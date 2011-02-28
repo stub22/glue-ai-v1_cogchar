@@ -5,7 +5,7 @@
 
 package org.cogchar.animoid.calc.curve;
 
-import org.cogchar.animoid.calc.number.NumberFactory;
+import org.cogchar.calc.number.NumberFactory;
 import static org.cogchar.animoid.calc.curve.ConstAccelCurveStateVarSymbol.*;
 import org.jscience.mathematics.function.Polynomial;
 import org.jscience.mathematics.function.Term;

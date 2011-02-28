@@ -7,8 +7,8 @@ package org.cogchar.animoid.test;
 
 import org.apache.log4j.BasicConfigurator;
 import org.cogchar.animoid.calc.curve.PolynomialTest;
-import org.cogchar.animoid.calc.number.Float64Funcs;
-import org.cogchar.animoid.calc.number.NumberFactory;
+import org.cogchar.calc.number.Float64Funcs;
+import org.cogchar.calc.number.NumberFactory;
 import org.jscience.mathematics.number.Float64;
 
 /**

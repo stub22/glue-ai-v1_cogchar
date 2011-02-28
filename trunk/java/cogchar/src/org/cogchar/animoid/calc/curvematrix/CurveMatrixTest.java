@@ -5,9 +5,9 @@
 
 package org.cogchar.animoid.calc.curvematrix;
 
-import org.cogchar.animoid.calc.function.BumpUF;
-import org.cogchar.animoid.calc.number.NumberFactory;
-import org.cogchar.animoid.calc.number.RealFuncs;
+import org.cogchar.calc.function.BumpUF;
+import org.cogchar.calc.number.NumberFactory;
+import org.cogchar.calc.number.RealFuncs;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
 import java.util.logging.Level;
 import org.slf4j.Logger;

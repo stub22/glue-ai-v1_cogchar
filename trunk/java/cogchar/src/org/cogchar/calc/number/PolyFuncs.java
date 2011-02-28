@@ -3,45 +3,46 @@
  * and open the template in the editor.
  */
 
-package org.cogchar.animoid.calc.number;
+package org.cogchar.calc.number;
+
 import java.util.List;
 import java.util.logging.Level;
-import org.slf4j.Logger;
 import org.jscience.mathematics.function.Polynomial;
 import org.jscience.mathematics.function.Variable;
+import org.slf4j.Logger;
 import org.jscience.mathematics.number.Number;
 import org.jscience.mathematics.number.Real;
+
 /**
  *
- * @author Stu Baurmann
+ * @author winston
  */
-public class NumberFuncs {
-	public static <NT extends Number<NT>> NT evalPoly(Polynomial<NT> poly) {
+public class PolyFuncs {
+	public static <RN extends Number<RN>> double evalPoly(Polynomial<RN> poly) {
 		return evalPrintReturnPoly(poly, null, null, null, false);
 	}
-	public static <NT extends Number<NT>> NT evalPrintReturnPoly(Polynomial<NT> poly, String logLabel,
+	public static <RN extends Number<RN>> double evalPrintReturnPoly(Polynomial<RN> poly, String logLabel,
 				Logger logger, Level logLev, boolean logFlag) {
-		NT nval = poly.evaluate();
-// 		if (logFlag && logger.isLoggable(logLev)) {
-		if (logFlag) {
+		RN val = poly.evaluate();
+		if (logFlag) { // (logFlag && logger.isLoggable(logLev)) {
 			StringBuffer msg = new StringBuffer(logLabel).append(" = {");
-			msg.append(poly.toString()).append("} (").append(dumpPolyVars(poly)).append(") = ").append(nval);
+			msg.append(poly.toString()).append("} (").append(dumpPolyVars(poly)).append(") = ").append(val);
+			// logger.log(logLev, msg.toString());
 			logger.info(msg.toString());
-//			logger.log(logLev, msg.toString());
 		}
-		return nval;
+		return val.doubleValue();
 	}
-	public static <NT extends Number<NT>> String dumpPolyVars(Polynomial<NT> poly) {
+	public static <RN extends Number<RN>> String dumpPolyVars(Polynomial<RN> poly) {
 		StringBuffer buf = new StringBuffer("[");
-		List<Variable<NT>> polyVars = poly.getVariables();
+		List<Variable<RN>> polyVars = poly.getVariables();
 		boolean firstVar = true;
-		for (Variable<NT> v : polyVars) {
+		for (Variable<RN> v : polyVars) {
 			String sym = v.getSymbol();
-			NT nval = v.get();
+			RN rval = v.get();
 			if (!firstVar) {
 				buf.append(",");
 			}
-			buf.append(sym).append("=").append(nval.toString());
+			buf.append(sym).append("=").append(rval.toString());
 			firstVar = false;
 		}
 		buf.append("]");

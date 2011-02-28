@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.cogchar.animoid.calc.number;
+package org.cogchar.calc.number;
 import java.lang.reflect.Array;
 import org.jscience.mathematics.number.Number;
 

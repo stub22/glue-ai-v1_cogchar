@@ -5,7 +5,7 @@
 
 package org.cogchar.animoid.calc.optimize;
 
-import org.cogchar.animoid.calc.number.NumberFactory;
+import org.cogchar.calc.number.NumberFactory;
 
 /**
  *
