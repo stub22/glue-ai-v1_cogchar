@@ -5,7 +5,7 @@
 
 package org.cogchar.animoid.calc.optimize;
 
-import org.cogchar.animoid.calc.number.NumberFactory;
+import org.cogchar.calc.number.NumberFactory;
 import org.jscience.mathematics.function.Function;
 import org.jscience.mathematics.number.Number;
 

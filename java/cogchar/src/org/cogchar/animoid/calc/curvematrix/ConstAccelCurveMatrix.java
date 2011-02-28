@@ -5,7 +5,7 @@
 
 package org.cogchar.animoid.calc.curvematrix;
 
-import org.cogchar.animoid.calc.number.NumberFactory;
+import org.cogchar.calc.number.NumberFactory;
 import org.cogchar.animoid.calc.curve.*;
 import java.util.ArrayList;
 import java.util.HashMap;

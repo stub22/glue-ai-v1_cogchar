@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.cogchar.animoid.calc.function;
+package org.cogchar.calc.function;
 
 /**
  *

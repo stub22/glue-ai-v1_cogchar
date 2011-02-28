@@ -5,10 +5,10 @@
 
 package org.cogchar.animoid.calc.curve;
 
-import org.cogchar.animoid.calc.number.NumberFactory;
-import org.cogchar.animoid.calc.number.RealFuncs;
+import org.cogchar.calc.number.NumberFactory;
+import org.cogchar.calc.number.RealFuncs;
 import java.util.logging.Level;
-import org.cogchar.animoid.calc.number.PolyFuncs;
+import org.cogchar.calc.number.PolyFuncs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jscience.mathematics.function.Polynomial;

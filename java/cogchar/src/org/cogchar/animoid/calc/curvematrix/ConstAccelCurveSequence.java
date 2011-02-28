@@ -5,11 +5,11 @@
 
 package org.cogchar.animoid.calc.curvematrix;
 
-import org.cogchar.animoid.calc.number.NumberFactory;
+import org.cogchar.calc.number.NumberFactory;
 import org.cogchar.animoid.calc.curve.*;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
 
-import org.cogchar.animoid.calc.function.BumpUF;
+import org.cogchar.calc.function.BumpUF;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

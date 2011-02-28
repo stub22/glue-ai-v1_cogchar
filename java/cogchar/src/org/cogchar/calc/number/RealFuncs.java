@@ -3,9 +3,9 @@
  * and open the template in the editor.
  */
 
-package org.cogchar.animoid.calc.number;
+package org.cogchar.calc.number;
 
-import org.cogchar.animoid.calc.number.NumberFactory;
+import org.cogchar.calc.number.NumberFactory;
 import java.util.List;
 import java.util.logging.Level;
 import org.slf4j.Logger;
