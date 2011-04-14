@@ -144,7 +144,7 @@ public class RealFuncs  {
 				return Real.ONE;
 			}
 			@Override public Real getOneHalf() {
-				throw new RuntimeException("need to replace code for Real.valueOf()");
+				throw new RuntimeException("need to replace code for Real.valueOf() for compat with latest Javolution");
 				// return Real.valueOf(0.5);
 			}
 			@Override public Real makeNumberFromDouble(double d) {

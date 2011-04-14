@@ -20,14 +20,15 @@ import org.cogchar.calc.function.BumpUF;
 import org.cogchar.calc.number.NumberFactory;
 import org.cogchar.calc.number.RealFuncs;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
-import java.util.logging.Level;
-import org.slf4j.Logger;
+
 
 import org.jscience.mathematics.number.Number;
 import org.jscience.mathematics.number.Real;
 import org.jscience.mathematics.structure.Field;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
+import org.apache.log4j.BasicConfigurator;
 /**
  *
  * @author Stu Baurmann
@@ -96,6 +97,8 @@ public class CurveMatrixTest<RN extends Number<RN> & Field<RN>>{
 	}
 	public static void main(String args[]) {
 		try {
+			// Use default config for Log4J.
+			BasicConfigurator.configure();
 			NumberFactory<Real> rnf = RealFuncs.getRealNumberFactory();
 			CurveMatrixTest<Real> cmt = new CurveMatrixTest<Real>(rnf);
 			cmt.testSDCACM();
