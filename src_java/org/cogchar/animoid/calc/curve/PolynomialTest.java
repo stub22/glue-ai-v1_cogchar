@@ -17,7 +17,6 @@
 package org.cogchar.animoid.calc.curve;
 
 import org.cogchar.calc.number.NumberFactory;
-import org.cogchar.calc.number.RealFuncs;
 import java.util.logging.Level;
 import org.cogchar.calc.number.PolyFuncs;
 import org.slf4j.Logger;
