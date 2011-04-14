@@ -22,6 +22,7 @@ import java.io.Serializable;
 import org.cogchar.animoid.config.FaceNoticeConfig;
 import org.cogchar.animoid.protocol.EgocentricDirection;
 import org.cogchar.animoid.protocol.Frame;
+import org.cogchar.sight.obs.SightObservation;
 
 /**
  * @author Stu Baurmann
@@ -34,7 +35,7 @@ public class TargetObjectStateEstimate implements Serializable {
 	public Frame					jointVelAtObs;
 
 	// This is here so we can display on GUI
-	// public SightObservation			temporarilyHackedSightObservation;
+	public SightObservation			temporarilyHackedSightObservation;
 
 	public TargetObjectStateEstimate(PositionEstimator pe, GazeDirectionComputer gdc,
 				Rectangle targetRect, Long timestampMsec) {
