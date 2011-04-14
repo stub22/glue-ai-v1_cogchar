@@ -24,11 +24,10 @@ import org.cogchar.animoid.config.AnimoidConfig;
 import org.cogchar.animoid.config.GazeJoint;
 import org.cogchar.animoid.config.GazeJointStrategy;
 import org.cogchar.animoid.config.GlanceStrategy;
-import org.cogchar.animoid.input.AnimoidCue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GazeStrategyCue  extends AnimoidCue {
+public class GazeStrategyCue  {
 	private static Logger	theLogger = LoggerFactory.getLogger(GazeStrategyCue.class.getName());
 
 	public enum MotionStyle {
