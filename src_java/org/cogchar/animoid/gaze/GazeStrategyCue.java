@@ -19,15 +19,17 @@ package org.cogchar.animoid.gaze;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+
 import org.cogchar.animoid.config.AnimoidConfig;
 import org.cogchar.animoid.config.GazeJoint;
 import org.cogchar.animoid.config.GazeJointStrategy;
 import org.cogchar.animoid.config.GlanceStrategy;
 import org.cogchar.animoid.input.AnimoidCue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GazeStrategyCue  extends AnimoidCue {
-	private static Logger	theLogger = Logger.getLogger(GazeStrategyCue.class.getName());
+	private static Logger	theLogger = LoggerFactory.getLogger(GazeStrategyCue.class.getName());
 
 	public enum MotionStyle {
 		NONE,
