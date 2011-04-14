@@ -1,6 +1,17 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package org.cogchar.calc.time;
@@ -11,15 +22,15 @@ import org.jscience.mathematics.number.FieldNumber;
  *
  * @author winston
  */
-class RelativeTimePoint<OffsetSecondsFN extends FieldNumber<OffsetSecondsFN>> extends TimePoint<OffsetSecondsFN> {
-	private		TimePoint<OffsetSecondsFN>			myReferencePoint;
+class RelativeTimePoint<OffsetSecondsFN extends FieldNumber<OffsetSecondsFN>> extends ExactTimePoint<OffsetSecondsFN> {
+	private		ExactTimePoint<OffsetSecondsFN>			myReferencePoint;
 	private		OffsetSecondsFN						myOffsetSeconds;
-	public RelativeTimePoint(TimePoint<OffsetSecondsFN> refPoint, OffsetSecondsFN offsetSec) {
+	public RelativeTimePoint(ExactTimePoint<OffsetSecondsFN> refPoint, OffsetSecondsFN offsetSec) {
 		myReferencePoint = refPoint;
 		offsetSec = myOffsetSeconds;
 	}
-	@Override public OffsetSecondsFN findMyOffsetToSimilarPoint(TimePoint<OffsetSecondsFN> otherPoint) {
-		OffsetSecondsFN		offsetOtherToRef = otherPoint.findMyOffsetToSimilarPoint(myReferencePoint);
+	@Override public OffsetSecondsFN findMyOffsetToReferencePoint(ExactTimePoint<OffsetSecondsFN> otherPoint) {
+		OffsetSecondsFN		offsetOtherToRef = otherPoint.findMyOffsetToReferencePoint(myReferencePoint);
 		return myOffsetSeconds.minus(offsetOtherToRef);
 	}
 }
