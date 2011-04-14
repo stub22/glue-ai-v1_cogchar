@@ -14,9 +14,7 @@
  *  limitations under the License.
  */
 
-
 package org.cogchar.animoid.world;
-
 
 import java.util.ArrayList;
 import java.util.List;
