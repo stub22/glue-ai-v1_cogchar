@@ -25,19 +25,21 @@ import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Logger;
+
 import org.cogchar.animoid.calc.estimate.TargetObjectStateEstimate;
 import org.cogchar.animoid.config.FaceNoticeConfig;
 import org.cogchar.animoid.protocol.EgocentricDirection;
 import org.cogchar.platform.util.CollectionFilter;
 import org.cogchar.platform.util.TimeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @param <ObsType>
  * @author Stu Baurmann
  */
 public abstract class SightObservationLog<ObsType extends SightObservation>  { // extends PropertyChangeNotifier {
-	private static Logger theLogger = Logger.getLogger(SightObservationLog.class.getName());
+	private static Logger theLogger = LoggerFactory.getLogger(SightObservationLog.class.getName());
 
 	private int							myPrunedObservationCount = 0;
 	private long						myFirstTimeStampMsec;
@@ -87,7 +89,7 @@ public abstract class SightObservationLog<ObsType extends SightObservation>  { /
 		Long insertTS = insertMe.getTimeStampMsec();
 		ObsType existingObs = getObservationForTimestamp(insertTS);
 		if (existingObs != null) {
-			theLogger.warning("Ignoring request to insert obs at timestamp " + insertTS
+			theLogger.warn("Ignoring request to insert obs at timestamp " + insertTS
 						+ " because we already have an obs there.");
 			return false;
 		}
@@ -272,7 +274,7 @@ public abstract class SightObservationLog<ObsType extends SightObservation>  { /
 		// Doublechecking some weirdness
 		ObsType mostRecent = this.getMostRecentObservation();
 		if (resultObs != mostRecent) {
-			theLogger.fine("Most recent obs is not most accurate.  mostRecentTOSE="
+			theLogger.trace("Most recent obs is not most accurate.  mostRecentTOSE="
 					+ mostRecent.myTOSE + ", mostAccurateTOSE=" + tose +
 					", fnconfig=" + SightHypothesis.getFaceNoticeConfig());
 		}

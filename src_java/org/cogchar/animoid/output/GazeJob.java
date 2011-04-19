@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
+
 import org.cogchar.animoid.calc.estimate.GazeDirectionComputer;
 import org.cogchar.animoid.calc.estimate.GazeJointStateSnap;
 import org.cogchar.animoid.calc.plan.GazeDimensionMotionPlan;
@@ -40,12 +40,14 @@ import org.cogchar.animoid.protocol.JointStateCoordinateType;
 import org.cogchar.animoid.protocol.JointVelocityAROMPS;
 import org.cogchar.animoid.protocol.SmallAngle;
 import org.cogchar.animoid.world.WorldJoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu Baurmann
  */
 public abstract class  GazeJob extends MotionJob {
-	private static Logger	theLogger = Logger.getLogger(GazeJob.class.getName());
+	private static Logger	theLogger = LoggerFactory.getLogger(GazeJob.class.getName());
 	protected			GazeStrategyCue				myGazeStrategy;
 	
 	protected		IGazeTarget					myGazeTarget;
@@ -126,7 +128,7 @@ public abstract class  GazeJob extends MotionJob {
 
 	protected synchronized JVFrame computeVelFrame(Frame currentPosEstimateAbsROM, JVFrame prevVelRomFrame) {
 		if(this.getStatus() != Status.RUNNING) {
-			theLogger.fine("Gaze attention is disabled, so nothing to do");
+			theLogger.trace("Gaze attention is disabled, so nothing to do");
 			return null;
 		}
 		JVFrame stereoVisionVelFrame = computeStereoGazePartnerVelFrame(currentPosEstimateAbsROM);
@@ -169,11 +171,11 @@ public abstract class  GazeJob extends MotionJob {
 		myLastGoalDeltaDir = moveAngles;
 
 		if (moveAngles == null) {
-			theLogger.finer("No target angles, so no move required");
+			theLogger.debug("No target angles, so no move required");
 			return null;
 		}
 		if (myGazeStrategy  == null) {
-			theLogger.finer("No gaze plan, so no move calculated");
+			theLogger.debug("No gaze plan, so no move calculated");
 			return null;
 		}
 

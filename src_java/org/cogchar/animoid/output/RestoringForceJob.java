@@ -18,7 +18,7 @@ package org.cogchar.animoid.output;
 
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
+
 import org.cogchar.animoid.calc.estimate.GazeJointStateSnap;
 import org.cogchar.animoid.config.AnimoidConfig;
 import org.cogchar.animoid.config.GazeJointStrategy;
@@ -27,6 +27,8 @@ import org.cogchar.animoid.protocol.Frame;
 import org.cogchar.animoid.protocol.JVFrame;
 import org.cogchar.animoid.protocol.Joint;
 import org.cogchar.animoid.protocol.JointVelocityAROMPS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -35,7 +37,7 @@ import org.cogchar.animoid.protocol.JointVelocityAROMPS;
  * Typically a RestoringForceJob will also attempt to achieve/keep eyes centered in head.
  */
 public class RestoringForceJob extends MotionJob {
-	private static Logger	theLogger = Logger.getLogger(RestoringForceJob.class.getName());
+	private static Logger	theLogger = LoggerFactory.getLogger(RestoringForceJob.class.getName());
 	
 	public	JVFrame							myLastVelFrame;
 	private	GazeStrategyCue					myHoldAndRecenterStrategy;

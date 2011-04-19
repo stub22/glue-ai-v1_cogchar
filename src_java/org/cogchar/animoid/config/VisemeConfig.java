@@ -23,17 +23,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
+
 import org.cogchar.animoid.oldconfig.StringMatrixFuncs;
 import org.cogchar.animoid.protocol.Frame;
 import org.cogchar.animoid.protocol.Joint;
 import org.cogchar.animoid.protocol.JointPositionAROM;
 import org.cogchar.animoid.protocol.Robot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * @author Stu Baurmann
  */
 public class VisemeConfig implements Serializable {
-	private static Logger	theLogger = Logger.getLogger(VisemeConfig.class.getName());
+	private static Logger	theLogger = LoggerFactory.getLogger(VisemeConfig.class.getName());
 	
 	public static final int							VISEME_POSITION_COUNT = 22;
 	public static final int							HEADER_ROW_COUNT = 1;
@@ -60,9 +62,9 @@ public class VisemeConfig implements Serializable {
 						+ " found " + totalColumns + " columns");		
 		}
 		Set<String> knownJointNames = robot.getJointNameSet();
-		theLogger.fine("Robot joint names: " + knownJointNames);
+		theLogger.trace("Robot joint names: " + knownJointNames);
 		Collection<Joint> knownJoints = robot.getJoints();
-		theLogger.fine("Robot joint names: " + knownJoints);
+		theLogger.trace("Robot joint names: " + knownJoints);
 
 		Joint[] joints = new Joint[jointColumns];
 		for (int i=0; i < jointColumns; i++) {
@@ -89,7 +91,7 @@ public class VisemeConfig implements Serializable {
 				int physChannel = Integer.parseInt(physChannelString);
 				ServoChannelConfig scc = servoConfigSparseArray[physChannel];
 				double romPos = scc.convertLopsidedFloatToROM(lopsidedPos);
-				theLogger.fine("Float: " + lopsidedPos + " converted to: " + romPos);
+				theLogger.trace("Float: " + lopsidedPos + " converted to: " + romPos);
 				JointPositionAROM jp = new JointPositionAROM(joints[i], romPos);
 				f.addPosition(jp);
 			}
