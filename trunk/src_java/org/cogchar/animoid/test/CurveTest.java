@@ -22,11 +22,13 @@ import org.cogchar.calc.number.Float64Funcs;
 import org.cogchar.calc.number.NumberFactory;
 import org.jscience.mathematics.number.Float64;
 
+
 /**
  *
  * @author Stu B.
  */
 public class CurveTest {
+
 
     /**
      * @param args the command line arguments

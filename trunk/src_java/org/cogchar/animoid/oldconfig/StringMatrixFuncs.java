@@ -17,21 +17,22 @@
 
 package org.cogchar.animoid.oldconfig;
 
-import	java.io.Reader;
 import	java.io.FileReader;
 import	java.io.LineNumberReader;
 
 import java.util.List;
 import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.logging.Logger;
+
 
 /**
  * @author Stu Baurmann
  */
 
 public class StringMatrixFuncs {
-	private static Logger	theLogger = Logger.getLogger("com.hansonrobotics.model.joint.StringMatrixReader");	
+	private static Logger	theLogger = LoggerFactory.getLogger(StringMatrixFuncs.class);
 
 	// This works for both VSA export files, and for ServoConfig files
 	public static String[][]	readDataIntoMatrix(LineNumberReader lnr) throws Throwable {
@@ -42,15 +43,15 @@ public class StringMatrixFuncs {
 		do {
 			int lineNumber = lnr.getLineNumber();
 			line = lnr.readLine();
-			theLogger.finest("Got line # " + lineNumber + " : " + line);
+			theLogger.debug("Got line # " + lineNumber + " : " + line);
 			if (line != null) {
 				if (!line.startsWith("#")) {
 					// Split on commas, which may optionally be accompanied by space on either side.
 					String tokens[] = line.split("\\s*,\\s*");
-					theLogger.finest("Got " + tokens.length + " tokens");
+					theLogger.debug("Got " + tokens.length + " tokens");
 					rowList.add(tokens);
 				} else {
-					theLogger.finest("Skipping comment line");
+					theLogger.debug("Skipping comment line");
 				}
 			}
 		} while (line != null);
@@ -62,7 +63,7 @@ public class StringMatrixFuncs {
 	public static boolean verifyMatrixWidth(String[][] matrix, int expectedColumnCount) {
 		for (int i = 0; i < matrix.length; i++) {
 			if (matrix[i].length != expectedColumnCount) {
-				theLogger.severe("Expected " + expectedColumnCount + " columns, but found " + matrix[i].length 
+				theLogger.error("Expected " + expectedColumnCount + " columns, but found " + matrix[i].length
 							+ " columns in row " + i);
 				return false;
 			}
@@ -82,7 +83,7 @@ public class StringMatrixFuncs {
 				throw new Exception("File " + filename + " contains rows not matching expected width: " + numColumns);
 			}
 		}
-		theLogger.fine("Read String[][] matrix of " + matrix.length + " rows, and verified column width");
+		theLogger.trace("Read String[][] matrix of " + matrix.length + " rows, and verified column width");
 		return matrix;
 	}
 }

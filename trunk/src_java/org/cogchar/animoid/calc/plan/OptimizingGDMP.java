@@ -6,7 +6,7 @@
 package org.cogchar.animoid.calc.plan;
 
 
-import java.util.logging.Logger;
+
 import org.apache.commons.math.FunctionEvaluationException;
 import org.apache.commons.math.analysis.DifferentiableMultivariateRealFunction;
 import org.apache.commons.math.analysis.MultivariateRealFunction;
@@ -20,12 +20,14 @@ import org.apache.commons.math.optimization.direct.MultiDirectional;
 import org.cogchar.animoid.calc.optimize.MultiStepPJT;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
 import org.jscience.mathematics.vector.Float64Vector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu Baurmann
  */
 public class OptimizingGDMP extends BudgetedGDMP {
-	private static Logger	theLogger = Logger.getLogger(OptimizingGDMP.class.getName());
+	private static Logger	theLogger = LoggerFactory.getLogger(OptimizingGDMP.class.getName());
 
 	private		double[]			myLastOptimalParams;
 
@@ -51,7 +53,7 @@ public class OptimizingGDMP extends BudgetedGDMP {
 		RealPointValuePair optimizedPair = optimizer.optimize(costFunction, GoalType.MINIMIZE, initParams);
 		double cost = optimizedPair.getValue();
 		double[] optimalParams = optimizedPair.getPoint();
-		theLogger.fine("Optimized gaze plan cost is: " + cost
+		theLogger.trace("Optimized gaze plan cost is: " + cost
 				+ ", numIterations=" + optimizer.getIterations()
 				+ ", numEvaluations=" + optimizer.getEvaluations()
 				+ ", rawParamVec=" + ParameterVector.doubleArrayToString(optimalParams));
@@ -67,7 +69,7 @@ public class OptimizingGDMP extends BudgetedGDMP {
 	public MultivariateRealFunction getCostFunction(final double targetPosDeg) {
 		return new MultivariateRealFunction() {
 			public double value(double[] args) throws FunctionEvaluationException, IllegalArgumentException {
-				theLogger.fine("RawParams: " + ParameterVector.doubleArrayToString(args));
+				theLogger.trace("RawParams: " + ParameterVector.doubleArrayToString(args));
 				reconfigureUsingParams(args, 0);
 				// theLogger.fine("After reconfig, plan=" + GazeDimensionMotionPlan.this.toString());
 				double totalCost = computePlanTotalCost(targetPosDeg, DUR_SHARED, true);
@@ -79,7 +81,7 @@ public class OptimizingGDMP extends BudgetedGDMP {
 	public DifferentiableMultivariateRealFunction getDifferentiableCostFunction(final double targetPosDeg) {
 		return new DifferentiableMultivariateRealFunction() {
 			public double value(double[] args) throws FunctionEvaluationException, IllegalArgumentException {
-				theLogger.fine("RawParams: " + ParameterVector.doubleArrayToString(args));
+				theLogger.trace("RawParams: " + ParameterVector.doubleArrayToString(args));
 				reconfigureUsingParams(args, 0);
 				// theLogger.fine("After reconfig, plan=" + GazeDimensionMotionPlan.this.toString());
 				double totalCost = computePlanTotalCost(targetPosDeg, DUR_SHARED, true);
