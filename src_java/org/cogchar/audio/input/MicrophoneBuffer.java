@@ -24,7 +24,7 @@ import javax.sound.sampled.TargetDataLine;
 
 /**
  *
- * @author matt
+ * @author Matthew Stevenson <matt@hansonrobokind.com>
  */
 public class MicrophoneBuffer implements AudioBuffer{
 	private AudioFormat myFormat;
