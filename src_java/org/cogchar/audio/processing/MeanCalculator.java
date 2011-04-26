@@ -16,19 +16,24 @@
 
 package org.cogchar.audio.processing;
 
-import java.util.List;
-
 /**
  *
- * @author matt
+ * @author Matthew Stevenson <matt@hansonrobokind.com>
  */
 public class MeanCalculator {
-	private int myChannels;
-	private double[][] myVals;
+	private Double[][] myVals;
+    private Double[] myMean;
+    private Double[] myStd;
+    private int myChannels;
 
-	public MeanCalculator(int chan){
-		myChannels = chan;
-		myVals = new double[myChannels][3];
+	public MeanCalculator(int channels){
+        myChannels = channels;
+		myVals = new Double[channels][];
+        for(int c=0; c<myChannels; c++){
+            myVals[c] = new Double[]{0.0,0.0,0.0};
+        }
+        myMean = new Double[myChannels];
+        myStd = new Double[myChannels];
 	}
 
 	public void addSamples(double[][] samples) {
@@ -38,14 +43,26 @@ public class MeanCalculator {
 				myVals[c][2] += s*s;
 			}
 			myVals[c][0] += samples[c].length;
+            myMean[c] = null;
+            myStd[c] = null;
 		}
 	}
 
-	public double getMean(int chan) {
-		return myVals[chan][1]/myVals[chan][0];
+	public double getMean(int c) {
+        if(myMean[c] == null){
+            myMean[c] = myVals[c][1]/myVals[c][0];
+        }
+        return myMean[c];
 	}
 
-	public double getStd(int chan) {
-		return (1.0/myVals[chan][0])*Math.sqrt(myVals[chan][0]*myVals[chan][2] - (myVals[chan][1]*myVals[chan][1]));
+	public double getStd(int c) {
+        if(myStd[c] == null){
+            myStd[c] = (1.0/myVals[c][0])*Math.sqrt(myVals[c][0]*myVals[c][2] - (myVals[c][1]*myVals[c][1]));
+        }
+        return myStd[c];
 	}
+
+    public double normalize(int c, double x){
+        return (x-getMean(c))/getStd(c);
+    }
 }

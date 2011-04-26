@@ -22,9 +22,9 @@ import javax.sound.sampled.AudioSystem;
 
 /**
  *
- * @author matt
+ * @author Matthew Stevenson <matt@hansonrobokind.com>
  */
-public class WavBuffer implements AudioBuffer {
+public class WavBuffer{
     private String myFileName;
     private int myBytesPerFrame;
     private int myBufferLength;

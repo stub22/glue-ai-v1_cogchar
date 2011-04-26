@@ -15,29 +15,21 @@
  */
 
 /*
- * SpectrogramFrame.java
+ * WavSpectrogramFrame.java
  *
- * Created on Dec 7, 2010, 7:25:50 PM
+ * Created on Apr 26, 2011, 12:58:46 AM
  */
 
 package org.cogchar.audio.spectrogram;
-
-import javax.sound.sampled.AudioFormat;
 
 /**
  *
  * @author Matthew Stevenson <matt@hansonrobokind.com>
  */
-public class SpectrogramFrame extends javax.swing.JFrame {
-	private RealtimeSpectrogram mySpect;
-	private boolean running;
-	/** Creates new form SpectrogramFrame */
-    public SpectrogramFrame() {
+public class WavSpectrogramFrame extends javax.swing.JFrame {
+    /** Creates new form WavSpectrogramFrame */
+    public WavSpectrogramFrame() {
         initComponents();
-		AudioFormat format = new AudioFormat(8000, 8, 1, false, true);
-		mySpect = new RealtimeSpectrogram(format, 1, 256, spectrogramPanel, 2.0);
-		running = false;
-		new Thread(mySpect).start();
     }
 
     /** This method is called from within the constructor to
@@ -49,33 +41,30 @@ public class SpectrogramFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        spectrogramPanel = new org.cogchar.audio.spectrogram.SpectrogramPanel();
+        newJPanel1 = new org.cogchar.audio.spectrogram.WavSpectrogramPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        spectrogramPanel.setMinimumSize(new java.awt.Dimension(0, 128));
-        spectrogramPanel.setPreferredSize(new java.awt.Dimension(400, 128));
-
-        javax.swing.GroupLayout spectrogramPanelLayout = new javax.swing.GroupLayout(spectrogramPanel);
-        spectrogramPanel.setLayout(spectrogramPanelLayout);
-        spectrogramPanelLayout.setHorizontalGroup(
-            spectrogramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 407, Short.MAX_VALUE)
+        javax.swing.GroupLayout newJPanel1Layout = new javax.swing.GroupLayout(newJPanel1);
+        newJPanel1.setLayout(newJPanel1Layout);
+        newJPanel1Layout.setHorizontalGroup(
+            newJPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
         );
-        spectrogramPanelLayout.setVerticalGroup(
-            spectrogramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 128, Short.MAX_VALUE)
+        newJPanel1Layout.setVerticalGroup(
+            newJPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spectrogramPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
+            .addComponent(newJPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spectrogramPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(newJPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -87,13 +76,13 @@ public class SpectrogramFrame extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new SpectrogramFrame().setVisible(true);
+                new WavSpectrogramFrame().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.cogchar.audio.spectrogram.SpectrogramPanel spectrogramPanel;
+    private org.cogchar.audio.spectrogram.WavSpectrogramPanel newJPanel1;
     // End of variables declaration//GEN-END:variables
 
 }

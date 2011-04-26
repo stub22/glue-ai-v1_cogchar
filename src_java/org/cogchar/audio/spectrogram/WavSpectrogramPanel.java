@@ -15,44 +15,33 @@
  */
 
 /*
- * SpectrogramPanel.java
+ * WavSpectrogramPanel.java
  *
- * Created on Dec 7, 2010, 3:18:38 PM
+ * Created on Apr 26, 2011, 12:47:34 AM
  */
 
 package org.cogchar.audio.spectrogram;
 
-import java.awt.Color;
 import java.awt.Graphics;
 
 /**
  *
  * @author Matthew Stevenson <matt@hansonrobokind.com>
  */
-public class SpectrogramPanel extends javax.swing.JPanel {
-
-    /** Creates new form SpectrogramPanel */
-    public SpectrogramPanel() {
+public class WavSpectrogramPanel extends javax.swing.JPanel {
+    private WavVisualizer myViz;
+    /** Creates new form WavSpectrogramPanel */
+    public WavSpectrogramPanel() {
         initComponents();
+        myViz = new WavVisualizer("test.wav");
     }
 
-	/*
-	@Override public void paintComponent(Graphics g) {
+    @Override
+    public void paint(Graphics g){
+        //super.print(g);
+        myViz.paint(g, 0, getHeight(), getWidth());
+    }
 
-	}*/
-
-	public void addData(int[][] data){
-		Graphics g = this.getGraphics();
-		int w = this.getWidth();
-		int h = this.getHeight();
-		int len = data.length;
-		double bH = (double)h/(double)len;
-		g.copyArea(0, 0, w, h, -1, 0);
-		for(int i = 0; i<data.length; i++){
-			g.setColor(new Color(data[i][0], data[i][1], data[i][2]));
-			g.drawLine(w-1, (int)(h-i*bH), w-1, (int)(h-(i-1)*bH));
-		}
-	}
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
