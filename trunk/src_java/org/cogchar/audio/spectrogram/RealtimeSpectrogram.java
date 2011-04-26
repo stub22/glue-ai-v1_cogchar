@@ -26,7 +26,7 @@ import javax.swing.SwingUtilities;
 
 /**
  *
- * @author matt
+ * @author Matthew Stevenson <matt@hansonrobokind.com>
  */
 public class RealtimeSpectrogram implements Runnable{
 	private MicrophoneBuffer myInput;
@@ -41,8 +41,8 @@ public class RealtimeSpectrogram implements Runnable{
 		myInput = new MicrophoneBuffer(format, fftLen);
 		myWindow = new HammingWindow(fftLen);
 		myMean = new MeanCalculator(chan);
-		myFFT = new FFTBuffer(chan, fftLen, myMean, myWindow);
-		mySpectrogram = new Spectrogram(chan, fftLen/2, 1, normalization);
+		myFFT = new FFTBuffer(chan, fftLen, myMean, myWindow, true);
+		mySpectrogram = new Spectrogram(fftLen/2, 1, normalization, false);
 		myPanel = panel;
 	}
 
@@ -52,7 +52,7 @@ public class RealtimeSpectrogram implements Runnable{
 		while(!myStop){
 			if(myInput.hasData()){
 				myFFT.writeData(myInput.getData());
-				mySpectrogram.addData(myFFT.getData());
+				mySpectrogram.addData(myFFT.getData()[0]);
 				updatePanel();
 				myInput.clear();
 			}else{
@@ -67,7 +67,7 @@ public class RealtimeSpectrogram implements Runnable{
 		try{
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					myPanel.addData(mySpectrogram.getPixels(0)[0]);
+					myPanel.addData(mySpectrogram.getPixels(0));
 				}
 			});
 		}catch(Throwable t){}

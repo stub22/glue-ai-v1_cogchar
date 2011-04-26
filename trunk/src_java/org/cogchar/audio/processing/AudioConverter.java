@@ -20,6 +20,7 @@ package org.cogchar.audio.processing;
  *
  * @author Matthew Stevenson <matt@hansonrobokind.com>
  */
-public interface FFTWindow {
-	public double applyWindow(int i, double sample);
+public interface AudioConverter {
+    public double[][] convert(byte[] data);
+    public double[][] convert(byte[] data, int offset, int len);
 }

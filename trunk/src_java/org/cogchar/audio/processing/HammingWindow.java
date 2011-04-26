@@ -18,7 +18,7 @@ package org.cogchar.audio.processing;
 
 /**
  *
- * @author matt
+ * @author Matthew Stevenson <matt@hansonrobokind.com>
  */
 public class HammingWindow implements FFTWindow {
 	private double[] myWindow;

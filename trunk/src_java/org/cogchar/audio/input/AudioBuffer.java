@@ -18,7 +18,7 @@ package org.cogchar.audio.input;
 
 /**
  *
- * @author matt
+ * @author Matthew Stevenson <matt@hansonrobokind.com>
  */
 public interface AudioBuffer {
 	public boolean hasData();

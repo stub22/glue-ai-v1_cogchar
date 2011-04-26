@@ -21,39 +21,38 @@ import org.apache.commons.math.transform.FastFourierTransformer;
 
 /**
  *
- * @author matt
+ * @author Matthew Stevenson <matt@hansonrobokind.com>
  */
 public class FFTBuffer {
 	private MeanCalculator myMean;
 	private FFTWindow myWindow;
 	private Complex[][] myFFTData;
 	private int mySize;
-	private int myChannels;
+    private int myChannels;
+    private boolean myRealitime;
 
-	public FFTBuffer(int chan, int size, MeanCalculator mean, FFTWindow win){
+	public FFTBuffer(int channels, int size, MeanCalculator mean, FFTWindow win, boolean realtime){
+        myRealitime = realtime;
+        myChannels = channels;
 		myMean = mean;
-		myChannels = chan;
 		myWindow = win;
 		mySize = size;
 		myFFTData = new Complex[myChannels][mySize];
 	}
 
 	public void writeData(double[][] data){
-		myMean.addSamples(data);
-		double mean = 0, std = 0;
 		boolean normalize =  myMean != null;
 		boolean window = myWindow != null;
+        if(myRealitime && window){
+            myMean.addSamples(data);
+        }
 		for(int c=0; c<myChannels; c++){
-			if(normalize){
-				mean = myMean.getMean(c);
-				std = myMean.getStd(c);
-			}
 			int i=0;
 			FastFourierTransformer fft = new FastFourierTransformer();
 			double[] temp = new double[mySize];
 			for(double x : data[c]){
 				if(normalize){
-					x = (x-mean)/std;
+					x = myMean.normalize(c, x);
 				}
 				if(window){
 					x = myWindow.applyWindow(i, x);
