@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SummableWJTrajectoryList<Traj extends WorldJointTrajectory>  {
 	private static Logger		theLogger = LoggerFactory.getLogger(SummableWJTrajectoryList.class.getName());

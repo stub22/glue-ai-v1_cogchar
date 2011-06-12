@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class JPRRFrame extends Frame<JointPositionRROM> {
 

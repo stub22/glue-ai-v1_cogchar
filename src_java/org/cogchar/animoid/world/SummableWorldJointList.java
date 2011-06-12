@@ -24,7 +24,7 @@ import org.cogchar.animoid.protocol.SmallAngle;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SummableWorldJointList <WJ extends WorldJoint> {
 	private		List<WJ>	myWorldJoints = new ArrayList<WJ>();

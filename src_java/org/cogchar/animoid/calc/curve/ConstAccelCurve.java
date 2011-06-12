@@ -34,7 +34,7 @@ import org.jscience.mathematics.number.Number;
  *
 
  * @param <RN>
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class ConstAccelCurve<RN extends Number<RN>>
 	extends PolynomialMotionCurve<ConstAccelCurveStateVarSymbol, RN> {

@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @param <HypoType>
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class SightModel<HypoType extends SightHypothesis> {
 

@@ -25,7 +25,7 @@ import org.cogchar.sight.obs.SightObservation;
 /**
  *
  * @param <HypoType> 
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SightHypoComparison<HypoType extends SightHypothesis> {
 	public HypoType	 lowerHypo;

@@ -22,7 +22,7 @@ import javax.swing.SwingUtilities;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class PropertyChangeNotifier {
 	private	 transient PropertyChangeSupport		myPropertyChangeSupport;

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class AttentionJob extends AnimoidJob {
 	private static Logger	theLogger = LoggerFactory.getLogger(AttentionJob.class.getName());

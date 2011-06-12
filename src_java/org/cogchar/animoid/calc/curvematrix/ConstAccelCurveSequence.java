@@ -23,7 +23,7 @@ import static org.cogchar.animoid.calc.curve.ConstAccelCurveStateVarSymbol.*;
 
 /**
  * @param <RN> 
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
 
  * Each of our added curves will have a different timeOffset variable,
  * shared with stepCurves *in other sequences*, and other polynomials.

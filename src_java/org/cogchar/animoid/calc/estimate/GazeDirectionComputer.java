@@ -40,7 +40,7 @@ import static org.cogchar.animoid.protocol.JointStateCoordinateType.*;
  * Crude forward-kinematics computation to determine what direction a
  * visible rectangle's center is in.
  * 
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class GazeDirectionComputer {
 	private static Logger	theLogger = LoggerFactory.getLogger(GazeDirectionComputer.class.getName());

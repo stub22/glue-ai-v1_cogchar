@@ -20,7 +20,7 @@ import java.text.DecimalFormat;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class StringUtils {
 	private static DecimalFormat theFormatter = new DecimalFormat("0.0#");

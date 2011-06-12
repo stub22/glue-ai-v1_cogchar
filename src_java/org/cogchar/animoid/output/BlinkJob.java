@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class BlinkJob extends MotionJob {
 	private static Logger	theLogger = LoggerFactory.getLogger(BlinkJob.class.getName());

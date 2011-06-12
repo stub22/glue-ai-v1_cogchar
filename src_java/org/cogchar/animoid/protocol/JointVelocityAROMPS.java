@@ -20,7 +20,7 @@ import static org.cogchar.animoid.protocol.JointStateCoordinateType.*;
  * The extension to JointPosition is a temporary hack.
  * For the moment this is just a marker subclass.
  * But soon it will extend JointStateItem instead of JointPosition.
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class JointVelocityAROMPS extends JointPosition {
 	public JointVelocityAROMPS(Joint j) {

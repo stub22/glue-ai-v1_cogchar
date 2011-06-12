@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  * 
  * Typically a RestoringForceJob will also attempt to achieve/keep eyes centered in head.
  */

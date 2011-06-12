@@ -20,7 +20,7 @@ import org.cogchar.animoid.protocol.Frame;
 
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public interface PositionEstimator {
 	public Frame estimatePositionAtMoment(long timestamp);

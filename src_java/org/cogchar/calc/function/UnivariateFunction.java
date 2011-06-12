@@ -18,7 +18,7 @@ package org.cogchar.calc.function;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public interface UnivariateFunction <DomainType, RangeType> {
 	public RangeType getOutputForInput(DomainType inputValue);

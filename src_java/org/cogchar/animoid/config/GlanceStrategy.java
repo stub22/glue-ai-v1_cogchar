@@ -16,7 +16,7 @@
 
 package org.cogchar.animoid.config;
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class GlanceStrategy {
 	// When the face center is within this many pixels of FOV center, 

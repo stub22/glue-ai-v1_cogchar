@@ -19,7 +19,7 @@ package org.cogchar.animoid.protocol;
 import java.io.Serializable;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  * A "small angle" is always between -pi=-180 and +pi=+180.
  * Attempts to set outside this range result in silent wrapping of the angle,
  * so +197 deg becomes -163deg.

@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class GazeDimensionMotionPlan <RN extends Number<RN> & Field<RN>> {
 	protected		static		boolean DUR_SHARED			= true;

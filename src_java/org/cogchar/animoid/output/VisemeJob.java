@@ -28,7 +28,7 @@ import org.cogchar.animoid.protocol.JointPositionAROM;
 import org.cogchar.animoid.protocol.JointStateCoordinateType;
 
 /**
- * @author Stu Baurmann, Matt Stevenson
+ * @author Stu B. <www.texpedient.com>, Matt Stevenson
  */
 public class VisemeJob extends MotionJob {
 	private		int							myCurrentVisemeNumber;

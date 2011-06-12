@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class GazeJobUnusedStuff extends GotoGazeJob {
 	private static Logger	theLogger = LoggerFactory.getLogger(GazeJobUnusedStuff.class.getName());

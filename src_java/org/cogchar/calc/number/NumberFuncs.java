@@ -24,7 +24,7 @@ import org.jscience.mathematics.function.Variable;
 import org.jscience.mathematics.number.Number;
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class NumberFuncs {
 	public static <NT extends Number<NT>> NT evalPoly(Polynomial<NT> poly) {

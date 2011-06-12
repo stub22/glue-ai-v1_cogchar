@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SightCue extends CueStub {
 	private static Logger	theLogger = LoggerFactory.getLogger(SightCue.class.getName());

@@ -27,7 +27,7 @@ import org.cogchar.sight.track.SightCue;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class PeakTracker extends SightTrackingTarget<SightCue> {
 

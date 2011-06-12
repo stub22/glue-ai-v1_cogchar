@@ -21,7 +21,7 @@ import org.cogchar.animoid.gaze.IGazeTarget.Flavor;
 import org.cogchar.animoid.protocol.Frame;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 
 public abstract class SightTrackingTarget<SC extends SightCue> implements IGazeTarget {

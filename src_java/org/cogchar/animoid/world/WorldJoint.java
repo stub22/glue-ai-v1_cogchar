@@ -33,7 +33,7 @@ import static org.cogchar.animoid.protocol.JointStateCoordinateType.*;
  * physical sense of a particular underlying servo.  The latter is indicated
  * by a "1" in the low-level servo-config, and is <b>irrelevant</b> to this class.</p>
  * Hint:  The world sense will be the same for all robots!
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class WorldJoint {
 

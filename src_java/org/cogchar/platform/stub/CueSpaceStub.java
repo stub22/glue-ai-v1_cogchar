@@ -18,7 +18,7 @@ package org.cogchar.platform.stub;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public interface CueSpaceStub extends ThalamentSpaceStub {
 

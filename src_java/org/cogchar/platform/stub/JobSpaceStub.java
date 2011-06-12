@@ -19,7 +19,7 @@ package org.cogchar.platform.stub;
 import java.util.List;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public interface JobSpaceStub extends ThalamentSpaceStub {
 	/**

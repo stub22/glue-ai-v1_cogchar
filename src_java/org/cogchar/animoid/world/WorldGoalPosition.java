@@ -19,7 +19,7 @@ package org.cogchar.animoid.world;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class WorldGoalPosition {
 	public Double		degrees;

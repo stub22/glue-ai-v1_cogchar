@@ -32,7 +32,7 @@ import org.cogchar.animoid.protocol.Robot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class VisemeConfig implements Serializable {
 	private static Logger	theLogger = LoggerFactory.getLogger(VisemeConfig.class.getName());

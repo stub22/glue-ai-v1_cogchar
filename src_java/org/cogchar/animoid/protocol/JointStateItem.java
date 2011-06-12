@@ -25,7 +25,7 @@ import static org.cogchar.animoid.protocol.JointStateCoordinateType.*;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class JointStateItem implements Serializable {
 	private static Logger	theLogger = LoggerFactory.getLogger(JointStateItem.class.getName());

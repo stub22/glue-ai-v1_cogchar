@@ -30,7 +30,7 @@ import org.jscience.mathematics.structure.Field;
 /**
  *
  * @param <RN> 
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SharedDurationCACM<RN extends Number<RN> & Field<RN>> extends ConstAccelCurveMatrix<RN> {
 	protected	List<SDCACM_Interval>		myIntervals = new ArrayList<SDCACM_Interval>();

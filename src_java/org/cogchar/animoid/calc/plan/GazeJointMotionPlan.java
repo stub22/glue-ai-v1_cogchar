@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @param <RN> 
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class GazeJointMotionPlan <RN extends Number<RN> & Field<RN>>  {
 	private static Logger	theLogger = LoggerFactory.getLogger(GazeJointMotionPlan.class.getName());

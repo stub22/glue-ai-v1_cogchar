@@ -18,7 +18,7 @@ package org.cogchar.animoid.protocol;
 import static org.cogchar.animoid.protocol.JointStateCoordinateType.*;
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class JointPositionRROM  extends JointPosition {
 	public JointPositionRROM(Joint j) {

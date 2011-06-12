@@ -19,7 +19,7 @@ package org.cogchar.sight.hypo;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public enum SightExposureStatus {
 	EXPOSED,
