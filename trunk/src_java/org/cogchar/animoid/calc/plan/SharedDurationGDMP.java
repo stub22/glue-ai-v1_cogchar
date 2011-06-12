@@ -26,7 +26,7 @@ import org.jscience.mathematics.function.Polynomial;
 import org.jscience.mathematics.number.Real;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class SharedDurationGDMP extends GazeDimensionMotionPlan<Real> {
 	protected		SharedDurationCACM<Real>		myCACM;

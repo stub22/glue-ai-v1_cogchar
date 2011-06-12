@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class JPARFrame extends Frame<JointPositionAROM> {
 	// Frames must contain same joints, and all coords must be abs-rom

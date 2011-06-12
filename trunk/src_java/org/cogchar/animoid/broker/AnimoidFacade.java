@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  * 
  * Lower level components should NOT know about the AnimoidFacade.
  */

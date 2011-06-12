@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class ThalamentStub extends PropertyChangeNotifier implements Serializable {
 	private static Logger	theLogger = LoggerFactory.getLogger(ThalamentStub.class.getName());

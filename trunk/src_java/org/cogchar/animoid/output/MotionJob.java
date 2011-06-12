@@ -26,7 +26,7 @@ import org.cogchar.animoid.protocol.Joint;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class MotionJob extends AnimoidJob {
 	private		transient		TimeKeeper		myTimeKeeper;

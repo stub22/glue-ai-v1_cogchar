@@ -29,7 +29,7 @@ import org.jscience.mathematics.structure.Field;
 /**
  *
  * @param <RN>
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SharedDurationGJMP<RN extends Number<RN> & Field<RN>> extends GazeJointMotionPlan<RN> {
 

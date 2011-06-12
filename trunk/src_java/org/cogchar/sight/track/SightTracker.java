@@ -28,7 +28,7 @@ import org.cogchar.platform.util.TimeUtils;
  * @param <SO>
  * @param <SH>
  * @param <SC>
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class SightTracker<SO extends SightObservation, SH extends SightHypothesis<SO>, SC extends SightCue> extends SightTrackingTarget<SC> {
 

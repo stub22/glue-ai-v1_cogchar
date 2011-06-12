@@ -21,7 +21,7 @@ import java.util.Map;
 import org.cogchar.platform.util.TimeUtils;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class JointPositionSnapshot extends Frame {
 	// private Map<Integer, JointPosition> myJointPositionsByID = new HashMap<Integer, JointPosition>();

@@ -17,7 +17,7 @@ package org.cogchar.animoid.protocol;
 import static org.cogchar.animoid.protocol.JointStateCoordinateType.*;
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class JointPositionAROM extends JointPosition {
 	private static double EQUALITY_TOLERANCE  = 0.0001;

@@ -19,7 +19,7 @@ package org.cogchar.animoid.calc.curve;
 /**
  *
  * @param <T> 
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public interface StateVariableSymbol<T extends StateVariableSymbol> {
 	public String getSymbolString();

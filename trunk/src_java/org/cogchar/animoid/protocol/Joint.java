@@ -19,7 +19,7 @@ package org.cogchar.animoid.protocol;
 import java.io.Serializable;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class Joint implements Serializable {
 	private Device		myDevice;

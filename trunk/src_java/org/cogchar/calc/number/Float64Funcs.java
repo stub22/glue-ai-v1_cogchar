@@ -21,7 +21,7 @@ import org.jscience.mathematics.number.Float64;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class Float64Funcs {
 	public static Float64 makeFloat64(double doubleValue) {

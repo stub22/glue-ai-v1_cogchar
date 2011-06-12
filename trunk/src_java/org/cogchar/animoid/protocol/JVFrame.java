@@ -19,7 +19,7 @@ import java.util.Set;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class JVFrame extends Frame<JointVelocityAROMPS> {
 	public static JVFrame makeFrom(Frame f) {

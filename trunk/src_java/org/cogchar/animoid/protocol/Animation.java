@@ -24,7 +24,7 @@ import java.util.Set;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class Animation implements Serializable {
 	private				String			myName;

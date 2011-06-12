@@ -21,7 +21,7 @@ import org.jscience.mathematics.function.Function;
 import org.jscience.mathematics.number.Number;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class ParameterVector<RN extends Number<RN>>  {
 	// Values and penalties are both always of length=myLength.

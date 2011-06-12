@@ -21,7 +21,7 @@ import org.cogchar.animoid.protocol.JPARFrame;
 import org.cogchar.animoid.protocol.JointPositionSnapshot;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public interface IServoMonitor {
 	// At most one of these snapshots may be null!

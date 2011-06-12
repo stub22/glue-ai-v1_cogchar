@@ -17,7 +17,7 @@
 package org.cogchar.animoid.calc.estimate;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 
 public interface TimeKeeper {

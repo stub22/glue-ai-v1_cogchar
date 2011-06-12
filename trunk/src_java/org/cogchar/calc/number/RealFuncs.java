@@ -28,7 +28,7 @@ import org.jscience.mathematics.number.Number;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class RealFuncs  {
 

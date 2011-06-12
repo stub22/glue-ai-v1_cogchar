@@ -20,7 +20,7 @@ import org.cogchar.animoid.protocol.Joint;
 import org.cogchar.animoid.world.WorldJoint;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class StereoGazeConfig {
 	public enum Orientation {

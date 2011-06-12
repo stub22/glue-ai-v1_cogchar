@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *  Cues start with no explicit constructors.
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class CueStub extends ThalamentStub {
 	private static Logger	theLogger = LoggerFactory.getLogger(CueStub.class.getName());

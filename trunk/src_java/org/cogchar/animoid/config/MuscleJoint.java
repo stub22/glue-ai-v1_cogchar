@@ -21,7 +21,7 @@ import java.util.EnumSet;
 /**
  * Copied from MjCanonicalNames.h in the "ControlSystems" C++ project on 2008-07-04.
  * That's right - independence day (from C++), baby!
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public enum MuscleJoint {
 	NO_MJ_ID(-1),

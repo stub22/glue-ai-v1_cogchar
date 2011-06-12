@@ -27,7 +27,7 @@ import org.jscience.mathematics.structure.Field;
 
 /**
  * @param <RN>
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  *
  * The elements of this matrix are all ConstAccelCurves.
  * They may be sharing underlying polynomial variables, or not.

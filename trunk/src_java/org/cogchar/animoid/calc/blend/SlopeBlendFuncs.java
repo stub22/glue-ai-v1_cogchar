@@ -20,7 +20,7 @@ import org.cogchar.animoid.protocol.JPRRFrame;
 import org.cogchar.animoid.protocol.JointPositionRROM;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SlopeBlendFuncs {
 

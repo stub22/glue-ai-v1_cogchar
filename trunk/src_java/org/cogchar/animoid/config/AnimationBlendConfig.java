@@ -19,7 +19,7 @@ package org.cogchar.animoid.config;
 import java.io.Serializable;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 
 public class AnimationBlendConfig implements Serializable {

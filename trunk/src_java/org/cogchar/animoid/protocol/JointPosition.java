@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import static org.cogchar.animoid.protocol.JointStateCoordinateType.*;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class JointPosition extends JointStateItem {
 	private static Logger	theLogger = LoggerFactory.getLogger(JointPosition.class.getName());

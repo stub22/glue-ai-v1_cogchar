@@ -30,7 +30,7 @@ import static org.cogchar.animoid.protocol.JointStateCoordinateType.*;
 /**
  *
  * @param <JP> 
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class Frame<JP extends JointPosition> implements Serializable {
 	private static Logger	theLogger = LoggerFactory.getLogger(Frame.class.getName());

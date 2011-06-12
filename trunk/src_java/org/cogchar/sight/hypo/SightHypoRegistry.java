@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @param <HypoType>
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SightHypoRegistry<HypoType extends SightHypothesis> {
 	private static Logger theLogger = LoggerFactory.getLogger(SightHypoRegistry.class.getName());

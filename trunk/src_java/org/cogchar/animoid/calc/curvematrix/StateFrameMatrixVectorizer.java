@@ -20,7 +20,7 @@ import org.cogchar.animoid.calc.curve.*;
 
 /**
  * @param <StateVarSymbol> 
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  * Virtual vector+matrix structure.
  * Implementer gets to decide how to map the implied matrix structure into a single vector.
  * In matrix we have rows for time segments and columns for state variables.

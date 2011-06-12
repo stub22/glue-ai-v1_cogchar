@@ -18,7 +18,7 @@ package org.cogchar.animoid.calc.trajectory;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public enum BoundaryStyle {
 	NONE,

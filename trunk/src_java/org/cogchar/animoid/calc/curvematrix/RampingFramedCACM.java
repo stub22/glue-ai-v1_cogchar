@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class RampingFramedCACM<RN extends Number<RN> & Field<RN>> extends ConstAccelCurveMatrix<RN> {
 	private static Logger		theLogger = LoggerFactory.getLogger(RampingFramedCACM.class.getName());

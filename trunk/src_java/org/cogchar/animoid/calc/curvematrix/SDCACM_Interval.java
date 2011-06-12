@@ -26,7 +26,7 @@ import org.jscience.mathematics.number.Real;
 import org.jscience.mathematics.number.Number;
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SDCACM_Interval<RN extends Number<RN>> {
 	public Integer						myIntervalNum;

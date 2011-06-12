@@ -25,7 +25,7 @@ import java.util.Set;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class Library implements Serializable {
 	private	Map<String, Animation>	myAnimationsByName = new HashMap<String, Animation>();

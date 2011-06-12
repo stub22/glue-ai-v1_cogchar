@@ -22,7 +22,7 @@ import java.util.Date;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class TimeUtils {
     private static DateFormat theTimestampFormat=new SimpleDateFormat("HH:mm:ss");

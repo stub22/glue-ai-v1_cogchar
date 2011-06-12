@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @param <ObsType>
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class SightHypothesis<ObsType extends SightObservation>
 			extends SightObservationLog<ObsType> {

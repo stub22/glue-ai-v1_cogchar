@@ -23,7 +23,7 @@ import org.cogchar.animoid.protocol.JointPosition;
 import static org.cogchar.animoid.protocol.JointStateCoordinateType.*;
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class WorldJointStateSnap {
 	private WorldJoint			myWorldJoint;

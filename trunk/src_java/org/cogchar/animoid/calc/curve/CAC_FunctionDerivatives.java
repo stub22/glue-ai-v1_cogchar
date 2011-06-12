@@ -26,7 +26,7 @@ import org.jscience.mathematics.number.Number;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  * Symbolic derivatives of a function for all state variables of a curve.
  * The function may well depend on other variables not in the state of this curve!
  */

@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  *
- * @author Stu Baurmann and Matt Stevenson
+ * @author Stu B. <www.texpedient.com> and Matt Stevenson
  */
 public class CollectionUtils {
 	/**

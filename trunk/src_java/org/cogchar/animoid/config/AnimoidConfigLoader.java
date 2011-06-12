@@ -28,7 +28,7 @@ import org.cogchar.animoid.world.WorldJoint;
 
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 
 public class AnimoidConfigLoader {
