@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  *  This class is an adapter between the abstract world of function curves and
  *  the concrete world of JointPositions.
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class WorldJointTrajectory<TimeType extends Number<TimeType> & Field<TimeType>,
 			AngleType extends Number<AngleType> & Field<AngleType>> {

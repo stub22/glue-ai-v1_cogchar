@@ -18,7 +18,7 @@ package org.cogchar.sight.track;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public enum SightAttentionStatus {
 	CONFIRMED,		// Sight is on-camera, centered, and identity-confirmed

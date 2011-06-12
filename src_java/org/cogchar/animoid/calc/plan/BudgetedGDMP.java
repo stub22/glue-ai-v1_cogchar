@@ -27,7 +27,7 @@ import org.jscience.mathematics.number.Real;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class BudgetedGDMP extends SharedDurationGDMP {
 	private		Variable<Real>		myTargetPosVar;

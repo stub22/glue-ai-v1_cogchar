@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @param <ObsType>
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class SightObservationLog<ObsType extends SightObservation>  { // extends PropertyChangeNotifier {
 	private static Logger theLogger = LoggerFactory.getLogger(SightObservationLog.class.getName());

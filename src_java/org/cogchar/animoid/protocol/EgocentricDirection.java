@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class EgocentricDirection implements Serializable {
 	// 0.0 is ahead, -pi/2 = -90.0 is left, +pi/2 = +90.0 is right

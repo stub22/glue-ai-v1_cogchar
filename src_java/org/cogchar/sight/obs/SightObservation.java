@@ -24,7 +24,7 @@ import org.cogchar.animoid.protocol.EgocentricDirection;
 import org.cogchar.platform.util.TimeUtils;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SightObservation implements Serializable {
 	private	long						myTimeStampMsec;

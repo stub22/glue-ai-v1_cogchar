@@ -27,6 +27,10 @@ import org.cogchar.animoid.config.GlanceStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author Stu B. <www.texpedient.com>
+ */
+
 public class GazeStrategyCue  {
 	private static Logger	theLogger = LoggerFactory.getLogger(GazeStrategyCue.class.getName());
 

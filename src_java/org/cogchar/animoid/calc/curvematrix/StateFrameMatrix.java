@@ -21,7 +21,7 @@ import org.jscience.mathematics.number.Number;
  *
  * @param <StateVarSymbol>
  * @param <RN>
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  *
  * A "StateFrame" is a single "block" of state variable values at a particular "time-segment".
  */

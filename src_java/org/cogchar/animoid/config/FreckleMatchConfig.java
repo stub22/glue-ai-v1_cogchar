@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class FreckleMatchConfig implements Serializable {
 	// IF all existing freckle-faces match with a score less than this threshold,

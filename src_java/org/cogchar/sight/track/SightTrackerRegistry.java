@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * @param <SO>
  * @param <SH>
  * @param <SC> 
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SightTrackerRegistry<ST extends SightTracker<SO, SH, SC>, SO extends SightObservation, SH extends SightHypothesis<SO>, SC extends SightCue>  {
 	private static Logger	theLogger = LoggerFactory.getLogger(SightTrackerRegistry.class.getName());

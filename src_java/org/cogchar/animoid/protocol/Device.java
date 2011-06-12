@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class Device implements Serializable {
 	public enum Type {

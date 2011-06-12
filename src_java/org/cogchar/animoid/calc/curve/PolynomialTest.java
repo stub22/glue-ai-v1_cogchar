@@ -28,7 +28,7 @@ import org.jscience.mathematics.number.Number;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class PolynomialTest<RN extends Number<RN>> {
 	private static Logger	theLogger = LoggerFactory.getLogger(PolynomialTest.class.getName());

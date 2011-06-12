@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  *
  * End of animation is indicated by the status of the Job changing to COMPLETED.
  */

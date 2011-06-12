@@ -21,7 +21,7 @@ import org.cogchar.animoid.oldconfig.IntMatrixFuncs;
 import org.cogchar.animoid.protocol.Joint;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class ServoChannelConfig implements Serializable {
 	// These are the fields of the ServoConfig file, in order.

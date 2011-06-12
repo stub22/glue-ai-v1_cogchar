@@ -26,7 +26,7 @@ import org.jscience.mathematics.number.Real;
 import org.jscience.mathematics.vector.Float64Vector;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  *
  * A single polynomial function depending on (some subset of) all the curves in a CACM.
  * Derivatives are symbolic polynomial derivs WRT all state variables of the curves.

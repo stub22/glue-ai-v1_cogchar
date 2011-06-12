@@ -18,7 +18,7 @@ package org.cogchar.platform.stub;
 import org.cogchar.platform.stub.CueSpaceStub;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public interface AnimoidCueSpaceStub extends CueSpaceStub {
 

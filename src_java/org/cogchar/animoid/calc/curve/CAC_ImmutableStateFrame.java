@@ -19,7 +19,7 @@ import static org.cogchar.animoid.calc.curve.ConstAccelCurveStateVarSymbol.*;
 import org.jscience.mathematics.number.Number;
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class CAC_ImmutableStateFrame<RN extends Number<RN>>
 		extends ImmutableStateFrame<ConstAccelCurveStateVarSymbol, RN> {

@@ -24,7 +24,7 @@ import org.cogchar.animoid.protocol.SmallAngle;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class ViewPort {
 	private		Integer			widthPixels, heightPixels;

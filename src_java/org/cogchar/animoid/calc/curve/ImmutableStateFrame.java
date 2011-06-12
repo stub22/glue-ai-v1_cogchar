@@ -21,7 +21,7 @@ import org.jscience.mathematics.number.Number;
 /**
  * @param <StateVarSymbol>
  * @param <RN>
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class ImmutableStateFrame<StateVarSymbol extends StateVariableSymbol,
 			RN extends Number<RN>> {

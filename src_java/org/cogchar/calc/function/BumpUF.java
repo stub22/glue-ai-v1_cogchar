@@ -17,7 +17,7 @@ package org.cogchar.calc.function;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public interface BumpUF <DomainType, RangeType>
 			extends SmoothUF<DomainType, RangeType>,

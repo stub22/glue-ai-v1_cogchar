@@ -23,7 +23,7 @@ import org.cogchar.animoid.protocol.Joint;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class BlenderJobUnusedStuff {
 		/* More disabled stuff:

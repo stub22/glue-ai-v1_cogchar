@@ -20,7 +20,7 @@ import org.jscience.mathematics.number.Number;
 
 /**
  * @param <RN>
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public abstract class NumberFactory<RN extends Number<RN>> {
 	public abstract RN makeNumberFromDouble(double d);

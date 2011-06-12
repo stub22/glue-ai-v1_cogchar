@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.apache.log4j.BasicConfigurator;
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class CurveMatrixTest<RN extends Number<RN> & Field<RN>>{
 	private static Logger	theLogger = LoggerFactory.getLogger(CurveMatrixTest.class.getName());

@@ -18,7 +18,7 @@ package org.cogchar.animoid.config;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class FaceNoticeConfig {
 	public Double		initialStrength;

@@ -27,7 +27,7 @@ import org.cogchar.animoid.gaze.GazeStrategyCue;
 import org.cogchar.animoid.protocol.Joint;
 import org.cogchar.animoid.protocol.Robot;
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class AnimoidConfig implements Serializable {
 	// These core things all come from animoid_config.xml

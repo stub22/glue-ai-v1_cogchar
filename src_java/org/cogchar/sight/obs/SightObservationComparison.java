@@ -23,7 +23,7 @@ import org.cogchar.animoid.protocol.EgocentricDirection;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SightObservationComparison {
 	public double distance;

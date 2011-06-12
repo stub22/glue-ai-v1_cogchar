@@ -25,7 +25,7 @@ import org.cogchar.animoid.protocol.Frame;
 import org.cogchar.sight.obs.SightObservation;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class TargetObjectStateEstimate implements Serializable {
 	public Long						timeAtObs;

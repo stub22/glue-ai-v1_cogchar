@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SimpleGazePlanManager<RN extends Number<RN> & Field<RN>> {
 	private static Logger	theLogger = LoggerFactory.getLogger(SimpleGazePlanManager.class.getName());

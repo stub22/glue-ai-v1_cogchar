@@ -19,7 +19,7 @@ package org.cogchar.platform.util;
 import java.util.Collection;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class CollectionFilter {
 	public abstract static class Predicate<T> {

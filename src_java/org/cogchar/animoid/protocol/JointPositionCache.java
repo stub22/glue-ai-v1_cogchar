@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class JointPositionCache<JP extends JointPosition> {
 	public	int					myRegisteredCounter;
