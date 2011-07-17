@@ -35,6 +35,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 import com.jme3.system.JmeContext;
+import com.jme3.system.JmeSystem;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.util.List;
@@ -75,6 +76,13 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		int height = 480;
 		settings.setWidth(width);
 		settings.setHeight(height);
+		// This explicit assetConfig workaround is necessary to prevent Jmonkey from resorting to getContextClassLoader()
+		//  this(Thread.currentThread().getContextClassLoader().getResource("com/jme3/asset/Desktop.cfg"));
+		// ... and this setting relies on a file in the "working directory" of the runtime, which 
+		// probably needs some refinement.
+		
+		// See new workaround in Activator (actually SETTING the contextClassLoader!!)
+		// settings.putString("AssetConfigURL", "file:./cogchar_jme3.cfg");
 		// settings.setUseInput(false);
 		setSettings(settings);
         createCanvas();
@@ -82,6 +90,13 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
  *         settings.setAudioRenderer(null);
         JmeSystem.setLowPermissions(true);
  */
+		
+		// This causes JME ClasspathLocator to use:
+		//							url = ClasspathLocator.class.getResource("/" + name);
+        //			instead of		url = Thread.currentThread().getContextClassLoader().getResource(name);
+		// JmeSystem.setLowPermissions(true);
+		// Again, see new workaround in Activator (actually SETTING the contextClassLoader!!)
+		
 		JmeContext ctx = getContext();
 		JmeCanvasContext cctx = (JmeCanvasContext) ctx;
 		Canvas awtCanvas = cctx.getCanvas();
@@ -188,8 +203,8 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 		 */
 		// Node testSceneNode = (Node) assetManager.loadModel("resources/leo_hanson_tests/test1/test1.scene");
 		// Node testSceneNode = (Node) assetManager.loadModel("resources/leo_hanson_tests/test2/test2.scene");
-		// Node testSceneNode = (Node) assetManager.loadModel("resources/leo_hanson_tests/test3/test3.scene");
-		Node testSceneNode = (Node) assetManager.loadModel("resources/stu_stickbot_01/ss.scene");
+		Node testSceneNode = (Node) assetManager.loadModel("resources/leo_hanson_tests/test3/test3.scene");
+		// Node testSceneNode = (Node) assetManager.loadModel("resources/stu_stickbot_01/ss.scene");
 		System.out.println("test scene loaded: " + testSceneNode);
 
 		SpatialManipFuncs.dumpNodeTree(testSceneNode, "   ");
@@ -356,4 +371,9 @@ public class WomanFaceTest extends SimpleApplication implements AnimEventListene
 	public ScoreBoard getScoreBoard() {
 		return myScoreBoard;
 	}
+    @Override  public void initialize() {
+		System.out.println("********************* WomanFaceTest.initialize() called, calling super.initialize()");
+		super.initialize();
+		System.out.println("********************* WomanFaceTest.initialize() returning");
+	}	
 }
