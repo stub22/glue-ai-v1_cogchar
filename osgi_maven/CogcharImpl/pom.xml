@@ -48,7 +48,8 @@
 	  <groupId>org.jmonkeyengine.mvn.jme3</groupId>
 	  <artifactId>nifty</artifactId>
 	  <version>3.0</version>
-	  <scope>provided</scope>	  
+	  <scope>provided</scope>
+	  <type>pom.lastUpdated</type>
 	 </dependency>
 	 <dependency>
 	  <groupId>org.jmonkeyengine.mvn.jme3</groupId>
@@ -100,6 +101,28 @@
 						<Private-Package>org.cogchar.*,jme3test.*,com.jme3.*,org.lwjgl.*,jme3tools.*,com.bulletphysics.*,javax.vecmath.*,Interface.*,Common.*,checkers.*,Models.*,Textures.*,Sound.*,Effects.*,Blender.*,Scenes.*</Private-Package>
 						<!-- <Embed-Dependency>!org.osgi.*;scope=compile|runtime</Embed-Dependency> 
 						-->
+                        <Include-Resource>
+                            {maven-resources},
+                            native=src/main/resources/native
+                        </Include-Resource>
+                        <Bundle-NativeCode>
+                            native/linux/32/liblwjgl.so;
+                            osname=linux;
+                            processor=x86,
+                            native/linux/64/liblwjgl64.so;
+                            osname=linux;
+                            processor=x86-64,
+                            native/windows/32/lwjgl.dll;
+                            osname=win32;
+                            processor=x86,
+                            native/windows/64/lwjgl64.dll;
+                            osname=win32;
+                            processor=x86-64,
+                            native/macosx/liblwjgl.jnilib;
+                            osname=mac os x;
+                            processor=x86;
+                            processor=ppc
+                        </Bundle-NativeCode>
 					</instructions>
 				</configuration>
 			</plugin>
