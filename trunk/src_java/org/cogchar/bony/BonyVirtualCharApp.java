@@ -23,16 +23,10 @@ package org.cogchar.bony;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.app.SimpleApplication;
-import com.jme3.scene.Node;
-import com.jme3.system.AppSettings;
-import com.jme3.system.JmeCanvasContext;
-import com.jme3.system.JmeContext;
-import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import javax.swing.JFrame;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -40,7 +34,7 @@ import javax.swing.JFrame;
 
 public class BonyVirtualCharApp extends SimpleApplication {
 
-	private		AnimChannel		channel;
+	private		AnimChannel				channel;
 	protected	List<AnimControl>		myAnimControls;
 	protected	VirtCharPanel			myVCP;
 	protected	ScoreBoard				myScoreBoard;
@@ -56,8 +50,7 @@ public class BonyVirtualCharApp extends SimpleApplication {
 		myVCP = vcp;
 	}
 
-	public VirtCharPanel makeCharPanelWithCanvas() {
-		BonySystem.setJMonkeySettings(this, 640, 480); 		
+	public VirtCharPanel makeCharPanelWithCanvas() { 		
 		this.createCanvas();
 		Canvas c = BonyGUI.makeAWTCanvas(this);
 		VirtCharPanel vcp = new VirtCharPanel();
