@@ -13,7 +13,8 @@
 
 	<!-- <sourceDirectory>src/main/java</sourceDirectory>
 	-->
-	<sourceDirectory>../../src_java</sourceDirectory>	  
+	<sourceDirectory>../../src_java</sourceDirectory>
+	<testSourceDirectory>../../src_java_test</testSourceDirectory>
 <resources>
     <resource>
         <directory>../../src_resources</directory>	
@@ -33,6 +34,7 @@
   </build>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<netbeans.hint.license>cogchar-apache20</netbeans.hint.license>
   </properties>
   <!-- Seem to still have to add repositories by hand in Netbeans 7.0,
 		even when they are registered and visible for "add dep", etc.
