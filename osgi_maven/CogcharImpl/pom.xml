@@ -8,17 +8,15 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>CogcharImpl</name>
+	
+  <repositories>
+
+  </repositories>	
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>1.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
-			<type>jar</type>
 		</dependency>
 	 <dependency>
 	  <groupId>org.jmonkeyengine.mvn.jme3</groupId>
@@ -49,7 +47,9 @@
 	  <artifactId>nifty</artifactId>
 	  <version>3.0</version>
 	  <scope>provided</scope>
+	  <!--  Matt's machine wants this, but Stu's doesn't like it.
 	  <type>pom.lastUpdated</type>
+	  -->
 	 </dependency>
 	 <dependency>
 	  <groupId>org.jmonkeyengine.mvn.jme3</groupId>
@@ -85,7 +85,12 @@
 	  <artifactId>jME3-testdata</artifactId>
 	  <version>3.0</version>
 	  <scope>provided</scope>
-	 </dependency>	 
+	 </dependency>
+	 <dependency>
+	  <groupId>${project.groupId}</groupId>
+	  <artifactId>CogcharJava</artifactId>
+	  <version>${project.version}</version>
+	 </dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -98,9 +103,10 @@
 					<instructions>
 						<Bundle-Activator>org.cogchar.osgi.impl.CogcharImplActivator</Bundle-Activator>
 						<Import-Package>*;resolution:=optional</Import-Package>
-						<Private-Package>org.cogchar.*,jme3test.*,com.jme3.*,org.lwjgl.*,jme3tools.*,com.bulletphysics.*,javax.vecmath.*,Interface.*,Common.*,checkers.*,Models.*,Textures.*,Sound.*,Effects.*,Blender.*,Scenes.*</Private-Package>
+						<Private-Package>org.cogchar.*,leo_hanson_tests.*,jme3test.*,com.jme3.*,org.lwjgl.*,jme3tools.*,com.bulletphysics.*,javax.vecmath.*,Interface.*,Common.*,checkers.*,Models.*,Textures.*,Sound.*,Effects.*,Blender.*,Scenes.*</Private-Package>
 						<!-- <Embed-Dependency>!org.osgi.*;scope=compile|runtime</Embed-Dependency> 
 						-->
+						<!--
                         <Include-Resource>
                             {maven-resources},
                             native=src/main/resources/native
@@ -123,6 +129,7 @@
                             processor=x86;
                             processor=ppc
                         </Bundle-NativeCode>
+						-->
 					</instructions>
 				</configuration>
 			</plugin>

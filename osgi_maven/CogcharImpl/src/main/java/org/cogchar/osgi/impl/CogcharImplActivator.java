@@ -5,7 +5,8 @@
 
 package org.cogchar.osgi.impl;
 
-import org.cogchar.bony.WomanFaceTest;
+import org.cogchar.bony.BonyVirtualCharApp;
+import org.cogchar.bony.StickFigureTestMain;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -28,13 +29,16 @@ public class CogcharImplActivator implements BundleActivator {
 			ClassLoader localLoader = getClass().getClassLoader();
 			System.out.println("Setting thread class loader to local loader: " + localLoader);
 			Thread.currentThread().setContextClassLoader(localLoader);
+			
+			// org.cogchar.osgi.scalatest.Wacko.hey();
+			
 			// Generally you want to run just ONE of the following main methods:
-			// WomanFaceTest.main(null);  // Our crude demo using test model exported by Leo from Maya.
+			StickFigureTestMain.main(null);  // Our crude demo using test model exported by Leo from Maya.
 			
 			// Most demos support camera nav using mouse and/or W,A,S,D and arrow keys
 
 			// This is the most impressive relevant JME3 demo - recently updated with facial expressions!
-			jme3test.bullet.TestBoneRagdoll.main(null);    //  Spacebar to make him do a pushup, then shoot him ...
+			// jme3test.bullet.TestBoneRagdoll.main(null);    //  Spacebar to make him do a pushup, then shoot him ...
 
 			// Esc-key to leave a demo.
 			// Sometimes you can run another demo, sometimes you need to quit and restart.
@@ -49,7 +53,7 @@ public class CogcharImplActivator implements BundleActivator {
 			System.out.println("Restoring old class loader: " + tccl);
 			Thread.currentThread().setContextClassLoader(tccl);
 		}
-		// System.out.println("Returned from WomanFaceTest.main()");
+		// System.out.println("Returned from StickFigureTestApp.main()");
 
     }
 

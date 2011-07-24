@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 by The Friendularity Project (www.friendularity.org).
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,10 +14,13 @@
  *  limitations under the License.
  */
 
+
 package org.cogchar.bony;
 
 import com.jme3.animation.AnimControl;
+import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
@@ -62,6 +65,45 @@ public class SpatialManipFuncs {
 	//	}
 		return results;
 	}
+	public static void resetBonesAndPrintInfo(List<AnimControl> animControls) { 
+		for (AnimControl ac : animControls) {
+			Skeleton csk = ac.getSkeleton();
+			csk.reset();  		// Forces bones to absorb default-bind-pose coords from nodes.
+			Bone roots[] = csk.getRoots();
+			Bone rb = roots[0];
+			Vector3f localPos = rb.getLocalPosition();
+			Vector3f modelPos = rb.getModelSpacePosition();
+			System.out.println("root bone=" + rb + ", localPos=" + localPos + ", modelPos=" + modelPos);
+			List<Bone> bkl = rb.getChildren();
+			for (Bone bk : bkl) {
+				System.out.println("child bone=" + bk + ", localPos=" + bk.getLocalPosition() + ", modelPos=" + bk.getModelSpacePosition());
+			}
+		}			
+	}		
+		/*
+		 * These mesh.xml files are excluded from assets.jar in JME default setup
+		 * (see "assets" section of project properties)
+		 */
+		// excludes: */*.mesh.xml,**/*.skeleton.xml,**/*.scene,**/*.material,**/*.meshxml,**/*.skeletonxml,**/*.obj,**/*.mtl
+/*
+		otoNode = (Node) assetManager.loadModel("Models/OtoSamp/Oto.mesh.xml");
+		otoNode.setLocalScale(0.5f);
+		rootNode.attachChild(otoNode);
+
+		control = otoNode.getControl(AnimControl.class);
+		control.addListener(this);
+		channel = control.createChannel();
+		channel.setAnim("stand");
+		// Dodge, push, pull, Walk, Stand
+
+		SkeletonDebugger skeletonDebug = new SkeletonDebugger("skeleton", control.getSkeleton());
+		Material mat = new Material(assetManager, "Common/MatDefs/Misc/WireColor.j3md");
+		mat.setColor("m_Color", ColorRGBA.Green);
+		mat.getAdditionalRenderState().setDepthTest(false);
+		skeletonDebug.setMaterial(mat);
+		otoNode.attachChild(skeletonDebug);
+		 */
+	
 	/*
 	 * found sceneKid spatial: body-node (Node)
 found sceneKid spatial: rightArm-node (Node)
