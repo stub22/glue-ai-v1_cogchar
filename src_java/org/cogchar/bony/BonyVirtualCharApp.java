@@ -34,29 +34,25 @@ import java.util.concurrent.Future;
 
 public class BonyVirtualCharApp extends SimpleApplication {
 
-	private		AnimChannel				channel;
-	protected	List<AnimControl>		myAnimControls;
-	protected	VirtCharPanel			myVCP;
-	protected	ScoreBoard				myScoreBoard;
+	// private		AnimChannel				channel;
+
+	protected	BonyContext				myContext = new BonyContext();
+
 
 	public BonyVirtualCharApp() {
 		super();
+		myContext = new BonyContext();
+		myContext.setApp(this);
 	}
-	
-	public List<AnimControl>	getAnimControls() {
-		return myAnimControls;
+	public BonyContext getBonyContext() { 
+		return myContext;
 	}
-	public void setVirtCharPanel(VirtCharPanel vcp) {
-		myVCP = vcp;
-	}
-
-	public VirtCharPanel makeCharPanelWithCanvas() { 		
+	public void initCharPanelWithCanvas() { 		
 		this.createCanvas();
 		Canvas c = BonyGUI.makeAWTCanvas(this);
 		VirtCharPanel vcp = new VirtCharPanel();
 		vcp.setRenderCanvas(c);
-		myVCP = vcp;
-		return vcp;
+		myContext.setPanel(vcp);
 		// assetManager does not exist until start is called, triggering simpleInit callback.
 	}
 	public void startJMonkeyCanvas() { 
@@ -81,10 +77,9 @@ public class BonyVirtualCharApp extends SimpleApplication {
 
 	@Override public void simpleInitApp() {
 		System.out.println("*********** BonyVirtualCharApp.simpleInitApp() is starting");
-
-		BonyGUI.setupCameraLightAndViewport(this);
-		myScoreBoard = BonyGUI.makeScoreBoard(this);
-// 		setupTextBox();
+		// Perform actions that cannot be done until engine is running.
+		BonyGUI.setupCameraLightAndViewport(myContext);
+		BonyGUI.initScoreBoard(myContext);
 		System.out.println("*********** BonyVirtualCharApp.simpleInitApp() is finished");
 	}
 

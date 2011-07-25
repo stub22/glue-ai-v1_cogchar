@@ -28,21 +28,22 @@ import java.util.List;
  * @author Stu B. <www.texpedient.com>
  */
 public class StickFigureTwister {
+	private	BonyContext		myContext;
+	
 	private float			myWaistTwistAngle = 0;
 	private float			myWaistTwistRate = 1;
 	private	boolean			myTwistScoringFlag = false;
 	
-	private	VirtCharPanel	myVCP;
-	private	ScoreBoard		myScoreBoard;
-	public StickFigureTwister(VirtCharPanel vcp, ScoreBoard sb) {
-		myVCP = vcp;
-		myScoreBoard = sb;
+	public StickFigureTwister(BonyContext bc) {
+		myContext = bc;
 	}
-	public void twist(float tpf,  List<AnimControl> animControls) { 
+	public void twist(float tpf) { 
 				//	System.out.println("simpleUpdate, tpf=" + tpf);
-		int testChannelNum = myVCP.getTestChannelNum();
+		List<AnimControl> animControls = myContext.getAnimControls();
+		VirtCharPanel vcp = myContext.getPanel();
+		int testChannelNum = vcp.getTestChannelNum();
 
-		String direction = myVCP.getTestDirection();
+		String direction = vcp.getTestDirection();
 		// System.out.println("Direction=" + direction);
 		AnimControl ac = animControls.get(testChannelNum);
 		Skeleton csk = ac.getSkeleton();
@@ -51,7 +52,7 @@ public class StickFigureTwister {
 		// System.out.println("Found " + roots.length + " root bones: " + roots);
 		Bone rootBone = roots[0];
 		Bone tgtBone = rootBone;
-		String mod = myVCP.getTestChannelModifier();
+		String mod = vcp.getTestChannelModifier();
 		if (mod.equals("first child")) {
 			List<Bone> kids = rootBone.getChildren();
 			Bone firstKid = kids.get(0);
@@ -61,7 +62,7 @@ public class StickFigureTwister {
 		Vector3f localPos = rootBone.getLocalPosition();
 		Vector3f modelPos = rootBone.getModelSpacePosition();
 		// System.out.println("================================================================");
-		myVCP.setDumpText("tgtBone=" + tgtBone + ", localPos=" + localPos + ", modelPos=" + modelPos + ", localRot=" + rootBone.getLocalRotation());
+		vcp.setDumpText("tgtBone=" + tgtBone + ", localPos=" + localPos + ", modelPos=" + modelPos + ", localRot=" + rootBone.getLocalRotation());
 
 
 		myWaistTwistAngle += tpf * myWaistTwistRate;
@@ -92,19 +93,14 @@ public class StickFigureTwister {
 		
 		// This applies rotation q to the "initial"/"bind" orientation, putting result in "local" rot.
 		tgtBone.setUserTransforms(Vector3f.ZERO, q, Vector3f.UNIT_XYZ);
-		if ((myTwistScoringFlag) && (myScoreBoard != null)) {
-			myScoreBoard.displayScore(0, "tgtBone=" + tgtBone);
-			myScoreBoard.displayScore(1, "xformRot=" + q);
-			myScoreBoard.displayScore(2, "tpf=" + tpf);
+		ScoreBoard sb = myContext.getScoreBoard();
+		if ((myTwistScoringFlag) && (sb != null)) {
+			sb.displayScore(0, "tgtBone=" + tgtBone);
+			sb.displayScore(1, "xformRot=" + q);
+			sb.displayScore(2, "tpf=" + tpf);
 		}
 	}
 	public void setScoringFlag(boolean f) {
 		myTwistScoringFlag = f;
-	}
-	public ScoreBoard getScoreBoard() {
-		return myScoreBoard;
-	}
-	public VirtCharPanel getVirtCharPanel() { 
-		return myVCP;
 	}
 }
