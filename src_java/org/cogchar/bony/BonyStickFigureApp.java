@@ -16,7 +16,9 @@
 
 package org.cogchar.bony;
 
+import com.jme3.animation.AnimControl;
 import com.jme3.scene.Node;
+import java.util.List;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -35,7 +37,7 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 	@Override public void simpleInitApp() {
 		super.simpleInitApp();
 		initStickFigureModel();
-		myTwister = new StickFigureTwister(myVCP, myScoreBoard);
+		myTwister = new StickFigureTwister(myContext);
 	}
 	public void setScoringFlag(boolean f) {
 		myTwister.setScoringFlag(f);
@@ -47,21 +49,23 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 		System.out.println("BonyStickFigure scene loaded: " + testSceneNode);
 
 		SpatialManipFuncs.dumpNodeTree(testSceneNode, "   ");
-		myAnimControls = SpatialManipFuncs.findAnimControls(testSceneNode);
+		List<AnimControl> animControls = SpatialManipFuncs.findAnimControls(testSceneNode);
 
-		System.out.println("Found BSF animControls " + myAnimControls);
+		System.out.println("Found BSF animControls, about to reset: " + animControls);
+		SpatialManipFuncs.resetBonesAndPrintInfo(animControls); 
 		
-		SpatialManipFuncs.resetBonesAndPrintInfo(myAnimControls); 
+		myContext.setAnimControls(animControls);
 
 		// Material testSceneMat = new Material(assetManager, "resources/leo_hanson_tests/test3/test3.material");
 
 		testSceneNode.setLocalScale(myLocalSceneScale);
-		rootNode.attachChild(testSceneNode);
+		
+		this.rootNode.attachChild(testSceneNode);
 	}	
 	@Override public void simpleUpdate(float tpf) {
 		doUpdate(tpf);
 	}
 	private void doUpdate(float tpf) {
-		myTwister.twist(tpf, myAnimControls);
+		myTwister.twist(tpf);
 	}	
 }

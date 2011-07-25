@@ -29,10 +29,12 @@ public class StickFigureTestMain {
 	public static void main(String[] args) {
 		BonyStickFigureApp stickFigureApp = new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
 		BonySystem.setJMonkeySettings(stickFigureApp, canvasWidth, canvasHeight);
-		VirtCharPanel vcp = stickFigureApp.makeCharPanelWithCanvas();
-		JFrame jf = vcp.makeEnclosingJFrame();
+		stickFigureApp.initCharPanelWithCanvas();
+		VirtCharPanel vcp = stickFigureApp.getBonyContext().getPanel();
+
 		stickFigureApp.startJMonkeyCanvas();
-		stickFigureApp.setScoringFlag(true);		
+		stickFigureApp.setScoringFlag(true);	
+		JFrame jf = vcp.makeEnclosingJFrame();		
 		// owTst.start(JmeContext.Type.Display);
 	}	
 }

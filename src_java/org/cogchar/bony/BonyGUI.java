@@ -33,7 +33,8 @@ import java.awt.Canvas;
  * @author Stu B. <www.texpedient.com>
  */
 public class BonyGUI {
-	public static void setupCameraLightAndViewport(SimpleApplication app) { 
+	public static void setupCameraLightAndViewport(BonyContext bc) { 
+		SimpleApplication app = bc.getApp();
 		FlyByCamera fbc = app.getFlyByCamera();
 		fbc.setMoveSpeed(10f);
 		app.setPauseOnLostFocus(false);
@@ -52,7 +53,8 @@ public class BonyGUI {
 		Quaternion camRotQ = new Quaternion(0.0f, 1.0f, 0.5f, 0.0f);
 		cam.setAxes(camRotQ);		
 	}	
-	public static ScoreBoard makeScoreBoard(SimpleApplication app) {
+	public static void initScoreBoard(BonyContext bc) {
+		SimpleApplication app = bc.getApp();
 		AppSettings settings = app.getContext().getSettings();
 		int numScoreRows = 4;
 		int rowHeight = 50;
@@ -61,8 +63,7 @@ public class BonyGUI {
 		int baseY = settings.getHeight() - numScoreRows * rowHeight;
 		float textSizeMult = 0.5f;
 		ScoreBoard sb = new ScoreBoard(app.getAssetManager(), app.getGuiNode(), baseX, baseY, boardWidth, rowHeight, numScoreRows, textSizeMult);
-		
-		return sb;
+		bc.setScoreBoard(sb);
 	}
 	public static Canvas makeAWTCanvas(SimpleApplication app) {
 		AppSettings settings = app.getContext().getSettings();
