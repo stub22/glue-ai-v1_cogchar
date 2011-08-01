@@ -16,6 +16,13 @@
 
 package org.cogchar.platform.stub;
 
+import java.util.List;
+import org.cogchar.platform.cues.NamedCue;
+import org.cogchar.platform.cues.NowCue;
+import org.cogchar.platform.cues.TextCue;
+import org.cogchar.platform.cues.TimerCue;
+import org.cogchar.platform.cues.VariableCue;
+
 /**
  *
  * @author Stu B. <www.texpedient.com>
@@ -24,21 +31,12 @@ public interface CueSpaceStub extends ThalamentSpaceStub {
 
 
 
-	/**
-	 * 
-	 * @return
-	 */
-	//public JobConfig getJobConfig();
-	/**
-	 * 
-	 * @return
-	 */
-	//public NowCue getSolitaryNowCue();
+
+	public JobConfig getJobConfig();
+
+	public NowCue getSolitaryNowCue();
 	
-	/**
-	 * 
-	 * @param c
-	 */
+	
 	public void clearCue(CueStub c);
 
 	// Used to selectively broadcast cue updates over JMX
@@ -50,7 +48,7 @@ public interface CueSpaceStub extends ThalamentSpaceStub {
 
 	public void clearMatchingNamedCues(String name);
 
-	// public void clearMatchingNamedCues(NamedCue nc);
+	public void clearMatchingNamedCues(NamedCue nc);
 
 	
 //	public void addCueListener(CueListener cl);
@@ -62,5 +60,12 @@ public interface CueSpaceStub extends ThalamentSpaceStub {
 	public CueStub addThoughtCueForName(String thoughtName, double strength);
 
 
-//	public <NCT extends NamedCue> NCT getNamedCue(Class<NCT> clazz, String cueName) ;
+	public <NCT extends NamedCue> NCT getNamedCue(Class<NCT> clazz, String cueName) ;
+	public NowCue addNowCue(Long prevDurationMsec, Long nextDurationMsec, Double strength) ;
+	public TextCue addTextCue(String textChannelName, String textData, Double strength);
+	public TimerCue addTimerCue(String timerName, Integer durationSec);
+
+	public List<VariableCue> getAllVariableCues();
+
+	public VariableCue setVariableCue(String varName, String varVal, Double strength);
 }

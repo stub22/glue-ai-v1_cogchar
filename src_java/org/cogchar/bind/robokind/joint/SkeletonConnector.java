@@ -24,7 +24,7 @@ import org.robokind.utils.services.ServiceFactory;
 /**
  * Robokind connector for a Cogchar virtual skeleton.
  * 
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class SkeletonConnector implements ServiceFactory<JointController,SerialControllerConfig>{
 

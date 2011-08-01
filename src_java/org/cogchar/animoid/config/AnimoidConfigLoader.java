@@ -32,7 +32,7 @@ import org.cogchar.animoid.world.WorldJoint;
  */
 
 public class AnimoidConfigLoader {
-	public static String testFilename = 	"C:\\_hanson\\_mount\\jira_svn\\convoid_trunk\\temp_config\\msi_hk01\\_humankind\\bina\\animoid\\animoid_bina.xml";
+	public static String testFilename = 	"animoid\\animoid_bina.xml";
 	
 	public static XStream buildDom4jXStreamForRead() {
 		Dom4JDriver dom4jDriver = new Dom4JDriver();

@@ -18,7 +18,7 @@ package org.cogchar.freckler.protocol;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public enum FaceRecognitionStatus {
 	UNTRIED,		// Recognition process has not started yet

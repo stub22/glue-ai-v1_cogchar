@@ -332,9 +332,9 @@ public abstract class JobStub extends ThalamentStub {
 	 * 
 	 * @return
 	 */
-//	protected JobBroker getJobBroker() {
-//		return (JobBroker) fetchBroker();
-//	}
+protected JobBrokerStub getJobBroker() {
+		return (JobBrokerStub) fetchBroker();
+	}
 
 	public boolean mayBeRunnableNowOrLater() {
 		switch(myStatus) {

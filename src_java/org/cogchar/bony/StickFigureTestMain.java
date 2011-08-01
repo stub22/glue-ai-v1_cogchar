@@ -26,15 +26,40 @@ public class StickFigureTestMain {
 	static float	sceneLocalScale = 0.5f;
 	static int		canvasWidth = 640, canvasHeight = 480;
 	
-	public static void main(String[] args) {
+
+	public static BonyContext initStickFigureApp(boolean addFrame) { 
 		BonyStickFigureApp stickFigureApp = new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
 		BonySystem.setJMonkeySettings(stickFigureApp, canvasWidth, canvasHeight);
 		stickFigureApp.initCharPanelWithCanvas();
-		VirtCharPanel vcp = stickFigureApp.getBonyContext().getPanel();
-
+		BonyContext bc = stickFigureApp.getBonyContext();
+		if (addFrame) {
+			// Frame must be packed after panel created, but created 
+			// before startJMonkey.  Might add frame to BonyContext...
+			VirtCharPanel vcp = bc.getPanel();
+			JFrame jf = vcp.makeEnclosingJFrame();
+		}	
 		stickFigureApp.startJMonkeyCanvas();
 		stickFigureApp.setScoringFlag(true);	
-		JFrame jf = vcp.makeEnclosingJFrame();		
-		// owTst.start(JmeContext.Type.Display);
-	}	
+		return bc;
+	}
+	public static void main(String[] args) {
+		BonyContext bc = initStickFigureApp(true);
+	
+		// OR, run a JMonkey demo in a standalone OpenGL system window (not a Java/Swing GUI).
+	
+		// Generally you want to run just ONE of the following main methods:
+			
+		// Most demos support camera nav using mouse and/or W,A,S,D and arrow keys
+
+		// This is the most impressive relevant JME3 demo - recently updated with facial expressions!
+		// jme3test.bullet.TestBoneRagdoll.main(null);    //  Spacebar to make him do a pushup, then shoot him ...
+
+
+		// jme3test.helloworld.HelloAnimation.main(null);   // Press spacebar to walk
+		// jme3test.bullet.TestBrickTower.main(null);       // shoot bricks
+		// jme3test.animation.TestMotionPath(null);			// space, u, i, j, p
+		// jme3test.model.anim.TestOgreComplexAnim(null);   // not interactive		
+		
+		// jme3test.TestChooser.main(null);
+	}		
 }
