@@ -22,36 +22,13 @@ import java.util.List;
  * @author Stu B. <www.texpedient.com>
  */
 public interface JobSpaceStub extends ThalamentSpaceStub {
-	/**
-	 * 
-	 * @param jl
-	 */
-//	public void addJobListener(JobListener jl);
-	/**
-	 * 
-	 * @param jl
-	 */
-	//public void removeJobListener(JobListener jl);
-	/**
-	 * 
-	 * @param j
-	 */
+	//	public void addJobListener(JobListener jl);
+	// public void removeJobListener(JobListener jl);
 	public void postManualJob(JobStub j);
-	/**
-	 * 
-	 * @param j
-	 */
+
 	public void clearJob(JobStub j);
 	public void terminateAndClearJob(JobStub j);
-	/**
-	 * 
-	 * @return
-	 */
-	//  public JobConfig getJobConfig();
-	/**
-	 * 
-	 * @return
-	 */
+	 public JobConfig getJobConfig();
 	public List<JobStub> getJobListCopy();
 
 	public <JT extends JobStub> List<JT> getAllJobsMatchingClass(Class<JT> clazz);

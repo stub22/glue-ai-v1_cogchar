@@ -22,7 +22,7 @@ import java.util.Collection;
 
 /**
  * Restricted API of FaceRec features.
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public interface FaceRecPopulationManager {
 

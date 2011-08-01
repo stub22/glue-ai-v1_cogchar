@@ -22,7 +22,7 @@ import java.util.Collection;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class FaceProfile {
 	private	Collection<OpenCVImage>		myOCVImages;

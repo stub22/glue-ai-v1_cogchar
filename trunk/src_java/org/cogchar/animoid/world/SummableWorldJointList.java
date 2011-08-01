@@ -23,7 +23,6 @@ import java.util.List;
 import org.cogchar.animoid.protocol.SmallAngle;
 
 /**
- *
  * @author Stu B. <www.texpedient.com>
  */
 public class SummableWorldJointList <WJ extends WorldJoint> {

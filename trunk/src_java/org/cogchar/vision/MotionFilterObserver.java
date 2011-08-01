@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import org.cogchar.sight.motion.PeakTracker;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 
 public class MotionFilterObserver extends ROIVisionObserver {

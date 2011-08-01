@@ -35,7 +35,7 @@ public abstract class ThalamentStub extends PropertyChangeNotifier implements Se
     private ThalamentStub                           myCausingThalament;
 	private	Long								myCreateStampMsec;
 	private	Long								myUpdateStampMsec;
-	// private	transient	ThalamusBroker			myBroker;
+	private	transient	ThalamusBrokerStub			myBroker;
 
     public ThalamentStub(){
         myThalamentID = theNextThalamentID++;
@@ -44,13 +44,12 @@ public abstract class ThalamentStub extends PropertyChangeNotifier implements Se
     public Integer getThalamentID(){
         return myThalamentID;
     }
-/*
-	public void setBroker(ThalamusBroker broker) {
+
+	public void setBroker(ThalamusBrokerStub broker) {
 		myBroker = broker;
         //myBroker.myThalamus.getThalamentArchive().addThalament(this);
 	}
- *
- */
+
 	// Called fetch rather than get to prevent JMX confusion.
 	protected Object fetchBroker() {
 		return null;
