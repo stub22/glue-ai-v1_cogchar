@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class FreckleSampleQuality implements Serializable {
 	private static Logger theLogger = Logger.getLogger(FreckleSampleQuality.class.getName());

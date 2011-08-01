@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import org.cogchar.animoid.broker.Animator;
-import org.cogchar.platform.stub.AnimoidCueSpaceStub;
+import org.cogchar.animoid.broker.AnimoidCueSpaceStub;
 
 import org.cogchar.animoid.calc.estimate.GazeDirectionComputer;
 import org.cogchar.animoid.calc.estimate.PositionEstimator;

@@ -113,10 +113,10 @@ public class RawFrameProcessor extends java.util.Observable implements IRawFrame
         at com.sun.imageio.plugins.bmp.BMPImageReader.read24Bit(BMPImageReader.java:1162)
         at com.sun.imageio.plugins.bmp.BMPImageReader.read(BMPImageReader.java:817)
         at javax.imageio.ImageReader.read(ImageReader.java:923)
-        at com.hansonrobotics.vision.RawFrameProcessor.getImage(RawFrameProcessor.java:97)
-        at com.hansonrobotics.vision.RawFrameProcessor.getOCV_SubImage(RawFrameProcessor.java:107)
-        at com.hansonrobotics.app.vision.FaceModel.facesSeen(FaceModel.java:74)
-        at com.hansonrobotics.app.vision.FaceDetectNoticeProcessor.ProcessFrame(FaceDetectNoticeProcessor.java:35)
+        at org.appdapter.vision.RawFrameProcessor.getImage(RawFrameProcessor.java:97)
+        at org.appdapter.vision.RawFrameProcessor.getOCV_SubImage(RawFrameProcessor.java:107)
+        at org.appdapter.app.vision.FaceModel.facesSeen(FaceModel.java:74)
+        at org.appdapter.app.vision.FaceDetectNoticeProcessor.ProcessFrame(FaceDetectNoticeProcessor.java:35)
  */
 				ImageInputStream iis = ImageIO.createImageInputStream(data);
 				m_reader.setInput(iis, true);

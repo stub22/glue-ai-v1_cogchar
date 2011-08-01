@@ -24,6 +24,7 @@ import org.cogchar.animoid.config.AnimoidConfig;
 import org.cogchar.animoid.config.GazeJoint;
 import org.cogchar.animoid.config.GazeJointStrategy;
 import org.cogchar.animoid.config.GlanceStrategy;
+import org.cogchar.platform.stub.CueStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class GazeStrategyCue  {
+public class GazeStrategyCue extends CueStub {
 	private static Logger	theLogger = LoggerFactory.getLogger(GazeStrategyCue.class.getName());
 
 	public enum MotionStyle {

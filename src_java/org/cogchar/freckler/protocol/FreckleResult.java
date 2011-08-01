@@ -26,7 +26,7 @@ import org.cogchar.platform.util.StringUtils;
 /**
  * FreckleResult must be both serializable (for JMX notifications) and MXBean-composite-data
  * mappable (to be returned as result of syncQuery).
- * @author Stu Baurmann
+ * @author Stu B. <www.texpedient.com>
  */
 public class FreckleResult implements Serializable {
 	private static Logger theLogger = Logger.getLogger(FreckleResult.class.getName());
