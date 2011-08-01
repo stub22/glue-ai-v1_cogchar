@@ -1,11 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package org.cogchar.osgi.impl;
 
-import org.cogchar.bony.BonyVirtualCharApp;
+import org.cogchar.bony.BonyContext;
 import org.cogchar.bony.StickFigureTestMain;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -17,9 +28,10 @@ import org.osgi.framework.BundleContext;
  */
 public class CogcharImplActivator implements BundleActivator {
 
-	@Override public void start(BundleContext context) throws Exception {
-        System.out.println("CogcharImplActivator.start(), bundleContext=" + context);
-		Bundle b = context.getBundle();
+	private	BonyContext		myBonyContext;
+	@Override public void start(BundleContext bundleCtx) throws Exception {
+        System.out.println("CogcharImplActivator.start(), bundleContext=" + bundleCtx);
+		Bundle b = bundleCtx.getBundle();
 		System.out.println("bundle=" + b);
 		
 
@@ -30,35 +42,28 @@ public class CogcharImplActivator implements BundleActivator {
 			System.out.println("Setting thread class loader to local loader: " + localLoader);
 			Thread.currentThread().setContextClassLoader(localLoader);
 			
-			// org.cogchar.osgi.scalatest.Wacko.hey();
+			// Our crude demo using test model exported by Leo from Maya.
+			myBonyContext = StickFigureTestMain.initStickFigureApp(false); 
 			
-			// Generally you want to run just ONE of the following main methods:
-			StickFigureTestMain.main(null);  // Our crude demo using test model exported by Leo from Maya.
 			
-			// Most demos support camera nav using mouse and/or W,A,S,D and arrow keys
-
-			// This is the most impressive relevant JME3 demo - recently updated with facial expressions!
-			// jme3test.bullet.TestBoneRagdoll.main(null);    //  Spacebar to make him do a pushup, then shoot him ...
-
-			// Esc-key to leave a demo.
-			// Sometimes you can run another demo, sometimes you need to quit and restart.
-			
-			// TestChooserWrapper.displayTestChooser(b, null);  // Choose from JME tests, some of which work!
-			// jme3test.helloworld.HelloAnimation.main(null);   // Press spacebar to walk
-			// jme3test.bullet.TestBrickTower.main(null);       // shoot bricks
-			// jme3test.animation.TestMotionPath(null);			// space, u, i, j, p
-			// jme3test.model.anim.TestOgreComplexAnim(null);   // not interactive
+				
+			// OR: choose from JME tests, run in system OpenGL window.
+			// Some tests are missing required libraries.
+			// TestChooserWrapper.displayTestChooser(b, null);  
 
 		} finally {
 			System.out.println("Restoring old class loader: " + tccl);
 			Thread.currentThread().setContextClassLoader(tccl);
 		}
-		// System.out.println("Returned from StickFigureTestApp.main()");
+		bundleCtx.registerService(BonyContext.class.getName(), myBonyContext, null);
+		// System.out.println("Returned from CogcharImplActivator.start()");
 
     }
-
 	@Override public void stop(BundleContext context) throws Exception {
         System.out.println("CogcharImplActivator.stop()");
+		// TODO:  Use the BonyContext to stop JMonkey canvas....
     }
-
+	public BonyContext getBonyContext() { 
+		return myBonyContext;
+	}
 }
