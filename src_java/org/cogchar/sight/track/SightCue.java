@@ -85,7 +85,7 @@ public class SightCue extends CueStub {
 		myASChangeStampMsec = TimeUtils.currentTimeMillis();
 		this.markUpdatedNow();
 	}
-	/*
+	
 	public Double getAttentionStartSec() {
 		return TimeUtils.msecStampObjToSecAgeObj(myAttentionStartStampMsec);
 	}
@@ -95,7 +95,7 @@ public class SightCue extends CueStub {
 	public Double getAttentionConfirmSec() {
 		return TimeUtils.msecStampObjToSecAgeObj(myAttentionConfirmStampMsec);
 	}
-	 */
+	 
 	public Double getAttentionStartAgeSec() {
 		return TimeUtils.msecStampObjToSecAgeObj(myAttentionStartStampMsec);
 	}

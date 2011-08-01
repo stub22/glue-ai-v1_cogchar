@@ -22,6 +22,7 @@ import org.cogchar.sight.hypo.SightModel;
 import org.cogchar.sight.obs.SightObservation;
 import org.cogchar.animoid.config.AnimoidConfig;
 import org.cogchar.animoid.protocol.EgocentricDirection;
+import org.cogchar.platform.stub.CueBrokerStub;
 import org.cogchar.platform.util.TimeUtils;
 
 /**
@@ -54,11 +55,10 @@ public abstract class SightTracker<SO extends SightObservation, SH extends Sight
 		}
 		myHypo = sh;
 	}
-	protected void die(Object cb) {
+	protected void die(CueBrokerStub cb) {
 
 		if (myCue != null) {
-			// cb was a cueBroker
-			// cb.clearCue(myCue);
+			cb.clearCue(myCue);
 			myCue = null;
 		}
 		setHypothesis(null);
