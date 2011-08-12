@@ -3,14 +3,26 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.cogchar</groupId>
-  <artifactId>Cogchar_Render</artifactId>
+  <artifactId>org.cogchar.lib.render.opengl</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Cogchar_Render</name>
+   	<name>${project.artifactId}</name>
   <url>http://maven.apache.org</url>
-
-  <properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -21,5 +33,10 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+      <dependency>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>ext.bundle.opengl.jmonkey</artifactId>
+          <version>${project.version}</version>
+      </dependency>
   </dependencies>
 </project>
