@@ -125,6 +125,11 @@ public class SkeletonController extends SerialJointController<BoneJoint> {
 		throw new UnsupportedOperationException("Not supported yet.");
 
 	}
+	
+    @Override
+    public Double getCurrentPosition() {
+		throw new UnsupportedOperationException("Not supported yet.");
+    }
     /**
      * Changes the physical id of the Joint and notifies listeners.
      * @param oldId previous physical id
