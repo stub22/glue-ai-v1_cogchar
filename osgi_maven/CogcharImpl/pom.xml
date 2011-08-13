@@ -4,10 +4,10 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cogchar</groupId>
-	<artifactId>CogcharImpl</artifactId>
+	<artifactId>org.cogchar.bundle.render.opengl</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<name>CogcharImpl</name>
+	<name>${project.artifactId} Bundle</name>
 <properties>
 		<netbeans.hint.license>cogchar-apache20</netbeans.hint.license>
 </properties>
