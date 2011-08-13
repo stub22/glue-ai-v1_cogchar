@@ -15,6 +15,7 @@
  */
 package org.cogchar.animoid.broker;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,13 +75,13 @@ public class AnimoidFacade implements Animator {
 
 	private		boolean					myAnimationsEnabledFlag = false;
 	
-	public AnimoidFacade(String servoConfigPath, String animoidConfigPath, 
+	public AnimoidFacade(String servoConfigPath, URL animoidConfigURL, 
 				String visemeConfigPath, Integer msecPerFrame,
 				double frameDurationSmoothingFactor) throws Throwable {
 
 		loadServoChannelConfigs(servoConfigPath);
-		theLogger.info("Reading animoid config file from: " + animoidConfigPath);
-		myAnimoidConfig = AnimoidConfigLoader.loadAnimoidConfig(animoidConfigPath,
+		theLogger.info("Reading animoid config from URL: " + animoidConfigURL);
+		myAnimoidConfig = AnimoidConfigLoader.loadAnimoidConfig(animoidConfigURL,
 					myMainRobot, msecPerFrame, frameDurationSmoothingFactor);
 		SightHypothesis.loadConfig(myAnimoidConfig.getFaceNoticeConfig());
 		loadVisemeConfig(visemeConfigPath);

@@ -19,15 +19,12 @@ package org.cogchar.animoid.config;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.Dom4JDriver;
-import com.thoughtworks.xstream.io.xml.Dom4JReader;
-import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
 import java.net.URL;
 
 
 import org.cogchar.animoid.gaze.GazeStrategyCue;
 import org.cogchar.animoid.protocol.Robot;
 import org.cogchar.animoid.world.WorldJoint;
-import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 
 
