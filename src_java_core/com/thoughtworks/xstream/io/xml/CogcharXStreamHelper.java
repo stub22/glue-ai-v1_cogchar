@@ -20,6 +20,8 @@ package com.thoughtworks.xstream.io.xml;
  * @author Stu B. <www.texpedient.com>
  * This class lives in the thoughtworks package so it can get access
  * to a protected method we need:  AbstractDocumentWriter.getCurrent().
+ * 
+ * This hack was last tested with XStream 1.3.1.
  */
 public class CogcharXStreamHelper {
 	public static Object fetchCurrentWriterObject(AbstractDocumentWriter adw) {
