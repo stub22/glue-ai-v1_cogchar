@@ -9,7 +9,6 @@
 
 package org.cogchar.vision;
 
-import org.cogchar.vision.RawVisionObserver;
 import java.awt.Graphics;
 
 /**

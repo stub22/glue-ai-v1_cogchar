@@ -16,10 +16,6 @@
 
 package org.cogchar.animoid.protocol;
 
-import org.cogchar.animoid.protocol.Frame;
-import org.cogchar.animoid.protocol.JPARFrame;
-import org.cogchar.animoid.protocol.JointPositionSnapshot;
-
 /**
  * @author Stu B. <www.texpedient.com>
  */

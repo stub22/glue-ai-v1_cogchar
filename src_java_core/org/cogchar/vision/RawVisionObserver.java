@@ -10,7 +10,6 @@
 package org.cogchar.vision;
 
 import org.cogchar.integroid.boot.ThreadAwareObject;
-import org.cogchar.vision.IAnnotatingObserver;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
