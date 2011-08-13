@@ -15,10 +15,6 @@
  */
 package org.cogchar.animoid.protocol;
 
-import org.cogchar.animoid.protocol.IServoMonitor;
-import org.cogchar.animoid.protocol.JPARFrame;
-import org.cogchar.animoid.protocol.JointPositionSnapshot;
-
 /**
  *
  * @author humankind

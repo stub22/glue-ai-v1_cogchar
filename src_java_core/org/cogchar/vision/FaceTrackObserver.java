@@ -10,7 +10,6 @@
 package org.cogchar.vision;
 
 import org.cogchar.integroid.boot.ThreadAwareObject;
-import org.cogchar.vision.ITrackObserver;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;

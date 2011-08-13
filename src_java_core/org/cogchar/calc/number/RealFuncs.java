@@ -16,7 +16,6 @@
 
 package org.cogchar.calc.number;
 
-import org.cogchar.calc.number.NumberFactory;
 import java.util.List;
 import java.util.logging.Level;
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ import org.jscience.mathematics.function.Polynomial;
 import org.jscience.mathematics.function.Term;
 import org.jscience.mathematics.function.Variable;
 import org.jscience.mathematics.number.Real;
-import org.jscience.mathematics.number.Number;
 
 /**
  *
