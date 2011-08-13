@@ -16,15 +16,19 @@
 
 package org.cogchar.animoid.config;
 
-import java.io.FileReader;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.Dom4JDriver;
+import com.thoughtworks.xstream.io.xml.Dom4JReader;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
+import java.net.URL;
 
 
 import org.cogchar.animoid.gaze.GazeStrategyCue;
 import org.cogchar.animoid.protocol.Robot;
 import org.cogchar.animoid.world.WorldJoint;
+import org.dom4j.Document;
+import org.dom4j.io.SAXReader;
 
 
 /**
@@ -32,7 +36,7 @@ import org.cogchar.animoid.world.WorldJoint;
  */
 
 public class AnimoidConfigLoader {
-	public static String testFilename = 	"animoid\\animoid_bina.xml";
+	// public static String testFilename = 	"animoid\\animoid_bina.xml";
 	
 	public static XStream buildDom4jXStreamForRead() {
 		Dom4JDriver dom4jDriver = new Dom4JDriver();
@@ -79,12 +83,15 @@ public class AnimoidConfigLoader {
 		...
 		*/
 	}
-	public static AnimoidConfig loadAnimoidConfig(String filename, Robot mainRobot,
+	public static AnimoidConfig loadAnimoidConfig(URL configFileURL, Robot mainRobot,
 				Integer msecPerFrame, Double frameSmoothingFactor) throws Throwable {
 
 		XStream xstream = buildDom4jXStreamForRead();
-		FileReader fread = new FileReader(filename);
-		AnimoidConfig animoidConfig = (AnimoidConfig) xstream.fromXML(fread);
+		// FileReader fread = new FileReader(configFileURL);
+	
+		// This URL based arg requires XStream 1.4 - we could open the stream manuallly if we want to fall
+		// back to 1.3. (e.g. to use servicemix OSGi bundle for XStream).
+		AnimoidConfig animoidConfig = (AnimoidConfig) xstream.fromXML(configFileURL); //fread);
 		if (mainRobot != null) {
 			animoidConfig.completeInit(mainRobot, msecPerFrame, frameSmoothingFactor);
 		}
@@ -93,7 +100,16 @@ public class AnimoidConfigLoader {
 	
 	public static void main(String[] args) {
 		try { 
-			AnimoidConfig animoidConfig = loadAnimoidConfig(testFilename, null, 100, 1.3);
+			String testPath = "/org/cogchar/test/animoid/animoid_zeno_robokind.xml";
+			URL testURL = AnimoidConfigLoader.class.getResource(testPath);
+			System.out.println("resolved URL: " + testURL);
+			
+        SAXReader reader = new SAXReader();
+			// Document document = reader.read(testURL);
+			// System.out.println("Read doc: " + document.asXML());
+			// Dom4JReader d4jr = new Dom4JReader(document, new XmlFriendlyReplacer());
+			
+			AnimoidConfig animoidConfig = loadAnimoidConfig(testURL, null, 100, 1.3);
 			
 			System.out.println("Loaded animoidConfig: " + animoidConfig);
 		} catch (Throwable t) {
