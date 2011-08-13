@@ -56,13 +56,14 @@
 			<artifactId>jscience-mathematics</artifactId>
 			<version>5.0-SNAPSHOT</version>
 		</dependency>
-		<!--
+		
 		<dependency>
+			<!-- commons-math used in cogchar.audio.processing -->
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math</artifactId>
 			<version>2.2</version>
 		</dependency>
-		-->
+	
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
