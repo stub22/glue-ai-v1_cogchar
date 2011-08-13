@@ -38,5 +38,17 @@
           <artifactId>ext.bundle.opengl.jmonkey</artifactId>
           <version>${project.version}</version>
       </dependency>
+      <dependency>
+          <groupId>org.jmonkeyengine.mvn.jme3</groupId>
+          <artifactId>jME3-test</artifactId>
+          <version>3.0</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.jmonkeyengine.mvn.jme3</groupId>
+          <artifactId>jME3-testdata</artifactId>
+          <version>3.0</version>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
 </project>

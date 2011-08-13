@@ -25,6 +25,12 @@
 
 	<repositories>
 		<repository>
+			<!-- Used for JScience and Javolution -->
+			<id>maven.java.net-SNAP</id>
+			<name>maven.java.net SNAPSHOTS Repo</name>
+			<url>https://maven.java.net/content/repositories/snapshots/</url>
+		</repository>		
+		<repository>
 			<id>scala-tools.org</id>
 			<name>Scala-Tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
@@ -119,7 +125,9 @@
 					<execution>
 						<goals>
 							<goal>compile</goal>
+							<!--
 							<goal>testCompile</goal>
+							-->
 						</goals>
 						<configuration>
 							<args>
@@ -127,6 +135,13 @@
 								<arg>-dependencyfile</arg>
 								<arg>${project.build.directory}/.scala_dependencies</arg>
 							</args>
+							<displayCmd>true</displayCmd>
+							<!-- Compile ONLY the Scala code.  The Java code is compiled by a previous goal.
+								This works OK as long as we don't refer to Scala classes from Java.
+								
+								This goes a little faster.  More issues are discussed in org.appdapter.lib.core pom.xml.
+							-->						 
+							<sendJavaToScalac>false</sendJavaToScalac>							
 						</configuration>
 					</execution>
 				</executions>
