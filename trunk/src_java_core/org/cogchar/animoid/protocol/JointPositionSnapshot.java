@@ -23,7 +23,7 @@ import org.cogchar.platform.util.TimeUtils;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class JointPositionSnapshot extends Frame {
+public class JointPositionSnapshot extends Frame<JointPosition> {
 	// private Map<Integer, JointPosition> myJointPositionsByID = new HashMap<Integer, JointPosition>();
 	private long	mySnapshotTimestamp;
 	

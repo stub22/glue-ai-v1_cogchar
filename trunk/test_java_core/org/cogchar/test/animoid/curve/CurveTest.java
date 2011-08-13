@@ -17,7 +17,6 @@
 package org.cogchar.test.animoid.curve;
 
 import org.apache.log4j.BasicConfigurator;
-import org.cogchar.test.animoid.curve.PolynomialTest;
 import org.cogchar.calc.number.Float64Funcs;
 import org.cogchar.calc.number.NumberFactory;
 import org.jscience.mathematics.number.Float64;
