@@ -90,7 +90,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.appdapter</groupId>
-			<artifactId>org.appdapter.lib.core</artifactId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	 <dependency>
