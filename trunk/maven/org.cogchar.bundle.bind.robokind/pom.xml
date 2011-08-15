@@ -40,7 +40,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.cogchar.bind.robokind.motion.bundle.Activator</Bundle-Activator>
+                        <Bundle-Activator>org.cogchar.bind.robokind.osgi.RobokindBindingActivator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>
