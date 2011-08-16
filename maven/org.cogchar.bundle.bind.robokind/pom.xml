@@ -29,6 +29,11 @@
             <artifactId>MotionAPI</artifactId>
             <version>0.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.robokind</groupId>
+            <artifactId>AvroVisionFragment</artifactId>
+            <version>0.5</version>
+        </dependency>
     </dependencies>
 
     <build>
