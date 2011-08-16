@@ -21,12 +21,13 @@ import java.io.Serializable;
 import org.cogchar.animoid.calc.estimate.TargetObjectStateEstimate;
 import org.cogchar.animoid.config.ViewPort;
 import org.cogchar.animoid.protocol.EgocentricDirection;
+import org.cogchar.gaze.Observation;
 import org.cogchar.platform.util.TimeUtils;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class SightObservation implements Serializable {
+public class SightObservation implements Serializable, Observation<EgocentricDirection> {
 	private	long						myTimeStampMsec;
 	private	EgocentricDirection			myCenterDirection;   // computed from boundRect + servoSnapshot + kinematics
 	public	TargetObjectStateEstimate	myTOSE;
