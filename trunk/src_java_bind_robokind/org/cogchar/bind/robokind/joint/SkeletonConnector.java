@@ -17,7 +17,7 @@
 package org.cogchar.bind.robokind.joint;
 
 import org.robokind.motion.JointController;
-import org.robokind.motion.serial.SerialControllerConfig;
+import org.robokind.motion.config.JointControllerConfig;
 import org.robokind.utils.config.VersionProperty;
 import org.robokind.utils.services.ServiceFactory;
 
@@ -26,10 +26,10 @@ import org.robokind.utils.services.ServiceFactory;
  * 
  * @author Stu B. <www.texpedient.com>
  */
-public class SkeletonConnector implements ServiceFactory<JointController,SerialControllerConfig>{
+public class SkeletonConnector implements ServiceFactory<JointController,JointControllerConfig>{
 
     @Override
-    public JointController build(SerialControllerConfig config) {
+    public JointController build(JointControllerConfig config) {
         return new SkeletonController(config);
     }
 
@@ -39,8 +39,8 @@ public class SkeletonConnector implements ServiceFactory<JointController,SerialC
     }
     
     @Override
-    public Class<SerialControllerConfig> getServiceConfigurationClass() {
-        return SerialControllerConfig.class;
+    public Class<JointControllerConfig> getServiceConfigurationClass() {
+        return JointControllerConfig.class;
     }
 
     @Override
