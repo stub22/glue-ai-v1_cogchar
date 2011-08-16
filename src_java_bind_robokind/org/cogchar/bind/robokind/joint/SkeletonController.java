@@ -17,20 +17,21 @@ package org.cogchar.bind.robokind.joint;
 
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.robokind.motion.AbstractJointController;
 import org.robokind.motion.ConnectionStatus;
 import org.robokind.motion.config.JointConfig;
-import org.robokind.motion.serial.SerialControllerConfig;
-import org.robokind.motion.serial.SerialJointController;
+import org.robokind.motion.config.JointControllerConfig;
 import org.robokind.utils.config.VersionProperty;
 import org.robokind.utils.property.PropertyChangeAction;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class SkeletonController extends SerialJointController<BoneJoint> {
+public class SkeletonController extends AbstractJointController<BoneJoint,JointControllerConfig> {
 
 	/**
 	 * Controller type version name.
@@ -47,7 +48,7 @@ public class SkeletonController extends SerialJointController<BoneJoint> {
 	private final static Logger theLogger = Logger.getLogger(SkeletonController.class.getName());
 	private Map<Integer, BoneJoint> myPhysicalMap;
 
-	public SkeletonController(SerialControllerConfig config) {
+	public SkeletonController(JointControllerConfig config) {
 		super(config);
 		myPhysicalMap = new HashMap<Integer, BoneJoint>();
 		myChangeMonitor.addAction(JointConfig.PROP_PHYSICAL_ID, new PropertyChangeAction() {
@@ -59,7 +60,7 @@ public class SkeletonController extends SerialJointController<BoneJoint> {
 		});
 	}
 
-	@Override protected boolean setJoints() {
+	protected boolean setJoints() {
 		myJoints.clear();
 		myJointMap.clear();
 		if (myConfig == null) {
@@ -110,7 +111,7 @@ public class SkeletonController extends SerialJointController<BoneJoint> {
 			return true;
 		} 
 		if (!true) {
-			theLogger.log(Level.SEVERE, "Cannot move servo {0}, unable to write to serial port {1}", new Object[]{id, myConfig.getPortName()});
+			theLogger.log(Level.SEVERE, "Cannot move servo {0}", new Object[]{id});
 			return false;
 		}
 		return true;
@@ -134,5 +135,22 @@ public class SkeletonController extends SerialJointController<BoneJoint> {
 		BoneJoint joint = myPhysicalMap.remove(oldId);
         myPhysicalMap.put(newId, joint);
         firePropertyChange(PROP_JOINTS, null, myJointMap);
+    }
+
+    @Override
+    public boolean connect() {
+        setJoints();
+        myConnectionStatus = ConnectionStatus.CONNECTED;
+        return true;
+    }
+
+    @Override
+    public boolean disconnect() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<String> getErrorMessages() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
