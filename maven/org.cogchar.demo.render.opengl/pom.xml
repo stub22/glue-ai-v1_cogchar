@@ -7,8 +7,8 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>org.cogchar.demo.render.opengl</name>
-  <url>http://maven.apache.org</url>
+	<name>${project.artifactId} - OpenGL Demos</name>
+
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
