@@ -61,6 +61,12 @@
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.impl.motion</artifactId>
 			<version>0.6</version>
+		 <exclusions>
+		  <exclusion>
+		   <artifactId>org.apache.servicemix.bundles.jdom</artifactId>
+		   <groupId>org.apache.servicemix.bundles</groupId>
+		  </exclusion>
+		 </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.robokind</groupId>
@@ -89,7 +95,10 @@
 						<Bundle-Activator>org.cogchar.bind.robokind.osgi.RobokindBindingActivator</Bundle-Activator>
 						<Export-Package>org.cogchar.*</Export-Package>
 						<Private-Package>com.thoughtworks.xstream.*</Private-Package>
-						<Import-Package>!com.bea.xml.*, !com.wutka.dtd.*, !net.sf.cglib.*, !nu.xom.*, *;resolution:=optional</Import-Package>
+						<!--
+						, *;resolution:=optional
+						-->
+						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !nu.xom.*, *</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
