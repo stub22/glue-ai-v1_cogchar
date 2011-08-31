@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.robokind.motion.AbstractJointController;
-import org.robokind.motion.ConnectionStatus;
-import org.robokind.motion.config.JointConfig;
-import org.robokind.motion.config.JointControllerConfig;
-import org.robokind.utils.config.VersionProperty;
-import org.robokind.utils.property.PropertyChangeAction;
+import org.robokind.api.common.config.VersionProperty;
+import org.robokind.api.common.property.PropertyChangeAction;
+import org.robokind.api.motion.AbstractJointController;
+import org.robokind.api.motion.ConnectionStatus;
+import org.robokind.api.motion.config.JointConfig;
+import org.robokind.api.motion.config.JointControllerConfig;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -153,4 +153,14 @@ public class SkeletonController extends AbstractJointController<BoneJoint,JointC
     public List<String> getErrorMessages() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+	@Override
+	public void setEnabled(Boolean enabled) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public Boolean getEnabled() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 }

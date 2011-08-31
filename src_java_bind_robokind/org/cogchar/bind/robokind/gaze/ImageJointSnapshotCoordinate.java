@@ -16,7 +16,7 @@
 package org.cogchar.bind.robokind.gaze;
 
 import java.util.Map;
-import org.robokind.vision.avrogen.ImageRegion;
+import org.robokind.api.vision.ImageRegion;
 
 /**
  *
