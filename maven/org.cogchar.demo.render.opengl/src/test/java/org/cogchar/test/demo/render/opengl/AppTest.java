@@ -1,4 +1,4 @@
-package org.cogchar.demo.render.opengl;
+package org.cogchar.test.demo.render.opengl;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
