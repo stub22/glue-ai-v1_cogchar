@@ -16,8 +16,7 @@
 
 package org.cogchar.bind.robokind.osgi;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import org.appdapter.osgi.core.BundleActivatorBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,17 +24,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author Stu B. <www.texpedient.com>
  */
-public class RobokindBindingActivator implements BundleActivator {
+public class RobokindBindingActivator extends BundleActivatorBase {
 	static Logger theLogger = LoggerFactory.getLogger(RobokindBindingActivator.class);
-	@Override public void start(BundleContext context) throws Exception {
-		theLogger.info(getClass().getCanonicalName() + ".start(ctx=" + context + ")BEGIN-[");
-        // org.appdapter.gui.demo.DemoBrowser.main(null);
-		theLogger.info(getClass().getCanonicalName() + ".start(ctx=" + context + ")]-END");
-    }
-
-    @Override public void stop(BundleContext context) throws Exception {
-		theLogger.info(getClass().getCanonicalName() + ".stop(ctx=" + context + ")BEGIN-[");
-          // TODO add deactivation code here
-		theLogger.info(getClass().getCanonicalName() + ".stop(ctx=" + context + ")]-END");
-    }
+	
+	@Override protected Logger getLogger() {
+		return theLogger;
+	}
+		
 }

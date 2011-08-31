@@ -16,30 +16,44 @@
 
 package org.cogchar.render.opengl.osgi;
 
+
+
+import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.render.opengl.bony.BonyContext;
 import org.cogchar.render.opengl.bony.StickFigureTestMain;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Stu B. <www.texpedient.com>
  */
-public class CogcharRenderOpenGLBundleActivator implements BundleActivator {
-
+public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
+	static Logger theLogger = LoggerFactory.getLogger(CogcharRenderOpenGLBundleActivator.class);
 	private	BonyContext		myBonyContext;
+	@Override
+	protected Logger getLogger() {
+		return theLogger;
+	}	
+	
+	// This is the primary service export point for the bundle, as of 2011-08-30.
+	public BonyContext getBonyContext() { 
+		return myBonyContext;
+	}
+
 	@Override public void start(BundleContext bundleCtx) throws Exception {
-        System.out.println("CogcharImplActivator.start(), bundleContext=" + bundleCtx);
+		super.start(bundleCtx);
 		Bundle b = bundleCtx.getBundle();
-		System.out.println("bundle=" + b);
+		theLogger.info("bundle=" + b);
 		
 
 		ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-		System.out.println("Saved old class loader: " + tccl);
+		theLogger.info("Saved old class loader: " + tccl);
 		try {
 			ClassLoader localLoader = getClass().getClassLoader();
-			System.out.println("Setting thread class loader to local loader: " + localLoader);
+			theLogger.info("Setting thread class loader to local loader: " + localLoader);
 			Thread.currentThread().setContextClassLoader(localLoader);
 			
 			// Our crude demo using test model exported by Leo from Maya.
@@ -52,18 +66,13 @@ public class CogcharRenderOpenGLBundleActivator implements BundleActivator {
 			// TestChooserWrapper.displayTestChooser(b, null);  
 
 		} finally {
-			System.out.println("Restoring old class loader: " + tccl);
+			theLogger.info("Restoring old class loader: " + tccl);
 			Thread.currentThread().setContextClassLoader(tccl);
 		}
 		bundleCtx.registerService(BonyContext.class.getName(), myBonyContext, null);
 		// System.out.println("Returned from CogcharImplActivator.start()");
 
     }
-	@Override public void stop(BundleContext context) throws Exception {
-        System.out.println("CogcharImplActivator.stop()");
-		// TODO:  Use the BonyContext to stop JMonkey canvas....
-    }
-	public BonyContext getBonyContext() { 
-		return myBonyContext;
-	}
+	
+
 }

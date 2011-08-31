@@ -16,8 +16,8 @@
 	</licenses>
 
 	<properties>
-		<maven.compiler.source>1.5</maven.compiler.source>
-		<maven.compiler.target>1.5</maven.compiler.target>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
 		<encoding>UTF-8</encoding>
 		<scala.version>2.8.1</scala.version>
 	</properties>
@@ -51,17 +51,6 @@
 	</pluginRepositories>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.jscience</groupId>
-			<artifactId>jscience</artifactId>
-			<version>5.0-SNAPSHOT</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.jscience</groupId>
-			<artifactId>jscience-mathematics</artifactId>
-			<version>5.0-SNAPSHOT</version>
-		</dependency>
 		
 		<dependency>
 			<!-- commons-math used in cogchar.audio.processing -->
@@ -75,6 +64,11 @@
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<version>1.0.3-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.scalaquery</groupId>
 			<artifactId>scalaquery_2.8.1</artifactId>
