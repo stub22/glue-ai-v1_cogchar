@@ -1,0 +1,21 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.cogchar</groupId>
+  <artifactId>org.cogchar.modules.all</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+	<name>${project.artifactId} - "All Modules" parent pom</name>
+	<description>
+		Owner Pom.xml for all Cogchar modules, includes everything except downstream repository bindings for release.
+	</description>
+	<modules>
+		<module>../org.cogchar.bundle.demo.all</module>
+		<module>../org.cogchar.bundle.render.opengl</module>
+		<module>../org.cogchar.bundle.bind.robokind</module>
+		<module>../org.cogchar.lib.core</module>
+		<module>../org.cogchar.lib.render</module>
+		<module>../ext.bundle.opengl.jmonkey</module>
+	</modules>
+  
+</project>
