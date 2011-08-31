@@ -16,8 +16,8 @@
 
 package org.cogchar.bind.robokind.joint;
 
-import org.robokind.motion.AbstractJoint;
-import org.robokind.motion.config.JointConfig;
+import org.robokind.api.motion.AbstractJoint;
+import org.robokind.api.motion.config.JointConfig;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -31,6 +31,16 @@ public class BoneJoint extends AbstractJoint<JointConfig,SkeletonController> {
          */
 	protected BoneJoint(JointConfig jc, SkeletonController controller){
 		super(jc,controller);
+	}
+
+	@Override
+	public void setEnabled(Boolean enabled) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public Boolean getEnabled() {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
     
 }

@@ -16,10 +16,10 @@
 
 package org.cogchar.bind.robokind.joint;
 
-import org.robokind.motion.JointController;
-import org.robokind.motion.config.JointControllerConfig;
-import org.robokind.utils.config.VersionProperty;
-import org.robokind.utils.services.ServiceFactory;
+import org.robokind.api.common.config.VersionProperty;
+import org.robokind.api.common.services.ServiceFactory;
+import org.robokind.api.motion.JointController;
+import org.robokind.api.motion.config.JointControllerConfig;
 
 /**
  * Robokind connector for a Cogchar virtual skeleton.

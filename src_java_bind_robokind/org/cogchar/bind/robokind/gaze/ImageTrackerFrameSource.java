@@ -21,10 +21,10 @@ import java.util.Map;
 import org.cogchar.animoid.gaze.IGazeTarget;
 import org.cogchar.animoid.protocol.EgocentricDirection;
 import org.cogchar.sight.obs.SightObservation;
-import org.robokind.motion.blending.FrameSource;
-import org.robokind.motion.blending.MotionFrame;
-import org.robokind.motion.utils.MotionUtils;
-import org.robokind.vision.avrogen.ImageRegion;
+import org.robokind.api.motion.protocol.FrameSource;
+import org.robokind.api.motion.protocol.MotionFrame;
+import org.robokind.api.motion.utils.MotionUtils;
+import org.robokind.api.vision.ImageRegion;
 
 /**
  *
@@ -63,10 +63,10 @@ public class ImageTrackerFrameSource implements FrameSource{
         SightObservation obs = new SightObservation();
         obs.setCenterDirection(edir);
         ImageRegion region = ijsc.getImageRegion();
-        int x = region.x;
-        int y = region.y;
-        int w = region.width;
-        int h = region.height;
+        int x = region.getX();
+        int y = region.getY();
+        int w = region.getWidth();
+        int h = region.getHeight();
         Rectangle rect = new Rectangle(x,y,w,h);
         obs.setBoundRect(rect);
         return obs;
