@@ -17,7 +17,7 @@
 	<dependencies>
 	 <dependency>
 	  <groupId>${project.groupId}</groupId>
-	  <artifactId>org.cogchar.lib.render.opengl</artifactId>
+	  <artifactId>org.cogchar.lib.render</artifactId>
 	  <version>${project.version}</version>
 	 </dependency>
 	</dependencies>
@@ -32,7 +32,7 @@
 					<instructions>
 						<Bundle-Activator>org.cogchar.render.opengl.osgi.CogcharRenderOpenGLBundleActivator</Bundle-Activator>
 						<Import-Package>*;resolution:=optional</Import-Package>
-						<Private-Package>org.cogchar.*,leo_hanson_tests.*,jme3test.*,com.jme3.*,org.lwjgl.*,jme3tools.*,com.bulletphysics.*,javax.vecmath.*,Interface.*,Common.*,checkers.*,Models.*,Textures.*,Sound.*,Effects.*,Blender.*,Scenes.*</Private-Package>
+						<Private-Package></Private-Package>
 						<!-- <Embed-Dependency>!org.osgi.*;scope=compile|runtime</Embed-Dependency> 
 						-->
 						<!--
@@ -59,6 +59,7 @@
                             processor=ppc
                         </Bundle-NativeCode>
 						-->
+					 <Export-Package>org.cogchar.ext.bundle.opengl.jmonkey,org.cogchar.render.opengl.bony,org.cogchar.render.opengl.osgi</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

@@ -50,6 +50,11 @@
           <version>3.0</version>
           <scope>test</scope>
       </dependency>
+    <dependency>
+      <groupId>org.appdapter</groupId>
+      <artifactId>org.appdapter.bundle.core</artifactId>
+      <version>1.0.3-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>
 
