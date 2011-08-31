@@ -21,8 +21,11 @@ import java.util.Map;
 import org.cogchar.animoid.gaze.IGazeTarget;
 import org.cogchar.animoid.protocol.EgocentricDirection;
 import org.cogchar.sight.obs.SightObservation;
+import org.robokind.api.motion.protocol.DefaultMotionFrame;
 import org.robokind.api.motion.protocol.FrameSource;
 import org.robokind.api.motion.protocol.MotionFrame;
+import org.robokind.api.motion.protocol.PositionHashMap;
+import org.robokind.api.motion.protocol.PositionMap;
 import org.robokind.api.motion.utils.MotionUtils;
 import org.robokind.api.vision.ImageRegion;
 
@@ -79,13 +82,15 @@ public class ImageTrackerFrameSource implements FrameSource{
             return null;
         }
         IGazeTarget target = targets.get(0);
-        Map<Integer,Double> curPos = MotionUtils.getCurrentPositions();
+        PositionMap curPos = MotionUtils.getCurrentPositions();
         Map<Integer,Double> goals = myPlanner.getMovements(time, interval, target, curPos);
-        MotionFrame frame = new MotionFrame();
+        MotionFrame frame = new DefaultMotionFrame();
         frame.setFrameLengthMillisec(interval);
         frame.setTimestampMillisecUTC(time);
+		
+		PositionMap goalPM = new PositionHashMap(goals, curPos.getDeviceId(), PositionMap.POSITION_TYPE_GOAL);
         frame.setPreviousPositions(curPos);
-        frame.setGoalPositions(goals);
+        frame.setGoalPositions(goalPM);
         return frame;
     }
 }
