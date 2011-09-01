@@ -11,12 +11,12 @@ package org.cogchar.ancient.utility;
 
 import java.io.File;
 import java.util.ArrayList;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
+// import javax.xml.parsers.FactoryConfigurationError;
+// import javax.xml.parsers.ParserConfigurationException;
+// import javax.xml.parsers.SAXParser;
+// import javax.xml.parsers.SAXParserFactory;
+// import org.xml.sax.Attributes;
+// import org.xml.sax.SAXException;
 
 /**
  *
@@ -26,6 +26,7 @@ public class ParametersBuilder {
     
     
     static public Parameters parseXMLParameters(File paramFile) {
+		/*  javax.parsers above is causinig OSGi troubles.
         SAXParser parser = null;
         try {
             parser = SAXParserFactory.newInstance().newSAXParser();
@@ -46,7 +47,12 @@ public class ParametersBuilder {
             ex.printStackTrace();
         }
         return handler.getParams();
+		*/
+		return null;
+		 
     }
+		
+		 
 }
 
 class pParser extends org.xml.sax.helpers.DefaultHandler {
@@ -64,7 +70,7 @@ class pParser extends org.xml.sax.helpers.DefaultHandler {
             m_stack.remove(m_stack.size()-1);
         }
     }
-
+/*
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
         // handling parameters 
         if ( ! m_stack.isEmpty() ) {
@@ -82,7 +88,7 @@ class pParser extends org.xml.sax.helpers.DefaultHandler {
             return;
         }
     }
-
+*/
     private Parameters getTop() {
         Object o = m_stack.get(m_stack.size()-1);
         Parameters ret = null;
