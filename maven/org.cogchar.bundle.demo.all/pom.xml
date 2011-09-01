@@ -23,6 +23,12 @@
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.felix.shell</artifactId>
             <version>1.0.3-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.apache.servicemix.specs.jaxp-api-1.4</artifactId>
+                    <groupId>org.apache.servicemix.specs</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
