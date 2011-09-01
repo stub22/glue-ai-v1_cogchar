@@ -89,6 +89,12 @@
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
 			<version>1.4</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>kxml2-min</artifactId>
+					<groupId>net.sf.kxml</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>	
     <!-- Test -->
 		<dependency>
@@ -121,7 +127,11 @@
 			<version>1.6.1</version>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>

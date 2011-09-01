@@ -24,12 +24,12 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.core</artifactId>
 			<version>${project.version}</version>
-		    <exclusions>
-		        <exclusion>
-		            <artifactId>osgi_R4_core</artifactId>
-		            <groupId>org.osgi</groupId>
-		        </exclusion>
-		    </exclusions>
+			<exclusions>
+				<exclusion>
+					<artifactId>osgi_R4_core</artifactId>
+					<groupId>org.osgi</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.robokind</groupId>
@@ -40,12 +40,12 @@
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.vision</artifactId>
 			<version>0.6</version>
-		    <exclusions>
-		        <exclusion>
-		            <artifactId>slf4j-simple</artifactId>
-		            <groupId>org.slf4j</groupId>
-		        </exclusion>
-		    </exclusions>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-simple</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.robokind</groupId>
@@ -61,12 +61,16 @@
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.impl.motion</artifactId>
 			<version>0.6</version>
-		 <exclusions>
-		  <exclusion>
-		   <artifactId>org.apache.servicemix.bundles.jdom</artifactId>
-		   <groupId>org.apache.servicemix.bundles</groupId>
-		  </exclusion>
-		 </exclusions>
+			<exclusions>
+				<exclusion>
+					<artifactId>org.apache.servicemix.bundles.jdom</artifactId>
+					<groupId>org.apache.servicemix.bundles</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jdom</artifactId>
+					<groupId>jdom</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.robokind</groupId>
@@ -94,11 +98,13 @@
 					<instructions>
 						<Bundle-Activator>org.cogchar.bind.robokind.osgi.RobokindBindingActivator</Bundle-Activator>
 						<Export-Package>org.cogchar.*</Export-Package>
-						<Private-Package>com.thoughtworks.xstream.*</Private-Package>
+						<Private-Package>com.thoughtworks.xstream.*, org.scalaquery.*</Private-Package>
 						<!--
 						, *;resolution:=optional
 						-->
-						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !nu.xom.*, *</Import-Package>
+						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !nu.xom.*, !org.codehaus.jettison.*, 
+										!org.jdom.*, !org.joda.*, !org.kxml2.*, sun.*;resolution:='optional', *
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
