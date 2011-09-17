@@ -16,10 +16,11 @@
 
 package org.cogchar.test.animoid.curve;
 
-import org.cogchar.calc.number.NumberFactory;
 import java.util.logging.Level;
 import org.cogchar.animoid.calc.curve.ConstAccelCurve;
-import org.cogchar.calc.number.PolyFuncs;
+import org.appdapter.bind.math.jscience.function.PolyFuncs;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jscience.mathematics.function.Polynomial;
@@ -52,29 +53,29 @@ public class PolynomialTest<RN extends Number<RN>> {
 		mc2.configureWithDoubles(2.2, 3.0, -2.0, -5.0);
 
 		boolean		printFlag = true;
-		double pos1_1 = PolyFuncs.evalPrintReturnPoly(mc1Poly, "pos1_1", theLogger, Level.INFO, printFlag);
-		double pos2_1 = PolyFuncs.evalPrintReturnPoly(mc2Poly, "pos2_1", theLogger, Level.INFO, printFlag);
-		double sqsum_1 = PolyFuncs.evalPrintReturnPoly(sqSumPoly, "sqSum_1", theLogger, Level.INFO, printFlag);
+		double pos1_1 = PolyFuncs.evalPrintReturnPoly(mc1Poly, "pos1_1", theLogger,  printFlag);
+		double pos2_1 = PolyFuncs.evalPrintReturnPoly(mc2Poly, "pos2_1", theLogger, printFlag);
+		double sqsum_1 = PolyFuncs.evalPrintReturnPoly(sqSumPoly, "sqSum_1", theLogger, printFlag);
 
 		rangeOffsetTimeVar.set(numFact.makeNumberFromDouble(100.0));
 
-		double pos1_100 = PolyFuncs.evalPrintReturnPoly(mc1Poly, "pos1_100", theLogger, Level.INFO, printFlag);
-		double pos2_100 = PolyFuncs.evalPrintReturnPoly(mc2Poly, "pos2_100", theLogger, Level.INFO, printFlag);
-		double sqsum_100 = PolyFuncs.evalPrintReturnPoly(sqSumPoly, "sqSum_100", theLogger, Level.INFO, printFlag);
+		double pos1_100 = PolyFuncs.evalPrintReturnPoly(mc1Poly, "pos1_100", theLogger,  printFlag);
+		double pos2_100 = PolyFuncs.evalPrintReturnPoly(mc2Poly, "pos2_100", theLogger,  printFlag);
+		double sqsum_100 = PolyFuncs.evalPrintReturnPoly(sqSumPoly, "sqSum_100", theLogger, printFlag);
 
 		mc1.configureWithDoubles(7.5, -0.1, 100.0, 1.0);
 		mc2.configureWithDoubles(12.5, -20.0, -20.0, 2.0);
 
-		double pos1p_10 = PolyFuncs.evalPrintReturnPoly(mc1Poly, "pos1p_10", theLogger, Level.INFO, printFlag);
-		double pos2p_10 = PolyFuncs.evalPrintReturnPoly(mc2Poly, "pos2p_10", theLogger, Level.INFO, printFlag);
-		double sqsumP_10 = PolyFuncs.evalPrintReturnPoly(sqSumPoly, "sqSumP_10", theLogger, Level.INFO, printFlag);
+		double pos1p_10 = PolyFuncs.evalPrintReturnPoly(mc1Poly, "pos1p_10", theLogger, printFlag);
+		double pos2p_10 = PolyFuncs.evalPrintReturnPoly(mc2Poly, "pos2p_10", theLogger,  printFlag);
+		double sqsumP_10 = PolyFuncs.evalPrintReturnPoly(sqSumPoly, "sqSumP_10", theLogger, printFlag);
 
 		// What we want to do is curry the integral function, right?
-		double integSqSumP_10 = PolyFuncs.evalPrintReturnPoly(integSqSumPoly, "integSqSumP_10", theLogger, Level.INFO, printFlag);
+		double integSqSumP_10 = PolyFuncs.evalPrintReturnPoly(integSqSumPoly, "integSqSumP_10", theLogger, printFlag);
 
 		rangeOffsetTimeVar.set(numFact.makeNumberFromDouble(0.0));
 
-		double integSqSumP_0 = PolyFuncs.evalPrintReturnPoly(integSqSumPoly, "integSqSumP_0", theLogger, Level.INFO, printFlag);
+		double integSqSumP_0 = PolyFuncs.evalPrintReturnPoly(integSqSumPoly, "integSqSumP_0", theLogger,  printFlag);
 
 		double definiteIntegSqSumP_0_10 = integSqSumP_10 - integSqSumP_0;
 

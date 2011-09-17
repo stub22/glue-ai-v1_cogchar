@@ -25,8 +25,8 @@ import org.jscience.mathematics.structure.Field;
 import org.cogchar.animoid.protocol.JointPosition;
 import org.cogchar.animoid.protocol.JointVelocityAROMPS;
 import org.cogchar.animoid.world.WorldJoint;
-import org.cogchar.calc.function.BumpUF;
-import org.cogchar.calc.number.NumberFactory;
+import org.appdapter.bind.math.jscience.function.BumpUF;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

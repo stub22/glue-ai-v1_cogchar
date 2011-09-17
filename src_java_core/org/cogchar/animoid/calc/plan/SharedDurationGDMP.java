@@ -21,7 +21,7 @@ import org.cogchar.animoid.calc.estimate.GazeJointStateSnap;
 import org.cogchar.animoid.calc.curvematrix.ConstAccelCurveSequence;
 import org.cogchar.animoid.calc.curvematrix.SharedDurationCACM;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
-import org.cogchar.calc.number.RealFuncs;
+import org.appdapter.bind.math.jscience.number.RealFuncs;
 import org.jscience.mathematics.function.Polynomial;
 import org.jscience.mathematics.number.Real;
 

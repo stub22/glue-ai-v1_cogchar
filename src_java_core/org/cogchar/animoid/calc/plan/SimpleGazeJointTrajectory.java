@@ -24,8 +24,8 @@ import org.cogchar.animoid.config.GazeJointStrategy;
 import org.cogchar.animoid.world.WorldJoint;
 import org.cogchar.animoid.world.WorldJointStateSnap;
 import org.cogchar.animoid.world.WorldJointTrajectory;
-import org.cogchar.calc.function.BumpUF;
-import org.cogchar.calc.number.NumberFactory;
+import org.appdapter.bind.math.jscience.function.BumpUF;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
 import org.jscience.mathematics.structure.Field;
 import org.jscience.mathematics.number.Number;
 

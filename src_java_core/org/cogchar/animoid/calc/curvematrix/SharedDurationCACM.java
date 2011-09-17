@@ -15,7 +15,7 @@
  */
 package org.cogchar.animoid.calc.curvematrix;
 
-import org.cogchar.calc.number.NumberFactory;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
 import org.cogchar.animoid.calc.curve.*;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
 import java.util.ArrayList;
