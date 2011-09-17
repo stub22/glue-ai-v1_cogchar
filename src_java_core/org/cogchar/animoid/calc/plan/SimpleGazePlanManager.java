@@ -9,7 +9,7 @@ import org.cogchar.animoid.config.GazeDimension;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cogchar.calc.number.NumberFactory;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
 import org.jscience.mathematics.number.Number;
 import org.jscience.mathematics.structure.Field;
 import org.slf4j.Logger;

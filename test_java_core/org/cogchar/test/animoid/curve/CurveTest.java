@@ -17,8 +17,8 @@
 package org.cogchar.test.animoid.curve;
 
 import org.apache.log4j.BasicConfigurator;
-import org.cogchar.calc.number.Float64Funcs;
-import org.cogchar.calc.number.NumberFactory;
+import org.appdapter.bind.math.jscience.number.Float64Funcs;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
 import org.jscience.mathematics.number.Float64;
 
 

@@ -16,8 +16,8 @@
 
 package org.cogchar.animoid.calc.curve;
 
-import org.cogchar.calc.number.NumberFuncs;
-import org.cogchar.calc.function.SmoothUF;
+import org.appdapter.bind.math.jscience.number.NumberFuncs;
+import org.appdapter.bind.math.jscience.function.SmoothUF;
 import java.util.ArrayList;
 import java.util.List;
 import org.jscience.mathematics.function.Polynomial;

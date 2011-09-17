@@ -24,12 +24,15 @@
 
 
 	<repositories>
-		<repository>
 			<!-- Used for JScience and Javolution -->
+			<!--
+		<repository>
+		
 			<id>maven.java.net-SNAP</id>
 			<name>maven.java.net SNAPSHOTS Repo</name>
 			<url>https://maven.java.net/content/repositories/snapshots/</url>
 		</repository>		
+		-->
 		<repository>
 			<id>scala-tools.org</id>
 			<name>Scala-Tools Maven2 Repository</name>

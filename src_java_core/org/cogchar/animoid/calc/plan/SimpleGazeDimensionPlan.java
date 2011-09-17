@@ -28,7 +28,7 @@ import org.cogchar.animoid.protocol.Joint;
 import org.cogchar.animoid.world.SummableWJTrajectoryList;
 import org.cogchar.animoid.world.SummableWorldJointList;
 import org.cogchar.animoid.world.WorldGoalPosition;
-import org.cogchar.calc.number.NumberFactory;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
 import org.cogchar.platform.util.TimeUtils;
 
 import org.jscience.mathematics.number.Number;

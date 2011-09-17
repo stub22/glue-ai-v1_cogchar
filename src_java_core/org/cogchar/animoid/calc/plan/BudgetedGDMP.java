@@ -20,7 +20,7 @@ package org.cogchar.animoid.calc.plan;
 import java.util.ArrayList;
 import java.util.List;
 import org.cogchar.animoid.calc.curvematrix.SDCACM_Interval;
-import org.cogchar.calc.number.RealFuncs;
+import org.appdapter.bind.math.jscience.number.RealFuncs;
 import org.jscience.mathematics.function.Polynomial;
 import org.jscience.mathematics.function.Variable;
 import org.jscience.mathematics.number.Real;

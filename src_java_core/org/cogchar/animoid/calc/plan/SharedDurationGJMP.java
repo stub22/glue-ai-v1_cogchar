@@ -22,7 +22,7 @@ import org.cogchar.animoid.calc.estimate.GazeJointStateSnap;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
 
 import org.cogchar.animoid.config.GazeJointStrategy;
-import org.cogchar.calc.number.NumberFactory;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
 import org.jscience.mathematics.number.Number;
 import org.jscience.mathematics.structure.Field;
 
