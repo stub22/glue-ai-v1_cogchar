@@ -16,7 +16,7 @@
 
 package org.cogchar.animoid.calc.optimize;
 
-import org.cogchar.calc.number.NumberFactory;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
 
 /**
  *

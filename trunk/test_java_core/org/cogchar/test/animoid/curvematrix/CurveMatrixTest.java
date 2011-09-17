@@ -16,9 +16,9 @@
 
 package org.cogchar.test.animoid.curvematrix;
 
-import org.cogchar.calc.function.BumpUF;
-import org.cogchar.calc.number.NumberFactory;
-import org.cogchar.calc.number.RealFuncs;
+import org.appdapter.bind.math.jscience.function.BumpUF;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
+import org.appdapter.bind.math.jscience.number.RealFuncs;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
 
 

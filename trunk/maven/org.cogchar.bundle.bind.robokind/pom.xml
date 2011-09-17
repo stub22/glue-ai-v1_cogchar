@@ -13,7 +13,13 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
+	<repositories>
+		<repository>
+			<id>scala-tools.org</id>
+			<name>Scala-Tools Maven2 Repository</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</repository>		
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -85,6 +91,13 @@
             <version>1.0-2</version>
         </dependency>
 		-->
+		<dependency>
+			<artifactId>scalaquery_2.8.1</artifactId>
+			<groupId>org.scalaquery</groupId>
+			<type>jar</type>
+			<version>0.9.4</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

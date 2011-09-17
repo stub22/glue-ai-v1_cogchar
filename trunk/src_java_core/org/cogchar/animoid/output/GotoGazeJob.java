@@ -30,8 +30,8 @@ import org.cogchar.animoid.config.GazeJointStrategy;
 import org.cogchar.animoid.protocol.JVFrame;
 import org.cogchar.animoid.protocol.JointVelocityAROMPS;
 import org.cogchar.animoid.world.WorldGoalPosition;
-import org.cogchar.calc.number.Float64Funcs;
-import org.cogchar.calc.number.NumberFactory;
+import org.appdapter.bind.math.jscience.number.Float64Funcs;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
 import org.jscience.mathematics.number.Float64;
 import org.jscience.mathematics.number.Real;
 

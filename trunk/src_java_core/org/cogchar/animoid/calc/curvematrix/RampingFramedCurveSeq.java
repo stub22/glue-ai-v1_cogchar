@@ -18,7 +18,7 @@ package org.cogchar.animoid.calc.curvematrix;
 
 import org.cogchar.animoid.calc.curve.ConstAccelCurve;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
-import org.cogchar.calc.number.NumberFactory;
+import org.appdapter.bind.math.jscience.number.NumberFactory;
 
 import org.jscience.mathematics.number.Number;
 import org.jscience.mathematics.function.Variable;
