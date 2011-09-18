@@ -33,6 +33,11 @@
 			<url>https://maven.java.net/content/repositories/snapshots/</url>
 		</repository>		
 		-->
+        <repository>
+            <id>sonatype</id>
+            <name>sonatype</name>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
 		<repository>
 			<id>scala-tools.org</id>
 			<name>Scala-Tools Maven2 Repository</name>
