@@ -15,18 +15,19 @@
  */
 package org.cogchar.bind.robokind.gaze;
 
-import java.util.Map;
 import org.cogchar.animoid.gaze.IGazeTarget;
 import org.cogchar.gaze.GazePlanner;
+import org.robokind.api.motion.Robot.RobotPositionMap;
 
 /**
  *
- * @author Matthew Stevenson
  */
-public class GazeTargetMotionPlanner implements GazePlanner<IGazeTarget> {
+public class GazeTargetMotionPlanner implements 
+        GazePlanner<IGazeTarget, RobotPositionMap> {
 
     @Override
-    public Map<Integer, Double> getMovements(long time, long interval, IGazeTarget tracker, Map<Integer, Double> currentPos) {
+    public RobotPositionMap getMovements(long time, long interval, 
+    IGazeTarget tracker, RobotPositionMap currentPos) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
