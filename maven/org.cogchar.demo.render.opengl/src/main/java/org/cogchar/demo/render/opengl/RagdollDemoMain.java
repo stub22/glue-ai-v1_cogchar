@@ -4,7 +4,7 @@ package org.cogchar.demo.render.opengl;
  * Hello world!
  *
  */
-public class App 
+public class RagdollDemoMain 
 {
     public static void main( String[] args )
     {
