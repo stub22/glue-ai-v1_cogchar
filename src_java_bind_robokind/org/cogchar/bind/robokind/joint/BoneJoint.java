@@ -16,31 +16,51 @@
 
 package org.cogchar.bind.robokind.joint;
 
+import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.AbstractJoint;
-import org.robokind.api.motion.config.JointConfig;
+import org.robokind.api.motion.Joint;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class BoneJoint extends AbstractJoint<JointConfig,SkeletonController> {
-        /**
-         * Creates a new BoneJoint from the given JointConfig and controller.
-         * @param params JointConfig for the new Joint
-         * @param controller the Joint's controller
-         */
-	protected BoneJoint(JointConfig jc, SkeletonController controller){
-		super(jc,controller);
+public class BoneJoint extends AbstractJoint{
+    
+	protected BoneJoint(Joint.Id jointId){
+        super(jointId);
 	}
 
 	@Override
 	public void setEnabled(Boolean enabled) {
-		throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public Boolean getEnabled() {
-		throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
 	}
+
+    @Override
+    public String getName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public NormalizedDouble getDefaultPosition() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public NormalizedDouble getGoalPosition() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    //This is used to allow the SkeletonRobot to set the GoalPosition and fire the event.
+    void setGoalPosition(NormalizedDouble pos){
+        NormalizedDouble old = getGoalPosition();
+        //actually set the goal position here
+        firePropertyChange(PROP_GOAL_POSITION, old, pos);
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 }

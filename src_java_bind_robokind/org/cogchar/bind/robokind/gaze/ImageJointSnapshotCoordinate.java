@@ -15,7 +15,7 @@
  */
 package org.cogchar.bind.robokind.gaze;
 
-import java.util.Map;
+import org.robokind.api.motion.Robot.RobotPositionMap;
 import org.robokind.api.vision.ImageRegion;
 
 /**
@@ -26,9 +26,10 @@ public class ImageJointSnapshotCoordinate {
     private int myImageWidth;
     private int myImageHeight;
     private ImageRegion myRegion;
-    private Map<Integer,Double> myJointPositions;
+    private RobotPositionMap myJointPositions;
     
-    public ImageJointSnapshotCoordinate(int width, int height, ImageRegion reg, Map<Integer,Double> pos){
+    public ImageJointSnapshotCoordinate(
+            int width, int height, ImageRegion reg, RobotPositionMap pos){
         myImageWidth = width;
         myImageHeight = height;
         myRegion = reg;
@@ -44,7 +45,7 @@ public class ImageJointSnapshotCoordinate {
     public ImageRegion getImageRegion(){
         return myRegion;
     }
-    public Map<Integer,Double> getJointPositions(){
+    public RobotPositionMap getJointPositions(){
         return myJointPositions;
     }
 }
