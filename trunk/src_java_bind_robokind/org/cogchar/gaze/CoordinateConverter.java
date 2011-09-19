@@ -15,13 +15,15 @@
  */
 package org.cogchar.gaze;
 
-import java.util.List;
-
 /**
- *
+ * Converts coordinates from one coordinate space to another.
  * @author Matthew Stevenson
  */
-public interface ObservationTrackerRegistry<ObsType extends Observation, TrackerType> {
-    public TrackerType addObservation(ObsType obs);
-    public List<TrackerType> getObservationTrackers();
+public interface CoordinateConverter<CoordSrc,CoordDest> {
+    /**
+     * Converts the given coordinate to the destination space.
+     * @param coord coordinate to convert
+     * @return coordinate in the destination coordinate space
+     */
+    public CoordDest convert(CoordSrc coord);
 }

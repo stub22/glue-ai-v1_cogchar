@@ -17,26 +17,27 @@ package org.cogchar.bind.robokind.gaze;
 
 import java.awt.Rectangle;
 import java.util.List;
-import java.util.Map;
 import org.cogchar.animoid.gaze.IGazeTarget;
 import org.cogchar.animoid.protocol.EgocentricDirection;
 import org.cogchar.sight.obs.SightObservation;
+import org.osgi.framework.BundleContext;
+import org.robokind.api.motion.Robot;
+import org.robokind.api.motion.Robot.RobotPositionMap;
 import org.robokind.api.motion.protocol.DefaultMotionFrame;
 import org.robokind.api.motion.protocol.FrameSource;
 import org.robokind.api.motion.protocol.MotionFrame;
-import org.robokind.api.motion.protocol.PositionHashMap;
-import org.robokind.api.motion.protocol.PositionMap;
 import org.robokind.api.motion.utils.MotionUtils;
 import org.robokind.api.vision.ImageRegion;
 
 /**
  *
- * @author Matthew Stevenson
  */
-public class ImageTrackerFrameSource implements FrameSource{
+public class ImageTrackerFrameSource implements FrameSource<RobotPositionMap> {
     private ImageEgocentricConverter myCoordinateConverter;
     private GazeTracker myTracker;
     private GazeTargetMotionPlanner myPlanner;
+    private BundleContext myContext;
+    private Robot.Id myRobotId;
     
     public void trackRegion(ImageRegion region, long time){
         ImageJointSnapshotCoordinate ijsc = convertImageRegionToIJSC(region);
@@ -52,7 +53,7 @@ public class ImageTrackerFrameSource implements FrameSource{
     }
     
     private ImageJointSnapshotCoordinate convertImageRegionToIJSC(ImageRegion reg){
-        Map<Integer,Double> pos = MotionUtils.getCurrentPositions();
+        RobotPositionMap pos = MotionUtils.getCurrentPositions(myContext, myRobotId);
         if(pos == null){
             return null;
         }
@@ -82,15 +83,15 @@ public class ImageTrackerFrameSource implements FrameSource{
             return null;
         }
         IGazeTarget target = targets.get(0);
-        PositionMap curPos = MotionUtils.getCurrentPositions();
-        Map<Integer,Double> goals = myPlanner.getMovements(time, interval, target, curPos);
+        RobotPositionMap curPos = MotionUtils.getCurrentPositions(myContext, myRobotId);
+        RobotPositionMap goals = myPlanner.getMovements(time, interval, target, curPos);
+        
         MotionFrame frame = new DefaultMotionFrame();
         frame.setFrameLengthMillisec(interval);
         frame.setTimestampMillisecUTC(time);
-		
-		PositionMap goalPM = new PositionHashMap(goals, curPos.getDeviceId(), PositionMap.POSITION_TYPE_GOAL);
         frame.setPreviousPositions(curPos);
-        frame.setGoalPositions(goalPM);
+        
+        frame.setGoalPositions(goals);
         return frame;
     }
 }
