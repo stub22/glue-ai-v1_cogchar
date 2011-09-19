@@ -52,36 +52,6 @@
 					<groupId>org.slf4j</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.api.messaging</artifactId>
-			<version>0.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.messaging</artifactId>
-			<version>0.6</version>
-		</dependency>		
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.motion</artifactId>
-			<version>0.6</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>org.apache.servicemix.bundles.jdom</artifactId>
-					<groupId>org.apache.servicemix.bundles</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>jdom</artifactId>
-					<groupId>jdom</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.vision</artifactId>
-			<version>0.6</version>
 		</dependency>		
 		
 		<!--

@@ -96,7 +96,7 @@
                     <instructions>
                         <Bundle-Activator>org.cogchar.ext.bundle.opengl.jmonkey.Activator</Bundle-Activator>
 						<Import-Package>*;resolution:=optional</Import-Package>
-						<Export-Package>com.jme3.*,org.lwjgl.*, Common.*, Interface.*, com.bulletphysics.*, javax.vecmath.*</Export-Package>						
+						<Export-Package>com.jme3.*, jme3tools.*, org.lwjgl.*, Common.*, Interface.*, com.bulletphysics.*, javax.vecmath.*</Export-Package>						
                     </instructions>
                 </configuration>
             </plugin>
