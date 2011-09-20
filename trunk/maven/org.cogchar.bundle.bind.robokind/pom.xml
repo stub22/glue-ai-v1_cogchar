@@ -30,6 +30,7 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.core</artifactId>
 			<version>${project.version}</version>
+			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>osgi_R4_core</artifactId>
@@ -67,6 +68,13 @@
 			<type>jar</type>
 			<version>0.9.4</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
+			<groupId>org.appdapter</groupId>
+			<type>jar</type>
+			<version>1.0.3-SNAPSHOT</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
