@@ -57,7 +57,7 @@ public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
 			Thread.currentThread().setContextClassLoader(localLoader);
 			
 			// Our crude demo using test model exported by Leo from Maya.
-			myBonyContext = StickFigureTestMain.initStickFigureApp(false); 
+			myBonyContext = StickFigureTestMain.initStickFigureApp(); 
 			
 			
 				
