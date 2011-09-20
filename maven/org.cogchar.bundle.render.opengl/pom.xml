@@ -19,7 +19,14 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.render</artifactId>
 			<version>${project.version}</version>
+			<scope>provided</scope>
 		</dependency>
+	 <dependency>
+	  <artifactId>ext.bundle.opengl.jmonkey</artifactId>
+	  <groupId>org.cogchar</groupId>
+	  <type>jar</type>
+	  <version>1.0-SNAPSHOT</version>
+	 </dependency>
 	</dependencies>
 	<build>
 		<plugins>

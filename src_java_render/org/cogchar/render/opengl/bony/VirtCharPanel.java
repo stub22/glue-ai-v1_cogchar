@@ -25,13 +25,15 @@ package org.cogchar.render.opengl.bony;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import javax.swing.JFrame;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class VirtCharPanel extends javax.swing.JPanel {
-
+	static Logger theLogger = LoggerFactory.getLogger(VirtCharPanel.class);
     /** Creates new form VirtCharPanel */
     public VirtCharPanel() {
         initComponents();
@@ -55,12 +57,13 @@ public class VirtCharPanel extends javax.swing.JPanel {
 	}
 	
 	public JFrame makeEnclosingJFrame() {
+		theLogger.info("Making frame");
 		JFrame frame = new JFrame(this.getClass().getName());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(this, BorderLayout.CENTER);
-
+		theLogger.info("Packing frame");
 		frame.pack();
-
+		theLogger.info("Setting frame visible");
 		frame.setVisible(true);	
 		return frame;
 	}

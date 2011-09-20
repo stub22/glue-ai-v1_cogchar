@@ -27,24 +27,22 @@ public class StickFigureTestMain {
 	static int		canvasWidth = 640, canvasHeight = 480;
 	
 
-	public static BonyContext initStickFigureApp(boolean addFrame) { 
+	public static BonyContext initStickFigureApp() { 
 		BonyStickFigureApp stickFigureApp = new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
 		BonySystem.setJMonkeySettings(stickFigureApp, canvasWidth, canvasHeight);
 		stickFigureApp.initCharPanelWithCanvas();
 		BonyContext bc = stickFigureApp.getBonyContext();
-		if (addFrame) {
-			// Frame must be packed after panel created, but created 
-			// before startJMonkey.  Might add frame to BonyContext...
-			VirtCharPanel vcp = bc.getPanel();
-			JFrame jf = vcp.makeEnclosingJFrame();
-		}	
-		stickFigureApp.startJMonkeyCanvas();
-		stickFigureApp.setScoringFlag(true);	
 		return bc;
 	}
 	public static void main(String[] args) {
-		BonyContext bc = initStickFigureApp(true);
-	
+		BonyContext bc = initStickFigureApp();
+		// Frame must be packed after panel created, but created 
+		// before startJMonkey.  Might add frame to BonyContext...
+		VirtCharPanel vcp = bc.getPanel();
+		JFrame jf = vcp.makeEnclosingJFrame();
+		BonyVirtualCharApp app = bc.getApp();
+		app.startJMonkeyCanvas();
+		((BonyStickFigureApp) app).setScoringFlag(true);	
 		// OR, run a JMonkey demo in a standalone OpenGL system window (not a Java/Swing GUI).
 	
 		// Generally you want to run just ONE of the following main methods:
