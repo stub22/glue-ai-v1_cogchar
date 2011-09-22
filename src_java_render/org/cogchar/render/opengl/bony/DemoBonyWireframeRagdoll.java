@@ -16,6 +16,7 @@ import com.jme3.bullet.joints.ConeJoint;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -28,6 +29,7 @@ public class DemoBonyWireframeRagdoll // extends SimpleApplication
 		implements ActionListener {
 	
 	public static final String PULL_RAGDOLL_UP = "Pull ragdoll up";
+	public static final String DANCE_LIKE_ROBOT = "Dance like a robot";
 
 	private Node myRagDollNode = new Node();
 	private Node myShouldersNode;
@@ -79,8 +81,10 @@ public class DemoBonyWireframeRagdoll // extends SimpleApplication
 		return bulletAppState;
 	}
 	public void registerTraditionalInputHandlers(InputManager inputManager) {
-		inputManager.addMapping(PULL_RAGDOLL_UP, new MouseButtonTrigger(0));
+		inputManager.addMapping(PULL_RAGDOLL_UP, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 		inputManager.addListener(this, PULL_RAGDOLL_UP);
+		inputManager.addMapping(DANCE_LIKE_ROBOT, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+		inputManager.addListener(this, DANCE_LIKE_ROBOT);		
 	}
 	public void realizeDollAndAttach(Node appRootNode, BulletAppState bulletAppState) { 
 		// "A doll is a necessity."
@@ -155,16 +159,28 @@ public class DemoBonyWireframeRagdoll // extends SimpleApplication
 		joint.setLimit(1f, 1f, 0);
 		return joint;
 	}
-
-	public void onAction(String string, boolean bln, float tpf) {
-		if (PULL_RAGDOLL_UP.equals(string)) {
+	public static interface Doer {
+		void doIt();
+	}
+	
+	private Doer myDanceDoer;
+	public void onAction(String actionName, boolean bln, float tpf) {
+		if (PULL_RAGDOLL_UP.equals(actionName)) {
 			if (bln) {
 				myShouldersNode.getControl(RigidBodyControl.class).activate();
 				myApplyForceFlag = true;
 			} else {
 				myApplyForceFlag = false;
 			}
+		} else if (DANCE_LIKE_ROBOT.equals(actionName) && bln) {
+			System.out.println("Gonna do my dance now!");
+			if (myDanceDoer != null) {
+				myDanceDoer.doIt();
+			}
 		}
+	}
+	public void setDanceDoer(Doer d) {
+		myDanceDoer = d;
 	}
 
 	public void doSimpleUpdate(float tpf) {

@@ -25,4 +25,7 @@ public class BonyRagdollApp extends BonyStickFigureApp {
 		super.simpleUpdate(tpf);
 		myRagdoll.doSimpleUpdate(tpf);
 	}
+	public DemoBonyWireframeRagdoll getRagdoll() {
+		return myRagdoll;
+	}
 }

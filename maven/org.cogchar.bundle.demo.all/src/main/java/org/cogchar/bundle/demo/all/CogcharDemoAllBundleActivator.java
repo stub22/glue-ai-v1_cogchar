@@ -23,7 +23,10 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
 		initRobokindJointPumperDemo(bundleCtx);
 	}
 	private void initRobokindJointPumperDemo(BundleContext bundleCtx)  throws Exception {
-		RobokindJointBindingDemo.createAndRegisterRobot(bundleCtx);
+		RobokindJointBindingDemo rjbd = new RobokindJointBindingDemo();
+		rjbd.createAndRegisterRobot(bundleCtx);
+		rjbd.connectToVirtualChar(bundleCtx);
+		
 	}
 	private void initOpenGLDemoStuff(BundleContext bundleCtx) throws Exception {
 		BonyContext bc = getBonyContext(bundleCtx);
@@ -63,7 +66,7 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
 
 	}
 	
-	private BonyContext getBonyContext(BundleContext bundleCtx) {
+	protected static BonyContext getBonyContext(BundleContext bundleCtx) {
 		ServiceReference ref = bundleCtx.getServiceReference(BonyContext.class.getName());
 		if(ref == null){
 			return null;
