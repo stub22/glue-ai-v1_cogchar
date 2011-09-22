@@ -8,25 +8,28 @@ import org.robokind.api.motion.AbstractRobot;
 import org.robokind.api.motion.Joint;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.Robot.RobotPositionMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class BonyRobot extends AbstractRobot<BonyJoint> {
-
+	static Logger theLogger = LoggerFactory.getLogger(BonyRobot.class);
 	public BonyRobot(Robot.Id robotId) {
 		super(robotId);
 	}
 
 	@Override public boolean connect() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		theLogger.info("BonyRobot[" + getRobotId() + "] connecting");
+		return true;
 	}
 
 	@Override public void disconnect() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		theLogger.info("BonyRobot[" + getRobotId() + "] disconnecting");
 	}
 
 	@Override public void move(RobotPositionMap positions) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		theLogger.info("BonyRobot[" + getRobotId() + "] moving to: " + positions);
 	}
 }
