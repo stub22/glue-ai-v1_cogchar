@@ -81,6 +81,13 @@
 			<version>1.0.3-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<artifactId>org.apache.servicemix.bundles.xpp3</artifactId>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<type>jar</type>
+			<version>1.1.4c_5</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
