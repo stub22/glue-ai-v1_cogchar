@@ -23,7 +23,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>org.cogchar.lib.render.opengl</artifactId>
+      <artifactId>org.cogchar.lib.render</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
