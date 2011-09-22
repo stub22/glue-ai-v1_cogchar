@@ -20,7 +20,7 @@ import com.jme3.scene.Node;
  *
  * @author normenhansen
  */
-public class DemoFloatableWireframeRagdol extends SimpleApplication implements ActionListener {
+public class DemoFloatableWireframeRagdoll extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState = new BulletAppState();
     private Node ragDoll = new Node();
@@ -29,7 +29,7 @@ public class DemoFloatableWireframeRagdol extends SimpleApplication implements A
     private boolean applyForce = false;
 
     public static void main(String[] args) {
-        DemoFloatableWireframeRagdol app = new DemoFloatableWireframeRagdol();
+        DemoFloatableWireframeRagdoll app = new DemoFloatableWireframeRagdoll();
         app.start();
     }
 

@@ -24,12 +24,20 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
 		if (bc != null) {
 			ClassLoader tccl = Thread.currentThread().getContextClassLoader();
 			try {
+				// Must set context classloader so that JMonkey can find goodies
+				// on the classpath, currently presumed to be in same class space
+				// as the BonyContext class.  (Could generalize this and make
+				// it use the loader of a configured bundle).
 				ClassLoader bonyLoader = bc.getClass().getClassLoader();
 				theLogger.info("Setting thread class loader to bony loader: " + bonyLoader);
 				Thread.currentThread().setContextClassLoader(bonyLoader);
 				VirtCharPanel vcp = bc.getPanel();
 				theLogger.info("Got VirtCharPanel: " + vcp);
-				// makeEnclosingFrame seems to be where we hang, when we do, under OSGi.
+				// Frame must be packed after panel created, but created 
+				// before startJMonkey.  If startJMonkey is called first,
+				// we often hang in frame.setVisible() as JMonkey tries
+				// to do some magic restart thing that doesn't work as of
+				// jme3-alpha4-August 2011.
 				JFrame jf = vcp.makeEnclosingJFrame();
 				theLogger.info("Got Enclosing Frame: " + jf);
 				BonyVirtualCharApp app = bc.getApp();
