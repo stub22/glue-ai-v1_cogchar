@@ -32,12 +32,14 @@ public class BonyRobotUtils {
 		//... add positions
 		mtfs.putPositions(positions);
 	}
-	public static void makeBonyJointForRobot(BonyRobot robot, int jointNum, String jointName, 
+	public static BonyJoint makeBonyJointForRobot(BonyRobot robot, int jointNum, String jointName, 
 					double defaultPos, double initPos) {
 		Joint.Id bjID = new Joint.Id(jointNum);
 		NormalizedDouble dpND = new NormalizedDouble(defaultPos);
 		NormalizedDouble ipND = new NormalizedDouble(initPos);
 		BonyJoint bj = new BonyJoint(bjID, jointName, dpND);
 		bj.setGoalPosition(ipND);
+		robot.registerBonyJoint(bj);
+		return bj;
 	}
 }
