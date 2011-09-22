@@ -24,24 +24,21 @@ import org.robokind.api.motion.Joint;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class BoneJoint extends AbstractJoint{
+public class BonyJoint extends AbstractJoint{
     
-	protected BoneJoint(Joint.Id jointId){
+	protected BonyJoint(Joint.Id jointId){
         super(jointId);
 	}
 
-	@Override
-	public void setEnabled(Boolean enabled) {
+	@Override public void setEnabled(Boolean enabled) {
         throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
-	public Boolean getEnabled() {
+	@Override public Boolean getEnabled() {
         throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-    @Override
-    public String getName() {
+    @Override public String getName() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
