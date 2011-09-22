@@ -16,7 +16,7 @@ import org.robokind.api.animation.utils.AnimationUtils;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class RobokindAnimUtils {
+public class BonyAnimUtils {
 
 	public static void createAndPlayAnim(BundleContext bundleCtx) throws Exception {
 		/* This is how the animation editor gets the available channels.  This
