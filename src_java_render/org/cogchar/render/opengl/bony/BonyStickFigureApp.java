@@ -28,13 +28,13 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 	private String					mySceneFilePath;
 	private float					myLocalSceneScale;
 	
-	private	DemoBonyWireframeRagdoll	myRagdoll;
+
 	
 	public BonyStickFigureApp(String sceneFilePath, float sceneScale) {
 		super();
 		mySceneFilePath = sceneFilePath;
 		myLocalSceneScale = sceneScale;
-		myRagdoll = new DemoBonyWireframeRagdoll();
+		
 	}
 	
 	@Override public void simpleInitApp() {
