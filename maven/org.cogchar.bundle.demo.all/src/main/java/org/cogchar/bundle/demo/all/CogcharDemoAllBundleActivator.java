@@ -23,7 +23,7 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
 		initRobokindJointPumperDemo(bundleCtx);
 	}
 	private void initRobokindJointPumperDemo(BundleContext bundleCtx)  throws Exception {
-		
+		RobokindJointBindingDemo.createAndRegisterRobot(bundleCtx);
 	}
 	private void initOpenGLDemoStuff(BundleContext bundleCtx) throws Exception {
 		BonyContext bc = getBonyContext(bundleCtx);

@@ -32,4 +32,9 @@ public class BonyRobot extends AbstractRobot<BonyJoint> {
 	@Override public void move(RobotPositionMap positions) {
 		theLogger.info("BonyRobot[" + getRobotId() + "] moving to: " + positions);
 	}
+	public void registerBonyJoint(BonyJoint bj) {
+		theLogger.info("BonyRobot[" + getRobotId() + "] registering joint: " + bj);
+		Robot.JointId brjID = new Robot.JointId(getRobotId(), bj.getId());
+		myJointMap.put(brjID, bj);
+	}
 }
