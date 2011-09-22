@@ -28,7 +28,8 @@ public class StickFigureTestMain {
 	
 
 	public static BonyContext initStickFigureApp() { 
-		BonyStickFigureApp stickFigureApp = new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
+		BonyStickFigureApp stickFigureApp = // new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
+					new BonyRagdollApp(sceneFilePath, sceneLocalScale);
 		BonySystem.setJMonkeySettings(stickFigureApp, canvasWidth, canvasHeight);
 		stickFigureApp.initCharPanelWithCanvas();
 		BonyContext bc = stickFigureApp.getBonyContext();
