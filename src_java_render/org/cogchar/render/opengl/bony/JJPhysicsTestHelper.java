@@ -44,7 +44,7 @@ public class JJPhysicsTestHelper {
         rootNode.addLight(light);
 
         Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setTexture("ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
+       // material.setTexture("ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
 
         Box floorBox = new Box(140, 0.25f, 140);
         Geometry floorGeometry = new Geometry("Floor", floorBox);

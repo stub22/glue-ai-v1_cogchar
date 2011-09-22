@@ -14,6 +14,7 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.joints.ConeJoint;
 import com.jme3.bullet.joints.PhysicsJoint;
+import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
@@ -36,26 +37,18 @@ public class DemoBonyWireframeRagdoll // extends SimpleApplication
 	public static void main(String[] args) {
 
 		final DemoBonyWireframeRagdoll doll = new DemoBonyWireframeRagdoll();
+		
 		SimpleApplication app = new SimpleApplication() {
-			BulletAppState myBulletAppState;
 			@Override public void simpleInitApp() {
-				myBulletAppState = makePhysicsAppState(stateManager, assetManager, rootNode);
-				doll.createDollNodes();
-				Node dollNode = doll.getDollNode();
-				rootNode.attachChild(dollNode);
-				myBulletAppState.getPhysicsSpace().addAll(dollNode);
-				registerInputHandlers();
+				BulletAppState bulletAppState = makePhysicsAppState(stateManager, assetManager, rootNode);
+				doll.realizeDollAndAttach(rootNode, bulletAppState);
+				doll.registerTraditionalInputHandlers(inputManager);
 			}
-			public void registerInputHandlers() { 
-				System.out.println("*******************************Registering mouse button puller-upper");
-				inputManager.addMapping(PULL_RAGDOLL_UP, new MouseButtonTrigger(0));
-				inputManager.addListener(doll, PULL_RAGDOLL_UP);
-			}
-
 			@Override public void simpleUpdate(float tpf) {
 				doll.doSimpleUpdate(tpf);
 			}
 		};
+		
 		app.start();
 	}
   
@@ -85,7 +78,21 @@ public class DemoBonyWireframeRagdoll // extends SimpleApplication
 		JJPhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
 		return bulletAppState;
 	}
+	public void registerTraditionalInputHandlers(InputManager inputManager) {
+		inputManager.addMapping(PULL_RAGDOLL_UP, new MouseButtonTrigger(0));
+		inputManager.addListener(this, PULL_RAGDOLL_UP);
+	}
+	public void realizeDollAndAttach(Node appRootNode, BulletAppState bulletAppState) { 
+		// "A doll is a necessity."
+
+		createDollNodes();
+		Node dollRootNode = getDollNode();
+		appRootNode.attachChild(dollRootNode);
+		bulletAppState.getPhysicsSpace().addAll(dollRootNode);		
+	}
 	private void createDollNodes() {
+		// "I am not putting the knock on dolls."
+		
 		myShouldersNode = createLimb(0.2f, 1.0f, new Vector3f(0.00f, 1.5f, 0), true);
 		Node uArmL = createLimb(0.2f, 0.5f, new Vector3f(-0.75f, 0.8f, 0), false);
 		Node uArmR = createLimb(0.2f, 0.5f, new Vector3f(0.75f, 0.8f, 0), false);
