@@ -19,6 +19,13 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
 	}
 	@Override public void start(BundleContext bundleCtx) throws Exception {
 		super.start(bundleCtx);
+		initOpenGLDemoStuff(bundleCtx);
+		initRobokindJointPumperDemo(bundleCtx);
+	}
+	private void initRobokindJointPumperDemo(BundleContext bundleCtx)  throws Exception {
+		
+	}
+	private void initOpenGLDemoStuff(BundleContext bundleCtx) throws Exception {
 		BonyContext bc = getBonyContext(bundleCtx);
 		theLogger.info("Got BonyContext: " + bc);
 		if (bc != null) {
