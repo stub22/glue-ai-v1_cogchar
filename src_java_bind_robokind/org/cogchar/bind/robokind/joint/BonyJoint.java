@@ -19,45 +19,55 @@ package org.cogchar.bind.robokind.joint;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.AbstractJoint;
 import org.robokind.api.motion.Joint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class BonyJoint extends AbstractJoint{
-    
-	protected BonyJoint(Joint.Id jointId){
+public class BonyJoint extends AbstractJoint {
+	static Logger theLogger = LoggerFactory.getLogger(BonyJoint.class);
+	
+    private	boolean				myEnabledFlag = false;
+	private	NormalizedDouble	myDefaultPos;
+	private	NormalizedDouble	myGoalPos;
+	private	String				myName;
+	
+	protected BonyJoint(Joint.Id jointId, String name, NormalizedDouble defaultPos) {
         super(jointId);
+		myName = name;
+		myDefaultPos = defaultPos;
 	}
 
 	@Override public void setEnabled(Boolean enabled) {
-        throw new UnsupportedOperationException("Not supported yet.");
+		theLogger.info("BonyJoint[" + getId() + "] setEnabled(" + enabled + ")");
+		myEnabledFlag = enabled;
 	}
 
 	@Override public Boolean getEnabled() {
-        throw new UnsupportedOperationException("Not supported yet.");
+		return myEnabledFlag;
 	}
 
     @Override public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+		return myName;
     }
 
-    @Override
-    public NormalizedDouble getDefaultPosition() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @Override public NormalizedDouble getDefaultPosition() {
+        return myDefaultPos;
     }
 
-    @Override
-    public NormalizedDouble getGoalPosition() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @Override public NormalizedDouble getGoalPosition() {
+        return myGoalPos;
     }
     
     //This is used to allow the SkeletonRobot to set the GoalPosition and fire the event.
     void setGoalPosition(NormalizedDouble pos){
-        NormalizedDouble old = getGoalPosition();
+		theLogger.info("BonyJoint[" + getId() + "] setGoalPosition(" + pos + ")");
+		NormalizedDouble old = getGoalPosition();
         //actually set the goal position here
         firePropertyChange(PROP_GOAL_POSITION, old, pos);
-        throw new UnsupportedOperationException("Not supported yet.");
+		myGoalPos = pos;
     }
     
 }
