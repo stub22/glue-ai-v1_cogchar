@@ -94,7 +94,7 @@
 					<instructions>
 						<Bundle-Activator>org.cogchar.bind.robokind.osgi.RobokindBindingActivator</Bundle-Activator>
 						<Export-Package>org.cogchar.*</Export-Package>
-						<Private-Package>com.thoughtworks.xstream.*, org.scalaquery.*</Private-Package>
+						<Private-Package>com.thoughtworks.xstream.*, org.scalaquery.*, org.apache.commons.math.*</Private-Package>
 						<!--
 						, *;resolution:=optional
 						-->
