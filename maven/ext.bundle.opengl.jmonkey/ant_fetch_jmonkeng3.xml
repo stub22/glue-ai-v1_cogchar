@@ -6,18 +6,23 @@
 
 
 <!-- set up the timestamp for the current nightly build to download -->
+
+<!--  Last JMonkey build seems to be on 2011-08-29
 	<tstamp>
 		<format property="NIGHTLY_JME3" pattern="yyyy-MM-dd" />
 	</tstamp>
+-->
+	<property name="NIGHTLY_JME3" value="2011-08-29"/>
+	
 <!-- set up various properties used elsewhere, this part is OS dependant, change based on your OS. -->
 
-    <property file="${user.name}.properties"/>
+    <property file="ant_maven_local.properties"/>
 
 	<property name="zip.name" value="jME3_${NIGHTLY_JME3}.zip" />
 	<property name="zip.local.name" value="jME3_nightly_build.zip" />
 	<property name="zip.url" value="http://jmonkeyengine.com/nightly/" />
-	<property name="location" value="${download.tmp}" />
-        <property name="maven" value="C:\_root\_japp\maven_303\bin\mvn.bat" />
+	<property name="location" value="${download_tmp}" />
+        <property name="maven" value="${maven_exec}" />
 <!-- now the actual downloading, unzipping and installing begins -->
 	<target name="download_nightly_build">
 <!-- first start by clearing out the old stuff -->
