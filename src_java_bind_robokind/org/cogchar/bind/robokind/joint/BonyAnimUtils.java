@@ -12,6 +12,7 @@ import org.robokind.api.animation.Channel;
 import org.robokind.api.animation.MotionPath;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.animation.utils.AnimationUtils;
+import org.robokind.api.animation.utils.ChannelsParameterSource;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -27,8 +28,10 @@ public class BonyAnimUtils {
 		 * isn't as critical as fixing the motion was.
 		 */
 
-		Map<Integer, String> chanNames =
-				AnimationUtils.getChannelsParameterSource().getChannelNames();
+		ChannelsParameterSource cpSource = AnimationUtils.getChannelsParameterSource();
+		System.out.println("cpSource=" + cpSource);
+		Map<Integer, String> chanNames = cpSource.getChannelNames();
+		System.out.println("channelNames=" + chanNames);
 		Animation anim = new Animation();
 		//Create your channels and add points
 		for (Entry<Integer, String> e : chanNames.entrySet()) {
