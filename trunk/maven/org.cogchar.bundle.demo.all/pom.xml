@@ -40,6 +40,12 @@
             <artifactId>org.cogchar.bundle.render.opengl</artifactId>
             <version>${project.version}</version>
         </dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.integration.animation_motion</artifactId>
+			<version>0.6</version>
+			<scope>runtime</scope>
+		</dependency>
     </dependencies>
 
     <build>
