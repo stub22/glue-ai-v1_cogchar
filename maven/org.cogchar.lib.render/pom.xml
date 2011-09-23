@@ -8,7 +8,15 @@
   <packaging>jar</packaging>
 
    	<name>${project.artifactId}</name>
+
   <url>http://maven.apache.org</url>
+    <repositories>
+        <repository>
+            <id>sonatype</id>
+            <name>sonatype</name>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
