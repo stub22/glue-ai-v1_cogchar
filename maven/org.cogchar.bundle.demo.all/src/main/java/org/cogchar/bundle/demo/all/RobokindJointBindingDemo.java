@@ -15,6 +15,7 @@ import org.robokind.api.motion.Robot;
 
 
 import org.cogchar.bind.robokind.joint.BonyRobotUtils;
+import org.cogchar.bind.robokind.joint.BonyAnimUtils;
 import org.cogchar.render.opengl.bony.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.DemoBonyWireframeRagdoll;
 import org.cogchar.render.opengl.bony.BonyRagdollApp;
@@ -24,9 +25,11 @@ import org.cogchar.render.opengl.bony.BonyContext;
  * @author Stu B. <www.texpedient.com>
  */
 public class RobokindJointBindingDemo {
-	private	BonyRobot	myBonyRobot;
+	private	BonyRobot		myBonyRobot;
+	private	BundleContext	myBundleCtx;
 	
 	public void createAndRegisterRobot(BundleContext bundleCtx) throws Exception {
+		
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr start");
 		//Create your Robot and register it
 		Robot.Id hbID = new Robot.Id("hedonismBot");
@@ -37,12 +40,20 @@ public class RobokindJointBindingDemo {
 
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr end");
 	}
-	public static class DanceDoer implements DemoBonyWireframeRagdoll.Doer {
+	public class DanceDoer implements DemoBonyWireframeRagdoll.Doer {
+		
 		public void doIt() { 
 			System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  Doing dance ");
+			try {
+				
+				BonyAnimUtils.createAndPlayAnim(myBundleCtx);
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
 		}
 	}
 	public void connectToVirtualChar(BundleContext bundleCtx) throws Exception {
+		myBundleCtx = bundleCtx;
 		BonyContext bc = CogcharDemoAllBundleActivator.getBonyContext(bundleCtx);
 		BonyVirtualCharApp app = bc.getApp();
 		BonyRagdollApp bra = (BonyRagdollApp) app;
