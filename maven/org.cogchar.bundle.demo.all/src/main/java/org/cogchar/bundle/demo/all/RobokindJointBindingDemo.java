@@ -28,11 +28,13 @@ public class RobokindJointBindingDemo {
 	private	BonyRobot		myBonyRobot;
 	private	BundleContext	myBundleCtx;
 	
+	public static String	HARDCODED_ROBOT_ID = "myDevice1";
+	
 	public void createAndRegisterRobot(BundleContext bundleCtx) throws Exception {
 		
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr start");
 		//Create your Robot and register it
-		Robot.Id hbID = new Robot.Id("hedonismBot");
+		Robot.Id hbID = new Robot.Id(HARDCODED_ROBOT_ID);
 		myBonyRobot  = new BonyRobot(hbID);
 		BonyRobotUtils.makeBonyJointForRobot(myBonyRobot, 22, "JTwentyTwo", 0.5, 0.2);
 		BonyRobotUtils.makeBonyJointForRobot(myBonyRobot, 22, "JNinetyNine", 0.8, 0.9);
