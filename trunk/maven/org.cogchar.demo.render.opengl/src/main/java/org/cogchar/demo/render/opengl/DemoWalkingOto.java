@@ -82,7 +82,7 @@ import jme3tools.converters.ImageToAwt;
  * A walking animated character followed by a 3rd person camera on a terrain with LOD.
  * @author normenhansen
  */
-public class DemoWalkingChar_Crashes extends SimpleApplication implements ActionListener, PhysicsCollisionListener, AnimEventListener {
+public class DemoWalkingOto extends SimpleApplication implements ActionListener, PhysicsCollisionListener, AnimEventListener {
 
     private BulletAppState bulletAppState;
     //character
@@ -117,7 +117,7 @@ public class DemoWalkingChar_Crashes extends SimpleApplication implements Action
     FilterPostProcessor fpp;
 
     public static void main(String[] args) {
-        DemoWalkingChar_Crashes app = new DemoWalkingChar_Crashes();
+        DemoWalkingOto app = new DemoWalkingOto();
         app.start();
     }
 
