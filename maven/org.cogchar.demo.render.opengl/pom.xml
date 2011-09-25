@@ -38,6 +38,11 @@
       <type>jar</type>
       <version>3.0</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>ext.bundle.opengl.nifty</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>
 

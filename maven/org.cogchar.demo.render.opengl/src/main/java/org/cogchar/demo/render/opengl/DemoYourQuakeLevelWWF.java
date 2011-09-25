@@ -52,7 +52,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.plugins.ogre.OgreMeshKey;
 import java.io.File;
 
-public class DemoYourQuakeLevel extends SimpleApplication implements ActionListener {
+public class DemoYourQuakeLevelWWF extends SimpleApplication implements ActionListener {
 	static String LOCAL_SCENE_PATH = "jme_asset_zips/quake3level.zip";
 	static String HTTP_SCENE_PATH = "http://jmonkeyengine.googlecode.com/files/quake3level.zip";
 	
@@ -68,7 +68,7 @@ public class DemoYourQuakeLevel extends SimpleApplication implements ActionListe
         if (!file.exists()) {
             useHttp = true;
         }
-        DemoYourQuakeLevel app = new DemoYourQuakeLevel();
+        DemoYourQuakeLevelWWF app = new DemoYourQuakeLevelWWF();
         app.start();
     }
 

@@ -49,7 +49,7 @@ import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
 import java.io.File;
 
-public class DemoYourHouseTerrainFallbackToHttp extends SimpleApplication {
+public class DemoYourHouseTerrainWWF extends SimpleApplication {
 
 	static String LOCAL_SCENE_PATH = "jme_asset_zips/wildhouse.zip";
 	static String HTTP_SCENE_PATH = "http://jmonkeyengine.googlecode.com/files/wildhouse.zip";
@@ -60,7 +60,7 @@ public class DemoYourHouseTerrainFallbackToHttp extends SimpleApplication {
 
     public static void main(String[] args) {
      
-        DemoYourHouseTerrainFallbackToHttp app = new DemoYourHouseTerrainFallbackToHttp();
+        DemoYourHouseTerrainWWF app = new DemoYourHouseTerrainWWF();
         app.start();
     }
 
