@@ -65,7 +65,7 @@ import com.jme3.texture.Texture.WrapMode;
  *
  * @author double1984 (tower mod by atom)
  */
-public class DemoShootableBrickTower extends SimpleApplication {
+public class DemoBombingBrickTower extends SimpleApplication {
 
     int bricksPerLayer = 8;
     int brickLayers = 30;
@@ -86,7 +86,7 @@ public class DemoShootableBrickTower extends SimpleApplication {
     private BulletAppState bulletAppState;
 
     public static void main(String args[]) {
-        DemoShootableBrickTower f = new DemoShootableBrickTower();
+        DemoBombingBrickTower f = new DemoBombingBrickTower();
         f.start();
     }
 

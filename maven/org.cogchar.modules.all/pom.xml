@@ -13,6 +13,7 @@
 		<module>../org.cogchar.bundle.demo.all</module>
 		<module>../org.cogchar.bundle.render.opengl</module>
 		<module>../org.cogchar.bundle.bind.robokind</module>
+		<module>../org.cogchar.demo.render.opengl</module>
 		<module>../org.cogchar.lib.core</module>
 		<module>../org.cogchar.lib.render</module>
 		<module>../ext.bundle.opengl.jmonkey</module>

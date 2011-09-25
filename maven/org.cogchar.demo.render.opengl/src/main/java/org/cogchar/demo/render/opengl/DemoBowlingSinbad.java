@@ -69,7 +69,7 @@ import com.jme3.texture.Texture;
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
  * @author normenhansen
  */
-public class DemoShootableSinbad extends SimpleApplication implements RagdollCollisionListener, AnimEventListener {
+public class DemoBowlingSinbad extends SimpleApplication implements RagdollCollisionListener, AnimEventListener {
 
     private BulletAppState bulletAppState;
     Material matBullet;
@@ -82,7 +82,7 @@ public class DemoShootableSinbad extends SimpleApplication implements RagdollCol
     private SphereCollisionShape bulletCollisionShape;
 
     public static void main(String[] args) {
-        DemoShootableSinbad app = new DemoShootableSinbad();
+        DemoBowlingSinbad app = new DemoBowlingSinbad();
         app.start();
     }
 
