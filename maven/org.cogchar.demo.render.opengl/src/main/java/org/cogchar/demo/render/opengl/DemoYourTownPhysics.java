@@ -55,7 +55,7 @@ import com.jme3.scene.Spatial;
  * This version uses Physics and a custom Action Listener.
  * @author normen, with edits by Zathras
  */
-public class DemoFirstPersonTownPhysics extends SimpleApplication
+public class DemoYourTownPhysics extends SimpleApplication
   implements ActionListener {
 
   private Spatial sceneModel;
@@ -68,7 +68,7 @@ public class DemoFirstPersonTownPhysics extends SimpleApplication
   public static String SCENE_LOCAL_ZIP_PATH = "jme_asset_zips/town.zip";
 
   public static void main(String[] args) {
-    DemoFirstPersonTownPhysics app = new DemoFirstPersonTownPhysics();
+    DemoYourTownPhysics app = new DemoYourTownPhysics();
     app.start();
   }
 
