@@ -55,7 +55,7 @@ import com.jme3.scene.Spatial;
  * This version uses Physics and a custom Action Listener.
  * @author normen, with edits by Zathras
  */
-public class DemoFirstPersonTown extends SimpleApplication
+public class DemoFirstPersonTownPhysics extends SimpleApplication
   implements ActionListener {
 
   private Spatial sceneModel;
@@ -64,9 +64,11 @@ public class DemoFirstPersonTown extends SimpleApplication
   private CharacterControl player;
   private Vector3f walkDirection = new Vector3f();
   private boolean left = false, right = false, up = false, down = false;
+  
+  public static String SCENE_LOCAL_ZIP_PATH = "jme_asset_zips/town.zip";
 
   public static void main(String[] args) {
-    DemoFirstPersonTown app = new DemoFirstPersonTown();
+    DemoFirstPersonTownPhysics app = new DemoFirstPersonTownPhysics();
     app.start();
   }
 
@@ -82,7 +84,7 @@ public class DemoFirstPersonTown extends SimpleApplication
     setUpLight();
 
     // We load the scene from the zip file and adjust its size.
-    assetManager.registerLocator("jme_models/town.zip", ZipLocator.class.getName());
+    assetManager.registerLocator(SCENE_LOCAL_ZIP_PATH, ZipLocator.class.getName());
     sceneModel = assetManager.loadModel("main.scene");
     sceneModel.setLocalScale(2f);
 
