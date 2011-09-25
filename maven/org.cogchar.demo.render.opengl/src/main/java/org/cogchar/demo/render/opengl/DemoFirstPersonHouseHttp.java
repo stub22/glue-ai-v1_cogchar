@@ -51,6 +51,9 @@ import java.io.File;
 
 public class DemoFirstPersonHouseHttp extends SimpleApplication {
 
+	static String LOCAL_SCENE_PATH = "jme_asset_zips/wildhouse.zip";
+	static String HTTP_SCENE_PATH = "http://jmonkeyengine.googlecode.com/files/wildhouse.zip";
+	
     private Sphere sphereMesh = new Sphere(32, 32, 10, false, true);
     private Geometry sphere = new Geometry("Sky", sphereMesh);
     private static boolean useHttp = false;
@@ -71,8 +74,7 @@ public class DemoFirstPersonHouseHttp extends SimpleApplication {
 
         // load sky
         rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
-		String LOCAL_SCENE_PATH = "jme_models/wildhouse.zip";
-		String HTTP_SCENE_PATH = "http://jmonkeyengine.googlecode.com/files/wildhouse.zip";
+
         File file = new File(LOCAL_SCENE_PATH);
         if (!file.exists()) {
 			System.out.println("Lookup of local scene file failed for:  " + LOCAL_SCENE_PATH);
