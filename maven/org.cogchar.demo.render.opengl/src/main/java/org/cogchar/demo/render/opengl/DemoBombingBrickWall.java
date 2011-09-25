@@ -60,7 +60,7 @@ import com.jme3.texture.Texture.WrapMode;
  *
  * @author double1984
  */
-public class DemoShootableBrickWall extends SimpleApplication {
+public class DemoBombingBrickWall extends SimpleApplication {
 
     static float bLength = 0.48f;
     static float bWidth = 0.24f;
@@ -76,7 +76,7 @@ public class DemoShootableBrickWall extends SimpleApplication {
     private BulletAppState bulletAppState;
 
     public static void main(String args[]) {
-        DemoShootableBrickWall f = new DemoShootableBrickWall();
+        DemoBombingBrickWall f = new DemoBombingBrickWall();
         f.start();
     }
 
