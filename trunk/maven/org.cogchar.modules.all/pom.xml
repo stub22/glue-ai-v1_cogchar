@@ -17,6 +17,7 @@
 		<module>../org.cogchar.lib.core</module>
 		<module>../org.cogchar.lib.render</module>
 		<module>../ext.bundle.opengl.jmonkey</module>
+		<module>../ext.bundle.opengl.nifty</module>
 	</modules>
   
 </project>
