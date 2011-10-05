@@ -46,9 +46,7 @@
 		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
 			<arg line="install:install-file -DartifactId=jbullet -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/jbullet.jar -Dversion=3.0" />
 		</exec>	
-		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
-			<arg line="install:install-file -DartifactId=nifty -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/nifty-1.3.jar -Dversion=3.0" />
-		</exec>		
+
 		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
 			<arg line="install:install-file -DartifactId=jinput -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/jinput.jar -Dversion=3.0" />
 		</exec>
@@ -63,7 +61,13 @@
 		</exec>		
 		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
 			<arg line="install:install-file -DartifactId=novyon-noise -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/noise-0.0.1-SNAPSHOT.jar -Dversion=3.0" />
-		</exec>				
+		</exec>		
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=nifty-v1.3 -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/nifty-1.3.jar -Dversion=3.0" />
+		</exec>					
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=nifty-default-controls-v1.3 -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/nifty-default-controls-1.3.jar -Dversion=3.0" />			
+		</exec>		
 			</target>
 </project>
 
