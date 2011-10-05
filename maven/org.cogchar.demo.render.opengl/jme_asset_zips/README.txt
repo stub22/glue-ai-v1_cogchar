@@ -1,6 +1,7 @@
 
   town.zip
   wildhouse.zip
+  quake3level.zip
 
 These asset zip files are copied from the JMonkey project, under
 the license shown below.
