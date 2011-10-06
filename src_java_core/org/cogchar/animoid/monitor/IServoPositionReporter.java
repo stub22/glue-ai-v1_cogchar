@@ -13,7 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.animoid.protocol;
+package org.cogchar.animoid.monitor;
+
+import org.cogchar.animoid.protocol.JPARFrame;
+import org.cogchar.animoid.protocol.JointPositionSnapshot;
 
 /**
  *

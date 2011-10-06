@@ -14,7 +14,10 @@
  *  limitations under the License.
  */
 
-package org.cogchar.animoid.protocol;
+package org.cogchar.animoid.monitor;
+
+import org.cogchar.animoid.protocol.JPARFrame;
+import org.cogchar.animoid.protocol.JointPositionSnapshot;
 
 /**
  * @author Stu B. <www.texpedient.com>
