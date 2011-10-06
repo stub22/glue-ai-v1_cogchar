@@ -45,10 +45,11 @@ public abstract class ThalamusBrokerStub implements PropertyChangeListener, Thal
 	public void registerGlobalHandle(String globalName) {
 		// mySKS.setGlobal(globalName, this);
 	}
-	/**
+	
 	 
-	public synchronized List<FactHandle> getAllFactHandlesMatchingClass(Class clazz) {
-		List<FactHandle> result = new ArrayList<FactHandle>();
+	public synchronized List<FactHandleStub> getAllFactHandlesMatchingClass(Class clazz) {
+		List<FactHandleStub> result = new ArrayList<FactHandleStub>();
+		/*
 		ClassObjectFilter filter = new ClassObjectFilter(clazz); 
 //		Drools 4
 //		Iterator<FactHandle> fhi = mySKS.iterateFactHandles(filter);
@@ -58,9 +59,10 @@ public abstract class ThalamusBrokerStub implements PropertyChangeListener, Thal
 		for (FactHandle fh: fhc) {
 			result.add(fh);
 		}
+		 */
 		return result;
 	}
-	 * */
+
 	public synchronized <T extends Object> List<T> getAllFactsMatchingClass(Class<T> clazz) {
 		List<T> result = new ArrayList<T>();
 		/*
@@ -81,11 +83,11 @@ public abstract class ThalamusBrokerStub implements PropertyChangeListener, Thal
 		}
 		return matchedList.get(0);
 	}
-/*
-	public Object getFactObjectFromHandle(FactHandle fh) {
-		return mySKS.getObject(fh);
-	}
 
+	public Object getFactObjectFromHandle(FactHandleStub fh) {
+		return fh; //  mySKS.getObject(fh);
+	}
+/*
 	public boolean retractFactForObject(Object o) {
 		FactHandle fh = mySKS.getFactHandle(o);
 		if (fh != null) {
