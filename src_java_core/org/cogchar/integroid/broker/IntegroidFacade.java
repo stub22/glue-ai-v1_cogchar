@@ -23,6 +23,11 @@ import java.util.Random;
 
 import javax.swing.SwingUtilities;
 import org.cogchar.animoid.broker.AnimoidFacade;
+import org.cogchar.convoid.broker.ConvoidFacade;
+import org.cogchar.convoid.broker.ConvoidFacadeSource;
+import org.cogchar.convoid.broker.IRemoteResponseInterface;
+import org.cogchar.convoid.output.config.Category;
+import org.cogchar.convoid.output.exec.AgendaManager;
 import org.cogchar.platform.cues.ThoughtCue;
 import org.cogchar.platform.cues.VariableCue;
 import org.slf4j.Logger;
@@ -32,7 +37,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class IntegroidFacade { // { extends ThalamusBroker implements ReactionProcessor, ConvoidFacadeSource {
+public class IntegroidFacade implements ConvoidFacadeSource, ReactionProcessor { // { extends ThalamusBroker implements ReactionProcessor, ConvoidFacadeSource {
 	private static Logger	theLogger = LoggerFactory.getLogger(IntegroidFacade.class.getName());
 	static {
 		// theLogger.setLevel(Level.ALL);
@@ -59,20 +64,19 @@ public class IntegroidFacade { // { extends ThalamusBroker implements ReactionPr
 	public IntegroidCueBroker getCueBroker() {
 		return myCueBroker;
 	}	
-	/*
-	@Override public ConvoidFacade getConvoidFacade() {
+	 public ConvoidFacade getConvoidFacade() {
 		return myJobBroker.getConvoidFacade();
 	}
-	 */
+
 	public AnimoidFacade getAnimoidFacade() {
-		return null; //  myJobBroker.getAnimoidFacade();
+		return myJobBroker.getAnimoidFacade();
 	}	
-/*
+
 	public void initConvoidFacade(Category rootCat, IRemoteResponseInterface remote, AgendaManager am) {
 		// ConvoidFacade cf = new ConvoidFacade(myCueBroker, myJobBroker, rootCat, remote, am);
 		// myJobBroker.setConvoidFacade(cf);
 	}
-*/
+
 	public void doSomething(String whatToDo) {
 		theLogger.debug("got instruction to: " + whatToDo);
 	}

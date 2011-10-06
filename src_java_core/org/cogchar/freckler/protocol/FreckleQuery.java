@@ -74,6 +74,9 @@ public class FreckleQuery implements Serializable {
 	public void setFreckleMatchConfig(FreckleMatchConfig fmc) {
 		myFreckleMatchConfig = fmc;
 	}
+	public void disableAutoEnrollment() {
+		myFreckleMatchConfig.setMatchScorePreventEnrollThresh(null);
+	}	
 	public String toString() {
 		return "FreckleQuery[handle=" + myHandle 
 			+ ", freckleMatchConf=" + myFreckleMatchConfig
