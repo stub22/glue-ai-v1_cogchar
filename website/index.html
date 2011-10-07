@@ -32,14 +32,32 @@ The cascade defines an ordered sequence of style sheets where rules in later she
 <p>
 CogChar is an open source cognitive character technology platform.
 <br/>Our characters may be physical (robots), virtual, or both.
+<br/>Some combinations can provide augmented reality experiences for the user.
 </p>
 
 <h4>Key Features</h4>
 <ul>
-	<li>Fusion of sensor and symbol streams</li>
-	<li>Blended adaptive control</li>
-	<li>Rendering of mind and body</li>
-	<li>Conversation stream coordination</li>
+	<li><b>Fusion of sensor and symbol streams</b>, applied to self-image and model of environment.</li>
+	<ul><li>Character sees, hears, touches and knows in many related symbolic and physical/virtual/numeric modalities.</li>
+		<li>My left-eye camera sees some pixels, some of which are recognized as a face, which may be matched to a name, which I may choose to say, producing a certain sound...</li>
+		<li>I am standing on a floor, so my feet feel pressure from the floor.  I am holding my torso erect above my legs, and my head above my torso.  I am looking at a person called Samantha.  I can describe these facts to you in spoken words, and you can also see these facts reflected in my physical/virtual display, because they are coming from the same world-image, built from the current fused estimate of all available information (both physical and symbolic).</li>
+
+	</ul>
+
+	<li><b>Blended adaptive control</b></li>
+		<ul><li>Run any numeric and symbolic learning algorithms you have heard of (Bayesian, Neural, Genetic, you name it),
+				using Java, Scala, R, Weka, Hadoop.</li>
+			<li>Cogchar provides: Metadata-driven pipeline schematic over 1) pruned immutable trajectory logs and 2) markovian mutable state vectors.</li>
+		</ul>
+	<li><b>Rendering mind and body together</b></li>
+		<ul><li>Standard OpenGL 3D display for any compatible device (computer, tablet, smartphone, game console)</li>
+			<li>Display character's body-image and mind-contents overlapped in interesting ways (want to fly into the character's ear?)</li>
+		</ul>
+	
+	<li><b>Ongoing conversation coordination</b></li>
+		<ul><li>Keep track of multiple conversation partners over any length of time (e.g. minutes to years).</li>
+			<li>Consult reference sources during conversations, and decide which ones to mention.</li>
+		</ul>
 </ul>
 	
 
@@ -50,11 +68,11 @@ presentation on the experimental <a href="http://www.friendularity.org">Friendul
 <h4>Technical Description</h4>
 <ul>
 	<li>Java, Scala, and OSGi core technology</li>
-	<li>Basic symbolic smarts from <a href="http://www.appdapter.org">Appdapter</a> semantic computing platform</li>
+	<li>Basic symbolic RDW/OWL smarts from <a href="http://www.appdapter.org">Appdapter</a> semantic computing platform</li>
 	<li>Binding to physical robots via <a href="http://www.robokind.org">Robokind</a></li>
-	<li>3D character rendering to OpenGL using <a href="http://jmonkeyengine.com">JMonkey Game Engine</a></li>
+	<li>3D character rendering to OpenGL using <a href="http://jmonkeyengine.com">JMonkey Game Engine</a>, LWJGL, BulletPhysics.</li>
 	<li>Integration with MIDI + SMPTE music+video technology for action mapping, triggering, and synchronization</li>
-	<li>Serialization to <a href="http://avro.apache.org">Avro</a>, cloud integration via <a href="http://hadoop.apache.org">Hadoop</a></li>
+	<li>Serialization to <a href="http://avro.apache.org">Avro</a>, messaging over <a href="http://www.amqp.org">AMQP</a>, cloud integration via <a href="http://hadoop.apache.org">Hadoop</a></li>
 	<li>Connection with many other popular open source mathematics, AI and robotics tools</li>
 	<li>Planned compatibility with Android platform</li>
 </ul>
