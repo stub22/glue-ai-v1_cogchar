@@ -14,11 +14,13 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.app;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.scene.Node;
 import java.util.List;
+import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
+import org.cogchar.render.opengl.bony.model.StickFigureTwister;
 
 /**
  * @author Stu B. <www.texpedient.com>

@@ -14,8 +14,14 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.demo;
 
+import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
+import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.BonySystemFuncs;
+import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
+import org.cogchar.render.opengl.bony.app.BonyRagdollApp;
+import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
@@ -36,7 +42,7 @@ public class StickFigureTestMain {
 	public static BonyContext initStickFigureApp() { 
 		BonyStickFigureApp stickFigureApp = // new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
 					new BonyRagdollApp(sceneFilePath, sceneLocalScale);
-		BonySystem.setJMonkeySettings(stickFigureApp, canvasWidth, canvasHeight);
+		BonySystemFuncs.setJMonkeySettings(stickFigureApp, canvasWidth, canvasHeight);
 		stickFigureApp.initCharPanelWithCanvas();
 		BonyContext bc = stickFigureApp.getBonyContext();
 		return bc;

@@ -20,7 +20,7 @@
  * Created on Apr 4, 2011, 1:29:28 PM
  */
 
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.sys;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;

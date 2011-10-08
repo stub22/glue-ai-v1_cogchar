@@ -15,7 +15,7 @@
  */
 
 
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.model;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
