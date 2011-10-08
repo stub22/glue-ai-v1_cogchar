@@ -63,6 +63,13 @@
       <artifactId>org.appdapter.bundle.core</artifactId>
       <version>1.0.3-SNAPSHOT</version>
     </dependency>
+    <dependency>
+		<!-- This is here temporarily to facilitate Dev testing of org.cogchar.lib.render through Netbeans -->
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.6.1</version>
+	  <scope>runtime</scope>
+    </dependency>
   </dependencies>
 </project>
 
