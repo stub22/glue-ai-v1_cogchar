@@ -60,7 +60,19 @@ public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
 			
 			// Our crude demo using test model exported by Leo from Maya.
 			myBonyContext = StickFigureTestMain.initStickFigureApp(); 
-			
+			/*
+			 * At this point, the following setup is still required to be done by enclosing application.
+			 * This ordering is somewhat strict due to a lot of interlocking assumptions.
+			 * 
+			 *		BonyContext bc = *** Lookup the BonyContext as OSGi service.
+			 *		VirtCharPanel vcp = bc.getPanel();
+			 *		JFrame jf = vcp.makeEnclosingJFrame();
+			 *		bc.setFrame(jf);
+			 *		*** Setup frame to handle windowClosing and windowClosed as shown in StickFigureTestMain.java.
+			 * 		BonyVirtualCharApp app = bc.getApp();
+			 *		app.startJMonkeyCanvas();
+			 *		((BonyStickFigureApp) app).setScoringFlag(true);	
+			 */
 			
 				
 			// OR: choose from JME tests, run in system OpenGL window.
@@ -80,11 +92,17 @@ public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
 		// Attempt to cleanup OpenGL resources, which happens nicely in standalone demo if the window is X-ed.
 		// (Probably cleanup is happening during dispose(), so direct call to that should work too).
 		BonyContext bc = getBonyContext();
-		JFrame jf = bc.getFrame();
-		if (jf != null) {
-			theLogger.info("Sending WINDOW_CLOSING event to BonyContext.JFrame");
-			WindowEvent windowClosing = new WindowEvent(jf, WindowEvent.WINDOW_CLOSING);
-			jf.dispatchEvent(windowClosing);	
+		if (bc != null) {
+			JFrame jf = bc.getFrame();
+			if (jf != null) {
+				theLogger.info("Sending WINDOW_CLOSING event to BonyContext.JFrame");
+				WindowEvent windowClosing = new WindowEvent(jf, WindowEvent.WINDOW_CLOSING);
+				jf.dispatchEvent(windowClosing);	
+			} else {
+				theLogger.warn("BonyContext returned null JFrame, so we have no window to close.");
+			}
+		} else {
+			theLogger.warn("stop() found null BonyContext");
 		}
 		theLogger.info("stop() is DONE!");
 	}
