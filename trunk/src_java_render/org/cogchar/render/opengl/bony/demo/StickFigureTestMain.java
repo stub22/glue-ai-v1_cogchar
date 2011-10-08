@@ -36,10 +36,12 @@ public class StickFigureTestMain {
 	
 	static String	sceneFilePath = "leo_hanson_tests/test3/test3.scene";
 	static float	sceneLocalScale = 0.5f;
-	static int		canvasWidth = 640, canvasHeight = 480;
 	
 
-	public static BonyContext initStickFigureApp() { 
+	public static int  DEFAULT_CANVAS_WIDTH = 800, DEFAULT_CANVAS_HEIGHT = 600;
+	
+
+	public static BonyContext initStickFigureApp(int canvasWidth, int canvasHeight) { 
 		BonyStickFigureApp stickFigureApp = // new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
 					new BonyRagdollApp(sceneFilePath, sceneLocalScale);
 		BonySystemFuncs.setJMonkeySettings(stickFigureApp, canvasWidth, canvasHeight);
@@ -48,10 +50,11 @@ public class StickFigureTestMain {
 		return bc;
 	}
 	public static void main(String[] args) {
-		final BonyContext bc = initStickFigureApp();
+		final BonyContext bc = initStickFigureApp(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
 		// Frame must be packed after panel created, but created 
 		// before startJMonkey.  Might add frame to BonyContext...
 		VirtCharPanel vcp = bc.getPanel();
+		theLogger.info("*********************** BEFORE FRAMING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
 		JFrame jf = vcp.makeEnclosingJFrame();
 		bc.setFrame(jf);
 		jf.addWindowListener(new WindowAdapter() {
@@ -96,7 +99,10 @@ VirtCharPanel.JFrame.closed, exiting
 		});
 		BonyVirtualCharApp app = bc.getApp();
 		app.startJMonkeyCanvas();
-		((BonyStickFigureApp) app).setScoringFlag(true);	
+		((BonyStickFigureApp) app).setScoringFlag(true);
+		theLogger.info("*********************** AFTER FRAMING + STARTING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
+		theLogger.info("*********************** Frame width="  + jf.getWidth() + ", height=" + jf.getHeight());
+
 		// OR, run a JMonkey demo in a standalone OpenGL system window (not a Java/Swing GUI).
 	
 		// Generally you want to run just ONE of the following main methods:

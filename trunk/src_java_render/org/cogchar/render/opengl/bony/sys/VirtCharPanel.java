@@ -40,7 +40,8 @@ public class VirtCharPanel extends javax.swing.JPanel {
     }
 
 	public void setRenderCanvas (Canvas c) {
-		renderPanel.add(c);
+		renderPanel.setPreferredSize(c.getPreferredSize());
+		renderPanel.add(c, BorderLayout.CENTER);
 	}
 	public int getTestChannelNum() {
 		return (Integer) jspin_animTestChannelNum.getValue();
@@ -90,16 +91,16 @@ The value is set to HIDE_ON_CLOSE by default. Changes to the value of this prope
         jButton1 = new javax.swing.JButton();
         jspin_animTestChannelNum = new javax.swing.JSpinner();
         jspin_animTestDirectionNum = new javax.swing.JSpinner();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jxtaDumpScrollPane = new javax.swing.JScrollPane();
         jtxta_dump = new javax.swing.JTextArea();
         jspin_animTestChannelMod = new javax.swing.JSpinner();
         renderPanel = new javax.swing.JPanel();
 
-        setPreferredSize(new java.awt.Dimension(640, 640));
+        setPreferredSize(new java.awt.Dimension(800, 750));
         setLayout(new java.awt.BorderLayout());
 
         controlPanel.setBackground(new java.awt.Color(255, 204, 204));
-        controlPanel.setPreferredSize(new java.awt.Dimension(640, 150));
+        controlPanel.setPreferredSize(new java.awt.Dimension(800, 150));
 
         jButton1.setText("start");
 
@@ -109,7 +110,7 @@ The value is set to HIDE_ON_CLOSE by default. Changes to the value of this prope
 
         jtxta_dump.setColumns(20);
         jtxta_dump.setRows(5);
-        jScrollPane1.setViewportView(jtxta_dump);
+        jxtaDumpScrollPane.setViewportView(jtxta_dump);
 
         jspin_animTestChannelMod.setModel(new javax.swing.SpinnerListModel(new String[] {"self", "first child"}));
 
@@ -130,8 +131,8 @@ The value is set to HIDE_ON_CLOSE by default. Changes to the value of this prope
                         .addComponent(jspin_animTestChannelMod, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(controlPanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(18, Short.MAX_VALUE))
+                        .addComponent(jxtaDumpScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         controlPanelLayout.setVerticalGroup(
             controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,25 +144,14 @@ The value is set to HIDE_ON_CLOSE by default. Changes to the value of this prope
                     .addComponent(jspin_animTestChannelMod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
+                .addComponent(jxtaDumpScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
         );
 
         add(controlPanel, java.awt.BorderLayout.NORTH);
 
         renderPanel.setBackground(new java.awt.Color(0, 51, 0));
-        renderPanel.setPreferredSize(new java.awt.Dimension(640, 480));
-
-        javax.swing.GroupLayout renderPanelLayout = new javax.swing.GroupLayout(renderPanel);
-        renderPanel.setLayout(renderPanelLayout);
-        renderPanelLayout.setHorizontalGroup(
-            renderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 537, Short.MAX_VALUE)
-        );
-        renderPanelLayout.setVerticalGroup(
-            renderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 173, Short.MAX_VALUE)
-        );
-
+        renderPanel.setPreferredSize(new java.awt.Dimension(800, 600));
+        renderPanel.setLayout(new java.awt.BorderLayout());
         add(renderPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -169,11 +159,11 @@ The value is set to HIDE_ON_CLOSE by default. Changes to the value of this prope
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel controlPanel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSpinner jspin_animTestChannelMod;
     private javax.swing.JSpinner jspin_animTestChannelNum;
     private javax.swing.JSpinner jspin_animTestDirectionNum;
     private javax.swing.JTextArea jtxta_dump;
+    private javax.swing.JScrollPane jxtaDumpScrollPane;
     private javax.swing.JPanel renderPanel;
     // End of variables declaration//GEN-END:variables
 
