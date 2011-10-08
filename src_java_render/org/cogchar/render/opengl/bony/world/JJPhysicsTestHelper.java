@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Adapted from JMonkey test code
  */
 package org.cogchar.render.opengl.bony.world;
 
