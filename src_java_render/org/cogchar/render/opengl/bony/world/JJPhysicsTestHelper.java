@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.world;
 
 import com.jme3.app.Application;
 import com.jme3.asset.AssetManager;

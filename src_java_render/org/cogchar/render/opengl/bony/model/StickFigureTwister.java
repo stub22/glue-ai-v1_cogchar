@@ -14,8 +14,11 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.model;
 
+import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
+import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.world.ScoreBoard;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;

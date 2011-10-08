@@ -18,12 +18,15 @@
  * See http://www.jmonkeyengine.org
  */
 
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.app;
 
 import com.jme3.app.SimpleApplication;
 import java.awt.Canvas;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import org.cogchar.render.opengl.bony.sys.BonyCanvasFuncs;
+import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -46,7 +49,7 @@ public class BonyVirtualCharApp extends SimpleApplication {
 	}
 	public void initCharPanelWithCanvas() { 		
 		this.createCanvas();
-		Canvas c = BonyGUI.makeAWTCanvas(this);
+		Canvas c = BonyCanvasFuncs.makeAWTCanvas(this);
 		VirtCharPanel vcp = new VirtCharPanel();
 		vcp.setRenderCanvas(c);
 		myContext.setPanel(vcp);
@@ -75,8 +78,8 @@ public class BonyVirtualCharApp extends SimpleApplication {
 	@Override public void simpleInitApp() {
 		System.out.println("*********** BonyVirtualCharApp.simpleInitApp() is starting");
 		// Perform actions that cannot be done until engine is running.
-		BonyGUI.setupCameraLightAndViewport(myContext);
-		BonyGUI.initScoreBoard(myContext);
+		BonyCanvasFuncs.setupCameraLightAndViewport(myContext);
+		BonyCanvasFuncs.initScoreBoard(myContext);
 		System.out.println("*********** BonyVirtualCharApp.simpleInitApp() is finished");
 	}
 

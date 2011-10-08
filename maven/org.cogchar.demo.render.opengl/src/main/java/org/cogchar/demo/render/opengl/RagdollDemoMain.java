@@ -1,6 +1,6 @@
 package org.cogchar.demo.render.opengl;
 
-import org.cogchar.render.opengl.bony.DemoBonyWireframeRagdoll;
+import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
 /**
  * Hello world!
  *

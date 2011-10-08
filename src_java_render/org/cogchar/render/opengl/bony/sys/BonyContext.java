@@ -13,8 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.sys;
 
+import org.cogchar.render.opengl.bony.world.ScoreBoard;
+import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import com.jme3.animation.AnimControl;
 import java.util.List;
 import javax.swing.JFrame;

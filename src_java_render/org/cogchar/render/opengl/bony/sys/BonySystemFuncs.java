@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.sys;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
@@ -21,7 +21,7 @@ import com.jme3.system.AppSettings;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonySystem {
+public class BonySystemFuncs {
 	public static void setJMonkeySettings(SimpleApplication app, int width, int height) {
 		// There is no getter for appSettings...?
 		

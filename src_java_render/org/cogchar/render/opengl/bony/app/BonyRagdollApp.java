@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.app;
 import com.jme3.bullet.BulletAppState;
+import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
 
 /**
  * @author Stu B. <www.texpedient.com>
