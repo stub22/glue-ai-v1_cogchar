@@ -49,7 +49,8 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
 				// to do some magic restart thing that doesn't work as of
 				// jme3-alpha4-August 2011.
 				JFrame jf = vcp.makeEnclosingJFrame();
-				theLogger.info("Got Enclosing Frame: " + jf);
+				theLogger.info("Got Enclosing Frame, adding to BonyContext for WindowClose triggering: " + jf);
+				bc.setFrame(jf);
 				BonyVirtualCharApp app = bc.getApp();
 				theLogger.info("Starting JMonkey canvas: " + jf);
 				app.startJMonkeyCanvas();
