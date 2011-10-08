@@ -57,12 +57,13 @@ public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
 			ClassLoader localLoader = getClass().getClassLoader();
 			theLogger.info("Setting thread class loader to local loader: " + localLoader);
 			Thread.currentThread().setContextClassLoader(localLoader);
-			
+			int canvasWidth = StickFigureTestMain.DEFAULT_CANVAS_WIDTH; 
+			int canvasHeight = StickFigureTestMain.DEFAULT_CANVAS_HEIGHT;
 			// Our crude demo using test model exported by Leo from Maya.
-			myBonyContext = StickFigureTestMain.initStickFigureApp(); 
+			myBonyContext = StickFigureTestMain.initStickFigureApp(canvasWidth, canvasHeight); 
 			/*
 			 * At this point, the following setup is still required to be done by enclosing application.
-			 * This ordering is somewhat strict due to a lot of interlocking assumptions.
+			 * This ordering is somewhat strict, due to a lot of interlocking assumptions.
 			 * 
 			 *		BonyContext bc = *** Lookup the BonyContext as OSGi service.
 			 *		VirtCharPanel vcp = bc.getPanel();
