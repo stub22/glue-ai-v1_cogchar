@@ -17,13 +17,15 @@ package org.cogchar.render.opengl.bony;
 
 import com.jme3.animation.AnimControl;
 import java.util.List;
+import javax.swing.JFrame;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class BonyContext {
 	protected	BonyVirtualCharApp		myApp;
-	protected	VirtCharPanel			myPanel;    
+	protected	VirtCharPanel			myPanel;   
+	protected	JFrame					myFrame;
 	protected	ScoreBoard				myScoreBoard;
 	protected	List<AnimControl>		myAnimControls;
 
@@ -57,6 +59,12 @@ public class BonyContext {
 
 	public void setAnimControls(List<AnimControl> animControls) {
 		this.myAnimControls = animControls;
+	}
+	public void setFrame(JFrame jf) {
+		myFrame = jf;
+	}
+	public JFrame getFrame() { 
+		return myFrame;
 	}
 
 }

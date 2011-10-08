@@ -20,11 +20,8 @@
 
 package org.cogchar.render.opengl.bony;
 
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
 import com.jme3.app.SimpleApplication;
 import java.awt.Canvas;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 

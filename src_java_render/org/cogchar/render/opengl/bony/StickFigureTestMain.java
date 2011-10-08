@@ -16,12 +16,18 @@
 
 package org.cogchar.render.opengl.bony;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class StickFigureTestMain {
+	static Logger theLogger = LoggerFactory.getLogger(StickFigureTestMain.class);
+	
 	static String	sceneFilePath = "leo_hanson_tests/test3/test3.scene";
 	static float	sceneLocalScale = 0.5f;
 	static int		canvasWidth = 640, canvasHeight = 480;
@@ -36,11 +42,52 @@ public class StickFigureTestMain {
 		return bc;
 	}
 	public static void main(String[] args) {
-		BonyContext bc = initStickFigureApp();
+		final BonyContext bc = initStickFigureApp();
 		// Frame must be packed after panel created, but created 
 		// before startJMonkey.  Might add frame to BonyContext...
 		VirtCharPanel vcp = bc.getPanel();
 		JFrame jf = vcp.makeEnclosingJFrame();
+		bc.setFrame(jf);
+		jf.addWindowListener(new WindowAdapter() {
+			@Override public void	windowClosing(WindowEvent e) {
+				theLogger.info("StickFigureTestMain.JFrame.windowClosing event:  " + e);
+				theLogger.info("NOT explicitly calling requestClose() on the app, letting the LWJGL thread detect dispose of the canvas instead");
+				BonyVirtualCharApp app = bc.getApp();
+				// JMonkey sez this method is "internal use only".
+				// Results in an abrubt close, without lwjgl shutdown and thread closure.
+				// The only messages then occur AFTER this method returns, saying:
+				/*
+				 * com.jme3.system.lwjgl.LwjglCanvas$GLCanvas removeNotify
+				 * INFO: EDT: Application is stopped. Not restoring canvas.
+				 */
+				//app.requestClose(false);
+				theLogger.info("StickFigureTestMain.JFrame.windowClosing - END");
+				/*
+				 * Note that line 207 of JME3:  LwjglAbstractDisplay says:
+	                if (Display.isCloseRequested())
+		                listener.requestClose(false);
+				 * and with no explicit call of our own to requestClose, we get:
+				 * 
+4042 [AWT-EventQueue-0] INFO org.cogchar.render.opengl.bony.StickFigureTestMain - StickFigureTestMain.JFrame.windowClosing - END
+Oct 7, 2011 7:44:27 PM com.jme3.system.lwjgl.LwjglCanvas$GLCanvas removeNotify
+INFO: EDT: Notifying OGL that canvas is about to become invisible..
+Oct 7, 2011 7:44:27 PM com.jme3.system.lwjgl.LwjglCanvas runLoop
+INFO: OGL: Received destroy request! Complying..
+Oct 7, 2011 7:44:27 PM com.jme3.system.lwjgl.LwjglCanvas pauseCanvas
+INFO: OGL: Canvas will become invisible! Destroying ..
+Oct 7, 2011 7:44:27 PM com.jme3.system.lwjgl.LwjglCanvas$GLCanvas removeNotify
+INFO: EDT: Acknowledged receipt of canvas death
+4144 [AWT-EventQueue-0] INFO org.cogchar.render.opengl.bony.StickFigureTestMain - VirtCharPanel.JFrame Window CLOSED event:  java.awt.event.WindowEvent[WINDOW_CLOSED,opposite=null,oldState=0,newState=0] on frame0
+VirtCharPanel.JFrame.closed, exiting
+				 * 
+				 */
+			}
+			@Override public void	windowClosed(WindowEvent e) {
+				theLogger.info("VirtCharPanel.JFrame Window CLOSED event:  " + e);
+				System.out.println("VirtCharPanel.JFrame.closed, exiting");
+				System.exit(0);
+			}
+		});
 		BonyVirtualCharApp app = bc.getApp();
 		app.startJMonkeyCanvas();
 		((BonyStickFigureApp) app).setScoringFlag(true);	

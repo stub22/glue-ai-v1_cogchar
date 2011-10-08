@@ -18,6 +18,8 @@ package org.cogchar.render.opengl.osgi;
 
 
 
+import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.render.opengl.bony.BonyContext;
 import org.cogchar.render.opengl.bony.StickFigureTestMain;
@@ -73,6 +75,17 @@ public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
 		// System.out.println("Returned from CogcharImplActivator.start()");
 
     }
-	
-
+	@Override public void stop(BundleContext bundleCtx) throws Exception {
+		super.stop(bundleCtx);
+		// Attempt to cleanup OpenGL resources, which happens nicely in standalone demo if the window is X-ed.
+		// (Probably cleanup is happening during dispose(), so direct call to that should work too).
+		BonyContext bc = getBonyContext();
+		JFrame jf = bc.getFrame();
+		if (jf != null) {
+			theLogger.info("Sending WINDOW_CLOSING event to BonyContext.JFrame");
+			WindowEvent windowClosing = new WindowEvent(jf, WindowEvent.WINDOW_CLOSING);
+			jf.dispatchEvent(windowClosing);	
+		}
+		theLogger.info("stop() is DONE!");
+	}
 }
