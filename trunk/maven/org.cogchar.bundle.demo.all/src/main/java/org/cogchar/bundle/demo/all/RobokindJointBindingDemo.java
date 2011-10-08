@@ -16,10 +16,10 @@ import org.robokind.api.motion.Robot;
 
 import org.cogchar.bind.robokind.joint.BonyRobotUtils;
 import org.cogchar.bind.robokind.joint.BonyAnimUtils;
-import org.cogchar.render.opengl.bony.BonyVirtualCharApp;
-import org.cogchar.render.opengl.bony.DemoBonyWireframeRagdoll;
-import org.cogchar.render.opengl.bony.BonyRagdollApp;
-import org.cogchar.render.opengl.bony.BonyContext;
+import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
+import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
+import org.cogchar.render.opengl.bony.app.BonyRagdollApp;
+import org.cogchar.render.opengl.bony.sys.BonyContext;
 
 /**
  * @author Stu B. <www.texpedient.com>

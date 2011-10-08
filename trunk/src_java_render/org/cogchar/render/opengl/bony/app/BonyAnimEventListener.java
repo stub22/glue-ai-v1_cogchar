@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.app;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;

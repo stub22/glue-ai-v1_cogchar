@@ -1,9 +1,10 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Adapted from JMonkeyEngine test code
+ * 
  */
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.model;
 
+import org.cogchar.render.opengl.bony.world.JJPhysicsTestHelper;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
@@ -21,10 +22,7 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-/**
- *
- * @author normenhansen
- */
+
 public class DemoBonyWireframeRagdoll // extends SimpleApplication 
 		implements ActionListener {
 	

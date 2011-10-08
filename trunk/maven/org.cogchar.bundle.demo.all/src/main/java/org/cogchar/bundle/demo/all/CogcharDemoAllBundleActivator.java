@@ -2,10 +2,10 @@ package org.cogchar.bundle.demo.all;
 
 import javax.swing.JFrame;
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.cogchar.render.opengl.bony.BonyVirtualCharApp;
-import org.cogchar.render.opengl.bony.BonyStickFigureApp;
-import org.cogchar.render.opengl.bony.BonyContext;
-import org.cogchar.render.opengl.bony.VirtCharPanel;
+import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
+import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
+import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;

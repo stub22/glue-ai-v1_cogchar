@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.opengl.bony;
+package org.cogchar.render.opengl.bony.sys;
 
+import org.cogchar.render.opengl.bony.world.ScoreBoard;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.FlyByCamera;
 import com.jme3.light.DirectionalLight;
@@ -32,7 +33,7 @@ import java.awt.Canvas;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyGUI {
+public class BonyCanvasFuncs {
 	public static void setupCameraLightAndViewport(BonyContext bc) { 
 		SimpleApplication app = bc.getApp();
 		FlyByCamera fbc = app.getFlyByCamera();
