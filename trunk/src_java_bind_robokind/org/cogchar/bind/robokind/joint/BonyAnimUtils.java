@@ -10,7 +10,6 @@ import org.osgi.framework.BundleContext;
 import org.robokind.api.animation.Animation;
 import org.robokind.api.animation.Channel;
 import org.robokind.api.animation.MotionPath;
-import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.animation.utils.AnimationUtils;
 import org.robokind.api.animation.utils.ChannelsParameterSource;
 
@@ -46,11 +45,8 @@ public class BonyAnimUtils {
 			chan.addPath(path);
 			anim.addChannel(chan);
 		}
-		AnimationPlayer player = AnimationUtils.getAnimationPlayer(bundleCtx);
-		if (player == null) {
-			throw new Exception("No Animation Player");
-		}
-		player.playAnimation(anim);
-
+        
+        //null should be RobotUtils.getRobotFilter(robotId)
+        AnimationUtils.playAnimation(bundleCtx, null, anim);
 	}
 }

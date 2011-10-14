@@ -11,9 +11,8 @@ import org.robokind.api.motion.Joint;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.Robot.RobotPositionHashMap;
 import org.robokind.api.motion.Robot.RobotPositionMap;
-import org.robokind.api.motion.protocol.FrameSource;
-import org.robokind.api.motion.protocol.MotionTargetFrameSource;
-import org.robokind.api.motion.utils.MotionUtils;
+import org.robokind.api.motion.protocol.RobotFrameSource;
+import org.robokind.api.motion.utils.RobotUtils;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -21,16 +20,21 @@ import org.robokind.api.motion.utils.MotionUtils;
 public class BonyRobotUtils {
 	public static void registerRobokindRobot(Robot robot, BundleContext bundleCtx) throws Exception {
 		robot.connect();
-		ServiceRegistration reg = MotionUtils.registerRobot(bundleCtx, robot, null);
+		ServiceRegistration reg = RobotUtils.registerRobot(bundleCtx, robot, null);
 		if(reg == null){
 			 throw new Exception("Error Registering Robot");
 		}
+        //Starts a blender
+        ServiceRegistration[] blenderRegs = RobotUtils.startDefaultBlender(
+                bundleCtx, robot.getRobotId(), RobotUtils.DEFAULT_BLENDER_INTERVAL);
 		//create and register the MotionTargetFrameSource,
-		MotionTargetFrameSource mtfs = new MotionTargetFrameSource(bundleCtx,	robot.getRobotId(), 0.01, null);
-		bundleCtx.registerService(FrameSource.class.getName(), mtfs, null);
+        RobotFrameSource robotFS = new RobotFrameSource(bundleCtx, robot.getRobotId());
+        RobotUtils.registerFrameSource(bundleCtx, robot.getRobotId(), robotFS);
 		RobotPositionMap positions = new RobotPositionHashMap();
 		//... add positions
-		mtfs.putPositions(positions);
+        
+        //moves to the positions over 1.5 seconds
+        robotFS.move(positions, 1500);
 	}
 	public static BonyJoint makeBonyJointForRobot(BonyRobot robot, int jointNum, String jointName, 
 					double defaultPos, double initPos) {
