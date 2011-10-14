@@ -26,7 +26,7 @@ import org.robokind.api.motion.Robot.RobotPositionMap;
 import org.robokind.api.motion.protocol.DefaultMotionFrame;
 import org.robokind.api.motion.protocol.FrameSource;
 import org.robokind.api.motion.protocol.MotionFrame;
-import org.robokind.api.motion.utils.MotionUtils;
+import org.robokind.api.motion.utils.RobotUtils;
 import org.robokind.api.vision.ImageRegion;
 
 /**
@@ -53,7 +53,7 @@ public class ImageTrackerFrameSource implements FrameSource<RobotPositionMap> {
     }
     
     private ImageJointSnapshotCoordinate convertImageRegionToIJSC(ImageRegion reg){
-        RobotPositionMap pos = MotionUtils.getCurrentPositions(myContext, myRobotId);
+        RobotPositionMap pos = RobotUtils.getCurrentPositions(myContext, myRobotId);
         if(pos == null){
             return null;
         }
@@ -83,7 +83,7 @@ public class ImageTrackerFrameSource implements FrameSource<RobotPositionMap> {
             return null;
         }
         IGazeTarget target = targets.get(0);
-        RobotPositionMap curPos = MotionUtils.getCurrentPositions(myContext, myRobotId);
+        RobotPositionMap curPos = RobotUtils.getCurrentPositions(myContext, myRobotId);
         RobotPositionMap goals = myPlanner.getMovements(time, interval, target, curPos);
         
         MotionFrame frame = new DefaultMotionFrame();
