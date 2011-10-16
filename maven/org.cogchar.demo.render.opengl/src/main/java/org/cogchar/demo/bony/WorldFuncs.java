@@ -24,7 +24,7 @@ public class WorldFuncs {
     }
 	public static AmbientLight makeAmbientLight() {
 		AmbientLight al = new AmbientLight();
-         al.setColor(ColorRGBA.White.mult(1));
-		 return al;
+        al.setColor(ColorRGBA.White.mult(1));
+        return al;
 	}
 }
