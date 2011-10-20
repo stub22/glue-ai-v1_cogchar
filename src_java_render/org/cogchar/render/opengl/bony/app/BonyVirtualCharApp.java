@@ -37,12 +37,13 @@ public class BonyVirtualCharApp extends SimpleApplication {
 	// private		AnimChannel				channel;
 
 	protected	BonyContext				myContext = new BonyContext();
-
+    private     boolean                 myCanvasStartedFlag;
 
 	public BonyVirtualCharApp() {
 		super();
 		myContext = new BonyContext();
 		myContext.setApp(this);
+        myCanvasStartedFlag = false;
 	}
 	public BonyContext getBonyContext() { 
 		return myContext;
@@ -73,7 +74,12 @@ public class BonyVirtualCharApp extends SimpleApplication {
 			t.printStackTrace();
 		}
 		System.out.println("*********** startJMonkeyCanvas is returning");
+        myCanvasStartedFlag = true;
 	}
+    
+    public boolean isCanvasStarted(){
+        return myCanvasStartedFlag;
+    }
 
 	@Override public void simpleInitApp() {
 		System.out.println("*********** BonyVirtualCharApp.simpleInitApp() is starting");
