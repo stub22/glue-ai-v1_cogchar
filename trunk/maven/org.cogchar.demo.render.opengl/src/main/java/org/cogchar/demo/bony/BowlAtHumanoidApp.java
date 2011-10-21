@@ -99,14 +99,13 @@ public class BowlAtHumanoidApp extends SimpleApplication implements RagdollColli
 			PATH_DEFAULT_FONT = "Interface/Fonts/Default.fnt";
 
 	public static void main(String[] args) {
-		BowlAtHumanoidApp app = new BowlAtHumanoidApp();
-		app.applySettings();
+		BowlAtHumanoidApp app = new BowlAtHumanoidApp(AppSettings.LWJGL_OPENGL1);
 		app.start();
 	}
-	private void applySettings() { 
+	public BowlAtHumanoidApp(String lwjglRendererName) {
 		// Set to OpenGL - 1 mode for 915GM graphics controller
 		AppSettings settings = new AppSettings(true);
-		settings.setRenderer(AppSettings.LWJGL_OPENGL1);
+		settings.setRenderer(lwjglRendererName);		
 		setSettings(settings);	
 	}
 	public void cmdToggleKinMode() {
@@ -153,7 +152,7 @@ public class BowlAtHumanoidApp extends SimpleApplication implements RagdollColli
 	}
 
 	public void cmdBoom() {
-		Geometry prjctlGeom = new Geometry("boom", myProjectileSphereMesh);
+		Geometry prjctlGeom = new Geometry(GEOM_BOOM, myProjectileSphereMesh);
 		prjctlGeom.setMaterial(myProjectileMaterial);
 		prjctlGeom.setLocalTranslation(cam.getLocation());
 		prjctlGeom.setLocalScale(myProjectileSize);

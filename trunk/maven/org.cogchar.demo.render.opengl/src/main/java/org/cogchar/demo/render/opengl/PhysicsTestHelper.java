@@ -31,6 +31,12 @@ import com.jme3.texture.Texture;
  * @author normenhansen
  */
 public class PhysicsTestHelper {
+	public static final String GEOM_BOX = "Box";
+	public static final String GEOM_FLOOR = "Floor";
+	public static final String GEOM_SOCCER_BALL = "Soccer ball";
+	public static final String GEOM_SPHERE = "Sphere";
+	public static final String PATH_LOGO_MONKEY = "Interface/Logo/Monkey.jpg";
+	public static final String PATH_MATERIAL_UNSHADED = "Common/MatDefs/Misc/Unshaded.j3md";
 
     /**
      * creates a simple physics test world with a floor, an obstacle and some test boxes
@@ -43,11 +49,11 @@ public class PhysicsTestHelper {
         light.setColor(ColorRGBA.LightGray);
         rootNode.addLight(light);
 
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setTexture("ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
+        Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
+        material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
 
         Box floorBox = new Box(140, 0.25f, 140);
-        Geometry floorGeometry = new Geometry("Floor", floorBox);
+        Geometry floorGeometry = new Geometry(GEOM_FLOOR, floorBox);
         floorGeometry.setMaterial(material);
         floorGeometry.setLocalTranslation(0, -5, 0);
 //        Plane plane = new Plane();
@@ -60,7 +66,7 @@ public class PhysicsTestHelper {
         //movable boxes
         for (int i = 0; i < 12; i++) {
             Box box = new Box(0.25f, 0.25f, 0.25f);
-            Geometry boxGeometry = new Geometry("Box", box);
+            Geometry boxGeometry = new Geometry(GEOM_BOX, box);
             boxGeometry.setMaterial(material);
             boxGeometry.setLocalTranslation(i, 5, -3);
             //RigidBodyControl automatically uses box collision shapes when attached to single geometry with box mesh
@@ -71,7 +77,7 @@ public class PhysicsTestHelper {
 
         //immovable sphere with mesh collision shape
         Sphere sphere = new Sphere(8, 8, 1);
-        Geometry sphereGeometry = new Geometry("Sphere", sphere);
+        Geometry sphereGeometry = new Geometry(GEOM_SPHERE, sphere);
         sphereGeometry.setMaterial(material);
         sphereGeometry.setLocalTranslation(4, -4, 2);
         sphereGeometry.addControl(new RigidBodyControl(new MeshCollisionShape(sphere), 0));
@@ -85,11 +91,11 @@ public class PhysicsTestHelper {
         light.setColor(ColorRGBA.LightGray);
         rootNode.addLight(light);
 
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setTexture("ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
+        Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
+        material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
 
         Box floorBox = new Box(140, 0.25f, 140);
-        Geometry floorGeometry = new Geometry("Floor", floorBox);
+        Geometry floorGeometry = new Geometry(GEOM_FLOOR, floorBox);
         floorGeometry.setMaterial(material);
         floorGeometry.setLocalTranslation(0, -0.25f, 0);
 //        Plane plane = new Plane();
@@ -102,7 +108,7 @@ public class PhysicsTestHelper {
         //movable spheres
         for (int i = 0; i < 5; i++) {
             Sphere sphere = new Sphere(16, 16, .5f);
-            Geometry ballGeometry = new Geometry("Soccer ball", sphere);
+            Geometry ballGeometry = new Geometry(GEOM_SOCCER_BALL, sphere);
             ballGeometry.setMaterial(material);
             ballGeometry.setLocalTranslation(i, 2, -3);
             //RigidBodyControl automatically uses Sphere collision shapes when attached to single geometry with sphere mesh
@@ -114,7 +120,7 @@ public class PhysicsTestHelper {
 
         //immovable Box with mesh collision shape
         Box box = new Box(1, 1, 1);
-        Geometry boxGeometry = new Geometry("Box", box);
+        Geometry boxGeometry = new Geometry(GEOM_BOX, box);
         boxGeometry.setMaterial(material);
         boxGeometry.setLocalTranslation(4, 1, 2);
         boxGeometry.addControl(new RigidBodyControl(new MeshCollisionShape(box), 0));
@@ -129,10 +135,10 @@ public class PhysicsTestHelper {
      * @return
      */
     public static Geometry createPhysicsTestBox(AssetManager assetManager) {
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setTexture("ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
+        Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
+        material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
         Box box = new Box(0.25f, 0.25f, 0.25f);
-        Geometry boxGeometry = new Geometry("Box", box);
+        Geometry boxGeometry = new Geometry(GEOM_BOX, box);
         boxGeometry.setMaterial(material);
         //RigidBodyControl automatically uses box collision shapes when attached to single geometry with box mesh
         boxGeometry.addControl(new RigidBodyControl(2));
@@ -145,10 +151,10 @@ public class PhysicsTestHelper {
      * @return
      */
     public static Geometry createPhysicsTestSphere(AssetManager assetManager) {
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setTexture("ColorMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
+        Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
+        material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
         Sphere sphere = new Sphere(8, 8, 0.25f);
-        Geometry boxGeometry = new Geometry("Sphere", sphere);
+        Geometry boxGeometry = new Geometry(GEOM_SPHERE, sphere);
         boxGeometry.setMaterial(material);
         //RigidBodyControl automatically uses sphere collision shapes when attached to single geometry with sphere mesh
         boxGeometry.addControl(new RigidBodyControl(2));
@@ -177,12 +183,13 @@ public class PhysicsTestHelper {
      */
     public static void createBallShooter(final Application app, final Node rootNode, final PhysicsSpace space) {
         ActionListener actionListener = new ActionListener() {
+			public static final String PATH_TERRAIN_ROCK = "Textures/Terrain/Rock/Rock.PNG";
 
             public void onAction(String name, boolean keyPressed, float tpf) {
                 Sphere bullet = new Sphere(32, 32, 0.4f, true, false);
                 bullet.setTextureMode(TextureMode.Projected);
-                Material mat2 = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-                TextureKey key2 = new TextureKey("Textures/Terrain/Rock/Rock.PNG");
+                Material mat2 = new Material(app.getAssetManager(), PATH_MATERIAL_UNSHADED);
+                TextureKey key2 = new TextureKey(PATH_TERRAIN_ROCK);
                 key2.setGenerateMips(true);
                 Texture tex2 = app.getAssetManager().loadTexture(key2);
                 mat2.setTexture("ColorMap", tex2);

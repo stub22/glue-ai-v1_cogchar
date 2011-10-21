@@ -34,7 +34,7 @@ public class RobokindBindingUtils {
 	private	static BonyRobot		myBonyRobot;
 	private	static BundleContext	myBundleCtx;
 	
-	public static String	HARDCODED_ROBOT_ID = "hey I'm a Robot.Id!";
+	public static String	HARDCODED_ROBOT_ID = "COGCHAR_NB_ROBOT";
 	
 	public static void createAndRegisterRobot(BundleContext bundleCtx) throws Exception {
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr start");
