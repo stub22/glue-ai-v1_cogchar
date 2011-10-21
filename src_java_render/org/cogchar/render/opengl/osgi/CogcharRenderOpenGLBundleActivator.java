@@ -60,8 +60,13 @@ public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
 			Thread.currentThread().setContextClassLoader(localLoader);
 			int canvasWidth = StickFigureTestMain.DEFAULT_CANVAS_WIDTH; 
 			int canvasHeight = StickFigureTestMain.DEFAULT_CANVAS_HEIGHT;
-			// Our crude demo using test model exported by Leo from Maya.
-			myBonyContext = StickFigureTestMain.initStickFigureApp(AppSettings.LWJGL_OPENGL_ANY, 
+
+			String lwjglRendererName = AppSettings.LWJGL_OPENGL_ANY;
+				// String LWJGL_OPENGL1,
+				//		LWJGL_OPENGL2, LWJGL_OPENGL3, LWJGL_OPENGL_ANY;
+			System.out.println("********++++++++++++++++++++ Using: " + lwjglRendererName);
+			// Setup our crude demo using test model exported by Leo from Maya.
+			myBonyContext = StickFigureTestMain.initStickFigureApp(lwjglRendererName, 
 							canvasWidth, canvasHeight); 
 			/*
 			 * At this point, the following setup is still required to be done by enclosing application.

@@ -51,7 +51,11 @@ public class StickFigureTestMain {
 		return bc;
 	}
 	public static void main(String[] args) {
-		final BonyContext bc = initStickFigureApp(AppSettings.LWJGL_OPENGL_ANY, DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
+		String lwjglRendererName = AppSettings.LWJGL_OPENGL_ANY; // LWJGL_OPENGL1; // LWJGL_OPENGL_ANY
+				// String LWJGL_OPENGL1,
+				//		LWJGL_OPENGL2, LWJGL_OPENGL3, LWJGL_OPENGL_ANY;		
+		System.out.println("+&+&+&++&+&+&+&+&+&+ Using: " + lwjglRendererName);
+		final BonyContext bc = initStickFigureApp(lwjglRendererName, DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
 		// Frame must be packed after panel created, but created 
 		// before startJMonkey.  Might add frame to BonyContext...
 		VirtCharPanel vcp = bc.getPanel();
