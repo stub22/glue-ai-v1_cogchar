@@ -27,6 +27,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.jme3.system.AppSettings;
 
 /**
  *
@@ -60,7 +61,8 @@ public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
 			int canvasWidth = StickFigureTestMain.DEFAULT_CANVAS_WIDTH; 
 			int canvasHeight = StickFigureTestMain.DEFAULT_CANVAS_HEIGHT;
 			// Our crude demo using test model exported by Leo from Maya.
-			myBonyContext = StickFigureTestMain.initStickFigureApp(canvasWidth, canvasHeight); 
+			myBonyContext = StickFigureTestMain.initStickFigureApp(AppSettings.LWJGL_OPENGL_ANY, 
+							canvasWidth, canvasHeight); 
 			/*
 			 * At this point, the following setup is still required to be done by enclosing application.
 			 * This ordering is somewhat strict, due to a lot of interlocking assumptions.

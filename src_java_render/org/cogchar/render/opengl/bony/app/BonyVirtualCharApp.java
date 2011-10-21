@@ -21,6 +21,7 @@
 package org.cogchar.render.opengl.bony.app;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.system.AppSettings;
 import java.awt.Canvas;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -39,8 +40,11 @@ public class BonyVirtualCharApp extends SimpleApplication {
 	protected	BonyContext				myContext = new BonyContext();
     private     boolean                 myCanvasStartedFlag;
 
-	public BonyVirtualCharApp() {
+	public BonyVirtualCharApp(String lwjglRendererName) {
 		super();
+		AppSettings settings = new AppSettings(true);
+		settings.setRenderer(lwjglRendererName);		
+		setSettings(settings);			
 		myContext = new BonyContext();
 		myContext.setApp(this);
         myCanvasStartedFlag = false;
