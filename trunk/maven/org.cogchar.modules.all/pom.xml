@@ -16,6 +16,10 @@
 		<module>../org.cogchar.demo.render.opengl</module>
 		<module>../org.cogchar.lib.core</module>
 		<module>../org.cogchar.lib.render</module>
+		
+		<module>../org.cogchar.nbui.render</module>
+		<module>../org.cogchar.nbui.demo.all</module>
+		
 		<module>../ext.bundle.opengl.jmonkey</module>
 		<module>../ext.bundle.opengl.nifty</module>
 	</modules>

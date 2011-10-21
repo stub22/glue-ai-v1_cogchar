@@ -24,8 +24,8 @@ import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
 public class BonyRagdollApp extends BonyStickFigureApp {
 	private	DemoBonyWireframeRagdoll	myRagdoll;
 	
-	public BonyRagdollApp(String sceneFilePath, float sceneScale) {
-		super (sceneFilePath, sceneScale);
+	public BonyRagdollApp(String lwjglRendererName, String sceneFilePath, float sceneScale) {
+		super (lwjglRendererName, sceneFilePath, sceneScale);
 		myRagdoll = new DemoBonyWireframeRagdoll();
 	}
 	@Override public void simpleInitApp() {

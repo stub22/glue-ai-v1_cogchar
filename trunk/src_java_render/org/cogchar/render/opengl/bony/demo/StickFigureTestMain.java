@@ -27,6 +27,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.jme3.system.AppSettings;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -41,16 +42,16 @@ public class StickFigureTestMain {
 	public static int  DEFAULT_CANVAS_WIDTH = 800, DEFAULT_CANVAS_HEIGHT = 600;
 	
 
-	public static BonyContext initStickFigureApp(int canvasWidth, int canvasHeight) { 
+	public static BonyContext initStickFigureApp(String lwjglRendererName, int canvasWidth, int canvasHeight) { 
 		BonyStickFigureApp stickFigureApp = // new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
-					new BonyRagdollApp(sceneFilePath, sceneLocalScale);
+					new BonyRagdollApp(lwjglRendererName, sceneFilePath, sceneLocalScale);
 		BonySystemFuncs.setJMonkeySettings(stickFigureApp, canvasWidth, canvasHeight);
 		stickFigureApp.initCharPanelWithCanvas();
 		BonyContext bc = stickFigureApp.getBonyContext();
 		return bc;
 	}
 	public static void main(String[] args) {
-		final BonyContext bc = initStickFigureApp(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
+		final BonyContext bc = initStickFigureApp(AppSettings.LWJGL_OPENGL_ANY, DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
 		// Frame must be packed after panel created, but created 
 		// before startJMonkey.  Might add frame to BonyContext...
 		VirtCharPanel vcp = bc.getPanel();
