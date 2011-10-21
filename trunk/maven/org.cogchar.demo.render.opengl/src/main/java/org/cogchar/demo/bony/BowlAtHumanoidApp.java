@@ -99,7 +99,8 @@ public class BowlAtHumanoidApp extends SimpleApplication implements RagdollColli
 			PATH_DEFAULT_FONT = "Interface/Fonts/Default.fnt";
 
 	public static void main(String[] args) {
-		BowlAtHumanoidApp app = new BowlAtHumanoidApp(AppSettings.LWJGL_OPENGL1);
+		String lwjglRendererName = AppSettings.LWJGL_OPENGL_ANY; // LWJGL_OPENGL1
+		BowlAtHumanoidApp app = new BowlAtHumanoidApp(lwjglRendererName);
 		app.start();
 	}
 	public BowlAtHumanoidApp(String lwjglRendererName) {
