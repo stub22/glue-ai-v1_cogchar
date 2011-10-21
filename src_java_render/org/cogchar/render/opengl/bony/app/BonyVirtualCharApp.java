@@ -39,12 +39,11 @@ public class BonyVirtualCharApp extends SimpleApplication {
 
 	protected	BonyContext				myContext = new BonyContext();
     private     boolean                 myCanvasStartedFlag;
+	private		String					myLWJGL_RendererName;
 
 	public BonyVirtualCharApp(String lwjglRendererName) {
 		super();
-		AppSettings settings = new AppSettings(true);
-		settings.setRenderer(lwjglRendererName);		
-		setSettings(settings);			
+		myLWJGL_RendererName = lwjglRendererName;
 		myContext = new BonyContext();
 		myContext.setApp(this);
         myCanvasStartedFlag = false;
@@ -52,8 +51,25 @@ public class BonyVirtualCharApp extends SimpleApplication {
 	public BonyContext getBonyContext() { 
 		return myContext;
 	}
-	public void initCharPanelWithCanvas() { 		
+	protected void applySettings() { 
+	/* http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:appsettings
+	 * Every class that extends jme3.app.SimpleApplication has properties 
+	 * that can be configured by customizing a com.jme3.system.AppSettings 
+	 * object. Configure the settings before you call app.start() on 
+	 * the application object. If you change display settings during runtime, 
+	 * call app.restart() to make them take effect.
+	 */
+		AppSettings settings = new AppSettings(true);
+		settings.setRenderer(myLWJGL_RendererName);		
+		setSettings(settings);			
+
+	}
+	public void initCharPanelWithCanvas() { 
+		// Works
+		applySettings();
 		this.createCanvas();
+		// Does not work at this time or subsq:
+		// applySettings();
 		Canvas c = BonyCanvasFuncs.makeAWTCanvas(this);
 		VirtCharPanel vcp = new VirtCharPanel();
 		vcp.setRenderCanvas(c);

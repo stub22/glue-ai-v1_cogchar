@@ -40,12 +40,13 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl.ControlDirection;
+import com.jme3.system.AppSettings;
 
 /**
  * A walking physical character followed by a 3rd person camera. (No animation.)
  * @author normenhansen, zathras
  */
-public class DemoSindbadVersusBalls extends SimpleApplication implements ActionListener {
+public class DemoSindbadVersusBalls extends DemoApp implements ActionListener {
 
   private BulletAppState bulletAppState;
   private CharacterControl physicsCharacter;
@@ -57,8 +58,12 @@ public class DemoSindbadVersusBalls extends SimpleApplication implements ActionL
   boolean leftStrafe = false, rightStrafe = false, forward = false, backward = false, 
           leftRotate = false, rightRotate = false;
 
+  public DemoSindbadVersusBalls(String lwjglRendererName) {
+	  super(lwjglRendererName);
+  }
   public static void main(String[] args) {
-    DemoSindbadVersusBalls app = new DemoSindbadVersusBalls();
+	  String lwjglRendererName = AppSettings.LWJGL_OPENGL1;
+    DemoSindbadVersusBalls app = new DemoSindbadVersusBalls(lwjglRendererName);
     app.start();
   }
 
