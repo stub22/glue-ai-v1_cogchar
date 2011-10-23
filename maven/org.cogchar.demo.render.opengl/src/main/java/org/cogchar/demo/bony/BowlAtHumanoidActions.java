@@ -21,7 +21,8 @@ public class BowlAtHumanoidActions {
 
         TOGGLE_KIN_MODE {
             void act(BowlAtHumanoidApp app) {
-                app.cmdToggleKinMode();
+				HumanoidRagdollWrapper hw = app.getHumdWrap();
+				hw.toggleKinMode();
             }
             Trigger[] makeTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_H),
@@ -30,7 +31,8 @@ public class BowlAtHumanoidActions {
         },
         STAND_UP {
             void act(BowlAtHumanoidApp app) {
-                app.cmdStandUp();
+				HumanoidRagdollWrapper hw = app.getHumdWrap();
+				hw.standUp();
             }
             Trigger[] makeTriggers() { 
                 return new Trigger[] {new KeyTrigger(KeyInput.KEY_SPACE)};
@@ -38,7 +40,8 @@ public class BowlAtHumanoidActions {
         },
         BOOGIE {
             void act(BowlAtHumanoidApp app) {
-                app.cmdBoogie();
+				HumanoidRagdollWrapper hw = app.getHumdWrap();
+				hw.boogie();
             }
             Trigger[] makeTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_B)};

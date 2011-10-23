@@ -35,42 +35,15 @@
  */
 package org.cogchar.demo.bony;
 
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.AnimEventListener;
-import com.jme3.animation.Bone;
-import com.jme3.animation.LoopMode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.AssetManager;
-import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionEvent;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.RagdollCollisionListener;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.KinematicRagdollControl;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.font.BitmapText;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.input.controls.Trigger;
 import com.jme3.light.Light;
-import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.scene.shape.Sphere.TextureMode;
 import com.jme3.system.AppSettings;
-import com.jme3.texture.Texture;
 
 import org.cogchar.demo.render.opengl.PhysicsTestHelper;
-import org.cogchar.demo.render.opengl.ThrowableBombRigidBodyControl;
 
 /**
  * JMonkey Team Comment as of about August 2011:
@@ -78,19 +51,12 @@ import org.cogchar.demo.render.opengl.ThrowableBombRigidBodyControl;
  */
 public class BowlAtHumanoidApp extends SimpleApplication {
 	private BulletAppState myPhysicsAppState;
-	//private Node myHumanoidModelNode;
-	//private KinematicRagdollControl myHumanoidKRC;
-	//private AnimChannel myHumanoidAnimChannel;
 	private HumanoidRagdollWrapper myHumanoidWrapper;
 	private ProjectileMgr myPrjctlMgr;
 	private	WorldMgr myWorldMgr;
+	
 	protected static String 
 			GEOM_FLOOR = "Floor",
-			//ANIM_STAND_FRONT = "StandUpFront",
-			//ANIM_STAND_BACK = "StandUpBack",
-			//ANIM_DANCE = "Dance",
-			//ANIM_IDLE_TOP = "IdleTop",
-			//PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",
 			PATH_DEFAULT_FONT = "Interface/Fonts/Default.fnt";
 
 	public static void main(String[] args) {
@@ -107,25 +73,28 @@ public class BowlAtHumanoidApp extends SimpleApplication {
 		myHumanoidWrapper = new HumanoidRagdollWrapper();
 		myWorldMgr = new WorldMgr();
 	}
-	public void cmdToggleKinMode() {
-		myHumanoidWrapper.toString();
-	}
-
-	public void cmdStandUp() {
-		myHumanoidWrapper.standUp();
-	}
-
-	public void cmdBoogie() {
+	public void simpleInitApp() {
+		initProjectileStuff();
+		guiFont = assetManager.loadFont(PATH_DEFAULT_FONT);
+		WorldMgr.makeCrossHairs(assetManager, guiNode, guiFont, settings);
+		initPhysicsStuff();
+		initCameraAndLights();
+		initHumanoidStuff();
+		BowlAtHumanoidActions.setupActionListeners(inputManager, this);
 		myHumanoidWrapper.boogie();
-//		myHumanoidAnimChannel.setAnim(ANIM_DANCE);
-//		myHumanoidKRC.blendToKinematicMode(0.5f);
 	}
-
+	private PhysicsSpace getPhysicsSpace() {
+		return myPhysicsAppState.getPhysicsSpace();
+	}	
+	public HumanoidRagdollWrapper getHumdWrap()  {
+		return myHumanoidWrapper;
+	}
+	public ProjectileMgr getProjectileMgr() { 
+		return myPrjctlMgr;
+	}	
 	public void cmdShoot() {
-		myPrjctlMgr.fireProjectileFromCamera(cam, rootNode, getPhysicsSpace());
-		
+		myPrjctlMgr.fireProjectileFromCamera(cam, rootNode, getPhysicsSpace());	
 	}
-
 	public void cmdBoom() {
 		/*
 		Geometry prjctlGeom = new Geometry(GEOM_BOOM, myProjectileSphereMesh);
@@ -144,12 +113,11 @@ public class BowlAtHumanoidApp extends SimpleApplication {
 		 * */
 		
 	}
-
+	private void initHumanoidStuff() { 
+		myHumanoidWrapper.initStuff(assetManager, rootNode, getPhysicsSpace());
+	}
 	private void initProjectileStuff() { 
 		myPrjctlMgr.initStuff(assetManager);
-	}
-	public ProjectileMgr getProjectileMgr() { 
-		return myPrjctlMgr;
 	}
 	private void initPhysicsStuff() { 
 		myPhysicsAppState = new BulletAppState();
@@ -168,45 +136,6 @@ public class BowlAtHumanoidApp extends SimpleApplication {
 		flyCam.setMoveSpeed(50);
 		addLightToRootNode(WorldMgr.makeDirectionalLight());		
 	}
-	private void initHumanoidStuff() { 
-		myHumanoidWrapper.initStuff(assetManager, rootNode, getPhysicsSpace());
-		/*
-		myHumanoidModelNode = (Node) assetManager.loadModel(PATH_HUMANOID_MESH);
-
-		// This was commented out in JMonkey code:
-		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));
-
-		// Turn on the green bone skeleton debug.
-		HumanoidMgr.attachDebugSkeleton(myHumanoidModelNode, getAssetManager());
-
-		//Note: PhysicsRagdollControl is still TODO, constructor will change
-		myHumanoidKRC = new KinematicRagdollControl(0.5f);
-		HumanoidMgr.addHumanoidBonesToRagdoll(myHumanoidKRC);
-		myHumanoidKRC.addCollisionListener(this);
-		myHumanoidModelNode.addControl(myHumanoidKRC);
-
-		HumanoidMgr.applyHumanoidJointLimits(myHumanoidKRC);
-
-		getPhysicsSpace().add(myHumanoidKRC);
-
-		rootNode.attachChild(myHumanoidModelNode);
-		// rootNode.attachChild(skeletonDebug);
-
-		AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
-		myHumanoidAnimChannel = humanoidControl.createChannel();
-		humanoidControl.addListener(this);
-		*/
-	}
-	public void simpleInitApp() {
-		initProjectileStuff();
-		guiFont = assetManager.loadFont(PATH_DEFAULT_FONT);
-		WorldMgr.makeCrossHairs(assetManager, guiNode, guiFont, settings);
-		initPhysicsStuff();
-		initCameraAndLights();
-		initHumanoidStuff();
-		BowlAtHumanoidActions.setupActionListeners(inputManager, this);
-		cmdBoogie();
-	}
 
 	private void setAppSpeed(float val) {
 		speed = val;
@@ -215,10 +144,6 @@ public class BowlAtHumanoidApp extends SimpleApplication {
 	protected void addLightToRootNode(Light l) {
 		rootNode.addLight(l);
 
-	}
-
-	private PhysicsSpace getPhysicsSpace() {
-		return myPhysicsAppState.getPhysicsSpace();
 	}
 
 	/*   
