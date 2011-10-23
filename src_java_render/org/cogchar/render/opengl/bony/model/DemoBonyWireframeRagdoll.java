@@ -20,7 +20,7 @@
  */
 package org.cogchar.render.opengl.bony.model;
 
-import org.cogchar.render.opengl.bony.world.JJPhysicsTestHelper;
+
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
@@ -37,6 +37,7 @@ import com.jme3.input.MouseInput;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
 
 
 public class DemoBonyWireframeRagdoll // extends SimpleApplication 
@@ -91,7 +92,7 @@ public class DemoBonyWireframeRagdoll // extends SimpleApplication
 		BulletAppState bulletAppState = new BulletAppState();
 		stateManager.attach(bulletAppState);
 		bulletAppState.getPhysicsSpace().enableDebug(assetManager);
-		JJPhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
+		PhysicsStuffBuilder.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
 		return bulletAppState;
 	}
 	public void registerTraditionalInputHandlers(InputManager inputManager) {
