@@ -38,6 +38,10 @@ public class StickFigureTestMain {
 	static String	sceneFilePath = "leo_hanson_tests/test3/test3.scene";
 	static float	sceneLocalScale = 0.5f;
 	
+	public static String  DEFAULT_RENDERER_NAME = AppSettings.LWJGL_OPENGL_ANY; 
+				// LWJGL_OPENGL1; // LWJGL_OPENGL_ANY
+				// String LWJGL_OPENGL1,
+				//		LWJGL_OPENGL2, LWJGL_OPENGL3, LWJGL_OPENGL_ANY;		
 
 	public static int  DEFAULT_CANVAS_WIDTH = 800, DEFAULT_CANVAS_HEIGHT = 600;
 	
@@ -51,9 +55,7 @@ public class StickFigureTestMain {
 		return bc;
 	}
 	public static void main(String[] args) {
-		String lwjglRendererName = AppSettings.LWJGL_OPENGL_ANY; // LWJGL_OPENGL1; // LWJGL_OPENGL_ANY
-				// String LWJGL_OPENGL1,
-				//		LWJGL_OPENGL2, LWJGL_OPENGL3, LWJGL_OPENGL_ANY;		
+		String lwjglRendererName = DEFAULT_RENDERER_NAME;
 		System.out.println("+&+&+&++&+&+&+&+&+&+ Using: " + lwjglRendererName);
 		final BonyContext bc = initStickFigureApp(lwjglRendererName, DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
 		// Frame must be packed after panel created, but created 
