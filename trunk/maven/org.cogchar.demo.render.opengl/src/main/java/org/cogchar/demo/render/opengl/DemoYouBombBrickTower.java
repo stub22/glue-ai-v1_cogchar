@@ -39,7 +39,6 @@ package org.cogchar.demo.render.opengl;
 
 import org.cogchar.render.opengl.bony.world.ThrowableBombRigidBodyControl;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.app.SimpleApplication;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -61,12 +60,13 @@ import com.jme3.shadow.PssmShadowRenderer.CompareMode;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
 /**
  *
  * @author double1984 (tower mod by atom)
  */
-public class DemoYouBombBrickTower extends SimpleApplication {
+public class DemoYouBombBrickTower extends DemoApp {
 
     int bricksPerLayer = 8;
     int brickLayers = 30;

@@ -54,12 +54,10 @@ public class DemoYourHouseTerrainWWF extends DemoApp {
     private Geometry sphere = new Geometry("Sky", sphereMesh);
     private static boolean useHttp = false;
 
-	public DemoYourHouseTerrainWWF(String lwjglRendererName) {
-		super(lwjglRendererName);
-	}
+
     public static void main(String[] args) {
      
-        DemoYourHouseTerrainWWF app = new DemoYourHouseTerrainWWF(DemoApp.DEFAULT_RENDERER_NAME);
+        DemoYourHouseTerrainWWF app = new DemoYourHouseTerrainWWF();
         app.start();
     }
 
