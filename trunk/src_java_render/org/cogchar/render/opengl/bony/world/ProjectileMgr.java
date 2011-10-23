@@ -40,9 +40,13 @@ public class ProjectileMgr {
 	
 	private static String 						
 			GEOM_PRJCT = "projectile",
-			GEOM_BOOM = "boom",
+			// GEOM_BOOM = "boom",
 			PATH_PRJCT_MAT = "Common/MatDefs/Misc/Unshaded.j3md",
 			PATH_ROCK_TEXTURE = "Textures/Terrain/Rock/Rock.PNG";
+	
+	private static float	CCD_MOTION_THRESH = 0.001f,
+							PRJCTL_GROWTH_FACTOR = 1.1f;
+							
 	
 	public void initStuff(AssetManager asstMgr) { 
 		initProjectileMaterial(asstMgr);
@@ -105,10 +109,10 @@ public class ProjectileMgr {
 		return prjctlRBC;
 	}
 	public void cmdBiggerProjectile() {
-		myProjectileSize *= 1.1f;
+		myProjectileSize *= PRJCTL_GROWTH_FACTOR;
 	}
 
 	public void cmdSmallerProjectile() {
-		myProjectileSize *= 0.9f;
+		myProjectileSize /= PRJCTL_GROWTH_FACTOR;
 	}	
 }

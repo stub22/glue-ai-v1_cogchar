@@ -10,6 +10,7 @@
 	<name>${project.artifactId} Bundle</name>
 	<properties>
 		<netbeans.hint.license>cogchar-apache20</netbeans.hint.license>
+	 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>
 
@@ -79,6 +80,7 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+				 <encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 			<!-- Stu added plugin for Jmonkey3 download 
@@ -112,6 +114,14 @@
 					</execution>
 				</executions>
 			</plugin>
+		 <plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-resources-plugin</artifactId>
+		  <version>2.4.3</version>
+		  <configuration>
+		   <encoding>${project.build.sourceEncoding}</encoding>
+		  </configuration>
+		 </plugin>
 		</plugins>
 	</build>
 
