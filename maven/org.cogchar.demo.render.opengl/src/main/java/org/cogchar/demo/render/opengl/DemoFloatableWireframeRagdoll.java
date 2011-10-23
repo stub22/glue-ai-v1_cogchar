@@ -30,11 +30,9 @@ public class DemoFloatableWireframeRagdoll extends DemoApp implements ActionList
     private Vector3f upforce = new Vector3f(0, 200, 0);
     private boolean applyForce = false;
 	
-	public DemoFloatableWireframeRagdoll(String lwjglRendererName) {
-		super(lwjglRendererName);
-	}
+
     public static void main(String[] args) {
-        DemoFloatableWireframeRagdoll app = new DemoFloatableWireframeRagdoll(DemoApp.DEFAULT_RENDERER_NAME);
+        DemoFloatableWireframeRagdoll app = new DemoFloatableWireframeRagdoll();
         app.start();
     }
 

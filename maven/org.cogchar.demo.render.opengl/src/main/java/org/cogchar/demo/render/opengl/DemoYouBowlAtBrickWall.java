@@ -32,7 +32,6 @@
 
 package org.cogchar.demo.render.opengl;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -51,15 +50,19 @@ import com.jme3.scene.shape.Sphere.TextureMode;
 import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
 /**
  * Example 12 - how to give objects physical properties so they bounce and fall.
  * @author base code by double1984, updated by zathras
  */
-public class DemoYouBowlAtBrickWall extends SimpleApplication {
+public class DemoYouBowlAtBrickWall extends DemoApp {
 
+	public DemoYouBowlAtBrickWall(String lwjglRendererName) {
+	  super(lwjglRendererName);
+  }
   public static void main(String args[]) {
-    DemoYouBowlAtBrickWall app = new DemoYouBowlAtBrickWall();
+    DemoYouBowlAtBrickWall app = new DemoYouBowlAtBrickWall(DemoApp.DEFAULT_RENDERER_NAME);
     app.start();
   }
 

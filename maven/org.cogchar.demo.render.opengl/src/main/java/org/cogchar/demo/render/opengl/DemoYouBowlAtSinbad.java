@@ -83,11 +83,8 @@ public class DemoYouBowlAtSinbad extends DemoApp implements RagdollCollisionList
     private Sphere bullet;
     private SphereCollisionShape bulletCollisionShape;
 
-	public DemoYouBowlAtSinbad (String lwjglRendererName) {
-		super(lwjglRendererName);
-	}
     public static void main(String[] args) {
-        DemoYouBowlAtSinbad app = new DemoYouBowlAtSinbad(DemoApp.DEFAULT_RENDERER_NAME);
+        DemoYouBowlAtSinbad app = new DemoYouBowlAtSinbad();
         app.start();
     }
 
