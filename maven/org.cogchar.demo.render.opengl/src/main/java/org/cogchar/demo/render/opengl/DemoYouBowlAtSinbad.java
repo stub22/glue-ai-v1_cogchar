@@ -31,13 +31,14 @@
  */
 package org.cogchar.demo.render.opengl;
 
+import org.cogchar.render.opengl.bony.world.ThrowableBombRigidBodyControl;
+import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.Bone;
 import com.jme3.animation.LoopMode;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.app.SimpleApplication;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -64,12 +65,13 @@ import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import com.jme3.texture.Texture;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
 /**
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
  * @author normenhansen
  */
-public class DemoYouBowlAtSinbad extends SimpleApplication implements RagdollCollisionListener, AnimEventListener {
+public class DemoYouBowlAtSinbad extends DemoApp implements RagdollCollisionListener, AnimEventListener {
 
     private BulletAppState bulletAppState;
     Material matBullet;
@@ -81,8 +83,11 @@ public class DemoYouBowlAtSinbad extends SimpleApplication implements RagdollCol
     private Sphere bullet;
     private SphereCollisionShape bulletCollisionShape;
 
+	public DemoYouBowlAtSinbad (String lwjglRendererName) {
+		super(lwjglRendererName);
+	}
     public static void main(String[] args) {
-        DemoYouBowlAtSinbad app = new DemoYouBowlAtSinbad();
+        DemoYouBowlAtSinbad app = new DemoYouBowlAtSinbad(DemoApp.DEFAULT_RENDERER_NAME);
         app.start();
     }
 

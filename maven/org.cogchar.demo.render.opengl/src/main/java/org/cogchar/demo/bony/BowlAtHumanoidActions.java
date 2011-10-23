@@ -4,6 +4,7 @@
  */
 package org.cogchar.demo.bony;
 
+import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;

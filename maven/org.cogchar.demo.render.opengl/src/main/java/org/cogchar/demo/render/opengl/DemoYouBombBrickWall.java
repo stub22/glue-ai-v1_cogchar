@@ -31,6 +31,7 @@
  */
 package org.cogchar.demo.render.opengl;
 
+import org.cogchar.render.opengl.bony.world.ThrowableBombRigidBodyControl;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.TextureKey;

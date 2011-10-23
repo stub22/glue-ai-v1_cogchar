@@ -24,6 +24,8 @@
  */
 package org.cogchar.demo.render.opengl;
 
+import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.PhysicsSpace;
@@ -62,8 +64,7 @@ public class DemoSindbadVersusBalls extends DemoApp implements ActionListener {
 	  super(lwjglRendererName);
   }
   public static void main(String[] args) {
-	  String lwjglRendererName = AppSettings.LWJGL_OPENGL1;
-    DemoSindbadVersusBalls app = new DemoSindbadVersusBalls(lwjglRendererName);
+    DemoSindbadVersusBalls app = new DemoSindbadVersusBalls(DemoApp.DEFAULT_RENDERER_NAME);
     app.start();
   }
 

@@ -31,6 +31,7 @@
  */
 package org.cogchar.demo.render.opengl;
 
+import org.cogchar.render.opengl.bony.world.ThrowableBombRigidBodyControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
