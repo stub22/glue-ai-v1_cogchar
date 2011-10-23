@@ -48,8 +48,8 @@ public class StickFigureTestMain {
 
 	public static BonyContext initStickFigureApp(String lwjglRendererName, int canvasWidth, int canvasHeight) { 
 		BonyStickFigureApp stickFigureApp = // new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
-					new BonyRagdollApp(lwjglRendererName, sceneFilePath, sceneLocalScale);
-		BonySystemFuncs.setJMonkeySettings(stickFigureApp, canvasWidth, canvasHeight);
+					new BonyRagdollApp(lwjglRendererName, canvasWidth, canvasHeight, sceneFilePath, sceneLocalScale);
+		// BonySystemFuncs.setJMonkeySettings(stickFigureApp, canvasWidth, canvasHeight);
 		stickFigureApp.initCharPanelWithCanvas();
 		BonyContext bc = stickFigureApp.getBonyContext();
 		return bc;

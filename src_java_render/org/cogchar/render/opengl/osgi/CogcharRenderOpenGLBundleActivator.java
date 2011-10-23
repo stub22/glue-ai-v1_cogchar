@@ -27,7 +27,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.jme3.system.AppSettings;
 
 /**
  *
@@ -61,7 +60,7 @@ public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
 			int canvasWidth = StickFigureTestMain.DEFAULT_CANVAS_WIDTH; 
 			int canvasHeight = StickFigureTestMain.DEFAULT_CANVAS_HEIGHT;
 
-			String lwjglRendererName = AppSettings.LWJGL_OPENGL_ANY;
+			String lwjglRendererName = StickFigureTestMain.DEFAULT_RENDERER_NAME;
 				// String LWJGL_OPENGL1,
 				//		LWJGL_OPENGL2, LWJGL_OPENGL3, LWJGL_OPENGL_ANY;
 			System.out.println("********++++++++++++++++++++ Using: " + lwjglRendererName);

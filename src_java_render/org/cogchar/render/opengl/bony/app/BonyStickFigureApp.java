@@ -32,8 +32,8 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 	
 
 	
-	public BonyStickFigureApp(String lwjglRendererName, String sceneFilePath, float sceneScale) {
-		super(lwjglRendererName);
+	public BonyStickFigureApp(String lwjglRendererName, int canvasWidth, int canvasHeight, String sceneFilePath, float sceneScale) {
+		super(lwjglRendererName, canvasWidth, canvasHeight);
 		mySceneFilePath = sceneFilePath;
 		myLocalSceneScale = sceneScale;
 		
