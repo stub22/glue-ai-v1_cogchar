@@ -58,12 +58,9 @@ import com.jme3.system.AppSettings;
  * using the mouse or key presses. Can be used for shooting, opening doors, etc. */
 public class DemoYouPickStuff extends DemoApp {
 
-	public DemoYouPickStuff(String lwjglRendererName) {
-		super(lwjglRendererName);
-	}
 
 	public static void main(String[] args) {
-		DemoYouPickStuff app = new DemoYouPickStuff(DemoApp.DEFAULT_RENDERER_NAME);
+		DemoYouPickStuff app = new DemoYouPickStuff();
 		app.start();
 	}
 	Node shootables;

@@ -63,15 +63,12 @@ public class DemoYourQuakeLevelWWF extends DemoApp implements ActionListener {
     private static boolean useHttp = false;
     private boolean left=false,right=false,up=false,down=false;
 
-	public DemoYourQuakeLevelWWF(String lwjglRendererName) {
-		super(lwjglRendererName);
-	}
     public static void main(String[] args) {
         File file = new File(LOCAL_SCENE_PATH);
         if (!file.exists()) {
             useHttp = true;
         }
-        DemoYourQuakeLevelWWF app = new DemoYourQuakeLevelWWF(DemoApp.DEFAULT_RENDERER_NAME);
+        DemoYourQuakeLevelWWF app = new DemoYourQuakeLevelWWF();
         app.start();
     }
 
