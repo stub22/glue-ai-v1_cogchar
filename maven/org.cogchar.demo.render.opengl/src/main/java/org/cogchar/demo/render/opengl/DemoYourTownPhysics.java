@@ -32,7 +32,6 @@
 
 package org.cogchar.demo.render.opengl;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -49,13 +48,14 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
 /**
  * Example 9 - How to make walls and floors solid.
  * This version uses Physics and a custom Action Listener.
  * @author normen, with edits by Zathras
  */
-public class DemoYourTownPhysics extends SimpleApplication
+public class DemoYourTownPhysics extends DemoApp
   implements ActionListener {
 
   private Spatial sceneModel;
@@ -66,9 +66,11 @@ public class DemoYourTownPhysics extends SimpleApplication
   private boolean left = false, right = false, up = false, down = false;
   
   public static String SCENE_LOCAL_ZIP_PATH = "jme_asset_zips/town.zip";
-
+  public DemoYourTownPhysics(String lwjglRendererName) {
+		super(lwjglRendererName);
+	}
   public static void main(String[] args) {
-    DemoYourTownPhysics app = new DemoYourTownPhysics();
+    DemoYourTownPhysics app = new DemoYourTownPhysics(DemoApp.DEFAULT_RENDERER_NAME);
     app.start();
   }
 

@@ -35,21 +35,21 @@
  */
 package org.cogchar.demo.bony;
 
-import com.jme3.bullet.BulletAppState;
-import com.jme3.app.SimpleApplication;
-import com.jme3.bullet.PhysicsSpace;
+import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
+import org.cogchar.render.opengl.bony.world.WorldMgr;
+import org.cogchar.render.opengl.bony.world.ProjectileMgr;
 import com.jme3.light.Light;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.system.AppSettings;
 
-import org.cogchar.demo.render.opengl.PhysicsStuffBuilder;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
 /**
  * JMonkey Team Comment as of about August 2011:
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
  */
-public class BowlAtHumanoidApp extends SimpleApplication {
+public class BowlAtHumanoidApp extends DemoApp {
 
 	private HumanoidRagdollWrapper myHumanoidWrapper;
 	private ProjectileMgr myPrjctlMgr;
@@ -60,15 +60,11 @@ public class BowlAtHumanoidApp extends SimpleApplication {
 			PATH_DEFAULT_FONT = "Interface/Fonts/Default.fnt";
 
 	public static void main(String[] args) {
-		String lwjglRendererName = AppSettings.LWJGL_OPENGL_ANY; // LWJGL_OPENGL1
-		BowlAtHumanoidApp app = new BowlAtHumanoidApp(lwjglRendererName);
+		BowlAtHumanoidApp app = new BowlAtHumanoidApp(DemoApp.DEFAULT_RENDERER_NAME);
 		app.start();
 	}
 	public BowlAtHumanoidApp(String lwjglRendererName) {
-		// Set to OpenGL - 1 mode for 915GM graphics controller
-		AppSettings settings = new AppSettings(true);
-		settings.setRenderer(lwjglRendererName);		
-		setSettings(settings);
+		super(lwjglRendererName);
 		myPrjctlMgr = new ProjectileMgr();
 		myHumanoidWrapper = new HumanoidRagdollWrapper();
 		myWorldMgr = new WorldMgr();

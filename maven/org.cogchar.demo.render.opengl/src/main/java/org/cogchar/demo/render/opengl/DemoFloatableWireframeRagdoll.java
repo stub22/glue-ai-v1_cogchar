@@ -4,6 +4,8 @@
  */
 package org.cogchar.demo.render.opengl;
 
+import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
@@ -20,16 +22,19 @@ import com.jme3.scene.Node;
  *
  * @author normenhansen
  */
-public class DemoFloatableWireframeRagdoll extends SimpleApplication implements ActionListener {
+public class DemoFloatableWireframeRagdoll extends DemoApp implements ActionListener {
 
     private BulletAppState bulletAppState = new BulletAppState();
     private Node ragDoll = new Node();
     private Node shoulders;
     private Vector3f upforce = new Vector3f(0, 200, 0);
     private boolean applyForce = false;
-
+	
+	public DemoFloatableWireframeRagdoll(String lwjglRendererName) {
+		super(lwjglRendererName);
+	}
     public static void main(String[] args) {
-        DemoFloatableWireframeRagdoll app = new DemoFloatableWireframeRagdoll();
+        DemoFloatableWireframeRagdoll app = new DemoFloatableWireframeRagdoll(DemoApp.DEFAULT_RENDERER_NAME);
         app.start();
     }
 
