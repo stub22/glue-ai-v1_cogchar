@@ -33,7 +33,6 @@ package org.cogchar.demo.render.opengl;
 
 import org.cogchar.render.opengl.bony.world.ThrowableBombRigidBodyControl;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.app.SimpleApplication;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
@@ -56,12 +55,13 @@ import com.jme3.scene.shape.Sphere.TextureMode;
 import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
 /**
  *
  * @author double1984
  */
-public class DemoYouBombBrickWall extends SimpleApplication {
+public class DemoYouBombBrickWall extends DemoApp {
 
     static float bLength = 0.48f;
     static float bWidth = 0.24f;

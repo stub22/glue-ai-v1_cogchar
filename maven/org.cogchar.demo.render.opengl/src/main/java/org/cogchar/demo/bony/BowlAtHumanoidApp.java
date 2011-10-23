@@ -38,10 +38,9 @@ package org.cogchar.demo.bony;
 import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
 import org.cogchar.render.opengl.bony.world.WorldMgr;
 import org.cogchar.render.opengl.bony.world.ProjectileMgr;
-import com.jme3.light.Light;
+
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.system.AppSettings;
 
 import org.cogchar.render.opengl.bony.app.DemoApp;
 
@@ -55,9 +54,7 @@ public class BowlAtHumanoidApp extends DemoApp {
 	private ProjectileMgr myPrjctlMgr;
 	private	WorldMgr myWorldMgr;
 	
-	protected static String 
-			GEOM_FLOOR = "Floor",
-			PATH_DEFAULT_FONT = "Interface/Fonts/Default.fnt";
+
 
 	public static void main(String[] args) {
 		BowlAtHumanoidApp app = new BowlAtHumanoidApp(DemoApp.DEFAULT_RENDERER_NAME);
@@ -70,12 +67,12 @@ public class BowlAtHumanoidApp extends DemoApp {
 		myWorldMgr = new WorldMgr();
 	}
 	public void simpleInitApp() {
-		initProjectileStuff();
-		guiFont = assetManager.loadFont(PATH_DEFAULT_FONT);
+		initFonts();
 		WorldMgr.makeCrossHairs(assetManager, guiNode, guiFont, settings);
 		initPhysicsStuff();
 		initCameraAndLights();
 		initHumanoidStuff();
+		initProjectileStuff();  // Can be done at any time in this startup seq
 		BowlAtHumanoidActions.setupActionListeners(inputManager, this);
 		myHumanoidWrapper.boogie();
 	}
@@ -124,14 +121,7 @@ public class BowlAtHumanoidApp extends DemoApp {
 		addLightToRootNode(WorldMgr.makeDirectionalLight());		
 	}
 
-	private void setAppSpeed(float val) {
-		speed = val;
-	}
 
-	protected void addLightToRootNode(Light l) {
-		rootNode.addLight(l);
-
-	}
 
 	/*   
 	float elTime = 0;

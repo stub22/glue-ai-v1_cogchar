@@ -32,7 +32,6 @@
 
 package org.cogchar.demo.render.opengl;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
@@ -46,8 +45,9 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
-public class DemoOtoIntersectsMovableBlock extends SimpleApplication {
+public class DemoOtoIntersectsMovableBlock extends DemoApp {
 
     Geometry geom1;
 

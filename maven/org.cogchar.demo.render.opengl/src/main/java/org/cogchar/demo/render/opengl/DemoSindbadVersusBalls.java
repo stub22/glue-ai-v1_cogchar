@@ -60,11 +60,9 @@ public class DemoSindbadVersusBalls extends DemoApp implements ActionListener {
   boolean leftStrafe = false, rightStrafe = false, forward = false, backward = false, 
           leftRotate = false, rightRotate = false;
 
-  public DemoSindbadVersusBalls(String lwjglRendererName) {
-	  super(lwjglRendererName);
-  }
+
   public static void main(String[] args) {
-    DemoSindbadVersusBalls app = new DemoSindbadVersusBalls(DemoApp.DEFAULT_RENDERER_NAME);
+    DemoSindbadVersusBalls app = new DemoSindbadVersusBalls();
     app.start();
   }
 
