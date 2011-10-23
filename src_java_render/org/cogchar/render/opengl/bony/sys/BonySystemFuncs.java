@@ -22,10 +22,11 @@ import com.jme3.system.AppSettings;
  * @author Stu B. <www.texpedient.com>
  */
 public class BonySystemFuncs {
+	/*
 	public static void setJMonkeySettings(SimpleApplication app, int width, int height) {
 		// There is no getter for appSettings...?
 		
-		/* See Jmonkey examples    "TestCanvas.java" and "AppHarness.java"  */
+		// See Jmonkey examples    "TestCanvas.java" and "AppHarness.java"  
 		AppSettings settings = new AppSettings(true);
 		settings.setWidth(width);
 		settings.setHeight(height);
@@ -38,5 +39,6 @@ public class BonySystemFuncs {
 		// settings.putString("AssetConfigURL", "file:./cogchar_jme3.cfg");
 		// settings.setUseInput(false);
 		app.setSettings(settings);
-	}	
+	}
+	*/
 }

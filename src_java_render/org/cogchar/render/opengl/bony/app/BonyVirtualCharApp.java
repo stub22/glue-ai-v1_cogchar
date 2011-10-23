@@ -40,10 +40,13 @@ public class BonyVirtualCharApp extends SimpleApplication {
 	protected	BonyContext				myContext = new BonyContext();
     private     boolean                 myCanvasStartedFlag;
 	private		String					myLWJGL_RendererName;
+	private		int						myCanvasWidth, myCanvasHeight;
 
-	public BonyVirtualCharApp(String lwjglRendererName) {
+	public BonyVirtualCharApp(String lwjglRendererName, int canvasWidth, int canvasHeight) {
 		super();
 		myLWJGL_RendererName = lwjglRendererName;
+		myCanvasWidth = canvasWidth;
+		myCanvasHeight = canvasHeight;
 		myContext = new BonyContext();
 		myContext.setApp(this);
         myCanvasStartedFlag = false;
@@ -60,7 +63,9 @@ public class BonyVirtualCharApp extends SimpleApplication {
 	 * call app.restart() to make them take effect.
 	 */
 		AppSettings settings = new AppSettings(true);
-		settings.setRenderer(myLWJGL_RendererName);		
+		settings.setRenderer(myLWJGL_RendererName);
+		settings.setWidth(myCanvasWidth);
+		settings.setHeight(myCanvasHeight);
 		setSettings(settings);			
 
 	}
@@ -69,7 +74,7 @@ public class BonyVirtualCharApp extends SimpleApplication {
 		applySettings();
 		this.createCanvas();
 		// Does not work at this time or subsq:
-		// applySettings();
+		//applySettings();
 		Canvas c = BonyCanvasFuncs.makeAWTCanvas(this);
 		VirtCharPanel vcp = new VirtCharPanel();
 		vcp.setRenderCanvas(c);
