@@ -58,11 +58,8 @@ import org.cogchar.render.opengl.bony.app.DemoApp;
  */
 public class DemoYouBowlAtBrickWall extends DemoApp {
 
-	public DemoYouBowlAtBrickWall(String lwjglRendererName) {
-	  super(lwjglRendererName);
-  }
   public static void main(String args[]) {
-    DemoYouBowlAtBrickWall app = new DemoYouBowlAtBrickWall(DemoApp.DEFAULT_RENDERER_NAME);
+    DemoYouBowlAtBrickWall app = new DemoYouBowlAtBrickWall();
     app.start();
   }
 

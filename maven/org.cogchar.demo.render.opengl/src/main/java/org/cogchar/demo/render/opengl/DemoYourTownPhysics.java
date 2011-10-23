@@ -66,11 +66,9 @@ public class DemoYourTownPhysics extends DemoApp
   private boolean left = false, right = false, up = false, down = false;
   
   public static String SCENE_LOCAL_ZIP_PATH = "jme_asset_zips/town.zip";
-  public DemoYourTownPhysics(String lwjglRendererName) {
-		super(lwjglRendererName);
-	}
+
   public static void main(String[] args) {
-    DemoYourTownPhysics app = new DemoYourTownPhysics(DemoApp.DEFAULT_RENDERER_NAME);
+    DemoYourTownPhysics app = new DemoYourTownPhysics();
     app.start();
   }
 
