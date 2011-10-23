@@ -37,7 +37,6 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.LoopMode;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -78,12 +77,13 @@ import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
 import java.util.List;
 import jme3tools.converters.ImageToAwt;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
 /**
  * A walking animated character followed by a 3rd person camera on a terrain with LOD.
  * @author normenhansen
  */
-public class DemoOtoWalksTerrainAndBombsWall extends SimpleApplication implements ActionListener, PhysicsCollisionListener, AnimEventListener {
+public class DemoOtoWalksTerrainAndBombsWall extends DemoApp implements ActionListener, PhysicsCollisionListener, AnimEventListener {
 
     private BulletAppState bulletAppState;
     //character

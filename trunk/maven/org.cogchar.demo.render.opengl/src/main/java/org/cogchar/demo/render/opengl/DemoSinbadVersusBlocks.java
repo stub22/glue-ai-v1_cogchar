@@ -37,7 +37,6 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.LoopMode;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.app.SimpleApplication;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.KinematicRagdollControl;
@@ -55,11 +54,12 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
 /**
  * @author normenhansen
  */
-public class DemoSinbadVersusBlocks extends SimpleApplication implements AnimEventListener, ActionListener {
+public class DemoSinbadVersusBlocks extends DemoApp implements AnimEventListener, ActionListener {
 
     BulletAppState bulletAppState;
     Node model;

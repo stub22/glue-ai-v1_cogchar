@@ -45,11 +45,8 @@ import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.debug.WireSphere;
 
 public class DemoDrawnShapes extends DemoApp {
-	public DemoDrawnShapes(String lwjglRendererName) {
-		super(lwjglRendererName);
-	}
     public static void main(String[] args){
-        DemoDrawnShapes app = new DemoDrawnShapes(DemoApp.DEFAULT_RENDERER_NAME);
+        DemoDrawnShapes app = new DemoDrawnShapes();
         app.start();
     }
 
