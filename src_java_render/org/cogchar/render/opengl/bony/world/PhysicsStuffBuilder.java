@@ -61,7 +61,7 @@ public class PhysicsStuffBuilder {
         rootNode.addLight(light);
 
         Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
-        material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
+        // material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
 
         Box floorBox = new Box(140, 0.25f, 140);
         Geometry floorGeometry = new Geometry(GEOM_FLOOR, floorBox);
