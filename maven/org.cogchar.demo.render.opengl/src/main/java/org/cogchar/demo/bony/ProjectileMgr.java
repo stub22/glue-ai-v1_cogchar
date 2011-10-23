@@ -26,7 +26,6 @@ public class ProjectileMgr {
 	private float myProjectileSize = 1f;
 	private Material myProjectileMaterial;
 	private Sphere myProjectileSphereMesh;
-	private SphereCollisionShape myProjectileCollisionShape;
 	
 	private static String 						
 			GEOM_PRJCT = "projectile",
@@ -37,7 +36,7 @@ public class ProjectileMgr {
 	protected void initStuff(AssetManager asstMgr) { 
 		initProjectileMaterial(asstMgr);
 		myProjectileSphereMesh = ProjectileMgr.makeProjectileSphere();
-		myProjectileCollisionShape = new SphereCollisionShape(1.0f);
+		// myProjectileCollisionShape = new SphereCollisionShape(1.0f);
 	}
 	public void initProjectileMaterial(AssetManager asstMgr) {
 
@@ -78,15 +77,21 @@ public class ProjectileMgr {
 		prjctlGeom.setMaterial(myProjectileMaterial);
 		prjctlGeom.setLocalTranslation(loc);
 		prjctlGeom.setLocalScale(myProjectileSize);
-		myProjectileCollisionShape = new SphereCollisionShape(myProjectileSize);
-		RigidBodyControl prjctlRBC = new RigidBodyControl(myProjectileCollisionShape, myProjectileSize * 10);
-		prjctlRBC.setCcdMotionThreshold(0.001f);
+
+		RigidBodyControl prjctlRBC = makeRegularProjectileCollider();
 		prjctlRBC.setLinearVelocity(vel);
 		prjctlGeom.addControl(prjctlRBC);
 		parentNode.attachChild(prjctlGeom);
 		return prjctlRBC;
 		 
 		// return prjctlGeom;
+	}
+	private RigidBodyControl makeRegularProjectileCollider() {
+		SphereCollisionShape projCollisionShape = new SphereCollisionShape(myProjectileSize);
+		RigidBodyControl prjctlRBC = new RigidBodyControl(projCollisionShape, myProjectileSize * 10);
+		prjctlRBC.setCcdMotionThreshold(0.001f);
+		
+		return prjctlRBC;
 	}
 	public void cmdBiggerProjectile() {
 		myProjectileSize *= 1.1f;

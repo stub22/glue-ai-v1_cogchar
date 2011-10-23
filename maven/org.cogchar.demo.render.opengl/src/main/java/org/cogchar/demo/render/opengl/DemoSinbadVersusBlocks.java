@@ -82,7 +82,7 @@ public class DemoSinbadVersusBlocks extends SimpleApplication implements AnimEve
 
 
 //        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
-        PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
+        PhysicsStuffBuilder.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
         initWall(2,1,1);
         setupLight();
 

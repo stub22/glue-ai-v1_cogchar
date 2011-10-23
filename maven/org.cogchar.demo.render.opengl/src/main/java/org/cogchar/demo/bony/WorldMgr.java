@@ -4,7 +4,10 @@
  */
 package org.cogchar.demo.bony;
 
+import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.light.AmbientLight;
@@ -13,11 +16,27 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
+import org.cogchar.demo.render.opengl.PhysicsStuffBuilder;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class WorldMgr {
+	private BulletAppState myPhysicsAppState;
+	protected void initPhysAppStuff(AssetManager asstMgr, AppStateManager stateMgr,
+					Node parentNode) { 
+		myPhysicsAppState = new BulletAppState();
+		myPhysicsAppState.setEnabled(true);
+		stateMgr.attach(myPhysicsAppState);	
+		PhysicsSpace ps = getPhysicsSpace();
+		// Turn on the blue wireframe collision bounds.
+		ps.enableDebug(asstMgr);
+		PhysicsStuffBuilder.createPhysicsTestWorld(parentNode, asstMgr, ps);
+	
+	}
+	protected PhysicsSpace getPhysicsSpace() {
+		return myPhysicsAppState.getPhysicsSpace();
+	}	
 	public static DirectionalLight makeDirectionalLight() {
 
         //   rootNode.addLight(al);
