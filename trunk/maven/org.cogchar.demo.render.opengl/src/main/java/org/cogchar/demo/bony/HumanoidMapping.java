@@ -16,7 +16,7 @@ import com.jme3.scene.debug.SkeletonDebugger;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class HumanoidFuncs {
+public class HumanoidMapping {
 	public static void attachDebugSkeleton(Node humanoidModel, AssetManager assetMgr) { 
 		  
         AnimControl humanoidControl = humanoidModel.getControl(AnimControl.class);
@@ -60,4 +60,6 @@ public class HumanoidFuncs {
         //  Oto's head is almost rigid
         //    myHumanoidKRC.setJointLimit("head", 0, 0, eighth_pi, -eighth_pi, 0, 0);
 	}
+	
+	
 }

@@ -62,7 +62,7 @@ public class BowlAtHumanoidActions {
         }, 
         BIGGER_PROJECTILE {
             void act(BowlAtHumanoidApp app) {
-                app.cmdBiggerProjectile();
+                app.getProjectileMgr().cmdBiggerProjectile();
             }
             Trigger[] makeTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_PERIOD) };
@@ -70,7 +70,7 @@ public class BowlAtHumanoidActions {
         },
         SMALLER_PROJECTILE {
             void act(BowlAtHumanoidApp app) {
-                app.cmdSmallerProjectile();
+                app.getProjectileMgr().cmdSmallerProjectile();
             }
             Trigger[] makeTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_COMMA) };
