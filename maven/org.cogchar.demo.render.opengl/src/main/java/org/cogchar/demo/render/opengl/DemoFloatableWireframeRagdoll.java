@@ -40,7 +40,7 @@ public class DemoFloatableWireframeRagdoll extends SimpleApplication implements 
         bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         inputManager.addMapping("Pull ragdoll up", new MouseButtonTrigger(0));
         inputManager.addListener(this, "Pull ragdoll up");
-        PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
+        PhysicsStuffBuilder.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
         createRagDoll();
     }
 

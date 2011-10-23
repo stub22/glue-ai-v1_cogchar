@@ -102,7 +102,7 @@ public class DemoYouBowlAtSinbad extends SimpleApplication implements RagdollCol
         bulletCollisionShape = new SphereCollisionShape(1.0f);
 
 //        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
-        PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
+        PhysicsStuffBuilder.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
         setupLight();
 
         model = (Node) assetManager.loadModel("Models/Sinbad/Sinbad.mesh.xml");

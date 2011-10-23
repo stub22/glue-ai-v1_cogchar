@@ -30,7 +30,7 @@ import com.jme3.texture.Texture;
  *
  * @author normenhansen
  */
-public class PhysicsTestHelper {
+public class PhysicsStuffBuilder {
 	public static final String GEOM_BOX = "Box";
 	public static final String GEOM_FLOOR = "Floor";
 	public static final String GEOM_SOCCER_BALL = "Soccer ball";

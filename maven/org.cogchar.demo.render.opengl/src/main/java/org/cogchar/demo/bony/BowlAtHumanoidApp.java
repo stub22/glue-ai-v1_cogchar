@@ -43,14 +43,14 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.system.AppSettings;
 
-import org.cogchar.demo.render.opengl.PhysicsTestHelper;
+import org.cogchar.demo.render.opengl.PhysicsStuffBuilder;
 
 /**
  * JMonkey Team Comment as of about August 2011:
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
  */
 public class BowlAtHumanoidApp extends SimpleApplication {
-	private BulletAppState myPhysicsAppState;
+
 	private HumanoidRagdollWrapper myHumanoidWrapper;
 	private ProjectileMgr myPrjctlMgr;
 	private	WorldMgr myWorldMgr;
@@ -83,9 +83,7 @@ public class BowlAtHumanoidApp extends SimpleApplication {
 		BowlAtHumanoidActions.setupActionListeners(inputManager, this);
 		myHumanoidWrapper.boogie();
 	}
-	private PhysicsSpace getPhysicsSpace() {
-		return myPhysicsAppState.getPhysicsSpace();
-	}	
+
 	public HumanoidRagdollWrapper getHumdWrap()  {
 		return myHumanoidWrapper;
 	}
@@ -93,7 +91,7 @@ public class BowlAtHumanoidApp extends SimpleApplication {
 		return myPrjctlMgr;
 	}	
 	public void cmdShoot() {
-		myPrjctlMgr.fireProjectileFromCamera(cam, rootNode, getPhysicsSpace());	
+		myPrjctlMgr.fireProjectileFromCamera(cam, rootNode, myWorldMgr.getPhysicsSpace());	
 	}
 	public void cmdBoom() {
 		/*
@@ -114,20 +112,13 @@ public class BowlAtHumanoidApp extends SimpleApplication {
 		
 	}
 	private void initHumanoidStuff() { 
-		myHumanoidWrapper.initStuff(assetManager, rootNode, getPhysicsSpace());
+		myHumanoidWrapper.initStuff(assetManager, rootNode, myWorldMgr.getPhysicsSpace());
 	}
 	private void initProjectileStuff() { 
 		myPrjctlMgr.initStuff(assetManager);
 	}
 	private void initPhysicsStuff() { 
-		myPhysicsAppState = new BulletAppState();
-		myPhysicsAppState.setEnabled(true);
-		stateManager.attach(myPhysicsAppState);
-
-		// Turn on the blue wireframe collision bounds.
-		myPhysicsAppState.getPhysicsSpace().enableDebug(assetManager);
-
-		PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, myPhysicsAppState.getPhysicsSpace());
+		myWorldMgr.initPhysAppStuff(assetManager, stateManager, rootNode);
 	}
 	private void initCameraAndLights() {
 		cam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));
