@@ -53,7 +53,11 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 			ANIM_STAND_BACK = "StandUpBack",
 			ANIM_DANCE = "Dance",
 			ANIM_IDLE_TOP = "IdleTop",
-			PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml";
+			PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",
+			PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md",
+			SKEL_DEBUG_NAME = "hrwSkelDebg";
+	
+	private static float DEFAULT_ANIM_BLEND_RATE = 0.5f;
 	
 	public void initStuff(AssetManager asstMgr, Node parentNode, PhysicsSpace ps) {
 		myHumanoidModelNode = (Node) asstMgr.loadModel(PATH_HUMANOID_MESH);
@@ -101,10 +105,10 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		myHumanoidModelNode.setLocalRotation(q);
 		if (angles[0] < 0) {
 			myHumanoidAnimChannel.setAnim(ANIM_STAND_BACK);
-			myHumanoidKRC.blendToKinematicMode(0.5f);
+			myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
 		} else {
 			myHumanoidAnimChannel.setAnim(ANIM_STAND_FRONT);
-			myHumanoidKRC.blendToKinematicMode(0.5f);
+			myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
 		}
 	}
 
@@ -140,13 +144,14 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	
 	public void boogie() { 
 		myHumanoidAnimChannel.setAnim(ANIM_DANCE);
-		myHumanoidKRC.blendToKinematicMode(0.5f);
+		myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
 	}
 	public static void attachDebugSkeleton(Node humanoidModel, AssetManager assetMgr) { 
 		  
         AnimControl humanoidControl = humanoidModel.getControl(AnimControl.class);
-        SkeletonDebugger humanoidSkeletonDebug = new SkeletonDebugger("skeleton", humanoidControl.getSkeleton());
-        Material mat2 = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
+        SkeletonDebugger humanoidSkeletonDebug = 
+				new SkeletonDebugger(SKEL_DEBUG_NAME, humanoidControl.getSkeleton());
+        Material mat2 = new Material(assetMgr, PATH_UNSHADED_MAT);
         mat2.getAdditionalRenderState().setWireframe(true);
         mat2.setColor("Color", ColorRGBA.Green);
         mat2.getAdditionalRenderState().setDepthTest(false);
