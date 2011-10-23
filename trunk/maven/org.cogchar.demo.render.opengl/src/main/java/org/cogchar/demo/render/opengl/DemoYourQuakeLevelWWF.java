@@ -33,7 +33,6 @@
 package org.cogchar.demo.render.opengl;
 
 import com.jme3.bullet.BulletAppState;
-import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.HttpZipLocator;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.PhysicsSpace;
@@ -51,8 +50,9 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.plugins.ogre.OgreMeshKey;
 import java.io.File;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
-public class DemoYourQuakeLevelWWF extends SimpleApplication implements ActionListener {
+public class DemoYourQuakeLevelWWF extends DemoApp implements ActionListener {
 	static String LOCAL_SCENE_PATH = "jme_asset_zips/quake3level.zip";
 	static String HTTP_SCENE_PATH = "http://jmonkeyengine.googlecode.com/files/quake3level.zip";
 	
@@ -63,12 +63,15 @@ public class DemoYourQuakeLevelWWF extends SimpleApplication implements ActionLi
     private static boolean useHttp = false;
     private boolean left=false,right=false,up=false,down=false;
 
+	public DemoYourQuakeLevelWWF(String lwjglRendererName) {
+		super(lwjglRendererName);
+	}
     public static void main(String[] args) {
         File file = new File(LOCAL_SCENE_PATH);
         if (!file.exists()) {
             useHttp = true;
         }
-        DemoYourQuakeLevelWWF app = new DemoYourQuakeLevelWWF();
+        DemoYourQuakeLevelWWF app = new DemoYourQuakeLevelWWF(DemoApp.DEFAULT_RENDERER_NAME);
         app.start();
     }
 

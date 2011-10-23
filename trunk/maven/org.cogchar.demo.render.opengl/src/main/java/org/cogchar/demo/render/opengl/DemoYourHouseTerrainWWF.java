@@ -32,24 +32,20 @@
 
 package org.cogchar.demo.render.opengl;
 
-import com.jme3.app.SimpleApplication;
-import com.jme3.asset.TextureKey;
 import com.jme3.asset.plugins.HttpZipLocator;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
-import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
 import java.io.File;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
-public class DemoYourHouseTerrainWWF extends SimpleApplication {
+public class DemoYourHouseTerrainWWF extends DemoApp {
 
 	static String LOCAL_SCENE_PATH = "jme_asset_zips/wildhouse.zip";
 	static String HTTP_SCENE_PATH = "http://jmonkeyengine.googlecode.com/files/wildhouse.zip";
@@ -58,9 +54,12 @@ public class DemoYourHouseTerrainWWF extends SimpleApplication {
     private Geometry sphere = new Geometry("Sky", sphereMesh);
     private static boolean useHttp = false;
 
+	public DemoYourHouseTerrainWWF(String lwjglRendererName) {
+		super(lwjglRendererName);
+	}
     public static void main(String[] args) {
      
-        DemoYourHouseTerrainWWF app = new DemoYourHouseTerrainWWF();
+        DemoYourHouseTerrainWWF app = new DemoYourHouseTerrainWWF(DemoApp.DEFAULT_RENDERER_NAME);
         app.start();
     }
 

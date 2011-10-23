@@ -32,6 +32,7 @@
 
 package org.cogchar.demo.render.opengl;
 
+import org.cogchar.render.opengl.bony.app.DemoApp;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -43,10 +44,12 @@ import com.jme3.scene.debug.Grid;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.debug.WireSphere;
 
-public class DemoDrawnShapes extends SimpleApplication {
-
+public class DemoDrawnShapes extends DemoApp {
+	public DemoDrawnShapes(String lwjglRendererName) {
+		super(lwjglRendererName);
+	}
     public static void main(String[] args){
-        DemoDrawnShapes app = new DemoDrawnShapes();
+        DemoDrawnShapes app = new DemoDrawnShapes(DemoApp.DEFAULT_RENDERER_NAME);
         app.start();
     }
 
