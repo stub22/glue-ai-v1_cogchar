@@ -103,7 +103,7 @@ public class DemoSindbadVersusBalls extends DemoApp implements ActionListener {
     stateManager.attach(bulletAppState);
 
     // init a physical test scene
-    PhysicsTestHelper.createPhysicsTestWorldSoccer(rootNode, assetManager, bulletAppState.getPhysicsSpace());
+    PhysicsStuffBuilder.createPhysicsTestWorldSoccer(rootNode, assetManager, bulletAppState.getPhysicsSpace());
     setupKeys();
 
     // Add a physics character to the world

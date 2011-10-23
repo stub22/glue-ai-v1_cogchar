@@ -32,8 +32,6 @@
 
 package org.cogchar.demo.render.opengl;
 
-import com.jme3.app.SimpleApplication;
-import com.jme3.bounding.BoundingBox;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
@@ -54,12 +52,17 @@ import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.math.Quaternion;
+import com.jme3.system.AppSettings;
 /** Sample 8 - how to let the user pick (select) objects in the scene 
  * using the mouse or key presses. Can be used for shooting, opening doors, etc. */
-public class DemoYouPickStuff extends SimpleApplication {
-
+public class DemoYouPickStuff extends DemoApp {
+  public DemoYouPickStuff(String lwjglRendererName) {
+	  super(lwjglRendererName);
+  }	  
   public static void main(String[] args) {
-    DemoYouPickStuff app = new DemoYouPickStuff();
+	  
+	String lwjglRendererName = AppSettings.LWJGL_OPENGL1;
+    DemoYouPickStuff app = new DemoYouPickStuff(lwjglRendererName);
     app.start();
   }
   Node shootables;
