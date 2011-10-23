@@ -43,6 +43,16 @@
       <artifactId>ext.bundle.opengl.nifty</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.jmonkeyengine.mvn.jme3</groupId>
+      <artifactId>jmonkeyengine3</artifactId>
+      <version>3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jmonkeyengine.mvn.jme3</groupId>
+      <artifactId>jME3-jbullet</artifactId>
+      <version>3.0</version>
+    </dependency>
   </dependencies>
 </project>
 

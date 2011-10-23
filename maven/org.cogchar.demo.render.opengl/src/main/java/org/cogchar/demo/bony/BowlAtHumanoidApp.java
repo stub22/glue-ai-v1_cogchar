@@ -42,6 +42,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.LoopMode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -75,27 +76,21 @@ import org.cogchar.demo.render.opengl.ThrowableBombRigidBodyControl;
  * JMonkey Team Comment as of about August 2011:
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
  */
-public class BowlAtHumanoidApp extends SimpleApplication implements RagdollCollisionListener, AnimEventListener {
-
-	private Node myHumanoidModelNode;
+public class BowlAtHumanoidApp extends SimpleApplication {
 	private BulletAppState myPhysicsAppState;
-	private KinematicRagdollControl myHumanoidKRC;
-	private float myProjectileSize = 1f;
-	private Material myProjectileMaterial;
-	private Sphere myProjectileSphereMesh;
-	private SphereCollisionShape myProjectileCollisionShape;
-	private AnimChannel myHumanoidAnimChannel;
-	private static String 
+	//private Node myHumanoidModelNode;
+	//private KinematicRagdollControl myHumanoidKRC;
+	//private AnimChannel myHumanoidAnimChannel;
+	private HumanoidRagdollWrapper myHumanoidWrapper;
+	private ProjectileMgr myPrjctlMgr;
+	private	WorldMgr myWorldMgr;
+	protected static String 
 			GEOM_FLOOR = "Floor",
-			GEOM_PRJCT = "projectile",
-			GEOM_BOOM = "boom",
-			ANIM_STAND_FRONT = "StandUpFront",
-			ANIM_STAND_BACK = "StandUpBack",
-			ANIM_DANCE = "Dance",
-			ANIM_IDLE_TOP = "IdleTop",
-			PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",
-			PATH_PRJCT_MAT = "Common/MatDefs/Misc/Unshaded.j3md",
-			PATH_ROCK_TEXTURE = "Textures/Terrain/Rock/Rock.PNG",
+			//ANIM_STAND_FRONT = "StandUpFront",
+			//ANIM_STAND_BACK = "StandUpBack",
+			//ANIM_DANCE = "Dance",
+			//ANIM_IDLE_TOP = "IdleTop",
+			//PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",
 			PATH_DEFAULT_FONT = "Interface/Fonts/Default.fnt";
 
 	public static void main(String[] args) {
@@ -107,52 +102,32 @@ public class BowlAtHumanoidApp extends SimpleApplication implements RagdollColli
 		// Set to OpenGL - 1 mode for 915GM graphics controller
 		AppSettings settings = new AppSettings(true);
 		settings.setRenderer(lwjglRendererName);		
-		setSettings(settings);	
+		setSettings(settings);
+		myPrjctlMgr = new ProjectileMgr();
+		myHumanoidWrapper = new HumanoidRagdollWrapper();
+		myWorldMgr = new WorldMgr();
 	}
 	public void cmdToggleKinMode() {
-		myHumanoidKRC.setEnabled(!myHumanoidKRC.isEnabled());
-		myHumanoidKRC.setRagdollMode();
+		myHumanoidWrapper.toString();
 	}
 
 	public void cmdStandUp() {
-		Vector3f v = new Vector3f();
-		v.set(myHumanoidModelNode.getLocalTranslation());
-		v.y = 0;
-		myHumanoidModelNode.setLocalTranslation(v);
-		Quaternion q = new Quaternion();
-		float[] angles = new float[3];
-		myHumanoidModelNode.getLocalRotation().toAngles(angles);
-		q.fromAngleAxis(angles[1], Vector3f.UNIT_Y);
-		myHumanoidModelNode.setLocalRotation(q);
-		if (angles[0] < 0) {
-			myHumanoidAnimChannel.setAnim(ANIM_STAND_BACK);
-			myHumanoidKRC.blendToKinematicMode(0.5f);
-		} else {
-			myHumanoidAnimChannel.setAnim(ANIM_STAND_FRONT);
-			myHumanoidKRC.blendToKinematicMode(0.5f);
-		}
+		myHumanoidWrapper.standUp();
 	}
 
 	public void cmdBoogie() {
-		myHumanoidAnimChannel.setAnim(ANIM_DANCE);
-		myHumanoidKRC.blendToKinematicMode(0.5f);
+		myHumanoidWrapper.boogie();
+//		myHumanoidAnimChannel.setAnim(ANIM_DANCE);
+//		myHumanoidKRC.blendToKinematicMode(0.5f);
 	}
 
 	public void cmdShoot() {
-		Geometry prjctlGeom = new Geometry(GEOM_PRJCT, myProjectileSphereMesh);
-		prjctlGeom.setMaterial(myProjectileMaterial);
-		prjctlGeom.setLocalTranslation(cam.getLocation());
-		prjctlGeom.setLocalScale(myProjectileSize);
-		myProjectileCollisionShape = new SphereCollisionShape(myProjectileSize);
-		RigidBodyControl prjctlNode = new RigidBodyControl(myProjectileCollisionShape, myProjectileSize * 10);
-		prjctlNode.setCcdMotionThreshold(0.001f);
-		prjctlNode.setLinearVelocity(cam.getDirection().mult(80));
-		prjctlGeom.addControl(prjctlNode);
-		rootNode.attachChild(prjctlGeom);
-		getPhysicsSpace().add(prjctlNode);
+		myPrjctlMgr.fireProjectileFromCamera(cam, rootNode, getPhysicsSpace());
+		
 	}
 
 	public void cmdBoom() {
+		/*
 		Geometry prjctlGeom = new Geometry(GEOM_BOOM, myProjectileSphereMesh);
 		prjctlGeom.setMaterial(myProjectileMaterial);
 		prjctlGeom.setLocalTranslation(cam.getLocation());
@@ -166,54 +141,51 @@ public class BowlAtHumanoidApp extends SimpleApplication implements RagdollColli
 		prjctlGeom.addControl(prjctlNode);
 		rootNode.attachChild(prjctlGeom);
 		getPhysicsSpace().add(prjctlNode);
+		 * */
+		
 	}
 
-	public void cmdBiggerProjectile() {
-		myProjectileSize *= 1.1f;
+	private void initProjectileStuff() { 
+		myPrjctlMgr.initStuff(assetManager);
 	}
-
-	public void cmdSmallerProjectile() {
-		myProjectileSize *= 0.9f;
+	public ProjectileMgr getProjectileMgr() { 
+		return myPrjctlMgr;
 	}
-
-	public void simpleInitApp() {
-		initCrossHairs();
-		initProjectileMaterial();
-
-		cam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));
-		cam.setRotation(new Quaternion(-2.302544E-4f, 0.99302495f, -0.117888905f, -0.0019395084f));
-
-
+	private void initPhysicsStuff() { 
 		myPhysicsAppState = new BulletAppState();
 		myPhysicsAppState.setEnabled(true);
 		stateManager.attach(myPhysicsAppState);
-		myProjectileSphereMesh = new Sphere(32, 32, 1.0f, true, false);
-		myProjectileSphereMesh.setTextureMode(TextureMode.Projected);
-		myProjectileCollisionShape = new SphereCollisionShape(1.0f);
 
 		// Turn on the blue wireframe collision bounds.
 		myPhysicsAppState.getPhysicsSpace().enableDebug(assetManager);
 
 		PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, myPhysicsAppState.getPhysicsSpace());
-		addLightToRootNode(WorldFuncs.makeDirectionalLight());
+	}
+	private void initCameraAndLights() {
+		cam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));
+		cam.setRotation(new Quaternion(-2.302544E-4f, 0.99302495f, -0.117888905f, -0.0019395084f));
 		setAppSpeed(1.3f);
 		flyCam.setMoveSpeed(50);
-
+		addLightToRootNode(WorldMgr.makeDirectionalLight());		
+	}
+	private void initHumanoidStuff() { 
+		myHumanoidWrapper.initStuff(assetManager, rootNode, getPhysicsSpace());
+		/*
 		myHumanoidModelNode = (Node) assetManager.loadModel(PATH_HUMANOID_MESH);
 
 		// This was commented out in JMonkey code:
 		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));
 
 		// Turn on the green bone skeleton debug.
-		HumanoidFuncs.attachDebugSkeleton(myHumanoidModelNode, getAssetManager());
+		HumanoidMgr.attachDebugSkeleton(myHumanoidModelNode, getAssetManager());
 
 		//Note: PhysicsRagdollControl is still TODO, constructor will change
 		myHumanoidKRC = new KinematicRagdollControl(0.5f);
-		HumanoidFuncs.addHumanoidBonesToRagdoll(myHumanoidKRC);
+		HumanoidMgr.addHumanoidBonesToRagdoll(myHumanoidKRC);
 		myHumanoidKRC.addCollisionListener(this);
 		myHumanoidModelNode.addControl(myHumanoidKRC);
 
-		HumanoidFuncs.applyHumanoidJointLimits(myHumanoidKRC);
+		HumanoidMgr.applyHumanoidJointLimits(myHumanoidKRC);
 
 		getPhysicsSpace().add(myHumanoidKRC);
 
@@ -223,6 +195,15 @@ public class BowlAtHumanoidApp extends SimpleApplication implements RagdollColli
 		AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
 		myHumanoidAnimChannel = humanoidControl.createChannel();
 		humanoidControl.addListener(this);
+		*/
+	}
+	public void simpleInitApp() {
+		initProjectileStuff();
+		guiFont = assetManager.loadFont(PATH_DEFAULT_FONT);
+		WorldMgr.makeCrossHairs(assetManager, guiNode, guiFont, settings);
+		initPhysicsStuff();
+		initCameraAndLights();
+		initHumanoidStuff();
 		BowlAtHumanoidActions.setupActionListeners(inputManager, this);
 		cmdBoogie();
 	}
@@ -239,38 +220,6 @@ public class BowlAtHumanoidApp extends SimpleApplication implements RagdollColli
 	private PhysicsSpace getPhysicsSpace() {
 		return myPhysicsAppState.getPhysicsSpace();
 	}
-
-	public void initProjectileMaterial() {
-
-		myProjectileMaterial = new Material(assetManager, PATH_PRJCT_MAT);
-		TextureKey key2 = new TextureKey(PATH_ROCK_TEXTURE);
-		key2.setGenerateMips(true);
-		Texture tex2 = assetManager.loadTexture(key2);
-		myProjectileMaterial.setTexture("ColorMap", tex2);
-	}
-
-	protected void initCrossHairs() {
-		guiFont = assetManager.loadFont(PATH_DEFAULT_FONT);
-		BitmapText ch = new BitmapText(guiFont, false);
-		ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
-		ch.setText("+"); // crosshairs
-		ch.setLocalTranslation( // center
-				settings.getWidth() / 2 - guiFont.getCharSet().getRenderedSize() / 3 * 2,
-				settings.getHeight() / 2 + ch.getLineHeight() / 2, 0);
-		guiNode.attachChild(ch);
-	}
-
-	public void collide(Bone bone, PhysicsCollisionObject object, PhysicsCollisionEvent event) {
-		if (object.getUserObject() != null && object.getUserObject() instanceof Geometry) {
-			Geometry geom = (Geometry) object.getUserObject();
-			if (GEOM_FLOOR.equals(geom.getName())) {
-				return;
-			}
-		}
-		myHumanoidKRC.setRagdollMode();
-
-	}
-
 
 	/*   
 	float elTime = 0;
@@ -321,22 +270,5 @@ public class BowlAtHumanoidApp extends SimpleApplication implements RagdollColli
 //        }
 	}
 
-	public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
-//        if(channel.getAnimationName().equals("StandUpFront")){
-//            channel.setAnim("Dance");
-//        }
 
-		if (channel.getAnimationName().equals(ANIM_STAND_BACK) || channel.getAnimationName().equals(ANIM_STAND_FRONT)) {
-			channel.setLoopMode(LoopMode.DontLoop);
-			channel.setAnim(ANIM_IDLE_TOP, 5);
-			channel.setLoopMode(LoopMode.Loop);
-		}
-//        if(channel.getAnimationName().equals("IdleTop")){
-//            channel.setAnim("StandUpFront");
-//        }
-
-	}
-
-	public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
-	}
 }
