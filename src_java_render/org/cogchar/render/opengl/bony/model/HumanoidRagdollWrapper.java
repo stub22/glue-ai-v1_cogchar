@@ -66,7 +66,10 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 
 		//Note: PhysicsRagdollControl is still TODO, constructor will change
 		myHumanoidKRC = new KinematicRagdollControl(0.5f);
-		HumanoidMapping.addHumanoidBonesToRagdoll(myHumanoidKRC);
+		
+		HumanoidBoneConfig hbc = new HumanoidBoneConfig();
+		hbc.attachRagdollBones(this);
+
 		myHumanoidKRC.addCollisionListener(this);
 		myHumanoidModelNode.addControl(myHumanoidKRC);
 
@@ -151,5 +154,8 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
         humanoidSkeletonDebug.setLocalTranslation(humanoidModel.getLocalTranslation());
 		
 		humanoidModel.attachChild(humanoidSkeletonDebug);
-	}	
+	}
+	public void attachRagdollBone(HumanoidBoneDesc hbd) {
+		myHumanoidKRC.addBoneName(hbd.getSpatialName());
+	}
 }

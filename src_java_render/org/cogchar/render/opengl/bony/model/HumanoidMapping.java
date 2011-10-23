@@ -28,7 +28,7 @@ import com.jme3.scene.debug.SkeletonDebugger;
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidMapping {
-
+/*
     public static void addHumanoidBonesToRagdoll(KinematicRagdollControl krc) {
         krc.addBoneName("Ulna.L");
         krc.addBoneName("Ulna.R");
@@ -51,6 +51,8 @@ public class HumanoidMapping {
         krc.addBoneName("Clavicle.R");
 
     }
+	 * 
+	 */
 	public static void applyHumanoidJointLimits(KinematicRagdollControl krc) { 
 		float eighth_pi = FastMath.PI * 0.125f;
         krc.setJointLimit("Waist", eighth_pi, eighth_pi, eighth_pi, eighth_pi, eighth_pi, eighth_pi);
