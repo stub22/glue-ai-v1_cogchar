@@ -40,6 +40,12 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
+import java.util.List;
+import com.jme3.bullet.joints.SixDofJoint;
+import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.joints.motors.RotationalLimitMotor;
+import com.jme3.bullet.joints.motors.TranslationalLimitMotor;
+
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -48,6 +54,7 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	private Node myHumanoidModelNode;
 	private KinematicRagdollControl myHumanoidKRC;
 	private AnimChannel myHumanoidAnimChannel;
+	private	HumanoidBoneConfig	myHumanoidBoneConfig;
 	private static String 	
 			ANIM_STAND_FRONT = "StandUpFront",
 			ANIM_STAND_BACK = "StandUpBack",
@@ -58,6 +65,7 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 			SKEL_DEBUG_NAME = "hrwSkelDebg";
 	
 	private static float DEFAULT_ANIM_BLEND_RATE = 0.5f;
+	private static float KRC_WEIGHT_THRESHOLD = 0.5f;
 	
 	public void initStuff(AssetManager asstMgr, Node parentNode, PhysicsSpace ps) {
 		myHumanoidModelNode = (Node) asstMgr.loadModel(PATH_HUMANOID_MESH);
@@ -69,15 +77,15 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		attachDebugSkeleton(myHumanoidModelNode, asstMgr);
 
 		//Note: PhysicsRagdollControl is still TODO, constructor will change
-		myHumanoidKRC = new KinematicRagdollControl(0.5f);
+		myHumanoidKRC = new KinematicRagdollControl(KRC_WEIGHT_THRESHOLD);
 		
-		HumanoidBoneConfig hbc = new HumanoidBoneConfig();
-		hbc.attachRagdollBones(this);
+		myHumanoidBoneConfig = new HumanoidBoneConfig();
+		myHumanoidBoneConfig.attachRagdollBones(this);
 
 		myHumanoidKRC.addCollisionListener(this);
 		myHumanoidModelNode.addControl(myHumanoidKRC);
 
-		HumanoidMapping.applyHumanoidJointLimits(myHumanoidKRC);
+		HumanoidBoneConfig.applyHumanoidJointLimits(myHumanoidKRC);
 
 		ps.add(myHumanoidKRC);
 
@@ -163,4 +171,50 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	public void attachRagdollBone(HumanoidBoneDesc hbd) {
 		myHumanoidKRC.addBoneName(hbd.getSpatialName());
 	}
+	private float myWigglePhase = 0.0f;
+	public void wiggle(float tpf) { 
+		wiggle(myHumanoidBoneConfig, tpf);
+	}
+	public void wiggle(HumanoidBoneConfig hbc, float tpf) {
+		myWigglePhase += tpf / 10.0f;
+		if (myWigglePhase > 1.0f) {
+			System.out.println("************ Wiggle phase reset");
+			myWigglePhase = 0.0f;
+		}
+		float amplitude = 5.0f;
+		float wigglePhaseRad = FastMath.TWO_PI  * myWigglePhase;
+		float wiggleVel = amplitude * FastMath.sin2(wigglePhaseRad);
+
+		if (myWigglePhase < 0.5) {
+			wiggleVel = amplitude;
+		} else {
+			wiggleVel = -1.0f * amplitude;
+		}
+		List<HumanoidBoneDesc> descs = hbc.getBoneDescs();
+		for(HumanoidBoneDesc hbd : descs) {
+			String boneName = hbd.getSpatialName();
+			if (!boneName.equals("Head")) {
+				continue;
+			}
+			// Don't have a direct need for the PRB yet, but we're sure to later!
+			PhysicsRigidBody prb = myHumanoidKRC.getBoneRigidBody(boneName);
+			SixDofJoint boneJoint = myHumanoidKRC.getJoint(boneName);
+			RotationalLimitMotor xRotMotor =  boneJoint.getRotationalLimitMotor(0);
+			RotationalLimitMotor yRotMotor =  boneJoint.getRotationalLimitMotor(1);
+			RotationalLimitMotor zRotMotor =  boneJoint.getRotationalLimitMotor(2);
+			
+			xRotMotor.setTargetVelocity(wiggleVel);
+			yRotMotor.setTargetVelocity(wiggleVel);
+			zRotMotor.setTargetVelocity(wiggleVel);
+		}
+	}
+	/*
+	 *        
+	 joint.getRotationalLimitMotor(0).setHiLimit(maxX);
+        joint.getRotationalLimitMotor(0).setLoLimit(minX);
+        joint.getRotationalLimitMotor(1).setHiLimit(maxY);
+        joint.getRotationalLimitMotor(1).setLoLimit(minY);
+        joint.getRotationalLimitMotor(2).setHiLimit(maxZ);
+        joint.getRotationalLimitMotor(2).setLoLimit(minZ);
+	 */
 }
