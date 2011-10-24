@@ -33,7 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.cogchar.demo.bony;
+package org.cogchar.render.opengl.bony.demo;
 
 import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
 import org.cogchar.render.opengl.bony.world.WorldMgr;
@@ -54,14 +54,17 @@ public class BowlAtHumanoidApp extends DemoApp {
 	private ProjectileMgr myPrjctlMgr;
 	private	WorldMgr myWorldMgr;
 	
-
+	private	String		myHumanoidMeshPath;
+	
+	public static String  PATH_HUMANOID_MESH = "jme3/models_20110917/sinbad/Sinbad.mesh.xml";
 
 	public static void main(String[] args) {
-		BowlAtHumanoidApp app = new BowlAtHumanoidApp(DemoApp.DEFAULT_RENDERER_NAME);
+		BowlAtHumanoidApp app = new BowlAtHumanoidApp(DemoApp.DEFAULT_RENDERER_NAME, PATH_HUMANOID_MESH);
 		app.start();
 	}
-	public BowlAtHumanoidApp(String lwjglRendererName) {
+	public BowlAtHumanoidApp(String lwjglRendererName, String pathToHumanoidMesh) {
 		super(lwjglRendererName);
+		myHumanoidMeshPath = pathToHumanoidMesh;
 		myPrjctlMgr = new ProjectileMgr();
 		myHumanoidWrapper = new HumanoidRagdollWrapper();
 		myWorldMgr = new WorldMgr();
@@ -105,7 +108,7 @@ public class BowlAtHumanoidApp extends DemoApp {
 		
 	}
 	private void initHumanoidStuff() { 
-		myHumanoidWrapper.initStuff(assetManager, rootNode, myWorldMgr.getPhysicsSpace());
+		myHumanoidWrapper.initStuff(assetManager, rootNode, myWorldMgr.getPhysicsSpace(), myHumanoidMeshPath);
 	}
 	private void initProjectileStuff() { 
 		myPrjctlMgr.initStuff(assetManager);

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cogchar.demo.bony;
+package org.cogchar.render.opengl.bony.demo;
 
 import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
 import com.jme3.input.InputManager;
