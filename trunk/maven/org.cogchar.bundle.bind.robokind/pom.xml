@@ -94,7 +94,17 @@
 			<version>1.1.4c_5</version>
 			<scope>runtime</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.avrogen</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.robokind</groupId>
+            <artifactId>org.robokind.extern.utils.messaging</artifactId>
+            <version>0.6</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
@@ -106,7 +116,7 @@
 				<configuration>
 					<instructions>
 						<Bundle-Activator>org.cogchar.bind.robokind.osgi.RobokindBindingActivator</Bundle-Activator>
-						<Export-Package>org.cogchar.*</Export-Package>
+						<Export-Package>!org.cogchar.avrogen.*,org.cogchar.*</Export-Package>
 						<Private-Package>com.thoughtworks.xstream.*, org.scalaquery.*, org.apache.commons.math.*</Private-Package>
 						<!--
 						, *;resolution:=optional
