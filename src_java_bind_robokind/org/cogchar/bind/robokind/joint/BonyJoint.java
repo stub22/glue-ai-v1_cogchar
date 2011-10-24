@@ -16,6 +16,7 @@
 
 package org.cogchar.bind.robokind.joint;
 
+import org.cogchar.avrogen.bind.robokind.RotationAxis;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.AbstractJoint;
 import org.robokind.api.motion.Joint;
@@ -33,7 +34,24 @@ public class BonyJoint extends AbstractJoint {
 	private	NormalizedDouble	myDefaultPos;
 	private	NormalizedDouble	myGoalPos;
 	private	String				myName;
+    private String              myBoneName;
+    private RotationAxis        myRotationAxis;
+    private double              myMinPosition;
+    private double              myMaxPosition;
 	
+    protected BonyJoint(Joint.Id jointId, String name, String bone, RotationAxis axis, double min, double max, double def){
+        super(jointId);
+        myName = name;
+        myBoneName = bone;
+        myRotationAxis = axis;
+        myMinPosition = min;
+        myMaxPosition = max;
+        double val = def - myMinPosition;
+        double range = myMaxPosition - myMinPosition;
+        myDefaultPos = new NormalizedDouble(val/range);
+        myGoalPos = myDefaultPos;
+    }
+    
 	protected BonyJoint(Joint.Id jointId, String name, NormalizedDouble defaultPos) {
         super(jointId);
 		myName = name;
