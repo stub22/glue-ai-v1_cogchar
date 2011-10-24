@@ -1,5 +1,6 @@
 package org.cogchar.bundle.demo.all;
 
+import java.io.File;
 import javax.swing.JFrame;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
@@ -23,9 +24,14 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
 		initRobokindJointPumperDemo(bundleCtx);
 	}
 	private void initRobokindJointPumperDemo(BundleContext bundleCtx)  throws Exception {
+        File f = new File("bonyRobotConfig.json");
 		RobokindJointBindingDemo rjbd = new RobokindJointBindingDemo();
-		rjbd.createAndRegisterRobot(bundleCtx);
-		rjbd.connectToVirtualChar(bundleCtx);
+		
+        //load robot from file
+        //rjbd.createAndRegisterRobot(bundleCtx);
+		rjbd.createAndRegisterRobot(bundleCtx, f);
+		
+        rjbd.connectToVirtualChar(bundleCtx);
 		
 	}
 	private void initOpenGLDemoStuff(BundleContext bundleCtx) throws Exception {
