@@ -134,6 +134,7 @@ public class BowlAtHumanoidApp extends DemoApp {
 	 * */
 	@Override
 	public void simpleUpdate(float tpf) {
+		myHumanoidWrapper.wiggle(tpf);
 		// System.out.println(((BoundingBox) myHumanoidModel.getWorldBound()).getYExtent());
 //        elTime += tpf;
 //        if (elTime > 3) {
