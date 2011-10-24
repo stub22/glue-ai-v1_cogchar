@@ -40,6 +40,7 @@ public class WorldMgr {
 		myPhysicsAppState.setEnabled(true);
 		stateMgr.attach(myPhysicsAppState);	
 		PhysicsSpace ps = getPhysicsSpace();
+		// ps.setGravity(Vector3f.ZERO);
 		// Turn on the blue wireframe collision bounds.
 		ps.enableDebug(asstMgr);
 		PhysicsStuffBuilder.createPhysicsTestWorld(parentNode, asstMgr, ps);
