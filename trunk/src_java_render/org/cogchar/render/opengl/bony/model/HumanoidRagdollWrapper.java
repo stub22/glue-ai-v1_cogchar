@@ -55,20 +55,20 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	private KinematicRagdollControl myHumanoidKRC;
 	private AnimChannel myHumanoidAnimChannel;
 	private	HumanoidBoneConfig	myHumanoidBoneConfig;
-	private static String 	
+	public static String 	
 			ANIM_STAND_FRONT = "StandUpFront",
 			ANIM_STAND_BACK = "StandUpBack",
 			ANIM_DANCE = "Dance",
 			ANIM_IDLE_TOP = "IdleTop",
-			PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",
+			DEFAULT_PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",
 			PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md",
 			SKEL_DEBUG_NAME = "hrwSkelDebg";
 	
 	private static float DEFAULT_ANIM_BLEND_RATE = 0.5f;
 	private static float KRC_WEIGHT_THRESHOLD = 0.5f;
 	
-	public void initStuff(AssetManager asstMgr, Node parentNode, PhysicsSpace ps) {
-		myHumanoidModelNode = (Node) asstMgr.loadModel(PATH_HUMANOID_MESH);
+	public void initStuff(AssetManager asstMgr, Node parentNode, PhysicsSpace ps, String humanoidMeshPath) {
+		myHumanoidModelNode = (Node) asstMgr.loadModel(humanoidMeshPath);
 
 		// This was commented out in JMonkey code:
 		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));

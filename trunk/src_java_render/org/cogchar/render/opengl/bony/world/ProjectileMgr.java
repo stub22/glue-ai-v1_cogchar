@@ -35,6 +35,7 @@ import com.jme3.texture.Texture;
  */
 public class ProjectileMgr {
 	private float myProjectileSize = 1f;
+	private String myProjectileTexturePath;
 	private Material myProjectileMaterial;
 	private Sphere myProjectileSphereMesh;
 	
@@ -56,7 +57,7 @@ public class ProjectileMgr {
 	public void initProjectileMaterial(AssetManager asstMgr) {
 
 		myProjectileMaterial = new Material(asstMgr, PATH_PRJCT_MAT);
-		TextureKey key2 = new TextureKey(PATH_ROCK_TEXTURE);
+		TextureKey key2 = new TextureKey(PATH_ROCK_TEXTURE); 
 		key2.setGenerateMips(true);
 		Texture tex2 = asstMgr.loadTexture(key2);
 		myProjectileMaterial.setTexture("ColorMap", tex2);
@@ -103,8 +104,9 @@ public class ProjectileMgr {
 	}
 	private RigidBodyControl makeRegularProjectileCollider() {
 		SphereCollisionShape projCollisionShape = new SphereCollisionShape(myProjectileSize);
-		RigidBodyControl prjctlRBC = new RigidBodyControl(projCollisionShape, myProjectileSize * 10);
-		prjctlRBC.setCcdMotionThreshold(0.001f);
+		float projectileMass = 10 * myProjectileSize;
+		RigidBodyControl prjctlRBC = new RigidBodyControl(projCollisionShape, projectileMass);
+		prjctlRBC.setCcdMotionThreshold(CCD_MOTION_THRESH);
 		
 		return prjctlRBC;
 	}
