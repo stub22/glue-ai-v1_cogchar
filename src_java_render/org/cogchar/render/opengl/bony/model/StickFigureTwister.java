@@ -54,6 +54,7 @@ public class StickFigureTwister {
 		Bone roots[] = csk.getRoots();
 		// System.out.println("Found " + roots.length + " root bones: " + roots);
 		Bone rootBone = roots[0];
+		dumpBonePositionsToVCP(rootBone, "rootBone");
 		Bone tgtBone = rootBone;
 		String mod = vcp.getTestChannelModifier();
 		if (mod.equals("first child")) {
@@ -61,15 +62,16 @@ public class StickFigureTwister {
 			Bone firstKid = kids.get(0);
 			tgtBone = firstKid;
 		}
-		twistBone(tpf, rootBone, tgtBone, direction);
+		twistBone(tpf, tgtBone, direction);
 	}
-	public void twistBone(float tpf, Bone rootBone, Bone tgtBone, String direction) {
+	public void dumpBonePositionsToVCP(Bone b, String prefix) { 
 		VirtCharPanel vcp = myContext.getPanel();
-		Vector3f localPos = rootBone.getLocalPosition();
-		Vector3f modelPos = rootBone.getModelSpacePosition();
+		Vector3f localPos = b.getLocalPosition();
+		Vector3f modelPos = b.getModelSpacePosition();
 		// System.out.println("================================================================");
-		vcp.setDumpText("tgtBone=" + tgtBone + ", localPos=" + localPos + ", modelPos=" + modelPos + ", localRot=" + rootBone.getLocalRotation());
-
+		vcp.setDumpText(prefix + "qryBone=" + b + ", localPos=" + localPos + ", modelPos=" + modelPos + ", localRot=" + b.getLocalRotation());		
+	}
+	public void twistBone(float tpf, Bone tgtBone, String direction) {
 
 		myWaistTwistAngle += tpf * myWaistTwistRate;
 		if (myWaistTwistAngle > FastMath.HALF_PI / 2f) {
@@ -80,7 +82,7 @@ public class StickFigureTwister {
 			myWaistTwistRate = 1;
 		}
 
-		Quaternion q = makeRotQuat(myWaistTwistAngle, direction);
+		Quaternion q = makeRotQuatForSingleAxis(myWaistTwistAngle, direction);
 		applyBoneRotQuat(tgtBone, q);
 		ScoreBoard sb = myContext.getScoreBoard();
 		if ((myTwistScoringFlag) && (sb != null)) {
@@ -89,7 +91,7 @@ public class StickFigureTwister {
 			sb.displayScore(2, "tpf=" + tpf);
 		}
 	}
-	public Quaternion makeRotQuat(float angleMag, String direction) {
+	public Quaternion makeRotQuatForSingleAxis(float angleMag, String direction) {
 		Quaternion q = new Quaternion();
 		float pitchAngle = 0.0f;
 		float rollAngle = 0.0f;

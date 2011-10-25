@@ -201,7 +201,8 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		HumanoidBoneDesc hbd = boneDescs.get(testChannelNum);
 		String boneName = hbd.getSpatialName();
 		Bone tgtBone = myHumanoidWrapper.getSpatialBone(boneName);
+		myTwister.twistBone(tpf, tgtBone, direction);
+		
 		Bone rootBone = myHumanoidWrapper.getRootBone();
-		myTwister.twistBone(tpf, rootBone, tgtBone, direction);
 	}
 }
