@@ -80,25 +80,8 @@ public class StickFigureTwister {
 			myWaistTwistRate = 1;
 		}
 
-		Quaternion q = new Quaternion();
-		// yaw, roll, pitch
-		//	System.out.println("Setting roll for bone: " + b + " to " + myWaistTwistAngle);
-
-		float pitchAngle = 0.0f;
-		float rollAngle = 0.0f;
-		float yawAngle = 0.0f;
-		if (direction.equals("pitch")) {
-			pitchAngle = myWaistTwistAngle;
-		} else if (direction.equals("roll")) {
-			rollAngle = myWaistTwistAngle;
-		} else if (direction.equals("yaw")) {
-			yawAngle = myWaistTwistAngle;
-		}
-		q.fromAngles(pitchAngle, rollAngle, yawAngle);
-		tgtBone.setUserControl(true);
-		
-		// This applies rotation q to the "initial"/"bind" orientation, putting result in "local" rot.
-		tgtBone.setUserTransforms(Vector3f.ZERO, q, Vector3f.UNIT_XYZ);
+		Quaternion q = makeRotQuat(myWaistTwistAngle, direction);
+		applyBoneRotQuat(tgtBone, q);
 		ScoreBoard sb = myContext.getScoreBoard();
 		if ((myTwistScoringFlag) && (sb != null)) {
 			sb.displayScore(0, "tgtBone=" + tgtBone);
@@ -106,6 +89,28 @@ public class StickFigureTwister {
 			sb.displayScore(2, "tpf=" + tpf);
 		}
 	}
+	public Quaternion makeRotQuat(float angleMag, String direction) {
+		Quaternion q = new Quaternion();
+		float pitchAngle = 0.0f;
+		float rollAngle = 0.0f;
+		float yawAngle = 0.0f;
+		if (direction.equals("pitch")) {
+			pitchAngle = angleMag;
+		} else if (direction.equals("roll")) {
+			rollAngle = angleMag;
+		} else if (direction.equals("yaw")) {
+			yawAngle = angleMag;
+		}
+		q.fromAngles(pitchAngle, rollAngle, yawAngle);
+		return q;
+	}
+	public void applyBoneRotQuat(Bone tgtBone, Quaternion q) {
+		tgtBone.setUserControl(true);
+		
+		// This applies rotation q to the "initial"/"bind" orientation, putting result in "local" rot.
+		tgtBone.setUserTransforms(Vector3f.ZERO, q, Vector3f.UNIT_XYZ);
+	}
+	
 	public void setScoringFlag(boolean f) {
 		myTwistScoringFlag = f;
 	}
