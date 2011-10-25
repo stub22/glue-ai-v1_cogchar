@@ -33,6 +33,7 @@ public class HumanoidBoneConfig {
 	private void makeSinbadDefaultBoneDescs() { 
 		myBoneDescs = new ArrayList<HumanoidBoneDesc>();
 		
+		// Explicitly bound to KRD in Bowl-At-Sinbad demo
         addBoneDesc("Ulna.L");
         addBoneDesc("Ulna.R");
         addBoneDesc("Chest");
@@ -52,8 +53,8 @@ public class HumanoidBoneConfig {
         addBoneDesc("Calf.R");
         addBoneDesc("Clavicle.L");
         addBoneDesc("Clavicle.R");	
-		// extras
 		
+		// extras
 		addBoneDesc("Head");
 	}
 	public static void applyHumanoidJointLimits(KinematicRagdollControl krc) { 
