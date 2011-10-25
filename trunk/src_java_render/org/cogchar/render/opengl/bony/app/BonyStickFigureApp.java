@@ -26,7 +26,7 @@ import org.cogchar.render.opengl.bony.model.StickFigureTwister;
  * @author Stu B. <www.texpedient.com>
  */
 public class BonyStickFigureApp extends BonyVirtualCharApp {
-	private StickFigureTwister		myTwister;	
+	protected StickFigureTwister		myTwister;	
 	private String					mySceneFilePath;
 	private float					myLocalSceneScale;
 	

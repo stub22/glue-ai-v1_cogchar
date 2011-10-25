@@ -60,8 +60,19 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	
 	private static float DEFAULT_ANIM_BLEND_RATE = 0.5f;
 	private static float KRC_WEIGHT_THRESHOLD = 0.5f;
-	
-	public void initStuff(AssetManager asstMgr, Node parentNode, PhysicsSpace ps, String humanoidMeshPath) {
+
+	public HumanoidBoneConfig getHBConfig() {
+		return myHumanoidBoneConfig;
+	}
+	public Bone getSpatialBone(String boneName) {
+		Bone b = myHumanoidSkeleton.getBone(boneName);
+		return b;
+	}
+	public Bone getRootBone() {
+		return myHumanoidSkeleton.getRoots()[0];
+	}
+	public void initStuff(HumanoidBoneConfig hbc, AssetManager asstMgr, Node parentNode, PhysicsSpace ps, String humanoidMeshPath) {
+		myHumanoidBoneConfig = hbc;
 		myHumanoidModelNode = (Node) asstMgr.loadModel(humanoidMeshPath);
 
 		// This was commented out in JMonkey code:
@@ -73,7 +84,6 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		//Note: PhysicsRagdollControl is still TODO, constructor will change
 		myHumanoidKRC = new KinematicRagdollControl(KRC_WEIGHT_THRESHOLD);
 		
-		myHumanoidBoneConfig = new HumanoidBoneConfig();
 		myHumanoidBoneConfig.attachRagdollBones(this);
 
 		myHumanoidKRC.addCollisionListener(this);
@@ -91,6 +101,7 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		humanoidControl.addListener(this);
 		
 	}
+
 	public void becomePuppet() { 
 		myHumanoidKRC.setKinematicMode();
 	}
