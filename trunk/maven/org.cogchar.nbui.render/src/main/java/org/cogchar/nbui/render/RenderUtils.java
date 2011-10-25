@@ -48,7 +48,7 @@ public class RenderUtils {
                 return;
             }
             app.startJMonkeyCanvas();
-            ((BonyStickFigureApp) app).setScoringFlag(true);
+           // ((BonyStickFigureApp) app).setScoringFlag(true);
         } finally {
             theLogger.info("Restoring old class loader: " + tccl);
             Thread.currentThread().setContextClassLoader(tccl);

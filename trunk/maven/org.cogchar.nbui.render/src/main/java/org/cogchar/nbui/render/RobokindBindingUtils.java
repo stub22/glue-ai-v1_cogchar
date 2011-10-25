@@ -64,10 +64,13 @@ public class RobokindBindingUtils {
 		myBundleCtx = bundleCtx;
 		BonyContext bc = RenderUtils.getBonyContext(bundleCtx);
 		BonyVirtualCharApp app = bc.getApp();
+		/*
 		BonyRagdollApp bra = (BonyRagdollApp) app;
 		DemoBonyWireframeRagdoll dbwr = bra.getRagdoll();
 		DanceDoer dd = new DanceDoer();
 		dbwr.setDanceDoer(dd);
+		 * 
+		 */
 	}
 		
 }
