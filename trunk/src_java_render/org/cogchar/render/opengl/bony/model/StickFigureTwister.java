@@ -61,7 +61,10 @@ public class StickFigureTwister {
 			Bone firstKid = kids.get(0);
 			tgtBone = firstKid;
 		}
-
+		twistBone(tpf, rootBone, tgtBone, direction);
+	}
+	public void twistBone(float tpf, Bone rootBone, Bone tgtBone, String direction) {
+		VirtCharPanel vcp = myContext.getPanel();
 		Vector3f localPos = rootBone.getLocalPosition();
 		Vector3f modelPos = rootBone.getModelSpacePosition();
 		// System.out.println("================================================================");

@@ -42,14 +42,14 @@ import org.cogchar.render.opengl.bony.world.ProjectileMgr;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
 import org.cogchar.render.opengl.bony.app.DemoApp;
-import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 
 /**
  * JMonkey Team Comment as of about August 2011:
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
  */
-public class BowlAtHumanoidApp extends BonyVirtualCharApp { // DemoApp {
+public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 
 	private HumanoidRagdollWrapper myHumanoidWrapper;
 	private ProjectileMgr myPrjctlMgr;
@@ -66,7 +66,7 @@ public class BowlAtHumanoidApp extends BonyVirtualCharApp { // DemoApp {
 		app.start();
 	}
 	public BowlAtHumanoidApp(String lwjglRendererName, String pathToHumanoidMesh, int canvWidth, int canvHeight) {
-		super(lwjglRendererName, canvWidth, canvHeight);
+		super(lwjglRendererName, canvWidth, canvHeight, pathToHumanoidMesh, 1.0f);
 		myHumanoidMeshPath = pathToHumanoidMesh;
 		myPrjctlMgr = new ProjectileMgr();
 		myHumanoidWrapper = new HumanoidRagdollWrapper();
@@ -81,7 +81,8 @@ public class BowlAtHumanoidApp extends BonyVirtualCharApp { // DemoApp {
 		initHumanoidStuff();
 		initProjectileStuff();  // Can be done at any time in this startup seq
 		BowlAtHumanoidActions.setupActionListeners(inputManager, this);
-		myHumanoidWrapper.boogie();
+		// myHumanoidWrapper.boogie();
+		myHumanoidWrapper.becomePuppet();
 	}
 
 	public HumanoidRagdollWrapper getHumdWrap()  {
@@ -141,6 +142,7 @@ public class BowlAtHumanoidApp extends BonyVirtualCharApp { // DemoApp {
 	 * */
 	@Override
 	public void simpleUpdate(float tpf) {
+		super.simpleUpdate(tpf);
 		myHumanoidWrapper.wiggle(tpf);
 		// System.out.println(((BoundingBox) myHumanoidModel.getWorldBound()).getYExtent());
 //        elTime += tpf;
