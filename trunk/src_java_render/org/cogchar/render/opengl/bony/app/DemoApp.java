@@ -14,7 +14,9 @@ import com.jme3.light.Light;
 public abstract class DemoApp extends SimpleApplication {
 	// Set to OpenGL - 1 mode for 915GM graphics controller
 	public static String DEFAULT_RENDERER_NAME = AppSettings.LWJGL_OPENGL_ANY;
+	public static int  DEFAULT_CANVAS_WIDTH = 800, DEFAULT_CANVAS_HEIGHT = 600;
 	public static String PATH_DEFAULT_FONT = "Interface/Fonts/Default.fnt";
+	
 	public DemoApp(String lwjglRendererName) {
 		AppSettings settings = new AppSettings(true);
 		settings.setRenderer(lwjglRendererName);		

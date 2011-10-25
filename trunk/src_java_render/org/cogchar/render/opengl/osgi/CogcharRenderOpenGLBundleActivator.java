@@ -28,6 +28,8 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.cogchar.render.opengl.bony.app.DemoApp;
+
 /**
  *
  * @author Stu B. <www.texpedient.com>
@@ -57,10 +59,10 @@ public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
 			ClassLoader localLoader = getClass().getClassLoader();
 			theLogger.info("Setting thread class loader to local loader: " + localLoader);
 			Thread.currentThread().setContextClassLoader(localLoader);
-			int canvasWidth = StickFigureTestMain.DEFAULT_CANVAS_WIDTH; 
-			int canvasHeight = StickFigureTestMain.DEFAULT_CANVAS_HEIGHT;
+			int canvasWidth = DemoApp.DEFAULT_CANVAS_WIDTH; 
+			int canvasHeight = DemoApp.DEFAULT_CANVAS_HEIGHT;
 
-			String lwjglRendererName = StickFigureTestMain.DEFAULT_RENDERER_NAME;
+			String lwjglRendererName = DemoApp.DEFAULT_RENDERER_NAME;
 				// String LWJGL_OPENGL1,
 				//		LWJGL_OPENGL2, LWJGL_OPENGL3, LWJGL_OPENGL_ANY;
 			System.out.println("********++++++++++++++++++++ Using: " + lwjglRendererName);
