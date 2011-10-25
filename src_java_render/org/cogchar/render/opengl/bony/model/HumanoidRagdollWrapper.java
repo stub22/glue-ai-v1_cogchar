@@ -16,23 +16,20 @@
 package org.cogchar.render.opengl.bony.model;
 
 import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.Bone;
 import com.jme3.animation.LoopMode;
-import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.RagdollCollisionListener;
-import com.jme3.bullet.control.KinematicRagdollControl;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 
 import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
 import com.jme3.animation.AnimControl;
+import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.KinematicRagdollControl;
 import com.jme3.material.Material;
@@ -40,11 +37,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
-import java.util.List;
-import com.jme3.bullet.joints.SixDofJoint;
-import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.bullet.joints.motors.RotationalLimitMotor;
-import com.jme3.bullet.joints.motors.TranslationalLimitMotor;
 
 
 /**
@@ -55,6 +47,8 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	private KinematicRagdollControl myHumanoidKRC;
 	private AnimChannel myHumanoidAnimChannel;
 	private	HumanoidBoneConfig	myHumanoidBoneConfig;
+	
+	private	Skeleton			myHumanoidSkeleton;
 	public static String 	
 			ANIM_STAND_FRONT = "StandUpFront",
 			ANIM_STAND_BACK = "StandUpBack",
@@ -96,6 +90,9 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		myHumanoidAnimChannel = humanoidControl.createChannel();
 		humanoidControl.addListener(this);
 		
+	}
+	public void becomePuppet() { 
+		myHumanoidKRC.setKinematicMode();
 	}
 	public void toggleKinMode() {
 		myHumanoidKRC.setEnabled(!myHumanoidKRC.isEnabled());
@@ -154,9 +151,11 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		myHumanoidAnimChannel.setAnim(ANIM_DANCE);
 		myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
 	}
-	public static void attachDebugSkeleton(Node humanoidModel, AssetManager assetMgr) { 
+	public void attachDebugSkeleton(Node humanoidModel, AssetManager assetMgr) { 
 		  
         AnimControl humanoidControl = humanoidModel.getControl(AnimControl.class);
+		
+		myHumanoidSkeleton = humanoidControl.getSkeleton();
         SkeletonDebugger humanoidSkeletonDebug = 
 				new SkeletonDebugger(SKEL_DEBUG_NAME, humanoidControl.getSkeleton());
         Material mat2 = new Material(assetMgr, PATH_UNSHADED_MAT);
@@ -178,7 +177,7 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	public void wiggle(HumanoidBoneConfig hbc, float tpf) {
 		myWigglePhase += tpf / 10.0f;
 		if (myWigglePhase > 1.0f) {
-			System.out.println("************ Wiggle phase reset");
+			System.out.println("************ Wiggle phase reset ------ hmmmm");
 			myWigglePhase = 0.0f;
 		}
 		float amplitude = 5.0f;
@@ -190,6 +189,14 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		} else {
 			wiggleVel = -1.0f * amplitude;
 		}
+		
+		Bone headBone = myHumanoidSkeleton.getBone("Head");
+		Bone footLeftBone = myHumanoidSkeleton.getBone("Foot.L");
+		
+		// System.out.println("Found head bone: " + headBone);
+		// System.out.println("Found left foot: " + footLeftBone);
+		
+		/*
 		List<HumanoidBoneDesc> descs = hbc.getBoneDescs();
 		for(HumanoidBoneDesc hbd : descs) {
 			String boneName = hbd.getSpatialName();
@@ -207,6 +214,8 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 			yRotMotor.setTargetVelocity(wiggleVel);
 			zRotMotor.setTargetVelocity(wiggleVel);
 		}
+		 * 
+		 */
 	}
 	/*
 	 *        
