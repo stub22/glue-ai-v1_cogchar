@@ -17,6 +17,7 @@ package org.cogchar.render.opengl.test;
 
 import org.cogchar.render.opengl.bony.app.DemoApp;
 import org.cogchar.render.opengl.bony.demo.BowlAtHumanoidApp;
+import org.cogchar.render.opengl.bony.demo.StickFigureTestMain;
 
 /**
  * @author pow
@@ -25,6 +26,7 @@ import org.cogchar.render.opengl.bony.demo.BowlAtHumanoidApp;
 
 public class RunSimulatorTest {
 	public static void main(String[] args) {
-		BowlAtHumanoidApp.main(args);
+		// BowlAtHumanoidApp.main(args);
+		StickFigureTestMain.main(args);
 	}
 }

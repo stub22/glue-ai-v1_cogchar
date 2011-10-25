@@ -43,12 +43,13 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 
 /**
  * JMonkey Team Comment as of about August 2011:
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
  */
-public class BowlAtHumanoidApp extends DemoApp {
+public class BowlAtHumanoidApp extends BonyVirtualCharApp { // DemoApp {
 
 	private HumanoidRagdollWrapper myHumanoidWrapper;
 	private ProjectileMgr myPrjctlMgr;
@@ -56,20 +57,23 @@ public class BowlAtHumanoidApp extends DemoApp {
 	
 	private	String		myHumanoidMeshPath;
 	
+	// This skeleton + mesh model is contained in the org.cogchar.bundle.render.opengl project.
 	public static String  PATH_HUMANOID_MESH = "jme3/models_20110917/sinbad/Sinbad.mesh.xml";
 
 	public static void main(String[] args) {
-		BowlAtHumanoidApp app = new BowlAtHumanoidApp(DemoApp.DEFAULT_RENDERER_NAME, PATH_HUMANOID_MESH);
+		BowlAtHumanoidApp app = new BowlAtHumanoidApp(DemoApp.DEFAULT_RENDERER_NAME, PATH_HUMANOID_MESH,
+						DemoApp.DEFAULT_CANVAS_WIDTH, DemoApp.DEFAULT_CANVAS_HEIGHT);
 		app.start();
 	}
-	public BowlAtHumanoidApp(String lwjglRendererName, String pathToHumanoidMesh) {
-		super(lwjglRendererName);
+	public BowlAtHumanoidApp(String lwjglRendererName, String pathToHumanoidMesh, int canvWidth, int canvHeight) {
+		super(lwjglRendererName, canvWidth, canvHeight);
 		myHumanoidMeshPath = pathToHumanoidMesh;
 		myPrjctlMgr = new ProjectileMgr();
 		myHumanoidWrapper = new HumanoidRagdollWrapper();
 		myWorldMgr = new WorldMgr();
 	}
-	public void simpleInitApp() {
+	@Override public void simpleInitApp() {
+		super.simpleInitApp();
 		initFonts();
 		WorldMgr.makeCrossHairs(assetManager, guiNode, guiFont, settings);
 		initPhysicsStuff();

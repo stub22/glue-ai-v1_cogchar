@@ -33,7 +33,7 @@ import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class BonyVirtualCharApp extends SimpleApplication {
+public class BonyVirtualCharApp extends DemoApp {
 
 	// private		AnimChannel				channel;
 
@@ -43,7 +43,7 @@ public class BonyVirtualCharApp extends SimpleApplication {
 	private		int						myCanvasWidth, myCanvasHeight;
 
 	public BonyVirtualCharApp(String lwjglRendererName, int canvasWidth, int canvasHeight) {
-		super();
+		super(lwjglRendererName);
 		myLWJGL_RendererName = lwjglRendererName;
 		myCanvasWidth = canvasWidth;
 		myCanvasHeight = canvasHeight;

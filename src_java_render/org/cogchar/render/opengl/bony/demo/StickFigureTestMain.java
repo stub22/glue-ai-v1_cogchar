@@ -28,6 +28,7 @@ import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.jme3.system.AppSettings;
+import org.cogchar.render.opengl.bony.app.DemoApp;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -38,26 +39,18 @@ public class StickFigureTestMain {
 	static String	sceneFilePath = "leo_hanson_tests/test3/test3.scene";
 	static float	sceneLocalScale = 0.5f;
 	
-	public static String  DEFAULT_RENDERER_NAME = AppSettings.LWJGL_OPENGL_ANY; 
-				// LWJGL_OPENGL1; // LWJGL_OPENGL_ANY
-				// String LWJGL_OPENGL1,
-				//		LWJGL_OPENGL2, LWJGL_OPENGL3, LWJGL_OPENGL_ANY;		
-
-	public static int  DEFAULT_CANVAS_WIDTH = 800, DEFAULT_CANVAS_HEIGHT = 600;
-	
-
 	public static BonyContext initStickFigureApp(String lwjglRendererName, int canvasWidth, int canvasHeight) { 
-		BonyStickFigureApp stickFigureApp = // new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
-					new BonyRagdollApp(lwjglRendererName, canvasWidth, canvasHeight, sceneFilePath, sceneLocalScale);
-		// BonySystemFuncs.setJMonkeySettings(stickFigureApp, canvasWidth, canvasHeight);
-		stickFigureApp.initCharPanelWithCanvas();
-		BonyContext bc = stickFigureApp.getBonyContext();
+		BonyVirtualCharApp bvcApp = // new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
+					// new BonyRagdollApp(lwjglRendererName, canvasWidth, canvasHeight, sceneFilePath, sceneLocalScale);
+					new BowlAtHumanoidApp(lwjglRendererName, BowlAtHumanoidApp.PATH_HUMANOID_MESH, canvasWidth, canvasHeight);
+		bvcApp.initCharPanelWithCanvas();
+		BonyContext bc = bvcApp.getBonyContext();
 		return bc;
 	}
 	public static void main(String[] args) {
-		String lwjglRendererName = DEFAULT_RENDERER_NAME;
+		String lwjglRendererName = DemoApp.DEFAULT_RENDERER_NAME;
 		System.out.println("+&+&+&++&+&+&+&+&+&+ Using: " + lwjglRendererName);
-		final BonyContext bc = initStickFigureApp(lwjglRendererName, DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT);
+		final BonyContext bc = initStickFigureApp(lwjglRendererName, DemoApp.DEFAULT_CANVAS_WIDTH, DemoApp.DEFAULT_CANVAS_HEIGHT);
 		// Frame must be packed after panel created, but created 
 		// before startJMonkey.  Might add frame to BonyContext...
 		VirtCharPanel vcp = bc.getPanel();
