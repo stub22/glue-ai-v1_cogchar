@@ -35,6 +35,7 @@
  */
 package org.cogchar.render.opengl.bony.demo;
 
+import com.jme3.animation.Bone;
 import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
 import org.cogchar.render.opengl.bony.world.WorldMgr;
 import org.cogchar.render.opengl.bony.world.ProjectileMgr;
@@ -42,8 +43,13 @@ import org.cogchar.render.opengl.bony.world.ProjectileMgr;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import java.util.List;
 import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
 import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
+import org.cogchar.render.opengl.bony.model.HumanoidBoneDesc;
+import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
 
 /**
  * JMonkey Team Comment as of about August 2011:
@@ -56,6 +62,7 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 	private	WorldMgr myWorldMgr;
 	
 	private	String		myHumanoidMeshPath;
+	
 	
 	// This skeleton + mesh model is contained in the org.cogchar.bundle.render.opengl project.
 	public static String  PATH_HUMANOID_MESH = "jme3/models_20110917/sinbad/Sinbad.mesh.xml";
@@ -113,7 +120,8 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		
 	}
 	private void initHumanoidStuff() { 
-		myHumanoidWrapper.initStuff(assetManager, rootNode, myWorldMgr.getPhysicsSpace(), myHumanoidMeshPath);
+		HumanoidBoneConfig hbc = new HumanoidBoneConfig();
+		myHumanoidWrapper.initStuff(hbc, assetManager, rootNode, myWorldMgr.getPhysicsSpace(), myHumanoidMeshPath);
 	}
 	private void initProjectileStuff() { 
 		myPrjctlMgr.initStuff(assetManager);
@@ -142,7 +150,8 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 	 * */
 	@Override
 	public void simpleUpdate(float tpf) {
-		super.simpleUpdate(tpf);
+		// super.simpleUpdate(tpf);
+		applyTwisting(tpf);
 		myHumanoidWrapper.wiggle(tpf);
 		// System.out.println(((BoundingBox) myHumanoidModel.getWorldBound()).getYExtent());
 //        elTime += tpf;
@@ -182,5 +191,17 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 //        }
 	}
 
-
+	public void applyTwisting(float tpf) { 
+		BonyContext ctx = getBonyContext();
+		VirtCharPanel vcp = ctx.getPanel();
+		int testChannelNum = vcp.getTestChannelNum();
+		String direction = vcp.getTestDirection();
+		HumanoidBoneConfig hbc = myHumanoidWrapper.getHBConfig();
+		List<HumanoidBoneDesc> boneDescs = hbc.getBoneDescs();
+		HumanoidBoneDesc hbd = boneDescs.get(testChannelNum);
+		String boneName = hbd.getSpatialName();
+		Bone tgtBone = myHumanoidWrapper.getSpatialBone(boneName);
+		Bone rootBone = myHumanoidWrapper.getRootBone();
+		myTwister.twistBone(tpf, rootBone, tgtBone, direction);
+	}
 }
