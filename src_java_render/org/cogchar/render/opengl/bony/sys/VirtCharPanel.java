@@ -25,6 +25,7 @@ package org.cogchar.render.opengl.bony.sys;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import javax.swing.JFrame;
+import javax.swing.SpinnerNumberModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +52,10 @@ public class VirtCharPanel extends javax.swing.JPanel {
 	}
 	public String getTestDirection() {
 		return (String) jspin_animTestDirectionNum.getValue();
+	}
+	public void setMaxChannelNum(int maxChanNum) { 
+		SpinnerNumberModel snm = (SpinnerNumberModel) jspin_animTestChannelNum.getModel();
+		snm.setMaximum(maxChanNum);
 	}
 
 	public void setDumpText(String dt) {

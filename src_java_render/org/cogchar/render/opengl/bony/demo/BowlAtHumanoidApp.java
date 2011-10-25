@@ -122,6 +122,8 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 	private void initHumanoidStuff() { 
 		HumanoidBoneConfig hbc = new HumanoidBoneConfig();
 		myHumanoidWrapper.initStuff(hbc, assetManager, rootNode, myWorldMgr.getPhysicsSpace(), myHumanoidMeshPath);
+		VirtCharPanel vcp = getVCPanel();
+		vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
 	}
 	private void initProjectileStuff() { 
 		myPrjctlMgr.initStuff(assetManager);
@@ -136,7 +138,24 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		flyCam.setMoveSpeed(50);
 		addLightToRootNode(WorldMgr.makeDirectionalLight());		
 	}
-
+	public VirtCharPanel getVCPanel() { 
+		BonyContext ctx = getBonyContext();
+		VirtCharPanel vcp = ctx.getPanel();
+		return vcp;
+	}
+	public void applyTwisting(float tpf) { 
+		VirtCharPanel vcp = getVCPanel();
+		int testChannelNum = vcp.getTestChannelNum();
+		String direction = vcp.getTestDirection();
+		HumanoidBoneConfig hbc = myHumanoidWrapper.getHBConfig();
+		List<HumanoidBoneDesc> boneDescs = hbc.getBoneDescs();
+		HumanoidBoneDesc hbd = boneDescs.get(testChannelNum);
+		String boneName = hbd.getSpatialName();
+		Bone tgtBone = myHumanoidWrapper.getSpatialBone(boneName);
+		myTwister.twistBone(tpf, tgtBone, direction);
+		
+		Bone rootBone = myHumanoidWrapper.getRootBone();
+	}
 
 
 	/*   
@@ -152,7 +171,9 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 	public void simpleUpdate(float tpf) {
 		// super.simpleUpdate(tpf);
 		applyTwisting(tpf);
-		myHumanoidWrapper.wiggle(tpf);
+		// myHumanoidWrapper.wiggle(tpf);
+		//  Below is JMonkey test code from TestBoneRagdoll, which is commented out in JMonkey trunk as of about 
+		// 2011-08-01.
 		// System.out.println(((BoundingBox) myHumanoidModel.getWorldBound()).getYExtent());
 //        elTime += tpf;
 //        if (elTime > 3) {
@@ -191,18 +212,5 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 //        }
 	}
 
-	public void applyTwisting(float tpf) { 
-		BonyContext ctx = getBonyContext();
-		VirtCharPanel vcp = ctx.getPanel();
-		int testChannelNum = vcp.getTestChannelNum();
-		String direction = vcp.getTestDirection();
-		HumanoidBoneConfig hbc = myHumanoidWrapper.getHBConfig();
-		List<HumanoidBoneDesc> boneDescs = hbc.getBoneDescs();
-		HumanoidBoneDesc hbd = boneDescs.get(testChannelNum);
-		String boneName = hbd.getSpatialName();
-		Bone tgtBone = myHumanoidWrapper.getSpatialBone(boneName);
-		myTwister.twistBone(tpf, tgtBone, direction);
-		
-		Bone rootBone = myHumanoidWrapper.getRootBone();
-	}
+
 }
