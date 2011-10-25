@@ -16,4 +16,7 @@ public class HumanoidBoneDesc {
 	public String	getSpatialName() { 
 		return mySpatialName;
 	}
+	@Override public String toString() { 
+		return "HBD[spatName=" + mySpatialName + "]";
+	}
 }

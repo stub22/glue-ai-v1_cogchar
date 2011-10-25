@@ -32,11 +32,15 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.KinematicRagdollControl;
+import com.jme3.bullet.joints.SixDofJoint;
+import com.jme3.bullet.joints.motors.RotationalLimitMotor;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
+import java.util.List;
 
 
 /**
@@ -188,7 +192,7 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	public void wiggle(HumanoidBoneConfig hbc, float tpf) {
 		myWigglePhase += tpf / 10.0f;
 		if (myWigglePhase > 1.0f) {
-			System.out.println("************ Wiggle phase reset ------ hmmmm");
+			System.out.println("************ Wiggle phase reset ------ hmmmm, OK");
 			myWigglePhase = 0.0f;
 		}
 		float amplitude = 5.0f;
@@ -200,20 +204,21 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		} else {
 			wiggleVel = -1.0f * amplitude;
 		}
-		
+		wiggleAllBonesUsingRotMotors(hbc, wiggleVel);
+		// Unused bone lookups
 		Bone headBone = myHumanoidSkeleton.getBone("Head");
 		Bone footLeftBone = myHumanoidSkeleton.getBone("Foot.L");
-		
 		// System.out.println("Found head bone: " + headBone);
 		// System.out.println("Found left foot: " + footLeftBone);
-		
-		/*
+	}
+	private void wiggleAllBonesUsingRotMotors(HumanoidBoneConfig hbc, float wiggleVel) {
 		List<HumanoidBoneDesc> descs = hbc.getBoneDescs();
 		for(HumanoidBoneDesc hbd : descs) {
 			String boneName = hbd.getSpatialName();
-			if (!boneName.equals("Head")) {
-				continue;
-			}
+			// Uncomment to wigle just the "Head" bone.
+			//if (!boneName.equals("Head")) {
+			//	continue;
+			//}
 			// Don't have a direct need for the PRB yet, but we're sure to later!
 			PhysicsRigidBody prb = myHumanoidKRC.getBoneRigidBody(boneName);
 			SixDofJoint boneJoint = myHumanoidKRC.getJoint(boneName);
@@ -225,8 +230,7 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 			yRotMotor.setTargetVelocity(wiggleVel);
 			zRotMotor.setTargetVelocity(wiggleVel);
 		}
-		 * 
-		 */
+	
 	}
 	/*
 	 *        

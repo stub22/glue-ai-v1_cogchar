@@ -30,6 +30,9 @@ public class HumanoidBoneConfig {
 	public List<HumanoidBoneDesc> getBoneDescs() { 
 		return myBoneDescs;
 	}
+	public int getConfiguredBoneCount() { 
+		return myBoneDescs.size();
+	}
 	private void makeSinbadDefaultBoneDescs() { 
 		myBoneDescs = new ArrayList<HumanoidBoneDesc>();
 		
