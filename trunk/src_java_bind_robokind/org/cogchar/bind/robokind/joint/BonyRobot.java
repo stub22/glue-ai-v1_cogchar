@@ -67,6 +67,7 @@ public class BonyRobot extends AbstractRobot<BonyJoint> {
             NormalizedDouble pos = e.getValue();
             bj.setGoalPosition(pos);
         }
+		notifyMoveListeners();
 	}
 	public void registerBonyJoint(BonyJoint bj) {
 		theLogger.info("BonyRobot[" + getRobotId() + "] registering joint: " + bj);
