@@ -11,13 +11,28 @@ import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
 
 
+import org.robokind.api.motion.Joint;
+import org.robokind.api.motion.Robot;
+
 import org.cogchar.bind.robokind.joint.BonyRobotUtils;
 import org.cogchar.bind.robokind.joint.BonyAnimUtils;
 import org.cogchar.bind.robokind.joint.BonyRobotFactory;
+import org.cogchar.bind.robokind.joint.BonyRobot;
+import org.cogchar.bind.robokind.joint.BonyJoint;
+
+import org.robokind.api.common.position.NormalizedDouble;
+import org.cogchar.avrogen.bind.robokind.RotationAxis;
+
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
-import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
-import org.cogchar.render.opengl.bony.app.BonyRagdollApp;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
+import org.cogchar.render.opengl.bony.model.HumanoidBoneDesc;
+import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
+import org.cogchar.render.opengl.bony.state.FigureState;
+import org.cogchar.render.opengl.bony.state.BoneState;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,18 +41,20 @@ import org.slf4j.LoggerFactory;
  */
 public class RobokindJointBindingDemo {
 	static Logger theLogger = LoggerFactory.getLogger(RobokindJointBindingDemo.class);
-	private	Robot		myBonyRobot;
 	private	BundleContext	myBundleCtx;
+	private	BonyRobot		myBonyRobot;
+	private	FigureState		myFigureState;
+
 	
 	public static String	HARDCODED_ROBOT_ID = "myDevice1";
 	
-	public void createAndRegisterRobot(BundleContext bundleCtx, File file) throws Exception {
-		
-		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr start");
+	public void createAndRegisterRobot(BundleContext bundleCtx, File jointBindingConfigFile) throws Exception {
+		String bindingFilePath = jointBindingConfigFile.getAbsolutePath();
+		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr start, using file: " + bindingFilePath);
 		//Create your Robot and register it
-		myBonyRobot  = BonyRobotFactory.buildFromFile(file);
+		myBonyRobot  = BonyRobotFactory.buildFromFile(jointBindingConfigFile);
         if(myBonyRobot == null){
-            theLogger.warn("Error building Robot from file: " + file.getAbsolutePath());
+            theLogger.warn("Error building Robot from file: " + bindingFilePath);
             return;
         }
 		BonyRobotUtils.registerRobokindRobot(myBonyRobot, bundleCtx);
@@ -45,7 +62,7 @@ public class RobokindJointBindingDemo {
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr end");
 	}
     public void createAndRegisterRobot(BundleContext bundleCtx) throws Exception {
-		
+		myBundleCtx = bundleCtx;
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr start");
 		//Create your Robot and register it
 		Robot.Id hbID = new Robot.Id(HARDCODED_ROBOT_ID);
@@ -68,14 +85,60 @@ public class RobokindJointBindingDemo {
 			}
 		}
 	}
-	public void connectToVirtualChar(BundleContext bundleCtx) throws Exception {
-		myBundleCtx = bundleCtx;
-		BonyContext bc = CogcharDemoAllBundleActivator.getBonyContext(bundleCtx);
+	public void connectToVirtualChar(final BonyContext bc) throws Exception {
 		BonyVirtualCharApp app = bc.getApp();
+		setupFigureState(bc);
+		final BonyRobot br = getBonyRobot();
+		br.registerMoveListener(new BonyRobot.MoveListener() {
+			@Override public void notifyBonyRobotMoved(BonyRobot br) {
+				propagateState(br, bc);
+			}
+			
+		});
+		/*
 		BonyRagdollApp bra = (BonyRagdollApp) app;
 		DemoBonyWireframeRagdoll dbwr = bra.getRagdoll();
 		DanceDoer dd = new DanceDoer();
 		dbwr.setDanceDoer(dd);
+		 */
 	}
-		
+
+	public BonyRobot getBonyRobot() { 
+		return myBonyRobot;
+	}
+	public void setupFigureState(BonyContext bctx) { 
+		BonyRobot br = getBonyRobot();
+		FigureState fs = new FigureState();
+		List<Joint> allJoints = br.getJointList();
+		for (Joint cursorJoint : allJoints) {
+			BonyJoint bj = (BonyJoint) cursorJoint;
+			String boneName = bj.getBoneName();
+			BoneState bs = fs.obtainBoneState(boneName);
+		}
+		bctx.setFigureState(fs);
+	}
+	public static void propagateState(BonyRobot br, BonyContext bc) { 
+		FigureState fs = bc.getFigureState();
+		for (BoneState bs : fs.getBoneStates()) {
+			String boneName = bs.getBoneName();
+			List<BonyJoint> bjList = BonyRobotUtils.findJointsForBoneName(br, boneName);
+			for (BonyJoint bj : bjList) {
+				RotationAxis axis = bj.getRotationAxis();
+				if (axis != null) {
+					float goalAngleRad = (float) bj.getGoalAngleRad();
+					switch (axis) {
+						case PITCH:
+							bs.rot_X_pitch = goalAngleRad;
+						break;
+						case ROLL:
+							bs.rot_Y_roll = goalAngleRad;
+						break;
+						case YAW:
+							bs.rot_Z_yaw = goalAngleRad;
+						break;
+					}
+				}
+			}
+		}
+	}
 }
