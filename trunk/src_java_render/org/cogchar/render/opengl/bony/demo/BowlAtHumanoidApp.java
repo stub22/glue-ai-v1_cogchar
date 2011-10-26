@@ -48,6 +48,8 @@ import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
 import org.cogchar.render.opengl.bony.app.DemoApp;
 import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
 import org.cogchar.render.opengl.bony.model.HumanoidBoneDesc;
+import org.cogchar.render.opengl.bony.state.BoneState;
+import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
 
@@ -120,7 +122,7 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		
 	}
 	private void initHumanoidStuff() { 
-		HumanoidBoneConfig hbc = new HumanoidBoneConfig();
+		HumanoidBoneConfig hbc = new HumanoidBoneConfig(true);
 		myHumanoidWrapper.initStuff(hbc, assetManager, rootNode, myWorldMgr.getPhysicsSpace(), myHumanoidMeshPath);
 		VirtCharPanel vcp = getVCPanel();
 		vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
@@ -156,7 +158,25 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		
 		Bone rootBone = myHumanoidWrapper.getRootBone();
 	}
-
+	public void applyFigureState() {
+		BonyContext ctx = getBonyContext();
+		FigureState fs = ctx.getFigureState();
+		if (fs == null) {
+			return;
+		}
+		HumanoidBoneConfig hbc = myHumanoidWrapper.getHBConfig();
+		List<HumanoidBoneDesc> boneDescs = hbc.getBoneDescs();
+		for (HumanoidBoneDesc hbd : boneDescs) {
+			String boneName = hbd.getSpatialName();
+			BoneState bs = fs.getBoneState(boneName);
+			Bone tgtBone = myHumanoidWrapper.getSpatialBone(boneName);
+			if ((bs != null) && (tgtBone != null)) {
+				Quaternion boneRotQuat = bs.getRotQuat();
+				myTwister.applyBoneRotQuat(tgtBone, boneRotQuat);
+			}
+		}
+	
+	}
 
 	/*   
 	float elTime = 0;
@@ -171,6 +191,7 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 	public void simpleUpdate(float tpf) {
 		// super.simpleUpdate(tpf);
 		applyTwisting(tpf);
+		applyFigureState();
 		// myHumanoidWrapper.wiggle(tpf);
 		//  Below is JMonkey test code from TestBoneRagdoll, which is commented out in JMonkey trunk as of about 
 		// 2011-08-01.

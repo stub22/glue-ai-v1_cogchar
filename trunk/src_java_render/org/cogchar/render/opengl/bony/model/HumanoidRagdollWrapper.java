@@ -51,14 +51,15 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	private KinematicRagdollControl myHumanoidKRC;
 	private AnimChannel myHumanoidAnimChannel;
 	private	HumanoidBoneConfig	myHumanoidBoneConfig;
-	
+	// Skeleton is used for direct access to the graphic "spatial" bones of JME3 (bypassing JBullet physics bindings). 
 	private	Skeleton			myHumanoidSkeleton;
+	private float myPhysicsWigglePhase = 0.0f;	
 	public static String 	
 			ANIM_STAND_FRONT = "StandUpFront",
 			ANIM_STAND_BACK = "StandUpBack",
 			ANIM_DANCE = "Dance",
 			ANIM_IDLE_TOP = "IdleTop",
-			DEFAULT_PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",
+			DEFAULT_PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",	// Default path in JME test setup
 			PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md",
 			SKEL_DEBUG_NAME = "hrwSkelDebg";
 	
@@ -185,21 +186,21 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	public void attachRagdollBone(HumanoidBoneDesc hbd) {
 		myHumanoidKRC.addBoneName(hbd.getSpatialName());
 	}
-	private float myWigglePhase = 0.0f;
-	public void wiggle(float tpf) { 
-		wiggle(myHumanoidBoneConfig, tpf);
+
+	public void wiggleUsingPhysics(float tpf) { 
+		wiggleUsingPhysicsMotors(myHumanoidBoneConfig, tpf);
 	}
-	public void wiggle(HumanoidBoneConfig hbc, float tpf) {
-		myWigglePhase += tpf / 10.0f;
-		if (myWigglePhase > 1.0f) {
+	public void wiggleUsingPhysicsMotors(HumanoidBoneConfig hbc, float tpf) {
+		myPhysicsWigglePhase += tpf / 10.0f;
+		if (myPhysicsWigglePhase > 1.0f) {
 			System.out.println("************ Wiggle phase reset ------ hmmmm, OK");
-			myWigglePhase = 0.0f;
+			myPhysicsWigglePhase = 0.0f;
 		}
 		float amplitude = 5.0f;
-		float wigglePhaseRad = FastMath.TWO_PI  * myWigglePhase;
+		float wigglePhaseRad = FastMath.TWO_PI  * myPhysicsWigglePhase;
 		float wiggleVel = amplitude * FastMath.sin2(wigglePhaseRad);
 
-		if (myWigglePhase < 0.5) {
+		if (myPhysicsWigglePhase < 0.5) {
 			wiggleVel = amplitude;
 		} else {
 			wiggleVel = -1.0f * amplitude;
