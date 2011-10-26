@@ -15,8 +15,10 @@ import com.jme3.math.FastMath;
  */
 public class HumanoidBoneConfig {
 	private	List<HumanoidBoneDesc> myBoneDescs;
-	public HumanoidBoneConfig() { 
-		makeSinbadDefaultBoneDescs();
+	public HumanoidBoneConfig(boolean useSindbadDefaultDescs) {
+		if (useSindbadDefaultDescs) {
+			makeSinbadDefaultBoneDescs();
+		}
 	}
 	public void addBoneDesc(String spatialName) {
 		HumanoidBoneDesc hbd = new HumanoidBoneDesc(spatialName);

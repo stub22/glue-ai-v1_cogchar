@@ -20,22 +20,28 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
 	}
 	@Override public void start(BundleContext bundleCtx) throws Exception {
 		super.start(bundleCtx);
-		initOpenGLDemoStuff(bundleCtx);
-		initRobokindJointPumperDemo(bundleCtx);
+		BonyContext bc = getBonyContext(bundleCtx);
+		if (bc != null) { 
+			initOpenGLDemoStuff(bc);
+			initRobokindJointPumperDemo(bundleCtx, bc);
+		} else {
+			theLogger.warn("Can't find BonyContext");
+		}
+		
 	}
-	private void initRobokindJointPumperDemo(BundleContext bundleCtx)  throws Exception {
-        File f = new File("bonyRobotConfig.json");
+	private void initRobokindJointPumperDemo(BundleContext bundleCtx, BonyContext bc)  throws Exception {
+        File jointBindingConfigFile = new File("bonyRobotConfig.json");
 		RobokindJointBindingDemo rjbd = new RobokindJointBindingDemo();
 		
         //load robot from file
         //rjbd.createAndRegisterRobot(bundleCtx);
-		rjbd.createAndRegisterRobot(bundleCtx, f);
+		rjbd.createAndRegisterRobot(bundleCtx, jointBindingConfigFile);
 		
-        rjbd.connectToVirtualChar(bundleCtx);
+        rjbd.connectToVirtualChar(bc);
 		
 	}
-	private void initOpenGLDemoStuff(BundleContext bundleCtx) throws Exception {
-		BonyContext bc = getBonyContext(bundleCtx);
+	private void initOpenGLDemoStuff(BonyContext bc) throws Exception {
+
 		theLogger.info("Got BonyContext: " + bc);
 		if (bc != null) {
 			ClassLoader tccl = Thread.currentThread().getContextClassLoader();

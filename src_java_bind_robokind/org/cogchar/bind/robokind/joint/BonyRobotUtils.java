@@ -13,6 +13,8 @@ import org.robokind.api.motion.Robot.RobotPositionHashMap;
 import org.robokind.api.motion.Robot.RobotPositionMap;
 import org.robokind.api.motion.protocol.RobotFrameSource;
 import org.robokind.api.motion.utils.RobotUtils;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -45,5 +47,16 @@ public class BonyRobotUtils {
 		bj.setGoalPosition(ipND);
 		robot.registerBonyJoint(bj);
 		return bj;
+	}
+	public static List<BonyJoint> findJointsForBoneName(BonyRobot robot, String boneName) {
+		List<BonyJoint> bjList = new ArrayList<BonyJoint>();
+		List<Joint> allJoints = robot.getJointList();
+		for (Joint cursorJoint : allJoints) {
+			BonyJoint bj = (BonyJoint) cursorJoint;
+			if (boneName.equals(bj.getBoneName())) {
+				bjList.add(bj);
+			}
+		}
+		return bjList;
 	}
 }

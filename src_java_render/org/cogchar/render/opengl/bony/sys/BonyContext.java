@@ -20,6 +20,7 @@ import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import com.jme3.animation.AnimControl;
 import java.util.List;
 import javax.swing.JFrame;
+import org.cogchar.render.opengl.bony.state.FigureState;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -30,6 +31,8 @@ public class BonyContext {
 	protected	JFrame					myFrame;
 	protected	ScoreBoard				myScoreBoard;
 	protected	List<AnimControl>		myAnimControls;
+	protected	FigureState				myFigureState;
+
 
 	public BonyVirtualCharApp getApp() {
 		return myApp;
@@ -68,5 +71,10 @@ public class BonyContext {
 	public JFrame getFrame() { 
 		return myFrame;
 	}
-
+	public FigureState getFigureState() {
+		return myFigureState;
+	}
+	public void setFigureState(FigureState fs) { 
+		myFigureState = fs;
+	}
 }

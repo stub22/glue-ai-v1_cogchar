@@ -31,31 +31,32 @@ public class BonyJoint extends AbstractJoint {
 	static Logger theLogger = LoggerFactory.getLogger(BonyJoint.class);
 	
     private	boolean				myEnabledFlag = false;
-	private	NormalizedDouble	myDefaultPos;
-	private	NormalizedDouble	myGoalPos;
+	private	NormalizedDouble	myDefaultPosNorm;
+	private	NormalizedDouble	myGoalPosNorm;
 	private	String				myName;
     private String              myBoneName;
     private RotationAxis        myRotationAxis;
-    private double              myMinPosition;
-    private double              myMaxPosition;
+    private double              myMinAngleRad;
+    private double              myMaxAngleRad;
 	
-    protected BonyJoint(Joint.Id jointId, String name, String bone, RotationAxis axis, double min, double max, double def){
+    protected BonyJoint(Joint.Id jointId, String name, String bone, RotationAxis axis, double minAngleRad, 
+					double maxAngleRad, double defAngleRad){
         super(jointId);
         myName = name;
         myBoneName = bone;
         myRotationAxis = axis;
-        myMinPosition = min;
-        myMaxPosition = max;
-        double val = def - myMinPosition;
-        double range = myMaxPosition - myMinPosition;
-        myDefaultPos = new NormalizedDouble(val/range);
-        myGoalPos = myDefaultPos;
+        myMinAngleRad = minAngleRad;
+        myMaxAngleRad = maxAngleRad;
+        double defOffsetAngleRad = defAngleRad - myMinAngleRad;
+        double fullRangeAngleRad = myMaxAngleRad - myMinAngleRad;
+        myDefaultPosNorm = new NormalizedDouble(defOffsetAngleRad/fullRangeAngleRad);
+        myGoalPosNorm = myDefaultPosNorm;
     }
     
 	protected BonyJoint(Joint.Id jointId, String name, NormalizedDouble defaultPos) {
         super(jointId);
 		myName = name;
-		myDefaultPos = defaultPos;
+		myDefaultPosNorm = defaultPos;
 	}
 
 	@Override public void setEnabled(Boolean enabled) {
@@ -72,11 +73,11 @@ public class BonyJoint extends AbstractJoint {
     }
 
     @Override public NormalizedDouble getDefaultPosition() {
-        return myDefaultPos;
+        return myDefaultPosNorm;
     }
 
     @Override public NormalizedDouble getGoalPosition() {
-        return myGoalPos;
+        return myGoalPosNorm;
     }
     
     //This is used to allow the SkeletonRobot to set the GoalPosition and fire the event.
@@ -85,7 +86,25 @@ public class BonyJoint extends AbstractJoint {
 		NormalizedDouble old = getGoalPosition();
         //actually set the goal position here
         firePropertyChange(PROP_GOAL_POSITION, old, pos);
-		myGoalPos = pos;
+		myGoalPosNorm = pos;
     }
+	
+	public String getBoneName(){ 
+		return myBoneName;
+	}
+	public RotationAxis getRotationAxis() { 
+		return myRotationAxis;
+	}
+	public double getAngleRadFromNormPos(NormalizedDouble normPos) { 
+		double np = normPos.getValue();
+		double fullRangeAngleRad = myMaxAngleRad - myMinAngleRad;
+		double goalAngleRad = myMinAngleRad + np * fullRangeAngleRad;
+		return goalAngleRad;
+		
+	}
+	public double getGoalAngleRad() { 
+		NormalizedDouble normGoalPos = getGoalPosition();
+		return getAngleRadFromNormPos(normGoalPos);
+	}
     
 }
