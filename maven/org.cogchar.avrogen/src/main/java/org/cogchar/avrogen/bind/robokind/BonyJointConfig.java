@@ -2,7 +2,7 @@ package org.cogchar.avrogen.bind.robokind;
 
 @SuppressWarnings("all")
 public class BonyJointConfig extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = org.apache.avro.Schema.parse("{\"type\":\"record\",\"name\":\"BonyJointConfig\",\"namespace\":\"org.cogchar.avrogen.bind.robokind\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"jointId\",\"type\":\"int\"},{\"name\":\"bone\",\"type\":\"string\"},{\"name\":\"rotationAbout\",\"type\":{\"type\":\"enum\",\"name\":\"RotationAxis\",\"symbols\":[\"X_AXIS\",\"Y_AXIS\",\"Z_AXIS\"]}},{\"name\":\"minPosition\",\"type\":\"double\"},{\"name\":\"maxPosition\",\"type\":\"double\"},{\"name\":\"defaultPosition\",\"type\":\"double\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = org.apache.avro.Schema.parse("{\"type\":\"record\",\"name\":\"BonyJointConfig\",\"namespace\":\"org.cogchar.avrogen.bind.robokind\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"jointId\",\"type\":\"int\"},{\"name\":\"bone\",\"type\":\"string\"},{\"name\":\"rotationAbout\",\"type\":{\"type\":\"enum\",\"name\":\"RotationAxis\",\"symbols\":[\"PITCH\",\"ROLL\",\"YAW\"]}},{\"name\":\"minPosition\",\"type\":\"double\"},{\"name\":\"maxPosition\",\"type\":\"double\"},{\"name\":\"defaultPosition\",\"type\":\"double\"}]}");
   public org.apache.avro.util.Utf8 name;
   public int jointId;
   public org.apache.avro.util.Utf8 bone;
