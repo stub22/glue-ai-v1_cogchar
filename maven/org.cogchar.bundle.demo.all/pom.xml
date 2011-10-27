@@ -208,7 +208,7 @@
 										
                                 <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
                                     <sysproperty key="felix.config.properties" value="${run.properties.url}"/>
-                                    <sysproperty key="gosh.args" value="--noi"/>
+                                    <sysproperty key="gosh.args" value="-sc telnetd -p1234 start"/>
                                     <jvmarg line="${vm.args}"/>
                                 </java>
 								
