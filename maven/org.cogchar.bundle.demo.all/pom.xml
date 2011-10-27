@@ -54,6 +54,11 @@
 			<version>0.6</version>
 			<scope>runtime</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.robokind</groupId>
+            <artifactId>org.robokind.impl.motion</artifactId>
+            <version>0.6</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -203,6 +208,7 @@
 										
                                 <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
                                     <sysproperty key="felix.config.properties" value="${run.properties.url}"/>
+                                    <sysproperty key="gosh.args" value="--noi"/>
                                     <jvmarg line="${vm.args}"/>
                                 </java>
 								
