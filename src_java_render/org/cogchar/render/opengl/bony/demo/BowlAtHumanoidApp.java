@@ -75,7 +75,7 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		app.start();
 	}
 	public BowlAtHumanoidApp(String lwjglRendererName, String pathToHumanoidMesh, int canvWidth, int canvHeight) {
-		super(lwjglRendererName, canvWidth, canvHeight, pathToHumanoidMesh, 1.0f);
+		super(lwjglRendererName, canvWidth, canvHeight, null, 1.0f);
 		myHumanoidMeshPath = pathToHumanoidMesh;
 		myPrjctlMgr = new ProjectileMgr();
 		myHumanoidWrapper = new HumanoidRagdollWrapper();
