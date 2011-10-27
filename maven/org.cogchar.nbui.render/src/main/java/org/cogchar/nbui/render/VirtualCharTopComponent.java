@@ -16,6 +16,8 @@
 
 package org.cogchar.nbui.render;
 
+import java.io.File;
+import javax.jms.Connection;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -23,8 +25,10 @@ import org.openide.windows.WindowManager;
 //import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.common.osgi.OSGiUtils;
 import org.robokind.api.motion.Robot;
+import org.robokind.impl.messaging.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,8 +68,17 @@ public final class VirtualCharTopComponent extends TopComponent {
         }
         RenderUtils.initOpenGLCanvas(bonyContext);
         initVirtualCharPanel(bonyContext);
-        RobokindBindingUtils.createAndRegisterRobot(context);
-        RobokindBindingUtils.connectToVirtualChar(context);
+        Robot r = RobokindBindingUtils.createAndRegisterRobot(context, new File("org_cogchar_nbui_render/bonyRobotConfig.json"));
+        RobokindBindingUtils.connectToVirtualChar(bonyContext);
+        Connection connection = ConnectionManager.createConnection(
+                "admin", "admin", "client1", "test", "tcp://127.0.0.1:5672");
+        if(connection != null){
+            String connId = "connection1";
+            ServiceRegistration connReg =  ConnectionManager.registerConnection(
+                    context, connId, connection, null);
+            String queue = "test.RobotMoveQueue; {create: always, node: {type: queue}}";
+            RobokindBindingUtils.startRobotServer(context, r.getRobotId(), connId, queue);
+        }
         myInitializedFlag = true;
     }
     
