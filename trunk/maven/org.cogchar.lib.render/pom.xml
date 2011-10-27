@@ -70,6 +70,18 @@
       <version>1.6.1</version>
 	  <scope>runtime</scope>
     </dependency>
+	<!-- These two temporary direct dependencies on local-repo JMonkey jars are useful for NB editor code completion, 
+			but not for formal build, test, deploy.  They should be commented out in checked in SVN versions! -->
+    <dependency>
+      <groupId>org.jmonkeyengine.mvn.jme3</groupId>
+      <artifactId>jmonkeyengine3</artifactId>
+      <version>3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jmonkeyengine.mvn.jme3</groupId>
+      <artifactId>jME3-jbullet</artifactId>
+      <version>3.0</version>
+    </dependency>
   </dependencies>
 </project>
 
