@@ -48,18 +48,19 @@ public class RobokindJointBindingDemo {
 	
 	public static String	HARDCODED_ROBOT_ID = "myDevice1";
 	
-	public void createAndRegisterRobot(BundleContext bundleCtx, File jointBindingConfigFile) throws Exception {
+	public Robot createAndRegisterRobot(BundleContext bundleCtx, File jointBindingConfigFile) throws Exception {
 		String bindingFilePath = jointBindingConfigFile.getAbsolutePath();
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr start, using file: " + bindingFilePath);
 		//Create your Robot and register it
 		myBonyRobot  = BonyRobotFactory.buildFromFile(jointBindingConfigFile);
         if(myBonyRobot == null){
             theLogger.warn("Error building Robot from file: " + bindingFilePath);
-            return;
+            return null;
         }
 		BonyRobotUtils.registerRobokindRobot(myBonyRobot, bundleCtx);
 
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr end");
+        return myBonyRobot;
 	}
     public void createAndRegisterRobot(BundleContext bundleCtx) throws Exception {
 		myBundleCtx = bundleCtx;
