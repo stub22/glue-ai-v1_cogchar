@@ -41,7 +41,9 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 	
 	@Override public void simpleInitApp() {
 		super.simpleInitApp();
-		initStickFigureModel();
+		if (mySceneFilePath != null) {
+			initStickFigureModel();
+		}
 		myTwister = new StickFigureTwister(myContext);
 	}
 	public void setScoringFlag(boolean f) {
