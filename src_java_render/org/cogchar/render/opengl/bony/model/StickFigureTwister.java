@@ -74,11 +74,13 @@ public class StickFigureTwister {
 	public void twistBone(float tpf, Bone tgtBone, String direction) {
 
 		myWaistTwistAngle += tpf * myWaistTwistRate;
-		if (myWaistTwistAngle > FastMath.HALF_PI / 2f) {
-			myWaistTwistAngle = FastMath.HALF_PI / 2f;
+		float posQuarterPi = FastMath.HALF_PI / 2f;
+		float negQuarterPi = -1 * posQuarterPi;
+		if (myWaistTwistAngle > posQuarterPi) {
+			myWaistTwistAngle = posQuarterPi;
 			myWaistTwistRate = -1;
-		} else if (myWaistTwistAngle < -FastMath.HALF_PI / 2f) {
-			myWaistTwistAngle = -FastMath.HALF_PI / 2f;
+		} else if (myWaistTwistAngle < negQuarterPi) {
+			myWaistTwistAngle = negQuarterPi;
 			myWaistTwistRate = 1;
 		}
 
