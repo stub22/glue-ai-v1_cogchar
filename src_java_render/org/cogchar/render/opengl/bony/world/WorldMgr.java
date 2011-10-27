@@ -43,7 +43,7 @@ public class WorldMgr {
 		// Comment in PhysicsSpace says to setGravity "before creating physics objects".
 		// ps.setGravity(Vector3f.ZERO);
 		// Turn on the blue wireframe collision bounds.
-		ps.enableDebug(asstMgr);
+		// ps.enableDebug(asstMgr);
 		PhysicsStuffBuilder.createPhysicsTestWorld(parentNode, asstMgr, ps);
 	
 	}

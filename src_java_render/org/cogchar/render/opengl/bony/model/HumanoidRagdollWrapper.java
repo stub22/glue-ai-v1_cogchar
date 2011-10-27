@@ -83,8 +83,10 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		// This was commented out in JMonkey code:
 		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));
 
+		AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
+		myHumanoidSkeleton = humanoidControl.getSkeleton();
 		// Turn on the green bone skeleton debug.
-		attachDebugSkeleton(myHumanoidModelNode, asstMgr);
+		// attachDebugSkeleton(myHumanoidModelNode, asstMgr);
 
 		//Note: PhysicsRagdollControl is still TODO, constructor will change
 		myHumanoidKRC = new KinematicRagdollControl(KRC_WEIGHT_THRESHOLD);
@@ -99,9 +101,7 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		ps.add(myHumanoidKRC);
 
 		parentNode.attachChild(myHumanoidModelNode);
-		// rootNode.attachChild(skeletonDebug);
 
-		AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
 		myHumanoidAnimChannel = humanoidControl.createChannel();
 		humanoidControl.addListener(this);
 		
@@ -168,12 +168,9 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
 	}
 	public void attachDebugSkeleton(Node humanoidModel, AssetManager assetMgr) { 
-		  
-        AnimControl humanoidControl = humanoidModel.getControl(AnimControl.class);
-		
-		myHumanoidSkeleton = humanoidControl.getSkeleton();
+		// AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
         SkeletonDebugger humanoidSkeletonDebug = 
-				new SkeletonDebugger(SKEL_DEBUG_NAME, humanoidControl.getSkeleton());
+				new SkeletonDebugger(SKEL_DEBUG_NAME, myHumanoidSkeleton);
         Material mat2 = new Material(assetMgr, PATH_UNSHADED_MAT);
         mat2.getAdditionalRenderState().setWireframe(true);
         mat2.setColor("Color", ColorRGBA.Green);
