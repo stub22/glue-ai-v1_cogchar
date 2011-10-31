@@ -22,9 +22,7 @@ import java.util.List;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
-import javax.jms.Session;
-import org.apache.avro.generic.IndexedRecord;
+import org.apache.qpid.client.AMQAnyDestination;
 import org.apache.qpid.client.AMQQueue;
 import org.cogchar.avrogen.bind.robokind.RotationAxis;
 import org.cogchar.bind.robokind.joint.BonyJoint;
@@ -35,18 +33,15 @@ import org.cogchar.bind.robokind.joint.BonyRobotUtils;
 import org.cogchar.bind.robokind.joint.BonyRobotFactory;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
-import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
-import org.cogchar.render.opengl.bony.model.HumanoidBoneDesc;
-import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.state.BoneState;
-import org.osgi.framework.ServiceReference;
-import org.robokind.api.messaging.PollingService;
+import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Joint;
-import org.robokind.avrogen.motion.MotionFrameRecord;
+import org.robokind.api.motion.protocol.RobotFrameSource;
+import org.robokind.api.motion.utils.RobotUtils;
 import org.robokind.impl.messaging.ConnectionManager;
-import org.robokind.impl.messaging.JMSPollingService;
-import org.robokind.impl.motion.messaging.RobotMoveServer;
+import org.robokind.impl.motion.messaging.JMSRobotServer;
+import org.robokind.impl.motion.messaging.MoveFrameListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +70,39 @@ public class RobokindBindingUtils {
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr end");
         return myBonyRobot;
 	}
+    
+    public static void createAndRegisterServer(
+            BundleContext bundleCtx, Robot.Id robotId){
+        Connection connection = ConnectionManager.createConnection(
+                "admin", "admin", "client1", "test", "tcp://127.0.0.1:5672");
+        try{
+            connection.start();
+        }catch(JMSException ex){
+            theLogger.warn("Could not start connection.", ex);
+        }
+        if(connection != null){
+            String connId = "connection1";
+            String destId = "destination1";
+            ServiceRegistration connReg =  ConnectionManager.registerConnection(
+                    bundleCtx, connId, connection, null);
+            String queue = "test.RobotMoveQueue; {create: always, node: {type: queue}}";
+            Destination dest;
+            try{
+                dest = new AMQQueue(queue);
+            }catch(URISyntaxException ex){
+                theLogger.warn("Error creating destination.", ex);
+                return;
+            }
+            ServiceRegistration destReg = ConnectionManager.registerDestination(
+                    bundleCtx, destId, dest, null);
+            try{
+                startRobotServer(bundleCtx, robotId, 
+                        connId, null, destId, null);
+            }catch(Exception ex){
+                theLogger.warn("Error starting Robot Server.", ex);
+            }
+        }
+    }
     
 	public static void connectToVirtualChar(final BonyContext bc) throws Exception {
 		BonyVirtualCharApp app = bc.getApp();
@@ -134,42 +162,19 @@ public class RobokindBindingUtils {
 		}
 	}
     
-    public static <T extends IndexedRecord> PollingService<T> 
-             startPollingService(Class<T> clazz, 
-                    BundleContext context, String connectionId, String destStr) 
-                            throws JMSException, URISyntaxException, Exception{
-         
-        ServiceReference ref = ConnectionManager.retrieveConnectionReference(
-                context, connectionId, null);
-        if(ref == null){
-            throw new NullPointerException();
-        }
-        Object obj = context.getService(ref);
-        if(!(obj instanceof Connection)){
-            theLogger.warn("Service not expected type.");
-            return null;
-        }
-        Connection connection = (Connection)obj;
-        Session session = 
-                connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-        Destination dest = new AMQQueue(destStr);
-        MessageConsumer moveConsumer = session.createConsumer(dest);
-        connection.start();
-        PollingService pollService = new JMSPollingService
-                (MotionFrameRecord.class, 
-                MotionFrameRecord.SCHEMA$, 
-                moveConsumer);
-        return pollService;
-    }
-    
-    protected static void startRobotServer(
-            BundleContext context, Robot.Id id, String conStr, String destStr)
+    private static JMSRobotServer startRobotServer(
+            BundleContext context, Robot.Id id, String conId, String conFilter, 
+            String destId, String destFilter)
                 throws Exception{
-        RobotMoveServer server = new RobotMoveServer(context, id);
-        PollingService<MotionFrameRecord> poll = startPollingService(
-                MotionFrameRecord.class, context, conStr, destStr);
-        server.setPollingService(poll);
-        poll.start();
-    }
-		
+        JMSRobotServer server = new JMSRobotServer(
+                context, conId, conFilter, destId, destFilter);
+        RobotFrameSource frameSource = new RobotFrameSource(context, id);
+        MoveFrameListener moveHandler = new MoveFrameListener();
+        ServiceRegistration reg = 
+                RobotUtils.registerFrameSource(context, id, frameSource);
+        moveHandler.setRobotFrameSource(frameSource);
+        server.setMoveHandler(moveHandler);
+        server.connect();
+        return server;
+    }		
 }

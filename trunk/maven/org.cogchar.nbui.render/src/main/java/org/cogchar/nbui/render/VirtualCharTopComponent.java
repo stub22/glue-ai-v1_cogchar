@@ -70,15 +70,7 @@ public final class VirtualCharTopComponent extends TopComponent {
         initVirtualCharPanel(bonyContext);
         Robot r = RobokindBindingUtils.createAndRegisterRobot(context, new File("org_cogchar_nbui_render/bonyRobotConfig.json"));
         RobokindBindingUtils.connectToVirtualChar(bonyContext);
-        Connection connection = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", "tcp://127.0.0.1:5672");
-        if(connection != null){
-            String connId = "connection1";
-            ServiceRegistration connReg =  ConnectionManager.registerConnection(
-                    context, connId, connection, null);
-            String queue = "test.RobotMoveQueue; {create: always, node: {type: queue}}";
-            RobokindBindingUtils.startRobotServer(context, r.getRobotId(), connId, queue);
-        }
+        RobokindBindingUtils.createAndRegisterServer(context, r.getRobotId());
         myInitializedFlag = true;
     }
     
