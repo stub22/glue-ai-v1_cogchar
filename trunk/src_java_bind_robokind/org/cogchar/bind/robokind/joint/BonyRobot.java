@@ -51,9 +51,14 @@ public class BonyRobot extends AbstractRobot<BonyJoint> {
 		theLogger.info("BonyRobot[" + getRobotId() + "] disconnecting");
 	}
 
+    private long myLastMove = System.currentTimeMillis();
 	@Override public void move(RobotPositionMap positions, long lenMillisec) {
+        long now = System.currentTimeMillis();
+        long elapsed = now - myLastMove;
 		theLogger.info("BonyRobot[" + getRobotId() + "] moving to: " + 
-                positions + ", over " + lenMillisec + " milliseconds");
+                positions + ", over " + lenMillisec + " milliseconds. "
+                + "elapsed: " + elapsed + ", current time: " + System.currentTimeMillis());
+        myLastMove = now;
         if(myJointMap == null){
             throw new NullPointerException();
         }

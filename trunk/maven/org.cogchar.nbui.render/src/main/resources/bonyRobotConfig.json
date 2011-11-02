@@ -4,7 +4,7 @@
 		{"name": "Waist",
 			"jointId": 0,
 			"bone": "Waist",
-			"rotationAbout": "YAW",
+			"rotationAbout": "ROLL",
 			"minPosition": -0.785,
 			"maxPosition": 0.785,
 			"defaultPosition": 0.0},
