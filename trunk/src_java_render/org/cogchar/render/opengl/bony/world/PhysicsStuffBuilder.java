@@ -60,10 +60,10 @@ public class PhysicsStuffBuilder {
         light.setColor(ColorRGBA.LightGray);
         rootNode.addLight(light);
 
-        Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
+        //Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
         // material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
 
-        Box floorBox = new Box(140, 0.25f, 140);
+        /*Box floorBox = new Box(140, 0.25f, 140);
         Geometry floorGeometry = new Geometry(GEOM_FLOOR, floorBox);
         floorGeometry.setMaterial(material);
         floorGeometry.setLocalTranslation(0, -5, 0);
@@ -73,9 +73,9 @@ public class PhysicsStuffBuilder {
         floorGeometry.addControl(new RigidBodyControl(0));
         rootNode.attachChild(floorGeometry);
         space.add(floorGeometry);
-
+        */ 
         //movable boxes
-        for (int i = 0; i < 12; i++) {
+        /*for (int i = 0; i < 12; i++) {
             Box box = new Box(0.25f, 0.25f, 0.25f);
             Geometry boxGeometry = new Geometry(GEOM_BOX, box);
             boxGeometry.setMaterial(material);
@@ -94,7 +94,7 @@ public class PhysicsStuffBuilder {
         sphereGeometry.addControl(new RigidBodyControl(new MeshCollisionShape(sphere), 0));
         rootNode.attachChild(sphereGeometry);
         space.add(sphereGeometry);
-
+        */ 
     }
     
     public static void createPhysicsTestWorldSoccer(Node rootNode, AssetManager assetManager, PhysicsSpace space) {
@@ -105,7 +105,7 @@ public class PhysicsStuffBuilder {
         Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
         material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
 
-        Box floorBox = new Box(140, 0.25f, 140);
+        /*Box floorBox = new Box(140, 0.25f, 140);
         Geometry floorGeometry = new Geometry(GEOM_FLOOR, floorBox);
         floorGeometry.setMaterial(material);
         floorGeometry.setLocalTranslation(0, -0.25f, 0);
@@ -115,9 +115,9 @@ public class PhysicsStuffBuilder {
         floorGeometry.addControl(new RigidBodyControl(0));
         rootNode.attachChild(floorGeometry);
         space.add(floorGeometry);
-
+        */
         //movable spheres
-        for (int i = 0; i < 5; i++) {
+        /*for (int i = 0; i < 5; i++) {
             Sphere sphere = new Sphere(16, 16, .5f);
             Geometry ballGeometry = new Geometry(GEOM_SOCCER_BALL, sphere);
             ballGeometry.setMaterial(material);
@@ -137,7 +137,7 @@ public class PhysicsStuffBuilder {
         boxGeometry.addControl(new RigidBodyControl(new MeshCollisionShape(box), 0));
         rootNode.attachChild(boxGeometry);
         space.add(boxGeometry);
-
+        */ 
     }
 
     /**

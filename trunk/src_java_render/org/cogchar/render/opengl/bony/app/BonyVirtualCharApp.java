@@ -110,7 +110,7 @@ public class BonyVirtualCharApp extends DemoApp {
 		System.out.println("*********** BonyVirtualCharApp.simpleInitApp() is starting");
 		// Perform actions that cannot be done until engine is running.
 		BonyCanvasFuncs.setupCameraLightAndViewport(myContext);
-		BonyCanvasFuncs.initScoreBoard(myContext);
+		//BonyCanvasFuncs.initScoreBoard(myContext);
 		System.out.println("*********** BonyVirtualCharApp.simpleInitApp() is finished");
 	}
 
