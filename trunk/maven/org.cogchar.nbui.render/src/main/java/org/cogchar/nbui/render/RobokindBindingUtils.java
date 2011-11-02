@@ -18,14 +18,16 @@ package org.cogchar.nbui.render;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import org.apache.qpid.client.AMQAnyDestination;
 import org.apache.qpid.client.AMQQueue;
-import org.cogchar.avrogen.bind.robokind.RotationAxis;
 import org.cogchar.bind.robokind.joint.BonyJoint;
+import org.cogchar.bind.robokind.joint.BonyJoint.JointRotation;
 import org.cogchar.bind.robokind.joint.BonyRobot;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
@@ -142,23 +144,13 @@ public class RobokindBindingUtils {
 		for (BoneState bs : fs.getBoneStates()) {
 			String boneName = bs.getBoneName();
 			List<BonyJoint> bjList = BonyRobotUtils.findJointsForBoneName(br, boneName);
+            JointRotation rot = null;
 			for (BonyJoint bj : bjList) {
-				RotationAxis axis = bj.getRotationAxis();
-				if (axis != null) {
-					float goalAngleRad = (float) bj.getGoalAngleRad();
-					switch (axis) {
-						case PITCH:
-							bs.rot_X_pitch = goalAngleRad;
-						break;
-						case ROLL:
-							bs.rot_Y_roll = goalAngleRad;
-						break;
-						case YAW:
-							bs.rot_Z_yaw = goalAngleRad;
-						break;
-					}
-				}
+                rot = JointRotation.add(bj.getGoalAngleRad(), rot);
 			}
+            bs.rot_X_pitch = (float)rot.getPitch();
+            bs.rot_Y_roll = (float)rot.getRoll();
+            bs.rot_Z_yaw = (float)rot.getYaw();
 		}
 	}
     

@@ -38,16 +38,7 @@ public class BonyRobotUtils {
         //moves to the positions over 1.5 seconds
         robotFS.move(positions, 1500);
 	}
-	public static BonyJoint makeBonyJointForRobot(BonyRobot robot, int jointNum, String jointName, 
-					double defaultPos, double initPos) {
-		Joint.Id bjID = new Joint.Id(jointNum);
-		NormalizedDouble dpND = new NormalizedDouble(defaultPos);
-		NormalizedDouble ipND = new NormalizedDouble(initPos);
-		BonyJoint bj = new BonyJoint(bjID, jointName, dpND);
-		bj.setGoalPosition(ipND);
-		robot.registerBonyJoint(bj);
-		return bj;
-	}
+    
 	public static List<BonyJoint> findJointsForBoneName(BonyRobot robot, String boneName) {
 		List<BonyJoint> bjList = new ArrayList<BonyJoint>();
 		List<Joint> allJoints = robot.getJointList();
