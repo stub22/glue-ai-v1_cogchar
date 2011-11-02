@@ -86,12 +86,13 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 	@Override public void simpleInitApp() {
 		super.simpleInitApp();
 		initFonts();
-		WorldMgr.makeCrossHairs(assetManager, guiNode, guiFont, settings);
+		//WorldMgr.makeCrossHairs(assetManager, guiNode, guiFont, settings);
 		initPhysicsStuff();
 		initCameraAndLights();
 		initHumanoidStuff();
-		initProjectileStuff();  // Can be done at any time in this startup seq
+		//initProjectileStuff();  // Can be done at any time in this startup seq
 		//BowlAtHumanoidActions.setupActionListeners(inputManager, this);
+        SimulatorActions.setupActionListeners(inputManager, this);
 		// myHumanoidWrapper.boogie();
 		myHumanoidWrapper.becomePuppet();
 	}
@@ -136,12 +137,15 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		myWorldMgr.initPhysAppStuff(assetManager, stateManager, rootNode);
 	}
 	private void initCameraAndLights() {
-		cam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));
-		cam.setRotation(new Quaternion(-2.302544E-4f, 0.99302495f, -0.117888905f, -0.0019395084f));
+        setDefaultCameraLocation();
 		setAppSpeed(1.3f);
 		flyCam.setMoveSpeed(50);
 		addLightToRootNode(WorldMgr.makeDirectionalLight());		
 	}
+    protected void setDefaultCameraLocation(){
+		cam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));
+		cam.setRotation(new Quaternion(-2.302544E-4f, 0.99302495f, -0.117888905f, -0.0019395084f));
+    }
 	public VirtCharPanel getVCPanel() { 
 		BonyContext ctx = getBonyContext();
 		VirtCharPanel vcp = ctx.getPanel();
@@ -190,15 +194,19 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 	boolean dance = true;
 	 * */
     private long myLastUpdateTime = System.currentTimeMillis();
-	@Override
-	public void simpleUpdate(float tpf) {
+    private void logUpdateTime(){
         long prev = myLastUpdateTime;
         long now = System.currentTimeMillis();
         long elapsed = now - prev;
         theLogger.info("Updating Robot.  " + elapsed + "msec since last update.  Cur time: " + now);
         myLastUpdateTime = now;
+    }
+    
+	@Override
+	public void simpleUpdate(float tpf) {
+        //logUpdateTime();
 		// super.simpleUpdate(tpf);
-		applyTwisting(tpf);
+		//applyTwisting(tpf);
 		applyFigureState();
 		// myHumanoidWrapper.wiggle(tpf);
 		//  Below is JMonkey test code from TestBoneRagdoll, which is commented out in JMonkey trunk as of about 
