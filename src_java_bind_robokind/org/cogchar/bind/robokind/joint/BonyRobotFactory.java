@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import org.cogchar.avrogen.bind.robokind.BonyJointConfig;
 import org.cogchar.avrogen.bind.robokind.BonyRobotConfig;
+import org.robokind.api.common.position.NormalizedDouble;
+import org.robokind.api.common.utils.Utils;
 import org.robokind.api.motion.Joint;
 import org.robokind.api.motion.Robot;
 import org.robokind.bind.apache_avro.AvroUtils;
@@ -58,13 +60,18 @@ public class BonyRobotFactory {
     
     private static BonyJoint buildJoint(BonyJointConfig config){
         Joint.Id jointId = new Joint.Id(config.jointId);
+        double defVal = Utils.bound(config.defaultPosition, 0.0, 1.0);
+        NormalizedDouble def = new NormalizedDouble(defVal);
         return new BonyJoint(
                 jointId, 
                 config.name.toString(), 
                 config.bone.toString(), 
-                config.rotationAbout, 
-                config.minPosition, 
-                config.maxPosition, 
-                config.defaultPosition);
+                config.minPitch,
+                config.maxPitch,
+                config.minRoll,
+                config.maxRoll,
+                config.minYaw,
+                config.maxYaw,
+                def);
     }
 }
