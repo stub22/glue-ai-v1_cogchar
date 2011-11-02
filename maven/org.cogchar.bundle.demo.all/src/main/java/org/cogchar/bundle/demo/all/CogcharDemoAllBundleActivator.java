@@ -55,6 +55,7 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
         if(connection != null){
             String connId = "connection1";
             String destId = "destination1";
+            connection.start();
             ServiceRegistration connReg =  ConnectionManager.registerConnection(
                     bundleCtx, connId, connection, null);
             String queue = "test.RobotMoveQueue; {create: always, node: {type: queue}}";

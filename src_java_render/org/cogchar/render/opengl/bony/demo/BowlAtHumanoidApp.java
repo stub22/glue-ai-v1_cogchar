@@ -52,13 +52,15 @@ import org.cogchar.render.opengl.bony.state.BoneState;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JMonkey Team Comment as of about August 2011:
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
  */
 public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
-
+    private final static Logger theLogger = LoggerFactory.getLogger(BowlAtHumanoidApp.class);
 	private HumanoidRagdollWrapper myHumanoidWrapper;
 	private ProjectileMgr myPrjctlMgr;
 	private	WorldMgr myWorldMgr;
@@ -89,7 +91,7 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		initCameraAndLights();
 		initHumanoidStuff();
 		initProjectileStuff();  // Can be done at any time in this startup seq
-		BowlAtHumanoidActions.setupActionListeners(inputManager, this);
+		//BowlAtHumanoidActions.setupActionListeners(inputManager, this);
 		// myHumanoidWrapper.boogie();
 		myHumanoidWrapper.becomePuppet();
 	}
@@ -187,8 +189,14 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 	Quaternion rotate = new Quaternion().fromAngleAxis(FastMath.PI / 8, Vector3f.UNIT_Y);
 	boolean dance = true;
 	 * */
+    private long myLastUpdateTime = System.currentTimeMillis();
 	@Override
 	public void simpleUpdate(float tpf) {
+        long prev = myLastUpdateTime;
+        long now = System.currentTimeMillis();
+        long elapsed = now - prev;
+        theLogger.info("Updating Robot.  " + elapsed + "msec since last update.  Cur time: " + now);
+        myLastUpdateTime = now;
 		// super.simpleUpdate(tpf);
 		applyTwisting(tpf);
 		applyFigureState();
