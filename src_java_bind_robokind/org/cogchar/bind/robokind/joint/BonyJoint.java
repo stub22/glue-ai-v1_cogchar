@@ -16,7 +16,7 @@
 
 package org.cogchar.bind.robokind.joint;
 
-import org.cogchar.avrogen.bind.robokind.RotationAxis;
+import org.robokind.api.common.position.NormalizableRange;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.AbstractJoint;
 import org.robokind.api.motion.Joint;
@@ -29,35 +29,30 @@ import org.slf4j.LoggerFactory;
 
 public class BonyJoint extends AbstractJoint {
 	static Logger theLogger = LoggerFactory.getLogger(BonyJoint.class);
-	
+    final static int PITCH = 0;
+    final static int ROLL = 1;
+    final static int YAW = 2;
+    final static int ROTATION_COUNT = 3;
+    
     private	boolean				myEnabledFlag = false;
 	private	NormalizedDouble	myDefaultPosNorm;
 	private	NormalizedDouble	myGoalPosNorm;
 	private	String				myName;
     private String              myBoneName;
-    private RotationAxis        myRotationAxis;
-    private double              myMinAngleRad;
-    private double              myMaxAngleRad;
+    private JointRotationRange  myRotationRange;
 	
-    protected BonyJoint(Joint.Id jointId, String name, String bone, RotationAxis axis, double minAngleRad, 
-					double maxAngleRad, double defAngleRad){
+    protected BonyJoint(Joint.Id jointId, String name, String bone, 
+            double minPitch, double maxPitch, 
+            double minRoll, double maxRoll, 
+            double minYaw, double maxYaw,
+            NormalizedDouble defAngleRad){
         super(jointId);
         myName = name;
         myBoneName = bone;
-        myRotationAxis = axis;
-        myMinAngleRad = minAngleRad;
-        myMaxAngleRad = maxAngleRad;
-        double defOffsetAngleRad = defAngleRad - myMinAngleRad;
-        double fullRangeAngleRad = myMaxAngleRad - myMinAngleRad;
-        myDefaultPosNorm = new NormalizedDouble(defOffsetAngleRad/fullRangeAngleRad);
+        myRotationRange = new JointRotationRange(minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw);
+        myDefaultPosNorm = defAngleRad;
         myGoalPosNorm = myDefaultPosNorm;
     }
-    
-	protected BonyJoint(Joint.Id jointId, String name, NormalizedDouble defaultPos) {
-        super(jointId);
-		myName = name;
-		myDefaultPosNorm = defaultPos;
-	}
 
 	@Override public void setEnabled(Boolean enabled) {
 		theLogger.info("BonyJoint[" + getId() + "] setEnabled(" + enabled + ")");
@@ -92,19 +87,113 @@ public class BonyJoint extends AbstractJoint {
 	public String getBoneName(){ 
 		return myBoneName;
 	}
-	public RotationAxis getRotationAxis() { 
-		return myRotationAxis;
-	}
-	public double getAngleRadFromNormPos(NormalizedDouble normPos) { 
-		double np = normPos.getValue();
-		double fullRangeAngleRad = myMaxAngleRad - myMinAngleRad;
-		double goalAngleRad = myMinAngleRad + np * fullRangeAngleRad;
-		return goalAngleRad;
+    
+	public JointRotation getAngleRadFromNormPos(NormalizedDouble normPos) { 
+		return myRotationRange.denormalizeValue(normPos);
 		
 	}
-	public double getGoalAngleRad() { 
+	public JointRotation getGoalAngleRad() { 
 		NormalizedDouble normGoalPos = getGoalPosition();
 		return getAngleRadFromNormPos(normGoalPos);
 	}
     
+    
+    public static class JointRotation {
+        private double[] myRotationValues;
+        
+        public JointRotation(double pitch, double roll, double yaw){
+            myRotationValues = new double[ROTATION_COUNT];
+            myRotationValues[PITCH] = pitch;
+            myRotationValues[ROLL] = roll;
+            myRotationValues[YAW] = yaw;
+        }
+        
+        public JointRotation(JointRotation rot){
+            myRotationValues = new double[ROTATION_COUNT];
+            myRotationValues[PITCH] = rot.getPitch();
+            myRotationValues[ROLL] = rot.getRoll();
+            myRotationValues[YAW] = rot.getYaw();
+        }
+        
+        public double getRotation(int axis){
+            if(axis < 0 || axis >= ROTATION_COUNT){
+                throw new IllegalArgumentException(
+                        "Axis (" + axis + ") is out of range.");
+            }
+            return myRotationValues[axis];
+        }
+        
+        public double getPitch(){
+            return myRotationValues[PITCH];
+        }
+        
+        public double getRoll(){
+            return myRotationValues[ROLL];
+        }
+        
+        public double getYaw(){
+            return myRotationValues[YAW];
+        }
+        
+        public static JointRotation add(JointRotation a, JointRotation b){
+            if(a == null && b == null){
+                return null;
+            }else if(a == null){
+                return new JointRotation(b);
+            }else if(b == null){
+                return new JointRotation(a);
+            }
+            return new JointRotation(
+                    a.getPitch()+b.getPitch(), 
+                    a.getRoll()+b.getRoll(),
+                    a.getYaw()+b.getYaw());
+        }
+    }
+    
+    public static class JointRotationRange implements NormalizableRange<JointRotation>{
+        
+        private double[] myMinRotations;
+        private double[] myMaxRotations;
+        
+        public JointRotationRange(double minPitch, double maxPitch, double minRoll, double maxRoll, double minYaw, double maxYaw){
+            myMinRotations = new double[ROTATION_COUNT];
+            myMaxRotations = new double[ROTATION_COUNT];
+            myMinRotations[PITCH] = minPitch;
+            myMaxRotations[PITCH] = maxPitch;
+            myMinRotations[ROLL] = minRoll;
+            myMaxRotations[ROLL] = maxRoll;
+            myMinRotations[YAW] = minYaw;
+            myMaxRotations[YAW] = maxYaw;
+        }
+        
+        @Override
+        public boolean isValid(JointRotation t) {
+            if(t == null){
+                throw new NullPointerException();
+            }
+            for(int i=0; i<ROTATION_COUNT; i++){
+                double val = t.getRotation(i);
+                if(val < myMaxRotations[i] || val > myMaxRotations[i]){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public NormalizedDouble normalizeValue(JointRotation t) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public JointRotation denormalizeValue(NormalizedDouble v) {
+            double[] vals = new double[ROTATION_COUNT];
+            for(int i=0; i<ROTATION_COUNT; i++){
+                double range = myMaxRotations[i] - myMinRotations[i];
+                vals[i] = range*v.getValue() + myMinRotations[i];
+            }
+            return new JointRotation(vals[PITCH], vals[ROLL], vals[YAW]);
+        }
+        
+    }
 }

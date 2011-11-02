@@ -5,10 +5,8 @@
 package org.cogchar.bundle.demo.all;
 
 import java.io.File;
-import org.cogchar.bind.robokind.joint.BonyRobot;
 import org.osgi.framework.BundleContext;
 
-import org.robokind.api.motion.Robot;
 
 
 import org.robokind.api.motion.Joint;
@@ -20,19 +18,15 @@ import org.cogchar.bind.robokind.joint.BonyRobotFactory;
 import org.cogchar.bind.robokind.joint.BonyRobot;
 import org.cogchar.bind.robokind.joint.BonyJoint;
 
-import org.robokind.api.common.position.NormalizedDouble;
-import org.cogchar.avrogen.bind.robokind.RotationAxis;
 
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
-import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
-import org.cogchar.render.opengl.bony.model.HumanoidBoneDesc;
-import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.state.BoneState;
 
 import java.util.List;
 
+import org.cogchar.bind.robokind.joint.BonyJoint.JointRotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +68,7 @@ public class RobokindJointBindingDemo {
 
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr end");
 	}
-	public class DanceDoer implements DemoBonyWireframeRagdoll.Doer {
+	/*public class DanceDoer implements DemoBonyWireframeRagdoll.Doer {
 		
 		public void doIt() { 
 			System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  Doing dance ");
@@ -85,7 +79,7 @@ public class RobokindJointBindingDemo {
 				t.printStackTrace();
 			}
 		}
-	}
+	}*/
 	public void connectToVirtualChar(final BonyContext bc) throws Exception {
 		BonyVirtualCharApp app = bc.getApp();
 		setupFigureState(bc);
@@ -123,23 +117,13 @@ public class RobokindJointBindingDemo {
 		for (BoneState bs : fs.getBoneStates()) {
 			String boneName = bs.getBoneName();
 			List<BonyJoint> bjList = BonyRobotUtils.findJointsForBoneName(br, boneName);
+            JointRotation rot = null;
 			for (BonyJoint bj : bjList) {
-				RotationAxis axis = bj.getRotationAxis();
-				if (axis != null) {
-					float goalAngleRad = (float) bj.getGoalAngleRad();
-					switch (axis) {
-						case PITCH:
-							bs.rot_X_pitch = goalAngleRad;
-						break;
-						case ROLL:
-							bs.rot_Y_roll = goalAngleRad;
-						break;
-						case YAW:
-							bs.rot_Z_yaw = goalAngleRad;
-						break;
-					}
-				}
+                rot = JointRotation.add(bj.getGoalAngleRad(), rot);
 			}
+            bs.rot_X_pitch = (float)rot.getPitch();
+            bs.rot_Y_roll = (float)rot.getRoll();
+            bs.rot_Z_yaw = (float)rot.getYaw();
 		}
 	}
 }
