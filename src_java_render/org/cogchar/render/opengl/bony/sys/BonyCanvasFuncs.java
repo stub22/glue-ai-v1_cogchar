@@ -28,6 +28,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 import com.jme3.system.JmeContext;
+import com.jme3.system.JmeSystem;
 import java.awt.Canvas;
 
 /**
@@ -37,6 +38,7 @@ public class BonyCanvasFuncs {
 	public static void setupCameraLightAndViewport(BonyContext bc) { 
 		SimpleApplication app = bc.getApp();
 		FlyByCamera fbc = app.getFlyByCamera();
+        fbc.setDragToRotate(true);
 		fbc.setMoveSpeed(10f);
 		app.setPauseOnLostFocus(false);
 		ViewPort vp = app.getViewPort();
