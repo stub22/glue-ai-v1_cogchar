@@ -17,7 +17,7 @@
 package org.cogchar.nbui.render;
 
 import java.io.File;
-import javax.jms.Connection;
+import java.util.Properties;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -25,10 +25,12 @@ import org.openide.windows.WindowManager;
 //import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.common.osgi.OSGiUtils;
+import org.robokind.api.common.services.ServiceConnectionDirectory;
 import org.robokind.api.motion.Robot;
-import org.robokind.impl.messaging.ConnectionManager;
+import org.robokind.api.motion.utils.JointGroup;
+import org.robokind.impl.motion.utils.RobotJointGroup;
+import org.robokind.impl.motion.utils.RobotJointGroupConfigXMLReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +70,19 @@ public final class VirtualCharTopComponent extends TopComponent {
         }
         RenderUtils.initOpenGLCanvas(bonyContext);
         initVirtualCharPanel(bonyContext);
-        Robot r = RobokindBindingUtils.createAndRegisterRobot(context, new File("org_cogchar_nbui_render/bonyRobotConfig.json"));
+        Robot r = RobokindBindingUtils.createAndRegisterRobot(context, new File("org_cogchar_nbui_render/bonyRobotConfig.json"));        
+        File file = new File("org_cogchar_nbui_render/jointgroup.xml");
+        JointGroup group = ServiceConnectionDirectory.buildService(
+                context, 
+                RobotJointGroup.VERSION, 
+                RobotJointGroupConfigXMLReader.VERSION, 
+                file, 
+                File.class,
+                JointGroup.class);
+        if(group != null){
+            context.registerService(JointGroup.class.getName(), group, new Properties());
+            theLogger.warn("JointGroup Registered.");
+        }
         RobokindBindingUtils.connectToVirtualChar(bonyContext);
         RobokindBindingUtils.createAndRegisterServer(context, r.getRobotId());
         myInitializedFlag = true;
