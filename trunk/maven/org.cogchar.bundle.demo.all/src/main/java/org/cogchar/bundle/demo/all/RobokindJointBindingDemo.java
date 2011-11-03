@@ -13,7 +13,6 @@ import org.robokind.api.motion.Joint;
 import org.robokind.api.motion.Robot;
 
 import org.cogchar.bind.robokind.joint.BonyRobotUtils;
-import org.cogchar.bind.robokind.joint.BonyAnimUtils;
 import org.cogchar.bind.robokind.joint.BonyRobotFactory;
 import org.cogchar.bind.robokind.joint.BonyRobot;
 import org.cogchar.bind.robokind.joint.BonyJoint;
@@ -26,7 +25,7 @@ import org.cogchar.render.opengl.bony.state.BoneState;
 
 import java.util.List;
 
-import org.cogchar.bind.robokind.joint.BonyJoint.JointRotation;
+import org.cogchar.bind.robokind.joint.JointRotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -214,6 +214,7 @@
                             <targetPath></targetPath>
                             <includes>
                                 <include>bonyRobotConfig.json</include>
+                                <include>jointgroup.xml</include>
                             </includes>
                         </nbmResource>
                     </nbmResources>
