@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<JointGroup name="robot">
+	<RobotId>bonez</RobotId>
+	<JointGroups>
+		<JointGroup name="Head">
+			<JointIds>
+				<JointId>21</JointId>
+				<JointId>22</JointId>
+				<JointId>23</JointId>
+				<JointId>24</JointId>
+				<JointId>25</JointId>
+				<JointId>26</JointId>
+				<JointId>27</JointId>
+				<JointId>28</JointId>
+				<JointId>29</JointId>
+				<JointId>30</JointId>
+			</JointIds>
+		</JointGroup>
+		<JointGroup name="Upper Body">
+			<JointGroups>
+				<JointGroup name="Right Arm">
+					<JointIds>
+						<JointId>1</JointId>
+						<JointId>2</JointId>
+						<JointId>3</JointId>
+						<JointId>4</JointId>
+					</JointIds>
+				</JointGroup>
+				<JointGroup name="Left Arm">
+					<JointIds>
+						<JointId>5</JointId>
+						<JointId>6</JointId>
+						<JointId>7</JointId>
+						<JointId>8</JointId>
+					</JointIds>
+				</JointGroup>
+			</JointGroups>
+		</JointGroup>
+		<JointGroup name="Torso">
+			<JointIds>
+				<JointId>0</JointId>
+			</JointIds>
+		</JointGroup>
+		<JointGroup name="Lower Body">
+			<JointGroups>
+				<JointGroup name="Right Leg">
+					<JointIds>
+						<JointId>9</JointId>
+						<JointId>10</JointId>
+						<JointId>11</JointId>
+						<JointId>12</JointId>
+						<JointId>13</JointId>
+						<JointId>14</JointId>
+					</JointIds>
+				</JointGroup>
+				<JointGroup name="Left Leg">
+					<JointIds>
+						<JointId>15</JointId>
+						<JointId>16</JointId>
+						<JointId>17</JointId>
+						<JointId>18</JointId>
+						<JointId>19</JointId>
+						<JointId>20</JointId>
+					</JointIds>
+				</JointGroup>
+			</JointGroups>
+		</JointGroup>
+	</JointGroups>
+</JointGroup>
