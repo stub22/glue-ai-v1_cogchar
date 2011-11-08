@@ -5,6 +5,8 @@
 package org.cogchar.bundle.demo.all;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import org.osgi.framework.BundleContext;
 
 
@@ -25,7 +27,10 @@ import org.cogchar.render.opengl.bony.state.BoneState;
 
 import java.util.List;
 
-import org.cogchar.bind.robokind.joint.JointRotation;
+import java.util.Map;
+import java.util.Map.Entry;
+import org.cogchar.bind.robokind.joint.BoneRotationRange;
+import org.cogchar.bind.robokind.joint.BoneRotationRange.BoneRotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,23 +111,57 @@ public class RobokindJointBindingDemo {
 		List<Joint> allJoints = br.getJointList();
 		for (Joint cursorJoint : allJoints) {
 			BonyJoint bj = (BonyJoint) cursorJoint;
-			String boneName = bj.getBoneName();
-			BoneState bs = fs.obtainBoneState(boneName);
+            for(BoneRotationRange range : bj.getBoneRotationRanges()){
+                String name = range.getBoneName();
+                fs.obtainBoneState(name);
+            }
 		}
 		bctx.setFigureState(fs);
 	}
+	
+    
+    
 	public static void propagateState(BonyRobot br, BonyContext bc) { 
 		FigureState fs = bc.getFigureState();
-		for (BoneState bs : fs.getBoneStates()) {
-			String boneName = bs.getBoneName();
-			List<BonyJoint> bjList = BonyRobotUtils.findJointsForBoneName(br, boneName);
-            JointRotation rot = null;
-			for (BonyJoint bj : bjList) {
-                rot = JointRotation.add(bj.getGoalAngleRad(), rot);
-			}
-            bs.rot_X_pitch = (float)rot.getPitch();
-            bs.rot_Y_roll = (float)rot.getRoll();
-            bs.rot_Z_yaw = (float)rot.getYaw();
-		}
+        applyAllRotations(fs, getRotations(br));
 	}
+    
+    private static void applyAllRotations(FigureState fs, Map<String,List<BoneRotation>> rotMap){
+        List<BoneRotation> rots = new ArrayList<BoneRotation>();
+        for(Entry<String,List<BoneRotation>> e : rotMap.entrySet()){
+            BoneState bs = fs.getBoneState(e.getKey());
+            if(bs == null){
+                continue;
+            }
+            applyRotations(bs, rots);
+        }
+    }
+    
+    private static void applyRotations(BoneState bs, List<BoneRotation> rots){
+        for(BoneRotation rot : rots){
+            float rads = (float)rot.getAngleRadians();
+            switch(rot.getRotationAxis()){
+                case PITCH: bs.rot_X_pitch = rads; break;
+                case ROLL:  bs.rot_Y_roll = rads;  break;
+                case YAW:   bs.rot_Z_yaw = rads;   break;
+            }
+        }
+    }
+    
+    private static Map<String,List<BoneRotation>> getRotations(BonyRobot robot){
+        Map<String,List<BoneRotation>> rotMap = new HashMap();
+        List<BonyJoint> joints = new ArrayList(robot.getJointList());
+        for(BonyJoint j : joints){
+            for(BoneRotation rot : j.getGoalAngleRad()){
+                String bone = rot.getBoneName();
+                List<BoneRotation> rots = rotMap.get(bone);
+                if(rots == null){
+                    rots = new ArrayList<BoneRotation>();
+                    rotMap.put(bone, rots);
+                }
+                rots.add(rot);
+            }
+        }
+        return rotMap;
+    }
 }
