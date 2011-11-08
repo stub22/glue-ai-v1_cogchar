@@ -127,8 +127,8 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 	private void initHumanoidStuff() { 
 		HumanoidBoneConfig hbc = new HumanoidBoneConfig(true);
 		myHumanoidWrapper.initStuff(hbc, assetManager, rootNode, myWorldMgr.getPhysicsSpace(), myHumanoidMeshPath);
-		VirtCharPanel vcp = getVCPanel();
-		vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
+		//VirtCharPanel vcp = getVCPanel();
+		//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
 	}
 	private void initProjectileStuff() { 
 		myPrjctlMgr.initStuff(assetManager);
@@ -152,7 +152,7 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		return vcp;
 	}
 	public void applyTwisting(float tpf) { 
-		VirtCharPanel vcp = getVCPanel();
+		/*VirtCharPanel vcp = getVCPanel();
 		int testChannelNum = vcp.getTestChannelNum();
 		String direction = vcp.getTestDirection();
 		HumanoidBoneConfig hbc = myHumanoidWrapper.getHBConfig();
@@ -162,7 +162,7 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		Bone tgtBone = myHumanoidWrapper.getSpatialBone(boneName);
 		myTwister.twistBone(tpf, tgtBone, direction);
 		
-		Bone rootBone = myHumanoidWrapper.getRootBone();
+		Bone rootBone = myHumanoidWrapper.getRootBone();*/
 	}
 	public void applyFigureState() {
 		BonyContext ctx = getBonyContext();

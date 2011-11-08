@@ -18,18 +18,23 @@ package org.cogchar.nbui.render;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import org.apache.qpid.client.AMQQueue;
+import org.cogchar.bind.robokind.joint.BoneRotationRange;
+import org.cogchar.bind.robokind.joint.BoneRotationRange.BoneRotation;
 import org.cogchar.bind.robokind.joint.BonyJoint;
 import org.cogchar.bind.robokind.joint.BonyRobot;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
 import org.cogchar.bind.robokind.joint.BonyRobotUtils;
 import org.cogchar.bind.robokind.joint.BonyRobotFactory;
-import org.cogchar.bind.robokind.joint.JointRotation;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
 import org.cogchar.render.opengl.bony.state.FigureState;
@@ -130,26 +135,56 @@ public class RobokindBindingUtils {
 		List<Joint> allJoints = br.getJointList();
 		for (Joint cursorJoint : allJoints) {
 			BonyJoint bj = (BonyJoint) cursorJoint;
-			String boneName = bj.getBoneName();
-			BoneState bs = fs.obtainBoneState(boneName);
+            for(BoneRotationRange range : bj.getBoneRotationRanges()){
+                String name = range.getBoneName();
+                fs.obtainBoneState(name);
+            }
 		}
 		bctx.setFigureState(fs);
 	}
     
 	public static void propagateState(BonyRobot br, BonyContext bc) { 
 		FigureState fs = bc.getFigureState();
-		for (BoneState bs : fs.getBoneStates()) {
-			String boneName = bs.getBoneName();
-			List<BonyJoint> bjList = BonyRobotUtils.findJointsForBoneName(br, boneName);
-            JointRotation rot = null;
-			for (BonyJoint bj : bjList) {
-                rot = JointRotation.add(bj.getGoalAngleRad(), rot);
-			}
-            bs.rot_X_pitch = (float)rot.getPitch();
-            bs.rot_Y_roll = (float)rot.getRoll();
-            bs.rot_Z_yaw = (float)rot.getYaw();
-		}
+        applyAllRotations(fs, getRotations(br));
 	}
+    
+    private static void applyAllRotations(FigureState fs, Map<String,List<BoneRotation>> rotMap){
+        for(Entry<String,List<BoneRotation>> e : rotMap.entrySet()){
+            BoneState bs = fs.getBoneState(e.getKey());
+            if(bs == null){
+                continue;
+            }
+            applyRotations(bs, e.getValue());
+        }
+    }
+    
+    private static void applyRotations(BoneState bs, List<BoneRotation> rots){
+        for(BoneRotation rot : rots){
+            float rads = (float)rot.getAngleRadians();
+            switch(rot.getRotationAxis()){
+                case PITCH: bs.rot_X_pitch = rads; break;
+                case ROLL:  bs.rot_Y_roll = rads;  break;
+                case YAW:   bs.rot_Z_yaw = rads;   break;
+            }
+        }
+    }
+    
+    private static Map<String,List<BoneRotation>> getRotations(BonyRobot robot){
+        Map<String,List<BoneRotation>> rotMap = new HashMap();
+        List<BonyJoint> joints = new ArrayList(robot.getJointList());
+        for(BonyJoint j : joints){
+            for(BoneRotation rot : j.getGoalAngleRad()){
+                String bone = rot.getBoneName();
+                List<BoneRotation> rots = rotMap.get(bone);
+                if(rots == null){
+                    rots = new ArrayList<BoneRotation>();
+                    rotMap.put(bone, rots);
+                }
+                rots.add(rot);
+            }
+        }
+        return rotMap;
+    }
     
     private static JMSRobotServer startRobotServer(
             BundleContext context, Robot.Id id, String conId, String conFilter, 

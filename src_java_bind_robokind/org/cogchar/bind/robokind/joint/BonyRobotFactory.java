@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Hanson Robokind LLC.
+ * Copyright 2011 The Cogchar Project (www.cogchar.org).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@ package org.cogchar.bind.robokind.joint;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.cogchar.avrogen.bind.robokind.BoneRotationConfig;
 import org.cogchar.avrogen.bind.robokind.BonyJointConfig;
 import org.cogchar.avrogen.bind.robokind.BonyRobotConfig;
 import org.robokind.api.common.position.NormalizedDouble;
@@ -60,18 +63,17 @@ public class BonyRobotFactory {
     
     private static BonyJoint buildJoint(BonyJointConfig config){
         Joint.Id jointId = new Joint.Id(config.jointId);
-        double defVal = Utils.bound(config.defaultPosition, 0.0, 1.0);
+        double defVal = Utils.bound(config.normalizedDefaultPosition, 0.0, 1.0);
         NormalizedDouble def = new NormalizedDouble(defVal);
-        return new BonyJoint(
-                jointId, 
-                config.name.toString(), 
-                config.bone.toString(), 
-                config.minPitch,
-                config.maxPitch,
-                config.minRoll,
-                config.maxRoll,
-                config.minYaw,
-                config.maxYaw,
-                def);
+        List<BoneRotationConfig> rotConfigs = config.boneRotations;
+        List<BoneRotationRange> ranges = new ArrayList<BoneRotationRange>(rotConfigs.size());
+        for(BoneRotationConfig c : rotConfigs){
+            ranges.add(new BoneRotationRange(
+                    c.boneName.toString(), 
+                    c.rotationAxis,
+                    c.minPosition,
+                    c.maxPosition));
+        }
+        return new BonyJoint(jointId, config.name.toString(), ranges, def);
     }
 }

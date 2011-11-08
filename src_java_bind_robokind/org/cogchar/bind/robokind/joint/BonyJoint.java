@@ -16,7 +16,9 @@
 
 package org.cogchar.bind.robokind.joint;
 
-import org.cogchar.bind.robokind.joint.JointRotation.JointRotationRange;
+import java.util.ArrayList;
+import java.util.List;
+import org.cogchar.bind.robokind.joint.BoneRotationRange.BoneRotation;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.AbstractJoint;
 import org.robokind.api.motion.Joint;
@@ -30,23 +32,18 @@ import org.slf4j.LoggerFactory;
 public class BonyJoint extends AbstractJoint {
 	static Logger theLogger = LoggerFactory.getLogger(BonyJoint.class);
     
-    private	boolean				myEnabledFlag = false;
-	private	NormalizedDouble	myDefaultPosNorm;
-	private	NormalizedDouble	myGoalPosNorm;
-	private	String				myName;
-    private String              myBoneName;
-    private JointRotationRange  myRotationRange;
+    private	boolean                 myEnabledFlag = false;
+	private	NormalizedDouble        myDefaultPosNorm;
+	private	NormalizedDouble        myGoalPosNorm;
+	private	String                  myName;
+    private String                  myBoneName;
+    private List<BoneRotationRange> myBoneRotationRanges;
 	
-    protected BonyJoint(Joint.Id jointId, String name, String bone, 
-            double minPitch, double maxPitch, 
-            double minRoll, double maxRoll, 
-            double minYaw, double maxYaw,
-            NormalizedDouble defAngleRad){
+    protected BonyJoint(Joint.Id jointId, String name, List<BoneRotationRange> rotations, NormalizedDouble defPos){
         super(jointId);
         myName = name;
-        myBoneName = bone;
-        myRotationRange = new JointRotationRange(minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw);
-        myDefaultPosNorm = defAngleRad;
+        myBoneRotationRanges = rotations;
+        myDefaultPosNorm = defPos;
         myGoalPosNorm = myDefaultPosNorm;
     }
 
@@ -68,6 +65,10 @@ public class BonyJoint extends AbstractJoint {
         return myGoalPosNorm;
     }
     
+    public List<BoneRotationRange> getBoneRotationRanges(){
+        return myBoneRotationRanges;
+    }
+    
     //This is used to allow the SkeletonRobot to set the GoalPosition and fire the event.
     void setGoalPosition(NormalizedDouble pos){
 		theLogger.info("BonyJoint[" + getId() + "] setGoalPosition(" + pos + ")");
@@ -76,16 +77,16 @@ public class BonyJoint extends AbstractJoint {
         firePropertyChange(PROP_GOAL_POSITION, old, pos);
 		myGoalPosNorm = pos;
     }
-	
-	public String getBoneName(){ 
-		return myBoneName;
-	}
     
-	public JointRotation getAngleRadFromNormPos(NormalizedDouble normPos) { 
-		return myRotationRange.denormalizeValue(normPos);
-		
+	public List<BoneRotation> getAngleRadFromNormPos(NormalizedDouble normPos) {
+        List<BoneRotation> rotations = 
+                new ArrayList<BoneRotation>(myBoneRotationRanges.size());
+		for(BoneRotationRange range : myBoneRotationRanges){
+            rotations.add(range.getRotationRadians(normPos));
+        }
+        return rotations;
 	}
-	public JointRotation getGoalAngleRad() { 
+	public List<BoneRotation> getGoalAngleRad() { 
 		NormalizedDouble normGoalPos = getGoalPosition();
 		return getAngleRadFromNormPos(normGoalPos);
 	}

@@ -42,7 +42,7 @@ public class StickFigureTwister {
 	}
 	public void twist(float tpf) { 
 				//	System.out.println("simpleUpdate, tpf=" + tpf);
-		List<AnimControl> animControls = myContext.getAnimControls();
+		/*List<AnimControl> animControls = myContext.getAnimControls();
 		VirtCharPanel vcp = myContext.getPanel();
 		int testChannelNum = vcp.getTestChannelNum();
 
@@ -62,14 +62,14 @@ public class StickFigureTwister {
 			Bone firstKid = kids.get(0);
 			tgtBone = firstKid;
 		}
-		twistBone(tpf, tgtBone, direction);
+		twistBone(tpf, tgtBone, direction);*/
 	}
 	public void dumpBonePositionsToVCP(Bone b, String prefix) { 
-		VirtCharPanel vcp = myContext.getPanel();
-		Vector3f localPos = b.getLocalPosition();
-		Vector3f modelPos = b.getModelSpacePosition();
+		//VirtCharPanel vcp = myContext.getPanel();
+		//Vector3f localPos = b.getLocalPosition();
+		//Vector3f modelPos = b.getModelSpacePosition();
 		// System.out.println("================================================================");
-		vcp.setDumpText(prefix + "qryBone=" + b + ", localPos=" + localPos + ", modelPos=" + modelPos + ", localRot=" + b.getLocalRotation());		
+		//vcp.setDumpText(prefix + "qryBone=" + b + ", localPos=" + localPos + ", modelPos=" + modelPos + ", localRot=" + b.getLocalRotation());		
 	}
 	public void twistBone(float tpf, Bone tgtBone, String direction) {
 

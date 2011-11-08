@@ -60,7 +60,19 @@ public class HumanoidBoneConfig {
         addBoneDesc("Clavicle.R");	
 		
 		// extras
-		addBoneDesc("Head");
+        addBoneDesc("Neck");
+        addBoneDesc("Head");
+        addBoneDesc("Eye.L");
+        addBoneDesc("Eye.R");
+        addBoneDesc("Brow.C");
+        addBoneDesc("Brow.L");
+        addBoneDesc("Brow.R");
+        addBoneDesc("Cheek.L");
+        addBoneDesc("Cheek.R");
+        addBoneDesc("UpperLip");
+        addBoneDesc("Jaw");
+        addBoneDesc("TongueBase");
+        addBoneDesc("LowerLip");
 	}
 	public static void applyHumanoidJointLimits(KinematicRagdollControl krc) { 
 		float eighth_pi = FastMath.PI * 0.125f;
