@@ -25,7 +25,6 @@ package org.cogchar.render.opengl.bony.sys;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import javax.swing.JFrame;
-import javax.swing.SpinnerNumberModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,23 +42,6 @@ public class VirtCharPanel extends javax.swing.JPanel {
 	public void setRenderCanvas (Canvas c) {
 		renderPanel.setPreferredSize(c.getPreferredSize());
 		renderPanel.add(c, BorderLayout.CENTER);
-	}
-	public int getTestChannelNum() {
-		return (Integer) jspin_animTestChannelNum.getValue();
-	}
-	public String getTestChannelModifier() {
-		return (String) jspin_animTestChannelMod.getValue();
-	}
-	public String getTestDirection() {
-		return (String) jspin_animTestDirectionNum.getValue();
-	}
-	public void setMaxChannelNum(int maxChanNum) { 
-		SpinnerNumberModel snm = (SpinnerNumberModel) jspin_animTestChannelNum.getModel();
-		snm.setMaximum(maxChanNum);
-	}
-
-	public void setDumpText(String dt) {
-		jtxta_dump.setText(dt);
 	}
 	
 	public JFrame makeEnclosingJFrame() {
@@ -92,67 +74,10 @@ The value is set to HIDE_ON_CLOSE by default. Changes to the value of this prope
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        controlPanel = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jspin_animTestChannelNum = new javax.swing.JSpinner();
-        jspin_animTestDirectionNum = new javax.swing.JSpinner();
-        jxtaDumpScrollPane = new javax.swing.JScrollPane();
-        jtxta_dump = new javax.swing.JTextArea();
-        jspin_animTestChannelMod = new javax.swing.JSpinner();
         renderPanel = new javax.swing.JPanel();
 
         setPreferredSize(new java.awt.Dimension(800, 750));
         setLayout(new java.awt.BorderLayout());
-
-        controlPanel.setBackground(new java.awt.Color(255, 204, 204));
-        controlPanel.setPreferredSize(new java.awt.Dimension(800, 150));
-
-        jButton1.setText("start");
-
-        jspin_animTestChannelNum.setModel(new javax.swing.SpinnerNumberModel(0, 0, 3, 1));
-
-        jspin_animTestDirectionNum.setModel(new javax.swing.SpinnerListModel(new String[] {"pitch", "roll", "yaw"}));
-
-        jtxta_dump.setColumns(20);
-        jtxta_dump.setRows(5);
-        jxtaDumpScrollPane.setViewportView(jtxta_dump);
-
-        jspin_animTestChannelMod.setModel(new javax.swing.SpinnerListModel(new String[] {"self", "first child"}));
-
-        javax.swing.GroupLayout controlPanelLayout = new javax.swing.GroupLayout(controlPanel);
-        controlPanel.setLayout(controlPanelLayout);
-        controlPanelLayout.setHorizontalGroup(
-            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(controlPanelLayout.createSequentialGroup()
-                .addGroup(controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(controlPanelLayout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jspin_animTestDirectionNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(jspin_animTestChannelNum, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(41, 41, 41)
-                        .addComponent(jspin_animTestChannelMod, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(controlPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jxtaDumpScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(30, Short.MAX_VALUE))
-        );
-        controlPanelLayout.setVerticalGroup(
-            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(controlPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jspin_animTestDirectionNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jspin_animTestChannelNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jspin_animTestChannelMod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jxtaDumpScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
-        );
-
-        add(controlPanel, java.awt.BorderLayout.NORTH);
 
         renderPanel.setBackground(new java.awt.Color(0, 51, 0));
         renderPanel.setPreferredSize(new java.awt.Dimension(800, 600));
@@ -162,13 +87,6 @@ The value is set to HIDE_ON_CLOSE by default. Changes to the value of this prope
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel controlPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JSpinner jspin_animTestChannelMod;
-    private javax.swing.JSpinner jspin_animTestChannelNum;
-    private javax.swing.JSpinner jspin_animTestDirectionNum;
-    private javax.swing.JTextArea jtxta_dump;
-    private javax.swing.JScrollPane jxtaDumpScrollPane;
     private javax.swing.JPanel renderPanel;
     // End of variables declaration//GEN-END:variables
 

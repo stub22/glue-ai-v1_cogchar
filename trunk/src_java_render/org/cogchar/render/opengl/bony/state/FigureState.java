@@ -7,7 +7,6 @@ package org.cogchar.render.opengl.bony.state;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Collection;
-import java.util.List;
 
 /**
  *
