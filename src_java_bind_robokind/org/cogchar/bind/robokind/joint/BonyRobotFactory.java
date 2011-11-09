@@ -20,8 +20,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.cogchar.avrogen.bind.robokind.BoneRotationConfig;
+import org.cogchar.avrogen.bind.robokind.BoneRotationRangeConfig;
 import org.cogchar.avrogen.bind.robokind.BonyJointConfig;
 import org.cogchar.avrogen.bind.robokind.BonyRobotConfig;
+import org.cogchar.avrogen.bind.robokind.RotationAxis;
+import org.cogchar.bind.robokind.joint.BoneRotationRange.BoneRotation;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.common.utils.Utils;
 import org.robokind.api.motion.Joint;
@@ -58,6 +61,16 @@ public class BonyRobotFactory {
         for(BonyJointConfig jc : config.jointConfigs){
             robot.registerBonyJoint(buildJoint(jc));
         }
+        List<BoneRotationConfig> rotConfigs = config.initialBonePositions;
+        List<BoneRotation> rotations = 
+                new ArrayList<BoneRotation>(rotConfigs.size());
+        for(BoneRotationConfig conf : rotConfigs){
+            rotations.add(new BoneRotation(
+                    conf.boneName.toString(), 
+                    conf.rotationAxis, 
+                    conf.rotationRadians));
+        }
+        robot.setInitialBoneRotations(rotations);
         return robot;
     }
     
@@ -65,9 +78,9 @@ public class BonyRobotFactory {
         Joint.Id jointId = new Joint.Id(config.jointId);
         double defVal = Utils.bound(config.normalizedDefaultPosition, 0.0, 1.0);
         NormalizedDouble def = new NormalizedDouble(defVal);
-        List<BoneRotationConfig> rotConfigs = config.boneRotations;
+        List<BoneRotationRangeConfig> rotConfigs = config.boneRotations;
         List<BoneRotationRange> ranges = new ArrayList<BoneRotationRange>(rotConfigs.size());
-        for(BoneRotationConfig c : rotConfigs){
+        for(BoneRotationRangeConfig c : rotConfigs){
             ranges.add(new BoneRotationRange(
                     c.boneName.toString(), 
                     c.rotationAxis,

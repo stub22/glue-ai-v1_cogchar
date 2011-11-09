@@ -18,6 +18,7 @@ package org.cogchar.nbui.render;
 
 import java.io.File;
 import java.util.Properties;
+import org.cogchar.bind.robokind.joint.BonyRobot;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -84,6 +85,7 @@ public final class VirtualCharTopComponent extends TopComponent {
             theLogger.warn("JointGroup Registered.");
         }
         RobokindBindingUtils.connectToVirtualChar(bonyContext);
+        RobokindBindingUtils.setInitialBoneRotations(bonyContext.getFigureState(), (BonyRobot)r);
         RobokindBindingUtils.createAndRegisterServer(context, r.getRobotId());
         myInitializedFlag = true;
     }

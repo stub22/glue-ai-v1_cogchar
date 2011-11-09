@@ -171,7 +171,7 @@ public class RobokindBindingUtils {
     
     private static Map<String,List<BoneRotation>> getRotations(BonyRobot robot){
         Map<String,List<BoneRotation>> rotMap = new HashMap();
-        List<BonyJoint> joints = new ArrayList(robot.getJointList());
+        List<BonyJoint> joints = (List)robot.getJointList();
         for(BonyJoint j : joints){
             for(BoneRotation rot : j.getGoalAngleRad()){
                 String bone = rot.getBoneName();
@@ -185,6 +185,29 @@ public class RobokindBindingUtils {
         }
         return rotMap;
     }
+    
+    public static void setInitialBoneRotations(FigureState fs, BonyRobot robot){
+        applyAllRotations(fs, getInitialRotationMap(robot));
+    }
+    
+    private static Map<String,List<BoneRotation>> getInitialRotationMap(BonyRobot robot){
+        Map<String,List<BoneRotation>> rotMap = new HashMap();
+        List<BoneRotation> initRots = robot.getInitialBoneRotations();
+        if(initRots == null){
+            return rotMap;
+        }
+        for(BoneRotation rot : initRots){
+            String bone = rot.getBoneName();
+            List<BoneRotation> rots = rotMap.get(bone);
+            if(rots == null){
+                rots = new ArrayList<BoneRotation>();
+                rotMap.put(bone, rots);
+            }
+            rots.add(rot);
+        }
+        return rotMap;
+    }
+    
     
     private static JMSRobotServer startRobotServer(
             BundleContext context, Robot.Id id, String conId, String conFilter, 
