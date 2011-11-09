@@ -7,6 +7,7 @@ package org.cogchar.bind.robokind.joint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import org.cogchar.bind.robokind.joint.BoneRotationRange.BoneRotation;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.AbstractRobot;
 import org.robokind.api.motion.Robot;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BonyRobot extends AbstractRobot<BonyJoint> {
 	static Logger theLogger = LoggerFactory.getLogger(BonyRobot.class);
+    private List<BoneRotation> myInitialBoneRotations;
     private boolean myConnectionFlag;
 	
 	public static interface MoveListener {
@@ -35,10 +37,17 @@ public class BonyRobot extends AbstractRobot<BonyJoint> {
 		}
 	}
 
-    
 	public BonyRobot(Robot.Id robotId) {
 		super(robotId);
 	}
+    
+    protected void setInitialBoneRotations(List<BoneRotation> rotations){
+        myInitialBoneRotations = rotations;
+    }
+    
+    public List<BoneRotation> getInitialBoneRotations(){
+        return myInitialBoneRotations;
+    }
 
 	@Override public boolean connect() {
         myConnectionFlag = true;
