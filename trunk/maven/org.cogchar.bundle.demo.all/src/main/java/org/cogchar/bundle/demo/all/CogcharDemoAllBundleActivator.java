@@ -1,10 +1,14 @@
 package org.cogchar.bundle.demo.all;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import javax.jms.Connection;
 import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Session;
 import javax.swing.JFrame;
 import org.apache.qpid.client.AMQAnyDestination;
+import org.apache.qpid.client.AMQQueue;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
@@ -50,22 +54,7 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
         }
 		
         rjbd.connectToVirtualChar(bc);
-        Connection connection = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", "tcp://127.0.0.1:5672");
-        if(connection != null){
-            String connId = "connection1";
-            String destId = "destination1";
-            connection.start();
-            ServiceRegistration connReg =  ConnectionManager.registerConnection(
-                    bundleCtx, connId, connection, null);
-            String queue = "test.RobotMoveQueue; {create: always, node: {type: queue}}";
-            Destination dest = new AMQAnyDestination(queue);
-            ConnectionManager.registerDestination(
-                    bundleCtx, destId, dest, null);
-            startRobotServer(bundleCtx, r.getRobotId(), 
-                    connId, null, destId, null);
-        }
-		
+        createAndRegisterServer(bundleCtx, r.getRobotId());		
 	}
 	private void initOpenGLDemoStuff(BonyContext bc) throws Exception {
 
@@ -107,12 +96,46 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
 
 	}
     
-    private JMSRobotServer startRobotServer(
-            BundleContext context, Robot.Id id, String conId, String conFilter, 
-            String destId, String destFilter)
-                throws Exception{
-        JMSRobotServer server = new JMSRobotServer(
-                context, conId, conFilter, destId, destFilter);
+    private static void createAndRegisterServer(
+            BundleContext bundleCtx, Robot.Id robotId){
+        Connection connection = ConnectionManager.createConnection(
+                "admin", "admin", "client1", "test", "tcp://127.0.0.1:5672");
+        try{
+            connection.start();
+        }catch(JMSException ex){
+            theLogger.warn("Could not start connection.", ex);
+            return;
+        }
+        if(connection == null){
+            return;
+        }
+        String queue = 
+                "test.RobotMoveQueue; {create: always, node: {type: queue}}";
+        Session session;
+        Destination destination;
+        try{
+            session = connection.createSession(
+                    false, Session.CLIENT_ACKNOWLEDGE);
+            destination = new AMQQueue(queue);
+        }catch(URISyntaxException ex){
+            theLogger.warn("Error creating destination.", ex);
+            return;
+        }catch(JMSException ex){
+            theLogger.warn("Error creating session.", ex);
+            return;            
+        }
+        
+        try{
+            startRobotServer(bundleCtx, robotId, session, destination);
+        }catch(Exception ex){
+            theLogger.warn("Error starting Robot Server.", ex);
+        }
+    }
+    
+    private static JMSRobotServer startRobotServer(
+            BundleContext context, Robot.Id id,
+            Session session, Destination destination) throws Exception{
+        JMSRobotServer server = new JMSRobotServer(session, destination);
         RobotFrameSource frameSource = new RobotFrameSource(context, id);
         MoveFrameListener moveHandler = new MoveFrameListener();
         ServiceRegistration reg = 
@@ -121,7 +144,7 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
         server.setMoveHandler(moveHandler);
         server.connect();
         return server;
-    }
+    }	
 	
 	protected static BonyContext getBonyContext(BundleContext bundleCtx) {
 		ServiceReference ref = bundleCtx.getServiceReference(BonyContext.class.getName());
