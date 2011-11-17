@@ -12,7 +12,7 @@
 		<format property="NIGHTLY_JME3" pattern="yyyy-MM-dd" />
 	</tstamp>
 -->
-	<property name="NIGHTLY_JME3" value="2011-08-27"/>
+	<property name="NIGHTLY_JME3" value="2011-08-29"/>
 	
 <!-- set up various properties used elsewhere, this part is OS dependant, change based on your OS. -->
 
