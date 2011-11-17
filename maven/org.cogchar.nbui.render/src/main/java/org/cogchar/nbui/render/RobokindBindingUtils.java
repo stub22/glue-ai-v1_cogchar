@@ -23,9 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.Session;
 import org.apache.qpid.client.AMQQueue;
 import org.cogchar.bind.robokind.joint.BoneRotationRange;
 import org.cogchar.bind.robokind.joint.BoneRotationRange.BoneRotation;
@@ -74,39 +76,6 @@ public class RobokindBindingUtils {
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr end");
         return myBonyRobot;
 	}
-    
-    public static void createAndRegisterServer(
-            BundleContext bundleCtx, Robot.Id robotId){
-        Connection connection = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", "tcp://127.0.0.1:5672");
-        try{
-            connection.start();
-        }catch(JMSException ex){
-            theLogger.warn("Could not start connection.", ex);
-        }
-        if(connection != null){
-            String connId = "connection1";
-            String destId = "destination1";
-            ServiceRegistration connReg =  ConnectionManager.registerConnection(
-                    bundleCtx, connId, connection, null);
-            String queue = "test.RobotMoveQueue; {create: always, node: {type: queue}}";
-            Destination dest;
-            try{
-                dest = new AMQQueue(queue);
-            }catch(URISyntaxException ex){
-                theLogger.warn("Error creating destination.", ex);
-                return;
-            }
-            ServiceRegistration destReg = ConnectionManager.registerDestination(
-                    bundleCtx, destId, dest, null);
-            try{
-                startRobotServer(bundleCtx, robotId, 
-                        connId, null, destId, null);
-            }catch(Exception ex){
-                theLogger.warn("Error starting Robot Server.", ex);
-            }
-        }
-    }
     
 	public static void connectToVirtualChar(final BonyContext bc) throws Exception {
 		BonyVirtualCharApp app = bc.getApp();
@@ -208,13 +177,46 @@ public class RobokindBindingUtils {
         return rotMap;
     }
     
+    public static void createAndRegisterServer(
+            BundleContext bundleCtx, Robot.Id robotId){
+        Connection connection = ConnectionManager.createConnection(
+                "admin", "admin", "client1", "test", "tcp://127.0.0.1:5672");
+        try{
+            connection.start();
+        }catch(JMSException ex){
+            theLogger.warn("Could not start connection.", ex);
+            return;
+        }
+        if(connection == null){
+            return;
+        }
+        String queue = 
+                "test.RobotMoveQueue; {create: always, node: {type: queue}}";
+        Session session;
+        Destination destination;
+        try{
+            session = connection.createSession(
+                    false, Session.CLIENT_ACKNOWLEDGE);
+            destination = new AMQQueue(queue);
+        }catch(URISyntaxException ex){
+            theLogger.warn("Error creating destination.", ex);
+            return;
+        }catch(JMSException ex){
+            theLogger.warn("Error creating session.", ex);
+            return;            
+        }
+        
+        try{
+            startRobotServer(bundleCtx, robotId, session, destination);
+        }catch(Exception ex){
+            theLogger.warn("Error starting Robot Server.", ex);
+        }
+    }
     
     private static JMSRobotServer startRobotServer(
-            BundleContext context, Robot.Id id, String conId, String conFilter, 
-            String destId, String destFilter)
-                throws Exception{
-        JMSRobotServer server = new JMSRobotServer(
-                context, conId, conFilter, destId, destFilter);
+            BundleContext context, Robot.Id id,
+            Session session, Destination destination) throws Exception{
+        JMSRobotServer server = new JMSRobotServer(session, destination);
         RobotFrameSource frameSource = new RobotFrameSource(context, id);
         MoveFrameListener moveHandler = new MoveFrameListener();
         ServiceRegistration reg = 
