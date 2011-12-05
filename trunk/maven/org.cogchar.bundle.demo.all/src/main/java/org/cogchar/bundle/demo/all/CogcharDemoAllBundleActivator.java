@@ -7,7 +7,6 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.swing.JFrame;
-import org.apache.qpid.client.AMQAnyDestination;
 import org.apache.qpid.client.AMQQueue;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
@@ -17,10 +16,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.protocol.RobotFrameSource;
+import org.robokind.api.motion.utils.RobotFrameSource;
 import org.robokind.api.motion.utils.RobotUtils;
 import org.robokind.impl.messaging.ConnectionManager;
-import org.robokind.impl.motion.messaging.JMSRobotServer;
+import org.robokind.impl.motion.messaging.JMSMotionFrameReceiver;
 import org.robokind.impl.motion.messaging.MoveFrameListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,13 +125,13 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
         }
         
         try{
-            startRobotServer(bundleCtx, robotId, session, destination);
+            //startRobotServer(bundleCtx, robotId, session, destination);
         }catch(Exception ex){
             theLogger.warn("Error starting Robot Server.", ex);
         }
     }
     
-    private static JMSRobotServer startRobotServer(
+    /*private static JMSRobotServer startRobotServer(
             BundleContext context, Robot.Id id,
             Session session, Destination destination) throws Exception{
         JMSRobotServer server = new JMSRobotServer(session, destination);
@@ -144,7 +143,7 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
         server.setMoveHandler(moveHandler);
         server.connect();
         return server;
-    }	
+    }	*/
 	
 	protected static BonyContext getBonyContext(BundleContext bundleCtx) {
 		ServiceReference ref = bundleCtx.getServiceReference(BonyContext.class.getName());
