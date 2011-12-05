@@ -12,6 +12,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <robokind.version>0.7</robokind.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -47,17 +48,17 @@
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.motion</artifactId>
-			<version>0.6</version>
+			<version>${robokind.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.animation</artifactId>
-			<version>0.6</version>
+			<version>${robokind.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.vision</artifactId>
-			<version>0.6</version>
+			<version>${robokind.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-simple</artifactId>
@@ -102,7 +103,7 @@
         <dependency>
             <groupId>org.robokind</groupId>
             <artifactId>org.robokind.extern.utils.messaging</artifactId>
-            <version>0.6</version>
+            <version>${robokind.version}</version>
         </dependency>
     </dependencies>
 

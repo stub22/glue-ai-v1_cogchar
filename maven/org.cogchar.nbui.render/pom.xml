@@ -12,6 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.version>RELEASE691</netbeans.version>
         <brandingToken>org_cogchar_nbui_render</brandingToken>
+        <robokind.version>0.7</robokind.version>
     </properties>
 
     <repositories>
@@ -72,17 +73,17 @@
         <dependency>
             <artifactId>org.robokind.api.motion</artifactId>
             <groupId>org.robokind</groupId>
-            <version>0.6</version>
+            <version>${robokind.version}</version>
         </dependency>
         <dependency>
             <artifactId>org.robokind.api.common</artifactId>
             <groupId>org.robokind</groupId>
-            <version>0.6</version>
+            <version>${robokind.version}</version>
         </dependency>
         <dependency>
             <artifactId>org.robokind.api.animation</artifactId>
             <groupId>org.robokind</groupId>
-            <version>0.6</version>
+            <version>${robokind.version}</version>
         </dependency>
         <dependency>
             <artifactId>org.osgi.core</artifactId>
@@ -102,7 +103,7 @@
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.integration.animation_motion</artifactId>
-			<version>0.6</version>
+			<version>${robokind.version}</version>
 		</dependency>
         <dependency>
             <artifactId>com.springsource.org.apache.log4j</artifactId>
@@ -141,25 +142,25 @@
         <dependency>
             <groupId>org.robokind</groupId>
             <artifactId>org.robokind.impl.motion</artifactId>
-            <version>0.6</version>
+            <version>${robokind.version}</version>
         </dependency>
         <dependency>
             <artifactId>org.robokind.api.messaging</artifactId>
             <groupId>org.robokind</groupId>
             <type>jar</type>
-            <version>0.6</version>
+            <version>${robokind.version}</version>
         </dependency>
         <dependency>
             <artifactId>org.robokind.avrogen.motion</artifactId>
             <groupId>org.robokind</groupId>
             <type>jar</type>
-            <version>0.6</version>
+            <version>${robokind.version}</version>
         </dependency>
         <dependency>
             <artifactId>org.robokind.impl.messaging</artifactId>
             <groupId>org.robokind</groupId>
             <type>jar</type>
-            <version>0.6</version>
+            <version>${robokind.version}</version>
         </dependency>
         <dependency>
             <artifactId>ext.bundle.apache_qpid_010</artifactId>
