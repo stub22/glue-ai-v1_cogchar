@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -43,11 +42,11 @@ import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.state.BoneState;
 import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Joint;
-import org.robokind.api.motion.protocol.RobotFrameSource;
+import org.robokind.api.motion.utils.RobotFrameSource;
 import org.robokind.api.motion.utils.RobotUtils;
 import org.robokind.impl.messaging.ConnectionManager;
-import org.robokind.impl.motion.messaging.JMSRobotServer;
 import org.robokind.impl.motion.messaging.MoveFrameListener;
+import org.robokind.impl.motion.messaging.JMSMotionFrameReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -213,17 +212,17 @@ public class RobokindBindingUtils {
         }
     }
     
-    private static JMSRobotServer startRobotServer(
+    private static JMSMotionFrameReceiver startRobotServer(
             BundleContext context, Robot.Id id,
             Session session, Destination destination) throws Exception{
-        JMSRobotServer server = new JMSRobotServer(session, destination);
+        JMSMotionFrameReceiver receiver = new JMSMotionFrameReceiver(session, destination);
         RobotFrameSource frameSource = new RobotFrameSource(context, id);
         MoveFrameListener moveHandler = new MoveFrameListener();
         ServiceRegistration reg = 
                 RobotUtils.registerFrameSource(context, id, frameSource);
         moveHandler.setRobotFrameSource(frameSource);
-        server.setMoveHandler(moveHandler);
-        server.connect();
-        return server;
+        receiver.addMessageListener(moveHandler);
+        receiver.start();
+        return receiver;
     }		
 }

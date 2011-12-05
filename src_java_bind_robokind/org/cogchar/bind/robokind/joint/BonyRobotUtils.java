@@ -9,7 +9,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.Robot.RobotPositionHashMap;
 import org.robokind.api.motion.Robot.RobotPositionMap;
-import org.robokind.api.motion.protocol.RobotFrameSource;
+import org.robokind.api.motion.utils.RobotFrameSource;
 import org.robokind.api.motion.utils.RobotUtils;
 
 /**
