@@ -1,0 +1,44 @@
+{"namespace": "org.cogchar.avrogen.bind.robokind", "protocol": "bind_robokind",
+	"types": [
+        {"name": "RotationAxis", "type": "enum",
+            "symbols": ["PITCH", "ROLL", "YAW"]
+        },
+        {"name": "BoneRotationRangeConfig", "type": "record",
+            "fields": [
+                {"name": "boneName", "type": "string"},
+                {"name": "rotationAxis", "type": "RotationAxis"},
+                {"name": "minPosition", "type": "double"},
+                {"name": "maxPosition", "type": "double"}
+            ]
+        },
+        {"name": "BonyJointConfig", "type": "record",
+            "fields": [
+                {"name": "name", "type": "string"},
+                {"name": "jointId", "type": "int"},
+                {"name": "boneRotations", "type":
+                    {"type":"array", "items": "BoneRotationRangeConfig"}
+                },
+                {"name": "normalizedDefaultPosition", "type": "double"}
+            ]
+        },
+        {"name": "BoneRotationConfig", "type": "record",
+            "fields": [
+                {"name": "boneName", "type": "string"},
+                {"name": "rotationAxis", "type": "RotationAxis"},
+                {"name": "rotationRadians", "type": "double"}
+            ]
+        },
+        {"name": "BonyRobotConfig", "type": "record",
+            "fields": [
+                {"name": "robotId",   "type": "string"},
+                {"name": "ogreModelPath",   "type": "string"},
+                {"name": "jointConfigs", "type": 
+                    {"type":"array", "items":"BonyJointConfig"}
+                },
+                {"name": "initialBonePositions", "type": 
+                    {"type":"array", "items":"BoneRotationConfig"}
+                }
+            ]
+        }
+	]
+}
