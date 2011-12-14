@@ -1,0 +1,44 @@
+{"name": "BonyRobotConfig", "type": "record",
+    "fields": [
+        {"name": "robotId",   "type": "string"},
+        {"name": "ogreModelPath",   "type": "string"},
+        {"name": "jointConfigs", "type": 
+            {"type":"array", "items":
+				{"name": "BonyJointConfig", "type": "record",
+					"fields": [
+						{"name": "name", "type": "string"},
+						{"name": "jointId", "type": "int"},
+						{"name": "boneRotations", "type":
+							{"type":"array", "items": 
+								{"name": "BoneRotationRangeConfig", "type": "record",
+									"fields": [
+										{"name": "boneName", "type": "string"},
+										{"name": "rotationAxis", "type":
+										{"name": "RotationAxis", "type": "enum",
+											"symbols": ["PITCH", "ROLL", "YAW"]
+										}	
+									},
+										{"name": "minPosition", "type": "double"},
+										{"name": "maxPosition", "type": "double"}
+									]
+								}
+							}
+						},
+						{"name": "normalizedDefaultPosition", "type": "double"}
+					]
+				}
+            }
+        },
+        {"name": "initialBonePositions", "type": 
+            {"type":"array", "items":
+				{"name": "BoneRotationConfig", "type": "record",
+					"fields": [
+						{"name": "boneName", "type": "string"},
+						{"name": "rotationAxis", "type": "RotationAxis"},
+						{"name": "rotationRadians", "type": "double"}
+					]
+				}            
+            }
+        }
+    ]
+}
