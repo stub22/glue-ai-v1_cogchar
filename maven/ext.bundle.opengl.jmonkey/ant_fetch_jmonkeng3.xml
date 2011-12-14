@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="download_nightly_build" name="OGF">
-<!-- Copied and modified by Stu B 
-     from:  http://jmonkeyengine.org/wiki/doku.php/jme3_maven
--->
+
+	<!-- Copied and modified by Stu B 
+     		from:  http://jmonkeyengine.org/wiki/doku.php/jme3_maven
+	-->
 
 
-<!-- set up the timestamp for the current nightly build to download -->
-
-<!--  Last JMonkey build seems to be on 2011-08-29
+	<!-- set up the pathname for the current nightly build to download -->
 	<tstamp>
 		<format property="NIGHTLY_JME3" pattern="yyyy-MM-dd" />
 	</tstamp>
--->
-	<property name="NIGHTLY_JME3" value="2011-08-29"/>
 	
-<!-- set up various properties used elsewhere, this part is OS dependant, change based on your OS. -->
+	<!-- You must set up correct paths for your machine by editing the 
+		ant_maven_local.properties file !
+	-->
 
     <property file="ant_maven_local.properties"/>
 
 	<property name="zip.name" value="jME3_${NIGHTLY_JME3}.zip" />
 	<property name="zip.local.name" value="jME3_nightly_build.zip" />
-	<property name="zip.url" value="http://jmonkeyengine.com/nightly/" />
+	<property name="zip.url" value="http://direct.jmonkeyengine.com/nightly/" />
 	<property name="location" value="${download_tmp}" />
         <property name="maven" value="${maven_exec}" />
 <!-- now the actual downloading, unzipping and installing begins -->
@@ -28,9 +27,13 @@
 <!-- first start by clearing out the old stuff -->
 		<delete dir="${location}/jme3" />
 		<mkdir dir="${location}/jme3" />
+
 <!-- the download is only performed when there is a new nightly build.
      This way, you can run this ant task multiple times per day without downloading the nightly build each time. -->
-		<get src="${zip.url}${zip.name}" dest="${location}/${zip.local.name}" usetimestamp="true" />
+
+		<get verbose="true" src="${zip.url}${zip.name}" dest="${location}/${zip.local.name}" usetimestamp="true" /> 
+
+
 <!-- unzip the downloaded file -->
 		<unzip src="${location}/${zip.local.name}" dest="${location}/jme3" overwrite="true" />
 <!-- after unzipping, install the required jar files, add or remove files as needed. -->
