@@ -17,9 +17,10 @@
 
     <property file="ant_maven_local.properties"/>
 
+	<property name="hidden.hostname.part" value="direct.jmon"/>
 	<property name="zip.name" value="jME3_${NIGHTLY_JME3}.zip" />
 	<property name="zip.local.name" value="jME3_nightly_build.zip" />
-	<property name="zip.url" value="http://direct.jmonkeyengine.com/nightly/" />
+	<property name="zip.url" value="http://${hidden.hostname.part}keyengine.com/nightly/" />
 	<property name="location" value="${download_tmp}" />
         <property name="maven" value="${maven_exec}" />
 <!-- now the actual downloading, unzipping and installing begins -->
