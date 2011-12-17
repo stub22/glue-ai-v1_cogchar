@@ -60,10 +60,10 @@ public class PhysicsStuffBuilder {
         light.setColor(ColorRGBA.LightGray);
         rootNode.addLight(light);
 
-        //Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
+        Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
         // material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
 
-        /*Box floorBox = new Box(140, 0.25f, 140);
+        Box floorBox = new Box(140, 0.25f, 140);
         Geometry floorGeometry = new Geometry(GEOM_FLOOR, floorBox);
         floorGeometry.setMaterial(material);
         floorGeometry.setLocalTranslation(0, -5, 0);
@@ -73,7 +73,7 @@ public class PhysicsStuffBuilder {
         floorGeometry.addControl(new RigidBodyControl(0));
         rootNode.attachChild(floorGeometry);
         space.add(floorGeometry);
-        */ 
+         
         //movable boxes
         /*for (int i = 0; i < 12; i++) {
             Box box = new Box(0.25f, 0.25f, 0.25f);
