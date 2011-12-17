@@ -272,12 +272,14 @@ public class DemoOtoWalksTerrainAndBombsWall extends DemoApp implements ActionLi
 
         AbstractHeightMap heightmap = null;
         try {
-            heightmap = new ImageBasedHeightMap(ImageToAwt.convert(heightMapImage.getImage(), false, true, 0), 0.25f);
+			heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
+//            heightmap = new ImageBasedHeightMap(ImageToAwt.convert(heightMapImage.getImage(), false, true, 0), 0.25f);
             heightmap.load();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+			
 
         terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
         List<Camera> cameras = new ArrayList<Camera>();
