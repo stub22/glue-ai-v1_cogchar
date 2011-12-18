@@ -42,21 +42,14 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jmonkeyengine.mvn.jme3</groupId>
-			<artifactId>jME3-test</artifactId>
-			<version>3.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jmonkeyengine.mvn.jme3</groupId>
+			<groupId>com.jme3</groupId>
 			<artifactId>jME3-testdata</artifactId>
-			<version>3.0</version>
-			<scope>test</scope>
-		</dependency>
+			<version>${jmonkey.version}</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
+			<version>${appdapter.version}</version>
 		</dependency>
 		<dependency>
 		<!-- This is here temporarily to facilitate Dev testing of org.cogchar.lib.render through Netbeans -->
