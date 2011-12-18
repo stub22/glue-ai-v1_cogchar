@@ -2,19 +2,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.cogchar</groupId>
-    <version>1.0-SNAPSHOT</version>
+	
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.all</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../org.cogchar.modules.all/pom.xml</relativePath>
+	</parent>		
+
 
     <artifactId>org.cogchar.nbui.demo.all</artifactId>
     <packaging>nbm-application</packaging>
 
-    <name>org.cogchar.nbui.demo.all - NetBeans Application</name>
+    <name>${project.artifactId} - NetBeans Application</name>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+       
         <netbeans.run.params.ide/>
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
-        <netbeans.version>RELEASE691</netbeans.version>
+
         <brandingToken>org_cogchar_nbui</brandingToken>
     </properties>
     

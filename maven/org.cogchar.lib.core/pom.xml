@@ -1,62 +1,16 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.cogchar</groupId>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>		
+	
 	<artifactId>org.cogchar.lib.core</artifactId>
-	<version>1.0-SNAPSHOT</version>
 	<name>${project.artifactId} java+scala lib (not a bundle)</name>
 	<description>Cogchar core - does not include Render binding or Robot binding</description>
-	<inceptionYear>2010</inceptionYear>
-	<licenses>
-		<license>
-			<name>My License</name>
-			<url>http://....</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
-	<properties>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
-		<encoding>UTF-8</encoding>
-		<scala.version>2.8.1</scala.version>
-	</properties>
-
-
-	<repositories>
-			<!-- Used for JScience and Javolution -->
-			<!--
-		<repository>
-		
-			<id>maven.java.net-SNAP</id>
-			<name>maven.java.net SNAPSHOTS Repo</name>
-			<url>https://maven.java.net/content/repositories/snapshots/</url>
-		</repository>		
-		-->
-        <repository>
-            <id>sonatype</id>
-            <name>sonatype</name>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-		<repository>
-			<id>scala-tools.org</id>
-			<name>Scala-Tools Maven2 Repository</name>
-			<url>http://scala-tools.org/repo-releases</url>
-		</repository>
-		<repository>
-			<id>scala-tools.org-SNAP</id>
-			<name>Scala-Tools Snapshots Repo</name>
-			<url>http://scala-tools.org/repo-snapshots/</url>
-		</repository>	
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>scala-tools.org</id>
-			<name>Scala-Tools Maven2 Repository</name>
-			<url>http://scala-tools.org/repo-releases</url>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<dependencies>
 		
@@ -70,12 +24,12 @@
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
+			<version>${appdapter.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
+			<version>${appdapter.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>org.scalaquery</groupId>
@@ -143,7 +97,7 @@
 	 <dependency>
 	  <groupId>org.appdapter</groupId>
 	  <artifactId>ext.bundle.xml.dom4j_161</artifactId>
-	  <version>1.0.3-SNAPSHOT</version>
+	  <version>${appdapter.version}</version>
 	 </dependency>
 	 <dependency>
 	  <groupId>com.h2database</groupId>
