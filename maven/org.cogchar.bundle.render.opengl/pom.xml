@@ -3,18 +3,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.cogchar</groupId>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>	
+	
 	<artifactId>org.cogchar.bundle.render.opengl</artifactId>
-	<version>1.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>${project.artifactId} Bundle</name>
-	<properties>
-		<netbeans.hint.license>cogchar-apache20</netbeans.hint.license>
-	 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-	<repositories>
 
-	</repositories>	
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -22,12 +21,11 @@
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
-	 <dependency>
-	  <artifactId>ext.bundle.opengl.jmonkey</artifactId>
-	  <groupId>org.cogchar</groupId>
-	  <type>jar</type>
-	  <version>1.0-SNAPSHOT</version>
-	 </dependency>
+		<dependency>
+			<artifactId>ext.bundle.opengl.jmonkey</artifactId>
+			<groupId>org.cogchar</groupId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -80,7 +78,7 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-				 <encoding>${project.build.sourceEncoding}</encoding>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 			<!-- Stu added plugin for Jmonkey3 download 
@@ -114,14 +112,14 @@
 					</execution>
 				</executions>
 			</plugin>
-		 <plugin>
-		  <groupId>org.apache.maven.plugins</groupId>
-		  <artifactId>maven-resources-plugin</artifactId>
-		  <version>2.4.3</version>
-		  <configuration>
-		   <encoding>${project.build.sourceEncoding}</encoding>
-		  </configuration>
-		 </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.3</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

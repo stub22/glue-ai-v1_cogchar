@@ -1,28 +1,53 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>	
 
-    <groupId>org.cogchar</groupId>
     <artifactId>ext.bundle.opengl.nifty</artifactId>
-    <version>1.0-SNAPSHOT</version>
+
     <packaging>bundle</packaging>
 
-    <name>ext.bundle.opengl.nifty OSGi Bundle</name>
+    <name>${project.artifactId} OSGi Wrapper Bundle</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
 		<dependency>
-			<groupId>org.jmonkeyengine.mvn.jme3</groupId>
-			<artifactId>nifty-v1.3</artifactId>
-			<version>3.0</version>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-niftygui</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
 			<scope>provided</scope>
-	  <!--  Matt's machine wants this (at least, under OSGi), but Stu's doesn't like it.
-	  <type>pom.lastUpdated</type>
-	  -->
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<!--  Need to exclude "sounds", "tutorial", "defaultcontrols/sounds"
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty-default-controls</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty-examples</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty-style-black</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>			
+		-->
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.osgi.core</artifactId>
