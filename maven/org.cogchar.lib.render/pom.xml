@@ -41,11 +41,7 @@
 			<artifactId>ext.bundle.opengl.jmonkey</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>jME3-testdata</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>		
+
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
@@ -58,6 +54,19 @@
 			<version>1.6.1</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-testdata</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>test</scope>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jmonkeyengine3</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>test</scope>
+		</dependency>		
+		
 	<!-- These two temporary direct dependencies on local-repo JMonkey jars are useful for NB editor code completion, 
 			but not for formal build, test, deploy.  They should be commented out in checked in SVN versions! -->
 			<!--
