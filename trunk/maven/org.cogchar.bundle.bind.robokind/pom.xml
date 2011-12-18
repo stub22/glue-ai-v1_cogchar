@@ -73,7 +73,7 @@
 			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
 			<groupId>org.appdapter</groupId>
 			<type>jar</type>
-			<version>1.0.3-SNAPSHOT</version>
+			<version>${appdapter.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -85,7 +85,7 @@
 		</dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>org.cogchar.avrogen</artifactId>
+            <artifactId>org.cogchar.bundle.avrogen</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
