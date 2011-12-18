@@ -44,17 +44,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.jme3</groupId>
 			<artifactId>jME3-testdata</artifactId>
-			<groupId>org.jmonkeyengine.mvn.jme3</groupId>
-			<type>jar</type>
-			<version>3.0</version>
-		</dependency>
-		<dependency>
-			<artifactId>jME3-test</artifactId>
-			<groupId>org.jmonkeyengine.mvn.jme3</groupId>
-			<type>jar</type>
-			<version>3.0</version>
-		</dependency>
+			<version>${jmonkey.version}</version>
+		</dependency>		
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>ext.bundle.opengl.nifty</artifactId>
