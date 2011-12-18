@@ -47,7 +47,10 @@ Version-less parent will be allowed in Maven 3.1.
 		</license>
 	</licenses>	
 	<modules>
-		<module>maven/org.cogchar.modules.all</module>	
+		<!-- We list only "main", not "all", because we don't want to deploy "all" to Sonatype,
+			 but we do need to deploy this root pom.xml file (because subprojects depend on it).
+		-->
+		<module>maven/org.cogchar.modules.main</module>	
 	</modules>
 	<properties>
 	</properties>	
