@@ -54,7 +54,7 @@
 	
 	
 	<modules>
-		<module>../org.cogchar.avrogen</module>		
+		<module>../org.cogchar.bundle.avrogen</module>		
 		<module>../org.cogchar.bundle.demo.all</module>
 		<module>../org.cogchar.bundle.render.opengl</module>
 		<module>../org.cogchar.bundle.bind.robokind</module>
