@@ -29,9 +29,9 @@ import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.OSGiUtils;
 import org.robokind.api.common.services.ServiceConnectionDirectory;
 import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.utils.JointGroup;
-import org.robokind.impl.motion.utils.RobotJointGroup;
-import org.robokind.impl.motion.utils.RobotJointGroupConfigXMLReader;
+import org.robokind.api.motion.jointgroup.JointGroup;
+import org.robokind.api.motion.jointgroup.RobotJointGroup;
+import org.robokind.impl.motion.jointgroup.RobotJointGroupConfigXMLReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
