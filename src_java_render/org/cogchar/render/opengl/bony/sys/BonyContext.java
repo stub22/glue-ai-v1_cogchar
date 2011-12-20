@@ -18,14 +18,19 @@ package org.cogchar.render.opengl.bony.sys;
 import org.cogchar.render.opengl.bony.world.ScoreBoard;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import com.jme3.animation.AnimControl;
+import java.io.File;
 import java.util.List;
 import javax.swing.JFrame;
+import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.state.FigureState;
 
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class BonyContext {
+	protected	BonyConfigEmitter		myConfigEmitter;
 	protected	BonyVirtualCharApp		myApp;
 	protected	VirtCharPanel			myPanel;   
 	protected	JFrame					myFrame;
@@ -33,7 +38,9 @@ public class BonyContext {
 	protected	List<AnimControl>		myAnimControls;
 	protected	FigureState				myFigureState;
 
-
+	public BonyContext(BonyConfigEmitter bce) { 
+		myConfigEmitter = bce;
+	}
 	public BonyVirtualCharApp getApp() {
 		return myApp;
 	}
@@ -76,5 +83,15 @@ public class BonyContext {
 	}
 	public void setFigureState(FigureState fs) { 
 		myFigureState = fs;
+	}
+	public BonyConfigEmitter getBonyConfigEmitter() { 
+		return myConfigEmitter;
+	}
+	public File getJointConfigFileForChar(String bonyCharURI) {
+		return myConfigEmitter.getJointConfigFileForChar(bonyCharURI);
+	}
+	public Vector3f getConfigVector3f(String vectorURI) {
+		float[] xyz = myConfigEmitter.getNamedFloatVector(vectorURI);
+		return JmonkeyMathObjFactory.makeVector(xyz);
 	}
 }
