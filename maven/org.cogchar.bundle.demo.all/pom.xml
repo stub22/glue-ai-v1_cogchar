@@ -52,6 +52,11 @@
             <artifactId>org.robokind.impl.motion</artifactId>
             <version>${robokind.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.bundle.render.resources</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

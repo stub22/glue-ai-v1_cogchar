@@ -21,6 +21,9 @@ package org.cogchar.render.opengl.osgi;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import org.appdapter.osgi.core.BundleActivatorBase;
+import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.bundle.render.resources.ResourceLoader;
+import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
 import org.cogchar.render.opengl.bony.demo.StickFigureTestMain;
 import org.osgi.framework.Bundle;
@@ -29,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.render.opengl.bony.demo.BowlAtHumanoidApp;
 
 /**
  *
@@ -51,24 +55,27 @@ public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
 		super.start(bundleCtx);
 		Bundle b = bundleCtx.getBundle();
 		theLogger.info("bundle=" + b);
-		
 
+
+/*
 		ClassLoader tccl = Thread.currentThread().getContextClassLoader();
 		theLogger.info("Saved old class loader: " + tccl);
 		try {
 			ClassLoader localLoader = getClass().getClassLoader();
 			theLogger.info("Setting thread class loader to local loader: " + localLoader);
 			Thread.currentThread().setContextClassLoader(localLoader);
-			int canvasWidth = DemoApp.DEFAULT_CANVAS_WIDTH; 
-			int canvasHeight = DemoApp.DEFAULT_CANVAS_HEIGHT;
+*/			
 
-			String lwjglRendererName = DemoApp.DEFAULT_RENDERER_NAME;
-				// String LWJGL_OPENGL1,
-				//		LWJGL_OPENGL2, LWJGL_OPENGL3, LWJGL_OPENGL_ANY;
-			System.out.println("********++++++++++++++++++++ Using: " + lwjglRendererName);
 			// Setup our crude demo using test model exported by Leo from Maya.
-			myBonyContext = StickFigureTestMain.initStickFigureApp(lwjglRendererName, 
-							canvasWidth, canvasHeight); 
+			BonyConfigEmitter bce = new BonyConfigEmitter();
+			BonyVirtualCharApp bvcApp =	new BowlAtHumanoidApp(bce);
+			ResourceLoader rl = new ResourceLoader();
+			bvcApp.setAssetLoader(rl);
+			bvcApp.initCharPanelWithCanvas();
+			myBonyContext = bvcApp.getBonyContext();	
+			
+			
+			// lwjglRendererName, 	canvasWidth, canvasHeight); 
 			/*
 			 * At this point, the following setup is still required to be done by enclosing application.
 			 * This ordering is somewhat strict, due to a lot of interlocking assumptions.
@@ -87,11 +94,13 @@ public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
 			// OR: choose from JME tests, run in system OpenGL window.
 			// Some tests are missing required libraries.
 			// TestChooserWrapper.displayTestChooser(b, null);  
-
+/*
 		} finally {
 			theLogger.info("Restoring old class loader: " + tccl);
 			Thread.currentThread().setContextClassLoader(tccl);
 		}
+ * 
+ */
 		bundleCtx.registerService(BonyContext.class.getName(), myBonyContext, null);
 		// System.out.println("Returned from CogcharImplActivator.start()");
 

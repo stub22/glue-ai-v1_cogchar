@@ -41,7 +41,8 @@ import com.jme3.math.FastMath;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
 import java.util.List;
-
+import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -53,19 +54,21 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	private	HumanoidBoneConfig	myHumanoidBoneConfig;
 	// Skeleton is used for direct access to the graphic "spatial" bones of JME3 (bypassing JBullet physics bindings). 
 	private	Skeleton			myHumanoidSkeleton;
+	private BonyConfigEmitter	myBonyConfigEmitter;
 	private float myPhysicsWigglePhase = 0.0f;	
 	public static String 	
 			ANIM_STAND_FRONT = "StandUpFront",
 			ANIM_STAND_BACK = "StandUpBack",
 			ANIM_DANCE = "Dance",
 			ANIM_IDLE_TOP = "IdleTop",
-			DEFAULT_PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",	// Default path in JME test setup
-			PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md",
 			SKEL_DEBUG_NAME = "hrwSkelDebg";
 	
 	private static float DEFAULT_ANIM_BLEND_RATE = 0.5f;
 	private static float KRC_WEIGHT_THRESHOLD = 0.5f;
 
+	public HumanoidRagdollWrapper(BonyConfigEmitter bce) { 
+		myBonyConfigEmitter = bce;
+	}
 	public HumanoidBoneConfig getHBConfig() {
 		return myHumanoidBoneConfig;
 	}
@@ -76,9 +79,9 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	public Bone getRootBone() {
 		return myHumanoidSkeleton.getRoots()[0];
 	}
-	public void initStuff(HumanoidBoneConfig hbc, AssetManager asstMgr, Node parentNode, PhysicsSpace ps, String humanoidMeshPath) {
+	public void initStuff(HumanoidBoneConfig hbc, JmonkeyAssetLoader assetLoader, Node parentNode, PhysicsSpace ps, String humanoidMeshPath) {
 		myHumanoidBoneConfig = hbc;
-		myHumanoidModelNode = (Node) asstMgr.loadModel(humanoidMeshPath);
+		myHumanoidModelNode = (Node) assetLoader.loadModel(humanoidMeshPath);
 
 		// This was commented out in JMonkey code:
 		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));
@@ -115,7 +118,7 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		myHumanoidKRC.setRagdollMode();
 	}
 	public void standUp() { 
-				Vector3f v = new Vector3f();
+		Vector3f v = new Vector3f();
 		v.set(myHumanoidModelNode.getLocalTranslation());
 		v.y = 0;
 		myHumanoidModelNode.setLocalTranslation(v);
@@ -171,7 +174,8 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		// AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
         SkeletonDebugger humanoidSkeletonDebug = 
 				new SkeletonDebugger(SKEL_DEBUG_NAME, myHumanoidSkeleton);
-        Material mat2 = new Material(assetMgr, PATH_UNSHADED_MAT);
+		String unshadedMatPath = myBonyConfigEmitter.getMaterialPath();
+        Material mat2 = new Material(assetMgr, unshadedMatPath);
         mat2.getAdditionalRenderState().setWireframe(true);
         mat2.setColor("Color", ColorRGBA.Green);
         mat2.getAdditionalRenderState().setDepthTest(false);

@@ -16,6 +16,7 @@
 
 package org.cogchar.render.opengl.bony.app;
 import com.jme3.bullet.BulletAppState;
+import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
 
 /**
@@ -24,8 +25,8 @@ import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
 public class BonyRagdollApp extends BonyStickFigureApp {
 	private	DemoBonyWireframeRagdoll	myRagdoll;
 	
-	public BonyRagdollApp(String lwjglRendererName, int canvasWidth, int canvasHeight, String sceneFilePath, float sceneScale) {
-		super (lwjglRendererName, canvasWidth, canvasHeight, sceneFilePath, sceneScale);
+	public BonyRagdollApp(BonyConfigEmitter bce) { // String lwjglRendererName, int canvasWidth, int canvasHeight, String sceneFilePath, float sceneScale) {
+		super (bce); // lwjglRendererName, canvasWidth, canvasHeight, sceneFilePath, sceneScale);
 		myRagdoll = new DemoBonyWireframeRagdoll();
 	}
 	@Override public void simpleInitApp() {

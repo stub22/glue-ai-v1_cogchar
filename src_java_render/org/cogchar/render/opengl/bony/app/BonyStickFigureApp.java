@@ -22,29 +22,25 @@ import java.util.List;
 import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
 import org.cogchar.render.opengl.bony.model.StickFigureTwister;
 
+import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.render.opengl.bony.sys.BonyContext;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class BonyStickFigureApp extends BonyVirtualCharApp {
 	protected StickFigureTwister		myTwister;	
-	private String					mySceneFilePath;
-	private float					myLocalSceneScale;
-	
 
 	
-	public BonyStickFigureApp(String lwjglRendererName, int canvasWidth, int canvasHeight, String sceneFilePath, float sceneScale) {
-		super(lwjglRendererName, canvasWidth, canvasHeight);
-		mySceneFilePath = sceneFilePath;
-		myLocalSceneScale = sceneScale;
-		
+	public BonyStickFigureApp(BonyConfigEmitter bce) { // String lwjglRendererName, int canvasWidth, int canvasHeight, String sceneFilePath, float sceneScale) {
+		super(bce); // lwjglRendererName, canvasWidth, canvasHeight);	
 	}
 	
 	@Override public void simpleInitApp() {
 		super.simpleInitApp();
-		if (mySceneFilePath != null) {
-			initStickFigureModel();
-		}
-		myTwister = new StickFigureTwister(myContext);
+		initStickFigureModel();
+		BonyContext bc = getBonyContext();
+		myTwister = new StickFigureTwister(bc);
 	}
 	public void setScoringFlag(boolean f) {
 		myTwister.setScoringFlag(f);
@@ -52,7 +48,11 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 
 	public void initStickFigureModel() {
 		// test1Node.setLocalScale(0.5f);
-		Node testSceneNode = (Node) assetManager.loadModel(mySceneFilePath);
+		BonyContext bc = getBonyContext();
+		BonyConfigEmitter bce = getBonyConfigEmitter(); 
+		String sceneFilePath = bce.getStickFigureScenePath();
+		float sceneScale = bce.getStickFigureSceneScale();
+		Node testSceneNode = (Node) assetManager.loadModel(sceneFilePath);
 		System.out.println("BonyStickFigure scene loaded: " + testSceneNode);
 
 		SpatialManipFuncs.dumpNodeTree(testSceneNode, "   ");
@@ -65,7 +65,7 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 
 		// Material testSceneMat = new Material(assetManager, "resources/leo_hanson_tests/test3/test3.material");
 
-		testSceneNode.setLocalScale(myLocalSceneScale);
+		testSceneNode.setLocalScale(sceneScale);
 		
 		this.rootNode.attachChild(testSceneNode);
 	}	

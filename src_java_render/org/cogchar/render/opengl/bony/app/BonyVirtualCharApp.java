@@ -20,11 +20,10 @@
 
 package org.cogchar.render.opengl.bony.app;
 
-import com.jme3.app.SimpleApplication;
-import com.jme3.system.AppSettings;
 import java.awt.Canvas;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.sys.BonyCanvasFuncs;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
@@ -37,38 +36,22 @@ public class BonyVirtualCharApp extends DemoApp {
 
 	// private		AnimChannel				channel;
 
-	protected	BonyContext				myContext = new BonyContext();
+	protected	BonyContext				myContext;
     private     boolean                 myCanvasStartedFlag;
-	private		String					myLWJGL_RendererName;
-	private		int						myCanvasWidth, myCanvasHeight;
 
-	public BonyVirtualCharApp(String lwjglRendererName, int canvasWidth, int canvasHeight) {
-		super(lwjglRendererName);
-		myLWJGL_RendererName = lwjglRendererName;
-		myCanvasWidth = canvasWidth;
-		myCanvasHeight = canvasHeight;
-		myContext = new BonyContext();
+	public BonyVirtualCharApp(BonyConfigEmitter bce) {
+		super(bce);
+		myContext = new BonyContext(bce);
 		myContext.setApp(this);
         myCanvasStartedFlag = false;
 	}
 	public BonyContext getBonyContext() { 
 		return myContext;
 	}
-	protected void applySettings() { 
-	/* http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:appsettings
-	 * Every class that extends jme3.app.SimpleApplication has properties 
-	 * that can be configured by customizing a com.jme3.system.AppSettings 
-	 * object. Configure the settings before you call app.start() on 
-	 * the application object. If you change display settings during runtime, 
-	 * call app.restart() to make them take effect.
-	 */
-		AppSettings settings = new AppSettings(true);
-		settings.setRenderer(myLWJGL_RendererName);
-		settings.setWidth(myCanvasWidth);
-		settings.setHeight(myCanvasHeight);
-		setSettings(settings);			
-
+	public BonyConfigEmitter getBonyConfigEmitter() { 
+		return getBonyContext().getBonyConfigEmitter();
 	}
+
 	public void initCharPanelWithCanvas() { 
 		// Works
 		applySettings();
