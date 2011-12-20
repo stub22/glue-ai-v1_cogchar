@@ -44,13 +44,14 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import java.util.List;
+import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
-import org.cogchar.render.opengl.bony.app.DemoApp;
 import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
 import org.cogchar.render.opengl.bony.model.HumanoidBoneDesc;
 import org.cogchar.render.opengl.bony.state.BoneState;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,27 +61,25 @@ import org.slf4j.LoggerFactory;
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
  */
 public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
-    private final static Logger theLogger = LoggerFactory.getLogger(BowlAtHumanoidApp.class);
-	private HumanoidRagdollWrapper myHumanoidWrapper;
-	private ProjectileMgr myPrjctlMgr;
-	private	WorldMgr myWorldMgr;
+    private final static Logger		theLogger = LoggerFactory.getLogger(BowlAtHumanoidApp.class);
+	private HumanoidRagdollWrapper	myHumanoidWrapper;
+	private ProjectileMgr			myPrjctlMgr;
+	private	WorldMgr				myWorldMgr;
 	
-	private	String		myHumanoidMeshPath;
+	// private	String					myHumanoidMeshPath;
 	
-	
-	// This skeleton + mesh model is contained in the org.cogchar.bundle.render.opengl project.
-	public static String  PATH_HUMANOID_MESH = "jme3/models_20110917/sinbad/Sinbad.mesh.xml";
+
 
 	public static void main(String[] args) {
-		BowlAtHumanoidApp app = new BowlAtHumanoidApp(DemoApp.DEFAULT_RENDERER_NAME, PATH_HUMANOID_MESH,
-						DemoApp.DEFAULT_CANVAS_WIDTH, DemoApp.DEFAULT_CANVAS_HEIGHT);
+		BonyConfigEmitter bce = new BonyConfigEmitter();
+		BowlAtHumanoidApp app = new BowlAtHumanoidApp(bce);
 		app.start();
 	}
-	public BowlAtHumanoidApp(String lwjglRendererName, String pathToHumanoidMesh, int canvWidth, int canvHeight) {
-		super(lwjglRendererName, canvWidth, canvHeight, null, 1.0f);
-		myHumanoidMeshPath = pathToHumanoidMesh;
+	public BowlAtHumanoidApp(BonyConfigEmitter bce) { 
+		super(bce); // lwjglRendererName, canvWidth, canvHeight, null, 1.0f);
+		// myHumanoidMeshPath = pathToHumanoidMesh;
 		myPrjctlMgr = new ProjectileMgr();
-		myHumanoidWrapper = new HumanoidRagdollWrapper();
+		myHumanoidWrapper = new HumanoidRagdollWrapper(bce);
 		myWorldMgr = new WorldMgr();
 	}
 	@Override public void simpleInitApp() {
@@ -126,7 +125,12 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 	}
 	private void initHumanoidStuff() { 
 		HumanoidBoneConfig hbc = new HumanoidBoneConfig(true);
-		myHumanoidWrapper.initStuff(hbc, assetManager, rootNode, myWorldMgr.getPhysicsSpace(), myHumanoidMeshPath);
+		BonyConfigEmitter bce = getBonyConfigEmitter();
+		String meshPath = bce.getHumanoidMeshPath();
+		JmonkeyAssetLoader jmal = getAssetLoader();
+		jmal.adoptClassLoader();
+		myHumanoidWrapper.initStuff(hbc, jmal, rootNode, myWorldMgr.getPhysicsSpace(), meshPath);
+		jmal.restoreClassLoader();
 		//VirtCharPanel vcp = getVCPanel();
 		//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
 	}

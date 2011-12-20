@@ -1,5 +1,6 @@
 package org.cogchar.render.test;
 
+import jme3test.TestChooser;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -33,6 +34,15 @@ public class AppTest
      */
     public void testApp()
     {
-        assertTrue( true );
+        // assertTrue( true );
+		/*
+		TestChooser.main(new String[0]);
+		try {
+			Thread.sleep(10*60*1000);
+		} catch(Throwable t) {
+			t.printStackTrace();
+		}
+		 * 
+		 */
     }
 }

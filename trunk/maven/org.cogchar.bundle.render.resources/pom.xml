@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-    <artifactId>org.cogchar.project.root</artifactId>
-    <groupId>org.cogchar</groupId>
-    <version>1.0.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>	
 
-    <groupId>org.cogchar</groupId>
     <artifactId>org.cogchar.bundle.render.resources</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>org.cogchar.bundle.render.resources OSGi Bundle</name>
+    <name>${project.artifactId} OSGi Bundle</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -24,6 +20,17 @@
             <artifactId>org.osgi.core</artifactId>
             <version>1.4.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ext.bundle.opengl.jmonkey</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.lib.render</artifactId>
+            <version>${project.version}</version>
+			<scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -37,6 +44,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.cogchar.bundle.render.resources.Activator</Bundle-Activator>
+						<Export-Package>jme3dat.*,leo_hanson_tests.*, org.cogchar.bundle.render.resources</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

@@ -31,18 +31,26 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
 		return theLogger;
 	}
 	@Override public void start(BundleContext bundleCtx) throws Exception {
+		String uriPrefix = "http://model.cogchar.org/char/bony/";
+		String bonyCharUniqueSuffix = "0x0000FFFF";
+		String bonyCharURI = "http://model.cogchar.org/char/bony/" + bonyCharUniqueSuffix;
+		String debugTxt = "bonyChar at URI[" + bonyCharURI + "]";
+		theLogger.info("==============================\nStarting " + debugTxt);
 		super.start(bundleCtx);
 		BonyContext bc = getBonyContext(bundleCtx);
 		if (bc != null) { 
 			initOpenGLDemoStuff(bc);
-			initRobokindJointPumperDemo(bundleCtx, bc);
+
+			initRobokindJointPumperDemo(bundleCtx, bc, bonyCharURI);
 		} else {
-			theLogger.warn("Can't find BonyContext");
+			theLogger.warn("Can't find BonyContext for " + debugTxt);
 		}
+		theLogger.info("Started" + debugTxt + "\n========================================");
 		
 	}
-	private void initRobokindJointPumperDemo(BundleContext bundleCtx, BonyContext bc)  throws Exception {
-        File jointBindingConfigFile = new File("bonyRobotConfig.json");
+	private void initRobokindJointPumperDemo(BundleContext bundleCtx, BonyContext bc, String bonyCharURI)  
+					throws Exception {
+        File jointBindingConfigFile = bc.getJointConfigFileForChar(bonyCharURI);
 		RobokindJointBindingDemo rjbd = new RobokindJointBindingDemo();
 		
         //load robot from file
