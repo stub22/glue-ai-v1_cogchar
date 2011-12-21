@@ -57,6 +57,11 @@
             <artifactId>org.cogchar.bundle.render.resources</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.bundle.app.puma</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -68,7 +73,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.cogchar.bundle.demo.all.CogcharDemoAllBundleActivator</Bundle-Activator>
+                        <Bundle-Activator>org.cogchar.bundle.demo.all.DemoAllBundleActivator</Bundle-Activator>
                         <Export-Package>org.cogchar.bundle.demo.all</Export-Package>
                         <Private-Package>org.cogchar.bundle.demo.all.*</Private-Package>
                     </instructions>
