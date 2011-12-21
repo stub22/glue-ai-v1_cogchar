@@ -108,9 +108,8 @@ public class RobokindJointBindingDemo {
 	public void setupFigureState(BonyContext bctx) { 
 		BonyRobot br = getBonyRobot();
 		FigureState fs = new FigureState();
-		List<Joint> allJoints = br.getJointList();
-		for (Joint cursorJoint : allJoints) {
-			BonyJoint bj = (BonyJoint) cursorJoint;
+		List<BonyJoint> allJoints = br.getJointList();
+		for (BonyJoint bj : allJoints) {
             for(BoneRotationRange range : bj.getBoneRotationRanges()){
                 String name = range.getBoneName();
                 fs.obtainBoneState(name);
