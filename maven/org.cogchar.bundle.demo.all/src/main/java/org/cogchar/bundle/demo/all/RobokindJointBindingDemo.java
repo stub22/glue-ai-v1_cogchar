@@ -29,6 +29,8 @@ import java.util.List;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import org.cogchar.bind.robokind.joint.BlendingBonyRobotContext;
+import org.cogchar.bind.robokind.joint.BlendingRobotContext;
 import org.cogchar.bind.robokind.joint.BoneRotationRange;
 import org.cogchar.bind.robokind.joint.BoneRotationRange.BoneRotation;
 import org.slf4j.Logger;
@@ -39,39 +41,21 @@ import org.slf4j.LoggerFactory;
  */
 public class RobokindJointBindingDemo {
 	static Logger theLogger = LoggerFactory.getLogger(RobokindJointBindingDemo.class);
-	private	BundleContext	myBundleCtx;
-	private	BonyRobot		myBonyRobot;
-	private	FigureState		myFigureState;
+	private	BundleContext				myBundleCtx;
+	private	BonyRobot					myBonyRobot;
+	private	FigureState					myFigureState;
+	private	BlendingBonyRobotContext	myBBRC;
+	
 
 	
-	public static String	HARDCODED_ROBOT_ID = "myDevice1";
-	
-	public Robot createAndRegisterRobot(BundleContext bundleCtx, File jointBindingConfigFile) throws Exception {
-		String bindingFilePath = jointBindingConfigFile.getAbsolutePath();
-		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr start, using file: " + bindingFilePath);
-		//Create your Robot and register it
-		myBonyRobot  = BonyRobotFactory.buildFromFile(jointBindingConfigFile);
-        if(myBonyRobot == null){
-            theLogger.warn("Error building Robot from file: " + bindingFilePath);
-            return null;
-        }
-		BonyRobotUtils.registerRobokindRobot(myBonyRobot, bundleCtx);
-
-		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr end");
-        return myBonyRobot;
-	}
-    public void createAndRegisterRobot(BundleContext bundleCtx) throws Exception {
+	public RobokindJointBindingDemo(BundleContext bundleCtx) {
 		myBundleCtx = bundleCtx;
-		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr start");
-		//Create your Robot and register it
-		Robot.Id hbID = new Robot.Id(HARDCODED_ROBOT_ID);
-		myBonyRobot  = new BonyRobot(hbID);
-		//BonyRobotUtils.makeBonyJointForRobot(myBonyRobot, 22, "JTwentyTwo", 0.5, 0.2);
-		//BonyRobotUtils.makeBonyJointForRobot(myBonyRobot, 22, "JNinetyNine", 0.8, 0.9);
-		//BonyRobotUtils.registerRobokindRobot(myBonyRobot, bundleCtx);
-
-		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr end");
+		myBBRC = new BlendingBonyRobotContext(bundleCtx);
 	}
+	public void setupBonyRobotWithBlender(File jointBindingConfigFile) throws Exception {
+		myBBRC.makeBonyRobotWithBlenderAndFrameSource(jointBindingConfigFile);
+	}
+
 	/*public class DanceDoer implements DemoBonyWireframeRagdoll.Doer {
 		
 		public void doIt() { 
@@ -122,7 +106,7 @@ public class RobokindJointBindingDemo {
     
 	public static void propagateState(BonyRobot br, BonyContext bc) { 
 		FigureState fs = bc.getFigureState();
-        applyAllRotations(fs, getRotations(br));
+        applyAllRotations(fs, BonyRobotUtils.getGoalAnglesAsRotations(br));
 	}
     
     private static void applyAllRotations(FigureState fs, Map<String,List<BoneRotation>> rotMap){
@@ -147,20 +131,5 @@ public class RobokindJointBindingDemo {
         }
     }
     
-    private static Map<String,List<BoneRotation>> getRotations(BonyRobot robot){
-        Map<String,List<BoneRotation>> rotMap = new HashMap();
-        List<BonyJoint> joints = new ArrayList(robot.getJointList());
-        for(BonyJoint j : joints){
-            for(BoneRotation rot : j.getGoalAngleRad()){
-                String bone = rot.getBoneName();
-                List<BoneRotation> rots = rotMap.get(bone);
-                if(rots == null){
-                    rots = new ArrayList<BoneRotation>();
-                    rotMap.put(bone, rots);
-                }
-                rots.add(rot);
-            }
-        }
-        return rotMap;
-    }
+
 }
