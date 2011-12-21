@@ -70,7 +70,7 @@ public class RobokindBindingUtils {
             theLogger.warn("Error building Robot from file: " + bindingFilePath);
             return null;
         }
-		BonyRobotUtils.registerRobokindRobot(myBonyRobot, bundleCtx);
+		BonyRobotUtils.registerRobotAndAttachBlender(myBonyRobot, bundleCtx);
 
 		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& carr end");
         return myBonyRobot;

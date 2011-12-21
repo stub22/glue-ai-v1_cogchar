@@ -26,13 +26,15 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	
 	val WINGED_OBELISK_SCENE = "leo_hanson_tests/test3/test3.scene";
 	val WOS_SCALE = 0.5f;
+	
+	val PATH_HUMANOID_JOINT_CONFIG = "bonyRobotConfig.json";
 //				DEFAULT_PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",	// Default path in JME test setup
 //			PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md",
 	def getJointConfigFileForChar(bonyCharURI: String) : java.io.File = {
 		println("**************\n***************");
 		println("Scala BonyConfigEmitter generating jointConfigFile for charURI[" + bonyCharURI + "]");
 		println("**************\n***************");
-		return new java.io.File("bonyRobotConfig.json");
+		return new java.io.File(PATH_HUMANOID_JOINT_CONFIG);
 	}
 	
 	def getHumanoidMeshPath : String = PATH_HUMANOID_MESH;

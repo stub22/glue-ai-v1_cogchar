@@ -9,6 +9,8 @@ import javax.jms.Session;
 import javax.swing.JFrame;
 import org.apache.qpid.client.AMQQueue;
 import org.appdapter.osgi.core.BundleActivatorBase;
+import org.cogchar.bind.robokind.client.RobotAnimClient;
+import org.cogchar.bind.robokind.joint.BonyRobot;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyContext;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
@@ -51,17 +53,21 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
 	private void initRobokindJointPumperDemo(BundleContext bundleCtx, BonyContext bc, String bonyCharURI)  
 					throws Exception {
         File jointBindingConfigFile = bc.getJointConfigFileForChar(bonyCharURI);
-		RobokindJointBindingDemo rjbd = new RobokindJointBindingDemo();
+		RobokindJointBindingDemo rjbd = new RobokindJointBindingDemo(bundleCtx);
 		
-        //load robot from file
-        //rjbd.createAndRegisterRobot(bundleCtx);
-		Robot r = rjbd.createAndRegisterRobot(bundleCtx, jointBindingConfigFile);
-        if(r == null){
-            return;
-        }
-		
-        rjbd.connectToVirtualChar(bc);
-        createAndRegisterServer(bundleCtx, r.getRobotId());		
+        //rjbd.registerDummyRobot();
+		rjbd.setupBonyRobotWithBlender(jointBindingConfigFile);
+		BonyRobot br = rjbd.getBonyRobot();
+		Robot.Id brid = br.getRobotId();
+		if (br != null) {
+	        rjbd.connectToVirtualChar(bc);
+			RobotAnimClient brac = new RobotAnimClient(bundleCtx); 
+			try {
+		        createAndRegisterServer(bundleCtx, brid);
+			} catch (Throwable t) {
+				theLogger.warn("Could not register AMQP network server for robot with ID=" + brid, t);
+			}
+		}
 	}
 	private void initOpenGLDemoStuff(BonyContext bc) throws Exception {
 
@@ -107,13 +113,13 @@ public class CogcharDemoAllBundleActivator extends BundleActivatorBase {
             BundleContext bundleCtx, Robot.Id robotId){
         Connection connection = ConnectionManager.createConnection(
                 "admin", "admin", "client1", "test", "tcp://127.0.0.1:5672");
+        if(connection == null){
+            return;
+        }
         try{
             connection.start();
         }catch(JMSException ex){
             theLogger.warn("Could not start connection.", ex);
-            return;
-        }
-        if(connection == null){
             return;
         }
         String queue = 

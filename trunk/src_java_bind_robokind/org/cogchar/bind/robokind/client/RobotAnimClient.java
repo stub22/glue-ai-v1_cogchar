@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cogchar.bind.robokind.joint;
+package org.cogchar.bind.robokind.client;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,9 +16,12 @@ import org.robokind.api.animation.utils.ChannelsParameterSource;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyAnimUtils {
-
-	public static void createAndPlayAnim(BundleContext bundleCtx) throws Exception {
+public class RobotAnimClient {
+	BundleContext	myBundleCtx;
+	public RobotAnimClient(BundleContext bundleCtx) throws Exception {
+		myBundleCtx = bundleCtx;
+	}
+	public void createAndPlayTestAnim() throws Exception {
 		/* This is how the animation editor gets the available channels.  This
 		 * uses a Robot and maps the JointIds to the Integers which are used as
 		 * channel ids.  Right now, it just uses the Integer from the JointId.
@@ -47,6 +50,6 @@ public class BonyAnimUtils {
 		}
         
         //null should be RobotUtils.getRobotFilter(robotId)
-        AnimationUtils.playAnimation(bundleCtx, null, anim);
+        AnimationUtils.playAnimation(myBundleCtx, null, anim);
 	}
 }
