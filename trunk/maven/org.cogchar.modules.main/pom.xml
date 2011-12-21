@@ -56,6 +56,7 @@
 	<modules>
 		<module>../org.cogchar.bundle.avrogen</module>		
 		<module>../org.cogchar.bundle.demo.all</module>
+		<module>../org.cogchar.bundle.app.puma</module>
 		<module>../org.cogchar.bundle.render.opengl</module>
 		<module>../org.cogchar.bundle.render.resources</module>
 		<module>../org.cogchar.bundle.bind.robokind</module>

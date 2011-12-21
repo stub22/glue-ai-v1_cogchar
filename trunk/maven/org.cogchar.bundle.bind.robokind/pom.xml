@@ -93,7 +93,12 @@
             <artifactId>org.robokind.extern.utils.messaging</artifactId>
             <version>${robokind.version}</version>
         </dependency>
-    </dependencies>
+	 <dependency>
+	  <groupId>org.robokind</groupId>
+	  <artifactId>org.robokind.impl.messaging</artifactId>
+	  <version>0.7</version>
+	 </dependency>
+	</dependencies>
 
 	<build>
 		<plugins>

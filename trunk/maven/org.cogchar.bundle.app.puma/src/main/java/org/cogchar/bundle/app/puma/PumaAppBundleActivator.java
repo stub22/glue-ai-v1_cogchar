@@ -3,7 +3,7 @@ package org.cogchar.bundle.app.puma;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator {
+public class PumaAppBundleActivator implements BundleActivator {
 
     public void start(BundleContext context) throws Exception {
         // TODO add activation code here

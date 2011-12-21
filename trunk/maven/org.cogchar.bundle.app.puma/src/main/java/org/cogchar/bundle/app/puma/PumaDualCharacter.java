@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cogchar.bundle.demo.all;
+package org.cogchar.bundle.app.puma;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,17 +39,13 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class RobokindJointBindingDemo {
-	static Logger theLogger = LoggerFactory.getLogger(RobokindJointBindingDemo.class);
-	private	BundleContext				myBundleCtx;
-	private	BonyRobot					myBonyRobot;
-	private	FigureState					myFigureState;
+public class PumaDualCharacter {
+	static Logger theLogger = LoggerFactory.getLogger(PumaDualCharacter.class);
 	private	BlendingBonyRobotContext	myBBRC;
 	
 
 	
-	public RobokindJointBindingDemo(BundleContext bundleCtx) {
-		myBundleCtx = bundleCtx;
+	public PumaDualCharacter(BundleContext bundleCtx) {
 		myBBRC = new BlendingBonyRobotContext(bundleCtx);
 	}
 	public void setupBonyRobotWithBlender(File jointBindingConfigFile) throws Exception {
@@ -74,7 +70,7 @@ public class RobokindJointBindingDemo {
 		final BonyRobot br = getBonyRobot();
 		br.registerMoveListener(new BonyRobot.MoveListener() {
 			@Override public void notifyBonyRobotMoved(BonyRobot br) {
-				propagateState(br, bc);
+				BonyStateMappingFuncs.propagateState(br, bc);
 			}
 			
 		});
@@ -87,7 +83,7 @@ public class RobokindJointBindingDemo {
 	}
 
 	public BonyRobot getBonyRobot() { 
-		return myBonyRobot;
+		return myBBRC.getRobot();
 	}
 	public void setupFigureState(BonyContext bctx) { 
 		BonyRobot br = getBonyRobot();
@@ -102,34 +98,6 @@ public class RobokindJointBindingDemo {
 		bctx.setFigureState(fs);
 	}
 	
-    
-    
-	public static void propagateState(BonyRobot br, BonyContext bc) { 
-		FigureState fs = bc.getFigureState();
-        applyAllRotations(fs, BonyRobotUtils.getGoalAnglesAsRotations(br));
-	}
-    
-    private static void applyAllRotations(FigureState fs, Map<String,List<BoneRotation>> rotMap){
-        List<BoneRotation> rots = new ArrayList<BoneRotation>();
-        for(Entry<String,List<BoneRotation>> e : rotMap.entrySet()){
-            BoneState bs = fs.getBoneState(e.getKey());
-            if(bs == null){
-                continue;
-            }
-            applyRotations(bs, rots);
-        }
-    }
-    
-    private static void applyRotations(BoneState bs, List<BoneRotation> rots){
-        for(BoneRotation rot : rots){
-            float rads = (float)rot.getAngleRadians();
-            switch(rot.getRotationAxis()){
-                case PITCH: bs.rot_X_pitch = rads; break;
-                case ROLL:  bs.rot_Y_roll = rads;  break;
-                case YAW:   bs.rot_Z_yaw = rads;   break;
-            }
-        }
-    }
     
 
 }
