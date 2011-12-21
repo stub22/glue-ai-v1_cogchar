@@ -43,7 +43,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.cogchar.bundle.render.resources.Activator</Bundle-Activator>
+                        <Bundle-Activator>org.cogchar.bundle.render.resources.ResourceBundleActivator</Bundle-Activator>
 						<Export-Package>jme3dat.*,leo_hanson_tests.*, org.cogchar.bundle.render.resources</Export-Package>
                     </instructions>
                 </configuration>

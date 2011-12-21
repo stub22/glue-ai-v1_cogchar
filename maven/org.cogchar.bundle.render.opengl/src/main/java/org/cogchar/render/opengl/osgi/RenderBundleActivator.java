@@ -38,8 +38,8 @@ import org.cogchar.render.opengl.bony.demo.BowlAtHumanoidApp;
  *
  * @author Stu B. <www.texpedient.com>
  */
-public class CogcharRenderOpenGLBundleActivator extends BundleActivatorBase {
-	static Logger theLogger = LoggerFactory.getLogger(CogcharRenderOpenGLBundleActivator.class);
+public class RenderBundleActivator extends BundleActivatorBase {
+	static Logger theLogger = LoggerFactory.getLogger(RenderBundleActivator.class);
 	private	BonyContext		myBonyContext;
 	@Override
 	protected Logger getLogger() {
