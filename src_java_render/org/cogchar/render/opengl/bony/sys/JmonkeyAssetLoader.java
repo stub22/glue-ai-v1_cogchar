@@ -41,7 +41,7 @@ public class JmonkeyAssetLoader {
 	public BitmapFont loadFont(String fontPath) {
 		return myAssetMgr.loadFont(fontPath);
 	}
-	public void adoptClassLoader()  {
+	public void installClassLoader()  {
 		mySavedClassLoader = Thread.currentThread().getContextClassLoader();
 		theLogger.info("Saved old class loader: " + mySavedClassLoader);
 		try {
@@ -49,7 +49,7 @@ public class JmonkeyAssetLoader {
 			theLogger.info("Setting thread class loader to local loader: " + localLoader);
 			Thread.currentThread().setContextClassLoader(localLoader);
 		} catch (Throwable t) {
-			theLogger.error("problem in adoptClassLoader", t);
+			theLogger.error("problem in installClassLoader", t);
 		}
 	}
 	public void restoreClassLoader()  {
