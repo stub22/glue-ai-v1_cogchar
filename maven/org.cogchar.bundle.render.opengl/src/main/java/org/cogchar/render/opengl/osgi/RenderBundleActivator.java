@@ -57,7 +57,7 @@ public class RenderBundleActivator extends BundleActivatorBase {
 		BonyConfigEmitter bce = new BonyConfigEmitter();
 		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
 		ResourceLoader rl = new ResourceLoader();
-		bvcApp.setAssetLoader(rl);
+		bvcApp.setContentsAssetLoader(rl);
 		bvcApp.initCharPanelWithCanvas();
 		myBonyRenderContext = bvcApp.getBonyRenderContext();
 

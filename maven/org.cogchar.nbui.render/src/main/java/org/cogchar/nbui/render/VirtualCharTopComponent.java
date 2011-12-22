@@ -20,6 +20,8 @@ import java.io.File;
 import java.util.Properties;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelRobotUtils;
+
+import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -32,6 +34,8 @@ import org.robokind.api.common.services.ServiceConnectionDirectory;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.jointgroup.JointGroup;
 import org.robokind.api.motion.jointgroup.RobotJointGroup;
+import org.cogchar.bundle.app.puma.PumaAppContext;
+import org.cogchar.bundle.app.puma.PumaDualCharacter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,36 +63,23 @@ public final class VirtualCharTopComponent extends TopComponent {
         myInitializedFlag = false;
     }
     
-    private synchronized void init(BundleContext bundleCtx) throws Exception{
+    private synchronized void init(BundleContext bundleCtx) throws Throwable {
         if(myInitializedFlag){
             return;
         }
         if(bundleCtx == null){
             throw new NullPointerException();
         }
-		
+		String dualCharURI = "NBURI:huzzah"; // =>  org_cogchar_nbui_render/bonyRobotConfig.json"));        
 		PumaAppContext pac = new PumaAppContext(bundleCtx);
+		BonyRenderContext brc = pac.getBonyRenderContext(dualCharURI);
+		initVirtualCharPanel(brc);
+		pac.startOpenGLCanvas(dualCharURI, true);
+		PumaDualCharacter pdc = pac.makeDualRobotChar(dualCharURI);
 		
-		
-        BonyRenderContext BonyRenderContext = RenderUtils.getBonyRenderContext(bundleCtx);
-        if(BonyRenderContext == null){
-            throw new NullPointerException();
-        }
-        RenderUtils.initOpenGLCanvas(BonyRenderContext);
-        initVirtualCharPanel(BonyRenderContext);
-		
-        // Robot r = ModelRobotUtils 
-				
-		//		registerRobotAndAttachBlender 
-				
-		//		RobokindBindingUtils.createAndRegisterRobot(context, new File("org_cogchar_nbui_render/bonyRobotConfig.json"));        
         File file = new File("org_cogchar_nbui_render/jointgroup.xml");
-        JointGroup group = ModelRobotUtils.registerJointGroup(bundleCtx, file);
+        RobotServiceFuncs.registerJointGroup(bundleCtx, file);
 		
-				
-        RobokindBindingUtils.connectToVirtualChar(BonyRenderContext);
-        RobokindBindingUtils.setInitialBoneRotations(BonyRenderContext.getFigureState(), (ModelRobot)r);
-		ModelRobotUtils.createAndRegisterFrameReceiver(bundleCtx, r.getRobotId());
         myInitializedFlag = true;
     }
     
@@ -193,8 +184,8 @@ public final class VirtualCharTopComponent extends TopComponent {
                         "Cannot find BundleContext for" + Robot.class);
             }
             init(context);
-        }catch(Exception ex){
-            theLogger.warn("Error initializing OpenGL canvas.", ex);
+        }catch(Throwable t){
+            theLogger.warn("Error initializing Cogchar-Robokind binding or OpenGL rendering.", t);
         }
     }
 

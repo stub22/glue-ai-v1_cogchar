@@ -114,7 +114,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>org.cogchar.bind.robokind.osgi.RobokindBindingActivator</Bundle-Activator>
+						<Bundle-Activator>org.cogchar.bind.rk.osgi.RobokindBindingActivator</Bundle-Activator>
 						<Export-Package>!org.cogchar.avrogen.*,org.cogchar.*</Export-Package>
 						<Private-Package>com.thoughtworks.xstream.*, org.scalaquery.*, org.apache.commons.math.*</Private-Package>
 						<!--
