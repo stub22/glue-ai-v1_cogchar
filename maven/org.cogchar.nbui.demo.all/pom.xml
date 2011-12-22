@@ -19,7 +19,7 @@
     <properties>
        
         <netbeans.run.params.ide/>
-        <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
+        <netbeans.run.params>${netbeans.run.params.ide} -J-Dorg.osgi.framework.bootdelegation=*</netbeans.run.params>
 
         <brandingToken>org_cogchar_nbui</brandingToken>
     </properties>
