@@ -2,12 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cogchar.bind.robokind.joint;
+package org.cogchar.bind.rk.robot.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import org.cogchar.bind.robokind.joint.BoneRotationRange.BoneRotation;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.AbstractRobot;
 import org.robokind.api.motion.Robot;
@@ -18,13 +17,14 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyRobot extends AbstractRobot<BonyJoint> {
-	static Logger theLogger = LoggerFactory.getLogger(BonyRobot.class);
-    private List<BoneRotation> myInitialBoneRotations;
+public class ModelRobot extends AbstractRobot<ModelJoint> {
+	
+	static Logger theLogger = LoggerFactory.getLogger(ModelRobot.class);
+    private List<ModelBoneRotation> myInitialBoneRotations;
     private boolean myConnectionFlag;
 	
 	public static interface MoveListener {
-		public void notifyBonyRobotMoved(BonyRobot br);
+		public void notifyBonyRobotMoved(ModelRobot br);
 	}
 	private	List<MoveListener> myListeners = new ArrayList<MoveListener>();
 	
@@ -37,15 +37,15 @@ public class BonyRobot extends AbstractRobot<BonyJoint> {
 		}
 	}
 
-	public BonyRobot(Robot.Id robotId) {
+	public ModelRobot(Robot.Id robotId) {
 		super(robotId);
 	}
     
-    protected void setInitialBoneRotations(List<BoneRotation> rotations){
+    protected void setInitialBoneRotations(List<ModelBoneRotation> rotations){
         myInitialBoneRotations = rotations;
     }
     
-    public List<BoneRotation> getInitialBoneRotations(){
+    public List<ModelBoneRotation> getInitialBoneRotations(){
         return myInitialBoneRotations;
     }
 
@@ -73,7 +73,7 @@ public class BonyRobot extends AbstractRobot<BonyJoint> {
         }
         for(Entry<Robot.JointId, NormalizedDouble> e : positions.entrySet()){
             Robot.JointId id = e.getKey();
-            BonyJoint bj = myJointMap.get(id);
+            ModelJoint bj = myJointMap.get(id);
             if(bj == null){
 				theLogger.warn("ignoring unknown joint id: " + id);
                 continue;
@@ -83,7 +83,7 @@ public class BonyRobot extends AbstractRobot<BonyJoint> {
         }
 		notifyMoveListeners();
 	}
-	public void registerBonyJoint(BonyJoint bj) {
+	public void registerBonyJoint(ModelJoint bj) {
 		theLogger.info("BonyRobot[" + getRobotId() + "] registering joint: " + bj);
 		addJoint(bj);
 	}

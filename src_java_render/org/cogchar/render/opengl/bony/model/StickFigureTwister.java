@@ -17,7 +17,7 @@
 package org.cogchar.render.opengl.bony.model;
 
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
-import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.world.ScoreBoard;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
@@ -31,13 +31,13 @@ import java.util.List;
  * @author Stu B. <www.texpedient.com>
  */
 public class StickFigureTwister {
-	private	BonyContext		myContext;
+	private	BonyRenderContext		myContext;
 	
 	private float			myWaistTwistAngle = 0;
 	private float			myWaistTwistRate = 1;
 	private	boolean			myTwistScoringFlag = false;
 	
-	public StickFigureTwister(BonyContext bc) {
+	public StickFigureTwister(BonyRenderContext bc) {
 		myContext = bc;
 	}
 	public void twist(float tpf) { 

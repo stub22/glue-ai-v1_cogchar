@@ -35,7 +35,7 @@ import java.awt.Canvas;
  * @author Stu B. <www.texpedient.com>
  */
 public class BonyCanvasFuncs {
-	public static void setupCameraLightAndViewport(BonyContext bc) { 
+	public static void setupCameraLightAndViewport(BonyRenderContext bc) { 
 		SimpleApplication app = bc.getApp();
 		FlyByCamera fbc = app.getFlyByCamera();
         fbc.setDragToRotate(true);
@@ -56,7 +56,7 @@ public class BonyCanvasFuncs {
 		Quaternion camRotQ = new Quaternion(0.0f, 1.0f, 0.5f, 0.0f);
 		cam.setAxes(camRotQ);		
 	}	
-	public static void initScoreBoard(BonyContext bc) {
+	public static void initScoreBoard(BonyRenderContext bc) {
 		SimpleApplication app = bc.getApp();
 		AppSettings settings = app.getContext().getSettings();
 		int numScoreRows = 4;

@@ -50,7 +50,7 @@ import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
 import org.cogchar.render.opengl.bony.model.HumanoidBoneDesc;
 import org.cogchar.render.opengl.bony.state.BoneState;
 import org.cogchar.render.opengl.bony.state.FigureState;
-import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
 import org.slf4j.Logger;
@@ -60,8 +60,8 @@ import org.slf4j.LoggerFactory;
  * JMonkey Team Comment as of about August 2011:
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
  */
-public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
-    private final static Logger		theLogger = LoggerFactory.getLogger(BowlAtHumanoidApp.class);
+public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
+    private final static Logger		theLogger = LoggerFactory.getLogger(HumanoidPuppetApp.class);
 	private HumanoidRagdollWrapper	myHumanoidWrapper;
 	private ProjectileMgr			myPrjctlMgr;
 	private	WorldMgr				myWorldMgr;
@@ -72,10 +72,10 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 
 	public static void main(String[] args) {
 		BonyConfigEmitter bce = new BonyConfigEmitter();
-		BowlAtHumanoidApp app = new BowlAtHumanoidApp(bce);
+		HumanoidPuppetApp app = new HumanoidPuppetApp(bce);
 		app.start();
 	}
-	public BowlAtHumanoidApp(BonyConfigEmitter bce) { 
+	public HumanoidPuppetApp(BonyConfigEmitter bce) { 
 		super(bce); // lwjglRendererName, canvWidth, canvHeight, null, 1.0f);
 		// myHumanoidMeshPath = pathToHumanoidMesh;
 		myPrjctlMgr = new ProjectileMgr();
@@ -129,8 +129,11 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		String meshPath = bce.getHumanoidMeshPath();
 		JmonkeyAssetLoader jmal = getAssetLoader();
 		jmal.adoptClassLoader();
-		myHumanoidWrapper.initStuff(hbc, jmal, rootNode, myWorldMgr.getPhysicsSpace(), meshPath);
-		jmal.restoreClassLoader();
+		try {
+			myHumanoidWrapper.initStuff(hbc, jmal, rootNode, myWorldMgr.getPhysicsSpace(), meshPath);
+		} finally {
+			jmal.restoreClassLoader();
+		}
 		//VirtCharPanel vcp = getVCPanel();
 		//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
 	}
@@ -151,7 +154,7 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		cam.setRotation(new Quaternion(-2.302544E-4f, 0.99302495f, -0.117888905f, -0.0019395084f));
     }
 	public VirtCharPanel getVCPanel() { 
-		BonyContext ctx = getBonyContext();
+		BonyRenderContext ctx = getBonyRenderContext();
 		VirtCharPanel vcp = ctx.getPanel();
 		return vcp;
 	}
@@ -169,7 +172,7 @@ public class BowlAtHumanoidApp extends BonyStickFigureApp { // DemoApp {
 		Bone rootBone = myHumanoidWrapper.getRootBone();*/
 	}
 	public void applyFigureState() {
-		BonyContext ctx = getBonyContext();
+		BonyRenderContext ctx = getBonyRenderContext();
 		FigureState fs = ctx.getFigureState();
 		if (fs == null) {
 			return;

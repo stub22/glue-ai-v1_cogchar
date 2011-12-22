@@ -13,15 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.demo.bony;
+package org.cogchar.bind.rk.gaze;
 
-import org.cogchar.render.opengl.bony.demo.HumanoidPuppetTestMain;
+import java.util.List;
+import org.cogchar.animoid.gaze.IGazeTarget;
+import org.cogchar.gaze.ObservationTrackerRegistry;
+import org.cogchar.sight.obs.SightObservation;
 
 /**
- * @author Stu B. <www.texpedient.com>
+ *
+ * @author Matthew Stevenson
  */
-public class BonyDemoMain {
-	public static void main(String[] args) {
-		HumanoidPuppetTestMain.main(args);
-	}
+public class GazeTracker implements ObservationTrackerRegistry<SightObservation, IGazeTarget> {
+    
+    @Override
+    public IGazeTarget addObservation(SightObservation obs) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<IGazeTarget> getObservationTrackers() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
 }

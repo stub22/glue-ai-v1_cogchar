@@ -14,11 +14,10 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.robokind.joint;
+package org.cogchar.bind.rk.robot.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cogchar.bind.robokind.joint.BoneRotationRange.BoneRotation;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.AbstractJoint;
 import org.robokind.api.motion.Joint;
@@ -29,20 +28,19 @@ import org.slf4j.LoggerFactory;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class BonyJoint extends AbstractJoint {
-	static Logger theLogger = LoggerFactory.getLogger(BonyJoint.class);
+public class ModelJoint extends AbstractJoint {
+	static Logger theLogger = LoggerFactory.getLogger(ModelJoint.class);
     
-    private	boolean                 myEnabledFlag = false;
-	private	NormalizedDouble        myDefaultPosNorm;
-	private	NormalizedDouble        myGoalPosNorm;
-	private	String                  myName;
-    private String                  myBoneName;
-    private List<BoneRotationRange> myBoneRotationRanges;
+    private	boolean						myEnabledFlag = false;
+	private	NormalizedDouble			myDefaultPosNorm;
+	private	NormalizedDouble			myGoalPosNorm;
+	private	String						myName;
+    private List<ModelBoneRotRange>	myBoneRotRangeList;
 	
-    protected BonyJoint(Joint.Id jointId, String name, List<BoneRotationRange> rotations, NormalizedDouble defPos){
+    protected ModelJoint(Joint.Id jointId, String name, List<ModelBoneRotRange> rotations, NormalizedDouble defPos){
         super(jointId);
         myName = name;
-        myBoneRotationRanges = rotations;
+        myBoneRotRangeList = rotations;
         myDefaultPosNorm = defPos;
         myGoalPosNorm = myDefaultPosNorm;
     }
@@ -65,8 +63,8 @@ public class BonyJoint extends AbstractJoint {
         return myGoalPosNorm;
     }
     
-    public List<BoneRotationRange> getBoneRotationRanges(){
-        return myBoneRotationRanges;
+    public List<ModelBoneRotRange> getBoneRotationRanges(){
+        return myBoneRotRangeList;
     }
     
     //This is used to allow the SkeletonRobot to set the GoalPosition and fire the event.
@@ -78,16 +76,16 @@ public class BonyJoint extends AbstractJoint {
 		myGoalPosNorm = pos;
     }
     
-	public List<BoneRotation> getAngleRadFromNormPos(NormalizedDouble normPos) {
-        List<BoneRotation> rotations = 
-                new ArrayList<BoneRotation>(myBoneRotationRanges.size());
-		for(BoneRotationRange range : myBoneRotationRanges){
-            rotations.add(range.getRotationRadians(normPos));
+	public List<ModelBoneRotation> getRotationListForNormPos(NormalizedDouble normPos) {
+        List<ModelBoneRotation> rotations = 
+                new ArrayList<ModelBoneRotation>(myBoneRotRangeList.size());
+		for(ModelBoneRotRange range : myBoneRotRangeList){
+            rotations.add(range.makeRotationForNormalizedFraction(normPos));
         }
         return rotations;
 	}
-	public List<BoneRotation> getGoalAngleRad() { 
+	public List<ModelBoneRotation> getRotationListForCurrentGoal() { 
 		NormalizedDouble normGoalPos = getGoalPosition();
-		return getAngleRadFromNormPos(normGoalPos);
+		return getRotationListForNormPos(normGoalPos);
 	}
 }
