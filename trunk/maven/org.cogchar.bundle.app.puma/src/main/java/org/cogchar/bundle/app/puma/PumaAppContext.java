@@ -19,6 +19,7 @@ import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
 
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
 
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.slf4j.Logger;
@@ -64,17 +65,6 @@ public class PumaAppContext {
 		theLogger.info("Got BonyRenderContext: " + bc);
 
 		if (bc != null) {
-			/*
-			ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-			try {
-			// In OSGi environment we must set context classloader so that JMonkey can 
-			// find goodies on the "current" classpath.  , currently presumed to be in same class space
-			// as the BonyRenderContext class. 
-			ClassLoader bonyLoader = bc.getClass().getClassLoader();
-			theLogger.info("Setting thread class loader to bony loader: " + bonyLoader);
-			Thread.currentThread().setContextClassLoader(bonyLoader);
-			 * 
-			 */
 			if (wrapInJFrameFlag) {
 				VirtCharPanel vcp = bc.getPanel();
 				theLogger.info("Got VirtCharPanel: " + vcp);
@@ -93,19 +83,29 @@ public class PumaAppContext {
 			if (app.isCanvasStarted()) {
 				theLogger.warn("JMonkey Canvas was already started!");
 			} else {
+				// Set the contextCL before spawning the JMonkey run-loop thread,
+				// so that JMonkey can find its builtin resources.
+				
+				// Also see HumanoidPuppetApp.initHumanoidStuff, which uses the 
+				// contents-asset loader installed by RenderBundleActivator.start(),
+				// which happens to be ResourceLoader from our render.resources bundle.
+				
+				// Finally, also see the commented out callback overrides in 
+				// DemoApp, which could also be used to achieve the same purpose
+				// as this wrapper, at a finer grain, in case we wanted to separate 
+				// JMonkey builtin assets from the JMonkey classes.
+
+				JmonkeyAssetLoader frameworkAL = app.getFrameworkAssetLoader();
+				frameworkAL.installClassLoader();
 				theLogger.info("Starting JMonkey canvas - hold yer breath! [[[[[[[[[[[[[[[[[[[[[[[[[[");
-				app.startJMonkeyCanvas();
+				try {
+					app.startJMonkeyCanvas();
+				} finally {
+					frameworkAL.restoreClassLoader();
+				}
 				theLogger.info("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]  Finished starting JMonkey canvas!");
 			}
 			//((BonyStickFigureApp) app).setScoringFlag(true);			
-
-			/*
-			 * finally {
-			theLogger.info("Restoring old class loader: " + tccl);
-			Thread.currentThread().setContextClassLoader(tccl);
-			}
-			 * 
-			 */
 
 		} else {
 			theLogger.error("BonyRenderContext is NULL, cannot startOpenGLCanvas!");

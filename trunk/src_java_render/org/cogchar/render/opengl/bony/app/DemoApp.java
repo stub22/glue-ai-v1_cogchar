@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 public abstract class DemoApp extends SimpleApplication {
 	static Logger theLogger = LoggerFactory.getLogger(DemoApp.class);
 	protected DemoConfigEmitter		myConfigEmitter;
-	protected JmonkeyAssetLoader	myAssetLoader;
+	protected JmonkeyAssetLoader	myContentsAssetLoader, myFrameworkAssetLoader;
 	
 	public DemoApp(DemoConfigEmitter ce) { 
 		myConfigEmitter = ce;
@@ -31,21 +31,34 @@ public abstract class DemoApp extends SimpleApplication {
 	public DemoApp() {
 		this(new DemoConfigEmitter());
 	}
-	public void setAssetLoader(JmonkeyAssetLoader jmal) {
-		myAssetLoader = jmal;
+	public void setContentsAssetLoader(JmonkeyAssetLoader jmal) {
+		myContentsAssetLoader = jmal;
 	}
-	public JmonkeyAssetLoader getAssetLoader() {
-		if (myAssetLoader == null) {
-			myAssetLoader = new JmonkeyAssetLoader();
+	public JmonkeyAssetLoader getContentsAssetLoader() {
+		if (myContentsAssetLoader == null) {
+			myContentsAssetLoader = new JmonkeyAssetLoader();
 		}
-		AssetManager am = myAssetLoader.getAssetManager();
+		AssetManager am = myContentsAssetLoader.getAssetManager();
 		if (am == null) {
-			myAssetLoader.setAssetManager(assetManager);
+			myContentsAssetLoader.setAssetManager(assetManager);
 		}
-		return myAssetLoader;
+		return myContentsAssetLoader;
 	}
+	public void setFrameworkAssetLoader(JmonkeyAssetLoader jmal) {
+		myFrameworkAssetLoader = jmal;
+	}
+	public JmonkeyAssetLoader getFrameworkAssetLoader() {
+		if (myFrameworkAssetLoader == null) {
+			myFrameworkAssetLoader = new JmonkeyAssetLoader();
+		}
+		AssetManager am = myFrameworkAssetLoader.getAssetManager();
+		if (am == null) {
+			myFrameworkAssetLoader.setAssetManager(assetManager);
+		}
+		return myFrameworkAssetLoader;
+	}	
 	protected void initFonts() { 
-		guiFont = getAssetLoader().loadFont(myConfigEmitter.getFontPath());
+		guiFont = getContentsAssetLoader().loadFont(myConfigEmitter.getFontPath());
 	}
 	protected void setAppSpeed(float val) {
 		speed = val;
@@ -68,4 +81,71 @@ public abstract class DemoApp extends SimpleApplication {
 		settings.setHeight(myConfigEmitter.getCanvasHeight());
 		setSettings(settings);			
 	}	
+	/*  This approach should work, as perhaps would not using SimpleApplication at all.
+	 * (Because SimpleApplication loads a bunch of stuff).
+	 * However, we are currently relying on PumaAppContext to set the frameworkAssetLoader
+	 * before launching the runLoop.  Which way is "better" depends on ones assumptions
+	 * about how our classes + resources are packaged into OSGi bundles.
+	 * Note that our custom assets are handled by a separate classloader installed
+	 * by  HumanoidPuppetApp.initHumanoidStuff.
+	 *
+    @Override  public void initialize() {
+		// This works for the initialize() callback, but
+		// then we fail in the update() callback.  
+		
+		theLogger.info("********************* DemoApp.initialize() called, installing framework asset classloader");
+		JmonkeyAssetLoader frameworkAL = getFrameworkAssetLoader();
+		frameworkAL.installClassLoader();
+		try {
+			super.initialize();
+		} finally {
+			frameworkAL.restoreClassLoader();
+		}
+		theLogger.info("********************* DemoApp.initialize() restored context class loader");
+	}	
+    @Override  public void update() {	
+		// It's probably only on the first call, but...we may
+		// not want to do this classpath switcherooing on
+		// update().  (Is there hidden cost in setting classloader?).
+		JmonkeyAssetLoader frameworkAL = getFrameworkAssetLoader();
+		frameworkAL.installClassLoader();
+		try {
+			super.update();
+		} finally {
+			frameworkAL.restoreClassLoader();
+		}
+	}
+	 * 
+	 */
+	/*
+	 *     [java] com.jme3.asset.AssetNotFoundException: Common/MatDefs/Light/Lighting
+vert
+    [java]     at com.jme3.asset.DesktopAssetManager.loadAsset(DesktopAssetMana
+er.java:268)
+    [java]     at com.jme3.asset.DesktopAssetManager.loadShader(DesktopAssetMan
+ger.java:395)
+    [java]     at com.jme3.material.Technique.loadShader(Technique.java:220)
+    [java]     at com.jme3.material.Technique.makeCurrent(Technique.java:205)
+    [java]     at com.jme3.material.Material.selectTechnique(Material.java:872)
+
+    [java]     at com.jme3.material.Material.autoSelectTechnique(Material.java:
+86)
+    [java]     at com.jme3.material.Material.render(Material.java:958)
+    [java]     at com.jme3.renderer.RenderManager.renderGeometry(RenderManager.
+ava:649)
+    [java]     at com.jme3.renderer.queue.RenderQueue.renderGeometryList(Render
+ueue.java:299)
+    [java]     at com.jme3.renderer.queue.RenderQueue.renderQueue(RenderQueue.j
+va:351)
+    [java]     at com.jme3.renderer.RenderManager.renderViewPortQueues(RenderMa
+ager.java:886)
+    [java]     at com.jme3.renderer.RenderManager.flushQueue(RenderManager.java
+842)
+    [java]     at com.jme3.renderer.RenderManager.renderViewPort(RenderManager.
+ava:1118)
+    [java]     at com.jme3.renderer.RenderManager.render(RenderManager.java:116
+)
+    [java]     at com.jme3.app.SimpleApplication.update(SimpleApplication.java:
+66)
+	 */
 }

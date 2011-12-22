@@ -27,13 +27,14 @@ import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.sys.BonyCanvasFuncs;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class BonyVirtualCharApp extends DemoApp {
-
+	static Logger theLogger = LoggerFactory.getLogger(DemoApp.class);
 	// private		AnimChannel				channel;
 
 	protected	BonyRenderContext				myContext;
@@ -65,12 +66,12 @@ public class BonyVirtualCharApp extends DemoApp {
 		// assetManager does not exist until start is called, triggering simpleInit callback.
 	}
 	public void startJMonkeyCanvas() { 
-		System.out.println("*********** startJMonkeyCanvas is starting");
+		theLogger.info("*********** startJMonkeyCanvas is starting");
 		this.startCanvas();  		// equivalent to this?:     start(JmeContext.Type.Canvas);
 		
 		Future fut = enqueue(new Callable() {
 			public Object call() throws Exception {
-				System.out.println("*********** Enqueued call is executing");
+				theLogger.info("*********** Enqueued call is executing");
 				return null;
 			}
 		});
@@ -81,7 +82,7 @@ public class BonyVirtualCharApp extends DemoApp {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-		System.out.println("*********** startJMonkeyCanvas is returning");
+		theLogger.info("*********** startJMonkeyCanvas is returning");
         myCanvasStartedFlag = true;
 	}
     
@@ -90,17 +91,17 @@ public class BonyVirtualCharApp extends DemoApp {
     }
 
 	@Override public void simpleInitApp() {
-		System.out.println("*********** BonyVirtualCharApp.simpleInitApp() is starting");
+		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is starting");
 		// Perform actions that cannot be done until engine is running.
 		BonyCanvasFuncs.setupCameraLightAndViewport(myContext);
 		//BonyCanvasFuncs.initScoreBoard(myContext);
-		System.out.println("*********** BonyVirtualCharApp.simpleInitApp() is finished");
+		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is finished");
 	}
 
     @Override  public void initialize() {
-		System.out.println("********************* StickFigureTest.initialize() called, calling super.initialize()");
+		theLogger.info("********************* BonyVirtualCharApp.initialize() called, calling super.initialize()");
 		super.initialize();
-		System.out.println("********************* StickFigureTest.initialize() returning");
+		theLogger.info("********************* BonyVirtualCharApp.initialize() returning");
 	}	
 	
 }

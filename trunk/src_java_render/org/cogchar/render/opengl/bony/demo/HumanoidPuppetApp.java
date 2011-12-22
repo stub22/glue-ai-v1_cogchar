@@ -127,8 +127,8 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 		HumanoidBoneConfig hbc = new HumanoidBoneConfig(true);
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 		String meshPath = bce.getHumanoidMeshPath();
-		JmonkeyAssetLoader jmal = getAssetLoader();
-		jmal.adoptClassLoader();
+		JmonkeyAssetLoader jmal = getContentsAssetLoader();
+		jmal.installClassLoader();
 		try {
 			myHumanoidWrapper.initStuff(hbc, jmal, rootNode, myWorldMgr.getPhysicsSpace(), meshPath);
 		} finally {
