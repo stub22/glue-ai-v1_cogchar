@@ -64,23 +64,30 @@ public final class VirtualCharTopComponent extends TopComponent {
     }
     
     private synchronized void init(BundleContext bundleCtx) throws Throwable {
+		System.out.println("**********************************VCTC - init - START");
+		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - logger sez hi");
         if(myInitializedFlag){
             return;
         }
         if(bundleCtx == null){
             throw new NullPointerException();
         }
+
 		String dualCharURI = "NBURI:huzzah"; // =>  org_cogchar_nbui_render/bonyRobotConfig.json"));        
 		PumaAppContext pac = new PumaAppContext(bundleCtx);
 		BonyRenderContext brc = pac.getBonyRenderContext(dualCharURI);
 		initVirtualCharPanel(brc);
-		pac.startOpenGLCanvas(dualCharURI, true);
-		PumaDualCharacter pdc = pac.makeDualRobotChar(dualCharURI);
 		
+		// This crashes with 
+		// java.lang.ClassNotFoundException: sun.misc.Unsafe
+		pac.startOpenGLCanvas(dualCharURI, false);
+/*		
+		PumaDualCharacter pdc = pac.makeDualRobotChar(dualCharURI);	
         File file = new File("org_cogchar_nbui_render/jointgroup.xml");
         RobotServiceFuncs.registerJointGroup(bundleCtx, file);
-		
+*/		
         myInitializedFlag = true;
+				System.out.println("**********************************VCTC - init - END");
     }
     
     private void initVirtualCharPanel(BonyRenderContext BonyRenderContext){
