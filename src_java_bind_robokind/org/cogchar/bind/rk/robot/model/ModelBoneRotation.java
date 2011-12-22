@@ -13,27 +13,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.robokind.gaze;
+package org.cogchar.bind.rk.robot.model;
 
-import java.util.List;
-import org.cogchar.animoid.gaze.IGazeTarget;
-import org.cogchar.gaze.ObservationTrackerRegistry;
-import org.cogchar.sight.obs.SightObservation;
+import org.cogchar.avrogen.bind.robokind.RotationAxis;
 
 /**
- *
- * @author Matthew Stevenson
+ * @author Stu B. <www.texpedient.com>
  */
-public class GazeTracker implements ObservationTrackerRegistry<SightObservation, IGazeTarget> {
-    
-    @Override
-    public IGazeTarget addObservation(SightObservation obs) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+public class ModelBoneRotation {
+	private String myBoneName;
+	private RotationAxis myRotationAxis;
+	private double myAngleRadians;
 
-    @Override
-    public List<IGazeTarget> getObservationTrackers() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
+	public ModelBoneRotation(String boneName, RotationAxis axis, double angleRads) {
+		myBoneName = boneName;
+		myRotationAxis = axis;
+		myAngleRadians = angleRads;
+	}
+
+	public String getBoneName() {
+		return myBoneName;
+	}
+
+	public RotationAxis getRotationAxis() {
+		return myRotationAxis;
+	}
+
+	public double getAngleRadians() {
+		return myAngleRadians;
+	}
+	
 }

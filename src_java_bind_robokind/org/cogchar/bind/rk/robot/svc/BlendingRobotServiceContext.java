@@ -13,7 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.robokind.joint;
+package org.cogchar.bind.rk.robot.svc;
+import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
@@ -26,34 +27,27 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BlendingRobotContext<R extends Robot> {
-	static Logger theLogger = LoggerFactory.getLogger(BlendingRobotContext.class);
-	private BundleContext			myBundleCtx;
-	private R						myRobot;
-	private	ServiceRegistration		myRobotReg;
+public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceContext<R> {
+	static Logger theLogger = LoggerFactory.getLogger(BlendingRobotServiceContext.class);
+	
 	private	ServiceRegistration[]	myBlenderRegs;
 	private	RobotFrameSource		myFrameSource;
 	
-	public BlendingRobotContext(BundleContext bundleCtx) {
-		myBundleCtx = bundleCtx;
+	public BlendingRobotServiceContext(BundleContext bundleCtx) {
+		 super(bundleCtx);
 	}
-	protected void registerRobot(R robot) throws Exception {
-		myRobot = robot;
-		myRobot.connect();
-		myRobotReg = RobotUtils.registerRobot(myBundleCtx, robot, null);
-		if(myRobotReg == null){
-			 throw new Exception("Error Registering Robot: " + robot);
-		}
-	}
+
 	protected void startDefaultBlender() {
+		R robot = getRobot();
         //Starts a blender
         myBlenderRegs = RobotUtils.startDefaultBlender(
-                myBundleCtx, myRobot.getRobotId(), RobotUtils.DEFAULT_BLENDER_INTERVAL);
+                myBundleCtx, robot.getRobotId(), RobotUtils.DEFAULT_BLENDER_INTERVAL);
 	}
 	protected void  registerFrameSource() { 
+		R robot = getRobot();
 		//create and register the MotionTargetFrameSource,
-        myFrameSource = new RobotFrameSource(myBundleCtx, myRobot.getRobotId());
-		RobotUtils.registerFrameSource(myBundleCtx, myRobot.getRobotId(), myFrameSource);
+        myFrameSource = new RobotFrameSource(myBundleCtx, robot.getRobotId());
+		RobotUtils.registerFrameSource(myBundleCtx, robot.getRobotId(), myFrameSource);
 	}
     protected void testPositionMove() { 
 		RobotPositionMap positions = new RobotPositionHashMap();
@@ -63,11 +57,8 @@ public class BlendingRobotContext<R extends Robot> {
         myFrameSource.move(positions, 1500);
 	}	
 
-	public R getRobot() { 
-		return myRobot;
-	}
-	public void registerAndStart(R robot) throws Exception {
-		registerRobot(robot);
+	public void registerAndStart(R robot) throws Throwable {
+		super.registerAndStart(robot);
 		startDefaultBlender();
 		registerFrameSource();
 		testPositionMove();

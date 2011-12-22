@@ -31,18 +31,18 @@ import com.jme3.input.controls.Trigger;
 public class SimulatorActions {
     enum SimulatorAction {
         RESET_CAMERA {
-            void act(BowlAtHumanoidApp app) {
+            void act(HumanoidPuppetApp app) {
 				app.setDefaultCameraLocation();
             }
             Trigger[] makeTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_R)};
             }
         };  // Last enum constant code block gets a semicolon.
-        abstract void act(BowlAtHumanoidApp app);
+        abstract void act(HumanoidPuppetApp app);
         abstract Trigger[] makeTriggers();
     };
     
-    static void setupActionListeners(InputManager inputManager, final BowlAtHumanoidApp app) {
+    static void setupActionListeners(InputManager inputManager, final HumanoidPuppetApp app) {
         SimulatorAction pavals[] = SimulatorAction.values();
         String actionNames[] = new String[pavals.length];
         for (int pai =0; pai < pavals.length; pai++) { 

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cogchar.bind.robokind.client;
+package org.cogchar.bind.rk.robot.client;
 
 import java.util.Map;
 import java.util.Map.Entry;

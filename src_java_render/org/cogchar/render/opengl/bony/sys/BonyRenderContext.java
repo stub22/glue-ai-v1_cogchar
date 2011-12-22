@@ -29,7 +29,7 @@ import com.jme3.math.Vector3f;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyContext {
+public class BonyRenderContext {
 	protected	BonyConfigEmitter		myConfigEmitter;
 	protected	BonyVirtualCharApp		myApp;
 	protected	VirtCharPanel			myPanel;   
@@ -38,7 +38,7 @@ public class BonyContext {
 	protected	List<AnimControl>		myAnimControls;
 	protected	FigureState				myFigureState;
 
-	public BonyContext(BonyConfigEmitter bce) { 
+	public BonyRenderContext(BonyConfigEmitter bce) { 
 		myConfigEmitter = bce;
 	}
 	public BonyVirtualCharApp getApp() {

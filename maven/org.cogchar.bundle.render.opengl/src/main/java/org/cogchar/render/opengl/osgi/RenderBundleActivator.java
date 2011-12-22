@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.cogchar.render.opengl.osgi;
-
-
 
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
@@ -24,103 +21,68 @@ import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.bundle.render.resources.ResourceLoader;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
-import org.cogchar.render.opengl.bony.sys.BonyContext;
-import org.cogchar.render.opengl.bony.demo.StickFigureTestMain;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
+import org.cogchar.render.opengl.bony.demo.HumanoidPuppetTestMain;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.cogchar.render.opengl.bony.app.DemoApp;
-import org.cogchar.render.opengl.bony.demo.BowlAtHumanoidApp;
+import org.cogchar.render.opengl.bony.demo.HumanoidPuppetApp;
 
 /**
  *
  * @author Stu B. <www.texpedient.com>
  */
 public class RenderBundleActivator extends BundleActivatorBase {
+
 	static Logger theLogger = LoggerFactory.getLogger(RenderBundleActivator.class);
-	private	BonyContext		myBonyContext;
+	private BonyRenderContext myBonyRenderContext;
+
 	@Override
 	protected Logger getLogger() {
 		return theLogger;
-	}	
-	
+	}
+
 	// This is the primary service export point for the bundle, as of 2011-08-30.
-	public BonyContext getBonyContext() { 
-		return myBonyContext;
+	public BonyRenderContext getBonyRenderContext() {
+		return myBonyRenderContext;
 	}
 
 	@Override public void start(BundleContext bundleCtx) throws Exception {
+		
 		super.start(bundleCtx);
-		Bundle b = bundleCtx.getBundle();
-		theLogger.info("bundle=" + b);
 
+		BonyConfigEmitter bce = new BonyConfigEmitter();
+		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
+		ResourceLoader rl = new ResourceLoader();
+		bvcApp.setAssetLoader(rl);
+		bvcApp.initCharPanelWithCanvas();
+		myBonyRenderContext = bvcApp.getBonyRenderContext();
 
-/*
-		ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-		theLogger.info("Saved old class loader: " + tccl);
-		try {
-			ClassLoader localLoader = getClass().getClassLoader();
-			theLogger.info("Setting thread class loader to local loader: " + localLoader);
-			Thread.currentThread().setContextClassLoader(localLoader);
-*/			
+		bundleCtx.registerService(BonyRenderContext.class.getName(), myBonyRenderContext, null);
 
-			// Setup our crude demo using test model exported by Leo from Maya.
-			BonyConfigEmitter bce = new BonyConfigEmitter();
-			BonyVirtualCharApp bvcApp =	new BowlAtHumanoidApp(bce);
-			ResourceLoader rl = new ResourceLoader();
-			bvcApp.setAssetLoader(rl);
-			bvcApp.initCharPanelWithCanvas();
-			myBonyContext = bvcApp.getBonyContext();	
-			
-			
-			// lwjglRendererName, 	canvasWidth, canvasHeight); 
-			/*
-			 * At this point, the following setup is still required to be done by enclosing application.
-			 * This ordering is somewhat strict, due to a lot of interlocking assumptions.
-			 * 
-			 *		BonyContext bc = *** Lookup the BonyContext as OSGi service.
-			 *		VirtCharPanel vcp = bc.getPanel();
-			 *		JFrame jf = vcp.makeEnclosingJFrame();
-			 *		bc.setFrame(jf);
-			 *		*** Setup frame to handle windowClosing and windowClosed as shown in StickFigureTestMain.java.
-			 * 		BonyVirtualCharApp app = bc.getApp();
-			 *		app.startJMonkeyCanvas();
-			 *		((BonyStickFigureApp) app).setScoringFlag(true);	
-			 */
-			
-				
-			// OR: choose from JME tests, run in system OpenGL window.
-			// Some tests are missing required libraries.
-			// TestChooserWrapper.displayTestChooser(b, null);  
-/*
-		} finally {
-			theLogger.info("Restoring old class loader: " + tccl);
-			Thread.currentThread().setContextClassLoader(tccl);
-		}
- * 
- */
-		bundleCtx.registerService(BonyContext.class.getName(), myBonyContext, null);
-		// System.out.println("Returned from CogcharImplActivator.start()");
+		theLogger.info("start() is DONE!");
+	}
 
-    }
 	@Override public void stop(BundleContext bundleCtx) throws Exception {
+		// Perhaps this should be done last, via a "finally" clause.
 		super.stop(bundleCtx);
 		// Attempt to cleanup OpenGL resources, which happens nicely in standalone demo if the window is X-ed.
 		// (Probably cleanup is happening during dispose(), so direct call to that should work too).
-		BonyContext bc = getBonyContext();
+		BonyRenderContext bc = getBonyRenderContext();
 		if (bc != null) {
 			JFrame jf = bc.getFrame();
 			if (jf != null) {
-				theLogger.info("Sending WINDOW_CLOSING event to BonyContext.JFrame");
+				theLogger.info("Sending WINDOW_CLOSING event to BonyRenderContext.JFrame");
 				WindowEvent windowClosing = new WindowEvent(jf, WindowEvent.WINDOW_CLOSING);
-				jf.dispatchEvent(windowClosing);	
+				jf.dispatchEvent(windowClosing);
 			} else {
-				theLogger.warn("BonyContext returned null JFrame, so we have no window to close.");
+				theLogger.warn("BonyRenderContext returned null JFrame, so we have no window to close.");
 			}
 		} else {
-			theLogger.warn("stop() found null BonyContext");
+			theLogger.warn("stop() found null BonyRenderContext");
 		}
 		theLogger.info("stop() is DONE!");
 	}

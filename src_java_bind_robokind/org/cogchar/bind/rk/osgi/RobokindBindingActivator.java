@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.robokind.osgi;
+package org.cogchar.bind.rk.osgi;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.slf4j.Logger;

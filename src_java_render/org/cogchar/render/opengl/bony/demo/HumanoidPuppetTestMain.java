@@ -17,7 +17,7 @@
 package org.cogchar.render.opengl.bony.demo;
 
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
-import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.sys.BonySystemFuncs;
 import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
 import org.cogchar.render.opengl.bony.app.BonyRagdollApp;
@@ -34,27 +34,27 @@ import org.cogchar.render.opengl.bony.app.DemoApp;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class StickFigureTestMain {
-	static Logger theLogger = LoggerFactory.getLogger(StickFigureTestMain.class);
+public class HumanoidPuppetTestMain {
+	static Logger theLogger = LoggerFactory.getLogger(HumanoidPuppetTestMain.class);
 	
 	//static String	sceneFilePath = "leo_hanson_tests/test3/test3.scene";
 	// static float	sceneLocalScale = 0.5f;
 	
-	public static BonyContext makeBonyContextWithApp(BonyConfigEmitter bce) { //   String lwjglRendererName, int canvasWidth, int canvasHeight) { 
+	public static BonyRenderContext makeBonyRenderContextWithApp(BonyConfigEmitter bce) { //   String lwjglRendererName, int canvasWidth, int canvasHeight) { 
 		BonyVirtualCharApp bvcApp = // new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
 					// new BonyRagdollApp(lwjglRendererName, canvasWidth, canvasHeight, sceneFilePath, sceneLocalScale);
-					new BowlAtHumanoidApp(bce); // lwjglRendererName, BowlAtHumanoidApp.PATH_HUMANOID_MESH, canvasWidth, canvasHeight);
+					new HumanoidPuppetApp(bce); // lwjglRendererName, HumanoidPuppetApp.PATH_HUMANOID_MESH, canvasWidth, canvasHeight);
 		bvcApp.initCharPanelWithCanvas();
-		BonyContext bc = bvcApp.getBonyContext();
+		BonyRenderContext bc = bvcApp.getBonyRenderContext();
 		return bc;
 	}
 	public static void main(String[] args) {
 		// String lwjglRendererName = DemoApp.DEFAULT_RENDERER_NAME;
 		// System.out.println("+&+&+&++&+&+&+&+&+&+ Using: " + lwjglRendererName);
 		BonyConfigEmitter bce = new BonyConfigEmitter();
-		final BonyContext bc = makeBonyContextWithApp(bce); // lwjglRendererName, DemoApp.DEFAULT_CANVAS_WIDTH, DemoApp.DEFAULT_CANVAS_HEIGHT);
+		final BonyRenderContext bc = makeBonyRenderContextWithApp(bce); // lwjglRendererName, DemoApp.DEFAULT_CANVAS_WIDTH, DemoApp.DEFAULT_CANVAS_HEIGHT);
 		// Frame must be packed after panel created, but created 
-		// before startJMonkey.  Might add frame to BonyContext...
+		// before startJMonkey.  Might add frame to BonyRenderContext...
 		VirtCharPanel vcp = bc.getPanel();
 		theLogger.info("*********************** BEFORE FRAMING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
 		JFrame jf = vcp.makeEnclosingJFrame();
@@ -79,7 +79,7 @@ public class StickFigureTestMain {
 		                listener.requestClose(false);
 				 * and with no explicit call of our own to requestClose, we get:
 				 * 
-4042 [AWT-EventQueue-0] INFO org.cogchar.render.opengl.bony.StickFigureTestMain - StickFigureTestMain.JFrame.windowClosing - END
+4042 [AWT-EventQueue-0] INFO org.cogchar.render.opengl.bony.HumanoidPuppetTestMain - HumanoidPuppetTestMain.JFrame.windowClosing - END
 Oct 7, 2011 7:44:27 PM com.jme3.system.lwjgl.LwjglCanvas$GLCanvas removeNotify
 INFO: EDT: Notifying OGL that canvas is about to become invisible..
 Oct 7, 2011 7:44:27 PM com.jme3.system.lwjgl.LwjglCanvas runLoop
@@ -88,7 +88,7 @@ Oct 7, 2011 7:44:27 PM com.jme3.system.lwjgl.LwjglCanvas pauseCanvas
 INFO: OGL: Canvas will become invisible! Destroying ..
 Oct 7, 2011 7:44:27 PM com.jme3.system.lwjgl.LwjglCanvas$GLCanvas removeNotify
 INFO: EDT: Acknowledged receipt of canvas death
-4144 [AWT-EventQueue-0] INFO org.cogchar.render.opengl.bony.StickFigureTestMain - VirtCharPanel.JFrame Window CLOSED event:  java.awt.event.WindowEvent[WINDOW_CLOSED,opposite=null,oldState=0,newState=0] on frame0
+4144 [AWT-EventQueue-0] INFO org.cogchar.render.opengl.bony.HumanoidPuppetTestMain - VirtCharPanel.JFrame Window CLOSED event:  java.awt.event.WindowEvent[WINDOW_CLOSED,opposite=null,oldState=0,newState=0] on frame0
 VirtCharPanel.JFrame.closed, exiting
 				 * 
 				 */

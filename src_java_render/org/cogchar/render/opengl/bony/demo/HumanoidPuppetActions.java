@@ -17,11 +17,11 @@ import com.jme3.input.controls.Trigger;
  *
  * @author pow
  */
-public class BowlAtHumanoidActions {
+public class HumanoidPuppetActions {
     enum PlayerAction {
 
         TOGGLE_KIN_MODE {
-            void act(BowlAtHumanoidApp app) {
+            void act(HumanoidPuppetApp app) {
 				HumanoidRagdollWrapper hw = app.getHumdWrap();
 				hw.toggleKinMode();
             }
@@ -31,7 +31,7 @@ public class BowlAtHumanoidActions {
             }
         },
         STAND_UP {
-            void act(BowlAtHumanoidApp app) {
+            void act(HumanoidPuppetApp app) {
 				HumanoidRagdollWrapper hw = app.getHumdWrap();
 				hw.standUp();
             }
@@ -40,7 +40,7 @@ public class BowlAtHumanoidActions {
             }            
         },
         BOOGIE {
-            void act(BowlAtHumanoidApp app) {
+            void act(HumanoidPuppetApp app) {
 				HumanoidRagdollWrapper hw = app.getHumdWrap();
 				hw.boogie();
             }
@@ -49,7 +49,7 @@ public class BowlAtHumanoidActions {
             }
         },        
         SHOOT {
-            void act(BowlAtHumanoidApp app) {
+            void act(HumanoidPuppetApp app) {
                 app.cmdShoot();
             }
             Trigger[] makeTriggers() { 
@@ -57,7 +57,7 @@ public class BowlAtHumanoidActions {
             }            
         }, 
         BOOM {
-            void act(BowlAtHumanoidApp app) {
+            void act(HumanoidPuppetApp app) {
                 app.cmdBoom();
             }
             Trigger[] makeTriggers() { 
@@ -65,7 +65,7 @@ public class BowlAtHumanoidActions {
             }            
         }, 
         BIGGER_PROJECTILE {
-            void act(BowlAtHumanoidApp app) {
+            void act(HumanoidPuppetApp app) {
                 app.getProjectileMgr().cmdBiggerProjectile();
             }
             Trigger[] makeTriggers() { 
@@ -73,7 +73,7 @@ public class BowlAtHumanoidActions {
             }            
         },
         SMALLER_PROJECTILE {
-            void act(BowlAtHumanoidApp app) {
+            void act(HumanoidPuppetApp app) {
                 app.getProjectileMgr().cmdSmallerProjectile();
             }
             Trigger[] makeTriggers() { 
@@ -81,10 +81,10 @@ public class BowlAtHumanoidActions {
             }            
         };  // Last enum constant code block gets a semicolon.
         
-        abstract void act(BowlAtHumanoidApp app);
+        abstract void act(HumanoidPuppetApp app);
         abstract Trigger[] makeTriggers();
     };
-    static void setupActionListeners(InputManager inputManager, final BowlAtHumanoidApp app) {
+    static void setupActionListeners(InputManager inputManager, final HumanoidPuppetApp app) {
         PlayerAction pavals[] = PlayerAction.values();
         String actionNames[] = new String[pavals.length];
         for (int pai =0; pai < pavals.length; pai++) { 

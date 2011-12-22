@@ -28,6 +28,10 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	val WOS_SCALE = 0.5f;
 	
 	val PATH_HUMANOID_JOINT_CONFIG = "bonyRobotConfig.json";
+	val NB_PATH_HUMANOID_JOINT_CFG = "org_cogchar_nbui_render/bonyRobotConfig.json";
+	
+	val NB_BONY_ROBOT_ID = "COGCHAR_NB_ROBOT";
+	val DUMMY_ROBOT_ID = "DummyRobot22";
 //				DEFAULT_PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",	// Default path in JME test setup
 //			PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md",
 	def getJointConfigFileForChar(bonyCharURI: String) : java.io.File = {
@@ -43,6 +47,9 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	def getStickFigureScenePath : String = WINGED_OBELISK_SCENE;
 	def getStickFigureSceneScale : Float = 0.5f;
 
+	def getRobokindRobotID(robotURI : String) = {
+		NB_BONY_ROBOT_ID; // or DUMMY_ROBOT_ID, ...
+	}
 	
 	
 	def getNamedFloatVector(vectorURI : String) : Array[Float] = {

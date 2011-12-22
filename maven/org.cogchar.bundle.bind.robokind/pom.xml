@@ -98,6 +98,11 @@
 	  <artifactId>org.robokind.impl.messaging</artifactId>
 	  <version>0.7</version>
 	 </dependency>
+	 <dependency>
+	  <groupId>org.robokind</groupId>
+	  <artifactId>org.robokind.impl.motion</artifactId>
+	  <version>0.7</version>
+	 </dependency>
 	</dependencies>
 
 	<build>

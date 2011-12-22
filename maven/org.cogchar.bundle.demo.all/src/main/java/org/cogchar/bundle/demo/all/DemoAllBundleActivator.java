@@ -10,12 +10,12 @@ import javax.jms.Session;
 import javax.swing.JFrame;
 import org.apache.qpid.client.AMQQueue;
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.cogchar.bind.robokind.client.RobotAnimClient;
-import org.cogchar.bind.robokind.joint.BonyRobot;
-import org.cogchar.bind.robokind.joint.BonyRobotUtils;
+import org.cogchar.bind.rk.robot.client.RobotAnimClient;
+import org.cogchar.bind.rk.robot.model.ModelRobot;
+import org.cogchar.bind.rk.robot.model.ModelRobotUtils;
 import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
-import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.osgi.framework.BundleContext;
@@ -46,7 +46,7 @@ public class DemoAllBundleActivator extends BundleActivatorBase {
 		
 		PumaAppContext pac = new PumaAppContext(bundleCtx);
 		try {
-			pac.initDualCharacter(bonyCharURI);
+			pac.makeDualCharForSwingOSGi(bonyCharURI);
 		} catch (Throwable t) {
 			theLogger.error("Cannot initialize " + debugTxt, t);
 		}

@@ -4,6 +4,8 @@
  */
 package org.cogchar.render.opengl.bony.state;
 
+import java.util.List;
+
 import com.jme3.math.Quaternion;
 
 /**
@@ -25,4 +27,5 @@ public class BoneState {
 		q.fromAngles(rot_X_pitch, rot_Y_roll, rot_Z_yaw);
 		return q;
 	}
+
 }

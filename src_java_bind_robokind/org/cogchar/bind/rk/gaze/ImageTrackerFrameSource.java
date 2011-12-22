@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.robokind.gaze;
+package org.cogchar.bind.rk.gaze;
 
 import java.awt.Rectangle;
 import java.util.List;
