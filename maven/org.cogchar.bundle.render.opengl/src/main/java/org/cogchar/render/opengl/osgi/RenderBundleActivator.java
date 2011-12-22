@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import org.cogchar.render.opengl.bony.app.DemoApp;
 import org.cogchar.render.opengl.bony.demo.HumanoidPuppetApp;
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
 
 /**
  *
@@ -58,7 +59,14 @@ public class RenderBundleActivator extends BundleActivatorBase {
 		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
 		ResourceLoader rl = new ResourceLoader();
 		bvcApp.setContentsAssetLoader(rl);
-		bvcApp.initCharPanelWithCanvas();
+		
+		JmonkeyAssetLoader frameworkAL = bvcApp.getFrameworkAssetLoader();
+		//frameworkAL.installClassLoader();
+		try {
+			bvcApp.initCharPanelWithCanvas();
+		} finally {
+			//frameworkAL.restoreClassLoader();
+		}
 		myBonyRenderContext = bvcApp.getBonyRenderContext();
 
 		bundleCtx.registerService(BonyRenderContext.class.getName(), myBonyRenderContext, null);

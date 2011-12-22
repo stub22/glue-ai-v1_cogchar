@@ -1,6 +1,17 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package org.cogchar.render.opengl.bony.app;
 
@@ -36,7 +47,7 @@ public abstract class DemoApp extends SimpleApplication {
 	}
 	public JmonkeyAssetLoader getContentsAssetLoader() {
 		if (myContentsAssetLoader == null) {
-			myContentsAssetLoader = new JmonkeyAssetLoader();
+			myContentsAssetLoader = new JmonkeyAssetLoader(AssetManager.class);
 		}
 		AssetManager am = myContentsAssetLoader.getAssetManager();
 		if (am == null) {
@@ -49,7 +60,7 @@ public abstract class DemoApp extends SimpleApplication {
 	}
 	public JmonkeyAssetLoader getFrameworkAssetLoader() {
 		if (myFrameworkAssetLoader == null) {
-			myFrameworkAssetLoader = new JmonkeyAssetLoader();
+			myFrameworkAssetLoader = new JmonkeyAssetLoader(AssetManager.class);
 		}
 		AssetManager am = myFrameworkAssetLoader.getAssetManager();
 		if (am == null) {
@@ -88,14 +99,14 @@ public abstract class DemoApp extends SimpleApplication {
 	 * about how our classes + resources are packaged into OSGi bundles.
 	 * Note that our custom assets are handled by a separate classloader installed
 	 * by  HumanoidPuppetApp.initHumanoidStuff.
-	 *
+	 */
     @Override  public void initialize() {
 		// This works for the initialize() callback, but
 		// then we fail in the update() callback.  
 		
 		theLogger.info("********************* DemoApp.initialize() called, installing framework asset classloader");
 		JmonkeyAssetLoader frameworkAL = getFrameworkAssetLoader();
-		frameworkAL.installClassLoader();
+		frameworkAL.installClassLoader(true);
 		try {
 			super.initialize();
 		} finally {
@@ -104,19 +115,18 @@ public abstract class DemoApp extends SimpleApplication {
 		theLogger.info("********************* DemoApp.initialize() restored context class loader");
 	}	
     @Override  public void update() {	
-		// It's probably only on the first call, but...we may
-		// not want to do this classpath switcherooing on
+		// It's probably only on the first call, and...we may
+		// not want to do this classpath switcherooing on every
 		// update().  (Is there hidden cost in setting classloader?).
 		JmonkeyAssetLoader frameworkAL = getFrameworkAssetLoader();
-		frameworkAL.installClassLoader();
+		frameworkAL.installClassLoader(false);
 		try {
 			super.update();
 		} finally {
 			frameworkAL.restoreClassLoader();
 		}
 	}
-	 * 
-	 */
+
 	/*
 	 *     [java] com.jme3.asset.AssetNotFoundException: Common/MatDefs/Light/Lighting
 vert

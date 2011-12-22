@@ -75,6 +75,7 @@ public class BonyVirtualCharApp extends DemoApp {
 				return null;
 			}
 		});
+		theLogger.info("*********** startJMonkeyCanvas is waiting for the future to come");
 //to retrieve return value (waits for call to finish, fire&forget otherwise):
 		Object unusedResult;
 		try {
@@ -82,7 +83,7 @@ public class BonyVirtualCharApp extends DemoApp {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-		theLogger.info("*********** startJMonkeyCanvas is returning");
+		theLogger.info("*********** startJMonkeyCanvas sees that the future has arrived, so it is returning");
         myCanvasStartedFlag = true;
 	}
     
@@ -99,9 +100,11 @@ public class BonyVirtualCharApp extends DemoApp {
 	}
 
     @Override  public void initialize() {
-		theLogger.info("********************* BonyVirtualCharApp.initialize() called, calling super.initialize()");
+		theLogger.info("********************* BonyVirtualCharApp.initialize() called, tccl=" +
+				Thread.currentThread().getContextClassLoader() + ", calling super.initialize()");
 		super.initialize();
-		theLogger.info("********************* BonyVirtualCharApp.initialize() returning");
+		theLogger.info("********************* BonyVirtualCharApp.initialize() finished, tccl=" + 
+				Thread.currentThread().getContextClassLoader() + ", returning");
 	}	
 	
 }

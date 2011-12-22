@@ -26,9 +26,12 @@ public class JmonkeyAssetLoader {
 	static Logger theLogger = LoggerFactory.getLogger(JmonkeyAssetLoader.class);
 	private AssetManager	myAssetMgr;
 	private ClassLoader		mySavedClassLoader;
+	private	Class			myResourceMarkerClass;
 	
-	public JmonkeyAssetLoader() {
+	public JmonkeyAssetLoader(Class resourceMarkerClass) {
+		myResourceMarkerClass = resourceMarkerClass;
 	}
+
 	public void setAssetManager(AssetManager assetMgr) {
 		myAssetMgr = assetMgr;
 	}
@@ -41,12 +44,16 @@ public class JmonkeyAssetLoader {
 	public BitmapFont loadFont(String fontPath) {
 		return myAssetMgr.loadFont(fontPath);
 	}
-	public void installClassLoader()  {
+	public void installClassLoader(boolean verbose)  {
 		mySavedClassLoader = Thread.currentThread().getContextClassLoader();
-		theLogger.info("Saved old class loader: " + mySavedClassLoader);
+		if (verbose) {
+			theLogger.info("Saved old class loader: " + mySavedClassLoader);
+		}
 		try {
-			ClassLoader localLoader = getClass().getClassLoader();
-			theLogger.info("Setting thread class loader to local loader: " + localLoader);
+			ClassLoader localLoader = myResourceMarkerClass.getClassLoader();
+			if (verbose) {
+				theLogger.info("Setting thread class loader to local loader: " + localLoader);
+			}
 			Thread.currentThread().setContextClassLoader(localLoader);
 		} catch (Throwable t) {
 			theLogger.error("problem in installClassLoader", t);
@@ -54,5 +61,20 @@ public class JmonkeyAssetLoader {
 	}
 	public void restoreClassLoader()  {
 		Thread.currentThread().setContextClassLoader(mySavedClassLoader); 
+	}
+	
+	public Spatial safelyLoadModel(String modelName, boolean verbose) {
+		Spatial result = null;
+		installClassLoader(verbose);
+		try {
+			result = loadModel(modelName);
+		} finally {
+			restoreClassLoader();
+			if (verbose) {
+				theLogger.info("********** Finished loading model, restored classLoader to: " 
+								+ Thread.currentThread().getContextClassLoader());
+			}
+		}
+		return result;
 	}
 }
