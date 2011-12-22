@@ -1,6 +1,17 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package org.cogchar.bundle.app.puma;
 
@@ -95,13 +106,38 @@ public class PumaAppContext {
 				// as this wrapper, at a finer grain, in case we wanted to separate 
 				// JMonkey builtin assets from the JMonkey classes.
 
-				JmonkeyAssetLoader frameworkAL = app.getFrameworkAssetLoader();
-				frameworkAL.installClassLoader();
+				//JmonkeyAssetLoader frameworkAL = app.getFrameworkAssetLoader();
+				// This does not seem to control the classloader of this thread
+				/*
+     [java] Dec 22, 2011 1:56:22 AM com.jme3.app.Application handleError
+     [java] SEVERE: Uncaught exception thrown in Thread[LWJGL Renderer Thread,5,
+main]
+     [java] java.lang.IllegalStateException: No loader registered for type "fnt"
+
+     [java]     at com.jme3.asset.DesktopAssetManager.loadAsset(DesktopAssetMana
+ger.java:248)
+     [java]     at com.jme3.asset.DesktopAssetManager.loadFont(DesktopAssetManag
+er.java:374)
+     [java]     at com.jme3.app.SimpleApplication.loadFPSText(SimpleApplication.
+java:183)
+     [java]     at com.jme3.app.SimpleApplication.initialize(SimpleApplication.j
+ava:208)
+     [java]     at org.cogchar.render.opengl.bony.app.BonyVirtualCharApp.initial
+ize(BonyVirtualCharApp.java:105)
+     [java]     at com.jme3.system.lwjgl.LwjglAbstractDisplay.initInThread(Lwjgl
+AbstractDisplay.java:129)
+     [java]     at com.jme3.system.lwjgl.LwjglAbstractDisplay.run(LwjglAbstractD
+isplay.java:205)
+     [java]     at java.lang.Thread.run(Thread.java:619)				
+				 * 
+				 */
+				//frameworkAL.installClassLoader();
 				theLogger.info("Starting JMonkey canvas - hold yer breath! [[[[[[[[[[[[[[[[[[[[[[[[[[");
 				try {
 					app.startJMonkeyCanvas();
 				} finally {
-					frameworkAL.restoreClassLoader();
+					// Does this affect CL in child threads?
+					// frameworkAL.restoreClassLoader();
 				}
 				theLogger.info("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]  Finished starting JMonkey canvas!");
 			}

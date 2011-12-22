@@ -22,6 +22,6 @@ import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
  */
 public class ResourceLoader extends JmonkeyAssetLoader {
 	public ResourceLoader() {
-		super();
+		super(ResourceBundleActivator.class);
 	}
 }
