@@ -15,7 +15,7 @@
  */
 package org.cogchar.render.opengl.osgi;
 
-import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -23,11 +23,11 @@ import org.osgi.framework.ServiceReference;
  * @author Stu B. <www.texpedient.com>
  */
 public class RenderBundleUtils {
-	public static BonyContext getBonyContext(BundleContext bundleCtx) {
-		ServiceReference ref = bundleCtx.getServiceReference(BonyContext.class.getName());
+	public static BonyRenderContext getBonyRenderContext(BundleContext bundleCtx) {
+		ServiceReference ref = bundleCtx.getServiceReference(BonyRenderContext.class.getName());
 		if(ref == null){
 			return null;
 		}
-		return (BonyContext) bundleCtx.getService(ref);
+		return (BonyRenderContext) bundleCtx.getService(ref);
 	}	
 }

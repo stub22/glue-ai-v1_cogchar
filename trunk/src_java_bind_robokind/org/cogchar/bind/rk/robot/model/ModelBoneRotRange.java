@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cogchar.bind.robokind.joint;
+package org.cogchar.bind.rk.robot.model;
 
 import org.cogchar.avrogen.bind.robokind.RotationAxis;
 import org.robokind.api.common.position.NormalizedDouble;
@@ -22,13 +22,13 @@ import org.robokind.api.common.position.NormalizedDouble;
  *
  * @author Matthew Stevenson <www.robokind.org>
  */
-public class BoneRotationRange {
+public class ModelBoneRotRange {
     private String myBoneName;
     private RotationAxis myRotationAxis;
     private double myMinRotation;
     private double myMaxRotation;
 
-    public BoneRotationRange(String boneName, RotationAxis axis, double min, double max){
+    public ModelBoneRotRange(String boneName, RotationAxis axis, double min, double max){
         if(boneName == null || axis == null){
             throw new NullPointerException();
         }
@@ -46,33 +46,9 @@ public class BoneRotationRange {
         return myRotationAxis;
     }
 
-    public BoneRotation getRotationRadians(NormalizedDouble normVal){
+    public ModelBoneRotation makeRotationForNormalizedFraction(NormalizedDouble normVal){
         double range = myMaxRotation - myMinRotation;
         double boneAngle = range*normVal.getValue() + myMinRotation;
-        return new BoneRotation(myBoneName, myRotationAxis, boneAngle);
-    }
-    
-    public static class BoneRotation{
-        private String myBoneName;
-        private RotationAxis myRotationAxis;
-        private double myBoneAngleRadians;
-        
-        public BoneRotation(String bone, RotationAxis axis, double angleRads){
-            myBoneName = bone;
-            myRotationAxis = axis;
-            myBoneAngleRadians = angleRads;
-        }
-        
-        public String getBoneName(){
-            return myBoneName;
-        }
-        
-        public RotationAxis getRotationAxis(){
-            return myRotationAxis;
-        }
-        
-        public double getAngleRadians(){
-            return myBoneAngleRadians;
-        }
+        return new ModelBoneRotation(myBoneName, myRotationAxis, boneAngle);
     }
 }

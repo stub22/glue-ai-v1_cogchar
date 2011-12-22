@@ -23,7 +23,7 @@ import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
 import org.cogchar.render.opengl.bony.model.StickFigureTwister;
 
 import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -39,7 +39,7 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 	@Override public void simpleInitApp() {
 		super.simpleInitApp();
 		initStickFigureModel();
-		BonyContext bc = getBonyContext();
+		BonyRenderContext bc = getBonyRenderContext();
 		myTwister = new StickFigureTwister(bc);
 	}
 	public void setScoringFlag(boolean f) {
@@ -48,7 +48,7 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 
 	public void initStickFigureModel() {
 		// test1Node.setLocalScale(0.5f);
-		BonyContext bc = getBonyContext();
+		BonyRenderContext bc = getBonyRenderContext();
 		BonyConfigEmitter bce = getBonyConfigEmitter(); 
 		String sceneFilePath = bce.getStickFigureScenePath();
 		float sceneScale = bce.getStickFigureSceneScale();

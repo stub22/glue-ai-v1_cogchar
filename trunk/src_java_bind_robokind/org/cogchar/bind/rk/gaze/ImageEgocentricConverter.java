@@ -13,14 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.robokind.client;
+package org.cogchar.bind.rk.gaze;
 
-import org.robokind.api.motion.Robot;
+import org.cogchar.animoid.protocol.EgocentricDirection;
+import org.cogchar.gaze.CoordinateConverter;
 
 /**
- * @author Stu B. <www.texpedient.com>
+ *
+ * @author Matthew Stevenson
  */
-public class RobotClientContext {
-	public	Robot				myTargetRobot;
-	public  RobotAnimClient		myAnimClient;
+public class ImageEgocentricConverter implements CoordinateConverter<ImageJointSnapshotCoordinate, EgocentricDirection> {
+
+    @Override
+    public EgocentricDirection convert(ImageJointSnapshotCoordinate coord) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
 }

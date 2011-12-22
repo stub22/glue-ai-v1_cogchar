@@ -13,19 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.robokind.gaze;
+package org.cogchar.bind.rk.gaze;
 
-import org.cogchar.animoid.protocol.EgocentricDirection;
-import org.cogchar.gaze.CoordinateConverter;
+import org.cogchar.animoid.gaze.IGazeTarget;
+import org.cogchar.gaze.GazePlanner;
+import org.robokind.api.motion.Robot.RobotPositionMap;
 
 /**
  *
- * @author Matthew Stevenson
  */
-public class ImageEgocentricConverter implements CoordinateConverter<ImageJointSnapshotCoordinate, EgocentricDirection> {
+public class GazeTargetMotionPlanner implements 
+        GazePlanner<IGazeTarget, RobotPositionMap> {
 
     @Override
-    public EgocentricDirection convert(ImageJointSnapshotCoordinate coord) {
+    public RobotPositionMap getMovements(long time, long interval, 
+    IGazeTarget tracker, RobotPositionMap currentPos) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

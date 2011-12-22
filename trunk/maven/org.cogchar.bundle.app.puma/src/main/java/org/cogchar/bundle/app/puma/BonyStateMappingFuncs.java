@@ -1,20 +1,32 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
+
 package org.cogchar.bundle.app.puma;
 import java.util.ArrayList;
 import org.robokind.api.motion.Joint;
 import org.robokind.api.motion.Robot;
 
-import org.cogchar.bind.robokind.joint.BonyRobotUtils;
-import org.cogchar.bind.robokind.joint.BonyRobotFactory;
-import org.cogchar.bind.robokind.joint.BonyRobot;
-import org.cogchar.bind.robokind.joint.BonyJoint;
+import org.cogchar.bind.rk.robot.model.ModelRobotUtils;
+import org.cogchar.bind.rk.robot.model.ModelRobotFactory;
+import org.cogchar.bind.rk.robot.model.ModelRobot;
+import org.cogchar.bind.rk.robot.model.ModelJoint;
 
 
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
-import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.state.BoneState;
 
@@ -22,34 +34,42 @@ import java.util.List;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import org.cogchar.bind.robokind.joint.BlendingBonyRobotContext;
-import org.cogchar.bind.robokind.joint.BlendingRobotContext;
-import org.cogchar.bind.robokind.joint.BoneRotationRange;
-import org.cogchar.bind.robokind.joint.BoneRotationRange.BoneRotation;
+import org.cogchar.bind.rk.robot.svc.BlendingRobotServiceContext;
+import org.cogchar.bind.rk.robot.model.ModelBoneRotRange;
+import org.cogchar.bind.rk.robot.model.ModelBoneRotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * 
+ * In this class, all our huge design flaws are revealed!
+ * EVERYTHING about this class is wrong!
+ * It's a perfect 0!  Except...it works for the moment
+ * as a bit of glue for testing less-fun parts.  This junk
+ * shall soon be absorbed into a proper state representation.
+ * Stu: 2011-12-21
+ * 
  */
 public class BonyStateMappingFuncs {
-	public static void propagateState(BonyRobot br, BonyContext bc) { 
+	public static void propagateState(ModelRobot br, BonyRenderContext bc) { 
 		FigureState fs = bc.getFigureState();
-        applyAllRotations(fs, BonyRobotUtils.getGoalAnglesAsRotations(br));
+        applyAllSillyEulerRotations(fs, ModelRobotUtils.getGoalAnglesAsRotations(br));
 	}
     
-    private static void applyAllRotations(FigureState fs, Map<String,List<BoneRotation>> rotMap){
-        List<BoneRotation> rots = new ArrayList<BoneRotation>();
-        for(Entry<String,List<BoneRotation>> e : rotMap.entrySet()){
+    public static void applyAllSillyEulerRotations(FigureState fs, Map<String,List<ModelBoneRotation>> rotMap){
+        List<ModelBoneRotation> rots = new ArrayList<ModelBoneRotation>();
+        for(Entry<String,List<ModelBoneRotation>> e : rotMap.entrySet()){
             BoneState bs = fs.getBoneState(e.getKey());
             if(bs == null){
                 continue;
             }
-            applyRotations(bs, rots);
+            applySillyEulerRotations(bs, rots);
         }
     }
-    
-    private static void applyRotations(BoneState bs, List<BoneRotation> rots){
-        for(BoneRotation rot : rots){
+    // This is not a viable technique - rotations are not commutative!
+    private static void applySillyEulerRotations(BoneState bs, List<ModelBoneRotation> rots){
+        for(ModelBoneRotation rot : rots){
             float rads = (float)rot.getAngleRadians();
             switch(rot.getRotationAxis()){
                 case PITCH: bs.rot_X_pitch = rads; break;

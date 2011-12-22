@@ -1,38 +1,51 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
+
 package org.cogchar.bundle.app.puma;
 
+import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import org.osgi.framework.BundleContext;
-
-
-
-import org.robokind.api.motion.Joint;
-import org.robokind.api.motion.Robot;
-
-import org.cogchar.bind.robokind.joint.BonyRobotUtils;
-import org.cogchar.bind.robokind.joint.BonyRobotFactory;
-import org.cogchar.bind.robokind.joint.BonyRobot;
-import org.cogchar.bind.robokind.joint.BonyJoint;
-
-
-import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
-import org.cogchar.render.opengl.bony.sys.BonyContext;
-import org.cogchar.render.opengl.bony.state.FigureState;
-import org.cogchar.render.opengl.bony.state.BoneState;
 
 import java.util.List;
 
 import java.util.Map;
-import java.util.Map.Entry;
-import org.cogchar.bind.robokind.joint.BlendingBonyRobotContext;
-import org.cogchar.bind.robokind.joint.BlendingRobotContext;
-import org.cogchar.bind.robokind.joint.BoneRotationRange;
-import org.cogchar.bind.robokind.joint.BoneRotationRange.BoneRotation;
+import org.osgi.framework.BundleContext;
+
+import org.robokind.api.motion.Joint;
+import org.robokind.api.motion.Robot;
+
+import org.cogchar.bind.rk.robot.model.ModelRobotUtils;
+import org.cogchar.bind.rk.robot.model.ModelRobotFactory;
+import org.cogchar.bind.rk.robot.model.ModelRobot;
+import org.cogchar.bind.rk.robot.model.ModelJoint;
+
+import org.cogchar.bind.rk.robot.client.RobotAnimClient;
+
+
+import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
+import org.cogchar.render.opengl.bony.state.FigureState;
+import org.cogchar.render.opengl.bony.state.BoneState;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
+
+
+import org.cogchar.bind.rk.robot.svc.BlendingRobotServiceContext;
+import org.cogchar.bind.rk.robot.model.ModelBoneRotRange;
+import org.cogchar.bind.rk.robot.model.ModelBoneRotation;
+import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,17 +54,36 @@ import org.slf4j.LoggerFactory;
  */
 public class PumaDualCharacter {
 	static Logger theLogger = LoggerFactory.getLogger(PumaDualCharacter.class);
-	private	BlendingBonyRobotContext	myBBRC;
-	
-
-	
-	public PumaDualCharacter(BundleContext bundleCtx) {
-		myBBRC = new BlendingBonyRobotContext(bundleCtx);
+	private	ModelBlendingRobotServiceContext	myRobotServiceContext;
+	private	BonyRenderContext							myBonyRenderContext;
+	public PumaDualCharacter(BonyRenderContext bc, BundleContext bundleCtx) {
+		myRobotServiceContext = new ModelBlendingRobotServiceContext(bundleCtx);
 	}
-	public void setupBonyRobotWithBlender(File jointBindingConfigFile) throws Exception {
-		myBBRC.makeBonyRobotWithBlenderAndFrameSource(jointBindingConfigFile);
+	public void connectBonyDualForURI( String bonyDualCharURI) throws Throwable {
+		BundleContext bundleCtx = myRobotServiceContext.getBundleContext();
+		File jointBindingConfigFile = myBonyRenderContext.getJointConfigFileForChar(bonyDualCharURI);
+        //rjbd.registerDummyRobot();
+		setupBonyRobotWithBlender(jointBindingConfigFile);
+		ModelRobot br = getBonyRobot();
+		Robot.Id brid = br.getRobotId();
+		if (br != null) {
+	        connectToVirtualChar();
+			applyInitialBoneRotations();
+			RobotAnimClient brac = new RobotAnimClient(bundleCtx); 
+			try {
+		        RobotServiceFuncs.createAndRegisterFrameReceiver(bundleCtx, brid);
+			} catch (Throwable t) {
+				theLogger.warn("Could not register AMQP network server for robot with ID=" + brid, t);
+			}
+		}
 	}
-
+	
+	public void setupBonyRobotWithBlender(File jointBindingConfigFile) throws Throwable {
+		myRobotServiceContext.makeModelRobotWithBlenderAndFrameSource(jointBindingConfigFile);
+	}
+	public ModelRobot getBonyRobot() { 
+		return myRobotServiceContext.getRobot();
+	}	
 	/*public class DanceDoer implements DemoBonyWireframeRagdoll.Doer {
 		
 		public void doIt() { 
@@ -64,13 +96,13 @@ public class PumaDualCharacter {
 			}
 		}
 	}*/
-	public void connectToVirtualChar(final BonyContext bc) throws Exception {
-		BonyVirtualCharApp app = bc.getApp();
-		setupFigureState(bc);
-		final BonyRobot br = getBonyRobot();
-		br.registerMoveListener(new BonyRobot.MoveListener() {
-			@Override public void notifyBonyRobotMoved(BonyRobot br) {
-				BonyStateMappingFuncs.propagateState(br, bc);
+	public void connectToVirtualChar() throws Exception {
+		BonyVirtualCharApp app = myBonyRenderContext.getApp();
+		setupFigureState();
+		final ModelRobot br = getBonyRobot();
+		br.registerMoveListener(new ModelRobot.MoveListener() {
+			@Override public void notifyBonyRobotMoved(ModelRobot br) {
+				BonyStateMappingFuncs.propagateState(br, myBonyRenderContext);
 			}
 			
 		});
@@ -82,22 +114,24 @@ public class PumaDualCharacter {
 		 */
 	}
 
-	public BonyRobot getBonyRobot() { 
-		return myBBRC.getRobot();
-	}
-	public void setupFigureState(BonyContext bctx) { 
-		BonyRobot br = getBonyRobot();
+
+	public void setupFigureState() { 
+		ModelRobot br = getBonyRobot();
 		FigureState fs = new FigureState();
-		List<BonyJoint> allJoints = br.getJointList();
-		for (BonyJoint bj : allJoints) {
-            for(BoneRotationRange range : bj.getBoneRotationRanges()){
+		List<ModelJoint> allJoints = br.getJointList();
+		for (ModelJoint bj : allJoints) {
+            for(ModelBoneRotRange range : bj.getBoneRotationRanges()){
                 String name = range.getBoneName();
                 fs.obtainBoneState(name);
             }
 		}
-		bctx.setFigureState(fs);
+		myBonyRenderContext.setFigureState(fs);
 	}
 	
-    
-
+    public void applyInitialBoneRotations() {
+		FigureState fs = myBonyRenderContext.getFigureState();
+		ModelRobot br = getBonyRobot();
+		Map<String,List<ModelBoneRotation>> initialRotationMap = ModelRobotUtils.getInitialRotationMap(br);
+        BonyStateMappingFuncs.applyAllSillyEulerRotations(fs, initialRotationMap);
+    }
 }

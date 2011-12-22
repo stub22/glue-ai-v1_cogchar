@@ -25,7 +25,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.sys.BonyCanvasFuncs;
-import org.cogchar.render.opengl.bony.sys.BonyContext;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
 
 /**
@@ -36,20 +36,20 @@ public class BonyVirtualCharApp extends DemoApp {
 
 	// private		AnimChannel				channel;
 
-	protected	BonyContext				myContext;
+	protected	BonyRenderContext				myContext;
     private     boolean                 myCanvasStartedFlag;
 
 	public BonyVirtualCharApp(BonyConfigEmitter bce) {
 		super(bce);
-		myContext = new BonyContext(bce);
+		myContext = new BonyRenderContext(bce);
 		myContext.setApp(this);
         myCanvasStartedFlag = false;
 	}
-	public BonyContext getBonyContext() { 
+	public BonyRenderContext getBonyRenderContext() { 
 		return myContext;
 	}
 	public BonyConfigEmitter getBonyConfigEmitter() { 
-		return getBonyContext().getBonyConfigEmitter();
+		return getBonyRenderContext().getBonyConfigEmitter();
 	}
 
 	public void initCharPanelWithCanvas() { 
