@@ -81,7 +81,7 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	}
 	public void initStuff(HumanoidBoneConfig hbc, JmonkeyAssetLoader assetLoader, Node parentNode, PhysicsSpace ps, String humanoidMeshPath) {
 		myHumanoidBoneConfig = hbc;
-		myHumanoidModelNode = (Node) assetLoader.loadModel(humanoidMeshPath);
+		myHumanoidModelNode = (Node) assetLoader.safelyLoadModel(humanoidMeshPath, true);
 
 		// This was commented out in JMonkey code:
 		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));

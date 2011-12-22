@@ -62,5 +62,8 @@ class DemoConfigEmitter {
         defaults.put("VSync", false);
         defaults.put("FrameRate", -1);
         defaults.put("SettingsDialogImage", "/com/jme3/app/Monkey.png");
+
+		Application.initAssetManager does:
+	             String assetCfg = settings.getString("AssetConfigURL");
 	 */
 }
