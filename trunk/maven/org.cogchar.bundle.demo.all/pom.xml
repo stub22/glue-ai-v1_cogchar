@@ -202,7 +202,12 @@
                                     <entry key="felix.auto.start" value="${urls}"/>
                                     <entry key="felix.auto.deploy.action" value="uninstall,install,update,start"/>
                                     <entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache"/>
+									<!--  This laxity with bootdelegation does not appear necessary, as of 2011-12-23 -->
+									<!--
                                     <entry key="org.osgi.framework.bootdelegation" value="*"/>
+									-->
+									<!-- Permission to load sun.misc required by ext.bundle.opengl.jmonkey, as of 2011-12-23 -->
+									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc"/>
                                 </propertyfile>
                                 <makeurl property="run.properties.url" file="${project.build.directory}/run.properties"/>
 																<!--
