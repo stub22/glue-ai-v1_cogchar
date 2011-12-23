@@ -64,8 +64,7 @@ public final class VirtualCharTopComponent extends TopComponent {
     }
     
     private synchronized void init(BundleContext bundleCtx) throws Throwable {
-		System.out.println("**********************************VCTC - init - START");
-		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - logger sez hi");
+		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - Simulator init() BEGIN");
         if(myInitializedFlag){
             return;
         }
@@ -78,8 +77,9 @@ public final class VirtualCharTopComponent extends TopComponent {
 		BonyRenderContext brc = pac.getBonyRenderContext(dualCharURI);
 		initVirtualCharPanel(brc);
 		
-		// This crashes with 
-		// java.lang.ClassNotFoundException: sun.misc.Unsafe
+		// Requires access to sun.misc.Unsafe, which must be explicitly imported by 
+		// ext.bundle.osgi.jmonkey, and explicitly allowed by the container using
+		// netigso
 		pac.startOpenGLCanvas(dualCharURI, false);
 /*		
 		PumaDualCharacter pdc = pac.makeDualRobotChar(dualCharURI);	
@@ -87,16 +87,18 @@ public final class VirtualCharTopComponent extends TopComponent {
         RobotServiceFuncs.registerJointGroup(bundleCtx, file);
 */		
         myInitializedFlag = true;
-				System.out.println("**********************************VCTC - init - END");
+		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - Simulator init() END");
     }
     
-    private void initVirtualCharPanel(BonyRenderContext BonyRenderContext){
+    private void initVirtualCharPanel(BonyRenderContext BonyRenderContext) throws Throwable {
         if(BonyRenderContext == null){
-            throw new NullPointerException();
+			theLogger.error("BonyRenderContext is null");
+            throw new Exception("BonyRenderContext is null");
         }
         myVirtualCharPanel = BonyRenderContext.getPanel();
         if(myVirtualCharPanel == null){
-            throw new NullPointerException();
+			theLogger.error("VirtualCharPanel is null");
+            throw new Exception("VirtualCharPanel is null");
         }
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
