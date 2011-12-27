@@ -19,6 +19,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.bundle.render.resources.ResourceBundleActivator;
 import org.cogchar.bundle.render.resources.ResourceLoader;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
@@ -57,6 +58,7 @@ public class RenderBundleActivator extends BundleActivatorBase {
 
 		BonyConfigEmitter bce = new BonyConfigEmitter();
 		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
+		theLogger.info("*************************************** Setting up ResourceLoader for contents");
 		ResourceLoader rl = new ResourceLoader();
 		bvcApp.setContentsAssetLoader(rl);
 		

@@ -13,26 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bundle.render.resources;
-import com.jme3.asset.AssetManager;
-import java.net.URL;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
+package org.cogchar.render.opengl.bony.sys;
 
-import org.osgi.framework.Bundle;
+import com.jme3.scene.plugins.ogre.MeshLoader;
+import com.jme3.asset.AssetInfo;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class ResourceLoader extends JmonkeyAssetLoader {
-	static Logger theLogger = LoggerFactory.getLogger(ResourceLoader.class);
-	public ResourceLoader() {
-		super(ResourceBundleActivator.class);
-	}
-	@Override public void resolve() { 
-		setHackyRootURL(ResourceBundleActivator.theBundleRootURL);
-		theLogger.info("******************** ResourceLoader resolved with URL: " + getHackyRootURL());
-		Bundle hackyBundle = ResourceBundleActivator.theInstance.getBundle();
-		setHackyBundle(hackyBundle);
+public class DummyMeshLoader extends MeshLoader {
+	static Logger theLogger = LoggerFactory.getLogger(DummyMeshLoader.class);
+	
+    public DummyMeshLoader() {
+        super();
+		theLogger.info("=============================== DummyMeshLoader constructing");
+    }
+	@Override public Object load(AssetInfo info) throws IOException {
+		theLogger.info("============================== DummyMeshLoader: " + info);
+		return super.load(info);
 	}
 }

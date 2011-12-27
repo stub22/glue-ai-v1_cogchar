@@ -83,6 +83,7 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 		myWorldMgr = new WorldMgr();
 	}
 	@Override public void simpleInitApp() {
+		theLogger.info("simpleInitApp() - START");
 		super.simpleInitApp();
 		initFonts();
 		//WorldMgr.makeCrossHairs(assetManager, guiNode, guiFont, settings);
@@ -94,6 +95,8 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
         SimulatorActions.setupActionListeners(inputManager, this);
 		// myHumanoidWrapper.boogie();
 		myHumanoidWrapper.becomePuppet();
+		theLogger.info("simpleInitApp() - END");
+
 	}
 
 	public HumanoidRagdollWrapper getHumdWrap()  {
