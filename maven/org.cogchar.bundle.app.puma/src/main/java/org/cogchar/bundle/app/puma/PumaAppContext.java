@@ -50,7 +50,7 @@ public class PumaAppContext {
 
 	public PumaDualCharacter makeDualCharForSwingOSGi(String dualCharURI) throws Throwable {
 		startOpenGLCanvas(dualCharURI, true);
-		return makeDualRobotChar(dualCharURI);
+		return connectDualRobotChar(dualCharURI);
 	}
 
 	private BonyRenderContext fetchBonyRenderContext() {
@@ -62,7 +62,7 @@ public class PumaAppContext {
 		return fetchBonyRenderContext();
 	}
 
-	public PumaDualCharacter makeDualRobotChar(String bonyCharURI)
+	public PumaDualCharacter connectDualRobotChar(String bonyCharURI)
 			throws Throwable {
 		
 		BonyRenderContext bc = getBonyRenderContext(bonyCharURI);

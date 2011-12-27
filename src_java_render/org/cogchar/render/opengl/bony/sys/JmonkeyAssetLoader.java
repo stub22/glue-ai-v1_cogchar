@@ -17,6 +17,10 @@ package org.cogchar.render.opengl.bony.sys;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Spatial;
 import com.jme3.font.BitmapFont;
+
+import java.net.URL;
+
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -27,6 +31,8 @@ public class JmonkeyAssetLoader {
 	private AssetManager	myAssetMgr;
 	private ClassLoader		mySavedClassLoader;
 	private	Class			myResourceMarkerClass;
+	private URL				myHackyRootURL;
+	private	Bundle			myHackyBundle;
 	
 	public JmonkeyAssetLoader(Class resourceMarkerClass) {
 		myResourceMarkerClass = resourceMarkerClass;
@@ -43,6 +49,24 @@ public class JmonkeyAssetLoader {
 	}
 	public BitmapFont loadFont(String fontPath) {
 		return myAssetMgr.loadFont(fontPath);
+	}
+	public ClassLoader getClassLoader() { 
+		return myResourceMarkerClass.getClassLoader();
+	}
+	public void resolve() { 
+		
+	}
+	public void setHackyRootURL(URL url) { 
+		myHackyRootURL = url;
+	}
+	public URL getHackyRootURL() { 
+		return myHackyRootURL;
+	}
+	public Bundle getHackyBundle() { 
+		return myHackyBundle;
+	}
+	public void setHackyBundle(Bundle b) { 
+		myHackyBundle = b;
 	}
 	public void installClassLoader(boolean verbose)  {
 		mySavedClassLoader = Thread.currentThread().getContextClassLoader();

@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class BonyVirtualCharApp extends DemoApp {
-	static Logger theLogger = LoggerFactory.getLogger(DemoApp.class);
+	static Logger theLogger = LoggerFactory.getLogger(BonyVirtualCharApp.class);
 	// private		AnimChannel				channel;
 
 	protected	BonyRenderContext				myContext;
@@ -93,6 +93,7 @@ public class BonyVirtualCharApp extends DemoApp {
 
 	@Override public void simpleInitApp() {
 		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is starting");
+		super.simpleInitApp();
 		// Perform actions that cannot be done until engine is running.
 		BonyCanvasFuncs.setupCameraLightAndViewport(myContext);
 		//BonyCanvasFuncs.initScoreBoard(myContext);

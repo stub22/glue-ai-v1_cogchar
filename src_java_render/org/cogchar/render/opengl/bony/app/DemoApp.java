@@ -19,8 +19,13 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
 import com.jme3.light.Light;
 import com.jme3.asset.AssetManager;
+import com.jme3.asset.plugins.UrlLocator;
+import java.net.URL;
+
 
 import org.cogchar.blob.emit.DemoConfigEmitter;
+import org.cogchar.render.opengl.bony.sys.BonyAssetLocator;
+import org.cogchar.render.opengl.bony.sys.DummyMeshLoader;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +111,7 @@ public abstract class DemoApp extends SimpleApplication {
 		
 		theLogger.info("********************* DemoApp.initialize() called, installing framework asset classloader");
 		JmonkeyAssetLoader frameworkAL = getFrameworkAssetLoader();
+		
 		frameworkAL.installClassLoader(true);
 		try {
 			super.initialize();
@@ -125,6 +131,35 @@ public abstract class DemoApp extends SimpleApplication {
 		} finally {
 			frameworkAL.restoreClassLoader();
 		}
+	}
+	@Override public void simpleInitApp() {
+		theLogger.info("simpleInitApp() - START");
+		JmonkeyAssetLoader frameworkAL = getFrameworkAssetLoader();
+		ClassLoader frameworkCL = frameworkAL.getClassLoader();
+		theLogger.info("Registering framework ClassLoader with assetManager: " + frameworkCL);
+		assetManager.addClassLoader(frameworkCL);
+		JmonkeyAssetLoader contentsAL = getContentsAssetLoader();
+		ClassLoader contentsCL = contentsAL.getClassLoader();
+		theLogger.info("Registering contents ClassLoader with assetManager: " + contentsCL);
+		assetManager.addClassLoader(contentsCL);		
+		contentsAL.resolve();
+		URL hackyRootURL = contentsAL.getHackyRootURL();
+		if (hackyRootURL != null) {
+			String hackyRootUrlPath = hackyRootURL.toExternalForm();
+			theLogger.info("hackyRootUrlPath: " + hackyRootUrlPath);
+			assetManager.unregisterLocator("/", com.jme3.asset.plugins.ClasspathLocator.class);
+			assetManager.registerLocator(hackyRootUrlPath, UrlLocator.class);
+			// assetManager.registerLocator("/", BonyAssetLocator.class);
+		} else {
+			theLogger.info("hackyRootURL is NULL");
+		}
+		theLogger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LowPermissions=" + com.jme3.system.JmeSystem.isLowPermissions());
+
+		
+		
+		assetManager.registerLoader(DummyMeshLoader.class, "meshxml", "mesh.xml");
+		
+		theLogger.info("simpleInitApp() - END");
 	}
 
 	/*
