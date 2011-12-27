@@ -82,7 +82,7 @@ public final class VirtualCharTopComponent extends TopComponent {
 		// netigso
 		pac.startOpenGLCanvas(dualCharURI, false);
 /*		
-		PumaDualCharacter pdc = pac.makeDualRobotChar(dualCharURI);	
+		PumaDualCharacter pdc = pac.connectDualRobotChar(dualCharURI);	
         File file = new File("org_cogchar_nbui_render/jointgroup.xml");
         RobotServiceFuncs.registerJointGroup(bundleCtx, file);
 */		

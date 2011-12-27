@@ -25,11 +25,13 @@ import org.cogchar.render.opengl.bony.model.StickFigureTwister;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class BonyStickFigureApp extends BonyVirtualCharApp {
+	static Logger theLogger = LoggerFactory.getLogger(BonyStickFigureApp.class);
 	protected StickFigureTwister		myTwister;	
 
 	
@@ -38,10 +40,12 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 	}
 	
 	@Override public void simpleInitApp() {
+		theLogger.info("simpleInitApp() - START");
 		super.simpleInitApp();
 		initStickFigureModel();
 		BonyRenderContext bc = getBonyRenderContext();
 		myTwister = new StickFigureTwister(bc);
+		theLogger.info("simpleInitApp() - START");
 	}
 	public void setScoringFlag(boolean f) {
 		myTwister.setScoringFlag(f);
@@ -55,12 +59,12 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 		float sceneScale = bce.getStickFigureSceneScale();
 		JmonkeyAssetLoader contentAL = getContentsAssetLoader();
 		Node testSceneNode = (Node) contentAL.safelyLoadModel(sceneFilePath, true); //  assetManager.loadModel(sceneFilePath);
-		System.out.println("BonyStickFigure scene loaded: " + testSceneNode);
+		theLogger.info("BonyStickFigure scene loaded: " + testSceneNode);
 
 		SpatialManipFuncs.dumpNodeTree(testSceneNode, "   ");
 		List<AnimControl> animControls = SpatialManipFuncs.findAnimControls(testSceneNode);
 
-		System.out.println("Found BSF animControls, about to reset: " + animControls);
+		theLogger.info("Found BSF animControls, about to reset: " + animControls);
 		SpatialManipFuncs.resetBonesAndPrintInfo(animControls); 
 		
 		myContext.setAnimControls(animControls);

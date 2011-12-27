@@ -213,7 +213,7 @@
 						<Bundle-Activator>org.cogchar.ext.bundle.opengl.jmonkey.OpenglJmonkeyBundleActivator</Bundle-Activator>
 						<!-- Explicit import of sun.misc is necessary for running under netigso (Netbeans-OSGI) -->
 						<Import-Package>sun.misc, *;resolution:=optional</Import-Package>
-						<Export-Package>com.jme3.*, jme3tools.*, org.lwjgl.*, com.bulletphysics.*, javax.vecmath.*, Common.*, Interface.*</Export-Package>
+						<Export-Package>sun.misc, com.jme3.*, jme3tools.*, org.lwjgl.*, com.bulletphysics.*, javax.vecmath.*, Common.*, Interface.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
