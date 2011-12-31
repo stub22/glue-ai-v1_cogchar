@@ -15,6 +15,9 @@
  */
 package org.cogchar.render.opengl.bony.app;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
 import com.jme3.light.Light;
@@ -26,7 +29,7 @@ import java.net.URL;
 import org.cogchar.blob.emit.DemoConfigEmitter;
 import org.cogchar.render.opengl.bony.sys.BonyAssetLocator;
 import org.cogchar.render.opengl.bony.sys.DummyMeshLoader;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -35,24 +38,38 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class DemoApp extends SimpleApplication {
 	static Logger theLogger = LoggerFactory.getLogger(DemoApp.class);
-	protected DemoConfigEmitter		myConfigEmitter;
-	protected JmonkeyAssetLoader	myContentsAssetLoader, myFrameworkAssetLoader;
+	protected	DemoConfigEmitter				myConfigEmitter;
+	private		List<JmonkeyAssetLocation>		myAssetSources = new ArrayList<JmonkeyAssetLocation>();
+	private		ClassLoader						myFrameworkResourceClassLoader;
 	
 	public DemoApp(DemoConfigEmitter ce) { 
 		myConfigEmitter = ce;
 		AppSettings settings = new AppSettings(ce.getAppSettingsDefloadFlag());
 		settings.setRenderer(ce.getLWJGL_RendererName());		
 		setSettings(settings);
+		myFrameworkResourceClassLoader = AssetManager.class.getClassLoader();
+		JmonkeyAssetLocation frameJAL = new JmonkeyAssetLocation(AssetManager.class);
+		addAssetSource(frameJAL);
 	}
 	public DemoApp() {
 		this(new DemoConfigEmitter());
 	}
-	public void setContentsAssetLoader(JmonkeyAssetLoader jmal) {
+	public void addAssetSource(JmonkeyAssetLocation jmal) {
+		myAssetSources.add(jmal);
+	}
+	public void resolveAndRegisterAllAssetSources() { 
+		for (JmonkeyAssetLocation jmal : myAssetSources) {
+			jmal.resolve();
+			jmal.registerLocators(assetManager);
+		}
+	}
+	/*
+	public void setContentsAssetLoader(JmonkeyAssetLocation jmal) {
 		myContentsAssetLoader = jmal;
 	}
-	public JmonkeyAssetLoader getContentsAssetLoader() {
+	public JmonkeyAssetLocation getContentsAssetLoader() {
 		if (myContentsAssetLoader == null) {
-			myContentsAssetLoader = new JmonkeyAssetLoader(AssetManager.class);
+			myContentsAssetLoader = new JmonkeyAssetLocation(AssetManager.class);
 		}
 		AssetManager am = myContentsAssetLoader.getAssetManager();
 		if (am == null) {
@@ -60,21 +77,24 @@ public abstract class DemoApp extends SimpleApplication {
 		}
 		return myContentsAssetLoader;
 	}
-	public void setFrameworkAssetLoader(JmonkeyAssetLoader jmal) {
+	public void setFrameworkAssetLoader(JmonkeyAssetLocation jmal) {
 		myFrameworkAssetLoader = jmal;
 	}
-	public JmonkeyAssetLoader getFrameworkAssetLoader() {
+	public JmonkeyAssetLocation getFrameworkAssetLoader() {
 		if (myFrameworkAssetLoader == null) {
-			myFrameworkAssetLoader = new JmonkeyAssetLoader(AssetManager.class);
+			myFrameworkAssetLoader = new JmonkeyAssetLocation(AssetManager.class);
 		}
 		AssetManager am = myFrameworkAssetLoader.getAssetManager();
 		if (am == null) {
 			myFrameworkAssetLoader.setAssetManager(assetManager);
 		}
 		return myFrameworkAssetLoader;
-	}	
+	}
+	 * 
+	 */
 	protected void initFonts() { 
-		guiFont = getContentsAssetLoader().loadFont(myConfigEmitter.getFontPath());
+		// getContentsAssetLoader().
+		guiFont = assetManager.loadFont(myConfigEmitter.getFontPath());
 	}
 	protected void setAppSpeed(float val) {
 		speed = val;
@@ -96,7 +116,36 @@ public abstract class DemoApp extends SimpleApplication {
 		settings.setWidth(myConfigEmitter.getCanvasWidth());
 		settings.setHeight(myConfigEmitter.getCanvasHeight());
 		setSettings(settings);			
-	}	
+	}
+	// Must be called before Application.initialize()
+	/*
+	protected void setupAssetManager() {
+        if (settings != null){
+            String assetCfg = settings.getString("AssetConfigURL");
+            if (assetCfg != null){
+                URL url = null;
+                try {
+                    url = new URL(assetCfg);
+                } catch (MalformedURLException ex) {
+                }
+                if (url == null) {
+                    url = Application.class.getClassLoader().getResource(assetCfg);
+                    if (url == null) {
+                        logger.log(Level.SEVERE, "Unable to access AssetConfigURL in asset config:{0}", assetCfg);
+                        return;
+                    }
+                }
+                assetManager = JmeSystem.newAssetManager(url);
+            }
+        }
+        if (assetManager == null){
+            assetManager = JmeSystem.newAssetManager(
+                    Thread.currentThread().getContextClassLoader()
+                    .getResource("com/jme3/asset/Desktop.cfg"));
+        }		
+	}
+	 * 
+	 */
 	/*  This approach should work, as perhaps would not using SimpleApplication at all.
 	 * (Because SimpleApplication loads a bunch of stuff).
 	 * However, we are currently relying on PumaAppContext to set the frameworkAssetLoader
@@ -106,21 +155,30 @@ public abstract class DemoApp extends SimpleApplication {
 	 * by  HumanoidPuppetApp.initHumanoidStuff.
 	 */
     @Override  public void initialize() {
-		// This works for the initialize() callback, but
-		// then we fail in the update() callback.  
+		// AssetManager does not exist yet.
+		// It is created in Application.initialize() (if it does not exist yet)
+		// , and used to load resources in SimpleApplication.initialize()
+		// (e.g. loadFPSText() does assetManager.loadFont("Interface/Fonts/Default.fnt");)
+		// so our only chance to intervene is right here (or to create AssetManager ourselves,
+		// or use a custom config file for DesktopAssetManager...
 		
-		theLogger.info("********************* DemoApp.initialize() called, installing framework asset classloader");
-		JmonkeyAssetLoader frameworkAL = getFrameworkAssetLoader();
-		
-		frameworkAL.installClassLoader(true);
+		theLogger.info("********************* DemoApp.initialize() called,  framework resource CL =" + myFrameworkResourceClassLoader);
+		ClassLoader savedCL = Thread.currentThread().getContextClassLoader();
 		try {
+			if (myFrameworkResourceClassLoader != null) {
+				Thread.currentThread().setContextClassLoader(myFrameworkResourceClassLoader);
+			}
 			super.initialize();
 		} finally {
-			frameworkAL.restoreClassLoader();
+			Thread.currentThread().setContextClassLoader(savedCL);
 		}
 		theLogger.info("********************* DemoApp.initialize() restored context class loader");
 	}	
-    @Override  public void update() {	
+    @Override  public void update() {
+		super.update();
+		/*  We expect AssetLocators to have been setup properly
+		 * by simpleInitApp(), so we shouldn't need TCCL hacking in here anymore.
+		
 		// It's probably only on the first call, and...we may
 		// not want to do this classpath switcherooing on every
 		// update().  (Is there hidden cost in setting classloader?).
@@ -131,34 +189,28 @@ public abstract class DemoApp extends SimpleApplication {
 		} finally {
 			frameworkAL.restoreClassLoader();
 		}
+		 * 
+		 */
 	}
 	@Override public void simpleInitApp() {
 		theLogger.info("simpleInitApp() - START");
-		JmonkeyAssetLoader frameworkAL = getFrameworkAssetLoader();
-		ClassLoader frameworkCL = frameworkAL.getClassLoader();
-		theLogger.info("Registering framework ClassLoader with assetManager: " + frameworkCL);
-		assetManager.addClassLoader(frameworkCL);
-		JmonkeyAssetLoader contentsAL = getContentsAssetLoader();
-		ClassLoader contentsCL = contentsAL.getClassLoader();
-		theLogger.info("Registering contents ClassLoader with assetManager: " + contentsCL);
-		assetManager.addClassLoader(contentsCL);		
+		theLogger.info("%%%%%%% JmeSystem.isLowPermissions()=" + com.jme3.system.JmeSystem.isLowPermissions());
+		theLogger.info("Disabling confusing JDK-Logger warnings from UrlLocator");		
+		java.util.logging.Logger.getLogger(UrlLocator.class.getName()).setLevel(java.util.logging.Level.SEVERE);
+//		theLogger.info("Unregistering default ClasspathLocator, which may fail if Default.cfg was not read by JMonkey.");
+//		assetManager.unregisterLocator("/", com.jme3.asset.plugins.ClasspathLocator.class);	
+		
+		resolveAndRegisterAllAssetSources();
+		/*
+		JmonkeyAssetLocation frameworkAL = getFrameworkAssetLoader();
+		frameworkAL.resolve();
+		frameworkAL.registerLocators(assetManager);
+		JmonkeyAssetLocation contentsAL = getContentsAssetLoader();
 		contentsAL.resolve();
-		URL hackyRootURL = contentsAL.getHackyRootURL();
-		if (hackyRootURL != null) {
-			String hackyRootUrlPath = hackyRootURL.toExternalForm();
-			theLogger.info("hackyRootUrlPath: " + hackyRootUrlPath);
-			assetManager.unregisterLocator("/", com.jme3.asset.plugins.ClasspathLocator.class);
-			assetManager.registerLocator(hackyRootUrlPath, UrlLocator.class);
-			// assetManager.registerLocator("/", BonyAssetLocator.class);
-		} else {
-			theLogger.info("hackyRootURL is NULL");
-		}
-		theLogger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LowPermissions=" + com.jme3.system.JmeSystem.isLowPermissions());
-
-		
-		
+		contentsAL.registerLocators(assetManager);	
+		 * 
+		 */
 		assetManager.registerLoader(DummyMeshLoader.class, "meshxml", "mesh.xml");
-		
 		theLogger.info("simpleInitApp() - END");
 	}
 

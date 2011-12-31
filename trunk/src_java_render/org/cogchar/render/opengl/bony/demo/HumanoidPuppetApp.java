@@ -51,7 +51,7 @@ import org.cogchar.render.opengl.bony.model.HumanoidBoneDesc;
 import org.cogchar.render.opengl.bony.state.BoneState;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,8 +130,8 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 		HumanoidBoneConfig hbc = new HumanoidBoneConfig(true);
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 		String meshPath = bce.getHumanoidMeshPath();
-		JmonkeyAssetLoader jmal = getContentsAssetLoader();
-		myHumanoidWrapper.initStuff(hbc, jmal, rootNode, myWorldMgr.getPhysicsSpace(), meshPath);
+		// JmonkeyAssetLocation jmal = getContentsAssetLoader();
+		myHumanoidWrapper.initStuff(hbc, assetManager, rootNode, myWorldMgr.getPhysicsSpace(), meshPath);
 		//VirtCharPanel vcp = getVCPanel();
 		//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
 	}

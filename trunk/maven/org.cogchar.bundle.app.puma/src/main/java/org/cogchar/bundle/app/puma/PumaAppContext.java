@@ -30,7 +30,7 @@ import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
 
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
 
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.slf4j.Logger;
@@ -66,6 +66,9 @@ public class PumaAppContext {
 			throws Throwable {
 		
 		BonyRenderContext bc = getBonyRenderContext(bonyCharURI);
+		if (bc == null) {
+			throw new Exception ("BonyRenderContext is null");
+		}
 		PumaDualCharacter pdc = new PumaDualCharacter(bc, myBundleContext);
 		pdc.connectBonyDualForURI(bonyCharURI);
 		return pdc;
@@ -94,51 +97,9 @@ public class PumaAppContext {
 			if (app.isCanvasStarted()) {
 				theLogger.warn("JMonkey Canvas was already started!");
 			} else {
-				// Set the contextCL before spawning the JMonkey run-loop thread,
-				// so that JMonkey can find its builtin resources.
-				
-				// Also see HumanoidPuppetApp.initHumanoidStuff, which uses the 
-				// contents-asset loader installed by RenderBundleActivator.start(),
-				// which happens to be ResourceLoader from our render.resources bundle.
-				
-				// Finally, also see the commented out callback overrides in 
-				// DemoApp, which could also be used to achieve the same purpose
-				// as this wrapper, at a finer grain, in case we wanted to separate 
-				// JMonkey builtin assets from the JMonkey classes.
 
-				//JmonkeyAssetLoader frameworkAL = app.getFrameworkAssetLoader();
-				// This does not seem to control the classloader of this thread
-				/*
-     [java] Dec 22, 2011 1:56:22 AM com.jme3.app.Application handleError
-     [java] SEVERE: Uncaught exception thrown in Thread[LWJGL Renderer Thread,5,
-main]
-     [java] java.lang.IllegalStateException: No loader registered for type "fnt"
-
-     [java]     at com.jme3.asset.DesktopAssetManager.loadAsset(DesktopAssetMana
-ger.java:248)
-     [java]     at com.jme3.asset.DesktopAssetManager.loadFont(DesktopAssetManag
-er.java:374)
-     [java]     at com.jme3.app.SimpleApplication.loadFPSText(SimpleApplication.
-java:183)
-     [java]     at com.jme3.app.SimpleApplication.initialize(SimpleApplication.j
-ava:208)
-     [java]     at org.cogchar.render.opengl.bony.app.BonyVirtualCharApp.initial
-ize(BonyVirtualCharApp.java:105)
-     [java]     at com.jme3.system.lwjgl.LwjglAbstractDisplay.initInThread(Lwjgl
-AbstractDisplay.java:129)
-     [java]     at com.jme3.system.lwjgl.LwjglAbstractDisplay.run(LwjglAbstractD
-isplay.java:205)
-     [java]     at java.lang.Thread.run(Thread.java:619)				
-				 * 
-				 */
-				//frameworkAL.installClassLoader();
 				theLogger.info("Starting JMonkey canvas - hold yer breath! [[[[[[[[[[[[[[[[[[[[[[[[[[");
-				try {
-					app.startJMonkeyCanvas();
-				} finally {
-					// Does this affect CL in child threads?
-					// frameworkAL.restoreClassLoader();
-				}
+				app.startJMonkeyCanvas();
 				theLogger.info("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]  Finished starting JMonkey canvas!");
 			}
 			//((BonyStickFigureApp) app).setScoringFlag(true);			
