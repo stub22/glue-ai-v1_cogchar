@@ -20,7 +20,6 @@ import javax.swing.JFrame;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.bundle.render.resources.ResourceBundleActivator;
-import org.cogchar.bundle.render.resources.ResourceLoader;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.demo.HumanoidPuppetTestMain;
@@ -31,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import org.cogchar.render.opengl.bony.app.DemoApp;
 import org.cogchar.render.opengl.bony.demo.HumanoidPuppetApp;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
 
 /**
  *
@@ -59,10 +58,11 @@ public class RenderBundleActivator extends BundleActivatorBase {
 		BonyConfigEmitter bce = new BonyConfigEmitter();
 		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
 		theLogger.info("*************************************** Setting up ResourceLoader for contents");
-		ResourceLoader rl = new ResourceLoader();
-		bvcApp.setContentsAssetLoader(rl);
+		JmonkeyAssetLocation jmal = new JmonkeyAssetLocation(ResourceBundleActivator.class);
+		// ResourceLoader rl = new ResourceLoader();
+		bvcApp.addAssetSource(jmal);   //setContentsAssetLoader(rl);
 		
-		JmonkeyAssetLoader frameworkAL = bvcApp.getFrameworkAssetLoader();
+		// JmonkeyAssetLocation frameworkAL = bvcApp.getFrameworkAssetLoader();
 		//frameworkAL.installClassLoader();
 		try {
 			bvcApp.initCharPanelWithCanvas();
