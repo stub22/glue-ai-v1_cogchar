@@ -1,4 +1,22 @@
+<!--
 
+/*
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+ 
+ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -12,44 +30,41 @@
 	<packaging>bundle</packaging>
 
 	<name>${project.artifactId} - OSGi Bundle</name>
-	<description>Wrapper of the JME3 Jars as an OSGi bundle provided by cogchar.org project.</description>
+	<description>OSGi bundle wrapper of the jMonkeyEngine-3 + LWJGL + Bullet + other gaming+opengl jars.</description>
 
-	<dependencies>
-		<!--
-			Vecmath is an example of a dependency that could be 
-			fetched by Maven independently if we did not
-			use our JME3 rebundling of it below, which is 
-			generally considered undesirable.
+<!--
+
+See also this trivial jME3 demo client project:
 			
-			See also eventbus, stack-alloc, and xmlpull-xpp
-			libraries, which could also be handled by Maven
-			for us.
-			
-			For now, as long as JME3 is delivering its own snapshots
-			of these jars, we will use those instead of letting
-			Maven fetch them for us.
+http://subversion.assembla.com/svn/friendularity/trunk/maven/org.friendularity.demo.jme3.maven/pom.xml
 		
+Vecmath is an example of a dependency that could be fetched by Maven independently if we did not
+use our JME3 rebundling of it below, which is generally considered undesirable.
+See also eventbus, stack-alloc, and xmlpull-xpp	libraries, which could also be handled by Maven
+for us.
+			
+For now, as long as JME3 is delivering its own snapshots of these jars, we will use those instead 
+of letting Maven fetch them for us.   When jME3 reaches 3.0 - GA, we will create a slimmed bundle  
+pointing to the correct versions of each 3rd party jar from the original repositories, where 
+possible.
+
+Those "release" 3rd party deps will look more like this (compare to what you see below.
 		<dependency>
 			<groupId>java3d</groupId>
 			<artifactId>vecmath</artifactId>
 			<version>1.3.1</version>
 			<scope>provided</scope>			
 		</dependency>
-		-->
-		
-		<!-- Here are all the main JMonkeyEngine-3 libraries,
-			which all have "provided" scope, which prevents
-			them from being seen as as transitive dependencies
-			by our bundle's user.  If our user wants these 
-			raw jars in hir project, user should just depend
-			on them directly and not on ext.bundle.opengl.jmonkey.
-			You probably don't want to mix those jars with this
-			bundle.
+
+ Below ere dependencies on all the main JMonkeyEngine-3 libraries, which all have "provided" 
+ scope, preventing them from being seen as as transitive dependencies by our bundle's user.  
+ If our user wants these raw jars in hir project, user should just depend on them directly 
+ and not on ext.bundle.opengl.jmonkey. You probably don't want to mix those jars with this
+bundle.
 			
-			The jmonkey.verson property is fetched from our
-			parent pom.xml.  
+The jmonkey.verson property is inherited from our parent project's pom.xml.  
 		-->
-		
+	<dependencies>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-core</artifactId>
@@ -118,7 +133,12 @@
 			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
-
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-jogg</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>	
+		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>j-ogg-oggd</artifactId>
@@ -162,7 +182,7 @@
 
 		<dependency>
 			<groupId>com.jme3</groupId>
-			<artifactId>xmlpull</artifactId>
+			<artifactId>xmlpull-xpp3</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>	
 		<dependency>
@@ -213,7 +233,7 @@
 						<Bundle-Activator>org.cogchar.ext.bundle.opengl.jmonkey.OpenglJmonkeyBundleActivator</Bundle-Activator>
 						<!-- Explicit import of sun.misc is necessary for running under netigso (Netbeans-OSGI) -->
 						<Import-Package>sun.misc, *;resolution:=optional</Import-Package>
-						<Export-Package>sun.misc, com.jme3.*, jme3tools.*, org.lwjgl.*, com.bulletphysics.*, javax.vecmath.*, Common.*, Interface.*</Export-Package>
+						<Export-Package>com.jme3.*, jme3tools.*, org.lwjgl.*, com.bulletphysics.*, javax.vecmath.*, Common.*, Interface.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
