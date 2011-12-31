@@ -16,7 +16,7 @@
 package org.cogchar.bundle.render.resources;
 import com.jme3.asset.AssetManager;
 import java.net.URL;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
 
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class ResourceLoader extends JmonkeyAssetLoader {
+public class ResourceLoader extends JmonkeyAssetLocation {
 	static Logger theLogger = LoggerFactory.getLogger(ResourceLoader.class);
 	public ResourceLoader() {
 		super(ResourceBundleActivator.class);
