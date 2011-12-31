@@ -24,7 +24,7 @@ import org.cogchar.render.opengl.bony.model.StickFigureTwister;
 
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -57,8 +57,8 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 		BonyConfigEmitter bce = getBonyConfigEmitter(); 
 		String sceneFilePath = bce.getStickFigureScenePath();
 		float sceneScale = bce.getStickFigureSceneScale();
-		JmonkeyAssetLoader contentAL = getContentsAssetLoader();
-		Node testSceneNode = (Node) contentAL.safelyLoadModel(sceneFilePath, true); //  assetManager.loadModel(sceneFilePath);
+		// JmonkeyAssetLocation contentAL = getContentsAssetLoader();
+		Node testSceneNode = (Node)assetManager.loadModel(sceneFilePath); //  contentAL.safelyLoadModel(sceneFilePath, true); //  
 		theLogger.info("BonyStickFigure scene loaded: " + testSceneNode);
 
 		SpatialManipFuncs.dumpNodeTree(testSceneNode, "   ");

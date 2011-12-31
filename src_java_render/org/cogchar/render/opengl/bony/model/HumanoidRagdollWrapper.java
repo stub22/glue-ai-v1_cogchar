@@ -42,7 +42,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
 import java.util.List;
 import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLoader;
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -79,9 +79,9 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	public Bone getRootBone() {
 		return myHumanoidSkeleton.getRoots()[0];
 	}
-	public void initStuff(HumanoidBoneConfig hbc, JmonkeyAssetLoader assetLoader, Node parentNode, PhysicsSpace ps, String humanoidMeshPath) {
+	public void initStuff(HumanoidBoneConfig hbc, AssetManager assetMgr, Node parentNode, PhysicsSpace ps, String humanoidMeshPath) {
 		myHumanoidBoneConfig = hbc;
-		myHumanoidModelNode = (Node) assetLoader.safelyLoadModel(humanoidMeshPath, true);
+		myHumanoidModelNode = (Node) assetMgr.loadModel(humanoidMeshPath);
 
 		// This was commented out in JMonkey code:
 		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));
