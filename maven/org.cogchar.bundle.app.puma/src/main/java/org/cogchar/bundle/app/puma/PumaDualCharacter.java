@@ -56,7 +56,8 @@ public class PumaDualCharacter {
 	static Logger theLogger = LoggerFactory.getLogger(PumaDualCharacter.class);
 	private	ModelBlendingRobotServiceContext	myRobotServiceContext;
 	private	BonyRenderContext							myBonyRenderContext;
-	public PumaDualCharacter(BonyRenderContext bc, BundleContext bundleCtx) {
+	public PumaDualCharacter(BonyRenderContext brc, BundleContext bundleCtx) {
+		myBonyRenderContext = brc;
 		myRobotServiceContext = new ModelBlendingRobotServiceContext(bundleCtx);
 	}
 	public void connectBonyDualForURI( String bonyDualCharURI) throws Throwable {
