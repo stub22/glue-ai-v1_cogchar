@@ -14,9 +14,6 @@
 	<packaging>pom</packaging>
 	<name>${project.artifactId} - "Main Modules" parent pom - everything we deploy to Sonatype</name>
 	
-
-
-	
   	<repositories>
 			<!-- Used for JScience and Javolution -->
 			<!--

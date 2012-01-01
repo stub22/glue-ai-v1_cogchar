@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.apache_avro_151</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>${appdapter.version}</version>
         </dependency>
     </dependencies>
 
