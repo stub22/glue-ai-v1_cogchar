@@ -99,13 +99,5 @@ public class BonyVirtualCharApp extends DemoApp {
 		//BonyCanvasFuncs.initScoreBoard(myContext);
 		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is finished");
 	}
-
-    @Override  public void initialize() {
-		theLogger.info("********************* BonyVirtualCharApp.initialize() called, tccl=" +
-				Thread.currentThread().getContextClassLoader() + ", calling super.initialize()");
-		super.initialize();
-		theLogger.info("********************* BonyVirtualCharApp.initialize() finished, tccl=" + 
-				Thread.currentThread().getContextClassLoader() + ", returning");
-	}	
 	
 }

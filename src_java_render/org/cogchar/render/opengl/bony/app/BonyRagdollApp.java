@@ -27,8 +27,8 @@ public class BonyRagdollApp extends BonyStickFigureApp {
 	static Logger theLogger = LoggerFactory.getLogger(BonyRagdollApp.class);
 	private	DemoBonyWireframeRagdoll	myRagdoll;
 	
-	public BonyRagdollApp(BonyConfigEmitter bce) { // String lwjglRendererName, int canvasWidth, int canvasHeight, String sceneFilePath, float sceneScale) {
-		super (bce); // lwjglRendererName, canvasWidth, canvasHeight, sceneFilePath, sceneScale);
+	public BonyRagdollApp(BonyConfigEmitter bce) { 
+		super (bce); 
 		myRagdoll = new DemoBonyWireframeRagdoll();
 	}
 	@Override public void simpleInitApp() {

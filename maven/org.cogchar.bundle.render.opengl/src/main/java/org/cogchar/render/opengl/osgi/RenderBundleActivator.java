@@ -33,7 +33,6 @@ import org.cogchar.render.opengl.bony.demo.HumanoidPuppetApp;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
 
 /**
- *
  * @author Stu B. <www.texpedient.com>
  */
 public class RenderBundleActivator extends BundleActivatorBase {
@@ -41,8 +40,7 @@ public class RenderBundleActivator extends BundleActivatorBase {
 	static Logger theLogger = LoggerFactory.getLogger(RenderBundleActivator.class);
 	private BonyRenderContext myBonyRenderContext;
 
-	@Override
-	protected Logger getLogger() {
+	@Override protected Logger getLogger() {
 		return theLogger;
 	}
 
@@ -54,26 +52,20 @@ public class RenderBundleActivator extends BundleActivatorBase {
 	@Override public void start(BundleContext bundleCtx) throws Exception {
 		
 		super.start(bundleCtx);
-
+		theLogger.info("******************* Creating BonyConfigEmitter, HumanoidPuppetApp, and JmonkeyAssetLocation");
 		BonyConfigEmitter bce = new BonyConfigEmitter();
 		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
-		theLogger.info("*************************************** Setting up ResourceLoader for contents");
 		JmonkeyAssetLocation jmal = new JmonkeyAssetLocation(ResourceBundleActivator.class);
-		// ResourceLoader rl = new ResourceLoader();
-		bvcApp.addAssetSource(jmal);   //setContentsAssetLoader(rl);
+		bvcApp.addAssetSource(jmal);   
+		theLogger.info("******************* Initializing VirtualCharPanel with canvas");
 		
-		// JmonkeyAssetLocation frameworkAL = bvcApp.getFrameworkAssetLoader();
-		//frameworkAL.installClassLoader();
-		try {
-			bvcApp.initCharPanelWithCanvas();
-		} finally {
-			//frameworkAL.restoreClassLoader();
-		}
-		myBonyRenderContext = bvcApp.getBonyRenderContext();
+		bvcApp.initCharPanelWithCanvas();
 
+		myBonyRenderContext = bvcApp.getBonyRenderContext();
+		theLogger.info("******************* Registering BonyRenderContext as OSGi service");
 		bundleCtx.registerService(BonyRenderContext.class.getName(), myBonyRenderContext, null);
 
-		theLogger.info("start() is DONE!");
+		theLogger.info("******************* start() is DONE!");
 	}
 
 	@Override public void stop(BundleContext bundleCtx) throws Exception {
