@@ -28,31 +28,23 @@ import org.slf4j.LoggerFactory;
  */
 public class JmonkeyAssetLocation {
 	static Logger theLogger = LoggerFactory.getLogger(JmonkeyAssetLocation.class);
-	private AssetManager	myAssetMgr;
-	private ClassLoader		mySavedClassLoader;
+//	private AssetManager	myAssetMgr;
+//	private ClassLoader		mySavedClassLoader;
 	private	Class			myResourceMarkerClass;
 	private URL				myHackyRootURL;
-	private	Bundle			myHackyBundle;
+//	private	Bundle			myHackyBundle;
 	
 	public JmonkeyAssetLocation(Class resourceMarkerClass) {
 		myResourceMarkerClass = resourceMarkerClass;
 	}
-
+/*
 	public void setAssetManager(AssetManager assetMgr) {
 		myAssetMgr = assetMgr;
 	}
 	public AssetManager getAssetManager() { 
 		return myAssetMgr;
 	}
-	/*
-	public Spatial	loadModel(String modelName) {
-		return myAssetMgr.loadModel(modelName);
-	}
-	public BitmapFont loadFont(String fontPath) {
-		return myAssetMgr.loadFont(fontPath);
-	}
-	 * 
-	 */
+*/
 	public ClassLoader getClassLoader() { 
 		return myResourceMarkerClass.getClassLoader();
 	}
@@ -70,12 +62,16 @@ public class JmonkeyAssetLocation {
 		}
 		
 	}
+	/*
 	public void setHackyRootURL(URL url) { 
 		myHackyRootURL = url;
 	}
+	 * 
+	 */
 	public URL getHackyRootURL() {
-		String resourceRootPath = "/";
+		
 		if (myHackyRootURL == null) {
+			String resourceRootPath = "/";
 			ClassLoader cl = getClassLoader();
 			
 			URL resURL = cl.getResource(resourceRootPath);
@@ -91,13 +87,16 @@ public class JmonkeyAssetLocation {
 		}
 		return myHackyRootURL;
 	}
+	/*
 	public Bundle getHackyBundle() { 
 		return myHackyBundle;
 	}
 	public void setHackyBundle(Bundle b) { 
 		myHackyBundle = b;
 	}
-
+	 * 
+	 */
+/*
 	public void installClassLoader(boolean verbose)  {
 		mySavedClassLoader = Thread.currentThread().getContextClassLoader();
 		if (verbose) {
@@ -116,6 +115,8 @@ public class JmonkeyAssetLocation {
 	public void restoreClassLoader()  {
 		Thread.currentThread().setContextClassLoader(mySavedClassLoader); 
 	}
+
+ */
 	/*  This doesn't work unless we are sure there are no "Common/..." resources
 	 * on another classLoader, which may be needed by our model.  Don't trust
 	 * jME3 warnings about "can't locate X" <- this may mean "can't locate

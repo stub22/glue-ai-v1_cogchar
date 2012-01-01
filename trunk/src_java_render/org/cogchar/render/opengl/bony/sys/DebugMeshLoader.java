@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class DummyMeshLoader extends MeshLoader {
-	static Logger theLogger = LoggerFactory.getLogger(DummyMeshLoader.class);
+public class DebugMeshLoader extends MeshLoader {
+	static Logger theLogger = LoggerFactory.getLogger(DebugMeshLoader.class);
 	
-    public DummyMeshLoader() {
+    public DebugMeshLoader() {
         super();
 		theLogger.info("=============================== DummyMeshLoader constructing");
     }

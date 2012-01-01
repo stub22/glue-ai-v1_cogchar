@@ -35,8 +35,8 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 	protected StickFigureTwister		myTwister;	
 
 	
-	public BonyStickFigureApp(BonyConfigEmitter bce) { // String lwjglRendererName, int canvasWidth, int canvasHeight, String sceneFilePath, float sceneScale) {
-		super(bce); // lwjglRendererName, canvasWidth, canvasHeight);	
+	public BonyStickFigureApp(BonyConfigEmitter bce) { 
+		super(bce); 
 	}
 	
 	@Override public void simpleInitApp() {
@@ -45,7 +45,7 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 		initStickFigureModel();
 		BonyRenderContext bc = getBonyRenderContext();
 		myTwister = new StickFigureTwister(bc);
-		theLogger.info("simpleInitApp() - START");
+		theLogger.info("simpleInitApp() - END");
 	}
 	public void setScoringFlag(boolean f) {
 		myTwister.setScoringFlag(f);
@@ -57,8 +57,8 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 		BonyConfigEmitter bce = getBonyConfigEmitter(); 
 		String sceneFilePath = bce.getStickFigureScenePath();
 		float sceneScale = bce.getStickFigureSceneScale();
-		// JmonkeyAssetLocation contentAL = getContentsAssetLoader();
-		Node testSceneNode = (Node)assetManager.loadModel(sceneFilePath); //  contentAL.safelyLoadModel(sceneFilePath, true); //  
+		
+		Node testSceneNode = (Node)assetManager.loadModel(sceneFilePath); 
 		theLogger.info("BonyStickFigure scene loaded: " + testSceneNode);
 
 		SpatialManipFuncs.dumpNodeTree(testSceneNode, "   ");
