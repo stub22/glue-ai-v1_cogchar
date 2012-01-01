@@ -82,11 +82,9 @@ public class PumaAppContext {
 			if (wrapInJFrameFlag) {
 				VirtCharPanel vcp = bc.getPanel();
 				theLogger.info("Got VirtCharPanel: " + vcp);
-				// Frame must be packed after panel created, but created 
-				// before startJMonkey.  If startJMonkey is called first,
-				// we often hang in frame.setVisible() as JMonkey tries
-				// to do some magic restart deal that doesn't work as of
-				// jme3-alpha4-August_2011.
+				// Frame must be packed after panel created, but created  before startJMonkey.  
+				// If startJMonkey is called first, we often hang in frame.setVisible() as JMonkey tries
+				// to do some magic restart deal that doesn't work as of jme3-alpha4-August_2011.
 				JFrame jf = vcp.makeEnclosingJFrame();
 				theLogger.info("Got Enclosing Frame, adding to BonyRenderContext for WindowClose triggering: " + jf);
 				// Frame will receive a close event when org.cogchar.bundle.render.opengl is STOPPED
