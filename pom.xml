@@ -50,7 +50,8 @@ Version-less parent will be allowed in Maven 3.1.
 		<!-- We list only "main", not "all", because we don't want to deploy "all" to Sonatype,
 			 but we do need to deploy this root pom.xml file (because subprojects depend on it).
 		-->
-		<module>maven/org.cogchar.modules.all</module>
+		<module>maven/org.cogchar.modules.main</module>
+		<module>maven/org.cogchar.nbui.render</module>
   </modules>
 	<properties>
 	</properties>	
