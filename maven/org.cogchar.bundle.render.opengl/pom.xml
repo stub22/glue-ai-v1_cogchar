@@ -15,22 +15,33 @@
 	<name>${project.artifactId} Bundle</name>
 
 	<dependencies>
+	
 		<dependency>
+			 <!-- This bundle repackages this lib, so it is depended with scope provided, and exported below -->			
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.render</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency>		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
 		<dependency>
 			<artifactId>ext.bundle.opengl.jmonkey</artifactId>
 			<groupId>org.cogchar</groupId>
 			<version>${project.version}</version>
 		</dependency>
-	 <dependency>
-	  <groupId>${project.groupId}</groupId>
-	  <artifactId>org.cogchar.bundle.render.resources</artifactId>
-	  <version>${project.version}</version>
-	 </dependency>
+		<dependency>
+			<!--	This dep on resources is currently used to pull in the marker class token for the resources,
+					which happens to be their BundleActivator.
+			-->
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.render.resources</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>
