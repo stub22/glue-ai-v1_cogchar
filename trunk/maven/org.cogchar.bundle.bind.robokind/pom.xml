@@ -21,21 +21,21 @@
 			<artifactId>org.osgi.core</artifactId>
 			<version>1.4.0</version>
 		</dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>org.cogchar.bundle.avrogen</artifactId>
-            <version>${project.version}</version>
-        </dependency>		
-	 <dependency>
-	  <groupId>${project.groupId}</groupId>
-	  <artifactId>org.cogchar.bundle.core</artifactId>
-	  <version>${project.version}</version>
-	 </dependency>		
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>org.cogchar.bundle.render.opengl</artifactId>
-            <version>${project.version}</version>
-        </dependency>	
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.avrogen</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
+			<version>${project.version}</version>
+		</dependency>	
 		<dependency>
 			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
 			<groupId>org.appdapter</groupId>
@@ -92,21 +92,21 @@
 			</exclusions>
 		</dependency>		
 
-        <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.extern.utils.messaging</artifactId>
-            <version>${robokind.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.messaging</artifactId>
-            <version>${robokind.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.robokind</groupId>
-            <artifactId>org.robokind.impl.motion</artifactId>
-            <version>${robokind.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.extern.utils.messaging</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.messaging</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.motion</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
 
 	</dependencies>
 

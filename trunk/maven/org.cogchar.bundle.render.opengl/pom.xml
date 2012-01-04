@@ -54,13 +54,9 @@
 					<instructions>
 						<Bundle-Activator>org.cogchar.render.opengl.osgi.RenderBundleActivator</Bundle-Activator>
 						<Import-Package>*;resolution:=optional</Import-Package>
-						<!--
-						<Private-Package>leo_hanson_tests.*, Common.*, Blender.*, Effects.*, Interface.*, Models.*, Scenes.*, Sound.*, Textures.*</Private-Package>
-						-->
-						<!-- org.cogchar.ext.bundle.opengl.*, -->
+
 						<Export-Package>org.cogchar.render.opengl.*</Export-Package>
-					 						<!-- <Embed-Dependency>!org.osgi.*;scope=compile|runtime</Embed-Dependency> 
-						-->
+						<!-- <Embed-Dependency>!org.osgi.*;scope=compile|runtime</Embed-Dependency> -->
 						<!--
                         <Include-Resource>
                             {maven-resources},
