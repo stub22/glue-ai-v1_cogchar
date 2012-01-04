@@ -60,11 +60,13 @@
             <artifactId>org.cogchar.nbui.render</artifactId>
             <version>${project.version}</version>
         </dependency>
+		<!--
         <dependency>
             <groupId>org.friendularity</groupId>
             <artifactId>ext.bundle.frag.sun.misc</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+		-->
     </dependencies>
 
     <build>
