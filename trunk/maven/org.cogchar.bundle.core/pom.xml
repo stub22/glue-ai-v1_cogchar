@@ -49,7 +49,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.cogchar.bundle.core.Activator</Bundle-Activator>
+                        <Bundle-Activator>org.cogchar.bundle.core.CogcharCoreActivator</Bundle-Activator>
 						<Export-Package>org.cogchar.*</Export-Package>
 						<Private-Package>com.thoughtworks.xstream.*, org.scalaquery.*, org.apache.commons.math.*</Private-Package>
 						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !nu.xom.*, !org.codehaus.jettison.*, 

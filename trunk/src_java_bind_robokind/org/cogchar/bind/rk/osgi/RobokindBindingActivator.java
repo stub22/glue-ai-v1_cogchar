@@ -19,7 +19,7 @@ package org.cogchar.bind.rk.osgi;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.osgi.framework.BundleContext;
 /**
  *
  * @author Stu B. <www.texpedient.com>
@@ -30,5 +30,11 @@ public class RobokindBindingActivator extends BundleActivatorBase {
 	@Override protected Logger getLogger() {
 		return theLogger;
 	}
-		
+    @Override public void start(BundleContext context) throws Exception {
+		// We assume some other bundle has configured SLF4J for us.
+		super.start(context);	
+	}
+	@Override public void stop(BundleContext context) throws Exception {
+		super.stop(context);	
+	}
 }
