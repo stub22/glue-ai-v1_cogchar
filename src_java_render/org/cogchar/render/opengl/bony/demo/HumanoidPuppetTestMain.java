@@ -64,8 +64,8 @@ public class HumanoidPuppetTestMain {
 				theLogger.info("StickFigureTestMain.JFrame.windowClosing event:  " + e);
 				theLogger.info("NOT explicitly calling requestClose() on the app, letting the LWJGL thread detect dispose of the canvas instead");
 				BonyVirtualCharApp app = bc.getApp();
-				// JMonkey sez this method is "internal use only".
-				// Results in an abrubt close, without lwjgl shutdown and thread closure.
+				// JMonkey code sez this requestClose() method is "internal use only".
+				// Results in an abrupt close, without lwjgl shutdown and thread closure.
 				// The only messages then occur AFTER this method returns, saying:
 				/*
 				 * com.jme3.system.lwjgl.LwjglCanvas$GLCanvas removeNotify
