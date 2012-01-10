@@ -1,4 +1,4 @@
-package org.cogchar.bundle.app.puma;
+package org.cogchar.bundle.core;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -7,9 +7,10 @@ import org.appdapter.osgi.core.BundleActivatorBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PumaAppBundleActivator extends BundleActivatorBase {
 
-	static Logger theLogger = LoggerFactory.getLogger(PumaAppBundleActivator.class);
+public class CogcharCoreActivator  extends BundleActivatorBase {
+
+	static Logger theLogger = LoggerFactory.getLogger(CogcharCoreActivator.class);
 	
 	@Override protected Logger getLogger() {
 		return theLogger;
@@ -21,5 +22,4 @@ public class PumaAppBundleActivator extends BundleActivatorBase {
 	@Override public void stop(BundleContext context) throws Exception {
 		super.stop(context);	
 	}
-
 }
