@@ -10,6 +10,7 @@
 	</parent>
 	
     <artifactId>org.cogchar.nbui.render</artifactId>
+  <version>1.0.0</version>
     <packaging>nbm</packaging>
     <name>${project.artifactId} NetBeans Module</name>
 
@@ -219,7 +220,7 @@
                         </nbmResource>
                         <nbmResource>
                             <directory>src/main/resources</directory>
-                            <targetPath></targetPath>
+                            <targetPath />
                             <includes>
                                 <include>bonyRobotConfig.json</include>
                                 <include>jointgroup.xml</include>
@@ -249,4 +250,10 @@
             </plugin>
         </plugins>
     </build>
+
+  <scm>
+    <connection>scm:svn:https://subversion.assembla.com/svn/cogchar/tags/org.cogchar.project.root-1.0.0/trunk/org.cogchar.nbui.render</connection>
+    <developerConnection>scm:svn:https://subversion.assembla.com/svn/cogchar/tags/org.cogchar.project.root-1.0.0/trunk/org.cogchar.nbui.render</developerConnection>
+    <url>https://www.assembla.com/code/cogchar/subversion/nodes/tags/org.cogchar.project.root-1.0.0/trunk/org.cogchar.nbui.render</url>
+  </scm>
 </project>
