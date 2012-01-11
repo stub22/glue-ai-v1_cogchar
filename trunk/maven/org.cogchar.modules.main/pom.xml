@@ -10,7 +10,7 @@
 	</parent>  
 	
 	<artifactId>org.cogchar.modules.main</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId} - "Main Modules" parent pom - everything we deploy to Sonatype</name>
 	
@@ -65,11 +65,5 @@
 			
 		<module>../ext.bundle.opengl.jmonkey</module>
 		<module>../ext.bundle.opengl.nifty</module>
-	</modules>  
-
-  <scm>
-    <connection>scm:svn:https://subversion.assembla.com/svn/cogchar/tags/org.cogchar.project.root-1.0.0/trunk/org.cogchar.modules.main</connection>
-    <developerConnection>scm:svn:https://subversion.assembla.com/svn/cogchar/tags/org.cogchar.project.root-1.0.0/trunk/org.cogchar.modules.main</developerConnection>
-    <url>https://www.assembla.com/code/cogchar/subversion/nodes/tags/org.cogchar.project.root-1.0.0/trunk/org.cogchar.modules.main</url>
-  </scm>
+	</modules>
 </project>
