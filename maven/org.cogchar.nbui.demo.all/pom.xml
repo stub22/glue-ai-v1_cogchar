@@ -85,6 +85,12 @@
 				</configuration>
 				<executions>
 					<execution>
+						<!-- Disable the inherited standalone-zip generation -->
+						<id>default-standalone-zip</id>
+						<phase>none</phase>
+					</execution>
+
+					<execution>
 						<id>redo-default-standalone-zip</id>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -137,7 +143,7 @@
 					
 					<execution>
 						<!-- Overwrite the felix lib with our own version that has a patched default.properties file,
-							allowing us to use the sun.misc.Unsafe code from Netisgo.
+							allowing us to use the sun.misc.Unsafe code under Netisgo.
 						-->
 						<id>patch-felix-lib</id>
 						<phase>package</phase>
