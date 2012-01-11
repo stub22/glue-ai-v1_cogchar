@@ -4,13 +4,12 @@
 	
 	<parent>
 		<groupId>org.cogchar</groupId>
-		<artifactId>org.cogchar.modules.all</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../org.cogchar.modules.all/pom.xml</relativePath>
-	</parent>
+		<artifactId>org.cogchar.project.root</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>  
 	
     <artifactId>org.cogchar.nbui.render</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
     <name>${project.artifactId} NetBeans Module</name>
 

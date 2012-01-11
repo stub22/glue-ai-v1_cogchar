@@ -1,20 +1,20 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
 		<groupId>org.cogchar</groupId>
-		<artifactId>org.cogchar.modules.all</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../org.cogchar.modules.all/pom.xml</relativePath>
+		<artifactId>org.cogchar.project.root</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
 	</parent>  
 	
 	<artifactId>org.cogchar.modules.main</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+
 	<packaging>pom</packaging>
 	<name>${project.artifactId} - "Main Modules" parent pom - everything we deploy to Sonatype</name>
 	
-  	<repositories>
+	<repositories>
 			<!-- Used for JScience and Javolution -->
 			<!--
 		<repository>
@@ -24,11 +24,11 @@
 			<url>https://maven.java.net/content/repositories/snapshots/</url>
 		</repository>		
 		-->
-        <repository>
-            <id>sonatype-public</id>
-            <name>sonatype public</name>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
+		<repository>
+			<id>sonatype-public</id>
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</repository>
 		<repository>
 			<id>scala-tools.org</id>
 			<name>Scala-Tools Maven2 Repository</name>
