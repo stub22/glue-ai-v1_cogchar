@@ -1,0 +1,49 @@
+<skeleton>
+    <bones>
+        <bone id="0" name="root">
+            <position x="1.33252" y="-5.33007" z="-4.79893e-016" />
+            <rotation angle="1.5708">
+                <axis x="0" y="0" z="1" />
+            </rotation>
+            <scale x="0.0832824" y="0.0832824" z="0.0832824" />
+        </bone>
+        <bone id="1" name="head_jnt">
+            <position x="64" y="1.42109e-014" z="0" />
+            <rotation angle="1.5708">
+                <axis x="0" y="0" z="-1" />
+            </rotation>
+        </bone>
+        <bone id="2" name="leftShoulder_jnt">
+            <position x="16" y="0" z="0" />
+            <rotation angle="3.14159">
+                <axis x="0" y="1" z="0" />
+            </rotation>
+        </bone>
+        <bone id="3" name="rightShoulder_jnt">
+            <position x="-16" y="0" z="5.76224e-015" />
+            <rotation angle="3.14159">
+                <axis x="-0.00300049" y="0.999995" z="1.83727e-019" />
+            </rotation>
+        </bone>
+        <bone id="4" name="rightElbowEnd_jnt">
+            <position x="20" y="0" z="2.51363e-015" />
+            <rotation angle="0">
+                <axis x="1" y="0" z="0" />
+            </rotation>
+        </bone>
+        <bone id="5" name="rightEnd_jnt">
+            <position x="27.9991" y="0.288045" z="-2.62959e-015" />
+            <rotation angle="0">
+                <axis x="1" y="0" z="0" />
+            </rotation>
+        </bone>
+    </bones>
+    <bonehierarchy>
+        <boneparent bone="head_jnt" parent="root" />
+        <boneparent bone="leftShoulder_jnt" parent="head_jnt" />
+        <boneparent bone="rightShoulder_jnt" parent="head_jnt" />
+        <boneparent bone="rightElbowEnd_jnt" parent="rightShoulder_jnt" />
+        <boneparent bone="rightEnd_jnt" parent="rightElbowEnd_jnt" />
+    </bonehierarchy>
+    <animations />
+</skeleton>
