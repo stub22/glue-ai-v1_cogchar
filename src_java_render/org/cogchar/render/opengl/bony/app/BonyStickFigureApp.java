@@ -23,6 +23,7 @@ import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
 import org.cogchar.render.opengl.bony.model.StickFigureTwister;
 
 import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
 import org.slf4j.Logger;
@@ -45,6 +46,11 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 		initStickFigureModel();
 		BonyRenderContext bc = getBonyRenderContext();
 		myTwister = new StickFigureTwister(bc);
+		VirtualCharacterPanel vcp = bc.getPanel();
+		TwistController tc = vcp.getTwistController();
+		if (tc != null) {
+			myTwister.setTwistController(tc);
+		}
 		theLogger.info("simpleInitApp() - END");
 	}
 	public void setScoringFlag(boolean f) {

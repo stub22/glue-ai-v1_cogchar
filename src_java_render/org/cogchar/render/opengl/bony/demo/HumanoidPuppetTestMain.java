@@ -16,7 +16,7 @@
 
 package org.cogchar.render.opengl.bony.demo;
 
-import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
+import org.cogchar.render.opengl.bony.gui.VirtCharPanel;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.sys.BonySystemFuncs;
 import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
@@ -28,8 +28,10 @@ import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.jme3.system.AppSettings;
+import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.render.opengl.bony.gui.PanelUtils;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -44,7 +46,8 @@ public class HumanoidPuppetTestMain {
 		BonyVirtualCharApp bvcApp = // new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
 					// new BonyRagdollApp(lwjglRendererName, canvasWidth, canvasHeight, sceneFilePath, sceneLocalScale);
 					new HumanoidPuppetApp(bce); // lwjglRendererName, HumanoidPuppetApp.PATH_HUMANOID_MESH, canvasWidth, canvasHeight);
-		bvcApp.initCharPanelWithCanvas();
+		VirtualCharacterPanel vcp = PanelUtils.makeVCPanel(bce, "FULL");
+		bvcApp.initCharPanelWithCanvas(vcp);
 		BonyRenderContext bc = bvcApp.getBonyRenderContext();
 		return bc;
 	}
@@ -55,9 +58,9 @@ public class HumanoidPuppetTestMain {
 		final BonyRenderContext bc = makeBonyRenderContextWithApp(bce); // lwjglRendererName, DemoApp.DEFAULT_CANVAS_WIDTH, DemoApp.DEFAULT_CANVAS_HEIGHT);
 		// Frame must be packed after panel created, but created 
 		// before startJMonkey.  Might add frame to BonyRenderContext...
-		VirtCharPanel vcp = bc.getPanel();
-		theLogger.info("*********************** BEFORE FRAMING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
-		JFrame jf = vcp.makeEnclosingJFrame();
+		VirtualCharacterPanel vcp = bc.getPanel();
+		// theLogger.info("*********************** BEFORE FRAMING: VCP width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
+		JFrame jf = vcp.makeEnclosingJFrame("Humanoid Puppet Test");
 		bc.setFrame(jf);
 		jf.addWindowListener(new WindowAdapter() {
 			@Override public void	windowClosing(WindowEvent e) {
@@ -102,7 +105,7 @@ VirtCharPanel.JFrame.closed, exiting
 		BonyVirtualCharApp app = bc.getApp();
 		app.startJMonkeyCanvas();
 		((BonyStickFigureApp) app).setScoringFlag(true);
-		theLogger.info("*********************** AFTER FRAMING + STARTING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
+		// theLogger.info("*********************** AFTER FRAMING + STARTING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
 		theLogger.info("*********************** Frame width="  + jf.getWidth() + ", height=" + jf.getHeight());
 
 		// OR, run a JMonkey demo in a standalone OpenGL system window (not a Java/Swing GUI).
