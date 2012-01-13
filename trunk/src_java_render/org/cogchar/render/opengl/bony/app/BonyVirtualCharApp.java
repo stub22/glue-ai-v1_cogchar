@@ -26,7 +26,8 @@ import java.util.concurrent.Future;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.sys.BonyCanvasFuncs;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
+import org.cogchar.render.opengl.bony.gui.VirtCharPanel;
+import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -53,14 +54,13 @@ public class BonyVirtualCharApp extends DemoApp {
 		return getBonyRenderContext().getBonyConfigEmitter();
 	}
 
-	public void initCharPanelWithCanvas() { 
+	public void initCharPanelWithCanvas(VirtualCharacterPanel vcp) { 
 		// Works
 		applySettings();
 		this.createCanvas();
 		// Does not work at this time or subsq:
 		//applySettings();
 		Canvas c = BonyCanvasFuncs.makeAWTCanvas(this);
-		VirtCharPanel vcp = new VirtCharPanel();
 		vcp.setRenderCanvas(c);
 		myContext.setPanel(vcp);
 		// assetManager does not exist until start is called, triggering simpleInit callback.

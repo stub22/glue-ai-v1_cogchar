@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import org.cogchar.render.opengl.bony.app.DemoApp;
 import org.cogchar.render.opengl.bony.demo.HumanoidPuppetApp;
+import org.cogchar.render.opengl.bony.gui.PanelUtils;
+import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
 
 /**
@@ -57,9 +59,10 @@ public class RenderBundleActivator extends BundleActivatorBase {
 		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
 		JmonkeyAssetLocation jmal = new JmonkeyAssetLocation(ResourceBundleActivator.class);
 		bvcApp.addAssetSource(jmal);   
-		theLogger.info("******************* Initializing VirtualCharPanel with canvas");
+		theLogger.info("******************* Initializing VirtualCharacterPanel with canvas");
 		
-		bvcApp.initCharPanelWithCanvas();
+		VirtualCharacterPanel vcp = PanelUtils.makeVCPanel(bce, "FULL");
+		bvcApp.initCharPanelWithCanvas(vcp);
 
 		myBonyRenderContext = bvcApp.getBonyRenderContext();
 		theLogger.info("******************* Registering BonyRenderContext as OSGi service");

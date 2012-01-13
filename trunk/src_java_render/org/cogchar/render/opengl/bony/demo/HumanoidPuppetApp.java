@@ -52,7 +52,8 @@ import org.cogchar.render.opengl.bony.state.BoneState;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
-import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
+import org.cogchar.render.opengl.bony.gui.VirtCharPanel;
+import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,9 +152,9 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 		cam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));
 		cam.setRotation(new Quaternion(-2.302544E-4f, 0.99302495f, -0.117888905f, -0.0019395084f));
     }
-	public VirtCharPanel getVCPanel() { 
+	public VirtualCharacterPanel getVCPanel() { 
 		BonyRenderContext ctx = getBonyRenderContext();
-		VirtCharPanel vcp = ctx.getPanel();
+		VirtualCharacterPanel vcp = ctx.getPanel();
 		return vcp;
 	}
 	public void applyTwisting(float tpf) { 
@@ -210,7 +211,7 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 	@Override
 	public void simpleUpdate(float tpf) {
         //logUpdateTime();
-		// super.simpleUpdate(tpf);
+		super.simpleUpdate(tpf);
 		//applyTwisting(tpf);
 		applyFigureState();
 		// myHumanoidWrapper.wiggle(tpf);
