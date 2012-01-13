@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Install: org/cogchar/nbui/render/Installer.class
+OpenIDE-Module-Localizing-Bundle: org/cogchar/nbui/render/Bundle.properties
+OpenIDE-Module-Layer: org/cogchar/nbui/render/layer.xml
+OpenIDE-Module-Requires: org.openide.windows.WindowManager

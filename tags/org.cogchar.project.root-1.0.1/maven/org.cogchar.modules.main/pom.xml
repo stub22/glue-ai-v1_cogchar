@@ -1,0 +1,69 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.project.root</artifactId>
+		<version>1.0.1</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>  
+	
+	<artifactId>org.cogchar.modules.main</artifactId>
+
+	<packaging>pom</packaging>
+	<name>${project.artifactId} - "Main Modules" parent pom</name>
+	<description>All libraries and OSGi bundles - everything EXCEPT nbui projects</description>
+	<repositories>
+			<!-- Previously Used for JScience and Javolution -->
+			<!--
+		<repository>
+		
+			<id>maven.java.net-SNAP</id>
+			<name>maven.java.net SNAPSHOTS Repo</name>
+			<url>https://maven.java.net/content/repositories/snapshots/</url>
+		</repository>		
+		-->
+		<repository>
+			<id>sonatype-public</id>
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>scala-tools.org</id>
+			<name>Scala-Tools Maven2 Repository</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</repository>
+		<repository>
+			<id>scala-tools.org-SNAP</id>
+			<name>Scala-Tools Snapshots Repo</name>
+			<url>http://scala-tools.org/repo-snapshots/</url>
+		</repository>	
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>scala-tools.org</id>
+			<name>Scala-Tools Maven2 Repository</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
+	
+	<modules>
+		<module>../org.cogchar.bundle.avrogen</module>		
+		<module>../org.cogchar.bundle.demo.all</module>
+		<module>../org.cogchar.bundle.app.puma</module>
+		<module>../org.cogchar.bundle.core</module>		
+		<module>../org.cogchar.bundle.render.opengl</module>
+		<module>../org.cogchar.bundle.render.resources</module>
+		<module>../org.cogchar.bundle.bind.robokind</module>
+		<module>../org.cogchar.demo.render.opengl</module>
+		<module>../org.cogchar.lib.core</module>
+		<module>../org.cogchar.lib.render</module>
+
+			
+		<module>../ext.bundle.opengl.jmonkey</module>
+		<module>../ext.bundle.opengl.nifty</module>
+	</modules>
+</project>
