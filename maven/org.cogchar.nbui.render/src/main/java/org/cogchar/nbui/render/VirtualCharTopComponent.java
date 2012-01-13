@@ -37,6 +37,7 @@ import org.robokind.api.motion.jointgroup.RobotJointGroup;
 import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaDualCharacter;
 
+import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,11 +96,12 @@ public final class VirtualCharTopComponent extends TopComponent {
 			theLogger.error("BonyRenderContext is null");
             throw new Exception("BonyRenderContext is null");
         }
-        myVirtualCharPanel = BonyRenderContext.getPanel();
-        if(myVirtualCharPanel == null){
+		VirtualCharacterPanel vcp = BonyRenderContext.getPanel();
+        if(vcp == null){
 			theLogger.error("VirtualCharPanel is null");
             throw new Exception("VirtualCharPanel is null");
         }
+		myVirtualCharPanel = vcp.getJPanel();
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -179,13 +181,11 @@ public final class VirtualCharTopComponent extends TopComponent {
         return getDefault();
     }
 
-    @Override
-    public int getPersistenceType() {
+    @Override public int getPersistenceType() {
         return TopComponent.PERSISTENCE_ALWAYS;
     }
 
-    @Override
-    public void componentOpened() {
+    @Override public void componentOpened() {
         try{
             BundleContext context = OSGiUtils.getBundleContext(Robot.class);
             if(context == null){

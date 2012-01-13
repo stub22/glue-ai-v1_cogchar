@@ -15,6 +15,7 @@
  */
 package org.cogchar.render.opengl.bony.sys;
 
+import org.cogchar.render.opengl.bony.gui.VirtCharPanel;
 import org.cogchar.render.opengl.bony.world.ScoreBoard;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import com.jme3.animation.AnimControl;
@@ -26,13 +27,14 @@ import org.cogchar.render.opengl.bony.state.FigureState;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class BonyRenderContext {
 	protected	BonyConfigEmitter		myConfigEmitter;
 	protected	BonyVirtualCharApp		myApp;
-	protected	VirtCharPanel			myPanel;   
+	protected	VirtualCharacterPanel	myPanel;   
 	protected	JFrame					myFrame;
 	protected	ScoreBoard				myScoreBoard;
 	protected	List<AnimControl>		myAnimControls;
@@ -49,11 +51,11 @@ public class BonyRenderContext {
 		this.myApp = app;
 	}
 
-	public VirtCharPanel getPanel() {
+	public VirtualCharacterPanel getPanel() {
 		return myPanel;
 	}
 
-	public void setPanel(VirtCharPanel panel) {
+	public void setPanel(VirtualCharacterPanel panel) {
 		this.myPanel = panel;
 	}
 

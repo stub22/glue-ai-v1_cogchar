@@ -51,7 +51,7 @@ public class JmonkeyAssetLocation {
 	public void resolve() { 
 
 	}
-	public void registerLocators(AssetManager assetMgr) { 
+	public void registerLocators(AssetManager assetMgr) {
 		URL hackyRootURL = getHackyRootURL();
 		if (hackyRootURL != null) {
 			String hackyRootUrlPath = hackyRootURL.toExternalForm();

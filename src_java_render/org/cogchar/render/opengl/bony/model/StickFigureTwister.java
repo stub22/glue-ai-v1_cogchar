@@ -16,7 +16,7 @@
 
 package org.cogchar.render.opengl.bony.model;
 
-import org.cogchar.render.opengl.bony.sys.VirtCharPanel;
+import org.cogchar.render.opengl.bony.gui.VirtCharPanel;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.world.ScoreBoard;
 import com.jme3.animation.AnimControl;
@@ -26,6 +26,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.util.List;
+import org.cogchar.render.opengl.bony.app.TwistController;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -37,32 +38,38 @@ public class StickFigureTwister {
 	private float			myWaistTwistRate = 1;
 	private	boolean			myTwistScoringFlag = false;
 	
+	private TwistController	myTwistController;
+	
 	public StickFigureTwister(BonyRenderContext bc) {
 		myContext = bc;
 	}
+	public void setTwistController(TwistController tc) {
+		myTwistController = tc;
+	}
 	public void twist(float tpf) { 
 				//	System.out.println("simpleUpdate, tpf=" + tpf);
-		/*List<AnimControl> animControls = myContext.getAnimControls();
-		VirtCharPanel vcp = myContext.getPanel();
-		int testChannelNum = vcp.getTestChannelNum();
-
-		String direction = vcp.getTestDirection();
+		if (myTwistController != null) {
+			List<AnimControl> animControls = myContext.getAnimControls();
+			// VirtCharPanel vcp = myContext.getPanel();
+			int twistChannelNum = myTwistController.getTwistChannelNum();
+			String direction = myTwistController.getTwistDirection();
 		// System.out.println("Direction=" + direction);
-		AnimControl ac = animControls.get(testChannelNum);
-		Skeleton csk = ac.getSkeleton();
+			AnimControl ac = animControls.get(twistChannelNum);
+			Skeleton csk = ac.getSkeleton();
 
-		Bone roots[] = csk.getRoots();
-		// System.out.println("Found " + roots.length + " root bones: " + roots);
-		Bone rootBone = roots[0];
-		dumpBonePositionsToVCP(rootBone, "rootBone");
-		Bone tgtBone = rootBone;
-		String mod = vcp.getTestChannelModifier();
-		if (mod.equals("first child")) {
-			List<Bone> kids = rootBone.getChildren();
-			Bone firstKid = kids.get(0);
-			tgtBone = firstKid;
+			Bone roots[] = csk.getRoots();
+			// System.out.println("Found " + roots.length + " root bones: " + roots);
+			Bone rootBone = roots[0];
+			dumpBonePositionsToVCP(rootBone, "rootBone");
+			Bone tgtBone = rootBone;
+			String mod = myTwistController.getTwistChannelModifier();
+			if (mod.equals("first child")) {
+				List<Bone> kids = rootBone.getChildren();
+				Bone firstKid = kids.get(0);
+				tgtBone = firstKid;
+			}
+			twistBone(tpf, tgtBone, direction);
 		}
-		twistBone(tpf, tgtBone, direction);*/
 	}
 	public void dumpBonePositionsToVCP(Bone b, String prefix) { 
 		//VirtCharPanel vcp = myContext.getPanel();

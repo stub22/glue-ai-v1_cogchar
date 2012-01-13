@@ -51,6 +51,13 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		NB_BONY_ROBOT_ID; // or DUMMY_ROBOT_ID, ...
 	}
 	
+	def getVCPanelClassName(kind : String) : String = {
+		kind match {
+			case "FULL" => "org.cogchar.render.opengl.bony.gui.FullCharPanel";
+			case "SLIM" => "org.cogchar.render.opengl.bony.gui.VirtCharPanel";
+			case _ => null
+		}
+	}
 	
 	def getNamedFloatVector(vectorURI : String) : Array[Float] = {
 		val third = 0.33333f;
