@@ -28,7 +28,7 @@ import javax.jms.Session;
 import javax.jms.Connection;
 import org.apache.qpid.client.AMQQueue;
 
-import org.robokind.impl.messaging.ConnectionManager;
+import org.robokind.impl.messaging.utils.ConnectionManager;
 import org.cogchar.bind.rk.robot.model.ModelBoneRotation;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -43,8 +43,8 @@ import org.robokind.api.motion.jointgroup.JointGroup;
 import org.robokind.api.motion.jointgroup.RobotJointGroup;
 
 import org.robokind.impl.motion.jointgroup.RobotJointGroupConfigXMLReader;
-import org.robokind.impl.motion.messaging.JMSMotionFrameReceiver;
-import org.robokind.impl.motion.messaging.MoveFrameListener;
+import org.robokind.impl.motion.messaging.JMSMotionFrameAsyncReceiver;
+import org.robokind.impl.motion.messaging.TargetFrameListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -53,12 +53,12 @@ import org.slf4j.LoggerFactory;
 public class RobotServiceFuncs {
 	static Logger theLogger = LoggerFactory.getLogger(RobotServiceFuncs.class);
 	
-	public static JMSMotionFrameReceiver createAndRegisterFrameReceiver(
+	public static JMSMotionFrameAsyncReceiver createAndRegisterFrameReceiver(
 			BundleContext bundleCtx, Robot.Id robotId) {
 		
 		Connection connection = ConnectionManager.createConnection(
 				"admin", "admin", "client1", "test", "tcp://127.0.0.1:5672");
-		JMSMotionFrameReceiver receiver = null;
+		JMSMotionFrameAsyncReceiver receiver = null;
 		try {
 			connection.start();
 		} catch (JMSException ex) {
@@ -90,15 +90,17 @@ public class RobotServiceFuncs {
 		return receiver;
 	}
 
-	private static JMSMotionFrameReceiver startRobotFrameReceiver(BundleContext context, 
+	private static JMSMotionFrameAsyncReceiver startRobotFrameReceiver(BundleContext context, 
 				Robot.Id id, Session session, Destination destination) throws Throwable {
 		
-		JMSMotionFrameReceiver receiver = new JMSMotionFrameReceiver(session, destination);
-		RobotFrameSource frameSource = new RobotFrameSource(context, id);
-		MoveFrameListener moveHandler = new MoveFrameListener();
+		JMSMotionFrameAsyncReceiver receiver = new JMSMotionFrameAsyncReceiver(session, destination);
+		RobotFrameSource frameSource = new RobotFrameSource(context, id); 
+		// Was MoveFrameListener before - same semantics?
+		TargetFrameListener moveHandler = new TargetFrameListener();
 		ServiceRegistration reg =
 				RobotUtils.registerFrameSource(context, id, frameSource);
-		moveHandler.setRobotFrameSource(frameSource);
+		// MoveFrameListener wants PositionTargetFrameSource, which is a sibling of RobotFrameSuource.
+//		moveHandler.setRobotFrameSource(frameSource);
 		receiver.addMessageListener(moveHandler);
 		receiver.start();
 		return receiver;
