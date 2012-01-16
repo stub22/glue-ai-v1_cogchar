@@ -15,9 +15,22 @@
  */
 package org.cogchar.app.buddy.busker;
 
+import org.cogchar.bundle.app.puma.PumaDualCharacter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.cogchar.platform.trigger.DummyTrigger;
+import org.cogchar.platform.trigger.DummyBox;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class DancingTriggerItem extends TriggerItem {
+	static Logger theLogger = LoggerFactory.getLogger(DancingTriggerItem.class);
 	
+	@Override public void fire(DummyBox targetBox) {
+		theLogger.info("trigger[" + toString() + "] firing on " + targetBox.toString());
+		PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+		pdc.triggerTestAnim();
+	}
 }
