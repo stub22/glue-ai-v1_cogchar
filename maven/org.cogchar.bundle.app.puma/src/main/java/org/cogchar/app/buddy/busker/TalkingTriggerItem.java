@@ -15,9 +15,18 @@
  */
 package org.cogchar.app.buddy.busker;
 
+import org.cogchar.platform.trigger.DummyBox;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class TalkingTriggerItem extends TriggerItem {
+	static Logger theLogger = LoggerFactory.getLogger(TalkingTriggerItem.class);
 	
+	@Override public void fire(DummyBox targetBox) {
+		theLogger.info("trigger[" + toString() + "] firing on " + targetBox.toString());
+	}	
 }

@@ -46,23 +46,28 @@ import org.cogchar.bind.rk.robot.svc.BlendingRobotServiceContext;
 import org.cogchar.bind.rk.robot.model.ModelBoneRotRange;
 import org.cogchar.bind.rk.robot.model.ModelBoneRotation;
 import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
+
+import org.cogchar.platform.trigger.DummyTrigger;
+import org.cogchar.platform.trigger.DummyBox;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaDualCharacter {
+public class PumaDualCharacter implements DummyBox {
 	static Logger theLogger = LoggerFactory.getLogger(PumaDualCharacter.class);
-	private	ModelBlendingRobotServiceContext	myRobotServiceContext;
-	private	BonyRenderContext							myBonyRenderContext;
+	private	ModelBlendingRobotServiceContext	myMBRSC;
+	private	BonyRenderContext					myBRC;
+	private	RobotAnimClient						myRAC;
 	public PumaDualCharacter(BonyRenderContext brc, BundleContext bundleCtx) {
-		myBonyRenderContext = brc;
-		myRobotServiceContext = new ModelBlendingRobotServiceContext(bundleCtx);
+		myBRC = brc;
+		myMBRSC = new ModelBlendingRobotServiceContext(bundleCtx);
 	}
 	public void connectBonyDualForURI( String bonyDualCharURI) throws Throwable {
-		BundleContext bundleCtx = myRobotServiceContext.getBundleContext();
-		File jointBindingConfigFile = myBonyRenderContext.getJointConfigFileForChar(bonyDualCharURI);
+		BundleContext bundleCtx = myMBRSC.getBundleContext();
+		File jointBindingConfigFile = myBRC.getJointConfigFileForChar(bonyDualCharURI);
         //rjbd.registerDummyRobot();
 		setupBonyRobotWithBlender(jointBindingConfigFile);
 		ModelRobot br = getBonyRobot();
@@ -70,7 +75,7 @@ public class PumaDualCharacter {
 		if (br != null) {
 	        connectToVirtualChar();
 			applyInitialBoneRotations();
-			RobotAnimClient brac = new RobotAnimClient(bundleCtx); 
+			myRAC = new RobotAnimClient(bundleCtx); 
 			try {
 		        RobotServiceFuncs.createAndRegisterFrameReceiver(bundleCtx, brid);
 			} catch (Throwable t) {
@@ -80,10 +85,10 @@ public class PumaDualCharacter {
 	}
 	
 	public void setupBonyRobotWithBlender(File jointBindingConfigFile) throws Throwable {
-		myRobotServiceContext.makeModelRobotWithBlenderAndFrameSource(jointBindingConfigFile);
+		myMBRSC.makeModelRobotWithBlenderAndFrameSource(jointBindingConfigFile);
 	}
 	public ModelRobot getBonyRobot() { 
-		return myRobotServiceContext.getRobot();
+		return myMBRSC.getRobot();
 	}	
 	/*public class DanceDoer implements DemoBonyWireframeRagdoll.Doer {
 		
@@ -98,12 +103,12 @@ public class PumaDualCharacter {
 		}
 	}*/
 	public void connectToVirtualChar() throws Exception {
-		BonyVirtualCharApp app = myBonyRenderContext.getApp();
+		BonyVirtualCharApp app = myBRC.getApp();
 		setupFigureState();
 		final ModelRobot br = getBonyRobot();
 		br.registerMoveListener(new ModelRobot.MoveListener() {
 			@Override public void notifyBonyRobotMoved(ModelRobot br) {
-				BonyStateMappingFuncs.propagateState(br, myBonyRenderContext);
+				BonyStateMappingFuncs.propagateState(br, myBRC);
 			}
 			
 		});
@@ -126,13 +131,20 @@ public class PumaDualCharacter {
                 fs.obtainBoneState(name);
             }
 		}
-		myBonyRenderContext.setFigureState(fs);
+		myBRC.setFigureState(fs);
 	}
 	
     public void applyInitialBoneRotations() {
-		FigureState fs = myBonyRenderContext.getFigureState();
+		FigureState fs = myBRC.getFigureState();
 		ModelRobot br = getBonyRobot();
 		Map<String,List<ModelBoneRotation>> initialRotationMap = ModelRobotUtils.getInitialRotationMap(br);
         BonyStateMappingFuncs.applyAllSillyEulerRotations(fs, initialRotationMap);
     }
+	public void triggerTestAnim() { 
+		try {
+			myRAC.createAndPlayTestAnim();
+		} catch (Throwable t) {
+			theLogger.error("problem playing test anim", t);
+		}
+	}
 }
