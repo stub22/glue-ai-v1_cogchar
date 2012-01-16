@@ -18,6 +18,7 @@ package org.cogchar.bundle.app.puma;
 import java.io.File;
 import javax.swing.JFrame;
 
+import org.cogchar.app.buddy.busker.DancingTriggerItem;
 import org.robokind.api.motion.Robot;
 
 import org.cogchar.bind.rk.robot.client.RobotAnimClient;
@@ -26,7 +27,10 @@ import org.osgi.framework.BundleContext;
 
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelRobotUtils;
+
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
+import org.cogchar.render.opengl.bony.app.TwistController;
+
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 
@@ -71,6 +75,8 @@ public class PumaAppContext {
 		}
 		PumaDualCharacter pdc = new PumaDualCharacter(bc, myBundleContext);
 		pdc.connectBonyDualForURI(bonyCharURI);
+		registerDummyPoker(bc, pdc);
+		
 		return pdc;
 	}
 
@@ -106,4 +112,10 @@ public class PumaAppContext {
 			theLogger.error("BonyRenderContext is NULL, cannot startOpenGLCanvas!");
 		}
 	}
+	private void registerDummyPoker(BonyRenderContext bc, PumaDualCharacter pdc) { 
+		VirtualCharacterPanel vcp = bc.getPanel();
+		TwistController tc = vcp.getTwistController();
+		tc.setupPokeTrigger(pdc, new DancingTriggerItem());
+	}
+
 }

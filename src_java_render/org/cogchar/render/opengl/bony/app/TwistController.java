@@ -15,11 +15,15 @@
  */
 package org.cogchar.render.opengl.bony.app;
 
+import org.cogchar.platform.trigger.DummyBox;
+import org.cogchar.platform.trigger.DummyTrigger;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface TwistController {
+public interface TwistController  {
 	public int getTwistChannelNum();
 	public String getTwistChannelModifier();
 	public String getTwistDirection();
+	public void setupPokeTrigger(DummyBox box, DummyTrigger trig);
 }

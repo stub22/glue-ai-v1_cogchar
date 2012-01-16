@@ -64,7 +64,7 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 		ModelRobot br = new ModelRobot(hbID);
 		//BonyRobotUtils.makeBonyJointForRobot(myBonyRobot, 22, "JTwentyTwo", 0.5, 0.2);
 		//BonyRobotUtils.makeBonyJointForRobot(myBonyRobot, 22, "JNinetyNine", 0.8, 0.9);
-		//registerAndStart(br)
+		registerAndStart(br);
 		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END registerDummyBlendingRobot");
 	}		
 }
