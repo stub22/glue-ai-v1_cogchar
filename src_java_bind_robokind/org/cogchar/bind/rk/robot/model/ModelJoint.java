@@ -44,9 +44,11 @@ public class ModelJoint extends AbstractJoint {
         myDefaultPosNorm = defPos;
         myGoalPosNorm = myDefaultPosNorm;
     }
-
+	protected String getDescription() { 
+		return "JOINT[" + getId() + "]";
+	}
 	@Override public void setEnabled(Boolean enabled) {
-		theLogger.info("BonyJoint[" + getId() + "] setEnabled(" + enabled + ")");
+		theLogger.info(getDescription() + ".setEnabled(" + enabled + ")");
 		myEnabledFlag = enabled;
 	}
 
@@ -69,7 +71,7 @@ public class ModelJoint extends AbstractJoint {
     
     //This is used to allow the SkeletonRobot to set the GoalPosition and fire the event.
     void setGoalPosition(NormalizedDouble pos){
-		theLogger.info("BonyJoint[" + getId() + "] setGoalPosition(" + pos + ")");
+		theLogger.trace(getDescription() + ".setGoalPosition(" + pos + ")");
 		NormalizedDouble old = getGoalPosition();
         //actually set the goal position here
         firePropertyChange(PROP_GOAL_POSITION, old, pos);
