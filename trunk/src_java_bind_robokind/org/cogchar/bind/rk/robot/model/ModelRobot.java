@@ -22,6 +22,7 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 	static Logger theLogger = LoggerFactory.getLogger(ModelRobot.class);
     private List<ModelBoneRotation> myInitialBoneRotations;
     private boolean myConnectionFlag;
+	private long myLastMoveStampMillis = System.currentTimeMillis();
 	
 	public static interface MoveListener {
 		public void notifyBonyRobotMoved(ModelRobot br);
@@ -48,26 +49,28 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
     public List<ModelBoneRotation> getInitialBoneRotations(){
         return myInitialBoneRotations;
     }
-
+	protected String getDescription() { 
+		return "ROBOT[" + getRobotId() + "]";
+	}
 	@Override public boolean connect() {
         myConnectionFlag = true;
-		theLogger.info("BonyRobot[" + getRobotId() + "] connecting");
+		theLogger.info(getDescription() + " connecting");
 		return true;
 	}
 
 	@Override public void disconnect() {
         myConnectionFlag = false;
-		theLogger.info("BonyRobot[" + getRobotId() + "] disconnecting");
+		theLogger.info(getDescription() + " disconnecting");
 	}
 
-    private long myLastMove = System.currentTimeMillis();
+
 	@Override public void move(RobotPositionMap positions, long lenMillisec) {
         long now = System.currentTimeMillis();
-        long elapsed = now - myLastMove;
-		theLogger.info("BonyRobot[" + getRobotId() + "] moving to: " + 
-                positions + ", over " + lenMillisec + " milliseconds. "
-                + "elapsed: " + elapsed + ", current time: " + System.currentTimeMillis());
-        myLastMove = now;
+        long elapsed = now - myLastMoveStampMillis;
+		//theLogger.info(getDescription() + " moving to: " + 
+        //        positions + ", over " + lenMillisec + " milliseconds. "
+        //        + "elapsed: " + elapsed + ", current time: " + System.currentTimeMillis());
+        myLastMoveStampMillis = now;
         if(myJointMap == null){
             throw new NullPointerException();
         }
@@ -84,7 +87,7 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 		notifyMoveListeners();
 	}
 	public void registerBonyJoint(ModelJoint bj) {
-		theLogger.info("BonyRobot[" + getRobotId() + "] registering joint: " + bj);
+		theLogger.info(getDescription() + " registering " + bj.getDescription());
 		addJoint(bj);
 	}
 

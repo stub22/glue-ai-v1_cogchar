@@ -108,7 +108,7 @@ public class PumaDualCharacter implements DummyBox {
 		final ModelRobot br = getBonyRobot();
 		br.registerMoveListener(new ModelRobot.MoveListener() {
 			@Override public void notifyBonyRobotMoved(ModelRobot br) {
-				BonyStateMappingFuncs.propagateState(br, myBRC);
+				ModelToFigureStateMappingFuncs.propagateState(br, myBRC);
 			}
 			
 		});
@@ -138,7 +138,7 @@ public class PumaDualCharacter implements DummyBox {
 		FigureState fs = myBRC.getFigureState();
 		ModelRobot br = getBonyRobot();
 		Map<String,List<ModelBoneRotation>> initialRotationMap = ModelRobotUtils.getInitialRotationMap(br);
-        BonyStateMappingFuncs.applyAllSillyEulerRotations(fs, initialRotationMap);
+        ModelToFigureStateMappingFuncs.applyAllSillyEulerRotations(fs, initialRotationMap);
     }
 	public void triggerTestAnim() { 
 		try {

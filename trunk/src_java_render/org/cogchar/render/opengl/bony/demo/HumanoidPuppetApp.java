@@ -170,6 +170,11 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 		
 		Bone rootBone = myHumanoidWrapper.getRootBone();*/
 	}
+	/**
+	 * Called from SimpleUpdate to propagate position state from the figure state in the
+	 * BonyRenderContext to the OpenGL-rendered bones of the humanoid puppet, as mediated
+	 * by the myTwister delegate (which doesn't do anything smart, yet)..  
+	 */
 	public void applyFigureState() {
 		BonyRenderContext ctx = getBonyRenderContext();
 		FigureState fs = ctx.getFigureState();
@@ -178,12 +183,18 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 		}
 		HumanoidBoneConfig hbc = myHumanoidWrapper.getHBConfig();
 		List<HumanoidBoneDesc> boneDescs = hbc.getBoneDescs();
+		// theLogger.info("Applying figureState " + fs + " to boneDescs[" + boneDescs + "]");
+		int debugModulator = 0;
 		for (HumanoidBoneDesc hbd : boneDescs) {
+			
 			String boneName = hbd.getSpatialName();
 			BoneState bs = fs.getBoneState(boneName);
 			Bone tgtBone = myHumanoidWrapper.getSpatialBone(boneName);
 			if ((bs != null) && (tgtBone != null)) {
 				Quaternion boneRotQuat = bs.getRotQuat();
+		//		if (debugModulator++ %5 == 0)  {
+		//			theLogger.info("Applying " + boneRotQuat + " to " + tgtBone);
+		//		}
 				myTwister.applyBoneRotQuat(tgtBone, boneRotQuat);
 			}
 		}

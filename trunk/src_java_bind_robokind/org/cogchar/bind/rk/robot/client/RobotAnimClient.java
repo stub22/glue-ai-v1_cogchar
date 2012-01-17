@@ -12,11 +12,14 @@ import org.robokind.api.animation.Channel;
 import org.robokind.api.animation.MotionPath;
 import org.robokind.api.animation.utils.AnimationUtils;
 import org.robokind.api.animation.utils.ChannelsParameterSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class RobotAnimClient {
+	static Logger theLogger = LoggerFactory.getLogger(RobotAnimClient.class);
 	BundleContext	myBundleCtx;
 	public RobotAnimClient(BundleContext bundleCtx) throws Exception {
 		myBundleCtx = bundleCtx;
@@ -31,9 +34,9 @@ public class RobotAnimClient {
 		 */
 
 		ChannelsParameterSource cpSource = AnimationUtils.getChannelsParameterSource();
-		System.out.println("cpSource=" + cpSource);
+		theLogger.trace("channelParamSource=" + cpSource);
 		Map<Integer, String> chanNames = cpSource.getChannelNames();
-		System.out.println("channelNames=" + chanNames);
+		theLogger.info("Test animation channelNames=" + chanNames);
 		Animation anim = new Animation();
 		//Create your channels and add points
 		for (Entry<Integer, String> e : chanNames.entrySet()) {

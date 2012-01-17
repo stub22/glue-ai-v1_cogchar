@@ -116,6 +116,7 @@ public class StickFigureTwister {
 		return q;
 	}
 	public void applyBoneRotQuat(Bone tgtBone, Quaternion q) {
+	
 		tgtBone.setUserControl(true);
 		
 		// This applies rotation q to the "initial"/"bind" orientation, putting result in "local" rot.
