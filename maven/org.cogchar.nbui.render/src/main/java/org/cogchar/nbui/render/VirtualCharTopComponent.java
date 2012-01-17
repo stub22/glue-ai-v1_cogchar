@@ -82,11 +82,11 @@ public final class VirtualCharTopComponent extends TopComponent {
 		// ext.bundle.osgi.jmonkey, and explicitly allowed by the container using
 		// netigso
 		pac.startOpenGLCanvas(dualCharURI, false);
-/*		
+		
 		PumaDualCharacter pdc = pac.connectDualRobotChar(dualCharURI);	
         File file = new File("org_cogchar_nbui_render/jointgroup.xml");
         RobotServiceFuncs.registerJointGroup(bundleCtx, file);
-*/		
+
         myInitializedFlag = true;
 		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - Simulator init() END");
     }
