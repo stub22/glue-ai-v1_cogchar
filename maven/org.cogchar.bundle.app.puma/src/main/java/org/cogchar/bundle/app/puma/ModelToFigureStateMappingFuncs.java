@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 import org.cogchar.bind.rk.robot.svc.BlendingRobotServiceContext;
 import org.cogchar.bind.rk.robot.model.ModelBoneRotRange;
 import org.cogchar.bind.rk.robot.model.ModelBoneRotation;
+import org.cogchar.avrogen.bind.robokind.RotationAxis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -51,27 +52,35 @@ import org.slf4j.LoggerFactory;
  * Stu: 2011-12-21
  * 
  */
-public class BonyStateMappingFuncs {
+public class ModelToFigureStateMappingFuncs {
+	static Logger theLogger = LoggerFactory.getLogger(ModelToFigureStateMappingFuncs.class);	
 	public static void propagateState(ModelRobot br, BonyRenderContext bc) { 
 		FigureState fs = bc.getFigureState();
-        applyAllSillyEulerRotations(fs, ModelRobotUtils.getGoalAnglesAsRotations(br));
+		Map<String,List<ModelBoneRotation>> rotMap = ModelRobotUtils.getGoalAnglesAsRotations(br);
+		// theLogger.info("Sending " + fs + " to " + rotMap);
+		applyAllSillyEulerRotations(fs, rotMap);
 	}
     
     public static void applyAllSillyEulerRotations(FigureState fs, Map<String,List<ModelBoneRotation>> rotMap){
-        List<ModelBoneRotation> rots = new ArrayList<ModelBoneRotation>();
+       //  List<ModelBoneRotation> rots = new ArrayList<ModelBoneRotation>();
         for(Entry<String,List<ModelBoneRotation>> e : rotMap.entrySet()){
-            BoneState bs = fs.getBoneState(e.getKey());
+			String boneName = e.getKey();
+            BoneState bs = fs.getBoneState(boneName);
             if(bs == null){
+				theLogger.warn("Can't find boneState for " + boneName);
                 continue;
             }
+			List<ModelBoneRotation> rots = e.getValue();
             applySillyEulerRotations(bs, rots);
         }
     }
     // This is not a viable technique - rotations are not commutative!
     private static void applySillyEulerRotations(BoneState bs, List<ModelBoneRotation> rots){
         for(ModelBoneRotation rot : rots){
+			RotationAxis rotAxis = rot.getRotationAxis();
             float rads = (float)rot.getAngleRadians();
-            switch(rot.getRotationAxis()){
+			// theLogger.info("Rotating " + bs.getBoneName() + " angle " + rotAxis + " to " + rads + " radians.");
+            switch(rotAxis) {
                 case PITCH: bs.rot_X_pitch = rads; break;
                 case ROLL:  bs.rot_Y_roll = rads;  break;
                 case YAW:   bs.rot_Z_yaw = rads;   break;

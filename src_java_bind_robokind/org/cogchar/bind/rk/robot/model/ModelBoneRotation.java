@@ -42,5 +42,8 @@ public class ModelBoneRotation {
 	public double getAngleRadians() {
 		return myAngleRadians;
 	}
+	@Override public String toString () {
+		return "MBR[" + myBoneName + "," + myRotationAxis + "," + myAngleRadians + "]";
+	}
 	
 }

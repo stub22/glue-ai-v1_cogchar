@@ -45,7 +45,10 @@ public class ModelJoint extends AbstractJoint {
         myGoalPosNorm = myDefaultPosNorm;
     }
 	protected String getDescription() { 
-		return "JOINT[" + getId() + "]";
+		return "JOINT[" + getId() + "," + myName + "]";
+	}
+	@Override public String toString() { 
+		return getDescription() + "-[enabled=" + myEnabledFlag + " goalPos=" + myGoalPosNorm + "]";
 	}
 	@Override public void setEnabled(Boolean enabled) {
 		theLogger.info(getDescription() + ".setEnabled(" + enabled + ")");

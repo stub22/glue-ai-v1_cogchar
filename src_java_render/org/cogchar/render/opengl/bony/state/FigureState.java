@@ -34,4 +34,7 @@ public class FigureState {
 	public Collection<BoneState> getBoneStates() {
 		return myBoneStateMap.values();
 	}
+	@Override public String toString() { 
+		return "FigureState[" + myBoneStateMap + "]";
+	}
 }
