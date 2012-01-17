@@ -28,6 +28,18 @@
             <artifactId>org.cogchar.bundle.render.opengl</artifactId>
             <version>${project.version}</version>
         </dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.integration.animation_motion</artifactId>
+			<version>${robokind.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.robokind</groupId>
+            <artifactId>org.robokind.impl.motion</artifactId>
+            <version>${robokind.version}</version>
+        </dependency>
+		
     </dependencies>
 
     <build>
