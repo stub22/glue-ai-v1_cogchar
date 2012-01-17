@@ -38,7 +38,8 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		println("**************\n***************");
 		println("Scala BonyConfigEmitter generating jointConfigFile for charURI[" + bonyCharURI + "]");
 		println("**************\n***************");
-		return new java.io.File(PATH_HUMANOID_JOINT_CONFIG);
+		val path = if (bonyCharURI.startsWith("NBURI")) NB_PATH_HUMANOID_JOINT_CFG  else PATH_HUMANOID_JOINT_CONFIG;
+		return new java.io.File(path);
 	}
 	
 	def getHumanoidMeshPath : String = PATH_HUMANOID_MESH;
