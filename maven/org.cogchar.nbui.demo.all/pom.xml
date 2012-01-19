@@ -91,6 +91,7 @@
 					</execution>
 
 					<execution>
+						<!-- Build a patched standalone-zip AFTER the package phase is complete -->
 						<id>redo-default-standalone-zip</id>
 						<phase>pre-integration-test</phase>
 						<goals>
