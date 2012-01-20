@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="download_nightly_build" name="OGF">
+
+	<!-- Copied and modified by Stu B from:  
+
+		http://jmonkeyengine.org/wiki/doku.php/jme3_maven
+	-->
+
+
+	<!-- set up the pathname for the current nightly build to download -->
+	<tstamp>
+		<format property="NIGHTLY_JME3" pattern="yyyy-MM-dd" />
+	</tstamp>
+	
+	<!-- You must set up correct paths for your machine by editing the 
+		ant_maven_local.properties file !
+	-->
+
+    <property file="ant_maven_local.properties"/>
+
+	<property name="hidden.hostname.part" value="direct.jmon"/>
+	<property name="zip.name" value="jME3_${NIGHTLY_JME3}.zip" />
+	<property name="zip.local.name" value="${zip.name}" />
+	<property name="zip.url" value="http://${hidden.hostname.part}keyengine.com/nightly/" />
+	<property name="location" value="${download_tmp}" />
+        <property name="maven" value="${maven_exec}" />
+<!-- now the actual downloading, unzipping and installing begins -->
+	<target name="download_nightly_build">
+<!-- first start by clearing out the old stuff -->
+		<delete dir="${location}/jme3" />
+		<mkdir dir="${location}/jme3" />
+
+<!-- the download is only performed when there is a new nightly build.
+     This way, you can run this ant task multiple times per day without downloading the nightly build each time. -->
+
+		<get verbose="true" src="${zip.url}${zip.name}" dest="${location}/${zip.local.name}" usetimestamp="true" /> 
+
+
+<!-- unzip the downloaded file -->
+		<unzip src="${location}/${zip.local.name}" dest="${location}/jme3" overwrite="true" />
+<!-- after unzipping, install the required jar files, add or remove files as needed. -->
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=jmonkeyengine3 -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=jMonkeyEngine3.jar -Dversion=3.0" />
+		</exec>
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=lwjgl -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/lwjgl.jar -Dversion=3.0" />
+		</exec>
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=lwjgl_natives -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/jME3-lwjgl-natives.jar -Dversion=3.0" />
+		</exec>
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=jbullet -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/jbullet.jar -Dversion=3.0" />
+		</exec>	
+
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=jinput -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/jinput.jar -Dversion=3.0" />
+		</exec>
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=jME3-jbullet -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/jME3-jbullet.jar -Dversion=3.0" />
+		</exec>
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=jME3-test -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/jME3-testdata.jar -Dversion=3.0" />
+		</exec>				
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=jME3-testdata -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/jME3-test.jar -Dversion=3.0" />
+		</exec>		
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=novyon-noise -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/noise-0.0.1-SNAPSHOT.jar -Dversion=3.0" />
+		</exec>		
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=nifty-v1.3 -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/nifty-1.3.jar -Dversion=3.0" />
+		</exec>					
+		<exec dir="${location}/jme3" executable="${maven}" output="${location}/jme3/mvn_install.log" append="true">
+			<arg line="install:install-file -DartifactId=nifty-default-controls-v1.3 -DgroupId=org.jmonkeyengine.mvn.jme3 -Dpackaging=jar -Dfile=lib/nifty-default-controls-1.3.jar -Dversion=3.0" />			
+		</exec>		
+			</target>
+</project>
+
+<!--
+
+Complete(?) list of JMonkey libs which can be pulled in to get fuller subset of JME3.
+
+eventbus-1.4.jar
+j-ogg-oggd.jar
+j-ogg-vorbisd.jar
+jME3-jbullet.jar
+jME3-lwjgl-natives.jar
+jME3-test.jar
+jME3-testdata.jar
+jbullet.jar
+jheora-jst-debug-0.6.0.jar
+jinput.jar
+lwjgl.jar
+nifty-1.3-SNAPSHOT.jar
+nifty-default-controls-1.3-SNAPSHOT.jar
+nifty-examples-1.3-SNAPSHOT.jar
+nifty-style-black-1.3-SNAPSHOT.jar
+nifty-style-grey-1.0.jar
+noise-0.0.1-SNAPSHOT.jar
+stack-alloc.jar
+vecmath.jar
+xmlpull-xpp3-1.1.4c.jar
+
+-->
