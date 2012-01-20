@@ -43,6 +43,9 @@ import org.cogchar.render.opengl.bony.world.ProjectileMgr;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import com.jme3.scene.Node;
+import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
+
 import java.util.List;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
@@ -135,6 +138,16 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 		myHumanoidWrapper.initStuff(hbc, assetManager, rootNode, myWorldMgr.getPhysicsSpace(), meshPath);
 		//VirtCharPanel vcp = getVCPanel();
 		//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
+		
+		String extraRobotMeshPath = bce.getExtraRobotMeshPath();
+		if (extraRobotMeshPath != null) {
+			theLogger.info("Loading extra robot mesh from: " + extraRobotMeshPath);
+			Node extraRobotNode = (Node) assetManager.loadModel(extraRobotMeshPath);
+			SpatialManipFuncs.dumpNodeTree(extraRobotNode, "   ");
+			rootNode.attachChild(extraRobotNode);
+		}
+		
+		
 	}
 	private void initProjectileStuff() { 
 		myPrjctlMgr.initStuff(assetManager);

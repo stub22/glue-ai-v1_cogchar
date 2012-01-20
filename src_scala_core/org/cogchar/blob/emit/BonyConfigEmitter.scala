@@ -23,6 +23,8 @@ package org.cogchar.blob.emit
 class BonyConfigEmitter extends DemoConfigEmitter {
 	// This skeleton + mesh model is delivered by the jar from o.c.bundle.render.opengl.
 	val PATH_HUMANOID_MESH = "jme3dat/models_20110917/sinbad/Sinbad.mesh.xml";	
+
+	val EXTRA_ROBOT_MESH_PATH = "zeno_model-ogre/zeno_model-ogre.mesh.xml";
 	
 	val WINGED_OBELISK_SCENE = "leo_hanson_tests/test3/test3.scene";
 	val WOS_SCALE = 0.5f;
@@ -32,6 +34,8 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	
 	val NB_BONY_ROBOT_ID = "COGCHAR_NB_ROBOT";
 	val DUMMY_ROBOT_ID = "DummyRobot22";
+	
+
 //				DEFAULT_PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",	// Default path in JME test setup
 //			PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md",
 	def getJointConfigFileForChar(bonyCharURI: String) : java.io.File = {
@@ -43,7 +47,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	}
 	
 	def getHumanoidMeshPath : String = PATH_HUMANOID_MESH;
-
+	def getExtraRobotMeshPath : String = EXTRA_ROBOT_MESH_PATH;
 	
 	def getStickFigureScenePath : String = WINGED_OBELISK_SCENE;
 	def getStickFigureSceneScale : Float = 0.5f;
@@ -54,7 +58,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	
 	def getVCPanelClassName(kind : String) : String = {
 		kind match {
-			case "FULL" => "org.cogchar.render.opengl.bony.gui.FullCharPanel";
+			case "FULL" => "org.cogchar.render.opengl.bony.gui.FancyCharPanel";
 			case "SLIM" => "org.cogchar.render.opengl.bony.gui.VirtCharPanel";
 			case _ => null
 		}

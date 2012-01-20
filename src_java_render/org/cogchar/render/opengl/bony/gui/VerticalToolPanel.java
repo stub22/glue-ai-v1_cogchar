@@ -24,13 +24,13 @@ package org.cogchar.render.opengl.bony.gui;
 
 import org.cogchar.platform.trigger.DummyBox;
 import org.cogchar.platform.trigger.DummyTrigger;
-import org.cogchar.render.opengl.bony.app.TwistController;
+import org.cogchar.render.opengl.bony.app.BodyController;
 
 /**
  *
  * @author Stu B. <www.texpedient.com>
  */
-public class VerticalToolPanel extends javax.swing.JPanel implements TwistController {
+public class VerticalToolPanel extends javax.swing.JPanel implements BodyController {
 	private DummyTrigger myPokeTrigger;
 	private DummyBox	 myPokeBox;
 	
@@ -73,6 +73,8 @@ public class VerticalToolPanel extends javax.swing.JPanel implements TwistContro
         jLabel3 = new javax.swing.JLabel();
         spin_twistChan = new javax.swing.JSpinner();
         pokeButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
 
         setRequestFocusEnabled(false);
 
@@ -92,6 +94,13 @@ public class VerticalToolPanel extends javax.swing.JPanel implements TwistContro
             }
         });
 
+        jList1.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jList1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -107,6 +116,11 @@ public class VerticalToolPanel extends javax.swing.JPanel implements TwistContro
                     .addComponent(spin_twistDir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pokeButton))
                 .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 22, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 23, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,6 +140,11 @@ public class VerticalToolPanel extends javax.swing.JPanel implements TwistContro
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pokeButton)
                 .addContainerGap(376, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 235, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 235, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -139,6 +158,8 @@ public class VerticalToolPanel extends javax.swing.JPanel implements TwistContro
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JList jList1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton pokeButton;
     private javax.swing.JSpinner spin_twistChan;
     private javax.swing.JSpinner spin_twistDir;

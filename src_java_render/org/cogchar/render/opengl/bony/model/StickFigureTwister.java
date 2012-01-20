@@ -26,7 +26,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.util.List;
-import org.cogchar.render.opengl.bony.app.TwistController;
+import org.cogchar.render.opengl.bony.app.BodyController;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -38,21 +38,21 @@ public class StickFigureTwister {
 	private float			myWaistTwistRate = 1;
 	private	boolean			myTwistScoringFlag = false;
 	
-	private TwistController	myTwistController;
+	private BodyController	myBodyController;
 	
 	public StickFigureTwister(BonyRenderContext bc) {
 		myContext = bc;
 	}
-	public void setTwistController(TwistController tc) {
-		myTwistController = tc;
+	public void setBodyController(BodyController tc) {
+		myBodyController = tc;
 	}
 	public void twist(float tpf) { 
 				//	System.out.println("simpleUpdate, tpf=" + tpf);
-		if (myTwistController != null) {
+		if (myBodyController != null) {
 			List<AnimControl> animControls = myContext.getAnimControls();
 			// VirtCharPanel vcp = myContext.getPanel();
-			int twistChannelNum = myTwistController.getTwistChannelNum();
-			String direction = myTwistController.getTwistDirection();
+			int twistChannelNum = myBodyController.getTwistChannelNum();
+			String direction = myBodyController.getTwistDirection();
 		// System.out.println("Direction=" + direction);
 			AnimControl ac = animControls.get(twistChannelNum);
 			Skeleton csk = ac.getSkeleton();
@@ -62,7 +62,7 @@ public class StickFigureTwister {
 			Bone rootBone = roots[0];
 			dumpBonePositionsToVCP(rootBone, "rootBone");
 			Bone tgtBone = rootBone;
-			String mod = myTwistController.getTwistChannelModifier();
+			String mod = myBodyController.getTwistChannelModifier();
 			if (mod.equals("first child")) {
 				List<Bone> kids = rootBone.getChildren();
 				Bone firstKid = kids.get(0);

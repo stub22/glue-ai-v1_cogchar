@@ -19,6 +19,7 @@ import java.io.File;
 import javax.swing.JFrame;
 
 import org.cogchar.app.buddy.busker.DancingTriggerItem;
+import org.cogchar.app.buddy.busker.TalkingTriggerItem;
 import org.robokind.api.motion.Robot;
 
 import org.cogchar.bind.rk.robot.client.RobotAnimClient;
@@ -29,7 +30,8 @@ import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelRobotUtils;
 
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
-import org.cogchar.render.opengl.bony.app.TwistController;
+import org.cogchar.render.opengl.bony.app.BodyController;
+import org.cogchar.render.opengl.bony.app.VerbalController;
 
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
@@ -76,7 +78,7 @@ public class PumaAppContext {
 		PumaDualCharacter pdc = new PumaDualCharacter(bc, myBundleContext);
 		pdc.connectBonyDualForURI(bonyCharURI);
 		registerDummyPoker(bc, pdc);
-		
+		registerDummyTalker(bc, pdc);
 		return pdc;
 	}
 
@@ -114,8 +116,21 @@ public class PumaAppContext {
 	}
 	private void registerDummyPoker(BonyRenderContext bc, PumaDualCharacter pdc) { 
 		VirtualCharacterPanel vcp = bc.getPanel();
-		TwistController tc = vcp.getTwistController();
-		tc.setupPokeTrigger(pdc, new DancingTriggerItem());
+		BodyController bodCont = vcp.getBodyController();
+		if (bodCont != null) {
+			bodCont.setupPokeTrigger(pdc, new DancingTriggerItem());		
+		} else {
+			theLogger.warn("No BodyController found to attach poke-trigger to");
+		}
 	}
+	private void registerDummyTalker(BonyRenderContext bc, PumaDualCharacter pdc) { 
+		VirtualCharacterPanel vcp = bc.getPanel();
+		VerbalController verbCont = vcp.getVerbalController();
+		if (verbCont != null) {
+			verbCont.setupTalkTrigger(pdc, new TalkingTriggerItem());
+		} else {
+			theLogger.warn("No VerbalController found to attach talk-trigger to");
+		}
+	}	
 
 }

@@ -47,6 +47,7 @@ import org.cogchar.bind.rk.robot.model.ModelBoneRotRange;
 import org.cogchar.bind.rk.robot.model.ModelBoneRotation;
 import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 
+import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.platform.trigger.DummyTrigger;
 import org.cogchar.platform.trigger.DummyBox;
 
@@ -61,6 +62,7 @@ public class PumaDualCharacter implements DummyBox {
 	private	ModelBlendingRobotServiceContext	myMBRSC;
 	private	BonyRenderContext					myBRC;
 	private	RobotAnimClient						myRAC;
+	private SpeechOutputClient					mySOC;
 	public PumaDualCharacter(BonyRenderContext brc, BundleContext bundleCtx) {
 		myBRC = brc;
 		myMBRSC = new ModelBlendingRobotServiceContext(bundleCtx);
@@ -82,6 +84,7 @@ public class PumaDualCharacter implements DummyBox {
 				theLogger.warn("Could not register AMQP network server for robot with ID=" + brid, t);
 			}
 		}
+		mySOC = new SpeechOutputClient(bundleCtx);
 	}
 	
 	public void setupBonyRobotWithBlender(File jointBindingConfigFile) throws Throwable {
@@ -145,6 +148,13 @@ public class PumaDualCharacter implements DummyBox {
 			myRAC.createAndPlayTestAnim();
 		} catch (Throwable t) {
 			theLogger.error("problem playing test anim", t);
+		}
+	}
+	public void sayText(String txt) {
+		try {
+			mySOC.speakText(txt);
+		} catch (Throwable t) {
+			theLogger.error("problem speaking", t);
 		}
 	}
 }
