@@ -13,22 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.app.buddy.busker;
-import org.cogchar.bundle.app.puma.PumaDualCharacter;
-import org.cogchar.platform.trigger.DummyBox;
+package org.cogchar.render.opengl.bony.app;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.cogchar.platform.trigger.DummyBox;
+import org.cogchar.platform.trigger.DummyTrigger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class TalkingTriggerItem extends TriggerItem {
-	static Logger theLogger = LoggerFactory.getLogger(TalkingTriggerItem.class);
-	
-	@Override public void fire(DummyBox targetBox) {
-		theLogger.info("trigger[" + toString() + "] firing on " + targetBox.toString());
-		PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
-		pdc.sayText("The time is now, " + System.currentTimeMillis());
-	}	
+public interface  VerbalController {
+	public void setupTalkTrigger(DummyBox box, DummyTrigger trig);	
 }

@@ -18,7 +18,8 @@ package org.cogchar.render.opengl.bony.gui;
 import java.awt.Canvas;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import org.cogchar.render.opengl.bony.app.TwistController;
+import org.cogchar.render.opengl.bony.app.BodyController;
+import org.cogchar.render.opengl.bony.app.VerbalController;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -27,5 +28,6 @@ public interface VirtualCharacterPanel {
 	public void setRenderCanvas (Canvas c);
 	public JFrame makeEnclosingJFrame(String title);
 	public JPanel getJPanel();
-	public TwistController getTwistController();
+	public BodyController getBodyController();
+	public VerbalController getVerbalController();
 }
