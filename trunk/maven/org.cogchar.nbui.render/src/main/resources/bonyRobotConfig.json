@@ -1,4 +1,4 @@
-{"robotId":"bonez",
+{"robotId":"myRobot",
 	"ogreModelPath":"./my/path",
 	"jointConfigs":[
 		{"name": "Waist",
