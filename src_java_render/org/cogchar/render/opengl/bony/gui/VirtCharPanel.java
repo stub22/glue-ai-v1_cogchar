@@ -26,7 +26,8 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import org.cogchar.render.opengl.bony.app.TwistController;
+import org.cogchar.render.opengl.bony.app.BodyController;
+import org.cogchar.render.opengl.bony.app.VerbalController;
 import org.cogchar.render.opengl.bony.gui.PanelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,10 +55,14 @@ public class VirtCharPanel extends javax.swing.JPanel implements VirtualCharacte
 		return this;
 	}
 
-	@Override public TwistController getTwistController() {
+	@Override public BodyController getBodyController() {
+		return null;
+	}
+	@Override public VerbalController getVerbalController() {
 		return null;
 	}
 
+	
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -69,7 +74,7 @@ public class VirtCharPanel extends javax.swing.JPanel implements VirtualCharacte
 
         renderPanel = new javax.swing.JPanel();
 
-        setPreferredSize(new java.awt.Dimension(950, 750));
+        setPreferredSize(new java.awt.Dimension(800, 600));
         setLayout(new java.awt.BorderLayout());
 
         renderPanel.setBackground(new java.awt.Color(0, 51, 0));
@@ -82,6 +87,7 @@ public class VirtCharPanel extends javax.swing.JPanel implements VirtualCharacte
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel renderPanel;
     // End of variables declaration//GEN-END:variables
+
 
 
 

@@ -47,9 +47,9 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 		BonyRenderContext bc = getBonyRenderContext();
 		myTwister = new StickFigureTwister(bc);
 		VirtualCharacterPanel vcp = bc.getPanel();
-		TwistController tc = vcp.getTwistController();
-		if (tc != null) {
-			myTwister.setTwistController(tc);
+		BodyController bodCont = vcp.getBodyController();
+		if (bodCont != null) {
+			myTwister.setBodyController(bodCont);
 		}
 		theLogger.info("simpleInitApp() - END");
 	}

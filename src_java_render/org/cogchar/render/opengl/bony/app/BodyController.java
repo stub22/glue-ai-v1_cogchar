@@ -21,7 +21,7 @@ import org.cogchar.platform.trigger.DummyTrigger;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface TwistController  {
+public interface BodyController  {
 	public int getTwistChannelNum();
 	public String getTwistChannelModifier();
 	public String getTwistDirection();

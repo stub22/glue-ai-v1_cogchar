@@ -22,17 +22,26 @@
 
 package org.cogchar.render.opengl.bony.gui;
 
+import org.cogchar.platform.trigger.DummyBox;
+import org.cogchar.platform.trigger.DummyTrigger;
+import org.cogchar.render.opengl.bony.app.VerbalController;
+
 /**
  *
  * @author Stu B. <www.texpedient.com>
  */
-public class HorizontalToolPanel extends javax.swing.JPanel {
-
+public class HorizontalToolPanel extends javax.swing.JPanel implements VerbalController {
+	private DummyTrigger myTalkTrigger;
+	private DummyBox	 myTalkBox;
+	
     /** Creates new form HorizontalToolPanel */
     public HorizontalToolPanel() {
         initComponents();
     }
-
+	@Override public void setupTalkTrigger(DummyBox box, DummyTrigger trig) {
+		myTalkBox = box;
+		myTalkTrigger = trig;
+	}	
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -42,19 +51,53 @@ public class HorizontalToolPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        txt_toSay = new javax.swing.JTextField();
+        button_say = new javax.swing.JButton();
+
         setPreferredSize(new java.awt.Dimension(880, 60));
+
+        txt_toSay.setText("not much");
+
+        button_say.setText("say");
+        button_say.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_sayActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 880, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(61, 61, 61)
+                .addComponent(txt_toSay, javax.swing.GroupLayout.PREFERRED_SIZE, 585, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
+                .addComponent(button_say)
+                .addContainerGap(146, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 60, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_toSay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(button_say))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+
+	private void button_sayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_sayActionPerformed
+		if (myTalkTrigger != null) {
+			myTalkTrigger.fire(myTalkBox);
+		}
+	}//GEN-LAST:event_button_sayActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton button_say;
+    private javax.swing.JTextField txt_toSay;
     // End of variables declaration//GEN-END:variables
+
+
 }
