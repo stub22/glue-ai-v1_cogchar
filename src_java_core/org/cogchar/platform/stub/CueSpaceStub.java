@@ -17,11 +17,11 @@
 package org.cogchar.platform.stub;
 
 import java.util.List;
-import org.cogchar.platform.cues.NamedCue;
-import org.cogchar.platform.cues.NowCue;
-import org.cogchar.platform.cues.TextCue;
-import org.cogchar.platform.cues.TimerCue;
-import org.cogchar.platform.cues.VariableCue;
+import org.cogchar.api.platform.cues.NamedCue;
+import org.cogchar.api.platform.cues.NowCue;
+import org.cogchar.api.platform.cues.TextCue;
+import org.cogchar.api.platform.cues.TimerCue;
+import org.cogchar.api.platform.cues.VariableCue;
 
 /**
  *

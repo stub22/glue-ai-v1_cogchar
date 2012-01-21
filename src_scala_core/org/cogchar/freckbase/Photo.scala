@@ -19,8 +19,8 @@ package org.cogchar.freckbase;
 import java.sql.Blob;
 import javax.sql.rowset.serial.SerialBlob;
 
-import org.cogchar.vision.PortableImage;
-import org.cogchar.vision.OpenCVImage;
+import org.cogchar.sight.vision.PortableImage;
+import org.cogchar.sight.vision.OpenCVImage;
 
 import org.scalaquery.session._
 import org.scalaquery.ql._

@@ -16,19 +16,19 @@
 
 package org.cogchar.convoid.broker;
 
-import org.cogchar.convoid.cursors.MeaningCursorMap;
-import org.cogchar.convoid.output.config.Step;
-import org.cogchar.convoid.output.exec.SpeechJob;
-import org.cogchar.convoid.output.speech.CursorManager;
-import org.cogchar.convoid.output.exec.context.BehaviorContext;
-import org.cogchar.convoid.output.exec.context.BehaviorContext.PromptSource;
-import org.cogchar.convoid.output.exec.context.IBehaviorPlayable;
-import org.cogchar.convoid.output.exec.context.PlayerAction;
-import org.cogchar.convoid.output.exec.context.SpeechPlayer;
-import org.cogchar.convoid.output.speech.CursorRequest;
-import org.cogchar.convoid.output.speech.CursorRequest.BackupOption;
-import org.cogchar.convoid.output.speech.CursorRequest.ResetMode;
-import org.cogchar.convoid.output.speech.CursorRequest.ScoreMode;
+import org.cogchar.xploder.cursors.MeaningCursorMap;
+import org.cogchar.api.convoid.act.Step;
+import org.cogchar.convoid.job.SpeechJob;
+import org.cogchar.xploder.mgr.CursorManager;
+import org.cogchar.convoid.player.BehaviorContext;
+import org.cogchar.convoid.player.BehaviorContext.PromptSource;
+import org.cogchar.convoid.player.IBehaviorPlayable;
+import org.cogchar.convoid.player.PlayerAction;
+import org.cogchar.convoid.player.SpeechPlayer;
+import org.cogchar.xploder.mgr.CursorRequest;
+import org.cogchar.xploder.mgr.CursorRequest.BackupOption;
+import org.cogchar.xploder.mgr.CursorRequest.ResetMode;
+import org.cogchar.xploder.mgr.CursorRequest.ScoreMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

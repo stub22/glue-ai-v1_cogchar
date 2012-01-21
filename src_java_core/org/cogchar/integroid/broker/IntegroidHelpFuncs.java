@@ -21,15 +21,15 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.cogchar.animoid.gaze.IGazeTarget;
-import org.cogchar.animoid.output.AnimationExecJob;
-import org.cogchar.animoid.protocol.Library;
-import org.cogchar.integroid.cue.AwarenessCue;
-import org.cogchar.platform.cues.NamedCue;
-import org.cogchar.platform.cues.NowCue;
-import org.cogchar.platform.cues.TextCue;
-import org.cogchar.platform.cues.ThoughtCue;
-import org.cogchar.platform.cues.TimerCue;
-import org.cogchar.platform.cues.VariableCue;
+import org.cogchar.animoid.job.AnimationExecJob;
+import org.cogchar.api.animoid.protocol.Library;
+import org.cogchar.api.integroid.cue.AwarenessCue;
+import org.cogchar.api.platform.cues.NamedCue;
+import org.cogchar.api.platform.cues.NowCue;
+import org.cogchar.api.platform.cues.TextCue;
+import org.cogchar.api.platform.cues.ThoughtCue;
+import org.cogchar.api.platform.cues.TimerCue;
+import org.cogchar.api.platform.cues.VariableCue;
 import org.cogchar.platform.stub.CueStub;
 
 /**

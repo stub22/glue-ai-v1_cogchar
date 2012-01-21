@@ -17,12 +17,12 @@
 
 package org.cogchar.nwrap.facerec;
 
-import org.cogchar.vision.OpenCVImage;
+import org.cogchar.sight.vision.OpenCVImage;
 import java.util.Collection;
 
 /**
  *
- * @author humankind
+ * @author Stu B.  <www.texpedient.com>
  */
 public interface FaceProfileManager {
 

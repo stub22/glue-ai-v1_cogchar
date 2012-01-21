@@ -26,10 +26,10 @@ import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.convoid.broker.ConvoidFacade;
 import org.cogchar.convoid.broker.ConvoidFacadeSource;
 import org.cogchar.convoid.broker.IRemoteResponseInterface;
-import org.cogchar.convoid.output.config.Category;
-import org.cogchar.convoid.output.exec.AgendaManager;
-import org.cogchar.platform.cues.ThoughtCue;
-import org.cogchar.platform.cues.VariableCue;
+import org.cogchar.api.convoid.act.Category;
+import org.cogchar.convoid.job.AgendaManager;
+import org.cogchar.api.platform.cues.ThoughtCue;
+import org.cogchar.api.platform.cues.VariableCue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

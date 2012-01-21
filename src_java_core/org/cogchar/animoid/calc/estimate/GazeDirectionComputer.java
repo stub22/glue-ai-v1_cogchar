@@ -24,17 +24,17 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
-import org.cogchar.animoid.config.GazeJoint;
-import org.cogchar.animoid.config.ViewPort;
-import org.cogchar.animoid.protocol.EgocentricDirection;
-import org.cogchar.animoid.protocol.Frame;
-import org.cogchar.animoid.protocol.Joint;
-import org.cogchar.animoid.protocol.JointPosition;
-import org.cogchar.animoid.protocol.SmallAngle;
-import org.cogchar.animoid.world.SummableWorldJointList;
+import org.cogchar.api.animoid.gaze.GazeJoint;
+import org.cogchar.api.sight.SightPort;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.Joint;
+import org.cogchar.api.animoid.protocol.JointPosition;
+import org.cogchar.api.animoid.protocol.SmallAngle;
+import org.cogchar.api.animoid.world.SummableWorldJointList;
 
-import static org.cogchar.animoid.config.GazeJoint.Direction.*;
-import static org.cogchar.animoid.protocol.JointStateCoordinateType.*;
+import static org.cogchar.api.animoid.gaze.GazeJoint.Direction.*;
+import static org.cogchar.api.animoid.protocol.JointStateCoordinateType.*;
 
 /**
  * Crude forward-kinematics computation to determine what direction a
@@ -44,11 +44,11 @@ import static org.cogchar.animoid.protocol.JointStateCoordinateType.*;
  */
 public class GazeDirectionComputer {
 	private static Logger	theLogger = LoggerFactory.getLogger(GazeDirectionComputer.class.getName());
-	private ViewPort			myViewPort;
+	private SightPort			myViewPort;
 	private	List<GazeJoint>		myGazeJoints;
 	private SummableWorldJointList<GazeJoint>	myAzimuthSWJL, myElevationSWJL;
 	
-	public GazeDirectionComputer(ViewPort vp, List<GazeJoint> gjList) {
+	public GazeDirectionComputer(SightPort vp, List<GazeJoint> gjList) {
 		theLogger.info("GDC constructed with viewport: " + vp);
 		myViewPort = vp;
 		myGazeJoints = gjList;
@@ -62,7 +62,7 @@ public class GazeDirectionComputer {
 			}
 		}
 	}
-	// This "center" is not the center pixel, unless ViewPort skew is 0.0.
+	// This "center" is not the center pixel, unless SightPort skew is 0.0.
 	public EgocentricDirection computeGazeCenterDirection(Frame f) {
 		double azimuthDeg = 0.0;
 		double elevationDeg = 0.0;
@@ -122,8 +122,8 @@ public class GazeDirectionComputer {
 	public Point computeTargetScreenPoint(Frame jps, EgocentricDirection targetDir) {
 		EgocentricDirection centerDir = computeGazeCenterDirection(jps);
 		EgocentricDirection relativeDir = targetDir.subtract(centerDir);
-		int hpix = myViewPort.getScreenHorizPixelForAzimuthAngle(relativeDir.getAzimuth());
-		int vpix = myViewPort.getScreenVertPixelForElevationAngle(relativeDir.getElevation());
+		int hpix = myViewPort.getCameraHorizPixelForAzimuthAngle(relativeDir.getAzimuth());
+		int vpix = myViewPort.getCameraVertPixelForElevationAngle(relativeDir.getElevation());
 		// hpix and vpix may well be "off screen", i.e. negative or "too big"
 		Point	targetPoint = new Point(hpix, vpix);
 		return targetPoint;
@@ -144,7 +144,7 @@ public class GazeDirectionComputer {
 		Point p = new Point(x, y);
 		return p;
 	}
-	public ViewPort getViewPort() {
+	public SightPort getViewPort() {
 		return myViewPort;
 	}
 	public EgocentricDirection computeGazeVelocity(Frame velFrame) {

@@ -14,20 +14,20 @@
  *  limitations under the License.
  */
 
-package org.cogchar.animoid.output;
+package org.cogchar.animoid.job;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.cogchar.animoid.calc.blend.SlopeBlendFuncs;
-import org.cogchar.animoid.config.AnimoidConfig;
-import org.cogchar.animoid.protocol.Animation;
-import org.cogchar.animoid.protocol.Frame;
-import org.cogchar.animoid.protocol.JPARFrame;
-import org.cogchar.animoid.protocol.JPRRFrame;
-import org.cogchar.animoid.protocol.JVFrame;
-import org.cogchar.animoid.protocol.Joint;
-import org.cogchar.animoid.protocol.JointStateCoordinateType;
+import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
+import org.cogchar.api.animoid.protocol.Animation;
+import org.cogchar.api.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.JPARFrame;
+import org.cogchar.api.animoid.protocol.JPRRFrame;
+import org.cogchar.api.animoid.protocol.JVFrame;
+import org.cogchar.api.animoid.protocol.Joint;
+import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,19 +16,19 @@
 
 package org.cogchar.convoid.broker;
 
-import org.cogchar.convoid.cursors.IConvoidCursor;
-import org.cogchar.convoid.output.config.Agenda;
-import org.cogchar.convoid.output.config.Category;
-import org.cogchar.convoid.output.exec.AgendaManager;
-import org.cogchar.convoid.output.exec.ConversationJob;
+import org.cogchar.xploder.cursors.IConvoidCursor;
+import org.cogchar.api.convoid.act.Agenda;
+import org.cogchar.api.convoid.act.Category;
+import org.cogchar.convoid.job.AgendaManager;
+import org.cogchar.convoid.job.ConversationJob;
 
-import org.cogchar.convoid.output.exec.SpeechJob;
-import org.cogchar.convoid.output.exec.StepJob;
-import org.cogchar.convoid.output.exec.context.BehaviorContext;
-import org.cogchar.convoid.output.exec.context.BehaviorContext.Detail;
-import org.cogchar.convoid.output.exec.context.BehaviorContext.PromptSource;
-import org.cogchar.convoid.output.exec.context.PlayerAction;
-import org.cogchar.convoid.output.speech.CursorRequest;
+import org.cogchar.convoid.job.SpeechJob;
+import org.cogchar.convoid.job.StepJob;
+import org.cogchar.convoid.player.BehaviorContext;
+import org.cogchar.convoid.player.BehaviorContext.Detail;
+import org.cogchar.convoid.player.BehaviorContext.PromptSource;
+import org.cogchar.convoid.player.PlayerAction;
+import org.cogchar.xploder.mgr.CursorRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,15 +36,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
-import org.cogchar.convoid.cue.ConvoidCueSpace;
-import org.cogchar.convoid.cue.HeardCue;
-import org.cogchar.convoid.cue.InhibitionCue;
-import org.cogchar.convoid.cue.InitiativeCue;
-import org.cogchar.convoid.cue.ModeCue;
-import org.cogchar.convoid.cue.PhaseCue;
-import org.cogchar.convoid.cue.ResponseCue;
-import org.cogchar.convoid.cue.VerbalCue;
-import org.cogchar.platform.cues.TimerCue;
+import org.cogchar.api.convoid.cue.ConvoidCueSpace;
+import org.cogchar.api.convoid.cue.HeardCue;
+import org.cogchar.api.convoid.cue.InhibitionCue;
+import org.cogchar.api.convoid.cue.InitiativeCue;
+import org.cogchar.api.convoid.cue.ModeCue;
+import org.cogchar.api.convoid.cue.PhaseCue;
+import org.cogchar.api.convoid.cue.ResponseCue;
+import org.cogchar.api.convoid.cue.VerbalCue;
+import org.cogchar.api.platform.cues.TimerCue;
 import org.cogchar.platform.stub.JobStub;
 import org.cogchar.platform.stub.ThalamentStub;
 

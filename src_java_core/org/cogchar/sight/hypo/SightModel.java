@@ -17,7 +17,8 @@
 
 package org.cogchar.sight.hypo;
 
-import org.cogchar.sight.obs.SightObservation;
+import org.cogchar.api.sight.SightExposureStatus;
+import org.cogchar.api.sight.SightObservation;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -29,11 +30,11 @@ import org.cogchar.animoid.broker.AnimoidCueSpaceStub;
 
 import org.cogchar.animoid.calc.estimate.GazeDirectionComputer;
 import org.cogchar.animoid.calc.estimate.PositionEstimator;
-import org.cogchar.animoid.config.AnimoidConfig;
-import org.cogchar.animoid.config.GazeJoint;
-import org.cogchar.animoid.config.ViewPort;
-import org.cogchar.animoid.protocol.EgocentricDirection;
-import org.cogchar.animoid.protocol.Frame;
+import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
+import org.cogchar.api.animoid.gaze.GazeJoint;
+import org.cogchar.api.sight.SightPort;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.animoid.protocol.Frame;
 import org.cogchar.platform.stub.CueSpaceStub;
 import org.cogchar.platform.util.TimeUtils;
 import org.slf4j.Logger;
@@ -125,7 +126,7 @@ public abstract class SightModel<HypoType extends SightHypothesis> {
 
 	public void setAnimator(Animator a) {
 		AnimoidConfig ac = a.getAnimoidConfig();
-		ViewPort vp = ac.getViewPort();
+		SightPort vp = ac.getViewPort();
 		List<GazeJoint> gjl = ac.getGazeJoints();
 		GazeDirectionComputer gdc = new GazeDirectionComputer(vp, gjl);
 		setGazeDirectionComputer(gdc);
@@ -154,7 +155,7 @@ public abstract class SightModel<HypoType extends SightHypothesis> {
 	}
 
 	public Rectangle getFieldBoundsRect() {
-		ViewPort vp = getGazeDirectionComputer().getViewPort();
+		SightPort vp = getGazeDirectionComputer().getViewPort();
 		Rectangle fieldBoundsRect = new Rectangle(1, 1, vp.getWidthPixels() - 2, vp.getHeightPixels() - 2);
 		return fieldBoundsRect;
 	}
@@ -162,7 +163,7 @@ public abstract class SightModel<HypoType extends SightHypothesis> {
 	public Rectangle getObjectImageGrabRect(Rectangle detectedRect, boolean invertedVertical, double expansionRatio) {
 		// Compute a "good" rectangle to use for a (face) image grab, based on the
 		// detectedRect (which came from OpenCV).
-		ViewPort vp = getGazeDirectionComputer().getViewPort();
+		SightPort vp = getGazeDirectionComputer().getViewPort();
 		Rectangle fieldBoundsRect = getFieldBoundsRect();
 		Rectangle fixedRect = detectedRect;
 		if (invertedVertical) {
@@ -215,7 +216,7 @@ public abstract class SightModel<HypoType extends SightHypothesis> {
 	}
 	public SightExposureStatus exposureStatusForObs(SightObservation obs) {
 		Point currentObsScreenPoint = getObsCenterAdjustedScreenPoint(obs, false);
-		ViewPort vp = getGazeDirectionComputer().getViewPort();
+		SightPort vp = getGazeDirectionComputer().getViewPort();
 		if (vp.inBounds(currentObsScreenPoint)) {
 			return SightExposureStatus.EXPOSED;
 		} else {
