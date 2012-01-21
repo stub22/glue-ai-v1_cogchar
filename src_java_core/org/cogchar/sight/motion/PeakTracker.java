@@ -20,10 +20,10 @@ import org.cogchar.sight.hypo.SightModel;
 import org.cogchar.sight.track.SightTrackingTarget;
 import java.awt.Point;
 import org.cogchar.animoid.calc.estimate.GazeDirectionComputer;
-import org.cogchar.animoid.config.ViewPort;
-import org.cogchar.animoid.protocol.EgocentricDirection;
-import org.cogchar.animoid.protocol.Frame;
-import org.cogchar.sight.track.SightCue;
+import org.cogchar.api.sight.SightPort;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.animoid.protocol.Frame;
+import org.cogchar.api.sight.SightCue;
 
 /**
  *
@@ -40,12 +40,12 @@ public class PeakTracker extends SightTrackingTarget<SightCue> {
 	}
 	public Point getCameraCenterPixel() {
 		GazeDirectionComputer gdc = myModelForEstimates.getGazeDirectionComputer();
-		ViewPort vp = gdc.getViewPort();
+		SightPort vp = gdc.getViewPort();
 		return vp.getCameraCenterPixel();
 	}
 	public int getCameraPixelArea() {
 		GazeDirectionComputer gdc = myModelForEstimates.getGazeDirectionComputer();
-		ViewPort vp = gdc.getViewPort();
+		SightPort vp = gdc.getViewPort();
 		int width = vp.getWidthPixels();
 		int height = vp.getHeightPixels();
 		return width * height;

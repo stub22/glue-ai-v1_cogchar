@@ -16,15 +16,15 @@
 
 package org.cogchar.integroid.awareness;
 
-import org.cogchar.platform.cues.ThoughtCue;
+import org.cogchar.api.platform.cues.ThoughtCue;
 import org.cogchar.integroid.broker.IntegroidFacade;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.sight.hypo.SightModel;
 import org.cogchar.sight.motion.PeakTracker;
-import org.cogchar.sight.track.SightCue;
-import org.cogchar.integroid.cue.AwarenessCue;
-import org.cogchar.integroid.cue.MotionCue;
-import org.cogchar.integroid.cue.PersonCue;
+import org.cogchar.api.sight.SightCue;
+import org.cogchar.api.integroid.cue.AwarenessCue;
+import org.cogchar.api.integroid.cue.MotionCue;
+import org.cogchar.api.integroid.cue.PersonCue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;

@@ -16,8 +16,8 @@
 
 package org.cogchar.animoid.calc.blend;
 
-import org.cogchar.animoid.protocol.JPRRFrame;
-import org.cogchar.animoid.protocol.JointPositionRROM;
+import org.cogchar.api.animoid.protocol.JPRRFrame;
+import org.cogchar.api.animoid.protocol.JointPositionRROM;
 
 /**
  * @author Stu B. <www.texpedient.com>

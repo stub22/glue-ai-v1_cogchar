@@ -18,7 +18,7 @@ package org.cogchar.platform.stub;
 
 /**
  *
- * @author humankind
+ * @author Stu B.  <www.texpedient.com>
  */
 public interface ThalamentSpaceStub {
     public void postFact(ThalamentStub t);

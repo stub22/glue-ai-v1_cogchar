@@ -19,11 +19,11 @@ package org.cogchar.animoid.calc.plan;
 
 import org.cogchar.animoid.calc.curvematrix.RampingFramedCurveSeq;
 import org.cogchar.animoid.calc.estimate.GazeJointStateSnap;
-import org.cogchar.animoid.config.GazeJoint;
-import org.cogchar.animoid.config.GazeJointStrategy;
-import org.cogchar.animoid.world.WorldJoint;
-import org.cogchar.animoid.world.WorldJointStateSnap;
-import org.cogchar.animoid.world.WorldJointTrajectory;
+import org.cogchar.api.animoid.gaze.GazeJoint;
+import org.cogchar.api.animoid.gaze.GazeJointStrategy;
+import org.cogchar.api.animoid.world.WorldJoint;
+import org.cogchar.api.animoid.world.WorldJointStateSnap;
+import org.cogchar.api.animoid.world.WorldJointTrajectory;
 import org.appdapter.bind.math.jscience.function.BumpUF;
 import org.appdapter.bind.math.jscience.number.NumberFactory;
 import org.jscience.mathematics.structure.Field;

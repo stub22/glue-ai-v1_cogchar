@@ -15,12 +15,12 @@
  */
 package org.cogchar.animoid.monitor;
 
-import org.cogchar.animoid.protocol.JPARFrame;
-import org.cogchar.animoid.protocol.JointPositionSnapshot;
+import org.cogchar.api.animoid.protocol.JPARFrame;
+import org.cogchar.api.animoid.protocol.JointPositionSnapshot;
 
 /**
  *
- * @author humankind
+ * @author Stu B.  <www.texpedient.com>
  */
 public interface IServoPositionReporter {
 	public enum Flavor {

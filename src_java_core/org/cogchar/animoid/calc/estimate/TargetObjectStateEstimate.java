@@ -19,10 +19,10 @@ package org.cogchar.animoid.calc.estimate;
 
 import java.awt.Rectangle;
 import java.io.Serializable;
-import org.cogchar.animoid.config.FaceNoticeConfig;
-import org.cogchar.animoid.protocol.EgocentricDirection;
-import org.cogchar.animoid.protocol.Frame;
-import org.cogchar.sight.obs.SightObservation;
+import org.cogchar.api.freckler.protocol.FaceNoticeConfig;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.animoid.protocol.Frame;
+import org.cogchar.api.sight.SightObservation;
 
 /**
  * @author Stu B. <www.texpedient.com>

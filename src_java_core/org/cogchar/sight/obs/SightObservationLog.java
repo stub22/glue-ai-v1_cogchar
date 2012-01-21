@@ -16,6 +16,7 @@
 
 package org.cogchar.sight.obs;
 
+import org.cogchar.api.sight.SightObservation;
 import org.cogchar.sight.hypo.SightHypothesis;
 
 import java.util.Collection;
@@ -27,8 +28,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.cogchar.animoid.calc.estimate.TargetObjectStateEstimate;
-import org.cogchar.animoid.config.FaceNoticeConfig;
-import org.cogchar.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.freckler.protocol.FaceNoticeConfig;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.platform.util.CollectionFilter;
 import org.cogchar.platform.util.TimeUtils;
 import org.slf4j.Logger;

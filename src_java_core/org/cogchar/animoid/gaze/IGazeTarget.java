@@ -15,12 +15,12 @@
  */
 
 package org.cogchar.animoid.gaze;
-import org.cogchar.animoid.protocol.EgocentricDirection;
-import org.cogchar.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.animoid.protocol.Frame;
 
 /**
  *
- * @author humankind
+ * @author Stu B.  <www.texpedient.com>
  */
 public interface IGazeTarget {
 	public enum Flavor {

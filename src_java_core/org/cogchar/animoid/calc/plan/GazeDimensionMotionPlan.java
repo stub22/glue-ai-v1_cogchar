@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.cogchar.animoid.calc.estimate.GazeJointStateSnap;
 
-import org.cogchar.animoid.config.GazeJoint;
+import org.cogchar.api.animoid.gaze.GazeJoint;
 import org.cogchar.animoid.calc.optimize.MultiStepPJT;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
 import org.jscience.mathematics.number.Number;

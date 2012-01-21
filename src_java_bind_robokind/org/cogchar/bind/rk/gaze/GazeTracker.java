@@ -18,7 +18,7 @@ package org.cogchar.bind.rk.gaze;
 import java.util.List;
 import org.cogchar.animoid.gaze.IGazeTarget;
 import org.cogchar.gaze.ObservationTrackerRegistry;
-import org.cogchar.sight.obs.SightObservation;
+import org.cogchar.api.sight.SightObservation;
 
 /**
  *

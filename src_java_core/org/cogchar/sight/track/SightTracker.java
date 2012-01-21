@@ -16,12 +16,14 @@
 
 package org.cogchar.sight.track;
 
-import org.cogchar.sight.hypo.SightExposureStatus;
+import org.cogchar.api.sight.SightAttentionStatus;
+import org.cogchar.api.sight.SightCue;
+import org.cogchar.api.sight.SightExposureStatus;
 import org.cogchar.sight.hypo.SightHypothesis;
 import org.cogchar.sight.hypo.SightModel;
-import org.cogchar.sight.obs.SightObservation;
-import org.cogchar.animoid.config.AnimoidConfig;
-import org.cogchar.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.sight.SightObservation;
+import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.platform.stub.CueBrokerStub;
 import org.cogchar.platform.util.TimeUtils;
 

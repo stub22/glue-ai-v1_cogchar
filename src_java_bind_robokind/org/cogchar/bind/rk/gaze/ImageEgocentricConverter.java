@@ -15,7 +15,7 @@
  */
 package org.cogchar.bind.rk.gaze;
 
-import org.cogchar.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.gaze.CoordinateConverter;
 
 /**

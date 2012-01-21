@@ -17,7 +17,7 @@
 package org.cogchar.animoid.broker;
 
 import org.cogchar.animoid.calc.estimate.PositionEstimator;
-import org.cogchar.animoid.config.AnimoidConfig;
+import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
 
 public interface Animator {
 	public void playAnimation(String animName, String gestureName, double rashAllowMult, double rashBonusAllow);

@@ -15,19 +15,19 @@
  */
 package org.cogchar.convoid.broker;
 
-import org.cogchar.convoid.cursors.CursorFactory;
-import org.cogchar.convoid.cursors.MeaningCursorMap;
-import org.cogchar.convoid.output.config.Category;
-import org.cogchar.convoid.output.config.Step;
-import org.cogchar.convoid.output.exec.ConversationJob;
-import org.cogchar.convoid.output.exec.SpeechJob;
-import org.cogchar.convoid.output.exec.ConvoidJobSpace;
-import org.cogchar.convoid.output.speech.CursorManager;
-import org.cogchar.convoid.cursors.IConvoidCursor;
-import org.cogchar.convoid.output.exec.AgendaManager;
-import org.cogchar.convoid.output.exec.StepJob;
+import org.cogchar.xploder.cursors.CursorFactory;
+import org.cogchar.xploder.cursors.MeaningCursorMap;
+import org.cogchar.api.convoid.act.Category;
+import org.cogchar.api.convoid.act.Step;
+import org.cogchar.convoid.job.ConversationJob;
+import org.cogchar.convoid.job.SpeechJob;
+import org.cogchar.convoid.job.ConvoidJobSpace;
+import org.cogchar.xploder.mgr.CursorManager;
+import org.cogchar.xploder.cursors.IConvoidCursor;
+import org.cogchar.convoid.job.AgendaManager;
+import org.cogchar.convoid.job.StepJob;
 import java.util.logging.Logger;
-import org.cogchar.convoid.cue.ConvoidCueSpace;
+import org.cogchar.api.convoid.cue.ConvoidCueSpace;
 import org.cogchar.platform.stub.JobStub;
 import org.cogchar.platform.stub.ThalamentStub;
 import org.cogchar.platform.util.TimeUtils;

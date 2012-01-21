@@ -23,14 +23,14 @@ import java.util.logging.Logger;
 
 
 
-import org.cogchar.convoid.cue.ConvoidCueSpace;
-import org.cogchar.convoid.cue.ModeCue;
-import org.cogchar.convoid.cue.VerbalCue;
+import org.cogchar.api.convoid.cue.ConvoidCueSpace;
+import org.cogchar.api.convoid.cue.ModeCue;
+import org.cogchar.api.convoid.cue.VerbalCue;
 
 import java.util.Map;
-import org.cogchar.integroid.cue.AwarenessCue;
-import org.cogchar.integroid.cue.MotionCue;
-import org.cogchar.integroid.cue.PersonCue;
+import org.cogchar.api.integroid.cue.AwarenessCue;
+import org.cogchar.api.integroid.cue.MotionCue;
+import org.cogchar.api.integroid.cue.PersonCue;
 import org.cogchar.animoid.broker.AnimoidCueSpaceStub;
 import org.cogchar.platform.stub.CueBrokerStub;
 import org.cogchar.platform.stub.JobConfig;

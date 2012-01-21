@@ -5,7 +5,7 @@
 
 package org.cogchar.animoid.calc.plan;
 
-import org.cogchar.animoid.config.GazeDimension;
+import org.cogchar.api.animoid.gaze.GazeDimension;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.cogchar.animoid.config.ViewPort;
-import org.cogchar.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.sight.SightPort;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +87,7 @@ public class SightHypoRegistry<HypoType extends SightHypothesis> {
 		}
 		removeKnownDeadHypos(deadHyposToRemove);
 	}		
-	protected synchronized boolean attemptToCollapseOneHypo(double maxDistance, ViewPort vp) {
+	protected synchronized boolean attemptToCollapseOneHypo(double maxDistance, SightPort vp) {
 		Set<Integer> hypoNumbers = new HashSet<Integer>(myHypothesesByNumber.keySet());
 		List<Integer> sortedHypoNumbers = new ArrayList<Integer>(hypoNumbers);
 		Collections.sort(sortedHypoNumbers);
