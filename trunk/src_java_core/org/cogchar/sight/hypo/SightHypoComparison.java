@@ -17,9 +17,9 @@
 
 package org.cogchar.sight.hypo;
 
-import org.cogchar.animoid.config.ViewPort;
+import org.cogchar.api.sight.SightPort;
 import org.cogchar.sight.obs.SightObservationComparison;
-import org.cogchar.sight.obs.SightObservation;
+import org.cogchar.api.sight.SightObservation;
 
 
 /**
@@ -34,7 +34,7 @@ public class SightHypoComparison<HypoType extends SightHypothesis> {
 	public double	myAdditionalDistance = 0.0;
 	public int		myOverlapCount = -99;
 
-	public SightHypoComparison(SightHypoRegistry<HypoType> registry, Integer lowerHypoNumber, Integer upperHypoNumber, ViewPort vp) {
+	public SightHypoComparison(SightHypoRegistry<HypoType> registry, Integer lowerHypoNumber, Integer upperHypoNumber, SightPort vp) {
 		lowerHypo = registry.getHypoForNumber(lowerHypoNumber);
 		upperHypo = registry.getHypoForNumber(upperHypoNumber);
 		// Should we use MostAccurateObs instead?

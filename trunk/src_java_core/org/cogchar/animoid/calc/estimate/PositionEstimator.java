@@ -16,7 +16,7 @@
 
 package org.cogchar.animoid.calc.estimate;
 
-import org.cogchar.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.Frame;
 
 
 /**

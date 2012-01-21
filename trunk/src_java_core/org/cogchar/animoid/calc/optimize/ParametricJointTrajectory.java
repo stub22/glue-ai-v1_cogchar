@@ -18,7 +18,7 @@ package org.cogchar.animoid.calc.optimize;
 
 /**
  *
- * @author humankind
+ * @author Stu B.  <www.texpedient.com>
  */
 public class ParametricJointTrajectory {
 

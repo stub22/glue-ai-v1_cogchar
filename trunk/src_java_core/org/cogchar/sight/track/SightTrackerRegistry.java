@@ -16,8 +16,9 @@
 
 package org.cogchar.sight.track;
 
+import org.cogchar.api.sight.SightCue;
 import org.cogchar.sight.hypo.SightHypothesis;
-import org.cogchar.sight.obs.SightObservation;
+import org.cogchar.api.sight.SightObservation;
 import java.util.HashSet;
 import java.util.Set;
 import org.slf4j.Logger;

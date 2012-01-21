@@ -20,12 +20,12 @@ import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
-import org.cogchar.platform.cues.NamedCue;
-import org.cogchar.platform.cues.NowCue;
-import org.cogchar.platform.cues.TextCue;
-import org.cogchar.platform.cues.ThoughtCue;
-import org.cogchar.platform.cues.TimerCue;
-import org.cogchar.platform.cues.VariableCue;
+import org.cogchar.api.platform.cues.NamedCue;
+import org.cogchar.api.platform.cues.NowCue;
+import org.cogchar.api.platform.cues.TextCue;
+import org.cogchar.api.platform.cues.ThoughtCue;
+import org.cogchar.api.platform.cues.TimerCue;
+import org.cogchar.api.platform.cues.VariableCue;
 import org.cogchar.platform.util.TimeUtils;
 
 /**

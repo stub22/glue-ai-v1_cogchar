@@ -32,8 +32,8 @@ import java.sql.{Connection, DriverManager, Statement, PreparedStatement, Result
 
 import org.cogchar.nwrap.facerec.FaceRecPopulationManager;
 
-import org.cogchar.freckler.protocol.{FreckleQuery, FreckleResult, FreckleSampleQuality};
-import org.cogchar.animoid.config.FreckleMatchConfig;
+import org.cogchar.api.freckler.protocol.{FreckleQuery, FreckleResult, FreckleSampleQuality};
+import org.cogchar.api.freckler.protocol.FreckleMatchConfig;
 import java.util.logging.Logger;
 
 /* This class provides a facade suitable for Scala 2.7 export to Java.

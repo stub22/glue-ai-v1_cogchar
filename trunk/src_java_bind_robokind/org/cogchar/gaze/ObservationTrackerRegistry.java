@@ -16,7 +16,7 @@
 package org.cogchar.gaze;
 
 import java.util.List;
-import org.cogchar.sight.obs.SightObservation;
+import org.cogchar.api.sight.SightObservation;
 
 /**
  * Tracks observations, combining observations of the same target into a single

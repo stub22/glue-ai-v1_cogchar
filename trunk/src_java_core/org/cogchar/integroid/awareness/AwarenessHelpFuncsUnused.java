@@ -17,7 +17,7 @@
 
 package org.cogchar.integroid.awareness;
 
-import org.cogchar.integroid.cue.PersonCue;
+import org.cogchar.api.integroid.cue.PersonCue;
 import java.util.List;
 import org.cogchar.integroid.broker.IntegroidFacade;
 import org.cogchar.integroid.broker.IntegroidHelpFuncs;

@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-package org.cogchar.animoid.output;
+package org.cogchar.animoid.job;
 
 
-import org.cogchar.animoid.config.AnimoidConfig;
+import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
 import org.cogchar.animoid.gaze.GazeStrategyCue;
 import org.cogchar.animoid.gaze.IGazeTarget;
-import org.cogchar.animoid.protocol.EgocentricDirection;
-import org.cogchar.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.animoid.protocol.Frame;
 import org.cogchar.platform.stub.JobSpaceStub;
 import org.cogchar.sight.hypo.SightModel;
 

@@ -16,9 +16,10 @@
 
 package org.cogchar.sight.track;
 
+import org.cogchar.api.sight.SightCue;
 import org.cogchar.animoid.gaze.IGazeTarget;
 import org.cogchar.animoid.gaze.IGazeTarget.Flavor;
-import org.cogchar.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.Frame;
 
 /**
  * @author Stu B. <www.texpedient.com>

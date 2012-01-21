@@ -20,13 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.cogchar.animoid.config.GazeJoint;
-import org.cogchar.animoid.protocol.Animation;
-import org.cogchar.animoid.protocol.Frame;
-import org.cogchar.animoid.protocol.Joint;
-import org.cogchar.animoid.protocol.JointPosition;
-import org.cogchar.animoid.protocol.JointStateCoordinateType;
-import org.cogchar.animoid.protocol.Robot;
+import org.cogchar.api.animoid.gaze.GazeJoint;
+import org.cogchar.api.animoid.protocol.Animation;
+import org.cogchar.api.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.Joint;
+import org.cogchar.api.animoid.protocol.JointPosition;
+import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
+import org.cogchar.api.animoid.protocol.Robot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -28,8 +28,8 @@ import org.scalaquery.ql.extended.{ExtendedTable => ExTable}
 import org.scalaquery.ql.extended.H2Driver.Implicit._
 
 
-import org.cogchar.vision.PortableImage;
-import org.cogchar.vision.OpenCVImage;
+import org.cogchar.sight.vision.PortableImage;
+import org.cogchar.sight.vision.OpenCVImage;
 import org.cogchar.nwrap.facerec.FaceRecPopulationManager;
 
 import java.util.logging.Logger;

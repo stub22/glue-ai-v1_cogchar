@@ -20,10 +20,10 @@ package org.cogchar.animoid.gaze;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cogchar.animoid.config.AnimoidConfig;
-import org.cogchar.animoid.config.GazeJoint;
-import org.cogchar.animoid.config.GazeJointStrategy;
-import org.cogchar.animoid.config.GlanceStrategy;
+import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
+import org.cogchar.api.animoid.gaze.GazeJoint;
+import org.cogchar.api.animoid.gaze.GazeJointStrategy;
+import org.cogchar.api.animoid.gaze.GlanceStrategy;
 import org.cogchar.platform.stub.CueStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -18,7 +18,7 @@ package org.cogchar.nwrap.core;
 
 /**
  *
- * @author humankind
+ * @author Stu B.  <www.texpedient.com>
  */
 public abstract class NativeEngine {
 

@@ -17,11 +17,11 @@
 package org.cogchar.animoid.calc.estimate;
 
 
-import org.cogchar.animoid.config.GazeJoint;
-import org.cogchar.animoid.config.GazeJointStrategy;
-import org.cogchar.animoid.protocol.Frame;
-import org.cogchar.animoid.protocol.JointPosition;
-import org.cogchar.animoid.world.WorldJointStateSnap;
+import org.cogchar.api.animoid.gaze.GazeJoint;
+import org.cogchar.api.animoid.gaze.GazeJointStrategy;
+import org.cogchar.api.animoid.protocol.Frame;
+import org.cogchar.api.animoid.protocol.JointPosition;
+import org.cogchar.api.animoid.world.WorldJointStateSnap;
 
 public class GazeJointStateSnap extends WorldJointStateSnap {
 

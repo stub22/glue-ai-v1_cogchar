@@ -17,8 +17,8 @@
 package org.cogchar.animoid.calc.plan;
 
 
-import org.cogchar.animoid.config.GazeJoint;
-import org.cogchar.animoid.config.GazeJointStrategy;
+import org.cogchar.api.animoid.gaze.GazeJoint;
+import org.cogchar.api.animoid.gaze.GazeJointStrategy;
 
 import org.cogchar.animoid.calc.curve.ConstAccelCurve;
 import org.cogchar.animoid.calc.estimate.GazeJointStateSnap;

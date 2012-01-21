@@ -16,8 +16,8 @@
 
 package org.cogchar.animoid.gaze;
 
-import org.cogchar.animoid.protocol.EgocentricDirection;
-import org.cogchar.animoid.protocol.SmallAngle;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.animoid.protocol.SmallAngle;
 
 /**
  * @author Matt Stevenson

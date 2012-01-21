@@ -20,7 +20,7 @@ import org.appdapter.bind.math.jscience.number.NumberFactory;
 
 /**
  *
- * @author humankind
+ * @author Stu B.  <www.texpedient.com>
  */
 public class MultiStepPJT extends ParametricJointTrajectory {
 

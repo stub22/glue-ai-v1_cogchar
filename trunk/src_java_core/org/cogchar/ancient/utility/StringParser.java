@@ -10,7 +10,7 @@ package org.cogchar.ancient.utility;
 
 /**
  *
- * @author humankind
+ * @author Stu B.  <www.texpedient.com>
  */
 public class StringParser {
 

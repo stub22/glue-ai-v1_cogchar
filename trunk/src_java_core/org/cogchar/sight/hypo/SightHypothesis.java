@@ -17,11 +17,12 @@
 
 package org.cogchar.sight.hypo;
 
+import org.cogchar.api.sight.SightExposureStatus;
 import org.cogchar.sight.obs.SightObservationLog;
-import org.cogchar.sight.obs.SightObservation;
+import org.cogchar.api.sight.SightObservation;
 import java.util.List;
-import org.cogchar.animoid.config.FaceNoticeConfig;
-import org.cogchar.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.freckler.protocol.FaceNoticeConfig;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.platform.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

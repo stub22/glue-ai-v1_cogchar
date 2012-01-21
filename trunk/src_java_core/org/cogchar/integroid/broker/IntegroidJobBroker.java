@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-import org.cogchar.convoid.output.exec.ConvoidJobSpace;
+import org.cogchar.convoid.job.ConvoidJobSpace;
 import org.cogchar.convoid.broker.ConvoidFacade;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.animoid.broker.AnimoidJobSpace;

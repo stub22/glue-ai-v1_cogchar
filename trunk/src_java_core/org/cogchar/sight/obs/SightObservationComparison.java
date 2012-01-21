@@ -16,10 +16,11 @@
 
 package org.cogchar.sight.obs;
 
+import org.cogchar.api.sight.SightObservation;
 import org.cogchar.sight.hypo.SightHypothesis;
-import org.cogchar.animoid.config.FaceNoticeConfig;
-import org.cogchar.animoid.config.ViewPort;
-import org.cogchar.animoid.protocol.EgocentricDirection;
+import org.cogchar.api.freckler.protocol.FaceNoticeConfig;
+import org.cogchar.api.sight.SightPort;
+import org.cogchar.api.animoid.protocol.EgocentricDirection;
 
 /**
  *
@@ -32,7 +33,7 @@ public class SightObservationComparison {
 	public double azDiffDiams;
 	public double elDiffDiams;
 
-	public SightObservationComparison(SightObservation one, SightObservation two, ViewPort vp) {
+	public SightObservationComparison(SightObservation one, SightObservation two, SightPort vp) {
 
 		timeDiffSec = ((double) Math.abs(one.getTimeStampMsec() - two.getTimeStampMsec())) / 1000.0;
 		EgocentricDirection dir1 = one.getCenterDirection();

@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.management.ObjectName;
 import org.cogchar.convoid.broker.ConvoidHelpFuncs;
-import org.cogchar.convoid.output.exec.StepJob;
+import org.cogchar.convoid.job.StepJob;
 import org.cogchar.integroid.broker.IntegroidFacade;
 import org.cogchar.integroid.broker.IntegroidHelpFuncs;
 import org.cogchar.platform.stub.CueListener;

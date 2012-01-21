@@ -15,10 +15,10 @@
  */
 package org.cogchar.convoid.broker;
 
-import org.cogchar.convoid.output.exec.context.BehaviorContext;
-import org.cogchar.convoid.output.exec.context.BehaviorContext.Detail;
-import org.cogchar.convoid.output.exec.context.IBehaviorPlayable;
-import org.cogchar.convoid.output.exec.context.StepPlayer;
+import org.cogchar.convoid.player.BehaviorContext;
+import org.cogchar.convoid.player.BehaviorContext.Detail;
+import org.cogchar.convoid.player.IBehaviorPlayable;
+import org.cogchar.convoid.player.StepPlayer;
 import java.util.logging.Logger;
 
 /**

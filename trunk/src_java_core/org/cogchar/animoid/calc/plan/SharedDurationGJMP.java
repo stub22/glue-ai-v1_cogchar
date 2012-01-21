@@ -21,7 +21,7 @@ import org.cogchar.animoid.calc.curvematrix.ConstAccelCurveSequence;
 import org.cogchar.animoid.calc.estimate.GazeJointStateSnap;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
 
-import org.cogchar.animoid.config.GazeJointStrategy;
+import org.cogchar.api.animoid.gaze.GazeJointStrategy;
 import org.appdapter.bind.math.jscience.number.NumberFactory;
 import org.jscience.mathematics.number.Number;
 import org.jscience.mathematics.structure.Field;
