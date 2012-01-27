@@ -69,7 +69,8 @@ public class PumaDualCharacter implements DummyBox {
 	}
 	public void connectBonyDualForURI( String bonyDualCharURI) throws Throwable {
 		BundleContext bundleCtx = myMBRSC.getBundleContext();
-		File jointBindingConfigFile = myBRC.getJointConfigFileForChar(bonyDualCharURI);
+		myBRC.setMainCharURI(bonyDualCharURI);
+		File jointBindingConfigFile = myBRC.getJointConfigFileForChar();
         //rjbd.registerDummyRobot();
 		setupBonyRobotWithBlender(jointBindingConfigFile);
 		ModelRobot br = getBonyRobot();

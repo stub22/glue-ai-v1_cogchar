@@ -122,6 +122,12 @@
 			<version>${robokind.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.integration.motion_speech</artifactId>
+			<version>${robokind.version}</version>
+			<scope>runtime</scope>
+		</dependency>		
 	</dependencies>
 
 	<build>

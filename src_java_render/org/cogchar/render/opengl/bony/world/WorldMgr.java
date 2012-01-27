@@ -50,20 +50,8 @@ public class WorldMgr {
 	public PhysicsSpace getPhysicsSpace() {
 		return myPhysicsAppState.getPhysicsSpace();
 	}	
-	public static DirectionalLight makeDirectionalLight() {
 
-        //   rootNode.addLight(al);
 
-        DirectionalLight dl = new DirectionalLight();
-        dl.setDirection(new Vector3f(-0.1f, -0.7f, -1).normalizeLocal());
-        dl.setColor(new ColorRGBA(1f, 1f, 1f, 1.0f));
-        return dl;
-    }
-	public static AmbientLight makeAmbientLight() {
-		AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(1));
-        return al;
-	}
 	public static void makeCrossHairs(AssetManager asstMgr, Node parentNode,
 				BitmapFont font, 	AppSettings settings) {
 		

@@ -40,19 +40,45 @@
 			<artifactId>ext.bundle.opengl.jmonkey</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+		<!-- We depend directly on the libs, instead of the bundles, and mark the scope "provided",
+			 to make it easier for some tools (including Netbeans 7.0.1) to navigate the code.
+			 It also demonstrates that an OSGi-free version of Cogchar is possible.
+			-->
 		<dependency>
 			<groupId>org.appdapter</groupId>
-			<artifactId>org.appdapter.bundle.core</artifactId>
+			<artifactId>org.appdapter.lib.core</artifactId>
 			<version>${appdapter.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		<!-- This is here temporarily to facilitate Dev testing of org.cogchar.lib.render through Netbeans -->
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.lib.registry</artifactId>
+			<version>${appdapter.version}</version>
+			<scope>provided</scope>
+		</dependency>		
+		<dependency>
+			<!-- This is here for dev to facilitate Dev testing of org.cogchar.lib.render through Netbeans. 
+				Should be removed before each project release, suggesting need for Maven profiles for dev vs. deliver
+				(easier under Gradle or SBT?).  
+			-->
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.6.1</version>
-			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<!-- This dep is used in addition to ext.bundle, to help NB. -->
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-core</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>	
+		</dependency>
+		<dependency>
+			<!-- This dep is used in addition to ext.bundle, to help NB. -->
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-jbullet</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>	
+		</dependency>			
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-testdata</artifactId>

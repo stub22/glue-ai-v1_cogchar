@@ -89,8 +89,11 @@ public class BonyRenderContext {
 	public BonyConfigEmitter getBonyConfigEmitter() { 
 		return myConfigEmitter;
 	}
-	public File getJointConfigFileForChar(String bonyCharURI) {
-		return myConfigEmitter.getJointConfigFileForChar(bonyCharURI);
+	public void setMainCharURI(String mainCharURI) {
+		myConfigEmitter.setMainCharURI(mainCharURI);
+	}
+	public File getJointConfigFileForChar() {
+		return myConfigEmitter.getJointConfigFileForChar();
 	}
 	public Vector3f getConfigVector3f(String vectorURI) {
 		float[] xyz = myConfigEmitter.getNamedFloatVector(vectorURI);
