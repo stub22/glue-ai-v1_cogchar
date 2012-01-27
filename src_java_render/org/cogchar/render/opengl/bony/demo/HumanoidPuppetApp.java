@@ -1,7 +1,27 @@
 /*
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * 
+ * 
+ * This file also contains fragments copied from the JMonkeyEngine test code.
+ * See http://www.jmonkeyengine.org
+ */
+
+/*
  * 
  * Based on test code from  JME3-alpha4 code of JMonkey project
- * http://
+ * http://www.jmonkeyengine.org
  * 
  * Copyright (c) 2009-2010 jMonkeyEngine
  * All rights reserved.
@@ -54,9 +74,8 @@ import org.cogchar.render.opengl.bony.model.HumanoidBoneDesc;
 import org.cogchar.render.opengl.bony.state.BoneState;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
-import org.cogchar.render.opengl.bony.gui.VirtCharPanel;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+import org.cogchar.render.opengl.bony.world.LightMgr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,18 +152,23 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 	private void initHumanoidStuff() { 
 		HumanoidBoneConfig hbc = new HumanoidBoneConfig(true);
 		BonyConfigEmitter bce = getBonyConfigEmitter();
-		String meshPath = bce.getHumanoidMeshPath();
-		// JmonkeyAssetLocation jmal = getContentsAssetLoader();
-		myHumanoidWrapper.initStuff(hbc, assetManager, rootNode, myWorldMgr.getPhysicsSpace(), meshPath);
-		//VirtCharPanel vcp = getVCPanel();
-		//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
+		String humanoidMeshPath = bce.getHumanoidMeshPath();
+		if (humanoidMeshPath != null) {
+			myHumanoidWrapper.initStuff(hbc, assetManager, rootNode, myWorldMgr.getPhysicsSpace(), humanoidMeshPath);
+			//VirtCharPanel vcp = getVCPanel();
+			//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
+		} else {
+			theLogger.warn("Skipping humanoid mesh load");
+		}
 		
 		String extraRobotMeshPath = bce.getExtraRobotMeshPath();
 		if (extraRobotMeshPath != null) {
-			theLogger.info("Loading extra robot mesh from: " + extraRobotMeshPath);
+			theLogger.info("Loading extra-robot mesh from: " + extraRobotMeshPath);
 			Node extraRobotNode = (Node) assetManager.loadModel(extraRobotMeshPath);
 			SpatialManipFuncs.dumpNodeTree(extraRobotNode, "   ");
 			rootNode.attachChild(extraRobotNode);
+		} else {
+			theLogger.warn("Skipping extra-robot mesh load");
 		}
 		
 		
@@ -159,7 +183,7 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
         setDefaultCameraLocation();
 		setAppSpeed(1.3f);
 		flyCam.setMoveSpeed(50);
-		addLightToRootNode(WorldMgr.makeDirectionalLight());		
+		addLightToRootNode(LightMgr.makeDirectionalLight());		
 	}
     protected void setDefaultCameraLocation(){
 		cam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));

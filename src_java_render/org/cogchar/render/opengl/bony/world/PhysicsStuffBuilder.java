@@ -21,6 +21,7 @@ import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
+import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -28,6 +29,7 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Plane;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
@@ -45,10 +47,6 @@ public class PhysicsStuffBuilder {
 
 	public static final String GEOM_BOX = "Box";
 	public static final String GEOM_FLOOR = "Floor";
-	public static final String GEOM_SOCCER_BALL = "Soccer ball";
-	public static final String GEOM_SPHERE = "Sphere";
-	public static final String PATH_LOGO_MONKEY = "Interface/Logo/Monkey.jpg";
-	public static final String PATH_MATERIAL_UNSHADED = "Common/MatDefs/Misc/Unshaded.j3md";
 
 	/**
 	 * creates a simple physics test world with a floor, an obstacle and some test boxes
@@ -57,57 +55,51 @@ public class PhysicsStuffBuilder {
 	 * @param space
 	 */
 	public static void createPhysicsTestWorld(Node rootNode, AssetManager assetManager, PhysicsSpace space) {
-		AmbientLight light = new AmbientLight();
-		light.setColor(ColorRGBA.LightGray);
-		rootNode.addLight(light);
-		Material floorMat = new Material(assetManager, PATH_MATERIAL_UNSHADED);
-		addFloor(rootNode, assetManager, space, floorMat);
+		LightMgr.addLightGrayAmbientLight(rootNode);
+		
+		Material floorMat = MatMgr.makeUnshadedMaterial(assetManager);
+		
+		addFloor(rootNode, space, true, floorMat);
 	}
 
 
 	public static void createPhysicsTestWorldSoccer(Node rootNode, AssetManager assetManager, PhysicsSpace space) {
-		AmbientLight light = new AmbientLight();
-		light.setColor(ColorRGBA.LightGray);
-		rootNode.addLight(light);
-
-		Material floorMat = new Material(assetManager, PATH_MATERIAL_UNSHADED);
-		floorMat.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));		
+		LightMgr.addLightGrayAmbientLight(rootNode);
+		
+		Material floorMat = MatMgr.makeJmonkeyLogoMaterial(assetManager);
 		Material ballMat = floorMat;
 
-
-		addFloor(rootNode, assetManager, space, floorMat);
+		addFloor(rootNode, space, true, floorMat);
 		//movable spheres
 		makeSpheres(rootNode, assetManager, space, ballMat);
   
 	}
-	public static void addFloor(Node rootNode, AssetManager assetManager, PhysicsSpace space, Material floorMat) {
-		AmbientLight light = new AmbientLight();
-		light.setColor(ColorRGBA.LightGray);
-		rootNode.addLight(light);
 
-		// material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
+	public static void addFloor(Node rootNode, PhysicsSpace space, boolean rigidBodyPhysFlag, Material floorMat) {
+		LightMgr.addLightGrayAmbientLight(rootNode);
 
 		Box floorBox = new Box(140, 0.25f, 140);
 		Geometry floorGeometry = new Geometry(GEOM_FLOOR, floorBox);
 		floorGeometry.setMaterial(floorMat);
 		floorGeometry.setLocalTranslation(0, -5, 0);
-//        Plane plane = new Plane();
-//        plane.setOriginNormal(new Vector3f(0, 0.25f, 0), Vector3f.UNIT_Y);
-//        floorGeometry.addControl(new RigidBodyControl(new PlaneCollisionShape(plane), 0));
+		if (rigidBodyPhysFlag) {
+			Plane plane = new Plane();
+			plane.setOriginNormal(new Vector3f(0, 0.25f, 0), Vector3f.UNIT_Y);
+			floorGeometry.addControl(new RigidBodyControl(new PlaneCollisionShape(plane), 0));
+		}
 		floorGeometry.addControl(new RigidBodyControl(0));
 		rootNode.attachChild(floorGeometry);
 		space.add(floorGeometry);
-		
 	}
 
+	
 	/**
 	 * creates a box geometry with a RigidBodyControl
 	 * @param assetManager
 	 * @return
 	 */
 	public static Geometry createPhysicsTestBox(Node parentNode, AssetManager assetManager, PhysicsSpace space) {
-		Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
-		material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
+		Material material = MatMgr.makeJmonkeyLogoMaterial(assetManager);
 		Box box = new Box(0.25f, 0.25f, 0.25f);
 // 		Box box = new Box(1, 1, 1);
 		Geometry boxGeometry = new Geometry(GEOM_BOX, box);
@@ -162,17 +154,10 @@ public class PhysicsStuffBuilder {
 	 */
 	public static void createBallShooter(final Application app, final Node rootNode, final PhysicsSpace space) {
 		ActionListener actionListener = new ActionListener() {
-
-			public static final String PATH_TERRAIN_ROCK = "Textures/Terrain/Rock/Rock.PNG";
-
 			public void onAction(String name, boolean keyPressed, float tpf) {
 				Sphere bullet = new Sphere(32, 32, 0.4f, true, false);
 				bullet.setTextureMode(TextureMode.Projected);
-				Material mat2 = new Material(app.getAssetManager(), PATH_MATERIAL_UNSHADED);
-				TextureKey key2 = new TextureKey(PATH_TERRAIN_ROCK);
-				key2.setGenerateMips(true);
-				Texture tex2 = app.getAssetManager().loadTexture(key2);
-				mat2.setTexture("ColorMap", tex2);
+				Material mat2 = MatMgr.makeRockMaterial(app.getAssetManager());
 				if (name.equals("shoot") && !keyPressed) {
 					Geometry bulletg = new Geometry("bullet", bullet);
 					bulletg.setMaterial(mat2);
@@ -187,19 +172,16 @@ public class PhysicsStuffBuilder {
 				}
 			}
 		};
-		app.getInputManager().addMapping("shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-		app.getInputManager().addListener(actionListener, "shoot");
+		InputMgr.attachShootTriggerAndListener(app.getInputManager(), actionListener);
 	}
 
 	public static void makeSpheres(Node rootNode, AssetManager assetManager, PhysicsSpace space, Material mat) {
 		for (int i = 0; i < 5; i++) {
-			Sphere sphere = new Sphere(16, 16, .5f);
-			Geometry ballGeometry = new Geometry(GEOM_SOCCER_BALL, sphere);
-			ballGeometry.setMaterial(mat);
-			ballGeometry.setLocalTranslation(i, 2, -3);
+			RigidBodyControl rbc = new RigidBodyControl(.001f);
+			Geometry ballGeometry = GeomMgr.makeSphereGeom(16, 16, .5f, GeomMgr.GEOM_SOCCER_BALL, mat, rbc);			
 			//RigidBodyControl automatically uses Sphere collision shapes when attached to single geometry with sphere mesh
-			ballGeometry.addControl(new RigidBodyControl(.001f));
 			ballGeometry.getControl(RigidBodyControl.class).setRestitution(1);
+			ballGeometry.setLocalTranslation(i, 2, -3);
 			rootNode.attachChild(ballGeometry);
 			space.add(ballGeometry);
 		}
@@ -207,10 +189,9 @@ public class PhysicsStuffBuilder {
 	public static void makeImmovableSphere(Node rootNode, AssetManager assetManager, PhysicsSpace space, Material mat) {	
 		//immovable sphere with mesh collision shape
 		Sphere sphere = new Sphere(8, 8, 1);
-		Geometry sphereGeometry = new Geometry(GEOM_SPHERE, sphere);
-		sphereGeometry.setMaterial(mat);
+		RigidBodyControl rbc = new RigidBodyControl(new MeshCollisionShape(sphere), 0);
+		Geometry sphereGeometry = GeomMgr.makeSphereGeom(sphere, GeomMgr.GEOM_SPHERE,  mat, rbc);
 		sphereGeometry.setLocalTranslation(4, -4, 2);
-		sphereGeometry.addControl(new RigidBodyControl(new MeshCollisionShape(sphere), 0));
 		rootNode.attachChild(sphereGeometry);
 		space.add(sphereGeometry);	
 	}
@@ -220,14 +201,9 @@ public class PhysicsStuffBuilder {
 	 * @return
 	 */
 	public static Geometry createPhysicsTestSphere(AssetManager assetManager) {
-		Material material = new Material(assetManager, PATH_MATERIAL_UNSHADED);
-		material.setTexture("ColorMap", assetManager.loadTexture(PATH_LOGO_MONKEY));
-		Sphere sphere = new Sphere(8, 8, 0.25f);
-		Geometry boxGeometry = new Geometry(GEOM_SPHERE, sphere);
-		boxGeometry.setMaterial(material);
-		//RigidBodyControl automatically uses sphere collision shapes when attached to single geometry with sphere mesh
-		boxGeometry.addControl(new RigidBodyControl(2));
-		return boxGeometry;
+		Material mat = MatMgr.makeJmonkeyLogoMaterial(assetManager);
+		Geometry sphGeom = GeomMgr.makeSphereGeom(8, 8, 0.25f, GeomMgr.GEOM_SPHERE, mat, new RigidBodyControl(2));
+		return sphGeom;
 	}	
 
 }

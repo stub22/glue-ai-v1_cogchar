@@ -35,14 +35,21 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	val NB_BONY_ROBOT_ID = "COGCHAR_NB_ROBOT";
 	val DUMMY_ROBOT_ID = "DummyRobot22";
 	
+	val DEFAULT_MAIN_CHAR_URI = "NO_CHARACTER_AT_ALL";
+	
+	var	myMainCharURI : String = DEFAULT_MAIN_CHAR_URI;
+	
+	def setMainCharURI(uri: String) : Unit = {
+		myMainCharURI = uri;
+	}
 
 //				DEFAULT_PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",	// Default path in JME test setup
 //			PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md",
-	def getJointConfigFileForChar(bonyCharURI: String) : java.io.File = {
+	def getJointConfigFileForChar() : java.io.File = {
 		println("**************\n***************");
-		println("Scala BonyConfigEmitter generating jointConfigFile for charURI[" + bonyCharURI + "]");
+		println("Scala BonyConfigEmitter generating jointConfigFile for charURI[" + myMainCharURI + "]");
 		println("**************\n***************");
-		val path = if (bonyCharURI.startsWith("NBURI")) NB_PATH_HUMANOID_JOINT_CFG  else PATH_HUMANOID_JOINT_CONFIG;
+		val path = if (myMainCharURI.startsWith("NBURI")) NB_PATH_HUMANOID_JOINT_CFG  else PATH_HUMANOID_JOINT_CONFIG;
 		return new java.io.File(path);
 	}
 	
