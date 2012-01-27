@@ -62,24 +62,28 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 		BonyRenderContext bc = getBonyRenderContext();
 		BonyConfigEmitter bce = getBonyConfigEmitter(); 
 		String sceneFilePath = bce.getStickFigureScenePath();
-		float sceneScale = bce.getStickFigureSceneScale();
 		
-		Node testSceneNode = (Node)assetManager.loadModel(sceneFilePath); 
-		theLogger.info("BonyStickFigure scene loaded: " + testSceneNode);
+		if (sceneFilePath != null) {
+			float sceneScale = bce.getStickFigureSceneScale();
+			Node testSceneNode = (Node)assetManager.loadModel(sceneFilePath); 
+			theLogger.info("BonyStickFigure scene loaded: " + testSceneNode);
 
-		SpatialManipFuncs.dumpNodeTree(testSceneNode, "   ");
-		List<AnimControl> animControls = SpatialManipFuncs.findAnimControls(testSceneNode);
+			SpatialManipFuncs.dumpNodeTree(testSceneNode, "   ");
+			List<AnimControl> animControls = SpatialManipFuncs.findAnimControls(testSceneNode);
 
-		theLogger.info("Found BSF animControls, about to reset: " + animControls);
-		SpatialManipFuncs.resetBonesAndPrintInfo(animControls); 
-		
-		myContext.setAnimControls(animControls);
+			theLogger.info("Found BSF animControls, about to reset: " + animControls);
+			SpatialManipFuncs.resetBonesAndPrintInfo(animControls); 
 
-		// Material testSceneMat = new Material(assetManager, "resources/leo_hanson_tests/test3/test3.material");
+			myContext.setAnimControls(animControls);
 
-		testSceneNode.setLocalScale(sceneScale);
-		
-		this.rootNode.attachChild(testSceneNode);
+			// Material testSceneMat = new Material(assetManager, "resources/leo_hanson_tests/test3/test3.material");
+
+			testSceneNode.setLocalScale(sceneScale);
+
+			this.rootNode.attachChild(testSceneNode);
+		} else {
+			theLogger.warn("Skipping load for BonyStickFigure - gui controls should also be disabled");
+		}
 	}	
 	@Override public void simpleUpdate(float tpf) {
 		doUpdate(tpf);
