@@ -45,7 +45,7 @@ public class ProjectileLauncher {
 	private static float	CCD_MOTION_THRESH = 0.001f,
 							PRJCTL_GROWTH_FACTOR = 1.1f;
 							
-	public void initStuff(MatMgr matMgr) { 
+	public void initStuff(MatFactory matMgr) { 
 		myProjectileMaterial = matMgr.makeRockMat();
 		myProjectileSphereMesh = ProjectileLauncher.makeProjectileSphere();
 		// myProjectileCollisionShape = new SphereCollisionShape(1.0f);

@@ -24,7 +24,7 @@ import com.jme3.scene.Node;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class LightMgr {
+public class LightFactory {
 	public static void addLightGrayAmbientLight(Node rootNode) {
 		addAmbientLight(rootNode, ColorRGBA.LightGray);
 	}
