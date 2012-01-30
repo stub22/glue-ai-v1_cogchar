@@ -29,15 +29,15 @@ import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
  * http://jmonkeyengine.org/wiki/doku.php/jme3:scenegraph_for_dummies - Slide 14 retrieved 2012-01-29.
  * @author Stu B. <www.texpedient.com>
  */
-public class GeomMgr {
+public class GeomFactory {
 	public static final String GEOM_SPHERE = "Sphere";
 	public static final String GEOM_SOCCER_BALL = "Soccer ball";
 	
 	private		ShapeMeshFactory	myShapeFactory;
 			
-	public MatMgr	myMatMgr;
+	public MatFactory	myMatMgr;
 	
-	public GeomMgr (MatMgr matMgr) {
+	public GeomFactory (MatFactory matMgr) {
 		myMatMgr = matMgr;
 	}
 	public Geometry makeGeom(String name, Mesh mesh) {

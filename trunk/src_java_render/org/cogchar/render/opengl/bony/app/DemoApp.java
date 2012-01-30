@@ -28,7 +28,7 @@ import com.jme3.asset.plugins.UrlLocator;
 import org.cogchar.blob.emit.DemoConfigEmitter;
 import org.cogchar.render.opengl.bony.sys.DebugMeshLoader;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
-import org.cogchar.render.opengl.bony.world.MatMgr;
+import org.cogchar.render.opengl.bony.world.MatFactory;
 import org.cogchar.render.opengl.mesh.MeshFactoryFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public abstract class DemoApp extends SimpleApplication {
 	private		ClassLoader						myFrameworkResourceClassLoader;
 	
 	private		MeshFactoryFacade				myMeshFactoryFacade;
-	private		MatMgr							myMatMgr;
+	private		MatFactory							myMatMgr;
 	
 	public DemoApp(DemoConfigEmitter ce) { 
 		myConfigEmitter = ce;
@@ -75,7 +75,7 @@ public abstract class DemoApp extends SimpleApplication {
 	protected MeshFactoryFacade  getMeshFF() {
 		return myMeshFactoryFacade;
 	}
-	protected MatMgr getMatMgr() { 
+	protected MatFactory getMatMgr() { 
 		return myMatMgr;
 	}
 	public void addAssetSource(JmonkeyAssetLocation jmal) {
@@ -156,7 +156,7 @@ public abstract class DemoApp extends SimpleApplication {
 		assetManager.registerLoader(DebugMeshLoader.class, "meshxml", "mesh.xml");
 		
 		myMeshFactoryFacade = new MeshFactoryFacade();
-		myMatMgr = new MatMgr(assetManager);
+		myMatMgr = new MatFactory(assetManager);
 		
 		theFallbackLogger.info("simpleInitApp() - END");
 	}

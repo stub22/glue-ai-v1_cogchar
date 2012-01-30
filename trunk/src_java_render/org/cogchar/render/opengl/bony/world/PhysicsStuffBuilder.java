@@ -48,11 +48,11 @@ public class PhysicsStuffBuilder {
 
 	private		Node			myRootNode;
 	private		PhysicsSpace	myPhysSpc;
-	private		MatMgr			myMatMgr;
-	private		GeomMgr				myGeomMgr;
+	private		MatFactory			myMatMgr;
+	private		GeomFactory				myGeomMgr;
 	private		MeshFactoryFacade	myMeshFF;
 	
-	public 	PhysicsStuffBuilder(Node rootNode, MatMgr matMgr, PhysicsSpace physSpc) {
+	public 	PhysicsStuffBuilder(Node rootNode, MatFactory matMgr, PhysicsSpace physSpc) {
 		myRootNode = rootNode;
 		myMatMgr = matMgr;
 		myPhysSpc = physSpc;
@@ -77,7 +77,7 @@ public class PhysicsStuffBuilder {
 	 * @param space
 	 */
 	public void createPhysicsTestWorld() {
-		LightMgr.addLightGrayAmbientLight(myRootNode);
+		LightFactory.addLightGrayAmbientLight(myRootNode);
 		
 		Material floorMat = myMatMgr.makeUnshadedMat();
 		
@@ -86,7 +86,7 @@ public class PhysicsStuffBuilder {
 
 
 	public void createPhysicsTestWorldSoccer() {
-		LightMgr.addLightGrayAmbientLight(myRootNode);
+		LightFactory.addLightGrayAmbientLight(myRootNode);
 		
 		Material floorMat = myMatMgr.makeJmonkeyLogoMat();
 		Material ballMat = floorMat;
@@ -216,7 +216,7 @@ public class PhysicsStuffBuilder {
 		for (int i = 0; i < 5; i++) {
 			RigidBodyControl rbc = new RigidBodyControl(.001f);
 			Sphere s = getMeshFF().getShapeMF().makeSphereMesh(16, 16, 0.5f);
-			Geometry ballGeometry = myGeomMgr.makeGeom( GeomMgr.GEOM_SOCCER_BALL, s, mat, rbc);			
+			Geometry ballGeometry = myGeomMgr.makeGeom( GeomFactory.GEOM_SOCCER_BALL, s, mat, rbc);			
 			//RigidBodyControl automatically uses Sphere collision shapes when attached to single geometry with sphere mesh
 			ballGeometry.getControl(RigidBodyControl.class).setRestitution(1);
 			ballGeometry.setLocalTranslation(i, 2, -3);
@@ -229,7 +229,7 @@ public class PhysicsStuffBuilder {
 		Sphere sphMesh = getMeshFF().getShapeMF().makeSphereMesh(8, 8, 1);
 		// Note here we are constructing the collision shape explicitly, and with 0 mass = "static" RBC.
 		RigidBodyControl rbc = new RigidBodyControl(new MeshCollisionShape(sphMesh), 0);
-		Geometry sphereGeometry = myGeomMgr.makeGeom(GeomMgr.GEOM_SPHERE, sphMesh,  mat, rbc);
+		Geometry sphereGeometry = myGeomMgr.makeGeom(GeomFactory.GEOM_SPHERE, sphMesh,  mat, rbc);
 		sphereGeometry.setLocalTranslation(4, -4, 2);
 		myRootNode.attachChild(sphereGeometry);
 		myPhysSpc.add(sphereGeometry);	
@@ -243,7 +243,7 @@ public class PhysicsStuffBuilder {
 		Material mat = myMatMgr.makeJmonkeyLogoMat();
 		Sphere sphMesh = getMeshFF().getShapeMF().makeSphereMesh(8, 8, 0.25f);		
 		RigidBodyControl sphRBC = new RigidBodyControl(2.0f);
-		Geometry sphGeom = myGeomMgr.makeGeom(GeomMgr.GEOM_SPHERE, sphMesh, mat, sphRBC);
+		Geometry sphGeom = myGeomMgr.makeGeom(GeomFactory.GEOM_SPHERE, sphMesh, mat, sphRBC);
 		return sphGeom;
 	}	
 

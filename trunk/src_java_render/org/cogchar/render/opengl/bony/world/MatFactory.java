@@ -24,7 +24,7 @@ import com.jme3.texture.Texture;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class MatMgr {
+public class MatFactory {
 	public static final String PATH_LOGO_MONKEY = "Interface/Logo/Monkey.jpg";
 	public static final String PATH_MATERIAL_UNSHADED = "Common/MatDefs/Misc/Unshaded.j3md";
 
@@ -32,7 +32,7 @@ public class MatMgr {
 	
 	private		AssetManager		myAssetMgr;
 	
-	public MatMgr(AssetManager assetMgr) {
+	public MatFactory(AssetManager assetMgr) {
 		myAssetMgr = assetMgr;
 	}
 	public Material makeMatWithOptTexture(String matName, String matTextName, Texture t) {
