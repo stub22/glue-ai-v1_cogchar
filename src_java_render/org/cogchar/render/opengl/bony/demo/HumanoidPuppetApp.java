@@ -75,7 +75,7 @@ import org.cogchar.render.opengl.bony.state.BoneState;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
-import org.cogchar.render.opengl.bony.world.LightMgr;
+import org.cogchar.render.opengl.bony.world.LightFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -184,7 +184,7 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
         setDefaultCameraLocation();
 		setAppSpeed(1.3f);
 		flyCam.setMoveSpeed(50);
-		addLightToRootNode(LightMgr.makeDirectionalLight());		
+		addLightToRootNode(LightFactory.makeDirectionalLight());		
 	}
     protected void setDefaultCameraLocation(){
 		cam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));
