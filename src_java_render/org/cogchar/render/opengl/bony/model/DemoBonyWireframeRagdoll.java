@@ -50,25 +50,7 @@ public class DemoBonyWireframeRagdoll // extends SimpleApplication
 	private Node myShouldersNode;
 	private Vector3f myUpForceVec = new Vector3f(0, 200, 0);
 	private boolean myApplyForceFlag = false;
-
-	public static void main(String[] args) {
-
-		final DemoBonyWireframeRagdoll doll = new DemoBonyWireframeRagdoll();
-		
-		SimpleApplication app = new SimpleApplication() {
-			@Override public void simpleInitApp() {
-				BulletAppState bulletAppState = makePhysicsAppState(stateManager, assetManager, rootNode);
-				doll.realizeDollAndAttach(rootNode, bulletAppState);
-				doll.registerTraditionalInputHandlers(inputManager);
-			}
-			@Override public void simpleUpdate(float tpf) {
-				doll.doSimpleUpdate(tpf);
-			}
-		};
-		
-		app.start();
-	}
-  
+	
     
 //    protected AudioRenderer audioRenderer;
 //    protected Renderer renderer;
@@ -87,14 +69,7 @@ public class DemoBonyWireframeRagdoll // extends SimpleApplication
  //   protected TouchInput touchInput;
  //   protected InputManager inputManager;
 
-	public static BulletAppState makePhysicsAppState(AppStateManager stateManager, AssetManager assetManager, Node rootNode) {
-		System.out.println("************************************************************ makePhysicsAppState");
-		BulletAppState bulletAppState = new BulletAppState();
-		stateManager.attach(bulletAppState);
-		bulletAppState.getPhysicsSpace().enableDebug(assetManager);
-		PhysicsStuffBuilder.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
-		return bulletAppState;
-	}
+
 	public void registerTraditionalInputHandlers(InputManager inputManager) {
 		inputManager.addMapping(PULL_RAGDOLL_UP, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 		inputManager.addListener(this, PULL_RAGDOLL_UP);

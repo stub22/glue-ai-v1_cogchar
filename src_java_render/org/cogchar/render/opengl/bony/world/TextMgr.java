@@ -15,30 +15,9 @@
  */
 package org.cogchar.render.opengl.bony.world;
 
-import com.jme3.input.InputManager;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.MouseButtonTrigger;
-
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class InputMgr {
+public class TextMgr {
 	
-	
-	private		InputManager myJmeInputManager;
-	
-	public InputMgr(InputManager jmeIM) {
-		myJmeInputManager = jmeIM;
-	}
-	public InputManager getJmeInputManager() { 
-		return myJmeInputManager;
-	}
-	public void attachMouseButtonTriggerAndListener (ActionListener actionListener, 
-					String actionName, int buttonID) {
-		
-		myJmeInputManager.addMapping(actionName, new MouseButtonTrigger(buttonID));
-		myJmeInputManager.addListener(actionListener, actionName);
-		
-	}	
 }

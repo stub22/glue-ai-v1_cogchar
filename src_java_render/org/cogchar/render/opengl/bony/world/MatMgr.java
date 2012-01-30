@@ -18,6 +18,7 @@ package org.cogchar.render.opengl.bony.world;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.texture.Texture;
 
 /**
@@ -29,24 +30,40 @@ public class MatMgr {
 
 	public static final String PATH_TERRAIN_ROCK = "Textures/Terrain/Rock/Rock.PNG";
 	
-	public static Material makeJmonkeyLogoMaterial(AssetManager assetManager) { 
-		Texture t = assetManager.loadTexture(PATH_LOGO_MONKEY);
-		return makeMaterialWithOptTexture(assetManager, PATH_MATERIAL_UNSHADED, "ColorMap", t);
+	private		AssetManager		myAssetMgr;
+	
+	public MatMgr(AssetManager assetMgr) {
+		myAssetMgr = assetMgr;
 	}
-	public static Material makeRockMaterial(AssetManager assetManager) { 
-		TextureKey rockTextureKey = new TextureKey(PATH_TERRAIN_ROCK);
-		rockTextureKey.setGenerateMips(true);
-		Texture rockTexture = assetManager.loadTexture(rockTextureKey);
-		return makeMaterialWithOptTexture(assetManager, PATH_MATERIAL_UNSHADED, "ColorMap", rockTexture);
-	}
-	public static Material makeUnshadedMaterial(AssetManager assetManager) {
-		return makeMaterialWithOptTexture(assetManager, PATH_MATERIAL_UNSHADED, null, null);
-	}
-	public static Material makeMaterialWithOptTexture(AssetManager assetManager, String matPath, String matTextName, Texture t) {
-		Material mat = new Material(assetManager, matPath);
-		if ((matTextName != null) && (matPath != null)) {
+	public Material makeMatWithOptTexture(String matName, String matTextName, Texture t) {
+		Material mat = new Material(myAssetMgr, matName);
+		if ((mat != null) && (matTextName != null) && (t != null)) {
 			mat.setTexture(matTextName, t);
 		}
 		return mat;
+	}	
+	public Material makeUnshadedMat() {
+		return makeMatWithOptTexture(PATH_MATERIAL_UNSHADED, null, null);
 	}
+	public Material makeColoredUnshadedMat(ColorRGBA color) {
+		Material mat = makeMatWithOptTexture(PATH_MATERIAL_UNSHADED, null, null);
+		mat.setColor("Color", color);
+		return mat;
+	}
+	public Material makeRandomlyColoredUnshadedMat() {
+		return makeColoredUnshadedMat(ColorRGBA.randomColor());
+	}	
+	public Material makeJmonkeyLogoMat() { 
+		Texture t = myAssetMgr.loadTexture(PATH_LOGO_MONKEY);
+		return makeMatWithOptTexture(PATH_MATERIAL_UNSHADED, "ColorMap", t);
+	}
+	public Material makeRockMat() { 
+		TextureKey rockTextureKey = new TextureKey(PATH_TERRAIN_ROCK);
+		rockTextureKey.setGenerateMips(true);
+		Texture rockTexture = myAssetMgr.loadTexture(rockTextureKey);
+		return makeMatWithOptTexture(PATH_MATERIAL_UNSHADED, "ColorMap", rockTexture);
+	}
+
+	
+
 }

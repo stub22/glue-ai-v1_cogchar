@@ -34,7 +34,7 @@ public class BonyRagdollApp extends BonyStickFigureApp {
 	@Override public void simpleInitApp() {
 		theLogger.info("simpleInitApp() - START");
 		super.simpleInitApp();
-		BulletAppState bulletAppState = DemoBonyWireframeRagdoll.makePhysicsAppState(stateManager, assetManager, rootNode);
+		BulletAppState bulletAppState = getBulletAppState();
 		myRagdoll.realizeDollAndAttach(rootNode, bulletAppState);
 		myRagdoll.registerTraditionalInputHandlers(inputManager);
 		theLogger.info("simpleInitApp() - END");

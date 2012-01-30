@@ -23,13 +23,13 @@ import com.jme3.system.AppSettings;
 import com.jme3.light.Light;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.UrlLocator;
-import java.net.URL;
 
 
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.opengl.bony.sys.BonyAssetLocator;
 import org.cogchar.render.opengl.bony.sys.DebugMeshLoader;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
+import org.cogchar.render.opengl.bony.world.MatMgr;
+import org.cogchar.render.opengl.mesh.MeshFactoryFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -37,10 +37,16 @@ import org.slf4j.LoggerFactory;
  * @author pow
  */
 public abstract class DemoApp extends SimpleApplication {
-	static Logger theLogger = LoggerFactory.getLogger(DemoApp.class);
+	static Logger theFallbackLogger = LoggerFactory.getLogger(DemoApp.class);
+	
+	private		Logger							myLogger;
+	
 	protected	DemoConfigEmitter				myConfigEmitter;
 	private		List<JmonkeyAssetLocation>		myAssetSources = new ArrayList<JmonkeyAssetLocation>();
 	private		ClassLoader						myFrameworkResourceClassLoader;
+	
+	private		MeshFactoryFacade				myMeshFactoryFacade;
+	private		MatMgr							myMatMgr;
 	
 	public DemoApp(DemoConfigEmitter ce) { 
 		myConfigEmitter = ce;
@@ -53,6 +59,24 @@ public abstract class DemoApp extends SimpleApplication {
 	}
 	public DemoApp() {
 		this(new DemoConfigEmitter());
+	}
+	protected Logger getLogger() {
+		if (myLogger == null) {
+			myLogger = LoggerFactory.getLogger(this.getClass());
+			if (myLogger == null) {
+				myLogger = theFallbackLogger;
+			}
+		}
+		return myLogger;
+	}
+	public synchronized void setLogger(Logger l) {
+		myLogger = l;
+	}
+	protected MeshFactoryFacade  getMeshFF() {
+		return myMeshFactoryFacade;
+	}
+	protected MatMgr getMatMgr() { 
+		return myMatMgr;
 	}
 	public void addAssetSource(JmonkeyAssetLocation jmal) {
 		myAssetSources.add(jmal);
@@ -104,7 +128,7 @@ public abstract class DemoApp extends SimpleApplication {
 		// Note that "update()" may also load assets, but by that time our simpleInitApp
 		// should have run to install our custom locators.
 		*/
-		theLogger.info("********************* DemoApp.initialize() called,  framework resource CL =" + myFrameworkResourceClassLoader);
+		theFallbackLogger.info("********************* DemoApp.initialize() called,  framework resource CL =" + myFrameworkResourceClassLoader);
 		ClassLoader savedCL = Thread.currentThread().getContextClassLoader();
 		try {
 			if (myFrameworkResourceClassLoader != null) {
@@ -114,16 +138,16 @@ public abstract class DemoApp extends SimpleApplication {
 		} finally {
 			Thread.currentThread().setContextClassLoader(savedCL);
 		}
-		theLogger.info("********************* DemoApp.initialize() restored context class loader");
+		theFallbackLogger.info("********************* DemoApp.initialize() restored context class loader");
 	}	
 
 	@Override public void simpleInitApp() {
-		theLogger.info("simpleInitApp() - START");
-		theLogger.info("%%%%%%% JmeSystem.isLowPermissions()=" + com.jme3.system.JmeSystem.isLowPermissions());
-		theLogger.info("Disabling confusing JDK-Logger warnings from UrlLocator");		
+		theFallbackLogger.info("simpleInitApp() - START");
+		theFallbackLogger.info("%%%%%%% JmeSystem.isLowPermissions()=" + com.jme3.system.JmeSystem.isLowPermissions());
+		theFallbackLogger.info("Disabling confusing JDK-Logger warnings from UrlLocator");		
 		java.util.logging.Logger.getLogger(UrlLocator.class.getName()).setLevel(java.util.logging.Level.SEVERE);
 		
-		//		theLogger.info("Unregistering default ClasspathLocator, which may fail if Default.cfg was not read by JMonkey.");
+		//		theFallbackLogger.info("Unregistering default ClasspathLocator, which may fail if Default.cfg was not read by JMonkey.");
 		// assetManager.unregisterLocator("/", com.jme3.asset.plugins.ClasspathLocator.class);	
 		
 		resolveAndRegisterAllAssetSources();
@@ -131,7 +155,10 @@ public abstract class DemoApp extends SimpleApplication {
 		// DebugMeshLoader helps with debugging.
 		assetManager.registerLoader(DebugMeshLoader.class, "meshxml", "mesh.xml");
 		
-		theLogger.info("simpleInitApp() - END");
+		myMeshFactoryFacade = new MeshFactoryFacade();
+		myMatMgr = new MatMgr(assetManager);
+		
+		theFallbackLogger.info("simpleInitApp() - END");
 	}
 
 }

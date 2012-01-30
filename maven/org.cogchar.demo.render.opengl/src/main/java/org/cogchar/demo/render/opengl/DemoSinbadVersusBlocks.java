@@ -1,44 +1,32 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
- * All rights reserved.
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * 
+ * ------------------------------------------------------------------------------
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- * * Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
- *
- * * Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in the
- *   documentation and/or other materials provided with the distribution.
- *
- * * Neither the name of 'jMonkeyEngine' nor the names of its contributors
- *   may be used to endorse or promote products derived from this software
- *   without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *		This file contains code copied from the JMonkeyEngine project.
+ *		You may not use this file except in compliance with the
+ *		JMonkeyEngine license.  See full notice at bottom of this file. 
  */
+
 package org.cogchar.demo.render.opengl;
 
-import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.LoopMode;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.asset.TextureKey;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.KinematicRagdollControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
@@ -54,14 +42,14 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
-import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.blob.emit.DemoConfigEmitter;
+import org.cogchar.render.opengl.bony.app.PhysicalApp;
 
 /**
  * @author normenhansen
  */
-public class DemoSinbadVersusBlocks extends DemoApp implements AnimEventListener, ActionListener {
+public class DemoSinbadVersusBlocks extends PhysicalApp implements AnimEventListener, ActionListener {
 
-    BulletAppState bulletAppState;
     Node model;
     KinematicRagdollControl ragdoll;
     boolean leftStrafe = false, rightStrafe = false, forward = false, backward = false,
@@ -70,21 +58,21 @@ public class DemoSinbadVersusBlocks extends DemoApp implements AnimEventListener
     AnimChannel animChannel;
 
     public static void main(String[] args) {
-        DemoSinbadVersusBlocks app = new DemoSinbadVersusBlocks();
+		DemoConfigEmitter dce = new DemoConfigEmitter();
+        DemoSinbadVersusBlocks app = new DemoSinbadVersusBlocks(dce);
         app.start();
     }
+	public DemoSinbadVersusBlocks(DemoConfigEmitter dce) { 
+		super(dce);
+	}
 
-    public void simpleInitApp() {
+    @Override public void simpleInitApp() {
+		super.simpleInitApp();
         setupKeys();
+		
+		initBasicTestPhysics();
 
-        bulletAppState = new BulletAppState();
-        bulletAppState.setEnabled(true);
-        stateManager.attach(bulletAppState);
-
-
-//        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
-        PhysicsStuffBuilder.createPhysicsTestWorld(rootNode, assetManager, bulletAppState.getPhysicsSpace());
-        initWall(2,1,1);
+		initWall(2,1,1);
         setupLight();
 
         cam.setLocation(new Vector3f(-8,0,-4));
@@ -117,9 +105,7 @@ public class DemoSinbadVersusBlocks extends DemoApp implements AnimEventListener
         rootNode.addLight(dl);
     }
 
-    private PhysicsSpace getPhysicsSpace() {
-        return bulletAppState.getPhysicsSpace();
-    }
+
 
     private void setupKeys() {
         inputManager.addMapping("Rotate Left",
@@ -229,3 +215,41 @@ public class DemoSinbadVersusBlocks extends DemoApp implements AnimEventListener
     }
 
 }
+
+/*
+ * 
+ * Contains code copied and modified from the JMonkeyEngine.com project,
+ * under the following terms:
+ * 
+ * -----------------------------------------------------------------------
+ * 
+ * Copyright (c) 2009-2010 jMonkeyEngine
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * * Neither the name of 'jMonkeyEngine' nor the names of its contributors
+ *   may be used to endorse or promote products derived from this software
+ *   without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

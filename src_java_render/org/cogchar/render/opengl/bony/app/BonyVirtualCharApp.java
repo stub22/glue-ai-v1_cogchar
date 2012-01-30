@@ -26,7 +26,6 @@ import java.util.concurrent.Future;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.sys.BonyCanvasFuncs;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-import org.cogchar.render.opengl.bony.gui.VirtCharPanel;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class BonyVirtualCharApp extends DemoApp {
+public class BonyVirtualCharApp extends PhysicalApp {
 	static Logger theLogger = LoggerFactory.getLogger(BonyVirtualCharApp.class);
 	// private		AnimChannel				channel;
 
