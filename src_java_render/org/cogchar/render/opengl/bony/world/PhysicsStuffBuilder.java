@@ -15,9 +15,7 @@
  */
 package org.cogchar.render.opengl.bony.world;
 
-import com.jme3.app.Application;
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
@@ -25,19 +23,17 @@ import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Plane;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
-import com.jme3.texture.Texture;
+import org.cogchar.render.opengl.mesh.MeshFactoryFacade;
 
 /**
  *
@@ -47,36 +43,61 @@ public class PhysicsStuffBuilder {
 
 	public static final String GEOM_BOX = "Box";
 	public static final String GEOM_FLOOR = "Floor";
+	
+	public static String		SHOOT_ACTION_NAME	= "shoot";
 
+	private		Node			myRootNode;
+	private		PhysicsSpace	myPhysSpc;
+	private		MatMgr			myMatMgr;
+	private		GeomMgr				myGeomMgr;
+	private		MeshFactoryFacade	myMeshFF;
+	
+	public 	PhysicsStuffBuilder(Node rootNode, MatMgr matMgr, PhysicsSpace physSpc) {
+		myRootNode = rootNode;
+		myMatMgr = matMgr;
+		myPhysSpc = physSpc;
+	}
+	
+	public Node getRootNode() { 
+		return myRootNode;
+	}
+
+	public PhysicsSpace getPhysicsSpace() { 
+		return myPhysSpc;
+	}
+
+	protected MeshFactoryFacade getMeshFF() { 
+		return myMeshFF;
+	}
+	
 	/**
 	 * creates a simple physics test world with a floor, an obstacle and some test boxes
 	 * @param rootNode
 	 * @param assetManager
 	 * @param space
 	 */
-	public static void createPhysicsTestWorld(Node rootNode, AssetManager assetManager, PhysicsSpace space) {
-		LightMgr.addLightGrayAmbientLight(rootNode);
+	public void createPhysicsTestWorld() {
+		LightMgr.addLightGrayAmbientLight(myRootNode);
 		
-		Material floorMat = MatMgr.makeUnshadedMaterial(assetManager);
+		Material floorMat = myMatMgr.makeUnshadedMat();
 		
-		addFloor(rootNode, space, true, floorMat);
+		addFloor( true, floorMat);
 	}
 
 
-	public static void createPhysicsTestWorldSoccer(Node rootNode, AssetManager assetManager, PhysicsSpace space) {
-		LightMgr.addLightGrayAmbientLight(rootNode);
+	public void createPhysicsTestWorldSoccer() {
+		LightMgr.addLightGrayAmbientLight(myRootNode);
 		
-		Material floorMat = MatMgr.makeJmonkeyLogoMaterial(assetManager);
+		Material floorMat = myMatMgr.makeJmonkeyLogoMat();
 		Material ballMat = floorMat;
 
-		addFloor(rootNode, space, true, floorMat);
+		addFloor(true, floorMat);
 		//movable spheres
-		makeSpheres(rootNode, assetManager, space, ballMat);
+		makeSpheres(ballMat);
   
 	}
 
-	public static void addFloor(Node rootNode, PhysicsSpace space, boolean rigidBodyPhysFlag, Material floorMat) {
-		LightMgr.addLightGrayAmbientLight(rootNode);
+	public void addFloor(boolean rigidBodyPhysFlag, Material floorMat) {
 
 		Box floorBox = new Box(140, 0.25f, 140);
 		Geometry floorGeometry = new Geometry(GEOM_FLOOR, floorBox);
@@ -88,8 +109,8 @@ public class PhysicsStuffBuilder {
 			floorGeometry.addControl(new RigidBodyControl(new PlaneCollisionShape(plane), 0));
 		}
 		floorGeometry.addControl(new RigidBodyControl(0));
-		rootNode.attachChild(floorGeometry);
-		space.add(floorGeometry);
+		myRootNode.attachChild(floorGeometry);
+		myPhysSpc.add(floorGeometry);
 	}
 
 	
@@ -98,8 +119,8 @@ public class PhysicsStuffBuilder {
 	 * @param assetManager
 	 * @return
 	 */
-	public static Geometry createPhysicsTestBox(Node parentNode, AssetManager assetManager, PhysicsSpace space) {
-		Material material = MatMgr.makeJmonkeyLogoMaterial(assetManager);
+	public Geometry createPhysicsTestBox() {
+		Material material = myMatMgr.makeJmonkeyLogoMat();
 		Box box = new Box(0.25f, 0.25f, 0.25f);
 // 		Box box = new Box(1, 1, 1);
 		Geometry boxGeometry = new Geometry(GEOM_BOX, box);
@@ -121,11 +142,11 @@ public class PhysicsStuffBuilder {
 		space.add(boxGeometry);
 		 */	
 
-		if (parentNode != null) {
-			parentNode.attachChild(boxGeometry);
+		if (myRootNode != null) {
+			myRootNode.attachChild(boxGeometry);
 		}
-		if (space != null) {
-			space.add(boxGeometry);	
+		if (myPhysSpc != null) {
+			myPhysSpc.add(boxGeometry);	
 		}
 		return boxGeometry;
 	}
@@ -139,12 +160,28 @@ public class PhysicsStuffBuilder {
 	 * @param mass
 	 * @return
 	 */
-	public static Node createPhysicsTestNode(AssetManager manager, CollisionShape shape, float mass) {
+	public Node createPhysicsTestNode(CollisionShape shape, float mass) {
 		Node node = new Node("PhysicsNode");
 		RigidBodyControl control = new RigidBodyControl(shape, mass);
 		node.addControl(control);
 		return node;
 	}
+
+	/*
+	public fireBallFromCamera() { 
+					Geometry bulletg = new Geometry("bullet", bullet);
+					bulletg.setMaterial(mat2);
+					bulletg.setShadowMode(ShadowMode.CastAndReceive);
+					bulletg.setLocalTranslation(cam.getLocation());
+					RigidBodyControl bulletControl = new RigidBodyControl(1);
+					bulletg.addControl(bulletControl);
+					bulletControl.setLinearVelocity(cam.getDirection().mult(25));
+					bulletg.addControl(bulletControl);
+					myRootNode.attachChild(bulletg);
+					myPhysSpc.add(bulletControl);
+	 * }
+	 *
+	 */
 
 	/**
 	 * creates the necessary inputlistener and action to shoot balls from teh camera
@@ -152,57 +189,61 @@ public class PhysicsStuffBuilder {
 	 * @param rootNode
 	 * @param space
 	 */
-	public static void createBallShooter(final Application app, final Node rootNode, final PhysicsSpace space) {
+	public void createBallShooter(final Camera cam, InputMgr inputMgr, String actionName) {
 		ActionListener actionListener = new ActionListener() {
 			public void onAction(String name, boolean keyPressed, float tpf) {
 				Sphere bullet = new Sphere(32, 32, 0.4f, true, false);
 				bullet.setTextureMode(TextureMode.Projected);
-				Material mat2 = MatMgr.makeRockMaterial(app.getAssetManager());
+				Material mat2 = myMatMgr.makeRockMat();
 				if (name.equals("shoot") && !keyPressed) {
 					Geometry bulletg = new Geometry("bullet", bullet);
 					bulletg.setMaterial(mat2);
 					bulletg.setShadowMode(ShadowMode.CastAndReceive);
-					bulletg.setLocalTranslation(app.getCamera().getLocation());
+					bulletg.setLocalTranslation(cam.getLocation());
 					RigidBodyControl bulletControl = new RigidBodyControl(1);
 					bulletg.addControl(bulletControl);
-					bulletControl.setLinearVelocity(app.getCamera().getDirection().mult(25));
+					bulletControl.setLinearVelocity(cam.getDirection().mult(25));
 					bulletg.addControl(bulletControl);
-					rootNode.attachChild(bulletg);
-					space.add(bulletControl);
+					myRootNode.attachChild(bulletg);
+					myPhysSpc.add(bulletControl);
 				}
 			}
 		};
-		InputMgr.attachShootTriggerAndListener(app.getInputManager(), actionListener);
+		inputMgr.attachMouseButtonTriggerAndListener(actionListener, SHOOT_ACTION_NAME,  MouseInput.BUTTON_LEFT);
 	}
 
-	public static void makeSpheres(Node rootNode, AssetManager assetManager, PhysicsSpace space, Material mat) {
+	public void makeSpheres(Material mat) {
 		for (int i = 0; i < 5; i++) {
 			RigidBodyControl rbc = new RigidBodyControl(.001f);
-			Geometry ballGeometry = GeomMgr.makeSphereGeom(16, 16, .5f, GeomMgr.GEOM_SOCCER_BALL, mat, rbc);			
+			Sphere s = getMeshFF().getShapeMF().makeSphereMesh(16, 16, 0.5f);
+			Geometry ballGeometry = myGeomMgr.makeGeom( GeomMgr.GEOM_SOCCER_BALL, s, mat, rbc);			
 			//RigidBodyControl automatically uses Sphere collision shapes when attached to single geometry with sphere mesh
 			ballGeometry.getControl(RigidBodyControl.class).setRestitution(1);
 			ballGeometry.setLocalTranslation(i, 2, -3);
-			rootNode.attachChild(ballGeometry);
-			space.add(ballGeometry);
+			myRootNode.attachChild(ballGeometry);
+			myPhysSpc.add(ballGeometry);
 		}
 	}
-	public static void makeImmovableSphere(Node rootNode, AssetManager assetManager, PhysicsSpace space, Material mat) {	
+	public void makeImmovableSphere(Material mat) {	
 		//immovable sphere with mesh collision shape
-		Sphere sphere = new Sphere(8, 8, 1);
-		RigidBodyControl rbc = new RigidBodyControl(new MeshCollisionShape(sphere), 0);
-		Geometry sphereGeometry = GeomMgr.makeSphereGeom(sphere, GeomMgr.GEOM_SPHERE,  mat, rbc);
+		Sphere sphMesh = getMeshFF().getShapeMF().makeSphereMesh(8, 8, 1);
+		// Note here we are constructing the collision shape explicitly, and with 0 mass = "static" RBC.
+		RigidBodyControl rbc = new RigidBodyControl(new MeshCollisionShape(sphMesh), 0);
+		Geometry sphereGeometry = myGeomMgr.makeGeom(GeomMgr.GEOM_SPHERE, sphMesh,  mat, rbc);
 		sphereGeometry.setLocalTranslation(4, -4, 2);
-		rootNode.attachChild(sphereGeometry);
-		space.add(sphereGeometry);	
+		myRootNode.attachChild(sphereGeometry);
+		myPhysSpc.add(sphereGeometry);	
 	}
 	/**
 	 * creates a sphere geometry with a RigidBodyControl
 	 * @param assetManager
 	 * @return
 	 */
-	public static Geometry createPhysicsTestSphere(AssetManager assetManager) {
-		Material mat = MatMgr.makeJmonkeyLogoMaterial(assetManager);
-		Geometry sphGeom = GeomMgr.makeSphereGeom(8, 8, 0.25f, GeomMgr.GEOM_SPHERE, mat, new RigidBodyControl(2));
+	public Geometry createPhysicsTestSphere() {
+		Material mat = myMatMgr.makeJmonkeyLogoMat();
+		Sphere sphMesh = getMeshFF().getShapeMF().makeSphereMesh(8, 8, 0.25f);		
+		RigidBodyControl sphRBC = new RigidBodyControl(2.0f);
+		Geometry sphGeom = myGeomMgr.makeGeom(GeomMgr.GEOM_SPHERE, sphMesh, mat, sphRBC);
 		return sphGeom;
 	}	
 

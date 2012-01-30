@@ -11,7 +11,7 @@
 	<artifactId>org.cogchar.demo.render.opengl</artifactId>
 
 	<packaging>jar</packaging>
-	<name>${project.artifactId} - OpenGL Demos</name>
+	<name>${project.artifactId} - OpenGL experiments - no OSGi req.</name>
 	
 	<build>
 		<plugins>
@@ -37,46 +37,55 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.lib.render</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>jME3-testdata</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>		
+	
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>ext.bundle.opengl.nifty</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.render.resources</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- We have direct lib dependencies instead of OSGi-bundle deps on the other cogchar components. -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.render</artifactId>
+			<version>${project.version}</version>
+		</dependency>	 
+		<dependency>
+			<!-- We need the big-ol jME3 testdata archive for some of these demos. -->
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-testdata</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>runtime</scope>
+		</dependency>	
+		
 	<!-- Turn these (otherwise unnecessary) direct deps
 		on to get text editor code-completion under NB 7.0.1.
-    <dependency>
-      <groupId>org.jmonkeyengine.mvn.jme3</groupId>
-      <artifactId>jmonkeyengine3</artifactId>
-      <version>3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jmonkeyengine.mvn.jme3</groupId>
-      <artifactId>jME3-jbullet</artifactId>
-      <version>3.0</version>
-    </dependency>
 	-->
-	 <dependency>
-	  <groupId>${project.groupId}</groupId>
-	  <artifactId>org.cogchar.bundle.render.resources</artifactId>
-	  <version>${project.version}</version>
-	 </dependency>
-	 <dependency>
-	  <groupId>${project.groupId}</groupId>
-	  <artifactId>org.cogchar.lib.core</artifactId>
-	  <version>${project.version}</version>
-	  <scope>runtime</scope>
-	 </dependency>
+		<dependency>
+			<!-- This dep is used in addition to ext.bundle, to help NB code editor. -->
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-core</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>	
+		</dependency>
+		<dependency>
+			<!-- This dep is used in addition to ext.bundle, to help NB code editor. -->
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-jbullet</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>	
+		</dependency>		
 	</dependencies>
 </project>
 
