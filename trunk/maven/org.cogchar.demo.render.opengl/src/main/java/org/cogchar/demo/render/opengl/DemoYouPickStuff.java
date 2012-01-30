@@ -1,34 +1,25 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
- * All rights reserved.
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * 
+ * ------------------------------------------------------------------------------
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- * * Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
- *
- * * Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in the
- *   documentation and/or other materials provided with the distribution.
- *
- * * Neither the name of 'jMonkeyEngine' nor the names of its contributors
- *   may be used to endorse or promote products derived from this software
- *   without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *		This file contains code copied from the JMonkeyEngine project.
+ *		You may not use this file except in compliance with the
+ *		JMonkeyEngine license.  See full notice at bottom of this file. 
  */
+
 package org.cogchar.demo.render.opengl;
 
 import org.cogchar.render.opengl.bony.app.DemoApp;
@@ -53,37 +44,38 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.math.Quaternion;
 import com.jme3.system.AppSettings;
+import org.cogchar.render.opengl.bony.world.CollisionMgr;
 
 /** Sample 8 - how to let the user pick (select) objects in the scene 
  * using the mouse or key presses. Can be used for shooting, opening doors, etc. */
 public class DemoYouPickStuff extends DemoApp {
 
-
+	Node myShootablesRootNode;
+	Geometry myMark, myArrowMark;
+	
 	public static void main(String[] args) {
 		DemoYouPickStuff app = new DemoYouPickStuff();
 		app.start();
 	}
-	Node shootables;
-	Geometry mark, arrowMark;
 
-	@Override
-	public void simpleInitApp() {
+
+	@Override public void simpleInitApp() {
 		flyCam.setMoveSpeed(20);
 
 		initCrossHairs(); // a "+" in the middle of the screen to help aiming
 		initKeys();       // load custom key mappings
-		initMark();       // a red sphere to mark the hit
+		initMark();       // a red sphere to myMark the hit
 		initArrowMark();
 
 		/** create four colored boxes and a floor to shoot at: */
-		shootables = new Node("Shootables");
-		rootNode.attachChild(shootables);
-		shootables.attachChild(makeCube("a Dragon", -2f, 0f, 1f));
-		shootables.attachChild(makeCube("a tin can", 1f, -2f, 0f));
-		shootables.attachChild(makeCube("the Sheriff", 0f, 1f, -2f));
-		shootables.attachChild(makeCube("the Deputy", 1f, 0f, -4f));
-		shootables.attachChild(makeFloor());
-		shootables.attachChild(makeCharacter());
+		myShootablesRootNode = new Node("Shootables");
+		rootNode.attachChild(myShootablesRootNode);
+		myShootablesRootNode.attachChild(makeCube("a Dragon", -2f, 0f, 1f));
+		myShootablesRootNode.attachChild(makeCube("a tin can", 1f, -2f, 0f));
+		myShootablesRootNode.attachChild(makeCube("the Sheriff", 0f, 1f, -2f));
+		myShootablesRootNode.attachChild(makeCube("the Deputy", 1f, 0f, -4f));
+		myShootablesRootNode.attachChild(makeFloor());
+		myShootablesRootNode.attachChild(makeCharacter());
 	}
 
 	/** Declaring the "Shoot" action and mapping to its triggers. */
@@ -98,32 +90,20 @@ public class DemoYouPickStuff extends DemoApp {
 
 		public void onAction(String name, boolean keyPressed, float tpf) {
 			if (name.equals("Shoot") && !keyPressed) {
-				// 1. Reset results list.
-				CollisionResults results = new CollisionResults();
-				// 2. Aim the ray from cam loc to cam direction.
-				Ray ray = new Ray(cam.getLocation(), cam.getDirection());
-				// 3. Collect intersections between Ray and Shootables in results list.
-				shootables.collideWith(ray, results);
-				// 4. Print the results
-				System.out.println("----- Collisions? " + results.size() + "-----");
-				for (int i = 0; i < results.size(); i++) {
-					// For each hit, we know distance, impact point, name of geometry.
-					float dist = results.getCollision(i).getDistance();
-					Vector3f pt = results.getCollision(i).getContactPoint();
-					String hit = results.getCollision(i).getGeometry().getName();
-					System.out.println("* Collision #" + i);
-					System.out.println("  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-				}
-				// 5. Use the results (we mark the hit object)
-				if (results.size() > 0) {
+				
+				CollisionResults coRes = CollisionMgr.getCameraCollisions(cam, myShootablesRootNode);
+				CollisionMgr.printCollisionDebug(getLogger(), coRes);
+
+				// Mark the hit object
+				if (coRes.size() > 0) {
 					// The closest collision point is what was truly hit:
-					CollisionResult closest = results.getClosestCollision();
-					// Let's interact - we mark the hit with a red dot.
-					mark.setLocalTranslation(closest.getContactPoint());
-					rootNode.attachChild(mark);
+					CollisionResult closest = coRes.getClosestCollision();
+					// Let's interact - we myMark the hit with a red dot.
+					myMark.setLocalTranslation(closest.getContactPoint());
+					rootNode.attachChild(myMark);
 				} else {
-					// No hits? Then remove the red mark.
-					rootNode.detachChild(mark);
+					// No hits? Then remove the red myMark.
+					rootNode.detachChild(myMark);
 				}
 			}
 		}
@@ -152,10 +132,10 @@ public class DemoYouPickStuff extends DemoApp {
 	/** A red ball that marks the last spot that was "hit" by the "shot". */
 	protected void initMark() {
 		Sphere sphere = new Sphere(30, 30, 0.2f);
-		mark = new Geometry("BOOM!", sphere);
+		myMark = new Geometry("BOOM!", sphere);
 		Material mark_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 		mark_mat.setColor("Color", ColorRGBA.Red);
-		mark.setMaterial(mark_mat);
+		myMark.setMaterial(mark_mat);
 	}
 
 	/** A centred plus sign to help the player aim. */
@@ -190,11 +170,11 @@ public class DemoYouPickStuff extends DemoApp {
 		arrow.setLineWidth(3);
 
 		//Sphere sphere = new Sphere(30, 30, 0.2f);
-		arrowMark = new Geometry("BOOM!", arrow);
+		myArrowMark = new Geometry("BOOM!", arrow);
 		//mark = new Geometry("BOOM!", sphere);
 		Material mark_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 		mark_mat.setColor("Color", ColorRGBA.Red);
-		arrowMark.setMaterial(mark_mat);
+		myArrowMark.setMaterial(mark_mat);
 	}
 
 	@Override
@@ -210,19 +190,57 @@ public class DemoYouPickStuff extends DemoApp {
 		Ray ray = new Ray(cam.getLocation(), cam.getDirection());
 
 		CollisionResults results = new CollisionResults();
-		shootables.collideWith(ray, results);
+		myShootablesRootNode.collideWith(ray, results);
 
 		if (results.size() > 0) {
 			CollisionResult closest = results.getClosestCollision();
-			arrowMark.setLocalTranslation(closest.getContactPoint());
+			myArrowMark.setLocalTranslation(closest.getContactPoint());
 
 			Quaternion q = new Quaternion();
 			q.lookAt(closest.getContactNormal(), Vector3f.UNIT_Y);
-			arrowMark.setLocalRotation(q);
+			myArrowMark.setLocalRotation(q);
 
-			rootNode.attachChild(arrowMark);
+			rootNode.attachChild(myArrowMark);
 		} else {
-			rootNode.detachChild(arrowMark);
+			rootNode.detachChild(myArrowMark);
 		}
 	}
 }
+
+/*
+ * 
+ * Contains code copied and modified from the JMonkeyEngine.com project,
+ * under the following terms:
+ * 
+ * -----------------------------------------------------------------------
+ * 
+ * Copyright (c) 2009-2010 jMonkeyEngine
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * * Neither the name of 'jMonkeyEngine' nor the names of its contributors
+ *   may be used to endorse or promote products derived from this software
+ *   without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

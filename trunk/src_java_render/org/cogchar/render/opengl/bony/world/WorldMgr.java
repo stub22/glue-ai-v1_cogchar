@@ -33,25 +33,12 @@ import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
  * @author Stu B. <www.texpedient.com>
  */
 public class WorldMgr {
-	private BulletAppState myPhysicsAppState;
-	public void initPhysAppStuff(AssetManager asstMgr, AppStateManager stateMgr,
-					Node parentNode) { 
-		myPhysicsAppState = new BulletAppState();
-		myPhysicsAppState.setEnabled(true);
-		stateMgr.attach(myPhysicsAppState);	
-		PhysicsSpace ps = getPhysicsSpace();
-		// Comment in PhysicsSpace says to setGravity "before creating physics objects".
-		// ps.setGravity(Vector3f.ZERO);
-		// Turn on the blue wireframe collision bounds.
-		// ps.enableDebug(asstMgr);
-		PhysicsStuffBuilder.createPhysicsTestWorld(parentNode, asstMgr, ps);
-	
+
+
+	public static void makeCrossHairs(AssetManager asstMgr, Node parentNode,
+				AppSettings settings) {
+		
 	}
-	public PhysicsSpace getPhysicsSpace() {
-		return myPhysicsAppState.getPhysicsSpace();
-	}	
-
-
 	public static void makeCrossHairs(AssetManager asstMgr, Node parentNode,
 				BitmapFont font, 	AppSettings settings) {
 		
