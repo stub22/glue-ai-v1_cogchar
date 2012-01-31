@@ -11,7 +11,7 @@
     <artifactId>org.cogchar.bundle.render.resources</artifactId>
     <packaging>bundle</packaging>
 
-    <name>${project.artifactId} OSGi Bundle</name>
+    <name>org.cogchar.bundle.render.resources - OSGi</name>
 
 
     <dependencies>

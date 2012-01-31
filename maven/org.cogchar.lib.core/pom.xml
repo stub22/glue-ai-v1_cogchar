@@ -9,7 +9,7 @@
 	</parent>		
 	
 	<artifactId>org.cogchar.lib.core</artifactId>
-	<name>${project.artifactId} java+scala lib (not a bundle)</name>
+	<name>org.cogchar.lib.core - POJO + Scala</name>
 	<description>Cogchar core - does not include Render binding or Robot binding</description>
 
 	<dependencies>

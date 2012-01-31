@@ -25,14 +25,14 @@ public class MeshFactoryFacade {
 	private		ShapeMeshFactory	myShapeMF;
 	private		WireMeshFactory		myWireMF;
 	private		FancyMeshFactory	myFancyMF;
-	private		OgreMeshFactory		myOgreMF;
+	private		ModelMeshLoader		myModelML;
 	
 	public MeshFactoryFacade() {
 		
 		myShapeMF = new ShapeMeshFactory();
 		myWireMF = new WireMeshFactory();
 		myFancyMF = new FancyMeshFactory();
-		myOgreMF = new OgreMeshFactory();
+		myModelML = new ModelMeshLoader();
 	}
 	
 	public ShapeMeshFactory getShapeMF() {
@@ -44,7 +44,7 @@ public class MeshFactoryFacade {
 	public FancyMeshFactory getFancyMF() {
 		return myFancyMF;
 	}
-	public OgreMeshFactory getOgreMF() {
-		return myOgreMF;
+	public ModelMeshLoader getModelML() {
+		return myModelML;
 	}
 }

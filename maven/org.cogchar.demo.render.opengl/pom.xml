@@ -11,7 +11,7 @@
 	<artifactId>org.cogchar.demo.render.opengl</artifactId>
 
 	<packaging>jar</packaging>
-	<name>${project.artifactId} - OpenGL experiments - no OSGi req.</name>
+	<name>org.cogchar.demo.render.opengl - POJO - runnable</name>
 	
 	<build>
 		<plugins>

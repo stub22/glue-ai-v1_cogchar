@@ -22,7 +22,7 @@
 
 package org.cogchar.demo.render.opengl;
 
-import org.cogchar.render.opengl.bony.world.ThrowableBombRigidBodyControl;
+import org.cogchar.render.opengl.bony.world.LaunchableCollidingRigidBodyControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -197,7 +197,7 @@ public class DemoYouBowlAtSinbad extends PhysicalApp implements RagdollCollision
                     bulletg.setLocalTranslation(cam.getLocation());
                     bulletg.setLocalScale(bulletSize);
                     bulletCollisionShape = new SphereCollisionShape(bulletSize);
-                    ThrowableBombRigidBodyControl bulletNode = new ThrowableBombRigidBodyControl(assetManager, bulletCollisionShape, 1);
+                    LaunchableCollidingRigidBodyControl bulletNode = new LaunchableCollidingRigidBodyControl(assetManager, bulletCollisionShape, 1);
                     bulletNode.setForceFactor(8);
                     bulletNode.setExplosionRadius(20);
                     bulletNode.setCcdMotionThreshold(0.001f);

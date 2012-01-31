@@ -15,9 +15,13 @@
  */
 package org.cogchar.render.opengl.mesh;
 
+import com.jme3.asset.AssetManager;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class OgreMeshFactory {
+public class ModelMeshLoader {
+	AssetManager	myAssetManager;
+	
 	
 }

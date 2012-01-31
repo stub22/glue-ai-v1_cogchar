@@ -75,7 +75,7 @@ import org.cogchar.render.opengl.bony.state.BoneState;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
-import org.cogchar.render.opengl.bony.world.LightFactory;
+import org.cogchar.render.opengl.optic.LightFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

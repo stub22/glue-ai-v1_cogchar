@@ -11,7 +11,7 @@
 	
 	<artifactId>org.cogchar.bundle.render.opengl</artifactId>
 	<packaging>bundle</packaging>
-	<name>${project.artifactId} Bundle</name>
+	<name>org.cogchar.bundle.render.opengl - OSGi</name>
 
 	<dependencies>
 	
