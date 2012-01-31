@@ -11,7 +11,7 @@
 
     <packaging>bundle</packaging>
 
-    <name>${project.artifactId} OSGi Bundle</name>
+    <name>org.cogchar.bundle.core - OSGi</name>
 
     <dependencies>
         <dependency>

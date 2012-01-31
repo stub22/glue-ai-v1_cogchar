@@ -28,7 +28,7 @@
 	<artifactId>ext.bundle.opengl.jmonkey</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>${project.artifactId} - OSGi Bundle</name>
+	<name>ext.bundle.opengl.jmonkey - OSGi - JME3 wrapper</name>
 	<description>OSGi bundle wrapper of the jMonkeyEngine-3 + LWJGL + Bullet + other gaming+opengl jars.</description>
 
 <!--

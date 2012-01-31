@@ -15,6 +15,8 @@
  */
 package org.cogchar.render.opengl.bony.world;
 
+import org.cogchar.render.opengl.optic.MatFactory;
+import org.cogchar.render.opengl.optic.LightFactory;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;

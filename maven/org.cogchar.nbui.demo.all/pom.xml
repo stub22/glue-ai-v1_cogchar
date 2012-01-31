@@ -14,7 +14,7 @@
 	<artifactId>org.cogchar.nbui.demo.all</artifactId>
 	<packaging>nbm-application</packaging>
 
-	<name>${project.artifactId} - NetBeans Application</name>
+	<name>org.cogchar.nbui.demo.all - NetBeans GUI App</name>
 
 	<properties>
         

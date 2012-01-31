@@ -11,7 +11,7 @@
 
     <packaging>bundle</packaging>
 
-    <name>${project.artifactId} OSGi Wrapper Bundle</name>
+    <name>ext.bundle.opengl.nifty - OSGi - Nifty wrapper</name>
 
 
     <dependencies>

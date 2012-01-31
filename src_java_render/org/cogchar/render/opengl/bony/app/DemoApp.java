@@ -28,7 +28,7 @@ import com.jme3.asset.plugins.UrlLocator;
 import org.cogchar.blob.emit.DemoConfigEmitter;
 import org.cogchar.render.opengl.bony.sys.DebugMeshLoader;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
-import org.cogchar.render.opengl.bony.world.MatFactory;
+import org.cogchar.render.opengl.optic.MatFactory;
 import org.cogchar.render.opengl.mesh.MeshFactoryFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

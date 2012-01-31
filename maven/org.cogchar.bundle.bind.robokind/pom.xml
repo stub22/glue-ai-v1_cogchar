@@ -11,7 +11,7 @@
 	<artifactId>org.cogchar.bundle.bind.robokind</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>${project.artifactId} - RK Motion+Vision binding</name>
+	<name>org.cogchar.bundle.bind.robokind - OSGi - binds motion, vsion, speech</name>
 
     
 	<dependencies>

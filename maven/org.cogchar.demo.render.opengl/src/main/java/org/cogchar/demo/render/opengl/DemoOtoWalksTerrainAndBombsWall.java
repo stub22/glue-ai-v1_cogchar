@@ -21,7 +21,7 @@
  */
 package org.cogchar.demo.render.opengl;
 
-import org.cogchar.render.opengl.bony.world.ThrowableBombRigidBodyControl;
+import org.cogchar.render.opengl.bony.world.LaunchableCollidingRigidBodyControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -391,7 +391,7 @@ public class DemoOtoWalksTerrainAndBombsWall extends DemoApp implements ActionLi
         bulletg.setMaterial(matBullet);
         bulletg.setShadowMode(ShadowMode.CastAndReceive);
         bulletg.setLocalTranslation(character.getPhysicsLocation().add(cam.getDirection().mult(2)));
-        RigidBodyControl bulletControl = new ThrowableBombRigidBodyControl(bulletCollisionShape, 1);
+        RigidBodyControl bulletControl = new LaunchableCollidingRigidBodyControl(bulletCollisionShape, 1);
         bulletControl.setCcdMotionThreshold(0.1f);
         bulletControl.setLinearVelocity(cam.getDirection().mult(80));
         bulletg.addControl(bulletControl);
@@ -400,12 +400,12 @@ public class DemoOtoWalksTerrainAndBombsWall extends DemoApp implements ActionLi
     }
 
     public void collision(PhysicsCollisionEvent event) {
-        if (event.getObjectA() instanceof ThrowableBombRigidBodyControl) {
+        if (event.getObjectA() instanceof LaunchableCollidingRigidBodyControl) {
             final Spatial node = event.getNodeA();
             effect.killAllParticles();
             effect.setLocalTranslation(node.getLocalTranslation());
             effect.emitAllParticles();
-        } else if (event.getObjectB() instanceof ThrowableBombRigidBodyControl) {
+        } else if (event.getObjectB() instanceof LaunchableCollidingRigidBodyControl) {
             final Spatial node = event.getNodeB();
             effect.killAllParticles();
             effect.setLocalTranslation(node.getLocalTranslation());

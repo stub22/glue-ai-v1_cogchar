@@ -10,7 +10,7 @@
     <artifactId>org.cogchar.bundle.avrogen</artifactId>
     <packaging>bundle</packaging>
 
-    <name>${project.artifactId} - Serialization OSGi Bundle</name>
+    <name>org.cogchar.bundle.avrogen - OSGi - generated serial</name>
 
 
     <dependencies>

@@ -39,9 +39,8 @@ import java.util.Iterator;
 
 /**
  *
- * @author normenhansen
  */
-public class ThrowableBombRigidBodyControl extends RigidBodyControl implements PhysicsCollisionListener, PhysicsTickListener {
+public class LaunchableCollidingRigidBodyControl extends RigidBodyControl implements PhysicsCollisionListener, PhysicsTickListener {
 
     private float explosionRadius = 10;
     private PhysicsGhostObject ghostObject;
@@ -54,12 +53,12 @@ public class ThrowableBombRigidBodyControl extends RigidBodyControl implements P
     private float curTime = -1.0f;
     private float timer;
 
-    public ThrowableBombRigidBodyControl(CollisionShape shape, float mass) {
+    public LaunchableCollidingRigidBodyControl(CollisionShape shape, float mass) {
         super(shape, mass);
         createGhostObject();
     }
 
-    public ThrowableBombRigidBodyControl(AssetManager manager, CollisionShape shape, float mass) {
+    public LaunchableCollidingRigidBodyControl(AssetManager manager, CollisionShape shape, float mass) {
         super(shape, mass);
         createGhostObject();
         prepareEffect(manager);
