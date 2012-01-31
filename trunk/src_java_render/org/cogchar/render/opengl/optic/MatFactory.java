@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony.world;
+package org.cogchar.render.opengl.optic;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;

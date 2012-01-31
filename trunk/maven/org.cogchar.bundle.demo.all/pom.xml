@@ -10,7 +10,7 @@
 
     <artifactId>org.cogchar.bundle.demo.all</artifactId>
     <packaging>bundle</packaging>
-    <name>${project.artifactId} - OSGi Bundle</name>
+    <name>org.cogchar.bundle.demo.all - OSGi + exec wrap</name>
 
  
     <dependencies>

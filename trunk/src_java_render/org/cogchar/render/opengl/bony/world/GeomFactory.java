@@ -15,6 +15,7 @@
  */
 package org.cogchar.render.opengl.bony.world;
 
+import org.cogchar.render.opengl.optic.MatFactory;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;

@@ -22,7 +22,7 @@
 
 package org.cogchar.demo.render.opengl;
 
-import org.cogchar.render.opengl.bony.world.ThrowableBombRigidBodyControl;
+import org.cogchar.render.opengl.bony.world.LaunchableCollidingRigidBodyControl;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.PhysicsSpace;
@@ -119,7 +119,7 @@ public class DemoYouBombBrickTower extends DemoApp {
                 bulletg.setMaterial(mat2);
                 bulletg.setShadowMode(ShadowMode.CastAndReceive);
                 bulletg.setLocalTranslation(cam.getLocation());
-                RigidBodyControl bulletNode = new ThrowableBombRigidBodyControl(assetManager, bulletCollisionShape, 1);
+                RigidBodyControl bulletNode = new LaunchableCollidingRigidBodyControl(assetManager, bulletCollisionShape, 1);
 //                RigidBodyControl bulletNode = new RigidBodyControl(bulletCollisionShape, 1);
                 bulletNode.setLinearVelocity(cam.getDirection().mult(25));
                 bulletg.addControl(bulletNode);

@@ -18,6 +18,6 @@ package org.cogchar.render.opengl.optic;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class CameraFactory {
+public class CameraMgr {
 	
 }

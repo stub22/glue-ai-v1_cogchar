@@ -39,7 +39,7 @@ public class DemoDrawnShapes extends DemoApp {
         DemoDrawnShapes app = new DemoDrawnShapes();
         app.start();
     }
-
+	
     public Geometry putShape(Mesh shape, ColorRGBA color){
         Geometry g = new Geometry("shape", shape);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
