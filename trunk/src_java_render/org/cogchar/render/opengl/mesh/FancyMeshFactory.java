@@ -19,7 +19,10 @@
 package org.cogchar.render.opengl.mesh;
 
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.scene.debug.Arrow;
+import com.jme3.scene.shape.Surface;
+import java.util.List;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -36,6 +39,12 @@ public class FancyMeshFactory {
 	        arrowMesh.setLineWidth(lineWidthPixels); // make arrow thicker
 		}
 		return arrowMesh;
+	}
+	
+	public Surface makeNurbsSurfaceMesh(List<List<Vector4f>> controlPoints, List<Float>[] nurbKnots, 
+				int uSegments, int vSegments, int basisUFunctionDegree, int basisVFunctionDegree)  {
+		return Surface.createNurbsSurface(controlPoints, nurbKnots, uSegments, vSegments, 
+					basisUFunctionDegree, basisVFunctionDegree);
 	}
 	
 /*

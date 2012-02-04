@@ -25,10 +25,10 @@ import com.jme3.texture.Texture;
  * @author Stu B. <www.texpedient.com>
  */
 public class MatFactory {
-	public static final String PATH_LOGO_MONKEY = "Interface/Logo/Monkey.jpg";
+
 	public static final String PATH_MATERIAL_UNSHADED = "Common/MatDefs/Misc/Unshaded.j3md";
 
-	public static final String PATH_TERRAIN_ROCK = "Textures/Terrain/Rock/Rock.PNG";
+
 	
 	private		AssetManager		myAssetMgr;
 	
@@ -41,9 +41,16 @@ public class MatFactory {
 			mat.setTexture(matTextName, t);
 		}
 		return mat;
-	}	
+	}
+	public Material makeMatWithOptPixelMapTexture(String matName, Texture texture) {
+		return makeMatWithOptTexture(matName, "ColorMap", texture);
+	}
+	public Material makeUnshadedMatWithOptPixelMapTexture(Texture texture) {
+		return makeMatWithOptPixelMapTexture(PATH_MATERIAL_UNSHADED, texture);
+	}
+	
 	public Material makeUnshadedMat() {
-		return makeMatWithOptTexture(PATH_MATERIAL_UNSHADED, null, null);
+		return makeUnshadedMatWithOptPixelMapTexture(null);
 	}
 	public Material makeColoredUnshadedMat(ColorRGBA color) {
 		Material mat = makeMatWithOptTexture(PATH_MATERIAL_UNSHADED, null, null);
@@ -53,17 +60,31 @@ public class MatFactory {
 	public Material makeRandomlyColoredUnshadedMat() {
 		return makeColoredUnshadedMat(ColorRGBA.randomColor());
 	}	
+	public Material makeTexturedUnshadedMat(String textureImagePath, boolean generateMips, Texture.WrapMode optWrapMode) { 
+		TextureKey textureKey = new TextureKey(textureImagePath);
+		textureKey.setGenerateMips(generateMips);
+		Texture texture = myAssetMgr.loadTexture(textureKey);
+		if (optWrapMode != null) {
+			texture.setWrap(optWrapMode);
+		}
+		return makeMatWithOptTexture(PATH_MATERIAL_UNSHADED, "ColorMap", texture);
+	}	
 	public Material makeJmonkeyLogoMat() { 
-		Texture t = myAssetMgr.loadTexture(PATH_LOGO_MONKEY);
-		return makeMatWithOptTexture(PATH_MATERIAL_UNSHADED, "ColorMap", t);
+		return makeTexturedUnshadedMat(TextureFactory.PATH_LOGO_MONKEY, false, null);
 	}
 	public Material makeRockMat() { 
-		TextureKey rockTextureKey = new TextureKey(PATH_TERRAIN_ROCK);
-		rockTextureKey.setGenerateMips(true);
-		Texture rockTexture = myAssetMgr.loadTexture(rockTextureKey);
-		return makeMatWithOptTexture(PATH_MATERIAL_UNSHADED, "ColorMap", rockTexture);
+		return makeTexturedUnshadedMat(TextureFactory.PATH_TERRAIN_ROCK, true, null);
 	}
+	public Material getBrickWallMat() { 
+		return makeTexturedUnshadedMat(TextureFactory.PATH_BRICK_WALL, true, null);
+	}
+	public Material getPondMat() { 
+		return makeTexturedUnshadedMat(TextureFactory.PATH_POND, true, Texture.WrapMode.Repeat);
+	}	
+/** 
+ * Material mat = new Material(assetManager, "Common/MatDefs/Misc/ShowNormals.j3md");
+ * 
+ */
 
-	
 
 }

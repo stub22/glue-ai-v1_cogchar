@@ -55,7 +55,7 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import com.jme3.texture.Texture;
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.opengl.bony.app.PhysicalApp;
+import org.cogchar.render.opengl.app.PhysicalApp;
 
 /** It has been said that:
  * "PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!"
@@ -217,37 +217,10 @@ public class DemoYouBowlAtSinbad extends PhysicalApp implements RagdollCollision
 
 
     }
-
-    private void setupLight() {
-        // AmbientLight al = new AmbientLight();
-        //  al.setColor(ColorRGBA.White.mult(1));
-        //   rootNode.addLight(al);
-
-        DirectionalLight dl = new DirectionalLight();
-        dl.setDirection(new Vector3f(-0.1f, -0.7f, -1).normalizeLocal());
-        dl.setColor(new ColorRGBA(1f, 1f, 1f, 1.0f));
-        rootNode.addLight(dl);
-    }
-
     public void initMaterial() {
-
-        matBullet = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        TextureKey key2 = new TextureKey("Textures/Terrain/Rock/Rock.PNG");
-        key2.setGenerateMips(true);
-        Texture tex2 = assetManager.loadTexture(key2);
-        matBullet.setTexture("ColorMap", tex2);
+        matBullet = getMatMgr().makeRockMat();
     }
 
-    protected void initCrossHairs() {
-        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        BitmapText ch = new BitmapText(guiFont, false);
-        ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
-        ch.setText("+"); // crosshairs
-        ch.setLocalTranslation( // center
-                settings.getWidth() / 2 - guiFont.getCharSet().getRenderedSize() / 3 * 2,
-                settings.getHeight() / 2 + ch.getLineHeight() / 2, 0);
-        guiNode.attachChild(ch);
-    }
 
     public void collide(Bone bone, PhysicsCollisionObject object, PhysicsCollisionEvent event) {
 

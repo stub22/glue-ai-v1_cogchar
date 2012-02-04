@@ -13,15 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.optic;
+package org.cogchar.render.opengl.scene;
 
-import com.jme3.renderer.Camera;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class CameraMgr {
-	public Camera cloneCamera(Camera orig) {
-		return orig.clone();
+public class FlatOverlayMgr {
+	private Node	myAppGuiNode;
+	public FlatOverlayMgr(Node appGuiNode) {
+		myAppGuiNode = appGuiNode;
+	}
+	
+	public void detachAllOverlays() { 
+		myAppGuiNode.detachAllChildren();
+	}
+	public void attachOverlaySpatial(Spatial s) {
+		myAppGuiNode.attachChild(s);
 	}
 }

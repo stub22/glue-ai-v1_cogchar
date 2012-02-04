@@ -13,15 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.mesh;
-
-import com.jme3.asset.AssetManager;
+package org.cogchar.render.opengl.optic;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class ModelMeshLoader {
-	AssetManager	myAssetManager;
-	
-	
+public class TextureFactory {
+	public static final String PATH_BRICK_WALL = "Textures/Terrain/BrickWall/BrickWall.jpg";
+	public static final String PATH_TERRAIN_ROCK = "Textures/Terrain/Rock/Rock.PNG";
+	public static final String PATH_LOGO_MONKEY = "Interface/Logo/Monkey.jpg";
+	public static final String PATH_POND = "Textures/Terrain/Pond/Pond.jpg";
 }

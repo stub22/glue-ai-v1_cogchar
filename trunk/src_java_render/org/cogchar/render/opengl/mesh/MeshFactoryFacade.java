@@ -15,6 +15,8 @@
  */
 package org.cogchar.render.opengl.mesh;
 
+import org.cogchar.render.opengl.scene.ModelSpatialFactory;
+
 /**
  * So far this "facade" merely inits the four current kinds of MeshFactories, and hands them out
  * to anyone who asks.
@@ -25,14 +27,14 @@ public class MeshFactoryFacade {
 	private		ShapeMeshFactory	myShapeMF;
 	private		WireMeshFactory		myWireMF;
 	private		FancyMeshFactory	myFancyMF;
-	private		ModelMeshLoader		myModelML;
+
 	
 	public MeshFactoryFacade() {
 		
 		myShapeMF = new ShapeMeshFactory();
 		myWireMF = new WireMeshFactory();
 		myFancyMF = new FancyMeshFactory();
-		myModelML = new ModelMeshLoader();
+
 	}
 	
 	public ShapeMeshFactory getShapeMF() {
@@ -44,7 +46,5 @@ public class MeshFactoryFacade {
 	public FancyMeshFactory getFancyMF() {
 		return myFancyMF;
 	}
-	public ModelMeshLoader getModelML() {
-		return myModelML;
-	}
+
 }

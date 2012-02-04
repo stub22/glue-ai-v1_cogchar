@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony.app;
+package org.cogchar.render.opengl.app;
 
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
@@ -45,7 +45,7 @@ public class PhysicalApp extends DemoApp {
 		// TODO: Check config for initial debug setting
 		ps.enableDebug(assetManager);
 
-		myPSB =  new PhysicsStuffBuilder(rootNode, getMatMgr(), ps);
+		myPSB =  new PhysicsStuffBuilder(rootNode, ps, getMeshFF(), getSceneFacade(), getOpticFacade());
 	}
 	protected BulletAppState getBulletAppState() { 
 		return myBulletAS;

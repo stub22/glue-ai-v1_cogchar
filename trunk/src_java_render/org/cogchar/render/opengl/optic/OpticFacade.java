@@ -15,13 +15,30 @@
  */
 package org.cogchar.render.opengl.optic;
 
-import com.jme3.renderer.Camera;
+import com.jme3.asset.AssetManager;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class CameraMgr {
-	public Camera cloneCamera(Camera orig) {
-		return orig.clone();
+public class OpticFacade {
+	private		MatFactory			myMatMgr;
+	private		LightFactory		myLightFactory;
+	private		CameraMgr			myCameraMgr;
+	private		ViewFactory			myViewFactory;
+	
+	public OpticFacade (AssetManager assetMgr) {
+		myMatMgr = new MatFactory(assetMgr);
+		myLightFactory = new LightFactory();
+		myCameraMgr = new CameraMgr();
 	}
+	public MatFactory getMatMgr() { 
+		return myMatMgr;
+	}
+	public LightFactory getLightFactory() { 
+		return myLightFactory;
+	}
+	public CameraMgr getCameraMgr() {
+		return myCameraMgr;
+	}
+	
 }

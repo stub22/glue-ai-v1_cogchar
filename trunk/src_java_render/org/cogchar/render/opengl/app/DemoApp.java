@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony.app;
+package org.cogchar.render.opengl.app;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -25,11 +25,19 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.UrlLocator;
 
 
+import com.jme3.font.BitmapText;
+import com.jme3.light.DirectionalLight;
+import com.jme3.math.Vector3f;
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.opengl.bony.sys.DebugMeshLoader;
+import org.cogchar.render.opengl.mesh.DebugMeshLoader;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
-import org.cogchar.render.opengl.optic.MatFactory;
+import org.cogchar.render.opengl.bony.world.DemoVectorFactory;
+import org.cogchar.render.opengl.scene.GeomFactory;
+import org.cogchar.render.opengl.scene.TextMgr;
 import org.cogchar.render.opengl.mesh.MeshFactoryFacade;
+import org.cogchar.render.opengl.optic.MatFactory;
+import org.cogchar.render.opengl.optic.OpticFacade;
+import org.cogchar.render.opengl.scene.SceneFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -46,7 +54,9 @@ public abstract class DemoApp extends SimpleApplication {
 	private		ClassLoader						myFrameworkResourceClassLoader;
 	
 	private		MeshFactoryFacade				myMeshFactoryFacade;
-	private		MatFactory							myMatMgr;
+	private		OpticFacade						myOpticFacade;
+	private		SceneFacade						mySceneFacade;
+
 	
 	public DemoApp(DemoConfigEmitter ce) { 
 		myConfigEmitter = ce;
@@ -56,6 +66,12 @@ public abstract class DemoApp extends SimpleApplication {
 		myFrameworkResourceClassLoader = AssetManager.class.getClassLoader();
 		JmonkeyAssetLocation frameJAL = new JmonkeyAssetLocation(AssetManager.class);
 		addAssetSource(frameJAL);
+	}
+	private void initCogcharRenderFacades() { 
+		// Called from simpleInitApp, after JME3.SimpleApp core stuff is already available.
+		myMeshFactoryFacade = new MeshFactoryFacade();
+		myOpticFacade = new OpticFacade(assetManager);
+		mySceneFacade = new SceneFacade(assetManager, myOpticFacade, rootNode, guiNode);
 	}
 	public DemoApp() {
 		this(new DemoConfigEmitter());
@@ -75,8 +91,23 @@ public abstract class DemoApp extends SimpleApplication {
 	protected MeshFactoryFacade  getMeshFF() {
 		return myMeshFactoryFacade;
 	}
-	protected MatFactory getMatMgr() { 
-		return myMatMgr;
+	protected OpticFacade getOpticFacade() { 
+		return myOpticFacade;
+	}
+	protected SceneFacade getSceneFacade() { 
+		return mySceneFacade;
+	}
+	protected MatFactory getMatMgr() {
+		return getOpticFacade().getMatMgr();
+	}
+	protected GeomFactory getGeomFactory() { 
+		return getSceneFacade().getGeomFactory();
+	}
+	protected TextMgr getTextMgr() {
+		return getSceneFacade().getTextMgr();
+	}
+	public DemoVectorFactory getDemoVectoryFactory() { 
+		return new DemoVectorFactory();
 	}
 	public void addAssetSource(JmonkeyAssetLocation jmal) {
 		myAssetSources.add(jmal);
@@ -99,9 +130,8 @@ public abstract class DemoApp extends SimpleApplication {
 		speed = val;
 	}
 
-	protected void addLightToRootNode(Light l) {
-		rootNode.addLight(l);
-	}	
+
+
 	protected void applySettings() { 
 	/* http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:appsettings
 	 * Every class that extends jme3.app.SimpleApplication has properties 
@@ -109,6 +139,8 @@ public abstract class DemoApp extends SimpleApplication {
 	 * object. Configure the settings before you call app.start() on 
 	 * the application object. If you change display settings during runtime, 
 	 * call app.restart() to make them take effect.
+		 * 
+		 * 		See Jmonkey examples    "TestCanvas.java" and "AppHarness.java"  
 	 */
 		AppSettings settings = new AppSettings(myConfigEmitter.getAppSettingsDefloadFlag());
 		settings.setRenderer(myConfigEmitter.getLWJGL_RendererName());
@@ -155,10 +187,28 @@ public abstract class DemoApp extends SimpleApplication {
 		// DebugMeshLoader helps with debugging.
 		assetManager.registerLoader(DebugMeshLoader.class, "meshxml", "mesh.xml");
 		
-		myMeshFactoryFacade = new MeshFactoryFacade();
-		myMatMgr = new MatFactory(assetManager);
+		initCogcharRenderFacades();
 		
 		theFallbackLogger.info("simpleInitApp() - END");
 	}
+	protected void addLightToRootNode(Light l) {
+		getSceneFacade().getDeepSceneMgr().addLight(l);
+	}	
+	protected DirectionalLight makeDemoDirectionalLight() { 
+		Vector3f dir = getDemoVectoryFactory().getUsualLightDirection();
+		return getOpticFacade().getLightFactory().makeWhiteOpaqueDirectionalLight(dir);
+	}
+	protected void addDemoDirLightToRootNode() { 
+		addLightToRootNode(makeDemoDirectionalLight());
+	}
+	protected void setupLight() { 
+		addDemoDirLightToRootNode();
+	}
+	/** A centred plus sign to help the player aim. */
+	protected void initCrossHairs() {
+		getSceneFacade().getFlatOverlayMgr().detachAllOverlays();
+		BitmapText crossBT = getTextMgr().makeCrossHairs(2.0f, settings);
+		getSceneFacade().getFlatOverlayMgr().attachOverlaySpatial(crossBT);
+	}	
 
 }

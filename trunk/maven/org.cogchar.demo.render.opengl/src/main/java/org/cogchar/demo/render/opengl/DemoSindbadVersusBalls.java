@@ -39,11 +39,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl.ControlDirection;
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.opengl.bony.app.PhysicalApp;
+import org.cogchar.render.opengl.app.PhysicalApp;
 
 /**
  * A walking physical character followed by a 3rd person camera. (No animation.)
- * @author normenhansen, zathras
  */
 public class DemoSindbadVersusBalls extends PhysicalApp implements ActionListener {
 
@@ -109,7 +108,7 @@ public class DemoSindbadVersusBalls extends PhysicalApp implements ActionListene
     physicsCharacter = new CharacterControl(new CapsuleCollisionShape(0.5f, 1.8f), .1f);
     physicsCharacter.setPhysicsLocation(new Vector3f(0, 1, 0));
     characterNode = new Node("character node");
-    Spatial model = assetManager.loadModel("Models/Sinbad/Sinbad.mesh.xml");
+    Spatial model = getSceneFacade().getModelML().makeSinbadSpatialFromDefaultPath();
     model.scale(0.25f);
     characterNode.addControl(physicsCharacter);
     getPhysicsSpace().add(physicsCharacter);

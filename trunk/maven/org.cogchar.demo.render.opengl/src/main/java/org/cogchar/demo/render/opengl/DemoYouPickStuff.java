@@ -22,28 +22,29 @@
 
 package org.cogchar.demo.render.opengl;
 
-import org.cogchar.render.opengl.bony.app.DemoApp;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import org.cogchar.render.opengl.app.DemoApp;
 import com.jme3.font.BitmapText;
+import com.jme3.font.Rectangle;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.PQTorus;
+import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
-import com.jme3.math.Quaternion;
-import com.jme3.system.AppSettings;
 import org.cogchar.render.opengl.bony.world.CollisionMgr;
 
 /** Sample 8 - how to let the user pick (select) objects in the scene 
@@ -53,6 +54,9 @@ public class DemoYouPickStuff extends DemoApp {
 	Node myShootablesRootNode;
 	Geometry myMark, myArrowMark;
 	
+	private static String		MARK_ACTION = "markSpot";
+	private static String		ARROW_NORMAL = "arrowNormal";
+	
 	public static void main(String[] args) {
 		DemoYouPickStuff app = new DemoYouPickStuff();
 		app.start();
@@ -60,36 +64,64 @@ public class DemoYouPickStuff extends DemoApp {
 
 
 	@Override public void simpleInitApp() {
+		super.simpleInitApp();
 		flyCam.setMoveSpeed(20);
 
 		initCrossHairs(); // a "+" in the middle of the screen to help aiming
 		initKeys();       // load custom key mappings
 		initMark();       // a red sphere to myMark the hit
 		initArrowMark();
-
+		setupLight();
 		/** create four colored boxes and a floor to shoot at: */
 		myShootablesRootNode = new Node("Shootables");
 		rootNode.attachChild(myShootablesRootNode);
-		myShootablesRootNode.attachChild(makeCube("a Dragon", -2f, 0f, 1f));
-		myShootablesRootNode.attachChild(makeCube("a tin can", 1f, -2f, 0f));
-		myShootablesRootNode.attachChild(makeCube("the Sheriff", 0f, 1f, -2f));
-		myShootablesRootNode.attachChild(makeCube("the Deputy", 1f, 0f, -4f));
-		myShootablesRootNode.attachChild(makeFloor());
-		myShootablesRootNode.attachChild(makeCharacter());
-	}
+		myShootablesRootNode.attachChild(makeCube("a Dragon", -2f, 0f, 1f, 3.0f));
+		myShootablesRootNode.attachChild(makeCube("a tin can", 1f, -2f, 0f, 1.5f));
+		myShootablesRootNode.attachChild(makeCube("the Sheriff", 0f, 1f, -2f, 1.0f));
+		myShootablesRootNode.attachChild(makeCube("the Deputy", 1f, 0f, -4f, 0.5f));
 
+		//myShootablesRootNode.attachChild(makePQT("spiral", 5,3, 2f, 1f, 32, 32)); // Spiral torus
+		//myShootablesRootNode.attachChild(makePQT("flower", 3,8, 2f, 1f, 32, 32)); // Flower torus
+
+		myShootablesRootNode.attachChild(makeFloor());
+		Spatial otoSpatial = getSceneFacade().getModelML().makeOtoSpatialFromDefaultPath();
+		otoSpatial.scale(0.5f);
+		otoSpatial.setLocalTranslation(-1.0f, -1.5f, -0.6f);
+
+		myShootablesRootNode.attachChild(otoSpatial);
+		
+		Geometry rr = makeBlueQuadGeom();
+		myShootablesRootNode.attachChild(rr);
+		BitmapText btSpatial = makeTextSpatial();
+		myShootablesRootNode.attachChild(btSpatial);
+	}
+	private Geometry makeBlueQuadGeom() { 
+        Quad q = new Quad(6, 3);
+        Geometry g = getGeomFactory().makeColoredUnshadedGeom("blueRect", q, ColorRGBA.Blue, null);
+        g.setLocalTranslation(0, -3, -0.0001f);
+        return g;
+	}
+	private BitmapText makeTextSpatial() {
+        String txtB =   "ABCDEFGHIKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()-=_+[]\\;',./{}|:<>?";
+		BitmapText txtSpatial = getTextMgr().getScaledBitmapText(txtB, 1.0f);
+        txtSpatial.setBox(new Rectangle(0, 0, 6, 3));
+        txtSpatial.setQueueBucket(Bucket.Transparent);
+        txtSpatial.setSize( 0.5f );
+        txtSpatial.setText(txtB);
+		return txtSpatial;
+    }
 	/** Declaring the "Shoot" action and mapping to its triggers. */
 	private void initKeys() {
-		inputManager.addMapping("Shoot",
+		inputManager.addMapping(MARK_ACTION,
 				new KeyTrigger(KeyInput.KEY_SPACE), // trigger 1: spacebar
 				new MouseButtonTrigger(MouseInput.BUTTON_LEFT)); // trigger 2: left-button click
-		inputManager.addListener(actionListener, "Shoot");
+		inputManager.addListener(actionListener, MARK_ACTION);
 	}
 	/** Defining the "Shoot" action: Determine what was hit and how to respond. */
 	private ActionListener actionListener = new ActionListener() {
 
 		public void onAction(String name, boolean keyPressed, float tpf) {
-			if (name.equals("Shoot") && !keyPressed) {
+			if (name.equals(MARK_ACTION) && !keyPressed) {
 				
 				CollisionResults coRes = CollisionMgr.getCameraCollisions(cam, myShootablesRootNode);
 				CollisionMgr.printCollisionDebug(getLogger(), coRes);
@@ -100,85 +132,47 @@ public class DemoYouPickStuff extends DemoApp {
 					CollisionResult closest = coRes.getClosestCollision();
 					// Let's interact - we myMark the hit with a red dot.
 					myMark.setLocalTranslation(closest.getContactPoint());
-					rootNode.attachChild(myMark);
+					getSceneFacade().getDeepSceneMgr().attachTopSpatial(myMark);
 				} else {
 					// No hits? Then remove the red myMark.
-					rootNode.detachChild(myMark);
+					getSceneFacade().getDeepSceneMgr().detachTopSpatial(myMark);
 				}
 			}
 		}
 	};
 
 	/** A cube object for target practice */
-	protected Geometry makeCube(String name, float x, float y, float z) {
-		Box box = new Box(new Vector3f(x, y, z), 1, 1, 1);
-		Geometry cube = new Geometry(name, box);
-		Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		mat1.setColor("Color", ColorRGBA.randomColor());
-		cube.setMaterial(mat1);
-		return cube;
+	protected Geometry makeCube(String geomName, float x, float y, float z, float sideLen) {
+		Box cubeMesh = getMeshFF().getShapeMF().makeBoxMesh(new Vector3f(x, y, z), sideLen, sideLen, sideLen);
+		Geometry cubeGeom = getGeomFactory().makeRandomlyColoredUnshadedGeom(geomName, cubeMesh, null);
+		return cubeGeom;
 	}
 
 	/** A floor to show that the "shot" can go through several objects. */
 	protected Geometry makeFloor() {
-		Box box = new Box(new Vector3f(0, -4, -5), 15, .2f, 15);
-		Geometry floor = new Geometry("the Floor", box);
-		Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		mat1.setColor("Color", ColorRGBA.Gray);
-		floor.setMaterial(mat1);
-		return floor;
+		Box floorMesh = getMeshFF().getShapeMF().makeBoxMesh(new Vector3f(0, -4, -5), 15, .2f, 15);
+		Geometry floorGeom = getGeomFactory().makeColoredUnshadedGeom("theFloor", floorMesh, ColorRGBA.Gray, null);
+		return floorGeom;
 	}
+	protected Geometry makePQT(String geomName, float p, float q, float radius, float width, int steps, int radialSamples) {
+		PQTorus pqtMesh = getMeshFF().getShapeMF().makePQTorusMesh(p, q, radius, width, steps, radialSamples);
+		Geometry pqtGeom = getGeomFactory().makeRandomlyColoredUnshadedGeom(geomName, pqtMesh, null);
+		return pqtGeom;
+	}	
 
 	/** A red ball that marks the last spot that was "hit" by the "shot". */
 	protected void initMark() {
-		Sphere sphere = new Sphere(30, 30, 0.2f);
-		myMark = new Geometry("BOOM!", sphere);
-		Material mark_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		mark_mat.setColor("Color", ColorRGBA.Red);
-		myMark.setMaterial(mark_mat);
+		Sphere markMesh = getMeshFF().getShapeMF().makeSphereMesh(30, 30, 0.2f);
+		myMark = getGeomFactory().makeColoredUnshadedGeom("theMark", markMesh, ColorRGBA.Red, null); 
 	}
 
-	/** A centred plus sign to help the player aim. */
-	protected void initCrossHairs() {
-		guiNode.detachAllChildren();
-		guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-		BitmapText ch = new BitmapText(guiFont, false);
-		ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
-		ch.setText("+"); // crosshairs
-		ch.setLocalTranslation( // center
-				settings.getWidth() / 2 - guiFont.getCharSet().getRenderedSize() / 3 * 2,
-				settings.getHeight() / 2 + ch.getLineHeight() / 2, 0);
-		guiNode.attachChild(ch);
-	}
-
-	protected Spatial makeCharacter() {
-		// load a character from jme3test-test-data
-		Spatial golem = assetManager.loadModel("Models/Oto/Oto.mesh.xml");
-		golem.scale(0.5f);
-		golem.setLocalTranslation(-1.0f, -1.5f, -0.6f);
-
-		// We must add a light to make the model visible
-		DirectionalLight sun = new DirectionalLight();
-		sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f));
-		golem.addLight(sun);
-		return golem;
-	}
-
-	// From TestMousePick:
 	protected void initArrowMark() {
-		Arrow arrow = new Arrow(Vector3f.UNIT_Z.mult(2f));
-		arrow.setLineWidth(3);
-
-		//Sphere sphere = new Sphere(30, 30, 0.2f);
-		myArrowMark = new Geometry("BOOM!", arrow);
-		//mark = new Geometry("BOOM!", sphere);
-		Material mark_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		mark_mat.setColor("Color", ColorRGBA.Red);
-		myArrowMark.setMaterial(mark_mat);
+		// From TestMousePick:
+		Arrow arrow = getMeshFF().getFancyMF().makeArrowMesh(Vector3f.UNIT_Z.mult(2f), 3f);
+		myArrowMark = getSceneFacade().getGeomFactory().makeColoredUnshadedGeom(ARROW_NORMAL, arrow, ColorRGBA.Red, null);
 	}
 
-	@Override
-	public void simpleUpdate(float tpf) {
+	@Override public void simpleUpdate(float tpf) {
 		// From TestMousePick
 		 /*
 		Vector3f origin    = cam.getWorldCoordinates(inputManager.getCursorPosition(), 0.0f);
