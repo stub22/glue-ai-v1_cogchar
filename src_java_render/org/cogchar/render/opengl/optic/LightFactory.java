@@ -39,13 +39,16 @@ public class LightFactory {
         al.setColor(ColorRGBA.White.mult(1));
         return al;
 	}
-	public static DirectionalLight makeDirectionalLight() {
-
-        //   rootNode.addLight(al);
-
+	public DirectionalLight makeDirectionalLight(Vector3f direction, ColorRGBA color) {
         DirectionalLight dl = new DirectionalLight();
-        dl.setDirection(new Vector3f(-0.1f, -0.7f, -1).normalizeLocal());
-        dl.setColor(new ColorRGBA(1f, 1f, 1f, 1.0f));
+        dl.setDirection(direction.normalizeLocal());
+        dl.setColor(color);
         return dl;
     }	
+	public  DirectionalLight makeWhiteOpaqueDirectionalLight(Vector3f direction) {
+        //   rootNode.addLight(al);
+		ColorRGBA whiteOpaqueLight = new ColorRGBA(1f, 1f, 1f, 1.0f);
+		return makeDirectionalLight(direction, whiteOpaqueLight);
+    }	
+
 }

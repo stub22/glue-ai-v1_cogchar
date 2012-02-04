@@ -13,15 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.optic;
+package org.cogchar.render.opengl.bony.world;
 
-import com.jme3.renderer.Camera;
+import com.jme3.math.Vector3f;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class CameraMgr {
-	public Camera cloneCamera(Camera orig) {
-		return orig.clone();
+public class DemoVectorFactory {
+
+	public Vector3f getUsualLightDirection() { 
+		return new Vector3f(-0.1f, -0.7f, -1).normalizeLocal();
 	}
 }

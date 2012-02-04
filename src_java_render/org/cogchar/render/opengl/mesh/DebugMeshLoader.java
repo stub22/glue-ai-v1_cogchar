@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony.sys;
+package org.cogchar.render.opengl.mesh;
 
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.asset.AssetInfo;

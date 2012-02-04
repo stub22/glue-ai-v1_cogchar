@@ -15,9 +15,15 @@
  */
 package org.cogchar.render.opengl.optic;
 
+import com.jme3.renderer.RenderManager;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class ViewFactory {
+	private	 RenderManager		myRenderManager;
+	public ViewFactory(RenderManager renderMgr) {
+		myRenderManager = renderMgr;
+	}
 	
 }

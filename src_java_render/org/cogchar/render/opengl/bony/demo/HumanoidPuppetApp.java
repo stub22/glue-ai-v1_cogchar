@@ -57,7 +57,6 @@ package org.cogchar.render.opengl.bony.demo;
 
 import com.jme3.animation.Bone;
 import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
-import org.cogchar.render.opengl.bony.world.WorldMgr;
 import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
 
 import com.jme3.math.Quaternion;
@@ -87,11 +86,6 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
     private final static Logger		theLogger = LoggerFactory.getLogger(HumanoidPuppetApp.class);
 	private HumanoidRagdollWrapper	myHumanoidWrapper;
 	private ProjectileLauncher			myPrjctlMgr;
-	private	WorldMgr				myWorldMgr;
-
-	
-	// private	String					myHumanoidMeshPath;
-	
 
 
 	public static void main(String[] args) {
@@ -102,30 +96,28 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 	public HumanoidPuppetApp(BonyConfigEmitter bce) { 
 		super(bce); // lwjglRendererName, canvWidth, canvHeight, null, 1.0f);
 		// myHumanoidMeshPath = pathToHumanoidMesh;
-		myPrjctlMgr = new ProjectileLauncher();
 		myHumanoidWrapper = new HumanoidRagdollWrapper(bce);
-		myWorldMgr = new WorldMgr();
 		// assetManager, rootNode, etc. are not available yet!
-		// So, we wait for "simpleInitApp()" to do the bulk of our init.
+		// So, we wait for "simpleInitApp()" to do the bulk of our init.		
+
 	}
 	@Override public void simpleInitApp() {
 		theLogger.info("simpleInitApp() - START");
 		super.simpleInitApp();
+		myPrjctlMgr = new ProjectileLauncher(getMeshFF(), getMatMgr());		
+
 		initFonts();
-		WorldMgr.makeCrossHairs(assetManager, guiNode, guiFont, settings);
+		initCrossHairs();
 		initBasicTestPhysics();
 		initCameraAndLights();
 		initHumanoidStuff();
-		initProjectileStuff();  // Can be done at any time in this startup seq
+		myPrjctlMgr.initStuff();  // Can be done at any time in this startup seq
 		HumanoidPuppetActions.setupActionListeners(inputManager, this);
         SimulatorActions.setupActionListeners(inputManager, this);
 		myHumanoidWrapper.boogie();
 		myHumanoidWrapper.becomePuppet();
 		theLogger.info("simpleInitApp() - END");
 
-	}
-	private void initProjectileStuff() {
-		myPrjctlMgr.initStuff(getMatMgr());
 	}
 	public HumanoidRagdollWrapper getHumdWrap()  {
 		return myHumanoidWrapper;
@@ -184,7 +176,7 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
         setDefaultCameraLocation();
 		setAppSpeed(1.3f);
 		flyCam.setMoveSpeed(50);
-		addLightToRootNode(LightFactory.makeDirectionalLight());		
+		setupLight();	
 	}
     protected void setDefaultCameraLocation(){
 		cam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));

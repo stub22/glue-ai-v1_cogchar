@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony.world;
+package org.cogchar.render.opengl.scene;
 
 import org.cogchar.render.opengl.optic.MatFactory;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -26,6 +26,7 @@ import com.jme3.scene.shape.Sphere;
 import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
 
 /**
+ * Geometry is a Spatial, which has "a link to a parent [Node], it's local transforms and the world's transforms."
  * "A geometry has a mesh to define its form, and a material to define the appearance".
  * http://jmonkeyengine.org/wiki/doku.php/jme3:scenegraph_for_dummies - Slide 14 retrieved 2012-01-29.
  * @author Stu B. <www.texpedient.com>
@@ -54,6 +55,16 @@ public class GeomFactory {
 		}
 		return g;
 	}
+	public Geometry makeColoredUnshadedGeom(String name, Mesh mesh, ColorRGBA color, RigidBodyControl optRBC) {
+		Material mat = myMatMgr.makeColoredUnshadedMat(color);
+		return makeGeom(name, mesh, mat, optRBC);
+	}
+	public Geometry makeRandomlyColoredUnshadedGeom(String name, Mesh mesh, RigidBodyControl optRBC) {
+		Material mat = myMatMgr.makeRandomlyColoredUnshadedMat();
+		return makeGeom(name, mesh, mat, optRBC);
+	}		
+	
+	/*
 	public Geometry makeSphereGeom(String geomName, Material optMat,  RigidBodyControl optRBC, 
 					int zSamples, int radialSamples, float radius) {	
 		
@@ -84,8 +95,7 @@ public class GeomFactory {
 		
 		return makeBoxGeom(name, optMat, optRBC, centerX, centerY, centerZ, edgeLen, edgeLen, edgeLen);
 	}
-	
-	/** X */
+
 	public Geometry makeColoredUnshadedCubeGeom(String name, ColorRGBA color, RigidBodyControl optRBC, 
 				float centerX, float centerY, float centerZ, float edgeLen) {
 		
@@ -93,17 +103,17 @@ public class GeomFactory {
 		return makeCubeGeom(name, cubeMat, optRBC, centerX, centerY, centerZ, edgeLen);
 	}
 
-	/** A floor to show that the "shot" can go through several objects. */
 	public Geometry makeFloor() {
 		Material floorMat = myMatMgr.makeColoredUnshadedMat(ColorRGBA.Gray);
 		Geometry floorGeom = makeBoxGeom("the_floor", floorMat, null, 0.0f, -4.0f, -5.0f, 7.5f, 0.2f, 7.5f);
 		return floorGeom;
 	}
 
-	/** A red ball that marks the last spot that was "hit" by the "shot". */
 	public Geometry makeRedBallMark() {
 		Material mat = myMatMgr.makeColoredUnshadedMat(ColorRGBA.Red);
 		Geometry sphGeom = makeSphereGeom ("hit_mark", mat, null, 30, 30, 0.2f);
 		return sphGeom;
 	}	
+	 * 
+	 */
 }

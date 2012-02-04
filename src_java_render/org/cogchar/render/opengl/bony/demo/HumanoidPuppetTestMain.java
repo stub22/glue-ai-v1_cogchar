@@ -18,7 +18,6 @@ package org.cogchar.render.opengl.bony.demo;
 
 import org.cogchar.render.opengl.bony.gui.VirtCharPanel;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-import org.cogchar.render.opengl.bony.sys.BonySystemFuncs;
 import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
 import org.cogchar.render.opengl.bony.app.BonyRagdollApp;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
@@ -30,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.jme3.system.AppSettings;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.render.opengl.app.DemoApp;
 import org.cogchar.render.opengl.bony.gui.PanelUtils;
 
 /**

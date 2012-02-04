@@ -35,7 +35,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
-import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.render.opengl.app.DemoApp;
 
 public class DemoOtoIntersectsMovableBlock extends DemoApp {
 
@@ -64,11 +64,7 @@ public class DemoOtoIntersectsMovableBlock extends DemoApp {
         golem.scale(0.5f);
         golem.setLocalTranslation(-1.0f, -1.5f, -0.6f);
 
-        // We must add a light to make the model visible
-        DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f).normalizeLocal());
-        golem.addLight(sun);
-        rootNode.attachChild(golem);
+		setupLight();
 
         // Create input
         inputManager.addMapping("MoveRight", new KeyTrigger(KeyInput.KEY_L));
