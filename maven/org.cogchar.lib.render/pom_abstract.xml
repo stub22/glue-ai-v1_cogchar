@@ -69,26 +69,26 @@
 			<!-- This dep is used in addition to ext.bundle, to help NB. -->
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-core</artifactId>
-			<version>3.0.0-20111230.163422-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>
 		<dependency>
 			<!-- This dep is used in addition to ext.bundle, to help NB. -->
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-jbullet</artifactId>
-			<version>3.0.0-20111230.163803-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>			
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-testdata</artifactId>
-			<version>3.0.0-20111230.164049-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>test</scope>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jmonkeyengine3</artifactId>
-			<version>3.0.0-20111230.163349-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>test</scope>
 		</dependency>		
 		
