@@ -45,10 +45,13 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.PQTorus;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
+import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
 import org.cogchar.render.opengl.bony.world.CollisionMgr;
 
 /** Sample 8 - how to let the user pick (select) objects in the scene 
- * using the mouse or key presses. Can be used for shooting, opening doors, etc. */
+ * using the mouse or key presses. Can be used for shooting, opening doors, etc. 
+ 
+ */
 public class DemoYouPickStuff extends DemoApp {
 
 	Node myShootablesRootNode;
@@ -85,6 +88,9 @@ public class DemoYouPickStuff extends DemoApp {
 
 		myShootablesRootNode.attachChild(makeFloor());
 		Spatial otoSpatial = getSceneFacade().getModelML().makeOtoSpatialFromDefaultPath();
+		
+		SpatialManipFuncs.dumpNodeTree((Node) otoSpatial, "XX ");
+		
 		otoSpatial.scale(0.5f);
 		otoSpatial.setLocalTranslation(-1.0f, -1.5f, -0.6f);
 
@@ -133,6 +139,11 @@ public class DemoYouPickStuff extends DemoApp {
 					// Let's interact - we myMark the hit with a red dot.
 					myMark.setLocalTranslation(closest.getContactPoint());
 					getSceneFacade().getDeepSceneMgr().attachTopSpatial(myMark);
+					
+					//TODO:  If we hit a model, how can we find the named part of it that was collided?
+					// Geometry colSpat = closest.getGeometry();
+					// colSpat.
+					
 				} else {
 					// No hits? Then remove the red myMark.
 					getSceneFacade().getDeepSceneMgr().detachTopSpatial(myMark);
@@ -181,13 +192,11 @@ public class DemoYouPickStuff extends DemoApp {
 		
 		Ray ray = new Ray(origin, direction);
 		 */
-		Ray ray = new Ray(cam.getLocation(), cam.getDirection());
-
-		CollisionResults results = new CollisionResults();
-		myShootablesRootNode.collideWith(ray, results);
-
-		if (results.size() > 0) {
-			CollisionResult closest = results.getClosestCollision();
+		
+		CollisionResults coRes = CollisionMgr.getCameraCollisions(cam, myShootablesRootNode);
+		
+		if (coRes.size() > 0) {
+			CollisionResult closest = coRes.getClosestCollision();
 			myArrowMark.setLocalTranslation(closest.getContactPoint());
 
 			Quaternion q = new Quaternion();

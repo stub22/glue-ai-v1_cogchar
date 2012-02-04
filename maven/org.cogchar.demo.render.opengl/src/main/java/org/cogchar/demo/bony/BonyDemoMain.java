@@ -18,6 +18,8 @@ package org.cogchar.demo.bony;
 import org.cogchar.render.opengl.bony.demo.HumanoidPuppetTestMain;
 
 /**
+ * Just a wrapper for the HumanoidPuppetTestMain demo, placing it on the
+ * classpath of this project.
  * @author Stu B. <www.texpedient.com>
  */
 public class BonyDemoMain {

@@ -40,12 +40,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import org.cogchar.render.opengl.app.DemoApp;
 
-/**
- * Example 9 - How to make walls and floors solid.
- * This version uses Physics and a custom Action Listener.
+/**  Solid floor and walls, with walking character, as discussed on JME3 Wiki 
+ * <a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_collision">here</a>.
  */
-public class DemoYourTownPhysics extends DemoApp
-  implements ActionListener {
+public class DemoYourTownPhysics extends DemoApp implements ActionListener {
 
   private Spatial sceneModel;
   private BulletAppState bulletAppState;
@@ -62,6 +60,7 @@ public class DemoYourTownPhysics extends DemoApp
   }
 
   public void simpleInitApp() {
+	  super.simpleInitApp();
     /** Set up Physics */
     bulletAppState = new BulletAppState();
     stateManager.attach(bulletAppState);

@@ -33,6 +33,10 @@ import org.cogchar.render.opengl.app.DemoApp;
 import org.cogchar.render.opengl.bony.gui.PanelUtils;
 
 /**
+ * To successfully run this test program, you must invoke it with a classpath that includes
+ * the resources it wants, e.g. use the BonyDemoMain class in the org.cogchar.demo.render.opengl 
+ * project.
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidPuppetTestMain {
@@ -111,10 +115,10 @@ VirtCharPanel.JFrame.closed, exiting
 	
 		// Generally you want to run just ONE of the following main methods:
 			
-		// Most demos support camera nav using mouse and/or W,A,S,D and arrow keys
+		// Most demos support camera nav using mouse/arrow-keys to rotate, and W,S A,D, Q,Z to move.
 
 		// This is the most impressive relevant JME3 demo - recently updated with facial expressions!
-		// jme3test.bullet.TestBoneRagdoll.main(null);    //  Spacebar to make him do a pushup, then shoot him ...
+		// jme3test.bullet.TestBoneRagdoll.main(null);    //  Spacebar to make 'im do a pushup, then shoot 'im agin!
 
 
 		// jme3test.helloworld.HelloAnimation.main(null);   // Press spacebar to walk
