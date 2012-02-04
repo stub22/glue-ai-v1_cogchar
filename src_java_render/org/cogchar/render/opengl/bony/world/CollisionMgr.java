@@ -26,13 +26,13 @@ import org.slf4j.Logger;
  * @author Stu B. <www.texpedient.com>
  */
 public class CollisionMgr {
-	public static CollisionResults getCameraCollisions(Camera cam, Node shootables) { 
+	public static CollisionResults getCameraCollisions(Camera cam, Node collidableTree) { 
 		// 1. Reset results list.
 		CollisionResults coRes = new CollisionResults();
 		// 2. Aim the ray from cam loc to cam direction.
 		Ray ray = new Ray(cam.getLocation(), cam.getDirection());
 		// 3. Collect intersections between Ray and Shootables in results list.
-		shootables.collideWith(ray, coRes);
+		collidableTree.collideWith(ray, coRes);
 		
 		return coRes;
 	}
