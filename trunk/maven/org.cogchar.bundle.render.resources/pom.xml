@@ -21,21 +21,9 @@
             <version>1.4.0</version>
             <scope>provided</scope>
         </dependency>
-		<!--
+
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ext.bundle.opengl.jmonkey</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>org.cogchar.lib.render</artifactId>
-            <version>${project.version}</version>
-			<scope>provided</scope>
-        </dependency>
-		-->
-        <dependency>
-			<!-- supports bundle activator, which may need to rise again and do something -->
+			<!-- supports bundle activator -->
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.core</artifactId>
             <version>${appdapter.version}</version>
