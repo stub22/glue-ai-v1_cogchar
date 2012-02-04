@@ -41,7 +41,8 @@ import com.jme3.scene.shape.Sphere.TextureMode;
 import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
-import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.render.opengl.app.DemoApp;
+import org.cogchar.render.opengl.optic.MatFactory;
 
 /**
  * Example 12 - how to give objects physical properties so they bounce and fall.
@@ -92,6 +93,8 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
 
   @Override
   public void simpleInitApp() {
+
+	  super.simpleInitApp();
     /** Set up Physics Game */
     bulletAppState = new BulletAppState();
     stateManager.attach(bulletAppState);
@@ -124,24 +127,12 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
 
   /** Initialize the materials used in this scene. */
   public void initMaterials() {
-    wall_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-    TextureKey key = new TextureKey("Textures/Terrain/BrickWall/BrickWall.jpg");
-    key.setGenerateMips(true);
-    Texture tex = assetManager.loadTexture(key);
-    wall_mat.setTexture("ColorMap", tex);
-
-    stone_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-    TextureKey key2 = new TextureKey("Textures/Terrain/Rock/Rock.PNG");
-    key2.setGenerateMips(true);
-    Texture tex2 = assetManager.loadTexture(key2);
-    stone_mat.setTexture("ColorMap", tex2);
-
-    floor_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-    TextureKey key3 = new TextureKey("Textures/Terrain/Pond/Pond.jpg");
-    key3.setGenerateMips(true);
-    Texture tex3 = assetManager.loadTexture(key3);
-    tex3.setWrap(WrapMode.Repeat);
-    floor_mat.setTexture("ColorMap", tex3);
+	MatFactory mf = getMatMgr();
+	
+    wall_mat = mf.getBrickWallMat();
+    stone_mat = mf.makeRockMat();
+    floor_mat = mf.getPondMat();
+	
   }
 
   /** Make a solid floor and add it to the scene. */
@@ -217,18 +208,6 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
     ball_phy.setLinearVelocity(cam.getDirection().mult(25));
   }
 
-  /** A plus sign used as crosshairs to help the player with aiming.*/
-  protected void initCrossHairs() {
-    guiNode.detachAllChildren();
-    guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-    BitmapText ch = new BitmapText(guiFont, false);
-    ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
-    ch.setText("+");        // fake crosshairs :)
-    ch.setLocalTranslation( // center
-      settings.getWidth() / 2 - guiFont.getCharSet().getRenderedSize() / 3 * 2,
-      settings.getHeight() / 2 + ch.getLineHeight() / 2, 0);
-    guiNode.attachChild(ch);
-  }
 }
 
 /*

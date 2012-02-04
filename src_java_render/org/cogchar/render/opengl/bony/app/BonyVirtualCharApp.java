@@ -20,6 +20,7 @@
 
 package org.cogchar.render.opengl.bony.app;
 
+import org.cogchar.render.opengl.app.PhysicalApp;
 import java.awt.Canvas;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;

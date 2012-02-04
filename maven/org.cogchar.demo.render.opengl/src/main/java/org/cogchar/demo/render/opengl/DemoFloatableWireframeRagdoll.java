@@ -33,7 +33,7 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.opengl.bony.app.PhysicalApp;
+import org.cogchar.render.opengl.app.PhysicalApp;
 
 /**
  *

@@ -13,15 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.optic;
+package org.cogchar.render.opengl.scene;
 
-import com.jme3.renderer.Camera;
+import com.jme3.light.Light;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class CameraMgr {
-	public Camera cloneCamera(Camera orig) {
-		return orig.clone();
+public class DeepSceneMgr {
+	private	Node	myParentNode;
+	public DeepSceneMgr (Node parentNode) {
+		myParentNode = parentNode;
+	}
+	public void attachTopSpatial(Spatial s) {
+		myParentNode.attachChild(s);
+	}
+	public void detachTopSpatial(Spatial s) {
+		myParentNode.detachChild(s);
+	}
+	public void addLight(Light l) {
+		myParentNode.addLight(l);
 	}
 }

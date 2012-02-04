@@ -13,11 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony.world;
 
 /**
- * @author Stu B. <www.texpedient.com>
+ * Factories for JME3 optical metaphor objects:  Cameras, lights, materials, viewports.
+ * 
  */
-public class TextMgr {
-	
-}
+package org.cogchar.render.opengl.optic;

@@ -22,7 +22,7 @@
 
 package org.cogchar.demo.render.opengl;
 
-import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.render.opengl.app.DemoApp;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;

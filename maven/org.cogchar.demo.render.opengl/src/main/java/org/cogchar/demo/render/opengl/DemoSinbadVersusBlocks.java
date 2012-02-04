@@ -43,10 +43,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.opengl.bony.app.PhysicalApp;
+import org.cogchar.render.opengl.app.PhysicalApp;
 
 /**
- * @author normenhansen
+ *
  */
 public class DemoSinbadVersusBlocks extends PhysicalApp implements AnimEventListener, ActionListener {
 
@@ -78,7 +78,7 @@ public class DemoSinbadVersusBlocks extends PhysicalApp implements AnimEventList
         cam.setLocation(new Vector3f(-8,0,-4));
         cam.lookAt(new Vector3f(4,0,-7), Vector3f.UNIT_Y);
 
-        model = (Node) assetManager.loadModel("Models/Sinbad/Sinbad.mesh.xml");
+        model = (Node) getSceneFacade().getModelML().makeSinbadSpatialFromDefaultPath();
         model.lookAt(new Vector3f(0,0,-1), Vector3f.UNIT_Y);
         model.setLocalTranslation(4, 0, -7f);
 
@@ -97,15 +97,6 @@ public class DemoSinbadVersusBlocks extends PhysicalApp implements AnimEventList
         control.addListener(this);
 
     }
-
-    private void setupLight() {
-        DirectionalLight dl = new DirectionalLight();
-        dl.setDirection(new Vector3f(-0.1f, -0.7f, -1).normalizeLocal());
-        dl.setColor(new ColorRGBA(1f, 1f, 1f, 1.0f));
-        rootNode.addLight(dl);
-    }
-
-
 
     private void setupKeys() {
         inputManager.addMapping("Rotate Left",

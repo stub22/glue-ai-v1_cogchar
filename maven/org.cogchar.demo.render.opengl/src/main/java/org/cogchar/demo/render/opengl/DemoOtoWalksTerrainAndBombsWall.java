@@ -67,11 +67,10 @@ import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
 import java.util.List;
 import jme3tools.converters.ImageToAwt;
-import org.cogchar.render.opengl.bony.app.DemoApp;
+import org.cogchar.render.opengl.app.DemoApp;
 
 /**
  * A walking animated character followed by a 3rd person camera on a terrain with LOD.
- * @author normenhansen
  */
 public class DemoOtoWalksTerrainAndBombsWall extends DemoApp implements ActionListener, PhysicsCollisionListener, AnimEventListener {
 
@@ -120,7 +119,7 @@ public class DemoOtoWalksTerrainAndBombsWall extends DemoApp implements ActionLi
         setupKeys();
         prepareBullet();
         prepareEffect();
-        createLight();
+		setupLight();
         createSky();
         createTerrain();
         createWall();
@@ -218,14 +217,6 @@ public class DemoOtoWalksTerrainAndBombsWall extends DemoApp implements ActionLi
         effect.setMaterial(mat);
 //        effect.setLocalScale(100);
         rootNode.attachChild(effect);
-    }
-
-    private void createLight() {
-        Vector3f direction = new Vector3f(-0.1f, -0.7f, -1).normalizeLocal();
-        DirectionalLight dl = new DirectionalLight();
-        dl.setDirection(direction);
-        dl.setColor(new ColorRGBA(1f, 1f, 1f, 1.0f));
-        rootNode.addLight(dl);
     }
 
     private void createSky() {

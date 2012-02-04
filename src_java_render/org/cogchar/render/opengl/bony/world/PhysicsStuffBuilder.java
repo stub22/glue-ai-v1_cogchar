@@ -15,9 +15,9 @@
  */
 package org.cogchar.render.opengl.bony.world;
 
+import org.cogchar.render.opengl.scene.GeomFactory;
 import org.cogchar.render.opengl.optic.MatFactory;
 import org.cogchar.render.opengl.optic.LightFactory;
-import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
@@ -36,6 +36,8 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import org.cogchar.render.opengl.mesh.MeshFactoryFacade;
+import org.cogchar.render.opengl.optic.OpticFacade;
+import org.cogchar.render.opengl.scene.SceneFacade;
 
 /**
  *
@@ -50,14 +52,17 @@ public class PhysicsStuffBuilder {
 
 	private		Node			myRootNode;
 	private		PhysicsSpace	myPhysSpc;
-	private		MatFactory			myMatMgr;
-	private		GeomFactory				myGeomMgr;
+
 	private		MeshFactoryFacade	myMeshFF;
+	private		SceneFacade			mySceneFacade;
+	private		OpticFacade			myOpticFacade;
 	
-	public 	PhysicsStuffBuilder(Node rootNode, MatFactory matMgr, PhysicsSpace physSpc) {
+	public 	PhysicsStuffBuilder(Node rootNode, PhysicsSpace physSpc, MeshFactoryFacade mff, SceneFacade sf, OpticFacade of) {
 		myRootNode = rootNode;
-		myMatMgr = matMgr;
 		myPhysSpc = physSpc;
+		myMeshFF = mff;
+		mySceneFacade = sf;
+		myOpticFacade = of;
 	}
 	
 	public Node getRootNode() { 
@@ -71,6 +76,12 @@ public class PhysicsStuffBuilder {
 	protected MeshFactoryFacade getMeshFF() { 
 		return myMeshFF;
 	}
+	protected GeomFactory getGeomFactory() { 
+		return mySceneFacade.getGeomFactory();
+	}
+	protected MatFactory getMatFactory() { 
+		return myOpticFacade.getMatMgr();
+	}
 	
 	/**
 	 * creates a simple physics test world with a floor, an obstacle and some test boxes
@@ -81,7 +92,7 @@ public class PhysicsStuffBuilder {
 	public void createPhysicsTestWorld() {
 		LightFactory.addLightGrayAmbientLight(myRootNode);
 		
-		Material floorMat = myMatMgr.makeUnshadedMat();
+		Material floorMat = getMatFactory().makeUnshadedMat();
 		
 		addFloor( true, floorMat);
 	}
@@ -90,13 +101,23 @@ public class PhysicsStuffBuilder {
 	public void createPhysicsTestWorldSoccer() {
 		LightFactory.addLightGrayAmbientLight(myRootNode);
 		
-		Material floorMat = myMatMgr.makeJmonkeyLogoMat();
+		Material floorMat = getMatFactory().makeJmonkeyLogoMat();
 		Material ballMat = floorMat;
 
-		addFloor(true, floorMat);
+		addFloor(false, floorMat);
 		//movable spheres
 		makeSpheres(ballMat);
-  
+		
+		/*
+        //immovable Box with mesh collision shape
+        Box box = new Box(1, 1, 1);
+        Geometry boxGeometry = new Geometry("Box", box);
+        boxGeometry.setMaterial(material);
+        boxGeometry.setLocalTranslation(4, 1, 2);
+        boxGeometry.addControl(new RigidBodyControl(new MeshCollisionShape(box), 0));
+        rootNode.attachChild(boxGeometry);
+        space.add(boxGeometry);		
+		 */
 	}
 
 	public void addFloor(boolean rigidBodyPhysFlag, Material floorMat) {
@@ -122,7 +143,7 @@ public class PhysicsStuffBuilder {
 	 * @return
 	 */
 	public Geometry createPhysicsTestBox() {
-		Material material = myMatMgr.makeJmonkeyLogoMat();
+		Material material = getMatFactory().makeJmonkeyLogoMat();
 		Box box = new Box(0.25f, 0.25f, 0.25f);
 // 		Box box = new Box(1, 1, 1);
 		Geometry boxGeometry = new Geometry(GEOM_BOX, box);
@@ -196,10 +217,10 @@ public class PhysicsStuffBuilder {
 			public void onAction(String name, boolean keyPressed, float tpf) {
 				Sphere bullet = new Sphere(32, 32, 0.4f, true, false);
 				bullet.setTextureMode(TextureMode.Projected);
-				Material mat2 = myMatMgr.makeRockMat();
+				Material rockMat = getMatFactory().makeRockMat();
 				if (name.equals("shoot") && !keyPressed) {
 					Geometry bulletg = new Geometry("bullet", bullet);
-					bulletg.setMaterial(mat2);
+					bulletg.setMaterial(rockMat);
 					bulletg.setShadowMode(ShadowMode.CastAndReceive);
 					bulletg.setLocalTranslation(cam.getLocation());
 					RigidBodyControl bulletControl = new RigidBodyControl(1);
@@ -218,7 +239,7 @@ public class PhysicsStuffBuilder {
 		for (int i = 0; i < 5; i++) {
 			RigidBodyControl rbc = new RigidBodyControl(.001f);
 			Sphere s = getMeshFF().getShapeMF().makeSphereMesh(16, 16, 0.5f);
-			Geometry ballGeometry = myGeomMgr.makeGeom( GeomFactory.GEOM_SOCCER_BALL, s, mat, rbc);			
+			Geometry ballGeometry = getGeomFactory().makeGeom( GeomFactory.GEOM_SOCCER_BALL, s, mat, rbc);			
 			//RigidBodyControl automatically uses Sphere collision shapes when attached to single geometry with sphere mesh
 			ballGeometry.getControl(RigidBodyControl.class).setRestitution(1);
 			ballGeometry.setLocalTranslation(i, 2, -3);
@@ -231,7 +252,7 @@ public class PhysicsStuffBuilder {
 		Sphere sphMesh = getMeshFF().getShapeMF().makeSphereMesh(8, 8, 1);
 		// Note here we are constructing the collision shape explicitly, and with 0 mass = "static" RBC.
 		RigidBodyControl rbc = new RigidBodyControl(new MeshCollisionShape(sphMesh), 0);
-		Geometry sphereGeometry = myGeomMgr.makeGeom(GeomFactory.GEOM_SPHERE, sphMesh,  mat, rbc);
+		Geometry sphereGeometry = getGeomFactory().makeGeom(GeomFactory.GEOM_SPHERE, sphMesh,  mat, rbc);
 		sphereGeometry.setLocalTranslation(4, -4, 2);
 		myRootNode.attachChild(sphereGeometry);
 		myPhysSpc.add(sphereGeometry);	
@@ -242,10 +263,10 @@ public class PhysicsStuffBuilder {
 	 * @return
 	 */
 	public Geometry createPhysicsTestSphere() {
-		Material mat = myMatMgr.makeJmonkeyLogoMat();
+		Material mat = getMatFactory().makeJmonkeyLogoMat();
 		Sphere sphMesh = getMeshFF().getShapeMF().makeSphereMesh(8, 8, 0.25f);		
 		RigidBodyControl sphRBC = new RigidBodyControl(2.0f);
-		Geometry sphGeom = myGeomMgr.makeGeom(GeomFactory.GEOM_SPHERE, sphMesh, mat, sphRBC);
+		Geometry sphGeom = getGeomFactory().makeGeom(GeomFactory.GEOM_SPHERE, sphMesh, mat, sphRBC);
 		return sphGeom;
 	}	
 

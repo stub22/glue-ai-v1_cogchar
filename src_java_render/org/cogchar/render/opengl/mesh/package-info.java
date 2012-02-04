@@ -13,15 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.optic;
-
-import com.jme3.renderer.Camera;
 
 /**
- * @author Stu B. <www.texpedient.com>
+ * Factories for creating + loading JME3 Mesh objects, which are the foundation
+ * of our OpenGL world display objects.
  */
-public class CameraMgr {
-	public Camera cloneCamera(Camera orig) {
-		return orig.clone();
-	}
-}
+package org.cogchar.render.opengl.mesh;

@@ -13,15 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.optic;
-
-import com.jme3.renderer.Camera;
-
 /**
- * @author Stu B. <www.texpedient.com>
+ * GUI panels allowing our character OpenGL displays to be embedded into Java GUIs, 
+ * and embellished with external toolbars.
  */
-public class CameraMgr {
-	public Camera cloneCamera(Camera orig) {
-		return orig.clone();
-	}
-}
+package org.cogchar.render.opengl.bony.gui;
