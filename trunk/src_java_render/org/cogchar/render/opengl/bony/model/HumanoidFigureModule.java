@@ -29,6 +29,7 @@ public class HumanoidFigureModule extends RenderModule {
 	public HumanoidFigureModule(HumanoidRagdollWrapper hw, BonyRenderContext brc) {
 		myHumanoidWrapper = hw;
 		myBRC = brc;
+		myRunDebugModulus = 100;
 	}
 	
 	@Override protected void doRenderCycle(long runSeqNum, float tpf) {
