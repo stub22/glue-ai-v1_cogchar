@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author pow
  */
-public abstract class DemoApp extends SimpleApplication {
+public abstract class DemoApp extends RenderApp {
 	static Logger theFallbackLogger = LoggerFactory.getLogger(DemoApp.class);
 	
 	private		Logger							myLogger;
@@ -57,6 +57,7 @@ public abstract class DemoApp extends SimpleApplication {
 	private		OpticFacade						myOpticFacade;
 	private		SceneFacade						mySceneFacade;
 
+	
 	
 	public DemoApp(DemoConfigEmitter ce) { 
 		myConfigEmitter = ce;
@@ -175,6 +176,7 @@ public abstract class DemoApp extends SimpleApplication {
 
 	@Override public void simpleInitApp() {
 		theFallbackLogger.info("simpleInitApp() - START");
+		super.simpleInitApp();
 		theFallbackLogger.info("%%%%%%% JmeSystem.isLowPermissions()=" + com.jme3.system.JmeSystem.isLowPermissions());
 		theFallbackLogger.info("Disabling confusing JDK-Logger warnings from UrlLocator");		
 		java.util.logging.Logger.getLogger(UrlLocator.class.getName()).setLevel(java.util.logging.Level.SEVERE);

@@ -43,13 +43,15 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 	@Override public void simpleInitApp() {
 		theLogger.info("simpleInitApp() - START");
 		super.simpleInitApp();
-		initStickFigureModel();
-		BonyRenderContext bc = getBonyRenderContext();
-		myTwister = new StickFigureTwister(bc);
-		VirtualCharacterPanel vcp = bc.getPanel();
-		BodyController bodCont = vcp.getBodyController();
-		if (bodCont != null) {
-			myTwister.setBodyController(bodCont);
+		if (initStickFigureModel()) {
+			BonyRenderContext bc = getBonyRenderContext();
+			myTwister = new StickFigureTwister(bc);
+			VirtualCharacterPanel vcp = bc.getPanel();
+			BodyController bodCont = vcp.getBodyController();
+			if (bodCont != null) {
+				myTwister.setBodyController(bodCont);
+			}
+			attachModule(myTwister);
 		}
 		theLogger.info("simpleInitApp() - END");
 	}
@@ -57,7 +59,7 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 		myTwister.setScoringFlag(f);
 	}
 
-	public void initStickFigureModel() {
+	public boolean initStickFigureModel() {
 		// test1Node.setLocalScale(0.5f);
 		BonyRenderContext bc = getBonyRenderContext();
 		BonyConfigEmitter bce = getBonyConfigEmitter(); 
@@ -81,14 +83,19 @@ public class BonyStickFigureApp extends BonyVirtualCharApp {
 			testSceneNode.setLocalScale(sceneScale);
 
 			this.rootNode.attachChild(testSceneNode);
+			return true;
 		} else {
 			theLogger.warn("Skipping load for BonyStickFigure - gui controls should also be disabled");
+			return false;
 		}
-	}	
+		
+	}	/*
 	@Override public void simpleUpdate(float tpf) {
 		doUpdate(tpf);
 	}
 	private void doUpdate(float tpf) {
 		myTwister.twist(tpf);
 	}	
+	 * 
+	 */
 }
