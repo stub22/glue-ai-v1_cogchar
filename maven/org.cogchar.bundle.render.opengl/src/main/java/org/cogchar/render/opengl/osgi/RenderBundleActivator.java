@@ -18,17 +18,16 @@ package org.cogchar.render.opengl.osgi;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import org.appdapter.osgi.core.BundleActivatorBase;
+import org.appdapter.osgi.registry.RegistryServiceFuncs;
+import org.appdapter.api.registry.VerySimpleRegistry;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.bundle.render.resources.ResourceBundleActivator;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-import org.cogchar.render.opengl.bony.demo.HumanoidPuppetTestMain;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.cogchar.render.opengl.app.DemoApp;
 import org.cogchar.render.opengl.bony.demo.HumanoidPuppetApp;
 import org.cogchar.render.opengl.bony.gui.PanelUtils;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
@@ -54,6 +53,11 @@ public class RenderBundleActivator extends BundleActivatorBase {
 	@Override public void start(BundleContext bundleCtx) throws Exception {
 		
 		super.start(bundleCtx);
+		// IDE hints may show these symbols as undefined, but they should compile OK.		
+		theLogger.info("******************* Fetching VerySimpleRegistry");
+
+		VerySimpleRegistry vsr = RegistryServiceFuncs.getTheWellKnownRegistry(bundleCtx);
+		
 		theLogger.info("******************* Creating BonyConfigEmitter, HumanoidPuppetApp, and JmonkeyAssetLocation");
 		BonyConfigEmitter bce = new BonyConfigEmitter();
 		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);

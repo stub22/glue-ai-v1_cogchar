@@ -50,7 +50,9 @@ import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
 import java.util.List;
 import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
+import org.cogchar.render.opengl.bony.state.BoneState;
+import org.cogchar.render.opengl.bony.state.FigureState;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -242,6 +244,29 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		}
 	
 	}
+	public void applyFigureState(FigureState fs) {
+		if (fs == null) {
+			return;
+		}
+		HumanoidBoneConfig hbc = getHBConfig();
+		List<HumanoidBoneDesc> boneDescs = hbc.getBoneDescs();
+		// theLogger.info("Applying figureState " + fs + " to boneDescs[" + boneDescs + "]");
+		int debugModulator = 0;
+		for (HumanoidBoneDesc hbd : boneDescs) {
+			
+			String boneName = hbd.getSpatialName();
+			BoneState bs = fs.getBoneState(boneName);
+			Bone tgtBone = getSpatialBone(boneName);
+			if ((bs != null) && (tgtBone != null)) {
+				Quaternion boneRotQuat = bs.getRotQuat();
+		//		if (debugModulator++ %5 == 0)  {
+		//			theLogger.info("Applying " + boneRotQuat + " to " + tgtBone);
+		//		}
+				StickFigureTwister.applyBoneRotQuat(tgtBone, boneRotQuat);
+			}
+		}
+	
+	}	
 	/*
 	 *        
 	 joint.getRotationalLimitMotor(0).setHiLimit(maxX);

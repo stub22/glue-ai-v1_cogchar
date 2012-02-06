@@ -94,7 +94,8 @@ public class BonyVirtualCharApp extends PhysicalApp {
 	@Override public void simpleInitApp() {
 		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is starting");
 		super.simpleInitApp();
-		// Perform actions that cannot be done until engine is running.
+		// (Finally!) Perform actions that cannot be done until JME3 engine is running (which is now!)
+		myContext.initJMonkeyStuff(assetManager, rootNode, guiNode);
 		BonyCanvasFuncs.setupCameraLightAndViewport(myContext);
 		//BonyCanvasFuncs.initScoreBoard(myContext);
 		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is finished");

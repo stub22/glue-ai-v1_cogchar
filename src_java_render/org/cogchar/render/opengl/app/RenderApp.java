@@ -13,13 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony.demo;
+package org.cogchar.render.opengl.app;
 
-import org.appdapter.module.basic.NullModule;
+import com.jme3.app.SimpleApplication;
+import org.appdapter.api.module.Module;
+import org.cogchar.render.opengl.bony.model.RenderModulator;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class HumanoidFigureModule extends NullModule {
+public class RenderApp extends SimpleApplication {
 	
+	private		RenderModulator		myRenderModulator;
+
+	@Override public void simpleInitApp() {
+		myRenderModulator = new RenderModulator();
+	}
+	
+	@Override public void simpleUpdate(float tpf) {
+		myRenderModulator.runOneCycle(tpf);
+	}
+	
+	public void attachModule(Module<RenderModulator> m) { 
+		myRenderModulator.attachModule(m);
+	}
+	public void detachModule(Module<RenderModulator> m) { 
+		myRenderModulator.detachModule(m);
+	}
 }
