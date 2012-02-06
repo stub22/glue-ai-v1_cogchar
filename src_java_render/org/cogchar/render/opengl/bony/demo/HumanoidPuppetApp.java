@@ -41,13 +41,13 @@ import org.cogchar.render.opengl.bony.state.BoneState;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+import org.cogchar.render.opengl.bony.model.HumanoidFigureModule;
 import org.cogchar.render.opengl.optic.LightFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JMonkey Team Comment as of about August 2011:
- * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
+ *
  */
 public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
     private final static Logger		theLogger = LoggerFactory.getLogger(HumanoidPuppetApp.class);
@@ -121,6 +121,9 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 			myHumanoidWrapper.initStuff(hbc, assetManager, rootNode, getPhysicsSpace(), humanoidMeshPath);
 			//VirtCharPanel vcp = getVCPanel();
 			//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
+			BonyRenderContext ctx = getBonyRenderContext();
+			HumanoidFigureModule hfm = new HumanoidFigureModule(myHumanoidWrapper, ctx);
+			attachModule(hfm);			
 		} else {
 			theLogger.warn("Skipping humanoid mesh load");
 		}
@@ -134,10 +137,8 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 		} else {
 			theLogger.warn("Skipping extra-robot mesh load");
 		}
-		
-		
-	}
 
+	}
 
 	private void initCameraAndLights() {
         setDefaultCameraLocation();
@@ -154,7 +155,40 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 		VirtualCharacterPanel vcp = ctx.getPanel();
 		return vcp;
 	}
-	public void applyTwisting(float tpf) { 
+
+	/*
+	 * Called from SimpleUpdate to propagate position state from the figure state in the
+	 * BonyRenderContext to the OpenGL-rendered bones of the humanoid puppet, as mediated
+	 * by the myTwister delegate (which doesn't do anything smart, yet)..  
+	 */
+	/*
+	public void applyFigureState() {
+		BonyRenderContext ctx = getBonyRenderContext();
+		FigureState fs = ctx.getFigureState();
+		myHumanoidWrapper.applyFigureState(fs);
+	}
+	 * 
+	 */
+
+
+    private long myLastUpdateTime = System.currentTimeMillis();
+    private void logUpdateTime(){
+        long prev = myLastUpdateTime;
+        long now = System.currentTimeMillis();
+        long elapsed = now - prev;
+        theLogger.info("Updating Robot.  " + elapsed + "msec since last update.  Cur time: " + now);
+        myLastUpdateTime = now;
+    }
+    /*
+	@Override public void simpleUpdate(float tpf) {
+        //logUpdateTime();
+		super.simpleUpdate(tpf);
+		//applyTwisting(tpf);
+		applyFigureState();
+	}
+	 * 
+	 */
+}
 		/*VirtCharPanel vcp = getVCPanel();
 		int testChannelNum = vcp.getTestChannelNum();
 		String direction = vcp.getTestDirection();
@@ -166,39 +200,7 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 		myTwister.twistBone(tpf, tgtBone, direction);
 		
 		Bone rootBone = myHumanoidWrapper.getRootBone();*/
-	}
-	/**
-	 * Called from SimpleUpdate to propagate position state from the figure state in the
-	 * BonyRenderContext to the OpenGL-rendered bones of the humanoid puppet, as mediated
-	 * by the myTwister delegate (which doesn't do anything smart, yet)..  
-	 */
-	public void applyFigureState() {
-		BonyRenderContext ctx = getBonyRenderContext();
-		FigureState fs = ctx.getFigureState();
-		if (fs == null) {
-			return;
-		}
-		HumanoidBoneConfig hbc = myHumanoidWrapper.getHBConfig();
-		List<HumanoidBoneDesc> boneDescs = hbc.getBoneDescs();
-		// theLogger.info("Applying figureState " + fs + " to boneDescs[" + boneDescs + "]");
-		int debugModulator = 0;
-		for (HumanoidBoneDesc hbd : boneDescs) {
-			
-			String boneName = hbd.getSpatialName();
-			BoneState bs = fs.getBoneState(boneName);
-			Bone tgtBone = myHumanoidWrapper.getSpatialBone(boneName);
-			if ((bs != null) && (tgtBone != null)) {
-				Quaternion boneRotQuat = bs.getRotQuat();
-		//		if (debugModulator++ %5 == 0)  {
-		//			theLogger.info("Applying " + boneRotQuat + " to " + tgtBone);
-		//		}
-				myTwister.applyBoneRotQuat(tgtBone, boneRotQuat);
-			}
-		}
-	
-	}
-
-	/*   
+			/*    Weird old bits of code
 	float elTime = 0;
 	boolean forward = true;
 	AnimControl animControl;
@@ -206,23 +208,10 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 	Vector3f direction = new Vector3f(0, 0, 1);
 	Quaternion rotate = new Quaternion().fromAngleAxis(FastMath.PI / 8, Vector3f.UNIT_Y);
 	boolean dance = true;
-	 * */
-    private long myLastUpdateTime = System.currentTimeMillis();
-    private void logUpdateTime(){
-        long prev = myLastUpdateTime;
-        long now = System.currentTimeMillis();
-        long elapsed = now - prev;
-        theLogger.info("Updating Robot.  " + elapsed + "msec since last update.  Cur time: " + now);
-        myLastUpdateTime = now;
-    }
-    
-	@Override
-	public void simpleUpdate(float tpf) {
-        //logUpdateTime();
-		super.simpleUpdate(tpf);
-		//applyTwisting(tpf);
-		applyFigureState();
-		// myHumanoidWrapper.wiggle(tpf);
+ * / myHumanoidWrapper.wiggle(tpf);
+	
+	  * JMonkey Team Comment as of about August 2011:
+ * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
 		//  Below is JMonkey test code from TestBoneRagdoll, which is commented out in JMonkey trunk as of about 
 		// 2011-08-01.
 		// System.out.println(((BoundingBox) myHumanoidModel.getWorldBound()).getYExtent());
@@ -260,11 +249,8 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 //            myHumanoidModel.move(direction.multLocal(tpf * 8));
 //            direction.normalizeLocal();
 //            myHumanoidModel.lookAt(myHumanoidModel.getLocalTranslation().add(direction), Vector3f.UNIT_Y);
-//        }
-	}
-
-
-}
+// 
+*/ 
 
 /*
  * 

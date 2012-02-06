@@ -31,7 +31,7 @@ import org.cogchar.render.opengl.bony.app.BodyController;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class StickFigureTwister {
+public class StickFigureTwister extends RenderModule {
 	private	BonyRenderContext		myContext;
 	
 	private float			myWaistTwistAngle = 0;
@@ -115,7 +115,7 @@ public class StickFigureTwister {
 		q.fromAngles(pitchAngle, rollAngle, yawAngle);
 		return q;
 	}
-	public void applyBoneRotQuat(Bone tgtBone, Quaternion q) {
+	public static void applyBoneRotQuat(Bone tgtBone, Quaternion q) {
 	
 		tgtBone.setUserControl(true);
 		
@@ -125,5 +125,9 @@ public class StickFigureTwister {
 	
 	public void setScoringFlag(boolean f) {
 		myTwistScoringFlag = f;
+	}
+
+	@Override protected void doRenderCycle(long runSeqNum, float tpf) {
+		twist(tpf);
 	}
 }

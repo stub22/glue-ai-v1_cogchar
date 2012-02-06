@@ -15,23 +15,23 @@
  */
 package org.cogchar.render.opengl.bony.sys;
 
-import org.cogchar.render.opengl.bony.gui.VirtCharPanel;
 import org.cogchar.render.opengl.bony.world.ScoreBoard;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import com.jme3.animation.AnimControl;
+import com.jme3.asset.AssetManager;
 import java.io.File;
 import java.util.List;
 import javax.swing.JFrame;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.state.FigureState;
 
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyRenderContext {
+public class BonyRenderContext extends RenderContext {
 	protected	BonyConfigEmitter		myConfigEmitter;
 	protected	BonyVirtualCharApp		myApp;
 	protected	VirtualCharacterPanel	myPanel;   
