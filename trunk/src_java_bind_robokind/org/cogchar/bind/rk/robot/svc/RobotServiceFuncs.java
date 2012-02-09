@@ -94,11 +94,11 @@ public class RobotServiceFuncs {
 				Robot.Id id, Session session, Destination destination) throws Throwable {
 		
 		JMSMotionFrameAsyncReceiver receiver = new JMSMotionFrameAsyncReceiver(session, destination);
-		RobotFrameSource frameSource = new RobotFrameSource(context, id); 
+		// RobotFrameSource is now an interface
+	//	RobotFrameSource frameSource = new RobotFrameSource(context, id); 
 		// Was MoveFrameListener before - same semantics?
 		TargetFrameListener moveHandler = new TargetFrameListener();
-		ServiceRegistration reg =
-				RobotUtils.registerFrameSource(context, id, frameSource);
+	//	ServiceRegistration reg =	RobotUtils.registerFrameSource(context, id, frameSource);
 		// MoveFrameListener wants PositionTargetFrameSource, which is a sibling of RobotFrameSuource.
 //		moveHandler.setRobotFrameSource(frameSource);
 		receiver.addMessageListener(moveHandler);

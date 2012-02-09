@@ -32,27 +32,53 @@ public class SpeechOutputClient {
 	public SpeechOutputClient(BundleContext bundleCtx){
 		myBundleCtx = bundleCtx;
 	}
+	public class ServiceContext  {
+		public	ServiceReference	serviceRef; 
+		public	SpeechService		speechService;
+		public  void release() {
+			if (serviceRef != null) {
+				myBundleCtx.ungetService(serviceRef);
+			}
+		}
+		public void speak() { 
+		}
+		
+	}
+	public ServiceContext lookupSpeechService() throws Throwable {
+		ServiceContext servCtx = new ServiceContext();
+		servCtx.serviceRef = myBundleCtx.getServiceReference(SpeechService.class.getName());
+		if(servCtx.serviceRef != null){
+			try {
+				Object serviceObj = myBundleCtx.getService(servCtx.serviceRef);
+				if(serviceObj != null){
+					servCtx.speechService = (SpeechService) serviceObj;
+				}
+			} finally {
+				if (servCtx.speechService == null) {
+					servCtx.release();
+					return null;
+				}
+			}
+			return servCtx;
+		} else {
+			return null;
+		}
+	}
+	
     public void speakText (String txt) throws Throwable {
 		theLogger.info("Trying to speakText: " + txt);
         if(txt == null){
              throw new Exception("Speech text is null");
         }
-        ServiceReference ref = myBundleCtx.getServiceReference(SpeechService.class.getName());
-		try {
-	        if(ref == null){
-		        throw new Exception("Cannot find Speech Service");
-		    }
-			Object serviceObj = myBundleCtx.getService(ref);
-			if(serviceObj == null){
-				throw new Exception ("SpeechService object is null");
-			}
-			SpeechService ss = (SpeechService) serviceObj;
-			ss.speak(txt);
-		} finally {
-			if (ref != null) {
-		        myBundleCtx.ungetService(ref);
+		ServiceContext servCtx = lookupSpeechService();
+		if (servCtx != null) {
+			try {
+				if (servCtx != null) {
+					servCtx.speechService.speak(txt);
+				}
+			} finally {
+				servCtx.release();
 			}
 		}
-       
     }	
 }

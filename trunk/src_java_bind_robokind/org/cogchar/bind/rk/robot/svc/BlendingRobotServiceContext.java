@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 package org.cogchar.bind.rk.robot.svc;
-import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.Robot.RobotPositionHashMap;
 import org.robokind.api.motion.Robot.RobotPositionMap;
 import org.robokind.api.motion.utils.RobotFrameSource;
+import org.robokind.api.motion.utils.RobotMoverFrameSource;
 import org.robokind.api.motion.utils.RobotUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory;
 public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceContext<R> {
 	static Logger theLogger = LoggerFactory.getLogger(BlendingRobotServiceContext.class);
 	
-	private	ServiceRegistration[]	myBlenderRegs;
-	private	RobotFrameSource		myFrameSource;
+	private	ServiceRegistration[]		myBlenderRegs;
+	private	RobotMoverFrameSource		myFrameSource;
 	
 	public BlendingRobotServiceContext(BundleContext bundleCtx) {
 		 super(bundleCtx);
@@ -46,7 +46,7 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
 	protected void  registerFrameSource() { 
 		R robot = getRobot();
 		//create and register the MotionTargetFrameSource,
-        myFrameSource = new RobotFrameSource(myBundleCtx, robot.getRobotId());
+        myFrameSource = new RobotMoverFrameSource(robot);
 		RobotUtils.registerFrameSource(myBundleCtx, robot.getRobotId(), myFrameSource);
 	}
     protected void testPositionMove() { 
