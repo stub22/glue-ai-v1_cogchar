@@ -198,9 +198,8 @@ public final class VirtualCharTopComponent extends TopComponent {
         }
     }
 
-    @Override
-    public void componentClosed() {
-        // TODO add custom code on component closing
+    @Override public void componentClosed() {
+        theLogger.info("*****************  componentClosed() called on Cogchar NBUI, need to cleanup OpenGL canvas! ******");
     }
 
     void writeProperties(java.util.Properties p) {
