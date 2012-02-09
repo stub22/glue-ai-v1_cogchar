@@ -18,9 +18,9 @@ package org.cogchar.render.opengl.osgi;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.appdapter.osgi.registry.RegistryServiceFuncs;
 import org.appdapter.api.registry.VerySimpleRegistry;
 import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RegistryClient;
 import org.cogchar.bundle.render.resources.ResourceBundleActivator;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
@@ -56,7 +56,7 @@ public class RenderBundleActivator extends BundleActivatorBase {
 		// IDE hints may show these symbols as undefined, but they should compile OK.		
 		theLogger.info("******************* Fetching VerySimpleRegistry");
 
-		VerySimpleRegistry vsr = RegistryServiceFuncs.getTheWellKnownRegistry(bundleCtx);
+		VerySimpleRegistry vsr = RegistryClient.getVerySimpleRegistry();
 		
 		theLogger.info("******************* Creating BonyConfigEmitter, HumanoidPuppetApp, and JmonkeyAssetLocation");
 		BonyConfigEmitter bce = new BonyConfigEmitter();
