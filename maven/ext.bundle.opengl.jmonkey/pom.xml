@@ -67,93 +67,93 @@ The jmonkey.verson property is inherited from our parent project's pom.xml.
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-core</artifactId>
-			<version>3.0.0-20111230.163422-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-jbullet</artifactId>
-			<version>3.0.0-20111230.163803-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jbullet</artifactId>
-			<version>3.0.0-20111230.163816-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-lwjgl</artifactId>
-			<version>3.0.0-20111230.163535-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-lwjgl-natives</artifactId>
-			<version>3.0.0-20111230.163546-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>lwjgl</artifactId>
-			<version>3.0.0-20111230.163717-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>
 		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-blender</artifactId>
-			<version>3.0.0-20111230.163845-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-core</artifactId>
-			<version>3.0.0-20111230.163422-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-desktop</artifactId>
-			<version>3.0.0-20111230.163905-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-plugins</artifactId>
-			<version>3.0.0-20111230.163921-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-terrain</artifactId>
-			<version>3.0.0-20111230.163931-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-jogg</artifactId>
-			<version>3.0.0-20111230.170828-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>j-ogg-oggd</artifactId>
-			<version>3.0.0-20111230.170836-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>j-ogg-vorbisd</artifactId>
-			<version>3.0.0-20111230.170844-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jinput</artifactId>
-			<version>3.0.0-20111230.163944-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>
 		<!-- See note at top of dependency list about these
@@ -163,31 +163,26 @@ The jmonkey.verson property is inherited from our parent project's pom.xml.
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>eventbus</artifactId>
-			<version>3.0.0-20111230.164000-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>stack-alloc</artifactId>
-			<version>3.0.0-20111230.164011-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>vecmath</artifactId>
-			<version>3.0.0-20111230.164021-1</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>xmlpull-xpp3</artifactId>
-			<version>3.0.0-20111230.215407-1</version>
-		</dependency>	
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>noise</artifactId>
-			<version>3.0.0-20111230.164041-1</version>
+			<version>${jmonkey.version}</version>
 		</dependency>	
 		
 
@@ -203,7 +198,7 @@ The jmonkey.verson property is inherited from our parent project's pom.xml.
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jmonkeyengine3</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 			<scope>test</scope>
 		</dependency>
 		--> 	
@@ -213,7 +208,7 @@ The jmonkey.verson property is inherited from our parent project's pom.xml.
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-testdata</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 			<scope>test</scope>
 		</dependency>
 		-->		
