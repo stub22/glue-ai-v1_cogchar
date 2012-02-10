@@ -12,7 +12,14 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ * 
+ * ------------------------------------------------------------------------------
+ *
+ *		This file contains code copied from the JMonkeyEngine project.
+ *		You may not use this file except in compliance with the
+ *		JMonkeyEngine license.  See full notice at bottom of this file. 
  */
+
 package org.cogchar.render.opengl.bony.world;
 
 import org.cogchar.render.opengl.scene.GeomFactory;
@@ -35,13 +42,13 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
+import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
 import org.cogchar.render.opengl.mesh.MeshFactoryFacade;
 import org.cogchar.render.opengl.optic.OpticFacade;
 import org.cogchar.render.opengl.scene.SceneFacade;
 
 /**
  *
- * @author normenhansen
  */
 public class PhysicsStuffBuilder {
 
@@ -50,23 +57,19 @@ public class PhysicsStuffBuilder {
 	
 	public static String		SHOOT_ACTION_NAME	= "shoot";
 
-	private		Node			myRootNode;
-	private		PhysicsSpace	myPhysSpc;
+	private		CogcharRenderContext		myCRC;
+	private		Node						myParentNode;
+	private		PhysicsSpace				myPhysSpc;
 
-	private		MeshFactoryFacade	myMeshFF;
-	private		SceneFacade			mySceneFacade;
-	private		OpticFacade			myOpticFacade;
-	
-	public 	PhysicsStuffBuilder(Node rootNode, PhysicsSpace physSpc, MeshFactoryFacade mff, SceneFacade sf, OpticFacade of) {
-		myRootNode = rootNode;
+	public 	PhysicsStuffBuilder(CogcharRenderContext crc, PhysicsSpace physSpc, Node parentNode) {
+		myCRC = crc;
 		myPhysSpc = physSpc;
-		myMeshFF = mff;
-		mySceneFacade = sf;
-		myOpticFacade = of;
+		myParentNode = parentNode;
 	}
+
 	
-	public Node getRootNode() { 
-		return myRootNode;
+	public Node getParentNode() { 
+		return myParentNode;
 	}
 
 	public PhysicsSpace getPhysicsSpace() { 
@@ -74,13 +77,13 @@ public class PhysicsStuffBuilder {
 	}
 
 	protected MeshFactoryFacade getMeshFF() { 
-		return myMeshFF;
+		return myCRC.getMeshFF();
 	}
 	protected GeomFactory getGeomFactory() { 
-		return mySceneFacade.getGeomFactory();
+		return myCRC.getSceneFacade().getGeomFactory();
 	}
 	protected MatFactory getMatFactory() { 
-		return myOpticFacade.getMatMgr();
+		return myCRC.getOpticFacade().getMatMgr();
 	}
 	
 	/**
@@ -90,7 +93,7 @@ public class PhysicsStuffBuilder {
 	 * @param space
 	 */
 	public void createPhysicsTestWorld() {
-		LightFactory.addLightGrayAmbientLight(myRootNode);
+		LightFactory.addLightGrayAmbientLight(myParentNode);
 		
 		Material floorMat = getMatFactory().makeUnshadedMat();
 		
@@ -99,7 +102,7 @@ public class PhysicsStuffBuilder {
 
 
 	public void createPhysicsTestWorldSoccer() {
-		LightFactory.addLightGrayAmbientLight(myRootNode);
+		LightFactory.addLightGrayAmbientLight(myParentNode);
 		
 		Material floorMat = getMatFactory().makeJmonkeyLogoMat();
 		Material ballMat = floorMat;
@@ -132,7 +135,7 @@ public class PhysicsStuffBuilder {
 			floorGeometry.addControl(new RigidBodyControl(new PlaneCollisionShape(plane), 0));
 		}
 		floorGeometry.addControl(new RigidBodyControl(0));
-		myRootNode.attachChild(floorGeometry);
+		myParentNode.attachChild(floorGeometry);
 		myPhysSpc.add(floorGeometry);
 	}
 
@@ -165,8 +168,8 @@ public class PhysicsStuffBuilder {
 		space.add(boxGeometry);
 		 */	
 
-		if (myRootNode != null) {
-			myRootNode.attachChild(boxGeometry);
+		if (myParentNode != null) {
+			myParentNode.attachChild(boxGeometry);
 		}
 		if (myPhysSpc != null) {
 			myPhysSpc.add(boxGeometry);	
@@ -227,7 +230,7 @@ public class PhysicsStuffBuilder {
 					bulletg.addControl(bulletControl);
 					bulletControl.setLinearVelocity(cam.getDirection().mult(25));
 					bulletg.addControl(bulletControl);
-					myRootNode.attachChild(bulletg);
+					myParentNode.attachChild(bulletg);
 					myPhysSpc.add(bulletControl);
 				}
 			}
@@ -243,7 +246,7 @@ public class PhysicsStuffBuilder {
 			//RigidBodyControl automatically uses Sphere collision shapes when attached to single geometry with sphere mesh
 			ballGeometry.getControl(RigidBodyControl.class).setRestitution(1);
 			ballGeometry.setLocalTranslation(i, 2, -3);
-			myRootNode.attachChild(ballGeometry);
+			myParentNode.attachChild(ballGeometry);
 			myPhysSpc.add(ballGeometry);
 		}
 	}
@@ -254,7 +257,7 @@ public class PhysicsStuffBuilder {
 		RigidBodyControl rbc = new RigidBodyControl(new MeshCollisionShape(sphMesh), 0);
 		Geometry sphereGeometry = getGeomFactory().makeGeom(GeomFactory.GEOM_SPHERE, sphMesh,  mat, rbc);
 		sphereGeometry.setLocalTranslation(4, -4, 2);
-		myRootNode.attachChild(sphereGeometry);
+		myParentNode.attachChild(sphereGeometry);
 		myPhysSpc.add(sphereGeometry);	
 	}
 	/**
@@ -271,3 +274,43 @@ public class PhysicsStuffBuilder {
 	}	
 
 }
+
+
+/*
+ * 
+ * Contains code copied and modified from the JMonkeyEngine.com project,
+ * under the following terms:
+ * 
+ * -----------------------------------------------------------------------
+ * 
+ * Copyright (c) 2009-2010 jMonkeyEngine
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * * Neither the name of 'jMonkeyEngine' nor the names of its contributors
+ *   may be used to endorse or promote products derived from this software
+ *   without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+

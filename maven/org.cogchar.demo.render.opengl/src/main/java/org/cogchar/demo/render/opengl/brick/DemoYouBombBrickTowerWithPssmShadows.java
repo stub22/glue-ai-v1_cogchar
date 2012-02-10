@@ -20,7 +20,7 @@
  *		JMonkeyEngine license.  See full notice at bottom of this file. 
  */
 
-package org.cogchar.demo.render.opengl;
+package org.cogchar.demo.render.opengl.brick;
 
 import org.cogchar.render.opengl.bony.world.LaunchableCollidingRigidBodyControl;
 import com.jme3.bullet.BulletAppState;
@@ -52,7 +52,7 @@ import org.cogchar.render.opengl.app.DemoApp;
  * Shadows seem to work a little better than in DemoYouBombBrickWallWithShadows.
  * This one uses PssmShadowRenderer instead of BasicShadowRenderer.
  */
-public class DemoYouBombBrickTowerWithPssmShadows extends DemoApp {
+public class DemoYouBombBrickTowerWithPssmShadows extends BrickApp {
 
     int bricksPerLayer = 8;
     int brickLayers = 30;
@@ -62,15 +62,14 @@ public class DemoYouBombBrickTowerWithPssmShadows extends DemoApp {
     float angle = 0;
 
 
-    Material mat;
-    Material mat2;
-    Material mat3;
-    PssmShadowRenderer bsr;
-    private Sphere bullet;
-    private Box brick;
-    private SphereCollisionShape bulletCollisionShape;
 
-    private BulletAppState bulletAppState;
+	
+    PssmShadowRenderer				myShadowRenderer;
+    private Sphere					myRockSphere;
+    private Box						myBrickBox;
+    private SphereCollisionShape	myRockSphereColShape;
+
+
 
     public static void main(String args[]) {
         DemoYouBombBrickTowerWithPssmShadows f = new DemoYouBombBrickTowerWithPssmShadows();
@@ -80,18 +79,18 @@ public class DemoYouBombBrickTowerWithPssmShadows extends DemoApp {
     @Override public void simpleInitApp() {
 		
 		super.simpleInitApp();
-        bulletAppState = new BulletAppState();
-        bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
-     //   bulletAppState.setEnabled(false);
-        stateManager.attach(bulletAppState);
-        bullet = new Sphere(32, 32, 0.4f, true, false);
-        bullet.setTextureMode(TextureMode.Projected);
-        bulletCollisionShape = new SphereCollisionShape(0.4f);
 
-        brick = new Box(Vector3f.ZERO, brickWidth, brickHeight, brickDepth);
-        brick.scaleTextureCoordinates(new Vector2f(1f, .5f));
+        myPhysAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+     //   bulletAppState.setEnabled(false);
+        stateManager.attach(myPhysAppState);
+        myRockSphere = new Sphere(32, 32, 0.4f, true, false);
+        myRockSphere.setTextureMode(TextureMode.Projected);
+        myRockSphereColShape = new SphereCollisionShape(0.4f);
+
+        myBrickBox = new Box(Vector3f.ZERO, brickWidth, brickHeight, brickDepth);
+        myBrickBox.scaleTextureCoordinates(new Vector2f(1f, .5f));
         //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
-        initMaterial();
+
         initTower();
         initFloor();
         initCrossHairs();
@@ -101,27 +100,27 @@ public class DemoYouBombBrickTowerWithPssmShadows extends DemoApp {
         inputManager.addMapping("shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addListener(actionListener, "shoot");
         rootNode.setShadowMode(ShadowMode.Off);
-        bsr = new PssmShadowRenderer(assetManager, 1024, 2);
-        bsr.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
-        bsr.setLambda(0.55f);
-        bsr.setShadowIntensity(0.6f);
-        bsr.setCompareMode(CompareMode.Hardware);
-        bsr.setFilterMode(FilterMode.PCF4);
-        viewPort.addProcessor(bsr);
+        myShadowRenderer = new PssmShadowRenderer(assetManager, 1024, 2);
+        myShadowRenderer.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
+        myShadowRenderer.setLambda(0.55f);
+        myShadowRenderer.setShadowIntensity(0.6f);
+        myShadowRenderer.setCompareMode(CompareMode.Hardware);
+        myShadowRenderer.setFilterMode(FilterMode.PCF4);
+        viewPort.addProcessor(myShadowRenderer);
     }
 
     private PhysicsSpace getPhysicsSpace() {
-        return bulletAppState.getPhysicsSpace();
+        return myPhysAppState.getPhysicsSpace();
     }
     private ActionListener actionListener = new ActionListener() {
 
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("shoot") && !keyPressed) {
-                Geometry bulletg = new Geometry("bullet", bullet);
-                bulletg.setMaterial(mat2);
+                Geometry bulletg = new Geometry("bullet", myRockSphere);
+                bulletg.setMaterial(myRockMat);
                 bulletg.setShadowMode(ShadowMode.CastAndReceive);
                 bulletg.setLocalTranslation(cam.getLocation());
-                RigidBodyControl bulletNode = new LaunchableCollidingRigidBodyControl(assetManager, bulletCollisionShape, 1);
+                RigidBodyControl bulletNode = new LaunchableCollidingRigidBodyControl(assetManager, myRockSphereColShape, 1);
 //                RigidBodyControl bulletNode = new RigidBodyControl(bulletCollisionShape, 1);
                 bulletNode.setLinearVelocity(cam.getDirection().mult(25));
                 bulletg.addControl(bulletNode);
@@ -170,7 +169,7 @@ public class DemoYouBombBrickTowerWithPssmShadows extends DemoApp {
         floorBox.scaleTextureCoordinates(new Vector2f(3, 6));
 
         Geometry floor = new Geometry("floor", floorBox);
-        floor.setMaterial(mat3);
+        floor.setMaterial(myPondMat);
         floor.setShadowMode(ShadowMode.Receive);
         floor.setLocalTranslation(0, 0, 0);
         floor.addControl(new RigidBodyControl(0));
@@ -178,30 +177,10 @@ public class DemoYouBombBrickTowerWithPssmShadows extends DemoApp {
         this.getPhysicsSpace().add(floor);
     }
 
-    public void initMaterial() {
-        mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        TextureKey key = new TextureKey("Textures/Terrain/BrickWall/BrickWall.jpg");
-        key.setGenerateMips(true);
-        Texture tex = assetManager.loadTexture(key);
-        mat.setTexture("ColorMap", tex);
-
-        mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        TextureKey key2 = new TextureKey("Textures/Terrain/Rock/Rock.PNG");
-        key2.setGenerateMips(true);
-        Texture tex2 = assetManager.loadTexture(key2);
-        mat2.setTexture("ColorMap", tex2);
-
-        mat3 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        TextureKey key3 = new TextureKey("Textures/Terrain/Pond/Pond.jpg");
-        key3.setGenerateMips(true);
-        Texture tex3 = assetManager.loadTexture(key3);
-        tex3.setWrap(WrapMode.Repeat);
-        mat3.setTexture("ColorMap", tex3);
-    }
 
     public void addBrick(Vector3f ori) {
-        Geometry reBoxg = new Geometry("brick", brick);
-        reBoxg.setMaterial(mat);
+        Geometry reBoxg = new Geometry("brick", myBrickBox);
+        reBoxg.setMaterial(myBrickMat);
         reBoxg.setLocalTranslation(ori);
         reBoxg.rotate(0f, (float)Math.toRadians(angle) , 0f );
         reBoxg.addControl(new RigidBodyControl(1.5f));
