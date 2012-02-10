@@ -48,10 +48,11 @@ import com.jme3.texture.Texture.WrapMode;
 import org.cogchar.render.opengl.app.DemoApp;
 
 /**
- *
- * @author double1984 (tower mod by atom)
+ * From:    jme3test.bullet.TestBrickTower - author double1984 (tower mod by atom).
+ * Shadows seem to work a little better than in DemoYouBombBrickWallWithShadows.
+ * This one uses PssmShadowRenderer instead of BasicShadowRenderer.
  */
-public class DemoYouBombBrickTower extends DemoApp {
+public class DemoYouBombBrickTowerWithPssmShadows extends DemoApp {
 
     int bricksPerLayer = 8;
     int brickLayers = 30;
@@ -72,12 +73,13 @@ public class DemoYouBombBrickTower extends DemoApp {
     private BulletAppState bulletAppState;
 
     public static void main(String args[]) {
-        DemoYouBombBrickTower f = new DemoYouBombBrickTower();
+        DemoYouBombBrickTowerWithPssmShadows f = new DemoYouBombBrickTowerWithPssmShadows();
         f.start();
     }
 
-    @Override
-    public void simpleInitApp() {
+    @Override public void simpleInitApp() {
+		
+		super.simpleInitApp();
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
      //   bulletAppState.setEnabled(false);

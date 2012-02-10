@@ -49,10 +49,10 @@ import com.jme3.texture.Texture.WrapMode;
 import org.cogchar.render.opengl.app.DemoApp;
 
 /**
+ * From jme3test.bullet.TestBrickWall
  *
- * @author double1984
  */
-public class DemoYouBombBrickWall extends DemoApp {
+public class DemoYouBombBrickWallWithBasicShadows extends DemoApp {
 
     static float bLength = 0.48f;
     static float bWidth = 0.24f;
@@ -68,13 +68,13 @@ public class DemoYouBombBrickWall extends DemoApp {
     private BulletAppState bulletAppState;
 
     public static void main(String args[]) {
-        DemoYouBombBrickWall f = new DemoYouBombBrickWall();
+        DemoYouBombBrickWallWithBasicShadows f = new DemoYouBombBrickWallWithBasicShadows();
         f.start();
     }
 
-    @Override
-    public void simpleInitApp() {
-        
+    @Override public void simpleInitApp() {
+        super.simpleInitApp();
+		
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
@@ -97,6 +97,10 @@ public class DemoYouBombBrickWall extends DemoApp {
         inputManager.addMapping("gc", new KeyTrigger(KeyInput.KEY_X));
         inputManager.addListener(actionListener, "gc");
 
+		/*
+		 * These shadows work, kinda, but create nasty little edge effects.
+		 */ 
+		 
         rootNode.setShadowMode(ShadowMode.Off);
         bsr = new BasicShadowRenderer(assetManager, 256);
         bsr.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
