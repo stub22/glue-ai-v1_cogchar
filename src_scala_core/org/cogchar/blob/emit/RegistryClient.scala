@@ -13,31 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.app;
 
-import com.jme3.app.SimpleApplication;
-import org.appdapter.api.module.Module;
-import org.cogchar.render.opengl.bony.model.RenderModulator;
+package org.cogchar.blob.emit
 
+import org.appdapter.api.registry.VerySimpleRegistry;
+import org.appdapter.osgi.registry.RegistryServiceFuncs;
 /**
+ *	Designed to work with or without OSGi context.
  * @author Stu B. <www.texpedient.com>
  */
-public class RenderApp extends SimpleApplication {
-	
-	private		RenderModulator		myRenderModulator;
 
-	@Override public void simpleInitApp() {
-		myRenderModulator = new RenderModulator();
-	}
-	
-	@Override public void simpleUpdate(float tpf) {
-		myRenderModulator.runOneCycle(tpf);
-	}
-	
-	public void attachModule(Module<RenderModulator> m) { 
-		myRenderModulator.attachModule(m);
-	}
-	public void detachModule(Module<RenderModulator> m) { 
-		myRenderModulator.detachModule(m);
+object RegistryClient {
+	def getVerySimpleRegistry() : VerySimpleRegistry = {
+		RegistryServiceFuncs.getTheWellKnownRegistry();
 	}
 }

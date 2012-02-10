@@ -11,39 +11,39 @@
 
     <packaging>bundle</packaging>
 
-    <name>ext.bundle.opengl.nifty - OSGi - Nifty wrapper</name>
+    <name>ext.bundle.opengl.nifty - OSGi - Nifty wrapper - not tested lately</name>
 
 
     <dependencies>
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-niftygui</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>nifty</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--  Need to exclude "sounds", "tutorial", "defaultcontrols/sounds"
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>nifty-default-controls</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>
 		</dependency>	
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>nifty-examples</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>
 		</dependency>	
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>nifty-style-black</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>
 		</dependency>			
 		-->
@@ -59,6 +59,7 @@
 			<scope>runtime</scope>
         </dependency>
         <dependency>
+			<!-- Still needed, or covered by import in ext.bundle.jmonkey? -->
             <groupId>xpp3</groupId>
             <artifactId>xpp3</artifactId>
             <version>1.1.4c</version>

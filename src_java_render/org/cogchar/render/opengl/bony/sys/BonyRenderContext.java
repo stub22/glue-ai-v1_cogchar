@@ -31,7 +31,7 @@ import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyRenderContext extends RenderContext {
+public class BonyRenderContext extends CogcharRenderContext {
 	protected	BonyConfigEmitter		myConfigEmitter;
 	protected	BonyVirtualCharApp		myApp;
 	protected	VirtualCharacterPanel	myPanel;   
