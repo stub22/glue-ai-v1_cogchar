@@ -45,8 +45,8 @@ import org.cogchar.render.opengl.app.DemoApp;
 import org.cogchar.render.opengl.optic.MatFactory;
 
 /**
+ * From:   jme3test.helloworld.HelloPhysics
  * Example 12 - how to give objects physical properties so they bounce and fall.
- * @author base code by double1984, updated by zathras
  */
 public class DemoYouBowlAtBrickWall extends DemoApp {
 
@@ -110,7 +110,6 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
     initWall();
     initFloor();
     initCrossHairs();
-    initShadows();
   }
 
   /**
@@ -163,14 +162,6 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
     }
   }
 
-  /** Activate shadow casting and light direction */
-    private void initShadows() {
-        bsr = new BasicShadowRenderer(assetManager, 256);
-        bsr.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
-        viewPort.addProcessor(bsr);
-        // Default mode is Off -- Every node declares own shadow mode!
-        rootNode.setShadowMode(ShadowMode.Off);
-    }
 
   /** This method creates one individual physical brick. */
   public void makeBrick(Vector3f loc) {
