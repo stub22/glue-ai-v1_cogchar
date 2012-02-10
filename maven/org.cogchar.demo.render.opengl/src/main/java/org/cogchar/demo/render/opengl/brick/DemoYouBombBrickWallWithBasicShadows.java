@@ -20,7 +20,7 @@
  *		JMonkeyEngine license.  See full notice at bottom of this file. 
  */
 
-package org.cogchar.demo.render.opengl;
+package org.cogchar.demo.render.opengl.brick;
 
 import org.cogchar.render.opengl.bony.world.LaunchableCollidingRigidBodyControl;
 import com.jme3.bullet.BulletAppState;
@@ -49,23 +49,20 @@ import com.jme3.texture.Texture.WrapMode;
 import org.cogchar.render.opengl.app.DemoApp;
 
 /**
- * From jme3test.bullet.TestBrickWall
+ * From: jme3test.bullet.TestBrickWall
  *
  */
-public class DemoYouBombBrickWallWithBasicShadows extends DemoApp {
+public class DemoYouBombBrickWallWithBasicShadows extends BrickApp {
 
     static float bLength = 0.48f;
     static float bWidth = 0.24f;
     static float bHeight = 0.12f;
-    Material mat;
-    Material mat2;
-    Material mat3;
-    BasicShadowRenderer bsr;
-    private static Sphere bullet;
-    private static Box brick;
-    private static SphereCollisionShape bulletCollisionShape;
 
-    private BulletAppState bulletAppState;
+    BasicShadowRenderer bsr;
+    private static Sphere myRockSphere;
+    private static Box myBrickBox;
+    private static SphereCollisionShape myRockColShape;
+
 
     public static void main(String args[]) {
         DemoYouBombBrickWallWithBasicShadows f = new DemoYouBombBrickWallWithBasicShadows();
@@ -75,20 +72,20 @@ public class DemoYouBombBrickWallWithBasicShadows extends DemoApp {
     @Override public void simpleInitApp() {
         super.simpleInitApp();
 		
-        bulletAppState = new BulletAppState();
-        bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
-        stateManager.attach(bulletAppState);
 
-        bullet = new Sphere(32, 32, 0.4f, true, false);
-        bullet.setTextureMode(TextureMode.Projected);
-        bulletCollisionShape = new SphereCollisionShape(0.4f);
-        brick = new Box(Vector3f.ZERO, bLength, bHeight, bWidth);
-        brick.scaleTextureCoordinates(new Vector2f(1f, .5f));
+        myPhysAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+        stateManager.attach(myPhysAppState);
 
-        initMaterial();
+        myRockSphere = new Sphere(32, 32, 0.4f, true, false);
+        myRockSphere.setTextureMode(TextureMode.Projected);
+        myRockColShape = new SphereCollisionShape(0.4f);
+        myBrickBox = new Box(Vector3f.ZERO, bLength, bHeight, bWidth);
+        myBrickBox.scaleTextureCoordinates(new Vector2f(1f, .5f));
+
         initWall();
         initFloor();
         initCrossHairs();
+		
         this.cam.setLocation(new Vector3f(0, 6f, 6f));
         cam.lookAt(Vector3f.ZERO, new Vector3f(0, 1, 0));
         cam.setFrustumFar(15);
@@ -108,14 +105,14 @@ public class DemoYouBombBrickWallWithBasicShadows extends DemoApp {
     }
 
     private PhysicsSpace getPhysicsSpace() {
-        return bulletAppState.getPhysicsSpace();
+        return myPhysAppState.getPhysicsSpace();
     }
     private ActionListener actionListener = new ActionListener() {
 
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("shoot") && !keyPressed) {
-                Geometry bulletg = new Geometry("bullet", bullet);
-                bulletg.setMaterial(mat2);
+                Geometry bulletg = new Geometry("bullet", myRockSphere);
+                bulletg.setMaterial(myRockMat);
                 bulletg.setShadowMode(ShadowMode.CastAndReceive);
                 bulletg.setLocalTranslation(cam.getLocation());
                 
@@ -151,7 +148,7 @@ public class DemoYouBombBrickWallWithBasicShadows extends DemoApp {
         floorBox.scaleTextureCoordinates(new Vector2f(3, 6));
 
         Geometry floor = new Geometry("floor", floorBox);
-        floor.setMaterial(mat3);
+        floor.setMaterial(myPondMat);
         floor.setShadowMode(ShadowMode.Receive);
         floor.setLocalTranslation(0, -0.1f, 0);
         floor.addControl(new RigidBodyControl(new BoxCollisionShape(new Vector3f(10f, 0.1f, 5f)), 0));
@@ -159,31 +156,10 @@ public class DemoYouBombBrickWallWithBasicShadows extends DemoApp {
         this.getPhysicsSpace().add(floor);
     }
 
-    public void initMaterial() {
-        mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        TextureKey key = new TextureKey("Textures/Terrain/BrickWall/BrickWall.jpg");
-        key.setGenerateMips(true);
-        Texture tex = assetManager.loadTexture(key);
-        mat.setTexture("ColorMap", tex);
-
-        mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        TextureKey key2 = new TextureKey("Textures/Terrain/Rock/Rock.PNG");
-        key2.setGenerateMips(true);
-        Texture tex2 = assetManager.loadTexture(key2);
-        mat2.setTexture("ColorMap", tex2);
-
-        mat3 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        TextureKey key3 = new TextureKey("Textures/Terrain/Pond/Pond.jpg");
-        key3.setGenerateMips(true);
-        Texture tex3 = assetManager.loadTexture(key3);
-        tex3.setWrap(WrapMode.Repeat);
-        mat3.setTexture("ColorMap", tex3);
-    }
-
     public void addBrick(Vector3f ori) {
 
-        Geometry reBoxg = new Geometry("brick", brick);
-        reBoxg.setMaterial(mat);
+        Geometry reBoxg = new Geometry("brick", myBrickBox);
+        reBoxg.setMaterial(myBrickMat);
         reBoxg.setLocalTranslation(ori);
         //for geometry with sphere mesh the physics system automatically uses a sphere collision shape
         reBoxg.addControl(new RigidBodyControl(1.5f));

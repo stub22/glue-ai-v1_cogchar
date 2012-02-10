@@ -45,7 +45,7 @@ public class PhysicalApp extends DemoApp {
 		// TODO: Check config for initial debug setting
 		ps.enableDebug(assetManager);
 
-		myPSB =  new PhysicsStuffBuilder(rootNode, ps, getMeshFF(), getSceneFacade(), getOpticFacade());
+		myPSB =  new PhysicsStuffBuilder(getRenderContext(), ps, rootNode);
 	}
 	protected BulletAppState getBulletAppState() { 
 		return myBulletAS;

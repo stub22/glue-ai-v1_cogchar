@@ -21,7 +21,7 @@
  */
 
 
-package org.cogchar.demo.render.opengl;
+package org.cogchar.demo.render.opengl.brick;
 
 import com.jme3.asset.TextureKey;
 import com.jme3.bullet.BulletAppState;
@@ -48,23 +48,16 @@ import org.cogchar.render.opengl.optic.MatFactory;
  * From:   jme3test.helloworld.HelloPhysics
  * Example 12 - how to give objects physical properties so they bounce and fall.
  */
-public class DemoYouBowlAtBrickWall extends DemoApp {
+public class DemoYouBowlAtBrickWall extends BrickApp {
 
   public static void main(String args[]) {
     DemoYouBowlAtBrickWall app = new DemoYouBowlAtBrickWall();
     app.start();
   }
 
-  /** Prepare the Physics Application State (jBullet) */
-  private BulletAppState bulletAppState;
-
   /** Activate custom rendering of shadows */
   BasicShadowRenderer bsr;
 
-  /** Prepare Materials */
-  Material wall_mat;
-  Material stone_mat;
-  Material floor_mat;
 
   /** Prepare geometries and physical nodes for bricks and cannon balls. */
   private RigidBodyControl    brick_phy;
@@ -75,9 +68,9 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
   private static final Box    floor;
   
   /** dimensions used for bricks and wall */
-  private static final float brickLength = 0.48f;
-  private static final float brickWidth  = 0.24f;
-  private static final float brickHeight = 0.12f;
+  protected static float brickLength = 0.48f;
+  protected static float brickWidth  = 0.24f;
+  protected static final float brickHeight = 0.12f;
 
   static {
     /** Initialize the cannon ball geometry */
@@ -91,13 +84,12 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
     floor.scaleTextureCoordinates(new Vector2f(3, 6));
   }
 
-  @Override
-  public void simpleInitApp() {
-
-	  super.simpleInitApp();
-    /** Set up Physics Game */
-    bulletAppState = new BulletAppState();
-    stateManager.attach(bulletAppState);
+  @Override public void simpleInitApp() {
+	super.simpleInitApp();
+    stateManager.attach(myPhysAppState);
+	// This one does not do:
+	// myPhysAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+	
     /** Configure cam to look at scene */
     cam.setLocation(new Vector3f(0, 6f, 6f));
     cam.lookAt(Vector3f.ZERO, new Vector3f(0, 1, 0));
@@ -106,7 +98,7 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
     inputManager.addMapping("shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
     inputManager.addListener(actionListener, "shoot");
     /** Initialize the scene, materials, and physics space */
-    initMaterials();
+
     initWall();
     initFloor();
     initCrossHairs();
@@ -124,27 +116,18 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
     }
   };
 
-  /** Initialize the materials used in this scene. */
-  public void initMaterials() {
-	MatFactory mf = getMatMgr();
-	
-    wall_mat = mf.getBrickWallMat();
-    stone_mat = mf.makeRockMat();
-    floor_mat = mf.getPondMat();
-	
-  }
 
   /** Make a solid floor and add it to the scene. */
   public void initFloor() {
     Geometry floor_geo = new Geometry("Floor", floor);
-    floor_geo.setMaterial(floor_mat);
+    floor_geo.setMaterial(myPondMat);
     floor_geo.setShadowMode(ShadowMode.Receive);
     floor_geo.setLocalTranslation(0, -0.1f, 0);
     this.rootNode.attachChild(floor_geo);
     /* Make the floor physical with mass 0.0f! */
     floor_phy = new RigidBodyControl(0.0f);
     floor_geo.addControl(floor_phy);
-    bulletAppState.getPhysicsSpace().add(floor_phy);
+    myPhysAppState.getPhysicsSpace().add(floor_phy);
   }
 
   /** This loop builds a wall out of individual bricks. */
@@ -167,7 +150,7 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
   public void makeBrick(Vector3f loc) {
     /** Create a brick geometry and attach to scene graph. */
     Geometry brick_geo = new Geometry("brick", box);
-    brick_geo.setMaterial(wall_mat);
+    brick_geo.setMaterial(myBrickMat);
     rootNode.attachChild(brick_geo);
     /** Position the brick geometry and activate shadows */
     brick_geo.setLocalTranslation(loc);
@@ -176,7 +159,7 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
     brick_phy = new RigidBodyControl(2f);
     /** Add physical brick to physics space. */
     brick_geo.addControl(brick_phy);
-    bulletAppState.getPhysicsSpace().add(brick_phy);
+    myPhysAppState.getPhysicsSpace().add(brick_phy);
   }
 
   /** This method creates one individual physical cannon ball.
@@ -185,7 +168,7 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
    public void makeCannonBall() {
     /** Create a cannon ball geometry and attach to scene graph. */
     Geometry ball_geo = new Geometry("cannon ball", sphere);
-    ball_geo.setMaterial(stone_mat);
+    ball_geo.setMaterial(myRockMat);
     rootNode.attachChild(ball_geo);
     /** Position the cannon ball and activate shadows */
     ball_geo.setLocalTranslation(cam.getLocation());
@@ -194,7 +177,7 @@ public class DemoYouBowlAtBrickWall extends DemoApp {
     ball_phy = new RigidBodyControl(1f);
     /** Add physical ball to physics space. */
     ball_geo.addControl(ball_phy);
-    bulletAppState.getPhysicsSpace().add(ball_phy);
+    myPhysAppState.getPhysicsSpace().add(ball_phy);
     /** Accelerate the physcial ball to shoot it. */
     ball_phy.setLinearVelocity(cam.getDirection().mult(25));
   }
