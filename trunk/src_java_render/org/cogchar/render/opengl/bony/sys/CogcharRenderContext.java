@@ -21,24 +21,32 @@ import org.cogchar.render.opengl.mesh.MeshFactoryFacade;
 import org.cogchar.render.opengl.optic.OpticFacade;
 import org.cogchar.render.opengl.scene.SceneFacade;
 
-/**
+/**  Named to differentiate it from JMonkey "RenderContext".  
  * @author Stu B. <www.texpedient.com>
  */
-public class RenderContext {
+public class CogcharRenderContext {
+	private		AssetContext					myAssetContext;
 	private		MeshFactoryFacade				myMeshFactoryFacade;
 	private		OpticFacade						myOpticFacade;
 	private		SceneFacade						mySceneFacade;
 	
 	
-	public RenderContext() {
+	public CogcharRenderContext() {
 	}
-	
+	/**
+	 * Typically called from simpleInitApp, after JME3.SimpleApp ingredients are fully available to use as args here.
+	 * @param assetMgr
+	 * @param rootNode
+	 * @param guiNode 
+	 */
 	public void initJMonkeyStuff(AssetManager assetMgr, Node rootNode, Node guiNode) { 
-	
-		// Called from simpleInitApp, after JME3.SimpleApp core stuff is already available.
+		
+		myAssetContext = new AssetContext(assetMgr);
 		myMeshFactoryFacade = new MeshFactoryFacade();
 		myOpticFacade = new OpticFacade(assetMgr);
-		mySceneFacade = new SceneFacade(assetMgr, myOpticFacade, rootNode, guiNode);		
+		mySceneFacade = new SceneFacade(assetMgr, myOpticFacade, rootNode, guiNode);
+		
+		myAssetContext.resolveAndRegisterAllAssetSources();
 	}
 	
 	

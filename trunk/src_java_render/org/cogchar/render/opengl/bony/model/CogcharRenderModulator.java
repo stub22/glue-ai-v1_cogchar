@@ -20,11 +20,11 @@ import org.appdapter.module.basic.BasicModulator;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class RenderModulator extends BasicModulator {
+public class CogcharRenderModulator extends BasicModulator {
 
-	private		float		myCurrentTimePerFrame;
+	private		float			myCurrentTimePerFrame;
 	
-	public RenderModulator() { 
+	public CogcharRenderModulator() { 
 		super();
 	}
 	public float getCurrentTimePerFrame() { 

@@ -42,37 +42,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  *
- * @author pow
+ * @author Stu B. <www.texpedient.com>
  */
-public abstract class DemoApp extends RenderApp {
+public abstract class DemoApp extends CogcharRenderApp {
 	static Logger theFallbackLogger = LoggerFactory.getLogger(DemoApp.class);
 	
 	private		Logger							myLogger;
 	
 	protected	DemoConfigEmitter				myConfigEmitter;
-	private		List<JmonkeyAssetLocation>		myAssetSources = new ArrayList<JmonkeyAssetLocation>();
-	private		ClassLoader						myFrameworkResourceClassLoader;
-	
-	private		MeshFactoryFacade				myMeshFactoryFacade;
-	private		OpticFacade						myOpticFacade;
-	private		SceneFacade						mySceneFacade;
 
-	
-	
 	public DemoApp(DemoConfigEmitter ce) { 
 		myConfigEmitter = ce;
 		AppSettings settings = new AppSettings(ce.getAppSettingsDefloadFlag());
 		settings.setRenderer(ce.getLWJGL_RendererName());		
 		setSettings(settings);
-		myFrameworkResourceClassLoader = AssetManager.class.getClassLoader();
-		JmonkeyAssetLocation frameJAL = new JmonkeyAssetLocation(AssetManager.class);
-		addAssetSource(frameJAL);
-	}
-	private void initCogcharRenderFacades() { 
-		// Called from simpleInitApp, after JME3.SimpleApp core stuff is already available.
-		myMeshFactoryFacade = new MeshFactoryFacade();
-		myOpticFacade = new OpticFacade(assetManager);
-		mySceneFacade = new SceneFacade(assetManager, myOpticFacade, rootNode, guiNode);
+
 	}
 	public DemoApp() {
 		this(new DemoConfigEmitter());
@@ -90,13 +74,13 @@ public abstract class DemoApp extends RenderApp {
 		myLogger = l;
 	}
 	protected MeshFactoryFacade  getMeshFF() {
-		return myMeshFactoryFacade;
+		return getRenderContext().getMeshFF();
 	}
 	protected OpticFacade getOpticFacade() { 
-		return myOpticFacade;
+		return getRenderContext().getOpticFacade();
 	}
 	protected SceneFacade getSceneFacade() { 
-		return mySceneFacade;
+		return getRenderContext().getSceneFacade();
 	}
 	protected MatFactory getMatMgr() {
 		return getOpticFacade().getMatMgr();
@@ -110,18 +94,7 @@ public abstract class DemoApp extends RenderApp {
 	public DemoVectorFactory getDemoVectoryFactory() { 
 		return new DemoVectorFactory();
 	}
-	public void addAssetSource(JmonkeyAssetLocation jmal) {
-		myAssetSources.add(jmal);
-	}
-	public void resolveAndRegisterAllAssetSources() { 
 
-		// Optionally add a bonyAssetLocator here for debugging.
-		for (JmonkeyAssetLocation jmal : myAssetSources) {
-			jmal.resolve();
-			jmal.registerLocators(assetManager);
-		}
-
-	}
 
 	protected void initFonts() { 
 		// getContentsAssetLoader().
@@ -130,8 +103,6 @@ public abstract class DemoApp extends RenderApp {
 	protected void setAppSpeed(float val) {
 		speed = val;
 	}
-
-
 
 	protected void applySettings() { 
 	/* http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:appsettings
@@ -161,11 +132,13 @@ public abstract class DemoApp extends RenderApp {
 		// Note that "update()" may also load assets, but by that time our simpleInitApp
 		// should have run to install our custom locators.
 		*/
-		theFallbackLogger.info("********************* DemoApp.initialize() called,  framework resource CL =" + myFrameworkResourceClassLoader);
+		theFallbackLogger.info("********************* DemoApp.initialize() called");
 		ClassLoader savedCL = Thread.currentThread().getContextClassLoader();
+		ClassLoader frameworkCL = AssetManager.class.getClassLoader();
+		theFallbackLogger.info("********************* contextCL = " + savedCL + ", frameworkCL = " + frameworkCL);
 		try {
-			if (myFrameworkResourceClassLoader != null) {
-				Thread.currentThread().setContextClassLoader(myFrameworkResourceClassLoader);
+			if (frameworkCL != null) {
+				Thread.currentThread().setContextClassLoader(frameworkCL);
 			}
 			super.initialize();
 		} finally {
@@ -183,13 +156,6 @@ public abstract class DemoApp extends RenderApp {
 		
 		//		theFallbackLogger.info("Unregistering default ClasspathLocator, which may fail if Default.cfg was not read by JMonkey.");
 		// assetManager.unregisterLocator("/", com.jme3.asset.plugins.ClasspathLocator.class);	
-		
-		resolveAndRegisterAllAssetSources();
-
-		// DebugMeshLoader helps with debugging.
-		assetManager.registerLoader(DebugMeshLoader.class, "meshxml", "mesh.xml");
-		
-		initCogcharRenderFacades();
 		
 		theFallbackLogger.info("simpleInitApp() - END");
 	}

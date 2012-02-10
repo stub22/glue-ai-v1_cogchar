@@ -20,11 +20,11 @@ import org.appdapter.module.basic.EmptyTimedModule;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public abstract class RenderModule extends EmptyTimedModule<RenderModulator> {
+public abstract class RenderModule extends EmptyTimedModule<CogcharRenderModulator> {
 
 	protected abstract void doRenderCycle(long runSeqNum, float timePerFrame);
 
-	@Override public synchronized void doRunOnce(RenderModulator rm, long runSeqNum) {		
+	@Override public synchronized void doRunOnce(CogcharRenderModulator rm, long runSeqNum) {		
 		float currentTPF = rm.getCurrentTimePerFrame();
 		doRenderCycle(runSeqNum, currentTPF);
 	}
