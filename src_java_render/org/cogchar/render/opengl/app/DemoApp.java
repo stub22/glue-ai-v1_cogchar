@@ -54,7 +54,7 @@ public abstract class DemoApp extends CogcharRenderApp {
 	public DemoApp(DemoConfigEmitter ce) { 
 		myConfigEmitter = ce;
 		AppSettings settings = new AppSettings(ce.getAppSettingsDefloadFlag());
-		settings.setRenderer(ce.getLWJGL_RendererName());		
+		settings.setRenderer("LWJGL-OpenGL2"); // ce.getLWJGL_RendererName());		
 		setSettings(settings);
 
 	}
