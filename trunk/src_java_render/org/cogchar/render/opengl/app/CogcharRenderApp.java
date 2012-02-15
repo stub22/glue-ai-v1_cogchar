@@ -31,10 +31,10 @@ import org.slf4j.LoggerFactory;
  * bypassing the JMonkey "controls" layer.  
  * @author Stu B. <www.texpedient.com>
  */
-public class CogcharRenderApp extends SimpleApplication {
+public abstract class CogcharRenderApp<CRCT extends CogcharRenderContext> extends SimpleApplication {
 	private		Logger							myLogger;
-	private		CogcharRenderModulator			myRenderModulator;
-	private		CogcharRenderContext			myRenderContext;
+
+	private		CRCT							myRenderContext;
 	
 	public CogcharRenderApp() { 
 		super();
@@ -46,44 +46,44 @@ public class CogcharRenderApp extends SimpleApplication {
 	protected void logInfo(String s) { 
 		getLogger().info(s);
 	}
+
+	/**
+	 * An app should be able to construct a CRCT of proper type, without any side effects or dependencies
+	 * on the environment.  This object then serves as a place to share handles to objects outside the
+	 * rendering system, like the Swing GUI, which may be produced before the JME3app simpleInitApp() 
+	 * method is called.
+	 * @return 
+	 */
+	protected abstract CRCT makeCogcharRenderContext();
+	
+	protected CRCT getRenderContext() {
+		if (myRenderContext == null) {
+			myRenderContext = makeCogcharRenderContext();
+		}
+		return myRenderContext;
+	}
 	
 	@Override public void simpleInitApp() {
 		logInfo("CogcharRenderApp.simpleInitApp() - START");
 		logInfo("%%%%%%% JmeSystem.isLowPermissions()=" + com.jme3.system.JmeSystem.isLowPermissions());
+		
 		logInfo("Disabling confusing JDK-Logger warnings from UrlLocator");		
 		java.util.logging.Logger.getLogger(UrlLocator.class.getName()).setLevel(java.util.logging.Level.SEVERE);
-		logInfo("init CogcharRenderModulator");		
-		myRenderModulator = new CogcharRenderModulator();
-		logInfo("init CogcharRenderContext");		
-		myRenderContext = new CogcharRenderContext();
-		myRenderContext.initJMonkeyStuff(assetManager, rootNode, guiNode);
+
+
+		logInfo("fetch(/init) CogcharRenderContext");		
+		myRenderContext = getRenderContext();
+		
+		myRenderContext.registerJMonkeyRoots(assetManager, rootNode, guiNode, stateManager, inputManager);
+		myRenderContext.registerJMonkeyDefaultCameras(cam, flyCam);
+		myRenderContext.completeInit();
+		
 		// Register context and modulator with well-known registry
 		logInfo("CogcharRenderApp.simpleInitApp() - END");
 	}
 	
 	@Override public void simpleUpdate(float tpf) {
-		myRenderModulator.runOneCycle(tpf);
+		getRenderContext().doUpdate(tpf);		
 	}
-	
-	public void attachModule(Module<CogcharRenderModulator> m) { 
-		myRenderModulator.attachModule(m);
-	}
-	public void detachModule(Module<CogcharRenderModulator> m) { 
-		myRenderModulator.detachModule(m);
-	}
-	/** Generally these should be looked up via Registry, hence the method is protected. 
-	 * 
-	 * @return 
-	 */
-	protected CogcharRenderModulator getModulator() { 
-		return myRenderModulator;
-	}
-	/** Generally these should be looked up via Registry, hence the method is protected. 
-	 * 
-	 * @return 
-	 */
-	
-	protected CogcharRenderContext getRenderContext() { 
-		return myRenderContext;
-	}
+		
 }

@@ -72,7 +72,7 @@ import org.cogchar.render.opengl.app.DemoApp;
 /**
  * A walking animated character followed by a 3rd person camera on a terrain with LOD.
  */
-public class DemoOtoWalksTerrainAndBombsWall extends DemoApp implements ActionListener, PhysicsCollisionListener, AnimEventListener {
+public class DemoOtoWalksTerrainAndBombsWall extends UnfinishedDemoApp implements ActionListener, PhysicsCollisionListener, AnimEventListener {
 
     private BulletAppState bulletAppState;
     //character

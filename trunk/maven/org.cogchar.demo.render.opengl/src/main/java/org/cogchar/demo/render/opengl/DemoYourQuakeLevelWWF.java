@@ -42,7 +42,7 @@ import com.jme3.scene.plugins.ogre.OgreMeshKey;
 import java.io.File;
 import org.cogchar.render.opengl.app.DemoApp;
 
-public class DemoYourQuakeLevelWWF extends DemoApp implements ActionListener {
+public class DemoYourQuakeLevelWWF extends UnfinishedDemoApp implements ActionListener {
 	static String LOCAL_SCENE_PATH = "jme_asset_zips/quake3level.zip";
 	static String HTTP_SCENE_PATH = "http://jmonkeyengine.googlecode.com/files/quake3level.zip";
 	

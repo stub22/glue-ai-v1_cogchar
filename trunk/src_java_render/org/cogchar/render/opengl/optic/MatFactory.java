@@ -20,23 +20,19 @@ import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.texture.Texture;
+import org.cogchar.render.opengl.bony.sys.AssetContext;
+import org.cogchar.render.opengl.bony.sys.RenderRegistryAware;
+import org.cogchar.render.opengl.bony.sys.RenderRegistryFuncs;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class MatFactory {
+public class MatFactory extends RenderRegistryAware {
 
 	public static final String PATH_MATERIAL_UNSHADED = "Common/MatDefs/Misc/Unshaded.j3md";
 
-
-	
-	private		AssetManager		myAssetMgr;
-	
-	public MatFactory(AssetManager assetMgr) {
-		myAssetMgr = assetMgr;
-	}
 	public Material makeMatWithOptTexture(String matName, String matTextName, Texture t) {
-		Material mat = new Material(myAssetMgr, matName);
+		Material mat = new Material(findJme3AssetManager(null), matName);
 		if ((mat != null) && (matTextName != null) && (t != null)) {
 			mat.setTexture(matTextName, t);
 		}
@@ -63,7 +59,7 @@ public class MatFactory {
 	public Material makeTexturedUnshadedMat(String textureImagePath, boolean generateMips, Texture.WrapMode optWrapMode) { 
 		TextureKey textureKey = new TextureKey(textureImagePath);
 		textureKey.setGenerateMips(generateMips);
-		Texture texture = myAssetMgr.loadTexture(textureKey);
+		Texture texture = findJme3AssetManager(null).loadTexture(textureKey);
 		if (optWrapMode != null) {
 			texture.setWrap(optWrapMode);
 		}

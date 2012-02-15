@@ -18,6 +18,7 @@ package org.cogchar.render.opengl.app;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import org.cogchar.blob.emit.DemoConfigEmitter;
+import org.cogchar.render.opengl.bony.sys.PhysicalRenderContext;
 import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
 
 /**
@@ -28,38 +29,10 @@ import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
 		// Turn on the blue wireframe collision bounds.
 		// ps.enableDebug(asstMgr);
  */
-public class PhysicalApp extends DemoApp {
-	
-	private		BulletAppState			myBulletAS;
-	private		PhysicsStuffBuilder		myPSB;
+public abstract class PhysicalApp<PRCT extends PhysicalRenderContext> extends DemoApp<PRCT> {
 	
 	public PhysicalApp(DemoConfigEmitter bce) {
 		super(bce);
 	}
-	@Override public void simpleInitApp() {
-		super.simpleInitApp();
-		myBulletAS = new BulletAppState();
-        myBulletAS.setEnabled(true);
-        stateManager.attach(myBulletAS);		
-		PhysicsSpace ps = myBulletAS.getPhysicsSpace();
-		// TODO: Check config for initial debug setting
-		ps.enableDebug(assetManager);
 
-		myPSB =  new PhysicsStuffBuilder(getRenderContext(), ps, rootNode);
-	}
-	protected BulletAppState getBulletAppState() { 
-		return myBulletAS;
-	}
-    protected PhysicsSpace getPhysicsSpace() {
-        return myBulletAS.getPhysicsSpace();
-    }	
-	protected PhysicsStuffBuilder getPhysicsStuffBuilder() { 
-		return myPSB;
-	}
-	protected void initBasicTestPhysics() {
-		myPSB.createPhysicsTestWorld();
-	}	
-	protected void initSoccerTestPhysics() {
-		myPSB.createPhysicsTestWorldSoccer();
-	}	
 }

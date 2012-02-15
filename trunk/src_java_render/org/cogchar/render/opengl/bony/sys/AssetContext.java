@@ -23,26 +23,37 @@ import org.cogchar.render.opengl.mesh.DebugMeshLoader;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class AssetContext {
+public class AssetContext extends RenderRegistryAware {
 	private		AssetManager					myAssetManager;
 	private		List<JmonkeyAssetLocation>		myAssetSources = new ArrayList<JmonkeyAssetLocation>();
 	
-	public AssetContext(AssetManager assetMgr){ 
+	public AssetContext(){ 
 		JmonkeyAssetLocation frameJAL = new JmonkeyAssetLocation(AssetManager.class);
 		addAssetSource(frameJAL);
-		myAssetManager = assetMgr;
+
 	}
 	public void addAssetSource(JmonkeyAssetLocation jmal) {
 		myAssetSources.add(jmal);
 	}
+	public void setAssetManager(AssetManager assetMgr) { 
+		myAssetManager = assetMgr;
+	}
+	public AssetManager getAssetManager() { 
+		if (myAssetManager == null) {
+			myAssetManager = findJme3AssetManager(null);
+		}
+		return myAssetManager;
+	}
+	
 	public void resolveAndRegisterAllAssetSources() { 
+		AssetManager assetMgr = getAssetManager();
 		// Optionally add a bonyAssetLocator here for debugging.
 		for (JmonkeyAssetLocation jmal : myAssetSources) {
 			jmal.resolve();
-			jmal.registerLocators(myAssetManager);
+			jmal.registerLocators(assetMgr);
 		}
 		// DebugMeshLoader helps with debugging.		
-		myAssetManager.registerLoader(DebugMeshLoader.class, "meshxml", "mesh.xml");
+		assetMgr.registerLoader(DebugMeshLoader.class, "meshxml", "mesh.xml");
 		
 	}
 }

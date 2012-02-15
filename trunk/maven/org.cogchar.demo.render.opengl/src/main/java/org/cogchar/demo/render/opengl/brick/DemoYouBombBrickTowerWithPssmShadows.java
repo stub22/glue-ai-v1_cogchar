@@ -59,17 +59,11 @@ public class DemoYouBombBrickTowerWithPssmShadows extends BrickApp {
 
     static float brickWidth = .75f, brickHeight = .25f, brickDepth = .25f;
     float radius = 3f;
-    float angle = 0;
 
 
-
-	
-    PssmShadowRenderer				myShadowRenderer;
     private Sphere					myRockSphere;
     private Box						myBrickBox;
     private SphereCollisionShape	myRockSphereColShape;
-
-
 
     public static void main(String args[]) {
         DemoYouBombBrickTowerWithPssmShadows f = new DemoYouBombBrickTowerWithPssmShadows();
@@ -92,26 +86,17 @@ public class DemoYouBombBrickTowerWithPssmShadows extends BrickApp {
         //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
         initTower();
-        initFloor();
+        initFloorBombTowerPssm();
         initCrossHairs();
         this.cam.setLocation(new Vector3f(0, 25f, 8f));
         cam.lookAt(Vector3f.ZERO, new Vector3f(0, 1, 0));
         cam.setFrustumFar(80);
         inputManager.addMapping("shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addListener(actionListener, "shoot");
-        rootNode.setShadowMode(ShadowMode.Off);
-        myShadowRenderer = new PssmShadowRenderer(assetManager, 1024, 2);
-        myShadowRenderer.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
-        myShadowRenderer.setLambda(0.55f);
-        myShadowRenderer.setShadowIntensity(0.6f);
-        myShadowRenderer.setCompareMode(CompareMode.Hardware);
-        myShadowRenderer.setFilterMode(FilterMode.PCF4);
-        viewPort.addProcessor(myShadowRenderer);
+		
+        initPssmShadowRenderer();
     }
 
-    private PhysicsSpace getPhysicsSpace() {
-        return myPhysAppState.getPhysicsSpace();
-    }
     private ActionListener actionListener = new ActionListener() {
 
         public void onAction(String name, boolean keyPressed, float tpf) {
@@ -131,10 +116,13 @@ public class DemoYouBombBrickTowerWithPssmShadows extends BrickApp {
     };
 
     public void initTower() {
+		float brickMass = 1.5f;
+		float brickFrict = 1.6f;
+		
         double tempX = 0;
         double tempY = 0;
         double tempZ = 0;
-        angle = 0f;
+        float brickAngle = 0f;
         for (int i = 0; i < brickLayers; i++){
             // Increment rows
             if(i!=0)
@@ -142,52 +130,49 @@ public class DemoYouBombBrickTowerWithPssmShadows extends BrickApp {
             else
                 tempY=brickHeight;
             // Alternate brick seams
-            angle = 360.0f / bricksPerLayer * i/2f;
+            brickAngle = 360.0f / bricksPerLayer * i/2f;
             for (int j = 0; j < bricksPerLayer; j++){
-              tempZ = Math.cos(Math.toRadians(angle))*radius;
-              tempX = Math.sin(Math.toRadians(angle))*radius;
+              tempZ = Math.cos(Math.toRadians(brickAngle))*radius;
+              tempX = Math.sin(Math.toRadians(brickAngle))*radius;
               System.out.println("x="+((float)(tempX))+" y="+((float)(tempY))+" z="+(float)(tempZ));
               Vector3f vt = new Vector3f((float)(tempX), (float)(tempY), (float)(tempZ));
               // Add crenelation
               if (i==brickLayers-1){
                 if (j%2 == 0){
-                    addBrick(vt);
+                    addBrickToTower(vt, brickAngle, brickMass, brickFrict);
                 }
               }
               // Create main tower
               else {
-                addBrick(vt);
+                addBrickToTower(vt, brickAngle, brickMass, brickFrict);
               }
-              angle += 360.0/bricksPerLayer;
+              brickAngle += 360.0/bricksPerLayer;
             }
           }
 
     }
-
-    public void initFloor() {
+    protected void initFloorBombTowerPssm() {
         Box floorBox = new Box(Vector3f.ZERO, 10f, 0.1f, 5f);
         floorBox.scaleTextureCoordinates(new Vector2f(3, 6));
-
         Geometry floor = new Geometry("floor", floorBox);
         floor.setMaterial(myPondMat);
         floor.setShadowMode(ShadowMode.Receive);
         floor.setLocalTranslation(0, 0, 0);
-        floor.addControl(new RigidBodyControl(0));
-        this.rootNode.attachChild(floor);
-        this.getPhysicsSpace().add(floor);
+		makePhysicalObjControlAndAttachToRoot(floor, 0f, null);
     }
 
 
-    public void addBrick(Vector3f ori) {
+    protected void addBrickToTower(Vector3f localTrans, float brickAngle, float mass, float friction) {
         Geometry reBoxg = new Geometry("brick", myBrickBox);
         reBoxg.setMaterial(myBrickMat);
-        reBoxg.setLocalTranslation(ori);
-        reBoxg.rotate(0f, (float)Math.toRadians(angle) , 0f );
-        reBoxg.addControl(new RigidBodyControl(1.5f));
         reBoxg.setShadowMode(ShadowMode.CastAndReceive);
-        reBoxg.getControl(RigidBodyControl.class).setFriction(1.6f);
-        this.rootNode.attachChild(reBoxg);
-        this.getPhysicsSpace().add(reBoxg);
+		
+		reBoxg.setLocalTranslation(localTrans);
+        reBoxg.rotate(0f, (float)Math.toRadians(brickAngle) , 0f );
+        reBoxg.addControl(new RigidBodyControl(mass));
+
+        reBoxg.getControl(RigidBodyControl.class).setFriction(friction);
+		attachPhysicalObjToRoot(reBoxg);
     }
 
 }

@@ -13,32 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.scene;
+package org.cogchar.demo.render.opengl;
 
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import org.cogchar.render.opengl.bony.sys.RenderRegistryAware;
+import org.cogchar.render.opengl.app.DemoApp;
+import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
+import org.cogchar.render.opengl.bony.sys.DemoRenderContext;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class FlatOverlayMgr extends RenderRegistryAware {
-	private Node	myAppGuiNode;
+public class UnfinishedDemoApp  extends DemoApp  {
+	@Override protected CogcharRenderContext makeCogcharRenderContext() {
+		return new DYPS_RenderContext();
+	}
 
-	public void setParentNode(Node n) {
-		myAppGuiNode = n;
+	public void setupLight() { 
+		DemoRenderContext drc = (DemoRenderContext) getRenderContext();
+		drc.setupLight();
 	}
-	protected Node getParentNode() {  
-		if (myAppGuiNode == null) {
-			myAppGuiNode = findJme3RootOverlayNode(null);
-		}
-		return myAppGuiNode;
-	}
-	
-	public void detachAllOverlays() { 
-		getParentNode().detachAllChildren();
-	}
-	public void attachOverlaySpatial(Spatial s) {
-		getParentNode().attachChild(s);
+	public static class DYPS_RenderContext extends DemoRenderContext {
+		
 	}
 }
