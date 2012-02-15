@@ -13,35 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.scene;
+package org.cogchar.render.opengl.bony.sys;
 
-import com.jme3.light.Light;
+import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import org.cogchar.render.opengl.bony.sys.RenderRegistryAware;
+
+// import static org.cogchar.render.opengl.bony.RenderRegistryFuncs.*;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class DeepSceneMgr extends RenderRegistryAware {
-	private	Node	myParentNode;
+public class RenderRegistryAware extends RenderRegistryFuncs {
+	
 
-	public void setParentNode(Node n) {
-		myParentNode = n;
+	public static void registerAssetManager(AssetManager assetMgr, String optName) {
+		AssetContext ac = findOrMakeAssetContext(null, null);
+		ac.setAssetManager(assetMgr);
 	}
-	protected Node getParentNode() {
-		if (myParentNode == null) {
-			myParentNode = findJme3RootDeepNode(null);
-		}
-		return myParentNode;
-	}
-	public void attachTopSpatial(Spatial s) {
-		getParentNode().attachChild(s);
-	}
-	public void detachTopSpatial(Spatial s) {
-		getParentNode().detachChild(s);
-	}
-	public void addLight(Light l) {
-		getParentNode().addLight(l);
-	}
+	public static void propagateRootNode(Node rootNode) {
+		// Let's start with just the default one.
+	//	SceneFacade sf = getSceneFacade(null);
+
+	}		
+	
 }

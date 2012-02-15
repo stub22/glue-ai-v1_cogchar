@@ -31,71 +31,12 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyStickFigureApp extends BonyVirtualCharApp {
+public abstract class BonyStickFigureApp<BRCT extends BonyRenderContext> extends BonyVirtualCharApp<BRCT> {
 	static Logger theLogger = LoggerFactory.getLogger(BonyStickFigureApp.class);
-	protected StickFigureTwister		myTwister;	
 
 	
 	public BonyStickFigureApp(BonyConfigEmitter bce) { 
 		super(bce); 
 	}
-	
-	@Override public void simpleInitApp() {
-		theLogger.info("simpleInitApp() - START");
-		super.simpleInitApp();
-		if (initStickFigureModel()) {
-			BonyRenderContext bc = getBonyRenderContext();
-			myTwister = new StickFigureTwister(bc);
-			VirtualCharacterPanel vcp = bc.getPanel();
-			BodyController bodCont = vcp.getBodyController();
-			if (bodCont != null) {
-				myTwister.setBodyController(bodCont);
-			}
-			attachModule(myTwister);
-		}
-		theLogger.info("simpleInitApp() - END");
-	}
-	public void setScoringFlag(boolean f) {
-		myTwister.setScoringFlag(f);
-	}
 
-	public boolean initStickFigureModel() {
-		// test1Node.setLocalScale(0.5f);
-		BonyRenderContext bc = getBonyRenderContext();
-		BonyConfigEmitter bce = getBonyConfigEmitter(); 
-		String sceneFilePath = bce.getStickFigureScenePath();
-		
-		if (sceneFilePath != null) {
-			float sceneScale = bce.getStickFigureSceneScale();
-			Node testSceneNode = (Node)assetManager.loadModel(sceneFilePath); 
-			theLogger.info("BonyStickFigure scene loaded: " + testSceneNode);
-
-			SpatialManipFuncs.dumpNodeTree(testSceneNode, "   ");
-			List<AnimControl> animControls = SpatialManipFuncs.findAnimControls(testSceneNode);
-
-			theLogger.info("Found BSF animControls, about to reset: " + animControls);
-			SpatialManipFuncs.resetBonesAndPrintInfo(animControls); 
-
-			myContext.setAnimControls(animControls);
-
-			// Material testSceneMat = new Material(assetManager, "resources/leo_hanson_tests/test3/test3.material");
-
-			testSceneNode.setLocalScale(sceneScale);
-
-			this.rootNode.attachChild(testSceneNode);
-			return true;
-		} else {
-			theLogger.warn("Skipping load for BonyStickFigure - gui controls should also be disabled");
-			return false;
-		}
-		
-	}	/*
-	@Override public void simpleUpdate(float tpf) {
-		doUpdate(tpf);
-	}
-	private void doUpdate(float tpf) {
-		myTwister.twist(tpf);
-	}	
-	 * 
-	 */
 }

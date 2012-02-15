@@ -64,8 +64,6 @@ public class DemoYouBowlAtBrickWall extends BrickApp {
   private static final Box    box;
   private RigidBodyControl    ball_phy;
   private static final Sphere sphere;
-  private RigidBodyControl    floor_phy;
-  private static final Box    floor;
   
   /** dimensions used for bricks and wall */
   protected static float brickLength = 0.48f;
@@ -79,9 +77,7 @@ public class DemoYouBowlAtBrickWall extends BrickApp {
     /** Initialize the brick geometry */
     box = new Box(Vector3f.ZERO, brickLength, brickHeight, brickWidth);
     box.scaleTextureCoordinates(new Vector2f(1f, .5f));
-    /** Initialize the floor geometry */
-    floor = new Box(Vector3f.ZERO, 10f, 0.1f, 5f);
-    floor.scaleTextureCoordinates(new Vector2f(3, 6));
+
   }
 
   @Override public void simpleInitApp() {
@@ -100,7 +96,7 @@ public class DemoYouBowlAtBrickWall extends BrickApp {
     /** Initialize the scene, materials, and physics space */
 
     initWall();
-    initFloor();
+    initFloorBowlWall();
     initCrossHairs();
   }
 
@@ -117,18 +113,7 @@ public class DemoYouBowlAtBrickWall extends BrickApp {
   };
 
 
-  /** Make a solid floor and add it to the scene. */
-  public void initFloor() {
-    Geometry floor_geo = new Geometry("Floor", floor);
-    floor_geo.setMaterial(myPondMat);
-    floor_geo.setShadowMode(ShadowMode.Receive);
-    floor_geo.setLocalTranslation(0, -0.1f, 0);
-    this.rootNode.attachChild(floor_geo);
-    /* Make the floor physical with mass 0.0f! */
-    floor_phy = new RigidBodyControl(0.0f);
-    floor_geo.addControl(floor_phy);
-    myPhysAppState.getPhysicsSpace().add(floor_phy);
-  }
+ 
 
   /** This loop builds a wall out of individual bricks. */
   public void initWall() {
@@ -151,15 +136,10 @@ public class DemoYouBowlAtBrickWall extends BrickApp {
     /** Create a brick geometry and attach to scene graph. */
     Geometry brick_geo = new Geometry("brick", box);
     brick_geo.setMaterial(myBrickMat);
-    rootNode.attachChild(brick_geo);
     /** Position the brick geometry and activate shadows */
     brick_geo.setLocalTranslation(loc);
     brick_geo.setShadowMode(ShadowMode.CastAndReceive);
-    /** Make brick physical with a mass > 0.0f. */
-    brick_phy = new RigidBodyControl(2f);
-    /** Add physical brick to physics space. */
-    brick_geo.addControl(brick_phy);
-    myPhysAppState.getPhysicsSpace().add(brick_phy);
+	makePhysicalObjControlAndAttachToRoot(brick_geo, 2f, null);
   }
 
   /** This method creates one individual physical cannon ball.

@@ -37,7 +37,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import org.cogchar.render.opengl.app.DemoApp;
 
-public class DemoOtoIntersectsMovableBlock extends DemoApp {
+public class DemoOtoIntersectsMovableBlock extends UnfinishedDemoApp {
 
     Geometry geom1;
 

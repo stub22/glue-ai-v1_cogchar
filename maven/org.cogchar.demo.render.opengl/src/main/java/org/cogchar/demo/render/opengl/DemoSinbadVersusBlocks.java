@@ -19,7 +19,6 @@
  *		You may not use this file except in compliance with the
  *		JMonkeyEngine license.  See full notice at bottom of this file. 
  */
-
 package org.cogchar.demo.render.opengl;
 
 import com.jme3.animation.AnimChannel;
@@ -32,9 +31,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
@@ -44,167 +41,176 @@ import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import org.cogchar.blob.emit.DemoConfigEmitter;
 import org.cogchar.render.opengl.app.PhysicalApp;
+import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
+import org.cogchar.render.opengl.bony.sys.DemoRenderContext;
 
 /**
- *
+ * From:    jme3test.bullet.TestRagdollCharacter
  */
-public class DemoSinbadVersusBlocks extends PhysicalApp implements AnimEventListener, ActionListener {
+public class DemoSinbadVersusBlocks extends PhysicalApp {
 
-    Node model;
-    KinematicRagdollControl ragdoll;
-    boolean leftStrafe = false, rightStrafe = false, forward = false, backward = false,
-            leftRotate = false, rightRotate = false;
-    AnimControl animControl;
-    AnimChannel animChannel;
+	Node model;
+	KinematicRagdollControl ragdoll;
+	boolean leftStrafe = false, rightStrafe = false, forward = false, backward = false,
+			leftRotate = false, rightRotate = false;
+	AnimControl animControl;
+	AnimChannel animChannel;
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 		DemoConfigEmitter dce = new DemoConfigEmitter();
-        DemoSinbadVersusBlocks app = new DemoSinbadVersusBlocks(dce);
-        app.start();
-    }
-	public DemoSinbadVersusBlocks(DemoConfigEmitter dce) { 
+		DemoSinbadVersusBlocks app = new DemoSinbadVersusBlocks(dce);
+		app.start();
+	}
+
+	public DemoSinbadVersusBlocks(DemoConfigEmitter dce) {
 		super(dce);
 	}
 
-    @Override public void simpleInitApp() {
-		super.simpleInitApp();
-        setupKeys();
+
+	@Override protected CogcharRenderContext makeCogcharRenderContext() {
+		DSVB_RenderContext rc = new DSVB_RenderContext();
+		return rc;
+	}
+
+	class DSVB_RenderContext extends DemoRenderContext implements AnimEventListener, ActionListener {
+
+		@Override public void completeInit() {
+			
+			setupKeys();
+
+			initBasicTestPhysics();
+
+			initWall(2, 1, 1);
+			setupLight();
+
+			cam.setLocation(new Vector3f(-8, 0, -4));
+			cam.lookAt(new Vector3f(4, 0, -7), Vector3f.UNIT_Y);
+
+			model = (Node) findOrMakeSceneSpatialModelFacade(null).makeSinbadSpatialFromDefaultPath();
+			model.lookAt(new Vector3f(0, 0, -1), Vector3f.UNIT_Y);
+			model.setLocalTranslation(4, 0, -7f);
+
+			ragdoll = new KinematicRagdollControl(0.5f);
+			model.addControl(ragdoll);
+
+			getPhysicsSpace().add(ragdoll);
+			speed = 1.3f;
+
+			rootNode.attachChild(model);
+
+
+			AnimControl control = model.getControl(AnimControl.class);
+			animChannel = control.createChannel();
+			animChannel.setAnim("IdleTop");
+			control.addListener(this);
+		}
+
+		@Override public void doUpdate(float tpf) {
+			if (forward) {
+				model.move(model.getLocalRotation().multLocal(new Vector3f(0, 0, 1)).multLocal(tpf));
+			} else if (backward) {
+				model.move(model.getLocalRotation().multLocal(new Vector3f(0, 0, 1)).multLocal(-tpf));
+			} else if (leftRotate) {
+				model.rotate(0, tpf, 0);
+			} else if (rightRotate) {
+				model.rotate(0, -tpf, 0);
+			}
+			fpsText.setText(cam.getLocation() + "/" + cam.getRotation());
+		}
+
+		@Override public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
+		}
+
+		@Override public void onAction(String binding, boolean value, float tpf) {
+			if (binding.equals("Rotate Left")) {
+				if (value) {
+					leftRotate = true;
+				} else {
+					leftRotate = false;
+				}
+			} else if (binding.equals("Rotate Right")) {
+				if (value) {
+					rightRotate = true;
+				} else {
+					rightRotate = false;
+				}
+			} else if (binding.equals("Walk Forward")) {
+				if (value) {
+					forward = true;
+				} else {
+					forward = false;
+				}
+			} else if (binding.equals("Walk Backward")) {
+				if (value) {
+					backward = true;
+				} else {
+					backward = false;
+				}
+			} else if (binding.equals("Slice")) {
+				if (value) {
+					animChannel.setAnim("SliceHorizontal");
+					animChannel.setSpeed(0.3f);
+				}
+			}
+		}
+
+		@Override public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+
+			if (channel.getAnimationName().equals("SliceHorizontal")) {
+				channel.setLoopMode(LoopMode.DontLoop);
+				channel.setAnim("IdleTop", 5);
+				channel.setLoopMode(LoopMode.Loop);
+			}
+
+		}
+
+		private void setupKeys() {
+			inputManager.addMapping("Rotate Left",
+					new KeyTrigger(KeyInput.KEY_H));
+			inputManager.addMapping("Rotate Right",
+					new KeyTrigger(KeyInput.KEY_K));
+			inputManager.addMapping("Walk Forward",
+					new KeyTrigger(KeyInput.KEY_U));
+			inputManager.addMapping("Walk Backward",
+					new KeyTrigger(KeyInput.KEY_J));
+			inputManager.addMapping("Slice",
+					new KeyTrigger(KeyInput.KEY_SPACE),
+					new KeyTrigger(KeyInput.KEY_RETURN));
+			inputManager.addListener(this, "Strafe Left", "Strafe Right");
+			inputManager.addListener(this, "Rotate Left", "Rotate Right");
+			inputManager.addListener(this, "Walk Forward", "Walk Backward");
+			inputManager.addListener(this, "Slice");
+		}
 		
-		initBasicTestPhysics();
+	public void initWall(float bLength, float bWidth, float bHeight) {
+		Box brick = new Box(Vector3f.ZERO, bLength, bHeight, bWidth);
+		brick.scaleTextureCoordinates(new Vector2f(1f, .5f));
+		Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		TextureKey key = new TextureKey("Textures/Terrain/BrickWall/BrickWall.jpg");
+		key.setGenerateMips(true);
+		Texture tex = assetManager.loadTexture(key);
+		mat2.setTexture("ColorMap", tex);
 
-		initWall(2,1,1);
-        setupLight();
-
-        cam.setLocation(new Vector3f(-8,0,-4));
-        cam.lookAt(new Vector3f(4,0,-7), Vector3f.UNIT_Y);
-
-        model = (Node) getSceneFacade().getModelML().makeSinbadSpatialFromDefaultPath();
-        model.lookAt(new Vector3f(0,0,-1), Vector3f.UNIT_Y);
-        model.setLocalTranslation(4, 0, -7f);
-
-        ragdoll = new KinematicRagdollControl(0.5f);
-        model.addControl(ragdoll);
-
-        getPhysicsSpace().add(ragdoll);
-        speed = 1.3f;
-
-        rootNode.attachChild(model);
-
-
-        AnimControl control = model.getControl(AnimControl.class);
-        animChannel = control.createChannel();
-        animChannel.setAnim("IdleTop");
-        control.addListener(this);
-
-    }
-
-    private void setupKeys() {
-        inputManager.addMapping("Rotate Left",
-                new KeyTrigger(KeyInput.KEY_H));
-        inputManager.addMapping("Rotate Right",
-                new KeyTrigger(KeyInput.KEY_K));
-        inputManager.addMapping("Walk Forward",
-                new KeyTrigger(KeyInput.KEY_U));
-        inputManager.addMapping("Walk Backward",
-                new KeyTrigger(KeyInput.KEY_J));
-        inputManager.addMapping("Slice",
-                new KeyTrigger(KeyInput.KEY_SPACE),
-                new KeyTrigger(KeyInput.KEY_RETURN));
-        inputManager.addListener(this, "Strafe Left", "Strafe Right");
-        inputManager.addListener(this, "Rotate Left", "Rotate Right");
-        inputManager.addListener(this, "Walk Forward", "Walk Backward");
-        inputManager.addListener(this, "Slice");
-    }
-
-    public void initWall(float bLength, float bWidth, float bHeight) {
-        Box brick = new Box(Vector3f.ZERO, bLength, bHeight, bWidth);
-        brick.scaleTextureCoordinates(new Vector2f(1f, .5f));
-        Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        TextureKey key = new TextureKey("Textures/Terrain/BrickWall/BrickWall.jpg");
-        key.setGenerateMips(true);
-        Texture tex = assetManager.loadTexture(key);
-        mat2.setTexture("ColorMap", tex);
-        
-        float startpt = bLength / 4;
-        float height = -5;
-        for (int j = 0; j < 15; j++) {
-            for (int i = 0; i < 4; i++) {
-                Vector3f ori = new Vector3f(i * bLength * 2 + startpt, bHeight + height, -10);
-                Geometry reBoxg = new Geometry("brick", brick);
-                reBoxg.setMaterial(mat2);
-                reBoxg.setLocalTranslation(ori);
-                //for geometry with sphere mesh the physics system automatically uses a sphere collision shape
-                reBoxg.addControl(new RigidBodyControl(1.5f));
-                reBoxg.setShadowMode(ShadowMode.CastAndReceive);
-                reBoxg.getControl(RigidBodyControl.class).setFriction(0.6f);
-                this.rootNode.attachChild(reBoxg);
-                this.getPhysicsSpace().add(reBoxg);
-            }
-            startpt = -startpt;
-            height += 2 * bHeight;
-        }
-    }
-
-    public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
-
-        if (channel.getAnimationName().equals("SliceHorizontal")) {
-            channel.setLoopMode(LoopMode.DontLoop);
-            channel.setAnim("IdleTop", 5);
-            channel.setLoopMode(LoopMode.Loop);
-        }
-
-    }
-
-    public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
-    }
-    
-    public void onAction(String binding, boolean value, float tpf) {
-        if (binding.equals("Rotate Left")) {
-            if (value) {
-                leftRotate = true;
-            } else {
-                leftRotate = false;
-            }
-        } else if (binding.equals("Rotate Right")) {
-            if (value) {
-                rightRotate = true;
-            } else {
-                rightRotate = false;
-            }
-        } else if (binding.equals("Walk Forward")) {
-            if (value) {
-                forward = true;
-            } else {
-                forward = false;
-            }
-        } else if (binding.equals("Walk Backward")) {
-            if (value) {
-                backward = true;
-            } else {
-                backward = false;
-            }
-        } else if (binding.equals("Slice")) {
-            if (value) {
-                animChannel.setAnim("SliceHorizontal");
-                animChannel.setSpeed(0.3f);
-            }
-        }
-    }
-
-    @Override
-    public void simpleUpdate(float tpf) {
-        if(forward){
-            model.move(model.getLocalRotation().multLocal(new Vector3f(0,0,1)).multLocal(tpf));
-        }else if(backward){
-            model.move(model.getLocalRotation().multLocal(new Vector3f(0,0,1)).multLocal(-tpf));
-        }else if(leftRotate){
-            model.rotate(0, tpf, 0);
-        }else if(rightRotate){
-            model.rotate(0, -tpf, 0);
-        }
-        fpsText.setText(cam.getLocation() + "/" + cam.getRotation());
-    }
-
+		float startpt = bLength / 4;
+		float height = -5;
+		for (int j = 0; j < 15; j++) {
+			for (int i = 0; i < 4; i++) {
+				Vector3f ori = new Vector3f(i * bLength * 2 + startpt, bHeight + height, -10);
+				Geometry reBoxg = new Geometry("brick", brick);
+				reBoxg.setMaterial(mat2);
+				reBoxg.setLocalTranslation(ori);
+				//for geometry with sphere mesh the physics system automatically uses a sphere collision shape
+				reBoxg.addControl(new RigidBodyControl(1.5f));
+				reBoxg.setShadowMode(ShadowMode.CastAndReceive);
+				reBoxg.getControl(RigidBodyControl.class).setFriction(0.6f);
+				rootNode.attachChild(reBoxg);
+				this.getPhysicsSpace().add(reBoxg);
+			}
+			startpt = -startpt;
+			height += 2 * bHeight;
+		}
+	}		
+	}
 }
 
 /*

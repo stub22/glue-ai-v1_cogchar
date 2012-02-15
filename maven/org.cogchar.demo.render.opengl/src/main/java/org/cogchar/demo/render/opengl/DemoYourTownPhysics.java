@@ -43,7 +43,7 @@ import org.cogchar.render.opengl.app.DemoApp;
 /**  Solid floor and walls, with walking character, as discussed on JME3 Wiki 
  * <a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_collision">here</a>.
  */
-public class DemoYourTownPhysics extends DemoApp implements ActionListener {
+public class DemoYourTownPhysics extends UnfinishedDemoApp implements ActionListener {
 
   private Spatial sceneModel;
   private BulletAppState bulletAppState;

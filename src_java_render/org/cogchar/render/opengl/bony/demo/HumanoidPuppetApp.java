@@ -49,10 +49,10 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
+public class HumanoidPuppetApp extends BonyStickFigureApp<HumanoidRenderContext> { // DemoApp {
     private final static Logger		theLogger = LoggerFactory.getLogger(HumanoidPuppetApp.class);
 	private HumanoidRagdollWrapper	myHumanoidWrapper;
-	private ProjectileLauncher			myPrjctlMgr;
+
 
 
 	public static void main(String[] args) {
@@ -61,100 +61,13 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 		app.start();
 	}
 	public HumanoidPuppetApp(BonyConfigEmitter bce) { 
-		super(bce); // lwjglRendererName, canvWidth, canvHeight, null, 1.0f);
-		// myHumanoidMeshPath = pathToHumanoidMesh;
-		myHumanoidWrapper = new HumanoidRagdollWrapper(bce);
-		// assetManager, rootNode, etc. are not available yet!
-		// So, we wait for "simpleInitApp()" to do the bulk of our init.		
-
+		super(bce); 		
 	}
-	@Override public void simpleInitApp() {
-		theLogger.info("simpleInitApp() - START");
-		super.simpleInitApp();
-		myPrjctlMgr = new ProjectileLauncher(getMeshFF(), getMatMgr());		
-
-		initFonts();
-		initCrossHairs();
-		initBasicTestPhysics();
-		initCameraAndLights();
-		initHumanoidStuff();
-		myPrjctlMgr.initStuff();  // Can be done at any time in this startup seq
-		HumanoidPuppetActions.setupActionListeners(inputManager, this);
-        SimulatorActions.setupActionListeners(inputManager, this);
-		myHumanoidWrapper.boogie();
-		myHumanoidWrapper.becomePuppet();
-		theLogger.info("simpleInitApp() - END");
-
-	}
-	public HumanoidRagdollWrapper getHumdWrap()  {
-		return myHumanoidWrapper;
-	}
-	public ProjectileLauncher getProjectileMgr() { 
-		return myPrjctlMgr;
-	}	
-	public void cmdShoot() {
-		myPrjctlMgr.fireProjectileFromCamera(cam, rootNode, getPhysicsSpace());	
-	}
-	public void cmdBoom() {
-		/*
-		Geometry prjctlGeom = new Geometry(GEOM_BOOM, myProjectileSphereMesh);
-		prjctlGeom.setMaterial(myProjectileMaterial);
-		prjctlGeom.setLocalTranslation(cam.getLocation());
-		prjctlGeom.setLocalScale(myProjectileSize);
-		myProjectileCollisionShape = new SphereCollisionShape(myProjectileSize);
-		ThrowableBombRigidBodyControl prjctlNode = new ThrowableBombRigidBodyControl(assetManager, myProjectileCollisionShape, 1);
-		prjctlNode.setForceFactor(8);
-		prjctlNode.setExplosionRadius(20);
-		prjctlNode.setCcdMotionThreshold(0.001f);
-		prjctlNode.setLinearVelocity(cam.getDirection().mult(180));
-		prjctlGeom.addControl(prjctlNode);
-		rootNode.attachChild(prjctlGeom);
-		getPhysicsSpace().add(prjctlNode);
-		 * */
-		
-	}
-	private void initHumanoidStuff() { 
-		HumanoidBoneConfig hbc = new HumanoidBoneConfig(true);
+	@Override protected HumanoidRenderContext makeCogcharRenderContext() {
 		BonyConfigEmitter bce = getBonyConfigEmitter();
-		String humanoidMeshPath = bce.getHumanoidMeshPath();
-		if (humanoidMeshPath != null) {
-			myHumanoidWrapper.initStuff(hbc, assetManager, rootNode, getPhysicsSpace(), humanoidMeshPath);
-			//VirtCharPanel vcp = getVCPanel();
-			//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
-			BonyRenderContext ctx = getBonyRenderContext();
-			HumanoidFigureModule hfm = new HumanoidFigureModule(myHumanoidWrapper, ctx);
-			attachModule(hfm);			
-		} else {
-			theLogger.warn("Skipping humanoid mesh load");
-		}
-		
-		String extraRobotMeshPath = bce.getExtraRobotMeshPath();
-		if (extraRobotMeshPath != null) {
-			theLogger.info("Loading extra-robot mesh from: " + extraRobotMeshPath);
-			Node extraRobotNode = (Node) assetManager.loadModel(extraRobotMeshPath);
-			SpatialManipFuncs.dumpNodeTree(extraRobotNode, "   ");
-			rootNode.attachChild(extraRobotNode);
-		} else {
-			theLogger.warn("Skipping extra-robot mesh load");
-		}
-
+		return new HumanoidRenderContext(bce);
 	}
-
-	private void initCameraAndLights() {
-        setDefaultCameraLocation();
-		setAppSpeed(1.3f);
-		flyCam.setMoveSpeed(50);
-		setupLight();	
-	}
-    protected void setDefaultCameraLocation(){
-		cam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));
-		cam.setRotation(new Quaternion(-2.302544E-4f, 0.99302495f, -0.117888905f, -0.0019395084f));
-    }
-	public VirtualCharacterPanel getVCPanel() { 
-		BonyRenderContext ctx = getBonyRenderContext();
-		VirtualCharacterPanel vcp = ctx.getPanel();
-		return vcp;
-	}
+	
 
 	/*
 	 * Called from SimpleUpdate to propagate position state from the figure state in the
@@ -188,6 +101,7 @@ public class HumanoidPuppetApp extends BonyStickFigureApp { // DemoApp {
 	}
 	 * 
 	 */
+
 }
 		/*VirtCharPanel vcp = getVCPanel();
 		int testChannelNum = vcp.getTestChannelNum();

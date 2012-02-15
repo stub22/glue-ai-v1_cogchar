@@ -18,33 +18,38 @@ package org.cogchar.render.opengl.bony.app;
 import com.jme3.bullet.BulletAppState;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyRagdollApp extends BonyStickFigureApp {
-	static Logger theLogger = LoggerFactory.getLogger(BonyRagdollApp.class);
-	private	DemoBonyWireframeRagdoll	myRagdoll;
-	
+public abstract class BonyRagdollApp<BRCT extends BonyRenderContext> extends BonyStickFigureApp<BRCT> {
+
 	public BonyRagdollApp(BonyConfigEmitter bce) { 
 		super (bce); 
-		myRagdoll = new DemoBonyWireframeRagdoll();
+		
 	}
-	@Override public void simpleInitApp() {
-		theLogger.info("simpleInitApp() - START");
-		super.simpleInitApp();
-		BulletAppState bulletAppState = getBulletAppState();
-		myRagdoll.realizeDollAndAttach(rootNode, bulletAppState);
-		myRagdoll.registerTraditionalInputHandlers(inputManager);
-		theLogger.info("simpleInitApp() - END");
 
-	}
-	@Override public void simpleUpdate(float tpf) {
-		super.simpleUpdate(tpf);
-		myRagdoll.doSimpleUpdate(tpf);
-	}
-	public DemoBonyWireframeRagdoll getRagdoll() {
-		return myRagdoll;
+	class BonyRagdollRenderContext extends BonyStickFigureContext {
+		private	DemoBonyWireframeRagdoll	myRagdoll;		
+		public BonyRagdollRenderContext(BonyConfigEmitter bce) {
+			super(bce);
+			myRagdoll = new DemoBonyWireframeRagdoll();
+		}
+		
+		@Override public void completeInit() {
+			BulletAppState bulletAppState = getBulletAppState();
+			myRagdoll.realizeDollAndAttach(rootNode, bulletAppState);
+			myRagdoll.registerTraditionalInputHandlers(inputManager);		
+		}
+		@Override public void doUpdate(float tpf) {
+			// TODO - add ragdoll as module.
+			super.doUpdate(tpf);
+			myRagdoll.doSimpleUpdate(tpf);
+		}	
+		public DemoBonyWireframeRagdoll getRagdoll() {
+			return myRagdoll;
+		}
 	}
 }

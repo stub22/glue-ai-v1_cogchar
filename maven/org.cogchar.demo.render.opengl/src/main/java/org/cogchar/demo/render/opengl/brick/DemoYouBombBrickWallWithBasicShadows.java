@@ -24,18 +24,14 @@ package org.cogchar.demo.render.opengl.brick;
 
 import org.cogchar.render.opengl.bony.world.LaunchableCollidingRigidBodyControl;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.asset.TextureKey;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.material.Material;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
@@ -43,10 +39,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
-import com.jme3.shadow.BasicShadowRenderer;
-import com.jme3.texture.Texture;
-import com.jme3.texture.Texture.WrapMode;
-import org.cogchar.render.opengl.app.DemoApp;
 
 /**
  * From: jme3test.bullet.TestBrickWall
@@ -58,9 +50,8 @@ public class DemoYouBombBrickWallWithBasicShadows extends BrickApp {
     static float bWidth = 0.24f;
     static float bHeight = 0.12f;
 
-    BasicShadowRenderer bsr;
-    private static Sphere myRockSphere;
-    private static Box myBrickBox;
+	private static Sphere				myRockSphere;
+    private static Box					myBrickBox;
     private static SphereCollisionShape myRockColShape;
 
 
@@ -83,7 +74,7 @@ public class DemoYouBombBrickWallWithBasicShadows extends BrickApp {
         myBrickBox.scaleTextureCoordinates(new Vector2f(1f, .5f));
 
         initWall();
-        initFloor();
+        initFloorBombWallBasic();
         initCrossHairs();
 		
         this.cam.setLocation(new Vector3f(0, 6f, 6f));
@@ -94,19 +85,10 @@ public class DemoYouBombBrickWallWithBasicShadows extends BrickApp {
         inputManager.addMapping("gc", new KeyTrigger(KeyInput.KEY_X));
         inputManager.addListener(actionListener, "gc");
 
-		/*
-		 * These shadows work, kinda, but create nasty little edge effects.
-		 */ 
-		 
-        rootNode.setShadowMode(ShadowMode.Off);
-        bsr = new BasicShadowRenderer(assetManager, 256);
-        bsr.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
-        viewPort.addProcessor(bsr);
+		initBasicShadowRenderer();
     }
 
-    private PhysicsSpace getPhysicsSpace() {
-        return myPhysAppState.getPhysicsSpace();
-    }
+
     private ActionListener actionListener = new ActionListener() {
 
         public void onAction(String name, boolean keyPressed, float tpf) {
@@ -136,14 +118,14 @@ public class DemoYouBombBrickWallWithBasicShadows extends BrickApp {
         for (int j = 0; j < 15; j++) {
             for (int i = 0; i < 4; i++) {
                 Vector3f vt = new Vector3f(i * bLength * 2 + startpt, bHeight + height, 0);
-                addBrick(vt);
+                addBrickToWall(vt);
             }
             startpt = -startpt;
             height += 2 * bHeight;
         }
     }
 
-    public void initFloor() {
+    public void initFloorBombWallBasic() {
         Box floorBox = new Box(Vector3f.ZERO, 10f, 0.1f, 5f);
         floorBox.scaleTextureCoordinates(new Vector2f(3, 6));
 
@@ -151,22 +133,18 @@ public class DemoYouBombBrickWallWithBasicShadows extends BrickApp {
         floor.setMaterial(myPondMat);
         floor.setShadowMode(ShadowMode.Receive);
         floor.setLocalTranslation(0, -0.1f, 0);
-        floor.addControl(new RigidBodyControl(new BoxCollisionShape(new Vector3f(10f, 0.1f, 5f)), 0));
-        this.rootNode.attachChild(floor);
-        this.getPhysicsSpace().add(floor);
+		RigidBodyControl rbc = new RigidBodyControl(new BoxCollisionShape(new Vector3f(10f, 0.1f, 5f)), 0);
+		attachPhysicalObjToRoot(floor, rbc, true);
     }
 
-    public void addBrick(Vector3f ori) {
+    public void addBrickToWall(Vector3f ori) {
 
         Geometry reBoxg = new Geometry("brick", myBrickBox);
         reBoxg.setMaterial(myBrickMat);
-        reBoxg.setLocalTranslation(ori);
-        //for geometry with sphere mesh the physics system automatically uses a sphere collision shape
-        reBoxg.addControl(new RigidBodyControl(1.5f));
         reBoxg.setShadowMode(ShadowMode.CastAndReceive);
-        reBoxg.getControl(RigidBodyControl.class).setFriction(0.6f);
-        this.rootNode.attachChild(reBoxg);
-        this.getPhysicsSpace().add(reBoxg);
+		
+        reBoxg.setLocalTranslation(ori);
+		makePhysicalObjControlAndAttachToRoot(reBoxg, 1.5f, 0.6f);
     }
 
  

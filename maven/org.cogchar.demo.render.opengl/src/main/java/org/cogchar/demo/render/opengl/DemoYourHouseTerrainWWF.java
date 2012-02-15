@@ -35,7 +35,7 @@ import com.jme3.util.SkyFactory;
 import java.io.File;
 import org.cogchar.render.opengl.app.DemoApp;
 
-public class DemoYourHouseTerrainWWF extends DemoApp {
+public class DemoYourHouseTerrainWWF extends UnfinishedDemoApp {
 
 	static String LOCAL_SCENE_PATH = "jme_asset_zips/wildhouse.zip";
 	static String HTTP_SCENE_PATH = "http://jmonkeyengine.googlecode.com/files/wildhouse.zip";

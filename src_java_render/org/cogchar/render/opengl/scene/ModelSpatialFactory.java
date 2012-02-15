@@ -19,22 +19,21 @@ import com.jme3.asset.AssetManager;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+import org.cogchar.render.opengl.bony.sys.RenderRegistryAware;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class ModelSpatialFactory {
-	AssetManager	myAssetManager;
+public class ModelSpatialFactory extends RenderRegistryAware {
 	
 	private static String OTO_MESH_DEFAULT = "Models/Oto/Oto.mesh.xml";
 	private static String ELEPHANT_MESH_DEFAULT = "Models/Elephant/Elephant.mesh.xml";
 	private static String SINBAD_MESH_DEFAULT = "Models/Sinbad/Sinbad.mesh.xml";
 
-	public ModelSpatialFactory(AssetManager assetMgr) {
-		myAssetManager = assetMgr;
-	}
+
 	public Spatial makeSpatialFromMeshPath(String meshPath) {
-		Spatial s = myAssetManager.loadModel(meshPath);	
+		AssetManager amgr = findJme3AssetManager(null);
+		Spatial s = amgr.loadModel(meshPath);	
 		return s;
 	}
 	public Spatial makeOtoSpatialFromDefaultPath() {

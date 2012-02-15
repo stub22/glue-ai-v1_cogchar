@@ -26,20 +26,21 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
-import org.cogchar.render.opengl.mesh.MeshFactoryFacade;
+import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
 
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class ProjectileLauncher {
-		private MatFactory		myMatFactory;
+	private MatFactory		myMatFactory;
 	
 	private float myProjectileSize = 1f;
 	private String myProjectileTexturePath;
 	private Material myProjectileMaterial;
 	private Sphere myProjectileSphereMesh;
-	private	MeshFactoryFacade	myMeshFF;
+	
+	private ShapeMeshFactory	myShapeMeshFactory;
 	
 	private static String 						
 			GEOM_PRJCT = "projectile",
@@ -51,8 +52,8 @@ public class ProjectileLauncher {
 							PRJCTL_GROWTH_FACTOR = 1.1f;
 					
 	
-	public ProjectileLauncher(MeshFactoryFacade meshFF, MatFactory mf) {
-		myMeshFF = meshFF;
+	public ProjectileLauncher(ShapeMeshFactory smf, MatFactory mf) {
+		myShapeMeshFactory = smf;
 		myMatFactory = mf;
 	}
 	
@@ -62,7 +63,7 @@ public class ProjectileLauncher {
 		// myProjectileCollisionShape = new SphereCollisionShape(1.0f);
 	}
 	public Sphere makeProjectileSphere () {
-		Sphere projSphere = myMeshFF.getShapeMF().makeSphereMesh(32, 32, 1.0f, true, false);
+		Sphere projSphere = myShapeMeshFactory.makeSphereMesh(32, 32, 1.0f, true, false);
 		projSphere.setTextureMode(TextureMode.Projected);
 		return projSphere;
 	}
