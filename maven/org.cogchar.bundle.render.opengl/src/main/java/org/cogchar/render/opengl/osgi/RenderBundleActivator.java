@@ -31,7 +31,9 @@ import org.slf4j.LoggerFactory;
 import org.cogchar.render.opengl.bony.demo.HumanoidPuppetApp;
 import org.cogchar.render.opengl.bony.gui.PanelUtils;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+import org.cogchar.render.opengl.bony.sys.AssetContext;
 import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
+import org.cogchar.render.opengl.bony.sys.RenderRegistryFuncs;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -53,16 +55,18 @@ public class RenderBundleActivator extends BundleActivatorBase {
 	@Override public void start(BundleContext bundleCtx) throws Exception {
 		
 		super.start(bundleCtx);
-		// IDE hints may show these symbols as undefined, but they should compile OK.		
+		// IDE hints may show these symbols (from transitive deps) as undefined, but they should compile OK with maven.
 		theLogger.info("******************* Fetching VerySimpleRegistry");
 
-		VerySimpleRegistry vsr = RegistryClient.getVerySimpleRegistry();
+		theLogger.info("******************* Registering assumed resource bundle with default AssetContext");
+		AssetContext defAssetCtx = RenderRegistryFuncs.findOrMakeAssetContext(null, null);
+		JmonkeyAssetLocation jmal = new JmonkeyAssetLocation(ResourceBundleActivator.class);
+		defAssetCtx.addAssetSource(null);
 		
-		theLogger.info("******************* Creating BonyConfigEmitter, HumanoidPuppetApp, and JmonkeyAssetLocation");
+		theLogger.info("******************* Creating BonyConfigEmitter, HumanoidPuppetApp");
 		BonyConfigEmitter bce = new BonyConfigEmitter();
 		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
-		JmonkeyAssetLocation jmal = new JmonkeyAssetLocation(ResourceBundleActivator.class);
-		bvcApp.addAssetSource(jmal);   
+		
 		theLogger.info("******************* Initializing VirtualCharacterPanel with canvas");
 		
 		VirtualCharacterPanel vcp = PanelUtils.makeVCPanel(bce, "FULL");

@@ -15,36 +15,23 @@
  */
 package org.cogchar.render.opengl.app;
 
-import java.util.List;
-import java.util.ArrayList;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
-import com.jme3.light.Light;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.UrlLocator;
 
 
-import com.jme3.font.BitmapText;
-import com.jme3.light.DirectionalLight;
-import com.jme3.math.Vector3f;
+import com.jme3.font.BitmapFont;
+import com.jme3.input.FlyByCamera;
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.opengl.mesh.DebugMeshLoader;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
-import org.cogchar.render.opengl.bony.world.DemoVectorFactory;
-import org.cogchar.render.opengl.scene.GeomFactory;
-import org.cogchar.render.opengl.scene.TextMgr;
-import org.cogchar.render.opengl.mesh.MeshFactoryFacade;
-import org.cogchar.render.opengl.optic.MatFactory;
-import org.cogchar.render.opengl.optic.OpticFacade;
-import org.cogchar.render.opengl.scene.SceneFacade;
+import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  *
  * @author Stu B. <www.texpedient.com>
  */
-public abstract class DemoApp extends CogcharRenderApp {
+public abstract class DemoApp<CRCT extends CogcharRenderContext> extends CogcharRenderApp<CRCT> implements AppStub {
 	static Logger theFallbackLogger = LoggerFactory.getLogger(DemoApp.class);
 	
 	private		Logger							myLogger;
@@ -53,10 +40,9 @@ public abstract class DemoApp extends CogcharRenderApp {
 
 	public DemoApp(DemoConfigEmitter ce) { 
 		myConfigEmitter = ce;
-		AppSettings settings = new AppSettings(ce.getAppSettingsDefloadFlag());
-		settings.setRenderer("LWJGL-OpenGL2"); // ce.getLWJGL_RendererName());		
-		setSettings(settings);
-
+		AppSettings someSettings = new AppSettings(ce.getAppSettingsDefloadFlag());
+		someSettings.setRenderer("LWJGL-OpenGL2"); // ce.getLWJGL_RendererName());		
+		setAppSettings(someSettings);
 	}
 	public DemoApp() {
 		this(new DemoConfigEmitter());
@@ -73,37 +59,13 @@ public abstract class DemoApp extends CogcharRenderApp {
 	public synchronized void setLogger(Logger l) {
 		myLogger = l;
 	}
-	protected MeshFactoryFacade  getMeshFF() {
-		return getRenderContext().getMeshFF();
+	public DemoConfigEmitter getConfigEmitter() { 
+		return myConfigEmitter;
 	}
-	protected OpticFacade getOpticFacade() { 
-		return getRenderContext().getOpticFacade();
+	public final void setAppSettings(AppSettings someSettings) { 
+		setSettings(someSettings);
+		getRenderContext().registerJMonkeyAppSettings(settings);		
 	}
-	protected SceneFacade getSceneFacade() { 
-		return getRenderContext().getSceneFacade();
-	}
-	protected MatFactory getMatMgr() {
-		return getOpticFacade().getMatMgr();
-	}
-	protected GeomFactory getGeomFactory() { 
-		return getSceneFacade().getGeomFactory();
-	}
-	protected TextMgr getTextMgr() {
-		return getSceneFacade().getTextMgr();
-	}
-	public DemoVectorFactory getDemoVectoryFactory() { 
-		return new DemoVectorFactory();
-	}
-
-
-	protected void initFonts() { 
-		// getContentsAssetLoader().
-		guiFont = assetManager.loadFont(myConfigEmitter.getFontPath());
-	}
-	protected void setAppSpeed(float val) {
-		speed = val;
-	}
-
 	protected void applySettings() { 
 	/* http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:appsettings
 	 * Every class that extends jme3.app.SimpleApplication has properties 
@@ -114,11 +76,10 @@ public abstract class DemoApp extends CogcharRenderApp {
 		 * 
 		 * 		See Jmonkey examples    "TestCanvas.java" and "AppHarness.java"  
 	 */
-		AppSettings settings = new AppSettings(myConfigEmitter.getAppSettingsDefloadFlag());
-		settings.setRenderer(myConfigEmitter.getLWJGL_RendererName());
-		settings.setWidth(myConfigEmitter.getCanvasWidth());
-		settings.setHeight(myConfigEmitter.getCanvasHeight());
-		setSettings(settings);			
+		AppSettings someSettings = new AppSettings(myConfigEmitter.getAppSettingsDefloadFlag());
+		someSettings.setRenderer(myConfigEmitter.getLWJGL_RendererName());
+		someSettings.setWidth(myConfigEmitter.getCanvasWidth());
+		someSettings.setHeight(myConfigEmitter.getCanvasHeight());
 	}
     @Override  public void initialize() {
 		/*
@@ -148,35 +109,26 @@ public abstract class DemoApp extends CogcharRenderApp {
 	}	
 
 	@Override public void simpleInitApp() {
-		theFallbackLogger.info("simpleInitApp() - START");
+		CRCT crc = getRenderContext();
+		crc.setAppStub(this);
 		super.simpleInitApp();
-		theFallbackLogger.info("%%%%%%% JmeSystem.isLowPermissions()=" + com.jme3.system.JmeSystem.isLowPermissions());
-		theFallbackLogger.info("Disabling confusing JDK-Logger warnings from UrlLocator");		
-		java.util.logging.Logger.getLogger(UrlLocator.class.getName()).setLevel(java.util.logging.Level.SEVERE);
-		
-		//		theFallbackLogger.info("Unregistering default ClasspathLocator, which may fail if Default.cfg was not read by JMonkey.");
-		// assetManager.unregisterLocator("/", com.jme3.asset.plugins.ClasspathLocator.class);	
-		
-		theFallbackLogger.info("simpleInitApp() - END");
 	}
-	protected void addLightToRootNode(Light l) {
-		getSceneFacade().getDeepSceneMgr().addLight(l);
-	}	
-	protected DirectionalLight makeDemoDirectionalLight() { 
-		Vector3f dir = getDemoVectoryFactory().getUsualLightDirection();
-		return getOpticFacade().getLightFactory().makeWhiteOpaqueDirectionalLight(dir);
+
+	@Override public void setAppSpeed(float val) {
+		speed = val;
 	}
-	protected void addDemoDirLightToRootNode() { 
-		addLightToRootNode(makeDemoDirectionalLight());
+	@Override public void setGuiFont(BitmapFont font) {
+		guiFont = font;
 	}
-	protected void setupLight() { 
-		addDemoDirLightToRootNode();
+	@Override public FlyByCamera getFlyCam() {
+		return flyCam;
 	}
+	
 	/** A centred plus sign to help the player aim. */
 	protected void initCrossHairs() {
-		getSceneFacade().getFlatOverlayMgr().detachAllOverlays();
-		BitmapText crossBT = getTextMgr().makeCrossHairs(2.0f, settings);
-		getSceneFacade().getFlatOverlayMgr().attachOverlaySpatial(crossBT);
+		getRenderContext().initCrossHairs(settings);
 	}	
+	
+	
 
 }

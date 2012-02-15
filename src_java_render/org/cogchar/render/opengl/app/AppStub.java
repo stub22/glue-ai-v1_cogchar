@@ -13,32 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.scene;
+package org.cogchar.render.opengl.app;
 
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import org.cogchar.render.opengl.bony.sys.RenderRegistryAware;
+import com.jme3.font.BitmapFont;
+import com.jme3.input.FlyByCamera;
+import com.jme3.system.AppSettings;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class FlatOverlayMgr extends RenderRegistryAware {
-	private Node	myAppGuiNode;
-
-	public void setParentNode(Node n) {
-		myAppGuiNode = n;
-	}
-	protected Node getParentNode() {  
-		if (myAppGuiNode == null) {
-			myAppGuiNode = findJme3RootOverlayNode(null);
-		}
-		return myAppGuiNode;
-	}
+public interface AppStub {
+	public void setAppSettings(AppSettings someSettings);
+	public void setGuiFont(BitmapFont font);
+	public void setAppSpeed(float appSpeed);
 	
-	public void detachAllOverlays() { 
-		getParentNode().detachAllChildren();
-	}
-	public void attachOverlaySpatial(Spatial s) {
-		getParentNode().attachChild(s);
-	}
+	//TODO:  Factor this into camera manager
+	
+	public FlyByCamera getFlyCam();
 }

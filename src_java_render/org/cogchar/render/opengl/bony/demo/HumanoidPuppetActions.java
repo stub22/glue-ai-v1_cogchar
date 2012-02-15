@@ -32,7 +32,7 @@ public class HumanoidPuppetActions {
     enum PlayerAction {
 
         TOGGLE_KIN_MODE {
-            void act(HumanoidPuppetApp app) {
+            void act(HumanoidRenderContext app) {
 				HumanoidRagdollWrapper hw = app.getHumdWrap();
 				hw.toggleKinMode();
             }
@@ -42,7 +42,7 @@ public class HumanoidPuppetActions {
             }
         },
         STAND_UP {
-            void act(HumanoidPuppetApp app) {
+            void act(HumanoidRenderContext app) {
 				HumanoidRagdollWrapper hw = app.getHumdWrap();
 				hw.standUp();
             }
@@ -51,7 +51,7 @@ public class HumanoidPuppetActions {
             }            
         },
         BOOGIE {
-            void act(HumanoidPuppetApp app) {
+            void act(HumanoidRenderContext app) {
 				HumanoidRagdollWrapper hw = app.getHumdWrap();
 				hw.boogie();
             }
@@ -60,7 +60,7 @@ public class HumanoidPuppetActions {
             }
         },        
         SHOOT {
-            void act(HumanoidPuppetApp app) {
+            void act(HumanoidRenderContext app) {
                 app.cmdShoot();
             }
             Trigger[] makeTriggers() { 
@@ -68,7 +68,7 @@ public class HumanoidPuppetActions {
             }            
         }, 
         BOOM {
-            void act(HumanoidPuppetApp app) {
+            void act(HumanoidRenderContext app) {
                 app.cmdBoom();
             }
             Trigger[] makeTriggers() { 
@@ -76,7 +76,7 @@ public class HumanoidPuppetActions {
             }            
         }, 
         BIGGER_PROJECTILE {
-            void act(HumanoidPuppetApp app) {
+            void act(HumanoidRenderContext app) {
                 app.getProjectileMgr().cmdBiggerProjectile();
             }
             Trigger[] makeTriggers() { 
@@ -84,7 +84,7 @@ public class HumanoidPuppetActions {
             }            
         },
         SMALLER_PROJECTILE {
-            void act(HumanoidPuppetApp app) {
+            void act(HumanoidRenderContext app) {
                 app.getProjectileMgr().cmdSmallerProjectile();
             }
             Trigger[] makeTriggers() { 
@@ -92,10 +92,10 @@ public class HumanoidPuppetActions {
             }            
         };  // Last enum constant code block gets a semicolon.
         
-        abstract void act(HumanoidPuppetApp app);
+        abstract void act(HumanoidRenderContext app);
         abstract Trigger[] makeTriggers();
     };
-    static void setupActionListeners(InputManager inputManager, final HumanoidPuppetApp app) {
+    static void setupActionListeners(InputManager inputManager, final HumanoidRenderContext app) {
         PlayerAction pavals[] = PlayerAction.values();
         String actionNames[] = new String[pavals.length];
         for (int pai =0; pai < pavals.length; pai++) { 

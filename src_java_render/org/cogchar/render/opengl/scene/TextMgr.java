@@ -19,19 +19,20 @@ import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.system.AppSettings;
+import org.cogchar.render.opengl.bony.sys.RenderRegistryAware;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class TextMgr {
-	private		AssetManager		myAssetMgr;
+public class TextMgr extends RenderRegistryAware {
+	
 	private		BitmapFont			myDefaultFont;
-	public TextMgr(AssetManager am) {
-		myAssetMgr = am;
-	}
+
+	
 	public BitmapFont getDefaultFont() { 
 		if (myDefaultFont == null) {
-			myDefaultFont = myAssetMgr.loadFont("Interface/Fonts/Default.fnt");
+			AssetManager amgr = findJme3AssetManager(null);
+			myDefaultFont = amgr.loadFont("Interface/Fonts/Default.fnt");
 		}
 		return myDefaultFont;
 	}

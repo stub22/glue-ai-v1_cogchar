@@ -34,24 +34,24 @@ import org.slf4j.LoggerFactory;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class BonyVirtualCharApp extends PhysicalApp {
+public abstract class BonyVirtualCharApp<BRCT extends BonyRenderContext> extends PhysicalApp<BRCT> {
 	static Logger theLogger = LoggerFactory.getLogger(BonyVirtualCharApp.class);
 	// private		AnimChannel				channel;
 
-	protected	BonyRenderContext				myContext;
+	// protected	BonyRenderContext				myContext;
     private     boolean                 myCanvasStartedFlag;
 
 	public BonyVirtualCharApp(BonyConfigEmitter bce) {
 		super(bce);
-		myContext = new BonyRenderContext(bce);
-		myContext.setApp(this);
+		//myContext = new BonyRenderContext(bce);
+		//myContext.setApp(this);
         myCanvasStartedFlag = false;
 	}
-	public BonyRenderContext getBonyRenderContext() { 
-		return myContext;
+	public BRCT getBonyRenderContext() { 
+		return getRenderContext();
 	}
 	public BonyConfigEmitter getBonyConfigEmitter() { 
-		return getBonyRenderContext().getBonyConfigEmitter();
+		return (BonyConfigEmitter) myConfigEmitter;
 	}
 
 	public void initCharPanelWithCanvas(VirtualCharacterPanel vcp) { 
@@ -62,7 +62,7 @@ public class BonyVirtualCharApp extends PhysicalApp {
 		//applySettings();
 		Canvas c = BonyCanvasFuncs.makeAWTCanvas(this);
 		vcp.setRenderCanvas(c);
-		myContext.setPanel(vcp);
+		getBonyRenderContext().setPanel(vcp);
 		// assetManager does not exist until start is called, triggering simpleInit callback.
 	}
 	public void startJMonkeyCanvas() { 
@@ -95,8 +95,10 @@ public class BonyVirtualCharApp extends PhysicalApp {
 		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is starting");
 		super.simpleInitApp();
 		// (Finally!) Perform actions that cannot be done until JME3 engine is running (which is now!)
-		myContext.initJMonkeyStuff(assetManager, rootNode, guiNode);
-		BonyCanvasFuncs.setupCameraLightAndViewport(myContext);
+		BRCT ctx = getBonyRenderContext();
+		// TODO:  Refactor out direct references to App into calls to context.
+		ctx.setApp(this);
+		BonyCanvasFuncs.setupCameraLightAndViewport(ctx);
 		//BonyCanvasFuncs.initScoreBoard(myContext);
 		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is finished");
 	}

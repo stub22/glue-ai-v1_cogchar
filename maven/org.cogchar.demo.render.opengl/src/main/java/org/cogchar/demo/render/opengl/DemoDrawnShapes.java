@@ -34,7 +34,7 @@ import com.jme3.scene.debug.Grid;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.debug.WireSphere;
 
-public class DemoDrawnShapes extends DemoApp {
+public class DemoDrawnShapes extends UnfinishedDemoApp {
     public static void main(String[] args){
         DemoDrawnShapes app = new DemoDrawnShapes();
         app.start();

@@ -16,20 +16,17 @@
 
 package org.cogchar.render.opengl.bony.demo;
 
-import org.cogchar.render.opengl.bony.gui.VirtCharPanel;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
-import org.cogchar.render.opengl.bony.app.BonyRagdollApp;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.jme3.system.AppSettings;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.render.opengl.app.DemoApp;
+import org.cogchar.render.opengl.bony.app.BonyStickFigureContext;
 import org.cogchar.render.opengl.bony.gui.PanelUtils;
 
 /**
@@ -107,7 +104,10 @@ VirtCharPanel.JFrame.closed, exiting
 		});
 		BonyVirtualCharApp app = bc.getApp();
 		app.startJMonkeyCanvas();
-		((BonyStickFigureApp) app).setScoringFlag(true);
+		
+		BonyStickFigureContext ctx = (BonyStickFigureContext) app.getBonyRenderContext();
+		
+		ctx.setScoringFlag(true);
 		// theLogger.info("*********************** AFTER FRAMING + STARTING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
 		theLogger.info("*********************** Frame width="  + jf.getWidth() + ", height=" + jf.getHeight());
 

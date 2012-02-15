@@ -31,8 +31,7 @@ import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyRenderContext extends CogcharRenderContext {
-	protected	BonyConfigEmitter		myConfigEmitter;
+public class BonyRenderContext extends DemoRenderContext {
 	protected	BonyVirtualCharApp		myApp;
 	protected	VirtualCharacterPanel	myPanel;   
 	protected	JFrame					myFrame;
@@ -41,7 +40,7 @@ public class BonyRenderContext extends CogcharRenderContext {
 	protected	FigureState				myFigureState;
 
 	public BonyRenderContext(BonyConfigEmitter bce) { 
-		myConfigEmitter = bce;
+		super(bce);
 	}
 	public BonyVirtualCharApp getApp() {
 		return myApp;
@@ -87,16 +86,16 @@ public class BonyRenderContext extends CogcharRenderContext {
 		myFigureState = fs;
 	}
 	public BonyConfigEmitter getBonyConfigEmitter() { 
-		return myConfigEmitter;
+		return (BonyConfigEmitter) getConfigEmiiter();
 	}
 	public void setMainCharURI(String mainCharURI) {
-		myConfigEmitter.setMainCharURI(mainCharURI);
+		getBonyConfigEmitter().setMainCharURI(mainCharURI);
 	}
 	public File getJointConfigFileForChar() {
-		return myConfigEmitter.getJointConfigFileForChar();
+		return getBonyConfigEmitter().getJointConfigFileForChar();
 	}
 	public Vector3f getConfigVector3f(String vectorURI) {
-		float[] xyz = myConfigEmitter.getNamedFloatVector(vectorURI);
+		float[] xyz = getBonyConfigEmitter().getNamedFloatVector(vectorURI);
 		return JmonkeyMathObjFactory.makeVector(xyz);
 	}
 }

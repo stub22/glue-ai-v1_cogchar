@@ -23,6 +23,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
+import org.cogchar.render.opengl.bony.sys.RenderRegistryAware;
 import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
 
 /**
@@ -31,16 +32,11 @@ import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
  * http://jmonkeyengine.org/wiki/doku.php/jme3:scenegraph_for_dummies - Slide 14 retrieved 2012-01-29.
  * @author Stu B. <www.texpedient.com>
  */
-public class GeomFactory {
+public class GeomFactory extends RenderRegistryAware {
 	public static final String GEOM_SPHERE = "Sphere";
 	public static final String GEOM_SOCCER_BALL = "Soccer ball";
-	
-	private		ShapeMeshFactory	myShapeFactory;
-			
-	public MatFactory	myMatMgr;
-	
-	public GeomFactory (MatFactory matMgr) {
-		myMatMgr = matMgr;
+		
+	public GeomFactory () {
 	}
 	public Geometry makeGeom(String name, Mesh mesh) {
 		return new Geometry(name, mesh);
@@ -56,11 +52,11 @@ public class GeomFactory {
 		return g;
 	}
 	public Geometry makeColoredUnshadedGeom(String name, Mesh mesh, ColorRGBA color, RigidBodyControl optRBC) {
-		Material mat = myMatMgr.makeColoredUnshadedMat(color);
+		Material mat = findOrMakeOpticMaterialFacade(null, null).makeColoredUnshadedMat(color);
 		return makeGeom(name, mesh, mat, optRBC);
 	}
 	public Geometry makeRandomlyColoredUnshadedGeom(String name, Mesh mesh, RigidBodyControl optRBC) {
-		Material mat = myMatMgr.makeRandomlyColoredUnshadedMat();
+		Material mat = findOrMakeOpticMaterialFacade(null, null).makeRandomlyColoredUnshadedMat();
 		return makeGeom(name, mesh, mat, optRBC);
 	}		
 	
