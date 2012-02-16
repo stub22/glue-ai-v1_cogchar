@@ -108,16 +108,17 @@ public class PhysicsStuffBuilder extends RenderRegistryAware {
 		//movable spheres
 		makeSpheres(ballMat);
 		
-		/*
+		
         //immovable Box with mesh collision shape
         Box box = new Box(1, 1, 1);
         Geometry boxGeometry = new Geometry("Box", box);
-        boxGeometry.setMaterial(material);
+        boxGeometry.setMaterial(ballMat);
         boxGeometry.setLocalTranslation(4, 1, 2);
         boxGeometry.addControl(new RigidBodyControl(new MeshCollisionShape(box), 0));
-        rootNode.attachChild(boxGeometry);
-        space.add(boxGeometry);		
-		 */
+        getParentNode().attachChild(boxGeometry);
+		PhysicsSpace spc = getPhysicsSpace();
+        spc.add(boxGeometry);		
+		 
 	}
 
 	public void addFloor(boolean rigidBodyPhysFlag, Material floorMat) {
@@ -132,8 +133,8 @@ public class PhysicsStuffBuilder extends RenderRegistryAware {
 			floorGeometry.addControl(new RigidBodyControl(new PlaneCollisionShape(plane), 0));
 		}
 		floorGeometry.addControl(new RigidBodyControl(0));
-		myParentNode.attachChild(floorGeometry);
-		myPhysSpc.add(floorGeometry);
+		getParentNode().attachChild(floorGeometry);
+		getPhysicsSpace().add(floorGeometry);
 	}
 
 	
