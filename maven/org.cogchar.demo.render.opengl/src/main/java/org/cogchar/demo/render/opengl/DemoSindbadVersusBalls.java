@@ -40,7 +40,7 @@ import org.cogchar.render.opengl.app.PhysicalApp;
 import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
 import org.cogchar.render.opengl.bony.sys.DemoRenderContext;
 
-/**
+/**  From  jme3test.bullet.TestPhysicsCharacter by normenhansen and zathras.
  * A walking physical character followed by a 3rd person camera. (No animation.)
  */
 public class DemoSindbadVersusBalls extends PhysicalApp {
@@ -77,6 +77,7 @@ public class DemoSindbadVersusBalls extends PhysicalApp {
 	class DSVB_RenderContext extends DemoRenderContext implements ActionListener {
 
 		@Override public void completeInit() {
+			super.completeInit();
 			initSoccerTestPhysics();
 
 			setupKeys();
