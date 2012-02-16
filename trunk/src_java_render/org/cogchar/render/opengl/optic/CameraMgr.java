@@ -23,27 +23,35 @@ import java.util.Map;
  * @author Stu B. <www.texpedient.com>
  */
 public class CameraMgr {
+
 	public enum CommonCameras {
+
 		DEFAULT,
 		TOP_VIEW,
 		WIDE_VIEW
 	}
 	private Map<String, Camera> myCamerasByName = new HashMap<String, Camera>();
+
 	public Camera cloneCamera(Camera orig) {
 		return orig.clone();
 	}
+
 	public void registerNamedCamera(String name, Camera cam) {
+		// System.out.println("**********######################*********************###############*************** cameraMgr: " + this + " - storing cam " + cam + " at " + name);
 		myCamerasByName.put(name, cam);
 	}
+
 	public Camera getNamedCamera(String name) {
-		return myCamerasByName.get(name);
+		Camera cam = myCamerasByName.get(name);
+		// System.out.println("**********######################*********************###############*************** cameraMgr: " + this + " - found cam " + cam + " at " + name);		
+		return cam;
 	}
-	
-	public void registerCommonCamera(CommonCameras id,  Camera cam) {
+
+	public void registerCommonCamera(CommonCameras id, Camera cam) {
 		registerNamedCamera(id.name(), cam);
 	}
+
 	public Camera getCommonCamera(CommonCameras id) {
 		return getNamedCamera(id.name());
 	}
-	
 }
