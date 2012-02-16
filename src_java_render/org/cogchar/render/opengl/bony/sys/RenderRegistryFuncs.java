@@ -214,7 +214,7 @@ public class RenderRegistryFuncs extends BasicDebugger {
 			if (result == null) {
 				result = maker.makeObj();
 				Description regDesc = maker.getRegistryDesc(result, objName);
-				vsr.registerObject(vsr, regDesc);
+				vsr.registerObject(result, regDesc);
 			}
 		} catch (Throwable t) {
 			theLogger.error("findOrMakeUniqueNamedObject got finder or maker exception: ", t);
@@ -228,15 +228,19 @@ public class RenderRegistryFuncs extends BasicDebugger {
 	}
 	/**
 	 * Further simplified "findOrMake" method, with longer name!  Uses objClaz.newInstance() as the maker.
+	 * 
 	 * @param <OT>
 	 * @param objClaz
 	 * @param objName
 	 * @return Found object OR made (and now registered) object OR null on error.
 	 */
-	protected static <OT> OT  findOrMakeUniqueNamedObjectWithDefCons(final Class<OT> objClaz, String objName) {	
+	protected static <OT> OT  findOrMakeUniqueNamedObjectWithDefCons(final Class<OT> objClaz, final String objName) {	
+		// TODO:  Optimization:   Keep a cache of these DefCons makers, to avoid unnecessary object construction
+		// (of the anon-class Makers themselves), which is happening on every call to this method).
 		return findOrMakeUniqueNamedObject(objClaz, objName, new BasicMaker<OT>() {
 			@Override public OT makeObj() {
 				try {
+					theLogger.info("Making new object named " + objName + " using default constructor of " + objClaz);
 					return objClaz.newInstance();
 				} catch (InstantiationException ie) {
 					theLogger.error("findOrMakeUniqueNamedObjectWithDefCons got default constructor exception: ", ie);
