@@ -17,7 +17,6 @@
 package org.cogchar.render.opengl.bony.demo;
 
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

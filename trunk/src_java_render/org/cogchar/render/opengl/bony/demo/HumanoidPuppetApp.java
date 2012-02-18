@@ -22,34 +22,19 @@
 
 package org.cogchar.render.opengl.bony.demo;
 
-import com.jme3.animation.Bone;
 import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
-import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 
-import com.jme3.scene.Node;
-import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
 
-import java.util.List;
 import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.render.opengl.bony.app.BonyStickFigureApp;
-import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
-import org.cogchar.render.opengl.bony.model.HumanoidBoneDesc;
-import org.cogchar.render.opengl.bony.state.BoneState;
-import org.cogchar.render.opengl.bony.state.FigureState;
-import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
-import org.cogchar.render.opengl.bony.model.HumanoidFigureModule;
-import org.cogchar.render.opengl.optic.LightFactory;
+import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  */
-public class HumanoidPuppetApp extends BonyStickFigureApp<HumanoidRenderContext> { // DemoApp {
+public class HumanoidPuppetApp extends BonyVirtualCharApp<HumanoidRenderContext> { // DemoApp {
     private final static Logger		theLogger = LoggerFactory.getLogger(HumanoidPuppetApp.class);
 	private HumanoidRagdollWrapper	myHumanoidWrapper;
 
