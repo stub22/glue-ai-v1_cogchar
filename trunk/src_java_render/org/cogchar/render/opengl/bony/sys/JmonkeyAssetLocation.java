@@ -23,33 +23,31 @@ import java.net.URL;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/**
+
+/** Represents a classloader asset source that we want to access through the JME3 
+ *  UrlLocator mechanism, usually in an OSGi context.  Pass any well known class
+ *  from that ClassLoader to the constructor of this object, and then register
+ *  this JmonkeyAssetLocation with an AssetContext.  That registration should be
+ *  done before CogcharRenderContext.completeInit(), which turns this object 
+ *  into an actual registered JME3 UrlLocator.
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 public class JmonkeyAssetLocation {
 	static Logger theLogger = LoggerFactory.getLogger(JmonkeyAssetLocation.class);
-//	private AssetManager	myAssetMgr;
-//	private ClassLoader		mySavedClassLoader;
+
 	private	Class			myResourceMarkerClass;
 	private URL				myHackyRootURL;
-//	private	Bundle			myHackyBundle;
 	
 	public JmonkeyAssetLocation(Class resourceMarkerClass) {
 		myResourceMarkerClass = resourceMarkerClass;
 	}
-/*
-	public void setAssetManager(AssetManager assetMgr) {
-		myAssetMgr = assetMgr;
-	}
-	public AssetManager getAssetManager() { 
-		return myAssetMgr;
-	}
-*/
+
 	public ClassLoader getClassLoader() { 
 		return myResourceMarkerClass.getClassLoader();
 	}
 	public void resolve() { 
-
+		theLogger.debug("resolve() currently does nothing.");
 	}
 	public void registerLocators(AssetManager assetMgr) {
 		URL hackyRootURL = getHackyRootURL();
@@ -62,12 +60,7 @@ public class JmonkeyAssetLocation {
 		}
 		
 	}
-	/*
-	public void setHackyRootURL(URL url) { 
-		myHackyRootURL = url;
-	}
-	 * 
-	 */
+
 	public URL getHackyRootURL() {
 		
 		if (myHackyRootURL == null) {
@@ -76,51 +69,23 @@ public class JmonkeyAssetLocation {
 			
 			URL resURL = cl.getResource(resourceRootPath);
 			theLogger.info("ClassLoader[" + cl + "]" + " lookup for resourcePath[" + resourceRootPath + "] returned: " + resURL);
-			/*
-			if (resURL == null) {
-				theLogger.info("Specific lookup failed, trying for systemResource");
-				resURL = ClassLoader.getSystemResource("/");
-			}
-			 * 
-			 */
 			myHackyRootURL = resURL;
 		}
 		return myHackyRootURL;
 	}
-	/*
-	public Bundle getHackyBundle() { 
-		return myHackyBundle;
-	}
-	public void setHackyBundle(Bundle b) { 
-		myHackyBundle = b;
-	}
-	 * 
-	 */
-/*
-	public void installClassLoader(boolean verbose)  {
-		mySavedClassLoader = Thread.currentThread().getContextClassLoader();
-		if (verbose) {
-			theLogger.info("Saved old class loader: " + mySavedClassLoader);
+	@Override public String toString() {
+		String desc = "";
+		if (myResourceMarkerClass != null) {
+			desc = myResourceMarkerClass.getName();
 		}
-		try {
-			ClassLoader localLoader = myResourceMarkerClass.getClassLoader();
-			if (verbose) {
-				theLogger.info("Setting thread class loader to local loader: " + localLoader);
-			}
-			Thread.currentThread().setContextClassLoader(localLoader);
-		} catch (Throwable t) {
-			theLogger.error("problem in installClassLoader", t);
-		}
-	}
-	public void restoreClassLoader()  {
-		Thread.currentThread().setContextClassLoader(mySavedClassLoader); 
-	}
+		return "JmonkeyAssetLocation[" + desc + "]";
+	}	
 
- */
-	/*  This doesn't work unless we are sure there are no "Common/..." resources
-	 * on another classLoader, which may be needed by our model.  Don't trust
-	 * jME3 warnings about "can't locate X" <- this may mean "can't locate
-	 * something that inferred (possibly hardcoded)  sub-reqt of X", e.g.
+	/* Old technique, kinda works, BUT, only when there are no foreign (i.e.
+	 * satisfied by a different classloader) resource* references embedded 
+	 * in the loaded assets, e.g. "Common/..." resources.    Don't trust
+	 * jME3 warnings about "can't locate X"! <- This may mean "I found X,
+	 * but I can't find inferred (possibly hardcoded)  sub-reqt of X", e.g.
 	 * Common/MatDefs/Light/Lighting.j3md
 	 * See:
 		 http://jmonkeyengine.org/groups/general-2/forum/topic/successes-and-challenges-using-jme3-with-osgi-classpaths-and-native-libraries#post-156958
@@ -141,11 +106,5 @@ public class JmonkeyAssetLocation {
 	}
 	 * 
 	 */
-	@Override public String toString() {
-		String desc = "";
-		if (myResourceMarkerClass != null) {
-			desc = myResourceMarkerClass.getName();
-		}
-		return "JmonkeyAssetLocation[" + desc + "]";
-	}
+
 }
