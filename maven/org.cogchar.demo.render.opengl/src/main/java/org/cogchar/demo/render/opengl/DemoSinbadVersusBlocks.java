@@ -75,6 +75,7 @@ public class DemoSinbadVersusBlocks extends PhysicalApp {
 	class DSVB_RenderContext extends DemoRenderContext implements AnimEventListener, ActionListener {
 
 		@Override public void completeInit() {
+			super.completeInit();
 			
 			setupKeys();
 

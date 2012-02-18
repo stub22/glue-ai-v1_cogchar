@@ -88,7 +88,8 @@ public class DemoYouBowlAtSinbad extends PhysicalApp {
 	class DYBAS_RenderContext extends DemoRenderContext implements RagdollCollisionListener, AnimEventListener {
 
 		@Override public void completeInit() {
-
+			super.completeInit();
+			
 			initCrossHairs(settings);
 			initMaterial();
 
