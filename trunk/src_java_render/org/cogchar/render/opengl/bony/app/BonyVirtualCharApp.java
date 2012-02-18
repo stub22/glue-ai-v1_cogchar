@@ -97,7 +97,7 @@ public abstract class BonyVirtualCharApp<BRCT extends BonyRenderContext> extends
 		// (Finally!) Perform actions that cannot be done until JME3 engine is running (which is now!)
 		BRCT ctx = getBonyRenderContext();
 		// TODO:  Refactor out direct references to App into calls to context.
-		ctx.setApp(this);
+
 		BonyCanvasFuncs.setupCameraLightAndViewport(ctx);
 		//BonyCanvasFuncs.initScoreBoard(myContext);
 		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is finished");
