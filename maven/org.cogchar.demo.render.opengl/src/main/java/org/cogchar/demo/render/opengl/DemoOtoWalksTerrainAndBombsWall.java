@@ -111,8 +111,9 @@ public class DemoOtoWalksTerrainAndBombsWall extends UnfinishedDemoApp implement
         app.start();
     }
 
-    @Override
-    public void simpleInitApp() {
+    @Override public void simpleInitApp() {
+		super.simpleInitApp();
+		
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);

@@ -30,6 +30,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import org.cogchar.render.opengl.app.DemoApp;
 import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
+import org.cogchar.render.opengl.bony.sys.DemoRenderContext;
 
 public class DemoMultiViews extends DemoApp {
 
@@ -45,9 +46,12 @@ public class DemoMultiViews extends DemoApp {
 
 	//public void simpleInitApp() {
 	//super.simpleInitApp();
-	class DMV_RenderContext extends CogcharRenderContext {
+	class DMV_RenderContext extends DemoRenderContext {
 
 		@Override public void completeInit() {
+			
+			super.completeInit();
+			
 			// create the geometry and attach it
 			Geometry teaGeom = (Geometry) assetManager.loadModel("Models/Teapot/Teapot.obj");
 			teaGeom.scale(3);
