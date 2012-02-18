@@ -25,18 +25,18 @@ import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.app.AppStub;
+import org.cogchar.render.opengl.bony.app.BonyStickFigureContext;
 import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
 import org.cogchar.render.opengl.bony.model.HumanoidFigureModule;
 import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
 import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
-import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class HumanoidRenderContext extends BonyRenderContext {
+public class HumanoidRenderContext extends BonyStickFigureContext {
 	private HumanoidRagdollWrapper		myHumanoidWrapper;
 	private ProjectileLauncher			myPrjctlMgr;
 	

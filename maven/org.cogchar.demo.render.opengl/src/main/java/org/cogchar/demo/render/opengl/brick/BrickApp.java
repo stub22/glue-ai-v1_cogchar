@@ -44,7 +44,6 @@ public class BrickApp extends DemoApp {
 
 	@Override protected CogcharRenderContext makeCogcharRenderContext() {
 		BA_RenderContext rc = new BA_RenderContext();
-		rc.initStuff();
 		return rc;
 	}
 //		@Override public void simpleInitApp() {
@@ -52,7 +51,7 @@ public class BrickApp extends DemoApp {
 
 	class BA_RenderContext extends CogcharRenderContext {
 
-		public void initStuff() {
+		@Override public void completeInit() {
 
 			myPhysAppState = new BulletAppState();
 
