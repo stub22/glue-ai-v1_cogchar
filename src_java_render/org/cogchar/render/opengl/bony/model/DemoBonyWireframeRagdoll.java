@@ -21,10 +21,6 @@
 package org.cogchar.render.opengl.bony.model;
 
 
-import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
-import com.jme3.asset.AssetManager;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -37,10 +33,9 @@ import com.jme3.input.MouseInput;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
 
 
-public class DemoBonyWireframeRagdoll // extends SimpleApplication 
+public class DemoBonyWireframeRagdoll extends RenderModule // extends SimpleApplication 
 		implements ActionListener {
 	
 	public static final String PULL_RAGDOLL_UP = "Pull ragdoll up";
@@ -70,6 +65,9 @@ public class DemoBonyWireframeRagdoll // extends SimpleApplication
  //   protected InputManager inputManager;
 
 
+	public DemoBonyWireframeRagdoll() { 
+		myRunDebugModulus = 100;
+	}
 	public void registerTraditionalInputHandlers(InputManager inputManager) {
 		inputManager.addMapping(PULL_RAGDOLL_UP, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 		inputManager.addListener(this, PULL_RAGDOLL_UP);
@@ -149,6 +147,8 @@ public class DemoBonyWireframeRagdoll // extends SimpleApplication
 		joint.setLimit(1f, 1f, 0);
 		return joint;
 	}
+
+
 	public static interface Doer {
 		void doIt();
 	}
@@ -172,8 +172,7 @@ public class DemoBonyWireframeRagdoll // extends SimpleApplication
 	public void setDanceDoer(Doer d) {
 		myDanceDoer = d;
 	}
-
-	public void doSimpleUpdate(float tpf) {
+	@Override protected void doRenderCycle(long runSeqNum, float timePerFrame) {
 		if (myApplyForceFlag) {
 			myShouldersNode.getControl(RigidBodyControl.class).applyForce(myUpForceVec, Vector3f.ZERO);
 		}

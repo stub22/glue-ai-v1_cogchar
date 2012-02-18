@@ -16,10 +16,13 @@
 package org.cogchar.render.opengl.bony.app;
 
 import com.jme3.animation.AnimControl;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.input.InputManager;
 import com.jme3.scene.Node;
 import java.util.List;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
 import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
 import org.cogchar.render.opengl.bony.model.StickFigureTwister;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
@@ -30,7 +33,8 @@ import org.cogchar.render.opengl.scene.ModelSpatialFactory;
  */
 public class BonyStickFigureContext extends BonyRenderContext {
 	
-	protected StickFigureTwister		myTwister;	
+	protected	StickFigureTwister			myTwister;	
+	private		DemoBonyWireframeRagdoll	myExtraRagdoll;		
 	
 	public BonyStickFigureContext(BonyConfigEmitter bce) { 
 		super(bce);
@@ -46,7 +50,8 @@ public class BonyStickFigureContext extends BonyRenderContext {
 				myTwister.setBodyController(bodCont);
 			}
 			attachModule(myTwister);
-		}		
+		}
+		initExtraRagdoll();
 	}	
 	public boolean initStickFigureModel() {
 		// test1Node.setLocalScale(0.5f);
@@ -85,5 +90,15 @@ public class BonyStickFigureContext extends BonyRenderContext {
 	}		
 	public void setScoringFlag(boolean f) {
 		myTwister.setScoringFlag(f);
-	}	
+	}
+	public boolean initExtraRagdoll() { 
+		myExtraRagdoll = new DemoBonyWireframeRagdoll();
+		BulletAppState bulletAppState = getBulletAppState();
+		Node rootNode = findJme3RootDeepNode(null);
+		myExtraRagdoll.realizeDollAndAttach(rootNode, bulletAppState);
+		InputManager imgr = findJme3InputManager(null);
+		myExtraRagdoll.registerTraditionalInputHandlers(imgr);
+		attachModule(myExtraRagdoll);
+		return true;
+	}
 }
