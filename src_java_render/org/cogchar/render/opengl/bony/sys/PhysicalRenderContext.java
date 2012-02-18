@@ -28,7 +28,7 @@ import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
 public class PhysicalRenderContext extends ModularRenderContext {
 	/**
 	 * 
-	 * TODO:  Register the PhysicsSpace and PhysicsStuff in RenderRegistry,
+	 * TODO:  Register the PhysicsSpace and PhysicsStuff-builder in RenderRegistry,
 	 * instead of holding these instance variables.
 	 */
 	

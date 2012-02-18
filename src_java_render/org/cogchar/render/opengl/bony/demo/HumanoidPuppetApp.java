@@ -65,7 +65,9 @@ public class HumanoidPuppetApp extends BonyStickFigureApp<HumanoidRenderContext>
 	}
 	@Override protected HumanoidRenderContext makeCogcharRenderContext() {
 		BonyConfigEmitter bce = getBonyConfigEmitter();
-		return new HumanoidRenderContext(bce);
+		HumanoidRenderContext hrc = new HumanoidRenderContext(bce);
+		hrc.setApp(this);
+		return hrc;
 	}
 	
 
