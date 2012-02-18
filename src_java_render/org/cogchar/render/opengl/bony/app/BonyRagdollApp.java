@@ -19,14 +19,12 @@ import com.jme3.bullet.BulletAppState;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 
  * @author Stu B. <www.texpedient.com>
  */
 @Deprecated 
-public abstract class BonyRagdollApp<BRCT extends BonyRenderContext> extends BonyStickFigureApp<BRCT> {
+public abstract class BonyRagdollApp<BRCT extends BonyRenderContext> extends BonyVirtualCharApp<BRCT> {
 
 	public BonyRagdollApp(BonyConfigEmitter bce) { 
 		super (bce); 
