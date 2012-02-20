@@ -15,7 +15,7 @@
  */
 package org.cogchar.render.opengl.bony.demo;
 
-import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
+import org.cogchar.render.opengl.bony.model.HumanoidFigure;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;

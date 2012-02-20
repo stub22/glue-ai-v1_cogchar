@@ -24,7 +24,7 @@ public class HumanoidBoneConfig {
 		HumanoidBoneDesc hbd = new HumanoidBoneDesc(spatialName);
 		myBoneDescs.add(hbd);
 	}
-	public void attachRagdollBones(HumanoidRagdollWrapper hrw) { 
+	public void attachRagdollBones(HumanoidFigure hrw) { 
 		for (HumanoidBoneDesc hbd : myBoneDescs) {
 			hrw.attachRagdollBone(hbd);
 		}

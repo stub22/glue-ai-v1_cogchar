@@ -22,7 +22,7 @@
 
 package org.cogchar.render.opengl.bony.demo;
 
-import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
+import org.cogchar.render.opengl.bony.model.HumanoidFigure;
 
 
 
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class HumanoidPuppetApp extends BonyVirtualCharApp<HumanoidRenderContext> { // DemoApp {
     private final static Logger		theLogger = LoggerFactory.getLogger(HumanoidPuppetApp.class);
-	private HumanoidRagdollWrapper	myHumanoidWrapper;
+	private HumanoidFigure	myHumanoidWrapper;
 
 
 
