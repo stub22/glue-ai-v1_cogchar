@@ -22,18 +22,18 @@ import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidFigureModule extends RenderModule {
-	private HumanoidRagdollWrapper	myHumanoidWrapper;
+	private HumanoidFigure	myFigure;
 	
 	private BonyRenderContext  myBRC;
 	
-	public HumanoidFigureModule(HumanoidRagdollWrapper hw, BonyRenderContext brc) {
-		myHumanoidWrapper = hw;
+	public HumanoidFigureModule(HumanoidFigure hw, BonyRenderContext brc) {
+		myFigure = hw;
 		myBRC = brc;
 		myRunDebugModulus = 100;
 	}
 	
 	@Override protected void doRenderCycle(long runSeqNum, float tpf) {
 		FigureState fs = myBRC.getFigureState();
-		myHumanoidWrapper.applyFigureState(fs);
+		myFigure.applyFigureState(fs);
 	}
 }

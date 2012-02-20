@@ -57,15 +57,15 @@ import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEventListener {
+public class HumanoidFigure implements RagdollCollisionListener, AnimEventListener {
 	private Node myHumanoidModelNode;
-	private KinematicRagdollControl myHumanoidKRC;
+	protected  KinematicRagdollControl myHumanoidKRC;
 	private AnimChannel myHumanoidAnimChannel;
-	private	HumanoidBoneConfig	myHumanoidBoneConfig;
+	protected	HumanoidBoneConfig	myHumanoidBoneConfig;
 	// Skeleton is used for direct access to the graphic "spatial" bones of JME3 (bypassing JBullet physics bindings). 
 	private	Skeleton			myHumanoidSkeleton;
 	private BonyConfigEmitter	myBonyConfigEmitter;
-	private float myPhysicsWigglePhase = 0.0f;	
+
 	public static String 	
 			ANIM_STAND_FRONT = "StandUpFront",
 			ANIM_STAND_BACK = "StandUpBack",
@@ -76,7 +76,7 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	private static float DEFAULT_ANIM_BLEND_RATE = 0.5f;
 	private static float KRC_WEIGHT_THRESHOLD = 0.5f;
 
-	public HumanoidRagdollWrapper(BonyConfigEmitter bce) { 
+	public HumanoidFigure(BonyConfigEmitter bce) { 
 		myBonyConfigEmitter = bce;
 	}
 	public HumanoidBoneConfig getHBConfig() {
@@ -198,52 +198,7 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 		myHumanoidKRC.addBoneName(hbd.getSpatialName());
 	}
 
-	public void wiggleUsingPhysics(float tpf) { 
-		wiggleUsingPhysicsMotors(myHumanoidBoneConfig, tpf);
-	}
-	public void wiggleUsingPhysicsMotors(HumanoidBoneConfig hbc, float tpf) {
-		myPhysicsWigglePhase += tpf / 10.0f;
-		if (myPhysicsWigglePhase > 1.0f) {
-			System.out.println("************ Wiggle phase reset ------ hmmmm, OK");
-			myPhysicsWigglePhase = 0.0f;
-		}
-		float amplitude = 5.0f;
-		float wigglePhaseRad = FastMath.TWO_PI  * myPhysicsWigglePhase;
-		float wiggleVel = amplitude * FastMath.sin2(wigglePhaseRad);
 
-		if (myPhysicsWigglePhase < 0.5) {
-			wiggleVel = amplitude;
-		} else {
-			wiggleVel = -1.0f * amplitude;
-		}
-		wiggleAllBonesUsingRotMotors(hbc, wiggleVel);
-		// Unused bone lookups
-		Bone headBone = myHumanoidSkeleton.getBone("Head");
-		Bone footLeftBone = myHumanoidSkeleton.getBone("Foot.L");
-		// System.out.println("Found head bone: " + headBone);
-		// System.out.println("Found left foot: " + footLeftBone);
-	}
-	private void wiggleAllBonesUsingRotMotors(HumanoidBoneConfig hbc, float wiggleVel) {
-		List<HumanoidBoneDesc> descs = hbc.getBoneDescs();
-		for(HumanoidBoneDesc hbd : descs) {
-			String boneName = hbd.getSpatialName();
-			// Uncomment to wigle just the "Head" bone.
-			//if (!boneName.equals("Head")) {
-			//	continue;
-			//}
-			// Don't have a direct need for the PRB yet, but we're sure to later!
-			PhysicsRigidBody prb = myHumanoidKRC.getBoneRigidBody(boneName);
-			SixDofJoint boneJoint = myHumanoidKRC.getJoint(boneName);
-			RotationalLimitMotor xRotMotor =  boneJoint.getRotationalLimitMotor(0);
-			RotationalLimitMotor yRotMotor =  boneJoint.getRotationalLimitMotor(1);
-			RotationalLimitMotor zRotMotor =  boneJoint.getRotationalLimitMotor(2);
-			
-			xRotMotor.setTargetVelocity(wiggleVel);
-			yRotMotor.setTargetVelocity(wiggleVel);
-			zRotMotor.setTargetVelocity(wiggleVel);
-		}
-	
-	}
 	public void applyFigureState(FigureState fs) {
 		if (fs == null) {
 			return;
@@ -268,6 +223,11 @@ public class HumanoidRagdollWrapper implements RagdollCollisionListener, AnimEve
 	
 	}	
 	/*
+	 * 
+	 * 		// Unused bone lookups
+		Bone headBone = myHumanoidSkeleton.getBone("Head");
+		Bone footLeftBone = myHumanoidSkeleton.getBone("Foot.L");
+
 	 *        
 	 joint.getRotationalLimitMotor(0).setHiLimit(maxX);
         joint.getRotationalLimitMotor(0).setLoLimit(minX);

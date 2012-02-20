@@ -28,7 +28,7 @@ import org.cogchar.render.opengl.app.AppStub;
 import org.cogchar.render.opengl.bony.app.BonyStickFigureContext;
 import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
 import org.cogchar.render.opengl.bony.model.HumanoidFigureModule;
-import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
+import org.cogchar.render.opengl.bony.model.HumanoidFigure;
 import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
 import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
@@ -37,12 +37,12 @@ import org.cogchar.render.opengl.optic.CameraMgr;
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidRenderContext extends BonyStickFigureContext {
-	private HumanoidRagdollWrapper		myHumanoidWrapper;
+	private HumanoidFigure		myHumanoidWrapper;
 	private ProjectileLauncher			myPrjctlMgr;
 	
 	public HumanoidRenderContext(BonyConfigEmitter bce) {
 		super(bce);
-		myHumanoidWrapper = new HumanoidRagdollWrapper(bce);
+		myHumanoidWrapper = new HumanoidFigure(bce);
 	}
 	@Override public void completeInit() { 
 		super.completeInit();
@@ -66,7 +66,7 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 	public ProjectileLauncher getProjectileMgr() { 
 		return myPrjctlMgr;
 	}
-	public HumanoidRagdollWrapper getHumdWrap()  {
+	public HumanoidFigure getHumdWrap()  {
 		return myHumanoidWrapper;
 	}
 

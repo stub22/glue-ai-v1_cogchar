@@ -16,7 +16,7 @@
 
 package org.cogchar.render.opengl.bony.demo;
 
-import org.cogchar.render.opengl.bony.model.HumanoidRagdollWrapper;
+import org.cogchar.render.opengl.bony.model.HumanoidFigure;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -33,7 +33,7 @@ public class HumanoidPuppetActions {
 
         TOGGLE_KIN_MODE {
             void act(HumanoidRenderContext app) {
-				HumanoidRagdollWrapper hw = app.getHumdWrap();
+				HumanoidFigure hw = app.getHumdWrap();
 				hw.toggleKinMode();
             }
             Trigger[] makeTriggers() { 
@@ -43,7 +43,7 @@ public class HumanoidPuppetActions {
         },
         STAND_UP {
             void act(HumanoidRenderContext app) {
-				HumanoidRagdollWrapper hw = app.getHumdWrap();
+				HumanoidFigure hw = app.getHumdWrap();
 				hw.standUp();
             }
             Trigger[] makeTriggers() { 
@@ -52,7 +52,7 @@ public class HumanoidPuppetActions {
         },
         BOOGIE {
             void act(HumanoidRenderContext app) {
-				HumanoidRagdollWrapper hw = app.getHumdWrap();
+				HumanoidFigure hw = app.getHumdWrap();
 				hw.boogie();
             }
             Trigger[] makeTriggers() { 
