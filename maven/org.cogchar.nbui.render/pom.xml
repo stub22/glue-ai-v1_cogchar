@@ -106,7 +106,11 @@
 			<type>jar</type>
 			<version>${project.version}</version>
 		</dependency>
-		
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.bundle.render.resources</artifactId>
+            <version>${project.version}</version>
+        </dependency>		
 		<dependency>
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<groupId>org.appdapter</groupId>
