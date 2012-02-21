@@ -26,10 +26,13 @@ import com.jme3.scene.Node;
 public class RenderRegistryAware extends RenderRegistryFuncs {
 	
 
+	/*
 	public static void registerAssetManager(AssetManager assetMgr, String optName) {
 		AssetContext ac = findOrMakeAssetContext(null, null);
 		ac.setAssetManager(assetMgr);
 	}
+	 * 
+	 */
 	public static void propagateRootNode(Node rootNode) {
 		// Let's start with just the default one.
 	//	SceneFacade sf = getSceneFacade(null);

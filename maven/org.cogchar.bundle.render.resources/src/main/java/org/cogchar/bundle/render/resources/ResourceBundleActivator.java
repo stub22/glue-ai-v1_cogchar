@@ -1,12 +1,13 @@
 package org.cogchar.bundle.render.resources;
 
-import java.net.URL;
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.cogchar.render.opengl.bony.sys.AssetContext;
+import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
+import org.cogchar.render.opengl.bony.sys.RenderRegistryFuncs;
 
 public class ResourceBundleActivator extends BundleActivatorBase {
 	static Logger theLogger = LoggerFactory.getLogger(ResourceBundleActivator.class);
@@ -18,6 +19,10 @@ public class ResourceBundleActivator extends BundleActivatorBase {
 	}	
 	@Override public void start(BundleContext bundleCtx) throws Exception {
 		super.start(bundleCtx);
+		theLogger.info("******************* Registering assumed resource bundle with default AssetContext");
+		AssetContext defAssetCtx = RenderRegistryFuncs.findOrMakeAssetContext(null, null);
+		JmonkeyAssetLocation jmal = new JmonkeyAssetLocation(ResourceBundleActivator.class);
+		defAssetCtx.addAssetSource(jmal);		
 		/*
 		Bundle bun = bundleCtx.getBundle();
 		theLogger.info("Got bundle: " + bun);

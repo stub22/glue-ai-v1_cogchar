@@ -46,6 +46,7 @@ public class AssetContext extends RenderRegistryAware {
 	}
 	
 	public void resolveAndRegisterAllAssetSources() { 
+		getLogger().info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  resolveAndRegisterAllAssetSources()");
 		AssetManager assetMgr = getAssetManager();
 		// Optionally add a bonyAssetLocator here for debugging.
 		for (JmonkeyAssetLocation jmal : myAssetSources) {
