@@ -25,6 +25,6 @@ import org.appdapter.osgi.registry.RegistryServiceFuncs;
 
 object RegistryClient {
 	def getVerySimpleRegistry() : VerySimpleRegistry = {
-		RegistryServiceFuncs.getTheWellKnownRegistry();
+		RegistryServiceFuncs.getTheWellKnownRegistry(this.getClass());
 	}
 }
