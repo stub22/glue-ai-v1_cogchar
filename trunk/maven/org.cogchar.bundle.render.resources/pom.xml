@@ -28,6 +28,11 @@
             <artifactId>org.appdapter.bundle.core</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
     </dependencies>
 
     <build>

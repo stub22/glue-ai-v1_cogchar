@@ -58,11 +58,13 @@ import org.slf4j.LoggerFactory;
  * @author Stu B. <www.texpedient.com>
  */
 public class PumaDualCharacter implements DummyBox {
+	
 	static Logger theLogger = LoggerFactory.getLogger(PumaDualCharacter.class);
 	private	ModelBlendingRobotServiceContext	myMBRSC;
 	private	BonyRenderContext					myBRC;
 	private	RobotAnimClient						myRAC;
 	private SpeechOutputClient					mySOC;
+	
 	public PumaDualCharacter(BonyRenderContext brc, BundleContext bundleCtx) {
 		myBRC = brc;
 		myMBRSC = new ModelBlendingRobotServiceContext(bundleCtx);
