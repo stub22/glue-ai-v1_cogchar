@@ -65,30 +65,33 @@ public final class VirtualCharTopComponent extends TopComponent {
     }
     
     private synchronized void init(BundleContext bundleCtx) throws Throwable {
-		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - Simulator init() BEGIN");
+		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - 'Simulator' panel init() - BEGIN");
         if(myInitializedFlag){
             return;
         }
         if(bundleCtx == null){
             throw new NullPointerException();
         }
-
-		String dualCharURI = "NBURI:huzzah"; // =>  org_cogchar_nbui_render/bonyRobotConfig.json"));        
+		// STILL using a hardcoded URI, but the NBURI prefix is enough to tell our (STILL stubbed out)
+		// config system that we are running under Netbeans Platform GUI (implying Netigso), so, only
+		// Robokind-Workshop-friendly features should be activated.  This area is ripe for improvement
+		// in Cogchar 1.0.4, due early in March 2012.
+		String dualCharURI = "NBURI:huzzah";       
 		PumaAppContext pac = new PumaAppContext(bundleCtx);
 		BonyRenderContext brc = pac.getBonyRenderContext(dualCharURI);
 		initVirtualCharPanel(brc);
 		
-		// Requires access to sun.misc.Unsafe, which must be explicitly imported by 
-		// ext.bundle.osgi.jmonkey, and explicitly allowed by the container using
-		// netigso
+		// Firing up the OpenGL canvas requires access to sun.misc.Unsafe, which must be explicitly imported 
+		// by ext.bundle.osgi.jmonkey, and explicitly allowed by the container using Netigso
+		
 		pac.startOpenGLCanvas(dualCharURI, false);
 		
 		PumaDualCharacter pdc = pac.connectDualRobotChar(dualCharURI);	
-        File file = new File("org_cogchar_nbui_render/jointgroup.xml");
+        File file = new File(Installer.VIRTCHAR_NB_MODULE_DIR + "/jointgroup.xml");
         RobotServiceFuncs.registerJointGroup(bundleCtx, file);
 
         myInitializedFlag = true;
-		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - Simulator init() END");
+		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - 'Simulator' panel init() - END");
     }
     
     private void initVirtualCharPanel(BonyRenderContext BonyRenderContext) throws Throwable {

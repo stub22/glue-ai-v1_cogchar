@@ -26,28 +26,31 @@ import org.slf4j.LoggerFactory;
 
 public class Installer extends ModuleInstall {
 	static Logger theLogger = LoggerFactory.getLogger(Installer.class);
+	
+	static String LOG4J_PROPS_PATH = "logging/log4j.properties";
+	static String VIRTCHAR_NB_MODULE_DIR = "org_cogchar_nbui_render";
+	
+    @Override public void restored() {
+        logInfo(".restored() - BEGIN");
+        
 
-    @Override
-    public void restored() {
-        String startupMsg = getClass().getCanonicalName();
-		System.out.println("[System.out]" + startupMsg);
-		theLogger.info("[SLF4J]" + startupMsg);
         
-		String resPath = "logging/log4j.properties";
-        String moduleName = "org_cogchar_nbui_render";
-        
-        File file = InstalledFileLocator.getDefault().locate(resPath, moduleName, false);
-		System.out.println("InstalledFileLocator resolved " + resPath + " to " + file.getAbsolutePath());
+        File file = InstalledFileLocator.getDefault().locate(LOG4J_PROPS_PATH, VIRTCHAR_NB_MODULE_DIR, false);
+		logInfo("InstalledFileLocator resolved path[" + LOG4J_PROPS_PATH + "] + module[" + VIRTCHAR_NB_MODULE_DIR + "] to " + file.getAbsolutePath());
         try{
             URL localURL = file.toURI().toURL();
-            System.out.println("[System.out] " + getClass().getCanonicalName() + " is forcing Log4J to read config from: " + localURL);
+            logInfo("Forcing Log4J to read config from: " + localURL);
             PropertyConfigurator.configure(localURL);
-            theLogger.info("[SLF4J]" + startupMsg);
-            theLogger.info("Is SLF4J->Log4J logging working?");
+            logInfo("Is SLF4J working under Netigso?");
         }catch(MalformedURLException ex){
-            System.out.println("Bad URL from file name: " + file.getAbsoluteFile());
-            System.out.println("Cannot start SLF4J Logging.");
+            logInfo("Bad URL from file name: " + file.getAbsoluteFile());
+			logInfo("Cannot start SLF4J Logging.");
             ex.printStackTrace();
         }
     }
+	private void logInfo(String msg) {
+		String smsg = "[Simulator-Installer]-" + msg;
+		System.out.println("[System.out]-" + getClass().getCanonicalName() + "-" + smsg);
+		theLogger.info("[SLF4J]" + smsg);
+	}
 }
