@@ -1,0 +1,120 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.0.3</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>	
+	<artifactId>org.cogchar.lib.render</artifactId>
+
+	<packaging>jar</packaging>
+	<name>org.cogchar.lib.render - POJO</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>ext.bundle.opengl.jmonkey</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- We depend directly on the libs, instead of the bundles, and mark the scope "provided",
+			 to make it easier for some tools (including Netbeans 7.0.1) to navigate the code.
+			 It also demonstrates that an OSGi-free version of Cogchar is possible.
+			-->
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.lib.core</artifactId>
+			<version>${appdapter.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.lib.registry</artifactId>
+			<version>${appdapter.version}</version>
+			<scope>provided</scope>
+		</dependency>		
+		<dependency>
+			<!-- This is here for dev to facilitate Dev testing of org.cogchar.lib.render through Netbeans. 
+				Should be removed before each project release, suggesting need for Maven profiles for dev vs. deliver
+				(easier under Gradle or SBT?).  
+			-->
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<!-- This dep is used in addition to ext.bundle, to help NB. -->
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-core</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>	
+		</dependency>
+		<dependency>
+			<!-- This dep is used in addition to ext.bundle, to help NB. -->
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-jbullet</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>	
+		</dependency>			
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-testdata</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>test</scope>
+		</dependency>		
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jmonkeyengine3</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>test</scope>
+		</dependency>		
+		
+	 <dependency>
+	  <groupId>${project.groupId}</groupId>
+	  <artifactId>org.cogchar.lib.core</artifactId>
+	  <version>${project.version}</version>
+	  <scope>provided</scope>
+	 </dependency>
+	</dependencies>
+</project>
+
+<!--
+/*
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+ -->
