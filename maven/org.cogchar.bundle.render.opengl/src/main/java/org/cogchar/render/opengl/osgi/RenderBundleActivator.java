@@ -18,10 +18,7 @@ package org.cogchar.render.opengl.osgi;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.appdapter.api.registry.VerySimpleRegistry;
 import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.blob.emit.RegistryClient;
-import org.cogchar.bundle.render.resources.ResourceBundleActivator;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.osgi.framework.BundleContext;
@@ -31,9 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.cogchar.render.opengl.bony.demo.HumanoidPuppetApp;
 import org.cogchar.render.opengl.bony.gui.PanelUtils;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
-import org.cogchar.render.opengl.bony.sys.AssetContext;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
-import org.cogchar.render.opengl.bony.sys.RenderRegistryFuncs;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -58,10 +52,13 @@ public class RenderBundleActivator extends BundleActivatorBase {
 		// IDE hints may show these symbols (from transitive deps) as undefined, but they should compile OK with maven.
 		theLogger.info("******************* Fetching VerySimpleRegistry");
 
+		/*
 		theLogger.info("******************* Registering assumed resource bundle with default AssetContext");
 		AssetContext defAssetCtx = RenderRegistryFuncs.findOrMakeAssetContext(null, null);
 		JmonkeyAssetLocation jmal = new JmonkeyAssetLocation(ResourceBundleActivator.class);
 		defAssetCtx.addAssetSource(null);
+		 * 
+		 */
 		
 		theLogger.info("******************* Creating BonyConfigEmitter, HumanoidPuppetApp");
 		BonyConfigEmitter bce = new BonyConfigEmitter();

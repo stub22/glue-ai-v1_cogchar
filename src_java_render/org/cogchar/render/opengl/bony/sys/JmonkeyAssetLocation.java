@@ -47,7 +47,7 @@ public class JmonkeyAssetLocation {
 		return myResourceMarkerClass.getClassLoader();
 	}
 	public void resolve() { 
-		theLogger.debug("resolve() currently does nothing.");
+		theLogger.info("resolve() by default does nothing.");
 	}
 	public void registerLocators(AssetManager assetMgr) {
 		URL hackyRootURL = getHackyRootURL();

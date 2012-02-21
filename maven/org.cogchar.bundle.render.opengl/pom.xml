@@ -32,14 +32,6 @@
 			<groupId>org.cogchar</groupId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<!--	This dep on resources is currently used to pull in the marker class token for the resources,
-					which happens to be their BundleActivator.
-			-->
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.bundle.render.resources</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 	</dependencies>
 	<build>

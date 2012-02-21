@@ -25,6 +25,7 @@ public class ModularRenderContext extends CogcharRenderContext {
 	private		CogcharRenderModulator			myRenderModulator;
 	
 	@Override public void completeInit() {
+		super.completeInit();
 		logInfo("init CogcharRenderModulator");		
 		myRenderModulator = new CogcharRenderModulator();
 	}
