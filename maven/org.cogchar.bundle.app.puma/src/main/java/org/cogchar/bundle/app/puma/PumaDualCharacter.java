@@ -81,11 +81,14 @@ public class PumaDualCharacter implements DummyBox {
 	        connectToVirtualChar();
 			applyInitialBoneRotations();
 			myRAC = new RobotAnimClient(bundleCtx); 
+			/*
 			try {
 		        RobotServiceFuncs.createAndRegisterFrameReceiver(bundleCtx, brid);
 			} catch (Throwable t) {
 				theLogger.warn("Could not register AMQP network server for robot with ID=" + brid, t);
 			}
+			 * 
+			 */
 		}
 		mySOC = new SpeechOutputClient(bundleCtx);
 	}
