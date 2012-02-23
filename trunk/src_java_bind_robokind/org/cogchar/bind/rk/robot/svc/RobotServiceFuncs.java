@@ -43,8 +43,11 @@ import org.robokind.api.motion.jointgroup.JointGroup;
 import org.robokind.api.motion.jointgroup.RobotJointGroup;
 
 import org.robokind.impl.motion.jointgroup.RobotJointGroupConfigXMLReader;
+/*
 import org.robokind.impl.motion.messaging.JMSMotionFrameAsyncReceiver;
 import org.robokind.impl.motion.messaging.TargetFrameListener;
+ * 
+ */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -52,7 +55,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RobotServiceFuncs {
 	static Logger theLogger = LoggerFactory.getLogger(RobotServiceFuncs.class);
-	
+	/*
 	public static JMSMotionFrameAsyncReceiver createAndRegisterFrameReceiver(
 			BundleContext bundleCtx, Robot.Id robotId) {
 		
@@ -105,7 +108,7 @@ public class RobotServiceFuncs {
 		receiver.start();
 		return receiver;
 	}
-	
+	*/
 	public static JointGroup registerJointGroup(BundleContext bundleCtx, File jointGroupConfigXML_file) throws Throwable {
 		JointGroup group = ServiceConnectionDirectory.buildService(
 				bundleCtx,
