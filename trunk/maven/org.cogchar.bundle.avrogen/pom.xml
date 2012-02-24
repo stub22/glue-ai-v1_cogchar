@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>ext.bundle.apache_avro_151</artifactId>
-            <version>${appdapter.version}</version>
+            <version>${appdapter.msg.version}</version>
         </dependency>
     </dependencies>
 
