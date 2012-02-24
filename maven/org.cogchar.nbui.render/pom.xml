@@ -127,13 +127,13 @@
 			<artifactId>ext.bundle.apache_qpid_010</artifactId>
 			<groupId>org.appdapter</groupId>
 			<type>jar</type>
-			<version>${appdapter.version}</version>
+			<version>${appdapter.msg.version}</version>
 		</dependency>
 		<dependency>
 			<artifactId>ext.bundle.apache_avro_151</artifactId>
 			<groupId>org.appdapter</groupId>
 			<type>jar</type>
-			<version>${appdapter.version}</version>
+			<version>${appdapter.msg.version}</version>
 		</dependency>
  
 		
