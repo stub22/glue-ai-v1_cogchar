@@ -42,9 +42,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This is a set of functions which statelessly defines the create/find behavior of Cogchar rendering core services.
+ * <br/>Does not make direct use of the (appdapter) BasicDebugger base class features, but includes it so that a class 
+ * extending this one can use those features.  You'll need 'em, buddy!
  * @author Stu B. <www.texpedient.com>
  */
-public class RenderRegistryFuncs extends BasicDebugger {
+public abstract class RenderRegistryFuncs extends BasicDebugger {
 	
 	private final static Logger		theLogger = LoggerFactory.getLogger(RenderRegistryFuncs.class);
 	

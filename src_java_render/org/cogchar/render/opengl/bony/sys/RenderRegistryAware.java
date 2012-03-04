@@ -23,7 +23,7 @@ import com.jme3.scene.Node;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class RenderRegistryAware extends RenderRegistryFuncs {
+public abstract class RenderRegistryAware extends RenderRegistryFuncs {
 	
 
 	/*
@@ -33,10 +33,10 @@ public class RenderRegistryAware extends RenderRegistryFuncs {
 	}
 	 * 
 	 */
-	public static void propagateRootNode(Node rootNode) {
+//	public static void propagateRootNode(Node rootNode) {
 		// Let's start with just the default one.
 	//	SceneFacade sf = getSceneFacade(null);
 
-	}		
+//	}		
 	
 }
