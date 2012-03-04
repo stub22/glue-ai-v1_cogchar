@@ -66,7 +66,7 @@ public class DemoBonyWireframeRagdoll extends RenderModule // extends SimpleAppl
 
 
 	public DemoBonyWireframeRagdoll() { 
-		myRunDebugModulus = 100;
+		setDebugRateModulus(100);
 	}
 	public void registerTraditionalInputHandlers(InputManager inputManager) {
 		inputManager.addMapping(PULL_RAGDOLL_UP, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));

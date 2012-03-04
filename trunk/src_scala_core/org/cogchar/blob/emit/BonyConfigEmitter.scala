@@ -24,7 +24,8 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	// This skeleton + mesh model is delivered by the jar from o.c.bundle.render.opengl.
 	val PATH_HUMANOID_MESH = "jme3dat/models_20110917/sinbad/Sinbad.mesh.xml";	
 
-	val EXTRA_ROBOT_MESH_PATH = "zeno_model-ogre/zeno_model-ogre.mesh.xml";
+	// val EXTRA_ROBOT_MESH_PATH = "zeno_model-ogre/zeno_model-ogre.mesh.xml";
+	val EXTRA_ROBOT_MESH_PATH = "zenobot_04_20120302/ZenoBot04.ma.mesh.xml";	
 	
 	val WINGED_OBELISK_SCENE = "leo_hanson_tests/test3/test3.scene";
 	val WOS_SCALE = 0.5f;

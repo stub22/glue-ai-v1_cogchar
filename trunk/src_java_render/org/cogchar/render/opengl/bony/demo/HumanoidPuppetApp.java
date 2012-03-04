@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-public class HumanoidPuppetApp extends BonyVirtualCharApp<HumanoidRenderContext> { // DemoApp {
+public class HumanoidPuppetApp extends BonyVirtualCharApp<HumanoidRenderContext> {
     private final static Logger		theLogger = LoggerFactory.getLogger(HumanoidPuppetApp.class);
 	private HumanoidFigure	myHumanoidWrapper;
 

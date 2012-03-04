@@ -36,15 +36,11 @@ import org.slf4j.LoggerFactory;
 
 public abstract class BonyVirtualCharApp<BRCT extends BonyRenderContext> extends PhysicalApp<BRCT> {
 	static Logger theLogger = LoggerFactory.getLogger(BonyVirtualCharApp.class);
-	// private		AnimChannel				channel;
 
-	// protected	BonyRenderContext				myContext;
     private     boolean                 myCanvasStartedFlag;
 
 	public BonyVirtualCharApp(BonyConfigEmitter bce) {
 		super(bce);
-		//myContext = new BonyRenderContext(bce);
-		//myContext.setApp(this);
         myCanvasStartedFlag = false;
 	}
 	public BRCT getBonyRenderContext() { 
