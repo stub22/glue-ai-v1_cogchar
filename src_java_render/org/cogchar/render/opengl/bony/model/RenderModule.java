@@ -28,5 +28,9 @@ public abstract class RenderModule extends EmptyTimedModule<CogcharRenderModulat
 		float currentTPF = rm.getCurrentTimePerFrame();
 		doRenderCycle(runSeqNum, currentTPF);
 	}
+	
+	public void setDebugRateModulus(int drm) {
+		myRunDebugModulus = drm;
+	}
 
 }

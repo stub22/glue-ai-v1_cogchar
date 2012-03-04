@@ -29,7 +29,7 @@ public class HumanoidFigureModule extends RenderModule {
 	public HumanoidFigureModule(HumanoidFigure hw, BonyRenderContext brc) {
 		myFigure = hw;
 		myBRC = brc;
-		myRunDebugModulus = 100;
+		setDebugRateModulus(100);
 	}
 	
 	@Override protected void doRenderCycle(long runSeqNum, float tpf) {
