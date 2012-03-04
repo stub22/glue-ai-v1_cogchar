@@ -140,5 +140,15 @@ public class CogcharRenderContext extends RenderRegistryAware {
 	public void doUpdate(float tpf) {
 		
 	}
+	
+	public Node loadModelOrNull(AssetManager amgr, String meshPath) {
+		Node result = null;
+		try {
+			result = (Node) amgr.loadModel(meshPath);
+		} catch (Throwable t) {
+			getLogger().warn("Cannot load model from meshPath=[" + meshPath + "]", t);
+		}
+		return result;
+	}
 		
 }

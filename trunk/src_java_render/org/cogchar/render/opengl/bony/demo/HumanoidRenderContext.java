@@ -92,10 +92,12 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		String extraRobotMeshPath = bce.getExtraRobotMeshPath();
 		if (extraRobotMeshPath != null) {
 			getLogger().info("Loading extra-robot mesh from: " + extraRobotMeshPath);
-			Node extraRobotNode = (Node) amgr.loadModel(extraRobotMeshPath);
-			SpatialManipFuncs.dumpNodeTree(extraRobotNode, "   ");
-			Node rootNode = findJme3RootDeepNode(null);
-			rootNode.attachChild(extraRobotNode);
+			Node extraRobotNode = loadModelOrNull(amgr, extraRobotMeshPath);
+			if (extraRobotNode != null) {
+				SpatialManipFuncs.dumpNodeTree(extraRobotNode, "   ");
+				Node rootNode = findJme3RootDeepNode(null);
+				rootNode.attachChild(extraRobotNode);
+			}
 		} else {
 			getLogger().warn("Skipping extra-robot mesh load");
 		}
