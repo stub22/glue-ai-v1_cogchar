@@ -64,9 +64,14 @@ public class RenderBundleActivator extends BundleActivatorBase {
 		BonyConfigEmitter bce = new BonyConfigEmitter();
 		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
 		
-		theLogger.info("******************* Initializing VirtualCharacterPanel with canvas");
+		// Want to decide this "kind" based on further context (e.g. "are we in Netbeans?"  "are we in debug-mode?"),
+		// which is a concrete reason to try to push this init out of the bundle activator, and perform on demand
+		// instead.
 		
-		VirtualCharacterPanel vcp = PanelUtils.makeVCPanel(bce, "FULL");
+		String panelKind = "SLIM";
+		theLogger.info("******************* Initializing VirtualCharacterPanel of kind " + panelKind + " with canvas");
+		
+		VirtualCharacterPanel vcp = PanelUtils.makeVCPanel(bce, panelKind);
 		bvcApp.initCharPanelWithCanvas(vcp);
 
 		myBonyRenderContext = bvcApp.getBonyRenderContext();
