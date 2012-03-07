@@ -38,23 +38,19 @@ import org.cogchar.render.opengl.bony.gui.PanelUtils;
 public class HumanoidPuppetTestMain {
 	static Logger theLogger = LoggerFactory.getLogger(HumanoidPuppetTestMain.class);
 	
-	//static String	sceneFilePath = "leo_hanson_tests/test3/test3.scene";
-	// static float	sceneLocalScale = 0.5f;
+
 	
-	public static BonyRenderContext makeBonyRenderContextWithApp(BonyConfigEmitter bce) { //   String lwjglRendererName, int canvasWidth, int canvasHeight) { 
-		BonyVirtualCharApp bvcApp = // new BonyStickFigureApp(sceneFilePath, sceneLocalScale);
-					// new BonyRagdollApp(lwjglRendererName, canvasWidth, canvasHeight, sceneFilePath, sceneLocalScale);
-					new HumanoidPuppetApp(bce); // lwjglRendererName, HumanoidPuppetApp.PATH_HUMANOID_MESH, canvasWidth, canvasHeight);
+	public static BonyRenderContext makeBonyRenderContextWithApp(BonyConfigEmitter bce) { 
+		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce); 
 		VirtualCharacterPanel vcp = PanelUtils.makeVCPanel(bce, "FULL");
 		bvcApp.initCharPanelWithCanvas(vcp);
 		BonyRenderContext bc = bvcApp.getBonyRenderContext();
 		return bc;
 	}
 	public static void main(String[] args) {
-		// String lwjglRendererName = DemoApp.DEFAULT_RENDERER_NAME;
-		// System.out.println("+&+&+&++&+&+&+&+&+&+ Using: " + lwjglRendererName);
+
 		BonyConfigEmitter bce = new BonyConfigEmitter();
-		final BonyRenderContext bc = makeBonyRenderContextWithApp(bce); // lwjglRendererName, DemoApp.DEFAULT_CANVAS_WIDTH, DemoApp.DEFAULT_CANVAS_HEIGHT);
+		final BonyRenderContext bc = makeBonyRenderContextWithApp(bce); 
 		// Frame must be packed after panel created, but created 
 		// before startJMonkey.  Might add frame to BonyRenderContext...
 		VirtualCharacterPanel vcp = bc.getPanel();
