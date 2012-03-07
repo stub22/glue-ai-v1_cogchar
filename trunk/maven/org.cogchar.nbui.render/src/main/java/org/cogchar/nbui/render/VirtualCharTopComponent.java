@@ -72,11 +72,12 @@ public final class VirtualCharTopComponent extends TopComponent {
         if(bundleCtx == null){
             throw new NullPointerException();
         }
-		// STILL using a hardcoded URI, but the NBURI prefix is enough to tell our (STILL stubbed out)
+		// STILL using a hardcoded URI, but "/platform/nb701" is enough to tell our (STILL stubbed out)
 		// config system that we are running under Netbeans Platform GUI (implying Netigso), so, only
 		// Robokind-Workshop-friendly features should be activated.  This area is ripe for improvement
-		// in Cogchar 1.0.4, due early in March 2012.
-		String dualCharURI = "NBURI:huzzah";       
+		// in Cogchar 1.0.4, due in March 2012.
+		// String dualCharURI = "urn:org.cogchar/platform/nb701?charName=HRK_Zeno_R50&version=20120302";       
+		String dualCharURI = "NBURI:huzzah";             
 		PumaAppContext pac = new PumaAppContext(bundleCtx);
 		BonyRenderContext brc = pac.getBonyRenderContext(dualCharURI);
 		initVirtualCharPanel(brc);

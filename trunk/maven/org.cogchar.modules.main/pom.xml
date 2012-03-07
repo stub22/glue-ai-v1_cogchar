@@ -29,6 +29,7 @@
 			<name>sonatype public</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
+		<!--
 		<repository>
 			<id>scala-tools.org</id>
 			<name>Scala-Tools Maven2 Repository</name>
@@ -38,15 +39,18 @@
 			<id>scala-tools.org-SNAP</id>
 			<name>Scala-Tools Snapshots Repo</name>
 			<url>http://scala-tools.org/repo-snapshots/</url>
-		</repository>	
+		</repository>
+		-->
 	</repositories>
 
 	<pluginRepositories>
+		<!--
 		<pluginRepository>
 			<id>scala-tools.org</id>
 			<name>Scala-Tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
 		</pluginRepository>
+		-->
 	</pluginRepositories>
 	
 	

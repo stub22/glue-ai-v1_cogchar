@@ -19,6 +19,11 @@ package org.cogchar.blob.emit
 /**
  * @author Stu B. <www.texpedient.com>
  */
+case class NVParam(val name: String, val value: String) {
+	def urlEncoding : String = {
+		name + "=" + value;
+	}
+}
 
 class BonyConfigEmitter extends DemoConfigEmitter {
 	// This skeleton + mesh model is delivered by the jar from o.c.bundle.render.opengl.resources
@@ -26,6 +31,10 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 
 	// Commercial "Extra Robot" model, not loadable without a license, ignored in those cases.
 	val EXTRA_ROBOT_MESH_PATH = "zenobot_04_20120302/ZenoBot04.ma.mesh.xml";	
+	
+	
+	//		String dualCharURI = "urn:org.cogchar/platform/nb701?char=HRK_Zeno_R50&version=20120302";   
+	
 	
 	val WINGED_OBELISK_SCENE = "leo_hanson_tests/test3/test3.scene";
 	val WOS_SCALE = 0.5f;
@@ -43,6 +52,36 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	def setMainCharURI(uri: String) : Unit = {
 		myMainCharURI = uri;
 	}
+	
+	val COGCHAR_URN_PRE = "urn:org.cogchar/";
+	
+	val NB_PLATFORM_CURRENT = "nb701";
+	
+	val x=12;
+	
+
+	def makeParamString(bindingList : List[NVParam]) : String = {
+		val len = bindingList.length;
+		if (len == 0) {
+			return "";
+		} else { 
+			val firstPairString = bindingList.head.urlEncoding;
+			if (len == 1) {
+				return firstPairString;
+			} else {
+				return firstPairString + "&" + makeParamString(bindingList.tail);
+			}
+		}
+	}
+	
+	def makeCogcharURN(item : String, bindingList : List[NVParam]) : String = {
+		val paramsEncoded = makeParamString(bindingList);
+		val marker = if (paramsEncoded.length() > 0) "?" else "";
+		COGCHAR_URN_PRE + item + marker + paramsEncoded;
+	}
+	
+
+	
 
 //				DEFAULT_PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",	// Default path in JME test setup
 //			PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md",

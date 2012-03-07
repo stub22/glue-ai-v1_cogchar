@@ -30,6 +30,12 @@
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
 			<version>${appdapter.version}</version>
+		</dependency>
+		<dependency>
+			<artifactId>ext.bundle.jena_all_264</artifactId>
+			<groupId>org.appdapter</groupId>
+			<type>jar</type>
+			<version>1.0.6-SNAPSHOT</version>
 		</dependency>		
 		<dependency>
 			<groupId>org.scalaquery</groupId>
@@ -94,16 +100,17 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.1</version>
 		</dependency>
-	 <dependency>
-	  <groupId>org.appdapter</groupId>
-	  <artifactId>ext.bundle.xml.dom4j_161</artifactId>
-	  <version>${appdapter.version}</version>
-	 </dependency>
-	 <dependency>
-	  <groupId>com.h2database</groupId>
-	  <artifactId>h2</artifactId>
-	  <version>1.3.157</version>
-	 </dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.3.157</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
