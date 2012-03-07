@@ -51,7 +51,10 @@ public class BonyStickFigureContext extends BonyRenderContext {
 			}
 			attachModule(myTwister);
 		}
-		initExtraRagdoll();
+		BonyConfigEmitter bce = getBonyConfigEmitter(); 
+		if (!bce.isMinimalSim()) {
+			initExtraRagdoll();
+		}
 	}	
 	public boolean initStickFigureModel() {
 		// test1Node.setLocalScale(0.5f);
