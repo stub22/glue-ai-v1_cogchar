@@ -52,6 +52,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	def setMainCharURI(uri: String) : Unit = {
 		myMainCharURI = uri;
 	}
+	def getMainCharURI = myMainCharURI;
 	
 	val COGCHAR_URN_PRE = "urn:org.cogchar/";
 	
@@ -96,7 +97,9 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	def getHumanoidMeshPath : String = PATH_HUMANOID_MESH;
 	def getExtraRobotMeshPath : String = EXTRA_ROBOT_MESH_PATH;
 	
-	def getStickFigureScenePath : String = WINGED_OBELISK_SCENE;
+	def getStickFigureScenePath : String = {
+		if (isMinimalSim()) null else WINGED_OBELISK_SCENE;
+	}
 	def getStickFigureSceneScale : Float = 0.5f;
 
 	def getRobokindRobotID(robotURI : String) = {
@@ -119,5 +122,9 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		res(2) = third;
 		val res2 : Array[Float] = Array(third, third, third);
 		res2;
+	}
+	
+	def isMinimalSim() : Boolean = {
+		myMainCharURI.startsWith("NB");
 	}
 }
