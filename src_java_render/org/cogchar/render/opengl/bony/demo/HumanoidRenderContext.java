@@ -73,12 +73,13 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 
 	private void initHumanoidStuff() { 
 		AssetManager amgr = findJme3AssetManager(null);
+		Node rootNode = findJme3RootDeepNode(null);		
 		HumanoidBoneConfig hbc = new HumanoidBoneConfig(true);
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 		String humanoidMeshPath = bce.getHumanoidMeshPath();
 		if (humanoidMeshPath != null) {
 			
-			Node rootNode = findJme3RootDeepNode(null);
+			
 			myHumanoidWrapper.initStuff(hbc, amgr, rootNode, getPhysicsSpace(), humanoidMeshPath);
 			//VirtCharPanel vcp = getVCPanel();
 			//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
@@ -95,7 +96,6 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 			Node extraRobotNode = loadModelOrNull(amgr, extraRobotMeshPath);
 			if (extraRobotNode != null) {
 				SpatialManipFuncs.dumpNodeTree(extraRobotNode, "   ");
-				Node rootNode = findJme3RootDeepNode(null);
 				rootNode.attachChild(extraRobotNode);
 			}
 		} else {

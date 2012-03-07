@@ -42,7 +42,7 @@ public class StickFigureTwister extends RenderModule {
 	
 	public StickFigureTwister(BonyRenderContext bc) {
 		myContext = bc;
-		setDebugRateModulus(100);
+		setDebugRateModulus(1000);
 	}
 	public void setBodyController(BodyController tc) {
 		myBodyController = tc;

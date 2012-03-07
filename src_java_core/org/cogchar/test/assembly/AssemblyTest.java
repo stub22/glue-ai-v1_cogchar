@@ -13,27 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony.model;
+package org.cogchar.test.assembly;
 
-import org.cogchar.render.opengl.bony.state.FigureState;
-import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
+import java.util.Set;
+import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
+
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class HumanoidFigureModule extends RenderModule {
-	private HumanoidFigure	myFigure;
+public class AssemblyTest {
 	
-	private BonyRenderContext  myBRC;
-	
-	public HumanoidFigureModule(HumanoidFigure hw, BonyRenderContext brc) {
-		myFigure = hw;
-		myBRC = brc;
-		setDebugRateModulus(1000);
+	public static void main(String args[]) {
+		String triplesURL = "src/main/resources/org/cogchar/test/assembly/ca_test.ttl";
+		AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(AssemblyTest.class.getClassLoader());
+		logInfo("Loading triples from URL: " + triplesURL);
+		Set<Object> loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(triplesURL);
+		logInfo("Loaded " + loadedStuff.size() + " objects");
+		for (Object o : loadedStuff) {
+			System.out.println("Loaded: " + o);
+		}
 	}
-	
-	@Override protected void doRenderCycle(long runSeqNum, float tpf) {
-		FigureState fs = myBRC.getFigureState();
-		myFigure.applyFigureState(fs);
+	public static void logInfo(String txt) {
+		System.out.println(txt);
 	}
 }
