@@ -24,6 +24,8 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.Trigger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  
@@ -48,7 +50,10 @@ public class HumanoidPuppetActions {
             }
             Trigger[] makeTriggers() { 
                 return new Trigger[] {new KeyTrigger(KeyInput.KEY_SPACE)};
-            }            
+            }
+			@Override boolean includedInMinSim() { 
+				return true;
+			}			
         },
         BOOGIE {
             void act(HumanoidRenderContext app) {
@@ -58,6 +63,9 @@ public class HumanoidPuppetActions {
             Trigger[] makeTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_B)};
             }
+			@Override boolean includedInMinSim() { 
+				return true;
+			}
         },        
         SHOOT {
             void act(HumanoidRenderContext app) {
@@ -94,15 +102,27 @@ public class HumanoidPuppetActions {
         
         abstract void act(HumanoidRenderContext app);
         abstract Trigger[] makeTriggers();
+		boolean includedInMinSim() { 
+			return false;
+		}
     };
     static void setupActionListeners(InputManager inputManager, final HumanoidRenderContext app) {
         PlayerAction pavals[] = PlayerAction.values();
-        String actionNames[] = new String[pavals.length];
+		List<String> actionNamesList = new ArrayList<String>();
+		boolean minSimMode = app.getBonyConfigEmitter().isMinimalSim();
         for (int pai =0; pai < pavals.length; pai++) { 
             PlayerAction pa = pavals[pai];
-            actionNames[pai] = pa.name();
-            inputManager.addMapping(pa.name(), pa.makeTriggers());
+			String actionName = pa.name();
+			if (minSimMode) {
+				if (!pa.includedInMinSim()) {
+					continue;
+				}
+			}
+			actionNamesList.add(actionName);
+            inputManager.addMapping(actionName, pa.makeTriggers());
         }
+		String actionNames[] = new String[actionNamesList.size()];
+		actionNamesList.toArray(actionNames);
         inputManager.addListener(new ActionListener() {
 
             public void onAction(String name, boolean isPressed, float tpf) {
