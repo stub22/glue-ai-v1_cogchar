@@ -16,6 +16,7 @@
 package org.cogchar.render.opengl.bony.demo;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
 import com.jme3.math.Quaternion;
@@ -23,6 +24,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
+import java.lang.String;
 import java.util.HashMap;
 import java.util.Map;
 import org.cogchar.blob.emit.BonyConfigEmitter;
@@ -31,7 +33,6 @@ import org.cogchar.render.opengl.bony.app.BonyStickFigureContext;
 import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
 import org.cogchar.render.opengl.bony.model.HumanoidFigureModule;
 import org.cogchar.render.opengl.bony.model.HumanoidFigure;
-import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
 import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
 
@@ -76,16 +77,20 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		return hf;
 	}
 
-	private void doHumanoidSetup(String charURI, HumanoidBoneConfig hbc) {
+	private void doHumanoidSetup(String charURI, HumanoidBoneConfig hbc, boolean usePhysics) {
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 		AssetManager amgr = findJme3AssetManager(null);
 		Node rootNode = findJme3RootDeepNode(null);		
+		PhysicsSpace ps = null;
+		if (usePhysics) {
+			ps = getPhysicsSpace();
+		}
 		
 		String meshPath = bce.getMeshPathForChar(charURI);
 		if (meshPath != null) {
 			HumanoidFigure figure = getHumanoidFigure(charURI);
 			
-			figure.initStuff(hbc, amgr, rootNode, getPhysicsSpace(), meshPath);
+			figure.initStuff(hbc, amgr, rootNode, ps, meshPath);
 			//VirtCharPanel vcp = getVCPanel();
 			//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
 
@@ -104,12 +109,12 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		String sinbadURI = bce.SINBAD_CHAR_URI();
 		HumanoidBoneConfig sinbadHBC = new HumanoidBoneConfig();
 		sinbadHBC.addSinbadDefaultBoneDescs();
-		doHumanoidSetup(sinbadURI, sinbadHBC);
+		doHumanoidSetup(sinbadURI, sinbadHBC, true);
 
 		String extraRobotURI = bce.ZENO_CHAR_URI();
 		HumanoidBoneConfig zenoHBC = new HumanoidBoneConfig();
 		zenoHBC.addZenoDefaultBoneDescs();
-		doHumanoidSetup(extraRobotURI, zenoHBC);
+		doHumanoidSetup(extraRobotURI, zenoHBC, false);
 	}
 
 	private void initCameraAndLights() {

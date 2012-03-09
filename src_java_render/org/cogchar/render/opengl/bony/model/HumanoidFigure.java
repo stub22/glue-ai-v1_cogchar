@@ -112,12 +112,14 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 		
 		myHumanoidBoneConfig.attachRagdollBones(this);
 
-		myHumanoidKRC.addCollisionListener(this);
 		myHumanoidModelNode.addControl(myHumanoidKRC);
 
 		HumanoidBoneConfig.applyHumanoidJointLimits(myHumanoidKRC);
 
-		ps.add(myHumanoidKRC);
+		if (ps != null) {
+			myHumanoidKRC.addCollisionListener(this);
+			ps.add(myHumanoidKRC);
+		}
 
 		parentNode.attachChild(myHumanoidModelNode);
 
