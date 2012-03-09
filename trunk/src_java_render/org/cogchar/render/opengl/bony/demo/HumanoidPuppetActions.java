@@ -16,6 +16,7 @@
 
 package org.cogchar.render.opengl.bony.demo;
 
+import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.render.opengl.bony.model.HumanoidFigure;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -26,29 +27,38 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.Trigger;
 import java.util.ArrayList;
 import java.util.List;
+import org.cogchar.platform.trigger.DummyBox;
+import org.cogchar.platform.trigger.DummyTrigger;
 
 /**
  
  */
 public class HumanoidPuppetActions {
-    enum PlayerAction {
-
+    public enum PlayerAction {
+        RESET_CAMERA {
+            void act(HumanoidRenderContext ctx) {
+				ctx.setDefaultCameraLocation();
+            }
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_R)};
+            }
+        },
         TOGGLE_KIN_MODE {
-            void act(HumanoidRenderContext app) {
-				HumanoidFigure hw = app.getHumdWrap();
+            void act(HumanoidRenderContext ctx) {
+				HumanoidFigure hw = ctx.getHumdWrap();
 				hw.toggleKinMode();
             }
-            Trigger[] makeTriggers() { 
+            Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_H),
                       new KeyTrigger(KeyInput.KEY_N)  };
             }
         },
         STAND_UP {
-            void act(HumanoidRenderContext app) {
-				HumanoidFigure hw = app.getHumdWrap();
+            void act(HumanoidRenderContext ctx) {
+				HumanoidFigure hw = ctx.getHumdWrap();
 				hw.standUp();
             }
-            Trigger[] makeTriggers() { 
+            Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] {new KeyTrigger(KeyInput.KEY_SPACE)};
             }
 			@Override boolean includedInMinSim() { 
@@ -56,60 +66,77 @@ public class HumanoidPuppetActions {
 			}			
         },
         BOOGIE {
-            void act(HumanoidRenderContext app) {
-				HumanoidFigure hw = app.getHumdWrap();
+			// Triggers a JME3 animation
+            void act(HumanoidRenderContext ctx) {
+				HumanoidFigure hw = ctx.getHumdWrap();
 				hw.boogie();
             }
-            Trigger[] makeTriggers() { 
+            Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_B)};
+            }
+			@Override boolean includedInMinSim() { 
+				return true;
+			}
+        },   		
+        POKE {
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_P)};
             }
 			@Override boolean includedInMinSim() { 
 				return true;
 			}
         },        
         SHOOT {
-            void act(HumanoidRenderContext app) {
-                app.cmdShoot();
+            void act(HumanoidRenderContext ctx) {
+                ctx.cmdShoot();
             }
-            Trigger[] makeTriggers() { 
+            Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] {new MouseButtonTrigger(MouseInput.BUTTON_LEFT)};
             }            
         }, 
         BOOM {
-            void act(HumanoidRenderContext app) {
-                app.cmdBoom();
+            void act(HumanoidRenderContext ctx) {
+                ctx.cmdBoom();
             }
-            Trigger[] makeTriggers() { 
+            Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new MouseButtonTrigger(MouseInput.BUTTON_RIGHT)};
             }            
         }, 
         BIGGER_PROJECTILE {
-            void act(HumanoidRenderContext app) {
-                app.getProjectileMgr().cmdBiggerProjectile();
+            void act(HumanoidRenderContext ctx) {
+                ctx.getProjectileMgr().cmdBiggerProjectile();
             }
-            Trigger[] makeTriggers() { 
+            Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_PERIOD) };
             }            
         },
         SMALLER_PROJECTILE {
-            void act(HumanoidRenderContext app) {
-                app.getProjectileMgr().cmdSmallerProjectile();
+            void act(HumanoidRenderContext ctx) {
+                ctx.getProjectileMgr().cmdSmallerProjectile();
             }
-            Trigger[] makeTriggers() { 
+            Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_COMMA) };
             }            
         };  // Last enum constant code block gets a semicolon.
-        
-        abstract void act(HumanoidRenderContext app);
-        abstract Trigger[] makeTriggers();
-		boolean includedInMinSim() { 
-			return false;
+		
+     
+		BoundAction	myBoundAction = new BoundAction();
+        abstract Trigger[] makeJME3InputTriggers();
+		
+        void act(HumanoidRenderContext ctx) {
+			myBoundAction.perform();
 		}
-    };
-    static void setupActionListeners(InputManager inputManager, final HumanoidRenderContext app) {
+		boolean includedInMinSim() { 
+			return myBoundAction.includedInMinSim();
+		}
+		public DummyBinding getBinding() { 
+			return myBoundAction;
+		}
+	};
+    static void setupActionListeners(InputManager inputManager, final HumanoidRenderContext ctx) {
         PlayerAction pavals[] = PlayerAction.values();
 		List<String> actionNamesList = new ArrayList<String>();
-		boolean minSimMode = app.getBonyConfigEmitter().isMinimalSim();
+		boolean minSimMode = ctx.getBonyConfigEmitter().isMinimalSim();
         for (int pai =0; pai < pavals.length; pai++) { 
             PlayerAction pa = pavals[pai];
 			String actionName = pa.name();
@@ -119,18 +146,25 @@ public class HumanoidPuppetActions {
 				}
 			}
 			actionNamesList.add(actionName);
-            inputManager.addMapping(actionName, pa.makeTriggers());
+            inputManager.addMapping(actionName, pa.makeJME3InputTriggers());
         }
 		String actionNames[] = new String[actionNamesList.size()];
 		actionNamesList.toArray(actionNames);
+		
+		registerListenerForActionSubset(inputManager, ctx, actionNames);
+    }
+	static void registerListenerForActionSubset(InputManager inputManager, final HumanoidRenderContext ctx,
+				String actionNames[]) {
+		
+		// The trick below is that we use PlayerAction.valueOf instead of a hash table.	
         inputManager.addListener(new ActionListener() {
 
             public void onAction(String name, boolean isPressed, float tpf) {
                 PlayerAction action = PlayerAction.valueOf(name);
                 if ((action != null) && isPressed) {
-                    action.act(app);
+                    action.act(ctx);
                 }
             }
-        }, actionNames);       
-    }      
+        }, actionNames);
+	}
 }

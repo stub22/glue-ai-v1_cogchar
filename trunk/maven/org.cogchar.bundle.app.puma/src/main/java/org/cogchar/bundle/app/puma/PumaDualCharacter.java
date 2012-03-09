@@ -18,6 +18,7 @@ package org.cogchar.bundle.app.puma;
 
 import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import java.io.File;
+import java.io.InputStream;
 
 import java.util.List;
 
@@ -72,9 +73,11 @@ public class PumaDualCharacter implements DummyBox {
 	public void connectBonyDualForURI( String bonyDualCharURI) throws Throwable {
 		BundleContext bundleCtx = myMBRSC.getBundleContext();
 		myBRC.setMainCharURI(bonyDualCharURI);
-		File jointBindingConfigFile = myBRC.getJointConfigFileForChar();
+		String jointConfigAssetName = myBRC.getJointConfigAssetNameForChar(bonyDualCharURI);
+		InputStream jointConfigAssetStream = openAssetStream(jointConfigAssetName);
+		myMBRSC.makeModelRobotWithBlenderAndFrameSource(jointConfigAssetStream, jointConfigAssetName);
+		// File jointBindingConfigFile = myBRC.getJointConfigFileForChar();
         //rjbd.registerDummyRobot();
-		setupBonyRobotWithBlender(jointBindingConfigFile);
 		ModelRobot br = getBonyRobot();
 		Robot.Id brid = br.getRobotId();
 		if (br != null) {
@@ -92,10 +95,9 @@ public class PumaDualCharacter implements DummyBox {
 		}
 		mySOC = new SpeechOutputClient(bundleCtx);
 	}
-	
-	public void setupBonyRobotWithBlender(File jointBindingConfigFile) throws Throwable {
-		myMBRSC.makeModelRobotWithBlenderAndFrameSource(jointBindingConfigFile);
-	}
+	private InputStream openAssetStream(String assetName) { 
+		return myBRC.openAssetStream(assetName);
+	}	
 	public ModelRobot getBonyRobot() { 
 		return myMBRSC.getRobot();
 	}	
