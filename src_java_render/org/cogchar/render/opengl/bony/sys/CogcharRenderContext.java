@@ -16,6 +16,8 @@
 package org.cogchar.render.opengl.bony.sys;
 
 import com.jme3.app.state.AppStateManager;
+import com.jme3.asset.AssetInfo;
+import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapText;
 import com.jme3.input.FlyByCamera;
@@ -26,12 +28,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
+import java.io.InputStream;
 import org.cogchar.render.opengl.app.AppStub;
 import org.cogchar.render.opengl.bony.world.DemoVectorFactory;
 import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
-import org.slf4j.Logger;
 
 /**  Named to differentiate it from JMonkey "RenderContext".  
  * This base class does not maintain any instance data.
@@ -43,7 +45,6 @@ import org.slf4j.Logger;
  * @author Stu B. <www.texpedient.com>
  */
 public class CogcharRenderContext extends RenderRegistryAware {
-	private		Logger			myLogger;
 	
 	private		AppStub			myAppStub;
 	
@@ -150,5 +151,21 @@ public class CogcharRenderContext extends RenderRegistryAware {
 		}
 		return result;
 	}
+	public InputStream openAssetStream(String assetName) {
+		InputStream ais = null;
+		try {
+			AssetKey akey = new AssetKey(assetName);
+			AssetManager assetMgr = findJme3AssetManager(null);
+			AssetInfo ainf = assetMgr.locateAsset(akey);
+			if (ainf != null) {
+				ais = ainf.openStream();
+			} else {
+				getLogger().warn("Cannot find AssetInfo for   assetName: " + assetName);
+			}
+		} catch (Throwable t) {
+			getLogger().warn("Cannot open input stream for   assetName: " + assetName, t);
+		}
+		return ais;
+	}	
 		
 }

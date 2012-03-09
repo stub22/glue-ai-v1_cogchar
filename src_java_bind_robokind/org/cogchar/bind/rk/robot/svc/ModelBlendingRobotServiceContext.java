@@ -26,6 +26,7 @@ import org.robokind.api.motion.Robot;
 
 
 import java.io.File;
+import java.io.InputStream;
 
 import org.osgi.framework.BundleContext;
 
@@ -43,7 +44,18 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 	public ModelBlendingRobotServiceContext(BundleContext bundleCtx) {
 		super(bundleCtx);
 	}
-	
+	public void makeModelRobotWithBlenderAndFrameSource(InputStream jointBindingConfigStream, String streamTitle) throws Throwable {
+
+		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START makeBonyRobot__, using stream: " + streamTitle);
+		//Create your Robot and register it
+		ModelRobot br = ModelRobotFactory.buildFromStream(jointBindingConfigStream, streamTitle);
+        if(br == null){
+            theLogger.warn("Error building Robot from stream: " + streamTitle);
+            return;
+        }
+		registerAndStart(br);
+		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeBonyRobotWithBlenderAndFrameSource ");
+	}	
 	
 	public void makeModelRobotWithBlenderAndFrameSource(File jointBindingConfigFile) throws Throwable {
 		String bindingFilePath = jointBindingConfigFile.getAbsolutePath();

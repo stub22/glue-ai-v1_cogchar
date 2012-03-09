@@ -36,9 +36,6 @@ import org.slf4j.LoggerFactory;
  */
 public class HumanoidPuppetApp extends BonyVirtualCharApp<HumanoidRenderContext> {
     private final static Logger		theLogger = LoggerFactory.getLogger(HumanoidPuppetApp.class);
-	private HumanoidFigure	myHumanoidWrapper;
-
-
 
 	public static void main(String[] args) {
 		BonyConfigEmitter bce = new BonyConfigEmitter();

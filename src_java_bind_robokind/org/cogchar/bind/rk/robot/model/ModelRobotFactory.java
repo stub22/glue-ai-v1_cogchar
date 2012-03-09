@@ -16,6 +16,11 @@
 package org.cogchar.bind.rk.robot.model;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,55 +42,70 @@ import org.slf4j.LoggerFactory;
  * @author Matthew Stevenson <www.robokind.org>
  */
 public class ModelRobotFactory {
+
 	static Logger theLogger = LoggerFactory.getLogger(ModelRobotFactory.class);
-    public static ModelRobot buildFromFile(File configFile){
-        try{
-            BonyRobotConfig config = AvroUtils.readFromFile(
-                    BonyRobotConfig.class, 
-                    null, 
-                    BonyRobotConfig.SCHEMA$, 
-                    configFile, 
-                    true);
-            return buildRobot(config);
-        }catch(IOException ex){
-            theLogger.warn(
-                    "Error loading file: " + configFile.getAbsolutePath(), ex);
-        }
-        return null;
-    }
-    
-    public static ModelRobot buildRobot(BonyRobotConfig config){
-        ModelRobot robot = 
-                new ModelRobot(new Robot.Id(config.robotId.toString()));
-        for(BonyJointConfig jc : config.jointConfigs){
-            robot.registerBonyJoint(buildJoint(jc));
-        }
-        List<BoneRotationConfig> rotConfigs = config.initialBonePositions;
-        List<ModelBoneRotation> rotations = 
-                new ArrayList<ModelBoneRotation>(rotConfigs.size());
-        for(BoneRotationConfig conf : rotConfigs){
-            rotations.add(new ModelBoneRotation(
-                    conf.boneName.toString(), 
-                    conf.rotationAxis, 
-                    conf.rotationRadians));
-        }
-        robot.setInitialBoneRotations(rotations);
-        return robot;
-    }
-    
-    private static ModelJoint buildJoint(BonyJointConfig config){
-        Joint.Id jointId = new Joint.Id(config.jointId);
-        double defVal = Utils.bound(config.normalizedDefaultPosition, 0.0, 1.0);
-        NormalizedDouble def = new NormalizedDouble(defVal);
-        List<BoneRotationRangeConfig> rotConfigs = config.boneRotations;
-        List<ModelBoneRotRange> ranges = new ArrayList<ModelBoneRotRange>(rotConfigs.size());
-        for(BoneRotationRangeConfig c : rotConfigs){
-            ranges.add(new ModelBoneRotRange(
-                    c.boneName.toString(), 
-                    c.rotationAxis,
-                    c.minPosition,
-                    c.maxPosition));
-        }
-        return new ModelJoint(jointId, config.name.toString(), ranges, def);
-    }
+
+	public static ModelRobot buildFromFile(File configFile) {
+		String streamTitle = configFile.getAbsolutePath();
+		try {
+			InputStream inStream = new FileInputStream(configFile);
+			return buildFromStream(inStream, streamTitle);
+		} catch (IOException ex) {
+			theLogger.warn(
+					"Error reading ModelRobot config from  file: " + streamTitle, ex);
+		}
+		return null;
+	}
+
+	public static ModelRobot buildFromStream(InputStream configInputStream, String streamTitle) {
+		ModelRobot builtMR = null;
+		try { 
+			BonyRobotConfig config = AvroUtils.readFromStream(
+					BonyRobotConfig.class,
+					null,
+					BonyRobotConfig.SCHEMA$,
+					configInputStream,
+					true);
+			builtMR = buildRobot(config);
+		} catch (Throwable t) {
+			theLogger.warn(
+					"Error reading ModelRobot config from  stream: " + streamTitle, t);
+		}
+		return builtMR;
+	}
+
+	public static ModelRobot buildRobot(BonyRobotConfig config) {
+		ModelRobot robot =
+				new ModelRobot(new Robot.Id(config.robotId.toString()));
+		for (BonyJointConfig jc : config.jointConfigs) {
+			robot.registerBonyJoint(buildJoint(jc));
+		}
+		List<BoneRotationConfig> rotConfigs = config.initialBonePositions;
+		List<ModelBoneRotation> rotations =
+				new ArrayList<ModelBoneRotation>(rotConfigs.size());
+		for (BoneRotationConfig conf : rotConfigs) {
+			rotations.add(new ModelBoneRotation(
+					conf.boneName.toString(),
+					conf.rotationAxis,
+					conf.rotationRadians));
+		}
+		robot.setInitialBoneRotations(rotations);
+		return robot;
+	}
+
+	private static ModelJoint buildJoint(BonyJointConfig config) {
+		Joint.Id jointId = new Joint.Id(config.jointId);
+		double defVal = Utils.bound(config.normalizedDefaultPosition, 0.0, 1.0);
+		NormalizedDouble def = new NormalizedDouble(defVal);
+		List<BoneRotationRangeConfig> rotConfigs = config.boneRotations;
+		List<ModelBoneRotRange> ranges = new ArrayList<ModelBoneRotRange>(rotConfigs.size());
+		for (BoneRotationRangeConfig c : rotConfigs) {
+			ranges.add(new ModelBoneRotRange(
+					c.boneName.toString(),
+					c.rotationAxis,
+					c.minPosition,
+					c.maxPosition));
+		}
+		return new ModelJoint(jointId, config.name.toString(), ranges, def);
+	}
 }
