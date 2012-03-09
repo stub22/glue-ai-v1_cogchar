@@ -33,7 +33,7 @@ public class HumanoidFigureModule extends RenderModule {
 	}
 	
 	@Override protected void doRenderCycle(long runSeqNum, float tpf) {
-		FigureState fs = myBRC.getFigureState();
+		FigureState fs = myFigure.getFigureState();
 		myFigure.applyFigureState(fs);
 	}
 }

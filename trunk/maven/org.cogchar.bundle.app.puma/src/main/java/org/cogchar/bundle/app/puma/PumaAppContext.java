@@ -18,13 +18,16 @@ package org.cogchar.bundle.app.puma;
 import java.io.InputStream;
 import javax.swing.JFrame;
 
+import java.util.List;
+import java.util.ArrayList;
+
+import org.osgi.framework.BundleContext;
+
 import org.cogchar.app.buddy.busker.DancingTriggerItem;
 import org.cogchar.app.buddy.busker.TalkingTriggerItem;
 
 
-import org.osgi.framework.BundleContext;
-
-
+import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.app.BodyController;
 import org.cogchar.render.opengl.bony.app.VerbalController;
@@ -45,43 +48,65 @@ import org.slf4j.LoggerFactory;
 public class PumaAppContext {
 
 	static Logger theLogger = LoggerFactory.getLogger(PumaAppContext.class);
-	private BundleContext myBundleContext;
+	
+	private BundleContext		myBundleContext;
+	private	BonyRenderContext	myBonyRenderContext;
+	
 
-	public PumaAppContext(BundleContext bc) {
+	public PumaAppContext(BundleContext bc, String sysContextURI) {
 		myBundleContext = bc;
+		myBonyRenderContext = RenderBundleUtils.getBonyRenderContext(bc);
+		myBonyRenderContext.setSystemContextURI(sysContextURI);
+		
 	}
 
-	public PumaDualCharacter makeDualCharForSwingOSGi(String dualCharURI) throws Throwable {
-		startOpenGLCanvas(dualCharURI, true);
-		return connectDualRobotChar(dualCharURI);
+	public List<PumaDualCharacter> makeDualCharsForSwingOSGi() throws Throwable {
+		startOpenGLCanvas(true);
+		return connectDualRobotChars();
 	}
-
+/*
 	private BonyRenderContext fetchBonyRenderContext() {
 		return RenderBundleUtils.getBonyRenderContext(myBundleContext);
 	}
 	// TODO: add URI based lookup for multiple BCs
-
-	public BonyRenderContext getBonyRenderContext(String bonyCharURI) {
-		return fetchBonyRenderContext();
+*/
+	public BonyRenderContext getBonyRenderContext() { // String bonyCharURI) {
+		// return fetchBonyRenderContext();
+		return myBonyRenderContext;
 	}
 
 
+	public List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
+		List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
+		BonyRenderContext brc = getBonyRenderContext();
+		BonyConfigEmitter bce = brc.getBonyConfigEmitter();
+		List<String> charURIs = bce.getBonyCharURIs();
+		for (String charURI : charURIs) {
+			PumaDualCharacter pdc = connectDualRobotChar(charURI);
+			pdcList.add(pdc);
+		}
+		PumaDualCharacter pdc = pdcList.get(0);
+		if (pdc != null) {
+			registerDummyPoker(brc, pdc);
+			registerDummyTalker(brc, pdc);
+		}
+		return pdcList;
+	}
 	public PumaDualCharacter connectDualRobotChar(String bonyCharURI)
 			throws Throwable {
 		
-		BonyRenderContext bc = getBonyRenderContext(bonyCharURI);
+		BonyRenderContext bc = getBonyRenderContext();
 		if (bc == null) {
 			throw new Exception ("BonyRenderContext is null");
 		}
-		PumaDualCharacter pdc = new PumaDualCharacter(bc, myBundleContext);
-		pdc.connectBonyDualForURI(bonyCharURI);
-		registerDummyPoker(bc, pdc);
-		registerDummyTalker(bc, pdc);
+		PumaDualCharacter pdc = new PumaDualCharacter(bc, myBundleContext, bonyCharURI);
+		pdc.connectBonyDualToModelRobot();
+
 		return pdc;
 	}
 
-	public void startOpenGLCanvas(String dualCharURI, boolean wrapInJFrameFlag) throws Exception {
-		BonyRenderContext bc = getBonyRenderContext(dualCharURI);
+	public void startOpenGLCanvas(boolean wrapInJFrameFlag) throws Exception {
+		BonyRenderContext bc = getBonyRenderContext();
 		theLogger.info("Got BonyRenderContext: " + bc);
 
 		if (bc != null) {

@@ -28,8 +28,8 @@ import org.cogchar.blob.emit.BonyConfigEmitter;
  */
 public class PhysicallyWigglingHumanoid extends HumanoidFigure {
 	private float myPhysicsWigglePhase = 0.0f;		
-	public 	PhysicallyWigglingHumanoid(BonyConfigEmitter bce)  {
-		super(bce);
+	public 	PhysicallyWigglingHumanoid(BonyConfigEmitter bce, String charURI)  {
+		super(bce, charURI);
 	}
 	public void wiggleUsingPhysics(float tpf) { 
 		wiggleUsingPhysicsMotors(myHumanoidBoneConfig, tpf);

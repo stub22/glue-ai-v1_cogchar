@@ -29,6 +29,7 @@ import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.state.BoneState;
+import org.cogchar.render.opengl.bony.model.HumanoidFigure;
 
 import java.util.List;
 
@@ -54,8 +55,9 @@ import org.slf4j.LoggerFactory;
  */
 public class ModelToFigureStateMappingFuncs {
 	static Logger theLogger = LoggerFactory.getLogger(ModelToFigureStateMappingFuncs.class);	
-	public static void propagateState(ModelRobot br, BonyRenderContext bc) { 
-		FigureState fs = bc.getFigureState();
+	
+	public static void propagateState(ModelRobot br, HumanoidFigure hf) { 
+		FigureState fs = hf.getFigureState();
 		Map<String,List<ModelBoneRotation>> rotMap = ModelRobotUtils.getGoalAnglesAsRotations(br);
 		// theLogger.info("Sending " + fs + " to " + rotMap);
 		applyAllSillyEulerRotations(fs, rotMap);

@@ -18,6 +18,9 @@ package org.cogchar.nbui.render;
 
 import java.io.File;
 import java.util.Properties;
+
+import java.util.List;
+
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelRobotUtils;
 
@@ -77,18 +80,17 @@ public final class VirtualCharTopComponent extends TopComponent {
 		// Robokind-Workshop-friendly features should be activated.  This area is ripe for improvement
 		// in Cogchar 1.0.4, due in March 2012.
 		// String dualCharURI = "urn:org.cogchar/platform/nb701?charName=HRK_Zeno_R50&version=20120302";       
-		String dualCharURI = "NBURI:huzzah";             
-		PumaAppContext pac = new PumaAppContext(bundleCtx);
-		BonyRenderContext brc = pac.getBonyRenderContext(dualCharURI);
-		brc.setMainCharURI(dualCharURI);
+		String sysContextURI = "NBURI:huzzah";             
+		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI);
+		BonyRenderContext brc = pac.getBonyRenderContext();
 		initVirtualCharPanel(brc);
 		
 		// Firing up the OpenGL canvas requires access to sun.misc.Unsafe, which must be explicitly imported 
 		// by ext.bundle.osgi.jmonkey, and explicitly allowed by the container using Netigso
 		
-		pac.startOpenGLCanvas(dualCharURI, false);
+		pac.startOpenGLCanvas(false);
 		
-		PumaDualCharacter pdc = pac.connectDualRobotChar(dualCharURI);	
+		List<PumaDualCharacter> pdcList = pac.connectDualRobotChars();	
         File file = new File(Installer.VIRTCHAR_NB_MODULE_DIR + "/jointgroup.xml");
         RobotServiceFuncs.registerJointGroup(bundleCtx, file);
 

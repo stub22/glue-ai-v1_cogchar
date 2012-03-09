@@ -30,6 +30,8 @@ import java.util.List;
 import org.cogchar.platform.trigger.DummyBox;
 import org.cogchar.platform.trigger.DummyTrigger;
 
+import org.cogchar.blob.emit.BonyConfigEmitter;
+
 /**
  
  */
@@ -45,7 +47,7 @@ public class HumanoidPuppetActions {
         },
         TOGGLE_KIN_MODE {
             void act(HumanoidRenderContext ctx) {
-				HumanoidFigure hw = ctx.getHumdWrap();
+				HumanoidFigure hw = getSinbad(ctx);
 				hw.toggleKinMode();
             }
             Trigger[] makeJME3InputTriggers() { 
@@ -55,7 +57,7 @@ public class HumanoidPuppetActions {
         },
         STAND_UP {
             void act(HumanoidRenderContext ctx) {
-				HumanoidFigure hw = ctx.getHumdWrap();
+				HumanoidFigure hw = getSinbad(ctx);
 				hw.standUp();
             }
             Trigger[] makeJME3InputTriggers() { 
@@ -68,7 +70,7 @@ public class HumanoidPuppetActions {
         BOOGIE {
 			// Triggers a JME3 animation
             void act(HumanoidRenderContext ctx) {
-				HumanoidFigure hw = ctx.getHumdWrap();
+				HumanoidFigure hw = getSinbad(ctx);
 				hw.boogie();
             }
             Trigger[] makeJME3InputTriggers() { 
@@ -131,6 +133,10 @@ public class HumanoidPuppetActions {
 		}
 		public DummyBinding getBinding() { 
 			return myBoundAction;
+		}
+		HumanoidFigure getSinbad(HumanoidRenderContext hrc) { 
+			BonyConfigEmitter bce = hrc.getBonyConfigEmitter();
+			return hrc.getHumanoidFigure(bce.SINBAD_CHAR_URI());
 		}
 	};
     static void setupActionListeners(InputManager inputManager, final HumanoidRenderContext ctx) {
