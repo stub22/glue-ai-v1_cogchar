@@ -37,7 +37,7 @@ public class BonyRenderContext extends DemoRenderContext {
 	protected	JFrame					myFrame;
 	protected	ScoreBoard				myScoreBoard;
 	protected	List<AnimControl>		myAnimControls;
-	protected	FigureState				myFigureState;
+
 
 	public BonyRenderContext(BonyConfigEmitter bce) { 
 		super(bce);
@@ -79,29 +79,19 @@ public class BonyRenderContext extends DemoRenderContext {
 	public JFrame getFrame() { 
 		return myFrame;
 	}
-	public FigureState getFigureState() {
-		return myFigureState;
-	}
-	public void setFigureState(FigureState fs) { 
-		myFigureState = fs;
-	}
+
 	public BonyConfigEmitter getBonyConfigEmitter() { 
 		return (BonyConfigEmitter) getConfigEmiiter();
 	}
-	public void setMainCharURI(String mainCharURI) {
-		getBonyConfigEmitter().setMainCharURI(mainCharURI);
+	public void setSystemContextURI(String sysContextURI) {
+		getBonyConfigEmitter().setSystemContextURI(sysContextURI);
+	}
+	public String getJointConfigAssetNameForChar(String charURI) {
+		return getBonyConfigEmitter().getJointConfigAssetNameForChar(charURI);
 	}
 	public Vector3f getConfigVector3f(String vectorURI) {
 		float[] xyz = getBonyConfigEmitter().getNamedFloatVector(vectorURI);
 		return JmonkeyMathObjFactory.makeVector(xyz);
-	}
-	/*
-	public File getJointConfigFileForChar() {
-		return getBonyConfigEmitter().getJointConfigFileForChar();
-	}*/
-	
-	public String getJointConfigAssetNameForChar(String charURI) {
-		return getBonyConfigEmitter().getJointConfigAssetNameForChar(charURI);
-	}
+	}	
 
 }

@@ -4,7 +4,7 @@
 		{"name": "Waist",
 			"jointId": 0,
 			"boneRotations":[
-				{"boneName": "Waist",
+				{"boneName": "Spine1",
 					"rotationAxis":"ROLL",
 					"minPosition": -1.50329990234375,
 					"maxPosition": 1.33456215820312
@@ -15,7 +15,7 @@
 		{"name": "Right Arm Up",
 			"jointId": 1,
 			"boneRotations":[
-				{"boneName": "Ulna.R",
+				{"boneName": "RtClav",
 					"rotationAxis":"YAW",
 					"minPosition": -0.530756904296875,
 					"maxPosition": 0.900957288411458
@@ -26,7 +26,7 @@
 		{"name": "Right Arm Turn",
 			"jointId": 2,
 			"boneRotations":[
-				{"boneName": "Ulna.R",
+				{"boneName": "RtClav",
 					"rotationAxis":"ROLL",
 					"minPosition": -0.655676012916667,
 					"maxPosition": 1.91629626898437
@@ -37,7 +37,7 @@
 		{"name": "Right Shoulder Out",
 			"jointId": 3,
 			"boneRotations":[
-				{"boneName": "Humerus.R",
+				{"boneName": "RtShoulder",
 					"rotationAxis":"YAW",
 					"minPosition": -0.630788729635417,
 					"maxPosition": 0.795812198098958
@@ -48,7 +48,7 @@
 		{"name": "Right Shoulder Turn",
 			"jointId": 4,
 			"boneRotations":[
-				{"boneName": "Humerus.R",
+				{"boneName": "RtShoulder",
 					"rotationAxis":"ROLL",
 					"minPosition": -1.45216725260417,
 					"maxPosition": 3.26737631835937
@@ -59,7 +59,7 @@
 		{"name": "Left Arm Up",
 			"jointId": 5,
 			"boneRotations":[
-				{"boneName": "Ulna.L",
+				{"boneName": "LtClav",
 					"rotationAxis":"YAW",
 					"minPosition": -0.921410348307292,
 					"maxPosition": 0.561436494140625
@@ -70,7 +70,7 @@
 		{"name": "Left Arm Turn",
 			"jointId": 6,
 			"boneRotations":[
-				{"boneName": "Ulna.L",
+				{"boneName": "LtClav",
 					"rotationAxis":"ROLL",
 					"minPosition": -2.19977567914062,
 					"maxPosition": 0.167666003802083
@@ -81,7 +81,7 @@
 		{"name": "Left Shoulder Out",
 			"jointId": 7,
 			"boneRotations":[
-				{"boneName": "Humerus.L",
+				{"boneName": "LtShoulder",
 					"rotationAxis":"YAW",
 					"minPosition": 0.586806469635416,
 					"maxPosition": -0.809114868255209
@@ -92,7 +92,7 @@
 		{"name": "Left Shoulder Turn",
 			"jointId": 8,
 			"boneRotations":[
-				{"boneName": "Humerus.L",
+				{"boneName": "LtShoulder",
 					"rotationAxis":"ROLL",
 					"minPosition": -3.07818551432292,
 					"maxPosition": 1.54931928710937
@@ -134,12 +134,12 @@
 		{"name": "Eyes Turn",
 			"jointId": 23,
 			"boneRotations":[
-				{"boneName": "Eye.R",
+				{"boneName": "RtEye",
 					"rotationAxis":"PITCH",
 					"minPosition": -0.36652,
 					"maxPosition": 0.36652
 				},
-				{"boneName": "Eye.L",
+				{"boneName": "LtEye",
 					"rotationAxis":"PITCH",
 					"minPosition": -0.36652,
 					"maxPosition": 0.36652
@@ -150,12 +150,12 @@
 		{"name": "Eyes Up",
 			"jointId": 24,
 			"boneRotations":[
-				{"boneName": "Eye.R",
+				{"boneName": "RtEye",
 					"rotationAxis":"YAW",
 					"minPosition": 0.47124,
 					"maxPosition": -0.15708
 				},
-				{"boneName": "Eye.L",
+				{"boneName": "LtEye",
 					"rotationAxis":"YAW",
 					"minPosition": 0.47124,
 					"maxPosition": -0.15708
@@ -204,7 +204,7 @@
 		{"name": "Neck Tilt",
 			"jointId": 28,
 			"boneRotations":[
-				{"boneName": "Neck",
+				{"boneName": "Neackbase",
 					"rotationAxis":"YAW",
 					"minPosition": -0.272272,
 					"maxPosition": 0.272272
@@ -215,7 +215,7 @@
 		{"name": "Neck Nod",
 			"jointId": 29,
 			"boneRotations":[
-				{"boneName": "Neck",
+				{"boneName": "Head",
 					"rotationAxis":"PITCH",
 					"minPosition": -0.324632,
 					"maxPosition": 0.675444
@@ -226,7 +226,7 @@
 		{"name": "Neck Turn",
 			"jointId": 30,
 			"boneRotations":[
-				{"boneName": "Neck",
+				{"boneName": "Head",
 					"rotationAxis":"ROLL",
 					"minPosition": -0.7854,
 					"maxPosition": 0.7854
@@ -236,7 +236,7 @@
 		}
 	],
 	"initialBonePositions": [
-		{"boneName": "Eye.R",
+		{"boneName": "RtEye",
             "rotationAxis":"ROLL",
             "rotationRadians": 0.54978}
 	]

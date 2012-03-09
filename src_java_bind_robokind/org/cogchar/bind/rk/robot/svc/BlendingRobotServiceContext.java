@@ -39,14 +39,17 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
 
 	protected void startDefaultBlender() {
 		R robot = getRobot();
-        //Starts a blender
+		Robot.Id robotID = robot.getRobotId();
+        theLogger.info("Starting default blender for robotID: " + robotID);
         myBlenderRegs = RobotUtils.startDefaultBlender(
-                myBundleCtx, robot.getRobotId(), RobotUtils.DEFAULT_BLENDER_INTERVAL);
+                myBundleCtx, robotID, RobotUtils.DEFAULT_BLENDER_INTERVAL);
 	}
 	protected void  registerFrameSource() { 
 		R robot = getRobot();
+		Robot.Id robotID = robot.getRobotId();		
 		//create and register the MotionTargetFrameSource,
         myFrameSource = new RobotMoverFrameSource(robot);
+		theLogger.info("Registering FrameSource for robotID: " + robotID);
 		RobotUtils.registerFrameSource(myBundleCtx, robot.getRobotId(), myFrameSource);
 	}
     protected void testPositionMove() { 
