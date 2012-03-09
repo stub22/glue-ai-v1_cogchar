@@ -40,31 +40,35 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.KinematicRagdollControl;
-import com.jme3.bullet.joints.SixDofJoint;
-import com.jme3.bullet.joints.motors.RotationalLimitMotor;
-import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
 import java.util.List;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.state.BoneState;
 import org.cogchar.render.opengl.bony.state.FigureState;
-import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidFigure implements RagdollCollisionListener, AnimEventListener {
-	private Node myHumanoidModelNode;
-	protected  KinematicRagdollControl myHumanoidKRC;
-	private AnimChannel myHumanoidAnimChannel;
-	protected	HumanoidBoneConfig	myHumanoidBoneConfig;
+	static Logger theLogger = LoggerFactory.getLogger(HumanoidFigure.class);
+
+	private Node						myHumanoidModelNode;
+	protected  KinematicRagdollControl	myHumanoidKRC;
+	private AnimChannel					myHumanoidAnimChannel;
+	protected	HumanoidBoneConfig		myHumanoidBoneConfig;
 	// Skeleton is used for direct access to the graphic "spatial" bones of JME3 (bypassing JBullet physics bindings). 
-	private	Skeleton			myHumanoidSkeleton;
-	private BonyConfigEmitter	myBonyConfigEmitter;
+	private	Skeleton					myHumanoidSkeleton;
+	private BonyConfigEmitter			myBonyConfigEmitter;
+	
+	private	FigureState					myFigureState;
+	
+	private String						myCharURI;
+	private String						myNickname;
 
 	public static String 	
 			ANIM_STAND_FRONT = "StandUpFront",
@@ -76,8 +80,10 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	private static float DEFAULT_ANIM_BLEND_RATE = 0.5f;
 	private static float KRC_WEIGHT_THRESHOLD = 0.5f;
 
-	public HumanoidFigure(BonyConfigEmitter bce) { 
+	public HumanoidFigure(BonyConfigEmitter bce, String charURI) { 
 		myBonyConfigEmitter = bce;
+		myCharURI = charURI;
+		myNickname = bce.getNicknameForChar(charURI);
 	}
 	public HumanoidBoneConfig getHBConfig() {
 		return myHumanoidBoneConfig;
@@ -177,8 +183,12 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	}
 	
 	public void boogie() { 
-		myHumanoidAnimChannel.setAnim(ANIM_DANCE);
-		myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
+		try {
+			myHumanoidAnimChannel.setAnim(ANIM_DANCE);
+			myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
+		} catch (Throwable t) {
+			theLogger.warn("Character cannot boogie, nickname is: " + myNickname, t);
+		}
 	}
 	public void attachDebugSkeleton(Node humanoidModel, AssetManager assetMgr) { 
 		// AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
@@ -198,7 +208,13 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 		myHumanoidKRC.addBoneName(hbd.getSpatialName());
 	}
 
-
+	public FigureState getFigureState() {
+		return myFigureState;
+	}
+	public void setFigureState(FigureState fs) { 
+		myFigureState = fs;
+	}
+	
 	public void applyFigureState(FigureState fs) {
 		if (fs == null) {
 			return;

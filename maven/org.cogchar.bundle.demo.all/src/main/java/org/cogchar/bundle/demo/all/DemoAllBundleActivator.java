@@ -19,14 +19,14 @@ public class DemoAllBundleActivator extends BundleActivatorBase {
 	@Override public void start(BundleContext bundleCtx) throws Exception {
 		String uriPrefix = "http://model.cogchar.org/char/bony/";
 		String bonyCharUniqueSuffix = "0x0000FFFF";
-		String bonyCharURI = "http://model.cogchar.org/char/bony/" + bonyCharUniqueSuffix;
-		String debugTxt = "bonyChar at URI[" + bonyCharURI + "]";
+		String sysContextURI = "http://model.cogchar.org/char/bony/" + bonyCharUniqueSuffix;
+		String debugTxt = "sysContextURI = [" + sysContextURI + "]";
 		theLogger.info("==============================\nStarting " + debugTxt);
 		super.start(bundleCtx);
 		
-		PumaAppContext pac = new PumaAppContext(bundleCtx);
+		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI);
 		try {
-			pac.makeDualCharForSwingOSGi(bonyCharURI);
+			pac.makeDualCharsForSwingOSGi();
 		} catch (Throwable t) {
 			theLogger.error("Cannot initialize " + debugTxt, t);
 		}

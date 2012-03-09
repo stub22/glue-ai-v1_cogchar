@@ -15,7 +15,7 @@ import com.jme3.math.FastMath;
  */
 public class HumanoidBoneConfig {
 
-	private List<HumanoidBoneDesc> myBoneDescs;
+	private List<HumanoidBoneDesc> myBoneDescs = new ArrayList<HumanoidBoneDesc>();
 
 	public HumanoidBoneConfig() {
 
@@ -26,9 +26,9 @@ public class HumanoidBoneConfig {
 		myBoneDescs.add(hbd);
 	}
 
-	public void attachRagdollBones(HumanoidFigure hrw) {
+	public void attachRagdollBones(HumanoidFigure hf) {
 		for (HumanoidBoneDesc hbd : myBoneDescs) {
-			hrw.attachRagdollBone(hbd);
+			hf.attachRagdollBone(hbd);
 		}
 	}
 
@@ -41,7 +41,6 @@ public class HumanoidBoneConfig {
 	}
 
 	public void addSinbadDefaultBoneDescs() {
-		myBoneDescs = new ArrayList<HumanoidBoneDesc>();
 
 		// Explicitly bound to KRD in Bowl-At-Sinbad demo
 		addBoneDesc("Ulna.L");
@@ -84,6 +83,7 @@ public class HumanoidBoneConfig {
 	 * 
 	 */
 	public void addZenoDefaultBoneDescs() {
+
 		addBoneDesc("Root");
 		addBoneDesc("Spine1");
 		addBoneDesc("Neackbase");

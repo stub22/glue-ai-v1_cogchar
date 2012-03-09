@@ -45,7 +45,6 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 		super(bundleCtx);
 	}
 	public void makeModelRobotWithBlenderAndFrameSource(InputStream jointBindingConfigStream, String streamTitle) throws Throwable {
-
 		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START makeBonyRobot__, using stream: " + streamTitle);
 		//Create your Robot and register it
 		ModelRobot br = ModelRobotFactory.buildFromStream(jointBindingConfigStream, streamTitle);
@@ -56,19 +55,8 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 		registerAndStart(br);
 		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeBonyRobotWithBlenderAndFrameSource ");
 	}	
-	
-	public void makeModelRobotWithBlenderAndFrameSource(File jointBindingConfigFile) throws Throwable {
-		String bindingFilePath = jointBindingConfigFile.getAbsolutePath();
-		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START makeBonyRobot__, using file: " + bindingFilePath);
-		//Create your Robot and register it
-		ModelRobot br = ModelRobotFactory.buildFromFile(jointBindingConfigFile);
-        if(br == null){
-            theLogger.warn("Error building Robot from file: " + bindingFilePath);
-            return;
-        }
-		registerAndStart(br);
-		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeBonyRobotWithBlenderAndFrameSource ");
-	}
+
+	// Test method, currently unused.
 	public void registerDummyModelRobot() throws Throwable {
 		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START registerDummyBlendingRobot");
 		//Create your Robot and register it
@@ -78,5 +66,6 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 		//BonyRobotUtils.makeBonyJointForRobot(myBonyRobot, 22, "JNinetyNine", 0.8, 0.9);
 		registerAndStart(br);
 		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END registerDummyBlendingRobot");
-	}		
+	}	
+
 }

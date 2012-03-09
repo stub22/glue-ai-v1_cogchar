@@ -41,7 +41,8 @@ import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.state.BoneState;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-
+import org.cogchar.render.opengl.bony.demo.HumanoidRenderContext;
+import org.cogchar.render.opengl.bony.model.HumanoidFigure;
 
 import org.cogchar.bind.rk.robot.svc.BlendingRobotServiceContext;
 import org.cogchar.bind.rk.robot.model.ModelBoneRotRange;
@@ -66,14 +67,16 @@ public class PumaDualCharacter implements DummyBox {
 	private	RobotAnimClient						myRAC;
 	private SpeechOutputClient					mySOC;
 	
-	public PumaDualCharacter(BonyRenderContext brc, BundleContext bundleCtx) {
+	private	String								myCharURI;
+	
+	public PumaDualCharacter(BonyRenderContext brc, BundleContext bundleCtx, String charURI) {
 		myBRC = brc;
 		myMBRSC = new ModelBlendingRobotServiceContext(bundleCtx);
+		myCharURI = charURI;
 	}
-	public void connectBonyDualForURI( String bonyDualCharURI) throws Throwable {
+	public void connectBonyDualToModelRobot() throws Throwable {
 		BundleContext bundleCtx = myMBRSC.getBundleContext();
-		myBRC.setMainCharURI(bonyDualCharURI);
-		String jointConfigAssetName = myBRC.getJointConfigAssetNameForChar(bonyDualCharURI);
+		String jointConfigAssetName = myBRC.getJointConfigAssetNameForChar(myCharURI);
 		InputStream jointConfigAssetStream = openAssetStream(jointConfigAssetName);
 		myMBRSC.makeModelRobotWithBlenderAndFrameSource(jointConfigAssetStream, jointConfigAssetName);
 		// File jointBindingConfigFile = myBRC.getJointConfigFileForChar();
@@ -101,37 +104,22 @@ public class PumaDualCharacter implements DummyBox {
 	public ModelRobot getBonyRobot() { 
 		return myMBRSC.getRobot();
 	}	
-	/*public class DanceDoer implements DemoBonyWireframeRagdoll.Doer {
-		
-		public void doIt() { 
-			System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  Doing dance ");
-			try {
-				
-				BonyAnimUtils.createAndPlayAnim(myBundleCtx);
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
-		}
-	}*/
+
 	public void connectToVirtualChar() throws Exception {
-		BonyVirtualCharApp app = myBRC.getApp();
 		setupFigureState();
 		final ModelRobot br = getBonyRobot();
 		br.registerMoveListener(new ModelRobot.MoveListener() {
 			@Override public void notifyBonyRobotMoved(ModelRobot br) {
-				ModelToFigureStateMappingFuncs.propagateState(br, myBRC);
+				HumanoidFigure hf = getHumanoidFigure();
+				ModelToFigureStateMappingFuncs.propagateState(br, hf);
 			}
 			
 		});
-		/*
-		BonyRagdollApp bra = (BonyRagdollApp) app;
-		DemoBonyWireframeRagdoll dbwr = bra.getRagdoll();
-		DanceDoer dd = new DanceDoer();
-		dbwr.setDanceDoer(dd);
-		 */
 	}
-
-
+	public HumanoidFigure getHumanoidFigure() { 
+		HumanoidRenderContext hrc = (HumanoidRenderContext) myBRC;
+		return hrc.getHumanoidFigure(myCharURI);
+	}
 	public void setupFigureState() { 
 		ModelRobot br = getBonyRobot();
 		FigureState fs = new FigureState();
@@ -142,11 +130,13 @@ public class PumaDualCharacter implements DummyBox {
                 fs.obtainBoneState(name);
             }
 		}
-		myBRC.setFigureState(fs);
+		HumanoidFigure hf = getHumanoidFigure();
+		hf.setFigureState(fs);
 	}
 	
     public void applyInitialBoneRotations() {
-		FigureState fs = myBRC.getFigureState();
+		HumanoidFigure hf = getHumanoidFigure();
+		FigureState fs = hf.getFigureState();
 		ModelRobot br = getBonyRobot();
 		Map<String,List<ModelBoneRotation>> initialRotationMap = ModelRobotUtils.getInitialRotationMap(br);
         ModelToFigureStateMappingFuncs.applyAllSillyEulerRotations(fs, initialRotationMap);

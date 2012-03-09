@@ -23,6 +23,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
+import java.util.HashMap;
+import java.util.Map;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.app.AppStub;
 import org.cogchar.render.opengl.bony.app.BonyStickFigureContext;
@@ -37,12 +39,11 @@ import org.cogchar.render.opengl.optic.CameraMgr;
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidRenderContext extends BonyStickFigureContext {
-	private HumanoidFigure				myHumanoidFigure;
+	private	Map<String, HumanoidFigure>		myFiguresByCharURI = new HashMap<String, HumanoidFigure>();
 	private ProjectileLauncher			myPrjctlMgr;
 	
 	public HumanoidRenderContext(BonyConfigEmitter bce) {
 		super(bce);
-		myHumanoidFigure = new HumanoidFigure(bce);
 	}
 	@Override public void completeInit() { 
 		super.completeInit();
@@ -59,49 +60,56 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		InputManager inputManager = findJme3InputManager(null);
 
 		HumanoidPuppetActions.setupActionListeners(inputManager, this);
-		myHumanoidFigure.boogie();
-		myHumanoidFigure.becomePuppet();		
+		//myHumanoidFigure.boogie();
+		//myHumanoidFigure.becomePuppet();		
 	}
 	public ProjectileLauncher getProjectileMgr() { 
 		return myPrjctlMgr;
 	}
-	public HumanoidFigure getHumdWrap()  {
-		return myHumanoidFigure;
+	public HumanoidFigure getHumanoidFigure(String charURI) {
+		HumanoidFigure hf = myFiguresByCharURI.get(charURI);
+		if (hf == null) {
+			BonyConfigEmitter bce = getBonyConfigEmitter();
+			hf = new HumanoidFigure(bce, charURI);
+			myFiguresByCharURI.put(charURI, hf);
+		}
+		return hf;
 	}
 
-
-	private void initHumanoidStuff() { 
+	private void doHumanoidSetup(String charURI, HumanoidBoneConfig hbc) {
+		BonyConfigEmitter bce = getBonyConfigEmitter();
 		AssetManager amgr = findJme3AssetManager(null);
 		Node rootNode = findJme3RootDeepNode(null);		
-		HumanoidBoneConfig hbc = new HumanoidBoneConfig();
-		hbc.addSinbadDefaultBoneDescs();
-		BonyConfigEmitter bce = getBonyConfigEmitter();
-		String humanoidMeshPath = bce.getHumanoidMeshPath();
-		if (humanoidMeshPath != null) {
+		
+		String meshPath = bce.getMeshPathForChar(charURI);
+		if (meshPath != null) {
+			HumanoidFigure figure = getHumanoidFigure(charURI);
 			
-			
-			myHumanoidFigure.initStuff(hbc, amgr, rootNode, getPhysicsSpace(), humanoidMeshPath);
+			figure.initStuff(hbc, amgr, rootNode, getPhysicsSpace(), meshPath);
 			//VirtCharPanel vcp = getVCPanel();
 			//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
 
-			HumanoidFigureModule hfm = new HumanoidFigureModule(myHumanoidFigure, this);
-			attachModule(hfm);			
+			HumanoidFigureModule hfm = new HumanoidFigureModule(figure, this);
+			attachModule(hfm);
+			figure.boogie();
+		//	figure.becomePuppet();
 		} else {
-			getLogger().warn("Skipping humanoid mesh load");
+			getLogger().warn("Skipping humanoid mesh load for charURI: " + charURI);
 		}
-		
-		String extraRobotMeshPath = bce.getExtraRobotMeshPath();
-		if (extraRobotMeshPath != null) {
-			getLogger().info("Loading extra-robot mesh from: " + extraRobotMeshPath);
-			Node extraRobotNode = loadModelOrNull(amgr, extraRobotMeshPath);
-			if (extraRobotNode != null) {
-				SpatialManipFuncs.dumpNodeTree(extraRobotNode, "   ");
-				rootNode.attachChild(extraRobotNode);
-			}
-		} else {
-			getLogger().warn("Skipping extra-robot mesh load");
-		}
+	}
 
+	private void initHumanoidStuff() {
+		BonyConfigEmitter bce = getBonyConfigEmitter();
+		
+		String sinbadURI = bce.SINBAD_CHAR_URI();
+		HumanoidBoneConfig sinbadHBC = new HumanoidBoneConfig();
+		sinbadHBC.addSinbadDefaultBoneDescs();
+		doHumanoidSetup(sinbadURI, sinbadHBC);
+
+		String extraRobotURI = bce.ZENO_CHAR_URI();
+		HumanoidBoneConfig zenoHBC = new HumanoidBoneConfig();
+		zenoHBC.addZenoDefaultBoneDescs();
+		doHumanoidSetup(extraRobotURI, zenoHBC);
 	}
 
 	private void initCameraAndLights() {

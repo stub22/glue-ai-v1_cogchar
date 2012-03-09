@@ -60,7 +60,7 @@ public class BonyStickFigureContext extends BonyRenderContext {
 		// test1Node.setLocalScale(0.5f);
 
 		BonyConfigEmitter bce = getBonyConfigEmitter(); 
-		getLogger().info("mainCharURI=" + bce.getMainCharURI() + ", isMinimalSim=" + bce.isMinimalSim());
+		getLogger().info("sysContextURI=" + bce.getSystemContextURI() + ", isMinimalSim=" + bce.isMinimalSim());
 		String sceneFilePath = bce.getStickFigureScenePath();
 		
 		if (sceneFilePath != null) {

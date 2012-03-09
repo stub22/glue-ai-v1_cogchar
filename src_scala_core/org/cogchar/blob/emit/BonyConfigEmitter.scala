@@ -27,7 +27,7 @@ case class NVParam(val name: String, val value: String) {
 
 class BonyConfigEmitter extends DemoConfigEmitter {
 	// This skeleton + mesh model is delivered by the jar from o.c.bundle.render.opengl.resources
-	val PATH_HUMANOID_MESH = "jme3dat/models_20110917/sinbad/Sinbad.mesh.xml";	
+	val SINBAD_MESH_PATH = "jme3dat/models_20110917/sinbad/Sinbad.mesh.xml";	
 
 	// Commercial "Extra Robot" model, not loadable without a license, ignored in those cases.
 	val EXTRA_ROBOT_MESH_PATH = "zenobot_04_20120302/ZenoBot04.ma.mesh.xml";		
@@ -36,17 +36,23 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	val WINGED_OBELISK_SCENE = "leo_hanson_tests/test3/test3.scene";
 	val WOS_SCALE = 0.5f;
 	
-	val NB_BONY_ROBOT_ID = "COGCHAR_NB_ROBOT";
-	val DUMMY_ROBOT_ID = "DummyRobot22";
+	// val NB_BONY_ROBOT_ID = "COGCHAR_NB_ROBOT";
+	// val DUMMY_ROBOT_ID = "DummyRobot22";
 	
-	val DEFAULT_MAIN_CHAR_URI = "NO_CHARACTER_AT_ALL";
+	val DEFAULT_SYS_CONTEXT_URI = "urn:org.cogchar/syscontext/default";
 	
-	var	myMainCharURI : String = DEFAULT_MAIN_CHAR_URI;
+	val	SINBAD_CHAR_URI = "urn:org.cogchar/char/Sinbad"
+	val	ZENO_CHAR_URI = "urn:org.cogchar/char/Zeno"
 	
-	def setMainCharURI(uri: String) : Unit = {
-		myMainCharURI = uri;
+	val SINBAD_JOINT_PATH = "rk_bind_config/motion/bonyRobotConfig_Sinbad.json";
+	val ZENO_JOINT_PATH = "rk_bind_config/motion/bonyRobotConfig_ZenoR50.json";
+	
+	var	mySystemContextURI : String = DEFAULT_SYS_CONTEXT_URI;
+	
+	def setSystemContextURI(uri: String) : Unit = {
+		mySystemContextURI = uri;
 	}
-	def getMainCharURI = myMainCharURI;
+	def getSystemContextURI = mySystemContextURI;
 	
 	val COGCHAR_URN_PRE = "urn:org.cogchar/";
 	
@@ -75,23 +81,18 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		COGCHAR_URN_PRE + item + marker + paramsEncoded;
 	}
 	
-
-	def getJointConfigAssetNameForChar(charURI : String) : String = {
-		"rk_bind_config/motion/bonyRobotConfig_Sinbad.json";
-	}
-	
-	def getHumanoidMeshPath : String = PATH_HUMANOID_MESH;
-	def getExtraRobotMeshPath : String = EXTRA_ROBOT_MESH_PATH;
 	
 	def getStickFigureScenePath : String = {
 		if (isMinimalSim()) null else WINGED_OBELISK_SCENE;
 	}
 	def getStickFigureSceneScale : Float = 0.5f;
 
+	/*
 	def getRobokindRobotID(robotURI : String) = {
 		NB_BONY_ROBOT_ID; // or DUMMY_ROBOT_ID, ...
 	}
-	
+	*/
+   
 	def getVCPanelClassName(kind : String) : String = {
 		kind match {
 			case "FULL" => "org.cogchar.render.opengl.bony.gui.FancyCharPanel";
@@ -111,6 +112,32 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	}
 	
 	def isMinimalSim() : Boolean = {
-		myMainCharURI.startsWith("NB");
+		mySystemContextURI.startsWith("NB");
+	}
+	
+	def getBonyCharURIs() : java.util.List[String] = {
+		val res = new java.util.ArrayList[String]();
+		res.add(ZENO_CHAR_URI);		
+		res.add(SINBAD_CHAR_URI);
+		res;
+	}
+	def getJointConfigAssetNameForChar(charURI : String) : String = {
+		charURI match {
+			case SINBAD_CHAR_URI => SINBAD_JOINT_PATH
+			case ZENO_CHAR_URI => ZENO_JOINT_PATH
+		}
+		
+	}	
+	def getMeshPathForChar(charURI : String) : String = {	
+		charURI match {
+			case SINBAD_CHAR_URI => SINBAD_MESH_PATH
+			case ZENO_CHAR_URI => EXTRA_ROBOT_MESH_PATH
+		}
+	}
+	def getNicknameForChar(charURI : String) : String = {		
+		charURI match {
+			case SINBAD_CHAR_URI => "Sinbad"
+			case ZENO_CHAR_URI => "Zeno"
+		}
 	}
 }
