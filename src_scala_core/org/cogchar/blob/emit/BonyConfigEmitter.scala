@@ -30,17 +30,11 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	val PATH_HUMANOID_MESH = "jme3dat/models_20110917/sinbad/Sinbad.mesh.xml";	
 
 	// Commercial "Extra Robot" model, not loadable without a license, ignored in those cases.
-	val EXTRA_ROBOT_MESH_PATH = "zenobot_04_20120302/ZenoBot04.ma.mesh.xml";	
-	
+	val EXTRA_ROBOT_MESH_PATH = "zenobot_04_20120302/ZenoBot04.ma.mesh.xml";		
 	
 	//		String dualCharURI = "urn:org.cogchar/platform/nb701?char=HRK_Zeno_R50&version=20120302";   
-	
-	
 	val WINGED_OBELISK_SCENE = "leo_hanson_tests/test3/test3.scene";
 	val WOS_SCALE = 0.5f;
-	
-	val PATH_HUMANOID_JOINT_CONFIG = "bonyRobotConfig.json";
-	val NB_PATH_HUMANOID_JOINT_CFG = "org_cogchar_nbui_render/bonyRobotConfig.json";
 	
 	val NB_BONY_ROBOT_ID = "COGCHAR_NB_ROBOT";
 	val DUMMY_ROBOT_ID = "DummyRobot22";
@@ -82,16 +76,8 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	}
 	
 
-	
-
-//				DEFAULT_PATH_HUMANOID_MESH = "Models/Sinbad/Sinbad.mesh.xml",	// Default path in JME test setup
-//			PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md",
-	def getJointConfigFileForChar() : java.io.File = {
-		println("**************\n***************");
-		println("Scala BonyConfigEmitter generating jointConfigFile for charURI[" + myMainCharURI + "]");
-		println("**************\n***************");
-		val path = if (myMainCharURI.startsWith("NBURI")) NB_PATH_HUMANOID_JOINT_CFG  else PATH_HUMANOID_JOINT_CONFIG;
-		return new java.io.File(path);
+	def getJointConfigAssetNameForChar(charURI : String) : String = {
+		"rk_bind_config/motion/bonyRobotConfig_Sinbad.json";
 	}
 	
 	def getHumanoidMeshPath : String = PATH_HUMANOID_MESH;

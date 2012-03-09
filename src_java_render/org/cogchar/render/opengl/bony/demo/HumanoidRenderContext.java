@@ -37,12 +37,12 @@ import org.cogchar.render.opengl.optic.CameraMgr;
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidRenderContext extends BonyStickFigureContext {
-	private HumanoidFigure		myHumanoidWrapper;
+	private HumanoidFigure				myHumanoidFigure;
 	private ProjectileLauncher			myPrjctlMgr;
 	
 	public HumanoidRenderContext(BonyConfigEmitter bce) {
 		super(bce);
-		myHumanoidWrapper = new HumanoidFigure(bce);
+		myHumanoidFigure = new HumanoidFigure(bce);
 	}
 	@Override public void completeInit() { 
 		super.completeInit();
@@ -59,32 +59,32 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		InputManager inputManager = findJme3InputManager(null);
 
 		HumanoidPuppetActions.setupActionListeners(inputManager, this);
-        SimulatorActions.setupActionListeners(inputManager, this);
-		myHumanoidWrapper.boogie();
-		myHumanoidWrapper.becomePuppet();		
+		myHumanoidFigure.boogie();
+		myHumanoidFigure.becomePuppet();		
 	}
 	public ProjectileLauncher getProjectileMgr() { 
 		return myPrjctlMgr;
 	}
 	public HumanoidFigure getHumdWrap()  {
-		return myHumanoidWrapper;
+		return myHumanoidFigure;
 	}
 
 
 	private void initHumanoidStuff() { 
 		AssetManager amgr = findJme3AssetManager(null);
 		Node rootNode = findJme3RootDeepNode(null);		
-		HumanoidBoneConfig hbc = new HumanoidBoneConfig(true);
+		HumanoidBoneConfig hbc = new HumanoidBoneConfig();
+		hbc.addSinbadDefaultBoneDescs();
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 		String humanoidMeshPath = bce.getHumanoidMeshPath();
 		if (humanoidMeshPath != null) {
 			
 			
-			myHumanoidWrapper.initStuff(hbc, amgr, rootNode, getPhysicsSpace(), humanoidMeshPath);
+			myHumanoidFigure.initStuff(hbc, amgr, rootNode, getPhysicsSpace(), humanoidMeshPath);
 			//VirtCharPanel vcp = getVCPanel();
 			//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
 
-			HumanoidFigureModule hfm = new HumanoidFigureModule(myHumanoidWrapper, this);
+			HumanoidFigureModule hfm = new HumanoidFigureModule(myHumanoidFigure, this);
 			attachModule(hfm);			
 		} else {
 			getLogger().warn("Skipping humanoid mesh load");

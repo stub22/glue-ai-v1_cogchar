@@ -15,19 +15,15 @@
  */
 package org.cogchar.bundle.app.puma;
 
-import java.io.File;
+import java.io.InputStream;
 import javax.swing.JFrame;
 
 import org.cogchar.app.buddy.busker.DancingTriggerItem;
 import org.cogchar.app.buddy.busker.TalkingTriggerItem;
-import org.robokind.api.motion.Robot;
 
-import org.cogchar.bind.rk.robot.client.RobotAnimClient;
 
 import org.osgi.framework.BundleContext;
 
-import org.cogchar.bind.rk.robot.model.ModelRobot;
-import org.cogchar.bind.rk.robot.model.ModelRobotUtils;
 
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.app.BodyController;
@@ -36,9 +32,10 @@ import org.cogchar.render.opengl.bony.app.VerbalController;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
-
+import org.cogchar.render.opengl.bony.demo.HumanoidPuppetActions;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +64,7 @@ public class PumaAppContext {
 	public BonyRenderContext getBonyRenderContext(String bonyCharURI) {
 		return fetchBonyRenderContext();
 	}
+
 
 	public PumaDualCharacter connectDualRobotChar(String bonyCharURI)
 			throws Throwable {
@@ -115,10 +113,18 @@ public class PumaAppContext {
 		}
 	}
 	private void registerDummyPoker(BonyRenderContext bc, PumaDualCharacter pdc) { 
+		DancingTriggerItem dti = new DancingTriggerItem();
+		// 1. Hook up to the JME3 action called "Poke"
+
+		HumanoidPuppetActions.PlayerAction.POKE.getBinding().setTargetBox(pdc);
+		HumanoidPuppetActions.PlayerAction.POKE.getBinding().setTargetTrigger(dti);
+		
+		
+		// 2. Hook up to the Swing-based "BodyController"
 		VirtualCharacterPanel vcp = bc.getPanel();
 		BodyController bodCont = vcp.getBodyController();
 		if (bodCont != null) {
-			bodCont.setupPokeTrigger(pdc, new DancingTriggerItem());		
+			bodCont.setupPokeTrigger(pdc, dti);		
 		} else {
 			theLogger.warn("No BodyController found to attach poke-trigger to");
 		}

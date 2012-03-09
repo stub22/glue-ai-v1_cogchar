@@ -1,4 +1,4 @@
-{"robotId":"myRobot",
+{"robotId":"Zeno_R50_RKR",
 	"ogreModelPath":"./my/path",
 	"jointConfigs":[
 		{"name": "Waist",
