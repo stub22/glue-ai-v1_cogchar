@@ -18,6 +18,7 @@ package org.cogchar.render.opengl.bony.app;
 import com.jme3.animation.AnimControl;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import java.util.List;
 import org.cogchar.blob.emit.BonyConfigEmitter;
@@ -26,6 +27,8 @@ import org.cogchar.render.opengl.bony.model.DemoBonyWireframeRagdoll;
 import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
 import org.cogchar.render.opengl.bony.model.StickFigureTwister;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
+import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
+import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.scene.ModelSpatialFactory;
 
 /**
@@ -35,6 +38,8 @@ public class BonyStickFigureContext extends BonyRenderContext {
 	
 	protected	StickFigureTwister			myTwister;	
 	private		DemoBonyWireframeRagdoll	myExtraRagdoll;		
+	
+	private		ProjectileLauncher			myPrjctlMgr;
 	
 	public BonyStickFigureContext(BonyConfigEmitter bce) { 
 		super(bce);
@@ -55,6 +60,10 @@ public class BonyStickFigureContext extends BonyRenderContext {
 		if (!bce.isMinimalSim()) {
 			initExtraRagdoll();
 		}
+		
+		myPrjctlMgr = makeProjectileLauncher();
+		myPrjctlMgr.initStuff();  // Can be done at any time in this startup seq
+				
 	}	
 	public boolean initStickFigureModel() {
 		// test1Node.setLocalScale(0.5f);
@@ -105,4 +114,32 @@ public class BonyStickFigureContext extends BonyRenderContext {
 		attachModule(myExtraRagdoll);
 		return true;
 	}
+	public ProjectileLauncher getProjectileMgr() { 
+		return myPrjctlMgr;
+	}	
+	public void cmdShoot() {
+		CameraMgr cm = findOrMakeOpticCameraFacade(null);
+		Camera defCam = cm.getCommonCamera(CameraMgr.CommonCameras.DEFAULT);
+		Node rootNode = findJme3RootDeepNode(null);
+		myPrjctlMgr.fireProjectileFromCamera(defCam, rootNode, getPhysicsSpace());	
+	}	
+	public void cmdBoom() {
+		/*
+		Geometry prjctlGeom = new Geometry(GEOM_BOOM, myProjectileSphereMesh);
+		prjctlGeom.setMaterial(myProjectileMaterial);
+		prjctlGeom.setLocalTranslation(cam.getLocation());
+		prjctlGeom.setLocalScale(myProjectileSize);
+		myProjectileCollisionShape = new SphereCollisionShape(myProjectileSize);
+		ThrowableBombRigidBodyControl prjctlNode = new ThrowableBombRigidBodyControl(assetManager, myProjectileCollisionShape, 1);
+		prjctlNode.setForceFactor(8);
+		prjctlNode.setExplosionRadius(20);
+		prjctlNode.setCcdMotionThreshold(0.001f);
+		prjctlNode.setLinearVelocity(cam.getDirection().mult(180));
+		prjctlGeom.addControl(prjctlNode);
+		rootNode.attachChild(prjctlGeom);
+		getPhysicsSpace().add(prjctlNode);
+		 * */
+		
+	}
+	
 }
