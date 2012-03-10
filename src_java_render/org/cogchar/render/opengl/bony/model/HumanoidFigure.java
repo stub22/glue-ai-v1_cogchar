@@ -153,6 +153,15 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 			myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
 		}
 	}
+	
+	public void movePosition(float deltaX, float deltaY, float deltaZ) {
+		Vector3f v = new Vector3f();
+		v.set(myHumanoidModelNode.getLocalTranslation());
+		v.x += deltaX;
+		v.y += deltaY;
+		v.z += deltaZ;
+		myHumanoidModelNode.setLocalTranslation(v);		
+	}
 
 	public void collide(Bone bone, PhysicsCollisionObject pco, PhysicsCollisionEvent pce) {
 		Object userObj = pco.getUserObject();
