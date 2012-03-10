@@ -19,6 +19,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -41,17 +42,14 @@ import org.cogchar.render.opengl.optic.CameraMgr;
  */
 public class HumanoidRenderContext extends BonyStickFigureContext {
 	private	Map<String, HumanoidFigure>		myFiguresByCharURI = new HashMap<String, HumanoidFigure>();
-	private ProjectileLauncher			myPrjctlMgr;
+
 	
 	public HumanoidRenderContext(BonyConfigEmitter bce) {
 		super(bce);
 	}
 	@Override public void completeInit() { 
 		super.completeInit();
-		
-		myPrjctlMgr = makeProjectileLauncher();
-		myPrjctlMgr.initStuff();  // Can be done at any time in this startup seq
-		
+
 		AppSettings someSettings = getJMonkeyAppSettings();
 		initCrossHairs(someSettings);
 		initBasicTestPhysics();
@@ -60,13 +58,9 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		
 		InputManager inputManager = findJme3InputManager(null);
 
-		HumanoidPuppetActions.setupActionListeners(inputManager, this);
-		//myHumanoidFigure.boogie();
-		//myHumanoidFigure.becomePuppet();		
+		HumanoidPuppetActions.setupActionListeners(inputManager, this);	
 	}
-	public ProjectileLauncher getProjectileMgr() { 
-		return myPrjctlMgr;
-	}
+
 	public HumanoidFigure getHumanoidFigure(String charURI) {
 		HumanoidFigure hf = myFiguresByCharURI.get(charURI);
 		if (hf == null) {
@@ -77,10 +71,11 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		return hf;
 	}
 
-	private void doHumanoidSetup(String charURI, HumanoidBoneConfig hbc, boolean usePhysics) {
+	private HumanoidFigure setupHumanoidFigure(String charURI, HumanoidBoneConfig hbc, boolean usePhysics) {
+		HumanoidFigure figure = null;
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 		AssetManager amgr = findJme3AssetManager(null);
-		Node rootNode = findJme3RootDeepNode(null);		
+		Node rootNode = findJme3RootDeepNode(null);
 		PhysicsSpace ps = null;
 		if (usePhysics) {
 			ps = getPhysicsSpace();
@@ -88,7 +83,7 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		
 		String meshPath = bce.getMeshPathForChar(charURI);
 		if (meshPath != null) {
-			HumanoidFigure figure = getHumanoidFigure(charURI);
+			figure = getHumanoidFigure(charURI);
 			
 			figure.initStuff(hbc, amgr, rootNode, ps, meshPath);
 			//VirtCharPanel vcp = getVCPanel();
@@ -101,6 +96,7 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		} else {
 			getLogger().warn("Skipping humanoid mesh load for charURI: " + charURI);
 		}
+		return figure;
 	}
 
 	private void initHumanoidStuff() {
@@ -109,12 +105,14 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		String sinbadURI = bce.SINBAD_CHAR_URI();
 		HumanoidBoneConfig sinbadHBC = new HumanoidBoneConfig();
 		sinbadHBC.addSinbadDefaultBoneDescs();
-		doHumanoidSetup(sinbadURI, sinbadHBC, true);
+		HumanoidFigure sinbadFigure = setupHumanoidFigure(sinbadURI, sinbadHBC, true);
+		sinbadFigure.movePosition(30.0f, 0.0f, -30.0f);
 
 		String extraRobotURI = bce.ZENO_CHAR_URI();
-		HumanoidBoneConfig zenoHBC = new HumanoidBoneConfig();
-		zenoHBC.addZenoDefaultBoneDescs();
-		doHumanoidSetup(extraRobotURI, zenoHBC, false);
+		HumanoidBoneConfig robotHBC = new HumanoidBoneConfig();
+		robotHBC.addZenoDefaultBoneDescs();
+		HumanoidFigure robotFigure = setupHumanoidFigure(extraRobotURI, robotHBC, false);
+		robotFigure.movePosition(0.0f, -5.0f, 0.0f);
 	}
 
 	private void initCameraAndLights() {
@@ -122,39 +120,44 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
         setDefaultCameraLocation();
 		stub.setAppSpeed(1.3f);
 		FlyByCamera fbCam = stub.getFlyCam();
-		fbCam.setMoveSpeed(50);
+		fbCam.setMoveSpeed(200);
 		setupLight();	
 	}
     protected void setDefaultCameraLocation(){
 		CameraMgr cmgr = findOrMakeOpticCameraFacade(null);
 		Camera defCam = cmgr.getCommonCamera(CameraMgr.CommonCameras.DEFAULT);
-		defCam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));
-		defCam.setRotation(new Quaternion(-2.302544E-4f, 0.99302495f, -0.117888905f, -0.0019395084f));
+		defCam.setLocation(new Vector3f(0.0f, 40.0f, 80.0f));
+		// float camEulerAngles[] = {2.0f, 0.0f, 0.0f};
+		Quaternion camRot = new Quaternion();
+		camRot.fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X);
+		defCam.setRotation(camRot);
+		
+		/*
+		 * 
+		 * The JME3 docs below are a horrible, inconsistent, incorrect mess:
+		 * 
+		 * 
+		 * http://jmonkeyengine.org/javadoc/com/jme3/math/Quaternion.html#Quaternion(float[])
+		 * 
+		 * public Quaternion fromAngles(float yaw,
+                             float roll,
+                             float pitch)
+fromAngles builds a Quaternion from the Euler rotation angles (y,r,p). Note that we are applying in order: roll, pitch, yaw 
+		 * 
+		 * but we've ordered them in x, y, and z for convenience.
+		 * 
+Parameters:
+yaw - the Euler yaw of rotation (in radians). (aka Bank, often rot around x)
+roll - the Euler roll of rotation (in radians). (aka Heading, often rot around y)
+pitch - the Euler pitch of rotation (in radians). (aka Attitude, often rot around z)
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 */
     }
 
 	
-	public void cmdShoot() {
-		CameraMgr cm = findOrMakeOpticCameraFacade(null);
-		Camera defCam = cm.getCommonCamera(CameraMgr.CommonCameras.DEFAULT);
-		Node rootNode = findJme3RootDeepNode(null);
-		myPrjctlMgr.fireProjectileFromCamera(defCam, rootNode, getPhysicsSpace());	
-	}	
-	public void cmdBoom() {
-		/*
-		Geometry prjctlGeom = new Geometry(GEOM_BOOM, myProjectileSphereMesh);
-		prjctlGeom.setMaterial(myProjectileMaterial);
-		prjctlGeom.setLocalTranslation(cam.getLocation());
-		prjctlGeom.setLocalScale(myProjectileSize);
-		myProjectileCollisionShape = new SphereCollisionShape(myProjectileSize);
-		ThrowableBombRigidBodyControl prjctlNode = new ThrowableBombRigidBodyControl(assetManager, myProjectileCollisionShape, 1);
-		prjctlNode.setForceFactor(8);
-		prjctlNode.setExplosionRadius(20);
-		prjctlNode.setCcdMotionThreshold(0.001f);
-		prjctlNode.setLinearVelocity(cam.getDirection().mult(180));
-		prjctlGeom.addControl(prjctlNode);
-		rootNode.attachChild(prjctlGeom);
-		getPhysicsSpace().add(prjctlNode);
-		 * */
-		
-	}	
+	
 }
