@@ -15,13 +15,17 @@
  */
 package org.cogchar.test.assembly;
 
-import org.appdapter.gui.box.KnownComponentImpl;
+import org.appdapter.gui.assembly.AssemblyNames;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class Nugget extends KnownComponentImpl {
-	public	String		myDetails;
-	@Override protected String getFieldSummary() {
-		return "details=[" + myDetails + "]";
-	}	
+public class AssemblyTestNames extends AssemblyNames {
+	public static	String		NS_ccNug = "http://www.cogchar.org/schema/nugget#";
+
+	public static 	String		P_details		= NS_ccNug + "details";
+	public static 	String		P_gaucho		= NS_ccNug + "gaucho";
+	public static 	String		P_otherNugs		= NS_ccNug + "otherNugs";
+	public static 	String		P_count			= NS_ccNug + "count";
+	public static 	String		P_angle			= NS_ccNug + "angle";
+	public static 	String		P_friendlyNug	= NS_ccNug + "friendlyNug";
 }
