@@ -21,7 +21,9 @@
     dc:date          "2010-11-06" ;
 
     dc:format        "RDF" ;
-    dc:identifier    "huh"
+    dc:identifier    "huh";
+
+	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl"
     .
     
 apsb:BuildableBox		
@@ -56,18 +58,45 @@ apt:box_002 	rdf:type			apsb:BuildableBox;
 				.
 
 								
-apsb:BuildableNugget
+cn:BuildableNugget
 		a 					rdfs:Class;
 		rdfs:subClassOf 	ja:Object;
 		ja:assembler		"org.cogchar.test.assembly.NuggetBuilder" 
 		.		
 
-apt:nug_001 	rdf:type			apsb:BuildableNugget;
+cn:nug_001 	rdf:type			cn:BuildableNugget;
 				apsb:javaFQCN		"org.cogchar.test.assembly.Nugget";
 				apsb:label			"nuggy-001 apsb label";
 				rdfs:label 			"nuggy-001 rdfs label";
 				apsb:trigger		apt:trig_001a;
-				cn:details			"nugget-specific-details-go-here"
+				cn:details			"nugget-specific-details-go-here";
+				cn:size				25;
 				.
 		
-		
+cn:nug_002 	rdf:type			cn:BuildableNugget;
+	apsb:javaFQCN		"org.cogchar.test.assembly.MegaNugget";
+	apsb:label			"nuggy-002 apsb label";
+	rdfs:label 			"nuggy-002 rdfs label";
+	apsb:trigger		[
+		rdf:type			apsb:BuildableTrigger;
+		apsb:label			"Trig 777 (dumple)";
+		apsb:javaFQCN		"org.appdapter.gui.trigger.SysTriggers$DumpTrigger"
+	];
+	cn:details			"details of a certain mega-nug";
+	cn:gaucho			"profundo";
+	cn:count			186022;
+	cn:angle			3.1415;
+	cn:friendlyNug		cn:nug_001
+	.
+	
+
+cn:nug_099 	rdf:type			cn:BuildableNugget;
+	apsb:javaFQCN		"org.cogchar.test.assembly.MegaNugget";
+	apsb:label			"nuggy-099 apsb label";
+	rdfs:label 			"nuggy-099 rdfs label";
+	apsb:trigger		apt:trig_001a;
+	cn:details			"details of a collection-containing mega-nug";
+	cn:gaucho			"soltero";
+	cn:otherNugs		(cn:nug_004 cn:nug_001 cn:nug_002 cn:nug_003)
+	.
+	

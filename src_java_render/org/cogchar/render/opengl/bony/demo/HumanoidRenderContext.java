@@ -34,6 +34,7 @@ import org.cogchar.render.opengl.bony.app.BonyStickFigureContext;
 import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
 import org.cogchar.render.opengl.bony.model.HumanoidFigureModule;
 import org.cogchar.render.opengl.bony.model.HumanoidFigure;
+import org.cogchar.render.opengl.bony.sys.BonyCanvasFuncs;
 import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
 
@@ -59,6 +60,8 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		InputManager inputManager = findJme3InputManager(null);
 
 		HumanoidPuppetActions.setupActionListeners(inputManager, this);	
+		
+		BonyCanvasFuncs.initScoreBoard(this);
 	}
 
 	public HumanoidFigure getHumanoidFigure(String charURI) {
@@ -127,14 +130,16 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		CameraMgr cmgr = findOrMakeOpticCameraFacade(null);
 		Camera defCam = cmgr.getCommonCamera(CameraMgr.CommonCameras.DEFAULT);
 		defCam.setLocation(new Vector3f(0.0f, 40.0f, 80.0f));
-		// float camEulerAngles[] = {2.0f, 0.0f, 0.0f};
-		Quaternion camRot = new Quaternion();
-		camRot.fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X);
-		defCam.setRotation(camRot);
 		
+		defCam.lookAt(new Vector3f(0.0f, 0.0f, 0.0f), Vector3f.UNIT_Y);
+		// float camEulerAngles[] = {2.0f, 0.0f, 0.0f};
+	//	Quaternion camRot = new Quaternion();
+	//	camRot.fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X);
+	//	defCam.setRotation(camRot);
+	}
 		/*
 		 * 
-		 * The JME3 docs below are a horrible, inconsistent, incorrect mess:
+		 * The JME3 docs below are a horrible, inconsistent, incomplete, incorrect mess:
 		 * 
 		 * 
 		 * http://jmonkeyengine.org/javadoc/com/jme3/math/Quaternion.html#Quaternion(float[])
@@ -156,7 +161,7 @@ pitch - the Euler pitch of rotation (in radians). (aka Attitude, often rot aroun
 		 * 
 		 * 
 		 */
-    }
+
 
 	
 	
