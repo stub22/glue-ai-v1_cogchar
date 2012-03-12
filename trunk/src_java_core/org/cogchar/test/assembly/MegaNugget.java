@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -12,31 +12,24 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
  */
-package org.cogchar.render.opengl.bony.state;
-
+package org.cogchar.test.assembly;
 import java.util.List;
-
-import com.jme3.math.Quaternion;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BoneState {
-	public	String		myBoneName;
-	public	float		rot_X_pitch, rot_Y_roll, rot_Z_yaw;
+public class MegaNugget extends Nugget {
+	public	String		myGaucho;
+	public	Long		myCount;
+	public	Double		myAngle;
+	public	List<Object>	myOtherNugs;
+	public	List<Object>	myTriggers;
+	public	Nugget			myFriendlyNug;
+	// public	List
 	
-	public BoneState(String name) {
-		myBoneName = name;
-	}
-	public String getBoneName() { 
-		return myBoneName;
-	}
-	public Quaternion getRotQuat() { 
-		Quaternion q = new Quaternion();
-		q.fromAngles(rot_X_pitch, rot_Y_roll, rot_Z_yaw);
-		return q;
-	}
-
+	@Override protected String getFieldSummary() {
+		return super.getFieldSummary() + ", gaucho=[" + myGaucho + "], count=[" + myCount + "], angle=[" + myAngle 
+					+ "], otherNugs=[" + myOtherNugs + "], triggers=[" + myTriggers + "], friendlyNug=[" + myFriendlyNug + "]";
+	}		 
 }

@@ -36,7 +36,7 @@ import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 
 /**  Named to differentiate it from JMonkey "RenderContext".  
- * This base class does not maintain any instance data.
+ * This base class does not maintain much instance data.
  * However, some of its methods do have side effects on the application
  * JMonkey state and registry state, therefore it is recommended to
  * have only one instance of this class in an application.  Also,

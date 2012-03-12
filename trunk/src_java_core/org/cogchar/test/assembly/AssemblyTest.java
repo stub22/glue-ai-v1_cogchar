@@ -25,9 +25,19 @@ import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 public class AssemblyTest {
 	
 	public static void main(String args[]) {
-		String triplesURL = "src/main/resources/org/cogchar/test/assembly/ca_test.ttl";
+		// As noted in Appdapter DemoResources, we can use either the classloader or a file loader.
+		// Hence the generic term "path"
+//		1) Relative classloader path (with no leading "/") works is best for modular platform-independent deployment.
+//	OR	2) Use a Jena-FM friendly URL like "file:/x/y/z/" - works if the classpath is frozen or hurtin, and you need 
+		// a darn file!  Another example is when you want to reload the file easily at runtime, without
+		// reloading the classLoader.
+
+		// Works OK with or without the "file:" prefix.
+		//String triplesPath = "file:src/main/resources/org/cogchar/test/assembly/ca_test.ttl";
+		// This will be interpreted as a classpath 
+		String triplesURL = "org/cogchar/test/assembly/ca_test.ttl";
 		AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(AssemblyTest.class.getClassLoader());
-		logInfo("Loading triples from URL: " + triplesURL);
+		logInfo("Loading triples from path: " + triplesPath);
 		Set<Object> loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(triplesURL);
 		logInfo("Loaded " + loadedStuff.size() + " objects");
 		for (Object o : loadedStuff) {
