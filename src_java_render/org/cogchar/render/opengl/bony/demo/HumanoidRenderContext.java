@@ -104,11 +104,13 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 	private void initHumanoidStuff() {
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 		
-		String sinbadURI = bce.SINBAD_CHAR_URI();
-		HumanoidBoneConfig sinbadHBC = new HumanoidBoneConfig();
-		sinbadHBC.addSinbadDefaultBoneDescs();
-		HumanoidFigure sinbadFigure = setupHumanoidFigure(sinbadURI, sinbadHBC, true);
-		sinbadFigure.movePosition(30.0f, 0.0f, -30.0f);
+		if (!bce.isMinimalSim()) {
+			String sinbadURI = bce.SINBAD_CHAR_URI();
+			HumanoidBoneConfig sinbadHBC = new HumanoidBoneConfig();
+			sinbadHBC.addSinbadDefaultBoneDescs();
+			HumanoidFigure sinbadFigure = setupHumanoidFigure(sinbadURI, sinbadHBC, true);
+			sinbadFigure.movePosition(30.0f, 0.0f, -30.0f);
+		}
 
 		String extraRobotURI = bce.ZENO_CHAR_URI();
 		HumanoidBoneConfig robotHBC = new HumanoidBoneConfig();
