@@ -87,6 +87,8 @@ public class BoneProjectionRange  {
 		return "boneName=[" + myBoneName + "], rotAxis=[" + myRotationAxis + "], minRot=[" + myMinPosAngRad
 				+ "], maxRot=[" + myMaxPosAngRad + "]";
 	}
-
+	public String toString() { 
+		return "BPR[" + getFieldSummary() + "]";
+	}
 
 }

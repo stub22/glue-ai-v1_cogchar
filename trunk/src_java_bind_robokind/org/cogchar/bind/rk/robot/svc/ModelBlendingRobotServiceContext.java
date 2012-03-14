@@ -18,16 +18,8 @@ package org.cogchar.bind.rk.robot.svc;
 import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelRobotFactory;
-
-
 import org.robokind.api.motion.Robot;
-
-
-
-
 import org.osgi.framework.BundleContext;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
