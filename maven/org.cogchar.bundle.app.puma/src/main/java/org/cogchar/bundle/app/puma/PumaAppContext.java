@@ -144,7 +144,7 @@ public class PumaAppContext {
 		HumanoidPuppetActions.PlayerAction.UPDATE_BONY_CONFIG.getBinding().setTargetBox(pdc);
 		HumanoidPuppetActions.PlayerAction.UPDATE_BONY_CONFIG.getBinding().setTargetTrigger(myUpdateBonyConfigTI);
 		
-		myUpdateBonyConfigTI.myBonyRdfConfigPath = BoneRobotConfig.DEV_TEST_RDF_PATH;
+		myUpdateBonyConfigTI.myBonyRdfConfigPath = PumaDualCharacter.UPDATE_BONY_RDF_PATH;
 		myUpdateBonyConfigTI.myOptResourceClassLoader = null;
 	}
 	private void registerTestDanceTrigger(PumaDualCharacter pdc) { 
