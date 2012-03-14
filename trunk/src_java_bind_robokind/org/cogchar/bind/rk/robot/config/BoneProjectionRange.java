@@ -78,8 +78,8 @@ public class BoneProjectionRange  {
 
 	public BoneProjectionPosition makePositionForNormalizedFraction(NormalizedDouble normVal) {
 		// This calc works regardless of signs of min/max
-		double range = myMaxPosAngRad - myMinPosAngRad;
-		double boneProjAngleRad = range * normVal.getValue() + myMinPosAngRad;
+		double rangeRad = myMaxPosAngRad - myMinPosAngRad;
+		double boneProjAngleRad = rangeRad * normVal.getValue() + myMinPosAngRad;
 		return new BoneProjectionPosition(this, boneProjAngleRad);
 	}
 
