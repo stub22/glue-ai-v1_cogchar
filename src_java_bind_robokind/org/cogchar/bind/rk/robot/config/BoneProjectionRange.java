@@ -38,9 +38,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * @author Stu B. <www.texpedient.com>
  */
 public class BoneProjectionRange  {
-
-	// We don't like this instance variable
-	private String myBoneName;
 	
 	private	BoneJointConfig		myBJC;
 	
@@ -84,8 +81,8 @@ public class BoneProjectionRange  {
 	}
 
 	protected String getFieldSummary() {
-		return "boneName=[" + myBoneName + "], rotAxis=[" + myRotationAxis + "], minRot=[" + myMinPosAngRad
-				+ "], maxRot=[" + myMaxPosAngRad + "]";
+		return "rotAxis=[" + myRotationAxis + "], minRotRad=[" + myMinPosAngRad
+				+ "], maxRotRad=[" + myMaxPosAngRad + "]";
 	}
 	public String toString() { 
 		return "BPR[" + getFieldSummary() + "]";
