@@ -16,6 +16,7 @@
 
 package org.cogchar.bind.rk.robot.model;
 
+import org.cogchar.bind.rk.robot.config.BoneProjectionPosition;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,37 +33,39 @@ public class ModelRobotUtils {
 
 	static Logger theLogger = LoggerFactory.getLogger(ModelRobotUtils.class);
 
-	private static void appendBoneRotation(Map<String, List<ModelBoneRotation>> rotListMap, ModelBoneRotation rot) {
+	private static void appendBoneRotation(Map<String, List<BoneProjectionPosition>> rotListMap, BoneProjectionPosition rot) {
 		String bone = rot.getBoneName();
-		List<ModelBoneRotation> rotList = rotListMap.get(bone);
+		List<BoneProjectionPosition> rotList = rotListMap.get(bone);
 		if (rotList == null) {
-			rotList = new ArrayList<ModelBoneRotation>();
+			rotList = new ArrayList<BoneProjectionPosition>();
 			rotListMap.put(bone, rotList);
 		}
 		rotList.add(rot);
 	}
 
-	public static Map<String, List<ModelBoneRotation>> getGoalAnglesAsRotations(ModelRobot robot) {
-		Map<String, List<ModelBoneRotation>> rotListMap = new HashMap();
+	public static Map<String, List<BoneProjectionPosition>> getGoalAnglesAsRotations(ModelRobot robot) {
+		Map<String, List<BoneProjectionPosition>> rotListMap = new HashMap();
 		List<ModelJoint> joints = new ArrayList(robot.getJointList());
 		for (ModelJoint j : joints) {
-			for (ModelBoneRotation rot : j.getRotationListForCurrentGoal()) {
+			for (BoneProjectionPosition rot : j.getRotationListForCurrentGoal()) {
 				appendBoneRotation(rotListMap, rot);
 			}
 		}
 		return rotListMap;
 	}
-
-	public static Map<String, List<ModelBoneRotation>> getInitialRotationMap(ModelRobot robot) {
-		Map<String, List<ModelBoneRotation>> rotListMap = new HashMap();
-		List<ModelBoneRotation> initRots = robot.getInitialBoneRotations();
+/*
+	public static Map<String, List<BoneProjectionPosition>> getInitialRotationMap(ModelRobot robot) {
+		Map<String, List<BoneProjectionPosition>> rotListMap = new HashMap();
+		List<BoneProjectionPosition> initRots = robot.getInitialBoneRotations();
 		if (initRots == null) {
 			return rotListMap;
 		}
-		for (ModelBoneRotation rot : initRots) {
+		for (BoneProjectionPosition rot : initRots) {
 			appendBoneRotation(rotListMap, rot);
 		}
 		return rotListMap;
 	}
+	 * 
+	 */
 
 }

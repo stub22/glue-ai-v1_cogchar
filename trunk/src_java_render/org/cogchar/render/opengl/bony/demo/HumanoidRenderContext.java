@@ -54,9 +54,8 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		AppSettings someSettings = getJMonkeyAppSettings();
 		initCrossHairs(someSettings);
 		initBasicTestPhysics();
-		initCameraAndLights();
 		initHumanoidStuff();
-		
+		initCameraAndLights();
 		InputManager inputManager = findJme3InputManager(null);
 
 		HumanoidPuppetActions.setupActionListeners(inputManager, this);	

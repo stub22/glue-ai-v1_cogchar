@@ -26,16 +26,19 @@
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<version>${appdapter.version}</version>
 		</dependency>
+		<!-- From the appdapter bundle above, we get transitive *runtime* dependence on the extern bundles
+			below.  But
+		-->
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
 			<version>${appdapter.version}</version>
 		</dependency>
+		
 		<dependency>
 			<artifactId>ext.bundle.jena_all_264</artifactId>
 			<groupId>org.appdapter</groupId>
-			<type>jar</type>
-			<version>1.0.6-SNAPSHOT</version>
+			<version>${appdapter.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>org.scalaquery</groupId>

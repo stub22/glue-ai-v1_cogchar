@@ -82,7 +82,7 @@ public final class VirtualCharTopComponent extends TopComponent {
 		// String dualCharURI = "urn:org.cogchar/platform/nb701?charName=HRK_Zeno_R50&version=20120302";       
 		String sysContextURI = "NBURI:huzzah";             
 		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI);
-		BonyRenderContext brc = pac.getBonyRenderContext();
+		BonyRenderContext brc = pac.getHumanoidRenderContext();
 		initVirtualCharPanel(brc);
 		
 		// Firing up the OpenGL canvas requires access to sun.misc.Unsafe, which must be explicitly imported 

@@ -29,7 +29,7 @@ import javax.jms.Connection;
 import org.apache.qpid.client.AMQQueue;
 
 import org.robokind.impl.messaging.utils.ConnectionManager;
-import org.cogchar.bind.rk.robot.model.ModelBoneRotation;
+import org.cogchar.bind.rk.robot.config.BoneProjectionPosition;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.common.services.ServiceConnectionDirectory;

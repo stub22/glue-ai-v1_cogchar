@@ -26,7 +26,9 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.app.buddy.busker.DancingTriggerItem;
 import org.cogchar.app.buddy.busker.TalkingTriggerItem;
 
+import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 
+import org.cogchar.app.buddy.busker.UpdateBonyConfig_TI;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.app.BodyController;
@@ -34,8 +36,8 @@ import org.cogchar.render.opengl.bony.app.VerbalController;
 
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
-
 import org.cogchar.render.opengl.bony.demo.HumanoidPuppetActions;
+import org.cogchar.render.opengl.bony.demo.HumanoidRenderContext;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 
 
@@ -49,14 +51,16 @@ public class PumaAppContext {
 
 	static Logger theLogger = LoggerFactory.getLogger(PumaAppContext.class);
 	
-	private BundleContext		myBundleContext;
-	private	BonyRenderContext	myBonyRenderContext;
+	private BundleContext			myBundleContext;
+	private	HumanoidRenderContext	myHRC;
+	
+	private	UpdateBonyConfig_TI		myUpdateBonyConfigTI;
 	
 
 	public PumaAppContext(BundleContext bc, String sysContextURI) {
 		myBundleContext = bc;
-		myBonyRenderContext = RenderBundleUtils.getBonyRenderContext(bc);
-		myBonyRenderContext.setSystemContextURI(sysContextURI);
+		myHRC = (HumanoidRenderContext) RenderBundleUtils.getBonyRenderContext(bc);
+		myHRC.setSystemContextURI(sysContextURI);
 		
 	}
 
@@ -64,54 +68,50 @@ public class PumaAppContext {
 		startOpenGLCanvas(true);
 		return connectDualRobotChars();
 	}
-/*
-	private BonyRenderContext fetchBonyRenderContext() {
-		return RenderBundleUtils.getBonyRenderContext(myBundleContext);
-	}
-	// TODO: add URI based lookup for multiple BCs
-*/
-	public BonyRenderContext getBonyRenderContext() { // String bonyCharURI) {
-		// return fetchBonyRenderContext();
-		return myBonyRenderContext;
+
+	public HumanoidRenderContext getHumanoidRenderContext() { 
+		return myHRC;
 	}
 
 
 	public List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
 		List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
-		BonyRenderContext brc = getBonyRenderContext();
+		BonyRenderContext brc = getHumanoidRenderContext();
 		BonyConfigEmitter bce = brc.getBonyConfigEmitter();
 		List<String> charURIs = bce.getBonyCharURIs();
 		for (String charURI : charURIs) {
 			PumaDualCharacter pdc = connectDualRobotChar(charURI);
 			pdcList.add(pdc);
 		}
+		// Let's be lame for the moment, and assume the first character found is the one we want to control.
 		PumaDualCharacter pdc = pdcList.get(0);
 		if (pdc != null) {
-			registerDummyPoker(brc, pdc);
-			registerDummyTalker(brc, pdc);
+			registerConfigReloadTrigger(pdc);			
+			registerTestDanceTrigger(pdc);
+			registerTestTalkTrigger(pdc);
 		}
 		return pdcList;
 	}
 	public PumaDualCharacter connectDualRobotChar(String bonyCharURI)
 			throws Throwable {
 		
-		BonyRenderContext bc = getBonyRenderContext();
-		if (bc == null) {
-			throw new Exception ("BonyRenderContext is null");
+		HumanoidRenderContext hrc = getHumanoidRenderContext();
+		if (hrc == null) {
+			throw new Exception ("HumanoidRenderContext is null");
 		}
-		PumaDualCharacter pdc = new PumaDualCharacter(bc, myBundleContext, bonyCharURI);
-		pdc.connectBonyDualToModelRobot();
+		PumaDualCharacter pdc = new PumaDualCharacter(hrc, myBundleContext, bonyCharURI);
+		pdc.connectBonyCharToRobokindSvcs(myBundleContext);
 
 		return pdc;
 	}
 
 	public void startOpenGLCanvas(boolean wrapInJFrameFlag) throws Exception {
-		BonyRenderContext bc = getBonyRenderContext();
-		theLogger.info("Got BonyRenderContext: " + bc);
+		HumanoidRenderContext hrc = getHumanoidRenderContext();
+		theLogger.info("Got BonyRenderContext: " + hrc);
 
-		if (bc != null) {
+		if (hrc != null) {
 			if (wrapInJFrameFlag) {
-				VirtualCharacterPanel vcp = bc.getPanel();
+				VirtualCharacterPanel vcp = hrc.getPanel();
 				theLogger.info("Got VirtCharPanel: " + vcp);
 				// Frame must be packed after panel created, but created  before startJMonkey.  
 				// If startJMonkey is called first, we often hang in frame.setVisible() as JMonkey tries
@@ -119,9 +119,9 @@ public class PumaAppContext {
 				JFrame jf = vcp.makeEnclosingJFrame("CCRK-PUMA virtual character");
 				theLogger.info("Got Enclosing Frame, adding to BonyRenderContext for WindowClose triggering: " + jf);
 				// Frame will receive a close event when org.cogchar.bundle.render.opengl is STOPPED
-				bc.setFrame(jf);
+				hrc.setFrame(jf);
 			}
-			BonyVirtualCharApp app = bc.getApp();
+			BonyVirtualCharApp app = hrc.getApp();
 
 			if (app.isCanvasStarted()) {
 				theLogger.warn("JMonkey Canvas was already started!");
@@ -137,30 +137,60 @@ public class PumaAppContext {
 			theLogger.error("BonyRenderContext is NULL, cannot startOpenGLCanvas!");
 		}
 	}
-	private void registerDummyPoker(BonyRenderContext bc, PumaDualCharacter pdc) { 
+	private void registerConfigReloadTrigger(PumaDualCharacter pdc) { 
+		myUpdateBonyConfigTI = new UpdateBonyConfig_TI();
+		
+		// Hook up to a JME3 action to catch keypresses in OpenGL window.
+		HumanoidPuppetActions.PlayerAction.UPDATE_BONY_CONFIG.getBinding().setTargetBox(pdc);
+		HumanoidPuppetActions.PlayerAction.UPDATE_BONY_CONFIG.getBinding().setTargetTrigger(myUpdateBonyConfigTI);
+		
+		myUpdateBonyConfigTI.myBonyRdfConfigPath = BoneRobotConfig.DEV_TEST_RDF_PATH;
+		myUpdateBonyConfigTI.myOptResourceClassLoader = null;
+	}
+	private void registerTestDanceTrigger(PumaDualCharacter pdc) { 
 		DancingTriggerItem dti = new DancingTriggerItem();
-		// 1. Hook up to the JME3 action called "Poke"
-
+		
+		// 1. Hook up to a JME3 action 
 		HumanoidPuppetActions.PlayerAction.POKE.getBinding().setTargetBox(pdc);
 		HumanoidPuppetActions.PlayerAction.POKE.getBinding().setTargetTrigger(dti);
 		
-		
 		// 2. Hook up to the Swing-based "BodyController"
-		VirtualCharacterPanel vcp = bc.getPanel();
-		BodyController bodCont = vcp.getBodyController();
-		if (bodCont != null) {
-			bodCont.setupPokeTrigger(pdc, dti);		
-		} else {
-			theLogger.warn("No BodyController found to attach poke-trigger to");
+		// Kinda ugly, may be axed soon
+		HumanoidRenderContext contextForSwingAction = getHumanoidRenderContext();
+		if (contextForSwingAction != null) {
+			
+			VirtualCharacterPanel vcp = contextForSwingAction.getPanel();
+			if (vcp != null) {
+				BodyController bodCont = vcp.getBodyController();
+				if (bodCont != null) {
+					bodCont.setupPokeTrigger(pdc, dti);		
+				} else {
+					theLogger.warn("No BodyController found to attach poke-trigger to");
+				}
+			}
 		}
 	}
-	private void registerDummyTalker(BonyRenderContext bc, PumaDualCharacter pdc) { 
-		VirtualCharacterPanel vcp = bc.getPanel();
-		VerbalController verbCont = vcp.getVerbalController();
-		if (verbCont != null) {
-			verbCont.setupTalkTrigger(pdc, new TalkingTriggerItem());
-		} else {
-			theLogger.warn("No VerbalController found to attach talk-trigger to");
+	private void registerTestTalkTrigger(PumaDualCharacter pdc) {
+
+		TalkingTriggerItem tti = new TalkingTriggerItem();
+		
+		// 1. Hook up to a JME3 action 
+		HumanoidPuppetActions.PlayerAction.TALK.getBinding().setTargetBox(pdc);
+		HumanoidPuppetActions.PlayerAction.TALK.getBinding().setTargetTrigger(tti);
+
+		// 2. Hook up to the Swing-based "BodyController"
+		// Kinda ugly, may be axed soon		
+		HumanoidRenderContext contextForSwingAction = getHumanoidRenderContext();		
+		if (contextForSwingAction != null) {
+			VirtualCharacterPanel vcp = contextForSwingAction.getPanel();
+			if (vcp != null) {
+				VerbalController verbCont = vcp.getVerbalController();
+				if (verbCont != null) {
+					verbCont.setupTalkTrigger(pdc, tti);
+				} else {
+					theLogger.warn("No VerbalController found to attach talk-trigger to");
+				}
+			}
 		}
 	}	
 
