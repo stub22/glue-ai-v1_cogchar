@@ -17,7 +17,6 @@ package org.cogchar.bind.rk.robot.svc;
 
 import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
-import org.cogchar.bind.rk.robot.model.ModelRobotFactory;
 import org.robokind.api.motion.Robot;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -33,22 +32,11 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 	public ModelBlendingRobotServiceContext(BundleContext bundleCtx) {
 		super(bundleCtx);
 	}
-	/*
-	public void makeModelRobotWithBlenderAndFrameSource(InputStream jointBindingConfigStream, String streamTitle) throws Throwable {
-		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START makeBonyRobot__, using stream: " + streamTitle);
-		//Create your Robot and register it
-		ModelRobot br = ModelRobotFactory.buildFromStream(jointBindingConfigStream, streamTitle);
-        if(br == null){
-            theLogger.warn("Error building Robot from stream: " + streamTitle);
-            return;
-        }
-		registerAndStart(br);
-		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeBonyRobotWithBlenderAndFrameSource ");
-	}*/
+
 	public void makeModelRobotWithBlenderAndFrameSource(BoneRobotConfig config) throws Throwable {
 		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START makeBonyRobot__, using config: " + config);
 		//Create your Robot and register it
-		ModelRobot br = ModelRobotFactory.buildRobot(config);
+		ModelRobot br = ModelRobot.buildRobot(config);
         if(br == null){
             theLogger.warn("Error building Robot from config: " + config);
             return;
@@ -58,7 +46,7 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 	}	
 	
 
-	// Test method, currently unused.
+	// Old test method, currently unused.
 	public void registerDummyModelRobot() throws Throwable {
 		theLogger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START registerDummyBlendingRobot");
 		//Create your Robot and register it

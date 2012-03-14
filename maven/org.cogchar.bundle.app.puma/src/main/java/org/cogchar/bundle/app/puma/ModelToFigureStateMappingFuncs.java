@@ -20,7 +20,6 @@ import org.robokind.api.motion.Joint;
 import org.robokind.api.motion.Robot;
 
 import org.cogchar.bind.rk.robot.model.ModelRobotUtils;
-import org.cogchar.bind.rk.robot.model.ModelRobotFactory;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelJoint;
 
@@ -76,7 +75,10 @@ public class ModelToFigureStateMappingFuncs {
             applySillyEulerRotations(bs, rots);
         }
     }
-    // This is not a viable technique - rotations are not commutative!
+    // This is not really a viable technique - rotations are not commutative!
+	// Also, JME3 has some confusing direction labeling things going on - appears
+	// that PITCH, ROLL, YAW are not defined in the traditional manner rel. to X, Y, Z.
+	// Needs review!
     private static void applySillyEulerRotations(BoneState bs, List<BoneProjectionPosition> rots){
         for(BoneProjectionPosition rot : rots){
 			BoneRotationAxis rotAxis = rot.getRotationAxis();
