@@ -48,7 +48,8 @@ bc:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 	apsb:label			"Zeno R-50 Avatar Bone Config apsb:label";
 	rdfs:label			"Zeno R-50 Avatar Bone Config rdfs:label";
 
-	bc:robotName		"avatar_zenoR50";
+##### Used for the Robokind "Robot.Id"
+	bc:robotName		"avatarZenoR50";
 
 	bc:joint bc:joint_waist, bc:joint_rtArmUp
 	.

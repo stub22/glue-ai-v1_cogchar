@@ -58,6 +58,8 @@ public class BoneJointConfig {
 			BoneProjectionRange bpr = BoneProjectionRange.makeOne(this, bpri);
 			myProjectionRanges.add(bpr);
 		}
-
+	}
+	public String toString() {
+		return "BJC[num=" + myJointNum + ", name=" + myBoneName + ", defPos=" + myNormalDefaultPos + ", projs=" + myProjectionRanges + "]";
 	}
 }
