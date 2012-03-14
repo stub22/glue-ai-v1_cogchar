@@ -118,8 +118,8 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	
 	def getBonyCharURIs() : java.util.List[String] = {
 		val res = new java.util.ArrayList[String]();
-		res.add(ZENO_CHAR_URI);		
-		res.add(SINBAD_CHAR_URI);
+		res.add(ZENO_CHAR_URI);
+		if (!isMinimalSim()) {res.add(SINBAD_CHAR_URI);}
 		res;
 	}
 	def getJointConfigAssetNameForChar(charURI : String) : String = {
