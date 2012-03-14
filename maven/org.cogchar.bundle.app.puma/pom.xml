@@ -29,7 +29,12 @@
             <artifactId>org.cogchar.bundle.render.opengl</artifactId>
             <version>${project.version}</version>
         </dependency>
-		
+        <dependency>
+			<!-- Temporarily adding this dep so we can pass classloader to Jena for bony config load -->
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.bundle.render.resources</artifactId>
+            <version>${project.version}</version>
+        </dependency>		
     </dependencies>
 
     <build>

@@ -61,7 +61,7 @@ bc:joint_waist
 	bc:boneName			"Spine1";
 	bc:defaultPosNorm	0.2;
 	bc:projectionRange	[
-		bc:rotationAxis		"PITCH";
+		bc:rotationAxis		"YAW";
 		bc:minAngleDeg		-20.0;
 		bc:maxAngleDeg		180.0;
 	]
@@ -74,7 +74,7 @@ bc:joint_rtArmUp
 	bc:boneName			"RtClav";
 	bc:defaultPosNorm	0.8;
 	bc:projectionRange	[
-		bc:rotationAxis		"YAW";
+		bc:rotationAxis		"PITCH";
 		bc:minAngleDeg		-150.0;
 		bc:maxAngleDeg		20.0;
 	]
