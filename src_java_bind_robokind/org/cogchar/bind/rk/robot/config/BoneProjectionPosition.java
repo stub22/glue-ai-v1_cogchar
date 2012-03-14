@@ -13,37 +13,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.rk.robot.model;
-
-import org.cogchar.avrogen.bind.robokind.RotationAxis;
+package org.cogchar.bind.rk.robot.config;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class ModelBoneRotation {
-	private String myBoneName;
-	private RotationAxis myRotationAxis;
-	private double myAngleRadians;
+public class BoneProjectionPosition {
+	private		BoneProjectionRange		myRange;
+	private		double					myAngleRadians;
 
-	public ModelBoneRotation(String boneName, RotationAxis axis, double angleRads) {
-		myBoneName = boneName;
-		myRotationAxis = axis;
+	public BoneProjectionPosition(BoneProjectionRange range, double angleRads) {
+		myRange = range;
 		myAngleRadians = angleRads;
 	}
 
 	public String getBoneName() {
-		return myBoneName;
+		return myRange.getBoneName();
 	}
 
-	public RotationAxis getRotationAxis() {
-		return myRotationAxis;
+	public BoneRotationAxis getRotationAxis() {
+		return myRange.getRotationAxis();
 	}
 
 	public double getAngleRadians() {
 		return myAngleRadians;
 	}
 	@Override public String toString () {
-		return "MBR[" + myBoneName + "," + myRotationAxis + "," + myAngleRadians + "]";
+		return "MBR[angleRad=" + myAngleRadians + ", range=" + myRange + "]";
 	}
 	
 }

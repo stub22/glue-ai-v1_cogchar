@@ -15,20 +15,15 @@
  */
 package org.cogchar.bind.rk.robot.model;
 
+import org.cogchar.bind.rk.robot.config.BoneProjectionRange;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import org.cogchar.avrogen.bind.robokind.BoneRotationConfig;
-import org.cogchar.avrogen.bind.robokind.BoneRotationRangeConfig;
-import org.cogchar.avrogen.bind.robokind.BonyJointConfig;
 import org.cogchar.avrogen.bind.robokind.BonyRobotConfig;
-import org.cogchar.avrogen.bind.robokind.RotationAxis;
+import org.cogchar.bind.rk.robot.config.BoneJointConfig;
+import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.common.utils.Utils;
 import org.robokind.api.motion.Joint;
@@ -40,11 +35,12 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author Matthew Stevenson <www.robokind.org>
+ * @author Stu B. <www.texpedient.com>
  */
 public class ModelRobotFactory {
 
 	static Logger theLogger = LoggerFactory.getLogger(ModelRobotFactory.class);
-
+/*
 	public static ModelRobot buildFromFile(File configFile) {
 		String streamTitle = configFile.getAbsolutePath();
 		try {
@@ -73,39 +69,42 @@ public class ModelRobotFactory {
 		}
 		return builtMR;
 	}
-
-	public static ModelRobot buildRobot(BonyRobotConfig config) {
-		ModelRobot robot =
-				new ModelRobot(new Robot.Id(config.robotId.toString()));
-		for (BonyJointConfig jc : config.jointConfigs) {
-			robot.registerBonyJoint(buildJoint(jc));
+*/
+	public static ModelRobot buildRobot(BoneRobotConfig config) {
+		
+		ModelRobot robot = new ModelRobot(new Robot.Id(config.myRobotName));
+		for (BoneJointConfig bjc : config.myBJCs) {
+			Joint.Id jointId = new Joint.Id(bjc.myJointNum);
+			ModelJoint mj = new ModelJoint(jointId, bjc);
+			robot.registerBonyJoint(mj);
 		}
+		return robot;
+	}
+		/*		
+		 * The joints have a default position, so this info is superfluous.
 		List<BoneRotationConfig> rotConfigs = config.initialBonePositions;
-		List<ModelBoneRotation> rotations =
-				new ArrayList<ModelBoneRotation>(rotConfigs.size());
+
+		List<BoneProjectionPosition> rotations =
+				new ArrayList<BoneProjectionPosition>(rotConfigs.size());
 		for (BoneRotationConfig conf : rotConfigs) {
-			rotations.add(new ModelBoneRotation(
+			rotations.add(new BoneProjectionPosition(
 					conf.boneName.toString(),
 					conf.rotationAxis,
 					conf.rotationRadians));
 		}
 		robot.setInitialBoneRotations(rotations);
-		return robot;
+		 * 
+		 */
+		
+	
+/*
+	private static ModelJoint buildJoint(BoneJointConfig config) {
+		
+		double defVal = Utils.bound(config.myNormalDefaultPos, 0.0, 1.0);
+		NormalizedDouble defPosNorm = new NormalizedDouble(defVal);
+		List<BoneProjectionRange> bprConfigs = config.myProjectionRanges;
+		return new ModelJoint(jointId, config.myBoneName, bprConfigs, defPosNorm);
 	}
-
-	private static ModelJoint buildJoint(BonyJointConfig config) {
-		Joint.Id jointId = new Joint.Id(config.jointId);
-		double defVal = Utils.bound(config.normalizedDefaultPosition, 0.0, 1.0);
-		NormalizedDouble def = new NormalizedDouble(defVal);
-		List<BoneRotationRangeConfig> rotConfigs = config.boneRotations;
-		List<ModelBoneRotRange> ranges = new ArrayList<ModelBoneRotRange>(rotConfigs.size());
-		for (BoneRotationRangeConfig c : rotConfigs) {
-			ranges.add(new ModelBoneRotRange(
-					c.boneName.toString(),
-					c.rotationAxis,
-					c.minPosition,
-					c.maxPosition));
-		}
-		return new ModelJoint(jointId, config.name.toString(), ranges, def);
-	}
+	 * 
+	 */
 }
