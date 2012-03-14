@@ -44,7 +44,29 @@ public class HumanoidPuppetActions {
             Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_R)};
             }
+			@Override boolean includedInMinSim() { 	return true; }				
         },
+        UPDATE_BONY_CONFIG {
+			// uses default act() and boxy wiring
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_U)};
+            }
+			@Override boolean includedInMinSim() { 	return true; }				
+        },
+        POKE {
+			// uses default act() and boxy wiring
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_P)};
+            }
+			@Override boolean includedInMinSim() { 	return true; }		
+        },
+        TALK {
+			// uses default act() and boxy wiring
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_T)};
+            }
+			@Override boolean includedInMinSim() { 	return true; }		
+        },      		
         TOGGLE_KIN_MODE {
             void act(HumanoidRenderContext ctx) {
 				HumanoidFigure hw = getSinbad(ctx);
@@ -63,31 +85,22 @@ public class HumanoidPuppetActions {
             Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] {new KeyTrigger(KeyInput.KEY_SPACE)};
             }
-			@Override boolean includedInMinSim() { 
-				return true;
-			}			
+			@Override boolean includedInMinSim() { 	return true; }			
         },
         BOOGIE {
 			// Triggers a JME3 animation
             void act(HumanoidRenderContext ctx) {
 				HumanoidFigure hw = getSinbad(ctx);
-				hw.boogie();
+				if (hw != null) {
+					hw.boogie();
+				}
             }
             Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_B)};
             }
-			@Override boolean includedInMinSim() { 
-				return true;
-			}
+			@Override boolean includedInMinSim() { 	return true; }		
         },   		
-        POKE {
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_P)};
-            }
-			@Override boolean includedInMinSim() { 
-				return true;
-			}
-        },        
+  		
         SHOOT {
             void act(HumanoidRenderContext ctx) {
                 ctx.cmdShoot();

@@ -14,22 +14,28 @@
  *  limitations under the License.
  */
 package org.cogchar.app.buddy.busker;
-import org.cogchar.bundle.app.puma.PumaDualCharacter;
-import org.cogchar.platform.trigger.DummyBox;
 
+import org.cogchar.bundle.app.puma.PumaDualCharacter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.cogchar.platform.trigger.DummyTrigger;
+import org.cogchar.platform.trigger.DummyBox;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class TalkingTriggerItem extends TriggerItem {
-	static Logger theLogger = LoggerFactory.getLogger(TalkingTriggerItem.class);
+public class UpdateBonyConfig_TI extends TriggerItem {
+	static Logger theLogger = LoggerFactory.getLogger(UpdateBonyConfig_TI.class);
+	
+	public String			myBonyRdfConfigPath;
+	public ClassLoader		myOptResourceClassLoader;
 	
 	@Override public void fire(DummyBox targetBox) {
-		theLogger.info("trigger[" + toString() + "] firing on " + targetBox.toString());
 		PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
-		pdc.sayText("The time is now, " + System.currentTimeMillis());
+		theLogger.info("Updating bony config using path[" + myBonyRdfConfigPath + "] for char [" + pdc + "]");
+		if ((pdc != null) && (myBonyRdfConfigPath != null)) {
+			pdc.updateBonyConfig(myBonyRdfConfigPath, myOptResourceClassLoader);
+		}
 	}
-	
 }

@@ -15,11 +15,18 @@
  */
 package org.cogchar.bind.rk.robot.model;
 
+import java.beans.PropertyChangeListener;
+import org.cogchar.bind.rk.robot.config.BoneProjectionPosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import org.cogchar.bind.rk.robot.config.BoneJointConfig;
+import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.AbstractRobot;
+import org.robokind.api.motion.Joint;
+import org.robokind.api.motion.Joint.Id;
+import org.robokind.api.motion.JointProperty;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.Robot.RobotPositionMap;
 import org.slf4j.Logger;
@@ -31,7 +38,7 @@ import org.slf4j.LoggerFactory;
 public class ModelRobot extends AbstractRobot<ModelJoint> {
 	
 	static Logger theLogger = LoggerFactory.getLogger(ModelRobot.class);
-    private List<ModelBoneRotation> myInitialBoneRotations;
+   // private List<BoneProjectionPosition> myInitialBoneRotations;
     private boolean myConnectionFlag;
 	private long myLastMoveStampMillis = System.currentTimeMillis();
 	
@@ -52,14 +59,16 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 	public ModelRobot(Robot.Id robotId) {
 		super(robotId);
 	}
-    
-    protected void setInitialBoneRotations(List<ModelBoneRotation> rotations){
+    /*
+    protected void setInitialBoneRotations(List<BoneProjectionPosition> rotations){
         myInitialBoneRotations = rotations;
     }
     
-    public List<ModelBoneRotation> getInitialBoneRotations(){
+    public List<BoneProjectionPosition> getInitialBoneRotations(){
         return myInitialBoneRotations;
     }
+	 * 
+	 */
 	protected String getDescription() { 
 		return "ROBOT[" + getRobotId() + "]";
 	}
@@ -102,8 +111,17 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 		addJoint(bj);
 	}
 
-    @Override
-    public boolean isConnected() {
+    @Override public boolean isConnected() {
         return myConnectionFlag;
     }
+	public void updateConfig(BoneRobotConfig config) {
+		for (BoneJointConfig bjc : config.myBJCs) {
+			Joint.Id jointJointID = new Joint.Id(bjc.myJointNum); 
+			JointId robotJointID = new JointId(getRobotId(), jointJointID);
+			ModelJoint mj = getJoint(robotJointID);
+			if (mj != null) {
+				theLogger.info("Updating robot joint: " + robotJointID);
+			}
+		}		
+	}
 }

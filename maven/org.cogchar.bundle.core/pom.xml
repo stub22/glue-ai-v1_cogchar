@@ -37,6 +37,11 @@
             <artifactId>org.appdapter.bundle.core</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
+		<dependency>
+			<artifactId>ext.bundle.jena_all_264</artifactId>
+			<groupId>org.appdapter</groupId>
+			<version>${appdapter.version}</version>
+		</dependency>			
     </dependencies>
 
     <build>

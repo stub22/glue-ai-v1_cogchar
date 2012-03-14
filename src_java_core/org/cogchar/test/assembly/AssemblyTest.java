@@ -35,14 +35,16 @@ public class AssemblyTest {
 		// Works OK with or without the "file:" prefix.
 		//String triplesPath = "file:src/main/resources/org/cogchar/test/assembly/ca_test.ttl";
 		// This will be interpreted as a classpath 
-		String triplesURL = "org/cogchar/test/assembly/ca_test.ttl";
+		String triplesPath = "org/cogchar/test/assembly/ca_test.ttl";
 		AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(AssemblyTest.class.getClassLoader());
 		logInfo("Loading triples from path: " + triplesPath);
-		Set<Object> loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(triplesURL);
+		Set<Object> loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(triplesPath);
 		logInfo("Loaded " + loadedStuff.size() + " objects");
 		for (Object o : loadedStuff) {
-			System.out.println("Loaded: " + o);
+			logInfo("Loaded: " + o);
 		}
+		logInfo("=====================================================================");
+		
 	}
 	public static void logInfo(String txt) {
 		System.out.println(txt);

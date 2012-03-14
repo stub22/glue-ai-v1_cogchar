@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.cogchar.bind.rk.robot.svc.BlendingRobotServiceContext;
-import org.cogchar.bind.rk.robot.model.ModelBoneRotRange;
-import org.cogchar.bind.rk.robot.model.ModelBoneRotation;
-import org.cogchar.avrogen.bind.robokind.RotationAxis;
+import org.cogchar.bind.rk.robot.config.BoneProjectionRange;
+import org.cogchar.bind.rk.robot.config.BoneProjectionPosition;
+import org.cogchar.bind.rk.robot.config.BoneRotationAxis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -58,28 +58,28 @@ public class ModelToFigureStateMappingFuncs {
 	
 	public static void propagateState(ModelRobot br, HumanoidFigure hf) { 
 		FigureState fs = hf.getFigureState();
-		Map<String,List<ModelBoneRotation>> rotMap = ModelRobotUtils.getGoalAnglesAsRotations(br);
+		Map<String,List<BoneProjectionPosition>> rotMap = ModelRobotUtils.getGoalAnglesAsRotations(br);
 		// theLogger.info("Sending " + fs + " to " + rotMap);
 		applyAllSillyEulerRotations(fs, rotMap);
 	}
     
-    public static void applyAllSillyEulerRotations(FigureState fs, Map<String,List<ModelBoneRotation>> rotMap){
+    public static void applyAllSillyEulerRotations(FigureState fs, Map<String,List<BoneProjectionPosition>> rotMap){
        //  List<ModelBoneRotation> rots = new ArrayList<ModelBoneRotation>();
-        for(Entry<String,List<ModelBoneRotation>> e : rotMap.entrySet()){
+        for(Entry<String,List<BoneProjectionPosition>> e : rotMap.entrySet()){
 			String boneName = e.getKey();
             BoneState bs = fs.getBoneState(boneName);
             if(bs == null){
 				theLogger.warn("Can't find boneState for " + boneName);
                 continue;
             }
-			List<ModelBoneRotation> rots = e.getValue();
+			List<BoneProjectionPosition> rots = e.getValue();
             applySillyEulerRotations(bs, rots);
         }
     }
     // This is not a viable technique - rotations are not commutative!
-    private static void applySillyEulerRotations(BoneState bs, List<ModelBoneRotation> rots){
-        for(ModelBoneRotation rot : rots){
-			RotationAxis rotAxis = rot.getRotationAxis();
+    private static void applySillyEulerRotations(BoneState bs, List<BoneProjectionPosition> rots){
+        for(BoneProjectionPosition rot : rots){
+			BoneRotationAxis rotAxis = rot.getRotationAxis();
             float rads = (float)rot.getAngleRadians();
 			// theLogger.info("Rotating " + bs.getBoneName() + " angle " + rotAxis + " to " + rads + " radians.");
             switch(rotAxis) {
