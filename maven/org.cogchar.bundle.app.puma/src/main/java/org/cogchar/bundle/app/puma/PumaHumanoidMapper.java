@@ -98,10 +98,8 @@ public class PumaHumanoidMapper {
 		FigureState fs = new FigureState();
 		List<ModelJoint> allJoints = br.getJointList();
 		for (ModelJoint bj : allJoints) {
-            for(BoneProjectionRange range : bj.getBoneRotationRanges()){
-                String name = range.getBoneName();
-                fs.obtainBoneState(name);
-            }
+			String boneName = bj.getName();
+            fs.obtainBoneState(boneName);
 		}
 		HumanoidFigure hf = getHumanoidFigure();
 		hf.setFigureState(fs);

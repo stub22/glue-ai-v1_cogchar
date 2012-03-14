@@ -45,6 +45,7 @@ public class ModelJoint extends AbstractJoint {
         super(jointId);
         myBoneName = bjc.myBoneName;
 		updateConfig(bjc);
+		myGoalPosNorm = myDefaultPosNorm;
     }
 	public void updateConfig(BoneJointConfig bjc) { 
 		double defPosVal = Utils.bound(bjc.myNormalDefaultPos, 0.0, 1.0);
