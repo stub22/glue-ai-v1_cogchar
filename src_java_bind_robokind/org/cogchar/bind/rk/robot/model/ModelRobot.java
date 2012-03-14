@@ -121,6 +121,7 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 			ModelJoint mj = getJoint(robotJointID);
 			if (mj != null) {
 				theLogger.info("Updating robot joint: " + robotJointID);
+				mj.updateConfig(bjc);
 			}
 		}		
 	}
