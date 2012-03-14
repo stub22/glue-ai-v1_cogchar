@@ -71,13 +71,15 @@ public class ModelRobotFactory {
 	}
 */
 	public static ModelRobot buildRobot(BoneRobotConfig config) {
-		
-		ModelRobot robot = new ModelRobot(new Robot.Id(config.myRobotName));
+		Robot.Id robotID = new Robot.Id(config.myRobotName);
+		ModelRobot robot = new ModelRobot(robotID);
+		theLogger.info("Robot.Id=" + robotID);
 		for (BoneJointConfig bjc : config.myBJCs) {
 			Joint.Id jointId = new Joint.Id(bjc.myJointNum);
 			ModelJoint mj = new ModelJoint(jointId, bjc);
 			robot.registerBonyJoint(mj);
 		}
+		theLogger.info("Built robot " + robot + " with ID=" + robot.getRobotId());
 		return robot;
 	}
 		/*		
