@@ -86,6 +86,7 @@ public class PumaAppContext {
 		// Let's be lame for the moment, and assume the first character found is the one we want to control.
 		PumaDualCharacter pdc = pdcList.get(0);
 		if (pdc != null) {
+			pdc.connectBonyCharToRobokindSvcs(myBundleContext);
 			registerConfigReloadTrigger(pdc);			
 			registerTestDanceTrigger(pdc);
 			registerTestTalkTrigger(pdc);
@@ -100,8 +101,7 @@ public class PumaAppContext {
 			throw new Exception ("HumanoidRenderContext is null");
 		}
 		PumaDualCharacter pdc = new PumaDualCharacter(hrc, myBundleContext, bonyCharURI);
-		pdc.connectBonyCharToRobokindSvcs(myBundleContext);
-
+		
 		return pdc;
 	}
 
