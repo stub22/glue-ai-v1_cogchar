@@ -53,19 +53,5 @@ public class ModelRobotUtils {
 		}
 		return rotListMap;
 	}
-/*
-	public static Map<String, List<BoneProjectionPosition>> getInitialRotationMap(ModelRobot robot) {
-		Map<String, List<BoneProjectionPosition>> rotListMap = new HashMap();
-		List<BoneProjectionPosition> initRots = robot.getInitialBoneRotations();
-		if (initRots == null) {
-			return rotListMap;
-		}
-		for (BoneProjectionPosition rot : initRots) {
-			appendBoneRotation(rotListMap, rot);
-		}
-		return rotListMap;
-	}
-	 * 
-	 */
 
 }
