@@ -52,15 +52,19 @@ public class PumaDualCharacter implements DummyBox {
 	
 	private	PumaHumanoidMapper					myPHM;
 	
+	public static String		INITIAL_BONY_RDF_PATH = "rk_bind_config/motion/bony_ZenoR50.ttl";
+	public static ClassLoader	INITIAL_BONY_RDF_CL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+	
+	public static String		UPDATE_BONY_RDF_PATH = "temp_bony_ZenoR50.ttl";
+
+	
 	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, String charURI) {
 		myCharURI = charURI;
 		myPHM = new PumaHumanoidMapper(hrc, bundleCtx, charURI);
 	}
 	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx) throws Throwable {
-		String rdfFilePath = BoneRobotConfig.DEV_TEST_RDF_PATH;
-		ClassLoader rdfOptionalCL = null;
 		
-		BoneRobotConfig brc = readBoneRobotConfig(rdfFilePath, rdfOptionalCL);
+		BoneRobotConfig brc = readBoneRobotConfig(INITIAL_BONY_RDF_PATH, INITIAL_BONY_RDF_CL);
 		myPHM.initModelRobotUsingBoneRobotConfig(brc);
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myPHM.connectToVirtualChar();
@@ -88,14 +92,12 @@ public class PumaDualCharacter implements DummyBox {
 	}
 	public void updateBonyConfig(String rdfConfigFlexPath, ClassLoader optRdfResourceCL) {
 		try {
+			BoneRobotConfig.Builder.clearCache();
 			BoneRobotConfig brc = readBoneRobotConfig(rdfConfigFlexPath, optRdfResourceCL);
 			myPHM.updateModelRobotUsingBoneRobotConfig(brc);
 		} catch (Throwable t) {
 			theLogger.error("problem updating bony config from flex-path[" + rdfConfigFlexPath + "]", t);
 		}
-	}
-	public String toString() { 
-		return "PumaDualChar[" + myCharURI + "]";
 	}
 	public BoneRobotConfig readBoneRobotConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
 		if (optResourceClassLoader != null) {
@@ -113,6 +115,9 @@ public class PumaDualCharacter implements DummyBox {
 		BoneRobotConfig brc = (BoneRobotConfig) loadedObjs[0];
 		return brc;
 	}
+	@Override public String toString() { 
+		return "PumaDualChar[" + myCharURI + "]";
+	}	
 	private void logInfo(String txt) { 
 		theLogger.info(txt);
 	}	
