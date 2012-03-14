@@ -100,12 +100,6 @@
 			<artifactId>org.cogchar.bundle.bind.robokind</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.bundle.avrogen</artifactId>
-			<type>jar</type>
-			<version>${project.version}</version>
-		</dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.cogchar.bundle.render.resources</artifactId>

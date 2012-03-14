@@ -54,8 +54,7 @@
 	</pluginRepositories>
 	
 	
-	<modules>
-		<module>../org.cogchar.bundle.avrogen</module>		
+	<modules>	
 		<module>../org.cogchar.bundle.demo.all</module>
 		<module>../org.cogchar.bundle.app.puma</module>
 		<module>../org.cogchar.bundle.core</module>		

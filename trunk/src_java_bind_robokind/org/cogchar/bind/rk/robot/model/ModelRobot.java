@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 public class ModelRobot extends AbstractRobot<ModelJoint> {
 	
 	static Logger theLogger = LoggerFactory.getLogger(ModelRobot.class);
-   // private List<BoneProjectionPosition> myInitialBoneRotations;
+	
     private boolean myConnectionFlag;
 	private long myLastMoveStampMillis = System.currentTimeMillis();
 	
@@ -59,16 +59,7 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 	public ModelRobot(Robot.Id robotId) {
 		super(robotId);
 	}
-    /*
-    protected void setInitialBoneRotations(List<BoneProjectionPosition> rotations){
-        myInitialBoneRotations = rotations;
-    }
-    
-    public List<BoneProjectionPosition> getInitialBoneRotations(){
-        return myInitialBoneRotations;
-    }
-	 * 
-	 */
+
 	protected String getDescription() { 
 		return "ROBOT[" + getRobotId() + "]";
 	}
@@ -125,4 +116,16 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 			}
 		}		
 	}
+	public static ModelRobot buildRobot(BoneRobotConfig config) {
+		Robot.Id robotID = new Robot.Id(config.myRobotName);
+		ModelRobot robot = new ModelRobot(robotID);
+		theLogger.info("Robot.Id=" + robotID);
+		for (BoneJointConfig bjc : config.myBJCs) {
+			Joint.Id jointId = new Joint.Id(bjc.myJointNum);
+			ModelJoint mj = new ModelJoint(jointId, bjc);
+			robot.registerBonyJoint(mj);
+		}
+		theLogger.info("Built robot " + robot + " with ID=" + robot.getRobotId());
+		return robot;
+	}	
 }
