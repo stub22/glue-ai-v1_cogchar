@@ -85,9 +85,9 @@ public class ModelToFigureStateMappingFuncs {
             float rads = (float)rot.getAngleRadians();
 			// theLogger.info("Rotating " + bs.getBoneName() + " angle " + rotAxis + " to " + rads + " radians.");
             switch(rotAxis) {
-                case PITCH: bs.rot_X_pitch = rads; break;
-                case ROLL:  bs.rot_Y_roll = rads;  break;
-                case YAW:   bs.rot_Z_yaw = rads;   break;
+                case PITCH: bs.rot_Z_attitude = rads; break;
+                case ROLL:  bs.rot_X_bank = rads;  break;
+                case YAW:   bs.rot_Y_heading = rads;   break;
             }
         }
     }	

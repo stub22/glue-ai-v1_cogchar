@@ -18,13 +18,8 @@ package org.cogchar.bundle.app.puma;
 
 import java.util.Set;
 
-
 import org.osgi.framework.BundleContext;
-
-
-
 import org.cogchar.bind.rk.robot.client.RobotAnimClient;
-
 
 import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 import org.cogchar.render.opengl.bony.demo.HumanoidRenderContext;

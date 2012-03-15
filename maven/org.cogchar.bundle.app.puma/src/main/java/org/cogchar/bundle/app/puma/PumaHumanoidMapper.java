@@ -20,20 +20,13 @@ import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import java.util.List;
 import java.util.Set;
 import org.osgi.framework.BundleContext;
-
-
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelJoint;
-
-
 
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.demo.HumanoidRenderContext;
 import org.cogchar.render.opengl.bony.model.HumanoidFigure;
-
 import org.cogchar.bind.rk.robot.config.BoneProjectionRange;
-
-
 import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 import org.slf4j.Logger;
@@ -61,13 +54,7 @@ public class PumaHumanoidMapper {
 	public ModelRobot getBonyRobot() { 
 		return myMBRSC.getRobot();
 	}	
-/*
-	public void initModelRobotUsingAvroJointConfig() throws Throwable {
-		String avroJointConfigAssetName = myHRC.getJointConfigAssetNameForChar(myCharURI);
-		InputStream avroJointConfigAssetStream = myHRC.openAssetStream(avroJointConfigAssetName);
-		myMBRSC.makeModelRobotWithBlenderAndFrameSource(avroJointConfigAssetStream, avroJointConfigAssetName);		
-	}
-*/	
+
 	public void initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
 		myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);
 	}
@@ -75,8 +62,6 @@ public class PumaHumanoidMapper {
 		ModelRobot targetRobot = getBonyRobot();
 		targetRobot.updateConfig(brc);
 	}
-// 	public void updateModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
-	
 
 	
 	public void connectToVirtualChar() throws Exception {
@@ -104,17 +89,6 @@ public class PumaHumanoidMapper {
 		HumanoidFigure hf = getHumanoidFigure();
 		hf.setFigureState(fs);
 	}
-	
-/*
-	  public void applyInitialBoneRotations() {
-		HumanoidFigure hf = getHumanoidFigure();
-		FigureState fs = hf.getFigureState();
-		ModelRobot br = getBonyRobot();
-		Map<String,List<BoneProjectionPosition>> initialRotationMap = ModelRobotUtils.getInitialRotationMap(br);
-        ModelToFigureStateMappingFuncs.applyAllSillyEulerRotations(fs, initialRotationMap);
-    }	
-	 * 
-	 */
 	public void registerFrameReceiver() throws Throwable { 
 		ModelRobot mr = getBonyRobot();		
 			/*
