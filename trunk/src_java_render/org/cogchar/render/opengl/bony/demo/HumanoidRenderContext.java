@@ -93,7 +93,7 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 
 			HumanoidFigureModule hfm = new HumanoidFigureModule(figure, this);
 			attachModule(hfm);
-			figure.boogie();
+		//	figure.boogie();
 		//	figure.becomePuppet();
 		} else {
 			getLogger().warn("Skipping humanoid mesh load for charURI: " + charURI);
