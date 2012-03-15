@@ -25,7 +25,12 @@ import com.jme3.math.Quaternion;
  */
 public class BoneState {
 	public	String		myBoneName;
-	public	float		rot_X_pitch, rot_Y_roll, rot_Z_yaw;
+	// JME3 docs are messed up regarding "yaw, pitch, roll" terminology.
+	// However, our current understanding is that rots are applied in this order,
+	// with this meaning for an airplane flying towards X-infinity (at our right)
+	// with Y straight up, and Z towards us.
+	
+	public	float		rot_X_bank, rot_Y_heading, rot_Z_attitude;
 	
 	public BoneState(String name) {
 		myBoneName = name;
@@ -35,7 +40,7 @@ public class BoneState {
 	}
 	public Quaternion getRotQuat() { 
 		Quaternion q = new Quaternion();
-		q.fromAngles(rot_X_pitch, rot_Y_roll, rot_Z_yaw);
+		q.fromAngles(rot_X_bank, rot_Y_heading, rot_Z_attitude);
 		return q;
 	}
 
