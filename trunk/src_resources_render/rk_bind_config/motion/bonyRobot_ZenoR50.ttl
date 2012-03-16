@@ -1,0 +1,121 @@
+## This file contains RDF in Turtle (".ttl") format.
+## See:   http://www.w3.org/TeamSubmission/turtle/
+
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+@prefix apsb:	<http://www.appdapter.org/schema/box#> .
+@prefix apt:	<http://www.appdapter.org/test#> .
+
+@prefix bc:		<http://www.cogchar.org/bony/config#> .
+
+
+<>  rdfs:comment     "All of this metadata is optional, unused, and just for fun/future" ;
+    dc:creator       "Stu B. <www.texpedient.com>" ;
+    dc:subject       "Zeno R-50 config" ;
+    dc:publisher     "cogchar.org" ;
+    dc:title         "(title) Bony config for Zeno R-50" ;
+    dc:description   "(desc) Bony config for Zeno R-50" ;
+    dc:date          "2012-03-13" ;
+
+    dc:format        "RDF" ;
+    dc:identifier    "what_does_this_dublin_core_identifier_mean"
+#####   ja:imports  is how we can include files, which can include others
+#####  The imports will be resolved using Jena FileManager, which reads
+#####  both filesystem and classpath.
+#####	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl"
+##### The period on next line is important:  It ends this block of triples.
+    .
+    
+
+#### This "Buildable" resource defines a factory for a particular kind of component.
+#### The factory might keep a cache allowing it to stitch identical URI references to a
+#### context-unique runtime object, or it might not.  As it turns out, BoneRobotConfig$Builder
+#### does inherit that feature, but we aren't using it at this time.
+#### Formally, we are defining an RDFS:class, which has the URI
+#### bc:BuildableBoneRobotConfig, which you'll see used below as the "rdf:type"
+#### of the bc:zenoR50 robot instance. 
+
+bc:BuildableBoneRobotConfig
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.bind.rk.robot.config.BoneRobotConfig$Builder" 
+#####  Again, note the period ending the description of this resource, and all other
+#####  top-level (*syntactically, but not semantically*) resources below.
+		.
+
+
+##########################################################################
+#####   The Robot Resource
+#####  The URI of the robot is bc:zenoR50	
+##########################################################################
+
+#### rdf:type allows Jena Assembler to construct the factory   (BoneRobotConfig.Builder)
+#### defined by the BuildableBoneRobotconfig above.
+
+bc:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
+####  Here is the class name of the actual config object instance we are constructing.
+	apsb:javaFQCN		"org.cogchar.bind.rk.robot.config.BoneRobotConfig";
+#### Some additional descriptive metadata
+	apsb:label			"Zeno R-50 Avatar Bone Config apsb:label";
+	rdfs:label			"Zeno R-50 Avatar Bone Config rdfs:label";
+#### bc:robotName is used for the Robokind "Robot.Id"
+	bc:robotName		"avatarZenoR50";
+#### bc:joint property contains the URIs of each joint.  The order does not matter.
+	bc:joint bc:joint_waist, bc:joint_rtClav
+	.
+#################################################################################
+#### Note the period above, so the robot resource is now done, and we can move on to:
+####    The Joint Resources
+#################################################################################
+
+
+### bc:joint_waist is a URI, which has properties, defined by triples.
+
+
+bc:joint_waist		
+	bc:jointNum			0;
+	bc:boneName			"Spine1";
+	bc:defaultPosNorm	0.2;
+
+### This joint has TWO projection ranges, which are blank nodes set off by [square brackets]
+### The commas here indicate multiple values for the same property, which can be
+### interpreted as an *unordered* collection.  An ordered collection would use parens, and
+### has a distinctly different form.  (See the o.c.test.assembly "Nugget" example).
+### Also note, up on the semantic level, that min may be numerically greater than max.  
+### "min" = fully retracted,  "max" = fully extended
+
+	bc:projectionRange	[
+		bc:rotationAxis		"YAW";
+		bc:minAngleDeg		-20.0;
+		bc:maxAngleDeg		180.0;
+	], [
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		90.0;
+		bc:maxAngleDeg		-90.0;
+	]
+.
+
+#####
+##  All done with the waist joint, moving on to the RtClav joint.
+### bc:joint_rtClav	 is another URI
+#####
+
+bc:joint_rtClav		
+	bc:jointNum			1;
+	bc:boneName			"RtClav";
+	bc:defaultPosNorm	0.8;
+	bc:projectionRange	[
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-150.0;
+		bc:maxAngleDeg		20.0;
+	]
+.
+
