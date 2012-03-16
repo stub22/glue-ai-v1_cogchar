@@ -105,11 +105,10 @@ bci:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 #### between the joint's sense and the coordinate system of the bone.
 #### "min" = fully retracted,  "max" = fully extended.
 #################################################################################
-
 ### bci:joint_Root is a URI, which has properties, defined by triples.
-
-### Each joint may have one or more projection ranges, each of which is also a resource,
-### which may be an explicit URI or a blank node.  
+### Each joint may have one or more projection ranges, each of which is 
+### also a resource, which may be an explicit URI or a blank node.  
+### (So far we are using blank nodes).
 ######################################################################
 
 
@@ -121,7 +120,9 @@ bci:joint_Root_Spin
 	# We put jointNum and boneName on same line to make it easy to grep this file for mappings.
 	bc:jointNum			0;			bc:jointName			"Root_Spin";
 	bc:defaultPosNorm	0.5;
+	
 	bc:projectionRange	[
+		# This resource is a "blank node", because it doesn't have an explicit URI.
 		bc:boneName			"Root";
 		bc:rotationAxis		"ROLL";
 		bc:minAngleDeg		-180.0;

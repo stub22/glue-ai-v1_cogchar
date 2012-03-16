@@ -71,7 +71,7 @@ public class BoneRobotConfig extends KnownComponentImpl {
 		}
 	}	
 	private static String	UNIT_TEST_RDF_PATH 
-		= "/P:/_prj/robo/cogchar_trunk/maven/org.cogchar.bundle.render.resources/src/main/resources/rk_bind_config/motion/bonyRobot_ZenoR50.ttl";	
+		= "../org.cogchar.bundle.render.resources/src/main/resources/rk_bind_config/motion/bonyRobot_ZenoR50.ttl";	
 		
 	public static void main(String args[]) {
 		System.out.println("starting boneRobotConfig test");
