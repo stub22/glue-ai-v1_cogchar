@@ -1,66 +1,75 @@
 <?xml version="1.0"?>
 <JointGroup name="robot">
-	<RobotId>myRobot</RobotId>
+	<RobotId>Avatar_ZenoR50</RobotId>
 	<JointGroups>
-		<JointGroup name="Head">
+		<JointGroup name="Torso">
 			<JointIds>
+				<JointId>0</JointId>
+				<JointId>1</JointId>
+			</JointIds>
+		</JointGroup>
+		<JointGroup name="Neck">
+			<JointIds>
+				<JointId>10</JointId>
+				<JointId>11</JointId>
+				<JointId>12</JointId>		
+			</JointIds>
+		</JointGroup>
+		<JointGroup name="Face">
+			<JointIds>
+				<JointId>20</JointId>
 				<JointId>21</JointId>
 				<JointId>22</JointId>
 				<JointId>23</JointId>
-				<JointId>24</JointId>
-				<JointId>25</JointId>
-				<JointId>26</JointId>
-				<JointId>27</JointId>
-				<JointId>28</JointId>
-				<JointId>29</JointId>
-				<JointId>30</JointId>
+
 			</JointIds>
 		</JointGroup>
 		<JointGroup name="Upper Body">
 			<JointGroups>
-				<JointGroup name="Right Arm">
-					<JointIds>
-						<JointId>1</JointId>
-						<JointId>2</JointId>
-						<JointId>3</JointId>
-						<JointId>4</JointId>
-					</JointIds>
-				</JointGroup>
 				<JointGroup name="Left Arm">
 					<JointIds>
-						<JointId>5</JointId>
-						<JointId>6</JointId>
-						<JointId>7</JointId>
-						<JointId>8</JointId>
+						<JointId>30</JointId>
+						<JointId>31</JointId>
+						<JointId>32</JointId>
+						<JointId>33</JointId>
+						<JointId>34</JointId>
+						<JointId>35</JointId>
 					</JointIds>
 				</JointGroup>
+				<JointGroup name="Right Arm">
+					<JointIds>
+						<JointId>40</JointId>
+						<JointId>41</JointId>
+						<JointId>42</JointId>
+						<JointId>43</JointId>
+						<JointId>44</JointId>
+						<JointId>45</JointId>
+					</JointIds>
+				</JointGroup>
+
 			</JointGroups>
 		</JointGroup>
-		<JointGroup name="Torso">
-			<JointIds>
-				<JointId>0</JointId>
-			</JointIds>
-		</JointGroup>
+
 		<JointGroup name="Lower Body">
 			<JointGroups>
-				<JointGroup name="Right Leg">
-					<JointIds>
-						<JointId>9</JointId>
-						<JointId>10</JointId>
-						<JointId>11</JointId>
-						<JointId>12</JointId>
-						<JointId>13</JointId>
-						<JointId>14</JointId>
-					</JointIds>
-				</JointGroup>
 				<JointGroup name="Left Leg">
 					<JointIds>
-						<JointId>15</JointId>
-						<JointId>16</JointId>
-						<JointId>17</JointId>
-						<JointId>18</JointId>
-						<JointId>19</JointId>
-						<JointId>20</JointId>
+						<JointId>50</JointId>
+						<JointId>51</JointId>
+						<JointId>52</JointId>
+						<JointId>53</JointId>
+						<JointId>54</JointId>
+						<JointId>55</JointId>
+					</JointIds>
+				</JointGroup>
+				<JointGroup name="Right Leg">
+					<JointIds>
+						<JointId>60</JointId>
+						<JointId>61</JointId>
+						<JointId>62</JointId>
+						<JointId>63</JointId>
+						<JointId>64</JointId>
+						<JointId>65</JointId>
 					</JointIds>
 				</JointGroup>
 			</JointGroups>
