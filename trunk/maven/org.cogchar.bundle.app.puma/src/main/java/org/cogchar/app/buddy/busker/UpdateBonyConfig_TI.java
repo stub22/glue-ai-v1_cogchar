@@ -28,14 +28,14 @@ import org.cogchar.platform.trigger.DummyBox;
 public class UpdateBonyConfig_TI extends TriggerItem {
 	static Logger theLogger = LoggerFactory.getLogger(UpdateBonyConfig_TI.class);
 	
-	public String			myBonyRdfConfigPath;
 	public ClassLoader		myOptResourceClassLoader;
 	
 	@Override public void fire(DummyBox targetBox) {
 		PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
-		theLogger.info("Updating bony config using path[" + myBonyRdfConfigPath + "] for char [" + pdc + "]");
-		if ((pdc != null) && (myBonyRdfConfigPath != null)) {
-			pdc.updateBonyConfig(myBonyRdfConfigPath, myOptResourceClassLoader);
+		String bonyRdfConfigPath = pdc.myUpdateBonyRdfPath;
+		theLogger.info("Updating bony config using path[" + bonyRdfConfigPath + "] for char [" + pdc + "]");
+		if ((pdc != null) && (bonyRdfConfigPath != null)) {
+			pdc.updateBonyConfig(bonyRdfConfigPath, myOptResourceClassLoader);
 		}
 	}
 }

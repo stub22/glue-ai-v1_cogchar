@@ -21,11 +21,8 @@ import java.util.Properties;
 
 import java.util.List;
 
-import org.cogchar.bind.rk.robot.model.ModelRobot;
-import org.cogchar.bind.rk.robot.model.ModelRobotUtils;
 
-import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
-import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
+
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -33,14 +30,15 @@ import org.openide.windows.WindowManager;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.OSGiUtils;
-import org.robokind.api.common.services.ServiceConnectionDirectory;
-import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.jointgroup.JointGroup;
-import org.robokind.api.motion.jointgroup.RobotJointGroup;
+
 import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaDualCharacter;
 
+import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+
+// import org.robokind.api.motion.Robot;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,35 +73,52 @@ public final class VirtualCharTopComponent extends TopComponent {
         if(bundleCtx == null){
             throw new NullPointerException();
         }
-		// STILL using a hardcoded URI, but "/platform/nb701" is enough to tell our (STILL stubbed out)
+		// Our sysContextURI is still hardcoded here, but by starting with "NB" we tell our (still stubbed out)
 		// config system that we are running under Netbeans Platform GUI (implying Netigso), so, only
 		// Robokind-Workshop-friendly features should be activated.  This area is ripe for improvement
 		// in Cogchar 1.0.4, due in March 2012.
 		// String dualCharURI = "urn:org.cogchar/platform/nb701?charName=HRK_Zeno_R50&version=20120302";       
+		
 		String sysContextURI = "NBURI:huzzah";             
-		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI);
+		String sysLocalTempConfigDir = Installer.VIRTCHAR_NB_MODULE_DIR;
+		
+		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI, sysLocalTempConfigDir);
+		
 		BonyRenderContext brc = pac.getHumanoidRenderContext();
+		
+		// Create/find a Cogchar-enabled Swing GUI panel to display inside this Netbeans Component window.
+		
 		initVirtualCharPanel(brc);
+		
+		// Start up the JME OpenGL canvas, which will in turn initialize the Cogchar rendering "App" (in JME3 lingo).
+		// This step will load all the 3D models (and other rendering resources) that Cogchar needs, based
+		// on what is implied by the sysContextURI we supplied to the PumaAppContext constructor above.
 		
 		// Firing up the OpenGL canvas requires access to sun.misc.Unsafe, which must be explicitly imported 
 		// by ext.bundle.osgi.jmonkey, and explicitly allowed by the container using Netigso
 		
 		pac.startOpenGLCanvas(false);
 		
+		// Now we have an Cogchar+JME3+OpenGL canvas, connected to our Netbeans Swing App.  
+		
+		// So, let's connect the Cogchar PUMA application (configured by implications of the sysContextURI and
+		// sysLocalTempConfigDir passed to PumaAppContext constructor).
+		
+		// The result is a list of connected "dual" characters, which each have a presence 
+		// in both Cogchar virtual space and Robokind physical space.
+		
 		List<PumaDualCharacter> pdcList = pac.connectDualRobotChars();	
-        File file = new File(Installer.VIRTCHAR_NB_MODULE_DIR + "/jointgroup.xml");
-        RobotServiceFuncs.registerJointGroup(bundleCtx, file);
 
         myInitializedFlag = true;
 		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - 'Simulator' panel init() - END");
     }
     
-    private void initVirtualCharPanel(BonyRenderContext BonyRenderContext) throws Throwable {
-        if(BonyRenderContext == null){
+    private void initVirtualCharPanel(BonyRenderContext brContext) throws Throwable {
+        if(brContext == null){
 			theLogger.error("BonyRenderContext is null");
             throw new Exception("BonyRenderContext is null");
         }
-		VirtualCharacterPanel vcp = BonyRenderContext.getPanel();
+		VirtualCharacterPanel vcp = brContext.getPanel();
         if(vcp == null){
 			theLogger.error("VirtualCharPanel is null");
             throw new Exception("VirtualCharPanel is null");
@@ -194,10 +209,10 @@ public final class VirtualCharTopComponent extends TopComponent {
 
     @Override public void componentOpened() {
         try{
-            BundleContext context = OSGiUtils.getBundleContext(Robot.class);
+            BundleContext context = OSGiUtils.getBundleContext(PumaAppContext.class);
             if(context == null){
                 throw new NullPointerException(
-                        "Cannot find BundleContext for" + Robot.class);
+                        "Cannot find BundleContext for" + PumaAppContext.class);
             }
             init(context);
         }catch(Throwable t){

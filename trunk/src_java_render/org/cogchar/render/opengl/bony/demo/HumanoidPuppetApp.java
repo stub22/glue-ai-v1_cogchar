@@ -23,9 +23,6 @@
 package org.cogchar.render.opengl.bony.demo;
 
 import org.cogchar.render.opengl.bony.model.HumanoidFigure;
-
-
-
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.slf4j.Logger;
@@ -52,23 +49,9 @@ public class HumanoidPuppetApp extends BonyVirtualCharApp<HumanoidRenderContext>
 		return hrc;
 	}
 	
-
-	/*
-	 * Called from SimpleUpdate to propagate position state from the figure state in the
-	 * BonyRenderContext to the OpenGL-rendered bones of the humanoid puppet, as mediated
-	 * by the myTwister delegate (which doesn't do anything smart, yet)..  
-	 */
-	/*
-	public void applyFigureState() {
-		BonyRenderContext ctx = getBonyRenderContext();
-		FigureState fs = ctx.getFigureState();
-		myHumanoidWrapper.applyFigureState(fs);
-	}
-	 * 
-	 */
-
-
     private long myLastUpdateTime = System.currentTimeMillis();
+	
+	// Unused
     private void logUpdateTime(){
         long prev = myLastUpdateTime;
         long now = System.currentTimeMillis();
@@ -76,39 +59,10 @@ public class HumanoidPuppetApp extends BonyVirtualCharApp<HumanoidRenderContext>
         theLogger.info("Updating Robot.  " + elapsed + "msec since last update.  Cur time: " + now);
         myLastUpdateTime = now;
     }
-    /*
-	@Override public void simpleUpdate(float tpf) {
-        //logUpdateTime();
-		super.simpleUpdate(tpf);
-		//applyTwisting(tpf);
-		applyFigureState();
-	}
-	 * 
-	 */
 
 }
-		/*VirtCharPanel vcp = getVCPanel();
-		int testChannelNum = vcp.getTestChannelNum();
-		String direction = vcp.getTestDirection();
-		HumanoidBoneConfig hbc = myHumanoidWrapper.getHBConfig();
-		List<HumanoidBoneDesc> boneDescs = hbc.getBoneDescs();
-		HumanoidBoneDesc hbd = boneDescs.get(testChannelNum);
-		String boneName = hbd.getSpatialName();
-		Bone tgtBone = myHumanoidWrapper.getSpatialBone(boneName);
-		myTwister.twistBone(tpf, tgtBone, direction);
-		
-		Bone rootBone = myHumanoidWrapper.getRootBone();*/
-			/*    Weird old bits of code
-	float elTime = 0;
-	boolean forward = true;
-	AnimControl animControl;
 	
-	Vector3f direction = new Vector3f(0, 0, 1);
-	Quaternion rotate = new Quaternion().fromAngleAxis(FastMath.PI / 8, Vector3f.UNIT_Y);
-	boolean dance = true;
- * / myHumanoidWrapper.wiggle(tpf);
-	
-	  * JMonkey Team Comment as of about August 2011:
+/* JMonkey Team Comment as of about August 2011:
  * PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!
 		//  Below is JMonkey test code from TestBoneRagdoll, which is commented out in JMonkey trunk as of about 
 		// 2011-08-01.

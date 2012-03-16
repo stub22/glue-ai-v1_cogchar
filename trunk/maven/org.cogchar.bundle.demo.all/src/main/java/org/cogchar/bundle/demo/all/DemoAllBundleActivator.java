@@ -24,7 +24,7 @@ public class DemoAllBundleActivator extends BundleActivatorBase {
 		theLogger.info("==============================\nStarting " + debugTxt);
 		super.start(bundleCtx);
 		
-		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI);
+		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI, null);
 		try {
 			pac.makeDualCharsForSwingOSGi();
 		} catch (Throwable t) {
