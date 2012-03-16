@@ -15,24 +15,10 @@
  */
 package org.cogchar.bind.rk.robot.config;
 
-import org.robokind.api.common.position.NormalizedDouble;
-import org.appdapter.gui.assembly.DynamicCachingComponentAssembler;
-import org.appdapter.gui.box.KnownComponentImpl;
-import org.appdapter.core.item.Ident;
+
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
-import org.appdapter.gui.box.BoxImpl;
-import org.appdapter.gui.box.Trigger;
-import org.appdapter.core.item.JenaResourceItem;
-import org.appdapter.core.item.ModelIdent;
-import org.appdapter.gui.box.KnownComponent;
-import org.appdapter.gui.box.MutableKnownComponent;
-import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.rdf.model.Resource;
 
 import java.util.Set;
 import java.util.List;
@@ -44,13 +30,13 @@ import java.util.ArrayList;
 public class BoneJointConfig {
 
 	public Integer						myJointNum;
-	public String						myBoneName;
+	public String						myJointName;
 	public Double						myNormalDefaultPos;
 	public List<BoneProjectionRange>	myProjectionRanges = new ArrayList<BoneProjectionRange>();
 
 	public BoneJointConfig(Item configItem) {
 		myJointNum = ItemFuncs.getInteger(configItem, BoneConfigNames.P_jointNum, null);
-		myBoneName = ItemFuncs.getString(configItem, BoneConfigNames.P_boneName, null);
+		myJointName = ItemFuncs.getString(configItem, BoneConfigNames.P_jointName, null);
 		myNormalDefaultPos = ItemFuncs.getDouble(configItem, BoneConfigNames.P_defaultPosNorm, null);
 		Set<Item> bprItems = ItemFuncs.getLinkedItemSet(configItem, BoneConfigNames.P_projectionRange);
 		
@@ -60,6 +46,6 @@ public class BoneJointConfig {
 		}
 	}
 	public String toString() {
-		return "BJC[num=" + myJointNum + ", name=" + myBoneName + ", defPos=" + myNormalDefaultPos + ", projs=" + myProjectionRanges + "]";
+		return "BJC[num=" + myJointNum + ", name=" + myJointName + ", defPos=" + myNormalDefaultPos + ", projs=" + myProjectionRanges + "]";
 	}
 }

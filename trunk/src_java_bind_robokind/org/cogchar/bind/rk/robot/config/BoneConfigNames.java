@@ -22,17 +22,18 @@ import org.appdapter.gui.assembly.AssemblyNames;
  */
 public class BoneConfigNames extends AssemblyNames {
 	public static	String		NS_CgcBC		= "http://www.cogchar.org/bony/config#";
-
-	public static 	String		P_joint				= NS_CgcBC + "joint";
 	
 	public static 	String		P_robotName			= NS_CgcBC + "robotName";
 	
+	public static 	String		P_joint				= NS_CgcBC + "joint";	
+	
 	public static 	String		P_jointNum			= NS_CgcBC + "jointNum";
+	public static 	String		P_jointName			= NS_CgcBC + "jointName";	
 	public static 	String		P_defaultPosNorm	= NS_CgcBC + "defaultPosNorm";
 	
-	public static 	String		P_boneName			= NS_CgcBC + "boneName";
-	
 	public static 	String		P_projectionRange	= NS_CgcBC + "projectionRange";
+	
+	public static 	String		P_boneName			= NS_CgcBC + "boneName";
 	public static 	String		P_rotationAxis		= NS_CgcBC + "rotationAxis";
 	public static 	String		P_minAngleDeg		= NS_CgcBC + "minAngleDeg";
 	public static 	String		P_maxAngleDeg		= NS_CgcBC + "maxAngleDeg";

@@ -110,7 +110,9 @@ public class PumaAppContext {
 			String jgPathTail = bonyCE.getJointGroupPathTailForChar(chrURI);
 			String jgFullPathTemp = behavCE.getRKMotionTempFilePath(jgPathTail);
 			File jgConfigFile = new File(jgFullPathTemp);
-			RobotServiceFuncs.registerJointGroup(myBundleContext, jgConfigFile);		
+			if (jgConfigFile.canRead()) {
+				RobotServiceFuncs.registerJointGroup(myBundleContext, jgConfigFile);
+			}
 		}
 		return pdcList;
 	}

@@ -35,7 +35,7 @@ public class Installer extends ModuleInstall {
 
         
         File file = InstalledFileLocator.getDefault().locate(LOG4J_PROPS_PATH, VIRTCHAR_NB_MODULE_DIR, false);
-		logInfo("InstalledFileLocator resolved path[" + LOG4J_PROPS_PATH + "] + module[" + VIRTCHAR_NB_MODULE_DIR + "] to " + file.getAbsolutePath());
+		logInfo("InstalledFileLocator resolved path[" + LOG4J_PROPS_PATH + "] in module[" + VIRTCHAR_NB_MODULE_DIR + "] to " + file.getAbsolutePath());
         try{
             URL localURL = file.toURI().toURL();
             logInfo("Forcing Log4J to read config from: " + localURL);

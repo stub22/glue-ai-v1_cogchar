@@ -41,32 +41,36 @@ public class BoneProjectionRange  {
 	
 	private	BoneJointConfig		myBJC;
 	
+	public String			myBoneName;
+	
 	private BoneRotationAxis myRotationAxis;
 	
 	private double myMinPosAngRad;	// Means "joint fully retracted at 0.0 normal" - not necessarily "numerically least"
 	private double myMaxPosAngRad;	// Means "joint fully extended at 1.0 normal" - not necessarily "numerically greatest"
 
-	public BoneProjectionRange(BoneJointConfig bjc, BoneRotationAxis axis, double minAngRad, double maxAngRad) {
+	public BoneProjectionRange(BoneJointConfig bjc, String boneName, BoneRotationAxis axis, double minAngRad, double maxAngRad) {
 		if (bjc == null || axis == null) {
 			throw new RuntimeException("Null joint or axis passed to constructor");
 		}
 		myBJC = bjc;
+		myBoneName = boneName;
 		myRotationAxis = axis;
 		myMinPosAngRad = minAngRad;
 		myMaxPosAngRad = maxAngRad;
 	}
 	public static BoneProjectionRange makeOne(BoneJointConfig bjc, Item configItem) {
+		String boneName = ItemFuncs.getString(configItem, BoneConfigNames.P_boneName, null);
 		String rotAxisName = ItemFuncs.getString(configItem, BoneConfigNames.P_rotationAxis, null);
 		Double minAngDeg = ItemFuncs.getDouble(configItem, BoneConfigNames.P_minAngleDeg, null);
 		Double maxAngDeg = ItemFuncs.getDouble(configItem, BoneConfigNames.P_maxAngleDeg, null);
 		double minAngRad = Math.toRadians(minAngDeg);
 		double maxAngRad = Math.toRadians(maxAngDeg);
 		BoneRotationAxis rax = BoneRotationAxis.valueOf(rotAxisName);
-		BoneProjectionRange bpr = new BoneProjectionRange(bjc, rax, minAngRad, maxAngRad);
+		BoneProjectionRange bpr = new BoneProjectionRange(bjc, boneName, rax, minAngRad, maxAngRad);
 		return bpr;
 	}
 	public String getBoneName() {
-		return myBJC.myBoneName;
+		return myBoneName;
 	}
 
 	public BoneRotationAxis getRotationAxis() {
