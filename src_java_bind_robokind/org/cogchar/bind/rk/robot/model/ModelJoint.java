@@ -38,12 +38,12 @@ public class ModelJoint extends AbstractJoint {
     private	boolean							myEnabledFlag = false;
 	private	NormalizedDouble				myDefaultPosNorm;
 	private	NormalizedDouble				myGoalPosNorm;
-	private	String							myBoneName;
+	private	String							myJointName;
     private List<BoneProjectionRange>		myBoneProjectionRanges;
 	
     protected ModelJoint(Joint.Id jointId, BoneJointConfig bjc) {
         super(jointId);
-        myBoneName = bjc.myBoneName;
+        myJointName = bjc.myJointName;
 		updateConfig(bjc);
 		myGoalPosNorm = myDefaultPosNorm;
     }
@@ -54,10 +54,10 @@ public class ModelJoint extends AbstractJoint {
 	}
 	
 	protected String getDescription() { 
-		return "JOINT[" + getId() + "," + myBoneName + "]";
+		return "JOINT[" + getId() + ", " + myJointName + "]";
 	}
 	@Override public String toString() { 
-		return getDescription() + "-[enabled=" + myEnabledFlag + " goalPos=" + myGoalPosNorm + "]";
+		return getDescription() + "-[enabled=" + myEnabledFlag + ", goalPos=" + myGoalPosNorm + "]";
 	}
 	@Override public void setEnabled(Boolean enabled) {
 		theLogger.info(getDescription() + ".setEnabled(" + enabled + ")");
@@ -68,7 +68,7 @@ public class ModelJoint extends AbstractJoint {
 		return myEnabledFlag;
 	}
     @Override public String getName() {
-		return myBoneName;
+		return myJointName;
     }
     @Override public NormalizedDouble getDefaultPosition() {
         return myDefaultPosNorm;

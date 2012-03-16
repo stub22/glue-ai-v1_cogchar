@@ -37,7 +37,7 @@ import org.cogchar.bundle.app.puma.PumaDualCharacter;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 
-// import org.robokind.api.motion.Robot;
+import org.robokind.api.motion.Robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -209,10 +209,10 @@ public final class VirtualCharTopComponent extends TopComponent {
 
     @Override public void componentOpened() {
         try{
-            BundleContext context = OSGiUtils.getBundleContext(PumaAppContext.class);
+            BundleContext context = OSGiUtils.getBundleContext(Robot.class);
             if(context == null){
                 throw new NullPointerException(
-                        "Cannot find BundleContext for" + PumaAppContext.class);
+                        "Cannot find BundleContext for" + Robot.class);
             }
             init(context);
         }catch(Throwable t){

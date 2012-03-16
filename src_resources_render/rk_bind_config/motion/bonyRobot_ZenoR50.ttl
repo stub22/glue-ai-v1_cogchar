@@ -15,6 +15,7 @@
 @prefix apt:	<http://www.appdapter.org/test#> .
 
 @prefix bc:		<http://www.cogchar.org/bony/config#> .
+@prefix bci:	<http://www.cogchar.org/bony/config/instance#> .
 
 
 <>  rdfs:comment     "All of this metadata is optional, unused, and just for fun/future" ;
@@ -41,7 +42,7 @@
 #### does inherit that feature, but we aren't using it at this time.
 #### Formally, we are defining an RDFS:class, which has the URI
 #### bc:BuildableBoneRobotConfig, which you'll see used below as the "rdf:type"
-#### of the bc:zenoR50 robot instance. 
+#### of the bci:zenoR50 robot instance. 
 
 bc:BuildableBoneRobotConfig
 		a 					rdfs:Class;
@@ -54,13 +55,12 @@ bc:BuildableBoneRobotConfig
 
 ##########################################################################
 #####   The Robot Resource
-#####  The URI of the robot is bc:zenoR50	
+#####  The URI of the robot is (the expanded form of) bci:zenoR50	
+##### rdf:type allows Jena Assembler to construct the factory   (BoneRobotConfig.Builder)
+##### defined by the BuildableBoneRobotconfig above.
 ##########################################################################
 
-#### rdf:type allows Jena Assembler to construct the factory   (BoneRobotConfig.Builder)
-#### defined by the BuildableBoneRobotconfig above.
-
-bc:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
+bci:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 ####  Here is the class name of the actual config object instance we are constructing.
 	apsb:javaFQCN		"org.cogchar.bind.rk.robot.config.BoneRobotConfig";
 #### Some additional descriptive metadata
@@ -68,54 +68,333 @@ bc:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 	rdfs:label			"Zeno R-50 Avatar Bone Config rdfs:label";
 #### bc:robotName is used for the Robokind "Robot.Id"
 	bc:robotName		"avatarZenoR50";
-#### bc:joint property contains the URIs of each joint.  The order does not matter.
-	bc:joint bc:joint_waist, bc:joint_rtClav
+
+### bc:joint property contains the URIs of each joint.  The order does not matter.
+### Commas indicate multiple values for the same property, which can be
+### interpreted as an *unordered* collection.  An ordered collection uses parens, and
+### has a distinctly different form (although it does also make use of commas).  
+###  See the o.c.test.assembly "Nugget" example.
+
+	bc:joint		
+		bci:joint_Root_Spin, bci:joint_Spine_Twist, bci:joint_Neck_Tilt, bci:joint_Neck_Nod, bci:joint_Head_Turn, 
+		bci:joint_Jaw, bci:joint_Mouth,
+		bci:joint_LtEye, bci:joint_RtEye,
+		bci:joint_LtShoulder_Out, bci:joint_LtShoulder_Turn, bci:joint_LtElbow, bci:joint_LtWrist, bci:joint_LtPalm,
+		bci:joint_RtShoulder_Out, bci:joint_RtShoulder_Turn, bci:joint_RtElbow, bci:joint_RtWrist, bci:joint_RtPalm,
+		bci:joint_LtHip, bci:joint_LtKnee, bci:joint_LtAnkle,
+		bci:joint_RtHip, bci:joint_RtKnee, bci:joint_RtAnkle
 	.
+
 #################################################################################
 #### Note the period above, so the robot resource is now done, and we can move on to:
 ####    The Joint Resources
+#### Note that minAngle may be numerically greater than maxAngle, indicating an inverted relationship
+#### between the joint's sense and the coordinate system of the bone.
+#### "min" = fully retracted,  "max" = fully extended.
 #################################################################################
 
+### bci:joint_Root is a URI, which has properties, defined by triples.
 
-### bc:joint_waist is a URI, which has properties, defined by triples.
+### Each joint may have one or more projection ranges, each of which is also a resource,
+### which may be an explicit URI or a blank node.  
+######################################################################
 
 
-bc:joint_waist		
-	bc:jointNum			0;
-	bc:boneName			"Spine1";
-	bc:defaultPosNorm	0.2;
-
-### This joint has TWO projection ranges, which are blank nodes set off by [square brackets]
-### The commas here indicate multiple values for the same property, which can be
-### interpreted as an *unordered* collection.  An ordered collection would use parens, and
-### has a distinctly different form.  (See the o.c.test.assembly "Nugget" example).
-### Also note, up on the semantic level, that min may be numerically greater than max.  
-### "min" = fully retracted,  "max" = fully extended
-
+bci:joint_Root_Spin
+	# We put jointNum and boneName on same line to make it easy to grep this file for mappings.
+	bc:jointNum			0;			bc:jointName			"Root_Spin";
+	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
+		bc:boneName			"Root";
+		bc:rotationAxis		"ROLL";
+		bc:minAngleDeg		-180.0;
+		bc:maxAngleDeg		 180.0;
+	]
+.
+
+bci:joint_Spine_Twist
+	bc:jointNum			1;			bc:jointName			"Spine_Twist";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"Spine1";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_Neck_Tilt
+	bc:jointNum			2;			bc:jointName			"Neck_Tilt";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"Neackbase";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_Neck_Nod
+	bc:jointNum			3;			bc:jointName			"Neck_Nod";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"Neackbase";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+
+bci:joint_Head_Turn
+	bc:jointNum			4;			bc:jointName			"Head_Turn";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"Head";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_Jaw
+	bc:jointNum			5;			bc:jointName			"Jaw";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"Jaw";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_Mouth
+	bc:jointNum			6;			bc:jointName			"Mouth";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"Mouth";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+######################################################################
+##### Eyes
+######################################################################
+
+bci:joint_LtEye
+	bc:jointNum			6;			bc:jointName			"LtEye";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtEye";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_RtEye
+	bc:jointNum			7;			bc:jointName			"RtEye";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtEye";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+######################################################################
+##### Left Arm
+######################################################################
+
+# Ignore   bci:joint_LtClav
+
+
+bci:joint_LtShoulder_Out
+	bc:jointNum			8;			bc:jointName			"LtShoulder";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtShoulder";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_LtShoulder_Turn
+	bc:jointNum			9;			bc:jointName			"LtShoulder";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtShoulder";
 		bc:rotationAxis		"YAW";
-		bc:minAngleDeg		-20.0;
-		bc:maxAngleDeg		180.0;
-	], [
-		bc:rotationAxis		"PITCH";
-		bc:minAngleDeg		90.0;
-		bc:maxAngleDeg		-90.0;
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
 	]
 .
 
-#####
-##  All done with the waist joint, moving on to the RtClav joint.
-### bc:joint_rtClav	 is another URI
-#####
-
-bc:joint_rtClav		
-	bc:jointNum			1;
-	bc:boneName			"RtClav";
-	bc:defaultPosNorm	0.8;
+bci:joint_LtElbow
+	bc:jointNum			10;			bc:jointName			"LtElbow";
+	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
+		bc:boneName			"LtElbow";
 		bc:rotationAxis		"PITCH";
-		bc:minAngleDeg		-150.0;
-		bc:maxAngleDeg		20.0;
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
 	]
 .
 
+bci:joint_LtWrist
+	bc:jointNum			11;			bc:jointName			"LtWrist";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtWrist";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_LtPalm
+	bc:jointNum			12;			bc:jointName			"LtPalm";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtPalm";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+######################################################################
+##### Right Arm
+######################################################################
+
+##### IGNORE     bci:joint_RtClav          bc:jointName			"RtClav";
+
+bci:joint_RtShoulder_Out
+	bc:jointNum			13;			bc:jointName			"RtShoulder";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtShoulder";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_RtShoulder_Turn
+	bc:jointNum			14;			bc:jointName			"RtShoulder";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtShoulder";
+		bc:rotationAxis		"ROLL";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_RtElbow
+	bc:jointNum			15;			bc:jointName			"RtElbow";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtElbow";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_RtWrist
+	bc:jointNum			16;			bc:jointName			"RtWrist";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtWrist";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+bci:joint_RtPalm
+	bc:jointNum			17;			bc:jointName			"RtPalm";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtPalm";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+
+######################################################################
+##### Left Leg
+######################################################################
+
+bci:joint_LtHip
+	bc:jointNum			18;			bc:jointName			"LtHip";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtHip";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_LtKnee
+	bc:jointNum			19;			bc:jointName			"LtKnee";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtKnee";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_LtAnkle
+	bc:jointNum			20;			bc:jointName			"LtAnkle";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtAnkle";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+######################################################################
+##### Right Leg
+######################################################################
+
+bci:joint_RtHip
+	bc:jointNum			21;			bc:jointName		"RtHip";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtHip";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_RtKnee
+	bc:jointNum			22;			bc:jointName			"RtKnee";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtKnee";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_RtAnkle
+	bc:jointNum			23;			bc:jointName			"RtAnkle";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtAnkle";
+		bc:rotationAxis		"PITCH";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
