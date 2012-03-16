@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Please see Cogchar open source license at bottom of this file -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
@@ -15,6 +18,13 @@
 
 	<properties>
 		<brandingToken>org_cogchar_nbui_render</brandingToken>
+		
+		<!-- All config files are placed in this output directory in our module -->
+		<coghcarConfigTgt>config/cogchar</coghcarConfigTgt>
+		
+		<!-- We create "temp" copies of the Cogchar config for end-user to edit, sourced from "permanent" copies here -->
+		<cogcharTempConfigSrc>../org.cogchar.bundle.render.resources/src/main/resources</cogcharTempConfigSrc>
+		
 	</properties>
 
 	<repositories>
@@ -226,13 +236,27 @@
 							</includes>
 						</nbmResource>
 						<nbmResource>
-							<directory>src/main/resources</directory>
-							<targetPath />
-							<includes>
-								<include>bonyRobotConfig.json</include>
-								<include>jointgroup.xml</include>
-							</includes>
+							<directory>${cogcharTempConfigSrc}/behavior</directory>
+							<targetPath>${cogcharConfigTgt}/behavior_temp</targetPath>
+						</nbmResource>							
+						<nbmResource>
+							<directory>${cogcharTempConfigSrc}/rk_bind_config</directory>
+							<targetPath>${cogcharConfigTgt}/rk_bind_temp</targetPath>
 						</nbmResource>
+						<nbmResource>
+							<directory>${cogcharTempConfigSrc}/logging_default</directory>
+							<targetPath>${cogcharConfigTgt}/logging_temp</targetPath>
+						</nbmResource>		
+						
+						<!-- Optional dependence on commercially licensed content.   If you do not
+							have the HRK content, you can still use Cogchar under the open source license.
+							
+						-->
+						<nbmResource>
+							<directory>${cogcharTempConfigSrc}/hrk_licensed</directory>
+							<targetPath>${cogcharConfigTgt}/hrk_licensed_temp</targetPath>
+						</nbmResource>
+				
 					</nbmResources>
 				</configuration>
 			</plugin>
@@ -258,3 +282,21 @@
 		</plugins>
 	</build>
 </project>
+
+<!--
+/*
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+ -->

@@ -21,9 +21,12 @@ import java.util.Set;
 import org.osgi.framework.BundleContext;
 import org.cogchar.bind.rk.robot.client.RobotAnimClient;
 
+import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.BehaviorConfigEmitter;
+
+
 import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 import org.cogchar.render.opengl.bony.demo.HumanoidRenderContext;
-
 
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.platform.trigger.DummyBox;
@@ -44,22 +47,30 @@ public class PumaDualCharacter implements DummyBox {
 	private SpeechOutputClient					mySOC;
 	
 	private	String								myCharURI;
+	private String								myNickName;
 	
 	private	PumaHumanoidMapper					myPHM;
 	
-	public static String		INITIAL_BONY_RDF_PATH = "rk_bind_config/motion/bony_ZenoR50.ttl";
-	public static ClassLoader	INITIAL_BONY_RDF_CL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+	// public static String		INITIAL_BONY_RDF_PATH = "rk_bind_config/motion/bony_ZenoR50.ttl";
+	private ClassLoader							myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 	
-	public static String		UPDATE_BONY_RDF_PATH = "temp_bony_ZenoR50.ttl";
+	public String								myUpdateBonyRdfPath;
 
 	
-	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, String charURI) {
+	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, String charURI, String nickName) {
 		myCharURI = charURI;
+		myNickName = nickName;
 		myPHM = new PumaHumanoidMapper(hrc, bundleCtx, charURI);
 	}
 	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx) throws Throwable {
 		
-		BoneRobotConfig brc = readBoneRobotConfig(INITIAL_BONY_RDF_PATH, INITIAL_BONY_RDF_CL);
+		BonyConfigEmitter bonyCE = myPHM.getHumanoidRenderContext().getBonyConfigEmitter();
+		String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharURI);
+		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
+		String bonyConfigPathPerm = behavCE.getRKMotionPermPath(bonyConfigPathTail);
+		myUpdateBonyRdfPath = behavCE.getRKMotionTempFilePath(bonyConfigPathTail);
+		
+		BoneRobotConfig brc = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		myPHM.initModelRobotUsingBoneRobotConfig(brc);
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myPHM.connectToVirtualChar();
@@ -70,7 +81,12 @@ public class PumaDualCharacter implements DummyBox {
 //	private InputStream openAssetStream(String assetName) { 
 //		return myBRC.openAssetStream(assetName);
 //	}	
-
+	public String getNickName() { 
+		return myNickName;
+	}
+	public String getCharURI() { 
+		return myCharURI;
+	}
 	public void triggerTestAnim() { 
 		try {
 			myRAC.createAndPlayTestAnim();
@@ -111,7 +127,7 @@ public class PumaDualCharacter implements DummyBox {
 		return brc;
 	}
 	@Override public String toString() { 
-		return "PumaDualChar[" + myCharURI + "]";
+		return "PumaDualChar[uri=" + myCharURI + ", nickName=" + myNickName + "]";
 	}	
 	private void logInfo(String txt) { 
 		theLogger.info(txt);
