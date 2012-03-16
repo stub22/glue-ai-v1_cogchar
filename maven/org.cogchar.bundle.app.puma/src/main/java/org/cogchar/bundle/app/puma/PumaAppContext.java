@@ -16,6 +16,7 @@
 package org.cogchar.bundle.app.puma;
 
 import java.io.InputStream;
+import java.io.File;
 import javax.swing.JFrame;
 
 import java.util.List;
@@ -23,13 +24,16 @@ import java.util.ArrayList;
 
 import org.osgi.framework.BundleContext;
 
+import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.BehaviorConfigEmitter;
+
 import org.cogchar.app.buddy.busker.DancingTriggerItem;
 import org.cogchar.app.buddy.busker.TalkingTriggerItem;
 
 import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 
 import org.cogchar.app.buddy.busker.UpdateBonyConfig_TI;
-import org.cogchar.blob.emit.BonyConfigEmitter;
+
 import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.app.BodyController;
 import org.cogchar.render.opengl.bony.app.VerbalController;
@@ -40,6 +44,10 @@ import org.cogchar.render.opengl.bony.demo.HumanoidPuppetActions;
 import org.cogchar.render.opengl.bony.demo.HumanoidRenderContext;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 
+import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
+import org.robokind.api.common.services.ServiceConnectionDirectory;
+import org.robokind.api.motion.jointgroup.JointGroup;
+import org.robokind.api.motion.jointgroup.RobotJointGroup;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,11 +65,17 @@ public class PumaAppContext {
 	private	UpdateBonyConfig_TI		myUpdateBonyConfigTI;
 	
 
-	public PumaAppContext(BundleContext bc, String sysContextURI) {
+	public PumaAppContext(BundleContext bc, String sysContextURI, String localConfigRootPath) {
 		myBundleContext = bc;
 		myHRC = (HumanoidRenderContext) RenderBundleUtils.getBonyRenderContext(bc);
-		myHRC.setSystemContextURI(sysContextURI);
-		
+		BonyConfigEmitter bonyCE = myHRC.getBonyConfigEmitter();
+		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
+		if (sysContextURI != null) {
+			behavCE.setSystemContextURI(sysContextURI);
+		}
+		if (localConfigRootPath != null) {
+			behavCE.setLocalFileRootDir(localConfigRootPath);
+		}
 	}
 
 	public List<PumaDualCharacter> makeDualCharsForSwingOSGi() throws Throwable {
@@ -77,19 +91,26 @@ public class PumaAppContext {
 	public List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
 		List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 		BonyRenderContext brc = getHumanoidRenderContext();
-		BonyConfigEmitter bce = brc.getBonyConfigEmitter();
-		List<String> charURIs = bce.getBonyCharURIs();
+		BonyConfigEmitter bonyCE = brc.getBonyConfigEmitter();
+		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();		
+		List<String> charURIs = bonyCE.getBonyCharURIs();
 		for (String charURI : charURIs) {
 			PumaDualCharacter pdc = connectDualRobotChar(charURI);
 			pdcList.add(pdc);
 		}
-		// Let's be lame for the moment, and assume the first character found is the one we want to control.
+		// Let's be lame for the moment, and assume the first character found is the only one we want to control.
 		PumaDualCharacter pdc = pdcList.get(0);
 		if (pdc != null) {
+			String chrURI = pdc.getCharURI();
 			pdc.connectBonyCharToRobokindSvcs(myBundleContext);
 			registerConfigReloadTrigger(pdc);			
 			registerTestDanceTrigger(pdc);
 			registerTestTalkTrigger(pdc);
+			
+			String jgPathTail = bonyCE.getJointGroupPathTailForChar(chrURI);
+			String jgFullPathTemp = behavCE.getRKMotionTempFilePath(jgPathTail);
+			File jgConfigFile = new File(jgFullPathTemp);
+			RobotServiceFuncs.registerJointGroup(myBundleContext, jgConfigFile);		
 		}
 		return pdcList;
 	}
@@ -100,7 +121,9 @@ public class PumaAppContext {
 		if (hrc == null) {
 			throw new Exception ("HumanoidRenderContext is null");
 		}
-		PumaDualCharacter pdc = new PumaDualCharacter(hrc, myBundleContext, bonyCharURI);
+		BonyConfigEmitter bonyCE = hrc.getBonyConfigEmitter();
+		String nickName = bonyCE.getNicknameForChar(bonyCharURI);
+		PumaDualCharacter pdc = new PumaDualCharacter(hrc, myBundleContext, bonyCharURI, nickName);
 		
 		return pdc;
 	}
@@ -144,7 +167,6 @@ public class PumaAppContext {
 		HumanoidPuppetActions.PlayerAction.UPDATE_BONY_CONFIG.getBinding().setTargetBox(pdc);
 		HumanoidPuppetActions.PlayerAction.UPDATE_BONY_CONFIG.getBinding().setTargetTrigger(myUpdateBonyConfigTI);
 		
-		myUpdateBonyConfigTI.myBonyRdfConfigPath = PumaDualCharacter.UPDATE_BONY_RDF_PATH;
 		myUpdateBonyConfigTI.myOptResourceClassLoader = null;
 	}
 	private void registerTestDanceTrigger(PumaDualCharacter pdc) { 

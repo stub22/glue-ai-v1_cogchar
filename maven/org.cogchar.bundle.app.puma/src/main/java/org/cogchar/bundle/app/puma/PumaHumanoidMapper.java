@@ -31,6 +31,7 @@ import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+// import sun.net.www.http.Hurryable;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -50,11 +51,13 @@ public class PumaHumanoidMapper {
 	private void logInfo(String txt) { 
 		theLogger.info(txt);
 	}
-
+	public HumanoidRenderContext getHumanoidRenderContext() { 
+		return myHRC;
+	}
 	public ModelRobot getBonyRobot() { 
 		return myMBRSC.getRobot();
 	}	
-
+	
 	public void initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
 		myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);
 	}

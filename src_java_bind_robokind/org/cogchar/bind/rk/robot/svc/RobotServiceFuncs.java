@@ -55,60 +55,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RobotServiceFuncs {
 	static Logger theLogger = LoggerFactory.getLogger(RobotServiceFuncs.class);
-	/*
-	public static JMSMotionFrameAsyncReceiver createAndRegisterFrameReceiver(
-			BundleContext bundleCtx, Robot.Id robotId) {
-		
-		Connection connection = ConnectionManager.createConnection(
-				"admin", "admin", "client1", "test", "tcp://127.0.0.1:5672");
-		JMSMotionFrameAsyncReceiver receiver = null;
-		try {
-			connection.start();
-		} catch (JMSException ex) {
-			theLogger.warn("Could not start connection.", ex);
-			return null;
-		}
-		if (connection == null) {
-			return null;
-		}
-		String queue = "test.RobotMoveQueue; {create: always, node: {type: queue}}";
-		Session session;
-		Destination destination;
-		try {
-			session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-			destination = new AMQQueue(queue);
-		} catch (URISyntaxException ex) {
-			theLogger.warn("Error creating destination.", ex);
-			return null;
-		} catch (JMSException ex) {
-			theLogger.warn("Error creating session.", ex);
-			return null;
-		}
-
-		try {
-			receiver = startRobotFrameReceiver(bundleCtx, robotId, session, destination);
-		} catch (Throwable t) {
-			theLogger.warn("Error starting Robot Server.", t);
-		}
-		return receiver;
-	}
-
-	private static JMSMotionFrameAsyncReceiver startRobotFrameReceiver(BundleContext context, 
-				Robot.Id id, Session session, Destination destination) throws Throwable {
-		
-		JMSMotionFrameAsyncReceiver receiver = new JMSMotionFrameAsyncReceiver(session, destination);
-		// RobotFrameSource is now an interface
-	//	RobotFrameSource frameSource = new RobotFrameSource(context, id); 
-		// Was MoveFrameListener before - same semantics?
-		TargetFrameListener moveHandler = new TargetFrameListener();
-	//	ServiceRegistration reg =	RobotUtils.registerFrameSource(context, id, frameSource);
-		// MoveFrameListener wants PositionTargetFrameSource, which is a sibling of RobotFrameSuource.
-//		moveHandler.setRobotFrameSource(frameSource);
-		receiver.addMessageListener(moveHandler);
-		receiver.start();
-		return receiver;
-	}
-	*/
+	
 	public static JointGroup registerJointGroup(BundleContext bundleCtx, File jointGroupConfigXML_file) throws Throwable {
 		JointGroup group = ServiceConnectionDirectory.buildService(
 				bundleCtx,

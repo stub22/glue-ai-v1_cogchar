@@ -112,7 +112,7 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 			sinbadFigure.movePosition(30.0f, 0.0f, -30.0f);
 		}
 
-		String extraRobotURI = bce.ZENO_CHAR_URI();
+		String extraRobotURI = bce.ZENO_R50_CHAR_URI();
 		HumanoidBoneConfig robotHBC = new HumanoidBoneConfig();
 		robotHBC.addZenoDefaultBoneDescs();
 		HumanoidFigure robotFigure = setupHumanoidFigure(extraRobotURI, robotHBC, false);

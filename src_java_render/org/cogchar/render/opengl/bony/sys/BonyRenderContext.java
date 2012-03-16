@@ -83,12 +83,10 @@ public class BonyRenderContext extends DemoRenderContext {
 	public BonyConfigEmitter getBonyConfigEmitter() { 
 		return (BonyConfigEmitter) getConfigEmiiter();
 	}
-	public void setSystemContextURI(String sysContextURI) {
-		getBonyConfigEmitter().setSystemContextURI(sysContextURI);
-	}
-	public String getJointConfigAssetNameForChar(String charURI) {
-		return getBonyConfigEmitter().getJointConfigAssetNameForChar(charURI);
-	}
+
+	//public String getJointConfigAssetNameForChar(String charURI) {
+//		return getBonyConfigEmitter().getJointConfigAssetNameForChar(charURI);
+//	}
 	public Vector3f getConfigVector3f(String vectorURI) {
 		float[] xyz = getBonyConfigEmitter().getNamedFloatVector(vectorURI);
 		return JmonkeyMathObjFactory.makeVector(xyz);
