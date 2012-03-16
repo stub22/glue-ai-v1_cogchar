@@ -32,8 +32,6 @@
 						<JointId>31</JointId>
 						<JointId>32</JointId>
 						<JointId>33</JointId>
-						<JointId>34</JointId>
-						<JointId>35</JointId>
 					</JointIds>
 				</JointGroup>
 				<JointGroup name="Right Arm">
@@ -42,8 +40,6 @@
 						<JointId>41</JointId>
 						<JointId>42</JointId>
 						<JointId>43</JointId>
-						<JointId>44</JointId>
-						<JointId>45</JointId>
 					</JointIds>
 				</JointGroup>
 
@@ -59,7 +55,6 @@
 						<JointId>52</JointId>
 						<JointId>53</JointId>
 						<JointId>54</JointId>
-						<JointId>55</JointId>
 					</JointIds>
 				</JointGroup>
 				<JointGroup name="Right Leg">
@@ -69,7 +64,6 @@
 						<JointId>62</JointId>
 						<JointId>63</JointId>
 						<JointId>64</JointId>
-						<JointId>65</JointId>
 					</JointIds>
 				</JointGroup>
 			</JointGroups>
