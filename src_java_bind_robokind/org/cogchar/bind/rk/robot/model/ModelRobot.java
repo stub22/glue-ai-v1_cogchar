@@ -111,8 +111,10 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 			JointId robotJointID = new JointId(getRobotId(), jointJointID);
 			ModelJoint mj = getJoint(robotJointID);
 			if (mj != null) {
-				theLogger.info("Updating robot joint: " + robotJointID);
+				theLogger.info("Updating robot joint " + robotJointID + " with new config: " + bjc);
 				mj.updateConfig(bjc);
+			} else {
+				theLogger.warn("Cannot find existing joint to update for: " + bjc);
 			}
 		}		
 	}
@@ -121,9 +123,15 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 		ModelRobot robot = new ModelRobot(robotID);
 		theLogger.info("Robot.Id=" + robotID);
 		for (BoneJointConfig bjc : config.myBJCs) {
-			Joint.Id jointId = new Joint.Id(bjc.myJointNum);
-			ModelJoint mj = new ModelJoint(jointId, bjc);
-			robot.registerBonyJoint(mj);
+			theLogger.info("Building Joint for config: " + bjc);
+			Integer jointNum = bjc.myJointNum;
+			if (jointNum != null) {
+				Joint.Id jointId = new Joint.Id(bjc.myJointNum);
+				ModelJoint mj = new ModelJoint(jointId, bjc);
+				robot.registerBonyJoint(mj);
+			} else {
+				theLogger.warn("Found null jointNum at: " + bjc);
+			}
 		}
 		theLogger.info("Built robot " + robot + " with ID=" + robot.getRobotId());
 		return robot;
