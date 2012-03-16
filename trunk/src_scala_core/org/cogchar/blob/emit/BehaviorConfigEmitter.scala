@@ -61,6 +61,9 @@ class BehaviorConfigEmitter {
 	def getRKMotionTempFilePath (pathTail: String) : String = {
 		getRKBindTempFilePath(MOTION + "/" + pathTail);
 	}
+	def getBehaviorTempFilePath (pathTail: String) : String = {
+		getLocalConfigFilePath(BEHAVIOR_TEMP + "/" + pathTail);
+	}
 	
 	/* Permanent paths */
 	def getPermPath(pathTail: String) : String = {
@@ -72,6 +75,9 @@ class BehaviorConfigEmitter {
 	def getRKMotionPermPath (pathTail: String) : String = {
 		getRKBindPermPath(MOTION + "/" + pathTail);
 	}
+	def getBehaviorPermPath (pathTail: String) : String = {
+		getPermPath(BEHAVIOR_PERM + "/" + pathTail);
+	}	
 
 	/* Feature-specific X Character-specific path tails */
 	def getBonyRobotConfigPathTail (chrShortName : String) : String = {
