@@ -29,6 +29,7 @@ import org.cogchar.render.opengl.bony.model.HumanoidFigure;
 import org.cogchar.bind.rk.robot.config.BoneProjectionRange;
 import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
+import org.cogchar.bind.rk.robot.config.BoneProjectionRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 // import sun.net.www.http.Hurryable;
@@ -85,9 +86,11 @@ public class PumaHumanoidMapper {
 		ModelRobot br = getBonyRobot();
 		FigureState fs = new FigureState();
 		List<ModelJoint> allJoints = br.getJointList();
-		for (ModelJoint bj : allJoints) {
-			String boneName = bj.getName();
-            fs.obtainBoneState(boneName);
+		for (ModelJoint mJoint : allJoints) {
+			for (BoneProjectionRange bpr : mJoint.getBoneRotationRanges()) {
+				String boneName = bpr.getBoneName();
+				fs.obtainBoneState(boneName);
+			}
 		}
 		HumanoidFigure hf = getHumanoidFigure();
 		hf.setFigureState(fs);
