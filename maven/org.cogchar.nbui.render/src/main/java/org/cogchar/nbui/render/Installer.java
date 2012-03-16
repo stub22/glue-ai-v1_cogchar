@@ -26,8 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public class Installer extends ModuleInstall {
 	static Logger theLogger = LoggerFactory.getLogger(Installer.class);
-	
-	static String LOG4J_PROPS_PATH = "logging/log4j.properties";
+	static String LOG4J_PROPS_PATH = "config/cogchar/logging_temp/log4j_cogchar_dev.properties";
 	static String VIRTCHAR_NB_MODULE_DIR = "org_cogchar_nbui_render";
 	
     @Override public void restored() {

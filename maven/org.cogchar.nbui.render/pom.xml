@@ -20,7 +20,7 @@
 		<brandingToken>org_cogchar_nbui_render</brandingToken>
 		
 		<!-- All config files are placed in this output directory in our module -->
-		<coghcarConfigTgt>config/cogchar</coghcarConfigTgt>
+		<cogcharConfigTgt>config/cogchar</cogcharConfigTgt>
 		
 		<!-- We create "temp" copies of the Cogchar config for end-user to edit, sourced from "permanent" copies here -->
 		<cogcharTempConfigSrc>../org.cogchar.bundle.render.resources/src/main/resources</cogcharTempConfigSrc>
@@ -220,20 +220,12 @@
 					<useOSGiDependencies>true</useOSGiDependencies>
 					<nbmResources>
 						<nbmResource>
-							<directory>src/main/resources/native</directory>
+							<directory>${cogcharTempConfigSrc}/lib-native</directory>
 							<targetPath>native-lib</targetPath>
-							<includes>
-								<include>*.so</include>
-								<include>*.dll</include>
-								<include>*.jnilib</include>
-							</includes>
 						</nbmResource>
 						<nbmResource>
-							<directory>src/main/resources/logging</directory>
-							<targetPath>logging</targetPath>
-							<includes>
-								<include>log4j.properties</include>
-							</includes>
+							<directory>${cogcharTempConfigSrc}/logging_default</directory>
+							<targetPath>${cogcharConfigTgt}/logging_temp</targetPath>
 						</nbmResource>
 						<nbmResource>
 							<directory>${cogcharTempConfigSrc}/behavior</directory>
