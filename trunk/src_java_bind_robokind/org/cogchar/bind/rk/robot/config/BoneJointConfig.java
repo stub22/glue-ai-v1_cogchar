@@ -28,13 +28,14 @@ import java.util.ArrayList;
  * @author Stu B. <www.texpedient.com>
  */
 public class BoneJointConfig {
-
+	public String						myURI_Fragment;
 	public Integer						myJointNum;
 	public String						myJointName;
 	public Double						myNormalDefaultPos;
 	public List<BoneProjectionRange>	myProjectionRanges = new ArrayList<BoneProjectionRange>();
 
 	public BoneJointConfig(Item configItem) {
+		myURI_Fragment = configItem.getIdent().getLocalName();
 		myJointNum = ItemFuncs.getInteger(configItem, BoneConfigNames.P_jointNum, null);
 		myJointName = ItemFuncs.getString(configItem, BoneConfigNames.P_jointName, null);
 		myNormalDefaultPos = ItemFuncs.getDouble(configItem, BoneConfigNames.P_defaultPosNorm, null);
@@ -46,6 +47,6 @@ public class BoneJointConfig {
 		}
 	}
 	public String toString() {
-		return "BJC[num=" + myJointNum + ", name=" + myJointName + ", defPos=" + myNormalDefaultPos + ", projs=" + myProjectionRanges + "]";
+		return "BJC[uriFrag=" + myURI_Fragment + ", num=" + myJointNum + ", name=" + myJointName + ", defPos=" + myNormalDefaultPos + ", projs=" + myProjectionRanges + "]";
 	}
 }
