@@ -67,7 +67,7 @@ bci:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 	apsb:label			"Zeno R-50 Avatar Bone Config apsb:label";
 	rdfs:label			"Zeno R-50 Avatar Bone Config rdfs:label";
 #### bc:robotName is used for the Robokind "Robot.Id"
-	bc:robotName		"avatarZenoR50";
+	bc:robotName		"Avatar_ZenoR50";
 
 ### bc:joint property contains the URIs of each joint.  The order does not matter.
 ### Commas indicate multiple values for the same property, which can be
@@ -81,14 +81,14 @@ bci:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 
 			bci:joint_Neck_Tilt, bci:joint_Neck_Nod, bci:joint_Head_Turn, 
 
-			bci:joint_Jaw, bci:joint_Mouth,
+			bci:joint_Jaw, bci:joint_Smile,
 
 			bci:joint_Eyes_Horiz, bci:joint_Eyes_Vert,
 
-		bci:joint_LtShoulder_Out, bci:joint_LtShoulder_Turn, bci:joint_LtElbow_Turn, bci:joint_LtElbow_Up, 
+		bci:joint_LtShoulder_Out, bci:joint_LtShoulder_Swing, bci:joint_LtElbow_Flex, bci:joint_LtElbow_Twist, 
 					bci:joint_LtWrist, bci:joint_LtPalm,
 
-		bci:joint_RtShoulder_Out, bci:joint_RtShoulder_Turn, bci:joint_RtElbow_Turn, bci:joint_RtElbow_Up, 
+		bci:joint_RtShoulder_Out, bci:joint_RtShoulder_Swing, bci:joint_RtElbow_Flex, bci:joint_RtElbow_Twist, 
 					bci:joint_RtWrist, bci:joint_RtPalm,
 
 		bci:joint_LtHip_Step, bci:joint_LtHip_Out, bci:joint_LtHip_Twist, bci:joint_LtKnee, 
@@ -113,6 +113,10 @@ bci:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 ######################################################################
 
 
+######################################################################
+##### Torso
+######################################################################
+
 bci:joint_Root_Spin
 	# We put jointNum and boneName on same line to make it easy to grep this file for mappings.
 	bc:jointNum			0;			bc:jointName			"Root_Spin";
@@ -136,8 +140,12 @@ bci:joint_Spine_Twist
 	]
 .
 
+######################################################################
+##### Neck
+######################################################################
+
 bci:joint_Neck_Tilt
-	bc:jointNum			2;			bc:jointName			"Neck_Tilt";
+	bc:jointNum			10;			bc:jointName			"Neck_Tilt";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"Neackbase";
@@ -148,7 +156,7 @@ bci:joint_Neck_Tilt
 .
 
 bci:joint_Neck_Nod
-	bc:jointNum			3;			bc:jointName			"Neck_Nod";
+	bc:jointNum			11;			bc:jointName			"Neck_Nod";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"Neackbase";
@@ -158,9 +166,8 @@ bci:joint_Neck_Nod
 	]
 .
 
-
 bci:joint_Head_Turn
-	bc:jointNum			4;			bc:jointName			"Head_Turn";
+	bc:jointNum			12;			bc:jointName			"Head_Turn";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"Head";
@@ -170,8 +177,13 @@ bci:joint_Head_Turn
 	]
 .
 
+
+######################################################################
+##### Face
+######################################################################
+
 bci:joint_Jaw
-	bc:jointNum			5;			bc:jointName			"Jaw";
+	bc:jointNum			20;			bc:jointName			"Jaw";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"Jaw";
@@ -181,8 +193,8 @@ bci:joint_Jaw
 	]
 .
 
-bci:joint_Mouth
-	bc:jointNum			6;			bc:jointName			"Mouth";
+bci:joint_Smile
+	bc:jointNum			21;			bc:jointName			"Smile";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"Mouth";
@@ -191,12 +203,9 @@ bci:joint_Mouth
 		bc:maxAngleDeg		 90.0;
 	]
 .
-######################################################################
-##### Eyes
-######################################################################
 
 bci:joint_Eyes_Horiz
-	bc:jointNum			6;			bc:jointName			"Eyes_Horiz";
+	bc:jointNum			22;			bc:jointName			"Eyes_Horiz";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtEye";
@@ -214,7 +223,7 @@ bci:joint_Eyes_Horiz
 .
 
 bci:joint_Eyes_Vert
-	bc:jointNum			7;			bc:jointName			"Eyes_Vert";
+	bc:jointNum			23;			bc:jointName			"Eyes_Vert";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtEye";
@@ -231,6 +240,10 @@ bci:joint_Eyes_Vert
 
 .
 
+# 25   = lower eyelids
+# 26  = upper eyelids
+# 27  = eyebrows
+
 ######################################################################
 ##### Left Arm
 ######################################################################
@@ -239,7 +252,7 @@ bci:joint_Eyes_Vert
 
 
 bci:joint_LtShoulder_Out
-	bc:jointNum			8;			bc:jointName			"LtShoulder";
+	bc:jointNum			30;			bc:jointName			"LtShoulder_Out";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtShoulder";
@@ -249,8 +262,8 @@ bci:joint_LtShoulder_Out
 	]
 .
 
-bci:joint_LtShoulder_Turn
-	bc:jointNum			9;			bc:jointName			"LtShoulder";
+bci:joint_LtShoulder_Swing
+	bc:jointNum			31;			bc:jointName			"LtShoulder_Swing";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtShoulder";
@@ -260,8 +273,8 @@ bci:joint_LtShoulder_Turn
 	]
 .
 
-bci:joint_LtElbow_Turn
-	bc:jointNum			10;			bc:jointName			"LtElbow_Turn";
+bci:joint_LtElbow_Flex
+	bc:jointNum			32;			bc:jointName			"LtElbow_Flex";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtElbow";
@@ -271,8 +284,8 @@ bci:joint_LtElbow_Turn
 	]
 .
 
-bci:joint_LtElbow_Up
-	bc:jointNum			10;			bc:jointName			"LtElbow_Up";
+bci:joint_LtElbow_Twist
+	bc:jointNum			33;			bc:jointName			"LtElbow_Twist";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtElbow";
@@ -284,7 +297,7 @@ bci:joint_LtElbow_Up
 
 
 bci:joint_LtWrist
-	bc:jointNum			11;			bc:jointName			"LtWrist";
+	bc:jointNum			34;			bc:jointName			"LtWrist";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtWrist";
@@ -295,7 +308,7 @@ bci:joint_LtWrist
 .
 
 bci:joint_LtPalm
-	bc:jointNum			12;			bc:jointName			"LtPalm";
+	bc:jointNum			35;			bc:jointName			"LtPalm";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtPalm";
@@ -311,7 +324,7 @@ bci:joint_LtPalm
 ##### IGNORE     bci:joint_RtClav          bc:jointName			"RtClav";
 
 bci:joint_RtShoulder_Out
-	bc:jointNum			13;			bc:jointName			"RtShoulder_Out";
+	bc:jointNum			40;			bc:jointName			"RtShoulder_Out";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtShoulder";
@@ -321,19 +334,19 @@ bci:joint_RtShoulder_Out
 	]
 .
 
-bci:joint_RtShoulder_Turn
-	bc:jointNum			14;			bc:jointName			"RtShoulder_Turn";
+bci:joint_RtShoulder_Swing
+	bc:jointNum			41;			bc:jointName			"RtShoulder_Swing";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtShoulder";
-		bc:rotationAxis		"ROLL";
+		bc:rotationAxis		"YAW";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
 	]
 .
 
-bci:joint_RtElbow_Turn
-	bc:jointNum			15;			bc:jointName			"RtElbow_Turn";
+bci:joint_RtElbow_Flex
+	bc:jointNum			42;			bc:jointName			"RtElbow_Flex";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtElbow";
@@ -342,8 +355,8 @@ bci:joint_RtElbow_Turn
 		bc:maxAngleDeg		 90.0;
 	]
 .
-bci:joint_RtElbow_Up
-	bc:jointNum			15;			bc:jointName			"RtElbow_Up";
+bci:joint_RtElbow_Twist
+	bc:jointNum			43;			bc:jointName			"RtElbow_Twist";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtElbow";
@@ -354,7 +367,7 @@ bci:joint_RtElbow_Up
 .
 
 bci:joint_RtWrist
-	bc:jointNum			16;			bc:jointName			"RtWrist";
+	bc:jointNum			44;			bc:jointName			"RtWrist";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtWrist";
@@ -364,7 +377,7 @@ bci:joint_RtWrist
 	]
 .
 bci:joint_RtPalm
-	bc:jointNum			17;			bc:jointName			"RtPalm";
+	bc:jointNum			45;			bc:jointName			"RtPalm";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtPalm";
@@ -380,7 +393,7 @@ bci:joint_RtPalm
 ######################################################################
 
 bci:joint_LtHip_Step
-	bc:jointNum			18;			bc:jointName			"LtHip_Step";
+	bc:jointNum			50;			bc:jointName			"LtHip_Step";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtHip";
@@ -390,7 +403,7 @@ bci:joint_LtHip_Step
 	]
 .
 bci:joint_LtHip_Out
-	bc:jointNum			18;			bc:jointName			"LtHip_Out";
+	bc:jointNum			51;			bc:jointName			"LtHip_Out";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtHip";
@@ -400,7 +413,7 @@ bci:joint_LtHip_Out
 	]
 .
 bci:joint_LtHip_Twist
-	bc:jointNum			18;			bc:jointName			"LtHip_Twist";
+	bc:jointNum			52;			bc:jointName			"LtHip_Twist";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtHip";
@@ -411,7 +424,7 @@ bci:joint_LtHip_Twist
 .
 
 bci:joint_LtKnee
-	bc:jointNum			19;			bc:jointName			"LtKnee";
+	bc:jointNum			53;			bc:jointName			"LtKnee";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtKnee";
@@ -422,7 +435,7 @@ bci:joint_LtKnee
 .
 
 bci:joint_LtAnkle_Step
-	bc:jointNum			20;			bc:jointName			"LtAnkle_Step";
+	bc:jointNum			54;			bc:jointName			"LtAnkle_Step";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtAnkle";
@@ -432,7 +445,7 @@ bci:joint_LtAnkle_Step
 	]
 .
 bci:joint_LtAnkle_Out
-	bc:jointNum			20;			bc:jointName			"LtAnkle_Out";
+	bc:jointNum			55;			bc:jointName			"LtAnkle_Out";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtAnkle";
@@ -446,7 +459,7 @@ bci:joint_LtAnkle_Out
 ######################################################################
 
 bci:joint_RtHip_Step
-	bc:jointNum			21;			bc:jointName		"RtHip_Step";
+	bc:jointNum			60;			bc:jointName		"RtHip_Step";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtHip";
@@ -456,7 +469,7 @@ bci:joint_RtHip_Step
 	]
 .
 bci:joint_RtHip_Out
-	bc:jointNum			21;			bc:jointName		"RtHip_Out";
+	bc:jointNum			61;			bc:jointName		"RtHip_Out";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtHip";
@@ -466,7 +479,7 @@ bci:joint_RtHip_Out
 	]
 .
 bci:joint_RtHip_Twist
-	bc:jointNum			21;			bc:jointName		"RtHip_Twist";
+	bc:jointNum			62;			bc:jointName		"RtHip_Twist";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtHip";
@@ -476,9 +489,8 @@ bci:joint_RtHip_Twist
 	]
 .
 
-
 bci:joint_RtKnee
-	bc:jointNum			22;			bc:jointName			"RtKnee";
+	bc:jointNum			63;			bc:jointName			"RtKnee";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtKnee";
@@ -489,7 +501,7 @@ bci:joint_RtKnee
 .
 
 bci:joint_RtAnkle_Step
-	bc:jointNum			23;			bc:jointName			"RtAnkle_Step";
+	bc:jointNum			64;			bc:jointName			"RtAnkle_Step";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtAnkle";
@@ -501,7 +513,7 @@ bci:joint_RtAnkle_Step
 
 
 bci:joint_RtAnkle_Out
-	bc:jointNum			23;			bc:jointName			"RtAnkle_Out";
+	bc:jointNum			65;			bc:jointName			"RtAnkle_Out";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtAnkle";
