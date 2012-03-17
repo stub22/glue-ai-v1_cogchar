@@ -57,7 +57,10 @@ public class PumaHumanoidMapper {
 	}
 	public ModelRobot getBonyRobot() { 
 		return myMBRSC.getRobot();
-	}	
+	}
+	public ModelBlendingRobotServiceContext getRobotServiceContext() { 
+		return myMBRSC;
+	}
 	
 	public void initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
 		myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);

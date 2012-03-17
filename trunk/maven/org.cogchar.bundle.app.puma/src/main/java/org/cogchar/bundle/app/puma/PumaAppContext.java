@@ -45,6 +45,7 @@ import org.cogchar.render.opengl.bony.demo.HumanoidRenderContext;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 
 import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
+import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.robokind.api.common.services.ServiceConnectionDirectory;
 import org.robokind.api.motion.jointgroup.JointGroup;
 import org.robokind.api.motion.jointgroup.RobotJointGroup;
@@ -111,7 +112,9 @@ public class PumaAppContext {
 			String jgFullPathTemp = behavCE.getRKMotionTempFilePath(jgPathTail);
 			File jgConfigFile = new File(jgFullPathTemp);
 			if (jgConfigFile.canRead()) {
-				RobotServiceFuncs.registerJointGroup(myBundleContext, jgConfigFile);
+				PumaHumanoidMapper phm = pdc.getHumanoidMapper();
+				RobotServiceContext rsc = phm.getRobotServiceContext();
+				rsc.startJointGroup(jgConfigFile);
 			}
 		}
 		return pdcList;
