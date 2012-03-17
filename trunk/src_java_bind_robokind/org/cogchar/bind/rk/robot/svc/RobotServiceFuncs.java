@@ -16,32 +16,21 @@
 package org.cogchar.bind.rk.robot.svc;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Session;
-import javax.jms.Connection;
-import org.apache.qpid.client.AMQQueue;
 
-import org.robokind.impl.messaging.utils.ConnectionManager;
-import org.cogchar.bind.rk.robot.config.BoneProjectionPosition;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
+import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
+import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.robokind.api.common.services.Constants;
 import org.robokind.api.common.services.ServiceConnectionDirectory;
 import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.Robot.RobotPositionHashMap;
-import org.robokind.api.motion.Robot.RobotPositionMap;
 
-import org.robokind.api.motion.utils.RobotFrameSource;
-import org.robokind.api.motion.utils.RobotUtils;
 import org.robokind.api.motion.jointgroup.JointGroup;
 import org.robokind.api.motion.jointgroup.RobotJointGroup;
 
+import org.robokind.api.motion.lifecycle.RobotJointGroupLifecycle;
 import org.robokind.impl.motion.jointgroup.RobotJointGroupConfigXMLReader;
 /*
 import org.robokind.impl.motion.messaging.JMSMotionFrameAsyncReceiver;
@@ -70,4 +59,32 @@ public class RobotServiceFuncs {
 		}
 		return group;
 	}
+    
+    public static void startJointGroup(BundleContext bundleCtx, 
+            Robot.Id robotId, File jointGroupConfigXML_file){
+        String paramId = "robot/" + robotId + "/jointgroup/config/param/xml";
+        launchJointGroupLifecycle(bundleCtx, robotId, paramId);
+        launchJointGroupConfig(bundleCtx, jointGroupConfigXML_file, paramId);
+    }
+    
+    protected static OSGiComponent launchJointGroupLifecycle(
+            BundleContext bundleCtx, Robot.Id robotId, String paramId){
+        RobotJointGroupLifecycle<File> lifecycle =
+                new RobotJointGroupLifecycle<File>(robotId, File.class, 
+                        paramId, RobotJointGroupConfigXMLReader.VERSION);
+        OSGiComponent jointGroupComp = new OSGiComponent(bundleCtx, lifecycle);
+        jointGroupComp.start();
+        return null;
+    }
+    
+    protected static OSGiComponent launchJointGroupConfig(BundleContext bundleCtx, 
+            File jointGroupConfigXML_file, String configFileId){
+        Properties props = new Properties();
+        props.put(Constants.CONFIG_PARAM_ID, configFileId);
+        ServiceLifecycleProvider lifecycle = new SimpleLifecycle(
+                        jointGroupConfigXML_file, File.class, props);
+        OSGiComponent paramComp = new OSGiComponent(bundleCtx, lifecycle);
+        paramComp.start();
+        return paramComp;
+    }
 }
