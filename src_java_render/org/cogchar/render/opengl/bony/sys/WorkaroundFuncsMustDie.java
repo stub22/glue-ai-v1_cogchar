@@ -28,13 +28,12 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 import com.jme3.system.JmeContext;
-import com.jme3.system.JmeSystem;
 import java.awt.Canvas;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyCanvasFuncs {
+public class WorkaroundFuncsMustDie {
 	public static void setupCameraLightAndViewport(BonyRenderContext bc) { 
 		SimpleApplication app = bc.getApp();
 		FlyByCamera fbc = app.getFlyByCamera();
