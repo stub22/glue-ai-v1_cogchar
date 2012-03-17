@@ -83,7 +83,7 @@ bci:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 
 			bci:joint_Jaw, bci:joint_Smile,
 
-			bci:joint_Eyes_Horiz, bci:joint_Eyes_Vert,
+			bci:joint_LtEye_Horiz, bci:joint_RtEye_Horiz, bci:joint_Eyes_Vert,
 
 		bci:joint_LtShoulder_Out, bci:joint_LtShoulder_Swing, bci:joint_LtElbow_Flex, 	bci:joint_LtWrist,
 
@@ -206,26 +206,30 @@ bci:joint_Smile
 	]
 .
 
-bci:joint_Eyes_Horiz
-	bc:jointNum			22;			bc:jointName			"Eyes_Horiz";
+bci:joint_LtEye_Horiz
+	bc:jointNum			22;			bc:jointName			"LtEye_Horiz";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtEye";
 		bc:rotationAxis		"YAW";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
-	],
-	[
+	]
+.
+
+bci:joint_RtEye_Horiz
+	bc:jointNum			23;			bc:jointName			"RtEye_Horiz";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
 		bc:boneName			"RtEye";
 		bc:rotationAxis		"YAW";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
 	]
-
 .
 
 bci:joint_Eyes_Vert
-	bc:jointNum			23;			bc:jointName			"Eyes_Vert";
+	bc:jointNum			24;			bc:jointName			"Eyes_Vert";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtEye";
@@ -239,7 +243,6 @@ bci:joint_Eyes_Vert
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
 	]
-
 .
 
 # 25   = lower eyelids
