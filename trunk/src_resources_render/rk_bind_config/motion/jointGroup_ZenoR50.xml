@@ -21,7 +21,7 @@
 				<JointId>21</JointId>
 				<JointId>22</JointId>
 				<JointId>23</JointId>
-
+				<JointId>24</JointId>
 			</JointIds>
 		</JointGroup>
 		<JointGroup name="Upper Body">
