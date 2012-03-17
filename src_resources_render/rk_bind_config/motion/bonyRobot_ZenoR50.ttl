@@ -152,8 +152,8 @@ bci:joint_Neck_Tilt
 	bc:projectionRange	[
 		bc:boneName			"Neackbase";
 		bc:rotationAxis		"PITCH";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		-45.0;
+		bc:maxAngleDeg		 45.0;
 	]
 .
 
@@ -278,7 +278,7 @@ bci:joint_LtElbow_Flex
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtElbow";
-		bc:rotationAxis		"ROLL";
+		bc:rotationAxis		"YAW";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
 	]
@@ -290,7 +290,7 @@ bci:joint_LtWrist
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtWrist";
-		bc:rotationAxis		"PITCH";
+		bc:rotationAxis		"ROLL";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
 	]
@@ -328,7 +328,7 @@ bci:joint_RtElbow_Flex
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtElbow";
-		bc:rotationAxis		"ROLL";
+		bc:rotationAxis		"YAW";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
 	]
@@ -339,7 +339,7 @@ bci:joint_RtWrist
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtWrist";
-		bc:rotationAxis		"PITCH";
+		bc:rotationAxis		"ROLL";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
 	]
@@ -398,9 +398,9 @@ bci:joint_LtAnkle_Out
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"LtAnkle";
-		bc:rotationAxis		"ROLL";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:rotationAxis		"YAW";
+		bc:minAngleDeg		-45.0;
+		bc:maxAngleDeg		 45.0;
 	]
 .
 ######################################################################
@@ -419,12 +419,12 @@ bci:joint_RtHip_Step
 .
 bci:joint_RtHip_Out
 	bc:jointNum			61;			bc:jointName		"RtHip_Out";
-	bc:defaultPosNorm	0.5;
+	bc:defaultPosNorm	0.8;
 	bc:projectionRange	[
 		bc:boneName			"RtHip";
 		bc:rotationAxis		"YAW";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		-40.0;
+		bc:maxAngleDeg		 10.0;
 	]
 .
 
@@ -456,8 +456,8 @@ bci:joint_RtAnkle_Out
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtAnkle";
-		bc:rotationAxis		"ROLL";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:rotationAxis		"YAW";
+		bc:minAngleDeg		-45.0;
+		bc:maxAngleDeg		 45.0;
 	]
 .
