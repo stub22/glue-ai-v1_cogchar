@@ -42,6 +42,10 @@ public class BonyRenderContext extends DemoRenderContext {
 	public BonyRenderContext(BonyConfigEmitter bce) { 
 		super(bce);
 	}
+	@Override public void completeInit() {
+		super.completeInit();
+		WorkaroundFuncsMustDie.setupCameraLightAndViewport(this);
+	}
 	public BonyVirtualCharApp getApp() {
 		return myApp;
 	}

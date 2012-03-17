@@ -26,6 +26,8 @@ import org.cogchar.render.opengl.app.DemoApp;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -50,22 +52,30 @@ public class DemoDrawnShapes extends UnfinishedDemoApp {
         return g;
     }
 
-    public void putArrow(Vector3f pos, Vector3f dir, ColorRGBA color){
+    public Geometry putArrow(Vector3f pos, Vector3f dir, ColorRGBA color){
         Arrow arrow = new Arrow(dir);
         arrow.setLineWidth(4); // make arrow thicker
-        putShape(arrow, color).setLocalTranslation(pos);
+        Geometry g = putShape(arrow, color);
+		g.setLocalTranslation(pos);
+		return g;
     }
 
-    public void putBox(Vector3f pos, float size, ColorRGBA color){
-        putShape(new WireBox(size, size, size), color).setLocalTranslation(pos);
+    public Geometry putBox(Vector3f pos, float size, ColorRGBA color){
+        Geometry g =  putShape(new WireBox(size, size, size), color);
+		g.setLocalTranslation(pos);
+		return g;
     }
 
-    public void putGrid(Vector3f pos, ColorRGBA color){
-        putShape(new Grid(6, 6, 0.2f), color).center().move(pos);
+    public Geometry putGrid(Vector3f pos, ColorRGBA color){
+        Geometry g = putShape(new Grid(6, 6, 0.2f), color);
+		g.center().move(pos);
+		return g;
     }
 
-    public void putSphere(Vector3f pos, ColorRGBA color){
-        putShape(new WireSphere(1), color).setLocalTranslation(pos);
+    public Geometry putSphere(Vector3f pos, ColorRGBA color){
+        Geometry g =  putShape(new WireSphere(1), color);
+		g.setLocalTranslation(pos);
+		return g;
     }
 
     @Override public void simpleInitApp() {
@@ -76,10 +86,20 @@ public class DemoDrawnShapes extends UnfinishedDemoApp {
         putArrow(Vector3f.ZERO, Vector3f.UNIT_X, ColorRGBA.Red);
         putArrow(Vector3f.ZERO, Vector3f.UNIT_Y, ColorRGBA.Green);
         putArrow(Vector3f.ZERO, Vector3f.UNIT_Z, ColorRGBA.Blue);
+		
+		Geometry whiteHope = putArrow(Vector3f.ZERO, Vector3f.UNIT_XYZ, ColorRGBA.White);
+		Quaternion tq = new Quaternion();
+		float rot_X_bank = 0.0f;//  FastMath.HALF_PI;
+		float rot_Y_heading = 0.0f; // FastMath.QUARTER_PI * 0.8f;
+		float rot_Z_attitude = FastMath.QUARTER_PI * 0.8f;
+		tq.fromAngles(rot_X_bank, rot_Y_heading, rot_Z_attitude);
+		whiteHope.rotate(tq);
 
         putBox(new Vector3f(2, 0, 0), 0.5f, ColorRGBA.Yellow);
         putGrid(new Vector3f(3.5f, 0, 0), ColorRGBA.White);
         putSphere(new Vector3f(4.5f, 0, 0), ColorRGBA.Magenta);
+		
+		
     }
 
 }

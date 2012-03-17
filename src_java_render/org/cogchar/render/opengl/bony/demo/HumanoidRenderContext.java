@@ -34,7 +34,7 @@ import org.cogchar.render.opengl.bony.app.BonyStickFigureContext;
 import org.cogchar.render.opengl.bony.model.HumanoidBoneConfig;
 import org.cogchar.render.opengl.bony.model.HumanoidFigureModule;
 import org.cogchar.render.opengl.bony.model.HumanoidFigure;
-import org.cogchar.render.opengl.bony.sys.BonyCanvasFuncs;
+import org.cogchar.render.opengl.bony.sys.WorkaroundFuncsMustDie;
 import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
 
@@ -60,7 +60,7 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 
 		HumanoidPuppetActions.setupActionListeners(inputManager, this);	
 		
-		BonyCanvasFuncs.initScoreBoard(this);
+		WorkaroundFuncsMustDie.initScoreBoard(this);
 	}
 
 	public HumanoidFigure getHumanoidFigure(String charURI) {
