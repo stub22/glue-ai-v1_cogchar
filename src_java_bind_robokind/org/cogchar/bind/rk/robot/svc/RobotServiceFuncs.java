@@ -59,7 +59,10 @@ public class RobotServiceFuncs {
 		}
 		return group;
 	}
-    
+    public static void startJointGroup(BundleContext bundleCtx, Robot robot, File jointGroupConfigXML_file){
+		Robot.Id robotId = robot.getRobotId();
+		startJointGroup(bundleCtx, robotId, jointGroupConfigXML_file);
+	}
     public static void startJointGroup(BundleContext bundleCtx, 
             Robot.Id robotId, File jointGroupConfigXML_file){
         String paramId = "robot/" + robotId + "/jointgroup/config/param/xml";
