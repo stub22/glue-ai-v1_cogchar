@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.rk.robot.svc;
 
+import java.io.File;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
@@ -50,5 +51,8 @@ public class RobotServiceContext<R extends Robot> {
 	}	
 	public void registerAndStart(R robot) throws Throwable {
 		registerRobot(robot);
+	}
+	public void startJointGroup(File jointGroupConfigXML_file) { 
+		RobotServiceFuncs.startJointGroup(myBundleCtx, myRobot, jointGroupConfigXML_file);
 	}
 }

@@ -87,6 +87,9 @@ public class PumaDualCharacter implements DummyBox {
 	public String getCharURI() { 
 		return myCharURI;
 	}
+	public PumaHumanoidMapper getHumanoidMapper() { 
+		return myPHM;
+	}
 	public void triggerTestAnim() { 
 		try {
 			myRAC.createAndPlayTestAnim();
