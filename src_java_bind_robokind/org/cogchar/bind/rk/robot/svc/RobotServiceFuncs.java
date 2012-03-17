@@ -66,15 +66,15 @@ public class RobotServiceFuncs {
     public static void startJointGroup(BundleContext bundleCtx, 
             Robot.Id robotId, File jointGroupConfigXML_file){
         String paramId = "robot/" + robotId + "/jointgroup/config/param/xml";
-        launchJointGroupLifecycle(bundleCtx, robotId, paramId);
-        launchJointGroupConfig(bundleCtx, jointGroupConfigXML_file, paramId);
+        launchJointGroupLifecycle(bundleCtx, robotId, jointGroupConfigXML_file);
+        /launchJointGroupConfig(bundleCtx, jointGroupConfigXML_file, paramId);
     }
     
     protected static OSGiComponent launchJointGroupLifecycle(
-            BundleContext bundleCtx, Robot.Id robotId, String paramId){
+            BundleContext bundleCtx, Robot.Id robotId, File configXML){
         RobotJointGroupLifecycle<File> lifecycle =
                 new RobotJointGroupLifecycle<File>(robotId, File.class, 
-                        paramId, RobotJointGroupConfigXMLReader.VERSION);
+                        configXML, RobotJointGroupConfigXMLReader.VERSION);
         OSGiComponent jointGroupComp = new OSGiComponent(bundleCtx, lifecycle);
         jointGroupComp.start();
         return null;
