@@ -25,7 +25,7 @@ import java.awt.Canvas;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.render.opengl.bony.sys.BonyCanvasFuncs;
+import org.cogchar.render.opengl.bony.sys.WorkaroundFuncsMustDie;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public abstract class BonyVirtualCharApp<BRCT extends BonyRenderContext> extends
 		this.createCanvas();
 		// Does not work at this time or subsq:
 		//applySettings();
-		Canvas c = BonyCanvasFuncs.makeAWTCanvas(this);
+		Canvas c = WorkaroundFuncsMustDie.makeAWTCanvas(this);
 		vcp.setRenderCanvas(c);
 		getBonyRenderContext().setPanel(vcp);
 		// assetManager does not exist until start is called, triggering simpleInit callback.
@@ -90,13 +90,7 @@ public abstract class BonyVirtualCharApp<BRCT extends BonyRenderContext> extends
 	@Override public void simpleInitApp() {
 		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is starting");
 		super.simpleInitApp();
-		// (Finally!) Perform actions that cannot be done until JME3 engine is running (which is now!)
-		BRCT ctx = getBonyRenderContext();
-		// TODO:  Refactor out direct references to App into calls to context.
-
-		BonyCanvasFuncs.setupCameraLightAndViewport(ctx);
-		//BonyCanvasFuncs.initScoreBoard(myContext);
-		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is finished");
+		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is finished - JME3 infrastructre is ready.");
 	}
 	
 }

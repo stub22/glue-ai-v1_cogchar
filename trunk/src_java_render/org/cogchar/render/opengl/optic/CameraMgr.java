@@ -54,4 +54,11 @@ public class CameraMgr {
 	public Camera getCommonCamera(CommonCameras id) {
 		return getNamedCamera(id.name());
 	}
+	/*
+	public  		
+	 * FlyByCamera fbc = app.getFlyByCamera();
+        fbc.setDragToRotate(true);
+		fbc.setMoveSpeed(10f);
+		app.setPauseOnLostFocus(false);
+	*/
 }
