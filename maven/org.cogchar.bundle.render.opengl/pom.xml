@@ -46,7 +46,7 @@
 						<Bundle-Activator>org.cogchar.render.opengl.osgi.RenderBundleActivator</Bundle-Activator>
 						<Import-Package>com.jme3.*,*;resolution:=optional</Import-Package>
 
-						<Export-Package>org.cogchar.render.opengl.*</Export-Package>
+						<Export-Package>org.cogchar.render.*</Export-Package>
 						<!-- <Embed-Dependency>!org.osgi.*;scope=compile|runtime</Embed-Dependency> -->
 						<!--
                         <Include-Resource>

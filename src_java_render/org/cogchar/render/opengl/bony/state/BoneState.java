@@ -16,7 +16,8 @@
  */
 package org.cogchar.render.opengl.bony.state;
 
-import java.util.List;
+
+import com.jme3.math.FastMath;
 
 import com.jme3.math.Quaternion;
 
@@ -30,7 +31,7 @@ public class BoneState {
 	// with this meaning for an airplane flying towards X-infinity (at our right)
 	// with Y straight up, and Z towards us.
 	
-	public	float		rot_X_bank, rot_Y_heading, rot_Z_attitude;
+	public	float		rot_X_bank_A3rd, rot_Y_heading_A1st, rot_Z_attitude_A2nd;
 	
 	public BoneState(String name) {
 		myBoneName = name;
@@ -40,8 +41,17 @@ public class BoneState {
 	}
 	public Quaternion getRotQuat() { 
 		Quaternion q = new Quaternion();
-		q.fromAngles(rot_X_bank, rot_Y_heading, rot_Z_attitude);
+		/* 
+		 * http://jmonkeyengine.org/groups/general-2/forum/topic/definition-of-pitch-yaw-roll-in-jmonkeyengine/?topic_page=2&num=15
+		 * 
+		 * Rotations are applied in the order
+		 * 1) heading=yRot
+		 * 2) attitude=zRot
+		 * 3) bank=xRot
+		 */
+		
+		q.fromAngles(rot_X_bank_A3rd, rot_Y_heading_A1st, rot_Z_attitude_A2nd);
 		return q;
 	}
-
+ 
 }

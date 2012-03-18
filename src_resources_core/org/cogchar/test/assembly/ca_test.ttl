@@ -23,7 +23,8 @@
     dc:format        "RDF" ;
     dc:identifier    "huh";
 
-	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl"
+	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl";
+	ja:imports		"org/cogchar/test/assembly/beeHive.ttl";
     .
     
 apsb:BuildableBox		

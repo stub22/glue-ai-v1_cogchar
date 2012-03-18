@@ -35,10 +35,10 @@ public class BoundAction implements DummyBinding {
 	@Override public void setTargetTrigger(DummyTrigger trig) {
 		myActionTrigger = trig;
 	}
-	boolean includedInMinSim() { 
+	public boolean includedInMinSim() { 
 		return false;
 	}	
-	void perform() {
+	public void perform() {
 		if (myActionTrigger != null) {
 			myActionTrigger.fire(myActionBox);
 		}			

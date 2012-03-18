@@ -40,8 +40,8 @@ import org.cogchar.render.opengl.bony.app.VerbalController;
 
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
-import org.cogchar.render.opengl.bony.demo.HumanoidPuppetActions;
-import org.cogchar.render.opengl.bony.demo.HumanoidRenderContext;
+import org.cogchar.render.app.humanoid.HumanoidPuppetActions;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 
 import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
