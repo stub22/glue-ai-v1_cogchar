@@ -20,14 +20,9 @@ import org.appdapter.gui.box.KnownComponentImpl;
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
-import org.appdapter.gui.box.BoxImpl;
-import org.appdapter.gui.box.Trigger;
-import org.appdapter.core.item.JenaResourceItem;
-import org.appdapter.core.item.ModelIdent;
-import org.appdapter.gui.box.KnownComponent;
-import org.appdapter.gui.box.MutableKnownComponent;
-import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 
+import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
+import org.appdapter.core.log.BasicDebugger;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
@@ -45,8 +40,8 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	public	List<BoneJointConfig>			myBJCs = new ArrayList<BoneJointConfig>();
 	
 		
-	@Override protected String getFieldSummary() {
-		return "robotName=[" + myRobotName + "], joints=[" + myBJCs + "]";
+	@Override public String getFieldSummary() {
+		return super.getFieldSummary() + ", robotName=" + myRobotName + ", joints=[" + myBJCs + "]";
 	}
 	
 	public static class Builder extends DynamicCachingComponentAssembler<BoneRobotConfig> {
@@ -74,20 +69,19 @@ public class BoneRobotConfig extends KnownComponentImpl {
 		= "../org.cogchar.bundle.render.resources/src/main/resources/rk_bind_config/motion/bonyRobot_ZenoR50.ttl";	
 		
 	public static void main(String args[]) {
-		System.out.println("starting boneRobotConfig test");
+		BasicDebugger bd = new BasicDebugger();
+		bd.logInfo("starting boneRobotConfig test");
 		
 		String triplesPath = UNIT_TEST_RDF_PATH;
 		// AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(AssemblyTest.class.getClassLoader());
-		logInfo("Loading triples from path: " + triplesPath);
+		bd.logInfo("Loading triples from path: " + triplesPath);
 		Set<Object> loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(triplesPath);
-		logInfo("Loaded " + loadedStuff.size() + " objects");
+		bd.logInfo("Loaded " + loadedStuff.size() + " objects");
 		for (Object o : loadedStuff) {
-			logInfo("Loaded: " + o);
+			bd.logInfo("Loaded: " + o);
 		}
-		logInfo("=====================================================================");
+		bd.logInfo("=====================================================================");
 		
 	}
-	public static void logInfo(String txt) {
-		System.out.println(txt);
-	}	
+
 }

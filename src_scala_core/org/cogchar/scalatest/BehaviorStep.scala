@@ -13,23 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.test.assembly;
-import java.util.List;
+
+package org.cogchar.scalatest
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class MegaNugget extends Nugget {
-	public	String		myGaucho;
-	public	Long		myCount;
-	public	Double		myAngle;
-	public	List<Object>	myOtherNugs;
-	public	List<Object>	myTriggers;
-	public	Nugget			myFriendlyNug;
-	// public	List
-	
-	@Override public String getFieldSummary() {
-		return super.getFieldSummary() + ", gaucho=[" + myGaucho + "], count=[" + myCount + "], angle=[" + myAngle 
-					+ "], otherNugs=[" + myOtherNugs + "], triggers=[" + myTriggers + "], friendlyNug=[" + myFriendlyNug + "]";
-	}		 
+
+trait BehaviorStep {
+}
+class ScheduledActionStep (val myOffsetMillisec : Int, val myAction: BehaviorAction) extends BehaviorStep() { 
+}
+
+trait BehaviorAction {
+	def perform();
+}
+class SpeechAction(val mySpeechText : String) extends BehaviorAction() { 
+	override def perform() { 
+	}
 }

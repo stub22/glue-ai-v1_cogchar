@@ -21,7 +21,7 @@ import org.appdapter.gui.box.KnownComponentImpl;
  */
 public class Nugget extends KnownComponentImpl {
 	public	String		myDetails;
-	@Override protected String getFieldSummary() {
-		return "details=[" + myDetails + "]";
+	@Override public String getFieldSummary() {
+		return super.getFieldSummary() + ", details=" + myDetails;
 	}	
 }
