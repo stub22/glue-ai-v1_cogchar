@@ -67,7 +67,7 @@ public class RobotServiceFuncs {
             Robot.Id robotId, File jointGroupConfigXML_file){
         String paramId = "robot/" + robotId + "/jointgroup/config/param/xml";
         launchJointGroupLifecycle(bundleCtx, robotId, jointGroupConfigXML_file);
-        /launchJointGroupConfig(bundleCtx, jointGroupConfigXML_file, paramId);
+        launchJointGroupConfig(bundleCtx, jointGroupConfigXML_file, paramId);
     }
     
     protected static OSGiComponent launchJointGroupLifecycle(

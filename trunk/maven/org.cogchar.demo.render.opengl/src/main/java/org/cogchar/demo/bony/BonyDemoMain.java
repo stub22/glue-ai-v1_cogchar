@@ -15,7 +15,7 @@
  */
 package org.cogchar.demo.bony;
 
-import org.cogchar.render.opengl.bony.demo.HumanoidPuppetTestMain;
+import org.cogchar.render.app.humanoid.HumanoidPuppetTestMain;
 
 /**
  * Just a wrapper for the HumanoidPuppetTestMain demo, placing it on the

@@ -25,7 +25,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.cogchar.render.opengl.bony.demo.HumanoidPuppetApp;
+import org.cogchar.render.app.humanoid.HumanoidPuppetApp;
 import org.cogchar.render.opengl.bony.gui.PanelUtils;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 

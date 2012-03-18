@@ -1,0 +1,39 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix apsb:	<http://www.appdapter.org/schema/box#> .
+@prefix apt:	<http://www.appdapter.org/test#> .
+
+@prefix cs:		<http://www.cogchar.org/schema/scene#> .
+@prefix csi:	<http://www.cogchar.org/schema/scene/instance#> .
+
+@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+
+cs:BuildableScene
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.scalatest.SceneBuilder" 
+		.		
+
+cs:BuildableBehavior
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.scalatest.BehaviorBuilder" 
+		.		
+
+csi:scn_001 	rdf:type			cs:BuildableScene;
+				apsb:javaFQCN		"org.cogchar.scalatest.Scene";
+				apsb:label			"scn-001 apsb label";
+				rdfs:label 			"scn-001 rdfs label";
+				apsb:trigger		apt:trig_001a;
+				cs:details			"scene-specific-details-go-here";
+				cs:size				25;
+				.
+
+csi:b
+		
