@@ -35,7 +35,7 @@ import org.cogchar.render.model.humanoid.HumanoidBoneConfig;
 import org.cogchar.render.model.humanoid.HumanoidFigureModule;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
-import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
+import org.cogchar.render.sys.physics.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
 
 /**

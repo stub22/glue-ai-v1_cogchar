@@ -13,14 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.sys.core;
+package org.cogchar.render.app.core;
 
+import org.cogchar.render.app.core.ModularRenderContext;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.Node;
-import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
+import org.cogchar.render.sys.physics.PhysicsStuffBuilder;
 
 /**
  * @author Stu B. <www.texpedient.com>

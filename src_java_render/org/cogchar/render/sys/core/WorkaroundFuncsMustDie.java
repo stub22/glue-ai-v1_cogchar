@@ -16,7 +16,8 @@
 
 package org.cogchar.render.sys.core;
 
-import org.cogchar.render.opengl.bony.world.ScoreBoard;
+import org.cogchar.render.app.bony.BonyRenderContext;
+import org.cogchar.render.sys.physics.ScoreBoard;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.FlyByCamera;
 import com.jme3.light.DirectionalLight;

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony.world;
+package org.cogchar.render.sys.physics;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;

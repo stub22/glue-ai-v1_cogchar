@@ -32,8 +32,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import org.cogchar.blob.emit.DemoConfigEmitter;
 import org.cogchar.render.app.core.DemoApp;
-import org.cogchar.render.sys.core.CogcharRenderContext;
-import org.cogchar.render.sys.core.DemoRenderContext;
+import org.cogchar.render.app.core.CogcharRenderContext;
+import org.cogchar.render.app.core.DemoRenderContext;
 
 /**
  *

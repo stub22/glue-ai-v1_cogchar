@@ -16,17 +16,17 @@
 
 package org.cogchar.render.app.humanoid;
 
-import org.cogchar.render.sys.core.BonyRenderContext;
+import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.app.bony.BonyStickFigureContext;
-import org.cogchar.render.opengl.bony.gui.PanelUtils;
+import org.cogchar.render.gui.bony.PanelUtils;
 
 /**
  * To successfully run this test program, you must invoke it with a classpath that includes

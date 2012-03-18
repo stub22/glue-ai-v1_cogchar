@@ -16,9 +16,9 @@
 
 package org.cogchar.render.model.bony;
 
-import org.cogchar.render.opengl.bony.gui.VirtCharPanel;
-import org.cogchar.render.sys.core.BonyRenderContext;
-import org.cogchar.render.opengl.bony.world.ScoreBoard;
+import org.cogchar.render.gui.bony.VirtCharPanel;
+import org.cogchar.render.app.bony.BonyRenderContext;
+import org.cogchar.render.sys.physics.ScoreBoard;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;

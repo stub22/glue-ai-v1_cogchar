@@ -15,7 +15,7 @@
  */
 package org.cogchar.render.opengl.osgi;
 
-import org.cogchar.render.sys.core.BonyRenderContext;
+import org.cogchar.render.app.bony.BonyRenderContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 

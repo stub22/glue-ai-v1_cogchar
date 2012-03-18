@@ -24,7 +24,6 @@ import com.jme3.asset.plugins.UrlLocator;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.FlyByCamera;
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.sys.core.CogcharRenderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

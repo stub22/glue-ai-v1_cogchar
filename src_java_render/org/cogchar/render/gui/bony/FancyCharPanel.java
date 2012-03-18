@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony.gui;
+package org.cogchar.render.gui.bony;
 import java.awt.Canvas;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -53,9 +53,9 @@ public class FancyCharPanel extends javax.swing.JPanel implements VirtualCharact
 		
 		setPreferredSize(new java.awt.Dimension(880,660));
 
-        myVCP = new org.cogchar.render.opengl.bony.gui.VirtCharPanel();
-        myHTP = new org.cogchar.render.opengl.bony.gui.HorizontalToolPanel();
-        myVTP = new org.cogchar.render.opengl.bony.gui.VerticalToolPanel();
+        myVCP = new org.cogchar.render.gui.bony.VirtCharPanel();
+        myHTP = new org.cogchar.render.gui.bony.HorizontalToolPanel();
+        myVTP = new org.cogchar.render.gui.bony.VerticalToolPanel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -69,9 +69,9 @@ public class FancyCharPanel extends javax.swing.JPanel implements VirtualCharact
         add(myVTP, java.awt.BorderLayout.EAST);
     }                      
                    
-    private org.cogchar.render.opengl.bony.gui.HorizontalToolPanel myHTP;
-    private org.cogchar.render.opengl.bony.gui.VirtCharPanel myVCP;
-    private org.cogchar.render.opengl.bony.gui.VerticalToolPanel myVTP;
+    private org.cogchar.render.gui.bony.HorizontalToolPanel myHTP;
+    private org.cogchar.render.gui.bony.VirtCharPanel myVCP;
+    private org.cogchar.render.gui.bony.VerticalToolPanel myVTP;
                
 
 

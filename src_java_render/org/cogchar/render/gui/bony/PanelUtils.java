@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.opengl.bony.gui;
+package org.cogchar.render.gui.bony;
 
 import java.awt.BorderLayout;
 import javax.swing.JFrame;

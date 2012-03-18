@@ -34,8 +34,8 @@ import org.robokind.api.common.osgi.OSGiUtils;
 import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaDualCharacter;
 
-import org.cogchar.render.sys.core.BonyRenderContext;
-import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+import org.cogchar.render.app.bony.BonyRenderContext;
+import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 
 import org.robokind.api.motion.Robot;
 
@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Top component which displays the OpenGL Canvas
  * @author Matthew Stevenson <www.robokind.org>
+ * @author Stu B. <www.texpedient.com>
  */
 @ConvertAsProperties(dtd = "-//org.cogchar.nbui//VirtualChar//EN",
 autostore = false)
