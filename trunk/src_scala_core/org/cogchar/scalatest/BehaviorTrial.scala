@@ -95,23 +95,23 @@ object BehaviorTrial {
 	}
 	import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 	
-	def loadScenes() : List[Scene] = { 
+	def loadSceneSpecs() : List[SceneSpec] = { 
 		// Set[Object] 
 		val triplesPath = "org/cogchar/test/assembly/ca_test.ttl";
 		val loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(triplesPath);
 		log("Loaded " + loadedStuff.size() + " objects");
 		log("Stuff: " + loadedStuff);
 		val si = loadedStuff.iterator();
-		var sceneList = List[Scene]()
+		var sceneSpecList = List[SceneSpec]()
 		while (si.hasNext()) {
 			val obj = si.next();
-			if (obj.isInstanceOf[Scene]) {
-				sceneList = sceneList :+ obj.asInstanceOf[Scene]
+			if (obj.isInstanceOf[SceneSpec]) {
+				sceneSpecList = sceneSpecList :+ obj.asInstanceOf[SceneSpec]
 			}
 		}
 		println("===========================================================================================")
-		println("SceneList: " + sceneList);
-		sceneList;
+		println("SceneList: " + sceneSpecList);
+		sceneSpecList;
 		// for (Object o : loadedStuff) {
 	}
 	def actThreadingTest() { 
@@ -131,6 +131,6 @@ object BehaviorTrial {
 
 	}
 	def main(args: Array[String]) {
-		val sceneList : List[Scene] = loadScenes();
+		val sceneList : List[SceneSpec] = loadSceneSpecs();
 	}  
 }

@@ -14,26 +14,33 @@
 @prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 
-cs:BuildableScene
+cs:BuildableSceneSpec
 		a 					rdfs:Class;
 		rdfs:subClassOf 	ja:Object;
-		ja:assembler		"org.cogchar.scalatest.SceneBuilder" 
+		ja:assembler		"org.cogchar.scalatest.SceneSpecBuilder" 
 		.		
 
-cs:BuildableBehavior
+cs:BuildableBehaviorSpec
 		a 					rdfs:Class;
 		rdfs:subClassOf 	ja:Object;
-		ja:assembler		"org.cogchar.scalatest.BehaviorBuilder" 
+		ja:assembler		"org.cogchar.scalatest.BehaviorSpecBuilder" 
 		.		
 
-csi:scn_001 	rdf:type			cs:BuildableScene;
-				apsb:javaFQCN		"org.cogchar.scalatest.Scene";
+csi:scn_001 	rdf:type			cs:BuildableSceneSpec;
+				apsb:javaFQCN		"org.cogchar.scalatest.SceneSpec";
 				apsb:label			"scn-001 apsb label";
 				rdfs:label 			"scn-001 rdfs label";
 				apsb:trigger		apt:trig_001a;
 				cs:details			"scene-specific-details-go-here";
-				cs:size				25;
+				cs:size				52;
+				cs:behavior			csi:bh_001
 				.
 
-csi:b
-		
+csi:bh_001		rdf:type			cs:BuildableBehaviorSpec;
+				apsb:javaFQCN		"org.cogchar.scalatest.BehaviorSpec";
+				apsb:label			"bh-001 apsb label";
+				rdfs:label 			"bh-001 rdfs label";
+				apsb:trigger		apt:trig_001a;
+				cs:details			"behavior-specific-details-go-here";
+				cs:size				11;
+				.
