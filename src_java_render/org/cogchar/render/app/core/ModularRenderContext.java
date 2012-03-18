@@ -13,8 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.sys.core;
+package org.cogchar.render.app.core;
 
+import org.cogchar.render.app.core.CogcharRenderContext;
 import org.appdapter.api.module.Module;
 import org.cogchar.render.model.bony.CogcharRenderModulator;
 

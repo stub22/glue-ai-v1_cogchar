@@ -13,9 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.sys.core;
+package org.cogchar.render.app.bony;
 
-import org.cogchar.render.opengl.bony.world.ScoreBoard;
+import org.cogchar.render.app.core.DemoRenderContext;
+import org.cogchar.render.sys.physics.ScoreBoard;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import com.jme3.animation.AnimControl;
 import com.jme3.asset.AssetManager;
@@ -27,7 +28,9 @@ import org.cogchar.render.model.bony.FigureState;
 
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+import org.cogchar.render.gui.bony.VirtualCharacterPanel;
+import org.cogchar.render.sys.core.JmonkeyMathObjFactory;
+import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
 /**
  * @author Stu B. <www.texpedient.com>
  */

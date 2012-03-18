@@ -38,8 +38,8 @@ import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import org.cogchar.render.app.bony.BodyController;
 import org.cogchar.render.app.bony.VerbalController;
 
-import org.cogchar.render.sys.core.BonyRenderContext;
-import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+import org.cogchar.render.app.bony.BonyRenderContext;
+import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.app.humanoid.HumanoidPuppetActions;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;

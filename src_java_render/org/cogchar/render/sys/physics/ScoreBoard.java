@@ -15,7 +15,7 @@
  */
 
 
-package org.cogchar.render.opengl.bony.world;
+package org.cogchar.render.sys.physics;
 
 
 import com.jme3.asset.AssetManager;

@@ -41,8 +41,8 @@ import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import org.cogchar.blob.emit.DemoConfigEmitter;
 import org.cogchar.render.app.core.PhysicalApp;
-import org.cogchar.render.sys.core.CogcharRenderContext;
-import org.cogchar.render.sys.core.DemoRenderContext;
+import org.cogchar.render.app.core.CogcharRenderContext;
+import org.cogchar.render.app.core.DemoRenderContext;
 
 /**
  * From:    jme3test.bullet.TestRagdollCharacter

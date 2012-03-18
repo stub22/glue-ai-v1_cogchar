@@ -20,7 +20,7 @@
  *		JMonkeyEngine license.  See full notice at bottom of this file. 
  */
 
-package org.cogchar.render.opengl.bony.world;
+package org.cogchar.render.sys.physics;
 
 import org.cogchar.render.opengl.scene.GeomFactory;
 import org.cogchar.render.opengl.optic.LightFactory;
@@ -41,7 +41,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
-import org.cogchar.render.sys.core.CogcharRenderContext;
+import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.sys.core.RenderRegistryAware;
 
 /**

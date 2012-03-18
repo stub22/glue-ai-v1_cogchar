@@ -20,7 +20,7 @@
  * Created on Jan 12, 2012, 5:47:00 PM
  */
 
-package org.cogchar.render.opengl.bony.gui;
+package org.cogchar.render.gui.bony;
 
 import org.cogchar.platform.trigger.DummyBox;
 import org.cogchar.platform.trigger.DummyTrigger;

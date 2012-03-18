@@ -43,9 +43,9 @@ import com.jme3.scene.shape.PQTorus;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import org.cogchar.render.model.bony.SpatialManipFuncs;
-import org.cogchar.render.sys.core.CogcharRenderContext;
-import org.cogchar.render.sys.core.DemoRenderContext;
-import org.cogchar.render.opengl.bony.world.CollisionMgr;
+import org.cogchar.render.app.core.CogcharRenderContext;
+import org.cogchar.render.app.core.DemoRenderContext;
+import org.cogchar.render.sys.physics.CollisionMgr;
 
 /** Sample 8 - how to let the user pick (select) objects in the scene 
  * using the mouse or key presses. Can be used for shooting, opening doors, etc. 
