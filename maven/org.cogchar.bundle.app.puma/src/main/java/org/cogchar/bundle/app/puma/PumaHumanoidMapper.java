@@ -23,7 +23,7 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelJoint;
 
-import org.cogchar.render.opengl.bony.state.FigureState;
+import org.cogchar.render.model.bony.FigureState;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.bind.rk.robot.config.BoneProjectionRange;

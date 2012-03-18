@@ -41,8 +41,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
-import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
-import org.cogchar.render.opengl.bony.sys.RenderRegistryAware;
+import org.cogchar.render.sys.core.CogcharRenderContext;
+import org.cogchar.render.sys.core.RenderRegistryAware;
 
 /**
  *

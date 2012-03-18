@@ -34,11 +34,11 @@ import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 
 import org.cogchar.app.buddy.busker.UpdateBonyConfig_TI;
 
-import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
-import org.cogchar.render.opengl.bony.app.BodyController;
-import org.cogchar.render.opengl.bony.app.VerbalController;
+import org.cogchar.render.app.bony.BonyVirtualCharApp;
+import org.cogchar.render.app.bony.BodyController;
+import org.cogchar.render.app.bony.VerbalController;
 
-import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
+import org.cogchar.render.sys.core.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 import org.cogchar.render.app.humanoid.HumanoidPuppetActions;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;

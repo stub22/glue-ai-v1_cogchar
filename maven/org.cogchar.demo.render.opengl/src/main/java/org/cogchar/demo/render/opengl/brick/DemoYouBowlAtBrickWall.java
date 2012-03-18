@@ -41,7 +41,7 @@ import com.jme3.scene.shape.Sphere.TextureMode;
 import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
-import org.cogchar.render.opengl.app.DemoApp;
+import org.cogchar.render.app.core.DemoApp;
 import org.cogchar.render.opengl.optic.MatFactory;
 
 /**

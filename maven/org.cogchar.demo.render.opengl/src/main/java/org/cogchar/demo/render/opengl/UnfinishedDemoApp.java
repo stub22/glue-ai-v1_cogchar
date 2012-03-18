@@ -15,9 +15,9 @@
  */
 package org.cogchar.demo.render.opengl;
 
-import org.cogchar.render.opengl.app.DemoApp;
-import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
-import org.cogchar.render.opengl.bony.sys.DemoRenderContext;
+import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.sys.core.CogcharRenderContext;
+import org.cogchar.render.sys.core.DemoRenderContext;
 
 /**
  * @author Stu B. <www.texpedient.com>

@@ -20,9 +20,9 @@ import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.texture.Texture;
-import org.cogchar.render.opengl.bony.sys.AssetContext;
-import org.cogchar.render.opengl.bony.sys.RenderRegistryAware;
-import org.cogchar.render.opengl.bony.sys.RenderRegistryFuncs;
+import org.cogchar.render.sys.core.AssetContext;
+import org.cogchar.render.sys.core.RenderRegistryAware;
+import org.cogchar.render.sys.core.RenderRegistryFuncs;
 
 /**
  * @author Stu B. <www.texpedient.com>

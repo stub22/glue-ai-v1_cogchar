@@ -29,8 +29,8 @@ import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.CompareMode;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
-import org.cogchar.render.opengl.app.DemoApp;
-import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
+import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.sys.core.CogcharRenderContext;
 import org.cogchar.render.opengl.optic.MatFactory;
 
 /**

@@ -36,9 +36,9 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl.ControlDirection;
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.opengl.app.PhysicalApp;
-import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
-import org.cogchar.render.opengl.bony.sys.DemoRenderContext;
+import org.cogchar.render.app.core.PhysicalApp;
+import org.cogchar.render.sys.core.CogcharRenderContext;
+import org.cogchar.render.sys.core.DemoRenderContext;
 
 /**  From  jme3test.bullet.TestPhysicsCharacter by normenhansen and zathras.
  * A walking physical character followed by a 3rd person camera. (No animation.)
