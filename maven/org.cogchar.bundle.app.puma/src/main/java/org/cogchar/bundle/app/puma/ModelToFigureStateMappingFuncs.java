@@ -28,7 +28,7 @@ import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
 import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
 import org.cogchar.render.opengl.bony.state.FigureState;
 import org.cogchar.render.opengl.bony.state.BoneState;
-import org.cogchar.render.opengl.bony.model.HumanoidFigure;
+import org.cogchar.render.model.humanoid.HumanoidFigure;
 
 import java.util.List;
 
@@ -85,9 +85,19 @@ public class ModelToFigureStateMappingFuncs {
             float rads = (float)rot.getAngleRadians();
 			// theLogger.info("Rotating " + bs.getBoneName() + " angle " + rotAxis + " to " + rads + " radians.");
             switch(rotAxis) {
-                case PITCH: bs.rot_Z_attitude = rads; break;
-                case ROLL:  bs.rot_X_bank = rads;  break;
-                case YAW:   bs.rot_Y_heading = rads;   break;
+				/*
+				 * We are currently using the EuclideanSpace.com conventions, in which 
+				 * the character is treated like a vehicle pointing down the X axis,
+				 * which conflicts with the JMonkey convention (and also often with the
+				 * orientation of different bones of a loaded skeleton).
+				 * 
+				 * http://jmonkeyengine.org/groups/general-2/forum/topic/definition-of-pitch-yaw-roll-in-jmonkeyengine/?topic_page=2&num=15
+				 * 
+				 * 
+				 */
+                case PITCH: bs.rot_Z_attitude_A2nd = rads; break;
+                case ROLL:  bs.rot_X_bank_A3rd = rads;  break;
+                case YAW:   bs.rot_Y_heading_A1st = rads;   break;
             }
         }
     }	

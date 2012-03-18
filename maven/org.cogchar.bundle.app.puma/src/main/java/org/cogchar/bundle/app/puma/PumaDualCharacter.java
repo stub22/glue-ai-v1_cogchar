@@ -26,7 +26,7 @@ import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
 
 import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
-import org.cogchar.render.opengl.bony.demo.HumanoidRenderContext;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.platform.trigger.DummyBox;

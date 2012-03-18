@@ -256,12 +256,12 @@ bci:joint_Eyes_Vert
 
 bci:joint_LtShoulder_Out
 	bc:jointNum			30;			bc:jointName			"LtShoulder_Out";
-	bc:defaultPosNorm	0.5;
+	bc:defaultPosNorm	0.1;
 	bc:projectionRange	[
 		bc:boneName			"LtShoulder";
 		bc:rotationAxis		"PITCH";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		-10.0;
+		bc:maxAngleDeg		 170.0;
 	]
 .
 
@@ -278,12 +278,12 @@ bci:joint_LtShoulder_Swing
 
 bci:joint_LtElbow_Flex
 	bc:jointNum			32;			bc:jointName			"LtElbow_Flex";
-	bc:defaultPosNorm	0.5;
+	bc:defaultPosNorm	0.1;
 	bc:projectionRange	[
 		bc:boneName			"LtElbow";
 		bc:rotationAxis		"YAW";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		0.0;
+		bc:maxAngleDeg		120.0;
 	]
 .
 
@@ -306,12 +306,12 @@ bci:joint_LtWrist
 
 bci:joint_RtShoulder_Out
 	bc:jointNum			40;			bc:jointName			"RtShoulder_Out";
-	bc:defaultPosNorm	0.5;
+	bc:defaultPosNorm	0.1;
 	bc:projectionRange	[
 		bc:boneName			"RtShoulder";
 		bc:rotationAxis		"PITCH";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		-10.0;
+		bc:maxAngleDeg		 170.0;
 	]
 .
 
@@ -321,19 +321,19 @@ bci:joint_RtShoulder_Swing
 	bc:projectionRange	[
 		bc:boneName			"RtShoulder";
 		bc:rotationAxis		"YAW";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		-30.0;
+		bc:maxAngleDeg		 120.0;
 	]
 .
 
 bci:joint_RtElbow_Flex
 	bc:jointNum			42;			bc:jointName			"RtElbow_Flex";
-	bc:defaultPosNorm	0.5;
+	bc:defaultPosNorm	0.1;
 	bc:projectionRange	[
 		bc:boneName			"RtElbow";
 		bc:rotationAxis		"YAW";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		0.0;
+		bc:maxAngleDeg		120.0;
 	]
 .
 
