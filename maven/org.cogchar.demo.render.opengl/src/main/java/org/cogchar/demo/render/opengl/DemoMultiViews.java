@@ -28,9 +28,9 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
-import org.cogchar.render.opengl.app.DemoApp;
-import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
-import org.cogchar.render.opengl.bony.sys.DemoRenderContext;
+import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.sys.core.CogcharRenderContext;
+import org.cogchar.render.sys.core.DemoRenderContext;
 
 public class DemoMultiViews extends DemoApp {
 

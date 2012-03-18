@@ -45,7 +45,7 @@ import com.jme3.shadow.PssmShadowRenderer.CompareMode;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
-import org.cogchar.render.opengl.app.DemoApp;
+import org.cogchar.render.app.core.DemoApp;
 
 /**
  * From:    jme3test.bullet.TestBrickTower - author double1984 (tower mod by atom).

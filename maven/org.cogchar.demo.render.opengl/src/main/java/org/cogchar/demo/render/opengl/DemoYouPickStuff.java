@@ -42,9 +42,9 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.PQTorus;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
-import org.cogchar.render.opengl.bony.model.SpatialManipFuncs;
-import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
-import org.cogchar.render.opengl.bony.sys.DemoRenderContext;
+import org.cogchar.render.model.bony.SpatialManipFuncs;
+import org.cogchar.render.sys.core.CogcharRenderContext;
+import org.cogchar.render.sys.core.DemoRenderContext;
 import org.cogchar.render.opengl.bony.world.CollisionMgr;
 
 /** Sample 8 - how to let the user pick (select) objects in the scene 

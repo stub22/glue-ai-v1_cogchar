@@ -34,7 +34,7 @@ import org.robokind.api.common.osgi.OSGiUtils;
 import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaDualCharacter;
 
-import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
+import org.cogchar.render.sys.core.BonyRenderContext;
 import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
 
 import org.robokind.api.motion.Robot;

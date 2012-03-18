@@ -5,9 +5,9 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.cogchar.render.opengl.bony.sys.AssetContext;
-import org.cogchar.render.opengl.bony.sys.JmonkeyAssetLocation;
-import org.cogchar.render.opengl.bony.sys.RenderRegistryFuncs;
+import org.cogchar.render.sys.core.AssetContext;
+import org.cogchar.render.sys.core.JmonkeyAssetLocation;
+import org.cogchar.render.sys.core.RenderRegistryFuncs;
 
 public class ResourceBundleActivator extends BundleActivatorBase {
 	static Logger theLogger = LoggerFactory.getLogger(ResourceBundleActivator.class);

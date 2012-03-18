@@ -50,9 +50,9 @@ import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.opengl.app.PhysicalApp;
-import org.cogchar.render.opengl.bony.sys.CogcharRenderContext;
-import org.cogchar.render.opengl.bony.sys.DemoRenderContext;
+import org.cogchar.render.app.core.PhysicalApp;
+import org.cogchar.render.sys.core.CogcharRenderContext;
+import org.cogchar.render.sys.core.DemoRenderContext;
 
 /** It has been said that:
  * "PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!"

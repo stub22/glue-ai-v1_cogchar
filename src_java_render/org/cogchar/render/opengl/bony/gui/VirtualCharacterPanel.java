@@ -18,8 +18,8 @@ package org.cogchar.render.opengl.bony.gui;
 import java.awt.Canvas;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import org.cogchar.render.opengl.bony.app.BodyController;
-import org.cogchar.render.opengl.bony.app.VerbalController;
+import org.cogchar.render.app.bony.BodyController;
+import org.cogchar.render.app.bony.VerbalController;
 
 /**
  * @author Stu B. <www.texpedient.com>
