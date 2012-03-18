@@ -26,6 +26,10 @@ case class NVParam(val name: String, val value: String) {
 }
 
 class BonyConfigEmitter extends DemoConfigEmitter {
+	
+	val FANCY_PANEL_CLASSNAME = "org.cogchar.render.gui.bony.FancyCharPanel";
+	val SLIM_PANEL_CLASSNAME = "org.cogchar.render.gui.bony.VirtCharPanel";
+	
 	// This skeleton + mesh model is delivered by the jar from o.c.bundle.render.opengl.resources
 	val SINBAD_MESH_PATH = "jme3dat/models_20110917/sinbad/Sinbad.mesh.xml";	
 
@@ -98,8 +102,8 @@ class BonyConfigEmitter extends DemoConfigEmitter {
    
 	def getVCPanelClassName(kind : String) : String = {
 		kind match {
-			case "FULL" => "org.cogchar.render.opengl.bony.gui.FancyCharPanel";
-			case "SLIM" => "org.cogchar.render.opengl.bony.gui.VirtCharPanel";
+			case "FULL" => FANCY_PANEL_CLASSNAME;
+			case "SLIM" => SLIM_PANEL_CLASSNAME;
 			case _ => null
 		}
 	}

@@ -20,7 +20,7 @@
  * Created on Apr 4, 2011, 1:29:28 PM
  */
 
-package org.cogchar.render.opengl.bony.gui;
+package org.cogchar.render.gui.bony;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
@@ -28,7 +28,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.cogchar.render.app.bony.BodyController;
 import org.cogchar.render.app.bony.VerbalController;
-import org.cogchar.render.opengl.bony.gui.PanelUtils;
+import org.cogchar.render.gui.bony.PanelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

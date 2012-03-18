@@ -22,12 +22,11 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import java.util.List;
 import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.model.bony.DemoBonyWireframeRagdoll;
 import org.cogchar.render.model.bony.SpatialManipFuncs;
 import org.cogchar.render.model.bony.StickFigureTwister;
-import org.cogchar.render.sys.core.BonyRenderContext;
-import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
+import org.cogchar.render.sys.physics.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.scene.ModelSpatialFactory;
 

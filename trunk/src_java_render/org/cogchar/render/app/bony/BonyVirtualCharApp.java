@@ -26,8 +26,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
-import org.cogchar.render.sys.core.BonyRenderContext;
-import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

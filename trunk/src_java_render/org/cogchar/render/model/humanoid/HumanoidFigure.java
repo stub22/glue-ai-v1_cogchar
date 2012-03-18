@@ -35,7 +35,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 
-import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
+import org.cogchar.render.sys.physics.PhysicsStuffBuilder;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetManager;

@@ -20,14 +20,14 @@ import javax.swing.JFrame;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
-import org.cogchar.render.sys.core.BonyRenderContext;
+import org.cogchar.render.app.bony.BonyRenderContext;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.cogchar.render.app.humanoid.HumanoidPuppetApp;
-import org.cogchar.render.opengl.bony.gui.PanelUtils;
-import org.cogchar.render.opengl.bony.gui.VirtualCharacterPanel;
+import org.cogchar.render.gui.bony.PanelUtils;
+import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 
 /**
  * @author Stu B. <www.texpedient.com>

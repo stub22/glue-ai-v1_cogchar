@@ -13,8 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package org.cogchar.render.gui.bony;
+
+import java.awt.Canvas;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import org.cogchar.render.app.bony.BodyController;
+import org.cogchar.render.app.bony.VerbalController;
+
 /**
- * GUI panels allowing our character OpenGL displays to be embedded into Java GUIs, 
- * and embellished with external toolbars.
+ * @author Stu B. <www.texpedient.com>
  */
-package org.cogchar.render.opengl.bony.gui;
+public interface VirtualCharacterPanel {
+	public void setRenderCanvas (Canvas c);
+	public JFrame makeEnclosingJFrame(String title);
+	public JPanel getJPanel();
+	public BodyController getBodyController();
+	public VerbalController getVerbalController();
+}

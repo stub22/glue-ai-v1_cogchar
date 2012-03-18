@@ -25,7 +25,7 @@ import org.cogchar.bind.rk.robot.model.ModelJoint;
 
 
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
-import org.cogchar.render.sys.core.BonyRenderContext;
+import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.model.bony.FigureState;
 import org.cogchar.render.model.bony.BoneState;
 import org.cogchar.render.model.humanoid.HumanoidFigure;

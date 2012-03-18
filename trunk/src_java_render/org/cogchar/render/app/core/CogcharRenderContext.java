@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.sys.core;
+package org.cogchar.render.app.core;
 
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetInfo;
@@ -30,10 +30,12 @@ import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import java.io.InputStream;
 import org.cogchar.render.app.core.AppStub;
-import org.cogchar.render.opengl.bony.world.DemoVectorFactory;
-import org.cogchar.render.opengl.bony.world.ProjectileLauncher;
+import org.cogchar.render.sys.physics.DemoVectorFactory;
+import org.cogchar.render.sys.physics.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
+import org.cogchar.render.sys.core.AssetContext;
+import org.cogchar.render.sys.core.RenderRegistryAware;
 
 /**  Named to differentiate it from JMonkey "RenderContext".  
  * This base class does not maintain much instance data.

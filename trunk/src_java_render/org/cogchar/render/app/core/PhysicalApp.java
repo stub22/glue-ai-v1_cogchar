@@ -18,8 +18,7 @@ package org.cogchar.render.app.core;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.sys.core.PhysicalRenderContext;
-import org.cogchar.render.opengl.bony.world.PhysicsStuffBuilder;
+import org.cogchar.render.sys.physics.PhysicsStuffBuilder;
 
 /**
  * @author Stu B. <www.texpedient.com>

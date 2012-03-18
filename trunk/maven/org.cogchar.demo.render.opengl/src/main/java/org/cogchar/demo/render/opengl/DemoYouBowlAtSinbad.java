@@ -21,7 +21,7 @@
  */
 package org.cogchar.demo.render.opengl;
 
-import org.cogchar.render.opengl.bony.world.LaunchableCollidingRigidBodyControl;
+import org.cogchar.render.sys.physics.LaunchableCollidingRigidBodyControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -51,8 +51,8 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import org.cogchar.blob.emit.DemoConfigEmitter;
 import org.cogchar.render.app.core.PhysicalApp;
-import org.cogchar.render.sys.core.CogcharRenderContext;
-import org.cogchar.render.sys.core.DemoRenderContext;
+import org.cogchar.render.app.core.CogcharRenderContext;
+import org.cogchar.render.app.core.DemoRenderContext;
 
 /** It has been said that:
  * "PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!"
