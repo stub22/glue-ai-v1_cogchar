@@ -67,7 +67,7 @@ import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
 import java.util.List;
 import jme3tools.converters.ImageToAwt;
-import org.cogchar.render.opengl.app.DemoApp;
+import org.cogchar.render.app.core.DemoApp;
 
 /**
  * A walking animated character followed by a 3rd person camera on a terrain with LOD.

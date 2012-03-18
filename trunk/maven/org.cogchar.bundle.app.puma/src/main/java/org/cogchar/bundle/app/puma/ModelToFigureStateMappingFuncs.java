@@ -24,10 +24,10 @@ import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelJoint;
 
 
-import org.cogchar.render.opengl.bony.app.BonyVirtualCharApp;
-import org.cogchar.render.opengl.bony.sys.BonyRenderContext;
-import org.cogchar.render.opengl.bony.state.FigureState;
-import org.cogchar.render.opengl.bony.state.BoneState;
+import org.cogchar.render.app.bony.BonyVirtualCharApp;
+import org.cogchar.render.sys.core.BonyRenderContext;
+import org.cogchar.render.model.bony.FigureState;
+import org.cogchar.render.model.bony.BoneState;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 
 import java.util.List;

@@ -17,7 +17,7 @@ package org.cogchar.render.opengl.scene;
 
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import org.cogchar.render.opengl.bony.sys.RenderRegistryAware;
+import org.cogchar.render.sys.core.RenderRegistryAware;
 
 /**
  * @author Stu B. <www.texpedient.com>

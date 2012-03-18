@@ -24,7 +24,7 @@ package org.cogchar.render.opengl.bony.gui;
 
 import org.cogchar.platform.trigger.DummyBox;
 import org.cogchar.platform.trigger.DummyTrigger;
-import org.cogchar.render.opengl.bony.app.VerbalController;
+import org.cogchar.render.app.bony.VerbalController;
 
 /**
  *

@@ -19,7 +19,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.system.AppSettings;
-import org.cogchar.render.opengl.bony.sys.RenderRegistryAware;
+import org.cogchar.render.sys.core.RenderRegistryAware;
 
 /**
  * @author Stu B. <www.texpedient.com>
