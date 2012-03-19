@@ -40,7 +40,8 @@ class SceneSpec () extends KnownComponentImpl {
 	val		myChannelSpecs  = new HashMap[Ident,ChannelSpec]();
 
 	override def getFieldSummary() : String = {
-		return super.getFieldSummary() + ", details=" + myDetails;
+		return super.getFieldSummary() + ", details=" + myDetails + ", behaviors=" + myBehaviorSpecs + ", channels=" + 
+				myChannelSpecs;
 	}
 	def addBehaviorSpec(bs: BehaviorSpec) {
 		myBehaviorSpecs.put(bs.getIdent(), bs);
@@ -51,13 +52,28 @@ class SceneSpec () extends KnownComponentImpl {
 	
 }
 class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[SceneSpec](builderConfRes) {
-
+	import scala.collection.JavaConversions._;
 	
 	override protected def initExtendedFieldsAndLinks(ss: SceneSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
 		logInfo("SceneBuilder.initExtendedFieldsAndLinks");	
 		ss.myDetails = "ChockFilledUp";
 		val linkedBehaviorSpecs : java.util.List[Object] = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_behavior, assmblr, mode, null);
+		for (val o <- linkedBehaviorSpecs) {
+			o match {
+				case bs: BehaviorSpec => ss.addBehaviorSpec(bs);
+				case _ => logWarning("Unexpected object found at " + SceneFieldNames.P_behavior + " = " + o);
+			}
+		}
+		val linkedChannelSpecs : java.util.List[Object] = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_channel, assmblr, mode, null);
+		for (val o <- linkedChannelSpecs) {
+			o match {
+				case cs: ChannelSpec => ss.addChannelSpec(cs);
+				case _ => logWarning("Unexpected object found at " + SceneFieldNames.P_channel + " = " + o);
+			}
+		}		
 		logInfo("Scene found linkedBehaviorSpecs: " + linkedBehaviorSpecs)
+		logInfo("Scene found linkedChannelSpecs: " + linkedChannelSpecs)
+
 	}
 }
 object SceneFieldNames extends org.appdapter.gui.assembly.AssemblyNames {
@@ -65,5 +81,6 @@ object SceneFieldNames extends org.appdapter.gui.assembly.AssemblyNames {
 	val		NS_ccScnInst = "http://www.cogchar.org/schema/scene/instance#";
 
 	val		P_behavior	= NS_ccScn + "behavior";
+	val		P_channel	= NS_ccScn + "channel";	
 }
 

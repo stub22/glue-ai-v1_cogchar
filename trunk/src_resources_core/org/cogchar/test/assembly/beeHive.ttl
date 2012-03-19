@@ -39,7 +39,8 @@ csi:scn_001 	rdf:type			cs:BuildableSceneSpec;
 				apsb:trigger		apt:trig_001a;
 				cs:details			"scene-specific-details-go-here";
 				cs:size				52;
-				cs:behavior			csi:bh_001
+				cs:behavior			csi:bh_001;
+				cs:channel			csi:chn_001;
 				.
 
 csi:bh_001		rdf:type			cs:BuildableBehaviorSpec;
