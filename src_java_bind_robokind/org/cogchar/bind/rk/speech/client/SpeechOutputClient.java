@@ -16,20 +16,30 @@
 package org.cogchar.bind.rk.speech.client;
 
 import org.cogchar.bind.rk.robot.client.RobotAnimClient;
+import org.cogchar.api.perform.TextChannel;
+import org.cogchar.api.perform.Performance;
+import org.cogchar.api.perform.BasicPerformance;
+
+import org.cogchar.impl.perform.FancyTextChan;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import org.robokind.api.speech.SpeechService;
+import org.appdapter.api.module.Module.State;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class SpeechOutputClient {
-	static Logger theLogger = LoggerFactory.getLogger(RobotAnimClient.class);
+public class SpeechOutputClient extends FancyTextChan {
+	static Logger theLogger = LoggerFactory.getLogger(SpeechOutputClient.class);
 	BundleContext	myBundleCtx;
-	public SpeechOutputClient(BundleContext bundleCtx){
+
+	
+	public SpeechOutputClient(BundleContext bundleCtx) {
+		super("SpeechOut_" + System.currentTimeMillis() % 100000);
 		myBundleCtx = bundleCtx;
 	}
 	public class ServiceContext  {
@@ -80,5 +90,9 @@ public class SpeechOutputClient {
 				servCtx.release();
 			}
 		}
-    }	
+    }
+	@Override  public void startTextPerformance (String txt) throws Throwable {
+		speakText(txt);
+	}
+
 }

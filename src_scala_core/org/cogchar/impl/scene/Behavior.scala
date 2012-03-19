@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.scalatest
+package org.cogchar.impl.scene
 
 import org.appdapter.core.item.{Ident, Item}
 
@@ -54,12 +54,7 @@ class BehaviorSpec() extends KnownComponentImpl {
 	}
 }
 class BehaviorSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[BehaviorSpec](builderConfRes) {
-	override def logInfo(txt: String) {
-		println(txt);
-	}
-	override def logWarn(txt: String) {
-		println(txt);
-	}
+
 	
 	override protected def initExtendedFieldsAndLinks(bs: BehaviorSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
 		logInfo("BehaviorSpecBuilder.initExtendedFieldsAndLinks");	

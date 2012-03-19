@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.scalatest
+package org.cogchar.impl.scene
 
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.Item;
@@ -26,30 +26,38 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import org.cogchar.impl.perform.ChannelSpec;
+
+import scala.collection.mutable.HashMap;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 class SceneSpec () extends KnownComponentImpl {
 	var		myDetails : String = "EMPTY";
+	val		myBehaviorSpecs = new HashMap[Ident,BehaviorSpec]();
+	val		myChannelSpecs  = new HashMap[Ident,ChannelSpec]();
 
 	override def getFieldSummary() : String = {
 		return super.getFieldSummary() + ", details=" + myDetails;
 	}
+	def addBehaviorSpec(bs: BehaviorSpec) {
+		myBehaviorSpecs.put(bs.getIdent(), bs);
+	}
+	def addChannelSpec(cs: ChannelSpec) {
+		myChannelSpecs.put(cs.getIdent(), cs);
+	}
+	
 }
 class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[SceneSpec](builderConfRes) {
-	override def logInfo(txt: String) {
-		println(txt);
-	}
-	override def logWarn(txt: String) {
-		println(txt);
-	}
+
 	
 	override protected def initExtendedFieldsAndLinks(ss: SceneSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
 		logInfo("SceneBuilder.initExtendedFieldsAndLinks");	
 		ss.myDetails = "ChockFilledUp";
 		val linkedBehaviorSpecs : java.util.List[Object] = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_behavior, assmblr, mode, null);
-		println("Scene found linkedBehaviorSpecs: " + linkedBehaviorSpecs)
+		logInfo("Scene found linkedBehaviorSpecs: " + linkedBehaviorSpecs)
 	}
 }
 object SceneFieldNames extends org.appdapter.gui.assembly.AssemblyNames {

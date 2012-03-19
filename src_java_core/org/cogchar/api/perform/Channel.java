@@ -13,22 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-package org.cogchar.scalatest
+package org.cogchar.api.perform;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-
-trait BehaviorStep {
-}
-class ScheduledActionStep (val myOffsetMillisec : Int, val myAction: BehaviorAction) extends BehaviorStep() { 
-}
-
-trait BehaviorAction {
-	def perform();
-}
-class SpeechAction(val mySpeechText : String) extends BehaviorAction() { 
-	override def perform() { 
+public interface Channel {
+	public enum Status {
+		INIT,
+		READY,
+		PERFORMING,
+		ERROR
 	}
+	public Status getStatus();
+	
+	public String getName();
 }

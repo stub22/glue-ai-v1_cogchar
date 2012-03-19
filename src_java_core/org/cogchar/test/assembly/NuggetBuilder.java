@@ -51,13 +51,6 @@ public class NuggetBuilder extends DynamicCachingComponentAssembler<Nugget> {
 	}
 			
 			
-	@Override public void logInfo(String txt) {
-		System.out.println(txt);
-	}
-	@Override public void logWarn(String txt) {
-		System.out.println(txt);
-	}
-	
 	@Override protected void initExtendedFieldsAndLinks(Nugget nug, Item configItem, Assembler assmblr, Mode mode) {
 		logDebug("NuggetBuilder.initExtendedFieldsAndLinks");
 		nug.myDetails = readConfigValString(configItem.getIdent(), AssemblyTestNames.P_details, configItem, null);

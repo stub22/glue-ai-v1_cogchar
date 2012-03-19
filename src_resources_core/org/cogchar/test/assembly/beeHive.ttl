@@ -17,17 +17,23 @@
 cs:BuildableSceneSpec
 		a 					rdfs:Class;
 		rdfs:subClassOf 	ja:Object;
-		ja:assembler		"org.cogchar.scalatest.SceneSpecBuilder" 
+		ja:assembler		"org.cogchar.impl.scene.SceneSpecBuilder" 
 		.		
 
 cs:BuildableBehaviorSpec
 		a 					rdfs:Class;
 		rdfs:subClassOf 	ja:Object;
-		ja:assembler		"org.cogchar.scalatest.BehaviorSpecBuilder" 
+		ja:assembler		"org.cogchar.impl.scene.BehaviorSpecBuilder" 
+		.	
+
+cs:BuildableChannelSpec
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.impl.perform.ChannelSpecBuilder" 
 		.		
 
 csi:scn_001 	rdf:type			cs:BuildableSceneSpec;
-				apsb:javaFQCN		"org.cogchar.scalatest.SceneSpec";
+				apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
 				apsb:label			"scn-001 apsb label";
 				rdfs:label 			"scn-001 rdfs label";
 				apsb:trigger		apt:trig_001a;
@@ -37,10 +43,19 @@ csi:scn_001 	rdf:type			cs:BuildableSceneSpec;
 				.
 
 csi:bh_001		rdf:type			cs:BuildableBehaviorSpec;
-				apsb:javaFQCN		"org.cogchar.scalatest.BehaviorSpec";
+				apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
 				apsb:label			"bh-001 apsb label";
 				rdfs:label 			"bh-001 rdfs label";
 				apsb:trigger		apt:trig_001a;
 				cs:details			"behavior-specific-details-go-here";
 				cs:size				11;
+				.
+
+csi:chn_001		rdf:type			cs:BuildableChannelSpec;
+				apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+				apsb:label			"chn-001 apsb label";
+				rdfs:label 			"chn-001 rdfs label";
+				apsb:trigger		apt:trig_001a;
+				cs:details			"channel-specific-details-go-here";
+				cs:size				-99.7;
 				.
