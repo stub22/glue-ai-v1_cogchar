@@ -66,27 +66,29 @@ public class RobotServiceFuncs {
     public static void startJointGroup(BundleContext bundleCtx, 
             Robot.Id robotId, File jointGroupConfigXML_file){
         String paramId = "robot/" + robotId + "/jointgroup/config/param/xml";
-        launchJointGroupLifecycle(bundleCtx, robotId, jointGroupConfigXML_file);
+        launchJointGroupLifecycle(bundleCtx, robotId, paramId);
         launchJointGroupConfig(bundleCtx, jointGroupConfigXML_file, paramId);
     }
     
     protected static OSGiComponent launchJointGroupLifecycle(
-            BundleContext bundleCtx, Robot.Id robotId, File configXML){
+            BundleContext bundleCtx, Robot.Id robotId, String configFileId){
         RobotJointGroupLifecycle<File> lifecycle =
                 new RobotJointGroupLifecycle<File>(robotId, File.class, 
-                        configXML, RobotJointGroupConfigXMLReader.VERSION);
+                        configFileId, RobotJointGroupConfigXMLReader.VERSION);
         OSGiComponent jointGroupComp = new OSGiComponent(bundleCtx, lifecycle);
         jointGroupComp.start();
         return null;
     }
     
-    protected static OSGiComponent launchJointGroupConfig(BundleContext bundleCtx, 
-            File jointGroupConfigXML_file, String configFileId){
+    protected static OSGiComponent launchJointGroupConfig(BundleContext context, 
+            File jointGroupConfigXML, String configFileId){
         Properties props = new Properties();
         props.put(Constants.CONFIG_PARAM_ID, configFileId);
+        props.put(Constants.CONFIG_FORMAT_VERSION, 
+                RobotJointGroupConfigXMLReader.VERSION.toString());
         ServiceLifecycleProvider lifecycle = new SimpleLifecycle(
-                        jointGroupConfigXML_file, File.class, props);
-        OSGiComponent paramComp = new OSGiComponent(bundleCtx, lifecycle);
+                        jointGroupConfigXML, File.class, props);
+        OSGiComponent paramComp = new OSGiComponent(context, lifecycle);
         paramComp.start();
         return paramComp;
     }
