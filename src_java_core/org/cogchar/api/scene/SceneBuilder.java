@@ -13,13 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package org.cogchar.api.scene;
 
-package org.cogchar.scalatest
+import java.util.List;
+import org.cogchar.api.perform.Channel;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-
-class Theater {
-	val		myBM = new BehaviorModulator();
+public interface SceneBuilder<RootChan extends Channel, S extends Scene<RootChan>> {
+	public	List<S> buildScenes(String sceneResourcePath);
 }

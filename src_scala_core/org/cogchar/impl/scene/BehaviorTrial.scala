@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.scalatest
+package org.cogchar.impl.scene
 
 import scala.actors._
 import Actor._
@@ -131,6 +131,6 @@ object BehaviorTrial {
 
 	}
 	def main(args: Array[String]) {
-		val sceneList : List[SceneSpec] = loadSceneSpecs();
+		val sceneSpecList : List[SceneSpec] = loadSceneSpecs();
 	}  
 }
