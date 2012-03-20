@@ -59,7 +59,7 @@ public class NuggetBuilder extends DynamicCachingComponentAssembler<Nugget> {
 			mn.myGaucho = readConfigValString(configItem.getIdent(), AssemblyTestNames.P_gaucho, configItem, null);
 			mn.myCount = readConfigValLong(configItem.getIdent(), AssemblyTestNames.P_count, configItem, null);
 			mn.myAngle = readConfigValDouble(configItem.getIdent(), AssemblyTestNames.P_angle, configItem, null);
-			mn.myOtherNugs = findOrMakeLinkedObjectsInCollection(configItem, AssemblyTestNames.P_otherNugs, assmblr, mode);			
+			mn.myOtherNugs = findOrMakeLinkedObjSeq(configItem, AssemblyTestNames.P_otherNugs, assmblr, mode);			
 			mn.myTriggers = findOrMakeLinkedObjects(configItem, AssemblyTestNames.P_trigger, assmblr, mode, null);
 			List<Object> friendlyNugs = findOrMakeLinkedObjects(configItem, AssemblyTestNames.P_friendlyNug, assmblr, mode, null);
 			if (friendlyNugs.size() == 1) { 

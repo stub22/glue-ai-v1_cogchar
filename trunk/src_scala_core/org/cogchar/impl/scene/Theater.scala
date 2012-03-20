@@ -16,10 +16,43 @@
 
 package org.cogchar.impl.scene
 
+import org.appdapter.core.log.{BasicDebugger};
+import org.appdapter.core.item.{Ident, Item, FreeIdent};
+import scala.collection.mutable.HashMap;
+
+import org.cogchar.api.perform.{Channel};
+import org.cogchar.impl.perform.{DummyTextChan};
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-class Theater {
+class Theater extends BasicDebugger {
 	val		myBM = new BehaviorModulator();
+}
+object Theater extends BasicDebugger {
+	def main(args: Array[String]) {
+		val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
+		val t = new Theater();
+		val sb = new SceneBook();
+		val sceneSpecList : List[SceneSpec] = sb.loadSceneSpecs(triplesFlexPath, null);
+		sb.registerSceneSpecs(sceneSpecList);
+		val testSceneName = "scn_001";
+		val testSceneURI = 	SceneFieldNames.NS_ccScnInst + testSceneName;
+		val tsIdent =  new FreeIdent(testSceneURI, testSceneName);
+		val tscs = sb.findSceneSpec(tsIdent);
+		logInfo("Found scene:" + tscs)
+		
+		val dtc = new DummyTextChan("dum-me");
+		val chanSet = new java.util.HashSet[Channel]();
+		chanSet.add(dtc);
+		
+		val scene = new BScene(tscs);
+		scene.wirePerformanceChannels(chanSet);
+		
+		scene.registerBehaviors(t.myBM);
+		t.myBM.runUntilDone(100);
+		
+		logInfo("*****************************************************************\nModulator finished");
+	}  
 }

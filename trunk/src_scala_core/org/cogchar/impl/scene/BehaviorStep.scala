@@ -21,9 +21,23 @@ package org.cogchar.impl.scene
  */
 
 trait BehaviorStep {
+	def proceed(s: BScene, b: Behavior) : Boolean;
 }
 
 class ScheduledActionStep (val myOffsetMillisec : Int, val myAction: BehaviorAction) extends BehaviorStep() { 
+	override def toString() : String = {
+		"ScheduledActionStep[offsetMsec=" + myOffsetMillisec + ", action=" + myAction + "]"
+	}
+	def proceed(s: BScene, b: Behavior) : Boolean = {
+		val msecSinceStart = b.getMillsecSinceStart();
+		if (msecSinceStart >= myOffsetMillisec) {
+			myAction.perform();
+			true;
+		} else {
+			false;
+		}
+	}
+
 }
 
 trait BehaviorAction {
@@ -33,4 +47,7 @@ trait BehaviorAction {
 class SpeechAction(val mySpeechText : String) extends BehaviorAction() { 
 	override def perform() { 
 	}
+	override def toString() : String = {
+		"SpeechAction[speechText=" + mySpeechText + "]"
+	}	
 }
