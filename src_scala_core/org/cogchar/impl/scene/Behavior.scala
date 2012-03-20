@@ -46,10 +46,12 @@ class Behavior (val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
 		if (myNextStepIndex >= mySpec.mySteps.size) {
 			logMe("reached end of its steps, self-requesting module stop");
 			markStopRequested();
-		}
-		val step = mySpec.mySteps(myNextStepIndex);
-		if (step.proceed(scn, this)) {
-			myNextStepIndex += 1;
+			logMe("finished requesting stop, so, err...");
+		} else {
+			val step = mySpec.mySteps(myNextStepIndex);
+			if (step.proceed(scn, this)) {
+				myNextStepIndex += 1;
+			}
 		}
 	}
 	override protected def doStop(scn : BScene) {
