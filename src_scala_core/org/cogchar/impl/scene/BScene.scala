@@ -16,24 +16,46 @@
 
 package org.cogchar.impl.scene
 
-import org.appdapter.core.item.Ident;
-import org.appdapter.core.item.Item;
+import org.appdapter.core.item.{Ident, Item}
+import org.appdapter.core.log.{BasicDebugger};
 
 import org.appdapter.gui.box.KnownComponentImpl;
 import org.appdapter.gui.assembly.DynamicCachingComponentAssembler;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
+import com.hp.hpl.jena.assembler.{Assembler, Mode}
+
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-import org.cogchar.impl.perform.ChannelSpec;
+import org.cogchar.api.perform.{Channel};
+import org.cogchar.impl.perform.{FancyChan, ChannelSpec};
+
+import org.cogchar.api.scene.{Scene, SceneBuilder};
 
 import scala.collection.mutable.HashMap;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
+class BSceneChan (n: String, val scn: BScene) extends FancyChan(n)  {
+}
+class BScene(ss: SceneSpec) extends BasicDebugger with Scene[BSceneChan] {
+	val myRootChan = new BSceneChan("Rooty", this);
+
+	override def getRootChannel() : BSceneChan = {	myRootChan	}
+	import scala.collection.JavaConversions._;
+	override def wirePerformanceChannels(chans : java.util.Collection[Channel]) : Unit = {
+		for (val c <- chans) {
+			logInfo("Wiring to channel: " + c);
+		}
+	}
+	def registerBehaviors(bm : BehaviorModulator) {
+		for (val bs : BehaviorSpec <- ss.myBehaviorSpecs.values) {
+			val b = new Behavior(bs);
+			bm.attachModule(b);
+		}
+	}
+}
 class SceneSpec () extends KnownComponentImpl {
 	var		myDetails : String = "EMPTY";
 	val		myBehaviorSpecs = new HashMap[Ident,BehaviorSpec]();
@@ -51,6 +73,7 @@ class SceneSpec () extends KnownComponentImpl {
 	}
 	
 }
+
 class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[SceneSpec](builderConfRes) {
 	import scala.collection.JavaConversions._;
 	
@@ -82,5 +105,9 @@ object SceneFieldNames extends org.appdapter.gui.assembly.AssemblyNames {
 
 	val		P_behavior	= NS_ccScn + "behavior";
 	val		P_channel	= NS_ccScn + "channel";	
+	
+	val		P_steps				= NS_ccScn + "steps";	// Plural indicates RDF-collection
+	val		P_startOffsetSec	= NS_ccScn + "startOffsetSec";
+	val		P_text				= NS_ccScn + "text";
 }
 

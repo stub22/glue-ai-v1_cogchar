@@ -18,12 +18,13 @@ package org.cogchar.impl.scene
 
 import scala.actors._
 import Actor._
+import org.appdapter.core.log.{BasicDebugger};
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-class  WorkThing {
+class  WorkThing extends BasicDebugger {
 	var emotedCount = 0	
 	def sendEmoteMsgLater(a : Actor, waitMsec : Long) : Unit = {
 		log("Will sendEmoteMsgLater to " + a + " now starting NEW innerActor")
@@ -83,41 +84,22 @@ class  WorkThing {
 		sillyActor
 	}
 	def log(txt: String) {
-		BehaviorTrial.log(txt)
+		logInfo(txt)
 	}
 }
-object BehaviorTrial {
+object BehaviorTrial extends BasicDebugger {
 	def log(txt : String) = {
 		val tstamp = System.currentTimeMillis();
 		val sec = tstamp / 1000
 		val msec = tstamp - sec * 1000
-		println("T[" + sec % 10000 + "." + msec + "] " + txt)
+		logInfo("T[" + sec % 10000 + "." + msec + "] " + txt)
 	}
-	import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
-	
-	def loadSceneSpecs() : List[SceneSpec] = { 
-		// Set[Object] 
-		val triplesPath = "org/cogchar/test/assembly/ca_test.ttl";
-		val loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(triplesPath);
-		log("Loaded " + loadedStuff.size() + " objects");
-		log("Stuff: " + loadedStuff);
-		val si = loadedStuff.iterator();
-		var sceneSpecList = List[SceneSpec]()
-		while (si.hasNext()) {
-			val obj = si.next();
-			if (obj.isInstanceOf[SceneSpec]) {
-				sceneSpecList = sceneSpecList :+ obj.asInstanceOf[SceneSpec]
-			}
-		}
-		println("===========================================================================================")
-		println("SceneList: " + sceneSpecList);
-		sceneSpecList;
-		// for (Object o : loadedStuff) {
-	}
+
+
 	def actThreadingTest() { 
 		log("actThreadingTest() START ------------------- ")
 		log("System.properties=" + System.getProperties());
-		log("The sillyActor is started automatically using the 'actor' utility method from class Actor");
+		log("The sillyActor is started automatically when using the 'actor' utility method from class Actor");
 		val wt = new WorkThing;
 		val sa = wt.startSillyActor();
 		log("Started sillyActor=" + sa)
@@ -130,7 +112,5 @@ object BehaviorTrial {
 		log("actThreadingTest() END ------------------- ")
 
 	}
-	def main(args: Array[String]) {
-		val sceneSpecList : List[SceneSpec] = loadSceneSpecs();
-	}  
+
 }

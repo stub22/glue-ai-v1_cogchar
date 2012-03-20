@@ -15,6 +15,8 @@
  */
 package org.cogchar.api.perform;
 
+import java.util.List;
+import java.util.ArrayList;
 import org.cogchar.api.perform.Performance.Result;
 import org.appdapter.api.module.Module.State;
 
@@ -22,21 +24,44 @@ import org.appdapter.api.module.Module.State;
  * @author Stu B. <www.texpedient.com>
  */
 public class BasicPerformance<Chan extends Channel> implements Performance<Chan> {
-	private	Chan				myChannel;
-	private	Result<Chan>		myCurrentResult;
 	
+	protected static class BasicResult<C extends Channel> implements Performance.Result<C> {
+		private State	myState;
+		public State getState() {
+			return myState;
+		}
+	}
+	
+	
+	private	Chan					myChannel;
+	private	BasicResult<Chan>		myCurrentResult;
+	private List<Listener<Chan>>	myListeners = new ArrayList<Listener<Chan>>();
 	public BasicPerformance(Chan chan) {
 		myChannel = chan;
-		myCurrentResult = new Result<Chan>();
+		myCurrentResult = new BasicResult<Chan>();
 		myCurrentResult.myState = State.IN_INIT;
 	}
 	@Override public Result<Chan> getCurrentResult() {
 		return myCurrentResult;
 	}
+	@Override public void addListener(Listener<Chan> l) {
+		myListeners.add(l);
+	}
+	@Override public void removeListener(Listener<Chan> l) {
+		myListeners.remove(l);
+	}		
 	protected Chan getChannel() { 
 		return myChannel;
 	}
 	public void updateResultState(State s) {
 		myCurrentResult.myState = s;
+		notifyListeners();
 	}
+	protected void notifyListeners() { 
+		for (Listener<Chan> l : myListeners) {
+			l.notifyChange(this);
+		}
+	}
+	
+
 }
