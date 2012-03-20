@@ -18,10 +18,17 @@ import org.appdapter.api.module.Module.State;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface Performance<Per extends Channel> {
-	public static class Result<Per> {
-		public State	myState;
-	}
+public interface Performance<Chan extends Channel> {
 	
-	public	Result<Per>		getCurrentResult();
+	public interface Result<C extends Channel> {		
+		public State getState();
+	}
+	public interface Listener<C extends Channel> {
+		public void notifyChange(Performance<C> bp);
+	}	
+	
+	public	Result<Chan>		getCurrentResult();
+	public void addListener(Listener<Chan> l);
+	public void removeListener(Listener<Chan> l);
+
 }

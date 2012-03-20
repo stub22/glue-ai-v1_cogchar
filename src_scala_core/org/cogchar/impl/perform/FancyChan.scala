@@ -44,7 +44,6 @@ class FancyChan(val myName: String) extends BasicDebugger with Channel {
 	
 }
 abstract class FancyTextChan(n: String) extends FancyChan(n) with TextChannel {
-	
 	@throws(classOf[Throwable])
 	def startTextPerformance (txt: String) : Unit;
 	
@@ -63,6 +62,12 @@ abstract class FancyTextChan(n: String) extends FancyChan(n) with TextChannel {
 		perf;
 	}
 }
+class DummyTextChan(n: String) extends FancyTextChan(n) {
+	@throws(classOf[Throwable])	override def startTextPerformance (txt: String) : Unit = {
+		logInfo("************* START DUMMY TEXT PERFORMANCE on [" + getName() + "] of [" + txt + "]");
+	}
+}
+
 class ChannelSpec extends KnownComponentImpl {
 	var		myDetails : String = "EMPTY";
 	override def getFieldSummary() : String = {
@@ -77,4 +82,11 @@ class ChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingCompon
 		//val linkedBehaviorSpecs : java.util.List[Object] = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_behavior, assmblr, mode, null);
 		//logInfo("Scene found linkedBehaviorSpecs: " + linkedBehaviorSpecs)
 	}
+}
+
+object ChannelNames extends org.appdapter.gui.assembly.AssemblyNames {
+	val		NS_ccScn =	"http://www.cogchar.org/schema/scene#";
+	val		NS_ccScnInst = "http://www.cogchar.org/schema/scene/instance#";
+
+	val		I_speechOut	= NS_ccScnInst + "chn_001";
 }

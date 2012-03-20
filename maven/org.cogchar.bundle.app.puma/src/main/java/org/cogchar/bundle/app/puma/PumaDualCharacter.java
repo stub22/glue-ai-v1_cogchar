@@ -21,6 +21,8 @@ import java.util.Set;
 import org.osgi.framework.BundleContext;
 import org.cogchar.bind.rk.robot.client.RobotAnimClient;
 
+
+
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
@@ -30,6 +32,8 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.platform.trigger.DummyBox;
+
+import org.cogchar.impl.scene.BehaviorTrial;
 
 import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 
@@ -77,7 +81,20 @@ public class PumaDualCharacter implements DummyBox {
 		// myPHM.applyInitialBoneRotations();
 		myRAC = new RobotAnimClient(bundleCtx); 
 		mySOC = new SpeechOutputClient(bundleCtx);
+		loadBehaviorConfig(bundleCtx);
 	}
+	public void loadBehaviorConfig(BundleContext bundleCtx) throws Throwable {
+		String pathTail = "bhv_nugget_01.ttl";
+		
+		BonyConfigEmitter bonyCE = myPHM.getHumanoidRenderContext().getBonyConfigEmitter();
+		// String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharURI);
+		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
+		String behavPathPerm = behavCE.getBehaviorPermPath(pathTail);
+		// myUpdateBonyRdfPath = behavCE.getRKMotionTempFilePath(bonyConfigPathTail);
+		Object sceneSpecScalaList = BehaviorTrial.loadSceneSpecs(behavPathPerm, null);
+		
+		logInfo("Got sceneSpecs: " + sceneSpecScalaList);
+	}	
 //	private InputStream openAssetStream(String assetName) { 
 //		return myBRC.openAssetStream(assetName);
 //	}	
