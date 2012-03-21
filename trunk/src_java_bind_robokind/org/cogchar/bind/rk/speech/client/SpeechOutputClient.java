@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 package org.cogchar.bind.rk.speech.client;
-
+import org.appdapter.core.item.Ident;
 import org.cogchar.bind.rk.robot.client.RobotAnimClient;
 import org.cogchar.api.perform.TextChannel;
 import org.cogchar.api.perform.Performance;
@@ -38,8 +38,8 @@ public class SpeechOutputClient extends FancyTextChan {
 	BundleContext	myBundleCtx;
 
 	
-	public SpeechOutputClient(BundleContext bundleCtx) {
-		super("SpeechOut_" + System.currentTimeMillis() % 100000);
+	public SpeechOutputClient(BundleContext bundleCtx, Ident chanIdent) {
+		super(chanIdent);
 		myBundleCtx = bundleCtx;
 	}
 	public class ServiceContext  {

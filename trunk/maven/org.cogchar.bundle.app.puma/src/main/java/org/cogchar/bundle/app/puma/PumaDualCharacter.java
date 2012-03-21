@@ -36,7 +36,11 @@ import org.cogchar.platform.trigger.DummyBox;
 import org.cogchar.impl.scene.BehaviorTrial;
 import org.cogchar.impl.scene.Theater;
 
+import org.cogchar.impl.perform.ChannelNames;
+
 import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
+import org.appdapter.core.item.Ident;
+import org.appdapter.core.item.FreeIdent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,8 +84,9 @@ public class PumaDualCharacter implements DummyBox {
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myPHM.connectToVirtualChar();
 		// myPHM.applyInitialBoneRotations();
+		Ident speechChanIdent = ChannelNames.getIdentForMainSpeechChannel();
 		myRAC = new RobotAnimClient(bundleCtx); 
-		mySOC = new SpeechOutputClient(bundleCtx);
+		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
 		loadBehaviorConfig(bundleCtx);
 	}
 	public void loadBehaviorConfig(BundleContext bundleCtx) throws Throwable {
