@@ -15,7 +15,11 @@
  */
 
 package org.cogchar.impl.scene
+import org.appdapter.core.log.{BasicDebugger, Loggable};
 
+import org.appdapter.core.item.{Ident}
+
+import  org.cogchar.api.perform.{Channel, TextChannel, Performance, BasicPerformance}
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -31,7 +35,7 @@ class ScheduledActionStep (val myOffsetMillisec : Int, val myAction: BehaviorAct
 	def proceed(s: BScene, b: Behavior) : Boolean = {
 		val msecSinceStart = b.getMillsecSinceStart();
 		if (msecSinceStart >= myOffsetMillisec) {
-			myAction.perform();
+			myAction.perform(s);
 			true;
 		} else {
 			false;
@@ -41,11 +45,28 @@ class ScheduledActionStep (val myOffsetMillisec : Int, val myAction: BehaviorAct
 }
 
 trait BehaviorAction {
-	def perform();
+	def perform(s: BScene);
+}
+abstract class BasicBehaviorAction extends BasicDebugger with BehaviorAction {
+	var	myChannelIdents : List[Ident] = List();
+	def addChannelIdent(id  : Ident) {
+		myChannelIdents = myChannelIdents :+ id;
+	}
 }
 
-class SpeechAction(val mySpeechText : String) extends BehaviorAction() { 
-	override def perform() { 
+class SpeechAction(val mySpeechText : String) extends BasicBehaviorAction() { 
+	override def perform(s: BScene) {
+		for (val chanId <- myChannelIdents) {
+			val chan : Channel = s.getChannel(chanId);
+			chan match {
+				case txtChan : TextChannel => {
+					txtChan.performText(mySpeechText)
+				}
+				case  _ => {
+					logWarning("SpeechAction cannot perform on non Text-Channel: " + chan);
+				}
+			}
+		}
 	}
 	override def toString() : String = {
 		"SpeechAction[speechText=" + mySpeechText + "]"
