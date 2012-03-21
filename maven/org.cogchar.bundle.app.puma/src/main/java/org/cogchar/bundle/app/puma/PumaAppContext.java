@@ -104,6 +104,9 @@ public class PumaAppContext {
 		if (pdc != null) {
 			String chrURI = pdc.getCharURI();
 			pdc.connectBonyCharToRobokindSvcs(myBundleContext);
+			
+			pdc.connectSpeechOutputSvcs(myBundleContext);
+			
 			registerConfigReloadTrigger(pdc);			
 			registerTestDanceTrigger(pdc);
 			registerTestTalkTrigger(pdc);

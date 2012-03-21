@@ -32,13 +32,14 @@ cs:BuildableChannelSpec
 		ja:assembler		"org.cogchar.impl.perform.ChannelSpecBuilder" 
 		.		
 
-csi:chn_001		rdf:type			cs:BuildableChannelSpec;
-				apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
-				apsb:label			"chn-001 apsb label";
-				rdfs:label 			"chn-001 rdfs label";
-				apsb:trigger		apt:trig_001a;
-				cs:details			"channel-specific-details-go-here";
-				cs:size				-99.7;
+csi:speechOut_100		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"SPEECH_OUT-MAIN-ACAPELA_KENNY";
+	rdfs:label 			"SPEECH_OUT-MAIN-ACAPELA_KENNY";
+	apsb:trigger		apt:trig_001a;
+	cs:details			"Acapela 'Kenny' timed for Linux";
+	cs:size				-99.7;
 				.
 
 csi:scn_001 	
@@ -50,7 +51,7 @@ csi:scn_001
 	cs:details			"scene-specific-details-go-here";
 	cs:size				52;
 	cs:behavior			csi:bh_001;
-	cs:channel			csi:chn_001
+	cs:channel			csi:speechOut_100
 	.
 
 csi:bh_001		
@@ -63,11 +64,11 @@ csi:bh_001
 	cs:size				11;
 	cs:steps (
 		[
-			cs:channel			csi:chn_001;
+			cs:channel			csi:speechOut_100;
 			cs:startOffsetSec	0.7;
 			cs:text				"I have a positive contribution to make"
 		] [
-			cs:channel			csi:chn_001;
+			cs:channel			csi:speechOut_100;
 			cs:startOffsetSec	5.2;
 			cs:text				"I am not a nattering nabob"
 		]

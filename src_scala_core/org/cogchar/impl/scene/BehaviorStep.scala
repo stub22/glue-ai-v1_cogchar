@@ -51,24 +51,31 @@ abstract class BasicBehaviorAction extends BasicDebugger with BehaviorAction {
 	var	myChannelIdents : List[Ident] = List();
 	def addChannelIdent(id  : Ident) {
 		myChannelIdents = myChannelIdents :+ id;
+		logInfo("************ appended " + id + "  so list is now: " + myChannelIdents);
 	}
 }
 
 class SpeechAction(val mySpeechText : String) extends BasicBehaviorAction() { 
 	override def perform(s: BScene) {
-		for (val chanId <- myChannelIdents) {
+		for (val chanId : Ident <- myChannelIdents) {
+			logInfo("Looking for channel[" + chanId + "] in scene [" + s + "]");
 			val chan : Channel = s.getChannel(chanId);
-			chan match {
-				case txtChan : TextChannel => {
-					txtChan.performText(mySpeechText)
+			logInfo("Found channel: " + chan);
+			if (chan != null) {
+				chan match {
+					case txtChan : TextChannel => {
+						txtChan.performText(mySpeechText)
+					}
+					case  _ => {
+						logWarning("************* SpeechAction cannot perform on non Text-Channel: " + chan);
+					}
 				}
-				case  _ => {
-					logWarning("SpeechAction cannot perform on non Text-Channel: " + chan);
-				}
+			} else {
+				logWarning("******************* Could not locate channel for: " + chanId);
 			}
 		}
 	}
 	override def toString() : String = {
-		"SpeechAction[speechText=" + mySpeechText + "]"
+		"SpeechAction[speechText=" + mySpeechText + ", channelIds=" + myChannelIdents + "]";
 	}	
 }

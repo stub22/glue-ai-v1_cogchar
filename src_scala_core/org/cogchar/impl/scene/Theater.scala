@@ -23,38 +23,64 @@ import scala.collection.mutable.HashMap;
 import org.cogchar.api.perform.{Channel};
 import org.cogchar.impl.perform.{DummyTextChan, ChannelNames};
 
+import org.cogchar.platform.trigger.{DummyBox};
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-class Theater extends BasicDebugger {
-	val		myBM = new BehaviorModulator();
+class Theater extends BasicDebugger with DummyBox {
+	val	myBM = new BehaviorModulator();
+	val myChanSet = new java.util.HashSet[Channel]();
+	var	mySceneBook : SceneBook = null;
+	
+	def registerChannel(c : Channel) {
+		myChanSet.add(c);
+	}
+	def registerSceneBook(sb : SceneBook) {
+		mySceneBook = sb;
+	}
+	def makeSceneFromBook(sceneID: Ident) : BScene = {
+		val sceneSpec = mySceneBook.findSceneSpec(sceneID);
+		val scene = new BScene(sceneSpec);
+		scene.wirePerformanceChannels(myChanSet);
+		scene;
+	}
+	def activateScene(scene: BScene) {
+		// TODO:  Ensure previous scene is complete, and modulator is idle or fresh or something.
+		myBM.setSceneContext(scene);
+		scene.attachBehaviorsToModulator(myBM);
+	}
 }
 object Theater extends BasicDebugger {
+	val		theTheater = new Theater();
+	
+	def getMainTheater() : Theater = {theTheater};
+	
 	def main(args: Array[String]) {
 		val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
-		val t = new Theater();
+		
+		val dummySpeechChanID = ChannelNames.getMainSpeechOutChannelIdent();
+		val dtc = new DummyTextChan(dummySpeechChanID);
+
+		theTheater.registerChannel(dtc);
+
 		val sb = new SceneBook();
 		val sceneSpecList : List[SceneSpec] = sb.loadSceneSpecs(triplesFlexPath, null);
 		sb.registerSceneSpecs(sceneSpecList);
+		
+		theTheater.registerSceneBook(sb);
+		
 		val testSceneName = "scn_001";
 		val testSceneURI = 	SceneFieldNames.NS_ccScnInst + testSceneName;
-		val tsIdent =  new FreeIdent(testSceneURI, testSceneName);
-		val tscs = sb.findSceneSpec(tsIdent);
-		logInfo("Found scene:" + tscs)
+		val testSceneID =  new FreeIdent(testSceneURI, testSceneName);
 		
-		val dummySpeechChanID = new FreeIdent(ChannelNames.I_speechOut, ChannelNames.N_speechOut);
-		val dtc = new DummyTextChan(dummySpeechChanID);
-		val chanSet = new java.util.HashSet[Channel]();
-		chanSet.add(dtc);
+		val scene = theTheater.makeSceneFromBook(testSceneID);
 		
-		val scene = new BScene(tscs);
-		scene.wirePerformanceChannels(chanSet);
+		theTheater.activateScene(scene);
 		
-		scene.registerBehaviors(t.myBM);
-		
-		t.myBM.setDebugImportanceThreshold(Loggable.IMPO_LOLO);
-		t.myBM.runUntilDone(100);
+		theTheater.myBM.setDebugImportanceThreshold(Loggable.IMPO_LOLO);
+		theTheater.myBM.runUntilDone(100);
 		
 		logInfo("************************  BehaviorModulator Test #1 Finished ***************************************");
 	}  

@@ -64,12 +64,15 @@ public class PumaDualCharacter implements DummyBox {
 	private ClassLoader							myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 	
 	public String								myUpdateBonyRdfPath;
-
+	
+	public Theater								myTheater;
+	
 	
 	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, String charURI, String nickName) {
 		myCharURI = charURI;
 		myNickName = nickName;
 		myPHM = new PumaHumanoidMapper(hrc, bundleCtx, charURI);
+		myTheater = new Theater();
 	}
 	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx) throws Throwable {
 		
@@ -84,10 +87,13 @@ public class PumaDualCharacter implements DummyBox {
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myPHM.connectToVirtualChar();
 		// myPHM.applyInitialBoneRotations();
-		Ident speechChanIdent = ChannelNames.getIdentForMainSpeechChannel();
 		myRAC = new RobotAnimClient(bundleCtx); 
-		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
 		loadBehaviorConfig(bundleCtx);
+	}
+	public void connectSpeechOutputSvcs(BundleContext bundleCtx) { 
+		Ident speechChanIdent = ChannelNames.getIdentForMainSpeechChannel();
+		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
+		myTheater.registerChannel(mySOC);		
 	}
 	public void loadBehaviorConfig(BundleContext bundleCtx) throws Throwable {
 		String pathTail = "bhv_nugget_01.ttl";
@@ -121,6 +127,7 @@ public class PumaDualCharacter implements DummyBox {
 		}
 	}
 	public void sayText(String txt) {
+		// TODO:  Guard against concurrent activity through the channel/behavior systerm
 		try {
 			mySOC.speakText(txt);
 		} catch (Throwable t) {
