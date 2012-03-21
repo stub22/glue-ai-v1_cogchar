@@ -16,7 +16,7 @@
 
 package org.cogchar.impl.scene
 
-import org.appdapter.core.item.{Ident, Item}
+import org.appdapter.core.item.{Ident, Item, FreeIdent}
 import org.appdapter.core.log.{BasicDebugger};
 
 import org.appdapter.gui.box.KnownComponentImpl;
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import org.cogchar.api.perform.{Channel};
-import org.cogchar.impl.perform.{FancyChan, ChannelSpec};
+import org.cogchar.impl.perform.{FancyChan, ChannelSpec, ChannelNames};
 
 import org.cogchar.api.scene.{Scene, SceneBuilder};
 
@@ -37,16 +37,25 @@ import scala.collection.mutable.HashMap;
  * @author Stu B. <www.texpedient.com>
  */
 
-class BSceneChan (n: String, val scn: BScene) extends FancyChan(n)  {
+class BSceneChan (id : Ident, val scn: BScene) extends FancyChan(id)  {
 }
 class BScene(ss: SceneSpec) extends BasicDebugger with Scene[BSceneChan] {
-	val myRootChan = new BSceneChan("Rooty", this);
-
+	val rootyID = new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
+	val myRootChan = new BSceneChan(rootyID, this);
+	val		myWiredChannels  = new HashMap[Ident,Channel]();
+	
 	override def getRootChannel() : BSceneChan = {	myRootChan	}
 	import scala.collection.JavaConversions._;
 	override def wirePerformanceChannels(chans : java.util.Collection[Channel]) : Unit = {
+		// TODO:  reconcile the actually wired channels with the ones in the SceneSpecs.		
 		for (val c <- chans) {
 			logInfo("Wiring to channel: " + c);
+			c match {
+				case fc: FancyChan => {
+					myWiredChannels.put(fc.getIdent, fc);
+				}
+				case _ => logWarning("Cannot wire channel[" + c + "] because it doesn't have a 'fancy' ident");
+			}
 		}
 	}
 	def registerBehaviors(bm : BehaviorModulator) {
@@ -54,6 +63,9 @@ class BScene(ss: SceneSpec) extends BasicDebugger with Scene[BSceneChan] {
 			val b = new Behavior(bs);
 			bm.attachModule(b);
 		}
+	}
+	def getChannel(id : Ident) : Channel = {
+		return myWiredChannels.getOrElse(id, null);
 	}
 }
 class SceneSpec () extends KnownComponentImpl {
@@ -100,8 +112,8 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 	}
 }
 object SceneFieldNames extends org.appdapter.gui.assembly.AssemblyNames {
-	val		NS_ccScn =	"http://www.cogchar.org/schema/scene#";
-	val		NS_ccScnInst = "http://www.cogchar.org/schema/scene/instance#";
+	val		NS_ccScn =	ChannelNames.NS_ccScn;
+	val		NS_ccScnInst = ChannelNames.NS_ccScnInst;
 
 	val		P_behavior	= NS_ccScn + "behavior";
 	val		P_channel	= NS_ccScn + "channel";	
@@ -109,5 +121,8 @@ object SceneFieldNames extends org.appdapter.gui.assembly.AssemblyNames {
 	val		P_steps				= NS_ccScn + "steps";	// Plural indicates RDF-collection
 	val		P_startOffsetSec	= NS_ccScn + "startOffsetSec";
 	val		P_text				= NS_ccScn + "text";
+	
+	val		N_rooty		=		"rooty";
+	val		I_rooty		=		NS_ccScnInst + N_rooty;
 }
 
