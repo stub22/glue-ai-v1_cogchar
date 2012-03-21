@@ -64,13 +64,14 @@ csi:bh_001
 	cs:steps (
 		[
 			cs:channel			csi:chn_001;
-			cs:startOffsetSec	0.1;
+			cs:startOffsetSec	0.7;
 			cs:text				"I have a positive contribution to make"
 		] [
 			cs:channel			csi:chn_001;
-			cs:startOffsetSec	5.0;
+			cs:startOffsetSec	5.2;
 			cs:text				"I am not a nattering nabob"
-		]		
+		]
+## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
 	)
 	.
 
