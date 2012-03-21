@@ -58,7 +58,7 @@ class BScene(ss: SceneSpec) extends BasicDebugger with Scene[BSceneChan] {
 			}
 		}
 	}
-	def registerBehaviors(bm : BehaviorModulator) {
+	def attachBehaviorsToModulator(bm : BehaviorModulator) {
 		for (val bs : BehaviorSpec <- ss.myBehaviorSpecs.values) {
 			val b = new Behavior(bs);
 			bm.attachModule(b);

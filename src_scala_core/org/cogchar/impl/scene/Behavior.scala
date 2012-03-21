@@ -80,7 +80,9 @@ class TimelineBehavior (bs: BehaviorSpec) {
 // }
 
 class BehaviorModulator() extends BasicModulator[BScene](null, false) {
-
+	def setSceneContext(scene : BScene) { 
+		setDefaultContext(scene);
+	}
 	def runUntilDone(msecDelay : Int) {
 		var done = false;
 		while (!done) {
@@ -132,7 +134,8 @@ class BehaviorSpecBuilder(builderConfRes : Resource) extends DynamicCachingCompo
 			readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
 			val action = new SpeechAction(text);
 			
-			val stepChannelSpecs = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_channel, assmblr, mode, null);
+			val stepChannelSpecs = findOrMakeLinkedObjects(stepItem, SceneFieldNames.P_channel, assmblr, mode, null);
+			logInfo("Got step channel specs: " + stepChannelSpecs);
 			for (val stepChanSpec <- stepChannelSpecs) {
 				stepChanSpec match {
 					case scs: ChannelSpec => {
