@@ -36,14 +36,14 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * @author Stu B. <www.texpedient.com>
  */
 
-class FancyChan(val myName: String) extends BasicDebugger with Channel {
-	
+class FancyChan(val myIdent: Ident) extends BasicDebugger with Channel {
 	private var	myStatus : Channel.Status = Channel.Status.INIT;
-	override def getStatus() : Channel.Status = {myStatus}
-	override def getName() : String = {myName}
 	
+	def getIdent() : Ident = {myIdent}
+	override def getStatus() : Channel.Status = {myStatus}
+	override def getName() : String = {myIdent.getLocalName();}
 }
-abstract class FancyTextChan(n: String) extends FancyChan(n) with TextChannel {
+abstract class FancyTextChan(id: Ident) extends FancyChan(id) with TextChannel {
 	@throws(classOf[Throwable])
 	def startTextPerformance (txt: String) : Unit;
 	
@@ -56,13 +56,13 @@ abstract class FancyTextChan(n: String) extends FancyChan(n) with TextChannel {
 		} catch {
 			case t => {
 				perf.updateResultState(State.FAILED_STARTUP);
-				logError("Error performing text[" + txt + "]", t);
+				logError("Error on [" + this + "] performing text[" + txt + "]", t);
 			}
 		}
 		perf;
 	}
 }
-class DummyTextChan(n: String) extends FancyTextChan(n) {
+class DummyTextChan(id: Ident) extends FancyTextChan(id) {
 	@throws(classOf[Throwable])	override def startTextPerformance (txt: String) : Unit = {
 		logInfo("************* START DUMMY TEXT PERFORMANCE on [" + getName() + "] of [" + txt + "]");
 	}
@@ -88,5 +88,7 @@ object ChannelNames extends org.appdapter.gui.assembly.AssemblyNames {
 	val		NS_ccScn =	"http://www.cogchar.org/schema/scene#";
 	val		NS_ccScnInst = "http://www.cogchar.org/schema/scene/instance#";
 
-	val		I_speechOut	= NS_ccScnInst + "chn_001";
+	val		N_speechOut =  "chn_001";
+	val		I_speechOut	= NS_ccScnInst + N_speechOut;
+	
 }

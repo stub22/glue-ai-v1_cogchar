@@ -21,7 +21,7 @@ import org.appdapter.core.item.{Ident, Item, FreeIdent};
 import scala.collection.mutable.HashMap;
 
 import org.cogchar.api.perform.{Channel};
-import org.cogchar.impl.perform.{DummyTextChan};
+import org.cogchar.impl.perform.{DummyTextChan, ChannelNames};
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -43,7 +43,8 @@ object Theater extends BasicDebugger {
 		val tscs = sb.findSceneSpec(tsIdent);
 		logInfo("Found scene:" + tscs)
 		
-		val dtc = new DummyTextChan("dum-me");
+		val dummySpeechChanID = new FreeIdent(ChannelNames.I_speechOut, ChannelNames.N_speechOut);
+		val dtc = new DummyTextChan(dummySpeechChanID);
 		val chanSet = new java.util.HashSet[Channel]();
 		chanSet.add(dtc);
 		

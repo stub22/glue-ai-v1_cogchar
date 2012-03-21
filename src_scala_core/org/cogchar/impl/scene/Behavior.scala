@@ -16,7 +16,7 @@
 
 package org.cogchar.impl.scene
 
-import org.appdapter.core.item.{Ident, Item}
+import org.appdapter.core.item.{Ident, Item, FreeIdent}
 
 import org.appdapter.gui.box.KnownComponentImpl;
 import org.appdapter.gui.assembly.DynamicCachingComponentAssembler;
@@ -30,6 +30,7 @@ import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
 import org.appdapter.api.module.{Module, Modulator}
 import org.appdapter.api.module.Module.State;
 
+import org.cogchar.impl.perform.{ChannelSpec};
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 /**
  * @author Stu B. <www.texpedient.com>
@@ -121,12 +122,29 @@ class BehaviorSpecBuilder(builderConfRes : Resource) extends DynamicCachingCompo
 		bs.myDetails = "brimmingOver";
 		val stepItems = readLinkedItemSeq(configItem, SceneFieldNames.P_steps);
 		logInfo("BSB got stepItems: " + stepItems);
-		for (val si : Item <- stepItems) {
-			logInfo("Got stepItem: " + si)
-			val offsetSec = readConfigValDouble(si.getIdent, SceneFieldNames.P_startOffsetSec, si, null);
+		for (val stepItem : Item <- stepItems) {
+			logInfo("Got stepItem: " + stepItem)
+			val stepIdent = stepItem.getIdent();
+			val offsetSec = readConfigValDouble(stepIdent, SceneFieldNames.P_startOffsetSec, stepItem, null);
 			val offsetMillisec : Int = (1000.0 * offsetSec.doubleValue()).toInt;
-			val text = readConfigValString(si.getIdent(), SceneFieldNames.P_text, si, null);
+			val text = readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
+			
+			readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
 			val action = new SpeechAction(text);
+			
+			val stepChannelSpecs = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_channel, assmblr, mode, null);
+			for (val stepChanSpec <- stepChannelSpecs) {
+				stepChanSpec match {
+					case scs: ChannelSpec => {
+						val chanId = scs.getIdent();
+						val freeChanIdent = new FreeIdent(chanId);
+						action.addChannelIdent(freeChanIdent);
+					}
+					case _ => logWarning("Unexpected object found in step[at " + SceneFieldNames.P_channel + " = " + stepChanSpec);
+				}
+			}
+				
+		
 			val step = new ScheduledActionStep(offsetMillisec, action);
 			logInfo("Built step: " + step);
 			bs.mySteps = bs.mySteps :+ step;
