@@ -91,7 +91,7 @@ public class PumaDualCharacter implements DummyBox {
 		loadBehaviorConfig(bundleCtx);
 	}
 	public void connectSpeechOutputSvcs(BundleContext bundleCtx) { 
-		Ident speechChanIdent = ChannelNames.getIdentForMainSpeechChannel();
+		Ident speechChanIdent = ChannelNames.getMainSpeechOutChannelIdent();
 		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
 		myTheater.registerChannel(mySOC);		
 	}
