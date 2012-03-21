@@ -20,8 +20,7 @@ import  org.cogchar.api.perform.{Channel, TextChannel, Performance, BasicPerform
 
 import org.appdapter.api.module.Module.State;
 import org.appdapter.core.log.{BasicDebugger};
-import org.appdapter.core.item.Ident;
-import org.appdapter.core.item.Item;
+import org.appdapter.core.item.{Ident, Item, FreeIdent};
 import org.appdapter.gui.box.KnownComponentImpl;
 import org.appdapter.gui.assembly.DynamicCachingComponentAssembler;
 
@@ -90,5 +89,5 @@ object ChannelNames extends org.appdapter.gui.assembly.AssemblyNames {
 
 	val		N_speechOut =  "chn_001";
 	val		I_speechOut	= NS_ccScnInst + N_speechOut;
-	
+	def getIdentForMainSpeechChannel() : Ident = { new FreeIdent(I_speechOut, N_speechOut)}
 }
