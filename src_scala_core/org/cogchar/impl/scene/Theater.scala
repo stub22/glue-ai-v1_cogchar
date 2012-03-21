@@ -16,7 +16,7 @@
 
 package org.cogchar.impl.scene
 
-import org.appdapter.core.log.{BasicDebugger};
+import org.appdapter.core.log.{BasicDebugger, Loggable};
 import org.appdapter.core.item.{Ident, Item, FreeIdent};
 import scala.collection.mutable.HashMap;
 
@@ -51,8 +51,10 @@ object Theater extends BasicDebugger {
 		scene.wirePerformanceChannels(chanSet);
 		
 		scene.registerBehaviors(t.myBM);
+		
+		t.myBM.setDebugImportanceThreshold(Loggable.IMPO_LOLO);
 		t.myBM.runUntilDone(100);
 		
-		logInfo("*****************************************************************\nModulator finished");
+		logInfo("************************  BehaviorModulator Test #1 Finished ***************************************");
 	}  
 }

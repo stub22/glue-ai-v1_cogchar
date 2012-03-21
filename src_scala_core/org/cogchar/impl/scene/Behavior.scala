@@ -30,7 +30,7 @@ import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
 import org.appdapter.api.module.{Module, Modulator}
 import org.appdapter.api.module.Module.State;
 
-
+import org.appdapter.core.log.{BasicDebugger, Loggable};
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -44,13 +44,15 @@ class Behavior (val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
 	}
 	override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
 		if (myNextStepIndex >= mySpec.mySteps.size) {
-			logMe("reached end of its steps, self-requesting module stop");
+			logMe("Reached end of its steps at #" + myNextStepIndex + ", self-requesting module stop");
 			markStopRequested();
-			logMe("finished requesting stop, so, err...");
+			logMe("Finished requesting stop, so this should be my last runOnce().");
 		} else {
 			val step = mySpec.mySteps(myNextStepIndex);
 			if (step.proceed(scn, this)) {
+				val osi = myNextStepIndex;
 				myNextStepIndex += 1;
+				logMe("Proceed succeeded for step #" + osi + ", will attempt step# " + myNextStepIndex + " on next runOnce().");
 			}
 		}
 	}
@@ -60,6 +62,9 @@ class Behavior (val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
 	def getMillsecSinceStart() : Long = { 
 		System.currentTimeMillis() - myStartStamp;
 	}
+	override def getFieldSummary() : String = {
+		return  super.getFieldSummary() +  ", nextStepIndex=" + myNextStepIndex;
+	}	
 }
 class TStamp () {
 	val	mySysStamp : Long = System.currentTimeMillis();
@@ -80,9 +85,9 @@ class BehaviorModulator() extends BasicModulator[BScene](null, false) {
 		while (!done) {
 			processOneBatch();
 			val amc = activeModuleCount();
-			logInfo("Active module count: " + amc)
 			done = (amc == 0);
 			if (!done) {
+				logInfo(Loggable.IMPO_LO, "runUntilDone() loop finished processOneBatch, active module count=" + amc + ", sleeping for " + msecDelay + "msec.");
 				Thread.sleep(msecDelay);
 			}
 		}
