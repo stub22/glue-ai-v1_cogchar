@@ -40,7 +40,8 @@ public abstract class DemoApp<CRCT extends CogcharRenderContext> extends Cogchar
 	public DemoApp(DemoConfigEmitter ce) { 
 		myConfigEmitter = ce;
 		AppSettings someSettings = new AppSettings(ce.getAppSettingsDefloadFlag());
-		someSettings.setRenderer("LWJGL-OpenGL2"); // ce.getLWJGL_RendererName());		
+		String rendererName = ce.getLWJGL_RendererName();
+		someSettings.setRenderer(ce.getLWJGL_RendererName()); // "LWJGL-OpenGL2"); // 		
 		setAppSettings(someSettings);
 	}
 	public DemoApp() {
