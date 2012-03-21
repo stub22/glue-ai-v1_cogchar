@@ -87,7 +87,25 @@ object ChannelNames extends org.appdapter.gui.assembly.AssemblyNames {
 	val		NS_ccScn =	"http://www.cogchar.org/schema/scene#";
 	val		NS_ccScnInst = "http://www.cogchar.org/schema/scene/instance#";
 
-	val		N_speechOut =  "chn_001";
-	val		I_speechOut	= NS_ccScnInst + N_speechOut;
-	def getIdentForMainSpeechChannel() : Ident = { new FreeIdent(I_speechOut, N_speechOut)}
+	val		N_PRE_speechOut =  "speechOut";
+	
+	val		SPEECH_CHANNEL_NUM_DIGITS = 3;
+	val		SPEECH_MAIN_CHANNEL_NUM = 100;
+	
+	
+	def getChannelIdent(localName : String) : Ident = { 
+		val absURI = NS_ccScnInst + localName;
+		new FreeIdent(absURI, localName);
+	}
+	def getNumericChannelName(prefix : String, chanNum  : Int, chanWidth : Int) : String = { 
+		val fmtString = "%s_%" + chanWidth.toString + "d";
+		fmtString.format(prefix, chanNum);
+	}
+	
+	def getSpeechOutChannelIdent(chanNum  : Int) : Ident = { 
+		val chanName = getNumericChannelName(N_PRE_speechOut, chanNum, SPEECH_CHANNEL_NUM_DIGITS);
+		getChannelIdent(chanName);
+	}
+	def getMainSpeechOutChannelIdent() = getSpeechOutChannelIdent(SPEECH_MAIN_CHANNEL_NUM); 
+
 }
