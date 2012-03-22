@@ -57,7 +57,10 @@ class Theater extends BasicDebugger with DummyBox {
 		myBM.setSceneContext(scene);
 		scene.attachBehaviorsToModulator(myBM);
 	}
-	def loadSceneBook(triplesFlexPath : String, optCL : ClassLoader ) {
+	def loadSceneBook(triplesFlexPath : String, optCL : ClassLoader, clearCachesFirst : Boolean ) {
+		if (clearCachesFirst) {
+			SceneBook.clearBuilderCaches();
+		}
 		val sceneBook = SceneBook.readSceneBook(triplesFlexPath, optCL);
 		registerSceneBook(sceneBook);		
 	}
@@ -128,8 +131,7 @@ object Theater extends BasicDebugger {
 
 		val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
 		
-		thtr.loadSceneBook(triplesFlexPath, null);
-		
+		thtr.loadSceneBook(triplesFlexPath, null, true);
 		
 		val aSceneSpec : SceneSpec = thtr.mySceneBook.mySceneSpecs.values.head;
 		logInfo("Found a SceneSpec: " + aSceneSpec);
