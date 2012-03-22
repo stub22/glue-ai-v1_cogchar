@@ -107,6 +107,10 @@ public class PumaAppContext {
 			
 			pdc.connectSpeechOutputSvcs(myBundleContext);
 			
+			pdc.registerDefaultSceneTriggers();
+			
+			pdc.loadBehaviorConfig(myBundleContext);
+			
 			registerConfigReloadTrigger(pdc);			
 			registerTestDanceTrigger(pdc);
 			registerTestTalkTrigger(pdc);
@@ -168,6 +172,7 @@ public class PumaAppContext {
 			theLogger.error("BonyRenderContext is NULL, cannot startOpenGLCanvas!");
 		}
 	}
+
 	private void registerConfigReloadTrigger(PumaDualCharacter pdc) { 
 		myUpdateBonyConfigTI = new UpdateBonyConfig_TI();
 		

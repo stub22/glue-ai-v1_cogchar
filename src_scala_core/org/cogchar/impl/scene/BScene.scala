@@ -70,6 +70,7 @@ class BScene(ss: SceneSpec) extends BasicDebugger with Scene[BSceneChan] {
 }
 class SceneSpec () extends KnownComponentImpl {
 	var		myDetails : String = "EMPTY";
+	var		myTrigName : Option[String] = None;
 	val		myBehaviorSpecs = new HashMap[Ident,BehaviorSpec]();
 	val		myChannelSpecs  = new HashMap[Ident,ChannelSpec]();
 
@@ -83,7 +84,6 @@ class SceneSpec () extends KnownComponentImpl {
 	def addChannelSpec(cs: ChannelSpec) {
 		myChannelSpecs.put(cs.getIdent(), cs);
 	}
-	
 }
 
 class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[SceneSpec](builderConfRes) {
@@ -92,6 +92,11 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 	override protected def initExtendedFieldsAndLinks(ss: SceneSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
 		logInfo("SceneBuilder.initExtendedFieldsAndLinks");	
 		ss.myDetails = "ChockFilledUp";
+
+		val optTrigName = readConfigValString(configItem.getIdent(), SceneFieldNames.P_trigger, configItem, null);
+		
+		ss.myTrigName = if (optTrigName != null) Some(optTrigName) else None;
+		
 		val linkedBehaviorSpecs : java.util.List[Object] = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_behavior, assmblr, mode, null);
 		for (val o <- linkedBehaviorSpecs) {
 			o match {
@@ -117,6 +122,7 @@ object SceneFieldNames extends org.appdapter.gui.assembly.AssemblyNames {
 
 	val		P_behavior	= NS_ccScn + "behavior";
 	val		P_channel	= NS_ccScn + "channel";	
+	val		P_trigger	= NS_ccScn + "trigger";
 	
 	val		P_steps				= NS_ccScn + "steps";	// Plural indicates RDF-collection
 	val		P_startOffsetSec	= NS_ccScn + "startOffsetSec";
