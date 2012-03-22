@@ -61,9 +61,6 @@ class Theater extends BasicDebugger with DummyBox {
 		val sceneBook = SceneBook.readSceneBook(triplesFlexPath, optCL);
 		registerSceneBook(sceneBook);		
 	}
-	def setBinder(db : DummyBinder) {
-		myBinder = db;
-	}
 	def stopAllScenes() {
 		myBM.stopAllModules();
 	}
