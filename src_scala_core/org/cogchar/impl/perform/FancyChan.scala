@@ -98,7 +98,7 @@ object ChannelNames extends org.appdapter.gui.assembly.AssemblyNames {
 		new FreeIdent(absURI, localName);
 	}
 	def getNumericChannelName(prefix : String, chanNum  : Int, chanWidth : Int) : String = { 
-		val fmtString = "%s_%" + chanWidth.toString + "d";
+		val fmtString = "%s_%0" + chanWidth.toString + "d";
 		fmtString.format(prefix, chanNum);
 	}
 	

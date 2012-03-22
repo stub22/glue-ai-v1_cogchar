@@ -39,7 +39,7 @@ import scala.collection.mutable.HashMap;
 
 class BSceneChan (id : Ident, val scn: BScene) extends FancyChan(id)  {
 }
-class BScene(ss: SceneSpec) extends BasicDebugger with Scene[BSceneChan] {
+class BScene(val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[BSceneChan] {
 	val rootyID = new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
 	val myRootChan = new BSceneChan(rootyID, this);
 	val		myWiredChannels  = new HashMap[Ident,Channel]();
@@ -49,7 +49,7 @@ class BScene(ss: SceneSpec) extends BasicDebugger with Scene[BSceneChan] {
 	override def wirePerformanceChannels(chans : java.util.Collection[Channel]) : Unit = {
 		// TODO:  reconcile the actually wired channels with the ones in the SceneSpecs.		
 		for (val c <- chans) {
-			logInfo("Wiring to channel: " + c);
+			logInfo("Wiring scene[" + mySceneSpec.getIdent.getLocalName + "] to channel: " + c);
 			c match {
 				case fc: FancyChan => {
 					myWiredChannels.put(fc.getIdent, fc);
@@ -59,7 +59,7 @@ class BScene(ss: SceneSpec) extends BasicDebugger with Scene[BSceneChan] {
 		}
 	}
 	def attachBehaviorsToModulator(bm : BehaviorModulator) {
-		for (val bs : BehaviorSpec <- ss.myBehaviorSpecs.values) {
+		for (val bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
 			val b = new Behavior(bs);
 			bm.attachModule(b);
 		}

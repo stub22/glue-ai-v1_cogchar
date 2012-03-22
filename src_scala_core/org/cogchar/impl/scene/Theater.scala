@@ -50,6 +50,7 @@ class Theater extends BasicDebugger with DummyBox {
 	}
 	def activateScene(scene: BScene) {
 		// TODO:  Ensure previous scene is complete, and modulator is idle or fresh or something.
+		logInfo("Activating scene with spec[" + scene.mySceneSpec + "]");
 		myBM.setSceneContext(scene);
 		scene.attachBehaviorsToModulator(myBM);
 	}
@@ -68,6 +69,8 @@ object Theater extends BasicDebugger {
 	def main(args: Array[String]) {
 		
 		val		thtr = new Theater();
+
+		logInfo("Tricky: " + ChannelNames.getNumericChannelName("hmm", 22, 4));
 		
 		val dummySpeechChanID = ChannelNames.getMainSpeechOutChannelIdent();
 		val dtc = new DummyTextChan(dummySpeechChanID);
