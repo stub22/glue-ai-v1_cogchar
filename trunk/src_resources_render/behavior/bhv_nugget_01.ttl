@@ -17,9 +17,10 @@
 @prefix csi:	<http://www.cogchar.org/schema/scene/instance#> .
 
 
-<>  rdfs:comment     "Chewy nuggets of real behavior" 
+<>  rdfs:comment     "Chewy nuggets of real behavior"   .
+### TODO:  We can't yet use imports with relative paths or in a way that matches
+### both our "perm" and "temp" directory structures.
 ###	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl";
-.
 
 cs:BuildableSceneSpec
 		a 					rdfs:Class;
