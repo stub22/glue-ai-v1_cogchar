@@ -25,6 +25,10 @@
 
 	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl";
 	ja:imports		"org/cogchar/test/assembly/beeHive.ttl";
+
+### Import paths relative to the parent file don't work.
+###	ja:imports		"beeHive.ttl";
+
     .
     
 apsb:BuildableBox		
