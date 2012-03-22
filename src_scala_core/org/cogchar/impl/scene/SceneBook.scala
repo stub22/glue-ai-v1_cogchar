@@ -18,6 +18,8 @@ package org.cogchar.impl.scene
 
 import org.appdapter.core.log.{BasicDebugger};
 import org.appdapter.core.item.{Ident, Item}
+import org.appdapter.gui.assembly.CachingComponentAssembler;
+import org.cogchar.impl.perform.{ChannelSpecBuilder};
 import scala.collection.mutable.HashMap;
 
 /**
@@ -49,7 +51,7 @@ class SceneBook extends BasicDebugger {
 		logInfo("Loading SceneSpecs from: " + rdfConfigFlexPath);
 		val loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(rdfConfigFlexPath);
 		logInfo("Loaded " + loadedStuff.size() + " objects");
-		logInfo("Stuff: " + loadedStuff);
+	//	logInfo("Stuff: " + loadedStuff);
 		val si = loadedStuff.iterator();
 		var sceneSpecList = List[SceneSpec]()
 		while (si.hasNext()) {
@@ -59,13 +61,11 @@ class SceneBook extends BasicDebugger {
 			}
 		}
 		logInfo("===========================================================================================")
-		logInfo("SceneSpecList: " + sceneSpecList);
+		logInfo("Loaded SceneSpecList: " + sceneSpecList);
+		logInfo("===========================================================================================")
 		sceneSpecList;
 		// for (Object o : loadedStuff) {
 	}
-	
-
-
 }
 object SceneBook extends BasicDebugger {
 	
@@ -75,4 +75,10 @@ object SceneBook extends BasicDebugger {
 		sb.registerSceneSpecs(sceneSpecList);
 		sb;
 	}
+	def  clearBuilderCaches() {
+		CachingComponentAssembler.clearCacheFor(classOf[SceneSpecBuilder]);
+		CachingComponentAssembler.clearCacheFor(classOf[BehaviorSpecBuilder]);
+		CachingComponentAssembler.clearCacheFor(classOf[ChannelSpecBuilder]);
+	}
+
 }
