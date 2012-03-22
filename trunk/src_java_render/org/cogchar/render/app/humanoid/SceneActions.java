@@ -53,7 +53,8 @@ public class SceneActions {
 	private	static DummyBinding theBoundActions[] = new DummyBinding[theSceneTrigKeyNums.length];
 	
 	public static String getSceneTrigName(int keyIndex) {
-		return String.format("sceneTrig_%2d", keyIndex);
+		// Two digit suffix, zero padded
+		return String.format("sceneTrig_%02d", keyIndex);
 	}
 	public static  void setupActionListeners(InputManager inputManager) {
 		String actionNames[] = new String[theSceneTrigKeyNums.length];
