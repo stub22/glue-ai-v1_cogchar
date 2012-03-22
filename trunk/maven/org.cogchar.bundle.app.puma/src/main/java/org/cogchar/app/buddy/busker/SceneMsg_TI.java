@@ -13,35 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.app.core;
+package org.cogchar.app.buddy.busker;
 
-import com.jme3.input.controls.Trigger;
-import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.platform.trigger.DummyBox;
 import org.cogchar.platform.trigger.DummyTrigger;
+
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BoundAction implements DummyBinding {
-	private DummyBox		myActionBox;
-	// Our Action Trigger types are entirely separate from the JME3 "Trigger" for inputs. 
-	private DummyTrigger	myActionTrigger;   
-
-	public boolean includedInMinSim() { 
-		return false;
+public class SceneMsg_TI extends TriggerItem {
+	public	String sceneInfo = "none";
+	@Override public void fire(DummyBox targetBox) {
+		theLogger.info("trigger[" + toString() + "] sending [" + sceneInfo + " to " + targetBox.toString());
+		// PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+		// pdc.sayText("The time is now, " + System.currentTimeMillis());
 	}	
-
-	@Override public void setTargetBox(DummyBox box) {
-		myActionBox = box;
-	}
-	@Override public void setTargetTrigger(DummyTrigger trig) {
-		myActionTrigger = trig;
-	}
-	@Override public void perform() {
-		if (myActionTrigger != null) {
-			myActionTrigger.fire(myActionBox);
-		}			
-	}
-
 }

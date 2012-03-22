@@ -40,7 +40,7 @@ csi:speechOut_100
 	apsb:trigger		apt:trig_001a;
 	cs:details			"Acapela 'Kenny' timed for Linux";
 	cs:size				-99.7;
-				.
+	.
 
 csi:scn_001 	
 	rdf:type			cs:BuildableSceneSpec;
@@ -51,7 +51,8 @@ csi:scn_001
 	cs:details			"scene-specific-details-go-here";
 	cs:size				52;
 	cs:behavior			csi:bh_001;
-	cs:channel			csi:speechOut_100
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_04"
 	.
 
 csi:bh_001		

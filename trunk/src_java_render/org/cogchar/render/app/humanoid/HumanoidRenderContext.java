@@ -59,6 +59,7 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		InputManager inputManager = findJme3InputManager(null);
 
 		HumanoidPuppetActions.setupActionListeners(inputManager, this);	
+		SceneActions.setupActionListeners(inputManager);
 		
 		WorkaroundFuncsMustDie.initScoreBoard(this);
 	}

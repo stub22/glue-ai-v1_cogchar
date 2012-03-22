@@ -41,11 +41,15 @@ public abstract class DemoApp<CRCT extends CogcharRenderContext> extends Cogchar
 		myConfigEmitter = ce;
 		AppSettings someSettings = new AppSettings(ce.getAppSettingsDefloadFlag());
 		String rendererName = ce.getLWJGL_RendererName();
-		someSettings.setRenderer(ce.getLWJGL_RendererName()); // "LWJGL-OpenGL2"); // 		
+		logInfo("**************************************************** LWJGL Renderer Name: " + rendererName);
+		someSettings.setRenderer(rendererName); // "LWJGL-OpenGL2"); 
 		setAppSettings(someSettings);
 	}
 	public DemoApp() {
 		this(new DemoConfigEmitter());
+	}
+	protected void logInfo(String txt) {
+		getLogger().info(txt);
 	}
 	protected Logger getLogger() {
 		if (myLogger == null) {

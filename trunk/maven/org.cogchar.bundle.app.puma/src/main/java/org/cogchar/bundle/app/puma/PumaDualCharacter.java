@@ -16,34 +16,41 @@
 
 package org.cogchar.bundle.app.puma;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
-import org.cogchar.bind.rk.robot.client.RobotAnimClient;
-
-
-
-import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.blob.emit.BehaviorConfigEmitter;
-
-
-import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-
-import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
-import org.cogchar.platform.trigger.DummyBox;
-
-import org.cogchar.impl.scene.BehaviorTrial;
-import org.cogchar.impl.scene.Theater;
-
-import org.cogchar.impl.perform.ChannelNames;
 
 import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.FreeIdent;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.cogchar.app.buddy.busker.SceneMsg_TI;
+import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.BehaviorConfigEmitter;
+
+import org.cogchar.bind.rk.robot.client.RobotAnimClient;
+import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
+import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
+
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.app.humanoid.SceneActions;
+
+import org.cogchar.platform.trigger.DummyBox;
+import org.cogchar.platform.trigger.DummyBinding;
+import org.cogchar.platform.trigger.DummyBinder;
+import org.cogchar.platform.trigger.DummyTrigger;
+
+import org.cogchar.impl.scene.BehaviorTrial;
+import org.cogchar.impl.scene.Theater;
+import org.cogchar.impl.scene.SceneBook;
+
+import org.cogchar.impl.perform.ChannelNames;
+
+import org.cogchar.impl.trigger.FancyTrigger;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -88,7 +95,6 @@ public class PumaDualCharacter implements DummyBox {
 		myPHM.connectToVirtualChar();
 		// myPHM.applyInitialBoneRotations();
 		myRAC = new RobotAnimClient(bundleCtx); 
-		loadBehaviorConfig(bundleCtx);
 	}
 	public void connectSpeechOutputSvcs(BundleContext bundleCtx) { 
 		Ident speechChanIdent = ChannelNames.getMainSpeechOutChannelIdent();
@@ -96,17 +102,33 @@ public class PumaDualCharacter implements DummyBox {
 		myTheater.registerChannel(mySOC);		
 	}
 	public void loadBehaviorConfig(BundleContext bundleCtx) throws Throwable {
+		
 		String pathTail = "bhv_nugget_01.ttl";
 		
 		BonyConfigEmitter bonyCE = myPHM.getHumanoidRenderContext().getBonyConfigEmitter();
 		// String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharURI);
 		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
 		String behavPathPerm = behavCE.getBehaviorPermPath(pathTail);
+		
+		myTheater.loadSceneBook(behavPathPerm, null);
+		SceneBook sb = myTheater.getSceneBook();
+		DummyBinder trigBinder = SceneActions.getBinder();
+		
+		FancyTrigger.registerAllTriggers(trigBinder, myTheater, sb); 
 		// myUpdateBonyRdfPath = behavCE.getRKMotionTempFilePath(bonyConfigPathTail);
 		
 		// Object sceneSpecScalaList = BehaviorTrial.loadSceneSpecs(behavPathPerm, null);
 		//logInfo("Got sceneSpecs: " + sceneSpecScalaList);
 	}	
+	public void registerDefaultSceneTriggers() { 
+		for (int i=0; i < 30; i++) {
+			SceneMsg_TI smti = new SceneMsg_TI();
+			smti.sceneInfo = "yowza " + i;
+			registerTheaterBinding(i, smti);
+		}
+	}
+	
+	
 //	private InputStream openAssetStream(String assetName) { 
 //		return myBRC.openAssetStream(assetName);
 //	}	
@@ -159,6 +181,9 @@ public class PumaDualCharacter implements DummyBox {
 		BoneRobotConfig brc = (BoneRobotConfig) loadedObjs[0];
 		return brc;
 	}
+	private void registerTheaterBinding(int sceneTrigIdx, DummyTrigger trig) {
+		SceneActions.setTriggerBinding(sceneTrigIdx, myTheater, trig);
+	}	
 	@Override public String toString() { 
 		return "PumaDualChar[uri=" + myCharURI + ", nickName=" + myNickName + "]";
 	}	
