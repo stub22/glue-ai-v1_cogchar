@@ -15,14 +15,10 @@
  */
 package org.cogchar.platform.trigger;
 
-import org.cogchar.platform.trigger.DummyBox;
-import org.cogchar.platform.trigger.DummyTrigger;
-
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface DummyBinding {
-	public void setTargetBox(DummyBox box);
-	public void setTargetTrigger(DummyTrigger trig);
-	public void perform();
+public interface DummyBinder {
+	public void setBinding(String boundEventName, DummyBinding binding);
+	public DummyBinding getBindingFor(String boundEventName);
 }

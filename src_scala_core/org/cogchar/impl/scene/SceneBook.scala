@@ -63,4 +63,16 @@ class SceneBook extends BasicDebugger {
 		sceneSpecList;
 		// for (Object o : loadedStuff) {
 	}
+	
+
+
+}
+object SceneBook extends BasicDebugger {
+	
+	def  readSceneBook(triplesFlexPath : String, optCL : ClassLoader ) : SceneBook = {
+		val sb = new SceneBook();
+		val sceneSpecList : List[SceneSpec] = sb.loadSceneSpecs(triplesFlexPath, null);
+		sb.registerSceneSpecs(sceneSpecList);
+		sb;
+	}
 }

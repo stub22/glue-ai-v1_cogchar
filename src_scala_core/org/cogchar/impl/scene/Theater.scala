@@ -23,7 +23,7 @@ import scala.collection.mutable.HashMap;
 import org.cogchar.api.perform.{Channel};
 import org.cogchar.impl.perform.{DummyTextChan, ChannelNames};
 
-import org.cogchar.platform.trigger.{DummyBox};
+import org.cogchar.platform.trigger.{DummyBox, DummyTrigger, DummyBinding, DummyBinder};
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -32,11 +32,13 @@ import org.cogchar.platform.trigger.{DummyBox};
 class Theater extends BasicDebugger with DummyBox {
 	val	myBM = new BehaviorModulator();
 	val myChanSet = new java.util.HashSet[Channel]();
+	var myBinder : DummyBinder = null;
 	var	mySceneBook : SceneBook = null;
 	
 	def registerChannel(c : Channel) {
 		myChanSet.add(c);
 	}
+	def getSceneBook = mySceneBook;
 	def registerSceneBook(sb : SceneBook) {
 		mySceneBook = sb;
 	}
@@ -51,37 +53,51 @@ class Theater extends BasicDebugger with DummyBox {
 		myBM.setSceneContext(scene);
 		scene.attachBehaviorsToModulator(myBM);
 	}
+	def loadSceneBook(triplesFlexPath : String, optCL : ClassLoader ) {
+		val sceneBook = SceneBook.readSceneBook(triplesFlexPath, optCL);
+		registerSceneBook(sceneBook);		
+	}
+	def setBinder(db : DummyBinder) {
+		myBinder = db;
+	}
+	
 }
 object Theater extends BasicDebugger {
-	val		theTheater = new Theater();
 	
-	def getMainTheater() : Theater = {theTheater};
-	
+
 	def main(args: Array[String]) {
-		val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
+		
+		val		thtr = new Theater();
 		
 		val dummySpeechChanID = ChannelNames.getMainSpeechOutChannelIdent();
 		val dtc = new DummyTextChan(dummySpeechChanID);
+		thtr.registerChannel(dtc);
 
-		theTheater.registerChannel(dtc);
-
-		val sb = new SceneBook();
-		val sceneSpecList : List[SceneSpec] = sb.loadSceneSpecs(triplesFlexPath, null);
-		sb.registerSceneSpecs(sceneSpecList);
+		val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
 		
-		theTheater.registerSceneBook(sb);
+		thtr.loadSceneBook(triplesFlexPath, null);
 		
-		val testSceneName = "scn_001";
-		val testSceneURI = 	SceneFieldNames.NS_ccScnInst + testSceneName;
-		val testSceneID =  new FreeIdent(testSceneURI, testSceneName);
 		
-		val scene = theTheater.makeSceneFromBook(testSceneID);
+		val aSceneSpec : SceneSpec = thtr.mySceneBook.mySceneSpecs.values.head;
+		logInfo("Found a SceneSpec: " + aSceneSpec);
 		
-		theTheater.activateScene(scene);
-		
-		theTheater.myBM.setDebugImportanceThreshold(Loggable.IMPO_LOLO);
-		theTheater.myBM.runUntilDone(100);
+		val trig : DummyTrigger = org.cogchar.impl.trigger.FancyTrigger.makeTrigger(aSceneSpec);
+		trig.fire(thtr);
+	
+		thtr.myBM.setDebugImportanceThreshold(Loggable.IMPO_LOLO);
+		thtr.myBM.runUntilDone(100);
 		
 		logInfo("************************  BehaviorModulator Test #1 Finished ***************************************");
 	}  
 }
+
+/*		val testSceneName = "scn_001";
+//		val testSceneURI = 	SceneFieldNames.NS_ccScnInst + testSceneName;
+//		val testSceneID =  new FreeIdent(testSceneURI, testSceneName);
+		
+		val testSceneSpec = mySceneBook.findSceneSpec(testSceneID);
+		
+		val scene = thtr.makeSceneFromBook(testSceneID);
+		
+		thtr.activateScene(scene);
+*/	

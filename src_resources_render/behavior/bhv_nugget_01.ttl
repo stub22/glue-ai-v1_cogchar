@@ -1,7 +1,6 @@
 ## This file contains RDF in Turtle (".ttl") format.
 ## See:   http://www.w3.org/TeamSubmission/turtle/
 
-
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dc:     <http://purl.org/dc/elements/1.1/> .
@@ -14,36 +13,8 @@
 @prefix apsb:	<http://www.appdapter.org/schema/box#> .
 @prefix apt:	<http://www.appdapter.org/test#> .
 
-@prefix bc:		<http://www.cogchar.org/bony/config#> .
-
-
-<>  rdfs:comment     "All of this metadata is optional, unused, and just for fun/future" ;
-    dc:creator       "Stu B. <www.texpedient.com>" ;
-    dc:subject       "Zeno R-50 config" ;
-    dc:publisher     "cogchar.org" ;
-    dc:title         "(title) Bony config for Zeno R-50" ;
-    dc:description   "(desc) Bony config for Zeno R-50" ;
-    dc:date          "2012-03-13" ;
-
-    dc:format        "RDF" ;
-    dc:identifier    "what_does_this_dublin_core_identifier_mean"
-#####   ja:imports  is how we can include files, which can include others
-#####  The imports will be resolved using Jena FileManager, which reads
-#####  both filesystem and classpath.
-#####	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl"
-##### The period on next line is important:  It ends this block of triples.
-    .
-    
-
-#### This "Buildable" resource defines a factory for a particular kind of component.
-#### The factory might keep a cache allowing it to stitch identical URI references to a
-#### context-unique runtime object, or it might not.  
-
-
 @prefix cs:		<http://www.cogchar.org/schema/scene#> .
 @prefix csi:	<http://www.cogchar.org/schema/scene/instance#> .
-
-@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 
 cs:BuildableSceneSpec
@@ -64,14 +35,15 @@ cs:BuildableChannelSpec
 		ja:assembler		"org.cogchar.impl.perform.ChannelSpecBuilder" 
 		.		
 
-csi:chn_001		rdf:type			cs:BuildableChannelSpec;
-				apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
-				apsb:label			"chn-001 apsb label";
-				rdfs:label 			"chn-001 rdfs label";
-				apsb:trigger		apt:trig_001a;
-				cs:details			"channel-specific-details-go-here";
-				cs:size				-99.7;
-				.
+csi:speechOut_100		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"SPEECH_OUT-MAIN-ACAPELA_KENNY";
+	rdfs:label 			"SPEECH_OUT-MAIN-ACAPELA_KENNY";
+	apsb:trigger		apt:trig_001a;
+	cs:details			"Acapela 'Kenny' timed for Linux";
+	cs:size				-99.7;
+	.
 
 csi:scn_001 	
 	rdf:type			cs:BuildableSceneSpec;
@@ -82,7 +54,8 @@ csi:scn_001
 	cs:details			"scene-specific-details-go-here";
 	cs:size				52;
 	cs:behavior			csi:bh_001;
-	cs:channel			csi:chn_001
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_04"
 	.
 
 csi:bh_001		
@@ -95,11 +68,11 @@ csi:bh_001
 	cs:size				11;
 	cs:steps (
 		[
-			cs:channel			csi:chn_001;
+			cs:channel			csi:speechOut_100;
 			cs:startOffsetSec	0.7;
 			cs:text				"I have a positive contribution to make"
 		] [
-			cs:channel			csi:chn_001;
+			cs:channel			csi:speechOut_100;
 			cs:startOffsetSec	5.2;
 			cs:text				"I am not a nattering nabob"
 		]
