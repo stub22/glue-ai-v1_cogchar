@@ -42,6 +42,7 @@ class Behavior (val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
 	def logMe(msg: String) {logInfo("[" + this + "]-" + msg);}
 	override protected def doStart(scn : BScene) {
 		myStartStamp = System.currentTimeMillis();
+		myRunDebugModulus = 20;
 	}
 	override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
 		if (myNextStepIndex >= mySpec.mySteps.size) {
@@ -79,7 +80,7 @@ class TimelineBehavior (bs: BehaviorSpec) {
 //	var	nextItemIndex = 0;
 // }
 
-class BehaviorModulator() extends BasicModulator[BScene](null, false) {
+class BehaviorModulator() extends BasicModulator[BScene](null, true) {
 	def setSceneContext(scene : BScene) { 
 		setDefaultContext(scene);
 	}
@@ -106,6 +107,12 @@ class BehaviorModulator() extends BasicModulator[BScene](null, false) {
 			um.markStopRequested();
 		}
 	}
+	def detachAllFinishedModules() {
+		val finishedModules : java.util.List[Module[BScene]] = getFinishedModules();
+		for (val fm <- finishedModules) {
+			detachModule(fm);
+		}
+	}	
 
 }
 class BehaviorSpec() extends KnownComponentImpl {

@@ -101,25 +101,33 @@ public class PumaDualCharacter implements DummyBox {
 		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
 		myTheater.registerChannel(mySOC);		
 	}
-	public void loadBehaviorConfig(BundleContext bundleCtx) throws Throwable {
+	public void loadBehaviorConfig(boolean useTempFiles) throws Throwable {
 		
 		String pathTail = "bhv_nugget_01.ttl";
 		
 		BonyConfigEmitter bonyCE = myPHM.getHumanoidRenderContext().getBonyConfigEmitter();
 		// String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharURI);
 		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
-		String behavPathPerm = behavCE.getBehaviorPermPath(pathTail);
 		
-		myTheater.loadSceneBook(behavPathPerm, null);
+		String behavPath = behavCE.getBehaviorPermPath(pathTail);
+		if (useTempFiles) {
+			behavPath = behavCE.getBehaviorTempFilePath(pathTail);
+		}
+		
+		myTheater.loadSceneBook(behavPath, null);
+	} 
+	public void startTheater() {
 		SceneBook sb = myTheater.getSceneBook();
 		DummyBinder trigBinder = SceneActions.getBinder();
 		
 		FancyTrigger.registerAllTriggers(trigBinder, myTheater, sb); 
-		// myUpdateBonyRdfPath = behavCE.getRKMotionTempFilePath(bonyConfigPathTail);
+		myTheater.startThread();
+	}
+	public void stopTheater() {
+		myTheater.fullyStop(500);
+	}
 		
-		// Object sceneSpecScalaList = BehaviorTrial.loadSceneSpecs(behavPathPerm, null);
-		//logInfo("Got sceneSpecs: " + sceneSpecScalaList);
-	}	
+	
 	public void registerDefaultSceneTriggers() { 
 		for (int i=0; i < 30; i++) {
 			SceneMsg_TI smti = new SceneMsg_TI();

@@ -67,7 +67,14 @@ public class HumanoidPuppetActions {
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_T)};
             }
 			@Override boolean includedInMinSim() { 	return true; }		
-        },      		
+        },      
+        RELOAD_BEHAVIOR {
+			// uses default act() and boxy wiring
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_L)};
+            }
+			@Override boolean includedInMinSim() { 	return true; }				
+        },		
         TOGGLE_KIN_MODE {
             void act(HumanoidRenderContext ctx) {
 				HumanoidFigure hw = getSinbad(ctx);

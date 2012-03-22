@@ -42,20 +42,18 @@ csi:speechOut_100
 	cs:size				-99.7;
 	.
 
-csi:scn_001 	
+csi:scn_004	
 	rdf:type			cs:BuildableSceneSpec;
 	apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
-	apsb:label			"scn-001 apsb label";
-	rdfs:label 			"scn-001 rdfs label";
-	apsb:trigger		apt:trig_001a;
+	apsb:label			"scn-004 apsb label";
+	rdfs:label 			"scn-004 rdfs label";
 	cs:details			"scene-specific-details-go-here";
-	cs:size				52;
-	cs:behavior			csi:bh_001;
+	cs:behavior			csi:bh_001A, csi:bh_001B;
 	cs:channel			csi:speechOut_100;
 	cs:trigger			"sceneTrig_04"
 	.
 
-csi:bh_001		
+csi:bh_001A		
 	rdf:type			cs:BuildableBehaviorSpec;
 	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
 	apsb:label			"bh-001 apsb label";
@@ -77,3 +75,18 @@ csi:bh_001
 	)
 	.
 
+csi:bh_001B		
+	rdf:type			cs:BuildableBehaviorSpec;
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	2.0;
+			cs:text				"Started after 2 sec"
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	7.0;
+			cs:text				"Started after 7 sec"
+		]
+	)
+	.
