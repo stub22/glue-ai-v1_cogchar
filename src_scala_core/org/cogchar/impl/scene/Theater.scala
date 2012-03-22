@@ -35,6 +35,9 @@ class Theater extends BasicDebugger with DummyBox {
 	var myBinder : DummyBinder = null;
 	var	mySceneBook : SceneBook = null;
 	
+	var myThread : Thread = null;
+	var myStopFlag : Boolean = false;
+	
 	def registerChannel(c : Channel) {
 		myChanSet.add(c);
 	}
@@ -61,7 +64,57 @@ class Theater extends BasicDebugger with DummyBox {
 	def setBinder(db : DummyBinder) {
 		myBinder = db;
 	}
+	def stopAllScenes() {
+		myBM.stopAllModules();
+	}
+	def stopThread() { 
+		myStopFlag = true;
+	}
+	def killThread() { 
+		if (myThread != null) {
+			myThread.interrupt();
+			myThread = null;
+		}
+	}
+	def startThread() {
+		val sleepTimeMsec = 100
+		// TODO: Consider how this can be better done with agents.
+		if (myThread != null) {
+			val tstate = myThread.getState;
+			if (tstate == Thread.State.TERMINATED) {
+				myThread = null;
+			} else {
+				throw new RuntimeException("Cannot start new Theater thread, old thread still exists in state: " + tstate + ", " + myThread);
+			}
+		}
+		myStopFlag = false;
+		val r : Runnable = new Runnable() {
+			override def run() {
+				while (!myStopFlag) {
+					myBM.runUntilDone(sleepTimeMsec);
+					// logInfo("Theater behavior module is 'done', detaching all finished modules");
+					// We turned auto-detach back on, so we don't currently need to do:   myBM.detachAllFinishedModules();
+					// logInfo("Sleeping for " + sleepTimeMsec + "msec");
+					Thread.sleep(sleepTimeMsec);
+				}
+				logInfo("Theater behavior thread stopped.");
+			}
+		}
+		myThread = new Thread(r);
+		myThread.start();
+	}
 	
+	def fullyStop(waitMsecThenForce : Int) {
+		stopAllScenes();
+		stopThread();
+		if (waitMsecThenForce >= 0) {
+			if (waitMsecThenForce > 0) {
+				Thread.sleep(waitMsecThenForce);
+				killThread();
+			}
+		}
+	}
+
 }
 object Theater extends BasicDebugger {
 	
@@ -85,10 +138,19 @@ object Theater extends BasicDebugger {
 		logInfo("Found a SceneSpec: " + aSceneSpec);
 		
 		val trig : DummyTrigger = org.cogchar.impl.trigger.FancyTrigger.makeTrigger(aSceneSpec);
-		trig.fire(thtr);
+		
 	
-		thtr.myBM.setDebugImportanceThreshold(Loggable.IMPO_LOLO);
-		thtr.myBM.runUntilDone(100);
+		thtr.startThread();
+		
+		Thread.sleep(2000);
+		trig.fire(thtr);
+		// thtr.myBM.setDebugImportanceThreshold(Loggable.IMPO_LOLO);
+		// thtr.myBM.runUntilDone(100);
+		// 
+		Thread.sleep(8000);
+		logInfo("********************** stopping thread");
+		thtr.fullyStop(500);
+		Thread.sleep(2000);
 		
 		logInfo("************************  BehaviorModulator Test #1 Finished ***************************************");
 	}  

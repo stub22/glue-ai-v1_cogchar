@@ -46,26 +46,26 @@ csi:speechOut_100
 	.
 
 csi:scn_001 	
-	rdf:type			cs:BuildableSceneSpec;
-	apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
 	apsb:label			"scn-001 apsb label";
-	rdfs:label 			"scn-001 rdfs label";
-	apsb:trigger		apt:trig_001a;
 	cs:details			"scene-specific-details-go-here";
-	cs:size				52;
 	cs:behavior			csi:bh_001;
 	cs:channel			csi:speechOut_100;
-	cs:trigger			"sceneTrig_04"
+	cs:trigger			"sceneTrig_01"
 	.
+
+csi:scn_002 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn-001 apsb label";
+	cs:behavior			csi:bh_002;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_02"
+	.
+
 
 csi:bh_001		
 	rdf:type			cs:BuildableBehaviorSpec;
 	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
-	apsb:label			"bh-001 apsb label";
-	rdfs:label 			"bh-001 rdfs label";
-	apsb:trigger		apt:trig_001a;
-	cs:details			"behavior-specific-details-go-here";
-	cs:size				11;
 	cs:steps (
 		[
 			cs:channel			csi:speechOut_100;
@@ -80,3 +80,19 @@ csi:bh_001
 	)
 	.
 
+csi:bh_002		
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	1.2;
+			cs:text				"Started after 1.2 seconds"
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	7;
+			cs:text				"Started after 7 seconds"
+		]
+## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
+	)
+	.
