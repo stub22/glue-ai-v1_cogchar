@@ -102,6 +102,7 @@ public class PumaDualCharacter implements DummyBox {
 		myTheater.registerChannel(mySOC);		
 	}
 	public void loadBehaviorConfig(boolean useTempFiles) throws Throwable {
+	
 		
 		String pathTail = "bhv_nugget_01.ttl";
 		
@@ -113,8 +114,7 @@ public class PumaDualCharacter implements DummyBox {
 		if (useTempFiles) {
 			behavPath = behavCE.getBehaviorTempFilePath(pathTail);
 		}
-		
-		myTheater.loadSceneBook(behavPath, null);
+		myTheater.loadSceneBook(behavPath, null, true);
 	} 
 	public void startTheater() {
 		SceneBook sb = myTheater.getSceneBook();
