@@ -36,6 +36,7 @@ object FancyTrigger extends BasicDebugger {
 			// the matching sceneID must be found in the book of that theater!
 			override def fire(db : DummyBox) : Unit = {
 				val t : Theater = db.asInstanceOf[Theater];
+				t.stopAllScenes();
 				val scn : BScene = t.makeSceneFromBook(freeSceneID);
 				t.activateScene(scn);
 			}

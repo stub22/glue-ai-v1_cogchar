@@ -15,7 +15,6 @@
  */
 package org.cogchar.bundle.app.puma;
 
-import java.io.InputStream;
 import java.io.File;
 import javax.swing.JFrame;
 
@@ -28,10 +27,8 @@ import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
 import org.cogchar.app.buddy.busker.DancingTriggerItem;
+import org.cogchar.app.buddy.busker.ReloadBehavior_TI;
 import org.cogchar.app.buddy.busker.TalkingTriggerItem;
-
-import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
-
 import org.cogchar.app.buddy.busker.UpdateBonyConfig_TI;
 
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
@@ -40,15 +37,10 @@ import org.cogchar.render.app.bony.VerbalController;
 
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
-import org.cogchar.render.app.humanoid.HumanoidPuppetActions;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 
-import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
-import org.robokind.api.common.services.ServiceConnectionDirectory;
-import org.robokind.api.motion.jointgroup.JointGroup;
-import org.robokind.api.motion.jointgroup.RobotJointGroup;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,11 +101,13 @@ public class PumaAppContext {
 			
 			pdc.registerDefaultSceneTriggers();
 			
-			pdc.loadBehaviorConfig(myBundleContext);
+			pdc.loadBehaviorConfig(false);
+			registerBehaviorReloadTrigger(pdc);
 			
-			registerConfigReloadTrigger(pdc);			
+			registerBonyConfigUpdateTrigger(pdc);			
 			registerTestDanceTrigger(pdc);
 			registerTestTalkTrigger(pdc);
+			
 			
 			String jgPathTail = bonyCE.getJointGroupPathTailForChar(chrURI);
 			String jgFullPathTemp = behavCE.getRKMotionTempFilePath(jgPathTail);
@@ -173,7 +167,7 @@ public class PumaAppContext {
 		}
 	}
 
-	private void registerConfigReloadTrigger(PumaDualCharacter pdc) { 
+	private void registerBonyConfigUpdateTrigger(PumaDualCharacter pdc) { 
 		myUpdateBonyConfigTI = new UpdateBonyConfig_TI();
 		
 		// Hook up to a JME3 action to catch keypresses in OpenGL window.
@@ -182,6 +176,12 @@ public class PumaAppContext {
 		
 		myUpdateBonyConfigTI.myOptResourceClassLoader = null;
 	}
+	private void registerBehaviorReloadTrigger(PumaDualCharacter pdc) { 
+		ReloadBehavior_TI rbti = new ReloadBehavior_TI();
+		// Hook up to a JME3 action to catch keypresses in OpenGL window.
+		HumanoidPuppetActions.PlayerAction.RELOAD_BEHAVIOR.getBinding().setTargetBox(pdc);
+		HumanoidPuppetActions.PlayerAction.RELOAD_BEHAVIOR.getBinding().setTargetTrigger(rbti);
+	}	
 	private void registerTestDanceTrigger(PumaDualCharacter pdc) { 
 		DancingTriggerItem dti = new DancingTriggerItem();
 		
