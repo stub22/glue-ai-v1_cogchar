@@ -62,6 +62,13 @@ csi:scn_002
 	cs:trigger			"sceneTrig_02"
 	.
 
+csi:scn_003 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn-001 apsb label";
+	cs:behavior			csi:bh_002, csi:bh_001;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_03"
+	.
 
 csi:bh_001		
 	rdf:type			cs:BuildableBehaviorSpec;

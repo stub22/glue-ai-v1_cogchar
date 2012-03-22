@@ -135,7 +135,9 @@ public class PumaDualCharacter implements DummyBox {
 			registerTheaterBinding(i, smti);
 		}
 	}
-	
+	private void registerTheaterBinding(int sceneTrigIdx, DummyTrigger trig) {
+		SceneActions.setTriggerBinding(sceneTrigIdx, myTheater, trig);
+	}
 	
 //	private InputStream openAssetStream(String assetName) { 
 //		return myBRC.openAssetStream(assetName);
@@ -189,9 +191,7 @@ public class PumaDualCharacter implements DummyBox {
 		BoneRobotConfig brc = (BoneRobotConfig) loadedObjs[0];
 		return brc;
 	}
-	private void registerTheaterBinding(int sceneTrigIdx, DummyTrigger trig) {
-		SceneActions.setTriggerBinding(sceneTrigIdx, myTheater, trig);
-	}	
+	
 	@Override public String toString() { 
 		return "PumaDualChar[uri=" + myCharURI + ", nickName=" + myNickName + "]";
 	}	

@@ -50,6 +50,7 @@ object FancyTrigger extends BasicDebugger {
 			case	Some(tn) =>	{
 				val trig = makeTrigger(ss);
 				val binding = new FancyBinding(box, trig);
+				logInfo("Registering binding for name[" + tn + "], binding [" + binding + "]");
 				binder.setBinding(tn, binding);
 					
 			}
@@ -75,5 +76,8 @@ class FancyBinding(val myBox : DummyBox, val myTrig : DummyTrigger) extends Dumm
 		if (myTrig != null) { 
 			myTrig.fire(myBox);
 		}
+	}
+	override def toString() : String = {
+		"FancyBinding box=[" + myBox + "] trig=[" + myTrig + "]";
 	}
 }

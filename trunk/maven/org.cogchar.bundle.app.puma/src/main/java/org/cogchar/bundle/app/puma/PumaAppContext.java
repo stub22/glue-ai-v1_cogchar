@@ -23,6 +23,9 @@ import java.util.ArrayList;
 
 import org.osgi.framework.BundleContext;
 
+import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
+
+
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
@@ -38,9 +41,10 @@ import org.cogchar.render.app.bony.VerbalController;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.app.humanoid.HumanoidPuppetActions;
+
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 
-import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +112,7 @@ public class PumaAppContext {
 			registerTestDanceTrigger(pdc);
 			registerTestTalkTrigger(pdc);
 			
+			pdc.startTheater();
 			
 			String jgPathTail = bonyCE.getJointGroupPathTailForChar(chrURI);
 			String jgFullPathTemp = behavCE.getRKMotionTempFilePath(jgPathTail);
