@@ -34,8 +34,8 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	val SINBAD_MESH_PATH = "jme3dat/models_20110917/sinbad/Sinbad.mesh.xml";	
 
 	// Commercial "Extra Robot" model, not loadable without a license, ignored in those cases.
-	val EXTRA_ROBOT_MESH_PATH = "zenobot_05_20120309/ZenoBot05.ma.mesh.xml";		
-	// val EXTRA_ROBOT_MESH_PATH = "zenobot_04_20120302/ZenoBot04.ma.mesh.xml";		
+	val EXTRA_ROBOT_MESH_PATH = "zenobot_06_20120323/zenobot_06_20120323.mesh.xml";		
+	// val EXTRA_ROBOT_MESH_PATH = "zenobot_05_20120309/ZenoBot05.ma.mesh.xml";		
 	//		String dualCharURI = "urn:org.cogchar/platform/nb701?char=HRK_Zeno_R50&version=20120302";   
 
 	val WINGED_OBELISK_SCENE = "leo_hanson_tests/test3/test3.scene";

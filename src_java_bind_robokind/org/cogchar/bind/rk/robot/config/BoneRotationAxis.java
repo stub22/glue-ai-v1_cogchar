@@ -2,5 +2,5 @@ package org.cogchar.bind.rk.robot.config;
 
 
 public enum BoneRotationAxis { 
-  PITCH, ROLL, YAW
+  X_ROT, Y_ROT, Z_ROT
 }

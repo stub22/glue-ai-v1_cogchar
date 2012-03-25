@@ -119,6 +119,7 @@ class BehaviorSpec() extends KnownComponentImpl {
 	var		myDetails : String = "EMPTY";
 	var		mySteps : List[BehaviorStep] = List();
 
+	// The field summary is used only for logging
 	override def getFieldSummary() : String = {
 		return  super.getFieldSummary() +  ", details=" + myDetails + ", steps=" + mySteps;
 	}

@@ -74,15 +74,17 @@ class SceneSpec () extends KnownComponentImpl {
 	val		myBehaviorSpecs = new HashMap[Ident,BehaviorSpec]();
 	val		myChannelSpecs  = new HashMap[Ident,ChannelSpec]();
 
-	override def getFieldSummary() : String = {
-		return super.getFieldSummary() + ", details=" + myDetails + ", behaviors=" + myBehaviorSpecs + ", channels=" + 
-				myChannelSpecs;
-	}
+	
 	def addBehaviorSpec(bs: BehaviorSpec) {
 		myBehaviorSpecs.put(bs.getIdent(), bs);
 	}
 	def addChannelSpec(cs: ChannelSpec) {
 		myChannelSpecs.put(cs.getIdent(), cs);
+	}
+	// The field summary is used only for logging
+	override def getFieldSummary() : String = {
+		return super.getFieldSummary() + ", details=" + myDetails + ", behaviors=" + myBehaviorSpecs + ", channels=" + 
+				myChannelSpecs;
 	}
 }
 
