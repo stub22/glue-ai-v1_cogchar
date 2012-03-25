@@ -75,7 +75,7 @@ public class ModelToFigureStateMappingFuncs {
             applySillyEulerRotations(bs, rots);
         }
     }
-    // This is not really a viable technique - rotations are not commutative!
+    // This is not yet a viable technique, as rotations are not commutative!
 	// Also, JME3 has some confusing direction labeling things going on - appears
 	// that PITCH, ROLL, YAW are not defined in the traditional manner rel. to X, Y, Z.
 	// Needs review!
@@ -83,21 +83,15 @@ public class ModelToFigureStateMappingFuncs {
         for(BoneProjectionPosition rot : rots){
 			BoneRotationAxis rotAxis = rot.getRotationAxis();
             float rads = (float)rot.getAngleRadians();
-			// theLogger.info("Rotating " + bs.getBoneName() + " angle " + rotAxis + " to " + rads + " radians.");
+			// theLogger.info("Rotating " + bs.getBoneName() + " arount " + rotAxis + " by  " + rads + " radians.");
             switch(rotAxis) {
 				/*
-				 * We are currently using the EuclideanSpace.com conventions, in which 
-				 * the character is treated like a vehicle pointing down the X axis,
-				 * which conflicts with the JMonkey convention (and also often with the
-				 * orientation of different bones of a loaded skeleton).
-				 * 
-				 * http://jmonkeyengine.org/groups/general-2/forum/topic/definition-of-pitch-yaw-roll-in-jmonkeyengine/?topic_page=2&num=15
-				 * 
 				 * 
 				 */
-                case PITCH: bs.rot_Z_attitude_A2nd = rads; break;
-                case ROLL:  bs.rot_X_bank_A3rd = rads;  break;
-                case YAW:   bs.rot_Y_heading_A1st = rads;   break;
+                case X_ROT:		bs.rot_X_A3rd = rads;  break;
+                case Y_ROT:		bs.rot_Y_A1st = rads;   break;
+                case Z_ROT:		bs.rot_Z_A2nd = rads; break;
+					
             }
         }
     }	

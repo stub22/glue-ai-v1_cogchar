@@ -28,10 +28,11 @@ public class BoneState {
 	public	String		myBoneName;
 	// JME3 docs are messed up regarding "yaw, pitch, roll" terminology.
 	// However, our current understanding is that rots are applied in this order,
-	// with this meaning for an airplane flying towards X-infinity (at our right)
-	// with Y straight up, and Z towards us.
+	// using positive right-hand sense as shown here:
+	//
+	// http://www.evl.uic.edu/ralph/508S98/coordinates.html
 	
-	public	float		rot_X_bank_A3rd, rot_Y_heading_A1st, rot_Z_attitude_A2nd;
+	public	float		rot_X_A3rd, rot_Y_A1st, rot_Z_A2nd;
 	
 	public BoneState(String name) {
 		myBoneName = name;
@@ -44,13 +45,16 @@ public class BoneState {
 		/* 
 		 * http://jmonkeyengine.org/groups/general-2/forum/topic/definition-of-pitch-yaw-roll-in-jmonkeyengine/?topic_page=2&num=15
 		 * 
+		 * // http://www.evl.uic.edu/ralph/508S98/coordinates.html
+
+		 * 
 		 * Rotations are applied in the order
-		 * 1) heading=yRot
-		 * 2) attitude=zRot
-		 * 3) bank=xRot
+		 * 1) yRot (= heading)
+		 * 2) zRot (= roll for character facing +Z direction)
+		 * 3) xRot (= bank for character facing +Z direction)
 		 */
 		
-		q.fromAngles(rot_X_bank_A3rd, rot_Y_heading_A1st, rot_Z_attitude_A2nd);
+		q.fromAngles(rot_X_A3rd, rot_Y_A1st, rot_Z_A2nd);
 		return q;
 	}
  
