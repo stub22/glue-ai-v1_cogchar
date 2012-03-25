@@ -91,7 +91,7 @@ bci:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 		bci:joint_LtWrist_Yaw,
 
 		bci:joint_RtShoulder_Pitch, bci:joint_RtShoulder_Roll,
-		bci:joint_LtElbow_Yaw, bci:joint_RtElbow_Pitch,
+		bci:joint_RtElbow_Yaw, bci:joint_RtElbow_Pitch,
 		bci:joint_RtWrist_Yaw, 
 
 		bci:joint_LtHip_Roll, bci:joint_LtHip_Yaw, bci:joint_LtHip_Pitch,
