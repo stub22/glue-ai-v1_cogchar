@@ -23,6 +23,10 @@ import org.robokind.api.animation.Channel;
 import org.robokind.api.animation.MotionPath;
 import org.robokind.api.animation.utils.AnimationUtils;
 import org.robokind.api.animation.utils.ChannelsParameterSource;
+
+import org.robokind.impl.animation.xml.AnimationXMLReader;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,4 +70,17 @@ public class RobotAnimClient {
         //null should be RobotUtils.getRobotFilter(robotId)
         AnimationUtils.playAnimation(myBundleCtx, null, anim);
 	}
+   public static Animation loadAnimation(String filepath){
+        try{
+            return new AnimationXMLReader().readAnimation(filepath);
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }	
+   // To use something other than file, we will go through a different constructor
+   // for XMLConfiguration, such as the URL one, and then call:
+    //  public static Animation readAnimation(HierarchicalConfiguration config){
+   // http://commons.apache.org/configuration/apidocs/org/apache/commons/configuration/XMLConfiguration.html
+	
 }

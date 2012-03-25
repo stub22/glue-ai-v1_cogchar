@@ -106,7 +106,7 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 		AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
 		myHumanoidSkeleton = humanoidControl.getSkeleton();
 		// Turn on the green bone skeleton debug.
-		// attachDebugSkeleton(myHumanoidModelNode, asstMgr);
+		attachDebugSkeleton(myHumanoidModelNode, assetMgr);
 
 		//Note: PhysicsRagdollControl is still TODO, constructor will change
 		myHumanoidKRC = new KinematicRagdollControl(KRC_WEIGHT_THRESHOLD);

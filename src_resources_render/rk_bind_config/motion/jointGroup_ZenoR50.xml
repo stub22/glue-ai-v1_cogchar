@@ -4,42 +4,47 @@
 	<JointGroups>
 		<JointGroup name="Torso">
 			<JointIds>
-				<JointId>0</JointId>
-				<JointId>1</JointId>
+				<JointId>42</JointId>
+				<JointId>100</JointId>
 			</JointIds>
 		</JointGroup>
 		<JointGroup name="Neck">
 			<JointIds>
-				<JointId>10</JointId>
-				<JointId>11</JointId>
-				<JointId>12</JointId>		
+				<JointId>200</JointId>
+				<JointId>201</JointId>
+				<JointId>202</JointId>		
 			</JointIds>
 		</JointGroup>
 		<JointGroup name="Face">
 			<JointIds>
-				<JointId>20</JointId>
-				<JointId>21</JointId>
-				<JointId>22</JointId>
-				<JointId>23</JointId>
-				<JointId>24</JointId>
+				<JointId>300</JointId>
+				<JointId>301</JointId>
+				<JointId>310</JointId>
+				<JointId>311</JointId>
+				<JointId>312</JointId>
+				<JointId>320</JointId>
+				<JointId>321</JointId>
+				<JointId>322</JointId>				
 			</JointIds>
 		</JointGroup>
 		<JointGroup name="Upper Body">
 			<JointGroups>
 				<JointGroup name="Left Arm">
 					<JointIds>
-						<JointId>30</JointId>
-						<JointId>31</JointId>
-						<JointId>32</JointId>
-						<JointId>33</JointId>
+						<JointId>400</JointId>
+						<JointId>401</JointId>
+						<JointId>410</JointId>
+						<JointId>411</JointId>
+						<JointId>420</JointId>
 					</JointIds>
 				</JointGroup>
 				<JointGroup name="Right Arm">
 					<JointIds>
-						<JointId>40</JointId>
-						<JointId>41</JointId>
-						<JointId>42</JointId>
-						<JointId>43</JointId>
+						<JointId>500</JointId>
+						<JointId>501</JointId>
+						<JointId>510</JointId>
+						<JointId>511</JointId>
+						<JointId>520</JointId>
 					</JointIds>
 				</JointGroup>
 
@@ -50,20 +55,22 @@
 			<JointGroups>
 				<JointGroup name="Left Leg">
 					<JointIds>
-						<JointId>50</JointId>
-						<JointId>51</JointId>
-						<JointId>52</JointId>
-						<JointId>53</JointId>
-						<JointId>54</JointId>
+						<JointId>600</JointId>
+						<JointId>601</JointId>
+						<JointId>602</JointId>
+						<JointId>610</JointId>
+						<JointId>620</JointId>
+						<JointId>621</JointId>
 					</JointIds>
 				</JointGroup>
 				<JointGroup name="Right Leg">
 					<JointIds>
-						<JointId>60</JointId>
-						<JointId>61</JointId>
-						<JointId>62</JointId>
-						<JointId>63</JointId>
-						<JointId>64</JointId>
+						<JointId>700</JointId>
+						<JointId>701</JointId>
+						<JointId>702</JointId>
+						<JointId>710</JointId>
+						<JointId>720</JointId>
+						<JointId>721</JointId>
 					</JointIds>
 				</JointGroup>
 			</JointGroups>
