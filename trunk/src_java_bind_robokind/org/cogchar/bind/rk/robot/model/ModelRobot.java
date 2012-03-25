@@ -107,7 +107,12 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
     }
 	public void updateConfig(BoneRobotConfig config) {
 		for (BoneJointConfig bjc : config.myBJCs) {
-			Joint.Id jointJointID = new Joint.Id(bjc.myJointNum); 
+			Integer jointNum = bjc.myJointNum;
+			if (jointNum == null) {
+				theLogger.warn("No jointNum for: " + bjc);
+				continue;
+			}
+			Joint.Id jointJointID = new Joint.Id(jointNum); 
 			JointId robotJointID = new JointId(getRobotId(), jointJointID);
 			ModelJoint mj = getJoint(robotJointID);
 			if (mj != null) {

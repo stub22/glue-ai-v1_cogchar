@@ -168,7 +168,7 @@ bci:joint_Neck_Roll
 	bc:jointNum			201;			bc:jointName			"Neck_Roll";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
-		bc:boneName			"bn_HeadPivot2";
+		bc:boneName			"bn_neck01";
 		bc:rotationAxis		"Z_ROT";
 		bc:minAngleDeg		-45.0;
 		bc:maxAngleDeg		 45.0;
@@ -179,7 +179,7 @@ bci:joint_Neck_Pitch
 	bc:jointNum			202;			bc:jointName			"Neck_Pitch";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
-		bc:boneName			"bn_HeadPivot2";
+		bc:boneName			"bn_neck01";
 		bc:rotationAxis		"Y_ROT";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
@@ -227,7 +227,7 @@ bci:joint_Blink_Open
 	bc:jointNum			301;			bc:jointName			"Blink_Open";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
-		bc:boneName			"bn_HeadPivot2";
+		bc:boneName			"LtEye2";
 		bc:rotationAxis		"Z_ROT";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
@@ -239,13 +239,13 @@ bci:joint_Eyes_Pitch
 	bc:jointNum			310;			bc:jointName			"Eyes_Vert";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
-		bc:boneName			"LtEye";
+		bc:boneName			"LtEye1";
 		bc:rotationAxis		"Z_ROT";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
 	],
 	[
-		bc:boneName			"RtEye";
+		bc:boneName			"RtEeye1";
 		bc:rotationAxis		"Z_ROT";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
@@ -255,7 +255,7 @@ bci:joint_LtEye_Yaw
 	bc:jointNum			311;			bc:jointName			"LtEye_Yaw";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
-		bc:boneName			"LtEye";
+		bc:boneName			"LtEye1";
 		bc:rotationAxis		"Y_ROT";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
@@ -266,7 +266,8 @@ bci:joint_RtEye_Yaw
 	bc:jointNum			312;			bc:jointName			"RtEye_Yaw";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
-		bc:boneName			"RtEye";
+		# RtEeye1 (sic) 
+		bc:boneName			"RtEeye1";
 		bc:rotationAxis		"Y_ROT";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
@@ -299,8 +300,8 @@ bci:joint_Jaw
 	bc:projectionRange	[
 		bc:boneName			"bn_Jaw01";
 		bc:rotationAxis		"Z_ROT";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		-12.0;
+		bc:maxAngleDeg		 30.0;
 	]
 .
 
@@ -351,7 +352,7 @@ bci:joint_LtElbow_Pitch
 		bc:boneName			"LtElbow";
 		bc:rotationAxis		"Y_ROT";
 		bc:minAngleDeg		0.0;
-		bc:maxAngleDeg		120.0;
+		bc:maxAngleDeg		-100.0;
 	]
 .
 
@@ -394,14 +395,14 @@ bci:joint_RtShoulder_Roll
 .
 
 
-bci:joint_LtElbow_Yaw
-	bc:jointNum			510;			bc:jointName			"LtElbow_Yaw";
+bci:joint_RtElbow_Yaw
+	bc:jointNum			510;			bc:jointName			"RtElbow_Yaw";
 	bc:defaultPosNorm	0.1;
 	bc:projectionRange	[
-		bc:boneName			"LtElbow";
+		bc:boneName			"RtElbow";
 		bc:rotationAxis		"X_ROT";
-		bc:minAngleDeg		-60.0;
-		bc:maxAngleDeg		60.0;
+		bc:minAngleDeg		0.0;
+		bc:maxAngleDeg		120.0;
 	]
 .
 bci:joint_RtElbow_Pitch
@@ -411,7 +412,7 @@ bci:joint_RtElbow_Pitch
 		bc:boneName			"RtElbow";
 		bc:rotationAxis		"Y_ROT";
 		bc:minAngleDeg		0.0;
-		bc:maxAngleDeg		120.0;
+		bc:maxAngleDeg		100.0;
 	]
 .
 
@@ -513,6 +514,7 @@ bci:joint_RtHip_Roll
 		bc:maxAngleDeg		 10.0;
 	]
 .
+
 bci:joint_RtHip_Yaw
 	bc:jointNum			701;			bc:jointName			"LtHip_Yaw";
 	bc:defaultPosNorm	0.5;
