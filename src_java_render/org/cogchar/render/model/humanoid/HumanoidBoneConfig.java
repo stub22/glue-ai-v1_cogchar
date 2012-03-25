@@ -98,12 +98,19 @@ public class HumanoidBoneConfig {
 
 		addBoneDesc("Root");
 		addBoneDesc("Spine1");
-		addBoneDesc("Neackbase");
-		addBoneDesc("Head");
-		addBoneDesc("Jaw");
-		addBoneDesc("Mouth1");
-		addBoneDesc("LtEye");
-		addBoneDesc("RtEye");
+		addBoneDesc("bn_neck01");
+		addBoneDesc("bn_HeadPivot2");
+		addBoneDesc("bn_Jaw01");
+		addBoneDesc("be_Jaw2");
+		addBoneDesc("be_RevJaw2");
+		
+		addBoneDesc("LtEye1");
+		addBoneDesc("LtEye2");
+		addBoneDesc("RtEeye1");  // sic
+		addBoneDesc("RtEye2");
+		addBoneDesc("LtBrow");
+		addBoneDesc("RtBrow");
+		
 		addBoneDesc("LtClav");
 		addBoneDesc("LtShoulder");
 		addBoneDesc("LtElbow");
