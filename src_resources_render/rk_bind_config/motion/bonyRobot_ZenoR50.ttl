@@ -351,8 +351,8 @@ bci:joint_LtElbow_Pitch
 	bc:projectionRange	[
 		bc:boneName			"LtElbow";
 		bc:rotationAxis		"Y_ROT";
-		bc:minAngleDeg		0.0;
-		bc:maxAngleDeg		-100.0;
+		bc:minAngleDeg		30.0;
+		bc:maxAngleDeg		-90.0;
 	]
 .
 
@@ -411,8 +411,8 @@ bci:joint_RtElbow_Pitch
 	bc:projectionRange	[
 		bc:boneName			"RtElbow";
 		bc:rotationAxis		"Y_ROT";
-		bc:minAngleDeg		0.0;
-		bc:maxAngleDeg		100.0;
+		bc:minAngleDeg		30.0;
+		bc:maxAngleDeg		-90.0;
 	]
 .
 
