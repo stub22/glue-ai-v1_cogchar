@@ -43,47 +43,68 @@ public class HumanoidPuppetActions {
 				ctx.setDefaultCameraLocation();
             }
             Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_R)};
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F1)};
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
-        UPDATE_BONY_CONFIG {
+        TOGGLE_SKEL_HILITE {
 			// uses default act() and boxy wiring
             Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_U)};
-            }
-			@Override boolean includedInMinSim() { 	return true; }				
-        },
-        POKE {
-			// uses default act() and boxy wiring
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_P)};
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F2)};
             }
 			@Override boolean includedInMinSim() { 	return true; }		
-        },
-        TALK {
+        },  		
+        SAY_THE_TIME {
 			// uses default act() and boxy wiring
             Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_T)};
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F3)};
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },      
+
+		STOP_AND_RESET_CHAR {
+			// uses default act() and boxy wiring
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F4)};
+            }
+			@Override boolean includedInMinSim() { 	return true; }		
+        },  		
+		
         RELOAD_BEHAVIOR {
 			// uses default act() and boxy wiring
             Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_L)};
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F8)};
             }
 			@Override boolean includedInMinSim() { 	return true; }				
-        },		
+        },
+		
+        DANGER_YOGA {
+			// This yoga-dance shold not be routed to physical robot.
+			// 
+			// uses default act() and boxy wiring
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F10)};
+            }
+			@Override boolean includedInMinSim() { 	return true; }		
+        },
+		
+        UPDATE_BONY_CONFIG {
+			// uses default act() and boxy wiring
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F12)};
+            }
+			@Override boolean includedInMinSim() { 	return true; }				
+        },
+
+	
         TOGGLE_KIN_MODE {
             void act(HumanoidRenderContext ctx) {
 				HumanoidFigure hw = getSinbad(ctx);
 				hw.toggleKinMode();
             }
             Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_H),
-                      new KeyTrigger(KeyInput.KEY_N)  };
-            }
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_K)};
+			}
         },
         STAND_UP {
             void act(HumanoidRenderContext ctx) {
@@ -92,8 +113,7 @@ public class HumanoidPuppetActions {
             }
             Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] {new KeyTrigger(KeyInput.KEY_SPACE)};
-            }
-			@Override boolean includedInMinSim() { 	return true; }			
+            }	
         },
         BOOGIE {
 			// Triggers a JME3 animation
@@ -105,8 +125,7 @@ public class HumanoidPuppetActions {
             }
             Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_B)};
-            }
-			@Override boolean includedInMinSim() { 	return true; }		
+            }	
         },   		
   		
         SHOOT {

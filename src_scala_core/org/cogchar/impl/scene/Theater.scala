@@ -129,7 +129,8 @@ object Theater extends BasicDebugger {
 		val dtc = new DummyTextChan(dummySpeechChanID);
 		thtr.registerChannel(dtc);
 
-		val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
+		// val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
+		val triplesFlexPath = "../org.cogchar.bundle.render.resources/src/main/resources/behavior/bhv_nugget_01.ttl";
 		
 		thtr.loadSceneBook(triplesFlexPath, null, true);
 		
