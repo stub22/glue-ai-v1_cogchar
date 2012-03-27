@@ -435,12 +435,12 @@ bci:joint_RtWrist_Yaw
 
 bci:joint_LtHip_Roll
 	bc:jointNum			600;			bc:jointName			"LtHip_Roll";
-	bc:defaultPosNorm	0.5;
+	bc:defaultPosNorm	0.2;
 	bc:projectionRange	[
 		bc:boneName			"LtHip";
 		bc:rotationAxis		"Y_ROT";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		 10.0;
+		bc:maxAngleDeg		 -40.0;
 	]
 .
 
@@ -516,10 +516,10 @@ bci:joint_RtHip_Roll
 .
 
 bci:joint_RtHip_Yaw
-	bc:jointNum			701;			bc:jointName			"LtHip_Yaw";
+	bc:jointNum			701;			bc:jointName			"RtHip_Yaw";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
-		bc:boneName			"LtHip";
+		bc:boneName			"RtHip";
 		bc:rotationAxis		"X_ROT";
 		bc:minAngleDeg		-45.0;
 		bc:maxAngleDeg		 45.0;
