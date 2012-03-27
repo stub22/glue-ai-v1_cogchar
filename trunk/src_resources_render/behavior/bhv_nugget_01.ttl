@@ -49,6 +49,9 @@ csi:speechOut_100
 	cs:details			"Acapela 'Kenny' timed for Linux";
 	cs:size				-99.7;
 	.
+################################################################################################################
+### Test scenes 1-10  are launched with numeric keypad
+################################################################################################################
 
 csi:scn_001 	
 	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
@@ -106,5 +109,172 @@ csi:bh_002
 			cs:text				"Started after 7 seconds"
 		]
 ## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
+	)
+	.
+
+################################################################################################################
+###   Demo Scenes 11-20 are launched with top-row number keys ("1" launches "11", "2" launches "12", ...)
+################################################################################################################
+
+
+csi:scn_011 	
+#  Conveying: Enthusiasm, excitement.
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn_011 - I Feel Good";
+	cs:behavior			csi:bh_011;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_11"
+	.
+
+csi:bh_011		
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text				"Wow. So many people here today. How do you all feel? I’ll tell you how I feel."
+			#Robot looks around, moves head back and forth. Opens eyes and mouth, Spreads arms. 
+
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	10;
+			cs:text				"I knew that I would?"
+	#  Robot shrugs head, looks down, looks up, opens mouth, raises one arm, starts replaying 
+	#  song and pumps arms in rock and roll time.
+		]
+	)
+	.
+################################################################################################################
+
+csi:scn_012 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn_012 - Take My Picture";
+	cs:behavior			csi:bh_012;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_12"
+	.
+
+csi:bh_012		
+#  Conveying: Friendliness. Inviting.
+
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text				"Hi, there. Would you like to have your picture taken with me?"
+			#  Robot nods head and beckons with hand. 
+			#  Robot turns head as if looking at person   standing next to it, 
+
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	7.0;
+			cs:text				"Say, Chitty, chitty, bang, bang."
+			# grins and makes second comment while turning    head back to front and smiling 
+			# artificially.
+		]
+	)
+	.
+################################################################################################################
+
+csi:scn_013 	
+#   Conveying: Helpfulness (Like a tour guide).
+
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn_013 - Have I Got a Course for You";
+	cs:behavior			csi:bh_013;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_13"
+	.
+
+
+csi:bh_013		
+
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text		"""	
+How would You like for me to come to your classroom.  I can help you out with your 
+students.  I will help you teach a Computer Science Course bu telling your students 
+about science, technology, and what it’s like to be a robot.   """;
+
+# Robot tilts head back, spreading arms as if asking a question. 
+
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	20.0;
+			cs:text				"Look over there. See that stack of pamphlets?"
+			#2) Robot turns head toward table, points at something on table. 
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	25.0;
+			cs:text				"You can grab one and take it with you!"
+			# Robot makes grabbing or picking up motion with hand and then turns head back 
+			# toward where the its listener would be standing.
+		]
+
+	)
+	.
+
+################################################################################################################
+
+csi:scn_014
+# Conveying: Enthusiasm. Helpfulness.
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn_014 - Meet Me, Call Me";
+	cs:behavior			csi:bh_014;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_14"
+	.
+
+
+csi:bh_014
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text				"""
+Hi, my name is Xeno. And my job is to help your school meet its objectives in computer science. 
+How? Well, for one thing, I’m going to hang out and help out, right in your classrooms. 
+Computer Science and Robotics.   Coming to your school.    
+			"""
+
+			# Routine: Robot addressing circle of conferees, looks around as if scanning faces. 
+			# Points to self and then extends arm. Stabs hand in air in downward motion.
+
+		]
+	)
+	.
+
+################################################################################################################
+
+
+csi:scn_015
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn_015 - Hey, Everybody";
+	cs:behavior			csi:bh_015;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_15"
+	.
+
+
+csi:bh_015
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text				"Hey, Everybody. Wanna meet a robot?"
+			# Routine: Robot tilts head to one side, opens an eye wide, raises arm with hand close to face.
+			# Conveying: Teasing. Childish enthusiasm. Expectation.
+		] 
 	)
 	.

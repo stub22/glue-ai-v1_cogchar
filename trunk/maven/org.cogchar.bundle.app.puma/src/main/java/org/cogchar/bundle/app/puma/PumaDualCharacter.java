@@ -129,7 +129,7 @@ public class PumaDualCharacter implements DummyBox {
 		
 	
 	public void registerDefaultSceneTriggers() { 
-		for (int i=0; i < 30; i++) {
+		for (int i=0; i < SceneActions.getSceneTrigKeyCount(); i++) {
 			SceneMsg_TI smti = new SceneMsg_TI();
 			smti.sceneInfo = "yowza " + i;
 			registerTheaterBinding(i, smti);

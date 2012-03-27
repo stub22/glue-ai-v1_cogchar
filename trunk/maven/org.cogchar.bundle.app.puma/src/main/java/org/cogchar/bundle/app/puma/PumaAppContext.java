@@ -191,8 +191,8 @@ public class PumaAppContext {
 		DancingTriggerItem dti = new DancingTriggerItem();
 		
 		// 1. Hook up to a JME3 action 
-		HumanoidPuppetActions.PlayerAction.POKE.getBinding().setTargetBox(pdc);
-		HumanoidPuppetActions.PlayerAction.POKE.getBinding().setTargetTrigger(dti);
+		HumanoidPuppetActions.PlayerAction.DANGER_YOGA.getBinding().setTargetBox(pdc);
+		HumanoidPuppetActions.PlayerAction.DANGER_YOGA.getBinding().setTargetTrigger(dti);
 		
 		// 2. Hook up to the Swing-based "BodyController"
 		// Kinda ugly, may be axed soon
@@ -215,8 +215,8 @@ public class PumaAppContext {
 		TalkingTriggerItem tti = new TalkingTriggerItem();
 		
 		// 1. Hook up to a JME3 action 
-		HumanoidPuppetActions.PlayerAction.TALK.getBinding().setTargetBox(pdc);
-		HumanoidPuppetActions.PlayerAction.TALK.getBinding().setTargetTrigger(tti);
+		HumanoidPuppetActions.PlayerAction.SAY_THE_TIME.getBinding().setTargetBox(pdc);
+		HumanoidPuppetActions.PlayerAction.SAY_THE_TIME.getBinding().setTargetTrigger(tti);
 
 		// 2. Hook up to the Swing-based "BodyController"
 		// Kinda ugly, may be axed soon		
