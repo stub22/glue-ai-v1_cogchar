@@ -16,7 +16,8 @@
 
 package org.cogchar.impl.perform
 
-import  org.cogchar.api.perform.{Channel, TextChannel, Performance, BasicPerformance}
+import  org.cogchar.api.event.{Event}
+import  org.cogchar.api.perform.{Media, Channel, Performance, BasicTextChannel, BasicTextPerformance, BasicFramedPerformance};
 
 import org.appdapter.api.module.Module.State;
 import org.appdapter.core.log.{BasicDebugger};
@@ -35,36 +36,30 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * @author Stu B. <www.texpedient.com>
  */
 
-class FancyChan(val myIdent: Ident) extends BasicDebugger with Channel {
-	private var	myStatus : Channel.Status = Channel.Status.INIT;
+class FancyTime (val myStampMsec : Long) {
 	
-	def getIdent() : Ident = {myIdent}
-	override def getStatus() : Channel.Status = {myStatus}
-	override def getName() : String = {myIdent.getLocalName();}
 }
-abstract class FancyTextChan(id: Ident) extends FancyChan(id) with TextChannel {
-	@throws(classOf[Throwable])
-	def startTextPerformance (txt: String) : Unit;
+
+trait FancyChanStuff {
 	
-	def  performText(txt: String) : Performance[TextChannel] = {		
-		val perf = new BasicPerformance[TextChannel](this);
-		try {
-			perf.updateResultState(State.IN_START);
-			startTextPerformance(txt);
-			perf.updateResultState(State.IN_RUN);
-		} catch {
-			case t => {
-				perf.updateResultState(State.FAILED_STARTUP);
-				logError("Error on [" + this + "] performing text[" + txt + "]", t);
-			}
-		}
-		perf;
-	}
+}
+
+abstract class FancyTextChan(id: Ident) extends BasicTextChannel[FancyTime](id) {
+}	
+
+class FancyTextPerf(media : Media.Text, chan: Channel.Text[FancyTime]) 
+		extends  BasicTextPerformance[FancyTime, FancyTextPerf, Event[FancyTextPerf, FancyTime]](media, chan) {
 }
 class DummyTextChan(id: Ident) extends FancyTextChan(id) {
-	@throws(classOf[Throwable])	override def startTextPerformance (txt: String) : Unit = {
-		logInfo("************* START DUMMY TEXT PERFORMANCE on [" + getName() + "] of [" + txt + "]");
+	@throws(classOf[Throwable])	
+	override protected def attemptMediaStartNow(m : Media.Text) {
+		val textString = m.getFullText();
+		logInfo("************* START DUMMY TEXT PERFORMANCE on [" + getName() + "] of [" + textString + "]");
 	}
+
+	override def  makePerformanceForMedia(media : Media.Text) : Performance[Media.Text, FancyTime] =  {
+		return new FancyTextPerf(media, this);
+	}	
 }
 
 class ChannelSpec extends KnownComponentImpl {

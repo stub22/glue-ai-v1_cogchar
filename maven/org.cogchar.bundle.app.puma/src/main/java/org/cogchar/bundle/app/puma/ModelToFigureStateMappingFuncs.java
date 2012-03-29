@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * 
  * 
  * In this class, all our huge design flaws are revealed!
- * EVERYTHING about this class is wrong!
+ * EVERYTHING about this class is wrong, including it's very existence.
  * It's a perfect 0!  Except...it works for the moment
  * as a bit of glue for testing less-fun parts.  This junk
  * shall soon be absorbed into a proper state representation.
@@ -83,11 +83,9 @@ public class ModelToFigureStateMappingFuncs {
         for(BoneProjectionPosition rot : rots){
 			BoneRotationAxis rotAxis = rot.getRotationAxis();
             float rads = (float)rot.getAngleRadians();
-			// theLogger.info("Rotating " + bs.getBoneName() + " arount " + rotAxis + " by  " + rads + " radians.");
+			// theLogger.info("Rotating " + bs.getBoneName() + " around " + rotAxis + " by  " + rads + " radians.");
             switch(rotAxis) {
-				/*
-				 * 
-				 */
+
                 case X_ROT:		bs.rot_X_A3rd = rads;  break;
                 case Y_ROT:		bs.rot_Y_A1st = rads;   break;
                 case Z_ROT:		bs.rot_Z_A2nd = rads; break;

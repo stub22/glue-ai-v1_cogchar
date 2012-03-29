@@ -13,16 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.scene;
 
-import java.util.Collection;
-import org.cogchar.api.perform.Channel;
-import org.cogchar.api.perform.Media;
+package org.cogchar.api.perform;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface Scene<Time, RootC extends Channel<?, Time>> {
-	public	void wireSubChannels(Collection<Channel<? extends Media, Time>> chans);
-	public RootC getRootChannel();
+
+public interface Media {
+	public interface Text extends Media {
+		public	String	getFullText();
+	}
+	public interface Framed<F> extends Media {
+		public long	getFrameCount();
+		public F getFrameAtIndex (long idx);
+	}	
+	
+	public class BasicText implements Text {
+		String	myTextString;
+		public BasicText(String contents) {
+			myTextString = contents;
+		}
+		public String getFullText() {
+			return myTextString;
+		}
+		
+	}
 }
