@@ -14,7 +14,7 @@
 	
 	<artifactId>org.cogchar.nbui.render</artifactId>
 	<packaging>nbm</packaging>
-	<name>org.cogchar.nbui.render - NetBeans GUI Module</name>
+	<name>${project.artifactId} - NetBeans GUI Module</name>
 
 	<properties>
 		<brandingToken>org_cogchar_nbui_render</brandingToken>

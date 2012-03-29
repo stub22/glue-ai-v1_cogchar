@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import org.cogchar.bind.cogbot.main.CogbotAvatar;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B.
  */
 public class CogSimBridge implements Runnable {
 
