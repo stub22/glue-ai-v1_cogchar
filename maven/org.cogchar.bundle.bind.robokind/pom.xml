@@ -29,14 +29,14 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
 			<version>${project.version}</version>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
 			<groupId>org.appdapter</groupId>
 			<type>jar</type>
 			<version>${appdapter.version}</version>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency>		
 		
 		<!--
         <dependency>
@@ -53,6 +53,35 @@
 			<scope>provided</scope>
 		</dependency>
 
+
+<!-- ***************** For Cogbot-Client HTTP / XML stuff -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		<dependency>
+			<artifactId>jdom</artifactId>
+			<groupId>jdom</groupId>
+			<type>jar</type>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
+			<groupId>org.appdapter</groupId>
+			<version>${appdapter.version}</version>
+		</dependency>
+
+<!--   End Cogbot-Client dependencies, begin Robokind-speech-IO stuff used by CogbotSpeechDemo -->		
+		
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.avrogen.speech</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+
+		
+		<!-- End Robokind-speech-IO stuff (not already used by Cogchar) -->
 	
 		<dependency>
 			<!-- Does this conflict with the XPP provided thru JME3? -->
@@ -75,9 +104,10 @@
 		</dependency>			
 		<dependency>
 			<groupId>org.robokind</groupId>
+			<!-- Needed at compile time for PortableSpeechRequest in CogbotSpeechDemo -->
 			<artifactId>org.robokind.impl.speech</artifactId>
 			<version>${robokind.version}</version>
-			<scope>runtime</scope>
+		
 		</dependency>		
 
 		<dependency>

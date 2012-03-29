@@ -131,7 +131,7 @@ public class PumaDualCharacter implements DummyBox {
 	public void stopAndReset() { 
 		stopTheater();
 		// TODO:  Cancel speech jobs and animation jobs
-		
+		// TODO:  Send character to default positions.
 	}
 	
 	public void registerDefaultSceneTriggers() { 

@@ -22,6 +22,10 @@
 ### both our "perm" and "temp" directory structures.
 ###	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl";
 
+##  Here we have 3 minimal RDFS classes to prime Jena Assembler's pump.
+## TODO:  Build real RDFS and OWL schemas to help work with this data.
+
+
 cs:BuildableSceneSpec
 		a 					rdfs:Class;
 		rdfs:subClassOf 	ja:Object;
@@ -43,12 +47,41 @@ cs:BuildableChannelSpec
 csi:speechOut_100		
 	rdf:type			cs:BuildableChannelSpec;
 	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
-	apsb:label			"SPEECH_OUT-MAIN-ACAPELA_KENNY";
-	rdfs:label 			"SPEECH_OUT-MAIN-ACAPELA_KENNY";
-	apsb:trigger		apt:trig_001a;
-	cs:details			"Acapela 'Kenny' timed for Linux";
-	cs:size				-99.7;
+	apsb:label			"[apsb:]SpeechOutMain for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]SpeechOutMain for Avatar_ZenoR50";
+	cs:details			"Acapela 'Nelly' timed for Linux";
 	.
+
+csi:animOut_200		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]AnimOut-VirtualBest for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]AnimOut-VirtualBest for Avatar_ZenoR50";
+	cs:details			"Robokind XML animations - 'best' version (perm or temp) based on current settings in GUI";
+	.
+
+
+csi:animOut_210		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]AnimOut-PermBundle for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]AnimOut-PermBundle for Avatar_ZenoR50";
+	cs:details			"Robokind XML animations - 'permanent' version from resource bundle";
+	.
+
+csi:animOut_220		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]AnimOut-TempFolder for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]AnimOut-TempFolder for Avatar_ZenoR50";
+	cs:details			"Robokind XML animations - 'temp' version from NB module filesys APP/org_cogchar_nbui_render/config/cogchar/rk_bind_temp";
+.
+
+# behavior_temp
+# logging_temp
+# rk_bind_temp
+
+
 ################################################################################################################
 ### Test scenes 1-10  are launched with numeric keypad
 ################################################################################################################
@@ -103,7 +136,13 @@ csi:bh_002
 			cs:channel			csi:speechOut_100;
 			cs:startOffsetSec	1.2;
 			cs:text				"Started after 1.2 seconds"
-		] [
+		] 
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	2.0;
+			cs:path				""
+		] 
+		[
 			cs:channel			csi:speechOut_100;
 			cs:startOffsetSec	7;
 			cs:text				"Started after 7 seconds"
