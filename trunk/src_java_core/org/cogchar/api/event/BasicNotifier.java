@@ -13,34 +13,37 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.perform;
+
+package org.cogchar.api.event;
+
 import org.cogchar.api.event.Notifier;
+import org.cogchar.api.event.Listener;
 import org.cogchar.api.event.Event;
-import org.appdapter.api.module.Module.State;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface Performance<M extends Media, Time> // ,  C extends Channel<M, Time, C>> //, P extends Performance<M, Time, C, P>> //, E extends Event<Performance<M, Time, C, E>, Time>> 
-								//extends Notifier<Performance<M, Time, C, E>, Time, E> {
-{
-	public enum Action {
-		START, 
-		PAUSE, 
-		RESUME, 
-		STOP
+
+public class BasicNotifier<Source, Time, E extends Event<Source, Time>> implements Notifier<Source, Time, E>  {
+
+	private	Map<Class<E>, List<Listener<Source, Time, E>>>		myListenerListsByFilterClass;
+	
+	public BasicNotifier() {
+		myListenerListsByFilterClass = new HashMap<Class<E>, List<Listener<Source, Time, E>>>();
+	}
+	
+	public void addListener(Class<E> eventClassFilter, Listener<Source, Time, E> l) {
+		
 	}
 
-	public	M						getMedia();
-	public	Channel<M, Time>		getChannel();
-	
-	public State	getState();
-	
-	public boolean attemptToScheduleAction(Action action, Time t);
-	
-	public interface TextPerf<Time> 	extends Performance<Media.Text, Time> {	
-	}
-	public interface FramedPerf<Time, F> 	extends Performance<Media.Framed<F>, Time> {	
-	}
+	public void removeListener(Class<E> eventClassFilter, Listener<Source, Time, E> l) {
 
-
+	}
+	public void notifyListeners(E event) {
+		
+	}
+	
 }

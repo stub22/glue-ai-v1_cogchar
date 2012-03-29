@@ -15,17 +15,43 @@
  */
 package org.cogchar.api.perform;
 
+import org.appdapter.core.item.Ident;
+import java.util.List;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface Channel {
+public interface Channel<M extends Media, Time> // , C extends Channel<M, Time, C>> {
+{
 	public enum Status {
 		INIT,
-		READY,
+		IDLE,
 		PERFORMING,
 		ERROR
 	}
 	public Status getStatus();
 	
+	public Ident getIdent();
 	public String getName();
+	
+	public int	getMaxAllowedPerformances();
+	
+	public Performance<M, Time> makePerformanceForMedia(M media);
+	
+	public boolean schedulePerfAction(Performance<M, Time> perf, Performance.Action action, Time actionTime);
+
+
+	public interface Text<Time> extends Channel<Media.Text, Time> {
+		
+	}
+	public interface Framed<Time, F> extends Channel<Media.Framed<F>, Time> {
+		
+	}
+	
+	public class Bank<Time> {
+		public	List<Channel<?, Time>>	myWildcardChannels;
+		public void test(Text<Time> textChan) { 
+			myWildcardChannels.add(textChan);
+		}
+	}
 }

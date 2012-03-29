@@ -13,16 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.scene;
 
-import java.util.Collection;
-import org.cogchar.api.perform.Channel;
+package org.cogchar.api.perform;
+
+import org.appdapter.core.item.Ident;
+import org.cogchar.api.event.Event;
 import org.cogchar.api.perform.Media;
+
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface Scene<Time, RootC extends Channel<?, Time>> {
-	public	void wireSubChannels(Collection<Channel<? extends Media, Time>> chans);
-	public RootC getRootChannel();
+
+public abstract class BasicTextChannel<Time> extends BasicChannel<Media.Text, Time> implements Channel.Text<Time>  {
+	public BasicTextChannel(Ident ident) {
+		super(ident);
+	}
+
+	@Override public int getMaxAllowedPerformances() {
+		return 1;
+	}
+
+	
 }

@@ -17,6 +17,8 @@ package org.cogchar.bind.rk.robot.client;
 
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.apache.commons.configuration.ConfigurationException;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.animation.Animation;
 import org.robokind.api.animation.Channel;
@@ -26,6 +28,10 @@ import org.robokind.api.animation.utils.ChannelsParameterSource;
 
 import org.robokind.impl.animation.xml.AnimationXMLReader;
 
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
+
+import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +42,15 @@ import org.slf4j.LoggerFactory;
 public class RobotAnimClient {
 	static Logger theLogger = LoggerFactory.getLogger(RobotAnimClient.class);
 	BundleContext	myBundleCtx;
+	private AnimationXMLReader	myAnimationReader;
 	public RobotAnimClient(BundleContext bundleCtx) throws Exception {
 		myBundleCtx = bundleCtx;
+	}
+	public AnimationXMLReader getAnimationReader() { 
+		if (myAnimationReader == null) {
+			myAnimationReader = new AnimationXMLReader();
+		}
+		return myAnimationReader;
 	}
 	public void createAndPlayTestAnim() throws Exception {
 		/* This is how the animation editor gets the available channels.  This
@@ -70,17 +83,66 @@ public class RobotAnimClient {
         //null should be RobotUtils.getRobotFilter(robotId)
         AnimationUtils.playAnimation(myBundleCtx, null, anim);
 	}
-   public static Animation loadAnimation(String filepath){
+   public Animation readAnimationFromFile(String filepath){
+	   
         try{
             return new AnimationXMLReader().readAnimation(filepath);
         }catch(Exception ex){
             ex.printStackTrace();
             return null;
         }
-    }	
+    }
+
+    public Animation readAnimation(HierarchicalConfiguration config){
+		AnimationXMLReader axr = getAnimationReader();
+		return AnimationXMLReader.readAnimation(config);
+	}
+	public HierarchicalConfiguration readXmlConfigFile (String xmlConfFilePath) {
+		HierarchicalConfiguration config = null;
+        try{
+            config = new XMLConfiguration(xmlConfFilePath);
+        }catch (ConfigurationException t){
+            theLogger.warn("Cannont open Robokind animation XML  file [" + xmlConfFilePath + "]", t);
+        }catch(Exception t){
+            theLogger.error("Error reading Robokind animation XML  file  [" + xmlConfFilePath + "]", t);
+        }		
+		return config;
+	}
+	public HierarchicalConfiguration readXmlConfigUrl (String xmlConfUrl) {
+		HierarchicalConfiguration config = null;
+        try{
+			URL url = new URL(xmlConfUrl);
+            config = new XMLConfiguration(url);
+        }catch (ConfigurationException t){
+            theLogger.warn("Cannont open Robokind animation XML URL [" + xmlConfUrl  + "]", t);
+        }catch(Exception t){
+            theLogger.error("Error reading Robokind animation XML URL [" + xmlConfUrl + "]", t);
+        }		
+		return config;
+	}	
+	
+	/*
+	 * 
+	 *     * @param anim Animation to play
+     * @param startTime Animation start time in milliseconds from the beginning 
+     * of the animation
+     * @param stopTime Animation stop time in milliseconds from the beginning 
+     * of the animation
+     * @return AnimationJob created from playing the Animation, returns null
+     * if unsuccessful
+     */
+	/*
+    public static AnimationJob playAnimation(
+            BundleContext context, String filter, Animation anim, 
+            long startTime, long stopTime){
+        return _playAnimation(context, filter, anim, startTime, stopTime);
+    }
+    */
+	
    // To use something other than file, we will go through a different constructor
    // for XMLConfiguration, such as the URL one, and then call:
     //  public static Animation readAnimation(HierarchicalConfiguration config){
    // http://commons.apache.org/configuration/apidocs/org/apache/commons/configuration/XMLConfiguration.html
-	
+
+   
 }

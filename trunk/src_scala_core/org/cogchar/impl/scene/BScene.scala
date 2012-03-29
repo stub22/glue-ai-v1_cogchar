@@ -27,8 +27,8 @@ import com.hp.hpl.jena.assembler.{Assembler, Mode}
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-import org.cogchar.api.perform.{Channel};
-import org.cogchar.impl.perform.{FancyChan, ChannelSpec, ChannelNames};
+import org.cogchar.api.perform.{Channel, Media, BasicChannel, Performance};
+import org.cogchar.impl.perform.{FancyTime, ChannelSpec, ChannelNames};
 
 import org.cogchar.api.scene.{Scene, SceneBuilder};
 
@@ -37,25 +37,28 @@ import scala.collection.mutable.HashMap;
  * @author Stu B. <www.texpedient.com>
  */
 
-class BSceneChan (id : Ident, val scn: BScene) extends FancyChan(id)  {
+class BSceneRootChan (id : Ident, val scn: BScene) extends BasicChannel[Media, FancyTime](id) {
+	override protected def attemptMediaStartNow(m : Media ) : Unit = {
+	}
+	override def makePerformanceForMedia(media : Media ) : Performance[Media, FancyTime] = {
+		null;
+	}
+	override def getMaxAllowedPerformances() : Int = 1;
 }
-class BScene(val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[BSceneChan] {
+// trait SubChan extends Channel[Media, FancyTime] {}
+
+class BScene(val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyTime, BSceneRootChan] {
 	val rootyID = new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
-	val myRootChan = new BSceneChan(rootyID, this);
-	val		myWiredChannels  = new HashMap[Ident,Channel]();
+	val myRootChan = new BSceneRootChan(rootyID, this);
+	val		myWiredChannels  = new HashMap[Ident,Channel[_ <: Media, FancyTime]]();
 	
-	override def getRootChannel() : BSceneChan = {	myRootChan	}
+	override def getRootChannel() : BSceneRootChan = {	myRootChan	}
 	import scala.collection.JavaConversions._;
-	override def wirePerformanceChannels(chans : java.util.Collection[Channel]) : Unit = {
+	override def wireSubChannels(chans : java.util.Collection[Channel[_ <: Media, FancyTime]]) : Unit = {
 		// TODO:  reconcile the actually wired channels with the ones in the SceneSpecs.		
 		for (val c <- chans) {
 			logInfo("Wiring scene[" + mySceneSpec.getIdent.getLocalName + "] to channel: " + c);
-			c match {
-				case fc: FancyChan => {
-					myWiredChannels.put(fc.getIdent, fc);
-				}
-				case _ => logWarning("Cannot wire channel[" + c + "] because it doesn't have a 'fancy' ident");
-			}
+			myWiredChannels.put(c.getIdent, c)
 		}
 	}
 	def attachBehaviorsToModulator(bm : BehaviorModulator) {
@@ -64,7 +67,7 @@ class BScene(val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[BScene
 			bm.attachModule(b);
 		}
 	}
-	def getChannel(id : Ident) : Channel = {
+	def getChannel(id : Ident) : Channel[_ <: Media, FancyTime] = {
 		return myWiredChannels.getOrElse(id, null);
 	}
 }

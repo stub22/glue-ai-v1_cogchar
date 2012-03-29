@@ -14,18 +14,28 @@
  *  limitations under the License.
  */
 package org.cogchar.bind.rk.speech.client;
+
 import org.appdapter.core.item.Ident;
+import org.appdapter.api.module.Module.State;
+
+
 import org.cogchar.bind.rk.robot.client.RobotAnimClient;
-import org.cogchar.api.perform.TextChannel;
+
+import org.cogchar.api.perform.Channel;
 import org.cogchar.api.perform.Performance;
 import org.cogchar.api.perform.BasicPerformance;
+import org.cogchar.api.perform.Media;
 
 import org.cogchar.impl.perform.FancyTextChan;
+import org.cogchar.impl.perform.FancyTextPerf;
+import org.cogchar.impl.perform.FancyTime;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+import org.robokind.api.common.utils.Listener;
 import org.robokind.api.speech.SpeechService;
-import org.appdapter.api.module.Module.State;
+import org.robokind.api.speech.SpeechEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +52,7 @@ public class SpeechOutputClient extends FancyTextChan {
 		super(chanIdent);
 		myBundleCtx = bundleCtx;
 	}
+
 	public class ServiceContext  {
 		public	ServiceReference	serviceRef; 
 		public	SpeechService		speechService;
@@ -91,8 +102,68 @@ public class SpeechOutputClient extends FancyTextChan {
 			}
 		}
     }
-	@Override  public void startTextPerformance (String txt) throws Throwable {
-		speakText(txt);
+	@Override protected void attemptMediaStartNow(Media.Text m) throws Throwable {
+		String textStr = m.getFullText();
+		speakText(textStr);
 	}
 
+	@Override public Performance<Media.Text, FancyTime> makePerformanceForMedia(Media.Text m) {
+		return new FancyTextPerf(m, this);
+	}
+	
+//	@Override  public void startTextPerformance (String txt) throws Throwable {
+//		
+//	}
+
+	
+//	 public long getTimestampMillisecUTC() 
+    /**
+     * Returns the name of the event of this event.
+     * @return name of the event of this event
+     */
+//    public String getSpeechEventType();
+    /**
+     * Returns the stream number for tts output the event originates from.
+     * @return stream number for tts output the event originates from
+     */
+ //   public Long getStreamNumber();
+    /**
+     * Returns the position of the speech request the event begins at.
+     * @return position of the speech request the event begins at
+     */
+ //   public Integer getTextPosition();
+    /**
+     * Returns the number of characters the event covers.
+     * @return number of characters the event covers
+     */
+ //   public Integer getTextLength();
+    /**
+     * Returns event data (usually phone or viseme id) associated with the start
+     * of the event.
+     * @return event data (usually phone or viseme id) associated with the start
+     * of the event
+     */
+ //   public Integer getCurrentData();
+    /**
+     * Returns event data (usually phone or viseme id) associated with the end
+     * of the event.
+     * @return event data (usually phone or viseme id) associated with the end
+     * of the event
+     */
+//    public Integer getNextData();
+    /**
+     * Returns any String data associated with the event (used for SAPI bookmark
+     * events).
+     * @return String data associated with the event (used for SAPI bookmark
+     * events)
+     */
+//    public String getStringData();
+    /**
+     * 
+	 * Returns the duration of the event in milliseconds.
+     * For word boundaries, this duration for speaking the word in milliseconds.
+     * For phonemes and visemes, this is the duration of event in milliseconds. 
+     * @return duration of the event in milliseconds
+     */
+ //   public Integer getDuration();
 }

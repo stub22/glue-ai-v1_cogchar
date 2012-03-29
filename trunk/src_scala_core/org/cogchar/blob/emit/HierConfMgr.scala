@@ -13,16 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.scene;
 
-import java.util.Collection;
-import org.cogchar.api.perform.Channel;
-import org.cogchar.api.perform.Media;
+package org.cogchar.blob.emit;
+
+
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface Scene<Time, RootC extends Channel<?, Time>> {
-	public	void wireSubChannels(Collection<Channel<? extends Media, Time>> chans);
-	public RootC getRootChannel();
+
+
+object HierConfMgr {
+
 }

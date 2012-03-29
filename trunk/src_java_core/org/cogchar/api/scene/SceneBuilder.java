@@ -21,6 +21,7 @@ import org.cogchar.api.perform.Channel;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface SceneBuilder<RootChan extends Channel, S extends Scene<RootChan>> {
-	public	List<S> buildScenes(String sceneResourcePath);
+public interface SceneBuilder {
+	//<RootChan extends Channel, S extends Scene<RootChan>> {
+	//public	List<S> buildScenes(String sceneResourcePath);
 }

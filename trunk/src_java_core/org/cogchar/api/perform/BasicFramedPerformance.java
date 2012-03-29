@@ -13,16 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.scene;
 
-import java.util.Collection;
-import org.cogchar.api.perform.Channel;
-import org.cogchar.api.perform.Media;
+package org.cogchar.api.perform;
+
+import org.cogchar.api.event.Event;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface Scene<Time, RootC extends Channel<?, Time>> {
-	public	void wireSubChannels(Collection<Channel<? extends Media, Time>> chans);
-	public RootC getRootChannel();
+
+public class BasicFramedPerformance<Time, F, EPT extends Performance.FramedPerf<Time, F>,  E extends Event<EPT, Time>> 
+		extends BasicPerformance<Media.Framed<F>, Time, EPT, E> implements Performance.FramedPerf<Time, F> {
+	public BasicFramedPerformance(Media.Framed<F> media, Channel.Framed<Time, F> chan) {
+		super(media, chan);
+	}
+
 }

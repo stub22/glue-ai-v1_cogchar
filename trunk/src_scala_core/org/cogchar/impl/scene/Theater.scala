@@ -20,8 +20,8 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
 import org.appdapter.core.item.{Ident, Item, FreeIdent};
 import scala.collection.mutable.HashMap;
 
-import org.cogchar.api.perform.{Channel};
-import org.cogchar.impl.perform.{DummyTextChan, ChannelNames};
+import org.cogchar.api.perform.{Media, Channel};
+import org.cogchar.impl.perform.{DummyTextChan, FancyTime, ChannelNames};
 
 import org.cogchar.platform.trigger.{DummyBox, DummyTrigger, DummyBinding, DummyBinder};
 
@@ -31,14 +31,14 @@ import org.cogchar.platform.trigger.{DummyBox, DummyTrigger, DummyBinding, Dummy
 
 class Theater extends BasicDebugger with DummyBox {
 	val	myBM = new BehaviorModulator();
-	val myChanSet = new java.util.HashSet[Channel]();
+	val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
 	var myBinder : DummyBinder = null;
 	var	mySceneBook : SceneBook = null;
 	
 	var myThread : Thread = null;
 	var myStopFlag : Boolean = false;
 	
-	def registerChannel(c : Channel) {
+	def registerChannel (c : Channel[_ <: Media, FancyTime]) {
 		myChanSet.add(c);
 	}
 	def getSceneBook = mySceneBook;
@@ -48,7 +48,7 @@ class Theater extends BasicDebugger with DummyBox {
 	def makeSceneFromBook(sceneID: Ident) : BScene = {
 		val sceneSpec = mySceneBook.findSceneSpec(sceneID);
 		val scene = new BScene(sceneSpec);
-		scene.wirePerformanceChannels(myChanSet);
+		scene.wireSubChannels(myChanSet);
 		scene;
 	}
 	def activateScene(scene: BScene) {
