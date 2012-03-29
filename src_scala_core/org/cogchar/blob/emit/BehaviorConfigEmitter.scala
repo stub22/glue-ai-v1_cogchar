@@ -28,6 +28,7 @@ class BehaviorConfigEmitter {
 	val RK_BIND_TEMP = "rk_bind_temp";
 	
 	val MOTION = "motion";
+	val ANIM_XML = "anim_xml";
 
 	val BEHAVIOR_PERM = "behavior";
 	val BEHAVIOR_TEMP = "behavior_temp";
@@ -61,6 +62,9 @@ class BehaviorConfigEmitter {
 	def getRKMotionTempFilePath (pathTail: String) : String = {
 		getRKBindTempFilePath(MOTION + "/" + pathTail);
 	}
+	def getRKAnimationTempFilePath (pathTail: String) : String = {
+		getRKBindTempFilePath(ANIM_XML + "/" + pathTail);
+	}	
 	def getBehaviorTempFilePath (pathTail: String) : String = {
 		getLocalConfigFilePath(BEHAVIOR_TEMP + "/" + pathTail);
 	}
@@ -75,6 +79,9 @@ class BehaviorConfigEmitter {
 	def getRKMotionPermPath (pathTail: String) : String = {
 		getRKBindPermPath(MOTION + "/" + pathTail);
 	}
+	def getRKAnimationPermPath (pathTail: String) : String = {
+		getRKBindPermPath(ANIM_XML + "/" + pathTail);
+	}	
 	def getBehaviorPermPath (pathTail: String) : String = {
 		getPermPath(BEHAVIOR_PERM + "/" + pathTail);
 	}	
