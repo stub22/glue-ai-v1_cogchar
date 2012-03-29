@@ -36,12 +36,13 @@
 			<artifactId>ow2-bundles-externals-commons-logging</artifactId>
 			<version>1.0.33</version>
 		</dependency>
-		
+<!--		
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.jdom</artifactId>
-			<version>1.1_4</version>
+			<version>1.1</version>
 		</dependency>
+-->
 		<dependency>
 			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
 			<groupId>org.appdapter</groupId>
