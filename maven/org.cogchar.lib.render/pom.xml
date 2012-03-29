@@ -14,7 +14,7 @@
 	<artifactId>org.cogchar.lib.render</artifactId>
 
 	<packaging>jar</packaging>
-	<name>org.cogchar.lib.render - POJO</name>
+	<name>${project.artifactId} - POJO</name>
 
 	<build>
 		<plugins>

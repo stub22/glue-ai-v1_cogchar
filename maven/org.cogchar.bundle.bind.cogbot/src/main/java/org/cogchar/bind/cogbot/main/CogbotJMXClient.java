@@ -6,8 +6,6 @@ package org.cogchar.bind.cogbot.main;
 
 /**
  *
- *  Copyright 2010 Hanson Robotics Inc.
- *  All Rights Reserved.
  */
 import org.cogchar.bind.cogbot.scripting.SerialEventQueue;
 
