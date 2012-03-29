@@ -20,7 +20,16 @@ import org.robokind.api.motion.Robot;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class RobotClientContext {
+public class RobotAnimContext {
+	
+	enum AnimChannel {
+		RK_XML_BEST,
+		RK_XML_PERM,
+		RK_XML_TEMP
+	}
+	
 	public	Robot				myTargetRobot;
 	public  RobotAnimClient		myAnimClient;
+	
+	//	myRAC = new RobotAnimClient(bundleCtx); 	
 }

@@ -17,7 +17,7 @@
 package org.cogchar.impl.perform
 
 import  org.cogchar.api.event.{Event}
-import  org.cogchar.api.perform.{Media, Channel, Performance, BasicTextChannel, BasicTextPerformance, BasicFramedPerformance};
+import  org.cogchar.api.perform.{Media, Channel, Performance, BasicTextChannel, BasicFramedChannel, BasicTextPerformance, BasicFramedPerformance};
 
 import org.appdapter.api.module.Module.State;
 import org.appdapter.core.log.{BasicDebugger};
@@ -44,8 +44,12 @@ trait FancyChanStuff {
 	
 }
 
-abstract class FancyTextChan(id: Ident) extends BasicTextChannel[FancyTime](id) {
+abstract class FancyTextChan(id: Ident) extends BasicTextChannel[FancyTime](id) {}
+abstract class FancyFramedChan[F](id: Ident) extends BasicFramedChannel[FancyTime,F](id) {
 }	
+abstract class FancyAnimChan[F](id: Ident) extends BasicFramedChannel[FancyTime,F](id) {
+}	
+
 
 class FancyTextPerf(media : Media.Text, chan: Channel.Text[FancyTime]) 
 		extends  BasicTextPerformance[FancyTime, FancyTextPerf, Event[FancyTextPerf, FancyTime]](media, chan) {
@@ -56,7 +60,6 @@ class DummyTextChan(id: Ident) extends FancyTextChan(id) {
 		val textString = m.getFullText();
 		logInfo("************* START DUMMY TEXT PERFORMANCE on [" + getName() + "] of [" + textString + "]");
 	}
-
 	override def  makePerformanceForMedia(media : Media.Text) : Performance[Media.Text, FancyTime] =  {
 		return new FancyTextPerf(media, this);
 	}	
@@ -83,10 +86,15 @@ object ChannelNames extends org.appdapter.gui.assembly.AssemblyNames {
 	val		NS_ccScnInst = "http://www.cogchar.org/schema/scene/instance#";
 
 	val		N_PRE_speechOut =  "speechOut";
+	val		N_PRE_animOut =  "animOut";
 	
 	val		SPEECH_CHANNEL_NUM_DIGITS = 3;
 	val		SPEECH_MAIN_CHANNEL_NUM = 100;
 	
+	val		ANIM_CHANNEL_NUM_DIGITS = 3;
+	val		RK_ANIM_BEST_CHANNEL_NUM = 200;
+	val		RK_ANIM_PERM_CHANNEL_NUM = 210;
+	val		RK_ANIM_TEMP_CHANNEL_NUM = 220;
 	
 	def getChannelIdent(localName : String) : Ident = { 
 		val absURI = NS_ccScnInst + localName;
@@ -103,4 +111,12 @@ object ChannelNames extends org.appdapter.gui.assembly.AssemblyNames {
 	}
 	def getMainSpeechOutChannelIdent() = getSpeechOutChannelIdent(SPEECH_MAIN_CHANNEL_NUM); 
 
+	def getAnimChannelIdent(chanNum  : Int) : Ident = { 
+		val chanName = getNumericChannelName(N_PRE_animOut, chanNum, ANIM_CHANNEL_NUM_DIGITS);
+		getChannelIdent(chanName);
+	}	
+	
+	def getAnimBestChannelIdent() = getSpeechOutChannelIdent(RK_ANIM_BEST_CHANNEL_NUM);
+	def getAnimPermChannelIdent() = getSpeechOutChannelIdent(RK_ANIM_PERM_CHANNEL_NUM);
+	def getAnimTempChannelIdent() = getSpeechOutChannelIdent(RK_ANIM_TEMP_CHANNEL_NUM);
 }
