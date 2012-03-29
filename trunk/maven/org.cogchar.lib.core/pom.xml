@@ -12,7 +12,7 @@
 	</parent>		
 	
 	<artifactId>org.cogchar.lib.core</artifactId>
-	<name>org.cogchar.lib.core - POJO + Scala</name>
+	<name>${project.artifactId} - POJO + Scala</name>
 	<description>Cogchar core - does not include Render binding or Robot binding</description>
 
 	<dependencies>

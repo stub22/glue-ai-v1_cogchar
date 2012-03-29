@@ -11,7 +11,7 @@ import org.cogchar.bind.cogbot.main.CogbotService;
 import org.cogchar.bind.cogbot.main.CogbotAvatar;
 
 /**
- * @author Stu Baurmann
+ * @author Stu B.
  */
 public class TestCogSim {
 

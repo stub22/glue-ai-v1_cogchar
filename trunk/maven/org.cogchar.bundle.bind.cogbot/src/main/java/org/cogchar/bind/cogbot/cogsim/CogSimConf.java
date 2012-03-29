@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B.
  */
 public class CogSimConf implements Serializable {
     private final Properties myProps;

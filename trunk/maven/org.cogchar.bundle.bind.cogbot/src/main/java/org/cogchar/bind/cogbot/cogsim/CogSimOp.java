@@ -31,7 +31,7 @@ import org.dom4j.Node;
 
 /**
  *
- * @author Stu Baurmann
+ * @author Stu B.
  */
 public class CogSimOp {
 
