@@ -48,7 +48,9 @@ public class HumanoidPuppetActions {
 			@Override boolean includedInMinSim() { 	return true; }				
         },
         TOGGLE_SKEL_HILITE {
-			// uses default act() and boxy wiring
+            void act(HumanoidRenderContext ctx) {
+				ctx.toggleDebugSkeletons();
+            }
             Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_F2)};
             }

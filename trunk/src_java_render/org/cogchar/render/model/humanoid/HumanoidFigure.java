@@ -64,6 +64,7 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	protected	HumanoidBoneConfig		myHumanoidBoneConfig;
 	// Skeleton is used for direct access to the graphic "spatial" bones of JME3 (bypassing JBullet physics bindings). 
 	private	Skeleton					myHumanoidSkeleton;
+	private	SkeletonDebugger			myHumanoidSkeletonDebugger;
 	private BonyConfigEmitter			myBonyConfigEmitter;
 	
 	private	FigureState					myFigureState;
@@ -105,8 +106,8 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 
 		AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
 		myHumanoidSkeleton = humanoidControl.getSkeleton();
-		// Turn on the green bone skeleton debug.
-		attachDebugSkeleton(myHumanoidModelNode, assetMgr);
+		// Prepare the green bone skeleton debugger, but don't activate it.
+		initDebugSkeleton(assetMgr);
 
 		//Note: PhysicsRagdollControl is still TODO, constructor will change
 		myHumanoidKRC = new KinematicRagdollControl(KRC_WEIGHT_THRESHOLD);
@@ -202,19 +203,25 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 			theLogger.warn("Character cannot boogie, nickname is: " + myNickname, t);
 		}
 	}
-	public void attachDebugSkeleton(Node humanoidModel, AssetManager assetMgr) { 
+	public void initDebugSkeleton(AssetManager assetMgr) { 
 		// AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
-        SkeletonDebugger humanoidSkeletonDebug = 
-				new SkeletonDebugger(SKEL_DEBUG_NAME, myHumanoidSkeleton);
-		String unshadedMatPath = myBonyConfigEmitter.getMaterialPath();
-        Material mat2 = new Material(assetMgr, unshadedMatPath);
-        mat2.getAdditionalRenderState().setWireframe(true);
-        mat2.setColor("Color", ColorRGBA.Green);
-        mat2.getAdditionalRenderState().setDepthTest(false);
-        humanoidSkeletonDebug.setMaterial(mat2);
-        humanoidSkeletonDebug.setLocalTranslation(humanoidModel.getLocalTranslation());
-		
-		humanoidModel.attachChild(humanoidSkeletonDebug);
+		if (myHumanoidSkeletonDebugger == null) {
+			myHumanoidSkeletonDebugger = new SkeletonDebugger(SKEL_DEBUG_NAME, myHumanoidSkeleton);
+			String unshadedMatPath = myBonyConfigEmitter.getMaterialPath();
+			Material mat2 = new Material(assetMgr, unshadedMatPath);
+			mat2.getAdditionalRenderState().setWireframe(true);
+			mat2.setColor("Color", ColorRGBA.Green);
+			mat2.getAdditionalRenderState().setDepthTest(false);
+			myHumanoidSkeletonDebugger.setMaterial(mat2);
+		}
+        myHumanoidSkeletonDebugger.setLocalTranslation(myHumanoidModelNode.getLocalTranslation());	
+	}
+	public void toggleDebugSkeleton() {
+		if (myHumanoidModelNode.hasChild(myHumanoidSkeletonDebugger)) {
+			myHumanoidModelNode.detachChild(myHumanoidSkeletonDebugger);
+		} else {
+			myHumanoidModelNode.attachChild(myHumanoidSkeletonDebugger);
+		}
 	}
 	public void attachRagdollBone(HumanoidBoneDesc hbd) {
 		myHumanoidKRC.addBoneName(hbd.getSpatialName());

@@ -14,14 +14,17 @@
  *  limitations under the License.
  */
 package org.cogchar.app.buddy.busker;
-import org.cogchar.platform.trigger.DummyTrigger;
+import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.platform.trigger.DummyBox;
+import org.cogchar.platform.trigger.DummyTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public abstract class TriggerItem implements DummyTrigger {
-	static Logger theLogger = LoggerFactory.getLogger(TriggerItem.class);
+public abstract class TriggerItem extends BasicDebugger implements DummyTrigger {
+	protected void logFiring(DummyBox targetBox) {
+		logInfo("trigger[" + toString() + "] firing on " + targetBox.toString());
+	}
 	
 }

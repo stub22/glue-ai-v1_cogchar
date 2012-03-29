@@ -139,6 +139,11 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 	//	camRot.fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X);
 	//	defCam.setRotation(camRot);
 	}
+	public void toggleDebugSkeletons() { 
+		for (HumanoidFigure hf : myFiguresByCharURI.values()) {
+			hf.toggleDebugSkeleton();
+		}
+	}
 		/*
 		 * 
 		 * The JME3 docs below are a horrible, inconsistent, incomplete, incorrect mess:
