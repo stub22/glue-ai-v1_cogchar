@@ -114,12 +114,49 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.bundle.bind.cogbot</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient-osgi</artifactId>
+			<version>4.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore-osgi</artifactId>
+			<version>4.1.4</version>
 		</dependency>		
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>org.cogchar.bundle.render.resources</artifactId>
-            <version>${project.version}</version>
-        </dependency>		
+		<dependency>
+			<groupId>org.ow2.bundles</groupId>
+			<artifactId>ow2-bundles-externals-commons-logging</artifactId>
+			<version>1.0.33</version>
+		</dependency>
+		<dependency>
+			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
+			<groupId>org.appdapter</groupId>
+			<version>${appdapter.version}</version>
+		</dependency>	
+		
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.avrogen.speech</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.api.speech</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<!-- Needed at compile time for PortableSpeechRequest in CogbotSpeechDemo -->
+			<artifactId>org.robokind.impl.speech</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>				
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.render.resources</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
 		<dependency>
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<groupId>org.appdapter</groupId>
