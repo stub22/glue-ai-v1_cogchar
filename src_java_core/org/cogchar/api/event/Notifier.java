@@ -13,16 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.scene;
 
-import java.util.Collection;
-import org.cogchar.api.perform.Channel;
-import org.cogchar.api.perform.Media;
+package org.cogchar.api.event;
+
+import org.cogchar.api.event.Listener;
+import org.cogchar.api.event.Event;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface Scene<Time, RootC extends Channel<?, Time>> {
-	public	void wireSubChannels(Collection<Channel<? extends Media, Time>> chans);
-	public RootC getRootChannel();
+
+public interface Notifier<Source, Time, E extends Event<Source, Time>> {
+	public	void	addListener(Class<E> eventClassFilter, Listener<Source, Time, E> l);
+	public	void	removeListener(Class<E> eventClassFilter, Listener<Source, Time, E> l);
 }

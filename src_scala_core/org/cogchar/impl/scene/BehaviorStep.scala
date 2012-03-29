@@ -19,7 +19,9 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
 
 import org.appdapter.core.item.{Ident}
 
-import  org.cogchar.api.perform.{Channel, TextChannel, Performance, BasicPerformance}
+import  org.cogchar.api.perform.{Media, Channel, Performance, BasicPerformance}
+
+import org.cogchar.impl.perform.{FancyTime};
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -57,15 +59,21 @@ abstract class BasicBehaviorAction extends BasicDebugger with BehaviorAction {
 
 class SpeechAction(val mySpeechText : String) extends BasicBehaviorAction() { 
 	override def perform(s: BScene) {
+		val media = new Media.BasicText(mySpeechText);
 		for (val chanId : Ident <- myChannelIdents) {
 			logInfo("Looking for channel[" + chanId + "] in scene [" + s + "]");
-			val chan : Channel = s.getChannel(chanId);
+			val chan : Channel[_ <: Media, FancyTime] = s.getChannel(chanId);
 			logInfo("Found channel: " + chan);
 			if (chan != null) {
+				
 				chan match {
-					case txtChan : TextChannel => {
-						txtChan.performText(mySpeechText)
+					case txtChan : Channel.Text[FancyTime] => {
+						val perf : Performance[Media.Text, FancyTime] = txtChan.makePerformanceForMedia(media);
+						val startResFlag = perf.attemptToScheduleAction(Performance.Action.START, null);
+						
 					}
+					//	txtChan.performText(mySpeechText)
+					//}
 					case  _ => {
 						logWarning("************* SpeechAction cannot perform on non Text-Channel: " + chan);
 					}

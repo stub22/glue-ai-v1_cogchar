@@ -15,53 +15,55 @@
  */
 package org.cogchar.api.perform;
 
+import org.cogchar.api.event.Listener;
+import org.cogchar.api.event.Event;
 import java.util.List;
 import java.util.ArrayList;
-import org.cogchar.api.perform.Performance.Result;
+
 import org.appdapter.api.module.Module.State;
+import org.cogchar.api.event.BasicNotifier;
+import org.cogchar.api.event.Notifier;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BasicPerformance<Chan extends Channel> implements Performance<Chan> {
-	
-	protected static class BasicResult<C extends Channel> implements Performance.Result<C> {
-		private State	myState;
-		public State getState() {
-			return myState;
-		}
-	}
+public class BasicPerformance<M extends Media, Time, EPT extends Performance<M, Time>, E extends Event<EPT, Time>>
+		extends BasicNotifier<EPT, Time, E>
+		implements Performance<M, Time>, Notifier<EPT, Time, E> {
 	
 	
-	private	Chan					myChannel;
-	private	BasicResult<Chan>		myCurrentResult;
-	private List<Listener<Chan>>	myListeners = new ArrayList<Listener<Chan>>();
-	public BasicPerformance(Chan chan) {
+	private	M						myMedia;
+	private	Channel<M, Time>		myChannel;
+	private State					myState;
+
+	public BasicPerformance(M media, Channel<M, Time> chan) {
+		myMedia = media;
 		myChannel = chan;
-		myCurrentResult = new BasicResult<Chan>();
-		myCurrentResult.myState = State.IN_INIT;
+		myState = State.IN_INIT;
 	}
-	@Override public Result<Chan> getCurrentResult() {
-		return myCurrentResult;
-	}
-	@Override public void addListener(Listener<Chan> l) {
-		myListeners.add(l);
-	}
-	@Override public void removeListener(Listener<Chan> l) {
-		myListeners.remove(l);
-	}		
-	protected Chan getChannel() { 
+
+	@Override public Channel<M, Time> getChannel() { 
 		return myChannel;
 	}
-	public void updateResultState(State s) {
-		myCurrentResult.myState = s;
+	@Override public M getMedia() { 
+		return myMedia;
+	}
+	public State getState() {
+		return myState;
+	}	
+	protected void markState(State s) {
+		myState = s;
 		notifyListeners();
 	}
 	protected void notifyListeners() { 
-		for (Listener<Chan> l : myListeners) {
-			l.notifyChange(this);
-		}
+		//for (Listener<M, C> l : myListeners) {
+		//	l.notifyChange(this);
+		//}
 	}
-	
+
+	public boolean attemptToScheduleAction(Action action, Time t) {
+		return myChannel.schedulePerfAction(this, action, t);
+	}
+
 
 }

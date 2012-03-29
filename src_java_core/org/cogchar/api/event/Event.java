@@ -13,11 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.perform;
+
+package org.cogchar.api.event;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface TextChannel extends Channel {
-	public Performance<TextChannel> performText(String txt);
+
+public interface Event<Source, Time> {
+	public	Source	getSource();
+	public	Time	getTimeStamp();
 }
