@@ -1,4 +1,4 @@
-package org.cocghcar.bind.cogbot.osgi;
+package org.cogchar.bind.cogbot.osgi;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
