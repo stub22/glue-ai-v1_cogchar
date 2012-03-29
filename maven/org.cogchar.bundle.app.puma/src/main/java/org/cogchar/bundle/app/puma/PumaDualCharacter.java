@@ -28,7 +28,7 @@ import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.FreeIdent;
 
-import org.cogchar.app.buddy.busker.SceneMsg_TI;
+
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
@@ -43,6 +43,8 @@ import org.cogchar.platform.trigger.DummyBox;
 import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.platform.trigger.DummyBinder;
 import org.cogchar.platform.trigger.DummyTrigger;
+
+import org.cogchar.app.buddy.busker.TriggerItems;
 
 import org.cogchar.impl.scene.BehaviorTrial;
 import org.cogchar.impl.scene.Theater;
@@ -126,11 +128,15 @@ public class PumaDualCharacter implements DummyBox {
 	public void stopTheater() {
 		myTheater.fullyStop(500);
 	}
+	public void stopAndReset() { 
+		stopTheater();
+		// TODO:  Cancel speech jobs and animation jobs
 		
+	}
 	
 	public void registerDefaultSceneTriggers() { 
 		for (int i=0; i < SceneActions.getSceneTrigKeyCount(); i++) {
-			SceneMsg_TI smti = new SceneMsg_TI();
+			TriggerItems.SceneMsg smti = new TriggerItems.SceneMsg();
 			smti.sceneInfo = "yowza " + i;
 			registerTheaterBinding(i, smti);
 		}

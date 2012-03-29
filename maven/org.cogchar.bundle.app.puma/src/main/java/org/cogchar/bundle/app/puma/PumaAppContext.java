@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 
 import java.util.List;
 import java.util.ArrayList;
+import org.cogchar.app.buddy.busker.TriggerItem;
 
 import org.osgi.framework.BundleContext;
 
@@ -29,11 +30,6 @@ import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
-import org.cogchar.app.buddy.busker.DancingTriggerItem;
-import org.cogchar.app.buddy.busker.ReloadBehavior_TI;
-import org.cogchar.app.buddy.busker.TalkingTriggerItem;
-import org.cogchar.app.buddy.busker.UpdateBonyConfig_TI;
-
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import org.cogchar.render.app.bony.BodyController;
 import org.cogchar.render.app.bony.VerbalController;
@@ -42,9 +38,12 @@ import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidPuppetActions;
+import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
 
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 
+import org.cogchar.app.buddy.busker.TriggerItems;
+import org.cogchar.platform.trigger.DummyBinding;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +58,7 @@ public class PumaAppContext {
 	private BundleContext			myBundleContext;
 	private	HumanoidRenderContext	myHRC;
 	
-	private	UpdateBonyConfig_TI		myUpdateBonyConfigTI;
+	private	TriggerItems.UpdateBonyConfig		myUpdateBonyConfigTI;
 	
 
 	public PumaAppContext(BundleContext bc, String sysContextURI, String localConfigRootPath) {
@@ -104,13 +103,9 @@ public class PumaAppContext {
 			pdc.connectSpeechOutputSvcs(myBundleContext);
 			
 			pdc.registerDefaultSceneTriggers();
-			
 			pdc.loadBehaviorConfig(false);
-			registerBehaviorReloadTrigger(pdc);
 			
-			registerBonyConfigUpdateTrigger(pdc);			
-			registerTestDanceTrigger(pdc);
-			registerTestTalkTrigger(pdc);
+			registerSpecialInputTriggers(pdc);
 			
 			pdc.startTheater();
 			
@@ -171,67 +166,22 @@ public class PumaAppContext {
 			theLogger.error("BonyRenderContext is NULL, cannot startOpenGLCanvas!");
 		}
 	}
-
-	private void registerBonyConfigUpdateTrigger(PumaDualCharacter pdc) { 
-		myUpdateBonyConfigTI = new UpdateBonyConfig_TI();
+	private void registerSpecialInputTriggers(PumaDualCharacter pdc) { 	
 		
-		// Hook up to a JME3 action to catch keypresses in OpenGL window.
-		HumanoidPuppetActions.PlayerAction.UPDATE_BONY_CONFIG.getBinding().setTargetBox(pdc);
-		HumanoidPuppetActions.PlayerAction.UPDATE_BONY_CONFIG.getBinding().setTargetTrigger(myUpdateBonyConfigTI);
+		hookItUp(PlayerAction.STOP_AND_RESET_CHAR, pdc, new TriggerItems.StopAndReset());
+		hookItUp(PlayerAction.RELOAD_BEHAVIOR, pdc, new TriggerItems.ReloadBehavior());
+		hookItUp(PlayerAction.DANGER_YOGA, pdc, new TriggerItems.DangerYoga());
+		hookItUp(PlayerAction.SAY_THE_TIME, pdc, new TriggerItems.SayTheTime());
 		
+		myUpdateBonyConfigTI = new TriggerItems.UpdateBonyConfig();
 		myUpdateBonyConfigTI.myOptResourceClassLoader = null;
+		
+		hookItUp(PlayerAction.UPDATE_BONY_CONFIG, pdc, myUpdateBonyConfigTI);
 	}
-	private void registerBehaviorReloadTrigger(PumaDualCharacter pdc) { 
-		ReloadBehavior_TI rbti = new ReloadBehavior_TI();
-		// Hook up to a JME3 action to catch keypresses in OpenGL window.
-		HumanoidPuppetActions.PlayerAction.RELOAD_BEHAVIOR.getBinding().setTargetBox(pdc);
-		HumanoidPuppetActions.PlayerAction.RELOAD_BEHAVIOR.getBinding().setTargetTrigger(rbti);
-	}	
-	private void registerTestDanceTrigger(PumaDualCharacter pdc) { 
-		DancingTriggerItem dti = new DancingTriggerItem();
-		
-		// 1. Hook up to a JME3 action 
-		HumanoidPuppetActions.PlayerAction.DANGER_YOGA.getBinding().setTargetBox(pdc);
-		HumanoidPuppetActions.PlayerAction.DANGER_YOGA.getBinding().setTargetTrigger(dti);
-		
-		// 2. Hook up to the Swing-based "BodyController"
-		// Kinda ugly, may be axed soon
-		HumanoidRenderContext contextForSwingAction = getHumanoidRenderContext();
-		if (contextForSwingAction != null) {
-			
-			VirtualCharacterPanel vcp = contextForSwingAction.getPanel();
-			if (vcp != null) {
-				BodyController bodCont = vcp.getBodyController();
-				if (bodCont != null) {
-					bodCont.setupPokeTrigger(pdc, dti);		
-				} else {
-					theLogger.warn("No BodyController found to attach poke-trigger to");
-				}
-			}
-		}
+	private void hookItUp(PlayerAction action, PumaDualCharacter pdc, TriggerItem trigItem) {
+		// Hook up to a JME3 action (defined in our org.cogchar.lib.render project) to catch keypresses in OpenGL window.
+		DummyBinding db = action.getBinding();
+		db.setTargetBox(pdc);
+		db.setTargetTrigger(trigItem);
 	}
-	private void registerTestTalkTrigger(PumaDualCharacter pdc) {
-
-		TalkingTriggerItem tti = new TalkingTriggerItem();
-		
-		// 1. Hook up to a JME3 action 
-		HumanoidPuppetActions.PlayerAction.SAY_THE_TIME.getBinding().setTargetBox(pdc);
-		HumanoidPuppetActions.PlayerAction.SAY_THE_TIME.getBinding().setTargetTrigger(tti);
-
-		// 2. Hook up to the Swing-based "BodyController"
-		// Kinda ugly, may be axed soon		
-		HumanoidRenderContext contextForSwingAction = getHumanoidRenderContext();		
-		if (contextForSwingAction != null) {
-			VirtualCharacterPanel vcp = contextForSwingAction.getPanel();
-			if (vcp != null) {
-				VerbalController verbCont = vcp.getVerbalController();
-				if (verbCont != null) {
-					verbCont.setupTalkTrigger(pdc, tti);
-				} else {
-					theLogger.warn("No VerbalController found to attach talk-trigger to");
-				}
-			}
-		}
-	}	
-
 }
