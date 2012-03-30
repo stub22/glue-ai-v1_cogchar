@@ -15,10 +15,15 @@
  */
 package org.cogchar.bundle.app.puma;
 
-import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
+
 
 import java.util.List;
 import java.util.Set;
+
+import org.appdapter.core.log.BasicDebugger;
+
+import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
+
 import org.osgi.framework.BundleContext;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelJoint;
@@ -26,18 +31,18 @@ import org.cogchar.bind.rk.robot.model.ModelJoint;
 import org.cogchar.render.model.bony.FigureState;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
-import org.cogchar.bind.rk.robot.config.BoneProjectionRange;
-import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
-import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
-import org.cogchar.bind.rk.robot.config.BoneProjectionRange;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-// import sun.net.www.http.Hurryable;
+
+import org.cogchar.api.skeleton.config.BoneProjectionRange;
+import org.cogchar.api.skeleton.config.BoneRobotConfig;
+import org.cogchar.api.skeleton.config.BoneProjectionRange;
+
+import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaHumanoidMapper {
-	static Logger theLogger = LoggerFactory.getLogger(PumaHumanoidMapper.class);	
+public class PumaHumanoidMapper extends BasicDebugger {
+
 	
 	private	ModelBlendingRobotServiceContext		myMBRSC;
 	private	HumanoidRenderContext					myHRC;
@@ -49,9 +54,6 @@ public class PumaHumanoidMapper {
 		myCharURI = charURI;
 	}
 	
-	private void logInfo(String txt) { 
-		theLogger.info(txt);
-	}
 	public HumanoidRenderContext getHumanoidRenderContext() { 
 		return myHRC;
 	}

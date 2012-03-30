@@ -13,11 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.rk.robot.config;
-import org.robokind.api.common.position.NormalizedDouble;
+package org.cogchar.api.skeleton.config;
+
 import org.appdapter.gui.assembly.DynamicCachingComponentAssembler;
 import org.appdapter.gui.box.KnownComponentImpl;
-import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 
@@ -28,9 +27,7 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -59,6 +56,13 @@ public class BoneRobotConfig extends KnownComponentImpl {
 				BoneJointConfig bjc = new BoneJointConfig(ji);
 				mrc.myBJCs.add(bjc);
 			}
+			Collections.sort(mrc.myBJCs, new Comparator() {
+				public int compare(Object o1, Object o2) {
+					int jointNum1 = ((BoneJointConfig)o1).myJointNum;
+					int jointNum2 = ((BoneJointConfig)o1).myJointNum;
+					return jointNum1 - jointNum2;
+				}
+			});
 		}
 		
 		public static void clearCache() { 

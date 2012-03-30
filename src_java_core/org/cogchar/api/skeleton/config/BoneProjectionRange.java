@@ -13,24 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cogchar.bind.rk.robot.config;
+package org.cogchar.api.skeleton.config;
 
-import org.robokind.api.common.position.NormalizedDouble;
-import org.appdapter.gui.assembly.DynamicCachingComponentAssembler;
-import org.appdapter.gui.box.KnownComponentImpl;
-import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
-import org.appdapter.gui.box.BoxImpl;
-import org.appdapter.gui.box.Trigger;
-import org.appdapter.core.item.JenaResourceItem;
-import org.appdapter.core.item.ModelIdent;
-import org.appdapter.gui.box.KnownComponent;
-import org.appdapter.gui.box.MutableKnownComponent;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  *
@@ -76,11 +62,15 @@ public class BoneProjectionRange  {
 	public BoneRotationAxis getRotationAxis() {
 		return myRotationAxis;
 	}
-
-	public BoneProjectionPosition makePositionForNormalizedFraction(NormalizedDouble normVal) {
+	/**
+	 * 
+	 * @param normVal  between 0.0 and 1.0
+	 * @return 
+	 */
+	public BoneProjectionPosition makePositionForNormalizedFraction(double normVal) {
 		// This calc works regardless of signs of min/max
 		double rangeRad = myMaxPosAngRad - myMinPosAngRad;
-		double boneProjAngleRad = rangeRad * normVal.getValue() + myMinPosAngRad;
+		double boneProjAngleRad = rangeRad * normVal + myMinPosAngRad;
 		return new BoneProjectionPosition(this, boneProjAngleRad);
 	}
 

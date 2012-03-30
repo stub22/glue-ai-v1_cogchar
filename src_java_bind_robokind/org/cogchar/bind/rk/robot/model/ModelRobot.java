@@ -16,12 +16,13 @@
 package org.cogchar.bind.rk.robot.model;
 
 import java.beans.PropertyChangeListener;
-import org.cogchar.bind.rk.robot.config.BoneProjectionPosition;
+import org.cogchar.api.skeleton.config.BoneProjectionPosition;
+import org.cogchar.api.skeleton.config.BoneJointConfig;
+import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import org.cogchar.bind.rk.robot.config.BoneJointConfig;
-import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
+
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.AbstractRobot;
 import org.robokind.api.motion.Joint;
