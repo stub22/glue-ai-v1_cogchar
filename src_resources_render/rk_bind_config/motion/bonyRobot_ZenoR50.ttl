@@ -47,7 +47,7 @@
 bc:BuildableBoneRobotConfig
 		a 					rdfs:Class;
 		rdfs:subClassOf 	ja:Object;
-		ja:assembler		"org.cogchar.bind.rk.robot.config.BoneRobotConfig$Builder" 
+		ja:assembler		"org.cogchar.api.skeleton.config.BoneRobotConfig$Builder" 
 #####  Again, note the period ending the description of this resource, and all other
 #####  top-level (*syntactically, but not semantically*) resources below.
 		.
@@ -62,7 +62,7 @@ bc:BuildableBoneRobotConfig
 
 bci:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 ####  Here is the class name of the actual config object instance we are constructing.
-	apsb:javaFQCN		"org.cogchar.bind.rk.robot.config.BoneRobotConfig";
+	apsb:javaFQCN		"org.cogchar.api.skeleton.config.BoneRobotConfig";
 #### Some additional descriptive metadata
 	apsb:label			"Zeno R-50 Avatar Bone Config apsb:label";
 	rdfs:label			"Zeno R-50 Avatar Bone Config rdfs:label";
@@ -305,9 +305,6 @@ bci:joint_Jaw
 	]
 .
 
-# 25   = lower eyelids
-# 26  = upper eyelids
-# 27  = eyebrows
 
 ######################################################################
 ##### Left Arm
@@ -324,8 +321,11 @@ bci:joint_LtShoulder_Pitch
 	]
 .
 bci:joint_LtShoulder_Roll
-	bc:jointNum			401;			bc:jointName			"LtShoulder_Roll";
-	bc:defaultPosNorm	0.1;
+
+	bc:jointNum				401;			bc:jointName			"LtShoulder_Roll";
+	bc:defaultPosNorm		0.1;
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
 	bc:projectionRange	[
 		bc:boneName			"LtShoulder";
 		bc:rotationAxis		"Z_ROT";
@@ -336,23 +336,26 @@ bci:joint_LtShoulder_Roll
 
 bci:joint_LtElbow_Yaw
 	bc:jointNum			410;			bc:jointName			"LtElbow_Yaw";
-	bc:defaultPosNorm	0.1;
+	bc:defaultPosNorm	0.5;
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
 	bc:projectionRange	[
 		bc:boneName			"LtElbow";
 		bc:rotationAxis		"X_ROT";
-		bc:minAngleDeg		-60.0;
-		bc:maxAngleDeg		60.0;
+		bc:minAngleDeg		180.0;
+		bc:maxAngleDeg		0.0;
 	]
 .
 
 bci:joint_LtElbow_Pitch
 	bc:jointNum			411;			bc:jointName			"LtElbow_Pitch";
-	bc:defaultPosNorm	0.1;
+	bc:defaultPosNorm	0.9;
 	bc:projectionRange	[
 		bc:boneName			"LtElbow";
 		bc:rotationAxis		"Y_ROT";
-		bc:minAngleDeg		30.0;
-		bc:maxAngleDeg		-90.0;
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		30.0;
+
 	]
 .
 
@@ -360,11 +363,13 @@ bci:joint_LtElbow_Pitch
 bci:joint_LtWrist_Yaw
 	bc:jointNum			420;			bc:jointName			"LtWrist_Yaw";
 	bc:defaultPosNorm	0.5;
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
 	bc:projectionRange	[
 		bc:boneName			"LtWrist";
 		bc:rotationAxis		"X_ROT";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		 90.0;
+		bc:maxAngleDeg		-90.0;
 	]
 .
 
@@ -378,41 +383,42 @@ bci:joint_RtShoulder_Pitch
 	bc:projectionRange	[
 		bc:boneName			"RtShoulder";
 		bc:rotationAxis		"Y_ROT";
-		bc:minAngleDeg		-30.0;
-		bc:maxAngleDeg		 120.0;
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
 	]
 .
 
 bci:joint_RtShoulder_Roll
 	bc:jointNum			501;			bc:jointName			"RtShoulder_Roll";
-	bc:defaultPosNorm	0.1;
+	bc:defaultPosNorm	0.9;
 	bc:projectionRange	[
 		bc:boneName			"RtShoulder";
 		bc:rotationAxis		"Z_ROT";
-		bc:minAngleDeg		-10.0;
-		bc:maxAngleDeg		 170.0;
+		bc:minAngleDeg		 170.0;
+		bc:maxAngleDeg		-10.0;
 	]
 .
 
-
 bci:joint_RtElbow_Yaw
 	bc:jointNum			510;			bc:jointName			"RtElbow_Yaw";
-	bc:defaultPosNorm	0.1;
+	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"RtElbow";
 		bc:rotationAxis		"X_ROT";
 		bc:minAngleDeg		0.0;
-		bc:maxAngleDeg		120.0;
+		bc:maxAngleDeg		180.0;
 	]
 .
+
 bci:joint_RtElbow_Pitch
 	bc:jointNum			511;			bc:jointName			"RtElbow_Pitch";
-	bc:defaultPosNorm	0.1;
+	bc:defaultPosNorm	0.9;
 	bc:projectionRange	[
 		bc:boneName			"RtElbow";
 		bc:rotationAxis		"Y_ROT";
-		bc:minAngleDeg		30.0;
-		bc:maxAngleDeg		-90.0;
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		30.0;
+
 	]
 .
 
@@ -436,6 +442,10 @@ bci:joint_RtWrist_Yaw
 bci:joint_LtHip_Roll
 	bc:jointNum			600;			bc:jointName			"LtHip_Roll";
 	bc:defaultPosNorm	0.2;
+
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
+
 	bc:projectionRange	[
 		bc:boneName			"LtHip";
 		bc:rotationAxis		"Y_ROT";
@@ -447,11 +457,15 @@ bci:joint_LtHip_Roll
 bci:joint_LtHip_Yaw
 	bc:jointNum			601;			bc:jointName			"LtHip_Yaw";
 	bc:defaultPosNorm	0.5;
+
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
+
 	bc:projectionRange	[
 		bc:boneName			"LtHip";
 		bc:rotationAxis		"X_ROT";
-		bc:minAngleDeg		-45.0;
-		bc:maxAngleDeg		 45.0;
+		bc:minAngleDeg		 45.0;
+		bc:maxAngleDeg		-45.0;
 	]
 .
 
@@ -465,8 +479,6 @@ bci:joint_LtHip_Pitch
 		bc:maxAngleDeg		 90.0;
 	]
 .
-
-
 
 
 bci:joint_LtKnee_Pitch
@@ -486,13 +498,17 @@ bci:joint_LtAnkle_Pitch
 	bc:projectionRange	[
 		bc:boneName			"LtAnkle";
 		bc:rotationAxis		"Z_ROT";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		 90.0;
+		bc:maxAngleDeg		 -90.0;
 	]
 .
 bci:joint_LtAnkle_Roll
 	bc:jointNum			621;			bc:jointName			"LtAnkle_Roll";
 	bc:defaultPosNorm	0.5;
+
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
+
 	bc:projectionRange	[
 		bc:boneName			"LtAnkle";
 		bc:rotationAxis		"Y_ROT";
@@ -555,8 +571,8 @@ bci:joint_RtAnkle_Pitch
 	bc:projectionRange	[
 		bc:boneName			"RtAnkle";
 		bc:rotationAxis		"Z_ROT";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		 90.0;
+		bc:maxAngleDeg		 -90.0;
 	]
 .
 
@@ -567,7 +583,7 @@ bci:joint_RtAnkle_Roll
 	bc:projectionRange	[
 		bc:boneName			"RtAnkle";
 		bc:rotationAxis		"Y_ROT";
-		bc:minAngleDeg		-45.0;
-		bc:maxAngleDeg		 45.0;
+		bc:minAngleDeg		 45.0;
+		bc:maxAngleDeg		 -45.0;
 	]
 .
