@@ -16,7 +16,7 @@
 
 package org.cogchar.bind.rk.robot.model;
 
-import org.cogchar.bind.rk.robot.config.BoneProjectionPosition;
+import org.cogchar.api.skeleton.config.BoneProjectionPosition;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

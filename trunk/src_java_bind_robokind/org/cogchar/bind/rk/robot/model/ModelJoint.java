@@ -16,11 +16,12 @@
 
 package org.cogchar.bind.rk.robot.model;
 
-import org.cogchar.bind.rk.robot.config.BoneProjectionPosition;
-import org.cogchar.bind.rk.robot.config.BoneProjectionRange;
+import org.cogchar.api.skeleton.config.BoneProjectionPosition;
+import org.cogchar.api.skeleton.config.BoneProjectionRange;
+import org.cogchar.api.skeleton.config.BoneJointConfig;
 import java.util.ArrayList;
 import java.util.List;
-import org.cogchar.bind.rk.robot.config.BoneJointConfig;
+
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.common.utils.Utils;
 import org.robokind.api.motion.AbstractJoint;
@@ -45,14 +46,17 @@ public class ModelJoint extends AbstractJoint {
         super(jointId);
         myJointName = bjc.myJointName;
 		updateConfig(bjc);
-		myGoalPosNorm = myDefaultPosNorm;
+		hardResetGoalPosToDefault();
     }
 	public void updateConfig(BoneJointConfig bjc) { 
 		double defPosVal = Utils.bound(bjc.myNormalDefaultPos, 0.0, 1.0);
 		myDefaultPosNorm = new NormalizedDouble(defPosVal);
         myBoneProjectionRanges =  bjc.myProjectionRanges;	
+		hardResetGoalPosToDefault();
 	}
-	
+	public void hardResetGoalPosToDefault() { 
+		setGoalPosition(getDefaultPosition());
+	}
 	protected String getDescription() { 
 		return "JOINT[" + getId() + ", " + myJointName + "]";
 	}
@@ -94,7 +98,7 @@ public class ModelJoint extends AbstractJoint {
         List<BoneProjectionPosition> rotations = 
                 new ArrayList<BoneProjectionPosition>(myBoneProjectionRanges.size());
 		for(BoneProjectionRange range : myBoneProjectionRanges){
-            rotations.add(range.makePositionForNormalizedFraction(normPos));
+            rotations.add(range.makePositionForNormalizedFraction(normPos.getValue()));
         }
         return rotations;
 	}

@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.cogchar.bind.rk.robot.svc.BlendingRobotServiceContext;
-import org.cogchar.bind.rk.robot.config.BoneProjectionRange;
-import org.cogchar.bind.rk.robot.config.BoneProjectionPosition;
-import org.cogchar.bind.rk.robot.config.BoneRotationAxis;
+import org.cogchar.api.skeleton.config.BoneProjectionRange;
+import org.cogchar.api.skeleton.config.BoneProjectionPosition;
+import org.cogchar.api.skeleton.config.BoneRotationAxis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
