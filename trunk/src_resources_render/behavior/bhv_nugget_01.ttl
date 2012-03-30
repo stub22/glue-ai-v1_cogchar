@@ -100,6 +100,7 @@ csi:scn_002
 	apsb:label			"scn-001 apsb label";
 	cs:behavior			csi:bh_002;
 	cs:channel			csi:speechOut_100;
+	cs:channel			csi:animOut_200;
 	cs:trigger			"sceneTrig_02"
 	.
 
@@ -140,7 +141,7 @@ csi:bh_002
 		[
 			cs:channel			csi:animOut_200;
 			cs:startOffsetSec	2.0;
-			cs:path				""
+			cs:path				"dir_101_sysTest_vol_01/UNSAFE_allJoints_fullRange_01.xml"
 		] 
 		[
 			cs:channel			csi:speechOut_100;
