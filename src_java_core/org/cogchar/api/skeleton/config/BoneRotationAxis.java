@@ -1,4 +1,4 @@
-package org.cogchar.bind.rk.robot.config;
+package org.cogchar.api.skeleton.config;
 
 
 public enum BoneRotationAxis { 

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.rk.robot.config;
+package org.cogchar.api.skeleton.config;
 
 import org.appdapter.gui.assembly.AssemblyNames;
 

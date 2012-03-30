@@ -16,10 +16,6 @@
 
 package org.cogchar.bundle.app.puma;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
@@ -27,13 +23,15 @@ import org.osgi.framework.BundleContext;
 import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.FreeIdent;
+import org.appdapter.core.log.BasicDebugger;
 
 
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
+import org.cogchar.api.skeleton.config.BoneRobotConfig;
+
 import org.cogchar.bind.rk.robot.client.RobotAnimClient;
-import org.cogchar.bind.rk.robot.config.BoneRobotConfig;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
@@ -57,9 +55,7 @@ import org.cogchar.impl.trigger.FancyTrigger;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaDualCharacter implements DummyBox {
-	
-	static Logger theLogger = LoggerFactory.getLogger(PumaDualCharacter.class);
+public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 
 	private	RobotAnimClient						myRAC;
 	private SpeechOutputClient					mySOC;
@@ -161,7 +157,7 @@ public class PumaDualCharacter implements DummyBox {
 		try {
 			myRAC.createAndPlayTestAnim();
 		} catch (Throwable t) {
-			theLogger.error("problem playing test anim", t);
+			logError("problem playing test anim", t);
 		}
 	}
 	public void sayText(String txt) {
@@ -169,7 +165,7 @@ public class PumaDualCharacter implements DummyBox {
 		try {
 			mySOC.speakText(txt);
 		} catch (Throwable t) {
-			theLogger.error("problem speaking", t);
+			logError("problem speaking", t);
 		}
 	}
 	public void updateBonyConfig(String rdfConfigFlexPath, ClassLoader optRdfResourceCL) {
@@ -178,7 +174,7 @@ public class PumaDualCharacter implements DummyBox {
 			BoneRobotConfig brc = readBoneRobotConfig(rdfConfigFlexPath, optRdfResourceCL);
 			myPHM.updateModelRobotUsingBoneRobotConfig(brc);
 		} catch (Throwable t) {
-			theLogger.error("problem updating bony config from flex-path[" + rdfConfigFlexPath + "]", t);
+			logError("problem updating bony config from flex-path[" + rdfConfigFlexPath + "]", t);
 		}
 	}
 	public BoneRobotConfig readBoneRobotConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
@@ -201,7 +197,5 @@ public class PumaDualCharacter implements DummyBox {
 	@Override public String toString() { 
 		return "PumaDualChar[uri=" + myCharURI + ", nickName=" + myNickName + "]";
 	}	
-	private void logInfo(String txt) { 
-		theLogger.info(txt);
-	}	
+
 }
