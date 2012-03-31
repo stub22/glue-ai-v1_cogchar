@@ -39,6 +39,7 @@ import org.cogchar.bind.rk.robot.client.RobotAnimClient;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 
 import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
+import org.cogchar.impl.perform.FancyTextChan;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -67,19 +68,22 @@ public class PumaHumanoidMapper extends BasicDebugger {
 	public ModelBlendingRobotServiceContext getRobotServiceContext() { 
 		return myMBRSC;
 	}
+	public FancyTextChan getBestAnimOutChan() { 
+		return myRAC.getTriggeringChannel();
+	}
 	
 	public void initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {
 		// This creates our ModelRobot instance, and calls registerAndStart() in the RobotServiceContext base class.
 		myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);
-		myRAC = new RobotAnimContext(myCharIdent);
+		
+		myRAC = new RobotAnimContext(myCharIdent, getHumanoidRenderContext().getBonyConfigEmitter().getBehaviorConfigEmitter());
 		myRAC.initConn(myMBRSC);
 	}
+
 	public void updateModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
 		ModelRobot targetRobot = getBonyRobot();
 		targetRobot.updateConfig(brc);
 	}
-
-	
 	public void connectToVirtualChar() throws Exception {
 		setupFigureState();
 		final ModelRobot br = getBonyRobot();
@@ -101,7 +105,7 @@ public class PumaHumanoidMapper extends BasicDebugger {
 	}
 	
 	public void playDangerYogaTestAnim() { 
-		myRAC.playDangerYogaTestAnim();
+		myRAC.playDangerYogaTestAnimNow();
 	}
 	
 	

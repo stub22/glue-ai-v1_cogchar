@@ -71,6 +71,28 @@ public class HumanoidPuppetActions {
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  		
+		STOP_RESET_AND_RECENTER_CHAR {
+			// uses default act() and boxy wiring
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F5)};
+            }
+			@Override boolean includedInMinSim() { 	return true; }		
+        },  		
+		
+		USE_PERM_ANIMS {
+			// uses default act() and boxy wiring
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F6)};
+            }
+			@Override boolean includedInMinSim() { 	return true; }		
+        },  			
+		USE_TEMP_ANIMS {
+			// uses default act() and boxy wiring
+            Trigger[] makeJME3InputTriggers() { 
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F7)};
+            }
+			@Override boolean includedInMinSim() { 	return true; }		
+        },  				
 		
         RELOAD_BEHAVIOR {
 			// uses default act() and boxy wiring

@@ -171,10 +171,16 @@ public class PumaAppContext {
 	private void registerSpecialInputTriggers(PumaDualCharacter pdc) { 	
 		
 		hookItUp(PlayerAction.STOP_AND_RESET_CHAR, pdc, new TriggerItems.StopAndReset());
-		hookItUp(PlayerAction.RELOAD_BEHAVIOR, pdc, new TriggerItems.ReloadBehavior());
+		hookItUp(PlayerAction.STOP_RESET_AND_RECENTER_CHAR, pdc, new TriggerItems.StopResetAndRecenter());
+
 		hookItUp(PlayerAction.DANGER_YOGA, pdc, new TriggerItems.DangerYoga());
 		hookItUp(PlayerAction.SAY_THE_TIME, pdc, new TriggerItems.SayTheTime());
-		
+				
+		hookItUp(PlayerAction.USE_PERM_ANIMS, pdc, new TriggerItems.UsePermAnims());
+		hookItUp(PlayerAction.USE_TEMP_ANIMS, pdc, new TriggerItems.UseTempAnims());
+
+		hookItUp(PlayerAction.RELOAD_BEHAVIOR, pdc, new TriggerItems.ReloadBehavior());
+
 		myUpdateBonyConfigTI = new TriggerItems.UpdateBonyConfig();
 		myUpdateBonyConfigTI.myOptResourceClassLoader = null;
 		

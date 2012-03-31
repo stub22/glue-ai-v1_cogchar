@@ -32,6 +32,14 @@ public class TriggerItems {
 			pdc.stopAndReset();
 		}
 	}
+	public static class StopResetAndRecenter extends TriggerItem {
+
+		@Override public void fire(DummyBox targetBox) {
+			logFiring(targetBox);
+			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+			pdc.stopResetAndRecenter();
+		}
+	}	
 
 	public static class DangerYoga extends TriggerItem {
 
@@ -99,4 +107,21 @@ public class TriggerItems {
 			// pdc.sayText("The time is now, " + System.currentTimeMillis());
 		}
 	}
+	public static class UsePermAnims extends TriggerItem {
+
+		@Override public void fire(DummyBox targetBox) {
+			logFiring(targetBox);
+			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+			pdc.usePermAnims();
+		}
+	}
+	public static class UseTempAnims extends TriggerItem {
+
+		@Override public void fire(DummyBox targetBox) {
+			logFiring(targetBox);
+			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+			pdc.useTempAnims();
+		}
+	}	
+	
 }
