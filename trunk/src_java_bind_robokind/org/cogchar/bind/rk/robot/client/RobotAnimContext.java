@@ -19,7 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.api.perform.Media;
+import org.cogchar.api.perform.Performance;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
+
+import org.cogchar.blob.emit.BehaviorConfigEmitter;
+
+import org.cogchar.impl.perform.ChannelNames;
+import org.cogchar.impl.perform.FancyTextChan;
+import org.cogchar.impl.perform.FancyTextPerf;
+import org.cogchar.impl.perform.FancyTime;
 
 import org.osgi.framework.BundleContext;
 import org.robokind.api.animation.Animation;
@@ -31,22 +40,28 @@ import org.robokind.api.motion.utils.RobotUtils;
  * @author Stu B. <www.texpedient.com>
  */
 public class RobotAnimContext extends BasicDebugger {
+
+
 	
 	enum AnimChannel {
 		RK_XML_BEST,
 		RK_XML_PERM,
 		RK_XML_TEMP
 	}
-	private		Ident				myCharIdent;
-	private		Robot				myTargetRobot;
-	private		RobotAnimClient		myAnimClient;
+	private		Ident					myCharIdent;
+	private		Robot					myTargetRobot;
+	private		RobotAnimClient			myAnimClient;
 	
-	private		List<AnimationJob>	myJobsInStartOrder = new ArrayList<AnimationJob>();
+	private		List<AnimationJob>		myJobsInStartOrder = new ArrayList<AnimationJob>();
 
-	private		Animation			myDangerYogaAnim;
+	private		Animation				myDangerYogaAnim;
 	
-	public RobotAnimContext(Ident charIdent) {
+	private		TriggeringChannel		myTriggeringChannel;
+	private		BehaviorConfigEmitter	myBehaviorCE;
+	
+	public RobotAnimContext(Ident charIdent, BehaviorConfigEmitter behavCE) {
 		myCharIdent = charIdent;
+		myBehaviorCE = behavCE;
 	}
 	public void initConn(RobotServiceContext robotSvcContext) {
 		try {
@@ -85,8 +100,8 @@ public class RobotAnimContext extends BasicDebugger {
 		myJobsInStartOrder = notCleared;
 		logInfo("endAndClear complete, succeededCount=" + clearedCount + ", failedCount=" + unclearedCount);		
 	}
-	public synchronized void  startAnimation(Animation anim) {
-		AnimationJob aj = myAnimClient.playFullAnimationNow(myDangerYogaAnim);
+	public synchronized void  startFullAnimationNow(Animation anim) {
+		AnimationJob aj = myAnimClient.playFullAnimationNow(anim);
 		if (aj != null) {
 			myJobsInStartOrder.add(aj);
 			logInfo("Started AnimationJob: [" + aj + "]");
@@ -94,7 +109,7 @@ public class RobotAnimContext extends BasicDebugger {
 			logWarning("********************* Could not start animation[" + anim + "]");
 		}
 	}
-	public void playDangerYogaTestAnim() { 
+	public void playDangerYogaTestAnimNow() { 
 		if (myAnimClient != null) {
 			if (myDangerYogaAnim == null) {
 				try {
@@ -104,9 +119,52 @@ public class RobotAnimContext extends BasicDebugger {
 					return;
 				}
 			}
-			startAnimation(myDangerYogaAnim);
+			startFullAnimationNow(myDangerYogaAnim);
 		} else {
 			logWarning("******************** Cannot play DangerYoga test anim because myAnimClient == null");
+		}
+	}
+
+	
+	public TriggeringChannel getTriggeringChannel() { 
+		if (myTriggeringChannel == null) {
+			Ident id = ChannelNames.getAnimBestChannelIdent();
+			logInfo("Creating triggering channel with ident=" + id);
+			myTriggeringChannel = new TriggeringChannel(id);
+		} 
+		return myTriggeringChannel;
+	}
+	public class TriggeringChannel extends FancyTextChan {
+		
+		private	boolean myUseTempAnimsFlag = false;
+		
+		public TriggeringChannel(Ident id) {
+			super(id);
+		}
+		
+		public void setUseTempAnims(boolean flag) {
+			myUseTempAnimsFlag = flag;
+		}
+		
+		@Override protected void attemptMediaStartNow(Media.Text m) throws Throwable {
+			String animPathStr = m.getFullText();
+			String fullPath = null;
+			// Temporarily we always use the temp path, because it's just a file and we don't have to turn
+			// the resource lookup into a URL.
+			//if (myUseTempAnimsFlag) {
+				fullPath = myBehaviorCE.getRKAnimationTempFilePath(animPathStr);
+			//} else {
+			//	fullPath = myBehaviorCE.getRKAnimationPermPath(animPathStr);
+			//}
+			logInfo("Attempting to start animation at relative path[" + fullPath + "]");
+			Animation anim = myAnimClient.readAnimationFromFile(fullPath);
+			if (anim != null) {
+				startFullAnimationNow(anim);
+			}
+		}
+
+		@Override public Performance<Media.Text, FancyTime> makePerformanceForMedia(Media.Text m) {
+			return new FancyTextPerf(m, this);
 		}
 	}
 }

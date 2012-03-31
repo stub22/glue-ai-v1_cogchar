@@ -37,23 +37,22 @@ import com.hp.hpl.jena.rdf.model.Resource;
  */
 
 class FancyTime (val myStampMsec : Long) {
-	
 }
 
 trait FancyChanStuff {
-	
 }
 
 abstract class FancyTextChan(id: Ident) extends BasicTextChannel[FancyTime](id) {}
-abstract class FancyFramedChan[F](id: Ident) extends BasicFramedChannel[FancyTime,F](id) {
-}	
-abstract class FancyAnimChan[F](id: Ident) extends BasicFramedChannel[FancyTime,F](id) {
-}	
-
+abstract class FancyFramedChan[F](id: Ident) extends BasicFramedChannel[FancyTime,F](id) {}	
+	
 
 class FancyTextPerf(media : Media.Text, chan: Channel.Text[FancyTime]) 
 		extends  BasicTextPerformance[FancyTime, FancyTextPerf, Event[FancyTextPerf, FancyTime]](media, chan) {
 }
+class FancyFramedPerf[F](media : Media.Framed[F], chan: Channel.Framed[FancyTime,F]) 
+		extends  BasicFramedPerformance[FancyTime, F, FancyFramedPerf[F], Event[FancyFramedPerf[F], FancyTime]](media, chan) {
+}
+
 class DummyTextChan(id: Ident) extends FancyTextChan(id) {
 	@throws(classOf[Throwable])	
 	override protected def attemptMediaStartNow(m : Media.Text) {
@@ -116,7 +115,7 @@ object ChannelNames extends org.appdapter.gui.assembly.AssemblyNames {
 		getChannelIdent(chanName);
 	}	
 	
-	def getAnimBestChannelIdent() = getSpeechOutChannelIdent(RK_ANIM_BEST_CHANNEL_NUM);
-	def getAnimPermChannelIdent() = getSpeechOutChannelIdent(RK_ANIM_PERM_CHANNEL_NUM);
-	def getAnimTempChannelIdent() = getSpeechOutChannelIdent(RK_ANIM_TEMP_CHANNEL_NUM);
+	def getAnimBestChannelIdent() = getAnimChannelIdent(RK_ANIM_BEST_CHANNEL_NUM);
+	def getAnimPermChannelIdent() = getAnimChannelIdent(RK_ANIM_PERM_CHANNEL_NUM);
+	def getAnimTempChannelIdent() = getAnimChannelIdent(RK_ANIM_TEMP_CHANNEL_NUM);
 }

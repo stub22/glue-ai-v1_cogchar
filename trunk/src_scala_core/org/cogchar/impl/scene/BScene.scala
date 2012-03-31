@@ -132,6 +132,7 @@ object SceneFieldNames extends org.appdapter.gui.assembly.AssemblyNames {
 	val		P_steps				= NS_ccScn + "steps";	// Plural indicates RDF-collection
 	val		P_startOffsetSec	= NS_ccScn + "startOffsetSec";
 	val		P_text				= NS_ccScn + "text";
+	val		P_path				= NS_ccScn + "path";
 	
 	val		N_rooty		=		"rooty";
 	val		I_rooty		=		NS_ccScnInst + N_rooty;

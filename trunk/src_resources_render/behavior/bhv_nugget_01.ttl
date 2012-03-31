@@ -141,7 +141,7 @@ csi:bh_002
 		[
 			cs:channel			csi:animOut_200;
 			cs:startOffsetSec	2.0;
-			cs:path				"dir_101_sysTest_vol_01/UNSAFE_allJoints_fullRange_01.xml"
+			cs:text				"dir_101_sysTest_vol_01/UNSAFE_allJoints_fullRange_01.xml"
 		] 
 		[
 			cs:channel			csi:speechOut_100;
@@ -176,7 +176,8 @@ csi:bh_011
 			cs:text				"Wow. So many people here today. How do you all feel? I’ll tell you how I feel."
 			#Robot looks around, moves head back and forth. Opens eyes and mouth, Spreads arms. 
 
-		] [
+		] 
+		[
 			cs:channel			csi:speechOut_100;
 			cs:startOffsetSec	10;
 			# Trigger audio file, with some leading and trailing text to help Acapela.  
@@ -184,6 +185,16 @@ csi:bh_011
 	#  Robot shrugs head, looks down, looks up, opens mouth, raises one arm, starts replaying 
 	#  song and pumps arms in rock and roll time.
 		]
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	10.1;
+			cs:text				"dir_301_meetAndGreet_vol_01/dance_arms.xml"
+		] 
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	10.2;
+			cs:text				"dir_301_meetAndGreet_vol_01/dance_legs.xml"
+		] 
 	)
 	.
 ################################################################################################################
