@@ -16,6 +16,9 @@
 
 package org.cogchar.blob.emit
 
+import org.appdapter.core.item.Ident;
+import org.appdapter.core.item.FreeIdent;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -54,6 +57,9 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	val	SINBAD_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + SINBAD_NICKNAME;
 	val	ZENO_R50_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + ZENO_R50_NICKNAME;
 	
+	val	SINBAD_CHAR_IDENT = new FreeIdent(SINBAD_CHAR_URI, SINBAD_NICKNAME)
+	val	ZENO_R50_CHAR_IDENT = new FreeIdent(ZENO_R50_CHAR_URI, ZENO_R50_NICKNAME)
+	
 	//val SINBAD_JOINT_PATH = "rk_bind_config/motion/bonyRobotConfig_Sinbad.json";
 	//val ZENO_JOINT_PATH = "rk_bind_config/motion/bonyRobotConfig_ZenoR50.json";
 	
@@ -65,9 +71,9 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	
 	def getSystemContextURI() : String = { myBehaviorCE.getSystemContextURI()}
 	
-	def isMinimalSim() : Boolean = {
-		getSystemContextURI.startsWith("NB");
-	}
+	def isZenoHome() : Boolean = {	true;	}
+	
+	def isMinimalSim() : Boolean = {	getSystemContextURI.startsWith("NB");	}
 	
 	def makeParamString(bindingList : List[NVParam]) : String = {
 		val len = bindingList.length;
@@ -117,14 +123,15 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		val res2 : Array[Float] = Array(third, third, third);
 		res2;
 	}
-	
-	def getBonyCharURIs() : java.util.List[String] = {
-		val res = new java.util.ArrayList[String]();
-		res.add(ZENO_R50_CHAR_URI);
-		if (!isMinimalSim()) {res.add(SINBAD_CHAR_URI);}
+			
+	def getActiveBonyCharIdents() : java.util.List[Ident] = {
+		val res = new java.util.ArrayList[Ident]();
+		if (isZenoHome()) {res.add(ZENO_R50_CHAR_IDENT)};
+		if (!isMinimalSim()) {res.add(SINBAD_CHAR_IDENT);}
 		res;
 	}
 	
+	def getNicknameForChar(charIdent : Ident) : String = getNicknameForChar(charIdent.getAbsUriString())
 	def getNicknameForChar(charURI : String) : String = {		
 		charURI match {
 			case SINBAD_CHAR_URI => SINBAD_NICKNAME
@@ -132,16 +139,19 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		}
 	}
 	
+	def getBonyConfigPathTailForChar(charIdent: Ident) : String = getBonyConfigPathTailForChar(charIdent.getAbsUriString())
 	def getBonyConfigPathTailForChar(charURI : String) : String = {
 		val chrShortName = getNicknameForChar(charURI);
 		getBehaviorConfigEmitter().getBonyRobotConfigPathTail(chrShortName);
 	}
 	
+	def getJointGroupPathTailForChar(charIdent: Ident) : String = getJointGroupPathTailForChar(charIdent.getAbsUriString())
 	def getJointGroupPathTailForChar(charURI : String) : String = {
 		val chrShortName = getNicknameForChar(charURI);
 		getBehaviorConfigEmitter().getJointGroupConfigPathTail(chrShortName);
 	}	
-	
+
+	def getMeshPathForChar(charIdent : Ident) : String = getMeshPathForChar(charIdent.getAbsUriString())
 	def getMeshPathForChar(charURI : String) : String = {	
 		charURI match {
 			case SINBAD_CHAR_URI => SINBAD_MESH_PATH

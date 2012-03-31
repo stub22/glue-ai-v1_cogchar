@@ -32,19 +32,26 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 
 import java.net.URL;
+import java.util.List;
+import org.appdapter.core.log.BasicDebugger;
+import org.robokind.api.animation.player.AnimationJob;
+import org.robokind.api.animation.player.AnimationPlayer;
+import org.robokind.api.common.playable.PlayState;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
+ * This class is able to invoke animations
+ * 
  * @author Stu B. <www.texpedient.com>
  */
-public class RobotAnimClient {
-	static Logger theLogger = LoggerFactory.getLogger(RobotAnimClient.class);
-	BundleContext	myBundleCtx;
+public class RobotAnimClient extends BasicDebugger {
+	private	BundleContext		myBundleCtx;
+	private	String				myAnimPlayerOsgiFilterString;
 	private AnimationXMLReader	myAnimationReader;
-	public RobotAnimClient(BundleContext bundleCtx) throws Exception {
+	
+	public RobotAnimClient(BundleContext bundleCtx, String animationPlayerOsgiFilterString) throws Exception {
 		myBundleCtx = bundleCtx;
+		myAnimPlayerOsgiFilterString = animationPlayerOsgiFilterString;
 	}
 	public AnimationXMLReader getAnimationReader() { 
 		if (myAnimationReader == null) {
@@ -52,7 +59,98 @@ public class RobotAnimClient {
 		}
 		return myAnimationReader;
 	}
-	public void createAndPlayTestAnim() throws Exception {
+
+	/*
+	 *  @param anim Animation to play
+     * @param segmentBeginOffsetMsec Animation start time in milliseconds from the beginning 
+     * of the animation
+     * @param segmentEndOffsetMsec Animation stop time in milliseconds from the beginning 
+     * of the animation
+     * @return AnimationJob created from playing the Animation, returns null
+     * if unsuccessful
+     */	
+	public AnimationJob playAnimationSegmentNow(Animation anim, long segBeginOffsetMsec, long segEndOffsetMsec){
+        return AnimationUtils.playAnimation(myBundleCtx, myAnimPlayerOsgiFilterString , anim, 
+						segBeginOffsetMsec, segEndOffsetMsec);
+    }
+	public AnimationJob playFullAnimationNow(Animation anim) { 
+        return AnimationUtils.playAnimation(myBundleCtx, myAnimPlayerOsgiFilterString, anim);
+    }
+	
+	/*
+	*	PENDING -		* A Playable which has not been started.
+	*	RUNNING -		* A Playable which is currently running.
+	*	PAUSED -		* A Playable which has been paused.
+	*	STOPPED -		* A Playable which has been stopped before completion.
+	*	COMPLETED -		* A Playable which is completed and no longer running.
+	*/
+	
+	public boolean markAnimationJobComplete(AnimationJob aj) {
+		PlayState curPlayState = aj.getPlayState();
+		if (curPlayState == PlayState.COMPLETED) {
+			return true;
+		} else {
+			long nowMsec = System.currentTimeMillis();
+			return aj.complete(nowMsec);
+		}
+	}
+	public boolean endAndClearAnimationJob(AnimationJob aj) {
+		boolean markedOK = markAnimationJobComplete(aj);
+		if (markedOK) {
+			AnimationPlayer player = aj.getSource();
+			player.removeAnimationJob(aj);
+			return true;
+		} else {
+			logWarning("Could not 'COMPLETE' animationJob, so not removing it: [" + aj + "]");
+			return false;
+		}
+	}
+    public List<AnimationJob> getAllCurrentAnimationsForPlayer(AnimationPlayer ap) {
+		return ap.getCurrentAnimations();
+	}	
+	public Animation readAnimationFromFile(String filepath){
+        try{
+            return new AnimationXMLReader().readAnimation(filepath);
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public Animation readAnimation(HierarchicalConfiguration config){
+		AnimationXMLReader axr = getAnimationReader();
+		return AnimationXMLReader.readAnimation(config);
+	}
+	/**
+	 * http://commons.apache.org/configuration/apidocs/org/apache/commons/configuration/XMLConfiguration.html
+	 * @param xmlConfFilePath
+	 * @return 
+	 */
+	public HierarchicalConfiguration readXmlConfigFile (String xmlConfFilePath) {
+		HierarchicalConfiguration config = null;
+        try{
+            config = new XMLConfiguration(xmlConfFilePath);
+        }catch (ConfigurationException t){
+            logWarning("Cannont open Robokind animation XML  file [" + xmlConfFilePath + "]", t);
+        }catch(Exception t){
+            logError("Error reading Robokind animation XML  file  [" + xmlConfFilePath + "]", t);
+        }		
+		return config;
+	}
+	
+	public HierarchicalConfiguration readXmlConfigUrl (String xmlConfUrl) {
+		HierarchicalConfiguration config = null;
+        try{
+			URL url = new URL(xmlConfUrl);
+            config = new XMLConfiguration(url);
+        }catch (ConfigurationException t){
+            logWarning("Cannont open Robokind animation XML URL [" + xmlConfUrl  + "]", t);
+        }catch(Exception t){
+            logError("Error reading Robokind animation XML URL [" + xmlConfUrl + "]", t);
+        }		
+		return config;
+	}	
+	public Animation makeDangerYogaAnim() throws Exception {
 		/* This is how the animation editor gets the available channels.  This
 		 * uses a Robot and maps the JointIds to the Integers which are used as
 		 * channel ids.  Right now, it just uses the Integer from the JointId.
@@ -62,9 +160,9 @@ public class RobotAnimClient {
 		 */
 
 		ChannelsParameterSource cpSource = AnimationUtils.getChannelsParameterSource();
-		theLogger.trace("channelParamSource=" + cpSource);
+		logInfo(IMPO_LO, "channelParamSource=" + cpSource);
 		Map<Integer, String> chanNames = cpSource.getChannelNames();
-		theLogger.info("Test animation channelNames=" + chanNames);
+		logInfo("Test animation channelNames=" + chanNames);
 		Animation anim = new Animation();
 		//Create your channels and add points
 		for (Entry<Integer, String> e : chanNames.entrySet()) {
@@ -79,70 +177,12 @@ public class RobotAnimClient {
 			chan.addPath(path);
 			anim.addChannel(chan);
 		}
-        
-        //null should be RobotUtils.getRobotFilter(robotId)
-        AnimationUtils.playAnimation(myBundleCtx, null, anim);
-	}
-   public Animation readAnimationFromFile(String filepath){
-	   
-        try{
-            return new AnimationXMLReader().readAnimation(filepath);
-        }catch(Exception ex){
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    public Animation readAnimation(HierarchicalConfiguration config){
-		AnimationXMLReader axr = getAnimationReader();
-		return AnimationXMLReader.readAnimation(config);
-	}
-	public HierarchicalConfiguration readXmlConfigFile (String xmlConfFilePath) {
-		HierarchicalConfiguration config = null;
-        try{
-            config = new XMLConfiguration(xmlConfFilePath);
-        }catch (ConfigurationException t){
-            theLogger.warn("Cannont open Robokind animation XML  file [" + xmlConfFilePath + "]", t);
-        }catch(Exception t){
-            theLogger.error("Error reading Robokind animation XML  file  [" + xmlConfFilePath + "]", t);
-        }		
-		return config;
-	}
-	public HierarchicalConfiguration readXmlConfigUrl (String xmlConfUrl) {
-		HierarchicalConfiguration config = null;
-        try{
-			URL url = new URL(xmlConfUrl);
-            config = new XMLConfiguration(url);
-        }catch (ConfigurationException t){
-            theLogger.warn("Cannont open Robokind animation XML URL [" + xmlConfUrl  + "]", t);
-        }catch(Exception t){
-            theLogger.error("Error reading Robokind animation XML URL [" + xmlConfUrl + "]", t);
-        }		
-		return config;
+		return anim;
 	}	
-	
-	/*
-	 * 
-	 *     * @param anim Animation to play
-     * @param startTime Animation start time in milliseconds from the beginning 
-     * of the animation
-     * @param stopTime Animation stop time in milliseconds from the beginning 
-     * of the animation
-     * @return AnimationJob created from playing the Animation, returns null
-     * if unsuccessful
-     */
-	/*
-    public static AnimationJob playAnimation(
-            BundleContext context, String filter, Animation anim, 
-            long startTime, long stopTime){
-        return _playAnimation(context, filter, anim, startTime, stopTime);
-    }
-    */
 	
    // To use something other than file, we will go through a different constructor
    // for XMLConfiguration, such as the URL one, and then call:
     //  public static Animation readAnimation(HierarchicalConfiguration config){
-   // http://commons.apache.org/configuration/apidocs/org/apache/commons/configuration/XMLConfiguration.html
 
    
 }

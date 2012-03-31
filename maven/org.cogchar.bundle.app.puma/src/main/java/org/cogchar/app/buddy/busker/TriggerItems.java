@@ -38,7 +38,7 @@ public class TriggerItems {
 		@Override public void fire(DummyBox targetBox) {
 			logFiring(targetBox);
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
-			pdc.triggerTestAnim();
+			pdc.playDangerYogaTestAnim();
 		}
 	}
 
