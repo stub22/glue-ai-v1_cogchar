@@ -249,23 +249,32 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 			Bone tgtBone = getSpatialBone(boneName);
 			if ((bs != null) && (tgtBone != null)) {
 				
+				// For hinged bones, generally all we need is the rotation.
 				Quaternion boneRotQuat = bs.getRotQuat();	// Can cancel this with null or Quaternion.IDENTITY
 			
-				/* HACKME - 
+			
+				/* HACKME - add scales + translates for special bones, e.g. facial.
 				 *	1) Check the boneName to match what you want to hack, as defined in OgreModel and bc:jointName 
 				 *		of Bony config.
 				 *  2) Construct a Vector3f for translate and/or scale.    If you want to cancel out the rotation,
 				 *  replace it with null or  Quaternion.IDENTITY.
 				 * 
-				 *    Vector3f docs:
+				 *		Vector3f docs:
 				 *       http://jmonkeyengine.org/javadoc/com/jme3/math/Vector3f.html
+				 * 
+				 *		Vector3f code:
+				 *		http://code.google.com/p/jmonkeyengine/source/browse/trunk/engine/src/core/com/jme3/math/Vector3f.java
+				 * 
+				 *		Tutorial on JME3 Scene Graph (but note: skeletons have additional properties)
+				 * 
+				 *		http://jmonkeyengine.org/wiki/doku.php/jme3:scenegraph_for_dummies
 				 */
 				
 				
-				Vector3f boneTranslate = null;  // Same as Vector3f.ZERO;
-				Vector3f boneScale = null;   // Same as Vector3f.UNIT_XYZ;
+				Vector3f boneTranslateVec = null;  // Same as Vector3f.ZERO = no local translation
+				Vector3f boneScaleVec = null;   // Same as Vector3f.UNIT_XYZ = new Vector3f(1.0, 1.0, 1.0); = scale by 1 in all 3 directions
 				
-				StickFigureTwister.applyBoneTransforms(tgtBone, boneTranslate, boneRotQuat, boneScale);
+				StickFigureTwister.applyBoneTransforms(tgtBone, boneTranslateVec, boneRotQuat, boneScaleVec);
 			}
 		}
 	
