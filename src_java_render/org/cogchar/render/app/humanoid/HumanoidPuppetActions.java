@@ -32,7 +32,9 @@ import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.app.core.BoundAction;
 
 /**
- 
+ *	Keyboard / Mouse bindings for HumanoidPuppet app.
+ *	The actions which do not override act() expect to be equipped from outside,
+ *  by setting of their box + trigger.
  */
 public class HumanoidPuppetActions {
     public enum PlayerAction {
