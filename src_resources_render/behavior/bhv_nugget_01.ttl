@@ -179,7 +179,8 @@ csi:bh_011
 		] [
 			cs:channel			csi:speechOut_100;
 			cs:startOffsetSec	10;
-			cs:text				"I knew that I would?"
+			# Trigger audio file, with some leading and trailing text to help Acapela.  
+			cs:text				"well hey now \\aud=\"/mnt/vm_shared/wav_samples/DancingFeet_MAG.wav\"\\ can you dig it?"
 	#  Robot shrugs head, looks down, looks up, opens mouth, raises one arm, starts replaying 
 	#  song and pumps arms in rock and roll time.
 		]
@@ -204,16 +205,21 @@ csi:bh_012
 		[
 			cs:channel			csi:speechOut_100;
 			cs:startOffsetSec	0.5;
-			cs:text				"Hi, there. Would you like to have your picture taken with me?"
+			cs:text				"Hi there.  Would you like to have your picture taken with me?"
 			#  Robot nods head and beckons with hand. 
 			#  Robot turns head as if looking at person   standing next to it, 
 
 		] [
 			cs:channel			csi:speechOut_100;
-			cs:startOffsetSec	7.0;
-			cs:text				"Say, Chitty, chitty, bang, bang."
-			# grins and makes second comment while turning    head back to front and smiling 
-			# artificially.
+			cs:startOffsetSec	9.0;
+			cs:text				"Well OK then.  Stand right here."
+			# Gestures
+		]
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	15.0;
+			cs:text				"Now, look at the camera and say, Chitty-chitty bang-bang!"
+			# Artificial Grin
 		]
 	)
 	.
@@ -281,9 +287,9 @@ csi:bh_014
 			cs:channel			csi:speechOut_100;
 			cs:startOffsetSec	0.5;
 			cs:text				"""
-Hi, my name is Xeno. And my job is to help your school meet its objectives in computer science. 
-How? Well, for one thing, I’m going to hang out and help out, right in your classrooms. 
-Computer Science and Robotics.   Coming to your school.    
+Hi, my name is Xeno, and my job is to help your school meet its objectives in computer science. 
+How do I do that? Well, for one thing, I’m going to hang out and help out, right in your classrooms. 
+Computer Science and Robotics.   Coming to your school!
 			"""
 
 			# Routine: Robot addressing circle of conferees, looks around as if scanning faces. 

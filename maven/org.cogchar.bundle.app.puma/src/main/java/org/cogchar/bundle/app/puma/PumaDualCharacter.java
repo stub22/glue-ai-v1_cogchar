@@ -121,13 +121,20 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myTheater.startThread();
 	}
 	public void stopTheater() {
-		myTheater.fullyStop(500);
+		// Should be long enough for the 100 Msec loop to cleanly exit.
+		int killTimeWaitMsec = 200;
+		myTheater.fullyStop(killTimeWaitMsec);
 	}
-	public void stopAndReset() { 
+	public void stopAndReset() {
+		logInfo("StopAndReset - Stopping Theater.");
 		stopTheater();
-		
-		// TODO:  Cancel speech jobs and animation jobs
+		logInfo("StopAndReset - Stopping Anim Jobs.");
+		myPHM.stopAndReset();
+		logInfo("StopAndReset - Stopping Speech-Output Jobs.");
+		mySOC.cancelAllRunningSpeechTasks();
 		// TODO:  Send character to default positions.
+		logInfo("StopAndReset - Restarting behavior theater.");
+		startTheater();
 	}
 	
 	public void registerDefaultSceneTriggers() { 
@@ -175,7 +182,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	}
 	public BoneRobotConfig readBoneRobotConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
 		if (optResourceClassLoader != null) {
-			logInfo("Ensuring registration of classLoader: " + optResourceClassLoader);
+			logInfo("Ensuring registration of classLoader: " + optResourceClassLoader);	
 			AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(optResourceClassLoader);
 		}
 		logInfo("Loading triples from flex-path: " + rdfConfigFlexPath);
