@@ -15,6 +15,8 @@
  */
 package org.cogchar.render.app.humanoid;
 
+import org.appdapter.core.item.Ident;
+
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.FlyByCamera;
@@ -42,7 +44,7 @@ import org.cogchar.render.opengl.optic.CameraMgr;
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidRenderContext extends BonyStickFigureContext {
-	private	Map<String, HumanoidFigure>		myFiguresByCharURI = new HashMap<String, HumanoidFigure>();
+	private	Map<Ident, HumanoidFigure>		myFiguresByCharIdent = new HashMap<Ident, HumanoidFigure>();
 
 	
 	public HumanoidRenderContext(BonyConfigEmitter bce) {
@@ -64,17 +66,17 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		WorkaroundFuncsMustDie.initScoreBoard(this);
 	}
 
-	public HumanoidFigure getHumanoidFigure(String charURI) {
-		HumanoidFigure hf = myFiguresByCharURI.get(charURI);
+	public HumanoidFigure getHumanoidFigure(Ident charIdent) {
+		HumanoidFigure hf = myFiguresByCharIdent.get(charIdent);
 		if (hf == null) {
 			BonyConfigEmitter bce = getBonyConfigEmitter();
-			hf = new HumanoidFigure(bce, charURI);
-			myFiguresByCharURI.put(charURI, hf);
+			hf = new HumanoidFigure(bce, charIdent);
+			myFiguresByCharIdent.put(charIdent, hf);
 		}
 		return hf;
 	}
 
-	private HumanoidFigure setupHumanoidFigure(String charURI, HumanoidBoneConfig hbc, boolean usePhysics) {
+	private HumanoidFigure setupHumanoidFigure(Ident charIdent, HumanoidBoneConfig hbc, boolean usePhysics) {
 		HumanoidFigure figure = null;
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 		AssetManager amgr = findJme3AssetManager(null);
@@ -84,9 +86,9 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 			ps = getPhysicsSpace();
 		}
 		
-		String meshPath = bce.getMeshPathForChar(charURI);
+		String meshPath = bce.getMeshPathForChar(charIdent);
 		if (meshPath != null) {
-			figure = getHumanoidFigure(charURI);
+			figure = getHumanoidFigure(charIdent);
 			
 			figure.initStuff(hbc, amgr, rootNode, ps, meshPath);
 			//VirtCharPanel vcp = getVCPanel();
@@ -97,7 +99,7 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		//	figure.boogie();
 		//	figure.becomePuppet();
 		} else {
-			getLogger().warn("Skipping humanoid mesh load for charURI: " + charURI);
+			getLogger().warn("Skipping humanoid mesh load for charURI: " + charIdent);
 		}
 		return figure;
 	}
@@ -106,17 +108,17 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 		
 		if (!bce.isMinimalSim()) {
-			String sinbadURI = bce.SINBAD_CHAR_URI();
+			Ident sinbadIdent = bce.SINBAD_CHAR_IDENT();
 			HumanoidBoneConfig sinbadHBC = new HumanoidBoneConfig();
 			sinbadHBC.addSinbadDefaultBoneDescs();
-			HumanoidFigure sinbadFigure = setupHumanoidFigure(sinbadURI, sinbadHBC, true);
+			HumanoidFigure sinbadFigure = setupHumanoidFigure(sinbadIdent, sinbadHBC, true);
 			sinbadFigure.movePosition(30.0f, 0.0f, -30.0f);
 		}
 
-		String extraRobotURI = bce.ZENO_R50_CHAR_URI();
+		Ident extraRobotIdent = bce.ZENO_R50_CHAR_IDENT();
 		HumanoidBoneConfig robotHBC = new HumanoidBoneConfig();
 		robotHBC.addZenoDefaultBoneDescs();
-		HumanoidFigure robotFigure = setupHumanoidFigure(extraRobotURI, robotHBC, false);
+		HumanoidFigure robotFigure = setupHumanoidFigure(extraRobotIdent, robotHBC, false);
 		robotFigure.movePosition(0.0f, -5.0f, 0.0f);
 	}
 
@@ -140,7 +142,7 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 	//	defCam.setRotation(camRot);
 	}
 	public void toggleDebugSkeletons() { 
-		for (HumanoidFigure hf : myFiguresByCharURI.values()) {
+		for (HumanoidFigure hf : myFiguresByCharIdent.values()) {
 			hf.toggleDebugSkeleton();
 		}
 	}

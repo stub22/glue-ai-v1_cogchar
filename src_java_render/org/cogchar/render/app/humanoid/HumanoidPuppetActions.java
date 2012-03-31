@@ -27,8 +27,6 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.Trigger;
 import java.util.ArrayList;
 import java.util.List;
-import org.cogchar.platform.trigger.DummyBox;
-import org.cogchar.platform.trigger.DummyTrigger;
 
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.app.core.BoundAction;
@@ -85,12 +83,14 @@ public class HumanoidPuppetActions {
 			// 
 			// uses default act() and boxy wiring
             Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F10)};
+                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F9)};
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },
 		
-        UPDATE_BONY_CONFIG {
+		/*** F10 is intercepted by Netbeans platform - do not use!!! **/
+        
+		UPDATE_BONY_CONFIG {
 			// uses default act() and boxy wiring
             Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_F12)};
@@ -98,11 +98,15 @@ public class HumanoidPuppetActions {
 			@Override boolean includedInMinSim() { 	return true; }				
         },
 
+		/*** The actions below are for V-world-only goodies (like Sinbad, projectiles, etc.)
+		 *		not available in RK "Simulator"  
+		 *		(hence they do not override includedInMinSim()).
+		 ***/
 	
         TOGGLE_KIN_MODE {
             void act(HumanoidRenderContext ctx) {
 				HumanoidFigure hw = getSinbad(ctx);
-				hw.toggleKinMode();
+				hw.togglePhysicsKinematicModeEnabled();
             }
             Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new KeyTrigger(KeyInput.KEY_K)};
@@ -111,7 +115,7 @@ public class HumanoidPuppetActions {
         STAND_UP {
             void act(HumanoidRenderContext ctx) {
 				HumanoidFigure hw = getSinbad(ctx);
-				hw.standUp();
+				hw.makeSinbadStandUp();
             }
             Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] {new KeyTrigger(KeyInput.KEY_SPACE)};
@@ -122,7 +126,7 @@ public class HumanoidPuppetActions {
             void act(HumanoidRenderContext ctx) {
 				HumanoidFigure hw = getSinbad(ctx);
 				if (hw != null) {
-					hw.boogie();
+					hw.runSinbadBoogieAnim();
 				}
             }
             Trigger[] makeJME3InputTriggers() { 
@@ -178,7 +182,7 @@ public class HumanoidPuppetActions {
 		}
 		HumanoidFigure getSinbad(HumanoidRenderContext hrc) { 
 			BonyConfigEmitter bce = hrc.getBonyConfigEmitter();
-			return hrc.getHumanoidFigure(bce.SINBAD_CHAR_URI());
+			return hrc.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
 		}
 	};
     static void setupActionListeners(InputManager inputManager, final HumanoidRenderContext ctx) {

@@ -57,15 +57,14 @@ import org.cogchar.impl.trigger.FancyTrigger;
  */
 public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 
-	private	RobotAnimClient						myRAC;
+
 	private SpeechOutputClient					mySOC;
 	
-	private	String								myCharURI;
+	private	Ident								myCharIdent;
 	private String								myNickName;
 	
 	private	PumaHumanoidMapper					myPHM;
 	
-	// public static String		INITIAL_BONY_RDF_PATH = "rk_bind_config/motion/bony_ZenoR50.ttl";
 	private ClassLoader							myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 	
 	public String								myUpdateBonyRdfPath;
@@ -73,16 +72,16 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	public Theater								myTheater;
 	
 	
-	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, String charURI, String nickName) {
-		myCharURI = charURI;
+	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, Ident charIdent, String nickName) {
+		myCharIdent = charIdent;
 		myNickName = nickName;
-		myPHM = new PumaHumanoidMapper(hrc, bundleCtx, charURI);
+		myPHM = new PumaHumanoidMapper(hrc, bundleCtx, charIdent);
 		myTheater = new Theater();
 	}
 	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx) throws Throwable {
 		
 		BonyConfigEmitter bonyCE = myPHM.getHumanoidRenderContext().getBonyConfigEmitter();
-		String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharURI);
+		String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharIdent);
 		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
 		String bonyConfigPathPerm = behavCE.getRKMotionPermPath(bonyConfigPathTail);
 		myUpdateBonyRdfPath = behavCE.getRKMotionTempFilePath(bonyConfigPathTail);
@@ -92,7 +91,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myPHM.connectToVirtualChar();
 		// myPHM.applyInitialBoneRotations();
-		myRAC = new RobotAnimClient(bundleCtx); 
+
 	}
 	public void connectSpeechOutputSvcs(BundleContext bundleCtx) { 
 		Ident speechChanIdent = ChannelNames.getMainSpeechOutChannelIdent();
@@ -126,6 +125,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	}
 	public void stopAndReset() { 
 		stopTheater();
+		
 		// TODO:  Cancel speech jobs and animation jobs
 		// TODO:  Send character to default positions.
 	}
@@ -147,18 +147,14 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	public String getNickName() { 
 		return myNickName;
 	}
-	public String getCharURI() { 
-		return myCharURI;
+	public Ident getCharIdent() { 
+		return myCharIdent;
 	}
 	public PumaHumanoidMapper getHumanoidMapper() { 
 		return myPHM;
 	}
-	public void triggerTestAnim() { 
-		try {
-			myRAC.createAndPlayTestAnim();
-		} catch (Throwable t) {
-			logError("problem playing test anim", t);
-		}
+	public void playDangerYogaTestAnim() { 
+		myPHM.playDangerYogaTestAnim();
 	}
 	public void sayText(String txt) {
 		// TODO:  Guard against concurrent activity through the channel/behavior systerm
@@ -195,7 +191,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	}
 	
 	@Override public String toString() { 
-		return "PumaDualChar[uri=" + myCharURI + ", nickName=" + myNickName + "]";
+		return "PumaDualChar[uri=" + myCharIdent + ", nickName=" + myNickName + "]";
 	}	
 
 }

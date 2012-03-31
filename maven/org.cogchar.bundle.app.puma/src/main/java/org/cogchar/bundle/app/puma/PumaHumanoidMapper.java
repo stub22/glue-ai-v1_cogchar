@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.appdapter.core.log.BasicDebugger;
 
-import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
+import org.appdapter.core.item.Ident;
 
 import org.osgi.framework.BundleContext;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
@@ -35,6 +35,8 @@ import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.api.skeleton.config.BoneProjectionRange;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.api.skeleton.config.BoneProjectionRange;
+import org.cogchar.bind.rk.robot.client.RobotAnimClient;
+import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 
 import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 
@@ -45,13 +47,15 @@ public class PumaHumanoidMapper extends BasicDebugger {
 
 	
 	private	ModelBlendingRobotServiceContext		myMBRSC;
-	private	HumanoidRenderContext					myHRC;
-	private	String									myCharURI;
+	private	RobotAnimContext						myRAC;
 	
-	public PumaHumanoidMapper(HumanoidRenderContext brc, BundleContext bundleCtx, String charURI) {
+	private	HumanoidRenderContext					myHRC;
+	private	Ident									myCharIdent;
+	
+	public PumaHumanoidMapper(HumanoidRenderContext brc, BundleContext bundleCtx, Ident charIdent) {
+		myCharIdent = charIdent;
 		myHRC = brc;
-		myMBRSC = new ModelBlendingRobotServiceContext(bundleCtx);
-		myCharURI = charURI;
+		myMBRSC = new ModelBlendingRobotServiceContext(bundleCtx); 
 	}
 	
 	public HumanoidRenderContext getHumanoidRenderContext() { 
@@ -64,8 +68,11 @@ public class PumaHumanoidMapper extends BasicDebugger {
 		return myMBRSC;
 	}
 	
-	public void initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
+	public void initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {
+		// This creates our ModelRobot instance, and calls registerAndStart() in the RobotServiceContext base class.
 		myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);
+		myRAC = new RobotAnimContext(myCharIdent);
+		myRAC.initConn(myMBRSC);
 	}
 	public void updateModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
 		ModelRobot targetRobot = getBonyRobot();
@@ -84,9 +91,20 @@ public class PumaHumanoidMapper extends BasicDebugger {
 			
 		});
 	}
-	public HumanoidFigure getHumanoidFigure() { 
-		return myHRC.getHumanoidFigure(myCharURI);
+	
+	public void stopAndReset() { 
+		myRAC.stopAndReset();
 	}
+	
+	public HumanoidFigure getHumanoidFigure() { 
+		return myHRC.getHumanoidFigure(myCharIdent);
+	}
+	
+	public void playDangerYogaTestAnim() { 
+		myRAC.playDangerYogaTestAnim();
+	}
+	
+	
 	public void setupFigureState() { 
 		ModelRobot br = getBonyRobot();
 		FigureState fs = new FigureState();

@@ -16,18 +16,18 @@
 package org.cogchar.bind.rk.robot.svc;
 
 import java.io.File;
+import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.utils.RobotUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class RobotServiceContext<R extends Robot> {
-	static Logger theLogger = LoggerFactory.getLogger(RobotServiceContext.class);
+public class RobotServiceContext<R extends Robot> extends BasicDebugger {
+
 	protected BundleContext			myBundleCtx;
 	private R						myRobot;
 	private	ServiceRegistration		myRobotReg;
