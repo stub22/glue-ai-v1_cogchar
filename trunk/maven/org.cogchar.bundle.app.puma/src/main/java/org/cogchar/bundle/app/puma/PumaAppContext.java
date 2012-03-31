@@ -26,7 +26,8 @@ import org.osgi.framework.BundleContext;
 
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 
-
+import org.appdapter.core.item.Ident;
+import org.appdapter.core.item.FreeIdent;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
@@ -89,15 +90,15 @@ public class PumaAppContext {
 		BonyRenderContext brc = getHumanoidRenderContext();
 		BonyConfigEmitter bonyCE = brc.getBonyConfigEmitter();
 		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();		
-		List<String> charURIs = bonyCE.getBonyCharURIs();
-		for (String charURI : charURIs) {
-			PumaDualCharacter pdc = connectDualRobotChar(charURI);
+		List<Ident> charIdents = bonyCE.getActiveBonyCharIdents();
+		for (Ident charIdent : charIdents) {
+			PumaDualCharacter pdc = connectDualRobotChar(charIdent);
 			pdcList.add(pdc);
 		}
 		// Let's be lame for the moment, and assume the first character found is the only one we want to control.
 		PumaDualCharacter pdc = pdcList.get(0);
 		if (pdc != null) {
-			String chrURI = pdc.getCharURI();
+			Ident chrIdent = pdc.getCharIdent();
 			pdc.connectBonyCharToRobokindSvcs(myBundleContext);
 			
 			pdc.connectSpeechOutputSvcs(myBundleContext);
@@ -109,7 +110,7 @@ public class PumaAppContext {
 			
 			pdc.startTheater();
 			
-			String jgPathTail = bonyCE.getJointGroupPathTailForChar(chrURI);
+			String jgPathTail = bonyCE.getJointGroupPathTailForChar(chrIdent);
 			String jgFullPathTemp = behavCE.getRKMotionTempFilePath(jgPathTail);
 			File jgConfigFile = new File(jgFullPathTemp);
 			if (jgConfigFile.canRead()) {
@@ -120,7 +121,7 @@ public class PumaAppContext {
 		}
 		return pdcList;
 	}
-	public PumaDualCharacter connectDualRobotChar(String bonyCharURI)
+	public PumaDualCharacter connectDualRobotChar(Ident bonyCharIdent)
 			throws Throwable {
 		
 		HumanoidRenderContext hrc = getHumanoidRenderContext();
@@ -128,8 +129,9 @@ public class PumaAppContext {
 			throw new Exception ("HumanoidRenderContext is null");
 		}
 		BonyConfigEmitter bonyCE = hrc.getBonyConfigEmitter();
-		String nickName = bonyCE.getNicknameForChar(bonyCharURI);
-		PumaDualCharacter pdc = new PumaDualCharacter(hrc, myBundleContext, bonyCharURI, nickName);
+		String nickName = bonyCE.getNicknameForChar(bonyCharIdent);
+		
+		PumaDualCharacter pdc = new PumaDualCharacter(hrc, myBundleContext, bonyCharIdent, nickName);
 		
 		return pdc;
 	}

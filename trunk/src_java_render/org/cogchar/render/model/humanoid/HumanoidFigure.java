@@ -23,6 +23,8 @@
 
 package org.cogchar.render.model.humanoid;
 
+import org.appdapter.core.item.Ident;
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.Bone;
@@ -69,7 +71,7 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	
 	private	FigureState					myFigureState;
 	
-	private String						myCharURI;
+	private Ident						myCharIdent;
 	private String						myNickname;
 
 	public static String 	
@@ -82,10 +84,10 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	private static float DEFAULT_ANIM_BLEND_RATE = 0.5f;
 	private static float KRC_WEIGHT_THRESHOLD = 0.5f;
 
-	public HumanoidFigure(BonyConfigEmitter bce, String charURI) { 
+	public HumanoidFigure(BonyConfigEmitter bce, Ident charIdent) { 
 		myBonyConfigEmitter = bce;
-		myCharURI = charURI;
-		myNickname = bce.getNicknameForChar(charURI);
+		myCharIdent = charIdent;
+		myNickname = bce.getNicknameForChar(charIdent);
 	}
 	public HumanoidBoneConfig getHBConfig() {
 		return myHumanoidBoneConfig;
@@ -130,14 +132,14 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 		
 	}
 
-	public void becomePuppet() { 
+	public void becomeKinematicPuppet() { 
 		myHumanoidKRC.setKinematicMode();
 	}
-	public void toggleKinMode() {
+	public void togglePhysicsKinematicModeEnabled() {
 		myHumanoidKRC.setEnabled(!myHumanoidKRC.isEnabled());
 		myHumanoidKRC.setRagdollMode();
 	}
-	public void standUp() { 
+	public void makeSinbadStandUp() { 
 		Vector3f v = new Vector3f();
 		v.set(myHumanoidModelNode.getLocalTranslation());
 		v.y = 0;
@@ -195,7 +197,7 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
 	}
 	
-	public void boogie() { 
+	public void runSinbadBoogieAnim() { 
 		try {
 			myHumanoidAnimChannel.setAnim(ANIM_DANCE);
 			myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);

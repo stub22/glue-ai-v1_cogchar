@@ -15,21 +15,27 @@
  */
 package org.cogchar.render.model.humanoid;
 
+import org.appdapter.core.item.Ident;
+
+import org.cogchar.blob.emit.BonyConfigEmitter;
+
 import com.jme3.animation.Bone;
+
 import com.jme3.bullet.joints.SixDofJoint;
 import com.jme3.bullet.joints.motors.RotationalLimitMotor;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.FastMath;
+
 import java.util.List;
-import org.cogchar.blob.emit.BonyConfigEmitter;
+
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class PhysicallyWigglingHumanoid extends HumanoidFigure {
 	private float myPhysicsWigglePhase = 0.0f;		
-	public 	PhysicallyWigglingHumanoid(BonyConfigEmitter bce, String charURI)  {
-		super(bce, charURI);
+	public 	PhysicallyWigglingHumanoid(BonyConfigEmitter bce, Ident charIdent)  {
+		super(bce, charIdent);
 	}
 	public void wiggleUsingPhysics(float tpf) { 
 		wiggleUsingPhysicsMotors(myHumanoidBoneConfig, tpf);
