@@ -25,7 +25,9 @@ import com.jme3.math.Quaternion;
  * @author Stu B. <www.texpedient.com>
  */
 public class BoneState {
+	
 	public	String		myBoneName;
+	
 	// JME3 docs are messed up regarding "yaw, pitch, roll" terminology.
 	// However, our current understanding is that rots are applied in this order,
 	// using positive right-hand sense as shown here:

@@ -83,4 +83,8 @@ public abstract class BasicChannel<M extends Media, Time> extends BasicDebugger 
 		attemptMediaStartNow(media);
 	}
 	protected abstract void attemptMediaStartNow(M m) throws Throwable;
+	
+	@Override public String toString() { 
+		return getClass().getSimpleName() + " ident=" + myIdent + ", stat=" + myStatus;
+	}
 }

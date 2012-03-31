@@ -57,9 +57,9 @@ abstract class BasicBehaviorAction extends BasicDebugger with BehaviorAction {
 	}
 }
 
-class SpeechAction(val mySpeechText : String) extends BasicBehaviorAction() { 
+class TextAction(val myActionText : String) extends BasicBehaviorAction() { 
 	override def perform(s: BScene) {
-		val media = new Media.BasicText(mySpeechText);
+		val media = new Media.BasicText(myActionText);
 		for (val chanId : Ident <- myChannelIdents) {
 			logInfo("Looking for channel[" + chanId + "] in scene [" + s + "]");
 			val chan : Channel[_ <: Media, FancyTime] = s.getChannel(chanId);
@@ -70,12 +70,9 @@ class SpeechAction(val mySpeechText : String) extends BasicBehaviorAction() {
 					case txtChan : Channel.Text[FancyTime] => {
 						val perf : Performance[Media.Text, FancyTime] = txtChan.makePerformanceForMedia(media);
 						val startResFlag = perf.attemptToScheduleAction(Performance.Action.START, null);
-						
 					}
-					//	txtChan.performText(mySpeechText)
-					//}
 					case  _ => {
-						logWarning("************* SpeechAction cannot perform on non Text-Channel: " + chan);
+						logWarning("************* TextAction cannot perform on non Text-Channel: " + chan);
 					}
 				}
 			} else {
@@ -84,6 +81,8 @@ class SpeechAction(val mySpeechText : String) extends BasicBehaviorAction() {
 		}
 	}
 	override def toString() : String = {
-		"SpeechAction[speechText=" + mySpeechText + ", channelIds=" + myChannelIdents + "]";
+		"TextAction[actionTxt=" + myActionText + ", channelIds=" + myChannelIdents + "]";
 	}	
 }
+
+

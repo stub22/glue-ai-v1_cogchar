@@ -272,11 +272,18 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 				 * 
 				 *		Tutorial on JME3 Scene Graph (but note: skeletons have additional properties)
 				 *		http://jmonkeyengine.org/wiki/doku.php/jme3:scenegraph_for_dummies
+				 * 
+			"be_Jaw2"		Translate close to XY, from 0,0 to   x="0.289509" y="0.318684"
+			"be_RevJaw2"	Translate along XY  x="-0.5" y="-0.5" to 0.0,0.0
+			"LtEye2"		Uses scale in Y [0.0, 1.0], + brief inversion rotation (to hide pupil?)
+			"RtEye2"		Uses scale in Y, [0.0, 1.0], and one frame of:  <rotate angle="3.14159"> <axis x="1" y="0" z="0" />
+			"RtBrow"		In model coords, uses Translate in Y [-1.0, 1.0] and rot about -Z
+			"LtBrow"		In model coords, uses Translate in Y [-1.0, 1.0] and rot about Z
 				 */
 				
-				Vector3f boneTranslateVec = null;
+				Vector3f boneTranslateVec = null; // Same as Vector3f.ZERO = no local translation
                 if("RtBrow".equals(boneName) || "LtBrow".equals(boneName)){
-                    boneTranslateVec = new Vector3f(bs.rot_Y_A1st, bs.rot_Z_A2nd, bs.rot_X_A3rd);  // Same as Vector3f.ZERO = no local translation
+                    boneTranslateVec = new Vector3f(bs.rot_Y_A1st, bs.rot_Z_A2nd, bs.rot_X_A3rd);  
                     boneRotQuat = null;
                 }
                 Vector3f boneScaleVec = null;   // Same as Vector3f.UNIT_XYZ = new Vector3f(1.0, 1.0, 1.0); = scale by 1 in all 3 directions

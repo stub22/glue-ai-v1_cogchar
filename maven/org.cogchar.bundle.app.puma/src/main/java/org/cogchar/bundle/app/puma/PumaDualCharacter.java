@@ -49,6 +49,7 @@ import org.cogchar.impl.scene.Theater;
 import org.cogchar.impl.scene.SceneBook;
 
 import org.cogchar.impl.perform.ChannelNames;
+import org.cogchar.impl.perform.FancyTextChan;
 
 import org.cogchar.impl.trigger.FancyTrigger;
 
@@ -88,10 +89,15 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		
 		BoneRobotConfig brc = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		myPHM.initModelRobotUsingBoneRobotConfig(brc);
+
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myPHM.connectToVirtualChar();
 		// myPHM.applyInitialBoneRotations();
-
+		connectAnimOutChans();
+	}
+	private void connectAnimOutChans() { 
+		FancyTextChan bestAnimOutChan = myPHM.getBestAnimOutChan();
+		myTheater.registerChannel(bestAnimOutChan);
 	}
 	public void connectSpeechOutputSvcs(BundleContext bundleCtx) { 
 		Ident speechChanIdent = ChannelNames.getMainSpeechOutChannelIdent();
@@ -99,7 +105,6 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myTheater.registerChannel(mySOC);		
 	}
 	public void loadBehaviorConfig(boolean useTempFiles) throws Throwable {
-	
 		
 		String pathTail = "bhv_nugget_01.ttl";
 		
@@ -125,18 +130,29 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		int killTimeWaitMsec = 200;
 		myTheater.fullyStop(killTimeWaitMsec);
 	}
-	public void stopAndReset() {
-		logInfo("StopAndReset - Stopping Theater.");
+	private void stopEverything() {
+		logInfo("stopEverything - Stopping Theater.");
 		stopTheater();
-		logInfo("StopAndReset - Stopping Anim Jobs.");
+		logInfo("stopEverything - Stopping Anim Jobs.");
 		myPHM.stopAndReset();
-		logInfo("StopAndReset - Stopping Speech-Output Jobs.");
+		logInfo("stopEverything - Stopping Speech-Output Jobs.");
 		mySOC.cancelAllRunningSpeechTasks();
-		// TODO:  Send character to default positions.
-		logInfo("StopAndReset - Restarting behavior theater.");
-		startTheater();
+		
 	}
-	
+	public void stopAndReset() {
+		stopEverything();
+		// TODO:  Send character to default positions.
+		logInfo("stopAndReset - Restarting behavior theater.");
+		startTheater();
+		logInfo("stopAndReset - Complete.");
+	}
+	public void stopResetAndRecenter() {
+		stopEverything();
+		logWarning("stopResetAndRecenter - Recenter is not implemented yet!");
+		logInfo("stopResetAndRecenter - Restarting behavior theater.");
+		startTheater();
+		logInfo("stopResetAndRecenter - Complete.");
+	}
 	public void registerDefaultSceneTriggers() { 
 		for (int i=0; i < SceneActions.getSceneTrigKeyCount(); i++) {
 			TriggerItems.SceneMsg smti = new TriggerItems.SceneMsg();
@@ -200,5 +216,11 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	@Override public String toString() { 
 		return "PumaDualChar[uri=" + myCharIdent + ", nickName=" + myNickName + "]";
 	}	
+	public void usePermAnims() {
+		logWarning("usePermAnims() not implemented yet");
+	}
+	public void useTempAnims() {
+		logWarning("useTempAnims() not implemented yet");
+	}
 
 }
