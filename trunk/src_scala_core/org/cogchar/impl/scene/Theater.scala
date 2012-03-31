@@ -72,6 +72,7 @@ class Theater extends BasicDebugger with DummyBox {
 	}
 	def killThread() { 
 		if (myThread != null) {
+			logInfo("Theater.killThread is interrupting its own thread");
 			myThread.interrupt();
 			myThread = null;
 		}
@@ -97,23 +98,31 @@ class Theater extends BasicDebugger with DummyBox {
 					// logInfo("Sleeping for " + sleepTimeMsec + "msec");
 					Thread.sleep(sleepTimeMsec);
 				}
-				logInfo("Theater behavior thread stopped.");
+				logInfo("Theater behavior thread stopped");
+				if (myThread != null) {
+					logInfo("marking Theater thread null as part of clean exit.");
+					myThread = null;
+				} else {
+					logWarning("End of run method found theater thread already null.  Boo!");
+				}
 			}
 		}
 		myThread = new Thread(r);
 		myThread.start();
 	}
 	
+	// 0 forces kill immediately.
 	def fullyStop(waitMsecThenForce : Int) {
 		stopAllScenes();
 		stopThread();
 		if (waitMsecThenForce >= 0) {
 			if (waitMsecThenForce > 0) {
 				Thread.sleep(waitMsecThenForce);
-				killThread();
 			}
+			killThread();
 		}
 	}
+	
 
 }
 object Theater extends BasicDebugger {
