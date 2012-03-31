@@ -22,9 +22,7 @@ import org.cogchar.render.sys.physics.ScoreBoard;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import java.util.List;
 import org.cogchar.render.app.bony.BodyController;
 
@@ -116,13 +114,33 @@ public class StickFigureTwister extends RenderModule {
 		q.fromAngles(pitchAngle, rollAngle, yawAngle);
 		return q;
 	}
-	public static void applyBoneRotQuat(Bone tgtBone, Quaternion q) {
 	
+	public static void applyBoneRotQuat(Bone tgtBone, Quaternion rotation) {
+		applyBoneTransforms(tgtBone, null, rotation, null);
+	}
+	/**
+	* Applies transforms from the "initial"/"bind" orientation, creating a new "local" transform set.
+	* Old "local" transforms are overwritten.  
+	 * @param tgtBone
+	 * @param translation
+	 * @param rotation
+	 * @param scale 
+	 */
+	public static void applyBoneTransforms(Bone tgtBone, Vector3f translation, Quaternion rotation, Vector3f scale) {
+		
 		tgtBone.setUserControl(true);
 		
-		// This applies rotation q to the "initial"/"bind" orientation, putting result in "local" rot.
-		tgtBone.setUserTransforms(Vector3f.ZERO, q, Vector3f.UNIT_XYZ);
-	}
+		if (translation == null) {
+			translation = Vector3f.ZERO;
+		}
+		if (rotation == null) {
+			rotation = Quaternion.IDENTITY;
+		}
+		if (scale == null) {
+			scale = Vector3f.UNIT_XYZ;
+		}
+		tgtBone.setUserTransforms(translation, rotation, scale);
+	}	
 	
 	public void setScoringFlag(boolean f) {
 		myTwistScoringFlag = f;
