@@ -265,8 +265,10 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 				 *		Vector3f code:
 				 *		http://code.google.com/p/jmonkeyengine/source/browse/trunk/engine/src/core/com/jme3/math/Vector3f.java
 				 * 
-				 *		Tutorial on JME3 Scene Graph (but note: skeletons have additional properties)
+				 *		Tutorial on JME3 math:
+				 *		http://jmonkeyengine.org/wiki/doku.php/jme3:math_for_dummies
 				 * 
+				 *		Tutorial on JME3 Scene Graph (but note: skeletons have additional properties)
 				 *		http://jmonkeyengine.org/wiki/doku.php/jme3:scenegraph_for_dummies
 				 */
 				
