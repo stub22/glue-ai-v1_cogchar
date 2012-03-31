@@ -59,7 +59,7 @@ public class BoneRobotConfig extends KnownComponentImpl {
 			Collections.sort(mrc.myBJCs, new Comparator() {
 				public int compare(Object o1, Object o2) {
 					int jointNum1 = ((BoneJointConfig)o1).myJointNum;
-					int jointNum2 = ((BoneJointConfig)o1).myJointNum;
+					int jointNum2 = ((BoneJointConfig)o2).myJointNum;
 					return jointNum1 - jointNum2;
 				}
 			});
