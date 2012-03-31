@@ -248,11 +248,24 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 			BoneState bs = fs.getBoneState(boneName);
 			Bone tgtBone = getSpatialBone(boneName);
 			if ((bs != null) && (tgtBone != null)) {
-				Quaternion boneRotQuat = bs.getRotQuat();
-		//		if (debugModulator++ %5 == 0)  {
-		//			theLogger.info("Applying " + boneRotQuat + " to " + tgtBone);
-		//		}
-				StickFigureTwister.applyBoneRotQuat(tgtBone, boneRotQuat);
+				
+				Quaternion boneRotQuat = bs.getRotQuat();	// Can cancel this with null or Quaternion.IDENTITY
+			
+				/* HACKME - 
+				 *	1) Check the boneName to match what you want to hack, as defined in OgreModel and bc:jointName 
+				 *		of Bony config.
+				 *  2) Construct a Vector3f for translate and/or scale.    If you want to cancel out the rotation,
+				 *  replace it with null or  Quaternion.IDENTITY.
+				 * 
+				 *    Vector3f docs:
+				 *       http://jmonkeyengine.org/javadoc/com/jme3/math/Vector3f.html
+				 */
+				
+				
+				Vector3f boneTranslate = null;  // Same as Vector3f.ZERO;
+				Vector3f boneScale = null;   // Same as Vector3f.UNIT_XYZ;
+				
+				StickFigureTwister.applyBoneTransforms(tgtBone, boneTranslate, boneRotQuat, boneScale);
 			}
 		}
 	
