@@ -2,34 +2,31 @@ package org.cogchar.bind.cogbot.main;
 
 
 
-import org.cogchar.impl.weber.config.TextUtils;
 import java.net.*;
 import java.io.*;
 
-import org.cogchar.impl.weber.config.MeneConfig;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CogbotCommunicator { // implements INexusService {
-
+    private final static Logger theLogger = Logger.getLogger(CogbotCommunicator.class.getName());
     // this is only called by get getID
     //private String lastKnownUserId = null;
     private String theBotId = "";
-    private MeneConfig myConfig;
     private CogbotService cogbotService;
     static PrintWriter servicePw = new PrintWriter(new Writer() {
 
+        @Override
         public void write(char[] cbuf, int off, int len) throws IOException {
-            TextUtils.println(new String(cbuf, off, len));
+            theLogger.info(new String(cbuf, off, len));
         }
 
+        @Override
         public void flush() throws IOException {
         }
 
+        @Override
         public void close() throws IOException {
         }
     });
@@ -37,8 +34,7 @@ public class CogbotCommunicator { // implements INexusService {
 	CogbotAvatar cogbotAvatar;
 
 
-    public CogbotCommunicator(MeneConfig config) {
-        myConfig = config;
+    public CogbotCommunicator(String cogbotUrl) {
         myProperties =  new Properties();
         try {
             myProperties.load(new FileReader("./resources/config.properties"));
@@ -47,7 +43,7 @@ public class CogbotCommunicator { // implements INexusService {
         }
         theBotId = sanitizeId(myProperties.getProperty("robot_fullname","Bina 48"));
      //   lastKnownUserId = sanitizeId(myProperties.getProperty("default_username","UNKNOWN_PARTNER"));
-        setBotProperty(CogbotService.cogbot_url_local, myConfig.getCogbotUrlLocal());
+        setBotProperty(CogbotService.cogbot_url_local, cogbotUrl);
         HttpURLConnection.setFollowRedirects(true);
         cogbotService = CogbotService.getInstance(myProperties);
         cogbotService.setOutput(servicePw);
@@ -69,7 +65,7 @@ public class CogbotCommunicator { // implements INexusService {
     private CogbotResponse getParsedResponse(String input, boolean clearingAssoc, int count) {
         CogbotResponse elRes = null;
         try {
-            input = myConfig.getFormatter("input").format(input);
+            input = sanatizeInput(input);
             elRes = cogbotService.getCogbotResponse(cogbotAvatar, servicePw, myProperties, input, theBotId);
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,6 +81,11 @@ public class CogbotCommunicator { // implements INexusService {
             }
         }
         return elRes;
+    }
+    
+    protected String sanatizeInput(String rawInput){
+        //return myConfig.getFormatter("input").format(input);
+        return rawInput;
     }
 
     private String getResponseString(String input, boolean clearingAssoc, int count) {
@@ -110,8 +111,7 @@ public class CogbotCommunicator { // implements INexusService {
     }
 
     private String sanitizeResponse(String response) {
-        response = myConfig.getFormatter("str").format(response);
-        response = myConfig.getFormatter("partner").format(response);
+        response = confSanitizeResponse(response);
         String temp = "";
         boolean modified = false;
         int start = 0, end = 0;
@@ -132,12 +132,18 @@ public class CogbotCommunicator { // implements INexusService {
         }
         return response;
     }
+    
+    protected String confSanitizeResponse(String resp){
+        //resp = myConfig.getFormatter("str").format(resp);
+        //resp = myConfig.getFormatter("partner").format(resp);
+        return resp;
+    }
 
     private String sanitizeId(String tempId) {
         if (tempId==null) return "Bina Daxeline";
         tempId = tempId.trim();
         if (tempId.length()==0) tempId = "Bina Daxeline";
-        tempId = myConfig.getFormatter("id").format(tempId);
+        tempId = confSanitizeId(tempId);
         for (int i = 0; i < tempId.length(); i++) {
             if (tempId.charAt(i) == (char) '\"') {
                 tempId = tempId.substring(i);
@@ -146,33 +152,37 @@ public class CogbotCommunicator { // implements INexusService {
         }
         return tempId;
     }
-
-    private String sanitizeLogId(String tempId) {
-        tempId = myConfig.getFormatter("logId").format(tempId);
-        for (int i = 0; i < tempId.length(); i++) {
-            if (tempId.charAt(i) == (char) '<') {
-                tempId = tempId.substring(i);
-                break;
-            }
-        }
-        return tempId.replace("\"", "");
+    
+    protected String confSanitizeId(String id){
+        //id = myConfig.getFormatter("id").format(id);
+        return id;
     }
 
     private String sanitizeAnimation(String animation) {
-        animation = myConfig.getFormatter("animation").format(animation);
+        animation = sanitizeAnim(animation);
         for (int k = 0; k < animation.length(); k++) {
             if (animation.charAt(k) == (char) '\"') {
                 animation = animation.substring(0, k);
                 break;
             }
         }
-        animation = myConfig.getFormatter("animation_list").format(animation);
+        animation = sanitizeAnimList(animation);
         animation = animation.trim();
         if (animation.length() > 0) {
             animation = "<bookmark mark=\"anim:" + animation + "\" />";
         }
 
         return animation;
+    }
+    
+    protected String sanitizeAnim(String anim){
+        //anim = myConfig.getFormatter("animation").format(anim);
+        return anim;
+    }
+    
+    protected String sanitizeAnimList(String anim){
+        //anim = myConfig.getFormatter("animation_list").format(anim);
+        return anim;
     }
 
     private String clearWordAssoc(String input, String resp, int count) {
@@ -181,7 +191,7 @@ public class CogbotCommunicator { // implements INexusService {
         }
         if (resp.matches(".*[Ww]ord associat.*")
                 || resp.matches("^'[A-Za-z.\\- ]*'$")) {
-            TextUtils.println("Stopping Word Association");
+            theLogger.info("Stopping Word Association");
             if (count >= 3) {
                 resp = "I could not understand what you said.";
             }
