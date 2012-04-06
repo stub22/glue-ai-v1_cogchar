@@ -48,6 +48,7 @@
 			<groupId>org.appdapter</groupId>
 			<version>${appdapter.version}</version>
 		</dependency>	
+			
 		
 		<dependency>
 			<groupId>org.robokind</groupId>
@@ -64,12 +65,7 @@
 			<!-- Needed at compile time for PortableSpeechRequest in CogbotSpeechDemo -->
 			<artifactId>org.robokind.impl.speech</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>		
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.bundle.core</artifactId>
-			<version>${project.version}</version>
-		</dependency>			
+		</dependency>
     </dependencies>
 
     <build>
@@ -83,6 +79,15 @@
                     <instructions>
                         <Bundle-Activator>org.cogchar.bind.cogbot.osgi.Activator</Bundle-Activator>
                     </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
         </plugins>

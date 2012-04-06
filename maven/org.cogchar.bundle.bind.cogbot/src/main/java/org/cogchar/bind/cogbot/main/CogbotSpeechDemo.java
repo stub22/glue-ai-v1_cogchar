@@ -12,7 +12,6 @@ import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 
-import org.cogchar.impl.weber.config.MeneConfig;
 
 import org.robokind.api.common.utils.Listener;
 import org.robokind.api.messaging.DefaultMessageAsyncReceiver;
@@ -42,10 +41,23 @@ public class CogbotSpeechDemo {
         if(session == null){
             return;
         }
-        CogbotCommunicator cogbot = createCogbotComm();
+        String url = "192.168.0.100";
+        if(args.length >= 1){
+            url = args[0];
+        }
+        CogbotCommunicator cogbot = createCogbotComm(url);
         if(cogbot == null){
             return;
         }
+        GenRespWithConf resp = cogbot.getResponse("hello friend!");
+        String respStr = resp.getResponse();
+        theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        theLogger.info(respStr);
+        theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
         Destination sendDest = ConnectionManager.createDestination("speech.Request");
         Destination recDest = ConnectionManager.createDestination("speechrec.Event");
         
@@ -80,7 +92,7 @@ public class CogbotSpeechDemo {
         }
     }
     
-    private static CogbotCommunicator createCogbotComm(){
+    private static CogbotCommunicator createCogbotComm(String url){
         Properties config = new Properties();
 		String testUser = "Test user";
 		String id = testUser.replace(" ", "");
@@ -89,7 +101,7 @@ public class CogbotSpeechDemo {
 		} catch (FileNotFoundException e) {
 			System.out.println("No config file found using defaults.");
 			config.setProperty("reset_phrase", "reload aiml");
-			String urlStr = "http://10.10.10.190:5580/chat?";
+			String urlStr = url;
 			config.setProperty("elbot_url_local", urlStr);
 			config.setProperty("elbot_url_remote", urlStr);
 			config.setProperty("id", id);
@@ -98,10 +110,8 @@ public class CogbotSpeechDemo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		MeneConfig mc = new MeneConfig();
-		mc.load_configuration(config);
 		System.out.println("Creating cogbot. Sending hello");
-		CogbotCommunicator cogbot = new CogbotCommunicator(mc);
+		CogbotCommunicator cogbot = new CogbotCommunicator(url);
 		cogbot.setBotProperty("username", testUser);
         return cogbot;
     }

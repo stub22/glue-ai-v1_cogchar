@@ -84,7 +84,7 @@ public class CogbotService {
         stdoutput.flush();
     }
 
-    synchronized void startLocalProcess() {
+    synchronized void startLocalProcess(final String ip) {
         if (isCogbotLocalChanging) {
             return;
         }
@@ -101,30 +101,30 @@ public class CogbotService {
         localProcessThread = new Thread(new Runnable() {
 
             public void run() {
-                CogbotService.this.startLocalProcessNow();
+                CogbotService.this.startLocalProcessNow(ip);
             }
         });
         localProcessThread.start();
     }
 
-    synchronized boolean isRunning() {
+    synchronized boolean isRunning(String localIp) {
         if (isCogbotAvailable) {
             return true;
         }
-        ensureAvailable();
+        ensureAvailable(localIp);
         return isCogbotAvailable;
     }
 
     public static synchronized CogbotService getInstance(Properties myProperties) {
         CogbotService service = CogbotService.getSingleInstance();
         service.addConfig(myProperties);
-        service.ensureAvailable();
+        service.ensureAvailable(myProperties.getProperty(CogbotService.cogbot_url_local));
         return service;
     }
     Thread ensureAvail = null;
     final Object starupShutdownLock = new Object();
 
-    void ensureAvailable() {
+    void ensureAvailable(final String url) {
         synchronized (starupShutdownLock) {
             if (ensureAvail != null) {
                 return;
@@ -132,7 +132,7 @@ public class CogbotService {
             ensureAvail = new Thread(new Runnable() {
 
                 public void run() {
-                    ensureAvailable0();
+                    ensureAvailable0(url);
                     synchronized (starupShutdownLock) {
                         ensureAvail = null;
                     }
@@ -142,14 +142,14 @@ public class CogbotService {
         }
     }
 
-    synchronized void ensureAvailable0() {
+    synchronized void ensureAvailable0(String localIp) {
         if (isCogbotAvailable) {
             return;
         }
         if (!COGBOT_LOCAL_CHECKED) {
             COGBOT_LOCAL_CHECKED = true;
-            if (cogbotPing("127.0.0.1")) {
-                simConf.setIp("127.0.0.1");
+            if (cogbotPing(localIp)) {
+                simConf.setIp(localIp);
                 isCogbotAvailable = true;
                 return;
             }
@@ -163,12 +163,12 @@ public class CogbotService {
                 return;
             }
         }
-        startLocalProcess();
+        startLocalProcess(localIp);
 
         if (!COGBOT_LOCAL_CHECKED_AFTER_START) {
             COGBOT_LOCAL_CHECKED_AFTER_START = true;
-            if (cogbotPing("127.0.0.1")) {
-                simConf.setIp("127.0.0.1");
+            if (cogbotPing(localIp)) {
+                simConf.setIp(localIp);
                 isCogbotAvailable = true;
                 return;
             }
@@ -187,7 +187,7 @@ public class CogbotService {
     }
 
     public CogbotResponse getCogbotResponse(CogbotAvatar av, PrintWriter servicePw, Properties myProperties, String input, String userName, String botName) {
-        if (!isRunning()) {
+        if (!isRunning(myProperties.getProperty(CogbotService.cogbot_url_local))) {
         }
         return new CogbotResponse(av, servicePw, myProperties, input,  userName, botName);
     }
@@ -255,7 +255,7 @@ public class CogbotService {
         return simConf;
     }
 
-    synchronized void startLocalProcessNow() {
+    synchronized void startLocalProcessNow(String ip) {
         try {
             if (isCogbotLocalChanging) {
                 return;
@@ -278,7 +278,7 @@ public class CogbotService {
             localProcess = Runtime.getRuntime().exec(exec, null, dir);
             isCogbotLocalChanging = false;
             isCogbotAvailable = true;
-            simConf.setIp("127.0.0.1");
+            simConf.setIp(ip);
             String line;
 
             BufferedReader input =
