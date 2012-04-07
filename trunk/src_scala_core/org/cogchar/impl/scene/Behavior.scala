@@ -142,7 +142,6 @@ class BehaviorSpecBuilder(builderConfRes : Resource) extends DynamicCachingCompo
 			val text = readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
 			// val path = readConfigValString(stepItem.getIdent(), SceneFieldNames.P_path, stepItem, null);
 			
-			readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
 			val action = new TextAction(text);
 			
 			val stepChannelSpecs = findOrMakeLinkedObjects(stepItem, SceneFieldNames.P_channel, assmblr, mode, null);
