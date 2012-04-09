@@ -21,6 +21,9 @@ import Actor._
 import org.appdapter.core.log.{BasicDebugger};
 
 /**
+ * Experimental code for actor messaging.
+ * Not used for any Cogchar features, yet.
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 
