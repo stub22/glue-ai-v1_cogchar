@@ -35,7 +35,7 @@ class Theater extends BasicDebugger with DummyBox {
 	var myBinder : DummyBinder = null;
 	var	mySceneBook : SceneBook = null;
 	
-	var myThread : Thread = null;
+	var myWorkThread : Thread = null;
 	var myStopFlag : Boolean = false;
 	
 	def registerChannel (c : Channel[_ <: Media, FancyTime]) {
@@ -71,21 +71,23 @@ class Theater extends BasicDebugger with DummyBox {
 		myStopFlag = true;
 	}
 	def killThread() { 
-		if (myThread != null) {
+		if (myWorkThread != null) {
 			logInfo("Theater.killThread is interrupting its own thread");
-			myThread.interrupt();
-			myThread = null;
+			myWorkThread.interrupt();
+			myWorkThread = null;
 		}
 	}
 	def startThread() {
 		val sleepTimeMsec = 100
-		// TODO: Consider how this can be better done with agents.
-		if (myThread != null) {
-			val tstate = myThread.getState;
+		// TODO: Consider how this thread communication might be better done with Scala actors, 
+		// following experimental pattern in BehaviorTrial.scala.
+		// 
+		if (myWorkThread != null) {
+			val tstate = myWorkThread.getState;
 			if (tstate == Thread.State.TERMINATED) {
-				myThread = null;
+				myWorkThread = null;
 			} else {
-				throw new RuntimeException("Cannot start new Theater thread, old thread still exists in state: " + tstate + ", " + myThread);
+				throw new RuntimeException("Cannot start new Theater thread, old thread still exists in state: " + tstate + ", " + myWorkThread);
 			}
 		}
 		myStopFlag = false;
@@ -98,20 +100,21 @@ class Theater extends BasicDebugger with DummyBox {
 					// logInfo("Sleeping for " + sleepTimeMsec + "msec");
 					Thread.sleep(sleepTimeMsec);
 				}
-				logInfo("Theater behavior thread stopped");
-				if (myThread != null) {
-					logInfo("marking Theater thread null as part of clean exit.");
-					myThread = null;
+				logInfo("Theater behavior work thread stopped");
+				if (myWorkThread != null) {
+					logInfo("marking Theater behavior work thread null as part of clean exit.");
+					myWorkThread = null;
 				} else {
 					logWarning("End of run method found theater thread already null.  Boo!");
 				}
 			}
 		}
-		myThread = new Thread(r);
-		myThread.start();
+		myWorkThread = new Thread(r);
+		myWorkThread.start();
 	}
-	
-	// 0 forces kill immediately.
+	// Negave value avoids thread kill.
+	// 0 forces thread kill immediately.
+	// positive value waits (in *calling* thead) that many millsec before killing thread.
 	def fullyStop(waitMsecThenForce : Int) {
 		stopAllScenes();
 		stopThread();
