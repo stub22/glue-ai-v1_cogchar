@@ -83,7 +83,7 @@ bci:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 
 		bci:joint_Brows_Up, bci:joint_Blink_Open,
 		bci:joint_Eyes_Pitch, bci:joint_LtEye_Yaw, bci:joint_RtEye_Yaw,
-		bci:joint_Smile_Left, bci:joint_Smile_Right,
+		bci:joint_Upper_Jaw, bci:joint_Lower_Jaw,
 		bci:joint_Jaw,
 
 		bci:joint_LtShoulder_Pitch, bci:joint_LtShoulder_Roll, 
@@ -216,7 +216,7 @@ bci:joint_Brows_Up
 	],
 	[
 		bc:boneName			"RtBrow";
-		bc:rotationAxis		"X_ROT";
+		bc:rotationAxis		"Z_ROT";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
 	]
@@ -225,13 +225,19 @@ bci:joint_Brows_Up
 
 bci:joint_Blink_Open
 	bc:jointNum			301;			bc:jointName			"Blink_Open";
-	bc:defaultPosNorm	0.5;
+	bc:defaultPosNorm	1;
 	bc:projectionRange	[
 		bc:boneName			"LtEye2";
 		bc:rotationAxis		"Z_ROT";
 		bc:minAngleDeg		-90.0;
 		bc:maxAngleDeg		 90.0;
-	]
+	],
+        [
+		bc:boneName			"RtEye2";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+        ]
 .
 
 
@@ -241,14 +247,14 @@ bci:joint_Eyes_Pitch
 	bc:projectionRange	[
 		bc:boneName			"LtEye1";
 		bc:rotationAxis		"Z_ROT";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		-35.0;
+		bc:maxAngleDeg		 35.0;
 	],
 	[
 		bc:boneName			"RtEeye1";
 		bc:rotationAxis		"Z_ROT";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		-35.0;
+		bc:maxAngleDeg		 35.0;
 	]
 .
 bci:joint_LtEye_Yaw
@@ -257,8 +263,8 @@ bci:joint_LtEye_Yaw
 	bc:projectionRange	[
 		bc:boneName			"LtEye1";
 		bc:rotationAxis		"Y_ROT";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		-35.0;
+		bc:maxAngleDeg		 35.0;
 	]
 .
 
@@ -269,12 +275,12 @@ bci:joint_RtEye_Yaw
 		# RtEeye1 (sic) 
 		bc:boneName			"RtEeye1";
 		bc:rotationAxis		"Y_ROT";
-		bc:minAngleDeg		-90.0;
-		bc:maxAngleDeg		 90.0;
+		bc:minAngleDeg		-35.0;
+		bc:maxAngleDeg		 35.0;
 	]
 .
-bci:joint_Smile_Left
-	bc:jointNum			320;			bc:jointName			"Smile_Left";
+bci:joint_Upper_Jaw
+	bc:jointNum			320;			bc:jointName			"Upper_Jaw";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"be_RevJaw2";
@@ -283,8 +289,8 @@ bci:joint_Smile_Left
 		bc:maxAngleDeg		 90.0;
 	]
 .
-bci:joint_Smile_Right
-	bc:jointNum			321;			bc:jointName			"Smile_Right";
+bci:joint_Lower_Jaw
+	bc:jointNum			321;			bc:jointName			"Lower_Jaw";
 	bc:defaultPosNorm	0.5;
 	bc:projectionRange	[
 		bc:boneName			"be_Jaw2";
