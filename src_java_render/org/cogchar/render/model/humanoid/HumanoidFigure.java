@@ -83,6 +83,10 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	
 	private static float DEFAULT_ANIM_BLEND_RATE = 0.5f;
 	private static float KRC_WEIGHT_THRESHOLD = 0.5f;
+        
+        // "Special" face bone "rotation" max/min angles assumed to be set to +/-FACE_ANGLE_LIMIT
+        // for purposes of "hack" mappings of rotations to translations, etc. (see getNormalizedTranslation)
+        private static float FACE_ANGLE_LIMIT = (float)Math.PI/2; 
 
 	public HumanoidFigure(BonyConfigEmitter bce, Ident charIdent) { 
 		myBonyConfigEmitter = bce;
@@ -254,7 +258,7 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 				// For hinged bones, generally all we need is the rotation.
 				Quaternion boneRotQuat = bs.getRotQuat();	// Can cancel this with null or Quaternion.IDENTITY
 			
-			
+                                // Below "hacks" are now generally accomplished - Ryan Biggs 9 April 2012
 				/* HACKME - add scales + translates for special bones, e.g. facial.
 				 *	1) Check the boneName to match what you want to hack, as defined in OgreModel and bc:jointName 
 				 *		of Bony config.
@@ -282,16 +286,51 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 				 */
 				
 				Vector3f boneTranslateVec = null; // Same as Vector3f.ZERO = no local translation
+                                Vector3f boneScaleVec = null;   // Same as Vector3f.UNIT_XYZ = new Vector3f(1.0, 1.0, 1.0); = scale by 1 in all 3 directions
+                                
                 if("RtBrow".equals(boneName) || "LtBrow".equals(boneName)){
-                    boneTranslateVec = new Vector3f(bs.rot_Y_A1st, bs.rot_Z_A2nd, bs.rot_X_A3rd);  
+                    float normalizedTranslation = getNormalizedLinearMap(bs.rot_Z_A2nd, true);
+                    boneTranslateVec = new Vector3f(0, normalizedTranslation, 0);
+                    float[] angles = {0f,0f,0f};
+                    angles[2] = ("LtBrow".equals(boneName))? normalizedTranslation/2 : -normalizedTranslation/2;
+                    boneRotQuat = new Quaternion(angles);
+                }
+                if("be_Jaw2".equals(boneName)){
+                    float normalizedTranslation = getNormalizedLinearMap(bs.rot_Z_A2nd, false);
+                    boneTranslateVec = new Vector3f(0.289509f*normalizedTranslation, 0.318684f*normalizedTranslation, 0f);
                     boneRotQuat = null;
                 }
-                Vector3f boneScaleVec = null;   // Same as Vector3f.UNIT_XYZ = new Vector3f(1.0, 1.0, 1.0); = scale by 1 in all 3 directions
+                if("be_RevJaw2".equals(boneName)){
+                    float normalizedTranslation = getNormalizedLinearMap(bs.rot_Z_A2nd, false);
+                    boneTranslateVec = new Vector3f(0.5f*(normalizedTranslation-1f), 0.5f*(normalizedTranslation-1f), 0f);
+                    boneRotQuat = null;
+                }
+                if("LtEye2".equals(boneName)|| "RtEye2".equals(boneName)){
+                    float normalizedScale = getNormalizedLinearMap(bs.rot_Z_A2nd, false);
+                    if (normalizedScale < 0.05f) {normalizedScale = 0f;}
+                    boneScaleVec = new Vector3f(1f, normalizedScale, 1f);
+                    boneRotQuat = null;
+                    /*
+                    // This doesn't seem to work well to hide pupil since eyelids also "invert"
+                    if (normalizedScale < 0.05f) {
+                        float[] angles = {(float)Math.PI, 0f, 0f};
+                        boneRotQuat = new Quaternion(angles);
+                    }
+                    */
+                }
+                
 				StickFigureTwister.applyBoneTransforms(tgtBone, boneTranslateVec, boneRotQuat, boneScaleVec);
 			}
 		}
 	
-	}	
+	}
+        
+        // Convenience method to convert from rotation about an axis of +/- FACE_ANGLE_LIMIT 
+        // to a normalized linear mapping with a domain of {0,1} (symmetric=false) or {-1,1} (symmetric=true)
+        private float getNormalizedLinearMap(float rotation, boolean symmetric) {
+            return symmetric? rotation/FACE_ANGLE_LIMIT : (rotation/FACE_ANGLE_LIMIT + 1)/2;
+        }
+        
 	/*
 	 * 
 	 * 		// Unused bone lookups
