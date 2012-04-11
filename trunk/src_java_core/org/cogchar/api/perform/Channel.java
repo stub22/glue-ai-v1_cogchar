@@ -19,38 +19,89 @@ import org.appdapter.core.item.Ident;
 import java.util.List;
 
 /**
+ * A Channel produces Performances from a given Media type.
+ * 
+ * @param <M> Type of Media used by this Channel
+ * @param <Time> Time unit used by the channel for timekeeping and scheduling
  * @author Stu B. <www.texpedient.com>
  */
 public interface Channel<M extends Media, Time> // , C extends Channel<M, Time, C>> {
 {
-	public enum Status {
-		INIT,
-		IDLE,
-		PERFORMING,
-		ERROR
+    public enum Status {
+        /**
+         * Channel is initializing and not ready.
+         */
+        INIT,
+        /**
+         * Channel is initialized and ready, but is not performing on media
+         */
+        IDLE,
+        /**
+         * Channel is currently performing on some media
+         */
+        PERFORMING,
+        /**
+         * The Channel has encountered an error and is unable to perform
+         */
+        ERROR
 	}
-	public Status getStatus();
+    /**
+     * Returns the current status of the Channel.
+     * @return current status of the Channel
+     */
+    public Status getStatus();
 	
-	public Ident getIdent();
-	public String getName();
+    /**
+     * Returns the unique identifier for this Channel.
+     * @return unique identifier for this Channel
+     */
+    public Ident getIdent();
+    /**
+     * Returns the name of the Channel.
+     * @return name of the Channel
+     */
+    public String getName();
 	
-	public int	getMaxAllowedPerformances();
+    /**
+     * Returns the maximum number of simultaneous Performances allowed by this
+     * Channel.
+     * @return maximum number of simultaneous Performances allowed by this
+     * Channel.
+     */
+    public int	getMaxAllowedPerformances();
 	
-	public Performance<M, Time> makePerformanceForMedia(M media);
+    /**
+     * Creates a new Performance instance to act on the given media.
+     * @param media the media to be used by the performance
+     * @return new Performance to act on the given media
+     */
+    public Performance<M, Time> makePerformanceForMedia(M media);
 	
-	public boolean schedulePerfAction(Performance<M, Time> perf, Performance.Action action, Time actionTime);
+    /**
+     * ??
+     * @param perf
+     * @param action
+     * @param actionTime
+     * @return
+     */
+    public boolean schedulePerfAction(Performance<M, Time> perf, Performance.Action action, Time actionTime);
 
 
-	public interface Text<Time> extends Channel<Media.Text, Time> {
+    public interface Text<Time> extends Channel<Media.Text, Time> {
 		
 	}
-	public interface Framed<Time, F> extends Channel<Media.Framed<F>, Time> {
+    public interface Framed<Time, F> extends Channel<Media.Framed<F>, Time> {
 		
 	}
 	
-	public class Bank<Time> {
-		public	List<Channel<?, Time>>	myWildcardChannels;
-		public void test(Text<Time> textChan) { 
+    /**
+     * ??
+     * @param <Time> 
+     */
+    public class Bank<Time> {
+        public	List<Channel<?, Time>>	myWildcardChannels;
+        
+        public void test(Text<Time> textChan) { 
 			myWildcardChannels.add(textChan);
 		}
 	}
