@@ -21,21 +21,28 @@ import java.net.URL;
 import org.apache.log4j.PropertyConfigurator;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.modules.ModuleInstall;
+import org.openide.util.NbBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Installer extends ModuleInstall {
 	static Logger theLogger = LoggerFactory.getLogger(Installer.class);
 	static String LOG4J_PROPS_PATH = "config/cogchar/logging_temp/log4j_cogchar_dev.properties";
-	static String VIRTCHAR_NB_MODULE_DIR = "org_cogchar_nbui_render";
+	static String VIRTCHAR_NB_CLUSTER = "org_cogchar_nbui_render";
+	private static String theVirtcharNBClusterDir;
+	public static String getVirtcharNBClusterDir(){
+        if(theVirtcharNBClusterDir == null){
+            theVirtcharNBClusterDir = 
+                    getRelativeAppPath() + VIRTCHAR_NB_CLUSTER;
+        }
+        return theVirtcharNBClusterDir;
+    }
 	
     @Override public void restored() {
         logInfo(".restored() - BEGIN");
         
-
-        
-        File file = InstalledFileLocator.getDefault().locate(LOG4J_PROPS_PATH, VIRTCHAR_NB_MODULE_DIR, false);
-		logInfo("InstalledFileLocator resolved path[" + LOG4J_PROPS_PATH + "] in module[" + VIRTCHAR_NB_MODULE_DIR + "] to " + file.getAbsolutePath());
+        File file = InstalledFileLocator.getDefault().locate(LOG4J_PROPS_PATH, getVirtcharNBClusterDir(), false);
+		logInfo("InstalledFileLocator resolved path[" + LOG4J_PROPS_PATH + "] in module[" + getVirtcharNBClusterDir() + "] to " + file.getAbsolutePath());
         try{
             URL localURL = file.toURI().toURL();
             logInfo("Forcing Log4J to read config from: " + localURL);
@@ -47,6 +54,28 @@ public class Installer extends ModuleInstall {
             ex.printStackTrace();
         }
     }
+    
+    private static String getRelativeAppPath(){
+        String brandingToken = NbBundle.getBranding();
+        File f = new File("./");
+        String path = f.getAbsolutePath();
+        int len = path.length();
+        if(len >= 5){
+            String dir = path.substring(len-5, len-2).toLowerCase();
+            if(dir.equals("bin")){
+                return "../";
+            }
+        }
+        int blen = brandingToken.length() + 2;
+        if(len >= blen){
+            String dir = path.substring(len-blen, len-2).toLowerCase();
+            if(dir.equals(brandingToken)){
+                return "./";
+            }
+        }
+        return "./target/" + brandingToken + "/";
+    }
+    
 	private void logInfo(String msg) {
 		String smsg = "[Simulator-Installer]-" + msg;
 		System.out.println("[System.out]-" + getClass().getCanonicalName() + "-" + smsg);
