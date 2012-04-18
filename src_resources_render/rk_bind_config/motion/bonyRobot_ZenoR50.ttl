@@ -280,8 +280,8 @@ bci:joint_RtEye_Yaw
 	]
 .
 bci:joint_Upper_Jaw
-	bc:jointNum			320;			bc:jointName			"Upper_Jaw";
-	bc:defaultPosNorm	0.5;
+	bc:jointNum			1001;			bc:jointName			"Unused"; #"Upper_Jaw";
+	bc:defaultPosNorm	0.7991;
 	bc:projectionRange	[
 		bc:boneName			"be_RevJaw2";
 		bc:rotationAxis		"Z_ROT";
@@ -290,8 +290,8 @@ bci:joint_Upper_Jaw
 	]
 .
 bci:joint_Lower_Jaw
-	bc:jointNum			321;			bc:jointName			"Lower_Jaw";
-	bc:defaultPosNorm	0.5;
+	bc:jointNum			322;			bc:jointName			"Jaw"; #"Lower_Jaw";
+	bc:defaultPosNorm	0.125;
 	bc:projectionRange	[
 		bc:boneName			"be_Jaw2";
 		bc:rotationAxis		"Z_ROT";
@@ -301,8 +301,8 @@ bci:joint_Lower_Jaw
 .
 
 bci:joint_Jaw
-	bc:jointNum			322;			bc:jointName			"Jaw";
-	bc:defaultPosNorm	0.5;
+	bc:jointNum			1000;			bc:jointName			"Unused"; #"Jaw";
+	bc:defaultPosNorm	0.2301;
 	bc:projectionRange	[
 		bc:boneName			"bn_Jaw01";
 		bc:rotationAxis		"Z_ROT";
