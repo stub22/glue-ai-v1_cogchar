@@ -19,7 +19,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.Robot.RobotPositionHashMap;
 import org.robokind.api.motion.Robot.RobotPositionMap;
-import org.robokind.api.motion.utils.RobotFrameSource;
+import org.robokind.api.motion.lifecycle.DefaultBlenderServiceGroup;
 import org.robokind.api.motion.utils.RobotMoverFrameSource;
 import org.robokind.api.motion.utils.RobotUtils;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceContext<R> {
 	static Logger theLogger = LoggerFactory.getLogger(BlendingRobotServiceContext.class);
 	
-	private	ServiceRegistration[]		myBlenderRegs;
+	private	DefaultBlenderServiceGroup  myBlenderGroup;
 	private	RobotMoverFrameSource		myFrameSource;
 	
 	public BlendingRobotServiceContext(BundleContext bundleCtx) {
@@ -39,13 +39,22 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
 
 	protected void startDefaultBlender() {
 		R robot = getRobot();
+        if(robot == null){
+            return;
+        }
 		Robot.Id robotID = robot.getRobotId();
         theLogger.info("Starting default blender for robotID: " + robotID);
-        myBlenderRegs = RobotUtils.startDefaultBlender(
-                myBundleCtx, robotID, RobotUtils.DEFAULT_BLENDER_INTERVAL);
+        myBlenderGroup = new DefaultBlenderServiceGroup(
+                myBundleCtx, robotID, 
+                RobotUtils.DEFAULT_BLENDER_INTERVAL, null);
+        myBlenderGroup.start();
 	}
+    
 	protected void  registerFrameSource() { 
 		R robot = getRobot();
+        if(robot == null){
+            return;
+        }
 		Robot.Id robotID = robot.getRobotId();		
 		//create and register the MotionTargetFrameSource,
         myFrameSource = new RobotMoverFrameSource(robot);
@@ -53,9 +62,11 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
 		RobotUtils.registerFrameSource(myBundleCtx, robot.getRobotId(), myFrameSource);
 	}
     protected void testPositionMove() { 
-		RobotPositionMap positions = new RobotPositionHashMap();
-		//... add positions
-        
+		R robot = getRobot();
+        if(robot == null){
+            return;
+        }
+		RobotPositionMap positions = robot.getDefaultPositions();        
         //moves to the positions over 1.5 seconds
         myFrameSource.move(positions, 1500);
 	}	

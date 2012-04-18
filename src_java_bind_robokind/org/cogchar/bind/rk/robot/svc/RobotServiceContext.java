@@ -17,6 +17,7 @@ package org.cogchar.bind.rk.robot.svc;
 
 import java.io.File;
 import javax.jms.Connection;
+import javax.jms.JMSException;
 import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -24,12 +25,15 @@ import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.utils.RobotUtils;
 import org.robokind.impl.messaging.utils.ConnectionManager;
 import org.robokind.impl.motion.lifecycle.RemoteRobotHostServiceGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class RobotServiceContext<R extends Robot> extends BasicDebugger {
+	static Logger theLogger = LoggerFactory.getLogger(RobotServiceContext.class);
 
 	protected BundleContext			myBundleCtx;
 	private R						myRobot;
@@ -42,6 +46,9 @@ public class RobotServiceContext<R extends Robot> extends BasicDebugger {
 		return myBundleCtx;
 	}
 	public R getRobot() { 
+        if(myRobot == null){
+            theLogger.warn("No Robot Set");
+        }
 		return myRobot;
 	}
 	protected void registerRobot(R robot) throws Exception {
@@ -51,19 +58,32 @@ public class RobotServiceContext<R extends Robot> extends BasicDebugger {
 		if(myRobotReg == null){
 			 throw new Exception("Error Registering Robot: " + robot);
 		}
-        
+    }
+    protected void launchRemoteHost(String ip){
+        if(ip == null){
+            throw new NullPointerException();
+        }else if(myRobot == null){
+            theLogger.warn("No Robot Set");
+            return;
+        }
         Connection con = ConnectionManager.createConnection(
                         "admin", "admin", "client1", "test", 
-                        "tcp://127.0.0.1:5672");
-        if(con != null){
+                        "tcp://"+ip);
+        if(con == null){
+            return;
+        }
+        try{
             con.start();
             new RemoteRobotHostServiceGroup(
                     myBundleCtx, myRobot.getRobotId(), 
                     "host", "client", con, null).start();
+        }catch(JMSException ex){
+            theLogger.warn("Could not connect to broker: " + ip, ex);
         }
-	}	
+    }
 	public void registerAndStart(R robot) throws Throwable {
 		registerRobot(robot);
+        launchRemoteHost("127.0.0.1:5672");
 	}
 	public void startJointGroup(File jointGroupConfigXML_file) { 
 		RobotServiceFuncs.startJointGroup(myBundleCtx, myRobot, jointGroupConfigXML_file);
