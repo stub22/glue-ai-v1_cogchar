@@ -16,11 +16,14 @@
 package org.cogchar.bind.rk.robot.svc;
 
 import java.io.File;
+import javax.jms.Connection;
 import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.utils.RobotUtils;
+import org.robokind.impl.messaging.utils.ConnectionManager;
+import org.robokind.impl.motion.lifecycle.RemoteRobotHostServiceGroup;
 
 
 /**
@@ -48,6 +51,16 @@ public class RobotServiceContext<R extends Robot> extends BasicDebugger {
 		if(myRobotReg == null){
 			 throw new Exception("Error Registering Robot: " + robot);
 		}
+        
+        Connection con = ConnectionManager.createConnection(
+                        "admin", "admin", "client1", "test", 
+                        "tcp://127.0.0.1:5672");
+        if(con != null){
+            con.start();
+            new RemoteRobotHostServiceGroup(
+                    myBundleCtx, myRobot.getRobotId(), 
+                    "host", "client", con, null).start();
+        }
 	}	
 	public void registerAndStart(R robot) throws Throwable {
 		registerRobot(robot);
