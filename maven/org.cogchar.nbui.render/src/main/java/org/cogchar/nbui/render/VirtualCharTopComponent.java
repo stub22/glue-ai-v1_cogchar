@@ -81,7 +81,7 @@ public final class VirtualCharTopComponent extends TopComponent {
 		// String dualCharURI = "urn:org.cogchar/platform/nb701?charName=HRK_Zeno_R50&version=20120302";       
 		
 		String sysContextURI = "NBURI:huzzah";             
-		String sysLocalTempConfigDir = Installer.VIRTCHAR_NB_MODULE_DIR;
+		String sysLocalTempConfigDir = Installer.getVirtcharNBClusterDir();
 		
 		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI, sysLocalTempConfigDir);
 		
