@@ -16,6 +16,7 @@
 package org.cogchar.nbui.render.trigger;
 
 import java.awt.event.ActionListener;
+import org.robokind.api.motion.Robot;
 
 /**
  *
