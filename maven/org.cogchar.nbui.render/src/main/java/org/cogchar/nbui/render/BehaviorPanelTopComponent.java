@@ -15,6 +15,8 @@
  */
 package org.cogchar.nbui.render;
 
+import org.cogchar.nbui.render.trigger.RobotSelector;
+import org.cogchar.nbui.render.trigger.RobotSelector.OSGiRobotSelector;
 import org.cogchar.nbui.render.trigger.TriggerSet;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -22,7 +24,9 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.osgi.framework.BundleContext;
+import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.OSGiUtils;
+import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.robokind.api.motion.Robot;
 
 /**
@@ -55,8 +59,11 @@ public final class BehaviorPanelTopComponent extends TopComponent {
         if(myInitFlag){
             return;
         }
-        bundleCtx.registerService(
-                TriggerSet.class.getName(), triggerPanel1, null);
+        new OSGiComponent(bundleCtx, 
+                new SimpleLifecycle(triggerPanel1, TriggerSet.class)).start();
+        new OSGiComponent(bundleCtx, 
+                new SimpleLifecycle(
+                        new OSGiRobotSelector(), RobotSelector.class)).start();
         myInitFlag = true;
     }
 
