@@ -37,7 +37,7 @@ autostore = false)
 @TopComponent.Description(preferredID = "BehaviorPanelTopComponent",
 //iconBase="SET/PATH/TO/ICON/HERE", 
 persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "bottomSlidingSide", openAtStartup = false)
+@TopComponent.Registration(mode = "bottomSlidingSide", openAtStartup = true)
 @ActionID(category = "Window", id = "org.cogchar.nbui.render.BehaviorPanelTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_BehaviorPanelAction",
