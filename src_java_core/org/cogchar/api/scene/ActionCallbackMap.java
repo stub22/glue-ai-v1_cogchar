@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.nbui.render.trigger;
+package org.cogchar.api.scene;
 
 import java.awt.event.ActionListener;
 
@@ -23,7 +23,10 @@ import java.awt.event.ActionListener;
  */
 
 
-public interface TriggerSet {
-    public void addTrigger(String name, ActionListener listener);
-    public void removeTrigger(String name);
+public interface ActionCallbackMap {
+    public void putActionCallback(String actionCallbackName, ActionListener listener);
+	
+    public ActionListener getActionCallback(String actionCallbackName);	
+    
+	public void removeActionCallback(String actionCallbackName);
 }

@@ -16,6 +16,7 @@
 
 package org.cogchar.nbui.render.trigger;
 
+import org.cogchar.api.scene.ActionCallbackMap;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ import javax.swing.JButton;
  */
 
 
-public class TriggerPanel extends javax.swing.JPanel implements TriggerSet {
+public class TriggerPanel extends javax.swing.JPanel implements ActionCallbackMap {
     private Map<String,JButton> myButtonMap;
     /** Creates new form TriggerPanel */
     public TriggerPanel() {
@@ -38,7 +39,7 @@ public class TriggerPanel extends javax.swing.JPanel implements TriggerSet {
     }
     
     @Override
-    public void addTrigger(String name, ActionListener listener){
+    public void putActionCallback(String name, ActionListener listener){
         JButton b = new JButton(name);
         b.addActionListener(listener);
         myButtonMap.put(name, b);
@@ -48,7 +49,7 @@ public class TriggerPanel extends javax.swing.JPanel implements TriggerSet {
     }
     
     @Override
-    public void removeTrigger(String name){
+    public void removeActionCallback(String name){
         JButton b = myButtonMap.remove(name);
         if(b != null){
             remove(b);
@@ -77,4 +78,19 @@ public class TriggerPanel extends javax.swing.JPanel implements TriggerSet {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
+	@Override
+	public ActionListener getActionCallback(String actionCallbackName) {
+		ActionListener result = null;
+		JButton b = myButtonMap.get(actionCallbackName);
+		if (b != null) { 
+			ActionListener allAL[] = b.getActionListeners();
+			if (allAL != null) {
+				if (allAL.length == 1) {
+					result = allAL[0];
+				}
+			}
+		}
+		return result;		
+	}
 }
