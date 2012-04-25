@@ -22,12 +22,9 @@ import com.jme3.input.InputManager;
 import com.jme3.scene.Node;
 
 import org.appdapter.api.facade.FacadeSpec;
-import org.appdapter.api.facade.Maker;
-import org.appdapter.api.facade.FacadeRegistryFuncs;
-import org.appdapter.api.registry.Description;
-import org.appdapter.api.registry.VerySimpleRegistry;
+
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.registry.basic.BasicDescription;
+
 import org.cogchar.blob.emit.RegistryClient;
 import org.cogchar.blob.emit.FacadeHandle;
 import org.cogchar.render.opengl.mesh.FancyMeshFactory;
@@ -52,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * extending this one can use those features.  You'll need 'em, buddy!
  * @author Stu B. <www.texpedient.com>
  */
-public abstract class RenderRegistryFuncs extends FacadeRegistryFuncs {
+public abstract class RenderRegistryFuncs extends BasicDebugger {
 	
 	private final static Logger		theLogger = LoggerFactory.getLogger(RenderRegistryFuncs.class);
 	
@@ -160,97 +157,102 @@ public abstract class RenderRegistryFuncs extends FacadeRegistryFuncs {
 	
 //		CC_PHYSICS_FACADE	
 
-	protected static <EFT, EFK> EFT  findExternalFacadeOrNull(FacadeSpec<EFT, EFK> fs, String optOverrideName) {		
+	public static <EFT, EFK> EFT  findExternalFacadeOrNull(FacadeSpec<EFT, EFK> fs, String optOverrideName) {		
 		EFT result = null;
-		FacadeHandle<EFT> fh = RegistryClient.findExternalFacade(fs, optOverrideName);
+		FacadeHandle<EFT> fh = RegistryClient.findExternalFacade(RegistryClient.SUBSYS_REG_RENDER(), fs, optOverrideName);
 		if (fh.isReady()) {
 			result = fh.getOrElse(null);
 		} 
 		return result;
 	}
-	
+	public static <EFT, EFK> void registerExternalFacade(FacadeSpec<EFT, EFK> fs, EFT facade, String optOverrideName) {
+		RegistryClient.registerExternalFacade(RegistryClient.SUBSYS_REG_RENDER(), fs, facade, optOverrideName);	
+	}
+	public static <IFT, IFK> IFT  findOrMakeInternalFacade(FacadeSpec<IFT, IFK> fs, String optOverrideName ) {
+		return RegistryClient.findOrMakeInternalFacade(RegistryClient.SUBSYS_REG_RENDER(), fs, optOverrideName);
+	}
 	protected static AssetManager findJme3AssetManager(String optionalName) {
 		return findExternalFacadeOrNull(THE_JME3_ASSET_MANAGER, optionalName);
 	}
 	protected static void registerJme3AssetManager(AssetManager am, String optionalName) {
-		RegistryClient.registerExternalFacade(THE_JME3_ASSET_MANAGER, am, optionalName);	
+		registerExternalFacade(THE_JME3_ASSET_MANAGER, am, optionalName);	
 	}
 	protected static Node findJme3RootDeepNode(String optionalName) {
 		return findExternalFacadeOrNull(THE_JME3_ROOT_DEEP_NODE, optionalName);
 	}
 	protected static void registerJme3RootDeepNode(Node n, String optionalName) {
-		RegistryClient.registerExternalFacade(THE_JME3_ROOT_DEEP_NODE, n, optionalName);
+		registerExternalFacade(THE_JME3_ROOT_DEEP_NODE, n, optionalName);
 	}
 	protected static Node findJme3RootOverlayNode(String optionalName) {
 		return findExternalFacadeOrNull(THE_JME3_ROOT_OVERLAY_NODE, optionalName);
 	}
 	protected static void registerJme3RootOverlayNode(Node n, String optionalName) {
-		RegistryClient.registerExternalFacade(THE_JME3_ROOT_OVERLAY_NODE, n, optionalName);
+		registerExternalFacade(THE_JME3_ROOT_OVERLAY_NODE, n, optionalName);
 	}	
 	
 	protected static AppStateManager findJme3AppStateManager(String optionalName) {
 		return findExternalFacadeOrNull(THE_JME3_APP_STATE_MANAGER, optionalName);
 	}
 	protected static void registerJme3AppStateManager(AppStateManager asm, String optionalName) {
-		RegistryClient.registerExternalFacade(THE_JME3_APP_STATE_MANAGER, asm, optionalName);
+		registerExternalFacade(THE_JME3_APP_STATE_MANAGER, asm, optionalName);
 	}
 	protected static InputManager findJme3InputManager(String optionalName) {
 		return findExternalFacadeOrNull(THE_JME3_INPUT_MANAGER, optionalName);
 	}
 	protected static void registerJme3InputManager(InputManager im, String optionalName) {
-		RegistryClient.registerExternalFacade(THE_JME3_INPUT_MANAGER, im, optionalName);
+		registerExternalFacade(THE_JME3_INPUT_MANAGER, im, optionalName);
 	}	
 	
 	// This one needs to be public, so that BundleActivators can find it, to register their classloader-markers.
 	public static AssetContext findOrMakeAssetContext(String optionalName, String optJme3AssetManagerName) {
 		// TODO - do something cool to make sure that optJme3AssetManagerName is compatible with the
 		// named JME3_ASSET_MANAGER, because this is the *constraint* being supplied by the application.
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_ASSET_CONTEXT, optionalName);
+		return findOrMakeInternalFacade(THE_CC_ASSET_CONTEXT, optionalName);
 	}
 
 	protected static ViewportFacade findOrMakeOpticViewportFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_OPTIC_VIEWPORT_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_OPTIC_VIEWPORT_FACADE, optionalName);
 	}
 	protected static CameraMgr findOrMakeOpticCameraFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_OPTIC_CAMERA_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_OPTIC_CAMERA_FACADE, optionalName);
 	}
 	protected static LightFactory findOrMakeOpticLightFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_OPTIC_LIGHT_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_OPTIC_LIGHT_FACADE, optionalName);
 	}
 	protected static MatFactory findOrMakeOpticMaterialFacade(String optionalName, String optAssetContextName) {
 		// TODO - do something cool to make sure that optAssetContextName is compatible
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_OPTIC_MATERIAL_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_OPTIC_MATERIAL_FACADE, optionalName);
 	}	
 	
 	protected static TextureFactory findOrMakeOpticTextureFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_OPTIC_TEXTURE_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_OPTIC_TEXTURE_FACADE, optionalName);
 	}
 	
 	protected static ShapeMeshFactory findOrMakeMeshShapeFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_MESH_SHAPE_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_MESH_SHAPE_FACADE, optionalName);
 	}	
 	protected static WireMeshFactory findOrMakeMeshWireFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_MESH_WIRE_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_MESH_WIRE_FACADE, optionalName);
 	}	
 	protected static FancyMeshFactory findOrMakeMeshFancyFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_MESH_FANCY_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_MESH_FANCY_FACADE, optionalName);
 	}	
 	
 
 	protected static GeomFactory findOrMakeSceneGeometryFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_SCENE_GEOMETRY_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_SCENE_GEOMETRY_FACADE, optionalName);
 	}		
 	protected static DeepSceneMgr findOrMakeSceneDeepFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_SCENE_DEEP_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_SCENE_DEEP_FACADE, optionalName);
 	}
 	protected static FlatOverlayMgr findOrMakeSceneFlatFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_SCENE_FLAT_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_SCENE_FLAT_FACADE, optionalName);
 	}
 	protected static ModelSpatialFactory findOrMakeSceneSpatialModelFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_SCENE_SPATIAL_MODEL_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_SCENE_SPATIAL_MODEL_FACADE, optionalName);
 	}
 	protected static TextMgr findOrMakeSceneTextFacade(String optionalName) {
-		return RegistryClient.findOrMakeInternalFacade(THE_CC_SCENE_TEXT_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_SCENE_TEXT_FACADE, optionalName);
 	}
 
 }
