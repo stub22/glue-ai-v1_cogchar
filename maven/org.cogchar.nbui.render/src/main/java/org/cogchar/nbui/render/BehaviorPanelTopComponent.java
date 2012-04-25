@@ -15,9 +15,9 @@
  */
 package org.cogchar.nbui.render;
 
-import org.cogchar.nbui.render.trigger.RobotSelector;
-import org.cogchar.nbui.render.trigger.RobotSelector.OSGiRobotSelector;
-import org.cogchar.nbui.render.trigger.TriggerSet;
+import org.cogchar.bind.rk.robot.client.RobotSelector;
+import org.cogchar.bind.rk.robot.client.RobotSelector.OSGiRobotSelector;
+import org.cogchar.api.scene.ActionCallbackMap;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -60,7 +60,7 @@ public final class BehaviorPanelTopComponent extends TopComponent {
             return;
         }
         new OSGiComponent(bundleCtx, 
-                new SimpleLifecycle(triggerPanel1, TriggerSet.class)).start();
+                new SimpleLifecycle(triggerPanel1, ActionCallbackMap.class)).start();
         new OSGiComponent(bundleCtx, 
                 new SimpleLifecycle(
                         new OSGiRobotSelector(), RobotSelector.class)).start();
