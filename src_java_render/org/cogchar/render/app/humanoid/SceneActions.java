@@ -63,6 +63,7 @@ public class SceneActions {
 			String sceneTrigName = getSceneTrigName(idx);
 			KeyTrigger keyTrig = new KeyTrigger(sceneTrigKeyNum);
 			inputManager.addMapping(sceneTrigName, keyTrig);
+                        KeyBindingTracker.addBinding(sceneTrigName, sceneTrigKeyNum);
 			actionNames[idx] = sceneTrigName;
 		}
         inputManager.addListener(new ActionListener() {

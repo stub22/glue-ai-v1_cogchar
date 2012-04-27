@@ -37,13 +37,14 @@ import org.cogchar.render.app.core.BoundAction;
  *  by setting of their box + trigger.
  */
 public class HumanoidPuppetActions {
+
     public enum PlayerAction {
         RESET_CAMERA {
             void act(HumanoidRenderContext ctx) {
 				ctx.setDefaultCameraLocation();
             }
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F1)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_F1;
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
@@ -51,53 +52,53 @@ public class HumanoidPuppetActions {
             void act(HumanoidRenderContext ctx) {
 				ctx.toggleDebugSkeletons();
             }
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F2)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_F2;
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  		
         SAY_THE_TIME {
 			// uses default act() and boxy wiring
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F3)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_F3;
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },      
 
 		STOP_AND_RESET_CHAR {
 			// uses default act() and boxy wiring
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F4)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_F4;
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  		
 		STOP_RESET_AND_RECENTER_CHAR {
 			// uses default act() and boxy wiring
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F5)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_F5;
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  		
 		
 		USE_PERM_ANIMS {
 			// uses default act() and boxy wiring
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F6)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_F6;
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  			
 		USE_TEMP_ANIMS {
 			// uses default act() and boxy wiring
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F7)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_F7;
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  				
 		
         RELOAD_BEHAVIOR {
 			// uses default act() and boxy wiring
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F8)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_F8;
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
@@ -106,8 +107,8 @@ public class HumanoidPuppetActions {
 			// This yoga-dance shold not be routed to physical robot.
 			// 
 			// uses default act() and boxy wiring
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F9)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_F9;
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },
@@ -116,8 +117,8 @@ public class HumanoidPuppetActions {
         
 		UPDATE_BONY_CONFIG {
 			// uses default act() and boxy wiring
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_F12)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_F12;
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
@@ -132,17 +133,17 @@ public class HumanoidPuppetActions {
 				HumanoidFigure hw = getSinbad(ctx);
 				hw.togglePhysicsKinematicModeEnabled();
             }
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_K)};
-			}
+            int getTriggerKey() { 
+                return KeyInput.KEY_K;
+            }
         },
         STAND_UP {
             void act(HumanoidRenderContext ctx) {
 				HumanoidFigure hw = getSinbad(ctx);
 				hw.makeSinbadStandUp();
             }
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] {new KeyTrigger(KeyInput.KEY_SPACE)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_SPACE;
             }	
         },
         BOOGIE {
@@ -153,18 +154,18 @@ public class HumanoidPuppetActions {
 					hw.runSinbadBoogieAnim();
 				}
             }
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_B)};
+            int getTriggerKey() { 
+                return KeyInput.KEY_B;
             }	
         },   		
   		
         SHOOT {
             void act(HumanoidRenderContext ctx) {
                 ctx.cmdShoot();
+            }  
+            int getTriggerKey() { 
+                return -MouseInput.BUTTON_LEFT; // Negative tells makeJME3InputTriggers this is mouse input - not ideal but will work for now
             }
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] {new MouseButtonTrigger(MouseInput.BUTTON_LEFT)};
-            }            
         }, 
         BOOM {
             void act(HumanoidRenderContext ctx) {
@@ -172,28 +173,31 @@ public class HumanoidPuppetActions {
             }
             Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new MouseButtonTrigger(MouseInput.BUTTON_RIGHT)};
-            }            
+            }
+            int getTriggerKey() { 
+                return -MouseInput.BUTTON_RIGHT; // Negative tells makeJME3InputTriggers this is mouse input - not ideal but will work for now
+            } 
         }, 
         BIGGER_PROJECTILE {
             void act(HumanoidRenderContext ctx) {
                 ctx.getProjectileMgr().cmdBiggerProjectile();
             }
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_PERIOD) };
+            int getTriggerKey() { 
+                return KeyInput.KEY_PERIOD;
             }            
         },
         SMALLER_PROJECTILE {
             void act(HumanoidRenderContext ctx) {
                 ctx.getProjectileMgr().cmdSmallerProjectile();
             }
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new KeyTrigger(KeyInput.KEY_COMMA) };
+            int getTriggerKey() { 
+                return KeyInput.KEY_COMMA;
             }            
         };  // Last enum constant code block gets a semicolon.
 		
      
 		BoundAction	myBoundAction = new BoundAction();
-        abstract Trigger[] makeJME3InputTriggers();
+        abstract int getTriggerKey();           
 		
         void act(HumanoidRenderContext ctx) {
 			myBoundAction.perform();
@@ -209,6 +213,24 @@ public class HumanoidPuppetActions {
 			return hrc.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
 		}
 	};
+    
+    /* 
+    * Below static method converts from jME KeyInput/MouseInput codes to Triggers
+    * and registers with KeyBindingTracker.
+    * We switch on sign of keyCode to determine if this is a mouse binding or not
+    * Negative codes are assumed to be mouse codes and inverted before trigger creation
+    * This is possible because all JME KeyInput codes are > 0
+    * Not very nice in long run, but gets it going with minimum of modification for now
+    */
+    private static Trigger[] makeJME3InputTriggers(PlayerAction pa) {
+            int keyCode = pa.getTriggerKey();
+            if (keyCode > 0) {
+                KeyBindingTracker.addBinding(pa.name(), keyCode);
+                return new Trigger[] { new KeyTrigger(keyCode)};
+            }
+             else {return new Trigger[] { new MouseButtonTrigger(-keyCode)};}
+        }
+    
     static void setupActionListeners(InputManager inputManager, final HumanoidRenderContext ctx) {
         PlayerAction pavals[] = PlayerAction.values();
 		List<String> actionNamesList = new ArrayList<String>();
@@ -222,7 +244,7 @@ public class HumanoidPuppetActions {
 				}
 			}
 			actionNamesList.add(actionName);
-            inputManager.addMapping(actionName, pa.makeJME3InputTriggers());
+            inputManager.addMapping(actionName, makeJME3InputTriggers(pa));
         }
 		String actionNames[] = new String[actionNamesList.size()];
 		actionNamesList.toArray(actionNames);
@@ -231,7 +253,7 @@ public class HumanoidPuppetActions {
     }
 	static void registerListenerForActionSubset(InputManager inputManager, final HumanoidRenderContext ctx,
 				String actionNames[]) {
-		
+	  
 		// The trick below is that we use PlayerAction.valueOf instead of a hash table.	
         inputManager.addListener(new ActionListener() {
 

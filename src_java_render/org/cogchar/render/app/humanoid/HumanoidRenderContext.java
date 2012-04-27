@@ -39,6 +39,11 @@ import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
 import org.cogchar.render.sys.physics.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
+// Below imports added for initHelpScreen - should go elsewhere eventually
+import com.jme3.font.BitmapText;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -64,6 +69,8 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		SceneActions.setupActionListeners(inputManager);
 		
 		WorkaroundFuncsMustDie.initScoreBoard(this);
+                
+                initHelpScreen(someSettings, inputManager);
 	}
 
 	public HumanoidFigure getHumanoidFigure(Ident charIdent) {
@@ -146,6 +153,27 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 			hf.toggleDebugSkeleton();
 		}
 	}
+        
+        // Does this best live here or further up in one of the context superclasses? Dunno, but should be easy enough to move it up later (w/o private); be sure to remove imports
+        // In order to access registry, must live in a class that extends CogcharRenderContext
+        private void initHelpScreen(AppSettings settings, InputManager inputManager) {
+                final String HELP_TAG = "Help"; // Should be defined elsewhere or perhaps via RDF for goodness, but just for the moment
+                final int HELP_KEY = com.jme3.input.KeyInput.KEY_H; // Same here - coming from RDF eventually
+                KeyBindingTracker.addBinding(HELP_TAG, HELP_KEY); // Let's add ourselves to the help list!
+                final BitmapText helpBT = findOrMakeSceneTextFacade(null).makeHelpScreen(0.6f, settings); // First argument sets text size, really shouldn't be hard-coded
+                KeyTrigger keyTrig = new KeyTrigger(HELP_KEY); 
+                inputManager.addMapping(HELP_TAG, keyTrig);
+                inputManager.addListener(new ActionListener() {
+                    private boolean helpDisplayed = false;
+                    public void onAction(String name, boolean isPressed, float tpf) {
+                        if (isPressed) {
+                            if (!helpDisplayed) {findOrMakeSceneFlatFacade(null).attachOverlaySpatial(helpBT); helpDisplayed = true;}
+                             else {findOrMakeSceneFlatFacade(null).detachOverlaySpatial(helpBT); helpDisplayed = false;}   
+                        }        
+                    }
+                }, HELP_TAG);
+        }
+        
 		/*
 		 * 
 		 * The JME3 docs below are a horrible, inconsistent, incomplete, incorrect mess:
