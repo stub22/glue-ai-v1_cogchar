@@ -20,6 +20,11 @@ import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.system.AppSettings;
 import org.cogchar.render.sys.core.RenderRegistryAware;
+// Below import for makeHelpScreen - not sure if we want it to work quite this way in long run
+import com.jme3.math.ColorRGBA;
+import org.cogchar.render.app.humanoid.KeyBindingTracker;
+import com.jme3.input.KeyNames;
+import java.util.Map;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -57,6 +62,26 @@ public class TextMgr extends RenderRegistryAware {
 		float yPos = settings.getHeight() / 2 + crossHalfHeight;
 		float zPos = 0.0f;
 		bt.setLocalTranslation(xPos, yPos, zPos);
+		return bt;
+	}
+        
+        public BitmapText makeHelpScreen(float scale, AppSettings settings) { 
+                String commandList = "";
+                String commandLine;
+                int longestLineLength = 0;
+                KeyNames keyNamesConverter = new KeyNames(); // You'd think they would have made this static...
+                for (Map.Entry<String, Integer> entry : KeyBindingTracker.getBindingMap().entrySet()) {
+                    commandLine = entry.getKey() + ": " + keyNamesConverter.getName(entry.getValue()) + "\n";
+                    if (commandLine.length() > longestLineLength) {longestLineLength = commandLine.length();}
+                    commandList = commandList + commandLine;
+                }
+                BitmapText bt = getScaledBitmapText(commandList, scale);
+                 // Sets offset to make sure text doesn't extend past right edge of screen - the last "fudge factor" probably shouldn't be hard coded
+		float xPos = settings.getWidth() - longestLineLength * scale * 1.5f;
+		float yPos = settings.getHeight() - 5f;
+		float zPos = 0.0f;
+		bt.setLocalTranslation(xPos, yPos, zPos);
+                bt.setColor(ColorRGBA.Black);
 		return bt;
 	}
 
