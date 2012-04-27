@@ -41,4 +41,8 @@ public class FlatOverlayMgr extends RenderRegistryAware {
 	public void attachOverlaySpatial(Spatial s) {
 		getParentNode().attachChild(s);
 	}
+        // Added by Ryan Biggs for help screen toggling 25 April 2012
+        public void detachOverlaySpatial(Spatial s) {
+		getParentNode().detachChild(s);
+	}
 }
