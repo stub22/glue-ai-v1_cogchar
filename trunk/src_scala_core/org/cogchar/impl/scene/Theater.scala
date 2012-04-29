@@ -149,7 +149,7 @@ object Theater extends BasicDebugger {
 		val aSceneSpec : SceneSpec = thtr.mySceneBook.mySceneSpecs.values.head;
 		logInfo("Found a SceneSpec: " + aSceneSpec);
 		
-		val trig : DummyTrigger = org.cogchar.impl.trigger.FancyTrigger.makeTrigger(aSceneSpec);
+		val trig : DummyTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTrigger(aSceneSpec);
 		
 	
 		thtr.startThread();

@@ -26,7 +26,7 @@ import org.cogchar.impl.scene.{SceneSpec, BScene, SceneBook, Theater};
  * @author Stu B. <www.texpedient.com>
  */
 
-object FancyTrigger extends BasicDebugger {
+object FancyTriggerFacade extends BasicDebugger {
 	def makeTrigger(ss : SceneSpec) : DummyTrigger  = {
 		val sceneID : Ident = ss.getIdent();
 		val freeSceneID : FreeIdent = new FreeIdent(sceneID);

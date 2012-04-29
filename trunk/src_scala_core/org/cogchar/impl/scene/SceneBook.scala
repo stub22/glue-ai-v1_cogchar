@@ -17,8 +17,8 @@
 package org.cogchar.impl.scene
 
 import org.appdapter.core.log.{BasicDebugger};
-import org.appdapter.core.item.{Ident, Item}
-import org.appdapter.gui.assembly.CachingComponentAssembler;
+import org.appdapter.core.item.{Ident, Item};
+import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.cogchar.impl.perform.{ChannelSpecBuilder};
 import scala.collection.mutable.HashMap;
 
