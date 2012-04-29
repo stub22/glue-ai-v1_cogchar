@@ -18,8 +18,10 @@ package org.cogchar.impl.scene
 
 import org.appdapter.core.item.{Ident, Item, FreeIdent}
 
-import org.appdapter.gui.box.KnownComponentImpl;
-import org.appdapter.gui.assembly.DynamicCachingComponentAssembler;
+import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
+
+import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
@@ -36,27 +38,13 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
  * @author Stu B. <www.texpedient.com>
  */
 
-class Behavior (val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
+abstract class Behavior (val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
+
 	var	myStartStamp : Long = -1;
-	var myNextStepIndex : Int = 0;
 	def logMe(msg: String) {logInfo("[" + this + "]-" + msg);}
 	override protected def doStart(scn : BScene) {
 		myStartStamp = System.currentTimeMillis();
 		myRunDebugModulus = 20;
-	}
-	override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
-		if (myNextStepIndex >= mySpec.mySteps.size) {
-			logMe("Reached end of its steps at #" + myNextStepIndex + ", self-requesting module stop");
-			markStopRequested();
-			logMe("Finished requesting stop, so this should be my last runOnce().");
-		} else {
-			val step = mySpec.mySteps(myNextStepIndex);
-			if (step.proceed(scn, this)) {
-				val osi = myNextStepIndex;
-				myNextStepIndex += 1;
-				logMe("Proceed succeeded for step #" + osi + ", will attempt step# " + myNextStepIndex + " on next runOnce().");
-			}
-		}
 	}
 	override protected def doStop(scn : BScene) {
 		logMe("doStopping")
@@ -64,10 +52,9 @@ class Behavior (val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
 	def getMillsecSinceStart() : Long = { 
 		System.currentTimeMillis() - myStartStamp;
 	}
-	override def getFieldSummary() : String = {
-		return  super.getFieldSummary() +  ", nextStepIndex=" + myNextStepIndex;
-	}	
+	
 }
+
 class TStamp () {
 	val	mySysStamp : Long = System.currentTimeMillis();
 	val	myFullSec = mySysStamp / 1000;
@@ -115,52 +102,16 @@ class BehaviorModulator() extends BasicModulator[BScene](null, true) {
 	}	
 
 }
-class BehaviorSpec() extends KnownComponentImpl {
+abstract class BehaviorSpec() extends KnownComponentImpl {
 	var		myDetails : String = "EMPTY";
-	var		mySteps : List[BehaviorStep] = List();
-
-	// The field summary is used only for logging
-	override def getFieldSummary() : String = {
-		return  super.getFieldSummary() +  ", details=" + myDetails + ", steps=" + mySteps;
-	}
+	
+	def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode);
+	def makeBehavior() : Behavior;
 }
-class BehaviorSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[BehaviorSpec](builderConfRes) {
 
-	import scala.collection.JavaConversions._;
+class BehaviorSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[BehaviorSpec](builderConfRes) {
 	
 	override protected def initExtendedFieldsAndLinks(bs: BehaviorSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
-		bs.myDetails = "brimmingOver";
-		val stepItems = readLinkedItemSeq(configItem, SceneFieldNames.P_steps);
-		logInfo("BSB got stepItems: " + stepItems);
-		for (val stepItem : Item <- stepItems) {
-			logInfo("Got stepItem: " + stepItem)
-			val stepIdent = stepItem.getIdent();
-			val offsetSec = readConfigValDouble(stepIdent, SceneFieldNames.P_startOffsetSec, stepItem, null);
-			val offsetMillisec : Int = (1000.0 * offsetSec.doubleValue()).toInt;
-			
-			// Text actions
-			val text = readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
-			// val path = readConfigValString(stepItem.getIdent(), SceneFieldNames.P_path, stepItem, null);
-			
-			val action = new TextAction(text);
-			
-			val stepChannelSpecs = findOrMakeLinkedObjects(stepItem, SceneFieldNames.P_channel, assmblr, mode, null);
-			logInfo("Got step channel specs: " + stepChannelSpecs);
-			for (val stepChanSpec <- stepChannelSpecs) {
-				stepChanSpec match {
-					case scs: ChannelSpec => {
-						val chanId = scs.getIdent();
-						val freeChanIdent = new FreeIdent(chanId);
-						action.addChannelIdent(freeChanIdent);
-					}
-					case _ => logWarning("Unexpected object found in step[at " + SceneFieldNames.P_channel + " = " + stepChanSpec);
-				}
-			}
-				
-		
-			val step = new ScheduledActionStep(offsetMillisec, action);
-			logInfo("Built step: " + step);
-			bs.mySteps = bs.mySteps :+ step;
-		}		
+		bs.completeInit(configItem, getReader(), assmblr, mode);
 	}
 }

@@ -36,7 +36,7 @@ object RegistryClient extends BasicDebugger  {
 	val	SUBSYS_REG_PUMA			= "SYSREG_PUMA";
 	val	SUBSYS_REG_BEHAVIOR		= "SYSREG_BEHAVIOR";
 	
-	def getVerySimpleRegistry() : VerySimpleRegistry = {
+	private def getVerySimpleRegistry() : VerySimpleRegistry = {
 		RegistryServiceFuncs.getTheWellKnownRegistry(this.getClass());
 	}
 	protected def getRequiredOverRegistry(functionCtx : String) : VerySimpleRegistry = { 

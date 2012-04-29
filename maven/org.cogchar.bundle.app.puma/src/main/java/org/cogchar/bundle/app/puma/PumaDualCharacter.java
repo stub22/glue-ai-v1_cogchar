@@ -51,7 +51,7 @@ import org.cogchar.impl.scene.SceneBook;
 import org.cogchar.impl.perform.ChannelNames;
 import org.cogchar.impl.perform.FancyTextChan;
 
-import org.cogchar.impl.trigger.FancyTrigger;
+import org.cogchar.impl.trigger.FancyTriggerFacade;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -105,8 +105,8 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myTheater.registerChannel(mySOC);		
 	}
 	public void loadBehaviorConfig(boolean useTempFiles) throws Throwable {
-		
-		String pathTail = "bhv_nugget_01.ttl";
+		// Currently we can only process
+		String pathTail = "bhv_nugget_02.ttl";
 		
 		BonyConfigEmitter bonyCE = myPHM.getHumanoidRenderContext().getBonyConfigEmitter();
 		// String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharURI);
@@ -116,13 +116,16 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		if (useTempFiles) {
 			behavPath = behavCE.getBehaviorTempFilePath(pathTail);
 		}
-		myTheater.loadSceneBook(behavPath, null, true);
+		// true = Clear caches first
+		boolean clearCachesFirst = true;
+		ClassLoader optCLforJenaFM = null;
+		myTheater.loadSceneBook(behavPath, optCLforJenaFM, clearCachesFirst);
 	} 
 	public void startTheater() {
 		SceneBook sb = myTheater.getSceneBook();
 		DummyBinder trigBinder = SceneActions.getBinder();
 		
-		FancyTrigger.registerAllTriggers(trigBinder, myTheater, sb); 
+		FancyTriggerFacade.registerAllTriggers(trigBinder, myTheater, sb); 
 		myTheater.startThread();
 	}
 	public void stopTheater() {

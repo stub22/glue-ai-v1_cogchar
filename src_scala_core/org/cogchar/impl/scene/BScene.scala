@@ -19,8 +19,8 @@ package org.cogchar.impl.scene
 import org.appdapter.core.item.{Ident, Item, FreeIdent}
 import org.appdapter.core.log.{BasicDebugger};
 
-import org.appdapter.gui.box.KnownComponentImpl;
-import org.appdapter.gui.assembly.DynamicCachingComponentAssembler;
+import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 
 import com.hp.hpl.jena.assembler.{Assembler, Mode}
 
@@ -63,7 +63,7 @@ class BScene(val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyT
 	}
 	def attachBehaviorsToModulator(bm : BehaviorModulator) {
 		for (val bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
-			val b = new Behavior(bs);
+			val b = bs.makeBehavior();
 			bm.attachModule(b);
 		}
 	}
@@ -97,19 +97,21 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 	override protected def initExtendedFieldsAndLinks(ss: SceneSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
 		logInfo("SceneBuilder.initExtendedFieldsAndLinks");	
 		ss.myDetails = "ChockFilledUp";
+		
+		val reader = getReader();
 
-		val optTrigName = readConfigValString(configItem.getIdent(), SceneFieldNames.P_trigger, configItem, null);
+		val optTrigName = reader.readConfigValString(configItem.getIdent(), SceneFieldNames.P_trigger, configItem, null);
 		
 		ss.myTrigName = if (optTrigName != null) Some(optTrigName) else None;
 		
-		val linkedBehaviorSpecs : java.util.List[Object] = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_behavior, assmblr, mode, null);
+		val linkedBehaviorSpecs : java.util.List[Object] = reader.findOrMakeLinkedObjects(configItem, SceneFieldNames.P_behavior, assmblr, mode, null);
 		for (val o <- linkedBehaviorSpecs) {
 			o match {
 				case bs: BehaviorSpec => ss.addBehaviorSpec(bs);
 				case _ => logWarning("Unexpected object found at " + SceneFieldNames.P_behavior + " = " + o);
 			}
 		}
-		val linkedChannelSpecs : java.util.List[Object] = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_channel, assmblr, mode, null);
+		val linkedChannelSpecs : java.util.List[Object] = reader.findOrMakeLinkedObjects(configItem, SceneFieldNames.P_channel, assmblr, mode, null);
 		for (val o <- linkedChannelSpecs) {
 			o match {
 				case cs: ChannelSpec => ss.addChannelSpec(cs);
@@ -121,7 +123,7 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 
 	}
 }
-object SceneFieldNames extends org.appdapter.gui.assembly.AssemblyNames {
+object SceneFieldNames extends org.appdapter.core.component.ComponentAssemblyNames {
 	val		NS_ccScn =	ChannelNames.NS_ccScn;
 	val		NS_ccScnInst = ChannelNames.NS_ccScnInst;
 

@@ -15,8 +15,8 @@
  */
 package org.cogchar.api.skeleton.config;
 
-import org.appdapter.gui.assembly.DynamicCachingComponentAssembler;
-import org.appdapter.gui.box.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
+import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 

@@ -22,8 +22,8 @@ import  org.cogchar.api.perform.{Media, Channel, Performance, BasicTextChannel, 
 import org.appdapter.api.module.Module.State;
 import org.appdapter.core.log.{BasicDebugger};
 import org.appdapter.core.item.{Ident, Item, FreeIdent};
-import org.appdapter.gui.box.KnownComponentImpl;
-import org.appdapter.gui.assembly.DynamicCachingComponentAssembler;
+import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
@@ -80,20 +80,48 @@ class ChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingCompon
 	}
 }
 
-object ChannelNames extends org.appdapter.gui.assembly.AssemblyNames {
+object ChannelNames extends org.appdapter.api.trigger.BoxAssemblyNames {
 	val		NS_ccScn =	"http://www.cogchar.org/schema/scene#";
 	val		NS_ccScnInst = "http://www.cogchar.org/schema/scene/instance#";
 
 	val		N_PRE_speechOut =  "speechOut";
-	val		N_PRE_animOut =  "animOut";
+	val		N_PRE_animOut =		"animOut";
 	
-	val		SPEECH_CHANNEL_NUM_DIGITS = 3;
-	val		SPEECH_MAIN_CHANNEL_NUM = 100;
+	val		N_PRE_speechIn	=	"speechIn";
+	val		N_PRE_visionIn	=	"visionIn"
+	val		N_PRE_triggerIn	=	"triggerIn";
 	
-	val		ANIM_CHANNEL_NUM_DIGITS = 3;
-	val		RK_ANIM_BEST_CHANNEL_NUM = 200;
-	val		RK_ANIM_PERM_CHANNEL_NUM = 210;
-	val		RK_ANIM_TEMP_CHANNEL_NUM = 220;
+	// Output = 000 to 499
+	val		VERBAL_OUT_CHANNEL_NUM_DIGITS			= 3;
+	val		CHN_OUT_SPEECH_BEST						= 100;
+	
+	val		ANIM_OUT_CHANNEL_NUM_DIGITS				= 3;
+	val		CHN_OUT_ANIM_RK_BEST					= 200;
+	val		CHN_OUT_ANIM_RK_PERM					= 210;
+	val		CHN_OUT_ANIM_RK_TEMP					= 220;
+	
+	val		CHN_OUT_BLEND_RK_BEST					= 250;
+	
+	// Input = 500 to 999
+	val		VERBAL_IN_CHANNEL_NUM_DIGITS			= 3;
+	val		CHN_IN_VERBAL_HEARD						= 500;
+	val		CHN_IN_CHAT_REPLY						= 510;
+
+	val		SPATIAL_IN_CHANNEL_NUM_DIGITS			= 3;
+	val		CHN_IN_SPATIAL_FACE						= 600;
+	val		CHN_IN_SPATIAL_MOTION					= 610;
+	val		CHN_IN_SPATIAL_SALIENCE					= 620;
+	val		CHN_IN_SPATIAL_IN_SKELETON				= 630;
+	val		CHN_IN_SPATIAL_IN_SOUND_LOC				= 640;
+	
+
+	val		TRIGGER_IN_CHANNEL_NUM_DIGITS			= 3;
+	val		CHN_IN_TRIGGER_SCENE					= 700;
+	val		CHN_IN_TRIGGER_MODE						= 710;
+	val		CHN_IN_TRIGGER_ACTION					= 720;
+	val		CHN_IN_TRIGGER_ANIM						= 730;
+	
+
 	
 	def getChannelIdent(localName : String) : Ident = { 
 		val absURI = NS_ccScnInst + localName;
@@ -105,17 +133,17 @@ object ChannelNames extends org.appdapter.gui.assembly.AssemblyNames {
 	}
 	
 	def getSpeechOutChannelIdent(chanNum  : Int) : Ident = { 
-		val chanName = getNumericChannelName(N_PRE_speechOut, chanNum, SPEECH_CHANNEL_NUM_DIGITS);
+		val chanName = getNumericChannelName(N_PRE_speechOut, chanNum, VERBAL_OUT_CHANNEL_NUM_DIGITS);
 		getChannelIdent(chanName);
 	}
-	def getMainSpeechOutChannelIdent() = getSpeechOutChannelIdent(SPEECH_MAIN_CHANNEL_NUM); 
+	def getMainSpeechOutChannelIdent() = getSpeechOutChannelIdent(CHN_OUT_SPEECH_BEST); 
 
 	def getAnimChannelIdent(chanNum  : Int) : Ident = { 
-		val chanName = getNumericChannelName(N_PRE_animOut, chanNum, ANIM_CHANNEL_NUM_DIGITS);
+		val chanName = getNumericChannelName(N_PRE_animOut, chanNum, ANIM_OUT_CHANNEL_NUM_DIGITS);
 		getChannelIdent(chanName);
 	}	
 	
-	def getAnimBestChannelIdent() = getAnimChannelIdent(RK_ANIM_BEST_CHANNEL_NUM);
-	def getAnimPermChannelIdent() = getAnimChannelIdent(RK_ANIM_PERM_CHANNEL_NUM);
-	def getAnimTempChannelIdent() = getAnimChannelIdent(RK_ANIM_TEMP_CHANNEL_NUM);
+	def getAnimBestChannelIdent() = getAnimChannelIdent(CHN_OUT_ANIM_RK_BEST);
+	def getAnimPermChannelIdent() = getAnimChannelIdent(CHN_OUT_ANIM_RK_PERM);
+	def getAnimTempChannelIdent() = getAnimChannelIdent(CHN_OUT_ANIM_RK_TEMP);
 }

@@ -15,12 +15,12 @@
  */
 package org.cogchar.api.skeleton.config;
 
-import org.appdapter.gui.assembly.AssemblyNames;
+import org.appdapter.api.trigger.BoxAssemblyNames;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BoneConfigNames extends AssemblyNames {
+public class BoneConfigNames extends BoxAssemblyNames {
 	public static	String		NS_CgcBC		= "http://www.cogchar.org/bony/config#";
 	
 	public static 	String		P_robotName			= NS_CgcBC + "robotName";

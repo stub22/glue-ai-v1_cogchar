@@ -15,7 +15,7 @@
  */
 package org.cogchar.test.assembly;
 
-import org.appdapter.gui.box.KnownComponentImpl;
+import org.appdapter.core.component.KnownComponentImpl;
 /**
  * @author Stu B. <www.texpedient.com>
  */
