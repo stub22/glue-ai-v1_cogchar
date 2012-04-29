@@ -15,11 +15,11 @@
  */
 package org.cogchar.test.assembly;
 
-import org.appdapter.gui.assembly.AssemblyNames;
+import org.appdapter.api.trigger.BoxAssemblyNames;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class AssemblyTestNames extends AssemblyNames {
+public class AssemblyTestNames extends BoxAssemblyNames {
 	public static	String		NS_ccNug = "http://www.cogchar.org/schema/nugget#";
 
 	public static 	String		P_details		= NS_ccNug + "details";

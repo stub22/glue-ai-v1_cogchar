@@ -100,7 +100,7 @@ public class CogcharRenderContext extends RenderRegistryAware {
 	/**
 	 *  Normally called during CogcharRenderApp.simpleInitApp(), after registerJMonkeyRoots.<br/>
 	 *	Performs final resolution of the asset classpath, and registers our asset classloaders
-	 *  (previously submitted via JmonkeyAssetLocation's passed to AssetContext.addAssetSource)
+	 *  (previously submitted via JmonkeyAssetLocations passed to AssetContext.addAssetSource)
 	 *  with our singleton JME3 assetManager.<br/>
 	 * 	This method should usually be called only once in an application's lifetime.<br/>
 	 * * TODO: Keep a flag and throw exception if it is called twice.

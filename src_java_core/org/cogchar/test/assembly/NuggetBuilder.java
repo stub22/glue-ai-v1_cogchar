@@ -17,12 +17,17 @@ package org.cogchar.test.assembly;
 
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.Item;
-import org.appdapter.gui.box.BoxImpl;
-import org.appdapter.gui.box.Trigger;
+
+import org.appdapter.core.component.KnownComponent;
+import org.appdapter.core.component.MutableKnownComponent;
+
+
+import org.appdapter.api.trigger.BoxImpl;
+import org.appdapter.api.trigger.Trigger;
 import org.appdapter.core.item.JenaResourceItem;
 import org.appdapter.core.item.ModelIdent;
-import org.appdapter.gui.box.KnownComponent;
-import org.appdapter.gui.box.MutableKnownComponent;
+import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
+
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
@@ -37,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-import org.appdapter.gui.assembly.DynamicCachingComponentAssembler;
+import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -52,16 +57,17 @@ public class NuggetBuilder extends DynamicCachingComponentAssembler<Nugget> {
 			
 			
 	@Override protected void initExtendedFieldsAndLinks(Nugget nug, Item configItem, Assembler assmblr, Mode mode) {
+		ItemAssemblyReader reader = getReader();
 		logDebug("NuggetBuilder.initExtendedFieldsAndLinks");
-		nug.myDetails = readConfigValString(configItem.getIdent(), AssemblyTestNames.P_details, configItem, null);
+		nug.myDetails = reader.readConfigValString(configItem.getIdent(), AssemblyTestNames.P_details, configItem, null);
 		if (nug instanceof MegaNugget) {	
 			MegaNugget mn = (MegaNugget) nug;
-			mn.myGaucho = readConfigValString(configItem.getIdent(), AssemblyTestNames.P_gaucho, configItem, null);
-			mn.myCount = readConfigValLong(configItem.getIdent(), AssemblyTestNames.P_count, configItem, null);
-			mn.myAngle = readConfigValDouble(configItem.getIdent(), AssemblyTestNames.P_angle, configItem, null);
-			mn.myOtherNugs = findOrMakeLinkedObjSeq(configItem, AssemblyTestNames.P_otherNugs, assmblr, mode);			
-			mn.myTriggers = findOrMakeLinkedObjects(configItem, AssemblyTestNames.P_trigger, assmblr, mode, null);
-			List<Object> friendlyNugs = findOrMakeLinkedObjects(configItem, AssemblyTestNames.P_friendlyNug, assmblr, mode, null);
+			mn.myGaucho = reader.readConfigValString(configItem.getIdent(), AssemblyTestNames.P_gaucho, configItem, null);
+			mn.myCount = reader.readConfigValLong(configItem.getIdent(), AssemblyTestNames.P_count, configItem, null);
+			mn.myAngle = reader.readConfigValDouble(configItem.getIdent(), AssemblyTestNames.P_angle, configItem, null);
+			mn.myOtherNugs = reader.findOrMakeLinkedObjSeq(configItem, AssemblyTestNames.P_otherNugs, assmblr, mode);			
+			mn.myTriggers = reader.findOrMakeLinkedObjects(configItem, AssemblyTestNames.P_trigger, assmblr, mode, null);
+			List<Object> friendlyNugs = reader.findOrMakeLinkedObjects(configItem, AssemblyTestNames.P_friendlyNug, assmblr, mode, null);
 			if (friendlyNugs.size() == 1) { 
 				Object fn = friendlyNugs.get(0);
 				mn.myFriendlyNug = (Nugget) fn;
