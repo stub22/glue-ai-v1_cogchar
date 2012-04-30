@@ -136,6 +136,9 @@ object SceneFieldNames extends org.appdapter.core.component.ComponentAssemblyNam
 	val		P_text				= NS_ccScn + "text";
 	val		P_path				= NS_ccScn + "path";
 	
+	val		P_rules				= NS_ccScn + "rules";
+	val		P_query				= NS_ccScn + "query";	
+	
 	val		N_rooty		=		"rooty";
 	val		I_rooty		=		NS_ccScnInst + N_rooty;
 }

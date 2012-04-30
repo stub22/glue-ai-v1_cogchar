@@ -57,7 +57,7 @@ csi:animOut_200
 	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
 	apsb:label			"[apsb:]AnimOut-VirtualBest for Avatar_ZenoR50";
 	rdfs:label 			"[rdfs:]AnimOut-VirtualBest for Avatar_ZenoR50";
-	cs:details			"Robokind XML animations - 'best' version (perm or temp) based on current settings in GUI";
+	cs:details			"Sends control signals and monitors status of Robokind XML animations - 'best' version (perm or temp) based on current settings in GUI";
 	.
 
 
@@ -66,7 +66,7 @@ csi:animOut_210
 	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
 	apsb:label			"[apsb:]AnimOut-PermBundle for Avatar_ZenoR50";
 	rdfs:label 			"[rdfs:]AnimOut-PermBundle for Avatar_ZenoR50";
-	cs:details			"Robokind XML animations - 'permanent' version from resource bundle";
+	cs:details			"Sends control signals and monitors status of Robokind XML animations - 'permanent' version from resource bundle";
 	.
 
 csi:animOut_220		
@@ -74,8 +74,81 @@ csi:animOut_220
 	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
 	apsb:label			"[apsb:]AnimOut-TempFolder for Avatar_ZenoR50";
 	rdfs:label 			"[rdfs:]AnimOut-TempFolder for Avatar_ZenoR50";
-	cs:details			"Robokind XML animations - 'temp' version from NB module filesys APP/org_cogchar_nbui_render/config/cogchar/rk_bind_temp";
+	cs:details			"Sends control signals and monitors status of Robokind XML animations - 'temp' version from NB module filesys APP/org_cogchar_nbui_render/config/cogchar/rk_bind_temp";
 .
+
+csi:blendOut_250		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]BlendOut-Best for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]BlendOut-Best for Avatar_ZenoR50";
+	cs:details			"Sends blending-tweak instructions as metadata";
+.
+
+csi:verbalIn_500		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]InVerbal_Heard for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]InVerbal_Heard for Avatar_ZenoR50";
+	cs:details			"Receives heard speech as metadata (or text)";
+	.
+
+csi:verbalIn_510		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]InVerbal_ChatReply for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]InVerbal_ChatReply for Avatar_ZenoR50";
+	cs:details			"Receives chat replies from an agent (e.g. Cogbot) as metadata (or TTS text)";
+	.
+
+csi:spatiaIn_600		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]InSpatial_Face for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]InSpatial_Face for Avatar_ZenoR50";
+	cs:details			"Receives information about faces seen as metadata";
+	.
+
+csi:spatialIn_630		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]InSpatial_Skeleton for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]InVerbal_Heard for Avatar_ZenoR50";
+	cs:details			"Receives heard speech as metadata (or text)";
+	.
+
+csi:triggerIn_700		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]InTrigger_Scene for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]InTrigger_Scene for Avatar_ZenoR50";
+	cs:details			"Receives skeletons (or messages about skeleton streams) as metadata ";
+	.
+
+csi:triggerIn_710		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]InTrigger_Mode for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]InTrigger_Mode for Avatar_ZenoR50";
+	cs:details			"Receives mode triggers as metadata (or text)";
+	.
+
+csi:triggerIn_720		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]InTrigger_Action for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]InTrigger_Action for Avatar_ZenoR50";
+	cs:details			"Receives (in scene) action triggers as metadata ";
+	.
+
+csi:triggerIn_730
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]InTrigger_Anim for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]InTrigger_Anim for Avatar_ZenoR50";
+	cs:details			"Receives animation triggers as metadata (or text)";
+	.
+
 
 # behavior_temp
 # logging_temp
@@ -152,6 +225,48 @@ csi:bh_002
 		]
 ## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
 	)
+	.
+
+csi:scn_004	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"Ruled Behavior test #4";
+	cs:details			"scene-specific-details-go-here";
+	cs:behavior			csi:bh_004;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_04"
+	.
+
+csi:bh_004
+	rdf:type			cs:BuildableBehaviorSpec;
+	apsb:javaFQCN		"org.cogchar.impl.scene.RuledBehaviorSpec";
+	cs:rules		"""
+@prefix csi: <http://www.cogchar.org/schema/scene/instance#>
+@prefix sil: <urn:sillyNamespace#>
+
+
+# @include <RDFS>.
+
+[bonusForSilliness: (?c sil:sillyProperty ?x) -> (?c sil:bonusProperty 22)]
+					""";
+
+	cs:query		"""
+
+PREFIX csi: <http://www.cogchar.org/schema/scene/instance#>
+PREFIX sil: <urn:sillyNamespace#>
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:	<http://www.w3.org/2000/01/rdf-schema#>
+
+PREFIX fnApbj: 	<java:org.appdapter.binding.jena.>
+PREFIX fnXp: 	<http://www.w3.org/2005/xpath-functions#>
+
+# We want the union of the default graph and any named graphs.
+SELECT * 
+{ 
+    { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } 
+}
+
+					"""
 	.
 
 ################################################################################################################
