@@ -135,14 +135,14 @@ object Theater extends BasicDebugger {
 		
 		val		thtr = new Theater();
 
-		logInfo("Tricky: " + ChannelNames.getNumericChannelName("hmm", 22, 4));
+		// logInfo("Tricky: " + ChannelNames.getNumericChannelName("hmm", 22, 4));
 		
-		val dummySpeechChanID = ChannelNames.getMainSpeechOutChannelIdent();
+		val dummySpeechChanID = ChannelNames.getOutChanIdent_SpeechMain();
 		val dtc = new DummyTextChan(dummySpeechChanID);
 		thtr.registerChannel(dtc);
 
 		// val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
-		val triplesFlexPath = "../org.cogchar.bundle.render.resources/src/main/resources/behavior/bhv_nugget_01.ttl";
+		val triplesFlexPath = "../org.cogchar.bundle.render.resources/src/main/resources/behavior/bhv_nugget_02.ttl";
 		
 		thtr.loadSceneBook(triplesFlexPath, null, true);
 		

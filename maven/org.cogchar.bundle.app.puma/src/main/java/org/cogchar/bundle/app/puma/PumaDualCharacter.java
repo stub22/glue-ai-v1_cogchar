@@ -100,7 +100,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myTheater.registerChannel(bestAnimOutChan);
 	}
 	public void connectSpeechOutputSvcs(BundleContext bundleCtx) { 
-		Ident speechChanIdent = ChannelNames.getMainSpeechOutChannelIdent();
+		Ident speechChanIdent = ChannelNames.getOutChanIdent_SpeechMain();
 		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
 		myTheater.registerChannel(mySOC);		
 	}
