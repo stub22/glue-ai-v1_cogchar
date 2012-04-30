@@ -128,7 +128,7 @@ public class RobotAnimContext extends BasicDebugger {
 	
 	public TriggeringChannel getTriggeringChannel() { 
 		if (myTriggeringChannel == null) {
-			Ident id = ChannelNames.getAnimBestChannelIdent();
+			Ident id = ChannelNames.getOutChanIdent_AnimBest();
 			logInfo("Creating triggering channel with ident=" + id);
 			myTriggeringChannel = new TriggeringChannel(id);
 		} 
