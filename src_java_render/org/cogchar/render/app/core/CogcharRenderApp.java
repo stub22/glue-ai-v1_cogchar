@@ -75,7 +75,11 @@ public abstract class CogcharRenderApp<CRCT extends CogcharRenderContext> extend
 		
 		myRenderContext.registerJMonkeyRoots(assetManager, rootNode, guiNode, stateManager, inputManager);
 		myRenderContext.registerJMonkeyDefaultCameras(cam, flyCam);
-		myRenderContext.completeInit();
+		try {
+			myRenderContext.completeInit();
+		} catch (Throwable t) {
+			getLogger().error("Problem during Coghar-RenderContext.completeInit()", t);
+		}
 		
 		// Register context and modulator with well-known registry
 		logInfo("CogcharRenderApp.simpleInitApp() - END");
