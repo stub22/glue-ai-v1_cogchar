@@ -32,9 +32,15 @@ public class ModelSpatialFactory extends RenderRegistryAware {
 
 
 	public Spatial makeSpatialFromMeshPath(String meshPath) {
-		AssetManager amgr = findJme3AssetManager(null);
-		Spatial s = amgr.loadModel(meshPath);	
-		return s;
+		Spatial result = null;
+	
+		try {
+			AssetManager amgr = findJme3AssetManager(null);
+			result = amgr.loadModel(meshPath);	
+		} catch (Throwable t) {
+			logError("Cannot make spatial for mesh path[" + meshPath + "]", t);
+		}
+		return result;
 	}
 	public Spatial makeOtoSpatialFromDefaultPath() {
 		return makeSpatialFromMeshPath(OTO_MESH_DEFAULT);

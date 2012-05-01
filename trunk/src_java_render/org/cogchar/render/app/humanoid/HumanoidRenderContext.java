@@ -70,7 +70,7 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		
 		WorkaroundFuncsMustDie.initScoreBoard(this);
                 
-                initHelpScreen(someSettings, inputManager);
+		initHelpScreen(someSettings, inputManager);
 	}
 
 	public HumanoidFigure getHumanoidFigure(Ident charIdent) {
