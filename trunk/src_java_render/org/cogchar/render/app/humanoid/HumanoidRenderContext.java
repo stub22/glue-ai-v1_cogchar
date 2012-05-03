@@ -131,13 +131,14 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 
 	private void initCameraAndLights() {
 		AppStub stub = getAppStub();
-        setDefaultCameraLocation();
 		stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
 		FlyByCamera fbCam = stub.getFlyCam();
 		fbCam.setMoveSpeed(50);
 		setupLight();	
 	}
-    protected void setDefaultCameraLocation(){
+        
+        // This is still called by HumanoidPuppetActions to reset default camera position - we'll just leave it for now, but have to figure out a better sol'n next
+        protected void setDefaultCameraLocation(){
 		CameraMgr cmgr = findOrMakeOpticCameraFacade(null);
 		Camera defCam = cmgr.getCommonCamera(CameraMgr.CommonCameras.DEFAULT);
 		defCam.setLocation(new Vector3f(0.0f, 40.0f, 80.0f));
