@@ -68,7 +68,7 @@ public class CogcharRenderContext extends RenderRegistryAware {
 					AppStateManager stateMgr, InputManager inputMgr) { 
 		registerJme3AssetManager(assetMgr, null);
 		registerJme3RootDeepNode(rootNode, null);
-		registerJme3RootOverlayNode(guiNode, null);
+		registerJme3RootOverlayNode(guiNode, null); // 2d interface node from JME being plugged into registry
 		registerJme3AppStateManager(stateMgr, null);
 		registerJme3InputManager(inputMgr, null);
 		
@@ -89,6 +89,18 @@ public class CogcharRenderContext extends RenderRegistryAware {
 		CameraMgr cm = findOrMakeOpticCameraFacade(null);
 		cm.registerCommonCamera(CameraMgr.CommonCameras.DEFAULT, defCam);
 	}
+        
+        /* Added so CameraMgr can create new cameras using JME3 settings from RDF 
+         * We also call back to CameraMgr to register this new camera - that way
+         * it's guaranteed to be taken care of in case some other code decides to
+         * call this method.
+         */
+        public Camera registerNewCameraUsingJME3Settings(String cameraName) {
+                CameraMgr cm = findOrMakeOpticCameraFacade(null);
+                Camera newCamera = new Camera(myJme3AppSettings.getWidth(), myJme3AppSettings.getHeight());
+		cm.registerNamedCamera(cameraName, newCamera);
+                return newCamera;
+        }
 	
 	public void setAppStub(AppStub stub) {
 		myAppStub = stub;
