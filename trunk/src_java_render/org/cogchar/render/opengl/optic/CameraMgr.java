@@ -87,8 +87,10 @@ public class CameraMgr {
         
         public void resetDefaultCamera() {
             Camera defaultCamera = getCommonCamera(CommonCameras.DEFAULT);
-            defaultCamera.setLocation(defaultPosition);
-            defaultCamera.lookAtDirection(defaultDirection, Vector3f.UNIT_Y);
+            if ((defaultPosition != null) && (defaultDirection != null)) {
+                defaultCamera.setLocation(defaultPosition);
+                defaultCamera.lookAtDirection(defaultDirection, Vector3f.UNIT_Y);
+            }
         }
         
 	/*
