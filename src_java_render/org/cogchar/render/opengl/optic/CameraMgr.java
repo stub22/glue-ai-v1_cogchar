@@ -39,6 +39,9 @@ public class CameraMgr {
 		WIDE_VIEW
 	}
 	private Map<String, Camera> myCamerasByName = new HashMap<String, Camera>();
+        
+        private Vector3f defaultPosition;
+        private Vector3f defaultDirection;
 
 	public Camera cloneCamera(Camera orig) {
 		return orig.clone();
@@ -75,7 +78,17 @@ public class CameraMgr {
                         loadingCamera.setLocation(new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]));
                         float[] cameraDir = cc.cameraPointDir;
                         loadingCamera.lookAtDirection(new Vector3f(cameraDir[0], cameraDir[1], cameraDir[2]), Vector3f.UNIT_Y);
+                        if (cameraName.equals("DEFAULT")) {// If we are setting default camera info, save position/direction for later reset
+                            defaultPosition = new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]);
+                            defaultDirection = new Vector3f(cameraDir[0], cameraDir[1], cameraDir[2]);
+                        }
                 }        
+        }
+        
+        public void resetDefaultCamera() {
+            Camera defaultCamera = getCommonCamera(CommonCameras.DEFAULT);
+            defaultCamera.setLocation(defaultPosition);
+            defaultCamera.lookAtDirection(defaultDirection, Vector3f.UNIT_Y);
         }
         
 	/*
