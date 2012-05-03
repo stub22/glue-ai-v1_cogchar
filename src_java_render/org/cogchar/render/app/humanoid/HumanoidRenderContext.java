@@ -137,18 +137,12 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		setupLight();	
 	}
         
-        // This is still called by HumanoidPuppetActions to reset default camera position - we'll just leave it for now, but have to figure out a better sol'n next
-        protected void setDefaultCameraLocation(){
+        // This is still called by HumanoidPuppetActions to reset default camera position
+        protected void setDefaultCameraLocation(){    
 		CameraMgr cmgr = findOrMakeOpticCameraFacade(null);
-		Camera defCam = cmgr.getCommonCamera(CameraMgr.CommonCameras.DEFAULT);
-		defCam.setLocation(new Vector3f(0.0f, 40.0f, 80.0f));
-		
-		defCam.lookAt(new Vector3f(0.0f, 0.0f, 0.0f), Vector3f.UNIT_Y);
-		// float camEulerAngles[] = {2.0f, 0.0f, 0.0f};
-	//	Quaternion camRot = new Quaternion();
-	//	camRot.fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X);
-	//	defCam.setRotation(camRot);
+                cmgr.resetDefaultCamera();
 	}
+        
 	public void toggleDebugSkeletons() { 
 		for (HumanoidFigure hf : myFiguresByCharIdent.values()) {
 			hf.toggleDebugSkeleton();
