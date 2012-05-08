@@ -58,8 +58,8 @@ public class CogbotSpeechDemo {
         theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
         theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
         theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
-        Destination sendDest = ConnectionManager.createDestination("speech.Request");
-        Destination recDest = ConnectionManager.createDestination("speechrec.Event");
+        Destination sendDest = ConnectionManager.createDestination("speechRequest");
+        Destination recDest = ConnectionManager.createDestination("speechrecEvent");
         
         MessageSender<SpeechRequest> sender = createSpeechSender(session, sendDest);
         if(sender == null){
