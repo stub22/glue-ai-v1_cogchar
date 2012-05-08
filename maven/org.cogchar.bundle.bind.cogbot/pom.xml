@@ -52,16 +52,6 @@
 		
 		<dependency>
 			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.avrogen.speech</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.api.speech</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
 			<!-- Needed at compile time for PortableSpeechRequest in CogbotSpeechDemo -->
 			<artifactId>org.robokind.impl.speech</artifactId>
 			<version>${robokind.version}</version>
