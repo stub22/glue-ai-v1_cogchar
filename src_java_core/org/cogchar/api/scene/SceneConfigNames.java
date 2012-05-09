@@ -27,8 +27,19 @@ public class SceneConfigNames extends BoxAssemblyNames {
         
         public static   String          P_cameraName            = NS_CgcBC + "cameraName";
 	
-        public static   String[]        P_position             = {NS_CgcBC + "xPos", NS_CgcBC + "yPos", NS_CgcBC + "zPos"};
+        public static   String[]        P_position              = {NS_CgcBC + "xPos", NS_CgcBC + "yPos", NS_CgcBC + "zPos"};
         
         public static   String[]        P_direction             = {NS_CgcBC + "xDir", NS_CgcBC + "yDir", NS_CgcBC + "zDir"};
+        
+        public static   String[]        P_viewport              = {NS_CgcBC + "viewportXstart", NS_CgcBC + "viewportXend", NS_CgcBC + "viewportYstart", NS_CgcBC + "viewportYend"};
+        
+        public static 	String			P_light					= NS_CgcBC + "light";
+        
+        public static   String          P_lightName             = NS_CgcBC + "lightName";
+        
+        public static   String          P_lightType             = NS_CgcBC + "type";
+	
+        public static   String[]        P_color                 = {NS_CgcBC + "colorR", NS_CgcBC + "colorG", NS_CgcBC + "colorB", NS_CgcBC + "colorAlpha"};
+        
 	
 }

@@ -66,32 +66,41 @@ public class CameraMgr {
 		return getNamedCamera(id.name());
 	}
         
-        public void initCamerasFromConfig(LightsCameraConfig config, HumanoidRenderContext hrc) {
-                for (CameraConfig cc : config.myCCs) {
+	public void initCamerasFromConfig(LightsCameraConfig config, HumanoidRenderContext hrc) {
+		for (CameraConfig cc : config.myCCs) {
 			theLogger.info("Building Camera for config: " + cc);
-                        String cameraName = cc.cameraName;
+			boolean newFromRdf = false; // Used to trigger new viewport creation for new cameras loaded from RDF - probably not the way we want to handle this in long run
+			String cameraName = cc.cameraName;
 			Camera loadingCamera = getNamedCamera(cameraName); // First let's see if we can get a registered camera by this name
-                        if (loadingCamera == null) {
-                            loadingCamera = hrc.registerNewCameraUsingJME3Settings(cameraName); // otherwise we create a new one - note this method (in CogcharRenderContext) registers the camera for us
-                        }
-                        float[] cameraPos = cc.cameraPosition;
-                        loadingCamera.setLocation(new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]));
-                        float[] cameraDir = cc.cameraPointDir;
-                        loadingCamera.lookAtDirection(new Vector3f(cameraDir[0], cameraDir[1], cameraDir[2]), Vector3f.UNIT_Y);
-                        if (cameraName.equals("DEFAULT")) {// If we are setting default camera info, save position/direction for later reset
-                            defaultPosition = new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]);
-                            defaultDirection = new Vector3f(cameraDir[0], cameraDir[1], cameraDir[2]);
-                        }
-                }        
-        }
+			if (loadingCamera == null) {
+				newFromRdf = true; // Trigger new viewport creation for a new camera from RDF
+				loadingCamera = cloneCamera(getCommonCamera(CommonCameras.DEFAULT)); // otherwise we create a new one...
+				registerNamedCamera(cameraName, loadingCamera); // and register it
+			}
+			float[] cameraPos = cc.cameraPosition;
+			loadingCamera.setLocation(new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]));
+			float[] cameraDir = cc.cameraPointDir;
+			loadingCamera.lookAtDirection(new Vector3f(cameraDir[0], cameraDir[1], cameraDir[2]), Vector3f.UNIT_Y);
+			float[] cameraViewPort = cc.cameraViewPort;
+			loadingCamera.setViewPort(cameraViewPort[0], cameraViewPort[1], cameraViewPort[2], cameraViewPort[3]);
+			if (newFromRdf) {
+				theLogger.info("Camera with config: " + cc + " is new from RDF, creating new viewport...");
+				hrc.addViewPort(cameraName, loadingCamera);
+			}
+			if (cameraName.equals("DEFAULT")) {// If we are setting default camera info, save position/direction for later reset
+				defaultPosition = new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]);
+				defaultDirection = new Vector3f(cameraDir[0], cameraDir[1], cameraDir[2]);
+			}
+		}        
+	}
         
-        public void resetDefaultCamera() {
-            Camera defaultCamera = getCommonCamera(CommonCameras.DEFAULT);
-            if ((defaultPosition != null) && (defaultDirection != null)) {
-                defaultCamera.setLocation(defaultPosition);
-                defaultCamera.lookAtDirection(defaultDirection, Vector3f.UNIT_Y);
-            }
-        }
+	public void resetDefaultCamera() {
+		Camera defaultCamera = getCommonCamera(CommonCameras.DEFAULT);
+		if ((defaultPosition != null) && (defaultDirection != null)) {
+			defaultCamera.setLocation(defaultPosition);
+			defaultCamera.lookAtDirection(defaultDirection, Vector3f.UNIT_Y);
+		}
+	}
         
 	/*
 	public  		

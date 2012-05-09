@@ -20,6 +20,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.InputManager;
 import com.jme3.scene.Node;
+import com.jme3.renderer.RenderManager;
 
 import org.appdapter.api.facade.FacadeSpec;
 
@@ -61,6 +62,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		
 		JME3_APP_STATE_MANAGER,
 		JME3_INPUT_MANAGER,
+		JME3_RENDER_MANAGER,
 		
 		CC_ASSET_CONTEXT,
 
@@ -94,6 +96,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static final RFSpec<Node>				THE_JME3_ROOT_OVERLAY_NODE;
 	protected static final RFSpec<AppStateManager>	THE_JME3_APP_STATE_MANAGER;
 	protected static final RFSpec<InputManager>		THE_JME3_INPUT_MANAGER;
+	protected static final RFSpec<RenderManager>            THE_JME3_RENDER_MANAGER;
 	
 	protected static final RFSpec<PhysicsSpace>		THE_BULLET_PHYSICS_SPACE;
 	
@@ -104,6 +107,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		
 		THE_JME3_APP_STATE_MANAGER = new RFSpec<AppStateManager>(RFKind.JME3_APP_STATE_MANAGER, AppStateManager.class);	
 		THE_JME3_INPUT_MANAGER = new RFSpec<InputManager>(RFKind.JME3_INPUT_MANAGER, InputManager.class);	
+		THE_JME3_RENDER_MANAGER  = new RFSpec<RenderManager>(RFKind.JME3_RENDER_MANAGER, RenderManager.class);
 		
 		THE_BULLET_PHYSICS_SPACE  = new RFSpec<PhysicsSpace>(RFKind.JME3_ROOT_DEEP_NODE, PhysicsSpace.class);	
 	}
@@ -201,7 +205,13 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	}
 	protected static void registerJme3InputManager(InputManager im, String optionalName) {
 		registerExternalFacade(THE_JME3_INPUT_MANAGER, im, optionalName);
-	}	
+	}
+	protected static RenderManager findJme3RenderManager(String optionalName) {
+		return findExternalFacadeOrNull(THE_JME3_RENDER_MANAGER, optionalName);
+	}
+	protected static void registerJme3RenderManager(RenderManager im, String optionalName) {
+		registerExternalFacade(THE_JME3_RENDER_MANAGER, im, optionalName);
+	}
 	
 	// This one needs to be public, so that BundleActivators can find it, to register their classloader-markers.
 	public static AssetContext findOrMakeAssetContext(String optionalName, String optJme3AssetManagerName) {

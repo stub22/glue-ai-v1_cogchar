@@ -16,14 +16,31 @@
 package org.cogchar.render.opengl.optic;
 
 import com.jme3.renderer.RenderManager;
+import org.cogchar.render.sys.core.RenderRegistryAware;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class ViewportFacade {
+public class ViewportFacade extends RenderRegistryAware {
 	private	 RenderManager		myRenderManager;
+	/*
 	public ViewportFacade(RenderManager renderMgr) {
 		myRenderManager = renderMgr;
+	}
+	*/
+	public void setRenderManager(RenderManager rm) {
+		myRenderManager = rm;
+	}
+	public RenderManager getRenderManager() {
+		if (myRenderManager == null) {
+			myRenderManager = findJme3RenderManager(null);
+		}
+		return myRenderManager;
+	
+	/*	
+        public RenderManager getRenderManager() {
+		return myRenderManager; 
+	*/
 	}
 	
 }

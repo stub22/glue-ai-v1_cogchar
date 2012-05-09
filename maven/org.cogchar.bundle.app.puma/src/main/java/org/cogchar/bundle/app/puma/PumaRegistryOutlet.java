@@ -16,6 +16,7 @@
 package org.cogchar.bundle.app.puma;
 
 import org.cogchar.render.opengl.optic.CameraMgr;
+import org.cogchar.render.opengl.optic.LightFactory;
 import org.cogchar.render.sys.core.RenderRegistryFuncs;
 
 /**
@@ -30,4 +31,7 @@ public class PumaRegistryOutlet extends RenderRegistryFuncs {
    static CameraMgr getCameraMgr() {
         return findOrMakeOpticCameraFacade(null);
     }
+   static LightFactory getLightFactory() {
+       return findOrMakeOpticLightFacade(null);
+   }
 }
