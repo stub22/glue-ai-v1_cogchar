@@ -58,6 +58,7 @@ import org.cogchar.impl.trigger.FancyTriggerFacade;
  */
 import org.cogchar.api.scene.LightsCameraConfig;
 import org.cogchar.render.opengl.optic.CameraMgr;
+import org.cogchar.render.opengl.optic.LightFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -96,15 +97,17 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		BoneRobotConfig brc = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		myPHM.initModelRobotUsingBoneRobotConfig(brc);
                 
-                /* Load cameras/lights config from charWorldConfig RDF resource.
-                 * Obviously we don't want the path hardcoded here as it is currently.
-                 * Do we want a new ConfigEmitter for this? Probably doesn't make sense to use the BonyConfigEmitter
-                 * since we are separating this from BoneConfig. Also probably doesn't make sense to have the Turtle
-                 * file in the rk_bind_config/motion/ path, but for the moment...
-                 */
-                LightsCameraConfig lcc = readLightsCameraConfig("rk_bind_config/motion/charWorldConfig.ttl", myInitialBonyRdfCL);
-                CameraMgr cm = PumaRegistryOutlet.getCameraMgr();
-                cm.initCamerasFromConfig(lcc, myPHM.getHumanoidRenderContext());
+		/* Load cameras/lights config from charWorldConfig RDF resource.
+			* Obviously we don't want the path hardcoded here as it is currently.
+			* Do we want a new ConfigEmitter for this? Probably doesn't make sense to use the BonyConfigEmitter
+			* since we are separating this from BoneConfig. Also probably doesn't make sense to have the Turtle
+			* file in the rk_bind_config/motion/ path, but for the moment...
+			*/
+		LightsCameraConfig lcc = readLightsCameraConfig("rk_bind_config/motion/charWorldConfig.ttl", myInitialBonyRdfCL);
+		CameraMgr cm = PumaRegistryOutlet.getCameraMgr();
+		cm.initCamerasFromConfig(lcc, myPHM.getHumanoidRenderContext());
+		LightFactory lf = PumaRegistryOutlet.getLightFactory();
+		lf.initLightsFromConfig(lcc, myPHM.getHumanoidRenderContext());
 
 
 		// myPHM.initModelRobotUsingAvroJointConfig();

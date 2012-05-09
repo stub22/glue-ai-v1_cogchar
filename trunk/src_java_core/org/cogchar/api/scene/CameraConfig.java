@@ -29,19 +29,23 @@ public class CameraConfig {
         public String                                           cameraName;
 	public float[]						cameraPosition = new float[3];
 	public float[]						cameraPointDir = new float[3];
+        public float[]                                          cameraViewPort = new float[4];
            
         @Override
 	public String toString() {
-		return "CameraConfig[uriFrag=" + myURI_Fragment + ", pos=" + Arrays.toString(cameraPosition) + ", dir=" + Arrays.toString(cameraPointDir) + "]";
+		return "CameraConfig[uriFrag=" + myURI_Fragment + ", pos=" + Arrays.toString(cameraPosition) + ", dir=" + Arrays.toString(cameraPointDir) + ", viewport=" + Arrays.toString(cameraViewPort)+ "]";
 	}
 
 	public CameraConfig(Item configItem) {
-                        myURI_Fragment = configItem.getIdent().getLocalName();
-                        cameraName = ItemFuncs.getString(configItem, SceneConfigNames.P_cameraName, null);
-                        for (int index=0; index<3; index++) {
-                            cameraPosition[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_position[index], null).floatValue();
-                            cameraPointDir[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_direction[index], null).floatValue();
-                        }
+		myURI_Fragment = configItem.getIdent().getLocalName();
+		cameraName = ItemFuncs.getString(configItem, SceneConfigNames.P_cameraName, null);
+		for (int index=0; index<3; index++) {
+			cameraPosition[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_position[index], null).floatValue();
+			cameraPointDir[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_direction[index], null).floatValue();
+		}
+		for (int index=0; index<cameraViewPort.length; index++) {
+			cameraViewPort[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_viewport[index], null).floatValue();
+		}
 	}
 
 }
