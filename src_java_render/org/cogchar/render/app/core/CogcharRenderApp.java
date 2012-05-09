@@ -73,7 +73,7 @@ public abstract class CogcharRenderApp<CRCT extends CogcharRenderContext> extend
 		logInfo("fetch(/init) CogcharRenderContext");		
 		myRenderContext = getRenderContext();
 		
-		myRenderContext.registerJMonkeyRoots(assetManager, rootNode, guiNode, stateManager, inputManager);
+		myRenderContext.registerJMonkeyRoots(assetManager, rootNode, guiNode, stateManager, inputManager, renderManager);
 		myRenderContext.registerJMonkeyDefaultCameras(cam, flyCam);
 		try {
 			myRenderContext.completeInit();

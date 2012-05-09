@@ -39,7 +39,8 @@ import org.appdapter.core.log.BasicDebugger;
  * @author Ryan Biggs
  */
 public class LightsCameraConfig extends KnownComponentImpl { 
-	public	List<CameraConfig>			  myCCs = new ArrayList<CameraConfig>();
+		public	List<CameraConfig>			  myCCs = new ArrayList<CameraConfig>();
+        public	List<LightConfig>			  myLCs = new ArrayList<LightConfig>();
                 
         public static class Builder extends DynamicCachingComponentAssembler<LightsCameraConfig> {
 
@@ -55,6 +56,12 @@ public class LightsCameraConfig extends KnownComponentImpl {
 				CameraConfig cc = new CameraConfig(ji);
                                 logInfo("Adding CameraConfig in LightsCameraConfig: " + cc);
 				mlcc.myCCs.add(cc);
+			}
+                        Set<Item> lightItems = ItemFuncs.getLinkedItemSet(configItem, SceneConfigNames.P_light);
+			for (Item ji : lightItems) {
+				LightConfig lc = new LightConfig(ji);
+                                logInfo("Adding LightConfig in LightsCameraConfig: " + lc);
+				mlcc.myLCs.add(lc);
 			}
 		}
 		

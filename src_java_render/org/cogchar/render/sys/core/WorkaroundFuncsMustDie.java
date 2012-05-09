@@ -47,18 +47,21 @@ public class WorkaroundFuncsMustDie {
 
 		// JME2-only so far, it seems
 		// JoystickInput.setProvider( InputSystem.INPUT_SYSTEM_LWJGL );
-
+		
+		/* Working on killing this method - the items below no longer seem necessary - Ryan Biggs 9 May 2012
 		DirectionalLight dl = new DirectionalLight();
 		dl.setDirection(new Vector3f(-0.4f, -0.5f, -0.5f).normalizeLocal());
-		app.getRootNode().addLight(dl);		
+		app.getRootNode().addLight(dl);	
+		
 		Camera cam = app.getCamera();
 
 		Quaternion camRotQ = new Quaternion(0.0f, 1.0f, 0.5f, 0.0f);
 		cam.setAxes(camRotQ);		
+		*/ 
 	}	
 	public static void initScoreBoard(BonyRenderContext bc) {
-		SimpleApplication app = bc.getApp();
-		AppSettings settings = app.getContext().getSettings();
+		SimpleApplication app = bc.getApp(); // Should be from registry, not this way
+		AppSettings settings = app.getContext().getSettings(); // Should be from registry, not this way
 		int numScoreRows = 4;
 		int rowHeight = 50;
 		int boardWidth = settings.getWidth();
@@ -66,7 +69,7 @@ public class WorkaroundFuncsMustDie {
 		int baseY = settings.getHeight() - numScoreRows * rowHeight;
 		float textSizeMult = 0.5f;
 		ScoreBoard sb = new ScoreBoard(app.getAssetManager(), app.getGuiNode(), baseX, baseY, boardWidth, rowHeight, numScoreRows, textSizeMult);
-		bc.setScoreBoard(sb);
+		bc.setScoreBoard(sb); // Goofy way to do it
 	}
 	public static Canvas makeAWTCanvas(SimpleApplication app) {
 		AppSettings settings = app.getContext().getSettings();

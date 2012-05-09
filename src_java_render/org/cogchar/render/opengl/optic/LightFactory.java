@@ -20,11 +20,19 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import org.cogchar.api.scene.LightConfig;
+import org.cogchar.api.scene.LightsCameraConfig;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class LightFactory {
+        
+        static Logger theLogger = LoggerFactory.getLogger(CameraMgr.class);
+    
 	public static void addLightGrayAmbientLight(Node rootNode) {
 		addAmbientLight(rootNode, ColorRGBA.LightGray);
 	}
@@ -32,6 +40,12 @@ public class LightFactory {
 		AmbientLight light = new AmbientLight();
 		light.setColor(c);
 		rootNode.addLight(light);
+	}
+        
+        public static AmbientLight makeAmbientLight(ColorRGBA c) {
+		AmbientLight light = new AmbientLight();
+		light.setColor(c);
+		return light;
 	}
 	
 	public static AmbientLight makeWhiteAmbientLight() {
@@ -50,5 +64,19 @@ public class LightFactory {
 		ColorRGBA whiteOpaqueLight = new ColorRGBA(1f, 1f, 1f, 1.0f);
 		return makeDirectionalLight(direction, whiteOpaqueLight);
     }	
+        
+	public void initLightsFromConfig(LightsCameraConfig config, HumanoidRenderContext hrc) {
+		for (LightConfig lc : config.myLCs) {
+			theLogger.info("Building Light for config: " + lc);
+			ColorRGBA color = new ColorRGBA(lc.lightColor[0], lc.lightColor[1], lc.lightColor[2], lc.lightColor[3]);
+			if (lc.lightType.equals(LightConfig.LightType.DIRECTIONAL)) {
+				Vector3f direction = new Vector3f(lc.lightDirection[0], lc.lightDirection[1], lc.lightDirection[2]);
+				//hrc.addNewLightToJME3RootNode(makeDirectionalLight(direction, color)); //Temporarily disabled until thread issues resolved
+			}
+			if (lc.lightType.equals(LightConfig.LightType.AMBIENT)) {
+				//hrc.addNewLightToJME3RootNode(makeAmbientLight(color)); //Temporarily disabled until thread issues resolved
+			}
+		}        
+	}
 
 }

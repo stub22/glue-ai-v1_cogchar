@@ -26,6 +26,7 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.light.Light;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import java.io.InputStream;
@@ -65,12 +66,14 @@ public class CogcharRenderContext extends RenderRegistryAware {
 	 * @param guiNode 
 	 */
 	public void registerJMonkeyRoots(AssetManager assetMgr, Node rootNode, Node guiNode, 
-					AppStateManager stateMgr, InputManager inputMgr) { 
+					AppStateManager stateMgr, InputManager inputMgr,
+					RenderManager renderMgr) { 
 		registerJme3AssetManager(assetMgr, null);
 		registerJme3RootDeepNode(rootNode, null);
 		registerJme3RootOverlayNode(guiNode, null); // 2d interface node from JME being plugged into registry
 		registerJme3AppStateManager(stateMgr, null);
 		registerJme3InputManager(inputMgr, null);
+		registerJme3RenderManager(renderMgr, null);
 		
 	}
 	/**
@@ -90,17 +93,34 @@ public class CogcharRenderContext extends RenderRegistryAware {
 		cm.registerCommonCamera(CameraMgr.CommonCameras.DEFAULT, defCam);
 	}
         
-        /* Added so CameraMgr can create new cameras using JME3 settings from RDF 
-         * We also call back to CameraMgr to register this new camera - that way
-         * it's guaranteed to be taken care of in case some other code decides to
-         * call this method.
-         */
-        public Camera registerNewCameraUsingJME3Settings(String cameraName) {
-                CameraMgr cm = findOrMakeOpticCameraFacade(null);
-                Camera newCamera = new Camera(myJme3AppSettings.getWidth(), myJme3AppSettings.getHeight());
+	/* Added so CameraMgr can create new cameras using JME3 settings from RDF 
+	* We also call back to CameraMgr to register this new camera - that way
+	* it's guaranteed to be taken care of in case some other code decides to
+	* call this method.
+	* 
+	* UPDATE: seems we must clone the default camera; a camera created this way
+	* does not seem to attach to the scene correctly (though it might with some extra steps) 
+
+	public Camera registerNewCameraUsingJME3Settings(String cameraName) {
+		CameraMgr cm = findOrMakeOpticCameraFacade(null);
+		Camera newCamera = new Camera(myJme3AppSettings.getWidth(), myJme3AppSettings.getHeight());
 		cm.registerNamedCamera(cameraName, newCamera);
-                return newCamera;
-        }
+		return newCamera;
+	}
+	*/
+
+
+	// Right now this is just a public wrapper for addLightToRootNode
+	// so LightFactory can add lights from RDF
+	public void addNewLightToJME3RootNode(Light l) {
+		addLightToRootNode(l);
+	}
+
+	// Added so CameraMgr can create new viewports for cameras loaded from RDF
+	public void addViewPort(String label, Camera c) {
+		DeepSceneMgr dsm = findOrMakeSceneDeepFacade(null);
+		dsm.addViewPort(label, c);
+	}
 	
 	public void setAppStub(AppStub stub) {
 		myAppStub = stub;
