@@ -129,18 +129,18 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		robotFigure.movePosition(0.0f, -5.0f, 0.0f);
 	}
 
+	// This method is getting to be vestigial - camera and light setup is now mostly handled from RDF	
 	private void initCameraAndLights() {
 		AppStub stub = getAppStub();
 		stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
 		FlyByCamera fbCam = stub.getFlyCam();
-		fbCam.setMoveSpeed(50);
-		setupLight();	
+		fbCam.setMoveSpeed(50);	
 	}
         
-        // This is still called by HumanoidPuppetActions to reset default camera position
-        protected void setDefaultCameraLocation(){    
+	// This is still called by HumanoidPuppetActions to reset default camera position
+	protected void setDefaultCameraLocation(){    
 		CameraMgr cmgr = findOrMakeOpticCameraFacade(null);
-                cmgr.resetDefaultCamera();
+		cmgr.resetDefaultCamera();
 	}
         
 	public void toggleDebugSkeletons() { 
@@ -149,25 +149,25 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		}
 	}
         
-        // Does this best live here or further up in one of the context superclasses? Dunno, but should be easy enough to move it up later (w/o private); be sure to remove imports
-        // In order to access registry, must live in a class that extends CogcharRenderContext
-        private void initHelpScreen(AppSettings settings, InputManager inputManager) {
-                final String HELP_TAG = "Help"; // Should be defined elsewhere or perhaps via RDF for goodness, but just for the moment
-                final int HELP_KEY = com.jme3.input.KeyInput.KEY_H; // Same here - coming from RDF eventually
-                KeyBindingTracker.addBinding(HELP_TAG, HELP_KEY); // Let's add ourselves to the help list!
-                final BitmapText helpBT = findOrMakeSceneTextFacade(null).makeHelpScreen(0.6f, settings); // First argument sets text size, really shouldn't be hard-coded
-                KeyTrigger keyTrig = new KeyTrigger(HELP_KEY); 
-                inputManager.addMapping(HELP_TAG, keyTrig);
-                inputManager.addListener(new ActionListener() {
-                    private boolean helpDisplayed = false;
-                    public void onAction(String name, boolean isPressed, float tpf) {
-                        if (isPressed) {
-                            if (!helpDisplayed) {findOrMakeSceneFlatFacade(null).attachOverlaySpatial(helpBT); helpDisplayed = true;}
-                             else {findOrMakeSceneFlatFacade(null).detachOverlaySpatial(helpBT); helpDisplayed = false;}   
-                        }        
-                    }
-                }, HELP_TAG);
-        }
+	// Does this best live here or further up in one of the context superclasses? Dunno, but should be easy enough to move it up later (w/o private); be sure to remove imports
+	// In order to access registry, must live in a class that extends CogcharRenderContext
+	private void initHelpScreen(AppSettings settings, InputManager inputManager) {
+		final String HELP_TAG = "Help"; // Should be defined elsewhere or perhaps via RDF for goodness, but just for the moment
+		final int HELP_KEY = com.jme3.input.KeyInput.KEY_H; // Same here - coming from RDF eventually
+		KeyBindingTracker.addBinding(HELP_TAG, HELP_KEY); // Let's add ourselves to the help list!
+		final BitmapText helpBT = findOrMakeSceneTextFacade(null).makeHelpScreen(0.6f, settings); // First argument sets text size, really shouldn't be hard-coded
+		KeyTrigger keyTrig = new KeyTrigger(HELP_KEY); 
+		inputManager.addMapping(HELP_TAG, keyTrig);
+		inputManager.addListener(new ActionListener() {
+			private boolean helpDisplayed = false;
+			public void onAction(String name, boolean isPressed, float tpf) {
+				if (isPressed) {
+					if (!helpDisplayed) {findOrMakeSceneFlatFacade(null).attachOverlaySpatial(helpBT); helpDisplayed = true;}
+						else {findOrMakeSceneFlatFacade(null).detachOverlaySpatial(helpBT); helpDisplayed = false;}   
+				}        
+			}
+		}, HELP_TAG);
+	}
         
 		/*
 		 * 

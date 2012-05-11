@@ -30,16 +30,23 @@ import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 import com.jme3.system.JmeContext;
 import java.awt.Canvas;
+import java.util.concurrent.Callable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class WorkaroundFuncsMustDie {
+	
+	static Logger theLogger = LoggerFactory.getLogger(WorkaroundFuncsMustDie.class);
+	
 	public static void setupCameraLightAndViewport(BonyRenderContext bc) { 
 		SimpleApplication app = bc.getApp();
 		FlyByCamera fbc = app.getFlyByCamera();
         fbc.setDragToRotate(true);
-		fbc.setMoveSpeed(10f);
+		//fbc.setMoveSpeed(10f); //This is set in HumanoidRenderContext.initCameraAndLights()
 		app.setPauseOnLostFocus(false);
 		ViewPort vp = app.getViewPort();
 		vp.setBackgroundColor(ColorRGBA.LightGray);
@@ -73,6 +80,7 @@ public class WorkaroundFuncsMustDie {
 	}
 	public static Canvas makeAWTCanvas(SimpleApplication app) {
 		AppSettings settings = app.getContext().getSettings();
+		theLogger.info("making AWTCanvas in WorkaroundFuncsMustDie: Size is " + settings.getWidth() + "x" + settings.getHeight());
 		return makeAWTCanvas(app, settings.getWidth(), settings.getHeight());	
 	}	
 	public static Canvas makeAWTCanvas(SimpleApplication app, int width, int height) {	
@@ -95,5 +103,11 @@ public class WorkaroundFuncsMustDie {
         awtCanvas.setSize(width, height);
 		return awtCanvas;
 	}
+	
+	// Adding this so we can enqueue requests to add RDF lights on main thread - seems like this is a bit of a
+	// WorkAroundFunc for now, so here it is:
+	public static void enqueueCallable(BonyRenderContext bc, Callable callThis) {
+		bc.getApp().enqueue(callThis);
+	}	
 
 }
