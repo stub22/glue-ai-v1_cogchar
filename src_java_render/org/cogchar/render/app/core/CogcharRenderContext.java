@@ -112,9 +112,13 @@ public class CogcharRenderContext extends RenderRegistryAware {
 
 	// Right now this is just a public wrapper for addLightToRootNode
 	// so LightFactory can add lights from RDF
+	// BUT this won't work as is - at time LightFactory is loading from RDF, lights won't be added on main
+	// render thread as needed using this method. See LightFactory for current kludge.
+	/*
 	public void addNewLightToJME3RootNode(Light l) {
 		addLightToRootNode(l);
 	}
+	*/
 
 	// Added so CameraMgr can create new viewports for cameras loaded from RDF
 	public void addViewPort(String label, Camera c) {
@@ -148,11 +152,13 @@ public class CogcharRenderContext extends RenderRegistryAware {
 	protected void addLightToRootNode(Light l) {
 		DeepSceneMgr dsm = findOrMakeSceneDeepFacade(null);
 		dsm.addLight(l);
-	}	
+	}
+	// Should be able to remove this now as light comes from RDF, but will leave it in for now in case something weird is calling it
 	protected DirectionalLight makeDemoDirectionalLight() { 
 		Vector3f dir = getDemoVectoryFactory().getUsualLightDirection();
 		return findOrMakeOpticLightFacade(null).makeWhiteOpaqueDirectionalLight(dir);
 	}
+	// Should be able to remove this now as light comes from RDF, but will leave it in for now in case something weird is calling it
 	public void addDemoDirLightToRootNode() { 
 		addLightToRootNode(makeDemoDirectionalLight());
 	}	
@@ -162,6 +168,8 @@ public class CogcharRenderContext extends RenderRegistryAware {
 		BitmapText crossBT = findOrMakeSceneTextFacade(null).makeCrossHairs(2.0f, settings);
 		findOrMakeSceneFlatFacade(null).attachOverlaySpatial(crossBT);
 	}	
+	// Should be able to remove this now as light comes from RDF, but will leave it in for now in case something weird is calling it
+	// Also should be able to get rid of fabulous DemoVectorFactory class!
 	public DemoVectorFactory getDemoVectoryFactory() { 
 		return new DemoVectorFactory();
 	}
