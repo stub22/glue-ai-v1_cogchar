@@ -15,21 +15,45 @@
  */
 package org.cogchar.render.opengl.optic;
 
+import com.jme3.light.Light;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import java.util.concurrent.Callable;
+import java.lang.Void;
 import org.cogchar.api.scene.LightConfig;
 import org.cogchar.api.scene.LightsCameraConfig;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.sys.core.RenderRegistryAware;
+import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
- */
-public class LightFactory {
+
+ * Kludge alert!
+ * Not sure we really want this RenderRegistryAware - need it to get root node to add lights via main rendering thread,
+ * currently handled directly from here to WorkaroundFuncsMustDie. If not for the requirement to enqueue the request,
+ * we'd want to do this via established methods in CogCharRenderContext. BUT we need access to the app to enqueue, and
+ * CogcharRenderContext doesn't have getApp - that's up in BonyRenderContext. So for now, we'll get the root node here
+ * and send it to WorkaroundFuncsMustDie along with the hrc from the calling method, from which it can getApp()
+ * We could just have WorkaroundFuncsMustDie get the root node from hrc, but findJme3RootDeepNode is protected.
+ */ 
+public class LightFactory extends RenderRegistryAware { 
+	private	Node	myParentNode;
+
+	public void setParentNode(Node n) {
+		myParentNode = n;
+	}
+	protected Node getParentNode() {
+		if (myParentNode == null) {
+			myParentNode = findJme3RootDeepNode(null);
+		}
+		return myParentNode;
+	}	
         
         static Logger theLogger = LoggerFactory.getLogger(CameraMgr.class);
     
@@ -71,12 +95,26 @@ public class LightFactory {
 			ColorRGBA color = new ColorRGBA(lc.lightColor[0], lc.lightColor[1], lc.lightColor[2], lc.lightColor[3]);
 			if (lc.lightType.equals(LightConfig.LightType.DIRECTIONAL)) {
 				Vector3f direction = new Vector3f(lc.lightDirection[0], lc.lightDirection[1], lc.lightDirection[2]);
-				//hrc.addNewLightToJME3RootNode(makeDirectionalLight(direction, color)); //Temporarily disabled until thread issues resolved
+				//hrc.addNewLightToJME3RootNode(makeDirectionalLight(direction, color)); //Would be the way to do it except for thread issues
+				addLightOnMainThread(makeDirectionalLight(direction, color), hrc);
 			}
 			if (lc.lightType.equals(LightConfig.LightType.AMBIENT)) {
-				//hrc.addNewLightToJME3RootNode(makeAmbientLight(color)); //Temporarily disabled until thread issues resolved
+				//hrc.addNewLightToJME3RootNode(makeAmbientLight(color)); //Would be the way to do it except for thread issues
+				addLightOnMainThread(makeAmbientLight(color), hrc);
 			}
 		}        
+	}
+	
+	// Needed to ensure light is added on main rendering thread
+	public void addLightOnMainThread(final Light l, final HumanoidRenderContext hrc) {
+		WorkaroundFuncsMustDie.enqueueCallable(hrc, new Callable<Void>() {	
+			@Override
+            public Void call() throws Exception {
+                getParentNode().addLight(l);
+				return null;
+            }  
+        });
+		
 	}
 
 }
