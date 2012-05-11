@@ -26,14 +26,14 @@ import org.appdapter.core.item.ItemFuncs;
  */
 public class LightConfig {
 	public String						myURI_Fragment;
-        public String                                           lightName;
-        public LightType                                        lightType;
+	public String                       lightName;
+	public LightType                    lightType;
 	public float[]						lightDirection = new float[3];
 	public float[]						lightColor = new float[4];
            
 	@Override
 	public String toString() {
-		return "LightConfig[uriFrag=" + myURI_Fragment + ", type =" + lightType.name() + /* ", pos=" + Arrays.toString(cameraPosition) + */ ", dir=" + Arrays.toString(lightDirection) + ", color =" + Arrays.toString(lightColor) + "]";
+		return "LightConfig[uriFrag=" + myURI_Fragment + ", type=" + lightType.name() + /* ", pos=" + Arrays.toString(cameraPosition) + */ ", dir=" + Arrays.toString(lightDirection) + ", color=" + Arrays.toString(lightColor) + "]";
 	}
 
 	public LightConfig(Item configItem) {
@@ -43,7 +43,7 @@ public class LightConfig {
 		String typeString = ItemFuncs.getString(configItem, SceneConfigNames.P_lightType, null);
 		if (typeString.equals("DIRECTIONAL")) {lightType = LightType.DIRECTIONAL;}
 		for (int index=0; index<lightDirection.length; index++) {
-			lightDirection[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_direction[index], null).floatValue();
+			lightDirection[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_direction[index], 0.0).floatValue();
 		}
 		for (int index=0; index<lightColor.length; index++) {
 			lightColor[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_color[index], null).floatValue();
