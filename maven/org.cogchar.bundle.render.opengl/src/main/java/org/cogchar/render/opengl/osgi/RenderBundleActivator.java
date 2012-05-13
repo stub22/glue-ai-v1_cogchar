@@ -17,6 +17,7 @@ package org.cogchar.render.opengl.osgi;
 
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
@@ -33,72 +34,39 @@ import org.cogchar.render.gui.bony.VirtualCharacterPanel;
  * @author Stu B. <www.texpedient.com>
  */
 public class RenderBundleActivator extends BundleActivatorBase {
+	
 
 	static Logger theLogger = LoggerFactory.getLogger(RenderBundleActivator.class);
-	private BonyRenderContext myBonyRenderContext;
+	// private BonyRenderContext myBonyRenderContext;
 
 	@Override protected Logger getLogger() {
 		return theLogger;
 	}
 
 	// This is the primary service export point for the bundle, as of 2011-08-30.
+	/*
 	public BonyRenderContext getBonyRenderContext() {
 		return myBonyRenderContext;
 	}
+	* 
+	*/ 
 
 	@Override public void start(BundleContext bundleCtx) throws Exception {
 		
 		super.start(bundleCtx);
-		// IDE hints may show these symbols (from transitive deps) as undefined, but they should compile OK with maven.
-		theLogger.info("******************* Fetching VerySimpleRegistry");
-
-		/*
-		theLogger.info("******************* Registering assumed resource bundle with default AssetContext");
-		AssetContext defAssetCtx = RenderRegistryFuncs.findOrMakeAssetContext(null, null);
-		JmonkeyAssetLocation jmal = new JmonkeyAssetLocation(ResourceBundleActivator.class);
-		defAssetCtx.addAssetSource(null);
-		 * 
-		 */
-		
-		theLogger.info("******************* Creating BonyConfigEmitter, HumanoidPuppetApp");
-		BonyConfigEmitter bce = new BonyConfigEmitter();
-		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
-		
-		// Want to decide this "kind" based on further context (e.g. "are we in Netbeans?"  "are we in debug-mode?"),
-		// which is a concrete reason to try to push this init out of the bundle activator, and perform on demand
-		// instead.
 		
 		String panelKind = "SLIM";
-		theLogger.info("******************* Initializing VirtualCharacterPanel of kind " + panelKind + " with canvas");
 		
-		VirtualCharacterPanel vcp = PanelUtils.makeVCPanel(bce, panelKind);
-		bvcApp.initCharPanelWithCanvas(vcp);
-
-		myBonyRenderContext = bvcApp.getBonyRenderContext();
-		theLogger.info("******************* Registering BonyRenderContext as OSGi service");
-		bundleCtx.registerService(BonyRenderContext.class.getName(), myBonyRenderContext, null);
-
+		// myBonyRenderContext = 
+		RenderBundleUtils.buildBonyRenderContextInOSGi(bundleCtx, panelKind);
+	
 		theLogger.info("******************* start() is DONE!");
 	}
 
 	@Override public void stop(BundleContext bundleCtx) throws Exception {
 		// Perhaps this should be done last, via a "finally" clause.
 		super.stop(bundleCtx);
-		// Attempt to cleanup OpenGL resources, which happens nicely in standalone demo if the window is X-ed.
-		// (Probably cleanup is happening during dispose(), so direct call to that should work too).
-		BonyRenderContext bc = getBonyRenderContext();
-		if (bc != null) {
-			JFrame jf = bc.getFrame();
-			if (jf != null) {
-				theLogger.info("Sending WINDOW_CLOSING event to BonyRenderContext.JFrame");
-				WindowEvent windowClosing = new WindowEvent(jf, WindowEvent.WINDOW_CLOSING);
-				jf.dispatchEvent(windowClosing);
-			} else {
-				theLogger.warn("BonyRenderContext returned null JFrame, so we have no window to close.");
-			}
-		} else {
-			theLogger.warn("stop() found null BonyRenderContext");
-		}
+		RenderBundleUtils.shutdownBonyRenderContextInOSGi(bundleCtx);
 		theLogger.info("stop() is DONE!");
 	}
 }

@@ -7,6 +7,7 @@ public class OpenglJmonkeyBundleActivator implements BundleActivator {
 
     public void start(BundleContext context) throws Exception {
         System.out.println("[System.out] - " + getClass().getName()+  " - start(" + context + ") [This msg unsynch with your logger]");
+		NativeLibUtils.testNativeLoad();
     }
 
     public void stop(BundleContext context) throws Exception {
