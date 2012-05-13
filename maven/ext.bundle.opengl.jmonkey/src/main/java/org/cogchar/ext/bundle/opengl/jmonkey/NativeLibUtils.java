@@ -27,7 +27,7 @@ public class NativeLibUtils {
 		System.out.println("NativeLibUtils: os.arch=" + System.getProperty("os.arch"));
 		System.out.println("NativeLibUtils: org.lwjgl.librarypath=" + System.getProperty("org.lwjgl.librarypath"));
 		System.out.println("NativeLibUtils: java.library.path=" + System.getProperty("java.library.path"));			
-		System.out.println("NativeLibUtils: All properties=" + System.getProperties());
+		// System.out.println("NativeLibUtils: All properties=" + System.getProperties());
 	}
 }
 /*

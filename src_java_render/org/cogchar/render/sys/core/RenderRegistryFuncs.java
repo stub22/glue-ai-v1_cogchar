@@ -41,8 +41,8 @@ import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 import org.cogchar.render.opengl.scene.GeomFactory;
 import org.cogchar.render.opengl.scene.ModelSpatialFactory;
 import org.cogchar.render.opengl.scene.TextMgr;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.osgi.framework.BundleContext;
+
 
 /**
  * This is a set of functions which statelessly defines the create/find behavior of Cogchar rendering core services.
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class RenderRegistryFuncs extends BasicDebugger {
 	
-	private final static Logger		theLogger = LoggerFactory.getLogger(RenderRegistryFuncs.class);
+	// private final static Logger		theLogger = LoggerFactory.getLogger(RenderRegistryFuncs.class);
 	
 	protected enum RFKind {
 		JME3_ASSET_MANAGER,
@@ -96,7 +96,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static final RFSpec<Node>				THE_JME3_ROOT_OVERLAY_NODE;
 	protected static final RFSpec<AppStateManager>	THE_JME3_APP_STATE_MANAGER;
 	protected static final RFSpec<InputManager>		THE_JME3_INPUT_MANAGER;
-	protected static final RFSpec<RenderManager>            THE_JME3_RENDER_MANAGER;
+	protected static final RFSpec<RenderManager>	THE_JME3_RENDER_MANAGER;
 	
 	protected static final RFSpec<PhysicsSpace>		THE_BULLET_PHYSICS_SPACE;
 	
@@ -161,108 +161,140 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	
 //		CC_PHYSICS_FACADE	
 
-	public static <EFT, EFK> EFT  findExternalFacadeOrNull(FacadeSpec<EFT, EFK> fs, String optOverrideName) {		
+	public static <EFT, EFK> RegistryClient getRegistryClient(FacadeSpec<EFT, EFK> fs, Class optCredClaz) {
+		// Use the internal facade class as the default credential, to usually make Netigso happily return a bundleContext.
+		Class credClaz = (optCredClaz != null) ? optCredClaz : fs.getFacadeClass();
+		return new RegistryClient(credClaz);
+	}
+	public static <EFT, EFK> RegistryClient getRegistryClientForExtFacade(FacadeSpec<EFT, EFK> fs, Class optCredClaz) {
+		// Use our own class as the default credential for external facades, to usually make Netigso happily return a bundleContext.		
+		
+		Class credClaz = (optCredClaz != null) ? optCredClaz : RenderRegistryFuncs.class;
+		return new RegistryClient(credClaz);
+	}	
+			
+	public static <EFT, EFK> EFT  findExternalFacadeOrNull(FacadeSpec<EFT, EFK> fs, String optOverrideName, Class optCredClaz) {		
 		EFT result = null;
-		FacadeHandle<EFT> fh = RegistryClient.findExternalFacade(RegistryClient.SUBSYS_REG_RENDER(), fs, optOverrideName);
+
+		RegistryClient	rc = getRegistryClientForExtFacade(fs, optCredClaz);
+		FacadeHandle<EFT> fh = rc.findExternalFacade(rc.SUBSYS_REG_RENDER(), fs, optOverrideName);
 		if (fh.isReady()) {
 			result = fh.getOrElse(null);
 		} 
 		return result;
 	}
-	public static <EFT, EFK> void registerExternalFacade(FacadeSpec<EFT, EFK> fs, EFT facade, String optOverrideName) {
-		RegistryClient.registerExternalFacade(RegistryClient.SUBSYS_REG_RENDER(), fs, facade, optOverrideName);	
+	public static <EFT, EFK> void registerExternalFacade(FacadeSpec<EFT, EFK> fs, EFT facade, String optOverrideName, Class optCredClaz) {
+		RegistryClient	rc = getRegistryClientForExtFacade(fs, optCredClaz);
+		rc.registerExternalFacade(rc.SUBSYS_REG_RENDER(), fs, facade, optOverrideName);	
 	}
-	public static <IFT, IFK> IFT  findOrMakeInternalFacade(FacadeSpec<IFT, IFK> fs, String optOverrideName ) {
-		return RegistryClient.findOrMakeInternalFacade(RegistryClient.SUBSYS_REG_RENDER(), fs, optOverrideName);
+	public static <IFT, IFK> IFT  findOrMakeInternalFacade(FacadeSpec<IFT, IFK> fs, String optOverrideName, Class optCredClaz ) {
+		RegistryClient	rc = getRegistryClient(fs, optCredClaz);
+		return rc.findOrMakeInternalFacade(rc.SUBSYS_REG_RENDER(), fs, optOverrideName);
 	}
 	protected static AssetManager findJme3AssetManager(String optionalName) {
-		return findExternalFacadeOrNull(THE_JME3_ASSET_MANAGER, optionalName);
+		return findExternalFacadeOrNull(THE_JME3_ASSET_MANAGER, optionalName, null);
 	}
 	protected static void registerJme3AssetManager(AssetManager am, String optionalName) {
-		registerExternalFacade(THE_JME3_ASSET_MANAGER, am, optionalName);	
+		registerExternalFacade(THE_JME3_ASSET_MANAGER, am, optionalName, null);	
 	}
 	protected static Node findJme3RootDeepNode(String optionalName) {
-		return findExternalFacadeOrNull(THE_JME3_ROOT_DEEP_NODE, optionalName);
+		return findExternalFacadeOrNull(THE_JME3_ROOT_DEEP_NODE, optionalName, null);
 	}
 	protected static void registerJme3RootDeepNode(Node n, String optionalName) {
-		registerExternalFacade(THE_JME3_ROOT_DEEP_NODE, n, optionalName);
+		registerExternalFacade(THE_JME3_ROOT_DEEP_NODE, n, optionalName, null);
 	}
 	protected static Node findJme3RootOverlayNode(String optionalName) {
-		return findExternalFacadeOrNull(THE_JME3_ROOT_OVERLAY_NODE, optionalName);
+		return findExternalFacadeOrNull(THE_JME3_ROOT_OVERLAY_NODE, optionalName, null);
 	}
 	protected static void registerJme3RootOverlayNode(Node n, String optionalName) {
-		registerExternalFacade(THE_JME3_ROOT_OVERLAY_NODE, n, optionalName);
+		registerExternalFacade(THE_JME3_ROOT_OVERLAY_NODE, n, optionalName, null);
 	}	
 	
 	protected static AppStateManager findJme3AppStateManager(String optionalName) {
-		return findExternalFacadeOrNull(THE_JME3_APP_STATE_MANAGER, optionalName);
+		return findExternalFacadeOrNull(THE_JME3_APP_STATE_MANAGER, optionalName, null);
 	}
 	protected static void registerJme3AppStateManager(AppStateManager asm, String optionalName) {
-		registerExternalFacade(THE_JME3_APP_STATE_MANAGER, asm, optionalName);
+		registerExternalFacade(THE_JME3_APP_STATE_MANAGER, asm, optionalName, null);
 	}
 	protected static InputManager findJme3InputManager(String optionalName) {
-		return findExternalFacadeOrNull(THE_JME3_INPUT_MANAGER, optionalName);
+		return findExternalFacadeOrNull(THE_JME3_INPUT_MANAGER, optionalName, null);
 	}
 	protected static void registerJme3InputManager(InputManager im, String optionalName) {
-		registerExternalFacade(THE_JME3_INPUT_MANAGER, im, optionalName);
+		registerExternalFacade(THE_JME3_INPUT_MANAGER, im, optionalName, null);
 	}
 	protected static RenderManager findJme3RenderManager(String optionalName) {
-		return findExternalFacadeOrNull(THE_JME3_RENDER_MANAGER, optionalName);
+		return findExternalFacadeOrNull(THE_JME3_RENDER_MANAGER, optionalName, null);
 	}
 	protected static void registerJme3RenderManager(RenderManager im, String optionalName) {
-		registerExternalFacade(THE_JME3_RENDER_MANAGER, im, optionalName);
-	}
-	
-	// This one needs to be public, so that BundleActivators can find it, to register their classloader-markers.
-	public static AssetContext findOrMakeAssetContext(String optionalName, String optJme3AssetManagerName) {
-		// TODO - do something cool to make sure that optJme3AssetManagerName is compatible with the
-		// named JME3_ASSET_MANAGER, because this is the *constraint* being supplied by the application.
-		return findOrMakeInternalFacade(THE_CC_ASSET_CONTEXT, optionalName);
+		registerExternalFacade(THE_JME3_RENDER_MANAGER, im, optionalName, null);
 	}
 
 	protected static ViewportFacade findOrMakeOpticViewportFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_OPTIC_VIEWPORT_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_OPTIC_VIEWPORT_FACADE, optionalName, null);
 	}
 	protected static CameraMgr findOrMakeOpticCameraFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_OPTIC_CAMERA_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_OPTIC_CAMERA_FACADE, optionalName, null);
 	}
 	protected static LightFactory findOrMakeOpticLightFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_OPTIC_LIGHT_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_OPTIC_LIGHT_FACADE, optionalName, null);
 	}
 	protected static MatFactory findOrMakeOpticMaterialFacade(String optionalName, String optAssetContextName) {
 		// TODO - do something cool to make sure that optAssetContextName is compatible
-		return findOrMakeInternalFacade(THE_CC_OPTIC_MATERIAL_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_OPTIC_MATERIAL_FACADE, optionalName, null);
 	}	
 	
 	protected static TextureFactory findOrMakeOpticTextureFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_OPTIC_TEXTURE_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_OPTIC_TEXTURE_FACADE, optionalName, null);
 	}
 	
 	protected static ShapeMeshFactory findOrMakeMeshShapeFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_MESH_SHAPE_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_MESH_SHAPE_FACADE, optionalName, null);
 	}	
 	protected static WireMeshFactory findOrMakeMeshWireFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_MESH_WIRE_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_MESH_WIRE_FACADE, optionalName, null);
 	}	
 	protected static FancyMeshFactory findOrMakeMeshFancyFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_MESH_FANCY_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_MESH_FANCY_FACADE, optionalName, null);
 	}	
 	
 
 	protected static GeomFactory findOrMakeSceneGeometryFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_SCENE_GEOMETRY_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_SCENE_GEOMETRY_FACADE, optionalName, null);
 	}		
 	protected static DeepSceneMgr findOrMakeSceneDeepFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_SCENE_DEEP_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_SCENE_DEEP_FACADE, optionalName, null);
 	}
 	protected static FlatOverlayMgr findOrMakeSceneFlatFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_SCENE_FLAT_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_SCENE_FLAT_FACADE, optionalName, null);
 	}
 	protected static ModelSpatialFactory findOrMakeSceneSpatialModelFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_SCENE_SPATIAL_MODEL_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_SCENE_SPATIAL_MODEL_FACADE, optionalName, null);
 	}
 	protected static TextMgr findOrMakeSceneTextFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_SCENE_TEXT_FACADE, optionalName);
+		return findOrMakeInternalFacade(THE_CC_SCENE_TEXT_FACADE, optionalName, null);
 	}
 
+		
+	// This one needs to be public, so that BundleActivators can find it, to register their classloader-markers.
+	public static AssetContext findOrMakeAssetContext(String optionalName, String optJme3AssetManagerName) {
+		// TODO - do something cool to make sure that optJme3AssetManagerName is compatible with the
+		// named JME3_ASSET_MANAGER, because this is the *constraint* being supplied by the application.
+		return findOrMakeInternalFacade(THE_CC_ASSET_CONTEXT, optionalName, null);
+	}
+
+	/*
+	 We offer an explicit credClaz version, to account for the case where an Activator
+	 wants to register a marker with assetContext BEFORE the target facade class (AssetContext)
+	 is willing/able to return a bundle that has a valid bundleContext.
+	 This circumstance occurs under Netigso (though RegistryClient was then the assumed credClaz, as shown below)
+	 
+ INFO [FelixStartLevel] (ResourceBundleActivator.java:22) - ******************* Registering assumed resource bundle with default AssetContext
+ WARN [FelixStartLevel] (RegistryServiceFuncs.java:145) - %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  bundle getBundleContext() returned null - OSGi permissions or load-ordering problem for bundle [org.cogchar.org.cogchar.bundle.core [117]] via credClaz[class org.cogchar.blob.emit.RegistryClient$]
+ INFO [FelixStartLevel] (RegistryServiceFuncs.java:112) - %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Getting singleton WellKnownRegistry in non-OSGi context
+ INFO [FelixStartLevel] (RegistryServiceFuncs.java:114) - %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Making singleton WellKnownRegistry for non-OSGi context
+	 */
+	public static AssetContext findOrMakeAssetContext(String optionalName, 	String optJme3AssetManagerName, Class optCredClaz) {
+		return findOrMakeInternalFacade(THE_CC_ASSET_CONTEXT, optionalName, optCredClaz);
+	}
+	
 }

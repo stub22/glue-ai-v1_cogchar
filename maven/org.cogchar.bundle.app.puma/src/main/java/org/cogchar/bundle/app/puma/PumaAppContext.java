@@ -64,6 +64,11 @@ public class PumaAppContext {
 
 	public PumaAppContext(BundleContext bc, String sysContextURI, String localConfigRootPath) {
 		myBundleContext = bc;
+		
+		// First stage init of JME3
+		String panelKind = "SLIM";
+		RenderBundleUtils.buildBonyRenderContextInOSGi(bc, panelKind);
+		
 		myHRC = (HumanoidRenderContext) RenderBundleUtils.getBonyRenderContext(bc);
 		BonyConfigEmitter bonyCE = myHRC.getBonyConfigEmitter();
 		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
@@ -76,6 +81,7 @@ public class PumaAppContext {
 	}
 
 	public List<PumaDualCharacter> makeDualCharsForSwingOSGi() throws Throwable {
+		// Second stage init of JME3 
 		startOpenGLCanvas(true);
 		return connectDualRobotChars();
 	}
