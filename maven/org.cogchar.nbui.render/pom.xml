@@ -270,10 +270,12 @@
 					<cluster>${brandingToken}</cluster>
 					<useOSGiDependencies>true</useOSGiDependencies>
 					<nbmResources>
+						<!--
 						<nbmResource>
 							<directory>${cogcharTempConfigSrc}/lib-native</directory>
 							<targetPath>native-lib</targetPath>
 						</nbmResource>
+						-->
 						<nbmResource>
 							<directory>${cogcharTempConfigSrc}/logging_default</directory>
 							<targetPath>${cogcharConfigTgt}/logging_temp</targetPath>
