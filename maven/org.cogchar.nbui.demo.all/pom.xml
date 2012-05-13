@@ -123,6 +123,7 @@
 					<!-- These tasks will run AFTER the [nbm:cluster-app] and [nbm:standalone-zip], which is why
 						we run redo-default-standalone-zip above in the pre-integration-test phase.
 					-->
+					<!--
 					<execution>
 						<id>copy-native-libs-to-root</id>
 						<phase>package</phase>
@@ -138,7 +139,7 @@
 							</resources>              
 						</configuration>            
 					</execution>
-					
+					-->
 					<execution>
 						<!-- Overwrite the felix lib with our own version that has a patched default.properties file,
 							allowing us to use the sun.misc.Unsafe code under Netisgo.
