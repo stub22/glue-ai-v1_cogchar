@@ -222,7 +222,43 @@ The jmonkey.verson property is inherited from our parent project's pom.xml.
 						<Bundle-Activator>org.cogchar.ext.bundle.opengl.jmonkey.OpenglJmonkeyBundleActivator</Bundle-Activator>
 						<!-- Explicit import of sun.misc is necessary for running under netigso (Netbeans-OSGI) -->
 						<Import-Package>sun.misc, *;resolution:=optional</Import-Package>
-						<Export-Package>com.jme3.*, jme3tools.*, org.lwjgl.*, com.bulletphysics.*, javax.vecmath.*, de.jarnbjo.*, Common.*, Interface.*</Export-Package>
+						<Export-Package>com.jme3.*, native.*, jme3tools.*, org.lwjgl.*, com.bulletphysics.*, javax.vecmath.*, de.jarnbjo.*, Common.*, Interface.*</Export-Package>
+                        <Bundle-NativeCode>
+                            native/linux/liblwjgl.so;
+							native/linux/libjinput-linux.so;
+							native/linux/libopenal.so;
+                            osname=linux;
+                            processor=x86,
+							
+                            native/linux/liblwjgl64.so;
+							native/linux/libjinput-linux.so;
+							native/linux/libopenal64.so;
+                            osname=linux;
+                            processor=x86-64,
+													
+                            native/windows/lwjgl.dll;
+							native/windows/jinput-dx8.dll;
+							native/windows/jinput-raw.dll;
+							native/windows/OpenAL32.dll;
+                            osname=win32;
+                            processor=x86,
+
+                            native/windows/lwjgl64.dll;
+							native/windows/jinput-dx8_64.dll;
+							native/windows/jinput-raw_64.dll;
+							native/windows/OpenAL64.dll;
+                            osname=win32;
+                            processor=x86-64,
+                
+                           
+                            native/macosx/liblwjgl.jnilib;
+							native/macosx/libjinput-osx.jnilib;
+							native/macosx/openal.dylib;
+                            osname=mac os x;
+                            processor=x86;
+                            processor=ppc
+                        </Bundle-NativeCode>
+
 					</instructions>
 				</configuration>
 			</plugin>
@@ -341,6 +377,8 @@ The jmonkey.verson property is inherited from our parent project's pom.xml.
 									<entry key="felix.auto.deploy.action" value="uninstall,install,update,start" />
 									<entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache" />
 									<entry key="org.osgi.framework.bootdelegation" value="*" />
+									<!-- Allow sun.misc package to be used by LWJGL, during Unit Test  -->
+									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc" />									
 								</propertyfile>
 								<makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />
 								<java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">

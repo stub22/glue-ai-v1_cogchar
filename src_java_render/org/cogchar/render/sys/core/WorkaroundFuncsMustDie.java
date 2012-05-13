@@ -29,6 +29,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 import com.jme3.system.JmeContext;
+import com.jme3.system.JmeSystem;
 import java.awt.Canvas;
 import java.util.concurrent.Callable;
 
@@ -83,11 +84,10 @@ public class WorkaroundFuncsMustDie {
 		theLogger.info("making AWTCanvas in WorkaroundFuncsMustDie: Size is " + settings.getWidth() + "x" + settings.getHeight());
 		return makeAWTCanvas(app, settings.getWidth(), settings.getHeight());	
 	}	
-	public static Canvas makeAWTCanvas(SimpleApplication app, int width, int height) {	
-		// This must come after 
+	public static Canvas makeAWTCanvas(SimpleApplication app, int width, int height) {
 /* In a silent applet, we might do:
  *         settings.setAudioRenderer(null);
-		 // setLowPermissions has many effects
+		 // setLowPermissions has important effects on native libs and classpath resource loading.
         JmeSystem.setLowPermissions(true);
  */
 		
