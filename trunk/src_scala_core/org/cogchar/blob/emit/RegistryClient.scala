@@ -26,21 +26,26 @@ import org.appdapter.osgi.registry.RegistryServiceFuncs;
 
 import org.appdapter.core.log.BasicDebugger;
 /**
- *	Designed to work with or without OSGi context.
+ *	Designed to work with or without OSGi context, however we must be careful not to mix the two (unknowingly).
+ *	The credClaz constructor argument is used to try to find a bundleContext.
  * @author Stu B. <www.texpedient.com>
  */
 
-object RegistryClient extends BasicDebugger  {
+class RegistryClient(val credClaz : Class[_]) extends BasicDebugger  {
 	
-	val	SUBSYS_REG_RENDER		= "SYSREG_RENDER";
-	val	SUBSYS_REG_PUMA			= "SYSREG_PUMA";
-	val	SUBSYS_REG_BEHAVIOR		= "SYSREG_BEHAVIOR";
+	def	SUBSYS_REG_RENDER		= "SYSREG_RENDER";
+	def	SUBSYS_REG_PUMA			= "SYSREG_PUMA";
+	def	SUBSYS_REG_BEHAVIOR		= "SYSREG_BEHAVIOR";
 	
 	private def getVerySimpleRegistry() : VerySimpleRegistry = {
-		RegistryServiceFuncs.getTheWellKnownRegistry(this.getClass());
+		//credClazOpt : Option[Class[_]]
+		// val actualCredClaz = credClazOpt.getOrElse {this.getClass()}
+			
+		RegistryServiceFuncs.getTheWellKnownRegistry(credClaz);
 	}
-	protected def getRequiredOverRegistry(functionCtx : String) : VerySimpleRegistry = { 
-		val vsr = getVerySimpleRegistry();
+	// credClazOpt : Option[Class[_]],
+	protected def getRequiredOverRegistry( functionCtx : String) : VerySimpleRegistry = { 
+		val vsr = getVerySimpleRegistry(); // credClazOpt);
 		if (vsr == null) {
 			val msg = "getRequiredOverRegistry(" + functionCtx + ") : Somehow got a null OverRegistry";
 			logError(msg);
