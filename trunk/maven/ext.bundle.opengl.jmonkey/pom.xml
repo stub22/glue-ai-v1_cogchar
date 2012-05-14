@@ -114,7 +114,19 @@ The jmonkey.verson property is inherited from our parent project's pom.xml.
 			<artifactId>jME3-desktop</artifactId>
 			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-effects</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>	
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-networking</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>	
+		</dependency>				
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-plugins</artifactId>

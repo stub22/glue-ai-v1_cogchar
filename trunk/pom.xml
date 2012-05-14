@@ -54,7 +54,7 @@ Version-less parent will be allowed in Maven 3.1.
 		<module>maven/org.cogchar.nbui.render</module>
 	</modules>
 	<properties>
-		<jmonkey.version>3.0.0.20120209-SNAPSHOT</jmonkey.version>
+		<jmonkey.version>3.0.0.20120512-SNAPSHOT</jmonkey.version>
 		<appdapter.msg.version>1.0.5</appdapter.msg.version>
 		<appdapter.version>1.0.7-SNAPSHOT</appdapter.version>		
 		<robokind.version>0.8.4</robokind.version>
