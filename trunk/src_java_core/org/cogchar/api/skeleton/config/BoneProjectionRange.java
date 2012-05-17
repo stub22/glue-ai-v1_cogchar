@@ -62,6 +62,15 @@ public class BoneProjectionRange  {
 	public BoneRotationAxis getRotationAxis() {
 		return myRotationAxis;
 	}
+        
+    public double getMinPosAngRad() {
+        return myMinPosAngRad;
+    }
+
+    public double getMaxPosAngRad() {
+        return myMaxPosAngRad;
+    }
+    
 	/**
 	 * 
 	 * @param normVal  between 0.0 and 1.0
@@ -78,8 +87,8 @@ public class BoneProjectionRange  {
 		return "rotAxis=[" + myRotationAxis + "], minRotRad=[" + myMinPosAngRad
 				+ "], maxRotRad=[" + myMaxPosAngRad + "]";
 	}
+    @Override
 	public String toString() { 
 		return "BPR[" + getFieldSummary() + "]";
 	}
-
 }
