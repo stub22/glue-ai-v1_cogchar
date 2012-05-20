@@ -54,11 +54,13 @@ import org.cogchar.impl.perform.FancyTextChan;
 import org.cogchar.impl.trigger.FancyTriggerFacade;
 
 /* This probably is only here for the short term - added so that we can initialize
- * lights and cameras from rdf via this class for testing
+ * lights and cameras (and webapp) from rdf via this class for testing
  */
 import org.cogchar.api.scene.LightsCameraConfig;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.optic.LightFactory;
+import org.cogchar.bind.lift.LiftConfig;
+import org.cogchar.bind.lift.LiftAmbassador;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -87,27 +89,34 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myTheater = new Theater();
 	}
 	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx) throws Throwable {
-		
+
 		BonyConfigEmitter bonyCE = myPHM.getHumanoidRenderContext().getBonyConfigEmitter();
 		String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharIdent);
 		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
 		String bonyConfigPathPerm = behavCE.getRKMotionPermPath(bonyConfigPathTail);
 		myUpdateBonyRdfPath = behavCE.getRKMotionTempFilePath(bonyConfigPathTail);
-		
+
 		BoneRobotConfig brc = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		myPHM.initModelRobotUsingBoneRobotConfig(brc);
-                
-		/* Load cameras/lights config from charWorldConfig RDF resource.
-			* Obviously we don't want the path hardcoded here as it is currently.
-			* Do we want a new ConfigEmitter for this? Probably doesn't make sense to use the BonyConfigEmitter
-			* since we are separating this from BoneConfig. Also probably doesn't make sense to have the Turtle
-			* file in the rk_bind_config/motion/ path, but for the moment...
-			*/
+
+		/*
+		 * Load cameras/lights config from charWorldConfig RDF resource. Obviously we don't want the path hardcoded here
+		 * as it is currently. Do we want a new ConfigEmitter for this? Probably doesn't make sense to use the
+		 * BonyConfigEmitter since we are separating this from BoneConfig. Also probably doesn't make sense to have the
+		 * Turtle file in the rk_bind_config/motion/ path, but for the moment...
+		 */
 		LightsCameraConfig lcc = readLightsCameraConfig("rk_bind_config/motion/charWorldConfig.ttl", myInitialBonyRdfCL);
 		CameraMgr cm = PumaRegistryOutlet.getCameraMgr();
 		cm.initCamerasFromConfig(lcc, myPHM.getHumanoidRenderContext());
 		LightFactory lf = PumaRegistryOutlet.getLightFactory();
 		lf.initLightsFromConfig(lcc, myPHM.getHumanoidRenderContext());
+
+		/*
+		 * Load lift webapp config from liftConfig RDF resource, since this is the place for all the RDF loads
+		 * currently!
+		 */
+		LiftConfig lc = (LiftConfig) readGeneralConfig("web/liftConfig.ttl", myInitialBonyRdfCL)[0];
+		LiftAmbassador.storeControlsFromConfig(lc);
 
 
 		// myPHM.initModelRobotUsingAvroJointConfig();
@@ -221,21 +230,21 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	}
         
 	public BoneRobotConfig readBoneRobotConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
-                logInfo("Reading RDF for BoneRobotConfig");
+		logInfo("Reading RDF for BoneRobotConfig");
 		BoneRobotConfig brc = (BoneRobotConfig) readGeneralConfig(rdfConfigFlexPath, optResourceClassLoader)[0];
 		return brc;
 	}
-        
-        public LightsCameraConfig readLightsCameraConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
-                logInfo("Reading RDF for LightsCameraConfig");
+
+	public LightsCameraConfig readLightsCameraConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
+		logInfo("Reading RDF for LightsCameraConfig");
 		LightsCameraConfig lcc = (LightsCameraConfig) readGeneralConfig(rdfConfigFlexPath, optResourceClassLoader)[0];
 		return lcc;
-        }
-        
-        // Added to hold code common to readBoneRobotConfig and readLightsCameraConfig
-        private Object[] readGeneralConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
-                if (optResourceClassLoader != null) {
-			logInfo("Ensuring registration of classLoader: " + optResourceClassLoader);	
+	}
+
+	// Added to hold code common to RDF config readers
+	private Object[] readGeneralConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
+		if (optResourceClassLoader != null) {
+			logInfo("Ensuring registration of classLoader: " + optResourceClassLoader);
 			AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(optResourceClassLoader);
 		}
 		logInfo("Loading triples from flex-path: " + rdfConfigFlexPath);
@@ -245,9 +254,9 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 			logInfo("Loaded: " + o);
 		}
 		logInfo("=====================================================================");
-                return loadedStuff.toArray();
-        }
-	
+		return loadedStuff.toArray();
+	}
+
 	@Override public String toString() { 
 		return "PumaDualChar[uri=" + myCharIdent + ", nickName=" + myNickName + "]";
 	}	
