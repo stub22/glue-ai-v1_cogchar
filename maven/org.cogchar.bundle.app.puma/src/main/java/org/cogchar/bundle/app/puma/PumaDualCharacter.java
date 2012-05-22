@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.cogchar.bundle.app.puma;
 
 import java.util.Set;
@@ -53,8 +52,9 @@ import org.cogchar.impl.perform.FancyTextChan;
 
 import org.cogchar.impl.trigger.FancyTriggerFacade;
 
-/* This probably is only here for the short term - added so that we can initialize
- * lights and cameras (and webapp) from rdf via this class for testing
+/*
+ * This probably is only here for the short term - added so that we can initialize lights and cameras (and webapp) from
+ * rdf via this class for testing
  */
 import org.cogchar.api.scene.LightsCameraConfig;
 import org.cogchar.render.opengl.optic.CameraMgr;
@@ -67,27 +67,21 @@ import org.cogchar.bind.lift.LiftAmbassador;
  */
 public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 
+	private SpeechOutputClient mySOC;
+	private Ident myCharIdent;
+	private String myNickName;
+	private PumaHumanoidMapper myPHM;
+	private ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+	public String myUpdateBonyRdfPath;
+	public Theater myTheater;
 
-	private SpeechOutputClient					mySOC;
-	
-	private	Ident								myCharIdent;
-	private String								myNickName;
-	
-	private	PumaHumanoidMapper					myPHM;
-	
-	private ClassLoader							myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
-	
-	public String								myUpdateBonyRdfPath;
-	
-	public Theater								myTheater;
-	
-	
 	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, Ident charIdent, String nickName) {
 		myCharIdent = charIdent;
 		myNickName = nickName;
 		myPHM = new PumaHumanoidMapper(hrc, bundleCtx, charIdent);
 		myTheater = new Theater();
 	}
+
 	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx) throws Throwable {
 
 		BonyConfigEmitter bonyCE = myPHM.getHumanoidRenderContext().getBonyConfigEmitter();
@@ -124,23 +118,26 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		// myPHM.applyInitialBoneRotations();
 		connectAnimOutChans();
 	}
-	private void connectAnimOutChans() { 
+
+	private void connectAnimOutChans() {
 		FancyTextChan bestAnimOutChan = myPHM.getBestAnimOutChan();
 		myTheater.registerChannel(bestAnimOutChan);
 	}
-	public void connectSpeechOutputSvcs(BundleContext bundleCtx) { 
+
+	public void connectSpeechOutputSvcs(BundleContext bundleCtx) {
 		Ident speechChanIdent = ChannelNames.getOutChanIdent_SpeechMain();
 		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
-		myTheater.registerChannel(mySOC);		
+		myTheater.registerChannel(mySOC);
 	}
+
 	public void loadBehaviorConfig(boolean useTempFiles) throws Throwable {
 		// Currently we can only process
 		String pathTail = "bhv_nugget_02.ttl";
-		
+
 		BonyConfigEmitter bonyCE = myPHM.getHumanoidRenderContext().getBonyConfigEmitter();
 		// String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharURI);
 		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
-		
+
 		String behavPath = behavCE.getBehaviorPermPath(pathTail);
 		if (useTempFiles) {
 			behavPath = behavCE.getBehaviorTempFilePath(pathTail);
@@ -149,19 +146,23 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		boolean clearCachesFirst = true;
 		ClassLoader optCLforJenaFM = null;
 		myTheater.loadSceneBook(behavPath, optCLforJenaFM, clearCachesFirst);
-	} 
+	}
+
 	public void startTheater() {
 		SceneBook sb = myTheater.getSceneBook();
 		DummyBinder trigBinder = SceneActions.getBinder();
-		
-		FancyTriggerFacade.registerAllTriggers(trigBinder, myTheater, sb); 
+		LiftAmbassador.setSceneLauncher(SceneActions.getLauncher()); // Connect Lift to SceneActions so scenes can be triggered from webapp
+
+		FancyTriggerFacade.registerAllTriggers(trigBinder, myTheater, sb);
 		myTheater.startThread();
 	}
+
 	public void stopTheater() {
 		// Should be long enough for the 100 Msec loop to cleanly exit.
 		int killTimeWaitMsec = 200;
 		myTheater.fullyStop(killTimeWaitMsec);
 	}
+
 	private void stopEverything() {
 		logInfo("stopEverything - Stopping Theater.");
 		stopTheater();
@@ -169,8 +170,9 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myPHM.stopAndReset();
 		logInfo("stopEverything - Stopping Speech-Output Jobs.");
 		mySOC.cancelAllRunningSpeechTasks();
-		
+
 	}
+
 	public void stopAndReset() {
 		stopEverything();
 		// TODO:  Send character to default positions.
@@ -178,6 +180,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		startTheater();
 		logInfo("stopAndReset - Complete.");
 	}
+
 	public void stopResetAndRecenter() {
 		stopEverything();
 		logWarning("stopResetAndRecenter - Recenter is not implemented yet!");
@@ -185,32 +188,38 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		startTheater();
 		logInfo("stopResetAndRecenter - Complete.");
 	}
-	public void registerDefaultSceneTriggers() { 
-		for (int i=0; i < SceneActions.getSceneTrigKeyCount(); i++) {
+
+	public void registerDefaultSceneTriggers() {
+		for (int i = 0; i < SceneActions.getSceneTrigKeyCount(); i++) {
 			TriggerItems.SceneMsg smti = new TriggerItems.SceneMsg();
 			smti.sceneInfo = "yowza " + i;
 			registerTheaterBinding(i, smti);
 		}
 	}
+
 	private void registerTheaterBinding(int sceneTrigIdx, DummyTrigger trig) {
 		SceneActions.setTriggerBinding(sceneTrigIdx, myTheater, trig);
 	}
-	
+
 //	private InputStream openAssetStream(String assetName) { 
 //		return myBRC.openAssetStream(assetName);
 //	}	
-	public String getNickName() { 
+	public String getNickName() {
 		return myNickName;
 	}
-	public Ident getCharIdent() { 
+
+	public Ident getCharIdent() {
 		return myCharIdent;
 	}
-	public PumaHumanoidMapper getHumanoidMapper() { 
+
+	public PumaHumanoidMapper getHumanoidMapper() {
 		return myPHM;
 	}
-	public void playDangerYogaTestAnim() { 
+
+	public void playDangerYogaTestAnim() {
 		myPHM.playDangerYogaTestAnim();
 	}
+
 	public void sayText(String txt) {
 		// TODO:  Guard against concurrent activity through the channel/behavior systerm
 		try {
@@ -219,6 +228,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 			logError("problem speaking", t);
 		}
 	}
+
 	public void updateBonyConfig(String rdfConfigFlexPath, ClassLoader optRdfResourceCL) {
 		try {
 			BoneRobotConfig.Builder.clearCache();
@@ -228,7 +238,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 			logError("problem updating bony config from flex-path[" + rdfConfigFlexPath + "]", t);
 		}
 	}
-        
+
 	public BoneRobotConfig readBoneRobotConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
 		logInfo("Reading RDF for BoneRobotConfig");
 		BoneRobotConfig brc = (BoneRobotConfig) readGeneralConfig(rdfConfigFlexPath, optResourceClassLoader)[0];
@@ -257,14 +267,16 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		return loadedStuff.toArray();
 	}
 
-	@Override public String toString() { 
+	@Override
+	public String toString() {
 		return "PumaDualChar[uri=" + myCharIdent + ", nickName=" + myNickName + "]";
-	}	
+	}
+
 	public void usePermAnims() {
 		logWarning("usePermAnims() not implemented yet");
 	}
+
 	public void useTempAnims() {
 		logWarning("useTempAnims() not implemented yet");
 	}
-
 }
