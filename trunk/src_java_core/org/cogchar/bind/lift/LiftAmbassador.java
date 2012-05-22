@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import org.cogchar.render.app.humanoid.SceneActions; // Can't see it
-//import org.cogchar.platform.trigger.DummyBinding;
 
 /**
  *
@@ -30,22 +28,56 @@ public class LiftAmbassador {
 
 	static Logger theLogger = LoggerFactory.getLogger(LiftAmbassador.class);
 	private static List<ControlConfig> controls = new ArrayList<ControlConfig>();
+	private static LiftSceneInterface sceneLauncher;
+	private static LiftInterface lift;
+	private static boolean configReady = false;
+
+	public interface LiftSceneInterface {
+
+		boolean triggerScene(String scene);
+	}
+
+	public interface LiftInterface {
+
+		void notifyConfigReady();
+	}
 
 	public static void storeControlsFromConfig(LiftConfig config) {
 		controls = config.myCCs;
-		// Use reflection to call method in bundle.lifter to set upon load?
+		theLogger.info("RDF Lift config sent to LiftAmbassador");
+		configReady = true;
+		if (lift != null) {
+			lift.notifyConfigReady();
+			theLogger.info("Lift notified of config ready");
+		}
 	}
 
 	public static ArrayList<ControlConfig> getControls() {
 		return (ArrayList<ControlConfig>) controls;
 	}
-	/*
-	 * Can't see into cogchar.lib.render public static boolean triggerScene(String scene) { boolean success = false;
-	 * DummyBinding triggerBinding = SceneActions.getTriggerBinding(scene); if (triggerBinding != null)
-	 * {triggerBinding.perform(); success = true;} return success; } /
-	 */
 
 	public static String getPrefix() {
 		return LiftConfigNames.partial_P_control + "_";
+	}
+
+	public static boolean triggerScene(String scene) {
+		boolean success = false;
+		if (sceneLauncher != null) {
+			success = sceneLauncher.triggerScene(scene);
+		}
+		return success;
+	}
+
+	public static void setSceneLauncher(LiftSceneInterface launcher) {
+		sceneLauncher = launcher;
+	}
+
+	public static void setLiftMessenger(LiftInterface li) {
+		theLogger.info("Lift messenger set");
+		lift = li;
+	}
+
+	public static boolean checkConfigReady() {
+		return configReady;
 	}
 }
