@@ -82,7 +82,7 @@ lci:control_1
 	lc:type					"PUSHYBUTTON";
 	lc:id					1;
 	lc:action				"sceneTrig_00";
-	lc:text					"Start Scene 0";
+	lc:text					"Scene 0";
 	lc:style				"buttonred";
 	lc:resource				"still-27.jpg";
 .
@@ -91,7 +91,7 @@ lci:control_2
 	lc:type					"PUSHYBUTTON";
 	lc:id					2;
 	lc:action				"sceneTrig_01";
-	lc:text					"Start Scene 1";
+	lc:text					"Scene 1";
 	lc:style				"buttonorange";
 	lc:resource				"still-27.jpg";
 .
@@ -100,7 +100,7 @@ lci:control_3
 	lc:type					"PUSHYBUTTON";;
 	lc:id					3;
 	lc:action				"sceneTrig_02";
-	lc:text					"Start Scene 2";
+	lc:text					"Scene 2";
 	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
 .
@@ -109,7 +109,7 @@ lci:control_4
 	lc:type					"PUSHYBUTTON";
 	lc:id					4;
 	lc:action				"sceneTrig_03";
-	lc:text					"Start Scene 3";
+	lc:text					"Scene 3";
 	lc:style				"buttonblue";
 	lc:resource				"still-27.jpg";
 .
@@ -118,7 +118,7 @@ lci:control_5
 	lc:type					"PUSHYBUTTON";
 	lc:id					5;
 	lc:action				"sceneTrig_04";
-	lc:text					"Start Scene 4";
+	lc:text					"Scene 4";
 	lc:style				"buttonred";
 	lc:resource				"still-27.jpg";
 .
@@ -127,7 +127,7 @@ lci:control_6
 	lc:type					"PUSHYBUTTON";
 	lc:id					6;
 	lc:action				"sceneTrig_05";
-	lc:text					"Start Scene 5";
+	lc:text					"Scene 5";
 	lc:style				"buttonorange";
 	lc:resource				"still-27.jpg";
 .
@@ -136,7 +136,7 @@ lci:control_7
 	lc:type					"PUSHYBUTTON";
 	lc:id					7;
 	lc:action				"sceneTrig_06";
-	lc:text					"Start Scene 6";
+	lc:text					"Scene 6";
 	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
 .
@@ -145,7 +145,7 @@ lci:control_8
 	lc:type					"PUSHYBUTTON";
 	lc:id					8;
 	lc:action				"sceneTrig_07";
-	lc:text					"Start Scene 7";
+	lc:text					"Scene 7";
 	lc:style				"buttonblue";
 	lc:resource				"still-27.jpg";
 .
@@ -154,7 +154,7 @@ lci:control_9
 	lc:type					"PUSHYBUTTON";
 	lc:id					9;
 	lc:action				"sceneTrig_08";
-	lc:text					"Start Scene 8";
+	lc:text					"Scene 8";
 	lc:style				"buttonred";
 	lc:resource				"still-27.jpg";
 .
@@ -163,7 +163,7 @@ lci:control_10
 	lc:type					"PUSHYBUTTON";
 	lc:id					10;
 	lc:action				"sceneTrig_09";
-	lc:text					"Start Scene 9";
+	lc:text					"Scene 9";
 	lc:style				"buttonorange";
 	lc:resource				"still-27.jpg";
 .
@@ -172,7 +172,7 @@ lci:control_11
 	lc:type					"PUSHYBUTTON";
 	lc:id					11;
 	lc:action				"sceneTrig_10";
-	lc:text					"Start Scene 10";
+	lc:text					"Scene 10";
 	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
 .
@@ -181,7 +181,7 @@ lci:control_12
 	lc:type					"PUSHYBUTTON";
 	lc:id					12;
 	lc:action				"sceneTrig_11";
-	lc:text					"Start Scene 11";
+	lc:text					"Scene 11";
 	lc:style				"buttonblue";
 	lc:resource				"still-27.jpg";
 .
