@@ -71,6 +71,10 @@ public class BoneProjectionRange  {
         return myMaxPosAngRad;
     }
     
+    public BoneJointConfig getJointConfig() {
+        return myBJC;
+    }
+    
 	/**
 	 * 
 	 * @param normVal  between 0.0 and 1.0
