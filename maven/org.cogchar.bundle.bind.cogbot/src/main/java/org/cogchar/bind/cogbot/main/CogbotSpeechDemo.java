@@ -13,7 +13,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 
 
-import org.robokind.api.common.utils.Listener;
+import org.jflux.api.core.util.Listener;
 import org.robokind.api.messaging.DefaultMessageAsyncReceiver;
 import org.robokind.api.messaging.DefaultMessageSender;
 import org.robokind.api.messaging.MessageAsyncReceiver;
@@ -35,7 +35,7 @@ import org.robokind.impl.speech.PortableSpeechRequest;
  */
 public class CogbotSpeechDemo {
     private final static Logger theLogger = Logger.getLogger(CogbotSpeechDemo.class.getName());
-    
+
     public static void main( String[] args ){
         Session session = getSession("127.0.0.1");
         if(session == null){
@@ -60,7 +60,7 @@ public class CogbotSpeechDemo {
         theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
         Destination sendDest = ConnectionManager.createDestination("speechRequest");
         Destination recDest = ConnectionManager.createDestination("speechrecEvent");
-        
+
         MessageSender<SpeechRequest> sender = createSpeechSender(session, sendDest);
         if(sender == null){
             return;
@@ -78,9 +78,9 @@ public class CogbotSpeechDemo {
             return;
         }
     }
-    
+
     private static Session getSession(String ip){
-        Connection con = 
+        Connection con =
                 ConnectionManager.createConnection(
                 "admin", "admin", "client1", "test", "tcp://" + ip + ":5672");
         try{
@@ -91,7 +91,7 @@ public class CogbotSpeechDemo {
             return null;
         }
     }
-    
+
     private static CogbotCommunicator createCogbotComm(String url){
         Properties config = new Properties();
 		String testUser = "Test user";
@@ -115,15 +115,15 @@ public class CogbotSpeechDemo {
 		cogbot.setBotProperty("username", testUser);
         return cogbot;
     }
-    
+
     private static MessageSender<SpeechRequest> createSpeechSender(
             Session session, Destination dest){
-        DefaultMessageSender<SpeechRequest, SpeechRequestRecord> sender = 
+        DefaultMessageSender<SpeechRequest, SpeechRequestRecord> sender =
                 new DefaultMessageSender<SpeechRequest, SpeechRequestRecord>();
         JMSBytesMessageSender bytesSender = new JMSBytesMessageSender();
         bytesSender.setSession(session);
         bytesSender.setDestination(dest);
-        RecordSender<SpeechRequestRecord> recSender = 
+        RecordSender<SpeechRequestRecord> recSender =
                 new JMSAvroRecordSender<SpeechRequestRecord>(bytesSender);
         sender.setAdapter(new PortableSpeechRequest.MessageRecordAdapter());
         sender.setRecordSender(recSender);
@@ -135,11 +135,11 @@ public class CogbotSpeechDemo {
         }
         return sender;
     }
-    
+
     private static MessageAsyncReceiver<SpeechRequest> createSpeechReceiver(
             Session session, Destination dest){
-        
-        DefaultMessageAsyncReceiver<SpeechRequest, SpeechRequestRecord> receiver = 
+
+        DefaultMessageAsyncReceiver<SpeechRequest, SpeechRequestRecord> receiver =
                 new DefaultMessageAsyncReceiver<SpeechRequest, SpeechRequestRecord>();
         MessageConsumer consumer;
         try{
@@ -148,23 +148,23 @@ public class CogbotSpeechDemo {
             theLogger.log(Level.SEVERE, "Error starting message receiver.", ex);
             return null;
         }
-        RecordAsyncReceiver<SpeechRequestRecord> recReceiver = 
+        RecordAsyncReceiver<SpeechRequestRecord> recReceiver =
                 new JMSAvroRecordAsyncReceiver<SpeechRequestRecord>(
-                        SpeechRequestRecord.class, 
-                        SpeechRequestRecord.SCHEMA$, 
+                        SpeechRequestRecord.class,
+                        SpeechRequestRecord.SCHEMA$,
                         consumer);
         receiver.setRecordReceiver(recReceiver);
         receiver.setAdapter(new PortableSpeechRequest.RecordMessageAdapter());
         return receiver;
     }
-    
+
     static class SpeechHandler implements Listener<SpeechRequest>{
         private CogbotCommunicator myCogbot;
         private MessageSender<SpeechRequest> mySpeechSender;
         private SpeechRequestFactory myFactory;
-        
+
         public SpeechHandler(
-                CogbotCommunicator cogbot, 
+                CogbotCommunicator cogbot,
                 MessageSender<SpeechRequest> speechSender){
             if(cogbot == null || speechSender == null){
                 throw new NullPointerException();
@@ -173,7 +173,7 @@ public class CogbotSpeechDemo {
             mySpeechSender = speechSender;
             myFactory = new PortableSpeechRequest.Factory();
         }
-        
+
         public void handleEvent(SpeechRequest event) {
             String input = event.getPhrase();
             GenRespWithConf genResp = myCogbot.getResponse(input);
