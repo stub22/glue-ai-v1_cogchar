@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Please see Cogchar open source license at bottom of this file -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.project.root</artifactId>
+		<version>1.0.4-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>  	
+
+
+	<artifactId>org.cogchar.nbui.demo.all</artifactId>
+	<packaging>nbm-application</packaging>
+
+	<name>org.cogchar.nbui.demo.all - NetBeans GUI App</name>
+
+	<properties>
+        
+		<netbeans.run.params.ide/>
+		<!-- These options do not make it to the Felix runtime, so we are patching the Felix jar instead.
+		-J-Dorg.osgi.framework.bootdelegation=sun.misc -J-Dorg.osgi.framework.system.packages.extra=sun.misc
+		-->
+		<netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
+
+		<brandingToken>org_cogchar_nbui</brandingToken>
+	</properties>
+    
+	<repositories>
+		<repository>
+			<id>netbeans</id>
+			<name>NetBeans</name>
+			<url>http://bits.netbeans.org/maven2/</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.netbeans.cluster</groupId>
+			<artifactId>platform</artifactId>
+			<version>${netbeans.version}</version>
+			<type>pom</type>
+		</dependency>
+        <!-- To run NbModuleSuite functional tests in src/test/java, use nbjunit (assumes RELEASE70 or later):
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-nbjunit</artifactId>
+            <version>${netbeans.version}</version>
+            <scope>test</scope>
+        </dependency>
+        -->
+        <!-- To use Jelly in your functional tests, add or replace with:
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-jellytools-platform</artifactId>
+            <version>${netbeans.version}</version>
+            <scope>test</scope>
+        </dependency>
+        -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.nbui.render</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>nbm-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<brandingToken>${brandingToken}</brandingToken>
+					<cluster>${brandingToken}</cluster>
+					<useOSGiDependencies>true</useOSGiDependencies>
+				</configuration>
+				<executions>
+					<execution>
+						<!-- Disable the inherited standalone-zip generation -->
+						<id>default-standalone-zip</id>
+						<phase>none</phase>
+					</execution>
+
+					<execution>
+						<!-- Build a patched standalone-zip AFTER the package phase is complete -->
+						<id>redo-default-standalone-zip</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>standalone-zip</goal>
+						</goals>
+						<configuration>
+							<finalName>patched_${project.artifactId}_${project.version}</finalName>
+						</configuration>
+					</execution>
+				</executions>
+				
+			</plugin>
+            <!-- To run NbModuleSuite in integration-test phase:
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.7.1</version>
+                <configuration>
+                    <systemProperties>
+                        <property>
+                            <name>cluster.path.final</name>
+                            <value>${project.build.directory}/${brandingToken}/${brandingToken}:${project.build.directory}/${brandingToken}/platform</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+            -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<!-- These tasks will run AFTER the [nbm:cluster-app] and [nbm:standalone-zip], which is why
+						we run redo-default-standalone-zip above in the pre-integration-test phase.
+					-->
+
+					<execution>
+						<!-- Overwrite the felix lib with our own version that has a patched default.properties file,
+							allowing us to use the sun.misc.Unsafe code under Netisgo.
+						-->
+						<id>patch-felix-lib</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>	
+						</goals>
+						<configuration>
+							<overwrite>true</overwrite>
+							<outputDirectory>${project.build.directory}/${brandingToken}/platform/modules/ext</outputDirectory>
+							<resources>          
+								<resource>
+									<directory>${project.basedir}/patched_platform_modules_ext</directory>
+								</resource>
+							</resources>              
+						</configuration>            
+					</execution>	
+					
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			
+			
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>deployment</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>nbm-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>extra</id>
+								<goals>
+									<goal>autoupdate</goal>
+									<goal>webstart-app</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
+
+<!--
+/*
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+ -->
