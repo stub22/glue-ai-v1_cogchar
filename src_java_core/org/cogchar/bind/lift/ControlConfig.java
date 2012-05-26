@@ -17,12 +17,15 @@ package org.cogchar.bind.lift;
 
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Ryan Biggs
  */
 public class ControlConfig {
 
+	static Logger theLogger = LoggerFactory.getLogger(ControlConfig.class);
 	public String myURI_Fragment;
 	public ControlType controlType;
 	public int id;
@@ -34,15 +37,20 @@ public class ControlConfig {
 	@Override
 	public String toString() {
 		return "ControlConfig[uriFrag=" + myURI_Fragment + ", Type=" + controlType.name() + ", id=" + id + ", text=\""
-				+ text + "\", style=" + style + "resource=" + resource + "]";
+				+ text + "\", style=" + style + " resource=" + resource + "]";
 	}
 
 	public ControlConfig(Item configItem) {
 		myURI_Fragment = configItem.getIdent().getLocalName();
 		String typeString = ItemFuncs.getString(configItem, LiftConfigNames.P_controlType, null);
-		// No switch on strings in Java 1.6, too bad. At least for the moment there's only one option!
-		if (typeString.equals("PUSHYBUTTON")) {
-			controlType = ControlType.PUSHYBUTTON;
+		controlType = ControlType.NULLTYPE;
+		for (ControlType testType : ControlType.values()) {
+			if (typeString.equals(testType.name())) {
+				controlType = testType;
+			}
+		}
+		if (controlType == ControlType.NULLTYPE) {
+			theLogger.warn("Lift Control with URI Fragment " + myURI_Fragment + " does not indicate a valid type!");
 		}
 		id = ItemFuncs.getInteger(configItem, LiftConfigNames.P_controlId, 0);
 		action = ItemFuncs.getString(configItem, LiftConfigNames.P_controlAction, "");
@@ -53,6 +61,6 @@ public class ControlConfig {
 
 	public enum ControlType {
 
-		PUSHYBUTTON
+		NULLTYPE, PUSHYBUTTON, TEXTINPUT, SELECTBOXES, RADIOBUTTONS
 	}
 }

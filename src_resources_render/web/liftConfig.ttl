@@ -133,55 +133,55 @@ lci:control_6
 .
 
 lci:control_7
-	lc:type					"PUSHYBUTTON";
+	lc:type					"SELECTBOXES";
 	lc:id					7;
 	lc:action				"sceneTrig_06";
-	lc:text					"Scene 6";
+	lc:text					"I've got a formId:7.,Box 0 ,Box 1 ,Box 2 ";
 	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_8
-	lc:type					"PUSHYBUTTON";
+	lc:type					"RADIOBUTTONS";
 	lc:id					8;
 	lc:action				"sceneTrig_07";
-	lc:text					"Scene 7";
+	lc:text					"My id's 8.,Option 0 ,Option 1 ";
 	lc:style				"buttonblue";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_9
-	lc:type					"PUSHYBUTTON";
+	lc:type					"TEXTINPUT";
 	lc:id					9;
 	lc:action				"sceneTrig_08";
-	lc:text					"Scene 8";
+	lc:text					"Tell me something!";
 	lc:style				"buttonred";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_10
-	lc:type					"PUSHYBUTTON";
+	lc:type					"TEXTINPUT";
 	lc:id					10;
 	lc:action				"sceneTrig_09";
-	lc:text					"Scene 9";
+	lc:text					"A Label for Form 10";
 	lc:style				"buttonorange";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_11
-	lc:type					"PUSHYBUTTON";
+	lc:type					"SELECTBOXES";
 	lc:id					11;
 	lc:action				"sceneTrig_10";
-	lc:text					"Scene 10";
+	lc:text					"I've got id 11!,Apples ,Bananas ,Oranges ,an option 3! ,4 also ";
 	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_12
-	lc:type					"PUSHYBUTTON";
+	lc:type					"RADIOBUTTONS";
 	lc:id					12;
 	lc:action				"sceneTrig_11";
-	lc:text					"Scene 11";
+	lc:text					"They call me #12,Do the thing ,Do another thing ,an Option 2 ,and Option 3 ";
 	lc:style				"buttonblue";
 	lc:resource				"still-27.jpg";
 .
