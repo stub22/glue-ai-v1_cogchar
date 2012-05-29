@@ -35,10 +35,10 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "char/";
 
 	
-	// Commercial "Extra Robot" model, not loadable without a license, ignored in those cases.
+	// Commercial "Extra Robot" model, not loadable without a license.
+	// Cogchar shoud ignore this "ExtraRobot" when it is not loadable, and still
+	// function correctly for Sinbad + other characters.
 	val EXTRA_ROBOT_MESH_PATH = "model3D/char/zeno/zeno_R50_06_20120323/zenobot_06_20120323.mesh.xml";		
-	// Old version of path
-	// val EXTRA_ROBOT_MESH_PATH = "zenobot_06_20120323/zenobot_06_20120323.mesh.xml";		
 	
 	// val EXTRA_ROBOT_MESH_PATH = "zenobot_05_20120309/ZenoBot05.ma.mesh.xml";		
 	//		String dualCharURI = "urn:org.cogchar/platform/nb701?char=HRK_Zeno_R50&version=20120302";   
