@@ -32,6 +32,25 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.animoid</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>		
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.integroid</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>		
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.freckler</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>		
+		</dependency>		
+		
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.core</artifactId>
@@ -41,7 +60,17 @@
 			<artifactId>ext.bundle.jena_all_264</artifactId>
 			<groupId>org.appdapter</groupId>
 			<version>${appdapter.version}</version>
-		</dependency>			
+		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.xpp3</artifactId>
+			<version>1.1.4c_5</version>
+		</dependency>		
     </dependencies>
 
     <build>

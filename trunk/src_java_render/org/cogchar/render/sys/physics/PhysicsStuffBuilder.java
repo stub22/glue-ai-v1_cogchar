@@ -72,17 +72,7 @@ public class PhysicsStuffBuilder extends RenderRegistryAware {
 	public PhysicsSpace getPhysicsSpace() { 
 		return myPhysSpc;
 	}
-/*
-	protected MeshFactoryFacade getMeshFF() { 
-		return myCRC.getMeshFF(null);
-	}
-	protected GeomFactory getGeomFactory() { 
-		return myCRC.getSceneFacade(null).getGeomFactory();
-	}
-	protected MatFactory getMatFactory() { 
-		return myCRC.getOpticFacade(null).getMatMgr();
-	}
-*/	
+
 	/**
 	 * creates a simple physics test world with a floor, an obstacle and some test boxes
 	 * @param rootNode

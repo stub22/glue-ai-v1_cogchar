@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.render.app.bony.BonyStickFigureContext;
+import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.gui.bony.PanelUtils;
 
 /**
@@ -100,9 +100,8 @@ VirtCharPanel.JFrame.closed, exiting
 		BonyVirtualCharApp app = bc.getApp();
 		app.startJMonkeyCanvas();
 		
-		BonyStickFigureContext ctx = (BonyStickFigureContext) app.getBonyRenderContext();
-		
-		ctx.setScoringFlag(true);
+		HumanoidRenderContext hrc = (HumanoidRenderContext) app.getBonyRenderContext();
+		hrc.getGameFeatureAdapter().setScoringFlag(true);
 		// theLogger.info("*********************** AFTER FRAMING + STARTING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
 		theLogger.info("*********************** Frame width="  + jf.getWidth() + ", height=" + jf.getHeight());
 

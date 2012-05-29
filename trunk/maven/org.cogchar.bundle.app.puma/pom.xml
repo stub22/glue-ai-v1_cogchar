@@ -46,6 +46,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+						<Import-Package>*,org_cogchar_user;resolution:=optional</Import-Package>
                         <Bundle-Activator>org.cogchar.bundle.app.puma.PumaAppBundleActivator</Bundle-Activator>
                     </instructions>
                 </configuration>

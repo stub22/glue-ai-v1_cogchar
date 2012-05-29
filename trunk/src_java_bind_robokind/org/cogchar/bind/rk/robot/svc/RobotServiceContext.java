@@ -54,12 +54,15 @@ public class RobotServiceContext<R extends Robot> extends BasicDebugger {
 	protected void registerRobot(R robot) throws Exception {
 		myRobot = robot;
 		myRobot.connect();
+		theLogger.info("Calling RobotUtils.registerRobot()");
 		myRobotReg = RobotUtils.registerRobot(myBundleCtx, robot, null);
+		theLogger.info("RobotUtils.registerRobot() returned: " + myRobotReg);
 		if(myRobotReg == null){
 			 throw new Exception("Error Registering Robot: " + robot);
 		}
     }
     protected void launchRemoteHost(String ip){
+		theLogger.info("Launching remote host for IP: " + ip);
         if(ip == null){
             throw new NullPointerException();
         }else if(myRobot == null){
@@ -82,6 +85,7 @@ public class RobotServiceContext<R extends Robot> extends BasicDebugger {
         }
     }
 	public void registerAndStart(R robot) throws Throwable {
+		
 		registerRobot(robot);
         launchRemoteHost("127.0.0.1:5672");
 	}

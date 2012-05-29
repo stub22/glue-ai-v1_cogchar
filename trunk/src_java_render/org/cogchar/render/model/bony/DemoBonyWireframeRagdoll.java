@@ -74,13 +74,13 @@ public class DemoBonyWireframeRagdoll extends RenderModule // extends SimpleAppl
 		inputManager.addMapping(DANCE_LIKE_ROBOT, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 		inputManager.addListener(this, DANCE_LIKE_ROBOT);		
 	}
-	public void realizeDollAndAttach(Node appRootNode, BulletAppState bulletAppState) { 
+	public void realizeDollAndAttach(Node appRootNode, PhysicsSpace physSpace) {
 		// "A doll is a necessity."
 
 		createDollNodes();
 		Node dollRootNode = getDollNode();
 		appRootNode.attachChild(dollRootNode);
-		bulletAppState.getPhysicsSpace().addAll(dollRootNode);		
+		physSpace.addAll(dollRootNode);		
 	}
 	private void createDollNodes() {
 		// "I am not putting the knock on dolls."

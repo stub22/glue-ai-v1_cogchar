@@ -19,10 +19,11 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import java.util.HashMap;
 import java.util.Map;
-import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.api.scene.CameraConfig;
 import org.cogchar.api.scene.LightsCameraConfig;
+import org.cogchar.render.app.core.CoreFeatureAdapter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.sys.core.RenderRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -85,7 +86,8 @@ public class CameraMgr {
 			loadingCamera.setViewPort(cameraViewPort[0], cameraViewPort[1], cameraViewPort[2], cameraViewPort[3]);
 			if (newFromRdf) {
 				theLogger.info("Camera with config: " + cc + " is new from RDF, creating new viewport...");
-				hrc.addViewPort(cameraName, loadingCamera);
+				RenderRegistryClient rrc = hrc.getRenderRegistryClient();
+				CoreFeatureAdapter.addViewPort(rrc, cameraName, loadingCamera);
 			}
 			if (cameraName.equals("DEFAULT")) {// If we are setting default camera info, save position/direction for later reset
 				defaultPosition = new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]);

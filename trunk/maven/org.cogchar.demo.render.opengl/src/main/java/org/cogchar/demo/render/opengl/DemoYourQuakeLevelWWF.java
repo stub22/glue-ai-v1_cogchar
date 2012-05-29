@@ -40,7 +40,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.plugins.ogre.OgreMeshKey;
 import java.io.File;
-import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.app.core.CogcharPresumedApp;
 
 public class DemoYourQuakeLevelWWF extends UnfinishedDemoApp implements ActionListener {
 	static String LOCAL_SCENE_PATH = "jme_asset_zips/quake3level.zip";

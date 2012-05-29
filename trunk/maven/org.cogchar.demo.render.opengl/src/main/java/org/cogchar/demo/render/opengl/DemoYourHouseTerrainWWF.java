@@ -33,7 +33,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.util.SkyFactory;
 import java.io.File;
-import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.app.core.CogcharPresumedApp;
 
 public class DemoYourHouseTerrainWWF extends UnfinishedDemoApp {
 

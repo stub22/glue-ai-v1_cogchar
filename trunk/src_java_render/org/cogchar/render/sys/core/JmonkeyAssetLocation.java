@@ -38,6 +38,8 @@ public class JmonkeyAssetLocation {
 
 	private	Class			myResourceMarkerClass;
 	private URL				myHackyRootURL;
+	// TODO:  Turn into a set of AssetManagers we are known to be registred with.
+	private	boolean			myRegisteredFlag = false;
 	
 	public JmonkeyAssetLocation(Class resourceMarkerClass) {
 		myResourceMarkerClass = resourceMarkerClass;
@@ -49,14 +51,20 @@ public class JmonkeyAssetLocation {
 	public void resolve() { 
 		theLogger.info("resolve() by default does nothing.");
 	}
-	public void registerLocators(AssetManager assetMgr) {
-		URL hackyRootURL = getHackyRootURL();
-		if (hackyRootURL != null) {
-			String hackyRootUrlPath = hackyRootURL.toExternalForm();
-			theLogger.info("Registering UrlLocator for path: " + hackyRootUrlPath);
-			assetMgr.registerLocator(hackyRootUrlPath, UrlLocator.class);
+	public void ensurerLocatorsReged(AssetManager assetMgr) {
+		// TODO : Check THIS assetMgr for an equiv locator instead of relying on this single flag.
+		if (!myRegisteredFlag) {
+			URL hackyRootURL = getHackyRootURL();
+			if (hackyRootURL != null) {
+				String hackyRootUrlPath = hackyRootURL.toExternalForm();
+				theLogger.info("Registering UrlLocator for path: " + hackyRootUrlPath);
+				assetMgr.registerLocator(hackyRootUrlPath, UrlLocator.class);
+				myRegisteredFlag = true;
+			} else {
+				theLogger.warn("Cannot find URL for resources of: " + this);
+			}
 		} else {
-			theLogger.warn("Cannot find URL for resources of: " + this);
+			theLogger.warn("Ignoring registration request for locator already registered: " + this);
 		}
 		
 	}

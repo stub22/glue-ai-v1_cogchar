@@ -29,17 +29,37 @@ case class NVParam(val name: String, val value: String) {
 }
 
 class BonyConfigEmitter extends DemoConfigEmitter {
+
+	val COGCHAR_URN_PREFIX = "urn:org.cogchar/";
+	
+	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "char/";
+
+	
+	// Commercial "Extra Robot" model, not loadable without a license, ignored in those cases.
+	val EXTRA_ROBOT_MESH_PATH = "model3D/char/zeno/zeno_R50_06_20120323/zenobot_06_20120323.mesh.xml";		
+	// Old version of path
+	// val EXTRA_ROBOT_MESH_PATH = "zenobot_06_20120323/zenobot_06_20120323.mesh.xml";		
+	
+	// val EXTRA_ROBOT_MESH_PATH = "zenobot_05_20120309/ZenoBot05.ma.mesh.xml";		
+	//		String dualCharURI = "urn:org.cogchar/platform/nb701?char=HRK_Zeno_R50&version=20120302";   
+	//		
+	//			
+	val HRK_URN_PREFIX = "urn:fdt:com.hrk/";
+	val ZENO_R50_NICKNAME = "ZenoR50";
+	val	ZENO_R50_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + ZENO_R50_NICKNAME;
+	val	ZENO_R50_CHAR_IDENT = new FreeIdent(ZENO_R50_CHAR_URI, ZENO_R50_NICKNAME)
+	
+	
+	
 	
 	val FANCY_PANEL_CLASSNAME = "org.cogchar.render.gui.bony.FancyCharPanel";
 	val SLIM_PANEL_CLASSNAME = "org.cogchar.render.gui.bony.VirtCharPanel";
 	
-	// This skeleton + mesh model is delivered by the jar from o.c.bundle.render.opengl.resources
+	// Skeleton + mesh model ias delivered from o.c.b.render.opengl.resources
 	val SINBAD_MESH_PATH = "jme3dat/models_20110917/sinbad/Sinbad.mesh.xml";	
 
-	// Commercial "Extra Robot" model, not loadable without a license, ignored in those cases.
-	val EXTRA_ROBOT_MESH_PATH = "zenobot_06_20120323/zenobot_06_20120323.mesh.xml";		
-	// val EXTRA_ROBOT_MESH_PATH = "zenobot_05_20120309/ZenoBot05.ma.mesh.xml";		
-	//		String dualCharURI = "urn:org.cogchar/platform/nb701?char=HRK_Zeno_R50&version=20120302";   
+
+
 
 	val WINGED_OBELISK_SCENE = "leo_hanson_tests/test3/test3.scene";
 	val WOS_SCALE = 0.5f;
@@ -48,17 +68,13 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	// val DUMMY_ROBOT_ID = "DummyRobot22";
 	
 	val SINBAD_NICKNAME = "Sinbad";
-	val ZENO_R50_NICKNAME = "ZenoR50";
-
-	val COGCHAR_URN_PREFIX = "urn:org.cogchar/";
 	
-	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "char/";
+	
+
 	
 	val	SINBAD_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + SINBAD_NICKNAME;
-	val	ZENO_R50_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + ZENO_R50_NICKNAME;
 	
 	val	SINBAD_CHAR_IDENT = new FreeIdent(SINBAD_CHAR_URI, SINBAD_NICKNAME)
-	val	ZENO_R50_CHAR_IDENT = new FreeIdent(ZENO_R50_CHAR_URI, ZENO_R50_NICKNAME)
 	
 	//val SINBAD_JOINT_PATH = "rk_bind_config/motion/bonyRobotConfig_Sinbad.json";
 	//val ZENO_JOINT_PATH = "rk_bind_config/motion/bonyRobotConfig_ZenoR50.json";

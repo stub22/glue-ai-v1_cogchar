@@ -50,9 +50,12 @@ import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import org.cogchar.blob.emit.DemoConfigEmitter;
+
+import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.core.PhysicalApp;
+import org.cogchar.render.app.core.CoreFeatureAdapter;
 import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.DemoRenderContext;
+import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
 
 /** It has been said that:
  * "PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!"
@@ -85,12 +88,12 @@ public class DemoYouBowlAtSinbad extends PhysicalApp {
 		return rc;
 	}
 
-	class DYBAS_RenderContext extends DemoRenderContext implements RagdollCollisionListener, AnimEventListener {
+	class DYBAS_RenderContext extends ConfiguredPhysicalModularRenderContext implements RagdollCollisionListener, AnimEventListener {
 
 		@Override public void completeInit() {
 			super.completeInit();
 			
-			initCrossHairs(settings);
+			BonyGameFeatureAdapter.initCrossHairs(settings, getRenderRegistryClient());
 			initMaterial();
 
 			cam.setLocation(new Vector3f(0.26924422f, 6.646658f, 22.265987f));
@@ -106,7 +109,7 @@ public class DemoYouBowlAtSinbad extends PhysicalApp {
 
 			initBasicTestPhysics();
 
-			setupLight();
+			CoreFeatureAdapter.setupLight(this);
 
 			model = (Node) assetManager.loadModel("Models/Sinbad/Sinbad.mesh.xml");
 

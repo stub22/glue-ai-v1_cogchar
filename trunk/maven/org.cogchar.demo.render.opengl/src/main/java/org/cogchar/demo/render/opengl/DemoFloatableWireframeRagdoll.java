@@ -31,14 +31,14 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.app.core.CogcharPresumedApp;
 import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.DemoRenderContext;
+import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
 
 /**
  *
  */
-public class DemoFloatableWireframeRagdoll extends DemoApp  {
+public class DemoFloatableWireframeRagdoll extends CogcharPresumedApp  {
 
 	private Node ragDoll = new Node();
 	private Node shoulders;
@@ -59,7 +59,7 @@ public class DemoFloatableWireframeRagdoll extends DemoApp  {
 		return new DFWR_RenderContext();
 	}
 
-	class DFWR_RenderContext extends DemoRenderContext implements ActionListener {
+	class DFWR_RenderContext extends ConfiguredPhysicalModularRenderContext implements ActionListener {
 
 		@Override public void completeInit() {
 			super.completeInit();

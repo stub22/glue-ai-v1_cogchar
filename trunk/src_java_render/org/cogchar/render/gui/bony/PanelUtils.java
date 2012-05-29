@@ -46,9 +46,16 @@ The value is set to HIDE_ON_CLOSE by default. Changes to the value of this prope
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
 
-		theLogger.info("Packing frame");
+		theLogger.info("Packing frame - this creates OGL display and starts the LwjglAbstractDisplay thread.");
 		frame.pack();
-		theLogger.info("Setting frame visible");
+		///*  Sleep here to see that pack() in fact does trigger Lwjgl thread
+		try {
+			theLogger.info("Sleeping 10 sec so we can see full impact of frame.pack().");
+			Thread.sleep(10000);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		theLogger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 10 sec is up, now setting frame visible");
 		frame.setVisible(true);	
 		return frame;
 	}

@@ -72,9 +72,15 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
 	}	
 
 	public void registerAndStart(R robot) throws Throwable {
+		Robot.Id robotID = robot.getRobotId();
+		theLogger.info("super.registerAndStart(robotID=" + robotID + ")");
 		super.registerAndStart(robot);
+		theLogger.info("startDefaultBlender(robotID=" + robotID + ")");
 		startDefaultBlender();
+		theLogger.info("registerFrameSource(robotID=" + robotID + ")");
 		registerFrameSource();
+		theLogger.info("testPositionMove(robotID=" + robotID + ")");
 		testPositionMove();
+		theLogger.info("registerAndStart COMPLETE for robotID=" + robotID);
 	}
 }

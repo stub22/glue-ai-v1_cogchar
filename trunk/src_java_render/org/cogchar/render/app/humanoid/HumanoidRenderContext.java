@@ -21,48 +21,50 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import java.lang.String;
 import java.util.HashMap;
 import java.util.Map;
 import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.render.app.core.AppStub;
-import org.cogchar.render.app.bony.BonyStickFigureContext;
+import org.cogchar.render.app.core.WorkaroundAppStub;
+import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidBoneConfig;
 import org.cogchar.render.model.humanoid.HumanoidFigureModule;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
-import org.cogchar.render.sys.physics.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
 // Below imports added for initHelpScreen - should go elsewhere eventually
 import com.jme3.font.BitmapText;
-import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
+import org.cogchar.render.sys.core.RenderRegistryClient;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class HumanoidRenderContext extends BonyStickFigureContext {
+public class HumanoidRenderContext extends BonyRenderContext {
 	private	Map<Ident, HumanoidFigure>		myFiguresByCharIdent = new HashMap<Ident, HumanoidFigure>();
 
+	private	BonyGameFeatureAdapter	myGameFeatureAdapter;
 	
 	public HumanoidRenderContext(BonyConfigEmitter bce) {
 		super(bce);
+		myGameFeatureAdapter = new BonyGameFeatureAdapter(this);
 	}
-	@Override public void completeInit() { 
-		super.completeInit();
+	@Override public void postInitLaunch() { 
+		super.postInitLaunch();
 
 		AppSettings someSettings = getJMonkeyAppSettings();
-		initCrossHairs(someSettings);
+		RenderRegistryClient rrc = getRenderRegistryClient();
+		BonyGameFeatureAdapter.initCrossHairs(someSettings, rrc);
 		initBasicTestPhysics();
 		initHumanoidStuff();
 		initCameraAndLights();
+		
+		myGameFeatureAdapter.initFeatures();
+		
 		InputManager inputManager = findJme3InputManager(null);
 
 		HumanoidPuppetActions.setupActionListeners(inputManager, this);	
@@ -71,6 +73,8 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 		WorkaroundFuncsMustDie.initScoreBoard(this);
                 
 		initHelpScreen(someSettings, inputManager);
+		
+		
 	}
 
 	public HumanoidFigure getHumanoidFigure(Ident charIdent) {
@@ -114,24 +118,28 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 	private void initHumanoidStuff() {
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 		
-		if (!bce.isMinimalSim()) {
-			Ident sinbadIdent = bce.SINBAD_CHAR_IDENT();
-			HumanoidBoneConfig sinbadHBC = new HumanoidBoneConfig();
-			sinbadHBC.addSinbadDefaultBoneDescs();
-			HumanoidFigure sinbadFigure = setupHumanoidFigure(sinbadIdent, sinbadHBC, true);
-			sinbadFigure.movePosition(30.0f, 0.0f, -30.0f);
-		}
+		try {
+			if (!bce.isMinimalSim()) {
+				Ident sinbadIdent = bce.SINBAD_CHAR_IDENT();
+				HumanoidBoneConfig sinbadHBC = new HumanoidBoneConfig();
+				sinbadHBC.addSinbadDefaultBoneDescs();
+				HumanoidFigure sinbadFigure = setupHumanoidFigure(sinbadIdent, sinbadHBC, true);
+				sinbadFigure.movePosition(30.0f, 0.0f, -30.0f);
+			}
 
-		Ident extraRobotIdent = bce.ZENO_R50_CHAR_IDENT();
-		HumanoidBoneConfig robotHBC = new HumanoidBoneConfig();
-		robotHBC.addZenoDefaultBoneDescs();
-		HumanoidFigure robotFigure = setupHumanoidFigure(extraRobotIdent, robotHBC, false);
-		robotFigure.movePosition(0.0f, -5.0f, 0.0f);
+			Ident extraRobotIdent = bce.ZENO_R50_CHAR_IDENT();
+			HumanoidBoneConfig robotHBC = new HumanoidBoneConfig();
+			robotHBC.addZenoDefaultBoneDescs();
+			HumanoidFigure robotFigure = setupHumanoidFigure(extraRobotIdent, robotHBC, false);
+			robotFigure.movePosition(0.0f, -5.0f, 0.0f);
+		} catch (Throwable t) {
+			logError("Problem in initHumanoidStuff(), eating exception to allow init to continue", t);
+		}
 	}
 
 	// This method is getting to be vestigial - camera and light setup is now mostly handled from RDF	
 	private void initCameraAndLights() {
-		AppStub stub = getAppStub();
+		WorkaroundAppStub stub = getAppStub();
 		stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
 		FlyByCamera fbCam = stub.getFlyCam();
 		fbCam.setMoveSpeed(50);	
@@ -148,7 +156,11 @@ public class HumanoidRenderContext extends BonyStickFigureContext {
 			hf.toggleDebugSkeleton();
 		}
 	}
-        
+	public BonyGameFeatureAdapter getGameFeatureAdapter() { 
+		return myGameFeatureAdapter;
+	}
+
+	
 	// Does this best live here or further up in one of the context superclasses? Dunno, but should be easy enough to move it up later (w/o private); be sure to remove imports
 	// In order to access registry, must live in a class that extends CogcharRenderContext
 	private void initHelpScreen(AppSettings settings, InputManager inputManager) {

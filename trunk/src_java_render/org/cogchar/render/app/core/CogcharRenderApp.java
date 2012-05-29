@@ -21,6 +21,7 @@ import com.jme3.asset.plugins.UrlLocator;
 
 import org.appdapter.api.module.Module;
 import org.cogchar.render.model.bony.CogcharRenderModulator;
+import org.cogchar.render.sys.core.RenderRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,18 +71,20 @@ public abstract class CogcharRenderApp<CRCT extends CogcharRenderContext> extend
 		java.util.logging.Logger.getLogger(UrlLocator.class.getName()).setLevel(java.util.logging.Level.SEVERE);
 
 
-		logInfo("fetch(/init) CogcharRenderContext");		
+		logInfo("fetch(/init) CogcharRenderContext, so we can register JMonkey roots for later lookup");		
 		myRenderContext = getRenderContext();
+		RenderRegistryClient rrc = myRenderContext.getRenderRegistryClient();
 		
 		myRenderContext.registerJMonkeyRoots(assetManager, rootNode, guiNode, stateManager, inputManager, renderManager);
-		myRenderContext.registerJMonkeyDefaultCameras(cam, flyCam);
+		CoreFeatureAdapter.registerJMonkeyDefaultCameras(rrc, cam, flyCam);
+		
+		
 		try {
 			myRenderContext.completeInit();
 		} catch (Throwable t) {
 			getLogger().error("Problem during Coghar-RenderContext.completeInit()", t);
 		}
 		
-		// Register context and modulator with well-known registry
 		logInfo("CogcharRenderApp.simpleInitApp() - END");
 	}
 	

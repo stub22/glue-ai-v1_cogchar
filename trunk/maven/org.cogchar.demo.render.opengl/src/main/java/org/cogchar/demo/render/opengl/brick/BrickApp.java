@@ -29,14 +29,14 @@ import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.CompareMode;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
-import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.app.core.CogcharPresumedApp;
 import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.opengl.optic.MatFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BrickApp extends DemoApp {
+public class BrickApp extends CogcharPresumedApp {
 
 	protected Material myBrickMat, myRockMat, myPondMat;
 	protected BulletAppState myPhysAppState;

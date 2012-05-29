@@ -15,7 +15,7 @@
  */
 package org.cogchar.render.app.bony;
 
-import org.cogchar.render.app.core.DemoRenderContext;
+import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
 import org.cogchar.render.sys.physics.ScoreBoard;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import com.jme3.animation.AnimControl;
@@ -32,10 +32,13 @@ import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.core.JmonkeyMathObjFactory;
 import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
 /**
+ * The contents of this class, are pimples to be squeezed.
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyRenderContext extends DemoRenderContext {
+public class BonyRenderContext extends ConfiguredPhysicalModularRenderContext {
+	// TODO:  We want this app pointer to go away.
 	protected	BonyVirtualCharApp		myApp;
+	
 	protected	VirtualCharacterPanel	myPanel;   
 	protected	JFrame					myFrame;
 	protected	ScoreBoard				myScoreBoard;
@@ -49,10 +52,13 @@ public class BonyRenderContext extends DemoRenderContext {
 		super.completeInit();
 		WorkaroundFuncsMustDie.setupCameraLightAndViewport(this);
 	}
+	
+	// TODO:  We want this app pointer to go away.
 	public BonyVirtualCharApp getApp() {
 		return myApp;
 	}
 
+	// TODO:  We want this app pointer to go away.
 	public void setApp(BonyVirtualCharApp app) {
 		this.myApp = app;
 	}

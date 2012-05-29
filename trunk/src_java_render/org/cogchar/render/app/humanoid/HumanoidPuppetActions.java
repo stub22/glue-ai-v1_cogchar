@@ -16,8 +16,6 @@
 
 package org.cogchar.render.app.humanoid;
 
-import org.cogchar.platform.trigger.DummyBinding;
-import org.cogchar.render.model.humanoid.HumanoidFigure;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -28,16 +26,21 @@ import com.jme3.input.controls.Trigger;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cogchar.platform.trigger.DummyBinding;
+import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.app.core.BoundAction;
+
+import org.appdapter.core.log.BasicDebugger;
 
 /**
  *	Keyboard / Mouse bindings for HumanoidPuppet app.
  *	The actions which do not override act() expect to be equipped from outside,
  *  by setting of their box + trigger.
  */
-public class HumanoidPuppetActions {
-
+public class HumanoidPuppetActions extends BasicDebugger {
+	static BasicDebugger theDbg = new BasicDebugger();
+	
     public enum PlayerAction {
         RESET_CAMERA {
             void act(HumanoidRenderContext ctx) {
@@ -161,7 +164,7 @@ public class HumanoidPuppetActions {
   		
         SHOOT {
             void act(HumanoidRenderContext ctx) {
-                ctx.cmdShoot();
+                ctx.getGameFeatureAdapter().cmdShoot();
             }  
             int getTriggerKey() { 
                 return -MouseInput.BUTTON_LEFT; // Negative tells makeJME3InputTriggers this is mouse input - not ideal but will work for now
@@ -169,7 +172,7 @@ public class HumanoidPuppetActions {
         }, 
         BOOM {
             void act(HumanoidRenderContext ctx) {
-                ctx.cmdBoom();
+                ctx.getGameFeatureAdapter().cmdBoom();
             }
             Trigger[] makeJME3InputTriggers() { 
                 return new Trigger[] { new MouseButtonTrigger(MouseInput.BUTTON_RIGHT)};
@@ -180,7 +183,7 @@ public class HumanoidPuppetActions {
         }, 
         BIGGER_PROJECTILE {
             void act(HumanoidRenderContext ctx) {
-                ctx.getProjectileMgr().cmdBiggerProjectile();
+                ctx.getGameFeatureAdapter().getProjectileMgr().cmdBiggerProjectile();
             }
             int getTriggerKey() { 
                 return KeyInput.KEY_PERIOD;
@@ -188,7 +191,7 @@ public class HumanoidPuppetActions {
         },
         SMALLER_PROJECTILE {
             void act(HumanoidRenderContext ctx) {
-                ctx.getProjectileMgr().cmdSmallerProjectile();
+                ctx.getGameFeatureAdapter().getProjectileMgr().cmdSmallerProjectile();
             }
             int getTriggerKey() { 
                 return KeyInput.KEY_COMMA;
@@ -260,7 +263,11 @@ public class HumanoidPuppetActions {
             public void onAction(String name, boolean isPressed, float tpf) {
                 PlayerAction action = PlayerAction.valueOf(name);
                 if ((action != null) && isPressed) {
-                    action.act(ctx);
+					try {
+	                    action.act(ctx);
+					} catch (Throwable t) {
+						theDbg.logError("Action for " + name + " threw exception", t);
+					}
                 }
             }
         }, actionNames);

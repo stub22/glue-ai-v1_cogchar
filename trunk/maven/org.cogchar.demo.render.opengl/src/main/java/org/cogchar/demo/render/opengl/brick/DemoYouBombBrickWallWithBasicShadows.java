@@ -39,6 +39,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
+import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 
 /**
  * From: jme3test.bullet.TestBrickWall
@@ -75,7 +76,7 @@ public class DemoYouBombBrickWallWithBasicShadows extends BrickApp {
 
         initWall();
         initFloorBombWallBasic();
-        initCrossHairs();
+        BonyGameFeatureAdapter.initCrossHairs(settings, getRenderContext().getRenderRegistryClient());
 		
         this.cam.setLocation(new Vector3f(0, 6f, 6f));
         cam.lookAt(Vector3f.ZERO, new Vector3f(0, 1, 0));
