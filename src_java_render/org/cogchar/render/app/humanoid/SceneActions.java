@@ -17,7 +17,7 @@ package org.cogchar.render.app.humanoid;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.cogchar.convoid.player.PlayerAction;
+
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
