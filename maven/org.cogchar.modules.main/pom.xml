@@ -65,13 +65,15 @@
 		<module>../org.cogchar.bundle.demo.convo</module>
 		<module>../org.cogchar.bundle.demo.dictation</module>
 		<module>../org.cogchar.demo.render.opengl</module>
+		
 		<module>../org.cogchar.lib.core</module>
-		<module>../org.cogchar.lib.animoid</module>		
+		
 		<module>../org.cogchar.lib.render</module>
-
+		
+		<module>../org.cogchar.lib.animoid</module>
+		<module>../org.cogchar.lib.convoid</module>
 		<module>../org.cogchar.lib.integroid</module>		
 		<module>../org.cogchar.lib.freckler</module>		
-
 			
 		<module>../ext.bundle.opengl.jmonkey</module>
 		<module>../ext.bundle.opengl.nifty</module>

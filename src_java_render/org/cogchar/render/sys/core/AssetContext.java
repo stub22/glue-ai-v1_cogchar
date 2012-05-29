@@ -71,7 +71,7 @@ public class AssetContext extends RenderRegistryAware {
 			jmal.ensurerLocatorsReged(assetMgr);
 		}
 		// DebugMeshLoader helps with debugging.		
-		assetMgr.registerLoader(DebugMeshLoader.class, "meshxml", "mesh.xml");
+		// assetMgr.registerLoader(DebugMeshLoader.class, "meshxml", "mesh.xml");
 		
 	}
 }
