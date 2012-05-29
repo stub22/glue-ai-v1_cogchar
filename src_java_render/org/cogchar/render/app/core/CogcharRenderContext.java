@@ -19,6 +19,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
+import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
@@ -30,13 +31,14 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import java.io.InputStream;
-import org.cogchar.render.app.core.AppStub;
 import org.cogchar.render.sys.physics.DemoVectorFactory;
 import org.cogchar.render.sys.physics.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.sys.core.AssetContext;
+import org.cogchar.render.sys.core.BasicRenderRegistryClientImpl;
 import org.cogchar.render.sys.core.RenderRegistryAware;
+import org.cogchar.render.sys.core.RenderRegistryClient;
 
 /**  Named to differentiate it from JMonkey "RenderContext".  
  * This base class does not maintain much instance data.
@@ -49,11 +51,18 @@ import org.cogchar.render.sys.core.RenderRegistryAware;
  */
 public class CogcharRenderContext extends RenderRegistryAware {
 	
-	private		AppStub			myAppStub;
+	private		RenderRegistryClient		myRegClient;
 	
-	private AppSettings		myJme3AppSettings;
+	private		WorkaroundAppStub			myAppStub;
+	
+	private		AppSettings					myJme3AppSettings;
 	
 	public CogcharRenderContext() {
+		myRegClient = new BasicRenderRegistryClientImpl();
+	}
+	
+	public RenderRegistryClient getRenderRegistryClient() {
+		return myRegClient;
 	}
 	/**
 	 * Normally called during CogcharRenderApp.simpleInitApp(), after JME3.SimpleApp variables are fully 
@@ -87,95 +96,44 @@ public class CogcharRenderContext extends RenderRegistryAware {
 	protected AppSettings getJMonkeyAppSettings() { 
 		return myJme3AppSettings;
 	}
-	
-	public void registerJMonkeyDefaultCameras(Camera defCam, FlyByCamera fbc) {
-		CameraMgr cm = findOrMakeOpticCameraFacade(null);
-		cm.registerCommonCamera(CameraMgr.CommonCameras.DEFAULT, defCam);
-	}
-        
-	/* Added so CameraMgr can create new cameras using JME3 settings from RDF 
-	* We also call back to CameraMgr to register this new camera - that way
-	* it's guaranteed to be taken care of in case some other code decides to
-	* call this method.
-	* 
-	* UPDATE: seems we must clone the default camera; a camera created this way
-	* does not seem to attach to the scene correctly (though it might with some extra steps) 
-
-	public Camera registerNewCameraUsingJME3Settings(String cameraName) {
-		CameraMgr cm = findOrMakeOpticCameraFacade(null);
-		Camera newCamera = new Camera(myJme3AppSettings.getWidth(), myJme3AppSettings.getHeight());
-		cm.registerNamedCamera(cameraName, newCamera);
-		return newCamera;
-	}
-	*/
-
-
-	// Right now this is just a public wrapper for addLightToRootNode
-	// so LightFactory can add lights from RDF
-	// BUT this won't work as is - at time LightFactory is loading from RDF, lights won't be added on main
-	// render thread as needed using this method. See LightFactory for current kludge.
-	/*
-	public void addNewLightToJME3RootNode(Light l) {
-		addLightToRootNode(l);
-	}
-	*/
-
-	// Added so CameraMgr can create new viewports for cameras loaded from RDF
-	public void addViewPort(String label, Camera c) {
-		DeepSceneMgr dsm = findOrMakeSceneDeepFacade(null);
-		dsm.addViewPort(label, c);
-	}
-	
-	public void setAppStub(AppStub stub) {
+		
+	public void setAppStub(WorkaroundAppStub stub) {
 		myAppStub = stub;
 	}
-	public AppStub getAppStub() {
+	public WorkaroundAppStub getAppStub() {
 		return myAppStub;
 	}
 	
 	/**
 	 *  Normally called during CogcharRenderApp.simpleInitApp(), after registerJMonkeyRoots.<br/>
-	 *	Performs final resolution of the asset classpath, and registers our asset classloaders
-	 *  (previously submitted via JmonkeyAssetLocations passed to AssetContext.addAssetSource)
+	 */
+	public void completeInit() {
+		resolveAssetContext();
+	}
+
+	
+	public void postInitLaunch() {
+
+		
+	}	
+/*****	Performs final resolution of default locators on the asset classpath, and registers our asset 
+	 *  classloaders  (previously submitted via JmonkeyAssetLocations passed to AssetContext.addAssetSource)
 	 *  with our singleton JME3 assetManager.<br/>
+	 * 
+	 * It has been necessary to do this "early" because SimpleApplication.update() tries to 
+	 * create some stuff that depends on the *default* classpath.
+	 * 
+	 * So apparently we need to split into the "resolve default" and "resolve bonus" phases.
+	 * 
 	 * 	This method should usually be called only once in an application's lifetime.<br/>
 	 * * TODO: Keep a flag and throw exception if it is called twice.
 	 */
-
-	public void completeInit() {
-		
+	public void resolveAssetContext() { 
 		AssetContext ac = findOrMakeAssetContext(null, null);
-		ac.resolveAndRegisterAllAssetSources();
-		
+		ac.ensureAllSourcesReged();
+
 	}
 	
-	protected void addLightToRootNode(Light l) {
-		DeepSceneMgr dsm = findOrMakeSceneDeepFacade(null);
-		dsm.addLight(l);
-	}
-	// Should be able to remove this now as light comes from RDF, but will leave it in for now in case something weird is calling it
-	protected DirectionalLight makeDemoDirectionalLight() { 
-		Vector3f dir = getDemoVectoryFactory().getUsualLightDirection();
-		return findOrMakeOpticLightFacade(null).makeWhiteOpaqueDirectionalLight(dir);
-	}
-	// Should be able to remove this now as light comes from RDF, but will leave it in for now in case something weird is calling it
-	public void addDemoDirLightToRootNode() { 
-		addLightToRootNode(makeDemoDirectionalLight());
-	}	
-	/** A centred plus sign to help the player aim. */
-	public void initCrossHairs(AppSettings settings) {
-		findOrMakeSceneFlatFacade(null).detachAllOverlays();
-		BitmapText crossBT = findOrMakeSceneTextFacade(null).makeCrossHairs(2.0f, settings);
-		findOrMakeSceneFlatFacade(null).attachOverlaySpatial(crossBT);
-	}	
-	// Should be able to remove this now as light comes from RDF, but will leave it in for now in case something weird is calling it
-	// Also should be able to get rid of fabulous DemoVectorFactory class!
-	public DemoVectorFactory getDemoVectoryFactory() { 
-		return new DemoVectorFactory();
-	}
-	public ProjectileLauncher makeProjectileLauncher() {
-		return new ProjectileLauncher(findOrMakeMeshShapeFacade(null), findOrMakeOpticMaterialFacade(null, null));		
-	}
 	/**
 	 *  Subclasses override this method to recieve a callback on each JME3 update cycle, supplied
 	 *  by the app.  
@@ -209,5 +167,9 @@ public class CogcharRenderContext extends RenderRegistryAware {
 		}
 		return ais;
 	}	
-		
+	
+	protected void addLightToRootNode(Light l) {
+		DeepSceneMgr dsm = findOrMakeSceneDeepFacade(null);
+		dsm.addLight(l);
+	}	
 }

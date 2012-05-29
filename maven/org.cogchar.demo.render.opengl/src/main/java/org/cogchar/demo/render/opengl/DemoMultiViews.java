@@ -28,11 +28,11 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
-import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.app.core.CogcharPresumedApp;
 import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.DemoRenderContext;
+import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
 
-public class DemoMultiViews extends DemoApp {
+public class DemoMultiViews extends CogcharPresumedApp {
 
 	public static void main(String[] args) {
 		DemoMultiViews app = new DemoMultiViews();
@@ -46,7 +46,7 @@ public class DemoMultiViews extends DemoApp {
 
 	//public void simpleInitApp() {
 	//super.simpleInitApp();
-	class DMV_RenderContext extends DemoRenderContext {
+	class DMV_RenderContext extends ConfiguredPhysicalModularRenderContext {
 
 		@Override public void completeInit() {
 			

@@ -38,7 +38,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.app.core.CogcharPresumedApp;
 
 /**  Solid floor and walls, with walking character, as discussed on JME3 Wiki 
  * <a href="http://jmonkeyengine.org/wiki/doku.php/jme3:beginner:hello_collision">here</a>.

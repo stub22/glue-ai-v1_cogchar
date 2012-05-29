@@ -35,7 +35,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
-import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.app.core.CogcharPresumedApp;
 
 public class DemoOtoIntersectsMovableBlock extends UnfinishedDemoApp {
 

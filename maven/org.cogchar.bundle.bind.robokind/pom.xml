@@ -136,7 +136,6 @@
 			<version>${robokind.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>

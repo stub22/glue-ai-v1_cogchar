@@ -46,15 +46,11 @@ import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.platform.trigger.DummyBinding;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.appdapter.core.log.BasicDebugger;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaAppContext {
-
-	static Logger theLogger = LoggerFactory.getLogger(PumaAppContext.class);
+public class PumaAppContext extends BasicDebugger {
 	
 	private BundleContext			myBundleContext;
 	private	HumanoidRenderContext	myHRC;
@@ -62,35 +58,31 @@ public class PumaAppContext {
 	private	TriggerItems.UpdateBonyConfig		myUpdateBonyConfigTI;
 	
 
-	public PumaAppContext(BundleContext bc, String sysContextURI, String localConfigRootPath) {
+	public PumaAppContext(BundleContext bc)  {
 		myBundleContext = bc;
-		
-		// First stage init of JME3
-		String panelKind = "SLIM";
-		RenderBundleUtils.buildBonyRenderContextInOSGi(bc, panelKind);
-		
-		myHRC = (HumanoidRenderContext) RenderBundleUtils.getBonyRenderContext(bc);
-		BonyConfigEmitter bonyCE = myHRC.getBonyConfigEmitter();
-		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
-		if (sysContextURI != null) {
-			behavCE.setSystemContextURI(sysContextURI);
-		}
-		if (localConfigRootPath != null) {
-			behavCE.setLocalFileRootDir(localConfigRootPath);
-		}
 	}
-
-	public List<PumaDualCharacter> makeDualCharsForSwingOSGi() throws Throwable {
-		// Second stage init of JME3 
-		startOpenGLCanvas(true);
-		return connectDualRobotChars();
-	}
-
 	public HumanoidRenderContext getHumanoidRenderContext() { 
 		return myHRC;
 	}
 
+	
+	/**
+	 * First (of three) stage init of world, done BEFORE startOpenGLCanvas().
+	 * @param panelKind
+	 * @return 
+	 */
+	public HumanoidRenderContext initHumanoidRenderContext(String panelKind) { 
+		myHRC = (HumanoidRenderContext) RenderBundleUtils.buildBonyRenderContextInOSGi(myBundleContext, panelKind);
+		return myHRC;
+	}
 
+
+	/**
+	 * Third (and last) stage init of OpenGL, and all other systems.
+	 * Done AFTER startOpenGLCanvas().
+	 * @return
+	 * @throws Throwable 
+	 */
 	public List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
 		List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 		BonyRenderContext brc = getHumanoidRenderContext();
@@ -98,6 +90,7 @@ public class PumaAppContext {
 		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();		
 		List<Ident> charIdents = bonyCE.getActiveBonyCharIdents();
 		for (Ident charIdent : charIdents) {
+			logInfo("^^^^^^^^^^^^^^^^^^^^^^^^^ Connecting dualRobotChar for charIdent: " + charIdent);
 			PumaDualCharacter pdc = connectDualRobotChar(charIdent);
 			pdcList.add(pdc);
 		}
@@ -127,6 +120,7 @@ public class PumaAppContext {
 		}
 		return pdcList;
 	}
+	
 	public PumaDualCharacter connectDualRobotChar(Ident bonyCharIdent)
 			throws Throwable {
 		
@@ -141,37 +135,46 @@ public class PumaAppContext {
 		
 		return pdc;
 	}
-
+	/**
+	 * Second (and most crucial) stage of OpenGL init.
+	 * This method blocks until the canvas initialization is complete, which requires
+	 * that the simpleInitApp() methods have all completed.
+	 * @param wrapInJFrameFlag
+	 * @throws Exception 
+	 */
 	public void startOpenGLCanvas(boolean wrapInJFrameFlag) throws Exception {
 		HumanoidRenderContext hrc = getHumanoidRenderContext();
-		theLogger.info("Got BonyRenderContext: " + hrc);
+		logInfo("Got BonyRenderContext: " + hrc);
 
 		if (hrc != null) {
 			if (wrapInJFrameFlag) {
 				VirtualCharacterPanel vcp = hrc.getPanel();
-				theLogger.info("Got VirtCharPanel: " + vcp);
+				logInfo("Making enclosing JFrame for VirtCharPanel: " + vcp);
 				// Frame must be packed after panel created, but created  before startJMonkey.  
 				// If startJMonkey is called first, we often hang in frame.setVisible() as JMonkey tries
 				// to do some magic restart deal that doesn't work as of jme3-alpha4-August_2011.
-				JFrame jf = vcp.makeEnclosingJFrame("CCRK-PUMA virtual character");
-				theLogger.info("Got Enclosing Frame, adding to BonyRenderContext for WindowClose triggering: " + jf);
+				
+				// During the Frame-pack portion of this method, we get all the way to:
+				//  CogcharPresumedApp - ********************* DemoApp.initialize() called
+				JFrame jf = vcp.makeEnclosingJFrame("CCRK-PUMA Virtual World");
+				logInfo("Got Enclosing Frame, adding to BonyRenderContext for WindowClose triggering: " + jf);
 				// Frame will receive a close event when org.cogchar.bundle.render.opengl is STOPPED
 				hrc.setFrame(jf);
 			}
 			BonyVirtualCharApp app = hrc.getApp();
 
 			if (app.isCanvasStarted()) {
-				theLogger.warn("JMonkey Canvas was already started!");
+				logWarning("JMonkey Canvas was already started!");
 			} else {
 
-				theLogger.info("Starting JMonkey canvas - hold yer breath! [[[[[[[[[[[[[[[[[[[[[[[[[[");
+				logInfo("Starting JMonkey canvas - hold yer breath! [[[[[[[[[[[[[[[[[[[[[[[[[[");
 				app.startJMonkeyCanvas();
-				theLogger.info("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]  Finished starting JMonkey canvas!");
+				logInfo("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]  Finished starting JMonkey canvas!");
 			}
 			//((BonyStickFigureApp) app).setScoringFlag(true);			
 
 		} else {
-			theLogger.error("BonyRenderContext is NULL, cannot startOpenGLCanvas!");
+			logError("BonyRenderContext is NULL, cannot startOpenGLCanvas!");
 		}
 	}
 	private void registerSpecialInputTriggers(PumaDualCharacter pdc) { 	
@@ -198,4 +201,5 @@ public class PumaAppContext {
 		db.setTargetBox(pdc);
 		db.setTargetTrigger(trigItem);
 	}
+	
 }

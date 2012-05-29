@@ -12,12 +12,12 @@ public class ResourceBundleActivator extends BundleActivatorBase {
 
 	@Override public void start(BundleContext bundleCtx) throws Exception {
 		super.start(bundleCtx);
-		logInfo("******************* Registering assumed resource bundle with default AssetContext");
+		logInfo("******************* Registering org.cogchar.bundle.render.resources with default AssetContext");
 		
 		AssetContext defAssetCtx = RenderRegistryFuncs.findOrMakeAssetContext(null, null, ResourceBundleActivator.class);
 		JmonkeyAssetLocation jmal = new JmonkeyAssetLocation(ResourceBundleActivator.class);
 		defAssetCtx.addAssetSource(jmal);		
-
+		logInfo("******************* Finished registering org.cogchar.bundle.render.resources with default AssetContext");
 	}
 
 }

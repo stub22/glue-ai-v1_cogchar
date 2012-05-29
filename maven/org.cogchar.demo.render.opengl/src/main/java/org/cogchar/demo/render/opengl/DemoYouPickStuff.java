@@ -42,9 +42,10 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.PQTorus;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
+import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.model.bony.SpatialManipFuncs;
 import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.DemoRenderContext;
+import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
 import org.cogchar.render.sys.physics.CollisionMgr;
 
 /** Sample 8 - how to let the user pick (select) objects in the scene 
@@ -79,13 +80,13 @@ public class DemoYouPickStuff extends UnfinishedDemoApp {
 	
 	Ray ray = new Ray(origin, direction);
 	 */
-	public class DYPS_RenderContext extends DemoRenderContext {
+	public class DYPS_RenderContext extends ConfiguredPhysicalModularRenderContext {
 
 		Node myShootablesRootNode;
 		Geometry myMark, myArrowMark;
 
 		@Override public void completeInit() {
-			initCrossHairs(settings); // a "+" in the middle of the screen to help aiming
+			BonyGameFeatureAdapter.initCrossHairs(settings, getRenderRegistryClient()); // a "+" in the middle of the screen to help aiming
 			initKeys();       // load custom key mappings
 			initMark();       // a red sphere to myMark the hit
 			initArrowMark();

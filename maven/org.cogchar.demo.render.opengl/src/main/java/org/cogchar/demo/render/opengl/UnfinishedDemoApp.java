@@ -15,23 +15,24 @@
  */
 package org.cogchar.demo.render.opengl;
 
-import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.app.core.CogcharPresumedApp;
 import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.DemoRenderContext;
+import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.app.core.CoreFeatureAdapter;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class UnfinishedDemoApp  extends DemoApp  {
+public class UnfinishedDemoApp  extends CogcharPresumedApp  {
 	@Override protected CogcharRenderContext makeCogcharRenderContext() {
 		return new DYPS_RenderContext();
 	}
 
 	public void setupLight() { 
-		DemoRenderContext drc = (DemoRenderContext) getRenderContext();
-		drc.setupLight();
+		ConfiguredPhysicalModularRenderContext drc = (ConfiguredPhysicalModularRenderContext) getRenderContext();
+		CoreFeatureAdapter.setupLight(drc);
 	}
-	public static class DYPS_RenderContext extends DemoRenderContext {
+	public static class DYPS_RenderContext extends ConfiguredPhysicalModularRenderContext {
 		
 	}
 }

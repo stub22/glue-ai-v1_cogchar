@@ -42,7 +42,8 @@ import com.jme3.texture.Texture;
 import org.cogchar.blob.emit.DemoConfigEmitter;
 import org.cogchar.render.app.core.PhysicalApp;
 import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.DemoRenderContext;
+import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.app.core.CoreFeatureAdapter;
 
 /**
  * From:    jme3test.bullet.TestRagdollCharacter
@@ -72,7 +73,7 @@ public class DemoSinbadVersusBlocks extends PhysicalApp {
 		return rc;
 	}
 
-	class DSVB_RenderContext extends DemoRenderContext implements AnimEventListener, ActionListener {
+	class DSVB_RenderContext extends ConfiguredPhysicalModularRenderContext implements AnimEventListener, ActionListener {
 
 		@Override public void completeInit() {
 			super.completeInit();
@@ -82,7 +83,7 @@ public class DemoSinbadVersusBlocks extends PhysicalApp {
 			initBasicTestPhysics();
 
 			initWall(2, 1, 1);
-			setupLight();
+			CoreFeatureAdapter.setupLight(this);
 
 			cam.setLocation(new Vector3f(-8, 0, -4));
 			cam.lookAt(new Vector3f(4, 0, -7), Vector3f.UNIT_Y);
