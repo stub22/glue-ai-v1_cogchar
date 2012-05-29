@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.rk.gaze;
 
+import org.cogchar.animoid.gaze.GazeTracker;
 import java.awt.Rectangle;
 import java.util.List;
 import org.cogchar.animoid.gaze.IGazeTarget;

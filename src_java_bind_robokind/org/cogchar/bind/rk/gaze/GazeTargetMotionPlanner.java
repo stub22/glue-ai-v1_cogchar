@@ -16,7 +16,6 @@
 package org.cogchar.bind.rk.gaze;
 
 import org.cogchar.animoid.gaze.IGazeTarget;
-import org.cogchar.gaze.GazePlanner;
 import org.robokind.api.motion.Robot.RobotPositionMap;
 
 /**

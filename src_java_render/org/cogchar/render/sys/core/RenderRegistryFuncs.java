@@ -17,7 +17,7 @@ package org.cogchar.render.sys.core;
 
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
 import com.jme3.scene.Node;
 import com.jme3.renderer.RenderManager;
@@ -63,6 +63,8 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		JME3_APP_STATE_MANAGER,
 		JME3_INPUT_MANAGER,
 		JME3_RENDER_MANAGER,
+
+		JME3_BULLET_APP_STATE,
 		
 		CC_ASSET_CONTEXT,
 
@@ -98,7 +100,8 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static final RFSpec<InputManager>		THE_JME3_INPUT_MANAGER;
 	protected static final RFSpec<RenderManager>	THE_JME3_RENDER_MANAGER;
 	
-	protected static final RFSpec<PhysicsSpace>		THE_BULLET_PHYSICS_SPACE;
+	
+	protected static final RFSpec<BulletAppState>	THE_JME3_BULLET_APP_STATE;
 	
 	static {
 		THE_JME3_ASSET_MANAGER = new RFSpec<AssetManager>(RFKind.JME3_ASSET_MANAGER, AssetManager.class);
@@ -109,7 +112,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		THE_JME3_INPUT_MANAGER = new RFSpec<InputManager>(RFKind.JME3_INPUT_MANAGER, InputManager.class);	
 		THE_JME3_RENDER_MANAGER  = new RFSpec<RenderManager>(RFKind.JME3_RENDER_MANAGER, RenderManager.class);
 		
-		THE_BULLET_PHYSICS_SPACE  = new RFSpec<PhysicsSpace>(RFKind.JME3_ROOT_DEEP_NODE, PhysicsSpace.class);	
+		THE_JME3_BULLET_APP_STATE  = new RFSpec<BulletAppState>(RFKind.JME3_BULLET_APP_STATE, BulletAppState.class);	
 	}
 
 	protected static RFSpec<AssetContext>	THE_CC_ASSET_CONTEXT;
@@ -228,6 +231,12 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static void registerJme3RenderManager(RenderManager im, String optionalName) {
 		registerExternalFacade(THE_JME3_RENDER_MANAGER, im, optionalName, null);
 	}
+	protected static BulletAppState findJme3BulletAppState(String optionalName) {
+		return findExternalFacadeOrNull(THE_JME3_BULLET_APP_STATE, optionalName, null);
+	}
+	protected static void registerJme3BulletAppState(BulletAppState bas, String optionalName) {
+		registerExternalFacade(THE_JME3_BULLET_APP_STATE, bas, optionalName, null);
+	}	
 
 	protected static ViewportFacade findOrMakeOpticViewportFacade(String optionalName) {
 		return findOrMakeInternalFacade(THE_CC_OPTIC_VIEWPORT_FACADE, optionalName, null);
@@ -296,5 +305,8 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	public static AssetContext findOrMakeAssetContext(String optionalName, 	String optJme3AssetManagerName, Class optCredClaz) {
 		return findOrMakeInternalFacade(THE_CC_ASSET_CONTEXT, optionalName, optCredClaz);
 	}
-	
+
+	public static AssetContext findOrMakeAssetContext(String optionalName, 	String optJme3AssetManagerName, BundleContext reqBundleCtx) {
+		return null; // return findOrMakeInternalFacade(THE_CC_ASSET_CONTEXT, optionalName, optCredClaz);
+	}
 }

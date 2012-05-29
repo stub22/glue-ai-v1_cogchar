@@ -28,7 +28,7 @@ import org.cogchar.render.sys.physics.PhysicsStuffBuilder;
 		// Turn on the blue wireframe collision bounds.
 		// ps.enableDebug(asstMgr);
  */
-public abstract class PhysicalApp<PRCT extends PhysicalRenderContext> extends DemoApp<PRCT> {
+public abstract class PhysicalApp<PMRCT extends PhysicalModularRenderContext> extends CogcharPresumedApp<PMRCT> {
 	
 	public PhysicalApp(DemoConfigEmitter bce) {
 		super(bce);

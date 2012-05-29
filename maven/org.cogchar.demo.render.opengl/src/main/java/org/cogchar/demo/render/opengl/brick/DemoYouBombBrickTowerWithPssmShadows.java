@@ -45,7 +45,8 @@ import com.jme3.shadow.PssmShadowRenderer.CompareMode;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
-import org.cogchar.render.app.core.DemoApp;
+import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
+import org.cogchar.render.app.core.CogcharPresumedApp;
 
 /**
  * From:    jme3test.bullet.TestBrickTower - author double1984 (tower mod by atom).
@@ -87,7 +88,7 @@ public class DemoYouBombBrickTowerWithPssmShadows extends BrickApp {
 
         initTower();
         initFloorBombTowerPssm();
-        initCrossHairs();
+		BonyGameFeatureAdapter.initCrossHairs(settings, getRenderContext().getRenderRegistryClient());
         this.cam.setLocation(new Vector3f(0, 25f, 8f));
         cam.lookAt(Vector3f.ZERO, new Vector3f(0, 1, 0));
         cam.setFrustumFar(80);

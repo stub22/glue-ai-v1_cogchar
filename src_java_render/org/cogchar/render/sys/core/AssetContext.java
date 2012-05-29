@@ -30,10 +30,6 @@ public class AssetContext extends RenderRegistryAware {
 	public AssetContext(){ 
 		JmonkeyAssetLocation frameJAL = new JmonkeyAssetLocation(AssetManager.class);
 		addAssetSource(frameJAL);
-
-	}
-	public void addAssetSource(JmonkeyAssetLocation jmal) {
-		myAssetSources.add(jmal);
 	}
 	public void setAssetManager(AssetManager assetMgr) { 
 		myAssetManager = assetMgr;
@@ -44,14 +40,35 @@ public class AssetContext extends RenderRegistryAware {
 		}
 		return myAssetManager;
 	}
+	public void addAssetSource(JmonkeyAssetLocation jmal) {
+		myAssetSources.add(jmal);
+/*		// We cannot do:		
+ * 		AssetManager am = getAssetManager();
+		if (am != null) {
+			jmal.resolve();
+			jmal.ensurerLocatorsReged(am);
+		}
+ * Because:		
+ * OSGi bundle permissions problem
+     [java] 	at org.appdapter.osgi.registry.RegistryServiceFuncs.getTheWellKnownRegistry(RegistryServiceFuncs.java:150)
+     [java] 	at org.cogchar.blob.emit.RegistryClient.getVerySimpleRegistry(RegistryClient.scala:44)
+     [java] 	at org.cogchar.blob.emit.RegistryClient.getRequiredOverRegistry(RegistryClient.scala:48)
+     [java] 	at org.cogchar.blob.emit.RegistryClient.findOrMakeSubsystemFacadeRegistry(RegistryClient.scala:62)
+     [java] 	at org.cogchar.blob.emit.RegistryClient.findExternalFacade(RegistryClient.scala:90)
+     [java] 	at org.cogchar.render.sys.core.RenderRegistryFuncs.findExternalFacadeOrNull(RenderRegistryFuncs.java:183)
+     [java] 	at org.cogchar.render.sys.core.RenderRegistryFuncs.findJme3AssetManager(RenderRegistryFuncs.java:198)
+     [java] 	at org.cogchar.render.sys.core.AssetContext.getAssetManager(AssetContext.java:52)
+     [java] 	at org.cogchar.render.sys.core.AssetContext.addAssetSource(AssetContext.java:58)* 
+ */		
+	}
 	
-	public void resolveAndRegisterAllAssetSources() { 
+	public void ensureAllSourcesReged() { 
 		getLogger().info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  resolveAndRegisterAllAssetSources()");
 		AssetManager assetMgr = getAssetManager();
 		// Optionally add a bonyAssetLocator here for debugging.
 		for (JmonkeyAssetLocation jmal : myAssetSources) {
 			jmal.resolve();
-			jmal.registerLocators(assetMgr);
+			jmal.ensurerLocatorsReged(assetMgr);
 		}
 		// DebugMeshLoader helps with debugging.		
 		assetMgr.registerLoader(DebugMeshLoader.class, "meshxml", "mesh.xml");

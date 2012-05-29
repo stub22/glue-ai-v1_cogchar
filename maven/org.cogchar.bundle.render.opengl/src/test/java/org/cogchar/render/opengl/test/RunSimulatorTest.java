@@ -15,8 +15,6 @@
  */
 package org.cogchar.render.opengl.test;
 
-import org.cogchar.render.app.core.DemoApp;
-import org.cogchar.render.app.humanoid.HumanoidPuppetApp;
 import org.cogchar.render.app.humanoid.HumanoidPuppetTestMain;
 
 /**

@@ -29,7 +29,11 @@ import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 /**
+ * Assumes that we want to run our application inside a Swing VirtualCharacterPanel 
+ * (rather than a standalone native OpenGL window).
  * @author Stu B. <www.texpedient.com>
  */
 
@@ -60,6 +64,9 @@ public abstract class BonyVirtualCharApp<BRCT extends BonyRenderContext> extends
 		getBonyRenderContext().setPanel(vcp);
 		// assetManager does not exist until start is called, triggering simpleInit callback.
 	}
+	/**
+	 * Blocks until all canvas init is complete, including execution of the simpleInitApp methods.
+	 */
 	public void startJMonkeyCanvas() { 
 		theLogger.info("*********** startJMonkeyCanvas is starting");
 		this.startCanvas();  		// equivalent to this?:     start(JmeContext.Type.Canvas);

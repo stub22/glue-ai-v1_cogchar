@@ -32,6 +32,7 @@ import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.OSGiUtils;
 
 import org.cogchar.bundle.app.puma.PumaAppContext;
+import org.cogchar.bundle.app.puma.PumaBooter;
 import org.cogchar.bundle.app.puma.PumaDualCharacter;
 
 import org.cogchar.render.app.bony.BonyRenderContext;
@@ -66,6 +67,32 @@ public final class VirtualCharTopComponent extends TopComponent {
         myInitializedFlag = false;
     }
     
+	private class PumaBootContextMediator extends PumaBooter.ContextMediator {
+	
+		@Override 
+		public boolean getFlagAllowJFrames() {
+			return false;
+		}
+		@Override
+		public String getOptionalFilesysRoot() {
+			return Installer.getVirtcharNBClusterDir();
+		}
+		@Override
+		public String getSysContextRootURI() {	
+		// Our sysContextURI is still hardcoded here, but by starting with "NB" we tell our (still stubbed out)
+		// config system that we are running under Netbeans Platform GUI (implying Netigso), so, only
+		// Robokind-Workshop-friendly features should be activated.  
+		// String dualCharURI = "urn:org.cogchar/platform/nb701?charName=HRK_Zeno_R50&version=20120302";    			
+			return  "NBURI:huzzah";
+		}
+		@Override
+		public void notifyContextBuilt(PumaAppContext pac) throws Throwable { 
+			BonyRenderContext brc = pac.getHumanoidRenderContext();
+			// Create/find the Cogchar-enabled Swing GUI panel to display inside this Netbeans Component window.
+			initVirtualCharPanel(brc);			
+		}
+		
+	}
     private synchronized void init(BundleContext bundleCtx) throws Throwable {
 		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - 'Simulator' panel init() - BEGIN");
         if(myInitializedFlag){
@@ -74,43 +101,12 @@ public final class VirtualCharTopComponent extends TopComponent {
         if(bundleCtx == null){
             throw new NullPointerException();
         }
-		// Our sysContextURI is still hardcoded here, but by starting with "NB" we tell our (still stubbed out)
-		// config system that we are running under Netbeans Platform GUI (implying Netigso), so, only
-		// Robokind-Workshop-friendly features should be activated.  This area is ripe for improvement
-		// in Cogchar 1.0.4, due in March 2012.
-		// String dualCharURI = "urn:org.cogchar/platform/nb701?charName=HRK_Zeno_R50&version=20120302";       
-		
-		String sysContextURI = "NBURI:huzzah";             
-		String sysLocalTempConfigDir = Installer.getVirtcharNBClusterDir();
-		
-		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI, sysLocalTempConfigDir);
-		
-		BonyRenderContext brc = pac.getHumanoidRenderContext();
-		
-		// Create/find a Cogchar-enabled Swing GUI panel to display inside this Netbeans Component window.
-		
-		initVirtualCharPanel(brc);
-		
-		// Start up the JME OpenGL canvas, which will in turn initialize the Cogchar rendering "App" (in JME3 lingo).
-		// This step will load all the 3D models (and other rendering resources) that Cogchar needs, based
-		// on what is implied by the sysContextURI we supplied to the PumaAppContext constructor above.
-		
-		// Firing up the OpenGL canvas requires access to sun.misc.Unsafe, which must be explicitly imported 
-		// by ext.bundle.osgi.jmonkey, and explicitly allowed by the container using Netigso
-		
-		pac.startOpenGLCanvas(false);
-		
-		// Now we have an Cogchar+JME3+OpenGL canvas, connected to our Netbeans Swing App.  
-		
-		// So, let's connect the Cogchar PUMA application (configured by implications of the sysContextURI and
-		// sysLocalTempConfigDir passed to PumaAppContext constructor).
-		
-		// The result is a list of connected "dual" characters, which each have a presence 
-		// in both Cogchar virtual space and Robokind physical space.
-		
-		List<PumaDualCharacter> pdcList = pac.connectDualRobotChars();	
 
-        myInitializedFlag = true;
+		PumaBootContextMediator mediator = new PumaBootContextMediator();
+		PumaBooter booter = new PumaBooter();		
+		PumaBooter.BootResult bootResult = booter.bootUnderOSGi(bundleCtx, mediator);
+
+		myInitializedFlag = true;
 		theLogger.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX - 'Simulator' panel init() - END");
     }
     
