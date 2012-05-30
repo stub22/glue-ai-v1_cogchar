@@ -115,10 +115,10 @@ lci:control_4
 .
 
 lci:control_5
-	lc:type					"PUSHYBUTTON";
+	lc:type					"LISTBOX";
 	lc:id					5;
 	lc:action				"sceneTrig_04";
-	lc:text					"Scene 4";
+	lc:text					"Select a Control!,Button,Text Input,Select Boxes,Radio Buttons";
 	lc:style				"buttonred";
 	lc:resource				"still-27.jpg";
 .
