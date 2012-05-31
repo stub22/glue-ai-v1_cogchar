@@ -17,8 +17,8 @@
 package org.cogchar.api.convoid.cue;
 
 import java.util.Map;
-import org.cogchar.platform.stub.CueSpaceStub;
-import org.cogchar.platform.stub.CueStub;
+import org.cogchar.zzz.platform.stub.CueSpaceStub;
+import org.cogchar.zzz.platform.stub.CueStub;
 
 public interface ConvoidCueSpace extends CueSpaceStub {
 	public VerbalCue addVerbalCueForMeanings(Map<String, Double> meanings, double strength);

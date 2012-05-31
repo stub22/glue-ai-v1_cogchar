@@ -74,6 +74,8 @@
 		<module>../org.cogchar.lib.convoid</module>
 		<module>../org.cogchar.lib.integroid</module>		
 		<module>../org.cogchar.lib.freckler</module>		
+		
+		<module>../org.cogchar.lib.sonograph</module>
 			
 		<module>../ext.bundle.opengl.jmonkey</module>
 		<module>../ext.bundle.opengl.nifty</module>

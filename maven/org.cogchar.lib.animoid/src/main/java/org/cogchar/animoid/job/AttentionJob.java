@@ -22,7 +22,7 @@ import org.cogchar.animoid.gaze.GazeStrategyCue;
 import org.cogchar.animoid.gaze.IGazeTarget;
 import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.api.animoid.protocol.Frame;
-import org.cogchar.platform.stub.JobSpaceStub;
+import org.cogchar.zzz.platform.stub.JobSpaceStub;
 import org.cogchar.sight.hypo.SightModel;
 
 import org.slf4j.Logger;

@@ -18,7 +18,7 @@ package org.cogchar.animoid.job;
 
 
 import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
-import org.cogchar.platform.stub.JobStub;
+import org.cogchar.zzz.platform.stub.JobStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

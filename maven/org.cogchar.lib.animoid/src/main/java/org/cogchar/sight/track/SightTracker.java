@@ -24,7 +24,7 @@ import org.cogchar.sight.hypo.SightModel;
 import org.cogchar.api.sight.SightObservation;
 import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
 import org.cogchar.api.animoid.protocol.EgocentricDirection;
-import org.cogchar.platform.stub.CueBrokerStub;
+import org.cogchar.zzz.platform.stub.CueBrokerStub;
 import org.cogchar.platform.util.TimeUtils;
 
 /**

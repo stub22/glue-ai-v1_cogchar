@@ -33,7 +33,7 @@ import org.cogchar.api.animoid.protocol.JVFrame;
 import org.cogchar.api.animoid.protocol.Joint;
 import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
 import org.cogchar.api.animoid.protocol.JointVelocityAROMPS;
-import org.cogchar.platform.stub.JobSpaceStub;
+import org.cogchar.zzz.platform.stub.JobSpaceStub;
 import org.cogchar.platform.util.TimeUtils;
 import org.cogchar.sight.hypo.SightModel;
 import org.slf4j.Logger;

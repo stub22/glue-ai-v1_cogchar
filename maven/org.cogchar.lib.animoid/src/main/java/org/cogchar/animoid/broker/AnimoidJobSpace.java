@@ -16,7 +16,7 @@
 
 package org.cogchar.animoid.broker;
 
-import org.cogchar.platform.stub.JobSpaceStub;
+import org.cogchar.zzz.platform.stub.JobSpaceStub;
 
 /**
  *

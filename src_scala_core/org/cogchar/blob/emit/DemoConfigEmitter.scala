@@ -21,6 +21,21 @@ package org.cogchar.blob.emit
  */
 
 class DemoConfigEmitter {
+
+	val myBehaviorCE : BehaviorConfigEmitter = new BehaviorConfigEmitter();
+		
+	def getBehaviorConfigEmitter() : BehaviorConfigEmitter = myBehaviorCE;
+	
+	def getSystemContextURI() : String = { myBehaviorCE.getSystemContextURI()}
+	
+	val myConvyCE : ConvyConfigEmitter = new ConvyConfigEmitter();
+	
+	def	getConvyConfigEmitter() : ConvyConfigEmitter = myConvyCE;
+
+	val myRobokindBindingCE : RobokindBindingConfigEmitter = new RobokindBindingConfigEmitter();
+	
+	def	getRobokindBindingConfigEmitter() : RobokindBindingConfigEmitter = myRobokindBindingCE;	
+
 	// Set to OpenGL - 1 mode for 915GM graphics controller
 	val DEFAULT_RENDERER_NAME = "LWJGL-OpenGL-Any";
 	val DEFAULT_CANVAS_WIDTH = 800;
@@ -36,6 +51,7 @@ class DemoConfigEmitter {
 	def getMaterialPath : String = PATH_UNSHADED_MAT;
 	
 	def getAppSettingsDefloadFlag : Boolean = true;
+
 	
 	
 	/*

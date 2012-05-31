@@ -9,7 +9,7 @@
 
 package org.cogchar.sight.vision;
 
-import org.cogchar.nwrap.core.NativeEngine;
+import org.cogchar.zzz.nwrap.core.NativeEngine;
 import java.awt.Graphics;
 
 /**

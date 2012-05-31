@@ -19,7 +19,7 @@ package org.cogchar.api.convoid.act;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.cogchar.platform.stub.CueStub;
+import org.cogchar.zzz.platform.stub.CueStub;
 
 /**
  *

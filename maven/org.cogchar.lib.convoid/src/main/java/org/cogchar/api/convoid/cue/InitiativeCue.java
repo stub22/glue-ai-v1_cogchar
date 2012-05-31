@@ -16,7 +16,7 @@
 
 package org.cogchar.api.convoid.cue;
 
-import org.cogchar.api.platform.cues.NamedCue;
+import org.cogchar.zzz.api.platform.cues.NamedCue;
 
 /**
  *

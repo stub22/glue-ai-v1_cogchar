@@ -24,13 +24,13 @@ import org.cogchar.animoid.gaze.IGazeTarget;
 import org.cogchar.animoid.job.AnimationExecJob;
 import org.cogchar.api.animoid.protocol.Library;
 import org.cogchar.api.integroid.cue.AwarenessCue;
-import org.cogchar.api.platform.cues.NamedCue;
-import org.cogchar.api.platform.cues.NowCue;
-import org.cogchar.api.platform.cues.TextCue;
-import org.cogchar.api.platform.cues.ThoughtCue;
-import org.cogchar.api.platform.cues.TimerCue;
-import org.cogchar.api.platform.cues.VariableCue;
-import org.cogchar.platform.stub.CueStub;
+import org.cogchar.zzz.api.platform.cues.NamedCue;
+import org.cogchar.zzz.api.platform.cues.NowCue;
+import org.cogchar.zzz.api.platform.cues.TextCue;
+import org.cogchar.zzz.api.platform.cues.ThoughtCue;
+import org.cogchar.zzz.api.platform.cues.TimerCue;
+import org.cogchar.zzz.api.platform.cues.VariableCue;
+import org.cogchar.zzz.platform.stub.CueStub;
 
 /**
  *

@@ -16,7 +16,7 @@
 
 package org.cogchar.integroid.awareness;
 
-import org.cogchar.api.platform.cues.ThoughtCue;
+import org.cogchar.zzz.api.platform.cues.ThoughtCue;
 import org.cogchar.integroid.broker.IntegroidFacade;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.sight.hypo.SightModel;

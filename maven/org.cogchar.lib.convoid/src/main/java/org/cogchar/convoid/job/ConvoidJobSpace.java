@@ -17,8 +17,8 @@
 package org.cogchar.convoid.job;
 
 import java.util.List;
-import org.cogchar.platform.stub.JobSpaceStub;
-import org.cogchar.platform.stub.JobStub;
+import org.cogchar.zzz.platform.stub.JobSpaceStub;
+import org.cogchar.zzz.platform.stub.JobStub;
 
 /**
  *
