@@ -269,12 +269,6 @@
 					<cluster>${brandingToken}</cluster>
 					<useOSGiDependencies>true</useOSGiDependencies>
 					<nbmResources>
-						<!--
-						<nbmResource>
-							<directory>${cogcharTempConfigSrc}/lib-native</directory>
-							<targetPath>native-lib</targetPath>
-						</nbmResource>
-						-->
 						<nbmResource>
 							<directory>${cogcharTempConfigSrc}/logging_default</directory>
 							<targetPath>${cogcharConfigTgt}/logging_temp</targetPath>
@@ -286,11 +280,7 @@
 						<nbmResource>
 							<directory>${cogcharTempConfigSrc}/rk_bind_config</directory>
 							<targetPath>${cogcharConfigTgt}/rk_bind_temp</targetPath>
-						</nbmResource>
-						<nbmResource>
-							<directory>${cogcharTempConfigSrc}/logging_default</directory>
-							<targetPath>${cogcharConfigTgt}/logging_temp</targetPath>
-						</nbmResource>				
+						</nbmResource>			
 					</nbmResources>
 				</configuration>
 			</plugin>

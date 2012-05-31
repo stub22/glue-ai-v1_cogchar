@@ -32,8 +32,8 @@ import org.cogchar.api.integroid.cue.AwarenessCue;
 import org.cogchar.api.integroid.cue.MotionCue;
 import org.cogchar.api.integroid.cue.PersonCue;
 import org.cogchar.animoid.broker.AnimoidCueSpaceStub;
-import org.cogchar.platform.stub.CueBrokerStub;
-import org.cogchar.platform.stub.JobConfig;
+import org.cogchar.zzz.platform.stub.CueBrokerStub;
+import org.cogchar.zzz.platform.stub.JobConfig;
 
 
 public class IntegroidCueBroker extends CueBrokerStub implements ConvoidCueSpace, AnimoidCueSpaceStub, JobConfig.Source {

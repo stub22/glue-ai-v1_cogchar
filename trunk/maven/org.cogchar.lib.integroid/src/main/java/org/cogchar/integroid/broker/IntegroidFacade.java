@@ -28,8 +28,8 @@ import org.cogchar.convoid.broker.ConvoidFacadeSource;
 import org.cogchar.convoid.broker.IRemoteResponseInterface;
 import org.cogchar.api.convoid.act.Category;
 import org.cogchar.convoid.job.AgendaManager;
-import org.cogchar.api.platform.cues.ThoughtCue;
-import org.cogchar.api.platform.cues.VariableCue;
+import org.cogchar.zzz.api.platform.cues.ThoughtCue;
+import org.cogchar.zzz.api.platform.cues.VariableCue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

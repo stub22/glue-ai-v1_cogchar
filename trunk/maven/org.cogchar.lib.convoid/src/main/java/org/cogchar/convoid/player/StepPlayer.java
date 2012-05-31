@@ -8,7 +8,7 @@ import org.cogchar.convoid.broker.ConvoidFacade;
 import org.cogchar.convoid.broker.ConvoidFacadeSource;
 import org.cogchar.api.convoid.cue.ConvoidCueSpace;
 import org.cogchar.convoid.job.ConversationJob;
-import org.cogchar.platform.stub.ThalamentStub;
+import org.cogchar.zzz.platform.stub.ThalamentStub;
 
 /**
  *

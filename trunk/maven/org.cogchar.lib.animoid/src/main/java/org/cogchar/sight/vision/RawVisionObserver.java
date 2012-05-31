@@ -9,7 +9,7 @@
 
 package org.cogchar.sight.vision;
 
-import org.cogchar.integroid.boot.ThreadAwareObject;
+import org.cogchar.zzz.oldboot.ThreadAwareObject;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;

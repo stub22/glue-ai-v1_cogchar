@@ -10,7 +10,7 @@ import org.cogchar.convoid.player.BehaviorContext.Detail;
 import java.util.ArrayList;
 import java.util.List;
 import org.cogchar.convoid.broker.ConvoidFacadeSource;
-import org.cogchar.platform.stub.ThalamentStub;
+import org.cogchar.zzz.platform.stub.ThalamentStub;
 
 /**
  *

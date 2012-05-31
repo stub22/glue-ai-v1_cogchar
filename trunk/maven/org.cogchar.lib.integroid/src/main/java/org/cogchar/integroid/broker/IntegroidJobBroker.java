@@ -25,7 +25,7 @@ import org.cogchar.convoid.job.ConvoidJobSpace;
 import org.cogchar.convoid.broker.ConvoidFacade;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.animoid.broker.AnimoidJobSpace;
-import org.cogchar.platform.stub.JobBrokerStub;
+import org.cogchar.zzz.platform.stub.JobBrokerStub;
 
 // import org.drools.WorkingMemory;
 

@@ -24,7 +24,7 @@ import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
 import org.cogchar.api.animoid.gaze.GazeJoint;
 import org.cogchar.api.animoid.gaze.GazeJointStrategy;
 import org.cogchar.api.animoid.gaze.GlanceStrategy;
-import org.cogchar.platform.stub.CueStub;
+import org.cogchar.zzz.platform.stub.CueStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

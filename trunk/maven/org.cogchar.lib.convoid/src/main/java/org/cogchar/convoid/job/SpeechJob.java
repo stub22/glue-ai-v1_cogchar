@@ -23,7 +23,7 @@ import org.cogchar.api.convoid.act.Step;
 import java.util.List;
 import java.util.Random;
 import org.cogchar.convoid.broker.ConvoidFacade;
-import org.cogchar.platform.stub.JobStub;
+import org.cogchar.zzz.platform.stub.JobStub;
 import org.cogchar.platform.util.TimeUtils;
 
 /**

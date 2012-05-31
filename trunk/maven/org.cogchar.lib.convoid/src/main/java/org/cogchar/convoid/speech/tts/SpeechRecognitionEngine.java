@@ -15,7 +15,7 @@
  */
 package org.cogchar.convoid.speech.tts;
 
-import org.cogchar.nwrap.core.NativeEngine;
+import org.cogchar.zzz.nwrap.core.NativeEngine;
 
 /**
  *

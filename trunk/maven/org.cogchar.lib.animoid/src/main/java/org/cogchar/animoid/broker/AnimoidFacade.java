@@ -44,7 +44,7 @@ import org.cogchar.api.animoid.protocol.JointPositionAROM;
 import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
 import org.cogchar.api.animoid.protocol.Library;
 import org.cogchar.api.animoid.protocol.Robot;
-import org.cogchar.platform.stub.JobSpaceStub;
+import org.cogchar.zzz.platform.stub.JobSpaceStub;
 import org.cogchar.sight.hypo.SightHypothesis;
 import org.cogchar.sight.hypo.SightModel;
 import org.slf4j.Logger;

@@ -21,8 +21,8 @@ import java.util.logging.Logger;
 
 import org.cogchar.api.convoid.act.Step;
 import java.util.Map;
-import org.cogchar.platform.stub.JobStub;
-import org.cogchar.platform.stub.JobStub.Status;
+import org.cogchar.zzz.platform.stub.JobStub;
+import org.cogchar.zzz.platform.stub.JobStub.Status;
 
 /**
  * @author Stu B. <www.texpedient.com>
