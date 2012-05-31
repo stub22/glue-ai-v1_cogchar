@@ -15,8 +15,8 @@
  */
 package org.cogchar.animoid.broker;
 
-import org.cogchar.platform.stub.CueSpaceStub;
-import org.cogchar.platform.stub.CueSpaceStub;
+import org.cogchar.zzz.platform.stub.CueSpaceStub;
+import org.cogchar.zzz.platform.stub.CueSpaceStub;
 
 /**
  * @author Stu B. <www.texpedient.com>

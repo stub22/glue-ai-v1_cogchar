@@ -44,9 +44,9 @@ import org.cogchar.api.convoid.cue.ModeCue;
 import org.cogchar.api.convoid.cue.PhaseCue;
 import org.cogchar.api.convoid.cue.ResponseCue;
 import org.cogchar.api.convoid.cue.VerbalCue;
-import org.cogchar.api.platform.cues.TimerCue;
-import org.cogchar.platform.stub.JobStub;
-import org.cogchar.platform.stub.ThalamentStub;
+import org.cogchar.zzz.api.platform.cues.TimerCue;
+import org.cogchar.zzz.platform.stub.JobStub;
+import org.cogchar.zzz.platform.stub.ThalamentStub;
 
 /**
  *

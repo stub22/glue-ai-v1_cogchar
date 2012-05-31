@@ -81,11 +81,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	
 	val NB_PLATFORM_CURRENT = "nb701";
 	
-	val myBehaviorCE : BehaviorConfigEmitter = new BehaviorConfigEmitter();
-		
-	def getBehaviorConfigEmitter() : BehaviorConfigEmitter = myBehaviorCE;
-	
-	def getSystemContextURI() : String = { myBehaviorCE.getSystemContextURI()}
+
 	
 	def isZenoHome() : Boolean = {	true;	}
 	

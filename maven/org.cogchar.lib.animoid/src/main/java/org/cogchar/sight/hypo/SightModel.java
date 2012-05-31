@@ -35,7 +35,7 @@ import org.cogchar.api.animoid.gaze.GazeJoint;
 import org.cogchar.api.sight.SightPort;
 import org.cogchar.api.animoid.protocol.EgocentricDirection;
 import org.cogchar.api.animoid.protocol.Frame;
-import org.cogchar.platform.stub.CueSpaceStub;
+import org.cogchar.zzz.platform.stub.CueSpaceStub;
 import org.cogchar.platform.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

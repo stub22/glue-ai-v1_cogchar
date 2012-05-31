@@ -19,10 +19,10 @@ package org.cogchar.convoid.job;
 import org.cogchar.api.convoid.act.*;
 import java.util.logging.Logger;
 import org.cogchar.api.convoid.cue.ConvoidCueSpace;
-import org.cogchar.platform.stub.ChainJob;
-import org.cogchar.platform.stub.JobConfig;
-import org.cogchar.platform.stub.JobStub;
-import org.cogchar.platform.stub.ThalamentStub;
+import org.cogchar.zzz.platform.stub.ChainJob;
+import org.cogchar.zzz.platform.stub.JobConfig;
+import org.cogchar.zzz.platform.stub.JobStub;
+import org.cogchar.zzz.platform.stub.ThalamentStub;
 
 /**
  *

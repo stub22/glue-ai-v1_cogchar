@@ -16,7 +16,7 @@
 
 package org.cogchar.convoid.job;
 
-import org.cogchar.platform.stub.JobStub;
+import org.cogchar.zzz.platform.stub.JobStub;
 
 /**
  *

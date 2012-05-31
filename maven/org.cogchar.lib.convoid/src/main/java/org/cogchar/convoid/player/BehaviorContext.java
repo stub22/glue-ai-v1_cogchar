@@ -2,7 +2,7 @@ package org.cogchar.convoid.player;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cogchar.platform.stub.ThalamentStub;
+import org.cogchar.zzz.platform.stub.ThalamentStub;
 
 /**
  *

@@ -18,13 +18,6 @@
 	<dependencies>
 		
 		<dependency>
-			<!-- commons-math used in cogchar.audio.processing -->
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math</artifactId>
-			<version>2.2</version>
-		</dependency>		
-
-		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<version>${appdapter.version}</version>
@@ -54,6 +47,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<!-- commons-math used in both o.c.l.animoid and o.c.l.sonograph -->
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math</artifactId>
+			<version>2.2</version>
+		</dependency>				
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.xpp3</artifactId>

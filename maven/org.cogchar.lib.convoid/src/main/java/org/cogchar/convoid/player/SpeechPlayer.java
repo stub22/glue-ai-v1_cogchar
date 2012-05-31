@@ -8,7 +8,7 @@ import org.cogchar.convoid.broker.ChatHelpFuncs;
 import org.cogchar.convoid.broker.ConvoidFacadeSource;
 import org.cogchar.convoid.broker.ConvoidHelpFuncs;
 import org.cogchar.convoid.job.SpeechJob;
-import org.cogchar.platform.stub.ThalamentStub;
+import org.cogchar.zzz.platform.stub.ThalamentStub;
 import org.cogchar.platform.util.TimeUtils;
 
 /**
