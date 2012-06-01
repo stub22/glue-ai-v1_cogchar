@@ -59,7 +59,7 @@ public class DictationConfigUtils {
         conf.addProperty(String.class, CONF_BROKER_CLIENT_NAME, "client1");
         conf.addProperty(String.class, CONF_BROKER_VIRTUAL_HOST, "test");
         conf.addProperty(String.class, CONF_DESTINATION, 
-                "speechRec.Event; {create: always, node: {type: queue}}");
+                "speechRecEvent; {create: always, node: {type: topic}}");
         
         return conf;
     }
