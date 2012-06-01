@@ -31,7 +31,6 @@ public class CogbotResponse {
     private String myResponse;
     private HashSet<String> animations = new HashSet<String>();
     private String initialRequest;
-    private Properties myConfig;
     public static double scoreMult = 8;
     public static int scoreMax = 12;
     private double scoreCurrent = scoreMult;
@@ -48,11 +47,10 @@ public class CogbotResponse {
     public Long getEndTimeMillis() {
         return myEndTimeMillis;
     }
-    public CogbotResponse(CogbotAvatar av, PrintWriter cogbot, Properties config,
+    public CogbotResponse(CogbotAvatar av, PrintWriter cogbot,
             String input, String userName, String botId) {
         callback = cogbot;
         avatar = av;
-        myConfig = config;
         usernameInRequest = userName;//av.coerceToUser(userName);
         currentBotId = botId;
         initialRequest = input;

@@ -11,10 +11,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.cogchar.bind.cogbot.cogsim.CogSimConf;
+import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
 
 
 
@@ -23,19 +23,10 @@ import org.cogchar.bind.cogbot.cogsim.CogSimConf;
  * @author Administrator
  */
 public class CogbotService {
-
-    final public static String cogbot_url_local = "cogbot_url_local";
-    final public static String cogbot_binary_folder = "cogbot_binary_folder";
-    final public static String cogbot_config_folder = "cogbot_config_folder";
-    final public static String cogbot_port_number = "cogbot_port_number";
-    final public static String cogsim_enable =  "cogsim_enable";
-    
     transient static PrintWriter stdoutput = new PrintWriter(System.err);
-    private static Logger theLogger = Logger.getLogger(CogbotService.class.getName());
+    private final static Logger theLogger = Logger.getLogger(CogbotService.class.getName());
     transient static CogbotService singleton = new CogbotService();
-    public static boolean disableJMX = false;
-    final Properties config = new Properties();
-    final CogSimConf simConf = new CogSimConf(config);
+    final CogSimConf simConf = new CogSimConf();
     transient CogbotAvatar singleAvatar;
     transient boolean isCogbotAvailable = false;
     transient boolean isCogbotLocalChanging = false;
@@ -49,18 +40,13 @@ public class CogbotService {
 
     public static void main(String args) {
     }
-    private String portNum;
-
-    public Properties getProperties() {
-        return config;
-    }
 
     private static CogbotService getSingleInstance() {
         return singleton;
     }
 
-    public static CogbotAvatar getDefaultAvatar(Properties object) {
-        return getInstance(object).getAvatar();
+    public static CogbotAvatar getDefaultAvatar() {
+        return getInstance().getAvatar();
     }
 
     private CogbotService() {
@@ -84,7 +70,7 @@ public class CogbotService {
         stdoutput.flush();
     }
 
-    synchronized void startLocalProcess(final String ip) {
+    synchronized void startLocalProcess() {
         if (isCogbotLocalChanging) {
             return;
         }
@@ -93,6 +79,7 @@ public class CogbotService {
         }
         shutDownHook = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 CogbotService.this.killLocalProcessNow();
             }
@@ -100,39 +87,40 @@ public class CogbotService {
         Runtime.getRuntime().addShutdownHook(shutDownHook);
         localProcessThread = new Thread(new Runnable() {
 
+            @Override
             public void run() {
-                CogbotService.this.startLocalProcessNow(ip);
+                CogbotService.this.startLocalProcessNow();
             }
         });
         localProcessThread.start();
     }
 
-    synchronized boolean isRunning(String localIp) {
+    synchronized boolean isRunning() {
         if (isCogbotAvailable) {
             return true;
         }
-        ensureAvailable(localIp);
+        ensureAvailable();
         return isCogbotAvailable;
     }
 
-    public static synchronized CogbotService getInstance(Properties myProperties) {
+    public static synchronized CogbotService getInstance() {
         CogbotService service = CogbotService.getSingleInstance();
-        service.addConfig(myProperties);
-        service.ensureAvailable(myProperties.getProperty(CogbotService.cogbot_url_local));
+        service.ensureAvailable();
         return service;
     }
     Thread ensureAvail = null;
     final Object starupShutdownLock = new Object();
 
-    void ensureAvailable(final String url) {
+    void ensureAvailable() {
         synchronized (starupShutdownLock) {
             if (ensureAvail != null) {
                 return;
             }
             ensureAvail = new Thread(new Runnable() {
 
+                @Override
                 public void run() {
-                    ensureAvailable0(url);
+                    ensureAvailable0();
                     synchronized (starupShutdownLock) {
                         ensureAvail = null;
                     }
@@ -142,66 +130,58 @@ public class CogbotService {
         }
     }
 
-    synchronized void ensureAvailable0(String localIp) {
+    synchronized void ensureAvailable0() {
         if (isCogbotAvailable) {
             return;
         }
         if (!COGBOT_LOCAL_CHECKED) {
             COGBOT_LOCAL_CHECKED = true;
-            if (cogbotPing(localIp)) {
-                simConf.setIp(localIp);
+            if (cogbotPing()) {
+                simConf.setIp(getValue(String.class, CONF_COGBOT_IP));
                 isCogbotAvailable = true;
                 return;
             }
         }
-        if (!COGBOT_EC2_CHECKED) {
-            String ip = config.getProperty(cogbot_url_local, "binabot.gotdns.org");
-            COGBOT_EC2_CHECKED = true;
-            if (cogbotPing(ip)) {
-                simConf.setIp(ip);
-                isCogbotAvailable = true;
-                return;
-            }
-        }
-        startLocalProcess(localIp);
-
-        if (!COGBOT_LOCAL_CHECKED_AFTER_START) {
-            COGBOT_LOCAL_CHECKED_AFTER_START = true;
-            if (cogbotPing(localIp)) {
-                simConf.setIp(localIp);
-                isCogbotAvailable = true;
-                return;
-            }
-        }
+//        if (!COGBOT_EC2_CHECKED) {
+//            String ip = config.getProperty(cogbot_url_local, "binabot.gotdns.org");
+//            COGBOT_EC2_CHECKED = true;
+//            if (cogbotPing()) {
+//                simConf.setIp(ip);
+//                isCogbotAvailable = true;
+//                return;
+//            }
+//        }
+//        startLocalProcess(localIp);
+//
+//        if (!COGBOT_LOCAL_CHECKED_AFTER_START) {
+//            COGBOT_LOCAL_CHECKED_AFTER_START = true;
+//            if (cogbotPing()) {
+//                simConf.setIp(localIp);
+//                isCogbotAvailable = true;
+//                return;
+//            }
+//        }
 
         echo("NO COGBOT FOUND ANYWHERE? - install it to $hanson-root/cogbot/ ");
         echo("  or change cogbot_url_local in the $hanson-root/config/mene/config.properties");
         COGBOT_LOCAL_CHECKED = false;
-        COGBOT_EC2_CHECKED = false;
-        COGBOT_LOCAL_CHECKED_AFTER_START = false;
+//        COGBOT_EC2_CHECKED = false;
+//        COGBOT_LOCAL_CHECKED_AFTER_START = false;
     }
 
 
     public CogbotResponse getCogbotResponse(CogbotAvatar av, String input, String userName, String botId) {
-        return new CogbotResponse(av, stdoutput, config, input, userName, botId);
+        return new CogbotResponse(av, stdoutput, input, userName, botId);
     }
 
-    public CogbotResponse getCogbotResponse(CogbotAvatar av, PrintWriter servicePw, Properties myProperties, String input, String userName, String botName) {
-        if (!isRunning(myProperties.getProperty(CogbotService.cogbot_url_local))) {
+    public CogbotResponse getCogbotResponse(CogbotAvatar av, PrintWriter servicePw, String input, String userName, String botName) {
+        if (!isRunning()) {
         }
-        return new CogbotResponse(av, servicePw, myProperties, input,  userName, botName);
+        return new CogbotResponse(av, servicePw, input,  userName, botName);
     }
 
-    public CogbotResponse getCogbotResponse(CogbotAvatar cogbotAvatar, PrintWriter servicePw, Properties myProperties, String input, String theBotId) {
-        return getCogbotResponse(cogbotAvatar, servicePw, myProperties, input,null,theBotId);
-    }
-
-
-    public void addConfig(Properties props) {
-        if (props == null) {
-            return;
-        }
-        config.putAll(props);
+    public CogbotResponse getCogbotResponse(CogbotAvatar cogbotAvatar, PrintWriter servicePw, String input, String theBotId) {
+        return getCogbotResponse(cogbotAvatar, servicePw, input, null, theBotId);
     }
 
     public void setOutput(PrintWriter servicePw) {
@@ -223,7 +203,6 @@ public class CogbotService {
     private synchronized CogbotAvatar getAvatar() {
         if (singleAvatar == null) {
             singleAvatar = new CogbotAvatar(this);
-            singleAvatar.readProperties(config);
         }
         return singleAvatar;
     }
@@ -232,20 +211,21 @@ public class CogbotService {
         return stdoutput;
     }
 
-    private boolean cogbotPing(String string) {
-        portNum = config.getProperty(cogbot_port_number, "5580");
+    private boolean cogbotPing() {
         try {
-            URL url = new URL("http://" + string + ":" + portNum + "/ping");
+            String ip = getValue(String.class, CONF_COGBOT_IP);
+            String port = getValue(String.class, CONF_COGBOT_PORT);
+            URL url = new URL("http://" + ip + ":" + port + "/ping");
             try {
                 url.openConnection().getInputStream().close();
-                echo("COGBOT FOUND AT " + string);
+                echo("COGBOT FOUND AT " + ip);
                 return true;
             } catch (IOException ex) {
-                echo("NO COGBOT FOUND AT " + string);
+                echo("NO COGBOT FOUND AT " + ip);
                 return false;
             }
         } catch (MalformedURLException ex) {
-            theLogger.getLogger(CogbotService.class.getName()).log(Level.SEVERE, null, ex);
+            theLogger.log(Level.SEVERE, null, ex);
             return false;
         }
 
@@ -255,7 +235,7 @@ public class CogbotService {
         return simConf;
     }
 
-    synchronized void startLocalProcessNow(String ip) {
+    synchronized void startLocalProcessNow() {
         try {
             if (isCogbotLocalChanging) {
                 return;
@@ -266,7 +246,7 @@ public class CogbotService {
             }
             isCogbotAvailable = true;
             echo("// CWD = ", new java.io.File(".").getCanonicalPath());
-            String dirString = config.getProperty(cogbot_binary_folder, "C:\\_hanson\\_deploy\\distro_20a\\cogbot");
+            String dirString = getValue(String.class, OLD_CONF_COBOT_BIN_DIR);
             File dir = new File(dirString);
             if (!dir.exists()) {
                 echo("!Exists dir = " + dir.getAbsolutePath());
@@ -278,7 +258,7 @@ public class CogbotService {
             localProcess = Runtime.getRuntime().exec(exec, null, dir);
             isCogbotLocalChanging = false;
             isCogbotAvailable = true;
-            simConf.setIp(ip);
+            simConf.setIp(getValue(String.class, CONF_COGBOT_IP));
             String line;
 
             BufferedReader input =
@@ -297,7 +277,7 @@ public class CogbotService {
             if (why != null) {
                 stdoutput.println("BECAUSE " + why.getMessage());
             }
-            Logger.getLogger(CogbotService.class.getName()).log(Level.SEVERE, null, ex);
+            theLogger.log(Level.SEVERE, null, ex);
             failLocalProcessNow();
         }
     }
@@ -320,7 +300,7 @@ public class CogbotService {
         } catch (Exception ex) {
             ex.printStackTrace(stdoutput);
             isCogbotAvailable = false;
-            Logger.getLogger(CogbotService.class.getName()).log(Level.SEVERE, null, ex);
+           theLogger.log(Level.SEVERE, null, ex);
         }
     }
 

@@ -5,9 +5,9 @@ package org.cogchar.bind.cogbot.main;
 import java.net.*;
 import java.io.*;
 
-import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
 
 public class CogbotCommunicator { // implements INexusService {
     private final static Logger theLogger = Logger.getLogger(CogbotCommunicator.class.getName());
@@ -15,6 +15,9 @@ public class CogbotCommunicator { // implements INexusService {
     //private String lastKnownUserId = null;
     private String theBotId = "";
     private CogbotService cogbotService;
+	CogbotAvatar cogbotAvatar;
+    
+    
     static PrintWriter servicePw = new PrintWriter(new Writer() {
 
         @Override
@@ -30,24 +33,24 @@ public class CogbotCommunicator { // implements INexusService {
         public void close() throws IOException {
         }
     });
-    private final Properties myProperties;
-	CogbotAvatar cogbotAvatar;
 
 
-    public CogbotCommunicator(String cogbotUrl) {
-        myProperties =  new Properties();
-        try {
-            myProperties.load(new FileReader("./resources/config.properties"));
-        } catch (IOException ex) {
-            Logger.getLogger(CogbotCommunicator.class.getName()).log(Level.SEVERE, null, ex);
+    public CogbotCommunicator(String cogbotIp) {
+        if(cogbotIp != null && !cogbotIp.isEmpty()){
+            setOrCreateValue(String.class, CONF_COGBOT_IP, cogbotIp);
         }
-        theBotId = sanitizeId(myProperties.getProperty("robot_fullname","Bina 48"));
+//        myProperties =  new Properties();
+//        try {
+//            myProperties.load(new FileReader(getValue(String.class, OLD_CONF_CONFIG_FOLDER)));
+//        } catch (IOException ex) {
+//            theLogger.log(Level.SEVERE, null, ex);
+//        }
+        theBotId = sanitizeId(getValue(String.class, OLD_CONF_FULL_NAME));
      //   lastKnownUserId = sanitizeId(myProperties.getProperty("default_username","UNKNOWN_PARTNER"));
-        setBotProperty(CogbotService.cogbot_url_local, cogbotUrl);
         HttpURLConnection.setFollowRedirects(true);
-        cogbotService = CogbotService.getInstance(myProperties);
+        cogbotService = CogbotService.getInstance();
         cogbotService.setOutput(servicePw);
-        cogbotAvatar = cogbotService.getDefaultAvatar(myProperties);
+        cogbotAvatar = CogbotService.getDefaultAvatar();
     }
 
     public GenRespWithConf getResponse(String input) {
@@ -66,7 +69,7 @@ public class CogbotCommunicator { // implements INexusService {
         CogbotResponse elRes = null;
         try {
             input = sanatizeInput(input);
-            elRes = cogbotService.getCogbotResponse(cogbotAvatar, servicePw, myProperties, input, theBotId);
+            elRes = cogbotService.getCogbotResponse(cogbotAvatar, servicePw, input, theBotId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -218,10 +221,6 @@ public class CogbotCommunicator { // implements INexusService {
     public String getId() {
         return lastKnownUserId;
     }*/
-
-    public void setBotProperty(String name, String value) {
-        myProperties.setProperty(name, value);
-    }
 
     public void log(Throwable e) {
         e.printStackTrace(servicePw);
