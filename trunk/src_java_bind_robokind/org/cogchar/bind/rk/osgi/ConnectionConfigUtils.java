@@ -17,8 +17,8 @@ package org.cogchar.bind.rk.osgi;
 
 import javax.jms.Connection;
 import org.jflux.api.core.Source;
-import org.jflux.api.core.util.Configuration;
-import org.jflux.api.core.util.DefaultConfiguration;
+import org.jflux.api.core.config.Configuration;
+import org.jflux.api.core.config.DefaultConfiguration;
 import org.jflux.api.core.util.DefaultTimestampSource;
 import org.robokind.impl.messaging.utils.ConnectionManager;
 
@@ -35,9 +35,7 @@ public class ConnectionConfigUtils {
     public static String CONF_BROKER_VIRTUAL_HOST = "msgBrokerVirtualHost";
     
     public static Configuration<String> buildDefaultConfig(){
-        Source<Long> ts = new DefaultTimestampSource();
-        DefaultConfiguration<Long,String> conf = 
-                new DefaultConfiguration<Long, String>(ts);
+        DefaultConfiguration<String> conf = new DefaultConfiguration<String>();
         
         conf.addProperty(String.class, CONF_BROKER_IP, "127.0.0.1");
         conf.addProperty(String.class, CONF_BROKER_PORT, "5672");

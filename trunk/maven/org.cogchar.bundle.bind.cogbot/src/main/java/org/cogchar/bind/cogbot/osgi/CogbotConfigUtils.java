@@ -16,10 +16,8 @@
 package org.cogchar.bind.cogbot.osgi;
 
 import org.jflux.api.core.Listener;
-import org.jflux.api.core.Source;
-import org.jflux.api.core.util.Configuration;
-import org.jflux.api.core.util.DefaultConfiguration;
-import org.jflux.api.core.util.DefaultTimestampSource;
+import org.jflux.api.core.config.Configuration;
+import org.jflux.api.core.config.DefaultConfiguration;
 
 /**
  *
@@ -62,17 +60,13 @@ public class CogbotConfigUtils {
     }
     
     private static Configuration<String> buildDefaultConfig(){
-        Source<Long> ts = new DefaultTimestampSource();
-        DefaultConfiguration<Long,String> conf = 
-                new DefaultConfiguration<Long, String>(ts);
+        DefaultConfiguration<String> conf = new DefaultConfiguration<String>();
         
         conf.addProperty(String.class, CONF_COGBOT_IP, "127.0.0.1");
         conf.addProperty(String.class, CONF_COGBOT_PORT, "5580");
         
-        conf.addProperty(String.class, OLD_CONF_COBOT_BIN_DIR, 
-                "C:\\_hanson\\_deploy\\distro_20a\\cogbot");
-        conf.addProperty(String.class, OLD_CONF_CONFIG_FOLDER,
-                "./resources/config.properties");
+        conf.addProperty(String.class, OLD_CONF_COBOT_BIN_DIR, "C:\\_hanson\\_deploy\\distro_20a\\cogbot");
+        conf.addProperty(String.class, OLD_CONF_CONFIG_FOLDER, "./resources/config.properties");
         conf.addProperty(String.class, OLD_CONF_FULL_NAME, "Bina Daxeline");
         conf.addProperty(String.class, OLD_CONF_COGBOT_NAME, "Bina Daxeline");
         

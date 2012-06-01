@@ -16,10 +16,8 @@
 package org.cogchar.bind.rk.osgi;
 
 import java.io.File;
-import org.jflux.api.core.Source;
-import org.jflux.api.core.util.Configuration;
-import org.jflux.api.core.util.DefaultConfiguration;
-import org.jflux.api.core.util.DefaultTimestampSource;
+import org.jflux.api.core.config.Configuration;
+import org.jflux.api.core.config.DefaultConfiguration;
 import org.robokind.api.common.config.VersionProperty;
 import org.robokind.api.motion.jointgroup.JointGroup;
 import org.robokind.api.motion.jointgroup.RobotJointGroup;
@@ -54,9 +52,7 @@ public class RobokindBindingConfigUtils {
     }
     
     private static Configuration<String> buildDefaultConfig(){
-        Source<Long> ts = new DefaultTimestampSource();
-        DefaultConfiguration<Long,String> conf = 
-                new DefaultConfiguration<Long, String>(ts);
+        DefaultConfiguration<String> conf = new DefaultConfiguration<String>();
         
         conf.addProperty(String.class, 
                 CONF_JOINTGROUP_XML_PATH, "resources/jointGroup.xml");
@@ -71,8 +67,7 @@ public class RobokindBindingConfigUtils {
         return conf;
     }
     
-    private static void addJointGroupConfig(
-            DefaultConfiguration<?,String> conf,
+    private static void addJointGroupConfig(DefaultConfiguration<String> conf, 
             Class paramClass, VersionProperty configFormat){
         conf.addProperty(Configuration.class, 
                 SVCCONF_ROBOT_JOINTGROUP, 
