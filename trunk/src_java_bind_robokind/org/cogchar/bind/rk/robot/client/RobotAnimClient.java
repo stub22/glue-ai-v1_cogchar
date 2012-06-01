@@ -26,8 +26,6 @@ import org.robokind.api.animation.MotionPath;
 import org.robokind.api.animation.utils.AnimationUtils;
 import org.robokind.api.animation.utils.ChannelsParameterSource;
 
-import org.robokind.impl.animation.xml.AnimationXMLReader;
-
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 
@@ -36,6 +34,8 @@ import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.robokind.api.animation.player.AnimationJob;
 import org.robokind.api.animation.player.AnimationPlayer;
+import org.robokind.api.animation.xml.AnimationFileReader;
+import org.robokind.api.animation.xml.AnimationXML;
 import org.robokind.api.common.playable.PlayState;
 
 
@@ -47,15 +47,15 @@ import org.robokind.api.common.playable.PlayState;
 public class RobotAnimClient extends BasicDebugger {
 	private	BundleContext		myBundleCtx;
 	private	String				myAnimPlayerOsgiFilterString;
-	private AnimationXMLReader	myAnimationReader;
+	private AnimationFileReader	myAnimationReader;
 	
 	public RobotAnimClient(BundleContext bundleCtx, String animationPlayerOsgiFilterString) throws Exception {
 		myBundleCtx = bundleCtx;
 		myAnimPlayerOsgiFilterString = animationPlayerOsgiFilterString;
 	}
-	public AnimationXMLReader getAnimationReader() { 
+	public AnimationFileReader getAnimationReader() { 
 		if (myAnimationReader == null) {
-			myAnimationReader = new AnimationXMLReader();
+			myAnimationReader = AnimationXML.getRegisteredReader();
 		}
 		return myAnimationReader;
 	}
@@ -110,17 +110,16 @@ public class RobotAnimClient extends BasicDebugger {
 	}	
 	public Animation readAnimationFromFile(String filepath){
         try{
-            return new AnimationXMLReader().readAnimation(filepath);
+            AnimationFileReader reader = getAnimationReader();
+            if(reader == null){
+                return null;
+            }
+            return reader.readAnimation(filepath);
         } catch(Exception ex){
             ex.printStackTrace();
             return null;
         }
     }
-
-    public Animation readAnimation(HierarchicalConfiguration config){
-		AnimationXMLReader axr = getAnimationReader();
-		return AnimationXMLReader.readAnimation(config);
-	}
 	/**
 	 * http://commons.apache.org/configuration/apidocs/org/apache/commons/configuration/XMLConfiguration.html
 	 * @param xmlConfFilePath
