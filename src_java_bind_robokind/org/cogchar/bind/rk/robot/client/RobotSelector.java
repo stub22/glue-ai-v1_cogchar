@@ -39,13 +39,11 @@ public interface RobotSelector extends PropertyChangeSource{
         private Robot.Id mySelectedId;
         
         public OSGiRobotSelector(){
-            mySelectedId = new Robot.Id("Avatar_ZenoR50");
-            myIds = new ArrayList<Id>();
-            myIds.add(mySelectedId);
+            myIds = new ArrayList<Robot.Id>();
         }
         
         @Override
-        public List<Id> getAvailableIds() {
+        public List<Robot.Id> getAvailableIds() {
             return myIds;
         }
 
@@ -55,8 +53,8 @@ public interface RobotSelector extends PropertyChangeSource{
         }
 
         @Override
-        public void selectId(Id robotId) {
-            if(myIds.contains(robotId)){
+        public void selectId(Robot.Id robotId) {
+            if(robotId == null || myIds.contains(robotId)){
                 mySelectedId = robotId;
             }
         }

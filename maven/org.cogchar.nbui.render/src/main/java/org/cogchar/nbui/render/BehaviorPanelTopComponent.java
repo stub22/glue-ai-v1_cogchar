@@ -59,6 +59,7 @@ public final class BehaviorPanelTopComponent extends TopComponent {
         if(myInitFlag){
             return;
         }
+        
         new OSGiComponent(bundleCtx, 
                 new SimpleLifecycle(triggerPanel1, ActionCallbackMap.class)).start();
         new OSGiComponent(bundleCtx, 
