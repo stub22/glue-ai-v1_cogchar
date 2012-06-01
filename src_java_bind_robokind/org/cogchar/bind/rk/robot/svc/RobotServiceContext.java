@@ -20,7 +20,7 @@ import javax.jms.Connection;
 import javax.jms.JMSException;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.rk.osgi.ConnectionConfigUtils;
-import org.jflux.api.core.util.Configuration;
+import org.jflux.api.core.config.Configuration;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
