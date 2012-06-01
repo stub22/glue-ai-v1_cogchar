@@ -37,7 +37,6 @@ import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 
 import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.impl.perform.FancyTextChan;
-import org.jflux.api.core.util.Configuration;
 
 /**
  * @author Stu B. <www.texpedient.com>

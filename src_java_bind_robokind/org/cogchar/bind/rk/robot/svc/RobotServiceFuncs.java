@@ -16,7 +16,7 @@
 package org.cogchar.bind.rk.robot.svc;
 
 import org.robokind.api.common.config.VersionProperty;
-import org.jflux.api.core.util.Configuration;
+import org.jflux.api.core.config.Configuration;
 import java.util.Properties;
 
 import org.osgi.framework.BundleContext;

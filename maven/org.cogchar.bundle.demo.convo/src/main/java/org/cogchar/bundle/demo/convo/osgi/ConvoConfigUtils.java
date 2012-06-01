@@ -17,9 +17,8 @@ package org.cogchar.bundle.demo.convo.osgi;
 
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.Source;
-import org.jflux.api.core.util.Configuration;
-import org.jflux.api.core.util.DefaultConfiguration;
-import org.jflux.api.core.util.DefaultTimestampSource;
+import org.jflux.api.core.config.Configuration;
+import org.jflux.api.core.config.DefaultConfiguration;
 
 /**
  *
@@ -59,9 +58,7 @@ public class ConvoConfigUtils {
     }
     
     private static Configuration<String> buildDefaultConfig(){
-        Source<Long> ts = new DefaultTimestampSource();
-        DefaultConfiguration<Long,String> conf = 
-                new DefaultConfiguration<Long, String>(ts);
+        DefaultConfiguration<String> conf = new DefaultConfiguration<String>();
         
         conf.addProperty(String.class, CONF_SPREC_BROKER_IP, "127.0.0.1");
         conf.addProperty(String.class, CONF_SPREC_BROKER_PORT, "5672");

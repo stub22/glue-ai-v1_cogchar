@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 package org.cogchar.bind.rk.robot.svc;
-import org.jflux.api.core.util.Configuration;
+import org.jflux.api.core.config.Configuration;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.Robot.RobotPositionMap;

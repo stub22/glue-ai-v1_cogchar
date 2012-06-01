@@ -15,10 +15,8 @@
  */
 package org.cogchar.bind.rk.osgi;
 
-import org.jflux.api.core.Source;
-import org.jflux.api.core.util.Configuration;
-import org.jflux.api.core.util.DefaultConfiguration;
-import org.jflux.api.core.util.DefaultTimestampSource;
+import org.jflux.api.core.config.Configuration;
+import org.jflux.api.core.config.DefaultConfiguration;
 import org.robokind.api.common.config.VersionProperty;
 import org.robokind.api.common.osgi.lifecycle.ConfiguredServiceParams;
 
@@ -43,9 +41,7 @@ public class ServiceConfigUtils {
         if(serviceClass == null|| serviceType == null || configReaderType == null){
             throw new NullPointerException();
         }
-        Source<Long> ts = new DefaultTimestampSource();
-        DefaultConfiguration<Long,String> conf = 
-                new DefaultConfiguration<Long, String>(ts);
+        DefaultConfiguration<String> conf = new DefaultConfiguration<String>();
         
         conf.addProperty(Class.class, CONF_SERVICE_CLASS, serviceClass);
         conf.addProperty(VersionProperty.class, CONF_SERVICE_VERSION, serviceType);
