@@ -17,8 +17,8 @@ package org.cogchar.bundle.demo.convo;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jflux.api.core.util.Listener;
-import org.jflux.api.core.util.Notifier;
+import org.jflux.api.core.Listener;
+import org.jflux.api.core.Notifier;
 import org.jflux.api.core.util.Repeater;
 import org.robokind.api.common.utils.TimeUtils;
 import org.robokind.api.speechrec.SpeechRecEvent;

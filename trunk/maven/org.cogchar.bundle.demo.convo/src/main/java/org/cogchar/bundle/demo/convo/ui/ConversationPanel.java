@@ -18,13 +18,13 @@ package org.cogchar.bundle.demo.convo.ui;
 import java.util.concurrent.TimeUnit;
 import org.cogchar.bundle.demo.convo.ConvoResponse;
 import org.jflux.api.core.node.ProcessorNode;
-import org.jflux.api.core.node.ProducerNode;
 import org.jflux.api.core.node.chain.NodeChain;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
-import org.jflux.api.core.util.Factory;
-import org.jflux.api.core.util.Listener;
-import org.jflux.api.core.util.Notifier;
+import org.jflux.api.core.Source;
+import org.jflux.api.core.Listener;
+import org.jflux.api.core.Notifier;
 import org.jflux.api.data.schedule.HeartbeatNode;
+import static org.cogchar.bundle.demo.convo.osgi.ConvoConfigUtils.*;
 
 /**
  *
@@ -37,12 +37,17 @@ public class ConversationPanel extends javax.swing.JPanel {
     private NodeChain myMonitorChain;
     private HeartbeatNode<String> myHeartbeatNode;
     private NodeChain myHeartbeatChain;
+    private Source<Long> myPollIntervalSource;
+    private Source<String> myHeartbeatMessageSource;
     /**
      * Creates new form ConversationPanel
      */
     public ConversationPanel() {
         initComponents();
         pnlTabs.setSelectedIndex(TAB_CONNECT);
+        myPollIntervalSource = getSource(Long.class, CONF_COGBOT_POLL_INTERVAL);
+        myHeartbeatMessageSource = 
+                getSource(String.class, CONF_COGBOT_POLL_MESSAGE);
     }
     
     private void connectConvoLog(){
@@ -60,9 +65,9 @@ public class ConversationPanel extends javax.swing.JPanel {
                 .attach(l);
         myMonitorChain.start();
         
-        Factory<String> factory = new Factory.RepeaterFactory<String>("");
         myHeartbeatNode = new HeartbeatNode<String>(
-                String.class, factory, 0, 1000, TimeUnit.MILLISECONDS);
+                String.class, myHeartbeatMessageSource, 0, 
+                myPollIntervalSource.getValue(), TimeUnit.MILLISECONDS);
         myHeartbeatChain = NodeChainBuilder.build(myHeartbeatNode)
                 .attach(convoProc).getNodeChain();
     }
@@ -77,7 +82,8 @@ public class ConversationPanel extends javax.swing.JPanel {
     }
     
     private void connectHeartbeat(){
-        long interval = pnlConvoConnect.getPollInterval();
+        pnlConvoConnect.updatetPollInterval();
+        long interval = myPollIntervalSource.getValue();
         myHeartbeatNode.setPeriod(interval);
         myHeartbeatChain.start();
         tglCogbotHeartbeat.setSelected(true);

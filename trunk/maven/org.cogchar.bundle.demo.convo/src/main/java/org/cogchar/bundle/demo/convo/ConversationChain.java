@@ -24,7 +24,7 @@ import org.jflux.api.core.node.ConsumerNode;
 import org.jflux.api.core.node.ProducerNode;
 import org.jflux.api.core.node.chain.NodeChain;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
-import org.jflux.api.core.util.Adapter;
+import org.jflux.api.core.Adapter;
 import org.jflux.impl.messaging.JMSAvroUtils;
 import org.jflux.impl.messaging.jms.MessageHeaderAdapter;
 import org.robokind.api.speech.SpeechRequest;
