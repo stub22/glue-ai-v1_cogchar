@@ -15,19 +15,16 @@
  */
 package org.cogchar.bind.rk.robot.model;
 
-import java.beans.PropertyChangeListener;
-import org.cogchar.api.skeleton.config.BoneProjectionPosition;
 import org.cogchar.api.skeleton.config.BoneJointConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.robokind.api.common.config.VersionProperty;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.AbstractRobot;
 import org.robokind.api.motion.Joint;
-import org.robokind.api.motion.Joint.Id;
-import org.robokind.api.motion.JointProperty;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.Robot.RobotPositionMap;
 import org.slf4j.Logger;
@@ -37,8 +34,20 @@ import org.slf4j.LoggerFactory;
  * @author Stu B. <www.texpedient.com>
  */
 public class ModelRobot extends AbstractRobot<ModelJoint> {
-	
 	static Logger theLogger = LoggerFactory.getLogger(ModelRobot.class);
+    /**
+     * Robot service name
+     */
+    public final static String VERSION_NAME = "ModelRobot";
+    /**
+     * Robot service version number.
+     */
+    public final static String VERSION_NUMBER = "1.0";
+    /**
+     * Robot type VersionProperty.
+     */
+    public final static VersionProperty VERSION = new VersionProperty(VERSION_NAME, VERSION_NUMBER);
+	
 	
     private boolean myConnectionFlag;
 	private long myLastMoveStampMillis = System.currentTimeMillis();
@@ -106,6 +115,7 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
     @Override public boolean isConnected() {
         return myConnectionFlag;
     }
+    
 	public void updateConfig(BoneRobotConfig config) {
 		for (BoneJointConfig bjc : config.myBJCs) {
 			Integer jointNum = bjc.myJointNum;
@@ -123,23 +133,5 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 				theLogger.warn("Cannot find existing joint to update for: " + bjc);
 			}
 		}		
-	}
-	public static ModelRobot buildRobot(BoneRobotConfig config) {
-		Robot.Id robotID = new Robot.Id(config.myRobotName);
-		ModelRobot robot = new ModelRobot(robotID);
-		theLogger.info("Robot.Id=" + robotID);
-		for (BoneJointConfig bjc : config.myBJCs) {
-			theLogger.info("Building Joint for config: " + bjc);
-			Integer jointNum = bjc.myJointNum;
-			if (jointNum != null) {
-				Joint.Id jointId = new Joint.Id(bjc.myJointNum);
-				ModelJoint mj = new ModelJoint(jointId, bjc);
-				robot.registerBonyJoint(mj);
-			} else {
-				theLogger.warn("Found null jointNum at: " + bjc);
-			}
-		}
-		theLogger.info("Built robot " + robot + " with ID=" + robot.getRobotId());
-		return robot;
 	}	
 }

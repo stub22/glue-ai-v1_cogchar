@@ -18,7 +18,6 @@ package org.cogchar.bundle.app.puma;
 
 
 import java.util.List;
-import java.util.Set;
 
 import org.appdapter.core.log.BasicDebugger;
 
@@ -32,14 +31,13 @@ import org.cogchar.render.model.bony.FigureState;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 
-import org.cogchar.api.skeleton.config.BoneProjectionRange;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.api.skeleton.config.BoneProjectionRange;
-import org.cogchar.bind.rk.robot.client.RobotAnimClient;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 
 import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.impl.perform.FancyTextChan;
+import org.jflux.api.core.util.Configuration;
 
 /**
  * @author Stu B. <www.texpedient.com>

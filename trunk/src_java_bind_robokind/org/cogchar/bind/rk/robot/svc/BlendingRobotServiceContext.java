@@ -14,10 +14,9 @@
  *  limitations under the License.
  */
 package org.cogchar.bind.rk.robot.svc;
+import org.jflux.api.core.util.Configuration;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.Robot.RobotPositionHashMap;
 import org.robokind.api.motion.Robot.RobotPositionMap;
 import org.robokind.api.motion.lifecycle.DefaultBlenderServiceGroup;
 import org.robokind.api.motion.utils.RobotMoverFrameSource;
@@ -71,10 +70,12 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
         myFrameSource.move(positions, 1500);
 	}	
 
-	public void registerAndStart(R robot) throws Throwable {
+    @Override
+	public void registerAndStart(
+            R robot, Configuration<String> connectionConfig) throws Throwable {
 		Robot.Id robotID = robot.getRobotId();
 		theLogger.info("super.registerAndStart(robotID=" + robotID + ")");
-		super.registerAndStart(robot);
+		super.registerAndStart(robot, connectionConfig);
 		theLogger.info("startDefaultBlender(robotID=" + robotID + ")");
 		startDefaultBlender();
 		theLogger.info("registerFrameSource(robotID=" + robotID + ")");
