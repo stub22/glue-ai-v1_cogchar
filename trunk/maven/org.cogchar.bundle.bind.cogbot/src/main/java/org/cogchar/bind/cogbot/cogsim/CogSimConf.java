@@ -7,17 +7,23 @@ package org.cogchar.bind.cogbot.cogsim;
 //import com.hansonrobotics.mene.Communicator;
 //import com.hansonrobotics.mene.config.MeneConfig;
 import java.io.Serializable;
-import java.util.Properties;
 import java.util.logging.Logger;
+import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
 
 /**
  *
  * @author Stu B.
  */
 public class CogSimConf implements Serializable {
-    private final Properties myProps;
-    private int cogsim_poll_ms = 1000;
+    private final static Logger theLogger = Logger.getLogger(CogSimConf.class.getName());
+    private boolean waiting = true;
 
+    public enum Op {
+
+        GET_SAID,
+        GET_HEARD,
+        DO_ACTION
+    }
     boolean isWaiting() {
         return waiting;
     }
@@ -30,85 +36,36 @@ public class CogSimConf implements Serializable {
      * @return the urlRoot
      */
     public String getUrlRoot() {
-        return urlRoot;
+        String ip = getValue(String.class, CONF_COGBOT_IP);
+        String port = getValue(String.class, CONF_COGBOT_PORT);
+        return "http://"+ ip+":" + port;
     }
 
         /**
      * @return the urlRoot
      */
     public String getChatUrl() {
-        return urlRoot + "?";
-    }
-
-    /**
-     * @param urlRoot the urlRoot to set
-     */
-    public void setUrlRoot(String urlRoot) {
-        this.urlRoot = urlRoot;
+        return getUrlRoot() + "/?";
     }
 
     public void setIp(String string) {
-        setUrlRoot("http://"+string+":5580/");
+        setValue(String.class, CONF_COGBOT_IP, string);
         waiting = false;
     }
 
-    public long getPollSleepTime() {
-        // cant be 0 = forever or too fast
-        return (cogsim_poll_ms < 100) ? 100 : cogsim_poll_ms;
-    }
-
-    public enum Op {
-
-        GET_SAID,
-        GET_HEARD,
-        DO_ACTION
-    }
-    private static Logger theLogger = Logger.getLogger(CogSimConf.class.getName());
-    // package/protected scope
-    //defualt
-    String urlRoot = "http://127.0.0.1:5580/";
-    String saidURL_tail = "posterboard/onchat-said";
-    String heardURL_tail = "posterboard/onchat-heard";
-    String actionURL_tail = "postaction";
-    boolean waiting = true;
-
-    public CogSimConf(Properties config) {
-        myProps = config;
-        readProperties(config);
-    }
-
-    public String valOrDefault(String val, String def) {
-        return (val != null) ? val : def;
-    }
-
-    public void readProperties(Properties config) {
-        theLogger.info("Props=" + config);
-        if (myProps != null) {
-            myProps.putAll(config);
-            config = myProps;
-        }
-        setUrlRoot(config.getProperty("cogsim_url_root", getUrlRoot()));
-        saidURL_tail = config.getProperty("cogsim_said_url_tail", saidURL_tail);
-        heardURL_tail = config.getProperty("cogsim_heard_url_tail", heardURL_tail);
-        actionURL_tail = config.getProperty("cogsim_act_url_tail", actionURL_tail);
-        try {
-            cogsim_poll_ms = Integer.valueOf(config.getProperty("cogsim_poll_ms", "" + cogsim_poll_ms));
-        } catch (NumberFormatException nfe) {
-        }
-    }
-
     public String findOpURL(Op op) {
-        if (getUrlRoot() == null) {
+        String url = getUrlRoot();
+        if (url == null) {
             // return null;
-            throw new RuntimeException("Cannot find URL becuase urlRoot=" + getUrlRoot());
+            throw new RuntimeException("Cannot find URL becuase urlRoot=" +url);
         }
         switch (op) {
             case GET_HEARD:
-                return getUrlRoot() + heardURL_tail;
+                return url + getValue(String.class, CONF_COGSIM_URL_HEARD_TAIL);
             case GET_SAID:
-                return getUrlRoot() + saidURL_tail;
+                return url + getValue(String.class, CONF_COGSIM_URL_SAID_TAIL);
             case DO_ACTION:
-                return getUrlRoot() + actionURL_tail;
+                return url + getValue(String.class, CONF_COGSIM_URL_ACTION_TAIL);
             default:
                 return "NO_OP_FOR_" + op;
         }
@@ -119,6 +76,8 @@ public class CogSimConf implements Serializable {
     }
 
     public boolean isConfigured() {
-        return isSet(getUrlRoot()) && isSet(heardURL_tail) && isSet(saidURL_tail);
+        return isSet(getUrlRoot()) 
+                && isSet(getValue(String.class, CONF_COGSIM_URL_HEARD_TAIL)) 
+                && isSet(getValue(String.class, CONF_COGSIM_URL_SAID_TAIL));
     }
 }

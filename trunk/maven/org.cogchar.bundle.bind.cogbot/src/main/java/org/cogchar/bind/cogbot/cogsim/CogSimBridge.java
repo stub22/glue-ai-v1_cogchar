@@ -8,6 +8,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.cogchar.bind.cogbot.main.CogbotAvatar;
 
+import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
+
 /**
  * @author Stu B.
  */
@@ -32,9 +34,10 @@ public class CogSimBridge implements Runnable {
     public void run() {
         int messageIn = 60;
         while (true) {
-            if (!avatar.isPolling || !avatar.isCogSimEnabled) {
+            if (!getValue(Boolean.class, CONF_COGSIM_POLL_ENABLED) 
+                    || !getValue(Boolean.class, CONF_COGSIM_ENABLED)) {
                 try {
-                    Thread.sleep(myCogSimConf.getPollSleepTime());
+                    Thread.sleep(getValue(Long.class, CONF_COGSIM_POLL_INTERVAL));
                 } catch (InterruptedException ex) {
                     Logger.getLogger(CogSimBridge.class.getName()).log(Level.SEVERE, null, ex);
                     break;
@@ -58,7 +61,7 @@ public class CogSimBridge implements Runnable {
                     }
                 }
                 messageIn--;
-                Thread.sleep(myCogSimConf.getPollSleepTime());
+                Thread.sleep(getValue(Long.class, CONF_COGSIM_POLL_INTERVAL));
             } catch (Throwable t) {
                 theLogger.log(Level.SEVERE, "run() caught exception", t);
             }
