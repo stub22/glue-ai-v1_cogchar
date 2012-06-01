@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.management.Notification;
@@ -24,25 +23,20 @@ import org.cogchar.bind.cogbot.cogsim.DictationReciever;
 import org.cogchar.bind.cogbot.scripting.CogbotPrimitive;
 import org.cogchar.bind.cogbot.scripting.ObjectLispWriter;
 import org.cogchar.bind.cogbot.scripting.SerialEventQueue;
+import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
 
 /**
  *
  * @author Administrator
  */
 public class CogbotAvatar implements NotificationListener, Serializable {
-
-    public transient boolean isCogSimEnabled = false;
-    public boolean isPolling = false;
-    
-    private static Logger theLogger = Logger.getLogger(CogbotAvatar.class.getName());
+    private final static Logger theLogger = Logger.getLogger(CogbotAvatar.class.getName());
     transient CogbotService service;
     CogSimConf myCogSimConf;
     transient private CogSimBridge myCSB;
-    final Properties config;
     transient final PrintWriter debugPw;
     transient Map<String, CogbotPrimitive> primitives = new HashMap<String, CogbotPrimitive>();
     transient CogbotJMXClient cogbotJMXClient;
-    public boolean debugPrintJMX = false;
     final SerialEventQueue TODO_QUEUE;
 
     //public String USER_PARTNER = null;
@@ -50,7 +44,7 @@ public class CogbotAvatar implements NotificationListener, Serializable {
 
 
     public String getBotId() {
-        return config.getProperty("cogbot_name","");
+        return getValue(String.class, OLD_CONF_COGBOT_NAME);
     }
 
     public CogSimConf getConfig() {
@@ -60,10 +54,9 @@ public class CogbotAvatar implements NotificationListener, Serializable {
     public CogbotAvatar(CogbotService service0) {
         service = service0;
         debugPw = service0.getLogPrintWriter();
-        config = service0.getProperties();
-        TODO_QUEUE = new SerialEventQueue(getBotId());
+        TODO_QUEUE = new SerialEventQueue(getValue(String.class, OLD_CONF_COGBOT_NAME));
         myCogSimConf = service0.getConf();
-        readProperties(config);
+        ensureJMX();
     }
 
     public synchronized void registerListener(DictationReciever dictationReciever) {
@@ -79,7 +72,7 @@ public class CogbotAvatar implements NotificationListener, Serializable {
     }
 
     public synchronized void postActionReqToCogbot(String verb, String details, boolean debugFlag) {
-        if (!isCogSimEnabled) return;
+        if (!getValue(Boolean.class, CONF_COGSIM_ENABLED)) return;
         CogSimOp cso = makeCogSimOp(myCogSimConf, null);
         try {
             cso.postActionReqToCogbot(verb, details, debugFlag);
@@ -89,12 +82,12 @@ public class CogbotAvatar implements NotificationListener, Serializable {
     }
 
     public synchronized void ensureJMX() {
-        if (CogbotService.disableJMX) {
+        if (!getValue(Boolean.class, CONF_COGSIM_JMX_ENABLED)) {
             return;
         }
         try {
             if (cogbotJMXClient == null) {
-                cogbotJMXClient = new CogbotJMXClient(config.getProperty("character_engine_jmx_url", CogbotJMXClient.serviceURL), debugPw);
+                cogbotJMXClient = new CogbotJMXClient(getValue(String.class, CONF_COGSIM_JMX_URL), debugPw);
                 cogbotJMXClient.registerListener((NotificationListener) this);
             }
         } catch (Throwable ex) {
@@ -107,32 +100,8 @@ public class CogbotAvatar implements NotificationListener, Serializable {
         return true;
     }
 
-    public synchronized void readProperties(Properties meneProps) {
-        CogbotService.disableJMX = Boolean.valueOf(meneProps.getProperty("cogbot_jmx_disable", "" + CogbotService.disableJMX));
-
-        // todo rename in config?
-        if (Boolean.valueOf(config.getProperty("cogsim_enable", "" + isCogSimEnabled))) {
-            isCogSimEnabled = true;
-        }
-        if (Boolean.valueOf(config.getProperty("cogsim_poll_enabled", "" + isPolling))) {
-
-            isPolling = true;
-        }
-
-        theLogger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        if (meneProps != null) {
-            myCogSimConf.readProperties(meneProps);
-            if (myCogSimConf.isConfigured()) {
-            }
-        } else {
-            throw new RuntimeException("Can't load cogsim properties!");
-        }
-        theLogger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        ensureJMX();
-    }
-
     public synchronized String fetchLastThingWeSaid(boolean debugFlag) {
-        if (!isPolling) return "";
+        if (!getValue(Boolean.class, CONF_COGSIM_POLL_ENABLED)) return "";
         CogSimOp cso = makeCogSimOp(myCogSimConf, null);
         try {
             return cso.fetchLastThingWeSaid(debugFlag);
@@ -143,7 +112,7 @@ public class CogbotAvatar implements NotificationListener, Serializable {
     }
 
     public synchronized String fetchLastThingWeHeard(boolean debugFlag) {
-        if (!isPolling) return "";
+        if (!getValue(Boolean.class, CONF_COGSIM_POLL_ENABLED)) return "";
         CogSimOp cso = makeCogSimOp(myCogSimConf, null);
         try {
             return cso.fetchLastThingWeHeard(debugFlag);
@@ -159,6 +128,7 @@ public class CogbotAvatar implements NotificationListener, Serializable {
         }
     }
 
+    @Override
     public void handleNotification(Notification notification, Object handback) {
         //throw new UnsupportedOperationException("Not supported yet.");
         debugJMX("----->" + notification);
@@ -244,8 +214,8 @@ public class CogbotAvatar implements NotificationListener, Serializable {
 //    }
 
     public String getResponse(String input, String from) {
-        String id = getBotId();
-        return service.getCogbotResponse(this,debugPw, config, input, from, id).getResponse();
+        return service.getCogbotResponse(this,debugPw, input, from, 
+                getValue(String.class, OLD_CONF_COGBOT_NAME)).getResponse();
     }
 
     synchronized  void setLookingAt(String value) {
@@ -266,7 +236,7 @@ public class CogbotAvatar implements NotificationListener, Serializable {
     }
 
     private void debugJMX(String string) {
-        if (!debugPrintJMX) return;
+        if (!getValue(Boolean.class, CONF_COGSIM_DEBUG_FLAG)) return;
         echo("CogbotJMX: " + string);
     }
 
@@ -293,11 +263,11 @@ public class CogbotAvatar implements NotificationListener, Serializable {
     }
 
     public void warnSettings() {
-        if (!isCogSimEnabled) {
-            warning("isCogSimEnabled = " + isCogSimEnabled + " so Cogbot may not know what the user is responding to");
+        if (!getValue(Boolean.class, CONF_COGSIM_ENABLED)) {
+            warning("isCogSimEnabled is false so Cogbot may not know what the user is responding to");
         }
-        if (!isPolling) {
-            warning("isPolling = " + isPolling + " so we will not recivie Sim conversation ");
+        if (!getValue(Boolean.class, CONF_COGSIM_POLL_ENABLED)) {
+            warning("isPolling is false so we will not recivie Sim conversation ");
         }
     }
 

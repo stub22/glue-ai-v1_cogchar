@@ -1,9 +1,5 @@
 package org.cogchar.bind.cogbot.main;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.Connection;
@@ -29,23 +25,45 @@ import org.robokind.impl.messaging.JMSBytesMessageSender;
 import org.robokind.impl.messaging.utils.ConnectionManager;
 import org.robokind.impl.speech.PortableSpeechRequest;
 
+import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
+
 /**
  * Hello world!
  *
  */
 public class CogbotSpeechDemo {
     private final static Logger theLogger = Logger.getLogger(CogbotSpeechDemo.class.getName());
-
+    private final static String CONF_DEMO_BROKER_IP = "cogbotDemoBrokerIp";
+    private final static String CONF_DEMO_BROKER_PORT = "cogbotDemoBrokerPort";
+    private final static String CONF_DEMO_BROKER_USERNAME = "cogbotDemoBrokerUsername";
+    private final static String CONF_DEMO_BROKER_PASSWORD = "cogbotDemoBrokerPassword";
+    private final static String CONF_DEMO_BROKER_CLIENT_NAME = "cogbotDemoBrokerClientName";
+    private final static String CONF_DEMO_BROKER_VIRTUAL_HOST = "cogbotDemoBrokerVirtualHost";
+    private final static String CONF_TTS_DEST = "cogbotDemoTTSDest";
+    private final static String CONF_SPREC_DEST = "cogbotDemoSpRecDest";
+    
+    private static void setDemoConfigVals(){
+        setOrCreateValue(String.class, CONF_DEMO_BROKER_IP, "127.0.0.1");
+        setOrCreateValue(String.class, CONF_DEMO_BROKER_PORT, "5672");
+        setOrCreateValue(String.class, CONF_DEMO_BROKER_USERNAME, "admin");
+        setOrCreateValue(String.class, CONF_DEMO_BROKER_PASSWORD, "admin");
+        setOrCreateValue(String.class, CONF_DEMO_BROKER_CLIENT_NAME, "client1");
+        setOrCreateValue(String.class, CONF_DEMO_BROKER_VIRTUAL_HOST, "test");
+        setOrCreateValue(String.class, CONF_TTS_DEST, "speechRequest");
+        setOrCreateValue(String.class, CONF_SPREC_DEST, "speechRecEvent");
+    }
+    
     public static void main( String[] args ){
-        Session session = getSession("127.0.0.1");
+        setDemoConfigVals();
+        Session session = getDemoSession();
         if(session == null){
             return;
         }
-        String url = "192.168.0.100";
+        //setValue(String.class, CONF_COGBOT_IP, "192.168.0.100");
         if(args.length >= 1){
-            url = args[0];
+            setValue(String.class, CONF_COGBOT_IP, args[0]);
         }
-        CogbotCommunicator cogbot = createCogbotComm(url);
+        CogbotCommunicator cogbot = createCogbotComm();
         if(cogbot == null){
             return;
         }
@@ -58,8 +76,10 @@ public class CogbotSpeechDemo {
         theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
         theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
         theLogger.info("++++++++++++++++++++++++++++++++++++++++++++++++++");
-        Destination sendDest = ConnectionManager.createDestination("speechRequest");
-        Destination recDest = ConnectionManager.createDestination("speechrecEvent");
+        Destination sendDest = ConnectionManager.createDestination(
+                getValue(String.class, CONF_TTS_DEST));
+        Destination recDest = ConnectionManager.createDestination(
+                getValue(String.class, CONF_SPREC_DEST));
 
         MessageSender<SpeechRequest> sender = createSpeechSender(session, sendDest);
         if(sender == null){
@@ -79,10 +99,16 @@ public class CogbotSpeechDemo {
         }
     }
 
-    private static Session getSession(String ip){
-        Connection con =
-                ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", "tcp://" + ip + ":5672");
+    private static Session getDemoSession(){
+        String ip = getValue(String.class, CONF_DEMO_BROKER_IP);
+        String port = getValue(String.class, CONF_DEMO_BROKER_PORT);
+        String addr = "tcp://" + ip + ":" + port;
+        Connection con = ConnectionManager.createConnection(
+                getValue(String.class, CONF_DEMO_BROKER_USERNAME),
+                getValue(String.class, CONF_DEMO_BROKER_PASSWORD),
+                getValue(String.class, CONF_DEMO_BROKER_CLIENT_NAME),
+                getValue(String.class, CONF_DEMO_BROKER_VIRTUAL_HOST), 
+                addr);
         try{
             con.start();
             return con.createSession(false, Session.CLIENT_ACKNOWLEDGE);
@@ -92,27 +118,9 @@ public class CogbotSpeechDemo {
         }
     }
 
-    private static CogbotCommunicator createCogbotComm(String url){
-        Properties config = new Properties();
-		String testUser = "Test user";
-		String id = testUser.replace(" ", "");
-		try {
-			config.load(new FileReader("./resources/config.properties"));
-		} catch (FileNotFoundException e) {
-			System.out.println("No config file found using defaults.");
-			config.setProperty("reset_phrase", "reload aiml");
-			String urlStr = url;
-			config.setProperty("elbot_url_local", urlStr);
-			config.setProperty("elbot_url_remote", urlStr);
-			config.setProperty("id", id);
-			config.setProperty("id_key", id);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    private static CogbotCommunicator createCogbotComm(){
 		System.out.println("Creating cogbot. Sending hello");
-		CogbotCommunicator cogbot = new CogbotCommunicator(url);
-		cogbot.setBotProperty("username", testUser);
+		CogbotCommunicator cogbot = new CogbotCommunicator(null);
         return cogbot;
     }
 
@@ -174,6 +182,7 @@ public class CogbotSpeechDemo {
             myFactory = new PortableSpeechRequest.Factory();
         }
 
+        @Override
         public void handleEvent(SpeechRequest event) {
             String input = event.getPhrase();
             GenRespWithConf genResp = myCogbot.getResponse(input);

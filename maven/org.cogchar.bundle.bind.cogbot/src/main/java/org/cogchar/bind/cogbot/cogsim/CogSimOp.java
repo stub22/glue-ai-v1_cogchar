@@ -36,7 +36,6 @@ import org.dom4j.Node;
 public class CogSimOp {
 
     private static Logger theLogger = Logger.getLogger(CogSimOp.class.getName());
-    private String myHeardURL, mySaidURL, myDoURL;
     HttpClient myClient;
     CogSimConf myConf;
     CogbotAvatar avatar;
@@ -45,13 +44,6 @@ public class CogSimOp {
         myClient = (client != null) ? client : new DefaultHttpClient();
         avatar = av;
         myConf = conf;
-        readUrlsFromConf();
-    }
-
-    private void readUrlsFromConf() {
-        mySaidURL = myConf.findOpURL(CogSimConf.Op.GET_SAID);
-        myHeardURL = myConf.findOpURL(CogSimConf.Op.GET_HEARD);
-        myDoURL = myConf.findOpURL(CogSimConf.Op.DO_ACTION);
     }
 
     public void postActionReqToCogbot(final String cmd, final String args, final boolean dump) {
@@ -67,8 +59,9 @@ public class CogSimOp {
     }
     
     public void postActionReqToCogbotNow(String cmd, String args, boolean dump) throws Throwable {
-        theLogger.info("Posting to URL: " + myDoURL);
-        HttpPost postReq = new HttpPost(myDoURL);
+        String doURL = myConf.findOpURL(CogSimConf.Op.DO_ACTION);
+        theLogger.info("Posting to URL: " + doURL);
+        HttpPost postReq = new HttpPost(doURL);
 
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("cmd", cmd));
@@ -130,13 +123,13 @@ public class CogSimOp {
     }
 
     public String fetchLastThingWeSaid(boolean debug) throws Throwable {
-        String thingWeSaidDocText = execGetLastThingReq(mySaidURL, "get last thing SAID", debug);
+        String thingWeSaidDocText = execGetLastThingReq(myConf.findOpURL(CogSimConf.Op.GET_SAID), "get last thing SAID", debug);
         String thingWeSaid = "extracted from docText: " + thingWeSaidDocText;
         return thingWeSaid;
     }
 
     public String fetchLastThingWeHeard(boolean debug) throws Throwable {
-        String thingWeHeardDocText = execGetLastThingReq(myHeardURL, "get last thing HEARD", debug);
+        String thingWeHeardDocText = execGetLastThingReq(myConf.findOpURL(CogSimConf.Op.GET_HEARD), "get last thing HEARD", debug);
         // String thingWeHeard = "extracted from docText: " + thingWeHeardDocText;
         String thingWeHeard = null;
         if (thingWeHeardDocText != null) {

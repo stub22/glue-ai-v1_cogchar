@@ -25,6 +25,7 @@ import javax.management.MBeanServerConnection;
 import javax.management.Notification;
 import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
+import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
 
 /**
  * @author Stu Baurmann/Douglas Miles
@@ -32,14 +33,11 @@ import javax.management.NotificationListener;
 public class CogbotJMXClient implements NotificationListener, NotificationFilter {
 	private static Logger	theLogger = Logger.getLogger(CogbotJMXClient.class.getName());
 
-    public static String serviceURL = "service:jmx:rmi:///jndi/rmi://localhost:7227/jmxrmi";
     transient private MBeanServerConnection myMBSC;
     //volatile MBeanServerInvocationHandler handler;
     transient private ObjectName myIntegroidON;
     //transient private IntegroidWrapperMXBean myIntegroidProxy;
     transient PrintWriter debugPw;
-    boolean jmxServiceReady = false;
-    private boolean isEnabled = true;
     final private SerialEventQueue OneAtATime;
     HashMap<NotificationListener, SerialEventQueue> listeners = new HashMap<NotificationListener, SerialEventQueue>();
 
@@ -48,9 +46,10 @@ public class CogbotJMXClient implements NotificationListener, NotificationFilter
         debugPw = pw != null ? pw : new PrintWriter(System.err);
         new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 try {
-                    connectJMX(serviceURL);
+                    connectJMX(getValue(String.class, CONF_COGSIM_JMX_URL));
                 } catch (Throwable ex) {
                     echo("connectJMX: ", ex);
                     Logger.getLogger(CogbotJMXClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -121,9 +120,9 @@ public class CogbotJMXClient implements NotificationListener, NotificationFilter
         while (true) {
             try {
                 Thread.sleep(3000);
-                myMBSC.addNotificationListener(myIntegroidON, this, this, handback);
+                myMBSC.addNotificationListener(myIntegroidON, this, filter, handback);
                 echo("addNotificationListener: SUCCESS");
-                jmxServiceReady = true;
+                setValue(Boolean.class, CONF_COGSIM_JMX_READY, true);
                 return;
             } catch (InstanceNotFoundException e) {
                 // too early
@@ -187,7 +186,7 @@ public class CogbotJMXClient implements NotificationListener, NotificationFilter
         final Notification notification = notification0;
         final Object handback = handbac0;
         try {
-            if (CogbotService.disableJMX) {
+            if (!getValue(Boolean.class, CONF_COGSIM_JMX_ENABLED)) {
                 return;
             }
             Runnable r = new Runnable() {
@@ -364,7 +363,9 @@ public class CogbotJMXClient implements NotificationListener, NotificationFilter
 
     public static void main(String args[]) {
         try {
-            CogbotJMXClient client = new CogbotJMXClient(serviceURL, new PrintWriter(System.out));
+            CogbotJMXClient client = new CogbotJMXClient(
+                    getValue(String.class, CONF_COGSIM_JMX_URL), 
+                    new PrintWriter(System.out));
             client.echo("\nCreating a COGBOT-JMX-RMI connection to the Hanson RoboMonitorGUI application");
             client.connectProxies();
             // If we setup handlers before sending our messages, it slows down the
@@ -396,8 +397,9 @@ public class CogbotJMXClient implements NotificationListener, NotificationFilter
         }
     }
 
+    @Override
     public boolean isNotificationEnabled(Notification notification) {
-        return isEnabled;
+        return getValue(Boolean.class, CONF_COGSIM_JMX_ENABLED);
     }
     private void echo(String msg) {
         // debugPw.println(msg);

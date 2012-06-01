@@ -4,8 +4,6 @@
  */
 package org.cogchar.bind.cogbot.cogsim;
 
-import java.io.FileInputStream;
-import java.util.Properties;
 import java.util.logging.Logger;
 import org.cogchar.bind.cogbot.main.CogbotService;
 import org.cogchar.bind.cogbot.main.CogbotAvatar;
@@ -20,10 +18,7 @@ public class TestCogSim {
 	public static void main(String args[]) {
 		try {
 			String message = "TestCogSim sez the time is: " + System.currentTimeMillis();
-			Properties meneProps = new Properties();// MeneConfig.readPropertiesFile(Communicator.thePropsPath);
-                        meneProps.load(new FileInputStream( "C:\\_hanson\\_deploy\\distro_20a\\conf\\_mene\\config.properties"));
-			CogbotAvatar cso = CogbotService.getDefaultAvatar(meneProps);
-			cso.readProperties(meneProps);
+			CogbotAvatar cso = CogbotService.getDefaultAvatar();
 			theLogger.info("Saying: [" + message + "]");
 			cso.postActionReqToCogbot("say", message, true);
 			String lastSaid = cso.fetchLastThingWeSaid(true);
