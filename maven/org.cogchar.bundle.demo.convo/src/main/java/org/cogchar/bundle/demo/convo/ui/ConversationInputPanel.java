@@ -23,7 +23,7 @@ package org.cogchar.bundle.demo.convo.ui;
 
 import java.awt.event.KeyEvent;
 import org.jflux.api.core.util.DefaultNotifier;
-import org.jflux.api.core.util.Notifier;
+import org.jflux.api.core.Notifier;
 
 /**
  *

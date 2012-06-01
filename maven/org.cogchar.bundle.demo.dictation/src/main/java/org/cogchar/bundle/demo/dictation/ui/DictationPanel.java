@@ -22,6 +22,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultCaret;
+import static org.cogchar.bundle.demo.dictation.osgi.DictationConfigUtils.*;
 
 /**
  *
@@ -43,6 +44,8 @@ public class DictationPanel extends JPanel {
         myRefocuser = new Refocuser(txtInput);
         myRefocuser.ignoreComponent(chkFocus);
         jTabbedPane1.setSelectedIndex(CONNECTION_TAB);
+        txtBrokerAddress.setText(getValue(String.class, CONF_BROKER_IP));
+        txtSpeechRecDest.setText(getValue(String.class, CONF_DESTINATION));
     }
     
     
@@ -307,7 +310,9 @@ public class DictationPanel extends JPanel {
         if(tglConnect.isSelected()){
             String addr = txtBrokerAddress.getText();
             String dest = txtSpeechRecDest.getText();
-            if(myImpl.connect(addr, dest)){
+            setValue(String.class, CONF_BROKER_IP, addr);
+            setValue(String.class, CONF_DESTINATION, dest);
+            if(myImpl.connect()){
                 txtBrokerAddress.setEnabled(false);
                 txtSpeechRecDest.setEnabled(false);
                 jTabbedPane1.setSelectedIndex(CONVO_TAB);

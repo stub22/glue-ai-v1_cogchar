@@ -28,7 +28,7 @@ import javax.jms.Session;
 import org.cogchar.bundle.demo.dictation.sound.SoundDetector;
 import org.jflux.api.core.node.ConsumerNode;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
-import org.jflux.api.core.util.Adapter;
+import org.jflux.api.core.Adapter;
 import org.jflux.impl.messaging.JMSAvroUtils;
 import org.jflux.impl.messaging.jms.MessageHeaderAdapter;
 import org.robokind.api.common.utils.TimeUtils;
@@ -38,6 +38,7 @@ import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
 import org.robokind.impl.messaging.utils.ConnectionManager;
 import org.robokind.impl.speechrec.PortableSpeechRecEvent;
 import org.robokind.impl.speechrec.PortableSpeechRecEventList;
+import static org.cogchar.bundle.demo.dictation.osgi.DictationConfigUtils.*;
 
 /**
  *
@@ -95,12 +96,12 @@ public class DefaultDictationGrabber implements DictationGrabber{
         return true;
     }
     
-    public boolean connect(String address, String dest){
+    public boolean connect(){
         if(myConnection != null || mySession != null){
             return false;
         }
         try{
-            mySpeechRecSender = buildSpeechSenderNodeChain(address, dest);
+            mySpeechRecSender = buildSpeechSenderNodeChain();
             if(mySpeechRecSender == null){
                 return false;
             }
@@ -148,10 +149,16 @@ public class DefaultDictationGrabber implements DictationGrabber{
         return mySoundDetector;
     }
     
-    private ConsumerNode<String> buildSpeechSenderNodeChain(
-            String ip, String destStr) throws JMSException{
+    private ConsumerNode<String> buildSpeechSenderNodeChain() throws JMSException{
+        String ip = getValue(String.class, CONF_BROKER_IP);
+        String port = getValue(String.class, CONF_BROKER_PORT);
+        String addr = "tcp://" + ip + ":" + port;
         myConnection = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", "tcp://" + ip + ":5672");
+                getValue(String.class, CONF_BROKER_USERNAME),
+                getValue(String.class, CONF_BROKER_PASSWORD),
+                getValue(String.class, CONF_BROKER_CLIENT_NAME),
+                getValue(String.class, CONF_BROKER_VIRTUAL_HOST), 
+                addr);
         if(myConnection == null){
             return null;
         }
@@ -161,6 +168,7 @@ public class DefaultDictationGrabber implements DictationGrabber{
         if(mySession == null){
             return null;
         }
+        String destStr = getValue(String.class, CONF_DESTINATION);
         Destination dest = ConnectionManager.createDestination(destStr);
         if(dest == null){
             return null;

@@ -27,6 +27,8 @@ import java.util.logging.Logger;
 import javax.jms.*;
 import org.apache.qpid.client.AMQAnyDestination;
 import org.apache.qpid.client.AMQConnectionFactory;
+import org.jflux.api.core.Listener;
+import org.jflux.api.core.Source;
 
 /**
  *
@@ -38,32 +40,68 @@ public class MessagingConnectPanel extends javax.swing.JPanel {
     Connection myConnection;
     Session mySession;
     Destination myDestination;
+    
+    private Source<String> myIpSource;
+    private Source<String> myDestSource;
+    private Source<String> myPortSource;
+    private Source<String> myUsernameSource;
+    private Source<String> myPasswordSource;
+    private Source<String> myClientNameSource;
+    private Source<String> myVirtualHostSource;
+    private Listener<String> myIpSetter;
+    private Listener<String> myDestSetter;
         
     /** Creates new form MessagingConnectPanel */
     public MessagingConnectPanel() {
         initComponents();
     }
     
-    public void setBrokerAddress(String address){
-        txtBrokerAddress.setText(address);
+    public void setBrokerAddress(
+            Source<String> ipSrc, 
+            Listener<String> ipSet,
+            Source<String> portSource,
+            Source<String> usernameSource,
+            Source<String> passwordSource,
+            Source<String> clientNameSource,
+            Source<String> virtualHostSource){
+        if(ipSrc == null || ipSet == null || portSource == null
+                || usernameSource == null || passwordSource == null
+                || clientNameSource == null || virtualHostSource == null){
+            throw new NullPointerException();
+        }
+        myIpSource = ipSrc;
+        myIpSetter = ipSet;
+        myPortSource = portSource;
+        myUsernameSource = usernameSource;
+        myPasswordSource = passwordSource;
+        myClientNameSource = clientNameSource;
+        myVirtualHostSource = virtualHostSource;
+        txtBrokerAddress.setText(myIpSource.getValue());
     }
     
-    public void setDestination(String destName){
-        txtDestination.setText(destName);
+    public void setDestination(Source<String> src, Listener<String> set){
+        if(src == null || set == null){
+            throw new NullPointerException();
+        }
+        myDestSource = src;
+        myDestSetter = set;
+        txtDestination.setText(myDestSource.getValue());
     }
     
     public boolean connect(){
         String ip = txtBrokerAddress.getText();
         String dest = txtDestination.getText();
-        return connect(ip, dest);
+        myIpSetter.handleEvent(ip);
+        myDestSetter.handleEvent(dest);
+        return connect0();
     }
     
-    public boolean connect(String ip, String dest){
-        myDestination = buildDestination(dest);
+    private boolean connect0(){
+        myDestination = buildDestination();
         if(myDestination == null){
             return false;
         }
-        myConnection = buildConnection(ip);
+        myConnection = buildConnection();
         if(myConnection == null){
             return false;
         }
@@ -101,13 +139,19 @@ public class MessagingConnectPanel extends javax.swing.JPanel {
                 username, password, clientName, virtualHost, tcpAddress);
     }
     
-    private Connection buildConnection(String brokerIP){
-        if(brokerIP == null){
+    private Connection buildConnection(){
+        String ip = myIpSource.getValue();
+        if(ip == null){
             throw new NullPointerException();
         }
-        String addr = "tcp://" + brokerIP + ":5672";
+        String port = myPortSource.getValue();
+        String addr = "tcp://" + ip + ":" + port;
         String url = createAMQPConnectionURL(
-                "admin", "admin", "client1", "test", addr);
+                myUsernameSource.getValue(), 
+                myPasswordSource.getValue(), 
+                myClientNameSource.getValue(), 
+                myVirtualHostSource.getValue(), 
+                addr);
         try{ 
             ConnectionFactory fact = new AMQConnectionFactory(url);
             Connection con = fact.createConnection();
@@ -134,7 +178,8 @@ public class MessagingConnectPanel extends javax.swing.JPanel {
         }
     }
     
-    private Destination buildDestination(String dest){
+    private Destination buildDestination(){
+        String dest = myDestSource.getValue();
         if(dest == null){
             throw new NullPointerException();
         }
