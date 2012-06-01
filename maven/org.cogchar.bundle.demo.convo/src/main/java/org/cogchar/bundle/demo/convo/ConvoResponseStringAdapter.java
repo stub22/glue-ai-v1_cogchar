@@ -16,7 +16,7 @@
 package org.cogchar.bundle.demo.convo;
 
 import org.cogchar.bind.cogbot.main.GenRespWithConf;
-import org.jflux.api.core.util.Adapter;
+import org.jflux.api.core.Adapter;
 
 /**
  *

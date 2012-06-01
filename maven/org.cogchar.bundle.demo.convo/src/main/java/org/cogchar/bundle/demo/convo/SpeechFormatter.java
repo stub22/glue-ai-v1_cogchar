@@ -15,7 +15,7 @@
  */
 package org.cogchar.bundle.demo.convo;
 
-import org.jflux.api.core.util.Adapter;
+import org.jflux.api.core.Adapter;
 import org.robokind.api.common.utils.TimeUtils;
 import org.robokind.api.speech.SpeechRequest;
 import org.robokind.impl.speech.PortableSpeechRequest;

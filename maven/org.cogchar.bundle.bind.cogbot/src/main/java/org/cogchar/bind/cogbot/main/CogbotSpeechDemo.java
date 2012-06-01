@@ -13,7 +13,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 
 
-import org.jflux.api.core.util.Listener;
+import org.jflux.api.core.Listener;
 import org.robokind.api.messaging.DefaultMessageAsyncReceiver;
 import org.robokind.api.messaging.DefaultMessageSender;
 import org.robokind.api.messaging.MessageAsyncReceiver;

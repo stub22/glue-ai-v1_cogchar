@@ -22,8 +22,8 @@
 package org.cogchar.bundle.demo.convo.ui;
 
 import org.cogchar.bundle.demo.convo.ConvoResponse;
-import org.jflux.api.core.util.Listener;
-import org.jflux.api.core.util.Notifier;
+import org.jflux.api.core.Listener;
+import org.jflux.api.core.Notifier;
 
 /**
  *

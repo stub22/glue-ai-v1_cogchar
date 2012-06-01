@@ -21,6 +21,8 @@
  */
 package org.cogchar.bundle.demo.convo.ui;
 
+import org.jflux.api.core.Listener;
+import org.jflux.api.core.Source;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.Destination;
@@ -43,6 +45,8 @@ import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
 import org.robokind.impl.speech.PortableSpeechRequest;
 import org.robokind.impl.speechrec.PortableSpeechRecEventList;
 
+import static org.cogchar.bundle.demo.convo.osgi.ConvoConfigUtils.*;
+
 /**
  *
  * @author Matthew Stevenson <www.robokind.org>
@@ -53,14 +57,47 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
     ProcessorNode<String,ConvoResponse> myConvoProc;
     ConsumerNode<SpeechRequest> myResponseSender;
     private NodeChain myChain;
+    private Source<String> myCogbotIpSource;
+    private Listener<String> myCogbotIpSetter;
+    private Source<Long> myCogbotPollIntervalSource;
+    private Listener<Long> myCogbotPollIntervalSetter;
     
     /** Creates new form ConvoConnectionPanel */
     public ConvoConnectionPanel() {
         initComponents();
         pnlRecConnect.setDestination(
-                "speechRec.Event; {create:always, node:{type:queue}}");
+                getSource(String.class, CONF_SPREC_DESTINATION), 
+                getSetter(String.class, CONF_SPREC_DESTINATION));
+        pnlRecConnect.setBrokerAddress(
+                getSource(String.class, CONF_SPREC_BROKER_IP), 
+                getSetter(String.class, CONF_SPREC_BROKER_IP),
+                getSource(String.class, CONF_SPREC_BROKER_PORT),
+                getSource(String.class, CONF_SPREC_BROKER_USERNAME),
+                getSource(String.class, CONF_SPREC_BROKER_PASSWORD),
+                getSource(String.class, CONF_SPREC_BROKER_CLIENT_NAME),
+                getSource(String.class, CONF_SPREC_BROKER_VIRTUAL_HOST));
         pnlTTSConnect.setDestination(
-                "speech.Request; {create:always, node:{type:queue}}");
+                getSource(String.class, CONF_TTS_DESTINATION), 
+                getSetter(String.class, CONF_TTS_DESTINATION));
+        pnlTTSConnect.setBrokerAddress(
+                getSource(String.class, CONF_TTS_BROKER_IP), 
+                getSetter(String.class, CONF_TTS_BROKER_IP),
+                getSource(String.class, CONF_TTS_BROKER_PORT),
+                getSource(String.class, CONF_TTS_BROKER_USERNAME),
+                getSource(String.class, CONF_TTS_BROKER_PASSWORD),
+                getSource(String.class, CONF_TTS_BROKER_CLIENT_NAME),
+                getSource(String.class, CONF_TTS_BROKER_VIRTUAL_HOST));
+        
+        myCogbotIpSource = getSource(String.class, CONF_COGBOT_IP);
+        myCogbotIpSetter = getSetter(String.class, CONF_COGBOT_IP);
+        myCogbotPollIntervalSource = 
+                getSource(Long.class, CONF_COGBOT_POLL_INTERVAL);
+        myCogbotPollIntervalSetter = 
+                getSetter(Long.class, CONF_COGBOT_POLL_INTERVAL);
+        
+        txtCogbot.setText(myCogbotIpSource.getValue());
+        txtCogbotPollInterval.setText(
+                myCogbotPollIntervalSource.getValue().toString());
     }
     
     public boolean connect(){
@@ -155,14 +192,15 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
         txtCogbot.setEnabled(true);
     }
     
-    public long getPollInterval(){
+    public void updatetPollInterval(){
         String str = txtCogbotPollInterval.getText();
         try{
             Long interval = Long.parseLong(str);
             interval = Math.max(interval, 1);
-            return interval;
+            myCogbotPollIntervalSetter.handleEvent(interval);
         }catch(NumberFormatException ex){
-            return 1000;
+            theLogger.log(Level.WARNING, 
+                    "Invalid Poll Interval, not a number: " + str, ex);
         }
     }
     

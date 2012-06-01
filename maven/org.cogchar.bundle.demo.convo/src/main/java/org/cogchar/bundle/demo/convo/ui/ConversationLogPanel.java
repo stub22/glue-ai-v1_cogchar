@@ -25,7 +25,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import javax.swing.SwingUtilities;
 import org.cogchar.bundle.demo.convo.ConvoResponse;
-import org.jflux.api.core.util.Listener;
+import org.jflux.api.core.Listener;
 
 /**
  *
