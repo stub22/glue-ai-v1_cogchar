@@ -11,8 +11,12 @@
 	<artifactId>org.cogchar.bundle.bind.robokind</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>org.cogchar.bundle.bind.robokind - OSGi - binds motion, vision, speech</name>
-
+	<name>${project.artifactId} - OSGi - binds motion, vision, speech</name>
+    
+    <properties>	
+		<robokind.version>0.8.6-SNAPSHOT</robokind.version>
+        <jflux.version>0.1.3-SNAPSHOT</jflux.version>
+    </properties>
     
 	<dependencies>
 		<dependency>
@@ -59,32 +63,16 @@
 			<artifactId>org.robokind.avrogen.speech</artifactId>
 			<version>${robokind.version}</version>
 		</dependency>
-
-		<dependency>
-			<!-- Does this conflict with the XPP provided thru JME3? -->
-			<artifactId>org.apache.servicemix.bundles.xpp3</artifactId>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<type>jar</type>
-			<version>1.1.4c_5</version>
-			<scope>runtime</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.speech</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<!-- Needed at compile time for AnimationXMLReader -->
-			<artifactId>org.robokind.impl.animation</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>			
+		</dependency>	
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<!-- Needed at compile time for PortableSpeechRequest  -->
 			<artifactId>org.robokind.impl.speech</artifactId>
 			<version>${robokind.version}</version>
-		
 		</dependency>		
 
 		<dependency>
@@ -136,6 +124,12 @@
 			<version>${robokind.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.impl.animation</artifactId>
+			<version>${robokind.version}</version>
+            <scope>runtime</scope>
+		</dependency>		
 	</dependencies>
 
 	<build>
