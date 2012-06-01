@@ -21,7 +21,6 @@ import org.osgi.framework.BundleContext;
 
 import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
 import org.appdapter.core.item.Ident;
-import org.appdapter.core.item.FreeIdent;
 import org.appdapter.core.log.BasicDebugger;
 
 
@@ -30,20 +29,17 @@ import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 
-import org.cogchar.bind.rk.robot.client.RobotAnimClient;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.SceneActions;
 
 import org.cogchar.platform.trigger.DummyBox;
-import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.platform.trigger.DummyBinder;
 import org.cogchar.platform.trigger.DummyTrigger;
 
 import org.cogchar.app.buddy.busker.TriggerItems;
 
-import org.cogchar.impl.scene.BehaviorTrial;
 import org.cogchar.impl.scene.Theater;
 import org.cogchar.impl.scene.SceneBook;
 
