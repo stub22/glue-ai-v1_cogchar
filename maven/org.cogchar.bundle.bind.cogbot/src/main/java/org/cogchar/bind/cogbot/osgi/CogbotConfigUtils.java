@@ -47,8 +47,6 @@ public class CogbotConfigUtils {
     
     public final static String CONF_COGSIM_DEBUG_FLAG = "cogsim_debug_flag";
     
-    
-    
     private static Configuration<String> theConfiguration;
     
     public static synchronized Configuration<String> defaultConfiguration(){
