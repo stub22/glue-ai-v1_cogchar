@@ -90,7 +90,7 @@ public class CogbotSpeechDemo {
         if(receiver == null){
             return;
         }
-        receiver.addMessageListener(handler);
+        receiver.addListener(handler);
         try{
             receiver.start();
         }catch(Exception ex){
@@ -188,7 +188,7 @@ public class CogbotSpeechDemo {
             GenRespWithConf genResp = myCogbot.getResponse(input);
             String resp = genResp.getResponse();
             SpeechRequest req = myFactory.create("client", "host", resp);
-            mySpeechSender.sendMessage(req);
+            mySpeechSender.notifyListeners(req);
         }
     }
 }
