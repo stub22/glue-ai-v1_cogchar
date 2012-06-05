@@ -22,6 +22,7 @@ import org.cogchar.api.skeleton.config.BoneJointConfig;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.robokind.api.common.position.NormalizableRange;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.common.utils.Utils;
 import org.robokind.api.motion.AbstractJoint;
@@ -106,5 +107,10 @@ public class ModelJoint extends AbstractJoint {
 		NormalizedDouble normGoalPos = getGoalPosition();
 		return getRotationListForNormPos(normGoalPos);
 	}
+
+    @Override
+    public NormalizableRange getPositionRange() {
+        return null;
+    }
 	
 }
