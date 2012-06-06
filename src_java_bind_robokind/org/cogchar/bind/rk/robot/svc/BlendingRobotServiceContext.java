@@ -72,7 +72,7 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
 
     @Override
 	public void registerAndStart(
-            R robot, Configuration<String> connectionConfig) throws Throwable {
+            R robot, String connectionConfig) throws Throwable {
 		Robot.Id robotID = robot.getRobotId();
 		theLogger.info("super.registerAndStart(robotID=" + robotID + ")");
 		super.registerAndStart(robot, connectionConfig);
