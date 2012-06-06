@@ -16,11 +16,7 @@
 package org.cogchar.bind.rk.robot.svc;
 
 import java.io.File;
-import javax.jms.Connection;
-import javax.jms.JMSException;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.bind.rk.osgi.ConnectionConfigUtils;
-import org.jflux.api.core.config.Configuration;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
@@ -62,34 +58,15 @@ public class RobotServiceContext<R extends Robot> extends BasicDebugger {
 			 throw new Exception("Error Registering Robot: " + robot);
 		}
     }
-    protected void launchRemoteHost(Configuration<String> connectionConfig){
-        String ip = connectionConfig.getPropertySource(
-                String.class, ConnectionConfigUtils.CONF_BROKER_IP).getValue();
-		theLogger.info("Launching remote host for IP: " + ip);
-        if(ip == null){
-            throw new NullPointerException();
-        }else if(myRobot == null){
-            theLogger.warn("No Robot Set");
-            return;
-        }
-        Connection con = ConnectionConfigUtils.createConnection(connectionConfig);
-        if(con == null){
-            theLogger.warn("Could not connect to broker: " + ip);
-            return;
-        }
-        try{
-            con.start();
-            new RemoteRobotHostServiceGroup(
-                    myBundleCtx, myRobot.getRobotId(), 
-                    "host", "client", con, null).start();
-        }catch(JMSException ex){
-            theLogger.warn("Could not connect to broker: " + ip, ex);
-        }
+    protected void launchRemoteHost(String connectionConfigId){
+        new RemoteRobotHostServiceGroup(
+                myBundleCtx, myRobot.getRobotId(), 
+                "host", "client", connectionConfigId, null).start();
     }
 	public void registerAndStart(
-            R robot, Configuration<String> connectionConfig) throws Throwable {
+            R robot, String connectionConfigId) throws Throwable {
 		registerRobot(robot);
-        launchRemoteHost(connectionConfig);
+        launchRemoteHost(connectionConfigId);
 	}
 	public void startJointGroup(File jointGroupConfigXML_file) { 
 		RobotServiceFuncs.startJointGroup(

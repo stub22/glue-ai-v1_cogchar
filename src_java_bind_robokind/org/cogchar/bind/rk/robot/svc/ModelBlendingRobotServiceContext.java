@@ -22,6 +22,11 @@ import org.jflux.api.core.config.Configuration;
 import org.robokind.api.motion.Robot;
 import org.osgi.framework.BundleContext;
 
+import org.robokind.api.common.lifecycle.config.GenericLifecycle;
+import org.robokind.api.common.lifecycle.config.RKLifecycleConfigUtils.GenericLifecycleFactory;
+import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.robokind.impl.messaging.config.MessagingLifecycleGroupConfigUtils;
+import org.robokind.impl.messaging.config.RKJMSConfigUtils;
 import static org.cogchar.bind.rk.osgi.RobokindBindingConfigUtils.*;
 
 
@@ -43,8 +48,10 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
             logWarning("Error building ModelRobot from config: " + config);
             return;
         }
-        Configuration connectionConfig = getValue(Configuration.class, MSGCONF_ROBOT_HOST);
-		registerAndStart(br, connectionConfig);
+        Configuration<String> connectionConf = getValue(Configuration.class, MSGCONF_ROBOT_HOST);
+        new OSGiComponent(myBundleCtx, 
+                new GenericLifecycleFactory().adapt(connectionConf)).start();
+		registerAndStart(br, MSGCONF_ROBOT_HOST);
 		logInfo("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeBonyRobotWithBlenderAndFrameSource ");
 	}	
 	
@@ -55,10 +62,12 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 		//Create your Robot and register it
 		Robot.Id hbID = new Robot.Id("temp"); // HARDCODED_DUMMY_ROBOT_ID);
 		ModelRobot br = new ModelRobot(hbID);
+        Configuration<String> connectionConf = getValue(Configuration.class, MSGCONF_ROBOT_HOST);
+        new OSGiComponent(myBundleCtx, 
+                new GenericLifecycleFactory().adapt(connectionConf)).start();
 		//BonyRobotUtils.makeBonyJointForRobot(myBonyRobot, 22, "JTwentyTwo", 0.5, 0.2);
 		//BonyRobotUtils.makeBonyJointForRobot(myBonyRobot, 22, "JNinetyNine", 0.8, 0.9);
-        Configuration connectionConfig = getValue(Configuration.class, MSGCONF_ROBOT_HOST);
-		registerAndStart(br, connectionConfig);
+		registerAndStart(br, MSGCONF_ROBOT_HOST);
 		logInfo("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END registerDummyBlendingRobot");
 	}	
 
