@@ -32,6 +32,7 @@ import com.jme3.system.JmeContext;
 import com.jme3.system.JmeSystem;
 import java.awt.Canvas;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,5 +110,10 @@ public class WorkaroundFuncsMustDie {
 	public static void enqueueCallable(BonyRenderContext bc, Callable callThis) {
 		bc.getApp().enqueue(callThis);
 	}	
+	
+	// Probably we just need this one. Plan to get rid of the first once I make sure I'm not blowing up lights!
+	public static Future<Object> enqueueCallableReturn(BonyRenderContext bc, Callable callThis) {
+		return bc.getApp().enqueue(callThis);
+	}
 
 }
