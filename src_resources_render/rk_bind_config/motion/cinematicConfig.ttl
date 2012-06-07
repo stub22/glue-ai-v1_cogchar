@@ -1,0 +1,109 @@
+## This file contains RDF in Turtle (".ttl") format.
+## See:   http://www.w3.org/TeamSubmission/turtle/
+
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+@prefix apsb:	<http://www.appdapter.org/schema/box#> .
+@prefix apt:	<http://www.appdapter.org/test#> .
+
+@prefix bc:		<http://www.cogchar.org/bony/config#> .
+@prefix bci:	<http://www.cogchar.org/bony/config/instance#> .
+
+@prefix cc:		<http://www.cogchar.org/schema/cinematic#> .
+@prefix cci:	<http://www.cogchar.org/schema/cinematic/instance#> .
+
+
+<>  rdfs:comment     "All of this metadata is optional, unused, and just for fun/future" ;
+    dc:creator       "Ryan Biggs" ;
+    dc:subject       "Cinematic config" ;
+    dc:publisher     "cogchar.org" ;
+    dc:title         "(title) Cinematic config" ;
+    dc:description   "(desc) Configuration for cinematic motions of cameras and objects" ;
+    dc:date          "2012-06-05" ;
+
+    dc:format        "RDF" ;
+    dc:identifier    "what_does_this_dublin_core_identifier_mean"
+    .
+    
+
+#### This "Buildable" resource defines a factory for a particular kind of component.
+
+cc:BuildableCinematicConfig
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.api.scene.CinematicConfig$Builder" 
+#####  Again, note the period ending the description of this resource, and all other
+#####  top-level (*syntactically, but not semantically*) resources below.
+		.
+
+
+##########################################################################
+#####   The Main Resource
+#####  The URI of the Cinematic Config is (the expanded form of) bci:cinematicConfig1	
+##### rdf:type allows Jena Assembler to construct the factory   (CinematicConfig.Builder)
+##### defined by the BuildableCinematicConfig above.
+##########################################################################
+
+cci:cinematicConfig1		rdf:type			cc:BuildableCinematicConfig;
+####  Here is the class name of the actual config object instance we are constructing.
+	apsb:javaFQCN		"org.cogchar.api.scene.CinematicConfig";
+#### Some additional descriptive metadata
+	apsb:label			"Cinematic Config apsb:label";
+	rdfs:label			"Cinematic Config rdfs:label";
+
+
+# Now let's list the cinematics contained within this config
+        cc:cinematicList	cci:cinematic_movingCameraDemo;
+        .        
+
+
+################################################################################
+# Cinematic Resources
+################################################################################
+
+cci:cinematic_movingCameraDemo
+		cc:duration			"60";
+		cc:tracks (
+		[	
+			cc:attachedItem		"aTestCamera";
+			cc:attachedItemType	"CAMERA";
+			cc:trackType		"MOTIONTRACK";
+			cc:directionType	"LookAt";
+			cc:xDir				"0.0";
+			cc:yDir				"18.0";
+			cc:zDir				"0.0";
+			cc:tension			"0.83";
+			cc:cycle			"true";
+			cc:loop				"Loop";
+			cc:startTime		"0.0";
+			cc:waypoints (
+			[
+				cc:xPos			"0";
+				cc:yPos			"40";
+				cc:zPos			"80"
+			] [
+				cc:xPos			"80";
+				cc:yPos			"40";
+				cc:zPos			"0"
+			] [
+				cc:xPos			"0";
+				cc:yPos			"40";
+				cc:zPos			"-80"
+			] [
+				cc:xPos			"-80";
+				cc:yPos			"40";
+				cc:zPos			"0"
+			]
+			)
+		] 
+		)	
+.        
+

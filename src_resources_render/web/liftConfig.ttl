@@ -108,10 +108,9 @@ lci:control_3
 lci:control_4
 	lc:type					"PUSHYBUTTON";
 	lc:id					4;
-	lc:action				"sceneTrig_03";
-	lc:text					"Scene 3";
+	lc:action				"cinematic_movingCameraDemo";
+	lc:text					"Push for cinematic camera demo in viewport";
 	lc:style				"buttonblue";
-	lc:resource				"still-27.jpg";
 .
 
 lci:control_5

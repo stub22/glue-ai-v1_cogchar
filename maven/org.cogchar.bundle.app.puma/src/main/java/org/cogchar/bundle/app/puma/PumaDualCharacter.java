@@ -49,14 +49,18 @@ import org.cogchar.impl.perform.FancyTextChan;
 import org.cogchar.impl.trigger.FancyTriggerFacade;
 
 /*
- * This probably is only here for the short term - added so that we can initialize lights and cameras (and webapp) from
- * rdf via this class for testing
+ * This probably is only here for the short term - added so that we can initialize lights and cameras (and webapp, and
+ * cinematics) from rdf via this class for testing
  */
+import org.cogchar.api.scene.CinematicConfig;
 import org.cogchar.api.scene.LightsCameraConfig;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.optic.LightFactory;
 import org.cogchar.bind.lift.LiftConfig;
 import org.cogchar.bind.lift.LiftAmbassador;
+
+
+import org.cogchar.render.opengl.scene.CinematicMgr; // We hook in here to trigger Cinematics on behalf of Lift
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -108,6 +112,11 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		LiftConfig lc = (LiftConfig) readGeneralConfig("web/liftConfig.ttl", myInitialBonyRdfCL)[0];
 		LiftAmbassador.storeControlsFromConfig(lc);
 
+		/*
+		 * And now, we introduce the delightful RDF definitions for cinematics:
+		 */
+		CinematicConfig cc = (CinematicConfig) readGeneralConfig("rk_bind_config/motion/cinematicConfig.ttl", myInitialBonyRdfCL)[0];
+		CinematicMgr.storeCinematicsFromConfig(cc, myPHM.getHumanoidRenderContext());
 
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myPHM.connectToVirtualChar();
@@ -148,7 +157,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		SceneBook sb = myTheater.getSceneBook();
 		DummyBinder trigBinder = SceneActions.getBinder();
 		LiftAmbassador.setSceneLauncher(SceneActions.getLauncher()); // Connect Lift to SceneActions so scenes can be triggered from webapp
-
+		LiftAmbassador.setAppInterface(getLiftInterface()); // Connect Lift so cinematics can be triggered from webapp
 		FancyTriggerFacade.registerAllTriggers(trigBinder, myTheater, sb);
 		myTheater.startThread();
 	}
@@ -274,5 +283,28 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 
 	public void useTempAnims() {
 		logWarning("useTempAnims() not implemented yet");
+	}
+	// The following LiftInterface stuff allows Lift app to hook in and trigger cinematics
+	LiftInterface liftInterface;
+
+	public LiftInterface getLiftInterface() {
+		if (liftInterface == null) {
+			liftInterface = new LiftInterface();
+		}
+		return liftInterface;
+	}
+
+	class LiftInterface implements LiftAmbassador.LiftAppInterface {
+
+		@Override
+		public boolean triggerNamedCinematic(String name) {
+			return CinematicMgr.controlCinematicByName(name, CinematicMgr.ControlAction.PLAY);
+
+		}
+
+		@Override
+		public boolean stopNamedCinematic(String name) {
+			return CinematicMgr.controlCinematicByName(name, CinematicMgr.ControlAction.STOP);
+		}
 	}
 }
