@@ -30,7 +30,9 @@ public class LiftAmbassador {
 	private static List<ControlConfig> controls = new ArrayList<ControlConfig>();
 	private static LiftSceneInterface sceneLauncher;
 	private static LiftInterface lift;
+	private static LiftAppInterface liftAppInterface;
 	private static boolean configReady = false;
+	private static List<String> triggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
 
 	public interface LiftSceneInterface {
 
@@ -40,6 +42,13 @@ public class LiftAmbassador {
 	public interface LiftInterface {
 
 		void notifyConfigReady();
+	}
+
+	public interface LiftAppInterface {
+
+		boolean triggerNamedCinematic(String name);
+
+		boolean stopNamedCinematic(String name);
 	}
 
 	public static void storeControlsFromConfig(LiftConfig config) {
@@ -60,10 +69,21 @@ public class LiftAmbassador {
 		return LiftConfigNames.partial_P_control + "_";
 	}
 
-	public static boolean triggerScene(String scene) {
+	public static boolean triggerAction(String action) {
 		boolean success = false;
-		if (sceneLauncher != null) {
-			success = sceneLauncher.triggerScene(scene);
+		// If we can't trust that the actions will have consistent prefixes, we may need to add action types to liftConfig.ttl RDF
+		// If we can, we may want to use a central repository of prefixes
+		if ((action.startsWith("sceneTrig")) && (sceneLauncher != null)) {
+			success = sceneLauncher.triggerScene(action);
+		}
+		if ((action.startsWith("cinematic")) && (liftAppInterface != null)) {
+			if (triggeredCinematics.contains(action)) {
+				liftAppInterface.stopNamedCinematic(action); // In order to replay, we need to stop previously played cinematic first
+			}
+			success = liftAppInterface.triggerNamedCinematic(action);
+			if (success) {
+				triggeredCinematics.add(action);
+			}
 		}
 		return success;
 	}
@@ -75,6 +95,10 @@ public class LiftAmbassador {
 	public static void setLiftMessenger(LiftInterface li) {
 		theLogger.info("Lift messenger set");
 		lift = li;
+	}
+
+	public static void setAppInterface(LiftAppInterface lai) {
+		liftAppInterface = lai;
 	}
 
 	public static boolean checkConfigReady() {

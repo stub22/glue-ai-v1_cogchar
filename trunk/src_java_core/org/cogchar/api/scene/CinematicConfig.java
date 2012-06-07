@@ -30,36 +30,31 @@ import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.log.BasicDebugger;
 
 /**
- * Used to enclose data from RDF camera and lights configuration currently in charWorldConfig.ttl
+ * Used to enclose data from RDF cinematics configuration currently in cinematicConfig.ttl
  *
  * @author Ryan Biggs
  */
-public class LightsCameraConfig extends KnownComponentImpl {
+public class CinematicConfig extends KnownComponentImpl {
 
-	public List<CameraConfig> myCCs = new ArrayList<CameraConfig>();
-	public List<LightConfig> myLCs = new ArrayList<LightConfig>();
+	public List<CinematicInstanceConfig> myCICs = new ArrayList<CinematicInstanceConfig>();
 
-	public static class Builder extends DynamicCachingComponentAssembler<LightsCameraConfig> {
+	public static class Builder extends DynamicCachingComponentAssembler<CinematicConfig> {
 
 		public Builder(Resource builderConfRes) {
 			super(builderConfRes);
 		}
 
 		@Override
-		protected void initExtendedFieldsAndLinks(LightsCameraConfig mlcc, Item configItem, Assembler assmblr,
+		protected void initExtendedFieldsAndLinks(CinematicConfig mcc, Item configItem, Assembler assmblr,
 				Mode mode) {
-			logInfo("LightsCameraConfig.initExtendedFieldsAndLinks()-BEGIN");
-			Set<Item> cameraItems = ItemFuncs.getLinkedItemSet(configItem, SceneConfigNames.P_camera);
-			for (Item ji : cameraItems) {
-				CameraConfig cc = new CameraConfig(ji);
-				logInfo("Adding CameraConfig in LightsCameraConfig: " + cc);
-				mlcc.myCCs.add(cc);
-			}
-			Set<Item> lightItems = ItemFuncs.getLinkedItemSet(configItem, SceneConfigNames.P_light);
-			for (Item ji : lightItems) {
-				LightConfig lc = new LightConfig(ji);
-				logInfo("Adding LightConfig in LightsCameraConfig: " + lc);
-				mlcc.myLCs.add(lc);
+			logInfo("CinematicConfig.initExtendedFieldsAndLinks()-BEGIN");
+			Set<Item> configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_cinematic);
+			logInfo("Cinematics found: " + configItems.size());
+			for (Item ji : configItems) {
+				logInfo("Adding a CinematicInstanceConfig"); // TEST ONLY
+				CinematicInstanceConfig cic = new CinematicInstanceConfig(ji);
+				logInfo("Adding CinematicInstanceConfig in CinematicConfig: " + cic);
+				mcc.myCICs.add(cic);
 			}
 		}
 
@@ -67,11 +62,11 @@ public class LightsCameraConfig extends KnownComponentImpl {
 			clearCacheFor(Builder.class);
 		}
 	}
-	private static String UNIT_TEST_RDF_PATH = "../org.cogchar.bundle.render.resources/src/main/resources/rk_bind_config/motion/charWorldConfig.ttl";
+	private static String UNIT_TEST_RDF_PATH = "../org.cogchar.bundle.render.resources/src/main/resources/rk_bind_config/motion/cinematicConfig.ttl";
 
 	public static void main(String args[]) {
 		BasicDebugger bd = new BasicDebugger();
-		bd.logInfo("starting LightsCameraConfig test");
+		bd.logInfo("starting CinematicConfig test");
 		String triplesPath = UNIT_TEST_RDF_PATH;
 		// AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(AssemblyTest.class.getClassLoader());
 		bd.logInfo("Loading triples from path: " + triplesPath);
