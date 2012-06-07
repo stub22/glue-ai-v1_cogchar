@@ -22,11 +22,10 @@ import org.jflux.api.core.config.Configuration;
 import org.robokind.api.motion.Robot;
 import org.osgi.framework.BundleContext;
 
-import org.robokind.api.common.lifecycle.config.GenericLifecycle;
 import org.robokind.api.common.lifecycle.config.RKLifecycleConfigUtils.GenericLifecycleFactory;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
-import org.robokind.impl.messaging.config.MessagingLifecycleGroupConfigUtils;
-import org.robokind.impl.messaging.config.RKJMSConfigUtils;
+import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
+import org.robokind.impl.messaging.config.RKMessagingConfigUtils;
 import static org.cogchar.bind.rk.osgi.RobokindBindingConfigUtils.*;
 
 
@@ -49,8 +48,9 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
             return;
         }
         Configuration<String> connectionConf = getValue(Configuration.class, MSGCONF_ROBOT_HOST);
-        new OSGiComponent(myBundleCtx, 
-                new GenericLifecycleFactory().adapt(connectionConf)).start();
+        RKMessagingConfigUtils.registerConnectionConfig(
+                MSGCONF_ROBOT_HOST, connectionConf, 
+                null, new OSGiComponentFactory(myBundleCtx));
 		registerAndStart(br, MSGCONF_ROBOT_HOST);
 		logInfo("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeBonyRobotWithBlenderAndFrameSource ");
 	}	
