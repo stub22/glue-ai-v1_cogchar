@@ -67,9 +67,12 @@ public class CogbotConfigUtils {
         
         conf.addProperty(String.class, OLD_CONF_COBOT_BIN_DIR, "C:\\_hanson\\_deploy\\distro_20a\\cogbot");
         conf.addProperty(String.class, OLD_CONF_CONFIG_FOLDER, "./resources/config.properties");
-        conf.addProperty(String.class, OLD_CONF_FULL_NAME, "Bina Daxeline");
-        conf.addProperty(String.class, OLD_CONF_COGBOT_NAME, "Bina Daxeline");
-        
+      //  conf.addProperty(String.class, OLD_CONF_FULL_NAME, "Bina Daxeline");
+      //  conf.addProperty(String.class, OLD_CONF_COGBOT_NAME, "Bina Daxeline");
+		
+      conf.addProperty(String.class, OLD_CONF_FULL_NAME,   "Zeno Aeronaut");
+      conf.addProperty(String.class, OLD_CONF_COGBOT_NAME, "Zeno Aeronaut");
+	  
         conf.addProperty(Boolean.class, CONF_COGSIM_ENABLED, false);
         conf.addProperty(String.class, CONF_COGSIM_USERNAME, "Test User");
         conf.addProperty(Boolean.class, CONF_COGSIM_POLL_ENABLED, false);
