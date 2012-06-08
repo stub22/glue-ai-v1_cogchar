@@ -15,9 +15,9 @@
  */
 package org.cogchar.bundle.demo.convo.ui;
 
+import org.jflux.api.core.Adapter;
 import java.util.concurrent.TimeUnit;
 import org.cogchar.bundle.demo.convo.ConvoResponse;
-import org.jflux.api.core.node.ProcessorNode;
 import org.jflux.api.core.node.chain.NodeChain;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
 import org.jflux.api.core.Source;
@@ -51,22 +51,19 @@ public class ConversationPanel extends javax.swing.JPanel {
     }
     
     private void connectConvoLog(){
-        ProcessorNode<String,ConvoResponse> convoProc = 
-                pnlConvoConnect.getConvoProc();
+        Adapter<String,ConvoResponse> convoProc = pnlConvoConnect.getConvoProc();
         if(convoProc == null){
             return;
         }
         Notifier<String> n = conversationMonitorPanel1.getConvoInputNotifier();
         Listener<ConvoResponse> l = 
                 conversationMonitorPanel1.getConvoResponseListener();
-        myMonitorChain = NodeChainBuilder.build(
-                String.class, n)
+        myMonitorChain = NodeChainBuilder.build(n)
                 .attach(convoProc)
                 .attach(l);
         myMonitorChain.start();
         
-        myHeartbeatNode = new HeartbeatNode<String>(
-                String.class, myHeartbeatMessageSource, 0, 
+        myHeartbeatNode = new HeartbeatNode<String>(myHeartbeatMessageSource, 0, 
                 myPollIntervalSource.getValue(), TimeUnit.MILLISECONDS);
         myHeartbeatChain = NodeChainBuilder.build(myHeartbeatNode)
                 .attach(convoProc).getNodeChain();

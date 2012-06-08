@@ -38,6 +38,11 @@
         </dependency>
         <dependency>
             <groupId>org.robokind</groupId>
+            <artifactId>org.robokind.api.speechrec</artifactId>
+            <version>${robokind.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.robokind</groupId>
             <artifactId>org.robokind.impl.speechrec</artifactId>
             <version>${robokind.version}</version>
         </dependency>
