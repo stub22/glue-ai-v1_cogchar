@@ -15,8 +15,7 @@
  */
 package org.cogchar.bind.rk.robot.client;
 
-import java.util.Map;
-import java.util.Map.Entry;
+
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.osgi.framework.BundleContext;
@@ -34,6 +33,7 @@ import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.robokind.api.animation.player.AnimationJob;
 import org.robokind.api.animation.player.AnimationPlayer;
+import org.robokind.api.animation.utils.ChannelsParameter;
 import org.robokind.api.animation.xml.AnimationFileReader;
 import org.robokind.api.animation.xml.AnimationXML;
 import org.robokind.api.common.playable.PlayState;
@@ -160,12 +160,14 @@ public class RobotAnimClient extends BasicDebugger {
 
 		ChannelsParameterSource cpSource = AnimationUtils.getChannelsParameterSource();
 		logInfo(IMPO_LO, "channelParamSource=" + cpSource);
-		Map<Integer, String> chanNames = cpSource.getChannelNames();
-		logInfo("Test animation channelNames=" + chanNames);
+		List<ChannelsParameter> chanParams = cpSource.getChannelParameters();
+		logInfo("Test animation channels=" + chanParams);
 		Animation anim = new Animation();
 		//Create your channels and add points
-		for (Entry<Integer, String> e : chanNames.entrySet()) {
-			Channel chan = new Channel(e.getKey(), e.getValue());
+		for (ChannelsParameter cp : chanParams) {
+            int id = cp.getChannelID();
+            String name = cp.getChannelName();
+			Channel chan = new Channel(id, name);
 			//default path interpolation is a CSpline
 			MotionPath path = new MotionPath();
 			//time in millisec, position [0,1]
