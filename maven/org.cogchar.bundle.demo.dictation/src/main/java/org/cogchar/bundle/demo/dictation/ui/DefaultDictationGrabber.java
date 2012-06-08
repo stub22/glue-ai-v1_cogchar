@@ -15,6 +15,7 @@
  */
 package org.cogchar.bundle.demo.dictation.ui;
 
+import org.jflux.api.messaging.encode.EncodeRequest;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -173,17 +174,16 @@ public class DefaultDictationGrabber implements DictationGrabber{
         if(dest == null){
             return null;
         }
-        ConsumerNode<SpeechRecEventList> ttsNode = 
-                JMSAvroUtils.buildEventSenderChain(
-                        SpeechRecEventList.class, 
-                        SpeechRecEventListRecord.class, 
-                        SpeechRecEventListRecord.SCHEMA$, 
-                        new PortableSpeechRecEventList.MessageRecordAdapter(),
-                        mySession, dest, 
-                        new MessageHeaderAdapter("application/speechRecEventList"));
-        return NodeChainBuilder.build(String.class)
-                .attach(SpeechRecEventList.class, 
-                        new SpeechRecEventListFormatter("source", "dest"))
+        ConsumerNode<SpeechRecEventList> ttsNode = NodeChainBuilder.build(
+                    EncodeRequest.factory(SpeechRecEventList.class, new JMSAvroUtils.ByteOutputStreamFactory()))
+                .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
+                    SpeechRecEventListRecord.class, 
+                    SpeechRecEventListRecord.SCHEMA$, 
+                    new PortableSpeechRecEventList.MessageRecordAdapter(), 
+                    mySession, dest, 
+                    new MessageHeaderAdapter("application/speechRecEventList")));
+        return NodeChainBuilder.build(
+                new SpeechRecEventListFormatter("source", "dest"))
                 .getConsumerChain(ttsNode);
     }
     
