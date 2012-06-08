@@ -21,6 +21,11 @@
  */
 package org.cogchar.bundle.demo.convo.ui;
 
+import org.jflux.api.messaging.encode.EncodeRequest;
+import org.jflux.impl.messaging.jms.MessageHeaderAdapter;
+import org.robokind.avrogen.speech.SpeechRequestRecord;
+import org.robokind.impl.speech.PortableSpeechRequest;
+import org.jflux.api.core.Adapter;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.Source;
 import java.util.logging.Level;
@@ -30,19 +35,13 @@ import javax.jms.JMSException;
 import javax.jms.Session;
 import org.cogchar.bundle.demo.convo.*;
 import org.jflux.api.core.node.ConsumerNode;
-import org.jflux.api.core.node.DefaultProcessorNode;
-import org.jflux.api.core.node.ProcessorNode;
 import org.jflux.api.core.node.ProducerNode;
 import org.jflux.api.core.node.chain.NodeChain;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
 import org.jflux.impl.messaging.JMSAvroUtils;
-import org.jflux.impl.messaging.jms.MessageHeaderAdapter;
 import org.robokind.api.speech.SpeechRequest;
-import org.robokind.api.speechrec.SpeechRecEvent;
 import org.robokind.api.speechrec.SpeechRecEventList;
-import org.robokind.avrogen.speech.SpeechRequestRecord;
 import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
-import org.robokind.impl.speech.PortableSpeechRequest;
 import org.robokind.impl.speechrec.PortableSpeechRecEventList;
 
 import static org.cogchar.bundle.demo.convo.osgi.ConvoConfigUtils.*;
@@ -54,7 +53,7 @@ import static org.cogchar.bundle.demo.convo.osgi.ConvoConfigUtils.*;
 public class ConvoConnectionPanel extends javax.swing.JPanel {
     private final static Logger theLogger = Logger.getLogger(ConvoConnectionPanel.class.getName());
     ProducerNode<SpeechRecEventList> mySpeechProducer;
-    ProcessorNode<String,ConvoResponse> myConvoProc;
+    Adapter<String,ConvoResponse> myConvoProc;
     ConsumerNode<SpeechRequest> myResponseSender;
     private NodeChain myChain;
     private Source<String> myCogbotIpSource;
@@ -119,7 +118,7 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
         return true;
     }
     
-    public ProcessorNode<String,ConvoResponse> getConvoProc(){
+    public Adapter<String,ConvoResponse> getConvoProc(){
         return myConvoProc;
     }
     
@@ -127,19 +126,19 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
             Session ttsSession, Destination ttsDest, String cogbotUrl) {
         mySpeechProducer = buildSpeechRecChain(recSession, recDest);
         myResponseSender = buildTTSNodeChain(ttsSession, ttsDest);
-        myConvoProc = buildConvoChain(cogbotUrl);
+        myConvoProc = new CogbotProcessor(cogbotUrl);
         if(mySpeechProducer == null || myResponseSender == null){
             return null;
         }
         
         return NodeChainBuilder.build(mySpeechProducer)
-            .attach(SpeechRecEvent.class, new SpeechRecFilter()) 
-            .attach(String.class, new SpeechRecStringFilter())
-            .attach(String.class, new ConversationInputFilter())
+            .attach(new SpeechRecFilter()) 
+            .attach(new SpeechRecStringFilter())
+            .attach(new ConversationInputFilter())
             .attach(myConvoProc)
-            .attach(ConvoResponse.class, new ConvoResponseFilter())
-            .attach(String.class, new ConvoResponseStringAdapter())
-            .attach(SpeechRequest.class, new SpeechFormatter("source", "dest"))
+            .attach(new ConvoResponseFilter())
+            .attach(new ConvoResponseStringAdapter())
+            .attach(new SpeechFormatter("source", "dest"))
             .attach(myResponseSender);
     }
     
@@ -147,7 +146,6 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
             Session session, Destination dest){
         try{
             return JMSAvroUtils.buildEventReceiverChain(
-                    SpeechRecEventList.class, 
                     SpeechRecEventListRecord.class, 
                     SpeechRecEventListRecord.SCHEMA$, 
                     new PortableSpeechRecEventList.RecordMessageAdapter(), 
@@ -161,23 +159,18 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
     private ConsumerNode<SpeechRequest> buildTTSNodeChain(
             Session session, Destination dest){
         try{
-            return JMSAvroUtils.buildEventSenderChain(
-                    SpeechRequest.class, 
+            return NodeChainBuilder.build(
+                    EncodeRequest.factory(SpeechRequest.class, new JMSAvroUtils.ByteOutputStreamFactory()))
+                .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
                     SpeechRequestRecord.class, 
                     SpeechRequestRecord.SCHEMA$, 
                     new PortableSpeechRequest.MessageRecordAdapter(), 
                     session, dest, 
-                    new MessageHeaderAdapter("application/speechRequest"));
-        }catch(JMSException ex){
+                    new MessageHeaderAdapter("application/speechRequest")));
+        }catch(Exception ex){
             theLogger.log(Level.WARNING,"Error connecting to TTS.",ex);
             return null;
         }
-    }
-    
-    private ProcessorNode<String,ConvoResponse> buildConvoChain(String cogbotUrl){
-        return new DefaultProcessorNode(
-                String.class, ConvoResponse.class, 
-                new CogbotProcessor(cogbotUrl));
     }
     
     public void disconnect(){
