@@ -23,7 +23,7 @@ import org.jflux.api.core.node.chain.NodeChainBuilder;
 import org.jflux.api.core.Source;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.Notifier;
-import org.jflux.api.data.schedule.HeartbeatNode;
+import org.jflux.api.schedule.HeartbeatNode;
 import static org.cogchar.bundle.demo.convo.osgi.ConvoConfigUtils.*;
 
 /**

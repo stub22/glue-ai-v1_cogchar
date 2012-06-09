@@ -29,7 +29,7 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         DictationFrame.main(null);
     }
-
+    
     @Override
     public void stop(BundleContext context) throws Exception {
         // TODO add deactivation code here
