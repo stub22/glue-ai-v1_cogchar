@@ -21,8 +21,8 @@
  */
 package org.cogchar.bundle.demo.convo.ui;
 
-import org.jflux.api.messaging.encode.EncodeRequest;
-import org.jflux.impl.messaging.jms.MessageHeaderAdapter;
+import org.jflux.impl.transport.jms.MessageHeaderAdapter;
+import org.jflux.api.encode.EncodeRequest;
 import org.robokind.avrogen.speech.SpeechRequestRecord;
 import org.robokind.impl.speech.PortableSpeechRequest;
 import org.jflux.api.core.Adapter;

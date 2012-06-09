@@ -13,7 +13,6 @@
 	<packaging>bundle</packaging>
     <properties>	
 		<robokind.version>0.8.6-SNAPSHOT</robokind.version>
-        <jflux.version>0.1.3-SNAPSHOT</jflux.version>
     </properties>
 
 	<name>${project.artifactId} OSGi Bundle</name>
@@ -54,16 +53,6 @@
             <groupId>org.robokind</groupId>
             <artifactId>org.robokind.impl.speechrec</artifactId>
             <version>${robokind.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jflux</groupId>
-            <artifactId>org.jflux.impl.messaging</artifactId>
-            <version>${jflux.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jflux</groupId>
-            <artifactId>org.jflux.api.data</artifactId>
-            <version>${jflux.version}</version>
         </dependency>
     </dependencies>
 

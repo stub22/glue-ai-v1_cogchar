@@ -13,7 +13,6 @@
 	<packaging>bundle</packaging>
     <properties>	
 		<robokind.version>0.8.6-SNAPSHOT</robokind.version>
-        <jflux.version>0.1.3-SNAPSHOT</jflux.version>
     </properties>
 
 
@@ -25,16 +24,6 @@
             <artifactId>org.osgi.core</artifactId>
             <version>1.4.0</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jflux</groupId>
-            <artifactId>org.jflux.api.core</artifactId>
-            <version>${jflux.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jflux</groupId>
-            <artifactId>org.jflux.impl.messaging</artifactId>
-            <version>${jflux.version}</version>
         </dependency>
         <dependency>
             <groupId>org.robokind</groupId>
