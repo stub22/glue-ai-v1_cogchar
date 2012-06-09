@@ -185,10 +185,9 @@
 			<version>${appdapter.msg.version}</version>
 		</dependency>
 		<dependency>
-			<artifactId>ext.bundle.apache_avro_151</artifactId>
-			<groupId>org.appdapter</groupId>
-			<type>jar</type>
-			<version>${appdapter.msg.version}</version>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.impl.encode.avro</artifactId>
+			<version>${jflux.version}</version>
 		</dependency>
  
 		
