@@ -22,10 +22,12 @@ import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
 
+import org.appdapter.core.log.BasicDebugger;
+
 /**
  * @author Ryan Biggs
  */
-public class CinematicInstanceConfig {
+public class CinematicInstanceConfig extends BasicDebugger {
 
 	public String myURI_Fragment;
 	public float duration;
@@ -41,6 +43,7 @@ public class CinematicInstanceConfig {
 		myURI_Fragment = configItem.getIdent().getLocalName();
 		duration = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_duration, null).floatValue();
 		List<Item> trackItems = reader.readLinkedItemSeq(configItem, CinematicConfigNames.P_track);
+		logInfo("Number of tracks found: " + trackItems.size());
 		for (Item ti : trackItems) {
 			CinematicTrack ct = new CinematicTrack(ti);
 			myTracks.add(ct);
