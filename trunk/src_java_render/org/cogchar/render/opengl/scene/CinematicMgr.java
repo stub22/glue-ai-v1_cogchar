@@ -31,6 +31,7 @@ import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.events.*;
 import com.jme3.scene.Node;
 import com.jme3.scene.CameraNode;
+import java.lang.Float;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -45,6 +46,7 @@ public class CinematicMgr extends BasicDebugger {
 
 	private static Map<String, Cinematic> myCinematicsByName = new HashMap<String, Cinematic>();
 	private static Map<String, CinematicTrack> myTracksByName = new HashMap<String, CinematicTrack>();
+	private static Map<String, WaypointConfig> myWaypointsByName = new HashMap<String, WaypointConfig>();
 	//private static Map<String, Boolean> myCinematicsReadyStatusByName = new HashMap<String, Boolean>(); // May not need this, woohoo!
 	private static Logger staticLogger = getLoggerForClass(CinematicMgr.class);
 	private static HumanoidRenderContext myHrc;
@@ -54,7 +56,13 @@ public class CinematicMgr extends BasicDebugger {
 		RenderRegistryClient rrc = hrc.getRenderRegistryClient();
 		Node jmeRootNode = rrc.getJme3RootDeepNode(null);
 
-		// First, any named tracks defined cinematics definitions are stored for later use
+		// First, any named waypoints defined outside track definitions are stored for later use
+		for (WaypointConfig wc : config.myWCs) {
+			staticLogger.info("Storing Named Waypoint from RDF: " + wc);
+			myWaypointsByName.put(wc.waypointName, wc);
+		}
+
+		// Second, any named tracks defined outside cinematics definitions are stored for later use
 		for (CinematicTrack ct : config.myCTs) {
 			staticLogger.info("Storing Named Track from RDF: " + ct);
 			myTracksByName.put(ct.trackName, ct);
@@ -84,10 +92,24 @@ public class CinematicMgr extends BasicDebugger {
 					MotionPath path = new MotionPath();
 					Node attachedNode = null;
 					path.setCycle(track.cycle);
-
-					for (float[] waypoint : track.waypoints) {
-						//staticLogger.info("Making new waypoint: " + new Vector3f(waypoint[0], waypoint[1], waypoint[2]));
-						path.addWayPoint(new Vector3f(waypoint[0], waypoint[1], waypoint[2]));
+					for (WaypointConfig waypoint : track.waypoints) {
+						boolean noPosition = (new Float(waypoint.waypointCoordinates[0]).isNaN()) || (new Float(waypoint.waypointCoordinates[1]).isNaN()) || (new Float(waypoint.waypointCoordinates[2]).isNaN());
+						if (noPosition) { // If we don't have coordinates for this waypoint...
+							// First check to see if this waypoint refers to a stored waypoint previously defined
+							String waypointReference = waypoint.waypointName;
+							if (!waypointReference.equals(CinematicConfigNames.unnamedWaypointName)) {
+								waypoint = myWaypointsByName.get(waypointReference); // Reset waypoint to the WaypointConfig declared separately by name
+								if (waypoint == null) { // If so, track is calling for a waypoint we don't know about
+									staticLogger.error("Track has requested undefined waypoint: " + waypointReference + "; track is " + track);
+									break;
+								}
+							} else {
+								staticLogger.error("No coordinates or waypointName in waypoint contained in track: " + track);
+								break; // If no coordinates and no waypointName, we don't really have a waypoint!
+							}
+						}
+						//staticLogger.info("Making new waypoint: " + new Vector3f(waypoint.waypointCoordinates[0], waypoint.waypointCoordinates[1], waypoint.waypointCoordinates[2])); // TEST ONLY
+						path.addWayPoint(new Vector3f(waypoint.waypointCoordinates[0], waypoint.waypointCoordinates[1], waypoint.waypointCoordinates[2]));
 					}
 					path.setCurveTension(track.tension);
 					if (track.attachedItemType == CinematicTrack.AttachedItemType.CAMERA) { // Which is all we support initally...

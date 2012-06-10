@@ -25,11 +25,17 @@ public class CinematicConfigNames extends BoxAssemblyNames {
 	
 	public static	String		P_namedTrack	= "track_";
 	
+	public static	String		P_namedWaypoint	= "waypoint_";
+	
 	public static	String		unnamedTrackName = "trackUnnamed";
+	
+	public static	String		unnamedWaypointName = "waypointUnnamed";
 	
 	public static 	String		P_cinematic		= NS_CgcCC + "cinematicList";
 	
 	public static 	String		P_trackList		= NS_CgcCC + "trackList";
+	
+	public static 	String		P_waypointList	= NS_CgcCC + "waypointList";
         
         public static   String          P_duration				= NS_CgcCC + "duration";
 		
@@ -58,5 +64,7 @@ public class CinematicConfigNames extends BoxAssemblyNames {
 		public static	String			P_startTime				= NS_CgcCC + "startTime";
 		
 		public static   String          P_waypoint				= NS_CgcCC + "waypoints";
+		
+		public static   String          P_waypointName			= NS_CgcCC + "waypointName";
   	
 }
