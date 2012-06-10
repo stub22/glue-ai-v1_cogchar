@@ -23,11 +23,19 @@ import org.appdapter.api.trigger.BoxAssemblyNames;
 public class CinematicConfigNames extends BoxAssemblyNames {
 	public static	String		NS_CgcCC		= "http://www.cogchar.org/schema/cinematic#";
 	
+	public static	String		P_namedTrack	= "track_";
+	
+	public static	String		unnamedTrackName = "trackUnnamed";
+	
 	public static 	String		P_cinematic		= NS_CgcCC + "cinematicList";
+	
+	public static 	String		P_trackList		= NS_CgcCC + "trackList";
         
         public static   String          P_duration				= NS_CgcCC + "duration";
 		
 		public static   String          P_track		            = NS_CgcCC + "tracks";
+		
+		public static   String          P_trackName		        = NS_CgcCC + "trackName";
 		
 		public static   String          P_item		            = NS_CgcCC + "attachedItem";
 		

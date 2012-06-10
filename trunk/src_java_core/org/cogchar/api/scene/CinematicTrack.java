@@ -28,6 +28,7 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
  */
 public class CinematicTrack {
 
+	public String trackName;
 	public String attachedItem;
 	public AttachedItemType attachedItemType = AttachedItemType.NULLTYPE;
 	public TrackType trackType = TrackType.NULLTYPE;
@@ -40,7 +41,23 @@ public class CinematicTrack {
 	public List<float[]> waypoints = new ArrayList<float[]>();
 	private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
 
+	@Override
+	public String toString() {
+		return "CinematicTrack = " + trackName + ", type = " + trackType.name() + ", Attached Item = " + attachedItem;
+	}
+
 	public CinematicTrack(Item configItem) {
+		// If this track has no name, it's likely an unnamed track defined in-line with a cinematic definition...
+		trackName = ItemFuncs.getString(configItem, CinematicConfigNames.P_trackName, CinematicConfigNames.unnamedTrackName);
+		String trackLocalName = configItem.getIdent().getLocalName();
+		// ... or a track with no name may be from a track resource not defined as part of a cinematic
+		if (trackLocalName == null) {
+			trackLocalName = "no dice";
+		} // Keeps expression below from throwing an NPE if trackLocalName is null, which it is if track is defined within cinematic definition
+		if (trackLocalName.startsWith(CinematicConfigNames.P_namedTrack)) {
+			//trackName = trackLocalName.replaceFirst(CinematicConfigNames.P_namedTrack, ""); // Strip the prefix and set trackName to this
+			trackName = trackLocalName; // Actually may be best to just leave the prefix, then we reference this named track in cinematics with the prefix for clarity
+		}
 		attachedItem = ItemFuncs.getString(configItem, CinematicConfigNames.P_item, "none");
 		String typeString;
 		typeString = ItemFuncs.getString(configItem, CinematicConfigNames.P_itemType, null);
