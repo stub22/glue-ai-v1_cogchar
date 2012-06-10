@@ -38,7 +38,7 @@ public class CinematicTrack {
 	public boolean cycle;
 	public String loopMode;
 	public float startTime;
-	public List<float[]> waypoints = new ArrayList<float[]>();
+	public List<WaypointConfig> waypoints = new ArrayList<WaypointConfig>();
 	private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
 
 	@Override
@@ -52,8 +52,8 @@ public class CinematicTrack {
 		String trackLocalName = configItem.getIdent().getLocalName();
 		// ... or a track with no name may be from a track resource not defined as part of a cinematic
 		if (trackLocalName == null) {
-			trackLocalName = "no dice";
-		} // Keeps expression below from throwing an NPE if trackLocalName is null, which it is if track is defined within cinematic definition
+			trackLocalName = "no dice"; // Keeps expression below from throwing an NPE if trackLocalName is null, which it is if track is defined within cinematic definition
+		}
 		if (trackLocalName.startsWith(CinematicConfigNames.P_namedTrack)) {
 			//trackName = trackLocalName.replaceFirst(CinematicConfigNames.P_namedTrack, ""); // Strip the prefix and set trackName to this
 			trackName = trackLocalName; // Actually may be best to just leave the prefix, then we reference this named track in cinematics with the prefix for clarity
@@ -88,10 +88,7 @@ public class CinematicTrack {
 		// Get waypoints
 		List<Item> waypointItems = reader.readLinkedItemSeq(configItem, CinematicConfigNames.P_waypoint);
 		for (Item wpt : waypointItems) {
-			float[] oneWaypoint = new float[3];
-			for (int index = 0; index < oneWaypoint.length; index++) {
-				oneWaypoint[index] = ItemFuncs.getDouble(wpt, CinematicConfigNames.P_position[index], 0.0).floatValue();
-			}
+			WaypointConfig oneWaypoint = new WaypointConfig(wpt);
 			waypoints.add(oneWaypoint);
 		}
 	}

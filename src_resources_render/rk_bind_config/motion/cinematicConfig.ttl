@@ -66,8 +66,14 @@ cci:cinematicConfig1		rdf:type			cc:BuildableCinematicConfig;
 
 # ... and the named tracks
 		cc:trackList		cci:track_Demo1;
-.        
-
+		cc:trackList		cci:track_Demo1a;
+		
+# ... and the named waypoints
+		cc:waypointList		cci:waypoint_DemoWpt1,
+							cci:waypoint_DemoWpt2,
+							cci:waypoint_DemoWpt3,
+        					cci:waypoint_DemoWpt4;
+.
 
 ################################################################################
 # Cinematic Resources
@@ -116,7 +122,8 @@ cci:cinematic_movingCameraDemo2
 		cc:duration			"60";
 		cc:tracks (
 		[
-			cc:trackName	"track_Demo1"
+			# Demo1 and Demo1a are the same, but both are defined below to demonstrate various design options
+			cc:trackName	"track_Demo1a" 
 		]
 		)
 .
@@ -157,4 +164,58 @@ cci:track_Demo1
 			cc:zPos			"0"
 		]
 		)
+.
+
+cci:track_Demo1a
+		cc:attachedItem		"anotherTestCamera";
+		cc:attachedItemType	"CAMERA";
+		cc:trackType		"MOTIONTRACK";
+		cc:directionType	"LookAt";
+		cc:xDir				"0.0";
+		cc:yDir				"18.0";
+		cc:zDir				"0.0";
+		cc:tension			"0.83";
+		cc:cycle			"true";
+		cc:loop				"Loop";
+		cc:startTime		"0.0";
+		cc:waypoints (
+		[
+			cc:waypointName	"waypoint_DemoWpt1"
+		] [
+			cc:waypointName	"waypoint_DemoWpt2"
+		] [
+			cc:waypointName	"waypoint_DemoWpt3"
+		] [
+			cc:waypointName	"waypoint_DemoWpt4"
+		]
+		)
+.
+
+
+################################################################################
+# Waypoint Resources
+################################################################################
+
+cci:waypoint_DemoWpt1
+	cc:xPos			"0";
+	cc:yPos			"40";
+	cc:zPos			"80"
+.
+
+cci:waypoint_DemoWpt2
+	cc:xPos			"80";
+	cc:yPos			"40";
+	cc:zPos			"0"
+.
+
+cci:waypoint_DemoWpt3
+	cc:xPos			"0";
+	cc:yPos			"40";
+	cc:zPos			"-80"
+.
+
+cci:waypoint_DemoWpt4
+	cc:xPos			"-80";
+	cc:yPos			"40";
+	cc:zPos			"0"
 .
