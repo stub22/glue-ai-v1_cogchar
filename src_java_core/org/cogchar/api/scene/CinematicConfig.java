@@ -37,6 +37,7 @@ import org.appdapter.core.log.BasicDebugger;
 public class CinematicConfig extends KnownComponentImpl {
 
 	public List<CinematicInstanceConfig> myCICs = new ArrayList<CinematicInstanceConfig>();
+	public List<CinematicTrack> myCTs = new ArrayList<CinematicTrack>();
 
 	public static class Builder extends DynamicCachingComponentAssembler<CinematicConfig> {
 
@@ -51,10 +52,18 @@ public class CinematicConfig extends KnownComponentImpl {
 			Set<Item> configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_cinematic);
 			logInfo("Cinematics found: " + configItems.size());
 			for (Item ji : configItems) {
-				logInfo("Adding a CinematicInstanceConfig"); // TEST ONLY
+				logInfo("Generating CinematicInstanceConfig"); // TEST ONLY
 				CinematicInstanceConfig cic = new CinematicInstanceConfig(ji);
 				logInfo("Adding CinematicInstanceConfig in CinematicConfig: " + cic);
 				mcc.myCICs.add(cic);
+			}
+			configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_trackList);
+			logInfo("Tracks found: " + configItems.size());
+			for (Item ji : configItems) {
+				logInfo("Generating CinematicTrack"); // TEST ONLY
+				CinematicTrack ct = new CinematicTrack(ji);
+				logInfo("Adding named CinematicTrack in CinematicConfig: " + ct);
+				mcc.myCTs.add(ct);
 			}
 		}
 

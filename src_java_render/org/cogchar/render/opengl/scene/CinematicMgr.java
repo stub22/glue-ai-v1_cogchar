@@ -22,6 +22,7 @@ import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.sys.core.RenderRegistryClient;
 import org.cogchar.render.opengl.optic.CameraMgr;
+import org.cogchar.api.scene.SceneConfigNames;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.cinematic.Cinematic;
@@ -43,6 +44,8 @@ import org.slf4j.Logger;
 public class CinematicMgr extends BasicDebugger {
 
 	private static Map<String, Cinematic> myCinematicsByName = new HashMap<String, Cinematic>();
+	private static Map<String, CinematicTrack> myTracksByName = new HashMap<String, CinematicTrack>();
+	//private static Map<String, Boolean> myCinematicsReadyStatusByName = new HashMap<String, Boolean>(); // May not need this, woohoo!
 	private static Logger staticLogger = getLoggerForClass(CinematicMgr.class);
 	private static HumanoidRenderContext myHrc;
 
@@ -50,19 +53,40 @@ public class CinematicMgr extends BasicDebugger {
 		myHrc = hrc;
 		RenderRegistryClient rrc = hrc.getRenderRegistryClient();
 		Node jmeRootNode = rrc.getJme3RootDeepNode(null);
+
+		// First, any named tracks defined cinematics definitions are stored for later use
+		for (CinematicTrack ct : config.myCTs) {
+			staticLogger.info("Storing Named Track from RDF: " + ct);
+			myTracksByName.put(ct.trackName, ct);
+		}
+
+		// Next, we build the cinematics, using named tracks if required.
 		for (CinematicInstanceConfig cic : config.myCICs) {
 			staticLogger.info("Building Cinematic from RDF: " + cic);
 			final Cinematic cinematic = new Cinematic(jmeRootNode, cic.duration);
 			// Add each track
 			for (CinematicTrack track : cic.myTracks) {
 				AbstractCinematicEvent event;
+				if (track.trackType == CinematicTrack.TrackType.NULLTYPE) { // This usually indicates that the cinematic contains a reference to a named track defined elsewhere
+					String trackReference = track.trackName;
+					if (!trackReference.equals(CinematicConfigNames.unnamedTrackName)) {
+						track = myTracksByName.get(trackReference); // Reset track to the CinematicTrack declared separately by name
+						if (track == null) { // If so, cinematic is calling for a track we don't know about
+							staticLogger.error("Cinematic has requested undefined track: " + trackReference + "; cinematic is " + cic);
+							break;
+						}
+					} else {
+						staticLogger.error("No trackType or trackName in track contained in cinematic: " + cic);
+						break; // If no trackType and no trackName, we don't really have a track!
+					}
+				}
 				if (track.trackType == CinematicTrack.TrackType.MOTIONTRACK) { // Which is all we support initially...
 					MotionPath path = new MotionPath();
 					Node attachedNode = null;
 					path.setCycle(track.cycle);
 
 					for (float[] waypoint : track.waypoints) {
-						staticLogger.info("Making new waypoint: " + new Vector3f(waypoint[0], waypoint[1], waypoint[2]));
+						//staticLogger.info("Making new waypoint: " + new Vector3f(waypoint[0], waypoint[1], waypoint[2]));
 						path.addWayPoint(new Vector3f(waypoint[0], waypoint[1], waypoint[2]));
 					}
 					path.setCurveTension(track.tension);
@@ -135,7 +159,7 @@ public class CinematicMgr extends BasicDebugger {
 		}
 	}
 
-	public static boolean controlCinematicByName(String name, CinematicMgr.ControlAction action) {
+	public static boolean controlCinematicByName(final String name, CinematicMgr.ControlAction action) {
 		boolean validAction = true;
 		final Cinematic cinematic = myCinematicsByName.get(name);
 		if (cinematic != null) {
@@ -144,21 +168,24 @@ public class CinematicMgr extends BasicDebugger {
 				cinematic.play();
 			} else if (action.equals(CinematicMgr.ControlAction.STOP)) {
 				// Wouldn't you know, this has to be done on main thread
-				Future<Object> waitForThis = WorkaroundFuncsMustDie.enqueueCallableReturn(myHrc, new Callable<Void>() {
+				Future<Object> waitForThis = WorkaroundFuncsMustDie.enqueueCallableReturn(myHrc, new Callable<Boolean>() {
 
 					@Override
-					public Void call() throws Exception {
+					public Boolean call() throws Exception {
 						cinematic.stop();
-						staticLogger.info("Stopping cinematic");
-						return null;
+						staticLogger.info("Stopping cinematic" + name);
+						return true;
 					}
 				});
 				try {
-					Object testThis = waitForThis.get(3, java.util.concurrent.TimeUnit.SECONDS); // Not working with the Void call, I think this will be easy to fix next thing, but for now I'll commit this error because the timeout makes things work anyhow!
+					// We call waitForThis.get (and discard the result) so that this method doesn't return until STOP is actially executed
+					waitForThis.get(3, java.util.concurrent.TimeUnit.SECONDS);
 				} catch (Exception e) {
 					staticLogger.error("Exception stopping cinematic: " + e.toString());
 				}
-			} else if (action.equals(CinematicMgr.ControlAction.PAUSE)) {
+			} else if (action.equals(CinematicMgr.ControlAction.PAUSE)) { // NEEDS TO BE TESTED, MAY NEED TO BE EXECUTED ON MAIN jME RENDERING THREAD
+				staticLogger.info("Pausing cinematic " + name);
+				staticLogger.info("Pause has not been tested. If it throws an exception, we probably just need to add some code to cause it to be run on the main jME rendering thread");
 				cinematic.pause();
 			} else {
 				validAction = false;
