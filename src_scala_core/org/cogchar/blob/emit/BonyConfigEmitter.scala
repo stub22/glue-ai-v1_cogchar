@@ -30,9 +30,9 @@ case class NVParam(val name: String, val value: String) {
 
 class BonyConfigEmitter extends DemoConfigEmitter {
 
-	val COGCHAR_URN_PREFIX = "urn:org.cogchar/";
+	val COGCHAR_URN_PREFIX = "urn:ftd:cogchar.org:2012:";
 	
-	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "char/";
+	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "char#";
 
 	
 	// Commercial "Extra Robot" model, not loadable without a license.
@@ -44,7 +44,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	//		String dualCharURI = "urn:org.cogchar/platform/nb701?char=HRK_Zeno_R50&version=20120302";   
 	//		
 	//			
-	val HRK_URN_PREFIX = "urn:fdt:com.hrk/";
+	val HRK_URN_PREFIX = "urn:ftd:hrkind.com:2012:chars#";
 	val ZENO_R50_NICKNAME = "ZenoR50";
 	val	ZENO_R50_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + ZENO_R50_NICKNAME;
 	val	ZENO_R50_CHAR_IDENT = new FreeIdent(ZENO_R50_CHAR_URI, ZENO_R50_NICKNAME)

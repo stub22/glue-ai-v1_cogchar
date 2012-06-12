@@ -102,9 +102,7 @@ public class PumaBooter extends BasicDebugger {
 			boolean allowJFrames = mediator.getFlagAllowJFrames();
 /*  
 Start up the JME OpenGL canvas, which will in turn initialize the Cogchar rendering "App" (in JME3 lingo).
- This step will load all the 3D models (and other rendering resources) that Cogchar needs, based
- on what is implied by the sysContextURI we supplied to the PumaAppContext constructor above.
-		
+ 		
  Firing up the OpenGL canvas requires access to sun.misc.Unsafe, which must be explicitly imported 
  by ext.bundle.osgi.jmonkey, and explicitly allowed by the container when using Netigso
  */
@@ -113,44 +111,28 @@ Start up the JME OpenGL canvas, which will in turn initialize the Cogchar render
 			pac.startOpenGLCanvas(allowJFrames);
 			logInfo("%%%%%%%%%%%%%%%%%%% startOpenGLCanvas completed, enqueueing final boot phase on JME3 thread");
 			
+			/**
+			 * Populate the virtual world with humanoids, cameras, lights, and other goodies.
+			 * This step will load all the 3D models (and other rendering resources) that Cogchar needs, 
+			 * based on what is implied by the sysContextURI we supplied to the PumaAppContext constructor above.
+
+			 * We enqueue this work to occure on JME3 update thread.  Otherwise we'll get an:
+			 *  IllegalStateException: Scene graph is not properly updated for rendering.
+			 */
 			
-			BonyVirtualCharApp bvcJME3App = hrc.getApp();
-	
-	/*
- Now we have an Cogchar+JME3+OpenGL canvas, connected to our Netbeans Swing App.  
- So, let's connect the Cogchar PUMA application (configured by implications of 
+			hrc.runPostInitLaunchOnJmeThread();
+			
+/*
+ Connect the Cogchar PUMA application (configured by implications of 
  the sysContextURI and sysLocalTempConfigDir used in setupConfigEmitters() above).
  The result is a list of connected "dual" characters, which each have a presence 
  in both Cogchar virtual space and Robokind physical space.			
- * 
- * To avoid IllegalStateException: Scene graph is not properly updated for rendering, we enqueue
- * this work to occure on JME3 update thread.
- */	
-			java.util.concurrent.Future<Throwable> finalBootPhaseFut = bvcJME3App.enqueue(new java.util.concurrent.Callable<Throwable>() {
-				public Throwable call() throws Exception {
-					try {
-						logInfo("%%%%%%%%%%%%%%%%%%% Callable on JME3 thread is calling postInitLaunch()");
 
-						hrc.postInitLaunch();
+If we try to do this inside the JME3Thread callable above (under certain conditions), we can get hung
+up when RobotServiceContext calls RobotUtils.registerRobot()
+*/ 
 
-						logInfo("%%%%%%%%%%%%%%%%%%% postInitLaunch() completed, Callable on JME3 thread is returning");
-						return null;
-					} catch (Throwable t) {
-						
-						return t;
-					}
-				}
-			});
-			
-			logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% Waiting for our postInitLaunch-bootPhase to complete()");
-			Throwable fbpThrown = finalBootPhaseFut.get();
-			if (fbpThrown != null) {
-				throw new Exception("FinalBootPhase returned an error", fbpThrown);
-			}
-			
-			logInfo("%%%%%%%%%%%%%%%%%%% Final bootPhase future completed , calling connectDualRobotChars()");
-			// If we try to do this inside the callable above (under certain conditions), we can get hung
-			// up when RobotServiceContext calls RobotUtils.registerRobot()
+			logInfo("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed , calling connectDualRobotChars()");
 			pac.connectDualRobotChars();
 			
 			logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed -  PUMA BOOT SUCCESSFUL!  8-)");
@@ -177,15 +159,4 @@ Start up the JME OpenGL canvas, which will in turn initialize the Cogchar render
 		}		
 	}
 
-	
-/*  Old init under NB:
-		
-		String sysContextURI = "NBURI:huzzah";             
-		String sysLocalTempConfigDir = Installer.getVirtcharNBClusterDir();
-		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI, sysLocalTempConfigDir);
-		BonyRenderContext brc = pac.getHumanoidRenderContext();
-		initVirtualCharPanel(brc);
-		pac.startOpenGLCanvas(false);
-		pac.connectDualRobotChars();
- */
 }

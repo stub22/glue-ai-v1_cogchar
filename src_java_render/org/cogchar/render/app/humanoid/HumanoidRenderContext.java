@@ -38,22 +38,26 @@ import org.cogchar.render.opengl.optic.CameraMgr;
 import com.jme3.font.BitmapText;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import javax.swing.JFrame;
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
+import org.cogchar.render.app.bony.BonyVirtualCharApp;
+import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.core.RenderRegistryClient;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidRenderContext extends BonyRenderContext {
-	private	Map<Ident, HumanoidFigure>		myFiguresByCharIdent = new HashMap<Ident, HumanoidFigure>();
 
-	private	BonyGameFeatureAdapter	myGameFeatureAdapter;
-	
+	private Map<Ident, HumanoidFigure> myFiguresByCharIdent = new HashMap<Ident, HumanoidFigure>();
+	private BonyGameFeatureAdapter myGameFeatureAdapter;
+
 	public HumanoidRenderContext(BonyConfigEmitter bce) {
 		super(bce);
 		myGameFeatureAdapter = new BonyGameFeatureAdapter(this);
 	}
-	@Override public void postInitLaunch() { 
+
+	@Override public void postInitLaunch() {
 		super.postInitLaunch();
 
 		AppSettings someSettings = getJMonkeyAppSettings();
@@ -62,19 +66,17 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		initBasicTestPhysics();
 		initHumanoidStuff();
 		initCameraAndLights();
-		
+
 		myGameFeatureAdapter.initFeatures();
-		
+
 		InputManager inputManager = findJme3InputManager(null);
 
-		HumanoidPuppetActions.setupActionListeners(inputManager, this);	
+		HumanoidPuppetActions.setupActionListeners(inputManager, this);
 		SceneActions.setupActionListeners(inputManager);
-		
+
 		WorkaroundFuncsMustDie.initScoreBoard(this);
-                
+
 		initHelpScreen(someSettings, inputManager);
-		
-		
 	}
 
 	public HumanoidFigure getHumanoidFigure(Ident charIdent) {
@@ -96,19 +98,19 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		if (usePhysics) {
 			ps = getPhysicsSpace();
 		}
-		
+
 		String meshPath = bce.getMeshPathForChar(charIdent);
 		if (meshPath != null) {
 			figure = getHumanoidFigure(charIdent);
-			
+
 			figure.initStuff(hbc, amgr, rootNode, ps, meshPath);
 			//VirtCharPanel vcp = getVCPanel();
 			//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
 
 			HumanoidFigureModule hfm = new HumanoidFigureModule(figure, this);
 			attachModule(hfm);
-		//	figure.boogie();
-		//	figure.becomePuppet();
+			//	figure.boogie();
+			//	figure.becomePuppet();
 		} else {
 			getLogger().warn("Skipping humanoid mesh load for charURI: " + charIdent);
 		}
@@ -117,7 +119,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 	private void initHumanoidStuff() {
 		BonyConfigEmitter bce = getBonyConfigEmitter();
-		
+
 		try {
 			if (!bce.isMinimalSim()) {
 				Ident sinbadIdent = bce.SINBAD_CHAR_IDENT();
@@ -142,25 +144,25 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		WorkaroundAppStub stub = getAppStub();
 		stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
 		FlyByCamera fbCam = stub.getFlyCam();
-		fbCam.setMoveSpeed(50);	
+		fbCam.setMoveSpeed(50);
 	}
-        
+
 	// This is still called by HumanoidPuppetActions to reset default camera position
-	protected void setDefaultCameraLocation(){    
+	protected void setDefaultCameraLocation() {
 		CameraMgr cmgr = findOrMakeOpticCameraFacade(null);
 		cmgr.resetDefaultCamera();
 	}
-        
-	public void toggleDebugSkeletons() { 
+
+	public void toggleDebugSkeletons() {
 		for (HumanoidFigure hf : myFiguresByCharIdent.values()) {
 			hf.toggleDebugSkeleton();
 		}
 	}
-	public BonyGameFeatureAdapter getGameFeatureAdapter() { 
+
+	public BonyGameFeatureAdapter getGameFeatureAdapter() {
 		return myGameFeatureAdapter;
 	}
 
-	
 	// Does this best live here or further up in one of the context superclasses? Dunno, but should be easy enough to move it up later (w/o private); be sure to remove imports
 	// In order to access registry, must live in a class that extends CogcharRenderContext
 	private void initHelpScreen(AppSettings settings, InputManager inputManager) {
@@ -168,45 +170,60 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		final int HELP_KEY = com.jme3.input.KeyInput.KEY_H; // Same here - coming from RDF eventually
 		KeyBindingTracker.addBinding(HELP_TAG, HELP_KEY); // Let's add ourselves to the help list!
 		final BitmapText helpBT = findOrMakeSceneTextFacade(null).makeHelpScreen(0.6f, settings); // First argument sets text size, really shouldn't be hard-coded
-		KeyTrigger keyTrig = new KeyTrigger(HELP_KEY); 
+		KeyTrigger keyTrig = new KeyTrigger(HELP_KEY);
 		inputManager.addMapping(HELP_TAG, keyTrig);
 		inputManager.addListener(new ActionListener() {
+
 			private boolean helpDisplayed = false;
+
 			public void onAction(String name, boolean isPressed, float tpf) {
 				if (isPressed) {
-					if (!helpDisplayed) {findOrMakeSceneFlatFacade(null).attachOverlaySpatial(helpBT); helpDisplayed = true;}
-						else {findOrMakeSceneFlatFacade(null).detachOverlaySpatial(helpBT); helpDisplayed = false;}   
-				}        
+					if (!helpDisplayed) {
+						findOrMakeSceneFlatFacade(null).attachOverlaySpatial(helpBT);
+						helpDisplayed = true;
+					} else {
+						findOrMakeSceneFlatFacade(null).detachOverlaySpatial(helpBT);
+						helpDisplayed = false;
+					}
+				}
 			}
 		}, HELP_TAG);
 	}
-        
-		/*
-		 * 
-		 * The JME3 docs below are a horrible, inconsistent, incomplete, incorrect mess:
-		 * 
-		 * 
-		 * http://jmonkeyengine.org/javadoc/com/jme3/math/Quaternion.html#Quaternion(float[])
-		 * 
-		 * public Quaternion fromAngles(float yaw,
-                             float roll,
-                             float pitch)
-fromAngles builds a Quaternion from the Euler rotation angles (y,r,p). Note that we are applying in order: roll, pitch, yaw 
-		 * 
-		 * but we've ordered them in x, y, and z for convenience.
-		 * 
-Parameters:
-yaw - the Euler yaw of rotation (in radians). (aka Bank, often rot around x)
-roll - the Euler roll of rotation (in radians). (aka Heading, often rot around y)
-pitch - the Euler pitch of rotation (in radians). (aka Attitude, often rot around z)
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 */
 
+	/**
+	 * Second (and most crucial) stage of OpenGL init. This method blocks until the canvas initialization is complete,
+	 * which requires that the simpleInitApp() methods have all completed.
+	 *
+	 * @param wrapInJFrameFlag
+	 * @throws Exception
+	 */
+	public void startOpenGLCanvas(boolean wrapInJFrameFlag) throws Exception {
 
-	
-	
+		if (wrapInJFrameFlag) {
+			VirtualCharacterPanel vcp = getPanel();
+			logInfo("Making enclosing JFrame for VirtCharPanel: " + vcp);
+			// Frame must be packed after panel created, but created  before startJMonkey.  
+			// If startJMonkey is called first, we often hang in frame.setVisible() as JMonkey tries
+			// to do some magic restart deal that doesn't work as of jme3-alpha4-August_2011.
+
+			// During the Frame-pack portion of this method, we get all the way to:
+			//  CogcharPresumedApp - ********************* DemoApp.initialize() called
+			JFrame jf = vcp.makeEnclosingJFrame("CCRK-PUMA Virtual World");
+			logInfo("Got Enclosing Frame, adding to BonyRenderContext for WindowClose triggering: " + jf);
+			// Frame will receive a close event when org.cogchar.bundle.render.opengl is STOPPED
+			setFrame(jf);
+		}
+		BonyVirtualCharApp app = getApp();
+
+		if (app.isCanvasStarted()) {
+			logWarning("JMonkey Canvas was already started!");
+		} else {
+
+			logInfo("Starting JMonkey canvas - hold yer breath! [[[[[[[[[[[[[[[[[[[[[[[[[[");
+			app.startJMonkeyCanvas();
+			logInfo("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]  Finished starting JMonkey canvas!");
+		}
+		//((BonyStickFigureApp) app).setScoringFlag(true);			
+
+	}
 }

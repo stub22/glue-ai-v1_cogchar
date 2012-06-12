@@ -171,5 +171,33 @@ public class CogcharRenderContext extends RenderRegistryAware {
 	protected void addLightToRootNode(Light l) {
 		DeepSceneMgr dsm = findOrMakeSceneDeepFacade(null);
 		dsm.addLight(l);
+	}
+	
+	
+	
+	public void runPostInitLaunchOnJmeThread() throws Throwable {
+		WorkaroundAppStub appStub = getAppStub();
+		java.util.concurrent.Future<Throwable> finalBootPhaseFut = appStub.enqueue(new java.util.concurrent.Callable<Throwable>() {
+
+			public Throwable call() throws Exception {
+				try {
+					logInfo("%%%%%%%%%%%%%%%%%%% Callable on JME3 thread is calling postInitLaunch()");
+
+					postInitLaunch();
+
+					logInfo("%%%%%%%%%%%%%%%%%%% postInitLaunch() completed, Callable on JME3 thread is returning");
+					return null;
+				} catch (Throwable t) {
+
+					return t;
+				}
+			}
+		});
+
+		logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% Waiting for our postInitLaunch-bootPhase to complete()");
+		Throwable fbpThrown = finalBootPhaseFut.get();
+		if (fbpThrown != null) {
+			throw new Exception("FinalBootPhase returned an error", fbpThrown);
+		}
 	}	
 }

@@ -48,7 +48,13 @@ public class HumanoidPuppetTestMain {
 		return bc;
 	}
 	public static void main(String[] args) {
-
+		try {
+			startTest();
+		} catch (Throwable t) {
+			theLogger.error("Caught Exception", t);
+		}
+	}
+	public static void startTest() throws Throwable { 
 		BonyConfigEmitter bce = new BonyConfigEmitter();
 		final BonyRenderContext bc = makeBonyRenderContextWithApp(bce); 
 		// Frame must be packed after panel created, but created 
@@ -101,6 +107,9 @@ VirtCharPanel.JFrame.closed, exiting
 		app.startJMonkeyCanvas();
 		
 		HumanoidRenderContext hrc = (HumanoidRenderContext) app.getBonyRenderContext();
+		
+		hrc.runPostInitLaunchOnJmeThread();
+		
 		hrc.getGameFeatureAdapter().setScoringFlag(true);
 		// theLogger.info("*********************** AFTER FRAMING + STARTING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
 		theLogger.info("*********************** Frame width="  + jf.getWidth() + ", height=" + jf.getHeight());
