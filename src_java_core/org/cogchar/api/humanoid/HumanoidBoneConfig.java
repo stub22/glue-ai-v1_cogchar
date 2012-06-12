@@ -15,12 +15,10 @@
  *
  */
 
-package org.cogchar.render.model.humanoid;
+package org.cogchar.api.humanoid;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.jme3.bullet.control.KinematicRagdollControl;
-import com.jme3.math.FastMath;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -38,11 +36,7 @@ public class HumanoidBoneConfig {
 		myBoneDescs.add(hbd);
 	}
 
-	public void attachRagdollBones(HumanoidFigure hf) {
-		for (HumanoidBoneDesc hbd : myBoneDescs) {
-			hf.attachRagdollBone(hbd);
-		}
-	}
+
 
 	public List<HumanoidBoneDesc> getBoneDescs() {
 		return myBoneDescs;
@@ -153,21 +147,5 @@ public class HumanoidBoneConfig {
 		addBoneDesc("RtAnkle");
 	}
 
-	public static void applyHumanoidJointLimits(KinematicRagdollControl krc) {
-		float eighth_pi = FastMath.PI * 0.125f;
-		krc.setJointLimit("Waist", eighth_pi, eighth_pi, eighth_pi, eighth_pi, eighth_pi, eighth_pi);
-		krc.setJointLimit("Chest", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
-		/*
-		krc.setJointLimit("Foot.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
-		krc.setJointLimit("Thigh.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
-		krc.setJointLimit("Calf.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
-		krc.setJointLimit("Hand.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
-		krc.setJointLimit("Humerus.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
-		krc.setJointLimit("Ulna.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
-		 * 
-		 */
-		//JMonkey original commented out line and comment...
-		//  Oto's head is almost rigid
-		//    myHumanoidKRC.setJointLimit("head", 0, 0, eighth_pi, -eighth_pi, 0, 0);
-	}
+
 }

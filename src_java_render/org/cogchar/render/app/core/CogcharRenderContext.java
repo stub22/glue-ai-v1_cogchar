@@ -177,7 +177,7 @@ public class CogcharRenderContext extends RenderRegistryAware {
 	
 	public void runPostInitLaunchOnJmeThread() throws Throwable {
 		WorkaroundAppStub appStub = getAppStub();
-		java.util.concurrent.Future<Throwable> finalBootPhaseFut = appStub.enqueue(new java.util.concurrent.Callable<Throwable>() {
+		java.util.concurrent.Future<Throwable> postInitFuture = appStub.enqueue(new java.util.concurrent.Callable<Throwable>() {
 
 			public Throwable call() throws Exception {
 				try {
@@ -195,9 +195,37 @@ public class CogcharRenderContext extends RenderRegistryAware {
 		});
 
 		logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% Waiting for our postInitLaunch-bootPhase to complete()");
-		Throwable fbpThrown = finalBootPhaseFut.get();
+		Throwable fbpThrown = postInitFuture.get();
 		if (fbpThrown != null) {
 			throw new Exception("FinalBootPhase returned an error", fbpThrown);
 		}
-	}	
+	}
+	public static interface Task {
+		public void perform() throws Throwable;
+	}
+	public void runTaskOnJmeThreadAndWait(final Task task) throws Throwable {
+		WorkaroundAppStub appStub = getAppStub();
+		java.util.concurrent.Future<Throwable> taskFuture = appStub.enqueue(new java.util.concurrent.Callable<Throwable>() {
+
+			public Throwable call() throws Exception {
+				try {
+					logInfo("%%%%%%%%%%%%%%%%%%% Callable on JME3 thread is calling task.perform()");
+
+					task.perform();
+
+					logInfo("%%%%%%%%%%%%%%%%%%% task.perform() completed, Callable on JME3 thread is returning");
+					return null;
+				} catch (Throwable t) {
+
+					return t;
+				}
+			}
+		});
+
+		logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% Waiting for our JME3 thread task to complete()");
+		Throwable fbpThrown = taskFuture.get();
+		if (fbpThrown != null) {
+			throw new Exception("task.perform() threw an error", fbpThrown);
+		}
+	}		
 }

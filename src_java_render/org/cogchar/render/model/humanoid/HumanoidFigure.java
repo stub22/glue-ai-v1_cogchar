@@ -23,6 +23,10 @@
 
 package org.cogchar.render.model.humanoid;
 
+import org.cogchar.api.humanoid.HumanoidBoneDesc;
+import org.cogchar.api.humanoid.HumanoidBoneConfig;
+import org.cogchar.api.humanoid.HumanoidFigureConfig;
+
 import org.appdapter.core.item.Ident;
 
 import com.jme3.animation.AnimChannel;
@@ -36,6 +40,7 @@ import com.jme3.bullet.collision.RagdollCollisionListener;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.math.FastMath;
 
 import org.cogchar.render.sys.physics.PhysicsStuffBuilder;
 import com.jme3.animation.AnimControl;
@@ -74,6 +79,9 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	private Ident						myCharIdent;
 	private String						myNickname;
 
+	private	HumanoidFigureConfig		myConfig;
+
+
 	public static String 	
 			ANIM_STAND_FRONT = "StandUpFront",
 			ANIM_STAND_BACK = "StandUpBack",
@@ -88,6 +96,13 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
         // for purposes of "hack" mappings of rotations to translations, etc. (see getNormalizedTranslation)
         private static float FACE_ANGLE_LIMIT = (float)Math.PI/2; 
 
+
+	public HumanoidFigure(HumanoidFigureConfig hfc) { 
+		myConfig = hfc;
+		
+	}
+
+		
 	public HumanoidFigure(BonyConfigEmitter bce, Ident charIdent) { 
 		myBonyConfigEmitter = bce;
 		myCharIdent = charIdent;
@@ -103,6 +118,7 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	public Bone getRootBone() {
 		return myHumanoidSkeleton.getRoots()[0];
 	}
+
 	public void initStuff(HumanoidBoneConfig hbc, AssetManager assetMgr, Node parentNode, PhysicsSpace ps, String humanoidMeshPath) {
 		myHumanoidBoneConfig = hbc;
 		myHumanoidModelNode = (Node) assetMgr.loadModel(humanoidMeshPath);
@@ -118,11 +134,11 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 		//Note: PhysicsRagdollControl is still TODO, constructor will change
 		myHumanoidKRC = new KinematicRagdollControl(KRC_WEIGHT_THRESHOLD);
 		
-		myHumanoidBoneConfig.attachRagdollBones(this);
+		attachRagdollBones();
 
 		myHumanoidModelNode.addControl(myHumanoidKRC);
 
-		HumanoidBoneConfig.applyHumanoidJointLimits(myHumanoidKRC);
+		applyHumanoidJointLimits(myHumanoidKRC);
 
 		if (ps != null) {
 			myHumanoidKRC.addCollisionListener(this);
@@ -161,7 +177,9 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 			myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
 		}
 	}
-	
+	public void moveToPosition(Vector3f pos) {
+		myHumanoidModelNode.setLocalTranslation(pos);		
+	}
 	public void movePosition(float deltaX, float deltaY, float deltaZ) {
 		Vector3f v = new Vector3f();
 		v.set(myHumanoidModelNode.getLocalTranslation());
@@ -330,6 +348,32 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
         private float getNormalizedLinearMap(float rotation, boolean symmetric) {
             return symmetric? rotation/FACE_ANGLE_LIMIT : (rotation/FACE_ANGLE_LIMIT + 1)/2;
         }
+
+	public void attachRagdollBones() {
+		HumanoidBoneConfig	hbc = myHumanoidBoneConfig;
+		List<HumanoidBoneDesc> boneDescs = hbc.getBoneDescs();
+		for (HumanoidBoneDesc hbd : boneDescs) {
+			attachRagdollBone(hbd);
+		}
+	}
+		
+	public static void applyHumanoidJointLimits(KinematicRagdollControl krc) {
+		float eighth_pi = FastMath.PI * 0.125f;
+		krc.setJointLimit("Waist", eighth_pi, eighth_pi, eighth_pi, eighth_pi, eighth_pi, eighth_pi);
+		krc.setJointLimit("Chest", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
+		/*
+		krc.setJointLimit("Foot.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
+		krc.setJointLimit("Thigh.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
+		krc.setJointLimit("Calf.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
+		krc.setJointLimit("Hand.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
+		krc.setJointLimit("Humerus.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
+		krc.setJointLimit("Ulna.L", eighth_pi, eighth_pi, 0, 0, eighth_pi, eighth_pi);
+		 * 
+		 */
+		//JMonkey original commented out line and comment...
+		//  Oto's head is almost rigid
+		//    myHumanoidKRC.setJointLimit("head", 0, 0, eighth_pi, -eighth_pi, 0, 0);
+	}		
         
 	/*
 	 * 
