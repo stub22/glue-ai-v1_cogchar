@@ -37,6 +37,8 @@ import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
 
+import org.cogchar.render.app.core.CogcharRenderContext;
+
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 
 import org.cogchar.app.buddy.busker.TriggerItems;
@@ -82,7 +84,16 @@ public class PumaAppContext extends BasicDebugger {
 		List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 		BonyRenderContext brc = getHumanoidRenderContext();
 		BonyConfigEmitter bonyCE = brc.getBonyConfigEmitter();
-		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
+
+		
+		final HumanoidRenderContext hrc = getHumanoidRenderContext();
+
+		hrc.runTaskOnJmeThreadAndWait(new CogcharRenderContext.Task() {
+			public void perform() throws Throwable {
+				hrc.initHumanoidStuff();
+			}
+		});
+		
 		List<Ident> charIdents = bonyCE.getActiveBonyCharIdents();
 		for (Ident charIdent : charIdents) {
 			logInfo("^^^^^^^^^^^^^^^^^^^^^^^^^ Connecting dualRobotChar for charIdent: " + charIdent);
@@ -162,39 +173,6 @@ public class PumaAppContext extends BasicDebugger {
 		} else {
 			logError("HumanoidRenderContext is NULL, cannot startOpenGLCanvas!");
 		}
-	/*
-		logInfo("Got BonyRenderContext: " + hrc);
-
-
-			if (wrapInJFrameFlag) {
-				VirtualCharacterPanel vcp = hrc.getPanel();
-				logInfo("Making enclosing JFrame for VirtCharPanel: " + vcp);
-				// Frame must be packed after panel created, but created  before startJMonkey.  
-				// If startJMonkey is called first, we often hang in frame.setVisible() as JMonkey tries
-				// to do some magic restart deal that doesn't work as of jme3-alpha4-August_2011.
-
-				// During the Frame-pack portion of this method, we get all the way to:
-				//  CogcharPresumedApp - ********************* DemoApp.initialize() called
-				JFrame jf = vcp.makeEnclosingJFrame("CCRK-PUMA Virtual World");
-				logInfo("Got Enclosing Frame, adding to BonyRenderContext for WindowClose triggering: " + jf);
-				// Frame will receive a close event when org.cogchar.bundle.render.opengl is STOPPED
-				hrc.setFrame(jf);
-			}
-			BonyVirtualCharApp app = hrc.getApp();
-
-			if (app.isCanvasStarted()) {
-				logWarning("JMonkey Canvas was already started!");
-			} else {
-
-				logInfo("Starting JMonkey canvas - hold yer breath! [[[[[[[[[[[[[[[[[[[[[[[[[[");
-				app.startJMonkeyCanvas();
-				logInfo("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]  Finished starting JMonkey canvas!");
-			}
-			//((BonyStickFigureApp) app).setScoringFlag(true);			
-
-	
-	*/
-		
 	}
 
 	private void registerSpecialInputTriggers(PumaDualCharacter pdc) {
