@@ -63,6 +63,8 @@ public class CinematicConfigNames extends BoxAssemblyNames {
 		
 		public static	String			P_startTime				= NS_CgcCC + "startTime";
 		
+		public static	String			P_trackDuration			= NS_CgcCC + "trackDuration";
+		
 		public static   String          P_waypoint				= NS_CgcCC + "waypoints";
 		
 		public static   String          P_waypointName			= NS_CgcCC + "waypointName";
