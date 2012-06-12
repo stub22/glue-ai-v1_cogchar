@@ -38,12 +38,13 @@ public class CinematicTrack {
 	public boolean cycle;
 	public String loopMode;
 	public float startTime;
+	public float trackDuration;
 	public List<WaypointConfig> waypoints = new ArrayList<WaypointConfig>();
 	private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
 
 	@Override
 	public String toString() {
-		return "CinematicTrack = " + trackName + ", type = " + trackType.name() + ", Attached Item = " + attachedItem;
+		return "CinematicTrack = " + trackName + ", type = " + trackType.name() + ", Attached Item = " + attachedItem + "]";
 	}
 
 	public CinematicTrack(Item configItem) {
@@ -85,6 +86,7 @@ public class CinematicTrack {
 		}
 		loopMode = ItemFuncs.getString(configItem, CinematicConfigNames.P_loop, null);
 		startTime = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_startTime, 0.0).floatValue();
+		trackDuration = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_trackDuration, 0.0).floatValue();
 		// Get waypoints
 		List<Item> waypointItems = reader.readLinkedItemSeq(configItem, CinematicConfigNames.P_waypoint);
 		for (Item wpt : waypointItems) {
@@ -100,6 +102,6 @@ public class CinematicTrack {
 
 	public enum TrackType {
 
-		NULLTYPE, MOTIONTRACK
-	} // Initially only supporting motion tracks
+		NULLTYPE, MOTIONTRACK, POSITIONTRACK
+	}
 }

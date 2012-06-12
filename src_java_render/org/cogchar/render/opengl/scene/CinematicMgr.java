@@ -25,9 +25,8 @@ import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.api.scene.SceneConfigNames;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import com.jme3.cinematic.Cinematic;
 import com.jme3.animation.LoopMode;
-import com.jme3.cinematic.MotionPath;
+import com.jme3.cinematic.*;
 import com.jme3.cinematic.events.*;
 import com.jme3.scene.Node;
 import com.jme3.scene.CameraNode;
@@ -88,13 +87,44 @@ public class CinematicMgr extends BasicDebugger {
 						break; // If no trackType and no trackName, we don't really have a track!
 					}
 				}
-				if (track.trackType == CinematicTrack.TrackType.MOTIONTRACK) { // Which is all we support initially...
+				Node attachedNode = null;
+				if (track.attachedItemType == CinematicTrack.AttachedItemType.CAMERA) { // Which is all we support initally...
+					CameraMgr cm = rrc.getOpticCameraFacade(null);
+					final Camera cineCam = cm.getNamedCamera(track.attachedItem);
+					if (cineCam != null) {
+						// The following is not necessary if we use only cameras already loaded from RDF, as these have already had their viewports added
+						//CoreFeatureAdapter.addViewPort(rrc, track.attachedItem, cineCam);
+						// Bind the camera to the cinematic to make a CameraNode - this must be done on the main render thread
+						final String cameraName = track.attachedItem;
+						Future<Object> camNodeFuture = WorkaroundFuncsMustDie.enqueueCallableReturn(hrc, new Callable<CameraNode>() {
+
+							@Override
+							public CameraNode call() throws Exception {
+								CameraNode camNode = cinematic.bindCamera(cameraName, cineCam);
+								return camNode;
+							}
+						});
+						try {
+							attachedNode = (Node) camNodeFuture.get(3, java.util.concurrent.TimeUnit.SECONDS);
+						} catch (Exception e) {
+							staticLogger.error("Exception binding camera to cinematic: " + e.toString());
+							break;
+						}
+						cinematic.activateCamera(track.startTime, cameraName);  // Results are very disappointing if we don't do this!
+						//cinematic.setActiveCamera(cameraName); // Can also do this, but it messes with initial camera position
+					} else {
+						staticLogger.error("Specified Camera not found for Cinematic config from RDF: " + track.attachedItem);
+						break;
+					}
+				} else {
+					staticLogger.error("Unsupported attached item type in track: " + track.attachedItemType);
+					break;
+				}
+				if (track.trackType == CinematicTrack.TrackType.MOTIONTRACK) {
 					MotionPath path = new MotionPath();
-					Node attachedNode = null;
 					path.setCycle(track.cycle);
 					for (WaypointConfig waypoint : track.waypoints) {
-						boolean noPosition = (new Float(waypoint.waypointCoordinates[0]).isNaN()) || (new Float(waypoint.waypointCoordinates[1]).isNaN()) || (new Float(waypoint.waypointCoordinates[2]).isNaN());
-						if (noPosition) { // If we don't have coordinates for this waypoint...
+						if (noPosition(waypoint.waypointCoordinates)) { // If we don't have coordinates for this waypoint...
 							// First check to see if this waypoint refers to a stored waypoint previously defined
 							String waypointReference = waypoint.waypointName;
 							if (!waypointReference.equals(CinematicConfigNames.unnamedWaypointName)) {
@@ -112,38 +142,7 @@ public class CinematicMgr extends BasicDebugger {
 						path.addWayPoint(new Vector3f(waypoint.waypointCoordinates[0], waypoint.waypointCoordinates[1], waypoint.waypointCoordinates[2]));
 					}
 					path.setCurveTension(track.tension);
-					if (track.attachedItemType == CinematicTrack.AttachedItemType.CAMERA) { // Which is all we support initally...
-						CameraMgr cm = rrc.getOpticCameraFacade(null);
-						final Camera cineCam = cm.getNamedCamera(track.attachedItem);
-						if (cineCam != null) {
-							// The following is not necessary if we use only cameras already loaded from RDF, as these have already had their viewports added
-							//CoreFeatureAdapter.addViewPort(rrc, track.attachedItem, cineCam);
-							// Bind the camera to the cinematic to make a CameraNode - this must be done on the main render thread
-							final String cameraName = track.attachedItem;
-							Future<Object> camNodeFuture = WorkaroundFuncsMustDie.enqueueCallableReturn(hrc, new Callable<CameraNode>() {
 
-								@Override
-								public CameraNode call() throws Exception {
-									CameraNode camNode = cinematic.bindCamera(cameraName, cineCam);
-									return camNode;
-								}
-							});
-							try {
-								attachedNode = (Node) camNodeFuture.get(3, java.util.concurrent.TimeUnit.SECONDS);
-							} catch (Exception e) {
-								staticLogger.error("Exception binding camera to cinematic: " + e.toString());
-								break;
-							}
-							cinematic.activateCamera(track.startTime, cameraName);  // Results are very disappointing if we don't do this!
-							//cinematic.setActiveCamera(cameraName); // Can also do this, but it messes with initial camera position
-						} else {
-							staticLogger.error("Specified Camera not found for Cinematic config from RDF: " + track.attachedItem);
-							break;
-						}
-					} else {
-						staticLogger.error("Unsupported attached item type in track: " + track.attachedItemType);
-						break;
-					}
 					MotionTrack.Direction directionJmeType = null;
 					for (MotionTrack.Direction testType : MotionTrack.Direction.values()) {
 						if (track.directionType.equals(testType.toString())) {
@@ -169,6 +168,50 @@ public class CinematicMgr extends BasicDebugger {
 					motionTrack.setLookAt(new Vector3f(track.direction[0], track.direction[1], track.direction[2]), Vector3f.UNIT_Y);
 					motionTrack.setLoopMode(loopJmeType);
 					event = motionTrack;
+				} else if (track.trackType == CinematicTrack.TrackType.POSITIONTRACK) {
+					float[] endPositionArray;
+					// PositionTrack only supports one waypoint. Let's check to be sure there is only one waypoint, and that it is valid.
+					if (track.waypoints.isEmpty()) {
+						staticLogger.error("PositionTrack requested, but no waypoint provided for track: " + track);
+						break;
+					} else if (track.waypoints.size() != 1) {
+						staticLogger.warn("PositionTrack requested, but more than one waypoint provided for track: " + track);
+						staticLogger.warn("Extra waypoints discarded for Positiontrack");
+					}
+					endPositionArray = track.waypoints.get(0).waypointCoordinates;
+					LoopMode loopJmeType = null;
+					for (LoopMode testType : LoopMode.values()) {
+						if (track.loopMode.equals(testType.toString())) {
+							loopJmeType = testType;
+						}
+					}
+					if (loopJmeType == null) {
+						staticLogger.error("Specified PositionTrack loop mode not in com.jme3.animation.LoopMode: " + track.loopMode);
+						break;
+					}
+					if (noPosition(endPositionArray)) { // If we don't have coordinates for this waypoint...
+						// First check to see if this waypoint refers to a stored waypoint previously defined
+						String waypointReference = track.waypoints.get(0).waypointName;
+						if (!waypointReference.equals(CinematicConfigNames.unnamedWaypointName)) {
+							WaypointConfig waypoint = myWaypointsByName.get(waypointReference); // Reset waypoint to the WaypointConfig declared separately by name
+							if (waypoint == null) { // If so, track is calling for a waypoint we don't know about
+								staticLogger.error("Track has requested undefined waypoint: " + waypointReference + "; track is " + track);
+								break;
+							} else {
+								endPositionArray = waypoint.waypointCoordinates;
+							}
+
+						} else {
+							staticLogger.error("No coordinates or waypointName in waypoint contained in track: " + track);
+							break; // If no coordinates and no waypointName, we don't really have a waypoint!
+						}
+					}
+					Vector3f endPosition = new Vector3f(endPositionArray[0], endPositionArray[1], endPositionArray[2]);
+					if (track.trackDuration <= 0) {
+						staticLogger.warn("Warning: PositionTrack contains no positive cc:trackDuration, setting to zero");
+						track.trackDuration = 0; // Just in case it is set to a negative number in RDF
+					}
+					event = new PositionTrack(attachedNode, endPosition, track.trackDuration, loopJmeType);
 				} else {
 					staticLogger.error("Unsupported track type: " + track.trackType);
 					break;
@@ -179,6 +222,10 @@ public class CinematicMgr extends BasicDebugger {
 			rrc.getJme3AppStateManager(null).attach(cinematic);
 			myCinematicsByName.put(cic.myURI_Fragment, cinematic);
 		}
+	}
+
+	private static boolean noPosition(float[] waypointDef) {
+		return (new Float(waypointDef[0]).isNaN()) || (new Float(waypointDef[1]).isNaN()) || (new Float(waypointDef[2]).isNaN());
 	}
 
 	public static boolean controlCinematicByName(final String name, CinematicMgr.ControlAction action) {
