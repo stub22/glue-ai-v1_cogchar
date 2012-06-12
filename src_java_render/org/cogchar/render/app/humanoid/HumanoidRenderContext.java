@@ -23,13 +23,14 @@ import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
+import com.jme3.math.Vector3f;
 import java.lang.String;
 import java.util.HashMap;
 import java.util.Map;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.app.bony.BonyRenderContext;
-import org.cogchar.render.model.humanoid.HumanoidBoneConfig;
+import org.cogchar.api.humanoid.HumanoidBoneConfig;
 import org.cogchar.render.model.humanoid.HumanoidFigureModule;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
@@ -64,7 +65,8 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		BonyGameFeatureAdapter.initCrossHairs(someSettings, rrc);
 		initBasicTestPhysics();
-		initHumanoidStuff();
+		// We wait and do this later, possibly repeatedly.
+		// initHumanoidStuff();
 		initCameraAndLights();
 
 		myGameFeatureAdapter.initFeatures();
@@ -89,7 +91,8 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		return hf;
 	}
 
-	private HumanoidFigure setupHumanoidFigure(Ident charIdent, HumanoidBoneConfig hbc, boolean usePhysics) {
+
+	public HumanoidFigure setupHumanoidFigure(Ident charIdent, HumanoidBoneConfig hbc, boolean usePhysics) {
 		HumanoidFigure figure = null;
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 		AssetManager amgr = findJme3AssetManager(null);
@@ -102,22 +105,16 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		String meshPath = bce.getMeshPathForChar(charIdent);
 		if (meshPath != null) {
 			figure = getHumanoidFigure(charIdent);
-
 			figure.initStuff(hbc, amgr, rootNode, ps, meshPath);
-			//VirtCharPanel vcp = getVCPanel();
-			//vcp.setMaxChannelNum(hbc.getConfiguredBoneCount() - 1);
-
 			HumanoidFigureModule hfm = new HumanoidFigureModule(figure, this);
 			attachModule(hfm);
-			//	figure.boogie();
-			//	figure.becomePuppet();
 		} else {
 			getLogger().warn("Skipping humanoid mesh load for charURI: " + charIdent);
 		}
 		return figure;
 	}
 
-	private void initHumanoidStuff() {
+	public void initHumanoidStuff() {
 		BonyConfigEmitter bce = getBonyConfigEmitter();
 
 		try {
@@ -223,7 +220,5 @@ public class HumanoidRenderContext extends BonyRenderContext {
 			app.startJMonkeyCanvas();
 			logInfo("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]  Finished starting JMonkey canvas!");
 		}
-		//((BonyStickFigureApp) app).setScoringFlag(true);			
-
 	}
 }
