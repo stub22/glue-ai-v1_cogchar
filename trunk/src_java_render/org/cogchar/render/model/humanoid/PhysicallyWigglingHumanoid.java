@@ -29,6 +29,7 @@ import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.FastMath;
 
 import java.util.List;
+import org.cogchar.api.humanoid.HumanoidFigureConfig;
 
 
 /**
@@ -36,11 +37,11 @@ import java.util.List;
  */
 public class PhysicallyWigglingHumanoid extends HumanoidFigure {
 	private float myPhysicsWigglePhase = 0.0f;		
-	public 	PhysicallyWigglingHumanoid(BonyConfigEmitter bce, Ident charIdent)  {
-		super(bce, charIdent);
+	public 	PhysicallyWigglingHumanoid(HumanoidFigureConfig hfc)   {
+		super(hfc);
 	}
 	public void wiggleUsingPhysics(float tpf) { 
-		wiggleUsingPhysicsMotors(myHumanoidBoneConfig, tpf);
+		wiggleUsingPhysicsMotors(getHBConfig(), tpf);
 	}
 	public void wiggleUsingPhysicsMotors(HumanoidBoneConfig hbc, float tpf) {
 		myPhysicsWigglePhase += tpf / 10.0f;

@@ -65,21 +65,18 @@ import org.slf4j.LoggerFactory;
 public class HumanoidFigure implements RagdollCollisionListener, AnimEventListener {
 	static Logger theLogger = LoggerFactory.getLogger(HumanoidFigure.class);
 
-	private Node						myHumanoidModelNode;
-	protected  KinematicRagdollControl	myHumanoidKRC;
-	private AnimChannel					myHumanoidAnimChannel;
-	protected	HumanoidBoneConfig		myHumanoidBoneConfig;
-	// Skeleton is used for direct access to the graphic "spatial" bones of JME3 (bypassing JBullet physics bindings). 
-	private	Skeleton					myHumanoidSkeleton;
-	private	SkeletonDebugger			myHumanoidSkeletonDebugger;
-	private BonyConfigEmitter			myBonyConfigEmitter;
-	
-	private	FigureState					myFigureState;
-	
-	private Ident						myCharIdent;
-	private String						myNickname;
+	private		Node						myHumanoidModelNode;
+	protected	KinematicRagdollControl		myHumanoidKRC;
+	private		AnimChannel					myHumanoidAnimChannel;
 
-	private	HumanoidFigureConfig		myConfig;
+	// Skeleton is used for direct access to the graphic "spatial" bones of JME3 (bypassing JBullet physics bindings). 
+	private	Skeleton						myHumanoidSkeleton;
+	private	SkeletonDebugger				myHumanoidSkeletonDebugger;
+
+	
+	private	FigureState						myFigureState;
+	
+	private	HumanoidFigureConfig			myConfig;
 
 
 	public static String 	
@@ -102,14 +99,14 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 		
 	}
 
-		
-	public HumanoidFigure(BonyConfigEmitter bce, Ident charIdent) { 
-		myBonyConfigEmitter = bce;
-		myCharIdent = charIdent;
-		myNickname = bce.getNicknameForChar(charIdent);
+	public Ident getCharIdent() { 
+		return myConfig.myCharIdent;
 	}
+	public String getNickname() { 
+		return myConfig.myNickname;
+	}	
 	public HumanoidBoneConfig getHBConfig() {
-		return myHumanoidBoneConfig;
+		return myConfig.myBoneConfig;
 	}
 	public Bone getSpatialBone(String boneName) {
 		Bone b = myHumanoidSkeleton.getBone(boneName);
@@ -119,9 +116,9 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 		return myHumanoidSkeleton.getRoots()[0];
 	}
 
-	public void initStuff(HumanoidBoneConfig hbc, AssetManager assetMgr, Node parentNode, PhysicsSpace ps, String humanoidMeshPath) {
-		myHumanoidBoneConfig = hbc;
-		myHumanoidModelNode = (Node) assetMgr.loadModel(humanoidMeshPath);
+	public void initStuff(AssetManager assetMgr, Node parentNode, PhysicsSpace ps) {
+
+		myHumanoidModelNode = (Node) assetMgr.loadModel(myConfig.myMeshPath);
 
 		// This was commented out in JMonkey code:
 		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));
@@ -140,12 +137,15 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 
 		applyHumanoidJointLimits(myHumanoidKRC);
 
-		if (ps != null) {
+		if (myConfig.myPhysicsFlag && (ps != null)) {
 			myHumanoidKRC.addCollisionListener(this);
 			ps.add(myHumanoidKRC);
 		}
 
 		parentNode.attachChild(myHumanoidModelNode);
+		
+		Vector3f pos = new Vector3f(myConfig.myInitX, myConfig.myInitY, myConfig.myInitZ);
+		moveToPosition(pos);
 
 		myHumanoidAnimChannel = humanoidControl.createChannel();
 		humanoidControl.addListener(this);
@@ -224,14 +224,14 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 			myHumanoidAnimChannel.setAnim(ANIM_DANCE);
 			myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
 		} catch (Throwable t) {
-			theLogger.warn("Character cannot boogie, nickname is: " + myNickname, t);
+			theLogger.warn("Character cannot boogie, nickname is: " + getNickname(), t);
 		}
 	}
 	public void initDebugSkeleton(AssetManager assetMgr) { 
 		// AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
 		if (myHumanoidSkeletonDebugger == null) {
 			myHumanoidSkeletonDebugger = new SkeletonDebugger(SKEL_DEBUG_NAME, myHumanoidSkeleton);
-			String unshadedMatPath = myBonyConfigEmitter.getMaterialPath();
+			String unshadedMatPath = myConfig.myDebugSkelMatPath;
 			Material mat2 = new Material(assetMgr, unshadedMatPath);
 			mat2.getAdditionalRenderState().setWireframe(true);
 			mat2.setColor("Color", ColorRGBA.Green);
@@ -350,7 +350,7 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
         }
 
 	public void attachRagdollBones() {
-		HumanoidBoneConfig	hbc = myHumanoidBoneConfig;
+		HumanoidBoneConfig	hbc = getHBConfig();
 		List<HumanoidBoneDesc> boneDescs = hbc.getBoneDescs();
 		for (HumanoidBoneDesc hbd : boneDescs) {
 			attachRagdollBone(hbd);
