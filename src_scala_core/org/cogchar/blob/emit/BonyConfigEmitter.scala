@@ -19,6 +19,8 @@ package org.cogchar.blob.emit
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.FreeIdent;
 
+import org.cogchar.api.humanoid.{HumanoidFigureConfig, HumanoidBoneConfig, HumanoidBoneDesc};
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -170,5 +172,42 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 			case ZENO_R50_CHAR_URI => EXTRA_ROBOT_MESH_PATH
 		}
 	}
-
+	
+	private def buildBaseHumanoidFigureConfigForChar(charIdent : Ident) : HumanoidFigureConfig = {
+		val hfc = new HumanoidFigureConfig();
+		hfc.myCharIdent = charIdent;
+		hfc.myNickname = getNicknameForChar(charIdent);
+		hfc.myMeshPath = getMeshPathForChar(charIdent);
+		hfc.myDebugSkelMatPath = getMaterialPath;
+		hfc.myBoneConfig = new HumanoidBoneConfig();
+		hfc
+	}
+	private def getSinbadFigureConfig()  : HumanoidFigureConfig = {
+		val hfc = buildBaseHumanoidFigureConfigForChar(SINBAD_CHAR_IDENT);
+		hfc.myBoneConfig.addSinbadDefaultBoneDescs();
+		hfc.myInitX = 30.0f;
+		hfc.myInitY = 0.0f;
+		hfc.myInitZ = -30.0f;
+		hfc.myPhysicsFlag = true;
+		hfc
+	}
+	private def getZenoFigureConfig() : HumanoidFigureConfig =  {
+		val hfc = buildBaseHumanoidFigureConfigForChar(ZENO_R50_CHAR_IDENT);
+		hfc.myBoneConfig.addZenoDefaultBoneDescs();
+		hfc.myInitX = 0.0f;
+		hfc.myInitY = -5.0f;
+		hfc.myInitZ = 0.0f;
+		hfc.myPhysicsFlag = false;
+		hfc
+	}
+	def getHumanoidFigureConfigForChar(charIdent : Ident) : HumanoidFigureConfig = {
+		if (charIdent.equals(SINBAD_CHAR_IDENT)) {
+			getSinbadFigureConfig()
+		} else if (charIdent.equals(ZENO_R50_CHAR_IDENT)) {
+			getZenoFigureConfig();
+		} else {
+			buildBaseHumanoidFigureConfigForChar(charIdent);
+		}
+	}
+	
 }

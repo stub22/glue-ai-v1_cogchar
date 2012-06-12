@@ -15,15 +15,22 @@
  */
 package org.cogchar.api.humanoid;
 
+import org.appdapter.core.item.Ident;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidFigureConfig {
 
-	public String myCharIdent;
+	public Ident	myCharIdent;
 	public String myNickname;
 	public String myMeshPath;
+	public String myDebugSkelMatPath;
 	public boolean myPhysicsFlag;
 	public HumanoidBoneConfig myBoneConfig;
 	public float myInitX, myInitY, myInitZ;
+	
+	public boolean isComplete() { 
+		return myMeshPath != null;
+	}
 }

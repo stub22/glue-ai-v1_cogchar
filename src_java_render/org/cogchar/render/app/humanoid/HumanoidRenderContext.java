@@ -31,6 +31,7 @@ import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.api.humanoid.HumanoidBoneConfig;
+import org.cogchar.api.humanoid.HumanoidFigureConfig;
 import org.cogchar.render.model.humanoid.HumanoidFigureModule;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
@@ -85,52 +86,36 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		HumanoidFigure hf = myFiguresByCharIdent.get(charIdent);
 		if (hf == null) {
 			BonyConfigEmitter bce = getBonyConfigEmitter();
-			hf = new HumanoidFigure(bce, charIdent);
-			myFiguresByCharIdent.put(charIdent, hf);
+			HumanoidFigureConfig hfc = bce.getHumanoidFigureConfigForChar(charIdent); 
+			if (hfc.isComplete()) {
+				hf = new HumanoidFigure(hfc);
+				myFiguresByCharIdent.put(charIdent, hf);
+			}
 		}
 		return hf;
 	}
 
 
-	public HumanoidFigure setupHumanoidFigure(Ident charIdent, HumanoidBoneConfig hbc, boolean usePhysics) {
-		HumanoidFigure figure = null;
-		BonyConfigEmitter bce = getBonyConfigEmitter();
+	public HumanoidFigure setupHumanoidFigure(Ident charIdent) {
+		HumanoidFigure figure = getHumanoidFigure(charIdent);
 		AssetManager amgr = findJme3AssetManager(null);
 		Node rootNode = findJme3RootDeepNode(null);
-		PhysicsSpace ps = null;
-		if (usePhysics) {
-			ps = getPhysicsSpace();
-		}
-
-		String meshPath = bce.getMeshPathForChar(charIdent);
-		if (meshPath != null) {
-			figure = getHumanoidFigure(charIdent);
-			figure.initStuff(hbc, amgr, rootNode, ps, meshPath);
-			HumanoidFigureModule hfm = new HumanoidFigureModule(figure, this);
-			attachModule(hfm);
-		} else {
-			getLogger().warn("Skipping humanoid mesh load for charURI: " + charIdent);
-		}
+		PhysicsSpace ps = getPhysicsSpace();
+		figure.initStuff(amgr, rootNode, ps);
+		HumanoidFigureModule hfm = new HumanoidFigureModule(figure, this);
+		attachModule(hfm);
 		return figure;
 	}
 
 	public void initHumanoidStuff() {
 		BonyConfigEmitter bce = getBonyConfigEmitter();
-
 		try {
 			if (!bce.isMinimalSim()) {
-				Ident sinbadIdent = bce.SINBAD_CHAR_IDENT();
-				HumanoidBoneConfig sinbadHBC = new HumanoidBoneConfig();
-				sinbadHBC.addSinbadDefaultBoneDescs();
-				HumanoidFigure sinbadFigure = setupHumanoidFigure(sinbadIdent, sinbadHBC, true);
-				sinbadFigure.movePosition(30.0f, 0.0f, -30.0f);
+				setupHumanoidFigure(bce.SINBAD_CHAR_IDENT());
 			}
-
-			Ident extraRobotIdent = bce.ZENO_R50_CHAR_IDENT();
-			HumanoidBoneConfig robotHBC = new HumanoidBoneConfig();
-			robotHBC.addZenoDefaultBoneDescs();
-			HumanoidFigure robotFigure = setupHumanoidFigure(extraRobotIdent, robotHBC, false);
-			robotFigure.movePosition(0.0f, -5.0f, 0.0f);
+			if (bce.isZenoHome()) {
+				setupHumanoidFigure (bce.ZENO_R50_CHAR_IDENT());
+			}
 		} catch (Throwable t) {
 			logError("Problem in initHumanoidStuff(), eating exception to allow init to continue", t);
 		}
