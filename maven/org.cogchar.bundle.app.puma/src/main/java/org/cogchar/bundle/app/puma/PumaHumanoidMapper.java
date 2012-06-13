@@ -87,7 +87,9 @@ public class PumaHumanoidMapper extends BasicDebugger {
 		br.registerMoveListener(new ModelRobot.MoveListener() {
 			@Override public void notifyBonyRobotMoved(ModelRobot br) {
 				HumanoidFigure hf = getHumanoidFigure();
-				ModelToFigureStateMappingFuncs.propagateState(br, hf);
+				if (hf != null) {
+					ModelToFigureStateMappingFuncs.propagateState(br, hf);
+				}
 			}
 			
 		});

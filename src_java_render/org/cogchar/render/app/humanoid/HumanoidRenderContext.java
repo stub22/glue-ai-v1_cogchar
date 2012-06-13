@@ -115,6 +115,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 			}
 			if (bce.isZenoHome()) {
 				setupHumanoidFigure (bce.ZENO_R50_CHAR_IDENT());
+				setupHumanoidFigure (bce.AZR50_CHAR_IDENT());
 			}
 		} catch (Throwable t) {
 			logError("Problem in initHumanoidStuff(), eating exception to allow init to continue", t);
