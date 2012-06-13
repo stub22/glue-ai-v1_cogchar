@@ -18,15 +18,17 @@ package org.cogchar.api.scene;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.appdapter.core.item.*;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
+import org.appdapter.core.log.BasicDebugger;
 
 /**
  *
  * @author Ryan Biggs
  */
-public class CinematicTrack {
+public class CinematicTrack extends BasicDebugger {
 
 	public String trackName;
 	public String attachedItem;
@@ -40,6 +42,7 @@ public class CinematicTrack {
 	public float startTime;
 	public float trackDuration;
 	public List<WaypointConfig> waypoints = new ArrayList<WaypointConfig>();
+	public RotationConfig endRotation;
 	private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
 
 	@Override
@@ -93,6 +96,14 @@ public class CinematicTrack {
 			WaypointConfig oneWaypoint = new WaypointConfig(wpt);
 			waypoints.add(oneWaypoint);
 		}
+		// Get rotation - there should only be one
+		Set<Item> rotationItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_rotation);
+		if (rotationItems.size() > 1) {
+			logWarning("More than one endRotation detected in track " + trackName + "; ignoring all but one!");
+		}
+		for (Item rotation : rotationItems) {
+			endRotation = new RotationConfig(rotation);
+		}
 	}
 
 	public enum AttachedItemType {
@@ -102,6 +113,6 @@ public class CinematicTrack {
 
 	public enum TrackType {
 
-		NULLTYPE, MOTIONTRACK, POSITIONTRACK
+		NULLTYPE, MOTIONTRACK, POSITIONTRACK, ROTATIONTRACK
 	}
 }

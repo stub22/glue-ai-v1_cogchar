@@ -27,15 +27,21 @@ public class CinematicConfigNames extends BoxAssemblyNames {
 	
 	public static	String		P_namedWaypoint	= "waypoint_";
 	
-	public static	String		unnamedTrackName = "trackUnnamed";
+	public static	String		P_namedRotation	= "rotation_";
 	
-	public static	String		unnamedWaypointName = "waypointUnnamed";
+	public static	String		unnamedTrackName = "track_Unnamed";
+	
+	public static	String		unnamedWaypointName = "waypoint_Unnamed";
+	
+	public static	String		unnamedRotationName = "rotation_Unnamed";
 	
 	public static 	String		P_cinematic		= NS_CgcCC + "cinematicList";
 	
 	public static 	String		P_trackList		= NS_CgcCC + "trackList";
 	
 	public static 	String		P_waypointList	= NS_CgcCC + "waypointList";
+	
+	public static 	String		P_rotationList	= NS_CgcCC + "rotationList";
         
         public static   String          P_duration				= NS_CgcCC + "duration";
 		
@@ -65,8 +71,18 @@ public class CinematicConfigNames extends BoxAssemblyNames {
 		
 		public static	String			P_trackDuration			= NS_CgcCC + "trackDuration";
 		
+		public static	String			P_yaw					= NS_CgcCC + "yaw";
+		
+		public static	String			P_roll					= NS_CgcCC + "roll";
+		
+		public static	String			P_pitch					= NS_CgcCC + "pitch";
+		
 		public static   String          P_waypoint				= NS_CgcCC + "waypoints";
 		
 		public static   String          P_waypointName			= NS_CgcCC + "waypointName";
+		
+		public static   String          P_rotation				= NS_CgcCC + "endRotation";
+		
+		public static   String          P_rotationName			= NS_CgcCC + "rotationName";
   	
 }
