@@ -27,7 +27,7 @@
     dc:publisher     "cogchar.org" ;
     dc:title         "(title) Cinematic config" ;
     dc:description   "(desc) Configuration for cinematic motions of cameras and objects" ;
-    dc:date          "2012-06-05" ;
+    dc:date          "2012-06-13" ;
 
     dc:format        "RDF" ;
     dc:identifier    "what_does_this_dublin_core_identifier_mean"
@@ -62,17 +62,24 @@ cci:cinematicConfig1		rdf:type			cc:BuildableCinematicConfig;
 
 # Now let's list the cinematics contained within this config
         cc:cinematicList	cci:cinematic_movingCameraDemo,
-							cci:cinematic_movingCameraDemo2;
-
+							cci:cinematic_movingCameraDemo2,
+							cci:cinematic_positionTrackDemo,
+							cci:cinematic_rotationTrackDemo;
+			
 # ... and the named tracks
-		cc:trackList		cci:track_Demo1;
-		cc:trackList		cci:track_Demo1a;
+		cc:trackList		cci:track_Demo1,
+							cci:track_Demo1a,
+							cci:track_PositionTrackDemo,
+							cci:track_RotationTrackDemo;
 		
 # ... and the named waypoints
 		cc:waypointList		cci:waypoint_DemoWpt1,
 							cci:waypoint_DemoWpt2,
 							cci:waypoint_DemoWpt3,
         					cci:waypoint_DemoWpt4;
+							
+# ... and the named rotations
+		cc:rotationList		cci:rotation_DemoRot1;
 .
 
 ################################################################################
@@ -117,17 +124,37 @@ cci:cinematic_movingCameraDemo
 		)	
 .        
 
-# In order to see this demo cinematic, uncomment bci:camera_Test2 in charWorldConfig, which track_Demo1 uses
+# In order to see any of the following cinematics, uncomment bci:camera_Test2 in charWorldConfig, which the contained tracks use
+# To trigger them from Lift "Pushy" webapp, edit liftConfig.ttl
 cci:cinematic_movingCameraDemo2
 		cc:duration			"60";
 		cc:tracks (
 		[
-			# Demo1 and Demo1a are the same, but both are defined below to demonstrate various design options
+			# Demo1 and Demo1a are the same, but both are defined below to demonstrate various markup options
 			cc:trackName	"track_Demo1a" 
 		]
 		)
 .
 
+cci:cinematic_positionTrackDemo
+		cc:duration			"60";
+		cc:tracks (
+		[
+			cc:trackName	"track_PositionTrackDemo"
+		]
+		)
+.
+
+cci:cinematic_rotationTrackDemo
+		cc:duration			"60";
+		cc:tracks (
+		[
+			cc:trackName	"track_PositionTrackDemo"
+		] [
+			cc:trackName	"track_RotationTrackDemo"
+		]
+		)
+.
 
 ################################################################################
 # Track Resources
@@ -191,6 +218,33 @@ cci:track_Demo1a
 		)
 .
 
+cci:track_PositionTrackDemo
+		cc:attachedItem		"anotherTestCamera";
+		cc:attachedItemType	"CAMERA";
+		cc:trackType		"POSITIONTRACK";
+		cc:loop				"Cycle";
+		cc:startTime		"0.0";
+		cc:trackDuration	"10";
+		cc:waypoints (
+		[
+			cc:waypointName	"waypoint_DemoWpt3"
+		]
+		)
+.
+
+cci:track_RotationTrackDemo
+		cc:attachedItem		"anotherTestCamera";
+		cc:attachedItemType	"CAMERA";
+		cc:trackType		"ROTATIONTRACK";
+		cc:loop				"Cycle";
+		cc:startTime		"10.0";
+		cc:trackDuration	"10";
+		cc:endRotation 
+		[
+			cc:rotationName	"rotation_DemoRot1"
+		]
+.
+
 
 ################################################################################
 # Waypoint Resources
@@ -218,4 +272,14 @@ cci:waypoint_DemoWpt4
 	cc:xPos			"-80";
 	cc:yPos			"40";
 	cc:zPos			"0"
+.
+
+################################################################################
+# Rotation Resources
+################################################################################
+
+cci:rotation_DemoRot1
+	cc:yaw			"0.1";
+	cc:roll			"-0.2";
+	cc:pitch		"-0.2"
 .
