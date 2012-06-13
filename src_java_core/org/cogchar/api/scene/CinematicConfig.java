@@ -39,6 +39,7 @@ public class CinematicConfig extends KnownComponentImpl {
 	public List<CinematicInstanceConfig> myCICs = new ArrayList<CinematicInstanceConfig>();
 	public List<CinematicTrack> myCTs = new ArrayList<CinematicTrack>();
 	public List<WaypointConfig> myWCs = new ArrayList<WaypointConfig>();
+	public List<RotationConfig> myRCs = new ArrayList<RotationConfig>();
 
 	public static class Builder extends DynamicCachingComponentAssembler<CinematicConfig> {
 
@@ -73,6 +74,14 @@ public class CinematicConfig extends KnownComponentImpl {
 				WaypointConfig wc = new WaypointConfig(ji);
 				logInfo("Adding named WaypointConfig in CinematicConfig: " + wc);
 				mcc.myWCs.add(wc);
+			}
+			configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_rotationList);
+			logInfo("Rotations found: " + configItems.size());
+			for (Item ji : configItems) {
+				//logInfo("Generating RotationConfig"); // TEST ONLY
+				RotationConfig rc = new RotationConfig(ji);
+				logInfo("Adding named RotationConfig in CinematicConfig: " + rc);
+				mcc.myRCs.add(rc);
 			}
 		}
 
