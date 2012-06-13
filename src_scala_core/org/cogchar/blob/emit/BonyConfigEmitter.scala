@@ -40,7 +40,9 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	// Commercial "Extra Robot" model, not loadable without a license.
 	// Cogchar shoud ignore this "ExtraRobot" when it is not loadable, and still
 	// function correctly for Sinbad + other characters.
-	val EXTRA_ROBOT_MESH_PATH = "model3D/char/zeno/zeno_R50_06_20120323/zenobot_06_20120323.mesh.xml";		
+	val EXTRA_ROBOT_MESH_PATH	= "model3D/char/zeno/zeno_R50_06_20120323/zenobot_06_20120323.mesh.xml";		
+	
+	val AZR50_MESH_PATH			= "model3D/char/zeno/zeno_R50_A03_20120608/AZR50_anim_03_2012.mesh.xml";
 	
 	// val EXTRA_ROBOT_MESH_PATH = "zenobot_05_20120309/ZenoBot05.ma.mesh.xml";		
 	//		String dualCharURI = "urn:org.cogchar/platform/nb701?char=HRK_Zeno_R50&version=20120302";   
@@ -50,7 +52,10 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	val ZENO_R50_NICKNAME = "ZenoR50";
 	val	ZENO_R50_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + ZENO_R50_NICKNAME;
 	val	ZENO_R50_CHAR_IDENT = new FreeIdent(ZENO_R50_CHAR_URI, ZENO_R50_NICKNAME)
-	
+
+	val AZR50_NICKNAME = "AZR50";
+	val	AZR50_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + AZR50_NICKNAME;
+	val	AZR50_CHAR_IDENT = new FreeIdent(AZR50_CHAR_URI, AZR50_NICKNAME)	
 	
 	
 	
@@ -140,7 +145,10 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 			
 	def getActiveBonyCharIdents() : java.util.List[Ident] = {
 		val res = new java.util.ArrayList[Ident]();
-		if (isZenoHome()) {res.add(ZENO_R50_CHAR_IDENT)};
+		if (isZenoHome()) {
+				res.add(ZENO_R50_CHAR_IDENT)
+				res.add(AZR50_CHAR_IDENT)
+		};
 		if (!isMinimalSim()) {res.add(SINBAD_CHAR_IDENT);}
 		res;
 	}
@@ -150,6 +158,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		charURI match {
 			case SINBAD_CHAR_URI => SINBAD_NICKNAME
 			case ZENO_R50_CHAR_URI => ZENO_R50_NICKNAME
+			case AZR50_CHAR_URI => AZR50_NICKNAME
 		}
 	}
 	
@@ -170,6 +179,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		charURI match {
 			case SINBAD_CHAR_URI => SINBAD_MESH_PATH
 			case ZENO_R50_CHAR_URI => EXTRA_ROBOT_MESH_PATH
+			case AZR50_CHAR_URI => AZR50_MESH_PATH
 		}
 	}
 	
@@ -200,11 +210,22 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		hfc.myPhysicsFlag = false;
 		hfc
 	}
+	private def getAZR50_FigureConfig() : HumanoidFigureConfig =  {
+		val hfc = buildBaseHumanoidFigureConfigForChar(AZR50_CHAR_IDENT);
+		// hfc.myBoneConfig.addZenoDefaultBoneDescs();
+		hfc.myInitX = -10.0f;
+		hfc.myInitY = -5.0f;
+		hfc.myInitZ = -10.0f;
+		hfc.myPhysicsFlag = false;
+		hfc
+	}	
 	def getHumanoidFigureConfigForChar(charIdent : Ident) : HumanoidFigureConfig = {
 		if (charIdent.equals(SINBAD_CHAR_IDENT)) {
 			getSinbadFigureConfig()
 		} else if (charIdent.equals(ZENO_R50_CHAR_IDENT)) {
 			getZenoFigureConfig();
+		} else if (charIdent.equals(AZR50_CHAR_IDENT)) {
+			getAZR50_FigureConfig();			
 		} else {
 			buildBaseHumanoidFigureConfigForChar(charIdent);
 		}
