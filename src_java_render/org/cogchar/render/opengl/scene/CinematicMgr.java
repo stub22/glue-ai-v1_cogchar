@@ -75,10 +75,11 @@ public class CinematicMgr extends BasicDebugger {
 			myTracksByName.put(ct.trackName, ct);
 		}
 
-		// Next, we build the cinematics, using named tracks if required.
+		// Next, we build the cinematics, using named tracks/waypoints/rotations if required.
 		for (CinematicInstanceConfig cic : config.myCICs) {
 			staticLogger.info("Building Cinematic from RDF: " + cic);
 			final Cinematic cinematic = new Cinematic(jmeRootNode, cic.duration);
+			Map<String, CameraNode> boundCameras = new HashMap<String, CameraNode>(); // To keep track of cameras bound to this cinematic
 			// Add each track
 			for (CinematicTrack track : cic.myTracks) {
 				AbstractCinematicEvent event;
@@ -98,31 +99,38 @@ public class CinematicMgr extends BasicDebugger {
 				Node attachedNode = null;
 				if (track.attachedItemType == CinematicTrack.AttachedItemType.CAMERA) { // Which is all we support initally...
 					CameraMgr cm = rrc.getOpticCameraFacade(null);
-					final Camera cineCam = cm.getNamedCamera(track.attachedItem);
-					if (cineCam != null) {
-						// The following is not necessary if we use only cameras already loaded from RDF, as these have already had their viewports added
-						//CoreFeatureAdapter.addViewPort(rrc, track.attachedItem, cineCam);
-						// Bind the camera to the cinematic to make a CameraNode - this must be done on the main render thread
-						final String cameraName = track.attachedItem;
-						Future<Object> camNodeFuture = WorkaroundFuncsMustDie.enqueueCallableReturn(hrc, new Callable<CameraNode>() {
+					if (boundCameras.containsKey(track.attachedItem)) {
+						// Hey, we already bound this to the cinematic! We'll just get the node to attach to the track.
+						staticLogger.info("Attached camera already bound, reusing in track: " + track);
+						attachedNode = (Node) boundCameras.get(track.attachedItem);
+					} else {
+						final Camera cineCam = cm.getNamedCamera(track.attachedItem);
+						if (cineCam != null) {
+							// The following is not necessary if we use only cameras already loaded from RDF, as these have already had their viewports added
+							//CoreFeatureAdapter.addViewPort(rrc, track.attachedItem, cineCam);
+							// Bind the camera to the cinematic to make a CameraNode - this must be done on the main render thread
+							final String cameraName = track.attachedItem;
+							Future<Object> camNodeFuture = WorkaroundFuncsMustDie.enqueueCallableReturn(hrc, new Callable<CameraNode>() {
 
-							@Override
-							public CameraNode call() throws Exception {
-								CameraNode camNode = cinematic.bindCamera(cameraName, cineCam);
-								return camNode;
+								@Override
+								public CameraNode call() throws Exception {
+									CameraNode camNode = cinematic.bindCamera(cameraName, cineCam);
+									return camNode;
+								}
+							});
+							try {
+								attachedNode = (Node) camNodeFuture.get(3, java.util.concurrent.TimeUnit.SECONDS);
+							} catch (Exception e) {
+								staticLogger.error("Exception binding camera to cinematic: " + e.toString());
+								break;
 							}
-						});
-						try {
-							attachedNode = (Node) camNodeFuture.get(3, java.util.concurrent.TimeUnit.SECONDS);
-						} catch (Exception e) {
-							staticLogger.error("Exception binding camera to cinematic: " + e.toString());
+							cinematic.activateCamera(0, cameraName); // Attached at time zero, because who knows what other track might use this camera?
+							//cinematic.setActiveCamera(cameraName); // Can also do this, but it messes with initial camera position
+							boundCameras.put(track.attachedItem, (CameraNode) attachedNode); // Could just use Node as type of HashMap and not cast back and forth, but this makes it explicit
+						} else {
+							staticLogger.error("Specified Camera not found for Cinematic config from RDF: " + track.attachedItem);
 							break;
 						}
-						cinematic.activateCamera(track.startTime, cameraName);  // Results are very disappointing if we don't do this!
-						//cinematic.setActiveCamera(cameraName); // Can also do this, but it messes with initial camera position
-					} else {
-						staticLogger.error("Specified Camera not found for Cinematic config from RDF: " + track.attachedItem);
-						break;
 					}
 				} else {
 					staticLogger.error("Unsupported attached item type in track: " + track.attachedItemType);
