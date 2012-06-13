@@ -23,6 +23,7 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.sys.core.RenderRegistryClient;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.api.scene.SceneConfigNames;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.animation.LoopMode;
@@ -46,6 +47,7 @@ public class CinematicMgr extends BasicDebugger {
 	private static Map<String, Cinematic> myCinematicsByName = new HashMap<String, Cinematic>();
 	private static Map<String, CinematicTrack> myTracksByName = new HashMap<String, CinematicTrack>();
 	private static Map<String, WaypointConfig> myWaypointsByName = new HashMap<String, WaypointConfig>();
+	private static Map<String, RotationConfig> myRotationsByName = new HashMap<String, RotationConfig>();
 	//private static Map<String, Boolean> myCinematicsReadyStatusByName = new HashMap<String, Boolean>(); // May not need this, woohoo!
 	private static Logger staticLogger = getLoggerForClass(CinematicMgr.class);
 	private static HumanoidRenderContext myHrc;
@@ -59,6 +61,12 @@ public class CinematicMgr extends BasicDebugger {
 		for (WaypointConfig wc : config.myWCs) {
 			staticLogger.info("Storing Named Waypoint from RDF: " + wc);
 			myWaypointsByName.put(wc.waypointName, wc);
+		}
+
+		// Also "first", any named rotations are stored
+		for (RotationConfig rc : config.myRCs) {
+			staticLogger.info("Storing Named Rotation from RDF: " + rc);
+			myRotationsByName.put(rc.rotationName, rc);
 		}
 
 		// Second, any named tracks defined outside cinematics definitions are stored for later use
@@ -153,12 +161,7 @@ public class CinematicMgr extends BasicDebugger {
 						staticLogger.error("Specified MotionTrack direction type not in MotionTrack.Direction: " + track.directionType);
 						break;
 					}
-					LoopMode loopJmeType = null;
-					for (LoopMode testType : LoopMode.values()) {
-						if (track.loopMode.equals(testType.toString())) {
-							loopJmeType = testType;
-						}
-					}
+					LoopMode loopJmeType = setLoopMode(track.loopMode);
 					if (loopJmeType == null) {
 						staticLogger.error("Specified MotionTrack loop mode not in com.jme3.animation.LoopMode: " + track.loopMode);
 						break;
@@ -179,21 +182,11 @@ public class CinematicMgr extends BasicDebugger {
 						staticLogger.warn("Extra waypoints discarded for Positiontrack");
 					}
 					endPositionArray = track.waypoints.get(0).waypointCoordinates;
-					LoopMode loopJmeType = null;
-					for (LoopMode testType : LoopMode.values()) {
-						if (track.loopMode.equals(testType.toString())) {
-							loopJmeType = testType;
-						}
-					}
-					if (loopJmeType == null) {
-						staticLogger.error("Specified PositionTrack loop mode not in com.jme3.animation.LoopMode: " + track.loopMode);
-						break;
-					}
 					if (noPosition(endPositionArray)) { // If we don't have coordinates for this waypoint...
 						// First check to see if this waypoint refers to a stored waypoint previously defined
 						String waypointReference = track.waypoints.get(0).waypointName;
 						if (!waypointReference.equals(CinematicConfigNames.unnamedWaypointName)) {
-							WaypointConfig waypoint = myWaypointsByName.get(waypointReference); // Reset waypoint to the WaypointConfig declared separately by name
+							WaypointConfig waypoint = myWaypointsByName.get(waypointReference); // Set waypoint to the WaypointConfig declared separately by name
 							if (waypoint == null) { // If so, track is calling for a waypoint we don't know about
 								staticLogger.error("Track has requested undefined waypoint: " + waypointReference + "; track is " + track);
 								break;
@@ -207,11 +200,50 @@ public class CinematicMgr extends BasicDebugger {
 						}
 					}
 					Vector3f endPosition = new Vector3f(endPositionArray[0], endPositionArray[1], endPositionArray[2]);
+					LoopMode loopJmeType = setLoopMode(track.loopMode);
+					if (loopJmeType == null) {
+						staticLogger.error("Specified PositionTrack loop mode not in com.jme3.animation.LoopMode: " + track.loopMode);
+						break;
+					}
 					if (track.trackDuration <= 0) {
 						staticLogger.warn("Warning: PositionTrack contains no positive cc:trackDuration, setting to zero");
 						track.trackDuration = 0; // Just in case it is set to a negative number in RDF
 					}
 					event = new PositionTrack(attachedNode, endPosition, track.trackDuration, loopJmeType);
+				} else if (track.trackType == CinematicTrack.TrackType.ROTATIONTRACK) {
+					// First make sure rotation is valid
+					RotationConfig rotation = track.endRotation;
+					float[] rotationInArray = {rotation.yaw, rotation.roll, rotation.pitch};
+					if (noPosition(rotationInArray)) { // If we don't have values for this rotation...
+						// First check to see if this rotation refers to a stored rotation previously defined
+						String rotationReference = rotation.rotationName;
+						if (!rotationReference.equals(CinematicConfigNames.unnamedRotationName)) {
+							rotation = myRotationsByName.get(rotationReference); // Reset rotation to the RotationConfig declared separately by name
+							if (rotation == null) { // If so, track is calling for a rotation we don't know about
+								staticLogger.error("Track has requested undefined rotation: " + rotationReference + "; track is " + track);
+								break;
+							} else {
+								// Reset rotationInArray to values from loaded rotation
+								rotationInArray[0] = rotation.yaw;
+								rotationInArray[1] = rotation.roll;
+								rotationInArray[2] = rotation.pitch;
+							}
+						} else {
+							staticLogger.error("No valid rotation angles or rotationName in rotation contained in track: " + track);
+							break; // If no coordinates and no rotationName, we don't really have a rotation!
+						}
+					}
+					LoopMode loopJmeType = setLoopMode(track.loopMode);
+					if (loopJmeType == null) {
+						staticLogger.error("Specified RotationTrack loop mode not in com.jme3.animation.LoopMode: " + track.loopMode);
+						break;
+					}
+					if (track.trackDuration <= 0) {
+						staticLogger.warn("Warning: RotationTrack contains no positive cc:trackDuration, setting to zero");
+						track.trackDuration = 0; // Just in case it is set to a negative number in RDF
+					}
+					Quaternion endRotation = new Quaternion(rotationInArray);
+					event = new RotationTrack(attachedNode, endRotation, track.trackDuration, loopJmeType);
 				} else {
 					staticLogger.error("Unsupported track type: " + track.trackType);
 					break;
@@ -226,6 +258,16 @@ public class CinematicMgr extends BasicDebugger {
 
 	private static boolean noPosition(float[] waypointDef) {
 		return (new Float(waypointDef[0]).isNaN()) || (new Float(waypointDef[1]).isNaN()) || (new Float(waypointDef[2]).isNaN());
+	}
+
+	private static LoopMode setLoopMode(String modeString) {
+		LoopMode loopJmeType = null;
+		for (LoopMode testType : LoopMode.values()) {
+			if (modeString.equals(testType.toString())) {
+				loopJmeType = testType;
+			}
+		}
+		return loopJmeType;
 	}
 
 	public static boolean controlCinematicByName(final String name, CinematicMgr.ControlAction action) {
