@@ -221,7 +221,7 @@ public class CinematicMgr extends BasicDebugger {
 				} else if (track.trackType == CinematicTrack.TrackType.ROTATIONTRACK) {
 					// First make sure rotation is valid
 					RotationConfig rotation = track.endRotation;
-					float[] rotationInArray = {rotation.yaw, rotation.roll, rotation.pitch};
+					float[] rotationInArray = {rotation.pitch, rotation.yaw, rotation.roll};
 					if (noPosition(rotationInArray)) { // If we don't have values for this rotation...
 						// First check to see if this rotation refers to a stored rotation previously defined
 						String rotationReference = rotation.rotationName;
@@ -232,14 +232,18 @@ public class CinematicMgr extends BasicDebugger {
 								break;
 							} else {
 								// Reset rotationInArray to values from loaded rotation
-								rotationInArray[0] = rotation.yaw;
-								rotationInArray[1] = rotation.roll;
-								rotationInArray[2] = rotation.pitch;
+								rotationInArray[0] = rotation.pitch;
+								rotationInArray[1] = rotation.yaw;
+								rotationInArray[2] = rotation.roll;
 							}
 						} else {
 							staticLogger.error("No valid rotation angles or rotationName in rotation contained in track: " + track);
 							break; // If no coordinates and no rotationName, we don't really have a rotation!
 						}
+					}
+					// Convert angles from degrees to radians
+					for (int i = 0; i < rotationInArray.length; i++) { // Really Java? All this is required just to multiply an array by a constant?
+						rotationInArray[i] = new Float(rotationInArray[i] * Math.PI / 180);
 					}
 					LoopMode loopJmeType = setLoopMode(track.loopMode);
 					if (loopJmeType == null) {
