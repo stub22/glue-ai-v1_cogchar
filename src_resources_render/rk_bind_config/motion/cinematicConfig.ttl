@@ -279,7 +279,7 @@ cci:waypoint_DemoWpt4
 ################################################################################
 
 cci:rotation_DemoRot1
-	cc:yaw			"0.1";
-	cc:roll			"-0.2";
-	cc:pitch		"-0.2"
+	cc:yaw			"30";
+	cc:roll			"-45";
+	cc:pitch		"30"
 .
