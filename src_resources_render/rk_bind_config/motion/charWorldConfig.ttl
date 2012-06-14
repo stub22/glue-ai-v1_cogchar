@@ -59,11 +59,11 @@ bci:charWorldConfig1		rdf:type			bc:BuildableLightsCameraConfig;
 
 # Now let's list the cameras contained within this config
         bc:camera
-                bci:camera_Default,
+                bci:camera_DEFAULT,
 # This next camera is used by a demo cinematic, but is disabled in SVN code to avoid cluttering the v-world with extra viewports
 # Uncomment it to enable it if you like! 
-#                bci:camera_Test2,
-				bci:camera_Test;
+#                bci:camera_anotherTestCamera,
+				bci:camera_aTestCamera;
                 
 # ... and the lights
 		bc:light	bci:light_Demo;
@@ -74,8 +74,7 @@ bci:charWorldConfig1		rdf:type			bc:BuildableLightsCameraConfig;
 # Camera Resources
 ################################################################################
 
-bci:camera_Default
-        bc:cameraName           "DEFAULT";
+bci:camera_DEFAULT
         bc:xPos                 0.0;
         bc:yPos                 40.0;
         bc:zPos                 80.0;
@@ -88,22 +87,20 @@ bci:camera_Default
         bc:viewportYend			1.0;
 .        
         
-bci:camera_Test
-        bc:cameraName           "aTestCamera";
+bci:camera_aTestCamera
         bc:xPos                 0.0;
         bc:yPos                 40.0;
         bc:zPos                 80.0;
         bc:xDir                 0.0;
         bc:yDir                 -0.3;
         bc:zDir                 -1.0;
-        bc:viewportXstart		0.0;
+		bc:viewportXstart		0.0;
 		bc:viewportXend			0.3;
 		bc:viewportYstart		0.0;
         bc:viewportYend			0.3;
 .
 
-bci:camera_Test2
-        bc:cameraName           "anotherTestCamera";
+bci:camera_anotherTestCamera
         bc:xPos                 0.0;
         bc:yPos                 40.0;
         bc:zPos                 80.0;
@@ -121,7 +118,6 @@ bci:camera_Test2
 ################################################################################
 
 bci:light_Demo
-        bc:lightName           "Demo";
         bc:type			"DIRECTIONAL";
         bc:xDir                 -0.1;
         bc:yDir                 -0.7;
@@ -129,6 +125,6 @@ bci:light_Demo
         bc:colorR               1.0;
         bc:colorG               1.0;
         bc:colorB               1.0;
-        bc:colorAlpha		1.0;
+        bc:colorAlpha			1.0;
 
 .    

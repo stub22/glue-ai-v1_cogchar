@@ -21,18 +21,20 @@ import java.util.HashMap;
 import java.util.Map;
 import org.cogchar.api.scene.CameraConfig;
 import org.cogchar.api.scene.LightsCameraConfig;
+import org.cogchar.api.scene.SceneConfigNames;
 import org.cogchar.render.app.core.CoreFeatureAdapter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.sys.core.RenderRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class CameraMgr {
 
-        static Logger theLogger = LoggerFactory.getLogger(CameraMgr.class);
-    
+	static Logger theLogger = LoggerFactory.getLogger(CameraMgr.class);
+
 	public enum CommonCameras {
 
 		DEFAULT,
@@ -40,9 +42,8 @@ public class CameraMgr {
 		WIDE_VIEW
 	}
 	private Map<String, Camera> myCamerasByName = new HashMap<String, Camera>();
-        
-        private Vector3f defaultPosition;
-        private Vector3f defaultDirection;
+	private Vector3f defaultPosition;
+	private Vector3f defaultDirection;
 
 	public Camera cloneCamera(Camera orig) {
 		return orig.clone();
@@ -66,12 +67,16 @@ public class CameraMgr {
 	public Camera getCommonCamera(CommonCameras id) {
 		return getNamedCamera(id.name());
 	}
-        
+
 	public void initCamerasFromConfig(LightsCameraConfig config, HumanoidRenderContext hrc) {
 		for (CameraConfig cc : config.myCCs) {
 			theLogger.info("Building Camera for config: " + cc);
 			boolean newFromRdf = false; // Used to trigger new viewport creation for new cameras loaded from RDF - probably not the way we want to handle this in long run
 			String cameraName = cc.cameraName;
+			// If the RDF camera name is camera_default (with any case), normalize name of this very special camera to "DEFAULT"
+			if (cameraName.toLowerCase().replaceFirst(SceneConfigNames.partial_P_camera, "").equals("_default")) {
+				cameraName = "DEFAULT";
+			}
 			Camera loadingCamera = getNamedCamera(cameraName); // First let's see if we can get a registered camera by this name
 			if (loadingCamera == null) {
 				newFromRdf = true; // Trigger new viewport creation for a new camera from RDF
@@ -93,9 +98,9 @@ public class CameraMgr {
 				defaultPosition = new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]);
 				defaultDirection = new Vector3f(cameraDir[0], cameraDir[1], cameraDir[2]);
 			}
-		}        
+		}
 	}
-        
+
 	public void resetDefaultCamera() {
 		Camera defaultCamera = getCommonCamera(CommonCameras.DEFAULT);
 		if ((defaultPosition != null) && (defaultDirection != null)) {
@@ -103,13 +108,8 @@ public class CameraMgr {
 			defaultCamera.lookAtDirection(defaultDirection, Vector3f.UNIT_Y);
 		}
 	}
-        
 	/*
-	public  		
-	 * FlyByCamera fbc = app.getFlyByCamera();
-        fbc.setDragToRotate(true);
-		fbc.setMoveSpeed(10f);
-		app.setPauseOnLostFocus(false);
-	*/
-        
+	 * public FlyByCamera fbc = app.getFlyByCamera(); fbc.setDragToRotate(true); fbc.setMoveSpeed(10f);
+	 * app.setPauseOnLostFocus(false);
+	 */
 }

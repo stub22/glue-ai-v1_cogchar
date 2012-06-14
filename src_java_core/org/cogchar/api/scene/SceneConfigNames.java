@@ -23,9 +23,9 @@ import org.appdapter.api.trigger.BoxAssemblyNames;
 public class SceneConfigNames extends BoxAssemblyNames {
 	public static	String		NS_CgcBC		= "http://www.cogchar.org/bony/config#";
 	
-	public static 	String		P_camera		= NS_CgcBC + "camera";
-        
-        public static   String          P_cameraName            = NS_CgcBC + "cameraName";
+	public static	String		partial_P_camera = "camera";
+	
+	public static 	String		P_camera		= NS_CgcBC + partial_P_camera;
 	
         public static   String[]        P_position              = {NS_CgcBC + "xPos", NS_CgcBC + "yPos", NS_CgcBC + "zPos"};
         

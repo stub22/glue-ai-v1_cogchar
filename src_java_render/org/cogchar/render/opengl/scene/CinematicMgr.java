@@ -48,7 +48,6 @@ public class CinematicMgr extends BasicDebugger {
 	private static Map<String, CinematicTrack> myTracksByName = new HashMap<String, CinematicTrack>();
 	private static Map<String, WaypointConfig> myWaypointsByName = new HashMap<String, WaypointConfig>();
 	private static Map<String, RotationConfig> myRotationsByName = new HashMap<String, RotationConfig>();
-	//private static Map<String, Boolean> myCinematicsReadyStatusByName = new HashMap<String, Boolean>(); // May not need this, woohoo!
 	private static Logger staticLogger = getLoggerForClass(CinematicMgr.class);
 	private static HumanoidRenderContext myHrc;
 
