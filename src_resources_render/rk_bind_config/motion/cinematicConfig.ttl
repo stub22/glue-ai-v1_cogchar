@@ -90,7 +90,7 @@ cci:cinematic_movingCameraDemo
 		cc:duration			"60";
 		cc:tracks (
 		[	
-			cc:attachedItem		"aTestCamera";
+			cc:attachedItem		"camera_aTestCamera";
 			cc:attachedItemType	"CAMERA";
 			cc:trackType		"MOTIONTRACK";
 			cc:directionType	"LookAt";
@@ -124,7 +124,7 @@ cci:cinematic_movingCameraDemo
 		)	
 .        
 
-# In order to see any of the following cinematics, uncomment bci:camera_Test2 in charWorldConfig, which the contained tracks use
+# In order to see any of the following cinematics, uncomment bci:camera_anotherTestCamera in charWorldConfig, which the contained tracks use
 # To trigger them from Lift "Pushy" webapp, edit liftConfig.ttl
 cci:cinematic_movingCameraDemo2
 		cc:duration			"60";
@@ -161,7 +161,7 @@ cci:cinematic_rotationTrackDemo
 ################################################################################
 
 cci:track_Demo1
-		cc:attachedItem		"anotherTestCamera";
+		cc:attachedItem		"camera_anotherTestCamera";
 		cc:attachedItemType	"CAMERA";
 		cc:trackType		"MOTIONTRACK";
 		cc:directionType	"LookAt";
@@ -194,7 +194,7 @@ cci:track_Demo1
 .
 
 cci:track_Demo1a
-		cc:attachedItem		"anotherTestCamera";
+		cc:attachedItem		"camera_anotherTestCamera";
 		cc:attachedItemType	"CAMERA";
 		cc:trackType		"MOTIONTRACK";
 		cc:directionType	"LookAt";
@@ -219,7 +219,7 @@ cci:track_Demo1a
 .
 
 cci:track_PositionTrackDemo
-		cc:attachedItem		"anotherTestCamera";
+		cc:attachedItem		"camera_anotherTestCamera";
 		cc:attachedItemType	"CAMERA";
 		cc:trackType		"POSITIONTRACK";
 		cc:loop				"Cycle";
@@ -233,7 +233,7 @@ cci:track_PositionTrackDemo
 .
 
 cci:track_RotationTrackDemo
-		cc:attachedItem		"anotherTestCamera";
+		cc:attachedItem		"camera_anotherTestCamera";
 		cc:attachedItemType	"CAMERA";
 		cc:trackType		"ROTATIONTRACK";
 		cc:loop				"Cycle";
