@@ -8,7 +8,7 @@ package org.cogchar.bind.cogbot.cogsim;
 //import com.hansonrobotics.mene.config.MeneConfig;
 import java.io.Serializable;
 import java.util.logging.Logger;
-import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
+import static org.cogchar.bind.cogbot.main.CogbotConfigUtils.*;
 
 /**
  *

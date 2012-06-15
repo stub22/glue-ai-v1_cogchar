@@ -23,7 +23,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import org.cogchar.bind.cogbot.main.CogbotAvatar;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;

@@ -4,6 +4,7 @@
  */
 package org.cogchar.bind.cogbot.main;
 
+import org.cogchar.bind.cogbot.cogsim.CogbotAvatar;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
