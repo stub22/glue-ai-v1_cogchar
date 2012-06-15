@@ -1,4 +1,4 @@
-package org.cogchar.bind.cogbot.main;
+package org.cogchar.bind.cogbot.unused;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -7,6 +7,8 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
+import org.cogchar.bind.cogbot.main.CogbotCommunicator;
+import org.cogchar.bind.cogbot.main.GenRespWithConf;
 
 
 import org.jflux.api.core.Listener;
@@ -25,7 +27,7 @@ import org.robokind.impl.messaging.JMSBytesMessageSender;
 import org.robokind.impl.messaging.utils.ConnectionManager;
 import org.robokind.impl.speech.PortableSpeechRequest;
 
-import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
+import static org.cogchar.bind.cogbot.main.CogbotConfigUtils.*;
 
 /**
  * Hello world!

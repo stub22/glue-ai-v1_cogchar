@@ -6,7 +6,6 @@ package org.cogchar.bind.cogbot.cogsim;
 
 import java.util.logging.Logger;
 import org.cogchar.bind.cogbot.main.CogbotService;
-import org.cogchar.bind.cogbot.main.CogbotAvatar;
 
 /**
  * @author Stu B.

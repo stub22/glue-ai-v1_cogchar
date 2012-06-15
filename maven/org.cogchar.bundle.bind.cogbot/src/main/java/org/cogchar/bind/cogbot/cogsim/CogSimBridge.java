@@ -6,9 +6,8 @@ package org.cogchar.bind.cogbot.cogsim;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.cogchar.bind.cogbot.main.CogbotAvatar;
 
-import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
+import static org.cogchar.bind.cogbot.main.CogbotConfigUtils.*;
 
 /**
  * @author Stu B.
