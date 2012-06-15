@@ -4,6 +4,7 @@
  */
 package org.cogchar.bind.cogbot.main;
 
+import org.cogchar.bind.cogbot.cogsim.CogbotAvatar;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.cogchar.bind.cogbot.cogsim.CogSimConf;
-import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
+import static org.cogchar.bind.cogbot.main.CogbotConfigUtils.*;
 
 
 

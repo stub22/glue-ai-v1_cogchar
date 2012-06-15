@@ -2,12 +2,13 @@ package org.cogchar.bind.cogbot.main;
 
 
 
+import org.cogchar.bind.cogbot.cogsim.CogbotAvatar;
 import java.net.*;
 import java.io.*;
 
 import java.util.logging.Logger;
 
-import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
+import static org.cogchar.bind.cogbot.main.CogbotConfigUtils.*;
 
 public class CogbotCommunicator { // implements INexusService {
     private final static Logger theLogger = Logger.getLogger(CogbotCommunicator.class.getName());

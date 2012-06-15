@@ -7,8 +7,8 @@ package org.cogchar.bind.cogbot.scripting;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.cogchar.bind.cogbot.main.CogbotJMXClient;
-import org.cogchar.bind.cogbot.main.CogbotAvatar;
+import org.cogchar.bind.cogbot.unused.CogbotJMXClient;
+import org.cogchar.bind.cogbot.cogsim.CogbotAvatar;
 
 /**
  *

@@ -2,10 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cogchar.bind.cogbot.main;
+package org.cogchar.bind.cogbot.cogsim;
 
 
 
+import org.cogchar.bind.cogbot.unused.CogbotJMXClient;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -19,11 +20,12 @@ import org.cogchar.bind.cogbot.cogsim.CogSimConf;
 import org.cogchar.bind.cogbot.cogsim.CogSimOp;
 import org.cogchar.bind.cogbot.cogsim.CogSimBridge;
 import org.cogchar.bind.cogbot.cogsim.DictationReciever;
+import org.cogchar.bind.cogbot.main.CogbotService;
 
 import org.cogchar.bind.cogbot.scripting.CogbotPrimitive;
 import org.cogchar.bind.cogbot.scripting.ObjectLispWriter;
 import org.cogchar.bind.cogbot.scripting.SerialEventQueue;
-import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
+import static org.cogchar.bind.cogbot.main.CogbotConfigUtils.*;
 
 /**
  *
@@ -31,7 +33,7 @@ import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
  */
 public class CogbotAvatar implements NotificationListener, Serializable {
     private final static Logger theLogger = Logger.getLogger(CogbotAvatar.class.getName());
-    transient CogbotService service;
+    public transient CogbotService service;
     CogSimConf myCogSimConf;
     transient private CogSimBridge myCSB;
     transient final PrintWriter debugPw;
@@ -218,7 +220,7 @@ public class CogbotAvatar implements NotificationListener, Serializable {
                 getValue(String.class, OLD_CONF_COGBOT_NAME)).getResponse();
     }
 
-    synchronized  void setLookingAt(String value) {
+    public synchronized  void setLookingAt(String value) {
 //		AwarenessHelpFuncs.logAware("CogbotAvatar.setLookingAt(" + value + ")");
         // we lloked away maybe
 /*        if (value == null) {

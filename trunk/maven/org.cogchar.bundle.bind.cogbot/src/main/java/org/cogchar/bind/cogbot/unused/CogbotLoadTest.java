@@ -2,14 +2,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cogchar.bind.cogbot.main;
+package org.cogchar.bind.cogbot.unused;
 
+import org.cogchar.bind.cogbot.cogsim.CogbotAvatar;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.cogchar.bind.cogbot.osgi.CogbotConfigUtils.*;
+import org.cogchar.bind.cogbot.main.CogbotResponse;
+import org.cogchar.bind.cogbot.main.CogbotService;
+import static org.cogchar.bind.cogbot.main.CogbotConfigUtils.*;
 
 /**
  *
