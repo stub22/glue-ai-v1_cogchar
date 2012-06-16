@@ -25,6 +25,7 @@ import java.util.concurrent.Callable;
 import java.lang.Void;
 import org.cogchar.api.scene.LightConfig;
 import org.cogchar.api.scene.LightsCameraConfig;
+import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.sys.core.RenderRegistryAware;
 import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
@@ -93,23 +94,23 @@ public class LightFactory extends RenderRegistryAware {
 		return makeDirectionalLight(direction, whiteOpaqueLight);
 	}
 
-	public void initLightsFromConfig(LightsCameraConfig config, HumanoidRenderContext hrc) {
+	public void initLightsFromConfig(LightsCameraConfig config, CogcharRenderContext crc) {
 		for (LightConfig lc : config.myLCs) {
 			theLogger.info("Building Light for config: " + lc);
 			ColorRGBA color = new ColorRGBA(lc.lightColor[0], lc.lightColor[1], lc.lightColor[2], lc.lightColor[3]);
 			if (lc.lightType.equals(LightConfig.LightType.DIRECTIONAL)) {
 				Vector3f direction = new Vector3f(lc.lightDirection[0], lc.lightDirection[1], lc.lightDirection[2]);
-				addLightOnMainThread(makeDirectionalLight(direction, color), hrc);
+				addLightOnMainThread(makeDirectionalLight(direction, color), crc);
 			}
 			if (lc.lightType.equals(LightConfig.LightType.AMBIENT)) {
-				addLightOnMainThread(makeAmbientLight(color), hrc);
+				addLightOnMainThread(makeAmbientLight(color), crc);
 			}
 		}
 	}
 
 	// Needed to ensure light is added on main rendering thread
-	public void addLightOnMainThread(final Light l, final HumanoidRenderContext hrc) {
-		WorkaroundFuncsMustDie.enqueueCallable(hrc, new Callable<Void>() {
+	public void addLightOnMainThread(final Light l, final CogcharRenderContext crc) {
+		crc.enqueueCallable(new Callable<Void>() {
 
 			@Override
 			public Void call() throws Exception {

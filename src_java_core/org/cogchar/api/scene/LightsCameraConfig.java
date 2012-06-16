@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
-import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
+import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.component.KnownComponentImpl;

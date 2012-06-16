@@ -28,10 +28,13 @@ import org.cogchar.render.sys.core.RenderRegistryFuncs;
 
 
 public class PumaRegistryOutlet extends RenderRegistryFuncs {
+	/*
    static CameraMgr getCameraMgr() {
         return findOrMakeOpticCameraFacade(null);
     }
    static LightFactory getLightFactory() {
        return findOrMakeOpticLightFacade(null);
    }
+   * 
+   */
 }

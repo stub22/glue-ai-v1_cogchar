@@ -18,6 +18,7 @@ package org.cogchar.render.app.core;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.FlyByCamera;
 import com.jme3.system.AppSettings;
+import com.jme3.renderer.ViewPort;
 
 /** WorkaroundAppStub exposes the few required features of JME3 SimpleApplication that Cogchar does not factor out 
  * into Cogchar facade APIs.
@@ -27,10 +28,14 @@ public interface WorkaroundAppStub {
 	public void setAppSettings(AppSettings someSettings);
 	public void setGuiFont(BitmapFont font);
 	public void setAppSpeed(float appSpeed);
+	public void setPauseOnLostFocus(boolean pauseFlag);
 	
 	//TODO:  Factor this into camera manager
 	
-	public FlyByCamera getFlyCam();
+	public FlyByCamera getFlyByCamera();
+	
+	// TOD: Factor this into ViewportFacade;
+	public ViewPort  getViewPort();
 	
 	public <V> java.util.concurrent.Future<V> enqueue(java.util.concurrent.Callable<V> callable);
 }
