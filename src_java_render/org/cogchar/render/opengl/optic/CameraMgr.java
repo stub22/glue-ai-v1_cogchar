@@ -23,7 +23,7 @@ import org.cogchar.api.scene.CameraConfig;
 import org.cogchar.api.scene.LightsCameraConfig;
 import org.cogchar.api.scene.SceneConfigNames;
 import org.cogchar.render.app.core.CoreFeatureAdapter;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.sys.core.RenderRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +68,7 @@ public class CameraMgr {
 		return getNamedCamera(id.name());
 	}
 
-	public void initCamerasFromConfig(LightsCameraConfig config, HumanoidRenderContext hrc) {
+	public void initCamerasFromConfig(LightsCameraConfig config, CogcharRenderContext hrc) {
 		for (CameraConfig cc : config.myCCs) {
 			theLogger.info("Building Camera for config: " + cc);
 			boolean newFromRdf = false; // Used to trigger new viewport creation for new cameras loaded from RDF - probably not the way we want to handle this in long run

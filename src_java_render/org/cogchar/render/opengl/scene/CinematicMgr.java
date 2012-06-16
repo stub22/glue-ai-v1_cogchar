@@ -17,6 +17,7 @@ package org.cogchar.render.opengl.scene;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.scene.*;
+import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.core.CoreFeatureAdapter;
 import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
@@ -49,11 +50,11 @@ public class CinematicMgr extends BasicDebugger {
 	private static Map<String, WaypointConfig> myWaypointsByName = new HashMap<String, WaypointConfig>();
 	private static Map<String, RotationConfig> myRotationsByName = new HashMap<String, RotationConfig>();
 	private static Logger staticLogger = getLoggerForClass(CinematicMgr.class);
-	private static HumanoidRenderContext myHrc;
+	private static CogcharRenderContext myCRC;
 
-	public static void storeCinematicsFromConfig(CinematicConfig config, HumanoidRenderContext hrc) {
-		myHrc = hrc;
-		RenderRegistryClient rrc = hrc.getRenderRegistryClient();
+	public static void storeCinematicsFromConfig(CinematicConfig config, CogcharRenderContext crc) {
+		myCRC = crc;
+		RenderRegistryClient rrc = crc.getRenderRegistryClient();
 		Node jmeRootNode = rrc.getJme3RootDeepNode(null);
 
 		// First, any named waypoints defined outside track definitions are stored for later use
@@ -109,7 +110,7 @@ public class CinematicMgr extends BasicDebugger {
 							//CoreFeatureAdapter.addViewPort(rrc, track.attachedItem, cineCam);
 							// Bind the camera to the cinematic to make a CameraNode - this must be done on the main render thread
 							final String cameraName = track.attachedItem;
-							Future<Object> camNodeFuture = WorkaroundFuncsMustDie.enqueueCallableReturn(hrc, new Callable<CameraNode>() {
+							Future<Object> camNodeFuture = crc.enqueueCallable(new Callable<CameraNode>() {
 
 								@Override
 								public CameraNode call() throws Exception {
@@ -290,7 +291,7 @@ public class CinematicMgr extends BasicDebugger {
 				cinematic.play();
 			} else if (action.equals(CinematicMgr.ControlAction.STOP)) {
 				// Wouldn't you know, this has to be done on main thread
-				Future<Object> waitForThis = WorkaroundFuncsMustDie.enqueueCallableReturn(myHrc, new Callable<Boolean>() {
+				Future<Object> waitForThis = myCRC.enqueueCallable(new Callable<Boolean>() {
 
 					@Override
 					public Boolean call() throws Exception {

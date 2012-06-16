@@ -40,6 +40,9 @@ import org.cogchar.render.sys.core.BasicRenderRegistryClientImpl;
 import org.cogchar.render.sys.core.RenderRegistryAware;
 import org.cogchar.render.sys.core.RenderRegistryClient;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+
 /**  Named to differentiate it from JMonkey "RenderContext".  
  * This base class does not maintain much instance data.
  * However, some of its methods do have side effects on the application
@@ -200,6 +203,10 @@ public class CogcharRenderContext extends RenderRegistryAware {
 			throw new Exception("FinalBootPhase returned an error", fbpThrown);
 		}
 	}
+	public Future<Object> enqueueCallable(Callable callThis) {
+		WorkaroundAppStub was = getAppStub();
+		return was.enqueue(callThis);
+	}	
 	public static interface Task {
 		public void perform() throws Throwable;
 	}

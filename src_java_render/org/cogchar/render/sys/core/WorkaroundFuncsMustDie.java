@@ -16,6 +16,7 @@
 
 package org.cogchar.render.sys.core;
 
+import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.sys.physics.ScoreBoard;
 import com.jme3.app.SimpleApplication;
@@ -33,6 +34,7 @@ import com.jme3.system.JmeSystem;
 import java.awt.Canvas;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import org.cogchar.render.app.core.WorkaroundAppStub;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,29 +46,19 @@ public class WorkaroundFuncsMustDie {
 	
 	static Logger theLogger = LoggerFactory.getLogger(WorkaroundFuncsMustDie.class);
 	
-	public static void setupCameraLightAndViewport(BonyRenderContext bc) { 
-		SimpleApplication app = bc.getApp();
-		FlyByCamera fbc = app.getFlyByCamera();
+	public static void setupCameraLightAndViewport(CogcharRenderContext bc) {
+		WorkaroundAppStub was = bc.getAppStub();
+		FlyByCamera fbc = was.getFlyByCamera();
         fbc.setDragToRotate(true);
 		//fbc.setMoveSpeed(10f); //This is set in HumanoidRenderContext.initCameraAndLights()
-		app.setPauseOnLostFocus(false);
-		ViewPort vp = app.getViewPort();
+		was.setPauseOnLostFocus(false);
+		ViewPort vp = was.getViewPort();
 		vp.setBackgroundColor(ColorRGBA.LightGray);
 //    initKeys();
 
 		// JME2-only so far, it seems
 		// JoystickInput.setProvider( InputSystem.INPUT_SYSTEM_LWJGL );
-		
-		/* Working on killing this method - the items below no longer seem necessary - Ryan Biggs 9 May 2012
-		DirectionalLight dl = new DirectionalLight();
-		dl.setDirection(new Vector3f(-0.4f, -0.5f, -0.5f).normalizeLocal());
-		app.getRootNode().addLight(dl);	
-		
-		Camera cam = app.getCamera();
 
-		Quaternion camRotQ = new Quaternion(0.0f, 1.0f, 0.5f, 0.0f);
-		cam.setAxes(camRotQ);		
-		*/ 
 	}	
 	public static void initScoreBoard(BonyRenderContext bc) {
 		SimpleApplication app = bc.getApp(); // Should be from registry, not this way
@@ -104,16 +96,4 @@ public class WorkaroundFuncsMustDie {
         awtCanvas.setSize(width, height);
 		return awtCanvas;
 	}
-	
-	// Adding this so we can enqueue requests to add RDF lights on main thread - seems like this is a bit of a
-	// WorkAroundFunc for now, so here it is:
-	public static void enqueueCallable(BonyRenderContext bc, Callable callThis) {
-		bc.getApp().enqueue(callThis);
-	}	
-	
-	// Probably we just need this one. Plan to get rid of the first once I make sure I'm not blowing up lights!
-	public static Future<Object> enqueueCallableReturn(BonyRenderContext bc, Callable callThis) {
-		return bc.getApp().enqueue(callThis);
-	}
-
 }

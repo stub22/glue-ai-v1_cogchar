@@ -28,7 +28,7 @@ import scala.collection.mutable.HashMap;
 
 class SceneBook extends BasicDebugger {
 	val		mySceneSpecs = new HashMap[Ident,SceneSpec]();
-	import org.appdapter.bind.rdf.jena.model.AssemblerUtils;	
+	import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;	
 
 	def addSceneSpec(ss: SceneSpec) {
 		mySceneSpecs.put(ss.getIdent(), ss);

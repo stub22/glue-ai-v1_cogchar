@@ -20,7 +20,7 @@ import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 
-import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
+import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.log.BasicDebugger;
 
 import com.hp.hpl.jena.assembler.Assembler;

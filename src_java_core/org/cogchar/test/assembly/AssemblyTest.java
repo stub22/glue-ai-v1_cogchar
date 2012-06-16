@@ -16,7 +16,7 @@
 package org.cogchar.test.assembly;
 
 import java.util.Set;
-import org.appdapter.bind.rdf.jena.model.AssemblerUtils;
+import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 
 
 /**
@@ -46,9 +46,8 @@ public class AssemblyTest {
 		 * should work OK, too.
 */		
 		String triplesPath = "org/cogchar/test/assembly/ca_test.ttl";
-		AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(AssemblyTest.class.getClassLoader());
-		logInfo("Loading triples from path: " + triplesPath);
-		Set<Object> loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(triplesPath);
+		
+		Set<Object> loadedStuff = AssemblerUtils.buildObjSetFromPath (triplesPath, AssemblyTest.class.getClassLoader());
 		logInfo("Loaded " + loadedStuff.size() + " objects");
 		for (Object o : loadedStuff) {
 			logInfo("Loaded: " + o);
