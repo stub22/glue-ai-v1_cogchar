@@ -126,7 +126,7 @@ public abstract class CogcharPresumedApp<CRCT extends CogcharRenderContext> exte
 	@Override public void setGuiFont(BitmapFont font) {
 		guiFont = font;
 	}
-	@Override public FlyByCamera getFlyCam() {
+	@Override public FlyByCamera getFlyByCamera() {
 		return flyCam;
 	}	
 	
