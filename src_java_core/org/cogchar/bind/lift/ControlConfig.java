@@ -28,12 +28,12 @@ public class ControlConfig {
 	static Logger theLogger = LoggerFactory.getLogger(ControlConfig.class);
 	public String myURI_Fragment;
 	//public ControlType controlType; // Probably a good idea to do away with this enum type - see comments at bottom
-	public String controlType;
-	public int id;
-	public String action;
-	public String text;
-	public String style;
-	public String resource;
+	public String controlType = "NULLTYPE";
+	public int id = 0;
+	public String action = "";
+	public String text = "";
+	public String style = "";
+	public String resource = "";
 
 	@Override
 	public String toString() {
@@ -41,20 +41,19 @@ public class ControlConfig {
 				+ text + "\", style=" + style + " resource=" + resource + "]";
 	}
 
+	public ControlConfig() {
+		// No need to do anything here; basically adding the default constructor for use by PageCommander in Lift
+	}
+
 	public ControlConfig(Item configItem) {
 		myURI_Fragment = configItem.getIdent().getLocalName();
-		/* This is for using ControlType enum type, which we are probably phasing out
-		String typeString = ItemFuncs.getString(configItem, LiftConfigNames.P_controlType, null);
-		controlType = ControlType.NULLTYPE;
-		for (ControlType testType : ControlType.values()) {
-			if (typeString.equals(testType.name())) {
-				controlType = testType;
-			}
-		}
-		if (controlType == ControlType.NULLTYPE) {
-			theLogger.warn("Lift Control with URI Fragment " + myURI_Fragment + " does not indicate a valid type!");
-		}
-		*/
+		/*
+		 * This is for using ControlType enum type, which we are probably phasing out String typeString =
+		 * ItemFuncs.getString(configItem, LiftConfigNames.P_controlType, null); controlType = ControlType.NULLTYPE; for
+		 * (ControlType testType : ControlType.values()) { if (typeString.equals(testType.name())) { controlType =
+		 * testType; } } if (controlType == ControlType.NULLTYPE) { theLogger.warn("Lift Control with URI Fragment " +
+		 * myURI_Fragment + " does not indicate a valid type!"); }
+		 */
 		controlType = ItemFuncs.getString(configItem, LiftConfigNames.P_controlType, "NULLTYPE");
 		id = ItemFuncs.getInteger(configItem, LiftConfigNames.P_controlId, 0);
 		action = ItemFuncs.getString(configItem, LiftConfigNames.P_controlAction, "");
@@ -63,11 +62,10 @@ public class ControlConfig {
 		resource = ItemFuncs.getString(configItem, LiftConfigNames.P_controlResource, "");
 	}
 
-	/* Let's try doing away with this. It makes sense to have enum type for jME stuff internal to Cog Char, but 
-	 * here it requires changes to Cog Char every time we add web app functionality
-	public enum ControlType {
-
-		NULLTYPE, PUSHYBUTTON, TEXTINPUT, SELECTBOXES, RADIOBUTTONS, LISTBOX
-	}
-	*/
+	/*
+	 * Let's try doing away with this. It makes sense to have enum type for jME stuff internal to Cog Char, but here it
+	 * requires changes to Cog Char every time we add web app functionality public enum ControlType {
+	 *
+	 * NULLTYPE, PUSHYBUTTON, TEXTINPUT, SELECTBOXES, RADIOBUTTONS, LISTBOX }
+	 */
 }
