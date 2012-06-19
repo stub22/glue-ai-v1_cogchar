@@ -41,7 +41,7 @@ public class PumaWebMapper extends BasicDebugger {
 		 */
 		String webConfigPath = "web/liftConfig.ttl";
 		LiftConfig lc = AssemblerUtils.readOneConfigObjFromPath(LiftConfig.class, webConfigPath, optRdfResourceCL);
-		LiftAmbassador.storeControlsFromConfig(lc);
+		LiftAmbassador.storeControlsFromConfig(lc, optRdfResourceCL);
 	}
 	public void connectMoreWebStuff() { 
 		LiftAmbassador.setSceneLauncher(SceneActions.getLauncher()); // Connect Lift to SceneActions so scenes can be triggered from webapp
