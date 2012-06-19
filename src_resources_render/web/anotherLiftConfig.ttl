@@ -81,8 +81,7 @@ lci:liftConfig1		rdf:type			lc:BuildableLiftConfig;
 lci:control_1
 	lc:type					"PUSHYBUTTON";
 	lc:id					1;
-	lc:action				"sceneTrig_00";
-	lc:text					"Scene 0";
+	lc:text					"Buttons like for 12 scenes: PirateJokes!";
 	lc:style				"buttonred";
 	lc:resource				"still-27.jpg";
 .
@@ -90,8 +89,7 @@ lci:control_1
 lci:control_2
 	lc:type					"PUSHYBUTTON";
 	lc:id					2;
-	lc:action				"sceneTrig_01";
-	lc:text					"Scene 1";
+	lc:text					"Chat";
 	lc:style				"buttonorange";
 	lc:resource				"still-27.jpg";
 .
@@ -99,8 +97,7 @@ lci:control_2
 lci:control_3
 	lc:type					"PUSHYBUTTON";
 	lc:id					3;
-	lc:action				"sceneTrig_02";
-	lc:text					"Scene 2";
+	lc:text					"Video Gallery";
 	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
 .
@@ -108,16 +105,15 @@ lci:control_3
 lci:control_4
 	lc:type					"PUSHYBUTTON";
 	lc:id					4;
-	lc:action				"cinematic_movingCameraDemo";
-	lc:text					"Push for cinematic camera demo in viewport";
+	lc:text					"Inventory";
 	lc:style				"buttonblue";
+	lc:resource				"still-27.jpg";
 .
 
 lci:control_5
-	lc:type					"LISTBOX";
+	lc:type					"PUSHYBUTTON";
 	lc:id					5;
-	lc:action				"sceneTrig_04";
-	lc:text					"Select a Control!,Button,Text Input,Select Boxes,Radio Buttons";
+	lc:text					"Meet And Greet";
 	lc:style				"buttonred";
 	lc:resource				"still-27.jpg";
 .
@@ -125,53 +121,47 @@ lci:control_5
 lci:control_6
 	lc:type					"PUSHYBUTTON";
 	lc:id					6;
-	lc:action				"sceneTrig_05";
-	lc:text					"Scene 5";
+	lc:text					"Magic Trick";
 	lc:style				"buttonorange";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_7
-	lc:type					"SELECTBOXES";
+	lc:type					"PUSHYBUTTON";
 	lc:id					7;
-	lc:action				"sceneTrig_06";
-	lc:text					"I've got a formId:7.,Box 0 ,Box 1 ,Box 2 ";
+	lc:text					"Tic Tac Toe";
 	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_8
-	lc:type					"RADIOBUTTONS";
+	lc:type					"PUSHYBUTTON";
 	lc:id					8;
-	lc:action				"sceneTrig_07";
-	lc:text					"My id's 8.,Option 0 ,Option 1 ";
+	lc:text					"Find Happiness";
 	lc:style				"buttonblue";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_9
-	lc:type					"TEXTINPUT";
+	lc:type					"PUSHYBUTTON";
 	lc:id					9;
-	lc:action				"sceneTrig_08";
-	lc:text					"Tell me something!";
+	lc:text					"Walkabout";
 	lc:style				"buttonred";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_10
-	lc:type					"TEXTINPUT";
+	lc:type					"PUSHYBUTTON";
 	lc:id					10;
-	lc:action				"sceneTrig_09";
-	lc:text					"A Label for Form 10";
+	lc:text					"Staring Contest";
 	lc:style				"buttonorange";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_11
-	lc:type					"SELECTBOXES";
+	lc:type					"PUSHYBUTTON";
 	lc:id					11;
-	lc:action				"sceneTrig_10";
-	lc:text					"I've got id 11!,Apples ,Bananas ,Oranges ,an option 3! ,4 also ";
+	lc:text					"Kinect Boogie";
 	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
 .
@@ -179,8 +169,7 @@ lci:control_11
 lci:control_12
 	lc:type					"PUSHYBUTTON";
 	lc:id					12;
-	lc:action				"liftconfig_anotherLiftConfig.ttl";
-	lc:text					"Show me some other controls";
+	lc:action				"liftconfig_liftConfig.ttl";
+	lc:text					"Go back to other controls";
 	lc:style				"buttonblue";
-	lc:resource				"still-27.jpg";
 .
