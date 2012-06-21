@@ -55,6 +55,8 @@ public class LiftAmbassador {
 		boolean triggerNamedCinematic(String name);
 
 		boolean stopNamedCinematic(String name);
+
+		String queryCogbot(String query);
 	}
 
 	public static void activateControlsFromConfig(LiftConfig config) {
@@ -102,17 +104,14 @@ public class LiftAmbassador {
 		return LiftConfigNames.partial_P_control + "_";
 	}
 
-	// Too many hardcoded strings in here that need to be moved elsewhere
 	public static boolean triggerAction(String action) {
 		boolean success = false;
-		// If we can't trust that the actions will have consistent prefixes, we may need to add action types to liftConfig.ttl RDF
-		// If we can, we may want to use a central repository of prefixes (coming real soon, no later than when we are acting on 4 different ones!)
-		if ((action.startsWith("sceneTrig")) && (sceneLauncher != null)) {
+		if ((action.startsWith(LiftConfigNames.partial_P_triggerScene)) && (sceneLauncher != null)) {
 			success = sceneLauncher.triggerScene(action);
 			if (success && (lift != null)) {
 				lift.loadPage("cogchar/scene_running.html");
 			}
-		} else if ((action.startsWith("cinematic")) && (liftAppInterface != null)) {
+		} else if ((action.startsWith(LiftConfigNames.partial_P_cinematic)) && (liftAppInterface != null)) {
 			if (triggeredCinematics.contains(action)) {
 				liftAppInterface.stopNamedCinematic(action); // In order to replay, we need to stop previously played cinematic first
 			}
@@ -120,11 +119,20 @@ public class LiftAmbassador {
 			if (success) {
 				triggeredCinematics.add(action);
 			}
-		} else if ((action.startsWith("liftconfig_")) && (lift != null)) {
-			String desiredFile = action.replaceAll("liftconfig_", "");
+		} else if ((action.startsWith(LiftConfigNames.partial_P_liftConfig)) && (lift != null)) {
+			String desiredFile = action.replaceAll(LiftConfigNames.partial_P_liftConfig, "");
 			success = activateControlsFromRdf(desiredFile);
 		}
 		return success;
+	}
+
+	public static String getCogbotResponse(String query) {
+		if (liftAppInterface != null) {
+			return liftAppInterface.queryCogbot(query); // This hardcoded URL is clearly going to have to leave in a hurry!
+		} else {
+			theLogger.error("Attempting to query Cogbot, but no liftAppInterface is available");
+			return "";
+		}
 	}
 
 	public static void setSceneLauncher(LiftSceneInterface launcher) {
@@ -143,4 +151,11 @@ public class LiftAmbassador {
 	public static boolean checkConfigReady() {
 		return configReady;
 	}
+	/*
+	 * An attempt at "cleanness" that doesn't seem to work, probably because I am returning an instance of a class with
+	 * only static methods, via a static method, to Scala no less 
+	public static LiftConfigNames getConfigNames() {
+		return new LiftConfigNames(); 
+	}
+	*/
 }
