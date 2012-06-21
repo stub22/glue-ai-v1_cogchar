@@ -34,7 +34,13 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>org.cogchar.bundle.render.resources</artifactId>
             <version>${project.version}</version>
-        </dependency>		
+        </dependency>
+		<dependency>
+			<!-- Adding this so that Cogbot can be accessed from PUMA -->
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.bundle.bind.cogbot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -79,99 +79,77 @@ lci:liftConfig1		rdf:type			lc:BuildableLiftConfig;
 ################################################################################
         
 lci:control_1
-	lc:type					"PUSHYBUTTON";
+	lc:type					"TEXTINPUT";
 	lc:id					1;
-	lc:text					"Busy Box Demo";
-	lc:style				"buttonred";
-	lc:resource				"still-27.jpg";
-	lc:action				"liftconfig_busyBoxLiftConfig.ttl"
+	lc:text					"Talk to the robot here!";
+	lc:action				"submittext_cogbot"
 .
 
 lci:control_2
 	lc:type					"PUSHYBUTTON";
 	lc:id					2;
-	lc:text					"Chat";
-	lc:style				"buttonorange";
-	lc:resource				"still-27.jpg";
-	lc:action				"liftconfig_chatLiftConfig.ttl"
+	lc:action				"showtext_cogbot"
 .
 
 lci:control_3
-	lc:type					"PUSHYBUTTON";
+	lc:type					"NULLTYPE";
 	lc:id					3;
-	lc:text					"Video Gallery";
-	lc:style				"buttongreen";
-	lc:resource				"still-27.jpg";
 .
 
 lci:control_4
 	lc:type					"PUSHYBUTTON";
 	lc:id					4;
-	lc:text					"Inventory";
-	lc:style				"buttonblue";
+	lc:text					"Make the robot chatty";
+	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_5
 	lc:type					"PUSHYBUTTON";
-	lc:id					5;
-	lc:text					"Meet And Greet";
+	lc:id					201;
+	lc:text					"Press me to talk to the robot using HRK Android app";
 	lc:style				"buttonred";
-	lc:resource				"still-27.jpg";
+	lc:action				"submittext_cogbot"
 .
 
 lci:control_6
 	lc:type					"PUSHYBUTTON";
 	lc:id					6;
-	lc:text					"Magic Trick";
-	lc:style				"buttonorange";
-	lc:resource				"still-27.jpg";
+	lc:action				"showtext_androidSpeech"
 .
 
 lci:control_7
-	lc:type					"PUSHYBUTTON";
+	lc:type					"NULLTYPE";
 	lc:id					7;
-	lc:text					"Tic Tac Toe";
-	lc:style				"buttongreen";
-	lc:resource				"still-27.jpg";
 .
 
 lci:control_8
 	lc:type					"PUSHYBUTTON";
 	lc:id					8;
-	lc:text					"Find Happiness";
-	lc:style				"buttonblue";
+	lc:text					"Make the robot wait to be spoken to";
+	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
 .
 
 lci:control_9
-	lc:type					"PUSHYBUTTON";
+	lc:type					"NULLTYPE";
 	lc:id					9;
-	lc:text					"Walkabout";
-	lc:style				"buttonred";
-	lc:resource				"still-27.jpg";
 .
 
 lci:control_10
-	lc:type					"PUSHYBUTTON";
+	lc:type					"NULLTYPE";
 	lc:id					10;
-	lc:text					"Staring Contest";
-	lc:style				"buttonorange";
-	lc:resource				"still-27.jpg";
 .
 
 lci:control_11
-	lc:type					"PUSHYBUTTON";
+	lc:type					"NULLTYPE";
 	lc:id					11;
-	lc:text					"Kinect Boogie (MS)";
-	lc:style				"buttongreen";
-	lc:resource				"still-27.jpg";
 .
 
 lci:control_12
 	lc:type					"PUSHYBUTTON";
 	lc:id					12;
-	lc:text					"Kinect Boogie (ROS)";
+	lc:text					"Return to main menu";
 	lc:style				"buttonblue";
-	lc:resource				"still-27.jpg";
+	lc:action				"liftconfig_liftConfig.ttl"
 .
