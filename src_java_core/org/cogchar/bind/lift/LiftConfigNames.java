@@ -24,11 +24,18 @@ public class LiftConfigNames extends BoxAssemblyNames {
 
 	public static final String NS_CgcLC = "http://www.cogchar.org/lift/config#";
 	public static final String partial_P_control = "control";
-	public static String P_control = NS_CgcLC + partial_P_control;
-	public static String P_controlType = NS_CgcLC + "type";
-	public static String P_controlId = NS_CgcLC + "id";
-	public static String P_controlAction = NS_CgcLC + "action";
-	public static String P_controlText = NS_CgcLC + "text";
-	public static String P_controlStyle = NS_CgcLC + "style";
-	public static String P_controlResource = NS_CgcLC + "resource";
+	public static final String P_control = NS_CgcLC + partial_P_control;
+	public static final String P_controlType = NS_CgcLC + "type";
+	public static final String P_controlId = NS_CgcLC + "id";
+	public static final String P_controlAction = NS_CgcLC + "action";
+	public static final String P_controlText = NS_CgcLC + "text";
+	public static final String P_controlStyle = NS_CgcLC + "style";
+	public static final String P_controlResource = NS_CgcLC + "resource";
+	
+	// These are not used in RDF parsing, but help Lift and LiftAmbassador know how to interpret prefixes found in RDF defined actions
+	public static final String partial_P_submitText = "submittext";
+	public static final String partial_P_showText = "showtext";
+	public static final String partial_P_triggerScene = "sceneTrig";
+	public static final String partial_P_cinematic = "cinematic";
+	public static final String partial_P_liftConfig = "liftconfig_";
 }
