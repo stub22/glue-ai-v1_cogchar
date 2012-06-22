@@ -33,7 +33,7 @@ import org.cogchar.bind.cogbot.main.CogbotCommunicator;
  */
 public class PumaWebMapper extends BasicDebugger {
 
-	static final String COGBOT_URL = "127.0.0.1"; // Just for the moment - this needs to be RDF configurable VERY soon
+	static final String COGBOT_URL = "184.73.60.23"; // Just for the moment - this needs to be RDF configurable VERY soon
 	static final String WEB_CONFIG_PATH = "web/liftConfig.ttl";
 	// The following LiftInterface stuff allows Lift app to hook in and trigger cinematics
 	LiftInterface liftInterface;
@@ -50,7 +50,12 @@ public class PumaWebMapper extends BasicDebugger {
 
 	public void connectMoreWebStuff() {
 		LiftAmbassador.setSceneLauncher(SceneActions.getLauncher()); // Connect Lift to SceneActions so scenes can be triggered from webapp
-		LiftAmbassador.setAppInterface(getLiftInterface()); // Connect Lift so cinematics can be triggered from webapp		
+		LiftAmbassador.setAppInterface(getLiftInterface()); // Connect Lift so cinematics, cogbot can be triggered from webapp		
+	}
+	
+	// Connects ONLY the LiftInterface. For use by org.friendularity.bundle.repo
+	public void connectLiftInterface() {
+		LiftAmbassador.setAppInterface(getLiftInterface()); // Connect Lift so cogbot can be queried		
 	}
 
 	public LiftInterface getLiftInterface() {
