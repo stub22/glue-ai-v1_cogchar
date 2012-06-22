@@ -128,7 +128,7 @@ public class LiftAmbassador {
 
 	public static String getCogbotResponse(String query) {
 		if (liftAppInterface != null) {
-			return liftAppInterface.queryCogbot(query); // This hardcoded URL is clearly going to have to leave in a hurry!
+			return liftAppInterface.queryCogbot(query);
 		} else {
 			theLogger.error("Attempting to query Cogbot, but no liftAppInterface is available");
 			return "";
