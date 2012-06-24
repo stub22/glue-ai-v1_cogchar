@@ -16,7 +16,9 @@
 package org.cogchar.bind.lift;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.slf4j.Logger;
@@ -37,6 +39,7 @@ public class LiftAmbassador {
 	private static List<String> triggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
 	private static ClassLoader myRdfCL; // We'll get this classloader so we can update control configuration from separate RDF file at runtime
 	private static final String RDF_PATH_PREFIX = "web/"; // Prefix for path to Lift configuration TTL files from resources root
+	public static Map<String, String> chatConfigEntries = new HashMap<String, String>();
 
 	public interface LiftSceneInterface {
 
@@ -56,7 +59,7 @@ public class LiftAmbassador {
 
 		boolean stopNamedCinematic(String name);
 
-		String queryCogbot(String query);
+		String queryCogbot(String query, String cogbotConvoUrl);
 	}
 
 	public static void activateControlsFromConfig(LiftConfig config) {
@@ -104,6 +107,14 @@ public class LiftAmbassador {
 		return LiftConfigNames.partial_P_control + "_";
 	}
 
+	public static void storeChatConfig(ChatConfig cc) {
+		// How do we want to handle the possible case of more than one ChatConfigResource? Not sure quite what the future will hold for ChatConfig.
+		// For now, let's just combine them all into one. This could be dangerous, but makes sense for now(?)
+		for (ChatConfigResource ccr : cc.myCCRs) {
+			chatConfigEntries.putAll(ccr.entries);
+		}
+	}
+
 	public static boolean triggerAction(String action) {
 		boolean success = false;
 		if ((action.startsWith(LiftConfigNames.partial_P_triggerScene)) && (sceneLauncher != null)) {
@@ -127,12 +138,18 @@ public class LiftAmbassador {
 	}
 
 	public static String getCogbotResponse(String query) {
+		String response = "";
 		if (liftAppInterface != null) {
-			return liftAppInterface.queryCogbot(query);
+			if (chatConfigEntries.containsKey(ChatConfigNames.N_cogbotConvoUrl)) {
+				response = liftAppInterface.queryCogbot(query, chatConfigEntries.get(ChatConfigNames.N_cogbotConvoUrl));
+				theLogger.info("Cogbot says " + response);
+			} else {
+				theLogger.error("No URL found from ChatConfig for Cogbot conversation server");
+			}
 		} else {
 			theLogger.error("Attempting to query Cogbot, but no liftAppInterface is available");
-			return "";
 		}
+		return response;
 	}
 
 	public static void setSceneLauncher(LiftSceneInterface launcher) {
@@ -153,9 +170,7 @@ public class LiftAmbassador {
 	}
 	/*
 	 * An attempt at "cleanness" that doesn't seem to work, probably because I am returning an instance of a class with
-	 * only static methods, via a static method, to Scala no less 
-	public static LiftConfigNames getConfigNames() {
-		return new LiftConfigNames(); 
-	}
-	*/
+	 * only static methods, via a static method, to Scala no less public static LiftConfigNames getConfigNames() {
+	 * return new LiftConfigNames(); }
+	 */
 }

@@ -15,28 +15,24 @@
  */
 package org.cogchar.bundle.app.puma;
 
-// import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.log.BasicDebugger;
-
-import org.cogchar.bind.lift.LiftConfig;
-import org.cogchar.bind.lift.LiftAmbassador;
-
-import org.cogchar.render.app.humanoid.SceneActions;
-
-import org.cogchar.render.opengl.scene.CinematicMgr;
-
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
+import org.cogchar.bind.lift.ChatConfig;
+import org.cogchar.bind.lift.LiftAmbassador;
+import org.cogchar.bind.lift.LiftConfig;
+import org.cogchar.render.app.humanoid.SceneActions;
+import org.cogchar.render.opengl.scene.CinematicMgr;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class PumaWebMapper extends BasicDebugger {
 
-	static final String COGBOT_URL = "184.73.60.23"; // Just for the moment - this needs to be RDF configurable VERY soon
 	static final String WEB_CONFIG_PATH = "web/liftConfig.ttl";
-	// The following LiftInterface stuff allows Lift app to hook in and trigger cinematics
-	LiftInterface liftInterface;
+	static final String CHAT_CONFIG_PATH = "metadata/chatbird/cogbotZenoAmazonEC.ttl";
+	LiftInterface liftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
+	static String cogbotConvoUrl;
 	CogbotCommunicator cogbot;
 
 	public void connectWebStuff(ClassLoader optRdfResourceCL) {
@@ -50,12 +46,18 @@ public class PumaWebMapper extends BasicDebugger {
 
 	public void connectMoreWebStuff() {
 		LiftAmbassador.setSceneLauncher(SceneActions.getLauncher()); // Connect Lift to SceneActions so scenes can be triggered from webapp
-		LiftAmbassador.setAppInterface(getLiftInterface()); // Connect Lift so cinematics, cogbot can be triggered from webapp		
+		connectLiftInterface(); // Connect Lift so cinematics, cogbot can be triggered from webapp		
 	}
-	
+
 	// Connects ONLY the LiftInterface. For use by org.friendularity.bundle.repo
 	public void connectLiftInterface() {
 		LiftAmbassador.setAppInterface(getLiftInterface()); // Connect Lift so cogbot can be queried		
+	}
+
+	public void connectHrkindContent(ClassLoader hrkindResourceCL) {
+		// Load "chat app" config
+		ChatConfig cc = AssemblerUtils.readOneConfigObjFromPath(ChatConfig.class, CHAT_CONFIG_PATH, hrkindResourceCL);
+		LiftAmbassador.storeChatConfig(cc);
 	}
 
 	public LiftInterface getLiftInterface() {
@@ -79,10 +81,10 @@ public class PumaWebMapper extends BasicDebugger {
 		}
 
 		@Override
-		public String queryCogbot(String query) {
-			//return new org.cogchar.bind.cogbot.main.CogbotCommunicator();
-			if (cogbot == null) {
-				cogbot = new CogbotCommunicator(COGBOT_URL); // This hardcoded URL is clearly going to have to leave in a hurry!
+		public String queryCogbot(String query, String url) {
+			if ((cogbot == null) || (!url.equals(cogbotConvoUrl))) {
+				cogbotConvoUrl = url;
+				cogbot = new CogbotCommunicator(cogbotConvoUrl);
 			}
 			return cogbot.getResponse(query).getResponse();
 		}
