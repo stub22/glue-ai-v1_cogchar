@@ -103,7 +103,7 @@ public class LiftAmbassador {
 		return (ArrayList<ControlConfig>) controls;
 	}
 
-	public static String getPrefix() {
+	public static String getControlPrefix() {
 		return LiftConfigNames.partial_P_control + "_";
 	}
 
