@@ -29,7 +29,6 @@ public class ControlConfig {
 	public String myURI_Fragment;
 	//public ControlType controlType; // Probably a good idea to do away with this enum type - see comments at bottom
 	public String controlType = "NULLTYPE";
-	public int id = 0;
 	public String action = "";
 	public String text = "";
 	public String style = "";
@@ -37,7 +36,7 @@ public class ControlConfig {
 
 	@Override
 	public String toString() {
-		return "ControlConfig[uriFrag=" + myURI_Fragment + ", Type=" + controlType + ", id=" + id + ", text=\""
+		return "ControlConfig[uriFrag=" + myURI_Fragment + ", Type=" + controlType + ", text=\""
 				+ text + "\", style=" + style + " resource=" + resource + "]";
 	}
 
@@ -55,7 +54,6 @@ public class ControlConfig {
 		 * myURI_Fragment + " does not indicate a valid type!"); }
 		 */
 		controlType = ItemFuncs.getString(configItem, LiftConfigNames.P_controlType, "NULLTYPE");
-		id = ItemFuncs.getInteger(configItem, LiftConfigNames.P_controlId, 0);
 		action = ItemFuncs.getString(configItem, LiftConfigNames.P_controlAction, "");
 		text = ItemFuncs.getString(configItem, LiftConfigNames.P_controlText, "");
 		style = ItemFuncs.getString(configItem, LiftConfigNames.P_controlStyle, "");
