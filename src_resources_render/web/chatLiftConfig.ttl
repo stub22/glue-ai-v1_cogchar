@@ -80,25 +80,23 @@ lci:liftConfig1		rdf:type			lc:BuildableLiftConfig;
         
 lci:control_1
 	lc:type					"TEXTINPUT";
-	lc:id					1;
 	lc:text					"Talk to the robot here!";
-	lc:action				"submittext_cogbot"
+	lc:action				"submittext_cogbot";
+	lc:style				"blackbg"
 .
 
 lci:control_2
 	lc:type					"PUSHYBUTTON";
-	lc:id					2;
-	lc:action				"showtext_cogbot"
+	lc:action				"showtext_cogbot";
+	lc:style				"blackbg"
 .
 
 lci:control_3
 	lc:type					"NULLTYPE";
-	lc:id					3;
 .
 
 lci:control_4
 	lc:type					"PUSHYBUTTON";
-	lc:id					4;
 	lc:text					"Make the robot chatty";
 	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
@@ -106,26 +104,23 @@ lci:control_4
 
 lci:control_5
 	lc:type					"PUSHYBUTTON";
-	lc:id					201;
 	lc:text					"Press me to talk to the robot using HRK Android app";
-	lc:style				"buttonred";
-	lc:action				"submittext_cogbot"
+	lc:style				"buttonred blackbg";
+	lc:action				"getspeech_submittext_cogbot"
 .
 
 lci:control_6
 	lc:type					"PUSHYBUTTON";
-	lc:id					6;
-	lc:action				"showtext_androidSpeech"
+	lc:action				"showtext_androidSpeech";
+	lc:style				"blackbg"
 .
 
 lci:control_7
 	lc:type					"NULLTYPE";
-	lc:id					7;
 .
 
 lci:control_8
 	lc:type					"PUSHYBUTTON";
-	lc:id					8;
 	lc:text					"Make the robot wait to be spoken to";
 	lc:style				"buttongreen";
 	lc:resource				"still-27.jpg";
@@ -133,22 +128,18 @@ lci:control_8
 
 lci:control_9
 	lc:type					"NULLTYPE";
-	lc:id					9;
 .
 
 lci:control_10
 	lc:type					"NULLTYPE";
-	lc:id					10;
 .
 
 lci:control_11
 	lc:type					"NULLTYPE";
-	lc:id					11;
 .
 
 lci:control_12
 	lc:type					"PUSHYBUTTON";
-	lc:id					12;
 	lc:text					"Return to main menu";
 	lc:style				"buttonblue";
 	lc:action				"liftconfig_liftConfig.ttl"

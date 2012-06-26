@@ -80,7 +80,6 @@ lci:liftConfig1		rdf:type			lc:BuildableLiftConfig;
         
 lci:control_1
 	lc:type					"PUSHYBUTTON";
-	lc:id					1;
 	lc:action				"sceneTrig_00";
 	lc:text					"Scene 0";
 	lc:style				"buttonred";
@@ -89,7 +88,6 @@ lci:control_1
 
 lci:control_2
 	lc:type					"PUSHYBUTTON";
-	lc:id					2;
 	lc:action				"sceneTrig_01";
 	lc:text					"Scene 1";
 	lc:style				"buttonorange";
@@ -98,7 +96,6 @@ lci:control_2
 
 lci:control_3
 	lc:type					"PUSHYBUTTON";
-	lc:id					3;
 	lc:action				"sceneTrig_02";
 	lc:text					"Scene 2";
 	lc:style				"buttongreen";
@@ -107,7 +104,6 @@ lci:control_3
 
 lci:control_4
 	lc:type					"PUSHYBUTTON";
-	lc:id					4;
 	lc:action				"cinematic_movingCameraDemo";
 	lc:text					"Push for cinematic camera demo in viewport";
 	lc:style				"buttonblue";
@@ -115,7 +111,6 @@ lci:control_4
 
 lci:control_5
 	lc:type					"LISTBOX";
-	lc:id					5;
 	lc:action				"sceneTrig_04";
 	lc:text					"Select a Control!,Button,Text Input,Select Boxes,Radio Buttons";
 	lc:style				"buttonred";
@@ -124,7 +119,6 @@ lci:control_5
 
 lci:control_6
 	lc:type					"PUSHYBUTTON";
-	lc:id					6;
 	lc:action				"sceneTrig_05";
 	lc:text					"Scene 5";
 	lc:style				"buttonorange";
@@ -133,7 +127,6 @@ lci:control_6
 
 lci:control_7
 	lc:type					"SELECTBOXES";
-	lc:id					7;
 	lc:action				"sceneTrig_06";
 	lc:text					"I've got a formId:7.,Box 0 ,Box 1 ,Box 2 ";
 	lc:style				"buttongreen";
@@ -142,7 +135,6 @@ lci:control_7
 
 lci:control_8
 	lc:type					"RADIOBUTTONS";
-	lc:id					8;
 	lc:action				"sceneTrig_07";
 	lc:text					"My id's 8.,Option 0 ,Option 1 ";
 	lc:style				"buttonblue";
@@ -151,7 +143,6 @@ lci:control_8
 
 lci:control_9
 	lc:type					"TEXTINPUT";
-	lc:id					9;
 	lc:action				"sceneTrig_08";
 	lc:text					"Tell me something!";
 	lc:style				"buttonred";
@@ -160,7 +151,6 @@ lci:control_9
 
 lci:control_10
 	lc:type					"TEXTINPUT";
-	lc:id					10;
 	lc:action				"sceneTrig_09";
 	lc:text					"A Label for Form 10";
 	lc:style				"buttonorange";
@@ -169,7 +159,6 @@ lci:control_10
 
 lci:control_11
 	lc:type					"SELECTBOXES";
-	lc:id					11;
 	lc:action				"sceneTrig_10";
 	lc:text					"I've got id 11!,Apples ,Bananas ,Oranges ,an option 3! ,4 also ";
 	lc:style				"buttongreen";
@@ -178,7 +167,6 @@ lci:control_11
 
 lci:control_12
 	lc:type					"PUSHYBUTTON";
-	lc:id					12;
 	lc:action				"liftconfig_liftConfig.ttl";
 	lc:text					"Return to main menu";
 	lc:style				"buttonblue";
