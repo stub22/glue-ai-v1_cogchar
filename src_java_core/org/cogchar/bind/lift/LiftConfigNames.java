@@ -26,7 +26,6 @@ public class LiftConfigNames extends BoxAssemblyNames {
 	public static final String partial_P_control = "control";
 	public static final String P_control = NS_CgcLC + partial_P_control;
 	public static final String P_controlType = NS_CgcLC + "type";
-	public static final String P_controlId = NS_CgcLC + "id";
 	public static final String P_controlAction = NS_CgcLC + "action";
 	public static final String P_controlText = NS_CgcLC + "text";
 	public static final String P_controlStyle = NS_CgcLC + "style";
@@ -37,5 +36,6 @@ public class LiftConfigNames extends BoxAssemblyNames {
 	public static final String partial_P_showText = "showtext";
 	public static final String partial_P_triggerScene = "sceneTrig";
 	public static final String partial_P_cinematic = "cinematic";
-	public static final String partial_P_liftConfig = "liftconfig_";
+	public static final String partial_P_liftConfig = "liftconfig_"; // Looking to normalize the "_" off the tail of this soon
+	public static final String partial_P_acquireSpeech = "getspeech";
 }
