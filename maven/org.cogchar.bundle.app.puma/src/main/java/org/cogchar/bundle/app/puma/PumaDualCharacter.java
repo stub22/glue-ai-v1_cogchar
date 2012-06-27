@@ -84,6 +84,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myUpdateBonyRdfPath = behavCE.getRKMotionTempFilePath(bonyConfigPathTail);
 
 		BoneRobotConfig boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
+        bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf);
 
 		CogcharRenderContext cogRendCtx = bonyRendCtx;
