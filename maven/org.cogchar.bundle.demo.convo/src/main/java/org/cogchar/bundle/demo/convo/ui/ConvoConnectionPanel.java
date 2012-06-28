@@ -97,6 +97,7 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
         txtCogbot.setText(myCogbotIpSource.getValue());
         txtCogbotPollInterval.setText(
                 myCogbotPollIntervalSource.getValue().toString());
+        pnlPannousConnection.setVisible(false);
     }
     
     public boolean connect(){
@@ -126,7 +127,11 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
             Session ttsSession, Destination ttsDest, String cogbotUrl) {
         mySpeechProducer = buildSpeechRecChain(recSession, recDest);
         myResponseSender = buildTTSNodeChain(ttsSession, ttsDest);
-        myConvoProc = new CogbotProcessor(cogbotUrl);
+        if(COGBOT.equals(comboService.getSelectedItem())){
+            myConvoProc = new CogbotProcessor(cogbotUrl);
+        }else if(PANNOUS.equals(comboService.getSelectedItem())){
+            myConvoProc = new PannousProcessor("", getPannousTimeout());         
+        }
         if(mySpeechProducer == null || myResponseSender == null){
             return null;
         }
@@ -140,6 +145,15 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
             .attach(new ConvoResponseStringAdapter())
             .attach(new SpeechFormatter("source", "dest"))
             .attach(myResponseSender);
+    }
+    
+    private int getPannousTimeout(){
+        String intStr = txtPannousTimeout.getText();
+        try{
+            return Integer.parseInt(intStr);
+        }catch(NumberFormatException ex){
+            return 10000;
+        }
     }
     
     private ProducerNode<SpeechRecEventList> buildSpeechRecChain(
@@ -210,6 +224,7 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         pnlSpeechRec = new javax.swing.JPanel();
         pnlRecConnect = new org.cogchar.bundle.demo.convo.ui.MessagingConnectPanel();
         pnlCogbotConnection = new javax.swing.JPanel();
@@ -220,6 +235,12 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         pnlTTS = new javax.swing.JPanel();
         pnlTTSConnect = new org.cogchar.bundle.demo.convo.ui.MessagingConnectPanel();
+        comboService = new javax.swing.JComboBox();
+        jLabel4 = new javax.swing.JLabel();
+        pnlPannousConnection = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        txtPannousTimeout = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
 
         pnlSpeechRec.setBorder(javax.swing.BorderFactory.createTitledBorder("Speech Rec Connection"));
 
@@ -227,7 +248,7 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
         pnlSpeechRec.setLayout(pnlSpeechRecLayout);
         pnlSpeechRecLayout.setHorizontalGroup(
             pnlSpeechRecLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlRecConnect, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
+            .addComponent(pnlRecConnect, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
         );
         pnlSpeechRecLayout.setVerticalGroup(
             pnlSpeechRecLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,7 +282,7 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addGap(175, 175, 175))
-                    .addComponent(txtCogbot, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)))
+                    .addComponent(txtCogbot, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)))
         );
         pnlCogbotConnectionLayout.setVerticalGroup(
             pnlCogbotConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -282,11 +303,51 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
         pnlTTS.setLayout(pnlTTSLayout);
         pnlTTSLayout.setHorizontalGroup(
             pnlTTSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlTTSConnect, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
+            .addComponent(pnlTTSConnect, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
         );
         pnlTTSLayout.setVerticalGroup(
             pnlTTSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnlTTSConnect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        comboService.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Cogbot", "Pannous" }));
+        comboService.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboServiceActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Answering Service");
+
+        pnlPannousConnection.setBorder(javax.swing.BorderFactory.createTitledBorder("Pannous Connection"));
+
+        jLabel6.setText("Timeout");
+
+        txtPannousTimeout.setText("10000");
+
+        jLabel7.setText("(millisec)");
+
+        javax.swing.GroupLayout pnlPannousConnectionLayout = new javax.swing.GroupLayout(pnlPannousConnection);
+        pnlPannousConnection.setLayout(pnlPannousConnectionLayout);
+        pnlPannousConnectionLayout.setHorizontalGroup(
+            pnlPannousConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPannousConnectionLayout.createSequentialGroup()
+                .addGap(52, 52, 52)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtPannousTimeout, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addContainerGap(200, Short.MAX_VALUE))
+        );
+        pnlPannousConnectionLayout.setVerticalGroup(
+            pnlPannousConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPannousConnectionLayout.createSequentialGroup()
+                .addGroup(pnlPannousConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtPannousTimeout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7))
+                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -295,7 +356,13 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnlSpeechRec, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlTTS, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(comboService, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(335, 335, 335))
             .addComponent(pnlCogbotConnection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlPannousConnection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -304,20 +371,45 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlTTS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlCogbotConnection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(comboService, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlCogbotConnection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(pnlPannousConnection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+    private final static String COGBOT = "Cogbot";
+    private final static String PANNOUS = "Pannous";
+    private void comboServiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboServiceActionPerformed
+        if(COGBOT.equals(comboService.getSelectedItem())){
+            pnlCogbotConnection.setVisible(true);
+            pnlPannousConnection.setVisible(false);
+        }else if(PANNOUS.equals(comboService.getSelectedItem())){
+            pnlCogbotConnection.setVisible(false); 
+            pnlPannousConnection.setVisible(true);
+        }
+    }//GEN-LAST:event_comboServiceActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JComboBox comboService;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel pnlCogbotConnection;
+    private javax.swing.JPanel pnlPannousConnection;
     private org.cogchar.bundle.demo.convo.ui.MessagingConnectPanel pnlRecConnect;
     private javax.swing.JPanel pnlSpeechRec;
     private javax.swing.JPanel pnlTTS;
     private org.cogchar.bundle.demo.convo.ui.MessagingConnectPanel pnlTTSConnect;
     private javax.swing.JTextField txtCogbot;
     private javax.swing.JTextField txtCogbotPollInterval;
+    private javax.swing.JTextField txtPannousTimeout;
     // End of variables declaration//GEN-END:variables
 }
