@@ -38,4 +38,5 @@ public class LiftConfigNames extends BoxAssemblyNames {
 	public static final String partial_P_cinematic = "cinematic";
 	public static final String partial_P_liftConfig = "liftconfig_"; // Looking to normalize the "_" off the tail of this soon
 	public static final String partial_P_acquireSpeech = "getspeech";
+	public static final String partial_P_cogbotSpeech = "cogbotspeech";
 }
