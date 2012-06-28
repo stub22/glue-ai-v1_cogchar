@@ -54,6 +54,11 @@
             <artifactId>org.robokind.impl.speechrec</artifactId>
             <version>${robokind.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>org.json</artifactId>
+            <version>chargebee-1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -67,6 +72,7 @@
                     <instructions>
                         <Bundle-Activator>org.cogchar.bundle.demo.convo.osgi.ConvoTestActivator</Bundle-Activator>
                         <Export-Package>org.cogchar.bundle.demo.convo.*</Export-Package>
+                        <Private-Package>org.json</Private-Package>
                     </instructions>
                 </configuration>
             </plugin>
