@@ -94,7 +94,7 @@ lci:control_2
 lci:control_3
 	lc:type					"TOGGLEBUTTON";
 	lc:text					"Press to hear Cogbot through the HRK Android Viewer,Press to turn off Cogbot speech in Android";
-	lc:action				"cogbotspeech_disable,cogbotspeech_enable";
+	lc:action				"cogbotspeech_enable,cogbotspeech_disable";
 	lc:style				"buttonblue,buttonred" 
 .
 
@@ -129,7 +129,10 @@ lci:control_8
 .
 
 lci:control_9
-	lc:type					"NULLTYPE";
+	lc:type					"TOGGLEBUTTON";
+	lc:text					"Press to start continuous Android speech input,Press to stop continuous speech input";
+	lc:action				"startgetspeech_submittext_cogbot,stopgetspeech";
+	lc:style				"buttonblue,buttonred" 
 .
 
 lci:control_10
