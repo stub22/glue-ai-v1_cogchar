@@ -93,8 +93,6 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 
 		myRenderMapper.initLightsAndCamera(cogRendCtx, optCL);
 		myRenderMapper.initCinematics(cogRendCtx, optCL);
-		
-		myWebMapper.connectWebStuff(optCL);
 
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myHumoidMapper.connectToVirtualChar();
