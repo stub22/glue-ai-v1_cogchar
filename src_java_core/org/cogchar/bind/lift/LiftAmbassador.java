@@ -37,8 +37,8 @@ public class LiftAmbassador {
 	private static LiftAppInterface liftAppInterface;
 	private static boolean configReady = false;
 	private static List<String> triggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
-	private static ClassLoader myRdfCL; // We'll get this classloader so we can update control configuration from separate RDF file at runtime
-	private static final String RDF_PATH_PREFIX = "web/"; // Prefix for path to Lift configuration TTL files from resources root
+	private static ClassLoader myRdfCL; // We'll get this classloader so we can update control configuration from separate RDF files at runtime
+	private static final String RDF_PATH_PREFIX = "metadata/web/liftconfig/"; // Prefix for path to Lift configuration TTL files from resources root
 	public static Map<String, String> chatConfigEntries = new HashMap<String, String>();
 
 	public interface LiftSceneInterface {
@@ -168,9 +168,5 @@ public class LiftAmbassador {
 	public static boolean checkConfigReady() {
 		return configReady;
 	}
-	/*
-	 * An attempt at "cleanness" that doesn't seem to work, probably because I am returning an instance of a class with
-	 * only static methods, via a static method, to Scala no less public static LiftConfigNames getConfigNames() {
-	 * return new LiftConfigNames(); }
-	 */
+
 }

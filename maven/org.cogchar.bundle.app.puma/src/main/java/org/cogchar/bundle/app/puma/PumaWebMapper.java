@@ -29,20 +29,11 @@ import org.cogchar.render.opengl.scene.CinematicMgr;
  */
 public class PumaWebMapper extends BasicDebugger {
 
-	static final String WEB_CONFIG_PATH = "web/liftConfig.ttl";
-	static final String CHAT_CONFIG_PATH = "metadata/chatbird/cogbotZenoAmazonEC.ttl";
+	static final String WEB_CONFIG_PATH = "metadata/web/liftconfig/liftConfig.ttl";
+	static final String CHAT_CONFIG_PATH = "metadata/web/chatbird/cogbotZenoAmazonEC.ttl";
 	LiftInterface liftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
 	static String cogbotConvoUrl;
 	CogbotCommunicator cogbot;
-
-	public void connectWebStuff(ClassLoader optRdfResourceCL) {
-		/*
-		 * Load lift webapp config from liftConfig RDF resource, since this is the place for all the RDF loads
-		 * currently!
-		 */
-		LiftConfig lc = AssemblerUtils.readOneConfigObjFromPath(LiftConfig.class, WEB_CONFIG_PATH, optRdfResourceCL);
-		LiftAmbassador.storeControlsFromConfig(lc, optRdfResourceCL);
-	}
 
 	public void connectMoreWebStuff() {
 		LiftAmbassador.setSceneLauncher(SceneActions.getLauncher()); // Connect Lift to SceneActions so scenes can be triggered from webapp
@@ -54,7 +45,10 @@ public class PumaWebMapper extends BasicDebugger {
 		LiftAmbassador.setAppInterface(getLiftInterface()); // Connect Lift so cogbot can be queried		
 	}
 
-	public void connectHrkindContent(ClassLoader hrkindResourceCL) {
+	public void connectHrkindWebContent(ClassLoader hrkindResourceCL) {
+		// Load web app "home" screen config
+		LiftConfig lc = AssemblerUtils.readOneConfigObjFromPath(LiftConfig.class, WEB_CONFIG_PATH, hrkindResourceCL);
+		LiftAmbassador.storeControlsFromConfig(lc, hrkindResourceCL);
 		// Load "chat app" config
 		ChatConfig cc = AssemblerUtils.readOneConfigObjFromPath(ChatConfig.class, CHAT_CONFIG_PATH, hrkindResourceCL);
 		LiftAmbassador.storeChatConfig(cc);
