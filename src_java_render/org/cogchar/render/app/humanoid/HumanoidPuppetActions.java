@@ -32,6 +32,7 @@ import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.app.core.BoundAction;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.render.model.databalls.BallBuilder;
 
 /**
  *	Keyboard / Mouse bindings for HumanoidPuppet app.
@@ -181,6 +182,22 @@ public class HumanoidPuppetActions extends BasicDebugger {
                 return -MouseInput.BUTTON_RIGHT; // Negative tells makeJME3InputTriggers this is mouse input - not ideal but will work for now
             } 
         }, 
+		SHOW_RESOURCE_BALLS {
+            void act(HumanoidRenderContext ctx) {
+                BallBuilder.runBalls(ctx);
+            }
+            int getTriggerKey() { 
+                return KeyInput.KEY_L;
+            }            
+        },
+		PICK_BALLS {
+            void act(HumanoidRenderContext ctx) {
+                BallBuilder.pick();
+            }
+            int getTriggerKey() { 
+                return KeyInput.KEY_P;
+            }            
+        },
         BIGGER_PROJECTILE {
             void act(HumanoidRenderContext ctx) {
                 ctx.getGameFeatureAdapter().getProjectileMgr().cmdBiggerProjectile();
