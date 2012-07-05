@@ -30,30 +30,31 @@ import java.util.Map;
  * @author Stu B. <www.texpedient.com>
  */
 public class TextMgr extends RenderRegistryAware {
-	
-	private		BitmapFont			myDefaultFont;
 
-	
-	public BitmapFont getDefaultFont() { 
+	private BitmapFont myDefaultFont;
+
+	public BitmapFont getDefaultFont() {
 		if (myDefaultFont == null) {
 			AssetManager amgr = findJme3AssetManager(null);
 			myDefaultFont = amgr.loadFont("Interface/Fonts/Default.fnt");
 		}
 		return myDefaultFont;
 	}
-	/* Is this still the most current info?
-	 * http://code.google.com/p/lonedev/wiki/BitmapFont
-	 * TODO: Still trying to get a handle on what the size stuff means.
+	/*
+	 * Is this still the most current info? http://code.google.com/p/lonedev/wiki/BitmapFont TODO: Still trying to get a
+	 * handle on what the size stuff means.
 	 */
+
 	public BitmapText getScaledBitmapText(String txtString, float scale) {
 		BitmapFont font = getDefaultFont();
-		BitmapText bt  = new BitmapText(font, false);
+		BitmapText bt = new BitmapText(font, false);
 		float renderScale = scale * font.getCharSet().getRenderedSize();
 		bt.setSize(renderScale);
-		bt.setText(txtString); 
+		bt.setText(txtString);
 		return bt;
 	}
-	public BitmapText makeCrossHairs(float scale, AppSettings settings) { 
+
+	public BitmapText makeCrossHairs(float scale, AppSettings settings) {
 		BitmapText bt = getScaledBitmapText("+", scale);
 		BitmapFont bf = bt.getFont();
 		float crossHalfWidth = bf.getCharSet().getRenderedSize() / 3.0f * 2.0f;  // WTF?     guiFont.getCharSet().getRenderedSize() / 3 * 2,
@@ -64,34 +65,32 @@ public class TextMgr extends RenderRegistryAware {
 		bt.setLocalTranslation(xPos, yPos, zPos);
 		return bt;
 	}
-        
-        public BitmapText makeHelpScreen(float scale, AppSettings settings) { 
-                String commandList = "";
-                String commandLine;
-                int longestLineLength = 0;
-                KeyNames keyNamesConverter = new KeyNames(); // You'd think they would have made this static...
-                for (Map.Entry<String, Integer> entry : KeyBindingTracker.getBindingMap().entrySet()) {
-                    commandLine = entry.getKey() + ": " + keyNamesConverter.getName(entry.getValue()) + "\n";
-                    if (commandLine.length() > longestLineLength) {longestLineLength = commandLine.length();}
-                    commandList = commandList + commandLine;
-                }
-                BitmapText bt = getScaledBitmapText(commandList, scale);
-                 // Sets offset to make sure text doesn't extend past right edge of screen - the last "fudge factor" probably shouldn't be hard coded
+
+	public BitmapText makeHelpScreen(float scale, AppSettings settings) {
+		String commandList = "";
+		String commandLine;
+		int longestLineLength = 0;
+		KeyNames keyNamesConverter = new KeyNames(); // You'd think they would have made this static...
+		for (Map.Entry<String, Integer> entry : KeyBindingTracker.getBindingMap().entrySet()) {
+			commandLine = entry.getKey() + ": " + keyNamesConverter.getName(entry.getValue()) + "\n";
+			if (commandLine.length() > longestLineLength) {
+				longestLineLength = commandLine.length();
+			}
+			commandList = commandList + commandLine;
+		}
+		BitmapText bt = getScaledBitmapText(commandList, scale);
+		// Sets offset to make sure text doesn't extend past right edge of screen - the last "fudge factor" probably shouldn't be hard coded
 		float xPos = settings.getWidth() - longestLineLength * scale * 1.5f;
-		float yPos = settings.getHeight() - 5f;
+		float yPos = settings.getHeight() - 2f;
 		float zPos = 0.0f;
 		bt.setLocalTranslation(xPos, yPos, zPos);
-                bt.setColor(ColorRGBA.Black);
+		bt.setColor(ColorRGBA.Black);
 		return bt;
 	}
-
-		
-		/*
-		 * BitmapText(BitmapFont font) 
-           
-BitmapText(BitmapFont font, boolean rightToLeft) 
-           
-BitmapText(BitmapFont font, boolean rightToLeft, boolean arrayBased) 
-		 * 
-		 */
+	/*
+	 * BitmapText(BitmapFont font) 	 *
+	 * BitmapText(BitmapFont font, boolean rightToLeft) 	 *
+	 * BitmapText(BitmapFont font, boolean rightToLeft, boolean arrayBased)
+	 *
+	 */
 }

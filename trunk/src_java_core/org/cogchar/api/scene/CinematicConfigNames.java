@@ -29,11 +29,13 @@ public class CinematicConfigNames extends BoxAssemblyNames {
 	
 	public static	String		P_namedRotation	= "rotation_";
 	
-	public static	String		unnamedTrackName = "track_Unnamed";
+	public static	String		suffix_unnamed	= "Unnamed";
 	
-	public static	String		unnamedWaypointName = "waypoint_Unnamed";
+	public static	String		unnamedTrackName = P_namedTrack + suffix_unnamed;
 	
-	public static	String		unnamedRotationName = "rotation_Unnamed";
+	public static	String		unnamedWaypointName = P_namedWaypoint + suffix_unnamed;
+	
+	public static	String		unnamedRotationName = P_namedRotation + suffix_unnamed;
 	
 	public static 	String		P_cinematic		= NS_CgcCC + "cinematicList";
 	
