@@ -18,6 +18,7 @@ package org.cogchar.render.app.core;
 import org.cogchar.render.app.core.CogcharRenderContext;
 import org.appdapter.api.module.Module;
 import org.cogchar.render.model.bony.CogcharRenderModulator;
+import org.cogchar.render.model.databalls.BallBuilder;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -41,6 +42,7 @@ public class ModularRenderContext extends CogcharRenderContext {
 		return myRenderModulator;
 	}
 	@Override public void doUpdate(float tpf) {
+		BallBuilder.applyUpdates();
 		myRenderModulator.runOneCycle(tpf);
 	}
 }

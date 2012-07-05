@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import org.cogchar.render.model.databalls.BallBuilder; // Temporary for BallBuilder demo
 import org.slf4j.Logger;
 
 /**
@@ -53,6 +54,8 @@ public class CinematicMgr extends BasicDebugger {
 	private static CogcharRenderContext myCRC;
 
 	public static void storeCinematicsFromConfig(CinematicConfig config, CogcharRenderContext crc) {
+		BallBuilder.storeCinematicConfig(config); // Temporary for BallBuilder demo
+		
 		myCRC = crc;
 		RenderRegistryClient rrc = crc.getRenderRegistryClient();
 		Node jmeRootNode = rrc.getJme3RootDeepNode(null);
