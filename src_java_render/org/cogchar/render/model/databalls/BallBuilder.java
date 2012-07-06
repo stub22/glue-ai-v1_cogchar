@@ -180,7 +180,9 @@ public class BallBuilder extends BasicDebugger {
 			activated = true;
 		} else if (activated) {
 			dsm.detachTopSpatial(ballsNode);
-			flatOverlayMgr.detachOverlaySpatial(screenText);
+			if (screenText != null) {
+				flatOverlayMgr.detachOverlaySpatial(screenText);
+			}
 			activated = false;
 		} else {
 			// Reset position and velocity
