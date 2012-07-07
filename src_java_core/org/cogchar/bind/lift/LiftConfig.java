@@ -33,8 +33,9 @@ import org.appdapter.core.log.BasicDebugger;
  */
 public class LiftConfig extends KnownComponentImpl {
 
+	private static final String DEFAULT_TEMPLATE = "12slots";
 	public List<ControlConfig> myCCs = new ArrayList<ControlConfig>();
-	//Map<Integer, ControlConfig> myCCsMap = new HashMap<Integer, ControlConfig>();
+	public String template;
 
 	public static class Builder extends DynamicCachingComponentAssembler<LiftConfig> {
 
@@ -46,12 +47,12 @@ public class LiftConfig extends KnownComponentImpl {
 		protected void initExtendedFieldsAndLinks(LiftConfig mlc, Item configItem, Assembler assmblr,
 				Mode mode) {
 			logInfo("LiftConfig.initExtendedFieldsAndLinks()-BEGIN");
+			mlc.template = ItemFuncs.getString(configItem, LiftConfigNames.P_template, DEFAULT_TEMPLATE);
 			Set<Item> controlItems = ItemFuncs.getLinkedItemSet(configItem, LiftConfigNames.P_control);
 			for (Item ji : controlItems) {
 				ControlConfig cc = new ControlConfig(ji);
 				logInfo("Adding ControlConfig in LiftConfig: " + cc);
 				mlc.myCCs.add(cc);
-				//mlc.myCCsMap.put(cc.id, cc);
 			}
 		}
 
