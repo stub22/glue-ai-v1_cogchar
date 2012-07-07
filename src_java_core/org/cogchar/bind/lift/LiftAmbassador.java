@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public class LiftAmbassador {
 
 	static Logger theLogger = LoggerFactory.getLogger(LiftAmbassador.class);
-	private static List<ControlConfig> controls = new ArrayList<ControlConfig>();
+	private static LiftConfig config;
 	private static LiftSceneInterface sceneLauncher;
 	private static LiftInterface lift;
 	private static LiftAppInterface liftAppInterface;
@@ -62,8 +62,8 @@ public class LiftAmbassador {
 		String queryCogbot(String query, String cogbotConvoUrl);
 	}
 
-	public static void activateControlsFromConfig(LiftConfig config) {
-		controls = config.myCCs;
+	public static void activateControlsFromConfig(LiftConfig newConfig) {
+		config = newConfig;
 		theLogger.info("RDF Lift config sent to LiftAmbassador");
 		configReady = true;
 		if (lift != null) {
@@ -99,8 +99,8 @@ public class LiftAmbassador {
 		myRdfCL = cl;
 	}
 
-	public static ArrayList<ControlConfig> getControls() {
-		return (ArrayList<ControlConfig>) controls;
+	public static LiftConfig getConfig() {
+		return config;
 	}
 
 	public static String getControlPrefix() {
@@ -131,7 +131,7 @@ public class LiftAmbassador {
 				triggeredCinematics.add(action);
 			}
 		} else if ((action.startsWith(LiftConfigNames.partial_P_liftConfig)) && (lift != null)) {
-			String desiredFile = action.replaceAll(LiftConfigNames.partial_P_liftConfig, "");
+			String desiredFile = action.replaceAll(LiftConfigNames.partial_P_liftConfig + "_", "");
 			success = activateControlsFromRdf(desiredFile);
 		}
 		return success;
@@ -168,5 +168,4 @@ public class LiftAmbassador {
 	public static boolean checkConfigReady() {
 		return configReady;
 	}
-
 }
