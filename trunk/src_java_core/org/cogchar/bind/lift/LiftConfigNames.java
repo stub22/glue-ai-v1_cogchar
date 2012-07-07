@@ -23,6 +23,7 @@ import org.appdapter.api.trigger.BoxAssemblyNames;
 public class LiftConfigNames extends BoxAssemblyNames {
 
 	public static final String NS_CgcLC = "http://www.cogchar.org/lift/config#";
+	public static final String P_template = NS_CgcLC + "template";
 	public static final String partial_P_control = "control";
 	public static final String P_control = NS_CgcLC + partial_P_control;
 	public static final String P_controlType = NS_CgcLC + "type";
@@ -34,5 +35,5 @@ public class LiftConfigNames extends BoxAssemblyNames {
 	// These are not used in RDF parsing, but help LiftAmbassador know how to interpret prefixes found in RDF defined actions
 	public static final String partial_P_triggerScene = "sceneTrig";
 	public static final String partial_P_cinematic = "cinematic";
-	public static final String partial_P_liftConfig = "liftconfig_"; // Looking to normalize the "_" off the tail of this soon
+	public static final String partial_P_liftConfig = "liftconfig";
 }
