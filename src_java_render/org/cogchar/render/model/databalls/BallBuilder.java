@@ -15,6 +15,8 @@
  */
 package org.cogchar.render.model.databalls;
 
+import com.hp.hpl.jena.rdf.model.*;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -31,10 +33,13 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
+import java.io.InputStream;
 import static java.lang.Math.*;
 import java.util.*;
+import java.util.concurrent.Callable;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.scene.*;
+import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
@@ -50,25 +55,36 @@ import org.slf4j.Logger;
  */
 public class BallBuilder extends BasicDebugger {
 
+	//private static final float LOW_DAMPING_COEFFICIENT = -0.1f;
+	private static final float LOW_DAMPING_COEFFICIENT = 0.4f;
+	//private static final float HIGH_DAMPING_COEFFICIENT = -1f;
+	private static final float HIGH_DAMPING_COEFFICIENT = 0.95f;
+	private static final float MASS_COEFFICIENT = 1f;
+	private static HumanoidRenderContext renderContext;
 	private static RenderRegistryClient rrc;
 	private static GeomFactory factory;
 	private static PhysicsSpace physics;
+	private static BulletAppState bulletState;
 	private static DeepSceneMgr dsm;
 	private static InputManager im;
 	private static CameraMgr cameraMgr;
-	private static Node ballsNode = new Node("ResourceBalls");
+	private static Node ballsNode = new Node("Databalls");
 	private static final SphereCollisionShape sphereShape = new SphereCollisionShape(1.0f);
 	private static Logger logger = getLoggerForClass(BallBuilder.class);
 	private static CinematicConfig aConfigToDemo;
 	private static TextMgr textMgr;
 	private static FlatOverlayMgr flatOverlayMgr;
-	private static final float[] PICK_TEXT_POSITION = {500f, 30f, 0f};
-	private static final float[] BALL_INJECTION_POSITION = {-30f, 24f, 50f};
+	private static ClassLoader resourceCl;
+	private static Map<String, ClassLoader> classloaders = new HashMap<String, ClassLoader>();
+	private static final float[] PICK_TEXT_POSITION = {300f, 30f, 0f};
+	private static final float[] BALL_INJECTION_POSITION = {-100f, 24f, 50f};
 	private static boolean activated = false;
 	private static Map<String, Ball> balls = new HashMap<String, Ball>();
 	private static BitmapText screenText;
+	private static float damping = LOW_DAMPING_COEFFICIENT;
 
 	public static void initialize(HumanoidRenderContext hrc) {
+		renderContext = hrc;
 		rrc = hrc.getRenderRegistryClient();
 		factory = rrc.getSceneGeometryFacade(null);
 		physics = rrc.getJme3BulletPhysicsSpace();
@@ -78,6 +94,11 @@ public class BallBuilder extends BasicDebugger {
 		textMgr = rrc.getSceneTextFacade(null);
 		//ballsNode = new Node("ResourceBalls");
 		flatOverlayMgr = rrc.getSceneFlatFacade(null);
+		// Below: an experiment in Bullet multithreading (http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:bullet_multithreading)
+		// Currently throwing an NPE
+		//bulletState = rrc.getJme3BulletAppState(null);
+		// This *may* improve performance
+		//bulletState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // Does the bulletState need to be attached to the state manager, or is it already?
 	}
 
 	public static void storeCinematicConfig(CinematicConfig config) {
@@ -172,26 +193,187 @@ public class BallBuilder extends BasicDebugger {
 		}
 	}
 
-	public static void runBalls(HumanoidRenderContext hrc) {
-		if (balls.isEmpty()) {
-			initialize(hrc);
-			CinematicModelBuilder.buildModelFromCinematicConfig(aConfigToDemo);
-			dsm.attachTopSpatial(ballsNode);
-			activated = true;
-		} else if (activated) {
-			dsm.detachTopSpatial(ballsNode);
-			if (screenText != null) {
-				flatOverlayMgr.detachOverlaySpatial(screenText);
-			}
-			activated = false;
-		} else {
-			// Reset position and velocity
-			for (Ball ball : balls.values()) {
-				ball.reset();
-			}
-			dsm.attachTopSpatial(ballsNode);
-			activated = true;
+	public static void showCinematicConfig() {
+		if (activated) {
+			stop();
 		}
+		CinematicModelBuilder.buildModelFromCinematicConfig(aConfigToDemo);
+		start();
+	}
+
+	public static void runBalls() {
+		if (balls.isEmpty() && renderContext != null) {
+			showCinematicConfig();
+			start();
+		} else if (activated) {
+			stop();
+		} else {
+			start();
+		}
+	}
+
+	public static void resetAllBalls() {
+		// Reset position and velocity
+		for (Ball ball : balls.values()) {
+			ball.reset();
+		}
+	}
+
+	public static boolean buildModelFromTurtle(ClassLoader loader, String configPath, boolean ballsForAllObjects) {
+		Model rdfModel = ModelFactory.createDefaultModel();
+		try {
+			InputStream stream = loader.getResourceAsStream(configPath);
+			rdfModel.read(stream, null, "TURTLE");
+		} catch (Exception e) {
+			logger.warn("Exception attemping to read Turtle file: " + e);
+			return false;
+		}
+		/*
+		 * NodeIterator objects = rdfModel.listObjects(); while (objects.hasNext()) { RDFNode node = objects.next();
+		 * logger.info("Node read: " + node.toString()); }
+		 */
+		ResIterator res = rdfModel.listSubjects();
+		while (res.hasNext()) {
+			Resource node = res.nextResource();
+			//logger.info("Subject read: " + node.toString());
+			Ball newBall = Ball.addBall(node.toString(), ColorRGBA.Red);
+			StmtIterator statements = node.listProperties();
+			while (statements.hasNext()) {
+				Statement statement = statements.nextStatement();
+				RDFNode rdfObject = statement.getObject();
+				//logger.info("Adding connection: " + node.toString() +" via " + statement.getPredicate() + " to " + statement.getObject());
+				newBall.addConnection(rdfObject.toString(), statement.getPredicate().toString());
+			}
+		}
+		if (ballsForAllObjects) { // If this true, balls will be generated for all Objects, even if they are not subjects
+			NodeIterator objects = rdfModel.listObjects();
+			while (objects.hasNext()) {
+				RDFNode node = objects.next();
+				if (!balls.containsKey(node.toString())) {
+					Ball.addBall(node.toString(), ColorRGBA.Green, 0.5f);
+				}
+			}
+		}
+		resetAllBalls();
+		return true;
+	}
+
+	public static void buildModelFromTurtle(ClassLoader loader, String configPath) {
+		buildModelFromTurtle(loader, configPath, false);
+	}
+
+	public static boolean buildModelFromTurtleUsingLiftSettings(String configPath) {
+		boolean success = false;
+		resourceCl = null;
+		String classloaderKey = LiftAmbassador.getLiftVariable(DataballStrings.classloaderKey);
+		if (classloaderKey != null) {
+			if (classloaders.containsKey(classloaderKey)) {
+				resourceCl = classloaders.get(classloaderKey);
+			}
+		}
+		boolean showAllObjects = false;
+		String liftShowAllObjectsString = LiftAmbassador.getLiftVariable(DataballStrings.showAllObjects);
+		if (liftShowAllObjectsString != null) {
+			showAllObjects = Boolean.valueOf(liftShowAllObjectsString);
+		}
+		//String liftDampingStateString = LiftAmbassador.getLiftVariable(DataballStrings.dampingState);
+		//if (liftDampingStateString != null) {damping = Boolean.valueOf(liftDampingStateString)? HIGH_DAMPING_COEFFICIENT : LOW_DAMPING_COEFFICIENT;}
+		if (resourceCl != null) {
+			if (activated) {
+				activated = false;
+				renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+
+					@Override
+					public Void call() throws Exception {
+						dsm.detachTopSpatial(ballsNode);
+						return null;
+					}
+				});
+
+			}
+			resetAllBalls();
+			success = buildModelFromTurtle(resourceCl, configPath, showAllObjects);
+			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+
+				@Override
+				public Void call() throws Exception {
+					dsm.attachTopSpatial(ballsNode);
+					activated = true;
+					return null;
+				}
+			});
+		} else {
+			logger.error("Databalls graph using Lift settings requested, but could not find classloader with key " + classloaderKey);
+		}
+		return success;
+	}
+
+	public static void setClassLoader(ClassLoader loader) {
+		resourceCl = loader;
+	}
+
+	public static void setClassLoader(String key, ClassLoader loader) {
+		classloaders.put(key, loader);
+	}
+
+	public static boolean performAction(String action, String text) {
+		boolean success = false;
+		if (action.equals(DataballStrings.viewRdfGraph)) {
+			success = buildModelFromTurtleUsingLiftSettings(text);
+		} else if (action.equals(DataballStrings.onOff)) {
+			runBalls();
+		} else if (action.startsWith(DataballStrings.setDamping)) {
+			String dampingString = action.replaceAll(DataballStrings.setDamping + "_", "");
+			damping = DataballStrings.highDamping.equals(dampingString) ? HIGH_DAMPING_COEFFICIENT : LOW_DAMPING_COEFFICIENT;
+		} else if (action.equals(DataballStrings.clear)) {
+			clear();
+		} else if (action.equals(DataballStrings.demo)) {
+			showCinematicConfig();
+		} else {
+			logger.error("Action sent to Databalls, but not recognized: " + action);
+		}
+		return success;
+	}
+
+	public static void clear() {
+		stop();
+		// Wait a while after stop() to be sure updates are complete
+		class ClearBalls extends TimerTask {
+
+			public void run() {
+				balls.clear();
+				ballsNode = new Node("Databalls");
+			}
+		}
+		new Timer().schedule(new ClearBalls(), 500);
+	}
+
+	public static void stop() {
+		activated = false;
+		renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread in case this is being run from a different one - oh no!
+
+			@Override
+			public Void call() throws Exception {
+				dsm.detachTopSpatial(ballsNode);
+				if (screenText != null) {
+					flatOverlayMgr.detachOverlaySpatial(screenText);
+				}
+				return null;
+			}
+		});
+	}
+
+	public static void start() {
+		resetAllBalls();
+		renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread in case this is being run from a different one - oh no!
+
+			@Override
+			public Void call() throws Exception {
+				dsm.attachTopSpatial(ballsNode);
+				activated = true;
+				return null;
+			}
+		});
 	}
 
 	static class Ball {
@@ -210,13 +392,20 @@ public class BallBuilder extends BasicDebugger {
 			radius = size;
 			Sphere ball = new Sphere(20, 20, size);
 			geometry = factory.makeColoredUnshadedGeom(uri, ball, color, null);
-			control = new RigidBodyControl(sphereShape, 1f);
+			control = new RigidBodyControl(sphereShape, (float) (pow(size, 3) * MASS_COEFFICIENT));
 			control.setRestitution(0.5f);
-			geometry.addControl(control);
-			physics.add(control);
-			ballsNode.attachChild(geometry);
-			//dsm.attachTopSpatial(geometry);
 			reset();
+			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+
+				@Override
+				public Void call() throws Exception {
+					geometry.addControl(control);
+					physics.add(control);
+					ballsNode.attachChild(geometry);
+					control.setPhysicsLocation(initialPosition);
+					return null;
+				}
+			});
 		}
 
 		static Ball addBall(String ballUri) {
@@ -224,8 +413,13 @@ public class BallBuilder extends BasicDebugger {
 		}
 
 		static Ball addBall(String ballUri, Vector3f position) {
-			Ball newBall = new Ball(ballUri, position, ColorRGBA.Blue, 1f);
-			balls.put(ballUri, newBall);
+			Ball newBall;
+			if (!balls.containsKey(ballUri)) {
+				newBall = new Ball(ballUri, position, ColorRGBA.Blue, 1f);
+				balls.put(ballUri, newBall);
+			} else {
+				newBall = balls.get(ballUri);
+			}
 			return newBall;
 		}
 
@@ -234,12 +428,15 @@ public class BallBuilder extends BasicDebugger {
 		}
 
 		static Ball addBall(String ballUri, ColorRGBA color, float size) {
-			Vector3f position = new Vector3f(BALL_INJECTION_POSITION[0] + 2 * balls.size(), BALL_INJECTION_POSITION[1], BALL_INJECTION_POSITION[2]);
-			Ball newBall = new Ball(ballUri, position, color, size);
-			balls.put(ballUri, newBall);
-			// Give the balls a little random motion so they will shake down to stable equilibrium
-			Random random = new Random(new Long(ballUri.hashCode()));
-			newBall.control.setLinearVelocity(new Vector3f(random.nextFloat() - 0.5f, 0.25f * (random.nextFloat() - 0.5f), random.nextFloat() - 0.5f));
+			Ball newBall;
+			if (!balls.containsKey(ballUri)) {
+				// Line the balls up so they don't touch. This little trick will need to get more sophisticated for more general cases / ball sizes / etc.
+				Vector3f position = new Vector3f(BALL_INJECTION_POSITION[0] + 3 * balls.size(), BALL_INJECTION_POSITION[1], BALL_INJECTION_POSITION[2]);
+				newBall = new Ball(ballUri, position, color, size);
+				balls.put(ballUri, newBall);
+			} else {
+				newBall = balls.get(ballUri);
+			}
 			return newBall;
 		}
 
@@ -258,7 +455,9 @@ public class BallBuilder extends BasicDebugger {
 
 		final void reset() {
 			control.setPhysicsLocation(initialPosition);
-			control.setLinearVelocity(Vector3f.ZERO);
+			// Give the balls a little random motion so they will shake down to stable equilibrium
+			Random random = new Random(new Long(uri.hashCode()));
+			control.setLinearVelocity(new Vector3f(random.nextFloat() - 0.5f, 0.25f * (random.nextFloat() - 0.5f), random.nextFloat() - 0.5f));
 		}
 	}
 
@@ -272,8 +471,14 @@ public class BallBuilder extends BasicDebugger {
 			uri = stickUri;
 			stickCylinder = new Cylinder(10, 20, 0.25f, 1f);
 			geometry = factory.makeColoredUnshadedGeom(uri, stickCylinder, ColorRGBA.Black, null);
-			ballsNode.attachChild(geometry);
-			//dsm.attachTopSpatial(geometry);
+			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+
+				@Override
+				public Void call() throws Exception {
+					ballsNode.attachChild(geometry);
+					return null;
+				}
+			});
 		}
 	}
 
@@ -283,6 +488,13 @@ public class BallBuilder extends BasicDebugger {
 				ball.control.setGravity(Vector3f.ZERO);
 				Vector3f location = ball.geometry.getLocalTranslation();
 				Vector3f velocity = ball.control.getLinearVelocity();
+
+				// "Auto-brakes": slow this way down if it's getting so fast that the 60Hz physics won't converge
+				if (velocity.length() / 60 > 1) {
+					ball.control.setLinearVelocity(velocity.mult(0.001f));
+					logger.warn("Ball velocity at " + velocity.length() + "; auto-braking!");
+					velocity = velocity.mult(0.001f); //In case we use it later;
+				}
 
 				// Compute forces due to other balls and connections
 				Vector3f potentialForce = new Vector3f();
@@ -296,7 +508,7 @@ public class BallBuilder extends BasicDebugger {
 						Stick connectingStick = null;
 
 						// Compute potential force
-						float potentialForceMagnitude = -20f * ((float) pow(ball.radius, 3) + (float) pow(otherBall.radius, 3)) / (distanceToOther * distanceToOther); // Change potential force physics here. Physics to move to separate method?
+						float potentialForceMagnitude = -20f * ((float) pow(ball.radius, 3) * (float) pow(otherBall.radius, 3)) / (distanceToOther * distanceToOther); // Change potential force physics here. Physics to move to separate method?
 						potentialForce = potentialForce.add(directionToOther.mult(potentialForceMagnitude));
 
 						// Compute spring force due to other ball's connections to this ball
@@ -324,7 +536,9 @@ public class BallBuilder extends BasicDebugger {
 				}
 
 				// Compute damping force
-				Vector3f dampingForce = velocity.mult(-0.5f); // Change damping force physics here
+				//Vector3f dampingForce = velocity.mult(damping); // Change damping force physics here
+				Vector3f dampingForce = Vector3f.ZERO; // Or not. At moment built-in jME/bullet damping seems to work a little better
+				ball.control.setLinearDamping(damping);
 
 				// Apply forces
 				Vector3f totalForce = potentialForce.add(springForce).add(dampingForce);
@@ -338,7 +552,7 @@ public class BallBuilder extends BasicDebugger {
 				if ((!forceMagnitude.isInfinite()) && (!forceMagnitude.isNaN())) {
 					ball.control.applyCentralForce(totalForce);
 				} else {
-					logger.info("Invalid force in BallBuilder.applyUpdates");
+					logger.info("Invalid force in BallBuilder.applyUpdates (normal during initial startup)");
 				}
 
 			}
@@ -356,14 +570,13 @@ public class BallBuilder extends BasicDebugger {
 		Ray ray = new Ray(click3d, dir);
 		// Collect intersections between ray and all nodes in results list.
 		ballsNode.collideWith(ray, results);
-		// (Print the results so we see what is going on:)
-		for (int i = 0; i < results.size(); i++) {
-			// (For each “hit”, we know distance, impact point, geometry.)
-			float dist = results.getCollision(i).getDistance();
-			Vector3f pt = results.getCollision(i).getContactPoint();
-			String target = results.getCollision(i).getGeometry().getName();
-			logger.info("Selection #" + i + ": " + target + " at " + pt + ", " + dist + " WU away.");
-		}
+		/*
+		 * // (Print the results so we see what is going on:) for (int i = 0; i < results.size(); i++) { // (For each
+		 * “hit”, we know distance, impact point, geometry.) float dist = results.getCollision(i).getDistance();
+		 * Vector3f pt = results.getCollision(i).getContactPoint(); String target =
+		 * results.getCollision(i).getGeometry().getName(); logger.info("Selection #" + i + ": " + target + " at " + pt
+		 * + ", " + dist + " WU away."); }
+		 */
 		// Use the results
 		if (results.size() > 0) {
 			// The closest result is the target that the player picked:
@@ -387,7 +600,7 @@ public class BallBuilder extends BasicDebugger {
 		if (screenText != null) {
 			flatOverlayMgr.detachOverlaySpatial(screenText);
 		}
-		screenText = textMgr.getScaledBitmapText("Picked: " + uri, 1.0f);
+		screenText = textMgr.getScaledBitmapText("Picked: " + uri, 0.8f);
 		screenText.setLocalTranslation(PICK_TEXT_POSITION[0], PICK_TEXT_POSITION[1], PICK_TEXT_POSITION[2]);
 		screenText.setColor(ColorRGBA.Black);
 		flatOverlayMgr.attachOverlaySpatial(screenText);

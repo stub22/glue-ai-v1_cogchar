@@ -50,7 +50,6 @@ import org.cogchar.impl.perform.FancyTextChan;
 
 import org.cogchar.impl.trigger.FancyTriggerFacade;
 
-
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -59,9 +58,9 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	private SpeechOutputClient mySOC;
 	private Ident myCharIdent;
 	private String myNickName;
-	private PumaHumanoidMapper  myHumoidMapper;
-	private	PumaWebMapper		myWebMapper;
-	private PumaRenderMapper	myRenderMapper;
+	private PumaHumanoidMapper myHumoidMapper;
+	private PumaWebMapper myWebMapper;
+	private PumaRenderMapper myRenderMapper;
 	private ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 	public String myUpdateBonyRdfPath;
 	public Theater myTheater;
@@ -84,11 +83,11 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myUpdateBonyRdfPath = behavCE.getRKMotionTempFilePath(bonyConfigPathTail);
 
 		BoneRobotConfig boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
-        bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
+		bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf);
 
 		CogcharRenderContext cogRendCtx = bonyRendCtx;
-		
+
 		ClassLoader optCL = myInitialBonyRdfCL;
 
 		myRenderMapper.initLightsAndCamera(cogRendCtx, optCL);
@@ -98,6 +97,8 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myHumoidMapper.connectToVirtualChar();
 		// myPHM.applyInitialBoneRotations();
 		connectAnimOutChans();
+
+		myWebMapper.connectCogCharResources(myInitialBonyRdfCL, myHumoidMapper.getHumanoidRenderContext());
 	}
 
 	private void connectAnimOutChans() {
@@ -220,10 +221,9 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	}
 
 	public BoneRobotConfig readBoneRobotConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
-		return AssemblerUtils.readOneConfigObjFromPath(BoneRobotConfig.class, rdfConfigFlexPath, optResourceClassLoader );
+		return AssemblerUtils.readOneConfigObjFromPath(BoneRobotConfig.class, rdfConfigFlexPath, optResourceClassLoader);
 
 	}
-
 
 	@Override
 	public String toString() {
@@ -237,5 +237,4 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	public void useTempAnims() {
 		logWarning("useTempAnims() not implemented yet");
 	}
-
 }
