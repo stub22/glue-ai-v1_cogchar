@@ -22,7 +22,9 @@ import org.cogchar.bind.lift.ChatConfig;
 import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.bind.lift.LiftConfig;
 import org.cogchar.render.app.humanoid.SceneActions;
+import org.cogchar.render.model.databalls.*;
 import org.cogchar.render.opengl.scene.CinematicMgr;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -35,9 +37,14 @@ public class PumaWebMapper extends BasicDebugger {
 	static String cogbotConvoUrl;
 	CogbotCommunicator cogbot;
 
+	public void connectCogCharResources(ClassLoader bonyRdfCl, HumanoidRenderContext hrc) {
+		BallBuilder.setClassLoader("Cog Char", bonyRdfCl);
+		BallBuilder.initialize(hrc);
+	}
+
 	public void connectMoreWebStuff() {
 		LiftAmbassador.setSceneLauncher(SceneActions.getLauncher()); // Connect Lift to SceneActions so scenes can be triggered from webapp
-		connectLiftInterface(); // Connect Lift so cinematics, cogbot can be triggered from webapp		
+		connectLiftInterface(); // Connect Lift so cinematics, cogbot can be triggered from webapp
 	}
 
 	// Connects ONLY the LiftInterface. For use by org.friendularity.bundle.repo
@@ -52,6 +59,7 @@ public class PumaWebMapper extends BasicDebugger {
 		// Load "chat app" config
 		ChatConfig cc = AssemblerUtils.readOneConfigObjFromPath(ChatConfig.class, CHAT_CONFIG_PATH, hrkindResourceCL);
 		LiftAmbassador.storeChatConfig(cc);
+		BallBuilder.setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
 	}
 
 	public LiftInterface getLiftInterface() {
@@ -81,6 +89,11 @@ public class PumaWebMapper extends BasicDebugger {
 				cogbot = new CogbotCommunicator(cogbotConvoUrl);
 			}
 			return cogbot.getResponse(query).getResponse();
+		}
+
+		@Override
+		public boolean performDataballAction(String action, String text) {
+			return BallBuilder.performAction(action, text);
 		}
 	}
 }

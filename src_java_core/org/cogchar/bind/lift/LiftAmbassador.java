@@ -51,6 +51,8 @@ public class LiftAmbassador {
 		void notifyConfigReady();
 
 		void loadPage(String path);
+
+		String getVariable(String key);
 	}
 
 	public interface LiftAppInterface {
@@ -60,6 +62,8 @@ public class LiftAmbassador {
 		boolean stopNamedCinematic(String name);
 
 		String queryCogbot(String query, String cogbotConvoUrl);
+
+		boolean performDataballAction(String action, String text);
 	}
 
 	public static void activateControlsFromConfig(LiftConfig newConfig) {
@@ -133,6 +137,9 @@ public class LiftAmbassador {
 		} else if ((action.startsWith(LiftConfigNames.partial_P_liftConfig)) && (lift != null)) {
 			String desiredFile = action.replaceAll(LiftConfigNames.partial_P_liftConfig + "_", "");
 			success = activateControlsFromRdf(desiredFile);
+		} else if ((action.startsWith(LiftConfigNames.partial_P_databalls)) && (liftAppInterface != null)) {
+			String databallsAction = action.replaceAll(LiftConfigNames.partial_P_databalls + "_", "");
+			liftAppInterface.performDataballAction(databallsAction, null);
 		}
 		return success;
 	}
@@ -150,6 +157,24 @@ public class LiftAmbassador {
 			theLogger.error("Attempting to query Cogbot, but no liftAppInterface is available");
 		}
 		return response;
+	}
+
+	public static boolean sendTextToCogChar(String actionToken, String text) {
+		boolean success = false;
+		if (actionToken.startsWith(LiftConfigNames.partial_P_databalls)) {
+			String databallsAction = actionToken.replaceAll(LiftConfigNames.partial_P_databalls + "_", "");
+			success = liftAppInterface.performDataballAction(databallsAction, text);
+		}
+		return success;
+	}
+
+	public static String getLiftVariable(String key) {
+		if (lift != null) {
+			return lift.getVariable(key);
+		} else {
+			theLogger.warn("Variable requested from Lift, but no Lift messenger set");
+			return null;
+		}
 	}
 
 	public static void setSceneLauncher(LiftSceneInterface launcher) {

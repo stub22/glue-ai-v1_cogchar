@@ -184,7 +184,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
         }, 
 		SHOW_RESOURCE_BALLS {
             void act(HumanoidRenderContext ctx) {
-                BallBuilder.runBalls(ctx);
+                BallBuilder.runBalls();
             }
             int getTriggerKey() { 
                 return KeyInput.KEY_L;
