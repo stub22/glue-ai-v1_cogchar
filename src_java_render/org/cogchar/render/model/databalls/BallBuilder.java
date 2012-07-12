@@ -23,18 +23,14 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.InputManager;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Ray;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
+import com.jme3.material.Material;
+import com.jme3.math.*;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
 import java.io.InputStream;
-import static java.lang.Math.*;
+import static java.lang.Math.pow;
 import java.util.*;
 import java.util.concurrent.Callable;
 import org.appdapter.core.log.BasicDebugger;
@@ -42,6 +38,7 @@ import org.cogchar.api.scene.*;
 import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.opengl.optic.CameraMgr;
+import org.cogchar.render.opengl.optic.MatFactory;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 import org.cogchar.render.opengl.scene.GeomFactory;
@@ -55,10 +52,8 @@ import org.slf4j.Logger;
  */
 public class BallBuilder extends BasicDebugger {
 
-	//private static final float LOW_DAMPING_COEFFICIENT = -0.1f;
 	private static final float LOW_DAMPING_COEFFICIENT = 0.4f;
-	//private static final float HIGH_DAMPING_COEFFICIENT = -1f;
-	private static final float HIGH_DAMPING_COEFFICIENT = 0.95f;
+	private static final float HIGH_DAMPING_COEFFICIENT = 0.98f;
 	private static final float MASS_COEFFICIENT = 1f;
 	private static HumanoidRenderContext renderContext;
 	private static RenderRegistryClient rrc;
@@ -75,6 +70,7 @@ public class BallBuilder extends BasicDebugger {
 	private static TextMgr textMgr;
 	private static FlatOverlayMgr flatOverlayMgr;
 	private static ClassLoader resourceCl;
+	private static MatFactory materialFactory;
 	private static Map<String, ClassLoader> classloaders = new HashMap<String, ClassLoader>();
 	private static final float[] PICK_TEXT_POSITION = {300f, 30f, 0f};
 	private static final float[] BALL_INJECTION_POSITION = {-100f, 24f, 50f};
@@ -82,6 +78,7 @@ public class BallBuilder extends BasicDebugger {
 	private static Map<String, Ball> balls = new HashMap<String, Ball>();
 	private static BitmapText screenText;
 	private static float damping = LOW_DAMPING_COEFFICIENT;
+	private static Material standardMaterial;
 
 	public static void initialize(HumanoidRenderContext hrc) {
 		renderContext = hrc;
@@ -94,6 +91,8 @@ public class BallBuilder extends BasicDebugger {
 		textMgr = rrc.getSceneTextFacade(null);
 		//ballsNode = new Node("ResourceBalls");
 		flatOverlayMgr = rrc.getSceneFlatFacade(null);
+		materialFactory = rrc.getOpticMaterialFacade(null, null);
+		standardMaterial = materialFactory.makeMatWithOptTexture("Common/MatDefs/Light/Lighting.j3md", "SpecularMap", null);
 		// Below: an experiment in Bullet multithreading (http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:bullet_multithreading)
 		// Currently throwing an NPE
 		//bulletState = rrc.getJme3BulletAppState(null);
@@ -384,6 +383,7 @@ public class BallBuilder extends BasicDebugger {
 		Map<String, Stick> stickMap = new HashMap<String, Stick>();
 		Geometry geometry;
 		RigidBodyControl control;
+		Material material;
 		float radius;
 
 		Ball(String ballUri, Vector3f position, ColorRGBA color, float size) {
@@ -391,18 +391,24 @@ public class BallBuilder extends BasicDebugger {
 			initialPosition = position;
 			radius = size;
 			Sphere ball = new Sphere(20, 20, size);
-			geometry = factory.makeColoredUnshadedGeom(uri, ball, color, null);
+			material = standardMaterial.clone();
+			material.setBoolean("UseMaterialColors", true);
+			material.setColor("Diffuse", color);
+			material.setColor("Ambient", color);
+			material.setColor("Specular", color);
+			material.setFloat("Shininess", 25f);
 			control = new RigidBodyControl(sphereShape, (float) (pow(size, 3) * MASS_COEFFICIENT));
 			control.setRestitution(0.5f);
+			geometry = factory.makeGeom(uri, ball, material, control);
 			reset();
 			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
-					geometry.addControl(control);
+					//geometry.addControl(control);
 					physics.add(control);
 					ballsNode.attachChild(geometry);
-					control.setPhysicsLocation(initialPosition);
+					control.setPhysicsLocation(initialPosition); // Probably unnecessary - setting this here, in reset() above, and using resetAllBalls in buildModelFromTurtle because they don't want to go to the initial position! Probably some sort of jME concurrency thing...
 					return null;
 				}
 			});
@@ -466,11 +472,18 @@ public class BallBuilder extends BasicDebugger {
 		String uri;
 		Geometry geometry;
 		Cylinder stickCylinder;
+		Material material;
 
 		Stick(String stickUri) {
 			uri = stickUri;
 			stickCylinder = new Cylinder(10, 20, 0.25f, 1f);
-			geometry = factory.makeColoredUnshadedGeom(uri, stickCylinder, ColorRGBA.Black, null);
+			material = standardMaterial;
+			material.setBoolean("UseMaterialColors", true);
+			material.setColor("Diffuse", ColorRGBA.Black);
+			material.setColor("Ambient", ColorRGBA.Black);
+			material.setColor("Specular", ColorRGBA.Black);
+			material.setFloat("Shininess", 100f);
+			geometry = factory.makeGeom(uri, stickCylinder, material, null);
 			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
 
 				@Override
@@ -491,9 +504,9 @@ public class BallBuilder extends BasicDebugger {
 
 				// "Auto-brakes": slow this way down if it's getting so fast that the 60Hz physics won't converge
 				if (velocity.length() / 60 > 1) {
-					ball.control.setLinearVelocity(velocity.mult(0.001f));
+					ball.control.setLinearVelocity(velocity.mult(0.01f));
 					logger.warn("Ball velocity at " + velocity.length() + "; auto-braking!");
-					velocity = velocity.mult(0.001f); //In case we use it later;
+					velocity = velocity.mult(0.01f); //In case we use it later;
 				}
 
 				// Compute forces due to other balls and connections
@@ -570,13 +583,16 @@ public class BallBuilder extends BasicDebugger {
 		Ray ray = new Ray(click3d, dir);
 		// Collect intersections between ray and all nodes in results list.
 		ballsNode.collideWith(ray, results);
+		//rrc.getJme3RootDeepNode(null).collideWith(ray, results); // ONLY FOR TESTING
+		
 		/*
-		 * // (Print the results so we see what is going on:) for (int i = 0; i < results.size(); i++) { // (For each
-		 * “hit”, we know distance, impact point, geometry.) float dist = results.getCollision(i).getDistance();
-		 * Vector3f pt = results.getCollision(i).getContactPoint(); String target =
-		 * results.getCollision(i).getGeometry().getName(); logger.info("Selection #" + i + ": " + target + " at " + pt
-		 * + ", " + dist + " WU away."); }
-		 */
+		// (Print the results so we see what is going on:)
+		for (int i = 0; i < results.size(); i++) { // (For each “hit”, we know distance, impact point, geometry.)
+		float dist = results.getCollision(i).getDistance();
+		Vector3f pt = results.getCollision(i).getContactPoint();
+		String target = results.getCollision(i).getGeometry().getName(); logger.info("Selection #" + i + ": " + target + " at " + pt + ", " + dist + " WU away."); }
+		*/ 
+		
 		// Use the results
 		if (results.size() > 0) {
 			// The closest result is the target that the player picked:
