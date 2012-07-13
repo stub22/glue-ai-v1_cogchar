@@ -21,6 +21,12 @@
  */
 package org.cogchar.bundle.demo.convo.ui;
 
+import org.apache.qpid.client.AMQTopic;
+import java.net.URISyntaxException;
+import org.robokind.api.messaging.services.ServiceCommand;
+import org.robokind.avrogen.messaging.ServiceCommandRecord;
+import org.robokind.impl.messaging.services.PortableServiceCommand;
+import org.jflux.api.core.node.ProcessorNode;
 import org.jflux.impl.transport.jms.MessageHeaderAdapter;
 import org.jflux.api.encode.EncodeRequest;
 import org.robokind.avrogen.speech.SpeechRequestRecord;
@@ -33,8 +39,10 @@ import java.util.logging.Logger;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
+import org.apache.qpid.client.AMQQueue;
 import org.cogchar.bundle.demo.convo.*;
 import org.jflux.api.core.node.ConsumerNode;
+import org.jflux.api.core.node.DefaultProcessorNode;
 import org.jflux.api.core.node.ProducerNode;
 import org.jflux.api.core.node.chain.NodeChain;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
@@ -53,8 +61,11 @@ import static org.cogchar.bundle.demo.convo.osgi.ConvoConfigUtils.*;
 public class ConvoConnectionPanel extends javax.swing.JPanel {
     private final static Logger theLogger = Logger.getLogger(ConvoConnectionPanel.class.getName());
     ProducerNode<SpeechRecEventList> mySpeechProducer;
-    Adapter<String,ConvoResponse> myConvoProc;
+    ProcessorNode<String,ConvoResponse> myConvoProc;
+    ConsumerNode<ServiceCommand> myTTSCommnadSender;
+    ConsumerNode<ServiceCommand> myAnimPromptSender;
     ConsumerNode<SpeechRequest> myResponseSender;
+    
     private NodeChain myChain;
     private Source<String> myCogbotIpSource;
     private Listener<String> myCogbotIpSetter;
@@ -119,29 +130,42 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
         return true;
     }
     
-    public Adapter<String,ConvoResponse> getConvoProc(){
+    public ProcessorNode<String,ConvoResponse> getConvoProc(){
         return myConvoProc;
     }
     
     public NodeChain connect(Session recSession, Destination recDest,
             Session ttsSession, Destination ttsDest, String cogbotUrl) {
+
         mySpeechProducer = buildSpeechRecChain(recSession, recDest);
         myResponseSender = buildTTSNodeChain(ttsSession, ttsDest);
+        try{
+            myTTSCommnadSender = buildServiceCommandNodeChain(ttsSession, 
+                    new AMQQueue("speechCommand; {create: always, node: {type: queue}}"));
+            myAnimPromptSender = buildServiceCommandNodeChain(ttsSession, 
+                    new AMQTopic("animPrompt; {create: always, node: {type: topic}}"));
+        }catch(URISyntaxException ex){}
         if(COGBOT.equals(comboService.getSelectedItem())){
-            myConvoProc = new CogbotProcessor(cogbotUrl);
+            myConvoProc = new DefaultProcessorNode<String, ConvoResponse>(new CogbotProcessor(cogbotUrl));
         }else if(PANNOUS.equals(comboService.getSelectedItem())){
-            myConvoProc = new PannousProcessor("", getPannousTimeout());         
+            myConvoProc = new DefaultProcessorNode<String, ConvoResponse>(new PannousProcessor("", getPannousTimeout()));         
         }
-        if(mySpeechProducer == null || myResponseSender == null){
+        if(mySpeechProducer == null || 
+                myResponseSender == null || myTTSCommnadSender == null){
             return null;
         }
+        myTTSCommnadSender.start();
+        myAnimPromptSender.start();
         
         return NodeChainBuilder.build(mySpeechProducer)
             .attach(new SpeechRecFilter()) 
             .attach(new SpeechRecStringFilter())
             .attach(new ConversationInputFilter())
             .attach(myConvoProc)
-            .attach(new ConvoResponseFilter())
+            .attach(new ConvoResponseFilter(
+                    myTTSCommnadSender.getListener(), 
+                    new PortableServiceCommand.Factory(),
+                    myAnimPromptSender.getListener()))
             .attach(new ConvoResponseStringAdapter())
             .attach(new SpeechFormatter("source", "dest"))
             .attach(myResponseSender);
@@ -182,6 +206,23 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
                     session, dest, 
                     new MessageHeaderAdapter("application/speechRequest")));
         }catch(Exception ex){
+            theLogger.log(Level.WARNING,"Error connecting to TTS.",ex);
+            return null;
+        }
+    }
+    
+    private ConsumerNode<ServiceCommand> buildServiceCommandNodeChain(
+            Session session, Destination dest){
+        try{
+            return NodeChainBuilder.build(
+                    EncodeRequest.factory(ServiceCommand.class, new JMSAvroUtils.ByteOutputStreamFactory()))
+                .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
+                    ServiceCommandRecord.class, 
+                    ServiceCommandRecord.SCHEMA$, 
+                    new PortableServiceCommand.MessageRecordAdapter(), 
+                    session, dest, 
+                    new MessageHeaderAdapter("application/service-command")));
+        }catch(JMSException ex){
             theLogger.log(Level.WARNING,"Error connecting to TTS.",ex);
             return null;
         }
