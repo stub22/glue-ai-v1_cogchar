@@ -29,7 +29,8 @@ public class ConversationInputFilter implements
         if(in == null){
             return null;
         }
-        String out = in.replaceAll("[^a-zA-Z0-9 .,;!?]+", " ");
+        String out = in.replaceAll("'", "");
+         out = in.replaceAll("[^a-zA-Z0-9 ]+", " ");
         return out;
     }
 }

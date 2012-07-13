@@ -15,6 +15,7 @@
  */
 package org.cogchar.bundle.demo.convo.ui;
 
+import org.jflux.api.core.node.ProcessorNode;
 import org.jflux.api.core.Adapter;
 import java.util.concurrent.TimeUnit;
 import org.cogchar.bundle.demo.convo.ConvoResponse;
@@ -51,7 +52,7 @@ public class ConversationPanel extends javax.swing.JPanel {
     }
     
     private void connectConvoLog(){
-        Adapter<String,ConvoResponse> convoProc = pnlConvoConnect.getConvoProc();
+        ProcessorNode<String,ConvoResponse> convoProc = pnlConvoConnect.getConvoProc();
         if(convoProc == null){
             return;
         }
