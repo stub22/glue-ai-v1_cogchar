@@ -28,6 +28,7 @@ public class OgreAnimationParser{
     private final static Logger theLogger = Logger.getLogger(OgreAnimationParser.class.getName());
 
     public static AnimationData parseAnimation(String animName, StreamTokenizer st){
+        st.ordinaryChars(0x21, 0x7E);
         int id = 0;
          AnimationData animTable = new AnimationData(animName);
 
@@ -59,7 +60,7 @@ public class OgreAnimationParser{
                 id, animName);
 
         if(StreamTokenizer.TT_WORD != st.nextToken()){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(st.sval);
         }
 
         if(st.sval.equals("{")){
