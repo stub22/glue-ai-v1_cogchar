@@ -16,22 +16,15 @@
 
 package org.cogchar.bundle.app.puma;
 
-import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
-
-import org.cogchar.render.sys.core.RenderRegistryClient;
-
+import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils; // We hook in here to trigger Cinematics on behalf of Lift
 import org.cogchar.api.scene.CinematicConfig;
 import org.cogchar.api.scene.LightsCameraConfig;
-import org.cogchar.render.opengl.optic.CameraMgr;
-import org.cogchar.render.opengl.optic.LightFactory;
-
-import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.app.humanoid.SceneActions;
-
-
-import org.cogchar.render.opengl.scene.CinematicMgr; // We hook in here to trigger Cinematics on behalf of Lift
+import org.cogchar.render.opengl.optic.CameraMgr;
+import org.cogchar.render.opengl.optic.LightFactory;
+import org.cogchar.render.opengl.scene.CinematicMgr;
+import org.cogchar.render.sys.core.RenderRegistryClient;
 
 
 /**
@@ -58,6 +51,11 @@ public class PumaRenderMapper {
 		LightFactory lf = rendRegCli.getOpticLightFacade(null);
 		lf.initLightsFromConfig(lcc, cogRendCtx);		
 	}	
+	public void initCameraMgrHumanoidRenderContext(HumanoidRenderContext hrc) {
+		RenderRegistryClient rendRegCli = hrc.getRenderRegistryClient();
+		CameraMgr cm = rendRegCli.getOpticCameraFacade(null);
+		cm.setHumanoidRenderContext(hrc);
+	}
 	public void initCinematics(CogcharRenderContext cogRendCtx, ClassLoader optRdfResourceCL) { 
 		/*
 		 * And now, we introduce the delightful RDF definitions for cinematics:

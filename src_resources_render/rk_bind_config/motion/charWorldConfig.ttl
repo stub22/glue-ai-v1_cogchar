@@ -60,6 +60,7 @@ bci:charWorldConfig1		rdf:type			bc:BuildableLightsCameraConfig;
 # Now let's list the cameras contained within this config
         bc:camera
                 bci:camera_DEFAULT,
+				bci:camera_HEAD_CAM,
 # This next camera is used by a demo cinematic, but is disabled in SVN code to avoid cluttering the v-world with extra viewports
 # Uncomment it to enable it if you like! 
 #                bci:camera_anotherTestCamera,
@@ -111,6 +112,18 @@ bci:camera_anotherTestCamera
 		bc:viewportXend			0.3;
 		bc:viewportYstart		0.7;
         bc:viewportYend			1.0;
+.
+
+# Position of HEAD_CAM is relative to instantaneous location of attachedTo bone
+bci:camera_HEAD_CAM
+		bc:xPos                 0.0;
+        bc:yPos                 0.0;
+        bc:zPos                 1.0;
+        bc:viewportXstart		0.0;
+		bc:viewportXend			0.3;
+		bc:viewportYstart		0.3;
+        bc:viewportYend			0.6;
+		bc:attachedTo			"LtEye2";
 .
 
 ################################################################################

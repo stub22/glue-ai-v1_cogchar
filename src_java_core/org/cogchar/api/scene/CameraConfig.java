@@ -29,6 +29,7 @@ public class CameraConfig {
 	public float[] cameraPosition = new float[3];
 	public float[] cameraPointDir = new float[3];
 	public float[] cameraViewPort = new float[4];
+	public String attachedItem;
 
 	@Override
 	public String toString() {
@@ -38,11 +39,12 @@ public class CameraConfig {
 	public CameraConfig(Item configItem) {
 		cameraName = configItem.getIdent().getLocalName();
 		for (int index = 0; index < 3; index++) {
-			cameraPosition[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_position[index], null).floatValue();
-			cameraPointDir[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_direction[index], null).floatValue();
+			cameraPosition[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_position[index], 0.0).floatValue();
+			cameraPointDir[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_direction[index], 0.0).floatValue();
 		}
 		for (int index = 0; index < cameraViewPort.length; index++) {
 			cameraViewPort[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_viewport[index], null).floatValue();
 		}
+		attachedItem = ItemFuncs.getString(configItem, SceneConfigNames.P_attachedItem, null);
 	}
 }

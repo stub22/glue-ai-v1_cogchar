@@ -45,6 +45,7 @@ import com.jme3.math.FastMath;
 import org.cogchar.render.sys.physics.PhysicsStuffBuilder;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
+import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.KinematicRagdollControl;
 import com.jme3.material.Material;
@@ -119,7 +120,7 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	public void initStuff(AssetManager assetMgr, Node parentNode, PhysicsSpace ps) {
 
 		myHumanoidModelNode = (Node) assetMgr.loadModel(myConfig.myMeshPath);
-
+		
 		// This was commented out in JMonkey code:
 		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));
 
@@ -355,6 +356,13 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 		for (HumanoidBoneDesc hbd : boneDescs) {
 			attachRagdollBone(hbd);
 		}
+	}
+	
+	// Provided so we can do such things as attach a camera node to bone attachment nodes
+	// We can't do the attaching here, because we need access to the main jME app to enqueue attach on main thread
+	public Node getBoneAttachmentsNode(String boneName) {
+		SkeletonControl sc = myHumanoidModelNode.getControl(SkeletonControl.class); 
+		return sc.getAttachmentsNode(boneName);
 	}
 		
 	public static void applyHumanoidJointLimits(KinematicRagdollControl krc) {
