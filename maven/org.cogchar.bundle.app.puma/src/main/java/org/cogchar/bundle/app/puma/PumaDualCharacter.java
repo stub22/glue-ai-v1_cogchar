@@ -89,9 +89,11 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		CogcharRenderContext cogRendCtx = bonyRendCtx;
 
 		ClassLoader optCL = myInitialBonyRdfCL;
-
+		
+		myRenderMapper.initCameraMgrHumanoidRenderContext(myHumoidMapper.getHumanoidRenderContext()); // Needed so CameraMgr/CoreFeatureAdapter have access to HumanoidRenderContext.getHumanoidFigure 
 		myRenderMapper.initLightsAndCamera(cogRendCtx, optCL);
 		myRenderMapper.initCinematics(cogRendCtx, optCL);
+		
 
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myHumoidMapper.connectToVirtualChar();
