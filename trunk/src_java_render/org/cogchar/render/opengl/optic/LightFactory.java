@@ -15,20 +15,17 @@
  */
 package org.cogchar.render.opengl.optic;
 
-import com.jme3.light.Light;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.Light;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
-import java.lang.Void;
 import org.cogchar.api.scene.LightConfig;
 import org.cogchar.api.scene.LightsCameraConfig;
 import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.sys.core.RenderRegistryAware;
-import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
