@@ -33,6 +33,7 @@ import java.io.InputStream;
 import static java.lang.Math.pow;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.scene.*;
 import org.cogchar.bind.lift.LiftAmbassador;
@@ -59,7 +60,7 @@ public class BallBuilder extends BasicDebugger {
 	private static RenderRegistryClient rrc;
 	private static GeomFactory factory;
 	private static PhysicsSpace physics;
-	private static BulletAppState bulletState;
+	//private static BulletAppState bulletState;
 	private static DeepSceneMgr dsm;
 	private static InputManager im;
 	private static CameraMgr cameraMgr;
@@ -73,10 +74,18 @@ public class BallBuilder extends BasicDebugger {
 	private static MatFactory materialFactory;
 	private static Map<String, ClassLoader> classloaders = new HashMap<String, ClassLoader>();
 	private static final float[] PICK_TEXT_POSITION = {300f, 30f, 0f};
-	private static final float[] BALL_INJECTION_POSITION = {-100f, 24f, 50f};
+	private static final float[] BALL_INJECTION_POSITION = {0f, 24f, 50f};
+	private static final float[] BALL_INJECTION_BOX_SIZE = {20f, 10f, 10f};
+	private static final float BALL_PADDING = 0.1f;
 	private static boolean activated = false;
 	private static Map<String, Ball> balls = new HashMap<String, Ball>();
 	private static BitmapText screenText;
+	private static final int DAMPING_TRIM_CONSTANT = (int) pow(40, 4);
+	private static final float MINIMUM_DAMPING_COEFFICIENT = 0.33f;
+	private static final int RELEASE_DAMPING_PERIOD = 60;
+	private static final float RELEASE_DAMPING = 0.99f;
+	private static final int INFLATION_PERIOD = 250;
+	private static final float INFLATION_DAMPING = MINIMUM_DAMPING_COEFFICIENT;
 	private static float damping = LOW_DAMPING_COEFFICIENT;
 	private static Material standardMaterial;
 
@@ -128,6 +137,7 @@ public class BallBuilder extends BasicDebugger {
 			for (RotationConfig rc : cc.myRCs) {
 				buildFromRotation(rc, null);
 			}
+			damping = computeIdealDamping();
 		}
 
 		public static void buildFromTrack(CinematicTrack ct, Ball parentBall) {
@@ -254,6 +264,7 @@ public class BallBuilder extends BasicDebugger {
 			}
 		}
 		resetAllBalls();
+		damping = computeIdealDamping();
 		return true;
 	}
 
@@ -275,32 +286,13 @@ public class BallBuilder extends BasicDebugger {
 		if (liftShowAllObjectsString != null) {
 			showAllObjects = Boolean.valueOf(liftShowAllObjectsString);
 		}
-		//String liftDampingStateString = LiftAmbassador.getLiftVariable(DataballStrings.dampingState);
-		//if (liftDampingStateString != null) {damping = Boolean.valueOf(liftDampingStateString)? HIGH_DAMPING_COEFFICIENT : LOW_DAMPING_COEFFICIENT;}
 		if (resourceCl != null) {
 			if (activated) {
-				activated = false;
-				renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
-
-					@Override
-					public Void call() throws Exception {
-						dsm.detachTopSpatial(ballsNode);
-						return null;
-					}
-				});
-
+				stop();
 			}
 			resetAllBalls();
 			success = buildModelFromTurtle(resourceCl, configPath, showAllObjects);
-			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
-
-				@Override
-				public Void call() throws Exception {
-					dsm.attachTopSpatial(ballsNode);
-					activated = true;
-					return null;
-				}
-			});
+			start();
 		} else {
 			logger.error("Databalls graph using Lift settings requested, but could not find classloader with key " + classloaderKey);
 		}
@@ -344,26 +336,36 @@ public class BallBuilder extends BasicDebugger {
 				ballsNode = new Node("Databalls");
 			}
 		}
-		new Timer().schedule(new ClearBalls(), 500);
+		new Timer().schedule(new ClearBalls(), 500); // We're waiting a whole 1/2s; usually 1/60s should be enough, but if we are experiencing excessive velocities, updates may be occurring very slowly
+		lastRadius = Float.NaN; // make sure assignStartingLocation knows we are starting over
 	}
 
 	public static void stop() {
 		activated = false;
-		renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread in case this is being run from a different one - oh no!
+		Future<Object> detachFuture = renderContext.enqueueCallable(new Callable<Boolean>() { // Do this on main render thread in case this is being run from a different one - oh no!
 
 			@Override
-			public Void call() throws Exception {
+			public Boolean call() throws Exception {
 				dsm.detachTopSpatial(ballsNode);
 				if (screenText != null) {
 					flatOverlayMgr.detachOverlaySpatial(screenText);
 				}
-				return null;
+				return true;
 			}
 		});
+		try { // Wait until call is complete before returning
+			detachFuture.get(5, java.util.concurrent.TimeUnit.SECONDS);
+		} catch (Exception e) {
+			logger.error("Future for detaching ballsNode did not return! Info: " + e.toString());
+		}
+		// Reset startMode for next "inflation" period
+		startMode = true;
+		updateCount = 0;
 	}
 
 	public static void start() {
 		resetAllBalls();
+
 		renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread in case this is being run from a different one - oh no!
 
 			@Override
@@ -436,8 +438,7 @@ public class BallBuilder extends BasicDebugger {
 		static Ball addBall(String ballUri, ColorRGBA color, float size) {
 			Ball newBall;
 			if (!balls.containsKey(ballUri)) {
-				// Line the balls up so they don't touch. This little trick will need to get more sophisticated for more general cases / ball sizes / etc.
-				Vector3f position = new Vector3f(BALL_INJECTION_POSITION[0] + 3 * balls.size(), BALL_INJECTION_POSITION[1], BALL_INJECTION_POSITION[2]);
+				Vector3f position = assignStartingLocation(size);
 				newBall = new Ball(ballUri, position, color, size);
 				balls.put(ballUri, newBall);
 			} else {
@@ -494,9 +495,111 @@ public class BallBuilder extends BasicDebugger {
 			});
 		}
 	}
+	private static float[] newPosition = new float[3];
+	private static Float lastRadius = Float.NaN;
+	private static float biggestRadiusThisLine;
+	private static float biggestRadiusThisPlane;
 
-	public static void applyUpdates() { // Called in ModularRenderContext.doUpdate - not sure if we want to hook in way "down" there or not
+	private static Vector3f assignStartingLocation(float ballRadius) {
+		if (lastRadius.isNaN()) { // If so, we are starting a fresh set of balls
+			for (int i = 0; i < newPosition.length; i++) {
+				newPosition[i] = firstPosition(i);
+			}
+			lastRadius = 0f;
+			biggestRadiusThisLine = ballRadius;
+			biggestRadiusThisPlane = ballRadius;
+		}
+		newPosition[0] += lastRadius + ballRadius + BALL_PADDING;
+		if (exceedsBound(0)) { // Time for a new line!
+			newPosition[0] = firstPosition(0);
+			newPosition[1] += biggestRadiusThisLine + ballRadius + BALL_PADDING;
+			if (exceedsBound(1)) { // Time for a new plane!
+				newPosition[1] = firstPosition(1);
+				newPosition[2] += biggestRadiusThisPlane + ballRadius + BALL_PADDING;
+				if (exceedsBound(2)) {
+					logger.warn("Balls are overflowing from injection box!");
+				}
+				biggestRadiusThisPlane = ballRadius;
+			} else {
+				biggestRadiusThisLine = ballRadius;
+			}
+		}
+		lastRadius = ballRadius;
+		if (ballRadius > biggestRadiusThisLine) {
+			newPosition[1] += (ballRadius - biggestRadiusThisLine); // We need to shift this ball (and rest of line) up to clear last line now that we have bigger radii
+			biggestRadiusThisLine = ballRadius;
+		}
+		if (ballRadius > biggestRadiusThisPlane) {
+			newPosition[2] += (ballRadius - biggestRadiusThisPlane); // We need to shift this ball (and rest of plane) back to clear last plane now that we have bigger radii
+			biggestRadiusThisPlane = ballRadius;
+		}
+		return new Vector3f(newPosition[0], newPosition[1], newPosition[2]);
+	}
+
+	private static boolean exceedsBound(int dimension) {
+		return (newPosition[dimension] > BALL_INJECTION_POSITION[dimension] + BALL_INJECTION_BOX_SIZE[dimension] / 2);
+	}
+
+	private static float firstPosition(int dimension) {
+		return BALL_INJECTION_POSITION[dimension] - BALL_INJECTION_BOX_SIZE[dimension] / 2;
+	}
+
+	private static float computeIdealDamping() {
+		double maxInstabilityScore = 0;
+		Map<String, Integer> ballConnectionStrength = new HashMap<String, Integer>();
+		for (String ballUri : balls.keySet()) {
+			int thisConnectivity = 0;
+			if (ballConnectionStrength.containsKey(ballUri)) {
+				thisConnectivity += ballConnectionStrength.get(ballUri);
+			}
+			Ball ball = balls.get(ballUri);
+			for (String connectedUri : ball.connectionMap.keySet()) {
+				int connectionStrength = ball.connectionMap.get(connectedUri);
+				thisConnectivity += connectionStrength;
+				int thatConnectivity = 0;
+				if (ballConnectionStrength.containsKey(connectedUri)) {
+					thatConnectivity += ballConnectionStrength.get(connectedUri);
+				}
+				thatConnectivity += connectionStrength;
+				ballConnectionStrength.put(connectedUri, thatConnectivity);
+			}
+			ballConnectionStrength.put(ballUri, thisConnectivity);
+		}
+		for (String ballUri : ballConnectionStrength.keySet()) {
+			if (balls.containsKey(ballUri)) {
+				Ball ball = balls.get(ballUri);
+				double instabilityScore = ballConnectionStrength.get(ballUri) / pow(ball.radius, 3);
+				if (instabilityScore > maxInstabilityScore) {
+					maxInstabilityScore = instabilityScore;
+				}
+			}
+		}
+		float idealDamping = new Float(1 - DAMPING_TRIM_CONSTANT / pow(maxInstabilityScore, 4));
+		idealDamping = Math.max(idealDamping, MINIMUM_DAMPING_COEFFICIENT);
+		logger.info("Damping coefficient of " + idealDamping + " computed for current configuration.");
+		return idealDamping;
+	}
+	private static boolean startMode = true;
+	private static int updateCount = 0;
+
+	public static void applyUpdates(float tpf) { // Called in ModularRenderContext.doUpdate - not sure if we want to hook in way "down" there or not
+		//boolean temp = activated; //TEST ONLY
+		//activated = false; //LOCK OFF! FOR TEST ONLY!!
 		if (activated) {
+			// Set special dampings to allow for quick "inflation" during start-up period
+			float currentDamping = damping;
+			if (startMode) {
+				updateCount += 1;
+				if (updateCount < RELEASE_DAMPING_PERIOD) {
+					currentDamping = RELEASE_DAMPING;
+				} else if (updateCount < (RELEASE_DAMPING_PERIOD + INFLATION_PERIOD)) {
+					currentDamping = INFLATION_DAMPING;
+				} else {
+					startMode = false;
+					logger.info("Startup damping mode complete; 1/tpf is " + 1 / tpf + " damping = " + currentDamping);
+				}
+
+			}
 			for (Ball ball : balls.values()) {
 				ball.control.setGravity(Vector3f.ZERO);
 				Vector3f location = ball.geometry.getLocalTranslation();
@@ -548,10 +651,9 @@ public class BallBuilder extends BasicDebugger {
 					}
 				}
 
-				// Compute damping force
 				//Vector3f dampingForce = velocity.mult(damping); // Change damping force physics here
 				Vector3f dampingForce = Vector3f.ZERO; // Or not. At moment built-in jME/bullet damping seems to work a little better
-				ball.control.setLinearDamping(damping);
+
 
 				// Apply forces
 				Vector3f totalForce = potentialForce.add(springForce).add(dampingForce);
@@ -563,13 +665,17 @@ public class BallBuilder extends BasicDebugger {
 				//logger.info("forceMagnitude is " + forceMagnitude);
 				// At the first update, locations may not yet be initialized, so the balls may both have position at the origin resulting in infinite force
 				if ((!forceMagnitude.isInfinite()) && (!forceMagnitude.isNaN())) {
+					// Apply conservative forces
 					ball.control.applyCentralForce(totalForce);
+					// Set damping force
+					ball.control.setLinearDamping(currentDamping);
 				} else {
 					logger.info("Invalid force in BallBuilder.applyUpdates (normal during initial startup)");
 				}
 
 			}
 		}
+		//activated = temp; //TEST ONLY
 	}
 
 	public static void pick() {
