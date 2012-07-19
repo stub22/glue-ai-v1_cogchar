@@ -79,8 +79,8 @@ public class TextMgr extends RenderRegistryAware {
 			commandList = commandList + commandLine;
 		}
 		BitmapText bt = getScaledBitmapText(commandList, scale);
-		// Sets offset to make sure text doesn't extend past right edge of screen - the last "fudge factor" probably shouldn't be hard coded
-		float xPos = settings.getWidth() - longestLineLength * scale * 1.5f;
+		// Sets offset to make sure text doesn't extend past right edge of screen - the last "fudge factors" might not want to be hard coded
+		float xPos = settings.getWidth() - (longestLineLength*scale*9.6f + 2f);
 		float yPos = settings.getHeight() - 2f;
 		float zPos = 0.0f;
 		bt.setLocalTranslation(xPos, yPos, zPos);
