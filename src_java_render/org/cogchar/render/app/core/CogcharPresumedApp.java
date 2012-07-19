@@ -70,7 +70,7 @@ public abstract class CogcharPresumedApp<CRCT extends CogcharRenderContext> exte
 	}
 	public final void setAppSettings(AppSettings someSettings) { 
 		setSettings(someSettings);
-		getRenderContext().registerJMonkeyAppSettings(settings);		
+		getRenderContext().registerJMonkeyAppSettings(someSettings); // Hmm this was registering settings, not someSettings. Where is settings, com.jme3.app.Application's field?
 	}
 	protected void applySettings() { 
 	/* http://jmonkeyengine.org/wiki/doku.php/jme3:intermediate:appsettings
@@ -86,6 +86,8 @@ public abstract class CogcharPresumedApp<CRCT extends CogcharRenderContext> exte
 		someSettings.setRenderer(myConfigEmitter.getLWJGL_RendererName());
 		someSettings.setWidth(myConfigEmitter.getCanvasWidth());
 		someSettings.setHeight(myConfigEmitter.getCanvasHeight());
+		someSettings.setFrameRate(60); // No need to run faster than this; we'd just be wasting resources
+		setAppSettings(someSettings);
 	}
     @Override  public void initialize() {
 		/*
