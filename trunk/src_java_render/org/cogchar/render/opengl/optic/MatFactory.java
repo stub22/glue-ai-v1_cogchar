@@ -29,7 +29,11 @@ import org.cogchar.render.sys.core.RenderRegistryFuncs;
  */
 public class MatFactory extends RenderRegistryAware {
 
-	public static final String PATH_MATERIAL_UNSHADED = "Common/MatDefs/Misc/Unshaded.j3md";
+	public static final String PATH_MAT_DEF_UNSHADED = "Common/MatDefs/Misc/Unshaded.j3md";
+	public static final String PATH_MAT_DEF_COLORED_TEXTURED = "Common/MatDefs/Misc/ColoredTextured.j3md";
+	public static final String PATH_MAT_DEF_PARTICLE = "Common/MatDefs/Misc/Particle.j3md";
+	public static final String PATH_MAT_DEF_SHOW_NORMALS = "Common/MatDefs/Misc/ShowNormals.j3md";
+	
 
 	public Material makeMatWithOptTexture(String matName, String matTextName, Texture t) {
 		Material mat = new Material(findJme3AssetManager(null), matName);
@@ -42,14 +46,14 @@ public class MatFactory extends RenderRegistryAware {
 		return makeMatWithOptTexture(matName, "ColorMap", texture);
 	}
 	public Material makeUnshadedMatWithOptPixelMapTexture(Texture texture) {
-		return makeMatWithOptPixelMapTexture(PATH_MATERIAL_UNSHADED, texture);
+		return makeMatWithOptPixelMapTexture(PATH_MAT_DEF_UNSHADED, texture);
 	}
 	
 	public Material makeUnshadedMat() {
 		return makeUnshadedMatWithOptPixelMapTexture(null);
 	}
 	public Material makeColoredUnshadedMat(ColorRGBA color) {
-		Material mat = makeMatWithOptTexture(PATH_MATERIAL_UNSHADED, null, null);
+		Material mat = makeMatWithOptTexture(PATH_MAT_DEF_UNSHADED, null, null);
 		mat.setColor("Color", color);
 		return mat;
 	}
@@ -63,7 +67,7 @@ public class MatFactory extends RenderRegistryAware {
 		if (optWrapMode != null) {
 			texture.setWrap(optWrapMode);
 		}
-		return makeMatWithOptTexture(PATH_MATERIAL_UNSHADED, "ColorMap", texture);
+		return makeMatWithOptTexture(PATH_MAT_DEF_UNSHADED, "ColorMap", texture);
 	}	
 	public Material makeJmonkeyLogoMat() { 
 		return makeTexturedUnshadedMat(TextureFactory.PATH_LOGO_MONKEY, false, null);

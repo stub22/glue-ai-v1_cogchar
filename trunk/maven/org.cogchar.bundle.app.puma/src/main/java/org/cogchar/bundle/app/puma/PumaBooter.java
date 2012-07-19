@@ -1,5 +1,4 @@
-/*
- *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
+/*  Copyright 2012 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,10 +23,17 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 
+import org.appdapter.core.matdat.SheetRepo;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QuerySolution;
+
+
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
+
+import  org.appdapter.core.store.Repo;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -72,6 +78,7 @@ public class PumaBooter extends BasicDebugger {
 		public String getPanelKind() {
 			return "SLIM";
 		}
+		
 	}
 	public BootResult bootUnderOSGi(BundleContext bundleCtx) {
 		ContextMediator cm = new ContextMediator();
@@ -97,8 +104,30 @@ public class PumaBooter extends BasicDebugger {
 			final HumanoidRenderContext hrc = pac.initHumanoidRenderContext(panelKind);
 			logInfo("%%%%%%%%%%%%%%%%%%% Calling mediator.notifyContextBuilt()");
 			mediator.notifyContextBuilt(pac);
+			
+			/* At this point we have a blank, generic hrc to work with.
+			 * No characters or config have been populated, no OpenGL 
+			 * window has been opened, and no connection has been made
+			 * to Robokind.
+			 * 
+			 * We are ready to decide "what kind of application are we running?",
+			 * without irrevocably committing any more than necessary (so that
+			 * user/agents can adjust/reshape the runtime as it progresses).
+			 * 
+			 * As of 2012-07-19, we are still relying on a half-baked notion
+			 * of "ConfigEmitters".  So now we will "set them up".  What
+			 * does that mean?   Should it be possible for anything in these
+			 * emitters to influence the pac.startOpenGLCanvas process?
+			 * Perhaps not.  However, it makes more sense for them to influence
+			 * the subsequent runPostInitLaunchOnJmeThread().
+			 * 
+			 */
+			
+			
 			logInfo("%%%%%%%%%%%%%%%%%%% Calling setupConfigEmitters()");
 			setupConfigEmitters(hrc, mediator);
+			
+			
 			boolean allowJFrames = mediator.getFlagAllowJFrames();
 /*  
 Start up the JME OpenGL canvas, which will in turn initialize the Cogchar rendering "App" (in JME3 lingo).
@@ -158,5 +187,9 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 			behavCE.setLocalFileRootDir(filesysRootPath);
 		}		
 	}
-
+	private Repo findMainRepo(ContextMediator mediator) {
+		Repo r = null;
+		
+		return r;
+	}
 }
