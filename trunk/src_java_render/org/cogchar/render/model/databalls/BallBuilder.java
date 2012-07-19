@@ -15,6 +15,10 @@
  */
 package org.cogchar.render.model.databalls;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.*;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
@@ -65,7 +69,6 @@ public class BallBuilder extends BasicDebugger {
 	private static InputManager im;
 	private static CameraMgr cameraMgr;
 	private static Node ballsNode = new Node("Databalls");
-	private static final SphereCollisionShape sphereShape = new SphereCollisionShape(1.0f);
 	private static Logger logger = getLoggerForClass(BallBuilder.class);
 	private static CinematicConfig aConfigToDemo;
 	private static TextMgr textMgr;
@@ -88,6 +91,7 @@ public class BallBuilder extends BasicDebugger {
 	private static final float INFLATION_DAMPING = MINIMUM_DAMPING_COEFFICIENT;
 	private static float damping = LOW_DAMPING_COEFFICIENT;
 	private static Material standardMaterial;
+	private static Model lastModel; // May be only temporary; holds last model loaded so we can run SPARQL queries on it
 
 	public static void initialize(HumanoidRenderContext hrc) {
 		renderContext = hrc;
@@ -107,6 +111,186 @@ public class BallBuilder extends BasicDebugger {
 		//bulletState = rrc.getJme3BulletAppState(null);
 		// This *may* improve performance
 		//bulletState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // Does the bulletState need to be attached to the state manager, or is it already?
+	}
+
+	static class Ball {
+
+		String uri;
+		Vector3f initialPosition;
+		Map<String, Integer> connectionMap = new HashMap<String, Integer>();
+		Map<String, Stick> stickMap = new HashMap<String, Stick>();
+		Geometry geometry;
+		RigidBodyControl control;
+		Material material;
+		float radius;
+
+		Ball(String ballUri, Vector3f position, ColorRGBA color, float size) {
+			uri = ballUri;
+			initialPosition = position;
+			radius = size;
+			Sphere ball = new Sphere(20, 20, size);
+			material = standardMaterial.clone();
+			material.setBoolean("UseMaterialColors", true);
+			material.setColor("Diffuse", color);
+			material.setColor("Ambient", color);
+			material.setColor("Specular", color);
+			material.setFloat("Shininess", 25f);
+			control = new RigidBodyControl(sphereShape(size), (float) (pow(size, 3) * MASS_COEFFICIENT));
+			control.setRestitution(0.5f);
+			geometry = factory.makeGeom(uri, ball, material, control);
+			reset();
+			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+
+				@Override
+				public Void call() throws Exception {
+					//geometry.addControl(control);
+					physics.add(control);
+					ballsNode.attachChild(geometry);
+					control.setPhysicsLocation(initialPosition); // Probably unnecessary - setting this here, in reset() above, and using resetAllBalls in buildModelFromTurtle because they don't want to go to the initial position! Probably some sort of jME concurrency thing...
+					return null;
+				}
+			});
+		}
+
+		static Ball addBall(String ballUri) {
+			return addBall(ballUri, ColorRGBA.Blue);
+		}
+
+		static Ball addBall(String ballUri, Vector3f position) {
+			Ball newBall;
+			if (!balls.containsKey(ballUri)) {
+				newBall = new Ball(ballUri, position, ColorRGBA.Blue, 1f);
+				balls.put(ballUri, newBall);
+			} else {
+				newBall = balls.get(ballUri);
+			}
+			return newBall;
+		}
+
+		static Ball addBall(String ballUri, ColorRGBA color) {
+			return addBall(ballUri, color, 1.0f);
+		}
+
+		static Ball addBall(String ballUri, ColorRGBA color, float size) {
+			Ball newBall;
+			if (!balls.containsKey(ballUri)) {
+				Vector3f position = assignStartingLocation(size);
+				newBall = new Ball(ballUri, position, color, size);
+				balls.put(ballUri, newBall);
+			} else {
+				newBall = balls.get(ballUri);
+			}
+			return newBall;
+		}
+
+		void addConnection(String connectedBallUri, String stickUri) {
+			addConnection(connectedBallUri, stickUri, 1);
+		}
+
+		void addConnection(String connectedBallUri, String stickUri, int strength) {
+			if (connectionMap.containsKey(connectedBallUri)) {
+				connectionMap.put(connectedBallUri, connectionMap.get(connectedBallUri) + strength);
+			} else {
+				connectionMap.put(connectedBallUri, strength);
+				stickMap.put(connectedBallUri, new Stick(stickUri));
+			}
+		}
+
+		final void reset() {
+			control.setPhysicsLocation(initialPosition);
+			// Give the balls a little random motion so they will shake down to stable equilibrium
+			Random random = new Random(new Long(uri.hashCode()));
+			control.setLinearVelocity(new Vector3f(random.nextFloat() - 0.5f, 0.25f * (random.nextFloat() - 0.5f), random.nextFloat() - 0.5f));
+		}
+		private static SphereCollisionShape lastShape;
+		private static float lastRadius = -1f;
+
+		private static SphereCollisionShape sphereShape(float radius) {
+			if (radius == lastRadius) {
+				return lastShape; // Recycle old sphereShape if possible for efficiency
+			} else {
+				SphereCollisionShape newShape = new SphereCollisionShape(radius);
+				lastShape = newShape;
+				lastRadius = radius;
+				return newShape;
+			}
+		}
+	}
+
+	static class Stick {
+
+		String uri;
+		Geometry geometry;
+		Cylinder stickCylinder;
+		Material material;
+
+		Stick(String stickUri) {
+			uri = stickUri;
+			stickCylinder = new Cylinder(10, 20, 0.25f, 1f);
+			material = standardMaterial;
+			material.setBoolean("UseMaterialColors", true);
+			material.setColor("Diffuse", ColorRGBA.Black);
+			material.setColor("Ambient", ColorRGBA.Black);
+			material.setColor("Specular", ColorRGBA.Black);
+			material.setFloat("Shininess", 100f);
+			geometry = factory.makeGeom(uri, stickCylinder, material, null);
+			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+
+				@Override
+				public Void call() throws Exception {
+					ballsNode.attachChild(geometry);
+					return null;
+				}
+			});
+		}
+	}
+	private static float[] newPosition = new float[3];
+	private static Float lastRadius = Float.NaN;
+	private static float biggestRadiusThisLine;
+	private static float biggestRadiusThisPlane;
+
+	private static Vector3f assignStartingLocation(float ballRadius) {
+		if (lastRadius.isNaN()) { // If so, we are starting a fresh set of balls
+			for (int i = 0; i < newPosition.length; i++) {
+				newPosition[i] = firstPosition(i);
+			}
+			lastRadius = 0f;
+			biggestRadiusThisLine = ballRadius;
+			biggestRadiusThisPlane = ballRadius;
+		}
+		newPosition[0] += lastRadius + ballRadius + BALL_PADDING;
+		if (exceedsBound(0)) { // Time for a new line!
+			newPosition[0] = firstPosition(0);
+			newPosition[1] += biggestRadiusThisLine + ballRadius + BALL_PADDING;
+			if (exceedsBound(1)) { // Time for a new plane!
+				newPosition[1] = firstPosition(1);
+				newPosition[2] += biggestRadiusThisPlane + ballRadius + BALL_PADDING;
+				if (exceedsBound(2)) {
+					logger.warn("Balls are overflowing from injection box!");
+				}
+				biggestRadiusThisPlane = ballRadius;
+			} else {
+				biggestRadiusThisLine = ballRadius;
+			}
+		}
+		lastRadius = ballRadius;
+		if (ballRadius > biggestRadiusThisLine) {
+			newPosition[1] += (ballRadius - biggestRadiusThisLine); // We need to shift this ball (and rest of line) up to clear last line now that we have bigger radii
+			biggestRadiusThisLine = ballRadius;
+		}
+		if (ballRadius > biggestRadiusThisPlane) {
+			newPosition[2] += (ballRadius - biggestRadiusThisPlane); // We need to shift this ball (and rest of plane) back to clear last plane now that we have bigger radii
+			biggestRadiusThisPlane = ballRadius;
+		}
+		return new Vector3f(newPosition[0], newPosition[1], newPosition[2]);
+	}
+
+	private static boolean exceedsBound(int dimension) {
+		return (newPosition[dimension] > BALL_INJECTION_POSITION[dimension] + BALL_INJECTION_BOX_SIZE[dimension] / 2);
+	}
+
+	private static float firstPosition(int dimension) {
+		return BALL_INJECTION_POSITION[dimension] - BALL_INJECTION_BOX_SIZE[dimension] / 2;
 	}
 
 	public static void storeCinematicConfig(CinematicConfig config) {
@@ -228,19 +412,15 @@ public class BallBuilder extends BasicDebugger {
 		}
 	}
 
-	public static boolean buildModelFromTurtle(ClassLoader loader, String configPath, boolean ballsForAllObjects) {
-		Model rdfModel = ModelFactory.createDefaultModel();
-		try {
-			InputStream stream = loader.getResourceAsStream(configPath);
-			rdfModel.read(stream, null, "TURTLE");
-		} catch (Exception e) {
-			logger.warn("Exception attemping to read Turtle file: " + e);
-			return false;
-		}
+	public static void buildModelFromJena(Model rdfModel, boolean ballsForAllObjects) {
 		/*
 		 * NodeIterator objects = rdfModel.listObjects(); while (objects.hasNext()) { RDFNode node = objects.next();
 		 * logger.info("Node read: " + node.toString()); }
 		 */
+		if (activated) {
+			stop();
+		}
+		resetAllBalls();
 		ResIterator res = rdfModel.listSubjects();
 		while (res.hasNext()) {
 			Resource node = res.nextResource();
@@ -265,11 +445,34 @@ public class BallBuilder extends BasicDebugger {
 		}
 		resetAllBalls();
 		damping = computeIdealDamping();
-		return true;
+		start();
 	}
 
-	public static void buildModelFromTurtle(ClassLoader loader, String configPath) {
-		buildModelFromTurtle(loader, configPath, false);
+	public static Model loadModelFromTurtle(ClassLoader loader, String configPath) {
+		Model rdfModel = ModelFactory.createDefaultModel();
+		try {
+			InputStream stream = loader.getResourceAsStream(configPath);
+			rdfModel.read(stream, null, "TURTLE");
+		} catch (Exception e) {
+			logger.warn("Exception attemping to read Turtle file: " + e);
+			return null;
+		}
+		lastModel = rdfModel;
+		return rdfModel;
+	}
+
+	public static boolean buildModelFromTurtle(ClassLoader loader, String configPath, boolean ballsForAllObjects) {
+		boolean success = false;
+		Model rdfModel = loadModelFromTurtle(loader, configPath);
+		if (rdfModel != null) {
+			buildModelFromJena(rdfModel, ballsForAllObjects);
+			success = true;
+		}
+		return success;
+	}
+
+	public static boolean buildModelFromTurtle(ClassLoader loader, String configPath) {
+		return buildModelFromTurtle(loader, configPath, false);
 	}
 
 	public static boolean buildModelFromTurtleUsingLiftSettings(String configPath) {
@@ -287,16 +490,36 @@ public class BallBuilder extends BasicDebugger {
 			showAllObjects = Boolean.valueOf(liftShowAllObjectsString);
 		}
 		if (resourceCl != null) {
-			if (activated) {
-				stop();
-			}
-			resetAllBalls();
+
 			success = buildModelFromTurtle(resourceCl, configPath, showAllObjects);
-			start();
+
 		} else {
 			logger.error("Databalls graph using Lift settings requested, but could not find classloader with key " + classloaderKey);
 		}
 		return success;
+	}
+
+	public static boolean buildModelFromSparql(Model modelToQuery, String queryString) {
+		boolean success = false;
+		Query query = QueryFactory.create(queryString);
+		//Model model = loadModelFromTurtle(loader, configPath); // Not sure if we want this to build its own model or not...
+		//if (model != null) {
+		QueryExecution qexec = QueryExecutionFactory.create(query, modelToQuery);
+		Model resultModel = qexec.execDescribe();
+		qexec.close();
+		buildModelFromJena(resultModel, true);
+		success = true;
+		//}
+		return success;
+	}
+
+	public static boolean buildModelFromSpaqrlUsingLiftSettings(String queryString) {
+		if (lastModel != null) {
+			return buildModelFromSparql(lastModel, queryString);
+		} else {
+			logger.error("Can't build model from Sparql - no model for query loaded");
+			return false;
+		}
 	}
 
 	public static void setClassLoader(ClassLoader loader) {
@@ -308,7 +531,7 @@ public class BallBuilder extends BasicDebugger {
 	}
 
 	public static boolean performAction(String action, String text) {
-		boolean success = false;
+		boolean success = true;
 		if (action.equals(DataballStrings.viewRdfGraph)) {
 			success = buildModelFromTurtleUsingLiftSettings(text);
 		} else if (action.equals(DataballStrings.onOff)) {
@@ -320,8 +543,11 @@ public class BallBuilder extends BasicDebugger {
 			clear();
 		} else if (action.equals(DataballStrings.demo)) {
 			showCinematicConfig();
+		} else if (action.equals(DataballStrings.viewSparqlQuery)) {
+			success = buildModelFromSpaqrlUsingLiftSettings(text);
 		} else {
 			logger.error("Action sent to Databalls, but not recognized: " + action);
+			success = false;
 		}
 		return success;
 	}
@@ -336,7 +562,7 @@ public class BallBuilder extends BasicDebugger {
 				ballsNode = new Node("Databalls");
 			}
 		}
-		new Timer().schedule(new ClearBalls(), 500); // We're waiting a whole 1/2s; usually 1/60s should be enough, but if we are experiencing excessive velocities, updates may be occurring very slowly
+		new Timer().schedule(new ClearBalls(), 500); // We're waiting a whole 1/2s; if we are experiencing excessive velocities, updates may be occurring very slowly
 		lastRadius = Float.NaN; // make sure assignStartingLocation knows we are starting over
 	}
 
@@ -375,173 +601,6 @@ public class BallBuilder extends BasicDebugger {
 				return null;
 			}
 		});
-	}
-
-	static class Ball {
-
-		String uri;
-		Vector3f initialPosition;
-		Map<String, Integer> connectionMap = new HashMap<String, Integer>();
-		Map<String, Stick> stickMap = new HashMap<String, Stick>();
-		Geometry geometry;
-		RigidBodyControl control;
-		Material material;
-		float radius;
-
-		Ball(String ballUri, Vector3f position, ColorRGBA color, float size) {
-			uri = ballUri;
-			initialPosition = position;
-			radius = size;
-			Sphere ball = new Sphere(20, 20, size);
-			material = standardMaterial.clone();
-			material.setBoolean("UseMaterialColors", true);
-			material.setColor("Diffuse", color);
-			material.setColor("Ambient", color);
-			material.setColor("Specular", color);
-			material.setFloat("Shininess", 25f);
-			control = new RigidBodyControl(sphereShape, (float) (pow(size, 3) * MASS_COEFFICIENT));
-			control.setRestitution(0.5f);
-			geometry = factory.makeGeom(uri, ball, material, control);
-			reset();
-			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
-
-				@Override
-				public Void call() throws Exception {
-					//geometry.addControl(control);
-					physics.add(control);
-					ballsNode.attachChild(geometry);
-					control.setPhysicsLocation(initialPosition); // Probably unnecessary - setting this here, in reset() above, and using resetAllBalls in buildModelFromTurtle because they don't want to go to the initial position! Probably some sort of jME concurrency thing...
-					return null;
-				}
-			});
-		}
-
-		static Ball addBall(String ballUri) {
-			return addBall(ballUri, ColorRGBA.Blue);
-		}
-
-		static Ball addBall(String ballUri, Vector3f position) {
-			Ball newBall;
-			if (!balls.containsKey(ballUri)) {
-				newBall = new Ball(ballUri, position, ColorRGBA.Blue, 1f);
-				balls.put(ballUri, newBall);
-			} else {
-				newBall = balls.get(ballUri);
-			}
-			return newBall;
-		}
-
-		static Ball addBall(String ballUri, ColorRGBA color) {
-			return addBall(ballUri, color, 1.0f);
-		}
-
-		static Ball addBall(String ballUri, ColorRGBA color, float size) {
-			Ball newBall;
-			if (!balls.containsKey(ballUri)) {
-				Vector3f position = assignStartingLocation(size);
-				newBall = new Ball(ballUri, position, color, size);
-				balls.put(ballUri, newBall);
-			} else {
-				newBall = balls.get(ballUri);
-			}
-			return newBall;
-		}
-
-		void addConnection(String connectedBallUri, String stickUri) {
-			addConnection(connectedBallUri, stickUri, 1);
-		}
-
-		void addConnection(String connectedBallUri, String stickUri, int strength) {
-			if (connectionMap.containsKey(connectedBallUri)) {
-				connectionMap.put(connectedBallUri, connectionMap.get(connectedBallUri) + strength);
-			} else {
-				connectionMap.put(connectedBallUri, strength);
-				stickMap.put(connectedBallUri, new Stick(stickUri));
-			}
-		}
-
-		final void reset() {
-			control.setPhysicsLocation(initialPosition);
-			// Give the balls a little random motion so they will shake down to stable equilibrium
-			Random random = new Random(new Long(uri.hashCode()));
-			control.setLinearVelocity(new Vector3f(random.nextFloat() - 0.5f, 0.25f * (random.nextFloat() - 0.5f), random.nextFloat() - 0.5f));
-		}
-	}
-
-	static class Stick {
-
-		String uri;
-		Geometry geometry;
-		Cylinder stickCylinder;
-		Material material;
-
-		Stick(String stickUri) {
-			uri = stickUri;
-			stickCylinder = new Cylinder(10, 20, 0.25f, 1f);
-			material = standardMaterial;
-			material.setBoolean("UseMaterialColors", true);
-			material.setColor("Diffuse", ColorRGBA.Black);
-			material.setColor("Ambient", ColorRGBA.Black);
-			material.setColor("Specular", ColorRGBA.Black);
-			material.setFloat("Shininess", 100f);
-			geometry = factory.makeGeom(uri, stickCylinder, material, null);
-			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
-
-				@Override
-				public Void call() throws Exception {
-					ballsNode.attachChild(geometry);
-					return null;
-				}
-			});
-		}
-	}
-	private static float[] newPosition = new float[3];
-	private static Float lastRadius = Float.NaN;
-	private static float biggestRadiusThisLine;
-	private static float biggestRadiusThisPlane;
-
-	private static Vector3f assignStartingLocation(float ballRadius) {
-		if (lastRadius.isNaN()) { // If so, we are starting a fresh set of balls
-			for (int i = 0; i < newPosition.length; i++) {
-				newPosition[i] = firstPosition(i);
-			}
-			lastRadius = 0f;
-			biggestRadiusThisLine = ballRadius;
-			biggestRadiusThisPlane = ballRadius;
-		}
-		newPosition[0] += lastRadius + ballRadius + BALL_PADDING;
-		if (exceedsBound(0)) { // Time for a new line!
-			newPosition[0] = firstPosition(0);
-			newPosition[1] += biggestRadiusThisLine + ballRadius + BALL_PADDING;
-			if (exceedsBound(1)) { // Time for a new plane!
-				newPosition[1] = firstPosition(1);
-				newPosition[2] += biggestRadiusThisPlane + ballRadius + BALL_PADDING;
-				if (exceedsBound(2)) {
-					logger.warn("Balls are overflowing from injection box!");
-				}
-				biggestRadiusThisPlane = ballRadius;
-			} else {
-				biggestRadiusThisLine = ballRadius;
-			}
-		}
-		lastRadius = ballRadius;
-		if (ballRadius > biggestRadiusThisLine) {
-			newPosition[1] += (ballRadius - biggestRadiusThisLine); // We need to shift this ball (and rest of line) up to clear last line now that we have bigger radii
-			biggestRadiusThisLine = ballRadius;
-		}
-		if (ballRadius > biggestRadiusThisPlane) {
-			newPosition[2] += (ballRadius - biggestRadiusThisPlane); // We need to shift this ball (and rest of plane) back to clear last plane now that we have bigger radii
-			biggestRadiusThisPlane = ballRadius;
-		}
-		return new Vector3f(newPosition[0], newPosition[1], newPosition[2]);
-	}
-
-	private static boolean exceedsBound(int dimension) {
-		return (newPosition[dimension] > BALL_INJECTION_POSITION[dimension] + BALL_INJECTION_BOX_SIZE[dimension] / 2);
-	}
-
-	private static float firstPosition(int dimension) {
-		return BALL_INJECTION_POSITION[dimension] - BALL_INJECTION_BOX_SIZE[dimension] / 2;
 	}
 
 	private static float computeIdealDamping() {
