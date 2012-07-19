@@ -90,9 +90,9 @@ class RuledBehavior (myRBS: RuledBehaviorSpec) extends Behavior(myRBS) {
 		val resultXML = ResultSetFormatter.asXMLString(rsRewindable);
 		// This XML can be routed/transformed as a packet using XLST, Dom4J, Cocoon, XProc, or other XML services.
 		logInfo("Got resultXML:\n" + resultXML);
-
-		while (resultSet.hasNext()) {
-			val qSoln = resultSet.next();
+		rsRewindable.reset();
+		while (rsRewindable.hasNext()) {
+			val qSoln = rsRewindable.next();
 			logInfo("Got qsoln" + qSoln + " with s=[" + qSoln.get("s") + "], p=[" + qSoln.get("p") + "], o=[" 
 							+ qSoln.get("o") +"]");
 		}
