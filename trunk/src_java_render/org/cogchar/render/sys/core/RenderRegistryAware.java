@@ -15,10 +15,6 @@
  */
 package org.cogchar.render.sys.core;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.scene.Node;
-
-// import static org.cogchar.render.opengl.bony.RenderRegistryFuncs.*;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -26,17 +22,5 @@ import com.jme3.scene.Node;
 public abstract class RenderRegistryAware extends RenderRegistryFuncs {
 	
 
-	/*
-	public static void registerAssetManager(AssetManager assetMgr, String optName) {
-		AssetContext ac = findOrMakeAssetContext(null, null);
-		ac.setAssetManager(assetMgr);
-	}
-	 * 
-	 */
-//	public static void propagateRootNode(Node rootNode) {
-		// Let's start with just the default one.
-	//	SceneFacade sf = getSceneFacade(null);
-
-//	}		
 	
 }
