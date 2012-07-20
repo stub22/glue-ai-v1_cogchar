@@ -30,4 +30,5 @@ public class DataballStrings {
 	public static final String clear = "clear";
 	public static final String demo = "showdemo";
 	public static final String viewSparqlQuery = "viewsparql";
+	public static final String liftErrorCode = "databalls";
 }
