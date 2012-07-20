@@ -53,6 +53,10 @@ public class LiftAmbassador {
 		void loadPage(String path);
 
 		String getVariable(String key);
+
+		void setSingleControl(ControlConfig control, int slotNum);
+
+		void showError(String errorSourceKey, String errorText);
 	}
 
 	public interface LiftAppInterface {
@@ -174,6 +178,14 @@ public class LiftAmbassador {
 		} else {
 			theLogger.warn("Variable requested from Lift, but no Lift messenger set");
 			return null;
+		}
+	}
+
+	public static void displayError(String errorSource, String errorText) {
+		if (lift != null) {
+			lift.showError(errorSource, errorText);
+		} else {
+			theLogger.error("Could not show the following error in Lift because not Lift messenger is set: " + errorSource + ": " + errorText);
 		}
 	}
 
