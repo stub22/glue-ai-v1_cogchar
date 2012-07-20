@@ -413,6 +413,9 @@ public class BallBuilder extends BasicDebugger {
 	}
 
 	public static void buildModelFromJena(Model rdfModel, boolean ballsForAllObjects) {
+		final float NORMAL_RADIUS = 1.25f;
+		final float ENDPOINT_RADIUS = 0.75f;
+		final float BLANK_NODE_RADIUS = 0.5f;
 		/*
 		 * NodeIterator objects = rdfModel.listObjects(); while (objects.hasNext()) { RDFNode node = objects.next();
 		 * logger.info("Node read: " + node.toString()); }
@@ -425,7 +428,14 @@ public class BallBuilder extends BasicDebugger {
 		while (res.hasNext()) {
 			Resource node = res.nextResource();
 			//logger.info("Subject read: " + node.toString());
-			Ball newBall = Ball.addBall(node.toString(), ColorRGBA.Red);
+			Ball newBall;
+			if (node.isAnon()) {
+				// A blank node!
+				newBall = Ball.addBall(node.toString(), ColorRGBA.Blue, BLANK_NODE_RADIUS);
+			} else {
+				// A regular node
+				newBall = Ball.addBall(node.toString(), ColorRGBA.Red, NORMAL_RADIUS);
+			}
 			StmtIterator statements = node.listProperties();
 			while (statements.hasNext()) {
 				Statement statement = statements.nextStatement();
@@ -439,7 +449,7 @@ public class BallBuilder extends BasicDebugger {
 			while (objects.hasNext()) {
 				RDFNode node = objects.next();
 				if (!balls.containsKey(node.toString())) {
-					Ball.addBall(node.toString(), ColorRGBA.Green, 0.5f);
+					Ball.addBall(node.toString(), ColorRGBA.Green, ENDPOINT_RADIUS);
 				}
 			}
 		}
@@ -627,7 +637,7 @@ public class BallBuilder extends BasicDebugger {
 		for (String ballUri : ballConnectionStrength.keySet()) {
 			if (balls.containsKey(ballUri)) {
 				Ball ball = balls.get(ballUri);
-				double instabilityScore = ballConnectionStrength.get(ballUri) / pow(ball.radius, 3);
+				double instabilityScore = ballConnectionStrength.get(ballUri) / pow(ball.radius, 4); // Basically this goes as connectionStrength/mass^1.33
 				if (instabilityScore > maxInstabilityScore) {
 					maxInstabilityScore = instabilityScore;
 				}
@@ -635,7 +645,7 @@ public class BallBuilder extends BasicDebugger {
 		}
 		float idealDamping = new Float(1 - DAMPING_TRIM_CONSTANT / pow(maxInstabilityScore, 4));
 		idealDamping = Math.max(idealDamping, MINIMUM_DAMPING_COEFFICIENT);
-		logger.info("Damping coefficient of " + idealDamping + " computed for current configuration.");
+		logger.info("Damping coefficient of " + idealDamping + " computed for current configuration. Maximum instabilityScore was " + maxInstabilityScore);
 		return idealDamping;
 	}
 	private static boolean startMode = true;
@@ -729,7 +739,8 @@ public class BallBuilder extends BasicDebugger {
 					// Set damping force
 					ball.control.setLinearDamping(currentDamping);
 				} else {
-					logger.info("Invalid force in BallBuilder.applyUpdates (normal during initial startup)");
+					// May not want this always enabled to avoid a chunk of messages during startup (when updates have been enabled but initialization isn't quite complete on main render thread)
+					//logger.info("Invalid force in BallBuilder.applyUpdates (normal during initial startup)");
 				}
 
 			}
