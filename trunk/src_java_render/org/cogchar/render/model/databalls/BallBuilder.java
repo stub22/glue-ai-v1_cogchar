@@ -464,7 +464,7 @@ public class BallBuilder extends BasicDebugger {
 			InputStream stream = loader.getResourceAsStream(configPath);
 			rdfModel.read(stream, null, "TURTLE");
 		} catch (Exception e) {
-			logger.warn("Exception attemping to read Turtle file: " + e);
+			showErrorInLift("Exception attemping to read Turtle file: " + e);
 			return null;
 		}
 		lastModel = rdfModel;
@@ -504,7 +504,7 @@ public class BallBuilder extends BasicDebugger {
 			success = buildModelFromTurtle(resourceCl, configPath, showAllObjects);
 
 		} else {
-			logger.error("Databalls graph using Lift settings requested, but could not find classloader with key " + classloaderKey);
+			showErrorInLift("Databalls graph using Lift settings requested, but could not find classloader with key " + classloaderKey);
 		}
 		return success;
 	}
@@ -527,7 +527,7 @@ public class BallBuilder extends BasicDebugger {
 		if (lastModel != null) {
 			return buildModelFromSparql(lastModel, queryString);
 		} else {
-			logger.error("Can't build model from Sparql - no model for query loaded");
+			showErrorInLift("Can't build model from Sparql - no model for query loaded");
 			return false;
 		}
 	}
@@ -539,9 +539,16 @@ public class BallBuilder extends BasicDebugger {
 	public static void setClassLoader(String key, ClassLoader loader) {
 		classloaders.put(key, loader);
 	}
+	
+	static void showErrorInLift(String errorText) {
+		logger.error(errorText);
+		LiftAmbassador.displayError(DataballStrings.liftErrorCode, errorText);
+	}
 
 	public static boolean performAction(String action, String text) {
 		boolean success = true;
+		// Clear error shown in Lift, if any
+		LiftAmbassador.displayError(DataballStrings.liftErrorCode, "");
 		if (action.equals(DataballStrings.viewRdfGraph)) {
 			success = buildModelFromTurtleUsingLiftSettings(text);
 		} else if (action.equals(DataballStrings.onOff)) {
