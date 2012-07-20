@@ -36,6 +36,8 @@ class RegistryClient(val credClaz : Class[_]) extends BasicDebugger  {
 	def	SUBSYS_REG_RENDER		= "SYSREG_RENDER";
 	def	SUBSYS_REG_PUMA			= "SYSREG_PUMA";
 	def	SUBSYS_REG_BEHAVIOR		= "SYSREG_BEHAVIOR";
+	def	SUBSYS_REG_REPOSITORY	= "SYSREG_REPOSITORY";
+	def	SUBSYS_REG_CCRK_BIND	= "SYSREG_CCRK_BIND";
 	
 	private def getVerySimpleRegistry() : VerySimpleRegistry = {
 		//credClazOpt : Option[Class[_]]
