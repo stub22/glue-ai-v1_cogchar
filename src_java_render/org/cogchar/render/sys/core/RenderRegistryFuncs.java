@@ -25,9 +25,11 @@ import com.jme3.renderer.RenderManager;
 import org.appdapter.api.facade.FacadeSpec;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.subreg.SubsystemHandle;
+import org.appdapter.subreg.BasicSubsystemHandle;
 
-import org.cogchar.blob.emit.RegistryClient;
-import org.cogchar.blob.emit.FacadeHandle;
+import org.cogchar.blob.emit.SubsystemHandleFinder;
+import org.appdapter.subreg.FacadeHandle;
 import org.cogchar.render.opengl.mesh.FancyMeshFactory;
 import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
 import org.cogchar.render.opengl.mesh.WireMeshFactory;
@@ -88,8 +90,8 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	}
 	
 	protected static class RFSpec<RFType> extends FacadeSpec<RFType, RFKind> {
-		RFSpec(RFKind kind, Class<RFType> sClz) {
-			super(kind, sClz);
+		RFSpec(RFKind kind, Class<RFType> sClz, boolean extFlag) {
+			super(kind, sClz, extFlag);
 		}
 	}
 	
@@ -104,20 +106,20 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static final RFSpec<BulletAppState>	THE_JME3_BULLET_APP_STATE;
 	
 	static {
-		THE_JME3_ASSET_MANAGER = new RFSpec<AssetManager>(RFKind.JME3_ASSET_MANAGER, AssetManager.class);
-		THE_JME3_ROOT_DEEP_NODE = new RFSpec<Node>(RFKind.JME3_ROOT_DEEP_NODE, Node.class);
-		THE_JME3_ROOT_OVERLAY_NODE = new RFSpec<Node>(RFKind.JME3_ROOT_OVERLAY_NODE, Node.class);	
+		THE_JME3_ASSET_MANAGER = new RFSpec<AssetManager>(RFKind.JME3_ASSET_MANAGER, AssetManager.class, true);
+		THE_JME3_ROOT_DEEP_NODE = new RFSpec<Node>(RFKind.JME3_ROOT_DEEP_NODE, Node.class, true);
+		THE_JME3_ROOT_OVERLAY_NODE = new RFSpec<Node>(RFKind.JME3_ROOT_OVERLAY_NODE, Node.class, true);	
 		
-		THE_JME3_APP_STATE_MANAGER = new RFSpec<AppStateManager>(RFKind.JME3_APP_STATE_MANAGER, AppStateManager.class);	
-		THE_JME3_INPUT_MANAGER = new RFSpec<InputManager>(RFKind.JME3_INPUT_MANAGER, InputManager.class);	
-		THE_JME3_RENDER_MANAGER  = new RFSpec<RenderManager>(RFKind.JME3_RENDER_MANAGER, RenderManager.class);
+		THE_JME3_APP_STATE_MANAGER = new RFSpec<AppStateManager>(RFKind.JME3_APP_STATE_MANAGER, AppStateManager.class, true);	
+		THE_JME3_INPUT_MANAGER = new RFSpec<InputManager>(RFKind.JME3_INPUT_MANAGER, InputManager.class, true);	
+		THE_JME3_RENDER_MANAGER  = new RFSpec<RenderManager>(RFKind.JME3_RENDER_MANAGER, RenderManager.class, true);
 		
-		THE_JME3_BULLET_APP_STATE  = new RFSpec<BulletAppState>(RFKind.JME3_BULLET_APP_STATE, BulletAppState.class);	
+		THE_JME3_BULLET_APP_STATE  = new RFSpec<BulletAppState>(RFKind.JME3_BULLET_APP_STATE, BulletAppState.class, true);	
 	}
 
 	protected static RFSpec<AssetContext>	THE_CC_ASSET_CONTEXT;
 	static {
-		THE_CC_ASSET_CONTEXT = new RFSpec<AssetContext>(RFKind.CC_ASSET_CONTEXT, AssetContext.class);
+		THE_CC_ASSET_CONTEXT = new RFSpec<AssetContext>(RFKind.CC_ASSET_CONTEXT, AssetContext.class, false);
 	}
 		
 	protected static RFSpec<ViewportFacade>	THE_CC_OPTIC_VIEWPORT_FACADE;
@@ -127,11 +129,11 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static RFSpec<TextureFactory>	THE_CC_OPTIC_TEXTURE_FACADE;
 	
 	static {
-		THE_CC_OPTIC_VIEWPORT_FACADE = new RFSpec<ViewportFacade>(RFKind.CC_OPTIC_VIEWPORT_FACADE, ViewportFacade.class);
-		THE_CC_OPTIC_CAMERA_FACADE = new RFSpec<CameraMgr>(RFKind.CC_OPTIC_CAMERA_FACADE, CameraMgr.class);		
-		THE_CC_OPTIC_LIGHT_FACADE = new RFSpec<LightFactory>(RFKind.CC_OPTIC_LIGHT_FACADE, LightFactory.class);
-		THE_CC_OPTIC_MATERIAL_FACADE = new RFSpec<MatFactory>(RFKind.CC_OPTIC_MATERIAL_FACADE, MatFactory.class);
-		THE_CC_OPTIC_TEXTURE_FACADE = new RFSpec<TextureFactory>(RFKind.CC_OPTIC_TEXTURE_FACADE, TextureFactory.class);
+		THE_CC_OPTIC_VIEWPORT_FACADE = new RFSpec<ViewportFacade>(RFKind.CC_OPTIC_VIEWPORT_FACADE, ViewportFacade.class, false);
+		THE_CC_OPTIC_CAMERA_FACADE = new RFSpec<CameraMgr>(RFKind.CC_OPTIC_CAMERA_FACADE, CameraMgr.class, false);		
+		THE_CC_OPTIC_LIGHT_FACADE = new RFSpec<LightFactory>(RFKind.CC_OPTIC_LIGHT_FACADE, LightFactory.class, false);
+		THE_CC_OPTIC_MATERIAL_FACADE = new RFSpec<MatFactory>(RFKind.CC_OPTIC_MATERIAL_FACADE, MatFactory.class, false);
+		THE_CC_OPTIC_TEXTURE_FACADE = new RFSpec<TextureFactory>(RFKind.CC_OPTIC_TEXTURE_FACADE, TextureFactory.class, false);
 	}	
 
 	protected static RFSpec<ShapeMeshFactory>	THE_CC_MESH_SHAPE_FACADE;
@@ -139,9 +141,9 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static RFSpec<FancyMeshFactory>	THE_CC_MESH_FANCY_FACADE;
 	
 	static {
-		THE_CC_MESH_SHAPE_FACADE = new RFSpec<ShapeMeshFactory>(RFKind.CC_MESH_SHAPE_FACADE, ShapeMeshFactory.class);
-		THE_CC_MESH_WIRE_FACADE = new RFSpec<WireMeshFactory>(RFKind.CC_MESH_WIRE_FACADE, WireMeshFactory.class);
-		THE_CC_MESH_FANCY_FACADE = new RFSpec<FancyMeshFactory>(RFKind.CC_MESH_FANCY_FACADE, FancyMeshFactory.class);		
+		THE_CC_MESH_SHAPE_FACADE = new RFSpec<ShapeMeshFactory>(RFKind.CC_MESH_SHAPE_FACADE, ShapeMeshFactory.class, false);
+		THE_CC_MESH_WIRE_FACADE = new RFSpec<WireMeshFactory>(RFKind.CC_MESH_WIRE_FACADE, WireMeshFactory.class, false);
+		THE_CC_MESH_FANCY_FACADE = new RFSpec<FancyMeshFactory>(RFKind.CC_MESH_FANCY_FACADE, FancyMeshFactory.class, false);		
 	}
 
 
@@ -153,46 +155,36 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static RFSpec<TextMgr>				THE_CC_SCENE_TEXT_FACADE;
 
 	static {
-		THE_CC_SCENE_GEOMETRY_FACADE = new RFSpec<GeomFactory>(RFKind.CC_SCENE_GEOMETRY_FACADE, GeomFactory.class);
-		THE_CC_SCENE_DEEP_FACADE = new RFSpec<DeepSceneMgr>(RFKind.CC_SCENE_DEEP_FACADE, DeepSceneMgr.class);		
-		THE_CC_SCENE_FLAT_FACADE = new RFSpec<FlatOverlayMgr>(RFKind.CC_SCENE_FLAT_FACADE, FlatOverlayMgr.class);
-		THE_CC_SCENE_SPATIAL_MODEL_FACADE = new RFSpec<ModelSpatialFactory>(RFKind.CC_SCENE_SPATIAL_MODEL_FACADE, ModelSpatialFactory.class);
-		THE_CC_SCENE_TEXT_FACADE = new RFSpec<TextMgr>(RFKind.CC_SCENE_TEXT_FACADE, TextMgr.class);		
+		THE_CC_SCENE_GEOMETRY_FACADE = new RFSpec<GeomFactory>(RFKind.CC_SCENE_GEOMETRY_FACADE, GeomFactory.class, false);
+		THE_CC_SCENE_DEEP_FACADE = new RFSpec<DeepSceneMgr>(RFKind.CC_SCENE_DEEP_FACADE, DeepSceneMgr.class, false);		
+		THE_CC_SCENE_FLAT_FACADE = new RFSpec<FlatOverlayMgr>(RFKind.CC_SCENE_FLAT_FACADE, FlatOverlayMgr.class, false);
+		THE_CC_SCENE_SPATIAL_MODEL_FACADE = new RFSpec<ModelSpatialFactory>(RFKind.CC_SCENE_SPATIAL_MODEL_FACADE, ModelSpatialFactory.class, false);
+		THE_CC_SCENE_TEXT_FACADE = new RFSpec<TextMgr>(RFKind.CC_SCENE_TEXT_FACADE, TextMgr.class, false);		
 	}
 
 	// protected static FacadeSpec<PhysicsStuffBuilder>	THE_CC_PHYSICS_FACADE;
 	
 //		CC_PHYSICS_FACADE	
 
-	public static <EFT, EFK> RegistryClient getRegistryClient(FacadeSpec<EFT, EFK> fs, Class optCredClaz) {
-		// Use the internal facade class as the default credential, to usually make Netigso happily return a bundleContext.
-		Class credClaz = (optCredClaz != null) ? optCredClaz : fs.getFacadeClass();
-		return new RegistryClient(credClaz);
-	}
-	public static <EFT, EFK> RegistryClient getRegistryClientForExtFacade(FacadeSpec<EFT, EFK> fs, Class optCredClaz) {
-		// Use our own class as the default credential for external facades, to usually make Netigso happily return a bundleContext.		
-		
-		Class credClaz = (optCredClaz != null) ? optCredClaz : RenderRegistryFuncs.class;
-		return new RegistryClient(credClaz);
-	}	
-			
-	public static <EFT, EFK> EFT  findExternalFacadeOrNull(FacadeSpec<EFT, EFK> fs, String optOverrideName, Class optCredClaz) {		
-		EFT result = null;
 
-		RegistryClient	rc = getRegistryClientForExtFacade(fs, optCredClaz);
-		FacadeHandle<EFT> fh = rc.findExternalFacade(rc.SUBSYS_REG_RENDER(), fs, optOverrideName);
+			
+	private static <EFT, EFK> EFT  findExternalFacadeOrNull(FacadeSpec<EFT, EFK> fs, String optOverrideName, Class optCredClaz) {		
+		EFT result = null;
+		
+		SubsystemHandle shand = SubsystemHandleFinder.getRenderSubsysHandle(fs,  optCredClaz);
+		FacadeHandle<EFT> fh = shand.findExternalFacade(fs, optOverrideName);
 		if (fh.isReady()) {
 			result = fh.getOrElse(null);
 		} 
 		return result;
 	}
-	public static <EFT, EFK> void registerExternalFacade(FacadeSpec<EFT, EFK> fs, EFT facade, String optOverrideName, Class optCredClaz) {
-		RegistryClient	rc = getRegistryClientForExtFacade(fs, optCredClaz);
-		rc.registerExternalFacade(rc.SUBSYS_REG_RENDER(), fs, facade, optOverrideName);	
+	private static <EFT, EFK> void registerExternalFacade(FacadeSpec<EFT, EFK> fs, EFT facade, String optOverrideName, Class optCredClaz) {
+		SubsystemHandle shand = SubsystemHandleFinder.getRenderSubsysHandle(fs,  optCredClaz);
+		shand.registerExternalFacade(fs, facade, optOverrideName);	
 	}
-	public static <IFT, IFK> IFT  findOrMakeInternalFacade(FacadeSpec<IFT, IFK> fs, String optOverrideName, Class optCredClaz ) {
-		RegistryClient	rc = getRegistryClient(fs, optCredClaz);
-		return rc.findOrMakeInternalFacade(rc.SUBSYS_REG_RENDER(), fs, optOverrideName);
+	private static <IFT, IFK> IFT  findOrMakeInternalFacade(FacadeSpec<IFT, IFK> fs, String optOverrideName, Class optCredClaz ) {
+		SubsystemHandle shand = SubsystemHandleFinder.getRenderSubsysHandle(fs,  optCredClaz);
+		return shand.findOrMakeInternalFacade(fs, optOverrideName);
 	}
 	protected static AssetManager findJme3AssetManager(String optionalName) {
 		return findExternalFacadeOrNull(THE_JME3_ASSET_MANAGER, optionalName, null);
