@@ -26,6 +26,7 @@ import org.appdapter.core.log.BasicDebugger;
 
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
+import org.cogchar.blob.emit.HumanoidConfigEmitter;
 
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 
@@ -76,12 +77,8 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 
 	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx) throws Throwable {
 		BonyRenderContext bonyRendCtx = myHumoidMapper.getHumanoidRenderContext();
-		BonyConfigEmitter bonyCE = bonyRendCtx.getBonyConfigEmitter();
-		String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharIdent);
-		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
-		String bonyConfigPathPerm = behavCE.getRKMotionPermPath(bonyConfigPathTail);
-		myUpdateBonyRdfPath = behavCE.getRKMotionTempFilePath(bonyConfigPathTail);
-
+		String bonyConfigPathPerm = HumanoidConfigEmitter.getBonyConfigPath(myCharIdent);
+		myUpdateBonyRdfPath = bonyConfigPathPerm; // Currently update and perm path are set the same for TriggerItems.UpdateBonyConfig
 		BoneRobotConfig boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf);
@@ -124,7 +121,8 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 
 		String behavPath = behavCE.getBehaviorPermPath(pathTail);
 		if (useTempFiles) {
-			behavPath = behavCE.getBehaviorTempFilePath(pathTail);
+			// "TempFiles" currently ignored
+			//behavPath = behavCE.getBehaviorTempFilePath(pathTail);
 		}
 		// true = Clear caches first
 		boolean clearCachesFirst = true;

@@ -16,35 +16,22 @@
 package org.cogchar.bundle.app.puma;
 
 import java.io.File;
-import javax.swing.JFrame;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import org.appdapter.core.item.Ident;
+import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.app.buddy.busker.TriggerItem;
-
+import org.cogchar.app.buddy.busker.TriggerItems;
+import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
+import org.cogchar.blob.emit.HumanoidConfigEmitter;
+import org.cogchar.platform.trigger.DummyBinding;
+import org.cogchar.render.app.core.CogcharRenderContext;
+import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;  // Perhaps we want to fetch this from a context instead, but it's a singleton, so no harm in getting it directly for the moment
+import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.osgi.framework.BundleContext;
 
-import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
-
-import org.appdapter.core.item.Ident;
-import org.cogchar.blob.emit.BonyConfigEmitter;
-import org.cogchar.blob.emit.BehaviorConfigEmitter;
-
-import org.cogchar.render.app.bony.BonyVirtualCharApp;
-
-import org.cogchar.render.app.bony.BonyRenderContext;
-import org.cogchar.render.gui.bony.VirtualCharacterPanel;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
-
-import org.cogchar.render.app.core.CogcharRenderContext;
-
-import org.cogchar.render.opengl.osgi.RenderBundleUtils;
-
-import org.cogchar.app.buddy.busker.TriggerItems;
-import org.cogchar.platform.trigger.DummyBinding;
-
-import org.appdapter.core.log.BasicDebugger;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -82,10 +69,6 @@ public class PumaAppContext extends BasicDebugger {
 	 */
 	public List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
 		List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
-		BonyRenderContext brc = getHumanoidRenderContext();
-		BonyConfigEmitter bonyCE = brc.getBonyConfigEmitter();
-
-		
 		final HumanoidRenderContext hrc = getHumanoidRenderContext();
 
 		hrc.runTaskOnJmeThreadAndWait(new CogcharRenderContext.Task() {
@@ -93,19 +76,23 @@ public class PumaAppContext extends BasicDebugger {
 				hrc.initHumanoidStuff();
 			}
 		});
+
+		Set<Ident> charIdents = HumanoidConfigEmitter.getRobotIdents();
 		
-		List<Ident> charIdents = bonyCE.getActiveBonyCharIdents();
 		for (Ident charIdent : charIdents) {
 			logInfo("^^^^^^^^^^^^^^^^^^^^^^^^^ Connecting dualRobotChar for charIdent: " + charIdent);
 			PumaDualCharacter pdc = connectDualRobotChar(charIdent);
 			pdcList.add(pdc);
 		}
-		// Let's be lame for the moment, and assume the first character found is the only one we want to control.
-		PumaDualCharacter pdc = pdcList.get(0);
-		if (pdc != null) {
-			setupCharacterBindingToRobokind(pdc);
-			setupAndStartBehaviorTheater(pdc);
+		// Let's be lame for the moment, and assume cajunZeno is the only one we want to control.
+		// Very lame indeed, but good for short-run test until we get other joint config paths, etc. set up
+		for (PumaDualCharacter pdc: pdcList) {
+			if (pdc.getNickName().equals("rk-cajunZeno")) {
+				setupCharacterBindingToRobokind(pdc);
+				setupAndStartBehaviorTheater(pdc);
+			}
 		}
+		
 		return pdcList;
 	}
 	public void setupAndStartBehaviorTheater(PumaDualCharacter pdc) throws Throwable {
@@ -127,16 +114,11 @@ public class PumaAppContext extends BasicDebugger {
 		}
 
 	}
-	public void setupRobokindJointGroup(PumaDualCharacter pdc) throws Throwable {	
-		BonyRenderContext brc = getHumanoidRenderContext();
-		BonyConfigEmitter bonyCE = brc.getBonyConfigEmitter();
-		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();		
+	public void setupRobokindJointGroup(PumaDualCharacter pdc) throws Throwable {		
 		Ident chrIdent = pdc.getCharIdent();
-		
-		String jgPathTail = bonyCE.getJointGroupPathTailForChar(chrIdent);
-		String jgFullPathTemp = behavCE.getRKMotionTempFilePath(jgPathTail);
+		String jgFullPath = HumanoidConfigEmitter.getJointConfigPath(chrIdent);
 
-		File jgConfigFile = new File(jgFullPathTemp);
+		File jgConfigFile = new File(jgFullPath);
 		if (jgConfigFile.canRead()) {
 			PumaHumanoidMapper phm = pdc.getHumanoidMapper();
 			RobotServiceContext rsc = phm.getRobotServiceContext();
@@ -151,9 +133,7 @@ public class PumaAppContext extends BasicDebugger {
 		if (hrc == null) {
 			throw new Exception("HumanoidRenderContext is null");
 		}
-		BonyConfigEmitter bonyCE = hrc.getBonyConfigEmitter();
-		String nickName = bonyCE.getNicknameForChar(bonyCharIdent);
-
+		String nickName = HumanoidConfigEmitter.getRobotId(bonyCharIdent);
 		PumaDualCharacter pdc = new PumaDualCharacter(hrc, myBundleContext, bonyCharIdent, nickName);
 
 		return pdc;

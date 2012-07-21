@@ -34,26 +34,14 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 
 	val COGCHAR_URN_PREFIX = "urn:ftd:cogchar.org:2012:";
 	
-	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "char#";
-
-	
-	// Commercial "Extra Robot" model, not loadable without a license.
-	// Cogchar shoud ignore this "ExtraRobot" when it is not loadable, and still
-	// function correctly for Sinbad + other characters.
-	val EXTRA_ROBOT_MESH_PATH	= "model3D/char/zeno/zeno_R50_06_20120323/zenobot_06_20120323.mesh.xml";		
-	
-	val AZR50_MESH_PATH			= "model3D/char/zeno/zeno_R50_A03_20120608/AZR50_anim_03_2012.mesh.xml";
-	
-	// val EXTRA_ROBOT_MESH_PATH = "zenobot_05_20120309/ZenoBot05.ma.mesh.xml";		
-	//		String dualCharURI = "urn:org.cogchar/platform/nb701?char=HRK_Zeno_R50&version=20120302";   
-	//		
-	//			
+	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "runtime#";
+		
 	val HRK_URN_PREFIX = "urn:ftd:hrkind.com:2012:chars#";
-	val ZENO_R50_NICKNAME = "ZenoR50";
+	val ZENO_R50_NICKNAME = "cajunZeno";
 	val	ZENO_R50_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + ZENO_R50_NICKNAME;
 	val	ZENO_R50_CHAR_IDENT = new FreeIdent(ZENO_R50_CHAR_URI, ZENO_R50_NICKNAME)
 
-	val AZR50_NICKNAME = "AZR50";
+	val AZR50_NICKNAME = "aZR50";
 	val	AZR50_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + AZR50_NICKNAME;
 	val	AZR50_CHAR_IDENT = new FreeIdent(AZR50_CHAR_URI, AZR50_NICKNAME)	
 	
@@ -62,11 +50,6 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	val FANCY_PANEL_CLASSNAME = "org.cogchar.render.gui.bony.FancyCharPanel";
 	val SLIM_PANEL_CLASSNAME = "org.cogchar.render.gui.bony.VirtCharPanel";
 	
-	// Skeleton + mesh model ias delivered from o.c.b.render.opengl.resources
-	val SINBAD_MESH_PATH = "jme3dat/models_20110917/sinbad/Sinbad.mesh.xml";	
-
-
-
 
 	val WINGED_OBELISK_SCENE = "leo_hanson_tests/test3/test3.scene";
 	val WOS_SCALE = 0.5f;
@@ -74,7 +57,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	// val NB_BONY_ROBOT_ID = "COGCHAR_NB_ROBOT";
 	// val DUMMY_ROBOT_ID = "DummyRobot22";
 	
-	val SINBAD_NICKNAME = "Sinbad";
+	val SINBAD_NICKNAME = "sinbad";
 	
 	
 
@@ -83,6 +66,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	
 	val	SINBAD_CHAR_IDENT = new FreeIdent(SINBAD_CHAR_URI, SINBAD_NICKNAME)
 	
+	// Appear to be no longer used
 	//val SINBAD_JOINT_PATH = "rk_bind_config/motion/bonyRobotConfig_Sinbad.json";
 	//val ZENO_JOINT_PATH = "rk_bind_config/motion/bonyRobotConfig_ZenoR50.json";
 	
@@ -142,81 +126,34 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		val res2 : Array[Float] = Array(third, third, third);
 		res2;
 	}
-			
-	def getActiveBonyCharIdents() : java.util.List[Ident] = {
-		val res = new java.util.ArrayList[Ident]();
-		if (isZenoHome()) {
-				res.add(ZENO_R50_CHAR_IDENT)
-				res.add(AZR50_CHAR_IDENT)
-		};
-		if (!isMinimalSim()) {res.add(SINBAD_CHAR_IDENT);}
-		res;
-	}
-	
-	def getNicknameForChar(charIdent : Ident) : String = getNicknameForChar(charIdent.getAbsUriString())
-	def getNicknameForChar(charURI : String) : String = {		
-		charURI match {
-			case SINBAD_CHAR_URI => SINBAD_NICKNAME
-			case ZENO_R50_CHAR_URI => ZENO_R50_NICKNAME
-			case AZR50_CHAR_URI => AZR50_NICKNAME
-		}
-	}
-	
-	def getBonyConfigPathTailForChar(charIdent: Ident) : String = getBonyConfigPathTailForChar(charIdent.getAbsUriString())
-	def getBonyConfigPathTailForChar(charURI : String) : String = {
-		val chrShortName = getNicknameForChar(charURI);
-		getBehaviorConfigEmitter().getBonyRobotConfigPathTail(chrShortName);
-	}
-	
-	def getJointGroupPathTailForChar(charIdent: Ident) : String = getJointGroupPathTailForChar(charIdent.getAbsUriString())
-	def getJointGroupPathTailForChar(charURI : String) : String = {
-		val chrShortName = getNicknameForChar(charURI);
-		getBehaviorConfigEmitter().getJointGroupConfigPathTail(chrShortName);
-	}	
-
-	def getMeshPathForChar(charIdent : Ident) : String = getMeshPathForChar(charIdent.getAbsUriString())
-	def getMeshPathForChar(charURI : String) : String = {	
-		charURI match {
-			case SINBAD_CHAR_URI => SINBAD_MESH_PATH
-			case ZENO_R50_CHAR_URI => EXTRA_ROBOT_MESH_PATH
-			case AZR50_CHAR_URI => AZR50_MESH_PATH
-		}
-	}
 	
 	private def buildBaseHumanoidFigureConfigForChar(charIdent : Ident) : HumanoidFigureConfig = {
 		val hfc = new HumanoidFigureConfig();
 		hfc.myCharIdent = charIdent;
-		hfc.myNickname = getNicknameForChar(charIdent);
-		hfc.myMeshPath = getMeshPathForChar(charIdent);
+		hfc.myNickname = HumanoidConfigEmitter.getRobotId(charIdent);
+		hfc.myMeshPath = HumanoidConfigEmitter.getMeshPath(charIdent);
 		hfc.myDebugSkelMatPath = getMaterialPath;
 		hfc.myBoneConfig = new HumanoidBoneConfig();
+		val initialPosition = HumanoidConfigEmitter.getInitialPosition(charIdent);
+		hfc.myInitX = initialPosition(0);
+		hfc.myInitY = initialPosition(1);
+		hfc.myInitZ = initialPosition(2);
+		hfc.myPhysicsFlag = HumanoidConfigEmitter.getPhysicsFlag(charIdent);
 		hfc
 	}
 	private def getSinbadFigureConfig()  : HumanoidFigureConfig = {
 		val hfc = buildBaseHumanoidFigureConfigForChar(SINBAD_CHAR_IDENT);
 		hfc.myBoneConfig.addSinbadDefaultBoneDescs();
-		hfc.myInitX = 30.0f;
-		hfc.myInitY = 0.0f;
-		hfc.myInitZ = -30.0f;
-		hfc.myPhysicsFlag = true;
 		hfc
 	}
 	private def getZenoFigureConfig() : HumanoidFigureConfig =  {
 		val hfc = buildBaseHumanoidFigureConfigForChar(ZENO_R50_CHAR_IDENT);
 		hfc.myBoneConfig.addZenoDefaultBoneDescs();
-		hfc.myInitX = 0.0f;
-		hfc.myInitY = -5.0f;
-		hfc.myInitZ = 0.0f;
-		hfc.myPhysicsFlag = false;
 		hfc
 	}
 	private def getAZR50_FigureConfig() : HumanoidFigureConfig =  {
 		val hfc = buildBaseHumanoidFigureConfigForChar(AZR50_CHAR_IDENT);
 		// hfc.myBoneConfig.addZenoDefaultBoneDescs();
-		hfc.myInitX = -10.0f;
-		hfc.myInitY = -5.0f;
-		hfc.myInitZ = -10.0f;
-		hfc.myPhysicsFlag = false;
 		hfc
 	}	
 	def getHumanoidFigureConfigForChar(charIdent : Ident) : HumanoidFigureConfig = {
