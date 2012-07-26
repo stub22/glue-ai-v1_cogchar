@@ -15,20 +15,25 @@
  */
 package org.cogchar.render.model.databalls;
 
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.rdf.model.*;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.InputManager;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.*;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Cylinder;
@@ -36,8 +41,7 @@ import com.jme3.scene.shape.Sphere;
 import java.io.InputStream;
 import static java.lang.Math.pow;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.scene.*;
 import org.cogchar.bind.lift.LiftAmbassador;
@@ -244,6 +248,40 @@ public class BallBuilder extends BasicDebugger {
 			});
 		}
 	}
+	
+	static class Cloud {
+		
+		static int cloudNum = 1; // Just a temporary way to discretely name these
+		static final String CLOUD_NAME_PREFIX = "Cloud";
+
+		Cloud(float radius, Vector3f position, ColorRGBA color) {
+			Sphere cloud = new Sphere(40, 40, radius);
+			Material material = materialFactory.makeMatWithOptNamedTexture("Common/MatDefs/Light/Lighting.j3md", "AlphaMap", "Textures/Uniform/DataCloudAlphaMap.png");
+			material.setBoolean("UseMaterialColors", true);
+			material.setColor("Diffuse", color);
+			material.setColor("Ambient", color);
+			material.setColor("Specular", color);
+			material.setFloat("Shininess", 25f);
+			material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+			
+			final Geometry geometry = factory.makeGeom(CLOUD_NAME_PREFIX + cloudNum, cloud, material, null);
+			final RigidBodyControl control = new RigidBodyControl(CollisionShapeFactory.createMeshShape(geometry), 0f);
+			geometry.addControl(control); // Has to be done after the makeGeom method since the control CollisionShape is based on the geometry
+			control.setPhysicsLocation(position);
+			geometry.setQueueBucket(Bucket.Transparent);
+			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+
+				@Override
+				public Void call() throws Exception {
+					physics.add(control);
+					ballsNode.attachChild(geometry);
+					return null;
+				}
+			});
+		}
+	}
+	
+	
 	private static float[] newPosition = new float[3];
 	private static Float lastRadius = Float.NaN;
 	private static float biggestRadiusThisLine;
@@ -531,7 +569,51 @@ public class BallBuilder extends BasicDebugger {
 			return false;
 		}
 	}
+	
+	public static void buildCloudFromSparql(Model modelToQuery, String queryString) {
+		clear(); // Seems best for now
+		Query query = QueryFactory.create(queryString);
+		QueryExecution qexec = QueryExecutionFactory.create(query, modelToQuery);
+		try {
+			ResultSet results = qexec.execSelect();
+			for (; results.hasNext();) {
+				QuerySolution soln = results.nextSolution();
+				Iterator<String> varNames = soln.varNames();
+				RDFNode lastNode = null;
+				for (; varNames.hasNext(); ) {
+					RDFNode newNode = soln.get(varNames.next());
+					Ball nodeBall = Ball.addBall(newNode.toString(), ColorRGBA.Green);
+					if (lastNode != null) {
+						nodeBall.addConnection(lastNode.toString(), "Shares solution");
+					}
+					lastNode=newNode;
+				}      
+			}
+		} finally {
+			qexec.close();
+		}
+		float cloudRadius = 0;
+		for (int i=0; i < BALL_INJECTION_BOX_SIZE.length; i++) {
+			//if (BALL_INJECTION_BOX_SIZE[i]/2 > cloudRadius) cloudRadius = BALL_INJECTION_BOX_SIZE[i]/2;
+			cloudRadius += pow(BALL_INJECTION_BOX_SIZE[i]/2, 2);
+		}
+		cloudRadius = (float)(Math.sqrt(new Double(cloudRadius))*1.2);
+		Vector3f cloudPosition = new Vector3f(BALL_INJECTION_POSITION[0], BALL_INJECTION_POSITION[1], BALL_INJECTION_POSITION[2]);
+		new Cloud(cloudRadius, cloudPosition, ColorRGBA.Blue);
+		damping = MINIMUM_DAMPING_COEFFICIENT;
+		start();
+	}
 
+	public static boolean buildCloudFromSpaqrlUsingLiftSettings(String queryString) {
+		if (lastModel != null) {
+			buildCloudFromSparql(lastModel, queryString);
+			return true;
+		} else {
+			showErrorInLift("Can't build model from Sparql - no model for query loaded");
+			return false;
+		}
+	}
+	
 	public static void setClassLoader(ClassLoader loader) {
 		resourceCl = loader;
 	}
@@ -549,7 +631,7 @@ public class BallBuilder extends BasicDebugger {
 		boolean success = true;
 		// Clear error shown in Lift, if any
 		LiftAmbassador.displayError(DataballStrings.liftErrorCode, "");
-		if (action.equals(DataballStrings.viewRdfGraph)) {
+		if (action.equals(DataballStrings.viewRdfGraph)) { // Oh, Java 6 and your non-String supporting case statements...
 			success = buildModelFromTurtleUsingLiftSettings(text);
 		} else if (action.equals(DataballStrings.onOff)) {
 			runBalls();
@@ -562,6 +644,8 @@ public class BallBuilder extends BasicDebugger {
 			showCinematicConfig();
 		} else if (action.equals(DataballStrings.viewSparqlQuery)) {
 			success = buildModelFromSpaqrlUsingLiftSettings(text);
+		} else if (action.equals(DataballStrings.viewSparqlQueryCloud)) {
+			success = buildCloudFromSpaqrlUsingLiftSettings(text);
 		} else {
 			logger.error("Action sent to Databalls, but not recognized: " + action);
 			success = false;
@@ -570,19 +654,50 @@ public class BallBuilder extends BasicDebugger {
 	}
 
 	public static void clear() {
-		stop();
-		// Wait a while after stop() to be sure updates are complete
-		class ClearBalls extends TimerTask {
 
-			public void run() {
-				balls.clear();
-				ballsNode = new Node("Databalls");
+		class Delayed {
+
+			private Void clearBalls() {
+				// Wait a while after stop() to be sure updates are complete
+				FutureTask<Void> future =
+						new FutureTask<Void>(new Callable<Void>() {
+
+					@Override
+					public Void call() {
+						balls.clear();
+						ballsNode = new Node("Databalls");
+						return null;
+					}
+				});
+				ExecutorService executor = Executors.newFixedThreadPool(1);
+				executor.execute(future);
+				// Making this a noncancelable task (see http://www.ibm.com/developerworks/java/library/j-jtp05236/index.html)
+				boolean interrupted = false;
+				try {
+					while (true) {
+						try {
+							return future.get();
+						} catch (InterruptedException e) { // ... really want to check to be sure this is an interrupted exception
+							interrupted = true;
+							// fall through and retry
+						} catch (ExecutionException e) {
+							logger.error("Execution Exception encountered in BallBuilder.clear() - other problems may follow: " + e);
+							return null;
+						}
+					}
+				} finally {
+					if (interrupted) {
+						Thread.currentThread().interrupt();
+					}
+				}
 			}
 		}
-		new Timer().schedule(new ClearBalls(), 500); // We're waiting a whole 1/2s; if we are experiencing excessive velocities, updates may be occurring very slowly
+
+		stop();
+		new Delayed().clearBalls();
 		lastRadius = Float.NaN; // make sure assignStartingLocation knows we are starting over
 	}
-
+	
 	public static void stop() {
 		activated = false;
 		Future<Object> detachFuture = renderContext.enqueueCallable(new Callable<Boolean>() { // Do this on main render thread in case this is being run from a different one - oh no!
@@ -774,12 +889,16 @@ public class BallBuilder extends BasicDebugger {
 		float dist = results.getCollision(i).getDistance();
 		Vector3f pt = results.getCollision(i).getContactPoint();
 		String target = results.getCollision(i).getGeometry().getName(); logger.info("Selection #" + i + ": " + target + " at " + pt + ", " + dist + " WU away."); }
-		*/ 
+		*/
 		
 		// Use the results
 		if (results.size() > 0) {
 			// The closest result is the target that the player picked:
 			Geometry target = results.getClosestCollision().getGeometry();
+			// ... Unless it's a DataCloud surface
+			if (target.getName().startsWith(Cloud.CLOUD_NAME_PREFIX)) {
+				target = results.getCollision(1).getGeometry();
+			}
 			// Here comes the action:
 			for (Ball ball : balls.values()) {
 				if (target.equals(ball.geometry)) {
