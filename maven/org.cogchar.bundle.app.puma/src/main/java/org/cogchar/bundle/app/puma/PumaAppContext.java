@@ -84,10 +84,13 @@ public class PumaAppContext extends BasicDebugger {
 			PumaDualCharacter pdc = connectDualRobotChar(charIdent);
 			pdcList.add(pdc);
 		}
-		// Let's be lame for the moment, and assume cajunZeno is the only one we want to control.
-		// Very lame indeed, but good for short-run test until we get other joint config paths, etc. set up
+		
+		// hrc.initHumanoidStuff(); can also be here if needed
+		
+		// Right now, only Cajun Zero really works properly, but we're getting close...
 		for (PumaDualCharacter pdc: pdcList) {
 			if (pdc.getNickName().equals("rk-cajunZeno")) {
+			//if (!pdc.getNickName().equals("rk-sinbad")) {
 				setupCharacterBindingToRobokind(pdc);
 				setupAndStartBehaviorTheater(pdc);
 			}
@@ -95,6 +98,7 @@ public class PumaAppContext extends BasicDebugger {
 		
 		return pdcList;
 	}
+	
 	public void setupAndStartBehaviorTheater(PumaDualCharacter pdc) throws Throwable {
 		pdc.registerDefaultSceneTriggers();
 		pdc.loadBehaviorConfig(false);

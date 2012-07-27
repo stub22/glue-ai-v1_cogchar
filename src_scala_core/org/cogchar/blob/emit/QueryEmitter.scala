@@ -33,18 +33,19 @@ import scala.collection.JavaConversions._
  */
 
 /** A still-under-construction API layer for the handling of query-based config data
-  *
-  */
+ *
+ */
 object QueryEmitter {
   
   final val QUERY_SHEET = "ccrt:qry_sheet_22"
+  var repo: SheetRepo = null;
   
   /** Provided solely for testing of queries
-  *
-  */
+   *
+   */
   def main(args: Array[String]) : Unit = {
 
-	val QUERY_TO_TEST = "ccrt:find_basicJointProperties_99"
+	val QUERY_TO_TEST = "ccrt:template_boneNames_99"
 	
 	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
 	val qText = sr.getQueryText(QUERY_SHEET, QUERY_TO_TEST)
@@ -55,6 +56,25 @@ object QueryEmitter {
 	println("Found solutions: " + solnJavaList)
   }
   
+  private def ensureRepo {
+	if (repo == null) {
+	  repo = SheetRepo.loadTestSheetRepo()
+	}
+  }
+  
+  def reloadSheetRepo {
+	repo = SheetRepo.loadTestSheetRepo()
+  }
+  
+  /** Returns the current cached SheetRepo
+   *
+   * @return The test sheet SheetRepo
+   */
+  def getSheet = {
+	ensureRepo
+	repo
+  }
+  
   /** Queries the configuration spreadsheet (with query sheet URI currently set in code as final val QUERY_SHEET).
    *
    * @param queryUri The QName of the query which should be run, found on the query sheet currently set in code
@@ -62,8 +82,8 @@ object QueryEmitter {
    * @return A SolutionMap of QuerySolutions with keys of the URIs of instances of keyVarName in solutions
    */
   def getQueryResultMap(queryUri:String, keyVarName:String): SolutionMap[Ident]={
-	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
-	getQueryResultMap(queryUri, keyVarName, sr)
+	ensureRepo
+	getQueryResultMap(queryUri, keyVarName, repo)
   }
   
   /** Queries the provided SheetRepo (with query sheet URI currently set in code as final val QUERY_SHEET).
@@ -76,6 +96,17 @@ object QueryEmitter {
   def getQueryResultMap(queryUri:String, keyVarName:String, sr:SheetRepo): SolutionMap[Ident]={
 	val qText = sr.getQueryText(QUERY_SHEET, queryUri)
 	getTextQueryResultMap(qText, keyVarName, sr)
+  }
+  
+  /** Queries the configuration spreadsheet with a provided query
+   *
+   * @param qText The text of the query to be run
+   * @param keyVarName The query variable name of resources by which the SolutionMap should be keyed
+   * @return A SolutionMap of QuerySolutions with keys of the URIs of instances of keyVarName in solutions
+   */
+  def getTextQueryResultMap(qText:String, keyVarName:String): SolutionMap[Ident]={
+	ensureRepo
+	getTextQueryResultMap(qText, keyVarName, repo)
   }
   
   /** Queries the provided SheetRepo with a provided query
@@ -116,14 +147,25 @@ object QueryEmitter {
 	solutionMap
   }
   
+  /** Queries the configuration spreadsheet with a provided query
+   *
+   * @param qText The text of the query to be run
+   * @param keyVarName The query variable name of resources by which the SolutionMap should be keyed
+   * @return A SolutionMap of QuerySolutions with keys of the URIs of instances of keyVarName in solutions
+   */
+  def getTextQueryResultMapByStringKey(qText:String, keyVarName:String): SolutionMap[String]={
+	ensureRepo
+	getTextQueryResultMapByStringKey(qText, keyVarName, repo);
+  }
+  
   /** Queries the configuration spreadsheet (with query sheet URI currently set in code as final val QUERY_SHEET).
    *
    * @param queryUri The QName of the query which should be run, found on the query sheet currently set in code
    * @return A SolutionList of QuerySolutions
    */
   def getQueryResultList(queryUri:String): SolutionList={
-	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
-	getQueryResultList(queryUri, sr)
+	ensureRepo
+	getQueryResultList(queryUri, repo)
   }
   
   /** Queries the provided SheetRepo (with query sheet URI currently set in code as final val QUERY_SHEET).
@@ -135,6 +177,16 @@ object QueryEmitter {
   def getQueryResultList(queryUri:String, sr:SheetRepo): SolutionList={
 	val qText = sr.getQueryText(QUERY_SHEET, queryUri)
 	getTextQueryResultList(qText, sr);
+  }
+  
+  /** Queries the configuration spreadsheet with a provided query
+   *
+   * @param qText The text of the query to be run
+   * @return A SolutionList of QuerySolutions
+   */
+  def getTextQueryResultList(qText:String): SolutionList={
+	ensureRepo
+	getTextQueryResultList(qText, repo)
   }
   
   /** Queries the provided SheetRepo with a provided query
@@ -149,12 +201,6 @@ object QueryEmitter {
 	solutionList.list = sr.findAllSolutions(parsedQ, null)
 	solutionList
   }
-  
-  /** Loads the test sheet and returns its SheetRepo.
-   *
-   * @return The test sheet SheetRepo
-   */
-  def getSheet = SheetRepo.loadTestSheetRepo()
  
   /** Gets a query from the query sheet page (specfied in code as QUERY_SHEET) of the test sheet
    *
@@ -162,8 +208,8 @@ object QueryEmitter {
    * @return String containing query
    */
   def getQuery(queryUri:String):String={
-	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
-	sr.getQueryText(QUERY_SHEET, queryUri);
+	ensureRepo
+	repo.getQueryText(QUERY_SHEET, queryUri);
   }
   
   /** Gets a query from the query sheet page (specfied in code as QUERY_SHEET) of the provided SheetRepo
@@ -198,6 +244,11 @@ object QueryEmitter {
   def setQueryVar(query:String, queryVarName: String, value: Ident) = {
 	//var queryOps = new StringOps(query) // wasn't working implicitly for some reason
 	query.replaceAll("!!" + queryVarName, "<" + value.getAbsUriString + ">")
+  }
+  
+  def getCompletedQueryFromTemplate(templateUri:String, queryVarName: String, queryVarValue: Ident) = {
+	val query = getQuery(templateUri)
+	setQueryVar(query, queryVarName, queryVarValue)
   }
   
   /** Gets a string literal from a query solution located in a SolutionMap and keyed by a selector URI
@@ -240,11 +291,13 @@ object QueryEmitter {
 	for (i <- 0 until solutionList.list.length) yield solutionList.list(i).getLiteral(variableName).getString
   }
   
+  def getStringsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[String] = getStringsFromSolution(solutionList, variableName)
+  
   def getIdentsFromSolution(solutionList:SolutionList, variableName:String) = {
 	val identList = new scala.collection.mutable.ArrayBuffer[Ident];
 	solutionList.list.foreach(solution => {
-	  identList += new FreeIdent(solution.getResource(variableName).getURI, solution.getResource(variableName).getLocalName)
-	})
+		identList += new FreeIdent(solution.getResource(variableName).getURI, solution.getResource(variableName).getLocalName)
+	  })
 	identList
   }
   

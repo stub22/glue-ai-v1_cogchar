@@ -19,6 +19,7 @@ import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
+import org.appdapter.core.matdat.SheetRepo;
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.log.BasicDebugger;
@@ -27,7 +28,12 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
+import org.cogchar.blob.emit.SolutionList;
+import org.cogchar.blob.emit.SolutionMap;
+import org.cogchar.blob.emit.QueryEmitter;
+
 import java.util.*;
+import org.appdapter.core.item.Ident;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -39,6 +45,27 @@ public class BoneRobotConfig extends KnownComponentImpl {
 		
 	@Override public String getFieldSummary() {
 		return super.getFieldSummary() + ", robotName=" + myRobotName + ", joints=[" + myBJCs + "]";
+	}
+	
+	// A new constructor to build BoneRobotConfig from spreadsheet
+	public BoneRobotConfig(Ident bonyConfigIdent) {
+		SolutionMap solutionMap = QueryEmitter.getQueryResultMap(BoneQueryNames.ROBOT_NAME_QUERY_URI, BoneQueryNames.ROBOT_URI_VAR_NAME);
+		myRobotName = QueryEmitter.getStringFromSolution(solutionMap, bonyConfigIdent, BoneQueryNames.ROBOT_NAME_VAR_NAME);
+		String queryString = QueryEmitter.getCompletedQueryFromTemplate(BoneQueryNames.BONE_JOINT_CONFIG_QUERY_TEMPLATE_URI, BoneQueryNames.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
+		SolutionList solutionList = QueryEmitter.getTextQueryResultList(queryString);
+		List<Ident> boneJointConfigIdents = QueryEmitter.getIdentsFromSolutionAsJava(solutionList, BoneQueryNames.BONE_JOINT_CONFIG_INSTANCE_VAR_NAME);
+		queryString = QueryEmitter.getQuery(BoneQueryNames.BASE_BONE_JOINT_PROPERTIES_QUERY_TEMPLATE_URI);
+		queryString = QueryEmitter.setQueryVar(queryString, BoneQueryNames.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
+		solutionMap = QueryEmitter.getTextQueryResultMap(queryString, BoneQueryNames.JOINT_URI_VAR_NAME);
+		for (Ident jointIdent: boneJointConfigIdents) {
+			myBJCs.add(new BoneJointConfig(jointIdent, solutionMap));
+		}
+	}
+	
+	// Calling this method before using the constructor above ensures that fresh config is being used, but takes more 
+	// time than using the cached repo as occurs by default
+	public static void reloadResource() {
+		QueryEmitter.reloadSheetRepo(); 
 	}
 	
 	public static class Builder extends DynamicCachingComponentAssembler<BoneRobotConfig> {
