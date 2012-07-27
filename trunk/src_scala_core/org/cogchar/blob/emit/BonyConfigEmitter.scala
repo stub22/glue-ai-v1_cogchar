@@ -21,6 +21,18 @@ import org.appdapter.core.item.FreeIdent;
 
 import org.cogchar.api.humanoid.{HumanoidFigureConfig, HumanoidBoneConfig, HumanoidBoneDesc};
 
+import scala.collection.mutable.ArrayBuffer;
+
+import com.hp.hpl.jena.rdf.model._;
+import java.io.InputStream;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import org.appdapter.core.matdat.SheetRepo;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -30,6 +42,7 @@ case class NVParam(val name: String, val value: String) {
 	}
 }
 
+// I suspect this class may be refactored out of existence before too long - Ryan Biggs 27 July 2012
 class BonyConfigEmitter extends DemoConfigEmitter {
 
 	val COGCHAR_URN_PREFIX = "urn:ftd:cogchar.org:2012:";
@@ -139,6 +152,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		hfc.myInitY = initialPosition(1);
 		hfc.myInitZ = initialPosition(2);
 		hfc.myPhysicsFlag = HumanoidConfigEmitter.getPhysicsFlag(charIdent);
+		addBoneDescsFromBoneRobotConfig(charIdent, hfc);
 		hfc
 	}
 	private def getSinbadFigureConfig()  : HumanoidFigureConfig = {
@@ -146,26 +160,68 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		hfc.myBoneConfig.addSinbadDefaultBoneDescs();
 		hfc
 	}
-	private def getZenoFigureConfig() : HumanoidFigureConfig =  {
-		val hfc = buildBaseHumanoidFigureConfigForChar(ZENO_R50_CHAR_IDENT);
-		hfc.myBoneConfig.addZenoDefaultBoneDescs();
-		hfc
-	}
-	private def getAZR50_FigureConfig() : HumanoidFigureConfig =  {
-		val hfc = buildBaseHumanoidFigureConfigForChar(AZR50_CHAR_IDENT);
-		// hfc.myBoneConfig.addZenoDefaultBoneDescs();
-		hfc
-	}	
+
 	def getHumanoidFigureConfigForChar(charIdent : Ident) : HumanoidFigureConfig = {
 		if (charIdent.equals(SINBAD_CHAR_IDENT)) {
-			getSinbadFigureConfig()
-		} else if (charIdent.equals(ZENO_R50_CHAR_IDENT)) {
-			getZenoFigureConfig();
-		} else if (charIdent.equals(AZR50_CHAR_IDENT)) {
-			getAZR50_FigureConfig();			
+			getSinbadFigureConfig()		
 		} else {
 			buildBaseHumanoidFigureConfigForChar(charIdent);
 		}
 	}
+
+  /*
+  // This is for getting bone names from Turtle, but was going to require a ClassLoader from somewhere
+  // Instead, just jumped to query-based config
+  def getBoneNames(robotIdent:Ident, loader:ClassLoader, queryUri:String)={
+	val rdfModel = ModelFactory.createDefaultModel();
+	val solutions = new ArrayBuffer[String]
+	try {
+	  val stream = loader.getResourceAsStream(HumanoidConfigEmitter.getBonyConfigPath(robotIdent));
+	  rdfModel.read(stream, null, "TURTLE");
+	} catch {
+	  case e: Exception => {
+		  println("Exception attemping to read Turtle file: " + e); // Oh so temporary to have this here - need a real logger and probably better handling
+		}
+	}
+	val queryString = HumanoidConfigEmitter.getQuery(queryUri);
+	val query = QueryFactory.create(queryString);
+	val qexec = QueryExecutionFactory.create(query, rdfModel);
+	var results:ResultSet = null;
+	try {
+	  results = qexec.execSelect();
+	} finally {
+	  qexec.close();
+	}
 	
+	while (results.hasNext) {
+	  val soln = results.nextSolution
+	  val varNames = soln.varNames
+	  while(varNames.hasNext())
+	  {
+		val solutionNode = soln.get(varNames.next());
+		solutions += solutionNode.toString
+	  }
+	}
+	//for (solution <- solnList if solution contains BONE_VAR_NAME) yield solution.getLiteral(BONE_VAR_NAME).getString
+	solutions
+  }
+  */
+ 
+  // An undesirable compromise for now: these constants are in org.cogchar.api.skeleton.config.BoneConfigNames,
+  // which is now in o.c.lib.animoid so we can't see it. This is the only remaining place in o.c.lib.core which
+  // needs BoneConfigNames, which is another reason this will likely be refactored soon.
+  final val BONE_NAMES_QUERY_TEMPLATE_URI = "ccrt:template_boneNames_99";
+  final val ROBOT_IDENT_QUERY_VAR = "robotUri";
+  final val BONE_NAME_VAR_NAME = "boneName";
+  def addBoneDescsFromBoneRobotConfig(charIdent:Ident, hfc:HumanoidFigureConfig) {
+		//SheetRepo sr = QueryEmitter.getSheet();
+		var queryString = QueryEmitter.getQuery(BONE_NAMES_QUERY_TEMPLATE_URI);
+		queryString = QueryEmitter.setQueryVar(queryString, ROBOT_IDENT_QUERY_VAR, charIdent);
+		val solutionList = QueryEmitter.getTextQueryResultList(queryString);
+		val boneNames = QueryEmitter.getStringsFromSolution(solutionList, BONE_NAME_VAR_NAME);
+		boneNames.foreach(boneName => {
+			hfc.myBoneConfig.addBoneDesc(boneName);
+		})
+	}
+
 }

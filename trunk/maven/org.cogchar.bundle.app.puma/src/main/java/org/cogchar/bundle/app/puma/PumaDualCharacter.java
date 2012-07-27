@@ -65,6 +65,8 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	private ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 	public String myUpdateBonyRdfPath;
 	public Theater myTheater;
+	
+	final static String SHEET_RESOURCE_MARKER = "//SHEET"; // As an RdfPath, indicates that config should be loaded from spreadsheet instead
 
 	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, Ident charIdent, String nickName) {
 		myCharIdent = charIdent;
@@ -79,7 +81,12 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		BonyRenderContext bonyRendCtx = myHumoidMapper.getHumanoidRenderContext();
 		String bonyConfigPathPerm = HumanoidConfigEmitter.getBonyConfigPath(myCharIdent);
 		myUpdateBonyRdfPath = bonyConfigPathPerm; // Currently update and perm path are set the same for TriggerItems.UpdateBonyConfig
-		BoneRobotConfig boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
+		BoneRobotConfig boneRobotConf;
+		if (bonyConfigPathPerm.equals(SHEET_RESOURCE_MARKER)) {
+			boneRobotConf = new BoneRobotConfig(myCharIdent); 
+		} else {
+			boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
+		}
 		bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf);
 
@@ -211,12 +218,21 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	}
 
 	public void updateBonyConfig(String rdfConfigFlexPath, ClassLoader optRdfResourceCL) {
-		try {
-			BoneRobotConfig.Builder.clearCache();
-			BoneRobotConfig brc = readBoneRobotConfig(rdfConfigFlexPath, optRdfResourceCL);
-			myHumoidMapper.updateModelRobotUsingBoneRobotConfig(brc);
-		} catch (Throwable t) {
-			logError("problem updating bony config from flex-path[" + rdfConfigFlexPath + "]", t);
+		if (rdfConfigFlexPath.equals(SHEET_RESOURCE_MARKER)) {
+			try {
+				BoneRobotConfig.reloadResource();
+				myHumoidMapper.updateModelRobotUsingBoneRobotConfig(new BoneRobotConfig(myCharIdent));
+			} catch (Throwable t) {
+				logError("problem updating bony config from queries for " + myCharIdent, t);
+			}
+		} else {
+			try {
+				BoneRobotConfig.Builder.clearCache();
+				BoneRobotConfig brc = readBoneRobotConfig(rdfConfigFlexPath, optRdfResourceCL);
+				myHumoidMapper.updateModelRobotUsingBoneRobotConfig(brc);
+			} catch (Throwable t) {
+				logError("problem updating bony config from flex-path[" + rdfConfigFlexPath + "]", t);
+			}
 		}
 	}
 

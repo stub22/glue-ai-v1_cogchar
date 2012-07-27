@@ -20,6 +20,7 @@ package org.cogchar.api.humanoid;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -88,6 +89,7 @@ public class HumanoidBoneConfig {
 	/*
 	 * 
 	 */
+	/*
 	public void addZenoDefaultBoneDescs() {
 
 		addBoneDesc("Root");
@@ -146,6 +148,6 @@ public class HumanoidBoneConfig {
 		addBoneDesc("RtKnee");
 		addBoneDesc("RtAnkle");
 	}
-
+	*/
 
 }

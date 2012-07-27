@@ -15,14 +15,20 @@
  */
 package org.cogchar.api.skeleton.config;
 
-
+import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
+import org.appdapter.core.matdat.SheetRepo;
+
+import org.cogchar.blob.emit.SolutionList;
+import org.cogchar.blob.emit.SolutionMap;
+import org.cogchar.blob.emit.QueryEmitter;
 
 
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -46,6 +52,28 @@ public class BoneJointConfig {
 			myProjectionRanges.add(bpr);
 		}
 	}
+	
+	// This constructor is used to build BoneJointConfig from queries
+	public BoneJointConfig(Ident jointIdent, SolutionMap solutionMap) {
+		myURI_Fragment = jointIdent.getLocalName();
+		myJointNum = QueryEmitter.getIntegerFromSolution(solutionMap, jointIdent, BoneQueryNames.JOINT_NUM_VAR_NAME);
+		myJointName = QueryEmitter.getStringFromSolution(solutionMap, jointIdent, BoneQueryNames.JOINT_NAME_VAR_NAME);
+		myNormalDefaultPos = QueryEmitter.getDoubleFromSolution(solutionMap, jointIdent, BoneQueryNames.DEFAULT_POS_VAR_NAME);
+		// What about bc:invertForSymmetry?
+		String queryString = QueryEmitter.getQuery(BoneQueryNames.BONEPROJECTION_QUERY_TEMPLATE_URI);
+		queryString = QueryEmitter.setQueryVar(queryString, BoneQueryNames.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
+		solutionMap = QueryEmitter.getTextQueryResultMapByStringKey(queryString, BoneQueryNames.BONE_NAME_VAR_NAME);
+		Iterator rangeIterator = solutionMap.getJavaIterator();
+		while (rangeIterator.hasNext()) {
+			String boneName = (String)rangeIterator.next();
+			String rotationAxisName = QueryEmitter.getStringFromSolution(solutionMap, boneName, BoneQueryNames.ROTATION_AXIS_VAR_NAME);
+			Double minAngle = QueryEmitter.getDoubleFromSolution(solutionMap, boneName, BoneQueryNames.MIN_ANGLE_VAR_NAME);
+			Double maxAngle = QueryEmitter.getDoubleFromSolution(solutionMap, boneName, BoneQueryNames.MAX_ANGLE_VAR_NAME);
+			BoneRotationAxis rotationAxis = BoneRotationAxis.valueOf(rotationAxisName);
+			myProjectionRanges.add(new BoneProjectionRange(this, boneName, rotationAxis, Math.toRadians(minAngle), Math.toRadians(maxAngle)));
+		}
+	}
+	
 	public String toString() {
 		return "BJC[uriFrag=" + myURI_Fragment + ", num=" + myJointNum + ", name=" + myJointName + ", defPos=" + myNormalDefaultPos + ", projs=" + myProjectionRanges + "]";
 	}

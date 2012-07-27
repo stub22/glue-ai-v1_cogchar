@@ -32,6 +32,9 @@ import scala.collection.JavaConversions._
 
 object HumanoidConfigEmitter {
   
+  final val QUERY_SHEET = "ccrt:qry_sheet_22"
+  final val HUMANOID_QUERY = "ccrt:find_humanoids_99"
+  
   final val ROBOT_URI_VAR_NAME = "humInd"
   final val ROBOT_ID_VAR_NAME = "rkRobotID"
   final val MESH_PATH_VAR_NAME = "meshPath"
@@ -39,13 +42,14 @@ object HumanoidConfigEmitter {
   final val JOINT_CONFIG_PATH_VAR_NAME = "jointConfigPath"
   final val INITIAL_POSITION_VAR_NAMES = Array("initX", "initY", "initZ")
   final val PHYSICS_FLAG_VAR_NAME = "physics"
+  final val BONE_VAR_NAME = "boneName"
   
   val solutionMap = new scala.collection.mutable.HashMap[Ident, QuerySolution]
   
   def main(args: Array[String]) : Unit = {
 
 	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
-	val qText = sr.getQueryText("ccrt:qry_sheet_22", "ccrt:find_humanoids_99")
+	val qText = sr.getQueryText(QUERY_SHEET, HUMANOID_QUERY)
 	println("Found query text: " + qText)
 		
 	val parsedQ = sr.parseQueryText(qText);
@@ -54,8 +58,9 @@ object HumanoidConfigEmitter {
   }
 	
   def getCharConfigData {
-	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
-	val qText = sr.getQueryText("ccrt:qry_sheet_22", "ccrt:find_humanoids_99")
+	//val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
+	val sr : SheetRepo = QueryEmitter.getSheet // By getting sr this way, we use the cached copy and only need load it once for init
+	val qText = sr.getQueryText(QUERY_SHEET, HUMANOID_QUERY)
 	val parsedQ = sr.parseQueryText(qText);
 	val solnList : scala.collection.mutable.Buffer[QuerySolution] = sr.findAllSolutions(parsedQ, null);
 	solnList.foreach(solution => {
