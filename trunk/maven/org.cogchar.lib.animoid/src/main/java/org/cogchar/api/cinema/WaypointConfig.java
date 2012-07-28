@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package org.cogchar.api.scene;
+package org.cogchar.api.cinema;
 
 import java.util.Arrays;
 import org.appdapter.core.item.*;

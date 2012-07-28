@@ -39,7 +39,7 @@
 cc:BuildableCinematicConfig
 		a 					rdfs:Class;
 		rdfs:subClassOf 	ja:Object;
-		ja:assembler		"org.cogchar.api.scene.CinematicConfig$Builder" 
+		ja:assembler		"org.cogchar.api.cinema.CinematicConfig$Builder" 
 #####  Again, note the period ending the description of this resource, and all other
 #####  top-level (*syntactically, but not semantically*) resources below.
 		.
@@ -54,7 +54,7 @@ cc:BuildableCinematicConfig
 
 cci:cinematicConfig1		rdf:type			cc:BuildableCinematicConfig;
 ####  Here is the class name of the actual config object instance we are constructing.
-	apsb:javaFQCN		"org.cogchar.api.scene.CinematicConfig";
+	apsb:javaFQCN		"org.cogchar.api.cinema.CinematicConfig";
 #### Some additional descriptive metadata
 	apsb:label			"Cinematic Config apsb:label";
 	rdfs:label			"Cinematic Config rdfs:label";

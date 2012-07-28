@@ -15,6 +15,12 @@
  */
 package org.cogchar.render.model.databalls;
 
+import org.cogchar.api.cinema.CinematicConfigNames;
+import org.cogchar.api.cinema.CinematicConfig;
+import org.cogchar.api.cinema.CinematicTrack;
+import org.cogchar.api.cinema.RotationConfig;
+import org.cogchar.api.cinema.CinematicInstanceConfig;
+import org.cogchar.api.cinema.WaypointConfig;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -43,7 +49,6 @@ import static java.lang.Math.pow;
 import java.util.*;
 import java.util.concurrent.*;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.api.scene.*;
 import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.opengl.optic.CameraMgr;

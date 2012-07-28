@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.scene;
+package org.cogchar.api.cinema;
 
 import java.util.Arrays;
 import org.appdapter.core.item.Item;
@@ -39,15 +39,15 @@ public class LightConfig {
 	public LightConfig(Item configItem) {
 		lightName = configItem.getIdent().getLocalName();
 		lightType = LightType.AMBIENT; // For now, we assume light is ambient (no direction required) if type is not specified
-		String typeString = ItemFuncs.getString(configItem, SceneConfigNames.P_lightType, null);
+		String typeString = ItemFuncs.getString(configItem, LightsCameraConfigNames.P_lightType, null);
 		if (typeString.equals("DIRECTIONAL")) {
 			lightType = LightType.DIRECTIONAL;
 		}
 		for (int index = 0; index < lightDirection.length; index++) {
-			lightDirection[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_direction[index], 0.0).floatValue();
+			lightDirection[index] = ItemFuncs.getDouble(configItem, LightsCameraConfigNames.P_direction[index], 0.0).floatValue();
 		}
 		for (int index = 0; index < lightColor.length; index++) {
-			lightColor[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_color[index], null).floatValue();
+			lightColor[index] = ItemFuncs.getDouble(configItem, LightsCameraConfigNames.P_color[index], null).floatValue();
 		}
 	}
 

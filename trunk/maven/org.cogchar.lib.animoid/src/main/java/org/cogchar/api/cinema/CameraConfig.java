@@ -13,11 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.scene;
+package org.cogchar.api.cinema;
 
 import java.util.Arrays;
+import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
+import org.cogchar.blob.emit.HumanoidConfigEmitter;
 
 /**
  * @author Ryan Biggs
@@ -29,6 +31,7 @@ public class CameraConfig {
 	public float[] cameraPosition = new float[3];
 	public float[] cameraPointDir = new float[3];
 	public float[] cameraViewPort = new float[4];
+	public Ident attachedRobot;
 	public String attachedItem;
 
 	@Override
@@ -39,12 +42,15 @@ public class CameraConfig {
 	public CameraConfig(Item configItem) {
 		cameraName = configItem.getIdent().getLocalName();
 		for (int index = 0; index < 3; index++) {
-			cameraPosition[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_position[index], 0.0).floatValue();
-			cameraPointDir[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_direction[index], 0.0).floatValue();
+			cameraPosition[index] = ItemFuncs.getDouble(configItem, LightsCameraConfigNames.P_position[index], 0.0).floatValue();
+			cameraPointDir[index] = ItemFuncs.getDouble(configItem, LightsCameraConfigNames.P_direction[index], 0.0).floatValue();
 		}
 		for (int index = 0; index < cameraViewPort.length; index++) {
-			cameraViewPort[index] = ItemFuncs.getDouble(configItem, SceneConfigNames.P_viewport[index], null).floatValue();
+			cameraViewPort[index] = ItemFuncs.getDouble(configItem, LightsCameraConfigNames.P_viewport[index], null).floatValue();
 		}
-		attachedItem = ItemFuncs.getString(configItem, SceneConfigNames.P_attachedItem, null);
+		// Would be nice to get attachedRobot as an Ident, but not possible with ItemFuncs
+		String attachedRobotId = ItemFuncs.getString(configItem, LightsCameraConfigNames.P_attachedRobot, null);
+		attachedRobot = HumanoidConfigEmitter.getRobotIdent(attachedRobotId);
+		attachedItem = ItemFuncs.getString(configItem, LightsCameraConfigNames.P_attachedItem, null);
 	}
 }

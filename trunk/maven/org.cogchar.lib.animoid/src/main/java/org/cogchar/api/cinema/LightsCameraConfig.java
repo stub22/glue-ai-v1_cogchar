@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 // This is just a guess as to where this should live at this point
-package org.cogchar.api.scene;
+package org.cogchar.api.cinema;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
@@ -49,13 +49,13 @@ public class LightsCameraConfig extends KnownComponentImpl {
 		protected void initExtendedFieldsAndLinks(LightsCameraConfig mlcc, Item configItem, Assembler assmblr,
 				Mode mode) {
 			logInfo("LightsCameraConfig.initExtendedFieldsAndLinks()-BEGIN");
-			Set<Item> cameraItems = ItemFuncs.getLinkedItemSet(configItem, SceneConfigNames.P_camera);
+			Set<Item> cameraItems = ItemFuncs.getLinkedItemSet(configItem, LightsCameraConfigNames.P_camera);
 			for (Item ji : cameraItems) {
 				CameraConfig cc = new CameraConfig(ji);
 				logInfo("Adding CameraConfig in LightsCameraConfig: " + cc);
 				mlcc.myCCs.add(cc);
 			}
-			Set<Item> lightItems = ItemFuncs.getLinkedItemSet(configItem, SceneConfigNames.P_light);
+			Set<Item> lightItems = ItemFuncs.getLinkedItemSet(configItem, LightsCameraConfigNames.P_light);
 			for (Item ji : lightItems) {
 				LightConfig lc = new LightConfig(ji);
 				logInfo("Adding LightConfig in LightsCameraConfig: " + lc);
