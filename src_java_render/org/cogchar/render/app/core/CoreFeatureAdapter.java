@@ -23,6 +23,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
+import org.appdapter.core.item.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.DemoConfigEmitter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
@@ -66,13 +67,13 @@ public class CoreFeatureAdapter extends BasicDebugger {
 		dsm.addViewPort(label, c);
 	}
 
-	static public void attachToHumanoidBone(final HumanoidRenderContext hrc, final Node toAttach, final String boneName) {
+	static public void attachToHumanoidBone(final HumanoidRenderContext hrc, final Node toAttach, final Ident robotIdent, final String boneName) {
 		hrc.enqueueCallable(new Callable<Void>() {
 
 			@Override
 			public Void call() throws Exception {
 				// getBoneAttachmentsNode attaches things to the rootNode, so this next line must be enqueued for the main render thread. Convenient!
-				Node attachToBone = hrc.getHumanoidFigure(hrc.getBonyConfigEmitter().ZENO_R50_CHAR_IDENT()).getBoneAttachmentsNode(boneName); // CHAR_IDENT likely to change when we switch models - may want to take this to RDF
+				Node attachToBone = hrc.getHumanoidFigure(robotIdent).getBoneAttachmentsNode(boneName);
 				attachToBone.attachChild(toAttach);
 				return null;
 			}

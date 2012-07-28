@@ -46,6 +46,7 @@ import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.core.RenderRegistryClient;
 
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -68,7 +69,8 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		initBasicTestPhysics();
 		// We wait and do this later, possibly repeatedly.
 		// initHumanoidStuff();
-		initCameraAndLights();
+		// This is now done later, after all characters have been loaded:
+		//initCameraAndLights(charWorldCl);
 
 		myGameFeatureAdapter.initFeatures();
 
@@ -121,13 +123,15 @@ public class HumanoidRenderContext extends BonyRenderContext {
 			logError("Problem in initHumanoidStuff(), eating exception to allow init to continue", t);
 		}
 	}
-
-	// This method is getting to be vestigial - camera and light setup is now mostly handled from RDF	
-	private void initCameraAndLights() {
+	
+	public void initCinema(ClassLoader charWorldCl) {
 		WorkaroundAppStub stub = getAppStub();
 		stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
 		FlyByCamera fbCam = stub.getFlyByCamera();
 		fbCam.setMoveSpeed(50);
+		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
+		myRenderMapper.initLightsAndCamera(this, charWorldCl);
+		myRenderMapper.initCinematics(this, charWorldCl);
 	}
 
 	// This is still called by HumanoidPuppetActions to reset default camera position

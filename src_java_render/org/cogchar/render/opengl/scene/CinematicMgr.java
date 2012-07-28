@@ -15,12 +15,16 @@
  */
 package org.cogchar.render.opengl.scene;
 
+import org.cogchar.api.cinema.CinematicConfigNames;
+import org.cogchar.api.cinema.CinematicConfig;
+import org.cogchar.api.cinema.CinematicTrack;
+import org.cogchar.api.cinema.RotationConfig;
+import org.cogchar.api.cinema.CinematicInstanceConfig;
+import org.cogchar.api.cinema.WaypointConfig;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.api.scene.*;
 import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.sys.core.RenderRegistryClient;
 import org.cogchar.render.opengl.optic.CameraMgr;
-import org.cogchar.api.scene.SceneConfigNames;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;

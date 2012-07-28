@@ -15,8 +15,6 @@
  */
 package org.cogchar.bundle.app.puma;
 
-import java.util.Set;
-
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
@@ -33,7 +31,6 @@ import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 
 import org.cogchar.render.app.bony.BonyRenderContext;
-import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.SceneActions;
 
@@ -61,7 +58,6 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	private String myNickName;
 	private PumaHumanoidMapper myHumoidMapper;
 	private PumaWebMapper myWebMapper;
-	private PumaRenderMapper myRenderMapper;
 	private ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 	public String myUpdateBonyRdfPath;
 	public Theater myTheater;
@@ -73,7 +69,6 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myNickName = nickName;
 		myHumoidMapper = new PumaHumanoidMapper(hrc, bundleCtx, charIdent);
 		myTheater = new Theater();
-		myRenderMapper = new PumaRenderMapper();
 		myWebMapper = new PumaWebMapper();
 	}
 
@@ -89,15 +84,6 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		}
 		bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf);
-
-		CogcharRenderContext cogRendCtx = bonyRendCtx;
-
-		ClassLoader optCL = myInitialBonyRdfCL;
-		
-		myRenderMapper.initCameraMgrHumanoidRenderContext(myHumoidMapper.getHumanoidRenderContext()); // Needed so CameraMgr/CoreFeatureAdapter have access to HumanoidRenderContext.getHumanoidFigure 
-		myRenderMapper.initLightsAndCamera(cogRendCtx, optCL);
-		myRenderMapper.initCinematics(cogRendCtx, optCL);
-		
 
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myHumoidMapper.connectToVirtualChar();
@@ -133,7 +119,10 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		}
 		// true = Clear caches first
 		boolean clearCachesFirst = true;
-		ClassLoader optCLforJenaFM = null;
+		// optCLforJenaFM was originally set to null,
+		// apparently depending on CL to have already been added by something else, in this case cinematic / lights / camera config
+		// ClassLoaders won't be required at all soon when this config becomes query-based
+		ClassLoader optCLforJenaFM = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 		myTheater.loadSceneBook(behavPath, optCLforJenaFM, clearCachesFirst);
 	}
 

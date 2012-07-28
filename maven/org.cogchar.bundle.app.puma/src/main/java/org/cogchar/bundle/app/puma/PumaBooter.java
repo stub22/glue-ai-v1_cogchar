@@ -164,7 +164,14 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 			logInfo("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed , calling connectDualRobotChars()");
 			pac.connectDualRobotChars();
 			
-			logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed -  PUMA BOOT SUCCESSFUL!  8-)");
+			logInfo("%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed , calling Context.initCinema()");
+			
+			// Lights, Cameras, and Cinematics were once configured during PumaDualCharacter init
+			// Since we can support multiple character now, this needs to happen after connectDualRobotChars()
+			// ClassLoader is only needed temporarily until config comes from query-based loaders
+			hrc.initCinema(org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader());
+			
+			logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% Context.initCinema() completed -  PUMA BOOT SUCCESSFUL!  8-)");
 			
 			result.myStatus = BootStatus.BOOTED_OK;
 			

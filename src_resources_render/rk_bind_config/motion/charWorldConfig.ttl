@@ -36,7 +36,7 @@
 bc:BuildableLightsCameraConfig
 		a 					rdfs:Class;
 		rdfs:subClassOf 	ja:Object;
-		ja:assembler		"org.cogchar.api.scene.LightsCameraConfig$Builder" 
+		ja:assembler		"org.cogchar.api.cinema.LightsCameraConfig$Builder" 
 #####  Again, note the period ending the description of this resource, and all other
 #####  top-level (*syntactically, but not semantically*) resources below.
 		.
@@ -51,7 +51,7 @@ bc:BuildableLightsCameraConfig
 
 bci:charWorldConfig1		rdf:type			bc:BuildableLightsCameraConfig;
 ####  Here is the class name of the actual config object instance we are constructing.
-	apsb:javaFQCN		"org.cogchar.api.scene.LightsCameraConfig";
+	apsb:javaFQCN		"org.cogchar.api.cinema.LightsCameraConfig";
 #### Some additional descriptive metadata
 	apsb:label			"Character World Config apsb:label";
 	rdfs:label			"Character World Config rdfs:label";
@@ -123,7 +123,8 @@ bci:camera_HEAD_CAM
 		bc:viewportXend			0.3;
 		bc:viewportYstart		0.3;
         bc:viewportYend			0.6;
-		bc:attachedTo			"LtEye2";
+		bc:attachedToRobot		"rk-cajunZeno";
+		bc:attachedToBone		"LtEye2";
 .
 
 ################################################################################

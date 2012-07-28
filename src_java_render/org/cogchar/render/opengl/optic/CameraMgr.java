@@ -21,9 +21,9 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.control.CameraControl.ControlDirection;
 import java.util.HashMap;
 import java.util.Map;
-import org.cogchar.api.scene.CameraConfig;
-import org.cogchar.api.scene.LightsCameraConfig;
-import org.cogchar.api.scene.SceneConfigNames;
+import org.cogchar.api.cinema.CameraConfig;
+import org.cogchar.api.cinema.LightsCameraConfig;
+import org.cogchar.api.cinema.LightsCameraConfigNames;
 import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.core.CoreFeatureAdapter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
@@ -48,7 +48,6 @@ public class CameraMgr {
 	private Map<String, Camera> myCamerasByName = new HashMap<String, Camera>();
 	private Vector3f defaultPosition;
 	private Vector3f defaultDirection;
-	private HumanoidRenderContext hrc;
 
 	public Camera cloneCamera(Camera orig) {
 		return orig.clone();
@@ -73,16 +72,16 @@ public class CameraMgr {
 		return getNamedCamera(id.name());
 	}
 
-	public void initCamerasFromConfig(LightsCameraConfig config, CogcharRenderContext hrc) { // We could just use the static hrc set by setHumanoidRenderContext, but leaving this for now since the future of that method isn't assured
+	public void initCamerasFromConfig(LightsCameraConfig config, HumanoidRenderContext hrc) {
 		for (CameraConfig cc : config.myCCs) {
 			theLogger.info("Building Camera for config: " + cc);
 			boolean newFromRdf = false; // Used to trigger new viewport creation for new cameras loaded from RDF - probably not the way we want to handle this in long run
 			String cameraName = cc.cameraName;
 			// If the RDF camera name is camera_default (with any case), normalize name of this very special camera to "DEFAULT"
-			if (cameraName.toLowerCase().replaceFirst(SceneConfigNames.partial_P_camera, "").equals("_" + SceneConfigNames.suffix_DEFAULT)) {
+			if (cameraName.toLowerCase().replaceFirst(LightsCameraConfigNames.partial_P_camera, "").equals("_" + LightsCameraConfigNames.suffix_DEFAULT)) {
 				cameraName = CommonCameras.DEFAULT.name();
 			}
-			if (cameraName.toLowerCase().replaceFirst(SceneConfigNames.partial_P_camera, "").equals("_" + SceneConfigNames.suffix_HEAD_CAM)) {
+			if (cameraName.toLowerCase().replaceFirst(LightsCameraConfigNames.partial_P_camera, "").equals("_" + LightsCameraConfigNames.suffix_HEAD_CAM)) {
 				cameraName = CommonCameras.HEAD_CAM.name();
 			}
 			Camera loadingCamera = getNamedCamera(cameraName); // First let's see if we can get a registered camera by this name
@@ -94,7 +93,7 @@ public class CameraMgr {
 			float[] cameraViewPort = cc.cameraViewPort;
 			loadingCamera.setViewPort(cameraViewPort[0], cameraViewPort[1], cameraViewPort[2], cameraViewPort[3]);
 			if (cameraName.equals(CommonCameras.HEAD_CAM.name())) {
-				addHeadCamera(loadingCamera, cc); // Special handling for head cam
+				addHeadCamera(loadingCamera, cc, hrc); // Special handling for head cam
 			} else {
 				float[] cameraPos = cc.cameraPosition;
 				loadingCamera.setLocation(new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]));
@@ -121,11 +120,12 @@ public class CameraMgr {
 		}
 	}
 
-	public void addHeadCamera(Camera headCam, CameraConfig config) {
+	public void addHeadCamera(Camera headCam, CameraConfig config, HumanoidRenderContext hrc) {
 		if (hrc != null) {
 			CameraNode headCamNode = new CameraNode(CommonCameras.HEAD_CAM.name() + "_NODE", headCam);
 			headCamNode.setControlDir(ControlDirection.SpatialToCamera);
-			CoreFeatureAdapter.attachToHumanoidBone(hrc, headCamNode, config.attachedItem);
+			//theLogger.info("Attaching head cam to robot ident: " + config.attachedRobot + " bone " + config.attachedItem); // TEST ONLY
+			CoreFeatureAdapter.attachToHumanoidBone(hrc, headCamNode, config.attachedRobot, config.attachedItem);
 			float[] cameraPos = config.cameraPosition;
 			headCamNode.setLocalTranslation(new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]));
 		} else {
@@ -133,9 +133,6 @@ public class CameraMgr {
 		}
 	}
 
-	public void setHumanoidRenderContext(HumanoidRenderContext hrcInstance) {
-		hrc = hrcInstance;
-	}
 	/*
 	 * public FlyByCamera fbc = app.getFlyByCamera(); fbc.setDragToRotate(true); fbc.setMoveSpeed(10f);
 	 * app.setPauseOnLostFocus(false);
