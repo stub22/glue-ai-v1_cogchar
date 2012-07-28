@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.scene;
+package org.cogchar.api.cinema;
 
 import org.appdapter.api.trigger.BoxAssemblyNames;
 
 /**
  * @author Ryan Biggs
  */
-public class SceneConfigNames extends BoxAssemblyNames {
+public class LightsCameraConfigNames extends BoxAssemblyNames {
 	public static	String		NS_CgcBC		= "http://www.cogchar.org/bony/config#";
 	
 	public static	String		partial_P_camera = "camera";
@@ -33,7 +33,9 @@ public class SceneConfigNames extends BoxAssemblyNames {
         
         public static   String[]        P_viewport              = {NS_CgcBC + "viewportXstart", NS_CgcBC + "viewportXend", NS_CgcBC + "viewportYstart", NS_CgcBC + "viewportYend"};
 		
-		public static	String			P_attachedItem			= NS_CgcBC + "attachedTo";
+		public static	String			P_attachedRobot			= NS_CgcBC + "attachedToRobot";
+		
+		public static	String			P_attachedItem			= NS_CgcBC + "attachedToBone";
         
         public static 	String			P_light					= NS_CgcBC + "light";
         

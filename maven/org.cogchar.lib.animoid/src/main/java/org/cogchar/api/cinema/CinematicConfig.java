@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 // This is just a guess as to where this should live at this point
-package org.cogchar.api.scene;
+package org.cogchar.api.cinema;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;

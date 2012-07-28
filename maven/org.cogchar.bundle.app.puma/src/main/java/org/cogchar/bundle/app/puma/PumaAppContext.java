@@ -87,10 +87,8 @@ public class PumaAppContext extends BasicDebugger {
 		
 		// hrc.initHumanoidStuff(); can also be here if needed
 		
-		// Right now, only Cajun Zero really works properly, but we're getting close...
 		for (PumaDualCharacter pdc: pdcList) {
-			if (pdc.getNickName().equals("rk-cajunZeno")) {
-			//if (!pdc.getNickName().equals("rk-sinbad")) {
+			if (!pdc.getNickName().equals("rk-sinbad")) {
 				setupCharacterBindingToRobokind(pdc);
 				setupAndStartBehaviorTheater(pdc);
 			}

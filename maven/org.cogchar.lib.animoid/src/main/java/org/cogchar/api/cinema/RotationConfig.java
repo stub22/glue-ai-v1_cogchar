@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package org.cogchar.api.scene;
+package org.cogchar.api.cinema;
 
 import org.appdapter.core.item.*;
 

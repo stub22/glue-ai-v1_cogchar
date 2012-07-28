@@ -15,7 +15,8 @@
  */
 package org.cogchar.render.app.core;
 
-import com.jme3.input.controls.Trigger;
+import java.util.ArrayList;
+import java.util.List;
 import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.platform.trigger.DummyBox;
 import org.cogchar.platform.trigger.DummyTrigger;
@@ -24,24 +25,32 @@ import org.cogchar.platform.trigger.DummyTrigger;
  * @author Stu B. <www.texpedient.com>
  */
 public class BoundAction implements DummyBinding {
-	private DummyBox		myActionBox;
+	// Changed to list of DummyBox instead of a single one to support multiple characters - 27 July 2012 Ryan Biggs
+
+	private List<DummyBox> myActionBoxes = new ArrayList<DummyBox>();
 	// Our Action Trigger types are entirely separate from the JME3 "Trigger" for inputs. 
-	private DummyTrigger	myActionTrigger;   
+	private DummyTrigger myActionTrigger;
 
-	public boolean includedInMinSim() { 
+	public boolean includedInMinSim() {
 		return false;
-	}	
-
-	@Override public void setTargetBox(DummyBox box) {
-		myActionBox = box;
 	}
-	@Override public void setTargetTrigger(DummyTrigger trig) {
+
+	@Override
+	public void setTargetBox(DummyBox box) {
+		myActionBoxes.add(box);
+	}
+
+	@Override
+	public void setTargetTrigger(DummyTrigger trig) {
 		myActionTrigger = trig;
 	}
-	@Override public void perform() {
-		if (myActionTrigger != null) {
-			myActionTrigger.fire(myActionBox);
-		}			
-	}
 
+	@Override
+	public void perform() {
+		if (myActionTrigger != null) {
+			for (DummyBox myActionBox : myActionBoxes) {
+				myActionTrigger.fire(myActionBox);
+			}
+		}
+	}
 }

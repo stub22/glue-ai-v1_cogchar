@@ -97,6 +97,17 @@ object HumanoidConfigEmitter {
 	robotId
   }
   
+  // This is a "band-aid" method to get a robot ident from its ccrt:rkRobotID
+  // Used by some old ItemFuncs based RDF init, likely unnecessary after full conversion to query based config
+  def getRobotIdent(robotId:String): Ident = {
+	var robotIdent: Ident = null
+	ensureMapReady
+	solutionMap.keySet.foreach(ident => {
+		if (getRobotId(ident).equals(robotId)) robotIdent = ident
+	  })
+	robotIdent
+  }
+  
   def getMeshPath(robotIdent:Ident): String = {
 	getStringFromSolution(robotIdent, MESH_PATH_VAR_NAME)
   }
