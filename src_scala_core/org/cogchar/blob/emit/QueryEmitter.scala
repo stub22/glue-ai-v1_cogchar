@@ -45,7 +45,7 @@ object QueryEmitter {
    */
   def main(args: Array[String]) : Unit = {
 
-	val QUERY_TO_TEST = "ccrt:template_boneNames_99"
+	val QUERY_TO_TEST = "ccrt:find_cameras_99"
 	
 	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
 	val qText = sr.getQueryText(QUERY_SHEET, QUERY_TO_TEST)
@@ -122,7 +122,7 @@ object QueryEmitter {
 	val solnList : scala.collection.mutable.Buffer[QuerySolution] = sr.findAllSolutions(parsedQ, null);
 	solnList.foreach(solution => {
 		if (solution contains keyVarName) {
-		  solutionMap.map(new FreeIdent(solution.getResource(keyVarName).getURI, solution.getResource(keyVarName).getLocalName)) = solution 
+		  solutionMap.map(new FreeIdent(solution.getResource(keyVarName).getURI, solution.getResource(keyVarName).getLocalName)) = new Solution(solution)
 		}
 	  })
 	solutionMap
@@ -141,7 +141,7 @@ object QueryEmitter {
 	val solnList : scala.collection.mutable.Buffer[QuerySolution] = sr.findAllSolutions(parsedQ, null);
 	solnList.foreach(solution => {
 		if (solution contains keyVarName) {
-		  solutionMap.map(solution.getLiteral(keyVarName).getString) = solution 
+		  solutionMap.map(solution.getLiteral(keyVarName).getString) = new Solution(solution) 
 		}
 	  })
 	solutionMap
@@ -198,7 +198,8 @@ object QueryEmitter {
   def getTextQueryResultList(qText: String, sr:SheetRepo): SolutionList = {
 	val solutionList = new SolutionList
 	val parsedQ = sr.parseQueryText(qText);
-	solutionList.list = sr.findAllSolutions(parsedQ, null)
+	val nativeSolutionList: scala.collection.mutable.Buffer[QuerySolution] = sr.findAllSolutions(parsedQ, null)
+	nativeSolutionList.foreach( solution => solutionList.list += new Solution(solution))
 	solutionList
   }
  
@@ -261,7 +262,7 @@ object QueryEmitter {
   def getStringFromSolution(solutionMap:SolutionMap[Ident], selectorUri:Ident, variableName:String) = {
 	var literal: String = null
 	if (solutionMap.map contains selectorUri) {
-	  literal = solutionMap.map(selectorUri).getLiteral(variableName).getString
+	  literal = solutionMap.map(selectorUri).solution.getLiteral(variableName).getString
 	}
 	literal
   }
@@ -276,7 +277,21 @@ object QueryEmitter {
   def getStringFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String) = {
 	var literal: String = null
 	if (solutionMap.map contains selector) {
-	  literal = solutionMap.map(selector).getLiteral(variableName).getString
+	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getString
+	}
+	literal
+  }
+  
+  /** Gets a string literal from a single query solution
+   *
+   * @param solution The Solution in which the desired solution is located
+   * @param variableName The query variable name for the string literal desired
+   * @return The selected string literal
+   */
+  def getStringFromSolution(solution:Solution, variableName:String): String = {
+	var literal: String = null
+	if (solution.solution.contains(variableName)) {
+	  literal = solution.solution.getLiteral(variableName).getString
 	}
 	literal
   }
@@ -288,15 +303,23 @@ object QueryEmitter {
    * @return The selected string literals
    */
   def getStringsFromSolution(solutionList:SolutionList, variableName:String) = {
-	for (i <- 0 until solutionList.list.length) yield solutionList.list(i).getLiteral(variableName).getString
+	for (i <- 0 until solutionList.list.length) yield solutionList.list(i).solution.getLiteral(variableName).getString
   }
   
   def getStringsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[String] = getStringsFromSolution(solutionList, variableName)
   
+  def getIdentFromSolution(solution:Solution, variableName:String) = {
+	var ident:Ident = null;
+	if (solution.solution.contains(variableName)) {
+	  ident = new FreeIdent(solution.solution.getResource(variableName).getURI, solution.solution.getResource(variableName).getLocalName)
+	}
+	ident
+  }
+  
   def getIdentsFromSolution(solutionList:SolutionList, variableName:String) = {
 	val identList = new scala.collection.mutable.ArrayBuffer[Ident];
 	solutionList.list.foreach(solution => {
-		identList += new FreeIdent(solution.getResource(variableName).getURI, solution.getResource(variableName).getLocalName)
+		identList += new FreeIdent(solution.solution.getResource(variableName).getURI, solution.solution.getResource(variableName).getLocalName)
 	  })
 	identList
   }
@@ -306,7 +329,15 @@ object QueryEmitter {
   def getFloatFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
 	var literal: Float = Float.NaN
 	if (solutionMap.map contains selector) {
-	  literal = solutionMap.map(selector).getLiteral(variableName).getFloat
+	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getFloat
+	}
+	literal
+  }
+  
+  def getFloatFromSolution(solution:Solution, variableName:String, default:Float) = {
+	var literal: Float = default
+	if (solution.solution.contains(variableName)) {
+	  literal = solution.solution.getLiteral(variableName).getFloat
 	}
 	literal
   }
@@ -314,7 +345,7 @@ object QueryEmitter {
   def getDoubleFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
 	var literal: Double = Double.NaN
 	if (solutionMap.map contains selector) {
-	  literal = solutionMap.map(selector).getLiteral(variableName).getDouble
+	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getDouble
 	}
 	literal
   }
@@ -322,7 +353,7 @@ object QueryEmitter {
   def getDoubleFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String) = {
 	var literal: Double = Double.NaN
 	if (solutionMap.map contains selector) {
-	  literal = solutionMap.map(selector).getLiteral(variableName).getDouble
+	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getDouble
 	}
 	literal
   }
@@ -332,7 +363,7 @@ object QueryEmitter {
 	// But Scala won't allow that for Int (or Float), and use of an Option seems inappropriate when this will be often called from Java code
 	var literal: Int = 0
 	if (solutionMap.map contains selector) {
-	  literal = solutionMap.map(selector).getLiteral(variableName).getInt
+	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getInt
 	}
 	literal
   }

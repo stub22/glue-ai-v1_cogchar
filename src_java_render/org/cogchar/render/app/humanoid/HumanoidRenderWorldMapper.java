@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.cogchar.render.app.humanoid;
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
@@ -28,36 +27,26 @@ import org.cogchar.render.sys.core.RenderRegistryClient;
  *
  * @author Ryan Biggs
  */
-
 public class HumanoidRenderWorldMapper {
-	public void initLightsAndCamera(HumanoidRenderContext hrc, ClassLoader optRdfResourceCL) { 
-		/*
-		 * Below is largely moot as soon as this config becomes query-based
-		 * 
-		 * Load cameras/lights config from charWorldConfig RDF resource. Obviously we don't want the path hardcoded here
-		 * as it is currently. Do we want a new ConfigEmitter for this? Probably doesn't make sense to use the
-		 * BonyConfigEmitter since we are separating this from BoneConfig. Also probably doesn't make sense to have the
-		 * Turtle file in the rk_bind_config/motion/ path, but for the moment...
-		 */
-		String vworldConfigPath = "rk_bind_config/motion/charWorldConfig.ttl";
-		LightsCameraConfig lcc = readLightsCameraConfig(vworldConfigPath, optRdfResourceCL);
-		
+
+	public void initLightsAndCamera(HumanoidRenderContext hrc) {
+		// The LightsCameraConfig constructor now automatically loads config from sheet
+		LightsCameraConfig lcc = new LightsCameraConfig();
 		RenderRegistryClient rendRegCli = hrc.getRenderRegistryClient();
 		CameraMgr cm = rendRegCli.getOpticCameraFacade(null);
 		cm.initCamerasFromConfig(lcc, hrc);
 		LightFactory lf = rendRegCli.getOpticLightFacade(null);
-		lf.initLightsFromConfig(lcc, hrc);		
+		lf.initLightsFromConfig(lcc, hrc);
 	}
 
-	public void initCinematics(HumanoidRenderContext hrc, ClassLoader optRdfResourceCL) { 
-		/*
-		 * And now, we introduce the delightful RDF definitions for cinematics:
-		 */
+	public void initCinematics(HumanoidRenderContext hrc, ClassLoader optRdfResourceCL) {
+		// Heading to sheet soon, but cinematics ttl makes heavy use of collections so may be a bit tricky...
 		String cineConfigPath = "rk_bind_config/motion/cinematicConfig.ttl";
 		CinematicConfig cc = AssemblerUtils.readOneConfigObjFromPath(CinematicConfig.class, cineConfigPath, optRdfResourceCL);
 		CinematicMgr.storeCinematicsFromConfig(cc, hrc);
 	}
+
 	public LightsCameraConfig readLightsCameraConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
-		return AssemblerUtils.readOneConfigObjFromPath(LightsCameraConfig.class, rdfConfigFlexPath, optResourceClassLoader );
-	}	
+		return AssemblerUtils.readOneConfigObjFromPath(LightsCameraConfig.class, rdfConfigFlexPath, optResourceClassLoader);
+	}
 }

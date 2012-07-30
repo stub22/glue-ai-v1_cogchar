@@ -20,6 +20,8 @@ import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.cogchar.blob.emit.HumanoidConfigEmitter;
+import org.cogchar.blob.emit.Solution;
+import org.cogchar.blob.emit.QueryEmitter;
 
 /**
  * @author Ryan Biggs
@@ -37,6 +39,20 @@ public class CameraConfig {
 	@Override
 	public String toString() {
 		return "CameraConfig[name=" + cameraName + ", pos=" + Arrays.toString(cameraPosition) + ", dir=" + Arrays.toString(cameraPointDir) + ", viewport=" + Arrays.toString(cameraViewPort) + "]";
+	}
+
+	// A new constructor to build CameraConfig from spreadsheet
+	public CameraConfig(Solution querySolution) {
+		cameraName = QueryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.CAMERA_NAME_VAR_NAME).getLocalName();
+		for (int index = 0; index < 3; index++) {
+			cameraPosition[index] = QueryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.POSITION_VAR_NAME[index], 0f);
+			cameraPointDir[index] = QueryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
+		}
+		for (int index = 0; index < cameraViewPort.length; index++) {
+			cameraViewPort[index] = QueryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.VIEWPORT_VAR_NAME[index], Float.NaN);
+		}
+		attachedRobot = QueryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.ATTACHED_ROBOT_VAR_NAME);
+		attachedItem = QueryEmitter.getStringFromSolution(querySolution, LightsCameraQueryNames.ATTACHED_BONE_VAR_NAME);
 	}
 
 	public CameraConfig(Item configItem) {
