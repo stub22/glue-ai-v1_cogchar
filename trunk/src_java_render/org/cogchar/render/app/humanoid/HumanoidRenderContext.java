@@ -130,7 +130,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		FlyByCamera fbCam = stub.getFlyByCamera();
 		fbCam.setMoveSpeed(50);
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
-		myRenderMapper.initLightsAndCamera(this, charWorldCl);
+		myRenderMapper.initLightsAndCamera(this);
 		myRenderMapper.initCinematics(this, charWorldCl);
 	}
 

@@ -17,12 +17,14 @@
 package org.cogchar.blob.emit
 
 import com.hp.hpl.jena.query.QuerySolution
+import scala.collection.JavaConversions._
 
 /**
  * @author Ryan Biggs
  */
 
-// A very simple class so the SolutionList can be handed to external classes without them needing to depend directly on Jena
+// A very simple class so the SolutionList can be handed to external classes without Scala-Java conversion concerns
 class SolutionList {
-  var list: scala.collection.mutable.Buffer[QuerySolution] = null
+  var list: scala.collection.mutable.Buffer[Solution] = new scala.collection.mutable.ArrayBuffer[Solution]
+  lazy val javaList: java.util.List[Solution] = list
 }
