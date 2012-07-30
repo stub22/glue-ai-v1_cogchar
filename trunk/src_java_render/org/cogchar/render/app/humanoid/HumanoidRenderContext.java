@@ -124,14 +124,14 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		}
 	}
 	
-	public void initCinema(ClassLoader charWorldCl) {
+	public void initCinema() {
 		WorkaroundAppStub stub = getAppStub();
 		stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
 		FlyByCamera fbCam = stub.getFlyByCamera();
 		fbCam.setMoveSpeed(50);
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		myRenderMapper.initLightsAndCamera(this);
-		myRenderMapper.initCinematics(this, charWorldCl);
+		myRenderMapper.initCinematics(this);
 	}
 
 	// This is still called by HumanoidPuppetActions to reset default camera position

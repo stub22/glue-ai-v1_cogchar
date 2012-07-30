@@ -39,14 +39,15 @@ public class HumanoidRenderWorldMapper {
 		lf.initLightsFromConfig(lcc, hrc);
 	}
 
-	public void initCinematics(HumanoidRenderContext hrc, ClassLoader optRdfResourceCL) {
-		// Heading to sheet soon, but cinematics ttl makes heavy use of collections so may be a bit tricky...
-		String cineConfigPath = "rk_bind_config/motion/cinematicConfig.ttl";
-		CinematicConfig cc = AssemblerUtils.readOneConfigObjFromPath(CinematicConfig.class, cineConfigPath, optRdfResourceCL);
+	public void initCinematics(HumanoidRenderContext hrc) {
+		// The CinematicConfig constructor now automatically loads config from sheet
+		CinematicConfig cc = new CinematicConfig();
 		CinematicMgr.storeCinematicsFromConfig(cc, hrc);
 	}
 
+	/* No longer needed unless we want to init from Turtle again
 	public LightsCameraConfig readLightsCameraConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
 		return AssemblerUtils.readOneConfigObjFromPath(LightsCameraConfig.class, rdfConfigFlexPath, optResourceClassLoader);
 	}
+	*/
 }
