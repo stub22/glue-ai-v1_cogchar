@@ -21,6 +21,10 @@ import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
+import org.appdapter.core.item.Ident;
+import org.cogchar.blob.emit.Solution;
+import org.cogchar.blob.emit.SolutionList;
+import org.cogchar.blob.emit.QueryEmitter;
 
 import org.appdapter.core.log.BasicDebugger;
 
@@ -37,6 +41,19 @@ public class CinematicInstanceConfig extends BasicDebugger {
 	@Override
 	public String toString() {
 		return "CinematicInstanceConfig[uriFrag = " + myURI_Fragment + ", duration = " + Float.toString(duration) + ", Number of tracks = " + Integer.toString(myTracks.size());
+	}
+
+	// A new constructor to build CinematicConfig from spreadsheet
+	public CinematicInstanceConfig(Solution querySolution) {
+		Ident myIdent = QueryEmitter.getIdentFromSolution(querySolution, CinematicQueryNames.CINEMATIC_VAR_NAME);
+		myURI_Fragment = myIdent.getLocalName();
+		duration = QueryEmitter.getFloatFromSolution(querySolution, CinematicQueryNames.DURATION_VAR_NAME, Float.NaN);
+		String query = QueryEmitter.getCompletedQueryFromTemplate(CinematicQueryNames.TRACKS_QUERY_TEMPLATE_URI, CinematicQueryNames.CINEMATIC_QUERY_VAR_NAME, myIdent);
+		SolutionList solutionList = QueryEmitter.getTextQueryResultList(query);
+		List<Ident> trackIdentList = QueryEmitter.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.TRACK_VAR_NAME);
+		for (Ident trackIdent : trackIdentList) {
+			myTracks.add(new CinematicTrack(trackIdent));
+		}
 	}
 
 	public CinematicInstanceConfig(Item configItem) {

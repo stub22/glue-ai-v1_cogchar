@@ -23,6 +23,9 @@ import org.appdapter.core.item.*;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.blob.emit.Solution;
+import org.cogchar.blob.emit.SolutionList;
+import org.cogchar.blob.emit.QueryEmitter;
 
 /**
  *
@@ -48,6 +51,52 @@ public class CinematicTrack extends BasicDebugger {
 	@Override
 	public String toString() {
 		return "CinematicTrack = " + trackName + ", type = " + trackType.name() + ", Attached Item = " + attachedItem + "]";
+	}
+
+	// This constructor is called from within CinematicTrackInstance to correspond to Turtle configured usages of "named" tracks within CinematicTrackInstances
+	// The need for this results from the flexibility of initial Turtle definition: tracks could be defined inline or as separate
+	// Named entities. (Same for waypoints and rotations.) We're moving away from this with the spreadsheet config, and can
+	// simplify / clean up things if we decide we're permanently doing away with the inline definitions
+	public CinematicTrack(Ident trackIdent) {
+		trackName = trackIdent.getLocalName();
+	}
+
+	// Called from CinematicConfig, corresponds to a "named" track definition
+	public CinematicTrack(Solution solution) {
+		Ident myIdent = QueryEmitter.getIdentFromSolution(solution, CinematicQueryNames.TRACK_VAR_NAME);
+		trackName = myIdent.getLocalName();
+		attachedItem = QueryEmitter.getIdentFromSolution(solution, CinematicQueryNames.ATTACHED_ITEM_VAR_NAME).getLocalName();
+		String typeString = QueryEmitter.getIdentFromSolution(solution, CinematicQueryNames.ATTACHED_ITEM_TYPE_VAR_NAME).getLocalName().toUpperCase();
+		for (AttachedItemType testType : AttachedItemType.values()) {
+			if (testType.toString().equals(typeString)) {
+				attachedItemType = testType;
+			}
+		}
+		typeString = QueryEmitter.getIdentFromSolution(solution, CinematicQueryNames.TRACK_TYPE_VAR_NAME).getLocalName();
+		for (TrackType testType : TrackType.values()) {
+			if (testType.toString().equals(typeString)) {
+				trackType = testType;
+			}
+		}
+		directionType = QueryEmitter.getIdentFromSolution(solution, CinematicQueryNames.DIRECTION_TYPE_VAR_NAME).getLocalName();
+		for (int index = 0; index < direction.length; index++) {
+			direction[index] = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.DIRECTION_VAR_NAME[index], 0f);
+		}
+		tension = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.TENSION_VAR_NAME, 0f);
+		cycle = QueryEmitter.getBooleanFromSolution(solution, CinematicQueryNames.CYCLE_VAR_NAME);
+		loopMode = QueryEmitter.getIdentFromSolution(solution, CinematicQueryNames.LOOP_MODE_VAR_NAME).getLocalName();
+		startTime = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.START_TIME_VAR_NAME, 0f);
+		trackDuration = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.DURATION_VAR_NAME, 0f);
+		String query = QueryEmitter.getCompletedQueryFromTemplate(CinematicQueryNames.WAYPOINTS_QUERY_TEMPLATE_URI, CinematicQueryNames.TRACK_QUERY_VAR_NAME, myIdent);
+		SolutionList solutionList = QueryEmitter.getTextQueryResultList(query);
+		List<Ident> waypointIdentList = QueryEmitter.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.WAYPOINT_VAR_NAME);
+		for (Ident waypointIdent : waypointIdentList) {
+			waypoints.add(new WaypointConfig(waypointIdent));
+		}
+		Ident rotationIdent = QueryEmitter.getIdentFromSolution(solution, CinematicQueryNames.END_ROTATION_VAR_NAME);
+		if (rotationIdent != null) {
+			endRotation = new RotationConfig(rotationIdent);
+		}
 	}
 
 	public CinematicTrack(Item configItem) {

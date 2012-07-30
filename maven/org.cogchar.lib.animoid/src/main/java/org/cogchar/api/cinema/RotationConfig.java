@@ -17,6 +17,8 @@
 package org.cogchar.api.cinema;
 
 import org.appdapter.core.item.*;
+import org.cogchar.blob.emit.Solution;
+import org.cogchar.blob.emit.QueryEmitter;
 
 /**
  *
@@ -25,13 +27,30 @@ import org.appdapter.core.item.*;
 public class RotationConfig {
 
 	public String rotationName;
-	public float yaw;
-	public float roll;
-	public float pitch;
+	public float yaw = Float.NaN;
+	public float roll = Float.NaN;
+	public float pitch = Float.NaN;
 
 	@Override
 	public String toString() {
 		return "RotationConfig = " + rotationName + ", yaw = " + yaw + ", roll = " + roll + ", pitch = " + pitch;
+	}
+
+	// This constructor is called from within CinematicTrack to correspond to Turtle configured usages of "named" rotations within CinematicTracks
+	// The need for this results from the flexibility of initial Turtle definition: rotations could be defined inline or as separate
+	// Named entities. (Same for tracks and waypoints.) We're moving away from this with the spreadsheet config, and can
+	// simplify / clean up things if we decide we're permanently doing away with the inline definitions
+	public RotationConfig(Ident ident) {
+		rotationName = ident.getLocalName();
+	}
+
+	// Called from CinematicConfig, corresponds to a "named" rotation definition
+	public RotationConfig(Solution solution) {
+		Ident myIdent = QueryEmitter.getIdentFromSolution(solution, CinematicQueryNames.ROTATION_VAR_NAME);
+		rotationName = myIdent.getLocalName();
+		yaw = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.YAW_VAR_NAME, Float.NaN);
+		pitch = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.PITCH_VAR_NAME, Float.NaN);
+		roll = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.ROLL_VAR_NAME, Float.NaN);
 	}
 
 	public RotationConfig(Item configItem) {

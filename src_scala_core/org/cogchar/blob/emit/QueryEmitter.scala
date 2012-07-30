@@ -45,7 +45,7 @@ object QueryEmitter {
    */
   def main(args: Array[String]) : Unit = {
 
-	val QUERY_TO_TEST = "ccrt:find_cameras_99"
+	val QUERY_TO_TEST = "ccrt:template_waypoint_99"
 	
 	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
 	val qText = sr.getQueryText(QUERY_SHEET, QUERY_TO_TEST)
@@ -274,98 +274,112 @@ object QueryEmitter {
    * @param variableName The query variable name for the string literal desired
    * @return The selected String literal
    */
-  def getStringFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String) = {
-	var literal: String = null
-	if (solutionMap.map contains selector) {
-	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getString
+   def getStringFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String) = {
+	  var literal: String = null
+	  if (solutionMap.map contains selector) {
+		literal = solutionMap.map(selector).solution.getLiteral(variableName).getString
+	  }
+	  literal
 	}
-	literal
-  }
   
-  /** Gets a string literal from a single query solution
-   *
-   * @param solution The Solution in which the desired solution is located
-   * @param variableName The query variable name for the string literal desired
-   * @return The selected string literal
-   */
-  def getStringFromSolution(solution:Solution, variableName:String): String = {
-	var literal: String = null
-	if (solution.solution.contains(variableName)) {
-	  literal = solution.solution.getLiteral(variableName).getString
+   /** Gets a string literal from a single query solution
+	*
+	* @param solution The Solution in which the desired solution is located
+	* @param variableName The query variable name for the string literal desired
+	* @return The selected string literal
+	*/
+   def getStringFromSolution(solution:Solution, variableName:String): String = {
+	  var literal: String = null
+	  if (solution.solution.contains(variableName)) {
+		literal = solution.solution.getLiteral(variableName).getString
+	  }
+	  literal
 	}
-	literal
-  }
   
-  /** Gets (an ArrayBuffer?) of string literals from each of the query solutions located in a SolutionList
-   *
-   * @param solutionList The SolutionList in which the desired solutions are located
-   * @param variableName The query variable name for the string literals desired
-   * @return The selected string literals
-   */
-  def getStringsFromSolution(solutionList:SolutionList, variableName:String) = {
-	for (i <- 0 until solutionList.list.length) yield solutionList.list(i).solution.getLiteral(variableName).getString
-  }
-  
-  def getStringsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[String] = getStringsFromSolution(solutionList, variableName)
-  
-  def getIdentFromSolution(solution:Solution, variableName:String) = {
-	var ident:Ident = null;
-	if (solution.solution.contains(variableName)) {
-	  ident = new FreeIdent(solution.solution.getResource(variableName).getURI, solution.solution.getResource(variableName).getLocalName)
+   /** Gets (an ArrayBuffer?) of string literals from each of the query solutions located in a SolutionList
+	*
+	* @param solutionList The SolutionList in which the desired solutions are located
+	* @param variableName The query variable name for the string literals desired
+	* @return The selected string literals
+	*/
+   def getStringsFromSolution(solutionList:SolutionList, variableName:String) = {
+	  for (i <- 0 until solutionList.list.length) yield solutionList.list(i).solution.getLiteral(variableName).getString
 	}
-	ident
-  }
   
-  def getIdentsFromSolution(solutionList:SolutionList, variableName:String) = {
-	val identList = new scala.collection.mutable.ArrayBuffer[Ident];
-	solutionList.list.foreach(solution => {
-		identList += new FreeIdent(solution.solution.getResource(variableName).getURI, solution.solution.getResource(variableName).getLocalName)
-	  })
-	identList
-  }
+   def getStringsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[String] = getStringsFromSolution(solutionList, variableName)
   
-  def getIdentsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[Ident] = getIdentsFromSolution(solutionList, variableName)
-  
-  def getFloatFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
-	var literal: Float = Float.NaN
-	if (solutionMap.map contains selector) {
-	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getFloat
+   def getIdentFromSolution(solution:Solution, variableName:String) = {
+	  var ident:Ident = null;
+	  if (solution.solution.contains(variableName)) {
+		ident = new FreeIdent(solution.solution.getResource(variableName).getURI, solution.solution.getResource(variableName).getLocalName)
+	  }
+	  ident
 	}
-	literal
-  }
   
-  def getFloatFromSolution(solution:Solution, variableName:String, default:Float) = {
-	var literal: Float = default
-	if (solution.solution.contains(variableName)) {
-	  literal = solution.solution.getLiteral(variableName).getFloat
+   def getIdentsFromSolution(solutionList:SolutionList, variableName:String) = {
+	  val identList = new scala.collection.mutable.ArrayBuffer[Ident];
+	  solutionList.list.foreach(solution => {
+		  identList += new FreeIdent(solution.solution.getResource(variableName).getURI, solution.solution.getResource(variableName).getLocalName)
+		})
+	  identList
 	}
-	literal
-  }
   
-  def getDoubleFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
-	var literal: Double = Double.NaN
-	if (solutionMap.map contains selector) {
-	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getDouble
+   def getIdentsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[Ident] = getIdentsFromSolution(solutionList, variableName)
+  
+   def getFloatFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
+	  var literal: Float = Float.NaN
+	  if (solutionMap.map contains selector) {
+		literal = solutionMap.map(selector).solution.getLiteral(variableName).getFloat
+	  }
+	  literal
 	}
-	literal
-  }
   
-  def getDoubleFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String) = {
-	var literal: Double = Double.NaN
-	if (solutionMap.map contains selector) {
-	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getDouble
+   def getFloatFromSolution(solution:Solution, variableName:String, default:Float) = {
+	  var literal: Float = default
+	  if (solution.solution.contains(variableName)) {
+		literal = solution.solution.getLiteral(variableName).getFloat
+	  }
+	  literal
 	}
-	literal
-  }
   
-  def getIntegerFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
-	// I'd really prefer to set this to null to result in NPE in subsequent Java code if it's not found in solution
-	// But Scala won't allow that for Int (or Float), and use of an Option seems inappropriate when this will be often called from Java code
-	var literal: Int = 0
-	if (solutionMap.map contains selector) {
-	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getInt
+   def getDoubleFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
+	  var literal: Double = Double.NaN
+	  if (solutionMap.map contains selector) {
+		literal = solutionMap.map(selector).solution.getLiteral(variableName).getDouble
+	  }
+	  literal
 	}
-	literal
-  }
   
-}
+   def getDoubleFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String) = {
+	  var literal: Double = Double.NaN
+	  if (solutionMap.map contains selector) {
+		literal = solutionMap.map(selector).solution.getLiteral(variableName).getDouble
+	  }
+	  literal
+	}
+  
+   def getIntegerFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
+	  // I'd really prefer to set this to null to result in NPE in subsequent Java code if it's not found in solution
+	  // But Scala won't allow that for Int (or Float), and use of an Option seems inappropriate when this will be often called from Java code
+	  var literal: Int = 0
+	  if (solutionMap.map contains selector) {
+		literal = solutionMap.map(selector).solution.getLiteral(variableName).getInt
+	  }
+	  literal
+	}
+ 
+   /** Gets a boolean literal from a single query solution
+	*
+	* @param solution The Solution in which the desired solution is located
+	* @param variableName The query variable name for the boolean literal desired
+	* @return The selected boolean literal
+	*/
+   def getBooleanFromSolution(solution:Solution, variableName:String) = {
+	  var literal: Boolean = false
+	  if (solution.solution contains variableName) {
+		literal = solution.solution.getLiteral(variableName).getBoolean
+	  }
+	  literal
+	}
+  
+   }
