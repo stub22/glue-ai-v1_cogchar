@@ -16,16 +16,11 @@
 
 package org.cogchar.blob.emit
 
-import org.appdapter.core.item.Ident
-import scala.collection.JavaConversions._
+import com.hp.hpl.jena.query.QuerySolution
 
 /**
  * @author Ryan Biggs
  */
 
-// A very simple class so the SolutionList can be handed to external classes without Scala-Java conversion concerns
-class SolutionMap[T] {
-  val map = new scala.collection.mutable.HashMap[T, Solution]
-  
-  def getJavaIterator: java.util.Iterator[T] = map.keysIterator
-}
+// A very simple class so the Solution can be handed to external classes without them needing to depend directly on Jena
+class Solution(var solution: QuerySolution) {}
