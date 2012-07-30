@@ -18,6 +18,8 @@ package org.cogchar.api.cinema;
 
 import java.util.Arrays;
 import org.appdapter.core.item.*;
+import org.cogchar.blob.emit.Solution;
+import org.cogchar.blob.emit.QueryEmitter;
 
 /**
  *
@@ -26,11 +28,28 @@ import org.appdapter.core.item.*;
 public class WaypointConfig {
 
 	public String waypointName;
-	public float[] waypointCoordinates = new float[3];
+	public float[] waypointCoordinates = {Float.NaN, Float.NaN, Float.NaN};
 
 	@Override
 	public String toString() {
 		return "WaypointConfig = " + waypointName + ", position = " + Arrays.toString(waypointCoordinates);
+	}
+
+	// This constructor is called from within CinematicTrack to correspond to Turtle configured usages of "named" waypoints within CinematicTracks
+	// The need for this results from the flexibility of initial Turtle definition: waypoints could be defined inline or as separate
+	// Named entities. (Same for tracks and rotations.) We're moving away from this with the spreadsheet config, and can
+	// simplify / clean up things if we decide we're permanently doing away with the inline definitions
+	public WaypointConfig(Ident ident) {
+		waypointName = ident.getLocalName();
+	}
+
+	// Called from CinematicConfig, corresponds to a "named" waypoint definition
+	public WaypointConfig(Solution solution) {
+		Ident myIdent = QueryEmitter.getIdentFromSolution(solution, CinematicQueryNames.WAYPOINT_VAR_NAME);
+		waypointName = myIdent.getLocalName();
+		for (int index = 0; index < waypointCoordinates.length; index++) {
+			waypointCoordinates[index] = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.POSITION_VAR_NAME[index], Float.NaN);
+		}
 	}
 
 	public WaypointConfig(Item configItem) {

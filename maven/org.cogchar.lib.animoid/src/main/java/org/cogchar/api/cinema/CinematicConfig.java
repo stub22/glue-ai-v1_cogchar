@@ -28,6 +28,9 @@ import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.blob.emit.Solution;
+import org.cogchar.blob.emit.SolutionList;
+import org.cogchar.blob.emit.QueryEmitter;
 
 /**
  * Used to enclose data from RDF cinematics configuration currently in cinematicConfig.ttl
@@ -40,6 +43,26 @@ public class CinematicConfig extends KnownComponentImpl {
 	public List<CinematicTrack> myCTs = new ArrayList<CinematicTrack>();
 	public List<WaypointConfig> myWCs = new ArrayList<WaypointConfig>();
 	public List<RotationConfig> myRCs = new ArrayList<RotationConfig>();
+
+	// A new constructor to build CinematicConfig from spreadsheet
+	public CinematicConfig() {
+		SolutionList solutionList = QueryEmitter.getQueryResultList(CinematicQueryNames.CINEMATICS_QUERY_URI);
+		for (Solution solution : solutionList.javaList()) {
+			myCICs.add(new CinematicInstanceConfig(solution));
+		}
+		solutionList = QueryEmitter.getQueryResultList(CinematicQueryNames.TRACK_QUERY_URI);
+		for (Solution solution : solutionList.javaList()) {
+			myCTs.add(new CinematicTrack(solution));
+		}
+		solutionList = QueryEmitter.getQueryResultList(CinematicQueryNames.WAYPOINT_QUERY_URI);
+		for (Solution solution : solutionList.javaList()) {
+			myWCs.add(new WaypointConfig(solution));
+		}
+		solutionList = QueryEmitter.getQueryResultList(CinematicQueryNames.ROTATION_QUERY_URI);
+		for (Solution solution : solutionList.javaList()) {
+			myRCs.add(new RotationConfig(solution));
+		}
+	}
 
 	public static class Builder extends DynamicCachingComponentAssembler<CinematicConfig> {
 

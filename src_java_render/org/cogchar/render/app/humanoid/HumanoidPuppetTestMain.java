@@ -110,11 +110,7 @@ VirtCharPanel.JFrame.closed, exiting
 		
 		hrc.runPostInitLaunchOnJmeThread();
 		
-		// This needs to call
-		// hrc.initCinema();
-		// for lights and cameras to work properly, but right now that needs a classloader won't don't have here.
-		// Soon config will be query-based and not need classloader, so we'll just fix this then.
-		// (Lights and Cameras done, but still waiting on cinematics)
+		hrc.initCinema();
 		
 		hrc.getGameFeatureAdapter().setScoringFlag(true);
 		// theLogger.info("*********************** AFTER FRAMING + STARTING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
