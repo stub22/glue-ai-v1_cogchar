@@ -24,7 +24,12 @@ import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.core.item.Ident;
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.blob.emit.Solution;
+import org.cogchar.blob.emit.SolutionMap;
+import org.cogchar.blob.emit.SolutionList;
+import org.cogchar.blob.emit.QueryEmitter;
 
 /**
  * Used to enclose data from RDF Lift webapp configuration currently in liftConfig.ttl
@@ -35,7 +40,21 @@ public class LiftConfig extends KnownComponentImpl {
 
 	private static final String DEFAULT_TEMPLATE = "12slots";
 	public List<ControlConfig> myCCs = new ArrayList<ControlConfig>();
-	public String template;
+	public String template = DEFAULT_TEMPLATE;
+	
+	// A new constructor to build CinematicConfig from spreadsheet
+	public LiftConfig(Ident configUri) {
+		SolutionMap solutionMap = QueryEmitter.getQueryResultMap(LiftQueryNames.TEMPLATE_QUERY_URI, LiftQueryNames.CONFIG_VAR_NAME);
+		String foundTemplate = QueryEmitter.getStringFromSolution(solutionMap, configUri, LiftQueryNames.TEMPLATE_VAR_NAME);
+		if (foundTemplate != null) {
+			template = foundTemplate;
+		}
+		String query = QueryEmitter.getCompletedQueryFromTemplate(LiftQueryNames.CONTROL_QUERY_TEMPLATE_URI, LiftQueryNames.CONFIG_QUERY_VAR_NAME, configUri);
+		SolutionList solutionList = QueryEmitter.getTextQueryResultList(query);
+		for (Solution solution : solutionList.javaList()) {
+			myCCs.add(new ControlConfig(solution));
+		}
+	}
 
 	public static class Builder extends DynamicCachingComponentAssembler<LiftConfig> {
 

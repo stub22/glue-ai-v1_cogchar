@@ -16,6 +16,8 @@
 package org.cogchar.bundle.app.puma;
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
+import org.appdapter.core.item.Ident;
+import org.appdapter.core.item.FreeIdent;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.ChatConfig;
@@ -31,8 +33,9 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
  */
 public class PumaWebMapper extends BasicDebugger {
 
-	static final String WEB_CONFIG_PATH = "metadata/web/liftconfig/liftConfig.ttl";
+	//static final String WEB_CONFIG_PATH = "metadata/web/liftconfig/liftConfig.ttl";
 	static final String CHAT_CONFIG_PATH = "metadata/web/chatbird/cogbotZenoAmazonEC.ttl";
+	static final Ident HOME_LIFT_CONFIG_IDENT = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#mainLiftConfig", "mainLiftConfig");
 	LiftInterface liftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
 	static String cogbotConvoUrl;
 	CogbotCommunicator cogbot;
@@ -54,8 +57,10 @@ public class PumaWebMapper extends BasicDebugger {
 
 	public void connectHrkindWebContent(ClassLoader hrkindResourceCL) {
 		// Load web app "home" screen config
-		LiftConfig lc = AssemblerUtils.readOneConfigObjFromPath(LiftConfig.class, WEB_CONFIG_PATH, hrkindResourceCL);
-		LiftAmbassador.storeControlsFromConfig(lc, hrkindResourceCL);
+		//LiftConfig lc = AssemblerUtils.readOneConfigObjFromPath(LiftConfig.class, WEB_CONFIG_PATH, hrkindResourceCL);
+		
+		LiftConfig lc = new LiftConfig(HOME_LIFT_CONFIG_IDENT);
+		LiftAmbassador.activateControlsFromConfig(lc);
 		// Load "chat app" config
 		ChatConfig cc = AssemblerUtils.readOneConfigObjFromPath(ChatConfig.class, CHAT_CONFIG_PATH, hrkindResourceCL);
 		LiftAmbassador.storeChatConfig(cc);
