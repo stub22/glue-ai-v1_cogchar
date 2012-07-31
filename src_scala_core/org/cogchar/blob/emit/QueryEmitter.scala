@@ -45,7 +45,7 @@ object QueryEmitter {
    */
   def main(args: Array[String]) : Unit = {
 
-	val QUERY_TO_TEST = "ccrt:template_waypoint_99"
+	val QUERY_TO_TEST = "ccrt:template_lift_control_99"
 	
 	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
 	val qText = sr.getQueryText(QUERY_SHEET, QUERY_TO_TEST)
@@ -289,7 +289,18 @@ object QueryEmitter {
 	* @return The selected string literal
 	*/
    def getStringFromSolution(solution:Solution, variableName:String): String = {
-	  var literal: String = null
+	  getStringFromSolution(solution, variableName, null)
+	}
+   
+   /** Gets a string literal from a single query solution with a provided default if solution variable is not found
+	*
+	* @param solution The Solution in which the desired solution is located
+	* @param variableName The query variable name for the string literal desired
+	* @param default The String to return if the query variable is not found in solution
+	* @return The selected string literal
+	*/
+   def getStringFromSolution(solution:Solution, variableName:String, default:String): String = {
+	  var literal: String = default
 	  if (solution.solution.contains(variableName)) {
 		literal = solution.solution.getLiteral(variableName).getString
 	  }

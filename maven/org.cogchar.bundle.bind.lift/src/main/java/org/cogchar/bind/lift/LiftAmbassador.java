@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
+import org.appdapter.core.item.FreeIdent;
+import org.appdapter.core.item.Ident;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +41,7 @@ public class LiftAmbassador {
 	private static List<String> triggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
 	private static ClassLoader myRdfCL; // We'll get this classloader so we can update control configuration from separate RDF files at runtime
 	private static final String RDF_PATH_PREFIX = "metadata/web/liftconfig/"; // Prefix for path to Lift configuration TTL files from resources root
+	public static Map<Ident, LiftConfig> liftConfigCache = new HashMap<Ident, LiftConfig>(); // To avoid query config if page is reselected
 	public static Map<String, String> chatConfigEntries = new HashMap<String, String>();
 
 	public interface LiftSceneInterface {
@@ -102,6 +105,7 @@ public class LiftAmbassador {
 	}
 
 	// Method to set initial config and RDF classloader for future configs
+	// No longer needed for query-based config
 	public static void storeControlsFromConfig(LiftConfig config, ClassLoader cl) {
 		activateControlsFromConfig(config);
 		myRdfCL = cl;
@@ -140,7 +144,23 @@ public class LiftAmbassador {
 			}
 		} else if ((action.startsWith(LiftConfigNames.partial_P_liftConfig)) && (lift != null)) {
 			String desiredFile = action.replaceAll(LiftConfigNames.partial_P_liftConfig + "_", "");
-			success = activateControlsFromRdf(desiredFile);
+			if (desiredFile.endsWith(".ttl")) {
+				success = activateControlsFromRdf(desiredFile);
+			} else {
+				Ident configIdent = new FreeIdent(LiftQueryNames.ccrt + desiredFile, desiredFile);
+				LiftConfig newConfig;
+				if (liftConfigCache.containsKey(configIdent)) {
+					newConfig = liftConfigCache.get(configIdent); // Use cached version if available
+					theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
+				} else {
+					newConfig = new LiftConfig(configIdent);
+					liftConfigCache.put(configIdent, newConfig);
+					theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
+				}
+				activateControlsFromConfig(newConfig);
+				success = true;
+			}
+			
 		} else if ((action.startsWith(LiftConfigNames.partial_P_databalls)) && (liftAppInterface != null)) {
 			String databallsAction = action.replaceAll(LiftConfigNames.partial_P_databalls + "_", "");
 			liftAppInterface.performDataballAction(databallsAction, null);
