@@ -57,12 +57,10 @@ public class PumaWebMapper extends BasicDebugger {
 
 	public void connectHrkindWebContent(ClassLoader hrkindResourceCL) {
 		// Load web app "home" screen config
-		//LiftConfig lc = AssemblerUtils.readOneConfigObjFromPath(LiftConfig.class, WEB_CONFIG_PATH, hrkindResourceCL);
-		
 		LiftConfig lc = new LiftConfig(HOME_LIFT_CONFIG_IDENT);
 		LiftAmbassador.activateControlsFromConfig(lc);
 		// Load "chat app" config
-		ChatConfig cc = AssemblerUtils.readOneConfigObjFromPath(ChatConfig.class, CHAT_CONFIG_PATH, hrkindResourceCL);
+		ChatConfig cc = new ChatConfig();
 		LiftAmbassador.storeChatConfig(cc);
 		BallBuilder.setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
 	}
