@@ -172,7 +172,8 @@ public class LiftAmbassador {
 		String response = "";
 		if (liftAppInterface != null) {
 			if (chatConfigEntries.containsKey(ChatConfigNames.N_cogbotConvoUrl)) {
-				response = liftAppInterface.queryCogbot(query, chatConfigEntries.get(ChatConfigNames.N_cogbotConvoUrl));
+				String convoIp = chatConfigEntries.get(ChatConfigNames.N_cogbotConvoUrl).replaceFirst("http://", "");
+				response = liftAppInterface.queryCogbot(query, convoIp);
 				theLogger.info("Cogbot says " + response);
 			} else {
 				theLogger.error("No URL found from ChatConfig for Cogbot conversation server");

@@ -27,15 +27,27 @@ import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.blob.emit.SolutionList;
+import org.cogchar.blob.emit.QueryEmitter;
 
 /**
  * Used to enclose data from RDF Lift webapp configuration currently in liftConfig.ttl
+ * 31 July 2012: Adding capability to init from spreadsheet / query-based config
  *
  * @author Ryan Biggs
  */
 public class ChatConfig extends KnownComponentImpl {
 
 	public List<ChatConfigResource> myCCRs = new ArrayList<ChatConfigResource>();
+	
+	// A new constructor to build ChatConfig from spreadsheet
+	// It's probably unnecessary to retain concept of multple config resources, so for now we just create one with our resource solutions
+	// Soon may condense this and ChatConfigResource into single class
+	public ChatConfig() {
+		String query = QueryEmitter.getCompletedQueryFromTemplate(ChatQueryNames.GENRAL_CONFIG_TEMPLATE_URI, ChatQueryNames.CATEGORY_QUERY_VAR_NAME, ChatQueryNames.CATEGORY_URI);
+		SolutionList solutionList = QueryEmitter.getTextQueryResultList(query);
+		myCCRs.add(new ChatConfigResource(solutionList));
+	}
 
 	public static class Builder extends DynamicCachingComponentAssembler<ChatConfig> {
 
