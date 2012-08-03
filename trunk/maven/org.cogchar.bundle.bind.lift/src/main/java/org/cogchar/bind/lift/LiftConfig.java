@@ -29,7 +29,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.Solution;
 import org.cogchar.blob.emit.SolutionMap;
 import org.cogchar.blob.emit.SolutionList;
-import org.cogchar.blob.emit.QueryEmitter;
+import org.cogchar.blob.emit.QueryInterface;
 
 /**
  * Used to enclose data from RDF Lift webapp configuration currently in liftConfig.ttl
@@ -43,16 +43,16 @@ public class LiftConfig extends KnownComponentImpl {
 	public String template = DEFAULT_TEMPLATE;
 	
 	// A new constructor to build CinematicConfig from spreadsheet
-	public LiftConfig(Ident configUri) {
-		SolutionMap solutionMap = QueryEmitter.getQueryResultMap(LiftQueryNames.TEMPLATE_QUERY_URI, LiftQueryNames.CONFIG_VAR_NAME);
-		String foundTemplate = QueryEmitter.getStringFromSolution(solutionMap, configUri, LiftQueryNames.TEMPLATE_VAR_NAME);
+	public LiftConfig(QueryInterface qi, Ident configUri) {
+		SolutionMap solutionMap = qi.getQueryResultMap(LiftQueryNames.TEMPLATE_QUERY_URI, LiftQueryNames.CONFIG_VAR_NAME);
+		String foundTemplate = qi.getStringFromSolution(solutionMap, configUri, LiftQueryNames.TEMPLATE_VAR_NAME);
 		if (foundTemplate != null) {
 			template = foundTemplate;
 		}
-		String query = QueryEmitter.getCompletedQueryFromTemplate(LiftQueryNames.CONTROL_QUERY_TEMPLATE_URI, LiftQueryNames.CONFIG_QUERY_VAR_NAME, configUri);
-		SolutionList solutionList = QueryEmitter.getTextQueryResultList(query);
+		String query = qi.getCompletedQueryFromTemplate(LiftQueryNames.CONTROL_QUERY_TEMPLATE_URI, LiftQueryNames.CONFIG_QUERY_VAR_NAME, configUri);
+		SolutionList solutionList = qi.getTextQueryResultList(query);
 		for (Solution solution : solutionList.javaList()) {
-			myCCs.add(new ControlConfig(solution));
+			myCCs.add(new ControlConfig(qi, solution));
 		}
 	}
 

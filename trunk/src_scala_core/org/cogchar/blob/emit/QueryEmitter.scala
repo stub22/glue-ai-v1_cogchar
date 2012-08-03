@@ -35,35 +35,17 @@ import scala.collection.JavaConversions._
 /** A still-under-construction API layer for the handling of query-based config data
  *
  */
-object QueryEmitter {
-  
-  final val QUERY_SHEET = "ccrt:qry_sheet_22"
-  var repo: SheetRepo = null;
-  
-  /** Provided solely for testing of queries
-   *
-   */
-  def main(args: Array[String]) : Unit = {
 
-	val QUERY_TO_TEST = "ccrt:template_lift_control_99"
-	
-	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
-	val qText = sr.getQueryText(QUERY_SHEET, QUERY_TO_TEST)
-	println("Found query text: " + qText)
-		
-	val parsedQ = sr.parseQueryText(qText);
-	val solnJavaList : java.util.List[QuerySolution] = sr.findAllSolutions(parsedQ, null);
-	println("Found solutions: " + solnJavaList)
-  }
+class QueryEmitter extends QueryInterface {
   
   private def ensureRepo {
-	if (repo == null) {
-	  repo = SheetRepo.loadTestSheetRepo()
+	if (QuerySheet.repo == null) {
+	  QuerySheet.repo = SheetRepo.loadTestSheetRepo()
 	}
   }
   
   def reloadSheetRepo {
-	repo = SheetRepo.loadTestSheetRepo()
+	QuerySheet.repo = SheetRepo.loadTestSheetRepo()
   }
   
   /** Returns the current cached SheetRepo
@@ -72,7 +54,7 @@ object QueryEmitter {
    */
   def getSheet = {
 	ensureRepo
-	repo
+	QuerySheet.repo
   }
   
   /** Queries the configuration spreadsheet (with query sheet URI currently set in code as final val QUERY_SHEET).
@@ -83,7 +65,7 @@ object QueryEmitter {
    */
   def getQueryResultMap(queryUri:String, keyVarName:String): SolutionMap[Ident]={
 	ensureRepo
-	getQueryResultMap(queryUri, keyVarName, repo)
+	getQueryResultMap(queryUri, keyVarName, QuerySheet.repo)
   }
   
   /** Queries the provided SheetRepo (with query sheet URI currently set in code as final val QUERY_SHEET).
@@ -94,7 +76,7 @@ object QueryEmitter {
    * @return A SolutionMap of QuerySolutions with keys of the URIs of instances of keyVarName in solutions
    */
   def getQueryResultMap(queryUri:String, keyVarName:String, sr:SheetRepo): SolutionMap[Ident]={
-	val qText = sr.getQueryText(QUERY_SHEET, queryUri)
+	val qText = sr.getQueryText(QuerySheet.QUERY_SHEET, queryUri)
 	getTextQueryResultMap(qText, keyVarName, sr)
   }
   
@@ -106,7 +88,7 @@ object QueryEmitter {
    */
   def getTextQueryResultMap(qText:String, keyVarName:String): SolutionMap[Ident]={
 	ensureRepo
-	getTextQueryResultMap(qText, keyVarName, repo)
+	getTextQueryResultMap(qText, keyVarName, QuerySheet.repo)
   }
   
   /** Queries the provided SheetRepo with a provided query
@@ -155,7 +137,7 @@ object QueryEmitter {
    */
   def getTextQueryResultMapByStringKey(qText:String, keyVarName:String): SolutionMap[String]={
 	ensureRepo
-	getTextQueryResultMapByStringKey(qText, keyVarName, repo);
+	getTextQueryResultMapByStringKey(qText, keyVarName, QuerySheet.repo);
   }
   
   /** Queries the configuration spreadsheet (with query sheet URI currently set in code as final val QUERY_SHEET).
@@ -165,7 +147,7 @@ object QueryEmitter {
    */
   def getQueryResultList(queryUri:String): SolutionList={
 	ensureRepo
-	getQueryResultList(queryUri, repo)
+	getQueryResultList(queryUri, QuerySheet.repo)
   }
   
   /** Queries the provided SheetRepo (with query sheet URI currently set in code as final val QUERY_SHEET).
@@ -175,7 +157,7 @@ object QueryEmitter {
    * @return A SolutionList of QuerySolutions
    */
   def getQueryResultList(queryUri:String, sr:SheetRepo): SolutionList={
-	val qText = sr.getQueryText(QUERY_SHEET, queryUri)
+	val qText = sr.getQueryText(QuerySheet.QUERY_SHEET, queryUri)
 	getTextQueryResultList(qText, sr);
   }
   
@@ -186,7 +168,7 @@ object QueryEmitter {
    */
   def getTextQueryResultList(qText:String): SolutionList={
 	ensureRepo
-	getTextQueryResultList(qText, repo)
+	getTextQueryResultList(qText, QuerySheet.repo)
   }
   
   /** Queries the provided SheetRepo with a provided query
@@ -210,7 +192,7 @@ object QueryEmitter {
    */
   def getQuery(queryUri:String):String={
 	ensureRepo
-	repo.getQueryText(QUERY_SHEET, queryUri);
+	QuerySheet.repo.getQueryText(QuerySheet.QUERY_SHEET, queryUri);
   }
   
   /** Gets a query from the query sheet page (specfied in code as QUERY_SHEET) of the provided SheetRepo
@@ -220,7 +202,7 @@ object QueryEmitter {
    * @return String containing query
    */
   def getQuery(queryUri:String, sr:SheetRepo):String = {
-	sr.getQueryText(QUERY_SHEET, queryUri);
+	sr.getQueryText(QuerySheet.QUERY_SHEET, queryUri);
   }
   
   /** A convenience method to replace a query variable (indicated with "!!" prefix) in a query with its String value
@@ -274,123 +256,155 @@ object QueryEmitter {
    * @param variableName The query variable name for the string literal desired
    * @return The selected String literal
    */
-   def getStringFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String) = {
-	  var literal: String = null
-	  if (solutionMap.map contains selector) {
-		literal = solutionMap.map(selector).solution.getLiteral(variableName).getString
-	  }
-	  literal
+  def getStringFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String) = {
+	var literal: String = null
+	if (solutionMap.map contains selector) {
+	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getString
 	}
+	literal
+  }
   
-   /** Gets a string literal from a single query solution
-	*
-	* @param solution The Solution in which the desired solution is located
-	* @param variableName The query variable name for the string literal desired
-	* @return The selected string literal
-	*/
-   def getStringFromSolution(solution:Solution, variableName:String): String = {
-	  getStringFromSolution(solution, variableName, null)
-	}
+  /** Gets a string literal from a single query solution
+   *
+   * @param solution The Solution in which the desired solution is located
+   * @param variableName The query variable name for the string literal desired
+   * @return The selected string literal
+   */
+  def getStringFromSolution(solution:Solution, variableName:String): String = {
+	getStringFromSolution(solution, variableName, null)
+  }
    
-   /** Gets a string literal from a single query solution with a provided default if solution variable is not found
-	*
-	* @param solution The Solution in which the desired solution is located
-	* @param variableName The query variable name for the string literal desired
-	* @param default The String to return if the query variable is not found in solution
-	* @return The selected string literal
-	*/
-   def getStringFromSolution(solution:Solution, variableName:String, default:String): String = {
-	  var literal: String = default
-	  if (solution.solution.contains(variableName)) {
-		literal = solution.solution.getLiteral(variableName).getString
-	  }
-	  literal
+  /** Gets a string literal from a single query solution with a provided default if solution variable is not found
+   *
+   * @param solution The Solution in which the desired solution is located
+   * @param variableName The query variable name for the string literal desired
+   * @param default The String to return if the query variable is not found in solution
+   * @return The selected string literal
+   */
+  def getStringFromSolution(solution:Solution, variableName:String, default:String): String = {
+	var literal: String = default
+	if (solution.solution.contains(variableName)) {
+	  literal = solution.solution.getLiteral(variableName).getString
 	}
+	literal
+  }
   
-   /** Gets (an ArrayBuffer?) of string literals from each of the query solutions located in a SolutionList
-	*
-	* @param solutionList The SolutionList in which the desired solutions are located
-	* @param variableName The query variable name for the string literals desired
-	* @return The selected string literals
-	*/
-   def getStringsFromSolution(solutionList:SolutionList, variableName:String) = {
-	  for (i <- 0 until solutionList.list.length) yield solutionList.list(i).solution.getLiteral(variableName).getString
+  /** Gets (an ArrayBuffer?) of string literals from each of the query solutions located in a SolutionList
+   *
+   * @param solutionList The SolutionList in which the desired solutions are located
+   * @param variableName The query variable name for the string literals desired
+   * @return The selected string literals
+   */
+  def getStringsFromSolution(solutionList:SolutionList, variableName:String) = {
+	for (i <- 0 until solutionList.list.length) yield solutionList.list(i).solution.getLiteral(variableName).getString
+  }
+  
+  def getStringsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[String] = getStringsFromSolution(solutionList, variableName)
+  
+  def getIdentFromSolution(solution:Solution, variableName:String) = {
+	var ident:Ident = null;
+	if (solution.solution.contains(variableName)) {
+	  ident = new FreeIdent(solution.solution.getResource(variableName).getURI, solution.solution.getResource(variableName).getLocalName)
 	}
+	ident
+  }
   
-   def getStringsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[String] = getStringsFromSolution(solutionList, variableName)
+  def getIdentsFromSolution(solutionList:SolutionList, variableName:String) = {
+	val identList = new scala.collection.mutable.ArrayBuffer[Ident];
+	solutionList.list.foreach(solution => {
+		identList += new FreeIdent(solution.solution.getResource(variableName).getURI, solution.solution.getResource(variableName).getLocalName)
+	  })
+	identList
+  }
   
-   def getIdentFromSolution(solution:Solution, variableName:String) = {
-	  var ident:Ident = null;
-	  if (solution.solution.contains(variableName)) {
-		ident = new FreeIdent(solution.solution.getResource(variableName).getURI, solution.solution.getResource(variableName).getLocalName)
-	  }
-	  ident
+  def getIdentsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[Ident] = getIdentsFromSolution(solutionList, variableName)
+  
+  def getFloatFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
+	var literal: Float = Float.NaN
+	if (solutionMap.map contains selector) {
+	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getFloat
 	}
+	literal
+  }
   
-   def getIdentsFromSolution(solutionList:SolutionList, variableName:String) = {
-	  val identList = new scala.collection.mutable.ArrayBuffer[Ident];
-	  solutionList.list.foreach(solution => {
-		  identList += new FreeIdent(solution.solution.getResource(variableName).getURI, solution.solution.getResource(variableName).getLocalName)
-		})
-	  identList
+  def getFloatFromSolution(solution:Solution, variableName:String, default:Float) = {
+	var literal: Float = default
+	if (solution.solution.contains(variableName)) {
+	  literal = solution.solution.getLiteral(variableName).getFloat
 	}
+	literal
+  }
   
-   def getIdentsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[Ident] = getIdentsFromSolution(solutionList, variableName)
-  
-   def getFloatFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
-	  var literal: Float = Float.NaN
-	  if (solutionMap.map contains selector) {
-		literal = solutionMap.map(selector).solution.getLiteral(variableName).getFloat
-	  }
-	  literal
+  def getDoubleFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
+	var literal: Double = Double.NaN
+	if (solutionMap.map contains selector) {
+	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getDouble
 	}
+	literal
+  }
   
-   def getFloatFromSolution(solution:Solution, variableName:String, default:Float) = {
-	  var literal: Float = default
-	  if (solution.solution.contains(variableName)) {
-		literal = solution.solution.getLiteral(variableName).getFloat
-	  }
-	  literal
+  def getDoubleFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String) = {
+	var literal: Double = Double.NaN
+	if (solutionMap.map contains selector) {
+	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getDouble
 	}
+	literal
+  }
   
-   def getDoubleFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
-	  var literal: Double = Double.NaN
-	  if (solutionMap.map contains selector) {
-		literal = solutionMap.map(selector).solution.getLiteral(variableName).getDouble
-	  }
-	  literal
+  def getIntegerFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
+	// I'd really prefer to set this to null to result in NPE in subsequent Java code if it's not found in solution
+	// But Scala won't allow that for Int (or Float), and use of an Option seems inappropriate when this will be often called from Java code
+	var literal: Int = 0
+	if (solutionMap.map contains selector) {
+	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getInt
 	}
-  
-   def getDoubleFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String) = {
-	  var literal: Double = Double.NaN
-	  if (solutionMap.map contains selector) {
-		literal = solutionMap.map(selector).solution.getLiteral(variableName).getDouble
-	  }
-	  literal
-	}
-  
-   def getIntegerFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
-	  // I'd really prefer to set this to null to result in NPE in subsequent Java code if it's not found in solution
-	  // But Scala won't allow that for Int (or Float), and use of an Option seems inappropriate when this will be often called from Java code
-	  var literal: Int = 0
-	  if (solutionMap.map contains selector) {
-		literal = solutionMap.map(selector).solution.getLiteral(variableName).getInt
-	  }
-	  literal
-	}
+	literal
+  }
  
-   /** Gets a boolean literal from a single query solution
-	*
-	* @param solution The Solution in which the desired solution is located
-	* @param variableName The query variable name for the boolean literal desired
-	* @return The selected boolean literal
-	*/
-   def getBooleanFromSolution(solution:Solution, variableName:String) = {
-	  var literal: Boolean = false
-	  if (solution.solution contains variableName) {
-		literal = solution.solution.getLiteral(variableName).getBoolean
-	  }
-	  literal
+  /** Gets a boolean literal from a single query solution
+   *
+   * @param solution The Solution in which the desired solution is located
+   * @param variableName The query variable name for the boolean literal desired
+   * @return The selected boolean literal
+   */
+  def getBooleanFromSolution(solution:Solution, variableName:String) = {
+	var literal: Boolean = false
+	if (solution.solution contains variableName) {
+	  literal = solution.solution.getLiteral(variableName).getBoolean
 	}
+	literal
+  }
+}
+
+object QuerySheet {
   
-   }
+  final val QUERY_SHEET = "ccrt:qry_sheet_22"
+  var repo: SheetRepo = null;
+  var interface: QueryInterface = null;
+  
+  /** Provided solely for testing of queries
+   *
+   */
+  def main(args: Array[String]) : Unit = {
+
+	val QUERY_TO_TEST = "ccrt:template_general_items_99"
+	
+	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
+	val qText = sr.getQueryText(QUERY_SHEET, QUERY_TO_TEST)
+	println("Found query text: " + qText)
+		
+	val parsedQ = sr.parseQueryText(qText);
+	val solnJavaList : java.util.List[QuerySolution] = sr.findAllSolutions(parsedQ, null);
+	println("Found solutions: " + solnJavaList)
+  }
+  
+  // A temporary hook-in to allow current clients of QueryEmitter to easily get a "primary" instance until they 
+  // start using the managed service version - really this should happen in a registry but this is a short-term fix
+  def getInterface = {
+	if (interface == null) {
+	  interface = new QueryEmitter()
+	}
+	interface
+  }
+}
+

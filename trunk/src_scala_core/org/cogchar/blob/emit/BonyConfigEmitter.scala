@@ -214,11 +214,11 @@ class BonyConfigEmitter extends DemoConfigEmitter {
   final val ROBOT_IDENT_QUERY_VAR = "robotUri";
   final val BONE_NAME_VAR_NAME = "boneName";
   def addBoneDescsFromBoneRobotConfig(charIdent:Ident, hfc:HumanoidFigureConfig) {
-		//SheetRepo sr = QueryEmitter.getSheet();
-		var queryString = QueryEmitter.getQuery(BONE_NAMES_QUERY_TEMPLATE_URI);
-		queryString = QueryEmitter.setQueryVar(queryString, ROBOT_IDENT_QUERY_VAR, charIdent);
-		val solutionList = QueryEmitter.getTextQueryResultList(queryString);
-		val boneNames = QueryEmitter.getStringsFromSolution(solutionList, BONE_NAME_VAR_NAME);
+		val queryEmitter = QuerySheet.getInterface
+		var queryString = queryEmitter.getQuery(BONE_NAMES_QUERY_TEMPLATE_URI);
+		queryString = queryEmitter.setQueryVar(queryString, ROBOT_IDENT_QUERY_VAR, charIdent);
+		val solutionList = queryEmitter.getTextQueryResultList(queryString);
+		val boneNames = queryEmitter.getStringsFromSolution(solutionList, BONE_NAME_VAR_NAME);
 		boneNames.foreach(boneName => {
 			hfc.myBoneConfig.addBoneDesc(boneName);
 		})

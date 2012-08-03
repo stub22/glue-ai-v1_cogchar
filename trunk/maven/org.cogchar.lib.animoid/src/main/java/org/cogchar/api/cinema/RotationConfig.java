@@ -18,7 +18,8 @@ package org.cogchar.api.cinema;
 
 import org.appdapter.core.item.*;
 import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.QueryEmitter;
+import org.cogchar.blob.emit.QueryInterface;
+import org.cogchar.blob.emit.QuerySheet;
 
 /**
  *
@@ -30,6 +31,8 @@ public class RotationConfig {
 	public float yaw = Float.NaN;
 	public float roll = Float.NaN;
 	public float pitch = Float.NaN;
+	
+	private static QueryInterface queryEmitter = QuerySheet.getInterface();
 
 	@Override
 	public String toString() {
@@ -46,11 +49,11 @@ public class RotationConfig {
 
 	// Called from CinematicConfig, corresponds to a "named" rotation definition
 	public RotationConfig(Solution solution) {
-		Ident myIdent = QueryEmitter.getIdentFromSolution(solution, CinematicQueryNames.ROTATION_VAR_NAME);
+		Ident myIdent = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.ROTATION_VAR_NAME);
 		rotationName = myIdent.getLocalName();
-		yaw = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.YAW_VAR_NAME, Float.NaN);
-		pitch = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.PITCH_VAR_NAME, Float.NaN);
-		roll = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.ROLL_VAR_NAME, Float.NaN);
+		yaw = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.YAW_VAR_NAME, Float.NaN);
+		pitch = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.PITCH_VAR_NAME, Float.NaN);
+		roll = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.ROLL_VAR_NAME, Float.NaN);
 	}
 
 	public RotationConfig(Item configItem) {
