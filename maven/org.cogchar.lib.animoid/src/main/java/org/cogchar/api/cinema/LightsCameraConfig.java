@@ -31,7 +31,8 @@ import org.appdapter.core.item.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.Solution;
 import org.cogchar.blob.emit.SolutionList;
-import org.cogchar.blob.emit.QueryEmitter;
+import org.cogchar.blob.emit.QueryInterface;
+import org.cogchar.blob.emit.QuerySheet;
 
 
 /**
@@ -43,14 +44,16 @@ public class LightsCameraConfig extends KnownComponentImpl {
 
 	public List<CameraConfig> myCCs = new ArrayList<CameraConfig>();
 	public List<LightConfig> myLCs = new ArrayList<LightConfig>();
+	
+	private static QueryInterface queryEmitter = QuerySheet.getInterface();
 
 	// A new constructor to build LightsCameraConfig from spreadsheet
 	public LightsCameraConfig() {
-		SolutionList solutionList = QueryEmitter.getQueryResultList(LightsCameraQueryNames.CAMERA_QUERY_URI);
+		SolutionList solutionList = queryEmitter.getQueryResultList(LightsCameraQueryNames.CAMERA_QUERY_URI);
 		for (Solution cameraSolution : solutionList.javaList()) {
 			myCCs.add(new CameraConfig(cameraSolution));
 		}
-		solutionList = QueryEmitter.getQueryResultList(LightsCameraQueryNames.LIGHT_QUERY_URI);
+		solutionList = queryEmitter.getQueryResultList(LightsCameraQueryNames.LIGHT_QUERY_URI);
 		for (Solution lightSolution : solutionList.javaList()) {
 			myLCs.add(new LightConfig(lightSolution));
 		}

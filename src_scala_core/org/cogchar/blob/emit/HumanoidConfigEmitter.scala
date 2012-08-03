@@ -59,7 +59,8 @@ object HumanoidConfigEmitter {
 	
   def getCharConfigData {
 	//val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
-	val sr : SheetRepo = QueryEmitter.getSheet // By getting sr this way, we use the cached copy and only need load it once for init
+	val queryEmitter = QuerySheet.getInterface
+	val sr : SheetRepo = queryEmitter.getSheet // By getting sr this way, we use the cached copy and only need load it once for init
 	val qText = sr.getQueryText(QUERY_SHEET, HUMANOID_QUERY)
 	val parsedQ = sr.parseQueryText(qText);
 	val solnList : scala.collection.mutable.Buffer[QuerySolution] = sr.findAllSolutions(parsedQ, null);

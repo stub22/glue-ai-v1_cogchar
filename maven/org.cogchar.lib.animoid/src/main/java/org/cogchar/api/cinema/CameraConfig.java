@@ -21,7 +21,8 @@ import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.cogchar.blob.emit.HumanoidConfigEmitter;
 import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.QueryEmitter;
+import org.cogchar.blob.emit.QueryInterface;
+import org.cogchar.blob.emit.QuerySheet;
 
 /**
  * @author Ryan Biggs
@@ -35,6 +36,8 @@ public class CameraConfig {
 	public float[] cameraViewPort = new float[4];
 	public Ident attachedRobot;
 	public String attachedItem;
+	
+	private static QueryInterface queryEmitter = QuerySheet.getInterface();
 
 	@Override
 	public String toString() {
@@ -43,16 +46,16 @@ public class CameraConfig {
 
 	// A new constructor to build CameraConfig from spreadsheet
 	public CameraConfig(Solution querySolution) {
-		cameraName = QueryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.CAMERA_NAME_VAR_NAME).getLocalName();
+		cameraName = queryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.CAMERA_NAME_VAR_NAME).getLocalName();
 		for (int index = 0; index < 3; index++) {
-			cameraPosition[index] = QueryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.POSITION_VAR_NAME[index], 0f);
-			cameraPointDir[index] = QueryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
+			cameraPosition[index] = queryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.POSITION_VAR_NAME[index], 0f);
+			cameraPointDir[index] = queryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
 		}
 		for (int index = 0; index < cameraViewPort.length; index++) {
-			cameraViewPort[index] = QueryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.VIEWPORT_VAR_NAME[index], Float.NaN);
+			cameraViewPort[index] = queryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.VIEWPORT_VAR_NAME[index], Float.NaN);
 		}
-		attachedRobot = QueryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.ATTACHED_ROBOT_VAR_NAME);
-		attachedItem = QueryEmitter.getStringFromSolution(querySolution, LightsCameraQueryNames.ATTACHED_BONE_VAR_NAME);
+		attachedRobot = queryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.ATTACHED_ROBOT_VAR_NAME);
+		attachedItem = queryEmitter.getStringFromSolution(querySolution, LightsCameraQueryNames.ATTACHED_BONE_VAR_NAME);
 	}
 
 	public CameraConfig(Item configItem) {

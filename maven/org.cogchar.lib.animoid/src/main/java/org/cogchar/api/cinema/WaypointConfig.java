@@ -19,7 +19,8 @@ package org.cogchar.api.cinema;
 import java.util.Arrays;
 import org.appdapter.core.item.*;
 import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.QueryEmitter;
+import org.cogchar.blob.emit.QueryInterface;
+import org.cogchar.blob.emit.QuerySheet;
 
 /**
  *
@@ -29,6 +30,8 @@ public class WaypointConfig {
 
 	public String waypointName;
 	public float[] waypointCoordinates = {Float.NaN, Float.NaN, Float.NaN};
+	
+	private static QueryInterface queryEmitter = QuerySheet.getInterface();
 
 	@Override
 	public String toString() {
@@ -45,10 +48,10 @@ public class WaypointConfig {
 
 	// Called from CinematicConfig, corresponds to a "named" waypoint definition
 	public WaypointConfig(Solution solution) {
-		Ident myIdent = QueryEmitter.getIdentFromSolution(solution, CinematicQueryNames.WAYPOINT_VAR_NAME);
+		Ident myIdent = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.WAYPOINT_VAR_NAME);
 		waypointName = myIdent.getLocalName();
 		for (int index = 0; index < waypointCoordinates.length; index++) {
-			waypointCoordinates[index] = QueryEmitter.getFloatFromSolution(solution, CinematicQueryNames.POSITION_VAR_NAME[index], Float.NaN);
+			waypointCoordinates[index] = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.POSITION_VAR_NAME[index], Float.NaN);
 		}
 	}
 

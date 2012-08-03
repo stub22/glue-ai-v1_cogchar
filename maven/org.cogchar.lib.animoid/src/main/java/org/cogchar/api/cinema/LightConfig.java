@@ -20,7 +20,8 @@ import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.QueryEmitter;
+import org.cogchar.blob.emit.QueryInterface;
+import org.cogchar.blob.emit.QuerySheet;
 
 /**
  * @author Ryan Biggs
@@ -32,6 +33,8 @@ public class LightConfig {
 	public LightType lightType;
 	public float[] lightDirection = new float[3];
 	public float[] lightColor = new float[4];
+	
+	private static QueryInterface queryEmitter = QuerySheet.getInterface();
 
 	@Override
 	public String toString() {
@@ -41,17 +44,17 @@ public class LightConfig {
 
 	// A new constructor to build CameraConfig from spreadsheet
 	public LightConfig(Solution querySolution) {
-		lightName = QueryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.LIGHT_NAME_VAR_NAME).getLocalName();
+		lightName = queryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.LIGHT_NAME_VAR_NAME).getLocalName();
 		lightType = LightType.AMBIENT; // For now, we assume light is ambient (no direction required) if type is not specified
-		Ident typeIdent = QueryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.LIGHT_TYPE_VAR_NAME);
+		Ident typeIdent = queryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.LIGHT_TYPE_VAR_NAME);
 		if (typeIdent.getLocalName().equals("DIRECTIONAL")) {
 			lightType = LightType.DIRECTIONAL;
 		}
 		for (int index = 0; index < lightDirection.length; index++) {
-			lightDirection[index] = QueryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
+			lightDirection[index] = queryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
 		}
 		for (int index = 0; index < lightColor.length; index++) {
-			lightColor[index] = QueryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.COLOR_VAR_NAME[index], Float.NaN);
+			lightColor[index] = queryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.COLOR_VAR_NAME[index], Float.NaN);
 		}
 	}
 
