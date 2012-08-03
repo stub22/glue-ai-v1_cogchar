@@ -30,7 +30,8 @@ import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.Solution;
 import org.cogchar.blob.emit.SolutionList;
-import org.cogchar.blob.emit.QueryEmitter;
+import org.cogchar.blob.emit.QueryInterface;
+import org.cogchar.blob.emit.QuerySheet;
 
 /**
  * Used to enclose data from RDF cinematics configuration currently in cinematicConfig.ttl
@@ -43,22 +44,24 @@ public class CinematicConfig extends KnownComponentImpl {
 	public List<CinematicTrack> myCTs = new ArrayList<CinematicTrack>();
 	public List<WaypointConfig> myWCs = new ArrayList<WaypointConfig>();
 	public List<RotationConfig> myRCs = new ArrayList<RotationConfig>();
+	
+	private static QueryInterface queryEmitter = QuerySheet.getInterface();
 
 	// A new constructor to build CinematicConfig from spreadsheet
 	public CinematicConfig() {
-		SolutionList solutionList = QueryEmitter.getQueryResultList(CinematicQueryNames.CINEMATICS_QUERY_URI);
+		SolutionList solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.CINEMATICS_QUERY_URI);
 		for (Solution solution : solutionList.javaList()) {
 			myCICs.add(new CinematicInstanceConfig(solution));
 		}
-		solutionList = QueryEmitter.getQueryResultList(CinematicQueryNames.TRACK_QUERY_URI);
+		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.TRACK_QUERY_URI);
 		for (Solution solution : solutionList.javaList()) {
 			myCTs.add(new CinematicTrack(solution));
 		}
-		solutionList = QueryEmitter.getQueryResultList(CinematicQueryNames.WAYPOINT_QUERY_URI);
+		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.WAYPOINT_QUERY_URI);
 		for (Solution solution : solutionList.javaList()) {
 			myWCs.add(new WaypointConfig(solution));
 		}
-		solutionList = QueryEmitter.getQueryResultList(CinematicQueryNames.ROTATION_QUERY_URI);
+		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.ROTATION_QUERY_URI);
 		for (Solution solution : solutionList.javaList()) {
 			myRCs.add(new RotationConfig(solution));
 		}

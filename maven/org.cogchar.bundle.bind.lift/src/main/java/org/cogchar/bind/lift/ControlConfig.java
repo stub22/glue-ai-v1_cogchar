@@ -21,7 +21,7 @@ import org.appdapter.core.item.ItemFuncs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.QueryEmitter;
+import org.cogchar.blob.emit.QueryInterface;
 
 /**
  * @author Ryan Biggs
@@ -48,19 +48,19 @@ public class ControlConfig {
 	}
 	
 	// A new constructor to build ControlConfig from spreadsheet
-	public ControlConfig(Solution solution) {
-		Ident myIdent = QueryEmitter.getIdentFromSolution(solution, LiftQueryNames.CONTROL_VAR_NAME);
+	public ControlConfig(QueryInterface qi, Solution solution) {
+		Ident myIdent = qi.getIdentFromSolution(solution, LiftQueryNames.CONTROL_VAR_NAME);
 		myURI_Fragment = myIdent.getLocalName();
-		controlType = QueryEmitter.getIdentFromSolution(solution, LiftQueryNames.CONTROL_TYPE_VAR_NAME).getLocalName();
+		controlType = qi.getIdentFromSolution(solution, LiftQueryNames.CONTROL_TYPE_VAR_NAME).getLocalName();
 		if (controlType == null) {
 			controlType = "NULLTYPE";
 		} else {
 			controlType = controlType.toUpperCase(); // Ensures lc:type property is case insensitive to local name
 		}
-		action = QueryEmitter.getStringFromSolution(solution, LiftQueryNames.ACTION_VAR_NAME, "");
-		text = QueryEmitter.getStringFromSolution(solution, LiftQueryNames.TEXT_VAR_NAME, "");
-		style = QueryEmitter.getStringFromSolution(solution, LiftQueryNames.STYLE_VAR_NAME, "");
-		resource = QueryEmitter.getStringFromSolution(solution, LiftQueryNames.RESOURCE_VAR_NAME, "");
+		action = qi.getStringFromSolution(solution, LiftQueryNames.ACTION_VAR_NAME, "");
+		text = qi.getStringFromSolution(solution, LiftQueryNames.TEXT_VAR_NAME, "");
+		style = qi.getStringFromSolution(solution, LiftQueryNames.STYLE_VAR_NAME, "");
+		resource = qi.getStringFromSolution(solution, LiftQueryNames.RESOURCE_VAR_NAME, "");
 	}
 
 	public ControlConfig(Item configItem) {

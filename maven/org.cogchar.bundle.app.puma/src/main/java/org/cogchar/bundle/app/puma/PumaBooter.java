@@ -23,17 +23,17 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 
-import org.appdapter.core.matdat.SheetRepo;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QuerySolution;
-
 
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
+import org.cogchar.blob.emit.QueryEmitter;
+import org.cogchar.blob.emit.QueryInterface;
 
-import org.cogchar.render.app.bony.BonyVirtualCharApp;
 
 import  org.appdapter.core.store.Repo;
+import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
+import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
+import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -124,9 +124,9 @@ public class PumaBooter extends BasicDebugger {
 			 */
 			
 			
-			logInfo("%%%%%%%%%%%%%%%%%%% Calling setupConfigEmitters()");
+			logInfo("%%%%%%%%%%%%%%%%%%% Calling setupConfigEmitters() and starting query service");
 			setupConfigEmitters(hrc, mediator);
-			
+			startQueryService(bundleCtx);
 			
 			boolean allowJFrames = mediator.getFlagAllowJFrames();
 /*  
@@ -145,7 +145,7 @@ Start up the JME OpenGL canvas, which will in turn initialize the Cogchar render
 			 * This step will load all the 3D models (and other rendering resources) that Cogchar needs, 
 			 * based on what is implied by the sysContextURI we supplied to the PumaAppContext constructor above.
 
-			 * We enqueue this work to occure on JME3 update thread.  Otherwise we'll get an:
+			 * We enqueue this work to occur on JME3 update thread.  Otherwise we'll get an:
 			 *  IllegalStateException: Scene graph is not properly updated for rendering.
 			 */
 			
@@ -191,8 +191,18 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 		String filesysRootPath = mediator.getOptionalFilesysRoot();
 		if (filesysRootPath != null) {
 			behavCE.setLocalFileRootDir(filesysRootPath);
-		}		
+		}
 	}
+	
+	// Registers the QueryEmitter service, currently with an empty lifecycle.
+	// This service will be used by managed services needing query config
+	// Currently, that's: LifterLifecycle
+	public static void startQueryService(BundleContext context) {
+		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(new QueryEmitter(), QueryInterface.class);
+    	OSGiComponent queryComp = new OSGiComponent(context, lifecycle);
+    	queryComp.start();
+	}
+	
 	private Repo findMainRepo(ContextMediator mediator) {
 		Repo r = null;
 		

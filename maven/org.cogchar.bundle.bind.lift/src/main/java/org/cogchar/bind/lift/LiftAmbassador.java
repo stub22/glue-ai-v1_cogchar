@@ -23,6 +23,7 @@ import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.appdapter.core.item.FreeIdent;
 import org.appdapter.core.item.Ident;
+import org.cogchar.blob.emit.QueryInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,7 @@ public class LiftAmbassador {
 	private static LiftSceneInterface sceneLauncher;
 	private static LiftInterface lift;
 	private static LiftAppInterface liftAppInterface;
+	private static QueryInterface queryInterface;
 	private static boolean configReady = false;
 	private static List<String> triggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
 	private static ClassLoader myRdfCL; // We'll get this classloader so we can update control configuration from separate RDF files at runtime
@@ -71,6 +73,13 @@ public class LiftAmbassador {
 		String queryCogbot(String query, String cogbotConvoUrl);
 
 		boolean performDataballAction(String action, String text);
+	}
+
+	// A (currently blank) interface used by service manager and available to add future PUMA/CogChar-to-Lifter channels
+	public interface LiftAmbassadorInterface {
+	}
+
+	public static class inputInterface implements LiftAmbassadorInterface {
 	}
 
 	public static void activateControlsFromConfig(LiftConfig newConfig) {
@@ -148,19 +157,25 @@ public class LiftAmbassador {
 				success = activateControlsFromRdf(desiredFile);
 			} else {
 				Ident configIdent = new FreeIdent(LiftQueryNames.ccrt + desiredFile, desiredFile);
-				LiftConfig newConfig;
+				LiftConfig newConfig = null;
 				if (liftConfigCache.containsKey(configIdent)) {
 					newConfig = liftConfigCache.get(configIdent); // Use cached version if available
 					theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
 				} else {
-					newConfig = new LiftConfig(configIdent);
-					liftConfigCache.put(configIdent, newConfig);
-					theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
+					if (queryInterface != null) {
+						newConfig = new LiftConfig(queryInterface, configIdent);
+						liftConfigCache.put(configIdent, newConfig);
+						theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
+					} else {
+						theLogger.error("New lift config requested, but no QueryInterface set!");
+					}
 				}
-				activateControlsFromConfig(newConfig);
-				success = true;
+				if (newConfig != null) {
+					activateControlsFromConfig(newConfig);
+					success = true;
+				}
 			}
-			
+
 		} else if ((action.startsWith(LiftConfigNames.partial_P_databalls)) && (liftAppInterface != null)) {
 			String databallsAction = action.replaceAll(LiftConfigNames.partial_P_databalls + "_", "");
 			liftAppInterface.performDataballAction(databallsAction, null);
@@ -221,6 +236,10 @@ public class LiftAmbassador {
 
 	public static void setAppInterface(LiftAppInterface lai) {
 		liftAppInterface = lai;
+	}
+
+	public static void setQueryInterface(QueryInterface qi) {
+		queryInterface = qi;
 	}
 
 	public static boolean checkConfigReady() {

@@ -61,6 +61,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	private ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 	public String myUpdateBonyRdfPath;
 	public Theater myTheater;
+	private BundleContext myBundleCtx; // Set at connectBonyCharToRobokindSvcs so it can be passed around to start dependencies needed for managed services
 	
 	final static String SHEET_RESOURCE_MARKER = "//SHEET"; // As an RdfPath, indicates that config should be loaded from spreadsheet instead
 
@@ -73,7 +74,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	}
 
 	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx) throws Throwable {
-		BonyRenderContext bonyRendCtx = myHumoidMapper.getHumanoidRenderContext();
+		myBundleCtx = bundleCtx;
 		String bonyConfigPathPerm = HumanoidConfigEmitter.getBonyConfigPath(myCharIdent);
 		myUpdateBonyRdfPath = bonyConfigPathPerm; // Currently update and perm path are set the same for TriggerItems.UpdateBonyConfig
 		BoneRobotConfig boneRobotConf;
@@ -129,7 +130,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	public void startTheater() {
 		SceneBook sb = myTheater.getSceneBook();
 		DummyBinder trigBinder = SceneActions.getBinder();
-		myWebMapper.connectMoreWebStuff();
+		myWebMapper.connectLiftSceneInterface(myBundleCtx);
 		FancyTriggerFacade.registerAllTriggers(trigBinder, myTheater, sb);
 		myTheater.startThread();
 	}
@@ -137,6 +138,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	public void stopTheater() {
 		// Should be long enough for the 100 Msec loop to cleanly exit.
 		int killTimeWaitMsec = 200;
+		myWebMapper.disconnectLiftSceneInterface(myBundleCtx);
 		myTheater.fullyStop(killTimeWaitMsec);
 	}
 
