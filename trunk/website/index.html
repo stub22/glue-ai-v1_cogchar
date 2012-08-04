@@ -53,7 +53,7 @@ CogChar is an open source cognitive character technology platform.
 Many of our subsystems come to us thru another open source software project (many of which are part of the GLUE-AI effort).  Specifically, Cogchar has the following main external ingredients:
 <br/>
 <ul>
-<li>Humanoid robotics capabilities of <a href="http://www.robokind.org">Robokind.org</a> open source robotics system, including APIs for servos, sensors, animation, and speech.</li>
+<li>Humanoid robotics capabilities of <a href="http://www.robokind.org">Robokind.org</a> open source robotics system, including APIs for servos, sensors, animation, vision, and speech.</li>
 <li>RDF/SPARQL/OWL semantic software stack of the <a href="http://www.appdapter.org">Appdapter</a> project (which itself is primarily dependent on 
 <a href="http://jena.apache.org">Jena</a>)</li>
 <li>3D character rendering to OpenGL using <a href="http://jmonkeyengine.com">JMonkey Game Engine</a>, LWJGL, BulletPhysics</li>
@@ -78,7 +78,7 @@ Many of our subsystems come to us thru another open source software project (man
 	</ul>
 	
 	<li><b>Blended adaptive estimators and controllers</b></li>
-		<ul><li>Run a wide variety numeric and symbolic learning algorithms(bayesian, neural, genetic, you name it),
+		<ul><li>Run a wide variety numeric and symbolic learning algorithms(bayesian, HMM, neural, genetic, you name it),
 				using Java, Scala, R, Weka, Hadoop, DL-Learner.</li>
 			<li>Metadata-driven analysis and update of 1) immutable trajectory logs (pruned) and 2) mutable state vectors (markovian).</li>
 		</ul>
