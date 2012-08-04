@@ -24,7 +24,8 @@ The cascade defines an ordered sequence of style sheets where rules in later she
 <hr/>
 <div id="navigationBlock">
   <ul>
-    <li> <a href="index.html" id="navCurrent">About</a> </li>
+    <li> <a href="index.html" id="navCurrent">Intro</a> </li>
+	<li> <a href="credits.html">Credits and Partlist</a></li>	
 	<li> <a href="https://www.assembla.com/space/cogchar">Workspace</a></li>
   </ul>
 </div>
@@ -32,14 +33,43 @@ The cascade defines an ordered sequence of style sheets where rules in later she
 <p>
 CogChar is an open source cognitive character technology platform.
 <br/>Our characters may be physical (robots), virtual, or both.
-<br/>Applications in therapeutics, education, research, and fun!
+<br/>Applications include therapeutics, education, research, and fun!
 </p>
+<p>The CogChar project is Java based, but network integratable, connecting several other open source projects.
+<br/>Coghcar provides an important piece of the <a href="http://www.assembla.com/spaces/glue_ai/wiki/GlueProjectDirectory">GLUE-AI</a> software collection.
+</p>
+<p>CogChar provides a set of connected subsystems for experimental, iterative character creation.
+<br/>We seek to engineer a highly integrated yet modular system that allows many features to be combined as freely and yet robsutly as possible.
+<br/>We achieve modularity using the OSGi standard for Java applications, although our individual features can often be run outside of OSGi.  
+<br/>Our outlook for Android compatibility is very bright, although we can't control or predict what Oracle and Google will do in coming years.
+<br/>We directly support networking over HTTP and AMQP.
+</p>
+<p>Cogchar by itself is primarily a set of bundles used to assemble your character application.
+<br/>We do have some runnable demonstrations included in our bundles.  
+<br/>Here is a <a href="https://docs.google.com/spreadsheet/pub?key=0ArBjkBoH40tndGFZeVlzd1VYUm1mYWRPRU01VllrNXc&gid=1">spreadsheet summary</a> of our user interface components and GLUE containers.
+</p>
+
+<h4>External Features</h4>
+Many of our subsystems come to us thru another open source software project (many of which are part of the GLUE-AI effort).  Specifically, Cogchar has the following main external ingredients:
+<br/>
+<ul>
+<li>Humanoid robotics capabilities of <a href="http://www.robokind.org">Robokind.org</a> open source robotics system, including APIs for servos, sensors, animation, and speech.</li>
+<li>RDF/SPARQL/OWL semantic software stack of the <a href="http://www.appdapter.org">Appdapter</a> project (which itself is primarily dependent on 
+<a href="http://jena.apache.org">Jena</a>)</li>
+<li>3D character rendering to OpenGL using <a href="http://jmonkeyengine.com">JMonkey Game Engine</a>, LWJGL, BulletPhysics</li>
+<li>Web interaction using the <a href="http://liftweb.net/">Lift</a> framework (combine or replace with your own bundled webapp using PAX-WEB launcher).</li>
+</ul>
+<p>After reading this list, it's perhaps rather obvious that one of the main goals of the Cogchar project is to achieve a useful simulation duality between real robotics worlds in the Robokind space, and various onscreen 3D OpenGL worlds.  We seek to do that as flexibly as possible, with the definition of world mappings occuring in the semantic space, with minimal need for software extensions.  
+</p>
+
 <img src="diag/ccrk_screen_01.png" width="408" height="319" />
 <img src="diag/ccrk_screen_02_crop.png" width="485" height="319" />
 <br/>
 <i>(Images of Zeno Robot are copyright by Hanson Robokind, LLC.  Used with Permission).</i>
-<h4>Key Features</h4>
+<h4>Internal Feature Goals</h4>
 <ul>
+	<li>Flexible <b>behavior</b> authoring, editing, sharing, and triggering.</li>
+	<li>Variable, authorable, testable <b>mappings</b> between various character and world coordinate systems, as well as between symbolic spaces.</li>
 	<li><b>Fusion of sensor and symbol streams</b>, applied to self-image and model of world.</li>
 	<ul><li>Character sees, hears, touches and knows in many related symbolic and physical/virtual/numeric dimensions.</li>
 		<li>My left-eye camera sees some pixels, some of which are recognized as a face, which may be matched to a name, which I may choose to say, producing a certain sound...</li>
@@ -48,24 +78,25 @@ CogChar is an open source cognitive character technology platform.
 	</ul>
 	
 	<li><b>Blended adaptive estimators and controllers</b></li>
-		<ul><li>Run any numeric and symbolic learning algorithms you have heard of (bayesian, neural, genetic, you name it),
-				using Java, Scala, R, Weka, Hadoop.</li>
-			<li>Cogchar provides: Metadata-driven analysis and update of 1) pruned immutable trajectory logs and 2) mutable (markovian) state vectors.</li>
+		<ul><li>Run a wide variety numeric and symbolic learning algorithms(bayesian, neural, genetic, you name it),
+				using Java, Scala, R, Weka, Hadoop, DL-Learner.</li>
+			<li>Metadata-driven analysis and update of 1) pruned immutable trajectory logs and 2) mutable (markovian) state vectors.</li>
 		</ul>
-	<li><b>Rendering mind and body together</b></li>
+	<li><b>Reasoning and rendering of body and mind</b></li>
 	<ul><li>Interact with visualizations of character's body, mind, and environment, overlapped in interesting ways (what's inside the character's left ear right now?)</li>
 		<li>Standard OpenGL 3D display for any compatible device (computer, tablet, smartphone, game console)</li>
 	</ul>
 	
 	<li><b>Ongoing conversation coordination</b></li>
 		<ul><li>Keep track of many conversation partners over any length of time (minutes to years).</li>
-			<li>Consult reference sources during conversations, and decide which ones to mention.</li>
+			<li>Consult reference sources during conversations, and decide which ones to mention (feature provided by Cogbot).</li>
 			<li>Conversation is integrated with embodiment, self-image, and world model.</li>
 		</ul>
 </ul>
 
-<a href="diag/ccrk_component_galaxy.png"><img src="diag/ccrk_component_galaxy.png" width="528" height="408"/></a>
+<a href="diag/ccrk_component_galaxy.png"><img src="diag/ccrk_component_galaxy.png" width="528" height="408"/>
 <br/><i>(Click diagram to enlarge)</i>
+</a>
 <h4>Technical Summary</h4>
 <ul>
 	<li>For the big picture, please see
@@ -85,9 +116,11 @@ presentation on the experimental <a href="http://www.friendularity.org">Friendul
 	<li><a href="http://code.google.com/p/opensim4opencog/">Cogbot</a> - Advanced conversation features, emotion simulation, and links to online virtual worlds</li>
 	</ul>
 	<li>Integration with MIDI + SMPTE music+video technology for action mapping, triggering, and synchronization</li>
-	<li>Serialization to <a href="http://avro.apache.org">Avro</a>, messaging over <a href="http://www.amqp.org">AMQP</a>, cloud integration via <a href="http://hadoop.apache.org">Hadoop</a></li>
+	<li>Serialization to <a href="http://avro.apache.org">Avro</a>, messaging over <a href="http://jena.apache.org/documentation/serving_data/soh.html">SOH</a>,
+			<a href="http://www.amqp.org">AMQP</a>, cloud integration via <a href="http://hadoop.apache.org">Hadoop</a></li>
 	<li>Planned compatibility with Android platform</li>
 </ul>
+
 <h4>For More Information</h4>
 <ul>
 	<li><a href="https://www.assembla.com/code/cogchar/subversion/nodes">Source tree</a> (maven is not strictly required, but makes life easier, for Us!)</li>
