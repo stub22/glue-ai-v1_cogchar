@@ -4,7 +4,6 @@
 <!DOCTYPE rdf:RDF [
     <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
     <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
-    <!ENTITY xml "http://www.w3.org/XML/1998/namespace" >
     <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
     <!ENTITY ace_lexicon "http://attempto.ifi.uzh.ch/ace_lexicon#" >
     <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
@@ -21,7 +20,6 @@
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-     xmlns:xml="http://www.w3.org/XML/1998/namespace"
      xmlns:za="http://www.hrkind.com/metad/2012/06/zenoAnims.owl#"
      xmlns:appsnazz="http://www.appdapter.org/ontologies/2010/snazzy.owl#"
      xmlns:ace_lexicon="http://attempto.ifi.uzh.ch/ace_lexicon#">
@@ -61,15 +59,6 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
-    
-
-
-    <!-- http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#Character -->
-
-    <rdf:Description rdf:about="&cca;Character">
-        <ace_lexicon:CN_sg>Character</ace_lexicon:CN_sg>
-        <ace_lexicon:CN_pl>Characters</ace_lexicon:CN_pl>
-    </rdf:Description>
     
 
 
@@ -632,38 +621,15 @@
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
-    // Individuals
+    // Annotations
     //
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
-    
-
-
-    <!-- http://www.hrkind.com/metad/2012/06/zenoAnims.owl#zeno_avatar_R50 -->
-
-    <owl:NamedIndividual rdf:about="&za;zeno_avatar_R50">
-        <rdf:type rdf:resource="&cca;Character"/>
-        <ace_lexicon:PN_sg>zeno_avatar_R50</ace_lexicon:PN_sg>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.hrkind.com/metad/2012/06/zenoAnims.owl#zeno_ideal_R50 -->
-
-    <owl:NamedIndividual rdf:about="&za;zeno_ideal_R50">
-        <rdf:type rdf:resource="&cca;Character"/>
-        <ace_lexicon:PN_sg>zeno_ideal_R50</ace_lexicon:PN_sg>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.hrkind.com/metad/2012/06/zenoAnims.owl#zeno_phys_R50_222 -->
-
-    <owl:NamedIndividual rdf:about="&za;zeno_phys_R50_222">
-        <rdf:type rdf:resource="&cca;Character"/>
-        <ace_lexicon:PN_sg>zeno_phys_R50_222</ace_lexicon:PN_sg>
-    </owl:NamedIndividual>
+    <rdf:Description rdf:about="&cca;Character">
+        <ace_lexicon:CN_sg>Character</ace_lexicon:CN_sg>
+        <ace_lexicon:CN_pl>Characters</ace_lexicon:CN_pl>
+    </rdf:Description>
     
 
 
