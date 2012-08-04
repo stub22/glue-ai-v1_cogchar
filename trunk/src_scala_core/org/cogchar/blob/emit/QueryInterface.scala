@@ -21,6 +21,9 @@ import org.appdapter.core.matdat.SheetRepo
 
 trait QueryInterface {
 
+  /** Triggers the refresh of the SheetRepo cache
+   *
+   */
   def reloadSheetRepo
   
   /** Returns the current cached SheetRepo
@@ -143,11 +146,19 @@ trait QueryInterface {
    */
   def setQueryVar(query:String, queryVarName: String, value: Ident): String
   
+  /** A convenience method to retrieve a query template from sheet and replace a query variable
+   * (indicated with "!!" prefix) with its URI value in a single step
+   *
+   * @param templateUri The URI of the query template to be retrieved
+   * @param queryVarName The name of the query variable (with "!!" prefix omitted)
+   * @param queryVarValue The value of the query variable
+   * @return Completed query with variable replaced with literal
+   */
   def getCompletedQueryFromTemplate(templateUri:String, queryVarName: String, queryVarValue: Ident): String
   
   /** Gets a string literal from a query solution located in a SolutionMap and keyed by a selector URI
    *
-   * @param solutionMap The SolutionMap in which the desired solution is located
+   * @param solutionMap The SolutionMap in which the desired literal is located
    * @param selectorUri The key URI which selects the desired solution
    * @param variableName The query variable name for the string literal desired
    * @return The selected String literal
@@ -156,7 +167,7 @@ trait QueryInterface {
   
   /** Gets a string literal from a query solution located in a SolutionMap and keyed by a selector String
    *
-   * @param solutionMap The SolutionMap in which the desired solution is located
+   * @param solutionMap The SolutionMap in which the desired literal is located
    * @param selector The key String which selects the desired solution
    * @param variableName The query variable name for the string literal desired
    * @return The selected String literal
@@ -165,53 +176,112 @@ trait QueryInterface {
   
   /** Gets a string literal from a single query solution
    *
-   * @param solution The Solution in which the desired solution is located
+   * @param solution The Solution in which the desired string is located
    * @param variableName The query variable name for the string literal desired
    * @return The selected string literal
    */
-  def getStringFromSolution(solution:Solution, variableName:String): String
+   def getStringFromSolution(solution:Solution, variableName:String): String
    
-  /** Gets a string literal from a single query solution with a provided default if solution variable is not found
-   *
-   * @param solution The Solution in which the desired solution is located
-   * @param variableName The query variable name for the string literal desired
-   * @param default The String to return if the query variable is not found in solution
-   * @return The selected string literal
-   */
-  def getStringFromSolution(solution:Solution, variableName:String, default:String): String
+   /** Gets a string literal from a single query solution with a provided default if solution variable is not found
+	*
+	* @param solution The Solution in which the desired string is located
+	* @param variableName The query variable name for the string literal desired
+	* @param default The String to return if the query variable is not found in solution
+	* @return The selected string literal
+	*/
+   def getStringFromSolution(solution:Solution, variableName:String, default:String): String
   
-  /** Gets an IndexedSeq of string literals from each of the query solutions located in a SolutionList
-   *
-   * @param solutionList The SolutionList in which the desired solutions are located
-   * @param variableName The query variable name for the string literals desired
-   * @return The selected string literals
-   */
-  def getStringsFromSolution(solutionList:SolutionList, variableName:String): scala.collection.immutable.IndexedSeq[String]
-   
-  def getStringsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[String]
+   /** Gets an IndexedSeq of string literals from each of the query solutions located in a SolutionList
+	*
+	* @param solutionList The SolutionList in which the desired strings are located
+	* @param variableName The query variable name for the string literals desired
+	* @return The selected string literals
+	*/
+   def getStringsFromSolution(solutionList:SolutionList, variableName:String): scala.collection.immutable.IndexedSeq[String]
   
-  def getIdentFromSolution(solution:Solution, variableName:String): Ident
+   /** Gets a Java list of string literals from each of the query solutions located in a SolutionList
+	*
+	* @param solutionList The SolutionList in which the desired strings are located
+	* @param variableName The query variable name for the string literals desired
+	* @return The selected string literals
+	*/
+   def getStringsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[String]
   
-  def getIdentsFromSolution(solutionList:SolutionList, variableName:String): scala.collection.mutable.ArrayBuffer[Ident]
+   /** Gets a resource in the form of an Ident from a single query solution
+	*
+	* @param solution The Solution in which the desired resource is located
+	* @param variableName The query variable name for the resource desired
+	* @return The selected resource
+	*/
+   def getIdentFromSolution(solution:Solution, variableName:String): Ident
   
-  def getIdentsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[Ident]
+   /** Gets an ArrayBuffer of resources in the form of Idents from each of the query solutions located in a SolutionList
+	*
+	* @param solutionList The SolutionList in which the desired resources are located
+	* @param variableName The query variable name for the resources desired
+	* @return The selected resources
+	*/
+   def getIdentsFromSolution(solutionList:SolutionList, variableName:String): scala.collection.mutable.ArrayBuffer[Ident]
   
-  def getFloatFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String): Float
+   /** Gets a Java list of resources in the form of Idents from each of the query solutions located in a SolutionList
+	*
+	* @param solutionList The SolutionList in which the desired resources are located
+	* @param variableName The query variable name for the resources desired
+	* @return The selected resources
+	*/
+   def getIdentsFromSolutionAsJava(solutionList:SolutionList, variableName:String): java.util.List[Ident]
+  
+   /** Gets a float literal from a query solution located in a SolutionMap and keyed by a selector String
+	*
+	* @param solutionMap The SolutionMap in which the desired literal is located
+	* @param selector The key Ident which selects the desired solution
+	* @param variableName The query variable name for the float literal desired
+	* @return The selected Float literal
+	*/
+   def getFloatFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String): Float
 
-  def getFloatFromSolution(solution:Solution, variableName:String, default:Float): Float
+   /** Gets a float literal from a single query solution with a provided default if solution variable is not found
+	*
+	* @param solution The Solution in which the desired float is located
+	* @param variableName The query variable name for the float literal desired
+	* @param default The Float to return if the query variable is not found in solution
+	* @return The selected float literal
+	*/
+   def getFloatFromSolution(solution:Solution, variableName:String, default:Float): Float
   
-  def getDoubleFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String): Double
+   /** Gets a double literal from a query solution located in a SolutionMap and keyed by a selector Ident
+	*
+	* @param solutionMap The SolutionMap in which the desired literal is located
+	* @param selector The key Ident which selects the desired solution
+	* @param variableName The query variable name for the double literal desired
+	* @return The selected Double literal
+	*/
+   def getDoubleFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String): Double
   
-  def getDoubleFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String): Double
+   /** Gets a double literal from a query solution located in a SolutionMap and keyed by a selector string
+	*
+	* @param solutionMap The SolutionMap in which the desired literal is located
+	* @param selector The key String which selects the desired solution
+	* @param variableName The query variable name for the double literal desired
+	* @return The selected Double literal
+	*/
+   def getDoubleFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String): Double
   
-  def getIntegerFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String): Int
+   /** Gets an integer literal from a query solution located in a SolutionMap and keyed by a selector Ident
+	*
+	* @param solutionMap The SolutionMap in which the desired literal is located
+	* @param selector The key Ident which selects the desired solution
+	* @param variableName The query variable name for the integer literal desired
+	* @return The selected integer literal
+	*/
+   def getIntegerFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String): Int
  
-  /** Gets a boolean literal from a single query solution
-   *
-   * @param solution The Solution in which the desired solution is located
-   * @param variableName The query variable name for the boolean literal desired
-   * @return The selected boolean literal
-   */
-  def getBooleanFromSolution(solution:Solution, variableName:String): Boolean
+   /** Gets a boolean literal from a single query solution
+	*
+	* @param solution The Solution in which the desired solution is located
+	* @param variableName The query variable name for the boolean literal desired
+	* @return The selected boolean literal
+	*/
+	def getBooleanFromSolution(solution:Solution, variableName:String): Boolean
   
 }
