@@ -153,6 +153,8 @@ public class MessagingConnectPanel extends javax.swing.JPanel {
                 myVirtualHostSource.getValue(), 
                 addr);
         try{ 
+            String reconnectOptions = "&connectdelay='5000'&retries='2147483647'";
+            url += reconnectOptions;
             ConnectionFactory fact = new AMQConnectionFactory(url);
             Connection con = fact.createConnection();
             if(con == null){
