@@ -14,8 +14,8 @@
 ]>
 
 
-<rdf:RDF xmlns="http://www.hrkind.com/metad/2012/06/zenoAnims.owl#"
-     xml:base="http://www.hrkind.com/metad/2012/06/zenoAnims.owl"
+<rdf:RDF xmlns="http://www.cogchar.org/ontologies/y2012m06/HominoidBodySchema.owl#"
+     xml:base="http://www.cogchar.org/ontologies/y2012m06/HominoidBodySchema.owl"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:cca="http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
@@ -25,7 +25,7 @@
      xmlns:za="http://www.hrkind.com/metad/2012/06/zenoAnims.owl#"
      xmlns:appsnazz="http://www.appdapter.org/ontologies/2010/snazzy.owl#"
      xmlns:ace_lexicon="http://attempto.ifi.uzh.ch/ace_lexicon#">
-    <owl:Ontology rdf:about="http://www.hrkind.com/metad/2012/06/zenoAnims.owl">
+    <owl:Ontology rdf:about="http://www.cogchar.org/ontologies/y2012m06/HominoidBodySchema.owl">
         <owl:imports rdf:resource="http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl"/>
     </owl:Ontology>
     
