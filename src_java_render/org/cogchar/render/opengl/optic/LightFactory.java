@@ -21,6 +21,7 @@ import com.jme3.light.Light;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import java.util.Iterator;
 import java.util.concurrent.Callable;
 import org.cogchar.api.cinema.LightConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
@@ -116,5 +117,27 @@ public class LightFactory extends RenderRegistryAware {
 			}
 		});
 
+	}
+	
+	public void removeLightOnMainThread(final Light l, final CogcharRenderContext crc) {
+		crc.enqueueCallable(new Callable<Void>() {
+
+			@Override
+			public Void call() throws Exception {
+				getParentNode().removeLight(l);
+				return null;
+			}
+		});
+
+	}
+	
+	public void clearLights(CogcharRenderContext crc) {
+		Iterator lightIterator = getParentNode().getWorldLightList().iterator();
+		theLogger.info("Clearing Lights...");
+		while (lightIterator.hasNext()) {
+			Light nextLight = (Light)lightIterator.next();
+			theLogger.info("Removing light of type: " + nextLight.getType().name());
+			removeLightOnMainThread(nextLight, crc);
+		}
 	}
 }

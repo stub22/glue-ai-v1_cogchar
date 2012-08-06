@@ -20,6 +20,7 @@ import org.cogchar.render.sys.core.RenderRegistryAware;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * A facade of perhaps debatable necessity
  */
 public class ViewportFacade extends RenderRegistryAware {
 	private	 RenderManager		myRenderManager;

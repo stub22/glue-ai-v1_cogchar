@@ -80,7 +80,8 @@ public class PhysicsStuffBuilder extends RenderRegistryAware {
 	 * @param space
 	 */
 	public void createPhysicsTestWorld() {
-		LightFactory.addLightGrayAmbientLight(myParentNode);
+		//Now configured from RDF instead
+		//LightFactory.addLightGrayAmbientLight(myParentNode);
 		
 		Material floorMat = findOrMakeOpticMaterialFacade(null, null).makeUnshadedMat();
 		

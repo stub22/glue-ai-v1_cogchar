@@ -61,12 +61,7 @@ public class CoreFeatureAdapter extends BasicDebugger {
 		cm.registerCommonCamera(CameraMgr.CommonCameras.DEFAULT, defCam);
 	}
 
-	// Used by CameraMgr can create new viewports for cameras loaded from RDF
-	static public void addViewPort(RenderRegistryClient rrc, String label, Camera c) {
-		DeepSceneMgr dsm = rrc.getSceneDeepFacade(null);
-		dsm.addViewPort(label, c);
-	}
-
+	// Mainly for attaching cameras to parts of robot, but potentially somewhat general purpose so I'll leave it here
 	static public void attachToHumanoidBone(final HumanoidRenderContext hrc, final Node toAttach, final Ident robotIdent, final String boneName) {
 		hrc.enqueueCallable(new Callable<Void>() {
 
