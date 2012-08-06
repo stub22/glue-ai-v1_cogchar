@@ -15,19 +15,19 @@
  */
 package org.cogchar.render.opengl.optic;
 
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.control.CameraControl.ControlDirection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import org.cogchar.api.cinema.CameraConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.api.cinema.LightsCameraConfigNames;
-import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.core.CoreFeatureAdapter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.sys.core.RenderRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,10 @@ public class CameraMgr {
 		WIDE_VIEW,
 		HEAD_CAM
 	}
+	
 	private Map<String, Camera> myCamerasByName = new HashMap<String, Camera>();
+	// A list of names of cameras (viewports have the same names) which have an active ViewPort
+	private List<String> attachedViewPortNames = new ArrayList<String>(); // A list of names of cameras (viewports have the same names)
 	private Vector3f defaultPosition;
 	private Vector3f defaultDirection;
 
@@ -75,7 +78,6 @@ public class CameraMgr {
 	public void initCamerasFromConfig(LightsCameraConfig config, HumanoidRenderContext hrc) {
 		for (CameraConfig cc : config.myCCs) {
 			theLogger.info("Building Camera for config: " + cc);
-			boolean newFromRdf = false; // Used to trigger new viewport creation for new cameras loaded from RDF - probably not the way we want to handle this in long run
 			String cameraName = cc.cameraName;
 			// If the RDF camera name is camera_default (with any case), normalize name of this very special camera to "DEFAULT"
 			if (cameraName.toLowerCase().replaceFirst(LightsCameraConfigNames.partial_P_camera, "").equals("_" + LightsCameraConfigNames.suffix_DEFAULT)) {
@@ -86,7 +88,6 @@ public class CameraMgr {
 			}
 			Camera loadingCamera = getNamedCamera(cameraName); // First let's see if we can get a registered camera by this name
 			if (loadingCamera == null) {
-				newFromRdf = true; // Trigger new viewport creation for a new camera from RDF
 				loadingCamera = cloneCamera(getCommonCamera(CommonCameras.DEFAULT)); // otherwise we create a new one...
 				registerNamedCamera(cameraName, loadingCamera); // and register it
 			}
@@ -104,10 +105,10 @@ public class CameraMgr {
 					defaultDirection = new Vector3f(cameraDir[0], cameraDir[1], cameraDir[2]);
 				}
 			}
-			if (newFromRdf) {
+			if ((!attachedViewPortNames.contains(cameraName)) && (!CommonCameras.DEFAULT.name().equals(cameraName))) {
 				theLogger.info("Camera with config: " + cc + " is new from RDF, creating new viewport...");
-				RenderRegistryClient rrc = hrc.getRenderRegistryClient();
-				CoreFeatureAdapter.addViewPort(rrc, cameraName, loadingCamera);
+				addViewPort(cameraName, loadingCamera, hrc);
+				attachedViewPortNames.add(cameraName);
 			}
 		}
 	}
@@ -131,6 +132,45 @@ public class CameraMgr {
 		} else {
 			theLogger.warn("Attempting to add head camera, but HumanoidRenderContext has not been set!");
 		}
+	}
+	
+	// Moving this here from DeepSceneMgr. A judgement call, but it seeems invoking 3 additional facades
+	// (CoreFeatureAdapter, DeepSceneMgr, ViewPortFacade) is needlessly complex when really the RenderRegistryClient
+	// is all we need. We need RenderContext to get RenderRegistryClient, but we need it to get other facades anyway.
+	// ViewPort stuff is inherently camera stuff, so why not have it live here for less confusion?
+	public ViewPort addViewPort(String label, Camera c, HumanoidRenderContext hrc) {
+		ViewPort vp = hrc.getRenderRegistryClient().getJme3RenderManager(null).createPostView(label, c); // PostView or MainView?
+		vp.setClearFlags(true, true, true);
+		vp.setBackgroundColor(ColorRGBA.LightGray); // This is set for main window right now in WorkaroundFuncsMustDie.setupCameraLightAndViewport - yuck. May want a more consistent way to do this in long run.
+		vp.attachScene(hrc.getRenderRegistryClient().getJme3RootDeepNode(null));
+		return vp;
+	}
+	
+	
+	// Does not remove cameras from myCamerasByName, but removes additional viewports to "clear" RDF cameras
+	public void clearViewPorts(HumanoidRenderContext hrc) {
+		RenderManager rm = hrc.getRenderRegistryClient().getJme3RenderManager(null);
+		List<ViewPort> attachedViewPorts = rm.getPostViews();
+		theLogger.info("Clearing ViewPorts...");
+		Object[] viewPortArray = attachedViewPorts.toArray(); 
+		for (int i=0; i<viewPortArray.length; i++) {
+			ViewPort viewPort = (ViewPort)viewPortArray[i];
+			if (!CommonCameras.DEFAULT.name().equals(viewPort.getName())) {
+				theLogger.info("Removing ViewPort: " + viewPort.getName());
+				rm.removePostView(viewPort);
+			}
+		}
+		attachedViewPortNames.clear();
+		/* ...for some reason this method misses an instance
+		for (ViewPort viewPort: attachedViewPorts) {
+			theLogger.info("Checking ViewPort: " + viewPort.getName()); // TEST ONLY
+			if (!DEFAULT_VIEWPORT_NAME.equals(viewPort.getName())) {
+				theLogger.info("Removing ViewPort: " + viewPort.getName());
+				rm.removePostView(viewPort);
+			}
+		}
+		*/
+	
 	}
 
 	/*

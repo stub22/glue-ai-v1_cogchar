@@ -44,6 +44,21 @@ public class HumanoidRenderWorldMapper {
 		CinematicConfig cc = new CinematicConfig();
 		CinematicMgr.storeCinematicsFromConfig(cc, hrc);
 	}
+	
+	public void clearLights(HumanoidRenderContext hrc) {
+		RenderRegistryClient rendRegCli = hrc.getRenderRegistryClient();
+		LightFactory lf = rendRegCli.getOpticLightFacade(null);
+		lf.clearLights(hrc);
+	}
+	
+	public void clearCinematics(HumanoidRenderContext hrc) {
+		CinematicMgr.clearCinematics(hrc);
+	}
+	
+	public void clearViewPorts(HumanoidRenderContext hrc) {
+		CameraMgr cm = hrc.getRenderRegistryClient().getOpticCameraFacade(null);
+		cm.clearViewPorts(hrc);
+	}
 
 	/* No longer needed unless we want to init from Turtle again
 	public LightsCameraConfig readLightsCameraConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
