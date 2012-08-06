@@ -29,6 +29,8 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.animation.LoopMode;
+import com.jme3.app.state.AppState;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.cinematic.*;
 import com.jme3.cinematic.events.*;
 import com.jme3.scene.Node;
@@ -322,6 +324,25 @@ public class CinematicMgr extends BasicDebugger {
 			validAction = false;
 		}
 		return validAction;
+	}
+	
+	public static void clearCinematics(CogcharRenderContext crc) {
+		AppStateManager manager = crc.getRenderRegistryClient().getJme3AppStateManager(null);
+		AppState state;
+		int detachCounter = 0;
+		// Keeps getting AppStates of class Cinematic and detaching them until there are no more
+		do {
+			state = manager.getState(Cinematic.class);
+			if (state != null) {
+				manager.detach(state);
+				detachCounter++;
+			}
+		} while (state != null);
+		myCinematicsByName.clear();
+		myTracksByName.clear();
+		myWaypointsByName.clear();
+		myRotationsByName.clear();
+		staticLogger.info("Cinematics cleared. Number detached: " + detachCounter);
 	}
 
 	public enum ControlAction {

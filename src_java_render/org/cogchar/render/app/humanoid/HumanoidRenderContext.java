@@ -45,6 +45,8 @@ import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.core.RenderRegistryClient;
+import org.cogchar.blob.emit.QueryInterface;
+import org.cogchar.blob.emit.QuerySheet;
 
 
 /**
@@ -129,9 +131,23 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
 		FlyByCamera fbCam = stub.getFlyByCamera();
 		fbCam.setMoveSpeed(50);
+		initLightsCameraCinematics();
+	}
+	
+	private void initLightsCameraCinematics() {
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		myRenderMapper.initLightsAndCamera(this);
 		myRenderMapper.initCinematics(this);
+	}
+	
+	public void reloadWorldConfig() {
+		QueryInterface queryEmitter = QuerySheet.getInterface();
+		queryEmitter.reloadSheetRepo();
+		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
+		myRenderMapper.clearLights(this);
+		myRenderMapper.clearCinematics(this);
+		myRenderMapper.clearViewPorts(this);
+		initLightsCameraCinematics();
 	}
 
 	// This is still called by HumanoidPuppetActions to reset default camera position

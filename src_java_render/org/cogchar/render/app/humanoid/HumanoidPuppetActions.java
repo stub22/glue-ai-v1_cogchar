@@ -119,6 +119,16 @@ public class HumanoidPuppetActions extends BasicDebugger {
 		
 		/*** F10 is intercepted by Netbeans platform - do not use!!! **/
         
+		UPDATE_WORLD_CONFIG {
+			void act(HumanoidRenderContext ctx) {
+				ctx.reloadWorldConfig();
+            }
+            int getTriggerKey() { 
+                return KeyInput.KEY_F11;
+            }
+			@Override boolean includedInMinSim() { 	return true; }				
+        },
+		
 		UPDATE_BONY_CONFIG {
 			// uses default act() and boxy wiring
             int getTriggerKey() { 
