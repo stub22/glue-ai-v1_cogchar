@@ -54,11 +54,50 @@
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#contains -->
+
+    <rdf:Description rdf:about="&cca;contains">
+        <ace_lexicon:TV_sg>containses</ace_lexicon:TV_sg>
+        <ace_lexicon:TV_vbg>containsed</ace_lexicon:TV_vbg>
+        <ace_lexicon:TV_pl>contains</ace_lexicon:TV_pl>
+    </rdf:Description>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
     // Classes
     //
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
+    
+
+
+    <!-- http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#Point -->
+
+    <rdf:Description rdf:about="&cca;Point">
+        <ace_lexicon:CN_pl>Points</ace_lexicon:CN_pl>
+        <ace_lexicon:CN_sg>Point</ace_lexicon:CN_sg>
+    </rdf:Description>
+    
+
+
+    <!-- http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#RobotServoJoint -->
+
+    <rdf:Description rdf:about="&cca;RobotServoJoint">
+        <ace_lexicon:CN_sg>RobotServoJoint</ace_lexicon:CN_sg>
+        <ace_lexicon:CN_pl>RobotServoJoints</ace_lexicon:CN_pl>
+    </rdf:Description>
     
 
 
