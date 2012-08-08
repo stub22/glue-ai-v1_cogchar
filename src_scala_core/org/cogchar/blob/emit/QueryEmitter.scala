@@ -68,6 +68,19 @@ class QueryEmitter extends QueryInterface {
 	getQueryResultMap(queryUri, keyVarName, QuerySheet.repo)
   }
   
+  /** Queries the configuration spreadsheet (with query sheet URI currently set in code as final val QUERY_SHEET).
+   *  Updates the query specified by queryUri with the graph ident in qGraph
+   *
+   * @param queryUri The QName of the query which should be run, found on the query sheet currently set in code
+   * @param keyVarName The query variable name of resources by which the SolutionMap should be keyed
+   * @param qGraph The Ident of the graph to be used in query
+   * @return A SolutionMap of QuerySolutions with keys of the URIs of instances of keyVarName in solutions
+   */
+  def getQueryResultMap(queryUri:String, keyVarName:String, qGraph:Ident): SolutionMap[Ident] = {
+	val qText = getCompletedQueryFromTemplate(queryUri, QuerySheet.GRAPH_QUERY_VAR, qGraph)
+	getTextQueryResultMap(qText, keyVarName)
+  }
+  
   /** Queries the provided SheetRepo (with query sheet URI currently set in code as final val QUERY_SHEET).
    *
    * @param queryUri The QName of the query which should be run, found on the query sheet currently set in code
@@ -89,6 +102,18 @@ class QueryEmitter extends QueryInterface {
   def getTextQueryResultMap(qText:String, keyVarName:String): SolutionMap[Ident]={
 	ensureRepo
 	getTextQueryResultMap(qText, keyVarName, QuerySheet.repo)
+  }
+  
+  /** Queries the configuration spreadsheet with a provided query and specified qGraph
+   *
+   * @param qText The text of the query to be run
+   * @param keyVarName The query variable name of resources by which the SolutionMap should be keyed
+   * @param qGraph The Ident of the graph to be used in query
+   * @return A SolutionMap of QuerySolutions with keys of the URIs of instances of keyVarName in solutions
+   */
+  def getTextQueryResultMap(qText:String, keyVarName:String, qGraph:Ident): SolutionMap[Ident] = {
+	val query = setQueryVar(qText, QuerySheet.GRAPH_QUERY_VAR, qGraph)
+	getTextQueryResultMap(query, keyVarName)
   }
   
   /** Queries the provided SheetRepo with a provided query
@@ -127,6 +152,18 @@ class QueryEmitter extends QueryInterface {
 		}
 	  })
 	solutionMap
+  }
+  
+  /** Queries the configuration spreadsheet with a provided query and specified qGraph
+   *
+   * @param qText The text of the query to be run
+   * @param keyVarName The query variable name of resources by which the SolutionMap should be keyed
+   * @param qGraph The Ident of the graph to be used in query
+   * @return A SolutionMap of QuerySolutions with keys of the URIs of instances of keyVarName in solutions
+   */
+  def getTextQueryResultMapByStringKey(qText:String, keyVarName:String, qGraph:Ident): SolutionMap[String] = {
+	val query = setQueryVar(qText, QuerySheet.GRAPH_QUERY_VAR, qGraph)
+	getTextQueryResultMapByStringKey(query, keyVarName)
   }
   
   /** Queries the configuration spreadsheet with a provided query
@@ -169,6 +206,17 @@ class QueryEmitter extends QueryInterface {
   def getTextQueryResultList(qText:String): SolutionList={
 	ensureRepo
 	getTextQueryResultList(qText, QuerySheet.repo)
+  }
+  
+  /** Queries the configuration spreadsheet with a provided query and graph Ident
+   *
+   * @param qText The text of the query to be run
+   * @param qGraph The Ident of the graph to be used in query
+   * @return A SolutionList of QuerySolutions
+   */
+  def getTextQueryResultList(qText:String, qGraph:Ident): SolutionList = {
+	val query = setQueryVar(qText, QuerySheet.GRAPH_QUERY_VAR, qGraph)
+	getTextQueryResultList(query);
   }
   
   /** Queries the provided SheetRepo with a provided query
@@ -379,18 +427,17 @@ class QueryEmitter extends QueryInterface {
 object QuerySheet {
   
   final val QUERY_SHEET = "ccrt:qry_sheet_22"
+  final val GRAPH_QUERY_VAR = "qGraph"
   var repo: SheetRepo = null;
   var interface: QueryInterface = null;
   
   /** Provided solely for testing of queries
    *
    */
-  def main(args: Array[String]) : Unit = {
-
-	val QUERY_TO_TEST = "ccrt:template_general_items_99"
+  def testQuery(queryToTest: String) : Unit = {
 	
 	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
-	val qText = sr.getQueryText(QUERY_SHEET, QUERY_TO_TEST)
+	val qText = sr.getQueryText(QUERY_SHEET, queryToTest)
 	println("Found query text: " + qText)
 		
 	val parsedQ = sr.parseQueryText(qText);

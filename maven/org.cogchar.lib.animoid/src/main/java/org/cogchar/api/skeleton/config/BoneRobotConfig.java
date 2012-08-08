@@ -51,17 +51,18 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	}
 	
 	// A new constructor to build BoneRobotConfig from spreadsheet
-	public BoneRobotConfig(Ident bonyConfigIdent) {
-		SolutionMap solutionMap = queryEmitter.getQueryResultMap(BoneQueryNames.ROBOT_NAME_QUERY_URI, BoneQueryNames.ROBOT_URI_VAR_NAME);
+	public BoneRobotConfig(Ident bonyConfigIdent, Ident graphIdent) {
+		logInfo("Building BoneRobotConfig via queries for " + bonyConfigIdent.getLocalName() + " using graph " + graphIdent.getAbsUriString());
+		SolutionMap solutionMap = queryEmitter.getQueryResultMap(BoneQueryNames.ROBOT_NAME_QUERY_URI, BoneQueryNames.ROBOT_URI_VAR_NAME, graphIdent);
 		myRobotName = queryEmitter.getStringFromSolution(solutionMap, bonyConfigIdent, BoneQueryNames.ROBOT_NAME_VAR_NAME);
 		String queryString = queryEmitter.getCompletedQueryFromTemplate(BoneQueryNames.BONE_JOINT_CONFIG_QUERY_TEMPLATE_URI, BoneQueryNames.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
-		SolutionList solutionList = queryEmitter.getTextQueryResultList(queryString);
+		SolutionList solutionList = queryEmitter.getTextQueryResultList(queryString, graphIdent);
 		List<Ident> boneJointConfigIdents = queryEmitter.getIdentsFromSolutionAsJava(solutionList, BoneQueryNames.BONE_JOINT_CONFIG_INSTANCE_VAR_NAME);
 		queryString = queryEmitter.getQuery(BoneQueryNames.BASE_BONE_JOINT_PROPERTIES_QUERY_TEMPLATE_URI);
 		queryString = queryEmitter.setQueryVar(queryString, BoneQueryNames.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
-		solutionMap = queryEmitter.getTextQueryResultMap(queryString, BoneQueryNames.JOINT_URI_VAR_NAME);
+		solutionMap = queryEmitter.getTextQueryResultMap(queryString, BoneQueryNames.JOINT_URI_VAR_NAME, graphIdent);
 		for (Ident jointIdent: boneJointConfigIdents) {
-			myBJCs.add(new BoneJointConfig(jointIdent, solutionMap));
+			myBJCs.add(new BoneJointConfig(jointIdent, solutionMap, graphIdent));
 		}
 	}
 	

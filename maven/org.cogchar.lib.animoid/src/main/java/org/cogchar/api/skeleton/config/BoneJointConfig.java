@@ -57,7 +57,7 @@ public class BoneJointConfig {
 	}
 	
 	// This constructor is used to build BoneJointConfig from queries
-	public BoneJointConfig(Ident jointIdent, SolutionMap solutionMap) {
+	public BoneJointConfig(Ident jointIdent, SolutionMap solutionMap, Ident graphIdent) {
 		myURI_Fragment = jointIdent.getLocalName();
 		myJointNum = queryEmitter.getIntegerFromSolution(solutionMap, jointIdent, BoneQueryNames.JOINT_NUM_VAR_NAME);
 		myJointName = queryEmitter.getStringFromSolution(solutionMap, jointIdent, BoneQueryNames.JOINT_NAME_VAR_NAME);
@@ -65,7 +65,7 @@ public class BoneJointConfig {
 		// What about bc:invertForSymmetry?
 		String queryString = queryEmitter.getQuery(BoneQueryNames.BONEPROJECTION_QUERY_TEMPLATE_URI);
 		queryString = queryEmitter.setQueryVar(queryString, BoneQueryNames.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
-		solutionMap = queryEmitter.getTextQueryResultMapByStringKey(queryString, BoneQueryNames.BONE_NAME_VAR_NAME);
+		solutionMap = queryEmitter.getTextQueryResultMapByStringKey(queryString, BoneQueryNames.BONE_NAME_VAR_NAME, graphIdent);
 		Iterator rangeIterator = solutionMap.getJavaIterator();
 		while (rangeIterator.hasNext()) {
 			String boneName = (String)rangeIterator.next();
@@ -75,6 +75,7 @@ public class BoneJointConfig {
 			BoneRotationAxis rotationAxis = BoneRotationAxis.valueOf(rotationAxisName);
 			myProjectionRanges.add(new BoneProjectionRange(this, boneName, rotationAxis, Math.toRadians(minAngle), Math.toRadians(maxAngle)));
 		}
+		//System.out.println("Created new BoneJointConfig: " + this.toString()); // TEST ONLY
 	}
 	
 	public String toString() {

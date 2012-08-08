@@ -164,7 +164,7 @@ public class CameraMgr {
 		/* ...for some reason this method misses an instance
 		for (ViewPort viewPort: attachedViewPorts) {
 			theLogger.info("Checking ViewPort: " + viewPort.getName()); // TEST ONLY
-			if (!DEFAULT_VIEWPORT_NAME.equals(viewPort.getName())) {
+			if (!CommonCameras.DEFAULT.name().equals(viewPort.getName())) {
 				theLogger.info("Removing ViewPort: " + viewPort.getName());
 				rm.removePostView(viewPort);
 			}
