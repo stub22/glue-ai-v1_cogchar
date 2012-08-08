@@ -79,9 +79,9 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		if (queryEmitterId.equals(serviceId)) {
 			connectWebContent((QueryInterface)dependency);
     	} else if (theLiftAppInterfaceId.equals(serviceId)){
-        		LiftAmbassador.setAppInterface((LiftAmbassador.LiftAppInterface)dependency);
+        	LiftAmbassador.setAppInterface((LiftAmbassador.LiftAppInterface)dependency);
     	} else if (theLiftSceneInterfaceId.equals(serviceId)){
-        		LiftAmbassador.setSceneLauncher((LiftAmbassador.LiftSceneInterface)dependency);
+        	LiftAmbassador.setSceneLauncher((LiftAmbassador.LiftSceneInterface)dependency);
     	}
 	}
 

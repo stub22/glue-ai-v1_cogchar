@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package org.cogchar.lifter {
   package model {
 
@@ -51,7 +67,7 @@ package org.cogchar.lifter {
 	  // A list of possible control types
 	  object ControlType extends Enumeration { 
 		type ControlType = Value
-		val NULLTYPE, PUSHYBUTTON, TEXTINPUT, SELECTBOXES, RADIOBUTTONS, LISTBOX, VIDEOBOX, TOGGLEBUTTON, TEXTBOX = Value
+		val NULLTYPE, PUSHYBUTTON, TEXTINPUT, DUALTEXTINPUT, SELECTBOXES, RADIOBUTTONS, LISTBOX, VIDEOBOX, TOGGLEBUTTON, TEXTBOX = Value
 	  }
 	  import ControlType._
 	  
@@ -129,6 +145,14 @@ package org.cogchar.lifter {
 		  case ControlType.TEXTINPUT => {
 			  setControl(slotNum, TextForm.makeTextForm(text, slotNum))
 			}
+		  case ControlType.DUALTEXTINPUT => {
+			  // From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
+			  val textItems = List.fromArray(text.split(","))
+			  val label1 = textItems(0)
+			  val label2 = textItems(1)
+			  val submitLabel = textItems(2)
+			  setControl(slotNum, DualTextForm.makeForm(label1, label2, submitLabel, slotNum))
+		  }
 		  case ControlType.SELECTBOXES => {
 			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
 			  val textItems = List.fromArray(text.split(","))
