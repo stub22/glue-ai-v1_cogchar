@@ -16,8 +16,7 @@
 
 package org.cogchar.blob.emit
 
-import org.appdapter.core.item.Ident;
-import org.appdapter.core.item.FreeIdent;
+import org.appdapter.core.item.{Ident, FreeIdent}
 
 import org.cogchar.api.humanoid.{HumanoidFigureConfig, HumanoidBoneConfig, HumanoidBoneDesc};
 
@@ -43,20 +42,24 @@ case class NVParam(val name: String, val value: String) {
 }
 
 // I suspect this class may be refactored out of existence before too long - Ryan Biggs 27 July 2012
+// Continuing to try to refactor things out of here with the highest priority being getting rid of the hard coded data. RB 8 Aug 2012
 class BonyConfigEmitter extends DemoConfigEmitter {
 
 	val COGCHAR_URN_PREFIX = "urn:ftd:cogchar.org:2012:";
 	
 	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "runtime#";
 		
-	val HRK_URN_PREFIX = "urn:ftd:hrkind.com:2012:chars#";
-	val ZENO_R50_NICKNAME = "cajunZeno";
-	val	ZENO_R50_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + ZENO_R50_NICKNAME;
-	val	ZENO_R50_CHAR_IDENT = new FreeIdent(ZENO_R50_CHAR_URI, ZENO_R50_NICKNAME)
+	//val HRK_URN_PREFIX = "urn:ftd:hrkind.com:2012:chars#";
+	
+	// val HRK_TEMP_PREFIX = "http://www.hrkind.com/model#"
+	
+	//val ZENO_R50_NICKNAME = "char_cajunZeno_77";
+	//val	ZENO_R50_CHAR_URI = HRK_TEMP_PREFIX + ZENO_R50_NICKNAME;
+	//val	ZENO_R50_CHAR_IDENT = new FreeIdent(ZENO_R50_CHAR_URI, ZENO_R50_NICKNAME)
 
-	val AZR50_NICKNAME = "aZR50";
-	val	AZR50_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + AZR50_NICKNAME;
-	val	AZR50_CHAR_IDENT = new FreeIdent(AZR50_CHAR_URI, AZR50_NICKNAME)	
+	//val AZR50_NICKNAME = "aZR50";
+	//val	AZR50_CHAR_URI = HRK_TEMP_PREFIX + AZR50_NICKNAME;
+	//val	AZR50_CHAR_IDENT = new FreeIdent(AZR50_CHAR_URI, AZR50_NICKNAME)	
 	
 	
 	
@@ -140,7 +143,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		res2;
 	}
 	
-	private def buildBaseHumanoidFigureConfigForChar(charIdent : Ident) : HumanoidFigureConfig = {
+	private def buildBaseHumanoidFigureConfigForChar(charIdent:Ident, bonyGraphIdent:Ident) : HumanoidFigureConfig = {
 		val hfc = new HumanoidFigureConfig();
 		hfc.myCharIdent = charIdent;
 		hfc.myNickname = HumanoidConfigEmitter.getRobotId(charIdent);
@@ -152,20 +155,20 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		hfc.myInitY = initialPosition(1);
 		hfc.myInitZ = initialPosition(2);
 		hfc.myPhysicsFlag = HumanoidConfigEmitter.getPhysicsFlag(charIdent);
-		addBoneDescsFromBoneRobotConfig(charIdent, hfc);
+		addBoneDescsFromBoneRobotConfig(charIdent, bonyGraphIdent, hfc);
 		hfc
 	}
 	private def getSinbadFigureConfig()  : HumanoidFigureConfig = {
-		val hfc = buildBaseHumanoidFigureConfigForChar(SINBAD_CHAR_IDENT);
+		val hfc = buildBaseHumanoidFigureConfigForChar(SINBAD_CHAR_IDENT, new FreeIdent("","")); // Blank FreeIdent is a total band-aid to keep any bonedescs from loading from query config - need to clean this up soon!!!!
 		hfc.myBoneConfig.addSinbadDefaultBoneDescs();
 		hfc
 	}
 
-	def getHumanoidFigureConfigForChar(charIdent : Ident) : HumanoidFigureConfig = {
+	def getHumanoidFigureConfigForChar(charIdent: Ident, bonyGraphIdent:Ident) : HumanoidFigureConfig = {
 		if (charIdent.equals(SINBAD_CHAR_IDENT)) {
 			getSinbadFigureConfig()		
 		} else {
-			buildBaseHumanoidFigureConfigForChar(charIdent);
+			buildBaseHumanoidFigureConfigForChar(charIdent, bonyGraphIdent);
 		}
 	}
 
@@ -213,15 +216,15 @@ class BonyConfigEmitter extends DemoConfigEmitter {
   final val BONE_NAMES_QUERY_TEMPLATE_URI = "ccrt:template_boneNames_99";
   final val ROBOT_IDENT_QUERY_VAR = "robotUri";
   final val BONE_NAME_VAR_NAME = "boneName";
-  def addBoneDescsFromBoneRobotConfig(charIdent:Ident, hfc:HumanoidFigureConfig) {
-		val queryEmitter = QuerySheet.getInterface
-		var queryString = queryEmitter.getQuery(BONE_NAMES_QUERY_TEMPLATE_URI);
-		queryString = queryEmitter.setQueryVar(queryString, ROBOT_IDENT_QUERY_VAR, charIdent);
-		val solutionList = queryEmitter.getTextQueryResultList(queryString);
-		val boneNames = queryEmitter.getStringsFromSolution(solutionList, BONE_NAME_VAR_NAME);
-		boneNames.foreach(boneName => {
-			hfc.myBoneConfig.addBoneDesc(boneName);
-		})
-	}
-
+  def addBoneDescsFromBoneRobotConfig(charIdent:Ident, graphIdent:Ident, hfc:HumanoidFigureConfig) {
+	val queryEmitter = QuerySheet.getInterface
+	var queryString = queryEmitter.getQuery(BONE_NAMES_QUERY_TEMPLATE_URI);
+	queryString = queryEmitter.setQueryVar(queryString, ROBOT_IDENT_QUERY_VAR, charIdent);
+	val solutionList = queryEmitter.getTextQueryResultList(queryString, graphIdent);
+	val boneNames = queryEmitter.getStringsFromSolution(solutionList, BONE_NAME_VAR_NAME);
+	boneNames.foreach(boneName => {
+		hfc.myBoneConfig.addBoneDesc(boneName);
+	  })
+  }
+  
 }

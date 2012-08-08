@@ -23,14 +23,12 @@ import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
-import com.jme3.math.Vector3f;
-import java.lang.String;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.app.bony.BonyRenderContext;
-import org.cogchar.api.humanoid.HumanoidBoneConfig;
 import org.cogchar.api.humanoid.HumanoidFigureConfig;
 import org.cogchar.render.model.humanoid.HumanoidFigureModule;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
@@ -86,11 +84,11 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		initHelpScreen(someSettings, inputManager);
 	}
 
-	public HumanoidFigure getHumanoidFigure(Ident charIdent) {
+	public HumanoidFigure getHumanoidFigure(Ident charIdent, Ident bonyConfigGraph) {
 		HumanoidFigure hf = myFiguresByCharIdent.get(charIdent);
 		if (hf == null) {
 			BonyConfigEmitter bce = getBonyConfigEmitter();
-			HumanoidFigureConfig hfc = bce.getHumanoidFigureConfigForChar(charIdent); 
+			HumanoidFigureConfig hfc = bce.getHumanoidFigureConfigForChar(charIdent, bonyConfigGraph); 
 			if (hfc.isComplete()) {
 				hf = new HumanoidFigure(hfc);
 				myFiguresByCharIdent.put(charIdent, hf);
@@ -99,9 +97,16 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		return hf;
 	}
 
+	// A few places want to just get the HumanoidFigure and aren't interested in possibly creating it
+	// Those features don't want to have to worry about the graph idents, which are just for loading config
+	// (CoreFeatureAdapter.attachToHumanoidBone, HumanoidPuppetActions.getSinbad)
+	// I don't like overloading this method, but probably only a temporary fix
+	public HumanoidFigure getHumanoidFigure(Ident charIdent) {
+		return myFiguresByCharIdent.get(charIdent);
+	}
 
-	public HumanoidFigure setupHumanoidFigure(Ident charIdent) {
-		HumanoidFigure figure = getHumanoidFigure(charIdent);
+	public HumanoidFigure setupHumanoidFigure(Ident charIdent, Ident bonyConfigGraph) {
+		HumanoidFigure figure = getHumanoidFigure(charIdent, bonyConfigGraph);
 		AssetManager amgr = findJme3AssetManager(null);
 		Node rootNode = findJme3RootDeepNode(null);
 		PhysicsSpace ps = getPhysicsSpace();
@@ -109,21 +114,6 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		HumanoidFigureModule hfm = new HumanoidFigureModule(figure, this);
 		attachModule(hfm);
 		return figure;
-	}
-
-	public void initHumanoidStuff() {
-		BonyConfigEmitter bce = getBonyConfigEmitter();
-		try {
-			if (!bce.isMinimalSim()) {
-				setupHumanoidFigure(bce.SINBAD_CHAR_IDENT());
-			}
-			if (bce.isZenoHome()) {
-				setupHumanoidFigure (bce.ZENO_R50_CHAR_IDENT());
-				setupHumanoidFigure (bce.AZR50_CHAR_IDENT());
-			}
-		} catch (Throwable t) {
-			logError("Problem in initHumanoidStuff(), eating exception to allow init to continue", t);
-		}
 	}
 	
 	public void initCinema() {

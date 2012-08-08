@@ -25,6 +25,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.blob.emit.HumanoidConfigEmitter;
+import org.cogchar.blob.emit.GlobalConfigEmitter;
 
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 
@@ -56,6 +57,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	private SpeechOutputClient mySOC;
 	private Ident myCharIdent;
 	private String myNickName;
+	private PumaAppContext myPumaAppContext; // Needed to get graph information from PAC for config updates
 	private PumaHumanoidMapper myHumoidMapper;
 	private PumaWebMapper myWebMapper;
 	private ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
@@ -65,26 +67,34 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	
 	final static String SHEET_RESOURCE_MARKER = "//SHEET"; // As an RdfPath, indicates that config should be loaded from spreadsheet instead
 
-	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, Ident charIdent, String nickName) {
+	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, PumaAppContext pac, Ident charIdent, String nickName) {
 		myCharIdent = charIdent;
 		myNickName = nickName;
+		myPumaAppContext = pac;
 		myHumoidMapper = new PumaHumanoidMapper(hrc, bundleCtx, charIdent);
 		myTheater = new Theater();
 		myWebMapper = new PumaWebMapper();
 	}
 
-	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx) throws Throwable {
+	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph) throws Throwable {
 		myBundleCtx = bundleCtx;
+		// bonyConfig path is going away as we move to query-based config
+		// Looks like Turtle BoneRobotConfig is going away for good, in which case this block can be deleted
+		/*
 		String bonyConfigPathPerm = HumanoidConfigEmitter.getBonyConfigPath(myCharIdent);
 		myUpdateBonyRdfPath = bonyConfigPathPerm; // Currently update and perm path are set the same for TriggerItems.UpdateBonyConfig
+		
 		BoneRobotConfig boneRobotConf;
 		if (bonyConfigPathPerm.equals(SHEET_RESOURCE_MARKER)) {
 			boneRobotConf = new BoneRobotConfig(myCharIdent); 
 		} else {
 			boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		}
+		*/ 
+		BoneRobotConfig boneRobotConf = new BoneRobotConfig(myCharIdent, qGraph); 
 		bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
-		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf);
+		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
+		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf, qGraph);
 
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myHumoidMapper.connectToVirtualChar();
@@ -208,30 +218,29 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		}
 	}
 
-	public void updateBonyConfig(String rdfConfigFlexPath, ClassLoader optRdfResourceCL) {
-		if (rdfConfigFlexPath.equals(SHEET_RESOURCE_MARKER)) {
+	public void updateBonyConfig() {
+		BoneRobotConfig.reloadResource(); // Oops, this now called once for each robot, inefficient!!!
+		myPumaAppContext.updateGlobalConfig(); // Oops, this now called once for each robot, inefficient!!!
+		Ident graphIdent;
+		try {
+			graphIdent = myPumaAppContext.getGlobalConfig().ergMap().get(myCharIdent).get(PumaModeConstants.BONY_CONFIG_ROLE);
 			try {
-				BoneRobotConfig.reloadResource();
-				myHumoidMapper.updateModelRobotUsingBoneRobotConfig(new BoneRobotConfig(myCharIdent));
+				myHumoidMapper.updateModelRobotUsingBoneRobotConfig(new BoneRobotConfig(myCharIdent, graphIdent));
 			} catch (Throwable t) {
 				logError("problem updating bony config from queries for " + myCharIdent, t);
 			}
-		} else {
-			try {
-				BoneRobotConfig.Builder.clearCache();
-				BoneRobotConfig brc = readBoneRobotConfig(rdfConfigFlexPath, optRdfResourceCL);
-				myHumoidMapper.updateModelRobotUsingBoneRobotConfig(brc);
-			} catch (Throwable t) {
-				logError("problem updating bony config from flex-path[" + rdfConfigFlexPath + "]", t);
-			}
+		} catch (Exception e) {
+			logWarning("Could not get a valid graph on which to query for config update of " + myCharIdent.getLocalName());
 		}
 	}
 
+	/* On the way out as we move away from Turtle config
 	public BoneRobotConfig readBoneRobotConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
 		return AssemblerUtils.readOneConfigObjFromPath(BoneRobotConfig.class, rdfConfigFlexPath, optResourceClassLoader);
 
 	}
-
+	*/
+	
 	@Override
 	public String toString() {
 		return "PumaDualChar[uri=" + myCharIdent + ", nickName=" + myNickName + "]";

@@ -19,11 +19,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.appdapter.core.item.FreeIdent;
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.app.buddy.busker.TriggerItem;
 import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
+import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.blob.emit.HumanoidConfigEmitter;
 import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.render.app.core.CogcharRenderContext;
@@ -41,6 +43,8 @@ public class PumaAppContext extends BasicDebugger {
 	private BundleContext myBundleContext;
 	private HumanoidRenderContext myHRC;
 	private TriggerItems.UpdateBonyConfig myUpdateBonyConfigTI;
+	// Here's a GlobalConfigEmitter for our PUMA instance. Does it really belong here? Time will tell.
+	private GlobalConfigEmitter myGlobalConfig;
 
 	public PumaAppContext(BundleContext bc) {
 		myBundleContext = bc;
@@ -48,6 +52,22 @@ public class PumaAppContext extends BasicDebugger {
 
 	public HumanoidRenderContext getHumanoidRenderContext() {
 		return myHRC;
+	}
+	
+	public void setGlobalConfig(GlobalConfigEmitter config) {
+		myGlobalConfig = config;
+	}
+	
+	public GlobalConfigEmitter getGlobalConfig() {
+		return myGlobalConfig;
+	}
+	
+	public void updateGlobalConfig() {
+		// Now this is a little irregular. We're creating this initally in PumaBooter, but also the same 
+		// (temporarily fixed) mode is reloaded here when we want to updateGlobalConfig. So far, that's mainly for our 
+		// current "primative" bony config reload. This all is a bit goofy and should be quite temporary; once we really 
+		// figure out how best to handle changes to this "GlobalMode" stuff this should become less hodge-podge
+		myGlobalConfig = new GlobalConfigEmitter(new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode));
 	}
 
 	/**
@@ -69,15 +89,8 @@ public class PumaAppContext extends BasicDebugger {
 	 */
 	public List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
 		List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
-		final HumanoidRenderContext hrc = getHumanoidRenderContext();
 
-		hrc.runTaskOnJmeThreadAndWait(new CogcharRenderContext.Task() {
-			public void perform() throws Throwable {
-				hrc.initHumanoidStuff();
-			}
-		});
-
-		Set<Ident> charIdents = HumanoidConfigEmitter.getRobotIdents();
+		Set<Ident> charIdents = HumanoidConfigEmitter.getRobotIdents(); // Soon needs to pop out of myGlobalConfig instead
 		
 		for (Ident charIdent : charIdents) {
 			logInfo("^^^^^^^^^^^^^^^^^^^^^^^^^ Connecting dualRobotChar for charIdent: " + charIdent);
@@ -85,10 +98,8 @@ public class PumaAppContext extends BasicDebugger {
 			pdcList.add(pdc);
 		}
 		
-		// hrc.initHumanoidStuff(); can also be here if needed
-		
 		for (PumaDualCharacter pdc: pdcList) {
-			if (!pdc.getNickName().equals("rk-sinbad")) {
+			if (!pdc.getNickName().equals("rk-sinbad")) { // TODO: Need to un-hardcode this sinbad ASAP, just need to check into best way
 				setupCharacterBindingToRobokind(pdc);
 				setupAndStartBehaviorTheater(pdc);
 			}
@@ -106,15 +117,24 @@ public class PumaAppContext extends BasicDebugger {
 		pdc.startTheater();
 		
 	}
-	public void setupCharacterBindingToRobokind(PumaDualCharacter pdc)  {
-		try {
-			pdc.connectBonyCharToRobokindSvcs(myBundleContext);
-			setupRobokindJointGroup(pdc);
-			pdc.connectSpeechOutputSvcs(myBundleContext);
-		} catch (Throwable t) {
-			logWarning("Problems in Robokind binding init", t);
+	public void setupCharacterBindingToRobokind(PumaDualCharacter pdc) {
+		if (myGlobalConfig == null) {
+			logWarning("GlobalConfigEmitter not available, cannot setup character binding to Robokind!");
+		} else {
+			Ident graphIdent;
+			try {
+				graphIdent = myGlobalConfig.ergMap().get(pdc.getCharIdent()).get(PumaModeConstants.BONY_CONFIG_ROLE);
+				try {
+					pdc.connectBonyCharToRobokindSvcs(myBundleContext, graphIdent);
+					setupRobokindJointGroup(pdc);
+					pdc.connectSpeechOutputSvcs(myBundleContext);
+				} catch (Throwable t) {
+					logWarning("Problems in Robokind binding init", t);
+				}
+			} catch (Exception e) {
+				logWarning("Could not get a valid graph on which to query for config of " + pdc.getCharIdent().getLocalName());
+			}
 		}
-
 	}
 	public void setupRobokindJointGroup(PumaDualCharacter pdc) throws Throwable {		
 		Ident chrIdent = pdc.getCharIdent();
@@ -136,7 +156,7 @@ public class PumaAppContext extends BasicDebugger {
 			throw new Exception("HumanoidRenderContext is null");
 		}
 		String nickName = HumanoidConfigEmitter.getRobotId(bonyCharIdent);
-		PumaDualCharacter pdc = new PumaDualCharacter(hrc, myBundleContext, bonyCharIdent, nickName);
+		PumaDualCharacter pdc = new PumaDualCharacter(hrc, myBundleContext, this, bonyCharIdent, nickName);
 
 		return pdc;
 	}

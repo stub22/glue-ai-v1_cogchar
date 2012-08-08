@@ -23,12 +23,13 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
+import org.slf4j.Logger;
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.DemoConfigEmitter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.opengl.optic.CameraMgr;
-import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.sys.core.RenderRegistryClient;
 import org.cogchar.render.sys.physics.DemoVectorFactory;
 
@@ -38,6 +39,7 @@ import org.cogchar.render.sys.physics.DemoVectorFactory;
 public class CoreFeatureAdapter extends BasicDebugger {
 
 	private ConfiguredPhysicalModularRenderContext myCPMRC;
+	private static Logger logger = getLoggerForClass(CoreFeatureAdapter.class);
 
 	protected CoreFeatureAdapter(ConfiguredPhysicalModularRenderContext cpmrc) {
 	}
@@ -62,17 +64,22 @@ public class CoreFeatureAdapter extends BasicDebugger {
 	}
 
 	// Mainly for attaching cameras to parts of robot, but potentially somewhat general purpose so I'll leave it here
-	static public void attachToHumanoidBone(final HumanoidRenderContext hrc, final Node toAttach, final Ident robotIdent, final String boneName) {
-		hrc.enqueueCallable(new Callable<Void>() {
+	static public void attachToHumanoidBone(HumanoidRenderContext hrc, final Node toAttach, Ident robotIdent, final String boneName) {
+		final HumanoidFigure robot = hrc.getHumanoidFigure(robotIdent);
+		if (robot == null) {
+			logger.warn("Trying to attach node to humanoid bone, but robot " + robotIdent.getLocalName() + " not found");
+		} else {
+			hrc.enqueueCallable(new Callable<Void>() {
 
-			@Override
-			public Void call() throws Exception {
-				// getBoneAttachmentsNode attaches things to the rootNode, so this next line must be enqueued for the main render thread. Convenient!
-				Node attachToBone = hrc.getHumanoidFigure(robotIdent).getBoneAttachmentsNode(boneName);
-				attachToBone.attachChild(toAttach);
-				return null;
-			}
-		});
+				@Override
+				public Void call() throws Exception {
+					// getBoneAttachmentsNode attaches things to the rootNode, so this next line must be enqueued for the main render thread. Convenient!
+					Node attachToBone = robot.getBoneAttachmentsNode(boneName);
+					attachToBone.attachChild(toAttach);
+					return null;
+				}
+			});
+		}
 	}
 
 	static public void initGuiFont(CogcharRenderContext crc, String fontPath) {

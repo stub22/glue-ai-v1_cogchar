@@ -65,10 +65,14 @@ public class TriggerItems {
 
 		@Override public void fire(DummyBox targetBox) {
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
-			String bonyRdfConfigPath = pdc.myUpdateBonyRdfPath;
-			logInfo("Updating bony config using path[" + bonyRdfConfigPath + "] for char [" + pdc + "]");
-			if ((pdc != null) && (bonyRdfConfigPath != null)) {
-				pdc.updateBonyConfig(bonyRdfConfigPath, myOptResourceClassLoader);
+			// Use of bonyConfigPaths seems to be going away in the brave new query-config era
+			//String bonyRdfConfigPath = pdc.myUpdateBonyRdfPath;
+			//logInfo("Updating bony config using path[" + bonyRdfConfigPath + "] for char [" + pdc + "]");
+			logInfo("Updating bony config for char [" + pdc + "]");
+			//if ((pdc != null) && (bonyRdfConfigPath != null)) {
+				//pdc.updateBonyConfig(bonyRdfConfigPath, myOptResourceClassLoader);
+			if (pdc != null)  {
+				pdc.updateBonyConfig();
 			}
 		}
 	}
