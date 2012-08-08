@@ -17,6 +17,7 @@ package org.cogchar.bundle.app.puma;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.appdapter.core.item.FreeIdent;
 import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
 
@@ -26,11 +27,13 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
+import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.blob.emit.QueryEmitter;
 import org.cogchar.blob.emit.QueryInterface;
 
 
 import  org.appdapter.core.store.Repo;
+import org.osgi.framework.Bundle;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
@@ -40,6 +43,9 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
  */
 
 public class PumaBooter extends BasicDebugger {
+	
+	
+	
 	public enum BootStatus {
 		BOOTING,
 		BOOTED_OK,
@@ -128,6 +134,11 @@ public class PumaBooter extends BasicDebugger {
 			setupConfigEmitters(hrc, mediator);
 			startQueryService(bundleCtx);
 			
+			// This method performs the configuration actions associated with the developmental "Global Mode" concept
+			// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
+			// be updated to relect that
+			applyGlobalMode(pac);
+			
 			boolean allowJFrames = mediator.getFlagAllowJFrames();
 /*  
 Start up the JME OpenGL canvas, which will in turn initialize the Cogchar rendering "App" (in JME3 lingo).
@@ -207,5 +218,18 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 		Repo r = null;
 		
 		return r;
+	}
+	
+	private void applyGlobalMode(PumaAppContext prc) {
+		GlobalConfigEmitter gce = new GlobalConfigEmitter(
+				new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode));
+		
+		// Great, now we have a GlobalConfigEmitter! Now, what do we do with it?
+		// GlobalConfigEmitter is in o.c.lib.core (for now) since it seems a "bottom level" function.
+		// But for now, perhaps we can assume that the uses of the information in global config will occur at the
+		// top, PUMA layer. So let's store this in our PumaAppContext.
+		// This may change as we work through this GlobalMode stuff. gce could be stored "deeper", or maybe 
+		// GlobalConfigEmitter (or similar) will move "updwards" to PUMA.
+		prc.setGlobalConfig(gce);
 	}
 }
