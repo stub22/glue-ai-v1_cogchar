@@ -22,11 +22,11 @@ import java.util.Set;
 import org.appdapter.core.item.FreeIdent;
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.app.buddy.busker.TriggerItem;
 import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.cogchar.blob.emit.HumanoidConfigEmitter;
 import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
@@ -89,22 +89,40 @@ public class PumaAppContext extends BasicDebugger {
 	 */
 	public List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
 		List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
-
-		Set<Ident> charIdents = HumanoidConfigEmitter.getRobotIdents(); // Soon needs to pop out of myGlobalConfig instead
-		
-		for (Ident charIdent : charIdents) {
-			logInfo("^^^^^^^^^^^^^^^^^^^^^^^^^ Connecting dualRobotChar for charIdent: " + charIdent);
-			PumaDualCharacter pdc = connectDualRobotChar(charIdent);
-			pdcList.add(pdc);
+		List<Ident> charIdents = new ArrayList<Ident>(); // A blank list, so if the try fails below, the for loop won't throw an Exception
+		try {
+			List<Ident> identsFromConfig = myGlobalConfig.entityMap().get(PumaModeConstants.CHAR_ENTITY_TYPE);
+			if (identsFromConfig != null) {
+				charIdents = identsFromConfig;
+			} else {
+				logWarning("Did not find character entity list in global config map");
+				throw new Throwable();
+			}
+		} catch (Throwable t) {
+			logWarning("Could not retrieve list of characters from global configuration");
 		}
 		
-		for (PumaDualCharacter pdc: pdcList) {
-			if (!pdc.getNickName().equals("rk-sinbad")) { // TODO: Need to un-hardcode this sinbad ASAP, just need to check into best way
-				setupCharacterBindingToRobokind(pdc);
+		if (myGlobalConfig == null) {
+			logWarning("GlobalConfigEmitter not available, cannot setup characters!");
+		} else {
+			for (Ident charIdent : charIdents) {
+				logInfo("^^^^^^^^^^^^^^^^^^^^^^^^^ Connecting dualRobotChar for charIdent: " + charIdent);
+				Ident graphIdentForBony;
+				Ident graphIdentForHumanoid;
+				try {
+					graphIdentForBony = myGlobalConfig.ergMap().get(charIdent).get(PumaModeConstants.BONY_CONFIG_ROLE);
+					graphIdentForHumanoid = myGlobalConfig.ergMap().get(charIdent).get(PumaModeConstants.HUMANOID_CONFIG_ROLE);
+				} catch (Exception e) {
+					logWarning("Could not get valid graphs on which to query for config of " + charIdent.getLocalName());
+					break;
+				}
+				HumanoidConfig myHumanoidConfig = new HumanoidConfig(charIdent, graphIdentForHumanoid);
+				PumaDualCharacter pdc = connectDualRobotChar(charIdent, myHumanoidConfig.nickname);
+				pdcList.add(pdc);
+				setupCharacterBindingToRobokind(pdc, graphIdentForBony, myHumanoidConfig);
 				setupAndStartBehaviorTheater(pdc);
 			}
 		}
-		
 		return pdcList;
 	}
 	
@@ -117,29 +135,20 @@ public class PumaAppContext extends BasicDebugger {
 		pdc.startTheater();
 		
 	}
-	public void setupCharacterBindingToRobokind(PumaDualCharacter pdc) {
-		if (myGlobalConfig == null) {
-			logWarning("GlobalConfigEmitter not available, cannot setup character binding to Robokind!");
-		} else {
-			Ident graphIdent;
-			try {
-				graphIdent = myGlobalConfig.ergMap().get(pdc.getCharIdent()).get(PumaModeConstants.BONY_CONFIG_ROLE);
-				try {
-					pdc.connectBonyCharToRobokindSvcs(myBundleContext, graphIdent);
-					setupRobokindJointGroup(pdc);
-					pdc.connectSpeechOutputSvcs(myBundleContext);
-				} catch (Throwable t) {
-					logWarning("Problems in Robokind binding init", t);
-				}
-			} catch (Exception e) {
-				logWarning("Could not get a valid graph on which to query for config of " + pdc.getCharIdent().getLocalName());
-			}
+	
+	public void setupCharacterBindingToRobokind(PumaDualCharacter pdc, Ident graphIdentForBony, HumanoidConfig hc) {
+
+		try {
+			pdc.connectBonyCharToRobokindSvcs(myBundleContext, graphIdentForBony, hc);
+			setupRobokindJointGroup(pdc, hc.jointConfigPath);
+			pdc.connectSpeechOutputSvcs(myBundleContext);
+		} catch (Throwable t) {
+			logWarning("Problems in Robokind binding init", t);
 		}
 	}
-	public void setupRobokindJointGroup(PumaDualCharacter pdc) throws Throwable {		
-		Ident chrIdent = pdc.getCharIdent();
-		String jgFullPath = HumanoidConfigEmitter.getJointConfigPath(chrIdent);
-
+	
+	public void setupRobokindJointGroup(PumaDualCharacter pdc, String jgFullPath) throws Throwable {		
+		//Ident chrIdent = pdc.getCharIdent();
 		File jgConfigFile = new File(jgFullPath);
 		if (jgConfigFile.canRead()) {
 			PumaHumanoidMapper phm = pdc.getHumanoidMapper();
@@ -148,14 +157,13 @@ public class PumaAppContext extends BasicDebugger {
 		}
 	}
 	
-	public PumaDualCharacter connectDualRobotChar(Ident bonyCharIdent)
+	public PumaDualCharacter connectDualRobotChar(Ident bonyCharIdent, String nickName)
 			throws Throwable {
 
 		HumanoidRenderContext hrc = getHumanoidRenderContext();
 		if (hrc == null) {
 			throw new Exception("HumanoidRenderContext is null");
 		}
-		String nickName = HumanoidConfigEmitter.getRobotId(bonyCharIdent);
 		PumaDualCharacter pdc = new PumaDualCharacter(hrc, myBundleContext, this, bonyCharIdent, nickName);
 
 		return pdc;

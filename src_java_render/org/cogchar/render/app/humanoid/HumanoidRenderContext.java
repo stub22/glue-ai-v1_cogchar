@@ -29,6 +29,7 @@ import java.util.Map;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.app.bony.BonyRenderContext;
+import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.api.humanoid.HumanoidFigureConfig;
 import org.cogchar.render.model.humanoid.HumanoidFigureModule;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
@@ -45,6 +46,7 @@ import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.core.RenderRegistryClient;
 import org.cogchar.blob.emit.QueryInterface;
 import org.cogchar.blob.emit.QuerySheet;
+import org.cogchar.render.app.core.CogcharRenderContext;
 
 
 /**
@@ -84,11 +86,11 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		initHelpScreen(someSettings, inputManager);
 	}
 
-	public HumanoidFigure getHumanoidFigure(Ident charIdent, Ident bonyConfigGraph) {
+	public HumanoidFigure getHumanoidFigure(Ident charIdent, HumanoidConfig hc, Ident bonyConfigGraph) {
 		HumanoidFigure hf = myFiguresByCharIdent.get(charIdent);
 		if (hf == null) {
-			BonyConfigEmitter bce = getBonyConfigEmitter();
-			HumanoidFigureConfig hfc = bce.getHumanoidFigureConfigForChar(charIdent, bonyConfigGraph); 
+			//BonyConfigEmitter bce = getBonyConfigEmitter();
+			HumanoidFigureConfig hfc = new HumanoidFigureConfig(hc, getConfigEmiiter(), bonyConfigGraph); 
 			if (hfc.isComplete()) {
 				hf = new HumanoidFigure(hfc);
 				myFiguresByCharIdent.put(charIdent, hf);
@@ -105,14 +107,23 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		return myFiguresByCharIdent.get(charIdent);
 	}
 
-	public HumanoidFigure setupHumanoidFigure(Ident charIdent, Ident bonyConfigGraph) {
-		HumanoidFigure figure = getHumanoidFigure(charIdent, bonyConfigGraph);
-		AssetManager amgr = findJme3AssetManager(null);
-		Node rootNode = findJme3RootDeepNode(null);
-		PhysicsSpace ps = getPhysicsSpace();
-		figure.initStuff(amgr, rootNode, ps);
-		HumanoidFigureModule hfm = new HumanoidFigureModule(figure, this);
-		attachModule(hfm);
+	// Now does more, but does less on jME thread!
+	public HumanoidFigure setupHumanoidFigure(Ident charIdent, Ident bonyConfigGraph, HumanoidConfig hc) throws Throwable {
+		final HumanoidFigure figure = getHumanoidFigure(charIdent, hc, bonyConfigGraph);
+		final AssetManager amgr = findJme3AssetManager(null);
+		final Node rootNode = findJme3RootDeepNode(null);
+		final PhysicsSpace ps = getPhysicsSpace();
+		runTaskOnJmeThreadAndWait(new CogcharRenderContext.Task() {
+			public void perform() throws Throwable {
+				figure.initStuff(amgr, rootNode, ps);
+			}
+		});
+		final HumanoidFigureModule hfm = new HumanoidFigureModule(figure, this);
+		runTaskOnJmeThreadAndWait(new CogcharRenderContext.Task() {
+			public void perform() throws Throwable {
+				attachModule(hfm);
+			}
+		});
 		return figure;
 	}
 	

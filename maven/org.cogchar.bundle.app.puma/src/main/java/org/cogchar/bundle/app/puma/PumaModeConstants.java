@@ -34,5 +34,8 @@ public class PumaModeConstants {
 	
 	public static final String rkrt = "urn:ftd:robokind.org:2012:runtime#";
 	
+	public static final String CHAR_ENTITY_TYPE = "CharEntity";
+	
 	public static final Ident BONY_CONFIG_ROLE = new FreeIdent(rkrt + "bonyAvatarConf", "bonyAvatarConf");
+	public static final Ident HUMANOID_CONFIG_ROLE = new FreeIdent(rkrt + "humanoidConf", "humanoidConf");
 }
