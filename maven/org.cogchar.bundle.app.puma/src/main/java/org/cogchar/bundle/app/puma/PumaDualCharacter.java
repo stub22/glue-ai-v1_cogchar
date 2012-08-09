@@ -24,14 +24,12 @@ import org.appdapter.core.log.BasicDebugger;
 
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
-import org.cogchar.blob.emit.HumanoidConfigEmitter;
-import org.cogchar.blob.emit.GlobalConfigEmitter;
 
+import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 
-import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.SceneActions;
 
@@ -64,8 +62,6 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	public String myUpdateBonyRdfPath;
 	public Theater myTheater;
 	private BundleContext myBundleCtx; // Set at connectBonyCharToRobokindSvcs so it can be passed around to start dependencies needed for managed services
-	
-	final static String SHEET_RESOURCE_MARKER = "//SHEET"; // As an RdfPath, indicates that config should be loaded from spreadsheet instead
 
 	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, PumaAppContext pac, Ident charIdent, String nickName) {
 		myCharIdent = charIdent;
@@ -76,7 +72,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myWebMapper = new PumaWebMapper();
 	}
 
-	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph) throws Throwable {
+	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, HumanoidConfig hc) throws Throwable {
 		myBundleCtx = bundleCtx;
 		// bonyConfig path is going away as we move to query-based config
 		// Looks like Turtle BoneRobotConfig is going away for good, in which case this block can be deleted
@@ -94,7 +90,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		BoneRobotConfig boneRobotConf = new BoneRobotConfig(myCharIdent, qGraph); 
 		bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
-		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf, qGraph);
+		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf, qGraph, hc);
 
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myHumoidMapper.connectToVirtualChar();

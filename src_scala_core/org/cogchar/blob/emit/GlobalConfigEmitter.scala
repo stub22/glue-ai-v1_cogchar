@@ -16,15 +16,20 @@
 
 package org.cogchar.blob.emit
 
-import org.appdapter.core.item.Ident
+import org.appdapter.core.item.{FreeIdent, Ident}
 
 object GlobalConfigEmitter {
   // Constants for query config - this could live elsewhere but may make sense here
-  private final val GLOBALMODE_QUERY_TEMPLATE_URI = "ccrt:template_globalmode_99"
+  // As usual, meta-meta-data keeps squeezing out into code
+  private final val gr = "http://www.cogchar.org/general/config#"
+  private final val GLOBALMODE_QUERY_TEMPLATE_URI = "ccrt:template_globalmode_99" 
+  private final val ENTITIES_QUERY_TEMPLATE_URI = "ccrt:template_global_entities_99"
   private final val GLOBALMODE_QUERY_VAR_NAME = "mode"
+  private final val ENTITY_TYPE_QUERY_VAR_NAME = "type"
   private final val ENTITY_VAR_NAME = "entity"
   private final val ROLE_VAR_NAME = "role"
   private final val GRAPH_VAR_NAME = "graph"
+  private final val ENTITY_TYPES = Array("CharEntity", "VirtualWorldEntity", "WebappEntity", "SwingAppEntity")
 }
 
 // An object class to hold "global" configuration information loaded at "boot"
@@ -39,12 +44,18 @@ class GlobalConfigEmitter {
   
   // A "triple map" keyed on config "entity" with values of maps keyed by "role", each of which have a "role" object
   //val ergMap = new scala.collection.mutable.HashMap[Ident, scala.collection.mutable.HashMap[Ident, Ident]]
+  // Using Java maps for now to minimize interoperability issues
   val ergMap = new java.util.HashMap[Ident, java.util.HashMap[Ident, Ident]]
+  
+  // A map of lists which will contain the listed (enabled) "entities" now listed on the "GlobalModes" tab
+  // Could be keyed by Idents of entity types, but probably simplier to use string tags here in Cog Char
+  val entityMap = new java.util.HashMap[String, java.util.List[Ident]]
   
   // For now, we provide a constructor to build the Global Config from "GlobalModes" tab on query-based sheet
   // This could be joined by other constructors to alternately get the config from other resources
   def this(globalModeUri: Ident) = {
 	this()
+	// First, the ergMap of "bindings" is populated
 	val query = qi.getCompletedQueryFromTemplate(GlobalConfigEmitter.GLOBALMODE_QUERY_TEMPLATE_URI, 
 												 GlobalConfigEmitter.GLOBALMODE_QUERY_VAR_NAME, globalModeUri);
 	val solutionList = qi.getTextQueryResultList(query);
@@ -60,8 +71,18 @@ class GlobalConfigEmitter {
 		val roleIdent = qi.getIdentFromSolution(solution, GlobalConfigEmitter.ROLE_VAR_NAME);
 		val graphIdent = qi.getIdentFromSolution(solution, GlobalConfigEmitter.GRAPH_VAR_NAME);
 		rgMap.put(roleIdent, graphIdent)
-		//ergMap.put(entityIdent, rgMap) // Check to see: this can maybe be above in else clause
 	  })
+	// Next, the entityMap is created
+	for (i <- 0 until GlobalConfigEmitter.ENTITY_TYPES.length) {
+	  val query = qi.getCompletedQueryFromTemplate(GlobalConfigEmitter.ENTITIES_QUERY_TEMPLATE_URI,
+												   GlobalConfigEmitter.ENTITY_TYPE_QUERY_VAR_NAME,
+												   new FreeIdent(GlobalConfigEmitter.gr+GlobalConfigEmitter.ENTITY_TYPES(i), GlobalConfigEmitter.ENTITY_TYPES(i)))
+	  val queryWithMode = qi.setQueryVar(query, GlobalConfigEmitter.GLOBALMODE_QUERY_VAR_NAME, globalModeUri)
+	  val solutionList = qi.getTextQueryResultList(queryWithMode)
+	  val entityList = qi.getIdentsFromSolutionAsJava(solutionList, GlobalConfigEmitter.ENTITY_VAR_NAME)
+	  //println("GlobalConfigEmitter putting list for type " + GlobalConfigEmitter.ENTITY_TYPES(i) + ": " + entityList) // TEST ONLY
+	  entityMap.put(GlobalConfigEmitter.ENTITY_TYPES(i), entityList)
+	}
   }
   
 }
