@@ -111,8 +111,11 @@ public class PumaHumanoidMapper extends BasicDebugger {
 		return myHRC.getHumanoidFigure(myCharIdent);
 	}
 	
-	public void playDangerYogaTestAnim() { 
-		myRAC.playDangerYogaTestAnimNow();
+	public void playDangerYogaTestAnim() {
+		if (myRAC != null) {
+			myRAC.playDangerYogaTestAnimNow();
+		}
+		
 	}
 	
 	
