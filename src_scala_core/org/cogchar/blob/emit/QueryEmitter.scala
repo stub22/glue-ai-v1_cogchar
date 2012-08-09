@@ -272,9 +272,12 @@ class QueryEmitter extends QueryInterface {
    * @param value The value of the query variable
    * @return New query with variable replaced with literal
    */
-  def setQueryVar(query:String, queryVarName: String, value: Ident) = {
-	//var queryOps = new StringOps(query) // wasn't working implicitly for some reason
-	query.replaceAll("!!" + queryVarName, "<" + value.getAbsUriString + ">")
+  def setQueryVar(query:String, queryVarName: String, value: Ident): String = {
+	var newQuery = ""
+	if (query != null) {
+	  newQuery = query.replaceAll("!!" + queryVarName, "<" + value.getAbsUriString + ">")
+	}
+	newQuery
   }
   
   def getCompletedQueryFromTemplate(templateUri:String, queryVarName: String, queryVarValue: Ident) = {

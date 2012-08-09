@@ -220,7 +220,9 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 		return r;
 	}
 	
-	private void applyGlobalMode(PumaAppContext prc) {
+	// Another bad thing about having lifter access this GlobalConfigService stuff (see below) through managed services:
+	// This method must be public so things like o.f.bundle.repo can call it (see below)
+	public static void applyGlobalMode(PumaAppContext pac) {
 		GlobalConfigEmitter gce = new GlobalConfigEmitter(
 				new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode));
 		
@@ -229,7 +231,22 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 		// But for now, perhaps we can assume that the uses of the information in global config will occur at the
 		// top, PUMA layer. So let's store this in our PumaAppContext.
 		// This may change as we work through this GlobalMode stuff. gce could be stored "deeper", or maybe 
-		// GlobalConfigEmitter (or similar) will move "updwards" to PUMA.
-		prc.setGlobalConfig(gce);
+		// GlobalConfigEmitter (or similar) will move "upwards" to PUMA.
+		pac.setGlobalConfig(gce);
+		
+		// Now here's something I was hoping to avoid, but it necessary for our experiment in making Lift a managed
+		// service. This is best seen as a trial of one possible way to handle the "GlobalMode" graph configuration.
+		// What we'll do here is tell the PumaAppContext to make the GlobalConfigEmitter available as a no-lifecycle
+		// managed service. (Why no-lifecycle? Because these lifecycles have to end somewhere! But it would make sense
+		// to make this service depend on the query interface if we decide to keep it.)
+		// Then Lifter can access it to load its config.
+		// The problem with this approach is that it elevates the GlobalConfigEmitter to a data structure of particular 
+		// importance outside of PUMA (we're putting it on the OSGi registry for crying out loud!), when at this early
+		// point I've been trying to keep non-PUMA code "agnostic" to any details of the graph "mode" config other than
+		// the Idents of the graph.
+		// So this may be a bad-idea-dead-end. Unless we decide we've fallen in love with both the GlobalConfigEmitter
+		// and the idea of doing config via managed services, in which it may turn out to be just what we need.
+		// For now, we'll restrict usage of this to the LifterLifeCycle only...
+		pac.startGlobalConfigService();
 	}
 }

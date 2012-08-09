@@ -24,6 +24,7 @@ import java.util.Set;
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.log.BasicDebugger;
@@ -43,9 +44,9 @@ public class ChatConfig extends KnownComponentImpl {
 	// A new constructor to build ChatConfig from spreadsheet
 	// It's probably unnecessary to retain concept of multple config resources, so for now we just create one with our resource solutions
 	// Soon may condense this and ChatConfigResource into single class
-	public ChatConfig(QueryInterface qi) {
+	public ChatConfig(QueryInterface qi, Ident graphIdent) {
 		String query = qi.getCompletedQueryFromTemplate(ChatQueryNames.GENRAL_CONFIG_TEMPLATE_URI, ChatQueryNames.CATEGORY_QUERY_VAR_NAME, ChatQueryNames.CATEGORY_URI);
-		SolutionList solutionList = qi.getTextQueryResultList(query);
+		SolutionList solutionList = qi.getTextQueryResultList(query, graphIdent);
 		myCCRs.add(new ChatConfigResource(solutionList));
 	}
 

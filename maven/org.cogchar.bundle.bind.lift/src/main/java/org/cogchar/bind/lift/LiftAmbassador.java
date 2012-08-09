@@ -39,6 +39,7 @@ public class LiftAmbassador {
 	private static LiftInterface lift;
 	private static LiftAppInterface liftAppInterface;
 	private static QueryInterface queryInterface;
+	private static Ident qGraph;
 	private static boolean configReady = false;
 	private static List<String> triggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
 	private static ClassLoader myRdfCL; // We'll get this classloader so we can update control configuration from separate RDF files at runtime
@@ -92,7 +93,7 @@ public class LiftAmbassador {
 		}
 	}
 
-	// Method to dyanamically reconfigure controls from RDF
+	// Method to dynamically reconfigure controls from RDF
 	public static boolean activateControlsFromRdf(String rdfFilename) {
 		boolean success = false;
 		if (myRdfCL == null) {
@@ -163,7 +164,7 @@ public class LiftAmbassador {
 					theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
 				} else {
 					if (queryInterface != null) {
-						newConfig = new LiftConfig(queryInterface, configIdent);
+						newConfig = new LiftConfig(queryInterface, qGraph, configIdent);
 						liftConfigCache.put(configIdent, newConfig);
 						theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
 					} else {
@@ -238,8 +239,9 @@ public class LiftAmbassador {
 		liftAppInterface = lai;
 	}
 
-	public static void setQueryInterface(QueryInterface qi) {
+	public static void setQueryInterface(QueryInterface qi, Ident graphIdent) {
 		queryInterface = qi;
+		qGraph = graphIdent;
 	}
 
 	public static boolean checkConfigReady() {
