@@ -43,14 +43,14 @@ public class LiftConfig extends KnownComponentImpl {
 	public String template = DEFAULT_TEMPLATE;
 	
 	// A new constructor to build CinematicConfig from spreadsheet
-	public LiftConfig(QueryInterface qi, Ident configUri) {
-		SolutionMap solutionMap = qi.getQueryResultMap(LiftQueryNames.TEMPLATE_QUERY_URI, LiftQueryNames.CONFIG_VAR_NAME);
+	public LiftConfig(QueryInterface qi, Ident graphIdent, Ident configUri) {
+		SolutionMap solutionMap = qi.getQueryResultMap(LiftQueryNames.TEMPLATE_QUERY_URI, LiftQueryNames.CONFIG_VAR_NAME, graphIdent);
 		String foundTemplate = qi.getStringFromSolution(solutionMap, configUri, LiftQueryNames.TEMPLATE_VAR_NAME);
 		if (foundTemplate != null) {
 			template = foundTemplate;
 		}
 		String query = qi.getCompletedQueryFromTemplate(LiftQueryNames.CONTROL_QUERY_TEMPLATE_URI, LiftQueryNames.CONFIG_QUERY_VAR_NAME, configUri);
-		SolutionList solutionList = qi.getTextQueryResultList(query);
+		SolutionList solutionList = qi.getTextQueryResultList(query, graphIdent);
 		for (Solution solution : solutionList.javaList()) {
 			myCCs.add(new ControlConfig(qi, solution));
 		}

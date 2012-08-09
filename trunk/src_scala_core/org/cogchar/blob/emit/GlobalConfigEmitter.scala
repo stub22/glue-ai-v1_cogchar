@@ -85,4 +85,12 @@ class GlobalConfigEmitter {
 	}
   }
   
+  // Below is an experiment in making Global Config a managed service, which is something I haven't truly
+  // been at all convinced is the right thing to do. But necessary for our Lifter-as-managed-service
+  // experiment. Managed services beget managed services!!
+  // Right now this really feels wrong to make this a service! I don't believe in these maps enough yet.
+  trait GlobalConfigService {
+	def getErgMap: java.util.HashMap[Ident, java.util.HashMap[Ident, Ident]]
+	def getEntityMap: java.util.HashMap[String, java.util.List[Ident]]
+  }
 }
