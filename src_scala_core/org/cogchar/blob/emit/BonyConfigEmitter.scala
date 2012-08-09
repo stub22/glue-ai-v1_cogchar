@@ -74,7 +74,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	// val NB_BONY_ROBOT_ID = "COGCHAR_NB_ROBOT";
 	// val DUMMY_ROBOT_ID = "DummyRobot22";
 	
-	val SINBAD_NICKNAME = "sinbad";
+	val SINBAD_NICKNAME = "char_sinbad_88";
 	
 	
 
