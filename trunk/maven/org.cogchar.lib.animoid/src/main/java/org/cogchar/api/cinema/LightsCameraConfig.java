@@ -59,6 +59,7 @@ public class LightsCameraConfig extends KnownComponentImpl {
 		}
 	}
 	
+	/* Assembler config not currently supported -- see CameraConfig for more info
 	public static class Builder extends DynamicCachingComponentAssembler<LightsCameraConfig> {
 
 		public Builder(Resource builderConfRes) {
@@ -103,4 +104,6 @@ public class LightsCameraConfig extends KnownComponentImpl {
 		bd.logInfo("=====================================================================");
 
 	}
+	*/ 
+
 }

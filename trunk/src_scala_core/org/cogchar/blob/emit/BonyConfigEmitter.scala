@@ -18,7 +18,7 @@ package org.cogchar.blob.emit
 
 import org.appdapter.core.item.{Ident, FreeIdent}
 
-import org.cogchar.api.humanoid.{HumanoidFigureConfig, HumanoidBoneConfig, HumanoidBoneDesc};
+//import org.cogchar.api.humanoid.{HumanoidFigureConfig, HumanoidBoneConfig, HumanoidBoneDesc};
 
 import scala.collection.mutable.ArrayBuffer;
 
@@ -43,6 +43,7 @@ case class NVParam(val name: String, val value: String) {
 
 // I suspect this class may be refactored out of existence before too long - Ryan Biggs 27 July 2012
 // Continuing to try to refactor things out of here with the highest priority being getting rid of the hard coded data. RB 8 Aug 2012
+// I can see it shrinking, woo-hoo! RB 9 Aug 2012
 class BonyConfigEmitter extends DemoConfigEmitter {
 
 	val COGCHAR_URN_PREFIX = "urn:ftd:cogchar.org:2012:";
@@ -143,6 +144,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		res2;
 	}
 	
+  /*
 	private def buildBaseHumanoidFigureConfigForChar(charIdent:Ident, bonyGraphIdent:Ident) : HumanoidFigureConfig = {
 		val hfc = new HumanoidFigureConfig();
 		hfc.myCharIdent = charIdent;
@@ -171,6 +173,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 			buildBaseHumanoidFigureConfigForChar(charIdent, bonyGraphIdent);
 		}
 	}
+	*/
 
   /*
   // This is for getting bone names from Turtle, but was going to require a ClassLoader from somewhere
@@ -213,6 +216,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
   // An undesirable compromise for now: these constants are in org.cogchar.api.skeleton.config.BoneConfigNames,
   // which is now in o.c.lib.animoid so we can't see it. This is the only remaining place in o.c.lib.core which
   // needs BoneConfigNames, which is another reason this will likely be refactored soon.
+  /*
   final val BONE_NAMES_QUERY_TEMPLATE_URI = "ccrt:template_boneNames_99";
   final val ROBOT_IDENT_QUERY_VAR = "robotUri";
   final val BONE_NAME_VAR_NAME = "boneName";
@@ -226,5 +230,6 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		hfc.myBoneConfig.addBoneDesc(boneName);
 	  })
   }
+  */
   
 }

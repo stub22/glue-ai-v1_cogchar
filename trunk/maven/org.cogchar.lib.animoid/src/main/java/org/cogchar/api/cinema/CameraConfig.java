@@ -19,7 +19,6 @@ import java.util.Arrays;
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
-import org.cogchar.blob.emit.HumanoidConfigEmitter;
 import org.cogchar.blob.emit.Solution;
 import org.cogchar.blob.emit.QueryInterface;
 import org.cogchar.blob.emit.QuerySheet;
@@ -58,6 +57,7 @@ public class CameraConfig {
 		attachedItem = queryEmitter.getStringFromSolution(querySolution, LightsCameraQueryNames.ATTACHED_BONE_VAR_NAME);
 	}
 
+	/* Disabled for now because we needed a method from HumanoidConfigEmitter, which is going way (see below). We can find a way to solve this problem if we decide we need assembler config again
 	public CameraConfig(Item configItem) {
 		cameraName = configItem.getIdent().getLocalName();
 		for (int index = 0; index < 3; index++) {
@@ -69,7 +69,11 @@ public class CameraConfig {
 		}
 		// Would be nice to get attachedRobot as an Ident, but not possible with ItemFuncs
 		String attachedRobotId = ItemFuncs.getString(configItem, LightsCameraConfigNames.P_attachedRobot, null);
+		// We no longer have HumanoidConfigEmitter, since it didn't make sense in the context of different robots possibly having different graphs.
+		// Will have to find a different way to get the robot ident here if we want to use Assembler config again
 		attachedRobot = HumanoidConfigEmitter.getRobotIdent(attachedRobotId);
 		attachedItem = ItemFuncs.getString(configItem, LightsCameraConfigNames.P_attachedItem, null);
 	}
+	*/ 
+
 }

@@ -408,6 +408,21 @@ class QueryEmitter extends QueryInterface {
 	}
 	literal
   }
+  
+  /** Gets a boolean literal from a query solution located in a SolutionMap and keyed by a selector Ident
+   *
+   * @param solutionMap The SolutionMap in which the desired literal is located
+   * @param selector The key Ident which selects the desired solution
+   * @param variableName The query variable name for the boolean literal desired
+   * @return The selected boolean literal
+   */
+  def getBooleanFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String): Boolean = {
+	var literal: Boolean = false
+	if (solutionMap.map contains selector) {
+	  literal = solutionMap.map(selector).solution.getLiteral(variableName).getBoolean
+	}
+	literal
+  }
  
   /** Gets a boolean literal from a single query solution
    *
