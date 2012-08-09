@@ -33,6 +33,9 @@ import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;  // Perhaps we want to fetch this from a context instead, but it's a singleton, so no harm in getting it directly for the moment
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.osgi.framework.BundleContext;
+import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
+import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
+import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 
 
 /**
@@ -60,6 +63,46 @@ public class PumaAppContext extends BasicDebugger {
 	
 	public GlobalConfigEmitter getGlobalConfig() {
 		return myGlobalConfig;
+	}
+	
+	// From the commentary in PumaBooter:
+	// Now here's something I was hoping to avoid, but it necessary for our experiment in making Lift a managed
+	// service. This is best seen as a trial of one possible way to handle the "GlobalMode" graph configuration.
+	// What we'll do here is tell the PumaAppContext to make the GlobalConfigEmitter available as a no-lifecycle
+	// managed service. (Why no-lifecycle? Because these lifecycles have to end somewhere! But it would make sense
+	// to make this service depend on the query interface if we decide to keep it.)
+	// Then Lifter can access it to load its config.
+	// The problem with this approach is that it elevates the GlobalConfigEmitter to a data structure of particular 
+	// importance outside of PUMA (we're putting it on the OSGi registry for crying out loud!), when at this early
+	// point I've been trying to keep non-PUMA code "agnostic" to any details of the graph "mode" config other than
+	// the Idents of the graph.
+	// So this may be a bad-idea-dead-end. Unless we decide we've fallen in love with both the GlobalConfigEmitter
+	// and the idea of doing config via managed services, in which it may turn out to be just what we need.
+	// For now, we'll restrict usage of this to the LifterLifeCycle only...
+	boolean startGlobalConfigService() {
+		boolean success = false;
+		if (myGlobalConfig != null) {
+			ServiceLifecycleProvider lifecycle = 
+					new SimpleLifecycle(new GlobalConfigServiceImpl(), GlobalConfigEmitter.GlobalConfigService.class);
+			OSGiComponent ergComp = new OSGiComponent(myBundleContext, lifecycle);
+			ergComp.start();
+			success = true;
+		}
+		return success;
+	}
+	
+	// Right now this really feels wrong to make this a service! I don't believe in these maps enough yet.
+	// Putting it here since it's more experimental than the GlobalConfigEmitter itself, but if this ends up
+	// being the "preferred" solution this interface should probably go into o.c.blob.emit
+	class GlobalConfigServiceImpl implements GlobalConfigEmitter.GlobalConfigService {
+		@Override
+		public java.util.HashMap<Ident, java.util.HashMap<Ident, Ident>> getErgMap() {
+			return myGlobalConfig.ergMap();
+		}
+		@Override
+		public java.util.HashMap<String, java.util.List<Ident>> getEntityMap() {
+			return myGlobalConfig.entityMap();
+		}
 	}
 	
 	public void updateGlobalConfig() {
