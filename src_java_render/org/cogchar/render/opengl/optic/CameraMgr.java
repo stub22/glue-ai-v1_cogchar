@@ -51,6 +51,8 @@ public class CameraMgr {
 	private List<String> attachedViewPortNames = new ArrayList<String>(); // A list of names of cameras (viewports have the same names)
 	private Vector3f defaultPosition;
 	private Vector3f defaultDirection;
+	
+	private static final String DEFAULT_VIEWPORT_NAME = "Gui Default"; // This is what jME calls the flycam viewport. We won't mess with it in clearViewPorts and such.
 
 	public Camera cloneCamera(Camera orig) {
 		return orig.clone();
@@ -155,7 +157,7 @@ public class CameraMgr {
 		Object[] viewPortArray = attachedViewPorts.toArray(); 
 		for (int i=0; i<viewPortArray.length; i++) {
 			ViewPort viewPort = (ViewPort)viewPortArray[i];
-			if (!CommonCameras.DEFAULT.name().equals(viewPort.getName())) {
+			if (!DEFAULT_VIEWPORT_NAME.equals(viewPort.getName())) {
 				theLogger.info("Removing ViewPort: " + viewPort.getName());
 				rm.removePostView(viewPort);
 			}
