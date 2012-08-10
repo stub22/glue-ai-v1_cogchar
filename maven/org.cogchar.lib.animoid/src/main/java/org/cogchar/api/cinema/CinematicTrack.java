@@ -65,7 +65,7 @@ public class CinematicTrack extends BasicDebugger {
 	}
 
 	// Called from CinematicConfig, corresponds to a "named" track definition
-	public CinematicTrack(Solution solution) {
+	public CinematicTrack(Solution solution, Ident qGraph) {
 		Ident myIdent = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.TRACK_VAR_NAME);
 		trackName = myIdent.getLocalName();
 		attachedItem = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.ATTACHED_ITEM_VAR_NAME).getLocalName();
@@ -91,7 +91,7 @@ public class CinematicTrack extends BasicDebugger {
 		startTime = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.START_TIME_VAR_NAME, 0f);
 		trackDuration = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.DURATION_VAR_NAME, 0f);
 		String query = queryEmitter.getCompletedQueryFromTemplate(CinematicQueryNames.WAYPOINTS_QUERY_TEMPLATE_URI, CinematicQueryNames.TRACK_QUERY_VAR_NAME, myIdent);
-		SolutionList solutionList = queryEmitter.getTextQueryResultList(query);
+		SolutionList solutionList = queryEmitter.getTextQueryResultList(query, qGraph);
 		List<Ident> waypointIdentList = queryEmitter.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.WAYPOINT_VAR_NAME);
 		for (Ident waypointIdent : waypointIdentList) {
 			waypoints.add(new WaypointConfig(waypointIdent));

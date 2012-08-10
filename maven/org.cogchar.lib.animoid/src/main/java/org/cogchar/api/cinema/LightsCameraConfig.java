@@ -48,12 +48,12 @@ public class LightsCameraConfig extends KnownComponentImpl {
 	private static QueryInterface queryEmitter = QuerySheet.getInterface();
 
 	// A new constructor to build LightsCameraConfig from spreadsheet
-	public LightsCameraConfig() {
-		SolutionList solutionList = queryEmitter.getQueryResultList(LightsCameraQueryNames.CAMERA_QUERY_URI);
+	public LightsCameraConfig(Ident qGraph) {
+		SolutionList solutionList = queryEmitter.getQueryResultList(LightsCameraQueryNames.CAMERA_QUERY_URI, qGraph);
 		for (Solution cameraSolution : solutionList.javaList()) {
 			myCCs.add(new CameraConfig(cameraSolution));
 		}
-		solutionList = queryEmitter.getQueryResultList(LightsCameraQueryNames.LIGHT_QUERY_URI);
+		solutionList = queryEmitter.getQueryResultList(LightsCameraQueryNames.LIGHT_QUERY_URI, qGraph);
 		for (Solution lightSolution : solutionList.javaList()) {
 			myLCs.add(new LightConfig(lightSolution));
 		}
