@@ -27,6 +27,7 @@ import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.core.item.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.Solution;
 import org.cogchar.blob.emit.SolutionList;
@@ -48,20 +49,20 @@ public class CinematicConfig extends KnownComponentImpl {
 	private static QueryInterface queryEmitter = QuerySheet.getInterface();
 
 	// A new constructor to build CinematicConfig from spreadsheet
-	public CinematicConfig() {
-		SolutionList solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.CINEMATICS_QUERY_URI);
+	public CinematicConfig(Ident qGraph) {
+		SolutionList solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.CINEMATICS_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
-			myCICs.add(new CinematicInstanceConfig(solution));
+			myCICs.add(new CinematicInstanceConfig(solution, qGraph));
 		}
-		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.TRACK_QUERY_URI);
+		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.TRACK_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
-			myCTs.add(new CinematicTrack(solution));
+			myCTs.add(new CinematicTrack(solution, qGraph));
 		}
-		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.WAYPOINT_QUERY_URI);
+		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.WAYPOINT_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
 			myWCs.add(new WaypointConfig(solution));
 		}
-		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.ROTATION_QUERY_URI);
+		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.ROTATION_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
 			myRCs.add(new RotationConfig(solution));
 		}

@@ -16,6 +16,7 @@
 package org.cogchar.render.app.humanoid;
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
+import org.appdapter.core.item.Ident;
 import org.cogchar.api.cinema.CinematicConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.render.opengl.optic.CameraMgr;
@@ -29,9 +30,9 @@ import org.cogchar.render.sys.core.RenderRegistryClient;
  */
 public class HumanoidRenderWorldMapper {
 
-	public void initLightsAndCamera(HumanoidRenderContext hrc) {
+	public void initLightsAndCamera(HumanoidRenderContext hrc, Ident qGraph) {
 		// The LightsCameraConfig constructor now automatically loads config from sheet
-		LightsCameraConfig lcc = new LightsCameraConfig();
+		LightsCameraConfig lcc = new LightsCameraConfig(qGraph);
 		RenderRegistryClient rendRegCli = hrc.getRenderRegistryClient();
 		CameraMgr cm = rendRegCli.getOpticCameraFacade(null);
 		cm.initCamerasFromConfig(lcc, hrc);
@@ -39,9 +40,9 @@ public class HumanoidRenderWorldMapper {
 		lf.initLightsFromConfig(lcc, hrc);
 	}
 
-	public void initCinematics(HumanoidRenderContext hrc) {
+	public void initCinematics(HumanoidRenderContext hrc, Ident qGraph) {
 		// The CinematicConfig constructor now automatically loads config from sheet
-		CinematicConfig cc = new CinematicConfig();
+		CinematicConfig cc = new CinematicConfig(qGraph);
 		CinematicMgr.storeCinematicsFromConfig(cc, hrc);
 	}
 	

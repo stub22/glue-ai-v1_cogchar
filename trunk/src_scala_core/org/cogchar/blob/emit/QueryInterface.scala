@@ -119,6 +119,15 @@ trait QueryInterface {
    */
   def getQueryResultList(queryUri:String): SolutionList
   
+  /** Queries the configuration spreadsheet (with query sheet URI currently set in code as final val QUERY_SHEET)
+   *  with graph Ident
+   *
+   * @param queryUri The QName of the query which should be run, found on the query sheet currently set in code
+   * @param qGraph The Ident of the graph to be used in query
+   * @return A SolutionList of QuerySolutions
+   */
+  def getQueryResultList(queryUri:String, qGraph:Ident): SolutionList
+  
   /** Queries the provided SheetRepo (with query sheet URI currently set in code as final val QUERY_SHEET).
    *
    * @param queryUri The QName of the query which should be run, found on the query sheet currently set in code
