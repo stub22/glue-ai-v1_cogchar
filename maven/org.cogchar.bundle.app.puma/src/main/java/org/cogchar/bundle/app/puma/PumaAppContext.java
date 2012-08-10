@@ -27,10 +27,13 @@ import org.cogchar.app.buddy.busker.TriggerItem;
 import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
+import org.cogchar.blob.emit.QueryInterface;
+import org.cogchar.blob.emit.QuerySheet;
 import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;  // Perhaps we want to fetch this from a context instead, but it's a singleton, so no harm in getting it directly for the moment
+import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
@@ -112,6 +115,22 @@ public class PumaAppContext extends BasicDebugger {
 		// figure out how best to handle changes to this "GlobalMode" stuff this should become less hodge-podge
 		myGlobalConfig = new GlobalConfigEmitter(new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode));
 	}
+	
+	// A half baked idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
+	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
+	public void updateConfigByRequest(String request) {
+		String WORLD_CONFIG = "WorldConfig";
+		if (WORLD_CONFIG.equals(request)) {
+			reloadWorldConfig();
+		}
+	}
+	
+	class UpdateInterfaceImpl implements HumanoidRenderContext.UpdateInterface {
+		@Override
+		public void updateConfig(String request) {
+			updateConfigByRequest(request);
+		}
+	}
 
 	/**
 	 * First (of three) stage init of world, done BEFORE startOpenGLCanvas().
@@ -121,6 +140,7 @@ public class PumaAppContext extends BasicDebugger {
 	 */
 	public HumanoidRenderContext initHumanoidRenderContext(String panelKind) {
 		myHRC = (HumanoidRenderContext) RenderBundleUtils.buildBonyRenderContextInOSGi(myBundleContext, panelKind);
+		myHRC.setUpdateInterface(new UpdateInterfaceImpl());
 		return myHRC;
 	}
 
@@ -167,6 +187,55 @@ public class PumaAppContext extends BasicDebugger {
 			}
 		}
 		return pdcList;
+	}
+	
+	// The Lights/Camera/Cinematics init used to be done from HumanoidRenderContext, but the global config lives
+	// here as does humanoid and bony config. So may make sense to have this here too, though we could move it
+	// back to HRC if there are philosophical reasons for doing so. (We'd also have to pass two graph flavors to it for this.)
+	public void initCinema() {
+		myHRC.initCinema();
+		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
+		Ident graphIdent = null;
+		try {
+			List<Ident> worldConfigIdents = myGlobalConfig.entityMap().get(PumaModeConstants.VIRTUAL_WORLD_ENTITY_TYPE);
+			// Multiple worldConfigIdents? Possible. It's possible duplicate cinematic definitions might cause problems
+			// but we'll leave that for later, so sure, go ahead and load on multiple configs if they are requested.
+			for (Ident configIdent : worldConfigIdents) {
+				try {
+					graphIdent = myGlobalConfig.ergMap().get(configIdent).get(PumaModeConstants.LIGHTS_CAMERA_CONFIG_ROLE);
+				} catch (Exception e) {
+					logWarning("Could not get valid graph on which to query for Lights/Cameras config of " + configIdent.getLocalName());
+				}
+				try {
+					myRenderMapper.initLightsAndCamera(myHRC, graphIdent);
+				} catch (Exception e) {
+					logWarning("Error attempting to initialize lights and cameras for " + configIdent.getLocalName() + ": " + e);
+				}
+				graphIdent = null;
+				try {
+					graphIdent = myGlobalConfig.ergMap().get(configIdent).get(PumaModeConstants.CINEMATIC_CONFIG_ROLE);
+				} catch (Exception e) {
+					logWarning("Could not get valid graph on which to query for Cinematics config of " + configIdent.getLocalName());
+				}
+				try {
+					myRenderMapper.initCinematics(myHRC, graphIdent);
+				} catch (Exception e) {
+					logWarning("Error attempting to initialize Cinematics for " + configIdent.getLocalName() + ": " + e);
+				}		
+			}
+		} catch (Exception e) {
+			logError("Could not retrieve any specified VirtualWorldEntity for this global configuration!");
+		}
+	}
+	
+	public void reloadWorldConfig() {
+		QueryInterface queryEmitter = QuerySheet.getInterface();
+		queryEmitter.reloadSheetRepo();
+		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
+		myRenderMapper.clearLights(myHRC);
+		myRenderMapper.clearCinematics(myHRC);
+		myRenderMapper.clearViewPorts(myHRC);
+		initCinema();
 	}
 	
 	public void setupAndStartBehaviorTheater(PumaDualCharacter pdc) throws Throwable {

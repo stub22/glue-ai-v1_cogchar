@@ -121,7 +121,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
         
 		UPDATE_WORLD_CONFIG {
 			void act(HumanoidRenderContext ctx) {
-				ctx.reloadWorldConfig();
+				ctx.requestConfigReload("WorldConfig");
             }
             int getTriggerKey() { 
                 return KeyInput.KEY_F11;

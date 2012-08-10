@@ -175,13 +175,15 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 			logInfo("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed , calling connectDualRobotChars()");
 			pac.connectDualRobotChars();
 			
-			logInfo("%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed , calling Context.initCinema()");
+			logInfo("%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed , calling initCinema()");
 			
 			// Lights, Cameras, and Cinematics were once configured during PumaDualCharacter init
 			// Since we can support multiple characters now (and connect cameras to them), this needs to happen after connectDualRobotChars()
-			hrc.initCinema();
+			// We'll let pac take care of this, since it is currently "Home of the Global Mode"
+			// (even though global mode is currently initially applied here. Any of this may change.)
+			pac.initCinema();
 			
-			logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% Context.initCinema() completed -  PUMA BOOT SUCCESSFUL!  8-)");
+			logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% initCinema() completed -  PUMA BOOT SUCCESSFUL!  8-)");
 			
 			result.myStatus = BootStatus.BOOTED_OK;
 			

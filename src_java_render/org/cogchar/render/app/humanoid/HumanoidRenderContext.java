@@ -56,10 +56,32 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 	private Map<Ident, HumanoidFigure> myFiguresByCharIdent = new HashMap<Ident, HumanoidFigure>();
 	private BonyGameFeatureAdapter myGameFeatureAdapter;
+	private UpdateInterface myUpdateInterface;
 
 	public HumanoidRenderContext(BonyConfigEmitter bce) {
 		super(bce);
 		myGameFeatureAdapter = new BonyGameFeatureAdapter(this);
+	}
+	
+	// What's this? Well, for better or worse I've made PumaAppContext the focal point of global config and graph
+	// determination. At times, code "lower down" will want to request config updates. This is a first guess at
+	// a method that will be general (thus the String key for the request type) and packaged in an interface we can 
+	// pass around. PumaAppContext will set the interface on creation of the HRC.
+	public interface UpdateInterface {
+		public void updateConfig(String request);
+	}
+	
+	public void setUpdateInterface(UpdateInterface theInterface) {
+		myUpdateInterface = theInterface;
+	}
+	
+	// ... and here's a method things that can see HRC can use to request a reload.
+	public void requestConfigReload(String request) {
+		if (myUpdateInterface != null) {
+			myUpdateInterface.updateConfig(request);
+		} else {
+			logWarning("Update requested (" + request + "), but UpdateInterface not available in HumanoidRenderContext");
+		}
 	}
 
 	@Override public void postInitLaunch() {
@@ -132,15 +154,18 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
 		FlyByCamera fbCam = stub.getFlyByCamera();
 		fbCam.setMoveSpeed(50);
-		initLightsCameraCinematics();
+		//initLightsCameraCinematics();
 	}
 	
+	/* For now at least, these functions are moved to PumaAppContext - that way we doing all the config from one place
 	private void initLightsCameraCinematics() {
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		myRenderMapper.initLightsAndCamera(this);
 		myRenderMapper.initCinematics(this);
 	}
+	*/
 	
+	/* Also moved to PumaAppContext
 	public void reloadWorldConfig() {
 		QueryInterface queryEmitter = QuerySheet.getInterface();
 		queryEmitter.reloadSheetRepo();
@@ -150,6 +175,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		myRenderMapper.clearViewPorts(this);
 		initLightsCameraCinematics();
 	}
+	*/ 
 
 	// This is still called by HumanoidPuppetActions to reset default camera position
 	protected void setDefaultCameraLocation() {

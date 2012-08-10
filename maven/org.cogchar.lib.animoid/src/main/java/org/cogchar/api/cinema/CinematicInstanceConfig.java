@@ -47,12 +47,12 @@ public class CinematicInstanceConfig extends BasicDebugger {
 	}
 
 	// A new constructor to build CinematicConfig from spreadsheet
-	public CinematicInstanceConfig(Solution querySolution) {
+	public CinematicInstanceConfig(Solution querySolution, Ident qGraph) {
 		Ident myIdent = queryEmitter.getIdentFromSolution(querySolution, CinematicQueryNames.CINEMATIC_VAR_NAME);
 		myURI_Fragment = myIdent.getLocalName();
 		duration = queryEmitter.getFloatFromSolution(querySolution, CinematicQueryNames.DURATION_VAR_NAME, Float.NaN);
 		String query = queryEmitter.getCompletedQueryFromTemplate(CinematicQueryNames.TRACKS_QUERY_TEMPLATE_URI, CinematicQueryNames.CINEMATIC_QUERY_VAR_NAME, myIdent);
-		SolutionList solutionList = queryEmitter.getTextQueryResultList(query);
+		SolutionList solutionList = queryEmitter.getTextQueryResultList(query, qGraph);
 		List<Ident> trackIdentList = queryEmitter.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.TRACK_VAR_NAME);
 		for (Ident trackIdent : trackIdentList) {
 			myTracks.add(new CinematicTrack(trackIdent));
