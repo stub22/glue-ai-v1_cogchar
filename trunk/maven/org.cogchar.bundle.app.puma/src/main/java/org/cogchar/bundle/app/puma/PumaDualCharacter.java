@@ -214,20 +214,9 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		}
 	}
 
-	public void updateBonyConfig() {
-		BoneRobotConfig.reloadResource(); // Oops, this now called once for each robot, inefficient!!!
-		myPumaAppContext.updateGlobalConfig(); // Oops, this now called once for each robot, inefficient!!!
-		Ident graphIdent;
-		try {
-			graphIdent = myPumaAppContext.getGlobalConfig().ergMap().get(myCharIdent).get(PumaModeConstants.BONY_CONFIG_ROLE);
-			try {
-				myHumoidMapper.updateModelRobotUsingBoneRobotConfig(new BoneRobotConfig(myCharIdent, graphIdent));
-			} catch (Throwable t) {
-				logError("problem updating bony config from queries for " + myCharIdent, t);
-			}
-		} catch (Exception e) {
-			logWarning("Could not get a valid graph on which to query for config update of " + myCharIdent.getLocalName());
-		}
+	// This method is called once (for each character) when bony config update is requested
+	public void updateBonyConfig(Ident graphIdent) throws Throwable {
+		myHumoidMapper.updateModelRobotUsingBoneRobotConfig(new BoneRobotConfig(myCharIdent, graphIdent));
 	}
 
 	/* On the way out as we move away from Turtle config

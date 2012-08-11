@@ -100,9 +100,11 @@ public class BonyRenderContext extends ConfiguredPhysicalModularRenderContext {
 	//public String getJointConfigAssetNameForChar(String charURI) {
 //		return getBonyConfigEmitter().getJointConfigAssetNameForChar(charURI);
 //	}
+	/*
 	public Vector3f getConfigVector3f(String vectorURI) {
 		float[] xyz = getBonyConfigEmitter().getNamedFloatVector(vectorURI);
 		return JmonkeyMathObjFactory.makeVector(xyz);
-	}	
+	}
+	*/ 
 
 }

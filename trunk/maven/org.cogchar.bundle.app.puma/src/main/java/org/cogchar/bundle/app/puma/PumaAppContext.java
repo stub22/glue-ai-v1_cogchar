@@ -48,9 +48,18 @@ public class PumaAppContext extends BasicDebugger {
 
 	private BundleContext myBundleContext;
 	private HumanoidRenderContext myHRC;
-	private TriggerItems.UpdateBonyConfig myUpdateBonyConfigTI;
+	// This method for updating bony config is not very flexible (to configuring only single characters in the future)
+	// and requires multiple sheet reloads for multiple characters. So I'm trying out the idea of moving this functionality
+	// into updateConfigByRequest - Ryan
+	//private TriggerItems.UpdateBonyConfig myUpdateBonyConfigTI;
 	// Here's a GlobalConfigEmitter for our PUMA instance. Does it really belong here? Time will tell.
 	private GlobalConfigEmitter myGlobalConfig;
+	// Let's try making this a field of PumaAppContext. That way, refresh of bony config can be handled here in a nice
+	// clean, consistent way. May also have additional advantages. Might have some disadvantages too, we'll see!
+	private List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
+	// A query interface instance we can reuse - right now just to trigger repo reloads. May want to do that via
+	// GlobalConfigEmitter or some other interface in the long run...?
+	QueryInterface queryEmitter;
 
 	public PumaAppContext(BundleContext bc) {
 		myBundleContext = bc;
@@ -66,6 +75,13 @@ public class PumaAppContext extends BasicDebugger {
 	
 	public GlobalConfigEmitter getGlobalConfig() {
 		return myGlobalConfig;
+	}
+	
+	private void reloadRepo() {
+		if (queryEmitter == null) {
+			queryEmitter = QuerySheet.getInterface();
+		queryEmitter.reloadSheetRepo();
+		}
 	}
 	
 	// From the commentary in PumaBooter:
@@ -111,17 +127,24 @@ public class PumaAppContext extends BasicDebugger {
 	public void updateGlobalConfig() {
 		// Now this is a little irregular. We're creating this initally in PumaBooter, but also the same 
 		// (temporarily fixed) mode is reloaded here when we want to updateGlobalConfig. So far, that's mainly for our 
-		// current "primative" bony config reload. This all is a bit goofy and should be quite temporary; once we really 
+		// current "primitive" bony config reload. This all is a bit goofy and should be quite temporary; once we really 
 		// figure out how best to handle changes to this "GlobalMode" stuff this should become less hodge-podge
+		// Do we want to always reload the repo here? Might want to keep these functions separate in the future, but for
+		// now I'll assume they will go together.
+		reloadRepo();
 		myGlobalConfig = new GlobalConfigEmitter(new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode));
 	}
 	
 	// A half baked idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
 	public void updateConfigByRequest(String request) {
-		String WORLD_CONFIG = "WorldConfig";
-		if (WORLD_CONFIG.equals(request)) {
+		// Eventually we may decide on a good home for these constants:
+		String WORLD_CONFIG = "worldconfig";
+		String BONE_ROBOT_CONFIG = "bonerobotconfig";
+		if (WORLD_CONFIG.equals(request.toLowerCase())) {
 			reloadWorldConfig();
+		} else if (BONE_ROBOT_CONFIG.equals(request.toLowerCase())) {
+			reloadBoneRobotConfig();
 		}
 	}
 	
@@ -151,7 +174,7 @@ public class PumaAppContext extends BasicDebugger {
 	 * @throws Throwable
 	 */
 	public List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
-		List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
+		//List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 		List<Ident> charIdents = new ArrayList<Ident>(); // A blank list, so if the try fails below, the for loop won't throw an Exception
 		try {
 			List<Ident> identsFromConfig = myGlobalConfig.entityMap().get(PumaModeConstants.CHAR_ENTITY_TYPE);
@@ -228,9 +251,10 @@ public class PumaAppContext extends BasicDebugger {
 		}
 	}
 	
+	
+	
 	public void reloadWorldConfig() {
-		QueryInterface queryEmitter = QuerySheet.getInterface();
-		queryEmitter.reloadSheetRepo();
+		updateGlobalConfig();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		myRenderMapper.clearLights(myHRC);
 		myRenderMapper.clearCinematics(myHRC);
@@ -238,6 +262,23 @@ public class PumaAppContext extends BasicDebugger {
 		initCinema();
 	}
 	
+	public void reloadBoneRobotConfig() {
+		updateGlobalConfig();
+		for (PumaDualCharacter pdc : pdcList) {
+			logInfo("Updating bony config for char [" + pdc + "]");
+			try {
+				Ident graphIdent = myGlobalConfig.ergMap().get(pdc.getCharIdent()).get(PumaModeConstants.BONY_CONFIG_ROLE);
+				try {
+					pdc.updateBonyConfig(graphIdent);
+				} catch (Throwable t) {
+					logError("problem updating bony config from queries for " + pdc.getCharIdent(), t);
+				}
+			} catch (Exception e) {
+				logWarning("Could not get a valid graph on which to query for config update of " + pdc.getCharIdent().getLocalName());
+			}
+		}
+	}
+
 	public void setupAndStartBehaviorTheater(PumaDualCharacter pdc) throws Throwable {
 		pdc.registerDefaultSceneTriggers();
 		pdc.loadBehaviorConfig(false);
@@ -310,10 +351,10 @@ public class PumaAppContext extends BasicDebugger {
 
 		hookItUp(PlayerAction.RELOAD_BEHAVIOR, pdc, new TriggerItems.ReloadBehavior());
 
-		myUpdateBonyConfigTI = new TriggerItems.UpdateBonyConfig();
-		myUpdateBonyConfigTI.myOptResourceClassLoader = null;
+		//myUpdateBonyConfigTI = new TriggerItems.UpdateBonyConfig();
+		//myUpdateBonyConfigTI.myOptResourceClassLoader = null;
 
-		hookItUp(PlayerAction.UPDATE_BONY_CONFIG, pdc, myUpdateBonyConfigTI);
+		//hookItUp(PlayerAction.UPDATE_BONY_CONFIG, pdc, myUpdateBonyConfigTI);
 	}
 
 	private void hookItUp(PlayerAction action, PumaDualCharacter pdc, TriggerItem trigItem) {
