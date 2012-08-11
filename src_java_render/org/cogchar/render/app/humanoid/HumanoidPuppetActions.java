@@ -130,7 +130,16 @@ public class HumanoidPuppetActions extends BasicDebugger {
         },
 		
 		UPDATE_BONY_CONFIG {
-			// uses default act() and boxy wiring
+			// previously used default act() and boxy wiring
+			// Now we are using the new "updateConfigByRequest" system in PumaAppContext
+			// That does a couple of good things: for one, it's more compatible with having different means of
+			// triggering reloads, like with the web app
+			// Also, this method allows us to reload the repo from sheet or etc. only once to update all 
+			// the active characters. And, in the future updateConfigByRequest will be able to handle updating
+			// single characters.
+			void act(HumanoidRenderContext ctx) {
+				ctx.requestConfigReload("BoneRobotConfig");
+            }
             int getTriggerKey() { 
                 return KeyInput.KEY_F12;
             }

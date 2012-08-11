@@ -35,6 +35,8 @@ import org.appdapter.core.matdat.SheetRepo;
 /**
  * @author Stu B. <www.texpedient.com>
  */
+
+// Used by org.cogchar.scalatest.Greeter
 case class NVParam(val name: String, val value: String) {
 	def urlEncoding : String = {
 		name + "=" + value;
@@ -46,10 +48,12 @@ case class NVParam(val name: String, val value: String) {
 // I can see it shrinking, woo-hoo! RB 9 Aug 2012
 class BonyConfigEmitter extends DemoConfigEmitter {
 
-	val COGCHAR_URN_PREFIX = "urn:ftd:cogchar.org:2012:";
+  
 	
-	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "runtime#";
-		
+	/*
+	
+	
+	
 	//val HRK_URN_PREFIX = "urn:ftd:hrkind.com:2012:chars#";
 	
 	// val HRK_TEMP_PREFIX = "http://www.hrkind.com/model#"
@@ -68,33 +72,35 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	val SLIM_PANEL_CLASSNAME = "org.cogchar.render.gui.bony.VirtCharPanel";
 	
 
-	val WINGED_OBELISK_SCENE = "leo_hanson_tests/test3/test3.scene";
 	val WOS_SCALE = 0.5f;
 	
 	// val NB_BONY_ROBOT_ID = "COGCHAR_NB_ROBOT";
 	// val DUMMY_ROBOT_ID = "DummyRobot22";
-	
+	*/
+   
+	// Used (for now) by HumanoidPuppetActions for Sinbad special handling
+	val COGCHAR_URN_PREFIX = "urn:ftd:cogchar.org:2012:";
+	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "runtime#";
 	val SINBAD_NICKNAME = "char_sinbad_88";
-	
-	
-
-	
 	val	SINBAD_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + SINBAD_NICKNAME;
-	
 	val	SINBAD_CHAR_IDENT = new FreeIdent(SINBAD_CHAR_URI, SINBAD_NICKNAME)
 	
 	// Appear to be no longer used
 	//val SINBAD_JOINT_PATH = "rk_bind_config/motion/bonyRobotConfig_Sinbad.json";
 	//val ZENO_JOINT_PATH = "rk_bind_config/motion/bonyRobotConfig_ZenoR50.json";
-	
+	/*
 	val NB_PLATFORM_CURRENT = "nb701";
 	
 
 	
 	def isZenoHome() : Boolean = {	true;	}
-	
+	*/
+   
+	// Used by HumanoidPuppetActions.setupActionListeners and BonyGameFeatureAdapter
 	def isMinimalSim() : Boolean = {	getSystemContextURI.startsWith("NB");	}
 	
+   
+	// Used by org.cogchar.scalatest.Greeter
 	def makeParamString(bindingList : List[NVParam]) : String = {
 		val len = bindingList.length;
 		if (len == 0) {
@@ -109,15 +115,20 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		}
 	}
 	
+	// Used by org.cogchar.scalatest.Greeter
 	def makeCogcharURN(item : String, bindingList : List[NVParam]) : String = {
 		val paramsEncoded = makeParamString(bindingList);
 		val marker = if (paramsEncoded.length() > 0) "?" else "";
 		COGCHAR_URN_PREFIX + item + marker + paramsEncoded;
 	}
 	
+	// Used by BonyGameFeatureAdapter
 	def getStickFigureScenePath : String = {
 		if (isMinimalSim()) null else WINGED_OBELISK_SCENE;
 	}
+	val WINGED_OBELISK_SCENE = "leo_hanson_tests/test3/test3.scene";
+	
+	// Used by BonyGameFeatureAdapter
 	def getStickFigureSceneScale : Float = 0.5f;
 
 	/*
@@ -126,6 +137,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 	}
 	*/
    
+	// Used by PanelUtils
 	def getVCPanelClassName(kind : String) : String = {
 		kind match {
 			case "FULL" => FANCY_PANEL_CLASSNAME;
@@ -133,7 +145,10 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 			case _ => null
 		}
 	}
-	
+	val FANCY_PANEL_CLASSNAME = "org.cogchar.render.gui.bony.FancyCharPanel";
+	val SLIM_PANEL_CLASSNAME = "org.cogchar.render.gui.bony.VirtCharPanel";	
+  
+	/*
 	def getNamedFloatVector(vectorURI : String) : Array[Float] = {
 		val third = 0.33333f;
 		val res = new Array[Float](3); // third, third, third);
@@ -144,6 +159,7 @@ class BonyConfigEmitter extends DemoConfigEmitter {
 		res2;
 	}
 	
+ */	
   /*
 	private def buildBaseHumanoidFigureConfigForChar(charIdent:Ident, bonyGraphIdent:Ident) : HumanoidFigureConfig = {
 		val hfc = new HumanoidFigureConfig();

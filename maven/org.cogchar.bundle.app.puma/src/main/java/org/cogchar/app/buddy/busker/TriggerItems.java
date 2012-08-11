@@ -58,7 +58,9 @@ public class TriggerItems {
 			pdc.sayText("The time is now, " + System.currentTimeMillis());
 		}
 	}
-
+	
+/*	Likely doing away with this class in favor of PumaAppContext.updateConfigByRequest --  see additional
+ *	commentary in PumaAppContext and HumanoidPuppetActions
 	public static class UpdateBonyConfig extends TriggerItem {
 
 		public ClassLoader myOptResourceClassLoader;
@@ -76,6 +78,7 @@ public class TriggerItems {
 			}
 		}
 	}
+*/
 
 	public static class ReloadBehavior extends TriggerItem {
 
