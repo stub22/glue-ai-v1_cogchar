@@ -74,6 +74,8 @@ public class LiftAmbassador {
 		String queryCogbot(String query, String cogbotConvoUrl);
 
 		boolean performDataballAction(String action, String text);
+		
+		boolean performUpdate(String request);
 	}
 
 	// A (currently blank) interface used by service manager and available to add future PUMA/CogChar-to-Lifter channels
@@ -178,9 +180,16 @@ public class LiftAmbassador {
 			}
 
 		} else if ((action.startsWith(LiftConfigNames.partial_P_databalls)) && (liftAppInterface != null)) {
-			String databallsAction = action.replaceAll(LiftConfigNames.partial_P_databalls + "_", "");
-			liftAppInterface.performDataballAction(databallsAction, null);
-		}
+			String databallsAction = action.replaceAll(LiftConfigNames.partial_P_databalls + "_", ""); // replaceFirst?
+			success = liftAppInterface.performDataballAction(databallsAction, null);
+		} else if ((action.startsWith(LiftConfigNames.partial_P_update)) && (liftAppInterface != null)) {
+			String desiredUpdate = action.replaceFirst(LiftConfigNames.partial_P_update + "_", "");
+			success = liftAppInterface.performUpdate(desiredUpdate);
+		} else if ((LiftConfigNames.refreshLift.equals(action.toLowerCase())) && (liftAppInterface != null)) {
+			theLogger.info("Clearing LiftAmbassador page cache and refreshing global state...");
+			liftConfigCache.clear();
+			success = liftAppInterface.performUpdate("ManagedGlobalConfigService");
+		} 
 		return success;
 	}
 
