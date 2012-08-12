@@ -60,6 +60,9 @@ public class PumaAppContext extends BasicDebugger {
 	// A query interface instance we can reuse - right now just to trigger repo reloads. May want to do that via
 	// GlobalConfigEmitter or some other interface in the long run...?
 	QueryInterface queryEmitter;
+	// A managed service instance of the GlobalConfigEmitter, currently used only by LifterLifecycle.
+	// We need to keep track of it so we can stop and restart it for Lift "refresh"
+	OSGiComponent gcComp;
 
 	public PumaAppContext(BundleContext bc) {
 		myBundleContext = bc;
@@ -74,15 +77,15 @@ public class PumaAppContext extends BasicDebugger {
 	}
 	
 	public GlobalConfigEmitter getGlobalConfig() {
-		return myGlobalConfig;
+            return myGlobalConfig;
 	}
-	
-	private void reloadRepo() {
-		if (queryEmitter == null) {
-			queryEmitter = QuerySheet.getInterface();
-		queryEmitter.reloadSheetRepo();
-		}
-	}
+
+        private void reloadRepo() {
+            if (queryEmitter == null) {
+                queryEmitter = QuerySheet.getInterface();
+            }
+            queryEmitter.reloadSheetRepo();
+        }
 	
 	// From the commentary in PumaBooter:
 	// Now here's something I was hoping to avoid, but it necessary for our experiment in making Lift a managed
@@ -103,8 +106,8 @@ public class PumaAppContext extends BasicDebugger {
 		if (myGlobalConfig != null) {
 			ServiceLifecycleProvider lifecycle = 
 					new SimpleLifecycle(new GlobalConfigServiceImpl(), GlobalConfigEmitter.GlobalConfigService.class);
-			OSGiComponent ergComp = new OSGiComponent(myBundleContext, lifecycle);
-			ergComp.start();
+			gcComp = new OSGiComponent(myBundleContext, lifecycle);
+			gcComp.start();
 			success = true;
 		}
 		return success;
@@ -137,15 +140,28 @@ public class PumaAppContext extends BasicDebugger {
 	
 	// A half baked idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
-	public void updateConfigByRequest(String request) {
+	public boolean updateConfigByRequest(String request) {
 		// Eventually we may decide on a good home for these constants:
 		String WORLD_CONFIG = "worldconfig";
 		String BONE_ROBOT_CONFIG = "bonerobotconfig";
+		String MANAGED_GCS = "managedglobalconfigservice";
+		logInfo("Updating config by request: " + request);
+		boolean success = true;
 		if (WORLD_CONFIG.equals(request.toLowerCase())) {
 			reloadWorldConfig();
 		} else if (BONE_ROBOT_CONFIG.equals(request.toLowerCase())) {
 			reloadBoneRobotConfig();
+		} else if (MANAGED_GCS.equals(request.toLowerCase())) {
+			if (gcComp != null) {
+				gcComp.stop();
+			}
+			updateGlobalConfig();
+			success = startGlobalConfigService();
+		} else {
+			logWarning("PumaAppContext did not recognize the config update to be performed: " + request);
+			success = false;
 		}
+		return success;
 	}
 	
 	class UpdateInterfaceImpl implements HumanoidRenderContext.UpdateInterface {
@@ -215,7 +231,7 @@ public class PumaAppContext extends BasicDebugger {
 	// The Lights/Camera/Cinematics init used to be done from HumanoidRenderContext, but the global config lives
 	// here as does humanoid and bony config. So may make sense to have this here too, though we could move it
 	// back to HRC if there are philosophical reasons for doing so. (We'd also have to pass two graph flavors to it for this.)
-	public void initCinema() {
+	public void initCinema(boolean initCinematics) {
 		myHRC.initCinema();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		Ident graphIdent = null;
@@ -240,26 +256,33 @@ public class PumaAppContext extends BasicDebugger {
 				} catch (Exception e) {
 					logWarning("Could not get valid graph on which to query for Cinematics config of " + configIdent.getLocalName());
 				}
+                                if (initCinematics){
 				try {
 					myRenderMapper.initCinematics(myHRC, graphIdent);
 				} catch (Exception e) {
 					logWarning("Error attempting to initialize Cinematics for " + configIdent.getLocalName() + ": " + e);
 				}		
+                                }
 			}
 		} catch (Exception e) {
 			logError("Could not retrieve any specified VirtualWorldEntity for this global configuration!");
 		}
 	}
 	
-	
+        // This reproduces the (no parameter) form of initCinema which will be the long-term
+        // method - the initCinematics parameter is only necessary to bypass cinematics reconfig
+        // until jME problems with reinit of cinematic camera binding are sorted
+	public void initCinema() {
+            initCinema(true);
+        }
 	
 	public void reloadWorldConfig() {
 		updateGlobalConfig();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		myRenderMapper.clearLights(myHRC);
-		myRenderMapper.clearCinematics(myHRC);
+		//myRenderMapper.clearCinematics(myHRC); // Bypassing until cinematic reinit problems solved
 		myRenderMapper.clearViewPorts(myHRC);
-		initCinema();
+		initCinema(false); // initCinematics is false temporarily until cinematic reinit problems solved
 	}
 	
 	public void reloadBoneRobotConfig() {

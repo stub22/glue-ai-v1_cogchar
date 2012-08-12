@@ -139,6 +139,12 @@ public class PumaBooter extends BasicDebugger {
 			// be updated to relect that
 			applyGlobalMode(pac);
 			
+			// Not in love with this, but not sure what else to do right now. PumaWebMapper implements the LiftInterface,
+			// which we now want to be able to trigger updates. Currently PumaAppContext is handling those updates, so
+			// PumaWebMapper needs to be able to access our pac. There's only this one PumaAppContext instance per 
+			// virtual world, right? Hopefully!
+			PumaWebMapper.setAppContext(pac);
+			
 			boolean allowJFrames = mediator.getFlagAllowJFrames();
 /*  
 Start up the JME OpenGL canvas, which will in turn initialize the Cogchar rendering "App" (in JME3 lingo).
