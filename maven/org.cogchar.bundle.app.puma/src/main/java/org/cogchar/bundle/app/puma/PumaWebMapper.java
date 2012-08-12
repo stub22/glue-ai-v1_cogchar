@@ -39,6 +39,7 @@ public class PumaWebMapper extends BasicDebugger {
 	CogbotCommunicator cogbot;
 	OSGiComponent liftAppComponent;
 	OSGiComponent liftSceneComponent;
+	static PumaAppContext myAppContext;
 
 	public void connectCogCharResources(ClassLoader bonyRdfCl, HumanoidRenderContext hrc) {
 		BallBuilder.setClassLoader("Cog Char", bonyRdfCl);
@@ -63,10 +64,14 @@ public class PumaWebMapper extends BasicDebugger {
 		liftAppComponent.start();
 	}
 
-	// Now mostly done from within LifterLifecycle on create(). 
+	// Previous functions now mostly done from within LifterLifecycle on create(). 
 	// Retaining for now for legacy BallBuilder classloader hookup
 	public void connectHrkindWebContent(ClassLoader hrkindResourceCL) {
 		BallBuilder.setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
+	}
+	
+	public static void setAppContext(PumaAppContext pac) {
+		myAppContext = pac;
 	}
 
 	public LiftInterface getLiftInterface() {
@@ -101,6 +106,17 @@ public class PumaWebMapper extends BasicDebugger {
 		@Override
 		public boolean performDataballAction(String action, String text) {
 			return BallBuilder.performAction(action, text);
+		}
+		
+		@Override
+		public boolean performUpdate(String request) {
+			boolean success = false;
+			if (myAppContext != null) {
+				success = myAppContext.updateConfigByRequest(request);
+			} else {
+				logWarning("Update requested, but PumaWebMapper cannot find PumaAppContext: " + request);
+			}
+			return success;
 		}
 	}
 }

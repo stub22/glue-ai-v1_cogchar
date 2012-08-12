@@ -32,10 +32,13 @@ public class LiftConfigNames extends BoxAssemblyNames {
 	public static final String P_controlStyle = NS_CgcLC + "style";
 	public static final String P_controlResource = NS_CgcLC + "resource";
 	
-	// These are not used in RDF parsing, but help LiftAmbassador know how to interpret prefixes found in RDF defined actions - really these should be replaced with real URIs
+	// These are not used in RDF parsing, but help LiftAmbassador know how to interpret prefixes found in RDF defined actions - 
+	// really these should probably be replaced with real URIs
 	public static final String partial_P_triggerScene = "sceneTrig";
 	public static final String partial_P_cinematic = "cinematic";
 	public static final String partial_P_liftConfig = "liftconfig";
 	public static final String partial_P_databalls = "databalls";
+	public static final String partial_P_update = "reload";
+	public static final String refreshLift = "refreshliftcache";
 	
 }
