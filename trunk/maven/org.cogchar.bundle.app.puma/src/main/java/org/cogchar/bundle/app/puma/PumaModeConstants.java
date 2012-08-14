@@ -39,7 +39,7 @@ public class PumaModeConstants {
 	
 	public static final Ident BONY_CONFIG_ROLE = new FreeIdent(rkrt + "bonyAvatarConf", "bonyAvatarConf");
 	public static final Ident LIGHTS_CAMERA_CONFIG_ROLE = new FreeIdent(rkrt + "camLightsConf", "camLightsConf");
-	public static final Ident CINEMATIC_CONFIG_ROLE = new FreeIdent(rkrt + "cinematicsConf", "cinematicsConf");
-		
+	public static final Ident CINEMATIC_CONFIG_ROLE = new FreeIdent(rkrt + "cinematicsConf", "cinematicsConf");	
 	public static final Ident HUMANOID_CONFIG_ROLE = new FreeIdent(rkrt + "humanoidConf", "humanoidConf");
+	public static final Ident INPUT_BINDINGS_ROLE = new FreeIdent(rkrt + "inputBindings", "inputBindings");
 }

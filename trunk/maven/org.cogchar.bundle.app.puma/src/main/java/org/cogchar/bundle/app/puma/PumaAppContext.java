@@ -31,6 +31,7 @@ import org.cogchar.blob.emit.QueryInterface;
 import org.cogchar.blob.emit.QuerySheet;
 import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.render.app.core.CogcharRenderContext;
+import org.cogchar.render.app.humanoid.KeyBindingConfig;
 import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;  // Perhaps we want to fetch this from a context instead, but it's a singleton, so no harm in getting it directly for the moment
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
@@ -222,7 +223,8 @@ public class PumaAppContext extends BasicDebugger {
 				PumaDualCharacter pdc = connectDualRobotChar(charIdent, myHumanoidConfig.nickname);
 				pdcList.add(pdc);
 				setupCharacterBindingToRobokind(pdc, graphIdentForBony, myHumanoidConfig);
-				setupAndStartBehaviorTheater(pdc);
+				// Must be done after jME triggers are set - now in initCinema
+				//setupAndStartBehaviorTheater(pdc);
 			}
 		}
 		return pdcList;
@@ -231,8 +233,11 @@ public class PumaAppContext extends BasicDebugger {
 	// The Lights/Camera/Cinematics init used to be done from HumanoidRenderContext, but the global config lives
 	// here as does humanoid and bony config. So may make sense to have this here too, though we could move it
 	// back to HRC if there are philosophical reasons for doing so. (We'd also have to pass two graph flavors to it for this.)
+	// Added: since jMonkey key bindings are part of "virtual world" config like Lights/Camera/Cinematics, they are also 
+	// set here
 	public void initCinema(boolean initCinematics) {
 		myHRC.initCinema();
+		KeyBindingConfig currentBindingConfig = new KeyBindingConfig();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		Ident graphIdent = null;
 		try {
@@ -256,25 +261,46 @@ public class PumaAppContext extends BasicDebugger {
 				} catch (Exception e) {
 					logWarning("Could not get valid graph on which to query for Cinematics config of " + configIdent.getLocalName());
 				}
-                                if (initCinematics){
+                if (initCinematics){
+					try {
+						myRenderMapper.initCinematics(myHRC, graphIdent);
+					} catch (Exception e) {
+						logWarning("Error attempting to initialize Cinematics for " + configIdent.getLocalName() + ": " + e);
+					}		
+				}
+				// Like with everything else dependent on global config's graph settings (except for Lift, which uses a managed service
+				// version of GlobalConfigEmitter) it seems logical to set the key bindings here.
+				// Multiple worldConfigIdents? We decided above this is possible (if messy). If key bindings are duplicated
+				// between the multiple world configs, we can't be certain which will end up in the KeyBindingConfig map.
+				// But for now we'll assume user is smart enough to watch out for that (perhaps a dangerous idea) and pile
+				// bindings from all worldConfigIdents into our KeyBindingConfig instance.
 				try {
-					myRenderMapper.initCinematics(myHRC, graphIdent);
+					graphIdent = myGlobalConfig.ergMap().get(configIdent).get(PumaModeConstants.INPUT_BINDINGS_ROLE);
+					currentBindingConfig.addBindings(graphIdent);
 				} catch (Exception e) {
-					logWarning("Error attempting to initialize Cinematics for " + configIdent.getLocalName() + ": " + e);
-				}		
-                                }
+					logWarning("Could not get valid graph on which to query for input bindings config of " + configIdent.getLocalName());
+				}
 			}
 		} catch (Exception e) {
 			logError("Could not retrieve any specified VirtualWorldEntity for this global configuration!");
 		}
+		myHRC.initBindings(currentBindingConfig);
+		// Now it's time to setupAndStartBehaviorTheater since we now have the keyboard bindings initialized
+		for (PumaDualCharacter pdc : pdcList) {
+			try {
+				setupAndStartBehaviorTheater(pdc); // Must be done after jME triggers are set
+			} catch (Throwable t) {
+				logError("Error starting behavior theater: " + t);
+			}
+		}
 	}
 	
-        // This reproduces the (no parameter) form of initCinema which will be the long-term
-        // method - the initCinematics parameter is only necessary to bypass cinematics reconfig
-        // until jME problems with reinit of cinematic camera binding are sorted
+	// This reproduces the (no parameter) form of initCinema which will be the long-term
+	// method - the initCinematics parameter is only necessary to bypass cinematics reconfig
+	// until jME problems with reinit of cinematic camera binding are sorted
 	public void initCinema() {
             initCinema(true);
-        }
+    }
 	
 	public void reloadWorldConfig() {
 		updateGlobalConfig();
