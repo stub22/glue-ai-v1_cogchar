@@ -69,7 +69,7 @@ package org.cogchar.lifter {
 		  info("Input text for form #" + formId + ": " + text1 + "; " + text2)
 		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			  def run() {
-				//PageCommander.textInputMapper(formId, text) // Let PageCommander know about the text so it can figure out what to do with it
+				PageCommander.multiTextInputMapper(formId, Array(text1, text2)) // Let PageCommander know about the text so it can figure out what to do with it
 			  }
 			})
 		  processThread.start

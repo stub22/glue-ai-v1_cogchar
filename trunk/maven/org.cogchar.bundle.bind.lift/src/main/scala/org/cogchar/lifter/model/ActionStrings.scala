@@ -27,12 +27,18 @@ package org.cogchar.lifter {
 	  final val showText = "showtext"
 	  final val setVariable = "setvariable"
 	  final val oldDemo = "olddemo"
+	  final val submit = "submit"
+	  
+	  // Not technically "action strings": strings related to network config function
+	  final val encryptionTypeVar = "networkEncType"
+	  final val noEncryptionName = "NONE"
 	  
 	  final val COGBOT_TOKEN = "cogbot" // These token definitiions will probably not live here permanently
 	  final val ANDROID_SPEECH_TOKEN = "androidSpeech" // for Android speech recognition
 	  final val ENABLE_TOKEN = "enable" 
 	  final val DISABLE_TOKEN = "disable"
 	  final val ERROR_TOKEN = "error"
+	  final val NETWORK_CONFIG_TOKEN = "networkconfig"
 	}
 
   }
