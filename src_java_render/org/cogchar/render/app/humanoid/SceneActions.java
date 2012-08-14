@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import org.cogchar.platform.trigger.DummyBox;
@@ -34,6 +35,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.jme3.input.KeyInput.*;
+import java.lang.reflect.Field;
+import java.util.Iterator;
+import java.util.TreeMap;
 
 /**
  *
@@ -41,27 +45,41 @@ import static com.jme3.input.KeyInput.*;
 public class SceneActions {
 
 	static Logger theLogger = LoggerFactory.getLogger(SceneActions.class);
-	private static int theSceneTrigKeyNums[] = {KEY_NUMPAD0, KEY_NUMPAD1, KEY_NUMPAD2, KEY_NUMPAD3, KEY_NUMPAD4,
-		KEY_NUMPAD5, KEY_NUMPAD6, KEY_NUMPAD7, KEY_NUMPAD8, KEY_NUMPAD9,
-		KEY_0, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9
-	};
-	private static Map<String, DummyBinding> theBoundActionsByTrigName = new HashMap<String, DummyBinding>();
-	private static DummyBinding theBoundActions[] = new DummyBinding[theSceneTrigKeyNums.length];
 
+	private static Map<String, DummyBinding> theBoundActionsByTrigName = new HashMap<String, DummyBinding>();
+	//private static DummyBinding theBoundActions[]; // Is this ever really used?
+	
+	private static int numberOfBindings = 0;
+	
+/*
 	public static String getSceneTrigName(int keyIndex) {
 		// Two digit suffix, zero padded
 		return String.format("sceneTrig_%02d", keyIndex);
 	}
-
-	public static void setupActionListeners(InputManager inputManager) {
-		String actionNames[] = new String[theSceneTrigKeyNums.length];
-		for (int idx = 0; idx < theSceneTrigKeyNums.length; idx++) {
-			int sceneTrigKeyNum = theSceneTrigKeyNums[idx];
-			String sceneTrigName = getSceneTrigName(idx);
+*/
+	public static void setupActionListeners(InputManager inputManager, KeyBindingConfig config) {
+		numberOfBindings = config.mySceneBindings.size();
+		String actionNames[] = new String[numberOfBindings];
+		//theBoundActions = new DummyBinding[numberOfBindings];
+		Iterator<KeyBindingConfigItem> sceneMappings = config.mySceneBindings.values().iterator();
+		// We'll put the bindings in this temporary map so we can deliver a sorted sequence to KeyBindingTracker
+		Map<String, Integer> bindingMap = new TreeMap<String, Integer>();
+		int idx = 0;
+		while (sceneMappings.hasNext()) {
+			KeyBindingConfigItem nextMapping = sceneMappings.next();
+			int sceneTrigKeyNum = getKey(nextMapping);
 			KeyTrigger keyTrig = new KeyTrigger(sceneTrigKeyNum);
+			String sceneTrigName = nextMapping.boundAction;
 			inputManager.addMapping(sceneTrigName, keyTrig);
-			KeyBindingTracker.addBinding(sceneTrigName, sceneTrigKeyNum);
+			bindingMap.put(sceneTrigName, sceneTrigKeyNum);
 			actionNames[idx] = sceneTrigName;
+			idx++;
+		}
+		// Now put sorted sequence of bindings in KeyBindingTracker
+		Iterator<Map.Entry<String, Integer>> bindingIterator = bindingMap.entrySet().iterator();
+		while (bindingIterator.hasNext()) {
+			Map.Entry<String, Integer> entry = bindingIterator.next();
+			KeyBindingTracker.addBinding(entry.getKey(), entry.getValue());
 		}
 		inputManager.addListener(new ActionListener() {
 
@@ -82,15 +100,18 @@ public class SceneActions {
 		theBoundActionsByTrigName.put(sceneTrigName, ba);
 	}
 
+	/* Hmm is it just me, or does this method not actually do anything?
 	public static void setTriggerBinding(int sceneTrigIdx, DummyBinding ba) {
 		String sceneTrigName = getSceneTrigName(sceneTrigIdx);
 	}
+	*/ 
+
 
 	public static void setTriggerBinding(int sceneTrigIdx, DummyBox box, DummyTrigger trigger) {
 		BoundAction ba = new BoundAction();
 		ba.setTargetBox(box);
 		ba.setTargetTrigger(trigger);
-		setTriggerBinding(sceneTrigIdx, ba);
+		//setTriggerBinding(sceneTrigIdx, ba); // Did this ever do anything? (see method above)
 	}
 
 	public static DummyBinding getTriggerBinding(String sceneTrigName) {
@@ -103,6 +124,22 @@ public class SceneActions {
 			theBinder = new Binder();
 		}
 		return theBinder;
+	}
+	
+	private static int getKey(KeyBindingConfigItem mapping) {
+		int keyInput = -100; // This input not mapped to any key; we'll use it in the event of not finding one from config
+		String keyString = mapping.boundKey;
+		try {
+			if ((keyString.startsWith("AXIS")) || (keyString.startsWith("BUTTON"))) { // In this case, must be MouseInput
+				theLogger.warn("Mouse triggers not supported for scene actions");
+			} else { // ... regular KeyInput - must use reflection to get fron key names to jME KeyInput field values
+				Field keyField = KeyInput.class.getField("KEY_" + keyString);
+				keyInput = keyField.getInt(keyField);
+			}
+		} catch (Exception e) {
+			theLogger.warn("Error getting binding for " + mapping.boundAction + ": " + e);
+		}
+		return keyInput;
 	}
 
 	static class Binder implements DummyBinder {
@@ -119,7 +156,7 @@ public class SceneActions {
 	}
 
 	public static int getSceneTrigKeyCount() {
-		return theSceneTrigKeyNums.length;
+		return numberOfBindings;
 	}
 	
 	// The following SceneLauncher stuff allows Lift app to hook in and trigger scenes
