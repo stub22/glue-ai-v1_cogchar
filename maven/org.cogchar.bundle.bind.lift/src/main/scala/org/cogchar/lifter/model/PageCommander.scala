@@ -152,7 +152,7 @@ package org.cogchar.lifter {
 			  val label2 = textItems(1)
 			  val submitLabel = textItems(2)
 			  setControl(slotNum, DualTextForm.makeForm(label1, label2, submitLabel, slotNum))
-		  }
+			}
 		  case ControlType.SELECTBOXES => {
 			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
 			  val textItems = List.fromArray(text.split(","))
@@ -280,6 +280,27 @@ package org.cogchar.lifter {
 		  }
 		} else {
 		  warn("Action in control id " + formId + " is not recognized by textInputMapper: " + desiredAction)
+		}
+	  }
+	  
+	  def multiTextInputMapper(formId:Int, text:Array[String]) {
+		var desiredAction = controlDefMap(formId).action
+		if (desiredAction startsWith ActionStrings.submit) {
+		  desiredAction = desiredAction.stripPrefix(ActionStrings.submit + "_")
+		  if ((ActionStrings.NETWORK_CONFIG_TOKEN equals desiredAction) && (text.length == 2)) {
+			var encryptionName:String = null;
+			if (appVariablesMap contains ActionStrings.encryptionTypeVar) {
+			  encryptionName = appVariablesMap(ActionStrings.encryptionTypeVar)
+			} else {
+			  warn("No encryption type set for network config, assuming none")
+			  encryptionName = ActionStrings.noEncryptionName
+			}
+			LiftAmbassador.requestNetworkConfig(text(0), encryptionName, text(1))
+		  } else {
+			warn("No action found in multiTextInputMapper for \"" + desiredAction + "\" and " + text.length + " inputs");
+		  }
+		} else {
+		  warn("Action in control id " + formId + " is not recognized by multiTextInputMapper: " + desiredAction)
 		}
 	  }
 	  

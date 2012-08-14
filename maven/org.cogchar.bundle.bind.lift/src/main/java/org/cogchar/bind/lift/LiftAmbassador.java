@@ -39,6 +39,7 @@ public class LiftAmbassador {
 	private static LiftInterface lift;
 	private static LiftAppInterface liftAppInterface;
 	private static QueryInterface queryInterface;
+	private static LiftNetworkConfigInterface netConfigInterface;
 	private static Ident qGraph;
 	private static boolean configReady = false;
 	private static List<String> triggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
@@ -80,6 +81,11 @@ public class LiftAmbassador {
 
 	// A (currently blank) interface used by service manager and available to add future PUMA/CogChar-to-Lifter channels
 	public interface LiftAmbassadorInterface {
+	}
+	
+	public interface LiftNetworkConfigInterface {
+
+		void configure(String ssid, String security, String key);
 	}
 
 	public static class inputInterface implements LiftAmbassadorInterface {
@@ -231,8 +237,17 @@ public class LiftAmbassador {
 		if (lift != null) {
 			lift.showError(errorSource, errorText);
 		} else {
-			theLogger.error("Could not show the following error in Lift because not Lift messenger is set: " + errorSource + ": " + errorText);
+			theLogger.error("Could not show the following error in Lift because no Lift messenger is set: " + errorSource + ": " + errorText);
 		}
+	}
+	
+	public static void requestNetworkConfig(String ssid, String security, String key) {
+		if (netConfigInterface != null) {
+			netConfigInterface.configure(ssid, security, key);
+		} else {
+			theLogger.warn("Could not configure network because no LiftNetworkConfigInterface set");
+		}
+		
 	}
 
 	public static void setSceneLauncher(LiftSceneInterface launcher) {
@@ -251,6 +266,10 @@ public class LiftAmbassador {
 	public static void setQueryInterface(QueryInterface qi, Ident graphIdent) {
 		queryInterface = qi;
 		qGraph = graphIdent;
+	}
+	
+	public static void setNetConfigInterface(LiftNetworkConfigInterface lnci) {
+		netConfigInterface = lnci;
 	}
 
 	public static boolean checkConfigReady() {

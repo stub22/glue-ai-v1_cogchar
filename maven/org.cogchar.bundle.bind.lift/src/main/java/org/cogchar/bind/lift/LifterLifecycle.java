@@ -44,6 +44,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 	private final static String globalConfigId = "globalConfig";
 	private final static String theLiftAppInterfaceId = "liftAppInterface";
 	private final static String theLiftSceneInterfaceId = "liftSceneInterface";
+	private final static String theLiftNetConfigInterfaceId = "liftNetConfigInterface";
 
 	static class OurDescriptorBuilder {
 
@@ -51,6 +52,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 			DescriptorListBuilder dlb = new DescriptorListBuilder().dependency(queryEmitterId, QueryInterface.class).dependency(globalConfigId, GlobalConfigEmitter.GlobalConfigService.class);
 			dlb = new DescriptorBuilder(dlb, theLiftAppInterfaceId, LiftAmbassador.LiftAppInterface.class, DependencyType.OPTIONAL);
 			dlb = new DescriptorBuilder(dlb, theLiftSceneInterfaceId, LiftAmbassador.LiftSceneInterface.class, DependencyType.OPTIONAL);
+			dlb = new DescriptorBuilder(dlb, theLiftNetConfigInterfaceId, LiftAmbassador.LiftNetworkConfigInterface.class, DependencyType.OPTIONAL);
 			return dlb;
 		}
 	}
@@ -69,6 +71,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		theLogger.info("Creating LiftAmbassador.inputInterface in LifterLifecycle");
 		LiftAmbassador.setAppInterface((LiftAmbassador.LiftAppInterface) dependencies.get(theLiftAppInterfaceId));
 		LiftAmbassador.setSceneLauncher((LiftAmbassador.LiftSceneInterface) dependencies.get(theLiftSceneInterfaceId));
+		LiftAmbassador.setNetConfigInterface((LiftAmbassador.LiftNetworkConfigInterface) dependencies.get(theLiftNetConfigInterfaceId));
 		connectWebContent((QueryInterface) dependencies.get(queryEmitterId),
 				(GlobalConfigEmitter.GlobalConfigService) dependencies.get(globalConfigId));
 		return new LiftAmbassador.inputInterface();
@@ -87,6 +90,8 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 			LiftAmbassador.setAppInterface((LiftAmbassador.LiftAppInterface) dependency);
 		} else if (theLiftSceneInterfaceId.equals(serviceId)) {
 			LiftAmbassador.setSceneLauncher((LiftAmbassador.LiftSceneInterface) dependency);
+		} else if (theLiftNetConfigInterfaceId.equals(serviceId)) {
+			LiftAmbassador.setNetConfigInterface((LiftAmbassador.LiftNetworkConfigInterface) dependency);
 		}
 	}
 
@@ -102,7 +107,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		if (webAppEntities.size() > 1) {
 			theLogger.warning("Multiple Web App Entities detected in global config! Ignoring all but the first");
 		}
-		if (webAppEntities.size() == 0) {
+		if (webAppEntities.isEmpty()) {
 			theLogger.warning("Could not find a specified web app entity, cannot create lift config");
 		} else {
 			Ident qGraph;
