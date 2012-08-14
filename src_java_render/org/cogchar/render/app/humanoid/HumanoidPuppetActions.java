@@ -23,6 +23,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.Trigger;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,13 +43,15 @@ import org.cogchar.render.model.databalls.BallBuilder;
 public class HumanoidPuppetActions extends BasicDebugger {
 	static BasicDebugger theDbg = new BasicDebugger();
 	
+	private static KeyBindingConfig keyBindings;
+	
     public enum PlayerAction {
         RESET_CAMERA {
             void act(HumanoidRenderContext ctx) {
 				ctx.setDefaultCameraLocation();
             }
             int getTriggerKey() { 
-                return KeyInput.KEY_F1;
+				return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
@@ -57,14 +60,14 @@ public class HumanoidPuppetActions extends BasicDebugger {
 				ctx.toggleDebugSkeletons();
             }
             int getTriggerKey() { 
-                return KeyInput.KEY_F2;
+                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  		
         SAY_THE_TIME {
 			// uses default act() and boxy wiring
             int getTriggerKey() { 
-                return KeyInput.KEY_F3;
+                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },      
@@ -72,14 +75,14 @@ public class HumanoidPuppetActions extends BasicDebugger {
 		STOP_AND_RESET_CHAR {
 			// uses default act() and boxy wiring
             int getTriggerKey() { 
-                return KeyInput.KEY_F4;
+                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  		
 		STOP_RESET_AND_RECENTER_CHAR {
 			// uses default act() and boxy wiring
             int getTriggerKey() { 
-                return KeyInput.KEY_F5;
+                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  		
@@ -87,14 +90,14 @@ public class HumanoidPuppetActions extends BasicDebugger {
 		USE_PERM_ANIMS {
 			// uses default act() and boxy wiring
             int getTriggerKey() { 
-                return KeyInput.KEY_F6;
+                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  			
 		USE_TEMP_ANIMS {
 			// uses default act() and boxy wiring
             int getTriggerKey() { 
-                return KeyInput.KEY_F7;
+                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  				
@@ -102,7 +105,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
         RELOAD_BEHAVIOR {
 			// uses default act() and boxy wiring
             int getTriggerKey() { 
-                return KeyInput.KEY_F8;
+                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
@@ -112,7 +115,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 			// 
 			// uses default act() and boxy wiring
             int getTriggerKey() { 
-                return KeyInput.KEY_F9;
+                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },
@@ -124,7 +127,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 				ctx.requestConfigReload("WorldConfig");
             }
             int getTriggerKey() { 
-                return KeyInput.KEY_F11;
+                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
@@ -141,7 +144,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 				ctx.requestConfigReload("BoneRobotConfig");
             }
             int getTriggerKey() { 
-                return KeyInput.KEY_F12;
+                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
@@ -157,7 +160,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 				hw.togglePhysicsKinematicModeEnabled();
             }
             int getTriggerKey() { 
-                return KeyInput.KEY_K;
+                return getKey(this);
             }
         },
         STAND_UP {
@@ -166,7 +169,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 				hw.makeSinbadStandUp();
             }
             int getTriggerKey() { 
-                return KeyInput.KEY_SPACE;
+                return getKey(this);
             }	
         },
         BOOGIE {
@@ -178,7 +181,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 				}
             }
             int getTriggerKey() { 
-                return KeyInput.KEY_B;
+                return getKey(this);
             }	
         },   		
   		
@@ -187,7 +190,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
                 ctx.getGameFeatureAdapter().cmdShoot();
             }  
             int getTriggerKey() { 
-                return -MouseInput.BUTTON_LEFT; // Negative tells makeJME3InputTriggers this is mouse input - not ideal but will work for now
+				return getKey(this);
             }
         }, 
         BOOM {
@@ -198,7 +201,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
                 return new Trigger[] { new MouseButtonTrigger(MouseInput.BUTTON_RIGHT)};
             }
             int getTriggerKey() { 
-                return -MouseInput.BUTTON_RIGHT; // Negative tells makeJME3InputTriggers this is mouse input - not ideal but will work for now
+				return getKey(this);
             } 
         }, 
 		SHOW_RESOURCE_BALLS {
@@ -206,7 +209,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
                 BallBuilder.runBalls();
             }
             int getTriggerKey() { 
-                return KeyInput.KEY_L;
+                return getKey(this);
             }            
         },
 		PICK_BALLS {
@@ -214,7 +217,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
                 BallBuilder.pick();
             }
             int getTriggerKey() { 
-                return KeyInput.KEY_P;
+                return getKey(this);
             }            
         },
         BIGGER_PROJECTILE {
@@ -222,7 +225,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
                 ctx.getGameFeatureAdapter().getProjectileMgr().cmdBiggerProjectile();
             }
             int getTriggerKey() { 
-                return KeyInput.KEY_PERIOD;
+                return getKey(this);
             }            
         },
         SMALLER_PROJECTILE {
@@ -230,7 +233,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
                 ctx.getGameFeatureAdapter().getProjectileMgr().cmdSmallerProjectile();
             }
             int getTriggerKey() { 
-                return KeyInput.KEY_COMMA;
+                return getKey(this);
             }            
         };  // Last enum constant code block gets a semicolon.
 		
@@ -251,6 +254,34 @@ public class HumanoidPuppetActions extends BasicDebugger {
 			BonyConfigEmitter bce = hrc.getBonyConfigEmitter();
 			return hrc.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
 		}
+		static int getKey(PlayerAction actionType) {
+			int keyInput = -100; // This input not mapped to any key; we'll use it in the event of not finding one from keyBindings
+			String keyString = null;
+			String action = actionType.name();
+			if (keyBindings.myGeneralBindings.containsKey(action)) {
+				keyString = keyBindings.myGeneralBindings.get(action).boundKey;
+			} else {
+				getLoggerForClass(HumanoidPuppetActions.PlayerAction.class)
+						.warn("Attemping to retrieve key binding for " + action + ", but none is found");
+			}
+			try {
+				if ((keyString.startsWith("AXIS")) || (keyString.startsWith("BUTTON"))) { // In this case, must be MouseInput
+					// We'll have to use reflection to get from the config strings to the fields in jME's KeyInput and MouseInput
+					Field keyField = MouseInput.class.getField(keyString);
+					// Inverting this result to stuck with old trick (for now) of having mouse triggers be negative so
+					// makeJME3InputTriggers can ignore mouse inputs for the purpose of the keyboard mapping help screen
+					// setup. Value is re-inverted there for proper handling.
+					keyInput = -keyField.getInt(keyField);
+				} else { // ... regular KeyInput
+					Field keyField = KeyInput.class.getField("KEY_" + keyString);
+					keyInput = keyField.getInt(keyField);
+				}
+			} catch (Exception e) {
+				getLoggerForClass(HumanoidPuppetActions.PlayerAction.class).warn(
+						"Error getting binding for " + actionType.toString() + ": " + e);
+			}
+			return keyInput;
+		}
 	};
     
     /* 
@@ -270,7 +301,8 @@ public class HumanoidPuppetActions extends BasicDebugger {
              else {return new Trigger[] { new MouseButtonTrigger(-keyCode)};}
         }
     
-    static void setupActionListeners(InputManager inputManager, final HumanoidRenderContext ctx) {
+    static void setupActionListeners(InputManager inputManager, final HumanoidRenderContext ctx, KeyBindingConfig config) {
+		keyBindings = config;
         PlayerAction pavals[] = PlayerAction.values();
 		List<String> actionNamesList = new ArrayList<String>();
 		boolean minSimMode = ctx.getBonyConfigEmitter().isMinimalSim();

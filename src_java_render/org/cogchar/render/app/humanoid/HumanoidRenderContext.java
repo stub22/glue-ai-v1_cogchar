@@ -35,7 +35,7 @@ import org.cogchar.render.model.humanoid.HumanoidFigureModule;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
 import org.cogchar.render.opengl.optic.CameraMgr;
-// Below imports added for initHelpScreen - should go elsewhere eventually
+// Below imports added for initHelpScreen - should go elsewhere eventually(?)
 import com.jme3.font.BitmapText;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -44,8 +44,6 @@ import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.core.RenderRegistryClient;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
 import org.cogchar.render.app.core.CogcharRenderContext;
 
 
@@ -100,12 +98,13 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 		InputManager inputManager = findJme3InputManager(null);
 
-		HumanoidPuppetActions.setupActionListeners(inputManager, this);
-		SceneActions.setupActionListeners(inputManager);
+		// Now done in initBindings, called by PumaAppContext along with initCinema
+		//HumanoidPuppetActions.setupActionListeners(inputManager, this);
+		//SceneActions.setupActionListeners(inputManager);
 
 		WorkaroundFuncsMustDie.initScoreBoard(this);
 
-		initHelpScreen(someSettings, inputManager);
+		//initHelpScreen(someSettings, inputManager);
 	}
 
 	public HumanoidFigure getHumanoidFigure(Ident charIdent, HumanoidConfig hc, Ident bonyConfigGraph) {
@@ -155,6 +154,16 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		FlyByCamera fbCam = stub.getFlyByCamera();
 		fbCam.setMoveSpeed(50);
 		//initLightsCameraCinematics();
+	}
+	
+	// Formerly performed in postInitLaunch, this is now called from PumaAppContext once the KeyBindingConfig is complete
+	// Might make sense to just move this to PumaAppContext
+	public void initBindings(KeyBindingConfig theConfig) {
+		InputManager inputManager = findJme3InputManager(null);
+		HumanoidPuppetActions.setupActionListeners(inputManager, this, theConfig);
+		SceneActions.setupActionListeners(inputManager, theConfig);
+		AppSettings someSettings = getJMonkeyAppSettings();
+		initHelpScreen(someSettings, inputManager);
 	}
 	
 	/* For now at least, these functions are moved to PumaAppContext - that way we doing all the config from one place
