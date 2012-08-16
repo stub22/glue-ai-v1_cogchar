@@ -21,6 +21,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 
@@ -39,6 +40,7 @@ import org.cogchar.render.opengl.optic.CameraMgr;
 import com.jme3.font.BitmapText;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import java.lang.reflect.Field;
 import javax.swing.JFrame;
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
@@ -96,7 +98,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 		myGameFeatureAdapter.initFeatures();
 
-		InputManager inputManager = findJme3InputManager(null);
+		//InputManager inputManager = findJme3InputManager(null);
 
 		// Now done in initBindings, called by PumaAppContext along with initCinema
 		//HumanoidPuppetActions.setupActionListeners(inputManager, this);
@@ -160,10 +162,21 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	// Might make sense to just move this to PumaAppContext
 	public void initBindings(KeyBindingConfig theConfig) {
 		InputManager inputManager = findJme3InputManager(null);
+		// If the help screen is displayed, we need to remove it since we'll be making a new one later	
+		if (currentHelpText != null) {
+			findOrMakeSceneFlatFacade(null).detachOverlaySpatial(currentHelpText);
+		}
+		inputManager.clearMappings(); // May be a reload, so let's clear the mappings
+		KeyBindingTracker.clearMap(); // If we do that, we'd better clear the KeyBindingTracker too
+		// Since we just cleared mappings and are (for now at least) using the default FlyByCamera mappings, we must re-register them
+		FlyByCamera fbCam = getAppStub().getFlyByCamera();
+		fbCam.registerWithInput(inputManager);
+		// Now we'll register the mappings in Cog Char based on theConfig
 		HumanoidPuppetActions.setupActionListeners(inputManager, this, theConfig);
 		SceneActions.setupActionListeners(inputManager, theConfig);
+		// ... and finally set up the help screen now that the mappings are done
 		AppSettings someSettings = getJMonkeyAppSettings();
-		initHelpScreen(someSettings, inputManager);
+		initHelpScreen(someSettings, inputManager, theConfig);
 	}
 	
 	/* For now at least, these functions are moved to PumaAppContext - that way we doing all the config from one place
@@ -204,29 +217,51 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 	// Does this best live here or further up in one of the context superclasses? Dunno, but should be easy enough to move it up later (w/o private); be sure to remove imports
 	// In order to access registry, must live in a class that extends CogcharRenderContext
-	private void initHelpScreen(AppSettings settings, InputManager inputManager) {
-		final String HELP_TAG = "Help"; // Should be defined elsewhere or perhaps via RDF for goodness, but just for the moment
-		final int HELP_KEY = com.jme3.input.KeyInput.KEY_H; // Same here - coming from RDF eventually
-		KeyBindingTracker.addBinding(HELP_TAG, HELP_KEY); // Let's add ourselves to the help list!
-		final BitmapText helpBT = findOrMakeSceneTextFacade(null).makeHelpScreen(0.6f, settings); // First argument sets text size, really shouldn't be hard-coded
-		KeyTrigger keyTrig = new KeyTrigger(HELP_KEY);
-		inputManager.addMapping(HELP_TAG, keyTrig);
-		inputManager.addListener(new ActionListener() {
+	private BitmapText currentHelpText; // We need to save this now, so it can be turned off automatically for reconfigs
 
-			private boolean helpDisplayed = false;
+	private void initHelpScreen(AppSettings settings, InputManager inputManager, KeyBindingConfig bindingConfig) {
+		final String HELP_TAG = "Help"; // Perhaps should be defined elsewhere?
+		final int NULL_KEY = -100; // This input not mapped to any key; we'll use it in the event of not finding one from bindingConfig
+		int helpKey = NULL_KEY;
+		String keyString = null;
+		if (bindingConfig.myGeneralBindings.containsKey(HELP_TAG)) {
+			keyString = bindingConfig.myGeneralBindings.get(HELP_TAG).boundKey;
+		} else {
+			logWarning("Attemping to retrieve key binding for help screen, but none is found");
+		}
+		try {
+			if ((keyString.startsWith("AXIS")) || (keyString.startsWith("BUTTON"))) { // In this case, must be MouseInput
+				logWarning("Mouse triggers not supported help screen");
+			} else { // ... regular KeyInput
+				Field keyField = KeyInput.class.getField("KEY_" + keyString.toUpperCase());
+				helpKey = keyField.getInt(keyField);
+			}
+		} catch (Exception e) {
+			logWarning("Error getting binding for help screen: " + e);
+		}
+		if (helpKey != NULL_KEY) {
+			KeyBindingTracker.addBinding(HELP_TAG, helpKey); // Let's add ourselves to the help list!
+			final BitmapText helpBT = findOrMakeSceneTextFacade(null).makeHelpScreen(0.6f, settings); // First argument sets text size, really shouldn't be hard-coded
+			currentHelpText = helpBT;
+			KeyTrigger keyTrig = new KeyTrigger(helpKey);
+			inputManager.addMapping(HELP_TAG, keyTrig);
+			inputManager.addListener(new ActionListener() {
 
-			public void onAction(String name, boolean isPressed, float tpf) {
-				if (isPressed) {
-					if (!helpDisplayed) {
-						findOrMakeSceneFlatFacade(null).attachOverlaySpatial(helpBT);
-						helpDisplayed = true;
-					} else {
-						findOrMakeSceneFlatFacade(null).detachOverlaySpatial(helpBT);
-						helpDisplayed = false;
+				private boolean helpDisplayed = false;
+
+				public void onAction(String name, boolean isPressed, float tpf) {
+					if (isPressed) {
+						if (!helpDisplayed) {
+							findOrMakeSceneFlatFacade(null).attachOverlaySpatial(helpBT);
+							helpDisplayed = true;
+						} else {
+							findOrMakeSceneFlatFacade(null).detachOverlaySpatial(helpBT);
+							helpDisplayed = false;
+						}
 					}
 				}
-			}
-		}, HELP_TAG);
+			}, HELP_TAG);
+		}
 	}
 
 	/**

@@ -223,8 +223,7 @@ public class PumaAppContext extends BasicDebugger {
 				PumaDualCharacter pdc = connectDualRobotChar(charIdent, myHumanoidConfig.nickname);
 				pdcList.add(pdc);
 				setupCharacterBindingToRobokind(pdc, graphIdentForBony, myHumanoidConfig);
-				// Must be done after jME triggers are set - now in initCinema
-				//setupAndStartBehaviorTheater(pdc);
+				setupAndStartBehaviorTheater(pdc);
 			}
 		}
 		return pdcList;
@@ -280,26 +279,20 @@ public class PumaAppContext extends BasicDebugger {
 				} catch (Exception e) {
 					logWarning("Could not get valid graph on which to query for input bindings config of " + configIdent.getLocalName());
 				}
+
 			}
 		} catch (Exception e) {
 			logError("Could not retrieve any specified VirtualWorldEntity for this global configuration!");
 		}
 		myHRC.initBindings(currentBindingConfig);
-		// Now it's time to setupAndStartBehaviorTheater since we now have the keyboard bindings initialized
-		for (PumaDualCharacter pdc : pdcList) {
-			try {
-				setupAndStartBehaviorTheater(pdc); // Must be done after jME triggers are set
-			} catch (Throwable t) {
-				logError("Error starting behavior theater: " + t);
-			}
-		}
 	}
+	
 	
 	// This reproduces the (no parameter) form of initCinema which will be the long-term
 	// method - the initCinematics parameter is only necessary to bypass cinematics reconfig
 	// until jME problems with reinit of cinematic camera binding are sorted
 	public void initCinema() {
-            initCinema(true);
+		initCinema(true);
     }
 	
 	public void reloadWorldConfig() {
@@ -329,7 +322,7 @@ public class PumaAppContext extends BasicDebugger {
 	}
 
 	public void setupAndStartBehaviorTheater(PumaDualCharacter pdc) throws Throwable {
-		pdc.registerDefaultSceneTriggers();
+		//pdc.registerDefaultSceneTriggers(); // Seems this doesn't actually do anything at this point
 		pdc.loadBehaviorConfig(false);
 
 		registerSpecialInputTriggers(pdc);

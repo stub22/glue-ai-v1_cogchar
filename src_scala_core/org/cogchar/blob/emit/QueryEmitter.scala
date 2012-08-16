@@ -40,12 +40,20 @@ class QueryEmitter extends QueryInterface {
   
   private def ensureRepo {
 	if (QuerySheet.repo == null) {
-	  QuerySheet.repo = SheetRepo.loadTestSheetRepo()
+	  QuerySheet.repo = loadSheetRepo
 	}
   }
   
   def reloadSheetRepo {
-	QuerySheet.repo = SheetRepo.loadTestSheetRepo()
+	QuerySheet.repo = loadSheetRepo
+  }
+  
+  // Modeled on SheetRepo.loadTestSheetRepo
+  def loadSheetRepo : SheetRepo = {
+	val dirModel : Model = SheetRepo.readDirectoryModelFromGoog(QuerySheet.SHEET_KEY, QuerySheet.NS_SHEET_NUM, QuerySheet.DIR_SHEET_NUM) 
+	val sr = new SheetRepo(dirModel)
+	sr.loadSheetModelsIntoMainDataset()
+	sr
   }
   
   /** Returns the current cached SheetRepo
@@ -456,6 +464,10 @@ class QueryEmitter extends QueryInterface {
 
 object QuerySheet {
   
+  final val SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" // Main test sheet!
+  //final val SHEET_KEY = "0Ajj1Rnx7FCoHdFN0MEV0NzkwRjNlQnZJOTBmQS1uR3c" // Biggs test sheet!
+  final val NS_SHEET_NUM = 9
+  final val DIR_SHEET_NUM = 8
   final val QUERY_SHEET = "ccrt:qry_sheet_22"
   final val GRAPH_QUERY_VAR = "qGraph"
   var repo: SheetRepo = null;
