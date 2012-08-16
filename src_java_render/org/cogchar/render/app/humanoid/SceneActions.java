@@ -68,12 +68,14 @@ public class SceneActions {
 		while (sceneMappings.hasNext()) {
 			KeyBindingConfigItem nextMapping = sceneMappings.next();
 			int sceneTrigKeyNum = getKey(nextMapping);
-			KeyTrigger keyTrig = new KeyTrigger(sceneTrigKeyNum);
-			String sceneTrigName = nextMapping.boundAction;
-			inputManager.addMapping(sceneTrigName, keyTrig);
-			bindingMap.put(sceneTrigName, sceneTrigKeyNum);
-			actionNames[idx] = sceneTrigName;
-			idx++;
+			if (sceneTrigKeyNum != NULL_KEY) {
+				KeyTrigger keyTrig = new KeyTrigger(sceneTrigKeyNum);
+				String sceneTrigName = nextMapping.boundAction;
+				inputManager.addMapping(sceneTrigName, keyTrig);
+				bindingMap.put(sceneTrigName, sceneTrigKeyNum);
+				actionNames[idx] = sceneTrigName;
+				idx++;
+			}
 		}
 		// Now put sorted sequence of bindings in KeyBindingTracker
 		Iterator<Map.Entry<String, Integer>> bindingIterator = bindingMap.entrySet().iterator();
@@ -126,14 +128,15 @@ public class SceneActions {
 		return theBinder;
 	}
 	
+	final static int NULL_KEY = -100; // This input not mapped to any key; we'll use it in the event of not finding one from config
 	private static int getKey(KeyBindingConfigItem mapping) {
-		int keyInput = -100; // This input not mapped to any key; we'll use it in the event of not finding one from config
+		int keyInput = NULL_KEY; 
 		String keyString = mapping.boundKey;
 		try {
 			if ((keyString.startsWith("AXIS")) || (keyString.startsWith("BUTTON"))) { // In this case, must be MouseInput
-				theLogger.warn("Mouse triggers not supported for scene actions");
+				theLogger.warn("Mouse triggers not supported for scene actions -- " + mapping.boundAction + " not mapped.");
 			} else { // ... regular KeyInput - must use reflection to get fron key names to jME KeyInput field values
-				Field keyField = KeyInput.class.getField("KEY_" + keyString);
+				Field keyField = KeyInput.class.getField("KEY_" + keyString.toUpperCase());
 				keyInput = keyField.getInt(keyField);
 			}
 		} catch (Exception e) {

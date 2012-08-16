@@ -197,9 +197,6 @@ public class HumanoidPuppetActions extends BasicDebugger {
             void act(HumanoidRenderContext ctx) {
                 ctx.getGameFeatureAdapter().cmdBoom();
             }
-            Trigger[] makeJME3InputTriggers() { 
-                return new Trigger[] { new MouseButtonTrigger(MouseInput.BUTTON_RIGHT)};
-            }
             int getTriggerKey() { 
 				return getKey(this);
             } 
@@ -254,8 +251,9 @@ public class HumanoidPuppetActions extends BasicDebugger {
 			BonyConfigEmitter bce = hrc.getBonyConfigEmitter();
 			return hrc.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
 		}
+		final static int NULL_KEY = -100; // This input not mapped to any key; we'll use it in the event of not finding one from keyBindings
 		static int getKey(PlayerAction actionType) {
-			int keyInput = -100; // This input not mapped to any key; we'll use it in the event of not finding one from keyBindings
+			int keyInput = NULL_KEY; 
 			String keyString = null;
 			String action = actionType.name();
 			if (keyBindings.myGeneralBindings.containsKey(action)) {
@@ -273,7 +271,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 					// setup. Value is re-inverted there for proper handling.
 					keyInput = -keyField.getInt(keyField);
 				} else { // ... regular KeyInput
-					Field keyField = KeyInput.class.getField("KEY_" + keyString);
+					Field keyField = KeyInput.class.getField("KEY_" + keyString.toUpperCase());
 					keyInput = keyField.getInt(keyField);
 				}
 			} catch (Exception e) {
@@ -293,13 +291,17 @@ public class HumanoidPuppetActions extends BasicDebugger {
     * Not very nice in long run, but gets it going with minimum of modification for now
     */
     private static Trigger[] makeJME3InputTriggers(PlayerAction pa) {
-            int keyCode = pa.getTriggerKey();
-            if (keyCode > 0) {
-                KeyBindingTracker.addBinding(pa.name(), keyCode);
-                return new Trigger[] { new KeyTrigger(keyCode)};
-            }
-             else {return new Trigger[] { new MouseButtonTrigger(-keyCode)};}
-        }
+		int keyCode = pa.getTriggerKey();
+		Trigger[] newTrigger = null;
+		if (keyCode != PlayerAction.NULL_KEY) {
+			if (keyCode > 0) {
+				KeyBindingTracker.addBinding(pa.name(), keyCode);
+				newTrigger = new Trigger[] { new KeyTrigger(keyCode)};
+			}
+			else {newTrigger = new Trigger[] { new MouseButtonTrigger(-keyCode)};}
+		}
+		return newTrigger;
+	}
     
     static void setupActionListeners(InputManager inputManager, final HumanoidRenderContext ctx, KeyBindingConfig config) {
 		keyBindings = config;
@@ -314,8 +316,12 @@ public class HumanoidPuppetActions extends BasicDebugger {
 					continue;
 				}
 			}
-			actionNamesList.add(actionName);
-            inputManager.addMapping(actionName, makeJME3InputTriggers(pa));
+			Trigger[] newTrigger = makeJME3InputTriggers(pa);
+			if (newTrigger != null) {
+				actionNamesList.add(actionName);
+				inputManager.addMapping(actionName, makeJME3InputTriggers(pa));
+			}
+            
         }
 		String actionNames[] = new String[actionNamesList.size()];
 		actionNamesList.toArray(actionNames);
