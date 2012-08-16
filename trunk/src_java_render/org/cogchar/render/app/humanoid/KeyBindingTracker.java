@@ -20,20 +20,22 @@ import java.util.Map;
 
 /**
  * A very simple class with a static map to keep track of key bindings for help overlay
- * 
+ *
  * @author Ryan Biggs
  */
-
-
 public class KeyBindingTracker {
-    static private Map<String, Integer> bindingMap = new LinkedHashMap<String, Integer>();
-    
-    static void addBinding(String action, Integer key) {
-        bindingMap.put(action, key); // Or do we want (key, action)? May depend on future of this class
-    }
-    
-    public static Map<String, Integer> getBindingMap() {
-        return bindingMap;
-    }
-    
+
+	static private Map<String, Integer> bindingMap = new LinkedHashMap<String, Integer>();
+
+	static void addBinding(String action, Integer key) {
+		bindingMap.put(action, key); // Or do we want (key, action)? May depend on future of this class
+	}
+
+	public static Map<String, Integer> getBindingMap() {
+		return bindingMap;
+	}
+
+	public static void clearMap() {
+		bindingMap.clear();
+	}
 }
