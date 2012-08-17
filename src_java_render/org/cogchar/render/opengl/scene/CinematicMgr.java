@@ -58,7 +58,7 @@ public class CinematicMgr extends BasicDebugger {
 
 	public static void storeCinematicsFromConfig(CinematicConfig config, CogcharRenderContext crc) {
 		BallBuilder.storeCinematicConfig(config); // Temporary for BallBuilder demo
-		
+
 		myCRC = crc;
 		RenderRegistryClient rrc = crc.getRenderRegistryClient();
 		Node jmeRootNode = rrc.getJme3RootDeepNode(null);
@@ -325,19 +325,34 @@ public class CinematicMgr extends BasicDebugger {
 		}
 		return validAction;
 	}
-	
+
 	public static void clearCinematics(CogcharRenderContext crc) {
-		AppStateManager manager = crc.getRenderRegistryClient().getJme3AppStateManager(null);
-		AppState state;
-		int detachCounter = 0;
+		final AppStateManager manager = crc.getRenderRegistryClient().getJme3AppStateManager(null);
+
 		// Keeps getting AppStates of class Cinematic and detaching them until there are no more
-		do {
-			state = manager.getState(Cinematic.class);
-			if (state != null) {
-				manager.detach(state);
-				detachCounter++;
+		Future<Object> detachFuture = myCRC.enqueueCallable(new Callable<Integer>() { // Do this on main render thread to detach successfully
+
+			@Override
+			public Integer call() throws Exception {
+				int counter = 0;
+				AppState state;
+				do {
+					state = manager.getState(Cinematic.class);
+					if (state != null) {
+						manager.detach(state);
+						counter++;
+					}
+				} while (state != null);
+				return counter;
 			}
-		} while (state != null);
+		});
+		int detachCounter = 0;
+		try {
+			// Gets the detached items counter, and waits to be sure everything is really detached
+			detachCounter = (Integer) detachFuture.get(3, java.util.concurrent.TimeUnit.SECONDS);
+		} catch (Exception e) {
+			staticLogger.error("Exception getting number of cinematics detached: " + e.toString());
+		}
 		myCinematicsByName.clear();
 		myTracksByName.clear();
 		myWaypointsByName.clear();
