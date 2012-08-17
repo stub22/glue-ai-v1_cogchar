@@ -68,7 +68,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	// a method that will be general (thus the String key for the request type) and packaged in an interface we can 
 	// pass around. PumaAppContext will set the interface on creation of the HRC.
 	public interface UpdateInterface {
-		public void updateConfig(String request);
+		public boolean updateConfig(String request);
 	}
 	
 	public void setUpdateInterface(UpdateInterface theInterface) {
