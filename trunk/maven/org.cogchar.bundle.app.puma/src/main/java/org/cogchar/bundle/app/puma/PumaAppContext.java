@@ -18,7 +18,6 @@ package org.cogchar.bundle.app.puma;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.appdapter.core.item.FreeIdent;
 import org.appdapter.core.item.Ident;
 import org.appdapter.core.log.BasicDebugger;
@@ -30,7 +29,6 @@ import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.blob.emit.QueryInterface;
 import org.cogchar.blob.emit.QuerySheet;
 import org.cogchar.platform.trigger.DummyBinding;
-import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.humanoid.KeyBindingConfig;
 import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;  // Perhaps we want to fetch this from a context instead, but it's a singleton, so no harm in getting it directly for the moment
@@ -139,25 +137,47 @@ public class PumaAppContext extends BasicDebugger {
 		myGlobalConfig = new GlobalConfigEmitter(new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode));
 	}
 	
-	// A half baked idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
+	// A half baked (3/4 baked?) idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
 	public boolean updateConfigByRequest(String request) {
-		// Eventually we may decide on a good home for these constants:
-		String WORLD_CONFIG = "worldconfig";
-		String BONE_ROBOT_CONFIG = "bonerobotconfig";
-		String MANAGED_GCS = "managedglobalconfigservice";
+		// Eventually we may decide on a good home for these constants:	
+		final String WORLD_CONFIG = "worldconfig";
+		final String BONE_ROBOT_CONFIG = "bonerobotconfig";
+		final String MANAGED_GCS = "managedglobalconfigservice";
+
+		// Do the actual updates on a new thread. That way we don't block the render thread. Much less intrusive, plus this way things
+		// we need to enqueue on main render thread will actually complete -  it must not be blocked during some of the update operations!
+		// This brings up an interesting point: we are probably doing far too much on the main render thread!
 		logInfo("Updating config by request: " + request);
 		boolean success = true;
 		if (WORLD_CONFIG.equals(request.toLowerCase())) {
-			reloadWorldConfig();
+			Thread updateThread = new Thread() {
+
+				public void run() {
+					reloadWorldConfig();
+				}
+			};
+			updateThread.start();
 		} else if (BONE_ROBOT_CONFIG.equals(request.toLowerCase())) {
-			reloadBoneRobotConfig();
+			Thread updateThread = new Thread() {
+
+				public void run() {
+					reloadBoneRobotConfig();
+				}
+			};
+			updateThread.start();
 		} else if (MANAGED_GCS.equals(request.toLowerCase())) {
 			if (gcComp != null) {
 				gcComp.stop();
 			}
-			updateGlobalConfig();
-			success = startGlobalConfigService();
+			Thread updateThread = new Thread() {
+
+				public void run() {
+					updateGlobalConfig();
+					startGlobalConfigService(); // would be nice to set success to the value returned here, but we can't without blocking the render thread, even using a future.
+				}
+			};
+			updateThread.start();
 		} else {
 			logWarning("PumaAppContext did not recognize the config update to be performed: " + request);
 			success = false;
@@ -167,8 +187,8 @@ public class PumaAppContext extends BasicDebugger {
 	
 	class UpdateInterfaceImpl implements HumanoidRenderContext.UpdateInterface {
 		@Override
-		public void updateConfig(String request) {
-			updateConfigByRequest(request);
+		public boolean updateConfig(String request) {
+			return updateConfigByRequest(request);
 		}
 	}
 
@@ -234,7 +254,7 @@ public class PumaAppContext extends BasicDebugger {
 	// back to HRC if there are philosophical reasons for doing so. (We'd also have to pass two graph flavors to it for this.)
 	// Added: since jMonkey key bindings are part of "virtual world" config like Lights/Camera/Cinematics, they are also 
 	// set here
-	public void initCinema(boolean initCinematics) {
+	public void initCinema() {
 		myHRC.initCinema();
 		KeyBindingConfig currentBindingConfig = new KeyBindingConfig();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
@@ -260,12 +280,10 @@ public class PumaAppContext extends BasicDebugger {
 				} catch (Exception e) {
 					logWarning("Could not get valid graph on which to query for Cinematics config of " + configIdent.getLocalName());
 				}
-                if (initCinematics){
-					try {
-						myRenderMapper.initCinematics(myHRC, graphIdent);
-					} catch (Exception e) {
-						logWarning("Error attempting to initialize Cinematics for " + configIdent.getLocalName() + ": " + e);
-					}		
+				try {
+					myRenderMapper.initCinematics(myHRC, graphIdent);
+				} catch (Exception e) {
+					logWarning("Error attempting to initialize Cinematics for " + configIdent.getLocalName() + ": " + e);
 				}
 				// Like with everything else dependent on global config's graph settings (except for Lift, which uses a managed service
 				// version of GlobalConfigEmitter) it seems logical to set the key bindings here.
@@ -287,21 +305,13 @@ public class PumaAppContext extends BasicDebugger {
 		myHRC.initBindings(currentBindingConfig);
 	}
 	
-	
-	// This reproduces the (no parameter) form of initCinema which will be the long-term
-	// method - the initCinematics parameter is only necessary to bypass cinematics reconfig
-	// until jME problems with reinit of cinematic camera binding are sorted
-	public void initCinema() {
-		initCinema(true);
-    }
-	
 	public void reloadWorldConfig() {
 		updateGlobalConfig();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		myRenderMapper.clearLights(myHRC);
-		//myRenderMapper.clearCinematics(myHRC); // Bypassing until cinematic reinit problems solved
+		myRenderMapper.clearCinematics(myHRC);
 		myRenderMapper.clearViewPorts(myHRC);
-		initCinema(false); // initCinematics is false temporarily until cinematic reinit problems solved
+		initCinema();
 	}
 	
 	public void reloadBoneRobotConfig() {
