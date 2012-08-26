@@ -27,7 +27,7 @@ public class ConvoTestActivator implements BundleActivator {
     
     @Override
     public void start(BundleContext context) throws Exception {
-        ConversationFrame.main(null);
+        //ConversationFrame.main(null);
     }
     
     @Override

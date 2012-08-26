@@ -15,7 +15,9 @@
  */
 package org.cogchar.bundle.demo.dictation.ui;
 
-import org.jflux.api.encode.EncodeRequest;
+import org.apache.qpid.client.AMQSession;
+import org.jflux.api.core.Source;
+import org.jflux.api.core.Notifier;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,10 +28,12 @@ import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
+import org.apache.qpid.client.AMQConnection;
 import org.cogchar.bundle.demo.dictation.sound.SoundDetector;
 import org.jflux.api.core.node.ConsumerNode;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
 import org.jflux.api.core.Adapter;
+import org.jflux.api.core.util.DefaultNotifier;
 import org.jflux.impl.messaging.JMSAvroUtils;
 import org.jflux.impl.transport.jms.MessageHeaderAdapter;
 import org.robokind.api.common.utils.TimeUtils;
@@ -48,17 +52,35 @@ import static org.cogchar.bundle.demo.dictation.osgi.DictationConfigUtils.*;
 public class DefaultDictationGrabber implements DictationGrabber{
     private final static Logger theLogger = Logger.getLogger(DefaultDictationGrabber.class.getName());
     private static DateFormat theDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
-    private DictationPanel myPanel;
     private SoundDetector mySoundDetector;
     private ConsumerNode<String> mySpeechRecSender;
     private Connection myConnection;
     private Session mySession;
     private String myCapturedDictation;
+    private Notifier<String> myDictationLogger;
+    private Notifier<String> myConcatInputNotifier;
+    private Source<String> myConcatInputSource;
+    private Source<String> myDictationInputSource;
     
-    public DefaultDictationGrabber(DictationPanel dp){
-        myPanel = dp;
+    public DefaultDictationGrabber(
+            Source<String> concatInput, Source<String> dictationInput){
+        if(concatInput == null || dictationInput == null){
+            throw new NullPointerException();
+        }
         mySoundDetector = new SoundDetector(this);
         myCapturedDictation = "";
+        myConcatInputSource = concatInput;
+        myDictationInputSource = dictationInput;
+        myDictationLogger = new DefaultNotifier<String>();
+        myConcatInputNotifier = new DefaultNotifier<String>();
+    }
+    
+    public Notifier<String> getDictationLogNotifier(){
+        return myDictationLogger;
+    }
+    
+    public Notifier<String> getConcatInputNotifier(){
+        return myConcatInputNotifier;
     }
 
     @Override
@@ -66,20 +88,20 @@ public class DefaultDictationGrabber implements DictationGrabber{
         collectDictation();
         if(mySpeechRecSender == null){
             myCapturedDictation = "";
-            myPanel.txtConcatInput.setText("");
+            myConcatInputNotifier.notifyListeners("");
             return;
         }else if(myCapturedDictation == null || myCapturedDictation.isEmpty()){
             return;
         }
         mySpeechRecSender.getListener().handleEvent(myCapturedDictation);
-        myPanel.logSpeech(formatSpeech(myCapturedDictation));
+        myDictationLogger.notifyListeners(formatSpeech(myCapturedDictation));
         myCapturedDictation = "";
-        myPanel.txtConcatInput.setText("");
+        myConcatInputNotifier.notifyListeners("");
     }
     
     private String formatSpeech(String str){
         str = "[" + theDateFormat.format(new Date()) + "]: " + str;
-        String s = myPanel.txtMatches.getText();
+        String s = myDictationInputSource.getValue();
         if(s != null && !s.isEmpty()){
             str = "\n\n" + str;
         }
@@ -88,7 +110,7 @@ public class DefaultDictationGrabber implements DictationGrabber{
 
     @Override
     public synchronized boolean collectDictation() {
-        String input = myPanel.txtConcatInput.getText();
+        String input = myConcatInputSource.getValue();
         if(input == null || input.isEmpty() 
                 || input.equals(myCapturedDictation)){
             return false;
@@ -121,13 +143,17 @@ public class DefaultDictationGrabber implements DictationGrabber{
         }
         if(mySession != null){
             try{
+                mySession.setMessageListener(null);
                 mySession.close();
             }catch(JMSException ex){}
             mySession = null;
         }
         if(myConnection != null){
             try{
-                myConnection.close();
+                for(AMQSession s : ((AMQConnection)myConnection).getSessions().values()){
+                    s.close(1000);
+                }
+                ((AMQConnection)myConnection).close(1000);
             }catch(JMSException ex){}
             myConnection = null;
         }        

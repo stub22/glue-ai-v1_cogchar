@@ -21,12 +21,7 @@
  */
 package org.cogchar.bundle.demo.convo.ui;
 
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.jms.*;
-import org.apache.qpid.client.AMQAnyDestination;
-import org.apache.qpid.client.AMQConnectionFactory;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.Source;
 
@@ -35,25 +30,15 @@ import org.jflux.api.core.Source;
  * @author Matthew Stevenson <www.robokind.org>
  */
 public class MessagingConnectPanel extends javax.swing.JPanel {
-    private final static Logger theLogger = Logger.getLogger(MessagingConnectPanel.class.getName());
-    private final static String theAMQPFormatString = "amqp://%s:%s@%s/%s?brokerlist='%s'";
-    Connection myConnection;
-    Session mySession;
-    Destination myDestination;
     
-    private Source<String> myIpSource;
-    private Source<String> myDestSource;
-    private Source<String> myPortSource;
-    private Source<String> myUsernameSource;
-    private Source<String> myPasswordSource;
-    private Source<String> myClientNameSource;
-    private Source<String> myVirtualHostSource;
+    private MessagingConnectImpl myConnector;
     private Listener<String> myIpSetter;
     private Listener<String> myDestSetter;
         
     /** Creates new form MessagingConnectPanel */
     public MessagingConnectPanel() {
         initComponents();
+        myConnector = new MessagingConnectImpl();
     }
     
     public void setBrokerAddress(
@@ -69,23 +54,20 @@ public class MessagingConnectPanel extends javax.swing.JPanel {
                 || clientNameSource == null || virtualHostSource == null){
             throw new NullPointerException();
         }
-        myIpSource = ipSrc;
+        myConnector.setBrokerAddress(
+                ipSrc, portSource, usernameSource, passwordSource, 
+                clientNameSource, virtualHostSource);
         myIpSetter = ipSet;
-        myPortSource = portSource;
-        myUsernameSource = usernameSource;
-        myPasswordSource = passwordSource;
-        myClientNameSource = clientNameSource;
-        myVirtualHostSource = virtualHostSource;
-        txtBrokerAddress.setText(myIpSource.getValue());
+        txtBrokerAddress.setText(ipSrc.getValue());
     }
     
     public void setDestination(Source<String> src, Listener<String> set){
         if(src == null || set == null){
             throw new NullPointerException();
         }
-        myDestSource = src;
+        myConnector.setDestination(src);
         myDestSetter = set;
-        txtDestination.setText(myDestSource.getValue());
+        txtDestination.setText(src.getValue());
     }
     
     public boolean connect(){
@@ -93,112 +75,28 @@ public class MessagingConnectPanel extends javax.swing.JPanel {
         String dest = txtDestination.getText();
         myIpSetter.handleEvent(ip);
         myDestSetter.handleEvent(dest);
-        return connect0();
-    }
-    
-    private boolean connect0(){
-        myDestination = buildDestination();
-        if(myDestination == null){
-            return false;
-        }
-        myConnection = buildConnection();
-        if(myConnection == null){
-            return false;
-        }
-        mySession = buildSession(myConnection);
-        if(mySession == null){
-            disconnect();
-            return false;
-        }
-        txtBrokerAddress.setEnabled(false);
-        txtDestination.setEnabled(false);
-        return true;
+        boolean val = myConnector.connect();
+        txtBrokerAddress.setEnabled(!val);
+        txtDestination.setEnabled(!val);
+        return val;
     }
     
     public void disconnect(){
-        if(mySession != null){
-            try{
-                mySession.close();
-            }catch(JMSException ex){}
-            mySession = null;
-        }
-        if(myConnection != null){
-            try{
-                myConnection.close();
-            }catch(JMSException ex){}
-            myConnection = null;
-        }
+        myConnector.disconnect();
         txtBrokerAddress.setEnabled(true);
         txtDestination.setEnabled(true);
     }
     
-    private String createAMQPConnectionURL(
-            String username, String password, 
-            String clientName, String virtualHost, String tcpAddress){
-        return String.format(theAMQPFormatString, 
-                username, password, clientName, virtualHost, tcpAddress);
-    }
-    
-    private Connection buildConnection(){
-        String ip = myIpSource.getValue();
-        if(ip == null){
-            throw new NullPointerException();
-        }
-        String port = myPortSource.getValue();
-        String addr = "tcp://" + ip + ":" + port;
-        String url = createAMQPConnectionURL(
-                myUsernameSource.getValue(), 
-                myPasswordSource.getValue(), 
-                myClientNameSource.getValue(), 
-                myVirtualHostSource.getValue(), 
-                addr);
-        try{ 
-            String reconnectOptions = "&connectdelay='5000'&retries='2147483647'";
-            url += reconnectOptions;
-            ConnectionFactory fact = new AMQConnectionFactory(url);
-            Connection con = fact.createConnection();
-            if(con == null){
-                return null;
-            }
-            con.start();
-            return con;
-        }catch(Exception ex){
-            theLogger.log(Level.WARNING, "Error creating Session.", ex);
-            return null;
-        }
-    }
-    
-    private Session buildSession(Connection con){
-        if(con == null){
-            throw new NullPointerException();
-        }
-        try{
-            return con.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-        }catch(Exception ex){
-            theLogger.log(Level.WARNING, "Error creating Session.", ex);
-            return null;
-        }
-    }
-    
-    private Destination buildDestination(){
-        String dest = myDestSource.getValue();
-        if(dest == null){
-            throw new NullPointerException();
-        }
-        try{
-            return new AMQAnyDestination(dest);
-        }catch(URISyntaxException ex){
-            theLogger.log(Level.WARNING, "Error creating Destination.", ex);
-            return null;
-        }
-    }
-    
     public Session getSession(){
-        return mySession;
+        return myConnector.getSession();
     }
     
     public Destination getDestination(){
-        return myDestination;
+        return myConnector.getDestination();
+    }
+    
+    public MessagingConnectImpl getConnector(){
+        return myConnector;
     }
 
     /** This method is called from within the constructor to
