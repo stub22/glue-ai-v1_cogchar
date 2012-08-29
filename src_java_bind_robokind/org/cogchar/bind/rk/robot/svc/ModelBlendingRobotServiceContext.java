@@ -15,6 +15,8 @@
  */
 package org.cogchar.bind.rk.robot.svc;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelRobotFactory;
@@ -27,12 +29,17 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
 import org.robokind.impl.messaging.config.RKMessagingConfigUtils;
 import static org.cogchar.bind.rk.osgi.RobokindBindingConfigUtils.*;
+import org.robokind.api.common.lifecycle.ManagedService;
 
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContext<ModelRobot> {
+	
+	// A static list of all the ManagedServices registered via RKMessagingConfigUtils.registerConnectionConfig
+	// We'll need this to clear 'em all out on "mode" change
+	private static List<ManagedService> registeredConnectionConfigServices = new ArrayList<ManagedService>();
 	
 
 	public ModelBlendingRobotServiceContext(BundleContext bundleCtx) {
@@ -48,9 +55,10 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
             return;
         }
         Configuration<String> connectionConf = getValue(Configuration.class, MSGCONF_ROBOT_HOST);
-        RKMessagingConfigUtils.registerConnectionConfig(
+        ManagedService connectionConfigService = RKMessagingConfigUtils.registerConnectionConfig(
                 MSGCONF_ROBOT_HOST, connectionConf, 
                 null, new OSGiComponentFactory(myBundleCtx));
+		registeredConnectionConfigServices.add(connectionConfigService);
 		registerAndStart(br, MSGCONF_ROBOT_HOST);
 		logInfo("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeBonyRobotWithBlenderAndFrameSource ");
 	}	
@@ -69,6 +77,14 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 		//BonyRobotUtils.makeBonyJointForRobot(myBonyRobot, 22, "JNinetyNine", 0.8, 0.9);
 		registerAndStart(br, MSGCONF_ROBOT_HOST);
 		logInfo("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END registerDummyBlendingRobot");
-	}	
+	}
+	
+	public static void clearRobots() {
+		BlendingRobotServiceContext.clearRobots();
+		for (ManagedService connectionConfigSvc : registeredConnectionConfigServices) {
+			connectionConfigSvc.dispose();
+		}
+		registeredConnectionConfigServices.clear();
+	}
 
 }

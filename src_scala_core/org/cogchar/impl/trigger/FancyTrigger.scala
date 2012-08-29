@@ -80,4 +80,8 @@ class FancyBinding(val myBox : DummyBox, val myTrig : DummyTrigger) extends Dumm
 	override def toString() : String = {
 		"FancyBinding box=[" + myBox + "] trig=[" + myTrig + "]";
 	}
+	
+	override def clearTargetBox() {
+		throw new RuntimeException("Cannot clear target box on fancy binding");
+	}
 }

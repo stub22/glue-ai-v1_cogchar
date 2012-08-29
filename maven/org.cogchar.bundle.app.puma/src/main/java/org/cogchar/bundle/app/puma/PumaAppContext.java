@@ -24,7 +24,9 @@ import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.app.buddy.busker.TriggerItem;
 import org.cogchar.app.buddy.busker.TriggerItems;
+import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
+import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.blob.emit.QueryInterface;
 import org.cogchar.blob.emit.QuerySheet;
@@ -139,34 +141,44 @@ public class PumaAppContext extends BasicDebugger {
 	
 	// A half baked (3/4 baked?) idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
+	private boolean updating = false;
 	public boolean updateConfigByRequest(String request) {
 		// Eventually we may decide on a good home for these constants:	
 		final String WORLD_CONFIG = "worldconfig";
 		final String BONE_ROBOT_CONFIG = "bonerobotconfig";
 		final String MANAGED_GCS = "managedglobalconfigservice";
+		final String ALL_HUMANOID_CONFIG = "allhumanoidconfig";
 
 		// Do the actual updates on a new thread. That way we don't block the render thread. Much less intrusive, plus this way things
 		// we need to enqueue on main render thread will actually complete -  it must not be blocked during some of the update operations!
 		// This brings up an interesting point: we are probably doing far too much on the main render thread!
 		logInfo("Updating config by request: " + request);
 		boolean success = true;
-		if (WORLD_CONFIG.equals(request.toLowerCase())) {
+		if (updating) {
+			logWarning("Update currently underway, ignoring additional request");
+			success = false;
+		} else if (WORLD_CONFIG.equals(request.toLowerCase())) {
+			updating = true;
 			Thread updateThread = new Thread() {
 
 				public void run() {
 					reloadWorldConfig();
+					updating = false;
 				}
 			};
 			updateThread.start();
 		} else if (BONE_ROBOT_CONFIG.equals(request.toLowerCase())) {
+			updating = true;
 			Thread updateThread = new Thread() {
 
 				public void run() {
 					reloadBoneRobotConfig();
+					updating = false;
 				}
 			};
 			updateThread.start();
 		} else if (MANAGED_GCS.equals(request.toLowerCase())) {
+			updating = true;
 			if (gcComp != null) {
 				gcComp.stop();
 			}
@@ -175,6 +187,17 @@ public class PumaAppContext extends BasicDebugger {
 				public void run() {
 					updateGlobalConfig();
 					startGlobalConfigService(); // would be nice to set success to the value returned here, but we can't without blocking the render thread, even using a future.
+					updating = false;
+				}
+			};
+			updateThread.start();
+		} else if (ALL_HUMANOID_CONFIG.equals(request.toLowerCase())) {
+			updating = true;
+			Thread updateThread = new Thread() {
+
+				public void run() {
+					reloadAll();
+					updating = false;
 				}
 			};
 			updateThread.start();
@@ -330,6 +353,30 @@ public class PumaAppContext extends BasicDebugger {
 			}
 		}
 	}
+	
+	public void reloadAll() {
+		try {
+			updateGlobalConfig();
+			HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
+			myRenderMapper.clearLights(myHRC);
+			myRenderMapper.clearCinematics(myHRC);
+			myRenderMapper.clearViewPorts(myHRC);
+			clearSpecialInputTriggers();
+			for (PumaDualCharacter pdc : pdcList) {
+				pdc.stopEverything();
+				pdc.disconnectBonyCharFromRobokindSvcs();
+			}
+			RobotServiceFuncs.clearJointGroups();
+			ModelBlendingRobotServiceContext.clearRobots();
+			myHRC.detachHumanoidFigures();
+			pdcList.clear();
+			connectDualRobotChars();
+			initCinema();
+		} catch (Throwable t) {
+			logError("Error attempting to reload all humanoid config: " + t);
+			// May be good to handle an exception by setting state of a "RebootResult" or etc...
+		}
+	}
 
 	public void setupAndStartBehaviorTheater(PumaDualCharacter pdc) throws Throwable {
 		//pdc.registerDefaultSceneTriggers(); // Seems this doesn't actually do anything at this point
@@ -414,5 +461,25 @@ public class PumaAppContext extends BasicDebugger {
 		DummyBinding db = action.getBinding();
 		db.setTargetBox(pdc);
 		db.setTargetTrigger(trigItem);
+	}
+	
+	private void clearSpecialInputTriggers() {
+
+		unhookIt(PlayerAction.STOP_AND_RESET_CHAR);
+		unhookIt(PlayerAction.STOP_RESET_AND_RECENTER_CHAR);
+
+		unhookIt(PlayerAction.DANGER_YOGA);
+		unhookIt(PlayerAction.SAY_THE_TIME);
+
+		unhookIt(PlayerAction.USE_PERM_ANIMS);
+		unhookIt(PlayerAction.USE_TEMP_ANIMS);
+
+		unhookIt(PlayerAction.RELOAD_BEHAVIOR);
+
+	}
+	
+	private void unhookIt(PlayerAction action) {
+		DummyBinding db = action.getBinding();
+		db.clearTargetBox();
 	}
 }

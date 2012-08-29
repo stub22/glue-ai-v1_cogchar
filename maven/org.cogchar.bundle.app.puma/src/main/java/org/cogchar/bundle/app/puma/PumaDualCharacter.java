@@ -46,6 +46,7 @@ import org.cogchar.impl.perform.ChannelNames;
 import org.cogchar.impl.perform.FancyTextChan;
 
 import org.cogchar.impl.trigger.FancyTriggerFacade;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -55,21 +56,20 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	private SpeechOutputClient mySOC;
 	private Ident myCharIdent;
 	private String myNickName;
-	private PumaAppContext myPumaAppContext; // Needed to get graph information from PAC for config updates
 	private PumaHumanoidMapper myHumoidMapper;
 	private PumaWebMapper myWebMapper;
 	private ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 	public String myUpdateBonyRdfPath;
 	public Theater myTheater;
 	private BundleContext myBundleCtx; // Set at connectBonyCharToRobokindSvcs so it can be passed around to start dependencies needed for managed services
+	private ServiceRegistration myBoneRobotConfigServiceRegistration;
 
 	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, PumaAppContext pac, Ident charIdent, String nickName) {
 		myCharIdent = charIdent;
 		myNickName = nickName;
-		myPumaAppContext = pac;
 		myHumoidMapper = new PumaHumanoidMapper(hrc, bundleCtx, charIdent);
 		myTheater = new Theater();
-		myWebMapper = new PumaWebMapper();
+		myWebMapper = new PumaWebMapper();	
 	}
 
 	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, HumanoidConfig hc) throws Throwable {
@@ -88,8 +88,9 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		}
 		*/ 
 		BoneRobotConfig boneRobotConf = new BoneRobotConfig(myCharIdent, qGraph); 
-		bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
+		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
+		
 		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf, qGraph, hc);
 
 		// myPHM.initModelRobotUsingAvroJointConfig();
@@ -98,6 +99,11 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		connectAnimOutChans();
 
 		myWebMapper.connectCogCharResources(myInitialBonyRdfCL, myHumoidMapper.getHumanoidRenderContext());
+		
+	}
+	
+	public void disconnectBonyCharFromRobokindSvcs() {
+		myBoneRobotConfigServiceRegistration.unregister();
 	}
 
 	private void connectAnimOutChans() {
@@ -148,13 +154,15 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myTheater.fullyStop(killTimeWaitMsec);
 	}
 
-	private void stopEverything() {
+	public void stopEverything() {
 		logInfo("stopEverything - Stopping Theater.");
 		stopTheater();
 		logInfo("stopEverything - Stopping Anim Jobs.");
 		myHumoidMapper.stopAndReset();
 		logInfo("stopEverything - Stopping Speech-Output Jobs.");
-		mySOC.cancelAllRunningSpeechTasks();
+		if (mySOC != null) {
+			mySOC.cancelAllRunningSpeechTasks();
+		}
 
 	}
 
