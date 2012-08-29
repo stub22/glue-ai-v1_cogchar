@@ -159,7 +159,7 @@ public class PumaAppContext extends BasicDebugger {
 			success = false;
 		} else if (WORLD_CONFIG.equals(request.toLowerCase())) {
 			updating = true;
-			Thread updateThread = new Thread() {
+			Thread updateThread = new Thread("World Update Thread") {
 
 				public void run() {
 					reloadWorldConfig();
@@ -169,7 +169,7 @@ public class PumaAppContext extends BasicDebugger {
 			updateThread.start();
 		} else if (BONE_ROBOT_CONFIG.equals(request.toLowerCase())) {
 			updating = true;
-			Thread updateThread = new Thread() {
+			Thread updateThread = new Thread("Bone Robot Update Thread") {
 
 				public void run() {
 					reloadBoneRobotConfig();
@@ -182,7 +182,7 @@ public class PumaAppContext extends BasicDebugger {
 			if (gcComp != null) {
 				gcComp.stop();
 			}
-			Thread updateThread = new Thread() {
+			Thread updateThread = new Thread("Managed Global Config Service Update Thread") {
 
 				public void run() {
 					updateGlobalConfig();
@@ -193,7 +193,7 @@ public class PumaAppContext extends BasicDebugger {
 			updateThread.start();
 		} else if (ALL_HUMANOID_CONFIG.equals(request.toLowerCase())) {
 			updating = true;
-			Thread updateThread = new Thread() {
+			Thread updateThread = new Thread("Update Thread") {
 
 				public void run() {
 					reloadAll();

@@ -149,7 +149,9 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 
 	public void stopTheater() {
 		// Should be long enough for the 100 Msec loop to cleanly exit.
-		int killTimeWaitMsec = 200;
+		// Was 200, but very occasionally this wasn't quite long enough, and myWorkThread was becoming null after the
+		// check in Theater.killThread, causing a NPE
+		int killTimeWaitMsec = 250; 
 		myWebMapper.disconnectLiftSceneInterface(myBundleCtx);
 		myTheater.fullyStop(killTimeWaitMsec);
 	}
