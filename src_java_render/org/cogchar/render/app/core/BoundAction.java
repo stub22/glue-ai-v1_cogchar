@@ -53,4 +53,9 @@ public class BoundAction implements DummyBinding {
 			}
 		}
 	}
+	
+	@Override
+	public void clearTargetBox() {
+		myActionBoxes.clear();
+	}
 }

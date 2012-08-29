@@ -103,8 +103,10 @@ public class PumaHumanoidMapper extends BasicDebugger {
 		});
 	}
 	
-	public void stopAndReset() { 
-		myRAC.stopAndReset();
+	public void stopAndReset() {
+		if (myRAC != null) {
+			myRAC.stopAndReset();
+		}
 	}
 	
 	public HumanoidFigure getHumanoidFigure() { 

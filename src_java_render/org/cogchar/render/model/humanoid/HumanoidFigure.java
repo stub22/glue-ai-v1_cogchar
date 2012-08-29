@@ -53,9 +53,11 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
 import java.util.List;
+import java.util.concurrent.Callable;
 import org.cogchar.blob.emit.BonyConfigEmitter;
 import org.cogchar.render.model.bony.StickFigureTwister;
 import org.cogchar.render.model.bony.BoneState;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.bony.FigureState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +80,8 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	private	FigureState						myFigureState;
 	
 	private	HumanoidFigureConfig			myConfig;
+	
+	private HumanoidFigureModule			myModule;
 
 
 	public static String 	
@@ -116,6 +120,15 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 	public Bone getRootBone() {
 		return myHumanoidSkeleton.getRoots()[0];
 	}
+	
+	// We provide getter/setter for the HumanoidFigureModule associated with this HumanoidFigure here.
+	// This allows us to detach the module on character "deinit"
+	public HumanoidFigureModule getModule() {
+		return myModule;
+	}
+	public void setModule(HumanoidFigureModule module) {
+		myModule = module;
+	}
 
 	public void initStuff(AssetManager assetMgr, Node parentNode, PhysicsSpace ps) {
 
@@ -151,6 +164,11 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 		myHumanoidAnimChannel = humanoidControl.createChannel();
 		humanoidControl.addListener(this);
 		
+	}
+	
+	public void detachFromVirtualWorld(final Node parentNode, PhysicsSpace ps) {
+		ps.remove(myHumanoidKRC);
+		parentNode.detachChild(myHumanoidModelNode);
 	}
 
 	public void becomeKinematicPuppet() { 
