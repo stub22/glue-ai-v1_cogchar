@@ -73,7 +73,14 @@ class Theater extends BasicDebugger with DummyBox {
 	def killThread() { 
 		if (myWorkThread != null) {
 			logInfo("Theater.killThread is interrupting its own thread");
-			myWorkThread.interrupt();
+			// It's possible (and has happened) that the thread goes null upon normal completion in the run loop
+			// between the check above and the interrupt call. This try block makes killThread more resistant to that problem.
+			try {
+			  myWorkThread.interrupt();
+			} catch {
+			  case e: NullPointerException => logInfo(
+				  "Theater.killThread encountered a null pointer exception trying to interrupt its thread, probably it just completed");
+			}
 			myWorkThread = null;
 		}
 	}
