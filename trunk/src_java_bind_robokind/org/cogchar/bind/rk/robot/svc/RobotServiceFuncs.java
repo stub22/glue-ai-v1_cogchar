@@ -15,6 +15,8 @@
  */
 package org.cogchar.bind.rk.robot.svc;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.robokind.api.common.config.VersionProperty;
 import org.jflux.api.core.config.Configuration;
 import java.util.Properties;
@@ -42,6 +44,13 @@ import static org.cogchar.bind.rk.osgi.ServiceConfigUtils.*;
  */
 public class RobotServiceFuncs {
 	static Logger theLogger = LoggerFactory.getLogger(RobotServiceFuncs.class);
+	
+	// A static list of all the Joint Group Lifecycles registered via launchJointGroupLifecycle
+	// We'll need this to dispose 'em all on "mode" change
+	private static List<OSGiComponent> startedJointGroupLifecycles = new ArrayList<OSGiComponent>();
+	// A static list of all the Joint Group Configs registered via launchJointGroupConfig
+	// We'll need this to dispose 'em all on "mode" change
+	private static List<OSGiComponent> startedJointGroupConfigs = new ArrayList<OSGiComponent>();
 	
 	
     public static <Param> void startJointGroup(
@@ -75,6 +84,7 @@ public class RobotServiceFuncs {
                                 jgSvcConf, CONF_CONFIG_READER_VERSION));
         OSGiComponent jointGroupComp = new OSGiComponent(bundleCtx, lifecycle);
         jointGroupComp.start();
+		startedJointGroupLifecycles.add(jointGroupComp);
         return jointGroupComp;
     }
     
@@ -93,6 +103,18 @@ public class RobotServiceFuncs {
                 props);
         OSGiComponent paramComp = new OSGiComponent(context, lifecycle);
         paramComp.start();
+		startedJointGroupConfigs.add(paramComp);
         return paramComp;
     }
+	
+	public static void clearJointGroups() {
+		for (OSGiComponent aJointGroupConfig : startedJointGroupConfigs) {
+			aJointGroupConfig.dispose();
+		}
+		startedJointGroupConfigs.clear();
+		for (OSGiComponent aJointGroupLifecycle : startedJointGroupLifecycles) {
+			aJointGroupLifecycle.dispose();
+		}
+		startedJointGroupLifecycles.clear();
+	}
 }

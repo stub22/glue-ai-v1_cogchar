@@ -148,6 +148,16 @@ public class HumanoidPuppetActions extends BasicDebugger {
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
+		
+		UPDATE_HUMANOIDS {
+			void act(HumanoidRenderContext ctx) {
+				ctx.requestConfigReload("AllHumanoidConfig");
+            }
+            int getTriggerKey() { 
+                return getKey(this);
+            }
+			@Override boolean includedInMinSim() { 	return true; }				
+        },
 
 		/*** The actions below are for V-world-only goodies (like Sinbad, projectiles, etc.)
 		 *		not available in RK "Simulator"  

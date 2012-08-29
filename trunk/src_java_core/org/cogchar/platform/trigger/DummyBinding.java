@@ -25,4 +25,5 @@ public interface DummyBinding {
 	public void setTargetBox(DummyBox box);
 	public void setTargetTrigger(DummyTrigger trig);
 	public void perform();
+	public void clearTargetBox();
 }

@@ -41,6 +41,8 @@ import com.jme3.font.BitmapText;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import java.lang.reflect.Field;
+import java.util.Iterator;
+import java.util.concurrent.Callable;
 import javax.swing.JFrame;
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
@@ -147,7 +149,27 @@ public class HumanoidRenderContext extends BonyRenderContext {
 				attachModule(hfm);
 			}
 		});
+		figure.setModule(hfm);
 		return figure;
+	}
+	
+	public void detachHumanoidFigures() {
+		final Node rootNode = findJme3RootDeepNode(null);
+		final PhysicsSpace ps = getPhysicsSpace();
+		Iterator<HumanoidFigure> currentFigureIterator = myFiguresByCharIdent.values().iterator();
+		while (currentFigureIterator.hasNext()) {
+			final HumanoidFigure aHumanoid = currentFigureIterator.next();
+			enqueueCallable(new Callable<Void>() { // Do this on main render thread
+
+				@Override
+				public Void call() throws Exception {
+					detachModule(aHumanoid.getModule());
+					aHumanoid.detachFromVirtualWorld(rootNode, ps);
+					return null;
+				}
+			});
+		}
+		myFiguresByCharIdent.clear();
 	}
 	
 	public void initCinema() {
@@ -162,9 +184,15 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	// Might make sense to just move this to PumaAppContext
 	public void initBindings(KeyBindingConfig theConfig) {
 		InputManager inputManager = findJme3InputManager(null);
-		// If the help screen is displayed, we need to remove it since we'll be making a new one later	
+		// If the help screen is displayed, we need to remove it since we'll be making a new one later
 		if (currentHelpText != null) {
-			findOrMakeSceneFlatFacade(null).detachOverlaySpatial(currentHelpText);
+			enqueueCallable(new Callable<Void>() { // Do this on main render thread
+				@Override
+				public Void call() throws Exception {
+					findOrMakeSceneFlatFacade(null).detachOverlaySpatial(currentHelpText);
+					return null;
+				}
+			});
 		}
 		inputManager.clearMappings(); // May be a reload, so let's clear the mappings
 		KeyBindingTracker.clearMap(); // If we do that, we'd better clear the KeyBindingTracker too

@@ -14,8 +14,11 @@
  *  limitations under the License.
  */
 package org.cogchar.bind.rk.robot.svc;
+import java.util.ArrayList;
+import java.util.List;
 import org.jflux.api.core.config.Configuration;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.Robot.RobotPositionMap;
 import org.robokind.api.motion.lifecycle.DefaultBlenderServiceGroup;
@@ -28,6 +31,13 @@ import org.slf4j.LoggerFactory;
  */
 public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceContext<R> {
 	static Logger theLogger = LoggerFactory.getLogger(BlendingRobotServiceContext.class);
+	
+	// A static list of all the DefaultBlenderServiceGroup started via startDefaultBlender
+	// We'll need this to stop 'em all on "mode" change
+	private static List<DefaultBlenderServiceGroup> startedBlenderGroups = new ArrayList<DefaultBlenderServiceGroup>();
+	// A static list of all the frame sources registered via registerFrameSource
+	// We'll need this to unregister 'em all on "mode" change
+	private static List<ServiceRegistration> registeredFrameSources = new ArrayList<ServiceRegistration>();
 	
 	private	DefaultBlenderServiceGroup  myBlenderGroup;
 	private	RobotMoverFrameSource		myFrameSource;
@@ -47,6 +57,7 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
                 myBundleCtx, robotID, 
                 RobotUtils.DEFAULT_BLENDER_INTERVAL, null);
         myBlenderGroup.start();
+		startedBlenderGroups.add(myBlenderGroup);
 	}
     
 	protected void  registerFrameSource() { 
@@ -58,7 +69,8 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
 		//create and register the MotionTargetFrameSource,
         myFrameSource = new RobotMoverFrameSource(robot);
 		theLogger.info("Registering FrameSource for robotID: " + robotID);
-		RobotUtils.registerFrameSource(myBundleCtx, robot.getRobotId(), myFrameSource);
+		ServiceRegistration frameSourceRegistration = RobotUtils.registerFrameSource(myBundleCtx, robot.getRobotId(), myFrameSource);
+		registeredFrameSources.add(frameSourceRegistration);
 	}
     protected void testPositionMove() { 
 		R robot = getRobot();
@@ -83,5 +95,17 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
 		theLogger.info("testPositionMove(robotID=" + robotID + ")");
 		testPositionMove();
 		theLogger.info("registerAndStart COMPLETE for robotID=" + robotID);
+	}
+	
+	public static void clearRobots() {
+		for (ServiceRegistration frameSource : registeredFrameSources) {
+			frameSource.unregister();
+		}
+		registeredFrameSources.clear();
+		for (DefaultBlenderServiceGroup blenderGroup : startedBlenderGroups) {
+			blenderGroup.stop();
+		}
+		startedBlenderGroups.clear();
+		RobotServiceContext.clearRobots();
 	}
 }
