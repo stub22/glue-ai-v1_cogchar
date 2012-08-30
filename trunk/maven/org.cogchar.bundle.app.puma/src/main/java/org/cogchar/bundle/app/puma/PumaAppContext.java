@@ -49,6 +49,7 @@ public class PumaAppContext extends BasicDebugger {
 
 	private BundleContext myBundleContext;
 	private HumanoidRenderContext myHRC;
+	private PumaWebMapper myWebMapper; // We now have a single instance of the web mapper here, instead of separate instances for each PumaDualCharacter.
 	// This method for updating bony config is not very flexible (to configuring only single characters in the future)
 	// and requires multiple sheet reloads for multiple characters. So I'm trying out the idea of moving this functionality
 	// into updateConfigByRequest - Ryan
@@ -71,6 +72,13 @@ public class PumaAppContext extends BasicDebugger {
 
 	public HumanoidRenderContext getHumanoidRenderContext() {
 		return myHRC;
+	}
+	
+	public PumaWebMapper getWebMapper() {
+		if (myWebMapper == null) {
+			myWebMapper = new PumaWebMapper();
+		}
+		return myWebMapper;
 	}
 	
 	public void setGlobalConfig(GlobalConfigEmitter config) {
@@ -279,6 +287,10 @@ public class PumaAppContext extends BasicDebugger {
 	// set here
 	public void initCinema() {
 		myHRC.initCinema();
+		getWebMapper().connectLiftSceneInterface(myBundleContext);
+		// The connectCogCharResources call below is currently still needed only for the "legacy" BallBuilder functionality
+		ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+		getWebMapper().connectCogCharResources(myInitialBonyRdfCL, myHRC);
 		KeyBindingConfig currentBindingConfig = new KeyBindingConfig();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		Ident graphIdent = null;
@@ -362,6 +374,7 @@ public class PumaAppContext extends BasicDebugger {
 			myRenderMapper.clearCinematics(myHRC);
 			myRenderMapper.clearViewPorts(myHRC);
 			clearSpecialInputTriggers();
+			getWebMapper().disconnectLiftSceneInterface(myBundleContext);
 			for (PumaDualCharacter pdc : pdcList) {
 				pdc.stopEverything();
 				pdc.disconnectBonyCharFromRobokindSvcs();
@@ -383,7 +396,7 @@ public class PumaAppContext extends BasicDebugger {
 		pdc.loadBehaviorConfig(false);
 
 		registerSpecialInputTriggers(pdc);
-
+		
 		pdc.startTheater();
 		
 	}

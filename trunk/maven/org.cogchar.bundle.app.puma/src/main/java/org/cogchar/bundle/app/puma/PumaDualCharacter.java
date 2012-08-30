@@ -57,23 +57,18 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	private Ident myCharIdent;
 	private String myNickName;
 	private PumaHumanoidMapper myHumoidMapper;
-	private PumaWebMapper myWebMapper;
-	private ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 	public String myUpdateBonyRdfPath;
 	public Theater myTheater;
-	private BundleContext myBundleCtx; // Set at connectBonyCharToRobokindSvcs so it can be passed around to start dependencies needed for managed services
 	private ServiceRegistration myBoneRobotConfigServiceRegistration;
 
 	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, PumaAppContext pac, Ident charIdent, String nickName) {
 		myCharIdent = charIdent;
 		myNickName = nickName;
 		myHumoidMapper = new PumaHumanoidMapper(hrc, bundleCtx, charIdent);
-		myTheater = new Theater();
-		myWebMapper = new PumaWebMapper();	
+		myTheater = new Theater();	
 	}
 
 	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, HumanoidConfig hc) throws Throwable {
-		myBundleCtx = bundleCtx;
 		// bonyConfig path is going away as we move to query-based config
 		// Looks like Turtle BoneRobotConfig is going away for good, in which case this block can be deleted
 		/*
@@ -98,7 +93,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		// myPHM.applyInitialBoneRotations();
 		connectAnimOutChans();
 
-		myWebMapper.connectCogCharResources(myInitialBonyRdfCL, myHumoidMapper.getHumanoidRenderContext());
+		//myWebMapper.connectCogCharResources(myInitialBonyRdfCL, myHumoidMapper.getHumanoidRenderContext()); // Now done in PumaAppContext.initCinema
 		
 	}
 	
@@ -142,7 +137,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	public void startTheater() {
 		SceneBook sb = myTheater.getSceneBook();
 		DummyBinder trigBinder = SceneActions.getBinder();
-		myWebMapper.connectLiftSceneInterface(myBundleCtx);
+		//myWebMapper.connectLiftSceneInterface(myBundleCtx); // Now done in PumaAppContext.initCinema
 		FancyTriggerFacade.registerAllTriggers(trigBinder, myTheater, sb);
 		myTheater.startThread();
 	}
@@ -152,7 +147,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		// Was 200, but very occasionally this wasn't quite long enough, and myWorkThread was becoming null after the
 		// check in Theater.killThread, causing a NPE
 		int killTimeWaitMsec = 250; 
-		myWebMapper.disconnectLiftSceneInterface(myBundleCtx);
+		//myWebMapper.disconnectLiftSceneInterface(myBundleCtx); // Now done in PumaAppContext.reloadAll
 		myTheater.fullyStop(killTimeWaitMsec);
 	}
 
