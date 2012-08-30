@@ -34,11 +34,11 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
  */
 public class PumaWebMapper extends BasicDebugger {
 
-	LiftInterface liftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
+	static LiftInterface liftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
 	static String cogbotConvoUrl;
 	CogbotCommunicator cogbot;
-	OSGiComponent liftAppComponent;
-	OSGiComponent liftSceneComponent;
+	static OSGiComponent liftAppComponent;
+	static OSGiComponent liftSceneComponent;
 	static PumaAppContext myAppContext;
 
 	public void connectCogCharResources(ClassLoader bonyRdfCl, HumanoidRenderContext hrc) {
