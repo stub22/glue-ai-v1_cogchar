@@ -129,7 +129,6 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		boolean clearCachesFirst = true;
 		// optCLforJenaFM was originally set to null,
 		// apparently depending on CL to have already been added by something else, in this case cinematic / lights / camera config
-		// ClassLoaders won't be required at all soon when this config becomes query-based
 		ClassLoader optCLforJenaFM = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 		myTheater.loadSceneBook(behavPath, optCLforJenaFM, clearCachesFirst);
 	}
