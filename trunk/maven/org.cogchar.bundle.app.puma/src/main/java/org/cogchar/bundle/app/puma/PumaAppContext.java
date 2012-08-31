@@ -15,7 +15,7 @@
  */
 package org.cogchar.bundle.app.puma;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.item.FreeIdent;
@@ -49,6 +49,7 @@ public class PumaAppContext extends BasicDebugger {
 
 	private BundleContext myBundleContext;
 	private HumanoidRenderContext myHRC;
+	private ClassLoader myInitialBonyRdfCL;
 	private PumaWebMapper myWebMapper; // We now have a single instance of the web mapper here, instead of separate instances for each PumaDualCharacter.
 	// This method for updating bony config is not very flexible (to configuring only single characters in the future)
 	// and requires multiple sheet reloads for multiple characters. So I'm trying out the idea of moving this functionality
@@ -72,6 +73,10 @@ public class PumaAppContext extends BasicDebugger {
 
 	public HumanoidRenderContext getHumanoidRenderContext() {
 		return myHRC;
+	}
+	
+	public void setCogCharResourcesClassLoader(ClassLoader loader) {
+		myInitialBonyRdfCL = loader;
 	}
 	
 	public PumaWebMapper getWebMapper() {
@@ -258,6 +263,10 @@ public class PumaAppContext extends BasicDebugger {
 		
 		if (myGlobalConfig == null) {
 			logWarning("GlobalConfigEmitter not available, cannot setup characters!");
+		} else if (myInitialBonyRdfCL == null) {
+			// We may not need this check eventually - currently only jointGroup.xml files and BallBuilder Turtle loader
+			// need access to this ClassLoader
+			logWarning("Cog Char resources ClassLoader not available, cannot setup characters!");
 		} else {
 			for (Ident charIdent : charIdents) {
 				logInfo("^^^^^^^^^^^^^^^^^^^^^^^^^ Connecting dualRobotChar for charIdent: " + charIdent);
@@ -289,7 +298,6 @@ public class PumaAppContext extends BasicDebugger {
 		myHRC.initCinema();
 		getWebMapper().connectLiftSceneInterface(myBundleContext);
 		// The connectCogCharResources call below is currently still needed only for the "legacy" BallBuilder functionality
-		ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 		getWebMapper().connectCogCharResources(myInitialBonyRdfCL, myHRC);
 		KeyBindingConfig currentBindingConfig = new KeyBindingConfig();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
@@ -414,12 +422,34 @@ public class PumaAppContext extends BasicDebugger {
 	
 	public void setupRobokindJointGroup(PumaDualCharacter pdc, String jgFullPath) throws Throwable {		
 		//Ident chrIdent = pdc.getCharIdent();
-		File jgConfigFile = new File(jgFullPath);
-		if (jgConfigFile.canRead()) {
+		File jgConfigFile = makeJointGroupTempFile(pdc, jgFullPath);
+		if (jgConfigFile != null) {
 			PumaHumanoidMapper phm = pdc.getHumanoidMapper();
 			RobotServiceContext rsc = phm.getRobotServiceContext();
 			rsc.startJointGroup(jgConfigFile);
+		} else {
+			logWarning("jointGroup file not found: " + jgFullPath);
 		}
+	}
+	
+	private File makeJointGroupTempFile(PumaDualCharacter pdc, String jgFullPath) {
+		File outputFile = null;
+		try {
+			outputFile = new File(pdc.getNickName() + "temporaryJointGroupResource.xml");
+			InputStream stream = myInitialBonyRdfCL.getResourceAsStream(jgFullPath);
+			OutputStream out = new FileOutputStream(outputFile);
+			int read = 0;
+			byte[] bytes = new byte[1024];
+			while ((read = stream.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+			stream.close();
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			logWarning("Exception trying to load jointGroup from resource into temp file: " + e);
+		}
+		return outputFile;
 	}
 	
 	public PumaDualCharacter connectDualRobotChar(Ident bonyCharIdent, String nickName)

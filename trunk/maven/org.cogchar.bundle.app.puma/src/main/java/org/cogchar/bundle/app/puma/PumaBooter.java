@@ -177,6 +177,10 @@ Start up the JME OpenGL canvas, which will in turn initialize the Cogchar render
 If we try to do this inside the JME3Thread callable above (under certain conditions), we can get hung
 up when RobotServiceContext calls RobotUtils.registerRobot()
 */ 
+			
+			// As long as we still need the classloader for bundle.render.resources, this seems a good place to set it up:
+			ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+			pac.setCogCharResourcesClassLoader(myInitialBonyRdfCL);
 
 			logInfo("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed , calling connectDualRobotChars()");
 			pac.connectDualRobotChars();
