@@ -15,11 +15,16 @@
  */
 package org.cogchar.bind.lift;
 
+import org.appdapter.core.item.FreeIdent;
+import org.appdapter.core.item.Ident;
+
 /**
  * @author Ryan Biggs
  */
 public class LiftQueryNames {
 	public static final String ccrt = "urn:ftd:cogchar.org:2012:runtime#"; // This itself could come from query if we want
+	
+	public static final Ident BLANK_ACTION = new FreeIdent("http://www.cogchar.org/lift/config/command#", "");
 
 	public static final String CONFIG_VAR_NAME = "liftConfig";
 	public static final String TEMPLATE_VAR_NAME = "template";

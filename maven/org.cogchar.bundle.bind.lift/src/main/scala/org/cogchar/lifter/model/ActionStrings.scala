@@ -39,6 +39,11 @@ package org.cogchar.lifter {
 	  final val DISABLE_TOKEN = "disable"
 	  final val ERROR_TOKEN = "error"
 	  final val NETWORK_CONFIG_TOKEN = "networkconfig"
+	  
+	  // These are URI prefixes for actions
+	  final val p_liftcmd = "http://www.cogchar.org/lift/config/command#"
+	  final val p_liftvar = "http://www.cogchar.org/lift/config/variable#"
+	  
 	}
 
   }

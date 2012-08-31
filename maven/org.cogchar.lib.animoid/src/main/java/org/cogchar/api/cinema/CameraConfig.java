@@ -57,7 +57,7 @@ public class CameraConfig {
 		attachedItem = queryEmitter.getStringFromSolution(querySolution, LightsCameraQueryNames.ATTACHED_BONE_VAR_NAME);
 	}
 
-	/* Disabled for now because we needed a method from HumanoidConfigEmitter, which is going way (see below). We can find a way to solve this problem if we decide we need assembler config again
+	/* Disabled for now because we needed a method from HumanoidConfigEmitter, which is going away (see below). We can find a way to solve this problem if we decide we need assembler config again
 	public CameraConfig(Item configItem) {
 		cameraName = configItem.getIdent().getLocalName();
 		for (int index = 0; index < 3; index++) {

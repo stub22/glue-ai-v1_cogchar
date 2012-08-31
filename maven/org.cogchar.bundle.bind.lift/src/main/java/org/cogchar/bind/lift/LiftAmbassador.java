@@ -101,6 +101,9 @@ public class LiftAmbassador {
 		}
 	}
 
+	/* At this point, the Turtle builder for LiftConfig is no longer working
+	 * That's because the assembler-based constructor for ControlConfig was broken when we switched from Lift action 
+	 * strings to action URIs
 	// Method to dynamically reconfigure controls from RDF
 	public static boolean activateControlsFromRdf(String rdfFilename) {
 		boolean success = false;
@@ -121,6 +124,7 @@ public class LiftAmbassador {
 		}
 		return success;
 	}
+	*/
 
 	// Method to set initial config and RDF classloader for future configs
 	// No longer needed for query-based config
@@ -145,14 +149,16 @@ public class LiftAmbassador {
 		}
 	}
 
-	public static boolean triggerAction(String action) {
+	public static boolean triggerAction(Ident actionUri) {
 		boolean success = false;
-		if ((action.startsWith(LiftConfigNames.partial_P_triggerScene)) && (sceneLauncher != null)) {
+		String actionUriPrefix = actionUri.getAbsUriString().replaceAll(actionUri.getLocalName(), "");
+		String action = actionUri.getLocalName();
+		if ((LiftConfigNames.p_scenetrig.equals(actionUriPrefix)) && (sceneLauncher != null)) {
 			success = sceneLauncher.triggerScene(action);
 			if (success && (lift != null)) {
 				lift.loadPage("cogchar/scene_running.html");
 			}
-		} else if ((action.startsWith(LiftConfigNames.partial_P_cinematic)) && (liftAppInterface != null)) {
+		} else if ((LiftConfigNames.p_cinematic.equals(actionUriPrefix)) && (liftAppInterface != null)) {
 			if (triggeredCinematics.contains(action)) {
 				liftAppInterface.stopNamedCinematic(action); // In order to replay, we need to stop previously played cinematic first
 			}
@@ -160,12 +166,14 @@ public class LiftAmbassador {
 			if (success) {
 				triggeredCinematics.add(action);
 			}
-		} else if ((action.startsWith(LiftConfigNames.partial_P_liftConfig)) && (lift != null)) {
-			String desiredFile = action.replaceAll(LiftConfigNames.partial_P_liftConfig + "_", "");
-			if (desiredFile.endsWith(".ttl")) {
-				success = activateControlsFromRdf(desiredFile);
+		} else if ((LiftConfigNames.p_liftconfig.equals(actionUriPrefix)) && (lift != null)) {
+			if (action.endsWith(".ttl")) {
+				// This capability no longer exists since we broke the ControlConfig assembler based constructor when the 
+				// switch to action URIs was made. We can fix it if we decide we'd like to...
+				//success = activateControlsFromRdf(action);
+				theLogger.warn("Turtle file based lift config is no longer supported, cannot load config from " + action);
 			} else {
-				Ident configIdent = new FreeIdent(LiftQueryNames.ccrt + desiredFile, desiredFile);
+				Ident configIdent = actionUri;
 				LiftConfig newConfig = null;
 				if (liftConfigCache.containsKey(configIdent)) {
 					newConfig = liftConfigCache.get(configIdent); // Use cached version if available
@@ -184,18 +192,19 @@ public class LiftAmbassador {
 					success = true;
 				}
 			}
-
-		} else if ((action.startsWith(LiftConfigNames.partial_P_databalls)) && (liftAppInterface != null)) {
-			String databallsAction = action.replaceAll(LiftConfigNames.partial_P_databalls + "_", ""); // replaceFirst?
-			success = liftAppInterface.performDataballAction(databallsAction, null);
-		} else if ((action.startsWith(LiftConfigNames.partial_P_update)) && (liftAppInterface != null)) {
-			String desiredUpdate = action.replaceFirst(LiftConfigNames.partial_P_update + "_", "");
-			success = liftAppInterface.performUpdate(desiredUpdate);
-		} else if ((LiftConfigNames.refreshLift.equals(action.toLowerCase())) && (liftAppInterface != null)) {
-			theLogger.info("Clearing LiftAmbassador page cache and refreshing global state...");
-			liftConfigCache.clear();
-			success = liftAppInterface.performUpdate("ManagedGlobalConfigService");
-		} 
+		} else if ((LiftConfigNames.p_liftcmd.equals(actionUriPrefix)) && (liftAppInterface != null)) {
+			if (action.startsWith(LiftConfigNames.partial_P_databalls)) {
+				String databallsAction = action.replaceAll(LiftConfigNames.partial_P_databalls + "_", ""); // replaceFirst?
+				success = liftAppInterface.performDataballAction(databallsAction, null);
+			} else if (action.startsWith(LiftConfigNames.partial_P_update)) {
+				String desiredUpdate = action.replaceFirst(LiftConfigNames.partial_P_update + "_", "");
+				success = liftAppInterface.performUpdate(desiredUpdate);
+			} else if (LiftConfigNames.refreshLift.equals(action.toLowerCase())) {
+				theLogger.info("Clearing LiftAmbassador page cache and refreshing global state...");
+				liftConfigCache.clear();
+				success = liftAppInterface.performUpdate("ManagedGlobalConfigService");
+			}
+		}
 		return success;
 	}
 
