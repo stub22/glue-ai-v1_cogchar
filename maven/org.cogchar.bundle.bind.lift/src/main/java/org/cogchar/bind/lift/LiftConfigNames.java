@@ -41,4 +41,10 @@ public class LiftConfigNames extends BoxAssemblyNames {
 	public static final String partial_P_update = "reload";
 	public static final String refreshLift = "refreshliftcache";
 	
+	/// .. and now they are, in large part. Here are the relevant prefixes:
+	public static final String p_scenetrig = "http://www.cogchar.org/schema/scene/trigger#";
+	public static final String p_cinematic = "http://www.cogchar.org/schema/cinematic/definition#";
+	public static final String p_liftconfig = "http://www.cogchar.org/lift/config/configroot#";
+	public static final String p_liftcmd = "http://www.cogchar.org/lift/config/command#";
+	
 }
