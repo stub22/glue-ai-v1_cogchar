@@ -56,6 +56,8 @@ public class LiftConfig extends KnownComponentImpl {
 		}
 	}
 
+	/* No longer available since ControlConfig assember based constructor isn't working anymore since switch to action URIs
+	 * We can rebuild this capability if we decide we still want it
 	public static class Builder extends DynamicCachingComponentAssembler<LiftConfig> {
 
 		public Builder(Resource builderConfRes) {
@@ -95,4 +97,5 @@ public class LiftConfig extends KnownComponentImpl {
 		bd.logInfo("=====================================================================");
 
 	}
+	*/
 }

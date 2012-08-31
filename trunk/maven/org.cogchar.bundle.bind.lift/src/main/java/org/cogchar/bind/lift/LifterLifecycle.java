@@ -35,7 +35,7 @@ import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
 public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.LiftAmbassadorInterface, LiftAmbassador.inputInterface> {
 
 	private final static Logger theLogger = Logger.getLogger(LifterLifecycle.class.getName());
-	static final Ident HOME_LIFT_CONFIG_IDENT = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#mainLiftConfig", "mainLiftConfig");
+	static final Ident HOME_LIFT_CONFIG_IDENT = new FreeIdent("http://www.cogchar.org/lift/config/configroot#mainLiftConfig", "mainLiftConfig"); // Needs to move to sheet!!!!
 	static final String LIFTER_ENTITY_TYPE = "WebappEntity";
 	public static final String rkrt = "urn:ftd:robokind.org:2012:runtime#";
 	public static Ident LIFT_CONFIG_ROLE = new FreeIdent(rkrt + "lifterConf", "lifterConf");

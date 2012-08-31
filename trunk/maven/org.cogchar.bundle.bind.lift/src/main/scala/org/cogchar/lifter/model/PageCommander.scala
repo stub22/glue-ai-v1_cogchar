@@ -29,6 +29,7 @@ package org.cogchar.lifter {
 	import scala.xml._
 	import _root_.net.liftweb.util.Log
 	import net.liftweb.actor._
+	import org.appdapter.core.item.{FreeIdent, Ident}
 	import org.cogchar.lifter.lib._
 	import org.cogchar.lifter.snippet._
 	import org.cogchar.lifter.view._
@@ -41,7 +42,7 @@ package org.cogchar.lifter {
 
 	  private var controlDefMap = new scala.collection.mutable.HashMap[Int, ControlConfig]
 	  private var controlsMap = new scala.collection.mutable.HashMap[Int, NodeSeq]
-	  private var singularAction = new scala.collection.mutable.HashMap[Int, String] // Holds action for currently enabled state of a multi-state control, such as a TOGGLEBUTTON
+	  private var singularAction = new scala.collection.mutable.HashMap[Int, Ident] // Holds action for currently enabled state of a multi-state control, such as a TOGGLEBUTTON
 	  
 	  // These guys hold lists of slotNums which will display text from Cogbot, or from Android speech input
 	  private var cogbotDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
@@ -204,37 +205,46 @@ package org.cogchar.lifter {
 	  }
 	  
 	  // Check to see if any action requested requires PageCommander to do some local handling
-	  def initLocalActions(slotNum:Int, action:String) {
-		val splitAction = action.split("_")
-		splitAction(0) match {
-		  case ActionStrings.showText => {splitAction(1) match {
-				case ActionStrings.COGBOT_TOKEN => cogbotDisplayers += slotNum // Show Cogbot speech on this control? Add it to the cogbotDisplayers list.
-				case ActionStrings.ANDROID_SPEECH_TOKEN => speechDisplayers += slotNum // Add to the speechDisplayers list if we want Android speech shown here
-				case ActionStrings.ERROR_TOKEN => errorMap(splitAction(2)) = slotNum // Associate the error source name with the slotNum where errors will display
-				case _ => warn("checkLocalActions doesn't know what to do in order to display text with token " + splitAction(1))
-			  }
-			}			  
-		  case _ => // looks like this action doesn't require anything to happen locally, so do nothing
+	  def initLocalActions(slotNum:Int, action:Ident) {
+		if (action != null) {
+		  if (action.getAbsUriString.startsWith(ActionStrings.p_liftcmd)) {
+			val splitAction = action.getLocalName.split("_")
+			splitAction(0) match {
+			  case ActionStrings.showText => {splitAction(1) match {
+					case ActionStrings.COGBOT_TOKEN => cogbotDisplayers += slotNum // Show Cogbot speech on this control? Add it to the cogbotDisplayers list.
+					case ActionStrings.ANDROID_SPEECH_TOKEN => speechDisplayers += slotNum // Add to the speechDisplayers list if we want Android speech shown here
+					case ActionStrings.ERROR_TOKEN => errorMap(splitAction(2)) = slotNum // Associate the error source name with the slotNum where errors will display
+					case _ => warn("checkLocalActions doesn't know what to do in order to display text with token " + splitAction(1))
+				  }
+				}			  
+			  case _ => // looks like this action doesn't require anything to happen locally, so do nothing
+			}
+		  }
 		}
 	  }
 	    
 	  // A central place to define actions performed by displayed controls - may want to move to its own class eventually
 	  def controlActionMapper(formId:Int, subControl:Int) {
-		val splitAction = controlDefMap(formId).action.split("_")
-		splitAction(0) match {
-		  case ActionStrings.setVariable => {
-			  //val textItems = List.fromArray(text.split(",")) //not sure the List.fromArray is necessary
+		val actionUriPrefix = getUriPrefix(controlDefMap(formId).action);
+		actionUriPrefix match {
+		  case ActionStrings.p_liftvar => {
 			  val textItems = List.fromArray(controlDefMap(formId).text.split(","))
 			  val textIndex = subControl + 1
-			  appVariablesMap(splitAction(1)) = textItems(textIndex)
-			  info("App Variable " + splitAction(1) + " set to " + textItems(textIndex))
+			  appVariablesMap(controlDefMap(formId).action.getLocalName) = textItems(textIndex)
+			  info("App Variable " + controlDefMap(formId).action.getLocalName + " set to " + textItems(textIndex))
 			}
-		  case ActionStrings.oldDemo => { // Just a way to include the old hard-coded demo just a little longer; soon will configure all of this from RDF
-			  subControl match { // An early hard coded demo
-				case 0 => setControl(6, PushyButton.makeButton("A button", "buttonred", "", 6))
-				case 1 => setControl(6, TextForm.makeTextForm("A text box", 6))
-				case 2 => setControl(6, SelectBoxes.makeSelectBoxes("Checkboxes", List("an option", "and another"), 6))
-				case 3 => setControl(6, RadioButtons.makeRadioButtons("Radio buttons", List("Radio Option 1", "Radio Option 2"), 6))
+		  case ActionStrings.p_liftcmd => {
+			  val splitAction = controlDefMap(formId).action.getLocalName.split("_")
+			  splitAction(0) match {
+				case ActionStrings.oldDemo => { // Just a way to include the old hard-coded demo just a little longer; soon will configure all of this from RDF
+					subControl match { // An early hard coded demo
+					  case 0 => setControl(6, PushyButton.makeButton("A button", "buttonred", "", 6))
+					  case 1 => setControl(6, TextForm.makeTextForm("A text box", 6))
+					  case 2 => setControl(6, SelectBoxes.makeSelectBoxes("Checkboxes", List("an option", "and another"), 6))
+					  case 3 => setControl(6, RadioButtons.makeRadioButtons("Radio buttons", List("Radio Option 1", "Radio Option 2"), 6))
+					  case _ =>
+					}
+				  }
 				case _ =>
 			  }
 			}
@@ -244,63 +254,71 @@ package org.cogchar.lifter {
 	  
 	  // Similarly, a central place to handle text input.
 	  def textInputMapper(formId:Int, text:String) {
-		var desiredAction = controlDefMap(formId).action
-		if (singularAction contains formId) {desiredAction = singularAction(formId)} // If this is a "multi-state" control, get the action corresponding to current state
-		// If we see an action with a get speech command, set displayInputSpeech, strip off acquire command and see what's behind
-		var displayInputSpeech = false;
-		if (desiredAction startsWith ActionStrings.acquireSpeech) {
-		  desiredAction = desiredAction.stripPrefix(ActionStrings.acquireSpeech + "_")
-		  displayInputSpeech = true;
-		} else if (desiredAction startsWith ActionStrings.getContinuousSpeech) {
-		  desiredAction = desiredAction.stripPrefix(ActionStrings.getContinuousSpeech + "_")
-		  displayInputSpeech = true;
-		}
-		//info("In textInputMapper; desiredAction is " + desiredAction) // TEST ONLY
-		if (displayInputSpeech) {
-		  speechDisplayers.foreach(slotNum => setControl(slotNum, TextBox.makeBox("I think you said \"" + text + "\"", controlDefMap(slotNum).style, true)))
-		} // ... then continue to see if RDF tells us we need to do anything else with speech
-		if (desiredAction.startsWith(ActionStrings.submitText)) { //... otherwise, we don't have a properly defined action for this text input
-		  val stringToStrip = ActionStrings.submitText + "_"
-		  val actionToken = desiredAction.stripPrefix(stringToStrip)
-		  actionToken match {
-			case ActionStrings.COGBOT_TOKEN => {
-				if (cogbotDisplayers != Nil) { // Likely this check is not necessary - foreach just won't execute if list is Nil, right?
-				  val response = LiftAmbassador.getCogbotResponse(text)
-				  val cleanedResponse = response.replaceAll("<.*>", ""); // For now, things are more readable if we just discard embedded XML
-				  cogbotDisplayers.foreach(slotNum => setControl(slotNum, TextBox.makeBox("Cogbot said \"" + cleanedResponse + "\"", controlDefMap(slotNum).style)))
-				  if (cogbotSpeaks) outputSpeech(cleanedResponse) // Output Android speech if cogbotSpeaks is set
+		if (controlDefMap(formId).action.getAbsUriString.startsWith(ActionStrings.p_liftcmd)) {
+		  var desiredAction = controlDefMap(formId).action.getLocalName
+		  if (singularAction contains formId) {desiredAction = singularAction(formId).getLocalName} // If this is a "multi-state" control, get the action corresponding to current state
+		  // If we see an action with a get speech command, set displayInputSpeech, strip off acquire command and see what's behind
+		  var displayInputSpeech = false;
+		  if (desiredAction startsWith ActionStrings.acquireSpeech) {
+			desiredAction = desiredAction.stripPrefix(ActionStrings.acquireSpeech + "_")
+			displayInputSpeech = true;
+		  } else if (desiredAction startsWith ActionStrings.getContinuousSpeech) {
+			desiredAction = desiredAction.stripPrefix(ActionStrings.getContinuousSpeech + "_")
+			displayInputSpeech = true;
+		  }
+		  //info("In textInputMapper; desiredAction is " + desiredAction) // TEST ONLY
+		  if (displayInputSpeech) {
+			speechDisplayers.foreach(slotNum => setControl(slotNum, TextBox.makeBox("I think you said \"" + text + "\"", controlDefMap(slotNum).style, true)))
+		  } // ... then continue to see if RDF tells us we need to do anything else with speech
+		  if (desiredAction.startsWith(ActionStrings.submitText)) { //... otherwise, we don't have a properly defined action for this text input
+			val stringToStrip = ActionStrings.submitText + "_"
+			val actionToken = desiredAction.stripPrefix(stringToStrip)
+			actionToken match {
+			  case ActionStrings.COGBOT_TOKEN => {
+				  if (cogbotDisplayers != Nil) { // Likely this check is not necessary - foreach just won't execute if list is Nil, right?
+					val response = LiftAmbassador.getCogbotResponse(text)
+					val cleanedResponse = response.replaceAll("<.*>", ""); // For now, things are more readable if we just discard embedded XML
+					cogbotDisplayers.foreach(slotNum => setControl(slotNum, TextBox.makeBox("Cogbot said \"" + cleanedResponse + "\"", controlDefMap(slotNum).style)))
+					if (cogbotSpeaks) outputSpeech(cleanedResponse) // Output Android speech if cogbotSpeaks is set
+				  }
 				}
-			  }
-			case _ => {
-				// Send text to LiftAmbassador, see if it knows what to do with it
-				if (!LiftAmbassador.sendTextToCogChar(actionToken, text)) {
-				  warn("No action found in textInputMapper for token " + actionToken)
+			  case _ => {
+				  // Send text to LiftAmbassador, see if it knows what to do with it
+				  if (!LiftAmbassador.sendTextToCogChar(actionToken, text)) {
+					warn("No action found in textInputMapper for token " + actionToken)
+				  }
 				}
-			  }
+			}
+		  } else {
+			warn("Action in control id " + formId + " is not recognized by textInputMapper: " + desiredAction)
 		  }
 		} else {
-		  warn("Action in control id " + formId + " is not recognized by textInputMapper: " + desiredAction)
+		  warn("Action URI prefix in control id " + formId + "does not provide a valid action to textInputMapper: " + getUriPrefix(controlDefMap(formId).action))
 		}
 	  }
 	  
 	  def multiTextInputMapper(formId:Int, text:Array[String]) {
-		var desiredAction = controlDefMap(formId).action
-		if (desiredAction startsWith ActionStrings.submit) {
-		  desiredAction = desiredAction.stripPrefix(ActionStrings.submit + "_")
-		  if ((ActionStrings.NETWORK_CONFIG_TOKEN equals desiredAction) && (text.length == 2)) {
-			var encryptionName:String = null;
-			if (appVariablesMap contains ActionStrings.encryptionTypeVar) {
-			  encryptionName = appVariablesMap(ActionStrings.encryptionTypeVar)
+		if (controlDefMap(formId).action.getAbsUriString.startsWith(ActionStrings.p_liftcmd)) {
+		  var desiredAction = controlDefMap(formId).action.getLocalName
+		  if (desiredAction startsWith ActionStrings.submit) {
+			desiredAction = desiredAction.stripPrefix(ActionStrings.submit + "_")
+			if ((ActionStrings.NETWORK_CONFIG_TOKEN equals desiredAction) && (text.length == 2)) {
+			  var encryptionName:String = null;
+			  if (appVariablesMap contains ActionStrings.encryptionTypeVar) {
+				encryptionName = appVariablesMap(ActionStrings.encryptionTypeVar)
+			  } else {
+				warn("No encryption type set for network config, assuming none")
+				encryptionName = ActionStrings.noEncryptionName
+			  }
+			  LiftAmbassador.requestNetworkConfig(text(0), encryptionName, text(1))
 			} else {
-			  warn("No encryption type set for network config, assuming none")
-			  encryptionName = ActionStrings.noEncryptionName
+			  warn("No action found in multiTextInputMapper for \"" + desiredAction + "\" and " + text.length + " inputs");
 			}
-			LiftAmbassador.requestNetworkConfig(text(0), encryptionName, text(1))
 		  } else {
-			warn("No action found in multiTextInputMapper for \"" + desiredAction + "\" and " + text.length + " inputs");
+			warn("Action in control id " + formId + " is not recognized by multiTextInputMapper: " + desiredAction)
 		  }
 		} else {
-		  warn("Action in control id " + formId + " is not recognized by multiTextInputMapper: " + desiredAction)
+		  warn("Action URI prefix in control id " + formId + "does not provide a valid action to multiTextInputMapper: " + getUriPrefix(controlDefMap(formId).action))
 		}
 	  }
 	  
@@ -312,7 +330,7 @@ package org.cogchar.lifter {
 		success
 	  }
 	  
-	  // Another "segment" of the triggering operation, which we jump back into from toggleButton
+	  // Another "segment" of the triggering operation, which we jump back into from toggleButton or directly from triggerAction
 	  def continueTriggering(id: Int): Boolean = {
 		var success = false
 		if (controlDefMap.contains(id)) {
@@ -320,7 +338,6 @@ package org.cogchar.lifter {
 		  else {
 			var action = controlDefMap(id).action
 			if (singularAction contains id) {action = singularAction(id)} // If this is a "multi-state" control, get the action corresponding to current state
-			//info("In continueTriggering, acting on action " + action) // TEST ONLY
 			// In case this is a scene and Cog Char tells us to show the info page, be sure it has the required info 
 			setSceneRunningInfo(id) // eventually this may not be necessary, and Cog Char may handle this part too}
 			success = LiftAmbassador.triggerAction(action)
@@ -337,37 +354,42 @@ package org.cogchar.lifter {
 	  
 	  // Perform any button actions handled locally, and return true if we find one
 	  def performLocalActions(slotNum: Int) = {
-		var action = controlDefMap(slotNum).action
-		if (singularAction contains slotNum) {action = singularAction(slotNum)} // If this is a "multi-state" control, get the action corresponding to current state
-		//info("In performLocalActions, acting on action " + action) // TEST ONLY
+		val actionUriPrefix = getUriPrefix(controlDefMap(slotNum).action);
+		var actionSuffix = controlDefMap(slotNum).action.getLocalName();
+		if (singularAction contains slotNum) {actionSuffix = singularAction(slotNum).getLocalName} // If this is a "multi-state" control, get the action corresponding to current state
+		val splitAction = actionSuffix.split("_")
 		var success = false;
-		val splitAction = action.split("_")
-		splitAction(0) match {
-		  case ActionStrings.acquireSpeech => {
-			  updateInfo = 201 // Special "slotNum" to tell JavaScriptActor to request speech
-			  lastSpeechReqSlotNum = slotNum; // Set this field - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
-			  updateListeners()
-			  success = true
+		actionUriPrefix match {
+		  case ActionStrings.p_liftcmd => {
+			  splitAction(0) match {
+				case ActionStrings.acquireSpeech => {
+					updateInfo = 201 // Special "slotNum" to tell JavaScriptActor to request speech
+					lastSpeechReqSlotNum = slotNum; // Set this field - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
+					updateListeners()
+					success = true
+				  }
+				case ActionStrings.cogbotSpeech => splitAction(1) match {
+					case ActionStrings.ENABLE_TOKEN => cogbotSpeaks = true; success = true
+					case ActionStrings.DISABLE_TOKEN => cogbotSpeaks = false; success = true
+					case _ => // No match, just exit (success=false)
+				  }
+				case ActionStrings.getContinuousSpeech => {
+					requestContinuousSpeech(slotNum, true)
+				  }
+				case ActionStrings.stopContinuousSpeech => {
+					requestContinuousSpeech(slotNum, false)
+				  }
+				case _ => // No match, just exit (success=false)
+			  }
 			}
-		  case ActionStrings.cogbotSpeech => splitAction(1) match {
-			  case ActionStrings.ENABLE_TOKEN => cogbotSpeaks = true; success = true
-			  case ActionStrings.DISABLE_TOKEN => cogbotSpeaks = false; success = true
-			  case _ => // No match, just exit (success=false)
-			}
-		  case ActionStrings.getContinuousSpeech => {
-			  requestContinuousSpeech(slotNum, true)
-			}
-		  case ActionStrings.stopContinuousSpeech => {
-			  requestContinuousSpeech(slotNum, false)
-			}
-		  case ActionStrings.setVariable => {
+		  case ActionStrings.p_liftvar => {
 			  //A button wants to set a variable. That means we toggle the value between true and false.
 			  if (toggleButtonMap contains slotNum) { // ... make sure the value is synced with the button state if so
-				appVariablesMap(splitAction(1)) = toggleButtonMap(slotNum).toString 
-			  } else if (appVariablesMap contains splitAction(1)) {
-				if (appVariablesMap(splitAction(1)).toBoolean) appVariablesMap(splitAction(1)) = false.toString else appVariablesMap(splitAction(1)) = true.toString
-			  } else appVariablesMap(splitAction(1)) = true.toString
-			  info("App Variable " + splitAction(1) + " set to " + appVariablesMap(splitAction(1)))
+				appVariablesMap(actionSuffix) = toggleButtonMap(slotNum).toString 
+			  } else if (appVariablesMap contains actionSuffix) {
+				if (appVariablesMap(actionSuffix).toBoolean) appVariablesMap(actionSuffix) = false.toString else appVariablesMap(actionSuffix) = true.toString
+			  } else appVariablesMap(actionSuffix) = true.toString
+			  info("App Variable " + actionSuffix + " set to " + appVariablesMap(actionSuffix))
 			}
 		  case _ => // No match, just exit (success=false)
 		}
@@ -378,32 +400,38 @@ package org.cogchar.lifter {
 		var success = false;
 		if (controlDefMap contains slotNum) {
 		  if (controlDefMap(slotNum).controlType equals ControlType.TOGGLEBUTTON.toString) {
-			var textItems = List.fromArray(controlDefMap(slotNum).text.split(","))
-			var actionItems = List.fromArray(controlDefMap(slotNum).action.split(","))
-			var styleItems = List.fromArray(controlDefMap(slotNum).style.split(","))
-			var resourceItems = List.fromArray(controlDefMap(slotNum).resource.split(","))
-			if (toggleButtonMap contains slotNum) {
-			  if (toggleButtonMap(slotNum)) {
-				// Button is "selected" -- change back to "default" and perform action
-				// If only one parameter is specified in RDF, duplicate the first and use that parameter here too (really we are prepending the one item in the list to itself, but that works ok here)
-				if (actionItems.length < 2) actionItems ::= actionItems(0)
-				singularAction(slotNum) = actionItems(1)
-				toggleButtonMap(slotNum) = false
-				success = continueTriggering(slotNum)
-				setControl(slotNum, PushyButton.makeButton(textItems(0), styleItems(0), resourceItems(0), slotNum))
+			val actionUriPrefix = getUriPrefix(controlDefMap(slotNum).action);
+			if ((actionUriPrefix.equals(ActionStrings.p_liftcmd)) || 
+				(actionUriPrefix.equals(ActionStrings.p_liftvar))) {
+			  var textItems = List.fromArray(controlDefMap(slotNum).text.split(","))
+			  var actionItems = List.fromArray(controlDefMap(slotNum).action.getLocalName.split("__"))
+			  var styleItems = List.fromArray(controlDefMap(slotNum).style.split(","))
+			  var resourceItems = List.fromArray(controlDefMap(slotNum).resource.split(","))
+			  if (toggleButtonMap contains slotNum) {
+				if (toggleButtonMap(slotNum)) {
+				  // Button is "selected" -- change back to "default" and perform action
+				  // If only one parameter is specified in RDF, duplicate the first and use that parameter here too (really we are prepending the one item in the list to itself, but that works ok here)
+				  if (actionItems.length < 2) actionItems ::= actionItems(0)
+				  singularAction(slotNum) = new FreeIdent(actionUriPrefix + actionItems(1), actionItems(1))
+				  toggleButtonMap(slotNum) = false
+				  success = continueTriggering(slotNum)
+				  setControl(slotNum, PushyButton.makeButton(textItems(0), styleItems(0), resourceItems(0), slotNum))
+				} else {
+				  // Button is set as "default" -- set to "selected" and perform action
+				  // If only one parameter is specified in RDF, duplicate the first and use that parameter here too (really we are prepending the one item in the list to itself, but that works ok here)
+				  if (textItems.length < 2) textItems ::= textItems(0)
+				  if (styleItems.length < 2) styleItems ::= styleItems(0)
+				  if (resourceItems.length < 2) resourceItems ::= resourceItems(0)
+				  singularAction(slotNum) = new FreeIdent(actionUriPrefix + actionItems(0), actionItems(0))
+				  toggleButtonMap(slotNum) = true
+				  success = continueTriggering(slotNum)
+				  setControl(slotNum, PushyButton.makeButton(textItems(1), styleItems(1), resourceItems(1), slotNum))
+				}
 			  } else {
-				// Button is set as "default" -- set to "selected" and perform action
-				// If only one parameter is specified in RDF, duplicate the first and use that parameter here too (really we are prepending the one item in the list to itself, but that works ok here)
-				if (textItems.length < 2) textItems ::= textItems(0)
-				if (styleItems.length < 2) styleItems ::= styleItems(0)
-				if (resourceItems.length < 2) resourceItems ::= resourceItems(0)
-				singularAction(slotNum) = actionItems(0)
-				toggleButtonMap(slotNum) = true
-				success = continueTriggering(slotNum)
-				setControl(slotNum, PushyButton.makeButton(textItems(1), styleItems(1), resourceItems(1), slotNum))
+				error("PageCommander.toggleButton called for slotNum " + slotNum + ", but no entry found in toggleButtonMap")
 			  }
 			} else {
-			  error("PageCommander.toggleButton called for slotNum " + slotNum + ", but no entry found in toggleButtonMap")
+			  error("PageCommander.toggleButton called for slotNum " + slotNum + ", but action URI prefix does not provide a valid action: " + getUriPrefix(controlDefMap(slotNum).action))
 			}
 		  } else {
 			error("PageCommander.toggleButton called for slotNum " + slotNum + ", but no TOGGLEBUTTON found in controlDefMap")
@@ -439,10 +467,18 @@ package org.cogchar.lifter {
 	  def getOutputSpeech = {
 		outputSpeech
 	  }
-	   
-	  def reconfigureControlsFromRdf(rdfFile:String) = {
-		LiftAmbassador.activateControlsFromRdf(rdfFile)
+	  
+	  // I think Ident should include this method, but since it doesn't...
+	  def getUriPrefix(uri: Ident) : String = {
+		uri.getAbsUriString.stripSuffix(uri.getLocalName)
 	  }
+	   
+	  /* We don't support lift config Turtle files now after making the switch to action URIs, unless we want to 
+	   * bring back that capability. See org.cogchar.bind.lift.ControlConfig for more info
+	   def reconfigureControlsFromRdf(rdfFile:String) = {
+	   LiftAmbassador.activateControlsFromRdf(rdfFile)
+	   }
+	   */
 	  
 	  var theMessenger: CogcharMessenger = null
 	

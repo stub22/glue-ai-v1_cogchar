@@ -30,9 +30,8 @@ public class ControlConfig {
 
 	static Logger theLogger = LoggerFactory.getLogger(ControlConfig.class);
 	public String myURI_Fragment;
-	//public ControlType controlType; // Probably a good idea to do away with this enum type - see comments at bottom
 	public String controlType = "NULLTYPE";
-	public String action = "";
+	public Ident action;
 	public String text = "";
 	public String style = "";
 	public String resource = "";
@@ -57,32 +56,25 @@ public class ControlConfig {
 		} else {
 			controlType = controlType.toUpperCase(); // Ensures lc:type property is case insensitive to local name
 		}
-		action = qi.getStringFromSolution(solution, LiftQueryNames.ACTION_VAR_NAME, "");
+		action = qi.getIdentFromSolution(solution, LiftQueryNames.ACTION_VAR_NAME);
+		// If no action specified, add the "blank action". This is mainly to protect us from NPEs in legacy code from
+		// the days of action strings, which assumed no action would result in a blank string instead of a null pointer.
+		if (action == null) {
+			action = LiftQueryNames.BLANK_ACTION;
+		}
 		text = qi.getStringFromSolution(solution, LiftQueryNames.TEXT_VAR_NAME, "");
 		style = qi.getStringFromSolution(solution, LiftQueryNames.STYLE_VAR_NAME, "");
 		resource = qi.getStringFromSolution(solution, LiftQueryNames.RESOURCE_VAR_NAME, "");
 	}
 
+	/* No longer available unless we fix this up to support the new action URIs instead of strings
 	public ControlConfig(Item configItem) {
 		myURI_Fragment = configItem.getIdent().getLocalName();
-		/*
-		 * This is for using ControlType enum type, which we are probably phasing out String typeString =
-		 * ItemFuncs.getString(configItem, LiftConfigNames.P_controlType, null); controlType = ControlType.NULLTYPE; for
-		 * (ControlType testType : ControlType.values()) { if (typeString.equals(testType.name())) { controlType =
-		 * testType; } } if (controlType == ControlType.NULLTYPE) { theLogger.warn("Lift Control with URI Fragment " +
-		 * myURI_Fragment + " does not indicate a valid type!"); }
-		 */
 		controlType = ItemFuncs.getString(configItem, LiftConfigNames.P_controlType, "NULLTYPE");
 		action = ItemFuncs.getString(configItem, LiftConfigNames.P_controlAction, "");
 		text = ItemFuncs.getString(configItem, LiftConfigNames.P_controlText, "");
 		style = ItemFuncs.getString(configItem, LiftConfigNames.P_controlStyle, "");
 		resource = ItemFuncs.getString(configItem, LiftConfigNames.P_controlResource, "");
 	}
-
-	/*
-	 * Let's try doing away with this. It makes sense to have enum type for jME stuff internal to Cog Char, but here it
-	 * requires changes to Cog Char every time we add web app functionality public enum ControlType {
-	 *
-	 * NULLTYPE, PUSHYBUTTON, TEXTINPUT, SELECTBOXES, RADIOBUTTONS, LISTBOX }
-	 */
+	*/
 }
