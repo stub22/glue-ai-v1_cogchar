@@ -52,14 +52,10 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		static DescriptorListBuilder get() {
 			DescriptorListBuilder dlb = new DescriptorListBuilder()
 					.dependency(queryEmitterId, QueryInterface.class)
-			//								.dependency(globalConfigId, GlobalConfigEmitter.GlobalConfigService.class);
 					.dependency(globalConfigId, GlobalConfigEmitter.GlobalConfigService.class)
 					.dependency(theLiftAppInterfaceId, LiftAmbassador.LiftAppInterface.class).optional()
 					.dependency(theLiftSceneInterfaceId, LiftAmbassador.LiftSceneInterface.class).optional()
 					.dependency(theLiftNetConfigInterfaceId, LiftAmbassador.LiftNetworkConfigInterface.class).optional();
-			//dlb = new DescriptorBuilder(dlb, theLiftAppInterfaceId, LiftAmbassador.LiftAppInterface.class, DependencyType.OPTIONAL);
-			//dlb = new DescriptorBuilder(dlb, theLiftSceneInterfaceId, LiftAmbassador.LiftSceneInterface.class, DependencyType.OPTIONAL);
-			//dlb = new DescriptorBuilder(dlb, theLiftNetConfigInterfaceId, LiftAmbassador.LiftNetworkConfigInterface.class, DependencyType.OPTIONAL);
 			return dlb;
 		}
 	}
