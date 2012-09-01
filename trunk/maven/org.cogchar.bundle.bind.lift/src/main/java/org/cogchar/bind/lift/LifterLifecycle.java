@@ -18,6 +18,7 @@ package org.cogchar.bind.lift;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.appdapter.core.item.FreeIdent;
 import org.appdapter.core.item.Ident;
@@ -49,10 +50,16 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 	static class OurDescriptorBuilder {
 
 		static DescriptorListBuilder get() {
-			DescriptorListBuilder dlb = new DescriptorListBuilder().dependency(queryEmitterId, QueryInterface.class).dependency(globalConfigId, GlobalConfigEmitter.GlobalConfigService.class);
-			dlb = new DescriptorBuilder(dlb, theLiftAppInterfaceId, LiftAmbassador.LiftAppInterface.class, DependencyType.OPTIONAL);
-			dlb = new DescriptorBuilder(dlb, theLiftSceneInterfaceId, LiftAmbassador.LiftSceneInterface.class, DependencyType.OPTIONAL);
-			dlb = new DescriptorBuilder(dlb, theLiftNetConfigInterfaceId, LiftAmbassador.LiftNetworkConfigInterface.class, DependencyType.OPTIONAL);
+			DescriptorListBuilder dlb = new DescriptorListBuilder()
+					.dependency(queryEmitterId, QueryInterface.class)
+			//								.dependency(globalConfigId, GlobalConfigEmitter.GlobalConfigService.class);
+					.dependency(globalConfigId, GlobalConfigEmitter.GlobalConfigService.class)
+					.dependency(theLiftAppInterfaceId, LiftAmbassador.LiftAppInterface.class).optional()
+					.dependency(theLiftSceneInterfaceId, LiftAmbassador.LiftSceneInterface.class).optional()
+					.dependency(theLiftNetConfigInterfaceId, LiftAmbassador.LiftNetworkConfigInterface.class).optional();
+			//dlb = new DescriptorBuilder(dlb, theLiftAppInterfaceId, LiftAmbassador.LiftAppInterface.class, DependencyType.OPTIONAL);
+			//dlb = new DescriptorBuilder(dlb, theLiftSceneInterfaceId, LiftAmbassador.LiftSceneInterface.class, DependencyType.OPTIONAL);
+			//dlb = new DescriptorBuilder(dlb, theLiftNetConfigInterfaceId, LiftAmbassador.LiftNetworkConfigInterface.class, DependencyType.OPTIONAL);
 			return dlb;
 		}
 	}
@@ -80,10 +87,11 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 	@Override
 	protected void handleChange(String serviceId, Object dependency, Map<String, Object> availableDependencies) {
 		//super.handleChange(name, dependency, availableDependencies); //Needed?
-		if (queryEmitterId.equals(serviceId)) {
+		theLogger.log(Level.INFO, "LifterLifecycle handling change to {0}", serviceId);
+		if ((queryEmitterId.equals(serviceId)) && (dependency != null)) {
 			connectWebContent((QueryInterface) dependency,
 					(GlobalConfigEmitter.GlobalConfigService) availableDependencies.get(globalConfigId));
-		} else if (globalConfigId.equals(serviceId)) {
+		} else if ((globalConfigId.equals(serviceId)) && (dependency != null)) {
 			connectWebContent((QueryInterface) availableDependencies.get(queryEmitterId),
 					(GlobalConfigEmitter.GlobalConfigService) dependency);
 		} else if (theLiftAppInterfaceId.equals(serviceId)) {

@@ -193,7 +193,7 @@ public class PumaAppContext extends BasicDebugger {
 		} else if (MANAGED_GCS.equals(request.toLowerCase())) {
 			updating = true;
 			if (gcComp != null) {
-				gcComp.stop();
+				gcComp.dispose();
 			}
 			Thread updateThread = new Thread("Managed Global Config Service Update Thread") {
 
@@ -446,7 +446,7 @@ public class PumaAppContext extends BasicDebugger {
 			stream.close();
 			out.flush();
 			out.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logWarning("Exception trying to load jointGroup from resource into temp file: " + e);
 		}
 		return outputFile;
