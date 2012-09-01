@@ -144,6 +144,7 @@ public class LiftAmbassador {
 	public static void storeChatConfig(ChatConfig cc) {
 		// How do we want to handle the possible case of more than one ChatConfigResource? Not sure quite what the future will hold for ChatConfig.
 		// For now, let's just combine them all into one. This could be dangerous, but makes sense for now(?)
+		chatConfigEntries.clear(); // If we are doing a "mode change" or other reconfig, we need to clear out old entries first
 		for (ChatConfigResource ccr : cc.myCCRs) {
 			chatConfigEntries.putAll(ccr.entries);
 		}
