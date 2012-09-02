@@ -259,6 +259,22 @@ public class LiftAmbassador {
 		}
 		
 	}
+	
+	// Just a demo login method
+	private static final String MAIN_CONFIG = "mainLiftConfig";
+	private static final String CHAT_CONFIG = "chatBigBoxLiftConfig";
+	public static void login(String userName, String password) {
+		if ((userName.equals("main")) && (password.equals("BigBoy"))) {
+			// Request main liftConfig
+			triggerAction(new FreeIdent(LiftConfigNames.p_liftconfig + MAIN_CONFIG, MAIN_CONFIG));
+		} else if ((userName.equals("chat")) && (password.equals("Mr.Wee"))) {
+			// Request chatConfig
+			triggerAction(new FreeIdent(LiftConfigNames.p_liftconfig + CHAT_CONFIG, CHAT_CONFIG));
+		} else {
+			//Show error
+			displayError("login", "Username or Password not recognized"); // <- move strings to resource
+		}
+	}
 
 	public static void setSceneLauncher(LiftSceneInterface launcher) {
 		sceneLauncher = launcher;
