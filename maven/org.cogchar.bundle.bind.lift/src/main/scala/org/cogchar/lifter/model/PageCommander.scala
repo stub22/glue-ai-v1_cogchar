@@ -68,7 +68,7 @@ package org.cogchar.lifter {
 	  // A list of possible control types
 	  object ControlType extends Enumeration { 
 		type ControlType = Value
-		val NULLTYPE, PUSHYBUTTON, TEXTINPUT, DUALTEXTINPUT, SELECTBOXES, RADIOBUTTONS, LISTBOX, VIDEOBOX, TOGGLEBUTTON, TEXTBOX = Value
+		val NULLTYPE, PUSHYBUTTON, TEXTINPUT, DUALTEXTINPUT, LOGINFORM, SELECTBOXES, RADIOBUTTONS, LISTBOX, VIDEOBOX, TOGGLEBUTTON, TEXTBOX = Value
 	  }
 	  import ControlType._
 	  
@@ -153,6 +153,14 @@ package org.cogchar.lifter {
 			  val label2 = textItems(1)
 			  val submitLabel = textItems(2)
 			  setControl(slotNum, DualTextForm.makeForm(label1, label2, submitLabel, slotNum))
+			}
+		  case ControlType.LOGINFORM => {
+			  // From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
+			  val textItems = List.fromArray(text.split(","))
+			  val label1 = textItems(0)
+			  val label2 = textItems(1)
+			  val submitLabel = textItems(2)
+			  setControl(slotNum, LoginForm.makeForm(label1, label2, submitLabel, slotNum))
 			}
 		  case ControlType.SELECTBOXES => {
 			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
