@@ -36,6 +36,7 @@ public class LiftQueryNames {
 	public static final String RESOURCE_VAR_NAME = "resource";
 	
 	public static final String TEMPLATE_QUERY_URI = "ccrt:find_lift_templates_99";
+	public static final String START_CONFIG_QUERY_URI = "ccrt:find_lift_startConfig_99";
 	
 	public static final String CONTROL_QUERY_TEMPLATE_URI = "ccrt:template_lift_control_99";
 	

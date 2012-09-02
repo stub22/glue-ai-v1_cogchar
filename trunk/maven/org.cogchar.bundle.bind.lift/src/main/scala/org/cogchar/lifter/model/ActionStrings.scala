@@ -33,12 +33,13 @@ package org.cogchar.lifter {
 	  final val encryptionTypeVar = "networkEncType"
 	  final val noEncryptionName = "NONE"
 	  
-	  final val COGBOT_TOKEN = "cogbot" // These token definitiions will probably not live here permanently
+	  final val COGBOT_TOKEN = "cogbot" // These token definitions may not live here permanently
 	  final val ANDROID_SPEECH_TOKEN = "androidSpeech" // for Android speech recognition
 	  final val ENABLE_TOKEN = "enable" 
 	  final val DISABLE_TOKEN = "disable"
 	  final val ERROR_TOKEN = "error"
 	  final val NETWORK_CONFIG_TOKEN = "networkconfig"
+	  final val LOGIN_TOKEN = "login"
 	  
 	  // These are URI prefixes for actions
 	  final val p_liftcmd = "http://www.cogchar.org/lift/config/command#"

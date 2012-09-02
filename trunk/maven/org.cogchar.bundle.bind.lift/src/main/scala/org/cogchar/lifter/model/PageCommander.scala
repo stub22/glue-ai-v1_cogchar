@@ -311,6 +311,8 @@ package org.cogchar.lifter {
 				encryptionName = ActionStrings.noEncryptionName
 			  }
 			  LiftAmbassador.requestNetworkConfig(text(0), encryptionName, text(1))
+			} else if ((ActionStrings.LOGIN_TOKEN equals desiredAction) && (text.length == 2)) {
+			  LiftAmbassador.login(text(0), text(1));
 			} else {
 			  warn("No action found in multiTextInputMapper for \"" + desiredAction + "\" and " + text.length + " inputs");
 			}
