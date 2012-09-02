@@ -40,21 +40,14 @@ class QueryEmitter extends QueryInterface {
   
   private def ensureRepo {
 	if (QuerySheet.repo == null) {
-	  QuerySheet.repo = loadSheetRepo
+	  QuerySheet.repo = QuerySheet.loadSheetRepo
 	}
   }
   
   def reloadSheetRepo {
-	QuerySheet.repo = loadSheetRepo
+	QuerySheet.repo = QuerySheet.loadSheetRepo
   }
   
-  // Modeled on SheetRepo.loadTestSheetRepo
-  def loadSheetRepo : SheetRepo = {
-	val dirModel : Model = SheetRepo.readDirectoryModelFromGoog(QuerySheet.SHEET_KEY, QuerySheet.NS_SHEET_NUM, QuerySheet.DIR_SHEET_NUM) 
-	val sr = new SheetRepo(dirModel)
-	sr.loadSheetModelsIntoMainDataset()
-	sr
-  }
   
   /** Returns the current cached SheetRepo
    *
@@ -465,7 +458,7 @@ class QueryEmitter extends QueryInterface {
 object QuerySheet {
   
   final val SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" // Main test sheet!
-  //final val SHEET_KEY = "0Ajj1Rnx7FCoHdFN0MEV0NzkwRjNlQnZJOTBmQS1uR3c" // Biggs test sheet!
+  //final val SHEET_KEY = "0Ajj1Rnx7FCoHdDN2VFdVazMzRGNGY3BMQmk1TXZzUHc" // Biggs test sheet!
   final val NS_SHEET_NUM = 9
   final val DIR_SHEET_NUM = 8
   final val QUERY_SHEET = "ccrt:qry_sheet_22"
@@ -478,13 +471,21 @@ object QuerySheet {
    */
   def testQuery(queryToTest: String) : Unit = {
 	
-	val sr : SheetRepo = SheetRepo.loadTestSheetRepo()
+	val sr : SheetRepo = loadSheetRepo
 	val qText = sr.getQueryText(QUERY_SHEET, queryToTest)
 	println("Found query text: " + qText)
 		
 	val parsedQ = sr.parseQueryText(qText);
 	val solnJavaList : java.util.List[QuerySolution] = sr.findAllSolutions(parsedQ, null);
 	println("Found solutions: " + solnJavaList)
+  }
+  
+  // Modeled on SheetRepo.loadTestSheetRepo
+  def loadSheetRepo : SheetRepo = {
+	val dirModel : Model = SheetRepo.readDirectoryModelFromGoog(QuerySheet.SHEET_KEY, QuerySheet.NS_SHEET_NUM, QuerySheet.DIR_SHEET_NUM) 
+	val sr = new SheetRepo(dirModel)
+	sr.loadSheetModelsIntoMainDataset()
+	sr
   }
   
   // A temporary hook-in to allow current clients of QueryEmitter to easily get a "primary" instance until they 
