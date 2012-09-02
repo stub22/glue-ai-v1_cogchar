@@ -24,9 +24,8 @@ import org.appdapter.core.item.FreeIdent;
 import org.appdapter.core.item.Ident;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.blob.emit.QueryInterface;
+import org.cogchar.blob.emit.SolutionList;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
-import org.robokind.api.common.lifecycle.DependencyDescriptor.DependencyType;
-import org.robokind.api.common.lifecycle.utils.DescriptorBuilder;
 import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
 
 /**
@@ -36,7 +35,6 @@ import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
 public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.LiftAmbassadorInterface, LiftAmbassador.inputInterface> {
 
 	private final static Logger theLogger = Logger.getLogger(LifterLifecycle.class.getName());
-	static final Ident HOME_LIFT_CONFIG_IDENT = new FreeIdent("http://www.cogchar.org/lift/config/configroot#mainLiftConfig", "mainLiftConfig"); // Needs to move to sheet!!!!
 	static final String LIFTER_ENTITY_TYPE = "WebappEntity";
 	public static final String rkrt = "urn:ftd:robokind.org:2012:runtime#";
 	public static Ident LIFT_CONFIG_ROLE = new FreeIdent(rkrt + "lifterConf", "lifterConf");
@@ -124,9 +122,12 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 			}
 			// Provide queryInterface to LiftAmbassador so it can reload lift configs
 			LiftAmbassador.setQueryInterface(qi, qGraph);
-			// Load web app "home" screen config
-			LiftConfig lc = new LiftConfig(qi, qGraph, HOME_LIFT_CONFIG_IDENT);
-			LiftAmbassador.activateControlsFromConfig(lc);
+			// Load web app "home" startup screen config
+			Ident startupConfigIdent = getStartupLiftConfig(qi, qGraph);
+			if (startupConfigIdent != null) {
+				LiftConfig lc = new LiftConfig(qi, qGraph, startupConfigIdent);
+				LiftAmbassador.activateControlsFromConfig(lc);
+			}
 			// Get the graph for the general config
 			try {
 				qGraph = configService.getErgMap().get(webAppEntities.get(0)).get(GENERAL_CONFIG_ROLE);
@@ -139,4 +140,21 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 			LiftAmbassador.storeChatConfig(cc);
 		}
 	}
+	
+	// Queries for the desired liftConfig to be displayed at startup
+	private Ident getStartupLiftConfig(QueryInterface qi, Ident graphIdent) {
+		Ident startupConfig =  null;
+		SolutionList solutionList = qi.getQueryResultList(LiftQueryNames.START_CONFIG_QUERY_URI, graphIdent);
+		List<Ident> startupConfigList = qi.getIdentsFromSolutionAsJava(solutionList, LiftQueryNames.CONFIG_VAR_NAME);
+		if (startupConfigList.size() < 1) {
+			theLogger.severe("Did not find a startup liftConfig! Web app will not function.");
+		} else {
+			startupConfig = startupConfigList.get(0);
+			if (startupConfigList.size() > 1) {
+				theLogger.log(Level.WARNING, "Found more than one startup liftConfig; using {0} and ignoring the rest", startupConfig);
+			}
+		}
+		return startupConfig;
+	}
+
 }
