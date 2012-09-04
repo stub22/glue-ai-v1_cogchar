@@ -415,6 +415,21 @@ class QueryEmitter extends QueryInterface {
 	literal
   }
   
+   /** Gets a double literal from a single query solution with a provided default if solution variable is not found
+   *
+   * @param solution The Solution in which the desired double is located
+   * @param variableName The query variable name for the double literal desired
+   * @param default The double to return if the query variable is not found in solution
+   * @return The selected double literal
+   */
+  def getDoubleFromSolution(solution:Solution, variableName:String, default:Double): Double = {
+	var literal: Double = default
+	if (solution.solution.contains(variableName)) {
+	  literal = solution.solution.getLiteral(variableName).getDouble
+	}
+	literal
+  }
+  
   def getIntegerFromSolution(solutionMap:SolutionMap[Ident], selector:Ident, variableName:String) = {
 	// I'd really prefer to set this to null to result in NPE in subsequent Java code if it's not found in solution
 	// But Scala won't allow that for Int (or Float), and use of an Option seems inappropriate when this will be often called from Java code
@@ -457,8 +472,8 @@ class QueryEmitter extends QueryInterface {
 
 object QuerySheet {
   
-  final val SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" // Main test sheet!
-  //final val SHEET_KEY = "0Ajj1Rnx7FCoHdDN2VFdVazMzRGNGY3BMQmk1TXZzUHc" // Biggs test sheet!
+  //final val SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" // Main test sheet!
+  final val SHEET_KEY = "0Ajj1Rnx7FCoHdDN2VFdVazMzRGNGY3BMQmk1TXZzUHc" // Biggs test sheet!
   final val NS_SHEET_NUM = 9
   final val DIR_SHEET_NUM = 8
   final val QUERY_SHEET = "ccrt:qry_sheet_22"

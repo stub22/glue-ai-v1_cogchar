@@ -20,6 +20,7 @@ import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.matdat.SheetRepo;
 
+import org.cogchar.blob.emit.Solution;
 import org.cogchar.blob.emit.SolutionList;
 import org.cogchar.blob.emit.SolutionMap;
 import org.cogchar.blob.emit.QuerySheet;
@@ -74,6 +75,17 @@ public class BoneJointConfig {
 			Double maxAngle = queryEmitter.getDoubleFromSolution(solutionMap, boneName, BoneQueryNames.MAX_ANGLE_VAR_NAME);
 			BoneRotationAxis rotationAxis = BoneRotationAxis.valueOf(rotationAxisName);
 			myProjectionRanges.add(new BoneProjectionRange(this, boneName, rotationAxis, Math.toRadians(minAngle), Math.toRadians(maxAngle)));
+			queryString = queryEmitter.getQuery(BoneQueryNames.ADDITIONAL_BONES_QUERY_TEMPLATE_URI);
+			queryString = queryEmitter.setQueryVar(queryString, BoneQueryNames.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
+			SolutionList solutionList = queryEmitter.getTextQueryResultList(queryString, graphIdent);
+			for (Solution solution : solutionList.javaList()) {
+				boneName = queryEmitter.getStringFromSolution(solution, BoneQueryNames.BONE_NAME_VAR_NAME, "");
+				rotationAxisName = queryEmitter.getStringFromSolution(solution, BoneQueryNames.ROTATION_AXIS_VAR_NAME, "");
+				minAngle = queryEmitter.getDoubleFromSolution(solution, BoneQueryNames.MIN_ANGLE_VAR_NAME, 0);
+				maxAngle = queryEmitter.getDoubleFromSolution(solution, BoneQueryNames.MAX_ANGLE_VAR_NAME, 0);
+				rotationAxis = BoneRotationAxis.valueOf(rotationAxisName);
+				myProjectionRanges.add(new BoneProjectionRange(this, boneName, rotationAxis, Math.toRadians(minAngle), Math.toRadians(maxAngle)));
+			}
 		}
 		//System.out.println("Created new BoneJointConfig: " + this.toString()); // TEST ONLY
 	}

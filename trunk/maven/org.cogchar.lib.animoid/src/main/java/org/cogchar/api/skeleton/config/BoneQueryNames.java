@@ -39,6 +39,7 @@ public class BoneQueryNames {
 	public static final String BASE_BONE_JOINT_PROPERTIES_QUERY_TEMPLATE_URI = "ccrt:template_basicJointProperties_99";
 	public static final String BONEPROJECTION_QUERY_TEMPLATE_URI = "ccrt:template_boneProjectionRanges_99";
 	public static final String BONE_NAMES_QUERY_TEMPLATE_URI = "ccrt:template_boneNames_99";
+	public static final String ADDITIONAL_BONES_QUERY_TEMPLATE_URI = "ccrt:template_additionalBones_99";
 	
 	public static final String BONE_JOINT_CONFIG_QUERY_VAR = "boneJointUri";
 	public static final String ROBOT_IDENT_QUERY_VAR = "robotUri";
