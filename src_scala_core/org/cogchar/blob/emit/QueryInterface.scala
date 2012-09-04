@@ -313,6 +313,15 @@ trait QueryInterface {
    */
   def getDoubleFromSolution(solutionMap:SolutionMap[String], selector:String, variableName:String): Double
   
+   /** Gets a double literal from a single query solution with a provided default if solution variable is not found
+   *
+   * @param solution The Solution in which the desired double is located
+   * @param variableName The query variable name for the double literal desired
+   * @param default The double to return if the query variable is not found in solution
+   * @return The selected double literal
+   */
+  def getDoubleFromSolution(solution:Solution, variableName:String, default:Double): Double
+  
   /** Gets an integer literal from a query solution located in a SolutionMap and keyed by a selector Ident
    *
    * @param solutionMap The SolutionMap in which the desired literal is located
