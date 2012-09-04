@@ -88,7 +88,7 @@ public class BoneProjectionRange  {
 	}
 
 	protected String getFieldSummary() {
-		return "rotAxis=[" + myRotationAxis + "], minRotRad=[" + myMinPosAngRad
+		return "boneName=[" + myBoneName + "], rotAxis=[" + myRotationAxis + "], minRotRad=[" + myMinPosAngRad
 				+ "], maxRotRad=[" + myMaxPosAngRad + "]";
 	}
     @Override
