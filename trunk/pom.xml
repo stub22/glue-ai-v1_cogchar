@@ -96,6 +96,17 @@ Version-less parent will be allowed in Maven 3.1.
 						 -->
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.scala-tools</groupId>
+					<artifactId>maven-scala-plugin</artifactId>
+					<configuration>
+		<!-- On Frogbait this option drops Scala proj build time about 20% -->
+						<jvmArgs>
+							<jvmArg>-XX:+TieredCompilation</jvmArg>
+						</jvmArgs>
+						<displayCmd>true</displayCmd>
+					</configuration>
+				</plugin>				
 			</plugins>
 		</pluginManagement>
 		<plugins>
