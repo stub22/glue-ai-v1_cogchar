@@ -40,9 +40,9 @@
 					<execution>
 						<goals>
 							<goal>compile</goal>
-							
+							<!--  Unused
 							<goal>testCompile</goal>
-						
+							-->
 						</goals>
 						<configuration>
 							<args>
