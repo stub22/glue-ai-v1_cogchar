@@ -240,6 +240,7 @@
 				<configuration>
 					<charset>${project.build.sourceEncoding}</charset>
 					<jvmArgs>
+						<jvmArg>-XX:+TieredCompilation</jvmArg>
 						<jvmArg>-Xmx1024m</jvmArg>
 						<jvmArg>-DpackageLinkDefs=file://${project.build.directory}/packageLinkDefs.properties</jvmArg>
 					</jvmArgs>
