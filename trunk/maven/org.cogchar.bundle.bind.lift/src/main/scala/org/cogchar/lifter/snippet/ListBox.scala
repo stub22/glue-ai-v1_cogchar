@@ -31,21 +31,28 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.model.PageCommander
 	import S._
 
-	object ListBox {
+	object ListBox extends ControlDefinition {
+	  
+	  class ListBoxConfig(val labelText: String, val labelList:List[String], val slotNum: Int)
+				extends PageCommander.InitialControlConfig {
+		  controlType = ListBox.instance
+	  }
+	  
+	  //under the covers, .instance() is implemented as a static method on class ListBox. This lets ListBoxConfig
+	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
+	  def instance = this  
 	  
 	  val responseText = "Title can change" // We can add bits to define this in XML if we want, or code in more fancy conditionals (Currently ignored here for demo purposes)
   
 	  val titlePrefix = "listformtitle"
 	  val boxId = "listbox"
-	  val blankId: Int = -1
+	  val titleMap = new scala.collection.mutable.HashMap[String, String]
+	  val labelMap = new scala.collection.mutable.HashMap[String, List[String]] // Map to hold all the labels for each ListBox control rendered
 	  
-	  val titleMap = scala.collection.mutable.HashMap(blankId -> "No title text found") // Map to hold the titles for each form handled by this snippet, plus default
-	  val labelMap = new scala.collection.mutable.HashMap[Int,List[String]] // Map to hold all the labels for each ListBox control rendered
-	  
-	  def makeListBox(labelText: String, labelList:List[String], idNum: Int): NodeSeq = {
-		titleMap(idNum) = labelText
-		labelMap(idNum) = labelList
-		val formIdForHtml: String = idNum.toString
+	  def makeListBox(labelText: String, labelList:List[String], sessionId:Int, idNum: Int): NodeSeq = {
+		val formIdForHtml: String = sessionId.toString + "_" + idNum.toString
+		titleMap(formIdForHtml) = labelText
+		labelMap(formIdForHtml) = labelList
 		val titleId: String = titlePrefix + formIdForHtml // We need a unique ID here, because JavaScript may be updating the title after post
 		(
 		  <form class='lift:form.ajax'>
@@ -56,11 +63,20 @@ package org.cogchar.lifter {
 		  </form>
 		)
 	  }
+	  
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+		val config = initialConfig match {
+		  case config: ListBoxConfig => config
+		  case _ => throw new ClassCastException
+		}
+		makeListBox(config.labelText, config.labelList, sessionId, config.slotNum)
+	  }
 	}
 	  
 	class ListBox extends StatefulSnippet {
 		
-	  var formId: Int = ListBox.blankId
+	  var formId: String = ""
+	  var idItems: Array[String] = new Array[String](2)
 	  lazy val listBoxInstanceTitle = ListBox.titlePrefix + formId
 		
 	  def dispatch = {case "render" => render}
@@ -72,13 +88,14 @@ package org.cogchar.lifter {
 		  //SetHtml(listBoxInstanceTitle, Text(ListBox.responseText)) // We'll leave the title the same for the demo
 		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			  def run() {
-				PageCommander.controlActionMapper(formId, result.toInt)
+				PageCommander.controlActionMapper(idItems(0).toInt, idItems(1).toInt, result.toInt)
 			  }
 			})
 		  processThread.start
 		}
 
-		formId = (S.attr("formId") openOr "-1").toInt
+		formId = (S.attr("formId") openOr "_")
+		idItems = formId.split("_")
 		var valid = false
 		var selectors:CssSel = "i_eat_yaks_for_breakfast" #> "" // This is just to produce a "Null" CssSel so we can initialize this here, but not add any meaningful info until we have checked for valid formId. (As recommended by the inventor of Lift)
 		if (ListBox.titleMap.contains(formId)) {

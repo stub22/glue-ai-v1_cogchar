@@ -21,15 +21,34 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http._
+	import org.cogchar.lifter.model.PageCommander
 
-	object VideoBox {
+	object VideoBox extends org.cogchar.lifter.snippet.ControlDefinition {
+	  
+	  class VideoBoxConfig(val videoResource:String, val mute:Boolean)
+				extends PageCommander.InitialControlConfig {
+		  controlType = VideoBox.instance
+	  }
   
+	  //under the covers, .instance() is implemented as a static method on class VideoBox. This lets VideoBoxConfig
+	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
+	  def instance = this 
+	  
 	  def makeBox(videoResource:String, mute: Boolean): NodeSeq = {
 		val videoPath: String = "/video/" + videoResource // May want to move this prefix to central location
 		val muteText = mute.toString
 		// It's all well and good to use a single video resource unless we want to support IE, in which case we'll have to mix in more
 		<video src={videoPath} width="100%" height="100%" autoplay="true" muted={muteText}></video>
-	  } 
+	  }
+	  
+	  
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+		val config = initialConfig match {
+		  case config: VideoBoxConfig => config
+		  case _ => throw new ClassCastException
+		}
+		makeBox(config.videoResource, config.mute)
+	  }
 	}
 	
   }
