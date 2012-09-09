@@ -31,7 +31,17 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.model.PageCommander
 	import S._
 	
-	object TextForm {
+	object TextForm extends ControlDefinition {
+	  
+	  class TextFormConfig(val labelText: String, val slotNum: Int)
+				extends PageCommander.InitialControlConfig {
+		  controlType = TextForm.instance
+	  }
+	  
+	  //under the covers, .instance() is implemented as a static method on class TextForm. This lets TextFormConfig
+	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
+	  def instance = this 
+	  
 	  val defaultText = "" // We can add bits to define this in XML if we want
 	  //val responseText = "Thanks for the input!" // We can add bits to define this in XML if we want - will probably do so soon, but disabling for "operational" demo right now
 	  val afterEntryText = "" // Right now we just clear text after input; we can do whatever we want
@@ -40,22 +50,30 @@ package org.cogchar.lifter {
 	  
 	  val labelIdPrefix = "textformlabel"
 	  val textBoxIdPrefix = "text_in"
-	  val blankId: Int = -1
-	  val textMap = scala.collection.mutable.HashMap(blankId -> "No label text found") // Map to hold the labels for each form handled by this snippet, plus default
+	  val textMap = new scala.collection.mutable.HashMap[String, String]
 	  
-	  def makeTextForm(initialText: String, idNum: Int): NodeSeq = {
-		textMap(idNum) = initialText
-		val formIdforHtml: String = idNum.toString
+	  def makeTextForm(initialText: String, sessionId:Int, idNum: Int): NodeSeq = {
+		val formIdforHtml: String = sessionId.toString + "_" + idNum.toString
+		textMap(formIdforHtml) = initialText
 		val labelId: String = labelIdPrefix + formIdforHtml // We need a unique ID here, because JavaScript will be updating the label after post
 		val inputId: String = textBoxIdPrefix + formIdforHtml // JavaScript may want to do things to the input box too, like clear it
 		// For good form and designer-friendliness, it would be nice to have all the XML in a template. But, we need to generate it here in order to set attributes. Maybe I can find a better way eventually.
 		<form class="lift:form.ajax"><lift:TextForm formId={formIdforHtml}><div class="labels" id={labelId}></div><input id={inputId}/> <input type="submit" value={submitLabel}/></lift:TextForm></form>
 	  }
+	  
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+		val config = initialConfig match {
+		  case config: TextFormConfig => config
+		  case _ => throw new ClassCastException
+		}
+		makeTextForm(config.labelText, sessionId, config.slotNum)
+	  }
 	}
 
 	class TextForm extends StatefulSnippet {
 	  var text: String = TextForm.defaultText
-	  var formId: Int = TextForm.blankId
+	  var formId: String = ""
+	  var idItems: Array[String] = new Array[String](2)
 	  lazy val textFormInstanceLabel = TextForm.labelIdPrefix + formId
 	  lazy val textBoxInstanceLabel = TextForm.textBoxIdPrefix + formId
 	 
@@ -67,7 +85,7 @@ package org.cogchar.lifter {
 		  println("Input text for form #" + formId + ": " + text)
 		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			  def run() {
-				PageCommander.textInputMapper(formId, text) // Let PageCommander know about the text so it can figure out what to do with it
+				PageCommander.textInputMapper(idItems(0).toInt, idItems(1).toInt, text) // Let PageCommander know about the text so it can figure out what to do with it
 			  }
 			})
 		  processThread.start
@@ -75,7 +93,8 @@ package org.cogchar.lifter {
 		  SetValById(textBoxInstanceLabel, TextForm.afterEntryText)
 		}
 		
-		formId = (S.attr("formId") openOr "-1").toInt
+		formId = (S.attr("formId") openOr "_")
+		idItems = formId.split("_")
 		val labelSelectorText: String = "#"+textFormInstanceLabel+" *"
 		val boxSelectorText: String = "#"+textBoxInstanceLabel
 		labelSelectorText #> TextForm.textMap(formId) &

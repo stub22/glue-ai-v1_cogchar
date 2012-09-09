@@ -18,29 +18,27 @@ package org.cogchar.lifter {
   package comet {
 
 	import net.liftweb.common._
-	import net.liftweb.http.js.JE._
 	import net.liftweb.http._
-	import S._
-	import net.liftweb.http.js.JsCmd
-	import net.liftweb.http.js.JsCmds._
 	import net.liftweb.util._
 	import Helpers._
-	import scala.xml._
 	import org.cogchar.lifter.model.PageCommander
 
 	
 	class ControlActor extends CometActor with CometListener {
   
-	  lazy val myElementNumber : Int = (name openOr"-1").toInt
+	  lazy val elementName = name openOr"NA"
 	  
 	  def registerWith = org.cogchar.lifter.model.PageCommander
 	  
 	  override def lowPriority : PartialFunction[Any, Unit]  = {
-		case a: Int if (a == myElementNumber) => {reRender(); /*println("ControlAction just rerendered " + a)*/}
-		case _: Int => // Do nothing if our ID not matched
+		case a: String if (a.equals(elementName)) => reRender
+		case _: Any => // Do nothing if our ID not matched
 	  }
 
-	  def render = "@ControlSlot" #> PageCommander.getNode(myElementNumber)
+	  def render = {
+		val idItems = elementName.split("_")
+		"@ControlSlot" #> PageCommander.getNode(idItems(0).toInt, idItems(1).toInt)
+	  }
   
 	}
 

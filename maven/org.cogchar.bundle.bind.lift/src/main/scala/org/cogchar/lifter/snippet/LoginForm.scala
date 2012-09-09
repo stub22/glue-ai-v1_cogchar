@@ -31,29 +31,47 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.model.PageCommander
 	import S._
 	
-	object LoginForm {
+	object LoginForm extends ControlDefinition {
+	  
+	  class LoginFormConfig(val label1: String, val label2: String, val submitLabel: String, val slotNum: Int)
+				extends PageCommander.InitialControlConfig {
+		  controlType = LoginForm.instance
+	  }
+	  
+	  //under the covers, .instance() is implemented as a static method on class LoginForm. This lets LoginFormConfig
+	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
+	  def instance = this  
+	  
 	  val labelIdPrefix = "loginformlabel_"
 	  val textBoxIdPrefix = "login_in_"
 	  val defaultText1 = "" // Default text in the entry boxes can be set here if desired, but probably not
 	  val defaultText2 = ""
-	  val blankId: Int = -1
-	  val textMap = scala.collection.mutable.HashMap(blankId -> ("No label text found", "No label text found")) // Map to hold the labels for each form handled by this snippet, plus default
+	  val textMap = new scala.collection.mutable.HashMap[String, (String, String)]
 	  
-	  def makeForm(label1: String, label2: String, submitLabel: String, idNum: Int): NodeSeq = {
-		textMap(idNum) = (label1, label2)
-		val formIdforHtml: String = idNum.toString
+	  def makeForm(label1: String, label2: String, submitLabel: String, sessionId:Int, idNum: Int): NodeSeq = {
+		val formIdforHtml: String = sessionId.toString + "_" + idNum.toString
+		textMap(formIdforHtml) = (label1, label2)
 		val labelId1: String = labelIdPrefix + formIdforHtml + "A"// We need unique IDs here, because JavaScript may be updating the label after post [future expansion]
 		val labelId2: String = labelIdPrefix + formIdforHtml + "B"
 		val inputId1: String = textBoxIdPrefix + formIdforHtml + "A"// JavaScript may want to do things to the input boxes too, like clear them
 		val inputId2: String = textBoxIdPrefix + formIdforHtml + "B"
 		<form class="lift:form.ajax"><lift:LoginForm formId={formIdforHtml}><div class="labels" id={labelId1}></div><input id={inputId1}/><div class="labels" id={labelId2}></div><input id={inputId2}/><br/><input type="submit" value={submitLabel}/></lift:LoginForm></form>
 	  }
+	  
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+		val config = initialConfig match {
+		  case config: LoginFormConfig => config
+		  case _ => throw new ClassCastException
+		}
+		makeForm(config.label1, config.label2, config.submitLabel, sessionId, config.slotNum)
+	  }
 	}
 
 	class LoginForm extends StatefulSnippet with Logger {
 	  var text1: String = LoginForm.defaultText1
 	  var text2: String = LoginForm.defaultText2
-	  var formId: Int = LoginForm.blankId
+	  var formId: String = ""
+	  var idItems: Array[String] = new Array[String](2)
 	  lazy val textFormInstanceLabel1 = LoginForm.labelIdPrefix + formId + "A"
 	  lazy val textFormInstanceLabel2 = LoginForm.labelIdPrefix + formId + "B"
 	  lazy val textBoxInstanceLabel1 = LoginForm.textBoxIdPrefix + formId + "A"
@@ -67,7 +85,7 @@ package org.cogchar.lifter {
 		  info("Input text for form #" + formId + ": " + text1 + "; [password hidden]")
 		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			  def run() {
-				PageCommander.multiTextInputMapper(formId, Array(text1, text2)) // Let PageCommander know about the text so it can figure out what to do with it
+				PageCommander.multiTextInputMapper(idItems(0).toInt, idItems(1).toInt, Array(text1, text2)) // Let PageCommander know about the text so it can figure out what to do with it
 			  }
 			})
 		  processThread.start
@@ -75,7 +93,8 @@ package org.cogchar.lifter {
 		  SetValById(textBoxInstanceLabel1, "") &  SetValById(textBoxInstanceLabel2, "")
 		}
 		
-		formId = (S.attr("formId") openOr "-1").toInt
+		formId = (S.attr("formId") openOr "_")
+		idItems = formId.split("_")
 		val labelSelectorText1: String = "#"+textFormInstanceLabel1+" *"
 		val labelSelectorText2: String = "#"+textFormInstanceLabel2+" *"
 		val boxSelectorText1: String = "#"+textBoxInstanceLabel1

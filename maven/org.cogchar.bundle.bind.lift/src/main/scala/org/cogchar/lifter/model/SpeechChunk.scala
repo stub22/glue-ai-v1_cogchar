@@ -25,7 +25,7 @@ package org.cogchar.lifter {
 
 // This is essentially the JSON template. Right now it contains a string labeled speechText and a requesting control id.
 // But if we wanted, we could, say, also receive the lower-confidence results which Google speech generates, or etc.
-	case class SpeechChunk(speechText: String, requestingId: Int)
+	case class SpeechChunk(speechText: String, requestingId: String)
 
 // Right now this model is very basic: it just sits on the last piece of text sent, 
 // plus it notifies PageCommander when speech is PUT, so PageCommander can do something with it if it chooses.	
@@ -34,7 +34,8 @@ package org.cogchar.lifter {
 	  private implicit val formats =
 		net.liftweb.json.DefaultFormats
 
-	  private var lastSpeech: String = "Not set"
+	  // A map of lastSpeech by sessionId
+	  private var lastSpeech = new scala.collection.mutable.HashMap[Int,String]
 
 	  /**
 	   * Convert a JValue to an Item if possible (extracts incoming JSON into SpeechChunk object)
@@ -55,7 +56,7 @@ package org.cogchar.lifter {
 	   * have overloaded unapply methods
 	   * (so says Simply Lift, not sure I understand the need for this bit which loads SpeechChunk's speechText value into an Option)
 	   */
-	  def unapply(in: Any): Option[(String, Int)] = {
+	  def unapply(in: Any): Option[(String, String)] = {
 		in match {
 		  case i: SpeechChunk => Some((i.speechText, i.requestingId))
 		  case _ => None
@@ -75,10 +76,11 @@ package org.cogchar.lifter {
 	  // What do we have SpeechRestListener do with the JSON SpeechChunk object it found?
 	  // Simple answer for now: just load its text into lastSpeech and let PageCommander know
 	  def setContents(chunk: SpeechChunk): SpeechChunk = {
-		lastSpeech = chunk.speechText
+		val idItems = chunk.requestingId.split("_")
+		lastSpeech(idItems(0).toInt) = chunk.speechText
 		val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			def run() {
-			  PageCommander.textInputMapper(chunk.requestingId, lastSpeech); // Let PageCommander know about the text so it can figure out what to do with it
+			  PageCommander.textInputMapper(idItems(0).toInt, idItems(1).toInt, chunk.speechText); // Let PageCommander know about the text so it can figure out what to do with it
 			}
 		  })
 		processThread.start
@@ -86,7 +88,7 @@ package org.cogchar.lifter {
 	  }
   
 	  // If something wants to know what the last speech was, just call this!
-	  def getLast: String = lastSpeech     
+	  def getLast(sessionId:Int): String = lastSpeech(sessionId)   
 
 	}
 
