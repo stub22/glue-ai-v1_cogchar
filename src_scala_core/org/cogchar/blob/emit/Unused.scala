@@ -20,6 +20,25 @@ package org.cogchar.blob.emit
  * @author Stu B. <www.texpedient.com>
  */
 
+object HierConfMgr {
+}
+class ConvyConfigEmitter {
+}
 class RobokindBindingConfigEmitter {
+}
+class ZenoConfigEmitter extends BonyConfigEmitter {
+	// Commercial "Extra Robot" model, not loadable without a license, ignored in those cases.
+/*
+	val EXTRA_ROBOT_MESH_PATH = "zenobot_06_20120323/zenobot_06_20120323.mesh.xml";		
+	
+	// val EXTRA_ROBOT_MESH_PATH = "zenobot_05_20120309/ZenoBot05.ma.mesh.xml";		
+	//		String dualCharURI = "urn:org.cogchar/platform/nb701?char=HRK_Zeno_R50&version=20120302";   
+	//		
+	//			
+	val HRK_URN_PREFIX = "urn:fdt:com.hrk/";
+	val ZENO_R50_NICKNAME = "ZenoR50";
+	val	ZENO_R50_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + ZENO_R50_NICKNAME;
+	val	ZENO_R50_CHAR_IDENT = new FreeIdent(ZENO_R50_CHAR_URI, ZENO_R50_NICKNAME)
+*/
 
 }
