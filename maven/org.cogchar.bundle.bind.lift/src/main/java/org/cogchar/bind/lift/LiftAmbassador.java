@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
-import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
+//import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
+//import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.appdapter.core.item.FreeIdent;
 import org.appdapter.core.item.Ident;
 import org.cogchar.blob.emit.QueryInterface;
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 public class LiftAmbassador {
 
 	static Logger theLogger = LoggerFactory.getLogger(LiftAmbassador.class);
-	private static LiftConfig config;
+	private static LiftConfig initialConfig;
 	private static LiftSceneInterface sceneLauncher;
 	private static LiftInterface lift;
 	private static LiftAppInterface liftAppInterface;
@@ -44,7 +44,7 @@ public class LiftAmbassador {
 	private static boolean configReady = false;
 	private static List<String> triggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
 	private static ClassLoader myRdfCL; // We'll get this classloader so we can update control configuration from separate RDF files at runtime
-	private static final String RDF_PATH_PREFIX = "metadata/web/liftconfig/"; // Prefix for path to Lift configuration TTL files from resources root
+	//private static final String RDF_PATH_PREFIX = "metadata/web/liftconfig/"; // Prefix for path to Lift configuration TTL files from resources root
 	public static Map<Ident, LiftConfig> liftConfigCache = new HashMap<Ident, LiftConfig>(); // To avoid query config if page is reselected
 	public static Map<String, String> chatConfigEntries = new HashMap<String, String>();
 
@@ -56,12 +56,14 @@ public class LiftAmbassador {
 	public interface LiftInterface {
 
 		void notifyConfigReady();
+		
+		void setConfigForSession(int sessionId, LiftConfig config);
 
-		void loadPage(String path);
-
+		void loadPage(int sessionId, String path);
+		
 		String getVariable(String key);
 
-		void setSingleControl(ControlConfig control, int slotNum);
+		String getVariable(int sessionId, String key);
 
 		void showError(String errorSourceKey, String errorText);
 	}
@@ -91,13 +93,23 @@ public class LiftAmbassador {
 	public static class inputInterface implements LiftAmbassadorInterface {
 	}
 
+	// This (legacy) flavor of the method activates controls for the initial config for new sessions
 	public static void activateControlsFromConfig(LiftConfig newConfig) {
-		config = newConfig;
+		initialConfig = newConfig;
 		theLogger.info("RDF Lift config sent to LiftAmbassador");
 		configReady = true;
 		if (lift != null) {
 			lift.notifyConfigReady();
 			theLogger.info("Lift notified of config ready");
+		}
+	}
+	
+	// This flavor activates a new set of controls for a single session
+	public static void activateControlsFromConfig(int sessionId, LiftConfig newConfig) {
+		if (lift != null) {
+			lift.setConfigForSession(sessionId, newConfig);
+		} else {
+			theLogger.error("A new control set was requested for session " + sessionId + ", but no liftInterface was found!");
 		}
 	}
 
@@ -124,17 +136,17 @@ public class LiftAmbassador {
 		}
 		return success;
 	}
-	*/
-
+	
 	// Method to set initial config and RDF classloader for future configs
 	// No longer needed for query-based config
 	public static void storeControlsFromConfig(LiftConfig config, ClassLoader cl) {
 		activateControlsFromConfig(config);
 		myRdfCL = cl;
 	}
-
-	public static LiftConfig getConfig() {
-		return config;
+	*/
+	
+	public static LiftConfig getInitialConfig() {
+		return initialConfig;
 	}
 
 	public static String getControlPrefix() {
@@ -150,14 +162,14 @@ public class LiftAmbassador {
 		}
 	}
 
-	public static boolean triggerAction(Ident actionUri) {
+	public static boolean triggerAction(int sessionId, Ident actionUri) {
 		boolean success = false;
 		String actionUriPrefix = actionUri.getAbsUriString().replaceAll(actionUri.getLocalName(), "");
 		String action = actionUri.getLocalName();
 		if ((LiftConfigNames.p_scenetrig.equals(actionUriPrefix)) && (sceneLauncher != null)) {
 			success = sceneLauncher.triggerScene(action);
 			if (success && (lift != null)) {
-				lift.loadPage("cogchar/scene_running.html");
+				//lift.loadPage(sessionId, "cogchar/scene_running.html"); // To be replaced shortly with more better method
 			}
 		} else if ((LiftConfigNames.p_cinematic.equals(actionUriPrefix)) && (liftAppInterface != null)) {
 			if (triggeredCinematics.contains(action)) {
@@ -189,7 +201,7 @@ public class LiftAmbassador {
 					}
 				}
 				if (newConfig != null) {
-					activateControlsFromConfig(newConfig);
+					activateControlsFromConfig(sessionId, newConfig);
 					success = true;
 				}
 			}
@@ -263,13 +275,13 @@ public class LiftAmbassador {
 	// Just a demo login method
 	private static final String MAIN_CONFIG = "mainLiftConfig";
 	private static final String CHAT_CONFIG = "chatBigBoxLiftConfig";
-	public static void login(String userName, String password) {
+	public static void login(int sessionId, String userName, String password) {
 		if ((userName.equals("main")) && (password.equals("BigBoy"))) {
 			// Request main liftConfig
-			triggerAction(new FreeIdent(LiftConfigNames.p_liftconfig + MAIN_CONFIG, MAIN_CONFIG));
+			triggerAction(sessionId, new FreeIdent(LiftConfigNames.p_liftconfig + MAIN_CONFIG, MAIN_CONFIG));
 		} else if ((userName.equals("chat")) && (password.equals("Mr.Wee"))) {
 			// Request chatConfig
-			triggerAction(new FreeIdent(LiftConfigNames.p_liftconfig + CHAT_CONFIG, CHAT_CONFIG));
+			triggerAction(sessionId, new FreeIdent(LiftConfigNames.p_liftconfig + CHAT_CONFIG, CHAT_CONFIG));
 		} else {
 			//Show error
 			displayError("login", "Username or Password not recognized"); // <- move strings to resource

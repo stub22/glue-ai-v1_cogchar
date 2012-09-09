@@ -31,28 +31,46 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.model.PageCommander
 	import S._
 
-	object RadioButtons extends Logger {
+	object RadioButtons extends Logger with ControlDefinition {
+	  
+	  class RadioButtonsConfig(val titleText: String, val labelList:List[String], val slotNum: Int)
+				extends PageCommander.InitialControlConfig {
+		  controlType = RadioButtons.instance
+	  }
+	  
+	  //under the covers, .instance() is implemented as a static method on class RadioButtons. This lets RadioButtonsConfig
+	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
+	  def instance = this   
   
 	  val responseText = "I see you!"
 	  
 	  val titlePrefix = "radiotitle"
-	  val blankId: Int = -1
-	  
-	  val titleMap = scala.collection.mutable.HashMap(blankId -> "No title text found") // Map to hold the titles for each form handled by this snippet, plus default
-	  val labelMap = new scala.collection.mutable.HashMap[Int,List[String]] // Map to hold all the labels for each RadioButtons control rendered
+	
+	  val titleMap = new scala.collection.mutable.HashMap[String,String]
+	  val labelMap = new scala.collection.mutable.HashMap[String,List[String]] // Map to hold all the labels for each RadioButtons control rendered
 
-	  def makeRadioButtons(titleText: String, labelList:List[String], idNum: Int): NodeSeq = {
-		titleMap(idNum) = titleText
-		labelMap(idNum) = labelList
-		val formIdForHtml: String = idNum.toString
+	  def makeRadioButtons(titleText: String, labelList:List[String], sessionId:Int, idNum: Int): NodeSeq = {
+		val formIdForHtml: String = sessionId.toString + "_" + idNum.toString
+		titleMap(formIdForHtml) = titleText
+		labelMap(formIdForHtml) = labelList
 		val titleId: String = titlePrefix + formIdForHtml // We need a unique ID here, because JavaScript will be updating the title after post
 		<form class="lift:form.ajax"><lift:RadioButtons formId={formIdForHtml}><div class="labels" id={titleId}></div><div id="buttonshere"></div></lift:RadioButtons></form>
-	  }  
+	  }
+	  
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+		val config = initialConfig match {
+		  case config: RadioButtonsConfig => config
+		  case _ => throw new ClassCastException
+		}
+		makeRadioButtons(config.titleText, config.labelList, sessionId, config.slotNum)
+	  }
 	}
 	
 	class RadioButtons extends StatefulSnippet with Logger {
 	  
-	  var formId: Int = RadioButtons.blankId
+	  //var formId: Int = RadioButtons.blankId
+	  var formId: String = ""
+	  var idItems: Array[String] = new Array[String](2)
 	  lazy val radioButtonsInstanceTitleId = RadioButtons.titlePrefix + formId
 	  
 	  def dispatch = {case "render" => render}
@@ -64,13 +82,14 @@ package org.cogchar.lifter {
 		  //SetHtml(radioButtonsInstanceTitleId, Text(RadioButtons.responseText)) //... or not for now
 		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			  def run() {
-				PageCommander.controlActionMapper(formId, result.toInt)
+				PageCommander.controlActionMapper(idItems(0).toInt, idItems(1).toInt, result.toInt)
 			  }
 			})
 		  processThread.start
 		  JsCmds.Noop
 		}
-		formId = (S.attr("formId") openOr "-1").toInt
+		formId = (S.attr("formId") openOr "_")
+		idItems = formId.split("_")
 		var valid = false
 		var selectors:CssSel = "i_eat_yaks_for_breakfast" #> "" // This is just to produce a "Null" CssSel so we can initialize this here, but not add any meaningful info until we have checked for valid formId. (As recommended by the inventor of Lift)
 		if (RadioButtons.titleMap.contains(formId)) {

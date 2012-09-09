@@ -28,10 +28,19 @@ package org.cogchar.lifter {
 	import S._
 	import org.cogchar.lifter.model.PageCommander
 
-	object PushyButton extends Logger {
+	object PushyButton extends Logger with ControlDefinition {
   
-	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, buttonId: Int): NodeSeq = {
-		val buttonNum: String = buttonId.toString
+	  class PushyButtonConfig(val buttonText:String, val buttonClass:String, val buttonImage:String, val buttonSlot: Int)
+				extends PageCommander.InitialControlConfig {
+		  controlType = PushyButton.instance
+	  }
+	  
+	  //under the covers, .instance() is implemented as a static method on class PushyButton. This lets PushyButtonConfig
+	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
+	  def instance = this   
+	  
+	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, sessionId: Int, buttonId: Int): NodeSeq = {
+		val buttonNum: String = sessionId.toString + "_" + buttonId.toString
 		val buttonPath: String = "/images/" + buttonImage // May want to move this prefix to central location
 		if (buttonImage.length >= 5) { // needs to be at least this long to have a valid image filename
 		  <lift:PushyButton buttonId={buttonNum}><div class="centerVert pushypadding"><div name="pushbutton" class={buttonClass} onclick=""><img src={buttonPath} width="50%"/><br/>{buttonText}</div></div></lift:PushyButton>
@@ -39,13 +48,21 @@ package org.cogchar.lifter {
 		  <lift:PushyButton buttonId={buttonNum}><div class="centerVert pushypadding"><div name="pushbutton" class={buttonClass} onclick="">{buttonText}</div></div></lift:PushyButton>
 		}
 	  }
+	  
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+	  val config = initialConfig match {
+		case config: PushyButtonConfig => config
+		case _ => throw new ClassCastException
+	  }
+		makeButton(config.buttonText, config.buttonClass, config.buttonImage, sessionId, config.buttonSlot)
+	  }
   
 	  def render = {
-		val buttonId: Int = (S.attr("buttonId") openOr "-1").toInt
+		val buttonId: String = (S.attr("buttonId") openOr "_")
 		"@pushbutton [onclick]" #> SHtml.ajaxInvoke (() => {
 			info("Button " + buttonId + " was pressed at " + now)
-
-			buttonId match {
+			val idItems = buttonId.split("_")
+			idItems(1).toInt match {
 			  // A special ID used by the SceneInfo screen
 			  // These "special cases" probably will eventually be worked out of here
 			  // In fact 101 is the last one standing, going away soon
@@ -56,7 +73,7 @@ package org.cogchar.lifter {
 				  info("Starting action mapped to button " + buttonId)
 				  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 					  def run() {
-						PageCommander.triggerAction(buttonId)
+						PageCommander.triggerAction(idItems(0).toInt, idItems(1).toInt)
 					  }
 					})
 				  processThread.start

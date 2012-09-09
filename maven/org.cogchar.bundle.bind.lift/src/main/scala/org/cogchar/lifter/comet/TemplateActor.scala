@@ -18,29 +18,40 @@ package org.cogchar.lifter {
   package comet {
 
 	import net.liftweb.common._
-	import net.liftweb.http.js.JE._
 	import net.liftweb.http._
 	import S._
-	import net.liftweb.http.js.JsCmd
-	import net.liftweb.http.js.JsCmds._
 	import net.liftweb.util._
-	import Helpers._
 	import scala.xml._
 	import org.cogchar.lifter.model.PageCommander
 
 	
-	class TemplateActor extends CometActor with CometListener {
+	class TemplateActor extends CometActor with CometListener with Logger {
 	  
+	  lazy val mySessionId : Int = (name openOr"-1").toInt
+	  lazy val myUpdateTag = mySessionId + "_301"
 	  def registerWith = org.cogchar.lifter.model.PageCommander
 	  
 	  override def lowPriority : PartialFunction[Any, Unit]  = {
-		case 301 => {reRender();} // A special code to trigger a refresh of template
-		case _: Int => // Do nothing if our ID not matched
+		
+		case a: String if (a.equals(myUpdateTag)) => {reRender();} // A special code to trigger a refresh of template
+		case _: String => // Do nothing if our ID not matched
 	  }
 
 	  def render = {
-		val desiredTemplate = PageCommander.getCurrentTemplate
-		"@TemplateSlot" #> <lift:surround with={desiredTemplate} at="content"/>
+		
+		val desiredTemplate = PageCommander.getCurrentTemplate(mySessionId)
+		if (desiredTemplate == null) { // If so, things are still initializing, and we'll just exit without rendering for now
+		  NodeSeq.Empty
+		} else {
+		  try {
+		  } catch {
+			case e: Exception => error("Error reading Lift template file: " + e)
+		  }
+		  var templateString = io.Source.fromInputStream(getClass.getResourceAsStream("/templates-hidden/"+desiredTemplate+".html")).mkString
+		  templateString = templateString.replace("[SESSIONID]", mySessionId.toString)
+		  //info("Filled template is: " + templateString) // TEST ONLY
+		  XML.loadString(templateString)
+		}
 	  }
   
 	}

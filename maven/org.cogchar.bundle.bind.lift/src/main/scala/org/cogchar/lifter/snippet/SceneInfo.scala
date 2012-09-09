@@ -37,7 +37,7 @@ package org.cogchar.lifter {
 		val infoImagePath: String = "/images/" + infoImage // May want to move this prefix to central location
 		val infoPlayingText: String = "Playing " + infoText
 		//<lift:PushyButton buttonId="101"><div class={infoClass} onclick=""><br/><img src={infoImagePath} width="50%"/><br/>{infoPlayingText}</div></lift:PushyButton>
-		PushyButton.makeButton(infoPlayingText, infoClass, infoImage, 101)
+		PushyButton.makeButton(infoPlayingText, infoClass, infoImage, 1, 101) // TEST ONLY - this method should go away VERY VERY shortly and be replaced with multi-session compatible template & liftconfig
 	  }
 	  
 	}
