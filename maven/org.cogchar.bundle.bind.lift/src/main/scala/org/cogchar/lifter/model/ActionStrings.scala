@@ -28,6 +28,7 @@ package org.cogchar.lifter {
 	  final val setVariable = "setvariable"
 	  final val oldDemo = "olddemo"
 	  final val submit = "submit"
+	  final val lastConfig = "lastScreen"
 	  
 	  // Not technically "action strings": strings related to network config function
 	  final val encryptionTypeVar = "networkEncType"
@@ -44,6 +45,7 @@ package org.cogchar.lifter {
 	  // These are URI prefixes for actions
 	  final val p_liftcmd = "http://www.cogchar.org/lift/config/command#"
 	  final val p_liftvar = "http://www.cogchar.org/lift/config/variable#"
+	  final val p_scenetrig = "http://www.cogchar.org/schema/scene/trigger#"
 	  
 	}
 

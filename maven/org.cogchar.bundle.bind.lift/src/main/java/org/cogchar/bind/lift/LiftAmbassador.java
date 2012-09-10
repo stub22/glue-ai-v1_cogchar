@@ -168,9 +168,6 @@ public class LiftAmbassador {
 		String action = actionUri.getLocalName();
 		if ((LiftConfigNames.p_scenetrig.equals(actionUriPrefix)) && (sceneLauncher != null)) {
 			success = sceneLauncher.triggerScene(action);
-			if (success && (lift != null)) {
-				//lift.loadPage(sessionId, "cogchar/scene_running.html"); // To be replaced shortly with more better method
-			}
 		} else if ((LiftConfigNames.p_cinematic.equals(actionUriPrefix)) && (liftAppInterface != null)) {
 			if (triggeredCinematics.contains(action)) {
 				liftAppInterface.stopNamedCinematic(action); // In order to replay, we need to stop previously played cinematic first

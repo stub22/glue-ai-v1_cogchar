@@ -40,10 +40,13 @@ package org.cogchar.lifter {
 	
 	object PageCommander extends LiftActor with ListenerManager with Logger {
 
+	  private var initialConfig: LiftConfig = null
 	  private val initialControlDefMap = new scala.collection.mutable.HashMap[Int,ControlConfig] 
 	  private val controlDefMap = new scala.collection.mutable.HashMap[Int, scala.collection.mutable.HashMap[Int,ControlConfig]]
 	  private val initialControlsMap = new scala.collection.mutable.HashMap[Int, InitialControlConfig]
 	  private val controlsMap = new scala.collection.mutable.HashMap[Int, scala.collection.mutable.HashMap[Int, NodeSeq]]
+	  private val currentConfig = new scala.collection.mutable.HashMap[Int, LiftConfig]
+	  private val lastConfig = new scala.collection.mutable.HashMap[Int, LiftConfig]
 	  private val singularAction = new scala.collection.mutable.HashMap[Int, scala.collection.mutable.HashMap[Int,Ident]] // Holds action for currently enabled state of a multi-state control, such as a TOGGLEBUTTON
 	  
 	  // These guys hold lists of slotNums which will display text from Cogbot, or from Android speech input
@@ -76,6 +79,7 @@ package org.cogchar.lifter {
 	  // Name of current template (in /templates-hidden) which corresponds to current liftConfig
 	  private val currentTemplate = new scala.collection.mutable.HashMap[Int, String]
 	  private var initialTemplate:String = "12slots"
+	  private final var SINGLE_SLOT_TEMPLATE = "singleSlot"
 	  private var lifterInitialized:Boolean = false // Will be set to true once PageCommander receives initial control config from LiftAmbassador
 	  
 	  private var updateInfo: String = ""
@@ -136,6 +140,8 @@ package org.cogchar.lifter {
 		singularAction(sessionId) = new scala.collection.mutable.HashMap[Int,Ident]
 		// Add a blank appVariablesMap for this session
 		appVariablesMap(sessionId) = new scala.collection.mutable.HashMap[String, String]
+		// Set currentConfig for this session
+		currentConfig(sessionId) = initialConfig
 		//Get initial template and request it be set
 		currentTemplate(sessionId) = initialTemplate
 		updateInfo = controlId(sessionId, 301) // Special code to trigger TemplateActor
@@ -160,6 +166,8 @@ package org.cogchar.lifter {
 			initialControlDefMap.clear
 			controlsMap.clear
 			initialControlsMap.clear
+			currentConfig.clear
+			lastConfig.clear
 			cogbotDisplayers.clear
 			speechDisplayers.clear
 			initialCogbotDisplayers.clear
@@ -170,6 +178,7 @@ package org.cogchar.lifter {
 			appVariablesMap.clear // Probably we won't want this to clear permanently. It's sort of a quick-fix for now to make sure that toggle button states don't get out of sync with app variables they control when a "page" is exited and reentered
 			errorMap.clear
 			initialErrorMap.clear
+			initialConfig = liftConfig
 		  } else { // otherwise reset maps for this session
 			controlDefMap(sessionId).clear
 			controlsMap(sessionId).clear
@@ -179,6 +188,8 @@ package org.cogchar.lifter {
 			singularAction(sessionId).clear
 			appVariablesMap(sessionId).clear // Probably we won't want this to clear permanently. It's sort of a quick-fix for now to make sure that toggle button states don't get out of sync with app variables they control when a "page" is exited and reentered
 			errorMap(sessionId).clear
+			lastConfig(sessionId) = currentConfig(sessionId)
+			currentConfig(sessionId) = liftConfig
 		  }
 
 		  //val liftConfig = LiftAmbassador.getConfig();
@@ -477,21 +488,30 @@ package org.cogchar.lifter {
 		  else {
 			var action = controlDefMap(sessionId)(id).action
 			if (singularAction(sessionId) contains id) {action = singularAction(sessionId)(id)} // If this is a "multi-state" control, get the action corresponding to current state
-			// In case this is a scene and Cog Char tells us to show the info page, be sure it has the required info 
-			setSceneRunningInfo(sessionId, id) // eventually this may not be necessary, and Cog Char may handle this part too}
 			info("About to trigger in LiftAmbassador with sessionId " + sessionId + " and slotNum " + id + "; action is " + action);
 			success = LiftAmbassador.triggerAction(sessionId, action)
+			// If the action sent to LiftAmbassador was a scene trigger, show the "Scene Playing screen" if command was successful
+			if ((action.getAbsUriString.startsWith(ActionStrings.p_scenetrig)) && (success)) {
+			  val sceneRunningScreen = createSceneInfoScreen(sessionId, id)
+			  initFromCogcharRDF(sessionId, sceneRunningScreen)
+			}
 		  }
 		} else {warn("Action requested, but no control def found for slot " + id + " of session " + sessionId)}
 		success
 	  }
-	  
-	  def setSceneRunningInfo(sessionId:Int, id: Int) {
-		// Do we need session awareness in SceneInfo? Perhaps, but perhaps not if this Lifter is attached to a single
-		// Cogchar/robot which is only running one scene at a time regardless of the number of connected users
-		SceneInfo.infoClass = controlDefMap(sessionId)(id).style
-		SceneInfo.infoImage = controlDefMap(sessionId)(id).resource
-		SceneInfo.infoText = controlDefMap(sessionId)(id).text
+								
+	  // A method to create a liftconfig locally to serve as a "Scene Playing" info screen
+	  def createSceneInfoScreen(sessionId:Int, slotNum:Int): LiftConfig = {
+		val sceneInfoConfig = new LiftConfig(SINGLE_SLOT_TEMPLATE)
+		val infoButton = new ControlConfig()
+		infoButton.myURI_Fragment = "info_control_1"
+		infoButton.controlType = ControlType.PUSHYBUTTON.toString
+		infoButton.action = new FreeIdent(ActionStrings.p_liftcmd + ActionStrings.lastConfig, ActionStrings.lastConfig)
+		infoButton.text = "Playing " + controlDefMap(sessionId)(slotNum).text
+		infoButton.style = controlDefMap(sessionId)(slotNum).style
+		infoButton.resource = controlDefMap(sessionId)(slotNum).resource
+		sceneInfoConfig.myCCs.add(infoButton)
+		sceneInfoConfig
 	  }
 	  
 	  // Perform any button actions handled locally, and return true if we find one
@@ -520,6 +540,9 @@ package org.cogchar.lifter {
 				  }
 				case ActionStrings.stopContinuousSpeech => {
 					requestContinuousSpeech(sessionId, slotNum, false)
+				  }
+				case ActionStrings.lastConfig => {
+					initFromCogcharRDF(sessionId, lastConfig(sessionId))
 				  }
 				case _ => // No match, just exit (success=false)
 			  }
