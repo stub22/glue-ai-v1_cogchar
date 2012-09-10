@@ -60,27 +60,16 @@ package org.cogchar.lifter {
 	  def render = {
 		val buttonId: String = (S.attr("buttonId") openOr "_")
 		"@pushbutton [onclick]" #> SHtml.ajaxInvoke (() => {
-			info("Button " + buttonId + " was pressed at " + now)
 			val idItems = buttonId.split("_")
-			idItems(1).toInt match {
-			  // A special ID used by the SceneInfo screen
-			  // These "special cases" probably will eventually be worked out of here
-			  // In fact 101 is the last one standing, going away soon
-			  case 101 => {
-				  JsCmds.RedirectTo("/")
+			info("Starting action mapped to button " + buttonId)
+			val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
+				def run() {
+				  PageCommander.triggerAction(idItems(0).toInt, idItems(1).toInt)
 				}
-			  case _ => {
-				  info("Starting action mapped to button " + buttonId)
-				  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
-					  def run() {
-						PageCommander.triggerAction(idItems(0).toInt, idItems(1).toInt)
-					  }
-					})
-				  processThread.start
-				  JsCmds.Noop
-				}
-			}
-		  })
+			  })
+			processThread.start
+			JsCmds.Noop
+		})
 	  } 
 	}
   }

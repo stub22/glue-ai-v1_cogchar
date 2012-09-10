@@ -42,6 +42,11 @@ public class LiftConfig extends KnownComponentImpl {
 	public List<ControlConfig> myCCs = new ArrayList<ControlConfig>();
 	public String template = DEFAULT_TEMPLATE;
 	
+	// A contructor for use by PageCommander
+	public LiftConfig(String templateToUse) {
+		template = templateToUse;
+	}
+	
 	// A new constructor to build CinematicConfig from spreadsheet
 	public LiftConfig(QueryInterface qi, Ident graphIdent, Ident configUri) {
 		SolutionMap solutionMap = qi.getQueryResultMap(LiftQueryNames.TEMPLATE_QUERY_URI, LiftQueryNames.CONFIG_VAR_NAME, graphIdent);
