@@ -64,10 +64,11 @@ public class PumaAppContext extends BasicDebugger {
 	private List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 	// A query interface instance we can reuse - right now just to trigger repo reloads. May want to do that via
 	// GlobalConfigEmitter or some other interface in the long run...?
-	QueryInterface queryEmitter;
+	QueryInterface			queryEmitter;
 	// A managed service instance of the GlobalConfigEmitter, currently used only by LifterLifecycle.
 	// We need to keep track of it so we can stop and restart it for Lift "refresh"
-	OSGiComponent gcComp;
+	OSGiComponent			gcComp;
+	PumaContextMediator		myMediator;
 
 	public PumaAppContext(BundleContext bc) {
 		myBundleContext = bc;
@@ -242,6 +243,9 @@ public class PumaAppContext extends BasicDebugger {
 		return myHRC;
 	}
 
+	public void setContextMediator(PumaContextMediator mediator) {
+		myMediator = mediator;
+	}
 	/**
 	 * Third (and last) stage init of OpenGL, and all other systems. Done AFTER startOpenGLCanvas().
 	 *
@@ -249,6 +253,7 @@ public class PumaAppContext extends BasicDebugger {
 	 * @throws Throwable
 	 */
 	public List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
+		
 		//List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 		List<Ident> charIdents = new ArrayList<Ident>(); // A blank list, so if the try fails below, the for loop won't throw an Exception
 		try {
@@ -284,6 +289,7 @@ public class PumaAppContext extends BasicDebugger {
 				HumanoidConfig myHumanoidConfig = new HumanoidConfig(charIdent, graphIdentForHumanoid);
 				PumaDualCharacter pdc = connectDualRobotChar(charIdent, myHumanoidConfig.nickname);
 				pdcList.add(pdc);
+				pdc.absorbContext(myMediator);
 				setupCharacterBindingToRobokind(pdc, graphIdentForBony, myHumanoidConfig);
 				setupAndStartBehaviorTheater(pdc);
 			}

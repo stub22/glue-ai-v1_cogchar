@@ -43,6 +43,8 @@ import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.impl.perform.FancyTextChan;
 
+import org.cogchar.blob.emit.BehaviorConfigEmitter;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -74,14 +76,15 @@ public class PumaHumanoidMapper extends BasicDebugger {
 		return myRAC.getTriggeringChannel();
 	}
 	
-	public void initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc, final Ident qGraph, final HumanoidConfig hc) throws Throwable {
+	public void initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc, final Ident qGraph, final HumanoidConfig hc,
+					BehaviorConfigEmitter behavCE) throws Throwable {
 		// New with "GlobalModes": we'll run hrc.setupHumanoidFigure from here now
 		myHRC.setupHumanoidFigure(myCharIdent, qGraph, hc);
 
 		// This creates our ModelRobot instance, and calls registerAndStart() in the RobotServiceContext base class.
 		myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);
 		
-		myRAC = new RobotAnimContext(myCharIdent, getHumanoidRenderContext().getConfigEmitter().getBehaviorConfigEmitter());
+		myRAC = new RobotAnimContext(myCharIdent, behavCE);
 		myRAC.initConn(myMBRSC);
 	}
 

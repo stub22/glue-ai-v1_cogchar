@@ -35,7 +35,7 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl.ControlDirection;
-import org.cogchar.blob.emit.DemoConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.PhysicalApp;
 import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
@@ -56,12 +56,12 @@ public class DemoSindbadVersusBalls extends PhysicalApp {
 			leftRotate = false, rightRotate = false;
 
 	public static void main(String[] args) {
-		DemoConfigEmitter dce = new DemoConfigEmitter();
-		DemoSindbadVersusBalls app = new DemoSindbadVersusBalls(dce);
+		RenderConfigEmitter rce = new RenderConfigEmitter();
+		DemoSindbadVersusBalls app = new DemoSindbadVersusBalls(rce);
 		app.start();
 	}
 
-	public DemoSindbadVersusBalls(DemoConfigEmitter dce) {
+	public DemoSindbadVersusBalls(RenderConfigEmitter dce) {
 		super(dce);
 	}
 
