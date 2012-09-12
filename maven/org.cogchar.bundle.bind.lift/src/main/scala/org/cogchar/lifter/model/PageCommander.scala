@@ -40,10 +40,7 @@ package org.cogchar.lifter {
 	
 	object PageCommander extends LiftActor with ListenerManager with Logger {
 
-	  private var initialConfig: LiftConfig = null
-	  private val initialControlDefMap = new scala.collection.mutable.HashMap[Int,ControlConfig] 
 	  private val controlDefMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[Int,ControlConfig]]
-	  private val initialControlsMap = new scala.collection.mutable.HashMap[Int, InitialControlConfig]
 	  private val controlsMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[Int, NodeSeq]]
 	  private val currentConfig = new scala.collection.mutable.HashMap[String, LiftConfig]
 	  private val lastConfig = new scala.collection.mutable.HashMap[String, LiftConfig]
@@ -52,15 +49,11 @@ package org.cogchar.lifter {
 	  // These guys hold lists of slotNums which will display text from Cogbot, or from Android speech input
 	  private val cogbotDisplayers = new scala.collection.mutable.HashMap[String, scala.collection.mutable.ArrayBuffer[Int]]
 	  private val speechDisplayers = new scala.collection.mutable.HashMap[String, scala.collection.mutable.ArrayBuffer[Int]]
-	  private val initialCogbotDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
-	  private val initialSpeechDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
 	  // ... this one for ToggleButton states
 	  private val toggleButtonMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[Int,Boolean]]
-	  private val initialToggleButtonMap = new scala.collection.mutable.HashMap[Int,Boolean]
 	  
 	  // This associates error source codes with the control on which they should be displayed
 	  private val errorMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[String, Int]]
-	  private val initialErrorMap = new scala.collection.mutable.HashMap[String, Int]
 	  
 	  // A place to hold variables that can be defined and set dynamically by the apps defined in the lift config files themselves
 	  private val appVariablesMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[String, String]]
@@ -95,12 +88,6 @@ package org.cogchar.lifter {
 	  }
 	  import ControlType._
 	  
-	  // A superclass for the sessionless configs of initial controls to be presented to new session
-	  // This really isn't needed anymore with new session management approach and will be refactored out soon
-	  class InitialControlConfig {
-		var controlType:org.cogchar.lifter.snippet.ControlDefinition = null
-	  }
-	  
 	  def getNode(sessionId:String, controlId: Int): NodeSeq = {
 		var nodeOut = NodeSeq.Empty
 		try {
@@ -120,25 +107,23 @@ package org.cogchar.lifter {
 	  def initializeSession(sessionId:String) {
 		info("Initializing Session " + sessionId) 
 		// Fill in the controlsMap for the new session with the initial config
-		controlsMap(sessionId) = new scala.collection.mutable.HashMap[Int, NodeSeq]
-		initialControlsMap foreach (initialControlEntry => controlsMap(sessionId)(initialControlEntry._1) = 
-			initialControlEntry._2.controlType.makeControl(initialControlEntry._2, sessionId))
+		controlsMap(sessionId) = controlsMap(INITIAL_CONFIG_ID).clone
 		// Copy initial configuration for ControlDef
-		controlDefMap(sessionId) = initialControlDefMap.clone
+		controlDefMap(sessionId) = controlDefMap(INITIAL_CONFIG_ID).clone
 		// Copy initial configuration for local action trackers
-		cogbotDisplayers(sessionId) = initialCogbotDisplayers.clone
-		speechDisplayers(sessionId) = initialSpeechDisplayers.clone
-		errorMap(sessionId) = initialErrorMap.clone
-		toggleButtonMap(sessionId) = initialToggleButtonMap.clone
+		cogbotDisplayers(sessionId) = cogbotDisplayers(INITIAL_CONFIG_ID).clone
+		speechDisplayers(sessionId) = speechDisplayers(INITIAL_CONFIG_ID).clone
+		errorMap(sessionId) = errorMap(INITIAL_CONFIG_ID).clone
+		toggleButtonMap(sessionId) = toggleButtonMap(INITIAL_CONFIG_ID).clone
 		cogbotSpeaks(sessionId) = false;
 		// Add a blank singularAction for this session
 		singularAction(sessionId) = new scala.collection.mutable.HashMap[Int,Ident]
 		// Add a blank appVariablesMap for this session
 		appVariablesMap(sessionId) = new scala.collection.mutable.HashMap[String, String]
 		// Set currentConfig for this session
-		currentConfig(sessionId) = initialConfig
+		currentConfig(sessionId) = currentConfig(INITIAL_CONFIG_ID)
 		//Get initial template and request it be set
-		currentTemplate(sessionId) = initialTemplate
+		currentTemplate(sessionId) = currentTemplate(INITIAL_CONFIG_ID)
 		updateListeners(controlId(sessionId, 301));
 		setControlsFromMap(sessionId)
 	  }
@@ -159,24 +144,23 @@ package org.cogchar.lifter {
 									
 	  def initFromCogcharRDF(sessionId:String, liftConfig:LiftConfig) {
 		info("Loading LiftConfig for session " + sessionId)
-		if (sessionId.equals(INITIAL_CONFIG_ID)) { // sessionId of 0 tells us this is initial config; reset all maps
+		if (sessionId.equals(INITIAL_CONFIG_ID)) {
 		  controlDefMap.clear
-		  initialControlDefMap.clear
+		  controlDefMap(INITIAL_CONFIG_ID) = new scala.collection.mutable.HashMap[Int,ControlConfig]
 		  controlsMap.clear
-		  initialControlsMap.clear
+		  controlsMap(INITIAL_CONFIG_ID) = new scala.collection.mutable.HashMap[Int, NodeSeq]
 		  currentConfig.clear
 		  lastConfig.clear
 		  cogbotDisplayers.clear
+		  cogbotDisplayers(INITIAL_CONFIG_ID) = new scala.collection.mutable.ArrayBuffer[Int]
 		  speechDisplayers.clear
-		  initialCogbotDisplayers.clear
-		  initialSpeechDisplayers.clear
+		  speechDisplayers(INITIAL_CONFIG_ID) = new scala.collection.mutable.ArrayBuffer[Int]
 		  toggleButtonMap.clear
-		  initialToggleButtonMap.clear
+		  toggleButtonMap(INITIAL_CONFIG_ID) = new scala.collection.mutable.HashMap[Int,Boolean]
 		  singularAction.clear
 		  appVariablesMap.clear // Probably we won't want this to clear permanently. It's sort of a quick-fix for now to make sure that toggle button states don't get out of sync with app variables they control when a "page" is exited and reentered
 		  errorMap.clear
-		  initialErrorMap.clear
-		  initialConfig = liftConfig
+		  errorMap(INITIAL_CONFIG_ID) = new scala.collection.mutable.HashMap[String, Int]
 		} else { // otherwise reset maps for this session
 		  controlDefMap(sessionId).clear
 		  controlsMap(sessionId).clear
@@ -187,8 +171,9 @@ package org.cogchar.lifter {
 		  appVariablesMap(sessionId).clear // Probably we won't want this to clear permanently. It's sort of a quick-fix for now to make sure that toggle button states don't get out of sync with app variables they control when a "page" is exited and reentered
 		  errorMap(sessionId).clear
 		  lastConfig(sessionId) = currentConfig(sessionId)
-		  currentConfig(sessionId) = liftConfig
 		}
+		
+		currentConfig(sessionId) = liftConfig
 
 		val controlList: java.util.List[ControlConfig] = liftConfig.myCCs
 
@@ -201,47 +186,30 @@ package org.cogchar.lifter {
 			} catch {
 			  case _: Any =>  warn("Unable to get valid slotNum from loaded control; URI fragment was " + controlDef.myURI_Fragment) // The control will still be loaded into slot -1; could "break" here but it's messy and unnecessary
 			}
-			if (sessionId.equals(INITIAL_CONFIG_ID)) {
-			  initialControlDefMap(slotNum) = controlDef; // Save the controlDef for this slotNum for future reference
-			  initialControlsMap(slotNum) = initSingleControl(controlDef, slotNum, true, null)
-			} else {
-			  controlDefMap(sessionId)(slotNum) = controlDef
-			  val newControlConfig = initSingleControl(controlDef, slotNum, false, sessionId)
-			  controlsMap(sessionId)(slotNum) = newControlConfig.controlType.makeControl(newControlConfig, sessionId)
-			}
-
+			controlDefMap(sessionId)(slotNum) = controlDef
+			initSingleControl(controlDef, slotNum, sessionId)
 		  })
 		// Blank unspecified slots (out to 20)
 		for (slot <- 1 to 20) {
-		  if (sessionId.equals(INITIAL_CONFIG_ID)) {
-			if (!(initialControlDefMap contains slot)) {
-			  info("Setting blank control in slot " + slot + " of initialControlsMap")
-			  initialControlsMap(slot) = new BlankControl.BlankControlConfig()
-			}
-		  } else {
-			if (!(controlDefMap(sessionId) contains slot)) {
-			  controlsMap(sessionId)(slot) = NodeSeq.Empty
-			}
+		  if (!(controlDefMap(sessionId) contains slot)) {
+			controlsMap(sessionId)(slot) = NodeSeq.Empty
 		  }
 		}
-		if (sessionId.equals(INITIAL_CONFIG_ID)) { // for initial config, store initialTemplate
-		  initialTemplate = liftConfig.template
+		currentTemplate(sessionId) = liftConfig.template
+		if (sessionId.equals(INITIAL_CONFIG_ID)) { 
 		  renderInitialControls; // Required to get things started if pages are loaded in browsers before config is initialized
 		} else { // otherwise...
-		  currentTemplate(sessionId) = liftConfig.template
 		  val changedTemplate = (currentTemplate(sessionId) != lastConfig(sessionId).template)
 		  if (changedTemplate) {
 			updateInfo = controlId(sessionId, 301) // Special code to trigger TemplateActor
 			updateListeners;
 		  }
-
 		  // ... and load new controls
 		  setControlsFromMap(sessionId)
 		}
 	  }
 	  
-	  def initSingleControl(controlDef:ControlConfig, slotNum:Int, initialConfig:Boolean, sessionId:String): InitialControlConfig = {
-		var loadingConfig: InitialControlConfig = null;
+	  def initSingleControl(controlDef:ControlConfig, slotNum:Int, sessionId:String) {
 		var controlType: ControlType = NULLTYPE
 		ControlType.values foreach(testType => {
 			if (controlDef.controlType equals(testType.toString)) controlType = testType
@@ -253,10 +221,10 @@ package org.cogchar.lifter {
 			
 		controlType match {
 		  case ControlType.PUSHYBUTTON => {
-			  loadingConfig = new PushyButton.PushyButtonConfig(text, style, resource, slotNum)
+			  controlsMap(sessionId)(slotNum) = PushyButton.makeButton(text, style, resource, slotNum)
 			}
 		  case ControlType.TEXTINPUT => {
-			  loadingConfig = new TextForm.TextFormConfig(text, slotNum)
+			  controlsMap(sessionId)(slotNum) = TextForm.makeTextForm(text, slotNum)
 			}
 		  case ControlType.DUALTEXTINPUT => {
 			  // From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
@@ -264,7 +232,7 @@ package org.cogchar.lifter {
 			  val label1 = textItems(0)
 			  val label2 = textItems(1)
 			  val submitLabel = textItems(2)
-			  loadingConfig = new DualTextForm.DualTextFormConfig(label1, label2, submitLabel, slotNum)
+			  controlsMap(sessionId)(slotNum) = DualTextForm.makeForm(label1, label2, submitLabel, slotNum)
 			}
 		  case ControlType.LOGINFORM => {
 			  // From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
@@ -272,31 +240,31 @@ package org.cogchar.lifter {
 			  val label1 = textItems(0)
 			  val label2 = textItems(1)
 			  val submitLabel = textItems(2)
-			  loadingConfig = new LoginForm.LoginFormConfig(label1, label2, submitLabel, slotNum)
+			  controlsMap(sessionId)(slotNum) = LoginForm.makeForm(label1, label2, submitLabel, slotNum)
 			}
 		  case ControlType.SELECTBOXES => {
 			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
 			  val textItems = List.fromArray(text.split(","))
 			  val titleText = textItems(0)
 			  val labelItems = textItems.tail
-			  loadingConfig = new SelectBoxes.SelectBoxesConfig(titleText, labelItems, slotNum)
+			  controlsMap(sessionId)(slotNum) = SelectBoxes.makeSelectBoxes(titleText, labelItems, slotNum)
 			}
 		  case ControlType.RADIOBUTTONS => {
 			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
 			  val textItems = List.fromArray(text.split(","))
 			  val titleText = textItems(0)
 			  val labelItems = textItems.tail
-			  loadingConfig = new RadioButtons.RadioButtonsConfig(titleText, labelItems, slotNum)
+			  controlsMap(sessionId)(slotNum) = RadioButtons.makeRadioButtons(titleText, labelItems, slotNum)
 			}
 		  case ControlType.LISTBOX => {
 			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
 			  val textItems = List.fromArray(text.split(","))
 			  val titleText = textItems(0)
 			  val labelItems = textItems.tail
-			  loadingConfig = new ListBox.ListBoxConfig(titleText, labelItems, slotNum)
+			  controlsMap(sessionId)(slotNum) = ListBox.makeListBox(titleText, labelItems, slotNum)
 			}
 		  case ControlType.VIDEOBOX => {
-			  loadingConfig = new VideoBox.VideoBoxConfig(resource, true)
+			  controlsMap(sessionId)(slotNum) = VideoBox.makeBox(resource, true)
 			}
 		  case ControlType.TOGGLEBUTTON => {
 			  // For a ToggleButton, the first item in CSV text, action, style, image corresponds to the default condition, the second to the "toggled" condition
@@ -304,23 +272,17 @@ package org.cogchar.lifter {
 			  val styleItems = List.fromArray(style.split(","))
 			  val resourceItems = List.fromArray(resource.split(","))
 			  // Set control for initial (default) state
-			  loadingConfig = new PushyButton.PushyButtonConfig(textItems(0), styleItems(0), resourceItems(0), slotNum)
+			  controlsMap(sessionId)(slotNum) = PushyButton.makeButton(textItems(0), styleItems(0), resourceItems(0), slotNum)
 			  // Flag the fact this is a toggle button, currently in the default (false) condition
-			  if (initialConfig) {
-				initialToggleButtonMap(slotNum) = false
-			  } else {
-				toggleButtonMap(sessionId)(slotNum) = false
-			  }
-			  
+			  toggleButtonMap(sessionId)(slotNum) = false
 			}
 		  case ControlType.TEXTBOX => {
-			  loadingConfig = new TextBox.TextBoxConfig(text, style, false, true) // From legacy config, centered=false and displayAsCell = true are hardcoded for now but will probably end up in RDF definition
+			  controlsMap(sessionId)(slotNum) = TextBox.makeBox(text, style)
 			  // Check for "local" actions which PageCommander needs to handle, such as text display
-			  initLocalActions(slotNum, action, initialConfig, sessionId) // this method will modify action as necessary according to prefixes 
+			  initLocalActions(slotNum, action, sessionId) // this method will modify action as necessary according to prefixes 
 			}
-		  case _ => loadingConfig = new BlankControl.BlankControlConfig
+		  case _ => controlsMap(sessionId)(slotNum) = NodeSeq.Empty
 		}
-		loadingConfig
 	  }
 					  
 	  def setControl(sessionId: String, slotNum: Int, slotHtml: NodeSeq) {
@@ -337,20 +299,20 @@ package org.cogchar.lifter {
 	  }
 									
 	  // Check to see if any action requested requires PageCommander to do some local handling
-	  def initLocalActions(slotNum:Int, action:Ident, initialConfig:Boolean, sessionId:String) {
+	  def initLocalActions(slotNum:Int, action:Ident, sessionId:String) {
 		if (action != null) {
 		  if (action.getAbsUriString.startsWith(ActionStrings.p_liftcmd)) {
 			val splitAction = action.getLocalName.split("_")
 			splitAction(0) match {
 			  case ActionStrings.showText => {splitAction(1) match {
 					case ActionStrings.COGBOT_TOKEN => { // Show Cogbot speech on this control? Add it to the cogbotDisplayers list.
-						if (initialConfig) initialCogbotDisplayers += slotNum else cogbotDisplayers(sessionId) += slotNum
+						cogbotDisplayers(sessionId) += slotNum
 					}
 					case ActionStrings.ANDROID_SPEECH_TOKEN => { // Add to the speechDisplayers list if we want Android speech shown here
-						if (initialConfig) initialSpeechDisplayers += slotNum else speechDisplayers(sessionId) += slotNum
+						speechDisplayers(sessionId) += slotNum
 					}
 					case ActionStrings.ERROR_TOKEN => { // Associate the error source name with the slotNum where errors will display
-						if (initialConfig) initialErrorMap(splitAction(2)) = slotNum else errorMap(sessionId)(splitAction(2)) = slotNum
+						errorMap(sessionId)(splitAction(2)) = slotNum
 					}
 					case _ => warn("checkLocalActions doesn't know what to do in order to display text with token " + splitAction(1))
 				  }
@@ -378,10 +340,10 @@ package org.cogchar.lifter {
 			  splitAction(0) match {
 				case ActionStrings.oldDemo => { // Just a way to include the old hard-coded demo just a little longer; soon will configure all of this from RDF
 					subControl match { // An early hard coded demo
-					  case 0 => setControl(sessionId, 6, PushyButton.makeButton("A button", "buttonred", "", sessionId, 6))
-					  case 1 => setControl(sessionId, 6, TextForm.makeTextForm("A text box", sessionId, 6))
-					  case 2 => setControl(sessionId, 6, SelectBoxes.makeSelectBoxes("Checkboxes", List("an option", "and another"), sessionId, 6))
-					  case 3 => setControl(sessionId, 6, RadioButtons.makeRadioButtons("Radio buttons", List("Radio Option 1", "Radio Option 2"), sessionId, 6))
+					  case 0 => setControl(sessionId, 6, PushyButton.makeButton("A button", "buttonred", "", 6))
+					  case 1 => setControl(sessionId, 6, TextForm.makeTextForm("A text box", 6))
+					  case 2 => setControl(sessionId, 6, SelectBoxes.makeSelectBoxes("Checkboxes", List("an option", "and another"), 6))
+					  case 3 => setControl(sessionId, 6, RadioButtons.makeRadioButtons("Radio buttons", List("Radio Option 1", "Radio Option 2"), 6))
 					  case _ =>
 					}
 				  }
@@ -590,7 +552,7 @@ package org.cogchar.lifter {
 				  singularAction(sessionId)(slotNum) = new FreeIdent(actionUriPrefix + actionItems(1), actionItems(1))
 				  toggleButtonMap(sessionId)(slotNum) = false
 				  success = continueTriggering(sessionId, slotNum)
-				  setControl(sessionId, slotNum, PushyButton.makeButton(textItems(0), styleItems(0), resourceItems(0), sessionId, slotNum))
+				  setControl(sessionId, slotNum, PushyButton.makeButton(textItems(0), styleItems(0), resourceItems(0), slotNum))
 				} else {
 				  // Button is set as "default" -- set to "selected" and perform action
 				  // If only one parameter is specified in RDF, duplicate the first and use that parameter here too (really we are prepending the one item in the list to itself, but that works ok here)
@@ -600,7 +562,7 @@ package org.cogchar.lifter {
 				  singularAction(sessionId)(slotNum) = new FreeIdent(actionUriPrefix + actionItems(0), actionItems(0))
 				  toggleButtonMap(sessionId)(slotNum) = true
 				  success = continueTriggering(sessionId, slotNum)
-				  setControl(sessionId, slotNum, PushyButton.makeButton(textItems(1), styleItems(1), resourceItems(1), sessionId, slotNum))
+				  setControl(sessionId, slotNum, PushyButton.makeButton(textItems(1), styleItems(1), resourceItems(1), slotNum))
 				}
 			  } else {
 				error("PageCommander.toggleButton called for slotNum " + slotNum + " of session " + sessionId + ", but no entry found in toggleButtonMap")

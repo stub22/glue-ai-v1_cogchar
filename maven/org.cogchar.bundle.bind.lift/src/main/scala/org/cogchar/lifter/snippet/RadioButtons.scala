@@ -32,16 +32,7 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.view.TextBox
 	import S._
 
-	object RadioButtons extends Logger with ControlDefinition {
-	  
-	  class RadioButtonsConfig(val titleText: String, val labelList:List[String], val slotNum: Int)
-				extends PageCommander.InitialControlConfig {
-		  controlType = RadioButtons.instance
-	  }
-	  
-	  //under the covers, .instance() is implemented as a static method on class RadioButtons. This lets RadioButtonsConfig
-	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
-	  def instance = this   
+	object RadioButtons extends Logger {
   
 	  val responseText = "I see you!"
 	  
@@ -52,20 +43,12 @@ package org.cogchar.lifter {
 	  val titleMap = new scala.collection.mutable.HashMap[Int,String]
 	  val labelMap = new scala.collection.mutable.HashMap[Int,List[String]] // Map to hold all the labels for each RadioButtons control rendered
 
-	  def makeRadioButtons(titleText: String, labelList:List[String], sessionId:String, idNum: Int): NodeSeq = {
+	  def makeRadioButtons(titleText: String, labelList:List[String], idNum: Int): NodeSeq = {
 		val formIdForHtml: String = idNum.toString
 		titleMap(idNum) = titleText
 		labelMap(idNum) = labelList
 		val titleId: String = titlePrefix + formIdForHtml // We need a unique ID here, because JavaScript will be updating the title after post
 		<form class="lift:form.ajax"><lift:RadioButtons formId={formIdForHtml}><div class="labels" id={titleId}></div><div id="buttonshere"></div></lift:RadioButtons></form>
-	  }
-	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
-		val config = initialConfig match {
-		  case config: RadioButtonsConfig => config
-		  case _ => throw new ClassCastException
-		}
-		makeRadioButtons(config.titleText, config.labelList, sessionId, config.slotNum)
 	  }
 	}
 	

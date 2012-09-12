@@ -29,18 +29,9 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.model.PageCommander
 	import org.cogchar.lifter.view.TextBox
 
-	object PushyButton extends Logger with ControlDefinition {
-  
-	  class PushyButtonConfig(val buttonText:String, val buttonClass:String, val buttonImage:String, val buttonSlot: Int)
-				extends PageCommander.InitialControlConfig {
-		  controlType = PushyButton.instance
-	  }
+	object PushyButton extends Logger {
 	  
-	  //under the covers, .instance() is implemented as a static method on class PushyButton. This lets PushyButtonConfig
-	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
-	  def instance = this   
-	  
-	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, sessionId: String, buttonId: Int): NodeSeq = {
+	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, buttonId: Int): NodeSeq = {
 		val buttonNum: String = buttonId.toString
 		val buttonPath: String = "/images/" + buttonImage // May want to move this prefix to central location
 		if (buttonImage.length >= 5) { // needs to be at least this long to have a valid image filename
@@ -48,14 +39,6 @@ package org.cogchar.lifter {
 		} else {
 		  <lift:PushyButton buttonId={buttonNum}><div class="centerVert pushypadding"><div name="pushbutton" class={buttonClass} onclick="">{buttonText}</div></div></lift:PushyButton>
 		}
-	  }
-	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
-	  val config = initialConfig match {
-		case config: PushyButtonConfig => config
-		case _ => throw new ClassCastException
-	  }
-		makeButton(config.buttonText, config.buttonClass, config.buttonImage, sessionId, config.buttonSlot)
 	  }
   
 	  def render = {

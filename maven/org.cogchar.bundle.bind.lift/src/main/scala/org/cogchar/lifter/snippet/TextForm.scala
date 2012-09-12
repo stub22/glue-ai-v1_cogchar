@@ -32,16 +32,7 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.view.TextBox
 	import S._
 	
-	object TextForm extends ControlDefinition {
-	  
-	  class TextFormConfig(val labelText: String, val slotNum: Int)
-				extends PageCommander.InitialControlConfig {
-		  controlType = TextForm.instance
-	  }
-	  
-	  //under the covers, .instance() is implemented as a static method on class TextForm. This lets TextFormConfig
-	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
-	  def instance = this 
+	object TextForm {
 	  
 	  val defaultText = "" // We can add bits to define this in XML if we want
 	  //val responseText = "Thanks for the input!" // We can add bits to define this in XML if we want - will probably do so soon, but disabling for "operational" demo right now
@@ -54,7 +45,7 @@ package org.cogchar.lifter {
 	  val textBoxIdPrefix = "text_in"
 	  val textMap = new scala.collection.mutable.HashMap[Int, String]
 	  
-	  def makeTextForm(initialText: String, sessionId:String, idNum: Int): NodeSeq = {
+	  def makeTextForm(initialText: String, idNum: Int): NodeSeq = {
 		val formIdforHtml: String = idNum.toString
 		textMap(idNum) = initialText
 		val labelId: String = labelIdPrefix + formIdforHtml // We need a unique ID here, because JavaScript will be updating the label after post
@@ -63,13 +54,6 @@ package org.cogchar.lifter {
 		<form class="lift:form.ajax"><lift:TextForm formId={formIdforHtml}><div class="labels" id={labelId}></div><input id={inputId}/> <input type="submit" value={submitLabel}/></lift:TextForm></form>
 	  }
 	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
-		val config = initialConfig match {
-		  case config: TextFormConfig => config
-		  case _ => throw new ClassCastException
-		}
-		makeTextForm(config.labelText, sessionId, config.slotNum)
-	  }
 	}
 
 	class TextForm extends StatefulSnippet with Logger {

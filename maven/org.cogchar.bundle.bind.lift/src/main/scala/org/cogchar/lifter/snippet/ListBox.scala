@@ -32,27 +32,16 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.view.TextBox
 	import S._
 
-	object ListBox extends ControlDefinition {
-	  
-	  class ListBoxConfig(val labelText: String, val labelList:List[String], val slotNum: Int)
-				extends PageCommander.InitialControlConfig {
-		  controlType = ListBox.instance
-	  }
+	object ListBox {
 	  
 	  val blankId = -1
-	  
-	  //under the covers, .instance() is implemented as a static method on class ListBox. This lets ListBoxConfig
-	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
-	  def instance = this  
-	  
 	  val responseText = "Title can change" // We can add bits to define this in XML if we want, or code in more fancy conditionals (Currently ignored here for demo purposes)
-  
 	  val titlePrefix = "listformtitle"
 	  val boxId = "listbox"
 	  val titleMap = new scala.collection.mutable.HashMap[Int, String]
 	  val labelMap = new scala.collection.mutable.HashMap[Int, List[String]] // Map to hold all the labels for each ListBox control rendered
 	  
-	  def makeListBox(labelText: String, labelList:List[String], sessionId:String, idNum: Int): NodeSeq = {
+	  def makeListBox(labelText: String, labelList:List[String], idNum: Int): NodeSeq = {
 		val formIdForHtml: String = idNum.toString
 		titleMap(idNum) = labelText
 		labelMap(idNum) = labelList
@@ -65,14 +54,6 @@ package org.cogchar.lifter {
 			</lift:ListBox>
 		  </form>
 		)
-	  }
-	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
-		val config = initialConfig match {
-		  case config: ListBoxConfig => config
-		  case _ => throw new ClassCastException
-		}
-		makeListBox(config.labelText, config.labelList, sessionId, config.slotNum)
 	  }
 	}
 	  

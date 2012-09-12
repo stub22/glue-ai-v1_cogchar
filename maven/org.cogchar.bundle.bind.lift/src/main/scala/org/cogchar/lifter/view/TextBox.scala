@@ -23,16 +23,7 @@ package org.cogchar.lifter {
 	import Helpers._
 	import org.cogchar.lifter.model.PageCommander
 
-	object TextBox extends org.cogchar.lifter.snippet.ControlDefinition {
-	  
-	  class TextBoxConfig(val text:String, val style:String, val centered:Boolean, val displayAsCell:Boolean)
-				extends PageCommander.InitialControlConfig {
-		  controlType = TextBox.instance
-	  }
-  
-	  //under the covers, .instance() is implemented as a static method on class TextBox. This lets TextBoxConfig
-	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
-	  def instance = this 
+	object TextBox {
 	  
 	  def makeBox(text:String, style:String, centered:Boolean, displayAsCell:Boolean): NodeSeq = {
 		if (centered) {
@@ -54,14 +45,6 @@ package org.cogchar.lifter {
 	  
 	  def makeBox(text:String, style:String): NodeSeq = {
 		makeBox(text, style, false);
-	  }
-	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
-		val config = initialConfig match {
-		  case config: TextBoxConfig => config
-		  case _ => throw new ClassCastException
-		}
-		makeBox(config.text, config.style, config.centered, config.displayAsCell)
 	  }
 
 	}
