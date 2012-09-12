@@ -21,40 +21,47 @@ package org.cogchar.lifter {
 	import net.liftweb.http._
 	import S._
 	import net.liftweb.util._
+	import Helpers._
 	import scala.xml._
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.view.TextBox
 
-	
 	class TemplateActor extends CometActor with CometListener with Logger {
 	  
-	  lazy val mySessionId : Int = (name openOr"-1").toInt
+	  final val DEFAULT_TEMPLATE = "12slots"
+	  
+	  lazy val mySessionId = {
+		S.session match {
+		  case Full(myLiftSession) => {
+			myLiftSession.uniqueId
+		  }
+		  case _ => ""
+		}
+	  }
+	  
 	  lazy val myUpdateTag = mySessionId + "_301"
+	  
 	  def registerWith = org.cogchar.lifter.model.PageCommander
 	  
 	  override def lowPriority : PartialFunction[Any, Unit]  = {
-		
 		case a: String if (a.equals(myUpdateTag)) => {reRender();} // A special code to trigger a refresh of template
 		case _: String => // Do nothing if our ID not matched
 	  }
 
 	  def render = {
-		
-		val desiredTemplate = PageCommander.getCurrentTemplate(mySessionId)
-		if (desiredTemplate == null) { // If so, things are still initializing, and we'll just exit without rendering for now
-		  NodeSeq.Empty
+		if (mySessionId.isEmpty) {
+		  error("TemplateActor cannot get sessionId, not rendering!")
+		  TextBox.makeBox("TemplateActor cannot get sessionId, not rendering!", "", true)
 		} else {
-		  try {
-		  } catch {
-			case e: Exception => error("Error reading Lift template file: " + e)
+		  val desiredTemplate = PageCommander.getCurrentTemplate(mySessionId)
+		  if (desiredTemplate == null) { // If so, things are still initializing, we'll render default template for now (rendering just a message in a paragraph, or blank, breaks JS part of control comet!
+			PageCommander.requestStart(mySessionId)
+			"@TemplateSlot" #> <lift:surround with={DEFAULT_TEMPLATE} at="content"/>
+		  } else {
+			"@TemplateSlot" #> <lift:surround with={desiredTemplate} at="content"/>
 		  }
-		  var templateString = io.Source.fromInputStream(getClass.getResourceAsStream("/templates-hidden/"+desiredTemplate+".html")).mkString
-		  templateString = templateString.replace("[SESSIONID]", mySessionId.toString)
-		  //info("Filled template is: " + templateString) // TEST ONLY
-		  XML.loadString(templateString)
 		}
 	  }
-  
 	}
-
   }
 }

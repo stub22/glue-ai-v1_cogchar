@@ -19,6 +19,7 @@ package org.cogchar.lifter.snippet
 import org.cogchar.lifter.model.PageCommander
 import scala.xml.NodeSeq
 
+// This is used extensively but not really necessary any more with new way of doing sessions; it will be refactored out soon.
 trait ControlDefinition {
-  def makeControl(config:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq
+  def makeControl(config:PageCommander.InitialControlConfig, sessionId: String): NodeSeq
 }

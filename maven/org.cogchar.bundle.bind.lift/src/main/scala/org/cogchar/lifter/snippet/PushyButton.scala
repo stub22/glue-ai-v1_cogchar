@@ -27,6 +27,7 @@ package org.cogchar.lifter {
 	import Helpers._
 	import S._
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.view.TextBox
 
 	object PushyButton extends Logger with ControlDefinition {
   
@@ -39,8 +40,8 @@ package org.cogchar.lifter {
 	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
 	  def instance = this   
 	  
-	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, sessionId: Int, buttonId: Int): NodeSeq = {
-		val buttonNum: String = sessionId.toString + "_" + buttonId.toString
+	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, sessionId: String, buttonId: Int): NodeSeq = {
+		val buttonNum: String = buttonId.toString
 		val buttonPath: String = "/images/" + buttonImage // May want to move this prefix to central location
 		if (buttonImage.length >= 5) { // needs to be at least this long to have a valid image filename
 		  <lift:PushyButton buttonId={buttonNum}><div class="centerVert pushypadding"><div name="pushbutton" class={buttonClass} onclick=""><img src={buttonPath} width="50%"/><br/>{buttonText}</div></div></lift:PushyButton>
@@ -49,7 +50,7 @@ package org.cogchar.lifter {
 		}
 	  }
 	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
 	  val config = initialConfig match {
 		case config: PushyButtonConfig => config
 		case _ => throw new ClassCastException
@@ -58,18 +59,27 @@ package org.cogchar.lifter {
 	  }
   
 	  def render = {
-		val buttonId: String = (S.attr("buttonId") openOr "_")
-		"@pushbutton [onclick]" #> SHtml.ajaxInvoke (() => {
-			val idItems = buttonId.split("_")
-			info("Starting action mapped to button " + buttonId)
-			val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
-				def run() {
-				  PageCommander.triggerAction(idItems(0).toInt, idItems(1).toInt)
-				}
-			  })
-			processThread.start
-			JsCmds.Noop
-		})
+		S.session match {
+		  case Full(myLiftSession) => {
+			val sessionId = myLiftSession.uniqueId
+			val buttonId: Int = (S.attr("buttonId") openOr "-1").toInt
+			"@pushbutton [onclick]" #> SHtml.ajaxInvoke (() => {
+				info("Starting action mapped to button " + buttonId + " in session " + sessionId)
+				val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
+					def run() {
+					  PageCommander.triggerAction(sessionId, buttonId)
+					}
+				  })
+				processThread.start
+				JsCmds.Noop
+			})
+		  }
+		  case _ => {
+			error("PushyButton cannot get sessionId, not rendering!")
+			TextBox.makeBox("PushyButton cannot get sessionId, not rendering!", "", true)
+		  }
+		}
+		
 	  } 
 	}
   }
