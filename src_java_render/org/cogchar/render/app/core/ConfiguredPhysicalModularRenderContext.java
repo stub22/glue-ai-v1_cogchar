@@ -26,12 +26,10 @@ public class ConfiguredPhysicalModularRenderContext extends PhysicalModularRende
 	public ConfiguredPhysicalModularRenderContext(RenderConfigEmitter rce) {
 		myRCE = rce;
 	}
-	/*
 	public ConfiguredPhysicalModularRenderContext() { 
-		this(new RenderConfigEmitter(None));
+		this(new RenderConfigEmitter());
 	}
-	* 
-	*/ 
+
 	public RenderConfigEmitter getConfigEmitter() { 
 		return myRCE;
 	}
