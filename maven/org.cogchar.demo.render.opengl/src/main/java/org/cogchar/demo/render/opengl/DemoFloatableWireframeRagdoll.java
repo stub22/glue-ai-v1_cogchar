@@ -30,7 +30,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import org.cogchar.blob.emit.DemoConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.CogcharPresumedApp;
 import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
@@ -46,13 +46,13 @@ public class DemoFloatableWireframeRagdoll extends CogcharPresumedApp  {
 	private boolean applyForce = false;
 
 	public static void main(String[] args) {
-		DemoConfigEmitter dce = new DemoConfigEmitter();
-		DemoFloatableWireframeRagdoll app = new DemoFloatableWireframeRagdoll(dce);
+		RenderConfigEmitter rce = new RenderConfigEmitter();
+		DemoFloatableWireframeRagdoll app = new DemoFloatableWireframeRagdoll(rce);
 		app.start();
 	}
 
-	public DemoFloatableWireframeRagdoll(DemoConfigEmitter dce) {
-		super(dce);
+	public DemoFloatableWireframeRagdoll(RenderConfigEmitter rce) {
+		super(rce);
 	}
 
 	@Override protected CogcharRenderContext makeCogcharRenderContext() {

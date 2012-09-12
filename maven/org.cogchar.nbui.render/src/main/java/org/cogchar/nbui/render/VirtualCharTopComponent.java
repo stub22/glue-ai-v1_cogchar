@@ -33,6 +33,7 @@ import org.robokind.api.common.osgi.OSGiUtils;
 
 import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaBooter;
+import org.cogchar.bundle.app.puma.PumaContextMediator;
 import org.cogchar.bundle.app.puma.PumaDualCharacter;
 
 import org.cogchar.render.app.bony.BonyRenderContext;
@@ -67,7 +68,7 @@ public final class VirtualCharTopComponent extends TopComponent {
         myInitializedFlag = false;
     }
     
-	private class PumaBootContextMediator extends PumaBooter.ContextMediator {
+	private class PumaBootContextMediator extends PumaContextMediator {
 	
 		@Override 
 		public boolean getFlagAllowJFrames() {

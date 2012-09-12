@@ -190,5 +190,30 @@ class ZenoConfigEmitter extends BonyConfigEmitter {
 		hfc.myBoneConfig.addBoneDesc(boneName);
 	  })
   }
+ 
+	def getSystemContextURI() : String = { myBehaviorCE.getSystemContextURI()}
+
+	
+	val myBehaviorCE : BehaviorConfigEmitter = new BehaviorConfigEmitter();
+		
+	def getBehaviorConfigEmitter() : BehaviorConfigEmitter = myBehaviorCE;
+	
+
+	val myConvyCE : ConvyConfigEmitter = new ConvyConfigEmitter();
+	
+	def	getConvyConfigEmitter() : ConvyConfigEmitter = myConvyCE;
+
+	
+	val myRobokindBindingCE : RobokindBindingConfigEmitter = new RobokindBindingConfigEmitter();
+	
+	def	getRobokindBindingConfigEmitter() : RobokindBindingConfigEmitter = myRobokindBindingCE;	
+
+	
+	lazy val myRenderCE : RenderConfigEmitter = new RenderConfigEmitter(Some(getSystemContextURI()));
+	
+	def getRenderConfigEmitter() : RenderConfigEmitter = myRenderCE 
+ 
+ 
+ 
   */
   

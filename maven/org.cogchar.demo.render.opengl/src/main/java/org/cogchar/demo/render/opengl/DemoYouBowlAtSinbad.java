@@ -49,7 +49,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
-import org.cogchar.blob.emit.DemoConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.core.PhysicalApp;
@@ -73,13 +73,13 @@ public class DemoYouBowlAtSinbad extends PhysicalApp {
 	private SphereCollisionShape bulletCollisionShape;
 
 	public static void main(String[] args) {
-		DemoConfigEmitter dce = new DemoConfigEmitter();
-		DemoYouBowlAtSinbad app = new DemoYouBowlAtSinbad(dce);
+		RenderConfigEmitter rce = new RenderConfigEmitter();
+		DemoYouBowlAtSinbad app = new DemoYouBowlAtSinbad(rce);
 		app.start();
 	}
 
-	public DemoYouBowlAtSinbad(DemoConfigEmitter dce) {
-		super(dce);
+	public DemoYouBowlAtSinbad(RenderConfigEmitter rce) {
+		super(rce);
 	}
 	// @Override public void simpleInitApp() {
 

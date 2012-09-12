@@ -53,19 +53,35 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 
-	private SpeechOutputClient mySOC;
-	private Ident myCharIdent;
-	private String myNickName;
-	private PumaHumanoidMapper myHumoidMapper;
-	public String myUpdateBonyRdfPath;
-	public Theater myTheater;
-	private ServiceRegistration myBoneRobotConfigServiceRegistration;
+	private		SpeechOutputClient		mySOC;
+	private		Ident					myCharIdent;
+	private		String					myNickName;
+	private		PumaHumanoidMapper		myHumoidMapper;
+	public		String					myUpdateBonyRdfPath;
+	private		BehaviorConfigEmitter	myBehaviorCE;
+	public		Theater					myTheater;
+	private		ServiceRegistration		myBoneRobotConfigServiceRegistration;
 
 	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, PumaAppContext pac, Ident charIdent, String nickName) {
 		myCharIdent = charIdent;
 		myNickName = nickName;
 		myHumoidMapper = new PumaHumanoidMapper(hrc, bundleCtx, charIdent);
 		myTheater = new Theater();	
+	}
+	public void absorbContext(PumaContextMediator mediator) { 
+		BehaviorConfigEmitter behavCE = new BehaviorConfigEmitter();
+		String sysContextURI = mediator.getSysContextRootURI();
+		if (sysContextURI != null) {
+			behavCE.setSystemContextURI(sysContextURI);
+		}
+		String filesysRootPath = mediator.getOptionalFilesysRoot();
+		if (filesysRootPath != null) {
+			behavCE.setLocalFileRootDir(filesysRootPath);
+		}
+		setBehaviorConfigEmitter(behavCE);
+	}
+	private void setBehaviorConfigEmitter(BehaviorConfigEmitter bce) {
+		myBehaviorCE = bce;
 	}
 
 	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, HumanoidConfig hc) throws Throwable {
@@ -86,7 +102,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
 		
-		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf, qGraph, hc);
+		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf, qGraph, hc, myBehaviorCE);
 
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myHumoidMapper.connectToVirtualChar();
@@ -116,11 +132,11 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		// Currently we can only process
 		String pathTail = "bhv_nugget_02.ttl";
 
-		BonyConfigEmitter bonyCE = myHumoidMapper.getHumanoidRenderContext().getBonyConfigEmitter();
+		// RenderConfigEmitter renderCE = myHumoidMapper.getHumanoidRenderContext().getConfigEmitter();
 		// String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharURI);
-		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
+		// BehaviorConfigEmitter behavCE = renderCE.getBehaviorConfigEmitter();
 
-		String behavPath = behavCE.getBehaviorPermPath(pathTail);
+		String behavPath = myBehaviorCE.getBehaviorPermPath(pathTail);
 		if (useTempFiles) {
 			// "TempFiles" currently ignored
 			//behavPath = behavCE.getBehaviorTempFilePath(pathTail);

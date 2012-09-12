@@ -44,8 +44,6 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 
 public class PumaBooter extends BasicDebugger {
 	
-	
-	
 	public enum BootStatus {
 		BOOTING,
 		BOOTED_OK,
@@ -57,42 +55,13 @@ public class PumaBooter extends BasicDebugger {
 		public	Throwable			myThrowable;
 	}
 	
-	public static class ContextMediator extends BasicDebugger {
-		/**
-		 * Called after panels constructed but before startOpenGLCanvas.
-		 * Allows GUI to intervene and realize the panels as needed.
-		 * This step is generally, when getFlagAllowJFrames returns false, e.g. when we
-		 * are running under NB platform and we want to manage windows manually).
-		 * 
-		 * @param ctx
-		 * @throws Throwable 
-		 */
-		public void notifyContextBuilt(PumaAppContext ctx) throws Throwable { 
-		}
-		public boolean getFlagAllowJFrames() {
-			return true;
-		}
-		public String getOptionalFilesysRoot() {
-			return null;
-		}
-		public String getSysContextRootURI() {
-			String uriPrefix = "http://model.cogchar.org/char/bony/";
-			String bonyCharUniqueSuffix = "0x0000FFFF";
-			String sysContextURI = uriPrefix + bonyCharUniqueSuffix;
-			return sysContextURI;
-		}
-		public String getPanelKind() {
-			return "SLIM";
-		}
-		
-	}
 	public BootResult bootUnderOSGi(BundleContext bundleCtx) {
-		ContextMediator cm = new ContextMediator();
+		PumaContextMediator cm = new PumaContextMediator();
 		return bootUnderOSGi(bundleCtx, cm);
 	}
 	
 // 	public BootResult boot(ClassLoader appBootCL, String appBootModelResourcePath) {
-	public BootResult bootUnderOSGi(BundleContext bundleCtx, ContextMediator mediator) {
+	public BootResult bootUnderOSGi(BundleContext bundleCtx, PumaContextMediator mediator) {
 		logInfo("%%%%%%%%%%%%%%%%%%% Beginning bootUnderOSGi");
 		BootResult result  = new BootResult();
 		result.myStatus = BootStatus.BOOTING;
@@ -130,8 +99,7 @@ public class PumaBooter extends BasicDebugger {
 			 */
 			
 			
-			logInfo("%%%%%%%%%%%%%%%%%%% Calling setupConfigEmitters() and starting query service");
-			setupConfigEmitters(hrc, mediator);
+			logInfo("%%%%%%%%%%%%%%%%%%% Starting query service");
 			startQueryService(bundleCtx);
 			
 			// This method performs the configuration actions associated with the developmental "Global Mode" concept
@@ -183,6 +151,7 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 			pac.setCogCharResourcesClassLoader(myInitialBonyRdfCL);
 
 			logInfo("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed , calling connectDualRobotChars()");
+			pac.setContextMediator(mediator);
 			pac.connectDualRobotChars();
 			
 			logInfo("%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed , calling initCinema()");
@@ -204,18 +173,6 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 		}
 		return result;
 	}
-	private void setupConfigEmitters(BonyRenderContext brc, ContextMediator mediator) {
-		BonyConfigEmitter bonyCE = brc.getBonyConfigEmitter();
-		BehaviorConfigEmitter behavCE = bonyCE.getBehaviorConfigEmitter();
-		String sysContextURI = mediator.getSysContextRootURI();
-		if (sysContextURI != null) {
-			behavCE.setSystemContextURI(sysContextURI);
-		}
-		String filesysRootPath = mediator.getOptionalFilesysRoot();
-		if (filesysRootPath != null) {
-			behavCE.setLocalFileRootDir(filesysRootPath);
-		}
-	}
 	
 	// Registers the QueryEmitter service, currently with an empty lifecycle.
 	// This service will be used by managed services needing query config
@@ -230,7 +187,7 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
     	queryComp.start();
 	}
 	
-	private Repo findMainRepo(ContextMediator mediator) {
+	private Repo findMainRepo(PumaContextMediator mediator) {
 		Repo r = null;
 		
 		return r;

@@ -39,7 +39,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
-import org.cogchar.blob.emit.DemoConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.PhysicalApp;
 import org.cogchar.render.app.core.CogcharRenderContext;
 import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
@@ -58,13 +58,13 @@ public class DemoSinbadVersusBlocks extends PhysicalApp {
 	AnimChannel animChannel;
 
 	public static void main(String[] args) {
-		DemoConfigEmitter dce = new DemoConfigEmitter();
+		RenderConfigEmitter dce = new RenderConfigEmitter();
 		DemoSinbadVersusBlocks app = new DemoSinbadVersusBlocks(dce);
 		app.start();
 	}
 
-	public DemoSinbadVersusBlocks(DemoConfigEmitter dce) {
-		super(dce);
+	public DemoSinbadVersusBlocks(RenderConfigEmitter rce) {
+		super(rce);
 	}
 
 
