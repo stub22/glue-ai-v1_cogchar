@@ -32,17 +32,7 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.view.TextBox
 	import S._
 	
-	object DualTextForm extends ControlDefinition {
-	  
-	  class DualTextFormConfig(val label1: String, val label2: String, val submitLabel: String, val slotNum: Int)
-				extends PageCommander.InitialControlConfig {
-		
-		controlType = DualTextForm.instance
-	  }
-	  
-	  //under the covers, .instance() is implemented as a static method on class DualTextForm. This lets DualTextFormConfig
-	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
-	  def instance = this  
+	object DualTextForm {
 	  
 	  val defaultText = "" // We can add bits to define this in RDF if we want
 	  val afterEntryText = "" // Right now we just clear text after input; we can do whatever we want
@@ -53,7 +43,7 @@ package org.cogchar.lifter {
 	  val textBoxIdPrefix = "dualtext_in_"
 	  val textMap = new scala.collection.mutable.HashMap[Int, (String,String)]
 	  
-	  def makeForm(label1: String, label2: String, submitLabel: String, sessionId:String, idNum: Int): NodeSeq = {
+	  def makeForm(label1: String, label2: String, submitLabel: String, idNum: Int): NodeSeq = {
 		//val formIdforHtml: String = sessionId.toString + "_" + idNum.toString
 		val formIdforHtml: String = idNum.toString
 		textMap(idNum) = (label1, label2)
@@ -62,14 +52,6 @@ package org.cogchar.lifter {
 		val inputId1: String = textBoxIdPrefix + formIdforHtml + "A"// JavaScript may want to do things to the input boxes too, like clear them
 		val inputId2: String = textBoxIdPrefix + formIdforHtml + "B"
 		<form class="lift:form.ajax"><lift:DualTextForm formId={formIdforHtml}><div class="labels" id={labelId1}></div><input id={inputId1}/><div class="labels" id={labelId2}></div><input id={inputId2}/><br/><input type="submit" value={submitLabel}/></lift:DualTextForm></form>
-	  }
-	  
-	  def makeControl(initialConfig: PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
-		val config = initialConfig match {
-		  case config: DualTextFormConfig => config
-		  case _ => throw new ClassCastException
-		}
-		makeForm(config.label1, config.label2, config.submitLabel, sessionId, config.slotNum)
 	  }
 	}
 

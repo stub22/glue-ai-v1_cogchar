@@ -32,16 +32,7 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.view.TextBox
 	import S._
 
-	object SelectBoxes extends ControlDefinition {
-	  
-	  class SelectBoxesConfig(val labelText: String, val labelList:List[String], val slotNum: Int)
-				extends PageCommander.InitialControlConfig {
-		  controlType = SelectBoxes.instance
-	  }
-	  
-	  //under the covers, .instance() is implemented as a static method on class SelectBoxes. This lets SelectBoxesConfig
-	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
-	  def instance = this 
+	object SelectBoxes {
 	  
 	  val responseText = "Title can change" // We can add bits to define this in XML if we want, or code in more fancy conditionals
   
@@ -53,7 +44,7 @@ package org.cogchar.lifter {
 	  val titleMap = new scala.collection.mutable.HashMap[Int,String]
 	  val labelMap = new scala.collection.mutable.HashMap[Int,List[String]] // Map to hold all the labels for each SelectBoxes control rendered
 	  
-	  def makeSelectBoxes(labelText: String, labelList:List[String], sessionId:String, idNum: Int): NodeSeq = {
+	  def makeSelectBoxes(labelText: String, labelList:List[String], idNum: Int): NodeSeq = {
 		val formIdForHtml: String = idNum.toString
 		titleMap(idNum) = labelText
 		labelMap(idNum) = labelList
@@ -67,14 +58,6 @@ package org.cogchar.lifter {
 		}
 		boxesHtmlString += "</lift:SelectBoxes></form>"
 		XML.loadString(boxesHtmlString)
-	  }
-	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
-		val config = initialConfig match {
-		  case config: SelectBoxesConfig => config
-		  case _ => throw new ClassCastException
-		}
-		makeSelectBoxes(config.labelText, config.labelList, sessionId, config.slotNum)
 	  }
 	}
 	  
