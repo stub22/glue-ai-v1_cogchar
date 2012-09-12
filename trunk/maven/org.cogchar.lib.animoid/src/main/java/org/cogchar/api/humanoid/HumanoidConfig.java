@@ -15,10 +15,10 @@
  */
 package org.cogchar.api.humanoid;
 
-import org.appdapter.core.item.Ident;
-import org.cogchar.blob.emit.SolutionMap;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
+import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.SolutionMap;
+import org.appdapter.help.repo.QueryInterface;
+import org.cogchar.blob.emit.QueryTester;
 
 /**
  * This class serves as a place to hold the humanoid config (right now, the stuff on the "Humanoids" spreadsheet tab)
@@ -37,7 +37,7 @@ public class HumanoidConfig {
 
 	public HumanoidConfig(Ident charIdent, Ident graphIdent) {
 		myCharIdent = charIdent;
-		QueryInterface qi = QuerySheet.getInterface(); // Still the interim way of getting QueryInterface, until we decide what the permanent one will be
+		QueryInterface qi = QueryTester.getInterface(); // Still the interim way of getting QueryInterface, until we decide what the permanent one will be
 		SolutionMap solutionMap = qi.getQueryResultMap(HumanoidQueryNames.HUMANOID_QUERY, HumanoidQueryNames.ROBOT_URI_VAR_NAME, graphIdent);
 		nickname = qi.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.ROBOT_ID_VAR_NAME);
 		meshPath = qi.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.MESH_PATH_VAR_NAME);

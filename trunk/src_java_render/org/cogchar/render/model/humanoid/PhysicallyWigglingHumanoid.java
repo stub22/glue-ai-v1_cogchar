@@ -17,11 +17,6 @@ package org.cogchar.render.model.humanoid;
 
 import org.cogchar.api.humanoid.HumanoidBoneDesc;
 import org.cogchar.api.humanoid.HumanoidBoneConfig;
-import org.appdapter.core.item.Ident;
-
-import org.cogchar.blob.emit.BonyConfigEmitter;
-
-import com.jme3.animation.Bone;
 
 import com.jme3.bullet.joints.SixDofJoint;
 import com.jme3.bullet.joints.motors.RotationalLimitMotor;

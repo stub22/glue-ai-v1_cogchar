@@ -18,11 +18,11 @@ package org.cogchar.bundle.app.puma;
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
 
 
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
 import org.cogchar.api.humanoid.HumanoidConfig;

@@ -18,7 +18,7 @@ package org.cogchar.render.gui.bony;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ The value is set to HIDE_ON_CLOSE by default. Changes to the value of this prope
 		frame.setVisible(true);	
 		return frame;
 	}
-	public static VirtualCharacterPanel makeVCPanel (BonyConfigEmitter bce, String panelKind)  {
+	public static VirtualCharacterPanel makeVCPanel (RenderConfigEmitter bce, String panelKind)  {
 		VirtualCharacterPanel vcPanel = null;
 		try {
 			String panelClassName = bce.getVCPanelClassName(panelKind);

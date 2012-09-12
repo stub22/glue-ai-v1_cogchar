@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.BoundAction;
 
 import org.appdapter.core.log.BasicDebugger;
@@ -258,7 +258,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 			return myBoundAction;
 		}
 		HumanoidFigure getSinbad(HumanoidRenderContext hrc) { 
-			BonyConfigEmitter bce = hrc.getBonyConfigEmitter();
+			RenderConfigEmitter bce = hrc.getConfigEmitter();
 			return hrc.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
 		}
 		final static int NULL_KEY = -100; // This input not mapped to any key; we'll use it in the event of not finding one from keyBindings
@@ -317,7 +317,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 		keyBindings = config;
         PlayerAction pavals[] = PlayerAction.values();
 		List<String> actionNamesList = new ArrayList<String>();
-		boolean minSimMode = ctx.getBonyConfigEmitter().isMinimalSim();
+		boolean minSimMode = ctx.getConfigEmitter().isMinimalSim();
         for (int pai =0; pai < pavals.length; pai++) { 
             PlayerAction pa = pavals[pai];
 			String actionName = pa.name();

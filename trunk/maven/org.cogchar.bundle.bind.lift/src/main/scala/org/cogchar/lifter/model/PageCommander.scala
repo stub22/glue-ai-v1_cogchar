@@ -29,7 +29,7 @@ package org.cogchar.lifter {
 	import scala.xml._
 	import _root_.net.liftweb.util.Log
 	import net.liftweb.actor._
-	import org.appdapter.core.item.{FreeIdent, Ident}
+	import org.appdapter.core.name.{FreeIdent, Ident}
 	import org.cogchar.lifter.lib._
 	import org.cogchar.lifter.snippet._
 	import org.cogchar.lifter.view._

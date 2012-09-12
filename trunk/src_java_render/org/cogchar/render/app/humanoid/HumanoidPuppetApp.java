@@ -23,7 +23,7 @@
 package org.cogchar.render.app.humanoid;
 
 import org.cogchar.render.model.humanoid.HumanoidFigure;
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,16 +35,16 @@ public class HumanoidPuppetApp extends BonyVirtualCharApp<HumanoidRenderContext>
     private final static Logger		theLogger = LoggerFactory.getLogger(HumanoidPuppetApp.class);
 
 	public static void main(String[] args) {
-		BonyConfigEmitter bce = new BonyConfigEmitter();
+		RenderConfigEmitter bce = new RenderConfigEmitter();
 		HumanoidPuppetApp app = new HumanoidPuppetApp(bce);
 		app.start();
 	}
-	public HumanoidPuppetApp(BonyConfigEmitter bce) { 
-		super(bce); 		
+	public HumanoidPuppetApp(RenderConfigEmitter rce) { 
+		super(rce); 		
 	}
 	@Override protected HumanoidRenderContext makeCogcharRenderContext() {
-		BonyConfigEmitter bce = getBonyConfigEmitter();
-		HumanoidRenderContext hrc = new HumanoidRenderContext(bce);
+		RenderConfigEmitter rce = getConfigEmitter();
+		HumanoidRenderContext hrc = new HumanoidRenderContext(rce);
 		hrc.setApp(this);
 		return hrc;
 	}

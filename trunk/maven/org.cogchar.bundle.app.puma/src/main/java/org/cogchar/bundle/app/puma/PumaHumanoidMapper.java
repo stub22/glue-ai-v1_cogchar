@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.appdapter.core.log.BasicDebugger;
 
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 
 import org.osgi.framework.BundleContext;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
@@ -81,7 +81,7 @@ public class PumaHumanoidMapper extends BasicDebugger {
 		// This creates our ModelRobot instance, and calls registerAndStart() in the RobotServiceContext base class.
 		myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);
 		
-		myRAC = new RobotAnimContext(myCharIdent, getHumanoidRenderContext().getBonyConfigEmitter().getBehaviorConfigEmitter());
+		myRAC = new RobotAnimContext(myCharIdent, getHumanoidRenderContext().getConfigEmitter().getBehaviorConfigEmitter());
 		myRAC.initConn(myMBRSC);
 	}
 

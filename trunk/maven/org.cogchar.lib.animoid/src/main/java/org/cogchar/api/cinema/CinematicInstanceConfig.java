@@ -21,25 +21,22 @@ import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
-import org.appdapter.core.item.Ident;
-import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.SolutionList;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
-
-import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionList;
+import org.appdapter.help.repo.QueryInterface;
 
 /**
  * @author Ryan Biggs
  */
-public class CinematicInstanceConfig extends BasicDebugger {
+public class CinematicInstanceConfig extends QueryBackedConfigBase {
 
 	public String myURI_Fragment;
 	public float duration;
 	public List<CinematicTrack> myTracks = new ArrayList<CinematicTrack>();
 	private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
 	
-	private static QueryInterface queryEmitter = QuerySheet.getInterface();
+	
 
 	@Override
 	public String toString() {
@@ -48,12 +45,13 @@ public class CinematicInstanceConfig extends BasicDebugger {
 
 	// A new constructor to build CinematicConfig from spreadsheet
 	public CinematicInstanceConfig(Solution querySolution, Ident qGraph) {
-		Ident myIdent = queryEmitter.getIdentFromSolution(querySolution, CinematicQueryNames.CINEMATIC_VAR_NAME);
+		QueryInterface qi = getQueryInterface();
+		Ident myIdent = qi.getIdentFromSolution(querySolution, CinematicQueryNames.CINEMATIC_VAR_NAME);
 		myURI_Fragment = myIdent.getLocalName();
-		duration = queryEmitter.getFloatFromSolution(querySolution, CinematicQueryNames.DURATION_VAR_NAME, Float.NaN);
-		String query = queryEmitter.getCompletedQueryFromTemplate(CinematicQueryNames.TRACKS_QUERY_TEMPLATE_URI, CinematicQueryNames.CINEMATIC_QUERY_VAR_NAME, myIdent);
-		SolutionList solutionList = queryEmitter.getTextQueryResultList(query, qGraph);
-		List<Ident> trackIdentList = queryEmitter.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.TRACK_VAR_NAME);
+		duration = qi.getFloatFromSolution(querySolution, CinematicQueryNames.DURATION_VAR_NAME, Float.NaN);
+		String query = qi.getCompletedQueryFromTemplate(CinematicQueryNames.TRACKS_QUERY_TEMPLATE_URI, CinematicQueryNames.CINEMATIC_QUERY_VAR_NAME, myIdent);
+		SolutionList solutionList = qi.getTextQueryResultList(query, qGraph);
+		List<Ident> trackIdentList = qi.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.TRACK_VAR_NAME);
 		for (Ident trackIdent : trackIdentList) {
 			myTracks.add(new CinematicTrack(trackIdent));
 		}

@@ -16,7 +16,7 @@
 package org.cogchar.render.app.humanoid;
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import org.cogchar.api.cinema.CinematicConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.render.opengl.optic.CameraMgr;

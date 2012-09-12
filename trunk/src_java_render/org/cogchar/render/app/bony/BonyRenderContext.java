@@ -23,7 +23,7 @@ import com.jme3.asset.AssetManager;
 import java.io.File;
 import java.util.List;
 import javax.swing.JFrame;
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.model.bony.FigureState;
 
 import com.jme3.math.Vector3f;
@@ -45,8 +45,8 @@ public class BonyRenderContext extends ConfiguredPhysicalModularRenderContext {
 	protected	List<AnimControl>		myAnimControls;
 
 
-	public BonyRenderContext(BonyConfigEmitter bce) { 
-		super(bce);
+	public BonyRenderContext(RenderConfigEmitter rce) { 
+		super(rce);
 	}
 	@Override public void completeInit() {
 		super.completeInit();
@@ -92,19 +92,5 @@ public class BonyRenderContext extends ConfiguredPhysicalModularRenderContext {
 	public JFrame getFrame() { 
 		return myFrame;
 	}
-
-	public BonyConfigEmitter getBonyConfigEmitter() { 
-		return (BonyConfigEmitter) getConfigEmiiter();
-	}
-
-	//public String getJointConfigAssetNameForChar(String charURI) {
-//		return getBonyConfigEmitter().getJointConfigAssetNameForChar(charURI);
-//	}
-	/*
-	public Vector3f getConfigVector3f(String vectorURI) {
-		float[] xyz = getBonyConfigEmitter().getNamedFloatVector(vectorURI);
-		return JmonkeyMathObjFactory.makeVector(xyz);
-	}
-	*/ 
 
 }

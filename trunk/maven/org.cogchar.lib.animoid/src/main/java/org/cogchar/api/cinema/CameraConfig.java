@@ -16,17 +16,15 @@
 package org.cogchar.api.cinema;
 
 import java.util.Arrays;
-import org.appdapter.core.item.Ident;
-import org.appdapter.core.item.Item;
-import org.appdapter.core.item.ItemFuncs;
-import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
+import org.appdapter.core.name.Ident;
+
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.QueryInterface;
 
 /**
  * @author Ryan Biggs
  */
-public class CameraConfig {
+public class CameraConfig extends QueryBackedConfigBase {
 
 	//public String myURI_Fragment;
 	public String cameraName;
@@ -36,7 +34,7 @@ public class CameraConfig {
 	public Ident attachedRobot;
 	public String attachedItem;
 	
-	private static QueryInterface queryEmitter = QuerySheet.getInterface();
+	
 
 	@Override
 	public String toString() {
@@ -45,6 +43,7 @@ public class CameraConfig {
 
 	// A new constructor to build CameraConfig from spreadsheet
 	public CameraConfig(Solution querySolution) {
+		QueryInterface queryEmitter = getQueryInterface();
 		cameraName = queryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.CAMERA_NAME_VAR_NAME).getLocalName();
 		for (int index = 0; index < 3; index++) {
 			cameraPosition[index] = queryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.POSITION_VAR_NAME[index], 0f);

@@ -16,7 +16,7 @@
 
 package org.cogchar.blob.emit
 
-import org.appdapter.core.item.{FreeIdent, Ident}
+import org.appdapter.core.name.{FreeIdent, Ident}
 
 object GlobalConfigEmitter {
   // Constants for query config - this could live elsewhere but may make sense here
@@ -40,7 +40,7 @@ class GlobalConfigEmitter {
   // (likely needlessly) managed service instance? Or will we decide referencing the singleton QueryEmitter is robust
   // and acceptable enough that its simplicity and "always-on" nature trump uneasy feelings about that technique?
   // This issue is still being worked out.
-  private val qi = QuerySheet.getInterface
+  private val qi = QueryTester.getInterface
   
   // A "triple map" keyed on config "entity" with values of maps keyed by "role", each of which have a "role" object
   //val ergMap = new scala.collection.mutable.HashMap[Ident, scala.collection.mutable.HashMap[Ident, Ident]]

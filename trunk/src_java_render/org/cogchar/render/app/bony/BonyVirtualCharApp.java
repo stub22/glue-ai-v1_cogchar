@@ -24,7 +24,7 @@ import org.cogchar.render.app.core.PhysicalApp;
 import java.awt.Canvas;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.slf4j.Logger;
@@ -42,15 +42,12 @@ public abstract class BonyVirtualCharApp<BRCT extends BonyRenderContext> extends
 
     private     boolean                 myCanvasStartedFlag;
 
-	public BonyVirtualCharApp(BonyConfigEmitter bce) {
-		super(bce);
+	public BonyVirtualCharApp(RenderConfigEmitter rce) {
+		super(rce);
         myCanvasStartedFlag = false;
 	}
 	public BRCT getBonyRenderContext() { 
 		return getRenderContext();
-	}
-	public BonyConfigEmitter getBonyConfigEmitter() { 
-		return (BonyConfigEmitter) myConfigEmitter;
 	}
 
 	public void initCharPanelWithCanvas(VirtualCharacterPanel vcp) { 
