@@ -35,7 +35,7 @@ package org.cogchar.lifter {
 		net.liftweb.json.DefaultFormats
 
 	  // A map of lastSpeech by sessionId
-	  private var lastSpeech = new scala.collection.mutable.HashMap[Int,String]
+	  private var lastSpeech = new scala.collection.mutable.HashMap[String,String]
 
 	  /**
 	   * Convert a JValue to an Item if possible (extracts incoming JSON into SpeechChunk object)
@@ -77,10 +77,10 @@ package org.cogchar.lifter {
 	  // Simple answer for now: just load its text into lastSpeech and let PageCommander know
 	  def setContents(chunk: SpeechChunk): SpeechChunk = {
 		val idItems = chunk.requestingId.split("_")
-		lastSpeech(idItems(0).toInt) = chunk.speechText
+		lastSpeech(idItems(0)) = chunk.speechText
 		val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			def run() {
-			  PageCommander.textInputMapper(idItems(0).toInt, idItems(1).toInt, chunk.speechText); // Let PageCommander know about the text so it can figure out what to do with it
+			  PageCommander.textInputMapper(idItems(0), idItems(1).toInt, chunk.speechText); // Let PageCommander know about the text so it can figure out what to do with it
 			}
 		  })
 		processThread.start
@@ -88,7 +88,7 @@ package org.cogchar.lifter {
 	  }
   
 	  // If something wants to know what the last speech was, just call this!
-	  def getLast(sessionId:Int): String = lastSpeech(sessionId)   
+	  def getLast(sessionId:String): String = lastSpeech(sessionId)   
 
 	}
 

@@ -29,6 +29,7 @@ package org.cogchar.lifter {
 	import Helpers._
 	import net.liftweb.http.SHtml._
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.view.TextBox
 	import S._
 
 	object ListBox extends ControlDefinition {
@@ -38,6 +39,8 @@ package org.cogchar.lifter {
 		  controlType = ListBox.instance
 	  }
 	  
+	  val blankId = -1
+	  
 	  //under the covers, .instance() is implemented as a static method on class ListBox. This lets ListBoxConfig
 	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
 	  def instance = this  
@@ -46,13 +49,13 @@ package org.cogchar.lifter {
   
 	  val titlePrefix = "listformtitle"
 	  val boxId = "listbox"
-	  val titleMap = new scala.collection.mutable.HashMap[String, String]
-	  val labelMap = new scala.collection.mutable.HashMap[String, List[String]] // Map to hold all the labels for each ListBox control rendered
+	  val titleMap = new scala.collection.mutable.HashMap[Int, String]
+	  val labelMap = new scala.collection.mutable.HashMap[Int, List[String]] // Map to hold all the labels for each ListBox control rendered
 	  
-	  def makeListBox(labelText: String, labelList:List[String], sessionId:Int, idNum: Int): NodeSeq = {
-		val formIdForHtml: String = sessionId.toString + "_" + idNum.toString
-		titleMap(formIdForHtml) = labelText
-		labelMap(formIdForHtml) = labelList
+	  def makeListBox(labelText: String, labelList:List[String], sessionId:String, idNum: Int): NodeSeq = {
+		val formIdForHtml: String = idNum.toString
+		titleMap(idNum) = labelText
+		labelMap(idNum) = labelList
 		val titleId: String = titlePrefix + formIdForHtml // We need a unique ID here, because JavaScript may be updating the title after post
 		(
 		  <form class='lift:form.ajax'>
@@ -64,7 +67,7 @@ package org.cogchar.lifter {
 		)
 	  }
 	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
 		val config = initialConfig match {
 		  case config: ListBoxConfig => config
 		  case _ => throw new ClassCastException
@@ -73,9 +76,10 @@ package org.cogchar.lifter {
 	  }
 	}
 	  
-	class ListBox extends StatefulSnippet {
+	class ListBox extends StatefulSnippet with Logger {
 		
-	  var formId: String = ""
+	  var formId: Int = ListBox.blankId
+	  var sessionId: String = ""
 	  var idItems: Array[String] = new Array[String](2)
 	  lazy val listBoxInstanceTitle = ListBox.titlePrefix + formId
 		
@@ -84,30 +88,39 @@ package org.cogchar.lifter {
 	  def render(xhtml:NodeSeq): NodeSeq = {
 
 		def process(result: String): JsCmd = {
-		  println("ListBox says option number " + result + " on formId " + formId + " is selected.")
+		  info("ListBox says option number " + result + " on formId " + formId + " is selected in session " + sessionId + ".")
 		  //SetHtml(listBoxInstanceTitle, Text(ListBox.responseText)) // We'll leave the title the same for the demo
 		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			  def run() {
-				PageCommander.controlActionMapper(idItems(0).toInt, idItems(1).toInt, result.toInt)
+				PageCommander.controlActionMapper(sessionId, formId, result.toInt)
 			  }
 			})
 		  processThread.start
 		}
 
-		formId = (S.attr("formId") openOr "_")
-		idItems = formId.split("_")
-		var valid = false
-		var selectors:CssSel = "i_eat_yaks_for_breakfast" #> "" // This is just to produce a "Null" CssSel so we can initialize this here, but not add any meaningful info until we have checked for valid formId. (As recommended by the inventor of Lift)
-		if (ListBox.titleMap.contains(formId)) {
-		  valid = true
-		  val titleSelectorText: String = "#"+listBoxInstanceTitle+" *"
-		  val boxSelectorText: String = "#" + ListBox.boxId
-		  val rows = if (ListBox.labelMap(formId).length < 8) ListBox.labelMap(formId).length else 7
-		  val listPairs = (for (i <- 0 until ListBox.labelMap(formId).length) yield (i.toString, ListBox.labelMap(formId)(i)))// There may be a simplier Scala way to do this
-		  selectors = titleSelectorText #> ListBox.titleMap(formId) & boxSelectorText #> SHtml.ajaxSelect(listPairs, Empty, process _, "class" -> "formlabels", "size" -> rows.toString)
-		} else println("ListBox.render cannot find a valid formId! Reported formId: " + formId) //; NodeSeq.Empty
-		if (valid) selectors.apply(xhtml) else NodeSeq.Empty // Blanks control if something is wrong with formId
-		//selectors.apply(xhtml) // This would be ok too, and would just apply the "null" selector transform to html if something is broken
+		S.session match {
+		  case Full(myLiftSession) => {
+			sessionId = myLiftSession.uniqueId
+			formId = (S.attr("formId") openOr "-1").toInt  
+			var valid = false
+			var selectors:CssSel = "i_eat_yaks_for_breakfast" #> "" // This is just to produce a "Null" CssSel so we can initialize this here, but not add any meaningful info until we have checked for valid formId. (As recommended by the inventor of Lift)
+			if (ListBox.titleMap.contains(formId)) {
+			  valid = true
+			  val titleSelectorText: String = "#"+listBoxInstanceTitle+" *"
+			  val boxSelectorText: String = "#" + ListBox.boxId
+			  val rows = if (ListBox.labelMap(formId).length < 8) ListBox.labelMap(formId).length else 7
+			  val listPairs = (for (i <- 0 until ListBox.labelMap(formId).length) yield (i.toString, ListBox.labelMap(formId)(i)))// There may be a simplier Scala way to do this
+			  selectors = titleSelectorText #> ListBox.titleMap(formId) & boxSelectorText #> SHtml.ajaxSelect(listPairs, Empty, process _, "class" -> "formlabels", "size" -> rows.toString)
+			} else println("ListBox.render cannot find a valid formId! Reported formId: " + formId) //; NodeSeq.Empty
+			if (valid) selectors.apply(xhtml) else NodeSeq.Empty // Blanks control if something is wrong with formId
+			//selectors.apply(xhtml) // This would be ok too, and would just apply the "null" selector transform to html if something is broken
+		  }
+		  case _ => {
+			  error("ListBox cannot get sessionId, not rendering!")
+			  TextBox.makeBox("ListBox cannot get sessionId, not rendering!", "", true)
+		  }
+		}
+		
 	  }
 	}
 

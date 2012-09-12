@@ -57,13 +57,13 @@ public class LiftAmbassador {
 
 		void notifyConfigReady();
 		
-		void setConfigForSession(int sessionId, LiftConfig config);
+		void setConfigForSession(String sessionId, LiftConfig config);
 
-		void loadPage(int sessionId, String path);
+		void loadPage(String sessionId, String path);
 		
 		String getVariable(String key);
 
-		String getVariable(int sessionId, String key);
+		String getVariable(String sessionId, String key);
 
 		void showError(String errorSourceKey, String errorText);
 	}
@@ -105,7 +105,7 @@ public class LiftAmbassador {
 	}
 	
 	// This flavor activates a new set of controls for a single session
-	public static void activateControlsFromConfig(int sessionId, LiftConfig newConfig) {
+	public static void activateControlsFromConfig(String sessionId, LiftConfig newConfig) {
 		if (lift != null) {
 			lift.setConfigForSession(sessionId, newConfig);
 		} else {
@@ -162,7 +162,7 @@ public class LiftAmbassador {
 		}
 	}
 
-	public static boolean triggerAction(int sessionId, Ident actionUri) {
+	public static boolean triggerAction(String sessionId, Ident actionUri) {
 		boolean success = false;
 		String actionUriPrefix = actionUri.getAbsUriString().replaceAll(actionUri.getLocalName(), "");
 		String action = actionUri.getLocalName();
@@ -272,7 +272,7 @@ public class LiftAmbassador {
 	// Just a demo login method
 	private static final String MAIN_CONFIG = "mainLiftConfig";
 	private static final String CHAT_CONFIG = "chatBigBoxLiftConfig";
-	public static void login(int sessionId, String userName, String password) {
+	public static void login(String sessionId, String userName, String password) {
 		if ((userName.equals("main")) && (password.equals("BigBoy"))) {
 			// Request main liftConfig
 			triggerAction(sessionId, new FreeIdent(LiftConfigNames.p_liftconfig + MAIN_CONFIG, MAIN_CONFIG));

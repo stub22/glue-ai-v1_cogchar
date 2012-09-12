@@ -56,7 +56,7 @@ package org.cogchar.lifter {
 		makeBox(text, style, false);
 	  }
 	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
 		val config = initialConfig match {
 		  case config: TextBoxConfig => config
 		  case _ => throw new ClassCastException

@@ -42,45 +42,47 @@ package org.cogchar.lifter {
 
 	  private var initialConfig: LiftConfig = null
 	  private val initialControlDefMap = new scala.collection.mutable.HashMap[Int,ControlConfig] 
-	  private val controlDefMap = new scala.collection.mutable.HashMap[Int, scala.collection.mutable.HashMap[Int,ControlConfig]]
+	  private val controlDefMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[Int,ControlConfig]]
 	  private val initialControlsMap = new scala.collection.mutable.HashMap[Int, InitialControlConfig]
-	  private val controlsMap = new scala.collection.mutable.HashMap[Int, scala.collection.mutable.HashMap[Int, NodeSeq]]
-	  private val currentConfig = new scala.collection.mutable.HashMap[Int, LiftConfig]
-	  private val lastConfig = new scala.collection.mutable.HashMap[Int, LiftConfig]
-	  private val singularAction = new scala.collection.mutable.HashMap[Int, scala.collection.mutable.HashMap[Int,Ident]] // Holds action for currently enabled state of a multi-state control, such as a TOGGLEBUTTON
+	  private val controlsMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[Int, NodeSeq]]
+	  private val currentConfig = new scala.collection.mutable.HashMap[String, LiftConfig]
+	  private val lastConfig = new scala.collection.mutable.HashMap[String, LiftConfig]
+	  private val singularAction = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[Int,Ident]] // Holds action for currently enabled state of a multi-state control, such as a TOGGLEBUTTON
 	  
 	  // These guys hold lists of slotNums which will display text from Cogbot, or from Android speech input
-	  private val cogbotDisplayers = new scala.collection.mutable.HashMap[Int, scala.collection.mutable.ArrayBuffer[Int]]
-	  private val speechDisplayers = new scala.collection.mutable.HashMap[Int, scala.collection.mutable.ArrayBuffer[Int]]
+	  private val cogbotDisplayers = new scala.collection.mutable.HashMap[String, scala.collection.mutable.ArrayBuffer[Int]]
+	  private val speechDisplayers = new scala.collection.mutable.HashMap[String, scala.collection.mutable.ArrayBuffer[Int]]
 	  private val initialCogbotDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
 	  private val initialSpeechDisplayers = new scala.collection.mutable.ArrayBuffer[Int]
 	  // ... this one for ToggleButton states
-	  private val toggleButtonMap = new scala.collection.mutable.HashMap[Int, scala.collection.mutable.HashMap[Int,Boolean]]
+	  private val toggleButtonMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[Int,Boolean]]
 	  private val initialToggleButtonMap = new scala.collection.mutable.HashMap[Int,Boolean]
 	  
 	  // This associates error source codes with the control on which they should be displayed
-	  private val errorMap = new scala.collection.mutable.HashMap[Int, scala.collection.mutable.HashMap[String, Int]]
+	  private val errorMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[String, Int]]
 	  private val initialErrorMap = new scala.collection.mutable.HashMap[String, Int]
 	  
 	  // A place to hold variables that can be defined and set dynamically by the apps defined in the lift config files themselves
-	  private val appVariablesMap = new scala.collection.mutable.HashMap[Int, scala.collection.mutable.HashMap[String, String]]
+	  private val appVariablesMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[String, String]]
 	  // For now this publicAppVariablesMap just holds the most recent value of the same named variable set among all sessions
 	  // Eventually we probably want to separate these concepts more fully
 	  private val publicAppVariablesMap = new scala.collection.mutable.HashMap[String, String]
 	  
 	  // A map to hold paths to pages requested by LiftAmbassador
-	  private val requestedPage = new scala.collection.mutable.HashMap[Int, Option[String]]
+	  private val requestedPage = new scala.collection.mutable.HashMap[String, Option[String]]
 	  // Holds speech we want Android to say
-	  private val outputSpeech = new scala.collection.mutable.HashMap[Int, String]
+	  private val outputSpeech = new scala.collection.mutable.HashMap[String, String]
 	  // id of last control which requested speech - used by JavaScriptActor to add identifying info to request
 	  private var lastSpeechReqSlotId:String = ""
 	  // Determines whether Cogbot speech out also triggers Android speech
-	  private val cogbotSpeaks = new scala.collection.mutable.HashMap[Int, Boolean]
+	  private val cogbotSpeaks = new scala.collection.mutable.HashMap[String, Boolean]
 	  // Name of current template (in /templates-hidden) which corresponds to current liftConfig
-	  private val currentTemplate = new scala.collection.mutable.HashMap[Int, String]
+	  private val currentTemplate = new scala.collection.mutable.HashMap[String, String]
 	  private var initialTemplate:String = "12slots"
 	  private final var SINGLE_SLOT_TEMPLATE = "singleSlot"
+	  final var INITIAL_CONFIG_ID = "InitialConfig" // "sessionId" for initial config for new sessions
 	  private var lifterInitialized:Boolean = false // Will be set to true once PageCommander receives initial control config from LiftAmbassador
+	  private val sessionsAwaitingStart = new scala.collection.mutable.ArrayBuffer[String] 
 	  
 	  private var updateInfo: String = ""
 	  
@@ -94,14 +96,14 @@ package org.cogchar.lifter {
 	  import ControlType._
 	  
 	  // A superclass for the sessionless configs of initial controls to be presented to new session
+	  // This really isn't needed anymore with new session management approach and will be refactored out soon
 	  class InitialControlConfig {
 		var controlType:org.cogchar.lifter.snippet.ControlDefinition = null
 	  }
 	  
-	  def getNode(sessionId:Int, controlId: Int): NodeSeq = {
+	  def getNode(sessionId:String, controlId: Int): NodeSeq = {
 		var nodeOut = NodeSeq.Empty
 		try {
-		  //info("Getting node for sessionId " + sessionId + " and controlId " + controlId) // TEST ONLY
 		  nodeOut = controlsMap(sessionId)(controlId)
 		} catch {
 		  case _: Any => // Implies nothing in map for this controlId, do nothing and return empty nodeOut
@@ -109,21 +111,14 @@ package org.cogchar.lifter {
 		nodeOut
 	  }
 	  
-	  def getRequestedPage(sessionId:Int) = {
+	  def getRequestedPage(sessionId:String) = {
 		val pageToGet = requestedPage(sessionId)
 		requestedPage(sessionId) = None // Once the page is read, the request is complete, so we set this back to Nothing
 		pageToGet
 	  }
 	  
-	  private var lastNewSessionId = 0;
-	  def getNextSessionId = {
-		lastNewSessionId += 1;
-		if (lifterInitialized) initializeSession(lastNewSessionId)
-		lastNewSessionId
-	  }
-	  
-	  def initializeSession(sessionId:Int) {
-		info("Initializing Session " + sessionId)
+	  def initializeSession(sessionId:String) {
+		info("Initializing Session " + sessionId) 
 		// Fill in the controlsMap for the new session with the initial config
 		controlsMap(sessionId) = new scala.collection.mutable.HashMap[Int, NodeSeq]
 		initialControlsMap foreach (initialControlEntry => controlsMap(sessionId)(initialControlEntry._1) = 
@@ -144,105 +139,108 @@ package org.cogchar.lifter {
 		currentConfig(sessionId) = initialConfig
 		//Get initial template and request it be set
 		currentTemplate(sessionId) = initialTemplate
-		updateInfo = controlId(sessionId, 301) // Special code to trigger TemplateActor
-		updateListeners;
-		// Render controls via comet
+		updateListeners(controlId(sessionId, 301));
 		setControlsFromMap(sessionId)
 	  }
 	  
 	  def renderInitialControls {
-		// initialize sessions for sessions that were already started when initial lifter config was received
-		for (sessionId <- 1 to lastNewSessionId) {
-		  initializeSession(sessionId)
-		}
+		sessionsAwaitingStart.foreach(sessionId => initializeSession(sessionId))
+		sessionsAwaitingStart.clear
 		lifterInitialized = true
 	  }
 	  
-	  def initFromCogcharRDF(sessionId:Int, liftConfig:LiftConfig) {
+	  def requestStart(sessionId:String) {
+	   if (lifterInitialized) {
+		 initializeSession(sessionId)
+	   } else {
+		 sessionsAwaitingStart += sessionId
+	   }
+	  }
+									
+	  def initFromCogcharRDF(sessionId:String, liftConfig:LiftConfig) {
 		info("Loading LiftConfig for session " + sessionId)
-		if ((sessionId >= 0) && (sessionId <= lastNewSessionId)) { // ... if so, we have a valid sessionId
-		  if (sessionId == 0) { // sessionId of 0 tells us this is initial config; reset all maps
-			controlDefMap.clear
-			initialControlDefMap.clear
-			controlsMap.clear
-			initialControlsMap.clear
-			currentConfig.clear
-			lastConfig.clear
-			cogbotDisplayers.clear
-			speechDisplayers.clear
-			initialCogbotDisplayers.clear
-			initialSpeechDisplayers.clear
-			toggleButtonMap.clear
-			initialToggleButtonMap.clear
-			singularAction.clear
-			appVariablesMap.clear // Probably we won't want this to clear permanently. It's sort of a quick-fix for now to make sure that toggle button states don't get out of sync with app variables they control when a "page" is exited and reentered
-			errorMap.clear
-			initialErrorMap.clear
-			initialConfig = liftConfig
-		  } else { // otherwise reset maps for this session
-			controlDefMap(sessionId).clear
-			controlsMap(sessionId).clear
-			cogbotDisplayers(sessionId).clear
-			speechDisplayers(sessionId).clear
-			toggleButtonMap(sessionId).clear
-			singularAction(sessionId).clear
-			appVariablesMap(sessionId).clear // Probably we won't want this to clear permanently. It's sort of a quick-fix for now to make sure that toggle button states don't get out of sync with app variables they control when a "page" is exited and reentered
-			errorMap(sessionId).clear
-			lastConfig(sessionId) = currentConfig(sessionId)
-			currentConfig(sessionId) = liftConfig
-		  }
+		if (sessionId.equals(INITIAL_CONFIG_ID)) { // sessionId of 0 tells us this is initial config; reset all maps
+		  controlDefMap.clear
+		  initialControlDefMap.clear
+		  controlsMap.clear
+		  initialControlsMap.clear
+		  currentConfig.clear
+		  lastConfig.clear
+		  cogbotDisplayers.clear
+		  speechDisplayers.clear
+		  initialCogbotDisplayers.clear
+		  initialSpeechDisplayers.clear
+		  toggleButtonMap.clear
+		  initialToggleButtonMap.clear
+		  singularAction.clear
+		  appVariablesMap.clear // Probably we won't want this to clear permanently. It's sort of a quick-fix for now to make sure that toggle button states don't get out of sync with app variables they control when a "page" is exited and reentered
+		  errorMap.clear
+		  initialErrorMap.clear
+		  initialConfig = liftConfig
+		} else { // otherwise reset maps for this session
+		  controlDefMap(sessionId).clear
+		  controlsMap(sessionId).clear
+		  cogbotDisplayers(sessionId).clear
+		  speechDisplayers(sessionId).clear
+		  toggleButtonMap(sessionId).clear
+		  singularAction(sessionId).clear
+		  appVariablesMap(sessionId).clear // Probably we won't want this to clear permanently. It's sort of a quick-fix for now to make sure that toggle button states don't get out of sync with app variables they control when a "page" is exited and reentered
+		  errorMap(sessionId).clear
+		  lastConfig(sessionId) = currentConfig(sessionId)
+		  currentConfig(sessionId) = liftConfig
+		}
 
-		  //val liftConfig = LiftAmbassador.getConfig();
-		  val controlList: java.util.List[ControlConfig] = liftConfig.myCCs
+		val controlList: java.util.List[ControlConfig] = liftConfig.myCCs
 
-		  val controlSet = controlList.asScala.toSet
-		  controlSet.foreach(controlDef => {
-			  var slotNum:Int = -1
-			  try {
-				val finalSplitterIndex = controlDef.myURI_Fragment.lastIndexOf("_")
-				slotNum = controlDef.myURI_Fragment.splitAt(finalSplitterIndex+1)._2.toInt
-			  } catch {
-				case _: Any =>  warn("Unable to get valid slotNum from loaded control; URI fragment was " + controlDef.myURI_Fragment) // The control will still be loaded into slot -1; could "break" here but it's messy and unnecessary
-			  }
-			  if (sessionId == 0) {
-				initialControlDefMap(slotNum) = controlDef; // Save the controlDef for this slotNum for future reference
-				initialControlsMap(slotNum) = initSingleControl(controlDef, slotNum, true, 0)
-			  } else {
-				controlDefMap(sessionId)(slotNum) = controlDef
-				val newControlConfig = initSingleControl(controlDef, slotNum, false, sessionId)
-				controlsMap(sessionId)(slotNum) = newControlConfig.controlType.makeControl(newControlConfig, sessionId)
-			  }
-
-			})
-		  // Blank unspecified slots (out to 20)
-		  for (slot <- 1 to 20) {
-			if (sessionId == 0) {
-			  if (!(initialControlDefMap contains slot)) {
-				info("Setting blank control in slot " + slot + " of initialControlsMap")
-				initialControlsMap(slot) = new BlankControl.BlankControlConfig()
-			  }
+		val controlSet = controlList.asScala.toSet
+		controlSet.foreach(controlDef => {
+			var slotNum:Int = -1
+			try {
+			  val finalSplitterIndex = controlDef.myURI_Fragment.lastIndexOf("_")
+			  slotNum = controlDef.myURI_Fragment.splitAt(finalSplitterIndex+1)._2.toInt
+			} catch {
+			  case _: Any =>  warn("Unable to get valid slotNum from loaded control; URI fragment was " + controlDef.myURI_Fragment) // The control will still be loaded into slot -1; could "break" here but it's messy and unnecessary
+			}
+			if (sessionId.equals(INITIAL_CONFIG_ID)) {
+			  initialControlDefMap(slotNum) = controlDef; // Save the controlDef for this slotNum for future reference
+			  initialControlsMap(slotNum) = initSingleControl(controlDef, slotNum, true, null)
 			} else {
-			  if (!(controlDefMap(sessionId) contains slot)) {
-				controlsMap(sessionId)(slot) = NodeSeq.Empty
-			  }
+			  controlDefMap(sessionId)(slotNum) = controlDef
+			  val newControlConfig = initSingleControl(controlDef, slotNum, false, sessionId)
+			  controlsMap(sessionId)(slotNum) = newControlConfig.controlType.makeControl(newControlConfig, sessionId)
+			}
+
+		  })
+		// Blank unspecified slots (out to 20)
+		for (slot <- 1 to 20) {
+		  if (sessionId.equals(INITIAL_CONFIG_ID)) {
+			if (!(initialControlDefMap contains slot)) {
+			  info("Setting blank control in slot " + slot + " of initialControlsMap")
+			  initialControlsMap(slot) = new BlankControl.BlankControlConfig()
+			}
+		  } else {
+			if (!(controlDefMap(sessionId) contains slot)) {
+			  controlsMap(sessionId)(slot) = NodeSeq.Empty
 			}
 		  }
-		  if (sessionId == 0) { // for initial config, store initialTemplate
-			initialTemplate = liftConfig.template
-			renderInitialControls; // Required to get things started if pages are loaded in browsers before config is initialized
-		  } else { // otherwise, activate our new template for this session
-			currentTemplate(sessionId) = liftConfig.template
+		}
+		if (sessionId.equals(INITIAL_CONFIG_ID)) { // for initial config, store initialTemplate
+		  initialTemplate = liftConfig.template
+		  renderInitialControls; // Required to get things started if pages are loaded in browsers before config is initialized
+		} else { // otherwise...
+		  currentTemplate(sessionId) = liftConfig.template
+		  val changedTemplate = (currentTemplate(sessionId) != lastConfig(sessionId).template)
+		  if (changedTemplate) {
 			updateInfo = controlId(sessionId, 301) // Special code to trigger TemplateActor
 			updateListeners;
-			// ... and load new controls
-			setControlsFromMap(sessionId)
 		  }
-		} else {
-		  error("Config received for invalid sessionId: " + sessionId)
+
+		  // ... and load new controls
+		  setControlsFromMap(sessionId)
 		}
 	  }
 	  
-	  def initSingleControl(controlDef:ControlConfig, slotNum:Int, initialConfig:Boolean, sessionId:Int): InitialControlConfig = {
+	  def initSingleControl(controlDef:ControlConfig, slotNum:Int, initialConfig:Boolean, sessionId:String): InitialControlConfig = {
 		var loadingConfig: InitialControlConfig = null;
 		var controlType: ControlType = NULLTYPE
 		ControlType.values foreach(testType => {
@@ -325,23 +323,21 @@ package org.cogchar.lifter {
 		loadingConfig
 	  }
 					  
-	  def setControl(sessionId: Int, slotNum: Int, slotHtml: NodeSeq) {
+	  def setControl(sessionId: String, slotNum: Int, slotHtml: NodeSeq) {
 		controlsMap(sessionId)(slotNum) = slotHtml 
-		updateInfo = controlId(sessionId, slotNum)
-		updateListeners()
+		updateListeners(controlId(sessionId, slotNum))
 	  }
 	  
-	  def setControlsFromMap(sessionId:Int) {
+	  def setControlsFromMap(sessionId:String) {
 		val slotIterator = controlsMap(sessionId).keysIterator
 		while (slotIterator.hasNext) {
 		  val nextSlot = slotIterator.next
-		  updateInfo = controlId(sessionId, nextSlot)
-		  updateListeners
+		  updateListeners(controlId(sessionId, nextSlot))
 		}
 	  }
 									
 	  // Check to see if any action requested requires PageCommander to do some local handling
-	  def initLocalActions(slotNum:Int, action:Ident, initialConfig:Boolean, sessionId:Int) {
+	  def initLocalActions(slotNum:Int, action:Ident, initialConfig:Boolean, sessionId:String) {
 		if (action != null) {
 		  if (action.getAbsUriString.startsWith(ActionStrings.p_liftcmd)) {
 			val splitAction = action.getLocalName.split("_")
@@ -366,7 +362,7 @@ package org.cogchar.lifter {
 	  }
 	    
 	  // A central place to define actions performed by displayed controls - may want to move to its own class eventually
-	  def controlActionMapper(sessionId:Int, formId:Int, subControl:Int) {
+	  def controlActionMapper(sessionId:String, formId:Int, subControl:Int) {
 		val actionUriPrefix = getUriPrefix(controlDefMap(sessionId)(formId).action);
 		actionUriPrefix match {
 		  case ActionStrings.p_liftvar => {
@@ -397,7 +393,7 @@ package org.cogchar.lifter {
 	  }
 	  
 	  // Similarly, a central place to handle text input.
-	  def textInputMapper(sessionId:Int, formId:Int, text:String) {
+	  def textInputMapper(sessionId:String, formId:Int, text:String) {
 		if (controlDefMap(sessionId)(formId).action.getAbsUriString.startsWith(ActionStrings.p_liftcmd)) {
 		  var desiredAction = controlDefMap(sessionId)(formId).action.getLocalName
 		  if (singularAction(sessionId) contains formId) {desiredAction = singularAction(sessionId)(formId).getLocalName} // If this is a "multi-state" control, get the action corresponding to current state
@@ -444,7 +440,7 @@ package org.cogchar.lifter {
 		}
 	  }
 	  
-	  def multiTextInputMapper(sessionId:Int, formId:Int, text:Array[String]) {
+	  def multiTextInputMapper(sessionId:String, formId:Int, text:Array[String]) {
 		if (controlDefMap(sessionId)(formId).action.getAbsUriString.startsWith(ActionStrings.p_liftcmd)) {
 		  var desiredAction = controlDefMap(sessionId)(formId).action.getLocalName
 		  if (desiredAction startsWith ActionStrings.submit) {
@@ -473,7 +469,7 @@ package org.cogchar.lifter {
 	  }
 	  
 	  // Perform action according to slotNum 
-	  def triggerAction(sessionId:Int, id: Int): Boolean  = {
+	  def triggerAction(sessionId:String, id: Int): Boolean  = {
 		var success = false
 		if (toggleButtonMap(sessionId) contains id) {success = toggleButton(sessionId,id)}
 		else {success = continueTriggering(sessionId, id)}
@@ -481,7 +477,7 @@ package org.cogchar.lifter {
 	  }
 	  
 	  // Another "segment" of the triggering operation, which we jump back into from toggleButton or directly from triggerAction
-	  def continueTriggering(sessionId:Int, id: Int): Boolean = {
+	  def continueTriggering(sessionId:String, id: Int): Boolean = {
 		var success = false
 		if (controlDefMap(sessionId).contains(id)) {
 		  if (performLocalActions(sessionId, id)) success = true // Local action was performed! We're done.
@@ -501,7 +497,7 @@ package org.cogchar.lifter {
 	  }
 								
 	  // A method to create a liftconfig locally to serve as a "Scene Playing" info screen
-	  def createSceneInfoScreen(sessionId:Int, slotNum:Int): LiftConfig = {
+	  def createSceneInfoScreen(sessionId:String, slotNum:Int): LiftConfig = {
 		val sceneInfoConfig = new LiftConfig(SINGLE_SLOT_TEMPLATE)
 		val infoButton = new ControlConfig()
 		infoButton.myURI_Fragment = "info_control_1"
@@ -515,7 +511,7 @@ package org.cogchar.lifter {
 	  }
 	  
 	  // Perform any button actions handled locally, and return true if we find one
-	  def performLocalActions(sessionId:Int, slotNum: Int) = {
+	  def performLocalActions(sessionId:String, slotNum: Int) = {
 		val actionUriPrefix = getUriPrefix(controlDefMap(sessionId)(slotNum).action);
 		var actionSuffix = controlDefMap(sessionId)(slotNum).action.getLocalName();
 		if (singularAction(sessionId) contains slotNum) {actionSuffix = singularAction(sessionId)(slotNum).getLocalName} // If this is a "multi-state" control, get the action corresponding to current state
@@ -575,7 +571,7 @@ package org.cogchar.lifter {
 		success
 	  }
 	
-	  def toggleButton(sessionId:Int, slotNum: Int) = {
+	  def toggleButton(sessionId:String, slotNum: Int) = {
 		var success = false;
 		if (controlDefMap(sessionId) contains slotNum) {
 		  if (controlDefMap(sessionId)(slotNum).controlType equals ControlType.TOGGLEBUTTON.toString) {
@@ -622,13 +618,13 @@ package org.cogchar.lifter {
 		success
 	  }
 	  
-	  def outputSpeech(sessionId:Int, text: String) {
+	  def outputSpeech(sessionId:String, text: String) {
 		outputSpeech(sessionId) = text
 		updateInfo = controlId(sessionId, 203) // To tell JavaScriptActor we want Android devices to say the text
 		updateListeners()
 	  }
 	  
-	  def requestContinuousSpeech(sessionId:Int, slotNum: Int, desired: Boolean) {
+	  def requestContinuousSpeech(sessionId:String, slotNum: Int, desired: Boolean) {
 		info("In requestContinuousSpeech, setting to " + desired + " for session " + sessionId)
 		if (desired) {
 		  lastSpeechReqSlotId = controlId(sessionId, slotNum)
@@ -642,13 +638,13 @@ package org.cogchar.lifter {
 	  
 	  def getSpeechReqControl = lastSpeechReqSlotId
 	  
-	  def getCurrentTemplate(sessionId:Int) = {
+	  def getCurrentTemplate(sessionId:String) = {
 		var templateToLoad: String = null
 		if (currentTemplate contains sessionId) templateToLoad = currentTemplate(sessionId)
 		templateToLoad
 	  }
 	  
-	  def getOutputSpeech(sessionId:Int) = {
+	  def getOutputSpeech(sessionId:String) = {
 		var speechToOutput: String = ""
 		if (outputSpeech contains sessionId) speechToOutput = outputSpeech(sessionId)
 		speechToOutput
@@ -660,7 +656,7 @@ package org.cogchar.lifter {
 		uri.getAbsUriString.stripSuffix(uri.getLocalName)
 	  }
 																	  
-	  def controlId(sessionId:Int, controlId: Int): String = {
+	  def controlId(sessionId:String, controlId: Int): String = {
 		sessionId + "_" + controlId
 	  }
 	   
@@ -682,12 +678,12 @@ package org.cogchar.lifter {
 
 	  class CogcharMessenger extends LiftAmbassador.LiftInterface {
 		def notifyConfigReady {
-		  initFromCogcharRDF(0, LiftAmbassador.getInitialConfig) // Set initial config with sessionId 0
+		  initFromCogcharRDF(INITIAL_CONFIG_ID, LiftAmbassador.getInitialConfig)
 		}
-		def setConfigForSession(sessionId:Int, config:LiftConfig) {
+		def setConfigForSession(sessionId:String, config:LiftConfig) {
 		  initFromCogcharRDF(sessionId, config)
 		}
-		def loadPage(sessionId:Int, pagePath:String) {
+		def loadPage(sessionId:String, pagePath:String) {
 		  requestedPage(sessionId) = Some(pagePath)
 		  updateInfo = controlId(sessionId, 202) // Our "special control slot" for triggering page redirect
 		  updateListeners()
@@ -697,7 +693,7 @@ package org.cogchar.lifter {
 		  if (publicAppVariablesMap contains key) contents = publicAppVariablesMap(key)
 		  contents
 		}
-		def getVariable(sessionId:Int, key:String): String = {
+		def getVariable(sessionId:String, key:String): String = {
 		  var contents:String = null
 		  if (appVariablesMap(sessionId) contains key) contents = appVariablesMap(sessionId)(key)
 		  contents
@@ -706,7 +702,9 @@ package org.cogchar.lifter {
 		  info("In showError; code = " + errorSourceCode + "; text = " + errorText);
 		  // Seems we want to display this error in all sessions currently featuring a control to monitor this error type
 		  // We may modify this thinking in the future
-		  for (sessionId <- 1 to lastNewSessionId) {
+		  val activeSessionIterator = controlsMap.keysIterator
+		  while (activeSessionIterator.hasNext) {
+			val sessionId = activeSessionIterator.next
 			if (errorMap contains sessionId) {
 			  if (errorMap(sessionId) contains errorSourceCode) {
 				val slotNum = errorMap(sessionId)(errorSourceCode)
@@ -717,7 +715,6 @@ package org.cogchar.lifter {
 				}
 			  }
 			}
-			
 		  }
 		}
 	  }

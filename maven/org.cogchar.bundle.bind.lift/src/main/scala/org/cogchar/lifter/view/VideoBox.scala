@@ -42,7 +42,7 @@ package org.cogchar.lifter {
 	  }
 	  
 	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
 		val config = initialConfig match {
 		  case config: VideoBoxConfig => config
 		  case _ => throw new ClassCastException

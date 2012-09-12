@@ -20,7 +20,7 @@ import org.cogchar.lifter.model.PageCommander
 import scala.xml.NodeSeq
 
 object BlankControl extends org.cogchar.lifter.snippet.ControlDefinition {
-  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
 	NodeSeq.Empty
   }
   
