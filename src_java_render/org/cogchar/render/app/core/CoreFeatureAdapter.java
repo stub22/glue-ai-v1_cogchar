@@ -24,9 +24,9 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
 import org.slf4j.Logger;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.blob.emit.DemoConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.opengl.optic.CameraMgr;
@@ -44,11 +44,11 @@ public class CoreFeatureAdapter extends BasicDebugger {
 	protected CoreFeatureAdapter(ConfiguredPhysicalModularRenderContext cpmrc) {
 	}
 
-	static public void unrolledInitDRC(ConfiguredPhysicalModularRenderContext drc) {
-		DemoConfigEmitter dce = drc.getConfigEmiiter();
-		String jme3GuiFontPath = dce.getFontPath();
+	static public void unrolledInitDRC(ConfiguredPhysicalModularRenderContext rctx) {
+		RenderConfigEmitter rce = rctx.getConfigEmitter();
+		String jme3GuiFontPath = rce.getFontPath();
 		// This method is actually supplied by plain old CogcharRenderContext
-		initGuiFont(drc, jme3GuiFontPath);
+		initGuiFont(rctx, jme3GuiFontPath);
 	}
 
 	static public void unrolledInitPRC(PhysicalModularRenderContext prc) {

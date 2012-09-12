@@ -14,25 +14,27 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.perform;
-
+package org.cogchar.api.cinema;
+import java.util.ArrayList;
+import java.util.List;
+import org.appdapter.core.item.Item;
+import org.appdapter.core.item.ItemFuncs;
+import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
+import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
+import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.event.Event;
-import org.cogchar.api.perform.Media;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionList;
+import org.appdapter.help.repo.QueryInterface;
+import org.cogchar.blob.emit.QueryTester;
 
-
+import org.appdapter.core.log.BasicDebugger;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public abstract class BasicTextChannel<Time> extends BasicChannel<Media.Text, Time> implements Channel.Text<Time>  {
-	public BasicTextChannel(Ident ident) {
-		super(ident);
+public class QueryBackedConfigBase extends KnownComponentImpl {
+	protected QueryInterface getQueryInterface() { 
+		return QueryTester.getInterface();
 	}
-
-	@Override public int getMaxAllowedPerformances() {
-		return 1;
-	}
-
-	
 }

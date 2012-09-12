@@ -17,7 +17,9 @@
 package org.cogchar.impl.scene
 
 import org.appdapter.core.log.{BasicDebugger};
-import org.appdapter.core.item.{Ident, Item};
+import org.appdapter.core.name.{Ident, FreeIdent};
+import org.appdapter.core.item.{Item};
+
 import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.cogchar.impl.perform.{ChannelSpecBuilder};
 import scala.collection.mutable.HashMap;
@@ -42,6 +44,7 @@ class SceneBook extends BasicDebugger {
 	def findSceneSpec(sceneID : Ident) : SceneSpec = {
 		mySceneSpecs.getOrElse(sceneID, null);
 	}
+	def allSceneSpecs() : Iterable[SceneSpec] = mySceneSpecs.values ;
 	
 	def loadSceneSpecs(rdfConfigFlexPath : String , optResourceClassLoader : ClassLoader ) : List[SceneSpec] = { 
 		if (optResourceClassLoader != null) {

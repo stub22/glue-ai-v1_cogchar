@@ -15,8 +15,8 @@
  */
 package org.cogchar.bundle.app.puma;
 
-import org.appdapter.core.item.Ident;
-import org.appdapter.core.item.FreeIdent;
+import org.appdapter.core.name.Ident;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.LiftAmbassador;

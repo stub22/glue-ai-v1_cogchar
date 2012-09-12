@@ -23,7 +23,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import java.util.List;
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.CoreFeatureAdapter;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.model.bony.DemoBonyWireframeRagdoll;
@@ -61,7 +61,7 @@ public class BonyGameFeatureAdapter extends CoreFeatureAdapter {
 			}
 			myBRC.attachModule(myTwister);
 		}
-		BonyConfigEmitter bce = myBRC.getBonyConfigEmitter(); 
+		RenderConfigEmitter bce = myBRC.getConfigEmitter(); 
 		if (!bce.isMinimalSim()) {
 			initExtraRagdoll();
 		}
@@ -73,12 +73,12 @@ public class BonyGameFeatureAdapter extends CoreFeatureAdapter {
 	public boolean initStickFigureModel() {
 		// test1Node.setLocalScale(0.5f);
 
-		BonyConfigEmitter bce = myBRC.getBonyConfigEmitter(); 
-		getLogger().info("sysContextURI=" + bce.getSystemContextURI() + ", isMinimalSim=" + bce.isMinimalSim());
-		String sceneFilePath = bce.getStickFigureScenePath();
+		RenderConfigEmitter rce = myBRC.getConfigEmitter(); 
+		getLogger().info("rce.isMinimalSim=" + rce.isMinimalSim());
+		String sceneFilePath = rce.getStickFigureScenePath();
 		
 		if (sceneFilePath != null) {
-			float sceneScale = bce.getStickFigureSceneScale();
+			float sceneScale = rce.getStickFigureSceneScale();
 			
 			RenderRegistryClient rrc = myBRC.getRenderRegistryClient();
 			ModelSpatialFactory msf = rrc.getSceneSpatialModelFacade(null);

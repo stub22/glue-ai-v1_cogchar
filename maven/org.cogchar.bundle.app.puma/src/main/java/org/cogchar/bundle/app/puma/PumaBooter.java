@@ -17,20 +17,20 @@ package org.cogchar.bundle.app.puma;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.appdapter.core.item.FreeIdent;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
 
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 
+import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.QueryEmitter;
 
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.cogchar.blob.emit.QueryEmitter;
-import org.cogchar.blob.emit.QueryInterface;
-
+import org.cogchar.blob.emit.QueryTester;
 
 import  org.appdapter.core.store.Repo;
 import org.osgi.framework.Bundle;
@@ -221,7 +221,11 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 	// This service will be used by managed services needing query config
 	// Currently, that's: LifterLifecycle
 	public static void startQueryService(BundleContext context) {
-		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(new QueryEmitter(), QueryInterface.class);
+		// We want to make explicity the assumptions about what goes into our QueryEmitter.
+		// On 2012-09-12 Stu changed "new QueryEmitter()" to makeVanillaQueryEmitter,
+		// but perhaps there is some more adjustment to do here for lifecycle compat.
+		QueryEmitter qemit = QueryTester.makeVanillaQueryEmitter();
+		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(qemit, QueryInterface.class);
     	OSGiComponent queryComp = new OSGiComponent(context, lifecycle);
     	queryComp.start();
 	}

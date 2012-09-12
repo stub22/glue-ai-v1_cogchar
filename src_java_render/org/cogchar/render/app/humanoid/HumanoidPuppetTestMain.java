@@ -24,7 +24,7 @@ import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.gui.bony.PanelUtils;
 
@@ -38,11 +38,9 @@ import org.cogchar.render.gui.bony.PanelUtils;
 public class HumanoidPuppetTestMain {
 	static Logger theLogger = LoggerFactory.getLogger(HumanoidPuppetTestMain.class);
 	
-
-	
-	public static BonyRenderContext makeBonyRenderContextWithApp(BonyConfigEmitter bce) { 
-		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce); 
-		VirtualCharacterPanel vcp = PanelUtils.makeVCPanel(bce, "FULL");
+	public static BonyRenderContext makeBonyRenderContextWithApp(RenderConfigEmitter rce) { 
+		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(rce); 
+		VirtualCharacterPanel vcp = PanelUtils.makeVCPanel(rce, "FULL");
 		bvcApp.initCharPanelWithCanvas(vcp);
 		BonyRenderContext bc = bvcApp.getBonyRenderContext();
 		return bc;
@@ -55,8 +53,8 @@ public class HumanoidPuppetTestMain {
 		}
 	}
 	public static void startTest() throws Throwable { 
-		BonyConfigEmitter bce = new BonyConfigEmitter();
-		final BonyRenderContext bc = makeBonyRenderContextWithApp(bce); 
+		RenderConfigEmitter rce = new RenderConfigEmitter();
+		final BonyRenderContext bc = makeBonyRenderContextWithApp(rce); 
 		// Frame must be packed after panel created, but created 
 		// before startJMonkey.  Might add frame to BonyRenderContext...
 		VirtualCharacterPanel vcp = bc.getPanel();

@@ -17,7 +17,7 @@ package org.cogchar.bind.rk.robot.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.perform.Media;
 import org.cogchar.api.perform.Performance;

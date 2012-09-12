@@ -18,7 +18,7 @@ package org.cogchar.impl.trigger
 
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 
-import org.appdapter.core.item.{Ident, FreeIdent};
+import org.appdapter.core.name.{Ident, FreeIdent};
 import org.cogchar.platform.trigger.{DummyBox, DummyTrigger, DummyBinding, DummyBinder};
 import org.cogchar.impl.scene.{SceneSpec, BScene, SceneBook, Theater};
 

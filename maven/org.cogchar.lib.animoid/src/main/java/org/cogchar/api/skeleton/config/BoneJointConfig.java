@@ -15,16 +15,19 @@
  */
 package org.cogchar.api.skeleton.config;
 
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.matdat.SheetRepo;
 
-import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.SolutionList;
-import org.cogchar.blob.emit.SolutionMap;
-import org.cogchar.blob.emit.QuerySheet;
-import org.cogchar.blob.emit.QueryInterface;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionList;
+import org.appdapter.help.repo.SolutionMap;
+import org.appdapter.help.repo.QueryInterface;
+
+import org.cogchar.blob.emit.QueryTester;
+
+
 
 
 import java.util.Set;
@@ -42,7 +45,7 @@ public class BoneJointConfig {
 	public Double						myNormalDefaultPos;
 	public List<BoneProjectionRange>	myProjectionRanges = new ArrayList<BoneProjectionRange>();
 	
-	private static QueryInterface queryEmitter = QuerySheet.getInterface();
+	private static QueryInterface queryEmitter = QueryTester.getInterface();
 
 	public BoneJointConfig(Item configItem) {
 		myURI_Fragment = configItem.getIdent().getLocalName();

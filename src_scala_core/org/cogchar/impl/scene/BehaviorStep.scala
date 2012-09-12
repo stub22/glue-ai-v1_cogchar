@@ -17,7 +17,7 @@
 package org.cogchar.impl.scene
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 
-import org.appdapter.core.item.{Ident}
+import org.appdapter.core.name.{Ident}
 
 import  org.cogchar.api.perform.{Media, Channel, Performance, BasicPerformance}
 

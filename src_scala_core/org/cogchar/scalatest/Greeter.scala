@@ -16,24 +16,49 @@
 
 package org.cogchar.scalatest
 
-import org.cogchar.blob.emit.{BonyConfigEmitter, NVParam};
-
+import org.cogchar.blob.emit.RenderConfigEmitter;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 object Greeter {
+	// Used by org.cogchar.scalatest.Greeter
+	def makeParamString(bindingList : List[NVParam]) : String = {
+		val len = bindingList.length;
+		if (len == 0) {
+			return "";
+		} else { 
+			val firstPairString = bindingList.head.urlEncoding;
+			if (len == 1) {
+				return firstPairString;
+			} else {
+				return firstPairString + "&" + makeParamString(bindingList.tail);
+			}
+		}
+	}
+	
+	def makeCogcharURN(urnPrefix : String, item : String, bindingList : List[NVParam]) : String = {
+		val paramsEncoded = makeParamString(bindingList);
+		val marker = if (paramsEncoded.length() > 0) "?" else "";
+		urnPrefix + item + marker + paramsEncoded;
+	}	
 	def main(args: Array[String]): Unit = {
 		println(this.toString() + " says 'Hello!'");
 		
-		val bce = new BonyConfigEmitter();
-		
+		val rce = new RenderConfigEmitter(None);
+		val urnPrefix = rce.COGCHAR_URN_PREFIX;
 		val nvp1 = new NVParam("color", "sienna");
 		val nvp2 = new NVParam("shape", "moon");
-		val ps1 = bce.makeParamString(List(nvp1, nvp2));
+		val ps1 = makeParamString(List(nvp1, nvp2));
 		println("Encoded paramString:  " + ps1);
-		val urn1 = bce.makeCogcharURN("grocery", List(nvp1, nvp2));
+		val urn1 = makeCogcharURN(urnPrefix, "grocery", List(nvp1, nvp2));
 		println("Made:   " + urn1);
+	}
+}
+// Used by org.cogchar.scalatest.Greeter
+case class NVParam(val name: String, val value: String) {
+	def urlEncoding : String = {
+		name + "=" + value;
 	}
 }

@@ -27,12 +27,12 @@ import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.component.KnownComponentImpl;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.SolutionList;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionList;
+import org.appdapter.help.repo.QueryInterface;
+import org.cogchar.blob.emit.QueryTester;
 
 
 /**
@@ -45,7 +45,7 @@ public class LightsCameraConfig extends KnownComponentImpl {
 	public List<CameraConfig> myCCs = new ArrayList<CameraConfig>();
 	public List<LightConfig> myLCs = new ArrayList<LightConfig>();
 	
-	private static QueryInterface queryEmitter = QuerySheet.getInterface();
+	private static QueryInterface queryEmitter = QueryTester.getInterface();
 
 	// A new constructor to build LightsCameraConfig from spreadsheet
 	public LightsCameraConfig(Ident qGraph) {

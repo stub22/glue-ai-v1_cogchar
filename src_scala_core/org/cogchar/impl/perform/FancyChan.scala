@@ -21,7 +21,8 @@ import  org.cogchar.api.perform.{Media, Channel, Performance, BasicTextChannel, 
 
 import org.appdapter.api.module.Module.State;
 import org.appdapter.core.log.{BasicDebugger};
-import org.appdapter.core.item.{Ident, Item, FreeIdent};
+import org.appdapter.core.name.{Ident, FreeIdent};
+import org.appdapter.core.item.{Item};
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 

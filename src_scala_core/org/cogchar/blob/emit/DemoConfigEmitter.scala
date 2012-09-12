@@ -21,65 +21,27 @@ package org.cogchar.blob.emit
  */
 
 class DemoConfigEmitter {
+	
+	def getSystemContextURI() : String = { myBehaviorCE.getSystemContextURI()}
 
+	
 	val myBehaviorCE : BehaviorConfigEmitter = new BehaviorConfigEmitter();
 		
 	def getBehaviorConfigEmitter() : BehaviorConfigEmitter = myBehaviorCE;
 	
-	def getSystemContextURI() : String = { myBehaviorCE.getSystemContextURI()}
-	
+
 	val myConvyCE : ConvyConfigEmitter = new ConvyConfigEmitter();
 	
 	def	getConvyConfigEmitter() : ConvyConfigEmitter = myConvyCE;
 
+	
 	val myRobokindBindingCE : RobokindBindingConfigEmitter = new RobokindBindingConfigEmitter();
 	
 	def	getRobokindBindingConfigEmitter() : RobokindBindingConfigEmitter = myRobokindBindingCE;	
 
-	// Set to OpenGL - 1 mode for 915GM graphics controller
-	val DEFAULT_RENDERER_NAME = "LWJGL-OpenGL-Any";
-	val DEFAULT_CANVAS_WIDTH = 800;
-	val DEFAULT_CANVAS_HEIGHT = 600;
-	val PATH_DEFAULT_FONT = "Interface/Fonts/Default.fnt";	
-	val PATH_UNSHADED_MAT =  "Common/MatDefs/Misc/Unshaded.j3md";
 	
-	def getLWJGL_RendererName : String = DEFAULT_RENDERER_NAME;
+	lazy val myRenderCE : RenderConfigEmitter = new RenderConfigEmitter(Some(getSystemContextURI()));
 	
-	def getCanvasWidth : Int = DEFAULT_CANVAS_WIDTH;
-	def getCanvasHeight : Int = DEFAULT_CANVAS_HEIGHT;
-	def getFontPath : String = PATH_DEFAULT_FONT;	
-	def getMaterialPath : String = PATH_UNSHADED_MAT;
+	def getRenderConfigEmitter() : RenderConfigEmitter = myRenderCE
 	
-	def getAppSettingsDefloadFlag : Boolean = true;
-
-	
-	
-	/*
-	 *         "LWJGL-OpenGL-Any";
-	 *         = "LWJGL-OpenGL3";
-	 *         
-	 *          "LWJGL-OpenGL2";
-	 *          
-	 *          "LWJGL-OPENGL1";
-	 *          
-	 *  defaults.put("Width", 640);
-        defaults.put("Height", 480);
-        defaults.put("BitsPerPixel", 24);
-        defaults.put("Frequency", 60);
-        defaults.put("DepthBits", 24);
-        defaults.put("StencilBits", 0);
-        defaults.put("Samples", 0);
-        defaults.put("Fullscreen", false);
-        defaults.put("Title", "jMonkey Engine 3.0");
-        defaults.put("Renderer", LWJGL_OPENGL2);
-        defaults.put("AudioRenderer", LWJGL_OPENAL);
-        defaults.put("DisableJoysticks", true);
-        defaults.put("UseInput", true);
-        defaults.put("VSync", false);
-        defaults.put("FrameRate", -1);
-        defaults.put("SettingsDialogImage", "/com/jme3/app/Monkey.png");
-
-		Application.initAssetManager does:
-	             String assetCfg = settings.getString("AssetConfigURL");
-	 */
 }

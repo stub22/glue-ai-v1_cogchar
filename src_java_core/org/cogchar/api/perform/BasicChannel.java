@@ -16,8 +16,8 @@
 package org.cogchar.api.perform;
 
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.item.Ident;
-import org.appdapter.core.item.FreeIdent;
+import org.appdapter.core.name.Ident;
+import org.appdapter.core.name.FreeIdent;
 import org.cogchar.api.perform.Performance.Action;
 
 import org.appdapter.api.module.Module.State;

@@ -15,25 +15,25 @@
  */
 package org.cogchar.render.app.core;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.font.BitmapFont;
-import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.app.core.WorkaroundAppStub;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class ConfiguredPhysicalModularRenderContext extends PhysicalModularRenderContext {
-	DemoConfigEmitter		myDCE;
+	RenderConfigEmitter		myRCE;
 	
-	public ConfiguredPhysicalModularRenderContext(DemoConfigEmitter dce) {
-		myDCE = dce;
+	public ConfiguredPhysicalModularRenderContext(RenderConfigEmitter rce) {
+		myRCE = rce;
 	}
+	/*
 	public ConfiguredPhysicalModularRenderContext() { 
-		this(new DemoConfigEmitter());
+		this(new RenderConfigEmitter(None));
 	}
-	public DemoConfigEmitter getConfigEmiiter() { 
-		return myDCE;
+	* 
+	*/ 
+	public RenderConfigEmitter getConfigEmitter() { 
+		return myRCE;
 	}
 	@Override public void completeInit() {
 		super.completeInit();

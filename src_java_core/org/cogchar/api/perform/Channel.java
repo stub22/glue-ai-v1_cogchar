@@ -15,7 +15,7 @@
  */
 package org.cogchar.api.perform;
 
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import java.util.List;
 
 /**

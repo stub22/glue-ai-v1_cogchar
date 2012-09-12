@@ -27,42 +27,44 @@ import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.component.KnownComponentImpl;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.SolutionList;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
+import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionList;
+
+import org.cogchar.blob.emit.QueryTester;
 
 /**
  * Used to enclose data from RDF cinematics configuration currently in cinematicConfig.ttl
  *
  * @author Ryan Biggs
  */
-public class CinematicConfig extends KnownComponentImpl {
+public class CinematicConfig extends QueryBackedConfigBase {
 
 	public List<CinematicInstanceConfig> myCICs = new ArrayList<CinematicInstanceConfig>();
 	public List<CinematicTrack> myCTs = new ArrayList<CinematicTrack>();
 	public List<WaypointConfig> myWCs = new ArrayList<WaypointConfig>();
 	public List<RotationConfig> myRCs = new ArrayList<RotationConfig>();
 	
-	private static QueryInterface queryEmitter = QuerySheet.getInterface();
+	
 
 	// A new constructor to build CinematicConfig from spreadsheet
 	public CinematicConfig(Ident qGraph) {
-		SolutionList solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.CINEMATICS_QUERY_URI, qGraph);
+		QueryInterface qi = getQueryInterface();
+		SolutionList solutionList = qi.getQueryResultList(CinematicQueryNames.CINEMATICS_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
 			myCICs.add(new CinematicInstanceConfig(solution, qGraph));
 		}
-		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.TRACK_QUERY_URI, qGraph);
+		solutionList = qi.getQueryResultList(CinematicQueryNames.TRACK_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
 			myCTs.add(new CinematicTrack(solution, qGraph));
 		}
-		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.WAYPOINT_QUERY_URI, qGraph);
+		solutionList = qi.getQueryResultList(CinematicQueryNames.WAYPOINT_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
 			myWCs.add(new WaypointConfig(solution));
 		}
-		solutionList = queryEmitter.getQueryResultList(CinematicQueryNames.ROTATION_QUERY_URI, qGraph);
+		solutionList = qi.getQueryResultList(CinematicQueryNames.ROTATION_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
 			myRCs.add(new RotationConfig(solution));
 		}

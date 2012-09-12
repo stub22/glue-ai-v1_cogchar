@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Map;
 //import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 //import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
-import org.appdapter.core.item.FreeIdent;
-import org.appdapter.core.item.Ident;
-import org.cogchar.blob.emit.QueryInterface;
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.QueryInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

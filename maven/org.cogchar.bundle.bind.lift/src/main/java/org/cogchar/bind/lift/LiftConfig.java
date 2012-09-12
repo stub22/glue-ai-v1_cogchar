@@ -24,12 +24,12 @@ import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.component.KnownComponentImpl;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.SolutionMap;
-import org.cogchar.blob.emit.SolutionList;
-import org.cogchar.blob.emit.QueryInterface;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionMap;
+import org.appdapter.help.repo.SolutionList;
+import org.appdapter.help.repo.QueryInterface;
 
 /**
  * Used to enclose data from RDF Lift webapp configuration currently in liftConfig.ttl

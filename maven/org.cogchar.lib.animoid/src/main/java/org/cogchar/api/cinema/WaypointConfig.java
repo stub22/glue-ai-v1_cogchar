@@ -18,9 +18,10 @@ package org.cogchar.api.cinema;
 
 import java.util.Arrays;
 import org.appdapter.core.item.*;
-import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
+import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.QueryInterface;
+import org.cogchar.blob.emit.QueryTester;
 
 /**
  *
@@ -31,7 +32,7 @@ public class WaypointConfig {
 	public String waypointName;
 	public float[] waypointCoordinates = {Float.NaN, Float.NaN, Float.NaN};
 	
-	private static QueryInterface queryEmitter = QuerySheet.getInterface();
+	private static QueryInterface queryEmitter = QueryTester.getInterface();
 
 	@Override
 	public String toString() {
