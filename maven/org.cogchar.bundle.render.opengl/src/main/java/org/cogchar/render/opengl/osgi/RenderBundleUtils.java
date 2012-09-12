@@ -22,7 +22,7 @@ import org.cogchar.render.app.humanoid.HumanoidPuppetApp;
 import org.cogchar.render.gui.bony.PanelUtils;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -63,7 +63,8 @@ public class RenderBundleUtils {
 		 */
 		
 		theDbg.logInfo("******************* Creating BonyConfigEmitter, HumanoidPuppetApp");
-		BonyConfigEmitter bce = new BonyConfigEmitter();
+		// TODO - lookup the sysContextURI from appropriate place.
+		RenderConfigEmitter bce = new RenderConfigEmitter();
 		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
 		
 		// Want to decide this "kind" based on further context (e.g. "are we in Netbeans?"  "are we in debug-mode?"),

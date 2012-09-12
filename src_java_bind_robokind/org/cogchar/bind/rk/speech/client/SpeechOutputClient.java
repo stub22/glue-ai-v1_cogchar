@@ -15,7 +15,7 @@
  */
 package org.cogchar.bind.rk.speech.client;
 
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import org.cogchar.api.perform.Performance;
 import org.cogchar.api.perform.Media;
 

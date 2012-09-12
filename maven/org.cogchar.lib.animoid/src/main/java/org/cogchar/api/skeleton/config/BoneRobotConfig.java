@@ -28,13 +28,13 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-import org.cogchar.blob.emit.SolutionList;
-import org.cogchar.blob.emit.SolutionMap;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
+import org.appdapter.help.repo.SolutionList;
+import org.appdapter.help.repo.SolutionMap;
+import org.appdapter.help.repo.QueryInterface;
+import org.cogchar.blob.emit.QueryTester;
 
 import java.util.*;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -43,7 +43,7 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	public	String							myRobotName;
 	public	List<BoneJointConfig>			myBJCs = new ArrayList<BoneJointConfig>();
 	
-	private static QueryInterface queryEmitter = QuerySheet.getInterface();
+	private static QueryInterface queryEmitter = QueryTester.getInterface();
 	
 		
 	@Override public String getFieldSummary() {

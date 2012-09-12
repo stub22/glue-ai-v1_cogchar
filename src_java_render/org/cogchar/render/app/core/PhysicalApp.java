@@ -17,7 +17,7 @@ package org.cogchar.render.app.core;
 
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
-import org.cogchar.blob.emit.DemoConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.sys.physics.PhysicsStuffBuilder;
 
 /**
@@ -30,8 +30,8 @@ import org.cogchar.render.sys.physics.PhysicsStuffBuilder;
  */
 public abstract class PhysicalApp<PMRCT extends PhysicalModularRenderContext> extends CogcharPresumedApp<PMRCT> {
 	
-	public PhysicalApp(DemoConfigEmitter bce) {
-		super(bce);
+	public PhysicalApp(RenderConfigEmitter rce) {
+		super(rce);
 	}
 
 }

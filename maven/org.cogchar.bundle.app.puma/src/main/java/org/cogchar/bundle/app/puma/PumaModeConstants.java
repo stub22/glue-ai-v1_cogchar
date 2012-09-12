@@ -15,8 +15,8 @@
  */
 package org.cogchar.bundle.app.puma;
 
-import org.appdapter.core.item.FreeIdent;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
 
 /**
  *

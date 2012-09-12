@@ -20,11 +20,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.appdapter.core.item.FreeIdent;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.SolutionList;
+import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.SolutionList;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
 

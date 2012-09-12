@@ -15,7 +15,7 @@
  */
 package org.cogchar.render.app.humanoid;
 
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
@@ -27,7 +27,7 @@ import com.jme3.system.AppSettings;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.api.humanoid.HumanoidConfig;
@@ -60,8 +60,8 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	private BonyGameFeatureAdapter myGameFeatureAdapter;
 	private UpdateInterface myUpdateInterface;
 
-	public HumanoidRenderContext(BonyConfigEmitter bce) {
-		super(bce);
+	public HumanoidRenderContext(RenderConfigEmitter rce) {
+		super(rce);
 		myGameFeatureAdapter = new BonyGameFeatureAdapter(this);
 	}
 	
@@ -115,7 +115,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		HumanoidFigure hf = myFiguresByCharIdent.get(charIdent);
 		if (hf == null) {
 			//BonyConfigEmitter bce = getBonyConfigEmitter();
-			HumanoidFigureConfig hfc = new HumanoidFigureConfig(hc, getConfigEmiiter(), bonyConfigGraph); 
+			HumanoidFigureConfig hfc = new HumanoidFigureConfig(hc, getConfigEmitter(), bonyConfigGraph); 
 			if (hfc.isComplete()) {
 				hf = new HumanoidFigure(hfc);
 				myFiguresByCharIdent.put(charIdent, hf);

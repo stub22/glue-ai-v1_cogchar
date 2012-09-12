@@ -17,7 +17,11 @@
 package org.cogchar.impl.scene
 
 import org.appdapter.core.log.{BasicDebugger, Loggable};
-import org.appdapter.core.item.{Ident, Item, FreeIdent};
+
+import org.appdapter.core.name.{Ident, FreeIdent};
+import org.appdapter.core.item.{Item};
+
+
 import scala.collection.mutable.HashMap;
 
 import org.cogchar.api.perform.{Media, Channel};
@@ -153,8 +157,11 @@ object Theater extends BasicDebugger {
 		
 		thtr.loadSceneBook(triplesFlexPath, null, true);
 		
-		val aSceneSpec : SceneSpec = thtr.mySceneBook.mySceneSpecs.values.head;
-		logInfo("Found a SceneSpec: " + aSceneSpec);
+		val sceneBook : SceneBook = thtr.getSceneBook;
+//		val ruledTestSceneIdent : Ident = "csi:bh_004";
+//		val ruledTestSS : SceneSpec = sceneBook.findSceneSpec(ruledTestSceneIdent);
+		val aSceneSpec : SceneSpec = sceneBook.allSceneSpecs().head;
+		logInfo("Found first SceneSpec to build a trigger for: " + aSceneSpec);
 		
 		val trig : DummyTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTrigger(aSceneSpec);
 		

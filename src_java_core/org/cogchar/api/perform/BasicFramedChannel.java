@@ -16,7 +16,7 @@
 
 package org.cogchar.api.perform;
 
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 
 /**
  * @author Stu B. <www.texpedient.com>

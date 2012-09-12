@@ -18,8 +18,8 @@ package org.cogchar.impl.scene
 
 import org.cogchar.impl.perform.{ChannelSpec};
 
-
-import org.appdapter.core.item.{Ident, Item, FreeIdent, JenaResourceItem}
+import org.appdapter.core.name.{Ident, FreeIdent};
+import org.appdapter.core.item.{Item, JenaResourceItem}
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;

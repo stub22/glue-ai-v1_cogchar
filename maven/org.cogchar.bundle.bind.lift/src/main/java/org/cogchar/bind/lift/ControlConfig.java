@@ -15,13 +15,12 @@
  */
 package org.cogchar.bind.lift;
 
-import org.appdapter.core.item.Ident;
-import org.appdapter.core.item.Item;
-import org.appdapter.core.item.ItemFuncs;
+import org.appdapter.core.name.Ident;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.QueryInterface;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.QueryInterface;
 
 /**
  * @author Ryan Biggs

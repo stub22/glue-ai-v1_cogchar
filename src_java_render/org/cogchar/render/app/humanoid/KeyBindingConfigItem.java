@@ -15,10 +15,11 @@
  */
 package org.cogchar.render.app.humanoid;
 
-import org.appdapter.core.item.Ident;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
-import org.cogchar.blob.emit.Solution;
+import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.Solution;
+
+import org.cogchar.blob.emit.QueryTester;
 
 /**
  * A class to hold the individual jMonkey key bindings. For more info see KeyBindingConfig.java
@@ -32,7 +33,7 @@ public class KeyBindingConfigItem {
 	public String boundAction;
 	public String boundKey;
 	// Another instance of the "not permanent" way of getting the QueryInterface! Time to decide soon the permanent way...
-	private static QueryInterface qi = QuerySheet.getInterface();
+	private static QueryInterface qi = QueryTester.getInterface();
 
 	public KeyBindingConfigItem(Solution solution) {
 		type = qi.getIdentFromSolution(solution, KeyBindingQueryNames.TYPE_VAR_NAME);

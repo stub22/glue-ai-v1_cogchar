@@ -27,7 +27,7 @@ import org.cogchar.api.humanoid.HumanoidBoneDesc;
 import org.cogchar.api.humanoid.HumanoidBoneConfig;
 import org.cogchar.api.humanoid.HumanoidFigureConfig;
 
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimEventListener;
@@ -54,7 +54,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.cogchar.blob.emit.BonyConfigEmitter;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.model.bony.StickFigureTwister;
 import org.cogchar.render.model.bony.BoneState;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;

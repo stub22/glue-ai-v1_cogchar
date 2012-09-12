@@ -20,13 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.appdapter.core.item.*;
+import org.appdapter.core.name.Ident;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.SolutionList;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionList;
+import org.appdapter.help.repo.QueryInterface;
+import org.cogchar.blob.emit.QueryTester;
 
 /**
  *
@@ -49,7 +50,7 @@ public class CinematicTrack extends BasicDebugger {
 	public RotationConfig endRotation;
 	private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
 	
-	private static QueryInterface queryEmitter = QuerySheet.getInterface();
+	private static QueryInterface queryEmitter = QueryTester.getInterface();
 
 	@Override
 	public String toString() {

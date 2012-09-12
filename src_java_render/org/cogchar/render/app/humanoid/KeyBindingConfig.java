@@ -18,13 +18,13 @@ package org.cogchar.render.app.humanoid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
-import org.cogchar.blob.emit.Solution;
-import org.cogchar.blob.emit.SolutionList;
+import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionList;
 
+import org.cogchar.blob.emit.QueryTester;
 /**
  * This class loads the jMonkey key bindings via query config and makes them available to Cog Char Currently these
  * bindings are applied in HumanoidPuppetActions and SceneActions, both of which are here in o.c.lib.render. So for now,
@@ -37,7 +37,7 @@ public class KeyBindingConfig extends BasicDebugger {
 	public Map<String, KeyBindingConfigItem> myGeneralBindings = new HashMap<String, KeyBindingConfigItem>();
 	public Map<String, KeyBindingConfigItem> mySceneBindings = new HashMap<String, KeyBindingConfigItem>();
 	// Another instance of the "not permanent" way of getting the QueryInterface! Time to decide soon the permanent way...
-	private static QueryInterface qi = QuerySheet.getInterface();
+	private static QueryInterface qi = QueryTester.getInterface();
 
 	public KeyBindingConfig() {
 		// Just a default constructor, if we want to just use the addBindings method

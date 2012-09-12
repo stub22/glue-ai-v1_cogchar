@@ -23,9 +23,7 @@ import com.jme3.asset.plugins.UrlLocator;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.input.FlyByCamera;
-import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.render.opengl.optic.CameraMgr;
-import org.cogchar.render.opengl.scene.DeepSceneMgr;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -37,18 +35,18 @@ public abstract class CogcharPresumedApp<CRCT extends CogcharRenderContext> exte
 	
 	private		Logger							myLogger;
 	
-	protected	DemoConfigEmitter				myConfigEmitter;
+	protected	RenderConfigEmitter				myConfigEmitter;
 
-	public CogcharPresumedApp(DemoConfigEmitter ce) { 
-		myConfigEmitter = ce;
-		AppSettings someSettings = new AppSettings(ce.getAppSettingsDefloadFlag());
-		String rendererName = ce.getLWJGL_RendererName();
+	public CogcharPresumedApp(RenderConfigEmitter rce) { 
+		myConfigEmitter = rce;
+		AppSettings someSettings = new AppSettings(rce.getAppSettingsDefloadFlag());
+		String rendererName = rce.getLWJGL_RendererName();
 		logInfo("**************************************************** LWJGL Renderer Name: " + rendererName);
 		someSettings.setRenderer(rendererName); // "LWJGL-OpenGL2"); 
 		setAppSettings(someSettings);
 	}
 	public CogcharPresumedApp() {
-		this(new DemoConfigEmitter());
+		this(new RenderConfigEmitter());
 	}
 	protected void logInfo(String txt) {
 		getLogger().info(txt);
@@ -65,7 +63,7 @@ public abstract class CogcharPresumedApp<CRCT extends CogcharRenderContext> exte
 	public synchronized void setLogger(Logger l) {
 		myLogger = l;
 	}
-	public DemoConfigEmitter getConfigEmitter() { 
+	public RenderConfigEmitter getConfigEmitter() { 
 		return myConfigEmitter;
 	}
 	public final void setAppSettings(AppSettings someSettings) { 

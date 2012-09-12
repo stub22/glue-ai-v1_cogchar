@@ -18,9 +18,11 @@ package org.cogchar.bundle.app.puma;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.appdapter.core.item.FreeIdent;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.help.repo.QueryInterface;
+
 import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.app.buddy.busker.TriggerItem;
 import org.cogchar.app.buddy.busker.TriggerItems;
@@ -28,8 +30,8 @@ import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
+
+import org.cogchar.blob.emit.QueryTester;
 import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.render.app.humanoid.KeyBindingConfig;
 import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
@@ -96,7 +98,7 @@ public class PumaAppContext extends BasicDebugger {
 
         private void reloadRepo() {
             if (queryEmitter == null) {
-                queryEmitter = QuerySheet.getInterface();
+                queryEmitter = QueryTester.getInterface();
             }
             queryEmitter.reloadSheetRepo();
         }

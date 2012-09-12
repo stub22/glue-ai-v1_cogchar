@@ -16,12 +16,12 @@
 package org.cogchar.api.humanoid;
 
 import java.util.List;
-import org.appdapter.core.item.Ident;
+import org.appdapter.core.name.Ident;
 import org.cogchar.api.skeleton.config.BoneQueryNames;
-import org.cogchar.blob.emit.DemoConfigEmitter;
-import org.cogchar.blob.emit.SolutionList;
-import org.cogchar.blob.emit.QueryInterface;
-import org.cogchar.blob.emit.QuerySheet;
+import org.cogchar.blob.emit.RenderConfigEmitter;
+import org.appdapter.help.repo.SolutionList;
+import org.appdapter.help.repo.QueryInterface;
+import org.cogchar.blob.emit.QueryTester;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -36,12 +36,11 @@ public class HumanoidFigureConfig {
 	public HumanoidBoneConfig myBoneConfig;
 	public float myInitX, myInitY, myInitZ;
 
-	// A new constructor to replace building a HumanoidFigureConfig in the old BonyConfigEmitter
-	public HumanoidFigureConfig(HumanoidConfig hc, DemoConfigEmitter dce, Ident bonyGraphIdent) {
+	public HumanoidFigureConfig(HumanoidConfig hc, RenderConfigEmitter rce, Ident bonyGraphIdent) {
 		myCharIdent = hc.myCharIdent;
 		myNickname = hc.nickname;
 		myMeshPath = hc.meshPath;
-		myDebugSkelMatPath = dce.getMaterialPath();
+		myDebugSkelMatPath = rce.getMaterialPath();
 		myBoneConfig = new HumanoidBoneConfig();
 		myInitX = hc.initialPosition[0];
 		myInitY = hc.initialPosition[1];
@@ -54,7 +53,7 @@ public class HumanoidFigureConfig {
 	// but I haven't figured out where yet. Then again, the bone descs are part of the HumanoidFigureConfig,
 	// so why not here?
 	private void addBoneDescsFromBoneRobotConfig(Ident charIdent, Ident bonyGraphIdent, HumanoidFigureConfig hfc) {
-		QueryInterface qi = QuerySheet.getInterface(); // Still the interim way of getting QueryInterface, until we decide what the permanent one will be
+		QueryInterface qi = QueryTester.getInterface(); // Still the interim way of getting QueryInterface, until we decide what the permanent one will be
 		String queryString = qi.getQuery(BoneQueryNames.BONE_NAMES_QUERY_TEMPLATE_URI);
 		queryString = qi.setQueryVar(queryString, BoneQueryNames.ROBOT_IDENT_QUERY_VAR, charIdent);
 		SolutionList solutionList = qi.getTextQueryResultList(queryString, bonyGraphIdent);
