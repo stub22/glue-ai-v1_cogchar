@@ -29,6 +29,7 @@ package org.cogchar.lifter {
 	import Helpers._
 	import net.liftweb.http.SHtml._
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.view.TextBox
 	import S._
 	
 	object TextForm extends ControlDefinition {
@@ -47,21 +48,22 @@ package org.cogchar.lifter {
 	  val afterEntryText = "" // Right now we just clear text after input; we can do whatever we want
 	  val submitLabel = "Submit" // We can add bits to define this in XML if we want
 	  val textBoxRows = 7;
+	  val blankId = -1
 	  
 	  val labelIdPrefix = "textformlabel"
 	  val textBoxIdPrefix = "text_in"
-	  val textMap = new scala.collection.mutable.HashMap[String, String]
+	  val textMap = new scala.collection.mutable.HashMap[Int, String]
 	  
-	  def makeTextForm(initialText: String, sessionId:Int, idNum: Int): NodeSeq = {
-		val formIdforHtml: String = sessionId.toString + "_" + idNum.toString
-		textMap(formIdforHtml) = initialText
+	  def makeTextForm(initialText: String, sessionId:String, idNum: Int): NodeSeq = {
+		val formIdforHtml: String = idNum.toString
+		textMap(idNum) = initialText
 		val labelId: String = labelIdPrefix + formIdforHtml // We need a unique ID here, because JavaScript will be updating the label after post
 		val inputId: String = textBoxIdPrefix + formIdforHtml // JavaScript may want to do things to the input box too, like clear it
 		// For good form and designer-friendliness, it would be nice to have all the XML in a template. But, we need to generate it here in order to set attributes. Maybe I can find a better way eventually.
 		<form class="lift:form.ajax"><lift:TextForm formId={formIdforHtml}><div class="labels" id={labelId}></div><input id={inputId}/> <input type="submit" value={submitLabel}/></lift:TextForm></form>
 	  }
 	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
 		val config = initialConfig match {
 		  case config: TextFormConfig => config
 		  case _ => throw new ClassCastException
@@ -70,22 +72,23 @@ package org.cogchar.lifter {
 	  }
 	}
 
-	class TextForm extends StatefulSnippet {
+	class TextForm extends StatefulSnippet with Logger {
 	  var text: String = TextForm.defaultText
-	  var formId: String = ""
+	  var formId: Int = TextForm.blankId
+	  var sessionId: String = ""
 	  var idItems: Array[String] = new Array[String](2)
 	  lazy val textFormInstanceLabel = TextForm.labelIdPrefix + formId
 	  lazy val textBoxInstanceLabel = TextForm.textBoxIdPrefix + formId
 	 
 	  def dispatch = {case "render" => render}	  
 	  
-	  def render = {
+	  def render(xhtml:NodeSeq) = {
    
 		def process(): JsCmd = {
-		  println("Input text for form #" + formId + ": " + text)
+		  info("Input text for form #" + formId + ": " + text + " in session " + sessionId)
 		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			  def run() {
-				PageCommander.textInputMapper(idItems(0).toInt, idItems(1).toInt, text) // Let PageCommander know about the text so it can figure out what to do with it
+				PageCommander.textInputMapper(sessionId, formId, text) // Let PageCommander know about the text so it can figure out what to do with it
 			  }
 			})
 		  processThread.start
@@ -93,12 +96,21 @@ package org.cogchar.lifter {
 		  SetValById(textBoxInstanceLabel, TextForm.afterEntryText)
 		}
 		
-		formId = (S.attr("formId") openOr "_")
-		idItems = formId.split("_")
-		val labelSelectorText: String = "#"+textFormInstanceLabel+" *"
-		val boxSelectorText: String = "#"+textBoxInstanceLabel
-		labelSelectorText #> TextForm.textMap(formId) &
-		boxSelectorText #> (SHtml.textarea(text, text = _, "rows" -> TextForm.textBoxRows.toString, "id" -> textBoxInstanceLabel) ++ SHtml.hidden(process))
+		S.session match {
+		  case Full(myLiftSession) => {
+			sessionId = myLiftSession.uniqueId
+			formId = (S.attr("formId") openOr "-1").toInt
+			val labelSelectorText: String = "#"+textFormInstanceLabel+" *"
+			val boxSelectorText: String = "#"+textBoxInstanceLabel
+			val selectors = labelSelectorText #> TextForm.textMap(formId) &
+			  boxSelectorText #> (SHtml.textarea(text, text = _, "rows" -> TextForm.textBoxRows.toString, "id" -> textBoxInstanceLabel) ++ SHtml.hidden(process))
+			selectors.apply(xhtml)
+		  }
+		  case _ => {
+			error("TextForm cannot get sessionId, not rendering!")
+			TextBox.makeBox("TextForm cannot get sessionId, not rendering!", "", true)
+		  }
+		}
 	  }
 	}
 

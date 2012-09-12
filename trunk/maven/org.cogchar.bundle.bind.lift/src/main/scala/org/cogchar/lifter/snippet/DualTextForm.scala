@@ -29,6 +29,7 @@ package org.cogchar.lifter {
 	import Helpers._
 	import net.liftweb.http.SHtml._
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.view.TextBox
 	import S._
 	
 	object DualTextForm extends ControlDefinition {
@@ -46,14 +47,16 @@ package org.cogchar.lifter {
 	  val defaultText = "" // We can add bits to define this in RDF if we want
 	  val afterEntryText = "" // Right now we just clear text after input; we can do whatever we want
 	  val textBoxRows = 3;
+	  val blankId = -1
 	  
 	  val labelIdPrefix = "dualtextformlabel_"
 	  val textBoxIdPrefix = "dualtext_in_"
-	  val textMap = new scala.collection.mutable.HashMap[String, (String,String)]
+	  val textMap = new scala.collection.mutable.HashMap[Int, (String,String)]
 	  
-	  def makeForm(label1: String, label2: String, submitLabel: String, sessionId:Int, idNum: Int): NodeSeq = {
-		val formIdforHtml: String = sessionId.toString + "_" + idNum.toString
-		textMap(formIdforHtml) = (label1, label2)
+	  def makeForm(label1: String, label2: String, submitLabel: String, sessionId:String, idNum: Int): NodeSeq = {
+		//val formIdforHtml: String = sessionId.toString + "_" + idNum.toString
+		val formIdforHtml: String = idNum.toString
+		textMap(idNum) = (label1, label2)
 		val labelId1: String = labelIdPrefix + formIdforHtml + "A"// We need unique IDs here, because JavaScript may be updating the label after post [future expansion]
 		val labelId2: String = labelIdPrefix + formIdforHtml + "B"
 		val inputId1: String = textBoxIdPrefix + formIdforHtml + "A"// JavaScript may want to do things to the input boxes too, like clear them
@@ -61,7 +64,7 @@ package org.cogchar.lifter {
 		<form class="lift:form.ajax"><lift:DualTextForm formId={formIdforHtml}><div class="labels" id={labelId1}></div><input id={inputId1}/><div class="labels" id={labelId2}></div><input id={inputId2}/><br/><input type="submit" value={submitLabel}/></lift:DualTextForm></form>
 	  }
 	  
-	  def makeControl(initialConfig: PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+	  def makeControl(initialConfig: PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
 		val config = initialConfig match {
 		  case config: DualTextFormConfig => config
 		  case _ => throw new ClassCastException
@@ -73,7 +76,8 @@ package org.cogchar.lifter {
 	class DualTextForm extends StatefulSnippet with Logger {
 	  var text1: String = DualTextForm.defaultText
 	  var text2: String = DualTextForm.defaultText
-	  var formId: String = ""
+	  var formId: Int = DualTextForm.blankId
+	  var sessionId: String = ""
 	  var idItems: Array[String] = new Array[String](2)
 	  lazy val textFormInstanceLabel1 = DualTextForm.labelIdPrefix + formId + "A"
 	  lazy val textFormInstanceLabel2 = DualTextForm.labelIdPrefix + formId + "B"
@@ -82,28 +86,37 @@ package org.cogchar.lifter {
 	 
 	  def dispatch = {case "render" => render}	  
 	  
-	  def render = {
+	  def render(xhtml: NodeSeq) = {
    
 		def process(): JsCmd = {
-		  info("Input text for form " + formId + ": " + text1 + "; " + text2)
+		  info("Input text for form " + formId + " for session " + sessionId + ": " + text1 + "; " + text2)
 		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			  def run() {
-				PageCommander.multiTextInputMapper(idItems(0).toInt, idItems(1).toInt, Array(text1, text2)) // Let PageCommander know about the text so it can figure out what to do with it
+				PageCommander.multiTextInputMapper(sessionId, formId, Array(text1, text2)) // Let PageCommander know about the text so it can figure out what to do with it
 			  }
 			})
 		  processThread.start
 		  SetValById(textBoxInstanceLabel1, DualTextForm.afterEntryText) &  SetValById(textBoxInstanceLabel2, DualTextForm.afterEntryText)
 		}
 		
-		formId = (S.attr("formId") openOr "_")
-		idItems = formId.split("_")
-		val labelSelectorText1: String = "#"+textFormInstanceLabel1+" *"
-		val labelSelectorText2: String = "#"+textFormInstanceLabel2+" *"
-		val boxSelectorText1: String = "#"+textBoxInstanceLabel1
-		val boxSelectorText2: String = "#"+textBoxInstanceLabel2
-		labelSelectorText1 #> DualTextForm.textMap(formId)._1 & labelSelectorText2 #> DualTextForm.textMap(formId)._2 &
-		boxSelectorText1 #> (SHtml.textarea(text1, text1 = _, "rows" -> DualTextForm.textBoxRows.toString, "id" -> textBoxInstanceLabel1)) &
-		boxSelectorText2 #> (SHtml.textarea(text2, text2 = _, "rows" -> DualTextForm.textBoxRows.toString, "id" -> textBoxInstanceLabel2) ++ SHtml.hidden(process))
+		S.session match {
+		  case Full(myLiftSession) => {
+			sessionId = myLiftSession.uniqueId
+			formId = (S.attr("formId") openOr "-1").toInt  
+			val labelSelectorText1: String = "#"+textFormInstanceLabel1+" *"
+			val labelSelectorText2: String = "#"+textFormInstanceLabel2+" *"
+			val boxSelectorText1: String = "#"+textBoxInstanceLabel1
+			val boxSelectorText2: String = "#"+textBoxInstanceLabel2
+			val selectors =  labelSelectorText1 #> DualTextForm.textMap(formId)._1 & labelSelectorText2 #> DualTextForm.textMap(formId)._2 &
+			  boxSelectorText1 #> (SHtml.textarea(text1, text1 = _, "rows" -> DualTextForm.textBoxRows.toString, "id" -> textBoxInstanceLabel1)) &
+			  boxSelectorText2 #> (SHtml.textarea(text2, text2 = _, "rows" -> DualTextForm.textBoxRows.toString, "id" -> textBoxInstanceLabel2) ++ SHtml.hidden(process))
+			selectors.apply(xhtml)
+		  }
+		  case _ => {
+			error("DualTextForm cannot get sessionId, not rendering!")
+			TextBox.makeBox("DualTextForm cannot get sessionId, not rendering!", "", true)
+		  }
+		}
 	  }
 	}
 

@@ -29,6 +29,7 @@ package org.cogchar.lifter {
 	import Helpers._
 	import net.liftweb.http.SHtml._
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.view.TextBox
 	import S._
 	
 	object LoginForm extends ControlDefinition {
@@ -46,11 +47,12 @@ package org.cogchar.lifter {
 	  val textBoxIdPrefix = "login_in_"
 	  val defaultText1 = "" // Default text in the entry boxes can be set here if desired, but probably not
 	  val defaultText2 = ""
-	  val textMap = new scala.collection.mutable.HashMap[String, (String, String)]
+	  val blankId = -1
+	  val textMap = new scala.collection.mutable.HashMap[Int, (String, String)]
 	  
-	  def makeForm(label1: String, label2: String, submitLabel: String, sessionId:Int, idNum: Int): NodeSeq = {
-		val formIdforHtml: String = sessionId.toString + "_" + idNum.toString
-		textMap(formIdforHtml) = (label1, label2)
+	  def makeForm(label1: String, label2: String, submitLabel: String, sessionId:String, idNum: Int): NodeSeq = {
+		val formIdforHtml: String = idNum.toString
+		textMap(idNum) = (label1, label2)
 		val labelId1: String = labelIdPrefix + formIdforHtml + "A"// We need unique IDs here, because JavaScript may be updating the label after post [future expansion]
 		val labelId2: String = labelIdPrefix + formIdforHtml + "B"
 		val inputId1: String = textBoxIdPrefix + formIdforHtml + "A"// JavaScript may want to do things to the input boxes too, like clear them
@@ -58,7 +60,7 @@ package org.cogchar.lifter {
 		<form class="lift:form.ajax"><lift:LoginForm formId={formIdforHtml}><div class="labels" id={labelId1}></div><input id={inputId1}/><div class="labels" id={labelId2}></div><input id={inputId2}/><br/><input type="submit" value={submitLabel}/></lift:LoginForm></form>
 	  }
 	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
 		val config = initialConfig match {
 		  case config: LoginFormConfig => config
 		  case _ => throw new ClassCastException
@@ -70,7 +72,8 @@ package org.cogchar.lifter {
 	class LoginForm extends StatefulSnippet with Logger {
 	  var text1: String = LoginForm.defaultText1
 	  var text2: String = LoginForm.defaultText2
-	  var formId: String = ""
+	  var formId: Int = LoginForm.blankId
+	  var sessionId: String = ""
 	  var idItems: Array[String] = new Array[String](2)
 	  lazy val textFormInstanceLabel1 = LoginForm.labelIdPrefix + formId + "A"
 	  lazy val textFormInstanceLabel2 = LoginForm.labelIdPrefix + formId + "B"
@@ -79,13 +82,13 @@ package org.cogchar.lifter {
 	 
 	  def dispatch = {case "render" => render}	  
 	  
-	  def render = {
+	  def render(xhtml: NodeSeq) = {
    
 		def process(): JsCmd = {
-		  info("Input text for form #" + formId + ": " + text1 + "; [password hidden]")
+		  info("Input text for form #" + formId + ": " + text1 + "; [password hidden] in session " + sessionId)
 		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			  def run() {
-				PageCommander.multiTextInputMapper(idItems(0).toInt, idItems(1).toInt, Array(text1, text2)) // Let PageCommander know about the text so it can figure out what to do with it
+				PageCommander.multiTextInputMapper(sessionId, formId, Array(text1, text2)) // Let PageCommander know about the text so it can figure out what to do with it
 			  }
 			})
 		  processThread.start
@@ -93,15 +96,24 @@ package org.cogchar.lifter {
 		  SetValById(textBoxInstanceLabel1, "") &  SetValById(textBoxInstanceLabel2, "")
 		}
 		
-		formId = (S.attr("formId") openOr "_")
-		idItems = formId.split("_")
-		val labelSelectorText1: String = "#"+textFormInstanceLabel1+" *"
-		val labelSelectorText2: String = "#"+textFormInstanceLabel2+" *"
-		val boxSelectorText1: String = "#"+textBoxInstanceLabel1
-		val boxSelectorText2: String = "#"+textBoxInstanceLabel2
-		labelSelectorText1 #> LoginForm.textMap(formId)._1 & labelSelectorText2 #> LoginForm.textMap(formId)._2 &
-		boxSelectorText1 #> (SHtml.text(text1, text1 = _, "id" -> textBoxInstanceLabel1)) &
-		boxSelectorText2 #> (SHtml.password(text2, text2 = _, "id" -> textBoxInstanceLabel2) ++ SHtml.hidden(process))
+		S.session match {
+		  case Full(myLiftSession) => {
+			sessionId = myLiftSession.uniqueId
+			formId = (S.attr("formId") openOr "-1").toInt 
+			val labelSelectorText1: String = "#"+textFormInstanceLabel1+" *"
+			val labelSelectorText2: String = "#"+textFormInstanceLabel2+" *"
+			val boxSelectorText1: String = "#"+textBoxInstanceLabel1
+			val boxSelectorText2: String = "#"+textBoxInstanceLabel2
+			val selectors = labelSelectorText1 #> LoginForm.textMap(formId)._1 & labelSelectorText2 #> LoginForm.textMap(formId)._2 &
+			  boxSelectorText1 #> (SHtml.text(text1, text1 = _, "id" -> textBoxInstanceLabel1)) &
+			  boxSelectorText2 #> (SHtml.password(text2, text2 = _, "id" -> textBoxInstanceLabel2) ++ SHtml.hidden(process))
+			selectors.apply(xhtml)
+		  }
+		  case _ => {
+			error("LoginForm cannot get sessionId, not rendering!")
+			TextBox.makeBox("LoginForm cannot get sessionId, not rendering!", "", true)
+		  }
+		}
 	  }
 	}
 

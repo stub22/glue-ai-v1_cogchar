@@ -29,6 +29,7 @@ package org.cogchar.lifter {
 	import Helpers._
 	import net.liftweb.http.SHtml._
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.view.TextBox
 	import S._
 
 	object SelectBoxes extends ControlDefinition {
@@ -47,14 +48,15 @@ package org.cogchar.lifter {
 	  val titlePrefix = "selectformtitle"
 	  val labelPrefix = "label"
 	  val boxPrefix = "checkbox"
+	  val blankId = -1
 
-	  val titleMap = new scala.collection.mutable.HashMap[String,String]
-	  val labelMap = new scala.collection.mutable.HashMap[String,List[String]] // Map to hold all the labels for each SelectBoxes control rendered
+	  val titleMap = new scala.collection.mutable.HashMap[Int,String]
+	  val labelMap = new scala.collection.mutable.HashMap[Int,List[String]] // Map to hold all the labels for each SelectBoxes control rendered
 	  
-	  def makeSelectBoxes(labelText: String, labelList:List[String], sessionId:Int, idNum: Int): NodeSeq = {
-		val formIdForHtml: String = sessionId.toString + "_" + idNum.toString
-		titleMap(formIdForHtml) = labelText
-		labelMap(formIdForHtml) = labelList
+	  def makeSelectBoxes(labelText: String, labelList:List[String], sessionId:String, idNum: Int): NodeSeq = {
+		val formIdForHtml: String = idNum.toString
+		titleMap(idNum) = labelText
+		labelMap(idNum) = labelList
 		val titleId: String = titlePrefix + formIdForHtml // We need a unique ID here, because JavaScript will be updating the title after post
 		var boxesHtmlString: String = "<form class='lift:form.ajax'><lift:SelectBoxes formId='" + formIdForHtml +"'><div id='" + titleId + "' class='labels'></div>"
 		// Add html for each box
@@ -67,7 +69,7 @@ package org.cogchar.lifter {
 		XML.loadString(boxesHtmlString)
 	  }
 	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: Int): NodeSeq = {
+	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
 		val config = initialConfig match {
 		  case config: SelectBoxesConfig => config
 		  case _ => throw new ClassCastException
@@ -76,9 +78,10 @@ package org.cogchar.lifter {
 	  }
 	}
 	  
-	class SelectBoxes extends StatefulSnippet {
+	class SelectBoxes extends StatefulSnippet with Logger {
 		
-	  var formId: String = ""
+	  var formId: Int = SelectBoxes.blankId
+	  var sessionId: String = ""
 	  lazy val selectBoxesInstanceTitle = SelectBoxes.titlePrefix + formId
 		
 	  def dispatch = {case "render" => render}
@@ -87,7 +90,7 @@ package org.cogchar.lifter {
 
 		def process(result: Boolean, boxNumber: Int): JsCmd = {
 		  // This control is set up as demo, but we yet need to have it do something on input other than print the result!
-		  println("SelectBoxes says box number " + boxNumber + " on formId " + formId + " is " + result)
+		  info("SelectBoxes says box number " + boxNumber + " on formId " + formId + " is " + result + " for session " + sessionId)
 		  SetHtml(selectBoxesInstanceTitle, Text(SelectBoxes.responseText))
 		}
 
@@ -98,20 +101,29 @@ package org.cogchar.lifter {
 		  boxId #> SHtml.ajaxCheckbox(false, (toggled: Boolean) => process(toggled, boxIndex))
 		}
 
-		formId = (S.attr("formId") openOr "_")
-		val idItems = formId.split("_")
-		var valid = false
-		var selectors:CssSel = "i_eat_yaks_for_breakfast" #> "" // This is just to produce a "Null" CssSel so we can initialize this here, but not add any meaningful info until we have checked for valid formId. (As recommended by the inventor of Lift)
-		if (SelectBoxes.titleMap.contains(formId)) {
-		  valid = true
-		  val titleSelectorText: String = "#"+selectBoxesInstanceTitle+" *"
-		  selectors = titleSelectorText #> SelectBoxes.titleMap(formId)
-		  for (boxIndex <- 0 until SelectBoxes.labelMap(formId).length) {
-			selectors = selectors & makeABox(boxIndex)
+		S.session match {
+		  case Full(myLiftSession) => {
+			sessionId = myLiftSession.uniqueId
+			formId = (S.attr("formId") openOr "-1").toInt
+			var valid = false
+			var selectors:CssSel = "i_eat_yaks_for_breakfast" #> "" // This is just to produce a "Null" CssSel so we can initialize this here, but not add any meaningful info until we have checked for valid formId. (As recommended by the inventor of Lift)
+			if (SelectBoxes.titleMap.contains(formId)) {
+			  valid = true
+			  val titleSelectorText: String = "#"+selectBoxesInstanceTitle+" *"
+			  selectors = titleSelectorText #> SelectBoxes.titleMap(formId)
+			  for (boxIndex <- 0 until SelectBoxes.labelMap(formId).length) {
+				selectors = selectors & makeABox(boxIndex)
+			  }
+			} else println("SelectBox.render cannot find a valid formId! Reported formId: " + formId)
+			if (valid) selectors.apply(xhtml) else NodeSeq.Empty // Blanks control if something is wrong with formId
+			//selectors.apply(xhtml) // This would be ok too, and would just apply the "null" selector transform to html if something is broken
 		  }
-		} else println("SelectBox.render cannot find a valid formId! Reported formId: " + formId)
-		if (valid) selectors.apply(xhtml) else NodeSeq.Empty // Blanks control if something is wrong with formId
-		//selectors.apply(xhtml) // This would be ok too, and would just apply the "null" selector transform to html if something is broken
+		  case _ => {
+			error("SelectBoxes cannot get sessionId, not rendering!")
+			TextBox.makeBox("SelectBoxes cannot get sessionId, not rendering!", "", true)
+		  }
+		}
+		
 	  }
 	}
 

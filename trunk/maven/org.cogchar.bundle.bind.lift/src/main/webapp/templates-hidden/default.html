@@ -95,10 +95,13 @@
  
     <script id="jquery" src="/classpath/jquery.js" type="text/javascript"/>
     <script id="json" src="/classpath/json.js" type="text/javascript"/>
-
    
   </head>
   <body>
-	<div name="TemplateCometSlot" class="lift:TemplateCometFiller">Template fills here</div>
+
+    <span class="lift:comet?type=TemplateActor"><span name="TemplateSlot">Template fills here</span></span>
+	<div id="SpeechRequest">
+        <lift:comet type="JavaScriptActor"><div name="JSCommandSlot">A hidden div to fire JS command</div></lift:comet>
+    </div>
   </body>
 </html>

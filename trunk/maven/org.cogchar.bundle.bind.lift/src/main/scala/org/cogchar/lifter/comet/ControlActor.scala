@@ -22,24 +22,41 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.view.TextBox
+	import S._
 
 	
 	class ControlActor extends CometActor with CometListener {
   
-	  lazy val elementName = name openOr"NA"
+	  lazy val slotNum = (name openOr"-1").toInt
 	  
+	  lazy val mySessionId = {
+		S.session match {
+		  case Full(myLiftSession) => {
+			myLiftSession.uniqueId
+		  }
+		  case _ => ""
+		}
+	  }
+	  
+	  lazy val fullId = mySessionId + "_" + slotNum 
+	 
+	 
 	  def registerWith = org.cogchar.lifter.model.PageCommander
 	  
 	  override def lowPriority : PartialFunction[Any, Unit]  = {
-		case a: String if (a.equals(elementName)) => reRender
+		case a: String if (a.equals(fullId)) => reRender
 		case _: Any => // Do nothing if our ID not matched
 	  }
 
 	  def render = {
-		val idItems = elementName.split("_")
-		"@ControlSlot" #> PageCommander.getNode(idItems(0).toInt, idItems(1).toInt)
+		if (mySessionId.isEmpty) {
+		  error("ControlActor cannot get sessionId, not rendering!")
+		  TextBox.makeBox("ControlActor cannot get sessionId, not rendering!", "", true)
+		} else {
+		  "@ControlSlot" #> PageCommander.getNode(mySessionId, slotNum)
+		}
 	  }
-  
 	}
 
   }

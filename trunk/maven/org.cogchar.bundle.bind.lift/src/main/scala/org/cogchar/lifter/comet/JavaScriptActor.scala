@@ -33,15 +33,23 @@ package org.cogchar.lifter {
 	  // On initial render, just blank anything in JavaScriptActor comet div
 	  def render = "@JSCommandSlot" #> NodeSeq.Empty
   
-	  lazy val mySessionId : Int = (name openOr"-1").toInt
+	  lazy val mySessionId = {
+		S.session match {
+		  case Full(myLiftSession) => {
+			myLiftSession.uniqueId
+		  }
+		  case _ => ""
+		}
+	  }
 	  def registerWith = org.cogchar.lifter.model.PageCommander
 	  
-	  def triggerId(sessionId:Int, functionId: Int) = PageCommander.controlId(sessionId:Int, functionId: Int)
+	  def triggerId(sessionId:String, functionId: Int) = PageCommander.controlId(sessionId, functionId)
 	  final val SPEECH_REQUEST_TRIGGERID = triggerId(mySessionId, 201)
 	  final val LOAD_PAGE_TRIGGERID = triggerId(mySessionId, 202)
 	  final val SPEECH_OUT_TRIGGERID = triggerId(mySessionId, 203)
 	  final val CONTINUOUS_SPEECH_REQUEST_START_TRIGGERID = triggerId(mySessionId, 204)
 	  final val CONTINUOUS_SPEECH_REQUEST_STOP_TRIGGERID = triggerId(mySessionId, 205)
+	  final val REFRESH_PAGE_TRIGGERID = triggerId(mySessionId, 206)
 
 	  override def lowPriority : PartialFunction[Any, Unit] = {
 		case SPEECH_REQUEST_TRIGGERID => { // A special "slot" code for speech request. Sort of a workaround, but works OK for now.
@@ -75,6 +83,11 @@ package org.cogchar.lifter {
 			//val slotNum = PageCommander.getSpeechReqControl
 			partialUpdate(new JsCmd { 
 				def toJsCmd = "try{Android.stopContinuousSpeechInput();} catch(err) {}"
+			  })
+		  }
+		case REFRESH_PAGE_TRIGGERID => { // This code for triggering browser page refresh. 
+			partialUpdate(new JsCmd { 
+				def toJsCmd = "window.location.reload();"
 			  })
 		  }
 		case _ => // Do nothing for other IDs
