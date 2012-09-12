@@ -32,16 +32,7 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.view.TextBox
 	import S._
 	
-	object LoginForm extends ControlDefinition {
-	  
-	  class LoginFormConfig(val label1: String, val label2: String, val submitLabel: String, val slotNum: Int)
-				extends PageCommander.InitialControlConfig {
-		  controlType = LoginForm.instance
-	  }
-	  
-	  //under the covers, .instance() is implemented as a static method on class LoginForm. This lets LoginFormConfig
-	  //pass the object singleton instance via controlType. See http://stackoverflow.com/questions/3845737/how-can-i-pass-a-scala-object-reference-around-in-java
-	  def instance = this  
+	object LoginForm {
 	  
 	  val labelIdPrefix = "loginformlabel_"
 	  val textBoxIdPrefix = "login_in_"
@@ -50,7 +41,7 @@ package org.cogchar.lifter {
 	  val blankId = -1
 	  val textMap = new scala.collection.mutable.HashMap[Int, (String, String)]
 	  
-	  def makeForm(label1: String, label2: String, submitLabel: String, sessionId:String, idNum: Int): NodeSeq = {
+	  def makeForm(label1: String, label2: String, submitLabel: String, idNum: Int): NodeSeq = {
 		val formIdforHtml: String = idNum.toString
 		textMap(idNum) = (label1, label2)
 		val labelId1: String = labelIdPrefix + formIdforHtml + "A"// We need unique IDs here, because JavaScript may be updating the label after post [future expansion]
@@ -58,14 +49,6 @@ package org.cogchar.lifter {
 		val inputId1: String = textBoxIdPrefix + formIdforHtml + "A"// JavaScript may want to do things to the input boxes too, like clear them
 		val inputId2: String = textBoxIdPrefix + formIdforHtml + "B"
 		<form class="lift:form.ajax"><lift:LoginForm formId={formIdforHtml}><div class="labels" id={labelId1}></div><input id={inputId1}/><div class="labels" id={labelId2}></div><input id={inputId2}/><br/><input type="submit" value={submitLabel}/></lift:LoginForm></form>
-	  }
-	  
-	  def makeControl(initialConfig:PageCommander.InitialControlConfig, sessionId: String): NodeSeq = {
-		val config = initialConfig match {
-		  case config: LoginFormConfig => config
-		  case _ => throw new ClassCastException
-		}
-		makeForm(config.label1, config.label2, config.submitLabel, sessionId, config.slotNum)
 	  }
 	}
 
