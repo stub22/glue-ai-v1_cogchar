@@ -267,10 +267,9 @@ public class HumanoidPuppetActions extends BasicDebugger {
 			String keyString = null;
 			String action = actionType.name();
 			if (keyBindings.myGeneralBindings.containsKey(action)) {
-				keyString = keyBindings.myGeneralBindings.get(action).boundKey;
+				keyString = keyBindings.myGeneralBindings.get(action).myBoundKeyName;
 			} else {
-				getLoggerForClass(HumanoidPuppetActions.PlayerAction.class)
-						.warn("Attemping to retrieve key binding for " + action + ", but none is found");
+				theDbg.logWarning("Attemping to retrieve key binding for " + action + ", but none is found");
 			}
 			try {
 				if ((keyString.startsWith("AXIS")) || (keyString.startsWith("BUTTON"))) { // In this case, must be MouseInput

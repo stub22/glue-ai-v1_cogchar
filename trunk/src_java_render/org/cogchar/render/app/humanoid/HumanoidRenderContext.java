@@ -253,7 +253,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		int helpKey = NULL_KEY;
 		String keyString = null;
 		if (bindingConfig.myGeneralBindings.containsKey(HELP_TAG)) {
-			keyString = bindingConfig.myGeneralBindings.get(HELP_TAG).boundKey;
+			keyString = bindingConfig.myGeneralBindings.get(HELP_TAG).myBoundKeyName;
 		} else {
 			logWarning("Attemping to retrieve key binding for help screen, but none is found");
 		}

@@ -15,6 +15,7 @@
  */
 package org.cogchar.render.app.humanoid;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,8 +24,8 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.QueryInterface;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
+import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 
-import org.cogchar.blob.emit.QueryTester;
 /**
  * This class loads the jMonkey key bindings via query config and makes them available to Cog Char Currently these
  * bindings are applied in HumanoidPuppetActions and SceneActions, both of which are here in o.c.lib.render. So for now,
@@ -37,26 +38,27 @@ public class KeyBindingConfig extends BasicDebugger {
 	public Map<String, KeyBindingConfigItem> myGeneralBindings = new HashMap<String, KeyBindingConfigItem>();
 	public Map<String, KeyBindingConfigItem> mySceneBindings = new HashMap<String, KeyBindingConfigItem>();
 	// Another instance of the "not permanent" way of getting the QueryInterface! Time to decide soon the permanent way...
-	private static QueryInterface qi = QueryTester.getInterface();
 
 	public KeyBindingConfig() {
 		// Just a default constructor, if we want to just use the addBindings method
 	}
 
-	public KeyBindingConfig(Ident qGraph) {
-		addBindings(qGraph);
+	public KeyBindingConfig(QueryInterface qi, Ident qGraph, KeystrokeConfigEmitter kce) {
+		addBindings(qi, qGraph, kce);
 	}
 
-	public void addBindings(Ident qGraph) {
-		SolutionList solutionList = qi.getQueryResultList(KeyBindingQueryNames.BINDINGS_QUERY_URI, qGraph);
-		for (Solution solution : solutionList.javaList()) {
-			KeyBindingConfigItem newItem = new KeyBindingConfigItem(solution);
-			if (KeyBindingQueryNames.GENERAL_BINDING_TYPE.equals(newItem.type)) {
-				myGeneralBindings.put(newItem.boundAction, newItem);
-			} else if (KeyBindingQueryNames.SCENE_BINDING_TYPE.equals(newItem.type)) {
-				mySceneBindings.put(newItem.boundAction, newItem);
+	public void addBindings(QueryInterface qi, Ident qGraph, KeystrokeConfigEmitter kce) {
+		SolutionList solutionList = qi.getQueryResultList(kce.BINDINGS_QUERY_URI(), qGraph);
+		List<Solution> solnJL =  solutionList.javaList();
+		logInfo("addBindings found " + solnJL.size() + " bindings");
+		for (Solution solution : solnJL ) {
+			KeyBindingConfigItem newItem = new KeyBindingConfigItem(solution, kce);
+			if (kce.GENERAL_BINDING_TYPE().equals(newItem.myTypeIdent)) {
+				myGeneralBindings.put(newItem.myBoundEventName, newItem);
+			} else if (kce.SCENE_BINDING_TYPE().equals(newItem.myTypeIdent)) {
+				mySceneBindings.put(newItem.myBoundEventName, newItem);
 			} else {
-				logWarning("Found an item in KeyBindings resource with invalid type: " + newItem.type);
+				logWarning("Found an item in KeyBindings resource with invalid type: " + newItem.myTypeIdent);
 			}
 		}
 	}

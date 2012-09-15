@@ -14,10 +14,14 @@
  *  limitations under the License.
  */
 package org.cogchar.platform.trigger;
+import org.appdapter.scafun.FullBox;
+import org.appdapter.scafun.FullTrigger;
+import org.appdapter.scafun.BoxOne;
+import org.appdapter.scafun.FullTrigger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface DummyBox {
+public class DummyBox extends FullBox<DummyTrigger> {
 	
 }
