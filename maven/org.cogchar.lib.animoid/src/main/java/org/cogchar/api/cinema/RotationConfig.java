@@ -33,7 +33,7 @@ public class RotationConfig {
 	public float roll = Float.NaN;
 	public float pitch = Float.NaN;
 	
-	private static QueryInterface queryEmitter = QueryTester.getInterface();
+	// private static QueryInterface queryEmitter = QueryTester.getInterface();
 
 	@Override
 	public String toString() {
@@ -49,12 +49,12 @@ public class RotationConfig {
 	}
 
 	// Called from CinematicConfig, corresponds to a "named" rotation definition
-	public RotationConfig(Solution solution) {
-		Ident myIdent = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.ROTATION_VAR_NAME);
+	public RotationConfig(QueryInterface qi, Solution solution) {
+		Ident myIdent = qi.getIdentFromSolution(solution, CinematicQueryNames.ROTATION_VAR_NAME);
 		rotationName = myIdent.getLocalName();
-		yaw = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.YAW_VAR_NAME, Float.NaN);
-		pitch = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.PITCH_VAR_NAME, Float.NaN);
-		roll = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.ROLL_VAR_NAME, Float.NaN);
+		yaw = qi.getFloatFromSolution(solution, CinematicQueryNames.YAW_VAR_NAME, Float.NaN);
+		pitch = qi.getFloatFromSolution(solution, CinematicQueryNames.PITCH_VAR_NAME, Float.NaN);
+		roll = qi.getFloatFromSolution(solution, CinematicQueryNames.ROLL_VAR_NAME, Float.NaN);
 	}
 
 	public RotationConfig(Item configItem) {

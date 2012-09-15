@@ -48,9 +48,7 @@ public class CinematicTrack extends BasicDebugger {
 	public float trackDuration;
 	public List<WaypointConfig> waypoints = new ArrayList<WaypointConfig>();
 	public RotationConfig endRotation;
-	private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
-	
-	private static QueryInterface queryEmitter = QueryTester.getInterface();
+	// private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
 
 	@Override
 	public String toString() {
@@ -66,44 +64,44 @@ public class CinematicTrack extends BasicDebugger {
 	}
 
 	// Called from CinematicConfig, corresponds to a "named" track definition
-	public CinematicTrack(Solution solution, Ident qGraph) {
-		Ident myIdent = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.TRACK_VAR_NAME);
+	public CinematicTrack(QueryInterface qi, Solution solution, Ident qGraph) {
+		Ident myIdent = qi.getIdentFromSolution(solution, CinematicQueryNames.TRACK_VAR_NAME);
 		trackName = myIdent.getLocalName();
-		attachedItem = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.ATTACHED_ITEM_VAR_NAME).getLocalName();
-		String typeString = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.ATTACHED_ITEM_TYPE_VAR_NAME).getLocalName().toUpperCase();
+		attachedItem = qi.getIdentFromSolution(solution, CinematicQueryNames.ATTACHED_ITEM_VAR_NAME).getLocalName();
+		String typeString = qi.getIdentFromSolution(solution, CinematicQueryNames.ATTACHED_ITEM_TYPE_VAR_NAME).getLocalName().toUpperCase();
 		for (AttachedItemType testType : AttachedItemType.values()) {
 			if (testType.toString().equals(typeString)) {
 				attachedItemType = testType;
 			}
 		}
-		typeString = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.TRACK_TYPE_VAR_NAME).getLocalName();
+		typeString = qi.getIdentFromSolution(solution, CinematicQueryNames.TRACK_TYPE_VAR_NAME).getLocalName();
 		for (TrackType testType : TrackType.values()) {
 			if (testType.toString().equals(typeString)) {
 				trackType = testType;
 			}
 		}
-		directionType = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.DIRECTION_TYPE_VAR_NAME).getLocalName();
+		directionType = qi.getIdentFromSolution(solution, CinematicQueryNames.DIRECTION_TYPE_VAR_NAME).getLocalName();
 		for (int index = 0; index < direction.length; index++) {
-			direction[index] = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.DIRECTION_VAR_NAME[index], 0f);
+			direction[index] = qi.getFloatFromSolution(solution, CinematicQueryNames.DIRECTION_VAR_NAME[index], 0f);
 		}
-		tension = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.TENSION_VAR_NAME, 0f);
-		cycle = queryEmitter.getBooleanFromSolution(solution, CinematicQueryNames.CYCLE_VAR_NAME);
-		loopMode = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.LOOP_MODE_VAR_NAME).getLocalName();
-		startTime = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.START_TIME_VAR_NAME, 0f);
-		trackDuration = queryEmitter.getFloatFromSolution(solution, CinematicQueryNames.DURATION_VAR_NAME, 0f);
-		String query = queryEmitter.getCompletedQueryFromTemplate(CinematicQueryNames.WAYPOINTS_QUERY_TEMPLATE_URI, CinematicQueryNames.TRACK_QUERY_VAR_NAME, myIdent);
-		SolutionList solutionList = queryEmitter.getTextQueryResultList(query, qGraph);
-		List<Ident> waypointIdentList = queryEmitter.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.WAYPOINT_VAR_NAME);
+		tension = qi.getFloatFromSolution(solution, CinematicQueryNames.TENSION_VAR_NAME, 0f);
+		cycle = qi.getBooleanFromSolution(solution, CinematicQueryNames.CYCLE_VAR_NAME);
+		loopMode = qi.getIdentFromSolution(solution, CinematicQueryNames.LOOP_MODE_VAR_NAME).getLocalName();
+		startTime = qi.getFloatFromSolution(solution, CinematicQueryNames.START_TIME_VAR_NAME, 0f);
+		trackDuration = qi.getFloatFromSolution(solution, CinematicQueryNames.DURATION_VAR_NAME, 0f);
+		String query = qi.getCompletedQueryFromTemplate(CinematicQueryNames.WAYPOINTS_QUERY_TEMPLATE_URI, CinematicQueryNames.TRACK_QUERY_VAR_NAME, myIdent);
+		SolutionList solutionList = qi.getTextQueryResultList(query, qGraph);
+		List<Ident> waypointIdentList = qi.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.WAYPOINT_VAR_NAME);
 		for (Ident waypointIdent : waypointIdentList) {
 			waypoints.add(new WaypointConfig(waypointIdent));
 		}
-		Ident rotationIdent = queryEmitter.getIdentFromSolution(solution, CinematicQueryNames.END_ROTATION_VAR_NAME);
+		Ident rotationIdent = qi.getIdentFromSolution(solution, CinematicQueryNames.END_ROTATION_VAR_NAME);
 		if (rotationIdent != null) {
 			endRotation = new RotationConfig(rotationIdent);
 		}
 	}
 
-	public CinematicTrack(Item configItem) {
+	public CinematicTrack(ItemAssemblyReader iaReader, Item configItem) {
 		// If this track has no name, it's likely an unnamed track defined in-line with a cinematic definition...
 		trackName = ItemFuncs.getString(configItem, CinematicConfigNames.P_trackName, CinematicConfigNames.unnamedTrackName);
 		String trackLocalName = configItem.getIdent().getLocalName();
@@ -144,7 +142,7 @@ public class CinematicTrack extends BasicDebugger {
 		startTime = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_startTime, 0.0).floatValue();
 		trackDuration = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_trackDuration, 0.0).floatValue();
 		// Get waypoints
-		List<Item> waypointItems = reader.readLinkedItemSeq(configItem, CinematicConfigNames.P_waypoint);
+		List<Item> waypointItems = iaReader.readLinkedItemSeq(configItem, CinematicConfigNames.P_waypoint);
 		for (Item wpt : waypointItems) {
 			WaypointConfig oneWaypoint = new WaypointConfig(wpt);
 			waypoints.add(oneWaypoint);

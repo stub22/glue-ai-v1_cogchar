@@ -44,6 +44,7 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 import javax.swing.JFrame;
+import org.appdapter.help.repo.QueryInterface;
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
@@ -70,7 +71,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	// a method that will be general (thus the String key for the request type) and packaged in an interface we can 
 	// pass around. PumaAppContext will set the interface on creation of the HRC.
 	public interface UpdateInterface {
-		public boolean updateConfig(String request);
+		public boolean updateConfig(QueryInterface qi, String request);
 	}
 	
 	public void setUpdateInterface(UpdateInterface theInterface) {
@@ -78,9 +79,9 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	}
 	
 	// ... and here's a method things that can see HRC can use to request a reload.
-	public void requestConfigReload(String request) {
+	public void requestConfigReload(QueryInterface qi, String request) {
 		if (myUpdateInterface != null) {
-			myUpdateInterface.updateConfig(request);
+			myUpdateInterface.updateConfig(qi, request);
 		} else {
 			logWarning("Update requested (" + request + "), but UpdateInterface not available in HumanoidRenderContext");
 		}
