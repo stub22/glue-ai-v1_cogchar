@@ -43,7 +43,7 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	public	String							myRobotName;
 	public	List<BoneJointConfig>			myBJCs = new ArrayList<BoneJointConfig>();
 	
-	private static QueryInterface queryEmitter = QueryTester.getInterface();
+	// private static QueryInterface queryEmitter = QueryTester.getInterface();
 	
 		
 	@Override public String getFieldSummary() {
@@ -51,16 +51,16 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	}
 	
 	// A new constructor to build BoneRobotConfig from spreadsheet
-	public BoneRobotConfig(Ident bonyConfigIdent, Ident graphIdent) {
+	public BoneRobotConfig(QueryInterface qi, Ident bonyConfigIdent, Ident graphIdent, BoneQueryNames bqn) {
 		logInfo("Building BoneRobotConfig via queries for " + bonyConfigIdent.getLocalName() + " using graph " + graphIdent.getAbsUriString());
-		SolutionMap solutionMap = queryEmitter.getQueryResultMap(BoneQueryNames.ROBOT_NAME_QUERY_URI, BoneQueryNames.ROBOT_URI_VAR_NAME, graphIdent);
-		myRobotName = queryEmitter.getStringFromSolution(solutionMap, bonyConfigIdent, BoneQueryNames.ROBOT_NAME_VAR_NAME);
-		String queryString = queryEmitter.getCompletedQueryFromTemplate(BoneQueryNames.BONE_JOINT_CONFIG_QUERY_TEMPLATE_URI, BoneQueryNames.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
-		SolutionList solutionList = queryEmitter.getTextQueryResultList(queryString, graphIdent);
-		List<Ident> boneJointConfigIdents = queryEmitter.getIdentsFromSolutionAsJava(solutionList, BoneQueryNames.BONE_JOINT_CONFIG_INSTANCE_VAR_NAME);
-		queryString = queryEmitter.getQuery(BoneQueryNames.BASE_BONE_JOINT_PROPERTIES_QUERY_TEMPLATE_URI);
-		queryString = queryEmitter.setQueryVar(queryString, BoneQueryNames.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
-		solutionMap = queryEmitter.getTextQueryResultMap(queryString, BoneQueryNames.JOINT_URI_VAR_NAME, graphIdent);
+		SolutionMap solutionMap = qi.getQueryResultMap(bqn.ROBOT_NAME_QUERY_URI, bqn.ROBOT_URI_VAR_NAME, graphIdent);
+		myRobotName = qi.getStringFromSolution(solutionMap, bonyConfigIdent, bqn.ROBOT_NAME_VAR_NAME);
+		String queryString = qi.getCompletedQueryFromTemplate(bqn.BONE_JOINT_CONFIG_QUERY_TEMPLATE_URI, bqn.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
+		SolutionList solutionList = qi.getTextQueryResultList(queryString, graphIdent);
+		List<Ident> boneJointConfigIdents = qi.getIdentsFromSolutionAsJava(solutionList, bqn.BONE_JOINT_CONFIG_INSTANCE_VAR_NAME);
+		queryString = qi.getQuery(bqn.BASE_BONE_JOINT_PROPERTIES_QUERY_TEMPLATE_URI);
+		queryString = qi.setQueryVar(queryString, bqn.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
+		solutionMap = qi.getTextQueryResultMap(queryString, bqn.JOINT_URI_VAR_NAME, graphIdent);
 		for (Ident jointIdent: boneJointConfigIdents) {
 			myBJCs.add(new BoneJointConfig(jointIdent, solutionMap, graphIdent));
 		}
@@ -68,9 +68,9 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	
 	// Calling this method before using the constructor above ensures that fresh config is being used, but takes more 
 	// time than using the cached repo as occurs by default
-	public static void reloadResource() {
-		queryEmitter.reloadSheetRepo(); 
-	}
+//	public static void reloadResource() {
+//		queryEmitter.reloadSheetRepo(); 
+//	}
 	
 	public static class Builder extends DynamicCachingComponentAssembler<BoneRobotConfig> {
 

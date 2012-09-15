@@ -1,0 +1,77 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix apsb:	<http://www.appdapter.org/schema/box#> .
+@prefix apt:	<http://www.appdapter.org/test#> .
+
+@prefix cn:		<http://www.cogchar.org/schema/nugget#> .
+
+@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+<>  rdfs:comment     "Cogchar contents for Whackamole browser" ;
+    dc:creator       "Stu B. <www.appstract.com>" ;
+    dc:subject       "Cogchar Tests" ;
+    dc:publisher     "cogchar.org" ;
+    dc:title         "(title) Cogchar Whackamole - object assembly test" ;
+    dc:description   "(desc)  object assembly test - lots of details in this discs" ;
+    dc:date          "2010-11-06" ;
+
+    dc:format        "RDF" ;
+    dc:identifier    "huh"
+    .
+
+cn:BuildableNugget
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.test.assembly.NuggetBuilder" 
+		.		
+    
+apsb:BuildableBox		
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.appdapter.gui.assembly.BoxAssembler" 
+		.
+
+apsb:BuildableTrigger		
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.appdapter.gui.assembly.TriggerAssembler" 
+		.			
+
+apt:box_001 	rdf:type			apsb:BuildableBox;
+				apsb:javaFQCN		"org.appdapter.gui.box.BoxImpl";
+				rdfs:label 			"box 001 rdfs label";
+				apsb:trigger		apt:trig_093
+				.
+
+apt:box_002 	rdf:type			apsb:BuildableBox;
+				apsb:javaFQCN		"org.appdapter.gui.box.BoxImpl";
+				rdfs:label 			"box 002 rdfs label";
+				apsb:trigger		apt:trig_088;
+				apsb:trigger		apt:trig_093
+				.
+				
+apt:trig_088	rdf:type			apsb:BuildableTrigger;
+				apsb:label			"trig 088 (dump)";
+				apsb:javaFQCN		"org.appdapter.gui.trigger.SysTriggers$DumpTrigger"
+				.
+
+apt:trig_093	rdf:type			apsb:BuildableTrigger;
+				apsb:label			"trig 093 (dump)";
+				apsb:javaFQCN		"org.appdapter.gui.trigger.SysTriggers$DumpTrigger"
+				.
+	
+cn:nug_099 	rdf:type			cn:BuildableNugget;
+	apsb:javaFQCN		"org.cogchar.test.assembly.MegaNugget";
+	apsb:label			"nuggy-099 apsb label";
+	rdfs:label 			"nuggy-099 rdfs label";
+	apsb:trigger		apt:trig_093;
+	cn:details			"details of a collection-containing mega-nug";
+	cn:gaucho			"soltero";
+	# cn:otherNugs		(cn:nug_004 cn:nug_001 cn:nug_002 cn:nug_003)
+	.
+	

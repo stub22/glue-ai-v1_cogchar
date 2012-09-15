@@ -27,7 +27,7 @@ import org.cogchar.impl.scene.{SceneSpec, BScene, SceneBook, Theater};
  */
 
 object FancyTriggerFacade extends BasicDebugger {
-	def makeTrigger(ss : SceneSpec) : DummyTrigger  = {
+	def makeTriggerForScene(ss : SceneSpec) : DummyTrigger  = {
 		val sceneID : Ident = ss.getIdent();
 		val freeSceneID : FreeIdent = new FreeIdent(sceneID);
 		val ndt = new DummyTrigger() { 
@@ -44,44 +44,45 @@ object FancyTriggerFacade extends BasicDebugger {
 		ndt;
 	}
 	
-	def registerTrigger(binder: DummyBinder, box: DummyBox, ss : SceneSpec) {
+	def registerTriggerForScene(binder: DummyBinder, box: DummyBox, ss : SceneSpec) {
 		val trigName : Option[String] = ss.myTrigName;
 		trigName match {
 			case	Some(tn) =>	{
-				val trig = makeTrigger(ss);
-				val binding = new FancyBinding(box, trig);
-				logInfo("Registering binding for name[" + tn + "], binding [" + binding + "]");
-				binder.setBinding(tn, binding);
+					val trig = makeTriggerForScene(ss);
+					val binding = new FancyBinding(box, trig);
+					logInfo("Registering binding for name[" + tn + "], binding [" + binding + "]");
+					binder.setBinding(tn, binding);
 					
-			}
+				}
 			case _  => {
-				logWarning("No trigName found for scene: " + ss);
+					logWarning("No trigName found for scene: " + ss);
+				}
+		}
+	}
+	def registerTriggersForAllScenes(binder: DummyBinder, box: DummyBox, sb : SceneBook) {
+		for (val aSceneSpec : SceneSpec <- sb.mySceneSpecs.values) {
+			registerTriggerForScene(binder, box, aSceneSpec);
+		}
+	}
+
+	private class FancyBinding(val myBox : DummyBox, val myTrig : DummyTrigger) extends DummyBinding {
+		override def setTargetBox(box: DummyBox) {
+			throw new RuntimeException("Cannot set target box on fancy binding");
+		}
+		override def setTargetTrigger(trig: DummyTrigger) {
+			throw new RuntimeException("Cannot set target trigger on fancy binding");
+		}
+		override def perform() {
+			if (myTrig != null) { 
+				myTrig.fire(myBox);
 			}
 		}
-	}
-	def registerAllTriggers(binder: DummyBinder, box: DummyBox, sb : SceneBook) {
-		for (val aSceneSpec : SceneSpec <- sb.mySceneSpecs.values) {
-			registerTrigger(binder, box, aSceneSpec);
+		override def toString() : String = {
+			"FancyBinding box=[" + myBox + "] trig=[" + myTrig + "]";
 		}
-	}
-}
-class FancyBinding(val myBox : DummyBox, val myTrig : DummyTrigger) extends DummyBinding {
-	override def setTargetBox(box: DummyBox) {
-		throw new RuntimeException("Cannot set target box on fancy binding");
-	}
-	override def setTargetTrigger(trig: DummyTrigger) {
-		throw new RuntimeException("Cannot set target trigger on fancy binding");
-	}
-	override def perform() {
-		if (myTrig != null) { 
-			myTrig.fire(myBox);
-		}
-	}
-	override def toString() : String = {
-		"FancyBinding box=[" + myBox + "] trig=[" + myTrig + "]";
-	}
 	
-	override def clearTargetBox() {
-		throw new RuntimeException("Cannot clear target box on fancy binding");
+		override def clearTargetBox() {
+			throw new RuntimeException("Cannot clear target box on fancy binding");
+		}
 	}
 }

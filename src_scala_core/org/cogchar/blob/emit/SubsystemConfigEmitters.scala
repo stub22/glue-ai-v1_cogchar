@@ -27,6 +27,10 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 
 object SubsystemConfigEmitters {
 }
+class SubsystemConfigEmitter {
+	val COGCHAR_URN_PREFIX = "urn:ftd:cogchar.org:2012:";
+	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "runtime#";
+}
 class ConvyConfigEmitter {
 }
 class RobokindBindingConfigEmitter {
@@ -35,8 +39,11 @@ class RobokindBindingConfigEmitter {
 		NB_BONY_ROBOT_ID; // or DUMMY_ROBOT_ID, ...
 	}
 	*/
+   
+	
+	
 }
-class RenderConfigEmitter(val myOptSysCtxURI : Option[String]) {
+class RenderConfigEmitter(val myOptSysCtxURI : Option[String]) extends SubsystemConfigEmitter {
 	// Alternate no-args constructor
 	def this() = this(None)
 	
@@ -68,8 +75,7 @@ class RenderConfigEmitter(val myOptSysCtxURI : Option[String]) {
 	val SLIM_PANEL_CLASSNAME = "org.cogchar.render.gui.bony.VirtCharPanel";	
 
 	// Used (for now) by HumanoidPuppetActions for Sinbad special handling
-	val COGCHAR_URN_PREFIX = "urn:ftd:cogchar.org:2012:";
-	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "runtime#";
+
 	val SINBAD_NICKNAME = "char_sinbad_88";
 	val	SINBAD_CHAR_URI = COGCHAR_CHAR_URN_PREFIX + SINBAD_NICKNAME;
 	val	SINBAD_CHAR_IDENT = new FreeIdent(SINBAD_CHAR_URI, SINBAD_NICKNAME)
@@ -119,4 +125,23 @@ class RenderConfigEmitter(val myOptSysCtxURI : Option[String]) {
 		Application.initAssetManager does:
 	             String assetCfg = settings.getString("AssetConfigURL");
 	 */	
+}
+
+class KeystrokeConfigEmitter extends SubsystemConfigEmitter {
+	
+	val ccrt = COGCHAR_CHAR_URN_PREFIX;
+	
+	val BINDINGS_QUERY_URI = "ccrt:find_keybindings_99";
+	
+	val TYPE_VAR_NAME = "type";
+	val BINDING_IDENT_VAR_NAME = "name";
+	val ACTION_VAR_NAME = "action";
+	val KEY_VAR_NAME = "key";
+	
+	val GENERAL_BINDING_NAME = "keybinding";
+	val SCENE_BINDING_NAME = "scene_keybinding";
+	
+	val  GENERAL_BINDING_TYPE : Ident = new FreeIdent(ccrt + GENERAL_BINDING_NAME, GENERAL_BINDING_NAME);
+	val  SCENE_BINDING_TYPE : Ident = new FreeIdent(ccrt + SCENE_BINDING_NAME, SCENE_BINDING_NAME);
+	
 }
