@@ -18,6 +18,7 @@ package org.cogchar.bundle.app.puma;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.help.repo.QueryInterface;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.render.app.humanoid.SceneActions;
@@ -109,10 +110,10 @@ public class PumaWebMapper extends BasicDebugger {
 		}
 		
 		@Override
-		public boolean performUpdate(String request) {
+		public boolean performUpdate(QueryInterface qi, String request) {
 			boolean success = false;
 			if (myAppContext != null) {
-				success = myAppContext.updateConfigByRequest(request);
+				success = myAppContext.updateConfigByRequest(qi, request);
 			} else {
 				logWarning("Update requested, but PumaWebMapper cannot find PumaAppContext: " + request);
 			}

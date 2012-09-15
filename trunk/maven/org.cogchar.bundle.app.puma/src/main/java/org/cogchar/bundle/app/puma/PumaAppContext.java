@@ -165,7 +165,7 @@ public class PumaAppContext extends BasicDebugger {
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
 	private boolean updating = false;
 
-	public boolean updateConfigByRequest(String request) {
+	public boolean updateConfigByRequest(final QueryInterface qi, String request) {
 		// Eventually we may decide on a good home for these constants:	
 		final String WORLD_CONFIG = "worldconfig";
 		final String BONE_ROBOT_CONFIG = "bonerobotconfig";
@@ -185,7 +185,7 @@ public class PumaAppContext extends BasicDebugger {
 			Thread updateThread = new Thread("World Update Thread") {
 
 				public void run() {
-					reloadWorldConfig();
+					reloadWorldConfig(qi);
 					updating = false;
 				}
 			};
@@ -195,7 +195,7 @@ public class PumaAppContext extends BasicDebugger {
 			Thread updateThread = new Thread("Bone Robot Update Thread") {
 
 				public void run() {
-					reloadBoneRobotConfig();
+					reloadBoneRobotConfig(qi);
 					updating = false;
 				}
 			};
@@ -219,7 +219,7 @@ public class PumaAppContext extends BasicDebugger {
 			Thread updateThread = new Thread("Update Thread") {
 
 				public void run() {
-					reloadAll();
+					reloadAll(qi);
 					updating = false;
 				}
 			};
@@ -234,8 +234,8 @@ public class PumaAppContext extends BasicDebugger {
 	class UpdateInterfaceImpl implements HumanoidRenderContext.UpdateInterface {
 
 		@Override
-		public boolean updateConfig(String request) {
-			return updateConfigByRequest(request);
+		public boolean updateConfig(QueryInterface qi, String request) {
+			return updateConfigByRequest(qi, request);
 		}
 	}
 
@@ -311,7 +311,7 @@ public class PumaAppContext extends BasicDebugger {
 	// back to HRC if there are philosophical reasons for doing so. (We'd also have to pass two graph flavors to it for this.)
 	// Added: since jMonkey key bindings are part of "virtual world" config like Lights/Camera/Cinematics, they are also 
 	// set here
-	public void initCinema() {
+	public void initCinema(QueryInterface qi) {
 		myHRC.initCinema();
 		getWebMapper().connectLiftSceneInterface(myBundleContext);
 		// The connectCogCharResources call below is currently still needed only for the "legacy" BallBuilder functionality
@@ -341,7 +341,7 @@ public class PumaAppContext extends BasicDebugger {
 					logWarning("Could not get valid graph on which to query for Cinematics config of " + configIdent.getLocalName(), e);
 				}
 				try {
-					myRenderMapper.initCinematics(myHRC, graphIdent);
+					myRenderMapper.initCinematics(qi, myHRC, graphIdent);
 				} catch (Exception e) {
 					logWarning("Error attempting to initialize Cinematics for " + configIdent.getLocalName() + ": " + e, e);
 				}
@@ -353,7 +353,6 @@ public class PumaAppContext extends BasicDebugger {
 				// bindings from all worldConfigIdents into our KeyBindingConfig instance.
 				try {
 					graphIdent = myGlobalConfig.ergMap().get(configIdent).get(PumaModeConstants.INPUT_BINDINGS_ROLE);
-					QueryInterface qi = getQueryHelper();
 					KeystrokeConfigEmitter kce = new KeystrokeConfigEmitter();
 					
 					currentBindingConfig.addBindings(qi, graphIdent, kce);
@@ -368,18 +367,17 @@ public class PumaAppContext extends BasicDebugger {
 		myHRC.initBindings(currentBindingConfig);
 	}
 
-	public void reloadWorldConfig() {
+	public void reloadWorldConfig(QueryInterface qi) {
 		updateGlobalConfig();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		myRenderMapper.clearLights(myHRC);
 		myRenderMapper.clearCinematics(myHRC);
 		myRenderMapper.clearViewPorts(myHRC);
-		initCinema();
+		initCinema(qi);
 	}
 
-	public void reloadBoneRobotConfig() {
+	public void reloadBoneRobotConfig(QueryInterface qi) {
 		updateGlobalConfig();
-		QueryInterface qi = getQueryHelper();
 		BoneQueryNames bqn = new BoneQueryNames();
 		for (PumaDualCharacter pdc : myCharList) {
 			logInfo("Updating bony config for char [" + pdc + "]");
@@ -396,7 +394,7 @@ public class PumaAppContext extends BasicDebugger {
 		}
 	}
 
-	public void reloadAll() {
+	public void reloadAll(QueryInterface qi) {
 		try {
 			updateGlobalConfig();
 			HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
@@ -414,7 +412,7 @@ public class PumaAppContext extends BasicDebugger {
 			myHRC.detachHumanoidFigures();
 			myCharList.clear();
 			connectDualRobotChars();
-			initCinema();
+			initCinema(qi);
 		} catch (Throwable t) {
 			logError("Error attempting to reload all humanoid config: " + t);
 			// May be good to handle an exception by setting state of a "RebootResult" or etc...

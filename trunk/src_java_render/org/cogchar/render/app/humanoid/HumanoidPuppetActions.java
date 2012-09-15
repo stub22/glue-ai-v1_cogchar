@@ -33,6 +33,8 @@ import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.BoundAction;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.help.repo.QueryEmitter;
+import org.cogchar.blob.emit.QueryTester;
 import org.cogchar.render.model.databalls.BallBuilder;
 
 /**
@@ -124,7 +126,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
         
 		UPDATE_WORLD_CONFIG {
 			void act(HumanoidRenderContext ctx) {
-				ctx.requestConfigReload("WorldConfig");
+				ctx.requestConfigReload(getQueryInterface(), "WorldConfig");
             }
             int getTriggerKey() { 
                 return getKey(this);
@@ -141,7 +143,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 			// the active characters. And, in the future updateConfigByRequest will be able to handle updating
 			// single characters.
 			void act(HumanoidRenderContext ctx) {
-				ctx.requestConfigReload("BoneRobotConfig");
+				ctx.requestConfigReload(getQueryInterface(), "BoneRobotConfig");
             }
             int getTriggerKey() { 
                 return getKey(this);
@@ -151,7 +153,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 		
 		UPDATE_HUMANOIDS {
 			void act(HumanoidRenderContext ctx) {
-				ctx.requestConfigReload("AllHumanoidConfig");
+				ctx.requestConfigReload(getQueryInterface(), "AllHumanoidConfig");
             }
             int getTriggerKey() { 
                 return getKey(this);
@@ -288,6 +290,9 @@ public class HumanoidPuppetActions extends BasicDebugger {
 						"Error getting binding for " + actionType.toString() + ": " + e);
 			}
 			return keyInput;
+		}
+		QueryInterface getQueryInterface() { 
+			return QueryTester.getInterface();
 		}
 	};
     

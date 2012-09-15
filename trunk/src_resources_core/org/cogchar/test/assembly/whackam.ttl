@@ -42,14 +42,14 @@ apsb:BuildableTrigger
 		ja:assembler		"org.appdapter.gui.assembly.TriggerAssembler" 
 		.			
 
-apt:box_001 	rdf:type			apsb:BuildableBox;
-				apsb:javaFQCN		"org.appdapter.gui.box.BoxImpl";
+apt:box_055 	rdf:type			apsb:BuildableBox;
+				apsb:javaFQCN		"org.cogchar.impl.trigger.WhackBox";
 				rdfs:label 			"box 001 rdfs label";
 				apsb:trigger		apt:trig_093
 				.
 
-apt:box_002 	rdf:type			apsb:BuildableBox;
-				apsb:javaFQCN		"org.appdapter.gui.box.BoxImpl";
+apt:box_056 	rdf:type			apsb:BuildableBox;
+				apsb:javaFQCN		"org.cogchar.impl.trigger.WhackBox";
 				rdfs:label 			"box 002 rdfs label";
 				apsb:trigger		apt:trig_088;
 				apsb:trigger		apt:trig_093
@@ -57,7 +57,7 @@ apt:box_002 	rdf:type			apsb:BuildableBox;
 				
 apt:trig_088	rdf:type			apsb:BuildableTrigger;
 				apsb:label			"trig 088 (dump)";
-				apsb:javaFQCN		"org.appdapter.gui.trigger.SysTriggers$DumpTrigger"
+				apsb:javaFQCN		"org.cogchar.impl.trigger.WhackTrig"
 				.
 
 apt:trig_093	rdf:type			apsb:BuildableTrigger;
