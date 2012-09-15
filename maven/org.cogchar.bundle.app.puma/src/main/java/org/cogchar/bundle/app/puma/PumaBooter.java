@@ -177,7 +177,7 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 	// Registers the QueryEmitter service, currently with an empty lifecycle.
 	// This service will be used by managed services needing query config
 	// Currently, that's: LifterLifecycle
-	public QueryInterface startVanillaQueryInterface(BundleContext context) {
+	public static QueryInterface startVanillaQueryInterface(BundleContext context) {
 		// We want to make explicity the assumptions about what goes into our QueryEmitter.
 		// On 2012-09-12 Stu changed "new QueryEmitter()" to makeVanillaQueryEmitter,
 		// but perhaps there is some more adjustment to do here for lifecycle compat.
