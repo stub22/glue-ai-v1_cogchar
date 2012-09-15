@@ -19,6 +19,9 @@ import org.osgi.framework.BundleContext;
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.QueryInterface;
+
+
 import org.appdapter.core.log.BasicDebugger;
 
 
@@ -26,6 +29,7 @@ import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
 import org.cogchar.api.humanoid.HumanoidConfig;
+import org.cogchar.api.skeleton.config.BoneQueryNames;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
@@ -51,7 +55,7 @@ import org.osgi.framework.ServiceRegistration;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaDualCharacter extends BasicDebugger implements DummyBox {
+public class PumaDualCharacter extends DummyBox {
 
 	private		SpeechOutputClient		mySOC;
 	private		Ident					myCharIdent;
@@ -84,7 +88,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		myBehaviorCE = bce;
 	}
 
-	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, HumanoidConfig hc) throws Throwable {
+	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, HumanoidConfig hc, QueryInterface qi, BoneQueryNames bqn) throws Throwable {
 		// bonyConfig path is going away as we move to query-based config
 		// Looks like Turtle BoneRobotConfig is going away for good, in which case this block can be deleted
 		/*
@@ -98,7 +102,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 			boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		}
 		*/ 
-		BoneRobotConfig boneRobotConf = new BoneRobotConfig(myCharIdent, qGraph); 
+		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharIdent, qGraph, bqn); 
 		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
 		
@@ -153,7 +157,7 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 		SceneBook sb = myTheater.getSceneBook();
 		DummyBinder trigBinder = SceneActions.getBinder();
 		//myWebMapper.connectLiftSceneInterface(myBundleCtx); // Now done in PumaAppContext.initCinema
-		FancyTriggerFacade.registerAllTriggers(trigBinder, myTheater, sb);
+		FancyTriggerFacade.registerTriggersForAllScenes(trigBinder, myTheater, sb);
 		myTheater.startThread();
 	}
 
@@ -235,8 +239,8 @@ public class PumaDualCharacter extends BasicDebugger implements DummyBox {
 	}
 
 	// This method is called once (for each character) when bony config update is requested
-	public void updateBonyConfig(Ident graphIdent) throws Throwable {
-		myHumoidMapper.updateModelRobotUsingBoneRobotConfig(new BoneRobotConfig(myCharIdent, graphIdent));
+	public void updateBonyConfig(QueryInterface qi, Ident graphIdent, BoneQueryNames bqn) throws Throwable {
+		myHumoidMapper.updateModelRobotUsingBoneRobotConfig(new BoneRobotConfig(qi, myCharIdent, graphIdent, bqn));
 	}
 
 	/* On the way out as we move away from Turtle config

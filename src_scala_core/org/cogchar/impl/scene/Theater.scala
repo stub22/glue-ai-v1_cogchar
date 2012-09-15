@@ -33,10 +33,10 @@ import org.cogchar.platform.trigger.{DummyBox, DummyTrigger, DummyBinding, Dummy
  * @author Stu B. <www.texpedient.com>
  */
 
-class Theater extends BasicDebugger with DummyBox {
+class Theater extends DummyBox {
 	val	myBM = new BehaviorModulator();
 	val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
-	var myBinder : DummyBinder = null;
+	// var myBinder : DummyBinder = null;
 	var	mySceneBook : SceneBook = null;
 	
 	var myWorkThread : Thread = null;
@@ -140,9 +140,11 @@ class Theater extends BasicDebugger with DummyBox {
 
 }
 object Theater extends BasicDebugger {
-	
 
-	def main(args: Array[String]) {
+	def main(args: Array[String])  : Unit = {
+		test();
+	}
+	def test() : Unit = {
 		
 		val		thtr = new Theater();
 
@@ -163,7 +165,7 @@ object Theater extends BasicDebugger {
 		val aSceneSpec : SceneSpec = sceneBook.allSceneSpecs().head;
 		logInfo("Found first SceneSpec to build a trigger for: " + aSceneSpec);
 		
-		val trig : DummyTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTrigger(aSceneSpec);
+		val trig : DummyTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTriggerForScene(aSceneSpec);
 		
 	
 		thtr.startThread();

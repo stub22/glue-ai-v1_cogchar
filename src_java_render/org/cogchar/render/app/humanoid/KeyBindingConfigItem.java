@@ -21,6 +21,8 @@ import org.appdapter.help.repo.Solution;
 
 import org.cogchar.blob.emit.QueryTester;
 
+import org.cogchar.blob.emit.KeystrokeConfigEmitter;
+
 /**
  * A class to hold the individual jMonkey key bindings. For more info see KeyBindingConfig.java
  *
@@ -28,17 +30,17 @@ import org.cogchar.blob.emit.QueryTester;
  */
 public class KeyBindingConfigItem {
 
-	public Ident type;
-	public String myIdent;
-	public String boundAction;
-	public String boundKey;
+	public Ident	myTypeIdent;
+	public String	myBindingLocalName;
+	public String	myBoundEventName;
+	public String	myBoundKeyName;
 	// Another instance of the "not permanent" way of getting the QueryInterface! Time to decide soon the permanent way...
 	private static QueryInterface qi = QueryTester.getInterface();
 
-	public KeyBindingConfigItem(Solution solution) {
-		type = qi.getIdentFromSolution(solution, KeyBindingQueryNames.TYPE_VAR_NAME);
-		myIdent = qi.getIdentFromSolution(solution, KeyBindingQueryNames.BINDING_IDENT_VAR_NAME).getLocalName();
-		boundAction = qi.getStringFromSolution(solution, KeyBindingQueryNames.ACTION_VAR_NAME);
-		boundKey = qi.getStringFromSolution(solution, KeyBindingQueryNames.KEY_VAR_NAME);
+	public KeyBindingConfigItem(Solution solution, KeystrokeConfigEmitter kce) {
+		myTypeIdent = qi.getIdentFromSolution(solution, kce.TYPE_VAR_NAME());
+		myBindingLocalName = qi.getIdentFromSolution(solution, kce.BINDING_IDENT_VAR_NAME()).getLocalName();
+		myBoundEventName = qi.getStringFromSolution(solution, kce.ACTION_VAR_NAME());
+		myBoundKeyName = qi.getStringFromSolution(solution, kce.KEY_VAR_NAME());
 	}
 }

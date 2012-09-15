@@ -64,7 +64,10 @@ object QueryTester {
 		sr.loadSheetModelsIntoMainDataset()
 		sr
 	}
-  
+  	def makeVanillaQueryEmitter() : QueryEmitter = {
+		val repo = loadSheetRepo;
+		new QueryEmitter(repo, GRAPH_QUERY_VAR, QUERY_SHEET)		
+	}
 	// A temporary hook-in to allow current clients of QueryEmitter to easily get a "primary" instance until they 
 	// start using the managed service version - really this should happen in a registry but this is a short-term fix
 	def getInterface : QueryInterface = {
@@ -73,8 +76,7 @@ object QueryTester {
 		}
 		myQueryInterface
 	}
-	def makeVanillaQueryEmitter() : QueryEmitter = {
-		val repo = loadSheetRepo;
-		new QueryEmitter(repo, GRAPH_QUERY_VAR, QUERY_SHEET)		
+	def clearQueryInterface : Unit = {
+		myQueryInterface = null;
 	}
 }

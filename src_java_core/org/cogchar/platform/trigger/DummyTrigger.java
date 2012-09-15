@@ -15,9 +15,11 @@
  */
 package org.cogchar.platform.trigger;
 
+import org.appdapter.scafun.FullTrigger;
+import org.appdapter.scafun.FullBox;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface DummyTrigger {
-	public void fire(DummyBox targetBox);
+public interface DummyTrigger extends FullTrigger<DummyBox> {
+	// public abstract void fire(DummyBox targetBox);
 }

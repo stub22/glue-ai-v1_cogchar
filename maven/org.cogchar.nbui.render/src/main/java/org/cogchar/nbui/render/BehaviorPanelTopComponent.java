@@ -57,9 +57,10 @@ public final class BehaviorPanelTopComponent extends TopComponent {
             return;
         }
         if(myInitFlag){
+			System.out.println("BehaviorPanelTopComponent was already initialized.");
             return;
         }
-        
+        System.out.println("init() - making trigger panel and robot selector");
         new OSGiComponent(bundleCtx, 
                 new SimpleLifecycle(triggerPanel1, ActionCallbackMap.class)).start();
         new OSGiComponent(bundleCtx, 
@@ -95,6 +96,7 @@ public final class BehaviorPanelTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
+		System.out.println("BehaviorPanel-componentOpened()");
         BundleContext context = OSGiUtils.getBundleContext(Robot.class);
         if(context == null){
             throw new NullPointerException(

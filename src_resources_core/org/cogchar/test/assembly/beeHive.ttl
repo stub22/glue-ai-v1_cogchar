@@ -55,7 +55,7 @@ csi:scn_004
 
 csi:bh_001A		
 	rdf:type			cs:BuildableBehaviorSpec;
-	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	apsb:javaFQCN		"org.cogchar.impl.scene.SteppingBehaviorSpec";
 	apsb:label			"bh-001 apsb label";
 	rdfs:label 			"bh-001 rdfs label";
 	apsb:trigger		apt:trig_001a;
@@ -77,7 +77,7 @@ csi:bh_001A
 
 csi:bh_001B		
 	rdf:type			cs:BuildableBehaviorSpec;
-	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	apsb:javaFQCN		"org.cogchar.impl.scene.SteppingBehaviorSpec";
 	cs:steps (
 		[
 			cs:channel			csi:speechOut_100;

@@ -30,6 +30,7 @@ import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
+import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 
 import org.cogchar.blob.emit.QueryTester;
 import org.cogchar.platform.trigger.DummyBinding;
@@ -42,34 +43,36 @@ import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
-
-
+import org.cogchar.api.skeleton.config.BoneQueryNames;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class PumaAppContext extends BasicDebugger {
 
-	private BundleContext myBundleContext;
-	private HumanoidRenderContext myHRC;
-	private ClassLoader myInitialBonyRdfCL;
-	private PumaWebMapper myWebMapper; // We now have a single instance of the web mapper here, instead of separate instances for each PumaDualCharacter.
+	private BundleContext			myBundleContext;
+	private HumanoidRenderContext	myHRC;
+	private ClassLoader				myInitialBonyRdfCL;
+	private PumaWebMapper			myWebMapper; 
+	// We now have a single instance of the web mapper here, instead of separate instances for each PumaDualCharacter.
 	// This method for updating bony config is not very flexible (to configuring only single characters in the future)
 	// and requires multiple sheet reloads for multiple characters. So I'm trying out the idea of moving this functionality
 	// into updateConfigByRequest - Ryan
 	//private TriggerItems.UpdateBonyConfig myUpdateBonyConfigTI;
-	// Here's a GlobalConfigEmitter for our PUMA instance. Does it really belong here? Time will tell.
-	private GlobalConfigEmitter myGlobalConfig;
 	// Let's try making this a field of PumaAppContext. That way, refresh of bony config can be handled here in a nice
 	// clean, consistent way. May also have additional advantages. Might have some disadvantages too, we'll see!
-	private List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
+	private List<PumaDualCharacter>	myCharList = new ArrayList<PumaDualCharacter>();
 	// A query interface instance we can reuse - right now just to trigger repo reloads. May want to do that via
 	// GlobalConfigEmitter or some other interface in the long run...?
-	QueryInterface			queryEmitter;
+	QueryInterface					myQueryInterface;
+	
 	// A managed service instance of the GlobalConfigEmitter, currently used only by LifterLifecycle.
 	// We need to keep track of it so we can stop and restart it for Lift "refresh"
-	OSGiComponent			gcComp;
-	PumaContextMediator		myMediator;
+	OSGiComponent					gcComp;
+	PumaContextMediator				myMediator;
+	// Here's a GlobalConfigEmitter for our PUMA instance. Does it really belong here? Time will tell.
+	private GlobalConfigEmitter		myGlobalConfig;
 
+	
 	public PumaAppContext(BundleContext bc) {
 		myBundleContext = bc;
 	}
@@ -77,33 +80,35 @@ public class PumaAppContext extends BasicDebugger {
 	public HumanoidRenderContext getHumanoidRenderContext() {
 		return myHRC;
 	}
-	
+
 	public void setCogCharResourcesClassLoader(ClassLoader loader) {
 		myInitialBonyRdfCL = loader;
 	}
-	
+
 	public PumaWebMapper getWebMapper() {
 		if (myWebMapper == null) {
 			myWebMapper = new PumaWebMapper();
 		}
 		return myWebMapper;
 	}
-	
+
 	public void setGlobalConfig(GlobalConfigEmitter config) {
 		myGlobalConfig = config;
 	}
-	
+
 	public GlobalConfigEmitter getGlobalConfig() {
-            return myGlobalConfig;
+		return myGlobalConfig;
 	}
 
-        private void reloadRepo() {
-            if (queryEmitter == null) {
-                queryEmitter = QueryTester.getInterface();
-            }
-            queryEmitter.reloadSheetRepo();
-        }
-	
+	private void clearQueryHelper() {
+		QueryTester.clearQueryInterface();
+	}
+	private QueryInterface getQueryHelper() { 
+		if (myQueryInterface == null) {
+			myQueryInterface = QueryTester.getInterface();
+		}
+		return myQueryInterface;
+	}
 	// From the commentary in PumaBooter:
 	// Now here's something I was hoping to avoid, but it necessary for our experiment in making Lift a managed
 	// service. This is best seen as a trial of one possible way to handle the "GlobalMode" graph configuration.
@@ -121,7 +126,7 @@ public class PumaAppContext extends BasicDebugger {
 	boolean startGlobalConfigService() {
 		boolean success = false;
 		if (myGlobalConfig != null) {
-			ServiceLifecycleProvider lifecycle = 
+			ServiceLifecycleProvider lifecycle =
 					new SimpleLifecycle(new GlobalConfigServiceImpl(), GlobalConfigEmitter.GlobalConfigService.class);
 			gcComp = new OSGiComponent(myBundleContext, lifecycle);
 			gcComp.start();
@@ -129,21 +134,23 @@ public class PumaAppContext extends BasicDebugger {
 		}
 		return success;
 	}
-	
+
 	// Right now this really feels wrong to make this a service! I don't believe in these maps enough yet.
 	// Putting it here since it's more experimental than the GlobalConfigEmitter itself, but if this ends up
 	// being the "preferred" solution this interface should probably go into o.c.blob.emit
 	class GlobalConfigServiceImpl implements GlobalConfigEmitter.GlobalConfigService {
+
 		@Override
 		public java.util.HashMap<Ident, java.util.HashMap<Ident, Ident>> getErgMap() {
 			return myGlobalConfig.ergMap();
 		}
+
 		@Override
 		public java.util.HashMap<String, java.util.List<Ident>> getEntityMap() {
 			return myGlobalConfig.entityMap();
 		}
 	}
-	
+
 	public void updateGlobalConfig() {
 		// Now this is a little irregular. We're creating this initally in PumaBooter, but also the same 
 		// (temporarily fixed) mode is reloaded here when we want to updateGlobalConfig. So far, that's mainly for our 
@@ -151,13 +158,13 @@ public class PumaAppContext extends BasicDebugger {
 		// figure out how best to handle changes to this "GlobalMode" stuff this should become less hodge-podge
 		// Do we want to always reload the repo here? Might want to keep these functions separate in the future, but for
 		// now I'll assume they will go together.
-		reloadRepo();
-		myGlobalConfig = new GlobalConfigEmitter(new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode));
+		clearQueryHelper();
+		myGlobalConfig = new GlobalConfigEmitter(new FreeIdent(PumaModeConstants.rkrt + PumaModeConstants.globalMode, PumaModeConstants.globalMode));
 	}
-	
 	// A half baked (3/4 baked?) idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
 	private boolean updating = false;
+
 	public boolean updateConfigByRequest(String request) {
 		// Eventually we may decide on a good home for these constants:	
 		final String WORLD_CONFIG = "worldconfig";
@@ -223,8 +230,9 @@ public class PumaAppContext extends BasicDebugger {
 		}
 		return success;
 	}
-	
+
 	class UpdateInterfaceImpl implements HumanoidRenderContext.UpdateInterface {
+
 		@Override
 		public boolean updateConfig(String request) {
 			return updateConfigByRequest(request);
@@ -246,6 +254,7 @@ public class PumaAppContext extends BasicDebugger {
 	public void setContextMediator(PumaContextMediator mediator) {
 		myMediator = mediator;
 	}
+
 	/**
 	 * Third (and last) stage init of OpenGL, and all other systems. Done AFTER startOpenGLCanvas().
 	 *
@@ -253,7 +262,7 @@ public class PumaAppContext extends BasicDebugger {
 	 * @throws Throwable
 	 */
 	public List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
-		
+
 		//List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 		List<Ident> charIdents = new ArrayList<Ident>(); // A blank list, so if the try fails below, the for loop won't throw an Exception
 		try {
@@ -267,7 +276,7 @@ public class PumaAppContext extends BasicDebugger {
 		} catch (Throwable t) {
 			logWarning("Could not retrieve list of characters from global configuration");
 		}
-		
+
 		if (myGlobalConfig == null) {
 			logWarning("GlobalConfigEmitter not available, cannot setup characters!");
 		} else if (myInitialBonyRdfCL == null) {
@@ -288,15 +297,15 @@ public class PumaAppContext extends BasicDebugger {
 				}
 				HumanoidConfig myHumanoidConfig = new HumanoidConfig(charIdent, graphIdentForHumanoid);
 				PumaDualCharacter pdc = connectDualRobotChar(charIdent, myHumanoidConfig.nickname);
-				pdcList.add(pdc);
+				myCharList.add(pdc);
 				pdc.absorbContext(myMediator);
 				setupCharacterBindingToRobokind(pdc, graphIdentForBony, myHumanoidConfig);
 				setupAndStartBehaviorTheater(pdc);
 			}
 		}
-		return pdcList;
+		return myCharList;
 	}
-	
+
 	// The Lights/Camera/Cinematics init used to be done from HumanoidRenderContext, but the global config lives
 	// here as does humanoid and bony config. So may make sense to have this here too, though we could move it
 	// back to HRC if there are philosophical reasons for doing so. (We'd also have to pass two graph flavors to it for this.)
@@ -318,23 +327,23 @@ public class PumaAppContext extends BasicDebugger {
 				try {
 					graphIdent = myGlobalConfig.ergMap().get(configIdent).get(PumaModeConstants.LIGHTS_CAMERA_CONFIG_ROLE);
 				} catch (Exception e) {
-					logWarning("Could not get valid graph on which to query for Lights/Cameras config of " + configIdent.getLocalName());
+					logWarning("Could not get valid graph on which to query for Lights/Cameras config of " + configIdent.getLocalName(), e);
 				}
 				try {
 					myRenderMapper.initLightsAndCamera(myHRC, graphIdent);
 				} catch (Exception e) {
-					logWarning("Error attempting to initialize lights and cameras for " + configIdent.getLocalName() + ": " + e);
+					logWarning("Error attempting to initialize lights and cameras for " + configIdent.getLocalName() + ": " + e, e);
 				}
 				graphIdent = null;
 				try {
 					graphIdent = myGlobalConfig.ergMap().get(configIdent).get(PumaModeConstants.CINEMATIC_CONFIG_ROLE);
 				} catch (Exception e) {
-					logWarning("Could not get valid graph on which to query for Cinematics config of " + configIdent.getLocalName());
+					logWarning("Could not get valid graph on which to query for Cinematics config of " + configIdent.getLocalName(), e);
 				}
 				try {
 					myRenderMapper.initCinematics(myHRC, graphIdent);
 				} catch (Exception e) {
-					logWarning("Error attempting to initialize Cinematics for " + configIdent.getLocalName() + ": " + e);
+					logWarning("Error attempting to initialize Cinematics for " + configIdent.getLocalName() + ": " + e, e);
 				}
 				// Like with everything else dependent on global config's graph settings (except for Lift, which uses a managed service
 				// version of GlobalConfigEmitter) it seems logical to set the key bindings here.
@@ -344,9 +353,12 @@ public class PumaAppContext extends BasicDebugger {
 				// bindings from all worldConfigIdents into our KeyBindingConfig instance.
 				try {
 					graphIdent = myGlobalConfig.ergMap().get(configIdent).get(PumaModeConstants.INPUT_BINDINGS_ROLE);
-					currentBindingConfig.addBindings(graphIdent);
+					QueryInterface qi = getQueryHelper();
+					KeystrokeConfigEmitter kce = new KeystrokeConfigEmitter();
+					
+					currentBindingConfig.addBindings(qi, graphIdent, kce);
 				} catch (Exception e) {
-					logWarning("Could not get valid graph on which to query for input bindings config of " + configIdent.getLocalName());
+					logError("Could not get valid graph on which to query for input bindings config of " + configIdent.getLocalName(), e);
 				}
 
 			}
@@ -355,7 +367,7 @@ public class PumaAppContext extends BasicDebugger {
 		}
 		myHRC.initBindings(currentBindingConfig);
 	}
-	
+
 	public void reloadWorldConfig() {
 		updateGlobalConfig();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
@@ -364,15 +376,17 @@ public class PumaAppContext extends BasicDebugger {
 		myRenderMapper.clearViewPorts(myHRC);
 		initCinema();
 	}
-	
+
 	public void reloadBoneRobotConfig() {
 		updateGlobalConfig();
-		for (PumaDualCharacter pdc : pdcList) {
+		QueryInterface qi = getQueryHelper();
+		BoneQueryNames bqn = new BoneQueryNames();
+		for (PumaDualCharacter pdc : myCharList) {
 			logInfo("Updating bony config for char [" + pdc + "]");
 			try {
 				Ident graphIdent = myGlobalConfig.ergMap().get(pdc.getCharIdent()).get(PumaModeConstants.BONY_CONFIG_ROLE);
 				try {
-					pdc.updateBonyConfig(graphIdent);
+					pdc.updateBonyConfig(qi, graphIdent, bqn);
 				} catch (Throwable t) {
 					logError("problem updating bony config from queries for " + pdc.getCharIdent(), t);
 				}
@@ -381,7 +395,7 @@ public class PumaAppContext extends BasicDebugger {
 			}
 		}
 	}
-	
+
 	public void reloadAll() {
 		try {
 			updateGlobalConfig();
@@ -391,14 +405,14 @@ public class PumaAppContext extends BasicDebugger {
 			myRenderMapper.clearViewPorts(myHRC);
 			clearSpecialInputTriggers();
 			getWebMapper().disconnectLiftSceneInterface(myBundleContext);
-			for (PumaDualCharacter pdc : pdcList) {
+			for (PumaDualCharacter pdc : myCharList) {
 				pdc.stopEverything();
 				pdc.disconnectBonyCharFromRobokindSvcs();
 			}
 			RobotServiceFuncs.clearJointGroups();
 			ModelBlendingRobotServiceContext.clearRobots();
 			myHRC.detachHumanoidFigures();
-			pdcList.clear();
+			myCharList.clear();
 			connectDualRobotChars();
 			initCinema();
 		} catch (Throwable t) {
@@ -412,23 +426,25 @@ public class PumaAppContext extends BasicDebugger {
 		pdc.loadBehaviorConfig(false);
 
 		registerSpecialInputTriggers(pdc);
-		
+
 		pdc.startTheater();
-		
+
 	}
-	
+
 	public void setupCharacterBindingToRobokind(PumaDualCharacter pdc, Ident graphIdentForBony, HumanoidConfig hc) {
 
 		try {
-			pdc.connectBonyCharToRobokindSvcs(myBundleContext, graphIdentForBony, hc);
+			QueryInterface qi = getQueryHelper();
+			BoneQueryNames bqn = new BoneQueryNames();
+			pdc.connectBonyCharToRobokindSvcs(myBundleContext, graphIdentForBony, hc, qi, bqn);
 			setupRobokindJointGroup(pdc, hc.jointConfigPath);
 			pdc.connectSpeechOutputSvcs(myBundleContext);
 		} catch (Throwable t) {
 			logWarning("Problems in Robokind binding init", t);
 		}
 	}
-	
-	public void setupRobokindJointGroup(PumaDualCharacter pdc, String jgFullPath) throws Throwable {		
+
+	public void setupRobokindJointGroup(PumaDualCharacter pdc, String jgFullPath) throws Throwable {
 		//Ident chrIdent = pdc.getCharIdent();
 		File jgConfigFile = makeJointGroupTempFile(pdc, jgFullPath);
 		if (jgConfigFile != null) {
@@ -439,7 +455,7 @@ public class PumaAppContext extends BasicDebugger {
 			logWarning("jointGroup file not found: " + jgFullPath);
 		}
 	}
-	
+
 	private File makeJointGroupTempFile(PumaDualCharacter pdc, String jgFullPath) {
 		File outputFile = null;
 		try {
@@ -459,7 +475,7 @@ public class PumaAppContext extends BasicDebugger {
 		}
 		return outputFile;
 	}
-	
+
 	public PumaDualCharacter connectDualRobotChar(Ident bonyCharIdent, String nickName)
 			throws Throwable {
 
@@ -513,7 +529,7 @@ public class PumaAppContext extends BasicDebugger {
 		db.setTargetBox(pdc);
 		db.setTargetTrigger(trigItem);
 	}
-	
+
 	private void clearSpecialInputTriggers() {
 
 		unhookIt(PlayerAction.STOP_AND_RESET_CHAR);
@@ -528,7 +544,7 @@ public class PumaAppContext extends BasicDebugger {
 		unhookIt(PlayerAction.RELOAD_BEHAVIOR);
 
 	}
-	
+
 	private void unhookIt(PlayerAction action) {
 		DummyBinding db = action.getBinding();
 		db.clearTargetBox();
