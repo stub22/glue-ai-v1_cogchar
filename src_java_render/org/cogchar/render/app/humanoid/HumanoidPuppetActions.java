@@ -33,7 +33,7 @@ import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.BoundAction;
 
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.QueryEmitter;
+import org.appdapter.help.repo.QueryInterface;
 import org.cogchar.blob.emit.QueryTester;
 import org.cogchar.render.model.databalls.BallBuilder;
 
