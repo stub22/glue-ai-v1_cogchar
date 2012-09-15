@@ -35,6 +35,9 @@ import org.appdapter.help.repo.SolutionList;
 
 import org.cogchar.blob.emit.QueryTester;
 
+import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
+import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
+
 /**
  * Used to enclose data from RDF cinematics configuration currently in cinematicConfig.ttl
  *
@@ -50,23 +53,22 @@ public class CinematicConfig extends QueryBackedConfigBase {
 	
 
 	// A new constructor to build CinematicConfig from spreadsheet
-	public CinematicConfig(Ident qGraph) {
-		QueryInterface qi = getQueryInterface();
+	public CinematicConfig(QueryInterface qi, Ident qGraph) {
 		SolutionList solutionList = qi.getQueryResultList(CinematicQueryNames.CINEMATICS_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
-			myCICs.add(new CinematicInstanceConfig(solution, qGraph));
+			myCICs.add(new CinematicInstanceConfig(qi, solution, qGraph));
 		}
 		solutionList = qi.getQueryResultList(CinematicQueryNames.TRACK_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
-			myCTs.add(new CinematicTrack(solution, qGraph));
+			myCTs.add(new CinematicTrack(qi, solution, qGraph));
 		}
 		solutionList = qi.getQueryResultList(CinematicQueryNames.WAYPOINT_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
-			myWCs.add(new WaypointConfig(solution));
+			myWCs.add(new WaypointConfig(qi, solution));
 		}
 		solutionList = qi.getQueryResultList(CinematicQueryNames.ROTATION_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
-			myRCs.add(new RotationConfig(solution));
+			myRCs.add(new RotationConfig(qi, solution));
 		}
 	}
 
@@ -75,16 +77,20 @@ public class CinematicConfig extends QueryBackedConfigBase {
 		public Builder(Resource builderConfRes) {
 			super(builderConfRes);
 		}
-
+		// stub22 2012-09-15:
+		// This method is a callback from Appdapter item-building framework.  
+		// We may want Appdapter to add iaReader as an argument,
+		// replacing/encapsulating the last two current args, assmblr + mode
 		@Override
 		protected void initExtendedFieldsAndLinks(CinematicConfig mcc, Item configItem, Assembler assmblr,
 				Mode mode) {
 			logInfo("CinematicConfig.initExtendedFieldsAndLinks()-BEGIN");
+			ItemAssemblyReader iaReader = new ItemAssemblyReaderImpl();
 			Set<Item> configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_cinematic);
 			logInfo("Cinematics found: " + configItems.size());
 			for (Item ji : configItems) {
 				//logInfo("Generating CinematicInstanceConfig"); // TEST ONLY
-				CinematicInstanceConfig cic = new CinematicInstanceConfig(ji);
+				CinematicInstanceConfig cic = new CinematicInstanceConfig(iaReader, ji);
 				logInfo("Adding CinematicInstanceConfig in CinematicConfig: " + cic);
 				mcc.myCICs.add(cic);
 			}
@@ -92,7 +98,7 @@ public class CinematicConfig extends QueryBackedConfigBase {
 			logInfo("Tracks found: " + configItems.size());
 			for (Item ji : configItems) {
 				//logInfo("Generating CinematicTrack"); // TEST ONLY
-				CinematicTrack ct = new CinematicTrack(ji);
+				CinematicTrack ct = new CinematicTrack(iaReader, ji);
 				logInfo("Adding named CinematicTrack in CinematicConfig: " + ct);
 				mcc.myCTs.add(ct);
 			}

@@ -100,7 +100,7 @@ public class PumaBooter extends BasicDebugger {
 			
 			
 			logInfo("%%%%%%%%%%%%%%%%%%% Starting query service");
-			startQueryService(bundleCtx);
+			QueryInterface vqi = startVanillaQueryInterface(bundleCtx);
 			
 			// This method performs the configuration actions associated with the developmental "Global Mode" concept
 			// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
@@ -160,7 +160,7 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 			// Since we can support multiple characters now (and connect cameras to them), this needs to happen after connectDualRobotChars()
 			// We'll let pac take care of this, since it is currently "Home of the Global Mode"
 			// (even though global mode is currently initially applied here. Any of this may change.)
-			pac.initCinema();
+			pac.initCinema(vqi);
 			
 			logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% initCinema() completed -  PUMA BOOT SUCCESSFUL!  8-)");
 			
@@ -177,7 +177,7 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 	// Registers the QueryEmitter service, currently with an empty lifecycle.
 	// This service will be used by managed services needing query config
 	// Currently, that's: LifterLifecycle
-	public static void startQueryService(BundleContext context) {
+	public QueryInterface startVanillaQueryInterface(BundleContext context) {
 		// We want to make explicity the assumptions about what goes into our QueryEmitter.
 		// On 2012-09-12 Stu changed "new QueryEmitter()" to makeVanillaQueryEmitter,
 		// but perhaps there is some more adjustment to do here for lifecycle compat.
@@ -185,6 +185,7 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(qemit, QueryInterface.class);
     	OSGiComponent queryComp = new OSGiComponent(context, lifecycle);
     	queryComp.start();
+		return qemit;
 	}
 	
 	private Repo findMainRepo(PumaContextMediator mediator) {

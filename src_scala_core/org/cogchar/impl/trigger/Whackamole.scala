@@ -22,7 +22,7 @@ import org.appdapter.osgi.registry.RegistryServiceFuncs;
 import org.appdapter.api.trigger.{Box, BoxContext, BoxImpl, MutableBox, Trigger, TriggerImpl};
 import org.appdapter.gui.demo.{DemoBrowser, DemoNavigatorCtrl};
 
-import org.appdapter.scafun.{Boxy, GoFish}
+import org.appdapter.scafun.{Boxy, GoFish, FullBox, FullTrigger}
 
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 
@@ -68,28 +68,18 @@ object Whackamole extends BasicDebugger {
 		val mutSet : scala.collection.mutable.Set[Object] = JavaConversions.asScalaSet[Object](loadedStuff);
 		mutSet.toSet[Object]
 	}
-	def makeStuff(triplesURL : String) : MutableBox[DummyTrigger] = {
-		logInfo(toString() + ".fire()");
+	def loadBoxes(triplesURL : String) : List[MutableBox[DummyTrigger]] = {
 		val loadedStuff : Set[Object] = getAssembledObjsFromFile(triplesURL);
-		var winner : MutableBox[DummyTrigger] = null;
+		var winnerList = List [MutableBox[DummyTrigger]]()
 		for (x <- loadedStuff) {
-			println("Got Thing[" + x + "]")
+			logInfo("Got Thing[" + x + "]")
+			x match {
+				// Scala "match" may be ignoring the [ParameterType]
+				case mb : MutableBox[DummyTrigger] => { winnerList = mb :: winnerList }
+				case _ => logInfo("Ignoring.")
+			}
 		}
-		/*
-		 for (Object o : loadedStuff) {
-		 o match {
-		 case 
-		 }
-		 if (o instanceof MutableBox) {
-		 loadedMutableBox : MutableBox = (MutableBox) o;
-		 bc.contextualizeAndAttachChildBox(targetBox, loadedMutableBox);
-		 logInfo("Loaded mutable box: " + loadedMutableBox);
-		 } else {
-		 logInfo("Loaded object which is not a mutable box: " + o);
-		 }
-		 }
-		 */
-		winner;
+		winnerList;
 	}
 	def makeFunTrig() : DummyTrigger  = {
 	//		val sceneID : Ident = ss.getIdent();
@@ -100,7 +90,7 @@ object Whackamole extends BasicDebugger {
 			// the matching sceneID must be found in the book of that theater!
 			override def fire(db : DummyBox) : Unit = {
 				
-				println("Firing [" + toString + " on " + db);
+				logInfo("Firing [" + toString + " on " + db);
 	//			val t : Theater = db.asInstanceOf[Theater];
 	//			t.stopAllScenes();
 	//			val scn : BScene = t.makeSceneFromBook(freeSceneID);
@@ -110,17 +100,30 @@ object Whackamole extends BasicDebugger {
 		ndt;
 	}
 	def main(args: Array[String]) :Unit = {
-		println(this.getClass.getCanonicalName() + ".main(" + args + ")-BEGIN");
-		println("Whack-em-ole, Vacquera!");
+		logInfo(this.getClass.getCanonicalName() + ".main(" + args + ")-BEGIN");
+		logInfo("Whack-em-ole, Vacquera!");
 		val time = java.lang.System.currentTimeMillis();
-		println("El tiempo es: " + time);
+		logInfo("El tiempo es: " + time);
 		val tnc : DemoNavigatorCtrl = makeTNC(args);
 		
-		// tnc.launchFrame("Whackamole");
+		tnc.launchFrame("Whackamole");
 		val moreBoxesModelURL : String = "org/cogchar/test/assembly/whackam.ttl";
-		val moreBoxesRoot : MutableBox[DummyTrigger] = makeStuff(moreBoxesModelURL)
+		val moreBoxes : List[MutableBox[DummyTrigger]] = loadBoxes(moreBoxesModelURL)
+		logInfo("Got MoreBoxes: " + moreBoxes)
 		val reloadFlag : Boolean = true;
-		// tnc.addBoxToRoot(moreBoxesRoot, reloadFlag)
-		println(this.getClass.getCanonicalName() + ".main()-END");
+		for (mb <- moreBoxes) {
+			 tnc.addBoxToRoot(mb, reloadFlag)
+		}
+		logInfo(this.getClass.getCanonicalName() + ".main()-END");
 	}	
+}
+
+class WhackBox extends FullBox[WhackTrig] {
+	
+}
+
+class WhackTrig extends TriggerImpl[WhackBox] with FullTrigger[WhackBox] {
+	override def fire(wb : WhackBox) : Unit = {
+		logInfo(this.toString() + " firing on " + wb.toString());
+	}
 }

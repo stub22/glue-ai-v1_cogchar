@@ -34,7 +34,7 @@ public class CinematicInstanceConfig extends QueryBackedConfigBase {
 	public String myURI_Fragment;
 	public float duration;
 	public List<CinematicTrack> myTracks = new ArrayList<CinematicTrack>();
-	private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
+	// private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
 	
 	
 
@@ -43,9 +43,10 @@ public class CinematicInstanceConfig extends QueryBackedConfigBase {
 		return "CinematicInstanceConfig[uriFrag = " + myURI_Fragment + ", duration = " + Float.toString(duration) + ", Number of tracks = " + Integer.toString(myTracks.size());
 	}
 
-	// A new constructor to build CinematicConfig from spreadsheet
-	public CinematicInstanceConfig(Solution querySolution, Ident qGraph) {
-		QueryInterface qi = getQueryInterface();
+	// TODO
+	
+	// A new constructor to build CinematicConfig from query results
+	public CinematicInstanceConfig(QueryInterface qi, Solution querySolution, Ident qGraph) {
 		Ident myIdent = qi.getIdentFromSolution(querySolution, CinematicQueryNames.CINEMATIC_VAR_NAME);
 		myURI_Fragment = myIdent.getLocalName();
 		duration = qi.getFloatFromSolution(querySolution, CinematicQueryNames.DURATION_VAR_NAME, Float.NaN);
@@ -56,14 +57,14 @@ public class CinematicInstanceConfig extends QueryBackedConfigBase {
 			myTracks.add(new CinematicTrack(trackIdent));
 		}
 	}
-
-	public CinematicInstanceConfig(Item configItem) {
+	public CinematicInstanceConfig(ItemAssemblyReader iaReader, Item configItem) {
+		
 		myURI_Fragment = configItem.getIdent().getLocalName();
 		duration = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_duration, null).floatValue();
-		List<Item> trackItems = reader.readLinkedItemSeq(configItem, CinematicConfigNames.P_track);
+		List<Item> trackItems = iaReader.readLinkedItemSeq(configItem, CinematicConfigNames.P_track);
 		logInfo("Number of tracks found: " + trackItems.size());
 		for (Item ti : trackItems) {
-			CinematicTrack ct = new CinematicTrack(ti);
+			CinematicTrack ct = new CinematicTrack(iaReader, ti);
 			myTracks.add(ct);
 		}
 	}

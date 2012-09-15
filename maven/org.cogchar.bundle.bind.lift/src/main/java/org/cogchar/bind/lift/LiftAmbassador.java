@@ -78,7 +78,7 @@ public class LiftAmbassador {
 
 		boolean performDataballAction(String action, String text);
 		
-		boolean performUpdate(String request);
+		boolean performUpdate(QueryInterface qi, String request);
 	}
 
 	// A (currently blank) interface used by service manager and available to add future PUMA/CogChar-to-Lifter channels
@@ -208,11 +208,13 @@ public class LiftAmbassador {
 				success = liftAppInterface.performDataballAction(databallsAction, null);
 			} else if (action.startsWith(LiftConfigNames.partial_P_update)) {
 				String desiredUpdate = action.replaceFirst(LiftConfigNames.partial_P_update + "_", "");
-				success = liftAppInterface.performUpdate(desiredUpdate);
+				// Alert - static variable "queryInterface" used
+				success = liftAppInterface.performUpdate(queryInterface, desiredUpdate);
 			} else if (LiftConfigNames.refreshLift.equals(action.toLowerCase())) {
 				theLogger.info("Clearing LiftAmbassador page cache and refreshing global state...");
 				liftConfigCache.clear();
-				success = liftAppInterface.performUpdate("ManagedGlobalConfigService");
+				// Alert - static variable "queryInterface" used
+				success = liftAppInterface.performUpdate(queryInterface, "ManagedGlobalConfigService");
 			}
 		}
 		return success;
