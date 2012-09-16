@@ -18,7 +18,8 @@ package org.cogchar.blob.emit
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.store.{Repo}
 import org.appdapter.help.repo.{QueryInterface, QueryEmitter} 
-import org.appdapter.core.matdat.{FancyRepo, SheetRepo}
+import org.appdapter.impl.store.{FancyRepo};
+import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{Query, QueryFactory, QueryExecution, QueryExecutionFactory, QuerySolution, QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 
