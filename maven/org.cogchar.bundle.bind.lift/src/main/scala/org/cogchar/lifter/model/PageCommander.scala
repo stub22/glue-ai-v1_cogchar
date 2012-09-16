@@ -38,8 +38,10 @@ package org.cogchar.lifter {
 	import org.cogchar.platform.trigger.DummyBinding
 	import java.util.concurrent.{Executors, TimeUnit}
 	
+	// What do we think about this being an object and not a class?
 	object PageCommander extends LiftActor with ListenerManager with Logger {
 
+	  private var theLiftAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods.
 	  private val controlDefMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[Int,ControlConfig]]
 	  private val controlsMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[Int, NodeSeq]]
 	  private val currentConfig = new scala.collection.mutable.HashMap[String, LiftConfig]
@@ -102,6 +104,13 @@ package org.cogchar.lifter {
 		val pageToGet = requestedPage(sessionId)
 		requestedPage(sessionId) = None // Once the page is read, the request is complete, so we set this back to Nothing
 		pageToGet
+	  }
+	  
+	  def getLiftAmbassador = {
+		  if (theLiftAmbassador == null) {
+			theLiftAmbassador = LiftAmbassador.getLiftAmbassador
+		  }
+		  theLiftAmbassador
 	  }
 	  
 	  def initializeSession(sessionId:String) {
@@ -379,7 +388,7 @@ package org.cogchar.lifter {
 			actionToken match {
 			  case ActionStrings.COGBOT_TOKEN => {
 				  if (cogbotDisplayers(sessionId) != Nil) { // Likely this check is not necessary - foreach just won't execute if list is Nil, right?
-					val response = LiftAmbassador.getCogbotResponse(text)
+					val response = getLiftAmbassador.getCogbotResponse(text)
 					val cleanedResponse = response.replaceAll("<.*>", ""); // For now, things are more readable if we just discard embedded XML
 					cogbotDisplayers(sessionId).foreach(slotNum =>
 					  setControl(sessionId, slotNum, TextBox.makeBox("Cogbot said \"" + cleanedResponse + "\"", controlDefMap(sessionId)(slotNum).style)))
@@ -388,7 +397,7 @@ package org.cogchar.lifter {
 				}
 			  case _ => {
 				  // Send text to LiftAmbassador, see if it knows what to do with it
-				  if (!LiftAmbassador.sendTextToCogChar(actionToken, text)) { // May need to pass sessionId!
+				  if (!getLiftAmbassador.sendTextToCogChar(actionToken, text)) { // May need to pass sessionId!
 					warn("No action found in textInputMapper for token " + actionToken + " during session " + sessionId)
 				  }
 				}
@@ -415,9 +424,9 @@ package org.cogchar.lifter {
 				warn("No encryption type set for network config, assuming none")
 				encryptionName = ActionStrings.noEncryptionName
 			  }
-			  LiftAmbassador.requestNetworkConfig(text(0), encryptionName, text(1))
+			  getLiftAmbassador.requestNetworkConfig(text(0), encryptionName, text(1))
 			} else if ((ActionStrings.LOGIN_TOKEN equals desiredAction) && (text.length == 2)) {
-			  LiftAmbassador.login(sessionId, text(0), text(1));
+			  getLiftAmbassador.login(sessionId, text(0), text(1));
 			} else {
 			  warn("No action found in multiTextInputMapper for \"" + desiredAction + "\" and " + text.length + " inputs");
 			}
@@ -447,7 +456,7 @@ package org.cogchar.lifter {
 			var action = controlDefMap(sessionId)(id).action
 			if (singularAction(sessionId) contains id) {action = singularAction(sessionId)(id)} // If this is a "multi-state" control, get the action corresponding to current state
 			info("About to trigger in LiftAmbassador with sessionId " + sessionId + " and slotNum " + id + "; action is " + action);
-			success = LiftAmbassador.triggerAction(sessionId, action)
+			success = getLiftAmbassador.triggerAction(sessionId, action)
 			// If the action sent to LiftAmbassador was a scene trigger, show the "Scene Playing screen" if command was successful
 			if ((action.getAbsUriString.startsWith(ActionStrings.p_scenetrig)) && (success)) {
 			  val sceneRunningScreen = createSceneInfoScreen(sessionId, id)
@@ -625,7 +634,7 @@ package org.cogchar.lifter {
 	  /* We don't support lift config Turtle files now after making the switch to action URIs, unless we want to 
 	   * bring back that capability. See org.cogchar.bind.lift.ControlConfig for more info
 	   def reconfigureControlsFromRdf(rdfFile:String) = {
-	   LiftAmbassador.activateControlsFromRdf(rdfFile)
+	   getLiftAmbassador.activateControlsFromRdf(rdfFile)
 	   }
 	   */
 	  
@@ -640,7 +649,7 @@ package org.cogchar.lifter {
 
 	  class CogcharMessenger extends LiftAmbassador.LiftInterface {
 		def notifyConfigReady {
-		  initFromCogcharRDF(INITIAL_CONFIG_ID, LiftAmbassador.getInitialConfig)
+		  initFromCogcharRDF(INITIAL_CONFIG_ID, getLiftAmbassador.getInitialConfig)
 		}
 		def setConfigForSession(sessionId:String, config:LiftConfig) {
 		  initFromCogcharRDF(sessionId, config)
