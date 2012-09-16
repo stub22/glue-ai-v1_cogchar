@@ -88,7 +88,7 @@ public class PumaAppContext extends BasicDebugger {
 
 	public PumaWebMapper getWebMapper() {
 		if (myWebMapper == null) {
-			myWebMapper = PumaWebMapper.getWebMapper();
+			myWebMapper = PumaWebMapper.getTheWebMapper();
 		}
 		return myWebMapper;
 	}

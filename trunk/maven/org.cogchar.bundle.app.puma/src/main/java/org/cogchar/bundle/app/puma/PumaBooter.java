@@ -111,7 +111,7 @@ public class PumaBooter extends BasicDebugger {
 			// which we now want to be able to trigger updates. Currently PumaAppContext is handling those updates, so
 			// PumaWebMapper needs to be able to access our pac. There's only this one PumaAppContext instance per 
 			// virtual world, right? Hopefully!
-			PumaWebMapper.getWebMapper().setAppContext(pac);
+			PumaWebMapper.getTheWebMapper().setAppContext(pac);
 			
 			boolean allowJFrames = mediator.getFlagAllowJFrames();
 /*  
