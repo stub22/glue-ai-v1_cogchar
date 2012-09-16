@@ -52,8 +52,9 @@ public class PumaAppContext extends BasicDebugger {
 	private BundleContext			myBundleContext;
 	private HumanoidRenderContext	myHRC;
 	private ClassLoader				myInitialBonyRdfCL;
+	// We now have a single instance of the web mapper here [via this.getWebMapper and PumaWebMapper.getWebMapper],
+	// instead of separate instances for each PumaDualCharacter.
 	private PumaWebMapper			myWebMapper; 
-	// We now have a single instance of the web mapper here, instead of separate instances for each PumaDualCharacter.
 	// This method for updating bony config is not very flexible (to configuring only single characters in the future)
 	// and requires multiple sheet reloads for multiple characters. So I'm trying out the idea of moving this functionality
 	// into updateConfigByRequest - Ryan
@@ -87,7 +88,7 @@ public class PumaAppContext extends BasicDebugger {
 
 	public PumaWebMapper getWebMapper() {
 		if (myWebMapper == null) {
-			myWebMapper = new PumaWebMapper();
+			myWebMapper = PumaWebMapper.getWebMapper();
 		}
 		return myWebMapper;
 	}
