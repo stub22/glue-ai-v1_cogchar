@@ -15,8 +15,6 @@
  */
 package org.cogchar.bundle.app.puma;
 
-import org.appdapter.core.name.Ident;
-import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.QueryInterface;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
@@ -35,13 +33,21 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
  */
 public class PumaWebMapper extends BasicDebugger {
 
-	static LiftInterface liftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
-	static String cogbotConvoUrl;
-	CogbotCommunicator cogbot;
-	static OSGiComponent liftAppComponent;
-	static OSGiComponent liftSceneComponent;
-	static PumaAppContext myAppContext;
+	private LiftInterface liftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
+	private String cogbotConvoUrl;
+	private CogbotCommunicator cogbot;
+	private OSGiComponent liftAppComponent;
+	private OSGiComponent liftSceneComponent;
+	private PumaAppContext myAppContext;
+	private static PumaWebMapper theWebMapper;
 
+	public static PumaWebMapper getWebMapper() {
+		if (theWebMapper == null) {
+			theWebMapper = new PumaWebMapper();
+		}
+		return theWebMapper;
+	}
+	
 	public void connectCogCharResources(ClassLoader bonyRdfCl, HumanoidRenderContext hrc) {
 		BallBuilder.setClassLoader("Cog Char", bonyRdfCl);
 		BallBuilder.initialize(hrc);
@@ -71,7 +77,7 @@ public class PumaWebMapper extends BasicDebugger {
 		BallBuilder.setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
 	}
 	
-	public static void setAppContext(PumaAppContext pac) {
+	public void setAppContext(PumaAppContext pac) {
 		myAppContext = pac;
 	}
 
