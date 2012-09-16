@@ -33,21 +33,34 @@ import org.slf4j.LoggerFactory;
  */
 public class LiftAmbassador {
 
-	static Logger theLogger = LoggerFactory.getLogger(LiftAmbassador.class);
-	private static LiftConfig initialConfig;
-	private static LiftSceneInterface sceneLauncher;
-	private static LiftInterface lift;
-	private static LiftAppInterface liftAppInterface;
-	private static QueryInterface queryInterface;
-	private static LiftNetworkConfigInterface netConfigInterface;
-	private static Ident qGraph;
-	private static boolean configReady = false;
-	private static List<String> triggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
-	private static ClassLoader myRdfCL; // We'll get this classloader so we can update control configuration from separate RDF files at runtime
+	private static LiftAmbassador theLiftAmbassador;
+	private static Logger theLogger = LoggerFactory.getLogger(LiftAmbassador.class); //OK?
+	private LiftConfig myInitialConfig;
+	private LiftSceneInterface mySceneLauncher;
+	private LiftInterface myLift;
+	private LiftAppInterface myLiftAppInterface;
+	// The following QueryInterface is now an instance variable, but currently is set with a setter (setQueryInterface)
+	// so that PageCommander, etc. can call into the active LiftAmbassador instance without knowing about QueryInterface.
+	// Perhaps we'll ultimately want to get rid of this setter and just specify the QueryInterface/qGraph in a constructor.
+	// However, setting interfaces this way allows LifterLifecycle to change any of the interfaces upon dependency change without
+	// requiring a new LiftAmbassador instance.
+	private QueryInterface myQueryInterface; 
+	private LiftNetworkConfigInterface myNetConfigInterface;
+	private Ident myQGraph;
+	private boolean myConfigReady = false;
+	private List<String> myTriggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
+	//private ClassLoader myRdfCL; // We'll get this classloader so we can update control configuration from separate RDF files at runtime
 	//private static final String RDF_PATH_PREFIX = "metadata/web/liftconfig/"; // Prefix for path to Lift configuration TTL files from resources root
-	public static Map<Ident, LiftConfig> liftConfigCache = new HashMap<Ident, LiftConfig>(); // To avoid query config if page is reselected
-	public static Map<String, String> chatConfigEntries = new HashMap<String, String>();
+	private Map<Ident, LiftConfig> myLiftConfigCache = new HashMap<Ident, LiftConfig>(); // To avoid query config if page is reselected
+	private Map<String, String> myChatConfigEntries = new HashMap<String, String>();
 
+	public static LiftAmbassador getLiftAmbassador() {
+		if (theLiftAmbassador == null) {
+			theLiftAmbassador = new LiftAmbassador();
+		}
+		return theLiftAmbassador;
+	}
+	
 	public interface LiftSceneInterface {
 
 		boolean triggerScene(String scene);
@@ -94,20 +107,20 @@ public class LiftAmbassador {
 	}
 
 	// This (legacy) flavor of the method activates controls for the initial config for new sessions
-	public static void activateControlsFromConfig(LiftConfig newConfig) {
-		initialConfig = newConfig;
+	public void activateControlsFromConfig(LiftConfig newConfig) {
+		myInitialConfig = newConfig;
 		theLogger.info("RDF Lift config sent to LiftAmbassador");
-		configReady = true;
-		if (lift != null) {
-			lift.notifyConfigReady();
+		myConfigReady = true;
+		if (myLift != null) {
+			myLift.notifyConfigReady();
 			theLogger.info("Lift notified of config ready");
 		}
 	}
 	
 	// This flavor activates a new set of controls for a single session
-	public static void activateControlsFromConfig(String sessionId, LiftConfig newConfig) {
-		if (lift != null) {
-			lift.setConfigForSession(sessionId, newConfig);
+	public void activateControlsFromConfig(String sessionId, LiftConfig newConfig) {
+		if (myLift != null) {
+			myLift.setConfigForSession(sessionId, newConfig);
 		} else {
 			theLogger.error("A new control set was requested for session " + sessionId + ", but no liftInterface was found!");
 		}
@@ -145,38 +158,38 @@ public class LiftAmbassador {
 	}
 	*/
 	
-	public static LiftConfig getInitialConfig() {
-		return initialConfig;
+	public LiftConfig getInitialConfig() {
+		return myInitialConfig;
 	}
 
-	public static String getControlPrefix() {
+	public String getControlPrefix() {
 		return LiftConfigNames.partial_P_control + "_";
 	}
 
-	public static void storeChatConfig(ChatConfig cc) {
+	public void storeChatConfig(ChatConfig cc) {
 		// How do we want to handle the possible case of more than one ChatConfigResource? Not sure quite what the future will hold for ChatConfig.
 		// For now, let's just combine them all into one. This could be dangerous, but makes sense for now(?)
-		chatConfigEntries.clear(); // If we are doing a "mode change" or other reconfig, we need to clear out old entries first
+		myChatConfigEntries.clear(); // If we are doing a "mode change" or other reconfig, we need to clear out old entries first
 		for (ChatConfigResource ccr : cc.myCCRs) {
-			chatConfigEntries.putAll(ccr.entries);
+			myChatConfigEntries.putAll(ccr.entries);
 		}
 	}
 
-	public static boolean triggerAction(String sessionId, Ident actionUri) {
+	public boolean triggerAction(String sessionId, Ident actionUri) {
 		boolean success = false;
 		String actionUriPrefix = actionUri.getAbsUriString().replaceAll(actionUri.getLocalName(), "");
 		String action = actionUri.getLocalName();
-		if ((LiftConfigNames.p_scenetrig.equals(actionUriPrefix)) && (sceneLauncher != null)) {
-			success = sceneLauncher.triggerScene(action);
-		} else if ((LiftConfigNames.p_cinematic.equals(actionUriPrefix)) && (liftAppInterface != null)) {
-			if (triggeredCinematics.contains(action)) {
-				liftAppInterface.stopNamedCinematic(action); // In order to replay, we need to stop previously played cinematic first
+		if ((LiftConfigNames.p_scenetrig.equals(actionUriPrefix)) && (mySceneLauncher != null)) {
+			success = mySceneLauncher.triggerScene(action);
+		} else if ((LiftConfigNames.p_cinematic.equals(actionUriPrefix)) && (myLiftAppInterface != null)) {
+			if (myTriggeredCinematics.contains(action)) {
+				myLiftAppInterface.stopNamedCinematic(action); // In order to replay, we need to stop previously played cinematic first
 			}
-			success = liftAppInterface.triggerNamedCinematic(action);
+			success = myLiftAppInterface.triggerNamedCinematic(action);
 			if (success) {
-				triggeredCinematics.add(action);
+				myTriggeredCinematics.add(action);
 			}
-		} else if ((LiftConfigNames.p_liftconfig.equals(actionUriPrefix)) && (lift != null)) {
+		} else if ((LiftConfigNames.p_liftconfig.equals(actionUriPrefix)) && (myLift != null)) {
 			if (action.endsWith(".ttl")) {
 				// This capability no longer exists since we broke the ControlConfig assembler based constructor when the 
 				// switch to action URIs was made. We can fix it if we decide we'd like to...
@@ -185,13 +198,13 @@ public class LiftAmbassador {
 			} else {
 				Ident configIdent = actionUri;
 				LiftConfig newConfig = null;
-				if (liftConfigCache.containsKey(configIdent)) {
-					newConfig = liftConfigCache.get(configIdent); // Use cached version if available
+				if (myLiftConfigCache.containsKey(configIdent)) {
+					newConfig = myLiftConfigCache.get(configIdent); // Use cached version if available
 					theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
 				} else {
-					if (queryInterface != null) {
-						newConfig = new LiftConfig(queryInterface, qGraph, configIdent);
-						liftConfigCache.put(configIdent, newConfig);
+					if (myQueryInterface != null) {
+						newConfig = new LiftConfig(myQueryInterface, myQGraph, configIdent);
+						myLiftConfigCache.put(configIdent, newConfig);
 						theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
 					} else {
 						theLogger.error("New lift config requested, but no QueryInterface set!");
@@ -202,30 +215,28 @@ public class LiftAmbassador {
 					success = true;
 				}
 			}
-		} else if ((LiftConfigNames.p_liftcmd.equals(actionUriPrefix)) && (liftAppInterface != null)) {
+		} else if ((LiftConfigNames.p_liftcmd.equals(actionUriPrefix)) && (myLiftAppInterface != null)) {
 			if (action.startsWith(LiftConfigNames.partial_P_databalls)) {
 				String databallsAction = action.replaceAll(LiftConfigNames.partial_P_databalls + "_", ""); // replaceFirst?
-				success = liftAppInterface.performDataballAction(databallsAction, null);
+				success = myLiftAppInterface.performDataballAction(databallsAction, null);
 			} else if (action.startsWith(LiftConfigNames.partial_P_update)) {
 				String desiredUpdate = action.replaceFirst(LiftConfigNames.partial_P_update + "_", "");
-				// Alert - static variable "queryInterface" used
-				success = liftAppInterface.performUpdate(queryInterface, desiredUpdate);
+				success = myLiftAppInterface.performUpdate(myQueryInterface, desiredUpdate);
 			} else if (LiftConfigNames.refreshLift.equals(action.toLowerCase())) {
 				theLogger.info("Clearing LiftAmbassador page cache and refreshing global state...");
-				liftConfigCache.clear();
-				// Alert - static variable "queryInterface" used
-				success = liftAppInterface.performUpdate(queryInterface, "ManagedGlobalConfigService");
+				myLiftConfigCache.clear();
+				success = myLiftAppInterface.performUpdate(myQueryInterface, "ManagedGlobalConfigService");
 			}
 		}
 		return success;
 	}
 
-	public static String getCogbotResponse(String query) {
+	public String getCogbotResponse(String query) {
 		String response = "";
-		if (liftAppInterface != null) {
-			if (chatConfigEntries.containsKey(ChatConfigNames.N_cogbotConvoUrl)) {
-				String convoIp = chatConfigEntries.get(ChatConfigNames.N_cogbotConvoUrl).replaceFirst("http://", "");
-				response = liftAppInterface.queryCogbot(query, convoIp);
+		if (myLiftAppInterface != null) {
+			if (myChatConfigEntries.containsKey(ChatConfigNames.N_cogbotConvoUrl)) {
+				String convoIp = myChatConfigEntries.get(ChatConfigNames.N_cogbotConvoUrl).replaceFirst("http://", "");
+				response = myLiftAppInterface.queryCogbot(query, convoIp);
 				theLogger.info("Cogbot says " + response);
 			} else {
 				theLogger.error("No URL found from ChatConfig for Cogbot conversation server");
@@ -236,35 +247,35 @@ public class LiftAmbassador {
 		return response;
 	}
 
-	public static boolean sendTextToCogChar(String actionToken, String text) {
+	public boolean sendTextToCogChar(String actionToken, String text) {
 		boolean success = false;
 		if (actionToken.startsWith(LiftConfigNames.partial_P_databalls)) {
 			String databallsAction = actionToken.replaceAll(LiftConfigNames.partial_P_databalls + "_", "");
-			success = liftAppInterface.performDataballAction(databallsAction, text);
+			success = myLiftAppInterface.performDataballAction(databallsAction, text);
 		}
 		return success;
 	}
 
-	public static String getLiftVariable(String key) {
-		if (lift != null) {
-			return lift.getVariable(key);
+	public String getLiftVariable(String key) {
+		if (myLift != null) {
+			return myLift.getVariable(key);
 		} else {
 			theLogger.warn("Variable requested from Lift, but no Lift messenger set");
 			return null;
 		}
 	}
 
-	public static void displayError(String errorSource, String errorText) {
-		if (lift != null) {
-			lift.showError(errorSource, errorText);
+	public void displayError(String errorSource, String errorText) {
+		if (myLift != null) {
+			myLift.showError(errorSource, errorText);
 		} else {
 			theLogger.error("Could not show the following error in Lift because no Lift messenger is set: " + errorSource + ": " + errorText);
 		}
 	}
 	
-	public static void requestNetworkConfig(String ssid, String security, String key) {
-		if (netConfigInterface != null) {
-			netConfigInterface.configure(ssid, security, key);
+	public void requestNetworkConfig(String ssid, String security, String key) {
+		if (myNetConfigInterface != null) {
+			myNetConfigInterface.configure(ssid, security, key);
 		} else {
 			theLogger.warn("Could not configure network because no LiftNetworkConfigInterface set");
 		}
@@ -274,7 +285,7 @@ public class LiftAmbassador {
 	// Just a demo login method
 	private static final String MAIN_CONFIG = "mainLiftConfig";
 	private static final String CHAT_CONFIG = "chatBigBoxLiftConfig";
-	public static void login(String sessionId, String userName, String password) {
+	public void login(String sessionId, String userName, String password) {
 		if ((userName.equals("main")) && (password.equals("BigBoy"))) {
 			// Request main liftConfig
 			triggerAction(sessionId, new FreeIdent(LiftConfigNames.p_liftconfig + MAIN_CONFIG, MAIN_CONFIG));
@@ -287,29 +298,29 @@ public class LiftAmbassador {
 		}
 	}
 
-	public static void setSceneLauncher(LiftSceneInterface launcher) {
-		sceneLauncher = launcher;
+	void setSceneLauncher(LiftSceneInterface launcher) {
+		mySceneLauncher = launcher;
 	}
 
-	public static void setLiftMessenger(LiftInterface li) {
+	public void setLiftMessenger(LiftInterface li) {
 		theLogger.info("Lift messenger set");
-		lift = li;
+		myLift = li;
 	}
 
-	public static void setAppInterface(LiftAppInterface lai) {
-		liftAppInterface = lai;
+	void setAppInterface(LiftAppInterface lai) {
+		myLiftAppInterface = lai;
 	}
 
-	public static void setQueryInterface(QueryInterface qi, Ident graphIdent) {
-		queryInterface = qi;
-		qGraph = graphIdent;
+	void setQueryInterface(QueryInterface qi, Ident graphIdent) {
+		myQueryInterface = qi;
+		myQGraph = graphIdent;
 	}
 	
-	public static void setNetConfigInterface(LiftNetworkConfigInterface lnci) {
-		netConfigInterface = lnci;
+	void setNetConfigInterface(LiftNetworkConfigInterface lnci) {
+		myNetConfigInterface = lnci;
 	}
 
-	public static boolean checkConfigReady() {
-		return configReady;
+	public boolean checkConfigReady() {
+		return myConfigReady;
 	}
 }

@@ -65,7 +65,7 @@ import org.slf4j.Logger;
  * @author Ryan Biggs
  */
 public class BallBuilder extends BasicDebugger {
-
+	// A big list of static state to soon banish!
 	private static final float LOW_DAMPING_COEFFICIENT = 0.4f;
 	private static final float HIGH_DAMPING_COEFFICIENT = 0.98f;
 	private static final float MASS_COEFFICIENT = 1f;
@@ -101,6 +101,9 @@ public class BallBuilder extends BasicDebugger {
 	private static float damping = LOW_DAMPING_COEFFICIENT;
 	private static Material standardMaterial;
 	private static Model lastModel; // May be only temporary; holds last model loaded so we can run SPARQL queries on it
+	private static LiftAmbassador theLiftAmbassador; // Only static because everything else is, for the moment. 
+	// Probably it makes sense to retain an instance variable for the LiftAmbassador since it is used in several methods.
+	// However, it's probably even better to add an interface for BallBuilder->Lifter interactions
 
 	public static void initialize(HumanoidRenderContext hrc) {
 		renderContext = hrc;
@@ -120,6 +123,14 @@ public class BallBuilder extends BasicDebugger {
 		//bulletState = rrc.getJme3BulletAppState(null);
 		// This *may* improve performance
 		//bulletState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // Does the bulletState need to be attached to the state manager, or is it already?
+	}
+	
+	// Not static for long...
+	private static LiftAmbassador getLiftAmbassador() {
+		if (theLiftAmbassador == null) {
+			theLiftAmbassador = LiftAmbassador.getLiftAmbassador();
+		}
+		return theLiftAmbassador;
 	}
 
 	static class Ball {
@@ -531,14 +542,14 @@ public class BallBuilder extends BasicDebugger {
 	public static boolean buildModelFromTurtleUsingLiftSettings(String configPath) {
 		boolean success = false;
 		resourceCl = null;
-		String classloaderKey = LiftAmbassador.getLiftVariable(DataballStrings.classloaderKey);
+		String classloaderKey = getLiftAmbassador().getLiftVariable(DataballStrings.classloaderKey);
 		if (classloaderKey != null) {
 			if (classloaders.containsKey(classloaderKey)) {
 				resourceCl = classloaders.get(classloaderKey);
 			}
 		}
 		boolean showAllObjects = false;
-		String liftShowAllObjectsString = LiftAmbassador.getLiftVariable(DataballStrings.showAllObjects);
+		String liftShowAllObjectsString = getLiftAmbassador().getLiftVariable(DataballStrings.showAllObjects);
 		if (liftShowAllObjectsString != null) {
 			showAllObjects = Boolean.valueOf(liftShowAllObjectsString);
 		}
@@ -629,13 +640,13 @@ public class BallBuilder extends BasicDebugger {
 	
 	static void showErrorInLift(String errorText) {
 		logger.error(errorText);
-		LiftAmbassador.displayError(DataballStrings.liftErrorCode, errorText);
+		getLiftAmbassador().displayError(DataballStrings.liftErrorCode, errorText);
 	}
 
 	public static boolean performAction(String action, String text) {
 		boolean success = true;
 		// Clear error shown in Lift, if any
-		LiftAmbassador.displayError(DataballStrings.liftErrorCode, "");
+		getLiftAmbassador().displayError(DataballStrings.liftErrorCode, "");
 		if (action.equals(DataballStrings.viewRdfGraph)) { // Oh, Java 6 and your non-String supporting case statements...
 			success = buildModelFromTurtleUsingLiftSettings(text);
 		} else if (action.equals(DataballStrings.onOff)) {

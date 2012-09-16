@@ -34,18 +34,19 @@ class Boot {
 	LiftRules.setSiteMap(SiteMap(sitemap:_*))
 
 	LiftRules.early.append(makeUtf8)
-	
+	val myLiftAmbassador = PageCommander.getLiftAmbassador
 	// Establish connection from LiftAmbassador into PageCommander
-	LiftAmbassador.setLiftMessenger(PageCommander.getMessenger)
+	myLiftAmbassador.setLiftMessenger(PageCommander.getMessenger)
 	
 	// Is config already ready? If so, we missed it. Let's update now.
-	if (LiftAmbassador.checkConfigReady) {
-	  PageCommander.initFromCogcharRDF(PageCommander.INITIAL_CONFIG_ID, LiftAmbassador.getInitialConfig)
+	if (myLiftAmbassador.checkConfigReady) {
+	  PageCommander.initFromCogcharRDF(PageCommander.INITIAL_CONFIG_ID, myLiftAmbassador.getInitialConfig)
 	}
 	
 	// Add the listener for JSON speech to the dispatch table
 	LiftRules.statelessDispatchTable.append(SpeechRestListener)
 	
+
 	//LiftRules.cometLogger = ActorLogger // Kind of a WAG as to how to use this, just trying it out. Actually seems to perhaps be making Comet behave better, but too early to say (and why would we expect it to?).
   }
 
