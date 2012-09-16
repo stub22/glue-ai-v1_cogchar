@@ -32,16 +32,17 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
  * @author Stu B. <www.texpedient.com>
  */
 public class PumaWebMapper extends BasicDebugger {
-
-	private LiftInterface liftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
-	private String cogbotConvoUrl;
-	private CogbotCommunicator cogbot;
-	private OSGiComponent liftAppComponent;
-	private OSGiComponent liftSceneComponent;
-	private PumaAppContext myAppContext;
+	// Static  instance singleton, for now
 	private static PumaWebMapper theWebMapper;
+	
+	private LiftInterface		myLiftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
+	private String				myCogbotConvoUrl;
+	private CogbotCommunicator	myCogbotComm;
+	private OSGiComponent		myLiftAppComp;
+	private OSGiComponent		myLiftSceneComp;
+	private PumaAppContext		myAppContext;
 
-	public static PumaWebMapper getWebMapper() {
+	public static PumaWebMapper getTheWebMapper() {
 		if (theWebMapper == null) {
 			theWebMapper = new PumaWebMapper();
 		}
@@ -54,21 +55,21 @@ public class PumaWebMapper extends BasicDebugger {
 	}
 
 	public void connectLiftSceneInterface(BundleContext bundleCtx) {
-		if (liftSceneComponent == null) {
+		if (myLiftSceneComp == null) {
 			ServiceLifecycleProvider lifecycle = new SimpleLifecycle(SceneActions.getLauncher(), LiftAmbassador.LiftSceneInterface.class);
-			liftSceneComponent = new OSGiComponent(bundleCtx, lifecycle);
+			myLiftSceneComp = new OSGiComponent(bundleCtx, lifecycle);
 		}
-		liftSceneComponent.start();
+		myLiftSceneComp.start();
 	}
 
 	public void disconnectLiftSceneInterface(BundleContext bundleCtx) {
-		liftSceneComponent.stop();
+		myLiftSceneComp.stop();
 	}
 
 	public void connectLiftInterface(BundleContext bundleCtx) {
 		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(getLiftInterface(), LiftAmbassador.LiftAppInterface.class);
-		liftAppComponent = new OSGiComponent(bundleCtx, lifecycle);
-		liftAppComponent.start();
+		myLiftAppComp = new OSGiComponent(bundleCtx, lifecycle);
+		myLiftAppComp.start();
 	}
 
 	// Previous functions now mostly done from within LifterLifecycle on create(). 
@@ -82,10 +83,10 @@ public class PumaWebMapper extends BasicDebugger {
 	}
 
 	public LiftInterface getLiftInterface() {
-		if (liftInterface == null) {
-			liftInterface = new LiftInterface();
+		if (myLiftInterface == null) {
+			myLiftInterface = new LiftInterface();
 		}
-		return liftInterface;
+		return myLiftInterface;
 	}
 
 	class LiftInterface implements LiftAmbassador.LiftAppInterface {
@@ -103,11 +104,11 @@ public class PumaWebMapper extends BasicDebugger {
 
 		@Override
 		public String queryCogbot(String query, String url) {
-			if ((cogbot == null) || (!url.equals(cogbotConvoUrl))) {
-				cogbotConvoUrl = url;
-				cogbot = new CogbotCommunicator(cogbotConvoUrl);
+			if ((myCogbotComm == null) || (!url.equals(myCogbotConvoUrl))) {
+				myCogbotConvoUrl = url;
+				myCogbotComm = new CogbotCommunicator(myCogbotConvoUrl);
 			}
-			return cogbot.getResponse(query).getResponse();
+			return myCogbotComm.getResponse(query).getResponse();
 		}
 
 		@Override
