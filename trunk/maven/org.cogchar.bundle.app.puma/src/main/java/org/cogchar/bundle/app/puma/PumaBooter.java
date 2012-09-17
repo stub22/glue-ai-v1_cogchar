@@ -181,7 +181,11 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 		// We want to make explicity the assumptions about what goes into our QueryEmitter.
 		// On 2012-09-12 Stu changed "new QueryEmitter()" to makeVanillaQueryEmitter,
 		// but perhaps there is some more adjustment to do here for lifecycle compat.
-		QueryEmitter qemit = QueryTester.makeVanillaQueryEmitter();
+		//QueryEmitter qemit = QueryTester.makeVanillaQueryEmitter();
+		// On 2012-09-16 Ryan changed from the qemit declaration above to the one below. This allows us to use the 
+		// same instance for the QueryEmitter here as is accessed by QueryTester.getInterface, preventing duplicate
+		// (SLOW) resource loads and the possibility of unsynchronized state in PUMA.
+		QueryEmitter qemit = QueryTester.getEmitter();
 		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(qemit, QueryInterface.class);
     	OSGiComponent queryComp = new OSGiComponent(context, lifecycle);
     	queryComp.start();
