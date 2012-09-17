@@ -78,6 +78,7 @@ package org.cogchar.lifter {
 	  final var INITIAL_CONFIG_ID = "InitialConfig" // "sessionId" for initial config for new sessions
 	  private var lifterInitialized:Boolean = false // Will be set to true once PageCommander receives initial control config from LiftAmbassador
 	  private val sessionsAwaitingStart = new scala.collection.mutable.ArrayBuffer[String] 
+	  private val activeSessions = new scala.collection.mutable.ArrayBuffer[String] 
 	  
 	  private var updateInfo: String = ""
 	  
@@ -135,12 +136,19 @@ package org.cogchar.lifter {
 		currentTemplate(sessionId) = currentTemplate(INITIAL_CONFIG_ID)
 		updateListeners(controlId(sessionId, 301));
 		setControlsFromMap(sessionId)
+		if (!(activeSessions contains sessionId)) {
+		  activeSessions += sessionId
+		}
 	  }
 	  
 	  def renderInitialControls {
-		sessionsAwaitingStart.foreach(sessionId => initializeSession(sessionId))
-		sessionsAwaitingStart.clear
-		lifterInitialized = true
+		if (!lifterInitialized) {
+		  sessionsAwaitingStart.foreach(sessionId => initializeSession(sessionId))
+		  sessionsAwaitingStart.clear
+		  lifterInitialized = true
+		} else { // if lifterInitialized, this is a restart on config change
+		  activeSessions.foreach(sessionId => initializeSession(sessionId))
+		}
 	  }
 	  
 	  def requestStart(sessionId:String) {
@@ -455,7 +463,7 @@ package org.cogchar.lifter {
 		  else {
 			var action = controlDefMap(sessionId)(id).action
 			if (singularAction(sessionId) contains id) {action = singularAction(sessionId)(id)} // If this is a "multi-state" control, get the action corresponding to current state
-			info("About to trigger in LiftAmbassador with sessionId " + sessionId + " and slotNum " + id + "; action is " + action);
+			//info("About to trigger in LiftAmbassador with sessionId " + sessionId + " and slotNum " + id + "; action is " + action); // TEST ONLY
 			success = getLiftAmbassador.triggerAction(sessionId, action)
 			// If the action sent to LiftAmbassador was a scene trigger, show the "Scene Playing screen" if command was successful
 			if ((action.getAbsUriString.startsWith(ActionStrings.p_scenetrig)) && (success)) {
