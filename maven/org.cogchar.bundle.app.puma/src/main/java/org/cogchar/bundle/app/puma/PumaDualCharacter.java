@@ -106,7 +106,7 @@ public class PumaDualCharacter extends DummyBox {
 		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
 		
-		myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf, qGraph, hc, myBehaviorCE);
+		myHumoidMapper.initModelRobotUsingBoneRobotConfig(qi, boneRobotConf, qGraph, hc, myBehaviorCE);
 
 		// myPHM.initModelRobotUsingAvroJointConfig();
 		myHumoidMapper.connectToVirtualChar();

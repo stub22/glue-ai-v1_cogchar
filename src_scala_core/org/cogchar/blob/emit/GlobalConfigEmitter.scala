@@ -36,10 +36,8 @@ object GlobalConfigEmitter {
 // Currently corresponds to "GlobalMode" bindings
 class GlobalConfigEmitter {
   
-  // We'll get the QueryInterface from QuerySheet for the moment. Goofy. Should this really come from a registry? Use the
-  // (likely needlessly) managed service instance? Or will we decide referencing the singleton QueryEmitter is robust
-  // and acceptable enough that its simplicity and "always-on" nature trump uneasy feelings about that technique?
-  // This issue is still being worked out.
+  // We'll get the QueryInterface from QueryTester for the moment. Goofy. Should this really come from a registry? Use the
+  // (likely needlessly) managed service instance? 
   private val qi = QueryTester.getInterface
   
   // A "triple map" keyed on config "entity" with values of maps keyed by "role", each of which have a "role" object

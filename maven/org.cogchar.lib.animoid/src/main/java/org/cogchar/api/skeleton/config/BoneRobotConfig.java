@@ -43,9 +43,6 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	public	String							myRobotName;
 	public	List<BoneJointConfig>			myBJCs = new ArrayList<BoneJointConfig>();
 	
-	// private static QueryInterface queryEmitter = QueryTester.getInterface();
-	
-		
 	@Override public String getFieldSummary() {
 		return super.getFieldSummary() + ", robotName=" + myRobotName + ", joints=[" + myBJCs + "]";
 	}
@@ -62,7 +59,7 @@ public class BoneRobotConfig extends KnownComponentImpl {
 		queryString = qi.setQueryVar(queryString, bqn.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
 		solutionMap = qi.getTextQueryResultMap(queryString, bqn.JOINT_URI_VAR_NAME, graphIdent);
 		for (Ident jointIdent: boneJointConfigIdents) {
-			myBJCs.add(new BoneJointConfig(jointIdent, solutionMap, graphIdent));
+			myBJCs.add(new BoneJointConfig(qi, jointIdent, solutionMap, graphIdent));
 		}
 	}
 	

@@ -34,6 +34,7 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.help.repo.QueryInterface;
 
 import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
@@ -76,10 +77,10 @@ public class PumaHumanoidMapper extends BasicDebugger {
 		return myRAC.getTriggeringChannel();
 	}
 	
-	public void initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc, final Ident qGraph, final HumanoidConfig hc,
+	public void initModelRobotUsingBoneRobotConfig(QueryInterface qi, BoneRobotConfig brc, final Ident qGraph, final HumanoidConfig hc,
 					BehaviorConfigEmitter behavCE) throws Throwable {
 		// New with "GlobalModes": we'll run hrc.setupHumanoidFigure from here now
-		myHRC.setupHumanoidFigure(myCharIdent, qGraph, hc);
+		myHRC.setupHumanoidFigure(qi, myCharIdent, qGraph, hc);
 
 		// This creates our ModelRobot instance, and calls registerAndStart() in the RobotServiceContext base class.
 		myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);
