@@ -56,7 +56,7 @@ package org.cogchar.lifter {
 			val slotId = PageCommander.getSpeechReqControl
 			partialUpdate(new JsCmd { 
 				// Put our oddball JS methods in a try block, so non-Proctor browsers are happy!
-				def toJsCmd = "try{Android.getSpeechInput(" + slotId + ");} catch(err) {}" 
+				def toJsCmd = "try{Android.getSpeechInput(\"" + slotId + "\");} catch(err) {}" 
 			  })
 		  }
 		case LOAD_PAGE_TRIGGERID => { // A special "slot" code for page redirect.
@@ -76,7 +76,7 @@ package org.cogchar.lifter {
 		case CONTINUOUS_SPEECH_REQUEST_START_TRIGGERID => { // This code for starting continuous speech. 
 			val slotId = PageCommander.getSpeechReqControl
 			partialUpdate(new JsCmd { 
-				def toJsCmd = "try{Android.getContinuousSpeechInput(" + slotId + ");} catch(err) {}"
+				def toJsCmd = "try{Android.getContinuousSpeechInput(\"" + slotId + "\");} catch(err) {}"
 			  })
 		  }
 		case CONTINUOUS_SPEECH_REQUEST_STOP_TRIGGERID => { // This code for stopping continuous speech. 
@@ -85,7 +85,7 @@ package org.cogchar.lifter {
 				def toJsCmd = "try{Android.stopContinuousSpeechInput();} catch(err) {}"
 			  })
 		  }
-		case REFRESH_PAGE_TRIGGERID => { // This code for triggering browser page refresh. 
+		case REFRESH_PAGE_TRIGGERID => { // This code for triggering browser page refresh. Untested and possibly bad idea jeans.
 			partialUpdate(new JsCmd { 
 				def toJsCmd = "window.location.reload();"
 			  })
