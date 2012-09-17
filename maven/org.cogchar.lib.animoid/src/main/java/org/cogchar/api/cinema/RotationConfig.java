@@ -32,8 +32,6 @@ public class RotationConfig {
 	public float yaw = Float.NaN;
 	public float roll = Float.NaN;
 	public float pitch = Float.NaN;
-	
-	// private static QueryInterface queryEmitter = QueryTester.getInterface();
 
 	@Override
 	public String toString() {

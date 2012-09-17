@@ -44,8 +44,6 @@ public class BoneJointConfig {
 	public String						myJointName;
 	public Double						myNormalDefaultPos;
 	public List<BoneProjectionRange>	myProjectionRanges = new ArrayList<BoneProjectionRange>();
-	
-	private static QueryInterface queryEmitter = QueryTester.getInterface();
 
 	public BoneJointConfig(Item configItem) {
 		myURI_Fragment = configItem.getIdent().getLocalName();
@@ -61,7 +59,7 @@ public class BoneJointConfig {
 	}
 	
 	// This constructor is used to build BoneJointConfig from queries
-	public BoneJointConfig(Ident jointIdent, SolutionMap solutionMap, Ident graphIdent) {
+	public BoneJointConfig(QueryInterface queryEmitter, Ident jointIdent, SolutionMap solutionMap, Ident graphIdent) {
 		myURI_Fragment = jointIdent.getLocalName();
 		myJointNum = queryEmitter.getIntegerFromSolution(solutionMap, jointIdent, BoneQueryNames.JOINT_NUM_VAR_NAME);
 		myJointName = queryEmitter.getStringFromSolution(solutionMap, jointIdent, BoneQueryNames.JOINT_NAME_VAR_NAME);

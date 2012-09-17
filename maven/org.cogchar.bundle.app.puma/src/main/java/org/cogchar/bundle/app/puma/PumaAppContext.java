@@ -166,12 +166,20 @@ public class PumaAppContext extends BasicDebugger {
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
 	private boolean updating = false;
 
-	public boolean updateConfigByRequest(final QueryInterface qi, String request) {
+	// Here I have removed the method variable passed in for the QueryInterface. Why? Because right now PumaAppContext really
+	// is the central clearing house for the QueryInterface for config -- ideally we want it to be passed down from one master instance here to
+	// all the objects that use it. Methods calling for config updates via this method shouldn't be responsible for 
+	// knowing what QueryInterface is appropriate -- they are calling into this method because we are trying to handle that here.
+	// So for now let's use the this.getQueryHelper way to get that interface here. We can continue to refine this thinking as we go.
+	// - Ryan 2012-09-17
+	public boolean updateConfigByRequest(String request) {
 		// Eventually we may decide on a good home for these constants:	
 		final String WORLD_CONFIG = "worldconfig";
 		final String BONE_ROBOT_CONFIG = "bonerobotconfig";
 		final String MANAGED_GCS = "managedglobalconfigservice";
 		final String ALL_HUMANOID_CONFIG = "allhumanoidconfig";
+		
+		final QueryInterface qi = getQueryHelper();
 
 		// Do the actual updates on a new thread. That way we don't block the render thread. Much less intrusive, plus this way things
 		// we need to enqueue on main render thread will actually complete -  it must not be blocked during some of the update operations!
@@ -235,8 +243,8 @@ public class PumaAppContext extends BasicDebugger {
 	class UpdateInterfaceImpl implements HumanoidRenderContext.UpdateInterface {
 
 		@Override
-		public boolean updateConfig(QueryInterface qi, String request) {
-			return updateConfigByRequest(qi, request);
+		public boolean updateConfig(String request) {
+			return updateConfigByRequest(request);
 		}
 	}
 
@@ -296,7 +304,7 @@ public class PumaAppContext extends BasicDebugger {
 					logWarning("Could not get valid graphs on which to query for config of " + charIdent.getLocalName());
 					break;
 				}
-				HumanoidConfig myHumanoidConfig = new HumanoidConfig(charIdent, graphIdentForHumanoid);
+				HumanoidConfig myHumanoidConfig = new HumanoidConfig(getQueryHelper(), charIdent, graphIdentForHumanoid);
 				PumaDualCharacter pdc = connectDualRobotChar(charIdent, myHumanoidConfig.nickname);
 				myCharList.add(pdc);
 				pdc.absorbContext(myMediator);
@@ -331,7 +339,7 @@ public class PumaAppContext extends BasicDebugger {
 					logWarning("Could not get valid graph on which to query for Lights/Cameras config of " + configIdent.getLocalName(), e);
 				}
 				try {
-					myRenderMapper.initLightsAndCamera(myHRC, graphIdent);
+					myRenderMapper.initLightsAndCamera(qi, myHRC, graphIdent);
 				} catch (Exception e) {
 					logWarning("Error attempting to initialize lights and cameras for " + configIdent.getLocalName() + ": " + e, e);
 				}

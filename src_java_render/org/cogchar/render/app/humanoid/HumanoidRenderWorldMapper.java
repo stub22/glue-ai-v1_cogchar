@@ -31,9 +31,9 @@ import org.cogchar.render.sys.core.RenderRegistryClient;
  */
 public class HumanoidRenderWorldMapper {
 
-	public void initLightsAndCamera(HumanoidRenderContext hrc, Ident qGraph) {
+	public void initLightsAndCamera(QueryInterface qi, HumanoidRenderContext hrc, Ident qGraph) {
 		// The LightsCameraConfig constructor now automatically loads config from sheet
-		LightsCameraConfig lcc = new LightsCameraConfig(qGraph);
+		LightsCameraConfig lcc = new LightsCameraConfig(qi, qGraph);
 		RenderRegistryClient rendRegCli = hrc.getRenderRegistryClient();
 		CameraMgr cm = rendRegCli.getOpticCameraFacade(null);
 		cm.initCamerasFromConfig(lcc, hrc);

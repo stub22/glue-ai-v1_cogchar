@@ -34,10 +34,8 @@ public class KeyBindingConfigItem {
 	public String	myBindingLocalName;
 	public String	myBoundEventName;
 	public String	myBoundKeyName;
-	// Another instance of the "not permanent" way of getting the QueryInterface! Time to decide soon the permanent way...
-	private static QueryInterface qi = QueryTester.getInterface();
 
-	public KeyBindingConfigItem(Solution solution, KeystrokeConfigEmitter kce) {
+	public KeyBindingConfigItem(QueryInterface qi, Solution solution, KeystrokeConfigEmitter kce) {
 		myTypeIdent = qi.getIdentFromSolution(solution, kce.TYPE_VAR_NAME());
 		myBindingLocalName = qi.getIdentFromSolution(solution, kce.BINDING_IDENT_VAR_NAME()).getLocalName();
 		myBoundEventName = qi.getStringFromSolution(solution, kce.ACTION_VAR_NAME());

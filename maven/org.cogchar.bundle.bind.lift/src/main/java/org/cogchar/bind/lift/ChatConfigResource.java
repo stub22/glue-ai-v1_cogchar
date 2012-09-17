@@ -39,8 +39,6 @@ public class ChatConfigResource {
 	//public String myURI_Fragment;
 	public Map<String, String> entries = new HashMap<String, String>();
 	private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
-	
-	private static QueryInterface queryEmitter = QueryTester.getInterface();
 
 	@Override
 	public String toString() {
@@ -48,7 +46,7 @@ public class ChatConfigResource {
 	}
 
 	// A new constructor to build ChatConfigResource from spreadsheet
-	public ChatConfigResource(SolutionList solutionList) {
+	public ChatConfigResource(QueryInterface queryEmitter, SolutionList solutionList) {
 		for (Solution solution : solutionList.javaList()) {
 			Ident variableUri = queryEmitter.getIdentFromSolution(solution, ChatQueryNames.VARIABLE_VAR_NAME);
 			Ident valueUri = queryEmitter.getIdentFromSolution(solution, ChatQueryNames.VALUE_VAR_NAME);

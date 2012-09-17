@@ -47,7 +47,7 @@ public class ChatConfig extends KnownComponentImpl {
 	public ChatConfig(QueryInterface qi, Ident graphIdent) {
 		String query = qi.getCompletedQueryFromTemplate(ChatQueryNames.GENRAL_CONFIG_TEMPLATE_URI, ChatQueryNames.CATEGORY_QUERY_VAR_NAME, ChatQueryNames.CATEGORY_URI);
 		SolutionList solutionList = qi.getTextQueryResultList(query, graphIdent);
-		myCCRs.add(new ChatConfigResource(solutionList));
+		myCCRs.add(new ChatConfigResource(qi, solutionList));
 	}
 
 	public static class Builder extends DynamicCachingComponentAssembler<ChatConfig> {

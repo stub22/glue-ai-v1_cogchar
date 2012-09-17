@@ -36,7 +36,7 @@ public class HumanoidFigureConfig {
 	public HumanoidBoneConfig myBoneConfig;
 	public float myInitX, myInitY, myInitZ;
 
-	public HumanoidFigureConfig(HumanoidConfig hc, RenderConfigEmitter rce, Ident bonyGraphIdent) {
+	public HumanoidFigureConfig(QueryInterface qi, HumanoidConfig hc, RenderConfigEmitter rce, Ident bonyGraphIdent) {
 		myCharIdent = hc.myCharIdent;
 		myNickname = hc.nickname;
 		myMeshPath = hc.meshPath;
@@ -46,14 +46,13 @@ public class HumanoidFigureConfig {
 		myInitY = hc.initialPosition[1];
 		myInitZ = hc.initialPosition[2];
 		myPhysicsFlag = hc.physicsFlag;
-		addBoneDescsFromBoneRobotConfig(myCharIdent, bonyGraphIdent, this);
+		addBoneDescsFromBoneRobotConfig(qi, myCharIdent, bonyGraphIdent, this);
 	}
 
 	// A method to add the bone descriptions by querying the bony config resource. Might should live somewhere else,
 	// but I haven't figured out where yet. Then again, the bone descs are part of the HumanoidFigureConfig,
 	// so why not here?
-	private void addBoneDescsFromBoneRobotConfig(Ident charIdent, Ident bonyGraphIdent, HumanoidFigureConfig hfc) {
-		QueryInterface qi = QueryTester.getInterface(); // Still the interim way of getting QueryInterface, until we decide what the permanent one will be
+	private void addBoneDescsFromBoneRobotConfig(QueryInterface qi, Ident charIdent, Ident bonyGraphIdent, HumanoidFigureConfig hfc) {
 		String queryString = qi.getQuery(BoneQueryNames.BONE_NAMES_QUERY_TEMPLATE_URI);
 		queryString = qi.setQueryVar(queryString, BoneQueryNames.ROBOT_IDENT_QUERY_VAR, charIdent);
 		SolutionList solutionList = qi.getTextQueryResultList(queryString, bonyGraphIdent);
