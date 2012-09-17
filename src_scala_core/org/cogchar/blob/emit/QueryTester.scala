@@ -29,7 +29,7 @@ import com.hp.hpl.jena.rdf.model.{Model}
  */
 object QueryTester {
 	def main(args: Array[String]) : Unit = {
-		val QUERY_TO_TEST = "ccrt:template_boneNames_99"
+		val QUERY_TO_TEST = "ccrt:find_users_99"
 		testQuery(QUERY_TO_TEST)
 	}
   
@@ -42,7 +42,7 @@ object QueryTester {
 	final val QUERY_SHEET = "ccrt:qry_sheet_22"
 	final val GRAPH_QUERY_VAR = "qGraph"
 	var myRepo: FancyRepo = null;
-	var myQueryInterface: QueryInterface = null;
+	var myQueryEmitter: QueryEmitter = null;
   
 	/** Provided solely for testing of queries
 	 *
@@ -72,12 +72,24 @@ object QueryTester {
 	// A temporary hook-in to allow current clients of QueryEmitter to easily get a "primary" instance until they 
 	// start using the managed service version - really this should happen in a registry but this is a short-term fix
 	def getInterface : QueryInterface = {
-		if (myQueryInterface == null) {
-			myQueryInterface = makeVanillaQueryEmitter;
-		}
-		myQueryInterface
+		getEmitter
 	}
+	// makeVanillaQueryEmitter creates a QueryEmitter, not a QueryInterface per se. Just for the moment, let's store this
+	// instead. This will allow PumaBooter.startVanillaQueryInterface to use the same instance of the QueryEmitter for which
+	// this.getInterface returns an interface. In turn, that prevents (SLOW) duplicate resource loading and the possibility for 
+	// unsynchronized state within PUMA.
+	// Really we might rather not expose the emitter, but rather only the interface. That sounds cleaner, but we need to be
+	// able to access an instance of the emitter to be able to start a managed service as in PumaBooter.startVanillaQueryInterface.
+	// So either we might have to accept exposing the QueryEmitter instance in this way, or move the functionality of 
+	// PumaBooter.startVanillaQueryInterface to here or to this class' successor. -Ryan Biggs 16 Sept 2012
+	def getEmitter : QueryEmitter = {
+		if (myQueryEmitter == null) {
+			  myQueryEmitter = makeVanillaQueryEmitter;
+		  }
+		  myQueryEmitter
+	}
+  
 	def clearQueryInterface : Unit = {
-		myQueryInterface = null;
+		myQueryEmitter = null;
 	}
 }
