@@ -71,7 +71,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	// a method that will be general (thus the String key for the request type) and packaged in an interface we can 
 	// pass around. PumaAppContext will set the interface on creation of the HRC.
 	public interface UpdateInterface {
-		public boolean updateConfig(QueryInterface qi, String request);
+		public boolean updateConfig(String request);
 	}
 	
 	public void setUpdateInterface(UpdateInterface theInterface) {
@@ -79,9 +79,9 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	}
 	
 	// ... and here's a method things that can see HRC can use to request a reload.
-	public void requestConfigReload(QueryInterface qi, String request) {
+	public void requestConfigReload(String request) {
 		if (myUpdateInterface != null) {
-			myUpdateInterface.updateConfig(qi, request);
+			myUpdateInterface.updateConfig(request);
 		} else {
 			logWarning("Update requested (" + request + "), but UpdateInterface not available in HumanoidRenderContext");
 		}
@@ -112,11 +112,11 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		//initHelpScreen(someSettings, inputManager);
 	}
 
-	public HumanoidFigure getHumanoidFigure(Ident charIdent, HumanoidConfig hc, Ident bonyConfigGraph) {
+	public HumanoidFigure getHumanoidFigure(QueryInterface qi, Ident charIdent, HumanoidConfig hc, Ident bonyConfigGraph) {
 		HumanoidFigure hf = myFiguresByCharIdent.get(charIdent);
 		if (hf == null) {
 			//BonyConfigEmitter bce = getBonyConfigEmitter();
-			HumanoidFigureConfig hfc = new HumanoidFigureConfig(hc, getConfigEmitter(), bonyConfigGraph); 
+			HumanoidFigureConfig hfc = new HumanoidFigureConfig(qi, hc, getConfigEmitter(), bonyConfigGraph); 
 			if (hfc.isComplete()) {
 				hf = new HumanoidFigure(hfc);
 				myFiguresByCharIdent.put(charIdent, hf);
@@ -134,8 +134,8 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	}
 
 	// Now does more, but does less on jME thread!
-	public HumanoidFigure setupHumanoidFigure(Ident charIdent, Ident bonyConfigGraph, HumanoidConfig hc) throws Throwable {
-		final HumanoidFigure figure = getHumanoidFigure(charIdent, hc, bonyConfigGraph);
+	public HumanoidFigure setupHumanoidFigure(QueryInterface qi, Ident charIdent, Ident bonyConfigGraph, HumanoidConfig hc) throws Throwable {
+		final HumanoidFigure figure = getHumanoidFigure(qi, charIdent, hc, bonyConfigGraph);
 		final AssetManager amgr = findJme3AssetManager(null);
 		final Node rootNode = findJme3RootDeepNode(null);
 		final PhysicsSpace ps = getPhysicsSpace();

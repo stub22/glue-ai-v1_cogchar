@@ -35,9 +35,8 @@ public class HumanoidConfig {
 	public Float[] initialPosition = new Float[3];
 	public boolean physicsFlag;
 
-	public HumanoidConfig(Ident charIdent, Ident graphIdent) {
+	public HumanoidConfig(QueryInterface qi, Ident charIdent, Ident graphIdent) {
 		myCharIdent = charIdent;
-		QueryInterface qi = QueryTester.getInterface(); // Still the interim way of getting QueryInterface, until we decide what the permanent one will be
 		SolutionMap solutionMap = qi.getQueryResultMap(HumanoidQueryNames.HUMANOID_QUERY, HumanoidQueryNames.ROBOT_URI_VAR_NAME, graphIdent);
 		nickname = qi.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.ROBOT_ID_VAR_NAME);
 		meshPath = qi.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.MESH_PATH_VAR_NAME);

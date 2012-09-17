@@ -52,7 +52,7 @@ public class KeyBindingConfig extends BasicDebugger {
 		List<Solution> solnJL =  solutionList.javaList();
 		logInfo("addBindings found " + solnJL.size() + " bindings");
 		for (Solution solution : solnJL ) {
-			KeyBindingConfigItem newItem = new KeyBindingConfigItem(solution, kce);
+			KeyBindingConfigItem newItem = new KeyBindingConfigItem(qi, solution, kce);
 			if (kce.GENERAL_BINDING_TYPE().equals(newItem.myTypeIdent)) {
 				myGeneralBindings.put(newItem.myBoundEventName, newItem);
 			} else if (kce.SCENE_BINDING_TYPE().equals(newItem.myTypeIdent)) {
