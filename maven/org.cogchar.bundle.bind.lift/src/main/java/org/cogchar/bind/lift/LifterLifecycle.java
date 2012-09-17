@@ -39,6 +39,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 	private final static String rkrt = "urn:ftd:robokind.org:2012:runtime#";
 	private final static Ident LIFT_CONFIG_ROLE = new FreeIdent(rkrt + "lifterConf", "lifterConf");
 	private final static Ident GENERAL_CONFIG_ROLE = new FreeIdent(rkrt + "generalConf", "generalConf");
+	private final static Ident USER_ACCESS_CONFIG_ROLE = new FreeIdent(rkrt + "userConf", "userConf");
 	private final static String queryEmitterId = "queryInterface";
 	private final static String globalConfigId = "globalConfig";
 	private final static String theLiftAppInterfaceId = "liftAppInterface";
@@ -114,23 +115,21 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		if (webAppEntities.isEmpty()) {
 			theLogger.warning("Could not find a specified web app entity, cannot create lift config");
 		} else {
-			Ident qGraph;
+			Ident liftConfigQGraph;
 			// Get the graph for the LiftConfig
 			try {
-				qGraph = configService.getErgMap().get(webAppEntities.get(0)).get(LIFT_CONFIG_ROLE);
+				liftConfigQGraph = configService.getErgMap().get(webAppEntities.get(0)).get(LIFT_CONFIG_ROLE);
 			} catch (Exception e) {
 				theLogger.warning("Could not retrieve graph for lift config");
 				return;
 			}
 			// Provide queryInterface to LiftAmbassador so it can reload lift configs
-			la.setQueryInterface(qi, qGraph);
-			// Load web app "home" startup screen config
-			Ident startupConfigIdent = getStartupLiftConfig(qi, qGraph);
-			if (startupConfigIdent != null) {
-				LiftConfig lc = new LiftConfig(qi, qGraph, startupConfigIdent);
-				la.activateControlsFromConfig(lc);
-			}
+			la.setQueryInterface(qi, liftConfigQGraph);
+			// Load web app "home" startup screen config and store for later when we see if we have a UserAccessConfig
+			// with a login page, which we will use instead if so
+			Ident startupConfigIdent = getStartupLiftConfig(qi, liftConfigQGraph);
 			// Get the graph for the general config
+			Ident qGraph;
 			try {
 				qGraph = configService.getErgMap().get(webAppEntities.get(0)).get(GENERAL_CONFIG_ROLE);
 			} catch (Exception e) {
@@ -140,6 +139,36 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 			// Load "chat app" config
 			ChatConfig cc = new ChatConfig(qi, qGraph);
 			la.storeChatConfig(cc);
+			// Get the graph for the user access config
+			try {
+				qGraph = configService.getErgMap().get(webAppEntities.get(0)).get(USER_ACCESS_CONFIG_ROLE);
+			} catch (Exception e) {
+				theLogger.warning("Could not retrieve graph for user access config");
+				return;
+			}
+			// Load user access config
+			UserAccessConfig uac = null;
+			try {
+				uac = new UserAccessConfig(qi, qGraph);
+				la.storeUserAccessConfig(uac);
+			} catch (Exception e) {
+				theLogger.log(Level.WARNING,"Error attempting to get user access config; it may not be defined. "
+						+ "Will use startLiftConfig defined in Lifter resource instead of login page for new sessions. " 
+						+ "Error is: ", e);
+			}
+			// If the uac has a non-null loginPage, use it, otherwise use the "home" page loaded earlier if present
+			boolean foundLoginPage = false;
+			if (uac != null) {
+				if (uac.loginPage != null) {
+					LiftConfig lc = new LiftConfig(qi, liftConfigQGraph, uac.loginPage);
+					la.activateControlsFromConfig(lc);
+					foundLoginPage = true;
+				}
+			} 
+			if ((!foundLoginPage) && (startupConfigIdent != null)) {
+				LiftConfig lc = new LiftConfig(qi, liftConfigQGraph, startupConfigIdent);
+				la.activateControlsFromConfig(lc);
+			}
 		}
 	}
 	

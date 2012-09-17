@@ -669,14 +669,19 @@ package org.cogchar.lifter {
 		  if (appVariablesMap(sessionId) contains key) contents = appVariablesMap(sessionId)(key)
 		  contents
 		}
+		// Show error globally
 		def showError(errorSourceCode:String, errorText:String) {
 		  info("In showError; code = " + errorSourceCode + "; text = " + errorText);
-		  // Seems we want to display this error in all sessions currently featuring a control to monitor this error type
-		  // We may modify this thinking in the future
 		  val activeSessionIterator = controlsMap.keysIterator
 		  while (activeSessionIterator.hasNext) {
 			val sessionId = activeSessionIterator.next
-			if (errorMap contains sessionId) {
+			showError(errorSourceCode, errorText, sessionId)
+		  }
+		}
+		// Show error in session
+		def showError(errorSourceCode:String, errorText:String, sessionId:String) {
+		  info("In showError; code = " + errorSourceCode + "; text = " + errorText + "; session = " + sessionId);
+		  if (errorMap contains sessionId) {
 			  if (errorMap(sessionId) contains errorSourceCode) {
 				val slotNum = errorMap(sessionId)(errorSourceCode)
 				if (errorText.isEmpty) {
@@ -685,7 +690,6 @@ package org.cogchar.lifter {
 				  setControl(sessionId, slotNum, TextBox.makeBox(errorText, controlDefMap(sessionId)(slotNum).style, true, false))
 				}
 			  }
-			}
 		  }
 		}
 	  }

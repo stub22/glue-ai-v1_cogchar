@@ -53,6 +53,7 @@ public class LiftAmbassador {
 	//private static final String RDF_PATH_PREFIX = "metadata/web/liftconfig/"; // Prefix for path to Lift configuration TTL files from resources root
 	private Map<Ident, LiftConfig> myLiftConfigCache = new HashMap<Ident, LiftConfig>(); // To avoid query config if page is reselected
 	private Map<String, String> myChatConfigEntries = new HashMap<String, String>();
+	private Map<Ident, UserAccessConfig.UserConfig> myUserMap = new HashMap<Ident, UserAccessConfig.UserConfig>();
 
 	public static LiftAmbassador getLiftAmbassador() {
 		if (theLiftAmbassador == null) {
@@ -79,6 +80,8 @@ public class LiftAmbassador {
 		String getVariable(String sessionId, String key);
 
 		void showError(String errorSourceKey, String errorText);
+		
+		void showError(String errorSourceKey, String errorText, String sessionId);
 	}
 
 	public interface LiftAppInterface {
@@ -174,6 +177,10 @@ public class LiftAmbassador {
 			myChatConfigEntries.putAll(ccr.entries);
 		}
 	}
+	
+	public void storeUserAccessConfig(UserAccessConfig uac) {
+		myUserMap = uac.users;
+	}
 
 	public boolean triggerAction(String sessionId, Ident actionUri) {
 		boolean success = false;
@@ -265,11 +272,21 @@ public class LiftAmbassador {
 		}
 	}
 
+	// Display global error
 	public void displayError(String errorSource, String errorText) {
 		if (myLift != null) {
 			myLift.showError(errorSource, errorText);
 		} else {
 			theLogger.error("Could not show the following error in Lift because no Lift messenger is set: " + errorSource + ": " + errorText);
+		}
+	}
+	
+	// Display error to session
+	public void displayError(String errorSource, String errorText, String sessionId) {
+		if (myLift != null) {
+			myLift.showError(errorSource, errorText, sessionId);
+		} else {
+			theLogger.error("Could not show the following error in Lift session " + sessionId + " because no Lift messenger is set: " + errorSource + ": " + errorText);
 		}
 	}
 	
@@ -279,22 +296,23 @@ public class LiftAmbassador {
 		} else {
 			theLogger.warn("Could not configure network because no LiftNetworkConfigInterface set");
 		}
-		
 	}
 	
-	// Just a demo login method
-	private static final String MAIN_CONFIG = "mainLiftConfig";
-	private static final String CHAT_CONFIG = "chatBigBoxLiftConfig";
 	public void login(String sessionId, String userName, String password) {
-		if ((userName.equals("main")) && (password.equals("BigBoy"))) {
-			// Request main liftConfig
-			triggerAction(sessionId, new FreeIdent(LiftConfigNames.p_liftconfig + MAIN_CONFIG, MAIN_CONFIG));
-		} else if ((userName.equals("chat")) && (password.equals("Mr.Wee"))) {
-			// Request chatConfig
-			triggerAction(sessionId, new FreeIdent(LiftConfigNames.p_liftconfig + CHAT_CONFIG, CHAT_CONFIG));
+		if (myUserMap != null) {
+			Ident userIdent = new FreeIdent(LiftConfigNames.P_user + userName, userName);
+			if (myUserMap.containsKey(userIdent)) {
+				if (myUserMap.get(userIdent).password.equals(password)) {
+					triggerAction(sessionId, myUserMap.get(userIdent).startConfig);
+				} else {
+					displayError("login", "Password not recognized", sessionId); // <- move strings to resource
+				}
+			} else {
+				displayError("login", "Username not recognized", sessionId); // <- move strings to resource
+			}
 		} else {
-			//Show error
-			displayError("login", "Username or Password not recognized"); // <- move strings to resource
+			theLogger.error("Attempting to log in user, but myUserMap is not set!");
+			displayError("login", "User database not set!", sessionId); // <- move strings to resource
 		}
 	}
 
