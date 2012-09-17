@@ -31,6 +31,7 @@ public class LiftConfigNames extends BoxAssemblyNames {
 	public static final String P_controlText = NS_CgcLC + "text";
 	public static final String P_controlStyle = NS_CgcLC + "style";
 	public static final String P_controlResource = NS_CgcLC + "resource";
+	public static final String P_user = "http://www.cogchar.org/lift/user#";
 	
 	// These are not used in RDF parsing, but help LiftAmbassador know how to interpret prefixes found in RDF defined actions - 
 	// really these should probably be replaced with real URIs
