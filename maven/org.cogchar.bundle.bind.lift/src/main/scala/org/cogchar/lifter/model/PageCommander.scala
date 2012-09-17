@@ -501,7 +501,7 @@ package org.cogchar.lifter {
 			  splitAction(0) match {
 				case ActionStrings.acquireSpeech => {
 					updateInfo = controlId(sessionId, 201) // Special "slotNum" to tell JavaScriptActor to request speech
-					lastSpeechReqSlotId = updateInfo; // Set this field - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
+					lastSpeechReqSlotId = controlId(sessionId, slotNum); // Set this field - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
 					updateListeners()
 					success = true
 				  }
