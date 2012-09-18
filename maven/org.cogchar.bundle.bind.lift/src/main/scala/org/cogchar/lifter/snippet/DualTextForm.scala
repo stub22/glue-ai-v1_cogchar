@@ -44,7 +44,6 @@ package org.cogchar.lifter {
 	  val textMap = new scala.collection.mutable.HashMap[Int, (String,String)]
 	  
 	  def makeForm(label1: String, label2: String, submitLabel: String, idNum: Int): NodeSeq = {
-		//val formIdforHtml: String = sessionId.toString + "_" + idNum.toString
 		val formIdforHtml: String = idNum.toString
 		textMap(idNum) = (label1, label2)
 		val labelId1: String = labelIdPrefix + formIdforHtml + "A"// We need unique IDs here, because JavaScript may be updating the label after post [future expansion]

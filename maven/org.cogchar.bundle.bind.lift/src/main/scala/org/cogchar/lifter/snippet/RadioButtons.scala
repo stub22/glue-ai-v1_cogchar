@@ -81,6 +81,7 @@ package org.cogchar.lifter {
 			formId = (S.attr("formId") openOr "-1").toInt 
 			var valid = false
 			var selectors:CssSel = "i_eat_yaks_for_breakfast" #> "" // This is just to produce a "Null" CssSel so we can initialize this here, but not add any meaningful info until we have checked for valid formId. (As recommended by the inventor of Lift)
+			var errorSeq: NodeSeq = NodeSeq.Empty
 			if (RadioButtons.titleMap.contains(formId)) {
 			  valid = true
 			  val titleSelectorText: String = "#"+radioButtonsInstanceTitleId+" *"
@@ -91,8 +92,11 @@ package org.cogchar.lifter {
 				buttonHtml = buttonHtml ++ <div><span class="formlabels">{RadioButtons.labelMap(formId)(buttonIndex)}</span><span>{theButtons(buttonIndex)}</span></div>
 			  }
 			  selectors = titleSelectorText #> RadioButtons.titleMap(formId) & "#buttonshere" #> buttonHtml
-			} else error("RadioButtons.render cannot find a valid formId! Reported formId: " + formId)
-			if (valid) selectors.apply(xhtml) else NodeSeq.Empty // Blanks control if something is wrong with formId
+			} else {
+			  error("RadioButtons.render cannot find a valid formId! Reported formId: " + formId)
+			  errorSeq = TextBox.makeBox("RadioButtons.render cannot find a valid formId! Reported formId: " + formId, "", true)
+			}
+			if (valid) selectors.apply(xhtml) else errorSeq // Blanks control if something is wrong with formId
 			//selectors.apply(xhtml) // This would be ok too, and would just apply the "null" selector transform to html if something is broken
 		  }
 		  case _ => {
