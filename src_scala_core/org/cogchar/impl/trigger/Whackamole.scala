@@ -101,7 +101,7 @@ object Whackamole extends BasicDebugger {
 	}
 	def main(args: Array[String]) :Unit = {
 		logInfo(this.getClass.getCanonicalName() + ".main(" + args + ")-BEGIN");
-		logInfo("Whack-em-ole, Vacquera!");
+		logInfo("Whack-em-ole, Vaquera!");
 		val time = java.lang.System.currentTimeMillis();
 		logInfo("El tiempo es: " + time);
 		val tnc : DemoNavigatorCtrl = makeTNC(args);
