@@ -50,8 +50,10 @@ public class PumaWebMapper extends BasicDebugger {
 	}
 	
 	public void connectCogCharResources(ClassLoader bonyRdfCl, HumanoidRenderContext hrc) {
-		BallBuilder.setClassLoader("Cog Char", bonyRdfCl);
-		BallBuilder.initialize(hrc);
+		BallBuilder theBallBuilder = BallBuilder.getTheBallBuilder();
+		theBallBuilder.setClassLoader("Cog Char", bonyRdfCl);
+		theBallBuilder.initialize(hrc);
+		hrc.setTheBallBuilder(theBallBuilder);
 	}
 
 	public void connectLiftSceneInterface(BundleContext bundleCtx) {
@@ -75,7 +77,7 @@ public class PumaWebMapper extends BasicDebugger {
 	// Previous functions now mostly done from within LifterLifecycle on create(). 
 	// Retaining for now for legacy BallBuilder classloader hookup
 	public void connectHrkindWebContent(ClassLoader hrkindResourceCL) {
-		BallBuilder.setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
+		BallBuilder.getTheBallBuilder().setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
 	}
 	
 	public void setAppContext(PumaAppContext pac) {
@@ -113,7 +115,7 @@ public class PumaWebMapper extends BasicDebugger {
 
 		@Override
 		public boolean performDataballAction(String action, String text) {
-			return BallBuilder.performAction(action, text);
+			return BallBuilder.getTheBallBuilder().performAction(action, text);
 		}
 		
 		@Override

@@ -65,75 +65,84 @@ import org.slf4j.Logger;
  * @author Ryan Biggs
  */
 public class BallBuilder extends BasicDebugger {
-	// A big list of static state to soon banish!
+	
+	private static BallBuilder theBallBuilder;
+	
 	private static final float LOW_DAMPING_COEFFICIENT = 0.4f;
 	private static final float HIGH_DAMPING_COEFFICIENT = 0.98f;
 	private static final float MASS_COEFFICIENT = 1f;
-	private static HumanoidRenderContext renderContext;
-	private static RenderRegistryClient rrc;
-	private static GeomFactory factory;
-	private static PhysicsSpace physics;
-	//private static BulletAppState bulletState;
-	private static DeepSceneMgr dsm;
-	private static InputManager im;
-	private static CameraMgr cameraMgr;
-	private static Node ballsNode = new Node("Databalls");
-	private static Logger logger = getLoggerForClass(BallBuilder.class);
-	private static CinematicConfig aConfigToDemo;
-	private static TextMgr textMgr;
-	private static FlatOverlayMgr flatOverlayMgr;
-	private static ClassLoader resourceCl;
-	private static MatFactory materialFactory;
-	private static Map<String, ClassLoader> classloaders = new HashMap<String, ClassLoader>();
 	private static final float[] PICK_TEXT_POSITION = {300f, 30f, 0f};
 	private static final float[] BALL_INJECTION_POSITION = {0f, 24f, 50f};
 	private static final float[] BALL_INJECTION_BOX_SIZE = {20f, 10f, 10f};
 	private static final float BALL_PADDING = 0.1f;
-	private static boolean activated = false;
-	private static Map<String, Ball> balls = new HashMap<String, Ball>();
-	private static BitmapText screenText;
 	private static final int DAMPING_TRIM_CONSTANT = (int) pow(40, 4);
 	private static final float MINIMUM_DAMPING_COEFFICIENT = 0.33f;
 	private static final int RELEASE_DAMPING_PERIOD = 60;
 	private static final float RELEASE_DAMPING = 0.99f;
 	private static final int INFLATION_PERIOD = 250;
 	private static final float INFLATION_DAMPING = MINIMUM_DAMPING_COEFFICIENT;
-	private static float damping = LOW_DAMPING_COEFFICIENT;
-	private static Material standardMaterial;
-	private static Model lastModel; // May be only temporary; holds last model loaded so we can run SPARQL queries on it
-	private static LiftAmbassador theLiftAmbassador; // Only static because everything else is, for the moment. 
+	private HumanoidRenderContext myRenderContext;
+	private RenderRegistryClient myRRC;
+	private GeomFactory myFactory;
+	private PhysicsSpace myPhysics;
+	//private BulletAppState bulletState;
+	private DeepSceneMgr myDSM;
+	private InputManager myIM;
+	private CameraMgr myCameraMgr;
+	private Node myBallsNode = new Node("Databalls");
+	private Logger myLogger = getLoggerForClass(BallBuilder.class);
+	private CinematicConfig myDemoCinematicConfig;
+	private TextMgr myTextMgr;
+	private FlatOverlayMgr myFlatOverlayMgr;
+	private ClassLoader myResourceCl;
+	private MatFactory myMaterialFactory;
+	private Map<String, ClassLoader> myClassloaders = new HashMap<String, ClassLoader>();
+	private boolean thisActivated = false;
+	private Map<String, Ball> myBalls = new HashMap<String, Ball>();
+	private BitmapText myScreenText;
+	private float myDamping = LOW_DAMPING_COEFFICIENT;
+	private Material myStandardMaterial;
+	private Model myLastModel; // May be only temporary; holds last model loaded so we can run SPARQL queries on it
+	private LiftAmbassador myLiftAmbassador; 
+	private CinematicModelBuilder myCinematicModelBuilder;
 	// Probably it makes sense to retain an instance variable for the LiftAmbassador since it is used in several methods.
 	// However, it's probably even better to add an interface for BallBuilder->Lifter interactions
 
-	public static void initialize(HumanoidRenderContext hrc) {
-		renderContext = hrc;
-		rrc = hrc.getRenderRegistryClient();
-		factory = rrc.getSceneGeometryFacade(null);
-		physics = rrc.getJme3BulletPhysicsSpace();
-		dsm = rrc.getSceneDeepFacade(null);
-		im = rrc.getJme3InputManager(null);
-		cameraMgr = rrc.getOpticCameraFacade(null);
-		textMgr = rrc.getSceneTextFacade(null);
+	public static BallBuilder getTheBallBuilder() {
+		if (theBallBuilder == null) {
+			theBallBuilder = new BallBuilder();
+		}
+		return theBallBuilder;
+	}
+	
+	public void initialize(HumanoidRenderContext hrc) {
+		myRenderContext = hrc;
+		myRRC = hrc.getRenderRegistryClient();
+		myFactory = myRRC.getSceneGeometryFacade(null);
+		myPhysics = myRRC.getJme3BulletPhysicsSpace();
+		myDSM = myRRC.getSceneDeepFacade(null);
+		myIM = myRRC.getJme3InputManager(null);
+		myCameraMgr = myRRC.getOpticCameraFacade(null);
+		myTextMgr = myRRC.getSceneTextFacade(null);
 		//ballsNode = new Node("ResourceBalls");
-		flatOverlayMgr = rrc.getSceneFlatFacade(null);
-		materialFactory = rrc.getOpticMaterialFacade(null, null);
-		standardMaterial = materialFactory.makeMatWithOptTexture("Common/MatDefs/Light/Lighting.j3md", "SpecularMap", null);
+		myFlatOverlayMgr = myRRC.getSceneFlatFacade(null);
+		myMaterialFactory = myRRC.getOpticMaterialFacade(null, null);
+		myStandardMaterial = myMaterialFactory.makeMatWithOptTexture("Common/MatDefs/Light/Lighting.j3md", "SpecularMap", null);
 		// Below: an experiment in Bullet multithreading (http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:bullet_multithreading)
 		// Currently throwing an NPE
-		//bulletState = rrc.getJme3BulletAppState(null);
+		//bulletState = myRRC.getJme3BulletAppState(null);
 		// This *may* improve performance
 		//bulletState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // Does the bulletState need to be attached to the state manager, or is it already?
 	}
 	
-	// Not static for long...
-	private static LiftAmbassador getLiftAmbassador() {
-		if (theLiftAmbassador == null) {
-			theLiftAmbassador = LiftAmbassador.getLiftAmbassador();
+	private LiftAmbassador getLiftAmbassador() {
+		if (myLiftAmbassador == null) {
+			myLiftAmbassador = LiftAmbassador.getLiftAmbassador();
 		}
-		return theLiftAmbassador;
+		return myLiftAmbassador;
 	}
 
-	static class Ball {
+	class Ball {
 
 		String uri;
 		Vector3f initialPosition;
@@ -149,7 +158,7 @@ public class BallBuilder extends BasicDebugger {
 			initialPosition = position;
 			radius = size;
 			Sphere ball = new Sphere(20, 20, size);
-			material = standardMaterial.clone();
+			material = myStandardMaterial.clone();
 			material.setBoolean("UseMaterialColors", true);
 			material.setColor("Diffuse", color);
 			material.setColor("Ambient", color);
@@ -157,52 +166,21 @@ public class BallBuilder extends BasicDebugger {
 			material.setFloat("Shininess", 25f);
 			control = new RigidBodyControl(sphereShape(size), (float) (pow(size, 3) * MASS_COEFFICIENT));
 			control.setRestitution(0.5f);
-			geometry = factory.makeGeom(uri, ball, material, control);
+			geometry = myFactory.makeGeom(uri, ball, material, control);
 			reset();
-			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+			myRenderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
 					//geometry.addControl(control);
-					physics.add(control);
-					ballsNode.attachChild(geometry);
+					myPhysics.add(control);
+					myBallsNode.attachChild(geometry);
 					control.setPhysicsLocation(initialPosition); // Probably unnecessary - setting this here, in reset() above, and using resetAllBalls in buildModelFromTurtle because they don't want to go to the initial position! Probably some sort of jME concurrency thing...
 					return null;
 				}
 			});
 		}
-
-		static Ball addBall(String ballUri) {
-			return addBall(ballUri, ColorRGBA.Blue);
-		}
-
-		static Ball addBall(String ballUri, Vector3f position) {
-			Ball newBall;
-			if (!balls.containsKey(ballUri)) {
-				newBall = new Ball(ballUri, position, ColorRGBA.Blue, 1f);
-				balls.put(ballUri, newBall);
-			} else {
-				newBall = balls.get(ballUri);
-			}
-			return newBall;
-		}
-
-		static Ball addBall(String ballUri, ColorRGBA color) {
-			return addBall(ballUri, color, 1.0f);
-		}
-
-		static Ball addBall(String ballUri, ColorRGBA color, float size) {
-			Ball newBall;
-			if (!balls.containsKey(ballUri)) {
-				Vector3f position = assignStartingLocation(size);
-				newBall = new Ball(ballUri, position, color, size);
-				balls.put(ballUri, newBall);
-			} else {
-				newBall = balls.get(ballUri);
-			}
-			return newBall;
-		}
-
+		
 		void addConnection(String connectedBallUri, String stickUri) {
 			addConnection(connectedBallUri, stickUri, 1);
 		}
@@ -222,10 +200,10 @@ public class BallBuilder extends BasicDebugger {
 			Random random = new Random(new Long(uri.hashCode()));
 			control.setLinearVelocity(new Vector3f(random.nextFloat() - 0.5f, 0.25f * (random.nextFloat() - 0.5f), random.nextFloat() - 0.5f));
 		}
-		private static SphereCollisionShape lastShape;
-		private static float lastRadius = -1f;
-
-		private static SphereCollisionShape sphereShape(float radius) {
+		
+		private SphereCollisionShape lastShape;
+		private float lastRadius = -1f;
+		private SphereCollisionShape sphereShape(float radius) {
 			if (radius == lastRadius) {
 				return lastShape; // Recycle old sphereShape if possible for efficiency
 			} else {
@@ -235,9 +213,43 @@ public class BallBuilder extends BasicDebugger {
 				return newShape;
 			}
 		}
+		
+	}
+	
+	Ball addBall(String ballUri) {
+		return addBall(ballUri, ColorRGBA.Blue);
 	}
 
-	static class Stick {
+	Ball addBall(String ballUri, Vector3f position) {
+		Ball newBall;
+		if (!myBalls.containsKey(ballUri)) {
+			newBall = new Ball(ballUri, position, ColorRGBA.Blue, 1f);
+			myBalls.put(ballUri, newBall);
+		} else {
+			newBall = myBalls.get(ballUri);
+		}
+		return newBall;
+	}
+
+	Ball addBall(String ballUri, ColorRGBA color) {
+		return addBall(ballUri, color, 1.0f);
+	}
+
+	Ball addBall(String ballUri, ColorRGBA color, float size) {
+		Ball newBall;
+		if (!myBalls.containsKey(ballUri)) {
+			Vector3f position = assignStartingLocation(size);
+			newBall = new Ball(ballUri, position, color, size);
+			myBalls.put(ballUri, newBall);
+		} else {
+			newBall = myBalls.get(ballUri);
+		}
+		return newBall;
+	}
+
+	
+
+	class Stick {
 
 		String uri;
 		Geometry geometry;
@@ -247,32 +259,32 @@ public class BallBuilder extends BasicDebugger {
 		Stick(String stickUri) {
 			uri = stickUri;
 			stickCylinder = new Cylinder(10, 20, 0.25f, 1f);
-			material = standardMaterial;
+			material = myStandardMaterial;
 			material.setBoolean("UseMaterialColors", true);
 			material.setColor("Diffuse", ColorRGBA.Black);
 			material.setColor("Ambient", ColorRGBA.Black);
 			material.setColor("Specular", ColorRGBA.Black);
 			material.setFloat("Shininess", 100f);
-			geometry = factory.makeGeom(uri, stickCylinder, material, null);
-			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+			geometry = myFactory.makeGeom(uri, stickCylinder, material, null);
+			myRenderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
-					ballsNode.attachChild(geometry);
+					myBallsNode.attachChild(geometry);
 					return null;
 				}
 			});
 		}
 	}
 	
-	static class Cloud {
+	class Cloud {
 		
-		static int cloudNum = 1; // Just a temporary way to discretely name these
+		int cloudNum = 1; // Just a temporary way to discretely name these
 		static final String CLOUD_NAME_PREFIX = "Cloud";
 
 		Cloud(float radius, Vector3f position, ColorRGBA color) {
 			Sphere cloud = new Sphere(40, 40, radius);
-			Material material = materialFactory.makeMatWithOptNamedTexture("Common/MatDefs/Light/Lighting.j3md", "AlphaMap", "Textures/Uniform/DataCloudAlphaMap.png");
+			Material material = myMaterialFactory.makeMatWithOptNamedTexture("Common/MatDefs/Light/Lighting.j3md", "AlphaMap", "Textures/Uniform/DataCloudAlphaMap.png");
 			material.setBoolean("UseMaterialColors", true);
 			material.setColor("Diffuse", color);
 			material.setColor("Ambient", color);
@@ -280,17 +292,17 @@ public class BallBuilder extends BasicDebugger {
 			material.setFloat("Shininess", 25f);
 			material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
 			
-			final Geometry geometry = factory.makeGeom(CLOUD_NAME_PREFIX + cloudNum, cloud, material, null);
+			final Geometry geometry = myFactory.makeGeom(CLOUD_NAME_PREFIX + cloudNum, cloud, material, null);
 			final RigidBodyControl control = new RigidBodyControl(CollisionShapeFactory.createMeshShape(geometry), 0f);
 			geometry.addControl(control); // Has to be done after the makeGeom method since the control CollisionShape is based on the geometry
 			control.setPhysicsLocation(position);
 			geometry.setQueueBucket(Bucket.Transparent);
-			renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+			myRenderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
-					physics.add(control);
-					ballsNode.attachChild(geometry);
+					myPhysics.add(control);
+					myBallsNode.attachChild(geometry);
 					return null;
 				}
 			});
@@ -298,12 +310,12 @@ public class BallBuilder extends BasicDebugger {
 	}
 	
 	
-	private static float[] newPosition = new float[3];
-	private static Float lastRadius = Float.NaN;
-	private static float biggestRadiusThisLine;
-	private static float biggestRadiusThisPlane;
+	private float[] newPosition = new float[3];
+	private Float lastRadius = Float.NaN;
+	private float biggestRadiusThisLine;
+	private float biggestRadiusThisPlane;
 
-	private static Vector3f assignStartingLocation(float ballRadius) {
+	private Vector3f assignStartingLocation(float ballRadius) {
 		if (lastRadius.isNaN()) { // If so, we are starting a fresh set of balls
 			for (int i = 0; i < newPosition.length; i++) {
 				newPosition[i] = firstPosition(i);
@@ -320,7 +332,7 @@ public class BallBuilder extends BasicDebugger {
 				newPosition[1] = firstPosition(1);
 				newPosition[2] += biggestRadiusThisPlane + ballRadius + BALL_PADDING;
 				if (exceedsBound(2)) {
-					logger.warn("Balls are overflowing from injection box!");
+					myLogger.warn("Balls are overflowing from injection box!");
 				}
 				biggestRadiusThisPlane = ballRadius;
 			} else {
@@ -339,29 +351,30 @@ public class BallBuilder extends BasicDebugger {
 		return new Vector3f(newPosition[0], newPosition[1], newPosition[2]);
 	}
 
-	private static boolean exceedsBound(int dimension) {
+	private boolean exceedsBound(int dimension) {
 		return (newPosition[dimension] > BALL_INJECTION_POSITION[dimension] + BALL_INJECTION_BOX_SIZE[dimension] / 2);
 	}
 
-	private static float firstPosition(int dimension) {
+	private float firstPosition(int dimension) {
 		return BALL_INJECTION_POSITION[dimension] - BALL_INJECTION_BOX_SIZE[dimension] / 2;
 	}
 
-	public static void storeCinematicConfig(CinematicConfig config) {
-		aConfigToDemo = config;
+	public void storeCinematicConfig(CinematicConfig config) {
+		myDemoCinematicConfig = config;
 	}
 
-	static class CinematicModelBuilder {
+	
+	class CinematicModelBuilder {
 		// These hold numbers to attach to the end of "Unnamed" track, waypoint, and rotation names
 
-		static int incrementingTrack = 1;
-		static int incrementingWaypoint = 1;
-		static int incrementingRotation = 1;
-
-		private static void buildModelFromCinematicConfig(CinematicConfig cc) {
+		int incrementingTrack = 1;
+		int incrementingWaypoint = 1;
+		int incrementingRotation = 1;
+		
+		private void buildModelFromCinematicConfig(CinematicConfig cc) {
 			for (CinematicInstanceConfig cic : cc.myCICs) {
-				logger.info("Adding instanceBall with uri " + cic.myURI_Fragment);
-				Ball instanceBall = Ball.addBall(cic.myURI_Fragment, ColorRGBA.Green, 1.5f);
+				myLogger.info("Adding instanceBall with uri " + cic.myURI_Fragment);
+				Ball instanceBall = addBall(cic.myURI_Fragment, ColorRGBA.Green, 1.5f);
 				for (CinematicTrack ct : cic.myTracks) {
 					buildFromTrack(ct, instanceBall);
 				}
@@ -375,10 +388,10 @@ public class BallBuilder extends BasicDebugger {
 			for (RotationConfig rc : cc.myRCs) {
 				buildFromRotation(rc, null);
 			}
-			damping = computeIdealDamping();
+			myDamping = computeIdealDamping();
 		}
 
-		public static void buildFromTrack(CinematicTrack ct, Ball parentBall) {
+		public void buildFromTrack(CinematicTrack ct, Ball parentBall) {
 			Ball trackBall;
 			String trackName;
 			if (ct.trackName.endsWith(CinematicConfigNames.suffix_unnamed)) {
@@ -387,12 +400,12 @@ public class BallBuilder extends BasicDebugger {
 			} else {
 				trackName = ct.trackName;
 			}
-			if (balls.containsKey(trackName)) {
-				logger.info("Updating trackBall with uri " + trackName);
-				trackBall = balls.get(trackName);
+			if (myBalls.containsKey(trackName)) {
+				myLogger.info("Updating trackBall with uri " + trackName);
+				trackBall = myBalls.get(trackName);
 			} else {
-				logger.info("Adding trackBall with uri " + trackName);
-				trackBall = Ball.addBall(trackName, ColorRGBA.Red);
+				myLogger.info("Adding trackBall with uri " + trackName);
+				trackBall = addBall(trackName, ColorRGBA.Red);
 			}
 			if (parentBall != null) {
 				parentBall.addConnection(trackName, "containsTrack");
@@ -405,7 +418,7 @@ public class BallBuilder extends BasicDebugger {
 			}
 		}
 
-		public static void buildFromWaypoint(WaypointConfig wc, Ball parentBall) {
+		public void buildFromWaypoint(WaypointConfig wc, Ball parentBall) {
 			String waypointName;
 			if (wc.waypointName.endsWith(CinematicConfigNames.suffix_unnamed)) {
 				waypointName = wc.waypointName + incrementingWaypoint;
@@ -413,16 +426,16 @@ public class BallBuilder extends BasicDebugger {
 			} else {
 				waypointName = wc.waypointName;
 			}
-			if (!balls.containsKey(waypointName)) {
-				logger.info("Adding waypointBall with uri " + waypointName);
-				Ball.addBall(waypointName, ColorRGBA.Yellow, 0.5f);
+			if (!myBalls.containsKey(waypointName)) {
+				myLogger.info("Adding waypointBall with uri " + waypointName);
+				addBall(waypointName, ColorRGBA.Yellow, 0.5f);
 			}
 			if (parentBall != null) {
 				parentBall.addConnection(waypointName, "containsWaypoint", 2);
 			}
 		}
 
-		public static void buildFromRotation(RotationConfig rc, Ball parentBall) {
+		public void buildFromRotation(RotationConfig rc, Ball parentBall) {
 			String rotationName;
 			if (rc.rotationName.endsWith(CinematicConfigNames.suffix_unnamed)) {
 				rotationName = rc.rotationName + incrementingRotation;
@@ -430,43 +443,50 @@ public class BallBuilder extends BasicDebugger {
 			} else {
 				rotationName = rc.rotationName;
 			}
-			if (!balls.containsKey(rotationName)) {
-				logger.info("Adding waypointBall with uri " + rotationName);
-				Ball.addBall(rotationName, ColorRGBA.Orange, 0.5f);
+			if (!myBalls.containsKey(rotationName)) {
+				myLogger.info("Adding waypointBall with uri " + rotationName);
+				addBall(rotationName, ColorRGBA.Orange, 0.5f);
 			}
 			if (parentBall != null) {
 				parentBall.addConnection(rotationName, "containsRotation", 2);
 			}
 		}
 	}
+	
+	private CinematicModelBuilder getMyCinematicModelBuilder() {
+		if (myCinematicModelBuilder == null) {
+			myCinematicModelBuilder = new CinematicModelBuilder();
+		}
+		return myCinematicModelBuilder;
+	}
 
-	public static void showCinematicConfig() {
-		if (activated) {
+	public void showCinematicConfig() {
+		if (thisActivated) {
 			stop();
 		}
-		CinematicModelBuilder.buildModelFromCinematicConfig(aConfigToDemo);
+		getMyCinematicModelBuilder().buildModelFromCinematicConfig(myDemoCinematicConfig);
 		start();
 	}
 
-	public static void runBalls() {
-		if (balls.isEmpty() && renderContext != null) {
+	public void runBalls() {
+		if (myBalls.isEmpty() && myRenderContext != null) {
 			showCinematicConfig();
 			start();
-		} else if (activated) {
+		} else if (thisActivated) {
 			stop();
 		} else {
 			start();
 		}
 	}
 
-	public static void resetAllBalls() {
+	public void resetAllBalls() {
 		// Reset position and velocity
-		for (Ball ball : balls.values()) {
+		for (Ball ball : myBalls.values()) {
 			ball.reset();
 		}
 	}
 
-	public static void buildModelFromJena(Model rdfModel, boolean ballsForAllObjects) {
+	public void buildModelFromJena(Model rdfModel, boolean ballsForAllObjects) {
 		final float NORMAL_RADIUS = 1.25f;
 		final float ENDPOINT_RADIUS = 0.75f;
 		final float BLANK_NODE_RADIUS = 0.5f;
@@ -474,7 +494,7 @@ public class BallBuilder extends BasicDebugger {
 		 * NodeIterator objects = rdfModel.listObjects(); while (objects.hasNext()) { RDFNode node = objects.next();
 		 * logger.info("Node read: " + node.toString()); }
 		 */
-		if (activated) {
+		if (thisActivated) {
 			stop();
 		}
 		resetAllBalls();
@@ -485,10 +505,10 @@ public class BallBuilder extends BasicDebugger {
 			Ball newBall;
 			if (node.isAnon()) {
 				// A blank node!
-				newBall = Ball.addBall(node.toString(), ColorRGBA.Blue, BLANK_NODE_RADIUS);
+				newBall = addBall(node.toString(), ColorRGBA.Blue, BLANK_NODE_RADIUS);
 			} else {
 				// A regular node
-				newBall = Ball.addBall(node.toString(), ColorRGBA.Red, NORMAL_RADIUS);
+				newBall = addBall(node.toString(), ColorRGBA.Red, NORMAL_RADIUS);
 			}
 			StmtIterator statements = node.listProperties();
 			while (statements.hasNext()) {
@@ -502,17 +522,17 @@ public class BallBuilder extends BasicDebugger {
 			NodeIterator objects = rdfModel.listObjects();
 			while (objects.hasNext()) {
 				RDFNode node = objects.next();
-				if (!balls.containsKey(node.toString())) {
-					Ball.addBall(node.toString(), ColorRGBA.Green, ENDPOINT_RADIUS);
+				if (!myBalls.containsKey(node.toString())) {
+					addBall(node.toString(), ColorRGBA.Green, ENDPOINT_RADIUS);
 				}
 			}
 		}
 		resetAllBalls();
-		damping = computeIdealDamping();
+		myDamping = computeIdealDamping();
 		start();
 	}
 
-	public static Model loadModelFromTurtle(ClassLoader loader, String configPath) {
+	public Model loadModelFromTurtle(ClassLoader loader, String configPath) {
 		Model rdfModel = ModelFactory.createDefaultModel();
 		try {
 			InputStream stream = loader.getResourceAsStream(configPath);
@@ -521,11 +541,11 @@ public class BallBuilder extends BasicDebugger {
 			showErrorInLift("Exception attemping to read Turtle file: " + e);
 			return null;
 		}
-		lastModel = rdfModel;
+		myLastModel = rdfModel;
 		return rdfModel;
 	}
 
-	public static boolean buildModelFromTurtle(ClassLoader loader, String configPath, boolean ballsForAllObjects) {
+	public boolean buildModelFromTurtle(ClassLoader loader, String configPath, boolean ballsForAllObjects) {
 		boolean success = false;
 		Model rdfModel = loadModelFromTurtle(loader, configPath);
 		if (rdfModel != null) {
@@ -535,17 +555,17 @@ public class BallBuilder extends BasicDebugger {
 		return success;
 	}
 
-	public static boolean buildModelFromTurtle(ClassLoader loader, String configPath) {
+	public boolean buildModelFromTurtle(ClassLoader loader, String configPath) {
 		return buildModelFromTurtle(loader, configPath, false);
 	}
 
-	public static boolean buildModelFromTurtleUsingLiftSettings(String configPath) {
+	public boolean buildModelFromTurtleUsingLiftSettings(String configPath) {
 		boolean success = false;
-		resourceCl = null;
+		myResourceCl = null;
 		String classloaderKey = getLiftAmbassador().getLiftVariable(DataballStrings.classloaderKey);
 		if (classloaderKey != null) {
-			if (classloaders.containsKey(classloaderKey)) {
-				resourceCl = classloaders.get(classloaderKey);
+			if (myClassloaders.containsKey(classloaderKey)) {
+				myResourceCl = myClassloaders.get(classloaderKey);
 			}
 		}
 		boolean showAllObjects = false;
@@ -553,9 +573,9 @@ public class BallBuilder extends BasicDebugger {
 		if (liftShowAllObjectsString != null) {
 			showAllObjects = Boolean.valueOf(liftShowAllObjectsString);
 		}
-		if (resourceCl != null) {
+		if (myResourceCl != null) {
 
-			success = buildModelFromTurtle(resourceCl, configPath, showAllObjects);
+			success = buildModelFromTurtle(myResourceCl, configPath, showAllObjects);
 
 		} else {
 			showErrorInLift("Databalls graph using Lift settings requested, but could not find classloader with key " + classloaderKey);
@@ -563,7 +583,7 @@ public class BallBuilder extends BasicDebugger {
 		return success;
 	}
 
-	public static boolean buildModelFromSparql(Model modelToQuery, String queryString) {
+	public boolean buildModelFromSparql(Model modelToQuery, String queryString) {
 		boolean success = false;
 		Query query = QueryFactory.create(queryString);
 		//Model model = loadModelFromTurtle(loader, configPath); // Not sure if we want this to build its own model or not...
@@ -577,16 +597,16 @@ public class BallBuilder extends BasicDebugger {
 		return success;
 	}
 
-	public static boolean buildModelFromSpaqrlUsingLiftSettings(String queryString) {
-		if (lastModel != null) {
-			return buildModelFromSparql(lastModel, queryString);
+	public boolean buildModelFromSpaqrlUsingLiftSettings(String queryString) {
+		if (myLastModel != null) {
+			return buildModelFromSparql(myLastModel, queryString);
 		} else {
 			showErrorInLift("Can't build model from Sparql - no model for query loaded");
 			return false;
 		}
 	}
 	
-	public static void buildCloudFromSparql(Model modelToQuery, String queryString) {
+	public void buildCloudFromSparql(Model modelToQuery, String queryString) {
 		clear(); // Seems best for now
 		Query query = QueryFactory.create(queryString);
 		QueryExecution qexec = QueryExecutionFactory.create(query, modelToQuery);
@@ -598,7 +618,7 @@ public class BallBuilder extends BasicDebugger {
 				RDFNode lastNode = null;
 				for (; varNames.hasNext(); ) {
 					RDFNode newNode = soln.get(varNames.next());
-					Ball nodeBall = Ball.addBall(newNode.toString(), ColorRGBA.Green);
+					Ball nodeBall = addBall(newNode.toString(), ColorRGBA.Green);
 					if (lastNode != null) {
 						nodeBall.addConnection(lastNode.toString(), "Shares solution");
 					}
@@ -616,13 +636,13 @@ public class BallBuilder extends BasicDebugger {
 		cloudRadius = (float)(Math.sqrt(new Double(cloudRadius))*1.2);
 		Vector3f cloudPosition = new Vector3f(BALL_INJECTION_POSITION[0], BALL_INJECTION_POSITION[1], BALL_INJECTION_POSITION[2]);
 		new Cloud(cloudRadius, cloudPosition, ColorRGBA.Blue);
-		damping = MINIMUM_DAMPING_COEFFICIENT;
+		myDamping = MINIMUM_DAMPING_COEFFICIENT;
 		start();
 	}
 
-	public static boolean buildCloudFromSpaqrlUsingLiftSettings(String queryString) {
-		if (lastModel != null) {
-			buildCloudFromSparql(lastModel, queryString);
+	public boolean buildCloudFromSpaqrlUsingLiftSettings(String queryString) {
+		if (myLastModel != null) {
+			buildCloudFromSparql(myLastModel, queryString);
 			return true;
 		} else {
 			showErrorInLift("Can't build model from Sparql - no model for query loaded");
@@ -630,20 +650,20 @@ public class BallBuilder extends BasicDebugger {
 		}
 	}
 	
-	public static void setClassLoader(ClassLoader loader) {
-		resourceCl = loader;
+	public void setClassLoader(ClassLoader loader) {
+		myResourceCl = loader;
 	}
 
-	public static void setClassLoader(String key, ClassLoader loader) {
-		classloaders.put(key, loader);
+	public void setClassLoader(String key, ClassLoader loader) {
+		myClassloaders.put(key, loader);
 	}
 	
-	static void showErrorInLift(String errorText) {
-		logger.error(errorText);
+	void showErrorInLift(String errorText) {
+		myLogger.error(errorText);
 		getLiftAmbassador().displayError(DataballStrings.liftErrorCode, errorText);
 	}
 
-	public static boolean performAction(String action, String text) {
+	public boolean performAction(String action, String text) {
 		boolean success = true;
 		// Clear error shown in Lift, if any
 		getLiftAmbassador().displayError(DataballStrings.liftErrorCode, "");
@@ -653,7 +673,7 @@ public class BallBuilder extends BasicDebugger {
 			runBalls();
 		} else if (action.startsWith(DataballStrings.setDamping)) {
 			String dampingString = action.replaceAll(DataballStrings.setDamping + "_", "");
-			damping = DataballStrings.highDamping.equals(dampingString) ? HIGH_DAMPING_COEFFICIENT : LOW_DAMPING_COEFFICIENT;
+			myDamping = DataballStrings.highDamping.equals(dampingString) ? HIGH_DAMPING_COEFFICIENT : LOW_DAMPING_COEFFICIENT;
 		} else if (action.equals(DataballStrings.clear)) {
 			clear();
 		} else if (action.equals(DataballStrings.demo)) {
@@ -663,13 +683,13 @@ public class BallBuilder extends BasicDebugger {
 		} else if (action.equals(DataballStrings.viewSparqlQueryCloud)) {
 			success = buildCloudFromSpaqrlUsingLiftSettings(text);
 		} else {
-			logger.error("Action sent to Databalls, but not recognized: " + action);
+			myLogger.error("Action sent to Databalls, but not recognized: " + action);
 			success = false;
 		}
 		return success;
 	}
 
-	public static void clear() {
+	public void clear() {
 
 		class Delayed {
 
@@ -680,8 +700,8 @@ public class BallBuilder extends BasicDebugger {
 
 					@Override
 					public Void call() {
-						balls.clear();
-						ballsNode = new Node("Databalls");
+						myBalls.clear();
+						myBallsNode = new Node("Databalls");
 						return null;
 					}
 				});
@@ -697,7 +717,7 @@ public class BallBuilder extends BasicDebugger {
 							interrupted = true;
 							// fall through and retry
 						} catch (ExecutionException e) {
-							logger.error("Execution Exception encountered in BallBuilder.clear() - other problems may follow: " + e);
+							myLogger.error("Execution Exception encountered in BallBuilder.clear() - other problems may follow: " + e);
 							return null;
 						}
 					}
@@ -714,15 +734,15 @@ public class BallBuilder extends BasicDebugger {
 		lastRadius = Float.NaN; // make sure assignStartingLocation knows we are starting over
 	}
 	
-	public static void stop() {
-		activated = false;
-		Future<Object> detachFuture = renderContext.enqueueCallable(new Callable<Boolean>() { // Do this on main render thread in case this is being run from a different one - oh no!
+	public void stop() {
+		thisActivated = false;
+		Future<Object> detachFuture = myRenderContext.enqueueCallable(new Callable<Boolean>() { // Do this on main render thread in case this is being run from a different one - oh no!
 
 			@Override
 			public Boolean call() throws Exception {
-				dsm.detachTopSpatial(ballsNode);
-				if (screenText != null) {
-					flatOverlayMgr.detachOverlaySpatial(screenText);
+				myDSM.detachTopSpatial(myBallsNode);
+				if (myScreenText != null) {
+					myFlatOverlayMgr.detachOverlaySpatial(myScreenText);
 				}
 				return true;
 			}
@@ -730,36 +750,36 @@ public class BallBuilder extends BasicDebugger {
 		try { // Wait until call is complete before returning
 			detachFuture.get(5, java.util.concurrent.TimeUnit.SECONDS);
 		} catch (Exception e) {
-			logger.error("Future for detaching ballsNode did not return! Info: " + e.toString());
+			myLogger.error("Future for detaching ballsNode did not return! Info: " + e.toString());
 		}
 		// Reset startMode for next "inflation" period
 		startMode = true;
 		updateCount = 0;
 	}
 
-	public static void start() {
+	public void start() {
 		resetAllBalls();
 
-		renderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread in case this is being run from a different one - oh no!
+		myRenderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread in case this is being run from a different one - oh no!
 
 			@Override
 			public Void call() throws Exception {
-				dsm.attachTopSpatial(ballsNode);
-				activated = true;
+				myDSM.attachTopSpatial(myBallsNode);
+				thisActivated = true;
 				return null;
 			}
 		});
 	}
 
-	private static float computeIdealDamping() {
+	private float computeIdealDamping() {
 		double maxInstabilityScore = 0;
 		Map<String, Integer> ballConnectionStrength = new HashMap<String, Integer>();
-		for (String ballUri : balls.keySet()) {
+		for (String ballUri : myBalls.keySet()) {
 			int thisConnectivity = 0;
 			if (ballConnectionStrength.containsKey(ballUri)) {
 				thisConnectivity += ballConnectionStrength.get(ballUri);
 			}
-			Ball ball = balls.get(ballUri);
+			Ball ball = myBalls.get(ballUri);
 			for (String connectedUri : ball.connectionMap.keySet()) {
 				int connectionStrength = ball.connectionMap.get(connectedUri);
 				thisConnectivity += connectionStrength;
@@ -773,8 +793,8 @@ public class BallBuilder extends BasicDebugger {
 			ballConnectionStrength.put(ballUri, thisConnectivity);
 		}
 		for (String ballUri : ballConnectionStrength.keySet()) {
-			if (balls.containsKey(ballUri)) {
-				Ball ball = balls.get(ballUri);
+			if (myBalls.containsKey(ballUri)) {
+				Ball ball = myBalls.get(ballUri);
 				double instabilityScore = ballConnectionStrength.get(ballUri) / pow(ball.radius, 4); // Basically this goes as connectionStrength/mass^1.33
 				if (instabilityScore > maxInstabilityScore) {
 					maxInstabilityScore = instabilityScore;
@@ -783,18 +803,18 @@ public class BallBuilder extends BasicDebugger {
 		}
 		float idealDamping = new Float(1 - DAMPING_TRIM_CONSTANT / pow(maxInstabilityScore, 4));
 		idealDamping = Math.max(idealDamping, MINIMUM_DAMPING_COEFFICIENT);
-		logger.info("Damping coefficient of " + idealDamping + " computed for current configuration. Maximum instabilityScore was " + maxInstabilityScore);
+		myLogger.info("Damping coefficient of " + idealDamping + " computed for current configuration. Maximum instabilityScore was " + maxInstabilityScore);
 		return idealDamping;
 	}
 	private static boolean startMode = true;
 	private static int updateCount = 0;
 
-	public static void applyUpdates(float tpf) { // Called in ModularRenderContext.doUpdate - not sure if we want to hook in way "down" there or not
+	public void applyUpdates(float tpf) { // Called in ModularRenderContext.doUpdate - not sure if we want to hook in way "down" there or not
 		//boolean temp = activated; //TEST ONLY
 		//activated = false; //LOCK OFF! FOR TEST ONLY!!
-		if (activated) {
+		if (thisActivated) {
 			// Set special dampings to allow for quick "inflation" during start-up period
-			float currentDamping = damping;
+			float currentDamping = myDamping;
 			if (startMode) {
 				updateCount += 1;
 				if (updateCount < RELEASE_DAMPING_PERIOD) {
@@ -803,11 +823,11 @@ public class BallBuilder extends BasicDebugger {
 					currentDamping = INFLATION_DAMPING;
 				} else {
 					startMode = false;
-					logger.info("Startup damping mode complete; 1/tpf is " + 1 / tpf + " damping = " + currentDamping);
+					myLogger.info("Startup damping mode complete; 1/tpf is " + 1 / tpf + " damping = " + currentDamping);
 				}
 
 			}
-			for (Ball ball : balls.values()) {
+			for (Ball ball : myBalls.values()) {
 				ball.control.setGravity(Vector3f.ZERO);
 				Vector3f location = ball.geometry.getLocalTranslation();
 				Vector3f velocity = ball.control.getLinearVelocity();
@@ -815,14 +835,14 @@ public class BallBuilder extends BasicDebugger {
 				// "Auto-brakes": slow this way down if it's getting so fast that the 60Hz physics won't converge
 				if (velocity.length() / 60 > 1) {
 					ball.control.setLinearVelocity(velocity.mult(0.01f));
-					logger.warn("Ball velocity at " + velocity.length() + "; auto-braking!");
+					myLogger.warn("Ball velocity at " + velocity.length() + "; auto-braking!");
 					velocity = velocity.mult(0.01f); //In case we use it later;
 				}
 
 				// Compute forces due to other balls and connections
 				Vector3f potentialForce = new Vector3f();
 				Vector3f springForce = new Vector3f();
-				for (Ball otherBall : balls.values()) {
+				for (Ball otherBall : myBalls.values()) {
 					if (!ball.equals(otherBall)) {
 						Vector3f otherLocation = otherBall.geometry.getLocalTranslation();
 						Vector3f vectorToOther = otherLocation.subtract(location);
@@ -886,17 +906,17 @@ public class BallBuilder extends BasicDebugger {
 		//activated = temp; //TEST ONLY
 	}
 
-	public static void pick() {
+	public void pick() {
 		// Reset results list.
 		CollisionResults results = new CollisionResults();
 		// Convert screen click to 3d position
-		Vector2f click2d = im.getCursorPosition();
-		Vector3f click3d = cameraMgr.getCommonCamera(CameraMgr.CommonCameras.DEFAULT).getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
-		Vector3f dir = cameraMgr.getCommonCamera(CameraMgr.CommonCameras.DEFAULT).getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+		Vector2f click2d = myIM.getCursorPosition();
+		Vector3f click3d = myCameraMgr.getCommonCamera(CameraMgr.CommonCameras.DEFAULT).getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+		Vector3f dir = myCameraMgr.getCommonCamera(CameraMgr.CommonCameras.DEFAULT).getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
 		// Aim the ray from the clicked spot forwards.
 		Ray ray = new Ray(click3d, dir);
 		// Collect intersections between ray and all nodes in results list.
-		ballsNode.collideWith(ray, results);
+		myBallsNode.collideWith(ray, results);
 		//rrc.getJme3RootDeepNode(null).collideWith(ray, results); // ONLY FOR TESTING
 		
 		/*
@@ -916,7 +936,7 @@ public class BallBuilder extends BasicDebugger {
 				target = results.getCollision(1).getGeometry();
 			}
 			// Here comes the action:
-			for (Ball ball : balls.values()) {
+			for (Ball ball : myBalls.values()) {
 				if (target.equals(ball.geometry)) {
 					showPickText(ball.uri);
 				}
@@ -929,14 +949,14 @@ public class BallBuilder extends BasicDebugger {
 		}
 	}
 
-	private static void showPickText(String uri) {
-		logger.info("Looks like you picked " + uri);
-		if (screenText != null) {
-			flatOverlayMgr.detachOverlaySpatial(screenText);
+	private void showPickText(String uri) {
+		myLogger.info("Looks like you picked " + uri);
+		if (myScreenText != null) {
+			myFlatOverlayMgr.detachOverlaySpatial(myScreenText);
 		}
-		screenText = textMgr.getScaledBitmapText("Picked: " + uri, 0.8f);
-		screenText.setLocalTranslation(PICK_TEXT_POSITION[0], PICK_TEXT_POSITION[1], PICK_TEXT_POSITION[2]);
-		screenText.setColor(ColorRGBA.Black);
-		flatOverlayMgr.attachOverlaySpatial(screenText);
+		myScreenText = myTextMgr.getScaledBitmapText("Picked: " + uri, 0.8f);
+		myScreenText.setLocalTranslation(PICK_TEXT_POSITION[0], PICK_TEXT_POSITION[1], PICK_TEXT_POSITION[2]);
+		myScreenText.setColor(ColorRGBA.Black);
+		myFlatOverlayMgr.attachOverlaySpatial(myScreenText);
 	}
 }

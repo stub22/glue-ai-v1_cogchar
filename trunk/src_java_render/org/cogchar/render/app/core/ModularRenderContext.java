@@ -25,6 +25,8 @@ import org.cogchar.render.model.databalls.BallBuilder;
  */
 public class ModularRenderContext extends CogcharRenderContext {
 	private		CogcharRenderModulator			myRenderModulator;
+	private		BallBuilder						myBallBuilder;
+	private		boolean							thisBallBuilderSet;
 	
 	@Override public void completeInit() {
 		super.completeInit();
@@ -42,7 +44,15 @@ public class ModularRenderContext extends CogcharRenderContext {
 		return myRenderModulator;
 	}
 	@Override public void doUpdate(float tpf) {
-		BallBuilder.applyUpdates(tpf); // tpf is passed to BallBuilder only for debugging now; it may get used more broadly eventally or may be removed from the method
+		if (thisBallBuilderSet) {myBallBuilder.applyUpdates(tpf);} // tpf is passed to BallBuilder only for debugging now; it may get used more broadly eventally or may be removed from the method
 		myRenderModulator.runOneCycle(tpf);
+	}
+	// Adding a method to manage locally stored BallBuilder instance. We could get it using BallBuilder.getBallBuilder
+	// each time we need it, but that's once per update cycle. 
+	public void setTheBallBuilder(BallBuilder theBallBuilder) {
+		myBallBuilder = theBallBuilder;
+		if (myBallBuilder != null) {
+			thisBallBuilderSet = true; // In theory, this variable allows a fast boolean check in doUpdate instead of having to check for null each update
+		}
 	}
 }
