@@ -90,6 +90,7 @@ package org.cogchar.lifter {
 			formId = (S.attr("formId") openOr "-1").toInt
 			var valid = false
 			var selectors:CssSel = "i_eat_yaks_for_breakfast" #> "" // This is just to produce a "Null" CssSel so we can initialize this here, but not add any meaningful info until we have checked for valid formId. (As recommended by the inventor of Lift)
+			var errorSeq: NodeSeq = NodeSeq.Empty
 			if (SelectBoxes.titleMap.contains(formId)) {
 			  valid = true
 			  val titleSelectorText: String = "#"+selectBoxesInstanceTitle+" *"
@@ -97,8 +98,11 @@ package org.cogchar.lifter {
 			  for (boxIndex <- 0 until SelectBoxes.labelMap(formId).length) {
 				selectors = selectors & makeABox(boxIndex)
 			  }
-			} else println("SelectBox.render cannot find a valid formId! Reported formId: " + formId)
-			if (valid) selectors.apply(xhtml) else NodeSeq.Empty // Blanks control if something is wrong with formId
+			} else {
+			  error("SelectBox.render cannot find a valid formId! Reported formId: " + formId)
+			  errorSeq = TextBox.makeBox("SelectBox.render cannot find a valid formId! Reported formId: " + formId, "", true)
+			}
+			if (valid) selectors.apply(xhtml) else errorSeq // Blanks control if something is wrong with formId
 			//selectors.apply(xhtml) // This would be ok too, and would just apply the "null" selector transform to html if something is broken
 		  }
 		  case _ => {
