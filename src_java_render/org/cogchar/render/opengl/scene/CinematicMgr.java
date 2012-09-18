@@ -57,7 +57,7 @@ public class CinematicMgr extends BasicDebugger {
 	private static CogcharRenderContext myCRC;
 
 	public static void storeCinematicsFromConfig(CinematicConfig config, CogcharRenderContext crc) {
-		BallBuilder.storeCinematicConfig(config); // Temporary for BallBuilder demo
+		BallBuilder.getTheBallBuilder().storeCinematicConfig(config); // Temporary for BallBuilder demo
 
 		myCRC = crc;
 		RenderRegistryClient rrc = crc.getRenderRegistryClient();

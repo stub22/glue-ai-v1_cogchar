@@ -213,7 +213,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
         }, 
 		SHOW_RESOURCE_BALLS {
             void act(HumanoidRenderContext ctx) {
-                BallBuilder.runBalls();
+                BallBuilder.getTheBallBuilder().runBalls();
             }
             int getTriggerKey() { 
                 return getKey(this);
@@ -221,7 +221,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
         },
 		PICK_BALLS {
             void act(HumanoidRenderContext ctx) {
-                BallBuilder.pick();
+                BallBuilder.getTheBallBuilder().pick();
             }
             int getTriggerKey() { 
                 return getKey(this);
