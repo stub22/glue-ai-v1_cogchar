@@ -85,6 +85,7 @@ package org.cogchar.lifter {
 			formId = (S.attr("formId") openOr "-1").toInt  
 			var valid = false
 			var selectors:CssSel = "i_eat_yaks_for_breakfast" #> "" // This is just to produce a "Null" CssSel so we can initialize this here, but not add any meaningful info until we have checked for valid formId. (As recommended by the inventor of Lift)
+			var errorSeq: NodeSeq = NodeSeq.Empty
 			if (ListBox.titleMap.contains(formId)) {
 			  valid = true
 			  val titleSelectorText: String = "#"+listBoxInstanceTitle+" *"
@@ -92,8 +93,11 @@ package org.cogchar.lifter {
 			  val rows = if (ListBox.labelMap(formId).length < 8) ListBox.labelMap(formId).length else 7
 			  val listPairs = (for (i <- 0 until ListBox.labelMap(formId).length) yield (i.toString, ListBox.labelMap(formId)(i)))// There may be a simplier Scala way to do this
 			  selectors = titleSelectorText #> ListBox.titleMap(formId) & boxSelectorText #> SHtml.ajaxSelect(listPairs, Empty, process _, "class" -> "formlabels", "size" -> rows.toString)
-			} else println("ListBox.render cannot find a valid formId! Reported formId: " + formId) //; NodeSeq.Empty
-			if (valid) selectors.apply(xhtml) else NodeSeq.Empty // Blanks control if something is wrong with formId
+			} else {
+			  error("ListBox.render cannot find a valid formId! Reported formId: " + formId)
+			  errorSeq = TextBox.makeBox("ListBox.render cannot find a valid formId! Reported formId: " + formId, "", true)
+			}
+			if (valid) selectors.apply(xhtml) else errorSeq // Blanks control if something is wrong with formId
 			//selectors.apply(xhtml) // This would be ok too, and would just apply the "null" selector transform to html if something is broken
 		  }
 		  case _ => {

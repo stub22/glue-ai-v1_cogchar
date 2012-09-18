@@ -23,7 +23,7 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import scala.xml._
-	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.model.{ActorCodes, PageCommander}
 	import org.cogchar.lifter.view.TextBox
 
 	class TemplateActor extends CometActor with CometListener with Logger {
@@ -39,7 +39,7 @@ package org.cogchar.lifter {
 		}
 	  }
 	  
-	  lazy val myUpdateTag = mySessionId + "_301"
+	  lazy val myUpdateTag = mySessionId + "_" + ActorCodes.TEMPLATE_CODE
 	  
 	  def registerWith = org.cogchar.lifter.model.PageCommander
 	  

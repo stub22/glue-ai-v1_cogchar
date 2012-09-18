@@ -26,7 +26,7 @@ package org.cogchar.lifter {
 	import Helpers._
 	import scala.xml._
 	import java.util.Date
-	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.model.{ActorCodes, PageCommander}
 
 	class JavaScriptActor extends CometActor with CometListener with Logger {
       
@@ -44,12 +44,12 @@ package org.cogchar.lifter {
 	  def registerWith = org.cogchar.lifter.model.PageCommander
 	  
 	  def triggerId(sessionId:String, functionId: Int) = PageCommander.controlId(sessionId, functionId)
-	  final val SPEECH_REQUEST_TRIGGERID = triggerId(mySessionId, 201)
-	  final val LOAD_PAGE_TRIGGERID = triggerId(mySessionId, 202)
-	  final val SPEECH_OUT_TRIGGERID = triggerId(mySessionId, 203)
-	  final val CONTINUOUS_SPEECH_REQUEST_START_TRIGGERID = triggerId(mySessionId, 204)
-	  final val CONTINUOUS_SPEECH_REQUEST_STOP_TRIGGERID = triggerId(mySessionId, 205)
-	  final val REFRESH_PAGE_TRIGGERID = triggerId(mySessionId, 206)
+	  final val SPEECH_REQUEST_TRIGGERID = triggerId(mySessionId, ActorCodes.SPEECH_REQUEST_CODE)
+	  final val LOAD_PAGE_TRIGGERID = triggerId(mySessionId, ActorCodes.LOAD_PAGE_CODE)
+	  final val SPEECH_OUT_TRIGGERID = triggerId(mySessionId, ActorCodes.SPEECH_OUT_CODE)
+	  final val CONTINUOUS_SPEECH_REQUEST_START_TRIGGERID = triggerId(mySessionId, ActorCodes.CONTINUOUS_SPEECH_REQUEST_START_CODE)
+	  final val CONTINUOUS_SPEECH_REQUEST_STOP_TRIGGERID = triggerId(mySessionId, ActorCodes.CONTINUOUS_SPEECH_REQUEST_STOP_CODE)
+	  final val REFRESH_PAGE_TRIGGERID = triggerId(mySessionId, ActorCodes.REFRESH_PAGE_CODE)
 
 	  override def lowPriority : PartialFunction[Any, Unit] = {
 		case SPEECH_REQUEST_TRIGGERID => { // A special "slot" code for speech request. Sort of a workaround, but works OK for now.

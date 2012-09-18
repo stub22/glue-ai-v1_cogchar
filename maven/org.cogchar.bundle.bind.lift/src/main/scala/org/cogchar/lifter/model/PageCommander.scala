@@ -39,6 +39,13 @@ package org.cogchar.lifter {
 	import java.util.concurrent.{Executors, TimeUnit}
 	
 	// What do we think about this being an object and not a class?
+	// Well, a Scala Object actually is automatically a static instance singleton anyhow, so no sense in trying to make it one manually.
+	// It appears to be standard practice for LiftActors which provide features to all sessions
+	// to be singleton Objects.
+	// We might eventually want parts of PageCommander to be performed via a class of 
+	// actors with an instance of that class created for each session. (PageCommander is currently acting as an actor
+	// but also in some un-Actor-like ways.) This would allow us to separate the page rendering actor parts of PageCommander from
+	// the growing amount of "non-CogChar" "action" logic.
 	object PageCommander extends LiftActor with ListenerManager with Logger {
 
 	  private var theLiftAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods.
@@ -134,7 +141,7 @@ package org.cogchar.lifter {
 		currentConfig(sessionId) = currentConfig(INITIAL_CONFIG_ID)
 		//Get initial template and request it be set
 		currentTemplate(sessionId) = currentTemplate(INITIAL_CONFIG_ID)
-		updateListeners(controlId(sessionId, 301));
+		updateListeners(controlId(sessionId, ActorCodes.TEMPLATE_CODE));
 		setControlsFromMap(sessionId)
 		if (!(activeSessions contains sessionId)) {
 		  activeSessions += sessionId
@@ -218,7 +225,7 @@ package org.cogchar.lifter {
 		} else { // otherwise...
 		  val changedTemplate = (currentTemplate(sessionId) != lastConfig(sessionId).template)
 		  if (changedTemplate) {
-			updateInfo = controlId(sessionId, 301) // Special code to trigger TemplateActor
+			updateInfo = controlId(sessionId, ActorCodes.TEMPLATE_CODE)
 			updateListeners;
 		  }
 		  // ... and load new controls
@@ -500,7 +507,7 @@ package org.cogchar.lifter {
 		  case ActionStrings.p_liftcmd => {
 			  splitAction(0) match {
 				case ActionStrings.acquireSpeech => {
-					updateInfo = controlId(sessionId, 201) // Special "slotNum" to tell JavaScriptActor to request speech
+					updateInfo = controlId(sessionId, ActorCodes.SPEECH_REQUEST_CODE)
 					lastSpeechReqSlotId = controlId(sessionId, slotNum); // Set this field - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
 					updateListeners()
 					success = true
@@ -599,7 +606,7 @@ package org.cogchar.lifter {
 	  
 	  def outputSpeech(sessionId:String, text: String) {
 		outputSpeech(sessionId) = text
-		updateInfo = controlId(sessionId, 203) // To tell JavaScriptActor we want Android devices to say the text
+		updateInfo = controlId(sessionId, ActorCodes.SPEECH_OUT_CODE) // To tell JavaScriptActor we want Android devices to say the text
 		updateListeners()
 	  }
 	  
@@ -607,10 +614,10 @@ package org.cogchar.lifter {
 		info("In requestContinuousSpeech, setting to " + desired + " for session " + sessionId)
 		if (desired) {
 		  lastSpeechReqSlotId = controlId(sessionId, slotNum)
-		  updateInfo = controlId(sessionId, 204) // To request start command - Should become a named constant soon
+		  updateInfo = controlId(sessionId, ActorCodes.CONTINUOUS_SPEECH_REQUEST_START_CODE)
 		  updateListeners()
 		} else {
-		  updateInfo = controlId(sessionId, 205) // To request stop command - Needs to become a named constant soon
+		  updateInfo = controlId(sessionId, ActorCodes.CONTINUOUS_SPEECH_REQUEST_STOP_CODE)
 		  updateListeners()
 		}
 	  }
@@ -664,7 +671,7 @@ package org.cogchar.lifter {
 		}
 		def loadPage(sessionId:String, pagePath:String) {
 		  requestedPage(sessionId) = Some(pagePath)
-		  updateInfo = controlId(sessionId, 202) // Our "special control slot" for triggering page redirect
+		  updateInfo = controlId(sessionId, ActorCodes.LOAD_PAGE_CODE)
 		  updateListeners()
 		}
 		def getVariable(key:String): String = { // returns value from "public" app variables map -- right now, just the most recently set value between all sessions
