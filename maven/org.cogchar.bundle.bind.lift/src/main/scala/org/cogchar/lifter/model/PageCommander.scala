@@ -65,10 +65,8 @@ package org.cogchar.lifter {
 	  private val errorMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[String, Int]]
 	  
 	  // A place to hold variables that can be defined and set dynamically by the apps defined in the lift config files themselves
-	  private val appVariablesMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[String, String]]
-	  // For now this publicAppVariablesMap just holds the most recent value of the same named variable set among all sessions
-	  // Eventually we probably want to separate these concepts more fully
-	  private val publicAppVariablesMap = new scala.collection.mutable.HashMap[String, String]
+	  private val appVariablesMap = new scala.collection.mutable.HashMap[String, scala.collection.mutable.HashMap[String, String]] // per-session
+	  private val publicAppVariablesMap = new scala.collection.mutable.HashMap[String, String] // global
 	  
 	  // A map to hold paths to pages requested by LiftAmbassador
 	  private val requestedPage = new scala.collection.mutable.HashMap[String, Option[String]]
@@ -182,7 +180,8 @@ package org.cogchar.lifter {
 		  toggleButtonMap.clear
 		  toggleButtonMap(INITIAL_CONFIG_ID) = new scala.collection.mutable.HashMap[Int,Boolean]
 		  singularAction.clear
-		  appVariablesMap.clear // Probably we won't want this to clear permanently. It's sort of a quick-fix for now to make sure that toggle button states don't get out of sync with app variables they control when a "page" is exited and reentered
+		  appVariablesMap.clear 
+		  publicAppVariablesMap.clear
 		  errorMap.clear
 		  errorMap(INITIAL_CONFIG_ID) = new scala.collection.mutable.HashMap[String, Int]
 		} else { // otherwise reset maps for this session
@@ -192,7 +191,6 @@ package org.cogchar.lifter {
 		  speechDisplayers(sessionId).clear
 		  toggleButtonMap(sessionId).clear
 		  singularAction(sessionId).clear
-		  appVariablesMap(sessionId).clear // Probably we won't want this to clear permanently. It's sort of a quick-fix for now to make sure that toggle button states don't get out of sync with app variables they control when a "page" is exited and reentered
 		  errorMap(sessionId).clear
 		  lastConfig(sessionId) = currentConfig(sessionId)
 		}
@@ -292,13 +290,21 @@ package org.cogchar.lifter {
 			}
 		  case ControlType.TOGGLEBUTTON => {
 			  // For a ToggleButton, the first item in CSV text, action, style, image corresponds to the default condition, the second to the "toggled" condition
-			  val textItems = List.fromArray(text.split(","))
-			  val styleItems = List.fromArray(style.split(","))
-			  val resourceItems = List.fromArray(resource.split(","))
-			  // Set control for initial (default) state
-			  controlsMap(sessionId)(slotNum) = PushyButton.makeButton(textItems(0), styleItems(0), resourceItems(0), slotNum)
-			  // Flag the fact this is a toggle button, currently in the default (false) condition
-			  toggleButtonMap(sessionId)(slotNum) = false
+			  var textItems = List.fromArray(text.split(","))
+			  var styleItems = List.fromArray(style.split(","))
+			  var resourceItems = List.fromArray(resource.split(","))
+			  // Next we need to see if an app variable linked to this toggle button is already set and set the button state to match if so
+			  val buttonState = getToggleButtonStateFromVariable(sessionId, action)
+			  // Flag the fact this is a toggle button and set current state
+			  toggleButtonMap(sessionId)(slotNum) = buttonState
+			  // Set control for state
+			  // If only one parameter is specified in RDF, duplicate the first and use that parameter for the other state too (really we are prepending the one item in the list to itself, but that works ok here)
+			  if (textItems.length < 2) textItems ::= textItems(0)
+			  if (styleItems.length < 2) styleItems ::= styleItems(0)
+			  if (resourceItems.length < 2) resourceItems ::= resourceItems(0)
+			  val stateIndex = if (buttonState) 1 else 0
+			  controlsMap(sessionId)(slotNum) = 
+				PushyButton.makeButton(textItems(stateIndex), styleItems(stateIndex), resourceItems(stateIndex), slotNum)
 			}
 		  case ControlType.TEXTBOX => {
 			  controlsMap(sessionId)(slotNum) = TextBox.makeBox(text, style)
@@ -320,6 +326,29 @@ package org.cogchar.lifter {
 		  val nextSlot = slotIterator.next
 		  updateListeners(controlId(sessionId, nextSlot))
 		}
+	  }
+	  
+	  // Checks to see if a toggle button already has a state defined by a Lifter variable
+	  // Returns this state if so, otherwise returns false
+	  def getToggleButtonStateFromVariable(sessionId:String, action:Ident): Boolean = {
+		val actionUriPrefix = getUriPrefix(action);
+		var buttonState = false
+		actionUriPrefix match {
+		  case ActionStrings.p_liftvar => {
+			  val mappedVariable = action.getLocalName();
+			  if (publicAppVariablesMap contains mappedVariable) {
+				buttonState = publicAppVariablesMap(mappedVariable).toBoolean
+			  }
+			}
+		  case ActionStrings.p_liftsessionvar => {
+			  val mappedVariable = action.getLocalName();
+			  if (appVariablesMap(sessionId) contains mappedVariable) {
+				buttonState = appVariablesMap(sessionId)(mappedVariable).toBoolean
+			  }
+			}
+		  case _ =>
+		}
+		buttonState
 	  }
 									
 	  // Check to see if any action requested requires PageCommander to do some local handling
@@ -354,11 +383,15 @@ package org.cogchar.lifter {
 		  case ActionStrings.p_liftvar => {
 			  val textItems = List.fromArray(controlDefMap(sessionId)(formId).text.split(","))
 			  val textIndex = subControl + 1
-			  appVariablesMap(sessionId)(controlDefMap(sessionId)(formId).action.getLocalName) = textItems(textIndex)
-			  // Set the public (common to all sessions) version of this variable too - eventually there will likely be further distinction between "public" and "per-session" variables
 			  publicAppVariablesMap(controlDefMap(sessionId)(formId).action.getLocalName) = textItems(textIndex)
-			  info("App Variable " + controlDefMap(sessionId)(formId).action.getLocalName + " set to " + textItems(textIndex) + " for session " + sessionId)
+			  info("Global App Variable " + controlDefMap(sessionId)(formId).action.getLocalName + " set to " + textItems(textIndex))
 			}
+		  case ActionStrings.p_liftsessionvar => {
+				val textItems = List.fromArray(controlDefMap(sessionId)(formId).text.split(","))
+				val textIndex = subControl + 1
+				appVariablesMap(sessionId)(controlDefMap(sessionId)(formId).action.getLocalName) = textItems(textIndex)
+				info("Session App Variable " + controlDefMap(sessionId)(formId).action.getLocalName + " set to " + textItems(textIndex) + " for session " + sessionId)
+			  }
 		  case ActionStrings.p_liftcmd => {
 			  val splitAction = controlDefMap(sessionId)(formId).action.getLocalName.split("_")
 			  splitAction(0) match {
@@ -532,26 +565,35 @@ package org.cogchar.lifter {
 		  case ActionStrings.p_liftvar => {
 			  //A button wants to set a variable. That means we toggle the value between true and false.
 			  if (toggleButtonMap(sessionId) contains slotNum) { // ... make sure the value is synced with the button state if so
-				appVariablesMap(sessionId)(actionSuffix) = toggleButtonMap(sessionId)(slotNum).toString
-				// Set the public (common to all sessions) version of this variable too - eventually there will likely be further distinction between "public" and "per-session" variables
-				publicAppVariablesMap(actionSuffix) = toggleButtonMap(sessionId)(slotNum).toString
-			  } else if (appVariablesMap(sessionId) contains actionSuffix) {
-				if (appVariablesMap(sessionId)(actionSuffix).toBoolean) {
-				  appVariablesMap(sessionId)(actionSuffix) = false.toString 
-				  // Set the public (common to all sessions) version of this variable too - eventually there will likely be further distinction between "public" and "per-session" variables
-				  publicAppVariablesMap(actionSuffix) = false.toString
+				val toggleButtonState = toggleButtonMap(sessionId)(slotNum)
+				publicAppVariablesMap(actionSuffix) = toggleButtonState.toString
+				setAllPublicLiftvarToggleButtonsToState(actionSuffix, toggleButtonState)
+			  } else if (publicAppVariablesMap contains actionSuffix) {
+				if (publicAppVariablesMap(actionSuffix).toBoolean) {
+				  publicAppVariablesMap(actionSuffix) = false.toString 
 				} else {
-				  appVariablesMap(sessionId)(actionSuffix) = true.toString
-				  // Set the public (common to all sessions) version of this variable too - eventually there will likely be further distinction between "public" and "per-session" variables
 				  publicAppVariablesMap(actionSuffix) = true.toString
 				}
 			  } else {
-				appVariablesMap(sessionId)(actionSuffix) = true.toString
-				// Set the public (common to all sessions) version of this variable too - eventually there will likely be further distinction between "public" and "per-session" variables
 				publicAppVariablesMap(actionSuffix) = true.toString
 			  }
-			  info("App Variable " + actionSuffix + " set to " + appVariablesMap(sessionId)(actionSuffix) + " for session " + sessionId)
+			  info("Global App Variable " + actionSuffix + " set to " + publicAppVariablesMap(actionSuffix))
 			}
+		  case ActionStrings.p_liftsessionvar => {
+				//A button wants to set a variable. That means we toggle the value between true and false.
+				if (toggleButtonMap(sessionId) contains slotNum) { // ... make sure the value is synced with the button state if so
+				  appVariablesMap(sessionId)(actionSuffix) = toggleButtonMap(sessionId)(slotNum).toString
+				} else if (appVariablesMap(sessionId) contains actionSuffix) {
+				  if (appVariablesMap(sessionId)(actionSuffix).toBoolean) {
+					appVariablesMap(sessionId)(actionSuffix) = false.toString 
+				  } else {
+					appVariablesMap(sessionId)(actionSuffix) = true.toString
+				  }
+				} else {
+				  appVariablesMap(sessionId)(actionSuffix) = true.toString
+				}
+				info("Session App Variable " + actionSuffix + " set to " + appVariablesMap(sessionId)(actionSuffix) + " for session " + sessionId)
+			  }
 		  case _ => // No match, just exit (success=false)
 		}
 		success
@@ -602,6 +644,27 @@ package org.cogchar.lifter {
 		  error("PageCommander.toggleButton called for slotNum " + slotNum + " of session " + sessionId + ", but no entry found in controlDefMap")
 		}
 		success
+	  }
+	  
+	  // A method to synchronize the state of toggle buttons in all sessions which are connected to the state of a global lifter variable
+	  def setAllPublicLiftvarToggleButtonsToState(varName:String, state:Boolean) {
+		activeSessions.foreach(sessionId => {
+			toggleButtonMap(sessionId).keySet.foreach(slotNum => {
+				val actionIdent = controlDefMap(sessionId)(slotNum).action
+				if (ActionStrings.p_liftvar.equals(getUriPrefix(actionIdent)) && varName.equals(actionIdent.getLocalName)) {
+				  var textItems = List.fromArray(controlDefMap(sessionId)(slotNum).text.split(","))
+				  var styleItems = List.fromArray(controlDefMap(sessionId)(slotNum).style.split(","))
+				  var resourceItems = List.fromArray(controlDefMap(sessionId)(slotNum).resource.split(","))
+				  // If only one parameter is specified in RDF, duplicate the first and use that parameter here too (really we are prepending the one item in the list to itself, but that works ok here)
+				  if (textItems.length < 2) textItems ::= textItems(0)
+				  if (styleItems.length < 2) styleItems ::= styleItems(0)
+				  if (resourceItems.length < 2) resourceItems ::= resourceItems(0)
+				  val stateIndex = if (state) 1 else 0
+				  setControl(sessionId, slotNum, PushyButton.makeButton(textItems(stateIndex), styleItems(stateIndex), resourceItems(stateIndex), slotNum))
+				  toggleButtonMap(sessionId)(slotNum) = state
+				}
+			  })
+		  })
 	  }
 	  
 	  def outputSpeech(sessionId:String, text: String) {
@@ -674,12 +737,12 @@ package org.cogchar.lifter {
 		  updateInfo = controlId(sessionId, ActorCodes.LOAD_PAGE_CODE)
 		  updateListeners()
 		}
-		def getVariable(key:String): String = { // returns value from "public" app variables map -- right now, just the most recently set value between all sessions
+		def getVariable(key:String): String = { // returns value from "public" (global) app variables map
 		  var contents:String = null
 		  if (publicAppVariablesMap contains key) contents = publicAppVariablesMap(key)
 		  contents
 		}
-		def getVariable(sessionId:String, key:String): String = {
+		def getVariable(sessionId:String, key:String): String = { // returns value from "session" app variables map
 		  var contents:String = null
 		  if (appVariablesMap(sessionId) contains key) contents = appVariablesMap(sessionId)(key)
 		  contents

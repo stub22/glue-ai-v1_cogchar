@@ -45,6 +45,7 @@ package org.cogchar.lifter {
 	  // These are URI prefixes for actions
 	  final val p_liftcmd = "http://www.cogchar.org/lift/config/command#"
 	  final val p_liftvar = "http://www.cogchar.org/lift/config/variable#"
+	  final val p_liftsessionvar = "http://www.cogchar.org/lift/config/sessionVariable#"
 	  final val p_scenetrig = "http://www.cogchar.org/schema/scene/trigger#"
 	  
 	}
