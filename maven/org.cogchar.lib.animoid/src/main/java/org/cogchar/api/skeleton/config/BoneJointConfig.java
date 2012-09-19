@@ -18,14 +18,12 @@ package org.cogchar.api.skeleton.config;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
-import org.appdapter.core.matdat.SheetRepo;
 
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.SolutionMap;
 import org.appdapter.help.repo.QueryInterface;
 
-import org.cogchar.blob.emit.QueryTester;
 
 
 
@@ -34,11 +32,12 @@ import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.appdapter.core.component.KnownComponentImpl;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BoneJointConfig {
+public class BoneJointConfig extends KnownComponentImpl{
 	public String						myURI_Fragment;
 	public Integer						myJointNum;
 	public String						myJointName;
@@ -67,18 +66,19 @@ public class BoneJointConfig {
 		// What about bc:invertForSymmetry?
 		String queryString = queryEmitter.getQuery(BoneQueryNames.BONEPROJECTION_QUERY_TEMPLATE_URI);
 		queryString = queryEmitter.setQueryVar(queryString, BoneQueryNames.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
-		solutionMap = queryEmitter.getTextQueryResultMapByStringKey(queryString, BoneQueryNames.BONE_NAME_VAR_NAME, graphIdent);
-		Iterator rangeIterator = solutionMap.getJavaIterator();
-		while (rangeIterator.hasNext()) {
-			String boneName = (String)rangeIterator.next();
-			String rotationAxisName = queryEmitter.getStringFromSolution(solutionMap, boneName, BoneQueryNames.ROTATION_AXIS_VAR_NAME);
-			Double minAngle = queryEmitter.getDoubleFromSolution(solutionMap, boneName, BoneQueryNames.MIN_ANGLE_VAR_NAME);
-			Double maxAngle = queryEmitter.getDoubleFromSolution(solutionMap, boneName, BoneQueryNames.MAX_ANGLE_VAR_NAME);
+		//solutionMap = queryEmitter.getTextQueryResultMapByStringKey(queryString, BoneQueryNames.BONE_NAME_VAR_NAME, graphIdent);
+		SolutionList solutionList = queryEmitter.getTextQueryResultList(queryString, graphIdent);
+		if (solutionList.javaList().size() == 1) {
+			Solution projectionRangeSolution = solutionList.javaList().get(0);
+			String boneName = queryEmitter.getStringFromSolution(projectionRangeSolution, BoneQueryNames.BONE_NAME_VAR_NAME);
+			String rotationAxisName = queryEmitter.getStringFromSolution(projectionRangeSolution, BoneQueryNames.ROTATION_AXIS_VAR_NAME);
+			Double minAngle = queryEmitter.getDoubleFromSolution(projectionRangeSolution, BoneQueryNames.MIN_ANGLE_VAR_NAME, 0);
+			Double maxAngle = queryEmitter.getDoubleFromSolution(projectionRangeSolution, BoneQueryNames.MAX_ANGLE_VAR_NAME, 0);
 			BoneRotationAxis rotationAxis = BoneRotationAxis.valueOf(rotationAxisName);
 			myProjectionRanges.add(new BoneProjectionRange(this, boneName, rotationAxis, Math.toRadians(minAngle), Math.toRadians(maxAngle)));
 			queryString = queryEmitter.getQuery(BoneQueryNames.ADDITIONAL_BONES_QUERY_TEMPLATE_URI);
 			queryString = queryEmitter.setQueryVar(queryString, BoneQueryNames.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
-			SolutionList solutionList = queryEmitter.getTextQueryResultList(queryString, graphIdent);
+			solutionList = queryEmitter.getTextQueryResultList(queryString, graphIdent);
 			for (Solution solution : solutionList.javaList()) {
 				boneName = queryEmitter.getStringFromSolution(solution, BoneQueryNames.BONE_NAME_VAR_NAME, "");
 				rotationAxisName = queryEmitter.getStringFromSolution(solution, BoneQueryNames.ROTATION_AXIS_VAR_NAME, "");
@@ -87,6 +87,9 @@ public class BoneJointConfig {
 				rotationAxis = BoneRotationAxis.valueOf(rotationAxisName);
 				myProjectionRanges.add(new BoneProjectionRange(this, boneName, rotationAxis, Math.toRadians(minAngle), Math.toRadians(maxAngle)));
 			}
+		} else {
+			logWarning("More than one bone projection range definition in primary bone joint config declaration for " 
+					+ myURI_Fragment + " -- not initializing projection ranges for this bone joint config");
 		}
 		//System.out.println("Created new BoneJointConfig: " + this.toString()); // TEST ONLY
 	}
