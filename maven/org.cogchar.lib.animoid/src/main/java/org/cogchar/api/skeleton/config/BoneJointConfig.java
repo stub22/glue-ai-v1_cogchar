@@ -15,24 +15,17 @@
  */
 package org.cogchar.api.skeleton.config;
 
-import org.appdapter.core.name.Ident;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
-
+import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.QueryInterface;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.SolutionMap;
-import org.appdapter.help.repo.QueryInterface;
-
-
-
-
-
-import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import org.appdapter.core.component.KnownComponentImpl;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -44,6 +37,7 @@ public class BoneJointConfig extends KnownComponentImpl{
 	public Double						myNormalDefaultPos;
 	public List<BoneProjectionRange>	myProjectionRanges = new ArrayList<BoneProjectionRange>();
 
+	// Original assembler constructor
 	public BoneJointConfig(Item configItem) {
 		myURI_Fragment = configItem.getIdent().getLocalName();
 		myJointNum = ItemFuncs.getInteger(configItem, BoneConfigNames.P_jointNum, null);
@@ -66,7 +60,6 @@ public class BoneJointConfig extends KnownComponentImpl{
 		// What about bc:invertForSymmetry?
 		String queryString = queryEmitter.getQuery(BoneQueryNames.BONEPROJECTION_QUERY_TEMPLATE_URI);
 		queryString = queryEmitter.setQueryVar(queryString, BoneQueryNames.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
-		//solutionMap = queryEmitter.getTextQueryResultMapByStringKey(queryString, BoneQueryNames.BONE_NAME_VAR_NAME, graphIdent);
 		SolutionList solutionList = queryEmitter.getTextQueryResultList(queryString, graphIdent);
 		if (solutionList.javaList().size() == 1) {
 			Solution projectionRangeSolution = solutionList.javaList().get(0);
@@ -94,6 +87,7 @@ public class BoneJointConfig extends KnownComponentImpl{
 		//System.out.println("Created new BoneJointConfig: " + this.toString()); // TEST ONLY
 	}
 	
+	@Override
 	public String toString() {
 		return "BJC[uriFrag=" + myURI_Fragment + ", num=" + myJointNum + ", name=" + myJointName + ", defPos=" + myNormalDefaultPos + ", projs=" + myProjectionRanges + "]";
 	}
