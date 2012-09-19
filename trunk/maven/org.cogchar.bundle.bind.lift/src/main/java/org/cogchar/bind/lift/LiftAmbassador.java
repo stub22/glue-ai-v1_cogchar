@@ -263,9 +263,20 @@ public class LiftAmbassador {
 		return success;
 	}
 
+	// Gets a global lifter variable
 	public String getLiftVariable(String key) {
 		if (myLift != null) {
 			return myLift.getVariable(key);
+		} else {
+			theLogger.warn("Variable requested from Lift, but no Lift messenger set");
+			return null;
+		}
+	}
+	
+	// Gets a session lifter variable
+	public String getLiftVariable(String sessionId, String key) {
+		if (myLift != null) {
+			return myLift.getVariable(sessionId, key);
 		} else {
 			theLogger.warn("Variable requested from Lift, but no Lift messenger set");
 			return null;
