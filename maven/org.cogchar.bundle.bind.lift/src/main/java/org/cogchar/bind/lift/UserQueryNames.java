@@ -30,6 +30,7 @@ public class UserQueryNames {
 	public static final String LOGIN_PAGE_VAR_NAME = "loginPage";
 	public static final String USER_VAR_NAME = "user";
 	public static final String PASSWORD_VAR_NAME = "password";
+	public static final String SALT_VAR_NAME = "salt";
 	public static final String START_PAGE_VAR_NAME = "startPage";
 	
 }

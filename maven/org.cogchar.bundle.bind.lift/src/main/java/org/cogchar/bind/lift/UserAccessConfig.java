@@ -64,11 +64,13 @@ public class UserAccessConfig extends KnownComponentImpl {
 
 	public static class UserConfig {
 
-		public String password;
+		public String hashedPassword;
+		public String salt;
 		public Ident startConfig;
 
 		public UserConfig(QueryInterface qi, Ident graphIdent, Solution userSolution) {
-			password = qi.getStringFromSolution(userSolution, UserQueryNames.PASSWORD_VAR_NAME);
+			hashedPassword = qi.getStringFromSolution(userSolution, UserQueryNames.PASSWORD_VAR_NAME);
+			salt = qi.getStringFromSolution(userSolution, UserQueryNames.SALT_VAR_NAME);
 			startConfig = qi.getIdentFromSolution(userSolution, UserQueryNames.START_PAGE_VAR_NAME);
 		}
 	}
