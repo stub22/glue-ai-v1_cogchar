@@ -313,7 +313,9 @@ public class LiftAmbassador {
 		if (myUserMap != null) {
 			Ident userIdent = new FreeIdent(LiftConfigNames.P_user + userName, userName);
 			if (myUserMap.containsKey(userIdent)) {
-				if (myUserMap.get(userIdent).password.equals(password)) {
+				LiftCrypto theLiftCrypto = LiftCrypto.getTheLiftCrypto();
+				String hashedEnteredPassword = theLiftCrypto.getStringFromBytes(theLiftCrypto.getHash(password, myUserMap.get(userIdent).salt));
+				if (myUserMap.get(userIdent).hashedPassword.equals(hashedEnteredPassword)) {
 					triggerAction(sessionId, myUserMap.get(userIdent).startConfig);
 				} else {
 					displayError("login", "Password not recognized", sessionId); // <- move strings to resource
