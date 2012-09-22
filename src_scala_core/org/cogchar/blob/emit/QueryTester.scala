@@ -37,6 +37,7 @@ object QueryTester {
 	//final val SHEET_KEY = "0Ajj1Rnx7FCoHdDN2VFdVazMzRGNGY3BMQmk1TXZzUHc" // Biggs test sheet!
 	//final val SHEET_KEY = "0AlpQRNQ-L8QUdDNWQXpmSW9iNzROcHktZEJZdTJhY2c" // Workshop v010_004 test sheet
 	//final val SHEET_KEY = "0AlpQRNQ-L8QUdGx2RkhDX1VEWklrS256cEVOcy0yb2c" // Workshop v010_005 test sheet
+    //final val SHEET_KEY = "0AlpQRNQ-L8QUdDg0c1dlT2Q1bEVUMDlDbmVvS0ZwLWc" // v011_02
 	final val NS_SHEET_NUM = 9
 	final val DIR_SHEET_NUM = 8
 	final val QUERY_SHEET = "ccrt:qry_sheet_22"
