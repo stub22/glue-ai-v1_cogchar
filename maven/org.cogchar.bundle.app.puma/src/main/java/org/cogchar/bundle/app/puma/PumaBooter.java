@@ -17,26 +17,10 @@ package org.cogchar.bundle.app.puma;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
-
-import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-
-import org.appdapter.help.repo.QueryInterface;
-import org.appdapter.help.repo.QueryEmitter;
-
-import org.cogchar.blob.emit.RenderConfigEmitter;
-import org.cogchar.blob.emit.BehaviorConfigEmitter;
-import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.cogchar.blob.emit.QueryTester;
-
-import  org.appdapter.core.store.Repo;
-import org.osgi.framework.Bundle;
-import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.appdapter.core.store.Repo;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -98,14 +82,13 @@ public class PumaBooter extends BasicDebugger {
 			 * 
 			 */
 			
-			
 			logInfo("%%%%%%%%%%%%%%%%%%% Starting query service");
-			QueryInterface vqi = startVanillaQueryInterface(bundleCtx);
+			pac.startVanillaQueryInterface();
 			
 			// This method performs the configuration actions associated with the developmental "Global Mode" concept
 			// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
 			// be updated to relect that
-			applyGlobalMode(pac);
+			pac.applyGlobalConfig();
 			
 			boolean allowJFrames = mediator.getFlagAllowJFrames();
 /*  
@@ -153,8 +136,7 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 			// Lights, Cameras, and Cinematics were once configured during PumaDualCharacter init
 			// Since we can support multiple characters now (and connect cameras to them), this needs to happen after connectDualRobotChars()
 			// We'll let pac take care of this, since it is currently "Home of the Global Mode"
-			// (even though global mode is currently initially applied here. Any of this may change.)
-			pac.initCinema(vqi);
+			pac.initCinema();
 			
 			logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% initCinema() completed -  PUMA BOOT SUCCESSFUL!  8-)");
 			
@@ -168,57 +150,9 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 		return result;
 	}
 	
-	// Registers the QueryEmitter service, currently with an empty lifecycle.
-	// This service will be used by managed services needing query config
-	// Currently, that's: LifterLifecycle
-	public static QueryInterface startVanillaQueryInterface(BundleContext context) {
-		// We want to make explicity the assumptions about what goes into our QueryEmitter.
-		// On 2012-09-12 Stu changed "new QueryEmitter()" to makeVanillaQueryEmitter,
-		// but perhaps there is some more adjustment to do here for lifecycle compat.
-		//QueryEmitter qemit = QueryTester.makeVanillaQueryEmitter();
-		// On 2012-09-16 Ryan changed from the qemit declaration above to the one below. This allows us to use the 
-		// same instance for the QueryEmitter here as is accessed by QueryTester.getInterface, preventing duplicate
-		// (SLOW) resource loads and the possibility of unsynchronized state in PUMA.
-		QueryEmitter qemit = QueryTester.getEmitter();
-		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(qemit, QueryInterface.class);
-    	OSGiComponent queryComp = new OSGiComponent(context, lifecycle);
-    	queryComp.start();
-		return qemit;
-	}
-	
 	private Repo findMainRepo(PumaContextMediator mediator) {
 		Repo r = null;
 		
 		return r;
-	}
-	
-	// Another bad thing about having lifter access this GlobalConfigService stuff (see below) through managed services:
-	// This method must be public so things like o.f.bundle.repo can call it (see below)
-	public static void applyGlobalMode(PumaAppContext pac) {
-		GlobalConfigEmitter gce = new GlobalConfigEmitter(
-				new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode));
-		
-		// Great, now we have a GlobalConfigEmitter! Now, what do we do with it?
-		// GlobalConfigEmitter is in o.c.lib.core (for now) since it seems a "bottom level" function.
-		// But for now, perhaps we can assume that the uses of the information in global config will occur at the
-		// top, PUMA layer. So let's store this in our PumaAppContext.
-		// This may change as we work through this GlobalMode stuff. gce could be stored "deeper", or maybe 
-		// GlobalConfigEmitter (or similar) will move "upwards" to PUMA.
-		pac.setGlobalConfig(gce);
-		
-		// Now here's something I was hoping to avoid, but it necessary for our experiment in making Lift a managed
-		// service. This is best seen as a trial of one possible way to handle the "GlobalMode" graph configuration.
-		// What we'll do here is tell the PumaAppContext to make the GlobalConfigEmitter available as a no-lifecycle
-		// managed service. (Why no-lifecycle? Because these lifecycles have to end somewhere! But it would make sense
-		// to make this service depend on the query interface if we decide to keep it.)
-		// Then Lifter can access it to load its config.
-		// The problem with this approach is that it elevates the GlobalConfigEmitter to a data structure of particular 
-		// importance outside of PUMA (we're putting it on the OSGi registry for crying out loud!), when at this early
-		// point I've been trying to keep non-PUMA code "agnostic" to any details of the graph "mode" config other than
-		// the Idents of the graph.
-		// So this may be a bad-idea-dead-end. Unless we decide we've fallen in love with both the GlobalConfigEmitter
-		// and the idea of doing config via managed services, in which it may turn out to be just what we need.
-		// For now, we'll restrict usage of this to the LifterLifeCycle only...
-		pac.startGlobalConfigService();
 	}
 }
