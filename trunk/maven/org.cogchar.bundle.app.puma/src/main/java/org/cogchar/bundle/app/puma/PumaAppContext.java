@@ -21,6 +21,7 @@ import java.util.List;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.help.repo.QueryEmitter;
 import org.appdapter.help.repo.QueryInterface;
 
 import org.cogchar.api.humanoid.HumanoidConfig;
@@ -68,7 +69,9 @@ public class PumaAppContext extends BasicDebugger {
 	
 	// A managed service instance of the GlobalConfigEmitter, currently used only by LifterLifecycle.
 	// We need to keep track of it so we can stop and restart it for Lift "refresh"
-	OSGiComponent					gcComp;
+	OSGiComponent					myGcComp;
+	// Same with the managed queryinterface used by Lift
+	OSGiComponent					myQueryComp;
 	PumaContextMediator				myMediator;
 	// Here's a GlobalConfigEmitter for our PUMA instance. Does it really belong here? Time will tell.
 	private GlobalConfigEmitter		myGlobalConfig;
@@ -93,16 +96,13 @@ public class PumaAppContext extends BasicDebugger {
 		return myWebMapper;
 	}
 
-	public void setGlobalConfig(GlobalConfigEmitter config) {
-		myGlobalConfig = config;
-	}
-
 	public GlobalConfigEmitter getGlobalConfig() {
 		return myGlobalConfig;
 	}
 
 	private void clearQueryHelper() {
 		QueryTester.clearQueryInterface();
+		myQueryInterface = null;
 	}
 	private QueryInterface getQueryHelper() { 
 		if (myQueryInterface == null) {
@@ -110,7 +110,27 @@ public class PumaAppContext extends BasicDebugger {
 		}
 		return myQueryInterface;
 	}
-	// From the commentary in PumaBooter:
+	
+	// Registers the QueryEmitter service, currently with an empty lifecycle.
+	// This service will be used by managed services needing query config
+	// Currently, that's: LifterLifecycle
+	// Moved here from PumaBooter because all "top level" QueryInterface business is now handled in this class.
+	// Also, we want this here so we can handle updates to Lifter config here, like with all other config.
+	public QueryInterface startVanillaQueryInterface() {
+		// We want to make explicity the assumptions about what goes into our QueryEmitter.
+		// On 2012-09-12 Stu changed "new QueryEmitter()" to makeVanillaQueryEmitter,
+		// but perhaps there is some more adjustment to do here for lifecycle compat.
+		//QueryEmitter qemit = QueryTester.makeVanillaQueryEmitter();
+		// On 2012-09-16 Ryan changed from the qemit declaration above to the one below. This allows us to use the 
+		// same instance for the QueryEmitter here as is accessed by QueryTester.getInterface, preventing duplicate
+		// (SLOW) resource loads and the possibility of unsynchronized state in PUMA.
+		QueryEmitter qemit = QueryTester.getEmitter();
+		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(qemit, QueryInterface.class);
+    	myQueryComp = new OSGiComponent(myBundleContext, lifecycle);
+    	myQueryComp.start();
+		return qemit;
+	}
+	
 	// Now here's something I was hoping to avoid, but it necessary for our experiment in making Lift a managed
 	// service. This is best seen as a trial of one possible way to handle the "GlobalMode" graph configuration.
 	// What we'll do here is tell the PumaAppContext to make the GlobalConfigEmitter available as a no-lifecycle
@@ -129,8 +149,8 @@ public class PumaAppContext extends BasicDebugger {
 		if (myGlobalConfig != null) {
 			ServiceLifecycleProvider lifecycle =
 					new SimpleLifecycle(new GlobalConfigServiceImpl(), GlobalConfigEmitter.GlobalConfigService.class);
-			gcComp = new OSGiComponent(myBundleContext, lifecycle);
-			gcComp.start();
+			myGcComp = new OSGiComponent(myBundleContext, lifecycle);
+			myGcComp.start();
 			success = true;
 		}
 		return success;
@@ -151,6 +171,16 @@ public class PumaAppContext extends BasicDebugger {
 			return myGlobalConfig.entityMap();
 		}
 	}
+	
+	// This may be the same thing as updateGlobalConfig eventually. Right now we are holding open the possibility that Lifter is acting on
+	// one global config and the rest of Cog Char on another. This allows us to update one but not the other, since Lifter uses the GlobalConfigService
+	// and everything else uses myGlobalConfig in this class. (Lifter auto-updates when the GlobalConfigService restarts.)
+	// But really this is a can of worms, so probably we should move to having both the
+	// GlobalConfigService and myGlobalConfig always be updated at the same time. Not yet though, until the possible implications are worked through...
+	public void applyGlobalConfig() {
+		myGlobalConfig = new GlobalConfigEmitter(new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode));
+		startGlobalConfigService();
+	}
 
 	public void updateGlobalConfig() {
 		// Now this is a little irregular. We're creating this initally in PumaBooter, but also the same 
@@ -165,7 +195,6 @@ public class PumaAppContext extends BasicDebugger {
 	// A half baked (3/4 baked?) idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
 	private boolean updating = false;
-
 	// Here I have removed the method variable passed in for the QueryInterface. Why? Because right now PumaAppContext really
 	// is the central clearing house for the QueryInterface for config -- ideally we want it to be passed down from one master instance here to
 	// all the objects that use it. Methods calling for config updates via this method shouldn't be responsible for 
@@ -178,8 +207,6 @@ public class PumaAppContext extends BasicDebugger {
 		final String BONE_ROBOT_CONFIG = "bonerobotconfig";
 		final String MANAGED_GCS = "managedglobalconfigservice";
 		final String ALL_HUMANOID_CONFIG = "allhumanoidconfig";
-		
-		final QueryInterface qi = getQueryHelper();
 
 		// Do the actual updates on a new thread. That way we don't block the render thread. Much less intrusive, plus this way things
 		// we need to enqueue on main render thread will actually complete -  it must not be blocked during some of the update operations!
@@ -194,7 +221,7 @@ public class PumaAppContext extends BasicDebugger {
 			Thread updateThread = new Thread("World Update Thread") {
 
 				public void run() {
-					reloadWorldConfig(qi);
+					reloadWorldConfig();
 					updating = false;
 				}
 			};
@@ -204,21 +231,25 @@ public class PumaAppContext extends BasicDebugger {
 			Thread updateThread = new Thread("Bone Robot Update Thread") {
 
 				public void run() {
-					reloadBoneRobotConfig(qi);
+					reloadBoneRobotConfig();
 					updating = false;
 				}
 			};
 			updateThread.start();
 		} else if (MANAGED_GCS.equals(request.toLowerCase())) {
 			updating = true;
-			if (gcComp != null) {
-				gcComp.dispose();
+			if (myGcComp != null) {
+				myGcComp.dispose();
+			}
+			if (myQueryComp != null) {
+				myQueryComp.dispose();
 			}
 			Thread updateThread = new Thread("Managed Global Config Service Update Thread") {
 
 				public void run() {
 					updateGlobalConfig();
-					startGlobalConfigService(); // would be nice to set success to the value returned here, but we can't without blocking the render thread, even using a future.
+					startGlobalConfigService();
+					startVanillaQueryInterface();
 					updating = false;
 				}
 			};
@@ -228,7 +259,7 @@ public class PumaAppContext extends BasicDebugger {
 			Thread updateThread = new Thread("Update Thread") {
 
 				public void run() {
-					reloadAll(qi);
+					reloadAll();
 					updating = false;
 				}
 			};
@@ -320,8 +351,9 @@ public class PumaAppContext extends BasicDebugger {
 	// back to HRC if there are philosophical reasons for doing so. (We'd also have to pass two graph flavors to it for this.)
 	// Added: since jMonkey key bindings are part of "virtual world" config like Lights/Camera/Cinematics, they are also 
 	// set here
-	public void initCinema(QueryInterface qi) {
+	public void initCinema() {
 		myHRC.initCinema();
+		QueryInterface qi = getQueryHelper();
 		PumaWebMapper theMapper = getWebMapper();
 		theMapper.connectLiftSceneInterface(myBundleContext);
 		theMapper.connectLiftInterface(myBundleContext);	
@@ -378,16 +410,16 @@ public class PumaAppContext extends BasicDebugger {
 		myHRC.initBindings(currentBindingConfig);
 	}
 
-	public void reloadWorldConfig(QueryInterface qi) {
+	public void reloadWorldConfig() {
 		updateGlobalConfig();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		myRenderMapper.clearLights(myHRC);
 		myRenderMapper.clearCinematics(myHRC);
 		myRenderMapper.clearViewPorts(myHRC);
-		initCinema(qi);
+		initCinema();
 	}
 
-	public void reloadBoneRobotConfig(QueryInterface qi) {
+	public void reloadBoneRobotConfig() {
 		updateGlobalConfig();
 		BoneQueryNames bqn = new BoneQueryNames();
 		for (PumaDualCharacter pdc : myCharList) {
@@ -395,7 +427,7 @@ public class PumaAppContext extends BasicDebugger {
 			try {
 				Ident graphIdent = myGlobalConfig.ergMap().get(pdc.getCharIdent()).get(PumaModeConstants.BONY_CONFIG_ROLE);
 				try {
-					pdc.updateBonyConfig(qi, graphIdent, bqn);
+					pdc.updateBonyConfig(getQueryHelper(), graphIdent, bqn);
 				} catch (Throwable t) {
 					logError("problem updating bony config from queries for " + pdc.getCharIdent(), t);
 				}
@@ -405,7 +437,7 @@ public class PumaAppContext extends BasicDebugger {
 		}
 	}
 
-	public void reloadAll(QueryInterface qi) {
+	public void reloadAll() {
 		try {
 			updateGlobalConfig();
 			HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
@@ -423,7 +455,7 @@ public class PumaAppContext extends BasicDebugger {
 			myHRC.detachHumanoidFigures();
 			myCharList.clear();
 			connectDualRobotChars();
-			initCinema(qi);
+			initCinema();
 		} catch (Throwable t) {
 			logError("Error attempting to reload all humanoid config: " + t);
 			// May be good to handle an exception by setting state of a "RebootResult" or etc...
