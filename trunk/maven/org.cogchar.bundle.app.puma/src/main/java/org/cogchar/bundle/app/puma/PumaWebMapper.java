@@ -32,8 +32,6 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
  * @author Stu B. <www.texpedient.com>
  */
 public class PumaWebMapper extends BasicDebugger {
-	// Static  instance singleton, for now
-	private static PumaWebMapper theWebMapper;
 	
 	private LiftInterface		myLiftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
 	private String				myCogbotConvoUrl;
@@ -41,12 +39,12 @@ public class PumaWebMapper extends BasicDebugger {
 	private OSGiComponent		myLiftAppComp;
 	private OSGiComponent		myLiftSceneComp;
 	private PumaAppContext		myAppContext;
-
-	public static PumaWebMapper getTheWebMapper() {
-		if (theWebMapper == null) {
-			theWebMapper = new PumaWebMapper();
-		}
-		return theWebMapper;
+	
+	// Make default constuctor private to prevent PumaWebMapper from being instantiated without a PumaAppContext
+	private PumaWebMapper() {}
+	
+	PumaWebMapper(PumaAppContext pac) {
+		myAppContext = pac;
 	}
 	
 	public void connectCogCharResources(ClassLoader bonyRdfCl, HumanoidRenderContext hrc) {
@@ -78,10 +76,6 @@ public class PumaWebMapper extends BasicDebugger {
 	// Retaining for now for legacy BallBuilder classloader hookup
 	public void connectHrkindWebContent(ClassLoader hrkindResourceCL) {
 		BallBuilder.getTheBallBuilder().setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
-	}
-	
-	public void setAppContext(PumaAppContext pac) {
-		myAppContext = pac;
 	}
 
 	public LiftInterface getLiftInterface() {

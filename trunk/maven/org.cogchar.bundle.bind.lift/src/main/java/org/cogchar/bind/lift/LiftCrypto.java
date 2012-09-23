@@ -18,6 +18,7 @@ package org.cogchar.bind.lift;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import org.slf4j.Logger;
 import org.appdapter.core.log.BasicDebugger;
 
 /**
@@ -33,7 +34,7 @@ public class LiftCrypto extends BasicDebugger {
 	private static final int SALT_BITS = 256; // Should match length of hash output and be an even number of bytes
 	private static final String RNG_ALGORITHM = "SHA1PRNG";
 	
-	private static LiftCrypto theLiftCrypto;
+	private static final Logger theLogger = getLoggerForClass(LiftCrypto.class);
 	
 	private SecureRandom myGenerator;
 	
@@ -44,22 +45,15 @@ public class LiftCrypto extends BasicDebugger {
 		if (args.length != 0) {
 			toHash = args[0];
 		}
-		LiftCrypto aLiftCrypto = getTheLiftCrypto();
+		LiftCrypto aLiftCrypto = new LiftCrypto();
 		String salt = aLiftCrypto.getSalt();
-		byte[] hash = aLiftCrypto.getHash(toHash, salt);
-		String hashString = aLiftCrypto.getStringFromBytes(hash);
+		byte[] hash = LiftCrypto.getHash(toHash, salt);
+		String hashString = LiftCrypto.getStringFromBytes(hash);
 		System.out.println("Hashing string: " + toHash + ": Salt is " + salt + "; salted and hashed string is " + hashString);
 		//System.out.println("String length is " + toHash.length() + "; salt length is " + salt.length() + "; hashed string length is " + hashString.length()); // TEST ONLY
 	}
 	
-	static LiftCrypto getTheLiftCrypto() {
-		if (theLiftCrypto == null) {
-			theLiftCrypto = new LiftCrypto();
-		}
-		return theLiftCrypto;
-	}
-	
-	byte[] getHash(String plainText, String salt) {
+	static byte[] getHash(String plainText, String salt) {
 		byte[] output = null;
 		try {
 			String text = salt + plainText;
@@ -67,12 +61,12 @@ public class LiftCrypto extends BasicDebugger {
 			md.update(text.getBytes(ENCODING_SCHEME));
 			output = md.digest();
 		} catch (Exception e) {
-			logError("Exception attempting to compute hash from string: " + e);
+			theLogger.error("Exception attempting to compute hash from string: " + e);
 		}
 		return output;
 	}
 	
-	String getStringFromBytes(byte[] bytes) {
+	static String getStringFromBytes(byte[] bytes) {
 		String hexString = "";
 		String byteString = null;
 		for (int i=0; i<bytes.length; i++) {

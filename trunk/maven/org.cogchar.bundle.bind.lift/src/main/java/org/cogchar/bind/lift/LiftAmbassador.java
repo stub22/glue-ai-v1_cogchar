@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 public class LiftAmbassador {
 
 	private static LiftAmbassador theLiftAmbassador;
+	private static final Object theClassLock = LiftAmbassador.class;
 	private static Logger theLogger = LoggerFactory.getLogger(LiftAmbassador.class); //OK?
 	private LiftConfig myInitialConfig;
 	private LiftSceneInterface mySceneLauncher;
@@ -55,11 +56,16 @@ public class LiftAmbassador {
 	private Map<String, String> myChatConfigEntries = new HashMap<String, String>();
 	private Map<Ident, UserAccessConfig.UserConfig> myUserMap = new HashMap<Ident, UserAccessConfig.UserConfig>();
 
+	// Empty private default constructor to prevent outside instantiation
+	private LiftAmbassador() {}
+	
 	public static LiftAmbassador getLiftAmbassador() {
-		if (theLiftAmbassador == null) {
-			theLiftAmbassador = new LiftAmbassador();
+		synchronized (theClassLock) {
+			if (theLiftAmbassador == null) {
+				theLiftAmbassador = new LiftAmbassador();
+			}
+			return theLiftAmbassador;
 		}
-		return theLiftAmbassador;
 	}
 	
 	public interface LiftSceneInterface {
@@ -111,21 +117,25 @@ public class LiftAmbassador {
 
 	// This (legacy) flavor of the method activates controls for the initial config for new sessions
 	public void activateControlsFromConfig(LiftConfig newConfig) {
-		myInitialConfig = newConfig;
-		theLogger.info("RDF Lift config sent to LiftAmbassador");
-		myConfigReady = true;
-		if (myLift != null) {
-			myLift.notifyConfigReady();
-			theLogger.info("Lift notified of config ready");
+		synchronized (theClassLock) {
+			myInitialConfig = newConfig;
+			theLogger.info("RDF Lift config sent to LiftAmbassador");
+			myConfigReady = true;
+			if (myLift != null) {
+				myLift.notifyConfigReady();
+				theLogger.info("Lift notified of config ready");
+			}
 		}
 	}
 	
 	// This flavor activates a new set of controls for a single session
 	public void activateControlsFromConfig(String sessionId, LiftConfig newConfig) {
-		if (myLift != null) {
-			myLift.setConfigForSession(sessionId, newConfig);
-		} else {
-			theLogger.error("A new control set was requested for session " + sessionId + ", but no liftInterface was found!");
+		synchronized (theClassLock) {
+			if (myLift != null) {
+				myLift.setConfigForSession(sessionId, newConfig);
+			} else {
+				theLogger.error("A new control set was requested for session " + sessionId + ", but no liftInterface was found!");
+			}
 		}
 	}
 
@@ -183,84 +193,93 @@ public class LiftAmbassador {
 	}
 
 	public boolean triggerAction(String sessionId, Ident actionUri) {
-		boolean success = false;
-		String actionUriPrefix = actionUri.getAbsUriString().replaceAll(actionUri.getLocalName(), "");
-		String action = actionUri.getLocalName();
-		if ((LiftConfigNames.p_scenetrig.equals(actionUriPrefix)) && (mySceneLauncher != null)) {
-			success = mySceneLauncher.triggerScene(action);
-		} else if ((LiftConfigNames.p_cinematic.equals(actionUriPrefix)) && (myLiftAppInterface != null)) {
-			if (myTriggeredCinematics.contains(action)) {
-				myLiftAppInterface.stopNamedCinematic(action); // In order to replay, we need to stop previously played cinematic first
-			}
-			success = myLiftAppInterface.triggerNamedCinematic(action);
-			if (success) {
-				myTriggeredCinematics.add(action);
-			}
-		} else if ((LiftConfigNames.p_liftconfig.equals(actionUriPrefix)) && (myLift != null)) {
-			if (action.endsWith(".ttl")) {
-				// This capability no longer exists since we broke the ControlConfig assembler based constructor when the 
-				// switch to action URIs was made. We can fix it if we decide we'd like to...
-				//success = activateControlsFromRdf(action);
-				theLogger.warn("Turtle file based lift config is no longer supported, cannot load config from " + action);
-			} else {
-				Ident configIdent = actionUri;
-				LiftConfig newConfig = null;
-				if (myLiftConfigCache.containsKey(configIdent)) {
-					newConfig = myLiftConfigCache.get(configIdent); // Use cached version if available
-					theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
+		// Probably don't really need to synchronize this whole thing, but since we aren't too concerned about multithreading
+		// performance here, probably easiest/safest to anyway...
+		// Updates near bottom of this method certainly should be thread safe, in any case....
+		synchronized (theClassLock) { 
+			boolean success = false;
+			String actionUriPrefix = actionUri.getAbsUriString().replaceAll(actionUri.getLocalName(), "");
+			String action = actionUri.getLocalName();
+			if ((LiftConfigNames.p_scenetrig.equals(actionUriPrefix)) && (mySceneLauncher != null)) {
+				success = mySceneLauncher.triggerScene(action);
+			} else if ((LiftConfigNames.p_cinematic.equals(actionUriPrefix)) && (myLiftAppInterface != null)) {
+				if (myTriggeredCinematics.contains(action)) {
+					myLiftAppInterface.stopNamedCinematic(action); // In order to replay, we need to stop previously played cinematic first
+				}
+				success = myLiftAppInterface.triggerNamedCinematic(action);
+				if (success) {
+					myTriggeredCinematics.add(action);
+				}
+			} else if ((LiftConfigNames.p_liftconfig.equals(actionUriPrefix)) && (myLift != null)) {
+				if (action.endsWith(".ttl")) {
+					// This capability no longer exists since we broke the ControlConfig assembler based constructor when the 
+					// switch to action URIs was made. We can fix it if we decide we'd like to...
+					//success = activateControlsFromRdf(action);
+					theLogger.warn("Turtle file based lift config is no longer supported, cannot load config from " + action);
 				} else {
-					if (myQueryInterface != null) {
-						newConfig = new LiftConfig(myQueryInterface, myQGraph, configIdent);
-						myLiftConfigCache.put(configIdent, newConfig);
-						theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
+					Ident configIdent = actionUri;
+					LiftConfig newConfig = null;
+					if (myLiftConfigCache.containsKey(configIdent)) {
+						newConfig = myLiftConfigCache.get(configIdent); // Use cached version if available
+						theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
 					} else {
-						theLogger.error("New lift config requested, but no QueryInterface set!");
+						if (myQueryInterface != null) {
+							newConfig = new LiftConfig(myQueryInterface, myQGraph, configIdent);
+							myLiftConfigCache.put(configIdent, newConfig);
+							theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
+						} else {
+							theLogger.error("New lift config requested, but no QueryInterface set!");
+						}
+					}
+					if (newConfig != null) {
+						activateControlsFromConfig(sessionId, newConfig);
+						success = true;
 					}
 				}
-				if (newConfig != null) {
-					activateControlsFromConfig(sessionId, newConfig);
-					success = true;
+			} else if ((LiftConfigNames.p_liftcmd.equals(actionUriPrefix)) && (myLiftAppInterface != null)) {
+				if (action.startsWith(LiftConfigNames.partial_P_databalls)) {
+					String databallsAction = action.replaceAll(LiftConfigNames.partial_P_databalls + "_", ""); // replaceFirst?
+					success = myLiftAppInterface.performDataballAction(databallsAction, null);
+				} else if (action.startsWith(LiftConfigNames.partial_P_update)) {
+					String desiredUpdate = action.replaceFirst(LiftConfigNames.partial_P_update + "_", "");
+					success = myLiftAppInterface.performUpdate(desiredUpdate);
+				} else if (LiftConfigNames.refreshLift.equals(action.toLowerCase())) {
+					theLogger.info("Clearing LiftAmbassador page cache and refreshing global state...");
+					myLiftConfigCache.clear();
+					success = myLiftAppInterface.performUpdate("ManagedGlobalConfigService");
 				}
 			}
-		} else if ((LiftConfigNames.p_liftcmd.equals(actionUriPrefix)) && (myLiftAppInterface != null)) {
-			if (action.startsWith(LiftConfigNames.partial_P_databalls)) {
-				String databallsAction = action.replaceAll(LiftConfigNames.partial_P_databalls + "_", ""); // replaceFirst?
-				success = myLiftAppInterface.performDataballAction(databallsAction, null);
-			} else if (action.startsWith(LiftConfigNames.partial_P_update)) {
-				String desiredUpdate = action.replaceFirst(LiftConfigNames.partial_P_update + "_", "");
-				success = myLiftAppInterface.performUpdate(desiredUpdate);
-			} else if (LiftConfigNames.refreshLift.equals(action.toLowerCase())) {
-				theLogger.info("Clearing LiftAmbassador page cache and refreshing global state...");
-				myLiftConfigCache.clear();
-				success = myLiftAppInterface.performUpdate("ManagedGlobalConfigService");
-			}
+			return success;
 		}
-		return success;
 	}
 
 	public String getCogbotResponse(String query) {
-		String response = "";
-		if (myLiftAppInterface != null) {
-			if (myChatConfigEntries.containsKey(ChatConfigNames.N_cogbotConvoUrl)) {
-				String convoIp = myChatConfigEntries.get(ChatConfigNames.N_cogbotConvoUrl).replaceFirst("http://", "");
-				response = myLiftAppInterface.queryCogbot(query, convoIp);
-				theLogger.info("Cogbot says " + response);
+		synchronized (theClassLock) { 
+			String response = "";
+			if (myLiftAppInterface != null) {
+				if (myChatConfigEntries.containsKey(ChatConfigNames.N_cogbotConvoUrl)) {
+					String convoIp = myChatConfigEntries.get(ChatConfigNames.N_cogbotConvoUrl).replaceFirst("http://", "");
+					response = myLiftAppInterface.queryCogbot(query, convoIp);
+					theLogger.info("Cogbot says " + response);
+				} else {
+					theLogger.error("No URL found from ChatConfig for Cogbot conversation server");
+				}
 			} else {
-				theLogger.error("No URL found from ChatConfig for Cogbot conversation server");
+				theLogger.error("Attempting to query Cogbot, but no liftAppInterface is available");
 			}
-		} else {
-			theLogger.error("Attempting to query Cogbot, but no liftAppInterface is available");
+			return response;
 		}
-		return response;
 	}
 
 	public boolean sendTextToCogChar(String actionToken, String text) {
-		boolean success = false;
-		if (actionToken.startsWith(LiftConfigNames.partial_P_databalls)) {
-			String databallsAction = actionToken.replaceAll(LiftConfigNames.partial_P_databalls + "_", "");
-			success = myLiftAppInterface.performDataballAction(databallsAction, text);
+		synchronized (theClassLock) { // May not really need synchronization...
+			boolean success = false;
+			if (actionToken.startsWith(LiftConfigNames.partial_P_databalls)) {
+				String databallsAction = actionToken.replaceAll(LiftConfigNames.partial_P_databalls + "_", "");
+				success = myLiftAppInterface.performDataballAction(databallsAction, text);
+			}
+			return success;
 		}
-		return success;
 	}
 
 	// Gets a global lifter variable
@@ -302,19 +321,21 @@ public class LiftAmbassador {
 	}
 	
 	public void requestNetworkConfig(String ssid, String security, String key) {
-		if (myNetConfigInterface != null) {
-			myNetConfigInterface.configure(ssid, security, key);
-		} else {
-			theLogger.warn("Could not configure network because no LiftNetworkConfigInterface set");
+		synchronized (theClassLock) { // ... in case come crazy fools are both trying to configure the network simultaneously!
+			if (myNetConfigInterface != null) {
+				myNetConfigInterface.configure(ssid, security, key);
+			} else {
+				theLogger.warn("Could not configure network because no LiftNetworkConfigInterface set");
+			}
 		}
 	}
 	
 	public void login(String sessionId, String userName, String password) {
+		// I believe this doesn't need to be synchronized...
 		if (myUserMap != null) {
 			Ident userIdent = new FreeIdent(LiftConfigNames.P_user + userName, userName);
 			if (myUserMap.containsKey(userIdent)) {
-				LiftCrypto theLiftCrypto = LiftCrypto.getTheLiftCrypto();
-				String hashedEnteredPassword = theLiftCrypto.getStringFromBytes(theLiftCrypto.getHash(password, myUserMap.get(userIdent).salt));
+				String hashedEnteredPassword = LiftCrypto.getStringFromBytes(LiftCrypto.getHash(password, myUserMap.get(userIdent).salt));
 				if (myUserMap.get(userIdent).hashedPassword.equals(hashedEnteredPassword)) {
 					triggerAction(sessionId, myUserMap.get(userIdent).startConfig);
 				} else {

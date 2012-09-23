@@ -103,17 +103,22 @@ public class BallBuilder extends BasicDebugger {
 	private float myDamping = LOW_DAMPING_COEFFICIENT;
 	private Material myStandardMaterial;
 	private Model myLastModel; // May be only temporary; holds last model loaded so we can run SPARQL queries on it
-	private LiftAmbassador myLiftAmbassador; 
-	private CinematicModelBuilder myCinematicModelBuilder;
 	// Probably it makes sense to retain an instance variable for the LiftAmbassador since it is used in several methods.
 	// However, it's probably even better to add an interface for BallBuilder->Lifter interactions
+	private LiftAmbassador myLiftAmbassador; 
+	private CinematicModelBuilder myCinematicModelBuilder;
 
-	public static BallBuilder getTheBallBuilder() {
-		if (theBallBuilder == null) {
-			theBallBuilder = new BallBuilder();
-		}
-		return theBallBuilder;
+	// Empty private default constructor to prevent outside instantiation
+	private BallBuilder() {}
+	
+	// Provides a getter for the singleton instance. This method provides lazy initialization and is automatically thread-safe.
+	// Probably not a concern for BallBuilder, but not a bad practice just in case.
+	private static final class SingletonHolder {
+		private static final BallBuilder theBallBuilder = new BallBuilder();
 	}
+	public static BallBuilder getTheBallBuilder() {
+		return SingletonHolder.theBallBuilder;
+	}	
 	
 	public void initialize(HumanoidRenderContext hrc) {
 		myRenderContext = hrc;
