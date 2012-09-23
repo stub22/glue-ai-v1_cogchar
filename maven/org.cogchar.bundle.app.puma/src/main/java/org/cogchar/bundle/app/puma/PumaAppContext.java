@@ -88,7 +88,7 @@ public class PumaAppContext extends BasicDebugger {
 
 	public PumaWebMapper getWebMapper() {
 		if (myWebMapper == null) {
-			myWebMapper = PumaWebMapper.getTheWebMapper();
+			myWebMapper = new PumaWebMapper(this);
 		}
 		return myWebMapper;
 	}
@@ -322,9 +322,11 @@ public class PumaAppContext extends BasicDebugger {
 	// set here
 	public void initCinema(QueryInterface qi) {
 		myHRC.initCinema();
-		getWebMapper().connectLiftSceneInterface(myBundleContext);
+		PumaWebMapper theMapper = getWebMapper();
+		theMapper.connectLiftSceneInterface(myBundleContext);
+		theMapper.connectLiftInterface(myBundleContext);	
 		// The connectCogCharResources call below is currently still needed only for the "legacy" BallBuilder functionality
-		getWebMapper().connectCogCharResources(myInitialBonyRdfCL, myHRC);
+		theMapper.connectCogCharResources(myInitialBonyRdfCL, myHRC);
 		KeyBindingConfig currentBindingConfig = new KeyBindingConfig();
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		Ident graphIdent = null;
