@@ -16,6 +16,8 @@
 
 package org.cogchar.render.app.humanoid;
 
+import org.cogchar.render.app.trigger.KeyBindingConfig;
+import org.cogchar.render.app.trigger.KeyBindingTracker;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -30,7 +32,7 @@ import java.util.List;
 import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.blob.emit.RenderConfigEmitter;
-import org.cogchar.render.app.core.BoundAction;
+import org.cogchar.render.app.trigger.BoundAction;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.render.model.databalls.BallBuilder;

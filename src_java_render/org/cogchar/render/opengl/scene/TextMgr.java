@@ -22,7 +22,7 @@ import com.jme3.system.AppSettings;
 import org.cogchar.render.sys.registry.RenderRegistryAware;
 // Below import for makeHelpScreen - not sure if we want it to work quite this way in long run
 import com.jme3.math.ColorRGBA;
-import org.cogchar.render.app.humanoid.KeyBindingTracker;
+import org.cogchar.render.app.trigger.KeyBindingTracker;
 import com.jme3.input.KeyNames;
 import java.util.Map;
 
