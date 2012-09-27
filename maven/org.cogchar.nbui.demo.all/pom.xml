@@ -21,7 +21,7 @@
 
 	<properties>
         
-		<netbeans.run.params.ide/>
+		<netbeans.run.params.ide>-J-Dlog4j.debug</netbeans.run.params.ide>
 		<!-- These options do not make it to the Felix runtime, so we are patching the Felix jar instead.
 		-J-Dorg.osgi.framework.bootdelegation=sun.misc -J-Dorg.osgi.framework.system.packages.extra=sun.misc
 		-->
