@@ -21,7 +21,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import org.cogchar.platform.trigger.CallableTask;
+import org.cogchar.platform.task.CallableTask;
 import org.cogchar.render.app.core.WorkaroundAppStub;
 
 /**  Named to differentiate it from JMonkey "RenderContext".  
