@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.platform.trigger;
+package org.cogchar.platform.task;
 
 /**
  * @author Stu B. <www.texpedient.com>
