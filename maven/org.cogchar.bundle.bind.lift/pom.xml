@@ -103,13 +103,17 @@
 			</exclusions>
 		</dependency>
 
-             
+         <!--
+			 Stu 2012-09-27:
+			 Logback serves as an implicit binding for SLF4J.  We don't want this dependency in a
+			 library bundle.
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.1</version>
 		</dependency>
-
+			-->
+			
 		<dependency>
 			<!-- OSGi bundle version of Scala 2.8.1 library -->
 			<artifactId>scala-library</artifactId>
@@ -225,7 +229,7 @@
 						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
 						<Export-Package>org.cogchar.lifter.*, org.cogchar.bind.lift.*, bootstrap.*, props, net.liftweb.*, toserve.*,  nu.validator.*
 						</Export-Package>
-						<Import-Package>!nu.xom.*,!org.mozilla.*,!org.specs.*,*</Import-Package>
+						<Import-Package>!nu.xom.*,!org.mozilla.*,!org.specs.*,!ch.qos.logback.*,*</Import-Package>
 
 					</instructions>
 

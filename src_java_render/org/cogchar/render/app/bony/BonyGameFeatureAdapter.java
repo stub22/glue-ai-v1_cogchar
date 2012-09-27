@@ -89,12 +89,14 @@ public class BonyGameFeatureAdapter extends CoreFeatureAdapter {
 			ModelSpatialFactory msf = rrc.getSceneSpatialModelFacade(null);
 
 			Node testSceneNode =  (Node) msf.makeSpatialFromMeshPath(sceneFilePath);
-			getLogger().info("BonyStickFigure scene loaded: " + testSceneNode);
+			getLogger().info("BonyStickFigure scene loaded");
+			getLogger().debug("Full scene dump: ", testSceneNode);
 
 			SpatialManipFuncs.dumpNodeTree(testSceneNode, "   ");
 			List<AnimControl> animControls = SpatialManipFuncs.findAnimControls(testSceneNode);
 
-			getLogger().info("Found BSF animControls, about to reset: " + animControls);
+			getLogger().info("Found BSF animControls, about to reset");
+			getLogger().debug("Full ctrls dump: ", animControls);
 			SpatialManipFuncs.resetBonesAndPrintInfo(animControls); 
 
 			myBRC.setAnimControls(animControls);
