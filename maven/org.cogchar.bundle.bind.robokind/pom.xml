@@ -88,12 +88,6 @@
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.vision</artifactId>
 			<version>${robokind.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>slf4j-simple</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>		
 
 		<dependency>
@@ -142,15 +136,6 @@
 					<instructions>
 						<Bundle-Activator>org.cogchar.bind.rk.osgi.RobokindBindingActivator</Bundle-Activator>
 						<Export-Package>org.cogchar.bind.rk.*,org.cogchar.gaze.*</Export-Package>
-
-						<!--
-						, *;resolution:=optional
-						-->
-					<!--
-						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !nu.xom.*, !org.codehaus.jettison.*, 
-										!org.jdom.*, !org.joda.*, !org.kxml2.*, sun.*;resolution:='optional', *
-						</Import-Package>
-					-->
 					</instructions>
 				</configuration>
 			</plugin>
