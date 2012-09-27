@@ -16,9 +16,9 @@
 package org.cogchar.demo.render.opengl;
 
 import org.cogchar.render.app.core.CogcharPresumedApp;
-import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
-import org.cogchar.render.app.core.CoreFeatureAdapter;
+import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.context.CoreFeatureAdapter;
 
 /**
  * @author Stu B. <www.texpedient.com>

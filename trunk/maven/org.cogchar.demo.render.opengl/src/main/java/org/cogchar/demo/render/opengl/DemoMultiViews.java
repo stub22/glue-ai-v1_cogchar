@@ -29,8 +29,9 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import org.cogchar.render.app.core.CogcharPresumedApp;
-import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 public class DemoMultiViews extends CogcharPresumedApp {
 
@@ -51,7 +52,7 @@ public class DemoMultiViews extends CogcharPresumedApp {
 		@Override public void completeInit() {
 			
 			super.completeInit();
-			
+			RenderRegistryClient rrc = getRenderRegistryClient();
 			// create the geometry and attach it
 			Geometry teaGeom = (Geometry) assetManager.loadModel("Models/Teapot/Teapot.obj");
 			teaGeom.scale(3);
@@ -70,7 +71,7 @@ public class DemoMultiViews extends CogcharPresumedApp {
 			cam.setRotation(new Quaternion(-0.07680723f, 0.92299235f, -0.2564353f, -0.27645364f));
 
 			// Setup second view
-			Camera cam2 = findOrMakeOpticCameraFacade(null).cloneCamera(cam);
+			Camera cam2 = rrc.getOpticCameraFacade(null).cloneCamera(cam);
 			cam2.setViewPort(0f, 0.5f, 0f, 0.5f);
 			cam2.setLocation(new Vector3f(-0.10947256f, 1.5760219f, 4.81758f));
 			cam2.setRotation(new Quaternion(0.0010108891f, 0.99857414f, -0.04928594f, 0.020481428f));

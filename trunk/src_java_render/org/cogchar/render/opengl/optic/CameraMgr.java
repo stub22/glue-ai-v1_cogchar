@@ -26,7 +26,7 @@ import java.util.*;
 import org.cogchar.api.cinema.CameraConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.api.cinema.LightsCameraConfigNames;
-import org.cogchar.render.app.core.CoreFeatureAdapter;
+import org.cogchar.render.sys.context.CoreFeatureAdapter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -44,8 +44,9 @@ import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.model.bony.SpatialManipFuncs;
-import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.physics.CollisionMgr;
 
 /** Sample 8 - how to let the user pick (select) objects in the scene 
@@ -103,7 +104,8 @@ public class DemoYouPickStuff extends UnfinishedDemoApp {
 			//myShootablesRootNode.attachChild(makePQT("flower", 3,8, 2f, 1f, 32, 32)); // Flower torus
 
 			myShootablesRootNode.attachChild(makeFloor());
-			Spatial otoSpatial = findOrMakeSceneSpatialModelFacade(null).makeOtoSpatialFromDefaultPath();
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			Spatial otoSpatial = rrc.getSceneSpatialModelFacade(null).makeOtoSpatialFromDefaultPath();
 
 			SpatialManipFuncs.dumpNodeTree((Node) otoSpatial, "XX ");
 
@@ -119,15 +121,18 @@ public class DemoYouPickStuff extends UnfinishedDemoApp {
 		}
 
 		private Geometry makeBlueQuadGeom() {
+			RenderRegistryClient rrc = getRenderRegistryClient();
 			Quad q = new Quad(6, 3);
-			Geometry g = findOrMakeSceneGeometryFacade(null).makeColoredUnshadedGeom("blueRect", q, ColorRGBA.Blue, null);
+			Geometry g = rrc.getSceneGeometryFacade(null).makeColoredUnshadedGeom("blueRect", q, ColorRGBA.Blue, null);
 			g.setLocalTranslation(0, -3, -0.0001f);
 			return g;
 		}
 
 		private BitmapText makeTextSpatial() {
 			String txtB = "ABCDEFGHIKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()-=_+[]\\;',./{}|:<>?";
-			BitmapText txtSpatial = findOrMakeSceneTextFacade(null).getScaledBitmapText(txtB, 1.0f);
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			
+			BitmapText txtSpatial = rrc.getSceneTextFacade(null).getScaledBitmapText(txtB, 1.0f);
 			txtSpatial.setBox(new Rectangle(0, 0, 6, 3));
 			txtSpatial.setQueueBucket(Bucket.Transparent);
 			txtSpatial.setSize(0.5f);
@@ -150,14 +155,14 @@ public class DemoYouPickStuff extends UnfinishedDemoApp {
 
 					CollisionResults coRes = CollisionMgr.getCameraCollisions(cam, myShootablesRootNode);
 					CollisionMgr.printCollisionDebug(getLogger(), coRes);
-
+					RenderRegistryClient rrc = getRenderRegistryClient();
 					// Mark the hit object
 					if (coRes.size() > 0) {
 						// The closest collision point is what was truly hit:
 						CollisionResult closest = coRes.getClosestCollision();
 						// Let's interact - we myMark the hit with a red dot.
 						myMark.setLocalTranslation(closest.getContactPoint());
-						findOrMakeSceneDeepFacade(null).attachTopSpatial(myMark);
+						rrc.getSceneDeepFacade(null).attachTopSpatial(myMark);
 
 						//TODO:  If we hit a model, how can we find the named part of it that was collided?
 						// Geometry colSpat = closest.getGeometry();
@@ -165,7 +170,7 @@ public class DemoYouPickStuff extends UnfinishedDemoApp {
 
 					} else {
 						// No hits? Then remove the red myMark.
-						findOrMakeSceneDeepFacade(null).detachTopSpatial(myMark);
+						rrc.getSceneDeepFacade(null).detachTopSpatial(myMark);
 					}
 				}
 			}
@@ -173,34 +178,39 @@ public class DemoYouPickStuff extends UnfinishedDemoApp {
 
 		/** A cube object for target practice */
 		protected Geometry makeCube(String geomName, float x, float y, float z, float sideLen) {
-			Box cubeMesh = findOrMakeMeshShapeFacade(null).makeBoxMesh(new Vector3f(x, y, z), sideLen, sideLen, sideLen);
-			Geometry cubeGeom = findOrMakeSceneGeometryFacade(null).makeRandomlyColoredUnshadedGeom(geomName, cubeMesh, null);
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			Box cubeMesh = rrc.getMeshShapeFacade(null).makeBoxMesh(new Vector3f(x, y, z), sideLen, sideLen, sideLen);
+			Geometry cubeGeom = rrc.getSceneGeometryFacade(null).makeRandomlyColoredUnshadedGeom(geomName, cubeMesh, null);
 			return cubeGeom;
 		}
 
 		/** A floor to show that the "shot" can go through several objects. */
 		protected Geometry makeFloor() {
-			Box floorMesh = findOrMakeMeshShapeFacade(null).makeBoxMesh(new Vector3f(0, -4, -5), 15, .2f, 15);
-			Geometry floorGeom = findOrMakeSceneGeometryFacade(null).makeColoredUnshadedGeom("theFloor", floorMesh, ColorRGBA.Gray, null);
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			Box floorMesh = rrc.getMeshShapeFacade(null).makeBoxMesh(new Vector3f(0, -4, -5), 15, .2f, 15);
+			Geometry floorGeom = rrc.getSceneGeometryFacade(null).makeColoredUnshadedGeom("theFloor", floorMesh, ColorRGBA.Gray, null);
 			return floorGeom;
 		}
 
 		protected Geometry makePQT(String geomName, float p, float q, float radius, float width, int steps, int radialSamples) {
-			PQTorus pqtMesh = findOrMakeMeshShapeFacade(null).makePQTorusMesh(p, q, radius, width, steps, radialSamples);
-			Geometry pqtGeom = findOrMakeSceneGeometryFacade(null).makeRandomlyColoredUnshadedGeom(geomName, pqtMesh, null);
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			PQTorus pqtMesh = rrc.getMeshShapeFacade(null).makePQTorusMesh(p, q, radius, width, steps, radialSamples);
+			Geometry pqtGeom = rrc.getSceneGeometryFacade(null).makeRandomlyColoredUnshadedGeom(geomName, pqtMesh, null);
 			return pqtGeom;
 		}
 
 		/** A red ball that marks the last spot that was "hit" by the "shot". */
 		protected void initMark() {
-			Sphere markMesh = findOrMakeMeshShapeFacade(null).makeSphereMesh(30, 30, 0.2f);
-			myMark = findOrMakeSceneGeometryFacade(null).makeColoredUnshadedGeom("theMark", markMesh, ColorRGBA.Red, null);
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			Sphere markMesh = rrc.getMeshShapeFacade(null).makeSphereMesh(30, 30, 0.2f);
+			myMark = rrc.getSceneGeometryFacade(null).makeColoredUnshadedGeom("theMark", markMesh, ColorRGBA.Red, null);
 		}
 
 		protected void initArrowMark() {
+			RenderRegistryClient rrc = getRenderRegistryClient();
 			// From TestMousePick:
-			Arrow arrow = findOrMakeMeshFancyFacade(null).makeArrowMesh(Vector3f.UNIT_Z.mult(2f), 3f);
-			myArrowMark = findOrMakeSceneGeometryFacade(null).makeColoredUnshadedGeom(ARROW_NORMAL, arrow, ColorRGBA.Red, null);
+			Arrow arrow = rrc.getMeshFancyFacade(null).makeArrowMesh(Vector3f.UNIT_Z.mult(2f), 3f);
+			myArrowMark = rrc.getSceneGeometryFacade(null).makeColoredUnshadedGeom(ARROW_NORMAL, arrow, ColorRGBA.Red, null);
 		}
 
 		@Override public void doUpdate(float tpf) {

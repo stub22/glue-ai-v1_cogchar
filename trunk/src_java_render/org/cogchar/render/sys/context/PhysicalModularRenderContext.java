@@ -13,16 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.app.core;
+package org.cogchar.render.sys.context;
 
-import org.cogchar.render.app.core.ModularRenderContext;
+import org.cogchar.render.sys.context.ModularRenderContext;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.Node;
 import org.cogchar.render.sys.physics.PhysicsStuffBuilder;
-import org.cogchar.render.sys.core.RenderRegistryClient;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -41,22 +41,23 @@ public class PhysicalModularRenderContext extends ModularRenderContext {
 		CoreFeatureAdapter.unrolledInitPRC(this);
 	}
 	protected void initBulletAppState() { 
+		RenderRegistryClient rrc = getRenderRegistryClient();
 		BulletAppState bas = new BulletAppState();
         bas.setEnabled(true);
-		AppStateManager appStateMgr = findJme3AppStateManager(null);
+		AppStateManager appStateMgr = rrc.getJme3AppStateManager(null);
         appStateMgr.attach(bas);
 		
-		registerJme3BulletAppState(bas, null);
+		rrc.putJme3BulletAppState(bas, null);
 	}
 	protected void initPhysicsStuffBuilder() { 
 		PhysicsSpace ps = getPhysicsSpace();
 		// TODO: Check config for initial debug setting
-		Node rootNode = findJme3RootDeepNode(null);
+		Node rootNode = getRenderRegistryClient().getJme3RootDeepNode(null);
 		myPSB =  new PhysicsStuffBuilder(this, ps, rootNode);				
 	}
 	public void enablePhysicsDebug() {
 		PhysicsSpace ps = getPhysicsSpace();
-		AssetManager assetMgr = findJme3AssetManager(null);
+		AssetManager assetMgr = getRenderRegistryClient().getJme3AssetManager(null);
 		ps.enableDebug(assetMgr);
 	}
 	public void disablePhysicsDebug() {
@@ -66,7 +67,7 @@ public class PhysicalModularRenderContext extends ModularRenderContext {
 	
 	// public void buildPhysicsStuff() { }
 	protected BulletAppState getBulletAppState() { 
-		return findJme3BulletAppState(null);
+		return getRenderRegistryClient().getJme3BulletAppState(null);
 	}
     protected PhysicsSpace getPhysicsSpace() {
         return getBulletAppState().getPhysicsSpace();

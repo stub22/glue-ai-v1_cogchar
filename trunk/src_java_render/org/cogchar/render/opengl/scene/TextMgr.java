@@ -19,7 +19,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.system.AppSettings;
-import org.cogchar.render.sys.core.RenderRegistryAware;
+import org.cogchar.render.sys.registry.RenderRegistryAware;
 // Below import for makeHelpScreen - not sure if we want it to work quite this way in long run
 import com.jme3.math.ColorRGBA;
 import org.cogchar.render.app.humanoid.KeyBindingTracker;

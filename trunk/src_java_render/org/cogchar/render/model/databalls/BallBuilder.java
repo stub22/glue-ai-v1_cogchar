@@ -57,7 +57,7 @@ import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 import org.cogchar.render.opengl.scene.GeomFactory;
 import org.cogchar.render.opengl.scene.TextMgr;
-import org.cogchar.render.sys.core.RenderRegistryClient;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
 
 /**

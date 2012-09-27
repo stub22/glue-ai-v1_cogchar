@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.sys.core;
+package org.cogchar.render.sys.asset;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLocator;
 import com.jme3.asset.AssetKey;
@@ -27,10 +27,10 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class CogcharRenderAssetLocator implements AssetLocator {
-	static Logger theLogger = LoggerFactory.getLogger(CogcharRenderAssetLocator.class);
+public class BonyAssetLocator implements AssetLocator {
+	static Logger theLogger = LoggerFactory.getLogger(BonyAssetLocator.class);
 	ClasspathLocator  myDelegate = new ClasspathLocator();
-	public CogcharRenderAssetLocator() { 
+	public BonyAssetLocator() { 
 		theLogger.info("*************** BonyAssetLocator constructing");
 	}
     @Override public void setRootPath(String rootPath) {

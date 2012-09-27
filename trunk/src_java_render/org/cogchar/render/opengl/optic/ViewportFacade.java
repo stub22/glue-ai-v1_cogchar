@@ -16,7 +16,7 @@
 package org.cogchar.render.opengl.optic;
 
 import com.jme3.renderer.RenderManager;
-import org.cogchar.render.sys.core.RenderRegistryAware;
+import org.cogchar.render.sys.registry.RenderRegistryAware;
 
 /**
  * @author Stu B. <www.texpedient.com>

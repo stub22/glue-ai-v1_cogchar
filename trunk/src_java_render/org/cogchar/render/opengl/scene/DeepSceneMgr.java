@@ -18,7 +18,7 @@ package org.cogchar.render.opengl.scene;
 import com.jme3.light.Light;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import org.cogchar.render.sys.core.RenderRegistryAware;
+import org.cogchar.render.sys.registry.RenderRegistryAware;
 
 /**
  * @author Stu B. <www.texpedient.com>

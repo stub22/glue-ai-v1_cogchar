@@ -205,7 +205,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
         }, 
         BOOM {
             void act(HumanoidRenderContext ctx) {
-                ctx.getGameFeatureAdapter().cmdBoom();
+                ctx.getGameFeatureAdapter().toggleAnnoyingStuff();
             }
             int getTriggerKey() { 
 				return getKey(this);

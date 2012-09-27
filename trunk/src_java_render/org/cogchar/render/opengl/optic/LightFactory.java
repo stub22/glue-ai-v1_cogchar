@@ -25,8 +25,8 @@ import java.util.Iterator;
 import java.util.concurrent.Callable;
 import org.cogchar.api.cinema.LightConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
-import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.sys.core.RenderRegistryAware;
+import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.registry.RenderRegistryAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
