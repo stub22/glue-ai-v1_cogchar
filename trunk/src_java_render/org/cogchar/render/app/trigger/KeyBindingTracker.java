@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.app.humanoid;
+package org.cogchar.render.app.trigger;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class KeyBindingTracker {
 
 	static private Map<String, Integer> bindingMap = new LinkedHashMap<String, Integer>();
 
-	static void addBinding(String action, Integer key) {
+	public static void addBinding(String action, Integer key) {
 		bindingMap.put(action, key); // Or do we want (key, action)? May depend on future of this class
 	}
 

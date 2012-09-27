@@ -35,10 +35,10 @@ import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 
 import org.cogchar.blob.emit.QueryTester;
 import org.cogchar.platform.trigger.DummyBinding;
-import org.cogchar.render.app.humanoid.KeyBindingConfig;
-import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
+import org.cogchar.render.app.trigger.KeyBindingConfig;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;  // Perhaps we want to fetch this from a context instead, but it's a singleton, so no harm in getting it directly for the moment
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
+import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;

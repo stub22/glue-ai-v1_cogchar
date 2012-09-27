@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.app.humanoid;
+package org.cogchar.render.app.trigger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +26,6 @@ import org.cogchar.platform.trigger.DummyBox;
 import org.cogchar.platform.trigger.DummyTrigger;
 import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.platform.trigger.DummyBinder;
-
-import org.cogchar.render.app.core.BoundAction;
 
 import org.cogchar.bind.lift.LiftAmbassador;
 
@@ -173,8 +171,7 @@ public class SceneActions {
 	}
 
 	static class SceneLauncher implements LiftAmbassador.LiftSceneInterface {
-		@Override
-		public boolean triggerScene(String scene) {
+		@Override public boolean triggerScene(String scene) {
 			boolean success = false;
 			DummyBinding triggerBinding = getTriggerBinding(scene);
 			if (triggerBinding != null) {

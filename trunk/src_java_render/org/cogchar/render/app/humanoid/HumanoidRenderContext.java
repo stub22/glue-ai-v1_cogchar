@@ -15,6 +15,9 @@
  */
 package org.cogchar.render.app.humanoid;
 
+import org.cogchar.render.app.trigger.SceneActions;
+import org.cogchar.render.app.trigger.KeyBindingConfig;
+import org.cogchar.render.app.trigger.KeyBindingTracker;
 import org.appdapter.core.name.Ident;
 
 import com.jme3.asset.AssetManager;
