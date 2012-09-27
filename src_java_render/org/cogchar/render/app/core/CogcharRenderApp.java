@@ -19,10 +19,7 @@ import org.cogchar.render.sys.context.CoreFeatureAdapter;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import com.jme3.app.SimpleApplication;
 
-import com.jme3.asset.plugins.UrlLocator;
 
-import org.appdapter.api.module.Module;
-import org.cogchar.render.model.bony.CogcharRenderModulator;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +34,8 @@ public abstract class CogcharRenderApp<CRCT extends CogcharRenderContext> extend
 	private		Logger							myLogger;
 
 	private		CRCT							myRenderContext;
+	
+	private		JdkLoggerMediator				myJDKLM;
 	
 	public CogcharRenderApp() { 
 		super();
@@ -64,14 +63,14 @@ public abstract class CogcharRenderApp<CRCT extends CogcharRenderContext> extend
 		}
 		return myRenderContext;
 	}
-	
+
 	@Override public void simpleInitApp() {
 		logInfo("CogcharRenderApp.simpleInitApp() - START");
 		logInfo("%%%%%%% JmeSystem.isLowPermissions()=" + com.jme3.system.JmeSystem.isLowPermissions());
-		
-		logInfo("Disabling confusing JDK-Logger warnings from UrlLocator");		
-		java.util.logging.Logger.getLogger(UrlLocator.class.getName()).setLevel(java.util.logging.Level.SEVERE);
 
+		// We need a persistent reference
+		myJDKLM = new JdkLoggerMediator();
+		myJDKLM.setUp();
 
 		logInfo("fetch(/init) CogcharRenderContext, so we can register JMonkey roots for later lookup");		
 		myRenderContext = getRenderContext();
@@ -79,7 +78,6 @@ public abstract class CogcharRenderApp<CRCT extends CogcharRenderContext> extend
 		
 		myRenderContext.registerJMonkeyRoots(assetManager, rootNode, guiNode, stateManager, inputManager, renderManager);
 		CoreFeatureAdapter.registerJMonkeyDefaultCameras(rrc, cam, flyCam);
-		
 		
 		try {
 			myRenderContext.completeInit();

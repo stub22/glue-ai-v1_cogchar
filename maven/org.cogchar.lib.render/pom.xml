@@ -58,16 +58,19 @@
 			<artifactId>org.appdapter.lib.registry</artifactId>
 			<version>${appdapter.version}</version>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>	
+			<!--
 		<dependency>
-			<!-- This is here for dev to facilitate Dev testing of org.cogchar.lib.render through Netbeans. 
-				Should be removed before each project release, suggesting need for Maven profiles for dev vs. deliver
-				(easier under Gradle or SBT?).  
-			-->
+		 This is here for dev to facilitate Dev testing of org.cogchar.lib.render through Netbeans. 
+				This simple binding should not be checkedn in (or deployed in a binary).
+				Consider using scope=test, or a maven profile.
+				
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.6.1</version>
+			
 		</dependency>
+		-->
 		<dependency>
 			<!-- This dep is used in addition to ext.bundle, to help NB. -->
 			<groupId>com.jme3</groupId>

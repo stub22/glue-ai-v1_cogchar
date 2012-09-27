@@ -21,6 +21,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.appdapter.core.store.Repo;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -47,6 +48,7 @@ public class PumaBooter extends BasicDebugger {
 // 	public BootResult boot(ClassLoader appBootCL, String appBootModelResourcePath) {
 	public BootResult bootUnderOSGi(BundleContext bundleCtx, PumaContextMediator mediator) {
 		logInfo("%%%%%%%%%%%%%%%%%%% Beginning bootUnderOSGi");
+		logError("^^^^ not really an error - just high priority ^^^^^^^^ SLF4J ILoggerFactory = " + LoggerFactory.getILoggerFactory());
 		BootResult result  = new BootResult();
 		result.myStatus = BootStatus.BOOTING;
 		try {
