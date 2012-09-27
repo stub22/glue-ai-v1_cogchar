@@ -37,8 +37,9 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl.ControlDirection;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.PhysicalApp;
-import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**  From  jme3test.bullet.TestPhysicsCharacter by normenhansen and zathras.
  * A walking physical character followed by a 3rd person camera. (No animation.)
@@ -78,6 +79,7 @@ public class DemoSindbadVersusBalls extends PhysicalApp {
 
 		@Override public void completeInit() {
 			super.completeInit();
+			RenderRegistryClient rrc = getRenderRegistryClient();
 			initSoccerTestPhysics();
 
 			setupKeys();
@@ -86,7 +88,7 @@ public class DemoSindbadVersusBalls extends PhysicalApp {
 			physicsCharacter = new CharacterControl(new CapsuleCollisionShape(0.5f, 1.8f), .1f);
 			physicsCharacter.setPhysicsLocation(new Vector3f(0, 1, 0));
 			characterNode = new Node("character node");
-			Spatial model = findOrMakeSceneSpatialModelFacade(null).makeSinbadSpatialFromDefaultPath();
+			Spatial model = rrc.getSceneSpatialModelFacade(null).makeSinbadSpatialFromDefaultPath();
 			model.scale(0.25f);
 			characterNode.addControl(physicsCharacter);
 			getPhysicsSpace().add(physicsCharacter);

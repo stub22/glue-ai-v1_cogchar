@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.sys.core;
+package org.cogchar.render.sys.registry;
 
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
@@ -28,6 +28,7 @@ import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
 import org.cogchar.render.opengl.mesh.WireMeshFactory;
 import org.cogchar.render.opengl.optic.*;
 import org.cogchar.render.opengl.scene.*;
+import org.cogchar.render.sys.asset.AssetContext;
 
 /**
  * @author Stu B. <www.texpedient.com>

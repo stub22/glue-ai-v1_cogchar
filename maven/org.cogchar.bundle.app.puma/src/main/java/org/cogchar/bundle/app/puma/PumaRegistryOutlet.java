@@ -15,9 +15,7 @@
  */
 package org.cogchar.bundle.app.puma;
 
-import org.cogchar.render.opengl.optic.CameraMgr;
-import org.cogchar.render.opengl.optic.LightFactory;
-import org.cogchar.render.sys.core.RenderRegistryFuncs;
+import org.cogchar.render.sys.registry.RenderRegistryFuncs;
 
 /**
  * This class provides an outlet for the Puma app to access required information

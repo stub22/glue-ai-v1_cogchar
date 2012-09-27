@@ -13,14 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.sys.core;
 
+package org.cogchar.render.sys.registry;
+
+import org.appdapter.core.log.BasicDebugger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public abstract class RenderRegistryAware extends RenderRegistryFuncs {
-	
 
+public class BasicRenderRegistryClientFinderImpl extends BasicDebugger implements RenderRegistryClientFinder {
+	private RenderRegistryClient myRegClient;
 	
+	public BasicRenderRegistryClientFinderImpl(RenderRegistryClient rrc) {
+		myRegClient = rrc;
+	}
+	@Override public RenderRegistryClient getRenderRegistryClient() {
+		return myRegClient;
+	}
+
 }

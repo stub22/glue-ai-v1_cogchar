@@ -53,9 +53,10 @@ import org.cogchar.blob.emit.RenderConfigEmitter;
 
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.core.PhysicalApp;
-import org.cogchar.render.app.core.CoreFeatureAdapter;
-import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.context.CoreFeatureAdapter;
+import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /** It has been said that:
  * "PHYSICS RAGDOLLS ARE NOT WORKING PROPERLY YET!"
@@ -89,7 +90,7 @@ public class DemoYouBowlAtSinbad extends PhysicalApp {
 	}
 
 	class DYBAS_RenderContext extends ConfiguredPhysicalModularRenderContext implements RagdollCollisionListener, AnimEventListener {
-
+	
 		@Override public void completeInit() {
 			super.completeInit();
 			
@@ -229,7 +230,8 @@ public class DemoYouBowlAtSinbad extends PhysicalApp {
 		}
 
 		public void initMaterial() {
-			matBullet = findOrMakeOpticMaterialFacade(null, null).makeRockMat();
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			matBullet = rrc.getOpticMaterialFacade(null, null).makeRockMat();
 		}
 
 		public void collide(Bone bone, PhysicsCollisionObject object, PhysicsCollisionEvent event) {

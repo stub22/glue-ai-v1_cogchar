@@ -29,7 +29,7 @@ import org.cogchar.bind.rk.robot.model.ModelJoint;
 
 import org.cogchar.render.model.bony.FigureState;
 
-import org.cogchar.render.app.core.CogcharRenderContext;
+import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 

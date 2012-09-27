@@ -30,8 +30,9 @@ import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.CompareMode;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
 import org.cogchar.render.app.core.CogcharPresumedApp;
-import org.cogchar.render.app.core.CogcharRenderContext;
+import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.opengl.optic.MatFactory;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -62,7 +63,8 @@ public class BrickApp extends CogcharPresumedApp {
 
 		/** Initialize the materials used in this scene. */
 		protected void initMaterials() {
-			MatFactory mf = findOrMakeOpticMaterialFacade(null, null);
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			MatFactory mf = rrc.getOpticMaterialFacade(null, null);
 
 			myBrickMat = mf.getBrickWallMat();
 			myRockMat = mf.makeRockMat();

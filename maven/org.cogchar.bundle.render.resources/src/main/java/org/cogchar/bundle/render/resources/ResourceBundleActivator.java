@@ -3,9 +3,9 @@ package org.cogchar.bundle.render.resources;
 import org.appdapter.osgi.core.BundleActivatorBase;
 import org.osgi.framework.BundleContext;
 
-import org.cogchar.render.sys.core.AssetContext;
-import org.cogchar.render.sys.core.JmonkeyAssetLocation;
-import org.cogchar.render.sys.core.RenderRegistryFuncs;
+import org.cogchar.render.sys.asset.AssetContext;
+import org.cogchar.render.sys.asset.JmonkeyAssetLocation;
+import org.cogchar.render.sys.registry.RenderRegistryFuncs;
 
 public class ResourceBundleActivator extends BundleActivatorBase {
 

@@ -13,26 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.app.core;
 
-import org.cogchar.render.sys.context.PhysicalModularRenderContext;
-import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.PhysicsSpace;
-import org.cogchar.blob.emit.RenderConfigEmitter;
-import org.cogchar.render.sys.physics.PhysicsStuffBuilder;
+package org.cogchar.platform.trigger;
 
 /**
  * @author Stu B. <www.texpedient.com>
- * 
- * 		// Comment in PhysicsSpace says to setGravity "before creating physics objects".
-		// ps.setGravity(Vector3f.ZERO);
-		// Turn on the blue wireframe collision bounds.
-		// ps.enableDebug(asstMgr);
  */
-public abstract class PhysicalApp<PMRCT extends PhysicalModularRenderContext> extends CogcharPresumedApp<PMRCT> {
-	
-	public PhysicalApp(RenderConfigEmitter rce) {
-		super(rce);
-	}
 
+public interface Task {
+	public void perform() throws Throwable;
 }

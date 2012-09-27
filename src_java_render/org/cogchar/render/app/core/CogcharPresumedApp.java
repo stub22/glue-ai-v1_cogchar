@@ -16,6 +16,7 @@
 package org.cogchar.render.app.core;
 
 
+import org.cogchar.render.sys.context.CogcharRenderContext;
 import com.jme3.system.AppSettings;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.UrlLocator;

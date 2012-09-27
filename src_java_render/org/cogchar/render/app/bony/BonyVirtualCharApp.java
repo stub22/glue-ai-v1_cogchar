@@ -25,7 +25,7 @@ import java.awt.Canvas;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.cogchar.blob.emit.RenderConfigEmitter;
-import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
+import org.cogchar.render.sys.context.WorkaroundFuncsMustDie;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

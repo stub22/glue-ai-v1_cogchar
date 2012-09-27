@@ -15,13 +15,15 @@
  */
 package org.cogchar.render.app.core;
 
+import org.cogchar.render.sys.context.CoreFeatureAdapter;
+import org.cogchar.render.sys.context.CogcharRenderContext;
 import com.jme3.app.SimpleApplication;
 
 import com.jme3.asset.plugins.UrlLocator;
 
 import org.appdapter.api.module.Module;
 import org.cogchar.render.model.bony.CogcharRenderModulator;
-import org.cogchar.render.sys.core.RenderRegistryClient;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
