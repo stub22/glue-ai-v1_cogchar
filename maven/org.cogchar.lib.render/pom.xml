@@ -59,18 +59,7 @@
 			<version>${appdapter.version}</version>
 			<scope>provided</scope>
 		</dependency>	
-			<!--
-		<dependency>
-		 This is here for dev to facilitate Dev testing of org.cogchar.lib.render through Netbeans. 
-				This simple binding should not be checkedn in (or deployed in a binary).
-				Consider using scope=test, or a maven profile.
-				
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.6.1</version>
-			
-		</dependency>
-		-->
+
 		<dependency>
 			<!-- This dep is used in addition to ext.bundle, to help NB. -->
 			<groupId>com.jme3</groupId>
@@ -98,25 +87,38 @@
 			<scope>test</scope>
 		</dependency>		
 		
-	 <dependency>
-	  <groupId>${project.groupId}</groupId>
-	  <artifactId>org.cogchar.lib.core</artifactId>
-	  <version>${project.version}</version>
-	  <scope>provided</scope>
-	 </dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.core</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
 	 
 	 <!-- Eventually it will be good to do away with following dependencies by acting via a central interface in o.c.lib.core -->
-	 <dependency>
-	  <groupId>${project.groupId}</groupId>
-	  <artifactId>org.cogchar.lib.animoid</artifactId>
-	  <version>${project.version}</version>
-	 </dependency>
-	 
-	 <dependency>
-	  <groupId>${project.groupId}</groupId>
-	  <artifactId>org.cogchar.bundle.bind.lift</artifactId>
-	  <version>${project.version}</version>
-	 </dependency>
+		<dependency>
+			<!-- Stu sez:  The animoid dep is not horrible -->
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.animoid</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<!-- Stu sez:  But this is pretty bad! -->
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<!--
+		<dependency>
+				It's possible to uncomment this dep during dev testing.
+				However, this "simple" binding should not be checkedn in (or deployed in a binary).
+				Let's consider using scope=test, or a maven profile.
+				
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		-->		
 	</dependencies>
 </project>
 
