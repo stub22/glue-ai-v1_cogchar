@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Installer extends ModuleInstall {
-	static Logger theLogger = LoggerFactory.getLogger(Installer.class);
+	private Logger myLogger = LoggerFactory.getLogger(Installer.class);
 	static String LOG4J_PROPS_PATH = "config/cogchar/logging_temp/log4j_cogchar_dev.properties";
 	static String VIRTCHAR_NB_CLUSTER = "org_cogchar_nbui_render";
 	private static String theVirtcharNBClusterDir;
@@ -47,10 +47,10 @@ public class Installer extends ModuleInstall {
             URL localURL = file.toURI().toURL();
             logInfo("Forcing Log4J to read config from: " + localURL);
             PropertyConfigurator.configure(localURL);
-            logInfo("Is SLF4J working under Netigso?");
+            logError("^^^ Not an error, but high priority ^^^ Is SLF4J working under Netigso?");
         }catch(MalformedURLException ex){
-            logInfo("Bad URL from file name: " + file.getAbsoluteFile());
-			logInfo("Cannot start SLF4J Logging.");
+            logError("Bad URL from file name: " + file.getAbsoluteFile());
+			logError("Cannot start SLF4J Logging.");
             ex.printStackTrace();
         }
     }
@@ -75,10 +75,26 @@ public class Installer extends ModuleInstall {
         }
         return "./target/" + brandingToken + "/";
     }
-    
+	/** CRAZINESS:  The existence of this method causes  NBPlatform 7.0.1 to pop up a dialog saying:
+	 * org.netbeans.InvalidException: StandardModule:org.cogchar.org.cogchar.nbui.render jarFile: 
+	 * E:\_mount\cogchar_trunk\maven\org.cogchar.nbui.demo.all\target\org_cogchar_nbui\org_cogchar_nbui_render\modules\org-cogchar-org-cogchar-nbui-render.jar: 
+	 * java.lang.NoClassDefFoundError: org/slf4j/Logger
+	 * 
+	 * Possibly similar to this issue?
+	 * http://forums.netbeans.org/topic50239.html
+	 * 
+    private Logger getLogger() {
+		return myLogger; 
+	}
+	*/
 	private void logInfo(String msg) {
 		String smsg = "[Simulator-Installer]-" + msg;
 		System.out.println("[System.out]-" + getClass().getCanonicalName() + "-" + smsg);
-		theLogger.info("[SLF4J]" + smsg);
+		myLogger.info("[SLF4J]" + smsg);
 	}
+	private void logError(String msg) {
+		String smsg = "[Simulator-Installer]-" + msg;
+		System.out.println("[System.out]-" + getClass().getCanonicalName() + "-" + smsg);
+		myLogger.error("[SLF4J]" + smsg);
+	}	
 }

@@ -19,10 +19,12 @@
 	<properties>
 		<brandingToken>org_cogchar_nbui_render</brandingToken>
 		
-		<!-- All config files are placed in this output directory in our module -->
+		<!-- All config *files* (not classpath resources) are placed in this output directory in our module
+			This area is also used for "temporary" config files created/edited by user during runtime.
+		-->
 		<cogcharConfigTgt>config/cogchar</cogcharConfigTgt>
 		
-		<!-- We create "temp" copies of the Cogchar config for end-user to edit, sourced from "permanent" copies here -->
+		<!-- "Permanent" classpath-sourced config resources come from here.  -->
 		<cogcharTempConfigSrc>../org.cogchar.bundle.render.resources/src/main/resources</cogcharTempConfigSrc>
 		
 	</properties>
@@ -82,12 +84,7 @@
 			<version>${netbeans.version}</version>
 		</dependency>
 		
-		<dependency>
-			<artifactId>slf4j-api</artifactId>
-			<groupId>org.slf4j</groupId>
-			<type>jar</type>
-			<version>1.6.1</version>
-		</dependency>
+
 		<dependency>
 			<artifactId>org.osgi.core</artifactId>
 			<groupId>org.apache.felix</groupId>
@@ -221,39 +218,41 @@
 		<dependency>
 			<artifactId>org.robokind.api.messaging</artifactId>
 			<groupId>org.robokind</groupId>
-			<type>jar</type>
 			<version>${robokind.version}</version>
 		</dependency>
 		<dependency>
 			<artifactId>org.robokind.avrogen.motion</artifactId>
 			<groupId>org.robokind</groupId>
-			<type>jar</type>
 			<version>${robokind.version}</version>
 		</dependency>
 		<dependency>
 			<artifactId>org.robokind.impl.messaging</artifactId>
 			<groupId>org.robokind</groupId>
-			<type>jar</type>
 			<version>${robokind.version}</version>
 		</dependency>
-		
 		<dependency>
-			<artifactId>com.springsource.org.apache.log4j</artifactId>
-			<groupId>org.apache.log4j</groupId>
-			<version>1.2.16</version>
-		</dependency>
+			<artifactId>slf4j-api</artifactId>
+			<groupId>org.slf4j</groupId>
+			<version>1.6.1</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.1</version>
 			<scope>runtime</scope>
 			<exclusions>
+				<!-- Exclude bundled log4J and use the springsource one below, which works better under OSGi -->
 				<exclusion>
 					<artifactId>log4j</artifactId>
 					<groupId>log4j</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<artifactId>com.springsource.org.apache.log4j</artifactId>
+			<groupId>org.apache.log4j</groupId>
+			<version>1.2.16</version>
+		</dependency>		
 	</dependencies>
 
 	<build>
