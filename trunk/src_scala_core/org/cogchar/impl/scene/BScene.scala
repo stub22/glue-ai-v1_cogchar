@@ -96,7 +96,7 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 	import scala.collection.JavaConversions._;
 	
 	override protected def initExtendedFieldsAndLinks(ss: SceneSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
-		logInfo("SceneBuilder.initExtendedFieldsAndLinks");	
+		logDebug("SceneBuilder.initExtendedFieldsAndLinks");	
 		ss.myDetails = "ChockFilledUp";
 		
 		val reader = getReader();
@@ -119,8 +119,8 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 				case _ => logWarning("Unexpected object found at " + SceneFieldNames.P_channel + " = " + o);
 			}
 		}		
-		logInfo("Scene found linkedBehaviorSpecs: " + linkedBehaviorSpecs)
-		logInfo("Scene found linkedChannelSpecs: " + linkedChannelSpecs)
+		logDebug("Scene found linkedBehaviorSpecs: " + linkedBehaviorSpecs)
+		logDebug("Scene found linkedChannelSpecs: " + linkedChannelSpecs)
 
 	}
 }
