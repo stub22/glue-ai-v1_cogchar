@@ -16,7 +16,7 @@
 
 package org.cogchar.render.sys.task;
 
-import org.cogchar.platform.trigger.BasicCallableTask;
+import org.cogchar.platform.task.BasicCallableTask;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.registry.RenderRegistryClientFinder;
 

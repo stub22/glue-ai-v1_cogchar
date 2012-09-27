@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.platform.trigger;
+package org.cogchar.platform.task;
 
 import org.appdapter.core.log.BasicDebugger;
 

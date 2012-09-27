@@ -25,13 +25,11 @@ import com.jme3.light.Light;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
 import java.io.InputStream;
-import org.cogchar.platform.trigger.CallableTask;
+import org.cogchar.platform.task.CallableTask;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.sys.asset.AssetContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
-
-import org.cogchar.platform.trigger.Task;
 
 import org.cogchar.render.sys.registry.BasicRenderRegistryClientFinderImpl;
 

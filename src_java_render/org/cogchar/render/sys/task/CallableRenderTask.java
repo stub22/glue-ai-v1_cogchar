@@ -16,7 +16,7 @@
 
 package org.cogchar.render.sys.task;
 
-import org.cogchar.platform.trigger.CallableTask;
+import org.cogchar.platform.task.CallableTask;
 
 /**
  * @author Stu B. <www.texpedient.com>
