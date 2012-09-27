@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.app.humanoid;
+package org.cogchar.render.app.trigger;
 
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.QueryInterface;

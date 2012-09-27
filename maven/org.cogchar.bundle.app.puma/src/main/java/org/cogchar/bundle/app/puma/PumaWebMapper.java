@@ -16,13 +16,12 @@
 package org.cogchar.bundle.app.puma;
 
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.QueryInterface;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.LiftAmbassador;
-import org.cogchar.render.app.humanoid.SceneActions;
-import org.cogchar.render.model.databalls.*;
+import org.cogchar.render.app.trigger.SceneActions;
 import org.cogchar.render.opengl.scene.CinematicMgr;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.model.databalls.BallBuilder;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;

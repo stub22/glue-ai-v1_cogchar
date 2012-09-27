@@ -17,15 +17,10 @@ package org.cogchar.bundle.app.puma;
 
 import org.osgi.framework.BundleContext;
 
-import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.QueryInterface;
 
 
-import org.appdapter.core.log.BasicDebugger;
-
-
-import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
 import org.cogchar.api.humanoid.HumanoidConfig;
@@ -35,7 +30,7 @@ import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.app.humanoid.SceneActions;
+import org.cogchar.render.app.trigger.SceneActions;
 
 import org.cogchar.platform.trigger.DummyBox;
 import org.cogchar.platform.trigger.DummyBinder;
