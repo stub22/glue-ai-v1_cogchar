@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.app.core;
+package org.cogchar.render.sys.context;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
@@ -27,10 +27,11 @@ import org.slf4j.Logger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.RenderConfigEmitter;
+import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.opengl.optic.CameraMgr;
-import org.cogchar.render.sys.core.RenderRegistryClient;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.physics.DemoVectorFactory;
 
 /**

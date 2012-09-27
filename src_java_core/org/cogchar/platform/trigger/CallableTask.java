@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,19 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.sys.core;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+package org.cogchar.platform.trigger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class JmonkeyMathObjFactory {
-	public static Vector3f makeVector(float xyz[]) {
-		if (xyz.length != 3) {
-			throw new RuntimeException("Cannot make 3F vector from vector of length " + xyz.length);
-		}
-		return new Vector3f(xyz[0], xyz[1], xyz[2]);
-	}
+
+public interface CallableTask extends Task, java.util.concurrent.Callable<Throwable> {
+
 }

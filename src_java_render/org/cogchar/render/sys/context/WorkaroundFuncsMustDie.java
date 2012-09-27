@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.sys.core;
+package org.cogchar.render.sys.context;
 
-import org.cogchar.render.app.core.CogcharRenderContext;
+import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.sys.physics.ScoreBoard;
 import com.jme3.app.SimpleApplication;
@@ -96,4 +96,10 @@ public class WorkaroundFuncsMustDie {
         awtCanvas.setSize(width, height);
 		return awtCanvas;
 	}
+	public static Vector3f makeVector(float xyz[]) {
+		if (xyz.length != 3) {
+			throw new RuntimeException("Cannot make 3F vector from vector of length " + xyz.length);
+		}
+		return new Vector3f(xyz[0], xyz[1], xyz[2]);
+	}	
 }

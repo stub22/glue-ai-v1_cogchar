@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.sys.core;
+package org.cogchar.render.sys.registry;
 
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
@@ -43,6 +43,7 @@ import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 import org.cogchar.render.opengl.scene.GeomFactory;
 import org.cogchar.render.opengl.scene.ModelSpatialFactory;
 import org.cogchar.render.opengl.scene.TextMgr;
+import org.cogchar.render.sys.asset.AssetContext;
 import org.osgi.framework.BundleContext;
 
 

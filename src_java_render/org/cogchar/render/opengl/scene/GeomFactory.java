@@ -23,7 +23,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
-import org.cogchar.render.sys.core.RenderRegistryAware;
+import org.cogchar.render.sys.registry.RenderRegistryAware;
 import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
 
 /**

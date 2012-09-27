@@ -34,7 +34,7 @@ import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.api.humanoid.HumanoidFigureConfig;
 import org.cogchar.render.model.humanoid.HumanoidFigureModule;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
-import org.cogchar.render.sys.core.WorkaroundFuncsMustDie;
+import org.cogchar.render.sys.context.WorkaroundFuncsMustDie;
 import org.cogchar.render.opengl.optic.CameraMgr;
 // Below imports added for initHelpScreen - should go elsewhere eventually(?)
 import com.jme3.font.BitmapText;
@@ -47,10 +47,10 @@ import javax.swing.JFrame;
 import org.appdapter.help.repo.QueryInterface;
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
+import org.cogchar.render.sys.task.BasicCallableRenderTask;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
-import org.cogchar.render.sys.core.RenderRegistryClient;
-import org.cogchar.render.app.core.CogcharRenderContext;
-
+import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -89,27 +89,25 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 	@Override public void postInitLaunch() {
 		super.postInitLaunch();
+		
+		/** Here is our best chance at placing initial content in the V-world, as part of module "start up",
+		 * as perceived by the end user.   We have historically created a lot of content here for test purposes
+		 * (e.g. some cross hairs, some physical world features, the wacky red stick figure, some debug text displays).
+		 * 
+		 * Now we are methodically tying all those debug features back into our AppdapterRepo-based config.
+		 * 
+		 */
 
 		AppSettings someSettings = getJMonkeyAppSettings();
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		BonyGameFeatureAdapter.initCrossHairs(someSettings, rrc);
 		initBasicTestPhysics();
-		// We wait and do this later, possibly repeatedly.
-		// initHumanoidStuff();
-		// This is now done later, after all characters have been loaded:
-		//initCameraAndLights(charWorldCl);
+
 
 		myGameFeatureAdapter.initFeatures();
-
-		//InputManager inputManager = findJme3InputManager(null);
-
-		// Now done in initBindings, called by PumaAppContext along with initCinema
-		//HumanoidPuppetActions.setupActionListeners(inputManager, this);
-		//SceneActions.setupActionListeners(inputManager);
-
 		WorkaroundFuncsMustDie.initScoreBoard(this);
-
-		//initHelpScreen(someSettings, inputManager);
+		
+	
 	}
 
 	public HumanoidFigure getHumanoidFigure(QueryInterface qi, Ident charIdent, HumanoidConfig hc, Ident bonyConfigGraph) {
@@ -135,18 +133,19 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 	// Now does more, but does less on jME thread!
 	public HumanoidFigure setupHumanoidFigure(QueryInterface qi, Ident charIdent, Ident bonyConfigGraph, HumanoidConfig hc) throws Throwable {
+		RenderRegistryClient rrc = getRenderRegistryClient();		
 		final HumanoidFigure figure = getHumanoidFigure(qi, charIdent, hc, bonyConfigGraph);
-		final AssetManager amgr = findJme3AssetManager(null);
-		final Node rootNode = findJme3RootDeepNode(null);
+		final AssetManager amgr = rrc.getJme3AssetManager(null);
+		final Node rootNode = rrc.getJme3RootDeepNode(null);
 		final PhysicsSpace ps = getPhysicsSpace();
-		runTaskOnJmeThreadAndWait(new CogcharRenderContext.Task() {
-			public void perform() throws Throwable {
+		runTaskSafelyUntilComplete(new BasicCallableRenderTask(this) {
+			@Override public void performWithClient(RenderRegistryClient rrc) throws Throwable {
 				figure.initStuff(amgr, rootNode, ps);
 			}
 		});
 		final HumanoidFigureModule hfm = new HumanoidFigureModule(figure, this);
-		runTaskOnJmeThreadAndWait(new CogcharRenderContext.Task() {
-			public void perform() throws Throwable {
+		runTaskSafelyUntilComplete(new BasicCallableRenderTask(this) {
+			@Override public void performWithClient(RenderRegistryClient rrc) throws Throwable {
 				attachModule(hfm);
 			}
 		});
@@ -155,7 +154,8 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	}
 	
 	public void detachHumanoidFigures() {
-		final Node rootNode = findJme3RootDeepNode(null);
+		RenderRegistryClient rrc = getRenderRegistryClient();
+		final Node rootNode = rrc.getJme3RootDeepNode(null);
 		final PhysicsSpace ps = getPhysicsSpace();
 		Iterator<HumanoidFigure> currentFigureIterator = myFiguresByCharIdent.values().iterator();
 		while (currentFigureIterator.hasNext()) {
@@ -184,13 +184,15 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	// Formerly performed in postInitLaunch, this is now called from PumaAppContext once the KeyBindingConfig is complete
 	// Might make sense to just move this to PumaAppContext
 	public void initBindings(KeyBindingConfig theConfig) {
-		InputManager inputManager = findJme3InputManager(null);
+		RenderRegistryClient rrc = getRenderRegistryClient();
+		InputManager inputManager = rrc.getJme3InputManager(null);
 		// If the help screen is displayed, we need to remove it since we'll be making a new one later
 		if (currentHelpText != null) {
 			enqueueCallable(new Callable<Void>() { // Do this on main render thread
 				@Override
 				public Void call() throws Exception {
-					findOrMakeSceneFlatFacade(null).detachOverlaySpatial(currentHelpText);
+					RenderRegistryClient rrcl = getRenderRegistryClient();
+					rrcl.getSceneFlatFacade(null).detachOverlaySpatial(currentHelpText);
 					return null;
 				}
 			});
@@ -208,29 +210,10 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		initHelpScreen(someSettings, inputManager, theConfig);
 	}
 	
-	/* For now at least, these functions are moved to PumaAppContext - that way we doing all the config from one place
-	private void initLightsCameraCinematics() {
-		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
-		myRenderMapper.initLightsAndCamera(this);
-		myRenderMapper.initCinematics(this);
-	}
-	*/
-	
-	/* Also moved to PumaAppContext
-	public void reloadWorldConfig() {
-		QueryInterface queryEmitter = QuerySheet.getInterface();
-		queryEmitter.reloadSheetRepo();
-		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
-		myRenderMapper.clearLights(this);
-		myRenderMapper.clearCinematics(this);
-		myRenderMapper.clearViewPorts(this);
-		initLightsCameraCinematics();
-	}
-	*/ 
-
 	// This is still called by HumanoidPuppetActions to reset default camera position
 	protected void setDefaultCameraLocation() {
-		CameraMgr cmgr = findOrMakeOpticCameraFacade(null);
+		RenderRegistryClient rrc = getRenderRegistryClient();
+		CameraMgr cmgr = rrc.getOpticCameraFacade(null);
 		cmgr.resetDefaultCamera();
 	}
 
@@ -239,7 +222,6 @@ public class HumanoidRenderContext extends BonyRenderContext {
 			hf.toggleDebugSkeleton();
 		}
 	}
-
 	public BonyGameFeatureAdapter getGameFeatureAdapter() {
 		return myGameFeatureAdapter;
 	}
@@ -249,6 +231,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	private BitmapText currentHelpText; // We need to save this now, so it can be turned off automatically for reconfigs
 
 	private void initHelpScreen(AppSettings settings, InputManager inputManager, KeyBindingConfig bindingConfig) {
+		RenderRegistryClient rrc = getRenderRegistryClient();
 		final String HELP_TAG = "Help"; // Perhaps should be defined elsewhere?
 		final int NULL_KEY = -100; // This input not mapped to any key; we'll use it in the event of not finding one from bindingConfig
 		int helpKey = NULL_KEY;
@@ -270,7 +253,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		}
 		if (helpKey != NULL_KEY) {
 			KeyBindingTracker.addBinding(HELP_TAG, helpKey); // Let's add ourselves to the help list!
-			final BitmapText helpBT = findOrMakeSceneTextFacade(null).makeHelpScreen(0.6f, settings); // First argument sets text size, really shouldn't be hard-coded
+			final BitmapText helpBT = rrc.getSceneTextFacade(null).makeHelpScreen(0.6f, settings); // First argument sets text size, really shouldn't be hard-coded
 			currentHelpText = helpBT;
 			KeyTrigger keyTrig = new KeyTrigger(helpKey);
 			inputManager.addMapping(HELP_TAG, keyTrig);
@@ -280,11 +263,13 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 				public void onAction(String name, boolean isPressed, float tpf) {
 					if (isPressed) {
+						RenderRegistryClient rrcl = getRenderRegistryClient();
+						FlatOverlayMgr fom = rrcl.getSceneFlatFacade(null);
 						if (!helpDisplayed) {
-							findOrMakeSceneFlatFacade(null).attachOverlaySpatial(helpBT);
+							fom.attachOverlaySpatial(helpBT);
 							helpDisplayed = true;
 						} else {
-							findOrMakeSceneFlatFacade(null).detachOverlaySpatial(helpBT);
+							fom.detachOverlaySpatial(helpBT);
 							helpDisplayed = false;
 						}
 					}
@@ -328,3 +313,37 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		}
 	}
 }
+	/**  Stu 2012-09-26 : Stuff below was already disabled (but interleaved above)
+		 * Kept here as SAMPLES of what a user MIGHT do from this class if they wanted to
+		 * bypass all our config.
+
+		// We wait and do this later, possibly repeatedly.
+		// initHumanoidStuff();
+		// This is now done later, after all characters have been loaded:
+		//initCameraAndLights(charWorldCl);
+		//InputManager inputManager = findJme3InputManager(null);
+
+		// Now done in initBindings, called by PumaAppContext along with initCinema
+		//HumanoidPuppetActions.setupActionListeners(inputManager, this);
+		//SceneActions.setupActionListeners(inputManager);
+		//initHelpScreen(someSettings, inputManager);
+		**/
+	/* For now at least, these functions are moved to PumaAppContext - that way we doing all the config from one place
+	private void initLightsCameraCinematics() {
+		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
+		myRenderMapper.initLightsAndCamera(this);
+		myRenderMapper.initCinematics(this);
+	}
+	*/
+	
+	/* Also moved to PumaAppContext
+	public void reloadWorldConfig() {
+		QueryInterface queryEmitter = QuerySheet.getInterface();
+		queryEmitter.reloadSheetRepo();
+		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
+		myRenderMapper.clearLights(this);
+		myRenderMapper.clearCinematics(this);
+		myRenderMapper.clearViewPorts(this);
+		initLightsCameraCinematics();
+	}
+	*/ 

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.sys.core;
+package org.cogchar.render.sys.registry;
 
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
@@ -28,8 +28,19 @@ import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
 import org.cogchar.render.opengl.mesh.WireMeshFactory;
 import org.cogchar.render.opengl.optic.*;
 import org.cogchar.render.opengl.scene.*;
+import org.cogchar.render.sys.asset.AssetContext;
 
 /**
+ * Preferred registry interface for the Cogchar rendering system.
+ * Code using this interface is isolated from the concrete type of
+ * the RenderRegistryClient, and the facade types it returns.
+ * Thus, a reimplementation of this interface can provide a
+ * customized rendering system, although clearly some dependence
+ * on JMonkey types is required.
+ * 
+ * An instance of this class is the primary precursor to creation of
+ * a CogcharRenderContext.
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 

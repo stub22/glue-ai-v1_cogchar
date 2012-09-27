@@ -41,9 +41,10 @@ import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.PhysicalApp;
-import org.cogchar.render.app.core.CogcharRenderContext;
-import org.cogchar.render.app.core.ConfiguredPhysicalModularRenderContext;
-import org.cogchar.render.app.core.CoreFeatureAdapter;
+import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.context.CoreFeatureAdapter;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  * From:    jme3test.bullet.TestRagdollCharacter
@@ -77,7 +78,7 @@ public class DemoSinbadVersusBlocks extends PhysicalApp {
 
 		@Override public void completeInit() {
 			super.completeInit();
-			
+			RenderRegistryClient rrc = getRenderRegistryClient();
 			setupKeys();
 
 			initBasicTestPhysics();
@@ -88,7 +89,7 @@ public class DemoSinbadVersusBlocks extends PhysicalApp {
 			cam.setLocation(new Vector3f(-8, 0, -4));
 			cam.lookAt(new Vector3f(4, 0, -7), Vector3f.UNIT_Y);
 
-			model = (Node) findOrMakeSceneSpatialModelFacade(null).makeSinbadSpatialFromDefaultPath();
+			model = (Node) rrc.getSceneSpatialModelFacade(null).makeSinbadSpatialFromDefaultPath();
 			model.lookAt(new Vector3f(0, 0, -1), Vector3f.UNIT_Y);
 			model.setLocalTranslation(4, 0, -7f);
 

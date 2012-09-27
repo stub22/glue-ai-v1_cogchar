@@ -23,7 +23,7 @@ import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.optic.LightFactory;
 import org.cogchar.render.opengl.scene.CinematicMgr;
-import org.cogchar.render.sys.core.RenderRegistryClient;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  *

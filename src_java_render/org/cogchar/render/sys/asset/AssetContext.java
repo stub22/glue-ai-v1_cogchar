@@ -13,8 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.sys.core;
+package org.cogchar.render.sys.asset;
 
+import org.cogchar.render.sys.registry.RenderRegistryAware;
 import com.jme3.asset.AssetManager;
 import java.util.ArrayList;
 import java.util.List;
