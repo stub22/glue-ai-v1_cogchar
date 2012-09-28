@@ -35,6 +35,16 @@ trait AbstractLifterActionHandler extends Logger {
 	}
   }
   
+  // Checks for actions which this control performs upon rendering, not actuation
+  def checkForInitialAction(sessionId:String, slotNum:Int, control:ControlConfig) {
+	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {this.handleInitialActionHere(sessionId, slotNum, control)}
+	else {
+	  if (this.nextHandler != null) {
+		nextHandler.checkForInitialAction(sessionId, slotNum, control)
+	  }
+	}
+  }
+  
   var nextHandler: AbstractLifterActionHandler = null
   
   def setNextHandler(handler: AbstractLifterActionHandler) {
@@ -43,5 +53,7 @@ trait AbstractLifterActionHandler extends Logger {
   
   protected val matchingPrefixes: ArrayBuffer[String]
   protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String])
+  // A blank method for handleInitialActionHere. If an action would like to perform tasks on rendering, it can override this method.
+  protected def handleInitialActionHere(sessionId:String, slotNum:Int, control:ControlConfig) {}
   
 }

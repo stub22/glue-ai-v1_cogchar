@@ -33,6 +33,16 @@ trait AbstractLifterCommandHandler extends Logger {
 	}
   }
   
+  // Checks for actions which this control performs upon rendering, not actuation
+  def checkForInitialAction(sessionId:String, slotNum:Int, command:String) {
+	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {this.handleInitialActionHere(sessionId, slotNum, command)}
+	else {
+	  if (this.nextHandler != null) {
+		nextHandler.checkForInitialAction(sessionId, slotNum, command)
+	  }
+	}
+  }
+  
   var nextHandler: AbstractLifterCommandHandler = null
   
   def setNextHandler(handler: AbstractLifterCommandHandler) {
@@ -41,5 +51,7 @@ trait AbstractLifterCommandHandler extends Logger {
   
   protected val matchingTokens: ArrayBuffer[String]
   protected def handleHere(sessionId:String, slotNum:Int, command:String, input:Array[String])
+  // A blank method for handleInitialActionHere. If a command would like to perform tasks on rendering, it can override this method.
+  protected def handleInitialActionHere(sessionId:String, slotNum:Int, command:String) {}
   
 }
