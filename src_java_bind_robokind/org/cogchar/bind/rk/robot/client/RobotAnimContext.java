@@ -63,17 +63,23 @@ public class RobotAnimContext extends BasicDebugger {
 		myCharIdent = charIdent;
 		myBehaviorCE = behavCE;
 	}
-	public void initConn(RobotServiceContext robotSvcContext) {
+	public boolean initConn(RobotServiceContext robotSvcContext) {
 		try {
 			BundleContext osgiBundleCtx = robotSvcContext.getBundleContext();
 			myTargetRobot = robotSvcContext.getRobot();
+			if (myTargetRobot == null) {
+				getLogger().warn("initConn() aborting due to missing target robot, for charIdent: " + myCharIdent);
+				return false;
+			}
 			Robot.Id robotId = myTargetRobot.getRobotId();
-			logInfo("***************************** Using robotId: " + robotId);
+			getLogger().info("***************************** Using robotId: " + robotId);
 			String osgiFilterStringForAnimPlayer = RobotUtils.getRobotFilter(robotId);
-			logInfo("***************************** Using osgiFilterStringForAnimPlayer: " + osgiFilterStringForAnimPlayer);
+			getLogger().info("***************************** Using osgiFilterStringForAnimPlayer: " + osgiFilterStringForAnimPlayer);
 			myAnimClient = new RobotAnimClient(osgiBundleCtx, osgiFilterStringForAnimPlayer);
+			return true;
 		} catch (Throwable t) {
-			logError("Cannot init RobotAnimClient for char[" + myCharIdent + "]", t);
+			getLogger().error("Cannot init RobotAnimClient for char[" + myCharIdent + "]", t);
+			return false;
 		}
 	}
 	public void stopAndReset() { 
@@ -90,15 +96,15 @@ public class RobotAnimContext extends BasicDebugger {
 		for (AnimationJob aj : myJobsInStartOrder) {
 			if (myAnimClient.endAndClearAnimationJob(aj)) {
 				clearedCount++;
-				logInfo("endAndClear success #" + clearedCount + " on AnimationJob " + aj);
+				getLogger().info("endAndClear success #" + clearedCount + " on AnimationJob " + aj);
 			} else {
 				notCleared.add(aj);
 				unclearedCount++;
-				logWarning("****** endAndClear FAILURE #" + unclearedCount + " on AnimationJob " + aj);
+				getLogger().warn("****** endAndClear FAILURE #" + unclearedCount + " on AnimationJob " + aj);
 			}
 		}
 		myJobsInStartOrder = notCleared;
-		logInfo("endAndClear complete, succeededCount=" + clearedCount + ", failedCount=" + unclearedCount);		
+		getLogger().info("endAndClear complete, succeededCount=" + clearedCount + ", failedCount=" + unclearedCount);		
 	}
 	public synchronized void  startFullAnimationNow(Animation anim) {
 		AnimationJob aj = myAnimClient.playFullAnimationNow(anim);
@@ -106,7 +112,7 @@ public class RobotAnimContext extends BasicDebugger {
 			myJobsInStartOrder.add(aj);
 			logInfo("Started AnimationJob: [" + aj + "]");
 		} else {
-			logWarning("********************* Could not start animation[" + anim + "]");
+			getLogger().warn("********************* Could not start animation[" + anim + "]");
 		}
 	}
 	public void playDangerYogaTestAnimNow() { 
@@ -115,13 +121,13 @@ public class RobotAnimContext extends BasicDebugger {
 				try {
 					myDangerYogaAnim = myAnimClient.makeDangerYogaAnim();
 				} catch (Throwable t) {
-					logError("Problem creating DangerYoga TestAnim", t);
+					getLogger().error("Problem creating DangerYoga TestAnim", t);
 					return;
 				}
 			}
 			startFullAnimationNow(myDangerYogaAnim);
 		} else {
-			logWarning("******************** Cannot play DangerYoga test anim because myAnimClient == null");
+			getLogger().warn("******************** Cannot play DangerYoga test anim because myAnimClient == null");
 		}
 	}
 
@@ -129,7 +135,7 @@ public class RobotAnimContext extends BasicDebugger {
 	public TriggeringChannel getTriggeringChannel() { 
 		if (myTriggeringChannel == null) {
 			Ident id = ChannelNames.getOutChanIdent_AnimBest();
-			logInfo("Creating triggering channel with ident=" + id);
+			getLogger().info("Creating triggering channel with ident=" + id);
 			myTriggeringChannel = new TriggeringChannel(id);
 		} 
 		return myTriggeringChannel;
@@ -156,7 +162,7 @@ public class RobotAnimContext extends BasicDebugger {
 			//} else {
 			//	fullPath = myBehaviorCE.getRKAnimationPermPath(animPathStr);
 			//}
-			logInfo("Attempting to start animation at relative path[" + fullPath + "]");
+			getLogger().info("Attempting to start animation at relative path[" + fullPath + "]");
 			Animation anim = myAnimClient.readAnimationFromFile(fullPath);
 			if (anim != null) {
 				startFullAnimationNow(anim);

@@ -64,11 +64,15 @@ public class CoreFeatureAdapter extends BasicDebugger {
 		cm.registerCommonCamera(CameraMgr.CommonCameras.DEFAULT, defCam);
 	}
 
-	// Mainly for attaching cameras to parts of robot, but potentially somewhat general purpose so I'll leave it here
+	/**
+	 * Mainly for attaching cameras to parts of robot, but potentially somewhat general purpose so I'll leave it here.
+	 * Currently (2012-09-28) called only from CameraMgr.addHeadCamera.
+	 * Note that it actually executes the attachment on the OpenGL render thread
+	 */
 	static public void attachToHumanoidBone(HumanoidRenderContext hrc, final Node toAttach, Ident robotIdent, final String boneName) {
 		final HumanoidFigure robot = hrc.getHumanoidFigure(robotIdent);
 		if (robot == null) {
-			logger.warn("Trying to attach node to humanoid bone, but robot " + robotIdent.getLocalName() + " not found");
+			logger.warn("Failed to attach node[" + toAttach + "] to humanoid's 'BoneAttachmentsNode', due to missing robot: " + robotIdent);
 		} else {
 			hrc.enqueueCallable(new Callable<Void>() {
 

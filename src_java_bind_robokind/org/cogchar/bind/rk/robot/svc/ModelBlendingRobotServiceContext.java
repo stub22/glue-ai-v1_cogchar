@@ -51,7 +51,7 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 		//Create your Robot and register it
 		ModelRobot br = ModelRobotFactory.buildRobot(config);
         if(br == null){
-            logWarning("Error building ModelRobot from config: " + config);
+            getLogger().warn("Error building ModelRobot from config: " + config);
             return;
         }
         Configuration<String> connectionConf = getValue(Configuration.class, MSGCONF_ROBOT_HOST);
@@ -60,7 +60,7 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
                 null, new OSGiComponentFactory(myBundleCtx));
 		registeredConnectionConfigServices.add(connectionConfigService);
 		registerAndStart(br, MSGCONF_ROBOT_HOST);
-		logInfo("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeBonyRobotWithBlenderAndFrameSource ");
+		getLogger().info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeBonyRobotWithBlenderAndFrameSource ");
 	}	
 	
 

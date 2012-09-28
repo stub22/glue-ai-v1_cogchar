@@ -83,7 +83,7 @@ public class PumaDualCharacter extends DummyBox {
 		myBehaviorCE = bce;
 	}
 
-	public void connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, HumanoidConfig hc, QueryInterface qi, BoneQueryNames bqn) throws Throwable {
+	public boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, HumanoidConfig hc, QueryInterface qi, BoneQueryNames bqn) throws Throwable {
 		// bonyConfig path is going away as we move to query-based config
 		// Looks like Turtle BoneRobotConfig is going away for good, in which case this block can be deleted
 		/*
@@ -100,16 +100,15 @@ public class PumaDualCharacter extends DummyBox {
 		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharIdent, qGraph, bqn); 
 		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
-		
-		myHumoidMapper.initModelRobotUsingBoneRobotConfig(qi, boneRobotConf, qGraph, hc, myBehaviorCE);
-
-		// myPHM.initModelRobotUsingAvroJointConfig();
-		myHumoidMapper.connectToVirtualChar();
-		// myPHM.applyInitialBoneRotations();
-		connectAnimOutChans();
-
-		//myWebMapper.connectCogCharResources(myInitialBonyRdfCL, myHumoidMapper.getHumanoidRenderContext()); // Now done in PumaAppContext.initCinema
-		
+		boolean boneRobotOK = myHumoidMapper.initModelRobotUsingBoneRobotConfig(qi, boneRobotConf, qGraph, hc, myBehaviorCE);
+		if (boneRobotOK) {
+			myHumoidMapper.connectToVirtualChar();
+			// myPHM.applyInitialBoneRotations();
+			connectAnimOutChans();
+		} else {
+			getLogger().warn("connectBonyCharToRobokindSvcs() aborting due to failed boneRobot init, for charIdent: " + myCharIdent);
+		}
+		return boneRobotOK;
 	}
 	
 	public void disconnectBonyCharFromRobokindSvcs() {
