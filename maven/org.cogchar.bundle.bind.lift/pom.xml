@@ -49,23 +49,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
-		<!-- This is in demo.lifter -->
-		<dependency>
-			<groupId>net.liftweb</groupId>
-			<artifactId>lift-mapper_2.8.1</artifactId>
-			<version>2.3</version>                      
-			<exclusions>
-				<exclusion>
-					<artifactId>scala-library</artifactId>
-					<groupId>org.scala-lang</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>h2</artifactId>
-					<groupId>com.h2database</groupId>
-				</exclusion>
-			</exclusions>                       
-		</dependency>		
 
 		<!-- TODO : Recheck source of this dep  -->
 		<dependency>
