@@ -39,6 +39,7 @@ object HandlerConfigurator {
 	val speechCommandHandler = new SpeechCommandHandler
 	val submitHander = new SubmitCommandHandler
 	val submitTextHandler = new SubmitTextCommandHandler
+	val showTextHandler = new ShowTextCommandHandler
 	val updateHandler = new UpdateCommandHandler
 	val oldDemoHandler = new OldDemoCommandHandler
 	val lastConfigHandler = new LastConfigCommandHandler
@@ -46,7 +47,8 @@ object HandlerConfigurator {
 	// Set up the chain
 	speechCommandHandler setNextHandler submitHander
 	submitHander setNextHandler submitTextHandler
-	submitTextHandler setNextHandler updateHandler
+	submitTextHandler setNextHandler showTextHandler
+	showTextHandler setNextHandler updateHandler
 	updateHandler setNextHandler oldDemoHandler
 	oldDemoHandler setNextHandler lastConfigHandler
 	lastConfigHandler setNextHandler databallsHandler
