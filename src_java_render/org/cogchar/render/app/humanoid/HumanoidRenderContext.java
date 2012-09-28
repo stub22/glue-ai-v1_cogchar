@@ -68,19 +68,20 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		super(rce);
 		myGameFeatureAdapter = new BonyGameFeatureAdapter(this);
 	}
-	
+
 	// What's this? Well, for better or worse I've made PumaAppContext the focal point of global config and graph
 	// determination. At times, code "lower down" will want to request config updates. This is a first guess at
 	// a method that will be general (thus the String key for the request type) and packaged in an interface we can 
 	// pass around. PumaAppContext will set the interface on creation of the HRC.
 	public interface UpdateInterface {
+
 		public boolean updateConfig(String request);
 	}
-	
+
 	public void setUpdateInterface(UpdateInterface theInterface) {
 		myUpdateInterface = theInterface;
 	}
-	
+
 	// ... and here's a method things that can see HRC can use to request a reload.
 	public void requestConfigReload(String request) {
 		if (myUpdateInterface != null) {
@@ -92,15 +93,15 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 	@Override public void postInitLaunch() {
 		super.postInitLaunch();
-		
-		/** Here is our best chance at placing initial content in the V-world, as part of module "start up",
-		 * as perceived by the end user.   We have historically created a lot of content here for test purposes
-		 * (e.g. some cross hairs, some physical world features, the wacky red stick figure, some debug text displays).
-		 * 
-		 * Now we are methodically tying all those debug features back into our AppdapterRepo-based config.
-		 * 
-		 */
 
+		/**
+		 * Here is our best chance at placing initial content in the V-world, as part of module "start up", as perceived
+		 * by the end user. We have historically created a lot of content here for test purposes (e.g. some cross hairs,
+		 * some physical world features, the wacky red stick figure, some debug text displays).
+		 *
+		 * Now we are methodically tying all those debug features back into our AppdapterRepo-based config.
+		 *
+		 */
 		AppSettings someSettings = getJMonkeyAppSettings();
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		BonyGameFeatureAdapter.initCrossHairs(someSettings, rrc);
@@ -109,15 +110,15 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 		myGameFeatureAdapter.initFeatures();
 		WorkaroundFuncsMustDie.initScoreBoard(this);
-		
-	
+
+
 	}
 
 	public HumanoidFigure getHumanoidFigure(QueryInterface qi, Ident charIdent, HumanoidConfig hc, Ident bonyConfigGraph) {
 		HumanoidFigure hf = myFiguresByCharIdent.get(charIdent);
 		if (hf == null) {
 			//BonyConfigEmitter bce = getBonyConfigEmitter();
-			HumanoidFigureConfig hfc = new HumanoidFigureConfig(qi, hc, getConfigEmitter(), bonyConfigGraph); 
+			HumanoidFigureConfig hfc = new HumanoidFigureConfig(qi, hc, getConfigEmitter(), bonyConfigGraph);
 			if (hfc.isComplete()) {
 				hf = new HumanoidFigure(hfc);
 				myFiguresByCharIdent.put(charIdent, hf);
@@ -126,7 +127,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		return hf;
 	}
 
-	// A few places want to just get the HumanoidFigure and aren't interested in possibly creating it
+	// A few places want to just get the HumanoidFigure and aren't interested in possibly creating it.
 	// Those features don't want to have to worry about the graph idents, which are just for loading config
 	// (CoreFeatureAdapter.attachToHumanoidBone, HumanoidPuppetActions.getSinbad)
 	// I don't like overloading this method, but probably only a temporary fix
@@ -135,27 +136,43 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	}
 
 	// Now does more, but does less on jME thread!
-	public HumanoidFigure setupHumanoidFigure(QueryInterface qi, Ident charIdent, Ident bonyConfigGraph, HumanoidConfig hc) throws Throwable {
-		RenderRegistryClient rrc = getRenderRegistryClient();		
+	public HumanoidFigure setupHumanoidFigure(QueryInterface qi, final Ident charIdent, Ident bonyConfigGraph, HumanoidConfig hc) throws Throwable {
+		RenderRegistryClient rrc = getRenderRegistryClient();
 		final HumanoidFigure figure = getHumanoidFigure(qi, charIdent, hc, bonyConfigGraph);
 		final AssetManager amgr = rrc.getJme3AssetManager(null);
 		final Node rootNode = rrc.getJme3RootDeepNode(null);
 		final PhysicsSpace ps = getPhysicsSpace();
+		if (figure == null) {
+			getLogger().warn("setupHumanoidFigure() Found null HumanoidFigure for " + charIdent);
+			return null;
+		}
+		/**
+		 * This task will eventually run async on the OpenGL render thread, and will make our figure snazzy.
+		 */
 		runTaskSafelyUntilComplete(new BasicCallableRenderTask(this) {
+
 			@Override public void performWithClient(RenderRegistryClient rrc) throws Throwable {
-				figure.initStuff(amgr, rootNode, ps);
+				boolean figureInitOK = figure.initStuff(amgr, rootNode, ps);
+				if (figureInitOK) {
+					// Create a coroutine execution module to accept time slices, to 
+					// allows us to animate the humanoid figure.
+					final HumanoidFigureModule hfm = new HumanoidFigureModule(figure, HumanoidRenderContext.this);
+					figure.setModule(hfm);
+					// Activate coroutine threading for our  module.
+					attachModule(hfm);
+					getLogger().warn("Async Result (not really a 'warning') : Figure initialized and HumanoidFigureModule attached for " + charIdent);
+				} else {
+					getLogger().warn("Delayed problem in code launched from setupHumanoidFigure():  Figure init failed for: " + charIdent);
+				}
 			}
 		});
-		final HumanoidFigureModule hfm = new HumanoidFigureModule(figure, this);
-		runTaskSafelyUntilComplete(new BasicCallableRenderTask(this) {
-			@Override public void performWithClient(RenderRegistryClient rrc) throws Throwable {
-				attachModule(hfm);
-			}
-		});
-		figure.setModule(hfm);
+		// Now we are back to the main thread.    We do not know if figureInit will succeed later,
+		// but regardless
+
+		// Now back on the main thread again.
 		return figure;
 	}
-	
+
 	public void detachHumanoidFigures() {
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		final Node rootNode = rrc.getJme3RootDeepNode(null);
@@ -175,7 +192,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		}
 		myFiguresByCharIdent.clear();
 	}
-	
+
 	public void initCinema() {
 		WorkaroundAppStub stub = getAppStub();
 		stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
@@ -183,7 +200,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		fbCam.setMoveSpeed(50);
 		//initLightsCameraCinematics();
 	}
-	
+
 	// Formerly performed in postInitLaunch, this is now called from PumaAppContext once the KeyBindingConfig is complete
 	// Might make sense to just move this to PumaAppContext
 	public void initBindings(KeyBindingConfig theConfig) {
@@ -192,6 +209,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		// If the help screen is displayed, we need to remove it since we'll be making a new one later
 		if (currentHelpText != null) {
 			enqueueCallable(new Callable<Void>() { // Do this on main render thread
+
 				@Override
 				public Void call() throws Exception {
 					RenderRegistryClient rrcl = getRenderRegistryClient();
@@ -212,7 +230,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		AppSettings someSettings = getJMonkeyAppSettings();
 		initHelpScreen(someSettings, inputManager, theConfig);
 	}
-	
+
 	// This is still called by HumanoidPuppetActions to reset default camera position
 	protected void setDefaultCameraLocation() {
 		RenderRegistryClient rrc = getRenderRegistryClient();
@@ -225,10 +243,10 @@ public class HumanoidRenderContext extends BonyRenderContext {
 			hf.toggleDebugSkeleton();
 		}
 	}
+
 	public BonyGameFeatureAdapter getGameFeatureAdapter() {
 		return myGameFeatureAdapter;
 	}
-
 	// Does this best live here or further up in one of the context superclasses? Dunno, but should be easy enough to move it up later (w/o private); be sure to remove imports
 	// In order to access registry, must live in a class that extends CogcharRenderContext
 	private BitmapText currentHelpText; // We need to save this now, so it can be turned off automatically for reconfigs
@@ -316,37 +334,27 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		}
 	}
 }
-	/**  Stu 2012-09-26 : Stuff below was already disabled (but interleaved above)
-		 * Kept here as SAMPLES of what a user MIGHT do from this class if they wanted to
-		 * bypass all our config.
-
-		// We wait and do this later, possibly repeatedly.
-		// initHumanoidStuff();
-		// This is now done later, after all characters have been loaded:
-		//initCameraAndLights(charWorldCl);
-		//InputManager inputManager = findJme3InputManager(null);
-
-		// Now done in initBindings, called by PumaAppContext along with initCinema
-		//HumanoidPuppetActions.setupActionListeners(inputManager, this);
-		//SceneActions.setupActionListeners(inputManager);
-		//initHelpScreen(someSettings, inputManager);
-		**/
-	/* For now at least, these functions are moved to PumaAppContext - that way we doing all the config from one place
-	private void initLightsCameraCinematics() {
-		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
-		myRenderMapper.initLightsAndCamera(this);
-		myRenderMapper.initCinematics(this);
-	}
-	*/
-	
-	/* Also moved to PumaAppContext
-	public void reloadWorldConfig() {
-		QueryInterface queryEmitter = QuerySheet.getInterface();
-		queryEmitter.reloadSheetRepo();
-		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
-		myRenderMapper.clearLights(this);
-		myRenderMapper.clearCinematics(this);
-		myRenderMapper.clearViewPorts(this);
-		initLightsCameraCinematics();
-	}
-	*/ 
+/**
+ * Stu 2012-09-26 : Stuff below was already disabled (but interleaved above) Kept here as SAMPLES of what a user MIGHT
+ * do from this class if they wanted to bypass all our config.
+ *
+ * // We wait and do this later, possibly repeatedly. // initHumanoidStuff(); // This is now done later, after all
+ * characters have been loaded: //initCameraAndLights(charWorldCl); //InputManager inputManager =
+ * findJme3InputManager(null);
+ *
+ * // Now done in initBindings, called by PumaAppContext along with initCinema
+ * //HumanoidPuppetActions.setupActionListeners(inputManager, this); //SceneActions.setupActionListeners(inputManager);
+ * //initHelpScreen(someSettings, inputManager);
+		*
+ */
+/*
+ * For now at least, these functions are moved to PumaAppContext - that way we doing all the config from one place
+ * private void initLightsCameraCinematics() { HumanoidRenderWorldMapper myRenderMapper = new
+ * HumanoidRenderWorldMapper(); myRenderMapper.initLightsAndCamera(this); myRenderMapper.initCinematics(this); }
+ */
+/*
+ * Also moved to PumaAppContext public void reloadWorldConfig() { QueryInterface queryEmitter =
+ * QuerySheet.getInterface(); queryEmitter.reloadSheetRepo(); HumanoidRenderWorldMapper myRenderMapper = new
+ * HumanoidRenderWorldMapper(); myRenderMapper.clearLights(this); myRenderMapper.clearCinematics(this);
+ * myRenderMapper.clearViewPorts(this); initLightsCameraCinematics(); }
+ */

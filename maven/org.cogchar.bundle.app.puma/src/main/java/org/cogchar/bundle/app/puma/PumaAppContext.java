@@ -214,7 +214,7 @@ public class PumaAppContext extends BasicDebugger {
 		logInfo("Updating config by request: " + request);
 		boolean success = true;
 		if (updating) {
-			logWarning("Update currently underway, ignoring additional request");
+			getLogger().warn("Update currently underway, ignoring additional request");
 			success = false;
 		} else if (WORLD_CONFIG.equals(request.toLowerCase())) {
 			updating = true;
@@ -265,7 +265,7 @@ public class PumaAppContext extends BasicDebugger {
 			};
 			updateThread.start();
 		} else {
-			logWarning("PumaAppContext did not recognize the config update to be performed: " + request);
+			getLogger().warn("PumaAppContext did not recognize the config update to be performed: " + request);
 			success = false;
 		}
 		return success;
@@ -310,11 +310,11 @@ public class PumaAppContext extends BasicDebugger {
 			if (identsFromConfig != null) {
 				charIdents = identsFromConfig;
 			} else {
-				logWarning("Did not find character entity list in global config map");
+				getLogger().warn("Did not find character entity list in global config map");
 				throw new Throwable();
 			}
 		} catch (Throwable t) {
-			logWarning("Could not retrieve list of characters from global configuration");
+			getLogger().warn("Could not retrieve list of characters from global configuration");
 		}
 
 		if (myGlobalConfig == null) {
@@ -322,7 +322,7 @@ public class PumaAppContext extends BasicDebugger {
 		} else if (myInitialBonyRdfCL == null) {
 			// We may not need this check eventually - currently only jointGroup.xml files and BallBuilder Turtle loader
 			// need access to this ClassLoader
-			logWarning("Cog Char resources ClassLoader not available, cannot setup characters!");
+			getLogger().warn("Cog Char resources ClassLoader not available, cannot setup characters!");
 		} else {
 			for (Ident charIdent : charIdents) {
 				logInfo("^^^^^^^^^^^^^^^^^^^^^^^^^ Connecting dualRobotChar for charIdent: " + charIdent);
@@ -332,7 +332,7 @@ public class PumaAppContext extends BasicDebugger {
 					graphIdentForBony = myGlobalConfig.ergMap().get(charIdent).get(PumaModeConstants.BONY_CONFIG_ROLE);
 					graphIdentForHumanoid = myGlobalConfig.ergMap().get(charIdent).get(PumaModeConstants.HUMANOID_CONFIG_ROLE);
 				} catch (Exception e) {
-					logWarning("Could not get valid graphs on which to query for config of " + charIdent.getLocalName());
+					getLogger().warn("Could not get valid graphs on which to query for config of " + charIdent.getLocalName());
 					break;
 				}
 				HumanoidConfig myHumanoidConfig = new HumanoidConfig(getQueryHelper(), charIdent, graphIdentForHumanoid);
@@ -370,23 +370,23 @@ public class PumaAppContext extends BasicDebugger {
 				try {
 					graphIdent = myGlobalConfig.ergMap().get(configIdent).get(PumaModeConstants.LIGHTS_CAMERA_CONFIG_ROLE);
 				} catch (Exception e) {
-					logWarning("Could not get valid graph on which to query for Lights/Cameras config of " + configIdent.getLocalName(), e);
+					getLogger().warn("Could not get valid graph on which to query for Lights/Cameras config of " + configIdent.getLocalName(), e);
 				}
 				try {
 					myRenderMapper.initLightsAndCamera(qi, myHRC, graphIdent);
 				} catch (Exception e) {
-					logWarning("Error attempting to initialize lights and cameras for " + configIdent.getLocalName() + ": " + e, e);
+					getLogger().warn("Error attempting to initialize lights and cameras for " + configIdent.getLocalName() + ": " + e, e);
 				}
 				graphIdent = null;
 				try {
 					graphIdent = myGlobalConfig.ergMap().get(configIdent).get(PumaModeConstants.CINEMATIC_CONFIG_ROLE);
 				} catch (Exception e) {
-					logWarning("Could not get valid graph on which to query for Cinematics config of " + configIdent.getLocalName(), e);
+					getLogger().warn("Could not get valid graph on which to query for Cinematics config of " + configIdent.getLocalName(), e);
 				}
 				try {
 					myRenderMapper.initCinematics(qi, myHRC, graphIdent);
 				} catch (Exception e) {
-					logWarning("Error attempting to initialize Cinematics for " + configIdent.getLocalName() + ": " + e, e);
+					getLogger().warn("Error attempting to initialize Cinematics for " + configIdent.getLocalName() + ": " + e, e);
 				}
 				// Like with everything else dependent on global config's graph settings (except for Lift, which uses a managed service
 				// version of GlobalConfigEmitter) it seems logical to set the key bindings here.
@@ -400,12 +400,12 @@ public class PumaAppContext extends BasicDebugger {
 					
 					currentBindingConfig.addBindings(qi, graphIdent, kce);
 				} catch (Exception e) {
-					logError("Could not get valid graph on which to query for input bindings config of " + configIdent.getLocalName(), e);
+					getLogger().error("Could not get valid graph on which to query for input bindings config of " + configIdent.getLocalName(), e);
 				}
 
 			}
 		} catch (Exception e) {
-			logError("Could not retrieve any specified VirtualWorldEntity for this global configuration!");
+			getLogger().error("Could not retrieve any specified VirtualWorldEntity for this global configuration!");
 		}
 		myHRC.initBindings(currentBindingConfig);
 	}
@@ -429,10 +429,10 @@ public class PumaAppContext extends BasicDebugger {
 				try {
 					pdc.updateBonyConfig(getQueryHelper(), graphIdent, bqn);
 				} catch (Throwable t) {
-					logError("problem updating bony config from queries for " + pdc.getCharIdent(), t);
+					getLogger().error("problem updating bony config from queries for " + pdc.getCharIdent(), t);
 				}
 			} catch (Exception e) {
-				logWarning("Could not get a valid graph on which to query for config update of " + pdc.getCharIdent().getLocalName());
+				getLogger().warn("Could not get a valid graph on which to query for config update of " + pdc.getCharIdent().getLocalName());
 			}
 		}
 	}
@@ -457,7 +457,7 @@ public class PumaAppContext extends BasicDebugger {
 			connectDualRobotChars();
 			initCinema();
 		} catch (Throwable t) {
-			logError("Error attempting to reload all humanoid config: " + t);
+			getLogger().error("Error attempting to reload all humanoid config: " + t);
 			// May be good to handle an exception by setting state of a "RebootResult" or etc...
 		}
 	}
@@ -472,16 +472,24 @@ public class PumaAppContext extends BasicDebugger {
 
 	}
 
-	public void setupCharacterBindingToRobokind(PumaDualCharacter pdc, Ident graphIdentForBony, HumanoidConfig hc) {
+	public boolean setupCharacterBindingToRobokind(PumaDualCharacter pdc, Ident graphIdentForBony, HumanoidConfig hc) {
 
 		try {
 			QueryInterface qi = getQueryHelper();
 			BoneQueryNames bqn = new BoneQueryNames();
-			pdc.connectBonyCharToRobokindSvcs(myBundleContext, graphIdentForBony, hc, qi, bqn);
-			setupRobokindJointGroup(pdc, hc.jointConfigPath);
-			pdc.connectSpeechOutputSvcs(myBundleContext);
+			boolean connectedOK = pdc.connectBonyCharToRobokindSvcs(myBundleContext, graphIdentForBony, hc, qi, bqn);
+			if (connectedOK) {
+				setupRobokindJointGroup(pdc, hc.jointConfigPath);
+				pdc.connectSpeechOutputSvcs(myBundleContext);
+				return true;
+			} else {
+				Ident charIdent = pdc.getCharIdent();
+				getLogger().warn("setupCharacterBindingToRobokind() aborting RK binding for character: " + charIdent);
+				return false;
+			}
 		} catch (Throwable t) {
-			logWarning("Problems in Robokind binding init", t);
+			getLogger().error("Exception during setupCharacterBindingToRobokind()", t);
+			return false;
 		}
 	}
 
@@ -493,7 +501,7 @@ public class PumaAppContext extends BasicDebugger {
 			RobotServiceContext rsc = phm.getRobotServiceContext();
 			rsc.startJointGroup(jgConfigFile);
 		} else {
-			logWarning("jointGroup file not found: " + jgFullPath);
+			getLogger().warn("jointGroup file not found: " + jgFullPath);
 		}
 	}
 
@@ -512,7 +520,7 @@ public class PumaAppContext extends BasicDebugger {
 			out.flush();
 			out.close();
 		} catch (Exception e) {
-			logWarning("Exception trying to load jointGroup from resource into temp file: " + e);
+			getLogger().warn("Exception trying to load jointGroup from resource into temp file: " + e);
 		}
 		return outputFile;
 	}

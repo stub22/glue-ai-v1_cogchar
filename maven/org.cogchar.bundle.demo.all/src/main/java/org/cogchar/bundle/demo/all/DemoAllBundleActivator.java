@@ -15,25 +15,7 @@ public class DemoAllBundleActivator extends BundleActivatorBase {
 		
 		PumaBooter	pumaBooter = new PumaBooter();
 		PumaBooter.BootResult bootResult = pumaBooter.bootUnderOSGi(bundleCtx);
-		/*
-		
-		String uriPrefix = "http://model.cogchar.org/char/bony/";
-		String bonyCharUniqueSuffix = "0x0000FFFF";
-		String sysContextURI = "http://model.cogchar.org/char/bony/" + bonyCharUniqueSuffix;
-		String debugTxt = "sysContextURI = [" + sysContextURI + "]";
-		logInfo("==============================\nStarting " + debugTxt);
-		
-		
-		PumaAppContext pac = new PumaAppContext(bundleCtx, sysContextURI, null);
-		try {
-			pac.makeDualCharsForSwingOSGi();
-		} catch (Throwable t) {
-			theLogger.error("Cannot initialize " + debugTxt, t);
-		}
-		
-		theLogger.info("Started" + debugTxt + "\n========================================");
-		* 
-		*/ 
+
 	}
 
 }

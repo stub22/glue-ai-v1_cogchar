@@ -53,11 +53,9 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
 import java.util.List;
-import java.util.concurrent.Callable;
-import org.cogchar.blob.emit.RenderConfigEmitter;
+import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.render.model.bony.StickFigureTwister;
 import org.cogchar.render.model.bony.BoneState;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.bony.FigureState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,9 +63,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class HumanoidFigure implements RagdollCollisionListener, AnimEventListener {
-	static Logger theLogger = LoggerFactory.getLogger(HumanoidFigure.class);
-
+public class HumanoidFigure extends BasicDebugger implements RagdollCollisionListener, AnimEventListener {
+	
 	private		Node						myHumanoidModelNode;
 	protected	KinematicRagdollControl		myHumanoidKRC;
 	private		AnimChannel					myHumanoidAnimChannel;
@@ -130,9 +127,13 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 		myModule = module;
 	}
 
-	public void initStuff(AssetManager assetMgr, Node parentNode, PhysicsSpace ps) {
-
-		myHumanoidModelNode = (Node) assetMgr.loadModel(myConfig.myMeshPath);
+	public boolean initStuff(AssetManager assetMgr, Node parentNode, PhysicsSpace ps) {
+		try {
+			myHumanoidModelNode = (Node) assetMgr.loadModel(myConfig.myMeshPath);
+		} catch (Throwable t) {
+			getLogger().warn("initStuff() cannot load 3D mesh model at [" + myConfig.myMeshPath + "], the reason is " + t);
+			return false;
+		}
 		
 		// This was commented out in JMonkey code:
 		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));
@@ -163,7 +164,7 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 
 		myHumanoidAnimChannel = humanoidControl.createChannel();
 		humanoidControl.addListener(this);
-		
+		return true;
 	}
 	
 	public void detachFromVirtualWorld(final Node parentNode, PhysicsSpace ps) {
@@ -243,7 +244,7 @@ public class HumanoidFigure implements RagdollCollisionListener, AnimEventListen
 			myHumanoidAnimChannel.setAnim(ANIM_DANCE);
 			myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
 		} catch (Throwable t) {
-			theLogger.warn("Character cannot boogie, nickname is: " + getNickname(), t);
+			getLogger().warn("Character cannot boogie, nickname is: " + getNickname(), t);
 		}
 	}
 	public void initDebugSkeleton(AssetManager assetMgr) { 
