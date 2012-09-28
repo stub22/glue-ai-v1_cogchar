@@ -126,8 +126,9 @@ public class RobotAnimContext extends BasicDebugger {
 				}
 			}
 			startFullAnimationNow(myDangerYogaAnim);
+			getLogger().info("Started DangerYoga test anim on robot: " + myCharIdent);
 		} else {
-			getLogger().warn("******************** Cannot play DangerYoga test anim because myAnimClient == null");
+			getLogger().warn("Cannot play DangerYoga test anim because myAnimClient == null, on robot: " + myCharIdent);
 		}
 	}
 
