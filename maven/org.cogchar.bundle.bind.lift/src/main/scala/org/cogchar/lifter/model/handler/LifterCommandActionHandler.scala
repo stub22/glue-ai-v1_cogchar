@@ -30,4 +30,8 @@ class LifterCommandActionHandler extends AbstractLifterActionHandler {
 	firstCommandHandler.processHandler(sessionId, slotNum, control.action.getLocalName, input)
   }
   
+  override protected def handleInitialActionHere(sessionId:String, slotNum:Int, control:ControlConfig) {
+	firstCommandHandler.checkForInitialAction(sessionId, slotNum, control.action.getLocalName)
+  }
+  
 }

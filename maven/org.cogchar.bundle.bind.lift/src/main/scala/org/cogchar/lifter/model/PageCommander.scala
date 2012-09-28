@@ -263,8 +263,10 @@ package org.cogchar.lifter {
 			}
 		  case ControlType.TEXTBOX => {
 			  appState.controlsMap(sessionId)(slotNum) = TextBox.makeBox(text, style)
-			  // Check for "local" actions which PageCommander needs to handle, such as text display
-			  initLocalActions(slotNum, action, sessionId) // this method will modify action as necessary according to prefixes 
+			  // Check for initial nee "local" actions which PageCommander needs to handle, such as text display
+			  // This should very likely be applied to every control, not just TEXTBOXes, but right now only TEXTBOX
+			  // uses it. So leaving it here for the moment to avoid unnecessary checks, but it will likely be moving soon.
+			  firstActionHandler.checkForInitialAction(sessionId, slotNum, controlDef)
 			}
 		  case _ => appState.controlsMap(sessionId)(slotNum) = NodeSeq.Empty
 		}
@@ -282,33 +284,7 @@ package org.cogchar.lifter {
 		  val nextSlot = slotIterator.next
 		  updateListeners(controlId(sessionId, nextSlot))
 		}
-	  }
-									
-	  // Check to see if any action requested requires PageCommander to do some local handling
-	  // Must be refactored into LifterCommandActionHandler!!!!!
-	  def initLocalActions(slotNum:Int, action:Ident, sessionId:String) {
-		if (action != null) {
-		  if (action.getAbsUriString.startsWith(ActionStrings.p_liftcmd)) {
-			val splitAction = action.getLocalName.split("_")
-			splitAction(0) match {
-			  case ActionStrings.showText => {splitAction(1) match {
-					case ActionStrings.COGBOT_TOKEN => { // Show Cogbot speech on this control? Add it to the cogbotDisplayers list.
-						getState.cogbotDisplayers(sessionId) += slotNum
-					}
-					case ActionStrings.ANDROID_SPEECH_TOKEN => { // Add to the speechDisplayers list if we want Android speech shown here
-						getState.speechDisplayers(sessionId) += slotNum
-					}
-					case ActionStrings.ERROR_TOKEN => { // Associate the error source name with the slotNum where errors will display
-						getState.errorMap(sessionId)(splitAction(2)) = slotNum
-					}
-					case _ => warn("checkLocalActions doesn't know what to do in order to display text with token " + splitAction(1))
-				  }
-				}			  
-			  case _ => // looks like this action doesn't require anything to happen locally, so do nothing
-			}
-		  }
-		}
-	  }
+	  }							
 	  
 	  def handleAction(sessionId:String, formId:Int, input:Array[String]) {
 		//info("Handling action: " + getState.controlDefMap(sessionId)(formId).action) // TEST ONLY
