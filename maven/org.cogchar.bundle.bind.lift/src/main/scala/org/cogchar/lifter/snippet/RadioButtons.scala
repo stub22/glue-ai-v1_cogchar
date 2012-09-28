@@ -66,12 +66,7 @@ package org.cogchar.lifter {
 		def process(result: String): JsCmd = {
 		  info("RadioButtons says option number " + result + " on formId " + formId + " is selected in session " + sessionId)
 		  //SetHtml(radioButtonsInstanceTitleId, Text(RadioButtons.responseText)) //... or not for now
-		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
-			  def run() {
-				PageCommander.controlActionMapper(sessionId, formId, result.toInt)
-			  }
-			})
-		  processThread.start
+		  PageCommander.multiSelectControlActionMapper(sessionId, formId, result.toInt)
 		  JsCmds.Noop
 		}
 		
