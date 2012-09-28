@@ -65,6 +65,16 @@ public class ControlConfig {
 		style = qi.getStringFromSolution(solution, LiftQueryNames.STYLE_VAR_NAME, "");
 		resource = qi.getStringFromSolution(solution, LiftQueryNames.RESOURCE_VAR_NAME, "");
 	}
+	
+	// A copy constructor - currently needed by PageCommander, but probably better if it wasn't...
+	public ControlConfig(ControlConfig configToCopy) {
+		myURI_Fragment = configToCopy.myURI_Fragment;
+		controlType = configToCopy.controlType;
+		action = configToCopy.action;
+		text = configToCopy.text;
+		style = configToCopy.style;
+		resource = configToCopy.resource;
+	}
 
 	/* No longer available unless we fix this up to support the new action URIs instead of strings
 	public ControlConfig(Item configItem) {

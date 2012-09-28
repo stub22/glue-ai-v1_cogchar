@@ -55,7 +55,6 @@ package org.cogchar.lifter {
 		} else {
 		  val desiredTemplate = PageCommander.getCurrentTemplate(mySessionId)
 		  if (desiredTemplate == null) { // If so, things are still initializing, we'll render default template for now (rendering just a message in a paragraph, or blank, breaks JS part of control comet!
-			PageCommander.requestStart(mySessionId)
 			"@TemplateSlot" #> <lift:surround with={DEFAULT_TEMPLATE} at="content"/>
 		  } else {
 			"@TemplateSlot" #> <lift:surround with={desiredTemplate} at="content"/>

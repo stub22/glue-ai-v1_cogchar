@@ -70,12 +70,7 @@ package org.cogchar.lifter {
    
 		def process(): JsCmd = {
 		  info("Input text for form #" + formId + ": " + text + " in session " + sessionId)
-		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
-			  def run() {
-				PageCommander.textInputMapper(sessionId, formId, text) // Let PageCommander know about the text so it can figure out what to do with it
-			  }
-			})
-		  processThread.start
+		  PageCommander.textInputMapper(sessionId, formId, text) // Let PageCommander know about the text so it can figure out what to do with it
 		  //SetHtml(textFormInstanceLabel, Text(TextForm.responseText)) & // for now, this is disabled for the "operational" demo requirements
 		  SetValById(textBoxInstanceLabel, TextForm.afterEntryText)
 		}

@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-//import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
-//import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.QueryInterface;
@@ -50,8 +48,6 @@ public class LiftAmbassador {
 	private Ident myQGraph;
 	private boolean myConfigReady = false;
 	private List<String> myTriggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
-	//private ClassLoader myRdfCL; // We'll get this classloader so we can update control configuration from separate RDF files at runtime
-	//private static final String RDF_PATH_PREFIX = "metadata/web/liftconfig/"; // Prefix for path to Lift configuration TTL files from resources root
 	private Map<Ident, LiftConfig> myLiftConfigCache = new HashMap<Ident, LiftConfig>(); // To avoid query config if page is reselected
 	private Map<String, String> myChatConfigEntries = new HashMap<String, String>();
 	private Map<Ident, UserAccessConfig.UserConfig> myUserMap = new HashMap<Ident, UserAccessConfig.UserConfig>();
@@ -138,38 +134,28 @@ public class LiftAmbassador {
 			}
 		}
 	}
-
-	/* At this point, the Turtle builder for LiftConfig is no longer working
-	 * That's because the assembler-based constructor for ControlConfig was broken when we switched from Lift action 
-	 * strings to action URIs
-	// Method to dynamically reconfigure controls from RDF
-	public static boolean activateControlsFromRdf(String rdfFilename) {
+	
+	// Activates controls identified by a LiftConfig URI
+	public void activateControlsFromUri(String sessionId, Ident configIdent) {
 		boolean success = false;
-		if (myRdfCL == null) {
-			theLogger.error("Trying to activate controls from RDF, but RDF class loader not set");
+		LiftConfig newConfig = null;
+		if (myLiftConfigCache.containsKey(configIdent)) {
+			newConfig = myLiftConfigCache.get(configIdent); // Use cached version if available
+			theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
 		} else {
-			CachingComponentAssembler.clearCacheFor(LiftConfig.Builder.class); // Clear cached model from Jena
-			String flexPath = RDF_PATH_PREFIX + rdfFilename;
-			LiftConfig lc;
-			try {
-				lc = AssemblerUtils.readOneConfigObjFromPath(LiftConfig.class, flexPath, myRdfCL);
-			} catch (Exception e) {
-				theLogger.error("Exception trying to load LiftConfig from " + rdfFilename + ": Exception was " + e);
-				return false;
+			if (myQueryInterface != null) {
+				newConfig = new LiftConfig(myQueryInterface, myQGraph, configIdent);
+				myLiftConfigCache.put(configIdent, newConfig);
+				theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
+			} else {
+				theLogger.error("New lift config requested, but no QueryInterface set!");
 			}
-			activateControlsFromConfig(lc);
+		}
+		if (newConfig != null) {
+			activateControlsFromConfig(sessionId, newConfig);
 			success = true;
 		}
-		return success;
 	}
-	
-	// Method to set initial config and RDF classloader for future configs
-	// No longer needed for query-based config
-	public static void storeControlsFromConfig(LiftConfig config, ClassLoader cl) {
-		activateControlsFromConfig(config);
-		myRdfCL = cl;
-	}
-	*/
 	
 	public LiftConfig getInitialConfig() {
 		return myInitialConfig;
@@ -192,65 +178,36 @@ public class LiftAmbassador {
 		myUserMap = uac.users;
 	}
 
-	public boolean triggerAction(String sessionId, Ident actionUri) {
-		// Probably don't really need to synchronize this whole thing, but since we aren't too concerned about multithreading
-		// performance here, probably easiest/safest to anyway...
-		// Updates near bottom of this method certainly should be thread safe, in any case....
-		synchronized (theClassLock) { 
-			boolean success = false;
-			String actionUriPrefix = actionUri.getAbsUriString().replaceAll(actionUri.getLocalName(), "");
-			String action = actionUri.getLocalName();
-			if ((LiftConfigNames.p_scenetrig.equals(actionUriPrefix)) && (mySceneLauncher != null)) {
-				success = mySceneLauncher.triggerScene(action);
-			} else if ((LiftConfigNames.p_cinematic.equals(actionUriPrefix)) && (myLiftAppInterface != null)) {
-				if (myTriggeredCinematics.contains(action)) {
-					myLiftAppInterface.stopNamedCinematic(action); // In order to replay, we need to stop previously played cinematic first
-				}
-				success = myLiftAppInterface.triggerNamedCinematic(action);
-				if (success) {
-					myTriggeredCinematics.add(action);
-				}
-			} else if ((LiftConfigNames.p_liftconfig.equals(actionUriPrefix)) && (myLift != null)) {
-				if (action.endsWith(".ttl")) {
-					// This capability no longer exists since we broke the ControlConfig assembler based constructor when the 
-					// switch to action URIs was made. We can fix it if we decide we'd like to...
-					//success = activateControlsFromRdf(action);
-					theLogger.warn("Turtle file based lift config is no longer supported, cannot load config from " + action);
-				} else {
-					Ident configIdent = actionUri;
-					LiftConfig newConfig = null;
-					if (myLiftConfigCache.containsKey(configIdent)) {
-						newConfig = myLiftConfigCache.get(configIdent); // Use cached version if available
-						theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
-					} else {
-						if (myQueryInterface != null) {
-							newConfig = new LiftConfig(myQueryInterface, myQGraph, configIdent);
-							myLiftConfigCache.put(configIdent, newConfig);
-							theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
-						} else {
-							theLogger.error("New lift config requested, but no QueryInterface set!");
-						}
-					}
-					if (newConfig != null) {
-						activateControlsFromConfig(sessionId, newConfig);
-						success = true;
-					}
-				}
-			} else if ((LiftConfigNames.p_liftcmd.equals(actionUriPrefix)) && (myLiftAppInterface != null)) {
-				if (action.startsWith(LiftConfigNames.partial_P_databalls)) {
-					String databallsAction = action.replaceAll(LiftConfigNames.partial_P_databalls + "_", ""); // replaceFirst?
-					success = myLiftAppInterface.performDataballAction(databallsAction, null);
-				} else if (action.startsWith(LiftConfigNames.partial_P_update)) {
-					String desiredUpdate = action.replaceFirst(LiftConfigNames.partial_P_update + "_", "");
-					success = myLiftAppInterface.performUpdate(desiredUpdate);
-				} else if (LiftConfigNames.refreshLift.equals(action.toLowerCase())) {
-					theLogger.info("Clearing LiftAmbassador page cache and refreshing global state...");
-					myLiftConfigCache.clear();
-					success = myLiftAppInterface.performUpdate("ManagedGlobalConfigService");
-				}
-			}
-			return success;
+	public boolean triggerCinematic(String cinematicName) {
+		boolean success;
+		if (myTriggeredCinematics.contains(cinematicName)) {
+			myLiftAppInterface.stopNamedCinematic(cinematicName); // In order to replay, we need to stop previously played cinematic first
 		}
+		success = myLiftAppInterface.triggerNamedCinematic(cinematicName);
+		if (success) {
+			myTriggeredCinematics.add(cinematicName);
+		}
+		return success;
+	}
+	
+	public boolean triggerScene(String sceneName) {
+		boolean success = false;
+		if (mySceneLauncher != null) {
+			success = mySceneLauncher.triggerScene(sceneName);
+		} else {
+			theLogger.warn("Attempting to trigger scene, but no LiftSceneInterface found");
+		}
+		return success;
+	}
+	
+	public boolean performDataballAction(String databallAction, String databallText) {
+		boolean success = false;
+		if (myLiftAppInterface != null) {
+			success = myLiftAppInterface.performDataballAction(databallAction, databallText);
+		} else {
+			theLogger.warn("Attempting to perform Databall action, but no LiftAppInterface found");
+		}
+		return success;
 	}
 
 	public String getCogbotResponse(String query) {
@@ -270,16 +227,19 @@ public class LiftAmbassador {
 			return response;
 		}
 	}
-
-	public boolean sendTextToCogChar(String actionToken, String text) {
-		synchronized (theClassLock) { // May not really need synchronization...
-			boolean success = false;
-			if (actionToken.startsWith(LiftConfigNames.partial_P_databalls)) {
-				String databallsAction = actionToken.replaceAll(LiftConfigNames.partial_P_databalls + "_", "");
-				success = myLiftAppInterface.performDataballAction(databallsAction, text);
-			}
-			return success;
+	
+	public boolean performCogCharUpdate(String desiredUpdate) {
+		boolean success = false;
+		if (myLiftAppInterface != null) {
+			success = myLiftAppInterface.performUpdate(desiredUpdate);
+		} else {
+			theLogger.error("Cannot perform update: " + desiredUpdate + " because no LiftAppInterface is available");
 		}
+		return success;
+	}
+	
+	public void clearLiftConfigCache() {
+		myLiftConfigCache.clear();
 	}
 
 	// Gets a global lifter variable
@@ -337,7 +297,7 @@ public class LiftAmbassador {
 			if (myUserMap.containsKey(userIdent)) {
 				String hashedEnteredPassword = LiftCrypto.getStringFromBytes(LiftCrypto.getHash(password, myUserMap.get(userIdent).salt));
 				if (myUserMap.get(userIdent).hashedPassword.equals(hashedEnteredPassword)) {
-					triggerAction(sessionId, myUserMap.get(userIdent).startConfig);
+					activateControlsFromUri(sessionId, myUserMap.get(userIdent).startConfig);
 				} else {
 					displayError("login", "Password not recognized", sessionId); // <- move strings to resource
 				}

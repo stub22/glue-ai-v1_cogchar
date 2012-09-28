@@ -22,6 +22,9 @@ import org.slf4j.Logger;
 import org.appdapter.core.log.BasicDebugger;
 
 /**
+ * A class for basic cryptography utilities, mainly for handling password hashes at this point
+ * 
+ * I believe there are more "Lifty" ways to do these tasks which I may switch to eventually.
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
