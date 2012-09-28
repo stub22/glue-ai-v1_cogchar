@@ -4,7 +4,7 @@ import _root_.net.liftweb.util._
 import _root_.net.liftweb.common._
 import _root_.net.liftweb.http._
 import _root_.net.liftweb.http.provider._
-import _root_.net.liftweb.mapper._
+//import _root_.net.liftweb.mapper._
 import _root_.net.liftweb.sitemap._
 import _root_.net.liftweb.sitemap.Loc._
 import _root_.net.liftweb.actor.ActorLogger
@@ -40,12 +40,14 @@ class Boot {
 	
 	// Is config already ready? If so, we missed it. Let's update now.
 	if (myLiftAmbassador.checkConfigReady) {
-	  PageCommander.initFromCogcharRDF(PageCommander.INITIAL_CONFIG_ID, myLiftAmbassador.getInitialConfig)
+	  PageCommander.initFromCogcharRDF(PageCommander.getState.INITIAL_CONFIG_ID, myLiftAmbassador.getInitialConfig)
 	}
 	
 	// Add the listener for JSON speech to the dispatch table
 	LiftRules.statelessDispatchTable.append(SpeechRestListener)
 	
+	// Have Lift automatically requestStart in PageCommander for a session when it is created
+	LiftSession.onSetupSession ::= ((ls:LiftSession) => PageCommander.requestStart(ls.uniqueId))
 
 	//LiftRules.cometLogger = ActorLogger // Kind of a WAG as to how to use this, just trying it out. Actually seems to perhaps be making Comet behave better, but too early to say (and why would we expect it to?).
   }

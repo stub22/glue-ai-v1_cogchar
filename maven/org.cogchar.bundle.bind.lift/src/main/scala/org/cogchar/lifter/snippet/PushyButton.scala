@@ -48,12 +48,7 @@ package org.cogchar.lifter {
 			val buttonId: Int = (S.attr("buttonId") openOr "-1").toInt
 			"@pushbutton [onclick]" #> SHtml.ajaxInvoke (() => {
 				info("Starting action mapped to button " + buttonId + " in session " + sessionId)
-				val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
-					def run() {
-					  PageCommander.triggerAction(sessionId, buttonId)
-					}
-				  })
-				processThread.start
+				PageCommander.triggerAction(sessionId, buttonId)
 				JsCmds.Noop
 			})
 		  }

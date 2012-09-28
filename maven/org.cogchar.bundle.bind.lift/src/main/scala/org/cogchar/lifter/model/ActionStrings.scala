@@ -25,10 +25,14 @@ package org.cogchar.lifter {
 	  final val cogbotSpeech = "cogbotspeech"
 	  final val submitText = "submittext"
 	  final val showText = "showtext"
-	  final val setVariable = "setvariable"
 	  final val oldDemo = "olddemo"
 	  final val submit = "submit"
 	  final val lastConfig = "lastScreen"
+	  final val update = "reload"
+	  final val refreshLift = "refreshliftcache"
+	  final val databalls = "databalls"
+	  
+	  final val commandTokenSeparator = "_"
 	  
 	  // Not technically "action strings": strings related to network config function
 	  final val encryptionTypeVar = "networkEncType"
@@ -41,12 +45,17 @@ package org.cogchar.lifter {
 	  final val ERROR_TOKEN = "error"
 	  final val NETWORK_CONFIG_TOKEN = "networkconfig"
 	  final val LOGIN_TOKEN = "login"
+	  final val DATABALLS_TOKEN = "databalls"
 	  
 	  // These are URI prefixes for actions
 	  final val p_liftcmd = "http://www.cogchar.org/lift/config/command#"
 	  final val p_liftvar = "http://www.cogchar.org/lift/config/variable#"
 	  final val p_liftsessionvar = "http://www.cogchar.org/lift/config/sessionVariable#"
 	  final val p_scenetrig = "http://www.cogchar.org/schema/scene/trigger#"
+	  final val p_liftconfig = "http://www.cogchar.org/lift/config/configroot#"
+	  final val p_cinematic = "http://www.cogchar.org/schema/cinematic/definition#"
+	  
+	  final val LIFT_REFRESH_UPDATE_NAME = "ManagedGlobalConfigService"
 	  
 	}
 

@@ -71,12 +71,7 @@ package org.cogchar.lifter {
 		def process(result: String): JsCmd = {
 		  info("ListBox says option number " + result + " on formId " + formId + " is selected in session " + sessionId + ".")
 		  //SetHtml(listBoxInstanceTitle, Text(ListBox.responseText)) // We'll leave the title the same for the demo
-		  val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
-			  def run() {
-				PageCommander.controlActionMapper(sessionId, formId, result.toInt)
-			  }
-			})
-		  processThread.start
+		  PageCommander.multiSelectControlActionMapper(sessionId, formId, result.toInt)
 		}
 
 		S.session match {
