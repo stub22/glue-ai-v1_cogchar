@@ -77,16 +77,20 @@ public class PumaHumanoidMapper extends BasicDebugger {
 		return myRAC.getTriggeringChannel();
 	}
 	
-	public void initModelRobotUsingBoneRobotConfig(QueryInterface qi, BoneRobotConfig brc, final Ident qGraph, final HumanoidConfig hc,
+	public boolean initModelRobotUsingBoneRobotConfig(QueryInterface qi, BoneRobotConfig brc, final Ident qGraph, final HumanoidConfig hc,
 					BehaviorConfigEmitter behavCE) throws Throwable {
 		// New with "GlobalModes": we'll run hrc.setupHumanoidFigure from here now
-		myHRC.setupHumanoidFigure(qi, myCharIdent, qGraph, hc);
+		HumanoidFigure hf = myHRC.setupHumanoidFigure(qi, myCharIdent, qGraph, hc);
+		if (hf != null) {
+			// This creates our ModelRobot instance, and calls registerAndStart() in the RobotServiceContext base class.
+			myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);
 
-		// This creates our ModelRobot instance, and calls registerAndStart() in the RobotServiceContext base class.
-		myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);
-		
-		myRAC = new RobotAnimContext(myCharIdent, behavCE);
-		myRAC.initConn(myMBRSC);
+			myRAC = new RobotAnimContext(myCharIdent, behavCE);
+			return myRAC.initConn(myMBRSC);
+		} else {
+			logWarning("initModelRobotUsingBoneRobotConfig() aborted setup due to null HumanoidFigure for " + myCharIdent);
+			return false;
+		}
 	}
 
 	public void updateModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
@@ -94,8 +98,12 @@ public class PumaHumanoidMapper extends BasicDebugger {
 		targetRobot.updateConfig(brc);
 	}
 	public void connectToVirtualChar() throws Exception {
-		setupFigureState();
 		final ModelRobot br = getBonyRobot();
+		if (br == null) {
+			getLogger().warn("connectToVirtualChar() aborting due to missing ModelRobot, for char: " + myCharIdent);
+			return;
+		}
+		setupFigureState(br);
 		br.registerMoveListener(new ModelRobot.MoveListener() {
 			@Override public void notifyBonyRobotMoved(ModelRobot br) {
 				HumanoidFigure hf = getHumanoidFigure();
@@ -124,9 +132,9 @@ public class PumaHumanoidMapper extends BasicDebugger {
 		
 	}
 	
-	
-	public void setupFigureState() { 
-		ModelRobot br = getBonyRobot();
+	 
+	private void setupFigureState(ModelRobot br) { 
+
 		FigureState fs = new FigureState();
 		List<ModelJoint> allJoints = br.getJointList();
 		for (ModelJoint mJoint : allJoints) {

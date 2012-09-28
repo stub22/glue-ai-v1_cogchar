@@ -59,7 +59,7 @@ public class RobotServiceContext<R extends Robot> extends BasicDebugger {
 	}
 	public R getRobot() { 
         if(myRobot == null){
-            theLogger.warn("No Robot Set");
+            theLogger.warn("getRobot() is returning null!");
         }
 		return myRobot;
 	}

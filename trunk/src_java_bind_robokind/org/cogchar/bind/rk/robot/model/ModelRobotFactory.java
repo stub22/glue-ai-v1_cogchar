@@ -52,7 +52,12 @@ public class ModelRobotFactory implements ServiceFactory<Robot, BoneRobotConfig>
     }
     
     public static ModelRobot buildRobot(BoneRobotConfig config) {
-		Robot.Id robotID = new Robot.Id(config.myRobotName);
+		String robotName = config.myRobotName;
+		if (robotName == null) {
+			theLogger.warn("robotName is null, aborting robot build for config: " + config);
+			return null;
+		}
+		Robot.Id robotID = new Robot.Id(robotName);
 		ModelRobot robot = new ModelRobot(robotID);
 		theLogger.info("Robot.Id=" + robotID);
 		for (BoneJointConfig bjc : config.myBJCs) {

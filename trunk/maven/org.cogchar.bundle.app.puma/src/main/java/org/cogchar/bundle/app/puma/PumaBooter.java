@@ -44,8 +44,16 @@ public class PumaBooter extends BasicDebugger {
 		PumaContextMediator cm = new PumaContextMediator();
 		return bootUnderOSGi(bundleCtx, cm);
 	}
-	
-// 	public BootResult boot(ClassLoader appBootCL, String appBootModelResourcePath) {
+	/**
+	 * Entry point for the PUMA application system when running in an OSGi environment.
+	 * Presumes that an SLF4J logging binding is already in place.
+	 * Normally this is *not* called directly from another bundle's activator.
+	 * Instead, it is called after all initial bundles (for your application)
+	 * are loaded, which is signaled  in a FrameworkEvent 
+	 * @param bundleCtx - an OSGi bundle 
+	 * @param mediator - users customize this object to customize the boot process.
+	 * @return a BootResult indicating the status of boot attempt.  No app data is passed here.
+	 */
 	public BootResult bootUnderOSGi(BundleContext bundleCtx, PumaContextMediator mediator) {
 		logInfo("%%%%%%%%%%%%%%%%%%% Beginning bootUnderOSGi");
 		logError("^^^^ not really an error - just high priority ^^^^^^^^ SLF4J ILoggerFactory = " + LoggerFactory.getILoggerFactory());
@@ -151,10 +159,14 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 		}
 		return result;
 	}
-	
+
 	private Repo findMainRepo(PumaContextMediator mediator) {
 		Repo r = null;
 		
 		return r;
+	}
+	
+	public void initSimulationRendering() { 
+		
 	}
 }
