@@ -54,15 +54,17 @@ public class BonyGameFeatureAdapter extends CoreFeatureAdapter {
 	}
 	
 	public void initFeatures() {
-		if (initStickFigureModel()) {
-			myTwister = new StickFigureTwister(myBRC);
-			VirtualCharacterPanel vcp = myBRC.getPanel();
-			BodyController bodCont = vcp.getBodyController();
-			if (bodCont != null) {
-				myTwister.setBodyController(bodCont);
-			}
-			myBRC.attachModule(myTwister);
+		// When enabled, this call creates the extra winged red thing.
+		// initExtraStickFigureModel()
+		
+		myTwister = new StickFigureTwister(myBRC);
+		VirtualCharacterPanel vcp = myBRC.getPanel();
+		BodyController bodCont = vcp.getBodyController();
+		if (bodCont != null) {
+			myTwister.setBodyController(bodCont);
 		}
+		myBRC.attachModule(myTwister);
+			
 		RenderConfigEmitter bce = myBRC.getConfigEmitter(); 
 		if (!bce.isMinimalSim()) {
 			initExtraRagdoll();
@@ -75,7 +77,7 @@ public class BonyGameFeatureAdapter extends CoreFeatureAdapter {
 	public void toggleAnnoyingStuff() {
 		
 	}
-	public boolean initStickFigureModel() {
+	public boolean initExtraStickFigureModel() {
 		// test1Node.setLocalScale(0.5f);
 
 		RenderConfigEmitter rce = myBRC.getConfigEmitter(); 
