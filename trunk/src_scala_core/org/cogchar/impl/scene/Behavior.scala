@@ -42,13 +42,13 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
 abstract class Behavior (val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
 
 	var	myStartStamp : Long = -1;
-	def logMe(msg: String) {logInfo("[" + this + "]-" + msg);}
+	// def logMe(msg: String) {logInfo("[" + this + "]-" + msg);}
 	override protected def doStart(scn : BScene) {
 		myStartStamp = System.currentTimeMillis();
 		myRunDebugModulus = 20;
 	}
 	override protected def doStop(scn : BScene) {
-		logMe("doStopping")
+		getLogger().info("doStop called for behavior {}", this)
 	}
 	def getMillsecSinceStart() : Long = { 
 		System.currentTimeMillis() - myStartStamp;

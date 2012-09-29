@@ -49,7 +49,7 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	
 	// A new constructor to build BoneRobotConfig from spreadsheet
 	public BoneRobotConfig(QueryInterface qi, Ident bonyConfigIdent, Ident graphIdent, BoneQueryNames bqn) {
-		logInfo("Building BoneRobotConfig via queries for " + bonyConfigIdent.getLocalName() + " using graph " + graphIdent.getAbsUriString());
+		getLogger().info("Building BoneRobotConfig via queries for {} using graph {} ", bonyConfigIdent, graphIdent);
 		SolutionMap solutionMap = qi.getQueryResultMap(bqn.ROBOT_NAME_QUERY_URI, bqn.ROBOT_URI_VAR_NAME, graphIdent);
 		myRobotName = qi.getStringFromSolution(solutionMap, bonyConfigIdent, bqn.ROBOT_NAME_VAR_NAME);
 		String queryString = qi.getCompletedQueryFromTemplate(bqn.BONE_JOINT_CONFIG_QUERY_TEMPLATE_URI, bqn.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
@@ -77,7 +77,7 @@ public class BoneRobotConfig extends KnownComponentImpl {
 
 		@Override protected void initExtendedFieldsAndLinks(BoneRobotConfig mrc, Item configItem, Assembler assmblr, 
 						Mode mode) {
-			logInfo("BoneRobotConfig.initExtendedFieldsAndLinks()-BEGIN");
+			getLogger().debug("BoneRobotConfig.initExtendedFieldsAndLinks()-BEGIN");
 			mrc.myRobotName = ItemFuncs.getString(configItem, BoneConfigNames.P_robotName, null);
 			Set<Item> jointItems = ItemFuncs.getLinkedItemSet(configItem, BoneConfigNames.P_joint);
 			for (Item ji : jointItems) {

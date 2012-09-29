@@ -40,15 +40,15 @@ class SteppingBehavior (val mySBS: SteppingBehaviorSpec) extends Behavior(mySBS)
 
 	override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
 		if (myNextStepIndex >= mySBS.mySteps.size) {
-			logMe("Reached end of its steps at #" + myNextStepIndex + ", self-requesting module stop");
+			getLogger().debug("Reached end of its steps at #{} self-requesting module stop on : {}", myNextStepIndex, this);
 			markStopRequested();
-			logMe("Finished requesting stop, so this should be my last runOnce().");
+			getLogger().info("Finished requesting stop, so this should be my last runOnce().");
 		} else {
 			val step = mySBS.mySteps(myNextStepIndex);
 			if (step.proceed(scn, this)) {
 				val osi = myNextStepIndex;
 				myNextStepIndex += 1;
-				logMe("Proceed succeeded for step #" + osi + ", will attempt step# " + myNextStepIndex + " on next runOnce().");
+				getLogger().debug("Proceed succeeded for step # {} will attempt step# {} on next runOnce()", osi, myNextStepIndex);
 			}
 		}
 	}
@@ -73,9 +73,9 @@ case class SteppingBehaviorSpec() extends BehaviorSpec {
 	override def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
 		myDetails = "brimmingOver";
 		val stepItems = reader.readLinkedItemSeq(configItem, SceneFieldNames.P_steps);
-		logInfo("BSB got stepItems: " + stepItems);
+		getLogger().debug("BSB got stepItems: {}", stepItems);
 		for (val stepItem : Item <- stepItems) {
-			logInfo("Got stepItem: " + stepItem)
+			getLogger().debug("Got stepItem: {}", stepItem)
 			val stepIdent = stepItem.getIdent();
 			val offsetSec = reader.readConfigValDouble(stepIdent, SceneFieldNames.P_startOffsetSec, stepItem, null);
 			val offsetMillisec : Int = (1000.0 * offsetSec.doubleValue()).toInt;
@@ -87,7 +87,7 @@ case class SteppingBehaviorSpec() extends BehaviorSpec {
 			val action = new TextAction(text);
 			
 			val stepChannelSpecs = reader.findOrMakeLinkedObjects(stepItem, SceneFieldNames.P_channel, assmblr, mode, null);
-			logInfo("Got step channel specs: " + stepChannelSpecs);
+			getLogger().debug("Got step channel specs: {} ", stepChannelSpecs);
 			for (val stepChanSpec <- stepChannelSpecs) {
 				stepChanSpec match {
 					case scs: ChannelSpec => {
@@ -95,13 +95,13 @@ case class SteppingBehaviorSpec() extends BehaviorSpec {
 						val freeChanIdent = new FreeIdent(chanId);
 						action.addChannelIdent(freeChanIdent);
 					}
-					case _ => logWarning("Unexpected object found in step[at " + SceneFieldNames.P_channel + " = " + stepChanSpec);
+					case _ => getLogger().warn("Unexpected object found in step[at " + SceneFieldNames.P_channel + " = " + stepChanSpec);
 				}
 			}
 				
 		
 			val step = new ScheduledActionStep(offsetMillisec, action);
-			logInfo("Built step: " + step);
+			getLogger().debug("Built step: {}", step);
 			mySteps = mySteps :+ step;
 		}		
 	}

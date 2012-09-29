@@ -58,7 +58,7 @@ class BScene(val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyT
 	override def wireSubChannels(chans : java.util.Collection[Channel[_ <: Media, FancyTime]]) : Unit = {
 		// TODO:  reconcile the actually wired channels with the ones in the SceneSpecs.		
 		for (val c <- chans) {
-			logInfo("Wiring scene[" + mySceneSpec.getIdent.getLocalName + "] to channel: " + c);
+			getLogger().info("Wiring scene[{}] to channel: {}", mySceneSpec.getIdent.getLocalName, c);
 			myWiredChannels.put(c.getIdent, c)
 		}
 	}
@@ -96,7 +96,7 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 	import scala.collection.JavaConversions._;
 	
 	override protected def initExtendedFieldsAndLinks(ss: SceneSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
-		logDebug("SceneBuilder.initExtendedFieldsAndLinks");	
+		getLogger().debug("SceneBuilder.initExtendedFieldsAndLinks");	
 		ss.myDetails = "ChockFilledUp";
 		
 		val reader = getReader();
@@ -109,18 +109,18 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 		for (val o <- linkedBehaviorSpecs) {
 			o match {
 				case bs: BehaviorSpec => ss.addBehaviorSpec(bs);
-				case _ => logWarning("Unexpected object found at " + SceneFieldNames.P_behavior + " = " + o);
+				case _ => getLogger().warn("Unexpected object found at " + SceneFieldNames.P_behavior + " = " + o);
 			}
 		}
 		val linkedChannelSpecs : java.util.List[Object] = reader.findOrMakeLinkedObjects(configItem, SceneFieldNames.P_channel, assmblr, mode, null);
 		for (val o <- linkedChannelSpecs) {
 			o match {
 				case cs: ChannelSpec => ss.addChannelSpec(cs);
-				case _ => logWarning("Unexpected object found at " + SceneFieldNames.P_channel + " = " + o);
+				case _ => getLogger().warn("Unexpected object found at " + SceneFieldNames.P_channel + " = " + o);
 			}
 		}		
-		logDebug("Scene found linkedBehaviorSpecs: " + linkedBehaviorSpecs)
-		logDebug("Scene found linkedChannelSpecs: " + linkedChannelSpecs)
+		getLogger().debug("Scene found linkedBehaviorSpecs: {}",  linkedBehaviorSpecs)
+		getLogger().debug("Scene found linkedChannelSpecs: {} ",  linkedChannelSpecs)
 
 	}
 }
