@@ -28,11 +28,23 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http.SHtml._
-	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.bind.lift.ControlConfig
+	import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import S._
 	
-	object DualTextForm {
+	object DualTextForm extends AbstractControlInitializationHandler {
+	  
+	  protected val matchingName = "DUALTEXTINPUT"
+  
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
+		val textItems = List.fromArray(control.text.split(ActionStrings.stringAttributeSeparator))
+		val label1 = textItems(0)
+		val label2 = textItems(1)
+		val submitLabel = textItems(2)
+		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeForm(label1, label2, submitLabel, slotNum)
+	  }
 	  
 	  val defaultText = "" // We can add bits to define this in RDF if we want
 	  val afterEntryText = "" // Right now we just clear text after input; we can do whatever we want
@@ -52,6 +64,7 @@ package org.cogchar.lifter {
 		val inputId2: String = textBoxIdPrefix + formIdforHtml + "B"
 		<form class="lift:form.ajax"><lift:DualTextForm formId={formIdforHtml}><div class="labels" id={labelId1}></div><input id={inputId1}/><div class="labels" id={labelId2}></div><input id={inputId2}/><br/><input type="submit" value={submitLabel}/></lift:DualTextForm></form>
 	  }
+	  
 	}
 
 	class DualTextForm extends StatefulSnippet with Logger {

@@ -26,10 +26,18 @@ package org.cogchar.lifter {
 	import net.liftweb.http.js.JsCmds
 	import Helpers._
 	import S._
+	import org.cogchar.bind.lift.ControlConfig
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 
-	object PushyButton extends Logger {
+	object PushyButton extends AbstractControlInitializationHandler with Logger {
+	  
+	  protected val matchingName = "PUSHYBUTTON"
+  
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
+		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeButton(control.text, control.style, control.resource, slotNum)
+	  }
 	  
 	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, buttonId: Int): NodeSeq = {
 		val buttonNum: String = buttonId.toString

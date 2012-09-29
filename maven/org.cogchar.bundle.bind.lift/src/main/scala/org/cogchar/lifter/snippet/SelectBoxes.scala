@@ -28,11 +28,23 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http.SHtml._
-	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.bind.lift.ControlConfig
+	import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import S._
 
-	object SelectBoxes {
+	object SelectBoxes extends AbstractControlInitializationHandler {
+	  
+	  protected val matchingName = "SELECTBOXES"
+  
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
+		// From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
+		val textItems = List.fromArray(control.text.split(ActionStrings.stringAttributeSeparator))
+		val titleText = textItems(0)
+		val labelItems = textItems.tail
+		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeSelectBoxes(titleText, labelItems, slotNum)
+	  }
 	  
 	  val responseText = "Title can change" // We can add bits to define this in XML if we want, or code in more fancy conditionals
   
