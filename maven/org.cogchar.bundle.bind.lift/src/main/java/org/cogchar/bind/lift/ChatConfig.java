@@ -59,11 +59,11 @@ public class ChatConfig extends KnownComponentImpl {
 		@Override
 		protected void initExtendedFieldsAndLinks(ChatConfig mcc, Item configItem, Assembler assmblr,
 				Mode mode) {
-			logInfo("ChatConfig.initExtendedFieldsAndLinks()-BEGIN");
+			getLogger().debug("ChatConfig.initExtendedFieldsAndLinks()-BEGIN");
 			Set<Item> resourceItems = ItemFuncs.getLinkedItemSet(configItem, ChatConfigNames.P_config);
 			for (Item ji : resourceItems) {
 				ChatConfigResource ccr = new ChatConfigResource(ji);
-				logInfo("Adding ChatConfigResource in ChatConfig: " + ccr);
+				getLogger().debug("Adding ChatConfigResource in ChatConfig: {} ", ccr);
 				mcc.myCCRs.add(ccr);
 			}
 		}

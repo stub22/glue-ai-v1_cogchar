@@ -84,38 +84,38 @@ public class CinematicConfig extends QueryBackedConfigBase {
 		@Override
 		protected void initExtendedFieldsAndLinks(CinematicConfig mcc, Item configItem, Assembler assmblr,
 				Mode mode) {
-			logInfo("CinematicConfig.initExtendedFieldsAndLinks()-BEGIN");
+			getLogger().trace("CinematicConfig.initExtendedFieldsAndLinks()-BEGIN");
 			ItemAssemblyReader iaReader = new ItemAssemblyReaderImpl();
 			Set<Item> configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_cinematic);
-			logInfo("Cinematics found: " + configItems.size());
+			getLogger().debug("Cinematics found: " + configItems.size());
 			for (Item ji : configItems) {
 				//logInfo("Generating CinematicInstanceConfig"); // TEST ONLY
 				CinematicInstanceConfig cic = new CinematicInstanceConfig(iaReader, ji);
-				logInfo("Adding CinematicInstanceConfig in CinematicConfig: " + cic);
+				getLogger().debug("Adding CinematicInstanceConfig in CinematicConfig: " + cic);
 				mcc.myCICs.add(cic);
 			}
 			configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_trackList);
-			logInfo("Tracks found: " + configItems.size());
+			getLogger().debug("Tracks found: " + configItems.size());
 			for (Item ji : configItems) {
 				//logInfo("Generating CinematicTrack"); // TEST ONLY
 				CinematicTrack ct = new CinematicTrack(iaReader, ji);
-				logInfo("Adding named CinematicTrack in CinematicConfig: " + ct);
+				getLogger().debug("Adding named CinematicTrack in CinematicConfig: " + ct);
 				mcc.myCTs.add(ct);
 			}
 			configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_waypointList);
-			logInfo("Waypoints found: " + configItems.size());
+			getLogger().debug("Waypoints found: {}", configItems.size());
 			for (Item ji : configItems) {
 				//logInfo("Generating WaypointConfig"); // TEST ONLY
 				WaypointConfig wc = new WaypointConfig(ji);
-				logInfo("Adding named WaypointConfig in CinematicConfig: " + wc);
+				getLogger().debug("Adding named WaypointConfig in CinematicConfig: {}", wc);
 				mcc.myWCs.add(wc);
 			}
 			configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_rotationList);
-			logInfo("Rotations found: " + configItems.size());
+			getLogger().debug ("Rotations found: {}", configItems.size());
 			for (Item ji : configItems) {
 				//logInfo("Generating RotationConfig"); // TEST ONLY
 				RotationConfig rc = new RotationConfig(ji);
-				logInfo("Adding named RotationConfig in CinematicConfig: " + rc);
+				getLogger().debug("Adding named RotationConfig in CinematicConfig: {} ", rc);
 				mcc.myRCs.add(rc);
 			}
 		}

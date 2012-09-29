@@ -46,7 +46,7 @@ public class NuggetBuilder extends DynamicCachingComponentAssembler<Nugget> {
 			
 	@Override protected void initExtendedFieldsAndLinks(Nugget nug, Item configItem, Assembler assmblr, Mode mode) {
 		ItemAssemblyReader reader = getReader();
-		logDebug("NuggetBuilder.initExtendedFieldsAndLinks");
+		getLogger().debug("NuggetBuilder.initExtendedFieldsAndLinks");
 		nug.myDetails = reader.readConfigValString(configItem.getIdent(), AssemblyTestNames.P_details, configItem, null);
 		if (nug instanceof MegaNugget) {	
 			MegaNugget mn = (MegaNugget) nug;

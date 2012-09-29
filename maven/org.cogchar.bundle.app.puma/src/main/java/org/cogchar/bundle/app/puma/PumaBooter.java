@@ -65,13 +65,13 @@ public class PumaBooter extends BasicDebugger {
 			// String debugTxt = "sysContextURI = [" + sysContextURI + "]";
 			// logInfo("======================================== Starting " + debugTxt);
 			String oprFilesysRoot = mediator.getOptionalFilesysRoot();
-			logInfo("%%%%%%%%%%%%%%%%%%% Creating PumaAppContext");
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Creating PumaAppContext");
 			final PumaAppContext pac = new PumaAppContext(bundleCtx);
 			// Mediator must be able to decide panelKind before the HumanoidRenderContext is built.
 			String panelKind = mediator.getPanelKind();
-			logInfo("%%%%%%%%%%%%%%%%%%% Calling initHumanoidRenderContext()");
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling initHumanoidRenderContext()");
 			final HumanoidRenderContext hrc = pac.initHumanoidRenderContext(panelKind);
-			logInfo("%%%%%%%%%%%%%%%%%%% Calling mediator.notifyContextBuilt()");
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling mediator.notifyContextBuilt()");
 			mediator.notifyContextBuilt(pac);
 			
 			/* At this point we have a blank, generic hrc to work with.
@@ -92,7 +92,7 @@ public class PumaBooter extends BasicDebugger {
 			 * 
 			 */
 			
-			logInfo("%%%%%%%%%%%%%%%%%%% Starting query service");
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Starting query service");
 			pac.startVanillaQueryInterface();
 			
 			// This method performs the configuration actions associated with the developmental "Global Mode" concept
@@ -108,9 +108,9 @@ Start up the JME OpenGL canvas, which will in turn initialize the Cogchar render
  by ext.bundle.osgi.jmonkey, and explicitly allowed by the container when using Netigso
  */
 		
-			logInfo("%%%%%%%%%%%%%%%%%%% Calling startOpenGLCanvas");
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling startOpenGLCanvas");
 			pac.startOpenGLCanvas(allowJFrames);
-			logInfo("%%%%%%%%%%%%%%%%%%% startOpenGLCanvas completed, enqueueing final boot phase on JME3 thread");
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% startOpenGLCanvas completed, enqueueing final boot phase on JME3 thread");
 			
 			/**
 			 * Populate the virtual world with humanoids, cameras, lights, and other goodies.
@@ -137,23 +137,23 @@ up when RobotServiceContext calls RobotUtils.registerRobot()
 			ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 			pac.setCogCharResourcesClassLoader(myInitialBonyRdfCL);
 
-			logInfo("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed , calling connectDualRobotChars()");
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed , calling connectDualRobotChars()");
 			pac.setContextMediator(mediator);
 			pac.connectDualRobotChars();
 			
-			logInfo("%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed , calling initCinema()");
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed , calling initCinema()");
 			
 			// Lights, Cameras, and Cinematics were once configured during PumaDualCharacter init
 			// Since we can support multiple characters now (and connect cameras to them), this needs to happen after connectDualRobotChars()
 			// We'll let pac take care of this, since it is currently "Home of the Global Mode"
 			pac.initCinema();
 			
-			logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% initCinema() completed -  PUMA BOOT SUCCESSFUL!  8-)");
+			getLogger().info("%%%%%%%%%%%%%%%%%%%%%%%%% initCinema() completed -  PUMA BOOT SUCCESSFUL!  8-)");
 			
 			result.myStatus = BootStatus.BOOTED_OK;
 			
 		} catch (Throwable t) {
-			logError("Error in PumaBooter 8-(", t);
+			getLogger().error("Error in PumaBooter 8-(", t);
 			result.myStatus = BootStatus.BOOT_FAILED;
 			result.myThrowable = t;
 		}

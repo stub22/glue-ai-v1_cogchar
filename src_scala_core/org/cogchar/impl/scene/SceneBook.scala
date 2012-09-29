@@ -48,12 +48,12 @@ class SceneBook extends BasicDebugger {
 	
 	def loadSceneSpecs(rdfConfigFlexPath : String , optResourceClassLoader : ClassLoader ) : List[SceneSpec] = { 
 		if (optResourceClassLoader != null) {
-			logInfo("Ensuring registration of classLoader: " + optResourceClassLoader);
+			getLogger.debug("Ensuring registration of classLoader: {}", optResourceClassLoader);
 			AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(optResourceClassLoader);
 		}
-		logInfo("Loading SceneSpecs from: " + rdfConfigFlexPath);
+		getLogger.debug("Loading SceneSpecs from: " + rdfConfigFlexPath);
 		val loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(rdfConfigFlexPath);
-		logInfo("Loaded " + loadedStuff.size() + " objects");
+		getLogger.debug("Loaded " + loadedStuff.size() + " objects");
 	//	logInfo("Stuff: " + loadedStuff);
 		val si = loadedStuff.iterator();
 		var sceneSpecList = List[SceneSpec]()
@@ -63,9 +63,9 @@ class SceneBook extends BasicDebugger {
 				sceneSpecList = sceneSpecList :+ obj.asInstanceOf[SceneSpec]
 			}
 		}
-		logInfo("===========================================================================================")
-		logInfo("Loaded SceneSpecList: " + sceneSpecList);
-		logInfo("===========================================================================================")
+		getLogger.debug("===========================================================================================")
+		getLogger.debug("Loaded SceneSpecList: {}", sceneSpecList);
+		getLogger.debug("===========================================================================================")
 		sceneSpecList;
 		// for (Object o : loadedStuff) {
 	}
