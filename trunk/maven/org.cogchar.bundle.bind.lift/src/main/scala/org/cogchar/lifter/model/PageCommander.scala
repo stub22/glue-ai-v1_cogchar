@@ -54,15 +54,9 @@ package org.cogchar.lifter {
 	  
 	  private val theLifterState = new LifterState()
 	  private val firstActionHandler = HandlerConfigurator.initializeActionHandlers
+	  private val firstControlInitializationHandler = HandlerConfigurator.initializeControlInitializationHandlers
 	  
 	  def createUpdate = updateInfo
-	  
-	  // A list of possible control types -- maybe should be in own class?
-	  object ControlType extends Enumeration { 
-		type ControlType = Value
-		val NULLTYPE, PUSHYBUTTON, TEXTINPUT, DUALTEXTINPUT, LOGINFORM, SELECTBOXES, RADIOBUTTONS, LISTBOX, VIDEOBOX, TOGGLEBUTTON, TEXTBOX = Value
-	  }
-	  import ControlType._
 	  
 	  def getNode(sessionId:String, controlId: Int): NodeSeq = {
 		var nodeOut = NodeSeq.Empty
@@ -156,7 +150,10 @@ package org.cogchar.lifter {
 			// That's important largly because ToggleButton modifies the actions in the controlDefMap.
 			// Pretty darn messy, and likely a topic for further refactoring.
 			appState.controlDefMap(sessionId)(slotNum) = new ControlConfig(controlDef) 
-			initSingleControl(controlDef, slotNum, sessionId)
+			// Trigger control initialization handler chain to fill proper XML into controlsMap
+			firstControlInitializationHandler.processHandler(sessionId, slotNum, controlDef)
+			// Check for initial nee "local" actions which PageCommander needs to handle, such as text display
+			firstActionHandler.checkForInitialAction(sessionId, slotNum, controlDef)
 		  })
 		// Blank unspecified slots (out to 20)
 		for (slot <- 1 to 20) {
@@ -176,101 +173,6 @@ package org.cogchar.lifter {
 		  // ... and load new controls
 		  setControlsFromMap(sessionId)
 		}
-	  }
-	  
-	  // Really want to refactor this so that new control types don't require updates to this method or anywhere
-	  // else in PageCommander...
-	  def initSingleControl(controlDef:ControlConfig, slotNum:Int, sessionId:String) {
-		val appState = getState
-		val controlType = getControlType(controlDef)
-		val action = controlDef.action
-		val text = controlDef.text
-		val style = controlDef.style
-		val resource = controlDef.resource
-			
-		controlType match {
-		  case ControlType.PUSHYBUTTON => {
-			  appState.controlsMap(sessionId)(slotNum) = PushyButton.makeButton(text, style, resource, slotNum)
-			}
-		  case ControlType.TEXTINPUT => {
-			  appState.controlsMap(sessionId)(slotNum) = TextForm.makeTextForm(text, slotNum)
-			}
-		  case ControlType.DUALTEXTINPUT => {
-			  // From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
-			  val textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
-			  val label1 = textItems(0)
-			  val label2 = textItems(1)
-			  val submitLabel = textItems(2)
-			  appState.controlsMap(sessionId)(slotNum) = DualTextForm.makeForm(label1, label2, submitLabel, slotNum)
-			}
-		  case ControlType.LOGINFORM => {
-			  // From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
-			  val textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
-			  val label1 = textItems(0)
-			  val label2 = textItems(1)
-			  val submitLabel = textItems(2)
-			  appState.controlsMap(sessionId)(slotNum) = LoginForm.makeForm(label1, label2, submitLabel, slotNum)
-			}
-		  case ControlType.SELECTBOXES => {
-			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
-			  val textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
-			  val titleText = textItems(0)
-			  val labelItems = textItems.tail
-			  appState.controlsMap(sessionId)(slotNum) = SelectBoxes.makeSelectBoxes(titleText, labelItems, slotNum)
-			}
-		  case ControlType.RADIOBUTTONS => {
-			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
-			  val textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
-			  val titleText = textItems(0)
-			  val labelItems = textItems.tail
-			  appState.controlsMap(sessionId)(slotNum) = RadioButtons.makeRadioButtons(titleText, labelItems, slotNum)
-			}
-		  case ControlType.LISTBOX => {
-			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
-			  val textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
-			  val titleText = textItems(0)
-			  val labelItems = textItems.tail
-			  appState.controlsMap(sessionId)(slotNum) = ListBox.makeListBox(titleText, labelItems, slotNum)
-			}
-		  case ControlType.VIDEOBOX => {
-			  appState.controlsMap(sessionId)(slotNum) = VideoBox.makeBox(resource, true)
-			}
-		  case ControlType.TOGGLEBUTTON => {
-			  // For a ToggleButton, the first item in CSV text, action, style, image corresponds to the default condition, the second to the "toggled" condition
-			  var textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
-			  var styleItems = List.fromArray(style.split(ActionStrings.stringAttributeSeparator))
-			  var resourceItems = List.fromArray(resource.split(ActionStrings.stringAttributeSeparator))
-			  var actionItems = List.fromArray(action.getLocalName.split(ActionStrings.multiCommandSeparator))
-			  appState.toggleButtonFullActionMap(sessionId)(slotNum) = action
-			  // Next we need to see if an app variable linked to this toggle button is already set and set the button state to match if so
-			  val buttonState = LifterVariableHandler.getToggleButtonStateFromVariable(sessionId, action)
-			  // Flag the fact this is a toggle button and set current state
-			  appState.toggleButtonMap(sessionId)(slotNum) = buttonState
-			  // Set control for state
-			  // If only one parameter is specified in RDF, duplicate the first and use that parameter for the other state too (really we are prepending the one item in the list to itself, but that works ok here)
-			  if (textItems.length < 2) textItems ::= textItems(0)
-			  if (styleItems.length < 2) styleItems ::= styleItems(0)
-			  if (resourceItems.length < 2) resourceItems ::= resourceItems(0)
-			  if (actionItems.length < 2) actionItems ::= actionItems(0)
-			  val stateIndex = if (buttonState) 1 else 0
-			  appState.controlsMap(sessionId)(slotNum) = 
-				PushyButton.makeButton(textItems(stateIndex), styleItems(stateIndex), resourceItems(stateIndex), slotNum)
-			  // A TOGGLEBUTTON trick: we have copied the full action for this control to toggleButtonFullActionMap - now
-			  // we rewrite this control's action in the controlDefMap depending on its state.
-			  // A bit problematic and there may be a better way, but this lets the action handler chain work the same for 
-			  // TOGGLEBUTTONS as for everything else.
-			  appState.controlDefMap(sessionId)(slotNum).action = new FreeIdent(getUriPrefix(action) + actionItems(stateIndex), actionItems(stateIndex))
-			}
-		  case ControlType.TEXTBOX => {
-			  appState.controlsMap(sessionId)(slotNum) = TextBox.makeBox(text, style)
-			  // Check for initial nee "local" actions which PageCommander needs to handle, such as text display
-			  // This should very likely be applied to every control, not just TEXTBOXes, but right now only TEXTBOX
-			  // uses it. So leaving it here for the moment to avoid unnecessary checks, but it will likely be moving soon.
-			  firstActionHandler.checkForInitialAction(sessionId, slotNum, controlDef)
-			}
-		  case _ => appState.controlsMap(sessionId)(slotNum) = NodeSeq.Empty
-		}
-		
 	  }
 					  
 	  def setControl(sessionId: String, slotNum: Int, slotHtml: NodeSeq) {
@@ -322,7 +224,7 @@ package org.cogchar.lifter {
 	  def toggleButton(sessionId:String, slotNum: Int) {
 		val appState = getState
 		if (appState.controlDefMap(sessionId) contains slotNum) {
-		  if (appState.controlDefMap(sessionId)(slotNum).controlType equals ControlType.TOGGLEBUTTON.toString) {
+		  if (appState.controlDefMap(sessionId)(slotNum).controlType equals "TOGGLEBUTTON") {
 			val actionUriPrefix = getUriPrefix(appState.controlDefMap(sessionId)(slotNum).action);
 			var textItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).text.split(ActionStrings.stringAttributeSeparator))
 			if (appState.toggleButtonFullActionMap(sessionId) contains slotNum) {
@@ -441,14 +343,6 @@ package org.cogchar.lifter {
 																	  
 	  def controlId(sessionId:String, controlId: Int): String = {
 		sessionId + "_" + controlId
-	  }
-	  
-	  def getControlType(controlDef:ControlConfig): ControlType = {
-		var controlType: ControlType = NULLTYPE
-		ControlType.values foreach(testType => {
-			if (controlDef.controlType equals(testType.toString)) controlType = testType
-		  })
-		controlType
 	  }
 	   
 	  /* We don't support lift config Turtle files now after making the switch to action URIs, unless we want to 

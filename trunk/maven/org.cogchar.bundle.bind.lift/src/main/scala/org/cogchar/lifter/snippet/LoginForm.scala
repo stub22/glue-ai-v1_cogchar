@@ -28,11 +28,24 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http.SHtml._
-	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.bind.lift.ControlConfig
+	import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import S._
 	
-	object LoginForm {
+	object LoginForm extends AbstractControlInitializationHandler {
+	  
+	  protected val matchingName = "LOGINFORM"
+  
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
+		// From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
+		val textItems = List.fromArray(control.text.split(ActionStrings.stringAttributeSeparator))
+		val label1 = textItems(0)
+		val label2 = textItems(1)
+		val submitLabel = textItems(2)
+		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeForm(label1, label2, submitLabel, slotNum)
+	  }
 	  
 	  val labelIdPrefix = "loginformlabel_"
 	  val textBoxIdPrefix = "login_in_"

@@ -21,9 +21,17 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http._
+	import org.cogchar.bind.lift.ControlConfig
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 
-	object VideoBox {
+	object VideoBox extends AbstractControlInitializationHandler {
+	  
+	  protected val matchingName = "VIDEOBOX"
+  
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
+		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeBox(control.resource, true)
+	  }
 	  
 	  def makeBox(videoResource:String, mute: Boolean): NodeSeq = {
 		val videoPath: String = "/video/" + videoResource // May want to move this prefix to central location
