@@ -137,23 +137,25 @@ public class LiftAmbassador {
 	
 	// Activates controls identified by a LiftConfig URI
 	public void activateControlsFromUri(String sessionId, Ident configIdent) {
-		boolean success = false;
-		LiftConfig newConfig = null;
-		if (myLiftConfigCache.containsKey(configIdent)) {
-			newConfig = myLiftConfigCache.get(configIdent); // Use cached version if available
-			theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
-		} else {
-			if (myQueryInterface != null) {
-				newConfig = new LiftConfig(myQueryInterface, myQGraph, configIdent);
-				myLiftConfigCache.put(configIdent, newConfig);
-				theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
+		synchronized (theClassLock) {
+			boolean success = false;
+			LiftConfig newConfig = null;
+			if (myLiftConfigCache.containsKey(configIdent)) {
+				newConfig = myLiftConfigCache.get(configIdent); // Use cached version if available
+				theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
 			} else {
-				theLogger.error("New lift config requested, but no QueryInterface set!");
+				if (myQueryInterface != null) {
+					newConfig = new LiftConfig(myQueryInterface, myQGraph, configIdent);
+					myLiftConfigCache.put(configIdent, newConfig);
+					theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
+				} else {
+					theLogger.error("New lift config requested, but no QueryInterface set!");
+				}
 			}
-		}
-		if (newConfig != null) {
-			activateControlsFromConfig(sessionId, newConfig);
-			success = true;
+			if (newConfig != null) {
+				activateControlsFromConfig(sessionId, newConfig);
+				success = true;
+			}
 		}
 	}
 	
@@ -191,23 +193,27 @@ public class LiftAmbassador {
 	}
 	
 	public boolean triggerScene(String sceneName) {
-		boolean success = false;
-		if (mySceneLauncher != null) {
-			success = mySceneLauncher.triggerScene(sceneName);
-		} else {
-			theLogger.warn("Attempting to trigger scene, but no LiftSceneInterface found");
+		synchronized (theClassLock) { // Not clear if this really needs to be synchronized, but won't hurt...
+			boolean success = false;
+			if (mySceneLauncher != null) {
+				success = mySceneLauncher.triggerScene(sceneName);
+			} else {
+				theLogger.warn("Attempting to trigger scene, but no LiftSceneInterface found");
+			}
+			return success;
 		}
-		return success;
 	}
 	
 	public boolean performDataballAction(String databallAction, String databallText) {
-		boolean success = false;
-		if (myLiftAppInterface != null) {
-			success = myLiftAppInterface.performDataballAction(databallAction, databallText);
-		} else {
-			theLogger.warn("Attempting to perform Databall action, but no LiftAppInterface found");
+		synchronized (theClassLock) {
+			boolean success = false;
+			if (myLiftAppInterface != null) {
+				success = myLiftAppInterface.performDataballAction(databallAction, databallText);
+			} else {
+				theLogger.warn("Attempting to perform Databall action, but no LiftAppInterface found");
+			}
+			return success;
 		}
-		return success;
 	}
 
 	public String getCogbotResponse(String query) {
@@ -229,17 +235,21 @@ public class LiftAmbassador {
 	}
 	
 	public boolean performCogCharUpdate(String desiredUpdate) {
-		boolean success = false;
-		if (myLiftAppInterface != null) {
-			success = myLiftAppInterface.performUpdate(desiredUpdate);
-		} else {
-			theLogger.error("Cannot perform update: " + desiredUpdate + " because no LiftAppInterface is available");
+		synchronized (theClassLock) { // Definitely needs to be threadsafe
+			boolean success = false;
+			if (myLiftAppInterface != null) {
+				success = myLiftAppInterface.performUpdate(desiredUpdate);
+			} else {
+				theLogger.error("Cannot perform update: " + desiredUpdate + " because no LiftAppInterface is available");
+			}
+			return success;
 		}
-		return success;
 	}
 	
 	public void clearLiftConfigCache() {
-		myLiftConfigCache.clear();
+		synchronized (theClassLock) { 
+			myLiftConfigCache.clear();
+		}
 	}
 
 	// Gets a global lifter variable
