@@ -74,7 +74,7 @@ class ChannelSpec extends KnownComponentImpl {
 class ChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[ChannelSpec](builderConfRes) {
 
 	override protected def initExtendedFieldsAndLinks(cs: ChannelSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
-		logInfo("ChannelSpecBuilder.initExtendedFieldsAndLinks");	
+		getLogger().debug("ChannelSpecBuilder.initExtendedFieldsAndLinks");	
 		cs.myDetails = "StayTuned!";
 		//val linkedBehaviorSpecs : java.util.List[Object] = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_behavior, assmblr, mode, null);
 		//logInfo("Scene found linkedBehaviorSpecs: " + linkedBehaviorSpecs)

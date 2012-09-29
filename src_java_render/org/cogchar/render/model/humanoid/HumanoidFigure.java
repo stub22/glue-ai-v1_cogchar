@@ -380,8 +380,12 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 	// Provided so we can do such things as attach a camera node to bone attachment nodes
 	// We can't do the attaching here, because we need access to the main jME app to enqueue attach on main thread
 	public Node getBoneAttachmentsNode(String boneName) {
-		SkeletonControl sc = myHumanoidModelNode.getControl(SkeletonControl.class); 
-		return sc.getAttachmentsNode(boneName);
+		if (myHumanoidModelNode != null) {
+			SkeletonControl sc = myHumanoidModelNode.getControl(SkeletonControl.class); 
+			return sc.getAttachmentsNode(boneName);
+		} else {
+			return null;
+		}
 	}
 		
 	public static void applyHumanoidJointLimits(KinematicRagdollControl krc) {

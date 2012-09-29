@@ -69,10 +69,10 @@ public class CoreFeatureAdapter extends BasicDebugger {
 	 * Currently (2012-09-28) called only from CameraMgr.addHeadCamera.
 	 * Note that it actually executes the attachment on the OpenGL render thread
 	 */
-	static public void attachToHumanoidBone(HumanoidRenderContext hrc, final Node toAttach, Ident robotIdent, final String boneName) {
+	static public void attachToHumanoidBone(HumanoidRenderContext hrc, final Node toAttach, final Ident robotIdent, final String boneName) {
 		final HumanoidFigure robot = hrc.getHumanoidFigure(robotIdent);
 		if (robot == null) {
-			logger.warn("Failed to attach node[" + toAttach + "] to humanoid's 'BoneAttachmentsNode', due to missing robot: " + robotIdent);
+			logger.warn("Failed to attach node[" + toAttach + "] to humanoid's " + boneName + " due to missing robot: " + robotIdent);
 		} else {
 			hrc.enqueueCallable(new Callable<Void>() {
 
@@ -80,7 +80,11 @@ public class CoreFeatureAdapter extends BasicDebugger {
 				public Void call() throws Exception {
 					// getBoneAttachmentsNode attaches things to the rootNode, so this next line must be enqueued for the main render thread. Convenient!
 					Node attachToBone = robot.getBoneAttachmentsNode(boneName);
-					attachToBone.attachChild(toAttach);
+					if (attachToBone != null) {
+						attachToBone.attachChild(toAttach);
+					} else {
+						logger.warn("Delayed failure to attach node[" + toAttach + "] to humanoid, due to missing bone " + boneName + " on robot: " + robotIdent);	
+					}
 					return null;
 				}
 			});

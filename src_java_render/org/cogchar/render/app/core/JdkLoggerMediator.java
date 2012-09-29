@@ -27,11 +27,11 @@ import org.appdapter.core.log.BasicDebugger;
 public class JdkLoggerMediator extends BasicDebugger {
 	private Logger ulLogger, genLogger;
 	public void setUp() {
-		logInfo("Setting general JDK-logger level (used by JME3) to 'WARNING'");
+		getLogger().info("Setting general JDK-logger level (used by JME3) to 'WARNING'");
 		genLogger = Logger.getLogger("");
 		genLogger.setLevel(Level.WARNING);
 
-		logInfo("Disabling confusing JDK-Logger warnings from UrlLocator");		
+		getLogger().info("Disabling confusing JDK-Logger warnings from UrlLocator");		
 		ulLogger = Logger.getLogger(UrlLocator.class.getName());
 		ulLogger.setLevel(Level.SEVERE);
 	}
