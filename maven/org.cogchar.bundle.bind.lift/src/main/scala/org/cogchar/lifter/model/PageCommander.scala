@@ -197,7 +197,7 @@ package org.cogchar.lifter {
 			}
 		  case ControlType.DUALTEXTINPUT => {
 			  // From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
-			  val textItems = List.fromArray(text.split(","))
+			  val textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
 			  val label1 = textItems(0)
 			  val label2 = textItems(1)
 			  val submitLabel = textItems(2)
@@ -205,7 +205,7 @@ package org.cogchar.lifter {
 			}
 		  case ControlType.LOGINFORM => {
 			  // From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
-			  val textItems = List.fromArray(text.split(","))
+			  val textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
 			  val label1 = textItems(0)
 			  val label2 = textItems(1)
 			  val submitLabel = textItems(2)
@@ -213,21 +213,21 @@ package org.cogchar.lifter {
 			}
 		  case ControlType.SELECTBOXES => {
 			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
-			  val textItems = List.fromArray(text.split(","))
+			  val textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
 			  val titleText = textItems(0)
 			  val labelItems = textItems.tail
 			  appState.controlsMap(sessionId)(slotNum) = SelectBoxes.makeSelectBoxes(titleText, labelItems, slotNum)
 			}
 		  case ControlType.RADIOBUTTONS => {
 			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
-			  val textItems = List.fromArray(text.split(","))
+			  val textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
 			  val titleText = textItems(0)
 			  val labelItems = textItems.tail
 			  appState.controlsMap(sessionId)(slotNum) = RadioButtons.makeRadioButtons(titleText, labelItems, slotNum)
 			}
 		  case ControlType.LISTBOX => {
 			  // From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
-			  val textItems = List.fromArray(text.split(","))
+			  val textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
 			  val titleText = textItems(0)
 			  val labelItems = textItems.tail
 			  appState.controlsMap(sessionId)(slotNum) = ListBox.makeListBox(titleText, labelItems, slotNum)
@@ -237,10 +237,10 @@ package org.cogchar.lifter {
 			}
 		  case ControlType.TOGGLEBUTTON => {
 			  // For a ToggleButton, the first item in CSV text, action, style, image corresponds to the default condition, the second to the "toggled" condition
-			  var textItems = List.fromArray(text.split(","))
-			  var styleItems = List.fromArray(style.split(","))
-			  var resourceItems = List.fromArray(resource.split(","))
-			  var actionItems = List.fromArray(action.getLocalName.split("__"))
+			  var textItems = List.fromArray(text.split(ActionStrings.stringAttributeSeparator))
+			  var styleItems = List.fromArray(style.split(ActionStrings.stringAttributeSeparator))
+			  var resourceItems = List.fromArray(resource.split(ActionStrings.stringAttributeSeparator))
+			  var actionItems = List.fromArray(action.getLocalName.split(ActionStrings.multiCommandSeparator))
 			  appState.toggleButtonFullActionMap(sessionId)(slotNum) = action
 			  // Next we need to see if an app variable linked to this toggle button is already set and set the button state to match if so
 			  val buttonState = LifterVariableHandler.getToggleButtonStateFromVariable(sessionId, action)
@@ -324,11 +324,11 @@ package org.cogchar.lifter {
 		if (appState.controlDefMap(sessionId) contains slotNum) {
 		  if (appState.controlDefMap(sessionId)(slotNum).controlType equals ControlType.TOGGLEBUTTON.toString) {
 			val actionUriPrefix = getUriPrefix(appState.controlDefMap(sessionId)(slotNum).action);
-			var textItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).text.split(","))
+			var textItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).text.split(ActionStrings.stringAttributeSeparator))
 			if (appState.toggleButtonFullActionMap(sessionId) contains slotNum) {
-			  var actionItems = List.fromArray(appState.toggleButtonFullActionMap(sessionId)(slotNum).getLocalName.split("__"))
-			  var styleItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).style.split(","))
-			  var resourceItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).resource.split(","))
+			  var actionItems = List.fromArray(appState.toggleButtonFullActionMap(sessionId)(slotNum).getLocalName.split(ActionStrings.multiCommandSeparator))
+			  var styleItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).style.split(ActionStrings.stringAttributeSeparator))
+			  var resourceItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).resource.split(ActionStrings.stringAttributeSeparator))
 			  if (appState.toggleButtonMap(sessionId) contains slotNum) {
 				if (appState.toggleButtonMap(sessionId)(slotNum)) {
 				  // Button is "selected" -- change back to "default" and perform action
@@ -375,9 +375,9 @@ package org.cogchar.lifter {
 			appState.toggleButtonMap(sessionId).keySet.foreach(slotNum => {
 				val actionIdent = appState.controlDefMap(sessionId)(slotNum).action
 				if (ActionStrings.p_liftvar.equals(getUriPrefix(actionIdent)) && varName.equals(actionIdent.getLocalName)) {
-				  var textItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).text.split(","))
-				  var styleItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).style.split(","))
-				  var resourceItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).resource.split(","))
+				  var textItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).text.split(ActionStrings.stringAttributeSeparator))
+				  var styleItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).style.split(ActionStrings.stringAttributeSeparator))
+				  var resourceItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).resource.split(ActionStrings.stringAttributeSeparator))
 				  // If only one parameter is specified in RDF, duplicate the first and use that parameter here too (really we are prepending the one item in the list to itself, but that works ok here)
 				  if (textItems.length < 2) textItems ::= textItems(0)
 				  if (styleItems.length < 2) styleItems ::= styleItems(0)

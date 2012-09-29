@@ -33,6 +33,8 @@ package org.cogchar.lifter {
 	  final val databalls = "databalls"
 	  
 	  final val commandTokenSeparator = "_"
+	  final val stringAttributeSeparator = ","
+	  final val multiCommandSeparator = "__"
 	  
 	  // Not technically "action strings": strings related to network config function
 	  final val encryptionTypeVar = "networkEncType"
