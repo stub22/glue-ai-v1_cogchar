@@ -30,13 +30,12 @@ class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
   
   protected def handleHere(sessionId:String, slotId:Int, control:ControlConfig, input:Array[String]) {
 	val varName = control.action.getLocalName
-	val controlType = PageCommander.getControlType(control)
 	var variablesMap: scala.collection.mutable.HashMap[String, String] = null;
 	var sessionVar = false
 	if (PageCommander.getUriPrefix(control.action) equals ActionStrings.p_liftvar) {variablesMap = PageCommander.getState.publicAppVariablesMap}
 	else {variablesMap = PageCommander.getState.appVariablesMap(sessionId); sessionVar = true}
-	controlType match {
-	  case PageCommander.ControlType.PUSHYBUTTON => {
+	control.controlType match {
+	  case "PUSHYBUTTON" => { // This stuff needs to be handled in snippet classes...
 		  if (variablesMap contains varName) {
 			if (variablesMap(varName).toBoolean) {
 			  variablesMap(varName) = false.toString 
@@ -47,18 +46,18 @@ class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
 			variablesMap(varName) = true.toString
 		  }
 		}
-	  case PageCommander.ControlType.TOGGLEBUTTON => {
+	  case "TOGGLEBUTTON" => {
 		  val toggleButtonState = PageCommander.getState.toggleButtonMap(sessionId)(slotId) // assumes button has already been toggled on press
 		  variablesMap(varName) = toggleButtonState.toString
 		  if (!sessionVar) PageCommander.setAllPublicLiftvarToggleButtonsToState(varName, toggleButtonState)
 		}
-	  case PageCommander.ControlType.LISTBOX | PageCommander.ControlType.RADIOBUTTONS => {
+	  case "LISTBOX" | "RADIOBUTTONS" => {
 		  val textItems = List.fromArray(control.text.split(","))
 		  val textIndex = input(0).toInt + 1
 		  variablesMap(varName) = textItems(textIndex)
 		}
 	  case _ => {
-		  warn("Lifter Variable action found, but control type was not valid: " + controlType)
+		  warn("Lifter Variable action found, but control type was not valid: " + control.controlType)
 		}
 	}
 	var variableTypeString = "global"

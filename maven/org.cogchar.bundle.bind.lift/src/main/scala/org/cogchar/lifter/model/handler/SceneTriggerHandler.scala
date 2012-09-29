@@ -37,7 +37,7 @@ class SceneTriggerHandler extends AbstractLifterActionHandler {
 	val sceneInfoConfig = new LiftConfig(PageCommander.getState.SINGLE_SLOT_TEMPLATE)
 	val infoButton = new ControlConfig()
 	infoButton.myURI_Fragment = "info_control_1"
-	infoButton.controlType = PageCommander.ControlType.PUSHYBUTTON.toString
+	infoButton.controlType = "PUSHYBUTTON"
 	infoButton.action = new FreeIdent(ActionStrings.p_liftcmd + ActionStrings.lastConfig, ActionStrings.lastConfig)
 	infoButton.text = "Playing " + control.text
 	infoButton.style = control.style

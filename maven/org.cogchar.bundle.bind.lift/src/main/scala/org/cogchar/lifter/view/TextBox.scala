@@ -21,9 +21,17 @@ package org.cogchar.lifter {
 	import net.liftweb.http._
 	import net.liftweb.util._
 	import Helpers._
+	import org.cogchar.bind.lift.ControlConfig
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 
-	object TextBox {
+	object TextBox extends AbstractControlInitializationHandler {
+	  
+	  protected val matchingName = "TEXTBOX"
+  
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
+		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeBox(control.text, control.style)
+	  }
 	  
 	  def makeBox(text:String, style:String, centered:Boolean, displayAsCell:Boolean): NodeSeq = {
 		if (centered) {

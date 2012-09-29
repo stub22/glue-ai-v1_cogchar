@@ -16,6 +16,9 @@
 
 package org.cogchar.lifter.model.handler
 
+import org.cogchar.lifter.snippet._
+import org.cogchar.lifter.view._
+
 // A class with methods to initialize the handler chains - may be a cleaner way to do this...
 // Stateless, so OK to make this an object?
 object HandlerConfigurator {
@@ -54,5 +57,19 @@ object HandlerConfigurator {
 	lastConfigHandler setNextHandler databallsHandler
 	// Return the first handler in chain
 	speechCommandHandler
+  }
+  def initializeControlInitializationHandlers:AbstractControlInitializationHandler = {
+	// Set up the chain
+	PushyButton setNextHandler ToggleButton
+	ToggleButton setNextHandler TextBox
+	TextBox setNextHandler TextForm
+	TextForm setNextHandler DualTextForm
+	DualTextForm setNextHandler ListBox
+	ListBox setNextHandler LoginForm
+	LoginForm setNextHandler RadioButtons
+	RadioButtons setNextHandler SelectBoxes
+	SelectBoxes setNextHandler VideoBox
+	// Return the first handler in chain
+	PushyButton
   }
 }

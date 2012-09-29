@@ -28,11 +28,19 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http.SHtml._
+	import org.cogchar.bind.lift.ControlConfig
 	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import S._
 	
-	object TextForm {
+	object TextForm extends AbstractControlInitializationHandler {
+	  
+	  protected val matchingName = "TEXTINPUT"
+  
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
+		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeTextForm(control.text, slotNum)
+	  }
 	  
 	  val defaultText = "" // We can add bits to define this in XML if we want
 	  //val responseText = "Thanks for the input!" // We can add bits to define this in XML if we want - will probably do so soon, but disabling for "operational" demo right now
