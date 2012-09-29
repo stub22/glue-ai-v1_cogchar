@@ -40,6 +40,9 @@ public abstract class CogcharRenderApp<CRCT extends CogcharRenderContext> extend
 	public CogcharRenderApp() { 
 		super();
 		myLogger = LoggerFactory.getLogger(getClass());
+		// We need a persistent reference
+		myJDKLM = new JdkLoggerMediator();
+		myJDKLM.setUp();		
 	}
 	protected Logger getLogger() {
 		return myLogger;
@@ -65,14 +68,10 @@ public abstract class CogcharRenderApp<CRCT extends CogcharRenderContext> extend
 	}
 
 	@Override public void simpleInitApp() {
-		logInfo("CogcharRenderApp.simpleInitApp() - START");
-		logInfo("%%%%%%% JmeSystem.isLowPermissions()=" + com.jme3.system.JmeSystem.isLowPermissions());
+		getLogger().info("CogcharRenderApp.simpleInitApp() - START");
+		getLogger().info("%%%%%%% JmeSystem.isLowPermissions()=" + com.jme3.system.JmeSystem.isLowPermissions());
 
-		// We need a persistent reference
-		myJDKLM = new JdkLoggerMediator();
-		myJDKLM.setUp();
-
-		logInfo("fetch(/init) CogcharRenderContext, so we can register JMonkey roots for later lookup");		
+		getLogger().debug("fetch(/init) CogcharRenderContext, so we can register JMonkey roots for later lookup");		
 		myRenderContext = getRenderContext();
 		RenderRegistryClient rrc = myRenderContext.getRenderRegistryClient();
 		
@@ -85,7 +84,7 @@ public abstract class CogcharRenderApp<CRCT extends CogcharRenderContext> extend
 			getLogger().error("Problem during Coghar-RenderContext.completeInit()", t);
 		}
 		
-		logInfo("CogcharRenderApp.simpleInitApp() - END");
+		getLogger().info("CogcharRenderApp.simpleInitApp() - END");
 	}
 	
 	@Override public void simpleUpdate(float tpf) {
