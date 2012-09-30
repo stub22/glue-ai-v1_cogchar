@@ -35,41 +35,35 @@ class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
 	var sessionVar = false
 	if (PageCommander.getUriPrefix(control.action) equals ActionStrings.p_liftvar) {variablesMap = PageCommander.getState.publicAppVariablesMap}
 	else {variablesMap = PageCommander.getState.appVariablesMap(sessionId); sessionVar = true}
-	control.controlType match {
-	  case "PUSHYBUTTON" => { // This stuff needs to be handled in snippet classes...
-		  if (variablesMap contains varName) {
-			if (variablesMap(varName).toBoolean) {
-			  variablesMap(varName) = false.toString 
-			} else {
-			  variablesMap(varName) = true.toString
-			}
-		  } else {
-			variablesMap(varName) = true.toString
-		  }
-		}
-	  case "TOGGLEBUTTON" => {
-		  val toggleButtonState = PageCommander.getState.toggleButtonMap(sessionId)(slotId) // assumes button has already been toggled on press
+	if (input != null) { // If so, we have a value for the variable
+	  val textItems = List.fromArray(control.text.split(","))
+	  val textIndex = input(0).toInt + 1
+	  variablesMap(varName) = textItems(textIndex)
+	} else { // If so, a button type control has this Lifter Variable action.
+	  var toggleButton = false;
+	  if (PageCommander.getState.toggleButtonMap contains sessionId) {
+		if (PageCommander.getState.toggleButtonMap(sessionId) contains slotId) {
+		  toggleButton = true;
+		  val toggleButtonState = PageCommander.getState.toggleButtonMap(sessionId)(slotId) // assumes button has already been toggled on press (by toggler)
 		  variablesMap(varName) = toggleButtonState.toString
 		  if (!sessionVar) PageCommander.getToggler.setAllPublicLiftvarToggleButtonsToState(varName, toggleButtonState)
 		}
-	  case "LISTBOX" | "RADIOBUTTONS" => {
-		  val textItems = List.fromArray(control.text.split(","))
-		  val textIndex = input(0).toInt + 1
-		  variablesMap(varName) = textItems(textIndex)
+	  }
+	  if (!toggleButton) {
+		if (variablesMap contains varName) {
+		  if (variablesMap(varName).toBoolean) {
+			variablesMap(varName) = false.toString 
+		  } else {
+			variablesMap(varName) = true.toString
+		  }
+		} else {
+		  variablesMap(varName) = true.toString
 		}
-	  case _ => {
-		  warn("Lifter Variable action found, but control type was not valid: " + control.controlType)
-		}
+	  }
 	}
-	var variableTypeString = "global"
-	if (sessionVar) variableTypeString = "session"
-	try {
-	  info("Exiting LifterVariableHandler; " + variableTypeString + " lifter variable " + varName + " is now set to " + variablesMap(varName))
-	} catch {
-	  case _: Any => // If this fails it's probably because control type was invalid and lifter variable was not set -- just exit
-	}
+	var variableTypeString = if (sessionVar) "session" else "global"
+	info("Exiting LifterVariableHandler; " + variableTypeString + " lifter variable " + varName + " is now set to " + variablesMap(varName))
   }
-  
 }
 
 object LifterVariableHandler {
