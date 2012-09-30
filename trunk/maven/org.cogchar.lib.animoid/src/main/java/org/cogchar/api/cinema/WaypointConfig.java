@@ -58,17 +58,17 @@ public class WaypointConfig {
 
 	public WaypointConfig(Item configItem) {
 		// If this waypoint has no name, it's likely an unnamed waypoint defined in-line with a track definition...
-		waypointName = ItemFuncs.getString(configItem, CinematicConfigNames.P_waypointName, CinematicConfigNames.unnamedWaypointName);
+		waypointName = ItemFuncs.getString(configItem, CinemaAN.P_waypointName, CinemaAN.unnamedWaypointName);
 		String waypointLocalName = configItem.getIdent().getLocalName();
 		// ... or a waypoint with no name may be from a waypoint resource not defined as part of a track
 		if (waypointLocalName == null) {
 			waypointLocalName = "no dice"; // Keeps expression below from throwing an NPE if waypointLocalName is null, which it is if waypoint is defined within track definition
 		}
-		if (waypointLocalName.startsWith(CinematicConfigNames.P_namedWaypoint)) {
+		if (waypointLocalName.startsWith(CinemaAN.P_namedWaypoint)) {
 			waypointName = waypointLocalName;
 		}
 		for (int index = 0; index < waypointCoordinates.length; index++) {
-			waypointCoordinates[index] = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_position[index], Double.NaN).floatValue();
+			waypointCoordinates[index] = ItemFuncs.getDouble(configItem, CinemaAN.P_position[index], Double.NaN).floatValue();
 		}
 	}
 }

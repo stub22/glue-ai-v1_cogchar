@@ -15,7 +15,7 @@
  */
 package org.cogchar.render.opengl.scene;
 
-import org.cogchar.api.cinema.CinematicConfigNames;
+import org.cogchar.api.cinema.CinemaAN;
 import org.cogchar.api.cinema.CinematicConfig;
 import org.cogchar.api.cinema.CinematicTrack;
 import org.cogchar.api.cinema.RotationConfig;
@@ -91,7 +91,7 @@ public class CinematicMgr extends BasicDebugger {
 				AbstractCinematicEvent event;
 				if (track.trackType == CinematicTrack.TrackType.NULLTYPE) { // This usually indicates that the cinematic contains a reference to a named track defined elsewhere
 					String trackReference = track.trackName;
-					if (!trackReference.equals(CinematicConfigNames.unnamedTrackName)) {
+					if (!trackReference.equals(CinemaAN.unnamedTrackName)) {
 						track = myTracksByName.get(trackReference); // Reset track to the CinematicTrack declared separately by name
 						if (track == null) { // If so, cinematic is calling for a track we don't know about
 							staticLogger.error("Cinematic has requested undefined track: " + trackReference + "; cinematic is " + cic);
@@ -149,7 +149,7 @@ public class CinematicMgr extends BasicDebugger {
 						if (noPosition(waypoint.waypointCoordinates)) { // If we don't have coordinates for this waypoint...
 							// First check to see if this waypoint refers to a stored waypoint previously defined
 							String waypointReference = waypoint.waypointName;
-							if (!waypointReference.equals(CinematicConfigNames.unnamedWaypointName)) {
+							if (!waypointReference.equals(CinemaAN.unnamedWaypointName)) {
 								waypoint = myWaypointsByName.get(waypointReference); // Reset waypoint to the WaypointConfig declared separately by name
 								if (waypoint == null) { // If so, track is calling for a waypoint we don't know about
 									staticLogger.error("Track has requested undefined waypoint: " + waypointReference + "; track is " + track);
@@ -199,7 +199,7 @@ public class CinematicMgr extends BasicDebugger {
 					if (noPosition(endPositionArray)) { // If we don't have coordinates for this waypoint...
 						// First check to see if this waypoint refers to a stored waypoint previously defined
 						String waypointReference = track.waypoints.get(0).waypointName;
-						if (!waypointReference.equals(CinematicConfigNames.unnamedWaypointName)) {
+						if (!waypointReference.equals(CinemaAN.unnamedWaypointName)) {
 							WaypointConfig waypoint = myWaypointsByName.get(waypointReference); // Set waypoint to the WaypointConfig declared separately by name
 							if (waypoint == null) { // If so, track is calling for a waypoint we don't know about
 								staticLogger.error("Track has requested undefined waypoint: " + waypointReference + "; track is " + track);
@@ -231,7 +231,7 @@ public class CinematicMgr extends BasicDebugger {
 					if (noPosition(rotationInArray)) { // If we don't have values for this rotation...
 						// First check to see if this rotation refers to a stored rotation previously defined
 						String rotationReference = rotation.rotationName;
-						if (!rotationReference.equals(CinematicConfigNames.unnamedRotationName)) {
+						if (!rotationReference.equals(CinemaAN.unnamedRotationName)) {
 							rotation = myRotationsByName.get(rotationReference); // Reset rotation to the RotationConfig declared separately by name
 							if (rotation == null) { // If so, track is calling for a rotation we don't know about
 								staticLogger.error("Track has requested undefined rotation: " + rotationReference + "; track is " + track);

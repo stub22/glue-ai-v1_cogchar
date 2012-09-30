@@ -47,11 +47,11 @@ public class LightsCameraConfig extends KnownComponentImpl {
 
 	// A new constructor to build LightsCameraConfig from spreadsheet
 	public LightsCameraConfig(RepoClient queryEmitter, Ident qGraph) {
-		SolutionList solutionList = queryEmitter.getQueryResultList(LightsCameraQueryNames.CAMERA_QUERY_URI, qGraph);
+		SolutionList solutionList = queryEmitter.getQueryResultList(LightsCameraCN.CAMERA_QUERY_URI, qGraph);
 		for (Solution cameraSolution : solutionList.javaList()) {
 			myCCs.add(new CameraConfig(cameraSolution));
 		}
-		solutionList = queryEmitter.getQueryResultList(LightsCameraQueryNames.LIGHT_QUERY_URI, qGraph);
+		solutionList = queryEmitter.getQueryResultList(LightsCameraCN.LIGHT_QUERY_URI, qGraph);
 		for (Solution lightSolution : solutionList.javaList()) {
 			myLCs.add(new LightConfig(queryEmitter, lightSolution));
 		}

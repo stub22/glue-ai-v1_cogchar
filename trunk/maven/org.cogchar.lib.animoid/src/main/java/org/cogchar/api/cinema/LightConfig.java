@@ -44,32 +44,32 @@ public class LightConfig {
 	// A new constructor to build CameraConfig from spreadsheet
 	public LightConfig(RepoClient queryEmitter, Solution querySolution) {
 		SolutionHelper sh = new SolutionHelper();
-		lightName = sh.pullIdent(querySolution, LightsCameraQueryNames.LIGHT_NAME_VAR_NAME).getLocalName();
+		lightName = sh.pullIdent(querySolution, LightsCameraCN.LIGHT_NAME_VAR_NAME).getLocalName();
 		lightType = LightType.AMBIENT; // For now, we assume light is ambient (no direction required) if type is not specified
-		Ident typeIdent = sh.pullIdent(querySolution, LightsCameraQueryNames.LIGHT_TYPE_VAR_NAME);
+		Ident typeIdent = sh.pullIdent(querySolution, LightsCameraCN.LIGHT_TYPE_VAR_NAME);
 		if (typeIdent.getLocalName().equals("DIRECTIONAL")) {
 			lightType = LightType.DIRECTIONAL;
 		}
 		for (int index = 0; index < lightDirection.length; index++) {
-			lightDirection[index] = sh.pullFloat(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
+			lightDirection[index] = sh.pullFloat(querySolution, LightsCameraCN.DIRECTION_VAR_NAME[index], 0f);
 		}
 		for (int index = 0; index < lightColor.length; index++) {
-			lightColor[index] = sh.pullFloat(querySolution, LightsCameraQueryNames.COLOR_VAR_NAME[index], Float.NaN);
+			lightColor[index] = sh.pullFloat(querySolution, LightsCameraCN.COLOR_VAR_NAME[index], Float.NaN);
 		}
 	}
 
 	public LightConfig(Item configItem) {
 		lightName = configItem.getIdent().getLocalName();
 		lightType = LightType.AMBIENT; // For now, we assume light is ambient (no direction required) if type is not specified
-		String typeString = ItemFuncs.getString(configItem, LightsCameraConfigNames.P_lightType, null);
+		String typeString = ItemFuncs.getString(configItem, LightsCameraAN.P_lightType, null);
 		if (typeString.equals("DIRECTIONAL")) {
 			lightType = LightType.DIRECTIONAL;
 		}
 		for (int index = 0; index < lightDirection.length; index++) {
-			lightDirection[index] = ItemFuncs.getDouble(configItem, LightsCameraConfigNames.P_direction[index], 0.0).floatValue();
+			lightDirection[index] = ItemFuncs.getDouble(configItem, LightsCameraAN.P_direction[index], 0.0).floatValue();
 		}
 		for (int index = 0; index < lightColor.length; index++) {
-			lightColor[index] = ItemFuncs.getDouble(configItem, LightsCameraConfigNames.P_color[index], null).floatValue();
+			lightColor[index] = ItemFuncs.getDouble(configItem, LightsCameraAN.P_color[index], null).floatValue();
 		}
 	}
 

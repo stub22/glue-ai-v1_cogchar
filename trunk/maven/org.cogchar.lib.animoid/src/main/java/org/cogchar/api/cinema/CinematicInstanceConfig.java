@@ -63,8 +63,8 @@ public class CinematicInstanceConfig extends QueryBackedConfigBase {
 	public CinematicInstanceConfig(ItemAssemblyReader iaReader, Item configItem) {
 		super(null);
 		myURI_Fragment = configItem.getIdent().getLocalName();
-		duration = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_duration, null).floatValue();
-		List<Item> trackItems = iaReader.readLinkedItemSeq(configItem, CinematicConfigNames.P_track);
+		duration = ItemFuncs.getDouble(configItem, CinemaAN.P_duration, null).floatValue();
+		List<Item> trackItems = iaReader.readLinkedItemSeq(configItem, CinemaAN.P_track);
 		logInfo("Number of tracks found: " + trackItems.size());
 		for (Item ti : trackItems) {
 			CinematicTrack ct = new CinematicTrack(iaReader, ti);

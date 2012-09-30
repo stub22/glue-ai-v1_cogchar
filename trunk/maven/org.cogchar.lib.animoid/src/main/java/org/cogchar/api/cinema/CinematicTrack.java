@@ -105,52 +105,52 @@ public class CinematicTrack extends BasicDebugger {
 
 	public CinematicTrack(ItemAssemblyReader iaReader, Item configItem) {
 		// If this track has no name, it's likely an unnamed track defined in-line with a cinematic definition...
-		trackName = ItemFuncs.getString(configItem, CinematicConfigNames.P_trackName, CinematicConfigNames.unnamedTrackName);
+		trackName = ItemFuncs.getString(configItem, CinemaAN.P_trackName, CinemaAN.unnamedTrackName);
 		String trackLocalName = configItem.getIdent().getLocalName();
 		// ... or a track with no name may be from a track resource not defined as part of a cinematic
 		if (trackLocalName == null) {
 			trackLocalName = "no dice"; // Keeps expression below from throwing an NPE if trackLocalName is null, which it is if track is defined within cinematic definition
 		}
-		if (trackLocalName.startsWith(CinematicConfigNames.P_namedTrack)) {
+		if (trackLocalName.startsWith(CinemaAN.P_namedTrack)) {
 			//trackName = trackLocalName.replaceFirst(CinematicConfigNames.P_namedTrack, ""); // Strip the prefix and set trackName to this
 			trackName = trackLocalName; // Actually may be best to just leave the prefix, then we reference this named track in cinematics with the prefix for clarity
 		}
-		attachedItem = ItemFuncs.getString(configItem, CinematicConfigNames.P_item, "none");
+		attachedItem = ItemFuncs.getString(configItem, CinemaAN.P_item, "none");
 		String typeString;
-		typeString = ItemFuncs.getString(configItem, CinematicConfigNames.P_itemType, null);
+		typeString = ItemFuncs.getString(configItem, CinemaAN.P_itemType, null);
 		for (AttachedItemType testType : AttachedItemType.values()) {
 			if (testType.toString().equals(typeString)) {
 				attachedItemType = testType;
 			}
 		}
-		typeString = ItemFuncs.getString(configItem, CinematicConfigNames.P_trackType, null);
+		typeString = ItemFuncs.getString(configItem, CinemaAN.P_trackType, null);
 		for (TrackType testType : TrackType.values()) {
 			if (testType.toString().equals(typeString)) {
 				trackType = testType;
 			}
 		}
-		directionType = ItemFuncs.getString(configItem, CinematicConfigNames.P_directionType, null);
+		directionType = ItemFuncs.getString(configItem, CinemaAN.P_directionType, null);
 		for (int index = 0; index < direction.length; index++) {
-			direction[index] = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_direction[index], 0.0).floatValue();
+			direction[index] = ItemFuncs.getDouble(configItem, CinemaAN.P_direction[index], 0.0).floatValue();
 		}
-		tension = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_tension, 0.0).floatValue();
-		typeString = ItemFuncs.getString(configItem, CinematicConfigNames.P_cycle, "false");
+		tension = ItemFuncs.getDouble(configItem, CinemaAN.P_tension, 0.0).floatValue();
+		typeString = ItemFuncs.getString(configItem, CinemaAN.P_cycle, "false");
 		if (typeString.equals("false")) {
 			cycle = false;
 		} else {
 			cycle = true;
 		}
-		loopMode = ItemFuncs.getString(configItem, CinematicConfigNames.P_loop, null);
-		startTime = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_startTime, 0.0).floatValue();
-		trackDuration = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_trackDuration, 0.0).floatValue();
+		loopMode = ItemFuncs.getString(configItem, CinemaAN.P_loop, null);
+		startTime = ItemFuncs.getDouble(configItem, CinemaAN.P_startTime, 0.0).floatValue();
+		trackDuration = ItemFuncs.getDouble(configItem, CinemaAN.P_trackDuration, 0.0).floatValue();
 		// Get waypoints
-		List<Item> waypointItems = iaReader.readLinkedItemSeq(configItem, CinematicConfigNames.P_waypoint);
+		List<Item> waypointItems = iaReader.readLinkedItemSeq(configItem, CinemaAN.P_waypoint);
 		for (Item wpt : waypointItems) {
 			WaypointConfig oneWaypoint = new WaypointConfig(wpt);
 			waypoints.add(oneWaypoint);
 		}
 		// Get rotation - there should only be one
-		Set<Item> rotationItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_rotation);
+		Set<Item> rotationItems = ItemFuncs.getLinkedItemSet(configItem, CinemaAN.P_rotation);
 		if (rotationItems.size() > 1) {
 			logWarning("More than one endRotation detected in track " + trackName + "; ignoring all but one!");
 		}

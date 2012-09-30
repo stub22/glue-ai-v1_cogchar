@@ -20,7 +20,7 @@ import org.appdapter.api.trigger.BoxAssemblyNames;
 /**
  * @author Ryan Biggs
  */
-public class LightsCameraConfigNames extends BoxAssemblyNames {
+public class LightsCameraAN extends BoxAssemblyNames {
 	public static	String		NS_CgcBC		= "http://www.cogchar.org/bony/config#";
 	
 	public static	String		partial_P_camera = "camera";
