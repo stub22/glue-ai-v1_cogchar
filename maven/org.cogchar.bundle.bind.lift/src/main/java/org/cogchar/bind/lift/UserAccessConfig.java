@@ -39,23 +39,25 @@ public class UserAccessConfig extends KnownComponentImpl {
 	public Ident loginPage;
 	public Map<Ident, UserConfig> users = new HashMap<Ident, UserConfig>();
 
-	public UserAccessConfig(RepoClient qi, Ident graphIdent) {
+	public UserAccessConfig(RepoClient rc, Ident graphIdent) {
 		SolutionHelper sh = new SolutionHelper();
-		SolutionList solutionList = qi.getQueryResultList(UserQueryNames.LOGIN_PAGE_QUERY_URI, graphIdent);
-		List<Ident> loginList = sh.pullIdentsAsJava(solutionList, UserQueryNames.LOGIN_PAGE_VAR_NAME);
+		SolutionList loginPageSolList = rc.queryIndirectForAllSolutions(UserQueryNames.LOGIN_PAGE_QUERY_URI, graphIdent);
+		List<Ident> loginList = sh.pullIdentsAsJava(loginPageSolList, UserQueryNames.LOGIN_PAGE_VAR_NAME);
 		if (loginList.size() >= 1) {
 			loginPage = loginList.get(0);
 			if (loginList.size() > 1) {
 				logWarning("Found more than one startup liftConfig; using " + loginPage + " and ignoring the rest");
 			}
 		}
-		SolutionMap solutionMap = qi.getQueryResultMap(UserQueryNames.USER_QUERY_URI, UserQueryNames.USER_VAR_NAME, graphIdent);
-		Iterator userIterator = solutionMap.getJavaIterator();
-		Map<Ident, Solution> javaSolutionMap = HelpRepoExtensions.convertToJavaMap(solutionMap.map()); // Not needed once javaMap is added to SolutionMap
+		SolutionList userSolList = rc.queryIndirectForAllSolutions(UserQueryNames.USER_QUERY_URI, graphIdent);
+		SolutionMap userSolMap = userSolList.makeSolutionMap(UserQueryNames.USER_VAR_NAME);
+		
+		Iterator userIterator = userSolMap.getJavaIterator();
+		Map<Ident, Solution> javaSolutionMap = HelpRepoExtensions.convertToJavaMap(userSolMap.map()); // Not needed once javaMap is added to SolutionMap
 		while (userIterator.hasNext()) {
 			Ident user = (Ident) userIterator.next();
 			// users.put(user, new UserConfig(qi, graphIdent, solutionMap.javaMap().get(user))); // We can use this form once javaMap is added to SolutionMap
-			users.put(user, new UserConfig(qi, graphIdent, javaSolutionMap.get(user))); // A temporary way to do it until javaMap is added to SolutionMap
+			users.put(user, new UserConfig(rc, graphIdent, javaSolutionMap.get(user))); // A temporary way to do it until javaMap is added to SolutionMap
 		}
 
 	}

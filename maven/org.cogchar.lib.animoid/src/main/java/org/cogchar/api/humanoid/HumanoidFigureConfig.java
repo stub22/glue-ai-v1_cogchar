@@ -54,9 +54,8 @@ public class HumanoidFigureConfig {
 	// so why not here?
 	private void addBoneDescsFromBoneRobotConfig(RepoClient qi, Ident charIdent, Ident bonyGraphIdent, HumanoidFigureConfig hfc) {
 		SolutionHelper sh = new SolutionHelper();
-		String queryString = qi.getQuery(BoneCN.BONE_NAMES_QUERY_TEMPLATE_URI);
-		queryString = qi.setQueryVar(queryString, BoneCN.ROBOT_IDENT_QUERY_VAR, charIdent);
-		SolutionList solutionList = qi.getTextQueryResultList(queryString, bonyGraphIdent);
+		SolutionList solutionList = qi.queryIndirectForAllSolutions(BoneCN.BONE_NAMES_QUERY_QN, bonyGraphIdent, 
+						BoneCN.ROBOT_IDENT_QUERY_VAR, charIdent);
 		List<String> boneNames = sh.pullStringsAsJava(solutionList, BoneCN.BONE_NAME_VAR_NAME);
 		for (String boneName : boneNames) {
 			myBoneConfig.addBoneDesc(boneName);

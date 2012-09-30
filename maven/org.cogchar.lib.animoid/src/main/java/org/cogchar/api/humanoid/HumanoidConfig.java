@@ -19,6 +19,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.SolutionMap;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
+import org.appdapter.help.repo.SolutionList;
 
 /**
  * This class serves as a place to hold the humanoid config (right now, the stuff on the "Humanoids" spreadsheet tab)
@@ -38,7 +39,9 @@ public class HumanoidConfig {
 	public HumanoidConfig(RepoClient qi, Ident charIdent, Ident graphIdent) {
 		SolutionHelper sh = new SolutionHelper();
 		myCharIdent = charIdent;
-		SolutionMap solutionMap = qi.getQueryResultMap(HumanoidCN.HUMANOID_QUERY, HumanoidCN.ROBOT_URI_VAR_NAME, graphIdent);
+		
+		SolutionList sList = qi.queryIndirectForAllSolutions(HumanoidCN.HUMANOID_QUERY, graphIdent);
+		SolutionMap solutionMap  = sList.makeSolutionMap(HumanoidCN.ROBOT_URI_VAR_NAME);
 		nickname = sh.pullString(solutionMap, charIdent, HumanoidCN.ROBOT_ID_VAR_NAME);
 		meshPath = sh.pullString(solutionMap, charIdent, HumanoidCN.MESH_PATH_VAR_NAME);
 		jointConfigPath = sh.pullString(solutionMap, charIdent, HumanoidCN.JOINT_CONFIG_PATH_VAR_NAME);

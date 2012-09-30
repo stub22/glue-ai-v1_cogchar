@@ -56,9 +56,8 @@ public class BoneJointConfig extends KnownComponentImpl{
 		myJointName = sh.pullString(solutionMap, jointIdent, BoneCN.JOINT_NAME_VAR_NAME);
 		myNormalDefaultPos = sh.pullDouble(solutionMap, jointIdent, BoneCN.DEFAULT_POS_VAR_NAME);
 		// What about bc:invertForSymmetry?
-		String queryString = qi.getQuery(BoneCN.BONEPROJECTION_QUERY_TEMPLATE_URI);
-		queryString = qi.setQueryVar(queryString, BoneCN.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
-		SolutionList solutionList = qi.getTextQueryResultList(queryString, graphIdent);
+		SolutionList solutionList = qi.queryIndirectForAllSolutions(BoneCN.BONEPROJECTION_QUERY_QN, graphIdent,
+						 BoneCN.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
 		if (solutionList.javaList().size() == 1) {
 			Solution projRangeSoln = solutionList.javaList().get(0);
 			String boneName = sh.pullString(projRangeSoln, BoneCN.BONE_NAME_VAR_NAME);
@@ -67,9 +66,8 @@ public class BoneJointConfig extends KnownComponentImpl{
 			Double maxAngle = sh.pullDouble(projRangeSoln, BoneCN.MAX_ANGLE_VAR_NAME, 0);
 			BoneRotationAxis rotationAxis = BoneRotationAxis.valueOf(rotationAxisName);
 			myProjectionRanges.add(new BoneProjectionRange(this, boneName, rotationAxis, Math.toRadians(minAngle), Math.toRadians(maxAngle)));
-			queryString = qi.getQuery(BoneCN.ADDITIONAL_BONES_QUERY_TEMPLATE_URI);
-			queryString = qi.setQueryVar(queryString, BoneCN.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
-			solutionList = qi.getTextQueryResultList(queryString, graphIdent);
+			solutionList = qi.queryIndirectForAllSolutions(BoneCN.ADDITIONAL_BONES_QUERY_QN, graphIdent, 
+							BoneCN.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
 			for (Solution solution : solutionList.javaList()) {
 				boneName = sh.pullString(solution, BoneCN.BONE_NAME_VAR_NAME, "");
 				rotationAxisName = sh.pullString(solution, BoneCN.ROTATION_AXIS_VAR_NAME, "");
