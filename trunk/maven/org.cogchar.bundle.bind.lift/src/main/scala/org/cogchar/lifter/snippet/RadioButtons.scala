@@ -38,12 +38,12 @@ package org.cogchar.lifter {
 	  
 	  protected val matchingName = "RADIOBUTTONS"
   
-	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq =  {
 		// From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
 		val textItems = List.fromArray(control.text.split(ActionStrings.stringAttributeSeparator))
 		val titleText = textItems(0)
 		val labelItems = textItems.tail
-		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeRadioButtons(titleText, labelItems, slotNum)
+		makeRadioButtons(titleText, labelItems, slotNum)
 	  }
   
 	  val responseText = "I see you!"

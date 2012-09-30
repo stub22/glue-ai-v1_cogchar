@@ -17,7 +17,7 @@
 package org.cogchar.lifter {
   package snippet {
 
-	import scala.xml._
+	import scala.xml.NodeSeq
 	import net.liftweb._
 	import http._
 	import common._
@@ -38,8 +38,8 @@ package org.cogchar.lifter {
 	  
 	  protected val matchingName = "TEXTINPUT"
   
-	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
-		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeTextForm(control.text, slotNum)
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+		makeTextForm(control.text, slotNum)
 	  }
 	  
 	  val defaultText = "" // We can add bits to define this in XML if we want

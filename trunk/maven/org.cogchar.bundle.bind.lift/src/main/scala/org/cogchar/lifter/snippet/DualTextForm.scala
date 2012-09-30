@@ -38,12 +38,12 @@ package org.cogchar.lifter {
 	  
 	  protected val matchingName = "DUALTEXTINPUT"
   
-	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
 		val textItems = List.fromArray(control.text.split(ActionStrings.stringAttributeSeparator))
 		val label1 = textItems(0)
 		val label2 = textItems(1)
 		val submitLabel = textItems(2)
-		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeForm(label1, label2, submitLabel, slotNum)
+		makeForm(label1, label2, submitLabel, slotNum)
 	  }
 	  
 	  val defaultText = "" // We can add bits to define this in RDF if we want

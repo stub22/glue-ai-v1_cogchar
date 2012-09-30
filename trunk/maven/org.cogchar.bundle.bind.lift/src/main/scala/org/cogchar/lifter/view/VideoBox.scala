@@ -17,20 +17,19 @@
 package org.cogchar.lifter {
   package view {
 
-	import scala.xml._	
+	import scala.xml.NodeSeq	
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http._
 	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.model.PageCommander
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 
 	object VideoBox extends AbstractControlInitializationHandler {
 	  
 	  protected val matchingName = "VIDEOBOX"
   
-	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
-		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeBox(control.resource, true)
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+		makeBox(control.resource, true)
 	  }
 	  
 	  def makeBox(videoResource:String, mute: Boolean): NodeSeq = {
