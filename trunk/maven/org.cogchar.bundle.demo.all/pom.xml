@@ -19,20 +19,7 @@
             <artifactId>org.cogchar.bundle.app.puma</artifactId>
             <version>${project.version}</version>
         </dependency>	
-		<!--
-		<dependency>
-            <groupId>com.hrkind</groupId>
-            <artifactId>com.hrkind.content.preview</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-		-->
-		<!--
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>org.cogchar.bundle.render.resources</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-		-->
+
 		<dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -40,9 +27,10 @@
         </dependency>
         <dependency>
 			<!-- Pull in the Appdapter OSGi shell integration, requiring the 
-				fancier launching setup used below.  For an example without
-				the shell (and easier launch from Netbeans, but requiring kill
-				to exit) see org.friendularity.bundle.demo.ccrk.
+				fancier launching setup used below.  (See wiki for commands
+				to use from shell to launch this project).  For an example without
+				the shell (and easier launch from Netbeans, but currently requiring 
+				kill to exit) see org.friendularity.bundle.demo.ccrk.
 			-->
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.felix.shell</artifactId>
@@ -55,13 +43,6 @@
             </exclusions>
         </dependency>
 
-		<!--
-        <dependency>
-            <groupId>org.friendularity</groupId>
-            <artifactId>ext.bundle.frag.sun.misc</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-		-->
         <dependency>
             <groupId>org.robokind</groupId>
             <artifactId>org.robokind.headless.speech</artifactId>
@@ -111,7 +92,9 @@
                     <version>3.0.7</version>
                     <scope>provided</scope>
                 </dependency>
-                <!-- To include a shell:
+                <!-- 
+				Default pom archetype for a Felix-OSGi suggests "To include a shell:",
+				but we have our own approach using appdapter dep above.
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.gogo.shell</artifactId>
@@ -212,11 +195,11 @@
                                     <entry key="felix.auto.start" value="${urls}" />
                                     <entry key="felix.auto.deploy.action" value="uninstall,install,update,start" />
                                     <entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache" />
-									<!--  This laxity with bootdelegation does not appear necessary, as of 2011-12-23 -->
+									<!--  Stu: This laxity with bootdelegation does not appear necessary, as of 2011-12-23 -->
 									<!--
                                     <entry key="org.osgi.framework.bootdelegation" value="*" />
 									-->
-									<!-- Permission to load sun.misc required by ext.bundle.opengl.jmonkey, as of 2011-12-23 -->
+									<!-- Stu: Permission to load sun.misc required by ext.bundle.opengl.jmonkey, as of 2011-12-23 -->
 									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc" />
                                 </propertyfile>
                                 <makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />
