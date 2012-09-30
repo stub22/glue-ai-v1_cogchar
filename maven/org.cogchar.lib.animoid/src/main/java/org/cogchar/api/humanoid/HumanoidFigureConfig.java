@@ -22,7 +22,6 @@ import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
-import org.cogchar.blob.emit.QueryTester;
 
 /**
  * @author Stu B. <www.texpedient.com>

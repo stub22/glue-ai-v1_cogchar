@@ -15,20 +15,8 @@
  */
 
 package org.cogchar.api.cinema;
-import java.util.ArrayList;
-import java.util.List;
-import org.appdapter.core.item.Item;
-import org.appdapter.core.item.ItemFuncs;
-import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
-import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
 import org.appdapter.core.component.KnownComponentImpl;
-import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.blob.emit.QueryTester;
-
-import org.appdapter.core.log.BasicDebugger;
 /**
  * @author Stu B. <www.texpedient.com>
  */

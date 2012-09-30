@@ -32,7 +32,6 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.blob.emit.QueryTester;
 
 
 /**

@@ -22,13 +22,11 @@ import java.util.Set;
 import org.appdapter.core.item.*;
 import org.appdapter.core.name.Ident;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
-import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
-import org.cogchar.blob.emit.QueryTester;
 
 /**
  *

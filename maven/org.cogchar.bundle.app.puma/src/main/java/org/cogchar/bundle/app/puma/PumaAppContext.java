@@ -33,7 +33,7 @@ import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 
-import org.cogchar.blob.emit.QueryTester;
+import org.cogchar.blob.emit.RepoClientTester;
 import org.cogchar.platform.trigger.DummyBinding;
 import org.cogchar.render.app.trigger.KeyBindingConfig;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;  // Perhaps we want to fetch this from a context instead, but it's a singleton, so no harm in getting it directly for the moment
@@ -105,7 +105,7 @@ public class PumaAppContext extends BasicDebugger {
 	}
 	private RepoClient getQueryHelper() { 
 		if (myRepoClient == null) {
-			myRepoClient = QueryTester.makeVanillaQueryEmitter();
+			myRepoClient = RepoClientTester.makeVanillaQueryEmitter();
 		}
 		return myRepoClient;
 	}
