@@ -46,8 +46,8 @@ public class AssemblyTest {
 		 * should work OK, too.
 */		
 		String triplesPath = "org/cogchar/test/assembly/ca_test.ttl";
-		
-		Set<Object> loadedStuff = AssemblerUtils.buildObjSetFromPath (triplesPath, AssemblyTest.class.getClassLoader());
+		ClassLoader hintCL = AssemblyTest.class.getClassLoader();
+		Set<Object> loadedStuff = AssemblerUtils.buildObjSetFromPath (triplesPath, hintCL);
 		logInfo("Loaded " + loadedStuff.size() + " objects");
 		for (Object o : loadedStuff) {
 			logInfo("Loaded: " + o);

@@ -18,6 +18,8 @@ package org.cogchar.blob.emit
 
 import org.appdapter.core.name.{FreeIdent, Ident}
 
+import org.appdapter.help.repo.{RepoClient, SolutionHelper}
+
 object GlobalConfigEmitter {
   // Constants for query config - this could live elsewhere but may make sense here
   // As usual, meta-meta-data keeps squeezing out into code
@@ -34,11 +36,9 @@ object GlobalConfigEmitter {
 
 // An object class to hold "global" configuration information loaded at "boot"
 // Currently corresponds to "GlobalMode" bindings
-class GlobalConfigEmitter {
-  
-  // We'll get the QueryInterface from QueryTester for the moment. Goofy. Should this really come from a registry? Use the
-  // (likely needlessly) managed service instance? 
-  private val qi = QueryTester.getInterface
+class GlobalConfigEmitter(val myQI : RepoClient) {
+   
+  private val sh = new SolutionHelper()
   
   // A "triple map" keyed on config "entity" with values of maps keyed by "role", each of which have a "role" object
   //val ergMap = new scala.collection.mutable.HashMap[Ident, scala.collection.mutable.HashMap[Ident, Ident]]
@@ -51,14 +51,14 @@ class GlobalConfigEmitter {
   
   // For now, we provide a constructor to build the Global Config from "GlobalModes" tab on query-based sheet
   // This could be joined by other constructors to alternately get the config from other resources
-  def this(globalModeUri: Ident) = {
-	this()
+  def this(aqi :  RepoClient, globalModeUri: Ident) = {
+	this(aqi)
 	// First, the ergMap of "bindings" is populated
-	val query = qi.getCompletedQueryFromTemplate(GlobalConfigEmitter.GLOBALMODE_QUERY_TEMPLATE_URI, 
+	val query = myQI.getCompletedQueryFromTemplate(GlobalConfigEmitter.GLOBALMODE_QUERY_TEMPLATE_URI, 
 												 GlobalConfigEmitter.GLOBALMODE_QUERY_VAR_NAME, globalModeUri);
-	val solutionList = qi.getTextQueryResultList(query);
+	val solutionList = myQI.getTextQueryResultList(query);
 	solutionList.list.foreach(solution => {
-		val entityIdent = qi.getIdentFromSolution(solution, GlobalConfigEmitter.ENTITY_VAR_NAME);
+		val entityIdent = sh.getIdentFromSolution(solution, GlobalConfigEmitter.ENTITY_VAR_NAME);
 		var rgMap: java.util.HashMap[Ident, Ident] = null;
 		if (ergMap containsKey entityIdent) {
 		  rgMap = ergMap.get(entityIdent)
@@ -66,18 +66,18 @@ class GlobalConfigEmitter {
 		  rgMap = new java.util.HashMap[Ident, Ident]
 		  ergMap.put(entityIdent, rgMap)
 		}
-		val roleIdent = qi.getIdentFromSolution(solution, GlobalConfigEmitter.ROLE_VAR_NAME);
-		val graphIdent = qi.getIdentFromSolution(solution, GlobalConfigEmitter.GRAPH_VAR_NAME);
+		val roleIdent = sh.getIdentFromSolution(solution, GlobalConfigEmitter.ROLE_VAR_NAME);
+		val graphIdent = sh.getIdentFromSolution(solution, GlobalConfigEmitter.GRAPH_VAR_NAME);
 		rgMap.put(roleIdent, graphIdent)
 	  })
 	// Next, the entityMap is created
 	for (i <- 0 until GlobalConfigEmitter.ENTITY_TYPES.length) {
-	  val query = qi.getCompletedQueryFromTemplate(GlobalConfigEmitter.ENTITIES_QUERY_TEMPLATE_URI,
+	  val query = myQI.getCompletedQueryFromTemplate(GlobalConfigEmitter.ENTITIES_QUERY_TEMPLATE_URI,
 												   GlobalConfigEmitter.ENTITY_TYPE_QUERY_VAR_NAME,
 												   new FreeIdent(GlobalConfigEmitter.gr+GlobalConfigEmitter.ENTITY_TYPES(i), GlobalConfigEmitter.ENTITY_TYPES(i)))
-	  val queryWithMode = qi.setQueryVar(query, GlobalConfigEmitter.GLOBALMODE_QUERY_VAR_NAME, globalModeUri)
-	  val solutionList = qi.getTextQueryResultList(queryWithMode)
-	  val entityList = qi.getIdentsFromSolutionAsJava(solutionList, GlobalConfigEmitter.ENTITY_VAR_NAME)
+	  val queryWithMode = myQI.setQueryVar(query, GlobalConfigEmitter.GLOBALMODE_QUERY_VAR_NAME, globalModeUri)
+	  val solutionList = myQI.getTextQueryResultList(queryWithMode)
+	  val entityList = sh.getIdentsFromSolutionAsJava(solutionList, GlobalConfigEmitter.ENTITY_VAR_NAME)
 	  //println("GlobalConfigEmitter putting list for type " + GlobalConfigEmitter.ENTITY_TYPES(i) + ": " + entityList) // TEST ONLY
 	  entityMap.put(GlobalConfigEmitter.ENTITY_TYPES(i), entityList)
 	}

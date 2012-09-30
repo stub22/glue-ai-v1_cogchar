@@ -17,7 +17,7 @@
 package org.cogchar.blob.emit
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.store.{Repo}
-import org.appdapter.help.repo.{QueryInterface, QueryEmitter} 
+import org.appdapter.help.repo.{RepoClient, RepoClientImpl} 
 import org.appdapter.impl.store.{FancyRepo};
 import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{Query, QueryFactory, QueryExecution, QueryExecutionFactory, QuerySolution, QuerySolutionMap, Syntax};
@@ -28,11 +28,6 @@ import com.hp.hpl.jena.rdf.model.{Model}
  *
  */
 object QueryTester {
-	def main(args: Array[String]) : Unit = {
-		val QUERY_TO_TEST = "ccrt:find_users_99"
-		testQuery(QUERY_TO_TEST)
-	}
-  
 	final val SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" // Main test sheet!
 	//final val SHEET_KEY = "0Ajj1Rnx7FCoHdDN2VFdVazMzRGNGY3BMQmk1TXZzUHc" // Biggs test sheet!
 	//final val SHEET_KEY = "0AlpQRNQ-L8QUdDNWQXpmSW9iNzROcHktZEJZdTJhY2c" // Workshop v010_004 test sheet
@@ -42,21 +37,37 @@ object QueryTester {
 	final val DIR_SHEET_NUM = 8
 	final val QUERY_SHEET = "ccrt:qry_sheet_22"
 	final val GRAPH_QUERY_VAR = "qGraph"
-	var myRepo: FancyRepo = null;
-	var myQueryEmitter: QueryEmitter = null;
-  
-	/** Provided solely for testing of queries
-	 *
-	 */
-	def testQuery(queryToTest: String) : Unit = {
+	// var myRepo: FancyRepo = null;
+	// var myQueryEmitter: QueryEmitter = null;
+
 	
-		val sr : SheetRepo = loadSheetRepo
-		val qText = sr.getQueryText(QUERY_SHEET, queryToTest)
-		println("Found query text: " + qText)
+	def main(args: Array[String]) : Unit = {
 		
-		val parsedQ = sr.parseQueryText(qText);
-		val solnJavaList : java.util.List[QuerySolution] = sr.findAllSolutions(parsedQ, null);
-		println("Found solutions: " + solnJavaList)
+		val vqe = makeVanillaQueryEmitter()
+		
+		val lightsQueryQName = "ccrt:find_lights_99"
+		val lightsGraphQName = "ccrt:lights_camera_sheet_22"
+		
+		testQueryInterface(vqe, lightsQueryQName, lightsGraphQName)
+	}
+  
+	def testQueryInterface(qi : RepoClient, queryQName: String, tgtGraphQName : String) : Unit = {
+			
+		val repo = qi.getRepo;
+		
+		// Find the query in this named model (according to Repo directory)
+		val querySheetQName = QUERY_SHEET;
+
+		// Plug a parameter in for the target query graph
+		val qInitBinding = new QuerySolutionMap()
+		val graphVarName = GRAPH_QUERY_VAR
+		// Repo reads QNames using its namespaces
+		repo.bindQueryVarToQName(qInitBinding, graphVarName, tgtGraphQName)
+		
+		// Run the resulting fully bound query, and print the results.		
+		val solnJavaList : java.util.List[QuerySolution] = repo.queryIndirectForAllSolutions(querySheetQName, queryQName, qInitBinding);
+
+		println("Found solutions for " + queryQName + " in " + tgtGraphQName + " : " + solnJavaList)
 	}
   
 	// Modeled on SheetRepo.loadTestSheetRepo
@@ -66,31 +77,9 @@ object QueryTester {
 		sr.loadSheetModelsIntoMainDataset()
 		sr
 	}
-  	def makeVanillaQueryEmitter() : QueryEmitter = {
+  	def makeVanillaQueryEmitter() : RepoClient = {
 		val repo = loadSheetRepo;
-		new QueryEmitter(repo, GRAPH_QUERY_VAR, QUERY_SHEET)		
+		new RepoClientImpl(repo, GRAPH_QUERY_VAR, QUERY_SHEET)		
 	}
-	// A temporary hook-in to allow current clients of QueryEmitter to easily get a "primary" instance until they 
-	// start using the managed service version - really this should happen in a registry but this is a short-term fix
-	def getInterface : QueryInterface = {
-		getEmitter
-	}
-	// makeVanillaQueryEmitter creates a QueryEmitter, not a QueryInterface per se. Just for the moment, let's store this
-	// instead. This will allow PumaBooter.startVanillaQueryInterface to use the same instance of the QueryEmitter for which
-	// this.getInterface returns an interface. In turn, that prevents (SLOW) duplicate resource loading and the possibility for 
-	// unsynchronized state within PUMA.
-	// Really we might rather not expose the emitter, but rather only the interface. That sounds cleaner, but we need to be
-	// able to access an instance of the emitter to be able to start a managed service as in PumaBooter.startVanillaQueryInterface.
-	// So either we might have to accept exposing the QueryEmitter instance in this way, or move the functionality of 
-	// PumaBooter.startVanillaQueryInterface to here or to this class' successor. -Ryan Biggs 16 Sept 2012
-	def getEmitter : QueryEmitter = {
-		if (myQueryEmitter == null) {
-			  myQueryEmitter = makeVanillaQueryEmitter;
-		  }
-		  myQueryEmitter
-	}
-  
-	def clearQueryInterface : Unit = {
-		myQueryEmitter = null;
-	}
+
 }

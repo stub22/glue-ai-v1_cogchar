@@ -22,10 +22,7 @@ import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.QueryInterface;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.SolutionMap;
+import org.appdapter.help.repo.*;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -52,31 +49,32 @@ public class BoneJointConfig extends KnownComponentImpl{
 	}
 	
 	// This constructor is used to build BoneJointConfig from queries
-	public BoneJointConfig(QueryInterface queryEmitter, Ident jointIdent, SolutionMap solutionMap, Ident graphIdent) {
+	public BoneJointConfig(RepoClient qi, Ident jointIdent, SolutionMap solutionMap, Ident graphIdent) {
+		SolutionHelper sh = new SolutionHelper();
 		myURI_Fragment = jointIdent.getLocalName();
-		myJointNum = queryEmitter.getIntegerFromSolution(solutionMap, jointIdent, BoneQueryNames.JOINT_NUM_VAR_NAME);
-		myJointName = queryEmitter.getStringFromSolution(solutionMap, jointIdent, BoneQueryNames.JOINT_NAME_VAR_NAME);
-		myNormalDefaultPos = queryEmitter.getDoubleFromSolution(solutionMap, jointIdent, BoneQueryNames.DEFAULT_POS_VAR_NAME);
+		myJointNum = sh.getIntegerFromSolution(solutionMap, jointIdent, BoneQueryNames.JOINT_NUM_VAR_NAME);
+		myJointName = sh.getStringFromSolution(solutionMap, jointIdent, BoneQueryNames.JOINT_NAME_VAR_NAME);
+		myNormalDefaultPos = sh.getDoubleFromSolution(solutionMap, jointIdent, BoneQueryNames.DEFAULT_POS_VAR_NAME);
 		// What about bc:invertForSymmetry?
-		String queryString = queryEmitter.getQuery(BoneQueryNames.BONEPROJECTION_QUERY_TEMPLATE_URI);
-		queryString = queryEmitter.setQueryVar(queryString, BoneQueryNames.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
-		SolutionList solutionList = queryEmitter.getTextQueryResultList(queryString, graphIdent);
+		String queryString = qi.getQuery(BoneQueryNames.BONEPROJECTION_QUERY_TEMPLATE_URI);
+		queryString = qi.setQueryVar(queryString, BoneQueryNames.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
+		SolutionList solutionList = qi.getTextQueryResultList(queryString, graphIdent);
 		if (solutionList.javaList().size() == 1) {
-			Solution projectionRangeSolution = solutionList.javaList().get(0);
-			String boneName = queryEmitter.getStringFromSolution(projectionRangeSolution, BoneQueryNames.BONE_NAME_VAR_NAME);
-			String rotationAxisName = queryEmitter.getStringFromSolution(projectionRangeSolution, BoneQueryNames.ROTATION_AXIS_VAR_NAME);
-			Double minAngle = queryEmitter.getDoubleFromSolution(projectionRangeSolution, BoneQueryNames.MIN_ANGLE_VAR_NAME, 0);
-			Double maxAngle = queryEmitter.getDoubleFromSolution(projectionRangeSolution, BoneQueryNames.MAX_ANGLE_VAR_NAME, 0);
+			Solution projRangeSoln = solutionList.javaList().get(0);
+			String boneName = sh.getStringFromSolution(projRangeSoln, BoneQueryNames.BONE_NAME_VAR_NAME);
+			String rotationAxisName = sh.getStringFromSolution(projRangeSoln, BoneQueryNames.ROTATION_AXIS_VAR_NAME);
+			Double minAngle = sh.getDoubleFromSolution(projRangeSoln, BoneQueryNames.MIN_ANGLE_VAR_NAME, 0);
+			Double maxAngle = sh.getDoubleFromSolution(projRangeSoln, BoneQueryNames.MAX_ANGLE_VAR_NAME, 0);
 			BoneRotationAxis rotationAxis = BoneRotationAxis.valueOf(rotationAxisName);
 			myProjectionRanges.add(new BoneProjectionRange(this, boneName, rotationAxis, Math.toRadians(minAngle), Math.toRadians(maxAngle)));
-			queryString = queryEmitter.getQuery(BoneQueryNames.ADDITIONAL_BONES_QUERY_TEMPLATE_URI);
-			queryString = queryEmitter.setQueryVar(queryString, BoneQueryNames.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
-			solutionList = queryEmitter.getTextQueryResultList(queryString, graphIdent);
+			queryString = qi.getQuery(BoneQueryNames.ADDITIONAL_BONES_QUERY_TEMPLATE_URI);
+			queryString = qi.setQueryVar(queryString, BoneQueryNames.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
+			solutionList = qi.getTextQueryResultList(queryString, graphIdent);
 			for (Solution solution : solutionList.javaList()) {
-				boneName = queryEmitter.getStringFromSolution(solution, BoneQueryNames.BONE_NAME_VAR_NAME, "");
-				rotationAxisName = queryEmitter.getStringFromSolution(solution, BoneQueryNames.ROTATION_AXIS_VAR_NAME, "");
-				minAngle = queryEmitter.getDoubleFromSolution(solution, BoneQueryNames.MIN_ANGLE_VAR_NAME, 0);
-				maxAngle = queryEmitter.getDoubleFromSolution(solution, BoneQueryNames.MAX_ANGLE_VAR_NAME, 0);
+				boneName = sh.getStringFromSolution(solution, BoneQueryNames.BONE_NAME_VAR_NAME, "");
+				rotationAxisName = sh.getStringFromSolution(solution, BoneQueryNames.ROTATION_AXIS_VAR_NAME, "");
+				minAngle = sh.getDoubleFromSolution(solution, BoneQueryNames.MIN_ANGLE_VAR_NAME, 0);
+				maxAngle = sh.getDoubleFromSolution(solution, BoneQueryNames.MAX_ANGLE_VAR_NAME, 0);
 				rotationAxis = BoneRotationAxis.valueOf(rotationAxisName);
 				myProjectionRanges.add(new BoneProjectionRange(this, boneName, rotationAxis, Math.toRadians(minAngle), Math.toRadians(maxAngle)));
 			}

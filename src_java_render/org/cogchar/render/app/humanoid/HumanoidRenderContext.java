@@ -47,7 +47,7 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 import javax.swing.JFrame;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import org.cogchar.render.sys.task.BasicCallableRenderTask;
@@ -114,7 +114,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 	}
 
-	public HumanoidFigure getHumanoidFigure(QueryInterface qi, Ident charIdent, HumanoidConfig hc, Ident bonyConfigGraph) {
+	public HumanoidFigure getHumanoidFigure(RepoClient qi, Ident charIdent, HumanoidConfig hc, Ident bonyConfigGraph) {
 		HumanoidFigure hf = myFiguresByCharIdent.get(charIdent);
 		if (hf == null) {
 			//BonyConfigEmitter bce = getBonyConfigEmitter();
@@ -136,7 +136,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	}
 
 	// Now does more, but does less on jME thread!
-	public HumanoidFigure setupHumanoidFigure(QueryInterface qi, final Ident charIdent, Ident bonyConfigGraph, HumanoidConfig hc) throws Throwable {
+	public HumanoidFigure setupHumanoidFigure(RepoClient qi, final Ident charIdent, Ident bonyConfigGraph, HumanoidConfig hc) throws Throwable {
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		final HumanoidFigure figure = getHumanoidFigure(qi, charIdent, hc, bonyConfigGraph);
 		final AssetManager amgr = rrc.getJme3AssetManager(null);
@@ -353,7 +353,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
  * HumanoidRenderWorldMapper(); myRenderMapper.initLightsAndCamera(this); myRenderMapper.initCinematics(this); }
  */
 /*
- * Also moved to PumaAppContext public void reloadWorldConfig() { QueryInterface queryEmitter =
+ * Also moved to PumaAppContext public void reloadWorldConfig() { RepoClient queryEmitter =
  * QuerySheet.getInterface(); queryEmitter.reloadSheetRepo(); HumanoidRenderWorldMapper myRenderMapper = new
  * HumanoidRenderWorldMapper(); myRenderMapper.clearLights(this); myRenderMapper.clearCinematics(this);
  * myRenderMapper.clearViewPorts(this); initLightsCameraCinematics(); }

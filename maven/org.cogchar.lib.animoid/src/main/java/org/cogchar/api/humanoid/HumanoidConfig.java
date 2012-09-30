@@ -17,7 +17,8 @@ package org.cogchar.api.humanoid;
 
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.SolutionMap;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.SolutionHelper;
 import org.cogchar.blob.emit.QueryTester;
 
 /**
@@ -35,15 +36,16 @@ public class HumanoidConfig {
 	public Float[] initialPosition = new Float[3];
 	public boolean physicsFlag;
 
-	public HumanoidConfig(QueryInterface qi, Ident charIdent, Ident graphIdent) {
+	public HumanoidConfig(RepoClient qi, Ident charIdent, Ident graphIdent) {
+		SolutionHelper sh = new SolutionHelper();
 		myCharIdent = charIdent;
 		SolutionMap solutionMap = qi.getQueryResultMap(HumanoidQueryNames.HUMANOID_QUERY, HumanoidQueryNames.ROBOT_URI_VAR_NAME, graphIdent);
-		nickname = qi.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.ROBOT_ID_VAR_NAME);
-		meshPath = qi.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.MESH_PATH_VAR_NAME);
-		jointConfigPath = qi.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.JOINT_CONFIG_PATH_VAR_NAME);
+		nickname = sh.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.ROBOT_ID_VAR_NAME);
+		meshPath = sh.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.MESH_PATH_VAR_NAME);
+		jointConfigPath = sh.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.JOINT_CONFIG_PATH_VAR_NAME);
 		for (int i = 0; i < initialPosition.length; i++) {
-			initialPosition[i] = qi.getFloatFromSolution(solutionMap, charIdent, HumanoidQueryNames.INITIAL_POSITION_VAR_NAMES[i]);
+			initialPosition[i] = sh.getFloatFromSolution(solutionMap, charIdent, HumanoidQueryNames.INITIAL_POSITION_VAR_NAMES[i]);
 		}
-		physicsFlag = qi.getBooleanFromSolution(solutionMap, charIdent, HumanoidQueryNames.PHYSICS_FLAG_VAR_NAME);
+		physicsFlag = sh.getBooleanFromSolution(solutionMap, charIdent, HumanoidQueryNames.PHYSICS_FLAG_VAR_NAME);
 	}
 }

@@ -23,7 +23,8 @@ import java.util.logging.Logger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
@@ -50,7 +51,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 
 		static DescriptorListBuilder get() {
 			DescriptorListBuilder dlb = new DescriptorListBuilder()
-					.dependency(queryEmitterId, QueryInterface.class)
+					.dependency(queryEmitterId, RepoClient.class)
 					.dependency(globalConfigId, GlobalConfigEmitter.GlobalConfigService.class)
 					.dependency(theLiftAppInterfaceId, LiftAmbassador.LiftAppInterface.class).optional()
 					.dependency(theLiftSceneInterfaceId, LiftAmbassador.LiftSceneInterface.class).optional()
@@ -75,7 +76,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		myLiftAmbassador.setAppInterface((LiftAmbassador.LiftAppInterface) dependencies.get(theLiftAppInterfaceId));
 		myLiftAmbassador.setSceneLauncher((LiftAmbassador.LiftSceneInterface) dependencies.get(theLiftSceneInterfaceId));
 		myLiftAmbassador.setNetConfigInterface((LiftAmbassador.LiftNetworkConfigInterface) dependencies.get(theLiftNetConfigInterfaceId));
-		connectWebContent(myLiftAmbassador, (QueryInterface) dependencies.get(queryEmitterId),
+		connectWebContent(myLiftAmbassador, (RepoClient) dependencies.get(queryEmitterId),
 				(GlobalConfigEmitter.GlobalConfigService) dependencies.get(globalConfigId));
 		return new LiftAmbassador.inputInterface();
 	}
@@ -86,10 +87,10 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		theLogger.log(Level.INFO, "LifterLifecycle handling change to {0}", serviceId);
 		LiftAmbassador myLiftAmbassador = LiftAmbassador.getLiftAmbassador();
 		if ((queryEmitterId.equals(serviceId)) && (dependency != null)) {
-			connectWebContent(myLiftAmbassador, (QueryInterface) dependency,
+			connectWebContent(myLiftAmbassador, (RepoClient) dependency,
 					(GlobalConfigEmitter.GlobalConfigService) availableDependencies.get(globalConfigId));
 		} else if ((globalConfigId.equals(serviceId)) && (dependency != null)) {
-			connectWebContent(myLiftAmbassador, (QueryInterface) availableDependencies.get(queryEmitterId),
+			connectWebContent(myLiftAmbassador, (RepoClient) availableDependencies.get(queryEmitterId),
 					(GlobalConfigEmitter.GlobalConfigService) dependency);
 		} else if (theLiftAppInterfaceId.equals(serviceId)) {
 			myLiftAmbassador.setAppInterface((LiftAmbassador.LiftAppInterface) dependency);
@@ -105,7 +106,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		return LiftAmbassador.LiftAmbassadorInterface.class;
 	}
 
-	public void connectWebContent(LiftAmbassador la, QueryInterface qi, GlobalConfigEmitter.GlobalConfigService configService) {
+	public void connectWebContent(LiftAmbassador la, RepoClient qi, GlobalConfigEmitter.GlobalConfigService configService) {
 		// First we need to figure out which graph to use, so we'll use our fabulous GlobalConfigService
 		List<Ident> webAppEntities = configService.getEntityMap().get(LIFTER_ENTITY_TYPE);
 		// Not sure what multiple web app entities would mean right now, so for now we'll assume there should be only one
@@ -124,7 +125,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 				return;
 			}
 			// Provide queryInterface to LiftAmbassador so it can reload lift configs
-			la.setQueryInterface(qi, liftConfigQGraph);
+			la.setRepoClient(qi, liftConfigQGraph);
 			// Load web app "home" startup screen config and store for later when we see if we have a UserAccessConfig
 			// with a login page, which we will use instead if so
 			Ident startupConfigIdent = getStartupLiftConfig(qi, liftConfigQGraph);
@@ -173,10 +174,11 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 	}
 	
 	// Queries for the desired liftConfig to be displayed at startup
-	private Ident getStartupLiftConfig(QueryInterface qi, Ident graphIdent) {
+	private Ident getStartupLiftConfig(RepoClient qi, Ident graphIdent) {
+		SolutionHelper sh = new SolutionHelper();
 		Ident startupConfig =  null;
 		SolutionList solutionList = qi.getQueryResultList(LiftQueryNames.START_CONFIG_QUERY_URI, graphIdent);
-		List<Ident> startupConfigList = qi.getIdentsFromSolutionAsJava(solutionList, LiftQueryNames.CONFIG_VAR_NAME);
+		List<Ident> startupConfigList = sh.getIdentsFromSolutionAsJava(solutionList, LiftQueryNames.CONFIG_VAR_NAME);
 		if (startupConfigList.size() < 1) {
 			theLogger.severe("Did not find a startup liftConfig! Web app will not function.");
 		} else {
