@@ -36,6 +36,8 @@ package org.cogchar.lifter {
 	  final val stringAttributeSeparator = ","
 	  final val multiCommandSeparator = "__"
 	  
+	  final val subControlIdentifier = "[subControl:]"
+	  
 	  // Not technically "action strings": strings related to network config function
 	  final val encryptionTypeVar = "networkEncType"
 	  final val noEncryptionName = "NONE"

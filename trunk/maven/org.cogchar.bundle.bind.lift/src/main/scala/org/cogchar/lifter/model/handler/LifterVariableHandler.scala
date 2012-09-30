@@ -37,8 +37,14 @@ class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
 	else {variablesMap = PageCommander.getState.appVariablesMap(sessionId); sessionVar = true}
 	if (input != null) { // If so, we have a value for the variable
 	  val textItems = List.fromArray(control.text.split(","))
-	  val textIndex = input(0).toInt + 1
-	  variablesMap(varName) = textItems(textIndex)
+	  if (input(0).startsWith(ActionStrings.subControlIdentifier)) {
+		// Looks like we have a multiselect control sending us a subControl id
+		// We'll set the variable to the label of the subControl selected
+		val textIndex = input(0).stripPrefix(ActionStrings.subControlIdentifier).toInt + 1
+		variablesMap(varName) = textItems(textIndex)
+	  } else {
+		variablesMap(varName) = input(0)
+	  }
 	} else { // If so, a button type control has this Lifter Variable action.
 	  var toggleButton = false;
 	  if (PageCommander.getState.toggleButtonMap contains sessionId) {
