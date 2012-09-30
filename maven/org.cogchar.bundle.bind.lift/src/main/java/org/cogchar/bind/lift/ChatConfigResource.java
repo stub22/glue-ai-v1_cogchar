@@ -50,8 +50,8 @@ public class ChatConfigResource {
 	public ChatConfigResource(RepoClient queryEmitter, SolutionList solutionList) {
 		SolutionHelper sh = new SolutionHelper();
 		for (Solution solution : solutionList.javaList()) {
-			Ident variableUri = sh.getIdentFromSolution(solution, ChatQueryNames.VARIABLE_VAR_NAME);
-			Ident valueUri = sh.getIdentFromSolution(solution, ChatQueryNames.VALUE_VAR_NAME);
+			Ident variableUri = sh.pullIdent(solution, ChatQueryNames.VARIABLE_VAR_NAME);
+			Ident valueUri = sh.pullIdent(solution, ChatQueryNames.VALUE_VAR_NAME);
 			if (variableUri != null) {
 				entries.put(variableUri.getLocalName(), valueUri.getAbsUriString());
 			} else {

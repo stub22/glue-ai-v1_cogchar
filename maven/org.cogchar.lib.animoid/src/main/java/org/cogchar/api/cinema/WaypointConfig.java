@@ -49,10 +49,10 @@ public class WaypointConfig {
 	// Called from CinematicConfig, corresponds to a "named" waypoint definition
 	public WaypointConfig(RepoClient qi, Solution solution) {
 		SolutionHelper sh = new SolutionHelper();
-		Ident myIdent = sh.getIdentFromSolution(solution, CinematicQueryNames.WAYPOINT_VAR_NAME);
+		Ident myIdent = sh.pullIdent(solution, CinemaCN.WAYPOINT_VAR_NAME);
 		waypointName = myIdent.getLocalName();
 		for (int index = 0; index < waypointCoordinates.length; index++) {
-			waypointCoordinates[index] = sh.getFloatFromSolution(solution, CinematicQueryNames.POSITION_VAR_NAME[index], Float.NaN);
+			waypointCoordinates[index] = sh.pullFloat(solution, CinemaCN.POSITION_VAR_NAME[index], Float.NaN);
 		}
 	}
 

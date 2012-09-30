@@ -40,12 +40,12 @@ public class HumanoidConfig {
 		SolutionHelper sh = new SolutionHelper();
 		myCharIdent = charIdent;
 		SolutionMap solutionMap = qi.getQueryResultMap(HumanoidQueryNames.HUMANOID_QUERY, HumanoidQueryNames.ROBOT_URI_VAR_NAME, graphIdent);
-		nickname = sh.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.ROBOT_ID_VAR_NAME);
-		meshPath = sh.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.MESH_PATH_VAR_NAME);
-		jointConfigPath = sh.getStringFromSolution(solutionMap, charIdent, HumanoidQueryNames.JOINT_CONFIG_PATH_VAR_NAME);
+		nickname = sh.pullString(solutionMap, charIdent, HumanoidQueryNames.ROBOT_ID_VAR_NAME);
+		meshPath = sh.pullString(solutionMap, charIdent, HumanoidQueryNames.MESH_PATH_VAR_NAME);
+		jointConfigPath = sh.pullString(solutionMap, charIdent, HumanoidQueryNames.JOINT_CONFIG_PATH_VAR_NAME);
 		for (int i = 0; i < initialPosition.length; i++) {
-			initialPosition[i] = sh.getFloatFromSolution(solutionMap, charIdent, HumanoidQueryNames.INITIAL_POSITION_VAR_NAMES[i]);
+			initialPosition[i] = sh.pullFloat(solutionMap, charIdent, HumanoidQueryNames.INITIAL_POSITION_VAR_NAMES[i]);
 		}
-		physicsFlag = sh.getBooleanFromSolution(solutionMap, charIdent, HumanoidQueryNames.PHYSICS_FLAG_VAR_NAME);
+		physicsFlag = sh.pullBoolean(solutionMap, charIdent, HumanoidQueryNames.PHYSICS_FLAG_VAR_NAME);
 	}
 }

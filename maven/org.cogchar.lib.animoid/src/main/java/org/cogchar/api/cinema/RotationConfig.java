@@ -50,11 +50,11 @@ public class RotationConfig {
 	// Called from CinematicConfig, corresponds to a "named" rotation definition
 	public RotationConfig(RepoClient qi, Solution solution) {
 		SolutionHelper sh = new SolutionHelper();
-		Ident myIdent = sh.getIdentFromSolution(solution, CinematicQueryNames.ROTATION_VAR_NAME);
+		Ident myIdent = sh.pullIdent(solution, CinemaCN.ROTATION_VAR_NAME);
 		rotationName = myIdent.getLocalName();
-		yaw = sh.getFloatFromSolution(solution, CinematicQueryNames.YAW_VAR_NAME, Float.NaN);
-		pitch = sh.getFloatFromSolution(solution, CinematicQueryNames.PITCH_VAR_NAME, Float.NaN);
-		roll = sh.getFloatFromSolution(solution, CinematicQueryNames.ROLL_VAR_NAME, Float.NaN);
+		yaw = sh.pullFloat(solution, CinemaCN.YAW_VAR_NAME, Float.NaN);
+		pitch = sh.pullFloat(solution, CinemaCN.PITCH_VAR_NAME, Float.NaN);
+		roll = sh.pullFloat(solution, CinemaCN.ROLL_VAR_NAME, Float.NaN);
 	}
 
 	public RotationConfig(Item configItem) {

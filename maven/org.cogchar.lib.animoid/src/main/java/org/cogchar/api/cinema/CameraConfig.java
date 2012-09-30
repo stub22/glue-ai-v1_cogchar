@@ -47,16 +47,16 @@ public class CameraConfig {
 		
 
 		SolutionHelper sh = new SolutionHelper();
-		cameraName = sh.getIdentFromSolution(querySolution, LightsCameraQueryNames.CAMERA_NAME_VAR_NAME).getLocalName();
+		cameraName = sh.pullIdent(querySolution, LightsCameraQueryNames.CAMERA_NAME_VAR_NAME).getLocalName();
 		for (int index = 0; index < 3; index++) {
-			cameraPosition[index] = sh.getFloatFromSolution(querySolution, LightsCameraQueryNames.POSITION_VAR_NAME[index], 0f);
-			cameraPointDir[index] = sh.getFloatFromSolution(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
+			cameraPosition[index] = sh.pullFloat(querySolution, LightsCameraQueryNames.POSITION_VAR_NAME[index], 0f);
+			cameraPointDir[index] = sh.pullFloat(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
 		}
 		for (int index = 0; index < cameraViewPort.length; index++) {
-			cameraViewPort[index] = sh.getFloatFromSolution(querySolution, LightsCameraQueryNames.VIEWPORT_VAR_NAME[index], Float.NaN);
+			cameraViewPort[index] = sh.pullFloat(querySolution, LightsCameraQueryNames.VIEWPORT_VAR_NAME[index], Float.NaN);
 		}
-		attachedRobot = sh.getIdentFromSolution(querySolution, LightsCameraQueryNames.ATTACHED_ROBOT_VAR_NAME);
-		attachedItem = sh.getStringFromSolution(querySolution, LightsCameraQueryNames.ATTACHED_BONE_VAR_NAME);
+		attachedRobot = sh.pullIdent(querySolution, LightsCameraQueryNames.ATTACHED_ROBOT_VAR_NAME);
+		attachedItem = sh.pullString(querySolution, LightsCameraQueryNames.ATTACHED_BONE_VAR_NAME);
 	}
 
 	/* Disabled for now because we needed a method from HumanoidConfigEmitter, which is going away (see below). We can find a way to solve this problem if we decide we need assembler config again
