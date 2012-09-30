@@ -15,7 +15,7 @@
  */
 package org.cogchar.render.model.databalls;
 
-import org.cogchar.api.cinema.CinematicConfigNames;
+import org.cogchar.api.cinema.CinemaAN;
 import org.cogchar.api.cinema.CinematicConfig;
 import org.cogchar.api.cinema.CinematicTrack;
 import org.cogchar.api.cinema.RotationConfig;
@@ -399,7 +399,7 @@ public class BallBuilder extends BasicDebugger {
 		public void buildFromTrack(CinematicTrack ct, Ball parentBall) {
 			Ball trackBall;
 			String trackName;
-			if (ct.trackName.endsWith(CinematicConfigNames.suffix_unnamed)) {
+			if (ct.trackName.endsWith(CinemaAN.suffix_unnamed)) {
 				trackName = ct.trackName + incrementingTrack;
 				incrementingTrack++;
 			} else {
@@ -425,7 +425,7 @@ public class BallBuilder extends BasicDebugger {
 
 		public void buildFromWaypoint(WaypointConfig wc, Ball parentBall) {
 			String waypointName;
-			if (wc.waypointName.endsWith(CinematicConfigNames.suffix_unnamed)) {
+			if (wc.waypointName.endsWith(CinemaAN.suffix_unnamed)) {
 				waypointName = wc.waypointName + incrementingWaypoint;
 				incrementingWaypoint++;
 			} else {
@@ -442,7 +442,7 @@ public class BallBuilder extends BasicDebugger {
 
 		public void buildFromRotation(RotationConfig rc, Ball parentBall) {
 			String rotationName;
-			if (rc.rotationName.endsWith(CinematicConfigNames.suffix_unnamed)) {
+			if (rc.rotationName.endsWith(CinemaAN.suffix_unnamed)) {
 				rotationName = rc.rotationName + incrementingRotation;
 				incrementingRotation++;
 			} else {

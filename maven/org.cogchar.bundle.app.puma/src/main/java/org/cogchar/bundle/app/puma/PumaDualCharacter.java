@@ -24,7 +24,7 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
 import org.cogchar.api.humanoid.HumanoidConfig;
-import org.cogchar.api.skeleton.config.BoneQueryNames;
+import org.cogchar.api.skeleton.config.BoneCN;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
@@ -83,7 +83,7 @@ public class PumaDualCharacter extends DummyBox {
 		myBehaviorCE = bce;
 	}
 
-	public boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, HumanoidConfig hc, RepoClient qi, BoneQueryNames bqn) throws Throwable {
+	public boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, HumanoidConfig hc, RepoClient qi, BoneCN bqn) throws Throwable {
 		// bonyConfig path is going away as we move to query-based config
 		// Looks like Turtle BoneRobotConfig is going away for good, in which case this block can be deleted
 		/*
@@ -233,7 +233,7 @@ public class PumaDualCharacter extends DummyBox {
 	}
 
 	// This method is called once (for each character) when bony config update is requested
-	public void updateBonyConfig(RepoClient qi, Ident graphIdent, BoneQueryNames bqn) throws Throwable {
+	public void updateBonyConfig(RepoClient qi, Ident graphIdent, BoneCN bqn) throws Throwable {
 		myHumoidMapper.updateModelRobotUsingBoneRobotConfig(new BoneRobotConfig(qi, myCharIdent, graphIdent, bqn));
 	}
 

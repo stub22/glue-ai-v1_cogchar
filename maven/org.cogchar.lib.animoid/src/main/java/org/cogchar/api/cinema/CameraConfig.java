@@ -39,24 +39,25 @@ public class CameraConfig {
 
 	@Override
 	public String toString() {
-		return "CameraConfig[name=" + cameraName + ", pos=" + Arrays.toString(cameraPosition) + ", dir=" + Arrays.toString(cameraPointDir) + ", viewport=" + Arrays.toString(cameraViewPort) + "]";
+		return "CameraConfig[name=" + cameraName + ", pos=" + Arrays.toString(cameraPosition) + ", dir=" 
+				+ Arrays.toString(cameraPointDir) + ", viewport=" + Arrays.toString(cameraViewPort) + "]";
 	}
 
 	// A new constructor to build CameraConfig from spreadsheet
-	public CameraConfig(Solution querySolution) {
+	public CameraConfig(Solution qSoln) {
 		
 
 		SolutionHelper sh = new SolutionHelper();
-		cameraName = sh.pullIdent(querySolution, LightsCameraQueryNames.CAMERA_NAME_VAR_NAME).getLocalName();
+		cameraName = sh.pullIdent(qSoln, LightsCameraCN.CAMERA_NAME_VAR_NAME).getLocalName();
 		for (int index = 0; index < 3; index++) {
-			cameraPosition[index] = sh.pullFloat(querySolution, LightsCameraQueryNames.POSITION_VAR_NAME[index], 0f);
-			cameraPointDir[index] = sh.pullFloat(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
+			cameraPosition[index] = sh.pullFloat(qSoln, LightsCameraCN.POSITION_VAR_NAME[index], 0f);
+			cameraPointDir[index] = sh.pullFloat(qSoln, LightsCameraCN.DIRECTION_VAR_NAME[index], 0f);
 		}
 		for (int index = 0; index < cameraViewPort.length; index++) {
-			cameraViewPort[index] = sh.pullFloat(querySolution, LightsCameraQueryNames.VIEWPORT_VAR_NAME[index], Float.NaN);
+			cameraViewPort[index] = sh.pullFloat(qSoln, LightsCameraCN.VIEWPORT_VAR_NAME[index], Float.NaN);
 		}
-		attachedRobot = sh.pullIdent(querySolution, LightsCameraQueryNames.ATTACHED_ROBOT_VAR_NAME);
-		attachedItem = sh.pullString(querySolution, LightsCameraQueryNames.ATTACHED_BONE_VAR_NAME);
+		attachedRobot = sh.pullIdent(qSoln, LightsCameraCN.ATTACHED_ROBOT_VAR_NAME);
+		attachedItem = sh.pullString(qSoln, LightsCameraCN.ATTACHED_BONE_VAR_NAME);
 	}
 
 	/* Disabled for now because we needed a method from HumanoidConfigEmitter, which is going away (see below). We can find a way to solve this problem if we decide we need assembler config again

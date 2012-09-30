@@ -44,7 +44,7 @@ import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
-import org.cogchar.api.skeleton.config.BoneQueryNames;
+import org.cogchar.api.skeleton.config.BoneCN;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -424,7 +424,7 @@ public class PumaAppContext extends BasicDebugger {
 
 	public void reloadBoneRobotConfig() {
 		updateGlobalConfig();
-		BoneQueryNames bqn = new BoneQueryNames();
+		BoneCN bqn = new BoneCN();
 		for (PumaDualCharacter pdc : myCharList) {
 			logInfo("Updating bony config for char [" + pdc + "]");
 			try {
@@ -479,7 +479,7 @@ public class PumaAppContext extends BasicDebugger {
 
 		try {
 			RepoClient qi = getQueryHelper();
-			BoneQueryNames bqn = new BoneQueryNames();
+			BoneCN bqn = new BoneCN();
 			boolean connectedOK = pdc.connectBonyCharToRobokindSvcs(myBundleContext, graphIdentForBony, hc, qi, bqn);
 			if (connectedOK) {
 				setupRobokindJointGroup(pdc, hc.jointConfigPath);

@@ -20,7 +20,7 @@ import org.appdapter.api.trigger.BoxAssemblyNames;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BoneConfigNames extends BoxAssemblyNames {
+public class BoneAN extends BoxAssemblyNames {
 	public static	String		NS_CgcBC		= "http://www.cogchar.org/bony/config#";
 	
 	public static 	String		P_robotName			= NS_CgcBC + "robotName";

@@ -22,7 +22,7 @@ package org.cogchar.api.cinema;
  */
 
 
-public class LightsCameraQueryNames {
+public class LightsCameraCN {
 	public final static String CAMERA_QUERY_URI = "ccrt:find_cameras_99";
 	public final static String LIGHT_QUERY_URI = "ccrt:find_lights_99";
 	

@@ -20,7 +20,7 @@ import org.appdapter.api.trigger.BoxAssemblyNames;
 /**
  * @author Ryan Biggs
  */
-public class CinematicConfigNames extends BoxAssemblyNames {
+public class CinemaAN extends BoxAssemblyNames {
 	public static	String		NS_CgcCC		= "http://www.cogchar.org/schema/cinematic#";
 	
 	public static	String		P_namedTrack	= "track_";

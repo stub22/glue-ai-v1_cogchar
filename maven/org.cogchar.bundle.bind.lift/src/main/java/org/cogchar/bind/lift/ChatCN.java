@@ -21,7 +21,7 @@ import org.appdapter.core.name.Ident;
 /**
  * @author Ryan Biggs
  */
-public class ChatQueryNames {
+public class ChatCN {
 	public static final String gri = "http://www.cogchar.org/general/config/instance#";
 	public static final String CATEGORY = "chatconfig";
 	
