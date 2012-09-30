@@ -58,7 +58,7 @@ public class HumanoidFigureConfig {
 		String queryString = qi.getQuery(BoneQueryNames.BONE_NAMES_QUERY_TEMPLATE_URI);
 		queryString = qi.setQueryVar(queryString, BoneQueryNames.ROBOT_IDENT_QUERY_VAR, charIdent);
 		SolutionList solutionList = qi.getTextQueryResultList(queryString, bonyGraphIdent);
-		List<String> boneNames = sh.getStringsFromSolutionAsJava(solutionList, BoneQueryNames.BONE_NAME_VAR_NAME);
+		List<String> boneNames = sh.pullStringsAsJava(solutionList, BoneQueryNames.BONE_NAME_VAR_NAME);
 		for (String boneName : boneNames) {
 			myBoneConfig.addBoneDesc(boneName);
 		}

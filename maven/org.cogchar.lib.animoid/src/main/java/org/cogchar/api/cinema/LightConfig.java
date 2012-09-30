@@ -44,17 +44,17 @@ public class LightConfig {
 	// A new constructor to build CameraConfig from spreadsheet
 	public LightConfig(RepoClient queryEmitter, Solution querySolution) {
 		SolutionHelper sh = new SolutionHelper();
-		lightName = sh.getIdentFromSolution(querySolution, LightsCameraQueryNames.LIGHT_NAME_VAR_NAME).getLocalName();
+		lightName = sh.pullIdent(querySolution, LightsCameraQueryNames.LIGHT_NAME_VAR_NAME).getLocalName();
 		lightType = LightType.AMBIENT; // For now, we assume light is ambient (no direction required) if type is not specified
-		Ident typeIdent = sh.getIdentFromSolution(querySolution, LightsCameraQueryNames.LIGHT_TYPE_VAR_NAME);
+		Ident typeIdent = sh.pullIdent(querySolution, LightsCameraQueryNames.LIGHT_TYPE_VAR_NAME);
 		if (typeIdent.getLocalName().equals("DIRECTIONAL")) {
 			lightType = LightType.DIRECTIONAL;
 		}
 		for (int index = 0; index < lightDirection.length; index++) {
-			lightDirection[index] = sh.getFloatFromSolution(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
+			lightDirection[index] = sh.pullFloat(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
 		}
 		for (int index = 0; index < lightColor.length; index++) {
-			lightColor[index] = sh.getFloatFromSolution(querySolution, LightsCameraQueryNames.COLOR_VAR_NAME[index], Float.NaN);
+			lightColor[index] = sh.pullFloat(querySolution, LightsCameraQueryNames.COLOR_VAR_NAME[index], Float.NaN);
 		}
 	}
 

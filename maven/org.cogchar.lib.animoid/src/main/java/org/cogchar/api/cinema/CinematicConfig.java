@@ -55,19 +55,19 @@ public class CinematicConfig extends QueryBackedConfigBase {
 	// A new constructor to build CinematicConfig from spreadsheet
 	public CinematicConfig(RepoClient qi, Ident qGraph) {
 		super(qi);
-		SolutionList solutionList = qi.getQueryResultList(CinematicQueryNames.CINEMATICS_QUERY_URI, qGraph);
+		SolutionList solutionList = qi.getQueryResultList(CinemaCN.CINEMATICS_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
 			myCICs.add(new CinematicInstanceConfig(qi, solution, qGraph));
 		}
-		solutionList = qi.getQueryResultList(CinematicQueryNames.TRACK_QUERY_URI, qGraph);
+		solutionList = qi.getQueryResultList(CinemaCN.TRACK_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
 			myCTs.add(new CinematicTrack(qi, solution, qGraph));
 		}
-		solutionList = qi.getQueryResultList(CinematicQueryNames.WAYPOINT_QUERY_URI, qGraph);
+		solutionList = qi.getQueryResultList(CinemaCN.WAYPOINT_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
 			myWCs.add(new WaypointConfig(qi, solution));
 		}
-		solutionList = qi.getQueryResultList(CinematicQueryNames.ROTATION_QUERY_URI, qGraph);
+		solutionList = qi.getQueryResultList(CinemaCN.ROTATION_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
 			myRCs.add(new RotationConfig(qi, solution));
 		}
