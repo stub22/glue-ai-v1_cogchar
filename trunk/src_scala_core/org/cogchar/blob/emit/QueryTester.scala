@@ -27,7 +27,7 @@ import com.hp.hpl.jena.rdf.model.{Model}
 /** Provided solely for testing of queries
  *
  */
-object QueryTester {
+object RepoClientTester {
 	final val SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" // Main test sheet!
 	//final val SHEET_KEY = "0Ajj1Rnx7FCoHdDN2VFdVazMzRGNGY3BMQmk1TXZzUHc" // Biggs test sheet!
 	//final val SHEET_KEY = "0AlpQRNQ-L8QUdDNWQXpmSW9iNzROcHktZEJZdTJhY2c" // Workshop v010_004 test sheet

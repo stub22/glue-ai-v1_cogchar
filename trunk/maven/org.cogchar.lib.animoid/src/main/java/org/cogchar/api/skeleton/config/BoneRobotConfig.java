@@ -19,7 +19,7 @@ import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
-import org.appdapter.core.matdat.SheetRepo;
+
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.log.BasicDebugger;
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.SolutionMap;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.blob.emit.QueryTester;
+
 
 import java.util.*;
 import org.appdapter.core.name.Ident;

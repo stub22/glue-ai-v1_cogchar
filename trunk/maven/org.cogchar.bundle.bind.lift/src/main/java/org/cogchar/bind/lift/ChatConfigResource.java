@@ -29,7 +29,6 @@ import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
-import org.cogchar.blob.emit.QueryTester;
 
 /**
  * @author Ryan Biggs

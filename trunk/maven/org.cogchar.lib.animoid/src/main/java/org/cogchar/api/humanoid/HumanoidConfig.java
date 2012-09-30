@@ -19,7 +19,6 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.SolutionMap;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
-import org.cogchar.blob.emit.QueryTester;
 
 /**
  * This class serves as a place to hold the humanoid config (right now, the stuff on the "Humanoids" spreadsheet tab)
