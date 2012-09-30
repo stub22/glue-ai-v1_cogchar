@@ -25,7 +25,7 @@ import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
 import org.cogchar.blob.emit.QueryTester;
 
 import org.appdapter.core.log.BasicDebugger;
@@ -34,7 +34,11 @@ import org.appdapter.core.log.BasicDebugger;
  */
 
 public class QueryBackedConfigBase extends KnownComponentImpl {
-	protected QueryInterface getQueryInterface() { 
-		return QueryTester.getInterface();
+	private		RepoClient		myQI;
+	public QueryBackedConfigBase(RepoClient qi) {
+		myQI = qi;
+	}
+	protected RepoClient getRepoClient() { 
+		return myQI;
 	}
 }

@@ -24,7 +24,8 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.SolutionHelper;
 
 /**
  * @author Ryan Biggs
@@ -46,19 +47,21 @@ public class CinematicInstanceConfig extends QueryBackedConfigBase {
 	// TODO
 	
 	// A new constructor to build CinematicConfig from query results
-	public CinematicInstanceConfig(QueryInterface qi, Solution querySolution, Ident qGraph) {
-		Ident myIdent = qi.getIdentFromSolution(querySolution, CinematicQueryNames.CINEMATIC_VAR_NAME);
+	public CinematicInstanceConfig(RepoClient qi, Solution querySolution, Ident qGraph) {
+		super(qi);
+		SolutionHelper sh = new SolutionHelper();
+		Ident myIdent = sh.getIdentFromSolution(querySolution, CinematicQueryNames.CINEMATIC_VAR_NAME);
 		myURI_Fragment = myIdent.getLocalName();
-		duration = qi.getFloatFromSolution(querySolution, CinematicQueryNames.DURATION_VAR_NAME, Float.NaN);
+		duration = sh.getFloatFromSolution(querySolution, CinematicQueryNames.DURATION_VAR_NAME, Float.NaN);
 		String query = qi.getCompletedQueryFromTemplate(CinematicQueryNames.TRACKS_QUERY_TEMPLATE_URI, CinematicQueryNames.CINEMATIC_QUERY_VAR_NAME, myIdent);
 		SolutionList solutionList = qi.getTextQueryResultList(query, qGraph);
-		List<Ident> trackIdentList = qi.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.TRACK_VAR_NAME);
+		List<Ident> trackIdentList = sh.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.TRACK_VAR_NAME);
 		for (Ident trackIdent : trackIdentList) {
 			myTracks.add(new CinematicTrack(trackIdent));
 		}
 	}
 	public CinematicInstanceConfig(ItemAssemblyReader iaReader, Item configItem) {
-		
+		super(null);
 		myURI_Fragment = configItem.getIdent().getLocalName();
 		duration = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_duration, null).floatValue();
 		List<Item> trackItems = iaReader.readLinkedItemSeq(configItem, CinematicConfigNames.P_track);

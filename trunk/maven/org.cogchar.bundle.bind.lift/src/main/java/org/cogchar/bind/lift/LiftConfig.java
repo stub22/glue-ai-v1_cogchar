@@ -26,10 +26,7 @@ import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionMap;
-import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.*;
 
 /**
  * Used to enclose data from RDF Lift webapp configuration currently in liftConfig.ttl
@@ -48,9 +45,10 @@ public class LiftConfig extends KnownComponentImpl {
 	}
 	
 	// A new constructor to build CinematicConfig from spreadsheet
-	public LiftConfig(QueryInterface qi, Ident graphIdent, Ident configUri) {
+	public LiftConfig(RepoClient qi, Ident graphIdent, Ident configUri) {
+		SolutionHelper sh = new SolutionHelper();
 		SolutionMap solutionMap = qi.getQueryResultMap(LiftQueryNames.TEMPLATE_QUERY_URI, LiftQueryNames.CONFIG_VAR_NAME, graphIdent);
-		String foundTemplate = qi.getStringFromSolution(solutionMap, configUri, LiftQueryNames.TEMPLATE_VAR_NAME);
+		String foundTemplate = sh.getStringFromSolution(solutionMap, configUri, LiftQueryNames.TEMPLATE_VAR_NAME);
 		if (foundTemplate != null) {
 			template = foundTemplate;
 		}

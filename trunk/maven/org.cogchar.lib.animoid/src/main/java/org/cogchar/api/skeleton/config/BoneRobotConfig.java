@@ -30,11 +30,12 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.SolutionMap;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
 import org.cogchar.blob.emit.QueryTester;
 
 import java.util.*;
 import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.SolutionHelper;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -48,13 +49,14 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	}
 	
 	// A new constructor to build BoneRobotConfig from spreadsheet
-	public BoneRobotConfig(QueryInterface qi, Ident bonyConfigIdent, Ident graphIdent, BoneQueryNames bqn) {
+	public BoneRobotConfig(RepoClient qi, Ident bonyConfigIdent, Ident graphIdent, BoneQueryNames bqn) {
+		SolutionHelper sh = new SolutionHelper();
 		getLogger().info("Building BoneRobotConfig via queries for {} using graph {} ", bonyConfigIdent, graphIdent);
 		SolutionMap solutionMap = qi.getQueryResultMap(bqn.ROBOT_NAME_QUERY_URI, bqn.ROBOT_URI_VAR_NAME, graphIdent);
-		myRobotName = qi.getStringFromSolution(solutionMap, bonyConfigIdent, bqn.ROBOT_NAME_VAR_NAME);
+		myRobotName = sh.getStringFromSolution(solutionMap, bonyConfigIdent, bqn.ROBOT_NAME_VAR_NAME);
 		String queryString = qi.getCompletedQueryFromTemplate(bqn.BONE_JOINT_CONFIG_QUERY_TEMPLATE_URI, bqn.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
 		SolutionList solutionList = qi.getTextQueryResultList(queryString, graphIdent);
-		List<Ident> boneJointConfigIdents = qi.getIdentsFromSolutionAsJava(solutionList, bqn.BONE_JOINT_CONFIG_INSTANCE_VAR_NAME);
+		List<Ident> boneJointConfigIdents = sh.getIdentsFromSolutionAsJava(solutionList, bqn.BONE_JOINT_CONFIG_INSTANCE_VAR_NAME);
 		queryString = qi.getQuery(bqn.BASE_BONE_JOINT_PROPERTIES_QUERY_TEMPLATE_URI);
 		queryString = qi.setQueryVar(queryString, bqn.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
 		solutionMap = qi.getTextQueryResultMap(queryString, bqn.JOINT_URI_VAR_NAME, graphIdent);

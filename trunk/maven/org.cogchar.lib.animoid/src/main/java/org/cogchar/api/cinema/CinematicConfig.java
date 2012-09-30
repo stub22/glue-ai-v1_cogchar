@@ -29,7 +29,7 @@ import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
 
@@ -53,7 +53,8 @@ public class CinematicConfig extends QueryBackedConfigBase {
 	
 
 	// A new constructor to build CinematicConfig from spreadsheet
-	public CinematicConfig(QueryInterface qi, Ident qGraph) {
+	public CinematicConfig(RepoClient qi, Ident qGraph) {
+		super(qi);
 		SolutionList solutionList = qi.getQueryResultList(CinematicQueryNames.CINEMATICS_QUERY_URI, qGraph);
 		for (Solution solution : solutionList.javaList()) {
 			myCICs.add(new CinematicInstanceConfig(qi, solution, qGraph));

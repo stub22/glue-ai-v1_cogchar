@@ -31,7 +31,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
 import org.cogchar.blob.emit.QueryTester;
 
 
@@ -46,7 +46,7 @@ public class LightsCameraConfig extends KnownComponentImpl {
 	public List<LightConfig> myLCs = new ArrayList<LightConfig>();
 
 	// A new constructor to build LightsCameraConfig from spreadsheet
-	public LightsCameraConfig(QueryInterface queryEmitter, Ident qGraph) {
+	public LightsCameraConfig(RepoClient queryEmitter, Ident qGraph) {
 		SolutionList solutionList = queryEmitter.getQueryResultList(LightsCameraQueryNames.CAMERA_QUERY_URI, qGraph);
 		for (Solution cameraSolution : solutionList.javaList()) {
 			myCCs.add(new CameraConfig(cameraSolution));

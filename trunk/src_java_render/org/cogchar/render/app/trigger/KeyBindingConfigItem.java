@@ -16,8 +16,9 @@
 package org.cogchar.render.app.trigger;
 
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionHelper;
 
 import org.cogchar.blob.emit.QueryTester;
 
@@ -35,10 +36,11 @@ public class KeyBindingConfigItem {
 	public String	myBoundEventName;
 	public String	myBoundKeyName;
 
-	public KeyBindingConfigItem(QueryInterface qi, Solution solution, KeystrokeConfigEmitter kce) {
-		myTypeIdent = qi.getIdentFromSolution(solution, kce.TYPE_VAR_NAME());
-		myBindingLocalName = qi.getIdentFromSolution(solution, kce.BINDING_IDENT_VAR_NAME()).getLocalName();
-		myBoundEventName = qi.getStringFromSolution(solution, kce.ACTION_VAR_NAME());
-		myBoundKeyName = qi.getStringFromSolution(solution, kce.KEY_VAR_NAME());
+	public KeyBindingConfigItem(RepoClient qi, Solution solution, KeystrokeConfigEmitter kce) {
+		SolutionHelper sh = new SolutionHelper();
+		myTypeIdent = sh.getIdentFromSolution(solution, kce.TYPE_VAR_NAME());
+		myBindingLocalName = sh.getIdentFromSolution(solution, kce.BINDING_IDENT_VAR_NAME()).getLocalName();
+		myBoundEventName = sh.getStringFromSolution(solution, kce.ACTION_VAR_NAME());
+		myBoundKeyName = sh.getStringFromSolution(solution, kce.KEY_VAR_NAME());
 	}
 }

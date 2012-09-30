@@ -27,7 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.SolutionHelper;
 import org.cogchar.blob.emit.QueryTester;
 
 /**
@@ -46,10 +47,11 @@ public class ChatConfigResource {
 	}
 
 	// A new constructor to build ChatConfigResource from spreadsheet
-	public ChatConfigResource(QueryInterface queryEmitter, SolutionList solutionList) {
+	public ChatConfigResource(RepoClient queryEmitter, SolutionList solutionList) {
+		SolutionHelper sh = new SolutionHelper();
 		for (Solution solution : solutionList.javaList()) {
-			Ident variableUri = queryEmitter.getIdentFromSolution(solution, ChatQueryNames.VARIABLE_VAR_NAME);
-			Ident valueUri = queryEmitter.getIdentFromSolution(solution, ChatQueryNames.VALUE_VAR_NAME);
+			Ident variableUri = sh.getIdentFromSolution(solution, ChatQueryNames.VARIABLE_VAR_NAME);
+			Ident valueUri = sh.getIdentFromSolution(solution, ChatQueryNames.VALUE_VAR_NAME);
 			if (variableUri != null) {
 				entries.put(variableUri.getLocalName(), valueUri.getAbsUriString());
 			} else {
