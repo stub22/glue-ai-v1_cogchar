@@ -20,7 +20,6 @@ import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionHelper;
 
-import org.cogchar.blob.emit.QueryTester;
 
 import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 
