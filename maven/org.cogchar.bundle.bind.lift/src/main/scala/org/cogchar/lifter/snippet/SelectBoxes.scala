@@ -38,12 +38,12 @@ package org.cogchar.lifter {
 	  
 	  protected val matchingName = "SELECTBOXES"
   
-	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
 		// From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
 		val textItems = List.fromArray(control.text.split(ActionStrings.stringAttributeSeparator))
 		val titleText = textItems(0)
 		val labelItems = textItems.tail
-		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeSelectBoxes(titleText, labelItems, slotNum)
+		makeSelectBoxes(titleText, labelItems, slotNum)
 	  }
 	  
 	  val responseText = "Title can change" // We can add bits to define this in XML if we want, or code in more fancy conditionals

@@ -52,7 +52,8 @@ package org.cogchar.lifter {
 	  
 	  private var updateInfo: String = ""
 	  
-	  private val theLifterState = new LifterState()
+	  private val theLifterState = new LifterState
+	  private val toggler = new ControlToggler
 	  private val firstActionHandler = HandlerConfigurator.initializeActionHandlers
 	  private val firstControlInitializationHandler = HandlerConfigurator.initializeControlInitializationHandlers
 	  
@@ -80,6 +81,12 @@ package org.cogchar.lifter {
 			theLiftAmbassador = LiftAmbassador.getLiftAmbassador
 		  }
 		  theLiftAmbassador
+	  }
+	  
+	  // This is sort of a funny deal and may need refactoring, but LifterVariableHandler needs to get this (for now at least)
+	  // Could just have ControlToggler be a singleton object, which may be OK since it's stateless
+	  def getToggler = {
+		toggler
 	  }
 	  
 	  def getState = theLifterState
@@ -151,7 +158,7 @@ package org.cogchar.lifter {
 			// Pretty darn messy, and likely a topic for further refactoring.
 			appState.controlDefMap(sessionId)(slotNum) = new ControlConfig(controlDef) 
 			// Trigger control initialization handler chain to fill proper XML into controlsMap
-			firstControlInitializationHandler.processHandler(sessionId, slotNum, controlDef)
+			appState.controlsMap(sessionId)(slotNum) = getXmlForControl(sessionId, slotNum, controlDef)
 			// Check for initial nee "local" actions which PageCommander needs to handle, such as text display
 			firstActionHandler.checkForInitialAction(sessionId, slotNum, controlDef)
 		  })
@@ -173,6 +180,10 @@ package org.cogchar.lifter {
 		  // ... and load new controls
 		  setControlsFromMap(sessionId)
 		}
+	  }
+	  
+	  def getXmlForControl(sessionId: String, slotNum:Int, controlDef:ControlConfig): NodeSeq = {
+		firstControlInitializationHandler.processHandler(sessionId, slotNum, controlDef)
 	  }
 					  
 	  def setControl(sessionId: String, slotNum: Int, slotHtml: NodeSeq) {
@@ -217,79 +228,20 @@ package org.cogchar.lifter {
 	  
 	  // Maps controls with actions only (buttons) to action handlers
 	  def triggerAction(sessionId:String, id: Int) {
-		if (getState.toggleButtonMap(sessionId) contains id) {toggleButton(sessionId,id)}
-		handleAction(sessionId, id, null)
-	  }
-	
-	  def toggleButton(sessionId:String, slotNum: Int) {
-		val appState = getState
-		if (appState.controlDefMap(sessionId) contains slotNum) {
-		  if (appState.controlDefMap(sessionId)(slotNum).controlType equals "TOGGLEBUTTON") {
-			val actionUriPrefix = getUriPrefix(appState.controlDefMap(sessionId)(slotNum).action);
-			var textItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).text.split(ActionStrings.stringAttributeSeparator))
-			if (appState.toggleButtonFullActionMap(sessionId) contains slotNum) {
-			  var actionItems = List.fromArray(appState.toggleButtonFullActionMap(sessionId)(slotNum).getLocalName.split(ActionStrings.multiCommandSeparator))
-			  var styleItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).style.split(ActionStrings.stringAttributeSeparator))
-			  var resourceItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).resource.split(ActionStrings.stringAttributeSeparator))
-			  if (appState.toggleButtonMap(sessionId) contains slotNum) {
-				if (appState.toggleButtonMap(sessionId)(slotNum)) {
-				  // Button is "selected" -- change back to "default" and perform action
-				  // If only one parameter is specified in RDF, duplicate the first and use that parameter here too (really we are prepending the one item in the list to itself, but that works ok here)
-				  if (actionItems.length < 2) actionItems ::= actionItems(0)
-				  // This is a little goofy and may be refactored some more. We are modifying the controlDefMap action for this control
-				  // so that the usual handler chain can parse it. BUT we must set the action to the "selected" value (with index 1)
-				  // while the control itself is toggled back to the "default" state using setControl (with index 0)
-				  appState.controlDefMap(sessionId)(slotNum).action = new FreeIdent(actionUriPrefix + actionItems(1), actionItems(1))
-				  appState.toggleButtonMap(sessionId)(slotNum) = false
-				  setControl(sessionId, slotNum, PushyButton.makeButton(textItems(0), styleItems(0), resourceItems(0), slotNum))
-				} else {
-				  // Button is set as "default" -- set to "selected" and perform action
-				  // If only one parameter is specified in RDF, duplicate the first and use that parameter here too (really we are prepending the one item in the list to itself, but that works ok here)
-				  if (textItems.length < 2) textItems ::= textItems(0)
-				  if (styleItems.length < 2) styleItems ::= styleItems(0)
-				  if (resourceItems.length < 2) resourceItems ::= resourceItems(0)
-				  // This is a little goofy and may be refactored some more. We are modifying the controlDefMap action for this control
-				  // so that the usual handler chain can parse it. BUT we must set the action to the "default" value (with index 0)
-				  // while the control itself is toggled to the "selected" state using setControl (with index 1)
-				  appState.controlDefMap(sessionId)(slotNum).action = new FreeIdent(actionUriPrefix + actionItems(0), actionItems(0))
-				  appState.toggleButtonMap(sessionId)(slotNum) = true
-				  setControl(sessionId, slotNum, PushyButton.makeButton(textItems(1), styleItems(1), resourceItems(1), slotNum))
-				}
-			  } else {
-				error("PageCommander.toggleButton called for slotNum " + slotNum + " of session " + sessionId + ", but no entry found in toggleButtonMap")
-			  }
-			} else {
-			  error("PageCommander.toggleButton called for slotNum " + slotNum + " of session " + sessionId + ", but no entry found in toggleButtonFullActionMap")
+		if (getState.toggleButtonMap(sessionId) contains id) {
+		  // Really we shouldn't run toggle on the Actor's thread, so we'll do this.
+		  // One of these days snippets will talk back to PageCommander as an Actor instead of calling into it, and the threading
+		  // will take care of itself instead of having to do things this messy way.
+		  val toggleThread = new Thread(new Runnable {
+			def run() {
+			  toggler.toggle(sessionId,id)
+			  handleAction(sessionId, id, null) // Starts yet another thread, but we need it started by the toggleThread so it won't run until toggle is complete
 			}
-		  } else {
-			error("PageCommander.toggleButton called for slotNum " + slotNum + " of session " + sessionId + ", but no TOGGLEBUTTON found in controlDefMap")
-		  }
-		} else {
-		  error("PageCommander.toggleButton called for slotNum " + slotNum + " of session " + sessionId + ", but no entry found in controlDefMap")
-		}
-	  }
-	  
-	  // A method to synchronize the state of toggle buttons in all sessions which are connected to the state of a global lifter variable
-	  // This needs to be refactored somewhere, maybe into LifterVariableHandler but probably into a ToggleButton class?
-	  def setAllPublicLiftvarToggleButtonsToState(varName:String, state:Boolean) {
-		val appState = getState
-		appState.activeSessions.foreach(sessionId => {
-			appState.toggleButtonMap(sessionId).keySet.foreach(slotNum => {
-				val actionIdent = appState.controlDefMap(sessionId)(slotNum).action
-				if (ActionStrings.p_liftvar.equals(getUriPrefix(actionIdent)) && varName.equals(actionIdent.getLocalName)) {
-				  var textItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).text.split(ActionStrings.stringAttributeSeparator))
-				  var styleItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).style.split(ActionStrings.stringAttributeSeparator))
-				  var resourceItems = List.fromArray(appState.controlDefMap(sessionId)(slotNum).resource.split(ActionStrings.stringAttributeSeparator))
-				  // If only one parameter is specified in RDF, duplicate the first and use that parameter here too (really we are prepending the one item in the list to itself, but that works ok here)
-				  if (textItems.length < 2) textItems ::= textItems(0)
-				  if (styleItems.length < 2) styleItems ::= styleItems(0)
-				  if (resourceItems.length < 2) resourceItems ::= resourceItems(0)
-				  val stateIndex = if (state) 1 else 0
-				  setControl(sessionId, slotNum, PushyButton.makeButton(textItems(stateIndex), styleItems(stateIndex), resourceItems(stateIndex), slotNum))
-				  appState.toggleButtonMap(sessionId)(slotNum) = state
-				}
-			  })
 		  })
+		  toggleThread.start(); 
+		} else {
+		  handleAction(sessionId, id, null)
+		}
 	  }
 	  
 	  // Likely should go in different class...
