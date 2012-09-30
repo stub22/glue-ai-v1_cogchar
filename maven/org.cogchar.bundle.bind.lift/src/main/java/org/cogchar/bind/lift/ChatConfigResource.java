@@ -61,11 +61,11 @@ public class ChatConfigResource {
 
 	public ChatConfigResource(Item configItem) {
 		//myURI_Fragment = configItem.getIdent().getLocalName();
-		List<Item> entryItems = reader.readLinkedItemSeq(configItem, ChatConfigNames.P_entry);
+		List<Item> entryItems = reader.readLinkedItemSeq(configItem, ChatAN.P_entry);
 		theLogger.info("Number of entries found: " + entryItems.size());
 		for (Item ei : entryItems) {
-			String name = ItemFuncs.getString(ei, ChatConfigNames.P_name, null);
-			String url = ItemFuncs.getString(ei, ChatConfigNames.P_url, "");
+			String name = ItemFuncs.getString(ei, ChatAN.P_name, null);
+			String url = ItemFuncs.getString(ei, ChatAN.P_url, "");
 			if (name != null) {
 				entries.put(name, url);
 			} else {

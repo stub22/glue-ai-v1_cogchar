@@ -177,8 +177,8 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 	private Ident getStartupLiftConfig(RepoClient qi, Ident graphIdent) {
 		SolutionHelper sh = new SolutionHelper();
 		Ident startupConfig =  null;
-		SolutionList liftStartConfSL = qi.queryIndirectForAllSolutions(LiftQueryNames.START_CONFIG_QUERY_URI, graphIdent);
-		List<Ident> startupConfigList = sh.pullIdentsAsJava(liftStartConfSL, LiftQueryNames.CONFIG_VAR_NAME);
+		SolutionList liftStartConfSL = qi.queryIndirectForAllSolutions(LiftCN.START_CONFIG_QUERY_URI, graphIdent);
+		List<Ident> startupConfigList = sh.pullIdentsAsJava(liftStartConfSL, LiftCN.CONFIG_VAR_NAME);
 		if (startupConfigList.size() < 1) {
 			theLogger.severe("Did not find a startup liftConfig! Web app will not function.");
 		} else {
