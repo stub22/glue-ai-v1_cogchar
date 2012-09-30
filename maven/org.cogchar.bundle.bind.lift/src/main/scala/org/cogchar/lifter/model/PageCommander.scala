@@ -211,7 +211,7 @@ package org.cogchar.lifter {
 	    
 	  // Maps controls with multiple possible selections to action handlers
 	  def multiSelectControlActionMapper(sessionId:String, formId:Int, subControl:Int) {
-		val input:Array[String] = Array(subControl.toString)
+		val input:Array[String] = Array(ActionStrings.subControlIdentifier + subControl.toString)
 		handleAction(sessionId, formId, input)
 	  }
 	  
