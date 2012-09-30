@@ -21,7 +21,7 @@ package org.cogchar.api.cinema;
  * @author Ryan Biggs
  */
 
-public class CinematicQueryNames {
+public class CinemaCN {
 	public final static String CINEMATICS_QUERY_URI = "ccrt:find_cinematics_99";
 	public final static String TRACK_QUERY_URI = "ccrt:find_tracks_99";
 	public final static String WAYPOINT_QUERY_URI = "ccrt:find_waypoints_99";

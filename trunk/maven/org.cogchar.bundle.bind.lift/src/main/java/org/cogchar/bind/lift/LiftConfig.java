@@ -48,7 +48,7 @@ public class LiftConfig extends KnownComponentImpl {
 	public LiftConfig(RepoClient qi, Ident graphIdent, Ident configUri) {
 		SolutionHelper sh = new SolutionHelper();
 		SolutionMap solutionMap = qi.getQueryResultMap(LiftQueryNames.TEMPLATE_QUERY_URI, LiftQueryNames.CONFIG_VAR_NAME, graphIdent);
-		String foundTemplate = sh.getStringFromSolution(solutionMap, configUri, LiftQueryNames.TEMPLATE_VAR_NAME);
+		String foundTemplate = sh.pullString(solutionMap, configUri, LiftQueryNames.TEMPLATE_VAR_NAME);
 		if (foundTemplate != null) {
 			template = foundTemplate;
 		}

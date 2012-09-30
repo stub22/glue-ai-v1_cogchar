@@ -42,7 +42,7 @@ public class UserAccessConfig extends KnownComponentImpl {
 	public UserAccessConfig(RepoClient qi, Ident graphIdent) {
 		SolutionHelper sh = new SolutionHelper();
 		SolutionList solutionList = qi.getQueryResultList(UserQueryNames.LOGIN_PAGE_QUERY_URI, graphIdent);
-		List<Ident> loginList = sh.getIdentsFromSolutionAsJava(solutionList, UserQueryNames.LOGIN_PAGE_VAR_NAME);
+		List<Ident> loginList = sh.pullIdentsAsJava(solutionList, UserQueryNames.LOGIN_PAGE_VAR_NAME);
 		if (loginList.size() >= 1) {
 			loginPage = loginList.get(0);
 			if (loginList.size() > 1) {
@@ -68,9 +68,9 @@ public class UserAccessConfig extends KnownComponentImpl {
 
 		public UserConfig(RepoClient qi, Ident graphIdent, Solution userSolution) {
 			SolutionHelper sh = new SolutionHelper();
-			hashedPassword = sh.getStringFromSolution(userSolution, UserQueryNames.PASSWORD_VAR_NAME);
-			salt = sh.getStringFromSolution(userSolution, UserQueryNames.SALT_VAR_NAME);
-			startConfig = sh.getIdentFromSolution(userSolution, UserQueryNames.START_PAGE_VAR_NAME);
+			hashedPassword = sh.pullString(userSolution, UserQueryNames.PASSWORD_VAR_NAME);
+			salt = sh.pullString(userSolution, UserQueryNames.SALT_VAR_NAME);
+			startConfig = sh.pullIdent(userSolution, UserQueryNames.START_PAGE_VAR_NAME);
 		}
 	}
 }

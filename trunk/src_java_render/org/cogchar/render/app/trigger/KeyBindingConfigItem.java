@@ -38,9 +38,9 @@ public class KeyBindingConfigItem {
 
 	public KeyBindingConfigItem(RepoClient qi, Solution solution, KeystrokeConfigEmitter kce) {
 		SolutionHelper sh = new SolutionHelper();
-		myTypeIdent = sh.getIdentFromSolution(solution, kce.TYPE_VAR_NAME());
-		myBindingLocalName = sh.getIdentFromSolution(solution, kce.BINDING_IDENT_VAR_NAME()).getLocalName();
-		myBoundEventName = sh.getStringFromSolution(solution, kce.ACTION_VAR_NAME());
-		myBoundKeyName = sh.getStringFromSolution(solution, kce.KEY_VAR_NAME());
+		myTypeIdent = sh.pullIdent(solution, kce.TYPE_VAR_NAME());
+		myBindingLocalName = sh.pullIdent(solution, kce.BINDING_IDENT_VAR_NAME()).getLocalName();
+		myBoundEventName = sh.pullString(solution, kce.ACTION_VAR_NAME());
+		myBoundKeyName = sh.pullString(solution, kce.KEY_VAR_NAME());
 	}
 }

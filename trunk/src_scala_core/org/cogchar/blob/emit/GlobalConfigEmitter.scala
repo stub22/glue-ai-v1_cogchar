@@ -58,7 +58,7 @@ class GlobalConfigEmitter(val myQI : RepoClient) {
 												 GlobalConfigEmitter.GLOBALMODE_QUERY_VAR_NAME, globalModeUri);
 	val solutionList = myQI.getTextQueryResultList(query);
 	solutionList.list.foreach(solution => {
-		val entityIdent = sh.getIdentFromSolution(solution, GlobalConfigEmitter.ENTITY_VAR_NAME);
+		val entityIdent = sh.pullIdent(solution, GlobalConfigEmitter.ENTITY_VAR_NAME);
 		var rgMap: java.util.HashMap[Ident, Ident] = null;
 		if (ergMap containsKey entityIdent) {
 		  rgMap = ergMap.get(entityIdent)
@@ -66,8 +66,8 @@ class GlobalConfigEmitter(val myQI : RepoClient) {
 		  rgMap = new java.util.HashMap[Ident, Ident]
 		  ergMap.put(entityIdent, rgMap)
 		}
-		val roleIdent = sh.getIdentFromSolution(solution, GlobalConfigEmitter.ROLE_VAR_NAME);
-		val graphIdent = sh.getIdentFromSolution(solution, GlobalConfigEmitter.GRAPH_VAR_NAME);
+		val roleIdent = sh.pullIdent(solution, GlobalConfigEmitter.ROLE_VAR_NAME);
+		val graphIdent = sh.pullIdent(solution, GlobalConfigEmitter.GRAPH_VAR_NAME);
 		rgMap.put(roleIdent, graphIdent)
 	  })
 	// Next, the entityMap is created
@@ -77,7 +77,7 @@ class GlobalConfigEmitter(val myQI : RepoClient) {
 												   new FreeIdent(GlobalConfigEmitter.gr+GlobalConfigEmitter.ENTITY_TYPES(i), GlobalConfigEmitter.ENTITY_TYPES(i)))
 	  val queryWithMode = myQI.setQueryVar(query, GlobalConfigEmitter.GLOBALMODE_QUERY_VAR_NAME, globalModeUri)
 	  val solutionList = myQI.getTextQueryResultList(queryWithMode)
-	  val entityList = sh.getIdentsFromSolutionAsJava(solutionList, GlobalConfigEmitter.ENTITY_VAR_NAME)
+	  val entityList = sh.pullIdentsAsJava(solutionList, GlobalConfigEmitter.ENTITY_VAR_NAME)
 	  //println("GlobalConfigEmitter putting list for type " + GlobalConfigEmitter.ENTITY_TYPES(i) + ": " + entityList) // TEST ONLY
 	  entityMap.put(GlobalConfigEmitter.ENTITY_TYPES(i), entityList)
 	}

@@ -185,7 +185,7 @@ class ZenoConfigEmitter extends BonyConfigEmitter {
 	var queryString = queryEmitter.getQuery(BONE_NAMES_QUERY_TEMPLATE_URI);
 	queryString = queryEmitter.setQueryVar(queryString, ROBOT_IDENT_QUERY_VAR, charIdent);
 	val solutionList = queryEmitter.getTextQueryResultList(queryString, graphIdent);
-	val boneNames = queryEmitter.getStringsFromSolution(solutionList, BONE_NAME_VAR_NAME);
+	val boneNames = queryEmitter.pullStrings(solutionList, BONE_NAME_VAR_NAME);
 	boneNames.foreach(boneName => {
 		hfc.myBoneConfig.addBoneDesc(boneName);
 	  })
