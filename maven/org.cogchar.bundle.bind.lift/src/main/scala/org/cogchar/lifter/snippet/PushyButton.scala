@@ -35,8 +35,8 @@ package org.cogchar.lifter {
 	  
 	  protected val matchingName = "PUSHYBUTTON"
   
-	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig) {
-		PageCommander.getState.controlsMap(sessionId)(slotNum) = makeButton(control.text, control.style, control.resource, slotNum)
+	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+		makeButton(control.text, control.style, control.resource, slotNum)
 	  }
 	  
 	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, buttonId: Int): NodeSeq = {
