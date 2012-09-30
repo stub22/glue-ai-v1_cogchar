@@ -20,7 +20,7 @@ import org.appdapter.api.trigger.BoxAssemblyNames;
 /**
  * @author Ryan Biggs
  */
-public class LiftConfigNames extends BoxAssemblyNames {
+public class LiftAN extends BoxAssemblyNames {
 
 	public static final String NS_CgcLC = "http://www.cogchar.org/lift/config#";
 	public static final String P_template = NS_CgcLC + "template";

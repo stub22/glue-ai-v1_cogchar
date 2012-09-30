@@ -13,24 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.cogchar.bind.lift;
 
+import org.appdapter.api.trigger.BoxAssemblyNames;
+
 /**
- *
- * @author Ryan Biggs <rbiggs@hansonrobokind.com>
+ * @author Ryan Biggs
  */
+public class ChatAN extends BoxAssemblyNames {
 
-
-public class UserQueryNames {
-	
-	public static final String LOGIN_PAGE_QUERY_URI = "ccrt:find_login_page_99";
-	public static final String USER_QUERY_URI = "ccrt:find_users_99";
-	
-	public static final String LOGIN_PAGE_VAR_NAME = "loginPage";
-	public static final String USER_VAR_NAME = "user";
-	public static final String PASSWORD_VAR_NAME = "password";
-	public static final String SALT_VAR_NAME = "salt";
-	public static final String START_PAGE_VAR_NAME = "startPage";
-	
+	public static final String NS_CgcChC = "http://www.cogchar.org/chat/config#";
+	public static final String partial_P_config = "config";
+	public static final String P_config = NS_CgcChC + partial_P_config;
+	public static final String P_entry = NS_CgcChC + "hasEntry";
+	public static final String P_name = NS_CgcChC + "hasName";
+	public static final String P_url = NS_CgcChC + "hasURL";
+	public static final String N_cogbotConvoUrl = "sendHeardAndGetSaid";
 }

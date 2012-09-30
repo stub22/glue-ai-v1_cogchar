@@ -164,7 +164,7 @@ public class LiftAmbassador {
 	}
 
 	public String getControlPrefix() {
-		return LiftConfigNames.partial_P_control + "_";
+		return LiftAN.partial_P_control + "_";
 	}
 
 	public void storeChatConfig(ChatConfig cc) {
@@ -217,11 +217,13 @@ public class LiftAmbassador {
 	}
 
 	public String getCogbotResponse(String query) {
+		// A touch dangerous to synchronize this, in that LiftAmbassador is blocked until Cogbot response is received
+		// Especially obvious when cogbot is not found and this blocks until timeout
 		synchronized (theClassLock) { 
 			String response = "";
 			if (myLiftAppInterface != null) {
-				if (myChatConfigEntries.containsKey(ChatConfigNames.N_cogbotConvoUrl)) {
-					String convoIp = myChatConfigEntries.get(ChatConfigNames.N_cogbotConvoUrl).replaceFirst("http://", "");
+				if (myChatConfigEntries.containsKey(ChatAN.N_cogbotConvoUrl)) {
+					String convoIp = myChatConfigEntries.get(ChatAN.N_cogbotConvoUrl).replaceFirst("http://", "");
 					response = myLiftAppInterface.queryCogbot(query, convoIp);
 					theLogger.info("Cogbot says " + response);
 				} else {
@@ -303,7 +305,7 @@ public class LiftAmbassador {
 	public void login(String sessionId, String userName, String password) {
 		// I believe this doesn't need to be synchronized...
 		if (myUserMap != null) {
-			Ident userIdent = new FreeIdent(LiftConfigNames.P_user + userName, userName);
+			Ident userIdent = new FreeIdent(LiftAN.P_user + userName, userName);
 			if (myUserMap.containsKey(userIdent)) {
 				String hashedEnteredPassword = LiftCrypto.getStringFromBytes(LiftCrypto.getHash(password, myUserMap.get(userIdent).salt));
 				if (myUserMap.get(userIdent).hashedPassword.equals(hashedEnteredPassword)) {
