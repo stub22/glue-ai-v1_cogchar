@@ -51,6 +51,13 @@ public class LiftAmbassador {
 	private Map<Ident, LiftConfig> myLiftConfigCache = new HashMap<Ident, LiftConfig>(); // To avoid query config if page is reselected
 	private Map<String, String> myChatConfigEntries = new HashMap<String, String>();
 	private Map<Ident, UserAccessConfig.UserConfig> myUserMap = new HashMap<Ident, UserAccessConfig.UserConfig>();
+	
+	private final Object activationLock = new Object();
+	private final Object cogcharLock = new Object();
+	private final Object databallsLock = new Object();
+	private final Object cogbotLock = new Object();
+	private final Object networkConfigLock = new Object();
+	
 
 	// Empty private default constructor to prevent outside instantiation
 	private LiftAmbassador() {}
@@ -113,7 +120,7 @@ public class LiftAmbassador {
 
 	// This (legacy) flavor of the method activates controls for the initial config for new sessions
 	public void activateControlsFromConfig(LiftConfig newConfig) {
-		synchronized (theClassLock) {
+		synchronized (activationLock) {
 			myInitialConfig = newConfig;
 			theLogger.info("RDF Lift config sent to LiftAmbassador");
 			myConfigReady = true;
@@ -126,7 +133,7 @@ public class LiftAmbassador {
 	
 	// This flavor activates a new set of controls for a single session
 	public void activateControlsFromConfig(String sessionId, LiftConfig newConfig) {
-		synchronized (theClassLock) {
+		synchronized (activationLock) {
 			if (myLift != null) {
 				myLift.setConfigForSession(sessionId, newConfig);
 			} else {
@@ -137,7 +144,7 @@ public class LiftAmbassador {
 	
 	// Activates controls identified by a LiftConfig URI
 	public void activateControlsFromUri(String sessionId, Ident configIdent) {
-		synchronized (theClassLock) {
+		synchronized (activationLock) {
 			boolean success = false;
 			LiftConfig newConfig = null;
 			if (myLiftConfigCache.containsKey(configIdent)) {
@@ -180,20 +187,23 @@ public class LiftAmbassador {
 		myUserMap = uac.users;
 	}
 
+	
 	public boolean triggerCinematic(String cinematicName) {
-		boolean success;
-		if (myTriggeredCinematics.contains(cinematicName)) {
-			myLiftAppInterface.stopNamedCinematic(cinematicName); // In order to replay, we need to stop previously played cinematic first
+		synchronized (cogcharLock) {
+			boolean success;
+			if (myTriggeredCinematics.contains(cinematicName)) {
+				myLiftAppInterface.stopNamedCinematic(cinematicName); // In order to replay, we need to stop previously played cinematic first
+			}
+			success = myLiftAppInterface.triggerNamedCinematic(cinematicName);
+			if (success) {
+				myTriggeredCinematics.add(cinematicName);
+			}
+			return success;
 		}
-		success = myLiftAppInterface.triggerNamedCinematic(cinematicName);
-		if (success) {
-			myTriggeredCinematics.add(cinematicName);
-		}
-		return success;
 	}
 	
 	public boolean triggerScene(String sceneName) {
-		synchronized (theClassLock) { // Not clear if this really needs to be synchronized, but won't hurt...
+		synchronized (cogcharLock) { // Not clear if this really needs to be synchronized, but won't hurt...
 			boolean success = false;
 			if (mySceneLauncher != null) {
 				success = mySceneLauncher.triggerScene(sceneName);
@@ -204,8 +214,9 @@ public class LiftAmbassador {
 		}
 	}
 	
+
 	public boolean performDataballAction(String databallAction, String databallText) {
-		synchronized (theClassLock) {
+		synchronized (databallsLock) {
 			boolean success = false;
 			if (myLiftAppInterface != null) {
 				success = myLiftAppInterface.performDataballAction(databallAction, databallText);
@@ -217,9 +228,7 @@ public class LiftAmbassador {
 	}
 
 	public String getCogbotResponse(String query) {
-		// A touch dangerous to synchronize this, in that LiftAmbassador is blocked until Cogbot response is received
-		// Especially obvious when cogbot is not found and this blocks until timeout
-		synchronized (theClassLock) { 
+		synchronized (cogbotLock) { 
 			String response = "";
 			if (myLiftAppInterface != null) {
 				if (myChatConfigEntries.containsKey(ChatAN.N_cogbotConvoUrl)) {
@@ -237,7 +246,7 @@ public class LiftAmbassador {
 	}
 	
 	public boolean performCogCharUpdate(String desiredUpdate) {
-		synchronized (theClassLock) { // Definitely needs to be threadsafe
+		synchronized (theClassLock) { // Definitely needs to be threadsafe, and a good thing to lock down the entire LiftAmbassador
 			boolean success = false;
 			if (myLiftAppInterface != null) {
 				success = myLiftAppInterface.performUpdate(desiredUpdate);
@@ -293,7 +302,7 @@ public class LiftAmbassador {
 	}
 	
 	public void requestNetworkConfig(String ssid, String security, String key) {
-		synchronized (theClassLock) { // ... in case come crazy fools are both trying to configure the network simultaneously!
+		synchronized (networkConfigLock) { // ... in case come crazy fools are both trying to configure the network simultaneously!
 			if (myNetConfigInterface != null) {
 				myNetConfigInterface.configure(ssid, security, key);
 			} else {
