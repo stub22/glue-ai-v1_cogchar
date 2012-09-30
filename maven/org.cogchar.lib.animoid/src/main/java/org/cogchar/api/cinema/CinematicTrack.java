@@ -26,7 +26,8 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.SolutionHelper;
 import org.cogchar.blob.emit.QueryTester;
 
 /**
@@ -64,38 +65,39 @@ public class CinematicTrack extends BasicDebugger {
 	}
 
 	// Called from CinematicConfig, corresponds to a "named" track definition
-	public CinematicTrack(QueryInterface qi, Solution solution, Ident qGraph) {
-		Ident myIdent = qi.getIdentFromSolution(solution, CinematicQueryNames.TRACK_VAR_NAME);
+	public CinematicTrack(RepoClient qi, Solution solution, Ident qGraph) {
+		SolutionHelper sh = new SolutionHelper();
+		Ident myIdent = sh.getIdentFromSolution(solution, CinematicQueryNames.TRACK_VAR_NAME);
 		trackName = myIdent.getLocalName();
-		attachedItem = qi.getIdentFromSolution(solution, CinematicQueryNames.ATTACHED_ITEM_VAR_NAME).getLocalName();
-		String typeString = qi.getIdentFromSolution(solution, CinematicQueryNames.ATTACHED_ITEM_TYPE_VAR_NAME).getLocalName().toUpperCase();
+		attachedItem = sh.getIdentFromSolution(solution, CinematicQueryNames.ATTACHED_ITEM_VAR_NAME).getLocalName();
+		String typeString = sh.getIdentFromSolution(solution, CinematicQueryNames.ATTACHED_ITEM_TYPE_VAR_NAME).getLocalName().toUpperCase();
 		for (AttachedItemType testType : AttachedItemType.values()) {
 			if (testType.toString().equals(typeString)) {
 				attachedItemType = testType;
 			}
 		}
-		typeString = qi.getIdentFromSolution(solution, CinematicQueryNames.TRACK_TYPE_VAR_NAME).getLocalName();
+		typeString = sh.getIdentFromSolution(solution, CinematicQueryNames.TRACK_TYPE_VAR_NAME).getLocalName();
 		for (TrackType testType : TrackType.values()) {
 			if (testType.toString().equals(typeString)) {
 				trackType = testType;
 			}
 		}
-		directionType = qi.getIdentFromSolution(solution, CinematicQueryNames.DIRECTION_TYPE_VAR_NAME).getLocalName();
+		directionType = sh.getIdentFromSolution(solution, CinematicQueryNames.DIRECTION_TYPE_VAR_NAME).getLocalName();
 		for (int index = 0; index < direction.length; index++) {
-			direction[index] = qi.getFloatFromSolution(solution, CinematicQueryNames.DIRECTION_VAR_NAME[index], 0f);
+			direction[index] = sh.getFloatFromSolution(solution, CinematicQueryNames.DIRECTION_VAR_NAME[index], 0f);
 		}
-		tension = qi.getFloatFromSolution(solution, CinematicQueryNames.TENSION_VAR_NAME, 0f);
-		cycle = qi.getBooleanFromSolution(solution, CinematicQueryNames.CYCLE_VAR_NAME);
-		loopMode = qi.getIdentFromSolution(solution, CinematicQueryNames.LOOP_MODE_VAR_NAME).getLocalName();
-		startTime = qi.getFloatFromSolution(solution, CinematicQueryNames.START_TIME_VAR_NAME, 0f);
-		trackDuration = qi.getFloatFromSolution(solution, CinematicQueryNames.DURATION_VAR_NAME, 0f);
+		tension = sh.getFloatFromSolution(solution, CinematicQueryNames.TENSION_VAR_NAME, 0f);
+		cycle = sh.getBooleanFromSolution(solution, CinematicQueryNames.CYCLE_VAR_NAME);
+		loopMode = sh.getIdentFromSolution(solution, CinematicQueryNames.LOOP_MODE_VAR_NAME).getLocalName();
+		startTime = sh.getFloatFromSolution(solution, CinematicQueryNames.START_TIME_VAR_NAME, 0f);
+		trackDuration = sh.getFloatFromSolution(solution, CinematicQueryNames.DURATION_VAR_NAME, 0f);
 		String query = qi.getCompletedQueryFromTemplate(CinematicQueryNames.WAYPOINTS_QUERY_TEMPLATE_URI, CinematicQueryNames.TRACK_QUERY_VAR_NAME, myIdent);
 		SolutionList solutionList = qi.getTextQueryResultList(query, qGraph);
-		List<Ident> waypointIdentList = qi.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.WAYPOINT_VAR_NAME);
+		List<Ident> waypointIdentList = sh.getIdentsFromSolutionAsJava(solutionList, CinematicQueryNames.WAYPOINT_VAR_NAME);
 		for (Ident waypointIdent : waypointIdentList) {
 			waypoints.add(new WaypointConfig(waypointIdent));
 		}
-		Ident rotationIdent = qi.getIdentFromSolution(solution, CinematicQueryNames.END_ROTATION_VAR_NAME);
+		Ident rotationIdent = sh.getIdentFromSolution(solution, CinematicQueryNames.END_ROTATION_VAR_NAME);
 		if (rotationIdent != null) {
 			endRotation = new RotationConfig(rotationIdent);
 		}

@@ -20,7 +20,8 @@ import org.appdapter.core.name.Ident;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.SolutionHelper;
 
 /**
  * @author Ryan Biggs
@@ -46,24 +47,25 @@ public class ControlConfig {
 	}
 	
 	// A new constructor to build ControlConfig from spreadsheet
-	public ControlConfig(QueryInterface qi, Solution solution) {
-		Ident myIdent = qi.getIdentFromSolution(solution, LiftQueryNames.CONTROL_VAR_NAME);
+	public ControlConfig(RepoClient qi, Solution solution) {
+		SolutionHelper sh = new SolutionHelper();
+		Ident myIdent = sh.getIdentFromSolution(solution, LiftQueryNames.CONTROL_VAR_NAME);
 		myURI_Fragment = myIdent.getLocalName();
-		controlType = qi.getIdentFromSolution(solution, LiftQueryNames.CONTROL_TYPE_VAR_NAME).getLocalName();
+		controlType = sh.getIdentFromSolution(solution, LiftQueryNames.CONTROL_TYPE_VAR_NAME).getLocalName();
 		if (controlType == null) {
 			controlType = "NULLTYPE";
 		} else {
 			controlType = controlType.toUpperCase(); // Ensures lc:type property is case insensitive to local name
 		}
-		action = qi.getIdentFromSolution(solution, LiftQueryNames.ACTION_VAR_NAME);
+		action = sh.getIdentFromSolution(solution, LiftQueryNames.ACTION_VAR_NAME);
 		// If no action specified, add the "blank action". This is mainly to protect us from NPEs in legacy code from
 		// the days of action strings, which assumed no action would result in a blank string instead of a null pointer.
 		if (action == null) {
 			action = LiftQueryNames.BLANK_ACTION;
 		}
-		text = qi.getStringFromSolution(solution, LiftQueryNames.TEXT_VAR_NAME, "");
-		style = qi.getStringFromSolution(solution, LiftQueryNames.STYLE_VAR_NAME, "");
-		resource = qi.getStringFromSolution(solution, LiftQueryNames.RESOURCE_VAR_NAME, "");
+		text = sh.getStringFromSolution(solution, LiftQueryNames.TEXT_VAR_NAME, "");
+		style = sh.getStringFromSolution(solution, LiftQueryNames.STYLE_VAR_NAME, "");
+		resource = sh.getStringFromSolution(solution, LiftQueryNames.RESOURCE_VAR_NAME, "");
 	}
 	
 	// A copy constructor - currently needed by PageCommander, but probably better if it wasn't...

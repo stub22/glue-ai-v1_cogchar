@@ -20,7 +20,8 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.api.skeleton.config.BoneQueryNames;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.SolutionHelper;
 import org.cogchar.blob.emit.QueryTester;
 
 /**
@@ -36,7 +37,7 @@ public class HumanoidFigureConfig {
 	public HumanoidBoneConfig myBoneConfig;
 	public float myInitX, myInitY, myInitZ;
 
-	public HumanoidFigureConfig(QueryInterface qi, HumanoidConfig hc, RenderConfigEmitter rce, Ident bonyGraphIdent) {
+	public HumanoidFigureConfig(RepoClient qi, HumanoidConfig hc, RenderConfigEmitter rce, Ident bonyGraphIdent) {
 		myCharIdent = hc.myCharIdent;
 		myNickname = hc.nickname;
 		myMeshPath = hc.meshPath;
@@ -52,11 +53,12 @@ public class HumanoidFigureConfig {
 	// A method to add the bone descriptions by querying the bony config resource. Might should live somewhere else,
 	// but I haven't figured out where yet. Then again, the bone descs are part of the HumanoidFigureConfig,
 	// so why not here?
-	private void addBoneDescsFromBoneRobotConfig(QueryInterface qi, Ident charIdent, Ident bonyGraphIdent, HumanoidFigureConfig hfc) {
+	private void addBoneDescsFromBoneRobotConfig(RepoClient qi, Ident charIdent, Ident bonyGraphIdent, HumanoidFigureConfig hfc) {
+		SolutionHelper sh = new SolutionHelper();
 		String queryString = qi.getQuery(BoneQueryNames.BONE_NAMES_QUERY_TEMPLATE_URI);
 		queryString = qi.setQueryVar(queryString, BoneQueryNames.ROBOT_IDENT_QUERY_VAR, charIdent);
 		SolutionList solutionList = qi.getTextQueryResultList(queryString, bonyGraphIdent);
-		List<String> boneNames = qi.getStringsFromSolutionAsJava(solutionList, BoneQueryNames.BONE_NAME_VAR_NAME);
+		List<String> boneNames = sh.getStringsFromSolutionAsJava(solutionList, BoneQueryNames.BONE_NAME_VAR_NAME);
 		for (String boneName : boneNames) {
 			myBoneConfig.addBoneDesc(boneName);
 		}

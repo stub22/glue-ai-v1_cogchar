@@ -21,8 +21,8 @@ import java.util.List;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.QueryEmitter;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClientImpl;
+import org.appdapter.help.repo.RepoClient;
 
 import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.app.buddy.busker.TriggerItem;
@@ -65,7 +65,7 @@ public class PumaAppContext extends BasicDebugger {
 	private List<PumaDualCharacter>	myCharList = new ArrayList<PumaDualCharacter>();
 	// A query interface instance we can reuse - right now just to trigger repo reloads. May want to do that via
 	// GlobalConfigEmitter or some other interface in the long run...?
-	QueryInterface					myQueryInterface;
+	RepoClient					myRepoClient;
 	
 	// A managed service instance of the GlobalConfigEmitter, currently used only by LifterLifecycle.
 	// We need to keep track of it so we can stop and restart it for Lift "refresh"
@@ -101,22 +101,21 @@ public class PumaAppContext extends BasicDebugger {
 	}
 
 	private void clearQueryHelper() {
-		QueryTester.clearQueryInterface();
-		myQueryInterface = null;
+		myRepoClient = null;
 	}
-	private QueryInterface getQueryHelper() { 
-		if (myQueryInterface == null) {
-			myQueryInterface = QueryTester.getInterface();
+	private RepoClient getQueryHelper() { 
+		if (myRepoClient == null) {
+			myRepoClient = QueryTester.makeVanillaQueryEmitter();
 		}
-		return myQueryInterface;
+		return myRepoClient;
 	}
 	
 	// Registers the QueryEmitter service, currently with an empty lifecycle.
 	// This service will be used by managed services needing query config
 	// Currently, that's: LifterLifecycle
-	// Moved here from PumaBooter because all "top level" QueryInterface business is now handled in this class.
+	// Moved here from PumaBooter because all "top level" RepoClient business is now handled in this class.
 	// Also, we want this here so we can handle updates to Lifter config here, like with all other config.
-	public QueryInterface startVanillaQueryInterface() {
+	public RepoClient startVanillaRepoClient() {
 		// We want to make explicity the assumptions about what goes into our QueryEmitter.
 		// On 2012-09-12 Stu changed "new QueryEmitter()" to makeVanillaQueryEmitter,
 		// but perhaps there is some more adjustment to do here for lifecycle compat.
@@ -124,8 +123,8 @@ public class PumaAppContext extends BasicDebugger {
 		// On 2012-09-16 Ryan changed from the qemit declaration above to the one below. This allows us to use the 
 		// same instance for the QueryEmitter here as is accessed by QueryTester.getInterface, preventing duplicate
 		// (SLOW) resource loads and the possibility of unsynchronized state in PUMA.
-		QueryEmitter qemit = QueryTester.getEmitter();
-		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(qemit, QueryInterface.class);
+		RepoClient qemit = getQueryHelper();
+		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(qemit, RepoClient.class);
     	myQueryComp = new OSGiComponent(myBundleContext, lifecycle);
     	myQueryComp.start();
 		return qemit;
@@ -171,17 +170,21 @@ public class PumaAppContext extends BasicDebugger {
 			return myGlobalConfig.entityMap();
 		}
 	}
-	
+
 	// This may be the same thing as updateGlobalConfig eventually. Right now we are holding open the possibility that Lifter is acting on
 	// one global config and the rest of Cog Char on another. This allows us to update one but not the other, since Lifter uses the GlobalConfigService
 	// and everything else uses myGlobalConfig in this class. (Lifter auto-updates when the GlobalConfigService restarts.)
 	// But really this is a can of worms, so probably we should move to having both the
 	// GlobalConfigService and myGlobalConfig always be updated at the same time. Not yet though, until the possible implications are worked through...
-	public void applyGlobalConfig() {
-		myGlobalConfig = new GlobalConfigEmitter(new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode));
+	private void applyGlobalConfig() {
+		RepoClient qHelper = getQueryHelper();
+		Ident gcIdent = new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode);
+		myGlobalConfig = new GlobalConfigEmitter(qHelper, gcIdent);
+	}
+	public void applyGlobalConfigAndStartService() {
+		applyGlobalConfig();
 		startGlobalConfigService();
 	}
-
 	public void updateGlobalConfig() {
 		// Now this is a little irregular. We're creating this initally in PumaBooter, but also the same 
 		// (temporarily fixed) mode is reloaded here when we want to updateGlobalConfig. So far, that's mainly for our 
@@ -190,15 +193,15 @@ public class PumaAppContext extends BasicDebugger {
 		// Do we want to always reload the repo here? Might want to keep these functions separate in the future, but for
 		// now I'll assume they will go together.
 		clearQueryHelper();
-		myGlobalConfig = new GlobalConfigEmitter(new FreeIdent(PumaModeConstants.rkrt + PumaModeConstants.globalMode, PumaModeConstants.globalMode));
+		applyGlobalConfig();
 	}
 	// A half baked (3/4 baked?) idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
 	private boolean updating = false;
-	// Here I have removed the method variable passed in for the QueryInterface. Why? Because right now PumaAppContext really
-	// is the central clearing house for the QueryInterface for config -- ideally we want it to be passed down from one master instance here to
+	// Here I have removed the method variable passed in for the RepoClient. Why? Because right now PumaAppContext really
+	// is the central clearing house for the RepoClient for config -- ideally we want it to be passed down from one master instance here to
 	// all the objects that use it. Methods calling for config updates via this method shouldn't be responsible for 
-	// knowing what QueryInterface is appropriate -- they are calling into this method because we are trying to handle that here.
+	// knowing what RepoClient is appropriate -- they are calling into this method because we are trying to handle that here.
 	// So for now let's use the this.getQueryHelper way to get that interface here. We can continue to refine this thinking as we go.
 	// - Ryan 2012-09-17
 	public boolean updateConfigByRequest(String request) {
@@ -249,7 +252,7 @@ public class PumaAppContext extends BasicDebugger {
 				public void run() {
 					updateGlobalConfig();
 					startGlobalConfigService();
-					startVanillaQueryInterface();
+					startVanillaRepoClient();
 					updating = false;
 				}
 			};
@@ -353,7 +356,7 @@ public class PumaAppContext extends BasicDebugger {
 	// set here
 	public void initCinema() {
 		myHRC.initCinema();
-		QueryInterface qi = getQueryHelper();
+		RepoClient qi = getQueryHelper();
 		PumaWebMapper theMapper = getWebMapper();
 		theMapper.connectLiftSceneInterface(myBundleContext);
 		theMapper.connectLiftInterface(myBundleContext);	
@@ -475,7 +478,7 @@ public class PumaAppContext extends BasicDebugger {
 	public boolean setupCharacterBindingToRobokind(PumaDualCharacter pdc, Ident graphIdentForBony, HumanoidConfig hc) {
 
 		try {
-			QueryInterface qi = getQueryHelper();
+			RepoClient qi = getQueryHelper();
 			BoneQueryNames bqn = new BoneQueryNames();
 			boolean connectedOK = pdc.connectBonyCharToRobokindSvcs(myBundleContext, graphIdentForBony, hc, qi, bqn);
 			if (connectedOK) {

@@ -21,10 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.QueryInterface;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.SolutionMap;
+import org.appdapter.help.repo.*;
 import org.cogchar.blob.emit.HelpRepoExtensions; // Not needed once javaMap is added to SolutionMap
 
 /**
@@ -42,9 +39,10 @@ public class UserAccessConfig extends KnownComponentImpl {
 	public Ident loginPage;
 	public Map<Ident, UserConfig> users = new HashMap<Ident, UserConfig>();
 
-	public UserAccessConfig(QueryInterface qi, Ident graphIdent) {
+	public UserAccessConfig(RepoClient qi, Ident graphIdent) {
+		SolutionHelper sh = new SolutionHelper();
 		SolutionList solutionList = qi.getQueryResultList(UserQueryNames.LOGIN_PAGE_QUERY_URI, graphIdent);
-		List<Ident> loginList = qi.getIdentsFromSolutionAsJava(solutionList, UserQueryNames.LOGIN_PAGE_VAR_NAME);
+		List<Ident> loginList = sh.getIdentsFromSolutionAsJava(solutionList, UserQueryNames.LOGIN_PAGE_VAR_NAME);
 		if (loginList.size() >= 1) {
 			loginPage = loginList.get(0);
 			if (loginList.size() > 1) {
@@ -68,10 +66,11 @@ public class UserAccessConfig extends KnownComponentImpl {
 		public String salt;
 		public Ident startConfig;
 
-		public UserConfig(QueryInterface qi, Ident graphIdent, Solution userSolution) {
-			hashedPassword = qi.getStringFromSolution(userSolution, UserQueryNames.PASSWORD_VAR_NAME);
-			salt = qi.getStringFromSolution(userSolution, UserQueryNames.SALT_VAR_NAME);
-			startConfig = qi.getIdentFromSolution(userSolution, UserQueryNames.START_PAGE_VAR_NAME);
+		public UserConfig(RepoClient qi, Ident graphIdent, Solution userSolution) {
+			SolutionHelper sh = new SolutionHelper();
+			hashedPassword = sh.getStringFromSolution(userSolution, UserQueryNames.PASSWORD_VAR_NAME);
+			salt = sh.getStringFromSolution(userSolution, UserQueryNames.SALT_VAR_NAME);
+			startConfig = sh.getIdentFromSolution(userSolution, UserQueryNames.START_PAGE_VAR_NAME);
 		}
 	}
 }

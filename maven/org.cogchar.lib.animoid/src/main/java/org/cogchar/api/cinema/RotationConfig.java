@@ -19,7 +19,8 @@ package org.cogchar.api.cinema;
 import org.appdapter.core.item.*;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.SolutionHelper;
 import org.cogchar.blob.emit.QueryTester;
 
 /**
@@ -47,12 +48,13 @@ public class RotationConfig {
 	}
 
 	// Called from CinematicConfig, corresponds to a "named" rotation definition
-	public RotationConfig(QueryInterface qi, Solution solution) {
-		Ident myIdent = qi.getIdentFromSolution(solution, CinematicQueryNames.ROTATION_VAR_NAME);
+	public RotationConfig(RepoClient qi, Solution solution) {
+		SolutionHelper sh = new SolutionHelper();
+		Ident myIdent = sh.getIdentFromSolution(solution, CinematicQueryNames.ROTATION_VAR_NAME);
 		rotationName = myIdent.getLocalName();
-		yaw = qi.getFloatFromSolution(solution, CinematicQueryNames.YAW_VAR_NAME, Float.NaN);
-		pitch = qi.getFloatFromSolution(solution, CinematicQueryNames.PITCH_VAR_NAME, Float.NaN);
-		roll = qi.getFloatFromSolution(solution, CinematicQueryNames.ROLL_VAR_NAME, Float.NaN);
+		yaw = sh.getFloatFromSolution(solution, CinematicQueryNames.YAW_VAR_NAME, Float.NaN);
+		pitch = sh.getFloatFromSolution(solution, CinematicQueryNames.PITCH_VAR_NAME, Float.NaN);
+		roll = sh.getFloatFromSolution(solution, CinematicQueryNames.ROLL_VAR_NAME, Float.NaN);
 	}
 
 	public RotationConfig(Item configItem) {

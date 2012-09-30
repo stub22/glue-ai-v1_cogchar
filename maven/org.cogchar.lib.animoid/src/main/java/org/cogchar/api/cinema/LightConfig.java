@@ -20,7 +20,8 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.SolutionHelper;
 import org.cogchar.blob.emit.QueryTester;
 
 /**
@@ -41,18 +42,19 @@ public class LightConfig {
 	}
 
 	// A new constructor to build CameraConfig from spreadsheet
-	public LightConfig(QueryInterface queryEmitter, Solution querySolution) {
-		lightName = queryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.LIGHT_NAME_VAR_NAME).getLocalName();
+	public LightConfig(RepoClient queryEmitter, Solution querySolution) {
+		SolutionHelper sh = new SolutionHelper();
+		lightName = sh.getIdentFromSolution(querySolution, LightsCameraQueryNames.LIGHT_NAME_VAR_NAME).getLocalName();
 		lightType = LightType.AMBIENT; // For now, we assume light is ambient (no direction required) if type is not specified
-		Ident typeIdent = queryEmitter.getIdentFromSolution(querySolution, LightsCameraQueryNames.LIGHT_TYPE_VAR_NAME);
+		Ident typeIdent = sh.getIdentFromSolution(querySolution, LightsCameraQueryNames.LIGHT_TYPE_VAR_NAME);
 		if (typeIdent.getLocalName().equals("DIRECTIONAL")) {
 			lightType = LightType.DIRECTIONAL;
 		}
 		for (int index = 0; index < lightDirection.length; index++) {
-			lightDirection[index] = queryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
+			lightDirection[index] = sh.getFloatFromSolution(querySolution, LightsCameraQueryNames.DIRECTION_VAR_NAME[index], 0f);
 		}
 		for (int index = 0; index < lightColor.length; index++) {
-			lightColor[index] = queryEmitter.getFloatFromSolution(querySolution, LightsCameraQueryNames.COLOR_VAR_NAME[index], Float.NaN);
+			lightColor[index] = sh.getFloatFromSolution(querySolution, LightsCameraQueryNames.COLOR_VAR_NAME[index], Float.NaN);
 		}
 	}
 

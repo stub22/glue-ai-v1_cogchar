@@ -20,6 +20,9 @@ import org.cogchar.blob.emit.RenderConfigEmitter;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * 2012-09-29:   This is an old experiment that doesn't do anything 
+ * very useful.  We may axe it soon.
  */
 
 object Greeter {

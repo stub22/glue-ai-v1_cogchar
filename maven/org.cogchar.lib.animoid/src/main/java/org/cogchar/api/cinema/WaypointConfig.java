@@ -20,7 +20,8 @@ import java.util.Arrays;
 import org.appdapter.core.item.*;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.SolutionHelper;
 
 
 /**
@@ -46,11 +47,12 @@ public class WaypointConfig {
 	}
 
 	// Called from CinematicConfig, corresponds to a "named" waypoint definition
-	public WaypointConfig(QueryInterface qi, Solution solution) {
-		Ident myIdent = qi.getIdentFromSolution(solution, CinematicQueryNames.WAYPOINT_VAR_NAME);
+	public WaypointConfig(RepoClient qi, Solution solution) {
+		SolutionHelper sh = new SolutionHelper();
+		Ident myIdent = sh.getIdentFromSolution(solution, CinematicQueryNames.WAYPOINT_VAR_NAME);
 		waypointName = myIdent.getLocalName();
 		for (int index = 0; index < waypointCoordinates.length; index++) {
-			waypointCoordinates[index] = qi.getFloatFromSolution(solution, CinematicQueryNames.POSITION_VAR_NAME[index], Float.NaN);
+			waypointCoordinates[index] = sh.getFloatFromSolution(solution, CinematicQueryNames.POSITION_VAR_NAME[index], Float.NaN);
 		}
 	}
 

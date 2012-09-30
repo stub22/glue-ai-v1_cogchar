@@ -93,12 +93,12 @@ public class PumaBooter extends BasicDebugger {
 			 */
 			
 			getLogger().debug("%%%%%%%%%%%%%%%%%%% Starting query service");
-			pac.startVanillaQueryInterface();
+			pac.startVanillaRepoClient();
 			
 			// This method performs the configuration actions associated with the developmental "Global Mode" concept
 			// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
 			// be updated to relect that
-			pac.applyGlobalConfig();
+			pac.applyGlobalConfigAndStartService();
 			
 			boolean allowJFrames = mediator.getFlagAllowJFrames();
 /*  

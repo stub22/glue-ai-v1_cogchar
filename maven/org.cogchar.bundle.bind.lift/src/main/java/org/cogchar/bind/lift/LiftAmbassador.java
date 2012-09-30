@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,12 +38,12 @@ public class LiftAmbassador {
 	private LiftSceneInterface mySceneLauncher;
 	private LiftInterface myLift;
 	private LiftAppInterface myLiftAppInterface;
-	// The following QueryInterface is now an instance variable, but currently is set with a setter (setQueryInterface)
-	// so that PageCommander, etc. can call into the active LiftAmbassador instance without knowing about QueryInterface.
-	// Perhaps we'll ultimately want to get rid of this setter and just specify the QueryInterface/qGraph in a constructor.
+	// The following RepoClient is now an instance variable, but currently is set with a setter (setRepoClient)
+	// so that PageCommander, etc. can call into the active LiftAmbassador instance without knowing about RepoClient.
+	// Perhaps we'll ultimately want to get rid of this setter and just specify the RepoClient/qGraph in a constructor.
 	// However, setting interfaces this way allows LifterLifecycle to change any of the interfaces upon dependency change without
 	// requiring a new LiftAmbassador instance.
-	private QueryInterface myQueryInterface; 
+	private RepoClient myRepoClient; 
 	private LiftNetworkConfigInterface myNetConfigInterface;
 	private Ident myQGraph;
 	private boolean myConfigReady = false;
@@ -144,12 +144,12 @@ public class LiftAmbassador {
 				newConfig = myLiftConfigCache.get(configIdent); // Use cached version if available
 				theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
 			} else {
-				if (myQueryInterface != null) {
-					newConfig = new LiftConfig(myQueryInterface, myQGraph, configIdent);
+				if (myRepoClient != null) {
+					newConfig = new LiftConfig(myRepoClient, myQGraph, configIdent);
 					myLiftConfigCache.put(configIdent, newConfig);
 					theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
 				} else {
-					theLogger.error("New lift config requested, but no QueryInterface set!");
+					theLogger.error("New lift config requested, but no RepoClient set!");
 				}
 			}
 			if (newConfig != null) {
@@ -333,8 +333,8 @@ public class LiftAmbassador {
 		myLiftAppInterface = lai;
 	}
 
-	void setQueryInterface(QueryInterface qi, Ident graphIdent) {
-		myQueryInterface = qi;
+	void setRepoClient(RepoClient qi, Ident graphIdent) {
+		myRepoClient = qi;
 		myQGraph = graphIdent;
 	}
 	

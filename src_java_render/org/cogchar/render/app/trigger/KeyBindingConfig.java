@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.QueryInterface;
+import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
 import org.cogchar.blob.emit.KeystrokeConfigEmitter;
@@ -37,17 +37,17 @@ public class KeyBindingConfig extends BasicDebugger {
 
 	public Map<String, KeyBindingConfigItem> myGeneralBindings = new HashMap<String, KeyBindingConfigItem>();
 	public Map<String, KeyBindingConfigItem> mySceneBindings = new HashMap<String, KeyBindingConfigItem>();
-	// Another instance of the "not permanent" way of getting the QueryInterface! Time to decide soon the permanent way...
+	// Another instance of the "not permanent" way of getting the RepoClient! Time to decide soon the permanent way...
 
 	public KeyBindingConfig() {
 		// Just a default constructor, if we want to just use the addBindings method
 	}
 
-	public KeyBindingConfig(QueryInterface qi, Ident qGraph, KeystrokeConfigEmitter kce) {
+	public KeyBindingConfig(RepoClient qi, Ident qGraph, KeystrokeConfigEmitter kce) {
 		addBindings(qi, qGraph, kce);
 	}
 
-	public void addBindings(QueryInterface qi, Ident qGraph, KeystrokeConfigEmitter kce) {
+	public void addBindings(RepoClient qi, Ident qGraph, KeystrokeConfigEmitter kce) {
 		SolutionList solutionList = qi.getQueryResultList(kce.BINDINGS_QUERY_URI(), qGraph);
 		List<Solution> solnJL =  solutionList.javaList();
 		logInfo("addBindings found " + solnJL.size() + " bindings");
