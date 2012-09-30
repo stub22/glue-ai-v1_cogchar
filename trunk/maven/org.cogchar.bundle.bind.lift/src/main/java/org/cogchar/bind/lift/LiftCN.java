@@ -21,7 +21,7 @@ import org.appdapter.core.name.Ident;
 /**
  * @author Ryan Biggs
  */
-public class LiftQueryNames {
+public class LiftCN {
 	public static final String ccrt = "urn:ftd:cogchar.org:2012:runtime#"; // This itself could come from query if we want
 	
 	public static final Ident BLANK_ACTION = new FreeIdent("http://www.cogchar.org/lift/config/command#", "");

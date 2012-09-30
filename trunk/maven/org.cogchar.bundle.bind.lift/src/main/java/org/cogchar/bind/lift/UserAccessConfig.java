@@ -41,16 +41,16 @@ public class UserAccessConfig extends KnownComponentImpl {
 
 	public UserAccessConfig(RepoClient rc, Ident graphIdent) {
 		SolutionHelper sh = new SolutionHelper();
-		SolutionList loginPageSolList = rc.queryIndirectForAllSolutions(UserQueryNames.LOGIN_PAGE_QUERY_URI, graphIdent);
-		List<Ident> loginList = sh.pullIdentsAsJava(loginPageSolList, UserQueryNames.LOGIN_PAGE_VAR_NAME);
+		SolutionList loginPageSolList = rc.queryIndirectForAllSolutions(UserCN.LOGIN_PAGE_QUERY_URI, graphIdent);
+		List<Ident> loginList = sh.pullIdentsAsJava(loginPageSolList, UserCN.LOGIN_PAGE_VAR_NAME);
 		if (loginList.size() >= 1) {
 			loginPage = loginList.get(0);
 			if (loginList.size() > 1) {
 				logWarning("Found more than one startup liftConfig; using " + loginPage + " and ignoring the rest");
 			}
 		}
-		SolutionList userSolList = rc.queryIndirectForAllSolutions(UserQueryNames.USER_QUERY_URI, graphIdent);
-		SolutionMap userSolMap = userSolList.makeSolutionMap(UserQueryNames.USER_VAR_NAME);
+		SolutionList userSolList = rc.queryIndirectForAllSolutions(UserCN.USER_QUERY_URI, graphIdent);
+		SolutionMap userSolMap = userSolList.makeSolutionMap(UserCN.USER_VAR_NAME);
 		
 		Iterator userIterator = userSolMap.getJavaIterator();
 		Map<Ident, Solution> javaSolutionMap = HelpRepoExtensions.convertToJavaMap(userSolMap.map()); // Not needed once javaMap is added to SolutionMap
@@ -70,9 +70,9 @@ public class UserAccessConfig extends KnownComponentImpl {
 
 		public UserConfig(RepoClient qi, Ident graphIdent, Solution userSolution) {
 			SolutionHelper sh = new SolutionHelper();
-			hashedPassword = sh.pullString(userSolution, UserQueryNames.PASSWORD_VAR_NAME);
-			salt = sh.pullString(userSolution, UserQueryNames.SALT_VAR_NAME);
-			startConfig = sh.pullIdent(userSolution, UserQueryNames.START_PAGE_VAR_NAME);
+			hashedPassword = sh.pullString(userSolution, UserCN.PASSWORD_VAR_NAME);
+			salt = sh.pullString(userSolution, UserCN.SALT_VAR_NAME);
+			startConfig = sh.pullIdent(userSolution, UserCN.START_PAGE_VAR_NAME);
 		}
 	}
 }
