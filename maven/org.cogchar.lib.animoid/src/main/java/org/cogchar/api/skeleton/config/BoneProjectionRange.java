@@ -45,10 +45,10 @@ public class BoneProjectionRange  {
 		myMaxPosAngRad = maxAngRad;
 	}
 	public static BoneProjectionRange makeOne(BoneJointConfig bjc, Item configItem) {
-		String boneName = ItemFuncs.getString(configItem, BoneConfigNames.P_boneName, null);
-		String rotAxisName = ItemFuncs.getString(configItem, BoneConfigNames.P_rotationAxis, null);
-		Double minAngDeg = ItemFuncs.getDouble(configItem, BoneConfigNames.P_minAngleDeg, null);
-		Double maxAngDeg = ItemFuncs.getDouble(configItem, BoneConfigNames.P_maxAngleDeg, null);
+		String boneName = ItemFuncs.getString(configItem, BoneAN.P_boneName, null);
+		String rotAxisName = ItemFuncs.getString(configItem, BoneAN.P_rotationAxis, null);
+		Double minAngDeg = ItemFuncs.getDouble(configItem, BoneAN.P_minAngleDeg, null);
+		Double maxAngDeg = ItemFuncs.getDouble(configItem, BoneAN.P_maxAngleDeg, null);
 		double minAngRad = Math.toRadians(minAngDeg);
 		double maxAngRad = Math.toRadians(maxAngDeg);
 		BoneRotationAxis rax = BoneRotationAxis.valueOf(rotAxisName);

@@ -87,7 +87,7 @@ public class CinematicConfig extends QueryBackedConfigBase {
 				Mode mode) {
 			getLogger().trace("CinematicConfig.initExtendedFieldsAndLinks()-BEGIN");
 			ItemAssemblyReader iaReader = new ItemAssemblyReaderImpl();
-			Set<Item> configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_cinematic);
+			Set<Item> configItems = ItemFuncs.getLinkedItemSet(configItem, CinemaAN.P_cinematic);
 			getLogger().debug("Cinematics found: " + configItems.size());
 			for (Item ji : configItems) {
 				//logInfo("Generating CinematicInstanceConfig"); // TEST ONLY
@@ -95,7 +95,7 @@ public class CinematicConfig extends QueryBackedConfigBase {
 				getLogger().debug("Adding CinematicInstanceConfig in CinematicConfig: " + cic);
 				mcc.myCICs.add(cic);
 			}
-			configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_trackList);
+			configItems = ItemFuncs.getLinkedItemSet(configItem, CinemaAN.P_trackList);
 			getLogger().debug("Tracks found: " + configItems.size());
 			for (Item ji : configItems) {
 				//logInfo("Generating CinematicTrack"); // TEST ONLY
@@ -103,7 +103,7 @@ public class CinematicConfig extends QueryBackedConfigBase {
 				getLogger().debug("Adding named CinematicTrack in CinematicConfig: " + ct);
 				mcc.myCTs.add(ct);
 			}
-			configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_waypointList);
+			configItems = ItemFuncs.getLinkedItemSet(configItem, CinemaAN.P_waypointList);
 			getLogger().debug("Waypoints found: {}", configItems.size());
 			for (Item ji : configItems) {
 				//logInfo("Generating WaypointConfig"); // TEST ONLY
@@ -111,7 +111,7 @@ public class CinematicConfig extends QueryBackedConfigBase {
 				getLogger().debug("Adding named WaypointConfig in CinematicConfig: {}", wc);
 				mcc.myWCs.add(wc);
 			}
-			configItems = ItemFuncs.getLinkedItemSet(configItem, CinematicConfigNames.P_rotationList);
+			configItems = ItemFuncs.getLinkedItemSet(configItem, CinemaAN.P_rotationList);
 			getLogger().debug ("Rotations found: {}", configItems.size());
 			for (Item ji : configItems) {
 				//logInfo("Generating RotationConfig"); // TEST ONLY

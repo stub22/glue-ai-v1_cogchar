@@ -17,7 +17,7 @@ package org.cogchar.api.humanoid;
 
 import java.util.List;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.skeleton.config.BoneQueryNames;
+import org.cogchar.api.skeleton.config.BoneCN;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.RepoClient;
@@ -55,10 +55,10 @@ public class HumanoidFigureConfig {
 	// so why not here?
 	private void addBoneDescsFromBoneRobotConfig(RepoClient qi, Ident charIdent, Ident bonyGraphIdent, HumanoidFigureConfig hfc) {
 		SolutionHelper sh = new SolutionHelper();
-		String queryString = qi.getQuery(BoneQueryNames.BONE_NAMES_QUERY_TEMPLATE_URI);
-		queryString = qi.setQueryVar(queryString, BoneQueryNames.ROBOT_IDENT_QUERY_VAR, charIdent);
+		String queryString = qi.getQuery(BoneCN.BONE_NAMES_QUERY_TEMPLATE_URI);
+		queryString = qi.setQueryVar(queryString, BoneCN.ROBOT_IDENT_QUERY_VAR, charIdent);
 		SolutionList solutionList = qi.getTextQueryResultList(queryString, bonyGraphIdent);
-		List<String> boneNames = sh.pullStringsAsJava(solutionList, BoneQueryNames.BONE_NAME_VAR_NAME);
+		List<String> boneNames = sh.pullStringsAsJava(solutionList, BoneCN.BONE_NAME_VAR_NAME);
 		for (String boneName : boneNames) {
 			myBoneConfig.addBoneDesc(boneName);
 		}

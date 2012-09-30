@@ -49,7 +49,7 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	}
 	
 	// A new constructor to build BoneRobotConfig from spreadsheet
-	public BoneRobotConfig(RepoClient qi, Ident bonyConfigIdent, Ident graphIdent, BoneQueryNames bqn) {
+	public BoneRobotConfig(RepoClient qi, Ident bonyConfigIdent, Ident graphIdent, BoneCN bqn) {
 		SolutionHelper sh = new SolutionHelper();
 		getLogger().info("Building BoneRobotConfig via queries for {} using graph {} ", bonyConfigIdent, graphIdent);
 		SolutionMap solutionMap = qi.getQueryResultMap(bqn.ROBOT_NAME_QUERY_URI, bqn.ROBOT_URI_VAR_NAME, graphIdent);
@@ -80,8 +80,8 @@ public class BoneRobotConfig extends KnownComponentImpl {
 		@Override protected void initExtendedFieldsAndLinks(BoneRobotConfig mrc, Item configItem, Assembler assmblr, 
 						Mode mode) {
 			getLogger().debug("BoneRobotConfig.initExtendedFieldsAndLinks()-BEGIN");
-			mrc.myRobotName = ItemFuncs.getString(configItem, BoneConfigNames.P_robotName, null);
-			Set<Item> jointItems = ItemFuncs.getLinkedItemSet(configItem, BoneConfigNames.P_joint);
+			mrc.myRobotName = ItemFuncs.getString(configItem, BoneAN.P_robotName, null);
+			Set<Item> jointItems = ItemFuncs.getLinkedItemSet(configItem, BoneAN.P_joint);
 			for (Item ji : jointItems) {
 				BoneJointConfig bjc = new BoneJointConfig(ji);
 				mrc.myBJCs.add(bjc);

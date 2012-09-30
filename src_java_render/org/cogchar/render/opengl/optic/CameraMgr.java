@@ -25,7 +25,7 @@ import com.jme3.scene.control.CameraControl.ControlDirection;
 import java.util.*;
 import org.cogchar.api.cinema.CameraConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
-import org.cogchar.api.cinema.LightsCameraConfigNames;
+import org.cogchar.api.cinema.LightsCameraAN;
 import org.cogchar.render.sys.context.CoreFeatureAdapter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.slf4j.Logger;
@@ -82,10 +82,10 @@ public class CameraMgr {
 			theLogger.info("Building Camera for config: " + cc);
 			String cameraName = cc.cameraName;
 			// If the RDF camera name is camera_default (with any case), normalize name of this very special camera to "DEFAULT"
-			if (cameraName.toLowerCase().replaceFirst(LightsCameraConfigNames.partial_P_camera, "").equals("_" + LightsCameraConfigNames.suffix_DEFAULT)) {
+			if (cameraName.toLowerCase().replaceFirst(LightsCameraAN.partial_P_camera, "").equals("_" + LightsCameraAN.suffix_DEFAULT)) {
 				cameraName = CommonCameras.DEFAULT.name();
 			}
-			if (cameraName.toLowerCase().replaceFirst(LightsCameraConfigNames.partial_P_camera, "").equals("_" + LightsCameraConfigNames.suffix_HEAD_CAM)) {
+			if (cameraName.toLowerCase().replaceFirst(LightsCameraAN.partial_P_camera, "").equals("_" + LightsCameraAN.suffix_HEAD_CAM)) {
 				cameraName = CommonCameras.HEAD_CAM.name();
 			}
 			Camera loadingCamera = getNamedCamera(cameraName); // First let's see if we can get a registered camera by this name

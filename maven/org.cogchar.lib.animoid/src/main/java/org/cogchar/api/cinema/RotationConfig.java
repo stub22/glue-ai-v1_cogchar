@@ -59,18 +59,18 @@ public class RotationConfig {
 
 	public RotationConfig(Item configItem) {
 		// If this rotation has no name, it's likely an unnamed rotation defined in-line with a track definition...
-		rotationName = ItemFuncs.getString(configItem, CinematicConfigNames.P_rotationName, CinematicConfigNames.unnamedRotationName);
+		rotationName = ItemFuncs.getString(configItem, CinemaAN.P_rotationName, CinemaAN.unnamedRotationName);
 		String rotationLocalName = configItem.getIdent().getLocalName();
 		// ... or a rotation with no name may be from a rotation resource not defined as part of a track
 		if (rotationLocalName == null) {
 			rotationLocalName = "no dice"; // Keeps expression below from throwing an NPE if rotationLocalName is null, which it is if rotation is defined within track definition
 		}
-		if (rotationLocalName.startsWith(CinematicConfigNames.P_namedRotation)) {
+		if (rotationLocalName.startsWith(CinemaAN.P_namedRotation)) {
 			rotationName = rotationLocalName;
 		}
-		yaw = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_yaw, Double.NaN).floatValue();
-		roll = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_roll, Double.NaN).floatValue();
-		pitch = ItemFuncs.getDouble(configItem, CinematicConfigNames.P_pitch, Double.NaN).floatValue();
+		yaw = ItemFuncs.getDouble(configItem, CinemaAN.P_yaw, Double.NaN).floatValue();
+		roll = ItemFuncs.getDouble(configItem, CinemaAN.P_roll, Double.NaN).floatValue();
+		pitch = ItemFuncs.getDouble(configItem, CinemaAN.P_pitch, Double.NaN).floatValue();
 
 	}
 }

@@ -19,7 +19,7 @@ package org.cogchar.api.skeleton.config;
  * @author Ryan Biggs
  */
 
-public class BoneQueryNames {
+public class BoneCN {
 	
 	public static final String ROBOT_URI_VAR_NAME = "humInd";
 	public static final String ROBOT_NAME_VAR_NAME = "robotName";
