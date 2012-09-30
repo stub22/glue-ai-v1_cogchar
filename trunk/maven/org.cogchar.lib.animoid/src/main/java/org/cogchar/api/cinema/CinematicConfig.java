@@ -54,21 +54,21 @@ public class CinematicConfig extends QueryBackedConfigBase {
 	// A new constructor to build CinematicConfig from spreadsheet
 	public CinematicConfig(RepoClient qi, Ident qGraph) {
 		super(qi);
-		SolutionList solutionList = qi.getQueryResultList(CinemaCN.CINEMATICS_QUERY_URI, qGraph);
-		for (Solution solution : solutionList.javaList()) {
-			myCICs.add(new CinematicInstanceConfig(qi, solution, qGraph));
+		SolutionList cinematicSolList = qi.queryIndirectForAllSolutions(CinemaCN.CINEMATICS_QUERY_URI, qGraph);
+		for (Solution cinematicSol : cinematicSolList.javaList()) {
+			myCICs.add(new CinematicInstanceConfig(qi, cinematicSol, qGraph));
 		}
-		solutionList = qi.getQueryResultList(CinemaCN.TRACK_QUERY_URI, qGraph);
-		for (Solution solution : solutionList.javaList()) {
-			myCTs.add(new CinematicTrack(qi, solution, qGraph));
+		SolutionList trackSolList = qi.queryIndirectForAllSolutions(CinemaCN.TRACK_QUERY_URI, qGraph);
+		for (Solution trackSol : trackSolList.javaList()) {
+			myCTs.add(new CinematicTrack(qi, trackSol, qGraph));
 		}
-		solutionList = qi.getQueryResultList(CinemaCN.WAYPOINT_QUERY_URI, qGraph);
-		for (Solution solution : solutionList.javaList()) {
-			myWCs.add(new WaypointConfig(qi, solution));
+		SolutionList waypointSolList = qi.queryIndirectForAllSolutions(CinemaCN.WAYPOINT_QUERY_URI, qGraph);
+		for (Solution waypointSol : waypointSolList.javaList()) {
+			myWCs.add(new WaypointConfig(qi, waypointSol));
 		}
-		solutionList = qi.getQueryResultList(CinemaCN.ROTATION_QUERY_URI, qGraph);
-		for (Solution solution : solutionList.javaList()) {
-			myRCs.add(new RotationConfig(qi, solution));
+		SolutionList rotSL  = qi.queryIndirectForAllSolutions(CinemaCN.ROTATION_QUERY_URI, qGraph);
+		for (Solution rotSol : rotSL.javaList()) {
+			myRCs.add(new RotationConfig(qi, rotSol));
 		}
 	}
 

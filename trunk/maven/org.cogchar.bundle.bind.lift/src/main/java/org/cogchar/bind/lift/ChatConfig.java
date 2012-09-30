@@ -44,9 +44,9 @@ public class ChatConfig extends KnownComponentImpl {
 	// A new constructor to build ChatConfig from spreadsheet
 	// It's probably unnecessary to retain concept of multple config resources, so for now we just create one with our resource solutions
 	// Soon may condense this and ChatConfigResource into single class
-	public ChatConfig(RepoClient qi, Ident graphIdent) {
-		String query = qi.getCompletedQueryFromTemplate(ChatCN.GENRAL_CONFIG_TEMPLATE_URI, ChatCN.CATEGORY_QUERY_VAR_NAME, ChatCN.CATEGORY_URI);
-		SolutionList solutionList = qi.getTextQueryResultList(query, graphIdent);
+	public ChatConfig(RepoClient qi, Ident graphIdent) {		
+		SolutionList solutionList = qi.queryIndirectForAllSolutions(ChatCN.GENRAL_CONFIG_TEMPLATE_URI, graphIdent,
+						ChatCN.CATEGORY_QUERY_VAR_NAME, ChatCN.CATEGORY_URI);
 		myCCRs.add(new ChatConfigResource(qi, solutionList));
 	}
 
@@ -56,8 +56,7 @@ public class ChatConfig extends KnownComponentImpl {
 			super(builderConfRes);
 		}
 
-		@Override
-		protected void initExtendedFieldsAndLinks(ChatConfig mcc, Item configItem, Assembler assmblr,
+		@Override protected void initExtendedFieldsAndLinks(ChatConfig mcc, Item configItem, Assembler assmblr,
 				Mode mode) {
 			getLogger().debug("ChatConfig.initExtendedFieldsAndLinks()-BEGIN");
 			Set<Item> resourceItems = ItemFuncs.getLinkedItemSet(configItem, ChatConfigNames.P_config);

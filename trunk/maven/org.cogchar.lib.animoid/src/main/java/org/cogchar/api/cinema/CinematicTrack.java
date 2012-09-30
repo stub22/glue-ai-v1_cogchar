@@ -89,8 +89,8 @@ public class CinematicTrack extends BasicDebugger {
 		loopMode = sh.pullIdent(solution, CinemaCN.LOOP_MODE_VAR_NAME).getLocalName();
 		startTime = sh.pullFloat(solution, CinemaCN.START_TIME_VAR_NAME, 0f);
 		trackDuration = sh.pullFloat(solution, CinemaCN.DURATION_VAR_NAME, 0f);
-		String query = qi.getCompletedQueryFromTemplate(CinemaCN.WAYPOINTS_QUERY_TEMPLATE_URI, CinemaCN.TRACK_QUERY_VAR_NAME, myIdent);
-		SolutionList solutionList = qi.getTextQueryResultList(query, qGraph);
+		SolutionList solutionList  = qi.queryIndirectForAllSolutions(CinemaCN.WAYPOINTS_QUERY_TEMPLATE_URI, qGraph, 
+					CinemaCN.TRACK_QUERY_VAR_NAME, myIdent);
 		List<Ident> waypointIdentList = sh.pullIdentsAsJava(solutionList, CinemaCN.WAYPOINT_VAR_NAME);
 		for (Ident waypointIdent : waypointIdentList) {
 			waypoints.add(new WaypointConfig(waypointIdent));

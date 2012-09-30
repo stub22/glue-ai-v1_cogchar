@@ -49,19 +49,21 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	}
 	
 	// A new constructor to build BoneRobotConfig from spreadsheet
-	public BoneRobotConfig(RepoClient qi, Ident bonyConfigIdent, Ident graphIdent, BoneCN bqn) {
+	public BoneRobotConfig(RepoClient rc, Ident bonyConfigIdent, Ident graphIdent, BoneCN bqn) {
 		SolutionHelper sh = new SolutionHelper();
 		getLogger().info("Building BoneRobotConfig via queries for {} using graph {} ", bonyConfigIdent, graphIdent);
-		SolutionMap solutionMap = qi.getQueryResultMap(bqn.ROBOT_NAME_QUERY_URI, bqn.ROBOT_URI_VAR_NAME, graphIdent);
-		myRobotName = sh.pullString(solutionMap, bonyConfigIdent, bqn.ROBOT_NAME_VAR_NAME);
-		String queryString = qi.getCompletedQueryFromTemplate(bqn.BONE_JOINT_CONFIG_QUERY_TEMPLATE_URI, bqn.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
-		SolutionList solutionList = qi.getTextQueryResultList(queryString, graphIdent);
-		List<Ident> boneJointConfigIdents = sh.pullIdentsAsJava(solutionList, bqn.BONE_JOINT_CONFIG_INSTANCE_VAR_NAME);
-		queryString = qi.getQuery(bqn.BASE_BONE_JOINT_PROPERTIES_QUERY_TEMPLATE_URI);
-		queryString = qi.setQueryVar(queryString, bqn.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
-		solutionMap = qi.getTextQueryResultMap(queryString, bqn.JOINT_URI_VAR_NAME, graphIdent);
+		SolutionList robotSL = rc.queryIndirectForAllSolutions(bqn.ROBOT_NAME_QUERY_URI, graphIdent);
+		SolutionMap robotSolMap = robotSL.makeSolutionMap(bqn.ROBOT_URI_VAR_NAME);
+		myRobotName = sh.pullString(robotSolMap, bonyConfigIdent, bqn.ROBOT_NAME_VAR_NAME);
+		SolutionList bjConfSL = rc.queryIndirectForAllSolutions(bqn.BONE_JOINT_CONFIG_QUERY_QN, graphIdent, 
+						bqn.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
+		List<Ident> boneJointConfigIdents = sh.pullIdentsAsJava(bjConfSL, bqn.BONE_JOINT_CONFIG_INSTANCE_VAR_NAME);
+		
+		SolutionList bjPropSL = rc.queryIndirectForAllSolutions(bqn.BASE_BONE_JOINT_PROPERTIES_QUERY_QN, graphIdent,
+						bqn.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
+		SolutionMap bjPropSM = bjPropSL.makeSolutionMap(bqn.JOINT_URI_VAR_NAME);
 		for (Ident jointIdent: boneJointConfigIdents) {
-			myBJCs.add(new BoneJointConfig(qi, jointIdent, solutionMap, graphIdent));
+			myBJCs.add(new BoneJointConfig(rc, jointIdent, bjPropSM, graphIdent));
 		}
 	}
 	
