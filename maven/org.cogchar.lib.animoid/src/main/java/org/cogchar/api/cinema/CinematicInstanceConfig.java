@@ -53,8 +53,9 @@ public class CinematicInstanceConfig extends QueryBackedConfigBase {
 		Ident myIdent = sh.pullIdent(querySolution, CinemaCN.CINEMATIC_VAR_NAME);
 		myURI_Fragment = myIdent.getLocalName();
 		duration = sh.pullFloat(querySolution, CinemaCN.DURATION_VAR_NAME, Float.NaN);
-		String query = qi.getCompletedQueryFromTemplate(CinemaCN.TRACKS_QUERY_TEMPLATE_URI, CinemaCN.CINEMATIC_QUERY_VAR_NAME, myIdent);
-		SolutionList solutionList = qi.getTextQueryResultList(query, qGraph);
+		SolutionList solutionList = qi.queryIndirectForAllSolutions(CinemaCN.TRACKS_QUERY_TEMPLATE_URI, qGraph, 
+							CinemaCN.CINEMATIC_QUERY_VAR_NAME, myIdent);
+
 		List<Ident> trackIdentList = sh.pullIdentsAsJava(solutionList, CinemaCN.TRACK_VAR_NAME);
 		for (Ident trackIdent : trackIdentList) {
 			myTracks.add(new CinematicTrack(trackIdent));

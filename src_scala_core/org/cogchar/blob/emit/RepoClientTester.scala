@@ -17,7 +17,7 @@
 package org.cogchar.blob.emit
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.store.{Repo}
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl} 
+import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBinding} 
 import org.appdapter.impl.store.{FancyRepo};
 import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{Query, QueryFactory, QueryExecution, QueryExecutionFactory, QuerySolution, QuerySolutionMap, Syntax};
@@ -58,14 +58,14 @@ object RepoClientTester {
 		// Find the query in this named model (according to Repo directory)
 		val querySheetQName = QUERY_SHEET;
 
-		// Plug a parameter in for the target query graph
-		val qInitBinding = new QuerySolutionMap()
 		val graphVarName = GRAPH_QUERY_VAR
+		
+		val qib : InitialBinding = repo.makeInitialBinding
 		// Repo reads QNames using its namespaces
-		repo.bindQueryVarToQName(qInitBinding, graphVarName, tgtGraphQName)
+		qib.bindQName(graphVarName, tgtGraphQName)
 		
 		// Run the resulting fully bound query, and print the results.		
-		val solnJavaList : java.util.List[QuerySolution] = repo.queryIndirectForAllSolutions(querySheetQName, queryQName, qInitBinding);
+		val solnJavaList : java.util.List[QuerySolution] = repo.queryIndirectForAllSolutions(querySheetQName, queryQName, qib.getQSMap);
 
 		println("Found solutions for " + queryQName + " in " + tgtGraphQName + " : " + solnJavaList)
 	}

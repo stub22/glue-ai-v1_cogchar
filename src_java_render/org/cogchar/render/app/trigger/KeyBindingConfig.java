@@ -48,7 +48,7 @@ public class KeyBindingConfig extends BasicDebugger {
 	}
 
 	public void addBindings(RepoClient qi, Ident qGraph, KeystrokeConfigEmitter kce) {
-		SolutionList solutionList = qi.getQueryResultList(kce.BINDINGS_QUERY_URI(), qGraph);
+		SolutionList solutionList = qi.queryIndirectForAllSolutions(kce.BINDINGS_QUERY_URI(), qGraph);
 		List<Solution> solnJL =  solutionList.javaList();
 		logInfo("addBindings found " + solnJL.size() + " bindings");
 		for (Solution solution : solnJL ) {
