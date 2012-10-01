@@ -23,6 +23,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.RepoClientImpl;
 import org.appdapter.help.repo.RepoClient;
+import org.appdapter.impl.store.FancyRepo;
 
 import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.app.buddy.busker.TriggerItem;
@@ -65,7 +66,7 @@ public class PumaAppContext extends BasicDebugger {
 	private List<PumaDualCharacter>	myCharList = new ArrayList<PumaDualCharacter>();
 	// A query interface instance we can reuse - right now just to trigger repo reloads. May want to do that via
 	// GlobalConfigEmitter or some other interface in the long run...?
-	RepoClient					myRepoClient;
+	private	RepoClient				myCurrentMainConfigRepoClient;
 	
 	// A managed service instance of the GlobalConfigEmitter, currently used only by LifterLifecycle.
 	// We need to keep track of it so we can stop and restart it for Lift "refresh"
@@ -101,13 +102,18 @@ public class PumaAppContext extends BasicDebugger {
 	}
 
 	private void clearQueryHelper() {
-		myRepoClient = null;
+		myCurrentMainConfigRepoClient = null;
 	}
-	private RepoClient getQueryHelper() { 
-		if (myRepoClient == null) {
-			myRepoClient = RepoClientTester.makeVanillaQueryEmitter();
+	private RepoClient getCurrentMainConfigRepoClient() { 
+		if (myCurrentMainConfigRepoClient == null) {
+			// Here we are calling in to a scala-coded singleton defined in o.c.lib.core.
+			// Step 1 is to load up a repo from somewhere.  We want to instead get our 
+			// repo info from the ContextMediator, which can choose to point us at a
+			// 
+			FancyRepo testRepo = RepoClientTester.loadDefaultTestRepo();
+			myCurrentMainConfigRepoClient = RepoClientTester.makeDefaultRepoClient(testRepo);
 		}
-		return myRepoClient;
+		return myCurrentMainConfigRepoClient;
 	}
 	
 	// Registers the QueryEmitter service, currently with an empty lifecycle.
@@ -116,14 +122,9 @@ public class PumaAppContext extends BasicDebugger {
 	// Moved here from PumaBooter because all "top level" RepoClient business is now handled in this class.
 	// Also, we want this here so we can handle updates to Lifter config here, like with all other config.
 	public RepoClient startVanillaRepoClient() {
-		// We want to make explicity the assumptions about what goes into our QueryEmitter.
-		// On 2012-09-12 Stu changed "new QueryEmitter()" to makeVanillaQueryEmitter,
-		// but perhaps there is some more adjustment to do here for lifecycle compat.
-		//QueryEmitter qemit = QueryTester.makeVanillaQueryEmitter();
-		// On 2012-09-16 Ryan changed from the qemit declaration above to the one below. This allows us to use the 
-		// same instance for the QueryEmitter here as is accessed by QueryTester.getInterface, preventing duplicate
-		// (SLOW) resource loads and the possibility of unsynchronized state in PUMA.
-		RepoClient qemit = getQueryHelper();
+		
+		// We want to show explicity our assumptions about the setup parameters of our RepoClient.
+		RepoClient qemit = getCurrentMainConfigRepoClient();
 		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(qemit, RepoClient.class);
     	myQueryComp = new OSGiComponent(myBundleContext, lifecycle);
     	myQueryComp.start();
@@ -177,7 +178,7 @@ public class PumaAppContext extends BasicDebugger {
 	// But really this is a can of worms, so probably we should move to having both the
 	// GlobalConfigService and myGlobalConfig always be updated at the same time. Not yet though, until the possible implications are worked through...
 	private void applyGlobalConfig() {
-		RepoClient qHelper = getQueryHelper();
+		RepoClient qHelper = getCurrentMainConfigRepoClient();
 		Ident gcIdent = new FreeIdent(PumaModeConstants.rkrt+PumaModeConstants.globalMode, PumaModeConstants.globalMode);
 		myGlobalConfig = new GlobalConfigEmitter(qHelper, gcIdent);
 	}
@@ -338,7 +339,7 @@ public class PumaAppContext extends BasicDebugger {
 					getLogger().warn("Could not get valid graphs on which to query for config of " + charIdent.getLocalName());
 					break;
 				}
-				HumanoidConfig myHumanoidConfig = new HumanoidConfig(getQueryHelper(), charIdent, graphIdentForHumanoid);
+				HumanoidConfig myHumanoidConfig = new HumanoidConfig(getCurrentMainConfigRepoClient(), charIdent, graphIdentForHumanoid);
 				PumaDualCharacter pdc = connectDualRobotChar(charIdent, myHumanoidConfig.nickname);
 				myCharList.add(pdc);
 				pdc.absorbContext(myMediator);
@@ -356,7 +357,7 @@ public class PumaAppContext extends BasicDebugger {
 	// set here
 	public void initCinema() {
 		myHRC.initCinema();
-		RepoClient qi = getQueryHelper();
+		RepoClient qi = getCurrentMainConfigRepoClient();
 		PumaWebMapper theMapper = getWebMapper();
 		theMapper.connectLiftSceneInterface(myBundleContext);
 		theMapper.connectLiftInterface(myBundleContext);	
@@ -430,7 +431,7 @@ public class PumaAppContext extends BasicDebugger {
 			try {
 				Ident graphIdent = myGlobalConfig.ergMap().get(pdc.getCharIdent()).get(PumaModeConstants.BONY_CONFIG_ROLE);
 				try {
-					pdc.updateBonyConfig(getQueryHelper(), graphIdent, bqn);
+					pdc.updateBonyConfig(getCurrentMainConfigRepoClient(), graphIdent, bqn);
 				} catch (Throwable t) {
 					getLogger().error("problem updating bony config from queries for " + pdc.getCharIdent(), t);
 				}
@@ -478,7 +479,7 @@ public class PumaAppContext extends BasicDebugger {
 	public boolean setupCharacterBindingToRobokind(PumaDualCharacter pdc, Ident graphIdentForBony, HumanoidConfig hc) {
 
 		try {
-			RepoClient qi = getQueryHelper();
+			RepoClient qi = getCurrentMainConfigRepoClient();
 			BoneCN bqn = new BoneCN();
 			boolean connectedOK = pdc.connectBonyCharToRobokindSvcs(myBundleContext, graphIdentForBony, hc, qi, bqn);
 			if (connectedOK) {
