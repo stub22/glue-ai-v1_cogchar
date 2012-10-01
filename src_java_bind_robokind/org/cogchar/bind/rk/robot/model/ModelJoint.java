@@ -27,6 +27,8 @@ import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.common.utils.Utils;
 import org.robokind.api.motion.AbstractJoint;
 import org.robokind.api.motion.Joint;
+import org.robokind.api.motion.JointProperty;
+import org.robokind.api.motion.joint_properties.ReadCurrentPosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +50,14 @@ public class ModelJoint extends AbstractJoint {
         myJointName = bjc.myJointName;
 		updateConfig(bjc);
 		hardResetGoalPosToDefault();
+        myProperties.put(ReadCurrentPosition.PROPERTY_NAME, new ReadCurrentPosition() {
+            @Override public NormalizedDouble getValue() {
+                return myGoalPosNorm;
+            }
+            @Override public NormalizableRange<NormalizedDouble> getNormalizableRange() {
+                return NormalizableRange.NORMALIZED_RANGE;
+            }
+        });
     }
 	public void updateConfig(BoneJointConfig bjc) { 
 		double defPosVal = Utils.bound(bjc.myNormalDefaultPos, 0.0, 1.0);
