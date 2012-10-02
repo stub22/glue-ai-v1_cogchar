@@ -143,7 +143,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		final Node rootNode = rrc.getJme3RootDeepNode(null);
 		final PhysicsSpace ps = getPhysicsSpace();
 		if (figure == null) {
-			getLogger().warn("setupHumanoidFigure() Found null HumanoidFigure for " + charIdent);
+			getLogger().warn("setupHumanoidFigure() Found null HumanoidFigure for {}", charIdent);
 			return null;
 		}
 		/**
@@ -160,9 +160,9 @@ public class HumanoidRenderContext extends BonyRenderContext {
 					figure.setModule(hfm);
 					// Activate coroutine threading for our  module.
 					attachModule(hfm);
-					getLogger().warn("Async Result (not really a 'warning') : Figure initialized and HumanoidFigureModule attached for " + charIdent);
+					getLogger().warn("Async Result (not really a 'warning') : Figure initialized and HumanoidFigureModule attached for {}", charIdent);
 				} else {
-					getLogger().warn("Delayed problem in code launched from setupHumanoidFigure():  Figure init failed for: " + charIdent);
+					getLogger().warn("Delayed problem in code launched from setupHumanoidFigure():  Figure init failed for: {}", charIdent);
 				}
 			}
 		});

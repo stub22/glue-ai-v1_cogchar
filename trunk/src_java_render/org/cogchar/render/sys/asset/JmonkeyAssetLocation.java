@@ -57,14 +57,14 @@ public class JmonkeyAssetLocation {
 			URL hackyRootURL = getHackyRootURL();
 			if (hackyRootURL != null) {
 				String hackyRootUrlPath = hackyRootURL.toExternalForm();
-				theLogger.info("Registering UrlLocator for path: " + hackyRootUrlPath);
+				theLogger.info("Registering UrlLocator for path: {}", hackyRootUrlPath);
 				assetMgr.registerLocator(hackyRootUrlPath, UrlLocator.class);
 				myRegisteredFlag = true;
 			} else {
-				theLogger.warn("Cannot find URL for resources of: " + this);
+				theLogger.warn("Cannot find URL for resources of: {}", this);
 			}
 		} else {
-			theLogger.warn("Ignoring registration request for locator already registered: " + this);
+			theLogger.warn("Ignoring registration request for locator already registered: {}", this);
 		}
 		
 	}
@@ -76,7 +76,7 @@ public class JmonkeyAssetLocation {
 			ClassLoader cl = getClassLoader();
 			
 			URL resURL = cl.getResource(resourceRootPath);
-			theLogger.info("ClassLoader[" + cl + "]" + " lookup for resourcePath[" + resourceRootPath + "] returned: " + resURL);
+			theLogger.info("ClassLoader[{}] lookup for resourcePath[{}] returned: {}", new Object[]{cl, resourceRootPath , resURL});
 			myHackyRootURL = resURL;
 		}
 		return myHackyRootURL;

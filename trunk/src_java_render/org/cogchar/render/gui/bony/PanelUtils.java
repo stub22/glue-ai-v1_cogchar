@@ -66,7 +66,7 @@ The value is set to HIDE_ON_CLOSE by default. Changes to the value of this prope
 			Class panelClass = Class.forName(panelClassName);
 			vcPanel = (VirtualCharacterPanel) panelClass.newInstance();
 		} catch (Throwable t) {
-			theLogger.error("Cannot load panel of kind: " + panelKind, t);
+			theLogger.error("Cannot load panel of kind: {}; {}", panelKind, t);
 		}
 		return vcPanel;
 	}

@@ -64,7 +64,7 @@ public class LiftCrypto extends BasicDebugger {
 			md.update(text.getBytes(ENCODING_SCHEME));
 			output = md.digest();
 		} catch (Exception e) {
-			theLogger.error("Exception attempting to compute hash from string: " + e);
+			theLogger.error("Exception attempting to compute hash from string: {}", e);
 		}
 		return output;
 	}

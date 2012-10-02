@@ -79,7 +79,7 @@ public class CameraMgr {
 
 	public void initCamerasFromConfig(LightsCameraConfig config, HumanoidRenderContext hrc) {
 		for (CameraConfig cc : config.myCCs) {
-			theLogger.info("Building Camera for config: " + cc);
+			theLogger.info("Building Camera for config: {}", cc);
 			String cameraName = cc.cameraName;
 			// If the RDF camera name is camera_default (with any case), normalize name of this very special camera to "DEFAULT"
 			if (cameraName.toLowerCase().replaceFirst(LightsCameraAN.partial_P_camera, "").equals("_" + LightsCameraAN.suffix_DEFAULT)) {
@@ -108,7 +108,7 @@ public class CameraMgr {
 				}
 			}
 			if ((!attachedViewPortNames.contains(cameraName)) && (!CommonCameras.DEFAULT.name().equals(cameraName))) {
-				theLogger.info("Camera with config: " + cc + " is new from RDF, creating new viewport...");
+				theLogger.info("Camera with config: {} is new from RDF, creating new viewport...", cc);
 				addViewPort(cameraName, loadingCamera, hrc);
 				attachedViewPortNames.add(cameraName);
 			}
@@ -158,7 +158,7 @@ public class CameraMgr {
 		for (int i=0; i<viewPortArray.length; i++) {
 			ViewPort viewPort = (ViewPort)viewPortArray[i];
 			if (!DEFAULT_VIEWPORT_NAME.equals(viewPort.getName())) {
-				theLogger.info("Removing ViewPort: " + viewPort.getName());
+				theLogger.info("Removing ViewPort: {}", viewPort.getName());
 				rm.removePostView(viewPort);
 			}
 		}

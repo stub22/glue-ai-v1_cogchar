@@ -81,7 +81,7 @@ public class BonyGameFeatureAdapter extends CoreFeatureAdapter {
 		// test1Node.setLocalScale(0.5f);
 
 		RenderConfigEmitter rce = myBRC.getConfigEmitter(); 
-		getLogger().info("rce.isMinimalSim=" + rce.isMinimalSim());
+		getLogger().info("rce.isMinimalSim={}", rce.isMinimalSim());
 		String sceneFilePath = rce.getStickFigureScenePath();
 		
 		if (sceneFilePath != null) {

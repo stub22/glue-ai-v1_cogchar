@@ -34,13 +34,13 @@ public class BonyAssetLocator implements AssetLocator {
 		theLogger.info("*************** BonyAssetLocator constructing");
 	}
     @Override public void setRootPath(String rootPath) {
-		theLogger.info("*************** setRootPath=" + rootPath);
+		theLogger.info("*************** setRootPath={}", rootPath);
 		myDelegate.setRootPath(rootPath);
 	}
     @Override public AssetInfo locate(AssetManager manager, AssetKey key) {
-		theLogger.info("************** looking for key: " + key + ", TCCL=" + Thread.currentThread().getContextClassLoader());
+		theLogger.info("************** looking for key: {}, TCCL={}", key, Thread.currentThread().getContextClassLoader());
 		AssetInfo result = myDelegate.locate(manager, key);
-		theLogger.info("************** result: " + result);
+		theLogger.info("************** result: {}", result);
 		return result;
 		//  return UrlAssetInfo.create(manager, key, url);
 	}

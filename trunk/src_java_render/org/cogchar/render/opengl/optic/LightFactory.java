@@ -94,7 +94,7 @@ public class LightFactory extends RenderRegistryAware {
 
 	public void initLightsFromConfig(LightsCameraConfig config, CogcharRenderContext crc) {
 		for (LightConfig lc : config.myLCs) {
-			theLogger.info("Building Light for config: " + lc);
+			theLogger.info("Building Light for config: {}", lc);
 			ColorRGBA color = new ColorRGBA(lc.lightColor[0], lc.lightColor[1], lc.lightColor[2], lc.lightColor[3]);
 			if (lc.lightType.equals(LightConfig.LightType.DIRECTIONAL)) {
 				Vector3f direction = new Vector3f(lc.lightDirection[0], lc.lightDirection[1], lc.lightDirection[2]);
@@ -136,7 +136,7 @@ public class LightFactory extends RenderRegistryAware {
 		theLogger.info("Clearing Lights...");
 		while (lightIterator.hasNext()) {
 			Light nextLight = (Light)lightIterator.next();
-			theLogger.info("Removing light of type: " + nextLight.getType().name());
+			theLogger.info("Removing light of type: {}", nextLight.getType().name());
 			removeLightOnMainThread(nextLight, crc);
 		}
 	}

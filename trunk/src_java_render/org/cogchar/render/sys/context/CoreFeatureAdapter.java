@@ -72,7 +72,7 @@ public class CoreFeatureAdapter extends BasicDebugger {
 	static public void attachToHumanoidBone(HumanoidRenderContext hrc, final Node toAttach, final Ident robotIdent, final String boneName) {
 		final HumanoidFigure robot = hrc.getHumanoidFigure(robotIdent);
 		if (robot == null) {
-			logger.warn("Failed to attach node[" + toAttach + "] to humanoid's " + boneName + " due to missing robot: " + robotIdent);
+			logger.warn("Failed to attach node[{}] to humanoid's {} due to missing robot: {}", new Object[]{toAttach, boneName, robotIdent});
 		} else {
 			hrc.enqueueCallable(new Callable<Void>() {
 
@@ -83,7 +83,7 @@ public class CoreFeatureAdapter extends BasicDebugger {
 					if (attachToBone != null) {
 						attachToBone.attachChild(toAttach);
 					} else {
-						logger.warn("Delayed failure to attach node[" + toAttach + "] to humanoid, due to missing bone " + boneName + " on robot: " + robotIdent);	
+						logger.warn("Delayed failure to attach node[{}] to humanoid, due to missing bone {} on robot: {}", new Object[]{toAttach, boneName, robotIdent});	
 					}
 					return null;
 				}

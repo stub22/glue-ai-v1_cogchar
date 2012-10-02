@@ -56,7 +56,7 @@ public class HumanoidPuppetApp extends BonyVirtualCharApp<HumanoidRenderContext>
         long prev = myLastUpdateTime;
         long now = System.currentTimeMillis();
         long elapsed = now - prev;
-        theLogger.info("Updating Robot.  " + elapsed + " msec since last update.  Cur time: " + now);
+        theLogger.info("Updating Robot.  {} msec since last update.  Cur time: {}", elapsed, now);
         myLastUpdateTime = now;
     }
 
