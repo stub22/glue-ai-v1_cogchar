@@ -16,26 +16,18 @@
 
 package org.cogchar.render.sys.context;
 
-import org.cogchar.render.sys.context.CogcharRenderContext;
-import org.cogchar.render.app.bony.BonyRenderContext;
-import org.cogchar.render.sys.physics.ScoreBoard;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.FlyByCamera;
-import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 import com.jme3.system.JmeContext;
-import com.jme3.system.JmeSystem;
 import java.awt.Canvas;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
+import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.core.WorkaroundAppStub;
-
+import org.cogchar.render.sys.physics.ScoreBoard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +66,7 @@ public class WorkaroundFuncsMustDie {
 	}
 	public static Canvas makeAWTCanvas(SimpleApplication app) {
 		AppSettings settings = app.getContext().getSettings();
-		theLogger.info("making AWTCanvas in WorkaroundFuncsMustDie: Size is " + settings.getWidth() + "x" + settings.getHeight());
+		theLogger.info("making AWTCanvas in WorkaroundFuncsMustDie: Size is {}x{}", settings.getWidth(), settings.getHeight());
 		return makeAWTCanvas(app, settings.getWidth(), settings.getHeight());	
 	}	
 	public static Canvas makeAWTCanvas(SimpleApplication app, int width, int height) {

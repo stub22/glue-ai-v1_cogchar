@@ -131,7 +131,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		try {
 			myHumanoidModelNode = (Node) assetMgr.loadModel(myConfig.myMeshPath);
 		} catch (Throwable t) {
-			getLogger().warn("initStuff() cannot load 3D mesh model at [" + myConfig.myMeshPath + "], the reason is " + t);
+			getLogger().warn("initStuff() cannot load 3D mesh model at [{}], the reason is {}", myConfig.myMeshPath, t);
 			return false;
 		}
 		
@@ -244,7 +244,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 			myHumanoidAnimChannel.setAnim(ANIM_DANCE);
 			myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
 		} catch (Throwable t) {
-			getLogger().warn("Character cannot boogie, nickname is: " + getNickname(), t);
+			getLogger().warn("Character cannot boogie, nickname is: {}; {}", getNickname(), t);
 		}
 	}
 	public void initDebugSkeleton(AssetManager assetMgr) { 
@@ -284,7 +284,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		}
 		HumanoidBoneConfig hbc = getHBConfig();
 		List<HumanoidBoneDesc> boneDescs = hbc.getBoneDescs();
-		// theLogger.info("Applying figureState " + fs + " to boneDescs[" + boneDescs + "]");
+		// theLogger.info("Applying figureState " + fs + " to boneDescs[" + boneDescs + "]"); // TEST ONLY
 		int debugModulator = 0;
 		for (HumanoidBoneDesc hbd : boneDescs) {
 			

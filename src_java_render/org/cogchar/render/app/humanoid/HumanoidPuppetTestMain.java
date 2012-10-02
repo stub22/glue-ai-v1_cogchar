@@ -63,7 +63,7 @@ public class HumanoidPuppetTestMain {
 		bc.setFrame(jf);
 		jf.addWindowListener(new WindowAdapter() {
 			@Override public void	windowClosing(WindowEvent e) {
-				theLogger.info("StickFigureTestMain.JFrame.windowClosing event:  " + e);
+				theLogger.info("StickFigureTestMain.JFrame.windowClosing event:  {}", e);
 				theLogger.info("NOT explicitly calling requestClose() on the app, letting the LWJGL thread detect dispose of the canvas instead");
 				BonyVirtualCharApp app = bc.getApp();
 				// JMonkey code sez this requestClose() method is "internal use only".
@@ -96,7 +96,7 @@ VirtCharPanel.JFrame.closed, exiting
 				 */
 			}
 			@Override public void	windowClosed(WindowEvent e) {
-				theLogger.info("VirtCharPanel.JFrame Window CLOSED event:  " + e);
+				theLogger.info("VirtCharPanel.JFrame Window CLOSED event:  {}", e);
 				System.out.println("VirtCharPanel.JFrame.closed, exiting");
 				System.exit(0);
 			}
@@ -112,7 +112,7 @@ VirtCharPanel.JFrame.closed, exiting
 		
 		hrc.getGameFeatureAdapter().setScoringFlag(true);
 		// theLogger.info("*********************** AFTER FRAMING + STARTING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
-		theLogger.info("*********************** Frame width="  + jf.getWidth() + ", height=" + jf.getHeight());
+		theLogger.info("*********************** Frame width={}, height={}", jf.getWidth(), jf.getHeight());
 
 		// OR, run a JMonkey demo in a standalone OpenGL system window (not a Java/Swing GUI).
 	

@@ -378,7 +378,7 @@ public class BallBuilder extends BasicDebugger {
 		
 		private void buildModelFromCinematicConfig(CinematicConfig cc) {
 			for (CinematicInstanceConfig cic : cc.myCICs) {
-				myLogger.info("Adding instanceBall with uri " + cic.myURI_Fragment);
+				myLogger.info("Adding instanceBall with uri {}", cic.myURI_Fragment);
 				Ball instanceBall = addBall(cic.myURI_Fragment, ColorRGBA.Green, 1.5f);
 				for (CinematicTrack ct : cic.myTracks) {
 					buildFromTrack(ct, instanceBall);
@@ -406,10 +406,10 @@ public class BallBuilder extends BasicDebugger {
 				trackName = ct.trackName;
 			}
 			if (myBalls.containsKey(trackName)) {
-				myLogger.info("Updating trackBall with uri " + trackName);
+				myLogger.info("Updating trackBall with uri {}", trackName);
 				trackBall = myBalls.get(trackName);
 			} else {
-				myLogger.info("Adding trackBall with uri " + trackName);
+				myLogger.info("Adding trackBall with uri {}", trackName);
 				trackBall = addBall(trackName, ColorRGBA.Red);
 			}
 			if (parentBall != null) {
@@ -432,7 +432,7 @@ public class BallBuilder extends BasicDebugger {
 				waypointName = wc.waypointName;
 			}
 			if (!myBalls.containsKey(waypointName)) {
-				myLogger.info("Adding waypointBall with uri " + waypointName);
+				myLogger.info("Adding waypointBall with uri {}", waypointName);
 				addBall(waypointName, ColorRGBA.Yellow, 0.5f);
 			}
 			if (parentBall != null) {
@@ -449,7 +449,7 @@ public class BallBuilder extends BasicDebugger {
 				rotationName = rc.rotationName;
 			}
 			if (!myBalls.containsKey(rotationName)) {
-				myLogger.info("Adding waypointBall with uri " + rotationName);
+				myLogger.info("Adding waypointBall with uri {}", rotationName);
 				addBall(rotationName, ColorRGBA.Orange, 0.5f);
 			}
 			if (parentBall != null) {
@@ -506,7 +506,7 @@ public class BallBuilder extends BasicDebugger {
 		ResIterator res = rdfModel.listSubjects();
 		while (res.hasNext()) {
 			Resource node = res.nextResource();
-			//logger.info("Subject read: " + node.toString());
+			//logger.info("Subject read: " + node.toString()); // TEST ONLY
 			Ball newBall;
 			if (node.isAnon()) {
 				// A blank node!
@@ -519,7 +519,7 @@ public class BallBuilder extends BasicDebugger {
 			while (statements.hasNext()) {
 				Statement statement = statements.nextStatement();
 				RDFNode rdfObject = statement.getObject();
-				//logger.info("Adding connection: " + node.toString() +" via " + statement.getPredicate() + " to " + statement.getObject());
+				//logger.info("Adding connection: " + node.toString() +" via " + statement.getPredicate() + " to " + statement.getObject()); // TEST ONLY
 				newBall.addConnection(rdfObject.toString(), statement.getPredicate().toString());
 			}
 		}
@@ -688,7 +688,7 @@ public class BallBuilder extends BasicDebugger {
 		} else if (action.equals(DataballStrings.viewSparqlQueryCloud)) {
 			success = buildCloudFromSpaqrlUsingLiftSettings(text);
 		} else {
-			myLogger.error("Action sent to Databalls, but not recognized: " + action);
+			myLogger.error("Action sent to Databalls, but not recognized: {}", action);
 			success = false;
 		}
 		return success;
@@ -722,7 +722,7 @@ public class BallBuilder extends BasicDebugger {
 							interrupted = true;
 							// fall through and retry
 						} catch (ExecutionException e) {
-							myLogger.error("Execution Exception encountered in BallBuilder.clear() - other problems may follow: " + e);
+							myLogger.error("Execution Exception encountered in BallBuilder.clear() - other problems may follow: {}", e);
 							return null;
 						}
 					}
@@ -755,7 +755,7 @@ public class BallBuilder extends BasicDebugger {
 		try { // Wait until call is complete before returning
 			detachFuture.get(5, java.util.concurrent.TimeUnit.SECONDS);
 		} catch (Exception e) {
-			myLogger.error("Future for detaching ballsNode did not return! Info: " + e.toString());
+			myLogger.error("Future for detaching ballsNode did not return! Info: {}", e);
 		}
 		// Reset startMode for next "inflation" period
 		startMode = true;
@@ -808,7 +808,7 @@ public class BallBuilder extends BasicDebugger {
 		}
 		float idealDamping = new Float(1 - DAMPING_TRIM_CONSTANT / pow(maxInstabilityScore, 4));
 		idealDamping = Math.max(idealDamping, MINIMUM_DAMPING_COEFFICIENT);
-		myLogger.info("Damping coefficient of " + idealDamping + " computed for current configuration. Maximum instabilityScore was " + maxInstabilityScore);
+		myLogger.info("Damping coefficient of {} computed for current configuration. Maximum instabilityScore was {}", idealDamping, maxInstabilityScore);
 		return idealDamping;
 	}
 	private static boolean startMode = true;
@@ -828,7 +828,7 @@ public class BallBuilder extends BasicDebugger {
 					currentDamping = INFLATION_DAMPING;
 				} else {
 					startMode = false;
-					myLogger.info("Startup damping mode complete; 1/tpf is " + 1 / tpf + " damping = " + currentDamping);
+					myLogger.info("Startup damping mode complete; 1/tpf is {}; damping = {}", 1 / tpf , currentDamping);
 				}
 
 			}
@@ -840,7 +840,7 @@ public class BallBuilder extends BasicDebugger {
 				// "Auto-brakes": slow this way down if it's getting so fast that the 60Hz physics won't converge
 				if (velocity.length() / 60 > 1) {
 					ball.control.setLinearVelocity(velocity.mult(0.01f));
-					myLogger.warn("Ball velocity at " + velocity.length() + "; auto-braking!");
+					myLogger.warn("Ball velocity at {}; auto-braking!", velocity.length());
 					velocity = velocity.mult(0.01f); //In case we use it later;
 				}
 
@@ -889,12 +889,13 @@ public class BallBuilder extends BasicDebugger {
 
 				// Apply forces
 				Vector3f totalForce = potentialForce.add(springForce).add(dampingForce);
-				//logger.info("potentialForce is " + potentialForce.toString());
-				//logger.info("springForce is " + springForce.toString());
-				//logger.info("dampingForce is " + dampingForce.toString());
-				//logger.info("totalForce is " + totalForce.toString());
+				// TEST ONLY Force logging:
+				//logger.info("potentialForce is ", potentialForce.toString());
+				//logger.info("springForce is ", springForce.toString());
+				//logger.info("dampingForce is ", dampingForce.toString());
+				//logger.info("totalForce is ", totalForce.toString());
 				Float forceMagnitude = totalForce.length();
-				//logger.info("forceMagnitude is " + forceMagnitude);
+				//logger.info("forceMagnitude is ", forceMagnitude);
 				// At the first update, locations may not yet be initialized, so the balls may both have position at the origin resulting in infinite force
 				if ((!forceMagnitude.isInfinite()) && (!forceMagnitude.isNaN())) {
 					// Apply conservative forces
@@ -955,7 +956,7 @@ public class BallBuilder extends BasicDebugger {
 	}
 
 	private void showPickText(String uri) {
-		myLogger.info("Looks like you picked " + uri);
+		myLogger.info("Looks like you picked {}", uri);
 		if (myScreenText != null) {
 			myFlatOverlayMgr.detachOverlaySpatial(myScreenText);
 		}

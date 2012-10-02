@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
 import jme3test.TestChooser;
@@ -90,7 +91,7 @@ public class TestChooserWrapper extends TestChooser {
 
 			// System.out.println("Deduced classname: " + classname);
             try {
-				logger.info("Trying to load class: " + classname);
+				logger.log(Level.INFO, "Trying to load class: {0}", classname);
                 final Class<?> cls = Class.forName(classname);
                 cls.getMethod("main", new Class[] { String[].class });
                 if (!getClass().equals(cls)) {

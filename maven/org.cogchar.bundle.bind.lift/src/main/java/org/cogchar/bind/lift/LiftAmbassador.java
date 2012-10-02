@@ -137,7 +137,7 @@ public class LiftAmbassador {
 			if (myLift != null) {
 				myLift.setConfigForSession(sessionId, newConfig);
 			} else {
-				theLogger.error("A new control set was requested for session " + sessionId + ", but no liftInterface was found!");
+				theLogger.error("A new control set was requested for session {}, but no liftInterface was found!", sessionId);
 			}
 		}
 	}
@@ -149,12 +149,12 @@ public class LiftAmbassador {
 			LiftConfig newConfig = null;
 			if (myLiftConfigCache.containsKey(configIdent)) {
 				newConfig = myLiftConfigCache.get(configIdent); // Use cached version if available
-				theLogger.info("Got lift config " + configIdent.getLocalName() + " from cache");
+				theLogger.info("Got lift config {} from cache", configIdent.getLocalName());
 			} else {
 				if (myRepoClient != null) {
 					newConfig = new LiftConfig(myRepoClient, myQGraph, configIdent);
 					myLiftConfigCache.put(configIdent, newConfig);
-					theLogger.info("Loaded lift config " + configIdent.getLocalName() + " from sheet");
+					theLogger.info("Loaded lift config {} from sheet", configIdent.getLocalName());
 				} else {
 					theLogger.error("New lift config requested, but no RepoClient set!");
 				}
@@ -234,7 +234,7 @@ public class LiftAmbassador {
 				if (myChatConfigEntries.containsKey(ChatAN.N_cogbotConvoUrl)) {
 					String convoIp = myChatConfigEntries.get(ChatAN.N_cogbotConvoUrl).replaceFirst("http://", "");
 					response = myLiftAppInterface.queryCogbot(query, convoIp);
-					theLogger.info("Cogbot says " + response);
+					theLogger.info("Cogbot says {}", response);
 				} else {
 					theLogger.error("No URL found from ChatConfig for Cogbot conversation server");
 				}
@@ -251,7 +251,7 @@ public class LiftAmbassador {
 			if (myLiftAppInterface != null) {
 				success = myLiftAppInterface.performUpdate(desiredUpdate);
 			} else {
-				theLogger.error("Cannot perform update: " + desiredUpdate + " because no LiftAppInterface is available");
+				theLogger.error("Cannot perform update: {} because no LiftAppInterface is available", desiredUpdate);
 			}
 			return success;
 		}
@@ -288,7 +288,7 @@ public class LiftAmbassador {
 		if (myLift != null) {
 			myLift.showError(errorSource, errorText);
 		} else {
-			theLogger.error("Could not show the following error in Lift because no Lift messenger is set: " + errorSource + ": " + errorText);
+			theLogger.error("Could not show the following error in Lift because no Lift messenger is set: {}: {}",errorSource, errorText);
 		}
 	}
 	
@@ -297,7 +297,7 @@ public class LiftAmbassador {
 		if (myLift != null) {
 			myLift.showError(errorSource, errorText, sessionId);
 		} else {
-			theLogger.error("Could not show the following error in Lift session " + sessionId + " because no Lift messenger is set: " + errorSource + ": " + errorText);
+			theLogger.error("Could not show the following error in Lift session {} because no Lift messenger is set: {}: {}", new Object[]{sessionId, errorSource, errorText});
 		}
 	}
 	

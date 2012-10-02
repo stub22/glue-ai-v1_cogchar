@@ -128,10 +128,10 @@ public abstract class BasicRenderContext extends BasicRenderRegistryClientFinder
 			if (ainf != null) {
 				ais = ainf.openStream();
 			} else {
-				getLogger().warn("Cannot find AssetInfo for   assetName: " + assetName);
+				getLogger().warn("Cannot find AssetInfo for   assetName: {}", assetName);
 			}
 		} catch (Throwable t) {
-			getLogger().warn("Cannot open input stream for   assetName: " + assetName, t);
+			getLogger().warn("Cannot open input stream for   assetName: {} ", assetName);
 		}
 		return ais;
 	}

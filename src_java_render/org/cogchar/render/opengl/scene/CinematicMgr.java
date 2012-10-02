@@ -65,25 +65,25 @@ public class CinematicMgr extends BasicDebugger {
 
 		// First, any named waypoints defined outside track definitions are stored for later use
 		for (WaypointConfig wc : config.myWCs) {
-			staticLogger.info("Storing Named Waypoint from RDF: " + wc);
+			staticLogger.info("Storing Named Waypoint from RDF: {}", wc);
 			myWaypointsByName.put(wc.waypointName, wc);
 		}
 
 		// Also "first", any named rotations are stored
 		for (RotationConfig rc : config.myRCs) {
-			staticLogger.info("Storing Named Rotation from RDF: " + rc);
+			staticLogger.info("Storing Named Rotation from RDF: {}", rc);
 			myRotationsByName.put(rc.rotationName, rc);
 		}
 
 		// Second, any named tracks defined outside cinematics definitions are stored for later use
 		for (CinematicTrack ct : config.myCTs) {
-			staticLogger.info("Storing Named Track from RDF: " + ct);
+			staticLogger.info("Storing Named Track from RDF: {}", ct);
 			myTracksByName.put(ct.trackName, ct);
 		}
 
 		// Next, we build the cinematics, using named tracks/waypoints/rotations if required.
 		for (CinematicInstanceConfig cic : config.myCICs) {
-			staticLogger.info("Building Cinematic from RDF: " + cic);
+			staticLogger.info("Building Cinematic from RDF: {}", cic);
 			final Cinematic cinematic = new Cinematic(jmeRootNode, cic.duration);
 			Map<String, CameraNode> boundCameras = new HashMap<String, CameraNode>(); // To keep track of cameras bound to this cinematic
 			// Add each track
@@ -94,11 +94,11 @@ public class CinematicMgr extends BasicDebugger {
 					if (!trackReference.equals(CinemaAN.unnamedTrackName)) {
 						track = myTracksByName.get(trackReference); // Reset track to the CinematicTrack declared separately by name
 						if (track == null) { // If so, cinematic is calling for a track we don't know about
-							staticLogger.error("Cinematic has requested undefined track: " + trackReference + "; cinematic is " + cic);
+							staticLogger.error("Cinematic has requested undefined track: {}; cinematic is {}", trackReference, cic);
 							break;
 						}
 					} else {
-						staticLogger.error("No trackType or trackName in track contained in cinematic: " + cic);
+						staticLogger.error("No trackType or trackName in track contained in cinematic: {}", cic);
 						break; // If no trackType and no trackName, we don't really have a track!
 					}
 				}
@@ -107,7 +107,7 @@ public class CinematicMgr extends BasicDebugger {
 					CameraMgr cm = rrc.getOpticCameraFacade(null);
 					if (boundCameras.containsKey(track.attachedItem)) {
 						// Hey, we already bound this to the cinematic! We'll just get the node to attach to the track.
-						staticLogger.info("Attached camera already bound, reusing in track: " + track);
+						staticLogger.info("Attached camera already bound, reusing in track: {}", track);
 						attachedNode = (Node) boundCameras.get(track.attachedItem);
 					} else {
 						final Camera cineCam = cm.getNamedCamera(track.attachedItem);
@@ -127,19 +127,19 @@ public class CinematicMgr extends BasicDebugger {
 							try {
 								attachedNode = (Node) camNodeFuture.get(3, java.util.concurrent.TimeUnit.SECONDS);
 							} catch (Exception e) {
-								staticLogger.error("Exception binding camera to cinematic: " + e.toString());
+								staticLogger.error("Exception binding camera to cinematic: {}", e.toString());
 								break;
 							}
 							cinematic.activateCamera(0, cameraName); // Attached at time zero, because who knows what other track might use this camera?
 							//cinematic.setActiveCamera(cameraName); // Can also do this, but it messes with initial camera position
 							boundCameras.put(track.attachedItem, (CameraNode) attachedNode); // Could just use Node as type of HashMap and not cast back and forth, but this makes it explicit
 						} else {
-							staticLogger.error("Specified Camera not found for Cinematic config from RDF: " + track.attachedItem);
+							staticLogger.error("Specified Camera not found for Cinematic config from RDF: {}", track.attachedItem);
 							break;
 						}
 					}
 				} else {
-					staticLogger.error("Unsupported attached item type in track: " + track.attachedItemType);
+					staticLogger.error("Unsupported attached item type in track: {}", track.attachedItemType);
 					break;
 				}
 				if (track.trackType == CinematicTrack.TrackType.MOTIONTRACK) {
@@ -152,11 +152,11 @@ public class CinematicMgr extends BasicDebugger {
 							if (!waypointReference.equals(CinemaAN.unnamedWaypointName)) {
 								waypoint = myWaypointsByName.get(waypointReference); // Reset waypoint to the WaypointConfig declared separately by name
 								if (waypoint == null) { // If so, track is calling for a waypoint we don't know about
-									staticLogger.error("Track has requested undefined waypoint: " + waypointReference + "; track is " + track);
+									staticLogger.error("Track has requested undefined waypoint: {}; track is {}", waypointReference, track);
 									break;
 								}
 							} else {
-								staticLogger.error("No coordinates or waypointName in waypoint contained in track: " + track);
+								staticLogger.error("No coordinates or waypointName in waypoint contained in track: {}", track);
 								break; // If no coordinates and no waypointName, we don't really have a waypoint!
 							}
 						}
@@ -172,12 +172,12 @@ public class CinematicMgr extends BasicDebugger {
 						}
 					}
 					if (directionJmeType == null) {
-						staticLogger.error("Specified MotionTrack direction type not in MotionTrack.Direction: " + track.directionType);
+						staticLogger.error("Specified MotionTrack direction type not in MotionTrack.Direction: {}", track.directionType);
 						break;
 					}
 					LoopMode loopJmeType = setLoopMode(track.loopMode);
 					if (loopJmeType == null) {
-						staticLogger.error("Specified MotionTrack loop mode not in com.jme3.animation.LoopMode: " + track.loopMode);
+						staticLogger.error("Specified MotionTrack loop mode not in com.jme3.animation.LoopMode: {}", track.loopMode);
 						break;
 					}
 					MotionTrack motionTrack = new MotionTrack(attachedNode, path);
@@ -189,10 +189,10 @@ public class CinematicMgr extends BasicDebugger {
 					float[] endPositionArray;
 					// PositionTrack only supports one waypoint. Let's check to be sure there is only one waypoint, and that it is valid.
 					if (track.waypoints.isEmpty()) {
-						staticLogger.error("PositionTrack requested, but no waypoint provided for track: " + track);
+						staticLogger.error("PositionTrack requested, but no waypoint provided for track: {}", track);
 						break;
 					} else if (track.waypoints.size() != 1) {
-						staticLogger.warn("PositionTrack requested, but more than one waypoint provided for track: " + track);
+						staticLogger.warn("PositionTrack requested, but more than one waypoint provided for track: {}", track);
 						staticLogger.warn("Extra waypoints discarded for Positiontrack");
 					}
 					endPositionArray = track.waypoints.get(0).waypointCoordinates;
@@ -202,21 +202,21 @@ public class CinematicMgr extends BasicDebugger {
 						if (!waypointReference.equals(CinemaAN.unnamedWaypointName)) {
 							WaypointConfig waypoint = myWaypointsByName.get(waypointReference); // Set waypoint to the WaypointConfig declared separately by name
 							if (waypoint == null) { // If so, track is calling for a waypoint we don't know about
-								staticLogger.error("Track has requested undefined waypoint: " + waypointReference + "; track is " + track);
+								staticLogger.error("Track has requested undefined waypoint: {}; track is {}", waypointReference, track);
 								break;
 							} else {
 								endPositionArray = waypoint.waypointCoordinates;
 							}
 
 						} else {
-							staticLogger.error("No coordinates or waypointName in waypoint contained in track: " + track);
+							staticLogger.error("No coordinates or waypointName in waypoint contained in track: {}", track);
 							break; // If no coordinates and no waypointName, we don't really have a waypoint!
 						}
 					}
 					Vector3f endPosition = new Vector3f(endPositionArray[0], endPositionArray[1], endPositionArray[2]);
 					LoopMode loopJmeType = setLoopMode(track.loopMode);
 					if (loopJmeType == null) {
-						staticLogger.error("Specified PositionTrack loop mode not in com.jme3.animation.LoopMode: " + track.loopMode);
+						staticLogger.error("Specified PositionTrack loop mode not in com.jme3.animation.LoopMode: {}", track.loopMode);
 						break;
 					}
 					if (track.trackDuration <= 0) {
@@ -234,7 +234,7 @@ public class CinematicMgr extends BasicDebugger {
 						if (!rotationReference.equals(CinemaAN.unnamedRotationName)) {
 							rotation = myRotationsByName.get(rotationReference); // Reset rotation to the RotationConfig declared separately by name
 							if (rotation == null) { // If so, track is calling for a rotation we don't know about
-								staticLogger.error("Track has requested undefined rotation: " + rotationReference + "; track is " + track);
+								staticLogger.error("Track has requested undefined rotation: {}; track is {}", rotationReference, track);
 								break;
 							} else {
 								// Reset rotationInArray to values from loaded rotation
@@ -243,7 +243,7 @@ public class CinematicMgr extends BasicDebugger {
 								rotationInArray[2] = rotation.roll;
 							}
 						} else {
-							staticLogger.error("No valid rotation angles or rotationName in rotation contained in track: " + track);
+							staticLogger.error("No valid rotation angles or rotationName in rotation contained in track: {}", track);
 							break; // If no coordinates and no rotationName, we don't really have a rotation!
 						}
 					}
@@ -253,7 +253,7 @@ public class CinematicMgr extends BasicDebugger {
 					}
 					LoopMode loopJmeType = setLoopMode(track.loopMode);
 					if (loopJmeType == null) {
-						staticLogger.error("Specified RotationTrack loop mode not in com.jme3.animation.LoopMode: " + track.loopMode);
+						staticLogger.error("Specified RotationTrack loop mode not in com.jme3.animation.LoopMode: {}", track.loopMode);
 						break;
 					}
 					if (track.trackDuration <= 0) {
@@ -263,7 +263,7 @@ public class CinematicMgr extends BasicDebugger {
 					Quaternion endRotation = new Quaternion(rotationInArray);
 					event = new RotationTrack(attachedNode, endRotation, track.trackDuration, loopJmeType);
 				} else {
-					staticLogger.error("Unsupported track type: " + track.trackType);
+					staticLogger.error("Unsupported track type: {}", track.trackType);
 					break;
 				}
 				cinematic.addCinematicEvent(track.startTime, event);
@@ -293,7 +293,7 @@ public class CinematicMgr extends BasicDebugger {
 		final Cinematic cinematic = myCinematicsByName.get(name);
 		if (cinematic != null) {
 			if (action.equals(CinematicMgr.ControlAction.PLAY)) {
-				staticLogger.info("Playing cinematic " + name);
+				staticLogger.info("Playing cinematic {}", name);
 				cinematic.play();
 			} else if (action.equals(CinematicMgr.ControlAction.STOP)) {
 				// Wouldn't you know, this has to be done on main thread
@@ -302,7 +302,7 @@ public class CinematicMgr extends BasicDebugger {
 					@Override
 					public Boolean call() throws Exception {
 						cinematic.stop();
-						staticLogger.info("Stopping cinematic" + name);
+						staticLogger.info("Stopping cinematic {}", name);
 						return true;
 					}
 				});
@@ -310,17 +310,17 @@ public class CinematicMgr extends BasicDebugger {
 					// We call waitForThis.get (and discard the result) so that this method doesn't return until STOP is actially executed
 					waitForThis.get(3, java.util.concurrent.TimeUnit.SECONDS);
 				} catch (Exception e) {
-					staticLogger.error("Exception stopping cinematic: " + e.toString());
+					staticLogger.error("Exception stopping cinematic: {}", e.toString());
 				}
 			} else if (action.equals(CinematicMgr.ControlAction.PAUSE)) { // NEEDS TO BE TESTED, MAY NEED TO BE EXECUTED ON MAIN jME RENDERING THREAD
-				staticLogger.info("Pausing cinematic " + name);
+				staticLogger.info("Pausing cinematic {}", name);
 				staticLogger.info("Pause has not been tested. If it throws an exception, we probably just need to add some code to cause it to be run on the main jME rendering thread");
 				cinematic.pause();
 			} else {
 				validAction = false;
 			}
 		} else {
-			staticLogger.error("No cinematic found by name " + name);
+			staticLogger.error("No cinematic found by name {}", name);
 			validAction = false;
 		}
 		return validAction;
@@ -351,13 +351,13 @@ public class CinematicMgr extends BasicDebugger {
 			// Gets the detached items counter, and waits to be sure everything is really detached
 			detachCounter = (Integer) detachFuture.get(3, java.util.concurrent.TimeUnit.SECONDS);
 		} catch (Exception e) {
-			staticLogger.error("Exception getting number of cinematics detached: " + e.toString());
+			staticLogger.error("Exception getting number of cinematics detached: {}", e.toString());
 		}
 		myCinematicsByName.clear();
 		myTracksByName.clear();
 		myWaypointsByName.clear();
 		myRotationsByName.clear();
-		staticLogger.info("Cinematics cleared. Number detached: " + detachCounter);
+		staticLogger.info("Cinematics cleared. Number detached: {}", detachCounter);
 	}
 
 	public enum ControlAction {
