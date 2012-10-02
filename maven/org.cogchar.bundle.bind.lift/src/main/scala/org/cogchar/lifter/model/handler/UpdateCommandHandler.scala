@@ -16,14 +16,14 @@
 
 package org.cogchar.lifter.model.handler
 
-import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
 class UpdateCommandHandler extends AbstractLifterCommandHandler {
 
   protected val matchingTokens = ArrayBuffer(ActionStrings.update, ActionStrings.refreshLift)
   
-  protected def handleHere(sessionId:String, slotNum:Int, command:String, input:Array[String]) {
+  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
 	val splitAction = command.split(ActionStrings.commandTokenSeparator)
 	splitAction(0) match {
 	  case ActionStrings.update => {

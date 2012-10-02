@@ -29,7 +29,7 @@ package org.cogchar.lifter {
 	import Helpers._
 	import net.liftweb.http.SHtml._
 	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+	import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import S._
@@ -38,7 +38,7 @@ package org.cogchar.lifter {
 	  
 	  protected val matchingName = "RADIOBUTTONS"
   
-	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq =  {
+	  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq =  {
 		// From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
 		val textItems = List.fromArray(control.text.split(ActionStrings.stringAttributeSeparator))
 		val titleText = textItems(0)

@@ -17,7 +17,7 @@
 package org.cogchar.lifter.model.handler
 
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
 // A handler for action URIs consisting of a LiftConfig
@@ -25,7 +25,7 @@ class CinematicHandler extends AbstractLifterActionHandler {
 
   protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_cinematic)
   
-  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
+  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
 	PageCommander.getLiftAmbassador.triggerCinematic(control.action.getLocalName)
   }
   

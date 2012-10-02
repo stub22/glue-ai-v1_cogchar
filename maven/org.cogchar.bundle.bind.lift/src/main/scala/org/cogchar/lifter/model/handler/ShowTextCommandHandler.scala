@@ -16,7 +16,7 @@
 
 package org.cogchar.lifter.model.handler
 
-import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import net.liftweb.common.Logger
 import scala.collection.mutable.ArrayBuffer
 
@@ -25,21 +25,21 @@ class ShowTextCommandHandler extends AbstractLifterCommandHandler with Logger {
   protected val matchingTokens = ArrayBuffer(ActionStrings.showText)
   
   // This command shouldn't be attached to a control which is actuated
-  protected def handleHere(sessionId:String, slotId:Int, command:String, input:Array[String]) {
+  protected def handleHere(state:LifterState, sessionId:String, slotId:Int, command:String, input:Array[String]) {
 	warn("Handling actuated control with command showtext - that's strange! Nothing to do...")
   }
   
-  override protected def handleInitialActionHere(sessionId:String, slotNum:Int, command:String) {
+  override protected def handleInitialActionHere(state:LifterState, sessionId:String, slotNum:Int, command:String) {
 	val splitAction = command.split("_")
 	splitAction(1) match {
 	  case ActionStrings.COGBOT_TOKEN => { // Show Cogbot speech on this control? Add it to the cogbotDisplayers list.
-		  PageCommander.getState.cogbotDisplayers(sessionId) += slotNum
+		  state.cogbotDisplayers(sessionId) += slotNum
 		}
 	  case ActionStrings.ANDROID_SPEECH_TOKEN => { // Add to the speechDisplayers list if we want Android speech shown here
-		  PageCommander.getState.speechDisplayers(sessionId) += slotNum
+		  state.speechDisplayers(sessionId) += slotNum
 		}
 	  case ActionStrings.ERROR_TOKEN => { // Associate the error source name with the slotNum where errors will display
-		  PageCommander.getState.errorMap(sessionId)(splitAction(2)) = slotNum
+		  state.errorMap(sessionId)(splitAction(2)) = slotNum
 		}
 	  case _ => warn("ShowTextCommandHandler doesn't know what to do in order to display text with token " + splitAction(1))
 	}

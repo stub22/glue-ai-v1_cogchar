@@ -17,7 +17,7 @@
 package org.cogchar.lifter.model.handler
 
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.ActionStrings
+import org.cogchar.lifter.model.{ActionStrings,LifterState}
 import scala.collection.mutable.ArrayBuffer
 
 class LifterCommandActionHandler extends AbstractLifterActionHandler {
@@ -26,12 +26,12 @@ class LifterCommandActionHandler extends AbstractLifterActionHandler {
   
   private var firstCommandHandler:AbstractLifterCommandHandler = HandlerConfigurator.initializeCommandHandlers
   
-  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
-	firstCommandHandler.processHandler(sessionId, slotNum, control.action.getLocalName, input)
+  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
+	firstCommandHandler.processHandler(state, sessionId, slotNum, control.action.getLocalName, input)
   }
   
-  override protected def handleInitialActionHere(sessionId:String, slotNum:Int, control:ControlConfig) {
-	firstCommandHandler.checkForInitialAction(sessionId, slotNum, control.action.getLocalName)
+  override protected def handleInitialActionHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig) {
+	firstCommandHandler.checkForInitialAction(state, sessionId, slotNum, control.action.getLocalName)
   }
   
 }
