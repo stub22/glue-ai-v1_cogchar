@@ -18,7 +18,7 @@ package org.cogchar.lifter.model.handler
 
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.bind.lift.{ControlConfig, LiftConfig}
-import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
 // A handler for action URIs consisting of a LiftConfig
@@ -26,15 +26,15 @@ class SceneTriggerHandler extends AbstractLifterActionHandler {
 
   protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_scenetrig)
   
-  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
+  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
 	val success = PageCommander.getLiftAmbassador.triggerScene(control.action.getLocalName)
-	val sceneRunningScreen = createSceneInfoScreen(sessionId, control)
+	val sceneRunningScreen = createSceneInfoScreen(state, sessionId, control)
 	PageCommander.initFromCogcharRDF(sessionId, sceneRunningScreen)
   }
   
   // A method to create a liftconfig locally to serve as a "Scene Playing" info screen
-  def createSceneInfoScreen(sessionId:String, control:ControlConfig): LiftConfig = {
-	val sceneInfoConfig = new LiftConfig(PageCommander.getState.SINGLE_SLOT_TEMPLATE)
+  def createSceneInfoScreen(state:LifterState, sessionId:String, control:ControlConfig): LiftConfig = {
+	val sceneInfoConfig = new LiftConfig(state.SINGLE_SLOT_TEMPLATE)
 	val infoButton = new ControlConfig()
 	infoButton.myURI_Fragment = "info_control_1"
 	infoButton.controlType = "PUSHYBUTTON"

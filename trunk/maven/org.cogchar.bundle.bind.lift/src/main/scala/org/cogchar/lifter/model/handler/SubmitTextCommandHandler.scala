@@ -17,7 +17,7 @@
 package org.cogchar.lifter.model.handler
 
 import net.liftweb.common.Logger
-import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import org.cogchar.lifter.view.TextBox
 import scala.collection.mutable.ArrayBuffer
 
@@ -25,10 +25,9 @@ class SubmitTextCommandHandler extends AbstractLifterCommandHandler with Logger 
   
   protected val matchingTokens = ArrayBuffer(ActionStrings.submitText)
   
-  protected def handleHere(sessionId:String, slotId:Int, command:String, input:Array[String]) {
+  protected def handleHere(appState:LifterState, sessionId:String, slotId:Int, command:String, input:Array[String]) {
 	val splitAction = command.split(ActionStrings.commandTokenSeparator)
 	val actionToken = splitAction(1)
-	val appState = PageCommander.getState
 	actionToken match {
 	  case ActionStrings.COGBOT_TOKEN => {
 		  if (appState.cogbotDisplayers(sessionId) != Nil) { // Likely this check is not necessary - foreach just won't execute if list is Nil, right?

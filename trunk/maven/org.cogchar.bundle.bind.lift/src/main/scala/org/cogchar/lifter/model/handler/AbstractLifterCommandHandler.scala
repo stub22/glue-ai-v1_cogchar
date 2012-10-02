@@ -17,16 +17,16 @@
 package org.cogchar.lifter.model.handler
 
 import net.liftweb.common.Logger
-import org.cogchar.lifter.model.ActionStrings
+import org.cogchar.lifter.model.{ActionStrings,LifterState}
 import scala.collection.mutable.ArrayBuffer
 
 trait AbstractLifterCommandHandler extends Logger {
   
-  def processHandler(sessionId:String, slotNum:Int, command:String, input:Array[String]) {
-	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {this.handleHere(sessionId, slotNum, command, input)}
+  def processHandler(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
+	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {this.handleHere(state, sessionId, slotNum, command, input)}
 	else {
 	  if (this.nextHandler != null) {
-		nextHandler.processHandler(sessionId, slotNum, command, input)
+		nextHandler.processHandler(state, sessionId, slotNum, command, input)
 	  } else {
 		warn("Reached end of Lifter Command handling chain without finding handler for sessionId:" + sessionId + " and slotNum:" + slotNum + " with action: " + command) // Need to fix
 	  }
@@ -34,11 +34,11 @@ trait AbstractLifterCommandHandler extends Logger {
   }
   
   // Checks for actions which this control performs upon rendering, not actuation
-  def checkForInitialAction(sessionId:String, slotNum:Int, command:String) {
-	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {this.handleInitialActionHere(sessionId, slotNum, command)}
+  def checkForInitialAction(state:LifterState, sessionId:String, slotNum:Int, command:String) {
+	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {this.handleInitialActionHere(state, sessionId, slotNum, command)}
 	else {
 	  if (this.nextHandler != null) {
-		nextHandler.checkForInitialAction(sessionId, slotNum, command)
+		nextHandler.checkForInitialAction(state, sessionId, slotNum, command)
 	  }
 	}
   }
@@ -50,8 +50,8 @@ trait AbstractLifterCommandHandler extends Logger {
   }
   
   protected val matchingTokens: ArrayBuffer[String]
-  protected def handleHere(sessionId:String, slotNum:Int, command:String, input:Array[String])
+  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String])
   // A blank method for handleInitialActionHere. If a command would like to perform tasks on rendering, it can override this method.
-  protected def handleInitialActionHere(sessionId:String, slotNum:Int, command:String) {}
+  protected def handleInitialActionHere(state:LifterState, sessionId:String, slotNum:Int, command:String) {}
   
 }

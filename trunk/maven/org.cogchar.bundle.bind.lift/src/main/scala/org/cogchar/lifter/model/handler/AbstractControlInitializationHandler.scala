@@ -18,16 +18,17 @@ package org.cogchar.lifter.model.handler
 
 import net.liftweb.common.Logger
 import org.cogchar.bind.lift.ControlConfig
+import org.cogchar.lifter.model.LifterState;
 import scala.xml.NodeSeq
 
 trait AbstractControlInitializationHandler extends Logger {
   
-  def processHandler(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+  def processHandler(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
 	var result = NodeSeq.Empty
-	if (this.matchingName equals control.controlType) {result = this.handleHere(sessionId, slotNum, control)}
+	if (this.matchingName equals control.controlType) {result = this.handleHere(state, sessionId, slotNum, control)}
 	else {
 	  if (this.nextHandler != null) {
-		result = nextHandler.processHandler(sessionId, slotNum, control)
+		result = nextHandler.processHandler(state, sessionId, slotNum, control)
 	  } else {
 		warn("Reached end of control initialization chain without finding handler for sessionId " + sessionId + " and slotNum:" + slotNum + " with control type: " + control.controlType) // Need to fix
 	  }
@@ -42,7 +43,7 @@ trait AbstractControlInitializationHandler extends Logger {
   }
   
   protected val matchingName: String
-  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq
+  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq
 
 
 }

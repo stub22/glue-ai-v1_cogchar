@@ -22,13 +22,14 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import org.cogchar.bind.lift.ControlConfig
+	import org.cogchar.lifter.model.LifterState;
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 
 	object TextBox extends AbstractControlInitializationHandler {
 	  
 	  protected val matchingName = "TEXTBOX"
   
-	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+	  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
 		makeBox(control.text, control.style)
 	  }
 	  

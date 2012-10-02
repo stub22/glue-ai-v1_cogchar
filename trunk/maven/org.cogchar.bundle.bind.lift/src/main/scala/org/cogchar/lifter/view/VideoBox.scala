@@ -22,13 +22,14 @@ package org.cogchar.lifter {
 	import Helpers._
 	import net.liftweb.http._
 	import org.cogchar.bind.lift.ControlConfig
+	import org.cogchar.lifter.model.LifterState;
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 
 	object VideoBox extends AbstractControlInitializationHandler {
 	  
 	  protected val matchingName = "VIDEOBOX"
   
-	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+	  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
 		makeBox(control.resource, true)
 	  }
 	  

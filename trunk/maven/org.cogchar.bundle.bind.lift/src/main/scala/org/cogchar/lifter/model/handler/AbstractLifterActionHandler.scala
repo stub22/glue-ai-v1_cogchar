@@ -19,16 +19,16 @@ package org.cogchar.lifter.model.handler
 import net.liftweb.common.Logger
 import org.appdapter.core.name.Ident
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.PageCommander
+import org.cogchar.lifter.model.{LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
 trait AbstractLifterActionHandler extends Logger {
   
-  def processHandler(sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
-	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {this.handleHere(sessionId, slotNum, control, input)}
+  def processHandler(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
+	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {this.handleHere(state, sessionId, slotNum, control, input)}
 	else {
 	  if (this.nextHandler != null) {
-		nextHandler.processHandler(sessionId, slotNum, control, input)
+		nextHandler.processHandler(state, sessionId, slotNum, control, input)
 	  } else {
 		warn("Reached end of action handling chain without finding handler for sessionId:" + sessionId + " and slotNum:" + slotNum + " with action: " + control.action) // Need to fix
 	  }
@@ -36,11 +36,11 @@ trait AbstractLifterActionHandler extends Logger {
   }
   
   // Checks for actions which this control performs upon rendering, not actuation
-  def checkForInitialAction(sessionId:String, slotNum:Int, control:ControlConfig) {
-	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {this.handleInitialActionHere(sessionId, slotNum, control)}
+  def checkForInitialAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig) {
+	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {this.handleInitialActionHere(state, sessionId, slotNum, control)}
 	else {
 	  if (this.nextHandler != null) {
-		nextHandler.checkForInitialAction(sessionId, slotNum, control)
+		nextHandler.checkForInitialAction(state, sessionId, slotNum, control)
 	  }
 	}
   }
@@ -52,8 +52,8 @@ trait AbstractLifterActionHandler extends Logger {
   }
   
   protected val matchingPrefixes: ArrayBuffer[String]
-  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String])
+  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String])
   // A blank method for handleInitialActionHere. If an action would like to perform tasks on rendering, it can override this method.
-  protected def handleInitialActionHere(sessionId:String, slotNum:Int, control:ControlConfig) {}
+  protected def handleInitialActionHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig) {}
   
 }

@@ -16,14 +16,14 @@
 
 package org.cogchar.lifter.model.handler
 
-import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
 class DataballsCommandHandler extends AbstractLifterCommandHandler {
   
   protected val matchingTokens = ArrayBuffer(ActionStrings.databalls)
   
-  protected def handleHere(sessionId:String, slotNum:Int, command:String, input:Array[String]) {
+  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
 	val databallsAction = command.stripPrefix(ActionStrings.databalls + ActionStrings.commandTokenSeparator);
 	var databallsText:String = null;
 	if (input != null) databallsText = input(0)
