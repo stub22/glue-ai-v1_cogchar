@@ -68,7 +68,7 @@ public class ModelToFigureStateMappingFuncs {
 			String boneName = e.getKey();
             BoneState bs = fs.getBoneState(boneName);
             if(bs == null){
-				theLogger.warn("Can't find boneState for " + boneName);
+				theLogger.warn("Can't find boneState for {}", boneName);
                 continue;
             }
 			List<BoneProjectionPosition> rots = e.getValue();

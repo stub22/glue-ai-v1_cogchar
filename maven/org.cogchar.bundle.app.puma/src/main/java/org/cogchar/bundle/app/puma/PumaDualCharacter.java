@@ -106,7 +106,7 @@ public class PumaDualCharacter extends DummyBox {
 			// myPHM.applyInitialBoneRotations();
 			connectAnimOutChans();
 		} else {
-			getLogger().warn("connectBonyCharToRobokindSvcs() aborting due to failed boneRobot init, for charIdent: " + myCharIdent);
+			getLogger().warn("connectBonyCharToRobokindSvcs() aborting due to failed boneRobot init, for charIdent: {}", myCharIdent);
 		}
 		return boneRobotOK;
 	}

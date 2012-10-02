@@ -109,14 +109,14 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 		for (val o <- linkedBehaviorSpecs) {
 			o match {
 				case bs: BehaviorSpec => ss.addBehaviorSpec(bs);
-				case _ => getLogger().warn("Unexpected object found at " + SceneFieldNames.P_behavior + " = " + o);
+				case _ => getLogger().warn("Unexpected object found at {} = {}", SceneFieldNames.P_behavior, o);
 			}
 		}
 		val linkedChannelSpecs : java.util.List[Object] = reader.findOrMakeLinkedObjects(configItem, SceneFieldNames.P_channel, assmblr, mode, null);
 		for (val o <- linkedChannelSpecs) {
 			o match {
 				case cs: ChannelSpec => ss.addChannelSpec(cs);
-				case _ => getLogger().warn("Unexpected object found at " + SceneFieldNames.P_channel + " = " + o);
+				case _ => getLogger().warn("Unexpected object found at {} = {}", SceneFieldNames.P_channel, o);
 			}
 		}		
 		getLogger().debug("Scene found linkedBehaviorSpecs: {}",  linkedBehaviorSpecs)
