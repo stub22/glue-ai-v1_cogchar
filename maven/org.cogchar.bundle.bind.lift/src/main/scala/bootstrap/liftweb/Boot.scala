@@ -40,7 +40,7 @@ class Boot {
 	
 	// Is config already ready? If so, we missed it. Let's update now.
 	if (myLiftAmbassador.checkConfigReady) {
-	  PageCommander.initFromCogcharRDF(PageCommander.getState.INITIAL_CONFIG_ID, myLiftAmbassador.getInitialConfig)
+	  PageCommander.initFromCogcharRDF(PageCommander.getInitialConfigId, myLiftAmbassador.getInitialConfig)
 	}
 	
 	// Add the listener for JSON speech to the dispatch table

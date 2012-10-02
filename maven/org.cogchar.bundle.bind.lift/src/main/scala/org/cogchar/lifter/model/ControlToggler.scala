@@ -29,8 +29,7 @@ import org.cogchar.bind.lift.ControlConfig
 
 class ControlToggler {
   
-  def toggle(sessionId:String, slotNum: Int) {
-	val appState = PageCommander.getState
+  def toggle(appState:LifterState, sessionId:String, slotNum: Int) {
 	if (appState.controlDefMap(sessionId) contains slotNum) {
 	  val togglingControl = appState.controlDefMap(sessionId)(slotNum)
 	  val actionUriPrefix = PageCommander.getUriPrefix(togglingControl.action);
@@ -86,8 +85,7 @@ class ControlToggler {
 
   // A method to synchronize the state of toggle buttons in all sessions which are connected to the state of a global lifter variable
   // Blur of responsibity between toggle action and lifter variables, but probably belongs here.
-  def setAllPublicLiftvarToggleButtonsToState(varName:String, state:Boolean) {
-	val appState = PageCommander.getState
+  def setAllPublicLiftvarToggleButtonsToState(appState:LifterState, varName:String, state:Boolean) {
 	appState.activeSessions.foreach(sessionId => {
 		appState.toggleButtonMap(sessionId).keySet.foreach(slotNum => {
 			val control = appState.controlDefMap(sessionId)(slotNum)

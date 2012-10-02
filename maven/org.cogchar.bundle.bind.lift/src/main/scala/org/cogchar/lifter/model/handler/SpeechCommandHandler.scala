@@ -17,7 +17,7 @@
 package org.cogchar.lifter.model.handler
 
 import net.liftweb.common.Logger
-import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import org.cogchar.lifter.view.TextBox
 import scala.collection.mutable.ArrayBuffer
 
@@ -26,36 +26,35 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler with Logger {
   protected val matchingTokens = ArrayBuffer(ActionStrings.acquireSpeech, ActionStrings.getContinuousSpeech,
 											 ActionStrings.stopContinuousSpeech, ActionStrings.cogbotSpeech)
   
-  protected def handleHere(sessionId:String, slotNum:Int, command:String, input:Array[String]) {  
+  protected def handleHere(appState:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {  
 	val primaryToken = command.split(ActionStrings.commandTokenSeparator)(0)
 	primaryToken match {
 	  case ActionStrings.acquireSpeech => {
 		  if (input == null) { // If so, this is a button or etc. asking for speech acquisition to be triggered
 			PageCommander.acquireSpeech(sessionId, slotNum)
 		  } else { // otherwise, we are getting speech back from an acquisition via the SpeechRestListener
-			displayInputSpeech(sessionId, input(0))
+			displayInputSpeech(appState, sessionId, input(0))
 			// Next we strip the acquireSpeech prefix and continue handling. For this to work, the SpeechCommandHandler
 			// must be near the "top" of the chain of responsiblity, and actions performed on acquired speech
 			// (such as submittext) must be farther down the chain.
-			nextHandler.processHandler(sessionId, slotNum, command.stripPrefix(ActionStrings.acquireSpeech + ActionStrings.commandTokenSeparator), input)
+			nextHandler.processHandler(appState, sessionId, slotNum, command.stripPrefix(ActionStrings.acquireSpeech + ActionStrings.commandTokenSeparator), input)
 		  }
 		}
 	  case ActionStrings.getContinuousSpeech => {
 		  if (input == null) { // If so, this is a button or etc. asking for speech acquisition to be triggered
 			PageCommander.requestContinuousSpeech(sessionId, slotNum, true)
 		  } else { // otherwise, we are getting speech back from an acquisition via the SpeechRestListener
-			displayInputSpeech(sessionId, input(0))
+			displayInputSpeech(appState, sessionId, input(0))
 			// Next we strip the getContinuousSpeech prefix and continue handling. For this to work, the SpeechCommandHandler
 			// must be near the "top" of the chain of responsiblity, and actions performed on acquired speech
 			// (such as submittext) must be farther down the chain.
-			nextHandler.processHandler(sessionId, slotNum, command.stripPrefix(ActionStrings.getContinuousSpeech + ActionStrings.commandTokenSeparator), input)
+			nextHandler.processHandler(appState, sessionId, slotNum, command.stripPrefix(ActionStrings.getContinuousSpeech + ActionStrings.commandTokenSeparator), input)
 		  }
 		}
 	  case ActionStrings.stopContinuousSpeech => {
 		  PageCommander.requestContinuousSpeech(sessionId, slotNum, false)
 		}
 	  case ActionStrings.cogbotSpeech => {
-		  val appState = PageCommander.getState
 		  val secondToken = command.stripPrefix(ActionStrings.cogbotSpeech + ActionStrings.commandTokenSeparator)
 		  secondToken match {
 			case ActionStrings.ENABLE_TOKEN => appState.cogbotSpeaks(sessionId) = true
@@ -67,10 +66,10 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler with Logger {
 	}
   }
   
-  private def displayInputSpeech(sessionId:String, textToDisplay:String) {
-	PageCommander.getState.speechDisplayers(sessionId).foreach(slotId => 
+  private def displayInputSpeech(state:LifterState, sessionId:String, textToDisplay:String) {
+	state.speechDisplayers(sessionId).foreach(slotId => 
 	  PageCommander.setControl(sessionId, slotId, 
-		TextBox.makeBox("I think you said \"" + textToDisplay + "\"", PageCommander.getState.controlDefMap(sessionId)(slotId).style, true)))
+		TextBox.makeBox("I think you said \"" + textToDisplay + "\"", state.controlDefMap(sessionId)(slotId).style, true)))
   }
   
 }

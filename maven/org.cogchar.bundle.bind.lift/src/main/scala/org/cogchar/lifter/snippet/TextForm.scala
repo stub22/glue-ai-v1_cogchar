@@ -29,7 +29,7 @@ package org.cogchar.lifter {
 	import Helpers._
 	import net.liftweb.http.SHtml._
 	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.model.{LifterState,PageCommander}
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import S._
@@ -38,7 +38,7 @@ package org.cogchar.lifter {
 	  
 	  protected val matchingName = "TEXTINPUT"
   
-	  protected def handleHere(sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+	  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
 		makeTextForm(control.text, slotNum)
 	  }
 	  

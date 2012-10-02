@@ -19,7 +19,7 @@ package org.cogchar.lifter.model.handler
 import java.lang.NumberFormatException
 import org.appdapter.core.name.Ident
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import org.cogchar.lifter.snippet.PushyButton
 import net.liftweb.common.Logger
 import scala.collection.mutable.ArrayBuffer
@@ -29,12 +29,12 @@ class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
   
   protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_liftvar, ActionStrings.p_liftsessionvar)
   
-  protected def handleHere(sessionId:String, slotId:Int, control:ControlConfig, input:Array[String]) {
+  protected def handleHere(state:LifterState, sessionId:String, slotId:Int, control:ControlConfig, input:Array[String]) {
 	val varName = control.action.getLocalName
 	var variablesMap: scala.collection.mutable.HashMap[String, String] = null;
 	var sessionVar = false
-	if (PageCommander.getUriPrefix(control.action) equals ActionStrings.p_liftvar) {variablesMap = PageCommander.getState.publicAppVariablesMap}
-	else {variablesMap = PageCommander.getState.appVariablesMap(sessionId); sessionVar = true}
+	if (PageCommander.getUriPrefix(control.action) equals ActionStrings.p_liftvar) {variablesMap = state.publicAppVariablesMap}
+	else {variablesMap = state.appVariablesMap(sessionId); sessionVar = true}
 	if (input != null) { // If so, we have a value for the variable
 	  val textItems = List.fromArray(control.text.split(","))
 	  if (input(0).startsWith(ActionStrings.subControlIdentifier)) {
@@ -47,12 +47,12 @@ class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
 	  }
 	} else { // If so, a button type control has this Lifter Variable action.
 	  var toggleButton = false;
-	  if (PageCommander.getState.toggleButtonMap contains sessionId) {
-		if (PageCommander.getState.toggleButtonMap(sessionId) contains slotId) {
+	  if (state.toggleButtonMap contains sessionId) {
+		if (state.toggleButtonMap(sessionId) contains slotId) {
 		  toggleButton = true;
-		  val toggleButtonState = PageCommander.getState.toggleButtonMap(sessionId)(slotId) // assumes button has already been toggled on press (by toggler)
+		  val toggleButtonState = state.toggleButtonMap(sessionId)(slotId) // assumes button has already been toggled on press (by toggler)
 		  variablesMap(varName) = toggleButtonState.toString
-		  if (!sessionVar) PageCommander.getToggler.setAllPublicLiftvarToggleButtonsToState(varName, toggleButtonState)
+		  if (!sessionVar) PageCommander.getToggler.setAllPublicLiftvarToggleButtonsToState(state, varName, toggleButtonState)
 		}
 	  }
 	  if (!toggleButton) {
@@ -76,10 +76,9 @@ object LifterVariableHandler {
   // Checks to see if an action links to a boolean state stored in a Lifter Variable
   // Returns this state if so, otherwise returns false
   // Currently used to allow TOGGLEBUTTON state to persist and reload when the control is removed and redisplayed.
-  def getStateFromVariable(sessionId:String, action:Ident): Boolean = {
+  def getStateFromVariable(appState:LifterState, sessionId:String, action:Ident): Boolean = {
 	val actionUriPrefix = PageCommander.getUriPrefix(action);
 	var state = false
-	val appState = PageCommander.getState
 	actionUriPrefix match {
 	  case ActionStrings.p_liftvar => {
 		  val mappedVariable = action.getLocalName();

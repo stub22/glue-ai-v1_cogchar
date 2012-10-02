@@ -17,15 +17,14 @@
 package org.cogchar.lifter.model.handler
 
 import net.liftweb.common.Logger
-import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
 class SubmitCommandHandler extends AbstractLifterCommandHandler with Logger {
 
   protected val matchingTokens = ArrayBuffer(ActionStrings.submit)
   
-  protected def handleHere(sessionId:String, slotNum:Int, command:String, input:Array[String]) {
-	val appState = PageCommander.getState
+  protected def handleHere(appState:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
 	val desiredAction = command.stripPrefix(ActionStrings.submit + ActionStrings.commandTokenSeparator)
 	desiredAction match {
 	  case ActionStrings.NETWORK_CONFIG_TOKEN => {

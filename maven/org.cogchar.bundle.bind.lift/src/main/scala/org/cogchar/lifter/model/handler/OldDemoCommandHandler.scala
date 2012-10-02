@@ -16,7 +16,7 @@
 
 package org.cogchar.lifter.model.handler
 
-import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import org.cogchar.lifter.snippet.{PushyButton, RadioButtons, SelectBoxes, TextForm}
 import scala.collection.mutable.ArrayBuffer
 
@@ -25,7 +25,7 @@ class OldDemoCommandHandler extends AbstractLifterCommandHandler {
   
   protected val matchingTokens = ArrayBuffer(ActionStrings.oldDemo)
   
-  protected def handleHere(sessionId:String, slotNum:Int, command:String, input:Array[String]) {
+  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
 	input(0).stripPrefix(ActionStrings.subControlIdentifier).toInt match { 
 	  case 0 => PageCommander.setControl(sessionId, 6, PushyButton.makeButton("A button", "buttonred", "", 6))
 	  case 1 => PageCommander.setControl(sessionId, 6, TextForm.makeTextForm("A text box", 6))

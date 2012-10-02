@@ -16,15 +16,15 @@
 
 package org.cogchar.lifter.model.handler
 
-import org.cogchar.lifter.model.{ActionStrings,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
 class LastConfigCommandHandler extends AbstractLifterCommandHandler {
   
   protected val matchingTokens = ArrayBuffer(ActionStrings.lastConfig)
   
-  protected def handleHere(sessionId:String, slotNum:Int, command:String, input:Array[String]) {
-	PageCommander.initFromCogcharRDF(sessionId, PageCommander.getState.lastConfig(sessionId))
+  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
+	PageCommander.initFromCogcharRDF(sessionId, state.lastConfig(sessionId))
   }
   
 }
