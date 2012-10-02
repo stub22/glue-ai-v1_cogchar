@@ -95,7 +95,7 @@ case class SteppingBehaviorSpec() extends BehaviorSpec {
 						val freeChanIdent = new FreeIdent(chanId);
 						action.addChannelIdent(freeChanIdent);
 					}
-					case _ => getLogger().warn("Unexpected object found in step[at " + SceneFieldNames.P_channel + " = " + stepChanSpec);
+					case _ => getLogger().warn("Unexpected object found in step at {} = {}", SceneFieldNames.P_channel, stepChanSpec);
 				}
 			}
 				

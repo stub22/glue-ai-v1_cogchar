@@ -51,9 +51,9 @@ class SceneBook extends BasicDebugger {
 			getLogger.debug("Ensuring registration of classLoader: {}", optResourceClassLoader);
 			AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(optResourceClassLoader);
 		}
-		getLogger.debug("Loading SceneSpecs from: " + rdfConfigFlexPath);
+		getLogger.debug("Loading SceneSpecs from: {}", rdfConfigFlexPath);
 		val loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(rdfConfigFlexPath);
-		getLogger.debug("Loaded " + loadedStuff.size() + " objects");
+		getLogger.debug("Loaded {} objects", loadedStuff.size());
 	//	logInfo("Stuff: " + loadedStuff);
 		val si = loadedStuff.iterator();
 		var sceneSpecList = List[SceneSpec]()

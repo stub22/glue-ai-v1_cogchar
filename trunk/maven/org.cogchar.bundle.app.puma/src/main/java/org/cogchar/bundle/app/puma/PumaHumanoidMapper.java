@@ -88,7 +88,7 @@ public class PumaHumanoidMapper extends BasicDebugger {
 			myRAC = new RobotAnimContext(myCharIdent, behavCE);
 			return myRAC.initConn(myMBRSC);
 		} else {
-			logWarning("initModelRobotUsingBoneRobotConfig() aborted setup due to null HumanoidFigure for " + myCharIdent);
+			getLogger().warn("initModelRobotUsingBoneRobotConfig() aborted setup due to null HumanoidFigure for {}", myCharIdent);
 			return false;
 		}
 	}
@@ -100,7 +100,7 @@ public class PumaHumanoidMapper extends BasicDebugger {
 	public void connectToVirtualChar() throws Exception {
 		final ModelRobot br = getBonyRobot();
 		if (br == null) {
-			getLogger().warn("connectToVirtualChar() aborting due to missing ModelRobot, for char: " + myCharIdent);
+			getLogger().warn("connectToVirtualChar() aborting due to missing ModelRobot, for char: {}", myCharIdent);
 			return;
 		}
 		setupFigureState(br);
