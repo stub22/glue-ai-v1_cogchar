@@ -287,7 +287,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 				}
 			} catch (Exception e) {
 				getLoggerForClass(HumanoidPuppetActions.PlayerAction.class).warn(
-						"Error getting binding for " + actionType.toString() + ": " + e);
+						"Error getting binding for {}: {}", actionType.toString(), e);
 			}
 			return keyInput;
 		}

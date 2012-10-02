@@ -32,7 +32,6 @@ import org.cogchar.bind.lift.LiftAmbassador;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.jme3.input.KeyInput.*;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -89,7 +88,7 @@ public class SceneActions {
 					if (binding != null) {
 						binding.perform();
 					} else {
-						theLogger.info("Received trigger-press [" + name + "], but binding=" + binding);
+						theLogger.info("Received trigger-press [{}], but binding = {}", name, binding);
 					}
 				}
 			}
@@ -132,13 +131,13 @@ public class SceneActions {
 		String keyString = mapping.myBoundKeyName;
 		try {
 			if ((keyString.startsWith("AXIS")) || (keyString.startsWith("BUTTON"))) { // In this case, must be MouseInput
-				theLogger.warn("Mouse triggers not supported for scene actions -- " + mapping.myBoundEventName + " not mapped.");
+				theLogger.warn("Mouse triggers not supported for scene actions -- {} not mapped.", mapping.myBoundEventName);
 			} else { // ... regular KeyInput - must use reflection to get fron key names to jME KeyInput field values
 				Field keyField = KeyInput.class.getField("KEY_" + keyString.toUpperCase());
 				keyInput = keyField.getInt(keyField);
 			}
 		} catch (Exception e) {
-			theLogger.warn("Error getting binding for " + mapping.myBoundEventName + ": " + e);
+			theLogger.warn("Error getting binding for {}: {}", mapping.myBoundEventName, e);
 		}
 		return keyInput;
 	}

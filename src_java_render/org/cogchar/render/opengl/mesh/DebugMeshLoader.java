@@ -32,7 +32,7 @@ public class DebugMeshLoader extends MeshLoader {
 		theLogger.info("=============================== DummyMeshLoader constructing");
     }
 	@Override public Object load(AssetInfo info) throws IOException {
-		theLogger.info("============================== DummyMeshLoader: " + info);
+		theLogger.info("============================== DummyMeshLoader: {}", info);
 		return super.load(info);
 	}
 }

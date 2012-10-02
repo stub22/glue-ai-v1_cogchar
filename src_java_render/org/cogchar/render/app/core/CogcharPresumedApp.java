@@ -103,7 +103,7 @@ public abstract class CogcharPresumedApp<CRCT extends CogcharRenderContext> exte
 		theFallbackLogger.info("********************* CogcharPresumedApp.initialize() called");
 		ClassLoader savedCL = Thread.currentThread().getContextClassLoader();
 		ClassLoader frameworkCL = AssetManager.class.getClassLoader();
-		theFallbackLogger.info("********************* contextCL = " + savedCL + ", frameworkCL = " + frameworkCL);
+		theFallbackLogger.info("********************* contextCL = {}, frameworkCL = {}", savedCL, frameworkCL);
 		try {
 			if (frameworkCL != null) {
 				Thread.currentThread().setContextClassLoader(frameworkCL);

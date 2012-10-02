@@ -69,7 +69,7 @@ public abstract class CogcharRenderApp<CRCT extends CogcharRenderContext> extend
 
 	@Override public void simpleInitApp() {
 		getLogger().info("CogcharRenderApp.simpleInitApp() - START");
-		getLogger().info("%%%%%%% JmeSystem.isLowPermissions()=" + com.jme3.system.JmeSystem.isLowPermissions());
+		getLogger().info("%%%%%%% JmeSystem.isLowPermissions()={}", com.jme3.system.JmeSystem.isLowPermissions());
 
 		getLogger().debug("fetch(/init) CogcharRenderContext, so we can register JMonkey roots for later lookup");		
 		myRenderContext = getRenderContext();
