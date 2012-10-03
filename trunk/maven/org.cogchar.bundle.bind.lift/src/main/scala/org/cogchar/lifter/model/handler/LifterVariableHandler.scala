@@ -31,7 +31,7 @@ class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
   
   protected def handleHere(state:LifterState, sessionId:String, slotId:Int, control:ControlConfig, input:Array[String]) {
 	val varName = control.action.getLocalName
-	var variablesMap: scala.collection.mutable.HashMap[String, String] = null;
+	var variablesMap: scala.collection.mutable.Map[String, String] = null;
 	var sessionVar = false
 	if (PageCommander.getUriPrefix(control.action) equals ActionStrings.p_liftvar) {variablesMap = state.publicAppVariablesMap}
 	else {variablesMap = state.appVariablesMap(sessionId); sessionVar = true}
