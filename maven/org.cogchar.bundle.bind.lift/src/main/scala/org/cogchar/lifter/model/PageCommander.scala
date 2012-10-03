@@ -18,12 +18,7 @@ package org.cogchar.lifter {
   package model {
 
 	import net.liftweb.common._
-	import net.liftweb.http.js.JE._
-	import net.liftweb.http.js.JsCmds
-	import net.liftweb.http.js.JsCmds._
 	import net.liftweb.http._
-	import S._
-	import net.liftweb.http.SHtml._
 	import net.liftweb.util._
 	import Helpers._
 	import scala.xml._
@@ -47,8 +42,8 @@ package org.cogchar.lifter {
 	// actors with an instance of that class created for each session. (PageCommander is currently acting as an actor
 	// but also in some un-Actor-like ways.)
 	object PageCommander extends LiftActor with ListenerManager with Logger {
-
-	  private var theLiftAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods.
+	  
+	  private var theLiftAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods
 	  
 	  private var updateInfo: String = ""
 	  
@@ -98,12 +93,12 @@ package org.cogchar.lifter {
 		setControlsFromMap(sessionId)
 	  }
 	  
-	  /* Not implemented yet:
-	  // This method clears the state info for a session from the state maps. May be desirable to perform on session shutdown.
-	  def clearSessionInfo(sessionId:String) {
-		
+	  // This method clears the state info for a session from the state maps.
+	  // Performed on session shutdown via LiftSession.onShutdownSession (in Boot.scala)
+	  def removeSession(sessionId:String) {
+		info("Removing state for session " + sessionId)
+		theLifterState.removeSession(sessionId)
 	  }
-	  */
 	  
 	  def renderInitialControls {
 		if (!theLifterState.lifterInitialized) {
@@ -149,6 +144,10 @@ package org.cogchar.lifter {
 			} catch {
 			  case _: Any =>  warn("Unable to get valid slotNum from loaded control; URI fragment was " + controlDef.myURI_Fragment) // The control will still be loaded into slot -1; could "break" here but it's messy and unnecessary
 			}
+			if (slotNum > theLifterState.MAX_CONTROL_QUANTITY) {
+			  warn("Maximum number of controls exceeded (" + theLifterState.MAX_CONTROL_QUANTITY + "); some controls may not be cleared upon page change!")
+			  warn("MAX_CONTROL_QUANTITY in LifterState can be increased if this is necessary.")
+			}
 			// Below, we clone the controlDef with a copy constructor so the ControlConfigs in the controlDefMap are 
 			// not the same objects as in LiftAmbassador's page cache.
 			// That's important largly because ToggleButton modifies the actions in the controlDefMap.
@@ -159,11 +158,9 @@ package org.cogchar.lifter {
 			// Check for initial nee "local" actions which PageCommander needs to handle, such as text display
 			firstActionHandler.checkForInitialAction(theLifterState, sessionId, slotNum, controlDef)
 		  })
-		// Blank unspecified slots (out to 20)
-		for (slot <- 1 to 20) {
-		  if (!(theLifterState.controlDefMap(sessionId) contains slot)) {
-			theLifterState.controlsMap(sessionId)(slot) = NodeSeq.Empty
-		  }
+		// Blank unspecified slots (out to MAX_CONTROL_QUANTITY)
+		for (slot <- 1 to theLifterState.MAX_CONTROL_QUANTITY) {
+		  theLifterState.controlsMap(sessionId).putIfAbsent(slot, NodeSeq.Empty)
 		}
 		theLifterState.currentTemplate(sessionId) = liftConfig.template
 		if (sessionId.equals(theLifterState.INITIAL_CONFIG_ID)) { 
