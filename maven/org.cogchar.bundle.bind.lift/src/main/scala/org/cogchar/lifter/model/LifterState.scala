@@ -35,6 +35,7 @@ class LifterState {
   final val MAX_CONTROL_QUANTITY = 20;
   
   // Default parameters for ConcurrentHashMap configuration
+  // For more info on these parameters, see http://ria101.wordpress.com/2011/12/12/concurrenthashmap-avoid-a-common-misuse/
   private final val DEFAULT_INITIAL_CAPACITY = 8
   private final val DEFAULT_LOAD_FACTOR = 0.9f
   private final val DEFAULT_CONCURRENCY_LEVEL = 1
@@ -82,7 +83,8 @@ class LifterState {
   val outputSpeech:ConcurrentMap[String,String] = 
 	new ConcurrentHashMap[String, String](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
   // id of last control which requested speech - used by JavaScriptActor to add identifying info to request
-  var lastSpeechReqSlotId:String = ""
+  var lastSpeechReqSlotId:ConcurrentMap[String,String] =
+	new ConcurrentHashMap[String, String](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
   // Determines whether Cogbot speech out also triggers Android speech
   val cogbotSpeaks:ConcurrentMap[String,Boolean] =
 	new ConcurrentHashMap[String, Boolean](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
@@ -92,11 +94,9 @@ class LifterState {
   
   var lifterInitialized:Boolean = false // Will be set to true once PageCommander receives initial control config from LiftAmbassador
   var sessionsAwaitingStart = new scala.collection.mutable.ArrayBuffer[String] 
-  //val activeSessions = new scala.collection.mutable.ArrayBuffer[String] 
   
   def activeSessions = controlDefMap.keySet.toList
   
-  // All the cloning in here probably indicates there is a Better Way (TM)
   def initializeSession(sessionId:String) {
 	// Fill in the controlsMap for the new session with the initial config
 	controlsMap(sessionId) = new ConcurrentHashMap[Int,NodeSeq](controlsMap(INITIAL_CONFIG_ID))
@@ -115,8 +115,10 @@ class LifterState {
 	appVariablesMap(sessionId) = new ConcurrentHashMap[String,String](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
 	// Set currentConfig for this session
 	currentConfig(sessionId) = currentConfig(INITIAL_CONFIG_ID)
-	//Set initial template
+	// Set initial template
 	currentTemplate(sessionId) = currentTemplate(INITIAL_CONFIG_ID)
+	// Set blank value for session key in lastSpeechReqSlotId
+	lastSpeechReqSlotId(sessionId) = ""
   }
   
   def clearState {
@@ -130,6 +132,7 @@ class LifterState {
 	cogbotDisplayers(INITIAL_CONFIG_ID) = new scala.collection.mutable.ArrayBuffer[Int]
 	speechDisplayers.clear
 	speechDisplayers(INITIAL_CONFIG_ID) = new scala.collection.mutable.ArrayBuffer[Int]
+	lastSpeechReqSlotId.clear
 	toggleButtonMap.clear
 	toggleButtonMap(INITIAL_CONFIG_ID) = 
 	  new ConcurrentHashMap[Int,Boolean](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
@@ -154,6 +157,7 @@ class LifterState {
 	singularAction(sessionId).clear
 	errorMap(sessionId).clear
 	lastConfig(sessionId) = currentConfig(sessionId)
+	lastSpeechReqSlotId(sessionId) = ""
   }
   
   def removeSession(sessionId:String) {
@@ -166,6 +170,7 @@ class LifterState {
 	singularAction remove sessionId
 	errorMap remove sessionId
 	lastConfig remove sessionId
+	lastSpeechReqSlotId remove sessionId
   }
   
 }
