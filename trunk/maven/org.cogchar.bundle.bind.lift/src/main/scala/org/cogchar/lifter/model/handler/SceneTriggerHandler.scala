@@ -28,8 +28,10 @@ class SceneTriggerHandler extends AbstractLifterActionHandler {
   
   protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
 	val success = PageCommander.getLiftAmbassador.triggerScene(control.action.getLocalName)
-	val sceneRunningScreen = createSceneInfoScreen(state, sessionId, control)
-	PageCommander.initFromCogcharRDF(sessionId, sceneRunningScreen)
+	if (success) {
+	  val sceneRunningScreen = createSceneInfoScreen(state, sessionId, control)
+	  PageCommander.initFromCogcharRDF(sessionId, sceneRunningScreen)
+	}
   }
   
   // A method to create a liftconfig locally to serve as a "Scene Playing" info screen

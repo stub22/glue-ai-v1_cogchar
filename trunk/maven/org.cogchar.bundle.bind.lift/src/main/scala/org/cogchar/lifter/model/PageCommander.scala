@@ -194,7 +194,7 @@ package org.cogchar.lifter {
 	  }							
 	  
 	  def handleAction(sessionId:String, formId:Int, input:Array[String]) {
-		//info("Handling action: " + theLifterState.controlDefMap(sessionId)(formId).action) // TEST ONLY
+		info("Handling action: " + theLifterState.controlDefMap(sessionId)(formId).action) // TEST ONLY
 		val processThread = new Thread(new Runnable { // A new thread to handle actions to make sure we don't block Ajax handling
 			def run() {
 			  firstActionHandler.processHandler(theLifterState, sessionId, formId, theLifterState.controlDefMap(sessionId)(formId), input)
@@ -248,7 +248,7 @@ package org.cogchar.lifter {
 	  // Likely should go in different class...
 	  def acquireSpeech(sessionId:String, slotNum:Int) {
 		updateInfo = controlId(sessionId, ActorCodes.SPEECH_REQUEST_CODE)
-		theLifterState.lastSpeechReqSlotId = controlId(sessionId, slotNum); // Set this field - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
+		theLifterState.lastSpeechReqSlotId(sessionId) = controlId(sessionId, slotNum); // Set this value - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
 		updateListeners()
 	  }
 	  
@@ -256,7 +256,7 @@ package org.cogchar.lifter {
 	  def requestContinuousSpeech(sessionId:String, slotNum: Int, desired: Boolean) {
 		info("In requestContinuousSpeech, setting to " + desired + " for session " + sessionId)
 		if (desired) {
-		  theLifterState.lastSpeechReqSlotId = controlId(sessionId, slotNum)
+		  theLifterState.lastSpeechReqSlotId(sessionId) = controlId(sessionId, slotNum)
 		  updateInfo = controlId(sessionId, ActorCodes.CONTINUOUS_SPEECH_REQUEST_START_CODE)
 		  updateListeners()
 		} else {
@@ -265,7 +265,7 @@ package org.cogchar.lifter {
 		}
 	  }
 	  
-	  def getSpeechReqControl = theLifterState.lastSpeechReqSlotId
+	  def getSpeechReqControl(sessionId:String) = theLifterState.lastSpeechReqSlotId(sessionId)
 	  
 	  def getCurrentTemplate(sessionId:String) = {
 		var templateToLoad: String = null

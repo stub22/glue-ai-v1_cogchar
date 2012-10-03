@@ -53,7 +53,7 @@ package org.cogchar.lifter {
 
 	  override def lowPriority : PartialFunction[Any, Unit] = {
 		case SPEECH_REQUEST_TRIGGERID => { // A special "slot" code for speech request. Sort of a workaround, but works OK for now.
-			val slotId = PageCommander.getSpeechReqControl
+			val slotId = PageCommander.getSpeechReqControl(mySessionId)
 			partialUpdate(new JsCmd { 
 				// Put our oddball JS methods in a try block, so non-Proctor browsers are happy!
 				def toJsCmd = "try{Android.getSpeechInput(\"" + slotId + "\");} catch(err) {}" 
@@ -74,13 +74,12 @@ package org.cogchar.lifter {
 			  })
 		  }
 		case CONTINUOUS_SPEECH_REQUEST_START_TRIGGERID => { // This code for starting continuous speech. 
-			val slotId = PageCommander.getSpeechReqControl
+			val slotId = PageCommander.getSpeechReqControl(mySessionId)
 			partialUpdate(new JsCmd { 
 				def toJsCmd = "try{Android.getContinuousSpeechInput(\"" + slotId + "\");} catch(err) {}"
 			  })
 		  }
 		case CONTINUOUS_SPEECH_REQUEST_STOP_TRIGGERID => { // This code for stopping continuous speech. 
-			//val slotNum = PageCommander.getSpeechReqControl
 			partialUpdate(new JsCmd { 
 				def toJsCmd = "try{Android.stopContinuousSpeechInput();} catch(err) {}"
 			  })
