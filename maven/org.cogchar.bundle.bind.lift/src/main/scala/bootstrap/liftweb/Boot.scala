@@ -48,6 +48,9 @@ class Boot {
 	
 	// Have Lift automatically requestStart in PageCommander for a session when it is created
 	LiftSession.onSetupSession ::= ((ls:LiftSession) => PageCommander.requestStart(ls.uniqueId))
+	
+	// ...and have lift automatically discard session state when it is shut down
+	LiftSession.onShutdownSession ::= ((ls:LiftSession) => PageCommander.removeSession(ls.uniqueId))
 
 	//LiftRules.cometLogger = ActorLogger // Kind of a WAG as to how to use this, just trying it out. Actually seems to perhaps be making Comet behave better, but too early to say (and why would we expect it to?).
   }
