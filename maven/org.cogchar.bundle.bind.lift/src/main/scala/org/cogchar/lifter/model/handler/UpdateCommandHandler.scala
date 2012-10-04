@@ -30,6 +30,7 @@ class UpdateCommandHandler extends AbstractLifterCommandHandler {
 		  PageCommander.getLiftAmbassador.performCogCharUpdate(splitAction(1))
 		}
 	  case ActionStrings.refreshLift => {
+		  state.lifterInitialized = false;
 		  PageCommander.getLiftAmbassador.clearLiftConfigCache
 		  PageCommander.getLiftAmbassador.performCogCharUpdate(ActionStrings.LIFT_REFRESH_UPDATE_NAME)
 		}

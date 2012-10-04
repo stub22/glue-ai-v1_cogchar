@@ -32,7 +32,6 @@ package org.cogchar.lifter {
 	import org.cogchar.bind.lift._
 	import scala.collection.JavaConverters._
 	import org.cogchar.platform.trigger.DummyBinding
-	import java.util.concurrent.{Executors, TimeUnit}
 	
 	// What do we think about this being an object and not a class?
 	// Well, a Scala Object actually is automatically a static instance singleton anyhow, so no sense in trying to make it one manually.
@@ -101,23 +100,16 @@ package org.cogchar.lifter {
 	  }
 	  
 	  def renderInitialControls {
-		if (!theLifterState.lifterInitialized) {
+		  theLifterState.lifterInitialized = true
 		  theLifterState.sessionsAwaitingStart.foreach(sessionId => initializeSession(sessionId))
 		  theLifterState.sessionsAwaitingStart.clear
-		  theLifterState.lifterInitialized = true
-		} else { // if lifterInitialized, this is a restart on config change
+		  // If this is a restart on config change, activeSessions will have sessions which need to be re-initialized
 		  theLifterState.activeSessions.foreach(sessionId => initializeSession(sessionId))
-		}
 	  }
 	  
 	  def requestStart(sessionId:String) {
 	   if (theLifterState.lifterInitialized) {
-		 // If the session is in activeSessions, a timed-out session may be reconnecting.
-		 // Don't re-initialize and clear state (if this continues to be what we want).
-		 // This may not be necessary: it seems after a genuine time-out, a new connection from the same browser gets a different ID?
-		 if (!(theLifterState.activeSessions contains sessionId)) {
-		    initializeSession(sessionId)
-		 }
+		  initializeSession(sessionId)
 	   } else {
 		 theLifterState.sessionsAwaitingStart += sessionId
 	   }

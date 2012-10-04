@@ -93,9 +93,8 @@ class LifterState {
 	new ConcurrentHashMap[String, String](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
   
   var lifterInitialized:Boolean = false // Will be set to true once PageCommander receives initial control config from LiftAmbassador
+  val activeSessions = new scala.collection.mutable.ArrayBuffer[String]
   var sessionsAwaitingStart = new scala.collection.mutable.ArrayBuffer[String] 
-  
-  def activeSessions = controlDefMap.keySet.toList
   
   def initializeSession(sessionId:String) {
 	// Fill in the controlsMap for the new session with the initial config
@@ -119,6 +118,8 @@ class LifterState {
 	currentTemplate(sessionId) = currentTemplate(INITIAL_CONFIG_ID)
 	// Set blank value for session key in lastSpeechReqSlotId
 	lastSpeechReqSlotId(sessionId) = ""
+	// Add session to activeSessions list
+	if (!(activeSessions contains sessionId)) {activeSessions += sessionId}
   }
   
   def clearState {
@@ -161,6 +162,8 @@ class LifterState {
   }
   
   def removeSession(sessionId:String) {
+	// Session is no longer active...
+	activeSessions remove sessionId
 	controlDefMap remove sessionId
 	controlsMap remove sessionId
 	cogbotDisplayers remove sessionId
