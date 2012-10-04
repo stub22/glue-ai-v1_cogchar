@@ -19,6 +19,8 @@ package org.cogchar.lifter.model
 import org.cogchar.bind.lift.{ControlConfig, LiftConfig}
 import scala.xml.NodeSeq
 import org.appdapter.core.name.Ident
+import scala.collection.mutable.ArrayBuffer;
+import scala.collection.mutable.SynchronizedBuffer;
 import java.util.concurrent.ConcurrentHashMap
 import scala.collection.mutable.ConcurrentMap
 import scala.collection.JavaConversions._ // required to use java.util.concurrent.ConcurrentHashMap as a scala.collection.mutable.ConcurrentMap
@@ -93,8 +95,8 @@ class LifterState {
 	new ConcurrentHashMap[String, String](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
   
   var lifterInitialized:Boolean = false // Will be set to true once PageCommander receives initial control config from LiftAmbassador
-  val activeSessions = new scala.collection.mutable.ArrayBuffer[String]
-  var sessionsAwaitingStart = new scala.collection.mutable.ArrayBuffer[String] 
+  val activeSessions = new ArrayBuffer[String] with SynchronizedBuffer[String]
+  var sessionsAwaitingStart = new ArrayBuffer[String] with SynchronizedBuffer[String]
   
   def initializeSession(sessionId:String) {
 	// Fill in the controlsMap for the new session with the initial config
