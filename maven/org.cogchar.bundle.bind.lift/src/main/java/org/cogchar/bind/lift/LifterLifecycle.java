@@ -89,7 +89,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		if ((queryEmitterId.equals(serviceId)) && (dependency != null)) {
 			connectWebContent(myLiftAmbassador, (RepoClient) dependency,
 					(GlobalConfigEmitter.GlobalConfigService) availableDependencies.get(globalConfigId));
-		} else if ((globalConfigId.equals(serviceId)) && (dependency != null)) {
+		} else if ((globalConfigId.equals(serviceId)) && (dependency != null) && (availableDependencies.get(queryEmitterId) != null)) {
 			connectWebContent(myLiftAmbassador, (RepoClient) availableDependencies.get(queryEmitterId),
 					(GlobalConfigEmitter.GlobalConfigService) dependency);
 		} else if (theLiftAppInterfaceId.equals(serviceId)) {
