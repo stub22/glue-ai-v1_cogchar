@@ -58,18 +58,23 @@ object Whackamole extends BasicDebugger {
 	} 
 
 	// Started with code from Appdapter demo BridgeTriggers
-	def getAssembledObjsFromFile(triplesURL : String) : Set[Object] = {
+	def getAssembledObjsFromModelAtURL(triplesURL : String) : Set[Object] = {
+		// Make sure that the classpath of this app class is known to Jena, in case the URL refers to a resource of
+		// this module (e.g. OSGi bundle).  If we happen to be outside a container, this classloader-add has no
+		// practical effect.
 		val cl = getClass().getClassLoader();
+		logDebug("Ensuring classloader registered for RDF-model resource URL resolution: " + cl);
 		AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(cl);
-		logInfo("Loading triples from URL: " + triplesURL);
+		logInfo("Loading RDF triples directly from resource URL: " + triplesURL);
 		
 		val loadedStuff : java.util.Set[Object] = AssemblerUtils.buildAllObjectsInRdfFile(triplesURL);
-		logInfo("Loaded " + loadedStuff.size() + " objects");		
+		logInfo("Loaded " + loadedStuff.size() + " objects of various types.");		
 		val mutSet : scala.collection.mutable.Set[Object] = JavaConversions.asScalaSet[Object](loadedStuff);
 		mutSet.toSet[Object]
 	}
-	def loadBoxes(triplesURL : String) : List[MutableBox[DummyTrigger]] = {
+	def loadBoxesFromModelAtURL(triplesURL : String) : List[MutableBox[DummyTrigger]] = {
 		val loadedStuff : Set[Object] = getAssembledObjsFromFile(triplesURL);
+		// Filter the loaded objects down to a list of the MutableBoxes found, and return that.
 		var winnerList = List [MutableBox[DummyTrigger]]()
 		for (x <- loadedStuff) {
 			logInfo("Got Thing[" + x + "]")
@@ -108,7 +113,7 @@ object Whackamole extends BasicDebugger {
 		
 		tnc.launchFrame("Whackamole");
 		val moreBoxesModelURL : String = "org/cogchar/test/assembly/whackam.ttl";
-		val moreBoxes : List[MutableBox[DummyTrigger]] = loadBoxes(moreBoxesModelURL)
+		val moreBoxes : List[MutableBox[DummyTrigger]] = loadBoxesFromModelAtURL(moreBoxesModelURL)
 		logInfo("Got MoreBoxes: " + moreBoxes)
 		val reloadFlag : Boolean = true;
 		for (mb <- moreBoxes) {

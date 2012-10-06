@@ -16,8 +16,8 @@
 
 package org.cogchar.blob.emit
 import org.appdapter.core.name.{Ident, FreeIdent}
-import org.appdapter.core.store.{Repo}
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBinding} 
+import org.appdapter.core.store.{Repo, InitialBinding }
+import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
 import org.appdapter.impl.store.{FancyRepo};
 import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
@@ -70,7 +70,7 @@ object RepoClientTester {
 	// Alternative params for database-backed repo, with a file-resource initializer.
 	// It is easy to make this repo read/write (compared to spreadsheet + file repos)
 	
-	final val DFLT_SDB_REPO_CONFIG_PATH = "/ok"
+	final val DFLT_SDB_REPO_CONFIG_PATH =  org.appdapter.demo.DemoResources.STORE_CONFIG_PATH; 
 	
 	// ----------------------------------------------------------------------------------
 	
@@ -113,7 +113,9 @@ object RepoClientTester {
 	val lightsGraphQN = "ccrt:lights_camera_sheet_22" // The QName of a graph = model = tab, as given by directory model.
 		
 	def main(args: Array[String]) : Unit = {
-	
+		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		
 		// First load up a sheet repo, using 3 params described above.
 		// The repo resolves QNames using the namespaces applied to its directory model.
 		val dfltTestRepo = loadDefaultTestRepo
@@ -135,8 +137,10 @@ object RepoClientTester {
 		// ( ?light = <urn:ftd:cogchar.org:2012:runtime#light_Ambient> ) 
 		// ( ?lightType = <http://www.cogchar.org/lightscamera/config/instance#AMBIENT> ) 
 		// ( ?colorR = "0.8" ) ( ?colorG = "0.8" ) ( ?colorB = "0.8" ) ( ?colorAlpha = "1" )]
+		// 
+		 
 		
-		testRepoDirect(dfltTestRepo, DFLT_QRY_SRC_GRAPH_QN, lightsQueryQN, lightsGraphQN)
+		RepoTester.testRepoDirect(dfltTestRepo, DFLT_QRY_SRC_GRAPH_QN, lightsQueryQN, DFLT_TGT_GRAPH_SPARQL_VAR, lightsGraphQN)
 		
 		// Next, let's set up a RepoClient wrapper to give us some extra features. 
 		// (RepoClient constructor params uses opposite order than the variables documented above)
@@ -146,39 +150,57 @@ object RepoClientTester {
 		println("Running same query via RepoClient")
 		val solList = dfltTestRC.queryIndirectForAllSolutions(lightsQueryQN, lightsGraphQN)
 		println("Results, in the form of 'Solution' wrapper objects = " + solList.javaList)
+		
+		// The dirGraphID can be phony for now, because it is not needed until we try to do something
+		// fancy like an indirect query.  We can do direct SPARQL queries against the dataset without
+		// having a valid directory graph.  However, we cannot use the "InitialBinding" convenience
+		// methods until we have a valid directoryModel to resolve prefixes.  (An alternative could
+		// be to treat the "default graph" of our dataset as the directoryModel, at least for NS
+		// resolution purposes).  
+		// 
+		val dirGraphID = new FreeIdent("urn:org.cogchar/dirModelInRepoTestDB", "dirModelInRepoTestDB");
+		val dbRepo = RepoTester.loadDatabaseRepo(DFLT_SDB_REPO_CONFIG_PATH, dirGraphID)
+		println("Built dbRepo: " + dbRepo);
+		
+		val lightsGraphID = dfltTestRC.makeIdentForQName(lightsGraphQN);
+		val copyURI_Tail = "ranDumbModelURI_02"
+		val copyID = new FreeIdent("urn:org.cogchar/" + copyURI_Tail, copyURI_Tail)
+		val lightsModelFromSheet = dfltTestRepo.getNamedModel(lightsGraphID);
+		println("Fetched lights model: " + lightsModelFromSheet)
+		dbRepo.addNamedModel(copyID, lightsModelFromSheet);
+		val copiedModel = dbRepo.getNamedModel(copyID)
+		println("Copied model: " + copiedModel);
+		
+		val dfltGraphStatsJL : java.util.List[Repo.GraphStat] = dfltTestRepo.getGraphStats();
+		
+		println("Got dflt Graph Stats: " + dfltGraphStatsJL)
+		import scala.collection.JavaConversions._
+		
+		val dfltGraphStats : List[Repo.GraphStat] = dfltGraphStatsJL.toList
+		dfltGraphStats foreach (gs => {
+			println("Doing import for: " + gs)
+			val tgtModelID = dbRepo.makeIdentForURI(gs.graphURI)
+			val srcModel = dfltTestRepo.getNamedModel(tgtModelID)
+			dbRepo.addNamedModel(tgtModelID, srcModel)
+		})
+		
+		
+		
+		println("DB-Repo dataset: " + dbRepo.getMainQueryDataset())
+		
+		val resolvedQueryURL = org.appdapter.demo.DemoResources.QUERY_PATH;
+		// RepoTester.testRepoDirect(dbRepo, )
 	}
-	def loadDefaultTestRepo : FancyRepo = loadSheetRepo(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM)
+	def loadDefaultTestRepo : FancyRepo = RepoTester.loadSheetRepo(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM)
 	def makeDefaultRepoClient (repo : FancyRepo) : RepoClient = makeRepoClient(repo, DFLT_TGT_GRAPH_SPARQL_VAR, DFLT_QRY_SRC_GRAPH_QN)
 	
-	// Modeled on SheetRepo.loadTestSheetRepo
-	def loadSheetRepo(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int) : SheetRepo = {
-		// Read the namespaces and directory sheets into a single directory model.
-		val dirModel : Model = SheetRepo.readDirectoryModelFromGoog(sheetKey, namespaceSheetNum, dirSheetNum) 
-		// Construct a repo around that directory
-		val shRepo = new SheetRepo(dirModel)
-		// Load the rest of the repo's initial models, as instructed by the directory.
-		shRepo.loadSheetModelsIntoMainDataset()
-		shRepo
-	}
   	def makeRepoClient(fr : FancyRepo, queryTargetVarName:  String, querySheetQN : String) : RepoClient = {
 		new RepoClientImpl(fr, queryTargetVarName, querySheetQN)		
 	}		
-	def testRepoDirect(repo : FancyRepo, querySheetQName : String, queryQName: String, tgtGraphQName : String) : Unit = {
-		// Here we manually set up a binding, as you would usually allow RepoClient
-		// to do for you, instead:
-		val qib : InitialBinding = repo.makeInitialBinding
-		qib.bindQName(DFLT_TGT_GRAPH_SPARQL_VAR, tgtGraphQName)
-		
-		// Run the resulting fully bound query, and print the results.		
-		val solnJavaList : java.util.List[QuerySolution] = repo.queryIndirectForAllSolutions(querySheetQName, queryQName, qib.getQSMap);
-
-		println("Found solutions for " + queryQName + " in " + tgtGraphQName + " : " + solnJavaList)
-	}
 
 		/*
 	def loadRepoSQL(configResPath: String) : DatabaseRepo = {
 		
 	}
 	*/
-
 }
