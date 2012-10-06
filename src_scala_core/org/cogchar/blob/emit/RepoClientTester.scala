@@ -113,8 +113,9 @@ object RepoClientTester {
 	val lightsGraphQN = "ccrt:lights_camera_sheet_22" // The QName of a graph = model = tab, as given by directory model.
 		
 	def main(args: Array[String]) : Unit = {
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		// Must enable "compile" scope for Log4J dep in order to compile this code.
+	//	org.apache.log4j.BasicConfigurator.configure();
+	//	org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
 		// First load up a sheet repo, using 3 params described above.
 		// The repo resolves QNames using the namespaces applied to its directory model.
