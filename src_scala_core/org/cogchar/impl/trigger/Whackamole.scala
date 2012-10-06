@@ -73,7 +73,7 @@ object Whackamole extends BasicDebugger {
 		mutSet.toSet[Object]
 	}
 	def loadBoxesFromModelAtURL(triplesURL : String) : List[MutableBox[DummyTrigger]] = {
-		val loadedStuff : Set[Object] = getAssembledObjsFromFile(triplesURL);
+		val loadedStuff : Set[Object] = getAssembledObjsFromModelAtURL(triplesURL);
 		// Filter the loaded objects down to a list of the MutableBoxes found, and return that.
 		var winnerList = List [MutableBox[DummyTrigger]]()
 		for (x <- loadedStuff) {
