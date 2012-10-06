@@ -118,7 +118,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.1</version>
-			<!-- You must temporarily change scope to "runtime" in order to activate Log4J for dev unit testing (outside of JUnit) -->
+			<!-- You must temporarily change scope to "runtime" or "compile" in order to activate Log4J for dev unit testing (outside of JUnit) -->
 			<scope>test</scope>
 		    <exclusions>
 				<!-- This embedded Log4J version is not OSGi friendly -->				
@@ -128,7 +128,10 @@
 		        </exclusion>
 		    </exclusions>
 		</dependency>
-		<!-- You must temporarily change scope to "runtime" in order to activate for dev unit testing (outside of JUnit) -->
+		<!-- You must temporarily change scope to "compile" in order to activate for dev unit testing (outside of JUnit).
+			You will also need to see to configuration, e.g. by uncommenting code for "BasicConfigurator" or
+			"forceLog4JConfig"
+		-->
 		<dependency>
 			<groupId>org.apache.log4j</groupId>
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
