@@ -101,10 +101,10 @@ package org.cogchar.lifter {
 	  
 	  def renderInitialControls {
 		  theLifterState.lifterInitialized = true
-		  theLifterState.sessionsAwaitingStart.foreach(sessionId => initializeSession(sessionId))
-		  theLifterState.sessionsAwaitingStart.clear
 		  // If this is a restart on config change, activeSessions will have sessions which need to be re-initialized
 		  theLifterState.activeSessions.foreach(sessionId => initializeSession(sessionId))
+		  theLifterState.sessionsAwaitingStart.foreach(sessionId => initializeSession(sessionId))
+		  theLifterState.sessionsAwaitingStart.clear
 	  }
 	  
 	  def requestStart(sessionId:String) {
@@ -186,7 +186,7 @@ package org.cogchar.lifter {
 	  }							
 	  
 	  def handleAction(sessionId:String, formId:Int, input:Array[String]) {
-		info("Handling action: " + theLifterState.controlDefMap(sessionId)(formId).action) // TEST ONLY
+		//info("Handling action: " + theLifterState.controlDefMap(sessionId)(formId).action) // TEST ONLY
 		val processThread = new Thread(new Runnable { // A new thread to handle actions to make sure we don't block Ajax handling
 			def run() {
 			  firstActionHandler.processHandler(theLifterState, sessionId, formId, theLifterState.controlDefMap(sessionId)(formId), input)
@@ -212,21 +212,37 @@ package org.cogchar.lifter {
 		handleAction(sessionId, formId, text)
 	  }
 	  
+	  
+	  import java.util.Date // needed for currently implemented "debouncing" function
+	  final val IGNORE_BOUNCE_TIME = 200 //ms
 	  // Maps controls with actions only (buttons) to action handlers
 	  def triggerAction(sessionId:String, id: Int) {
-		if (theLifterState.toggleButtonMap(sessionId) contains id) {
-		  // Really we shouldn't run toggle on the Actor's thread, so we'll do this.
-		  // One of these days snippets will talk back to PageCommander as an Actor instead of calling into it, and the threading
-		  // will take care of itself instead of having to do things this messy way.
-		  val toggleThread = new Thread(new Runnable {
-			def run() {
-			  toggler.toggle(theLifterState,sessionId,id)
-			  handleAction(sessionId, id, null) // Starts yet another thread, but we need it started by the toggleThread so it won't run until toggle is complete
-			}
-		  })
-		  toggleThread.start(); 
+		// Check last actuated time for this control, and ignore if it happened less than IGNORE_BOUNCE_TIME ago
+		val time = new Date().getTime()
+		var ignore = false;
+		if (theLifterState.bounceMap(sessionId) contains id) {
+		  if (time - theLifterState.bounceMap(sessionId)(id) < IGNORE_BOUNCE_TIME) {
+			ignore = true;
+		  }
+		}
+		theLifterState.bounceMap(sessionId)(id) = time;
+		if (!ignore) {
+		  if (theLifterState.toggleButtonMap(sessionId) contains id) {
+			// Really we shouldn't run toggle on the Actor's thread, so we'll do this.
+			// One of these days snippets will talk back to PageCommander as an Actor instead of calling into it, and the threading
+			// will take care of itself instead of having to do things this messy way.
+			val toggleThread = new Thread(new Runnable {
+				def run() {
+				  toggler.toggle(theLifterState,sessionId,id)
+				  handleAction(sessionId, id, null) // Starts yet another thread, but we need it started by the toggleThread so it won't run until toggle is complete
+				}
+			  })
+			toggleThread.start(); 
+		  } else {
+			handleAction(sessionId, id, null)
+		  }
 		} else {
-		  handleAction(sessionId, id, null)
+		  warn("Debouncing control " + id + " in session + " + sessionId)
 		}
 	  }
 	  
