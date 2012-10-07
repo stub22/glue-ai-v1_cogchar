@@ -112,7 +112,15 @@ object Whackamole extends BasicDebugger {
 		val tnc : DemoNavigatorCtrl = makeTNC(args);
 		
 		tnc.launchFrame("Whackamole");
+
+		//  This test model is found in the resource path of this module (o.c.lib.core),
+		//  which typically is mapped to our src_resources_core directory.
+		//  In applications, the software can use models from another form like DB or spreadsheet.
+		//  This assembler-style model defines bindings to Java factory classes and specific config objects.
+		//  Some config objects are bound to WhackBox and WhackTrig below, via some factory classes
+		//  found in the Appdapter project.  
 		val moreBoxesModelURL : String = "org/cogchar/test/assembly/whackam.ttl";
+		
 		val moreBoxes : List[MutableBox[DummyTrigger]] = loadBoxesFromModelAtURL(moreBoxesModelURL)
 		logInfo("Got MoreBoxes: " + moreBoxes)
 		val reloadFlag : Boolean = true;
