@@ -52,73 +52,46 @@ public class HumanoidPuppetActions extends BasicDebugger {
             void act(HumanoidRenderContext ctx) {
 				ctx.setDefaultCameraLocation();
             }
-            int getTriggerKey() { 
-				return getKey(this);
-            }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
         TOGGLE_SKEL_HILITE {
             void act(HumanoidRenderContext ctx) {
 				ctx.toggleDebugSkeletons();
             }
-            int getTriggerKey() { 
-                return getKey(this);
-            }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  		
         SAY_THE_TIME {
 			// uses default act() and boxy wiring
-            int getTriggerKey() { 
-                return getKey(this);
-            }
 			@Override boolean includedInMinSim() { 	return true; }		
         },      
 
 		STOP_AND_RESET_CHAR {
 			// uses default act() and boxy wiring
-            int getTriggerKey() { 
-                return getKey(this);
-            }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  		
 		STOP_RESET_AND_RECENTER_CHAR {
 			// uses default act() and boxy wiring
-            int getTriggerKey() { 
-                return getKey(this);
-            }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  		
 		
 		USE_PERM_ANIMS {
 			// uses default act() and boxy wiring
-            int getTriggerKey() { 
-                return getKey(this);
-            }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  			
 		USE_TEMP_ANIMS {
 			// uses default act() and boxy wiring
-            int getTriggerKey() { 
-                return getKey(this);
-            }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  				
 		
         RELOAD_BEHAVIOR {
 			// uses default act() and boxy wiring
-            int getTriggerKey() { 
-                return getKey(this);
-            }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
 		
         DANGER_YOGA {
-			// This yoga-dance shold not be routed to physical robot.
+			// This yoga-dance should not be routed to physical robot.
 			// 
 			// uses default act() and boxy wiring
-            int getTriggerKey() { 
-                return getKey(this);
-            }
 			@Override boolean includedInMinSim() { 	return true; }		
         },
 		
@@ -127,9 +100,6 @@ public class HumanoidPuppetActions extends BasicDebugger {
 		UPDATE_WORLD_CONFIG {
 			void act(HumanoidRenderContext ctx) {
 				ctx.requestConfigReload("WorldConfig");
-            }
-            int getTriggerKey() { 
-                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
@@ -145,18 +115,12 @@ public class HumanoidPuppetActions extends BasicDebugger {
 			void act(HumanoidRenderContext ctx) {
 				ctx.requestConfigReload("BoneRobotConfig");
             }
-            int getTriggerKey() { 
-                return getKey(this);
-            }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
 		
 		UPDATE_HUMANOIDS {
 			void act(HumanoidRenderContext ctx) {
 				ctx.requestConfigReload("AllHumanoidConfig");
-            }
-            int getTriggerKey() { 
-                return getKey(this);
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
@@ -171,18 +135,12 @@ public class HumanoidPuppetActions extends BasicDebugger {
 				HumanoidFigure hw = getSinbad(ctx);
 				hw.togglePhysicsKinematicModeEnabled();
             }
-            int getTriggerKey() { 
-                return getKey(this);
-            }
         },
         STAND_UP {
             void act(HumanoidRenderContext ctx) {
 				HumanoidFigure hw = getSinbad(ctx);
 				hw.makeSinbadStandUp();
             }
-            int getTriggerKey() { 
-                return getKey(this);
-            }	
         },
         BOOGIE {
 			// Triggers a JME3 animation
@@ -192,77 +150,59 @@ public class HumanoidPuppetActions extends BasicDebugger {
 					hw.runSinbadBoogieAnim();
 				}
             }
-            int getTriggerKey() { 
-                return getKey(this);
-            }	
         },   		
   		
         SHOOT {
             void act(HumanoidRenderContext ctx) {
                 ctx.getGameFeatureAdapter().cmdShoot();
-            }  
-            int getTriggerKey() { 
-				return getKey(this);
-            }
+            } 
         }, 
         BOOM {
             void act(HumanoidRenderContext ctx) {
                 ctx.getGameFeatureAdapter().toggleAnnoyingStuff();
             }
-            int getTriggerKey() { 
-				return getKey(this);
-            } 
         }, 
 		SHOW_RESOURCE_BALLS {
             void act(HumanoidRenderContext ctx) {
                 BallBuilder.getTheBallBuilder().runBalls();
-            }
-            int getTriggerKey() { 
-                return getKey(this);
-            }            
+            }     
         },
 		PICK_BALLS {
             void act(HumanoidRenderContext ctx) {
                 BallBuilder.getTheBallBuilder().pick();
-            }
-            int getTriggerKey() { 
-                return getKey(this);
-            }            
+            }         
         },
         BIGGER_PROJECTILE {
             void act(HumanoidRenderContext ctx) {
                 ctx.getGameFeatureAdapter().getProjectileMgr().cmdBiggerProjectile();
             }
-            int getTriggerKey() { 
-                return getKey(this);
-            }            
         },
         SMALLER_PROJECTILE {
             void act(HumanoidRenderContext ctx) {
                 ctx.getGameFeatureAdapter().getProjectileMgr().cmdSmallerProjectile();
-            }
-            int getTriggerKey() { 
-                return getKey(this);
-            }            
+            }         
         };  // Last enum constant code block gets a semicolon.
 		
      
 		BoundAction	myBoundAction = new BoundAction();
-        abstract int getTriggerKey();           
-		
-        void act(HumanoidRenderContext ctx) {
-			myBoundAction.perform();
-		}
+		public DummyBinding getBinding() { 
+			return myBoundAction;
+		}		
 		boolean includedInMinSim() { 
 			return myBoundAction.includedInMinSim();
 		}
-		public DummyBinding getBinding() { 
-			return myBoundAction;
+		int getTriggerKey() {
+			return getKey(this);
 		}
+        void act(HumanoidRenderContext ctx) {
+			myBoundAction.perform();
+		}
+
 		HumanoidFigure getSinbad(HumanoidRenderContext hrc) { 
 			RenderConfigEmitter bce = hrc.getConfigEmitter();
 			return hrc.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
 		}
+		
 		final static int NULL_KEY = -100; // This input not mapped to any key; we'll use it in the event of not finding one from keyBindings
 		static int getKey(PlayerAction actionType) {
 			int keyInput = NULL_KEY; 
@@ -280,7 +220,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 					// Inverting this result to stuck with old trick (for now) of having mouse triggers be negative so
 					// makeJME3InputTriggers can ignore mouse inputs for the purpose of the keyboard mapping help screen
 					// setup. Value is re-inverted there for proper handling.
-					keyInput = -keyField.getInt(keyField);
+					keyInput = -1 * keyField.getInt(keyField);
 				} else { // ... regular KeyInput
 					Field keyField = KeyInput.class.getField("KEY_" + keyString.toUpperCase());
 					keyInput = keyField.getInt(keyField);
