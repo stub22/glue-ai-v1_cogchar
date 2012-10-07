@@ -35,7 +35,8 @@ import scala.collection.mutable.HashMap;
 import org.cogchar.api.perform.{Media, Channel};
 import org.cogchar.impl.perform.{DummyTextChan, FancyTime, ChannelNames};
 
-import org.cogchar.platform.trigger.{DummyBox, DummyTrigger, DummyBinding, DummyBinder};
+import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
+
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import scala.collection.JavaConversions;
@@ -72,28 +73,28 @@ object Whackamole extends BasicDebugger {
 		val mutSet : scala.collection.mutable.Set[Object] = JavaConversions.asScalaSet[Object](loadedStuff);
 		mutSet.toSet[Object]
 	}
-	def loadBoxesFromModelAtURL(triplesURL : String) : List[MutableBox[DummyTrigger]] = {
+	def loadBoxesFromModelAtURL(triplesURL : String) : List[MutableBox[CogcharActionTrigger]] = {
 		val loadedStuff : Set[Object] = getAssembledObjsFromModelAtURL(triplesURL);
 		// Filter the loaded objects down to a list of the MutableBoxes found, and return that.
-		var winnerList = List [MutableBox[DummyTrigger]]()
+		var winnerList = List [MutableBox[CogcharActionTrigger]]()
 		for (x <- loadedStuff) {
 			logInfo("Got Thing[" + x + "]")
 			x match {
 				// Scala "match" may be ignoring the [ParameterType]
-				case mb : MutableBox[DummyTrigger] => { winnerList = mb :: winnerList }
+				case mb : MutableBox[CogcharActionTrigger] => { winnerList = mb :: winnerList }
 				case _ => logInfo("Ignoring.")
 			}
 		}
 		winnerList;
 	}
-	def makeFunTrig() : DummyTrigger  = {
+	def makeFunTrig() : CogcharActionTrigger  = {
 	//		val sceneID : Ident = ss.getIdent();
 	//	val freeSceneID : FreeIdent = new FreeIdent(sceneID);
-		val ndt = new DummyTrigger() { 
+		val ndt = new CogcharActionTrigger() { 
 			// Note that we use *argument* theater, not enclosing one. 
 			// So, this trigger can be used on any theater, but of course,
 			// the matching sceneID must be found in the book of that theater!
-			override def fire(db : DummyBox) : Unit = {
+			override def fire(db : CogcharScreenBox) : Unit = {
 				
 				logInfo("Firing [" + toString + " on " + db);
 	//			val t : Theater = db.asInstanceOf[Theater];
@@ -121,7 +122,7 @@ object Whackamole extends BasicDebugger {
 		//  found in the Appdapter project.  
 		val moreBoxesModelURL : String = "org/cogchar/test/assembly/whackam.ttl";
 		
-		val moreBoxes : List[MutableBox[DummyTrigger]] = loadBoxesFromModelAtURL(moreBoxesModelURL)
+		val moreBoxes : List[MutableBox[CogcharActionTrigger]] = loadBoxesFromModelAtURL(moreBoxesModelURL)
 		logInfo("Got MoreBoxes: " + moreBoxes)
 		val reloadFlag : Boolean = true;
 		for (mb <- moreBoxes) {

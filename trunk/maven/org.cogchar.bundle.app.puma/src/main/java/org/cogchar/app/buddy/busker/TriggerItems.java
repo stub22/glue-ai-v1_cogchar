@@ -16,7 +16,7 @@
 package org.cogchar.app.buddy.busker;
 
 import org.cogchar.bundle.app.puma.PumaDualCharacter;
-import org.cogchar.platform.trigger.DummyBox;
+import org.cogchar.platform.trigger.CogcharScreenBox;
 
 
 /**
@@ -26,7 +26,7 @@ public class TriggerItems {
 	
 	public static class StopAndReset extends TriggerItem {
 
-		@Override public void fire(DummyBox targetBox) {
+		@Override public void fire(CogcharScreenBox targetBox) {
 			logFiring(targetBox);
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 			pdc.stopAndReset();
@@ -34,7 +34,7 @@ public class TriggerItems {
 	}
 	public static class StopResetAndRecenter extends TriggerItem {
 
-		@Override public void fire(DummyBox targetBox) {
+		@Override public void fire(CogcharScreenBox targetBox) {
 			logFiring(targetBox);
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 			pdc.stopResetAndRecenter();
@@ -43,7 +43,7 @@ public class TriggerItems {
 
 	public static class DangerYoga extends TriggerItem {
 
-		@Override public void fire(DummyBox targetBox) {
+		@Override public void fire(CogcharScreenBox targetBox) {
 			logFiring(targetBox);
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 			pdc.playDangerYogaTestAnim();
@@ -52,7 +52,7 @@ public class TriggerItems {
 
 	public static class SayTheTime extends TriggerItem {
 
-		@Override public void fire(DummyBox targetBox) {
+		@Override public void fire(CogcharScreenBox targetBox) {
 			logFiring(targetBox);
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 			pdc.sayText("The time is now, " + System.currentTimeMillis());
@@ -84,7 +84,7 @@ public class TriggerItems {
 
 		public ClassLoader myOptResourceClassLoader;
 
-		@Override public void fire(DummyBox targetBox) {
+		@Override public void fire(CogcharScreenBox targetBox) {
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 
 			if (pdc != null) {
@@ -108,7 +108,7 @@ public class TriggerItems {
 
 		public String sceneInfo = "none";
 
-		@Override public void fire(DummyBox targetBox) {
+		@Override public void fire(CogcharScreenBox targetBox) {
 			logInfo("trigger[" + toString() + "] sending [" + sceneInfo + " to " + targetBox.toString());
 			// PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 			// pdc.sayText("The time is now, " + System.currentTimeMillis());
@@ -116,7 +116,7 @@ public class TriggerItems {
 	}
 	public static class UsePermAnims extends TriggerItem {
 
-		@Override public void fire(DummyBox targetBox) {
+		@Override public void fire(CogcharScreenBox targetBox) {
 			logFiring(targetBox);
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 			pdc.usePermAnims();
@@ -124,7 +124,7 @@ public class TriggerItems {
 	}
 	public static class UseTempAnims extends TriggerItem {
 
-		@Override public void fire(DummyBox targetBox) {
+		@Override public void fire(CogcharScreenBox targetBox) {
 			logFiring(targetBox);
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 			pdc.useTempAnims();

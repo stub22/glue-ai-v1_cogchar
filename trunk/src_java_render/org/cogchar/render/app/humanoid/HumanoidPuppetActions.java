@@ -29,7 +29,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cogchar.platform.trigger.DummyBinding;
+import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.trigger.BoundAction;
@@ -185,7 +185,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 		
      
 		BoundAction	myBoundAction = new BoundAction();
-		public DummyBinding getBinding() { 
+		public CogcharActionBinding getBinding() { 
 			return myBoundAction;
 		}		
 		boolean includedInMinSim() { 
@@ -282,7 +282,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 	static void registerListenerForActionSubset(InputManager inputManager, final HumanoidRenderContext ctx,
 				String actionNames[]) {
 	  
-		// The trick below is that we use PlayerAction.valueOf instead of a hash table.	
+		// The trick below that justifies the enum contortions above is using PlayerAction.valueOf instead of a hash table.	
         inputManager.addListener(new ActionListener() {
 
             public void onAction(String name, boolean isPressed, float tpf) {

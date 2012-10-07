@@ -37,8 +37,7 @@ public class KeyBindingConfig extends BasicDebugger {
 
 	public Map<String, KeyBindingConfigItem> myGeneralBindings = new HashMap<String, KeyBindingConfigItem>();
 	public Map<String, KeyBindingConfigItem> mySceneBindings = new HashMap<String, KeyBindingConfigItem>();
-	// Another instance of the "not permanent" way of getting the RepoClient! Time to decide soon the permanent way...
-
+	
 	public KeyBindingConfig() {
 		// Just a default constructor, if we want to just use the addBindings method
 	}

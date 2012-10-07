@@ -15,15 +15,15 @@
  */
 package org.cogchar.app.buddy.busker;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.platform.trigger.DummyBox;
-import org.cogchar.platform.trigger.DummyTrigger;
+import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.platform.trigger.CogcharActionTrigger;
 
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public abstract class TriggerItem extends org.appdapter.core.component.KnownComponentImpl implements DummyTrigger {
-	protected void logFiring(DummyBox targetBox) {
+public abstract class TriggerItem extends org.appdapter.core.component.KnownComponentImpl implements CogcharActionTrigger {
+	protected void logFiring(CogcharScreenBox targetBox) {
 		logInfo("trigger[" + toString() + "] firing on " + targetBox.toString());
 	}
 	

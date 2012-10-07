@@ -22,8 +22,8 @@
 
 package org.cogchar.render.gui.bony;
 
-import org.cogchar.platform.trigger.DummyBox;
-import org.cogchar.platform.trigger.DummyTrigger;
+import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.platform.trigger.CogcharActionTrigger;
 import org.cogchar.render.app.bony.BodyController;
 
 /**
@@ -31,8 +31,8 @@ import org.cogchar.render.app.bony.BodyController;
  * @author Stu B. <www.texpedient.com>
  */
 public class VerticalToolPanel extends javax.swing.JPanel implements BodyController {
-	private DummyTrigger myPokeTrigger;
-	private DummyBox	 myPokeBox;
+	private CogcharActionTrigger myPokeTrigger;
+	private CogcharScreenBox	 myPokeBox;
 	
     /** Creates new form VerticalToolPanel */
     public VerticalToolPanel() {
@@ -53,7 +53,7 @@ public class VerticalToolPanel extends javax.swing.JPanel implements BodyControl
 	@Override public String getTwistDirection() {
 		return (String) spin_twistDir.getValue();
 	}
-	@Override public void setupPokeTrigger(DummyBox db, DummyTrigger dt) {
+	@Override public void setupPokeTrigger(CogcharScreenBox db, CogcharActionTrigger dt) {
 		myPokeBox = db;
 		myPokeTrigger = dt;
 	}	

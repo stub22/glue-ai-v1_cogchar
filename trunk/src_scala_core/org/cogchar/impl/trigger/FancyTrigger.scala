@@ -19,7 +19,7 @@ package org.cogchar.impl.trigger
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 
 import org.appdapter.core.name.{Ident, FreeIdent};
-import org.cogchar.platform.trigger.{DummyBox, DummyTrigger, DummyBinding, DummyBinder};
+import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 import org.cogchar.impl.scene.{SceneSpec, BScene, SceneBook, Theater};
 
 /**
@@ -27,14 +27,14 @@ import org.cogchar.impl.scene.{SceneSpec, BScene, SceneBook, Theater};
  */
 
 object FancyTriggerFacade extends BasicDebugger {
-	def makeTriggerForScene(ss : SceneSpec) : DummyTrigger  = {
+	def makeTriggerForScene(ss : SceneSpec) : CogcharActionTrigger  = {
 		val sceneID : Ident = ss.getIdent();
 		val freeSceneID : FreeIdent = new FreeIdent(sceneID);
-		val ndt = new DummyTrigger() { 
+		val ndt = new CogcharActionTrigger() { 
 			// Note that we use *argument* theater, not enclosing one. 
 			// So, this trigger can be used on any theater, but of course,
 			// the matching sceneID must be found in the book of that theater!
-			override def fire(db : DummyBox) : Unit = {
+			override def fire(db : CogcharScreenBox) : Unit = {
 				val t : Theater = db.asInstanceOf[Theater];
 				t.stopAllScenes();
 				val scn : BScene = t.makeSceneFromBook(freeSceneID);
@@ -44,14 +44,14 @@ object FancyTriggerFacade extends BasicDebugger {
 		ndt;
 	}
 	
-	def registerTriggerForScene(binder: DummyBinder, box: DummyBox, ss : SceneSpec) {
-		val trigName : Option[String] = ss.myTrigName;
-		trigName match {
-			case	Some(tn) =>	{
+	def registerTriggerForScene(binder: CogcharEventActionBinder, box: CogcharScreenBox, ss : SceneSpec) {
+		val optTrigEventName : Option[String] = ss.myTrigName;
+		optTrigEventName match {
+			case	Some(trigEventName) =>	{
 					val trig = makeTriggerForScene(ss);
 					val binding = new FancyBinding(box, trig);
-					logInfo("Registering binding for name[" + tn + "], binding [" + binding + "]");
-					binder.setBinding(tn, binding);
+					logInfo("Registering action binding for name[" + trigEventName + "] = [" + binding + "]");
+					binder.setBindingForEvent(trigEventName, binding);
 					
 				}
 			case _  => {
@@ -59,17 +59,17 @@ object FancyTriggerFacade extends BasicDebugger {
 				}
 		}
 	}
-	def registerTriggersForAllScenes(binder: DummyBinder, box: DummyBox, sb : SceneBook) {
+	def registerTriggersForAllScenes(binder: CogcharEventActionBinder, box: CogcharScreenBox, sb : SceneBook) {
 		for (val aSceneSpec : SceneSpec <- sb.mySceneSpecs.values) {
 			registerTriggerForScene(binder, box, aSceneSpec);
 		}
 	}
 
-	private class FancyBinding(val myBox : DummyBox, val myTrig : DummyTrigger) extends DummyBinding {
-		override def setTargetBox(box: DummyBox) {
-			throw new RuntimeException("Cannot set target box on fancy binding");
+	private class FancyBinding(val myBox : CogcharScreenBox, val myTrig : CogcharActionTrigger) extends CogcharActionBinding {
+		override def addTargetBox(box: CogcharScreenBox) {
+			throw new RuntimeException("Cannot add target box on fancy binding");
 		}
-		override def setTargetTrigger(trig: DummyTrigger) {
+		override def setTargetTrigger(trig: CogcharActionTrigger) {
 			throw new RuntimeException("Cannot set target trigger on fancy binding");
 		}
 		override def perform() {
@@ -81,8 +81,8 @@ object FancyTriggerFacade extends BasicDebugger {
 			"FancyBinding box=[" + myBox + "] trig=[" + myTrig + "]";
 		}
 	
-		override def clearTargetBox() {
-			throw new RuntimeException("Cannot clear target box on fancy binding");
+		override def clearTargetBoxes() {
+			throw new RuntimeException("Cannot clear target boxes on fancy binding");
 		}
 	}
 }

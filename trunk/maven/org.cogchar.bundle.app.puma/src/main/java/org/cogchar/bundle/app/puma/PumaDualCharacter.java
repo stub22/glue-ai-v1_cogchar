@@ -32,9 +32,9 @@ import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.trigger.SceneActions;
 
-import org.cogchar.platform.trigger.DummyBox;
-import org.cogchar.platform.trigger.DummyBinder;
-import org.cogchar.platform.trigger.DummyTrigger;
+import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.platform.trigger.CogcharEventActionBinder;
+import org.cogchar.platform.trigger.CogcharActionTrigger;
 
 import org.cogchar.app.buddy.busker.TriggerItems;
 
@@ -50,7 +50,7 @@ import org.osgi.framework.ServiceRegistration;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaDualCharacter extends DummyBox {
+public class PumaDualCharacter extends CogcharScreenBox {
 
 	private		SpeechOutputClient		mySOC;
 	private		Ident					myCharIdent;
@@ -149,7 +149,7 @@ public class PumaDualCharacter extends DummyBox {
 
 	public void startTheater() {
 		SceneBook sb = myTheater.getSceneBook();
-		DummyBinder trigBinder = SceneActions.getBinder();
+		CogcharEventActionBinder trigBinder = SceneActions.getBinder();
 		//myWebMapper.connectLiftSceneInterface(myBundleCtx); // Now done in PumaAppContext.initCinema
 		FancyTriggerFacade.registerTriggersForAllScenes(trigBinder, myTheater, sb);
 		myTheater.startThread();
@@ -200,7 +200,7 @@ public class PumaDualCharacter extends DummyBox {
 		}
 	}
 
-	private void registerTheaterBinding(int sceneTrigIdx, DummyTrigger trig) {
+	private void registerTheaterBinding(int sceneTrigIdx, CogcharActionTrigger trig) {
 		SceneActions.setTriggerBinding(sceneTrigIdx, myTheater, trig);
 	}
 
