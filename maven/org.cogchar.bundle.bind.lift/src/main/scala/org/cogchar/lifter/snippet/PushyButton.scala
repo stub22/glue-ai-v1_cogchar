@@ -42,10 +42,11 @@ package org.cogchar.lifter {
 	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, buttonId: Int): NodeSeq = {
 		val buttonNum: String = buttonId.toString
 		val buttonPath: String = "/images/" + buttonImage // May want to move this prefix to central location
+		val buttonName: String = "pushbutton" + buttonNum
 		if (buttonImage.length >= 5) { // needs to be at least this long to have a valid image filename
-		  <lift:PushyButton buttonId={buttonNum}><div class="centerVert pushypadding"><div name="pushbutton" class={buttonClass} onclick=""><img src={buttonPath} width="50%"/><br/>{buttonText}</div></div></lift:PushyButton>
+		  <lift:PushyButton buttonId={buttonNum}><div class="centerVert pushypadding"><div name={buttonName} type="button" class={buttonClass} onclick=""><img src={buttonPath} width="50%"/><br/>{buttonText}</div></div></lift:PushyButton>
 		} else {
-		  <lift:PushyButton buttonId={buttonNum}><div class="centerVert pushypadding"><div name="pushbutton" class={buttonClass} onclick="">{buttonText}</div></div></lift:PushyButton>
+		  <lift:PushyButton buttonId={buttonNum}><div class="centerVert pushypadding"><div name={buttonName} type="button" class={buttonClass} onclick="">{buttonText}</div></div></lift:PushyButton>
 		}
 	  }
   
@@ -54,7 +55,9 @@ package org.cogchar.lifter {
 		  case Full(myLiftSession) => {
 			val sessionId = myLiftSession.uniqueId
 			val buttonId: Int = (S.attr("buttonId") openOr "-1").toInt
-			"@pushbutton [onclick]" #> SHtml.ajaxInvoke (() => {
+			val buttonName: String = "pushbutton" + buttonId
+			val selectorString = "@" + buttonName + " [onclick]"
+			selectorString #> SHtml.ajaxInvoke (() => {
 				info("Starting action mapped to button " + buttonId + " in session " + sessionId)
 				PageCommander.triggerAction(sessionId, buttonId)
 				JsCmds.Noop
@@ -65,7 +68,6 @@ package org.cogchar.lifter {
 			TextBox.makeBox("PushyButton cannot get sessionId, not rendering!", "", true)
 		  }
 		}
-		
 	  } 
 	}
   }
