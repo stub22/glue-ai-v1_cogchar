@@ -93,6 +93,9 @@ class LifterState {
   // Name of current template (in /templates-hidden) which corresponds to current liftConfig
   val currentTemplate:ConcurrentMap[String,String] =
 	new ConcurrentHashMap[String, String](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  // Tracks recently actuated controls, so "bounced" or double clicked buttons will only excute their actions once
+  val bounceMap:ConcurrentMap[String,ConcurrentMap[Int,Long]] =
+	new ConcurrentHashMap[String, ConcurrentMap[Int,Long]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
   
   var lifterInitialized:Boolean = false // Will be set to true once PageCommander receives initial control config from LiftAmbassador
   val activeSessions = new ArrayBuffer[String] with SynchronizedBuffer[String]
@@ -120,6 +123,8 @@ class LifterState {
 	currentTemplate(sessionId) = currentTemplate(INITIAL_CONFIG_ID)
 	// Set blank value for session key in lastSpeechReqSlotId
 	lastSpeechReqSlotId(sessionId) = ""
+	// Make fresh bounce tracking map
+	bounceMap(sessionId) = new ConcurrentHashMap[Int,Long](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
 	// Add session to activeSessions list
 	if (!(activeSessions contains sessionId)) {activeSessions += sessionId}
   }
@@ -148,6 +153,7 @@ class LifterState {
 	errorMap.clear
 	errorMap(INITIAL_CONFIG_ID) =
 	  new ConcurrentHashMap[String,Int](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+	bounceMap.clear
   }
   
   def clearSession(sessionId:String) {
@@ -159,6 +165,7 @@ class LifterState {
 	toggleButtonFullActionMap(sessionId).clear
 	singularAction(sessionId).clear
 	errorMap(sessionId).clear
+	bounceMap(sessionId).clear
 	lastConfig(sessionId) = currentConfig(sessionId)
 	lastSpeechReqSlotId(sessionId) = ""
   }
@@ -174,6 +181,7 @@ class LifterState {
 	toggleButtonFullActionMap remove sessionId
 	singularAction remove sessionId
 	errorMap remove sessionId
+	bounceMap remove sessionId
 	lastConfig remove sessionId
 	lastSpeechReqSlotId remove sessionId
   }
