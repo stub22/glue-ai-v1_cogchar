@@ -15,8 +15,8 @@
  */
 package org.cogchar.render.app.bony;
 
-import org.cogchar.platform.trigger.DummyBox;
-import org.cogchar.platform.trigger.DummyTrigger;
+import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.platform.trigger.CogcharActionTrigger;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -25,5 +25,5 @@ public interface BodyController  {
 	public int getTwistChannelNum();
 	public String getTwistChannelModifier();
 	public String getTwistDirection();
-	public void setupPokeTrigger(DummyBox box, DummyTrigger trig);
+	public void setupPokeTrigger(CogcharScreenBox box, CogcharActionTrigger trig);
 }

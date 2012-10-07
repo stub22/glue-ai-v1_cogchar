@@ -22,8 +22,8 @@
 
 package org.cogchar.render.gui.bony;
 
-import org.cogchar.platform.trigger.DummyBox;
-import org.cogchar.platform.trigger.DummyTrigger;
+import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.platform.trigger.CogcharActionTrigger;
 import org.cogchar.render.app.bony.VerbalController;
 
 /**
@@ -31,14 +31,14 @@ import org.cogchar.render.app.bony.VerbalController;
  * @author Stu B. <www.texpedient.com>
  */
 public class HorizontalToolPanel extends javax.swing.JPanel implements VerbalController {
-	private DummyTrigger myTalkTrigger;
-	private DummyBox	 myTalkBox;
+	private CogcharActionTrigger myTalkTrigger;
+	private CogcharScreenBox	 myTalkBox;
 	
     /** Creates new form HorizontalToolPanel */
     public HorizontalToolPanel() {
         initComponents();
     }
-	@Override public void setupTalkTrigger(DummyBox box, DummyTrigger trig) {
+	@Override public void setupTalkTrigger(CogcharScreenBox box, CogcharActionTrigger trig) {
 		myTalkBox = box;
 		myTalkTrigger = trig;
 	}	

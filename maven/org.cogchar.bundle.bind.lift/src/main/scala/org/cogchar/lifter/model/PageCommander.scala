@@ -31,7 +31,7 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.view._
 	import org.cogchar.bind.lift._
 	import scala.collection.JavaConverters._
-	import org.cogchar.platform.trigger.DummyBinding
+	// import org.cogchar.platform.trigger.CogcharActionBinding
 	
 	// What do we think about this being an object and not a class?
 	// Well, a Scala Object actually is automatically a static instance singleton anyhow, so no sense in trying to make it one manually.

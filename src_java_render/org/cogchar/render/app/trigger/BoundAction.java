@@ -17,45 +17,45 @@ package org.cogchar.render.app.trigger;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cogchar.platform.trigger.DummyBinding;
-import org.cogchar.platform.trigger.DummyBox;
-import org.cogchar.platform.trigger.DummyTrigger;
+import org.cogchar.platform.trigger.CogcharActionBinding;
+import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.platform.trigger.CogcharActionTrigger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BoundAction implements DummyBinding {
+public class BoundAction implements CogcharActionBinding {
 	// Changed to list of DummyBox instead of a single one to support multiple characters - 27 July 2012 Ryan Biggs
 
-	private List<DummyBox> myActionBoxes = new ArrayList<DummyBox>();
+	private List<CogcharScreenBox> myActionBoxes = new ArrayList<CogcharScreenBox>();
 	// Our Action Trigger types are entirely separate from the JME3 "Trigger" for inputs. 
-	private DummyTrigger myActionTrigger;
+	private CogcharActionTrigger myActionTrigger;
 
 	public boolean includedInMinSim() {
 		return false;
 	}
 
 	@Override
-	public void setTargetBox(DummyBox box) {
+	public void addTargetBox(CogcharScreenBox box) {
 		myActionBoxes.add(box);
 	}
 
 	@Override
-	public void setTargetTrigger(DummyTrigger trig) {
+	public void setTargetTrigger(CogcharActionTrigger trig) {
 		myActionTrigger = trig;
 	}
 
 	@Override
 	public void perform() {
 		if (myActionTrigger != null) {
-			for (DummyBox myActionBox : myActionBoxes) {
+			for (CogcharScreenBox myActionBox : myActionBoxes) {
 				myActionTrigger.fire(myActionBox);
 			}
 		}
 	}
 	
 	@Override
-	public void clearTargetBox() {
+	public void clearTargetBoxes() {
 		myActionBoxes.clear();
 	}
 }

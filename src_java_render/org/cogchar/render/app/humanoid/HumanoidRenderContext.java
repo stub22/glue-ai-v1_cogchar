@@ -203,7 +203,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 	// Formerly performed in postInitLaunch, this is now called from PumaAppContext once the KeyBindingConfig is complete
 	// Might make sense to just move this to PumaAppContext
-	public void initBindings(KeyBindingConfig theConfig) {
+	public void initBindings(KeyBindingConfig keyBindConfig) {
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		InputManager inputManager = rrc.getJme3InputManager(null);
 		// If the help screen is displayed, we need to remove it since we'll be making a new one later
@@ -224,11 +224,11 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		FlyByCamera fbCam = getAppStub().getFlyByCamera();
 		fbCam.registerWithInput(inputManager);
 		// Now we'll register the mappings in Cog Char based on theConfig
-		HumanoidPuppetActions.setupActionListeners(inputManager, this, theConfig);
-		SceneActions.setupActionListeners(inputManager, theConfig);
+		HumanoidPuppetActions.setupActionListeners(inputManager, this, keyBindConfig);
+		SceneActions.setupActionListeners(inputManager, keyBindConfig);
 		// ... and finally set up the help screen now that the mappings are done
 		AppSettings someSettings = getJMonkeyAppSettings();
-		initHelpScreen(someSettings, inputManager, theConfig);
+		initHelpScreen(someSettings, inputManager, keyBindConfig);
 	}
 
 	// This is still called by HumanoidPuppetActions to reset default camera position

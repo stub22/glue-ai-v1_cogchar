@@ -35,7 +35,7 @@ import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 
 import org.cogchar.blob.emit.RepoClientTester;
-import org.cogchar.platform.trigger.DummyBinding;
+import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.render.app.trigger.KeyBindingConfig;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;  // Perhaps we want to fetch this from a context instead, but it's a singleton, so no harm in getting it directly for the moment
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
@@ -578,8 +578,9 @@ public class PumaAppContext extends BasicDebugger {
 
 	private void hookItUp(PlayerAction action, PumaDualCharacter pdc, TriggerItem trigItem) {
 		// Hook up to a JME3 action (defined in our org.cogchar.lib.render project) to catch keypresses in OpenGL window.
-		DummyBinding db = action.getBinding();
-		db.setTargetBox(pdc);
+		CogcharActionBinding db = action.getBinding();
+		db.addTargetBox(pdc);
+		// Overrides any existing trigger.
 		db.setTargetTrigger(trigItem);
 	}
 
@@ -599,7 +600,7 @@ public class PumaAppContext extends BasicDebugger {
 	}
 
 	private void unhookIt(PlayerAction action) {
-		DummyBinding db = action.getBinding();
-		db.clearTargetBox();
+		CogcharActionBinding db = action.getBinding();
+		db.clearTargetBoxes();
 	}
 }
