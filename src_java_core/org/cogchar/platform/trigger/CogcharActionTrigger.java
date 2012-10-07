@@ -20,6 +20,6 @@ import org.appdapter.scafun.FullBox;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface DummyTrigger extends FullTrigger<DummyBox> {
-	// public abstract void fire(DummyBox targetBox);
+public interface CogcharActionTrigger extends FullTrigger<CogcharScreenBox> {
+	// Inherits:  public abstract void fire(DummyBox targetBox);
 }

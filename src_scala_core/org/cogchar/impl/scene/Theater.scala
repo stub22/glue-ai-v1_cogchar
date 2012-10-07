@@ -27,13 +27,13 @@ import scala.collection.mutable.HashMap;
 import org.cogchar.api.perform.{Media, Channel};
 import org.cogchar.impl.perform.{DummyTextChan, FancyTime, ChannelNames};
 
-import org.cogchar.platform.trigger.{DummyBox, DummyTrigger, DummyBinding, DummyBinder};
+import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-class Theater extends DummyBox {
+class Theater extends CogcharScreenBox {
 	val	myBM = new BehaviorModulator();
 	val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
 	// var myBinder : DummyBinder = null;
@@ -165,7 +165,7 @@ object Theater extends BasicDebugger {
 		val aSceneSpec : SceneSpec = sceneBook.allSceneSpecs().head;
 		logInfo("Found first SceneSpec to build a trigger for: " + aSceneSpec);
 		
-		val trig : DummyTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTriggerForScene(aSceneSpec);
+		val trig : CogcharActionTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTriggerForScene(aSceneSpec);
 		
 	
 		thtr.startThread();

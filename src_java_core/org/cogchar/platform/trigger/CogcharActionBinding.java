@@ -14,14 +14,16 @@
  *  limitations under the License.
  */
 package org.cogchar.platform.trigger;
-import org.appdapter.scafun.FullBox;
-import org.appdapter.scafun.FullTrigger;
-import org.appdapter.scafun.BoxOne;
-import org.appdapter.scafun.FullTrigger;
+
+import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.platform.trigger.CogcharActionTrigger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class DummyBox extends FullBox<DummyTrigger> {
-	
+public interface CogcharActionBinding {
+	public void addTargetBox(CogcharScreenBox box);
+	public void setTargetTrigger(CogcharActionTrigger trig);
+	public void perform();
+	public void clearTargetBoxes();
 }

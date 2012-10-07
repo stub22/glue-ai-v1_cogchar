@@ -22,10 +22,10 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import org.cogchar.platform.trigger.DummyBox;
-import org.cogchar.platform.trigger.DummyTrigger;
-import org.cogchar.platform.trigger.DummyBinding;
-import org.cogchar.platform.trigger.DummyBinder;
+import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.platform.trigger.CogcharActionTrigger;
+import org.cogchar.platform.trigger.CogcharActionBinding;
+import org.cogchar.platform.trigger.CogcharEventActionBinder;
 
 import org.cogchar.bind.lift.LiftAmbassador;
 
@@ -43,7 +43,7 @@ public class SceneActions {
 
 	static Logger theLogger = LoggerFactory.getLogger(SceneActions.class);
 
-	private static Map<String, DummyBinding> theBoundActionsByTrigName = new HashMap<String, DummyBinding>();
+	private static Map<String, CogcharActionBinding> theBoundActionsByTrigName = new HashMap<String, CogcharActionBinding>();
 	//private static DummyBinding theBoundActions[]; // Is this ever really used?
 	
 	private static int numberOfBindings = 0;
@@ -84,7 +84,7 @@ public class SceneActions {
 
 			public void onAction(String name, boolean isPressed, float tpf) {
 				if (isPressed) {
-					DummyBinding binding = theBoundActionsByTrigName.get(name);
+					CogcharActionBinding binding = theBoundActionsByTrigName.get(name);
 					if (binding != null) {
 						binding.perform();
 					} else {
@@ -95,7 +95,7 @@ public class SceneActions {
 		}, actionNames);
 	}
 
-	public static void setTriggerBinding(String sceneTrigName, DummyBinding ba) {
+	public static void setTriggerBinding(String sceneTrigName, CogcharActionBinding ba) {
 		theBoundActionsByTrigName.put(sceneTrigName, ba);
 	}
 
@@ -106,14 +106,14 @@ public class SceneActions {
 	*/ 
 
 
-	public static void setTriggerBinding(int sceneTrigIdx, DummyBox box, DummyTrigger trigger) {
+	public static void setTriggerBinding(int sceneTrigIdx, CogcharScreenBox box, CogcharActionTrigger trigger) {
 		BoundAction ba = new BoundAction();
-		ba.setTargetBox(box);
+		ba.addTargetBox(box);
 		ba.setTargetTrigger(trigger);
 		//setTriggerBinding(sceneTrigIdx, ba); // Did this ever do anything? (see method above)
 	}
 
-	public static DummyBinding getTriggerBinding(String sceneTrigName) {
+	public static CogcharActionBinding getTriggerBinding(String sceneTrigName) {
 		return theBoundActionsByTrigName.get(sceneTrigName);
 	}
 	static Binder theBinder;
@@ -142,15 +142,15 @@ public class SceneActions {
 		return keyInput;
 	}
 
-	static class Binder implements DummyBinder {
+	static class Binder implements CogcharEventActionBinder {
 
 		@Override
-		public void setBinding(String boundEventName, DummyBinding binding) {
+		public void setBindingForEvent(String boundEventName, CogcharActionBinding binding) {
 			setTriggerBinding(boundEventName, binding);
 		}
 
 		@Override
-		public DummyBinding getBindingFor(String boundEventName) {
+		public CogcharActionBinding getBindingForEvent(String boundEventName) {
 			return getTriggerBinding(boundEventName);
 		}
 	}
@@ -172,7 +172,7 @@ public class SceneActions {
 	static class SceneLauncher implements LiftAmbassador.LiftSceneInterface {
 		@Override public boolean triggerScene(String scene) {
 			boolean success = false;
-			DummyBinding triggerBinding = getTriggerBinding(scene);
+			CogcharActionBinding triggerBinding = getTriggerBinding(scene);
 			if (triggerBinding != null) {
 				triggerBinding.perform();
 				success = true;
