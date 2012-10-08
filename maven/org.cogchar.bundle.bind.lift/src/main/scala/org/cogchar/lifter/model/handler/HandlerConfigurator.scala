@@ -64,7 +64,8 @@ object HandlerConfigurator {
 	ToggleButton setNextHandler TextBox
 	TextBox setNextHandler TextForm
 	TextForm setNextHandler DualTextForm
-	DualTextForm setNextHandler ListBox
+	DualTextForm setNextHandler InsertMarkup
+	InsertMarkup setNextHandler ListBox
 	ListBox setNextHandler LoginForm
 	LoginForm setNextHandler RadioButtons
 	RadioButtons setNextHandler SelectBoxes
