@@ -84,7 +84,7 @@ package org.cogchar.lifter {
 				def toJsCmd = "try{Android.stopContinuousSpeechInput();} catch(err) {}"
 			  })
 		  }
-		case REFRESH_PAGE_TRIGGERID => { // This code for triggering browser page refresh. Untested and possibly bad idea jeans.
+		case REFRESH_PAGE_TRIGGERID => { // This code for triggering browser page refresh.
 			partialUpdate(new JsCmd { 
 				def toJsCmd = "window.location.reload();"
 			  })
