@@ -159,12 +159,18 @@ package org.cogchar.lifter {
 		  renderInitialControls; // Required to get things started if pages are loaded in browsers before config is initialized
 		} else { // otherwise...
 		  val changedTemplate = (theLifterState.currentTemplate(sessionId) != theLifterState.lastConfig(sessionId).template)
+		  // ... load new template if necessary
 		  if (changedTemplate) {
 			updateInfo = controlId(sessionId, ActorCodes.TEMPLATE_CODE)
 			updateListeners;
 		  }
-		  // ... and load new controls
+		  // ... load new controls
 		  setControlsFromMap(sessionId)
+		  if (changedTemplate) {
+			// If template has changed, refresh page. This fixes problems where controls do not render properly
+			// if the new template has more slots than the old. Seems to be a browser-side JavaScript issue.
+			updateListeners(controlId(sessionId, ActorCodes.REFRESH_PAGE_CODE));
+		  }
 		}
 	  }
 	  
@@ -223,6 +229,7 @@ package org.cogchar.lifter {
 		if (theLifterState.bounceMap(sessionId) contains id) {
 		  if (time - theLifterState.bounceMap(sessionId)(id) < IGNORE_BOUNCE_TIME) {
 			ignore = true;
+			warn("Debouncing control " + id + " in session " + sessionId)
 		  }
 		}
 		theLifterState.bounceMap(sessionId)(id) = time;
@@ -241,8 +248,6 @@ package org.cogchar.lifter {
 		  } else {
 			handleAction(sessionId, id, null)
 		  }
-		} else {
-		  warn("Debouncing control " + id + " in session + " + sessionId)
 		}
 	  }
 	  
