@@ -165,7 +165,6 @@ class LifterState {
 	toggleButtonFullActionMap(sessionId).clear
 	singularAction(sessionId).clear
 	errorMap(sessionId).clear
-	bounceMap(sessionId).clear
 	lastConfig(sessionId) = currentConfig(sessionId)
 	lastSpeechReqSlotId(sessionId) = ""
   }

@@ -220,19 +220,11 @@ package org.cogchar.lifter {
 	  
 	  
 	  import java.util.Date // needed for currently implemented "debouncing" function
-	  final val IGNORE_BOUNCE_TIME = 200 //ms
 	  // Maps controls with actions only (buttons) to action handlers
 	  def triggerAction(sessionId:String, id: Int) {
 		// Check last actuated time for this control, and ignore if it happened less than IGNORE_BOUNCE_TIME ago
 		val time = new Date().getTime()
-		var ignore = false;
-		if (theLifterState.bounceMap(sessionId) contains id) {
-		  if (time - theLifterState.bounceMap(sessionId)(id) < IGNORE_BOUNCE_TIME) {
-			ignore = true;
-			warn("Debouncing control " + id + " in session " + sessionId)
-		  }
-		}
-		theLifterState.bounceMap(sessionId)(id) = time;
+		val ignore = checkForBounce(sessionId, id, time)
 		if (!ignore) {
 		  if (theLifterState.toggleButtonMap(sessionId) contains id) {
 			// Really we shouldn't run toggle on the Actor's thread, so we'll do this.
@@ -248,6 +240,22 @@ package org.cogchar.lifter {
 		  } else {
 			handleAction(sessionId, id, null)
 		  }
+		}
+	  }
+	  
+	  val bounceCheckLock: Object = new Object()
+	  final val IGNORE_BOUNCE_TIME = 250 //ms
+	  def checkForBounce(sessionId:String, id:Int, time:Long): Boolean = {
+		bounceCheckLock.synchronized {
+		  var ignore = false;
+		  if (theLifterState.bounceMap(sessionId) contains id) {
+			if (time - theLifterState.bounceMap(sessionId)(id) < IGNORE_BOUNCE_TIME) {
+			  ignore = true;
+			  warn("Debouncing control " + id + " in session " + sessionId)
+			}
+		  }
+		  theLifterState.bounceMap(sessionId)(id) = time;
+		  ignore
 		}
 	  }
 	  
