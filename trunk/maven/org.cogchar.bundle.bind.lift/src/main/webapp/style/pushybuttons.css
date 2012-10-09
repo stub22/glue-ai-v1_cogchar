@@ -83,3 +83,12 @@
 	font-size: 16px;
 	display: inline;
 }
+
+.buttonZenoGray {
+	font-family: Arial;
+	color: #ffffff;
+	font-size: 24px;
+	text-align: center;
+	border: solid #000000 2px;
+	background-color: #6b6c67;
+}
