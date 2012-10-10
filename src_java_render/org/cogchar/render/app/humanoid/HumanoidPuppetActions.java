@@ -282,10 +282,12 @@ public class HumanoidPuppetActions extends BasicDebugger {
 	static void registerListenerForActionSubset(InputManager inputManager, final HumanoidRenderContext ctx,
 				String actionNames[]) {
 	  
+		// Here we register a single actionListener to be called back for all the actionNames.
 		// The trick below that justifies the enum contortions above is using PlayerAction.valueOf instead of a hash table.	
         inputManager.addListener(new ActionListener() {
 
             public void onAction(String name, boolean isPressed, float tpf) {
+				// Do an enum lookup-by-name
                 PlayerAction action = PlayerAction.valueOf(name);
                 if ((action != null) && isPressed) {
 					try {
