@@ -108,7 +108,7 @@ VirtCharPanel.JFrame.closed, exiting
 		
 		hrc.runPostInitLaunchOnJmeThread();
 		
-		hrc.initCinema();
+		hrc.initCinematicParameters();
 		
 		hrc.getGameFeatureAdapter().setScoringFlag(true);
 		// theLogger.info("*********************** AFTER FRAMING + STARTING: VirtCharPanel width="  + vcp.getWidth() + ", height=" + vcp.getHeight());

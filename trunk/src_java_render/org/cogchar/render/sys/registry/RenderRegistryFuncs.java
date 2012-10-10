@@ -57,6 +57,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	
 	// private final static Logger		theLogger = LoggerFactory.getLogger(RenderRegistryFuncs.class);
 	
+	// Here are the kinds of things this registry knows about.
 	protected enum RFKind {
 		JME3_ASSET_MANAGER,
 		
@@ -95,7 +96,8 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 			super(kind, sClz, extFlag);
 		}
 	}
-	
+	// Here are the static specifications for the KINDS of hings this registry knows about.
+	// These constant names should really each end with KIND_SPEC or similar.
 	protected static final RFSpec<AssetManager>		THE_JME3_ASSET_MANAGER;
 	protected static final RFSpec<Node>				THE_JME3_ROOT_DEEP_NODE;
 	protected static final RFSpec<Node>				THE_JME3_ROOT_OVERLAY_NODE;
@@ -298,8 +300,10 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	public static AssetContext findOrMakeAssetContext(String optionalName, 	String optJme3AssetManagerName, Class optCredClaz) {
 		return findOrMakeInternalFacade(THE_CC_ASSET_CONTEXT, optionalName, optCredClaz);
 	}
-
+/*
 	public static AssetContext findOrMakeAssetContext(String optionalName, 	String optJme3AssetManagerName, BundleContext reqBundleCtx) {
 		return null; // return findOrMakeInternalFacade(THE_CC_ASSET_CONTEXT, optionalName, optCredClaz);
 	}
+	* 
+	*/ 
 }

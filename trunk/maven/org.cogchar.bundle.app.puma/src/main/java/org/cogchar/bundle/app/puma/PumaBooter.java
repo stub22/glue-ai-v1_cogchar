@@ -44,6 +44,102 @@ public class PumaBooter extends BasicDebugger {
 		PumaContextMediator cm = new PumaContextMediator();
 		return bootUnderOSGi(bundleCtx, cm);
 	}
+	
+	protected void pumaBootUnsafeUnderOSGi(BundleContext bundleCtx, PumaContextMediator mediator) throws Throwable { 
+		
+		boolean includeVWorld = mediator.getFlagIncludeVirtualWorld();
+		HumanoidRenderContext hrc = null;
+		// forceLog4jConfig();
+
+		// String debugTxt = "sysContextURI = [" + sysContextURI + "]";
+		// logInfo("======================================== Starting " + debugTxt);
+		String optFilesysRoot = mediator.getOptionalFilesysRoot();
+		getLogger().debug("%%%%%%%%%%%%%%%%%%% Creating PumaAppContext");
+		final PumaAppContext pac = new PumaAppContext(bundleCtx);
+		pac.setContextMediator(mediator);
+
+		if (includeVWorld) {
+			// Mediator must be able to decide panelKind before the HumanoidRenderContext is built.
+			String panelKind = mediator.getPanelKind();
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling initHumanoidRenderContext()");
+			PumaVirtualWorldMapper pvwm = pac.getVirtualWorldMapper();
+			hrc = pvwm.initHumanoidRenderContext(panelKind);
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling mediator.notifyContextBuilt()");
+		}
+	
+		mediator.notifyContextBuilt(pac);
+
+		/* At this point we have a blank, generic hrc to work with.
+			* No characters or config have been populated, no OpenGL 
+			* window has been opened, and no connection has been made
+			* to Robokind.
+			* 
+			* We are ready to decide "what kind of application are we running?",
+			* without irrevocably committing any more than necessary (so that
+			* user/agents can adjust/reshape the runtime as it progresses).
+			* 
+			* As of 2012-07-19, we are still relying on a half-baked notion
+			* of "ConfigEmitters".  So now we will "set them up".  What
+			* does that mean?   Should it be possible for anything in these
+			* emitters to influence the pac.startOpenGLCanvas process?
+			* Perhaps not.  However, it makes more sense for them to influence
+			* the subsequent runPostInitLaunchOnJmeThread().
+			* 
+			*/
+
+		getLogger().debug("%%%%%%%%%%%%%%%%%%% Starting repository-backed config services");
+
+		pac.startRepositoryConfigServices();
+		
+		if (includeVWorld) {
+/*  
+Start up the JME OpenGL canvas, which will in turn initialize the Cogchar rendering "App" (in JME3 lingo).
+
+Firing up the OpenGL canvas requires access to sun.misc.Unsafe, which must be explicitly imported 
+by ext.bundle.osgi.jmonkey, and explicitly allowed by the container when using Netigso
+*/
+			boolean allowJFrames = mediator.getFlagAllowJFrames();		
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling startOpenGLCanvas");
+			pac.startOpenGLCanvas(allowJFrames);
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% startOpenGLCanvas completed, enqueueing final boot phase on JME3 thread");
+		/**
+			* Populate the virtual world with humanoids, cameras, lights, and other goodies.
+			* This step will load all the 3D models (and other rendering resources) that Cogchar needs, 
+			* based on what is implied by the sysContextURI we supplied to the PumaAppContext constructor above.
+
+			* We enqueue this work to occur on JME3 update thread.  Otherwise we'll get an:
+			*  IllegalStateException: Scene graph is not properly updated for rendering.
+			*/
+
+			hrc.runPostInitLaunchOnJmeThread();
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed"); 			
+		}
+/*
+ Connect the Cogchar PUMA application (configured by implications of 
+ the sysContextURI and sysLocalTempConfigDir used in setupConfigEmitters() above).
+ The result is a list of connected "dual" characters, which each have a presence 
+ in both Cogchar virtual space and Robokind physical space.			
+
+If we try to do this inside the JME3Thread callable above (under certain conditions), we can get hung
+up when RobotServiceContext calls RobotUtils.registerRobot()
+*/ 
+			
+		// Currently this btarget bundle contains bony-config stuff that goes beyond just rendering resources.
+		ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+		pac.setCogCharResourcesClassLoader(myInitialBonyRdfCL);
+
+		getLogger().debug("%%%%%%%%%%%%%%%%%%% calling connectDualRobotChars()");				
+		pac.connectDualRobotChars();
+
+		if (includeVWorld) {
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed , calling initCinema()");
+
+			// Lights, Cameras, and Cinematics were once configured during PumaDualCharacter init
+			// Since we can support multiple characters now (and connect cameras to them), this needs to happen after connectDualRobotChars()
+			// We'll let pac take care of this, since it is currently "Home of the Global Mode"
+			pac.initCinema();
+		}
+	}
 	/**
 	 * Entry point for the PUMA application system when running in an OSGi environment.
 	 * Presumes that an SLF4J logging binding is already in place.
@@ -60,98 +156,11 @@ public class PumaBooter extends BasicDebugger {
 		BootResult result  = new BootResult();
 		result.myStatus = BootStatus.BOOTING;
 		try {
-			// forceLog4jConfig();
 
-			// String debugTxt = "sysContextURI = [" + sysContextURI + "]";
-			// logInfo("======================================== Starting " + debugTxt);
-			String oprFilesysRoot = mediator.getOptionalFilesysRoot();
-			getLogger().debug("%%%%%%%%%%%%%%%%%%% Creating PumaAppContext");
-			final PumaAppContext pac = new PumaAppContext(bundleCtx);
-			// Mediator must be able to decide panelKind before the HumanoidRenderContext is built.
-			String panelKind = mediator.getPanelKind();
-			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling initHumanoidRenderContext()");
-			final HumanoidRenderContext hrc = pac.initHumanoidRenderContext(panelKind);
-			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling mediator.notifyContextBuilt()");
-			mediator.notifyContextBuilt(pac);
-			
-			/* At this point we have a blank, generic hrc to work with.
-			 * No characters or config have been populated, no OpenGL 
-			 * window has been opened, and no connection has been made
-			 * to Robokind.
-			 * 
-			 * We are ready to decide "what kind of application are we running?",
-			 * without irrevocably committing any more than necessary (so that
-			 * user/agents can adjust/reshape the runtime as it progresses).
-			 * 
-			 * As of 2012-07-19, we are still relying on a half-baked notion
-			 * of "ConfigEmitters".  So now we will "set them up".  What
-			 * does that mean?   Should it be possible for anything in these
-			 * emitters to influence the pac.startOpenGLCanvas process?
-			 * Perhaps not.  However, it makes more sense for them to influence
-			 * the subsequent runPostInitLaunchOnJmeThread().
-			 * 
-			 */
-			
-			getLogger().debug("%%%%%%%%%%%%%%%%%%% Starting query service");
-			pac.startVanillaRepoClient();
-			
-			// This method performs the configuration actions associated with the developmental "Global Mode" concept
-			// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
-			// be updated to relect that
-			pac.applyGlobalConfigAndStartService();
-			
-			boolean allowJFrames = mediator.getFlagAllowJFrames();
-/*  
-Start up the JME OpenGL canvas, which will in turn initialize the Cogchar rendering "App" (in JME3 lingo).
- 		
- Firing up the OpenGL canvas requires access to sun.misc.Unsafe, which must be explicitly imported 
- by ext.bundle.osgi.jmonkey, and explicitly allowed by the container when using Netigso
- */
-		
-			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling startOpenGLCanvas");
-			pac.startOpenGLCanvas(allowJFrames);
-			getLogger().debug("%%%%%%%%%%%%%%%%%%% startOpenGLCanvas completed, enqueueing final boot phase on JME3 thread");
-			
-			/**
-			 * Populate the virtual world with humanoids, cameras, lights, and other goodies.
-			 * This step will load all the 3D models (and other rendering resources) that Cogchar needs, 
-			 * based on what is implied by the sysContextURI we supplied to the PumaAppContext constructor above.
+			pumaBootUnsafeUnderOSGi(bundleCtx, mediator);
 
-			 * We enqueue this work to occur on JME3 update thread.  Otherwise we'll get an:
-			 *  IllegalStateException: Scene graph is not properly updated for rendering.
-			 */
-			
-			hrc.runPostInitLaunchOnJmeThread();
-			
-/*
- Connect the Cogchar PUMA application (configured by implications of 
- the sysContextURI and sysLocalTempConfigDir used in setupConfigEmitters() above).
- The result is a list of connected "dual" characters, which each have a presence 
- in both Cogchar virtual space and Robokind physical space.			
-
-If we try to do this inside the JME3Thread callable above (under certain conditions), we can get hung
-up when RobotServiceContext calls RobotUtils.registerRobot()
-*/ 
-			
-			// As long as we still need the classloader for bundle.render.resources, this seems a good place to set it up:
-			ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
-			pac.setCogCharResourcesClassLoader(myInitialBonyRdfCL);
-
-			getLogger().debug("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed , calling connectDualRobotChars()");
-			pac.setContextMediator(mediator);
-			pac.connectDualRobotChars();
-			
-			getLogger().debug("%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed , calling initCinema()");
-			
-			// Lights, Cameras, and Cinematics were once configured during PumaDualCharacter init
-			// Since we can support multiple characters now (and connect cameras to them), this needs to happen after connectDualRobotChars()
-			// We'll let pac take care of this, since it is currently "Home of the Global Mode"
-			pac.initCinema();
-			
-			getLogger().info("%%%%%%%%%%%%%%%%%%%%%%%%% initCinema() completed -  PUMA BOOT SUCCESSFUL!  8-)");
-			
+			getLogger().info("%%%%%%%%%%%%%%%%%%%%%%%%% pumaBootUnsafe() completed without exception - PUMA BOOT SUCCESSFUL!  8-)");
 			result.myStatus = BootStatus.BOOTED_OK;
-			
 		} catch (Throwable t) {
 			getLogger().error("Error in PumaBooter 8-(", t);
 			result.myStatus = BootStatus.BOOT_FAILED;

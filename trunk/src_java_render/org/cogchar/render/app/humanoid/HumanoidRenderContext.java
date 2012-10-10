@@ -193,7 +193,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		myFiguresByCharIdent.clear();
 	}
 
-	public void initCinema() {
+	public void initCinematicParameters() {
 		WorkaroundAppStub stub = getAppStub();
 		stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
 		FlyByCamera fbCam = stub.getFlyByCamera();

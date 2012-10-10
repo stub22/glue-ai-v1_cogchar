@@ -70,25 +70,21 @@ public final class VirtualCharTopComponent extends TopComponent {
     
 	private class PumaBootContextMediator extends PumaContextMediator {
 	
-		@Override 
-		public boolean getFlagAllowJFrames() {
+		@Override public boolean getFlagAllowJFrames() {
 			return false;
 		}
-		@Override
-		public String getOptionalFilesysRoot() {
+		@Override public String getOptionalFilesysRoot() {
 			return Installer.getVirtcharNBClusterDir();
 		}
-		@Override
-		public String getSysContextRootURI() {	
+		@Override public String getSysContextRootURI() {	
 		// Our sysContextURI is still hardcoded here, but by starting with "NB" we tell our (still stubbed out)
 		// config system that we are running under Netbeans Platform GUI (implying Netigso), so, only
 		// Robokind-Workshop-friendly features should be activated.  
 		// String dualCharURI = "urn:org.cogchar/platform/nb701?charName=HRK_Zeno_R50&version=20120302";    			
 			return  "NBURI:huzzah";
 		}
-		@Override
-		public void notifyContextBuilt(PumaAppContext pac) throws Throwable { 
-			BonyRenderContext brc = pac.getHumanoidRenderContext();
+		@Override public void notifyContextBuilt(PumaAppContext pac) throws Throwable { 
+			BonyRenderContext brc = pac.getVirtualWorldMapper().getHumanoidRenderContext();
 			// Create/find the Cogchar-enabled Swing GUI panel to display inside this Netbeans Component window.
 			initVirtualCharPanel(brc);			
 		}

@@ -35,18 +35,15 @@ public class BoundAction implements CogcharActionBinding {
 		return false;
 	}
 
-	@Override
-	public void addTargetBox(CogcharScreenBox box) {
+	@Override public void addTargetBox(CogcharScreenBox box) {
 		myActionBoxes.add(box);
 	}
 
-	@Override
-	public void setTargetTrigger(CogcharActionTrigger trig) {
+	@Override public void setTargetTrigger(CogcharActionTrigger trig) {
 		myActionTrigger = trig;
 	}
 
-	@Override
-	public void perform() {
+	@Override public void perform() {
 		if (myActionTrigger != null) {
 			for (CogcharScreenBox myActionBox : myActionBoxes) {
 				myActionTrigger.fire(myActionBox);
@@ -54,8 +51,7 @@ public class BoundAction implements CogcharActionBinding {
 		}
 	}
 	
-	@Override
-	public void clearTargetBoxes() {
+	@Override public void clearTargetBoxes() {
 		myActionBoxes.clear();
 	}
 }

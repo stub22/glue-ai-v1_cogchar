@@ -113,9 +113,10 @@ public class PumaWebMapper extends BasicDebugger {
 		
 		@Override
 		public boolean performUpdate(String request) {
+			boolean forceFreshDefaultRepo = false;
 			boolean success = false;
 			if (myAppContext != null) {
-				success = myAppContext.updateConfigByRequest(request);
+				success = myAppContext.updateConfigByRequest(request, forceFreshDefaultRepo);
 			} else {
 				logWarning("Update requested, but PumaWebMapper cannot find PumaAppContext: " + request);
 			}
