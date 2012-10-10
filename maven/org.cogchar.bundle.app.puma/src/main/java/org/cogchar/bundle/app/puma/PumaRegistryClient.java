@@ -16,10 +16,27 @@
 
 package org.cogchar.bundle.app.puma;
 
+import org.appdapter.core.name.Ident;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class PumaRegistryClient {
+public interface PumaRegistryClient {
+	
+	public PumaAppContext getAppContext(Ident optSpecID);
+	public void putAppContext(PumaAppContext pac, Ident optSpecID);
+	
+	public PumaContextMediator getCtxMediator(Ident optSpecID);
+	public void putCtxMediator (PumaContextMediator med, Ident optSpecID);
+	
+	public PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID);
+	public void putVWorldMapper (PumaContextMediator v, Ident optSpecID);
+	
+	public PumaConfigManager getConfigMgr(Ident optSpecID);
+	public void putConfigMgr (PumaConfigManager pcm, Ident optSpecID);
+	
+	public PumaWebMapper getWebMapper(Ident optSpecID);
+	public void putWebMapper(PumaWebMapper wm, Ident optSpecID);
 	
 }
