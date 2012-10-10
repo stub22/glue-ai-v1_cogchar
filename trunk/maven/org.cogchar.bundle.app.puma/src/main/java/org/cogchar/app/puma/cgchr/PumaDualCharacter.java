@@ -29,7 +29,6 @@ import org.cogchar.api.skeleton.config.BoneRobotConfig;
 
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.trigger.SceneActions;
 
 import org.cogchar.platform.trigger.CogcharScreenBox;
@@ -37,8 +36,9 @@ import org.cogchar.platform.trigger.CogcharEventActionBinder;
 import org.cogchar.platform.trigger.CogcharActionTrigger;
 
 import org.cogchar.app.buddy.busker.TriggerItems;
-import org.cogchar.bundle.app.puma.PumaAppContext;
+
 import org.cogchar.bundle.app.puma.PumaContextMediator;
+import org.cogchar.bundle.app.puma.PumaVirtualWorldMapper;
 
 import org.cogchar.impl.scene.Theater;
 import org.cogchar.impl.scene.SceneBook;
@@ -63,10 +63,10 @@ public class PumaDualCharacter extends CogcharScreenBox {
 	public		Theater					myTheater;
 	private		ServiceRegistration		myBoneRobotConfigServiceRegistration;
 
-	public PumaDualCharacter(HumanoidRenderContext hrc, BundleContext bundleCtx, PumaAppContext pac, Ident charIdent, String nickName) {
+	public PumaDualCharacter(PumaVirtualWorldMapper vWorldMapper, BundleContext bundleCtx, Ident charIdent, String nickName) {
 		myCharIdent = charIdent;
 		myNickName = nickName;
-		myHumoidMapper = new PumaHumanoidMapper(hrc, bundleCtx, charIdent);
+		myHumoidMapper = new PumaHumanoidMapper(vWorldMapper, bundleCtx, charIdent);
 		myTheater = new Theater();	
 	}
 	public void absorbContext(PumaContextMediator mediator) { 
@@ -104,8 +104,11 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
 		boolean boneRobotOK = myHumoidMapper.initModelRobotUsingBoneRobotConfig(qi, boneRobotConf, qGraph, hc, myBehaviorCE);
 		if (boneRobotOK) {
+			// This does nothing if there is no vWorld, or no human figure for this char in the vWorld.
 			myHumoidMapper.connectToVirtualChar();
+			// This was an antiquated way of controlling initial char position, left here as reminder of the issue.
 			// myPHM.applyInitialBoneRotations();
+			// We connect animation output channels for triggering (regardless of whether we are doing virtual-world animation or not).
 			connectAnimOutChans();
 		} else {
 			getLogger().warn("connectBonyCharToRobokindSvcs() aborting due to failed boneRobot init, for charIdent: {}", myCharIdent);
