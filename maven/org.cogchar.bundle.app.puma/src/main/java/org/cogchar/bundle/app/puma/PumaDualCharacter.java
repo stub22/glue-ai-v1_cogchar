@@ -224,7 +224,7 @@ public class PumaDualCharacter extends CogcharScreenBox {
 	}
 
 	public void sayText(String txt) {
-		// TODO:  Guard against concurrent activity through the channel/behavior systerm
+		// TODO:  Prevent/blend concurrent activity through the channel/behavior systerm
 		try {
 			mySOC.speakText(txt);
 		} catch (Throwable t) {

@@ -50,4 +50,9 @@ public class HumanoidConfig {
 		}
 		physicsFlag = sh.pullBoolean(solutionMap, charIdent, HumanoidCN.PHYSICS_FLAG_VAR_NAME);
 	}
+	@Override public String toString() { 
+		return "HumanoidConfig[charId=" + myCharIdent + ", nickname=" + nickname + ", meshPath=" + meshPath 
+				+ ", jointConfigPath=" + jointConfigPath + ", initialPos=" + initialPosition  
+				+ ", physics=" + physicsFlag + "]";
+	}
 }

@@ -159,9 +159,9 @@ public class RobotAnimClient extends BasicDebugger {
 		 */
 
 		ChannelsParameterSource cpSource = AnimationUtils.getChannelsParameterSource();
-		logInfo(IMPO_LO, "channelParamSource=" + cpSource);
+		getLogger().debug("channelParamSource={}", cpSource);
 		List<ChannelsParameter> chanParams = cpSource.getChannelParameters();
-		logInfo("Test animation channels=" + chanParams);
+		getLogger().debug("Test animation channels={}", chanParams);
 		Animation anim = new Animation();
 		//Create your channels and add points
 		for (ChannelsParameter cp : chanParams) {
