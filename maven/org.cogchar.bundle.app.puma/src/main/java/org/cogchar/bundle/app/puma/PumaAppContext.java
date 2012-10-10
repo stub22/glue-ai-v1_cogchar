@@ -54,7 +54,7 @@ public class PumaAppContext extends BasicDebugger {
 
 	private BundleContext			myBundleContext;
 	private	PumaContextMediator		myMediator;
-	private	PumaVirtualWorldMapper	myVirtualWorldMapper;
+	private	PumaVirtualWorldMapper	myVWorldMapper;
 	
 	private	PumaConfigManager		myConfigManager;
 	
@@ -74,7 +74,6 @@ public class PumaAppContext extends BasicDebugger {
 	
 	public PumaAppContext(BundleContext bc) {
 		myBundleContext = bc;
-		myVirtualWorldMapper = new PumaVirtualWorldMapper(this);
 		myConfigManager = new PumaConfigManager();
 	}
 	
@@ -82,7 +81,10 @@ public class PumaAppContext extends BasicDebugger {
 		return myBundleContext;
 	}
 	public PumaVirtualWorldMapper getVirtualWorldMapper() { 
-		return myVirtualWorldMapper;
+		if (myVWorldMapper == null) {
+			myVWorldMapper = new PumaVirtualWorldMapper(this);
+		}
+		return myVWorldMapper;
 	}
 	public void setCogCharResourcesClassLoader(ClassLoader loader) {
 		myInitialBonyRdfCL = loader;
@@ -101,10 +103,19 @@ public class PumaAppContext extends BasicDebugger {
 	}
 
 	public void startOpenGLCanvas(boolean wrapInJFrameFlag) throws Exception {
-		myVirtualWorldMapper.startOpenGLCanvas(wrapInJFrameFlag);
+		if (myVWorldMapper != null) {
+			myVWorldMapper.startOpenGLCanvas(wrapInJFrameFlag);
+		} else {
+			getLogger().warn("Ignoring startOpenGLCanvas command - no vWorldMapper present");
+		}		
+		
 	}	
-	protected void initCinema() { 
-		myVirtualWorldMapper.initCinema();
+	protected void initCinema() {
+		if (myVWorldMapper != null) {
+			myVWorldMapper.initCinema();
+		} else {
+			getLogger().warn("Ignoring initCinema command - no vWorldMapper present");
+		}
 	}
 	// TODO:  This should take some optional args that will start a different repo client instead.
 	public void startRepositoryConfigServices() {
@@ -174,13 +185,18 @@ public class PumaAppContext extends BasicDebugger {
 
 	public void reloadVirtualWorldConfig(boolean resetMainConfigFlag) {
 		PumaConfigManager pcm = getConfigManager();
-		PumaVirtualWorldMapper pvwm = getVirtualWorldMapper();
-		if (resetMainConfigFlag) {
-			BundleContext bc = getBundleContext();
-			pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bc);
+		
+		PumaVirtualWorldMapper pvwm = myVWorldMapper; // getVirtualWorldMapper();
+		if (pvwm != null) {
+			if (resetMainConfigFlag) {
+				BundleContext bc = getBundleContext();
+				pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bc);
+			}
+			pvwm.clearCinematicStuff();
+			pvwm.initCinema();
+		} else {
+			getLogger().warn("Ignoring command to reloadVirtualWorldConfig, because no vWorldMapper is present!");
 		}
-		pvwm.clearCinematicStuff();
-		pvwm.initCinema();
 	}
 	
 	public void reloadBoneRobotConfig(boolean resetMainConfigFlag) {
@@ -271,7 +287,7 @@ public class PumaAppContext extends BasicDebugger {
 		//pdc.registerDefaultSceneTriggers(); // Seems this doesn't actually do anything at this point
 		pdc.loadBehaviorConfig(false);
 
-		myVirtualWorldMapper.registerSpecialInputTriggers(pdc);
+		myVWorldMapper.registerSpecialInputTriggers(pdc);
 
 		pdc.startTheater();
 
@@ -332,15 +348,9 @@ public class PumaAppContext extends BasicDebugger {
 		return outputFile;
 	}
 
-	public PumaDualCharacter connectDualRobotChar(Ident bonyCharIdent, String nickName)
-			throws Throwable {
-
-		HumanoidRenderContext hrc = myVirtualWorldMapper.getHumanoidRenderContext();
-		if (hrc == null) {
-			throw new Exception("HumanoidRenderContext is null");
-		}
-		PumaDualCharacter pdc = new PumaDualCharacter(hrc, myBundleContext, this, bonyCharIdent, nickName);
-
+	public PumaDualCharacter connectDualRobotChar(Ident bonyCharIdent, String nickName)	throws Throwable {
+		// note that vWorldMapper may be null.
+		PumaDualCharacter pdc = new PumaDualCharacter(myVWorldMapper, myBundleContext, bonyCharIdent, nickName);
 		return pdc;
 	}
 
