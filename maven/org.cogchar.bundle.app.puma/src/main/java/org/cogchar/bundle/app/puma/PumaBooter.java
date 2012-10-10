@@ -97,20 +97,26 @@ public class PumaBooter extends BasicDebugger {
 		 * RobotServiceContext calls RobotUtils.registerRobot()
 		 */
 
-		// Currently this btarget bundle contains bony-config stuff that goes beyond just rendering resources.
-		ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
-		pac.setCogCharResourcesClassLoader(myInitialBonyRdfCL);
-
-		getLogger().debug("%%%%%%%%%%%%%%%%%%% calling connectDualRobotChars()");
-		pac.connectDualRobotChars();
 		
-		mediator.notifyCharactersLoaded(pac);
+		boolean wantChars = mediator.getFlagIncludeCharacters();
+		if (wantChars) {
+			// Currently this btarget bundle contains bony-config stuff that goes beyond just rendering resources.
+			ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+			pac.setCogCharResourcesClassLoader(myInitialBonyRdfCL);
+
+
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% calling connectDualRobotChars()");
+			pac.connectDualRobotChars();
+
+			mediator.notifyCharactersLoaded(pac);
+		}
 		
 		if (wantVWorld) {
 			getLogger().debug("%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed , calling initCinema()");
 
 			// Lights, Cameras, and Cinematics were once configured during PumaDualCharacter init
-			// Since we can support multiple characters now (and connect cameras to them), this needs to happen after connectDualRobotChars()
+			// Since we can support multiple characters now (and connect cameras to them), this needs to 
+			// happen after connectDualRobotChars().
 			// We'll let pac take care of this, since it is currently "Home of the Global Mode"
 			pac.initCinema();
 		}
