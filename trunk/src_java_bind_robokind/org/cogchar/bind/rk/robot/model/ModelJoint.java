@@ -50,14 +50,15 @@ public class ModelJoint extends AbstractJoint {
         myJointName = bjc.myJointName;
 		updateConfig(bjc);
 		hardResetGoalPosToDefault();
-        myProperties.put(ReadCurrentPosition.PROPERTY_NAME, new ReadCurrentPosition() {
+        ReadCurrentPosition rcp = new ReadCurrentPosition() {
             @Override public NormalizedDouble getValue() {
                 return myGoalPosNorm;
             }
             @Override public NormalizableRange<NormalizedDouble> getNormalizableRange() {
                 return NormalizableRange.NORMALIZED_RANGE;
             }
-        });
+        };
+		addProperty(rcp);
     }
 	public void updateConfig(BoneJointConfig bjc) { 
 		double defPosVal = Utils.bound(bjc.myNormalDefaultPos, 0.0, 1.0);
@@ -98,7 +99,7 @@ public class ModelJoint extends AbstractJoint {
     
     //This is used to allow the SkeletonRobot to set the GoalPosition and fire the event.
     void setGoalPosition(NormalizedDouble pos){
-		theLogger.trace(getDescription() + ".setGoalPosition(" + pos + ")");
+		theLogger.trace("Setting position for Joint {} to {}", myJointName, pos);
 		NormalizedDouble old = getGoalPosition();
         //actually set the goal position here
         firePropertyChange(PROP_GOAL_POSITION, old, pos);

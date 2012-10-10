@@ -41,8 +41,6 @@ import org.robokind.api.motion.utils.RobotUtils;
  */
 public class RobotAnimContext extends BasicDebugger {
 
-
-	
 	enum AnimChannel {
 		RK_XML_BEST,
 		RK_XML_PERM,
@@ -110,7 +108,7 @@ public class RobotAnimContext extends BasicDebugger {
 		AnimationJob aj = myAnimClient.playFullAnimationNow(anim);
 		if (aj != null) {
 			myJobsInStartOrder.add(aj);
-			logInfo("Started AnimationJob: [" + aj + "]");
+			getLogger().info("Started AnimationJob: [{}]", aj);
 		} else {
 			getLogger().warn("********************* Could not start animation[" + anim + "]");
 		}

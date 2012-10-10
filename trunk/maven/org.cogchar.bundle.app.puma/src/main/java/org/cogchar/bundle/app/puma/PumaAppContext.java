@@ -276,7 +276,8 @@ public class PumaAppContext extends BasicDebugger {
 	}
 
 	public boolean setupCharacterBindingToRobokind(PumaDualCharacter pdc, Ident graphIdentForBony, HumanoidConfig hc) {
-
+		Ident charIdent = pdc.getCharIdent();
+		getLogger().debug("Setup for {} using graph {} and humanoidConf {}", new Object[]{charIdent, graphIdentForBony, hc});
 		try {
 			final PumaConfigManager pcm = getConfigManager();
 			BundleContext bunCtx = getBundleContext();
@@ -288,12 +289,11 @@ public class PumaAppContext extends BasicDebugger {
 				pdc.connectSpeechOutputSvcs(bunCtx);
 				return true;
 			} else {
-				Ident charIdent = pdc.getCharIdent();
 				getLogger().warn("setupCharacterBindingToRobokind() aborting RK binding for character: {}", charIdent);
 				return false;
 			}
 		} catch (Throwable t) {
-			getLogger().error("Exception during setupCharacterBindingToRobokind()", t);
+			getLogger().error("Exception during setupCharacterBindingToRobokind for character: {}", charIdent, t);
 			return false;
 		}
 	}

@@ -118,6 +118,8 @@ public class PumaHumanoidMapper extends BasicDebugger {
 	public void stopAndReset() {
 		if (myRAC != null) {
 			myRAC.stopAndReset();
+		}else {
+			getLogger().warn("stopAndReset() ignored because RobotAnimContext = null for {}", myCharIdent);
 		}
 	}
 	
@@ -128,6 +130,8 @@ public class PumaHumanoidMapper extends BasicDebugger {
 	public void playDangerYogaTestAnim() {
 		if (myRAC != null) {
 			myRAC.playDangerYogaTestAnimNow();
+		} else {
+			getLogger().warn("playDangerYogaTestAnim() ignored because RobotAnimContext = null for {}", myCharIdent);
 		}
 		
 	}
