@@ -39,7 +39,9 @@ public class PumaBooter extends BasicDebugger {
 		public	List<String>		myMessageList = new ArrayList<String>();
 		public	Throwable			myThrowable;
 	}
-	
+	/** Convenience version uses default PumaContextMediator.
+	 * 
+	 */
 	public BootResult bootUnderOSGi(BundleContext bundleCtx) {
 		PumaContextMediator cm = new PumaContextMediator();
 		return bootUnderOSGi(bundleCtx, cm);
