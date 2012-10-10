@@ -31,6 +31,7 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 import org.osgi.framework.BundleContext;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
+import org.cogchar.app.puma.cgchr.PumaDualCharacter;
 
 /**
  * @author Stu B. <www.texpedient.com>

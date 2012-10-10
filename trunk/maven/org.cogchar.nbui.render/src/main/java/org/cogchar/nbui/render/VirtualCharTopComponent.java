@@ -34,7 +34,8 @@ import org.robokind.api.common.osgi.OSGiUtils;
 import org.cogchar.bundle.app.puma.PumaAppContext;
 import org.cogchar.bundle.app.puma.PumaBooter;
 import org.cogchar.bundle.app.puma.PumaContextMediator;
-import org.cogchar.bundle.app.puma.PumaDualCharacter;
+import org.cogchar.app.puma.cgchr.PumaDualCharacter;
+import org.cogchar.bundle.app.puma.PumaVirtualWorldMapper;
 
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
@@ -84,10 +85,17 @@ public final class VirtualCharTopComponent extends TopComponent {
 			return  "NBURI:huzzah";
 		}
 		@Override public void notifyContextBuilt(PumaAppContext pac) throws Throwable { 
-			BonyRenderContext brc = pac.getVirtualWorldMapper().getHumanoidRenderContext();
-			// Create/find the Cogchar-enabled Swing GUI panel to display inside this Netbeans Component window.
-			initVirtualCharPanel(brc);			
+			// This is our chance to access config resources
+			theLogger.info("Our Cogchar-NBUI-PBBM.notifyContextBuilt is not accessing any config today.  How sad.");
 		}
+		@Override public void notifyPanelsConstructed(PumaAppContext ctx) throws Throwable {
+			PumaVirtualWorldMapper pvwm = ctx.getVirtualWorldMapper();
+			if (pvwm != null) {
+				BonyRenderContext brc = pvwm.getHumanoidRenderContext();
+				// Create/find the Cogchar-enabled Swing GUI panel to display inside this Netbeans Component window.
+				initVirtualCharPanel(brc);
+			}
+		}			
 		
 	}
     private synchronized void init(BundleContext bundleCtx) throws Throwable {

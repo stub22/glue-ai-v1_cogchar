@@ -15,7 +15,7 @@
  */
 package org.cogchar.app.buddy.busker;
 
-import org.cogchar.bundle.app.puma.PumaDualCharacter;
+import org.cogchar.app.puma.cgchr.PumaDualCharacter;
 import org.cogchar.platform.trigger.CogcharScreenBox;
 
 

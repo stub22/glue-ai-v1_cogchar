@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bundle.app.puma;
+package org.cogchar.app.puma.cgchr;
 
 import org.osgi.framework.BundleContext;
 
@@ -37,6 +37,8 @@ import org.cogchar.platform.trigger.CogcharEventActionBinder;
 import org.cogchar.platform.trigger.CogcharActionTrigger;
 
 import org.cogchar.app.buddy.busker.TriggerItems;
+import org.cogchar.bundle.app.puma.PumaAppContext;
+import org.cogchar.bundle.app.puma.PumaContextMediator;
 
 import org.cogchar.impl.scene.Theater;
 import org.cogchar.impl.scene.SceneBook;

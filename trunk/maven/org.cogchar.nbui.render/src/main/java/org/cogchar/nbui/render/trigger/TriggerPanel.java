@@ -38,8 +38,7 @@ public class TriggerPanel extends javax.swing.JPanel implements ActionCallbackMa
         myButtonMap = new HashMap<String, JButton>();
     }
     
-    @Override
-    public void putActionCallback(String name, ActionListener listener){
+    @Override public void putActionCallback(String name, ActionListener listener){
         JButton b = new JButton(name);
         b.addActionListener(listener);
         myButtonMap.put(name, b);
@@ -48,8 +47,7 @@ public class TriggerPanel extends javax.swing.JPanel implements ActionCallbackMa
         repaint();
     }
     
-    @Override
-    public void removeActionCallback(String name){
+    @Override public void removeActionCallback(String name){
         JButton b = myButtonMap.remove(name);
         if(b != null){
             remove(b);
@@ -79,8 +77,7 @@ public class TriggerPanel extends javax.swing.JPanel implements ActionCallbackMa
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-	@Override
-	public ActionListener getActionCallback(String actionCallbackName) {
+	@Override public ActionListener getActionCallback(String actionCallbackName) {
 		ActionListener result = null;
 		JButton b = myButtonMap.get(actionCallbackName);
 		if (b != null) { 

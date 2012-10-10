@@ -45,6 +45,8 @@ import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.cogchar.api.skeleton.config.BoneCN;
+import org.cogchar.app.puma.cgchr.PumaDualCharacter;
+import org.cogchar.app.puma.cgchr.PumaHumanoidMapper;
 /**
  * @author Stu B. <www.texpedient.com>
  */
