@@ -45,6 +45,10 @@ object SubsystemHandleFinder {
 	def	SUBSYS_REG_REPOSITORY	= "SYSREG_REPOSITORY";
 	def	SUBSYS_REG_CCRK_BIND	= "SYSREG_CCRK_BIND";
 
+	// exampleFS is an examplar of one of the FacadeSpecs we might use to look up a facade in the requested subsystem.
+	// optCredClaz is used as the credential class, but if it is null, AND the specified facade is "external",
+	// then the FacadeSpecs target class type.   Otherwise, the class of this object (SubsystemHandleFinder) will
+	// be used.
 	def getSubsystemHandle(subsysName : String, exampleFS : FacadeSpec[_, _], optCredClaz : Class[_] ) : SubsystemHandle = {
 		// Use the internal facade class as the default credential, to usually make Netigso happily return a bundleContext.
 		val credClaz : Class[_] =  exampleFS.determineCredentialClass(optCredClaz, getClass())

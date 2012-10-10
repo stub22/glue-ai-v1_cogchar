@@ -30,16 +30,19 @@ import org.appdapter.core.name.Ident;
 // at the PUMA level. Maybe.
 public class PumaModeConstants {
 	// The (temporarily fixed) "GlobalMode". This won't be a constant for long.
-	public static String globalMode = "test_spread_reload";
+	public static String DEFAULT_GLOBAL_MODE_NAME = "test_spread_reload";
 	
-	public static final String rkrt = "urn:ftd:robokind.org:2012:runtime#";
+	public static final String RKRT_NS_PREFIX = "urn:ftd:robokind.org:2012:runtime#";
 	
 	public static final String CHAR_ENTITY_TYPE = "CharEntity";
 	public static final String VIRTUAL_WORLD_ENTITY_TYPE = "VirtualWorldEntity";
 	
-	public static final Ident BONY_CONFIG_ROLE = new FreeIdent(rkrt + "bonyAvatarConf", "bonyAvatarConf");
-	public static final Ident LIGHTS_CAMERA_CONFIG_ROLE = new FreeIdent(rkrt + "camLightsConf", "camLightsConf");
-	public static final Ident CINEMATIC_CONFIG_ROLE = new FreeIdent(rkrt + "cinematicsConf", "cinematicsConf");	
-	public static final Ident HUMANOID_CONFIG_ROLE = new FreeIdent(rkrt + "humanoidConf", "humanoidConf");
-	public static final Ident INPUT_BINDINGS_ROLE = new FreeIdent(rkrt + "inputBindings", "inputBindings");
+	public static Ident makeRoleIdent(String roleShortName) {
+		return new FreeIdent(RKRT_NS_PREFIX + roleShortName, roleShortName);
+	}
+	public static final Ident BONY_CONFIG_ROLE =  makeRoleIdent("bonyAvatarConf");
+	public static final Ident LIGHTS_CAMERA_CONFIG_ROLE = makeRoleIdent ("camLightsConf");
+	public static final Ident CINEMATIC_CONFIG_ROLE = makeRoleIdent("cinematicsConf");	
+	public static final Ident HUMANOID_CONFIG_ROLE = makeRoleIdent("humanoidConf");
+	public static final Ident INPUT_BINDINGS_ROLE = makeRoleIdent("inputBindings");
 }

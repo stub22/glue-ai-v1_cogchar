@@ -22,7 +22,7 @@ public class PumaContextMediator {
 
 	/**
 	 * Called after panels constructed but before startOpenGLCanvas. Allows GUI to intervene and realize the panels as
-	 * needed. This step is generally, when getFlagAllowJFrames returns false, e.g. when we are running under NB
+	 * needed. This step is normally used when getFlagAllowJFrames returns false, e.g. when we are running under NB
 	 * platform and we want to manage windows manually).
 	 *
 	 * @param ctx
@@ -49,4 +49,10 @@ public class PumaContextMediator {
 	public String getPanelKind() {
 		return "SLIM";
 	}
+	
+	public boolean getFlagIncludeVirtualWorld() { 
+		return true;
+	}
+	/**** Todo:  Allow this mediator to specify what kind of repo should be used for main config.
+	 */
 }

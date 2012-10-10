@@ -23,12 +23,22 @@ import org.appdapter.scafun.FullTrigger;
  * @author Stu B. <www.texpedient.com>
  * FullBox extends ScreenBoxImpl
  * 
+ * Because it is a KnownComponent, it can:
+ * 	public Ident getIdent();
+	public String getDescription();
+	public String getShortLabel();
+  and because it is a MutableKnownComponent:
+ 	public void setIdent(Ident id);
+	public void setDescription(String description);
+	public void setShortLabel(String shortLabel);
+
  * Because it is a Box, it can do these things:
- * 	public BoxContext getBoxContext();
+ * 	public BoxContext getBoxContext();   
 	public List<TrigType> getTriggers();
 	* 
-	* Because it is a MutableBox, it can:
+* And because it is a MutableBox, it can:
 	void attachTrigger(TrigType bt);
+	void clearTriggers()  
 	void setContext(BoxContext bc);
 	* 
 The BoxContext can do these things
@@ -39,7 +49,7 @@ The BoxContext can do these things
 	public void contextualizeAndAttachChildBox(Box<?> parentBox, MutableBox<?> childBox);
 
 * 
-Because it is a ScreenBox, it can:
+Because it is a ScreenBox, it can, publicly:
  	public DisplayContext getDisplayContext();
 	void setDisplayContextProvider(DisplayContextProvider dcp);	
 	public ScreenBoxPanel findBoxPanel(ScreenBoxPanel.Kind kind);
@@ -47,14 +57,41 @@ Because it is a ScreenBox, it can:
 where the DisplayContext can simply:
     public JTabbedPane getBoxPanelTabPane();
  
-and where a ScreenBoxPanel can:
-	public enum Kind {
-		MATRIX,
-		DB_MANAGER,
-		REPO_MANAGER,
-		OTHER
-	}
+and where a ScreenBoxPanel is a JPanel, of one of these types
+	public enum Kind {MATRIX,DB_MANAGER,REPO_MANAGER,OTHER
+ that can:
 	public abstract void focusOnBox(BoxType b);
+	
+	With protected scope, this CogcharScreenBox also gets, from ScreenBoxImpl:
+		protected void putBoxPanel(ScreenBoxPanel.Kind kind, ScreenBoxPanel bp) 
+		protected ScreenBoxPanel getBoxPanel(ScreenBoxPanel.Kind kind) 
+		protected ScreenBoxPanel makeBoxPanel(ScreenBoxPanel.Kind kind) 
+		protected ScreenBoxPanel makeOtherPanel() 
+	
+	By overriding makeOtherPanel(), our CogcharScreenBox can return any type
+	of OTHER screenBoxPanel that is appropriate for interacting with its content.
+	* 
+	* 
+Current examples of CogcharScreenBox are:
+*	PumaDualCharacter
+*	Theater
+* 
+We consider adding:
+*	PumaAppContext
+*	BonyGameFeatureAdapter
+* 
+*   WorldModel
+* 
+*   CinematicHooHaManager
+*	SuperDuperConfigManager
+* 
+* RepoBrowseAdapter
+* 
+* RegistryBrowseAdapter
+* 
+* VisionMonitor
+* EgosphereMonitor
+*	
  */
 public class CogcharScreenBox extends FullBox<CogcharActionTrigger> {
 
