@@ -13,14 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.platform.trigger;
 
-import org.appdapter.scafun.FullTrigger;
-import org.appdapter.scafun.FullBox;
+package org.cogchar.bundle.app.puma;
+
 /**
  * @author Stu B. <www.texpedient.com>
- * Just a trigger with a fire method, that is typed to work on CogcharScreenBoxes.
  */
-public interface CogcharActionTrigger extends FullTrigger<CogcharScreenBox> {
-	// Inherits:  public abstract void fire(DummyBox targetBox);
+
+public class PumaRegistryClient {
+	
 }

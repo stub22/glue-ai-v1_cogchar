@@ -73,6 +73,10 @@ public class BoneRobotConfig extends KnownComponentImpl {
 //		queryEmitter.reloadSheetRepo(); 
 //	}
 	
+	/** Alternate approach to creating a BoeRobotConfig goes thru Jena's Assembler stuff.
+	 * 
+	 */
+	
 	public static class Builder extends DynamicCachingComponentAssembler<BoneRobotConfig> {
 
 		public Builder(Resource builderConfRes) {
@@ -97,8 +101,8 @@ public class BoneRobotConfig extends KnownComponentImpl {
 			});
 		}
 		
-		public static void clearCache() { 
-			clearCacheFor(Builder.class);
+		public static void clearCacheForThisAssemblerType() { 
+			clearCacheForAssemblerSubclass(Builder.class);
 		}
 	}	
 	private static String	UNIT_TEST_RDF_PATH 

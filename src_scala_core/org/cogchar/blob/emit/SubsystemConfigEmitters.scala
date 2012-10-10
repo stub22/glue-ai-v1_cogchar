@@ -39,9 +39,6 @@ class RobokindBindingConfigEmitter {
 		NB_BONY_ROBOT_ID; // or DUMMY_ROBOT_ID, ...
 	}
 	*/
-   
-	
-	
 }
 class RenderConfigEmitter(val myOptSysCtxURI : Option[String]) extends SubsystemConfigEmitter {
 	// Alternate no-args constructor

@@ -79,9 +79,9 @@ object SceneBook extends BasicDebugger {
 		sb;
 	}
 	def  clearBuilderCaches() {
-		CachingComponentAssembler.clearCacheFor(classOf[SceneSpecBuilder]);
-		CachingComponentAssembler.clearCacheFor(classOf[BehaviorSpecBuilder]);
-		CachingComponentAssembler.clearCacheFor(classOf[ChannelSpecBuilder]);
+		CachingComponentAssembler.clearCacheForAssemblerSubclass(classOf[SceneSpecBuilder]);
+		CachingComponentAssembler.clearCacheForAssemblerSubclass(classOf[BehaviorSpecBuilder]);
+		CachingComponentAssembler.clearCacheForAssemblerSubclass(classOf[ChannelSpecBuilder]);
 	}
 
 }

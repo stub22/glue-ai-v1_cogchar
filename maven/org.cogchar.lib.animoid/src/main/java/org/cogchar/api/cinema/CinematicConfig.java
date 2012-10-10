@@ -71,9 +71,11 @@ public class CinematicConfig extends QueryBackedConfigBase {
 			myRCs.add(new RotationConfig(qi, rotSol));
 		}
 	}
-
+	/* This assembler-based Builder is made (arguably) unnecessary by the RepoClient based technique (above),
+	 * unless we LIKE having two separate routes to instantiation (enough to maintain both codebases)
+	 */
 	public static class Builder extends DynamicCachingComponentAssembler<CinematicConfig> {
-
+		
 		public Builder(Resource builderConfRes) {
 			super(builderConfRes);
 		}
@@ -119,9 +121,9 @@ public class CinematicConfig extends QueryBackedConfigBase {
 				mcc.myRCs.add(rc);
 			}
 		}
-
-		public static void clearCache() {
-			clearCacheFor(Builder.class);
+		// Unfortunately static to deal with unpredictable Assembler/Builder instantiation pattern.
+		public static void clearCacheForThisAssemblerType() {
+			clearCacheForAssemblerSubclass(Builder.class);
 		}
 	}
 	private static String UNIT_TEST_RDF_PATH = "../org.cogchar.bundle.render.resources/src/main/resources/rk_bind_config/motion/cinematicConfig.ttl";
