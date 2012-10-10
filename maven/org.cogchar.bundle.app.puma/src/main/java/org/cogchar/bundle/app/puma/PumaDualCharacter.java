@@ -165,11 +165,12 @@ public class PumaDualCharacter extends CogcharScreenBox {
 	}
 
 	public void stopEverything() {
-		logInfo("stopEverything - Stopping Theater.");
+		Ident charID = getCharIdent();
+		getLogger().info("stopEverything for {} - Stopping Theater.", charID);
 		stopTheater();
-		logInfo("stopEverything - Stopping Anim Jobs.");
+		getLogger().info("stopEverything for {} - Stopping Anim Jobs.", charID);
 		myHumoidMapper.stopAndReset();
-		logInfo("stopEverything - Stopping Speech-Output Jobs.");
+		getLogger().info("stopEverything for {} - Stopping Speech-Output Jobs.", charID);
 		if (mySOC != null) {
 			mySOC.cancelAllRunningSpeechTasks();
 		}
@@ -177,19 +178,21 @@ public class PumaDualCharacter extends CogcharScreenBox {
 	}
 
 	public void stopAndReset() {
+		Ident charID = getCharIdent();
 		stopEverything();
 		// TODO:  Send character to default positions.
-		logInfo("stopAndReset - Restarting behavior theater.");
+		getLogger().info("stopAndReset for {} - Restarting behavior theater.", charID);
 		startTheater();
-		logInfo("stopAndReset - Complete.");
+		getLogger().info("stopAndReset - Complete.");
 	}
 
 	public void stopResetAndRecenter() {
+		Ident charID = getCharIdent();
 		stopEverything();
-		logWarning("stopResetAndRecenter - Recenter is not implemented yet!");
-		logInfo("stopResetAndRecenter - Restarting behavior theater.");
+		getLogger().warn("stopResetAndRecenter for {} - Recenter is not implemented yet!", charID);
+		getLogger().info("stopResetAndRecenter - Restarting behavior theater.");
 		startTheater();
-		logInfo("stopResetAndRecenter - Complete.");
+		getLogger().info("stopResetAndRecenter - Complete.");
 	}
 
 	public void registerDefaultSceneTriggers() {
@@ -228,7 +231,7 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		try {
 			mySOC.speakText(txt);
 		} catch (Throwable t) {
-			logError("problem speaking", t);
+			getLogger().error("problem speaking", t);
 		}
 	}
 
@@ -250,10 +253,10 @@ public class PumaDualCharacter extends CogcharScreenBox {
 	}
 
 	public void usePermAnims() {
-		logWarning("usePermAnims() not implemented yet");
+		getLogger().warn("usePermAnims() not implemented yet");
 	}
 
 	public void useTempAnims() {
-		logWarning("useTempAnims() not implemented yet");
+		getLogger().warn("useTempAnims() not implemented yet");
 	}
 }
