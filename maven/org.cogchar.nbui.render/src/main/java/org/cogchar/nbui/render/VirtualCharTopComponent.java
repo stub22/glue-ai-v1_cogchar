@@ -89,8 +89,8 @@ public final class VirtualCharTopComponent extends TopComponent {
 			theLogger.info("Our Cogchar-NBUI-PBBM.notifyContextBuilt is not accessing any config today.  How sad.");
 		}
 		@Override public void notifyPanelsConstructed(PumaAppContext ctx) throws Throwable {
-			PumaVirtualWorldMapper pvwm = ctx.getVirtualWorldMapper();
-			if (pvwm != null) {
+			if (ctx.hasVWorldMapper()) {
+				PumaVirtualWorldMapper pvwm = ctx.getOrMakeVWorldMapper();
 				BonyRenderContext brc = pvwm.getHumanoidRenderContext();
 				// Create/find the Cogchar-enabled Swing GUI panel to display inside this Netbeans Component window.
 				initVirtualCharPanel(brc);

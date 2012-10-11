@@ -80,7 +80,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		 BundleContext bundleCtx = myPAC.getBundleContext();		 
 		 RepoClient rc = pcm.getOrMakeMainConfigRepoClient(bundleCtx);
 
-		 PumaWebMapper webMapper = myPAC.getWebMapper();
+		 PumaWebMapper webMapper = myPAC.getOrMakeWebMapper();
 		 ClassLoader bonyRdfCL = myPAC.getCogCharResourcesClassLoader();
 		 
 		myHRC.initCinematicParameters();
