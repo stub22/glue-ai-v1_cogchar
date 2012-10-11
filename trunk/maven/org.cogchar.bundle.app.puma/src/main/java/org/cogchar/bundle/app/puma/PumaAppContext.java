@@ -47,69 +47,75 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.cogchar.api.skeleton.config.BoneCN;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
 import org.cogchar.app.puma.cgchr.PumaHumanoidMapper;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class PumaAppContext extends BasicDebugger {
 
-	private BundleContext			myBundleContext;
-	private	PumaContextMediator		myMediator;
-	private	PumaVirtualWorldMapper	myVWorldMapper;
-	
-	private	PumaConfigManager		myConfigManager;
-	
-	private ClassLoader				myInitialBonyRdfCL;
+	private BundleContext myBundleContext;
+	private PumaContextMediator myMediator;
+	private PumaVirtualWorldMapper myVWorldMapper;
+	private PumaConfigManager myConfigManager;
+	private ClassLoader myInitialBonyRdfCL;
 	// We now have a single instance of the web mapper here [via this.getWebMapper and PumaWebMapper.getWebMapper],
 	// instead of separate instances for each PumaDualCharacter.
-	private PumaWebMapper			myWebMapper; 
+	private PumaWebMapper myWebMapper;
 	// This method for updating bony config is not very flexible (to configuring only single characters in the future)
 	// and requires multiple sheet reloads for multiple characters. So I'm trying out the idea of moving this functionality
 	// into updateConfigByRequest - Ryan
 	//private TriggerItems.UpdateBonyConfig myUpdateBonyConfigTI;
 	// Let's try making this a field of PumaAppContext. That way, refresh of bony config can be handled here in a nice
 	// clean, consistent way. May also have additional advantages. Might have some disadvantages too, we'll see!
-	private List<PumaDualCharacter>	myCharList = new ArrayList<PumaDualCharacter>();
+	private List<PumaDualCharacter> myCharList = new ArrayList<PumaDualCharacter>();
 
-
-	
 	public PumaAppContext(BundleContext bc) {
 		myBundleContext = bc;
 		myConfigManager = new PumaConfigManager();
 	}
-	
+
 	protected BundleContext getBundleContext() {
 		return myBundleContext;
 	}
-	public PumaVirtualWorldMapper getVirtualWorldMapper() { 
+	public boolean hasVWorldMapper() {
+		return (myVWorldMapper != null);
+	}
+
+	public PumaVirtualWorldMapper getOrMakeVWorldMapper() {
 		if (myVWorldMapper == null) {
 			myVWorldMapper = new PumaVirtualWorldMapper(this);
 		}
 		return myVWorldMapper;
 	}
-	public void setCogCharResourcesClassLoader(ClassLoader loader) {
-		myInitialBonyRdfCL = loader;
-	}
-	public ClassLoader getCogCharResourcesClassLoader() {
-		return myInitialBonyRdfCL;
-	}
-	public PumaWebMapper getWebMapper() {
+	public boolean hasWebMapper() { 
+		return (myWebMapper != null);
+	}	
+	public PumaWebMapper getOrMakeWebMapper() {
 		if (myWebMapper == null) {
 			myWebMapper = new PumaWebMapper(this);
 		}
 		return myWebMapper;
 	}
-	protected PumaConfigManager getConfigManager() { 
+
+	protected PumaConfigManager getConfigManager() {
 		return myConfigManager;
 	}
+	public void setCogCharResourcesClassLoader(ClassLoader loader) {
+		myInitialBonyRdfCL = loader;
+	}
 
+	public ClassLoader getCogCharResourcesClassLoader() {
+		return myInitialBonyRdfCL;
+	}
 	public void startOpenGLCanvas(boolean wrapInJFrameFlag) throws Exception {
 		if (myVWorldMapper != null) {
 			myVWorldMapper.startOpenGLCanvas(wrapInJFrameFlag);
 		} else {
 			getLogger().warn("Ignoring startOpenGLCanvas command - no vWorldMapper present");
-		}		
-		
-	}	
+		}
+
+	}
+
 	protected void initCinema() {
 		if (myVWorldMapper != null) {
 			myVWorldMapper.initCinema();
@@ -118,16 +124,15 @@ public class PumaAppContext extends BasicDebugger {
 		}
 	}
 	// TODO:  This should take some optional args that will start a different repo client instead.
+
 	public void startRepositoryConfigServices() {
 		// This would happen by default anyway, if there were not already a MainConfigRepoClient in place.
 		myConfigManager.applyVanillaRepoClientAsMainConfig(myBundleContext);
-			// This method performs the configuration actions associated with the developmental "Global Mode" concept
-			// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
-			// be updated to relect that		
+		// This method performs the configuration actions associated with the developmental "Global Mode" concept
+		// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
+		// be updated to relect that		
 		myConfigManager.applyGlobalConfig(myBundleContext);
 	}
-
-
 
 	public void setContextMediator(PumaContextMediator mediator) {
 		myMediator = mediator;
@@ -145,7 +150,7 @@ public class PumaAppContext extends BasicDebugger {
 		RepoClient rc = pcm.getOrMakeMainConfigRepoClient(myBundleContext);
 		//List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 		List<Ident> charIdents = new ArrayList<Ident>(); // A blank list, so if the try fails below, the for loop won't throw an Exception
-		
+
 		List<Ident> identsFromConfig = gce.entityMap().get(PumaModeConstants.CHAR_ENTITY_TYPE);
 		if (identsFromConfig != null) {
 			charIdents = identsFromConfig;
@@ -167,7 +172,7 @@ public class PumaAppContext extends BasicDebugger {
 				Ident graphIdentForHumanoid;
 				try {
 					graphIdentForBony = pcm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.BONY_CONFIG_ROLE);
-					graphIdentForHumanoid =  pcm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.HUMANOID_CONFIG_ROLE);
+					graphIdentForHumanoid = pcm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.HUMANOID_CONFIG_ROLE);
 				} catch (Exception e) {
 					getLogger().warn("Could not get valid graphs on which to query for config of {}", charIdent.getLocalName());
 					break;
@@ -185,7 +190,7 @@ public class PumaAppContext extends BasicDebugger {
 
 	public void reloadVirtualWorldConfig(boolean resetMainConfigFlag) {
 		PumaConfigManager pcm = getConfigManager();
-		
+
 		PumaVirtualWorldMapper pvwm = myVWorldMapper; // getVirtualWorldMapper();
 		if (pvwm != null) {
 			if (resetMainConfigFlag) {
@@ -198,7 +203,7 @@ public class PumaAppContext extends BasicDebugger {
 			getLogger().warn("Ignoring command to reloadVirtualWorldConfig, because no vWorldMapper is present!");
 		}
 	}
-	
+
 	public void reloadBoneRobotConfig(boolean resetMainConfigFlag) {
 		final PumaConfigManager pcm = getConfigManager();
 
@@ -208,7 +213,7 @@ public class PumaAppContext extends BasicDebugger {
 			BundleContext bc = getBundleContext();
 			pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bc);
 		}
-		RepoClient rc = pcm.getOrMakeMainConfigRepoClient(myBundleContext);		
+		RepoClient rc = pcm.getOrMakeMainConfigRepoClient(myBundleContext);
 
 		BoneCN bqn = new BoneCN();
 		for (PumaDualCharacter pdc : myCharList) {
@@ -226,6 +231,7 @@ public class PumaAppContext extends BasicDebugger {
 			}
 		}
 	}
+
 	public void reloadGlobalConfig(boolean resetMainConfigFlag) {
 		final PumaConfigManager pcm = getConfigManager();
 
@@ -235,48 +241,67 @@ public class PumaAppContext extends BasicDebugger {
 			BundleContext bc = getBundleContext();
 			pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bc);
 		}
-		RepoClient rc = pcm.getOrMakeMainConfigRepoClient(myBundleContext);		
+		RepoClient rc = pcm.getOrMakeMainConfigRepoClient(myBundleContext);
 		pcm.startGlobalConfigService(myBundleContext);
 	}
+
 	protected void stopAndReleaseAllHumanoids() {
 		for (PumaDualCharacter pdc : myCharList) {
 			pdc.stopEverything();
 			pdc.disconnectBonyCharFromRobokindSvcs();
-		}		
+		}
 		RobotServiceFuncs.clearJointGroups();
 		ModelBlendingRobotServiceContext.clearRobots();
-		PumaVirtualWorldMapper pvwm = getVirtualWorldMapper();
+		PumaVirtualWorldMapper pvwm = getOrMakeVWorldMapper();
 		pvwm.detachAllHumanoidFigures();
 		myCharList.clear();
 	}
+
+	protected void disconnectAllCharsAndMappers() throws Throwable {
+		BundleContext bunCtx = getBundleContext();		
+
+		if (hasVWorldMapper()) {
+			PumaVirtualWorldMapper vWorldMapper = getOrMakeVWorldMapper();
+			vWorldMapper.clearCinematicStuff();
+			vWorldMapper.clearSpecialInputTriggers();
+			// Consider:  also set the context/registry vWorldMapper to null, expecting
+			// PumaBooter or somesuch to find it again.
+		}
+		if (hasWebMapper()) {
+			PumaWebMapper webMapper = getOrMakeWebMapper();
+			webMapper.disconnectLiftSceneInterface(bunCtx);
+			// Similarly, consider setting context/registry webMapper to null.
+		}
+		stopAndReleaseAllHumanoids();
+		// If we did set our vWorldMapper and webMapper to null, above, then we'd
+		// Which means the user will need to 
+	}
+
 	public void reloadAll(boolean resetMainConfigFlag) {
 		try {
 			BundleContext bunCtx = getBundleContext();
 			// Here we make the cute assumption that vWorldMapper or webMapper would be null
-			// if we weren't using those features.  Only problem is that is not true yet.
-			
-			PumaVirtualWorldMapper vWorldMapper = getVirtualWorldMapper();
-			PumaWebMapper webMapper = getWebMapper();
+			// if we weren't using those features.  Only problem is that is not true yet,
+			// because these accessor methods
 
-			if (vWorldMapper != null) {
-				vWorldMapper.clearCinematicStuff();
-				vWorldMapper.clearSpecialInputTriggers();
-			}
-			if (webMapper != null) {
-				webMapper.disconnectLiftSceneInterface(bunCtx);
-			}
-			stopAndReleaseAllHumanoids();
+			disconnectAllCharsAndMappers();
 		
+			// NOW we are ready to load any new config.
 			if (resetMainConfigFlag) {
 				PumaConfigManager pcm = getConfigManager();
+				// TODO:  This need to be a more general config source, either set earlier or supplied expliicitly.
 				pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bunCtx);
-			}			
-			
-			connectDualRobotChars();
-			if (vWorldMapper != null) {
-				vWorldMapper.initCinema();
 			}
 			
+			// So NOW what we want to examine is the difference between the state right here, and the
+			// state at this moment during a full "boot" sequence.
+			connectDualRobotChars();
+			
+			if (hasVWorldMapper()) {
+				PumaVirtualWorldMapper vWorldMapper = getOrMakeVWorldMapper();
+				vWorldMapper.initCinema();
+			}
+
 		} catch (Throwable t) {
 			getLogger().error("Error attempting to reload all PUMA App config: ", t);
 			// May be good to handle an exception by setting state of a "RebootResult" or etc...
@@ -299,7 +324,7 @@ public class PumaAppContext extends BasicDebugger {
 		try {
 			final PumaConfigManager pcm = getConfigManager();
 			BundleContext bunCtx = getBundleContext();
-			RepoClient rc = pcm.getOrMakeMainConfigRepoClient(bunCtx);		
+			RepoClient rc = pcm.getOrMakeMainConfigRepoClient(bunCtx);
 			BoneCN bqn = new BoneCN();
 			boolean connectedOK = pdc.connectBonyCharToRobokindSvcs(bunCtx, graphIdentForBony, hc, rc, bqn);
 			if (connectedOK) {
@@ -348,14 +373,12 @@ public class PumaAppContext extends BasicDebugger {
 		return outputFile;
 	}
 
-	public PumaDualCharacter connectDualRobotChar(Ident bonyCharIdent, String nickName)	throws Throwable {
+	public PumaDualCharacter connectDualRobotChar(Ident bonyCharIdent, String nickName) throws Throwable {
 		// note that vWorldMapper may be null.
 		PumaDualCharacter pdc = new PumaDualCharacter(myVWorldMapper, myBundleContext, bonyCharIdent, nickName);
 		return pdc;
 	}
-
-	
-		// A half baked (3/4 baked?) idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
+	// A half baked (3/4 baked?) idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
 	private boolean myUpdateInProgressFlag = false;
 	// Here I have removed the method variable passed in for the RepoClient. Why? Because right now PumaAppContext really
@@ -364,9 +387,10 @@ public class PumaAppContext extends BasicDebugger {
 	// knowing what RepoClient is appropriate -- they are calling into this method because we are trying to handle that here.
 	// So for now let's use the this.getQueryHelper way to get that interface here. We can continue to refine this thinking as we go.
 	// - Ryan 2012-09-17
+
 	public boolean updateConfigByRequest(String request, final boolean resetMainConfigFlag) {
 		final PumaConfigManager pcm = getConfigManager();
-		
+
 		// Eventually we may decide on a good home for these constants:	
 		final String WORLD_CONFIG = "worldconfig";
 		final String BONE_ROBOT_CONFIG = "bonerobotconfig";
@@ -428,6 +452,4 @@ public class PumaAppContext extends BasicDebugger {
 		}
 		return success;
 	}
-
-
 }

@@ -85,7 +85,9 @@ public class PumaContextMediator {
 	public boolean getFlagIncludeVirtualWorld() { 
 		return true;
 	}
-	
+	public boolean getFlagIncludeWebServices() { 
+		return false;
+	}
 	public boolean getFlagIncludeCharacters() { 
 		return true;
 	}

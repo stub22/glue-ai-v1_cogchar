@@ -64,6 +64,9 @@ public class PumaBooter extends BasicDebugger {
 
 		// String debugTxt = "sysContextURI = [" + sysContextURI + "]";
 		// logInfo("======================================== Starting " + debugTxt);
+		/* Stu 2012-10-10 - the fileSys root isn't being used currently.  The sysConfigURI thing is mostly unused, too.
+		 * So, what we need now is
+		 */
 		String optFilesysRoot = mediator.getOptionalFilesysRoot();
 		getLogger().debug("%%%%%%%%%%%%%%%%%%% Creating PumaAppContext");
 		final PumaAppContext pac = new PumaAppContext(bundleCtx);
@@ -103,7 +106,6 @@ public class PumaBooter extends BasicDebugger {
 			// Currently this btarget bundle contains bony-config stuff that goes beyond just rendering resources.
 			ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 			pac.setCogCharResourcesClassLoader(myInitialBonyRdfCL);
-
 
 			getLogger().debug("%%%%%%%%%%%%%%%%%%% calling connectDualRobotChars()");
 			pac.connectDualRobotChars();
@@ -164,7 +166,7 @@ public class PumaBooter extends BasicDebugger {
 		// Mediator must be able to decide panelKind before the HumanoidRenderContext is built.
 		String panelKind = mediator.getPanelKind();
 		getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling initHumanoidRenderContext()");
-		PumaVirtualWorldMapper pvwm = pac.getVirtualWorldMapper();
+		PumaVirtualWorldMapper pvwm = pac.getOrMakeVWorldMapper();
 		HumanoidRenderContext hrc = pvwm.initHumanoidRenderContext(panelKind);
 		getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling mediator.notifyPanelsConstructed()");
 		mediator.notifyPanelsConstructed(pac);
