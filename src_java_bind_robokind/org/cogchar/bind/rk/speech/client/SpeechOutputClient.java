@@ -78,23 +78,23 @@ public class SpeechOutputClient extends FancyTextChan {
 
 	public void speakText(String txt) {
 		if (txt == null) {
-			logWarning("************************* Received null speech text, ignoring");
+			getLogger().warn("************************* Received null speech text, ignoring");
 			return;
 		}
 		try {
 			ServiceContext servCtx = lookupSpeechServiceContext();
 			if (servCtx != null) {
 				try {
-					logInfo("Trying to speakText[" + txt + "]");
+					getLogger().info("Trying to speakText[{}]", txt);
 					servCtx.speechService.speak(txt);
 				} finally {
 					servCtx.release();
 				}
 			} else {
-				logWarning("************************* speech-output ServiceContext == null, ignoring speech text: " + txt);
+				getLogger().warn("************************* speech-output ServiceContext == null, ignoring speech text: " + txt);
 			}
 		} catch (Throwable t) {
-			logError("Problem in speakText(txt=[" + txt + "])", t);
+			getLogger().error("Problem in speakText(txt=[" + txt + "])", t);
 		}
 	}
 

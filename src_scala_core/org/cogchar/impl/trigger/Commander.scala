@@ -13,20 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.platform.trigger;
 
-import org.cogchar.platform.trigger.CogcharScreenBox;
-import org.cogchar.platform.trigger.CogcharActionTrigger;
+package org.cogchar.impl.trigger
 
 /**
  * @author Stu B. <www.texpedient.com>
- * 
- * Binds a single trigger to one or more target boxes.
- * 
  */
-public interface CogcharActionBinding {
-	public void addTargetBox(CogcharScreenBox box);
-	public void setTargetTrigger(CogcharActionTrigger trig);
-	public void perform();
-	public void clearTargetBoxes();
+
+object Commander {
+
 }
+

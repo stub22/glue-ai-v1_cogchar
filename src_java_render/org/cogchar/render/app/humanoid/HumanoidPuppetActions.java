@@ -32,7 +32,7 @@ import java.util.List;
 import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.blob.emit.RenderConfigEmitter;
-import org.cogchar.render.app.trigger.BoundAction;
+import org.cogchar.platform.trigger.BasicActionBindingImpl;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.render.model.databalls.BallBuilder;
@@ -184,7 +184,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
         };  // Last enum constant code block gets a semicolon.
 		
      
-		BoundAction	myBoundAction = new BoundAction();
+		BasicActionBindingImpl	myBoundAction = new BasicActionBindingImpl();
 		public CogcharActionBinding getBinding() { 
 			return myBoundAction;
 		}		

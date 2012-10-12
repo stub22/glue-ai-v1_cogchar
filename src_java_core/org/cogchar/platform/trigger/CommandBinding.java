@@ -13,20 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.cogchar.platform.trigger;
 
-import org.cogchar.platform.trigger.CogcharScreenBox;
-import org.cogchar.platform.trigger.CogcharActionTrigger;
+import java.util.ArrayList;
+import java.util.List;
+import org.appdapter.core.name.Ident;
 
 /**
  * @author Stu B. <www.texpedient.com>
- * 
- * Binds a single trigger to one or more target boxes.
- * 
  */
-public interface CogcharActionBinding {
-	public void addTargetBox(CogcharScreenBox box);
-	public void setTargetTrigger(CogcharActionTrigger trig);
-	public void perform();
-	public void clearTargetBoxes();
+
+public class CommandBinding {
+	private		Ident							myCommandID;
+	private		List<CogcharActionBinding>		myActionList = new ArrayList<CogcharActionBinding>();
+	
+	public CommandBinding(Ident cmdID) {
+		myCommandID = cmdID;
+	}
+	
+	public void appendAction(CogcharActionBinding action) { 
+		myActionList.add(action);
+	}
+	public void performAllActions() {
+		for (CogcharActionBinding b : myActionList) {
+			b.perform();
+		}
+	}
 }

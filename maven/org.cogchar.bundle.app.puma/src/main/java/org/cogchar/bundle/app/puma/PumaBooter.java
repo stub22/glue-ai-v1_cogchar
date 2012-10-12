@@ -69,8 +69,7 @@ public class PumaBooter extends BasicDebugger {
 		 */
 		String optFilesysRoot = mediator.getOptionalFilesysRoot();
 		getLogger().debug("%%%%%%%%%%%%%%%%%%% Creating PumaAppContext");
-		final PumaAppContext pac = new PumaAppContext(bundleCtx);
-		pac.setContextMediator(mediator);
+		final PumaAppContext pac = new PumaAppContext(bundleCtx, mediator);
 
 		/*
 		 * At this point we have blank, generic PAC + HRC (if vWorld) context objects to work with. PAC + HRC are
@@ -157,9 +156,6 @@ public class PumaBooter extends BasicDebugger {
 		Repo r = null;
 
 		return r;
-	}
-
-	public void initSimulationRendering() {
 	}
 
 	private void initVWorldUnsafe(final PumaAppContext pac, PumaContextMediator mediator) throws Throwable {

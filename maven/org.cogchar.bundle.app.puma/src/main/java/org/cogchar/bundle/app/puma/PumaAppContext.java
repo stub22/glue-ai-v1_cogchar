@@ -47,58 +47,57 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.cogchar.api.skeleton.config.BoneCN;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
 import org.cogchar.app.puma.cgchr.PumaHumanoidMapper;
+import org.cogchar.platform.trigger.*;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaAppContext extends BasicDebugger {
-
+public class PumaAppContext extends CogcharScreenBox {
+	
+	private PumaRegistryClient	myRegClient;
+	
 	private BundleContext myBundleContext;
-	private PumaContextMediator myMediator;
-	private PumaVirtualWorldMapper myVWorldMapper;
-	private PumaConfigManager myConfigManager;
+
 	private ClassLoader myInitialBonyRdfCL;
-	// We now have a single instance of the web mapper here [via this.getWebMapper and PumaWebMapper.getWebMapper],
-	// instead of separate instances for each PumaDualCharacter.
-	private PumaWebMapper myWebMapper;
-	// This method for updating bony config is not very flexible (to configuring only single characters in the future)
-	// and requires multiple sheet reloads for multiple characters. So I'm trying out the idea of moving this functionality
-	// into updateConfigByRequest - Ryan
-	//private TriggerItems.UpdateBonyConfig myUpdateBonyConfigTI;
-	// Let's try making this a field of PumaAppContext. That way, refresh of bony config can be handled here in a nice
-	// clean, consistent way. May also have additional advantages. Might have some disadvantages too, we'll see!
+
 	private List<PumaDualCharacter> myCharList = new ArrayList<PumaDualCharacter>();
 
-	public PumaAppContext(BundleContext bc) {
+	public PumaAppContext(BundleContext bc, PumaContextMediator mediator) {
+		myRegClient = new PumaRegistryClientImpl(bc, mediator);
+		
 		myBundleContext = bc;
-		myConfigManager = new PumaConfigManager();
+		//myConfigManager = new PumaConfigManager();
 	}
 
 	protected BundleContext getBundleContext() {
 		return myBundleContext;
 	}
 	public boolean hasVWorldMapper() {
-		return (myVWorldMapper != null);
+		return (myRegClient.getVWorldMapper(null) != null);
 	}
 
 	public PumaVirtualWorldMapper getOrMakeVWorldMapper() {
-		if (myVWorldMapper == null) {
-			myVWorldMapper = new PumaVirtualWorldMapper(this);
+		PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
+		if (pvwm == null) {
+			pvwm = new PumaVirtualWorldMapper(this);
+			myRegClient.putVWorldMapper(pvwm, null);
 		}
-		return myVWorldMapper;
+		return pvwm;
 	}
 	public boolean hasWebMapper() { 
-		return (myWebMapper != null);
+		return (myRegClient.getWebMapper(null) != null);
 	}	
 	public PumaWebMapper getOrMakeWebMapper() {
-		if (myWebMapper == null) {
-			myWebMapper = new PumaWebMapper(this);
+		PumaWebMapper pwm = myRegClient.getWebMapper(null);
+		if (pwm == null) {
+			pwm = new PumaWebMapper(this);
+			myRegClient.putWebMapper(pwm, null);
 		}
-		return myWebMapper;
+		return pwm;
 	}
 
 	protected PumaConfigManager getConfigManager() {
-		return myConfigManager;
+		return myRegClient.getConfigMgr(null);
 	}
 	public void setCogCharResourcesClassLoader(ClassLoader loader) {
 		myInitialBonyRdfCL = loader;
@@ -108,8 +107,9 @@ public class PumaAppContext extends BasicDebugger {
 		return myInitialBonyRdfCL;
 	}
 	public void startOpenGLCanvas(boolean wrapInJFrameFlag) throws Exception {
-		if (myVWorldMapper != null) {
-			myVWorldMapper.startOpenGLCanvas(wrapInJFrameFlag);
+		if (hasVWorldMapper()) {
+			PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
+			pvwm.startOpenGLCanvas(wrapInJFrameFlag);
 		} else {
 			getLogger().warn("Ignoring startOpenGLCanvas command - no vWorldMapper present");
 		}
@@ -117,8 +117,9 @@ public class PumaAppContext extends BasicDebugger {
 	}
 
 	protected void initCinema() {
-		if (myVWorldMapper != null) {
-			myVWorldMapper.initCinema();
+		if (hasVWorldMapper()) {
+			PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
+			pvwm.initCinema();
 		} else {
 			getLogger().warn("Ignoring initCinema command - no vWorldMapper present");
 		}
@@ -126,16 +127,13 @@ public class PumaAppContext extends BasicDebugger {
 	// TODO:  This should take some optional args that will start a different repo client instead.
 
 	public void startRepositoryConfigServices() {
+		PumaConfigManager pcm = getConfigManager();
 		// This would happen by default anyway, if there were not already a MainConfigRepoClient in place.
-		myConfigManager.applyVanillaRepoClientAsMainConfig(myBundleContext);
+		pcm.applyVanillaRepoClientAsMainConfig(myBundleContext);
 		// This method performs the configuration actions associated with the developmental "Global Mode" concept
 		// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
 		// be updated to relect that		
-		myConfigManager.applyGlobalConfig(myBundleContext);
-	}
-
-	public void setContextMediator(PumaContextMediator mediator) {
-		myMediator = mediator;
+		pcm.applyGlobalConfig(myBundleContext);
 	}
 
 	/**
@@ -177,21 +175,30 @@ public class PumaAppContext extends BasicDebugger {
 					getLogger().warn("Could not get valid graphs on which to query for config of {}", charIdent.getLocalName());
 					break;
 				}
-				HumanoidConfig myHumanoidConfig = new HumanoidConfig(rc, charIdent, graphIdentForHumanoid);
-				PumaDualCharacter pdc = connectDualRobotChar(charIdent, myHumanoidConfig.nickname);
-				myCharList.add(pdc);
-				pdc.absorbContext(myMediator);
-				setupCharacterBindingToRobokind(pdc, graphIdentForBony, myHumanoidConfig);
-				setupAndStartBehaviorTheater(pdc);
+				HumanoidConfig humConfig = new HumanoidConfig(rc, charIdent, graphIdentForHumanoid);
+				PumaDualCharacter pdc = connectDualRobotChar(humConfig, graphIdentForBony);
 			}
 		}
 		return myCharList;
 	}
-
+	
+	public PumaDualCharacter connectDualRobotChar(HumanoidConfig humCfg, Ident graphIdentForBony) throws Throwable {
+		Ident bonyCharIdent = humCfg.myCharIdent;
+		PumaVirtualWorldMapper vWorldMapper = myRegClient.getVWorldMapper(null);
+		PumaContextMediator pcMediator = myRegClient.getCtxMediator(null);
+		// note that vWorldMapper may be null.
+		PumaDualCharacter pdc = new PumaDualCharacter(vWorldMapper, myBundleContext, humCfg.myCharIdent, humCfg.myNickname);
+		myCharList.add(pdc);
+		pdc.absorbContext(pcMediator);
+		setupCharacterBindingToRobokind(pdc, graphIdentForBony, humCfg);
+		setupAndStartBehaviorTheater(pdc);		
+		return pdc;
+	}
+	
 	public void reloadVirtualWorldConfig(boolean resetMainConfigFlag) {
 		PumaConfigManager pcm = getConfigManager();
 
-		PumaVirtualWorldMapper pvwm = myVWorldMapper; // getVirtualWorldMapper();
+		PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null); // getVirtualWorldMapper();
 		if (pvwm != null) {
 			if (resetMainConfigFlag) {
 				BundleContext bc = getBundleContext();
@@ -311,8 +318,11 @@ public class PumaAppContext extends BasicDebugger {
 	public void setupAndStartBehaviorTheater(PumaDualCharacter pdc) throws Throwable {
 		//pdc.registerDefaultSceneTriggers(); // Seems this doesn't actually do anything at this point
 		pdc.loadBehaviorConfig(false);
-
-		myVWorldMapper.registerSpecialInputTriggers(pdc);
+		PumaVirtualWorldMapper vWorldMapper = myRegClient.getVWorldMapper(null);
+		if (vWorldMapper != null) {
+			// ToDo:  Remove this stuff in favor of BoxSpace/CommandSpace setup.
+			vWorldMapper.registerSpecialInputTriggers(pdc);
+		}
 
 		pdc.startTheater();
 
@@ -328,7 +338,7 @@ public class PumaAppContext extends BasicDebugger {
 			BoneCN bqn = new BoneCN();
 			boolean connectedOK = pdc.connectBonyCharToRobokindSvcs(bunCtx, graphIdentForBony, hc, rc, bqn);
 			if (connectedOK) {
-				setupRobokindJointGroup(pdc, hc.jointConfigPath);
+				setupRobokindJointGroup(pdc, hc.myJointConfigPath);
 				pdc.connectSpeechOutputSvcs(bunCtx);
 				return true;
 			} else {
@@ -373,11 +383,7 @@ public class PumaAppContext extends BasicDebugger {
 		return outputFile;
 	}
 
-	public PumaDualCharacter connectDualRobotChar(Ident bonyCharIdent, String nickName) throws Throwable {
-		// note that vWorldMapper may be null.
-		PumaDualCharacter pdc = new PumaDualCharacter(myVWorldMapper, myBundleContext, bonyCharIdent, nickName);
-		return pdc;
-	}
+
 	// A half baked (3/4 baked?) idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
 	private boolean myUpdateInProgressFlag = false;
