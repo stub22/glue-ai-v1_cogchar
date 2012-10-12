@@ -53,7 +53,19 @@ package org.cogchar.lifter {
 		if (mySessionId.isEmpty) {
 		  error("ControlActor cannot get sessionId, not rendering!")
 		  TextBox.makeBox("ControlActor cannot get sessionId, not rendering!", "", true)
-		} else {
+	  } else {
+		  // On the surface, this is rather bad form. Generally actors should get their update information through
+		  // the actor message (which could be a case class containing any needed fields), not a callback into the
+		  // very object to which they are registered as an actor!
+		  // But there is a reason this works "better" in this case. When a Lifter template is first rendered, the control
+		  // actors in the template are not yet active, but the browser will call this
+		  // method for that initial render. At that point, as PageCommander is currently set up, the correct control
+		  // info is already available, and the page renders correctly.
+		  // If the update information is passed in the actor message and not via this callback, we must jump through
+		  // additional hoops in a brittle way, and attempt to wait sufficiently long after the template is initially rendered
+		  // for Comet to be active on both the client and server sides. Only then can the controls be
+		  // updated via Comet actor messages.
+		  // This has been shown to work, but the workarounds involved are less elegant than this inelegance:
 		  "@ControlSlot" #> PageCommander.getNode(mySessionId, slotNum)
 		}
 	  }
