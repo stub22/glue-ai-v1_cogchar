@@ -28,8 +28,6 @@ package org.cogchar.lifter {
 
 	class TemplateActor extends CometActor with CometListener with Logger {
 	  
-	  final val DEFAULT_TEMPLATE = "12slots"
-	  
 	  lazy val mySessionId = {
 		S.session match {
 		  case Full(myLiftSession) => {
@@ -54,9 +52,21 @@ package org.cogchar.lifter {
 		  TextBox.makeBox("TemplateActor cannot get sessionId, not rendering!", "", true)
 		} else {
 		  val desiredTemplate = PageCommander.getCurrentTemplate(mySessionId)
-		  if (desiredTemplate == null) { // If so, things are still initializing, we'll render default template for now (rendering just a message in a paragraph, or blank, breaks JS part of control comet!
-			"@TemplateSlot" #> <lift:surround with={DEFAULT_TEMPLATE} at="content"/>
+		  if (desiredTemplate == null) { // If so, things are still initializing, we'll render loading message:
+			"@TemplateSlot" #> <h1>Loading, please wait...</h1>
 		  } else {
+			// On the surface, this is rather bad form. Generally actors should get their update information through
+			// the actor message (which could be a case class containing any needed fields), not a callback into the
+			// very object to which they are registered as an actor!
+			// But there is a reason this works "better" in this case. When a session is first rendered, the template
+			// actor in the default.html base Lift template is not yet active, but the browser will call this
+			// method for that initial render. At that point, as PageCommander is currently set up, the correct template
+			// info is already available, and the page renders correctly.
+			// If the update information is passed in the actor message and not via this callback, we must jump through
+			// additional hoops in a brittle way, and attempt to wait sufficiently long after the basic Lift template is initially rendered
+			// for Comet to be active on both the client and server sides. Only then can the embedded Lifter template be
+			// updated via Comet actor messages.
+			// This has been shown to work, but the workarounds involved are less elegant than this inelegance:
 			"@TemplateSlot" #> <lift:surround with={desiredTemplate} at="content"/>
 		  }
 		}
