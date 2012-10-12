@@ -38,14 +38,14 @@ public class HumanoidFigureConfig {
 
 	public HumanoidFigureConfig(RepoClient qi, HumanoidConfig hc, RenderConfigEmitter rce, Ident bonyGraphIdent) {
 		myCharIdent = hc.myCharIdent;
-		myNickname = hc.nickname;
-		myMeshPath = hc.meshPath;
+		myNickname = hc.myNickname;
+		myMeshPath = hc.myMeshPath;
 		myDebugSkelMatPath = rce.getMaterialPath();
 		myBoneConfig = new HumanoidBoneConfig();
-		myInitX = hc.initialPosition[0];
-		myInitY = hc.initialPosition[1];
-		myInitZ = hc.initialPosition[2];
-		myPhysicsFlag = hc.physicsFlag;
+		myInitX = hc.myInitialPosition[0];
+		myInitY = hc.myInitialPosition[1];
+		myInitZ = hc.myInitialPosition[2];
+		myPhysicsFlag = hc.myPhysicsFlag;
 		addBoneDescsFromBoneRobotConfig(qi, myCharIdent, bonyGraphIdent, this);
 	}
 

@@ -30,11 +30,11 @@ import org.appdapter.help.repo.SolutionList;
 public class HumanoidConfig {
 
 	public Ident myCharIdent;
-	public String nickname = "";
-	public String meshPath;
-	public String jointConfigPath;
-	public Float[] initialPosition = new Float[3];
-	public boolean physicsFlag;
+	public String myNickname = "";
+	public String myMeshPath;
+	public String myJointConfigPath;
+	public Float[] myInitialPosition = new Float[3];
+	public boolean myPhysicsFlag;
 
 	public HumanoidConfig(RepoClient qi, Ident charIdent, Ident graphIdent) {
 		SolutionHelper sh = new SolutionHelper();
@@ -42,17 +42,17 @@ public class HumanoidConfig {
 		
 		SolutionList sList = qi.queryIndirectForAllSolutions(HumanoidCN.HUMANOID_QUERY, graphIdent);
 		SolutionMap solutionMap  = sList.makeSolutionMap(HumanoidCN.ROBOT_URI_VAR_NAME);
-		nickname = sh.pullString(solutionMap, charIdent, HumanoidCN.ROBOT_ID_VAR_NAME);
-		meshPath = sh.pullString(solutionMap, charIdent, HumanoidCN.MESH_PATH_VAR_NAME);
-		jointConfigPath = sh.pullString(solutionMap, charIdent, HumanoidCN.JOINT_CONFIG_PATH_VAR_NAME);
-		for (int i = 0; i < initialPosition.length; i++) {
-			initialPosition[i] = sh.pullFloat(solutionMap, charIdent, HumanoidCN.INITIAL_POSITION_VAR_NAMES[i]);
+		myNickname = sh.pullString(solutionMap, charIdent, HumanoidCN.ROBOT_ID_VAR_NAME);
+		myMeshPath = sh.pullString(solutionMap, charIdent, HumanoidCN.MESH_PATH_VAR_NAME);
+		myJointConfigPath = sh.pullString(solutionMap, charIdent, HumanoidCN.JOINT_CONFIG_PATH_VAR_NAME);
+		for (int i = 0; i < myInitialPosition.length; i++) {
+			myInitialPosition[i] = sh.pullFloat(solutionMap, charIdent, HumanoidCN.INITIAL_POSITION_VAR_NAMES[i]);
 		}
-		physicsFlag = sh.pullBoolean(solutionMap, charIdent, HumanoidCN.PHYSICS_FLAG_VAR_NAME);
+		myPhysicsFlag = sh.pullBoolean(solutionMap, charIdent, HumanoidCN.PHYSICS_FLAG_VAR_NAME);
 	}
 	@Override public String toString() { 
-		return "HumanoidConfig[charId=" + myCharIdent + ", nickname=" + nickname + ", meshPath=" + meshPath 
-				+ ", jointConfigPath=" + jointConfigPath + ", initialPos=" + initialPosition  
-				+ ", physics=" + physicsFlag + "]";
+		return "HumanoidConfig[charId=" + myCharIdent + ", nickname=" + myNickname + ", meshPath=" + myMeshPath 
+				+ ", jointConfigPath=" + myJointConfigPath + ", initialPos=" + myInitialPosition  
+				+ ", physics=" + myPhysicsFlag + "]";
 	}
 }

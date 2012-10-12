@@ -17,6 +17,8 @@
 package org.cogchar.bundle.app.puma;
 
 import org.appdapter.core.name.Ident;
+import org.cogchar.platform.trigger.BoxSpace;
+import org.cogchar.platform.trigger.CommandSpace;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -24,19 +26,26 @@ import org.appdapter.core.name.Ident;
 
 public interface PumaRegistryClient {
 	
-	public PumaAppContext getAppContext(Ident optSpecID);
-	public void putAppContext(PumaAppContext pac, Ident optSpecID);
+	//public PumaAppContext getAppContext(Ident optSpecID);
+	//public void putAppContext(PumaAppContext pac, Ident optSpecID);
 	
 	public PumaContextMediator getCtxMediator(Ident optSpecID);
-	public void putCtxMediator (PumaContextMediator med, Ident optSpecID);
-	
-	public PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID);
-	public void putVWorldMapper (PumaContextMediator v, Ident optSpecID);
+	// public void putCtxMediator (PumaContextMediator med, Ident optSpecID);
 	
 	public PumaConfigManager getConfigMgr(Ident optSpecID);
-	public void putConfigMgr (PumaConfigManager pcm, Ident optSpecID);
+	//public void putConfigMgr (PumaConfigManager pcm, Ident optSpecID);
+		
+	public BoxSpace getTargetBoxSpace(Ident optSpecID);
+	//public void putTargetBoxSpace(BoxSpace bs, Ident optSpecID);
+
+	public CommandSpace getCommandSpace(Ident optSpecID);
+	//public void putCommandSpace(CommandSpace cs, Ident optSpecID);
+
+	public PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID);
+	public void putVWorldMapper (PumaVirtualWorldMapper v, Ident optSpecID);
 	
 	public PumaWebMapper getWebMapper(Ident optSpecID);
 	public void putWebMapper(PumaWebMapper wm, Ident optSpecID);
+	
 	
 }

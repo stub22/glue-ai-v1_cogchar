@@ -15,8 +15,18 @@
  */
 package org.cogchar.app.buddy.busker;
 
+import java.util.List;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
+import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.platform.trigger.CommandSpace;
+import org.cogchar.platform.trigger.CommandBinding;
+import org.cogchar.platform.trigger.BasicActionBindingImpl;
+import org.appdapter.help.repo.RepoClient;
+import org.cogchar.blob.emit.RepoClientTester;
+import org.cogchar.blob.emit.RepoClientTester.CommandRec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -130,5 +140,33 @@ public class TriggerItems {
 			pdc.useTempAnims();
 		}
 	}	
+	private static Logger theLogger = LoggerFactory.getLogger(TriggerItems.class);
 	
+	public static TriggerItem makeTriggerItem(String trigFQCN) {
+		// forName(String name, boolean initialize, ClassLoader loader) 
+        //  Returns the Class object associated with the class or interface with the given string name, using the given class loader.
+		TriggerItem  ti = null;
+		try {
+			Class trigClass = Class.forName(trigFQCN);
+			ti = (TriggerItem) trigClass.newInstance();
+		} catch (Throwable t) {
+			theLogger.error("Cannot make trigger item for class " + trigFQCN, t);
+		}
+		return ti;
+	}
+	public static CommandSpace buildCommandSpace(RepoClient rc) {
+		CommandSpace cSpace = new CommandSpace();
+		List<CommandRec> cmdRecList = RepoClientTester.queryCommands(rc);
+		for (CommandRec cRec : cmdRecList) {
+			TriggerItem ti = makeTriggerItem(cRec.trigFQCN());
+			CommandBinding cb = cSpace.findOrMakeBinding(cRec.cmdID());
+			// Here is the missing piece: get from boxID to a CogcharScreenBox to put in the binding.
+			// CogcharScreenBox csb 
+			CogcharActionBinding cab = new BasicActionBindingImpl();
+			
+		//	CogcharActionBinding action = 
+		//	cb.
+		}
+		return cSpace;
+	}
 }
