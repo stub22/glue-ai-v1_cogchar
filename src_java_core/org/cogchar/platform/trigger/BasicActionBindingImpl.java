@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.app.trigger;
+package org.cogchar.platform.trigger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import org.cogchar.platform.trigger.CogcharActionTrigger;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BoundAction implements CogcharActionBinding {
+public class BasicActionBindingImpl implements CogcharActionBinding {
 	// Changed to list of DummyBox instead of a single one to support multiple characters - 27 July 2012 Ryan Biggs
 
 	private List<CogcharScreenBox> myActionBoxes = new ArrayList<CogcharScreenBox>();

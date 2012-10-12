@@ -86,6 +86,7 @@ public class SceneActions {
 				if (isPressed) {
 					CogcharActionBinding binding = theBoundActionsByTrigName.get(name);
 					if (binding != null) {
+						theLogger.info("Performing bound action: {}", binding);
 						binding.perform();
 					} else {
 						theLogger.info("Received trigger-press [{}], but binding = {}", name, binding);
@@ -96,6 +97,9 @@ public class SceneActions {
 	}
 
 	public static void setTriggerBinding(String sceneTrigName, CogcharActionBinding ba) {
+		// Problem is that this overwrites any existing binding for that sceneTrig,
+		// so if we have more than one Theater posting bindings, we wind up with a race
+		// condition regarding which one is active.
 		theBoundActionsByTrigName.put(sceneTrigName, ba);
 	}
 
@@ -105,13 +109,15 @@ public class SceneActions {
 	}
 	*/ 
 
-
-	public static void setTriggerBinding(int sceneTrigIdx, CogcharScreenBox box, CogcharActionTrigger trigger) {
+/*
+	private static void setTriggerBinding(int sceneTrigIdx, CogcharScreenBox box, CogcharActionTrigger trigger) {
 		BoundAction ba = new BoundAction();
 		ba.addTargetBox(box);
 		ba.setTargetTrigger(trigger);
 		//setTriggerBinding(sceneTrigIdx, ba); // Did this ever do anything? (see method above)
 	}
+	* 
+	*/ 
 
 	public static CogcharActionBinding getTriggerBinding(String sceneTrigName) {
 		return theBoundActionsByTrigName.get(sceneTrigName);
@@ -144,13 +150,11 @@ public class SceneActions {
 
 	static class Binder implements CogcharEventActionBinder {
 
-		@Override
-		public void setBindingForEvent(String boundEventName, CogcharActionBinding binding) {
+		@Override public void setBindingForEvent(String boundEventName, CogcharActionBinding binding) {
 			setTriggerBinding(boundEventName, binding);
 		}
 
-		@Override
-		public CogcharActionBinding getBindingForEvent(String boundEventName) {
+		@Override public CogcharActionBinding getBindingForEvent(String boundEventName) {
 			return getTriggerBinding(boundEventName);
 		}
 	}

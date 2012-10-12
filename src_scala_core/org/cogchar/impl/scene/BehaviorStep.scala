@@ -61,9 +61,9 @@ class TextAction(val myActionText : String) extends BasicBehaviorAction() {
 	override def perform(s: BScene) {
 		val media = new Media.BasicText(myActionText);
 		for (val chanId : Ident <- myChannelIdents) {
-			logInfo("Looking for channel[" + chanId + "] in scene [" + s + "]");
+			getLogger().info("Looking for channel[" + chanId + "] in scene [" + s + "]");
 			val chan : Channel[_ <: Media, FancyTime] = s.getChannel(chanId);
-			logInfo("Found channel: " + chan);
+			getLogger().info("Found channel: " + chan);
 			if (chan != null) {
 				
 				chan match {
@@ -72,11 +72,11 @@ class TextAction(val myActionText : String) extends BasicBehaviorAction() {
 						val startResFlag = perf.attemptToScheduleAction(Performance.Action.START, null);
 					}
 					case  _ => {
-						logWarning("************* TextAction cannot perform on non Text-Channel: " + chan);
+						getLogger().warn("************* TextAction cannot perform on non Text-Channel: " + chan);
 					}
 				}
 			} else {
-				logWarning("******************* Could not locate channel for: " + chanId);
+				getLogger().warn("******************* Could not locate channel for: " + chanId);
 			}
 		}
 	}

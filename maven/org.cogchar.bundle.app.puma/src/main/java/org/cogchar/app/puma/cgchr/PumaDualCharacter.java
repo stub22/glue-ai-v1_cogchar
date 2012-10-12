@@ -67,7 +67,7 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		myCharIdent = charIdent;
 		myNickName = nickName;
 		myHumoidMapper = new PumaHumanoidMapper(vWorldMapper, bundleCtx, charIdent);
-		myTheater = new Theater();	
+		myTheater = new Theater(charIdent);	
 	}
 	public void absorbContext(PumaContextMediator mediator) { 
 		BehaviorConfigEmitter behavCE = new BehaviorConfigEmitter();
@@ -127,6 +127,7 @@ public class PumaDualCharacter extends CogcharScreenBox {
 
 	public void connectSpeechOutputSvcs(BundleContext bundleCtx) {
 		Ident speechChanIdent = ChannelNames.getOutChanIdent_SpeechMain();
+		
 		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
 		myTheater.registerChannel(mySOC);
 	}
@@ -199,7 +200,7 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		startTheater();
 		getLogger().info("stopResetAndRecenter - Complete.");
 	}
-
+/*
 	public void registerDefaultSceneTriggers() {
 		for (int i = 0; i < SceneActions.getSceneTrigKeyCount(); i++) {
 			TriggerItems.SceneMsg smti = new TriggerItems.SceneMsg();
@@ -211,7 +212,7 @@ public class PumaDualCharacter extends CogcharScreenBox {
 	private void registerTheaterBinding(int sceneTrigIdx, CogcharActionTrigger trig) {
 		SceneActions.setTriggerBinding(sceneTrigIdx, myTheater, trig);
 	}
-
+*/
 //	private InputStream openAssetStream(String assetName) { 
 //		return myBRC.openAssetStream(assetName);
 //	}	
@@ -234,7 +235,11 @@ public class PumaDualCharacter extends CogcharScreenBox {
 	public void sayText(String txt) {
 		// TODO:  Prevent/blend concurrent activity through the channel/behavior systerm
 		try {
-			mySOC.speakText(txt);
+			if (mySOC != null) {
+				mySOC.speakText(txt);
+			} else {
+				getLogger().warn("Character {} ignoring request to sayText, because SpeechOutputClient is null", myCharIdent);
+			}
 		} catch (Throwable t) {
 			getLogger().error("problem speaking", t);
 		}
