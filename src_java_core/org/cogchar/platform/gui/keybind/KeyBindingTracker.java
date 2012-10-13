@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.app.trigger;
+package org.cogchar.platform.gui.keybind;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -15,6 +15,9 @@
  */
 package org.cogchar.render.app.trigger;
 
+import org.cogchar.platform.gui.keybind.KeyBindingConfigItem;
+import org.cogchar.platform.gui.keybind.KeyBindingTracker;
+import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,7 +70,7 @@ public class SceneActions {
 			int sceneTrigKeyNum = getKey(nextMapping);
 			if (sceneTrigKeyNum != NULL_KEY) {
 				KeyTrigger keyTrig = new KeyTrigger(sceneTrigKeyNum);
-				String sceneTrigName = nextMapping.myBoundEventName;
+				String sceneTrigName = nextMapping.myTargetActionName;
 				inputManager.addMapping(sceneTrigName, keyTrig);
 				bindingMap.put(sceneTrigName, sceneTrigKeyNum);
 				actionNames[idx] = sceneTrigName;
@@ -137,13 +140,13 @@ public class SceneActions {
 		String keyString = mapping.myBoundKeyName;
 		try {
 			if ((keyString.startsWith("AXIS")) || (keyString.startsWith("BUTTON"))) { // In this case, must be MouseInput
-				theLogger.warn("Mouse triggers not supported for scene actions -- {} not mapped.", mapping.myBoundEventName);
+				theLogger.warn("Mouse triggers not supported for scene actions -- {} not mapped.", mapping.myTargetActionName);
 			} else { // ... regular KeyInput - must use reflection to get fron key names to jME KeyInput field values
 				Field keyField = KeyInput.class.getField("KEY_" + keyString.toUpperCase());
 				keyInput = keyField.getInt(keyField);
 			}
 		} catch (Exception e) {
-			theLogger.warn("Error getting binding for {}: {}", mapping.myBoundEventName, e);
+			theLogger.warn("Error getting binding for {}: {}", mapping.myTargetActionName, e);
 		}
 		return keyInput;
 	}

@@ -17,6 +17,7 @@ package org.cogchar.app.buddy.busker;
 
 import java.util.List;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
+import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.platform.trigger.CogcharScreenBox;
 import org.cogchar.platform.trigger.CommandSpace;
@@ -141,7 +142,9 @@ public class TriggerItems {
 		}
 	}	
 	private static Logger theLogger = LoggerFactory.getLogger(TriggerItems.class);
-	
+	private static Logger getLogger() { 
+		return theLogger;
+	}
 	public static TriggerItem makeTriggerItem(String trigFQCN) {
 		// forName(String name, boolean initialize, ClassLoader loader) 
         //  Returns the Class object associated with the class or interface with the given string name, using the given class loader.
@@ -154,19 +157,23 @@ public class TriggerItems {
 		}
 		return ti;
 	}
-	public static CommandSpace buildCommandSpace(RepoClient rc) {
-		CommandSpace cSpace = new CommandSpace();
+	public static void populateCommandSpace(RepoClient rc, CommandSpace cSpace, BoxSpace boxSpace) {
 		List<CommandRec> cmdRecList = RepoClientTester.queryCommands(rc);
 		for (CommandRec cRec : cmdRecList) {
 			TriggerItem ti = makeTriggerItem(cRec.trigFQCN());
-			CommandBinding cb = cSpace.findOrMakeBinding(cRec.cmdID());
-			// Here is the missing piece: get from boxID to a CogcharScreenBox to put in the binding.
-			// CogcharScreenBox csb 
-			CogcharActionBinding cab = new BasicActionBindingImpl();
-			
-		//	CogcharActionBinding action = 
-		//	cb.
+			CogcharScreenBox csBox = boxSpace.findBox(cRec.boxID());
+			if ((ti != null) && (csBox != null)) {
+				CommandBinding cb = cSpace.findOrMakeBinding(cRec.cmdID());
+				// Here is the missing piece: get from boxID to a CogcharScreenBox to put in the binding.
+				// CogcharScreenBox csb 
+				CogcharActionBinding cab = new BasicActionBindingImpl();
+				cab.addTargetBox(csBox);
+				cab.setTargetTrigger(ti);
+				cb.appendAction(cab);
+				getLogger().info("Successfully populated command: {}", cRec);
+			} else {
+				getLogger().warn("Skipping failed binding for trig=[{}] and box=[{}], for cmd=[{}]", new Object[]{ti, csBox, cRec});
+			}
 		}
-		return cSpace;
 	}
 }

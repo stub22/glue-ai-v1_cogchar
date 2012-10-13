@@ -25,13 +25,13 @@ import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.platform.trigger.CogcharActionBinding;
-import org.cogchar.render.app.trigger.KeyBindingConfig;
 import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 import org.osgi.framework.BundleContext;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
+import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 
 /**
  * @author Stu B. <www.texpedient.com>
