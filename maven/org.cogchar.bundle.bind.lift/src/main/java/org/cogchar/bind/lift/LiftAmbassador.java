@@ -81,6 +81,8 @@ public class LiftAmbassador {
 		void notifyConfigReady();
 		
 		void setConfigForSession(String sessionId, LiftConfig config);
+		
+		void setControlForSessionAndSlot(String sessionId, int slotNum, ControlConfig newConfig);
 
 		void loadPage(String sessionId, String path);
 		
@@ -133,7 +135,7 @@ public class LiftAmbassador {
 	
 	// This flavor activates a new set of controls for a single session
 	public void activateControlsFromConfig(String sessionId, LiftConfig newConfig) {
-		synchronized (activationLock) {
+		synchronized (activationLock) { // Likely doesn't actually need synchronization since LifterState is now threadsafe...
 			if (myLift != null) {
 				myLift.setConfigForSession(sessionId, newConfig);
 			} else {
@@ -142,9 +144,22 @@ public class LiftAmbassador {
 		}
 	}
 	
+	// This method activates a single control for a single session
+	public void activateControlFromConfig(String sessionId, int slotNum, ControlConfig newConfig) {
+		synchronized (activationLock) { // Likely doesn't actually need synchronization since LifterState is now threadsafe...
+			if (myLift != null) {
+				myLift.setControlForSessionAndSlot(sessionId, slotNum, newConfig);
+			} else {
+				theLogger.error("A new control was requested for session {}, but no liftInterface was found!", sessionId);
+			}
+		}
+	}
+	
 	// Activates controls identified by a LiftConfig URI
 	public void activateControlsFromUri(String sessionId, Ident configIdent) {
-		synchronized (activationLock) {
+		// May be OK not to have this synchronized if appdapter repo code is threadsafe, and if myLiftConfigCache
+		// is made a ConcurrentHashMap
+		synchronized (activationLock) { 
 			boolean success = false;
 			LiftConfig newConfig = null;
 			if (myLiftConfigCache.containsKey(configIdent)) {
@@ -165,6 +180,34 @@ public class LiftAmbassador {
 			}
 		}
 	}
+	
+	// Activates a single control in a single session
+	public void activateControlFromUri(String sessionId, int slotNum, Ident configIdent) {
+		// May be OK not to have this synchronized if appdapter repo code is threadsafe
+		synchronized(activationLock) {
+			boolean success = false;
+			if (myRepoClient != null) {
+				ControlConfig newControl = ControlConfig.getControlConfigFromUri(myRepoClient, myQGraph, configIdent);
+				if (newControl != null) {
+					theLogger.info("Loaded lift control {} from sheet", configIdent.getLocalName());
+					activateControlFromConfig(sessionId, slotNum, newControl);
+					success = true;
+				} else {
+					theLogger.warn("Control requested in session {}, but it was not found: {}", sessionId, configIdent);
+				}
+				
+			} else {
+				theLogger.error("New lift control requested in session {}, but no RepoClient set!", sessionId);
+			}
+		}
+	}
+	
+	// Activates a single control in a single session by localname only, assuming the lci: prefix
+	public void activateControlFromLocalName(String sessionId, int slotNum, String localName) {
+		Ident controlIdent = new FreeIdent(LiftCN.LIFT_CONFIG_INSTANCE_PREFIX + localName, localName);
+		activateControlFromUri(sessionId, slotNum, controlIdent);
+	}
+	
 	
 	public LiftConfig getInitialConfig() {
 		return myInitialConfig;

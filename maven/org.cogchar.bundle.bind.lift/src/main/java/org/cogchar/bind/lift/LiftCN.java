@@ -39,6 +39,10 @@ public class LiftCN {
 	public static final String START_CONFIG_QUERY_URI = "ccrt:find_lift_startConfig_99";
 	
 	public static final String CONTROL_QUERY_TEMPLATE_URI = "ccrt:template_lift_control_99";
+	public static final String FREE_CONTROL_QUERY_TEMPLATE_URI = "ccrt:find_free_control_99";
 	
 	public static final String CONFIG_QUERY_VAR_NAME = "config";
+	public static final String CONTROL_QUERY_VAR_NAME = "desiredControl";
+	
+	public static final String LIFT_CONFIG_INSTANCE_PREFIX = "http://www.cogchar.org/lift/config/instance#"; //lci:
 }

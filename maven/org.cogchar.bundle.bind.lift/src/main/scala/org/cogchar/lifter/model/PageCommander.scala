@@ -343,6 +343,10 @@ package org.cogchar.lifter {
 		def setConfigForSession(sessionId:String, config:LiftConfig) {
 		  initFromCogcharRDF(sessionId, config)
 		}
+		def setControlForSessionAndSlot(sessionId:String, slotNum:Int, newConfig:ControlConfig) {
+		  val newControlXml = getXmlForControl(sessionId, slotNum, newConfig)
+		  setControl(sessionId, slotNum, newControlXml)
+		}
 		def loadPage(sessionId:String, pagePath:String) {
 		  theLifterState.requestedPage(sessionId) = Some(pagePath)
 		  updateInfo = controlId(sessionId, ActorCodes.LOAD_PAGE_CODE)
