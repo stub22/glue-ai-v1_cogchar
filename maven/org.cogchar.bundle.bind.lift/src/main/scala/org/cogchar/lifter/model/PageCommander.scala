@@ -171,14 +171,23 @@ package org.cogchar.lifter {
 		  if (changedTemplate) {
 			updateInfo = controlId(sessionId, ActorCodes.TEMPLATE_CODE)
 			updateListeners;
-			// If template has changed, refresh page. This fixes problems where controls do not render properly
-			// if the new template has more slots than the old. Seems to be a browser-side JavaScript issue.
-			updateListeners(controlId(sessionId, ActorCodes.REFRESH_PAGE_CODE));
-			// For a reason not completely understood, the page refresh above fails to have the desired effect unless
+			// For a reason not completely understood, the template change above fails to have the desired effect unless
 			// the control comet is updated below, although in theory this should happen automatically on template change:
 		  } 
 		  // ... load new controls
 		  setControlsFromMap(sessionId)
+		  // If template has changed, refresh page. This fixes problems where controls do not render properly
+		  // if the new template has more slots than the old. Seems to be a browser-side JavaScript issue.
+		  if (changedTemplate) {
+			updateListeners(controlId(sessionId, ActorCodes.REFRESH_PAGE_CODE));
+		  }
+		  if (!(theLifterState.firstConfigChanged contains sessionId)) {
+			// This contains repeated code, but is only temporary until ticket 23 is addressed.
+			// If not for repeated page refresh code, we'd have to check firstConfigChanged once in the conditonal
+			// above, and again to see if we need to add session to (the temporary) firstConfigChanged
+			updateListeners(controlId(sessionId, ActorCodes.REFRESH_PAGE_CODE));
+			theLifterState.firstConfigChanged += sessionId;
+		  }
 		}
 	  }
 	  
