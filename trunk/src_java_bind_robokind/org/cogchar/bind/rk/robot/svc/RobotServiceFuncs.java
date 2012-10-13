@@ -15,6 +15,10 @@
  */
 package org.cogchar.bind.rk.robot.svc;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.robokind.api.common.config.VersionProperty;
@@ -117,4 +121,23 @@ public class RobotServiceFuncs {
 		}
 		startedJointGroupLifecycles.clear();
 	}
+	public static File copyJointGroupFile(String tgtFilePath, String jgFullPath, ClassLoader jgClassLoader) {
+		File outputFile = null;
+		try {
+			InputStream stream = jgClassLoader.getResourceAsStream(jgFullPath);			
+			outputFile = new File(tgtFilePath);
+			OutputStream out = new FileOutputStream(outputFile);
+			int read = 0;
+			byte[] bytes = new byte[1024];
+			while ((read = stream.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+			stream.close();
+			out.flush();
+			out.close();
+		} catch (Exception e) {
+			theLogger.warn("Exception trying to load jointGroup from resource into temp file: ", e);
+		}
+		return outputFile;
+	}	
 }

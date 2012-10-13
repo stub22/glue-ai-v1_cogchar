@@ -20,6 +20,11 @@ import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.appdapter.core.store.Repo;
+
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
+import org.cogchar.app.buddy.busker.TriggerItems;
+
 import org.slf4j.LoggerFactory;
 
 /**
@@ -69,7 +74,10 @@ public class PumaBooter extends BasicDebugger {
 		 */
 		String optFilesysRoot = mediator.getOptionalFilesysRoot();
 		getLogger().debug("%%%%%%%%%%%%%%%%%%% Creating PumaAppContext");
-		final PumaAppContext pac = new PumaAppContext(bundleCtx, mediator);
+		
+		String roleShortName = "pumaAppContext";
+		Ident ctxID = new FreeIdent(PumaModeConstants.RKRT_NS_PREFIX + roleShortName, roleShortName);
+		final PumaAppContext pac = new PumaAppContext(bundleCtx, mediator, ctxID);
 
 		/*
 		 * At this point we have blank, generic PAC + HRC (if vWorld) context objects to work with. PAC + HRC are
@@ -107,10 +115,16 @@ public class PumaBooter extends BasicDebugger {
 			pac.setCogCharResourcesClassLoader(myInitialBonyRdfCL);
 
 			getLogger().debug("%%%%%%%%%%%%%%%%%%% calling connectDualRobotChars()");
+			
 			pac.connectDualRobotChars();
 
+			pac.reloadCommandSpace();
+			
 			mediator.notifyCharactersLoaded(pac);
 		}
+		
+		// NOW we are ready to set up the command-processing system, making use of our boxSpace to find
+		// characters and other commandable entities.
 		
 		if (wantVWorld) {
 			getLogger().debug("%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed , calling initCinema()");
@@ -121,6 +135,7 @@ public class PumaBooter extends BasicDebugger {
 			// We'll let pac take care of this, since it is currently "Home of the Global Mode"
 			pac.initCinema();
 		}
+		
 		mediator.notifyBeforeBootComplete(pac);
 	}
 
