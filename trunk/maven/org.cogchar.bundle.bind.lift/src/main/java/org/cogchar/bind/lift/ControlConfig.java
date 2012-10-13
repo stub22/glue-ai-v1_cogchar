@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
+import org.appdapter.help.repo.SolutionList;
 
 /**
  * @author Ryan Biggs
@@ -50,7 +51,9 @@ public class ControlConfig {
 	public ControlConfig(RepoClient qi, Solution solution) {
 		SolutionHelper sh = new SolutionHelper();
 		Ident myIdent = sh.pullIdent(solution, LiftCN.CONTROL_VAR_NAME);
-		myURI_Fragment = myIdent.getLocalName();
+		if (myIdent != null) { // This might be false (myIdent = null) if this is instantiated via getControlConfigFromUri
+			myURI_Fragment = myIdent.getLocalName();
+		}
 		controlType = sh.pullIdent(solution, LiftCN.CONTROL_TYPE_VAR_NAME).getLocalName();
 		if (controlType == null) {
 			controlType = "NULLTYPE";
@@ -68,7 +71,7 @@ public class ControlConfig {
 		resource = sh.pullString(solution, LiftCN.RESOURCE_VAR_NAME, "");
 	}
 	
-	// A copy constructor - currently needed by PageCommander, but probably better if it wasn't...
+	// A copy constructor - currently needed by PageCommander (but probably better if it wasn't...)
 	public ControlConfig(ControlConfig configToCopy) {
 		myURI_Fragment = configToCopy.myURI_Fragment;
 		controlType = configToCopy.controlType;
@@ -76,6 +79,21 @@ public class ControlConfig {
 		text = configToCopy.text;
 		style = configToCopy.style;
 		resource = configToCopy.resource;
+	}
+	
+	// A factory method to get a ControlConfig by URI alone
+	public static ControlConfig getControlConfigFromUri(RepoClient qi, Ident graphIdent, Ident configUri) {
+		ControlConfig newConfig = null;
+		SolutionList solutionList = qi.queryIndirectForAllSolutions(LiftCN.FREE_CONTROL_QUERY_TEMPLATE_URI, graphIdent, 
+							LiftCN.CONTROL_QUERY_VAR_NAME, configUri);
+		switch (solutionList.javaList().size()) {
+			case 0:	theLogger.warn("Could not find control with URI {}", configUri); break;
+			case 1: newConfig = new ControlConfig(qi, solutionList.javaList().get(0));
+								newConfig.myURI_Fragment = configUri.getLocalName();
+								break;
+			default: theLogger.error("Found multiple controls with URI {}", configUri); break;
+		}
+		return newConfig;
 	}
 
 	/* No longer available unless we fix this up to support the new action URIs instead of strings
