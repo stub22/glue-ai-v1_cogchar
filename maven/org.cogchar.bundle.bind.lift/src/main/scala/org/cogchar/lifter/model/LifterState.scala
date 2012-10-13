@@ -101,6 +101,10 @@ class LifterState {
   val activeSessions = new ArrayBuffer[String] with SynchronizedBuffer[String]
   var sessionsAwaitingStart = new ArrayBuffer[String] with SynchronizedBuffer[String]
   
+  // A temporary list to handle required page refresh on first LiftConfig change to ensure proper Comet behavior 
+  // in previously started browsers already displaying Lifter at time of Lifter start
+  val firstConfigChanged = new ArrayBuffer[String] with SynchronizedBuffer[String]
+  
   def initializeSession(sessionId:String) {
 	// Fill in the controlsMap for the new session with the initial config
 	controlsMap(sessionId) = new ConcurrentHashMap[Int,NodeSeq](controlsMap(INITIAL_CONFIG_ID))
