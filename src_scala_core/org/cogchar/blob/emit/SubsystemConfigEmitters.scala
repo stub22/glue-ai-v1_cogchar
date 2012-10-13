@@ -18,6 +18,7 @@ package org.cogchar.blob.emit
 
 import org.appdapter.core.name.{FreeIdent, Ident}
 
+
 /**
  * @author Stu B. <www.texpedient.com>
  * 
@@ -124,21 +125,21 @@ class RenderConfigEmitter(val myOptSysCtxURI : Option[String]) extends Subsystem
 	 */	
 }
 
-class KeystrokeConfigEmitter extends SubsystemConfigEmitter {
+import org.cogchar.platform.gui.keybind.{KeystrokeConfigNames}
+import org.cogchar.platform.gui.keybind.KeystrokeConfigNames.{GENERAL_BINDING_NAME, SCENE_BINDING_NAME}
+
+class KeystrokeConfigEmitter extends SubsystemConfigEmitter with KeystrokeConfigNames {
 	
 	val ccrt = COGCHAR_CHAR_URN_PREFIX;
 	
 	val BINDINGS_QUERY_URI = "ccrt:find_keybindings_99";
-	
-	val TYPE_VAR_NAME = "type";
-	val BINDING_IDENT_VAR_NAME = "name";
-	val ACTION_VAR_NAME = "action";
-	val KEY_VAR_NAME = "key";
-	
-	val GENERAL_BINDING_NAME = "keybinding";
-	val SCENE_BINDING_NAME = "scene_keybinding";
-	
 	val  GENERAL_BINDING_TYPE : Ident = new FreeIdent(ccrt + GENERAL_BINDING_NAME, GENERAL_BINDING_NAME);
 	val  SCENE_BINDING_TYPE : Ident = new FreeIdent(ccrt + SCENE_BINDING_NAME, SCENE_BINDING_NAME);
+	
+	override def getBindingsQueryURI() : String = BINDINGS_QUERY_URI
+
+	override def getGeneralBindingID : Ident = GENERAL_BINDING_TYPE;
+	override def getSceneBindingID : Ident = SCENE_BINDING_TYPE;
+
 	
 }

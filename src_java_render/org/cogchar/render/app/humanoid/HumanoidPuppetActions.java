@@ -16,8 +16,8 @@
 
 package org.cogchar.render.app.humanoid;
 
-import org.cogchar.render.app.trigger.KeyBindingConfig;
-import org.cogchar.render.app.trigger.KeyBindingTracker;
+import org.cogchar.platform.gui.keybind.KeyBindingConfig;
+import org.cogchar.platform.gui.keybind.KeyBindingTracker;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;

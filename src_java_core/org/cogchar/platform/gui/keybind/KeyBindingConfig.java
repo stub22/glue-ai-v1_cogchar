@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.app.trigger;
+package org.cogchar.platform.gui.keybind;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -24,7 +24,6 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
-import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 
 /**
  * This class loads the jMonkey key bindings via query config and makes them available to Cog Char Currently these
@@ -42,20 +41,20 @@ public class KeyBindingConfig extends BasicDebugger {
 		// Just a default constructor, if we want to just use the addBindings method
 	}
 
-	public KeyBindingConfig(RepoClient qi, Ident qGraph, KeystrokeConfigEmitter kce) {
+	public KeyBindingConfig(RepoClient qi, Ident qGraph, KeystrokeConfigNames kce) {
 		addBindings(qi, qGraph, kce);
 	}
 
-	public void addBindings(RepoClient qi, Ident qGraph, KeystrokeConfigEmitter kce) {
-		SolutionList solutionList = qi.queryIndirectForAllSolutions(kce.BINDINGS_QUERY_URI(), qGraph);
+	public void addBindings(RepoClient qi, Ident qGraph, KeystrokeConfigNames kce) {
+		SolutionList solutionList = qi.queryIndirectForAllSolutions(kce.getBindingsQueryURI(), qGraph);
 		List<Solution> solnJL =  solutionList.javaList();
 		logInfo("addBindings found " + solnJL.size() + " bindings");
 		for (Solution solution : solnJL ) {
 			KeyBindingConfigItem newItem = new KeyBindingConfigItem(qi, solution, kce);
-			if (kce.GENERAL_BINDING_TYPE().equals(newItem.myTypeIdent)) {
-				myGeneralBindings.put(newItem.myBoundEventName, newItem);
-			} else if (kce.SCENE_BINDING_TYPE().equals(newItem.myTypeIdent)) {
-				mySceneBindings.put(newItem.myBoundEventName, newItem);
+			if (kce.getGeneralBindingID().equals(newItem.myTypeIdent)) {
+				myGeneralBindings.put(newItem.myTargetActionName, newItem);
+			} else if (kce.getSceneBindingID().equals(newItem.myTypeIdent)) {
+				mySceneBindings.put(newItem.myTargetActionName, newItem);
 			} else {
 				logWarning("Found an item in KeyBindings resource with invalid type: " + newItem.myTypeIdent);
 			}

@@ -15,36 +15,23 @@
  */
 package org.cogchar.bundle.app.puma;
 
-import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
-import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.RepoClientImpl;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.impl.store.FancyRepo;
 
-import org.cogchar.api.humanoid.HumanoidConfig;
-import org.cogchar.app.buddy.busker.TriggerItem;
 import org.cogchar.app.buddy.busker.TriggerItems;
-import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
-import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
-import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 
 import org.cogchar.blob.emit.RepoClientTester;
-import org.cogchar.platform.trigger.CogcharActionBinding;
-
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;  // Perhaps we want to fetch this from a context instead, but it's a singleton, so no harm in getting it directly for the moment
-import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
-import org.cogchar.api.skeleton.config.BoneCN;
+
+import org.cogchar.platform.trigger.BoxSpace;
+import org.cogchar.platform.trigger.CommandSpace;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -186,5 +173,11 @@ public class PumaConfigManager {
 			success = true;
 		}
 		return success;
-	}	
+	}
+	
+	
+	public void populateCommandSpace(CommandSpace cmdSpc, BoxSpace boxSpc) {
+		RepoClient repoCli = getMainConfigRepoClient();
+		TriggerItems.populateCommandSpace(repoCli, cmdSpc, boxSpc);
+	}
 }
