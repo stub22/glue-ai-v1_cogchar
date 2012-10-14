@@ -42,60 +42,49 @@ class LifterState {
   private final val DEFAULT_LOAD_FACTOR = 0.9f
   private final val DEFAULT_CONCURRENCY_LEVEL = 1
   
+  class DefaultConcurrentHashMap[T,U] extends ConcurrentHashMap[T,U](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL) {}
+  class ConcurrentHashMapWithCapacity[T,U](initialCapacity:Int) extends 
+		  ConcurrentHashMap[T,U](initialCapacity, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL) {}
+
   var initialTemplate:String = "12slots"
-  val controlDefMap:ConcurrentMap[String,ConcurrentMap[Int,ControlConfig]] = 
-	new ConcurrentHashMap[String, ConcurrentMap[Int,ControlConfig]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
-  val controlsMap:ConcurrentMap[String,ConcurrentMap[Int,NodeSeq]] = 
-	new ConcurrentHashMap[String, ConcurrentMap[Int, NodeSeq]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
-  val currentConfig:ConcurrentMap[String, LiftConfig] = 
-	new ConcurrentHashMap[String, LiftConfig](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
-  val lastConfig:ConcurrentMap[String, LiftConfig] =
-	new ConcurrentHashMap[String, LiftConfig](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+
+  val controlDefMap:ConcurrentMap[String,ConcurrentMap[Int,ControlConfig]] = new DefaultConcurrentHashMap[String,ConcurrentMap[Int,ControlConfig]]
+  val controlsMap:ConcurrentMap[String,ConcurrentMap[Int,NodeSeq]] = new DefaultConcurrentHashMap[String,ConcurrentMap[Int,NodeSeq]]
+  val currentConfig:ConcurrentMap[String, LiftConfig] = new DefaultConcurrentHashMap[String,LiftConfig]
+  val lastConfig:ConcurrentMap[String, LiftConfig] = new DefaultConcurrentHashMap[String,LiftConfig]
   
   // Holds action for currently enabled state of a multi-state control, such as a TOGGLEBUTTON
-  val singularAction:ConcurrentMap[String,ConcurrentMap[Int,Ident]] = 
-	new ConcurrentHashMap[String, ConcurrentMap[Int,Ident]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  val singularAction:ConcurrentMap[String,ConcurrentMap[Int,Ident]] = new DefaultConcurrentHashMap[String,ConcurrentMap[Int,Ident]]
 	  
   // These guys hold lists of slotNums which will display text from Cogbot, or from Android speech input
-  val cogbotDisplayers:ConcurrentMap[String,scala.collection.mutable.ArrayBuffer[Int]] =
-	new ConcurrentHashMap[String, scala.collection.mutable.ArrayBuffer[Int]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
-  val speechDisplayers:ConcurrentMap[String,scala.collection.mutable.ArrayBuffer[Int]] = 
-	new ConcurrentHashMap[String, scala.collection.mutable.ArrayBuffer[Int]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  val cogbotDisplayers:ConcurrentMap[String,ArrayBuffer[Int]] = new DefaultConcurrentHashMap[String,ArrayBuffer[Int]]
+  val speechDisplayers:ConcurrentMap[String,ArrayBuffer[Int]] = new DefaultConcurrentHashMap[String,ArrayBuffer[Int]]
   // ... this one for ToggleButton states
-  val toggleButtonMap:ConcurrentMap[String,ConcurrentMap[Int,Boolean]] = 
-	new ConcurrentHashMap[String, ConcurrentMap[Int,Boolean]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  val toggleButtonMap:ConcurrentMap[String,ConcurrentMap[Int,Boolean]] = new DefaultConcurrentHashMap[String,ConcurrentMap[Int,Boolean]]
   // ... and ToggleButton full action URIs
-  val toggleButtonFullActionMap:ConcurrentMap[String,ConcurrentMap[Int,Ident]] =
-	new ConcurrentHashMap[String, ConcurrentMap[Int,Ident]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  val toggleButtonFullActionMap:ConcurrentMap[String,ConcurrentMap[Int,Ident]] = new DefaultConcurrentHashMap[String,ConcurrentMap[Int,Ident]]
 	  
   // This associates error source codes with the control on which they should be displayed
-  val errorMap:ConcurrentMap[String,ConcurrentMap[String,Int]] = 
-	new ConcurrentHashMap[String, ConcurrentMap[String, Int]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  val errorMap:ConcurrentMap[String,ConcurrentMap[String,Int]] = new DefaultConcurrentHashMap[String,ConcurrentMap[String,Int]]
 	  
   // A place to hold variables that can be defined and set dynamically by the apps defined in the lift config files themselves
-  val appVariablesMap:ConcurrentMap[String,ConcurrentMap[String,String]] = // per-session
-	new ConcurrentHashMap[String, ConcurrentMap[String, String]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
-  val publicAppVariablesMap:ConcurrentMap[String,String] = // global
-	new ConcurrentHashMap[String, String](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  // per-session
+  val appVariablesMap:ConcurrentMap[String,ConcurrentMap[String,String]] = new DefaultConcurrentHashMap[String,ConcurrentMap[String,String]]
+  // global
+  val publicAppVariablesMap:ConcurrentMap[String,String] = new DefaultConcurrentHashMap[String,String]
 	  
   // A map to hold paths to pages requested by LiftAmbassador
-  val requestedPage:ConcurrentMap[String,Option[String]] = 
-	new ConcurrentHashMap[String, Option[String]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  val requestedPage:ConcurrentMap[String,Option[String]] = new DefaultConcurrentHashMap[String,Option[String]]
   // Holds speech we want Android to say
-  val outputSpeech:ConcurrentMap[String,String] = 
-	new ConcurrentHashMap[String, String](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  val outputSpeech:ConcurrentMap[String,String] = new DefaultConcurrentHashMap[String,String]
   // id of last control which requested speech - used by JavaScriptActor to add identifying info to request
-  var lastSpeechReqSlotId:ConcurrentMap[String,String] =
-	new ConcurrentHashMap[String, String](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  var lastSpeechReqSlotId:ConcurrentMap[String,String] = new DefaultConcurrentHashMap[String,String]
   // Determines whether Cogbot speech out also triggers Android speech
-  val cogbotSpeaks:ConcurrentMap[String,Boolean] =
-	new ConcurrentHashMap[String, Boolean](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  val cogbotSpeaks:ConcurrentMap[String,Boolean] = new DefaultConcurrentHashMap[String,Boolean]
   // Name of current template (in /templates-hidden) which corresponds to current liftConfig
-  val currentTemplate:ConcurrentMap[String,String] =
-	new ConcurrentHashMap[String, String](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  val currentTemplate:ConcurrentMap[String,String] = new DefaultConcurrentHashMap[String,String]
   // Tracks recently actuated controls, so "bounced" or double clicked buttons will only excute their actions once
-  val bounceMap:ConcurrentMap[String,ConcurrentMap[Int,Long]] =
-	new ConcurrentHashMap[String, ConcurrentMap[Int,Long]](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+  val bounceMap:ConcurrentMap[String,ConcurrentMap[Int,Long]] = new DefaultConcurrentHashMap[String,ConcurrentMap[Int,Long]]
   
   var lifterInitialized:Boolean = false // Will be set to true once PageCommander receives initial control config from LiftAmbassador
   val activeSessions = new ArrayBuffer[String] with SynchronizedBuffer[String]
@@ -118,9 +107,9 @@ class LifterState {
 	toggleButtonFullActionMap(sessionId) = new ConcurrentHashMap[Int,Ident](toggleButtonFullActionMap(INITIAL_CONFIG_ID))
 	cogbotSpeaks(sessionId) = false;
 	// Add a blank singularAction for this session
-	singularAction(sessionId) = new ConcurrentHashMap[Int,Ident](MAX_CONTROL_QUANTITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+	singularAction(sessionId) = new ConcurrentHashMapWithCapacity[Int,Ident](MAX_CONTROL_QUANTITY)
 	// Add a blank appVariablesMap for this session
-	appVariablesMap(sessionId) = new ConcurrentHashMap[String,String](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+	appVariablesMap(sessionId) = new DefaultConcurrentHashMap[String,String]
 	// Set currentConfig for this session
 	currentConfig(sessionId) = currentConfig(INITIAL_CONFIG_ID)
 	// Set initial template
@@ -128,16 +117,16 @@ class LifterState {
 	// Set blank value for session key in lastSpeechReqSlotId
 	lastSpeechReqSlotId(sessionId) = ""
 	// Make fresh bounce tracking map
-	bounceMap(sessionId) = new ConcurrentHashMap[Int,Long](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+	bounceMap(sessionId) = new DefaultConcurrentHashMap[Int,Long]
 	// Add session to activeSessions list
 	if (!(activeSessions contains sessionId)) {activeSessions += sessionId}
   }
   
   def clearState {
 	controlDefMap.clear
-	controlDefMap(INITIAL_CONFIG_ID) = new ConcurrentHashMap[Int,ControlConfig](MAX_CONTROL_QUANTITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+	controlDefMap(INITIAL_CONFIG_ID) = new ConcurrentHashMapWithCapacity[Int,ControlConfig](MAX_CONTROL_QUANTITY)
 	controlsMap.clear
-	controlsMap(INITIAL_CONFIG_ID) = new ConcurrentHashMap[Int,NodeSeq](MAX_CONTROL_QUANTITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+	controlsMap(INITIAL_CONFIG_ID) = new ConcurrentHashMapWithCapacity[Int,NodeSeq](MAX_CONTROL_QUANTITY)
 	currentConfig.clear
 	lastConfig.clear
 	cogbotDisplayers.clear
@@ -146,17 +135,14 @@ class LifterState {
 	speechDisplayers(INITIAL_CONFIG_ID) = new scala.collection.mutable.ArrayBuffer[Int]
 	lastSpeechReqSlotId.clear
 	toggleButtonMap.clear
-	toggleButtonMap(INITIAL_CONFIG_ID) = 
-	  new ConcurrentHashMap[Int,Boolean](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+	toggleButtonMap(INITIAL_CONFIG_ID) = new DefaultConcurrentHashMap[Int,Boolean]
 	toggleButtonFullActionMap.clear
-	toggleButtonFullActionMap(INITIAL_CONFIG_ID) = 
-	  new ConcurrentHashMap[Int,Ident](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+	toggleButtonFullActionMap(INITIAL_CONFIG_ID) = new DefaultConcurrentHashMap[Int,Ident]
 	singularAction.clear
 	appVariablesMap.clear 
 	publicAppVariablesMap.clear
 	errorMap.clear
-	errorMap(INITIAL_CONFIG_ID) =
-	  new ConcurrentHashMap[String,Int](DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL)
+	errorMap(INITIAL_CONFIG_ID) = new DefaultConcurrentHashMap[String,Int]
 	bounceMap.clear
   }
   
