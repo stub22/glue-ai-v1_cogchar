@@ -83,6 +83,10 @@ class ControlToggler {
 	}
   }
 
+	// This code below looks very similar to what is above.  
+	// Please try to reduce duplication, by splitting into more methods.
+	
+	
   // A method to synchronize the state of toggle buttons in all sessions which are connected to the state of a global lifter variable
   // Blur of responsibity between toggle action and lifter variables, but probably belongs here.
   def setAllPublicLiftvarToggleButtonsToState(appState:LifterState, varName:String, state:Boolean) {
@@ -99,6 +103,7 @@ class ControlToggler {
 			  if (styleItems.length < 2) styleItems ::= styleItems(0)
 			  if (resourceItems.length < 2) resourceItems ::= resourceItems(0)
 			  val stateIndex = if (state) 1 else 0
+
 			  val newControl = new ControlConfig();
 			  newControl.controlType = control.controlType
 			  newControl.text = textItems(stateIndex)
