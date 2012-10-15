@@ -84,7 +84,15 @@ public class PumaAppContext extends CogcharScreenBox {
 		}
 		return pwm;
 	}
-
+	protected RepoClient getOrMakeMainConfigRC() {
+		final PumaConfigManager pcm = getConfigManager();
+		PumaContextMediator mediator = getMediator();
+		RepoClient repoCli  = pcm.getOrMakeMainConfigRepoClient(mediator, myBundleContext);	
+		return repoCli;
+	}
+	protected PumaContextMediator getMediator() { 
+		return myRegClient.getCtxMediator(null);
+	}
 	protected PumaConfigManager getConfigManager() {
 		return myRegClient.getConfigMgr(null);
 	}
@@ -117,14 +125,15 @@ public class PumaAppContext extends CogcharScreenBox {
 
 	public void startRepositoryConfigServices() {
 		PumaConfigManager pcm = getConfigManager();
+		PumaContextMediator mediator = myRegClient.getCtxMediator(null);
 		// This would happen by default anyway, if there were not already a MainConfigRepoClient in place.
-		pcm.applyVanillaRepoClientAsMainConfig(myBundleContext);
+		pcm.applyDefaultRepoClientAsMainConfig(mediator, myBundleContext);
 		// This method performs the configuration actions associated with the developmental "Global Mode" concept
 		// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
 		// be updated to relect that		
 		pcm.applyGlobalConfig(myBundleContext);
 	}
-
+	
 	/**
 	 * Third (and last) stage init of OpenGL, and all other systems. Done AFTER startOpenGLCanvas().
 	 *
@@ -134,7 +143,7 @@ public class PumaAppContext extends CogcharScreenBox {
 	public List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
 		final PumaConfigManager pcm = getConfigManager();
 		GlobalConfigEmitter gce = pcm.getGlobalConfig();
-		RepoClient rc = pcm.getOrMakeMainConfigRepoClient(myBundleContext);
+		RepoClient rc = getOrMakeMainConfigRC();
 		//List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 		List<Ident> charIdents = new ArrayList<Ident>(); // A blank list, so if the try fails below, the for loop won't throw an Exception
 
@@ -187,38 +196,33 @@ public class PumaAppContext extends CogcharScreenBox {
 	}
 	public void reloadCommandSpace() { 
 		final PumaConfigManager pcm = getConfigManager();
-		RepoClient repoCli  = pcm.getOrMakeMainConfigRepoClient(myBundleContext);		
+		RepoClient repoCli  = getOrMakeMainConfigRC();		
 		CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
 		BoxSpace boxSpc = myRegClient.getTargetBoxSpace(null);
 		// TODO:  stuff to clear out the command space
 		TriggerItems.populateCommandSpace(repoCli, cmdSpc, boxSpc);
 	}
-	public void reloadVirtualWorldConfig(boolean resetMainConfigFlag) {
+	public void reloadVirtualWorldConfig() {
 		PumaConfigManager pcm = getConfigManager();
 
 		PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null); // getVirtualWorldMapper();
 		if (pvwm != null) {
-			if (resetMainConfigFlag) {
-				BundleContext bc = getBundleContext();
-				pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bc);
-			}
 			pvwm.clearCinematicStuff();
 			pvwm.initCinema();
 		} else {
 			getLogger().warn("Ignoring command to reloadVirtualWorldConfig, because no vWorldMapper is present!");
 		}
 	}
-
-	public void reloadBoneRobotConfig(boolean resetMainConfigFlag) {
+	public void resetToDefaultConfig() { 
+		PumaConfigManager pcm = getConfigManager();
+		BundleContext bc = getBundleContext();
+		pcm.clearMainConfigRepoClient();
+		// pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bc);	
+	}
+	public void reloadBoneRobotConfig() {
 		final PumaConfigManager pcm = getConfigManager();
 
-		if (resetMainConfigFlag) {
-			// This forces a complete system config reset, which might be good if our
-			// goal is to cause an underlying spreadsheet repo to reload.
-			BundleContext bc = getBundleContext();
-			pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bc);
-		}
-		RepoClient rc = pcm.getOrMakeMainConfigRepoClient(myBundleContext);
+		RepoClient rc = getOrMakeMainConfigRC();
 
 		BoneCN bqn = new BoneCN();
 		for (PumaDualCharacter pdc : myCharList) {
@@ -237,16 +241,9 @@ public class PumaAppContext extends CogcharScreenBox {
 		}
 	}
 
-	public void reloadGlobalConfig(boolean resetMainConfigFlag) {
+	public void reloadGlobalConfig() {
 		final PumaConfigManager pcm = getConfigManager();
-
-		if (resetMainConfigFlag) {
-			// This forces a complete system config reset, which might be good if our
-			// goal is to cause an underlying spreadsheet repo to reload.
-			BundleContext bc = getBundleContext();
-			pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bc);
-		}
-		RepoClient rc = pcm.getOrMakeMainConfigRepoClient(myBundleContext);
+		RepoClient rc = getOrMakeMainConfigRC();
 		pcm.startGlobalConfigService(myBundleContext);
 	}
 
@@ -294,9 +291,7 @@ public class PumaAppContext extends CogcharScreenBox {
 		
 			// NOW we are ready to load any new config.
 			if (resetMainConfigFlag) {
-				PumaConfigManager pcm = getConfigManager();
-				// TODO:  This need to be a more general config source, either set earlier or supplied expliicitly.
-				pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bunCtx);
+				resetToDefaultConfig();
 			}
 			
 			// So NOW what we want to examine is the difference between the state right here, and the
@@ -333,7 +328,7 @@ public class PumaAppContext extends CogcharScreenBox {
 		try {
 			final PumaConfigManager pcm = getConfigManager();
 			BundleContext bunCtx = getBundleContext();
-			RepoClient rc = pcm.getOrMakeMainConfigRepoClient(bunCtx);
+			RepoClient rc = getOrMakeMainConfigRC();
 			BoneCN bqn = new BoneCN();
 			boolean connectedOK = pdc.connectBonyCharToRobokindSvcs(bunCtx, graphIdentForBony, hc, rc, bqn);
 			if (connectedOK) {
@@ -399,7 +394,7 @@ public class PumaAppContext extends CogcharScreenBox {
 			Thread updateThread = new Thread("World Update Thread") {
 
 				public void run() {
-					reloadVirtualWorldConfig(resetMainConfigFlag);
+					reloadVirtualWorldConfig();
 					myUpdateInProgressFlag = false;
 				}
 			};
@@ -409,7 +404,7 @@ public class PumaAppContext extends CogcharScreenBox {
 			Thread updateThread = new Thread("Bone Robot Update Thread") {
 
 				public void run() {
-					reloadBoneRobotConfig(resetMainConfigFlag);
+					reloadBoneRobotConfig();
 					myUpdateInProgressFlag = false;
 				}
 			};
@@ -420,7 +415,7 @@ public class PumaAppContext extends CogcharScreenBox {
 			Thread updateThread = new Thread("Managed Global Config Service Update Thread") {
 
 				public void run() {
-					reloadGlobalConfig(resetMainConfigFlag);
+					reloadGlobalConfig();
 					myUpdateInProgressFlag = false;
 				}
 			};

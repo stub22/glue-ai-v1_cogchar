@@ -23,7 +23,7 @@ import org.appdapter.impl.store.FancyRepo;
 import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 
-import org.cogchar.blob.emit.RepoClientTester;
+
 
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
@@ -36,7 +36,7 @@ import org.cogchar.platform.trigger.CommandSpace;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaConfigManager {
+public abstract class PumaConfigManager {
 	// A query interface instance we can reuse - right now just to trigger repo reloads. May want to do that via
 	// GlobalConfigEmitter or some other interface in the long run...?
 
@@ -50,6 +50,8 @@ public class PumaConfigManager {
 	// Here's a GlobalConfigEmitter for our PUMA instance. Does it really belong here? Time will tell.
 	private GlobalConfigEmitter myGlobalConfig;
 
+	abstract protected void applyDefaultRepoClientAsMainConfig(PumaContextMediator mediator, BundleContext optBundCtxForLifecycle);
+	
 	public GlobalConfigEmitter getGlobalConfig() {
 		return myGlobalConfig;
 	}
@@ -62,12 +64,15 @@ public class PumaConfigManager {
 	public RepoClient getMainConfigRepoClient() {
 		return myCurrentMainConfigRepoClient;
 	}
-	protected RepoClient getOrMakeMainConfigRepoClient(BundleContext optBundCtxForLifecycle) {
+	
+	protected RepoClient getOrMakeMainConfigRepoClient(PumaContextMediator mediator, BundleContext optBundCtxForLifecycle) {
 		if (myCurrentMainConfigRepoClient == null) {
-			applyFreshDefaultMainRepoClientToGlobalConfig(optBundCtxForLifecycle);
+			applyDefaultRepoClientAsMainConfig(mediator, optBundCtxForLifecycle);
+			// applyFreshDefaultMainRepoClientToGlobalConfig(optBundCtxForLifecycle);
 		}
 		return myCurrentMainConfigRepoClient;
 	}
+ 
 	// This may be the same thing as updateGlobalConfig eventually. Right now we are holding open the possibility that Lifter is acting on
 	// one global config and the rest of Cog Char on another. This allows us to update one but not the other, since Lifter uses the GlobalConfigService
 	// and everything else uses myGlobalConfig in this class. (Lifter auto-updates when the GlobalConfigService restarts.)
@@ -82,36 +87,17 @@ public class PumaConfigManager {
 			startGlobalConfigService(optBundCtxForLifecycle);
 		}
 	}
+	/*
 	// Used to be called "updateGlobalConfig" - Currently this would cause a detach from any previous lifecycle-registered RepoCli.
 	public void applyFreshDefaultMainRepoClientToGlobalConfig(BundleContext optBundCtxForLifecycle) {
-		// Now this is a little irregular. We're creating this initally in PumaBooter, but also the same 
-		// (temporarily fixed) mode is reloaded here when we want to updateGlobalConfig. So far, that's mainly for our 
-		// current "primitive" bony config reload. This all is a bit goofy and should be quite temporary; once we really 
-		// figure out how best to handle changes to this "GlobalMode" stuff this should become less hodge-podge
-		// Do we want to always reload the repo here? Might want to keep these functions separate in the future, but for
-		// now I'll assume they will go together.
 		clearMainConfigRepoClient();
 		applyGlobalConfig(optBundCtxForLifecycle);
 	}
-	protected void applyVanillaRepoClientAsMainConfig(BundleContext optBundCtxForLifecycle) {
-		// TODO:  "turn off" any previous config's lifecycle
-		RepoClient vanRC = makeVanillaRepoClient();
-		if (vanRC != null) {
-			setMainConfigRepoClient(vanRC);
-			if (optBundCtxForLifecycle != null)  {
-				myQueryComp = startRepoClientLifecyle(optBundCtxForLifecycle, vanRC);
-			}
-		}
-	}
+	* 
+	*/ 
 
-	protected static RepoClient makeVanillaRepoClient() {
-			// Here we are calling in to a scala-coded singleton defined in o.c.lib.core.
-			// Step 1 is to load up a repo from somewhere.  We want to instead get our 
-			// repo info from the ContextMediator, which can choose to point us at a...
-		FancyRepo testRepo = RepoClientTester.loadDefaultTestRepo();
-		RepoClient repoCli = RepoClientTester.makeDefaultRepoClient(testRepo);
-		return repoCli;
-	}
+
+
 	
 	// TODO : This can be pushed down into o.c.lib.core
 	protected static OSGiComponent startRepoClientLifecyle(BundleContext bundCtx, RepoClient rc) {

@@ -36,6 +36,8 @@ import org.cogchar.bundle.app.puma.PumaBooter;
 import org.cogchar.bundle.app.puma.PumaContextMediator;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
 import org.cogchar.bundle.app.puma.PumaVirtualWorldMapper;
+import org.cogchar.blob.emit.RepoSpec;
+import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
@@ -69,8 +71,17 @@ public final class VirtualCharTopComponent extends TopComponent {
         myInitializedFlag = false;
     }
     
-	private class PumaBootContextMediator extends PumaContextMediator {
-	
+	private class NbuiContextMediator extends PumaContextMediator {
+		// Override base class methods to customize the way that PUMA boots + runs, and
+		// to receive notifications of progress during the boot / re-boot process.
+		String TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc";
+		int  DFLT_NAMESPACE_SHEET_NUM = 9;
+		int   DFLT_DIRECTORY_SHEET_NUM = 8;
+		
+		@Override public RepoSpec getMainConfigRepoSpec() {
+			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM);
+		}
+
 		@Override public boolean getFlagAllowJFrames() {
 			return false;
 		}
@@ -95,7 +106,8 @@ public final class VirtualCharTopComponent extends TopComponent {
 				// Create/find the Cogchar-enabled Swing GUI panel to display inside this Netbeans Component window.
 				initVirtualCharPanel(brc);
 			}
-		}			
+		}
+
 		
 	}
     private synchronized void init(BundleContext bundleCtx) throws Throwable {
@@ -106,8 +118,9 @@ public final class VirtualCharTopComponent extends TopComponent {
         if(bundleCtx == null){
             throw new NullPointerException();
         }
-
-		PumaBootContextMediator mediator = new PumaBootContextMediator();
+		// Currently we are not going through the PumaGlobalPrebootInjector, so there is 
+		// no chance for customers to override the mediator in this particular form.
+		NbuiContextMediator mediator = new NbuiContextMediator();
 		PumaBooter booter = new PumaBooter();		
 		PumaBooter.BootResult bootResult = booter.bootUnderOSGi(bundleCtx, mediator);
 

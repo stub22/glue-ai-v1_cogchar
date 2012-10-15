@@ -46,7 +46,7 @@ public class PumaRegistryClientImpl implements PumaRegistryClient {
 	public PumaRegistryClientImpl(BundleContext optBundleContext, PumaContextMediator mediator) {
 		myBundleContext = optBundleContext;
 		myMediator = mediator;
-		myConfigManager = new PumaConfigManager();
+		myConfigManager = new VanillaConfigManager();
 		myTargetBoxSpace = new BoxSpace();
 		myCommandSpace = new CommandSpace();
 		
