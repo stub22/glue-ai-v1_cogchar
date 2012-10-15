@@ -75,7 +75,8 @@ object RepoClientTester {
 	// ----------------------------------------------------------------------------------
 	
 	// Alternative params for a "bunch of file-resources"-backed repo.  This is generally
-	// readonly, although it is also possible to read and write live filesystem files.
+	// readonly, although it is also possible to write out files containing graphs in
+	// numerous formats..
 	
 	final val DFLT_FILE_REPO_CONFIG_PATH = "/ok"
 
@@ -83,27 +84,7 @@ object RepoClientTester {
 
 	//  OK, that's 3 kinds of repos to test.  
 	//  Now, what kind of data do we expect to find  in these repos during our testing?
- 
-	// The next two params define the repo-client wrapper defaults, giving a default query context
-	// to easily fetch from.
-	// Either value may be bypassed/overidden using the more general forms of queryIndirect_. 
-	/**
-	// 1) Default query *source* graph QName used in directory model (Sheet or RDF).
-	// We read SPARQL text from this graph, which we use to query *other* graphs.  
-	// This graph is typically not used as a regular data graph by  other low-order 
-	// query operations, although there is no prohibition or protection from doing so 
-	// at this time.   This query source graph may be overridden using the more general
-	// forms of queryIndirect_.
-	*/
-	
-	final val DFLT_QRY_SRC_GRAPH_QN = "ccrt:qry_sheet_22"
-	
-	// 2) default variable name for a single target graph in a SPARQL query.
-	// This is used in the convenience forms of queryIndirect that handle many common
-	// use cases, wherein the query needs a single graph to operate on that is switched
-	// by application logic or user selection.
-	
-	final val DFLT_TGT_GRAPH_SPARQL_VAR = "qGraph"
+	// See:   Overridable query/graph processing constants in abstract RepoSpec class.
 
 	// Last two params can be any query to run, and any graph to run it on as "primary".
 	// Queries may also pull in additional graphs, by explicit URI in SPARQL text, or by 
@@ -119,7 +100,10 @@ object RepoClientTester {
 		
 		// First load up a sheet repo, using 3 params described above.
 		// The repo resolves QNames using the namespaces applied to its directory model.
-		val dfltTestRepo = loadDefaultTestRepo
+		// 
+		val rspec = new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM);
+		 
+		val dfltTestRepo = rspec.makeRepo();
 		
 		// At this point, we can forget that the repo came from a spreadsheet, at least for
 		// *reading* purposes.  We could write to the repo in memory, but we'd have to save
@@ -141,11 +125,12 @@ object RepoClientTester {
 		// 
 		 
 		
-		RepoTester.testRepoDirect(dfltTestRepo, DFLT_QRY_SRC_GRAPH_QN, lightsQueryQN, DFLT_TGT_GRAPH_SPARQL_VAR, lightsGraphQN)
+		RepoTester.testRepoDirect(dfltTestRepo, rspec.getDfltQrySrcGraphQName, lightsQueryQN, 
+								  rspec.getDfltTgtGraphSparqlVarName, lightsGraphQN)
 		
 		// Next, let's set up a RepoClient wrapper to give us some extra features. 
 		// (RepoClient constructor params uses opposite order than the variables documented above)
-		val dfltTestRC = makeDefaultRepoClient(dfltTestRepo)
+		val dfltTestRC = rspec.makeRepoClient(dfltTestRepo);
 		
 		// Do the same query again, making use of the default params supplied by the RepoClient wrapper.
 		println("Running same query via RepoClient")
@@ -196,9 +181,7 @@ object RepoClientTester {
 		val cmdList = queryCommands(dfltTestRC);
 		println("Got commands: " + cmdList);
 	}
-	def loadDefaultTestRepo : FancyRepo = RepoTester.loadSheetRepo(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM)
-	def makeDefaultRepoClient (repo : FancyRepo) : RepoClient = makeRepoClient(repo, DFLT_TGT_GRAPH_SPARQL_VAR, DFLT_QRY_SRC_GRAPH_QN)
-	
+
   	def makeRepoClient(fr : FancyRepo, queryTargetVarName:  String, querySheetQN : String) : RepoClient = {
 		new RepoClientImpl(fr, queryTargetVarName, querySheetQN)		
 	}		
