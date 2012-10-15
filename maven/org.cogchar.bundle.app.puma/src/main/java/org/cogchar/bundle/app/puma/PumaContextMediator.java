@@ -15,10 +15,13 @@
  */
 package org.cogchar.bundle.app.puma;
 
+import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.blob.emit.RepoSpec;
+
 /**  This mediator is our "/etc/rc", the "top" mechanism available to customize the Cogchar PUMA boot up sequence.
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaContextMediator {
+public abstract class PumaContextMediator extends BasicDebugger {
 
 	/** Boot callback sequence #1.
 	 *  The mediator should now do any special init that it wants to, but without assuming GUI exists.
@@ -100,5 +103,7 @@ public class PumaContextMediator {
 		String bonyCharUniqueSuffix = "0x0000FFFF";
 		String sysContextURI = uriPrefix + bonyCharUniqueSuffix;
 		return sysContextURI;
-	}	
+	}
+	
+	public abstract RepoSpec getMainConfigRepoSpec();
 }

@@ -47,15 +47,6 @@ public class PumaBooter extends BasicDebugger {
 	}
 
 	/**
-	 * Convenience version uses default PumaContextMediator.
-	 *
-	 */
-	public BootResult bootUnderOSGi(BundleContext bundleCtx) {
-		PumaContextMediator cm = new PumaContextMediator();
-		return bootUnderOSGi(bundleCtx, cm);
-	}
-
-	/**
 	 * Client controls the boot process through the mediator.
 	 *
 	 * @param bundleCtx
@@ -87,6 +78,7 @@ public class PumaBooter extends BasicDebugger {
 
 		getLogger().debug("%%%%%%%%%%%%%%%%%%% Starting repository-backed config services");
 
+		String topConfigURL;
 		pac.startRepositoryConfigServices();
 
 		/*The mediator should now do any special init that it wants to, but without assuming GUI exists.
