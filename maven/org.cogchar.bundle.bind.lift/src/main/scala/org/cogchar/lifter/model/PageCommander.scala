@@ -47,7 +47,6 @@ package org.cogchar.lifter {
 	  private var updateInfo: String = ""
 	  
 	  private val theLifterState = new LifterState
-	  private val toggler = new ControlToggler
 	  private val firstActionHandler = HandlerConfigurator.initializeActionHandlers
 	  private val firstControlInitializationHandler = HandlerConfigurator.initializeControlInitializationHandlers
 	  
@@ -78,12 +77,6 @@ package org.cogchar.lifter {
 	  }
 	  
 	  def getInitialConfigId = theLifterState.INITIAL_CONFIG_ID
-	  
-	  // This is sort of a funny deal and may need refactoring, but LifterVariableHandler needs to get this (for now at least)
-	  // Could just have ControlToggler be a singleton object, which may be OK since it's stateless
-	  def getToggler = {
-		toggler
-	  }
 	  
 	  def initializeSession(sessionId:String) {
 		info("Initializing Session %s".format(sessionId))
@@ -249,7 +242,7 @@ package org.cogchar.lifter {
 			// will take care of itself instead of having to do things this messy way.
 			val toggleThread = new Thread(new Runnable {
 				def run() {
-				  toggler.toggle(theLifterState,sessionId,id)
+				  ControlToggler.toggle(theLifterState,sessionId,id)
 				  handleAction(sessionId, id, null) // Starts yet another thread, but we need it started by the toggleThread so it won't run until toggle is complete
 				}
 			  })

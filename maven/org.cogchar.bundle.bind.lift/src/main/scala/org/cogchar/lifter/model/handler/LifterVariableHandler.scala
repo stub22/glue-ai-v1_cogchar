@@ -19,7 +19,7 @@ package org.cogchar.lifter.model.handler
 import java.lang.NumberFormatException
 import org.appdapter.core.name.Ident
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
+import org.cogchar.lifter.model.{ActionStrings,ControlToggler,LifterState,PageCommander}
 import org.cogchar.lifter.snippet.PushyButton
 import net.liftweb.common.Logger
 import scala.collection.mutable.ArrayBuffer
@@ -52,7 +52,7 @@ class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
 		  toggleButton = true;
 		  val toggleButtonState = state.toggleButtonMap(sessionId)(slotId) // assumes button has already been toggled on press (by toggler)
 		  variablesMap(varName) = toggleButtonState.toString
-		  if (!sessionVar) PageCommander.getToggler.setAllPublicLiftvarToggleButtonsToState(state, varName, toggleButtonState)
+		  if (!sessionVar) ControlToggler.setAllPublicLiftvarToggleButtonsToState(state, varName, toggleButtonState)
 		}
 	  }
 	  if (!toggleButton) {
