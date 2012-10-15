@@ -18,7 +18,7 @@ package org.cogchar.lifter.snippet
 
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
+import org.cogchar.lifter.model.{ControlToggler,LifterState}
 import org.cogchar.lifter.model.handler.{AbstractControlInitializationHandler,LifterVariableHandler}
 import scala.xml.NodeSeq
 
@@ -27,34 +27,23 @@ object ToggleButton extends AbstractControlInitializationHandler {
   protected val matchingName = "TOGGLEBUTTON"
   
   protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
-	// For a ToggleButton, the first item in CSV text, action, style, image corresponds to the default condition, the second to the "toggled" condition
-	var textItems = List.fromArray(control.text.split(ActionStrings.stringAttributeSeparator))
-	var styleItems = List.fromArray(control.style.split(ActionStrings.stringAttributeSeparator))
-	var resourceItems = List.fromArray(control.resource.split(ActionStrings.stringAttributeSeparator))
-	var actionItems = List.fromArray(control.action.getLocalName.split(ActionStrings.multiCommandSeparator))
+	// Load the "full" action (with an action local name containing actions for each state) into toggleButtonFullActionMap
 	state.toggleButtonFullActionMap(sessionId)(slotNum) = control.action
 	// Next we need to see if an app variable linked to this toggle button is already set and set the button state to match if so
 	val buttonState = LifterVariableHandler.getStateFromVariable(state, sessionId, control.action)
-	// Flag the fact this is a toggle button and set current state
+	// Flag the fact this is a toggle button and set current state via toggleButtonMap
 	state.toggleButtonMap(sessionId)(slotNum) = buttonState
-	// Set control for state
-	// If only one parameter is specified in RDF, duplicate the first and use that parameter for the other state too (really we are prepending the one item in the list to itself, but that works ok here)
-	if (textItems.length < 2) textItems ::= textItems(0)
-	if (styleItems.length < 2) styleItems ::= styleItems(0)
-	if (resourceItems.length < 2) resourceItems ::= resourceItems(0)
-	if (actionItems.length < 2) actionItems ::= actionItems(0)
-	val stateIndex = if (buttonState) 1 else 0
 	// A TOGGLEBUTTON trick: we have copied the full action for this control to toggleButtonFullActionMap - now
 	// we rewrite this control's action in the controlDefMap depending on its state.
 	// A bit problematic and there may be a better way, but this lets the action handler chain work the same for 
 	// TOGGLEBUTTONS as for everything else.
-	val myControlDef = state.controlDefMap(sessionId)(slotNum)
-	myControlDef.action =
-	  new FreeIdent(PageCommander.getUriPrefix(control.action) + actionItems(stateIndex), actionItems(stateIndex))
+	ControlToggler.setSingularAction(state, sessionId, slotNum, buttonState)
 	// Another trick: we set the type to PUSHYBUTTON in the controlDefMap so ControlToggler will render control as
-	// a Pushy Button on state change
+	// a PushyButton
+	val myControlDef = state.controlDefMap(sessionId)(slotNum)
 	myControlDef.controlType = "PUSHYBUTTON"
-	PushyButton.makeButton(textItems(stateIndex), styleItems(stateIndex), resourceItems(stateIndex), slotNum)
+	// Get control NodeSeq to render for state
+	ControlToggler.getSingularControlXml(sessionId, slotNum, myControlDef, buttonState)
   }
 	 
 }
