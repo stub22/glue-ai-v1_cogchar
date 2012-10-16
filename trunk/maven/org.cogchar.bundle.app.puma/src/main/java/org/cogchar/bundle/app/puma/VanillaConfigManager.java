@@ -27,12 +27,34 @@ import org.appdapter.help.repo.RepoClient;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * A mix-in encoding an optional assumption that the best "default" config-repo-client 
+ * is the one derived from the current RepoSpec provided by our current mediator.   
+ * 
+ * As of 2012-10-15, this fetching of specs from the mediator is the crux of
+ * Cogchar PUMA boot customization.
  */
 
 public class VanillaConfigManager extends PumaConfigManager {
+	/** We override this method to plug in to PumaConfigManager's operations,
+	 * calling applyDefaultRepoClientAsMainConfig.
+	 * 
+	 * @param mediator
+	 * @param optBundCtxForLifecycle 
+	 */
 	@Override protected void applyDefaultRepoClientAsMainConfig(PumaContextMediator mediator, BundleContext optBundCtxForLifecycle) {
 		applyVanillaRepoClientAsMainConfig(mediator, optBundCtxForLifecycle);
 	}
+	/**
+	 * 1) Calls makeVanillaRepoClient.
+	 * 2) If OSGi bundle is present, starts lifecycles using it.
+	 * 
+	 * Does not yet perform any cleanup on old lifecycles.
+	 * TODO:  Add any such necessary cleanup.
+	 * @param mediator
+	 * @param optBundCtxForLifecycle - optional (null => None) OSGi BundleContext signaling that JFlux.org/Robokind.org 
+	 * -compatible lifecycles should be started.
+	 */
 	protected void applyVanillaRepoClientAsMainConfig( PumaContextMediator mediator, BundleContext optBundCtxForLifecycle) {
 		// TODO:  "turn off" any previous config's lifecycle
 		RepoClient vanRC = makeVanillaRepoClient(mediator);
@@ -42,7 +64,12 @@ public class VanillaConfigManager extends PumaConfigManager {
 				myQueryComp = startRepoClientLifecyle(optBundCtxForLifecycle, vanRC);
 			}
 		}
-	}		
+	}
+	/**
+	 * Ask client Mediator for its MainConfig RepoSpec, implementing the crux of Cogchar-PUMA boot customization.
+	 * @param mediator
+	 * @return 
+	 */
 	protected static RepoClient makeVanillaRepoClient(PumaContextMediator mediator) {
 		RepoSpec rspec = mediator.getMainConfigRepoSpec();
 				
