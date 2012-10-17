@@ -30,8 +30,9 @@ class SubmitCommandHandler extends AbstractLifterCommandHandler with Logger {
 	  case ActionStrings.NETWORK_CONFIG_TOKEN => {
 		  if (input.length == 2) {
 			var encryptionName:String = null;
-			if (appState.appVariablesMap(sessionId) contains ActionStrings.encryptionTypeVar) {
-			  encryptionName = appState.appVariablesMap(sessionId)(ActionStrings.encryptionTypeVar)
+			val sessionVariables = appState.stateBySession(sessionId).sessionLifterVariablesByName
+			if (sessionVariables contains ActionStrings.encryptionTypeVar) {
+			  encryptionName = sessionVariables(ActionStrings.encryptionTypeVar)
 			} else {
 			  warn("No encryption type set for network config, assuming none")
 			  encryptionName = ActionStrings.noEncryptionName

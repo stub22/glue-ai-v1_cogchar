@@ -30,12 +30,15 @@ class SubmitTextCommandHandler extends AbstractLifterCommandHandler with Logger 
 	val actionToken = splitAction(1)
 	actionToken match {
 	  case ActionStrings.COGBOT_TOKEN => {
-		  if (appState.cogbotDisplayers(sessionId) != Nil) { // Likely this check is not necessary - foreach just won't execute if list is Nil, right?
+		  val sessionState = appState.stateBySession(sessionId)
+		  val cogbotDisplayList = sessionState.cogbotDisplaySlots
+		  if (cogbotDisplayList != Nil) { // Likely this check is not necessary - foreach just won't execute if list is Nil, right?
 			val response = PageCommander.getLiftAmbassador.getCogbotResponse(input(0))
-			val cleanedResponse = response.replaceAll("<.*>", ""); // For now, things are more readable if we just discard embedded XML
-			appState.cogbotDisplayers(sessionId).foreach(slotNum =>
-			  PageCommander.setControl(sessionId, slotNum, TextBox.makeBox("Cogbot said \"" + cleanedResponse + "\"", appState.controlDefMap(sessionId)(slotNum).style)))
-			if (appState.cogbotSpeaks(sessionId)) PageCommander.outputSpeech(sessionId, cleanedResponse) // Output Android speech if cogbotSpeaks is set
+			val cleanedResponse = cleanCogbotResponse(response)
+			cogbotDisplayList.foreach(slotNum =>
+			  PageCommander.setControl(sessionId, slotNum, TextBox.makeBox("Cogbot said \"" + cleanedResponse 
+																  + "\"", sessionState.controlConfigBySlot(slotNum).style)))
+			if (sessionState.cogbotTextToSpeechActive) PageCommander.outputSpeech(sessionId, cleanedResponse) // Output Android speech if cogbotTextToSpeechActive is set
 		  }
 		}
 	  case ActionStrings.DATABALLS_TOKEN => {
@@ -50,6 +53,12 @@ class SubmitTextCommandHandler extends AbstractLifterCommandHandler with Logger 
 		  warn("No action found in SubmitTextCommandHandler for token " + actionToken + " during session " + sessionId)
 		}
 	}
+  }
+  
+  // For now, things are more readable if we just discard embedded XML
+  // May not be necessary in the longer term
+  private def cleanCogbotResponse(response:String) = {
+	response.replaceAll("<.*>", "")
   }
 
 }

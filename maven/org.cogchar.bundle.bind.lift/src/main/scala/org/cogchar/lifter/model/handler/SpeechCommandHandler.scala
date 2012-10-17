@@ -37,7 +37,8 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler with Logger {
 			// Next we strip the acquireSpeech prefix and continue handling. For this to work, the SpeechCommandHandler
 			// must be near the "top" of the chain of responsiblity, and actions performed on acquired speech
 			// (such as submittext) must be farther down the chain.
-			nextHandler.processHandler(appState, sessionId, slotNum, command.stripPrefix(ActionStrings.acquireSpeech + ActionStrings.commandTokenSeparator), input)
+			nextHandler.processHandler(appState, sessionId, slotNum, 
+							command.stripPrefix(ActionStrings.acquireSpeech + ActionStrings.commandTokenSeparator), input)
 		  }
 		}
 	  case ActionStrings.getContinuousSpeech => {
@@ -48,7 +49,8 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler with Logger {
 			// Next we strip the getContinuousSpeech prefix and continue handling. For this to work, the SpeechCommandHandler
 			// must be near the "top" of the chain of responsiblity, and actions performed on acquired speech
 			// (such as submittext) must be farther down the chain.
-			nextHandler.processHandler(appState, sessionId, slotNum, command.stripPrefix(ActionStrings.getContinuousSpeech + ActionStrings.commandTokenSeparator), input)
+			nextHandler.processHandler(appState, sessionId, slotNum, 
+							command.stripPrefix(ActionStrings.getContinuousSpeech + ActionStrings.commandTokenSeparator), input)
 		  }
 		}
 	  case ActionStrings.stopContinuousSpeech => {
@@ -56,9 +58,10 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler with Logger {
 		}
 	  case ActionStrings.cogbotSpeech => {
 		  val secondToken = command.stripPrefix(ActionStrings.cogbotSpeech + ActionStrings.commandTokenSeparator)
+		  val sessionState = appState.stateBySession(sessionId)
 		  secondToken match {
-			case ActionStrings.ENABLE_TOKEN => appState.cogbotSpeaks(sessionId) = true
-			case ActionStrings.DISABLE_TOKEN => appState.cogbotSpeaks(sessionId) = false
+			case ActionStrings.ENABLE_TOKEN => sessionState.cogbotTextToSpeechActive = true
+			case ActionStrings.DISABLE_TOKEN => sessionState.cogbotTextToSpeechActive = false
 			case _ => error("Cogbot Speech lifter command seen, but following token " + secondToken + " is not understood")
 		  }  
 		}
@@ -67,9 +70,10 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler with Logger {
   }
   
   private def displayInputSpeech(state:LifterState, sessionId:String, textToDisplay:String) {
-	state.speechDisplayers(sessionId).foreach(slotId => 
+	val sessionState = state.stateBySession(sessionId)
+	sessionState.speechDisplaySlots.foreach(slotId => 
 	  PageCommander.setControl(sessionId, slotId, 
-		TextBox.makeBox("I think you said \"" + textToDisplay + "\"", state.controlDefMap(sessionId)(slotId).style, true)))
+		TextBox.makeBox("I think you said \"" + textToDisplay + "\"", sessionState.controlConfigBySlot(slotId).style, true)))
   }
   
 }
