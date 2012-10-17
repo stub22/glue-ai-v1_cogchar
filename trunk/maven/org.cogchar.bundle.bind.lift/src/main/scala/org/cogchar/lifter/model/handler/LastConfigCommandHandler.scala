@@ -24,7 +24,7 @@ class LastConfigCommandHandler extends AbstractLifterCommandHandler {
   protected val matchingTokens = ArrayBuffer(ActionStrings.lastConfig)
   
   protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
-	PageCommander.initFromCogcharRDF(sessionId, state.lastConfig(sessionId))
+	PageCommander.initFromCogcharRDF(sessionId, state.stateBySession(sessionId).lastLiftConfig)
   }
   
 }
