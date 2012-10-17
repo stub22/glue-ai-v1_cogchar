@@ -31,10 +31,10 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.view._
 	import org.cogchar.bind.lift._
 	import scala.collection.JavaConverters._
+	import concurrent.ops._
 	// import org.cogchar.platform.trigger.CogcharActionBinding
 	
 	// What do we think about this being an object and not a class?
-	// Well, a Scala Object actually is automatically a static instance singleton anyhow, so no sense in trying to make it one manually.
 	// It appears to be standard practice for LiftActors which provide features to all sessions
 	// to be singleton Objects.
 	// We might eventually want parts of PageCommander to be performed via a class of 
@@ -50,12 +50,14 @@ package org.cogchar.lifter {
 	  private val firstActionHandler = HandlerConfigurator.initializeActionHandlers
 	  private val firstControlInitializationHandler = HandlerConfigurator.initializeControlInitializationHandlers
 	  
+	  private def getSessionState(sessionId:String) = theLifterState.stateBySession(sessionId)
+	  
 	  def createUpdate = updateInfo
 	  
 	  def getNode(sessionId:String, controlId: Int): NodeSeq = {
 		var nodeOut = NodeSeq.Empty
 		try {
-		  nodeOut = theLifterState.controlsMap(sessionId)(controlId)
+		  nodeOut = getSessionState(sessionId).controlXmlBySlot(controlId)
 		} catch {
 		  case _: Any => // Implies nothing in map for this controlId, do nothing and return empty nodeOut
 		}
@@ -79,18 +81,8 @@ package org.cogchar.lifter {
 	  def getInitialConfigId = theLifterState.INITIAL_CONFIG_ID
 	  
 	  def initializeSession(sessionId:String) {
-		info("Initializing Session %s".format(sessionId))
-		theLifterState.initializeSession(sessionId)
-		// As it turns out, generally the below is not necessary!
-		// At the time this is called, the initial "base" Lift template (default.html) hasn't even been rendered yet,
-		// so there is no Comet active in the browser to receive these updates. However, due to the callbacks in the
-		// Template and ControlActors (see comments in those classes), the page will magically receive proper state on initial
-		// render, when Lift takes care of all that.
-		// However, when a previously active browser is trying to reconnect, its template Comet *is* already active on that browser.
-		// So, for those cases, we'll push out the template update (which will automatically render the correct initial controls).
-		// For completely new sessions, this update does nothing:
-		updateListeners(controlId(sessionId, ActorCodes.TEMPLATE_CODE));
-		//setControlsFromMap(sessionId)
+		  info("Initializing Session %s".format(sessionId))
+		  theLifterState.initializeSession(sessionId)
 	  }
 	  
 	  // This method clears the state info for a session from the state maps.
@@ -104,27 +96,50 @@ package org.cogchar.lifter {
 		  theLifterState.lifterInitialized = true
 		  // If this is a restart on config change, activeSessions will have sessions which need to be re-initialized
 		  theLifterState.activeSessions.foreach(sessionId => initializeSession(sessionId))
-		  theLifterState.sessionsAwaitingStart.foreach(sessionId => initializeSession(sessionId))
+		  theLifterState.sessionsAwaitingStart.foreach(sessionId => {
+			  initializeSession(sessionId);
+			  theLifterState.requestedPage(sessionId) = Some(getCurrentTemplate(sessionId)) // Temporary; soon this will be passed in actor message
+			  updateListeners(controlId(sessionId, ActorCodes.LOAD_PAGE_CODE))
+			  setControlsFromMap(sessionId)
+			})
 		  theLifterState.sessionsAwaitingStart.clear
 	  }
 	  
 	  def requestStart(sessionId:String) {
 	   if (theLifterState.lifterInitialized) {
-		  initializeSession(sessionId)
+		 initializeSession(sessionId)
 	   } else {
-		 theLifterState.sessionsAwaitingStart += sessionId
+		 // Some situations may result in requestStart being called more than once, so we need to check if it's already in buffer
+		 if (!(theLifterState.sessionsAwaitingStart contains sessionId)) {
+		   theLifterState.sessionsAwaitingStart += sessionId
+		 }
 	   }
+	  }
+	  
+	  // This method is used by templates to check if session is active on initial render. If not, session should
+	  // be initialized and the caller notified it wasn't previously active by returning a false result
+	  def checkForActiveSessionAndStartIfNot(sessionId:String):Boolean = {
+		var sessionActive = true
+		if (!(theLifterState.activeSessions contains sessionId)) {
+		  sessionActive = false
+		  requestStart(sessionId) // Needs a little more refactoring between this and requestStart
+		  if (theLifterState.lifterInitialized) {
+			setControlsFromMap(sessionId)
+		  }
+		} 
+		return sessionActive
 	  }
 									
 	  def initFromCogcharRDF(sessionId:String, liftConfig:LiftConfig) {
 		info("Loading LiftConfig for session " + sessionId)
 		if (sessionId.equals(theLifterState.INITIAL_CONFIG_ID)) {
-		  theLifterState.clearState
+		  theLifterState.clearAndInitializeState
 		} else { // otherwise reset maps for this session
-		  theLifterState.clearSession(sessionId)
+		  theLifterState.prepareSessionForNewConfig(sessionId)
 		}
 		
-		theLifterState.currentConfig(sessionId) = liftConfig
+		val sessionState = getSessionState(sessionId)
+		sessionState.currentLiftConfig = liftConfig
 
 		val controlList: java.util.List[ControlConfig] = liftConfig.myCCs
 
@@ -145,42 +160,29 @@ package org.cogchar.lifter {
 			// not the same objects as in LiftAmbassador's page cache.
 			// That's important largly because ToggleButton modifies the actions in the controlDefMap.
 			// Pretty darn messy, and likely a topic for further refactoring.
-			theLifterState.controlDefMap(sessionId)(slotNum) = new ControlConfig(controlDef) 
+			sessionState.controlConfigBySlot(slotNum) = new ControlConfig(controlDef) 
 			// Trigger control initialization handler chain to fill proper XML into controlsMap
-			theLifterState.controlsMap(sessionId)(slotNum) = getXmlForControl(sessionId, slotNum, controlDef)
+			sessionState.controlXmlBySlot(slotNum) = getXmlForControl(sessionId, slotNum, controlDef)
 			// Check for initial nee "local" actions which PageCommander needs to handle, such as text display
 			firstActionHandler.checkForInitialAction(theLifterState, sessionId, slotNum, controlDef)
 		  })
 		// Blank unspecified slots (out to MAX_CONTROL_QUANTITY)
 		for (slot <- 1 to theLifterState.MAX_CONTROL_QUANTITY) {
-		  theLifterState.controlsMap(sessionId).putIfAbsent(slot, NodeSeq.Empty)
+		  sessionState.controlXmlBySlot.putIfAbsent(slot, NodeSeq.Empty)
 		}
-		theLifterState.currentTemplate(sessionId) = liftConfig.template
+		sessionState.currentTemplateName = liftConfig.template
 		if (sessionId.equals(theLifterState.INITIAL_CONFIG_ID)) { 
 		  renderInitialControls; // Required to get things started if pages are loaded in browsers before config is initialized
 		} else { // otherwise...
-		  val changedTemplate = (theLifterState.currentTemplate(sessionId) != theLifterState.lastConfig(sessionId).template)
+		  val changedTemplate = !sessionState.currentTemplateName.equals(sessionState.lastLiftConfig.template)
 		  // ... load new template if necessary
 		  if (changedTemplate) {
-			updateInfo = controlId(sessionId, ActorCodes.TEMPLATE_CODE)
-			updateListeners;
-			// For a reason not completely understood, the template change above fails to have the desired effect unless
-			// the control comet is updated below, although in theory this should happen automatically on template change:
+			theLifterState.requestedPage(sessionId) = Some(getCurrentTemplate(sessionId)) // Temporary; soon this will be passed in actor message
+			updateInfo = controlId(sessionId, ActorCodes.LOAD_PAGE_CODE)
+			updateListeners
 		  } 
 		  // ... load new controls
 		  setControlsFromMap(sessionId)
-		  // If template has changed, refresh page. This fixes problems where controls do not render properly
-		  // if the new template has more slots than the old. Seems to be a browser-side JavaScript issue.
-		  if (changedTemplate) {
-			updateListeners(controlId(sessionId, ActorCodes.REFRESH_PAGE_CODE));
-		  }
-		  if (!(theLifterState.firstConfigChanged contains sessionId)) {
-			// This contains repeated code, but is only temporary until ticket 23 is addressed.
-			// If not for repeated page refresh code, we'd have to check firstConfigChanged once in the conditonal
-			// above, and again to see if we need to add session to (the temporary) firstConfigChanged
-			updateListeners(controlId(sessionId, ActorCodes.REFRESH_PAGE_CODE));
-			theLifterState.firstConfigChanged += sessionId;
-		  }
 		}
 	  }
 	  
@@ -189,12 +191,12 @@ package org.cogchar.lifter {
 	  }
 					  
 	  def setControl(sessionId: String, slotNum: Int, slotHtml: NodeSeq) {
-		theLifterState.controlsMap(sessionId)(slotNum) = slotHtml 
+		getSessionState(sessionId).controlXmlBySlot(slotNum) = slotHtml 
 		updateListeners(controlId(sessionId, slotNum))
 	  }
 	  
 	  def setControlsFromMap(sessionId:String) {
-		val slotIterator = theLifterState.controlsMap(sessionId).keysIterator
+		val slotIterator = getSessionState(sessionId).controlXmlBySlot.keysIterator
 		while (slotIterator.hasNext) {
 		  val nextSlot = slotIterator.next
 		  updateListeners(controlId(sessionId, nextSlot))
@@ -202,13 +204,12 @@ package org.cogchar.lifter {
 	  }							
 	  
 	  def handleAction(sessionId:String, formId:Int, input:Array[String]) {
-		//info("Handling action: " + theLifterState.controlDefMap(sessionId)(formId).action) // TEST ONLY
-		val processThread = new Thread(new Runnable { // A new thread to handle actions to make sure we don't block Ajax handling
-			def run() {
-			  firstActionHandler.processHandler(theLifterState, sessionId, formId, theLifterState.controlDefMap(sessionId)(formId), input)
-			}
-		  })
-		processThread.start();
+		info("Handling action: " + getSessionState(sessionId).controlConfigBySlot(formId).action) // TEST ONLY
+		spawn { // A new thread to handle actions to make sure we don't block Ajax handling
+		  // Eventually this thread will no longer be needed since controls should call into PageCommander as an actor
+		  firstActionHandler.processHandler(theLifterState, sessionId, formId, 
+											getSessionState(sessionId).controlConfigBySlot(formId), input)
+		}
 	  }
 	    
 	  // Maps controls with multiple possible selections to action handlers
@@ -236,17 +237,14 @@ package org.cogchar.lifter {
 		val time = new Date().getTime()
 		val ignore = checkForBounce(sessionId, id, time)
 		if (!ignore) {
-		  if (theLifterState.toggleButtonMap(sessionId) contains id) {
+		  if (getSessionState(sessionId).toggleControlStateBySlot contains id) {
 			// Really we shouldn't run toggle on the Actor's thread, so we'll do this.
 			// One of these days snippets will talk back to PageCommander as an Actor instead of calling into it, and the threading
 			// will take care of itself instead of having to do things this messy way.
-			val toggleThread = new Thread(new Runnable {
-				def run() {
-				  ControlToggler.toggle(theLifterState,sessionId,id)
-				  handleAction(sessionId, id, null) // Starts yet another thread, but we need it started by the toggleThread so it won't run until toggle is complete
-				}
-			  })
-			toggleThread.start(); 
+			spawn{
+			  ControlToggler.getTheToggler.toggle(theLifterState,sessionId,id)
+			  handleAction(sessionId, id, null) // Starts yet another thread, but we need it started by the toggleThread so it won't run until toggle is complete
+			}
 		  } else {
 			handleAction(sessionId, id, null)
 		  }
@@ -257,14 +255,15 @@ package org.cogchar.lifter {
 	  final val IGNORE_BOUNCE_TIME = 250 //ms
 	  def checkForBounce(sessionId:String, id:Int, time:Long): Boolean = {
 		bounceCheckLock.synchronized {
-		  var ignore = false;
-		  if (theLifterState.bounceMap(sessionId) contains id) {
-			if (time - theLifterState.bounceMap(sessionId)(id) < IGNORE_BOUNCE_TIME) {
+		  val bounceMap = getSessionState(sessionId).lastTimeAcutatedBySlot
+		  var ignore = false
+		  if (bounceMap contains id) {
+			if ((time - bounceMap(id)) < IGNORE_BOUNCE_TIME) {
 			  ignore = true;
 			  warn("Debouncing control " + id + " in session " + sessionId)
 			}
 		  }
-		  theLifterState.bounceMap(sessionId)(id) = time;
+		  bounceMap(id) = time
 		  ignore
 		}
 	  }
@@ -300,7 +299,8 @@ package org.cogchar.lifter {
 	  
 	  def getCurrentTemplate(sessionId:String) = {
 		var templateToLoad: String = null
-		if (theLifterState.currentTemplate contains sessionId) templateToLoad = theLifterState.currentTemplate(sessionId)
+		val sessionState = theLifterState.stateBySession
+		if (sessionState contains sessionId) templateToLoad = sessionState(sessionId).currentTemplateName
 		templateToLoad
 	  }
 	  
@@ -321,13 +321,6 @@ package org.cogchar.lifter {
 	  def controlId(sessionId:String, controlId: Int): String = {
 		sessionId + "_" + controlId
 	  }
-	   
-	  /* We don't support lift config Turtle files now after making the switch to action URIs, unless we want to 
-	   * bring back that capability. See org.cogchar.bind.lift.ControlConfig for more info
-	   def reconfigureControlsFromRdf(rdfFile:String) = {
-	   getLiftAmbassador.activateControlsFromRdf(rdfFile)
-	   }
-	   */
 	  
 	  var theMessenger: CogcharMessenger = null
 	
@@ -356,18 +349,20 @@ package org.cogchar.lifter {
 		}
 		def getVariable(key:String): String = { // returns value from "public" (global) app variables map
 		  var contents:String = null
-		  if (theLifterState.publicAppVariablesMap contains key) contents = theLifterState.publicAppVariablesMap(key)
+		  val globalVariables = theLifterState.globalLifterVariablesByName
+		  if (globalVariables contains key) contents = globalVariables(key)
 		  contents
 		}
 		def getVariable(sessionId:String, key:String): String = { // returns value from "session" app variables map
 		  var contents:String = null
-		  if (theLifterState.appVariablesMap(sessionId) contains key) contents = theLifterState.appVariablesMap(sessionId)(key)
+		  val sessionVariables = getSessionState(sessionId).sessionLifterVariablesByName
+		  if (sessionVariables contains key) contents = sessionVariables(key)
 		  contents
 		}
 		// Show error globally
 		def showError(errorSourceCode:String, errorText:String) {
 		  info("In showError; code = " + errorSourceCode + "; text = " + errorText);
-		  val activeSessionIterator = theLifterState.controlsMap.keysIterator
+		  val activeSessionIterator = theLifterState.activeSessions.iterator
 		  while (activeSessionIterator.hasNext) {
 			val sessionId = activeSessionIterator.next
 			showError(errorSourceCode, errorText, sessionId)
@@ -376,13 +371,15 @@ package org.cogchar.lifter {
 		// Show error in session
 		def showError(errorSourceCode:String, errorText:String, sessionId:String) {
 		  info("In showError; code = " + errorSourceCode + "; text = " + errorText + "; session = " + sessionId);
-		  if (theLifterState.errorMap contains sessionId) {
-			  if (theLifterState.errorMap(sessionId) contains errorSourceCode) {
-				val slotNum = theLifterState.errorMap(sessionId)(errorSourceCode)
+		  if (theLifterState.stateBySession contains sessionId) {
+			  val sessionErrorMap = getSessionState(sessionId).errorDisplaySlotsByType
+			  if (sessionErrorMap contains errorSourceCode) {
+				val slotNum = sessionErrorMap(errorSourceCode)
 				if (errorText.isEmpty) {
 				  setControl(sessionId, slotNum, NodeSeq.Empty)
 				} else {
-				  setControl(sessionId, slotNum, TextBox.makeBox(errorText, theLifterState.controlDefMap(sessionId)(slotNum).style, true, false))
+				  setControl(sessionId, slotNum, TextBox.makeBox(errorText, 
+							getSessionState(sessionId).controlConfigBySlot(slotNum).style, true, false))
 				}
 			  }
 		  }

@@ -31,15 +31,16 @@ class ShowTextCommandHandler extends AbstractLifterCommandHandler with Logger {
   
   override protected def handleInitialActionHere(state:LifterState, sessionId:String, slotNum:Int, command:String) {
 	val splitAction = command.split("_")
+	val sessionState = state.stateBySession(sessionId)
 	splitAction(1) match {
 	  case ActionStrings.COGBOT_TOKEN => { // Show Cogbot speech on this control? Add it to the cogbotDisplayers list.
-		  state.cogbotDisplayers(sessionId) += slotNum
+		  sessionState.cogbotDisplaySlots += slotNum
 		}
 	  case ActionStrings.ANDROID_SPEECH_TOKEN => { // Add to the speechDisplayers list if we want Android speech shown here
-		  state.speechDisplayers(sessionId) += slotNum
+		  sessionState.speechDisplaySlots += slotNum
 		}
 	  case ActionStrings.ERROR_TOKEN => { // Associate the error source name with the slotNum where errors will display
-		  state.errorMap(sessionId)(splitAction(2)) = slotNum
+		  sessionState.errorDisplaySlotsByType(splitAction(2)) = slotNum
 		}
 	  case _ => warn("ShowTextCommandHandler doesn't know what to do in order to display text with token " + splitAction(1))
 	}

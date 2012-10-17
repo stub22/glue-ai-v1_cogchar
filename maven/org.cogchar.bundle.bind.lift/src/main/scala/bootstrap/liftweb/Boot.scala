@@ -31,7 +31,7 @@ class Boot {
 	val pushyMenu = Menu("pushy") / "index" // This very different format from Lift in Action p.45
 	val cogcharMenu = Menu(Loc("cogchar", ("cogchar" :: Nil) -> true, "Cogchar Interaction Internals")) // This is for the /cogchar directory and directories inside - format from Exploring Lift I think
 	val sitemap = List(pushyMenu, cogcharMenu) // Just what we need for Pushy right now
-	LiftRules.setSiteMap(SiteMap(sitemap:_*))
+	//LiftRules.setSiteMap(SiteMap(sitemap:_*)) // This is only commented out temporarily until Ticket 23 work is fully complete
 
 	LiftRules.early.append(makeUtf8)
 	val myLiftAmbassador = PageCommander.getLiftAmbassador
@@ -46,10 +46,10 @@ class Boot {
 	// Add the listener for JSON speech to the dispatch table
 	LiftRules.statelessDispatchTable.append(SpeechRestListener)
 	
-	// Have Lift automatically requestStart in PageCommander for a session when it is created
-	LiftSession.onSetupSession ::= ((ls:LiftSession) => PageCommander.requestStart(ls.uniqueId))
-	
-	// ...and have lift automatically discard session state when it is shut down
+	// Have lift automatically discard session state when it is shut down
+	// (Session initialization is done via "BrowserReadyIndicator" snippet instead of LiftSession.onSetupSession
+	// so that Lifter knows the browser has read the default template (or another one already loaded in browser at
+	// Lifter startup) and is ready to receive a page redirect to the desired template)
 	LiftSession.onShutdownSession ::= ((ls:LiftSession) => PageCommander.removeSession(ls.uniqueId))
 
 	//LiftRules.cometLogger = ActorLogger // Kind of a WAG as to how to use this, just trying it out. Actually seems to perhaps be making Comet behave better, but too early to say (and why would we expect it to?).

@@ -33,8 +33,8 @@ class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
 	val varName = control.action.getLocalName
 	var variablesMap: scala.collection.mutable.Map[String, String] = null;
 	var sessionVar = false
-	if (PageCommander.getUriPrefix(control.action) equals ActionStrings.p_liftvar) {variablesMap = state.publicAppVariablesMap}
-	else {variablesMap = state.appVariablesMap(sessionId); sessionVar = true}
+	if (PageCommander.getUriPrefix(control.action) equals ActionStrings.p_liftvar) {variablesMap = state.globalLifterVariablesByName}
+	else {variablesMap = state.stateBySession(sessionId).sessionLifterVariablesByName; sessionVar = true}
 	if (input != null) { // If so, we have a value for the variable
 	  val textItems = List.fromArray(control.text.split(","))
 	  if (input(0).startsWith(ActionStrings.subControlIdentifier)) {
@@ -47,12 +47,13 @@ class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
 	  }
 	} else { // If so, a button type control has this Lifter Variable action.
 	  var toggleButton = false;
-	  if (state.toggleButtonMap contains sessionId) {
-		if (state.toggleButtonMap(sessionId) contains slotId) {
+	  if (state.stateBySession contains sessionId) {
+		val toggleStateMap = state.stateBySession(sessionId).toggleControlStateBySlot
+		if (toggleStateMap contains slotId) {
 		  toggleButton = true;
-		  val toggleButtonState = state.toggleButtonMap(sessionId)(slotId) // assumes button has already been toggled on press (by toggler)
+		  val toggleButtonState = toggleStateMap(slotId) // assumes button has already been toggled on press (by toggler)
 		  variablesMap(varName) = toggleButtonState.toString
-		  if (!sessionVar) ControlToggler.setAllPublicLiftvarToggleButtonsToState(state, varName, toggleButtonState)
+		  if (!sessionVar) ControlToggler.getTheToggler.setAllPublicLiftvarToggleButtonsToState(state, varName, toggleButtonState)
 		}
 	  }
 	  if (!toggleButton) {
@@ -82,9 +83,9 @@ object LifterVariableHandler {
 	actionUriPrefix match {
 	  case ActionStrings.p_liftvar => {
 		  val mappedVariable = action.getLocalName();
-		  if (appState.publicAppVariablesMap contains mappedVariable) {
+		  if (appState.globalLifterVariablesByName contains mappedVariable) {
 			try {
-			  state = appState.publicAppVariablesMap(mappedVariable).toBoolean
+			  state = appState.globalLifterVariablesByName(mappedVariable).toBoolean
 			} catch {
 			  case e: NumberFormatException => // just leave state false if not a boolean value
 			}
@@ -92,9 +93,10 @@ object LifterVariableHandler {
 		}
 	  case ActionStrings.p_liftsessionvar => {
 		  val mappedVariable = action.getLocalName();
-		  if (appState.appVariablesMap(sessionId) contains mappedVariable) {
+		  val sessionVariables = appState.stateBySession(sessionId).sessionLifterVariablesByName
+		  if (sessionVariables contains mappedVariable) {
 			try {
-			  state = appState.appVariablesMap(sessionId)(mappedVariable).toBoolean
+			  state = sessionVariables(mappedVariable).toBoolean
 			} catch {
 			  case e: NumberFormatException => // just leave state false if not a boolean value
 			}

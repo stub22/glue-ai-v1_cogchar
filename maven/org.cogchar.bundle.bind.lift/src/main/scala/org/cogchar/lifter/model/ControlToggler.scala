@@ -29,23 +29,32 @@ import scala.xml.NodeSeq
 // Really the way toggle is implemented is pretty ugly in general, maybe it will get better...
 
 object ControlToggler {
+  lazy val theControlToggler = new ControlToggler();
+  def getTheToggler = theControlToggler;
+}
+
+
+class ControlToggler {
   
   def toggle(appState:LifterState, sessionId:String, slotNum: Int) {
-	if (appState.controlDefMap(sessionId) contains slotNum) {
-	  if (appState.toggleButtonFullActionMap(sessionId) contains slotNum) {
-		if (appState.toggleButtonMap(sessionId) contains slotNum) {
-		  val state = appState.toggleButtonMap(sessionId)(slotNum)
+	val sessionState = appState.stateBySession(sessionId)
+	val controls = sessionState.controlConfigBySlot
+	if (controls contains slotNum) {
+	  if (sessionState.toggleControlMultiActionsBySlot contains slotNum) {
+		val toggleStateMap = sessionState.toggleControlStateBySlot
+		if (toggleStateMap contains slotNum) {
+		  val state = toggleStateMap(slotNum)
 		  setSingularAction(appState, sessionId, slotNum, state)
-		  getSingularControlXmlAndRender(sessionId, slotNum, appState.controlDefMap(sessionId)(slotNum), !state)
-		  appState.toggleButtonMap(sessionId)(slotNum) = !state
+		  getSingularControlXmlAndRender(sessionId, slotNum, controls(slotNum), !state)
+		  toggleStateMap(slotNum) = !state
 		} else {
-		  ControlToggler.togglerMapError(sessionId, slotNum, "toggleButtonMap")
+		  togglerMapError(sessionId, slotNum, "toggleControlStateBySlot")
 		}
 	  } else {
-		ControlToggler.togglerMapError(sessionId, slotNum, "toggleButtonFullActionMap")
+		togglerMapError(sessionId, slotNum, "toggleControlMultiActionsBySlot")
 	  }
 	} else {
-	  ControlToggler.togglerMapError(sessionId, slotNum, "controlDefMap")
+	  togglerMapError(sessionId, slotNum, "controlConfigBySlot")
 	}
   }
 
@@ -53,13 +62,14 @@ object ControlToggler {
   // Blur of responsibity between toggle action and lifter variables, but probably belongs here.
   def setAllPublicLiftvarToggleButtonsToState(appState:LifterState, varName:String, state:Boolean) {
 	appState.activeSessions.foreach(sessionId => {
-		appState.toggleButtonMap(sessionId).keySet.foreach(slotNum => {
-			val control = appState.controlDefMap(sessionId)(slotNum)
+		val toggleStateMap = appState.stateBySession(sessionId).toggleControlStateBySlot
+		toggleStateMap.keySet.foreach(slotNum => {
+			val control = appState.stateBySession(sessionId).controlConfigBySlot(slotNum)
 			val actionIdent = control.action
 			if (ActionStrings.p_liftvar.equals(PageCommander.getUriPrefix(actionIdent))
 				&& varName.equals(actionIdent.getLocalName)) {  
 			  getSingularControlXmlAndRender(sessionId, slotNum, control, state)
-			  appState.toggleButtonMap(sessionId)(slotNum) = state
+			  toggleStateMap(slotNum) = state
 			}
 		  })
 	  })
@@ -68,9 +78,9 @@ object ControlToggler {
   def getSingularControlXml(sessionId:String, slotNum:Int, control:ControlConfig, state:Boolean): NodeSeq = {
 	val newControl = new ControlConfig();
 	newControl.controlType = control.controlType
-	newControl.text = ControlToggler.getSubstringForToggleState(control.text, state)
-	newControl.style = ControlToggler.getSubstringForToggleState(control.style, state)
-	newControl.resource = ControlToggler.getSubstringForToggleState(control.resource, state)
+	newControl.text = getSubstringForToggleState(control.text, state)
+	newControl.style = getSubstringForToggleState(control.style, state)
+	newControl.resource = getSubstringForToggleState(control.resource, state)
 	PageCommander.getXmlForControl(sessionId, slotNum, newControl)
   }
   
@@ -79,11 +89,12 @@ object ControlToggler {
   }
   
   def setSingularAction(appState:LifterState, sessionId:String, slotNum:Int, state:Boolean) {
-	val actionItem = 
-	  ControlToggler.getSubstringForToggleState(appState.toggleButtonFullActionMap(sessionId)(slotNum).getLocalName,
+	val sessionState = appState.stateBySession(sessionId)
+	val controls = sessionState.controlConfigBySlot
+	val actionItem = getSubstringForToggleState(sessionState.toggleControlMultiActionsBySlot(slotNum).getLocalName,
 												state, ActionStrings.multiCommandSeparator)
-	val actionUriPrefix = PageCommander.getUriPrefix(appState.controlDefMap(sessionId)(slotNum).action)
-	appState.controlDefMap(sessionId)(slotNum).action = new FreeIdent(actionUriPrefix + actionItem, actionItem)
+	val actionUriPrefix = PageCommander.getUriPrefix(controls(slotNum).action)
+	controls(slotNum).action = new FreeIdent(actionUriPrefix + actionItem, actionItem)
   }
   
   def getStateIndex(state:Boolean) = if (state) 1 else 0
@@ -102,5 +113,5 @@ object ControlToggler {
 	error("ControlToggler called for slotNum " + slotNum + " of session " + sessionId + 
 		  ", but no entry found in " + mapName)
   }
-
+  
 }

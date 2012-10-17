@@ -24,73 +24,7 @@
 			overflow: hidden;
 		}
 		
-		.slotstyle, .slotstyle2wide {
-			position:absolute;
-			overflow: hidden;
-		}
-		
-		.slotstyle {
-			width: 25%;
-			height: 33%;
-		}
-		
-		.slotstyle2wide {
-			width: 50%;
-			height: 66%;
-		}
-		
-		.fullscreen {
-			width: 100%;
-			height: 100%;
-			overflow: hidden;
-		}
-		
-		.top0 {
-			top: 0%;
-		}
 
-		.top33 {
-			top: 33%;
-		}
-		
-		.top66 {
-			top: 66%;
-		}
-
-		.left25 {
-			left: 25%;
-		}
-
-		.left50 {
-			left: 50%;
-		}
-
-		.left75 {
-			left: 75%;
-		}
-		
-		.centerVert {
-			display:table;
-			width: 100%;
-			height: 100%;
-		}
-
-		.centerVert div {
-			display: table-cell;
-			vertical-align: middle;
-			text-align: center;
-		}
-		
-		.labels {
-			font-family: Arial;
-			font-size: 20px;
-			display: block;
-		}
-
-		.formlabels {
-			font-family: Arial;
-			font-size: 14px;
-		}
 	</style>
  
     <script id="jquery" src="/classpath/jquery.js" type="text/javascript"/>
@@ -99,7 +33,10 @@
   </head>
   <body>
 
-    <span class="lift:comet?type=TemplateActor"><span name="TemplateSlot">Template fills here</span></span>
+    <h1>Loading, please wait...</h1>
+	<div id="IndicateBrowserReady">
+        <lift:BrowserReadyIndicator templateName="default"/>
+    </div>
 	<div id="SpeechRequest">
         <lift:comet type="JavaScriptActor"><div name="JSCommandSlot">A hidden div to fire JS command</div></lift:comet>
     </div>
