@@ -66,24 +66,25 @@ object FancyTriggerFacade extends BasicDebugger {
 		}
 	}
 
-	private class FancyBinding(val myBox : CogcharScreenBox, val myTrig : CogcharActionTrigger) extends CogcharActionBinding {
-		override def addTargetBox(box: CogcharScreenBox) {
-			throw new RuntimeException("Cannot add target box on fancy binding");
+
+}
+class FancyBinding(val myBox : CogcharScreenBox, val myTrig : CogcharActionTrigger) extends CogcharActionBinding {
+	override def addTargetBox(box: CogcharScreenBox) {
+		throw new RuntimeException("Cannot add target box on fancy binding");
+	}
+	override def setTargetTrigger(trig: CogcharActionTrigger) {
+		throw new RuntimeException("Cannot set target trigger on fancy binding");
+	}
+	override def perform() {
+		if (myTrig != null) { 
+			myTrig.fire(myBox);
 		}
-		override def setTargetTrigger(trig: CogcharActionTrigger) {
-			throw new RuntimeException("Cannot set target trigger on fancy binding");
-		}
-		override def perform() {
-			if (myTrig != null) { 
-				myTrig.fire(myBox);
-			}
-		}
-		override def toString() : String = {
-			"FancyBinding box=[" + myBox + "] trig=[" + myTrig + "]";
-		}
+	}
+	override def toString() : String = {
+		"FancyBinding box=[" + myBox + "] trig=[" + myTrig + "]";
+	}
 	
-		override def clearTargetBoxes() {
-			throw new RuntimeException("Cannot clear target boxes on fancy binding");
-		}
+	override def clearTargetBoxes() {
+		throw new RuntimeException("Cannot clear target boxes on fancy binding");
 	}
 }

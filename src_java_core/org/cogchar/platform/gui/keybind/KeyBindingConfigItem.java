@@ -34,6 +34,8 @@ public class KeyBindingConfigItem {
 	public String	myBoundKeyName;
 	public String	myTargetActionName;	
 	public	Ident	myTargetCommandID;
+	
+	public String	myFeatureCategoryName;
 
 	public KeyBindingConfigItem(RepoClient qi, Solution solution, KeystrokeConfigNames kce) {
 		SolutionHelper sh = new SolutionHelper();
@@ -43,5 +45,7 @@ public class KeyBindingConfigItem {
 		// Generally only one of these will be set, and the other will be null.
 		myTargetActionName = sh.pullString(solution, kce.ACTION_VAR_NAME);
 		myTargetCommandID = sh.pullIdent(solution, kce.COMMAND_ID_NAME);
+		
+		myFeatureCategoryName = sh.pullString(solution, kce.FEATURE_CATEGORY_NAME);
 	}
 }

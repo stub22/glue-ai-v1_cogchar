@@ -14,12 +14,25 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.sys.input;
-
+package org.cogchar.bundle.app.puma;
+import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class InputBindingFuncs {
-
+public class PumaContextCommandBox extends CogcharScreenBox {
+	private		PumaAppContext		myPAC;
+	
+	public PumaContextCommandBox(PumaAppContext pac) {
+		myPAC = pac;
+	}
+	protected HumanoidRenderContext getHRC() { 
+		return myPAC.getOrMakeVWorldMapper().getHumanoidRenderContext();
+	}
+	public void resetMainCameraLocation() { 
+		getHRC().setDefaultCameraLocation();
+	}
+	
+	
 }

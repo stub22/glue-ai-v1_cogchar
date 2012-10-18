@@ -25,6 +25,8 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.Trigger;
+
+import  org.cogchar.render.sys.input.VW_InputBindingFuncs;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,7 @@ import org.cogchar.render.model.databalls.BallBuilder;
  */
 public class HumanoidPuppetActions extends BasicDebugger {
 	static BasicDebugger theDbg = new BasicDebugger();
+	
 	
 	private static KeyBindingConfig keyBindings;
 	
@@ -205,72 +208,36 @@ public class HumanoidPuppetActions extends BasicDebugger {
 		
 		final static int NULL_KEY = -100; // This input not mapped to any key; we'll use it in the event of not finding one from keyBindings
 		static int getKey(PlayerAction actionType) {
-			int keyInput = NULL_KEY; 
-			String keyString = null;
+			int keyInputCode = NULL_KEY; 
+			String keyName = null;
 			String action = actionType.name();
 			if (keyBindings.myGeneralBindings.containsKey(action)) {
-				keyString = keyBindings.myGeneralBindings.get(action).myBoundKeyName;
+				keyName = keyBindings.myGeneralBindings.get(action).myBoundKeyName;
 			} else {
 				theDbg.logWarning("Attemping to retrieve key binding for " + action + ", but none is found");
 			}
-			try {
-				if ((keyString.startsWith("AXIS")) || (keyString.startsWith("BUTTON"))) { // In this case, must be MouseInput
-					// We'll have to use reflection to get from the config strings to the fields in jME's KeyInput and MouseInput
-					Field keyField = MouseInput.class.getField(keyString);
-					// Inverting this result to stuck with old trick (for now) of having mouse triggers be negative so
-					// makeJME3InputTriggers can ignore mouse inputs for the purpose of the keyboard mapping help screen
-					// setup. Value is re-inverted there for proper handling.
-					keyInput = -1 * keyField.getInt(keyField);
-				} else { // ... regular KeyInput
-					Field keyField = KeyInput.class.getField("KEY_" + keyString.toUpperCase());
-					keyInput = keyField.getInt(keyField);
-				}
-			} catch (Exception e) {
-				getLoggerForClass(HumanoidPuppetActions.PlayerAction.class).warn(
-						"Error getting binding for {}: {}", actionType.toString(), e);
-			}
-			return keyInput;
+			keyInputCode = VW_InputBindingFuncs.getKeyConstantForName(keyName);
+			return keyInputCode;
 		}
 	};
-    
-    /* 
-    * Below static method converts from jME KeyInput/MouseInput codes to Triggers
-    * and registers with KeyBindingTracker.
-    * We switch on sign of keyCode to determine if this is a mouse binding or not
-    * Negative codes are assumed to be mouse codes and inverted before trigger creation
-    * This is possible because all JME KeyInput codes are > 0
-    * Not very nice in long run, but gets it going with minimum of modification for now
-    */
-    private static Trigger[] makeJME3InputTriggers(PlayerAction pa) {
-		int keyCode = pa.getTriggerKey();
-		Trigger[] newTrigger = null;
-		if (keyCode != PlayerAction.NULL_KEY) {
-			if (keyCode > 0) {
-				KeyBindingTracker.addBinding(pa.name(), keyCode);
-				newTrigger = new Trigger[] { new KeyTrigger(keyCode)};
-			}
-			else {newTrigger = new Trigger[] { new MouseButtonTrigger(-keyCode)};}
-		}
-		return newTrigger;
-	}
-    
-    static void setupActionListeners(InputManager inputManager, final HumanoidRenderContext ctx, KeyBindingConfig config) {
-		keyBindings = config;
-        PlayerAction pavals[] = PlayerAction.values();
+  static public void setupActionListeners(InputManager inputManager, final HumanoidRenderContext ctx, 
+				KeyBindingConfig kbConfig, KeyBindingTracker kbt) {
+		keyBindings = kbConfig;
+        HumanoidPuppetActions.PlayerAction pavals[] = HumanoidPuppetActions.PlayerAction.values();
 		List<String> actionNamesList = new ArrayList<String>();
 		boolean minSimMode = ctx.getConfigEmitter().isMinimalSim();
         for (int pai =0; pai < pavals.length; pai++) { 
-            PlayerAction pa = pavals[pai];
+            HumanoidPuppetActions.PlayerAction pa = pavals[pai];
 			String actionName = pa.name();
 			if (minSimMode) {
 				if (!pa.includedInMinSim()) {
 					continue;
 				}
 			}
-			Trigger[] newTrigger = makeJME3InputTriggers(pa);
-			if (newTrigger != null) {
+			Trigger[] newTriggerBlock = VW_InputBindingFuncs.makeJME3InputTriggers(pa.getTriggerKey(), pa.name(), kbt);
+			if (newTriggerBlock != null) {
 				actionNamesList.add(actionName);
-				inputManager.addMapping(actionName, makeJME3InputTriggers(pa));
+				inputManager.addMapping(actionName, newTriggerBlock);
 			}
             
         }
@@ -288,7 +255,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
 
             public void onAction(String name, boolean isPressed, float tpf) {
 				// Do an enum lookup-by-name
-                PlayerAction action = PlayerAction.valueOf(name);
+                HumanoidPuppetActions.PlayerAction action = HumanoidPuppetActions.PlayerAction.valueOf(name);
                 if ((action != null) && isPressed) {
 					try {
 	                    action.act(ctx);
@@ -298,5 +265,6 @@ public class HumanoidPuppetActions extends BasicDebugger {
                 }
             }
         }, actionNames);
-	}
+	}	    
+  
 }

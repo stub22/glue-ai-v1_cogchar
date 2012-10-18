@@ -17,6 +17,7 @@ package org.cogchar.app.buddy.busker;
 
 import java.util.List;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
+import org.cogchar.bundle.app.puma.PumaContextCommandBox;
 import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.platform.trigger.CogcharScreenBox;
@@ -68,6 +69,15 @@ public class TriggerItems {
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 			pdc.sayText("The time is now, " + System.currentTimeMillis());
 		}
+	}
+	
+	public static class ResetMainCamera extends TriggerItem {
+		@Override public void fire(CogcharScreenBox targetBox) {
+			logFiring(targetBox);
+			PumaContextCommandBox pccb = (PumaContextCommandBox) targetBox;
+			pccb.resetMainCameraLocation();
+		}
+		
 	}
 	
 /*	Likely doing away with this class in favor of PumaAppContext.updateConfigByRequest --  see additional
@@ -164,8 +174,6 @@ public class TriggerItems {
 			CogcharScreenBox csBox = boxSpace.findBox(cRec.boxID());
 			if ((ti != null) && (csBox != null)) {
 				CommandBinding cb = cSpace.findOrMakeBinding(cRec.cmdID());
-				// Here is the missing piece: get from boxID to a CogcharScreenBox to put in the binding.
-				// CogcharScreenBox csb 
 				CogcharActionBinding cab = new BasicActionBindingImpl();
 				cab.addTargetBox(csBox);
 				cab.setTargetTrigger(ti);
