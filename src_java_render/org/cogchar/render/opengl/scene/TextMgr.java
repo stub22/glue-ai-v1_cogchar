@@ -65,13 +65,13 @@ public class TextMgr extends RenderRegistryAware {
 		bt.setLocalTranslation(xPos, yPos, zPos);
 		return bt;
 	}
-
-	public BitmapText makeHelpScreen(float scale, AppSettings settings) {
+	// KeyBindingTracker.getBindingMap()
+	public BitmapText makeHelpScreen(float scale, AppSettings settings, Map<String, Integer> keyBindingMap) {
 		String commandList = "";
 		String commandLine;
 		int longestLineLength = 0;
 		KeyNames keyNamesConverter = new KeyNames(); // You'd think they would have made this static...
-		for (Map.Entry<String, Integer> entry : KeyBindingTracker.getBindingMap().entrySet()) {
+		for (Map.Entry<String, Integer> entry : keyBindingMap.entrySet()) {
 			commandLine = entry.getKey() + ": " + keyNamesConverter.getName(entry.getValue()) + "\n";
 			if (commandLine.length() > longestLineLength) {
 				longestLineLength = commandLine.length();

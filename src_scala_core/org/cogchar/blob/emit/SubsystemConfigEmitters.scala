@@ -126,7 +126,7 @@ class RenderConfigEmitter(val myOptSysCtxURI : Option[String]) extends Subsystem
 }
 
 import org.cogchar.platform.gui.keybind.{KeystrokeConfigNames}
-import org.cogchar.platform.gui.keybind.KeystrokeConfigNames.{GENERAL_BINDING_NAME, SCENE_BINDING_NAME}
+import org.cogchar.platform.gui.keybind.KeystrokeConfigNames.{GENERAL_BINDING_NAME, SCENE_BINDING_NAME, COMMAND_KEYBINDING_TYPE_NAME}
 
 class KeystrokeConfigEmitter extends SubsystemConfigEmitter with KeystrokeConfigNames {
 	
@@ -135,11 +135,12 @@ class KeystrokeConfigEmitter extends SubsystemConfigEmitter with KeystrokeConfig
 	val BINDINGS_QUERY_URI = "ccrt:find_keybindings_99";
 	val  GENERAL_BINDING_TYPE : Ident = new FreeIdent(ccrt + GENERAL_BINDING_NAME, GENERAL_BINDING_NAME);
 	val  SCENE_BINDING_TYPE : Ident = new FreeIdent(ccrt + SCENE_BINDING_NAME, SCENE_BINDING_NAME);
+	val  COMMAND_KEYBINDING_TYPE : Ident = new FreeIdent(ccrt + COMMAND_KEYBINDING_TYPE_NAME, COMMAND_KEYBINDING_TYPE_NAME);
 	
 	override def getBindingsQueryURI() : String = BINDINGS_QUERY_URI
 
-	override def getGeneralBindingID : Ident = GENERAL_BINDING_TYPE;
-	override def getSceneBindingID : Ident = SCENE_BINDING_TYPE;
+	override def getGeneralKeybindingTypeID : Ident = GENERAL_BINDING_TYPE;
+	override def getSceneKeybindingTypeID : Ident = SCENE_BINDING_TYPE;
 
-	
+	override def getCommandKeybindingTypeID : Ident = COMMAND_KEYBINDING_TYPE;
 }

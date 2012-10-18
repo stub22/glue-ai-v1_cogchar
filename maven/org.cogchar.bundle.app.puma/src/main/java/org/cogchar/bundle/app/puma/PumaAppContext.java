@@ -18,6 +18,7 @@ package org.cogchar.bundle.app.puma;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 
@@ -39,7 +40,7 @@ import org.cogchar.platform.trigger.CommandSpace;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaAppContext extends CogcharScreenBox {
+public class PumaAppContext extends BasicDebugger {
 	
 	private PumaRegistryClient	myRegClient;
 	
@@ -55,7 +56,8 @@ public class PumaAppContext extends CogcharScreenBox {
 		myBundleContext = bc;
 		
 		BoxSpace bs = myRegClient.getTargetBoxSpace(null);
-		bs.addBox(ctxID, this);
+		PumaContextCommandBox pcc = new PumaContextCommandBox(this);
+		bs.addBox(ctxID, pcc);
 	}
 
 	protected BundleContext getBundleContext() {
@@ -113,15 +115,6 @@ public class PumaAppContext extends CogcharScreenBox {
 
 	}
 
-	protected void initCinema() {
-		if (hasVWorldMapper()) {
-			PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
-			pvwm.initCinema();
-		} else {
-			getLogger().warn("Ignoring initCinema command - no vWorldMapper present");
-		}
-	}
-	// TODO:  This should take some optional args that will start a different repo client instead.
 
 	public void startRepositoryConfigServices() {
 		PumaConfigManager pcm = getConfigManager();
@@ -194,6 +187,9 @@ public class PumaAppContext extends CogcharScreenBox {
 		setupAndStartBehaviorTheater(pdc);		
 		return pdc;
 	}
+
+	
+	/** Would also need to reload keybindings for this to be effective */
 	public void reloadCommandSpace() { 
 		final PumaConfigManager pcm = getConfigManager();
 		RepoClient repoCli  = getOrMakeMainConfigRC();		
@@ -202,13 +198,23 @@ public class PumaAppContext extends CogcharScreenBox {
 		// TODO:  stuff to clear out the command space
 		TriggerItems.populateCommandSpace(repoCli, cmdSpc, boxSpc);
 	}
+	protected void initCinema() {
+		if (hasVWorldMapper()) {
+			PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
+			CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
+			pvwm.initVirtualWorlds(cmdSpc);
+		} else {
+			getLogger().warn("Ignoring initCinema command - no vWorldMapper present");
+		}
+	}	
 	public void reloadVirtualWorldConfig() {
 		PumaConfigManager pcm = getConfigManager();
 
 		PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null); // getVirtualWorldMapper();
 		if (pvwm != null) {
 			pvwm.clearCinematicStuff();
-			pvwm.initCinema();
+			CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
+			pvwm.initVirtualWorlds(cmdSpc);
 		} else {
 			getLogger().warn("Ignoring command to reloadVirtualWorldConfig, because no vWorldMapper is present!");
 		}
@@ -300,7 +306,8 @@ public class PumaAppContext extends CogcharScreenBox {
 			
 			if (hasVWorldMapper()) {
 				PumaVirtualWorldMapper vWorldMapper = getOrMakeVWorldMapper();
-				vWorldMapper.initCinema();
+				CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
+				vWorldMapper.initVirtualWorlds(cmdSpc);
 			}
 
 		} catch (Throwable t) {

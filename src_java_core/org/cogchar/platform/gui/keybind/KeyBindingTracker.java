@@ -25,17 +25,27 @@ import java.util.Map;
  */
 public class KeyBindingTracker {
 
-	static private Map<String, Integer> bindingMap = new LinkedHashMap<String, Integer>();
+	static private	KeyBindingTracker theTracker = new KeyBindingTracker();
+	
+	private Map<String, Integer>  myBindingMap = new LinkedHashMap<String, Integer>();
 
-	public static void addBinding(String action, Integer key) {
-		bindingMap.put(action, key); // Or do we want (key, action)? May depend on future of this class
+	public static KeyBindingTracker getTheTracker() { 
+		return theTracker;
+	}
+	public void addBinding(String action, Integer key) {
+		myBindingMap.put(action, key); // Or do we want (key, action)? May depend on future of this class
 	}
 
-	public static Map<String, Integer> getBindingMap() {
-		return bindingMap;
+	public Map<String, Integer> getBindingMap() {
+		return myBindingMap;
 	}
 
-	public static void clearMap() {
-		bindingMap.clear();
+	public void clearMap() {
+		myBindingMap.clear();
+		
+	}
+	
+	public void addBindings (Map<String, Integer> keyBindingMap) {
+		myBindingMap.putAll(keyBindingMap);
 	}
 }

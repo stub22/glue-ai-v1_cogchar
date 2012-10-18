@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.TreeMap;
+import org.cogchar.render.sys.input.VW_InputBindingFuncs;
 
 /**
  *
@@ -47,17 +48,10 @@ public class SceneActions {
 	static Logger theLogger = LoggerFactory.getLogger(SceneActions.class);
 
 	private static Map<String, CogcharActionBinding> theBoundActionsByTrigName = new HashMap<String, CogcharActionBinding>();
-	//private static DummyBinding theBoundActions[]; // Is this ever really used?
 	
 	private static int numberOfBindings = 0;
 	
-/*
-	public static String getSceneTrigName(int keyIndex) {
-		// Two digit suffix, zero padded
-		return String.format("sceneTrig_%02d", keyIndex);
-	}
-*/
-	public static void setupActionListeners(InputManager inputManager, KeyBindingConfig config) {
+	public static void setupActionListeners(InputManager inputManager, KeyBindingConfig config, KeyBindingTracker kbt) {
 		numberOfBindings = config.mySceneBindings.size();
 		String actionNames[] = new String[numberOfBindings];
 		//theBoundActions = new DummyBinding[numberOfBindings];
@@ -67,8 +61,9 @@ public class SceneActions {
 		int idx = 0;
 		while (sceneMappings.hasNext()) {
 			KeyBindingConfigItem nextMapping = sceneMappings.next();
-			int sceneTrigKeyNum = getKey(nextMapping);
-			if (sceneTrigKeyNum != NULL_KEY) {
+			String keyName = nextMapping.myBoundKeyName;
+			int sceneTrigKeyNum = VW_InputBindingFuncs.getKeyConstantForName(keyName);
+			if (sceneTrigKeyNum != VW_InputBindingFuncs.NULL_KEY) {
 				KeyTrigger keyTrig = new KeyTrigger(sceneTrigKeyNum);
 				String sceneTrigName = nextMapping.myTargetActionName;
 				inputManager.addMapping(sceneTrigName, keyTrig);
@@ -77,26 +72,8 @@ public class SceneActions {
 				idx++;
 			}
 		}
-		// Now put sorted sequence of bindings in KeyBindingTracker
-		Iterator<Map.Entry<String, Integer>> bindingIterator = bindingMap.entrySet().iterator();
-		while (bindingIterator.hasNext()) {
-			Map.Entry<String, Integer> entry = bindingIterator.next();
-			KeyBindingTracker.addBinding(entry.getKey(), entry.getValue());
-		}
-		inputManager.addListener(new ActionListener() {
+		VW_InputBindingFuncs.registerActionListeners(theBoundActionsByTrigName, actionNames, bindingMap, inputManager, kbt);
 
-			public void onAction(String name, boolean isPressed, float tpf) {
-				if (isPressed) {
-					CogcharActionBinding binding = theBoundActionsByTrigName.get(name);
-					if (binding != null) {
-						theLogger.info("Performing bound action: {}", binding);
-						binding.perform();
-					} else {
-						theLogger.info("Received trigger-press [{}], but binding = {}", name, binding);
-					}
-				}
-			}
-		}, actionNames);
 	}
 
 	public static void setTriggerBinding(String sceneTrigName, CogcharActionBinding ba) {
@@ -105,22 +82,6 @@ public class SceneActions {
 		// condition regarding which one is active.
 		theBoundActionsByTrigName.put(sceneTrigName, ba);
 	}
-
-	/* Hmm is it just me, or does this method not actually do anything?
-	public static void setTriggerBinding(int sceneTrigIdx, DummyBinding ba) {
-		String sceneTrigName = getSceneTrigName(sceneTrigIdx);
-	}
-	*/ 
-
-/*
-	private static void setTriggerBinding(int sceneTrigIdx, CogcharScreenBox box, CogcharActionTrigger trigger) {
-		BoundAction ba = new BoundAction();
-		ba.addTargetBox(box);
-		ba.setTargetTrigger(trigger);
-		//setTriggerBinding(sceneTrigIdx, ba); // Did this ever do anything? (see method above)
-	}
-	* 
-	*/ 
 
 	public static CogcharActionBinding getTriggerBinding(String sceneTrigName) {
 		return theBoundActionsByTrigName.get(sceneTrigName);
@@ -133,23 +94,7 @@ public class SceneActions {
 		}
 		return theBinder;
 	}
-	
-	final static int NULL_KEY = -100; // This input not mapped to any key; we'll use it in the event of not finding one from config
-	private static int getKey(KeyBindingConfigItem mapping) {
-		int keyInput = NULL_KEY; 
-		String keyString = mapping.myBoundKeyName;
-		try {
-			if ((keyString.startsWith("AXIS")) || (keyString.startsWith("BUTTON"))) { // In this case, must be MouseInput
-				theLogger.warn("Mouse triggers not supported for scene actions -- {} not mapped.", mapping.myTargetActionName);
-			} else { // ... regular KeyInput - must use reflection to get fron key names to jME KeyInput field values
-				Field keyField = KeyInput.class.getField("KEY_" + keyString.toUpperCase());
-				keyInput = keyField.getInt(keyField);
-			}
-		} catch (Exception e) {
-			theLogger.warn("Error getting binding for {}: {}", mapping.myTargetActionName, e);
-		}
-		return keyInput;
-	}
+
 
 	static class Binder implements CogcharEventActionBinder {
 

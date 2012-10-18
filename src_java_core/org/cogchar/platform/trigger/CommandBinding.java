@@ -18,13 +18,17 @@ package org.cogchar.platform.trigger;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * CommandBinding groups some set of actionBindings.
+ * It is also a trigger, which ignores its argument.
  */
 
-public class CommandBinding {
+public class CommandBinding extends BasicDebugger implements CogcharActionTrigger {
 	private		Ident							myCommandID;
 	private		List<CogcharActionBinding>		myActionList = new ArrayList<CogcharActionBinding>();
 	
@@ -40,4 +44,9 @@ public class CommandBinding {
 			b.perform();
 		}
 	}
+	public void fire(CogcharScreenBox bt) {
+		getLogger().info("Firing command group {}", myCommandID);
+		performAllActions();
+	}
+	
 }
