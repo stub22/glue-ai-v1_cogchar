@@ -28,12 +28,16 @@ public interface KeystrokeConfigNames {
 	public final static String ACTION_VAR_NAME = "action";
 	public final static String KEY_VAR_NAME = "key";
 	public final static String COMMAND_ID_NAME = "cmdID";
+	public final static String FEATURE_CATEGORY_NAME = "featCat";
 	
 	public final static String GENERAL_BINDING_NAME = "keybinding";
 	public final static String SCENE_BINDING_NAME = "scene_keybinding";
 	
+	public final static String COMMAND_KEYBINDING_TYPE_NAME = "CommandKeybinding";
+	
 	public String getBindingsQueryURI();
 	
-	public Ident getGeneralBindingID();
-	public Ident getSceneBindingID();
+	public Ident getGeneralKeybindingTypeID();
+	public Ident getSceneKeybindingTypeID();
+	public Ident getCommandKeybindingTypeID();
 }

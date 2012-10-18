@@ -54,7 +54,8 @@ import org.cogchar.render.sys.task.BasicCallableRenderTask;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
-
+import org.cogchar.render.sys.input.VW_InputBindingFuncs;
+import org.cogchar.platform.trigger.CommandSpace;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -203,36 +204,16 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 	// Formerly performed in postInitLaunch, this is now called from PumaAppContext once the KeyBindingConfig is complete
 	// Might make sense to just move this to PumaAppContext
-	public void initBindings(KeyBindingConfig keyBindConfig) {
-		RenderRegistryClient rrc = getRenderRegistryClient();
-		InputManager inputManager = rrc.getJme3InputManager(null);
-		// If the help screen is displayed, we need to remove it since we'll be making a new one later
-		if (currentHelpText != null) {
-			enqueueCallable(new Callable<Void>() { // Do this on main render thread
 
-				@Override
-				public Void call() throws Exception {
-					RenderRegistryClient rrcl = getRenderRegistryClient();
-					rrcl.getSceneFlatFacade(null).detachOverlaySpatial(currentHelpText);
-					return null;
-				}
-			});
-		}
-		inputManager.clearMappings(); // May be a reload, so let's clear the mappings
-		KeyBindingTracker.clearMap(); // If we do that, we'd better clear the KeyBindingTracker too
-		// Since we just cleared mappings and are (for now at least) using the default FlyByCamera mappings, we must re-register them
-		FlyByCamera fbCam = getAppStub().getFlyByCamera();
-		fbCam.registerWithInput(inputManager);
-		// Now we'll register the mappings in Cog Char based on theConfig
-		HumanoidPuppetActions.setupActionListeners(inputManager, this, keyBindConfig);
-		SceneActions.setupActionListeners(inputManager, keyBindConfig);
-		// ... and finally set up the help screen now that the mappings are done
-		AppSettings someSettings = getJMonkeyAppSettings();
-		initHelpScreen(someSettings, inputManager, keyBindConfig);
+	public void refreshInputBindingsAndHelpScreen(KeyBindingConfig keyBindConfig, CommandSpace cspace) {
+		RenderRegistryClient rrc = getRenderRegistryClient();
+		VW_InputBindingFuncs.setupKeyBindingsAndHelpScreen(rrc, keyBindConfig, getAppStub(), this, 
+					getJMonkeyAppSettings(), cspace);
 	}
 
+
 	// This is still called by HumanoidPuppetActions to reset default camera position
-	protected void setDefaultCameraLocation() {
+	public void setDefaultCameraLocation() {
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		CameraMgr cmgr = rrc.getOpticCameraFacade(null);
 		cmgr.resetDefaultCamera();
@@ -247,57 +228,8 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	public BonyGameFeatureAdapter getGameFeatureAdapter() {
 		return myGameFeatureAdapter;
 	}
-	// Does this best live here or further up in one of the context superclasses? Dunno, but should be easy enough to move it up later (w/o private); be sure to remove imports
-	// In order to access registry, must live in a class that extends CogcharRenderContext
-	private BitmapText currentHelpText; // We need to save this now, so it can be turned off automatically for reconfigs
 
-	private void initHelpScreen(AppSettings settings, InputManager inputManager, KeyBindingConfig bindingConfig) {
-		RenderRegistryClient rrc = getRenderRegistryClient();
-		final String HELP_TAG = "Help"; // Perhaps should be defined elsewhere?
-		final int NULL_KEY = -100; // This input not mapped to any key; we'll use it in the event of not finding one from bindingConfig
-		int helpKey = NULL_KEY;
-		String keyString = null;
-		if (bindingConfig.myGeneralBindings.containsKey(HELP_TAG)) {
-			keyString = bindingConfig.myGeneralBindings.get(HELP_TAG).myBoundKeyName;
-		} else {
-			logWarning("Attemping to retrieve key binding for help screen, but none is found");
-		}
-		try {
-			if ((keyString.startsWith("AXIS")) || (keyString.startsWith("BUTTON"))) { // In this case, must be MouseInput
-				logWarning("Mouse triggers not supported help screen");
-			} else { // ... regular KeyInput
-				Field keyField = KeyInput.class.getField("KEY_" + keyString.toUpperCase());
-				helpKey = keyField.getInt(keyField);
-			}
-		} catch (Exception e) {
-			logWarning("Error getting binding for help screen: " + e);
-		}
-		if (helpKey != NULL_KEY) {
-			KeyBindingTracker.addBinding(HELP_TAG, helpKey); // Let's add ourselves to the help list!
-			final BitmapText helpBT = rrc.getSceneTextFacade(null).makeHelpScreen(0.6f, settings); // First argument sets text size, really shouldn't be hard-coded
-			currentHelpText = helpBT;
-			KeyTrigger keyTrig = new KeyTrigger(helpKey);
-			inputManager.addMapping(HELP_TAG, keyTrig);
-			inputManager.addListener(new ActionListener() {
 
-				private boolean helpDisplayed = false;
-
-				public void onAction(String name, boolean isPressed, float tpf) {
-					if (isPressed) {
-						RenderRegistryClient rrcl = getRenderRegistryClient();
-						FlatOverlayMgr fom = rrcl.getSceneFlatFacade(null);
-						if (!helpDisplayed) {
-							fom.attachOverlaySpatial(helpBT);
-							helpDisplayed = true;
-						} else {
-							fom.detachOverlaySpatial(helpBT);
-							helpDisplayed = false;
-						}
-					}
-				}
-			}, HELP_TAG);
-		}
-	}
 
 	/**
 	 * Second (and most crucial) stage of OpenGL init. This method blocks until the canvas initialization is complete,
