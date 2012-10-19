@@ -11,9 +11,6 @@
 	
 	<artifactId>org.cogchar.bundle.demo.convo</artifactId>
 	<packaging>bundle</packaging>
-    <properties>	
-		<robokind.version>0.8.6-SNAPSHOT</robokind.version>
-    </properties>
 
 	<name>${project.artifactId} OSGi Bundle</name>
 
