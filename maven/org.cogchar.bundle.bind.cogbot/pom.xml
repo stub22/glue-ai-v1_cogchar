@@ -13,10 +13,6 @@
 
 	<name>${project.artifactId} - OSGi</name>
     
-    <properties>	
-		<robokind.version>0.8.6-SNAPSHOT</robokind.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.felix</groupId>
