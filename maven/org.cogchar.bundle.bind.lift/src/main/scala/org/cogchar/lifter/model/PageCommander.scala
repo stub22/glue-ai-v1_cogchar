@@ -54,6 +54,13 @@ package org.cogchar.lifter {
 	  
 	  def createUpdate = updateInfo
 	  
+	  case class HtmlPageRequest(sessionId:String, pagePathOption:Option[String])
+	  case class SpeechOutRequest(sessionId:String, text:String)
+	  case class SpeechInRequest(sessionId:String, slotNum:Int)
+	  case class ContinuousSpeechInStartRequest(sessionId:String, slotNum:Int)
+	  case class ContinuousSpeechInStopRequest(sessionId:String)
+	  case class HtmlPageRefreshRequest(sessionId:String)
+	  
 	  def getNode(sessionId:String, controlId: Int): NodeSeq = {
 		var nodeOut = NodeSeq.Empty
 		try {
@@ -63,12 +70,6 @@ package org.cogchar.lifter {
 		}
 		//info("nodeOut for session " + sessionId + " and control " + controlId + " is " + nodeOut) // TEST ONLY
 		nodeOut
-	  }
-	  
-	  def getRequestedPage(sessionId:String) = {
-		val pageToGet = theLifterState.requestedPage(sessionId)
-		theLifterState.requestedPage(sessionId) = None // Once the page is read, the request is complete, so we set this back to Nothing
-		pageToGet
 	  }
 	  
 	  def getLiftAmbassador = {
@@ -98,8 +99,7 @@ package org.cogchar.lifter {
 		  theLifterState.activeSessions.foreach(sessionId => initializeSession(sessionId))
 		  theLifterState.sessionsAwaitingStart.foreach(sessionId => {
 			  initializeSession(sessionId);
-			  theLifterState.requestedPage(sessionId) = Some(getCurrentTemplate(sessionId)) // Temporary; soon this will be passed in actor message
-			  updateListeners(controlId(sessionId, ActorCodes.LOAD_PAGE_CODE))
+			  updateListeners(HtmlPageRequest(sessionId, Some(getCurrentTemplate(sessionId))))
 			  setControlsFromMap(sessionId)
 			})
 		  theLifterState.sessionsAwaitingStart.clear
@@ -177,9 +177,7 @@ package org.cogchar.lifter {
 		  val changedTemplate = !sessionState.currentTemplateName.equals(sessionState.lastLiftConfig.template)
 		  // ... load new template if necessary
 		  if (changedTemplate) {
-			theLifterState.requestedPage(sessionId) = Some(getCurrentTemplate(sessionId)) // Temporary; soon this will be passed in actor message
-			updateInfo = controlId(sessionId, ActorCodes.LOAD_PAGE_CODE)
-			updateListeners
+			updateListeners(HtmlPageRequest(sessionId, Some(getCurrentTemplate(sessionId))))
 		  } 
 		  // ... load new controls
 		  setControlsFromMap(sessionId)
@@ -204,7 +202,7 @@ package org.cogchar.lifter {
 	  }							
 	  
 	  def handleAction(sessionId:String, formId:Int, input:Array[String]) {
-		info("Handling action: " + getSessionState(sessionId).controlConfigBySlot(formId).action) // TEST ONLY
+		//info("Handling action: " + getSessionState(sessionId).controlConfigBySlot(formId).action) // TEST ONLY
 		spawn { // A new thread to handle actions to make sure we don't block Ajax handling
 		  // Eventually this thread will no longer be needed since controls should call into PageCommander as an actor
 		  firstActionHandler.processHandler(theLifterState, sessionId, formId, 
@@ -270,32 +268,23 @@ package org.cogchar.lifter {
 	  
 	  // Likely should go in different class...
 	  def outputSpeech(sessionId:String, text: String) {
-		theLifterState.outputSpeech(sessionId) = text
-		updateInfo = controlId(sessionId, ActorCodes.SPEECH_OUT_CODE) // To tell JavaScriptActor we want Android devices to say the text
-		updateListeners()
+		updateListeners(SpeechOutRequest(sessionId, text)) // To tell JavaScriptActor we want Android devices to say the text
 	  }
 	  
 	  // Likely should go in different class...
 	  def acquireSpeech(sessionId:String, slotNum:Int) {
-		updateInfo = controlId(sessionId, ActorCodes.SPEECH_REQUEST_CODE)
-		theLifterState.lastSpeechReqSlotId(sessionId) = controlId(sessionId, slotNum); // Set this value - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
-		updateListeners()
+		updateListeners(SpeechInRequest(sessionId, slotNum)); // Send this message - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
 	  }
 	  
 	  // Likely should go in different class...
 	  def requestContinuousSpeech(sessionId:String, slotNum: Int, desired: Boolean) {
 		info("In requestContinuousSpeech, setting to " + desired + " for session " + sessionId)
 		if (desired) {
-		  theLifterState.lastSpeechReqSlotId(sessionId) = controlId(sessionId, slotNum)
-		  updateInfo = controlId(sessionId, ActorCodes.CONTINUOUS_SPEECH_REQUEST_START_CODE)
-		  updateListeners()
+		  updateListeners(ContinuousSpeechInStartRequest(sessionId, slotNum))
 		} else {
-		  updateInfo = controlId(sessionId, ActorCodes.CONTINUOUS_SPEECH_REQUEST_STOP_CODE)
-		  updateListeners()
+		  updateListeners(ContinuousSpeechInStopRequest(sessionId))
 		}
 	  }
-	  
-	  def getSpeechReqControl(sessionId:String) = theLifterState.lastSpeechReqSlotId(sessionId)
 	  
 	  def getCurrentTemplate(sessionId:String) = {
 		var templateToLoad: String = null
@@ -303,13 +292,6 @@ package org.cogchar.lifter {
 		if (sessionState contains sessionId) templateToLoad = sessionState(sessionId).currentTemplateName
 		templateToLoad
 	  }
-	  
-	  def getOutputSpeech(sessionId:String) = {
-		var speechToOutput: String = ""
-		if (theLifterState.outputSpeech contains sessionId) speechToOutput = theLifterState.outputSpeech(sessionId)
-		speechToOutput
-	  }
-	  
 	  
 	  // A lot of these "helper" methods below likely belong in separate class:
 	  
@@ -343,9 +325,7 @@ package org.cogchar.lifter {
 		  setControl(sessionId, slotNum, newControlXml)
 		}
 		def loadPage(sessionId:String, pagePath:String) {
-		  theLifterState.requestedPage(sessionId) = Some(pagePath)
-		  updateInfo = controlId(sessionId, ActorCodes.LOAD_PAGE_CODE)
-		  updateListeners()
+		  updateListeners(HtmlPageRequest(sessionId, Some(pagePath)))
 		}
 		def getVariable(key:String): String = { // returns value from "public" (global) app variables map
 		  var contents:String = null
