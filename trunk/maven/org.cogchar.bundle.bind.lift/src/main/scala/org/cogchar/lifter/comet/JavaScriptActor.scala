@@ -25,8 +25,8 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import scala.xml._
-	import java.util.Date
-	import org.cogchar.lifter.model.{ActorCodes, PageCommander}
+	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.model.PageCommander._
 
 	class JavaScriptActor extends CometActor with CometListener with Logger {
       
@@ -42,49 +42,38 @@ package org.cogchar.lifter {
 		}
 	  }
 	  def registerWith = org.cogchar.lifter.model.PageCommander
-	  
-	  def triggerId(sessionId:String, functionId: Int) = PageCommander.controlId(sessionId, functionId)
-	  final val SPEECH_REQUEST_TRIGGERID = triggerId(mySessionId, ActorCodes.SPEECH_REQUEST_CODE)
-	  final val LOAD_PAGE_TRIGGERID = triggerId(mySessionId, ActorCodes.LOAD_PAGE_CODE)
-	  final val SPEECH_OUT_TRIGGERID = triggerId(mySessionId, ActorCodes.SPEECH_OUT_CODE)
-	  final val CONTINUOUS_SPEECH_REQUEST_START_TRIGGERID = triggerId(mySessionId, ActorCodes.CONTINUOUS_SPEECH_REQUEST_START_CODE)
-	  final val CONTINUOUS_SPEECH_REQUEST_STOP_TRIGGERID = triggerId(mySessionId, ActorCodes.CONTINUOUS_SPEECH_REQUEST_STOP_CODE)
-	  final val REFRESH_PAGE_TRIGGERID = triggerId(mySessionId, ActorCodes.REFRESH_PAGE_CODE)
 
 	  override def lowPriority : PartialFunction[Any, Unit] = {
-		case SPEECH_REQUEST_TRIGGERID => { // A special "slot" code for speech request. Sort of a workaround, but works OK for now.
-			val slotId = PageCommander.getSpeechReqControl(mySessionId)
+		case req: SpeechInRequest if (req.sessionId == mySessionId) => {
 			partialUpdate(new JsCmd { 
 				// Put our oddball JS methods in a try block, so non-Proctor browsers are happy!
-				def toJsCmd = "try{Android.getSpeechInput(\"" + slotId + "\");} catch(err) {}" 
+				def toJsCmd = "try{Android.getSpeechInput(\"" + PageCommander.controlId(req.sessionId,req.slotNum) + "\");} catch(err) {}" 
 			  })
 		  }
-		case LOAD_PAGE_TRIGGERID => { // A special "slot" code for page redirect.
-			val newPage = PageCommander.getRequestedPage(mySessionId)
+		case req: HtmlPageRequest if (req.sessionId == mySessionId) => {
+			val newPage = req.pagePathOption
 			newPage match {
 			  case Some(page) => partialUpdate(JsCmds.RedirectTo(page))
 			  case None => JsCmds.Noop
 			}  
 		  }
-		case SPEECH_OUT_TRIGGERID => { // This code results in a request for speech output on Android
+		case req: SpeechOutRequest if (req.sessionId == mySessionId) => {
 			info("Sending speech to Android...")
-			val text = PageCommander.getOutputSpeech(mySessionId)
 			partialUpdate(new JsCmd { 
-				def toJsCmd = "try{Android.outputSpeech(\"" + text + "\");} catch(err) {}"
+				def toJsCmd = "try{Android.outputSpeech(\"" + req.text + "\");} catch(err) {}"
 			  })
 		  }
-		case CONTINUOUS_SPEECH_REQUEST_START_TRIGGERID => { // This code for starting continuous speech. 
-			val slotId = PageCommander.getSpeechReqControl(mySessionId)
+		case req: ContinuousSpeechInStartRequest if (req.sessionId == mySessionId) => {
 			partialUpdate(new JsCmd { 
-				def toJsCmd = "try{Android.getContinuousSpeechInput(\"" + slotId + "\");} catch(err) {}"
+				def toJsCmd = "try{Android.getContinuousSpeechInput(\"" + PageCommander.controlId(req.sessionId,req.slotNum) + "\");} catch(err) {}"
 			  })
 		  }
-		case CONTINUOUS_SPEECH_REQUEST_STOP_TRIGGERID => { // This code for stopping continuous speech. 
+		case req: ContinuousSpeechInStopRequest if (req.sessionId == mySessionId) => {
 			partialUpdate(new JsCmd { 
 				def toJsCmd = "try{Android.stopContinuousSpeechInput();} catch(err) {}"
 			  })
 		  }
-		case REFRESH_PAGE_TRIGGERID => { // This code for triggering browser page refresh.
+		case req: HtmlPageRefreshRequest if (req.sessionId == mySessionId) => {
 			partialUpdate(new JsCmd { 
 				def toJsCmd = "window.location.reload();"
 			  })

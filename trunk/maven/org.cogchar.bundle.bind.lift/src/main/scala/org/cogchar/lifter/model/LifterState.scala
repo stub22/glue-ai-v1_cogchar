@@ -71,17 +71,6 @@ class LifterState {
   val stateBySession:ConcurrentMap[String,SessionState] = new DfltConcHashMap[String,SessionState]
 
   val globalLifterVariablesByName:ConcurrentMap[String,String] = new DfltConcHashMap[String,String]
-	  
-  // A map to hold paths to pages requested by LiftAmbassador
-  // Needs to be eliminated through proper actor usage
-  val requestedPage:ConcurrentMap[String,Option[String]] = new DfltConcHashMap[String,Option[String]]
-  // Holds speech we want Android to say
-  // Needs to be eliminated through proper actor usage
-  val outputSpeech:ConcurrentMap[String,String] = new DfltConcHashMap[String,String]
-  // id of last control which requested speech - used by JavaScriptActor to add identifying info to request
-  // Needs to be eliminated through proper actor usage
-  var lastSpeechReqSlotId:ConcurrentMap[String,String] = new DfltConcHashMap[String,String]
-
   
   var lifterInitialized:Boolean = false // Will be set to true once PageCommander receives initial control config from LiftAmbassador
   val activeSessions = new ArrayBuffer[String] with SynchronizedBuffer[String]
@@ -90,8 +79,6 @@ class LifterState {
   // Should only be called after clearAndInitializeState (and loading of the initial state into stateBySession(INITIAL_CONFIG_ID)) 
   def initializeSession(sessionId:String) {
 	stateBySession(sessionId) = getNewSessionState
-	// Set blank value for session key in lastSpeechReqSlotId (refactoring out soon)
-	lastSpeechReqSlotId(sessionId) = ""
 	// Add session to activeSessions list
 	if (!(activeSessions contains sessionId)) {activeSessions += sessionId}
   }
@@ -121,10 +108,6 @@ class LifterState {
 	stateBySession.clear
 	stateBySession(INITIAL_CONFIG_ID) = new SessionState
 	globalLifterVariablesByName.clear
-	// The following should be going away soon via further refactoring:
-	requestedPage.clear
-	outputSpeech.clear
-	lastSpeechReqSlotId.clear
   }
   
   def prepareSessionForNewConfig(sessionId:String) {
@@ -142,10 +125,6 @@ class LifterState {
 	// Session is no longer active...
 	activeSessions remove sessionId
 	stateBySession remove sessionId
-	// The following should be going away soon via further refactoring:
-	requestedPage remove sessionId
-	outputSpeech remove sessionId
-	lastSpeechReqSlotId remove sessionId
   }
   
 }
