@@ -7,23 +7,25 @@ import net.liftweb.http.S._
 import net.liftweb.util._
 import Helpers._
 import org.cogchar.lifter.model.PageCommander
-
 import xml._
 
 
 object BrowserReadyIndicator extends Logger {
 
+  final val STARTUP_TEMPLATE = "loading"
+  final val TEMPLATE_NAME_ATTRIB_NAME = "templateName"
+  
   // Needs some refactoring
   def render = {
 	S.session match {
 	  case Full(myLiftSession) => {
 		  val sessionId = myLiftSession.uniqueId
 		  PageCommander.checkForActiveSessionAndStartIfNot(sessionId)
-		  val templateName: String = (S.attr("templateName") openOr "NotFound")
+		  val templateName: String = (S.attr(TEMPLATE_NAME_ATTRIB_NAME) openOr "NotFound")
 		  val desiredTemplate = PageCommander.getCurrentTemplate(sessionId)
 		  //info("Desired template is " + desiredTemplate) // TEST ONLY
 		  if (desiredTemplate == null) { // Indicates Lifter has not yet fully initialized
-			if (templateName.equals("default")) {
+			if (templateName.equals(STARTUP_TEMPLATE)) {
 			  //info("Parked at default") // TEST ONLY
 			  NodeSeq.Empty
 			} else {
