@@ -48,26 +48,28 @@ public class ModelJoint extends AbstractJoint {
     protected ModelJoint(Joint.Id jointId, BoneJointConfig bjc) {
         super(jointId);
         myJointName = bjc.myJointName;
-		updateConfig(bjc);
-		hardResetGoalPosToDefault();
-        ReadCurrentPosition rcp = new ReadCurrentPosition() {
+		boolean flag_hardResetToDefaultOnJointInit = true;
+		updateConfig(bjc, flag_hardResetToDefaultOnJointInit);
+        ReadCurrentPosition currentPositionReader = new ReadCurrentPosition() {
             @Override public NormalizedDouble getValue() {
-                return myGoalPosNorm;
+                return getGoalPosition();
             }
             @Override public NormalizableRange<NormalizedDouble> getNormalizableRange() {
-                return NormalizableRange.NORMALIZED_RANGE;
+                return getPositionRange();
             }
         };
-		addProperty(rcp);
+		addProperty(currentPositionReader);
     }
-	public void updateConfig(BoneJointConfig bjc) { 
+	protected void updateConfig(BoneJointConfig bjc, boolean flag_hardResetGoalPosToDefault) { 
 		double defPosVal = Utils.bound(bjc.myNormalDefaultPos, 0.0, 1.0);
 		myDefaultPosNorm = new NormalizedDouble(defPosVal);
-        myBoneProjectionRanges =  bjc.myProjectionRanges;	
-		hardResetGoalPosToDefault();
+        myBoneProjectionRanges =  bjc.myProjectionRanges;
+		if (flag_hardResetGoalPosToDefault) {
+			hardResetGoalPosToDefault();
+		}
 	}
-	public void hardResetGoalPosToDefault() { 
-		setGoalPosition(getDefaultPosition());
+	private void hardResetGoalPosToDefault() { 
+		setGoalPositionAndFirePropChangedEvent(getDefaultPosition());
 	}
 	protected String getDescription() { 
 		return "JOINT[" + getId() + ", " + myJointName + "]";
@@ -92,16 +94,25 @@ public class ModelJoint extends AbstractJoint {
     @Override public NormalizedDouble getGoalPosition() {
         return myGoalPosNorm;
     }
+	/**
+	 * What impacts does this Range have?  Who uses it?
+	 * @return 
+	 */
+    @Override public NormalizableRange getPositionRange() {
+         return NormalizableRange.NORMALIZED_RANGE;
+    }
     
     public List<BoneProjectionRange> getBoneRotationRanges(){
         return myBoneProjectionRanges;
     }
-    
-    //This is used to allow the SkeletonRobot to set the GoalPosition and fire the event.
-    void setGoalPosition(NormalizedDouble pos){
+    /**
+	 * This is how our owning robot tells us to go to a particular position, in
+	 * response to the move() commands it receives.
+	 * @param pos 
+	 */
+    protected void setGoalPositionAndFirePropChangedEvent(NormalizedDouble pos){
 		theLogger.trace("Setting position for Joint {} to {}", myJointName, pos);
 		NormalizedDouble old = getGoalPosition();
-        //actually set the goal position here
         firePropertyChange(PROP_GOAL_POSITION, old, pos);
 		myGoalPosNorm = pos;
     }
@@ -119,9 +130,5 @@ public class ModelJoint extends AbstractJoint {
 		return getRotationListForNormPos(normGoalPos);
 	}
 
-    @Override
-    public NormalizableRange getPositionRange() {
-        return null;
-    }
 	
 }

@@ -12,8 +12,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bundle.app.puma;
+package org.cogchar.app.puma.boot;
 
+import org.cogchar.app.puma.config.PumaContextMediator;
+import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.config.PumaModeConstants;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
@@ -47,27 +50,25 @@ public class PumaBooter extends BasicDebugger {
 	}
 
 	/**
-	 * Client controls the boot process through the mediator.
+	 * Entry point for PUMA in and OSGi context.
+	 * Normally this is called from the FrameworkStarted-EventHandler 
+	 * (NOT the BundleActivator.start() method !) of some "top" application 
+	 * bundle client.  That client controls our boot process through supplied
+	 * the mediator.
 	 *
 	 * @param bundleCtx
 	 * @param mediator
 	 * @throws Throwable
 	 */
 	protected void pumaBootUnsafeUnderOSGi(BundleContext bundleCtx, PumaContextMediator mediator) throws Throwable {
-
-
-		// forceLog4jConfig();
-
-		// String debugTxt = "sysContextURI = [" + sysContextURI + "]";
-		// logInfo("======================================== Starting " + debugTxt);
-		/* Stu 2012-10-10 - the fileSys root isn't being used currently.  The sysConfigURI thing is mostly unused, too.
-		 * So, what we need now is
-		 */
+		//   forceLog4jConfig()
+		//  Stu 2012-10-27 - the fileSys root isn't being used currently.  
 		String optFilesysRoot = mediator.getOptionalFilesysRoot();
-		getLogger().debug("%%%%%%%%%%%%%%%%%%% Creating PumaAppContext");
+
+		String ctxURI = mediator.getSysContextRootURI();
 		
-		String roleShortName = "pumaAppContext";
-		Ident ctxID = new FreeIdent(PumaModeConstants.RKRT_NS_PREFIX + roleShortName, roleShortName);
+		Ident ctxID = new FreeIdent(ctxURI);
+		getLogger().warn("%%% Creating PumaAppContext at [{}]", ctxID);
 		final PumaAppContext pac = new PumaAppContext(bundleCtx, mediator, ctxID);
 
 		/*
@@ -76,9 +77,8 @@ public class PumaBooter extends BasicDebugger {
 		 * window has been opened, and no connection has been made to Robokind.
 		 */
 
-		getLogger().debug("%%%%%%%%%%%%%%%%%%% Starting repository-backed config services");
+		getLogger().debug("%%% Starting repository-backed config services");
 
-		String topConfigURL;
 		pac.startRepositoryConfigServices();
 
 		/*The mediator should now do any special init that it wants to, but without assuming GUI exists.
@@ -102,11 +102,8 @@ public class PumaBooter extends BasicDebugger {
 		
 		boolean wantChars = mediator.getFlagIncludeCharacters();
 		if (wantChars) {
-			// Currently this btarget bundle contains bony-config stuff that goes beyond just rendering resources.
-			ClassLoader myInitialBonyRdfCL = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
-			pac.setCogCharResourcesClassLoader(myInitialBonyRdfCL);
 
-			getLogger().debug("%%%%%%%%%%%%%%%%%%% calling connectDualRobotChars()");
+			getLogger().debug("%%% calling connectDualRobotChars()");
 			
 			pac.connectDualRobotChars();
 
@@ -119,13 +116,13 @@ public class PumaBooter extends BasicDebugger {
 		// characters and other commandable entities.
 		
 		if (wantVWorld) {
-			getLogger().debug("%%%%%%%%%%%%%%%%%%% connectDualRobotChars() completed , calling initCinema()");
+			getLogger().debug("%%% connectDualRobotChars() completed , calling initCinema()");
 
 			// Lights, Cameras, and Cinematics were once configured during PumaDualCharacter init
 			// Since we can support multiple characters now (and connect cameras to them), this needs to 
 			// happen after connectDualRobotChars().
 			// We'll let pac take care of this, since it is currently "Home of the Global Mode"
-			pac.initCinema();
+			pac.initCinema(false);
 		}
 		
 		mediator.notifyBeforeBootComplete(pac);

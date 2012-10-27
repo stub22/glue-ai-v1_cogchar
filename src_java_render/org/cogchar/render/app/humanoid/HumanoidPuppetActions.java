@@ -33,6 +33,8 @@ import java.util.List;
 
 import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
+import org.cogchar.render.model.humanoid.HumanoidFigureManager;
+import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.platform.trigger.BasicActionBindingImpl;
 
@@ -59,7 +61,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
         },
         TOGGLE_SKEL_HILITE {
             void act(HumanoidRenderContext ctx) {
-				ctx.toggleDebugSkeletons();
+				ctx.getHumanoidFigureManager().toggleDebugSkeletons();
             }
 			@Override boolean includedInMinSim() { 	return true; }		
         },  		
@@ -99,7 +101,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
         },
 		
 		/*** F10 is intercepted by Netbeans platform - do not use!!! **/
-        
+  /*      
 		UPDATE_WORLD_CONFIG {
 			void act(HumanoidRenderContext ctx) {
 				ctx.requestConfigReload("WorldConfig");
@@ -127,7 +129,7 @@ public class HumanoidPuppetActions extends BasicDebugger {
             }
 			@Override boolean includedInMinSim() { 	return true; }				
         },
-
+*/
 		/*** The actions below are for V-world-only goodies (like Sinbad, projectiles, etc.)
 		 *		not available in RK "Simulator"  
 		 *		(hence they do not override includedInMinSim()).
@@ -135,20 +137,20 @@ public class HumanoidPuppetActions extends BasicDebugger {
 	
         TOGGLE_KIN_MODE {
             void act(HumanoidRenderContext ctx) {
-				HumanoidFigure hw = getSinbad(ctx);
+				HumanoidFigure hw = getSinbad(ctx, ctx.getHumanoidFigureManager());
 				hw.togglePhysicsKinematicModeEnabled();
             }
         },
         STAND_UP {
             void act(HumanoidRenderContext ctx) {
-				HumanoidFigure hw = getSinbad(ctx);
+				HumanoidFigure hw = getSinbad(ctx, ctx.getHumanoidFigureManager());
 				hw.makeSinbadStandUp();
             }
         },
         BOOGIE {
 			// Triggers a JME3 animation
             void act(HumanoidRenderContext ctx) {
-				HumanoidFigure hw = getSinbad(ctx);
+				HumanoidFigure hw = getSinbad(ctx, ctx.getHumanoidFigureManager());
 				if (hw != null) {
 					hw.runSinbadBoogieAnim();
 				}
@@ -201,9 +203,9 @@ public class HumanoidPuppetActions extends BasicDebugger {
 			myBoundAction.perform();
 		}
 
-		HumanoidFigure getSinbad(HumanoidRenderContext hrc) { 
-			RenderConfigEmitter bce = hrc.getConfigEmitter();
-			return hrc.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
+		HumanoidFigure getSinbad(BonyRenderContext brc, HumanoidFigureManager  hfm) { 
+			RenderConfigEmitter bce = brc.getConfigEmitter();
+			return hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
 		}
 		
 		final static int NULL_KEY = -100; // This input not mapped to any key; we'll use it in the event of not finding one from keyBindings

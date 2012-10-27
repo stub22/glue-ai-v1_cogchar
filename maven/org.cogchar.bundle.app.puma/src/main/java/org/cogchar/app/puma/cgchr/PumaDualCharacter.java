@@ -15,6 +15,7 @@
  */
 package org.cogchar.app.puma.cgchr;
 
+import java.io.File;
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.name.Ident;
@@ -26,7 +27,7 @@ import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.api.skeleton.config.BoneCN;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
-
+import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 
 import org.cogchar.render.app.trigger.SceneActions;
@@ -36,9 +37,11 @@ import org.cogchar.platform.trigger.CogcharEventActionBinder;
 import org.cogchar.platform.trigger.CogcharActionTrigger;
 
 import org.cogchar.app.buddy.busker.TriggerItems;
+import org.cogchar.app.puma.config.PumaConfigManager;
 
-import org.cogchar.bundle.app.puma.PumaContextMediator;
-import org.cogchar.bundle.app.puma.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.config.PumaContextMediator;
+import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
+import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 
 import org.cogchar.impl.scene.Theater;
 import org.cogchar.impl.scene.SceneBook;
@@ -85,36 +88,7 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		myBehaviorCE = bce;
 	}
 
-	public boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, HumanoidConfig hc, RepoClient qi, BoneCN bqn) throws Throwable {
-		// bonyConfig path is going away as we move to query-based config
-		// Looks like Turtle BoneRobotConfig is going away for good, in which case this block can be deleted
-		/*
-		String bonyConfigPathPerm = HumanoidConfigEmitter.getBonyConfigPath(myCharIdent);
-		myUpdateBonyRdfPath = bonyConfigPathPerm; // Currently update and perm path are set the same for TriggerItems.UpdateBonyConfig
-		
-		BoneRobotConfig boneRobotConf;
-		if (bonyConfigPathPerm.equals(SHEET_RESOURCE_MARKER)) {
-			boneRobotConf = new BoneRobotConfig(myCharIdent); 
-		} else {
-			boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
-		}
-		*/ 
-		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharIdent, qGraph, bqn); 
-		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
-		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
-		boolean boneRobotOK = myHumoidMapper.initModelRobotUsingBoneRobotConfig(qi, boneRobotConf, qGraph, hc, myBehaviorCE);
-		if (boneRobotOK) {
-			// This does nothing if there is no vWorld, or no human figure for this char in the vWorld.
-			myHumoidMapper.connectToVirtualChar();
-			// This was an antiquated way of controlling initial char position, left here as reminder of the issue.
-			// myPHM.applyInitialBoneRotations();
-			// We connect animation output channels for triggering (regardless of whether we are doing virtual-world animation or not).
-			connectAnimOutChans();
-		} else {
-			getLogger().warn("connectBonyCharToRobokindSvcs() aborting due to failed boneRobot init, for charIdent: {}", myCharIdent);
-		}
-		return boneRobotOK;
-	}
+
 	
 	public void disconnectBonyCharFromRobokindSvcs() {
 		myBoneRobotConfigServiceRegistration.unregister();
@@ -131,28 +105,33 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
 		myTheater.registerChannel(mySOC);
 	}
-
-	public void loadBehaviorConfig(boolean useTempFiles) throws Throwable {
-		// Currently we can only process
-		String pathTail = "bhv_nugget_02.ttl";
-
-		// RenderConfigEmitter renderCE = myHumoidMapper.getHumanoidRenderContext().getConfigEmitter();
-		// String bonyConfigPathTail = bonyCE.getBonyConfigPathTailForChar(myCharURI);
-		// BehaviorConfigEmitter behavCE = renderCE.getBehaviorConfigEmitter();
-
-		String behavPath = myBehaviorCE.getBehaviorPermPath(pathTail);
-		if (useTempFiles) {
-			// "TempFiles" currently ignored
-			//behavPath = behavCE.getBehaviorTempFilePath(pathTail);
-		}
-		// true = Clear caches first
+	public void setupAndStartBehaviorTheater(PumaConfigManager pcm, PumaVirtualWorldMapper vWorldMapper) throws Throwable {
 		boolean clearCachesFirst = true;
-		// optCLforJenaFM was originally set to null,
-		// apparently depending on CL to have already been added by something else, in this case cinematic / lights / camera config
-		ClassLoader optCLforJenaFM = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
-		myTheater.loadSceneBook(behavPath, optCLforJenaFM, clearCachesFirst);
+		// Old way, may still be useful durnig behavior development by advanced users.
+		// loadBehaviorConfigFromTestFile(clearCachesFirst);
+		RepoClient rc = pcm.getMainConfigRepoClient();
+		Ident	chanGraphID = rc.makeIdentForQName("ccrt:chan_sheet_AZR50");
+		
+		Ident	behavGraphID = rc.makeIdentForQName("hrk:behav_file_44");
+		loadBehaviorConfigFromRepo(rc, chanGraphID, behavGraphID, clearCachesFirst);
+		
+		if (vWorldMapper != null) {
+			// ToDo:  Remove this stuff in favor of BoxSpace/CommandSpace setup.
+			vWorldMapper.registerSpecialInputTriggers(this);
+		}
+		startTheater();
 	}
-
+	public void loadBehaviorConfigFromTestFile(boolean clearCachesFirst) throws Throwable {
+		String pathTail = "bhv_nugget_02.ttl";
+		String behavPath = myBehaviorCE.getBehaviorPermPath(pathTail);
+		// if (useTempFiles) {	//behavPath = behavCE.getBehaviorTempFilePath(pathTail);
+		ClassLoader optCLforJenaFM = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+		myTheater.loadSceneBookFromFile(behavPath, optCLforJenaFM, clearCachesFirst);
+	}
+	public void loadBehaviorConfigFromRepo(RepoClient repoClient, Ident chanGraphID, Ident behavGraphID, 
+					boolean clearCachesFirst) throws Throwable {
+		myTheater.loadSceneBookFromRepo(repoClient, chanGraphID, behavGraphID, clearCachesFirst);
+	}
 	public void startTheater() {
 		SceneBook sb = myTheater.getSceneBook();
 		CogcharEventActionBinder trigBinder = SceneActions.getBinder();
@@ -195,27 +174,14 @@ public class PumaDualCharacter extends CogcharScreenBox {
 	public void stopResetAndRecenter() {
 		Ident charID = getCharIdent();
 		stopEverything();
-		getLogger().warn("stopResetAndRecenter for {} - Recenter is not implemented yet!", charID);
+		getLogger().info("stopResetAndRecenter - Starting GOTO_DEFAULTS anim");
+		myHumoidMapper.playBuiltinAnimNow(BuiltinAnimKind.BAK_GOTO_DEFAULTS);
 		getLogger().info("stopResetAndRecenter - Restarting behavior theater.");
 		startTheater();
 		getLogger().info("stopResetAndRecenter - Complete.");
 	}
-/*
-	public void registerDefaultSceneTriggers() {
-		for (int i = 0; i < SceneActions.getSceneTrigKeyCount(); i++) {
-			TriggerItems.SceneMsg smti = new TriggerItems.SceneMsg();
-			smti.sceneInfo = "yowza " + i;
-			registerTheaterBinding(i, smti);
-		}
-	}
 
-	private void registerTheaterBinding(int sceneTrigIdx, CogcharActionTrigger trig) {
-		SceneActions.setTriggerBinding(sceneTrigIdx, myTheater, trig);
-	}
-*/
-//	private InputStream openAssetStream(String assetName) { 
-//		return myBRC.openAssetStream(assetName);
-//	}	
+	
 	public String getNickName() {
 		return myNickName;
 	}
@@ -228,9 +194,10 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		return myHumoidMapper;
 	}
 
-	public void playDangerYogaTestAnim() {
-		myHumoidMapper.playDangerYogaTestAnim();
+	public void playBuiltinAnimNow(BuiltinAnimKind baKind) {
+		myHumoidMapper.playBuiltinAnimNow(baKind);
 	}
+	
 
 	public void sayText(String txt) {
 		// TODO:  Prevent/blend concurrent activity through the channel/behavior systerm
@@ -250,15 +217,13 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		myHumoidMapper.updateModelRobotUsingBoneRobotConfig(new BoneRobotConfig(qi, myCharIdent, graphIdent, bqn));
 	}
 
-	/* On the way out as we move away from Turtle config
+	/* Old way to load, direct from Turtle config
 	public BoneRobotConfig readBoneRobotConfig(String rdfConfigFlexPath, ClassLoader optResourceClassLoader) {
 		return AssemblerUtils.readOneConfigObjFromPath(BoneRobotConfig.class, rdfConfigFlexPath, optResourceClassLoader);
-
 	}
 	*/
 	
-	@Override
-	public String toString() {
+	@Override public String toString() {
 		return "PumaDualChar[uri=" + myCharIdent + ", nickName=" + myNickName + "]";
 	}
 
@@ -269,4 +234,65 @@ public class PumaDualCharacter extends CogcharScreenBox {
 	public void useTempAnims() {
 		getLogger().warn("useTempAnims() not implemented yet");
 	}
+	
+
+	public boolean setupCharacterBindingToRobokind(BundleContext bunCtx, RepoClient rc, Ident graphIdentForBony, 
+					HumanoidConfig hc, ClassLoader clForRKJG) {
+		Ident charIdent = getCharIdent();
+		getLogger().debug("Setup for {} using graph {} and humanoidConf {}", new Object[]{charIdent, graphIdentForBony, hc});
+		try {
+			BoneCN bqn = new BoneCN();
+			boolean connectedOK = connectBonyCharToRobokindSvcs(bunCtx, graphIdentForBony, rc, bqn);
+			if (connectedOK) {
+				if (clForRKJG != null) {
+					setupRobokindJointGroup(hc.myJointConfigPath, clForRKJG);				
+				} else {
+					getLogger().warn("No RK classLoader, cannot setup JointGroup for {}", charIdent);
+				}
+				connectSpeechOutputSvcs(bunCtx);
+				return true;
+			} else {
+				getLogger().warn("aborting RK binding for character: {}", charIdent);
+				return false;
+			}
+		} catch (Throwable t) {
+			getLogger().error("Exception during setupCharacterBindingToRobokind for character: {}", charIdent, t);
+			return false;
+		}
+	}
+	public boolean initVWorldHumanoidFigure(RepoClient qi, Ident qGraph, HumanoidConfig hc) throws Throwable { 
+		boolean vwHumOK = myHumoidMapper.initVWorldHumanoid(qi, qGraph, hc);
+		return vwHumOK;
+	}
+	private boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, RepoClient qi, BoneCN bqn) throws Throwable {
+		// We useta read from a TTL file with: 	boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
+		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharIdent, qGraph, bqn); 	
+		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
+		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
+		boolean boneRobotOK = myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf, myBehaviorCE);
+		if (boneRobotOK) {
+			// This does nothing if there is no vWorld, or no human figure for this char in the vWorld.
+			myHumoidMapper.connectToVirtualChar();
+			// This was an antiquated way of controlling initial char position, left here as reminder of the issue.
+			// myPHM.applyInitialBoneRotations();
+			// We connect animation output channels for triggering (regardless of whether we are doing virtual-world animation or not).
+			connectAnimOutChans();
+		} else {
+			getLogger().warn("connectBonyCharToRobokindSvcs() aborting due to failed boneRobot init, for charIdent: {}", myCharIdent);
+		}
+		return boneRobotOK;
+	}
+	private void setupRobokindJointGroup(String jgFullPath, ClassLoader clForRK) throws Throwable {
+		//Ident chrIdent = pdc.getCharIdent();
+		String tgtFilePath = getNickName() + "temporaryJointGroupResource.xml";
+		File jgConfigFile = RobotServiceFuncs.copyJointGroupFile(tgtFilePath, jgFullPath, clForRK);
+
+		if (jgConfigFile != null) {
+			PumaHumanoidMapper phm = getHumanoidMapper();
+			RobotServiceContext rsc = phm.getRobotServiceContext();
+			rsc.startJointGroup(jgConfigFile);
+		} else {
+			getLogger().warn("jointGroup file not found: {}", jgFullPath);
+		}
+	}	
 }

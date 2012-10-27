@@ -74,8 +74,9 @@ class ChannelSpec extends KnownComponentImpl {
 class ChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[ChannelSpec](builderConfRes) {
 
 	override protected def initExtendedFieldsAndLinks(cs: ChannelSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
-		getLogger().debug("ChannelSpecBuilder.initExtendedFieldsAndLinks");	
-		cs.myDetails = "StayTuned!";
+		getLogger().warn("ChannelSpecBuilder.initExtendedFieldsAndLinks");
+		val reader = getReader();
+		cs.myDetails = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_details, configItem, null);
 		//val linkedBehaviorSpecs : java.util.List[Object] = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_behavior, assmblr, mode, null);
 		//logInfo("Scene found linkedBehaviorSpecs: " + linkedBehaviorSpecs)
 	}
@@ -85,6 +86,9 @@ object ChannelNames extends org.appdapter.api.trigger.BoxAssemblyNames {
 	val		NS_ccScn =	"http://www.cogchar.org/schema/scene#";
 	val		NS_ccScnInst = "http://www.cogchar.org/schema/scene/instance#";
 
+	val		P_details = NS_ccScn + "details";
+	
+	
 	val		N_PRE_verbalOut =   "speechOut";
 	val		N_PRE_animOut	=	"animOut";
 	val		N_PRE_blendOut	=	"blendOut";

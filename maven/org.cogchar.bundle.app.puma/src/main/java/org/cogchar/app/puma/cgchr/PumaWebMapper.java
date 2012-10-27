@@ -13,28 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bundle.app.puma;
+package org.cogchar.app.puma.cgchr;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.LiftAmbassador;
+import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.render.app.trigger.SceneActions;
 import org.cogchar.render.opengl.scene.CinematicMgr;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.model.databalls.BallBuilder;
+
+
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
-
+import org.cogchar.render.model.databalls.BallBuilder;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class PumaWebMapper extends BasicDebugger {
 	
-	private LiftInterface		myLiftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
-	private String				myCogbotConvoUrl;
-	private CogbotCommunicator	myCogbotComm;
+	private CommandTargetForUseFromWeb		myLiftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
+
 	private OSGiComponent		myLiftAppComp;
 	private OSGiComponent		myLiftSceneComp;
 	private PumaAppContext		myAppContext;
@@ -42,16 +42,11 @@ public class PumaWebMapper extends BasicDebugger {
 	// Make default constuctor private to prevent PumaWebMapper from being instantiated without a PumaAppContext
 	private PumaWebMapper() {}
 	
-	PumaWebMapper(PumaAppContext pac) {
+	public PumaWebMapper(PumaAppContext pac) {
 		myAppContext = pac;
 	}
 	
-	public void connectCogCharResources(ClassLoader bonyRdfCl, HumanoidRenderContext hrc) {
-		BallBuilder theBallBuilder = BallBuilder.getTheBallBuilder();
-		theBallBuilder.setClassLoader("Cog Char", bonyRdfCl);
-		theBallBuilder.initialize(hrc);
-		hrc.setTheBallBuilder(theBallBuilder);
-	}
+
 
 	public void connectLiftSceneInterface(BundleContext bundleCtx) {
 		if (myLiftSceneComp == null) {
@@ -73,54 +68,13 @@ public class PumaWebMapper extends BasicDebugger {
 
 	// Previous functions now mostly done from within LifterLifecycle on create(). 
 	// Retaining for now for legacy BallBuilder classloader hookup
-	public void connectHrkindWebContent(ClassLoader hrkindResourceCL) {
-		BallBuilder.getTheBallBuilder().setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
-	}
+//	public void connectHrkindWebContent(ClassLoader hrkindResourceCL) {
+//	}
 
-	public LiftInterface getLiftInterface() {
+	public CommandTargetForUseFromWeb getLiftInterface() {
 		if (myLiftInterface == null) {
-			myLiftInterface = new LiftInterface();
+			myLiftInterface = new CommandTargetForUseFromWeb(myAppContext, this);
 		}
 		return myLiftInterface;
-	}
-
-	class LiftInterface implements LiftAmbassador.LiftAppInterface {
-
-		@Override
-		public boolean triggerNamedCinematic(String name) {
-			return CinematicMgr.controlCinematicByName(name, CinematicMgr.ControlAction.PLAY);
-
-		}
-
-		@Override
-		public boolean stopNamedCinematic(String name) {
-			return CinematicMgr.controlCinematicByName(name, CinematicMgr.ControlAction.STOP);
-		}
-
-		@Override
-		public String queryCogbot(String query, String url) {
-			if ((myCogbotComm == null) || (!url.equals(myCogbotConvoUrl))) {
-				myCogbotConvoUrl = url;
-				myCogbotComm = new CogbotCommunicator(myCogbotConvoUrl);
-			}
-			return myCogbotComm.getResponse(query).getResponse();
-		}
-
-		@Override
-		public boolean performDataballAction(String action, String text) {
-			return BallBuilder.getTheBallBuilder().performAction(action, text);
-		}
-		
-		@Override
-		public boolean performUpdate(String request) {
-			boolean forceFreshDefaultRepo = false;
-			boolean success = false;
-			if (myAppContext != null) {
-				success = myAppContext.updateConfigByRequest(request, forceFreshDefaultRepo);
-			} else {
-				logWarning("Update requested, but PumaWebMapper cannot find PumaAppContext: " + request);
-			}
-			return success;
-		}
 	}
 }

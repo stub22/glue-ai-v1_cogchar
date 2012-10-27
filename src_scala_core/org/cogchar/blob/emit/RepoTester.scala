@@ -18,7 +18,7 @@ package org.cogchar.blob.emit
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.store.{Repo, InitialBinding}
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
-import org.appdapter.impl.store.{FancyRepo, DatabaseRepo};
+import org.appdapter.impl.store.{FancyRepo, DatabaseRepo, FancyRepoFactory};
 import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
@@ -28,17 +28,20 @@ import com.hp.hpl.jena.rdf.model.{Model}
 
 object RepoTester {
 	// Modeled on SheetRepo.loadTestSheetRepo
-	def loadSheetRepo(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int) : SheetRepo = {
+	def loadSheetRepo(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int, 
+						fileModelCLs : java.util.List[ClassLoader]) : SheetRepo = {
 		// Read the namespaces and directory sheets into a single directory model.
 		val dirModel : Model = SheetRepo.readDirectoryModelFromGoog(sheetKey, namespaceSheetNum, dirSheetNum) 
 		// Construct a repo around that directory
 		val shRepo = new SheetRepo(dirModel)
-		// Load the rest of the repo's initial models, as instructed by the directory.
+		// Load the rest of the repo's initial *sheet* models, as instructed by the directory.
 		shRepo.loadSheetModelsIntoMainDataset()
+		// Load the rest of the repo's initial *file/resource* models, as instructed by the directory.
+		shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
 		shRepo
 	}
-	def loadDatabaseRepo(configPath : String, dirGraphID : Ident) : DatabaseRepo = {
-		 val dbRepo = new DatabaseRepo(configPath, dirGraphID)
+	def loadDatabaseRepo(configPath : String, optConfigResolveCL : ClassLoader, dirGraphID : Ident) : DatabaseRepo = {
+		 val dbRepo = FancyRepoFactory.makeDatabaseRepo(configPath, optConfigResolveCL, dirGraphID)
 		 dbRepo;
 	}
 	
@@ -62,7 +65,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.modify.request.{UpdateCreate, UpdateLoad} ;
 import com.hp.hpl.jena.update.{GraphStore, GraphStoreFactory, UpdateAction, UpdateRequest};
 import com.hp.hpl.jena.sdb.{Store, SDBFactory};
-class BetterDatabaseRepo(configPath : String, dirGraphID : Ident)extends DatabaseRepo(configPath, dirGraphID){
+class BetterDatabaseRepo(sdbStore : Store, dirGraphID : Ident) extends DatabaseRepo(sdbStore, dirGraphID){
 //	Current docs for GraphStoreFactory (more recent than the code version we're using) say,
 //	regarding   GraphStoreFactory. reate(Dataset dataset)
 //	 Create a GraphStore from a dataset so that updates apply to the graphs in the dataset.

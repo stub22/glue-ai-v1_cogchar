@@ -14,9 +14,10 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bundle.app.puma;
+package org.cogchar.app.puma.registry;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.app.puma.config.PumaContextMediator;
 
 /**
  * @author Stu B. <www.texpedient.com>

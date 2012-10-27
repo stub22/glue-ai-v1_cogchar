@@ -13,11 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.app.puma.router;
 
+package org.cogchar.app.puma.boot;
+import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class RoutingKernel {
+
+public class PumaContextCommandBox extends CogcharScreenBox {
+	private		PumaAppContext		myPAC;
+	
+	public PumaContextCommandBox(PumaAppContext pac) {
+		myPAC = pac;
+	}
+	protected HumanoidRenderContext getHRC() { 
+		return myPAC.getOrMakeVWorldMapper().getHumanoidRenderContext();
+	}
+	public void resetMainCameraLocation() { 
+		getHRC().setDefaultCameraLocation();
+	}
+	
+	
+	public void updateConfigByRequest(String request, final boolean resetMainConfigFlag) {
+		myPAC.updateConfigByRequest(request, resetMainConfigFlag);
+	}
 	
 }

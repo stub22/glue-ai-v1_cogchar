@@ -15,21 +15,18 @@
  */
 
 package org.cogchar.impl.scene
+import scala.collection.mutable.HashMap;
 
 import org.appdapter.core.log.{BasicDebugger, Loggable};
-
 import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
-
-
-import scala.collection.mutable.HashMap;
+import org.appdapter.help.repo.{RepoClient}
 
 import org.cogchar.api.perform.{Media, Channel};
 import org.cogchar.impl.perform.{DummyTextChan, FancyTime, ChannelNames};
-
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
-/**
+/**  A theater is an execution context for scene-based behavior.
  * @author Stu B. <www.texpedient.com>
  */
 
@@ -63,13 +60,22 @@ class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
 		myBM.setSceneContext(scene);
 		scene.attachBehaviorsToModulator(myBM);
 	}
-	def loadSceneBook(triplesFlexPath : String, optCL : ClassLoader, clearCachesFirst : Boolean ) {
+	def loadSceneBookFromFile(triplesFlexPath : String, optCL : ClassLoader, clearCachesFirst : Boolean ) {
 		if (clearCachesFirst) {
+			// Issue: this is a global operation, but we are loading one Theater/SceneBook per character.
 			SceneBook.clearBuilderCaches();
 		}
-		val sceneBook = SceneBook.readSceneBook(triplesFlexPath, optCL);
+		val sceneBook = SceneBook.readSceneBookFromFile(triplesFlexPath, optCL);
 		registerSceneBook(sceneBook);		
 	}
+	def loadSceneBookFromRepo(repoClient : RepoClient, chanGraphID : Ident, behavGraphID : Ident, clearCachesFirst : Boolean ) {
+		if (clearCachesFirst) {
+			// Issue: this is a global operation, but we are loading one Theater/SceneBook per character.
+			SceneBook.clearBuilderCaches();
+		}
+		val sceneBook = SceneBook.readSceneBookFromRepo(repoClient, chanGraphID, behavGraphID);
+		registerSceneBook(sceneBook);		
+	}	
 	def stopAllScenes() {
 		myBM.stopAllModules();
 	}
@@ -160,7 +166,7 @@ object Theater extends BasicDebugger {
 		// val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
 		val triplesFlexPath = "../org.cogchar.bundle.render.resources/src/main/resources/behavior/bhv_nugget_02.ttl";
 		
-		thtr.loadSceneBook(triplesFlexPath, null, true);
+		thtr.loadSceneBookFromFile(triplesFlexPath, null, true);
 		
 		val sceneBook : SceneBook = thtr.getSceneBook;
 //		val ruledTestSceneIdent : Ident = "csi:bh_004";

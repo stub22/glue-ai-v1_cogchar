@@ -19,8 +19,10 @@ package org.cogchar.impl.scene
 import org.appdapter.core.log.{BasicDebugger};
 import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
+import org.appdapter.bind.rdf.jena.model.{JenaFileManagerUtils};
 
-import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
+import org.appdapter.help.repo.{RepoClient}
+
 import org.cogchar.impl.perform.{ChannelSpecBuilder};
 import scala.collection.mutable.HashMap;
 
@@ -46,38 +48,65 @@ class SceneBook extends BasicDebugger {
 	}
 	def allSceneSpecs() : Iterable[SceneSpec] = mySceneSpecs.values ;
 	
-	def loadSceneSpecs(rdfConfigFlexPath : String , optResourceClassLoader : ClassLoader ) : List[SceneSpec] = { 
+	
+	
+	def loadSceneSpecsFromRepo(repoClient : RepoClient, chanGraphID : Ident, behavGraphID : Ident) : List[SceneSpec] = { 
+		getLogger.info("Loading Channel Specs from: {}", chanGraphID);
+		val chanSet : java.util.Set[Object] = repoClient.assembleRootsFromNamedModel(chanGraphID)
+		getLogger.debug("Loaded chan objects {} ", chanSet);
+		getLogger.info("Loading Scene/Behavior Specs from: {}", behavGraphID);
+		val behvSet : java.util.Set[Object] = repoClient.assembleRootsFromNamedModel(behavGraphID)
+		getLogger.debug("Loaded behav objects {} ", behvSet);	
+		yieldSceneSpecs(behvSet)
+	}
+	def loadSceneSpecsFromFile(rdfConfigFlexPath : String , optResourceClassLoader : ClassLoader ) : List[SceneSpec] = { 
 		if (optResourceClassLoader != null) {
 			getLogger.debug("Ensuring registration of classLoader: {}", optResourceClassLoader);
-			AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(optResourceClassLoader);
+			JenaFileManagerUtils.ensureClassLoaderRegisteredWithDefaultJenaFM(optResourceClassLoader);
 		}
 		getLogger.debug("Loading SceneSpecs from: {}", rdfConfigFlexPath);
 		val loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(rdfConfigFlexPath);
 		getLogger.debug("Loaded {} objects", loadedStuff.size());
+		yieldSceneSpecs(loadedStuff)
 	//	logInfo("Stuff: " + loadedStuff);
-		val si = loadedStuff.iterator();
+	}
+	def yieldSceneSpecs(loadedStuff : java.util.Set[Object]) : List[SceneSpec] = { 		
+
 		var sceneSpecList = List[SceneSpec]()
-		while (si.hasNext()) {
-			val obj = si.next();
-			if (obj.isInstanceOf[SceneSpec]) {
-				sceneSpecList = sceneSpecList :+ obj.asInstanceOf[SceneSpec]
+		if (loadedStuff != null) {
+			val si = loadedStuff.iterator();		
+			while (si.hasNext()) {
+				val obj = si.next();
+				if (obj.isInstanceOf[SceneSpec]) {
+					sceneSpecList = sceneSpecList :+ obj.asInstanceOf[SceneSpec]
+				}
 			}
+		} else {
+			getLogger.warn("SceneSpecLoad FAILED, yielding empty list.")
 		}
 		getLogger.debug("===========================================================================================")
 		getLogger.debug("Loaded SceneSpecList: {}", sceneSpecList);
 		getLogger.debug("===========================================================================================")
 		sceneSpecList;
-		// for (Object o : loadedStuff) {
 	}
 }
 object SceneBook extends BasicDebugger {
 	
-	def  readSceneBook(triplesFlexPath : String, optCL : ClassLoader ) : SceneBook = {
+	def  readSceneBookFromFile(triplesFlexPath : String, optCL : ClassLoader ) : SceneBook = {
 		val sb = new SceneBook();
-		val sceneSpecList : List[SceneSpec] = sb.loadSceneSpecs(triplesFlexPath, optCL);
+		val sceneSpecList : List[SceneSpec] = sb.loadSceneSpecsFromFile(triplesFlexPath, optCL);
 		sb.registerSceneSpecs(sceneSpecList);
 		sb;
 	}
+	def  readSceneBookFromRepo(repoClient : RepoClient, chanGraphID : Ident, behavGraphID : Ident) : SceneBook = {
+		val sb = new SceneBook();
+		val sceneSpecList : List[SceneSpec] = sb.loadSceneSpecsFromRepo(repoClient, chanGraphID, behavGraphID);
+		sb.registerSceneSpecs(sceneSpecList);
+		sb;
+	}
+	
+	import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
+	
 	def  clearBuilderCaches() {
 		CachingComponentAssembler.clearCacheForAssemblerSubclass(classOf[SceneSpecBuilder]);
 		CachingComponentAssembler.clearCacheForAssemblerSubclass(classOf[BehaviorSpecBuilder]);

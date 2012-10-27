@@ -72,6 +72,8 @@ object RepoClientTester {
 	
 	final val DFLT_SDB_REPO_CONFIG_PATH =  org.appdapter.demo.DemoResources.STORE_CONFIG_PATH; 
 	
+	val      DFLT_SDB_REPO_CONFIG_CLASS_LOADER = classOf[org.appdapter.demo.DemoResources].getClassLoader();
+	
 	// ----------------------------------------------------------------------------------
 	
 	// Alternative params for a "bunch of file-resources"-backed repo.  This is generally
@@ -95,13 +97,16 @@ object RepoClientTester {
 		
 	def main(args: Array[String]) : Unit = {
 		// Must enable "compile" scope for Log4J dep in order to compile this code.
-	//	org.apache.log4j.BasicConfigurator.configure();
-	//	org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
 		// First load up a sheet repo, using 3 params described above.
 		// The repo resolves QNames using the namespaces applied to its directory model.
-		// 
-		val rspec = new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM);
+		
+		val fileResModelCLs = new java.util.ArrayList[ClassLoader]();
+		
+		val rspec = new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, 
+											DFLT_DIRECTORY_SHEET_NUM, fileResModelCLs);
 		 
 		val dfltTestRepo = rspec.makeRepo();
 		
@@ -145,7 +150,8 @@ object RepoClientTester {
 		// resolution purposes).  
 		// 
 		val dirGraphID = new FreeIdent("urn:org.cogchar/dirModelInRepoTestDB", "dirModelInRepoTestDB");
-		val dbRepo = RepoTester.loadDatabaseRepo(DFLT_SDB_REPO_CONFIG_PATH, dirGraphID)
+		
+		val dbRepo = RepoTester.loadDatabaseRepo(DFLT_SDB_REPO_CONFIG_PATH, DFLT_SDB_REPO_CONFIG_CLASS_LOADER, dirGraphID)
 		println("Built dbRepo: " + dbRepo);
 		
 		val lightsGraphID = dfltTestRC.makeIdentForQName(lightsGraphQN);
@@ -180,6 +186,9 @@ object RepoClientTester {
 		queryAnims(dfltTestRC);
 		val cmdList = queryCommands(dfltTestRC);
 		println("Got commands: " + cmdList);
+		
+		val chanSet = assembleChannelSpecs(dfltTestRC);
+		println("Got chanSpecs: " + chanSet)
 	}
 
   	def makeRepoClient(fr : FancyRepo, queryTargetVarName:  String, querySheetQN : String) : RepoClient = {
@@ -226,5 +235,9 @@ object RepoClientTester {
 		})
 		resultJList
 	}	
+	import org.cogchar.impl.perform.ChannelSpec;
+	def assembleChannelSpecs (rc : RepoClient) : java.util.Set[Object] = {
+		rc.assembleRootsFromNamedModel("ccrt:chan_sheet_AZR50")
+	}
 	
 }

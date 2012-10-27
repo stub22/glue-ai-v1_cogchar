@@ -142,7 +142,7 @@ public abstract class BasicRenderContext extends BasicRenderRegistryClientFinder
 		dsm.addLight(l);
 	}
 
-	abstract protected void runTaskSafelyUntilComplete(CallableTask task) throws Throwable;
+	abstract public void runTaskSafelyUntilComplete(CallableTask task) throws Throwable;
 		
 	/**
 	 * Override this method to place your *initial* content into our context's OpenGL virtual world.

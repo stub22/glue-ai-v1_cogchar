@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bundle.app.puma;
+package org.cogchar.app.puma.config;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
@@ -23,11 +23,7 @@ import org.appdapter.core.name.Ident;
  * @author Ryan Biggs <rbiggs@skyriversoftware.com>
  */
 
-// As hard as we push to move data to external resources, it seems some sort of meta-meta-meta data keeps
-// squeezing out and has to be hard coded. 
-// This class contains the information for reading what we now are calling "Global Modes." This global configuration
-// is applied at the top level in Cog Char, so the working theory at the moment is that this information belongs here,
-// at the PUMA level. Maybe.
+
 public class PumaModeConstants {
 	// The (temporarily fixed) "GlobalMode". This won't be a constant for long.
 	public static String DEFAULT_GLOBAL_MODE_NAME = "test_spread_reload";

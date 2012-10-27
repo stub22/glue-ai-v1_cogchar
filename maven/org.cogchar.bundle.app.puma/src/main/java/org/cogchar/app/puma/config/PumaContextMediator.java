@@ -13,10 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bundle.app.puma;
+package org.cogchar.app.puma.config;
 
+import org.cogchar.app.puma.registry.PumaRegistryClient;
+import java.util.ArrayList;
+import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.RepoSpec;
+import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.registry.ResourceFileCategory;
 
 /**  This mediator is our "/etc/rc", the "top" mechanism available to customize the Cogchar PUMA boot up sequence.
  * @author Stu B. <www.texpedient.com>
@@ -94,16 +99,49 @@ public abstract class PumaContextMediator extends BasicDebugger {
 	public boolean getFlagIncludeCharacters() { 
 		return true;
 	}
-	/**** Todo:  Allow this mediator to specify what kind of repo should be used for main config.
+	
+	/**
+	 * Used to set the URI of the PumaContextCommandBox
+	 * @return 
 	 */
 	
-	// IGNORE:This is not really used at present.
 	public String getSysContextRootURI() {
-		String uriPrefix = "http://model.cogchar.org/char/bony/";
-		String bonyCharUniqueSuffix = "0x0000FFFF";
-		String sysContextURI = uriPrefix + bonyCharUniqueSuffix;
+		String uriPrefix = "urn:ftd:cogchar.org:2012:runtime_instance#";
+		String sysRootName = "pumaCtxCmdBox";
+		String sysContextURI = uriPrefix + sysRootName;
 		return sysContextURI;
 	}
-	
+
+	/**
+	 * Mediator determines 
+	 * @return 
+	 */
 	public abstract RepoSpec getMainConfigRepoSpec();
+	
+
+	/** Synchronous callback allowing your app to be sure it has registered classLoaders
+	 * that can see all required files in the different ResourceCategories.  In a simple JavaApp,
+	 * these will probably just be the default classloader, and this callback is unimportant.
+	 * But under OSGi, this method is a useful and easy way to get your classLoaders "in".
+	 * 
+	 * It is helpful to override this method with your own, because your application bundle
+	 * has the best visibility into the set of classLoaders for other bundles.  Under OSGi,
+	 * you can easily "import" the required packages, grab a sibing class, and ask for its
+	 * classLoader.  Each classLoader should only be returned once, although repetitions
+	 * should have little impact.  The ordering does not currently control any behavior, 
+	 * but might be used later 
+	 * 
+	 * We intend that Puma should consult this method at least once for each category,
+	 * before trying to load any resources from it.
+	 * Puma may consult it multiple times, in which case Puma should not build up long
+	 * lists of duplicate classloaders in any data structures!
+	 * 
+	 * [S2B22 - 2012-10-23].
+	 * 
+	 * @param cat
+	 * @return 
+	 */
+	public List<ClassLoader> getExtraResFileCLsForCat(ResourceFileCategory cat) {
+		return new ArrayList<ClassLoader>();
+	}
 }
