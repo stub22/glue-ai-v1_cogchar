@@ -7,6 +7,12 @@ import org.appdapter.osgi.core.BundleActivatorBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The PumaAppBundleActivator does nothing but print some log messages when it is started or stopped.
+ * TODO:  Make the "stop()" method do appropriate cleanup.
+ * 
+ * @author Stu B. <www.texpedient.com>
+ */
 public class PumaAppBundleActivator extends BundleActivatorBase {
 
 	static Logger theLogger = LoggerFactory.getLogger(PumaAppBundleActivator.class);

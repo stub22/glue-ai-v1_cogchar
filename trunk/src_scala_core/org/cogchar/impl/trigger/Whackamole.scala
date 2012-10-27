@@ -37,8 +37,8 @@ import org.cogchar.impl.perform.{DummyTextChan, FancyTime, ChannelNames};
 
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
-
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
+import org.appdapter.bind.rdf.jena.model.{JenaFileManagerUtils};
 import scala.collection.JavaConversions;
 
 /**
@@ -65,7 +65,7 @@ object Whackamole extends BasicDebugger {
 		// practical effect.
 		val cl = getClass().getClassLoader();
 		logDebug("Ensuring classloader registered for RDF-model resource URL resolution: " + cl);
-		AssemblerUtils.ensureClassLoaderRegisteredWithJenaFM(cl);
+		JenaFileManagerUtils.ensureClassLoaderRegisteredWithDefaultJenaFM(cl);
 		logInfo("Loading RDF triples directly from resource URL: " + triplesURL);
 		
 		val loadedStuff : java.util.Set[Object] = AssemblerUtils.buildAllObjectsInRdfFile(triplesURL);

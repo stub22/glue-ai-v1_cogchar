@@ -17,7 +17,7 @@ package org.cogchar.app.buddy.busker;
 
 import java.util.List;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
-import org.cogchar.bundle.app.puma.PumaContextCommandBox;
+import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.platform.trigger.CogcharScreenBox;
@@ -27,6 +27,10 @@ import org.cogchar.platform.trigger.BasicActionBindingImpl;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.blob.emit.RepoClientTester;
 import org.cogchar.blob.emit.RepoClientTester.CommandRec;
+
+import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +62,7 @@ public class TriggerItems {
 		@Override public void fire(CogcharScreenBox targetBox) {
 			logFiring(targetBox);
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
-			pdc.playDangerYogaTestAnim();
+			pdc.playBuiltinAnimNow(BuiltinAnimKind.BAK_DANGER_YOGA);
 		}
 	}
 
@@ -112,8 +116,8 @@ public class TriggerItems {
 				try {
 					logInfo("Stopping theater for char [" + pdc + "]");
 					pdc.stopTheater();
-					logInfo("Reloading behavior config for char [" + pdc + "]");
-					pdc.loadBehaviorConfig(true);
+					logWarning("Reloading behavior config FROM TEST FILE for char [" + pdc + "]");
+					pdc.loadBehaviorConfigFromTestFile(true);
 					logInfo("Restarting theater for char [" + pdc + "]");
 					pdc.startTheater();
 				} catch (Throwable t) {
@@ -150,7 +154,43 @@ public class TriggerItems {
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 			pdc.useTempAnims();
 		}
-	}	
+	}
+	/**
+	 * ./maven/org.cogchar.lib.render/src/main/j
+estConfigReload("WorldConfig");
+./maven/org.cogchar.lib.render/src/main/j
+estConfigReload("BoneRobotConfig");
+./maven/org.cogchar.lib.render/src/main/j
+estConfigReload("AllHumanoidConfig");
+	 */
+	
+	protected static boolean forceFreshDefaultMainConfig = false;
+	
+	
+	public static class UpdateWorldConfig extends TriggerItem {
+		@Override public void fire(CogcharScreenBox targetBox) {
+			logFiring(targetBox);
+			PumaContextCommandBox pccb = (PumaContextCommandBox) targetBox;
+			pccb.updateConfigByRequest("WorldConfig", forceFreshDefaultMainConfig);
+		}
+	}
+	public static class UpdateBoneRobotConfig extends TriggerItem {
+		@Override public void fire(CogcharScreenBox targetBox) {
+			logFiring(targetBox);
+			PumaContextCommandBox pccb = (PumaContextCommandBox) targetBox;
+			pccb.updateConfigByRequest("BoneRobotConfig", forceFreshDefaultMainConfig);
+		}
+	}
+	public static class UpdateAllHumanoidConfig extends TriggerItem {
+		@Override public void fire(CogcharScreenBox targetBox) {
+			logFiring(targetBox);
+			PumaContextCommandBox pccb = (PumaContextCommandBox) targetBox;
+			pccb.updateConfigByRequest("AllHumanoidConfig", forceFreshDefaultMainConfig);
+		}
+	}
+	
+	
+	
 	private static Logger theLogger = LoggerFactory.getLogger(TriggerItems.class);
 	private static Logger getLogger() { 
 		return theLogger;

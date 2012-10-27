@@ -118,7 +118,10 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.1</version>
-			<!-- You must temporarily change scope to "runtime" or "compile" in order to activate Log4J for dev unit testing (outside of JUnit) -->
+			<!-- You must temporarily change scope to "runtime" or "compile" in order to activate Log4J for 
+			dev unit testing (outside of JUnit).  But the svn-committed (and mvn-deployed, etc.) versions
+			should always have this scope marked as "test", so that clients can use their own logger binding.  
+			-->
 			<scope>test</scope>
 		    <exclusions>
 				<!-- This embedded Log4J version is not OSGi friendly -->				
@@ -128,15 +131,21 @@
 		        </exclusion>
 		    </exclusions>
 		</dependency>
-		<!-- You must temporarily change scope to "compile" in order to activate for dev unit testing (outside of JUnit).
-			You will also need to see to configuration, e.g. by uncommenting code for "BasicConfigurator" or
-			"forceLog4JConfig"
+		<!--  We include "correct" (OGSi-friendly) Log4J version in "provided"
+			scope, so that our test programs can invoke Log4J configuration code,
+			and so that client projects can correctly+easily use Log4J (preferably
+			via SLF4J!), if they choose.
+			
+			However, there is no SLF4J binding without the above dependency.
+			
+			To see Log4J output, one also needs to see to configuration, e.g. by 
+			using "BasicConfigurator" or "forceLog4JConfig".
 		-->
 		<dependency>
 			<groupId>org.apache.log4j</groupId>
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
 			<version>1.2.16</version>
-			<scope>test</scope>			
+			<scope>compile</scope>			
 		</dependency>		
 	</dependencies>
 

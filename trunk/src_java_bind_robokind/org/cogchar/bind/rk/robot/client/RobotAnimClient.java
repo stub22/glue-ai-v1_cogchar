@@ -31,12 +31,19 @@ import org.apache.commons.configuration.XMLConfiguration;
 import java.net.URL;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.bind.rk.robot.model.ModelJoint;
+import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.robokind.api.animation.player.AnimationJob;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.animation.utils.ChannelsParameter;
 import org.robokind.api.animation.xml.AnimationFileReader;
 import org.robokind.api.animation.xml.AnimationXML;
 import org.robokind.api.common.playable.PlayState;
+import org.robokind.api.common.position.NormalizedDouble;
+import org.robokind.api.motion.Joint;
+import org.robokind.api.motion.Robot;
+
+
 
 
 /**
@@ -149,15 +156,24 @@ public class RobotAnimClient extends BasicDebugger {
         }		
 		return config;
 	}	
-	public Animation makeDangerYogaAnim() throws Exception {
-		/* This is how the animation editor gets the available channels.  This
+	public enum BuiltinAnimKind {
+		BAK_GOTO_DEFAULTS,
+		BAK_GOTO_MAX_NORM,
+		BAK_GOTO_MIN_NORM,
+		BAK_DANGER_YOGA
+	}
+	public Animation makeBuiltinAnim(BuiltinAnimKind baKind, ModelRobot refBot) throws Exception {
+		/* From Matt (in early 2012?):
+		 * This is how the animation editor gets the available channels.  This
 		 * uses a Robot and maps the JointIds to the Integers which are used as
 		 * channel ids.  Right now, it just uses the Integer from the JointId.
 		 * So an animation will only work for a single Robot.
 		 * I need to make ids and position in the animations explicit, but it
 		 * isn't as critical as fixing the motion was.
 		 */
-
+		
+		Robot.Id robotID = refBot.getRobotId();
+		
 		ChannelsParameterSource cpSource = AnimationUtils.getChannelsParameterSource();
 		getLogger().debug("channelParamSource={}", cpSource);
 		List<ChannelsParameter> chanParams = cpSource.getChannelParameters();
@@ -165,21 +181,44 @@ public class RobotAnimClient extends BasicDebugger {
 		Animation anim = new Animation();
 		//Create your channels and add points
 		for (ChannelsParameter cp : chanParams) {
-            int id = cp.getChannelID();
+            int jointNum = cp.getChannelID();
             String name = cp.getChannelName();
-			Channel chan = new Channel(id, name);
+			Channel chan = new Channel(jointNum, name);
+			getLogger().debug("Creating MotionPath for channel jointNum={}, name={}", jointNum, name);
 			//default path interpolation is a CSpline
 			MotionPath path = new MotionPath();
-			//time in millisec, position [0,1]
-			path.addPoint(0, 0.5);
-			path.addPoint(1000, 1.0);
-			path.addPoint(3000, 0.0);
-			path.addPoint(4000, 0.5);
+			
+			Joint.Id jointId = new Joint.Id(jointNum);
+			Robot.JointId rJID = new Robot.JointId(robotID, jointId);
+			ModelJoint mj = refBot.getJoint(rJID);
+	
+			//time in millisec, position in normalized range [0,1]
+			// Need to get the joint so we can get the abs-default position.
+			int gotoRampMsec = 1000;
+			
+			NormalizedDouble defaultPosNorm = mj.getDefaultPosition();
+			double maxPosNorm = 1.0;
+			double minPosNorm = 0.0;
+			
+
+			switch (baKind) {
+				case BAK_GOTO_DEFAULTS:
+					path.addPoint(gotoRampMsec, defaultPosNorm.getValue());
+				break;
+				case BAK_DANGER_YOGA:		
+					path.addPoint(500, defaultPosNorm.getValue());
+					path.addPoint(1500, 1.0);
+					path.addPoint(2500, 0.0);
+					path.addPoint(3500, defaultPosNorm.getValue());					
+				break;	
+			}			
+
 			chan.addPath(path);
 			anim.addChannel(chan);
 		}
 		return anim;
-	}	
+	}		
+
 	
    // To use something other than file, we will go through a different constructor
    // for XMLConfiguration, such as the URL one, and then call:

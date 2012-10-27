@@ -69,7 +69,7 @@ public class PhysicalModularRenderContext extends ModularRenderContext {
 	protected BulletAppState getBulletAppState() { 
 		return getRenderRegistryClient().getJme3BulletAppState(null);
 	}
-    protected PhysicsSpace getPhysicsSpace() {
+    public PhysicsSpace getPhysicsSpace() {
         return getBulletAppState().getPhysicsSpace();
     }	
 	protected PhysicsStuffBuilder getPhysicsStuffBuilder() { 

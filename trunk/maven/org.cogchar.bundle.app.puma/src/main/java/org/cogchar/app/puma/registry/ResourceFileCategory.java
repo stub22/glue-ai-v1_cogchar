@@ -13,26 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package org.cogchar.app.puma.registry;
 
-package org.cogchar.bundle.app.puma;
-import org.cogchar.platform.trigger.CogcharScreenBox;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 /**
+ *
  * @author Stu B. <www.texpedient.com>
  */
-
-public class PumaContextCommandBox extends CogcharScreenBox {
-	private		PumaAppContext		myPAC;
-	
-	public PumaContextCommandBox(PumaAppContext pac) {
-		myPAC = pac;
-	}
-	protected HumanoidRenderContext getHRC() { 
-		return myPAC.getOrMakeVWorldMapper().getHumanoidRenderContext();
-	}
-	public void resetMainCameraLocation() { 
-		getHRC().setDefaultCameraLocation();
-	}
-	
-	
+public enum ResourceFileCategory {
+	RESFILE_REPO_RDF, // Not used yet - 2012-10-23
+	RESFILE_ANIM_XML, // Not used yet - 2012-10-23
+	RESFILE_OPENGL_JME3_OGRE, // Not used yet - 2012-10-23
+	RESFILE_WEB_LIFT, // Not used yet - 2012-10-23
+	RESFILE_WEB_SPARQL, // Not used yet - 2012-10-23
+	RESFILE_RK_CONF // Used for Robokind JointGroup file open via getResourceAsStream
 }

@@ -31,11 +31,11 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.OSGiUtils;
 
-import org.cogchar.bundle.app.puma.PumaAppContext;
-import org.cogchar.bundle.app.puma.PumaBooter;
-import org.cogchar.bundle.app.puma.PumaContextMediator;
+import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaBooter;
+import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
-import org.cogchar.bundle.app.puma.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 
@@ -79,7 +79,9 @@ public final class VirtualCharTopComponent extends TopComponent {
 		int   DFLT_DIRECTORY_SHEET_NUM = 8;
 		
 		@Override public RepoSpec getMainConfigRepoSpec() {
-			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM);
+			java.util.List<ClassLoader> fileResModelCLs = new java.util.ArrayList<ClassLoader>();
+			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM,
+							fileResModelCLs);
 		}
 
 		@Override public boolean getFlagAllowJFrames() {

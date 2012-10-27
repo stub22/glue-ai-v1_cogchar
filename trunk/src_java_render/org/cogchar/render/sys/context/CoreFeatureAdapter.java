@@ -28,8 +28,9 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.WorkaroundAppStub;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
+import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.physics.DemoVectorFactory;
@@ -62,33 +63,6 @@ public class CoreFeatureAdapter extends BasicDebugger {
 	static public void registerJMonkeyDefaultCameras(RenderRegistryClient rrc, Camera defCam, FlyByCamera fbc) {
 		CameraMgr cm = rrc.getOpticCameraFacade(null);
 		cm.registerCommonCamera(CameraMgr.CommonCameras.DEFAULT, defCam);
-	}
-
-	/**
-	 * Mainly for attaching cameras to parts of robot, but potentially somewhat general purpose so I'll leave it here.
-	 * Currently (2012-09-28) called only from CameraMgr.addHeadCamera.
-	 * Note that it actually executes the attachment on the OpenGL render thread
-	 */
-	static public void attachToHumanoidBone(HumanoidRenderContext hrc, final Node toAttach, final Ident robotIdent, final String boneName) {
-		final HumanoidFigure robot = hrc.getHumanoidFigure(robotIdent);
-		if (robot == null) {
-			logger.warn("Failed to attach node[{}] to humanoid's {} due to missing robot: {}", new Object[]{toAttach, boneName, robotIdent});
-		} else {
-			hrc.enqueueCallable(new Callable<Void>() {
-
-				@Override
-				public Void call() throws Exception {
-					// getBoneAttachmentsNode attaches things to the rootNode, so this next line must be enqueued for the main render thread. Convenient!
-					Node attachToBone = robot.getBoneAttachmentsNode(boneName);
-					if (attachToBone != null) {
-						attachToBone.attachChild(toAttach);
-					} else {
-						logger.warn("Delayed failure to attach node[{}] to humanoid, due to missing bone {} on robot: {}", new Object[]{toAttach, boneName, robotIdent});	
-					}
-					return null;
-				}
-			});
-		}
 	}
 
 	static public void initGuiFont(CogcharRenderContext crc, String fontPath) {
