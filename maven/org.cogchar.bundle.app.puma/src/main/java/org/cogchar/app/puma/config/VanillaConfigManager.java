@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bundle.app.puma;
+package org.cogchar.app.puma.config;
 
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.impl.store.FancyRepo;
@@ -42,7 +42,7 @@ public class VanillaConfigManager extends PumaConfigManager {
 	 * @param mediator
 	 * @param optBundCtxForLifecycle 
 	 */
-	@Override protected void applyDefaultRepoClientAsMainConfig(PumaContextMediator mediator, BundleContext optBundCtxForLifecycle) {
+	@Override public void applyDefaultRepoClientAsMainConfig(PumaContextMediator mediator, BundleContext optBundCtxForLifecycle) {
 		applyVanillaRepoClientAsMainConfig(mediator, optBundCtxForLifecycle);
 	}
 	/**
@@ -66,7 +66,8 @@ public class VanillaConfigManager extends PumaConfigManager {
 		}
 	}
 	/**
-	 * Ask client Mediator for its MainConfig RepoSpec, implementing the crux of Cogchar-PUMA boot customization.
+	 * Ask client Mediator for its MainConfig RepoSpec, and then make a repo for that spec,
+	 * thus implementing the crux of Cogchar-PUMA boot customization.
 	 * @param mediator
 	 * @return 
 	 */

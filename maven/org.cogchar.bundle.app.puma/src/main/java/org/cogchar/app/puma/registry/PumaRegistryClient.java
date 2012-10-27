@@ -14,9 +14,15 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bundle.app.puma;
+package org.cogchar.app.puma.registry;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.appdapter.core.name.Ident;
+import org.cogchar.app.puma.config.PumaConfigManager;
+import org.cogchar.app.puma.config.PumaContextMediator;
+import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.cgchr.PumaWebMapper;
 import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CommandSpace;
 
@@ -46,6 +52,7 @@ public interface PumaRegistryClient {
 	
 	public PumaWebMapper getWebMapper(Ident optSpecID);
 	public void putWebMapper(PumaWebMapper wm, Ident optSpecID);
-	
-	
+
+	public List<ClassLoader> getResFileCLsForCat(ResourceFileCategory cat);
+
 }

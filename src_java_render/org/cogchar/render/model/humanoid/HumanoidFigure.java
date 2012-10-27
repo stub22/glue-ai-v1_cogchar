@@ -101,20 +101,20 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		
 	}
 
-	public Ident getCharIdent() { 
+	protected Ident getCharIdent() { 
 		return myConfig.myCharIdent;
 	}
-	public String getNickname() { 
+	protected String getNickname() { 
 		return myConfig.myNickname;
 	}	
-	public HumanoidBoneConfig getHBConfig() {
+	protected HumanoidBoneConfig getHBConfig() {
 		return myConfig.myBoneConfig;
 	}
-	public Bone getSpatialBone(String boneName) {
+	protected Bone getSpatialBone(String boneName) {
 		Bone b = myHumanoidSkeleton.getBone(boneName);
 		return b;
 	}
-	public Bone getRootBone() {
+	protected Bone getRootBone() {
 		return myHumanoidSkeleton.getRoots()[0];
 	}
 	
@@ -127,11 +127,11 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		myModule = module;
 	}
 
-	public boolean initStuff(AssetManager assetMgr, Node parentNode, PhysicsSpace ps) {
+	public boolean loadMeshAndSkeletonIntoVWorld(AssetManager assetMgr, Node parentNode, PhysicsSpace ps) {
 		try {
 			myHumanoidModelNode = (Node) assetMgr.loadModel(myConfig.myMeshPath);
 		} catch (Throwable t) {
-			getLogger().warn("initStuff() cannot load 3D mesh model at [{}], the reason is {}", myConfig.myMeshPath, t);
+			getLogger().warn("Caught exception trying to load 3D mesh model at [{}]", myConfig.myMeshPath, t);
 			return false;
 		}
 		
@@ -172,7 +172,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		parentNode.detachChild(myHumanoidModelNode);
 	}
 
-	public void becomeKinematicPuppet() { 
+	protected void becomeKinematicPuppet() { 
 		myHumanoidKRC.setKinematicMode();
 	}
 	public void togglePhysicsKinematicModeEnabled() {
@@ -197,10 +197,10 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 			myHumanoidKRC.blendToKinematicMode(DEFAULT_ANIM_BLEND_RATE);
 		}
 	}
-	public void moveToPosition(Vector3f pos) {
+	protected void moveToPosition(Vector3f pos) {
 		myHumanoidModelNode.setLocalTranslation(pos);		
 	}
-	public void movePosition(float deltaX, float deltaY, float deltaZ) {
+	protected void movePosition(float deltaX, float deltaY, float deltaZ) {
 		Vector3f v = new Vector3f();
 		v.set(myHumanoidModelNode.getLocalTranslation());
 		v.x += deltaX;
@@ -209,7 +209,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		myHumanoidModelNode.setLocalTranslation(v);		
 	}
 
-	public void collide(Bone bone, PhysicsCollisionObject pco, PhysicsCollisionEvent pce) {
+	@Override public void collide(Bone bone, PhysicsCollisionObject pco, PhysicsCollisionEvent pce) {
 		Object userObj = pco.getUserObject();
 		if ((userObj != null) && (userObj instanceof Geometry)) {
 			Geometry geom = (Geometry) userObj;
@@ -220,7 +220,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		myHumanoidKRC.setRagdollMode();
 	}
 
-	public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+	@Override public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
 //        if(channel.getAnimationName().equals("StandUpFront")){
 //            channel.setAnim("Dance");
 //        }
@@ -236,7 +236,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 
 	}
 
-	public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
+	@Override public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
 	}
 	
 	public void runSinbadBoogieAnim() { 
@@ -267,7 +267,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 			myHumanoidModelNode.attachChild(myHumanoidSkeletonDebugger);
 		}
 	}
-	public void attachRagdollBone(HumanoidBoneDesc hbd) {
+	protected void attachRagdollBone(HumanoidBoneDesc hbd) {
 		myHumanoidKRC.addBoneName(hbd.getSpatialName());
 	}
 

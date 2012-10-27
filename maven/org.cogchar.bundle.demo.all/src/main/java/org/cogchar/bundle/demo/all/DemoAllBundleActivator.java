@@ -3,10 +3,10 @@ package org.cogchar.bundle.demo.all;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
 
-import org.cogchar.bundle.app.puma.PumaAppContext;
-import org.cogchar.bundle.app.puma.PumaBooter;
-import org.cogchar.bundle.app.puma.PumaContextMediator;
-import org.cogchar.bundle.app.puma.PumaGlobalPrebootInjector;
+import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaBooter;
+import org.cogchar.app.puma.config.PumaContextMediator;
+import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 import org.osgi.framework.BundleContext;
@@ -57,7 +57,8 @@ public class DemoAllBundleActivator extends BundleActivatorBase {
 		int   DFLT_DIRECTORY_SHEET_NUM = 8;
 		
 		@Override public RepoSpec getMainConfigRepoSpec() {
-			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM);
+			java.util.List<ClassLoader> fileResModelCLs = new java.util.ArrayList<ClassLoader>();
+			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM, fileResModelCLs);
 		}
 	}	
 

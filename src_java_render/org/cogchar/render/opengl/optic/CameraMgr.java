@@ -28,6 +28,7 @@ import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.api.cinema.LightsCameraAN;
 import org.cogchar.render.sys.context.CoreFeatureAdapter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,10 +126,11 @@ public class CameraMgr {
 
 	public void addHeadCamera(Camera headCam, CameraConfig config, HumanoidRenderContext hrc) {
 		if (hrc != null) {
+			HumanoidFigureManager hfm = hrc.getHumanoidFigureManager();
 			CameraNode headCamNode = new CameraNode(CommonCameras.HEAD_CAM.name() + "_NODE", headCam);
 			headCamNode.setControlDir(ControlDirection.SpatialToCamera);
 			//theLogger.info("Attaching head cam to robot ident: " + config.attachedRobot + " bone " + config.attachedItem); // TEST ONLY
-			CoreFeatureAdapter.attachToHumanoidBone(hrc, headCamNode, config.attachedRobot, config.attachedItem);
+			hfm.attachNodeToHumanoidBone(hrc, headCamNode, config.attachedRobot, config.attachedItem);
 			float[] cameraPos = config.cameraPosition;
 			headCamNode.setLocalTranslation(new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]));
 		} else {

@@ -103,7 +103,7 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
                 continue;
             }
             NormalizedDouble pos = e.getValue();
-            bj.setGoalPosition(pos);
+            bj.setGoalPositionAndFirePropChangedEvent(pos);
         }
 		notifyMoveListeners();
 	}
@@ -115,8 +115,20 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
     @Override public boolean isConnected() {
         return myConnectionFlag;
     }
-    
-	public void updateConfig(BoneRobotConfig config) {
+    /**
+	 * For each BoneJointConfig bjc, in argument, IF there is an existing ModelJoint in this robot with same 
+	 * jointID, THEN call mj.updateConfig(bjc).
+	 * @param config 
+	 * @param flag_hardResetGoalPosToDefault  - passed along to mj.updateConfig, indicating whether we should
+	 *										immediately *force* the goal position to its default value.
+	 */
+	
+	/**
+	 * 
+	 * @param config
+	 * 
+	 */
+	public void updateConfig(BoneRobotConfig config, boolean flag_hardResetGoalPosToDefault) {
 		for (BoneJointConfig bjc : config.myBJCs) {
 			Integer jointNum = bjc.myJointNum;
 			if (jointNum == null) {
@@ -128,7 +140,7 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 			ModelJoint mj = getJoint(robotJointID);
 			if (mj != null) {
 				theLogger.info("Updating robot joint " + robotJointID + " with new config: " + bjc);
-				mj.updateConfig(bjc);
+				mj.updateConfig(bjc, flag_hardResetGoalPosToDefault);
 			} else {
 				theLogger.warn("Cannot find existing joint to update for: " + bjc);
 			}

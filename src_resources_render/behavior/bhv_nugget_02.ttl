@@ -163,7 +163,7 @@ csi:triggerIn_730
 
 csi:scn_001 	
 	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
-	apsb:label			"Stepping Behavior test #1";
+	apsb:label			"Stepping Behavior test #001";
 	cs:details			"scene-specific-details-go-here";
 	cs:behavior			csi:bh_001;
 	cs:channel			csi:speechOut_100;
@@ -172,7 +172,7 @@ csi:scn_001
 
 csi:scn_002 	
 	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
-	apsb:label			"Stepping Behavior test #2";
+	apsb:label			"Stepping Behavior test #002";
 	cs:behavior			csi:bh_002;
 	cs:channel			csi:speechOut_100;
 	cs:channel			csi:animOut_200;
@@ -181,9 +181,10 @@ csi:scn_002
 
 csi:scn_003 	
 	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
-	apsb:label			"Stepping Behavior test #2";
-	cs:behavior			csi:bh_002, csi:bh_001;
+	apsb:label			"Stepping Behavior test #003";
+	cs:behavior			csi:bh_003;
 	cs:channel			csi:speechOut_100;
+	cs:channel			csi:animOut_200;
 	cs:trigger			"sceneTrig_03"
 	.
 
@@ -224,6 +225,23 @@ csi:bh_002
 			cs:text				"Started after 7 seconds"
 		]
 ## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
+	)
+	.
+
+csi:bh_003	
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.SteppingBehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text				"Behavior double-Oh Tree"
+		] 
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	1.0;
+			cs:text				"animations/demo_anim_R50_A11_20120920/arms_default.anim.xml"
+		] 
 	)
 	.
 
@@ -268,6 +286,44 @@ SELECT *
 
 					"""
 	.
+
+csi:scn_005	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"Stepping Behavior test #005";
+	cs:behavior			csi:bh_005;
+	cs:channel			csi:speechOut_100;
+	cs:channel			csi:animOut_200;
+	cs:trigger			"sceneTrig_05"
+	.
+
+csi:bh_005	
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.SteppingBehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text				"Behavior Oh Oh Five"
+		] 
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	1.0;
+			cs:text				"animations/demo_anim_R50_A11_20120920/intro.anim.xml"
+		] 
+	)
+	.
+
+# arms_default.anim.xml
+# avatar_blink.anim.xml
+# avatar_face.anim.xml
+# closing.anim.xml
+# hardware.anim.xml
+# intro.anim.xml
+# legs_def.anim.xml
+# software.anim.xml
+# uses.anim.xml
+
+
 
 ################################################################################################################
 ###   Demo Scenes 11-20 are launched with top-row number keys ("1" launches "11", "2" launches "12", ...)

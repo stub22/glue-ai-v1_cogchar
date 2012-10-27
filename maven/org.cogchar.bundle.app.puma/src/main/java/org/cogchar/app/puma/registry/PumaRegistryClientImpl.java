@@ -14,9 +14,17 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bundle.app.puma;
+package org.cogchar.app.puma.registry;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.avro.generic.GenericData;
 import org.appdapter.core.name.Ident;
+import org.cogchar.app.puma.config.PumaConfigManager;
+import org.cogchar.app.puma.config.PumaContextMediator;
+import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.cgchr.PumaWebMapper;
+import org.cogchar.app.puma.config.VanillaConfigManager;
 import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CommandSpace;
 import org.osgi.framework.BundleContext;
@@ -83,6 +91,14 @@ public class PumaRegistryClientImpl implements PumaRegistryClient {
 
 	@Override public void putWebMapper(PumaWebMapper wm, Ident optSpecID) {
 		myWebMapper = wm;
+	}
+
+	@Override public List<ClassLoader> getResFileCLsForCat(ResourceFileCategory cat) {
+		List<ClassLoader> extraCLs = myMediator.getExtraResFileCLsForCat(cat);
+		List<ClassLoader> totalCLs = new ArrayList<ClassLoader>(extraCLs);
+		ClassLoader ourOpenGLResLoader = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+		totalCLs.add(ourOpenGLResLoader);
+		return totalCLs;
 	}
 	
 }

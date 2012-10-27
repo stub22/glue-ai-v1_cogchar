@@ -13,8 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bundle.app.puma;
+package org.cogchar.app.puma.cgchr;
 
+import org.cogchar.app.puma.config.PumaModeConstants;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
@@ -30,8 +31,12 @@ import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 import org.osgi.framework.BundleContext;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
+import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.trigger.CommandSpace;
+import org.cogchar.render.model.databalls.BallBuilder;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -57,10 +62,10 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 	public HumanoidRenderContext initHumanoidRenderContext(String panelKind) {
 		BundleContext bundleCtx = myPAC.getBundleContext();
 		myHRC = (HumanoidRenderContext) RenderBundleUtils.buildBonyRenderContextInOSGi(bundleCtx, panelKind);
-		myHRC.setUpdateInterface(new UpdateInterfaceImpl());
+		// myHRC.setUpdateInterface(new UpdateInterfaceImpl());
 		return myHRC;
 	}
-
+/*  Replaced by cmd/trigger wiring.
 	class UpdateInterfaceImpl implements HumanoidRenderContext.UpdateInterface {
 
 		protected boolean forceFreshDefaultMainConfig = false;
@@ -69,27 +74,19 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 			return myPAC.updateConfigByRequest(request, forceFreshDefaultMainConfig);
 		}
 	}
-
+*/
 // The Lights/Camera/Cinematics init used to be done from HumanoidRenderContext, but the global config lives
 	// here as does humanoid and bony config. So may make sense to have this here too, though we could move it
 	// back to HRC if there are philosophical reasons for doing so. (We'd also have to pass two graph flavors to it for this.)
 	// Added: since jMonkey key bindings are part of "virtual world" config like Lights/Camera/Cinematics, they are also 
 	// set here
-	public void initVirtualWorlds(CommandSpace cspace) {
-		PumaConfigManager pcm = myPAC.getConfigManager();
+	public void initVirtualWorlds(CommandSpace cspace, PumaConfigManager pcm) { 
+// , PumaWebMapper webMapper, 	BundleContext bundleCtx) {
 		GlobalConfigEmitter gce = pcm.getGlobalConfig();
-		BundleContext bundleCtx = myPAC.getBundleContext();
-		RepoClient rc = myPAC.getOrMakeMainConfigRC();
-
-		PumaWebMapper webMapper = myPAC.getOrMakeWebMapper();
-		ClassLoader bonyRdfCL = myPAC.getCogCharResourcesClassLoader();
+		RepoClient rc = pcm.getMainConfigRepoClient();		
 
 		myHRC.initCinematicParameters();
-		webMapper.connectLiftSceneInterface(bundleCtx);
-		webMapper.connectLiftInterface(bundleCtx);
-		// The connectCogCharResources call below is currently still needed only for the "legacy" BallBuilder functionality
-		webMapper.connectCogCharResources(bonyRdfCL, myHRC);
-
+		
 		KeyBindingConfig currKeyBindCfg = new KeyBindingConfig();
 		try {
 			List<Ident> worldConfigIdents = gce.entityMap().get(PumaModeConstants.VIRTUAL_WORLD_ENTITY_TYPE);
@@ -118,7 +115,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		
 		myHRC.refreshInputBindingsAndHelpScreen(currKeyBindCfg, cspace);
 	}
-
+	
 	private void initCinematicStuff(GlobalConfigEmitter gce, Ident worldConfigIdent, RepoClient repoCli) {
 		HumanoidRenderWorldMapper renderMapper = new HumanoidRenderWorldMapper();
 		Ident graphIdent = null;
@@ -162,7 +159,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		}
 	}
 
-	protected void registerSpecialInputTriggers(PumaDualCharacter pdc) {
+	public void registerSpecialInputTriggers(PumaDualCharacter pdc) {
 
 		hookItUp(PlayerAction.STOP_AND_RESET_CHAR, pdc, new TriggerItems.StopAndReset());
 		hookItUp(PlayerAction.STOP_RESET_AND_RECENTER_CHAR, pdc, new TriggerItems.StopResetAndRecenter());
@@ -189,7 +186,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		db.setTargetTrigger(trigItem);
 	}
 
-	protected void clearSpecialInputTriggers() {
+	public void clearSpecialInputTriggers() {
 
 		unhookIt(PlayerAction.STOP_AND_RESET_CHAR);
 		unhookIt(PlayerAction.STOP_RESET_AND_RECENTER_CHAR);
@@ -216,7 +213,19 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		myRenderMapper.clearViewPorts(myHRC);
 	}
 
-	protected void detachAllHumanoidFigures() {
-		myHRC.detachHumanoidFigures();
+	public void detachAllHumanoidFigures() {
+		myHRC.getHumanoidFigureManager().detachHumanoidFigures(myHRC);
 	}
+	public void connectVisualizationResources(ClassLoader bonyRdfCl) {
+		BallBuilder ballBldr = BallBuilder.getTheBallBuilder();
+		ballBldr.setClassLoader("Cog Char", bonyRdfCl);
+		ballBldr.initialize(myHRC);
+		myHRC.setTheBallBuilder(ballBldr);
+	}	
+	// Previous functions now mostly done from within LifterLifecycle on create(). 
+	// Retaining for now for legacy BallBuilder classloader hookup
+	public void connectHrkindVisualizationContent(ClassLoader hrkindResourceCL) {
+		BallBuilder.getTheBallBuilder().setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
+	}
+	
 }

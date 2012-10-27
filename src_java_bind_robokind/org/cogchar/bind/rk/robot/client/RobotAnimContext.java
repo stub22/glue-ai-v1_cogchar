@@ -17,6 +17,7 @@ package org.cogchar.bind.rk.robot.client;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.perform.Media;
@@ -36,31 +37,32 @@ import org.robokind.api.animation.player.AnimationJob;
 import org.robokind.api.motion.Robot;
 import org.robokind.api.motion.utils.RobotUtils;
 
+import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
+import org.cogchar.bind.rk.robot.model.ModelRobot;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class RobotAnimContext extends BasicDebugger {
 
 	enum AnimChannel {
+
 		RK_XML_BEST,
 		RK_XML_PERM,
 		RK_XML_TEMP
 	}
-	private		Ident					myCharIdent;
-	private		Robot					myTargetRobot;
-	private		RobotAnimClient			myAnimClient;
-	
-	private		List<AnimationJob>		myJobsInStartOrder = new ArrayList<AnimationJob>();
+	private Ident myCharIdent;
+	private Robot myTargetRobot;
+	private RobotAnimClient myAnimClient;
+	private List<AnimationJob> myJobsInStartOrder = new ArrayList<AnimationJob>();
+	private TriggeringChannel myTriggeringChannel;
+	private BehaviorConfigEmitter myBehaviorCE;
 
-	private		Animation				myDangerYogaAnim;
-	
-	private		TriggeringChannel		myTriggeringChannel;
-	private		BehaviorConfigEmitter	myBehaviorCE;
-	
 	public RobotAnimContext(Ident charIdent, BehaviorConfigEmitter behavCE) {
 		myCharIdent = charIdent;
 		myBehaviorCE = behavCE;
 	}
+
 	public boolean initConn(RobotServiceContext robotSvcContext) {
 		try {
 			BundleContext osgiBundleCtx = robotSvcContext.getBundleContext();
@@ -80,17 +82,19 @@ public class RobotAnimContext extends BasicDebugger {
 			return false;
 		}
 	}
-	public void stopAndReset() { 
+
+	public void stopAndReset() {
 		endAndClearKnownAnimationJobs();
 	}
-	public void endAndClearKnownAnimationJobs() { 
+
+	public void endAndClearKnownAnimationJobs() {
 		// We could use this instead:
 		//		getAllCurrentAnimationsForPlayer
 		// which would stop/clear all animations, regardless of whether launched by this AnimClient
 		// TODO:  Let's print the one's we didn't stop and clear!
-		
+
 		List<AnimationJob> notCleared = new ArrayList<AnimationJob>();
-		int	clearedCount = 0, unclearedCount = 0;
+		int clearedCount = 0, unclearedCount = 0;
 		for (AnimationJob aj : myJobsInStartOrder) {
 			if (myAnimClient.endAndClearAnimationJob(aj)) {
 				clearedCount++;
@@ -102,9 +106,10 @@ public class RobotAnimContext extends BasicDebugger {
 			}
 		}
 		myJobsInStartOrder = notCleared;
-		getLogger().info("endAndClear complete, succeededCount=" + clearedCount + ", failedCount=" + unclearedCount);		
+		getLogger().info("endAndClear complete, succeededCount=" + clearedCount + ", failedCount=" + unclearedCount);
 	}
-	public synchronized void  startFullAnimationNow(Animation anim) {
+
+	public synchronized void startFullAnimationNow(Animation anim) {
 		AnimationJob aj = myAnimClient.playFullAnimationNow(anim);
 		if (aj != null) {
 			myJobsInStartOrder.add(aj);
@@ -113,51 +118,55 @@ public class RobotAnimContext extends BasicDebugger {
 			getLogger().warn("********************* Could not start animation[" + anim + "]");
 		}
 	}
-	public void playDangerYogaTestAnimNow() { 
+
+	public void playBuiltinAnimNow(BuiltinAnimKind baKind) {
 		if (myAnimClient != null) {
-			if (myDangerYogaAnim == null) {
-				try {
-					myDangerYogaAnim = myAnimClient.makeDangerYogaAnim();
-				} catch (Throwable t) {
-					getLogger().error("Problem creating DangerYoga TestAnim", t);
-					return;
-				}
+			Animation builtinAnim = null;
+			// TODO: check cache
+			try {
+				builtinAnim = myAnimClient.makeBuiltinAnim(baKind, (ModelRobot) myTargetRobot);
+
+			} catch (Throwable t) {
+				getLogger().error("Problem creating builtin anim: {} ", baKind, t);
+				return;
 			}
-			startFullAnimationNow(myDangerYogaAnim);
-			getLogger().info("Started DangerYoga test anim on robot: " + myCharIdent);
+			if (builtinAnim != null) {
+				startFullAnimationNow(builtinAnim);
+			}
+			getLogger().info("Started builtin anim {} on robot {} ", builtinAnim, myCharIdent);
 		} else {
-			getLogger().warn("Cannot play DangerYoga test anim because myAnimClient == null, on robot: " + myCharIdent);
+			getLogger().warn("Cannot play builtin anim {}, because myAnimClient == null, on robot: {} ", baKind, myCharIdent);
 		}
 	}
 
-	
-	public TriggeringChannel getTriggeringChannel() { 
+	public TriggeringChannel getTriggeringChannel() {
 		if (myTriggeringChannel == null) {
 			Ident id = ChannelNames.getOutChanIdent_AnimBest();
 			getLogger().info("Creating triggering channel with ident=" + id);
 			myTriggeringChannel = new TriggeringChannel(id);
-		} 
+		}
 		return myTriggeringChannel;
 	}
+
 	public class TriggeringChannel extends FancyTextChan {
-		
-		private	boolean myUseTempAnimsFlag = false;
-		
+
+		private boolean myUseTempAnimsFlag = false;
+
 		public TriggeringChannel(Ident id) {
 			super(id);
 		}
-		
+
 		public void setUseTempAnims(boolean flag) {
 			myUseTempAnimsFlag = flag;
 		}
-		
+
 		@Override protected void attemptMediaStartNow(Media.Text m) throws Throwable {
 			String animPathStr = m.getFullText();
 			String fullPath = null;
 			// Temporarily we always use the temp path, because it's just a file and we don't have to turn
 			// the resource lookup into a URL.
 			//if (myUseTempAnimsFlag) {
-				fullPath = myBehaviorCE.getRKAnimationTempFilePath(animPathStr);
+			fullPath = myBehaviorCE.getRKAnimationTempFilePath(animPathStr);
 			//} else {
 			//	fullPath = myBehaviorCE.getRKAnimationPermPath(animPathStr);
 			//}

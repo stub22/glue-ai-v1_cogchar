@@ -82,7 +82,7 @@ public class CogcharRenderContext extends BasicRenderContext {
 		return was.enqueue(callThis);
 	}	
 	
-	@Override protected void runTaskSafelyUntilComplete(CallableTask task) throws Throwable {
+	@Override public void runTaskSafelyUntilComplete(CallableTask task) throws Throwable {
 		WorkaroundAppStub appStub = getAppStub();
 		java.util.concurrent.Future<Throwable> taskFuture = appStub.enqueue(task);
 	

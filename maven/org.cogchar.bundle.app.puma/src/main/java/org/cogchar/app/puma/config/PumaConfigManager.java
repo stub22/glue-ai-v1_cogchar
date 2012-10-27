@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bundle.app.puma;
+package org.cogchar.app.puma.config;
 
 import java.util.List;
 import org.appdapter.core.name.Ident;
@@ -50,7 +50,7 @@ public abstract class PumaConfigManager {
 	// Here's a GlobalConfigEmitter for our PUMA instance. Does it really belong here? Time will tell.
 	private GlobalConfigEmitter myGlobalConfig;
 
-	abstract protected void applyDefaultRepoClientAsMainConfig(PumaContextMediator mediator, BundleContext optBundCtxForLifecycle);
+	abstract public void applyDefaultRepoClientAsMainConfig(PumaContextMediator mediator, BundleContext optBundCtxForLifecycle);
 	
 	public GlobalConfigEmitter getGlobalConfig() {
 		return myGlobalConfig;
@@ -58,14 +58,14 @@ public abstract class PumaConfigManager {
 	protected void setMainConfigRepoClient(RepoClient rc) {
 		myCurrentMainConfigRepoClient = rc;
 	}
-	protected void clearMainConfigRepoClient() {
+	public void clearMainConfigRepoClient() {
 		myCurrentMainConfigRepoClient = null;
 	}
 	public RepoClient getMainConfigRepoClient() {
 		return myCurrentMainConfigRepoClient;
 	}
 	
-	protected RepoClient getOrMakeMainConfigRepoClient(PumaContextMediator mediator, BundleContext optBundCtxForLifecycle) {
+	public RepoClient getOrMakeMainConfigRepoClient(PumaContextMediator mediator, BundleContext optBundCtxForLifecycle) {
 		if (myCurrentMainConfigRepoClient == null) {
 			applyDefaultRepoClientAsMainConfig(mediator, optBundCtxForLifecycle);
 			// applyFreshDefaultMainRepoClientToGlobalConfig(optBundCtxForLifecycle);
@@ -79,7 +79,7 @@ public abstract class PumaConfigManager {
 	// But really this is a can of worms, so probably we should move to having both the
 	// GlobalConfigService and myGlobalConfig always be updated at the same time. Not yet though, until the possible implications are worked through...
 
-	protected void applyGlobalConfig(BundleContext optBundCtxForLifecycle) {
+	public void applyGlobalConfig(BundleContext optBundCtxForLifecycle) {
 		RepoClient repoCli = getMainConfigRepoClient();
 		Ident gcIdent = PumaModeConstants.makeRoleIdent(PumaModeConstants.DEFAULT_GLOBAL_MODE_NAME);
 		myGlobalConfig = new GlobalConfigEmitter(repoCli, gcIdent);
@@ -110,7 +110,7 @@ public abstract class PumaConfigManager {
 		return rcComp;
 	}
 	
-	protected void clearOSGiComps() {
+	public void clearOSGiComps() {
 		if (myGcComp != null) {
 			myGcComp.dispose();
 		}
@@ -149,7 +149,7 @@ public abstract class PumaConfigManager {
 	// So this may be a bad-idea-dead-end. Unless we decide we've fallen in love with both the GlobalConfigEmitter
 	// and the idea of doing config via managed services, in which it may turn out to be just what we need.
 	// For now, we'll restrict usage of this to the LifterLifeCycle only...
-	boolean startGlobalConfigService(BundleContext bundCtx) {
+	public boolean startGlobalConfigService(BundleContext bundCtx) {
 		boolean success = false;
 		if (myGlobalConfig != null) {
 			ServiceLifecycleProvider lifecycle =

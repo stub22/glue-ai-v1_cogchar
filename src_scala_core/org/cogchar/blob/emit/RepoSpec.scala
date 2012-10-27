@@ -55,15 +55,16 @@ abstract class RepoSpec {
 	def getDfltQrySrcGraphQName = DFLT_QRY_SRC_GRAPH_QN;
 	def getDfltTgtGraphSparqlVarName : String = DFLT_TGT_GRAPH_SPARQL_VAR;
 }
-case class OnlineSheetRepoSpec(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int) extends RepoSpec {
+case class OnlineSheetRepoSpec(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int, 
+							fileModelCLs : java.util.List[ClassLoader]) extends RepoSpec {
 	override def makeRepo() : Repo.WithDirectory = {
-		RepoTester.loadSheetRepo(sheetKey, namespaceSheetNum, dirSheetNum)
+		RepoTester.loadSheetRepo(sheetKey, namespaceSheetNum, dirSheetNum, fileModelCLs)
 	}
 }
-case class DatabaseRepoSpec(configPath : String, dirGraphID : Ident) extends RepoSpec {
-	def this(cPath : String, dirGraphUriPrefix : String, dirGraphLocalName : String) 
-			= this(cPath, new FreeIdent(dirGraphUriPrefix + dirGraphLocalName, dirGraphLocalName))
+case class DatabaseRepoSpec(configPath : String, optConfResCL : ClassLoader, dirGraphID : Ident) extends RepoSpec {
+	def this(cPath : String,  optCL : ClassLoader,  dirGraphUriPrefix : String, dirGraphLocalName : String) 
+			= this(cPath, optCL, new FreeIdent(dirGraphUriPrefix + dirGraphLocalName, dirGraphLocalName))
 	override def makeRepo() : Repo.WithDirectory = {
-		RepoTester.loadDatabaseRepo(configPath, dirGraphID)
+		RepoTester.loadDatabaseRepo(configPath, optConfResCL, dirGraphID)
 	}			
 }
