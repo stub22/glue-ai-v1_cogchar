@@ -19,7 +19,7 @@ package org.cogchar.lifter.model
 import org.cogchar.bind.lift.{ControlConfig, LiftConfig}
 import scala.xml.NodeSeq
 import org.appdapter.core.name.Ident
-import scala.collection.mutable.{ArrayBuffer,SynchronizedBuffer};
+import scala.collection.mutable.{ArrayBuffer,HashMap,Map,SynchronizedBuffer};
 import java.util.concurrent.ConcurrentHashMap
 import scala.collection.mutable.ConcurrentMap
 import scala.collection.JavaConversions._ // required to use java.util.concurrent.ConcurrentHashMap as a scala.collection.mutable.ConcurrentMap
@@ -64,8 +64,6 @@ class LifterState {
 	var sessionLifterVariablesByName:ConcurrentMap[String,String] = new DfltConcHashMap[String,String]
 	var cogbotTextToSpeechActive:Boolean = false
 	var currentTemplateName:String = ""
-	// Needed to "de-bounce" controls, mainly necessary now for Android 4.1 Webview JavaScript bug:
-	val lastTimeAcutatedBySlot:ConcurrentMap[Int,Long] = new DfltConcHashMap[Int,Long]
   }
   
   val stateBySession:ConcurrentMap[String,SessionState] = new DfltConcHashMap[String,SessionState]
@@ -76,11 +74,17 @@ class LifterState {
   val activeSessions = new ArrayBuffer[String] with SynchronizedBuffer[String]
   var sessionsAwaitingStart = new ArrayBuffer[String] with SynchronizedBuffer[String]
   
+  // Needed to "de-bounce" controls, mainly necessary now for Android 4.1 Webview JavaScript bug
+  // This must *not* involve concurrent maps, as the debounce routine relies on its own synchronization strategy to work properly
+  val lastTimeAcutatedBySlot:Map[String, Map[Int,Long]] = new HashMap[String,Map[Int,Long]]
+  
   // Should only be called after clearAndInitializeState (and loading of the initial state into stateBySession(INITIAL_CONFIG_ID)) 
   def initializeSession(sessionId:String) {
 	stateBySession(sessionId) = getNewSessionState
 	// Add session to activeSessions list
 	if (!(activeSessions contains sessionId)) {activeSessions += sessionId}
+	// We need a new sub map for lastTimeAcutatedBySlot, which has to be kept separate from session state since it can't be a concurrent map
+	lastTimeAcutatedBySlot(sessionId) = new HashMap[Int,Long]
   }
   
   // New sessions need a state based on the special SessionState with the INITIAL_CONFIG_ID
@@ -108,6 +112,8 @@ class LifterState {
 	stateBySession.clear
 	stateBySession(INITIAL_CONFIG_ID) = new SessionState
 	globalLifterVariablesByName.clear
+	lastTimeAcutatedBySlot.clear
+	
   }
   
   def prepareSessionForNewConfig(sessionId:String) {
@@ -125,6 +131,7 @@ class LifterState {
 	// Session is no longer active...
 	activeSessions remove sessionId
 	stateBySession remove sessionId
+	lastTimeAcutatedBySlot remove sessionId
   }
   
 }

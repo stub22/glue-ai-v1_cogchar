@@ -54,6 +54,10 @@ package org.cogchar.lifter {
 	  
 	  def createUpdate = updateInfo
 	  
+	  // Case class for messaging ControlActor
+	  case class ControlChange(sessionId:String, slotNum:Int, markup:NodeSeq)
+	  
+	  // Case classes for messaging JavaScriptActor
 	  case class HtmlPageRequest(sessionId:String, pagePathOption:Option[String])
 	  case class SpeechOutRequest(sessionId:String, text:String)
 	  case class SpeechInRequest(sessionId:String, slotNum:Int)
@@ -61,7 +65,7 @@ package org.cogchar.lifter {
 	  case class ContinuousSpeechInStopRequest(sessionId:String)
 	  case class HtmlPageRefreshRequest(sessionId:String)
 	  
-	  def getNode(sessionId:String, controlId: Int): NodeSeq = {
+	  def getMarkup(sessionId:String, controlId: Int): NodeSeq = {
 		var nodeOut = NodeSeq.Empty
 		try {
 		  nodeOut = getSessionState(sessionId).controlXmlBySlot(controlId)
@@ -190,14 +194,14 @@ package org.cogchar.lifter {
 					  
 	  def setControl(sessionId: String, slotNum: Int, slotHtml: NodeSeq) {
 		getSessionState(sessionId).controlXmlBySlot(slotNum) = slotHtml 
-		updateListeners(controlId(sessionId, slotNum))
+		updateListeners(ControlChange(sessionId, slotNum, slotHtml))
 	  }
 	  
 	  def setControlsFromMap(sessionId:String) {
 		val slotIterator = getSessionState(sessionId).controlXmlBySlot.keysIterator
 		while (slotIterator.hasNext) {
 		  val nextSlot = slotIterator.next
-		  updateListeners(controlId(sessionId, nextSlot))
+		  updateListeners(ControlChange(sessionId, nextSlot, getSessionState(sessionId).controlXmlBySlot(nextSlot)))
 		}
 	  }							
 	  
@@ -232,8 +236,7 @@ package org.cogchar.lifter {
 	  // Maps controls with actions only (buttons) to action handlers
 	  def triggerAction(sessionId:String, id: Int) {
 		// Check last actuated time for this control, and ignore if it happened less than IGNORE_BOUNCE_TIME ago
-		val time = new Date().getTime()
-		val ignore = checkForBounce(sessionId, id, time)
+		val ignore = checkForBounce(sessionId, id)
 		if (!ignore) {
 		  if (getSessionState(sessionId).toggleControlStateBySlot contains id) {
 			// Really we shouldn't run toggle on the Actor's thread, so we'll do this.
@@ -251,11 +254,14 @@ package org.cogchar.lifter {
 	  
 	  val bounceCheckLock: Object = new Object()
 	  final val IGNORE_BOUNCE_TIME = 250 //ms
-	  def checkForBounce(sessionId:String, id:Int, time:Long): Boolean = {
+	  def checkForBounce(sessionId:String, id:Int): Boolean = {
 		bounceCheckLock.synchronized {
-		  val bounceMap = getSessionState(sessionId).lastTimeAcutatedBySlot
+		  val time = new Date().getTime()
+		  val bounceMap = theLifterState.lastTimeAcutatedBySlot(sessionId)
 		  var ignore = false
+		  //info("Checking for bounce with session " + sessionId + " and slot " + id + " time=" + time) // TEST ONLY
 		  if (bounceMap contains id) {
+			//info("Last time=" + bounceMap(id) + " diff=" + (time - bounceMap(id))) // TEST ONLY
 			if ((time - bounceMap(id)) < IGNORE_BOUNCE_TIME) {
 			  ignore = true;
 			  warn("Debouncing control " + id + " in session " + sessionId)
@@ -298,10 +304,6 @@ package org.cogchar.lifter {
 	  // I think Ident should include this method, but since it doesn't...
 	  def getUriPrefix(uri: Ident) : String = {
 		uri.getAbsUriString.stripSuffix(uri.getLocalName)
-	  }
-																	  
-	  def controlId(sessionId:String, controlId: Int): String = {
-		sessionId + "_" + controlId
 	  }
 	  
 	  var theMessenger: CogcharMessenger = null

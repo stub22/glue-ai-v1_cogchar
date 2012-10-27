@@ -47,7 +47,7 @@ package org.cogchar.lifter {
 		case req: SpeechInRequest if (req.sessionId == mySessionId) => {
 			partialUpdate(new JsCmd { 
 				// Put our oddball JS methods in a try block, so non-Proctor browsers are happy!
-				def toJsCmd = "try{Android.getSpeechInput(\"" + PageCommander.controlId(req.sessionId,req.slotNum) + "\");} catch(err) {}" 
+				def toJsCmd = "try{Android.getSpeechInput(\"" + controlId(req.sessionId,req.slotNum) + "\");} catch(err) {}" 
 			  })
 		  }
 		case req: HtmlPageRequest if (req.sessionId == mySessionId) => {
@@ -65,7 +65,7 @@ package org.cogchar.lifter {
 		  }
 		case req: ContinuousSpeechInStartRequest if (req.sessionId == mySessionId) => {
 			partialUpdate(new JsCmd { 
-				def toJsCmd = "try{Android.getContinuousSpeechInput(\"" + PageCommander.controlId(req.sessionId,req.slotNum) + "\");} catch(err) {}"
+				def toJsCmd = "try{Android.getContinuousSpeechInput(\"" + controlId(req.sessionId,req.slotNum) + "\");} catch(err) {}"
 			  })
 		  }
 		case req: ContinuousSpeechInStopRequest if (req.sessionId == mySessionId) => {
@@ -79,6 +79,10 @@ package org.cogchar.lifter {
 			  })
 		  }
 		case _ => // Do nothing for other IDs
+	  }
+	   
+	  def controlId(sessionId:String, controlId: Int): String = {
+		sessionId + "_" + controlId
 	  }
 	}
   }
