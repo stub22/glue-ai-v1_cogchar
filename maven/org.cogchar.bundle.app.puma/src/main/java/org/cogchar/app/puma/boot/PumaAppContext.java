@@ -351,6 +351,13 @@ public class PumaAppContext extends BasicDebugger {
 		// Do the actual updates on a new thread. That way we don't block the render thread. Much less intrusive, plus this way things
 		// we need to enqueue on main render thread will actually complete -  it must not be blocked during some of the update operations!
 		// This brings up an interesting point: we are probably doing far too much on the main render thread!
+		
+		/* Stu notes on 2012-10-28
+		 * As Ryan and I have discussed, these direct thread spawnings are not as good an approach as
+		 * submitting a Callable object to an existing thread.
+		 * 
+		 */
+		
 		logInfo("Updating config by request: " + request);
 		boolean success = true;
 		if (myUpdateInProgressFlag) {

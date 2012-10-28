@@ -47,9 +47,11 @@ object RepoClientTester {
 	
 	final val TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" 
 	
-	// Here are some other sheets that developers have been using, with this list
-	// pointing the way to the next layer of bootstrap integration via PumaContextMediator, et al.
-
+	// This value is now specified by applications using overrides of the PumaContextMediator.
+	// See, for example the Activator for the org.friendularity.bundle.demo.ccrk project.
+	
+	// Here are some other sheets that developers might use for unit testing.
+	// 
 	//final val TEST_REPO_SHEET_KEY = "0Ajj1Rnx7FCoHdDN2VFdVazMzRGNGY3BMQmk1TXZzUHc" // Biggs test sheet!
 	//final val TEST_REPO_SHEET_KEY = "0AlpQRNQ-L8QUdDNWQXpmSW9iNzROcHktZEJZdTJhY2c" // Workshop v010_004 test sheet
 	//final val TEST_REPO_SHEET_KEY = "0AlpQRNQ-L8QUdGx2RkhDX1VEWklrS256cEVOcy0yb2c" // Workshop v010_005 test sheet
