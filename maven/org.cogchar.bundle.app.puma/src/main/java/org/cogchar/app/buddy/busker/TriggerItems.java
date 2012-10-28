@@ -39,6 +39,10 @@ import org.slf4j.LoggerFactory;
 
 
 /**
+ * Contains all the trigger-"commands" currently available through V-World GUI
+ * (except for scene-triggers).    These triggers fire on either the systemContext
+ * (PumaContextCommandBox) or a particular character (PumaDualCharacter).
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 public class TriggerItems {
