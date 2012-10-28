@@ -18,16 +18,16 @@ package org.cogchar.bind.lift;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
+import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -35,7 +35,7 @@ import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
  */
 public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.LiftAmbassadorInterface, LiftAmbassador.inputInterface> {
 
-	private final static Logger theLogger = Logger.getLogger(LifterLifecycle.class.getName());
+	private final static Logger theLogger = LoggerFactory.getLogger(LifterLifecycle.class);
 	static final String LIFTER_ENTITY_TYPE = "WebappEntity";
 	private final static String rkrt = "urn:ftd:robokind.org:2012:runtime#";
 	private final static Ident LIFT_CONFIG_ROLE = new FreeIdent(rkrt + "lifterConf", "lifterConf");
@@ -84,9 +84,9 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 	@Override
 	protected void handleChange(String serviceId, Object dependency, Map<String, Object> availableDependencies) {
 		//super.handleChange(name, dependency, availableDependencies); //Needed?
-		theLogger.log(Level.INFO, "LifterLifecycle handling change to {0}", serviceId);
+		theLogger.info("LifterLifecycle handling change to {}, new dependency is: {}", serviceId, ((dependency == null)? "null" : "not null"));
 		LiftAmbassador myLiftAmbassador = LiftAmbassador.getLiftAmbassador();
-		if ((queryEmitterId.equals(serviceId)) && (dependency != null)) {
+		if ((queryEmitterId.equals(serviceId)) && (dependency != null) && (availableDependencies.get(globalConfigId) != null)) {
 			connectWebContent(myLiftAmbassador, (RepoClient) dependency,
 					(GlobalConfigEmitter.GlobalConfigService) availableDependencies.get(globalConfigId));
 		} else if ((globalConfigId.equals(serviceId)) && (dependency != null) && (availableDependencies.get(queryEmitterId) != null)) {
@@ -111,17 +111,17 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		List<Ident> webAppEntities = configService.getEntityMap().get(LIFTER_ENTITY_TYPE);
 		// Not sure what multiple web app entities would mean right now, so for now we'll assume there should be only one
 		if (webAppEntities.size() > 1) {
-			theLogger.warning("Multiple Web App Entities detected in global config! Ignoring all but the first");
+			theLogger.warn("Multiple Web App Entities detected in global config! Ignoring all but the first");
 		}
 		if (webAppEntities.isEmpty()) {
-			theLogger.warning("Could not find a specified web app entity, cannot create lift config");
+			theLogger.warn("Could not find a specified web app entity, cannot create lift config");
 		} else {
 			Ident liftConfigQGraph;
 			// Get the graph for the LiftConfig
 			try {
 				liftConfigQGraph = configService.getErgMap().get(webAppEntities.get(0)).get(LIFT_CONFIG_ROLE);
 			} catch (Exception e) {
-				theLogger.warning("Could not retrieve graph for lift config");
+				theLogger.warn("Could not retrieve graph for lift config");
 				return;
 			}
 			// Provide queryInterface to LiftAmbassador so it can reload lift configs
@@ -134,7 +134,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 			try {
 				qGraph = configService.getErgMap().get(webAppEntities.get(0)).get(GENERAL_CONFIG_ROLE);
 			} catch (Exception e) {
-				theLogger.warning("Could not retrieve graph for general config");
+				theLogger.warn("Could not retrieve graph for general config");
 				return;
 			}
 			// Load "chat app" config
@@ -144,7 +144,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 			try {
 				qGraph = configService.getErgMap().get(webAppEntities.get(0)).get(USER_ACCESS_CONFIG_ROLE);
 			} catch (Exception e) {
-				theLogger.warning("Could not retrieve graph for user access config");
+				theLogger.warn("Could not retrieve graph for user access config");
 				return;
 			}
 			// Load user access config
@@ -153,7 +153,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 				uac = new UserAccessConfig(qi, qGraph);
 				la.storeUserAccessConfig(uac);
 			} catch (Exception e) {
-				theLogger.log(Level.WARNING,"Error attempting to get user access config; it may not be defined. "
+				theLogger.warn("Error attempting to get user access config; it may not be defined. "
 						+ "Will use startLiftConfig defined in Lifter resource instead of login page for new sessions. " 
 						+ "Error is: ", e);
 			}
@@ -180,11 +180,11 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		SolutionList liftStartConfSL = qi.queryIndirectForAllSolutions(LiftCN.START_CONFIG_QUERY_URI, graphIdent);
 		List<Ident> startupConfigList = sh.pullIdentsAsJava(liftStartConfSL, LiftCN.CONFIG_VAR_NAME);
 		if (startupConfigList.size() < 1) {
-			theLogger.severe("Did not find a startup liftConfig! Web app will not function.");
+			theLogger.error("Did not find a startup liftConfig! Web app will not function.");
 		} else {
 			startupConfig = startupConfigList.get(0);
 			if (startupConfigList.size() > 1) {
-				theLogger.log(Level.WARNING, "Found more than one startup liftConfig; using {0} and ignoring the rest", startupConfig);
+				theLogger.warn("Found more than one startup liftConfig; using {} and ignoring the rest", startupConfig);
 			}
 		}
 		return startupConfig;
