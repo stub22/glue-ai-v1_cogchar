@@ -29,7 +29,9 @@ import org.cogchar.blob.emit.RepoClientTester;
 import org.cogchar.blob.emit.RepoClientTester.CommandRec;
 
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
-
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.model.databalls.BallBuilder;
+import org.cogchar.render.model.humanoid.HumanoidFigure;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,77 +42,49 @@ import org.slf4j.LoggerFactory;
  */
 public class TriggerItems {
 	
-	public static class StopAndReset extends TriggerItem {
-
+	public static class SceneMsg extends TriggerItem {
+		public String sceneInfo = "none";
+		@Override public void fire(CogcharScreenBox targetBox) {
+			logInfo("trigger[" + toString() + "] sending [" + sceneInfo + " to " + targetBox.toString());
+			// PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+			// pdc.sayText("The time is now, " + System.currentTimeMillis());
+		}
+	}	
+	
+	public static abstract class DualCharTI extends TriggerItem {
+		abstract void fireOnPDC(PumaDualCharacter pdc);
 		@Override public void fire(CogcharScreenBox targetBox) {
 			logFiring(targetBox);
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+			fireOnPDC(pdc);
+		}
+	}	
+	public static class StopAndReset extends DualCharTI {
+		@Override public void fireOnPDC(PumaDualCharacter pdc) {
 			pdc.stopAndReset();
 		}
 	}
-	public static class StopResetAndRecenter extends TriggerItem {
-
-		@Override public void fire(CogcharScreenBox targetBox) {
-			logFiring(targetBox);
-			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+	public static class StopResetAndRecenter extends DualCharTI {
+		@Override public void fireOnPDC(PumaDualCharacter pdc) {
 			pdc.stopResetAndRecenter();
 		}
 	}	
-
-	public static class DangerYoga extends TriggerItem {
-
-		@Override public void fire(CogcharScreenBox targetBox) {
-			logFiring(targetBox);
-			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+	public static class DangerYoga extends DualCharTI {
+		@Override public void fireOnPDC(PumaDualCharacter pdc) {
 			pdc.playBuiltinAnimNow(BuiltinAnimKind.BAK_DANGER_YOGA);
 		}
 	}
-
-	public static class SayTheTime extends TriggerItem {
-
-		@Override public void fire(CogcharScreenBox targetBox) {
-			logFiring(targetBox);
-			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+	public static class SayTheTime extends DualCharTI {
+		@Override public void fireOnPDC(PumaDualCharacter pdc) {
 			pdc.sayText("The time is now, " + System.currentTimeMillis());
 		}
 	}
-	
-	public static class ResetMainCamera extends TriggerItem {
-		@Override public void fire(CogcharScreenBox targetBox) {
-			logFiring(targetBox);
-			PumaContextCommandBox pccb = (PumaContextCommandBox) targetBox;
-			pccb.resetMainCameraLocation();
-		}
-		
-	}
-	
-/*	Likely doing away with this class in favor of PumaAppContext.updateConfigByRequest --  see additional
- *	commentary in PumaAppContext and HumanoidPuppetActions
-	public static class UpdateBonyConfig extends TriggerItem {
+
+	public static class ReloadBehavior extends DualCharTI {
 
 		public ClassLoader myOptResourceClassLoader;
 
-		@Override public void fire(DummyBox targetBox) {
-			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
-			// Use of bonyConfigPaths seems to be going away in the brave new query-config era
-			//String bonyRdfConfigPath = pdc.myUpdateBonyRdfPath;
-			//logInfo("Updating bony config using path[" + bonyRdfConfigPath + "] for char [" + pdc + "]");
-			logInfo("Updating bony config for char [" + pdc + "]");
-			//if ((pdc != null) && (bonyRdfConfigPath != null)) {
-				//pdc.updateBonyConfig(bonyRdfConfigPath, myOptResourceClassLoader);
-			if (pdc != null)  {
-				pdc.updateBonyConfig();
-			}
-		}
-	}
-*/
-
-	public static class ReloadBehavior extends TriggerItem {
-
-		public ClassLoader myOptResourceClassLoader;
-
-		@Override public void fire(CogcharScreenBox targetBox) {
-			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+		@Override public void fireOnPDC(PumaDualCharacter pdc) {
 
 			if (pdc != null) {
 				try {
@@ -129,68 +103,112 @@ public class TriggerItems {
 		}
 	}
 
-	public static class SceneMsg extends TriggerItem {
-
-		public String sceneInfo = "none";
-
-		@Override public void fire(CogcharScreenBox targetBox) {
-			logInfo("trigger[" + toString() + "] sending [" + sceneInfo + " to " + targetBox.toString());
-			// PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
-			// pdc.sayText("The time is now, " + System.currentTimeMillis());
-		}
-	}
-	public static class UsePermAnims extends TriggerItem {
-
-		@Override public void fire(CogcharScreenBox targetBox) {
-			logFiring(targetBox);
-			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+	public static class UsePermAnims extends DualCharTI {
+		@Override public void fireOnPDC(PumaDualCharacter pdc) {
 			pdc.usePermAnims();
 		}
 	}
-	public static class UseTempAnims extends TriggerItem {
-
-		@Override public void fire(CogcharScreenBox targetBox) {
-			logFiring(targetBox);
-			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
+	public static class UseTempAnims extends DualCharTI {
+		@Override public void fireOnPDC(PumaDualCharacter pdc) {
 			pdc.useTempAnims();
 		}
 	}
-	/**
-	 * ./maven/org.cogchar.lib.render/src/main/j
-estConfigReload("WorldConfig");
-./maven/org.cogchar.lib.render/src/main/j
-estConfigReload("BoneRobotConfig");
-./maven/org.cogchar.lib.render/src/main/j
-estConfigReload("AllHumanoidConfig");
-	 */
-	
+
 	protected static boolean forceFreshDefaultMainConfig = false;
 	
-	
-	public static class UpdateWorldConfig extends TriggerItem {
+	public static abstract class CtxCmdBoxTI extends TriggerItem {
+		abstract void fireOnPCCB(PumaContextCommandBox pccb);
 		@Override public void fire(CogcharScreenBox targetBox) {
 			logFiring(targetBox);
 			PumaContextCommandBox pccb = (PumaContextCommandBox) targetBox;
+			fireOnPCCB(pccb);
+		}
+	}
+	public static class ResetMainCamera extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			pccb.resetMainCameraLocation();
+			// ctx.setDefaultCameraLocation();
+		}
+	}	
+	public static class UpdateWorldConfig extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
 			pccb.updateConfigByRequest("WorldConfig", forceFreshDefaultMainConfig);
 		}
 	}
-	public static class UpdateBoneRobotConfig extends TriggerItem {
-		@Override public void fire(CogcharScreenBox targetBox) {
-			logFiring(targetBox);
-			PumaContextCommandBox pccb = (PumaContextCommandBox) targetBox;
+	public static class UpdateBoneRobotConfig extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
 			pccb.updateConfigByRequest("BoneRobotConfig", forceFreshDefaultMainConfig);
 		}
 	}
-	public static class UpdateAllHumanoidConfig extends TriggerItem {
-		@Override public void fire(CogcharScreenBox targetBox) {
-			logFiring(targetBox);
-			PumaContextCommandBox pccb = (PumaContextCommandBox) targetBox;
+	public static class UpdateAllHumanoidConfig extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
 			pccb.updateConfigByRequest("AllHumanoidConfig", forceFreshDefaultMainConfig);
 		}
 	}
-	
-	
-	
+	public static class ToggleSkeletonHilite extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			pccb.getFigureManager().toggleDebugSkeletons();
+		}		
+	}
+	public static class Shoot extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			pccb.getGameFeatureAdapter().cmdShoot();
+		}		
+	}
+	public static class Boom extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			pccb.getGameFeatureAdapter().toggleAnnoyingStuff();
+		}		
+	}
+	public static class ShowResourceBalls extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			BallBuilder.getTheBallBuilder().runBalls();
+		}		
+	}	
+	public static class PickBalls extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			BallBuilder.getTheBallBuilder().pick();
+		}		
+	}	
+	public static class BiggerProjectile extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			pccb.getGameFeatureAdapter().getProjectileMgr().cmdBiggerProjectile();
+		}		
+	}	
+
+	public static class SmallerProjectile extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			pccb.getGameFeatureAdapter().getProjectileMgr().cmdSmallerProjectile();
+		}		
+	}
+	public static class ToggleKinMode extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			HumanoidFigure hw = pccb.getSinbad();
+			if (hw != null) {
+				hw.togglePhysicsKinematicModeEnabled();
+			}
+		}		
+	}
+	public static class StandUp extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			HumanoidFigure hw = pccb.getSinbad();
+			if (hw != null) {
+				hw.makeSinbadStandUp();
+			}
+		}		
+	}
+	public static class Boogie extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			HumanoidFigure hw = pccb.getSinbad();
+			if (hw != null) {
+				// This is an Ogre skeletal animation run by JME3, bypassing our figure-anim system.
+				hw.runSinbadBoogieAnim();
+			}
+		}		
+	}
+ 
+
+
 	private static Logger theLogger = LoggerFactory.getLogger(TriggerItems.class);
 	private static Logger getLogger() { 
 		return theLogger;

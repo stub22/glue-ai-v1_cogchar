@@ -115,10 +115,6 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		Ident	behavGraphID = rc.makeIdentForQName("hrk:behav_file_44");
 		loadBehaviorConfigFromRepo(rc, chanGraphID, behavGraphID, clearCachesFirst);
 		
-		if (vWorldMapper != null) {
-			// ToDo:  Remove this stuff in favor of BoxSpace/CommandSpace setup.
-			vWorldMapper.registerSpecialInputTriggers(this);
-		}
 		startTheater();
 	}
 	public void loadBehaviorConfigFromTestFile(boolean clearCachesFirst) throws Throwable {
