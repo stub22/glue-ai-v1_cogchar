@@ -25,6 +25,18 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 /**
+ * This class is intended to be the "public" API to the PUMA "system",
+ * for use from direct commands sent by GUIs or network.  
+ * 
+ * An instance of this object is referred to in our repositories, as 
+ * registered with the URI returned by an application's  
+ * PumaContextMediator.getSysContextURI() method.
+ * 
+ * Having "public" methods on this object helps us to keep more
+ * of PumaAppContext's methods "protected", and also keep track
+ * in one place of what we're officially "exposing" to the command 
+ * layer.
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 
