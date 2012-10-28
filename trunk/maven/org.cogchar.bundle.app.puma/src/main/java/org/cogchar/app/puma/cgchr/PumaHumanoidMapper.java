@@ -102,7 +102,7 @@ public class PumaHumanoidMapper extends BasicDebugger {
 	 * @return true  if the "boneRobot" is "OK".  That means it is animatable, but it may or may not have a VWorld humanoid figure.
 	 * @throws Throwable 
 	 */
-	protected boolean initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc, BehaviorConfigEmitter behavCE) throws Throwable {
+	protected boolean initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc, BehaviorConfigEmitter behavCE, List<ClassLoader> clsForRKConf) throws Throwable {
 
 		if (brc != null) {
 			// This creates our ModelRobot instance, and calls registerAndStart() in the RobotServiceContext base class.
@@ -110,6 +110,8 @@ public class PumaHumanoidMapper extends BasicDebugger {
 			if (behavCE != null) {
 				// This gives us an animation triggering context, connecting behavior system to animation system.
 				myRAC = new RobotAnimContext(myCharIdent, behavCE);
+				// Setup classLoaders used to load animations
+				myRAC.setResourceClassLoaders(clsForRKConf);
 				// Connect the triggering RobotAnimContext to the running model robot.
 				return myRAC.initConn(myMBRSC);
 			}

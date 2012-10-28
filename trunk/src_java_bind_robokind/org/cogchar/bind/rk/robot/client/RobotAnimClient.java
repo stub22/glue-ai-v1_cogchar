@@ -42,6 +42,7 @@ import org.robokind.api.common.playable.PlayState;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.motion.Joint;
 import org.robokind.api.motion.Robot;
+import org.robokind.impl.animation.xml.AnimationXMLReader;
 
 
 
@@ -122,11 +123,26 @@ public class RobotAnimClient extends BasicDebugger {
                 return null;
             }
             return reader.readAnimation(filepath);
-        } catch(Exception ex){
-            ex.printStackTrace();
+        } catch(Throwable t){
+             getLogger().error("Problem reading animation from {} ", filepath, t);
             return null;
         }
     }
+	public Animation readAnimationFromHC(HierarchicalConfiguration hc) { 
+		return AnimationXMLReader.readAnimation(hc);
+	}
+	public Animation readAnimationFromURL(String urlText) {
+		Animation anim = null;
+		try {
+			HierarchicalConfiguration hc = readXmlConfigUrl(urlText);
+			if (hc != null) {
+				anim = readAnimationFromHC(hc);
+			}
+		} catch (Throwable t) {
+			getLogger().error("Problem reading animation from {} ", urlText, t);
+		}
+		return anim;
+	}
 	/**
 	 * http://commons.apache.org/configuration/apidocs/org/apache/commons/configuration/XMLConfiguration.html
 	 * @param xmlConfFilePath
