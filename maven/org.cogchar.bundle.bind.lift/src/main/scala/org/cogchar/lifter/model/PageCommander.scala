@@ -103,13 +103,16 @@ package org.cogchar.lifter {
 	  def renderInitialControls {
 		  theLifterState.lifterInitialized = true
 		  // If this is a restart on config change, activeSessions will have sessions which need to be re-initialized
-		  theLifterState.activeSessions.foreach(sessionId => initializeSession(sessionId))
-		  theLifterState.sessionsAwaitingStart.foreach(sessionId => {
-			  initializeSession(sessionId);
-			  updateListeners(HtmlPageRequest(sessionId, Some(getCurrentTemplate(sessionId))))
-			  setControlsFromMap(sessionId)
-			})
+		  theLifterState.activeSessions.foreach(sessionId => initializeSessionAndRedirectToNewTemplate(sessionId))
+		  // If it's an initial startup, there may be sessions in sessionsAwaitingStart
+		  theLifterState.sessionsAwaitingStart.foreach(sessionId => initializeSessionAndRedirectToNewTemplate(sessionId))
 		  theLifterState.sessionsAwaitingStart.clear
+	  }
+	  
+	  def initializeSessionAndRedirectToNewTemplate(sessionId:String) {
+		initializeSession(sessionId);
+		updateListeners(HtmlPageRequest(sessionId, Some(getCurrentTemplate(sessionId))))
+		setControlsFromMap(sessionId)
 	  }
 	  
 	  def requestStart(sessionId:String) {
