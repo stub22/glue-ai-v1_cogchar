@@ -185,9 +185,9 @@ public class PumaAppContext extends BasicDebugger {
 		bs.addBox(humCfg.myCharIdent, pdc);
 		pdc.absorbContext(pcMediator);
 		RepoClient rc = getOrMakeMainConfigRC();
-		ClassLoader clForRKJG = getSingleClassLoaderOrNull(ResourceFileCategory.RESFILE_RK_CONF);
+		List<ClassLoader> rkConfCLs = myRegClient.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
 		pdc.initVWorldHumanoidFigure(rc, graphIdentForBony, humCfg);
-		pdc.setupCharacterBindingToRobokind(bunCtx, rc, graphIdentForBony, humCfg, clForRKJG);
+		pdc.setupCharacterBindingToRobokind(bunCtx, rc, graphIdentForBony, humCfg, rkConfCLs);
 		PumaConfigManager pcm = getConfigManager();
 		pdc.setupAndStartBehaviorTheater(pcm, vWorldMapper);		
 		return pdc;

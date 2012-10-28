@@ -39,7 +39,8 @@ import org.robokind.api.motion.utils.RobotUtils;
 
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
-
+import java.net.URL;
+import org.cogchar.platform.util.ClassLoaderUtils;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -57,12 +58,16 @@ public class RobotAnimContext extends BasicDebugger {
 	private List<AnimationJob> myJobsInStartOrder = new ArrayList<AnimationJob>();
 	private TriggeringChannel myTriggeringChannel;
 	private BehaviorConfigEmitter myBehaviorCE;
+	
+	private	List<ClassLoader>	myResourceCLs = new ArrayList<ClassLoader>();
 
 	public RobotAnimContext(Ident charIdent, BehaviorConfigEmitter behavCE) {
 		myCharIdent = charIdent;
 		myBehaviorCE = behavCE;
 	}
-
+	public void setResourceClassLoaders(List<ClassLoader>  resCLs) {
+		myResourceCLs = resCLs;
+	}
 	public boolean initConn(RobotServiceContext robotSvcContext) {
 		try {
 			BundleContext osgiBundleCtx = robotSvcContext.getBundleContext();
@@ -162,16 +167,24 @@ public class RobotAnimContext extends BasicDebugger {
 
 		@Override protected void attemptMediaStartNow(Media.Text m) throws Throwable {
 			String animPathStr = m.getFullText();
-			String fullPath = null;
-			// Temporarily we always use the temp path, because it's just a file and we don't have to turn
-			// the resource lookup into a URL.
-			//if (myUseTempAnimsFlag) {
-			fullPath = myBehaviorCE.getRKAnimationTempFilePath(animPathStr);
-			//} else {
-			//	fullPath = myBehaviorCE.getRKAnimationPermPath(animPathStr);
-			//}
-			getLogger().info("Attempting to start animation at relative path[" + fullPath + "]");
-			Animation anim = myAnimClient.readAnimationFromFile(fullPath);
+			Animation anim = null;
+			URL animResURL = ClassLoaderUtils.findResourceURL(animPathStr, myResourceCLs);
+			if (animResURL != null) {
+				getLogger().warn("Found Animation Resource URL: " + animResURL);
+				String aruString = animResURL.toExternalForm();
+				anim = myAnimClient.readAnimationFromURL(aruString);
+			} else {
+				String fullPath = null;
+				// Temporarily we always use the temp path, because it's just a file and we don't have to turn
+				// the resource lookup into a URL.
+				//if (myUseTempAnimsFlag) {
+				fullPath = myBehaviorCE.getRKAnimationTempFilePath(animPathStr);
+				//} else {
+				//	fullPath = myBehaviorCE.getRKAnimationPermPath(animPathStr);
+				//}
+				getLogger().info("Attempting to start animation at relative path[" + fullPath + "]");
+				anim = myAnimClient.readAnimationFromFile(fullPath);
+			}
 			if (anim != null) {
 				startFullAnimationNow(anim);
 			}

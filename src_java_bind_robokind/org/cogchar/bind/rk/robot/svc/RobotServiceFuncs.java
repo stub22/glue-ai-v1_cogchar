@@ -43,6 +43,9 @@ import org.slf4j.LoggerFactory;
 
 import static org.cogchar.bind.rk.osgi.RobokindBindingConfigUtils.*;
 import static org.cogchar.bind.rk.osgi.ServiceConfigUtils.*;
+
+import org.cogchar.platform.util.ClassLoaderUtils;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -120,6 +123,14 @@ public class RobotServiceFuncs {
 			aJointGroupLifecycle.dispose();
 		}
 		startedJointGroupLifecycles.clear();
+	}
+	public static File copyJointGroupFile(String tgtFilePath, String jgFullPath, List<ClassLoader> possibleCLs) {
+		ClassLoader cl = ClassLoaderUtils.findResourceClassLoader(jgFullPath, possibleCLs);
+		if (cl != null) {
+			return copyJointGroupFile(tgtFilePath, jgFullPath, cl);
+		} else {
+			return null;
+		}
 	}
 	public static File copyJointGroupFile(String tgtFilePath, String jgFullPath, ClassLoader jgClassLoader) {
 		File outputFile = null;
