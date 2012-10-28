@@ -137,6 +137,9 @@
 			via SLF4J!), if they choose.
 			
 			However, there is no SLF4J binding without the above dependency.
+			Also, in an OSGi environment, our Log4J dep will not pass through
+			unless also declared by our wrapping bundle (i.e. o.c.bundle.core,
+			which in fact does *not* declare this dep, at present).  
 			
 			To see Log4J output, one also needs to see to configuration, e.g. by 
 			using "BasicConfigurator" or "forceLog4JConfig".
