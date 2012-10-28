@@ -58,11 +58,7 @@ static Logger theLogger = LoggerFactory.getLogger(VW_InputBindingFuncs.class);
 		return theLogger;
 	}
 	final public static int NULL_KEY = -100; // This input not mapped to any key; we'll use it in the event of not finding one from config
-//	private static int getKey(KeyBindingConfigItem mapping) {
-//		int keyInput = NULL_KEY; 
-//		String keyName = mapping.myBoundKeyName;
 
-	
 	public static int getKeyConstantForName(String keyName) {
 		int keyConstant = NULL_KEY; 
 		try {
@@ -155,7 +151,9 @@ static Logger theLogger = LoggerFactory.getLogger(VW_InputBindingFuncs.class);
 		theOpenGLInputDirector.clearKeyBindingsAndHelpScreen();
 		
 		theOpenGLInputDirector.setupKeyBindingsAndHelpScreen();
-
+	}
+	public static VW_HelpScreenMgr getHelpScreenMgr() { 
+		return theOpenGLInputDirector.getHelpScreenMgr();
 	}
 	
 }

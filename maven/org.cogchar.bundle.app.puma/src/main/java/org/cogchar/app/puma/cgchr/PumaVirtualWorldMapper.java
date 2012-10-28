@@ -36,6 +36,11 @@ import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.render.model.databalls.BallBuilder;
 
+import org.cogchar.render.sys.input.VW_HelpScreenMgr;
+import org.cogchar.render.sys.input.VW_InputDirector;
+import org.cogchar.render.sys.input.VW_InputBindingFuncs;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -170,5 +175,9 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 	public void connectHrkindVisualizationContent(ClassLoader hrkindResourceCL) {
 		BallBuilder.getTheBallBuilder().setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
 	}
-	
+	public void toggleHelpScreenDisplay() { 
+		VW_HelpScreenMgr hsm = VW_InputBindingFuncs.getHelpScreenMgr();
+		RenderRegistryClient rrc = myHRC.getRenderRegistryClient();
+		hsm.toggleHelpTextDisplay(rrc);
+	}
 }

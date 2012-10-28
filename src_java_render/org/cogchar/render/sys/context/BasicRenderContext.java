@@ -148,13 +148,7 @@ public abstract class BasicRenderContext extends BasicRenderRegistryClientFinder
 	 * Override this method to place your *initial* content into our context's OpenGL virtual world.
 	 */
 	abstract public void postInitLaunch();
-/*
-	protected void runAnyTaskSafelyUntilComplete(Task t) throws Throwable {
-		CogcharRenderTask launcherCRT = CogcharRenderTask.makeRenderTaskFromAny(t);
-		runTaskSafelyUntilComplete(launcherCRT);
-	}
-	* 
-	*/ 
+
 	public void runPostInitLaunchOnJmeThread() throws Throwable {
 		CallableTask ct = new BasicCallableRenderTask(this) {
 			@Override public void performWithClient(RenderRegistryClient rrc) throws Throwable {

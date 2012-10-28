@@ -64,7 +64,6 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 	private	HumanoidFigureManager	myHFM;
 	private BonyGameFeatureAdapter	myGameFeatureAdapter;
-	// private UpdateInterface			myUpdateInterface;
 
 	public HumanoidRenderContext(RenderConfigEmitter rce) {
 		super(rce);

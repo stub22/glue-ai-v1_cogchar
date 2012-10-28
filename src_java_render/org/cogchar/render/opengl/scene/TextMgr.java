@@ -70,13 +70,20 @@ public class TextMgr extends RenderRegistryAware {
 		String commandList = "";
 		String commandLine;
 		int longestLineLength = 0;
-		KeyNames keyNamesConverter = new KeyNames(); // You'd think they would have made this static...
+		KeyNames keyNamesConverter = new KeyNames(); 
 		for (Map.Entry<String, Integer> entry : keyBindingMap.entrySet()) {
-			commandLine = entry.getKey() + ": " + keyNamesConverter.getName(entry.getValue()) + "\n";
-			if (commandLine.length() > longestLineLength) {
-				longestLineLength = commandLine.length();
+			String entryKey = entry.getKey();
+			Integer entryVal = entry.getValue();
+			if ((entryVal != null) && (entryVal >= 0)) {
+				String convertedName = keyNamesConverter.getName(entryVal);
+				commandLine = entryKey + ": " + convertedName + "\n";
+				if (commandLine.length() > longestLineLength) {
+					longestLineLength = commandLine.length();
+				}
+				commandList = commandList + commandLine;
+			} else {
+				getLogger().warn("Cannot make helpText for key={}, val={}", entryKey, entryVal);
 			}
-			commandList = commandList + commandLine;
 		}
 		BitmapText bt = getScaledBitmapText(commandList, scale);
 		// Sets offset to make sure text doesn't extend past right edge of screen - the last "fudge factors" might not want to be hard coded

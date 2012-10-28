@@ -15,6 +15,8 @@
  */
 
 package org.cogchar.app.puma.boot;
+
+import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.platform.trigger.CogcharScreenBox;
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
@@ -53,5 +55,7 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 		HumanoidFigureManager hfm = getFigureManager();
 		return hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
 	}	
-	
+	public PumaVirtualWorldMapper getVWM() { 
+		return myPAC.getOrMakeVWorldMapper();
+	}
 }

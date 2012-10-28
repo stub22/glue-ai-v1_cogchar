@@ -108,7 +108,7 @@ public class RobotAnimClient extends BasicDebugger {
 			player.removeAnimationJob(aj);
 			return true;
 		} else {
-			logWarning("Could not 'COMPLETE' animationJob, so not removing it: [" + aj + "]");
+			getLogger().warn("Could not 'COMPLETE' animationJob, so not removing it: [" + aj + "]");
 			return false;
 		}
 	}
@@ -137,9 +137,9 @@ public class RobotAnimClient extends BasicDebugger {
         try{
             config = new XMLConfiguration(xmlConfFilePath);
         }catch (ConfigurationException t){
-            logWarning("Cannont open Robokind animation XML  file [" + xmlConfFilePath + "]", t);
+            getLogger().warn("Cannont open Robokind animation XML  file [" + xmlConfFilePath + "]", t);
         }catch(Exception t){
-            logError("Error reading Robokind animation XML  file  [" + xmlConfFilePath + "]", t);
+            getLogger().error("Error reading Robokind animation XML  file  [" + xmlConfFilePath + "]", t);
         }		
 		return config;
 	}
@@ -150,9 +150,9 @@ public class RobotAnimClient extends BasicDebugger {
 			URL url = new URL(xmlConfUrl);
             config = new XMLConfiguration(url);
         }catch (ConfigurationException t){
-            logWarning("Cannont open Robokind animation XML URL [" + xmlConfUrl  + "]", t);
+            getLogger().warn("Cannont open Robokind animation XML URL [" + xmlConfUrl  + "]", t);
         }catch(Exception t){
-            logError("Error reading Robokind animation XML URL [" + xmlConfUrl + "]", t);
+            getLogger().error("Error reading Robokind animation XML URL [" + xmlConfUrl + "]", t);
         }		
 		return config;
 	}	
