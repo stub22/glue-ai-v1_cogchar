@@ -51,6 +51,7 @@ import org.cogchar.impl.perform.FancyTextChan;
 
 import org.cogchar.impl.trigger.FancyTriggerFacade;
 import org.osgi.framework.ServiceRegistration;
+import java.util.List;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -233,18 +234,14 @@ public class PumaDualCharacter extends CogcharScreenBox {
 	
 
 	public boolean setupCharacterBindingToRobokind(BundleContext bunCtx, RepoClient rc, Ident graphIdentForBony, 
-					HumanoidConfig hc, ClassLoader clForRKJG) {
+					HumanoidConfig hc, List<ClassLoader> clsForRKConf) {
 		Ident charIdent = getCharIdent();
 		getLogger().debug("Setup for {} using graph {} and humanoidConf {}", new Object[]{charIdent, graphIdentForBony, hc});
 		try {
 			BoneCN bqn = new BoneCN();
-			boolean connectedOK = connectBonyCharToRobokindSvcs(bunCtx, graphIdentForBony, rc, bqn);
+			boolean connectedOK = connectBonyCharToRobokindSvcs(bunCtx, graphIdentForBony, rc, bqn, clsForRKConf);
 			if (connectedOK) {
-				if (clForRKJG != null) {
-					setupRobokindJointGroup(hc.myJointConfigPath, clForRKJG);				
-				} else {
-					getLogger().warn("No RK classLoader, cannot setup JointGroup for {}", charIdent);
-				}
+				setupRobokindJointGroup(hc.myJointConfigPath, clsForRKConf);				
 				connectSpeechOutputSvcs(bunCtx);
 				return true;
 			} else {
@@ -260,12 +257,12 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		boolean vwHumOK = myHumoidMapper.initVWorldHumanoid(qi, qGraph, hc);
 		return vwHumOK;
 	}
-	private boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, RepoClient qi, BoneCN bqn) throws Throwable {
+	private boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
 		// We useta read from a TTL file with: 	boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharIdent, qGraph, bqn); 	
 		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
 		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
-		boolean boneRobotOK = myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf, myBehaviorCE);
+		boolean boneRobotOK = myHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf, myBehaviorCE, clsForRKConf);
 		if (boneRobotOK) {
 			// This does nothing if there is no vWorld, or no human figure for this char in the vWorld.
 			myHumoidMapper.connectToVirtualChar();
@@ -278,10 +275,10 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		}
 		return boneRobotOK;
 	}
-	private void setupRobokindJointGroup(String jgFullPath, ClassLoader clForRK) throws Throwable {
+	private void setupRobokindJointGroup(String jgFullPath, List<ClassLoader> clsForRKConf) throws Throwable {
 		//Ident chrIdent = pdc.getCharIdent();
 		String tgtFilePath = getNickName() + "temporaryJointGroupResource.xml";
-		File jgConfigFile = RobotServiceFuncs.copyJointGroupFile(tgtFilePath, jgFullPath, clForRK);
+		File jgConfigFile = RobotServiceFuncs.copyJointGroupFile(tgtFilePath, jgFullPath, clsForRKConf);
 
 		if (jgConfigFile != null) {
 			PumaHumanoidMapper phm = getHumanoidMapper();

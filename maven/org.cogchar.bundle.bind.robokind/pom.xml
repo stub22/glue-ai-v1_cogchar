@@ -79,7 +79,7 @@
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.animation</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>		
+		</dependency>				
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.vision</artifactId>
@@ -114,10 +114,11 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<!-- Needed at compile time for AnimationXMLReader -->			
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.impl.animation</artifactId>
 			<version>${robokind.version}</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
 		</dependency>		
 	</dependencies>
 
