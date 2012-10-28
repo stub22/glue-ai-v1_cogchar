@@ -83,7 +83,7 @@ package org.cogchar.lifter {
 		def process(result: String): JsCmd = {
 		  info("ListBox says option number " + result + " on formId " + formId + " is selected in session " + sessionId + ".")
 		  //SetHtml(listBoxInstanceTitle, Text(ListBox.responseText)) // We'll leave the title the same for the demo
-		  PageCommander.multiSelectControlActionMapper(sessionId, formId, result.toInt)
+		  PageCommander ! PageCommander.ControlMultiSelect(sessionId, formId, result.toInt)
 		}
 
 		S.session match {

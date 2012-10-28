@@ -31,15 +31,13 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.view._
 	import org.cogchar.bind.lift._
 	import scala.collection.JavaConverters._
-	import concurrent.ops._
 	// import org.cogchar.platform.trigger.CogcharActionBinding
 	
 	// What do we think about this being an object and not a class?
 	// It appears to be standard practice for LiftActors which provide features to all sessions
 	// to be singleton Objects.
 	// We might eventually want parts of PageCommander to be performed via a class of 
-	// actors with an instance of that class created for each session. (PageCommander is currently acting as an actor
-	// but also in some un-Actor-like ways.)
+	// actors with an instance of that class created for each session.
 	object PageCommander extends LiftActor with ListenerManager with Logger {
 	  
 	  private var theLiftAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods
@@ -64,6 +62,11 @@ package org.cogchar.lifter {
 	  case class ContinuousSpeechInStartRequest(sessionId:String, slotNum:Int)
 	  case class ContinuousSpeechInStopRequest(sessionId:String)
 	  case class HtmlPageRefreshRequest(sessionId:String)
+	  
+	  // Case classes for controls to message back into PageCommander
+	  case class ControlAction(sessionId:String, slotNum:Int)
+	  case class ControlTextInput(sessionId:String, slotNum:Int, text:Array[String])
+	  case class ControlMultiSelect(sessionId:String, slotNum:Int, subControl:Int)
 	  
 	  def getMarkup(sessionId:String, controlId: Int): NodeSeq = {
 		var nodeOut = NodeSeq.Empty
@@ -207,30 +210,9 @@ package org.cogchar.lifter {
 	  
 	  def handleAction(sessionId:String, formId:Int, input:Array[String]) {
 		//info("Handling action: " + getSessionState(sessionId).controlConfigBySlot(formId).action) // TEST ONLY
-		spawn { // A new thread to handle actions to make sure we don't block Ajax handling
-		  // Eventually this thread will no longer be needed since controls should call into PageCommander as an actor
-		  firstActionHandler.processHandler(theLifterState, sessionId, formId, 
+		firstActionHandler.processHandler(theLifterState, sessionId, formId, 
 											getSessionState(sessionId).controlConfigBySlot(formId), input)
-		}
 	  }
-	    
-	  // Maps controls with multiple possible selections to action handlers
-	  def multiSelectControlActionMapper(sessionId:String, formId:Int, subControl:Int) {
-		val input:Array[String] = Array(ActionStrings.subControlIdentifier + subControl.toString)
-		handleAction(sessionId, formId, input)
-	  }
-	  
-	  // Maps controls with a text input to action handlers
-	  def textInputMapper(sessionId:String, formId:Int, text:String) {
-		val input:Array[String] = Array(text)
-		handleAction(sessionId, formId, input)
-	  }
-	  
-	  // Maps controls with multiple text inputs to action handlers
-	  def multiTextInputMapper(sessionId:String, formId:Int, text:Array[String]) {
-		handleAction(sessionId, formId, text)
-	  }
-	  
 	  
 	  import java.util.Date // needed for currently implemented "debouncing" function
 	  // Maps controls with actions only (buttons) to action handlers
@@ -239,16 +221,9 @@ package org.cogchar.lifter {
 		val ignore = checkForBounce(sessionId, id)
 		if (!ignore) {
 		  if (getSessionState(sessionId).toggleControlStateBySlot contains id) {
-			// Really we shouldn't run toggle on the Actor's thread, so we'll do this.
-			// One of these days snippets will talk back to PageCommander as an Actor instead of calling into it, and the threading
-			// will take care of itself instead of having to do things this messy way.
-			spawn{
 			  ControlToggler.getTheToggler.toggle(theLifterState,sessionId,id)
-			  handleAction(sessionId, id, null) // Starts yet another thread, but we need it started by the toggleThread so it won't run until toggle is complete
-			}
-		  } else {
-			handleAction(sessionId, id, null)
 		  }
+		  handleAction(sessionId, id, null)		  
 		}
 	  }
 	  
@@ -270,6 +245,21 @@ package org.cogchar.lifter {
 		  bounceMap(id) = time
 		  ignore
 		}
+	  }
+	  
+	  // Handles incoming messages from controls
+	  override def lowPriority : PartialFunction[Any, Unit]  = {		
+		case a:ControlAction => {
+			triggerAction(a.sessionId, a.slotNum)
+		  }
+		case a:ControlTextInput => {
+			handleAction(a.sessionId:String, a.slotNum, a.text)
+		  }
+		case a:ControlMultiSelect => {
+			val input:Array[String] = Array(ActionStrings.subControlIdentifier + a.subControl.toString)
+			handleAction(a.sessionId, a.slotNum, input)
+		  }
+		case _: Any =>
 	  }
 	  
 	  // Likely should go in different class...
