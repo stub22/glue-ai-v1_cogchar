@@ -287,7 +287,6 @@ public class PumaAppContext extends BasicDebugger {
 		if (hasVWorldMapper()) {
 			PumaVirtualWorldMapper vWorldMapper = getOrMakeVWorldMapper();
 			vWorldMapper.clearCinematicStuff();
-			vWorldMapper.clearSpecialInputTriggers();
 			// Consider:  also set the context/registry vWorldMapper to null, expecting
 			// PumaBooter or somesuch to find it again.
 		}

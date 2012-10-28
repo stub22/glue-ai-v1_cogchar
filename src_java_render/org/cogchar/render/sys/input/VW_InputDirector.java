@@ -23,7 +23,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 
 import org.cogchar.platform.gui.keybind.KeyBindingTracker;
-import org.cogchar.render.app.humanoid.HumanoidPuppetActions;
+
 import org.cogchar.render.app.trigger.SceneActions;
 
 import com.jme3.system.AppSettings;
@@ -87,7 +87,7 @@ public class VW_InputDirector extends BasicDebugger {
 		FlyByCamera fbCam = myAppStub.getFlyByCamera();
 		fbCam.registerWithInput(inputManager);
 		// Now we'll register the mappings in Cog Char based on theConfig
-		HumanoidPuppetActions.setupActionListeners(inputManager, myHRC_elim, myKeyBindCfg, myKeyBindingTracker);
+		// HumanoidPuppetActions.setupActionListeners(inputManager, myHRC_elim, myKeyBindCfg, myKeyBindingTracker);
 		SceneActions.setupActionListeners(inputManager, myKeyBindCfg, myKeyBindingTracker);
 		
 		setupCommandKeybindings();

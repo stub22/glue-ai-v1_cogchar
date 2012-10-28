@@ -101,7 +101,8 @@ public abstract class PumaContextMediator extends BasicDebugger {
 	}
 	
 	/**
-	 * Used to set the URI of the PumaContextCommandBox
+	 * Used to set the URI of the PumaContextCommandBox, which is used as the most powerful/general target 
+	 * in our "Cmd" models, which should match this URI for your application.
 	 * @return 
 	 */
 	

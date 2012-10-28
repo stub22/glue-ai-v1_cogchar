@@ -25,7 +25,6 @@ import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.platform.trigger.CogcharActionBinding;
-import org.cogchar.render.app.humanoid.HumanoidPuppetActions.PlayerAction;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 import org.osgi.framework.BundleContext;
@@ -62,19 +61,10 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 	public HumanoidRenderContext initHumanoidRenderContext(String panelKind) {
 		BundleContext bundleCtx = myPAC.getBundleContext();
 		myHRC = (HumanoidRenderContext) RenderBundleUtils.buildBonyRenderContextInOSGi(bundleCtx, panelKind);
-		// myHRC.setUpdateInterface(new UpdateInterfaceImpl());
+
 		return myHRC;
 	}
-/*  Replaced by cmd/trigger wiring.
-	class UpdateInterfaceImpl implements HumanoidRenderContext.UpdateInterface {
 
-		protected boolean forceFreshDefaultMainConfig = false;
-
-		@Override public boolean updateConfig(String request) {
-			return myPAC.updateConfigByRequest(request, forceFreshDefaultMainConfig);
-		}
-	}
-*/
 // The Lights/Camera/Cinematics init used to be done from HumanoidRenderContext, but the global config lives
 	// here as does humanoid and bony config. So may make sense to have this here too, though we could move it
 	// back to HRC if there are philosophical reasons for doing so. (We'd also have to pass two graph flavors to it for this.)
@@ -157,53 +147,6 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		} else {
 			logError("HumanoidRenderContext is NULL, cannot startOpenGLCanvas!");
 		}
-	}
-
-	public void registerSpecialInputTriggers(PumaDualCharacter pdc) {
-
-		hookItUp(PlayerAction.STOP_AND_RESET_CHAR, pdc, new TriggerItems.StopAndReset());
-		hookItUp(PlayerAction.STOP_RESET_AND_RECENTER_CHAR, pdc, new TriggerItems.StopResetAndRecenter());
-
-		hookItUp(PlayerAction.DANGER_YOGA, pdc, new TriggerItems.DangerYoga());
-		hookItUp(PlayerAction.SAY_THE_TIME, pdc, new TriggerItems.SayTheTime());
-
-		hookItUp(PlayerAction.USE_PERM_ANIMS, pdc, new TriggerItems.UsePermAnims());
-		hookItUp(PlayerAction.USE_TEMP_ANIMS, pdc, new TriggerItems.UseTempAnims());
-
-		hookItUp(PlayerAction.RELOAD_BEHAVIOR, pdc, new TriggerItems.ReloadBehavior());
-
-		//myUpdateBonyConfigTI = new TriggerItems.UpdateBonyConfig();
-		//myUpdateBonyConfigTI.myOptResourceClassLoader = null;
-
-		//hookItUp(PlayerAction.UPDATE_BONY_CONFIG, pdc, myUpdateBonyConfigTI);
-	}
-
-	private void hookItUp(PlayerAction action, PumaDualCharacter pdc, TriggerItem trigItem) {
-		// Hook up to a JME3 action (defined in our org.cogchar.lib.render project) to catch keypresses in OpenGL window.
-		CogcharActionBinding db = action.getBinding();
-		db.addTargetBox(pdc);
-		// Overrides any existing trigger.
-		db.setTargetTrigger(trigItem);
-	}
-
-	public void clearSpecialInputTriggers() {
-
-		unhookIt(PlayerAction.STOP_AND_RESET_CHAR);
-		unhookIt(PlayerAction.STOP_RESET_AND_RECENTER_CHAR);
-
-		unhookIt(PlayerAction.DANGER_YOGA);
-		unhookIt(PlayerAction.SAY_THE_TIME);
-
-		unhookIt(PlayerAction.USE_PERM_ANIMS);
-		unhookIt(PlayerAction.USE_TEMP_ANIMS);
-
-		unhookIt(PlayerAction.RELOAD_BEHAVIOR);
-
-	}
-
-	private void unhookIt(PlayerAction action) {
-		CogcharActionBinding db = action.getBinding();
-		db.clearTargetBoxes();
 	}
 
 	public void clearCinematicStuff() {

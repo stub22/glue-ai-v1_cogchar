@@ -23,7 +23,7 @@ import java.util.List;
 import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.gui.keybind.KeyBindingConfigItem;
 import org.cogchar.platform.gui.keybind.KeyBindingTracker;
-import org.cogchar.render.app.humanoid.HumanoidPuppetActions;
+
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.trigger.SceneActions;
 import com.jme3.input.FlyByCamera;
