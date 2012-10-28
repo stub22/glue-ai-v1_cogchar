@@ -78,7 +78,7 @@ package org.cogchar.lifter {
    
 		def process(): JsCmd = {
 		  info("Input text for form #" + formId + ": " + text + " in session " + sessionId)
-		  PageCommander.textInputMapper(sessionId, formId, text) // Let PageCommander know about the text so it can figure out what to do with it
+		  PageCommander ! PageCommander.ControlTextInput(sessionId, formId, Array(text)) // Let PageCommander know about the text so it can figure out what to do with it
 		  //SetHtml(textFormInstanceLabel, Text(TextForm.responseText)) & // for now, this is disabled for the "operational" demo requirements
 		  SetValById(textBoxInstanceLabel, TextForm.afterEntryText)
 		}

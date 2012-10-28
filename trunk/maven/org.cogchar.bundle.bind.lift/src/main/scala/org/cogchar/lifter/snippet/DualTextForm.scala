@@ -84,7 +84,7 @@ package org.cogchar.lifter {
    
 		def process(): JsCmd = {
 		  info("Input text for form " + formId + " for session " + sessionId + ": " + text1 + "; " + text2)
-		  PageCommander.multiTextInputMapper(sessionId, formId, Array(text1, text2)) // Let PageCommander know about the text so it can figure out what to do with it
+		  PageCommander ! PageCommander.ControlTextInput(sessionId, formId, Array(text1, text2)) // Let PageCommander know about the text so it can figure out what to do with it
 		  SetValById(textBoxInstanceLabel1, DualTextForm.afterEntryText) &  SetValById(textBoxInstanceLabel2, DualTextForm.afterEntryText)
 		}
 		

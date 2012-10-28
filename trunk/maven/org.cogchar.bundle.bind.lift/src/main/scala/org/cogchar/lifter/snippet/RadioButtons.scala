@@ -78,7 +78,7 @@ package org.cogchar.lifter {
 		def process(result: String): JsCmd = {
 		  info("RadioButtons says option number " + result + " on formId " + formId + " is selected in session " + sessionId)
 		  //SetHtml(radioButtonsInstanceTitleId, Text(RadioButtons.responseText)) //... or not for now
-		  PageCommander.multiSelectControlActionMapper(sessionId, formId, result.toInt)
+		  PageCommander ! PageCommander.ControlMultiSelect(sessionId, formId, result.toInt)
 		  JsCmds.Noop
 		}
 		

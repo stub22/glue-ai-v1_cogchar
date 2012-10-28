@@ -59,7 +59,7 @@ package org.cogchar.lifter {
 			val selectorString = "@" + buttonName + " [onclick]"
 			selectorString #> SHtml.ajaxInvoke (() => {
 				info("Starting action mapped to button " + buttonId + " in session " + sessionId)
-				PageCommander.triggerAction(sessionId, buttonId)
+				PageCommander ! PageCommander.ControlAction(sessionId, buttonId)
 				JsCmds.Noop
 			})
 		  }
