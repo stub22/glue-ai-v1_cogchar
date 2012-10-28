@@ -108,7 +108,6 @@ public class PumaAppContext extends BasicDebugger {
 	protected PumaConfigManager getConfigManager() {
 		return myRegClient.getConfigMgr(null);
 	}
-
 	protected void startOpenGLCanvas(boolean wrapInJFrameFlag) throws Exception {
 		if (hasVWorldMapper()) {
 			PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
@@ -198,7 +197,6 @@ public class PumaAppContext extends BasicDebugger {
 		ClassLoader singleCL_orNull = (classLoaders.size() == 1)  ? classLoaders.get(0) : null;
 		return singleCL_orNull;
 	}
-
 	
 	/** Would also need to reload keybindings for this to be effective */
 	protected void reloadCommandSpace() { 
@@ -248,7 +246,7 @@ public class PumaAppContext extends BasicDebugger {
 		BoneCN bqn = new BoneCN();
 		for (PumaDualCharacter pdc : myCharList) {
 			Ident charID = pdc.getCharIdent();
-			logInfo("Updating bony config for char [" + pdc + "]");
+			getLogger().info("Updating bony config for char [" + pdc + "]");
 			try {
 				Ident graphIdent = pcm.resolveGraphForCharAndRole(charID, PumaModeConstants.BONY_CONFIG_ROLE);
 				try {

@@ -25,6 +25,7 @@ import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.platform.trigger.CommandBinding;
 import org.cogchar.platform.trigger.BasicActionBindingImpl;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
 import org.cogchar.blob.emit.RepoClientTester;
 import org.cogchar.blob.emit.RepoClientTester.CommandRec;
 
@@ -88,17 +89,17 @@ public class TriggerItems {
 
 			if (pdc != null) {
 				try {
-					logInfo("Stopping theater for char [" + pdc + "]");
+					getLogger().info("Stopping theater for char [" + pdc + "]");
 					pdc.stopTheater();
-					logWarning("Reloading behavior config FROM TEST FILE for char [" + pdc + "]");
+					getLogger().warn("Reloading behavior config FROM TEST FILE for char [" + pdc + "]");
 					pdc.loadBehaviorConfigFromTestFile(true);
-					logInfo("Restarting theater for char [" + pdc + "]");
+					getLogger().info("Restarting theater for char [" + pdc + "]");
 					pdc.startTheater();
 				} catch (Throwable t) {
-					logError("Problem during ReloadBehavior_TI", t);
+					getLogger().error("Problem during ReloadBehavior_TI", t);
 				}
 			} else {
-				logWarning("Not reloading behavior...character is null!");
+				getLogger().warn("Not reloading behavior...character is null!");
 			}
 		}
 	}
@@ -206,7 +207,12 @@ public class TriggerItems {
 			}
 		}		
 	}
- 
+ 	public static class ToggleHelp extends CtxCmdBoxTI {
+		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+			PumaVirtualWorldMapper pvwm = pccb.getVWM();
+			pvwm.toggleHelpScreenDisplay();
+		}		
+	}
 
 
 	private static Logger theLogger = LoggerFactory.getLogger(TriggerItems.class);
