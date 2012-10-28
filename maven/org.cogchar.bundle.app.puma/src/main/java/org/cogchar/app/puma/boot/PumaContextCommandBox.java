@@ -15,8 +15,13 @@
  */
 
 package org.cogchar.app.puma.boot;
+import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
+import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.model.humanoid.HumanoidFigure;
+import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -30,13 +35,23 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 	protected HumanoidRenderContext getHRC() { 
 		return myPAC.getOrMakeVWorldMapper().getHumanoidRenderContext();
 	}
+	public BonyGameFeatureAdapter getGameFeatureAdapter() { 
+		return getHRC().getGameFeatureAdapter();
+	}
+	public HumanoidFigureManager getFigureManager() { 
+		return getHRC().getHumanoidFigureManager();
+	}
 	public void resetMainCameraLocation() { 
 		getHRC().setDefaultCameraLocation();
 	}
-	
-	
 	public void updateConfigByRequest(String request, final boolean resetMainConfigFlag) {
 		myPAC.updateConfigByRequest(request, resetMainConfigFlag);
 	}
+	public HumanoidFigure getSinbad() { 
+		BonyRenderContext brc = getHRC();
+		RenderConfigEmitter bce = brc.getConfigEmitter();
+		HumanoidFigureManager hfm = getFigureManager();
+		return hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
+	}	
 	
 }
