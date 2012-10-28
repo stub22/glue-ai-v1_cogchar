@@ -93,7 +93,7 @@ public class VW_InputDirector extends BasicDebugger {
 		setupCommandKeybindings();
 		
 		// ... and finally set up the help screen now that the mappings are done
-		myHelpScreenMgr.initHelpScreen(myAppSettings, inputManager, myKeyBindCfg, myRenderRegCli, myKeyBindingTracker);
+		myHelpScreenMgr.updateHelpTextContents(myRenderRegCli, myAppSettings, myKeyBindCfg, myKeyBindingTracker);
 	}
 	protected void setupCommandKeybindings() {
 		CommandSpace cspace = myCommandSpace;
@@ -132,5 +132,8 @@ public class VW_InputDirector extends BasicDebugger {
 		}
 		String actionNames[] = actionNameList.toArray(new String[0]);
 		VW_InputBindingFuncs.registerActionListeners(actionBindingMap, actionNames, keyBindingMap, inputManager, kbt);
+	}
+	public VW_HelpScreenMgr getHelpScreenMgr() { 
+		return myHelpScreenMgr;
 	}
 }
