@@ -31,10 +31,7 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.FlyByCamera;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.input.controls.Trigger;
+import com.jme3.input.controls.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -110,7 +107,14 @@ public class VW_InputDirector extends BasicDebugger {
 			getLogger().warn("Registering command keybinding for " + keyName);
 			int keyNumber = VW_InputBindingFuncs.getKeyConstantForName(keyName);
 			if (keyNumber != VW_InputBindingFuncs.NULL_KEY) {
-				KeyTrigger keyTrig = new KeyTrigger(keyNumber);
+				Trigger jme3InTrig = null;
+				// BUTTON_LEFT = 0
+				if (keyNumber > 0) {
+					jme3InTrig = new KeyTrigger(keyNumber);
+				} else {
+					jme3InTrig = new MouseButtonTrigger(-1 * keyNumber);
+				}
+				
 				String actionName = kbci.myTargetActionName;
 				Ident cmdID = kbci.myTargetCommandID;
 				CommandBinding cbind = cspace.findBinding(cmdID);
@@ -122,9 +126,10 @@ public class VW_InputDirector extends BasicDebugger {
 					// registerActionListeners() code.
 					CogcharActionBinding cwrap = new org.cogchar.impl.trigger.FancyBinding(null, cbind);
 					actionBindingMap.put(actionName, cwrap);
-					inputManager.addMapping(actionName, keyTrig);
+					inputManager.addMapping(actionName, jme3InTrig);
 					keyBindingMap.put(actionName, keyNumber);
 					actionNameList.add(actionName);
+					getLogger().warn("Registered " + actionName + " for " + jme3InTrig + " at " + keyNumber);
 				} else {
 					getLogger().warn("Cannot find command binding for {}", cmdID);
 				}				

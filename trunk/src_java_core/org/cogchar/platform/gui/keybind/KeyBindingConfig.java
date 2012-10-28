@@ -34,10 +34,10 @@ import org.appdapter.help.repo.SolutionList;
  */
 public class KeyBindingConfig extends BasicDebugger {
 
-	public Map<String, KeyBindingConfigItem>	myGeneralBindings = new HashMap<String, KeyBindingConfigItem>();
-	public Map<String, KeyBindingConfigItem>	mySceneBindings = new HashMap<String, KeyBindingConfigItem>();
-	public List<KeyBindingConfigItem>			myCommandKeybindings = new ArrayList<KeyBindingConfigItem>();
-	
+	// public Map<String, KeyBindingConfigItem>	myGeneralBindings = new HashMap<String, KeyBindingConfigItem>();
+	public Map<String, KeyBindingConfigItem> mySceneBindings = new HashMap<String, KeyBindingConfigItem>();
+	public List<KeyBindingConfigItem> myCommandKeybindings = new ArrayList<KeyBindingConfigItem>();
+
 	public KeyBindingConfig() {
 		// Just a default constructor, if we want to just use the addBindings method
 	}
@@ -48,18 +48,16 @@ public class KeyBindingConfig extends BasicDebugger {
 
 	public void addBindings(RepoClient qi, Ident qGraph, KeystrokeConfigNames kce) {
 		SolutionList solutionList = qi.queryIndirectForAllSolutions(kce.getBindingsQueryURI(), qGraph);
-		List<Solution> solnJL =  solutionList.javaList();
-		logInfo("addBindings found " + solnJL.size() + " bindings");
-		for (Solution solution : solnJL ) {
+		List<Solution> solnJL = solutionList.javaList();
+		getLogger().info("addBindings found " + solnJL.size() + " bindings");
+		for (Solution solution : solnJL) {
 			KeyBindingConfigItem kbcItem = new KeyBindingConfigItem(qi, solution, kce);
-			if (kce.getGeneralKeybindingTypeID().equals(kbcItem.myTypeIdent)) {
-				myGeneralBindings.put(kbcItem.myTargetActionName, kbcItem);
-			} else if (kce.getSceneKeybindingTypeID().equals(kbcItem.myTypeIdent)) {
+			if (kce.getSceneKeybindingTypeID().equals(kbcItem.myTypeIdent)) {
 				mySceneBindings.put(kbcItem.myTargetActionName, kbcItem);
-			} else if (kce.getCommandKeybindingTypeID().equals(kbcItem.myTypeIdent)) { 
+			} else if (kce.getCommandKeybindingTypeID().equals(kbcItem.myTypeIdent)) {
 				myCommandKeybindings.add(kbcItem);
 			} else {
-				logWarning("Found an item in KeyBindings resource with invalid type: " + kbcItem.myTypeIdent);
+				getLogger().warn("Found an item in KeyBindings resource with invalid type: " + kbcItem.myTypeIdent);
 			}
 		}
 	}

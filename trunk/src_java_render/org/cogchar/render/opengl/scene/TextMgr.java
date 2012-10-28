@@ -74,7 +74,8 @@ public class TextMgr extends RenderRegistryAware {
 		for (Map.Entry<String, Integer> entry : keyBindingMap.entrySet()) {
 			String entryKey = entry.getKey();
 			Integer entryVal = entry.getValue();
-			if ((entryVal != null) && (entryVal >= 0)) {
+			// We use 0 = BUTTON_LEFT, only key values are avail 
+			if ((entryVal != null) && (entryVal > 0)) {
 				String convertedName = keyNamesConverter.getName(entryVal);
 				commandLine = entryKey + ": " + convertedName + "\n";
 				if (commandLine.length() > longestLineLength) {

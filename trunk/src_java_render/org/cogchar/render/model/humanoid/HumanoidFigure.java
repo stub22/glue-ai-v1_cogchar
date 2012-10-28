@@ -261,10 +261,12 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
         myHumanoidSkeletonDebugger.setLocalTranslation(myHumanoidModelNode.getLocalTranslation());	
 	}
 	public void toggleDebugSkeleton() {
-		if (myHumanoidModelNode.hasChild(myHumanoidSkeletonDebugger)) {
-			myHumanoidModelNode.detachChild(myHumanoidSkeletonDebugger);
-		} else {
-			myHumanoidModelNode.attachChild(myHumanoidSkeletonDebugger);
+		if (myHumanoidModelNode != null) {
+			if (myHumanoidModelNode.hasChild(myHumanoidSkeletonDebugger)) {
+				myHumanoidModelNode.detachChild(myHumanoidSkeletonDebugger);
+			} else {
+				myHumanoidModelNode.attachChild(myHumanoidSkeletonDebugger);
+			}
 		}
 	}
 	protected void attachRagdollBone(HumanoidBoneDesc hbd) {
