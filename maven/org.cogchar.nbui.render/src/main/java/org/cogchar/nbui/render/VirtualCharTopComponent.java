@@ -95,7 +95,8 @@ public final class VirtualCharTopComponent extends TopComponent {
 		// config system that we are running under Netbeans Platform GUI (implying Netigso), so, only
 		// Robokind-Workshop-friendly features should be activated.  
 		// String dualCharURI = "urn:org.cogchar/platform/nb701?charName=HRK_Zeno_R50&version=20120302";    			
-			return  "NBURI:huzzah";
+			// return  "NBURI:huzzah";
+			return super.getSysContextRootURI();
 		}
 		@Override public void notifyContextBuilt(PumaAppContext pac) throws Throwable { 
 			// This is our chance to access config resources
