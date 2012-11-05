@@ -25,6 +25,9 @@ import org.robokind.api.common.position.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.robokind.api.animation.ControlPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -32,12 +35,19 @@ import java.util.Map.Entry;
  */
 public class OgreAnimationSkeletonMap{
 
-    public final static String ROTATE = "Ctrl_rotate";
-    public final static String TRANSLATE = "Ctrl_translate";
-    public final static String SCALE = "Ctrl_scale";
-    public final static String X = "X";
-    public final static String Y = "Y";
-    public final static String Z = "Z";
+    //public final static String ROTATE = "Ctrl_rotate";
+	public final static String ROTATE = "_rotate";
+    //public final static String TRANSLATE = "Ctrl_translate";
+	public final static String TRANSLATE = "_translate";
+    //public final static String SCALE = "Ctrl_scale";
+	public final static String SCALE = "_scale";
+    public final static String X = "rotateX";
+    public final static String Y = "rotateY";
+    public final static String Z = "rotateZ";
+	
+	private final static JunkyConversionTable JUNKY = new JunkyConversionTable(); // A temporary and exceedingly ugly crutch
+	
+	private static Logger theLogger = LoggerFactory.getLogger(OgreAnimationSkeletonMap.class); 
 
     public static AnimationData mapSkeleton(
             BoneRobotConfig skeleton,
@@ -55,18 +65,47 @@ public class OgreAnimationSkeletonMap{
             BoneRobotConfig skeleton, AnimationData animData){
         Map<BoneJointConfig, ChannelData<Double>> jointTable =
                 new HashMap(skeleton.myBJCs.size());
+		
+		/*
+		 for(ChannelData<Double> chan : animData.getChannels()){ // TEST ONLY
+			 System.out.println(chan.getName());
+		 }
+		 */ 
 
         for(ChannelData<Double> chan : animData.getChannels()){
-            String boneName = getBoneName(chan.getName());
+			
+			// Temporary ugly way to remove the following tag sometimes found in .anim channel names:
+			String strippedA04PrefixChanName = chan.getName().replaceAll("AZR50New_Rig_FINAL:", "");
+			
+			if (strippedA04PrefixChanName.endsWith("1")) { // Clear off number from "Y1/Z1" suffix
+				strippedA04PrefixChanName = strippedA04PrefixChanName.substring(0, strippedA04PrefixChanName.length() - 1);
+			}
+			
+            String boneName = getBoneName(strippedA04PrefixChanName);
             if(boneName == null){
                 continue;
             }
-
             BoneRotationAxis axis = getRotationAxis(chan.getName());
+			
+			if (JUNKY.lookupTable.containsKey(strippedA04PrefixChanName)) {
+				JunkyConversionTable.JointInfo info = JUNKY.lookupTable.get(strippedA04PrefixChanName);
+				boneName = info.boneName;
+				axis = info.axis;
+			}
+
+			//theLogger.info("Processing bone {} with axis {} from chanName " + chan.getName(), boneName, axis); // TEST ONLY
+			if (axis == null) {continue;} // axis will be null unless chan.getName() suffix is rotateX/Y/Z
+			//System.out.println("Looking for boneName " + boneName + " and axis " + axis + " from name " + chan.getName()); // TEST ONLY
             BoneProjectionRange bpr = getProjectionRange(
                     boneName, axis, skeleton);
+			if (bpr == null) {
+				//theLogger.warn("Could not find BoneProjectionRange for bone: {} -- ignoring", boneName);
+				continue;
+			}
+			theLogger.info("Adding joint for bone: {}", boneName);
             BoneJointConfig joint = bpr.getJointConfig();
             
+			// Ignores duplicated channel sections -- potentially a dangerous assumption:
             if(jointTable.containsKey(joint)) {
                 continue;
             }
@@ -89,42 +128,44 @@ public class OgreAnimationSkeletonMap{
         }else if(chanName.endsWith(Z)){
             return BoneRotationAxis.Z_ROT;
         }
-
-        throw new IllegalArgumentException();
+		return null;
     }
 
     private static String getBoneName(String chanName){
         if(chanName.isEmpty()){
             throw new IllegalArgumentException();
         }
+		
+		if (chanName.contains("Global")) {return "Root";} // Handles "root" rotations; we may or may not want this as such
+		String boneName = "None";
 
         chanName = chanName.substring(0, chanName.length() - 1);
 
         if(chanName.endsWith(ROTATE)){
-            return chanName.substring(0, chanName.length() - ROTATE.length());
+            boneName = chanName.substring(0, chanName.length() - ROTATE.length());
         }else if(chanName.endsWith(TRANSLATE)){
-            return chanName.substring(0, chanName.length() - TRANSLATE.length());
+            boneName = chanName.substring(0, chanName.length() - TRANSLATE.length());
         }else if(chanName.endsWith(SCALE)){
-            return chanName.substring(0, chanName.length() - SCALE.length());
+            boneName = chanName.substring(0, chanName.length() - SCALE.length());
         }
 
-        return null;
+		return boneName; 
     }
 
     private static BoneProjectionRange getProjectionRange(String boneName,
             BoneRotationAxis axis, BoneRobotConfig skeleton){
+		//theLogger.info("Getting projection ranges from BRC: {}", skeleton); // TEST ONLY
         for(BoneJointConfig joint : skeleton.myBJCs){
-            if(joint.myJointName.equals(boneName)){
                 for(BoneProjectionRange bpr : joint.myProjectionRanges){
-                    if(bpr.getRotationAxis() == axis){
+					if ((bpr.myBoneName.equals(boneName)) && (bpr.getRotationAxis() == axis)){
+						theLogger.info("Found matching bone for {}", boneName); // TEST ONLY
                         return bpr;
                     }
                 }
-            }
         }
-
         return null;
     }
+	
     
     private static AnimationData buildAnimationData(
             String animName,
@@ -138,6 +179,11 @@ public class OgreAnimationSkeletonMap{
             String name = joint.myJointName;
             ChannelData<Double> chanData = 
                     new ChannelData<Double>(id, name, chanDataOrig.getRange());
+			// It appears that the channel pairs (control points) are never added! The loop below will try to do that, at least in a quick-and-dirty way:
+			for (ControlPoint<Double> point : chanDataOrig.getPoints()) {
+				ControlPoint millisecondPoint = new ControlPoint(point.getTime()*1000, point.getPosition());
+				chanData.addPoint(millisecondPoint); // We just copy them with no conversion except time -- this seems to be the right thing to do...
+			}
             newAnimData.addChannel(chanData);
         }
         return newAnimData;
