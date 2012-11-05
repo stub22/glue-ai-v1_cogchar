@@ -48,6 +48,8 @@ public class BoneRobotConfig extends KnownComponentImpl {
 		return super.getFieldSummary() + ", robotName=" + myRobotName + ", joints=[" + myBJCs + "]";
 	}
 	
+	public BoneRobotConfig(){} // Needed by o.c.bind.rk.aniconv.ui
+	
 	// A new constructor to build BoneRobotConfig from spreadsheet
 	public BoneRobotConfig(RepoClient rc, Ident bonyConfigIdent, Ident graphIdent, BoneCN bqn) {
 		SolutionHelper sh = new SolutionHelper();

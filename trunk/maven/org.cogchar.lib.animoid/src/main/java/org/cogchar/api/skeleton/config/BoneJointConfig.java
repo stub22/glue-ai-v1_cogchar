@@ -31,6 +31,7 @@ public class BoneJointConfig extends KnownComponentImpl{
 	public String						myURI_Fragment;
 	public Integer						myJointNum;
 	public String						myJointName;
+	public String						myBoneName; // Needed for aniconv
 	public Double						myNormalDefaultPos;
 	public List<BoneProjectionRange>	myProjectionRanges = new ArrayList<BoneProjectionRange>();
 
