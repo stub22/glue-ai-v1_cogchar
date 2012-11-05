@@ -16,8 +16,10 @@
 package org.cogchar.bind.rk.aniconv;
 
 import java.io.*;
+import java.util.List;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.robokind.api.animation.Animation;
+import org.robokind.api.animation.ControlPoint;
 
 /**
  *
@@ -28,14 +30,38 @@ import org.robokind.api.animation.Animation;
 public class AnimationConverter {
     public static Animation convertAnimation(
             String animName, BoneRobotConfig skeleton, StreamTokenizer st) {
+		System.out.println("In AnimationConverter"); // TEST ONLY
         AnimationData ogreAnimData =
                 OgreAnimationParser.parseAnimation(animName, st);
+		
+		//examineChannels(ogreAnimData);  // TEST ONLY ALL THIS
+
+		
         AnimationData animData =
                 OgreAnimationSkeletonMap.mapSkeleton(skeleton, ogreAnimData);
+		
+		//examineChannels(animData);  // TEST ONLY ALL THIS
+
+		
         NormalizingAnimationFactory converter =
                 new NormalizingAnimationFactory(animData);
         
         Animation anim = converter.getAnimation();
         return anim;
     }
+	
+	// TEST ONLY
+	private static void examineChannels(AnimationData demDatas) {
+		for (ChannelData channelData : demDatas.getChannels()) { // TEST ONLY ALL THIS
+			System.out.println("Found " + demDatas.getName() + " channel: " + channelData.getName() + " with " + channelData.getPoints().size() + " points"); // TEST ONLY
+			List<ControlPoint> pointsList = channelData.getPoints();
+			for (ControlPoint<Double> point : pointsList) {
+				try {
+					System.out.println("A point with time " + point.getTime() + " and position " + point.getPosition());
+				} catch (Exception e) {
+					System.out.println("A point had null time or position");
+				}
+			}
+		}
+	}
 }
