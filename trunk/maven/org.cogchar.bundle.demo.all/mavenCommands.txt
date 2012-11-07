@@ -26,6 +26,9 @@ ant -f ant_run.xml -propertyfile target/felix.ant.run.props
 #1.3
 #maven-archetype
 
+# Also useful is this form, for direct invocation of a "main" class:
+
+mvn -e exec:java -Dexec.mainClass=org.friendularity.datmat.TestSheetRead
 
 
 
