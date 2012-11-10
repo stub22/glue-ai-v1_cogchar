@@ -145,10 +145,10 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 	 * @param wrapInJFrameFlag
 	 * @throws Exception
 	 */
-	public void startOpenGLCanvas(boolean wrapInJFrameFlag) throws Exception {
+	public void startOpenGLCanvas(boolean wrapInJFrameFlag, java.awt.event.WindowListener optWinLis) throws Exception {
 		HumanoidRenderContext hrc = getHumanoidRenderContext();
 		if (hrc != null) {
-			hrc.startOpenGLCanvas(wrapInJFrameFlag);
+			hrc.startOpenGLCanvas(wrapInJFrameFlag, optWinLis);
 		} else {
 			logError("HumanoidRenderContext is NULL, cannot startOpenGLCanvas!");
 		}
