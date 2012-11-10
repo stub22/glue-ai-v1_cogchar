@@ -19,6 +19,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.render.app.trigger.SceneActions;
 import org.cogchar.render.opengl.scene.CinematicMgr;
 
@@ -35,15 +36,15 @@ public class PumaWebMapper extends BasicDebugger {
 	
 	private CommandTargetForUseFromWeb		myLiftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
 
-	private OSGiComponent		myLiftAppComp;
-	private OSGiComponent		myLiftSceneComp;
-	private PumaAppContext		myAppContext;
+	private OSGiComponent					myLiftAppComp;
+	private OSGiComponent					myLiftSceneComp;
+	private PumaContextCommandBox					myPCCB;
 	
 	// Make default constuctor private to prevent PumaWebMapper from being instantiated without a PumaAppContext
 	private PumaWebMapper() {}
 	
-	public PumaWebMapper(PumaAppContext pac) {
-		myAppContext = pac;
+	public PumaWebMapper(PumaContextCommandBox pccb) {
+		myPCCB = pccb;
 	}
 	
 
@@ -73,7 +74,7 @@ public class PumaWebMapper extends BasicDebugger {
 
 	public CommandTargetForUseFromWeb getLiftInterface() {
 		if (myLiftInterface == null) {
-			myLiftInterface = new CommandTargetForUseFromWeb(myAppContext, this);
+			myLiftInterface = new CommandTargetForUseFromWeb(myPCCB, this);
 		}
 		return myLiftInterface;
 	}
