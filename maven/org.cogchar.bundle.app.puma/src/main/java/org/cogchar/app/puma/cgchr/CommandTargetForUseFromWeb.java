@@ -19,7 +19,7 @@ package org.cogchar.app.puma.cgchr;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.LiftAmbassador;
-import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.render.opengl.scene.CinematicMgr;
 import org.cogchar.render.model.databalls.BallBuilder;
 /**
@@ -29,14 +29,14 @@ import org.cogchar.render.model.databalls.BallBuilder;
  */
 
 class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador.LiftAppInterface {
-	private PumaAppContext myAppContext;
-	private String myCogbotConvoUrl;
-	private CogbotCommunicator myCogbotComm;
-	private final PumaWebMapper myWebMapper;
+	private PumaContextCommandBox		myPCCB;
+	private String						myCogbotConvoUrl;
+	private CogbotCommunicator			myCogbotComm;
+	private final PumaWebMapper			myWebMapper;
 
-	public CommandTargetForUseFromWeb(PumaAppContext pac, final PumaWebMapper outer) {
+	public CommandTargetForUseFromWeb(PumaContextCommandBox pccb, final PumaWebMapper outer) {
 		this.myWebMapper = outer;
-		myAppContext = pac;
+		myPCCB = pccb;
 	}
 
 	@Override public boolean triggerNamedCinematic(String name) {
@@ -62,8 +62,8 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
 	@Override public boolean performUpdate(String request) {
 		boolean forceFreshDefaultRepo = false;
 		boolean success = false;
-		if (myAppContext != null) {
-			success = myAppContext.updateConfigByRequest(request, forceFreshDefaultRepo);
+		if (myPCCB != null) {
+			success = myPCCB.updateConfigByRequest(request, forceFreshDefaultRepo);
 		} else {
 			getLogger().warn("Update requested, but PumaWebMapper cannot find PumaAppContext for RQ=" + request);
 		}
