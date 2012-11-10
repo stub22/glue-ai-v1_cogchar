@@ -28,6 +28,15 @@ import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.buddy.busker.TriggerItems;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+
 import org.slf4j.LoggerFactory;
 
 /**
@@ -48,13 +57,39 @@ public class PumaBooter extends BasicDebugger {
 		public List<String> myMessageList = new ArrayList<String>();
 		public Throwable myThrowable;
 	}
-
 	/**
-	 * Entry point for PUMA in and OSGi context.
+	 * Public entry point for the PUMA application system when running in an OSGi environment. Presumes that an SLF4J logging
+	 * binding is already in place. Normally this is *not* called directly from another bundle's activator. Instead, it
+	 * is called after all initial bundles (for your application) are loaded, which is signaled in a FrameworkEvent
+	 *
+	 * @param bundleCtx - an OSGi bundle
+	 * @param mediator - users customize this object to configure/influence the boot process.
+	 * @return a BootResult indicating the status of boot attempt. No app data is passed here.
+	 */
+	public BootResult bootUnderOSGi(BundleContext bundleCtx, PumaContextMediator mediator) {
+		logInfo("%%%%%%%%%%%%%%%%%%% Beginning bootUnderOSGi");
+		logError("^^^^ not really an error - just high priority ^^^^^^^^ SLF4J ILoggerFactory = " + LoggerFactory.getILoggerFactory());
+		BootResult result = new BootResult();
+		result.myStatus = BootStatus.BOOTING;
+		try {
+
+			pumaBootUnsafeUnderOSGi(bundleCtx, mediator);
+
+			getLogger().info("%%%%%%%%%%%%%%%%%%%%%%%%% pumaBootUnsafe() completed without exception - PUMA BOOT SUCCESSFUL!  8-)");
+			result.myStatus = BootStatus.BOOTED_OK;
+		} catch (Throwable t) {
+			getLogger().error("Error in PumaBooter 8-(", t);
+			result.myStatus = BootStatus.BOOT_FAILED;
+			result.myThrowable = t;
+		}
+		return result;
+	}
+	/**
+	 * Protected initialization of an OSGi context - the guts.
 	 * Normally this is called from the FrameworkStarted-EventHandler 
 	 * (NOT the BundleActivator.start() method !) of some "top" application 
 	 * bundle client.  That client controls our boot process through supplied
-	 * the mediator.
+	 * mediator.
 	 *
 	 * @param bundleCtx
 	 * @param mediator
@@ -128,33 +163,7 @@ public class PumaBooter extends BasicDebugger {
 		mediator.notifyBeforeBootComplete(pac);
 	}
 
-	/**
-	 * Entry point for the PUMA application system when running in an OSGi environment. Presumes that an SLF4J logging
-	 * binding is already in place. Normally this is *not* called directly from another bundle's activator. Instead, it
-	 * is called after all initial bundles (for your application) are loaded, which is signaled in a FrameworkEvent
-	 *
-	 * @param bundleCtx - an OSGi bundle
-	 * @param mediator - users customize this object to configure/influence the boot process.
-	 * @return a BootResult indicating the status of boot attempt. No app data is passed here.
-	 */
-	public BootResult bootUnderOSGi(BundleContext bundleCtx, PumaContextMediator mediator) {
-		logInfo("%%%%%%%%%%%%%%%%%%% Beginning bootUnderOSGi");
-		logError("^^^^ not really an error - just high priority ^^^^^^^^ SLF4J ILoggerFactory = " + LoggerFactory.getILoggerFactory());
-		BootResult result = new BootResult();
-		result.myStatus = BootStatus.BOOTING;
-		try {
 
-			pumaBootUnsafeUnderOSGi(bundleCtx, mediator);
-
-			getLogger().info("%%%%%%%%%%%%%%%%%%%%%%%%% pumaBootUnsafe() completed without exception - PUMA BOOT SUCCESSFUL!  8-)");
-			result.myStatus = BootStatus.BOOTED_OK;
-		} catch (Throwable t) {
-			getLogger().error("Error in PumaBooter 8-(", t);
-			result.myStatus = BootStatus.BOOT_FAILED;
-			result.myThrowable = t;
-		}
-		return result;
-	}
 
 	private Repo findMainRepo(PumaContextMediator mediator) {
 		Repo r = null;
@@ -177,8 +186,17 @@ public class PumaBooter extends BasicDebugger {
 		 * ext.bundle.osgi.jmonkey, and explicitly allowed by the container when using Netigso
 		 */
 		boolean allowJFrames = mediator.getFlagAllowJFrames();
-		getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling startOpenGLCanvas");
-		pac.startOpenGLCanvas(allowJFrames);
+		if (allowJFrames) {
+			WindowAdapter winLis = new WindowAdapter() {
+				@Override public void	windowClosed(WindowEvent e) {
+					getLogger().warn("PumaBooter caught window CLOSED event for OpenGL frame:  {}", e);
+					notifyVWorldWindowClosed();
+				}
+			};
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling startOpenGLCanvas");
+			pac.startOpenGLCanvas(allowJFrames, winLis);
+			
+		}
 		getLogger().debug("%%%%%%%%%%%%%%%%%%% startOpenGLCanvas completed, enqueueing final boot phase on JME3 thread");
 		/**
 		 * Populate the virtual world with humanoids, cameras, lights, and other goodies. This step will load all the 3D
@@ -190,5 +208,19 @@ public class PumaBooter extends BasicDebugger {
 		 */
 		hrc.runPostInitLaunchOnJmeThread();
 		getLogger().debug("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed");
+	}
+	protected void notifyVWorldWindowClosed() { 
+		Bundle anyB = org.osgi.framework.FrameworkUtil.getBundle(getClass());
+		BundleContext anyBC = anyB.getBundleContext();
+		shutdownOSGiContainer(anyBC);
+	}
+	protected void shutdownOSGiContainer(BundleContext bc) { 
+		Bundle sysB = bc.getBundle(0);
+		getLogger().warn("PumaBooter asking system bundle to stop(): {}", sysB);
+		try {
+			sysB.stop();
+		} catch (Throwable t) {
+			getLogger().error("PumaBooter caught exception during sys-bundle.stop() request", t);
+		}
 	}
 }
