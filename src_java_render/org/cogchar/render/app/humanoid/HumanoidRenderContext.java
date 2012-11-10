@@ -41,22 +41,20 @@ import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 import org.cogchar.render.sys.context.WorkaroundFuncsMustDie;
 import org.cogchar.render.opengl.optic.CameraMgr;
 // Below imports added for initHelpScreen - should go elsewhere eventually(?)
-import com.jme3.font.BitmapText;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
-import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.concurrent.Callable;
-import javax.swing.JFrame;
-import org.appdapter.help.repo.RepoClient;
+
 import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
-import org.cogchar.render.sys.task.BasicCallableRenderTask;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
 import org.cogchar.platform.trigger.CommandSpace;
+
+import javax.swing.JFrame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -131,7 +129,7 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	 * @param wrapInJFrameFlag
 	 * @throws Exception
 	 */
-	public void startOpenGLCanvas(boolean wrapInJFrameFlag) throws Exception {
+	public void startOpenGLCanvas(boolean wrapInJFrameFlag, WindowListener optWindowEventListener) throws Exception {
 
 		if (wrapInJFrameFlag) {
 			VirtualCharacterPanel vcp = getPanel();
@@ -145,7 +143,13 @@ public class HumanoidRenderContext extends BonyRenderContext {
 			JFrame jf = vcp.makeEnclosingJFrame("CCRK-PUMA Virtual World");
 			logInfo("Got Enclosing Frame, adding to BonyRenderContext for WindowClose triggering: " + jf);
 			// Frame will receive a close event when org.cogchar.bundle.render.opengl is STOPPED
+			// So, that's our attempt to close the window gracefully on app exit (under OSGi).
 			setFrame(jf);
+			// Meanwhile, if someone X-s the window, the optWindowEventListener gets a callback,
+			// which could try to shut down whatever system is running (e.g. OSGi).
+			if (optWindowEventListener != null) { 
+				jf.addWindowListener(optWindowEventListener);
+			}
 		}
 		BonyVirtualCharApp app = getApp();
 

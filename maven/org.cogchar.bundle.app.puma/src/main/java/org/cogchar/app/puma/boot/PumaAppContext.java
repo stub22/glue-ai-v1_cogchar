@@ -108,10 +108,10 @@ public class PumaAppContext extends BasicDebugger {
 	protected PumaConfigManager getConfigManager() {
 		return myRegClient.getConfigMgr(null);
 	}
-	protected void startOpenGLCanvas(boolean wrapInJFrameFlag) throws Exception {
+	protected void startOpenGLCanvas(boolean wrapInJFrameFlag, java.awt.event.WindowListener optWinLis) throws Exception {
 		if (hasVWorldMapper()) {
 			PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
-			pvwm.startOpenGLCanvas(wrapInJFrameFlag);
+			pvwm.startOpenGLCanvas(wrapInJFrameFlag, optWinLis);
 		} else {
 			getLogger().warn("Ignoring startOpenGLCanvas command - no vWorldMapper present");
 		}
