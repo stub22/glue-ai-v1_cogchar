@@ -29,6 +29,9 @@ import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.gui.bony.PanelUtils;
 
 /**
+ * Example of a Java program that is able to display a bony-humanoid in OpenGL,
+ * without using OSGi, or any Robokind robotics interfaces.
+ * 
  * To successfully run this test program, you must invoke it with a classpath that includes
  * the resources it wants, e.g. use the BonyDemoMain class in the org.cogchar.demo.render.opengl 
  * project.
@@ -115,14 +118,11 @@ VirtCharPanel.JFrame.closed, exiting
 		theLogger.info("*********************** Frame width={}, height={}", jf.getWidth(), jf.getHeight());
 
 		// OR, run a JMonkey demo in a standalone OpenGL system window (not a Java/Swing GUI).
-	
+		// Most demos support camera nav using mouse/arrow-keys to rotate, and W,S A,D, Q,Z to move.
 		// Generally you want to run just ONE of the following main methods:
 			
-		// Most demos support camera nav using mouse/arrow-keys to rotate, and W,S A,D, Q,Z to move.
-
-		// This is the most impressive relevant JME3 demo - recently updated with facial expressions!
+		// JME3 Sinbad demo - includes grimacing facial expressions!
 		// jme3test.bullet.TestBoneRagdoll.main(null);    //  Spacebar to make 'im do a pushup, then shoot 'im agin!
-
 
 		// jme3test.helloworld.HelloAnimation.main(null);   // Press spacebar to walk
 		// jme3test.bullet.TestBrickTower.main(null);       // shoot bricks
