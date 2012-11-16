@@ -26,7 +26,7 @@ import com.hp.hpl.jena.rdf.model.{Model}
 
 /** Documenting and testing our query-based configuration systems.
  *	// Note that "QName" and QN refers to the prefixed style syntax, which is resolved against
-	// the repo's known prefixes.  
+ // the repo's known prefixes.  
  */
 object RepoClientTester {
 
@@ -34,16 +34,16 @@ object RepoClientTester {
 	// The first 3 params define the repo:
 	
 	/**
-	The sheet key is used to build a URL for something like a Google-Docs spreadsheet,
-	which we read in easily as just CSV (commma-separated values).
-	Each tab of the spreadsheet is treated as a separate named graph, which are all
-	registered in a directory graph, which can also happen to be in the same spreadsheet.
+	 The sheet key is used to build a URL for something like a Google-Docs spreadsheet,
+	 which we read in easily as just CSV (commma-separated values).
+	 Each tab of the spreadsheet is treated as a separate named graph, which are all
+	 registered in a directory graph, which can also happen to be in the same spreadsheet.
 
-	// Shared public "CharBootAll" test sheet.  
-	// 2012-09-29 : Note that queries were updated to remove "!!", although the latter are now
-	// converted to "?" if present, so no query-"templates" should be broken (even in older sheet's).
-	// We now use standard SPARQL query text and variable replacement, in all cases.
-	*/
+	 // Shared public "CharBootAll" test sheet.  
+	 // 2012-09-29 : Note that queries were updated to remove "!!", although the latter are now
+	 // converted to "?" if present, so no query-"templates" should be broken (even in older sheet's).
+	 // We now use standard SPARQL query text and variable replacement, in all cases.
+	 */
 	
 	final val TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" 
 	
@@ -172,11 +172,11 @@ object RepoClientTester {
 		
 		val dfltGraphStats : List[Repo.GraphStat] = dfltGraphStatsJL.toList
 		dfltGraphStats foreach (gs => {
-			println("Doing import for: " + gs)
-			val tgtModelID = dbRepo.makeIdentForURI(gs.graphURI)
-			val srcModel = dfltTestRepo.getNamedModel(tgtModelID)
-			dbRepo.addNamedModel(tgtModelID, srcModel)
-		})
+				println("Doing import for: " + gs)
+				val tgtModelID = dbRepo.makeIdentForURI(gs.graphURI)
+				val srcModel = dfltTestRepo.getNamedModel(tgtModelID)
+				dbRepo.addNamedModel(tgtModelID, srcModel)
+			})
 		
 		
 		
@@ -191,30 +191,36 @@ object RepoClientTester {
 		
 		val chanSet = assembleChannelSpecs(dfltTestRC);
 		println("Got chanSpecs: " + chanSet)
+		
+		queryInboxEvents(dfltTestRC);
 	}
 
   	def makeRepoClient(fr : FancyRepo, queryTargetVarName:  String, querySheetQN : String) : RepoClient = {
 		new RepoClientImpl(fr, queryTargetVarName, querySheetQN)		
 	}		
 
-		/*
-	def loadRepoSQL(configResPath: String) : DatabaseRepo = {
+	/*
+	 def loadRepoSQL(configResPath: String) : DatabaseRepo = {
 		
-	}
-	*/
+	 }
+	 */
+	val ANIM_IDENT = "anim"
+	val ANIM_REL_PATH = "relPath"
+	val ANIM_FOLDER_PATH = "folderPath"
+	val animQueryQN = "ccrt:find_anims_99" // The QName of a query in the "Queries" model/tab
+	val animGraphQN = "ccrt:anim_sheet_22" // The QName of a graph = model = tab, as given by directory model.   
    
 	def queryAnims (rc : RepoClient) = {
-		val animQueryQN = "ccrt:find_anims_99" // The QName of a query in the "Queries" model/tab
-		val animGraphQN = "ccrt:anim_sheet_22" // The QName of a graph = model = tab, as given by directory model.
+
 		val solList = rc.queryIndirectForAllSolutions(animQueryQN, animGraphQN)
 		import scala.collection.JavaConversions._
 		solList.javaList foreach (animFile => {
-			println("Got animFile soln: " + animFile);
-			val animIdent = animFile.getIdentResultVar("anim")
-			val animRelPath = animFile.getStringResultVar("relPath")
-			val animFolderPath = animFile.getStringResultVar("folderPath")
-			println("ident=" + animIdent + ", relPath=" + animRelPath + ", folderPath=" + animFolderPath)
-		})
+				println("Got animFile soln: " + animFile);
+				val animIdent = animFile.getIdentResultVar(ANIM_IDENT);
+				val animRelPath = animFile.getStringResultVar(ANIM_REL_PATH);
+				val animFolderPath = animFile.getStringResultVar(ANIM_FOLDER_PATH);
+				println("ident=" + animIdent + ", relPath=" + animRelPath + ", folderPath=" + animFolderPath)
+			})
 
 	}
 	class CommandRec (val cmdID : Ident, val boxID : Ident, val trigID : Ident, val trigFQCN : String) {
@@ -228,18 +234,37 @@ object RepoClientTester {
 		val resultJList = new java.util.ArrayList[CommandRec]();
 		import scala.collection.JavaConversions._
 		solList.javaList foreach (cmd  => {
-			val cmdID = cmd.getIdentResultVar("cmdID")
-			val boxID = cmd.getIdentResultVar("boxID")
-			val trigID = cmd.getIdentResultVar("trigID")
-			val trigFQCN = cmd.getStringResultVar("trigFQCN")
-			val cRec = new CommandRec(cmdID, boxID, trigID, trigFQCN);
-			resultJList.add(cRec);
-		})
+				val cmdID = cmd.getIdentResultVar("cmdID")
+				val boxID = cmd.getIdentResultVar("boxID")
+				val trigID = cmd.getIdentResultVar("trigID")
+				val trigFQCN = cmd.getStringResultVar("trigFQCN")
+				val cRec = new CommandRec(cmdID, boxID, trigID, trigFQCN);
+				resultJList.add(cRec);
+			})
 		resultJList
 	}	
 	import org.cogchar.impl.perform.ChannelSpec;
 	def assembleChannelSpecs (rc : RepoClient) : java.util.Set[Object] = {
 		rc.assembleRootsFromNamedModel("ccrt:chan_sheet_AZR50")
 	}
+
+	val eventQueryQN = "ccrt:find_agentItemEvents_99" // The QName of a query in the "Queries" model/tab
+	val eventGraphQN = "ccrt:inbox_sheet_AZR50" // The QName of a graph = model = tab, as given by directory model.   
+
+	def queryInboxEvents (rc : RepoClient) = {
+
+		val solList = rc.queryIndirectForAllSolutions(eventQueryQN, eventGraphQN)
+		import scala.collection.JavaConversions._
+		solList.javaList foreach (inboxEvent => {
+				println("Got event-inbox soln: " + inboxEvent);
+				val eventID = inboxEvent.getIdentResultVar("eventID");
+				val agentID = inboxEvent.getIdentResultVar("agentID");
+				val tstampMsec = inboxEvent.getStringResultVar("tstamp");
+				val actionName = inboxEvent.getStringResultVar("action");
+				println("eventID=" + eventID + ", agentID=" + agentID + ", tstampMsec=" + tstampMsec + ", action=" + actionName)
+			})
+
+	}
+
 	
 }
