@@ -67,8 +67,10 @@ public class OgreAnimationParser{
 		//System.out.println("The next token is " + st.toString()); // TEST ONLY
 
         String animName = st.sval;
+		// Temporary ugly way to remove the following tag sometimes found in .anim channel names:
+		String strippedA04PrefixChanName = animName.replaceAll("AZR50New_Rig_FINAL:", "");
         ChannelData<Double> chanData = new ChannelData<Double>(
-                id, animName);
+                id, strippedA04PrefixChanName);
 
         if(StreamTokenizer.TT_WORD != st.nextToken()){
             throw new IllegalArgumentException(st.sval);
