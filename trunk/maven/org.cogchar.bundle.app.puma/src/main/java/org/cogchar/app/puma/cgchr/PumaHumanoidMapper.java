@@ -72,12 +72,26 @@ public class PumaHumanoidMapper extends BasicDebugger {
 		}
 		return hrc;
 	}
+	/**
+	 * Direct access to the Robokind-compliant Cogchar model of an Avatar's joints, at protected scope.
+	 * @return 
+	 */
 	protected ModelRobot getBonyRobot() { 
 		return myMBRSC.getRobot();
 	}
+	/**
+	 * 
+	 * @return 
+	 */
 	protected ModelBlendingRobotServiceContext getRobotServiceContext() { 
 		return myMBRSC;
 	}
+	/**
+	 * This method exposes our "best" AnimOutChan at protected scope.
+	 * This is the main pathway for wiring animation triggers from behavior systems
+	 * (whether local or remote).
+	 * @return 
+	 */
 	protected FancyTextChan getBestAnimOutChan() { 
 		return myRAC.getTriggeringChannel();
 	}
