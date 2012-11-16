@@ -80,6 +80,8 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 	// So for now let's use the this.getQueryHelper way to get that interface here. We can continue to refine this thinking as we go.
 	// - Ryan 2012-09-17
 		// Eventually we may decide on a good home for these constants:	
+	
+	
 	final public static String WORLD_CONFIG = "worldconfig";
 	final public static String BONE_ROBOT_CONFIG = "bonerobotconfig";
 	final public static String MANAGED_GCS = "managedglobalconfigservice";
