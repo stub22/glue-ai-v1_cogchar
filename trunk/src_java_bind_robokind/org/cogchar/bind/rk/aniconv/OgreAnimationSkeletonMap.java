@@ -49,11 +49,11 @@ public class OgreAnimationSkeletonMap{
 	
 	private static Logger theLogger = LoggerFactory.getLogger(OgreAnimationSkeletonMap.class); 
 
-    public static AnimationData mapSkeleton(
-            BoneRobotConfig skeleton,
+    public static AnimationData mapMayaModel(
+            MayaModelMap conversionMap,
             AnimationData oldAnimData){
         Map<BoneJointConfig, ChannelData<Double>> jointTable =
-                buildAnimationMap(skeleton, oldAnimData);
+                buildAnimationMap(conversionMap, oldAnimData);
 
         AnimationData animData =
                 buildAnimationData(oldAnimData.getName(), jointTable);
@@ -62,9 +62,11 @@ public class OgreAnimationSkeletonMap{
     }
 
     private static Map<BoneJointConfig, ChannelData<Double>> buildAnimationMap(
-            BoneRobotConfig skeleton, AnimationData animData){
-        Map<BoneJointConfig, ChannelData<Double>> jointTable =
+            MayaModelMap conversionMap, AnimationData animData){
+        /*
+		Map<BoneJointConfig, ChannelData<Double>> jointTable =
                 new HashMap(skeleton.myBJCs.size());
+		*/
 		
 		/*
 		 for(ChannelData<Double> chan : animData.getChannels()){ // TEST ONLY
@@ -77,6 +79,7 @@ public class OgreAnimationSkeletonMap{
 			// Temporary ugly way to remove the following tag sometimes found in .anim channel names:
 			String strippedA04PrefixChanName = chan.getName().replaceAll("AZR50New_Rig_FINAL:", "");
 			
+			/*
 			if (strippedA04PrefixChanName.endsWith("1")) { // Clear off number from "Y1/Z1" suffix
 				strippedA04PrefixChanName = strippedA04PrefixChanName.substring(0, strippedA04PrefixChanName.length() - 1);
 			}
@@ -116,8 +119,12 @@ public class OgreAnimationSkeletonMap{
             chan.setRange(range);
             jointTable.put(joint, chan);
         }
+		*/
+
         
-        return jointTable;
+        //return jointTable;
+		}
+		return null;
     }
 
     private static BoneRotationAxis getRotationAxis(String chanName){

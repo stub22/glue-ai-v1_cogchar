@@ -77,19 +77,21 @@ public class ChannelData<T> {
         List<ControlPoint<NormalizedDouble>> normPoints = new ArrayList();
         
 		
-		System.out.println("normalizePoints: the range for these points in " + myName + " is " + myRange.getMin() + " to " + myRange.getMax()); // TEST ONLY
+		//System.out.println("normalizePoints: the range for these points in " + myName + " is " + myRange.getMin() + " to " + myRange.getMax()); // TEST ONLY
         for(ControlPoint<T> point: myPairs) {
+			/*
 			try { // TEST ONLY ALL THIS
 					System.out.println("normalizePoints: A point with time " + point.getTime() + " and position " + point.getPosition());
 				} catch (Exception e) {
 					System.out.println("normalizePoints: A point had null time or position");
 				}
+			*/
 			
             NormalizedDouble normPos = myRange.normalizeValue(point.getPosition()); // Returns null
 			
 			if (normPos == null) {normPos = new NormalizedDouble(0.5);} // TEST ONLY -- Put it in center if it's out of range
 			
-			System.out.println("normPos = " + normPos);
+			//System.out.println("normPos = " + normPos);
             ControlPoint<NormalizedDouble> normPoint = new ControlPoint(point.getTime(), normPos);
             normPoints.add(normPoint);
         }
