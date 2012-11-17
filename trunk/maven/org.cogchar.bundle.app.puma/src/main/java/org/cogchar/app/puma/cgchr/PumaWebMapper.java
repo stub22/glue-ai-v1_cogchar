@@ -78,4 +78,8 @@ public class PumaWebMapper extends BasicDebugger {
 		}
 		return myLiftInterface;
 	}
+	public PumaContextCommandBox getCommandBox() { 
+		return myPCCB;
+	}
+	
 }

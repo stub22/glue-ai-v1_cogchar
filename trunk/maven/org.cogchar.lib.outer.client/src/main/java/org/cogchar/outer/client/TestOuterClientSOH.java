@@ -23,16 +23,24 @@ public class TestOuterClientSOH {
 
 	public static String	repoServerRootURL = "http://localhost:8080/cgc_repo/";
 	public static String	sparqlServiceURL = "http://dbpedia.org/sparql";
+	public static String	repoSvcURL = "http://localhost:8080/friendu_joseki/books";
+	
+	
 	public static void main(String[] args) {
-		System.out.println("QueryText=\n" + dbpQ);
+		runQuery (dbpQ, sparqlServiceURL);
+		runQuery (repoQ, repoSvcURL);
+	}
+	public static void runQuery (String queryText, String svcUrl) {
+
+		System.out.println("QueryText=\n" + queryText);
 		// now creating query object
-		Query parsedQuery = QueryFactory.create(dbpQ);
+		Query parsedQuery = QueryFactory.create(queryText);
 		String queryBaseURI = null;
 		Syntax queryFileSyntax = Syntax.syntaxSPARQL;
 		// Query parsedQuery = QueryFactory.read(queryFileURL, null, Syntax.syntaxSPARQL); // , queryBaseURI, queryFileSyntax);
 		// initializing queryExecution factory with remote service.
 		// **this actually was the main problem I couldn't figure out.**
-		QueryExecution qExc = QueryExecutionFactory.sparqlService(sparqlServiceURL, parsedQuery);
+		QueryExecution qExc = QueryExecutionFactory.sparqlService(svcUrl, parsedQuery);
 		ResultSet resSet = qExc.execSelect();
 		ResultSetRewindable rewindableResSet = ResultSetFactory.makeRewindable(resSet);
 		String resultXML = ResultSetFormatter.asXMLString(rewindableResSet);		
@@ -47,4 +55,9 @@ static String dbpQ =
 		"?person dbo:birthPlace :Berlin .   ?person dbo:birthDate ?birth .   ?person foaf:name ?name .\n" +
 		"?person dbo:deathDate ?death .   FILTER (?birth < '1900-01-01'^^xsd:date) }";
 
+
+static String repoQ = 
+	"PREFIX books:   <http://example.org/book/>\n" +
+	"PREFIX dc:      <http://purl.org/dc/elements/1.1/>\n" +
+	"SELECT ?book ?title  WHERE   { ?book dc:title ?title }";
 }

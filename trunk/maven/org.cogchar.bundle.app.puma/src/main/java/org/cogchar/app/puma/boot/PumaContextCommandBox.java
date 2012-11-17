@@ -16,6 +16,7 @@
 
 package org.cogchar.app.puma.boot;
 
+import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.blob.emit.RenderConfigEmitter;
@@ -129,5 +130,9 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 			successFlag = false;
 		}
 		return successFlag;
-	}	
+	}
+	public 	RepoClient getMainConfigRepoClient() {
+		PumaConfigManager pcm = myPAC.getConfigManager();
+		return pcm.getMainConfigRepoClient();
+	}
 }
