@@ -25,6 +25,13 @@ public class WebDataClient extends BasicDebugger {
 
 	protected HttpClient myHttpCli = new DefaultHttpClient();
 
+	/**
+	 * Not currently used by our SPARQL client, but provided for completeness.
+	 * @param url
+	 * @param debugFlag
+	 * @param rqSummary
+	 * @return 
+	 */
 	public String execGet(String url, boolean debugFlag, String rqSummary) {
 		String resultText = null;
 		try {
@@ -34,7 +41,16 @@ public class WebDataClient extends BasicDebugger {
 		}
 		return resultText;
 	}
-
+/**
+ *  Not currently used by our SPARQL client, but provided for completeness.
+ * @param httpCli
+ * @param url
+ * @param log
+ * @param debugFlag
+ * @param rqSummary
+ * @return
+ * @throws Throwable 
+ */
 	protected static String execGetRequest(HttpClient httpCli, String url, Logger log, boolean debugFlag, String rqSummary)
 			throws Throwable {
 		String resultText = null;
@@ -43,6 +59,14 @@ public class WebDataClient extends BasicDebugger {
 		resultText = extractResponseEntityText(response, log, debugFlag, rqSummary);
 		return resultText;
 	}
+	/**
+	 * Use this to exec POST on any server URL, including a SPARQL-update service!
+	 * @param url
+	 * @param nvps  - parameters for the POST.  Joseki likes to see one called "request" with the body of your 
+	 * SPARQL-Update message.
+	 * @param debugFlag
+	 * @return 
+	 */
 	public String execPost (String url, List<NameValuePair> nvps, boolean debugFlag) {
 		String resultText = null;
 		try {
