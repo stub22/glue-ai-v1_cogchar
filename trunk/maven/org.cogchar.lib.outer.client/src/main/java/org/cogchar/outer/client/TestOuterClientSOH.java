@@ -46,7 +46,9 @@ public class TestOuterClientSOH extends BasicDebugger {
 	public static String bookSvcURL = repoBaseQryURL + "books";
 	public static String glueQryURL = repoBaseQryURL + "glue-ai";
 	public static String glueUpdURL = repoBaseUpdURL + "glue-ai";
-	HttpClient myHttpCli = new DefaultHttpClient();
+	
+	
+	WebDataClient	myWebDataClient = new WebDataClient();
 
 	public static void main(String[] args) {
 		TestOuterClientSOH test = new TestOuterClientSOH();
@@ -54,16 +56,32 @@ public class TestOuterClientSOH extends BasicDebugger {
 		// Fun, but gives long result list
 		// test.runQuery (dbpQ, dbpediaServiceURL);
 
-		test.runQuery(bookQ, bookSvcURL);
-		test.runQuery(glueQ, glueQryURL);
-		test.runUpdate(glueUpSilly, glueUpdURL);
+		test.runRemoteSparqlSelectAndPrintResults(bookSvcURL, bookQ);
+		test.runRemoteSparqlSelectAndPrintResults(glueQryURL, glueQ );
+		test.execRemoteSparqlUpdate(glueUpdURL, glueUpSilly);
 	}
 
 	public TestOuterClientSOH() {
 		forceLog4jConfig();
 	}
-
-	public void runQuery(String queryText, String svcUrl) {
+	public void runRemoteSparqlSelectAndPrintResults(String svcUrl, String queryTxt) {
+		Logger log = getLogger();
+		ResultSet resSet = execRemoteSparqlSelect(svcUrl, queryTxt);
+		ResultSetRewindable rewindableResSet = ResultSetFactory.makeRewindable(resSet);
+		String resultXML = ResultSetFormatter.asXMLString(rewindableResSet);
+		log.info("ResultSet as XML: \n" + resultXML);
+	}
+	/**
+	 * SPARQL query runs through the sparqlService facility of Jena/ARQ, which handles
+	 * the HTTP client duties, and returns us a regular jena.query.ResultSet, which 
+	 * we can iterate rowwise, dump as XML, etc.
+	 * 
+	 * TODO:  Need to review the proper "close" semantics for these result sets.
+	 * 
+	 * @param queryText
+	 * @param svcUrl 
+	 */
+	public ResultSet execRemoteSparqlSelect(String svcUrl, String queryText) {
 		Logger log = getLogger();
 		log.info("QueryUrl=[{}]  QueryText={}", svcUrl, queryText);
 		// Create an ARQ parsed query object
@@ -74,90 +92,25 @@ public class TestOuterClientSOH extends BasicDebugger {
 
 		QueryExecution qExc = QueryExecutionFactory.sparqlService(svcUrl, parsedQuery);
 		ResultSet resSet = qExc.execSelect();
-		ResultSetRewindable rewindableResSet = ResultSetFactory.makeRewindable(resSet);
-		String resultXML = ResultSetFormatter.asXMLString(rewindableResSet);
-		log.info("ResultSet as XML: \n" + resultXML);
+		return resSet;
 	}
-
-	public void runUpdate(String updateText, String svcUrl) {
+	/**
+	 *  SPARQL-Update POST runs through the Apache Commons HttpClient library.
+	 * @param updateText
+	 * @param svcUrl 
+	 */
+	public void execRemoteSparqlUpdate(String svcUrl, String updateText) {
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		nvps.add(new BasicNameValuePair("request", updateText));
 		try {
-			postWebRequestNow(myHttpCli, glueUpdURL, nvps, getLogger(), true);
+			myWebDataClient.execPost(svcUrl, nvps, true);
 		} catch (Throwable t) {
 			getLogger().error("Caught Exception: ", t);
 		}
 	}
 
-	/**
-	 * General HTTP posting method, which we make static to emphasize that there's no hidden state in it.
-	 *
-	 * @param httpCli
-	 * @param postURL
-	 * @param nvps
-	 * @param log
-	 * @param debugFlag
-	 * @throws Throwable
-	 */
-	public static void postWebRequestNow(HttpClient httpCli, String postURL, List<NameValuePair> nvps,
-				Logger log, boolean debugFlag) throws Throwable {
-		
-		log.info("Building post request for URL: " + postURL);
-		HttpPost postReq = new HttpPost(postURL);
-		UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(nvps, HTTP.UTF_8);
-		postReq.setEntity(formEntity);
-		if (debugFlag) {
-			dumpRequestInfo(postReq, log);
-		}
-		String rqSummary = "Posting [URL=" + postURL + ", pairs=[" + nvps + "]]";
-		HttpResponse response = httpCli.execute(postReq);
-		String resultText = responseEntityText(response, debugFlag, rqSummary, log);
-		if (debugFlag) {
-			dumpResponseInfo(response, rqSummary, resultText, log);
-		}
-	}
 
-	public static String responseEntityText(HttpResponse response, boolean debugFlag, String rqSummary, Logger log) throws Throwable {
-		String entityText = null;
 
-		HttpEntity resEntity = response.getEntity();
-		if (resEntity != null) {
-			if (debugFlag) {
-				log.debug("Got response entity: " + resEntity);
-				log.debug("Response content length: " + resEntity.getContentLength());
-				log.debug("Chunked?: " + resEntity.isChunked());
-			}
-			entityText = EntityUtils.toString(resEntity);
-			resEntity.consumeContent();
-		} else {
-			log.warn("No entity attached to response to request: " + rqSummary);
-		}
-		return entityText;
-	}
-
-	public static void dumpRequestInfo(HttpPost postReq, Logger log) {
-		log.info("Request method: " + postReq.getMethod());
-		log.info("Request line: " + postReq.getRequestLine());
-		Header[] allHeaders = postReq.getAllHeaders();
-		log.info("POST header count: " + allHeaders.length);
-		for (Header h : allHeaders) {
-			log.info("Header: " + h);
-		}
-	}
-
-	public static void dumpResponseInfo(HttpResponse response, String rqSummary, String entityText, Logger log)
-			throws Throwable {
-		log.info("Request Summary: " + rqSummary);
-
-		if (response != null) {
-			log.info("Response status line: " + response.getStatusLine());
-		} else {
-			log.warn("Got null response to request: " + rqSummary);
-		}
-		if (entityText != null) {
-			log.info("Entity Text: " + entityText);
-		}
-	}
 	static String PREFIX_FOAF = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n",
 			PREFIX_XSD = "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n",
 			PREFIX_DC = "PREFIX dc:      <http://purl.org/dc/elements/1.1/>\n",
