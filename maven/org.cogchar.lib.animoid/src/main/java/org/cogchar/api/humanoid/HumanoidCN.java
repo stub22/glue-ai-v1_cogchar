@@ -32,5 +32,6 @@ public class HumanoidCN {
 	final static String BONY_CONFIG_PATH_VAR_NAME = "bonyConfigPath";
 	final static String JOINT_CONFIG_PATH_VAR_NAME = "jointConfigPath";
 	final static String[] INITIAL_POSITION_VAR_NAMES = {"initX", "initY", "initZ"};
+	final static String SCALE_VAR_NAME = "scale";
 	final static String PHYSICS_FLAG_VAR_NAME = "physics";
 }
