@@ -34,7 +34,7 @@ class GlobalConfigEmitter(val myQI : RepoClient) {
 	private final val ENTITY_VAR_NAME = "entity"
 	private final val ROLE_VAR_NAME = "role"
 	private final val GRAPH_VAR_NAME = "graph"
-	private final val ENTITY_TYPES = Array("CharEntity", "VirtualWorldEntity", "WebappEntity", "SwingAppEntity")
+	private final val ENTITY_TYPES = Array("CharEntity", "VirtualWorldEntity", "WebappEntity", "SwingAppEntity", "MayaMappingEntity")
   
 	def getEntityTypeIdent(i : Int) = new FreeIdent(gr+ENTITY_TYPES(i), ENTITY_TYPES(i))
 	

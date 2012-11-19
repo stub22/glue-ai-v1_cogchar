@@ -45,7 +45,7 @@ public class OgreAnimationSkeletonMap{
     public final static String Y = "rotateY";
     public final static String Z = "rotateZ";
 	
-	private final static JunkyConversionTable JUNKY = new JunkyConversionTable(); // A temporary and exceedingly ugly crutch
+	//private final static JunkyConversionTable JUNKY = new JunkyConversionTable(); // A temporary and exceedingly ugly crutch
 	
 	private static Logger theLogger = LoggerFactory.getLogger(OgreAnimationSkeletonMap.class); 
 
