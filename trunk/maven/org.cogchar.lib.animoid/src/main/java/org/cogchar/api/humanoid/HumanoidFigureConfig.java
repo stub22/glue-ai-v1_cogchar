@@ -34,7 +34,7 @@ public class HumanoidFigureConfig {
 	public String myDebugSkelMatPath;
 	public boolean myPhysicsFlag;
 	public HumanoidBoneConfig myBoneConfig;
-	public float myInitX, myInitY, myInitZ;
+	public float myInitX, myInitY, myInitZ, myScale;
 
 	public HumanoidFigureConfig(RepoClient qi, HumanoidConfig hc, RenderConfigEmitter rce, Ident bonyGraphIdent) {
 		myCharIdent = hc.myCharIdent;
@@ -45,6 +45,7 @@ public class HumanoidFigureConfig {
 		myInitX = hc.myInitialPosition[0];
 		myInitY = hc.myInitialPosition[1];
 		myInitZ = hc.myInitialPosition[2];
+		myScale = hc.myScale;
 		myPhysicsFlag = hc.myPhysicsFlag;
 		addBoneDescsFromBoneRobotConfig(qi, myCharIdent, bonyGraphIdent, this);
 	}

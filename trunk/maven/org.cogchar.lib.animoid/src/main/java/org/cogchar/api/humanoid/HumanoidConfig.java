@@ -34,6 +34,7 @@ public class HumanoidConfig {
 	public String myMeshPath;
 	public String myJointConfigPath;
 	public Float[] myInitialPosition = new Float[3];
+	public float myScale;
 	public boolean myPhysicsFlag;
 
 	public HumanoidConfig(RepoClient qi, Ident charIdent, Ident graphIdent) {
@@ -48,6 +49,7 @@ public class HumanoidConfig {
 		for (int i = 0; i < myInitialPosition.length; i++) {
 			myInitialPosition[i] = sh.pullFloat(solutionMap, charIdent, HumanoidCN.INITIAL_POSITION_VAR_NAMES[i]);
 		}
+		myScale = sh.pullFloat(solutionMap, charIdent, HumanoidCN.SCALE_VAR_NAME);
 		myPhysicsFlag = sh.pullBoolean(solutionMap, charIdent, HumanoidCN.PHYSICS_FLAG_VAR_NAME);
 	}
 	@Override public String toString() { 

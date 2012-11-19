@@ -135,6 +135,8 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 			return false;
 		}
 		
+		myHumanoidModelNode.setLocalScale(myConfig.myScale); 
+		
 		// This was commented out in JMonkey code:
 		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));
 
