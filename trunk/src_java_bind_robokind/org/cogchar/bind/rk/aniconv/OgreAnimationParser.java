@@ -16,8 +16,7 @@
 package org.cogchar.bind.rk.aniconv;
 
 import java.io.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.*;
 import org.robokind.api.animation.ControlPoint;
 
 /**
@@ -26,63 +25,57 @@ import org.robokind.api.animation.ControlPoint;
  */
 public class OgreAnimationParser{
 
-    private final static Logger theLogger = LoggerFactory.getLogger(OgreAnimationParser.class.getName());
-	
-	private final static double MAX_ALLOWED_TIME = 1000.0; // seconds
+    private final static Logger theLogger = Logger.getLogger(OgreAnimationParser.class.getName());
 
     public static AnimationData parseAnimation(String animName, StreamTokenizer st){
-		//System.out.println("In parseAnimation"); // TEST ONLY
         st.wordChars(0x21, 0x7E);
         int id = 0;
-         AnimationData animTable = new AnimationData(animName);
+        AnimationData animTable = new AnimationData(animName);
 
-		 
-        try{            
-            while(StreamTokenizer.TT_WORD == st.nextToken()){
-				if(!"anim".equals(st.sval)){ // TEST ONLY
-					//System.out.println("No anim token here, found " + st.toString()); // TEST ONLY
+        try{     
+            while(StreamTokenizer.TT_EOF != st.nextToken()){
+                if(StreamTokenizer.TT_WORD != st.ttype){
                     continue;
                 }
-                //System.out.println("Adding channel, found " + st.toString()); // TEST ONLY
+                if(!st.sval.equals("anim")){
+                    continue;
+                }
+                
                 ChannelData<Double> chanData = parseChannelData(st, id);
-                animTable.addChannel(chanData);
-                id++;
-				
+                if(chanData != null){
+                    animTable.addChannel(chanData);
+                    id++;
+                }
             }
         }catch(Exception e){
-            theLogger.warn("Exception while parsing animation source: ", e);
+            theLogger.log(Level.WARNING,
+                    "Exception while parsing animation source: ", e);
         }
-		//System.out.println("Exiting parseAnimation..."); // TEST ONLY
         return animTable;
     }
 
     private static ChannelData<Double> parseChannelData(StreamTokenizer st,
             int id) throws IOException{
-		
         if(StreamTokenizer.TT_WORD != st.nextToken()){
             throw new IllegalArgumentException();
         }
-		
-		//st.nextToken();
-		//System.out.println("The next token is " + st.toString()); // TEST ONLY
-
-        String animName = st.sval;
-		// Temporary ugly way to remove the following tag sometimes found in .anim channel names:
-		String strippedA04PrefixChanName = animName.replaceAll("AZR50New_Rig_FINAL:", "");
-        ChannelData<Double> chanData = new ChannelData<Double>(
-                id, strippedA04PrefixChanName);
-
-        if(StreamTokenizer.TT_WORD != st.nextToken()){
-            throw new IllegalArgumentException(st.sval);
+        StringBuilder chanNameBuilder = new StringBuilder();
+        int tokenType = st.ttype;
+        while(StreamTokenizer.TT_EOF != tokenType){
+            if(StreamTokenizer.TT_WORD == tokenType){
+                if(st.sval.equals("{")){
+                    ChannelData<Double> chanData = 
+                            new ChannelData<Double>(id, chanNameBuilder.toString());
+                    parseChannelPoints(st, chanData);
+                    return chanData;
+                }
+                chanNameBuilder.append(st.sval);
+            }else if(StreamTokenizer.TT_NUMBER == tokenType){
+                chanNameBuilder.append(st.nval);
+            }
+            tokenType = st.nextToken();
         }
-
-        if(st.sval.equals("{")){
-			st.nextToken();
-			st.nextToken(); // Step past Time and Value headers - ugly temporary method
-            parseChannelPoints(st, chanData);
-        }
-
-        return chanData;
+        return null;
     }
 
     private static void parseChannelPoints(StreamTokenizer st,
@@ -90,7 +83,6 @@ public class OgreAnimationParser{
         ControlPoint<Double> point;
 
         while(true){
-			//System.out.println("Parsing a point..."); // TEST ONLY
             point = parseControlPoint(st);
             if(point == null){
                 if(StreamTokenizer.TT_WORD == st.ttype && "}".equals(st.sval)){
@@ -112,29 +104,12 @@ public class OgreAnimationParser{
         }
 
         double time = st.nval;
-		
 
         if(StreamTokenizer.TT_NUMBER != st.nextToken()){
             throw new IllegalArgumentException();
         }
 
         double position = st.nval;
-		
-		// Handle scientific notation if we find it
-		int nextThingy = st.nextToken();
-		if ((nextThingy == -3) && (st.sval.startsWith("e"))) {
-			//System.out.println("Found scientific notation..."); // TEST ONLY
-			int exponent = Integer.valueOf(st.sval.replaceAll("e", ""));
-			position = position * Math.pow(10.0, exponent);
-		} else {
-			st.pushBack();
-		}
-		
-		// This was added due to "extreme" time points found in some .anim files
-		if ((time < 0) || (time > MAX_ALLOWED_TIME)) {
-			theLogger.warn("Found time out of allowed range in anim file ({}), ignoring", String.valueOf(time)); 
-            return null;
-        }
 
         ControlPoint<Double> point = new ControlPoint(time, position);
 
