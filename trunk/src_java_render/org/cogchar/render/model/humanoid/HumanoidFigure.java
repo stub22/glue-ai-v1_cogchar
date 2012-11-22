@@ -184,7 +184,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 	public void makeSinbadStandUp() { 
 		Vector3f v = new Vector3f();
 		v.set(myHumanoidModelNode.getLocalTranslation());
-		v.y = 0;
+		v.y = myConfig.myInitY;
 		myHumanoidModelNode.setLocalTranslation(v);
 		Quaternion q = new Quaternion();
 		float[] angles = new float[3];
