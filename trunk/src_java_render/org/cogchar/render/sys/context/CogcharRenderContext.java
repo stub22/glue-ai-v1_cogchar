@@ -42,7 +42,7 @@ import org.cogchar.render.app.core.WorkaroundAppStub;
  */
 public class CogcharRenderContext extends BasicRenderContext {
 	
-	private		WorkaroundAppStub			myAppStub;
+	// private		WorkaroundAppStub			myAppStub;
 	
 	private		AppSettings					myJme3AppSettings;
 	
@@ -71,10 +71,14 @@ public class CogcharRenderContext extends BasicRenderContext {
 	}
 		
 	public void setAppStub(WorkaroundAppStub stub) {
-		myAppStub = stub;
+		RenderRegistryClient rrc = getRenderRegistryClient();
+		rrc.putWorkaroundAppStub(stub);
+		// myAppStub = stub;
 	}
 	public WorkaroundAppStub getAppStub() {
-		return myAppStub;
+		RenderRegistryClient rrc = getRenderRegistryClient();
+		return rrc.getWorkaroundAppStub();
+		// return myAppStub;
 	}
 	
 	public Future<Object> enqueueCallable(Callable callThis) {

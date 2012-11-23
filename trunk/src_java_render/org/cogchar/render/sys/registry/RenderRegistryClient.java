@@ -29,6 +29,7 @@ import org.cogchar.render.opengl.mesh.WireMeshFactory;
 import org.cogchar.render.opengl.optic.*;
 import org.cogchar.render.opengl.scene.*;
 import org.cogchar.render.sys.asset.AssetContext;
+import org.cogchar.render.app.core.WorkaroundAppStub;
 
 /**
  * Preferred registry interface for the Cogchar rendering system.
@@ -87,5 +88,8 @@ public interface RenderRegistryClient {
 	public AssetContext getAssetContext(String optionalName, String optJme3AssetManagerName);
 
 	public AssetContext getAssetContext(String optionalName, 	String optJme3AssetManagerName, Class optCredClaz);
+	
+	public WorkaroundAppStub getWorkaroundAppStub();
+	public void putWorkaroundAppStub(WorkaroundAppStub stub);
 	
 }
