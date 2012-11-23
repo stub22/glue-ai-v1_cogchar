@@ -45,7 +45,7 @@ import org.cogchar.render.opengl.scene.ModelSpatialFactory;
 import org.cogchar.render.opengl.scene.TextMgr;
 import org.cogchar.render.sys.asset.AssetContext;
 import org.osgi.framework.BundleContext;
-
+import org.cogchar.render.app.core.WorkaroundAppStub;
 
 /**
  * This is a set of functions which statelessly defines the create/find behavior of Cogchar rendering core services.
@@ -88,7 +88,9 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		CC_SCENE_SPATIAL_MODEL_FACADE,
 		CC_SCENE_TEXT_FACADE,
 		
-		CC_PHYSICS_FACADE
+		CC_PHYSICS_FACADE,
+		
+		CC_WORKAROUND_APP_STUB
 	}
 	
 	protected static class RFSpec<RFType> extends FacadeSpec<RFType, RFKind> {
@@ -164,6 +166,8 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		THE_CC_SCENE_SPATIAL_MODEL_FACADE = new RFSpec<ModelSpatialFactory>(RFKind.CC_SCENE_SPATIAL_MODEL_FACADE, ModelSpatialFactory.class, false);
 		THE_CC_SCENE_TEXT_FACADE = new RFSpec<TextMgr>(RFKind.CC_SCENE_TEXT_FACADE, TextMgr.class, false);		
 	}
+	
+	protected static RFSpec<WorkaroundAppStub>		THE_CC_WORKAROUND_APP_STUB;
 
 	// protected static FacadeSpec<PhysicsStuffBuilder>	THE_CC_PHYSICS_FACADE;
 	
@@ -306,4 +310,11 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	}
 	* 
 	*/ 
+	
+	protected static void registerWorkaroundAppStub(WorkaroundAppStub stub) { 
+		registerExternalFacade(THE_CC_WORKAROUND_APP_STUB, stub, null, null);
+	}
+	protected static WorkaroundAppStub findWorkaroundAppStub() {
+		return findExternalFacadeOrNull(THE_CC_WORKAROUND_APP_STUB, null, null);
+	}	
 }
