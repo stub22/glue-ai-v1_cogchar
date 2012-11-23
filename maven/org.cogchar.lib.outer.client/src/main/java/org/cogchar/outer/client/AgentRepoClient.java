@@ -59,4 +59,8 @@ public class AgentRepoClient extends BasicDebugger {
 		}
 	}
 	
+	public String buildSparqlPrefixHeader (String repoServiceURL) { 
+		return null;
+	}
+	
 }

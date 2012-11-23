@@ -29,6 +29,7 @@ import org.cogchar.render.opengl.mesh.WireMeshFactory;
 import org.cogchar.render.opengl.optic.*;
 import org.cogchar.render.opengl.scene.*;
 import org.cogchar.render.sys.asset.AssetContext;
+import org.cogchar.render.app.core.WorkaroundAppStub;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -189,6 +190,15 @@ public class BasicRenderRegistryClientImpl implements RenderRegistryClient {
 	@Override
 	public AssetContext getAssetContext(String optionalName, String optJme3AssetManagerName, Class optCredClaz) {
 		return RenderRegistryFuncs.findOrMakeAssetContext(optionalName, optJme3AssetManagerName, optCredClaz);
+	}
+
+	@Override public WorkaroundAppStub getWorkaroundAppStub() {
+		return RenderRegistryFuncs.findWorkaroundAppStub();
+	}
+
+	@Override
+	public void putWorkaroundAppStub(WorkaroundAppStub stub) {
+		RenderRegistryFuncs.registerWorkaroundAppStub(stub);
 	}
 
 
