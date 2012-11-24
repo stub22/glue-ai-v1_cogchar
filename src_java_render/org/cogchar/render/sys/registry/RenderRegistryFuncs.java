@@ -168,6 +168,9 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	}
 	
 	protected static RFSpec<WorkaroundAppStub>		THE_CC_WORKAROUND_APP_STUB;
+	static {
+		THE_CC_WORKAROUND_APP_STUB = new RFSpec<WorkaroundAppStub>(RFKind.CC_WORKAROUND_APP_STUB, WorkaroundAppStub.class, false);
+	}
 
 	// protected static FacadeSpec<PhysicsStuffBuilder>	THE_CC_PHYSICS_FACADE;
 	
