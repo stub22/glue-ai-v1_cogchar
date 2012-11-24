@@ -33,7 +33,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  *
- * Kludge alert! Not sure we really want this RenderRegistryAware - need it to get root node to add lights via main
+ * 
+ * (From Ryan)
+ * Kludge alert! Not sure we really want this RenderRegistryAware (base class) - need it to get root node to add lights via main
  * rendering thread, currently handled directly from here to WorkaroundFuncsMustDie. If not for the requirement to
  * enqueue the request, we'd want to do this via established methods in CogCharRenderContext. BUT we need access to the
  * app to enqueue, and CogcharRenderContext doesn't have getApp - that's up in BonyRenderContext. So for now, we'll get

@@ -22,9 +22,12 @@ import com.jme3.renderer.ViewPort;
 
 /** WorkaroundAppStub exposes the few required features of JME3 SimpleApplication that Cogchar does not factor out 
  * into Cogchar facade APIs.
+ * 
+ * These capabilities should be broken out into narrower interfaces, enabling us to more clearly
+ * self-document the dependencies on these features in client code.
  * @author Stu B. <www.texpedient.com>
  */
-public interface WorkaroundAppStub {
+public interface WorkaroundAppStub extends CogcharRenderSchedule {
 	public void setAppSettings(AppSettings someSettings);
 	public void setGuiFont(BitmapFont font);
 	public void setAppSpeed(float appSpeed);
@@ -35,7 +38,7 @@ public interface WorkaroundAppStub {
 	public FlyByCamera getFlyByCamera();
 	
 	// TOD: Factor this into ViewportFacade;
-	public ViewPort  getViewPort();
+	public ViewPort  getPrimaryAppViewPort();
 	
-	public <V> java.util.concurrent.Future<V> enqueue(java.util.concurrent.Callable<V> callable);
+
 }
