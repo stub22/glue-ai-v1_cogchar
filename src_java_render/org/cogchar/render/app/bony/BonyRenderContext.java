@@ -21,8 +21,10 @@ import com.jme3.animation.AnimControl;
 import java.util.List;
 import javax.swing.JFrame;
 import org.cogchar.blob.emit.RenderConfigEmitter;
+import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.context.WorkaroundFuncsMustDie;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 /**
  * The contents of this class, are pimples to be squeezed.
  * @author Stu B. <www.texpedient.com>
@@ -42,7 +44,9 @@ public class BonyRenderContext extends ConfiguredPhysicalModularRenderContext {
 	}
 	@Override public void completeInit() {
 		super.completeInit();
-		WorkaroundFuncsMustDie.setupCameraLightAndViewport(this);
+		// RenderRegistryClient rrc = getRenderRegistryClient();
+		WorkaroundAppStub was = getAppStub();
+		WorkaroundFuncsMustDie.setupRegularCameraLightAndViewport(was);
 	}
 	
 	// TODO:  We want this app pointer to go away.
