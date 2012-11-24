@@ -38,13 +38,12 @@ public class WorkaroundFuncsMustDie {
 	
 	static Logger theLogger = LoggerFactory.getLogger(WorkaroundFuncsMustDie.class);
 	
-	public static void setupCameraLightAndViewport(CogcharRenderContext bc) {
-		WorkaroundAppStub was = bc.getAppStub();
+	public static void setupRegularCameraLightAndViewport(WorkaroundAppStub was) {
 		FlyByCamera fbc = was.getFlyByCamera();
         fbc.setDragToRotate(true);
 		//fbc.setMoveSpeed(10f); //This is set in HumanoidRenderContext.initCameraAndLights()
 		was.setPauseOnLostFocus(false);
-		ViewPort vp = was.getViewPort();
+		ViewPort vp = was.getPrimaryAppViewPort();
 		vp.setBackgroundColor(ColorRGBA.LightGray);
 //    initKeys();
 

@@ -24,6 +24,7 @@ import com.jme3.asset.plugins.UrlLocator;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.input.FlyByCamera;
+import com.jme3.renderer.ViewPort;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,6 +131,8 @@ public abstract class CogcharPresumedApp<CRCT extends CogcharRenderContext> exte
 	@Override public FlyByCamera getFlyByCamera() {
 		return flyCam;
 	}	
-	
+	@Override	public ViewPort  getPrimaryAppViewPort() {
+		return getViewPort();
+	}
 
 }
