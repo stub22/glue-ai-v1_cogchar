@@ -17,11 +17,15 @@
 package org.cogchar.render.model.goodies;
 
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Torus;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  * A class to implement the Robosteps "BitBox" objects, which may not turn out to be boxes at all
@@ -33,27 +37,34 @@ import org.appdapter.core.name.Ident;
 public class BitBox extends BasicVirtualThing {
 	
 	private boolean state = false;
-	private Mesh zeroMesh;
-	private Mesh oneMesh;
+	private int zeroIndex;
+	private int oneIndex;
 	
 	// A new BitBox has false (0) state as currently implemented
-	BitBox(Ident boxUri, Vector3f initialPosition, float size) {
+	BitBox(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size) {
+		super(aRenderRegCli);
 		uri = boxUri;
 		position = initialPosition;
-		zeroMesh = new Box(size/5, size, size/5);
-		oneMesh = new Torus(20,20,size/5,size*4/5);
-		mesh = zeroMesh;
+		Mesh zeroMesh = new Torus(40,20,size/5,size*5/6);
+		Mesh oneMesh = new Cylinder(20, 20, size/5, size*2, true);
+		zeroIndex = addGeometry(zeroMesh, ColorRGBA.Blue);
+		float[] oneRotationAngles = {(float)(Math.PI/2), 0f, 0f};
+		oneIndex = addGeometry(oneMesh, ColorRGBA.Red, new Quaternion(oneRotationAngles));
+		
+	}
+	
+	@Override
+	void attachToVirtualWorldNode(final Node rootNode) {
+		attachToVirtualWorldNode(rootNode, zeroIndex);
 	}
 	
 	public void setZeroState() {
-		changeMesh(zeroMesh);
-		setMaterialColor(ColorRGBA.Blue);
+		setGeometryByIndex(zeroIndex);
 		state = false;
 	}
 	
 	public void setOneState() {
-		changeMesh(oneMesh);
-		setMaterialColor(ColorRGBA.Red);
+		setGeometryByIndex(oneIndex);
 		state = true;
 	}
 	
