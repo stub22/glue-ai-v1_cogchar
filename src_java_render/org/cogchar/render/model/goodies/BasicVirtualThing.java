@@ -21,16 +21,18 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.opengl.optic.MatFactory;
-import org.cogchar.render.opengl.scene.GeomFactory;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -39,91 +41,160 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 // This will need some ongoing refactorings both to fix some oddness and bad form inherent in development of the concepts here,
 // and to make sure the BasicVirtualThing has the sorts of properties we want it to have
-// Might need to be abstract, but so far not necessary. However this shouldn't be instantiated directly, so ultimately
-// we'll want to make sure it can't be
+// Might need to be abstract, but so far not necessary. 
 public class BasicVirtualThing {
+	
+		private static Logger theLogger = LoggerFactory.getLogger(BasicVirtualThing.class);
 
-		// Some of these may not really need to live in fields, and some of these properties may duplicate other implied
-		// information in methods -- definitely something to polish up as this is refactored and refined
+		RenderRegistryClient myRenderRegCli;
 		Ident uri;
-		HumanoidRenderContext myHRC;
 		Vector3f position;
-		Mesh mesh;
-		Geometry geometry;
-		ColorRGBA color = ColorRGBA.Blue; // A default color
-		RigidBodyControl control = null;
-		Material material;
+		boolean attached = false;
+		
+		// This allows a single "thing" to have multiple switchable geometries
+		List<BasicThingGeometry> myGeometries = new ArrayList<BasicThingGeometry>();
+		Geometry attachedGeometry;
+
 		Node myRootNode;
-
-		// This class is intended to also support physical objects, though that functionality is not yet fleshed out
-		// Both addToVirtualWorld methods really need to be protected against exceptions if they are called when the 
-		// Thing's fields aren't set up properly 
-		void addToVirtualWorld(HumanoidRenderContext hrc, Node rootNode, CollisionShape shape, float mass) {
-			control = new RigidBodyControl(shape, mass);
-			control.setRestitution(0.5f);
-			addToVirtualWorld(hrc, rootNode);
+		
+		// May not want to allow this to be instantiated directly
+		// Might make sense to set more instance variables in the constructor as well, including perhaps rootNode?
+		BasicVirtualThing(RenderRegistryClient aRenderRegCli) {
+			myRenderRegCli = aRenderRegCli;
 		}
-		void addToVirtualWorld(HumanoidRenderContext hrc, final Node rootNode) {
-			myHRC = hrc;
-			myRootNode = rootNode;
-			RenderRegistryClient rrc = hrc.getRenderRegistryClient();
-			GeomFactory geomFactory = rrc.getSceneGeometryFacade(null);
-			MatFactory materialFactory = rrc.getOpticMaterialFacade(null, null);
-			
-			if (material == null) {
-				// Set "standard" material; these hard coded values probably won't live here for long
-				material = materialFactory.makeMatWithOptTexture("Common/MatDefs/Light/Lighting.j3md", "SpecularMap", null);
-				material.setBoolean("UseMaterialColors", true);
-				material.setFloat("Shininess", 25f);
-				setMaterialColor(color);
+		
+		// It would be good for clarity to have this in a separate file, but by having it as an inner class we allow
+		// access to getRenderRegistryClient() without awkwardness. And it seems it can be a private class. But we might
+		// end up reconsidering this being a private inner class eventually.
+		private class BasicThingGeometry {
+			Geometry myGeometry;
+			ColorRGBA myColor = ColorRGBA.Blue; // A default color
+			RigidBodyControl myControl = null;
+			Material myMaterial;
+
+			BasicThingGeometry(Mesh mesh, Material material, ColorRGBA color, 
+					Quaternion rotation, CollisionShape shape, float mass) {
+				if (color != null) {
+					myColor = color;
+				}
+				if (shape != null) {
+					myControl = new RigidBodyControl(shape, mass);
+					myControl.setRestitution(0.5f);
+				}
+				if (material == null) {
+					// Set "standard" material; these hard coded values probably won't live here for long
+					myMaterial = getRenderRegistryClient().getOpticMaterialFacade(null, null)
+							.makeMatWithOptTexture("Common/MatDefs/Light/Lighting.j3md", "SpecularMap", null);
+					myMaterial.setBoolean("UseMaterialColors", true);
+					myMaterial.setFloat("Shininess", 25f);
+					setMaterialColor(myColor);
+				} else {
+					myMaterial = material;
+				}
+				myGeometry = getRenderRegistryClient().getSceneGeometryFacade(null).makeGeom(uri.getLocalName(), mesh, myMaterial, myControl);
+				myGeometry.setLocalRotation(rotation);
 			}
-
-			geometry = geomFactory.makeGeom(uri.getLocalName(), mesh, material, control);
-			attachGeometryToRootNode();
+			
+			final void setMaterialColor(ColorRGBA newColor) {
+				myColor = newColor;
+				myMaterial.setColor("Diffuse", newColor);
+				myMaterial.setColor("Ambient", newColor);
+				myMaterial.setColor("Specular", newColor);	
+			}
+			
+			Geometry getJmeGeometry() {
+				return myGeometry;
+			}
 		}
 		
-		void setMaterialColor(ColorRGBA newColor) {
-			color = newColor;
-			material.setColor("Diffuse", newColor);
-			material.setColor("Ambient", newColor);
-			material.setColor("Specular", newColor);	
+		protected RenderRegistryClient getRenderRegistryClient() {
+			return myRenderRegCli;
 		}
 		
-		private void attachGeometryToRootNode() {
-			final PhysicsSpace physicsSpace = myHRC.getRenderRegistryClient().getJme3BulletPhysicsSpace();
-			myHRC.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+		// Returns geometry index
+		// This class is intended to also support physical objects, though that functionality is not yet fleshed out
+		int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, CollisionShape shape, float mass) {
+			myGeometries.add(new BasicThingGeometry(mesh, material, color, rotation, shape, mass));
+			return myGeometries.size() - 1;
+		}
+		// For adding non-physical geometries
+		int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation) {
+			return addGeometry(mesh, material, color, rotation, null, 0f);
+		}
+		// For adding non-physical geometries with default material
+		int addGeometry(Mesh mesh, ColorRGBA color, Quaternion rotation) {
+			return addGeometry(mesh, null, color, rotation, null, 0f);
+		}
+		// For adding non-physical geometries with default material and no rotation offset
+		int addGeometry(Mesh mesh, ColorRGBA color) {
+			return addGeometry(mesh, null, color, new Quaternion(), null, 0f);
+		}
+		
+		// For attaching "default" (zero index) geometry
+		void attachToVirtualWorldNode(Node rootNode) {
+			attachToVirtualWorldNode(rootNode, 0);
+		}
+		// For attaching geometry by index
+		void attachToVirtualWorldNode(Node rootNode, int geometryIndex) {
+			myRootNode = rootNode;
+			attachToRootNode(geometryIndex);
+		}
+		// For switching to geometry from a new index, attached to existing root node
+		void setGeometryByIndex(int geometryIndex) {
+			if (myRootNode != null) {
+				attachToRootNode(geometryIndex);
+			} else {
+				theLogger.error("Attempting to set geometry by index, but no root node is set");
+			}	
+		}
+		
+		private void attachToRootNode(int geometryIndex) {
+			detachIfAttached();
+			if (myGeometries.size() > geometryIndex) {
+				attachGeometryToRootNode(myGeometries.get(geometryIndex));
+			} else {
+				theLogger.error("Attempting to attach BasicVirtualThing {} with geometry index {}, but that geometry is not available",
+						uri.getAbsUriString(), geometryIndex);
+			}
+		}
+		
+		void detachIfAttached() {
+			if (attached)  {
+				detachGeometryFromRootNode();
+			}
+		}
+		
+		private void attachGeometryToRootNode(final BasicThingGeometry geometryToAttach) {
+			final PhysicsSpace physicsSpace = getRenderRegistryClient().getJme3BulletPhysicsSpace();
+			getRenderRegistryClient().getWorkaroundAppStub().enqueue(new Callable<Void>() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
-					if (control != null) {
+					if (geometryToAttach.myControl != null) {
 						//geometry.addControl(control); should be automatically done in geomFactory.makeGeom
-						physicsSpace.add(control);
-						control.setPhysicsLocation(position); // Need to review this to see if it's necessary/proper
+						physicsSpace.add(geometryToAttach.myControl);
+						geometryToAttach.myControl.setPhysicsLocation(position); // Need to review this to see if it's necessary/proper
 					} else {
-						geometry.setLocalTranslation(position);
+						geometryToAttach.getJmeGeometry().setLocalTranslation(position);
 					}
-					myRootNode.attachChild(geometry);
+					myRootNode.attachChild(geometryToAttach.getJmeGeometry());
 					return null;
 				}
 			});
+			attached = true;
 		}
 		
 		private void detachGeometryFromRootNode() {
-			myHRC.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+			getRenderRegistryClient().getWorkaroundAppStub().enqueue(new Callable<Void>() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
-					// Must detach by name; detaching by geometry saved in field does not work
+					// Must detach by name; detaching by saved geometry does not work
 					myRootNode.detachChildNamed(uri.getLocalName()); 
 					return null;
 				}
 			});
+			attached = false;
 		}
 		
-		void changeMesh(Mesh newMesh) {
-			detachGeometryFromRootNode();
-			mesh = newMesh;
-			geometry = myHRC.getRenderRegistryClient().getSceneGeometryFacade(null).makeGeom(uri.getLocalName(), newMesh, material, control);
-			attachGeometryToRootNode();
-		}
 }
