@@ -21,7 +21,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Torus;
 import org.appdapter.core.name.Ident;
@@ -34,7 +33,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 
 
-public class BitBox extends BasicVirtualThing {
+public class BitBox extends BasicGoodyImpl {
 	
 	private boolean state = false;
 	private int zeroIndex;
@@ -42,15 +41,13 @@ public class BitBox extends BasicVirtualThing {
 	
 	// A new BitBox has false (0) state as currently implemented
 	BitBox(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size) {
-		super(aRenderRegCli);
-		uri = boxUri;
-		position = initialPosition;
+		super(aRenderRegCli, boxUri);
+		setPosition(initialPosition);
 		Mesh zeroMesh = new Torus(40,20,size/5,size*5/6);
 		Mesh oneMesh = new Cylinder(20, 20, size/5, size*2, true);
 		zeroIndex = addGeometry(zeroMesh, ColorRGBA.Blue);
 		float[] oneRotationAngles = {(float)(Math.PI/2), 0f, 0f};
 		oneIndex = addGeometry(oneMesh, ColorRGBA.Red, new Quaternion(oneRotationAngles));
-		
 	}
 	
 	@Override
