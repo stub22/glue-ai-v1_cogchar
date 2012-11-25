@@ -83,6 +83,8 @@
 		<module>../org.cogchar.lib.freckler</module>		
 		
 		<module>../org.cogchar.lib.sonograph</module>
+		
+		<module>../org.cogchar.lib.outer.client</module>
 			
 		<module>../ext.bundle.opengl.jmonkey</module>
 		<module>../ext.bundle.opengl.nifty</module>
