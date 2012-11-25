@@ -50,6 +50,14 @@ public class BasicThingActionSpec implements ThingActionSpec {
 		
 		myParamTVMap = paramTVMap;
 	}
+	public BasicThingActionSpec(ThingActionSpec template) { 
+		// myActionRecordID = template.getActionSpecID();
+		// mySourceAgentID = 
+		myTargetThingID = template.getTargetThingID();
+		myActionVerbID = template.getVerbID();
+		
+		myParamTVMap = null;  // copy of (paramTVMap)
+	}
 
 	public Ident getActionSpecID() {
 		return myActionRecordID;
