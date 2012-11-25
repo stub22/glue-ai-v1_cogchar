@@ -59,8 +59,7 @@ public class GoodyActionParamWriter {
 	 * @param parentResToken - already rendered as either a URI or a variable-ref.
 	 * @return
 	 */
-	public String produceInsertDataTriples(String parentResToken) {
-		TypedValueMap	paramTVM =  myBTVMap;
+	public static String produceInsertDataTriples(TypedValueMap	paramTVM, String parentResToken) {
 		StringBuffer resBuf = new StringBuffer();
 		int paramCount = paramTVM.getSize();
 		if (paramCount > 0) {
