@@ -16,6 +16,7 @@
 
 package org.cogchar.render.model.goodies;
 
+import org.appdapter.core.component.ComponentAssemblyNames;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 
@@ -23,7 +24,7 @@ import org.appdapter.core.name.Ident;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class GoodyNames {
+public class GoodyNames  {
 	
 	public  static String	GOODY_NS = "urn:ftd:cogchar.org:2012:goody#";
 	
@@ -38,5 +39,12 @@ public class GoodyNames {
 	public	static Ident	ROTATION_AXIS_Y = makeID("rotAxisY");
 	public	static Ident	ROTATION_AXIS_Z = makeID("rotAxisZ");
 	public	static Ident	ROTATION_MAG_DEG = makeID("rotMagDeg");
-
+	
+	public static	Ident	TYPE_BIT_BOX = makeID("BitBox");
+	
+	public  static Ident	RDF_TYPE = new FreeIdent(ComponentAssemblyNames.NS_rdf + "type");
+	
+	public static	Ident	ACTION_CREATE = makeID("ActionCreate");
+	public static	Ident	ACTION_UPDATE = makeID("ActionUpdate");
+	public static	Ident	ACTION_DELETE = makeID("ActionDelete");
 }
