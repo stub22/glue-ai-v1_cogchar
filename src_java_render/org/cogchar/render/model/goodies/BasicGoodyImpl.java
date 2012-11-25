@@ -40,40 +40,45 @@ import org.slf4j.LoggerFactory;
  */
 
 // This will need some ongoing refactorings both to fix some oddness and bad form inherent in development of the concepts here,
-// and to make sure the BasicVirtualThing has the sorts of properties we want it to have
+// and to make sure the BasicGoodyImpl has the sorts of properties we want it to have
 // Might need to be abstract, but so far not necessary. 
-public class BasicVirtualThing {
+public class BasicGoodyImpl {
 	
-		private static Logger theLogger = LoggerFactory.getLogger(BasicVirtualThing.class);
+		private static Logger theLogger = LoggerFactory.getLogger(BasicGoodyImpl.class);
 
 		RenderRegistryClient myRenderRegCli;
-		Ident uri;
-		Vector3f position;
+		Ident myUri;
+		Vector3f myPosition = new Vector3f(); // default: at origin
+		Quaternion myRotation = new Quaternion(); // default: no rotation
 		boolean attached = false;
 		
 		// This allows a single "thing" to have multiple switchable geometries
-		List<BasicThingGeometry> myGeometries = new ArrayList<BasicThingGeometry>();
-		Geometry attachedGeometry;
+		List<BasicGoodieGeometry> myGeometries = new ArrayList<BasicGoodieGeometry>();
+		int attachedIndex = NULL_INDEX; // The index of the currently attached geometry, or -1 if none
+		final static int NULL_INDEX = -1;
 
 		Node myRootNode;
 		
 		// May not want to allow this to be instantiated directly
 		// Might make sense to set more instance variables in the constructor as well, including perhaps rootNode?
-		BasicVirtualThing(RenderRegistryClient aRenderRegCli) {
+		BasicGoodyImpl(RenderRegistryClient aRenderRegCli, Ident uri) {
 			myRenderRegCli = aRenderRegCli;
+			myUri = uri;
 		}
 		
 		// It would be good for clarity to have this in a separate file, but by having it as an inner class we allow
 		// access to getRenderRegistryClient() without awkwardness. And it seems it can be a private class. But we might
 		// end up reconsidering this being a private inner class eventually.
-		private class BasicThingGeometry {
+		private class BasicGoodieGeometry {
 			Geometry myGeometry;
 			ColorRGBA myColor = ColorRGBA.Blue; // A default color
 			RigidBodyControl myControl = null;
 			Material myMaterial;
+			Quaternion myRotationOffset;
 
-			BasicThingGeometry(Mesh mesh, Material material, ColorRGBA color, 
+			BasicGoodieGeometry(Mesh mesh, Material material, ColorRGBA color, 
 					Quaternion rotation, CollisionShape shape, float mass) {
+				myRotationOffset = rotation;
 				if (color != null) {
 					myColor = color;
 				}
@@ -91,7 +96,8 @@ public class BasicVirtualThing {
 				} else {
 					myMaterial = material;
 				}
-				myGeometry = getRenderRegistryClient().getSceneGeometryFacade(null).makeGeom(uri.getLocalName(), mesh, myMaterial, myControl);
+				myGeometry = getRenderRegistryClient().getSceneGeometryFacade(null)
+						.makeGeom(myUri.getLocalName(), mesh, myMaterial, myControl);
 				myGeometry.setLocalRotation(rotation);
 			}
 			
@@ -114,7 +120,7 @@ public class BasicVirtualThing {
 		// Returns geometry index
 		// This class is intended to also support physical objects, though that functionality is not yet fleshed out
 		int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, CollisionShape shape, float mass) {
-			myGeometries.add(new BasicThingGeometry(mesh, material, color, rotation, shape, mass));
+			myGeometries.add(new BasicGoodieGeometry(mesh, material, color, rotation, shape, mass));
 			return myGeometries.size() - 1;
 		}
 		// For adding non-physical geometries
@@ -152,31 +158,26 @@ public class BasicVirtualThing {
 			detachIfAttached();
 			if (myGeometries.size() > geometryIndex) {
 				attachGeometryToRootNode(myGeometries.get(geometryIndex));
+				attachedIndex = geometryIndex;
 			} else {
 				theLogger.error("Attempting to attach BasicVirtualThing {} with geometry index {}, but that geometry is not available",
-						uri.getAbsUriString(), geometryIndex);
+						myUri.getAbsUriString(), geometryIndex);
 			}
 		}
 		
 		void detachIfAttached() {
 			if (attached)  {
 				detachGeometryFromRootNode();
+				attachedIndex = NULL_INDEX;
 			}
 		}
 		
-		private void attachGeometryToRootNode(final BasicThingGeometry geometryToAttach) {
-			final PhysicsSpace physicsSpace = getRenderRegistryClient().getJme3BulletPhysicsSpace();
+		private void attachGeometryToRootNode(final BasicGoodieGeometry geometryToAttach) {
 			getRenderRegistryClient().getWorkaroundAppStub().enqueue(new Callable<Void>() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
-					if (geometryToAttach.myControl != null) {
-						//geometry.addControl(control); should be automatically done in geomFactory.makeGeom
-						physicsSpace.add(geometryToAttach.myControl);
-						geometryToAttach.myControl.setPhysicsLocation(position); // Need to review this to see if it's necessary/proper
-					} else {
-						geometryToAttach.getJmeGeometry().setLocalTranslation(position);
-					}
+					setGeometryPositionAndRotation(geometryToAttach);
 					myRootNode.attachChild(geometryToAttach.getJmeGeometry());
 					return null;
 				}
@@ -190,11 +191,49 @@ public class BasicVirtualThing {
 				@Override
 				public Void call() throws Exception {
 					// Must detach by name; detaching by saved geometry does not work
-					myRootNode.detachChildNamed(uri.getLocalName()); 
+					myRootNode.detachChildNamed(myUri.getLocalName()); 
 					return null;
 				}
 			});
 			attached = false;
+		}
+		
+		public void setPosition(Vector3f newPosition) {
+			myPosition = newPosition;
+			if (attachedIndex != NULL_INDEX) {
+				setGeometryPositionAndRotation(myGeometries.get(attachedIndex));
+			} 
+		}
+		
+		public void setRotation(Quaternion newRotation) {
+			myRotation = newRotation;
+			if (attachedIndex != NULL_INDEX) {
+				setGeometryPositionAndRotation(myGeometries.get(attachedIndex));
+			} 
+		}
+		
+		public Vector3f getPosition() {
+			return myPosition;
+		}
+		
+		public Quaternion getRotation() {
+			return myRotation;
+		}
+		
+		private void setGeometryPositionAndRotation(BasicGoodieGeometry goodieGeometry) {
+			final PhysicsSpace physicsSpace = getRenderRegistryClient().getJme3BulletPhysicsSpace();
+			Quaternion totalRotation = myRotation.mult(goodieGeometry.myRotationOffset);
+			RigidBodyControl jmeControl = goodieGeometry.myControl;
+			if (jmeControl != null) {
+				//geometry.addControl(jmeControl); should be automatically done in geomFactory.makeGeom
+				physicsSpace.add(jmeControl);
+				jmeControl.setPhysicsLocation(myPosition); // Need to review this to see if it's necessary/proper
+				jmeControl.setPhysicsRotation(totalRotation);
+			} else {
+				Geometry jmeGeometry = goodieGeometry.getJmeGeometry();
+				jmeGeometry.setLocalTranslation(myPosition);
+				jmeGeometry.setLocalRotation(totalRotation);
+			}
 		}
 		
 }
