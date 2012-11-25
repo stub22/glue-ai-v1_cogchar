@@ -67,6 +67,7 @@ package org.cogchar.lifter {
 	  case class ControlAction(sessionId:String, slotNum:Int)
 	  case class ControlTextInput(sessionId:String, slotNum:Int, text:Array[String])
 	  case class ControlMultiSelect(sessionId:String, slotNum:Int, subControl:Int)
+	  case class ControlMultiAction(sessionId:String, slotNum:Int, subControl:Int)
 	  
 	  def getMarkup(sessionId:String, controlId: Int): NodeSeq = {
 		var nodeOut = NodeSeq.Empty
@@ -262,6 +263,18 @@ package org.cogchar.lifter {
 			val input:Array[String] = Array(ActionStrings.subControlIdentifier + a.subControl.toString)
 			handleAction(a.sessionId, a.slotNum, input)
 		  }
+		case a:ControlMultiAction => {
+			if (theLifterState.stateBySession(a.sessionId).multiActionsBySlot contains a.slotNum) {
+			  // Set the "main" action to the currently desired one; a workaround we may want to change to something more elegant in the future
+			  theLifterState.stateBySession(a.sessionId).controlConfigBySlot(a.slotNum).action = 
+				theLifterState.stateBySession(a.sessionId).multiActionsBySlot(a.slotNum)(a.subControl)
+			  // Using triggerAction to check for bounce, which I believe should work properly here...
+			  triggerAction(a.sessionId, a.slotNum)
+			} else {
+			  warn("Multi action control is attempting to execute an action, but no multiAction data found in Lifter state. Session = " 
+				   + a.sessionId + "; slot = " + a.slotNum)
+			}
+		}
 		case _: Any =>
 	  }
 	  

@@ -64,6 +64,11 @@ class LifterState {
 	var sessionLifterVariablesByName:ConcurrentMap[String,String] = new DfltConcHashMap[String,String]
 	var cogbotTextToSpeechActive:Boolean = false
 	var currentTemplateName:String = ""
+	// The multiActionsBySlot map holds arrays of action idents for "MultiSelect" controls which allow
+	// multiple actions. Sort of an ugly construct, so may be supplanted by a better way.
+	// No need to copy this from initial config in getNewSessionState, since it will be populated as necessary 
+	// by control "initial actions" in each session.
+	var multiActionsBySlot:ConcurrentMap[Int,Array[Ident]] = new DfltConcHashMap[Int,Array[Ident]]
   }
   
   val stateBySession:ConcurrentMap[String,SessionState] = new DfltConcHashMap[String,SessionState]

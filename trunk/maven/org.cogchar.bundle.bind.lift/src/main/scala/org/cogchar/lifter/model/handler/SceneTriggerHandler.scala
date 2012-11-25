@@ -24,7 +24,7 @@ import scala.collection.mutable.ArrayBuffer
 // A handler for action URIs consisting of a LiftConfig
 class SceneTriggerHandler extends AbstractLifterActionHandler {
 
-  protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_scenetrig)
+  protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_scenetrig, ActionStrings.p_anim)
   
   protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
 	val success = PageCommander.getLiftAmbassador.triggerScene(control.action.getLocalName)
