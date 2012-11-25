@@ -25,10 +25,15 @@ import org.cogchar.api.thing.TypedValueMap;
 import org.cogchar.api.thing.ThingActionSpec;
 
 /**
+ * Typically used in the OpenGL server process to interpret an actionSpec found in a repo.
+ * An HTTP-client would not normally use this class.
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 
 public class GoodyAction  {
+	/* We can optionallly play a game of equivalence between Java-enum-constant and URI, without an additional hashMap.
+	// The price is that we must initialize the value in the enum constants.
 	public enum Kind {
 		CREATE,
 		DELETE,
@@ -36,20 +41,34 @@ public class GoodyAction  {
 		SET;
 		
 		public	String myKindUriString;
+	
 	}
+	private		Kind					myKind;
+	* 
+	*/
 	
 	private		ThingActionSpec			mySpec;
-	private		Kind					myKind;
-	private		Ident					myGoodyID;
 
+	private		Ident					myGoodyID;
 	
 	public GoodyAction(ThingActionSpec actionSpec) {
 		mySpec = actionSpec;
 		myGoodyID = actionSpec.getTargetThingID();
 	}
+	/**
+	 * If our ThingActionSpec supplied a targetThingID, we use that by default.
+	 * However, during creation or other "special" operation, our GoodyAction action may 
+	 * set its GoodyID differently.
+	 * @return 
+	 */
 	public Ident getGoodyID() {
 		return myGoodyID;
 	}
+	/**
+	 * Example of actual application data read from spec, into an application specific type.
+	 * Will be generalized to use for "goal location", "direction", etc.
+	 * @return 
+	 */
 	public Vector3f getLocationVector() {
 		TypedValueMap paramTVMap = mySpec.getParamTVM();
 		float locX = paramTVMap.getAsFloat(GoodyNames.LOCATION_X);
@@ -59,8 +78,14 @@ public class GoodyAction  {
 		// Read LocX, LocY, LocZ from some assumed properties.
 		return resultVec;
 	}
+	/**
+	 * Here is a harder one.
+	 * Read rotation axis AxisX, AxisY, AxisZ and magDegrees from some assumed properties,
+	 * and produce a Quartenion.   Will also be generalized later.
+	 * @return rotational operator quaternion object encoding
+	 */
 	public Quaternion getRotationQuaternion() {
-		// Read rotation axis AxisX, AxisY, AxisZ and magDegrees from some assumed properties.
+		// 
 		return null;
 	}
 
