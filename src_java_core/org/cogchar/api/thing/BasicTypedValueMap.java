@@ -17,6 +17,7 @@
 package org.cogchar.api.thing;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
 
@@ -27,7 +28,18 @@ import org.appdapter.core.name.Ident;
 public abstract class BasicTypedValueMap implements TypedValueMap {
 	
 	private	Map<Ident, Object>		myRawObjsByID = new HashMap<Ident, Object>();
-	
+
+	@Override public int getSize() { 
+		return myRawObjsByID.size();
+	}
+	@Override public Iterator<Ident>	iterateKeys() {
+		return myRawObjsByID.keySet().iterator();
+	}
+
+		
+	@Override public Object getRaw(Ident name) {
+		return myRawObjsByID.get(name);
+	}
 	protected <VT> VT getValueAtNameAs(Ident name, Class<VT> valClass) {
 		VT typedResult = null;
 		Object rawVal = myRawObjsByID.get(name);
@@ -45,5 +57,4 @@ public abstract class BasicTypedValueMap implements TypedValueMap {
 	public Ident getNameAtName(Ident name) {
 		return getValueAtNameAs(name, Ident.class);
 	}
-
 }
