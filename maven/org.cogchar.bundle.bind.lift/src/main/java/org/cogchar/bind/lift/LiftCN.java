@@ -34,6 +34,7 @@ public class LiftCN {
 	public static final String TEXT_VAR_NAME = "text";
 	public static final String STYLE_VAR_NAME = "style";
 	public static final String RESOURCE_VAR_NAME = "resource";
+	public static final String NAME_VAR_NAME = "name";
 	
 	public static final String TEMPLATE_QUERY_URI = "ccrt:find_lift_templates_99";
 	public static final String START_CONFIG_QUERY_URI = "ccrt:find_lift_startConfig_99";

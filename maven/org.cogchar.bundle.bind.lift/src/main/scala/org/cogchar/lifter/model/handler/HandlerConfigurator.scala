@@ -29,11 +29,13 @@ object HandlerConfigurator {
 	val variableHandler = new LifterVariableHandler
 	val sceneHandler = new SceneTriggerHandler
 	val commandHandler = new LifterCommandActionHandler
+	val lifterQueryHandler = new LifterQueryActionHandler
 	// Set up the chain
 	liftConfigHandler setNextHandler cinematicHandler
 	cinematicHandler setNextHandler variableHandler
 	variableHandler setNextHandler sceneHandler
 	sceneHandler setNextHandler commandHandler
+	commandHandler setNextHandler lifterQueryHandler
 	// Return the first handler in chain
 	liftConfigHandler
   }
@@ -70,6 +72,7 @@ object HandlerConfigurator {
 	LoginForm setNextHandler RadioButtons
 	RadioButtons setNextHandler SelectBoxes
 	SelectBoxes setNextHandler VideoBox
+	VideoBox setNextHandler LinkList
 	// Return the first handler in chain
 	PushyButton
   }

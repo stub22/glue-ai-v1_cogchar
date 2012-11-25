@@ -51,6 +51,7 @@ public class LiftAmbassador {
 	private Map<Ident, LiftConfig> myLiftConfigCache = new HashMap<Ident, LiftConfig>(); // To avoid query config if page is reselected
 	private Map<String, String> myChatConfigEntries = new HashMap<String, String>();
 	private Map<Ident, UserAccessConfig.UserConfig> myUserMap = new HashMap<Ident, UserAccessConfig.UserConfig>();
+	private LiftQueryEnvoy myQueryEnvoy = new LiftQueryEnvoy();
 	
 	private final Object activationLock = new Object();
 	private final Object cogcharLock = new Object();
@@ -124,7 +125,7 @@ public class LiftAmbassador {
 	public void activateControlsFromConfig(LiftConfig newConfig) {
 		synchronized (activationLock) {
 			myInitialConfig = newConfig;
-			theLogger.info("RDF Lift config sent to LiftAmbassador");
+			theLogger.info("Lift config sent to LiftAmbassador");
 			myConfigReady = true;
 			if (myLift != null) {
 				myLift.notifyConfigReady();
@@ -372,6 +373,12 @@ public class LiftAmbassador {
 			theLogger.error("Attempting to log in user, but myUserMap is not set!");
 			displayError("login", "User database not set!", sessionId); // <- move strings to resource
 		}
+	}
+	
+	public List<NameAndAction> getNamesAndActionsFromQuery(Ident queryUri) {
+		// The qGraph here is the lifter one, so usually not what we want -- so far these queries use hard coded graph so this one is ignored
+		// Want to figure out a better way to handle this soon though
+		return myQueryEnvoy.getNamesAndActionsFromQuery(myRepoClient, myQGraph, queryUri, LiftCN.ACTION_VAR_NAME, LiftCN.NAME_VAR_NAME);
 	}
 
 	void setSceneLauncher(LiftSceneInterface launcher) {
