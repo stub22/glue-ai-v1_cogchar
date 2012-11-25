@@ -73,5 +73,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 	public void sendThingActionSpec(ThingActionSpec actionSpec) {
 		Logger log = getLogger();
 		log.info("Sending action spec: " + actionSpec);
+		String insertTriples = GoodyActionParamWriter.produceInsertDataTriples(actionSpec.getParamTVM(), "<parentURI>");
+		log.info("InsertTriples: " + insertTriples);
 	}
 }
