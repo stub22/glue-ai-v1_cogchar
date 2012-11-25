@@ -20,7 +20,7 @@ import org.cogchar.bind.lift.ControlConfig
 import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
-// A handler for action URIs consisting of a LiftConfig
+// A handler for action URIs consisting of a cinematic URI
 class CinematicHandler extends AbstractLifterActionHandler {
 
   protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_cinematic)
