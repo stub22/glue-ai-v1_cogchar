@@ -53,7 +53,7 @@ class ConcreteTVM() extends BasicTypedValueMap {
 		null;
 	}
 	override def   getAsString(propName : Ident) : String = {
-		null;
+		"REGULAR_STRING_FOR_" + getRaw(propName);
 	}
 	override def   getAsInteger(propName : Ident) : java.lang.Integer = {
 		0
@@ -66,5 +66,13 @@ class ConcreteTVM() extends BasicTypedValueMap {
 	}
 	override def   getAsDouble(propName : Ident) :  java.lang.Double = {
 		0.0d;
+	}
+	override def  getSparqlText(propName : Ident) : String = {
+		"SPARQL_TEXT_FOR_" + getRaw(propName);
+	}
+}
+class SparqlRenderContext() {
+	def whoopee() = {
+		
 	}
 }

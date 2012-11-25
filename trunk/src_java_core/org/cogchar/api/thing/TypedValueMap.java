@@ -16,6 +16,7 @@
 
 package org.cogchar.api.thing;
 
+import java.util.Iterator;
 import org.appdapter.core.name.Ident;
 
 /**  Subtypes are coded in Scala to easily handle conversions to the user's desired type,
@@ -37,4 +38,10 @@ public interface TypedValueMap {
 	public static class TV_Exception extends RuntimeException {
 		
 	}
+		public int getSize();
+	public Iterator<Ident>	iterateKeys();
+	
+	public Object getRaw(Ident propName);
+	public String getSparqlText(Ident propName);
+
 }
