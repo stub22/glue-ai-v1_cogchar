@@ -24,7 +24,7 @@ import org.appdapter.core.name.Ident;
  * @author Stu B. <www.texpedient.com>
  */
 
-abstract class BasicTypedValueMap implements TypedValueMap {
+public abstract class BasicTypedValueMap implements TypedValueMap {
 	
 	private	Map<Ident, Object>		myRawObjsByID = new HashMap<Ident, Object>();
 	
@@ -36,7 +36,7 @@ abstract class BasicTypedValueMap implements TypedValueMap {
 		}
 		return typedResult;
 	}
-	protected void putValueAtName(Ident name, Object val) {
+	public void putValueAtName(Ident name, Object val) {
 		myRawObjsByID.put(name, val);
 	}
 	public void putNameAtName(Ident name, Ident nameVal) { 

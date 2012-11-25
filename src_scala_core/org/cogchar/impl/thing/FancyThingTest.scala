@@ -23,7 +23,7 @@ import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 
-import  org.cogchar.api.thing.{ThingActionSpec};
+import  org.cogchar.api.thing.{ThingActionSpec, BasicTypedValueMap};
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -47,4 +47,24 @@ object FancyThingTest {
 	 *
 	 */
 	
+}
+class ConcreteTVM() extends BasicTypedValueMap {
+	override def  getAsIdent( propName : Ident) : Ident = {
+		null;
+	}
+	override def   getAsString(propName : Ident) : String = {
+		null;
+	}
+	override def   getAsInteger(propName : Ident) : java.lang.Integer = {
+		0
+	}
+	override def   getAsLong(propName : Ident) : java.lang.Long = {
+		0;
+	}
+	override def   getAsFloat(propName : Ident) : java.lang.Float = {
+		0.0f;
+	}
+	override def   getAsDouble(propName : Ident) :  java.lang.Double = {
+		0.0d;
+	}
 }
