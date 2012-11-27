@@ -42,8 +42,11 @@ public class ModJosDispatcher
     {
         if ( serviceRegistry == null )
         {
-            log.error("Service registry not initialized") ;
-            throw new ExecutionException(ReturnCodes.rcInternalError, "Service registry not initialized") ;
+			buildServiceRegistry();
+			if (serviceRegistry == null) {
+	            log.error("Service registry not initialized") ;
+		        throw new ExecutionException(ReturnCodes.rcInternalError, "Service registry not initialized") ;
+			}
         }
         
         try {
@@ -120,31 +123,45 @@ public class ModJosDispatcher
     protected static ModJosConfiguration makeConfig(FileManager fileManager, String configURI, ServiceRegistry sreg) {
 		return new ModJosConfiguration(fileManager, configURI, sreg) ;
 	}
-    public static synchronized void setConfiguration(FileManager fileManager, String configURI)
-    {
-        if ( serviceRegistry != null )
-        {
-            //log.debug("Service registry already initialized") ;
+	/*** 
+	 * 
+	 */
+	private static	FileManager		theGlueFM;
+	private static String			theConfigURI;
+	
+    public static synchronized void setConfiguration(FileManager fileManager, String configURI)  {
+		// In Joseki default impl, this method includes all the buildServiceRegistry stuff below.
+        if ( configURI == null ){
+            log.error("Null  configuration URI") ;
             return ;
         }
-        
-        if ( configURI == null )
-        {
-            log.error("Null for configuration URI") ;
+		theGlueFM = fileManager;
+		theConfigURI = configURI;
+	}
+	public static synchronized void buildServiceRegistry() {
+	
+		FileManager fileManager = theGlueFM;
+		String configURI = theConfigURI;
+		
+	    if ( serviceRegistry != null ) {
+            log.warn("Service registry already initialized") ;
             return ;
         }
-        
         // Already squirreled away somewhere?
         serviceRegistry = (ServiceRegistry)Registry.find(DisabledRDFServer.ServiceRegistryName) ;
-        
-        if ( serviceRegistry != null )
-        {
-            log.debug("Using globally registered service registry") ;
+        if ( serviceRegistry != null ) {
+            log.warn("Found globally registered service registry") ;
             return ;
         }
-
-        // Better find one.
-
+		if (fileManager == null) {
+			log.error("Null File Manager");
+			return;
+		}
+		if (configURI == null) {
+			log.error("Null config URI");
+			return;
+		}
+        // Time to really build it!
         ServiceRegistry tmp = new ServiceRegistry() ;
         try {
 			// Stu added classloader-reg this so our bundle-CL is on FM locator list
@@ -156,16 +173,13 @@ public class ModJosDispatcher
 			// with this:
 			configuration = makeConfig(fileManager, configURI, tmp) ;
 			
-			
             Registry.add(DisabledRDFServer.ServiceRegistryName, tmp) ;
             serviceRegistry = (ServiceRegistry)Registry.find(DisabledRDFServer.ServiceRegistryName) ;
             log.info("Loaded data source configuration: " + configURI);
-        } catch (NotFoundException ex)
-        {
+        } catch (NotFoundException ex)   {
             throw new ConfigurationErrorException("Not found: "+ex.getMessage(), ex) ;
             //return false;
-        } catch (JenaException rdfEx)
-        {
+        } catch (JenaException rdfEx)  {
             // Trouble processing a configuration 
             throw new ConfigurationErrorException("RDF Exception: "+rdfEx.getMessage(), rdfEx) ;
             //return false ;

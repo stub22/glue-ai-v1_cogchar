@@ -40,32 +40,44 @@ import org.cogchar.api.skeleton.config.BoneCN;
 import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
 import org.cogchar.app.puma.cgchr.PumaHumanoidMapper;
+import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 import org.cogchar.platform.trigger.CogcharScreenBox;
 import org.cogchar.platform.trigger.BoxSpace;
 
 import org.cogchar.platform.trigger.CommandSpace;
-
+import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
+import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
+import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class PumaAppContext extends BasicDebugger {
 
 	private PumaRegistryClient			myRegClient;
+	private OSGiComponent				myRegClientOSGiComp;
+	
 	private BundleContext				myBundleContext;
 	private List<PumaDualCharacter>		myCharList = new ArrayList<PumaDualCharacter>();
 	private	PumaContextCommandBox		myPCCB;
+	
+	
 
 	public PumaAppContext(BundleContext bc, PumaContextMediator mediator, Ident ctxID) {
 		myRegClient = new PumaRegistryClientImpl(bc, mediator);
-
+		advertisePumaRegClient(myRegClient);
 		myBundleContext = bc;
 
 		BoxSpace bs = myRegClient.getTargetBoxSpace(null);
 		myPCCB = new PumaContextCommandBox(this);
 		bs.addBox(ctxID, myPCCB);
 	}
-
+	
+	private void advertisePumaRegClient(PumaRegistryClient prc) {
+		PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
+		prcFinder.registerPumaRegClient(prc, null, PumaAppContext.class);
+	}
+	
 	public BundleContext getBundleContext() {
 		return myBundleContext;
 	}
