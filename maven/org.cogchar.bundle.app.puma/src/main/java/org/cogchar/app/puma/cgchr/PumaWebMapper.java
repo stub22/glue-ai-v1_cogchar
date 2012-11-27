@@ -100,7 +100,7 @@ public class PumaWebMapper extends BasicDebugger {
 		// Print out the available graphs, for debugging.
 		java.util.List<Repo.GraphStat> gStats = mainConfRepo.getGraphStats();
 		for (Repo.GraphStat gStat : gStats) {
-			getLogger().info("Found in main config:  " + gStat);
+			getLogger().debug("Found in main config:  " + gStat);
 		}		
 		return mainConfDset;
 	}
