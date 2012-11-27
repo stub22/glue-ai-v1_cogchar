@@ -6,7 +6,7 @@ import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 	
-	public static Dataset theMainConfigDataset;
+	// public static Dataset theMainConfigDataset;
 	
     public void start(BundleContext context) throws Exception {
         // TODO add activation code here
