@@ -25,7 +25,10 @@ import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 /**
  * This class is the lynchpin of our customization of Joseki.
- * The work of 
+ * 
+ * Each use of the dset in the config (e.g. 1 for query, 1 for update)
+ * results in a separate instance of this class, and hence potentially
+ * a separate call to findPumaMainDataset().
  * 
  * @author Stu B. <www.texpedient.com>
  */

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package org.joseki.http;
+package org.cogchar.joswrap;
 
 import java.io.InputStream;
 import javax.servlet.ServletContext;
@@ -22,12 +22,12 @@ import com.hp.hpl.jena.util.TypedStream;
  * @version $Id: LocatorServletContext.java,v 1.7 2009/04/24 14:30:44 andy_seaborne Exp $
  */
 
-public class LocatorServletContext implements Locator
+public class ModLocatorServletContext implements Locator
 {
-    static Logger logger = LoggerFactory.getLogger(LocatorServletContext.class) ;
+    static Logger logger = LoggerFactory.getLogger(ModLocatorServletContext.class) ;
     ServletContext servletContext = null ;
     
-    public LocatorServletContext(ServletContext context)
+    public ModLocatorServletContext(ServletContext context)
     {
         servletContext = context ;
     }
@@ -45,9 +45,13 @@ public class LocatorServletContext implements Locator
         }
 
         InputStream in = servletContext.getResourceAsStream(fn);
-        if (in != null)
+		// Stu cleaned this up a little.  It was not properly returning null before.
+        if (in != null)  {
             logger.debug("Reading as servlet resource: " + resourceName);
-        return new TypedStream(in) ;
+	        return new TypedStream(in) ;
+		} else {
+			return null;
+		}
 
     }
 
