@@ -40,7 +40,7 @@ public class TestOuterClientSOH extends BasicDebugger {
 	public static String dbpediaServiceURL = "http://dbpedia.org/sparql";
 	
 	// Our test repository URLs.
-	public static String repoBaseURL = "http://localhost:8080/friendu_joseki/";
+	public static String repoBaseURL = "http://localhost:8080/cchr_josk/";
 	public static String repoBaseQryURL = repoBaseURL + "sparql/";
 	public static String repoBaseUpdURL = repoBaseURL + "sparql-update/";
 	public static String bookSvcURL = repoBaseQryURL + "books";
