@@ -26,10 +26,10 @@ import org.cogchar.api.thing.ThingActionSpec;
  */
 
 public class GoodySpace {
-	private	Map<Ident, BasicVirtualThing>		myVThingsByID;
+	private	Map<Ident, BasicGoodyImpl>		myGoodiesByID;
 	
 	public GoodySpace() { 
-		myVThingsByID = new HashMap<Ident, BasicVirtualThing>();
+		myGoodiesByID = new HashMap<Ident, BasicGoodyImpl>();
 	}
 	
 	/**
@@ -40,9 +40,8 @@ public class GoodySpace {
 		Ident gid = ga.getGoodyID();
 		// If it's a CREATE action, we will do some different stuff
 		// For the moment, let's focus on "update"
-		BasicVirtualThing goodyBVT = myVThingsByID.get(gid);
-		// Now - "apply" the "action" to the "virtual-thing"/"goody".
-		// 
+		BasicGoodyImpl goodyOne = myGoodiesByID.get(gid);
+		// Now - apply the action to goodyOne
 	}
 	
 }
