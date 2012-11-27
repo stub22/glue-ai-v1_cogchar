@@ -5,6 +5,7 @@
 
 package org.joseki.http;
 
+import org.cogchar.joswrap.ModLocatorServletContext;
 import java.io.IOException;
 import java.util.*;
 import org.slf4j.*;
@@ -103,7 +104,7 @@ public class Servlet extends HttpServlet
         if (config != null)
         {
             servletContext = config.getServletContext();
-            fileManager.addLocator(new LocatorServletContext(servletContext)) ;
+            fileManager.addLocator(new ModLocatorServletContext(servletContext)) ;
         }
         
         printName = config.getServletName();
