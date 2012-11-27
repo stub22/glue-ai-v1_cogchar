@@ -22,6 +22,7 @@
 	
 	<name>${project.artifactId} - Webapp in OSGi bundle</name>
 
+	<!-- Set the baseURL for http access via OSGi -->
 	<properties>
 		<web.contextPath>test_lifter</web.contextPath>
 	</properties>
