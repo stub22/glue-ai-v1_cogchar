@@ -15,11 +15,15 @@
  */
 package org.cogchar.app.puma.cgchr;
 
+import com.hp.hpl.jena.query.Dataset;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.store.Repo;
+import org.appdapter.help.repo.RepoClient;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
+import org.cogchar.bind.lift.LifterLifecycle;
 import org.cogchar.render.app.trigger.SceneActions;
 import org.cogchar.render.opengl.scene.CinematicMgr;
 
@@ -30,11 +34,12 @@ import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.cogchar.render.model.databalls.BallBuilder;
 /**
+ * Able to wire and start both our current HTTP services:  1) SPARQL-HTTP repo and 2) Lifter WebUI
  * @author Stu B. <www.texpedient.com>
  */
 public class PumaWebMapper extends BasicDebugger {
 	
-	private CommandTargetForUseFromWeb		myLiftInterface; // The LiftInterface allows Lift app to hook in and trigger cinematics
+	private CommandTargetForUseFromWeb		myCmdTargetForWeb; // The LiftInterface allows Lift app to hook in and trigger cinematics
 
 	private OSGiComponent					myLiftAppComp;
 	private OSGiComponent					myLiftSceneComp;
@@ -46,9 +51,16 @@ public class PumaWebMapper extends BasicDebugger {
 	public PumaWebMapper(PumaContextCommandBox pccb) {
 		myPCCB = pccb;
 	}
+	public PumaContextCommandBox getCommandBox() { 
+		return myPCCB;
+	}
+	protected CommandTargetForUseFromWeb geWebCommandTarget() {
+		if (myCmdTargetForWeb == null) {
+			myCmdTargetForWeb = new CommandTargetForUseFromWeb(myPCCB, this);
+		}
+		return myCmdTargetForWeb;
+	}
 	
-
-
 	public void connectLiftSceneInterface(BundleContext bundleCtx) {
 		if (myLiftSceneComp == null) {
 			ServiceLifecycleProvider lifecycle = new SimpleLifecycle(SceneActions.getLauncher(), LiftAmbassador.LiftSceneInterface.class);
@@ -62,24 +74,34 @@ public class PumaWebMapper extends BasicDebugger {
 	}
 
 	public void connectLiftInterface(BundleContext bundleCtx) {
-		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(getLiftInterface(), LiftAmbassador.LiftAppInterface.class);
+		CommandTargetForUseFromWeb webCmdTarget = geWebCommandTarget();
+		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(webCmdTarget, LiftAmbassador.LiftAppInterface.class);
 		myLiftAppComp = new OSGiComponent(bundleCtx, lifecycle);
 		myLiftAppComp.start();
 	}
-
+	// Tell the lifter lifecycle to start, once its OSGi dependencies are satisfied
+	public void startLifterLifecycle(BundleContext bunCtx) { 
+		LifterLifecycle lifecycle = new LifterLifecycle();
+    	OSGiComponent lifterComp = new OSGiComponent(bunCtx, lifecycle);
+    	lifterComp.start();
+	}	
+	
 	// Previous functions now mostly done from within LifterLifecycle on create(). 
 	// Retaining for now for legacy BallBuilder classloader hookup
 //	public void connectHrkindWebContent(ClassLoader hrkindResourceCL) {
 //	}
 
-	public CommandTargetForUseFromWeb getLiftInterface() {
-		if (myLiftInterface == null) {
-			myLiftInterface = new CommandTargetForUseFromWeb(myPCCB, this);
-		}
-		return myLiftInterface;
+
+	public Dataset getMainSparqlDataset() {
+		PumaContextCommandBox pccb = getCommandBox();
+		RepoClient mainConfRC = pccb.getMainConfigRepoClient();
+		Repo mainConfRepo = mainConfRC.getRepo();
+		Dataset mainConfDset = mainConfRepo.getMainQueryDataset();
+		// Print out the available graphs, for debugging.
+		java.util.List<Repo.GraphStat> gStats = mainConfRepo.getGraphStats();
+		for (Repo.GraphStat gStat : gStats) {
+			getLogger().info("Found in main config:  " + gStat);
+		}		
+		return mainConfDset;
 	}
-	public PumaContextCommandBox getCommandBox() { 
-		return myPCCB;
-	}
-	
 }

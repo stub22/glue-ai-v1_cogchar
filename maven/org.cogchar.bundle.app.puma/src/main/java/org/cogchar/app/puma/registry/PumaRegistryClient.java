@@ -26,7 +26,10 @@ import org.cogchar.app.puma.cgchr.PumaWebMapper;
 import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CommandSpace;
 
-/**
+/**  Legitimate PUMA application services are accessed through this interface.
+ *   It is the top-level handle used by client code to interact with PUMA.
+ *   PumaRegistryClient is a service object that may be registered/found through 
+ *   plain OSGi registry or JFlux lifecycle.
  * @author Stu B. <www.texpedient.com>
  */
 
@@ -54,5 +57,6 @@ public interface PumaRegistryClient {
 	public void putWebMapper(PumaWebMapper wm, Ident optSpecID);
 
 	public List<ClassLoader> getResFileCLsForCat(ResourceFileCategory cat);
+	
 
 }

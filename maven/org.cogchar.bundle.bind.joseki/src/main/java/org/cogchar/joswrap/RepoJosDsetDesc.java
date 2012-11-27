@@ -18,10 +18,14 @@ package org.cogchar.joswrap;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Resource;
+import org.cogchar.app.puma.cgchr.PumaWebMapper;
 import org.cogchar.bundle.bind.joseki.Activator;
 
+import org.cogchar.app.puma.registry.PumaRegistryClient;
+import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 /**
- * This class is the lynchpin of our customization of Joseki
+ * This class is the lynchpin of our customization of Joseki.
+ * The work of 
  * 
  * @author Stu B. <www.texpedient.com>
  */
@@ -33,18 +37,29 @@ public class RepoJosDsetDesc extends ModJosDatasetDesc {
 	/**
 	 * Called from super.initialize()
 	 * 
+	 * ...and present ugly reality is that we need this to happen *after* PUMA has initialized the "main" repo.
+	 * 
 	 * @return 
 	 */
 	@Override protected Dataset newDataset() { 
-		System.out.println("newDataset() invoked for [" + datasetRoot  + "]");
 		String uriFrag = datasetRoot.getLocalName();
-		Dataset rcd = Activator.theMainConfigDataset;
-		if ((rcd != null) && uriFrag.toLowerCase().contains("repo")) {
-			System.out.println("newDataset() Returning special Friendu-Repo MainConfigDataset: " + rcd);
+		System.out.println("newDataset() invoked for [" + datasetRoot  + "] - checking frag [" + uriFrag + "]");
+
+		if (uriFrag.toLowerCase().contains("repo")) {
+			Dataset rcd = findPumaMainDataset();
+			System.out.println("newDataset() Returning special Friendu-Repo MainConfigDataset (from PUMA): " + rcd);
 			return rcd;
 		} else {
 			System.out.println("newDataset() returning default Joseki implementation");
 			return super.newDataset();
 		}
+	}
+	protected Dataset findPumaMainDataset() {
+		Dataset pumaDataset = null;
+		PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
+		PumaRegistryClient pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
+		PumaWebMapper pwm = pumaRegClient.getWebMapper(null);
+		pumaDataset = pwm.getMainSparqlDataset();
+		return pumaDataset;
 	}
 }

@@ -46,6 +46,10 @@ import org.joseki.Service;
 import org.joseki.ServiceRegistry;
 import org.joseki.Utils;
 
+/** This processes config during its own *constructor* 
+ * 
+ * @author Stu B. <www.texpedient.com>
+ */
 public class ModJosConfiguration
 {
     private static Logger log = LoggerFactory.getLogger(ModJosConfiguration.class) ;
