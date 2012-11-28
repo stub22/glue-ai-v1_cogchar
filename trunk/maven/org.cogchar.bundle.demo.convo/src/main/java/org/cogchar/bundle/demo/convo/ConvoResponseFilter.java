@@ -88,8 +88,14 @@ public class ConvoResponseFilter<R extends GenRespWithConf> implements
         resp = resp.replaceAll("[Rr][Oo][Bb][Oo][Kk][Ii][Nn][Dd]", "Robo-kind");
         resp = resp.replaceAll("[Aa]utism", "aw-tisum");
         
+        resp = trimPannousSource(resp);
+        
         in.setResponse(resp.trim());
         return in;
+    }
+    
+    public static String trimPannousSource(String resp){
+        return resp.replaceFirst("\\s*\\([a-zA-Z0-9]+\\.(com|net|org)\\)(\\s*\\.\\s*)?$", "");
     }
     
     private final static String ANIM_PROMPT = "[ANIM_PROMPT:";

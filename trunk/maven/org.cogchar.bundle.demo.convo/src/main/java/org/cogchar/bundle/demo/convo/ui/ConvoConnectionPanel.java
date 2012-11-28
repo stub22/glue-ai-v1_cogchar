@@ -146,7 +146,9 @@ public class ConvoConnectionPanel extends javax.swing.JPanel {
                     new AMQTopic("animPrompt; {create: always, node: {type: topic}}"));
         }catch(URISyntaxException ex){}
         if(COGBOT.equals(comboService.getSelectedItem())){
-            myConvoProc = new DefaultProcessorNode<String, ConvoResponse>(new CogbotProcessor(cogbotUrl));
+            CogbotProcessor proc = new CogbotProcessor(cogbotUrl);
+            myConvoProc = new DefaultProcessorNode<String, ConvoResponse>(proc);
+            proc.setInputListener(myConvoProc.getListener());
         }else if(PANNOUS.equals(comboService.getSelectedItem())){
             myConvoProc = new DefaultProcessorNode<String, ConvoResponse>(new PannousProcessor("", getPannousTimeout()));         
         }
