@@ -29,6 +29,7 @@ import org.cogchar.bundle.demo.convo.PannousProcessor;
 import org.cogchar.bundle.demo.convo.SpeechFormatter;
 import org.cogchar.bundle.demo.convo.SpeechRecFilter;
 import org.cogchar.bundle.demo.convo.SpeechRecStringFilter;
+import org.jflux.api.core.Listener;
 import org.jflux.api.core.node.ConsumerNode;
 import org.jflux.api.core.node.DefaultProcessorNode;
 import org.jflux.api.core.node.ProcessorNode;
@@ -84,9 +85,9 @@ public class ConvoConnector {
     }
     
     public boolean connectCogbot(String cogbotUrl) {
-        myConvoProc = 
-                new DefaultProcessorNode<String, ConvoResponse>(
-                        new CogbotProcessor(cogbotUrl));
+        CogbotProcessor proc = new CogbotProcessor(cogbotUrl);
+        myConvoProc = new DefaultProcessorNode<String, ConvoResponse>(proc);
+        proc.setInputListener(myConvoProc.getListener());
         return connect();
     }
     
