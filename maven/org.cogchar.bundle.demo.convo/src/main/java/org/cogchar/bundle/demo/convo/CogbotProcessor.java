@@ -15,9 +15,13 @@
  */
 package org.cogchar.bundle.demo.convo;
 
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.cogbot.main.GenRespWithConf;
 import org.jflux.api.core.Adapter;
+import org.jflux.api.core.Listener;
 import org.robokind.api.common.utils.TimeUtils;
 
 /**
@@ -25,10 +29,19 @@ import org.robokind.api.common.utils.TimeUtils;
  * @author Matthew Stevenson <www.robokind.org>
  */
 public class CogbotProcessor implements Adapter<String, ConvoResponse>{
+    private final static String STOP_SCHED_PROMPT = "STOP_ZS_SCHEDULE";
+    
     private CogbotCommunicator myCogbotComm;
+    private ScheduledExecutorService mySchedule;
+    private Listener<String> myInputListener;
     
     public CogbotProcessor(String cogbotUrl){
         myCogbotComm = new CogbotCommunicator(cogbotUrl);
+        mySchedule = new ScheduledThreadPoolExecutor(1);
+    }
+    
+    public void setInputListener(Listener<String> inputListener){
+        myInputListener = inputListener;
     }
     
     @Override
@@ -41,7 +54,37 @@ public class CogbotProcessor implements Adapter<String, ConvoResponse>{
             return null;
         }
         GenRespWithConf resp = myCogbotComm.getResponse(a);
+        if(STOP_SCHED_PROMPT.equals(resp.getResponse())){
+            mySchedule.shutdownNow();
+            mySchedule = new ScheduledThreadPoolExecutor(1);
+            resp.setResponse("INTERRUPT_OUTPUT");
+        }
+        resp.setResponse(trySchedule(resp.getResponse()));
         return new ConvoResponse(
                 a, resp.getResponse(), 0, start, TimeUtils.now());
+    }
+    
+    private final static String NEXT_PROMPT = "{NEXT:";
+    private String trySchedule(String resp){
+        int h = resp.indexOf(NEXT_PROMPT, 0);
+        int i = h + NEXT_PROMPT.length();
+        int j = resp.indexOf("::", i);
+        int k = resp.indexOf("}", j);
+        if(h == -1 || j == -1 || k == -1){
+            return resp;
+        }
+        final String prompt = resp.substring(i,j);
+        String timeStr = resp.substring(j+2,k);
+        long sleep = Long.parseLong(timeStr);
+        mySchedule.schedule(
+                new Runnable() {
+                    @Override public void run() {
+                        if(myInputListener == null){
+                            return;
+                        }
+                        myInputListener.handleEvent(prompt);
+                    }
+                }, sleep, TimeUnit.MILLISECONDS);
+        return resp.substring(0,h) + resp.substring(k+1);
     }
 }
