@@ -33,7 +33,7 @@ public class AnimationTrimmer {
         return newData;
     }
     
-    private static boolean positionsChange(ChannelData<Double> cd){
+    static boolean positionsChange(ChannelData<Double> cd){
         Double prev = null;
         for(ControlPoint<Double> p : cd.getPoints()){
             if(p == null){
