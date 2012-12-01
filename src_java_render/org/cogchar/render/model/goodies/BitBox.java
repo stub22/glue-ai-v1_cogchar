@@ -51,7 +51,7 @@ public class BitBox extends BasicGoodyImpl {
 	}
 	
 	@Override
-	void attachToVirtualWorldNode(final Node rootNode) {
+	public void attachToVirtualWorldNode(final Node rootNode) {
 		attachToVirtualWorldNode(rootNode, zeroIndex);
 	}
 	
@@ -70,6 +70,15 @@ public class BitBox extends BasicGoodyImpl {
 			setZeroState();
 		} else {
 			setOneState();
+		}
+	}
+	
+	@Override
+	public void applyAction(GoodyAction ga) {
+		switch (ga.getKind()) { // This stub needs to be populated next...
+			default: {
+				
+			}
 		}
 	}
 	

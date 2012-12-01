@@ -17,19 +17,27 @@
 package org.cogchar.render.model.goodies;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.ThingActionSpec;
+import org.cogchar.api.thing.ThingActionUpdater;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class GoodySpace {
+	
 	private	Map<Ident, BasicGoodyImpl>		myGoodiesByID;
 	
 	public GoodySpace() { 
 		myGoodiesByID = new HashMap<Ident, BasicGoodyImpl>();
+	}
+	
+	public void addGoody(BasicGoodyImpl newGoody) {
+		myGoodiesByID.put(newGoody.myUri, newGoody);
 	}
 	
 	/**
@@ -39,9 +47,23 @@ public class GoodySpace {
 		GoodyAction ga = new GoodyAction(actionSpec);
 		Ident gid = ga.getGoodyID();
 		// If it's a CREATE action, we will do some different stuff
-		// For the moment, let's focus on "update"
-		BasicGoodyImpl goodyOne = myGoodiesByID.get(gid);
-		// Now - apply the action to goodyOne
+		if (ga.getKind() == GoodyAction.Kind.CREATE) {
+			GoodyFactory.getTheFactory().createByAction(ga);
+		} else {
+			// For the moment, let's focus on "update"
+			BasicGoodyImpl goodyOne = myGoodiesByID.get(gid);
+			// Now - apply the action to goodyOne
+			goodyOne.applyAction(ga);
+		}
+	}
+	
+	// Not immediately clear if this should be here or elsewhere
+	public void readAndApplyGoodyActions(RepoClient rc, Ident graphIdent) {
+		ThingActionUpdater updater = new ThingActionUpdater();
+		List<ThingActionSpec> actionSpecList = updater.getThingActions(rc, graphIdent);
+		for (ThingActionSpec actionSpec : actionSpecList) {
+			processAction(actionSpec);
+		}
 	}
 	
 }
