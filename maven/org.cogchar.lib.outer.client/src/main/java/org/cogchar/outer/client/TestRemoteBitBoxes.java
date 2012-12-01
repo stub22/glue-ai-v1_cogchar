@@ -48,7 +48,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		
 		Ident actRecID = null;
 		Ident tgtThingID = dummyBoxID;
-		Ident actVerbID = GoodyNames.ACTION_CREATE;
+		Ident actVerbID = GoodyNames.CREATE_URI;
 		Ident srcAgentID = null;
 		
 		BasicThingActionSpec btas = new BasicThingActionSpec(actRecID, tgtThingID, actVerbID, srcAgentID, btvm);
@@ -63,7 +63,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		
 		Ident actRecID = null;
 		Ident tgtThingID = goodyID;
-		Ident actVerbID = GoodyNames.ACTION_UPDATE;
+		Ident actVerbID = GoodyNames.MOVE_URI;
 		Ident srcAgentID = null;
 		
 		BasicThingActionSpec btas = new BasicThingActionSpec(actRecID, tgtThingID, actVerbID, srcAgentID, btvm);

@@ -40,11 +40,25 @@ public class GoodyNames  {
 	public	static Ident	ROTATION_AXIS_Z = makeID("rotAxisZ");
 	public	static Ident	ROTATION_MAG_DEG = makeID("rotMagDeg");
 	
+	public	static Ident	SIZE_X = makeID("sizeX");
+	public	static Ident	SIZE_Y = makeID("sizeY");
+	public	static Ident	SIZE_Z = makeID("sizeZ");
+	
+	public	static Ident	THING_TYPE = makeID("thingType");
+	
 	public static	Ident	TYPE_BIT_BOX = makeID("BitBox");
 	
 	public  static Ident	RDF_TYPE = new FreeIdent(ComponentAssemblyNames.NS_rdf + "type");
 	
+	/* CRUD, or CREATE/DELETE/MOVE/SET as in GoodyAction?
 	public static	Ident	ACTION_CREATE = makeID("ActionCreate");
 	public static	Ident	ACTION_UPDATE = makeID("ActionUpdate");
 	public static	Ident	ACTION_DELETE = makeID("ActionDelete");
+	*/
+	
+	public static	Ident	CREATE_URI = makeID("ActionCreate");
+	public static	Ident	DELETE_URI = makeID("ActionDelete");
+	public static	Ident	MOVE_URI = makeID("ActionMove");
+	public static	Ident	SET_URI = makeID("ActionSet");
+
 }
