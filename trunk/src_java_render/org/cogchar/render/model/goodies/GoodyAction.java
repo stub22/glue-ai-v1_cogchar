@@ -32,7 +32,7 @@ import org.cogchar.api.thing.ThingActionSpec;
  */
 
 public class GoodyAction  {
-	/* We can optionallly play a game of equivalence between Java-enum-constant and URI, without an additional hashMap.
+	// We can optionallly play a game of equivalence between Java-enum-constant and URI, without an additional hashMap.
 	// The price is that we must initialize the value in the enum constants.
 	public enum Kind {
 		CREATE,
@@ -44,16 +44,34 @@ public class GoodyAction  {
 	
 	}
 	private		Kind					myKind;
-	* 
-	*/
+	
 	
 	private		ThingActionSpec			mySpec;
 
 	private		Ident					myGoodyID;
 	
+	private		TypedValueMap			paramTVMap;
+	
 	public GoodyAction(ThingActionSpec actionSpec) {
 		mySpec = actionSpec;
 		myGoodyID = actionSpec.getTargetThingID();
+		initializeKinds();
+		paramTVMap = mySpec.getParamTVM();
+		String kindIdentString = actionSpec.getVerbID().getAbsUriString();
+		for (Kind kindToCheck : Kind.values()) {
+			if (kindToCheck.myKindUriString.equals(kindIdentString)) {
+				myKind = kindToCheck;
+				break;
+			}
+		}
+	}
+	
+	// Surely there must be a more elegant way than this, eh?
+	private void initializeKinds() {
+		Kind.CREATE.myKindUriString = GoodyNames.CREATE_URI.getAbsUriString();
+		Kind.DELETE.myKindUriString = GoodyNames.DELETE_URI.getAbsUriString();
+		Kind.MOVE.myKindUriString = GoodyNames.MOVE_URI.getAbsUriString();
+		Kind.SET.myKindUriString = GoodyNames.SET_URI.getAbsUriString();
 	}
 	/**
 	 * If our ThingActionSpec supplied a targetThingID, we use that by default.
@@ -64,13 +82,20 @@ public class GoodyAction  {
 	public Ident getGoodyID() {
 		return myGoodyID;
 	}
+	// Is this something we want to expose publically? Seems we may need to...
+	public Kind getKind() {
+		return myKind;
+	}
+	
+	public Ident getType() {
+		return paramTVMap.getAsIdent(GoodyNames.THING_TYPE);
+	}
 	/**
 	 * Example of actual application data read from spec, into an application specific type.
 	 * Will be generalized to use for "goal location", "direction", etc.
 	 * @return 
 	 */
 	public Vector3f getLocationVector() {
-		TypedValueMap paramTVMap = mySpec.getParamTVM();
 		float locX = paramTVMap.getAsFloat(GoodyNames.LOCATION_X);
 		float locY = paramTVMap.getAsFloat(GoodyNames.LOCATION_Y);
 		float locZ = paramTVMap.getAsFloat(GoodyNames.LOCATION_Z);
@@ -81,13 +106,21 @@ public class GoodyAction  {
 	/**
 	 * Here is a harder one.
 	 * Read rotation axis AxisX, AxisY, AxisZ and magDegrees from some assumed properties,
-	 * and produce a Quartenion.   Will also be generalized later.
+	 * and produce a Quaternion.   Will also be generalized later.
 	 * @return rotational operator quaternion object encoding
 	 */
 	public Quaternion getRotationQuaternion() {
 		// 
 		return null;
 	}
-
+	
+	// Still figuring this one out; right now assuming size may have up to three components, but sometimes fewer
+	public float[] getSize() {
+		float sizeX = paramTVMap.getAsFloat(GoodyNames.SIZE_X);
+		float sizeY = paramTVMap.getAsFloat(GoodyNames.SIZE_Y);
+		float sizeZ = paramTVMap.getAsFloat(GoodyNames.SIZE_Z);
+		float[] sizes = {sizeX, sizeY, sizeZ};
+		return sizes;
+	}
 
 }

@@ -36,6 +36,12 @@ import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.render.model.databalls.BallBuilder;
 
+// Currently for BitBox / Virtual Thing development testing
+import org.cogchar.api.thing.ThingActionSpec;
+import org.cogchar.api.thing.ThingActionUpdater;
+import org.cogchar.render.model.goodies.GoodyFactory;
+import org.cogchar.api.thing.ThingActionUpdater;
+
 import org.cogchar.render.sys.input.VW_HelpScreenMgr;
 import org.cogchar.render.sys.input.VW_InputDirector;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
@@ -83,6 +89,9 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		myHRC.initCinematicParameters();
 		
 		KeyBindingConfig currKeyBindCfg = new KeyBindingConfig();
+		// Hook-in for Goody system
+		RenderRegistryClient rrc = myHRC.getRenderRegistryClient();
+		GoodyFactory gFactory = GoodyFactory.createTheFactory(rrc);
 		try {
 			List<Ident> worldConfigIdents = gce.entityMap().get(PumaModeConstants.VIRTUAL_WORLD_ENTITY_TYPE);
 			// Multiple worldConfigIdents? Possible. It's possible duplicate cinematic definitions might cause problems
@@ -101,7 +110,15 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 
 					currKeyBindCfg.addBindings(rc, graphIdent, kce);
 				} catch (Exception e) {
-					getLogger().error("Could not get valid graph on which to query for input bindings config of {}", configIdent.getLocalName(), e);
+					getLogger().error("Could not get valid graph on which to query for input bindings config of {}",
+							configIdent.getLocalName(), e);
+				}
+				try {
+					Ident graphIdent = gce.ergMap().get(configIdent).get(PumaModeConstants.THING_ACTIONS_BINDINGS_ROLE);
+					gFactory.getTheGoodySpace().readAndApplyGoodyActions(rc, graphIdent);
+				} catch (Exception e) {
+					getLogger().error("Could not initialize Thing actions with a config of {}",
+							configIdent.getLocalName(), e);
 				}
 			}
 		} catch (Exception e) {
