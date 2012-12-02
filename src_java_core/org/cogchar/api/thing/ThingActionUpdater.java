@@ -57,7 +57,7 @@ public class ThingActionUpdater {
 	}
 	
 	private TypedValueMap buildActionParameterValueMap(RepoClient rc, Ident graphIdent, SolutionHelper sh, Ident actionIdent) {
-		BasicTypedValueMap paramMap = new BasicTypedValueMapImpl();
+		BasicTypedValueMap paramMap = new BasicTypedValueMapTemporaryImpl();
 		SolutionList paramList = rc.queryIndirectForAllSolutions(ThingCN.PARAM_QUERY_URI, graphIdent,
 				ThingCN.ACTION_QUERY_VAR_NAME, actionIdent);
 		for (Solution paramSoln: paramList.javaList()) {
