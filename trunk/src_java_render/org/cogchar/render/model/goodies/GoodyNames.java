@@ -60,5 +60,7 @@ public class GoodyNames  {
 	public static	Ident	DELETE_URI = makeID("ActionDelete");
 	public static	Ident	MOVE_URI = makeID("ActionMove");
 	public static	Ident	SET_URI = makeID("ActionSet");
+	
+	public static	Ident	BOOLEAN_STATE = makeID("booleanState");
 
 }

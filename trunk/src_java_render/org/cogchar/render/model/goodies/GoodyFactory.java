@@ -75,7 +75,10 @@ public class GoodyFactory {
 			if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
 				BitBox newBitBox = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0]);
 				theGoodySpace.addGoody(newBitBox);
-				newBitBox.attachToVirtualWorldNode(myRootNode);
+				boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
+				newBitBox.attachToVirtualWorldNode(myRootNode, bitBoxState);
+			} else {
+				theLogger.warn("Did not recognize requested goody type for creation {}", ga.getType());
 			}
 		} else {
 			theLogger.warn("GoodyFactory was requested to add a goody, but the GoodyAction kind was not CREATE! Goody URI: {}", ga.getGoodyID());
