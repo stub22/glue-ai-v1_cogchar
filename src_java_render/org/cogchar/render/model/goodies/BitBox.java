@@ -25,6 +25,8 @@ import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Torus;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class to implement the Robosteps "BitBox" objects, which may not turn out to be boxes at all
@@ -34,6 +36,11 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 
 public class BitBox extends BasicGoodyImpl {
+	
+	private static Logger theLogger = LoggerFactory.getLogger(BitBox.class);
+	
+	private static final ColorRGBA FALSE_COLOR = ColorRGBA.Blue;
+	private static final ColorRGBA TRUE_COLOR = ColorRGBA.Red;
 	
 	private boolean state = false;
 	private int zeroIndex;
@@ -45,37 +52,52 @@ public class BitBox extends BasicGoodyImpl {
 		setPosition(initialPosition);
 		Mesh zeroMesh = new Torus(40,20,size/5,size*5/6);
 		Mesh oneMesh = new Cylinder(20, 20, size/5, size*2, true);
-		zeroIndex = addGeometry(zeroMesh, ColorRGBA.Blue);
+		zeroIndex = addGeometry(zeroMesh, FALSE_COLOR);
 		float[] oneRotationAngles = {(float)(Math.PI/2), 0f, 0f};
-		oneIndex = addGeometry(oneMesh, ColorRGBA.Red, new Quaternion(oneRotationAngles));
+		oneIndex = addGeometry(oneMesh, TRUE_COLOR, new Quaternion(oneRotationAngles));
 	}
 	
 	@Override
 	public void attachToVirtualWorldNode(final Node rootNode) {
 		attachToVirtualWorldNode(rootNode, zeroIndex);
 	}
+	public void attachToVirtualWorldNode(final Node rootNode, boolean boxState) {
+		state = boxState;
+		attachToVirtualWorldNode(rootNode, boxState? oneIndex : zeroIndex);
+	}
 	
 	public void setZeroState() {
-		setGeometryByIndex(zeroIndex);
-		state = false;
+		setState(false);
 	}
 	
 	public void setOneState() {
-		setGeometryByIndex(oneIndex);
-		state = true;
+		setState(true);
+	}
+	
+	public void setState(boolean boxState) {
+		int geometryIndex = boxState? oneIndex : zeroIndex;
+		setGeometryByIndex(geometryIndex);
+		state = boxState;
 	}
 	
 	public void toggleState() {
-		if (state) {
-			setZeroState();
-		} else {
-			setOneState();
-		}
+		setState(!state);
 	}
 	
 	@Override
 	public void applyAction(GoodyAction ga) {
-		switch (ga.getKind()) { // This stub needs to be populated next...
+		switch (ga.getKind()) {
+			case SET : {
+				boolean boxState;
+				String stateString = ga.getSpecialString(GoodyNames.BOOLEAN_STATE);
+				if (stateString != null) {
+					try {
+						setState(Boolean.valueOf(stateString));
+					} catch (Exception e) {
+						theLogger.error("Error setting box state to state string {}", stateString, e);
+					}
+				}
+			}
 			default: {
 				
 			}
