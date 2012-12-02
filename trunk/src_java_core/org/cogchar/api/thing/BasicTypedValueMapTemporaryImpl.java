@@ -27,7 +27,7 @@ import org.appdapter.core.name.Ident;
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
  
-public class BasicTypedValueMapImpl extends BasicTypedValueMap {
+public class BasicTypedValueMapTemporaryImpl extends BasicTypedValueMap {
 	public String getSparqlText(Ident propName) {
 		// Not sure how we'll be using this exactly, so for the moment we'll just return an empty string
 		return "";

@@ -41,7 +41,14 @@ public class GoodySpace {
 	}
 	
 	public void addGoody(BasicGoodyImpl newGoody) {
-		myGoodiesByID.put(newGoody.myUri, newGoody);
+		Ident goodyUri = newGoody.myUri;
+		theLogger.info("Adding Goody with URI: {}", goodyUri);
+		myGoodiesByID.put(goodyUri, newGoody);
+	}
+	
+	public void removeGoody(BasicGoodyImpl departingGoody) {
+		departingGoody.detachFromVirtualWorldNode(); // Safe to perform even if it's not currently attached
+		myGoodiesByID.remove(departingGoody.myUri);
 	}
 	
 	/**
@@ -50,21 +57,33 @@ public class GoodySpace {
 	public void processAction(ThingActionSpec actionSpec) {
 		GoodyAction ga = new GoodyAction(actionSpec);
 		Ident gid = ga.getGoodyID();
-		// If it's a CREATE action, we will do some different stuff
-		if (ga.getKind() == GoodyAction.Kind.CREATE) {
-			if (myGoodiesByID.containsKey(gid)) {
-				theLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid);
-			} else {
-				GoodyFactory.getTheFactory().createByAction(ga);
+		BasicGoodyImpl goodyOne = myGoodiesByID.get(gid);
+		switch (ga.getKind()) {
+			case CREATE: { // If it's a CREATE action, we will do some different stuff
+				if (myGoodiesByID.containsKey(gid)) {
+					theLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid);
+				} else {
+					goodyOne = GoodyFactory.getTheFactory().createAndAttachByAction(ga);
+					addGoody(goodyOne);
+				}
+				break;
 			}
-		} else {
-			// For the moment, let's focus on "update"
-			try {
-				BasicGoodyImpl goodyOne = myGoodiesByID.get(gid);
-				// Now - apply the action to goodyOne
-				goodyOne.applyAction(ga);
-			} catch (Exception e) {
-				theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);
+			case DELETE: {
+				if (!myGoodiesByID.containsKey(gid)) {
+					theLogger.warn("Could not delete goody because it does not exist: {}", gid);
+				} else {
+					removeGoody(goodyOne);
+				}
+				break;
+			}
+			default: {
+				// For the moment, let's focus on "update"
+				try {
+					// Now - apply the action to goodyOne
+					goodyOne.applyAction(ga);
+				} catch (Exception e) {
+					theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);
+				}
 			}
 		}
 	}
