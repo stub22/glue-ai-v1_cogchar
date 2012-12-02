@@ -23,12 +23,16 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.ThingActionUpdater;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class GoodySpace {
+	
+	private static Logger theLogger = LoggerFactory.getLogger(GoodySpace.class);
 	
 	private	Map<Ident, BasicGoodyImpl>		myGoodiesByID;
 	
@@ -48,12 +52,20 @@ public class GoodySpace {
 		Ident gid = ga.getGoodyID();
 		// If it's a CREATE action, we will do some different stuff
 		if (ga.getKind() == GoodyAction.Kind.CREATE) {
-			GoodyFactory.getTheFactory().createByAction(ga);
+			if (myGoodiesByID.containsKey(gid)) {
+				theLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid);
+			} else {
+				GoodyFactory.getTheFactory().createByAction(ga);
+			}
 		} else {
 			// For the moment, let's focus on "update"
-			BasicGoodyImpl goodyOne = myGoodiesByID.get(gid);
-			// Now - apply the action to goodyOne
-			goodyOne.applyAction(ga);
+			try {
+				BasicGoodyImpl goodyOne = myGoodiesByID.get(gid);
+				// Now - apply the action to goodyOne
+				goodyOne.applyAction(ga);
+			} catch (Exception e) {
+				theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);
+			}
 		}
 	}
 	

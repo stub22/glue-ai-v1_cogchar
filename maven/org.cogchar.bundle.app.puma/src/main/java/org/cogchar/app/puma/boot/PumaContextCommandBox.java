@@ -87,13 +87,14 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 	final public static String BONE_ROBOT_CONFIG = "bonerobotconfig";
 	final public static String MANAGED_GCS = "managedglobalconfigservice";
 	final public static String ALL_HUMANOID_CONFIG = "allhumanoidconfig";
+	final public static String THING_ACTIONS = "thingactions";
 	// Currently used from two places:
 	// org/cogchar/app/puma/cgchr/PumaVirtualWorldMapper.java:[74,15] 
 	// org/cogchar/app/puma/cgchr/CommandTargetForUseFromWeb.java:[66,25] 
 	public boolean updateConfigByRequest(final String request, final boolean resetMainConfigFlag) {
 		// Do the actual updates on a new thread. That way we don't block the render thread. Much less intrusive, plus this way things
 		// we need to enqueue on main render thread will actually complete -  it must not be blocked during some of the update operations!
-		// This brings up an interesting point: we are probably doing far too much on the main render thread!
+		// This brings up an interesting point: we are probably doing far too much on the main jME thread!
 		logInfo("Updating config by request: " + request);
 		boolean success = true;
 		if (myUpdateInProgressFlag) {
@@ -125,6 +126,8 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 			myPAC.reloadGlobalConfig();
 		} else if (ALL_HUMANOID_CONFIG.equals(request.toLowerCase())) {
 			myPAC.reloadAll(resetMainConfigFlag);
+		} else if (THING_ACTIONS.equals(request.toLowerCase())) {
+			myPAC.resetMainConfigAndCheckThingActions();
 		} else {
 			getLogger().warn("PumaAppContext did not recognize the config update to be performed: {}", request);
 			successFlag = false;
