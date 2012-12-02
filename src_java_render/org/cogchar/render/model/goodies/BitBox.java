@@ -47,7 +47,7 @@ public class BitBox extends BasicGoodyImpl {
 	private int oneIndex;
 	
 	// A new BitBox has false (0) state as currently implemented
-	BitBox(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size) {
+	BitBox(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size, boolean boxState) {
 		super(aRenderRegCli, boxUri);
 		setPosition(initialPosition);
 		Mesh zeroMesh = new Torus(40,20,size/5,size*5/6);
@@ -55,15 +55,16 @@ public class BitBox extends BasicGoodyImpl {
 		zeroIndex = addGeometry(zeroMesh, FALSE_COLOR);
 		float[] oneRotationAngles = {(float)(Math.PI/2), 0f, 0f};
 		oneIndex = addGeometry(oneMesh, TRUE_COLOR, new Quaternion(oneRotationAngles));
+		state = boxState;
 	}
 	
 	@Override
 	public void attachToVirtualWorldNode(final Node rootNode) {
-		attachToVirtualWorldNode(rootNode, zeroIndex);
+		attachToVirtualWorldNode(rootNode, state? oneIndex : zeroIndex);
 	}
 	public void attachToVirtualWorldNode(final Node rootNode, boolean boxState) {
 		state = boxState;
-		attachToVirtualWorldNode(rootNode, boxState? oneIndex : zeroIndex);
+		attachToVirtualWorldNode(rootNode);
 	}
 	
 	public void setZeroState() {
@@ -88,19 +89,17 @@ public class BitBox extends BasicGoodyImpl {
 	public void applyAction(GoodyAction ga) {
 		switch (ga.getKind()) {
 			case SET : {
-				boolean boxState;
 				String stateString = ga.getSpecialString(GoodyNames.BOOLEAN_STATE);
 				if (stateString != null) {
 					try {
 						setState(Boolean.valueOf(stateString));
-					} catch (Exception e) {
+					} catch (Exception e) { // May not need try/catch after BasicTypedValueMap implementation is complete
 						theLogger.error("Error setting box state to state string {}", stateString, e);
 					}
 				}
+				break;
 			}
-			default: {
-				
-			}
+			default: super.applyAction(ga);
 		}
 	}
 	

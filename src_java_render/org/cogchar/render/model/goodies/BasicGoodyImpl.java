@@ -41,8 +41,8 @@ import org.slf4j.LoggerFactory;
  */
 
 // This will need some ongoing refactorings both to fix some oddness and bad form inherent in development of the concepts here,
-// and to make sure the BasicGoodyImpl has the sorts of properties we want it to have
-public abstract class BasicGoodyImpl {
+// and to make sure the BasicGoodyImpl has the sorts of properties we want it to have 
+public class BasicGoodyImpl {
 	
 		private static Logger theLogger = LoggerFactory.getLogger(BasicGoodyImpl.class);
 		
@@ -164,10 +164,14 @@ public abstract class BasicGoodyImpl {
 			}	
 		}
 		
-		private void attachGeometryToRootNode(final int geometryIndex) {
+		public void detachFromVirtualWorldNode() {
 			if (attachedIndex != -1)  {
 				detachGeometryFromRootNode();
 			}
+		}
+		
+		private void attachGeometryToRootNode(final int geometryIndex) {
+			detachFromVirtualWorldNode();
 			final BasicGoodieGeometry geometryToAttach = myGeometries.get(geometryIndex);
 			final Geometry jmeGeometry = geometryToAttach.getJmeGeometry();
 			setGeometryPositionAndRotation(geometryToAttach);
@@ -216,17 +220,27 @@ public abstract class BasicGoodyImpl {
 		}
 		
 		public void setPosition(Vector3f newPosition) {
-			myPosition = newPosition;
-			if (attachedIndex != NULL_INDEX) {
-				setGeometryPositionAndRotation(myGeometries.get(attachedIndex));
-			} 
+			setPositionAndRotation(newPosition, myRotation);
 		}
 		
 		public void setRotation(Quaternion newRotation) {
+			setPositionAndRotation(myPosition, newRotation); 
+		}
+		
+		public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation) {
+			myPosition = newPosition;
 			myRotation = newRotation;
 			if (attachedIndex != NULL_INDEX) {
-				setGeometryPositionAndRotation(myGeometries.get(attachedIndex));
-			} 
+				// Wouldn't think this needs to be done on render thread, but seems to be...
+				Future<Void> attachFuture = getRenderRegistryClient().getWorkaroundAppStub().enqueue(new Callable<Void>() { // Do this on main render thread
+
+					@Override
+					public Void call() throws Exception {
+						setGeometryPositionAndRotation(myGeometries.get(attachedIndex));
+						return null;
+					}
+				});
+			}
 		}
 		
 		public Vector3f getPosition() {
@@ -251,6 +265,19 @@ public abstract class BasicGoodyImpl {
 			}
 		}
 		
-		public abstract void applyAction(GoodyAction ga);
+		// Override this method to add functionality; be sure to call this super method if action is not handled
+		// by overriding method
+		public void applyAction(GoodyAction ga) {
+			switch (ga.getKind()) {
+				case MOVE : {
+					setPosition(ga.getLocationVector());
+					// Shortly will also add rotation
+					break;
+				}
+				default: {
+					theLogger.error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
+				}
+			}
+		};
 		
 }

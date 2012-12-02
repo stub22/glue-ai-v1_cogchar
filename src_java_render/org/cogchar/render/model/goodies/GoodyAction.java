@@ -35,13 +35,16 @@ public class GoodyAction  {
 	// We can optionallly play a game of equivalence between Java-enum-constant and URI, without an additional hashMap.
 	// The price is that we must initialize the value in the enum constants.
 	public enum Kind {
-		CREATE,
-		DELETE,
-		MOVE,
-		SET;
+		CREATE(GoodyNames.CREATE_URI.getAbsUriString()),
+		DELETE(GoodyNames.DELETE_URI.getAbsUriString()),
+		MOVE(GoodyNames.MOVE_URI.getAbsUriString()),
+		SET(GoodyNames.SET_URI.getAbsUriString());
 		
 		public	String myKindUriString;
-	
+		
+		private Kind(String uriString) {
+			myKindUriString = uriString;
+		}
 	}
 	private		Kind					myKind;
 	
@@ -55,7 +58,6 @@ public class GoodyAction  {
 	public GoodyAction(ThingActionSpec actionSpec) {
 		mySpec = actionSpec;
 		myGoodyID = actionSpec.getTargetThingID();
-		initializeKinds();
 		paramTVMap = mySpec.getParamTVM();
 		String kindIdentString = actionSpec.getVerbID().getAbsUriString();
 		for (Kind kindToCheck : Kind.values()) {
@@ -66,13 +68,6 @@ public class GoodyAction  {
 		}
 	}
 	
-	// Surely there must be a more elegant way than this, eh?
-	private void initializeKinds() {
-		Kind.CREATE.myKindUriString = GoodyNames.CREATE_URI.getAbsUriString();
-		Kind.DELETE.myKindUriString = GoodyNames.DELETE_URI.getAbsUriString();
-		Kind.MOVE.myKindUriString = GoodyNames.MOVE_URI.getAbsUriString();
-		Kind.SET.myKindUriString = GoodyNames.SET_URI.getAbsUriString();
-	}
 	/**
 	 * If our ThingActionSpec supplied a targetThingID, we use that by default.
 	 * However, during creation or other "special" operation, our GoodyAction action may 

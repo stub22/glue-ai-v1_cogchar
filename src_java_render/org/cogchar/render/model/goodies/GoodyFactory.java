@@ -40,6 +40,7 @@ public class GoodyFactory {
 		return theFactory;
 	}
 	public static GoodyFactory createTheFactory(RenderRegistryClient rrc) {
+		theLogger.info("Creating new GoodyFactory");
 		theFactory = new GoodyFactory(rrc);
 		return theFactory;
 	}
@@ -70,18 +71,29 @@ public class GoodyFactory {
 		});
 	}
 	
-	public void createByAction(GoodyAction ga) {
+	public BasicGoodyImpl createByAction(GoodyAction ga) {
+		BasicGoodyImpl newGoody = null;
 		if (ga.getKind() == GoodyAction.Kind.CREATE) {
 			if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
-				BitBox newBitBox = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0]);
-				theGoodySpace.addGoody(newBitBox);
 				boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
-				newBitBox.attachToVirtualWorldNode(myRootNode, bitBoxState);
+				newGoody = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0], bitBoxState);
 			} else {
 				theLogger.warn("Did not recognize requested goody type for creation {}", ga.getType());
 			}
 		} else {
-			theLogger.warn("GoodyFactory was requested to add a goody, but the GoodyAction kind was not CREATE! Goody URI: {}", ga.getGoodyID());
+			theLogger.warn("GoodyFactory received request to add a goody, but the GoodyAction kind was not CREATE! Goody URI: {}",
+					ga.getGoodyID());
 		}
+		return newGoody;
+	}
+	
+	// This way, GoodySpace doesn't need to know about the root node to attach. But this pattern can change if
+	// we decide we rather it did!
+	public BasicGoodyImpl createAndAttachByAction(GoodyAction ga) {
+		BasicGoodyImpl newGoody = createByAction(ga);
+		if (newGoody != null) {
+			newGoody.attachToVirtualWorldNode(myRootNode);
+		}
+		return newGoody;
 	}
 }
