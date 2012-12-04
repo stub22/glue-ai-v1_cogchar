@@ -79,25 +79,33 @@ public class ChannelData<T> {
 		
         for(ControlPoint<T> point: myPairs) {
 			
-            NormalizedDouble normPos = myRange.normalizeValue(point.getPosition()); // Returns null
 			
+            NormalizedDouble normPos = myRange.normalizeValue(point.getPosition()); // Returns null if out of range
+			
+			/* This section only needed for handling out-of-range animation channel values during conversion by substituting
+			 * nearest limit (0 or 1) as appropriate. This is a quick and very dirty band-aid. The functionality
+			 * to indicate which range is exceeded should be added to NormalizableRange if we need it in the long run
+			 * 
 			// Set to limit normPos if out of range
 			// Wow needs some serious refactoring!
+			// Assumes position is a double, bad!
+			Double position = (Double)point.getPosition();
 			if (normPos == null) {
-				if (point.getPosition() == null) {
+				if ((position == null) || (position.isNaN()))  {
 					normPos = new NormalizedDouble(0.5);
 				} else if ((Double)myRange.getMax() > (Double)myRange.getMin()) {
-					if ((Double)point.getPosition() > (Double)myRange.getMax()) {
+					if (position > (Double)myRange.getMax()) {
 						normPos = new NormalizedDouble(1.0);
 					} else {
 						normPos = new NormalizedDouble(0.0);
 					}
-				} else if ((Double)point.getPosition() < (Double)myRange.getMax()) {
+				} else if (position < (Double)myRange.getMax()) {
 					normPos = new NormalizedDouble(1.0);
 				} else {
 					normPos = new NormalizedDouble(0.0);
 				}
 			} 
+			*/
 			
             ControlPoint<NormalizedDouble> normPoint = new ControlPoint(point.getTime(), normPos);
             normPoints.add(normPoint);

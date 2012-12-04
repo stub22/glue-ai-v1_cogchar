@@ -32,7 +32,6 @@ public class OgreAnimationParser{
 
     private final static Logger theLogger = LoggerFactory.getLogger(OgreAnimationParser.class.getName());
 	
-	// 
 	private final static double MAX_ALLOWED_TIME = 1000.0; // seconds
 
     public static AnimationData parseAnimation(String animName, StreamTokenizer st){

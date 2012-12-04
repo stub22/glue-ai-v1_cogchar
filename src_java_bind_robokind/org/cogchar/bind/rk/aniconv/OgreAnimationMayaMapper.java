@@ -151,11 +151,17 @@ public class OgreAnimationMayaMapper {
 		if (conversionMap.containsKey(yawKey)) {
 			yawChannel = makeNewChannelForMapping(conversionMap.get(yawKey));
 		}
+		//System.out.println("Time,Pitch,Yaw,X,Y,Z"); // TEST ONLY
+		boolean rightFlag = yawKey.contains("_R");
+		float xStart = rightFlag? -1f : 1f;
+		double xMultiplier = rightFlag? 1 : -1;
+		double yMultiplier = -xMultiplier;
+		double yawMultiplier = yMultiplier;
+		Vector3f zeroPosition = new Vector3f(xStart, 0f, 0f);
 		for (int i=0; i<keyframeCount; i++) {
 			float[] rotations = {elbowChannels.get(0).getPoints().get(i).getPosition().floatValue(), 
 				elbowChannels.get(1).getPoints().get(i).getPosition().floatValue(),
 				elbowChannels.get(2).getPoints().get(i).getPosition().floatValue()};
-			Vector3f zeroPosition = new Vector3f(-1f, 0f, 0f);
 			Quaternion rotQuats[] = {new Quaternion(), new Quaternion(), new Quaternion()};
 			Quaternion totalRotQuat;
 			rotQuats[2].fromAngleAxis(rotations[2], new Vector3f(0f,0f,1f));
@@ -164,16 +170,20 @@ public class OgreAnimationMayaMapper {
 			rotQuats[0].fromAngleAxis(rotations[0], totalRotQuat.mult(new Vector3f(1f,0f,0f)));
 			totalRotQuat = rotQuats[0].mult(totalRotQuat);
 			Vector3f endPosition = totalRotQuat.mult(zeroPosition);
-			double pitch = Math.PI - Math.acos(endPosition.getX());
-			double yaw = Math.atan(-endPosition.getY()/endPosition.getZ());
+			
+			double pitch = Math.PI - Math.acos(xMultiplier*endPosition.getX());
+			double yaw = yawMultiplier*Math.atan2(yMultiplier*endPosition.getY(),endPosition.getZ());
+			if (pitch == 0) {yaw = 0;}
+			double time = elbowChannels.get(0).getPoints().get(i).getTime()*1000;
 			if (pitchChannel != null) {
-				ControlPoint pitchPoint = new ControlPoint(elbowChannels.get(0).getPoints().get(i).getTime()*1000, pitch);
+				ControlPoint pitchPoint = new ControlPoint(time, pitch);
 				pitchChannel.addPoint(pitchPoint);
 			}
 			if (yawChannel != null) {
-				ControlPoint yawPoint = new ControlPoint(elbowChannels.get(0).getPoints().get(i).getTime()*1000, yaw);
+				ControlPoint yawPoint = new ControlPoint(time, yaw);
 				yawChannel.addPoint(yawPoint);
 			}
+			//System.out.println(time+","+pitch+","+yaw+","+endPosition.getX()+","+endPosition.getY()+","+endPosition.getZ()); // TEST ONLY
 		}
 		existingData = addChannelIfChangingAndNonNull(existingData, pitchChannel);
 		existingData = addChannelIfChangingAndNonNull(existingData, yawChannel);
