@@ -47,9 +47,8 @@ public class BasicGoodyImpl {
 		private static Logger theLogger = LoggerFactory.getLogger(BasicGoodyImpl.class);
 		
 		// Number of ms this Impl will wait for goody to attach or detach from jMonkey root node before timing out
-		// Currently we don't wait, because futures never return! This creates potential for concurrency issues
-		// and is something it'd be very nice to sort out.
-		private final static long ATTACH_DETACH_TIMEOUT = 3000;
+		// Currently not used -- timed futures are timing out for some reason
+		//private final static long ATTACH_DETACH_TIMEOUT = 3000; //ms
 
 		RenderRegistryClient myRenderRegCli;
 		Ident myUri;
@@ -175,7 +174,7 @@ public class BasicGoodyImpl {
 			final BasicGoodieGeometry geometryToAttach = myGeometries.get(geometryIndex);
 			final Geometry jmeGeometry = geometryToAttach.getJmeGeometry();
 			setGeometryPositionAndRotation(geometryToAttach);
-			Future<Void> attachFuture = getRenderRegistryClient().getWorkaroundAppStub().enqueue(new Callable<Void>() { // Do this on main render thread
+			Future attachFuture = getRenderRegistryClient().getWorkaroundAppStub().enqueue(new Callable() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
@@ -188,7 +187,7 @@ public class BasicGoodyImpl {
 				}
 			});
 			// Method should block until attach completes to avoid collision with subsequent detach
-			//waitForJmeFuture(attachFuture);
+			waitForJmeFuture(attachFuture);
 		}
 		
 		private void detachGeometryFromRootNode() {
@@ -207,16 +206,20 @@ public class BasicGoodyImpl {
 				}
 			});
 			// Method should block until detach completes to avoid collision with subsequent attaches
-			//waitForJmeFuture(detachFuture);
+			waitForJmeFuture(detachFuture);
 		}
 		
-		// This would be nice if it worked, but futures don't return for some reason...
+		
 		private void waitForJmeFuture(Future jmeFuture) {
 			try {
-				jmeFuture.get(ATTACH_DETACH_TIMEOUT, TimeUnit.MILLISECONDS);
+				// Timed return seems to always time out -- are other things often blocking the render thread,
+				// or another reason?
+				//jmeFuture.get(ATTACH_DETACH_TIMEOUT, TimeUnit.MILLISECONDS);
+				jmeFuture.get();
 			} catch (Exception e) {
 				theLogger.warn("Exception attempting to attach or detach goody: ", e);
 			}
+			//theLogger.info("Jme Future has arrived"); // TEST ONLY
 		}
 		
 		public void setPosition(Vector3f newPosition) {
@@ -232,7 +235,7 @@ public class BasicGoodyImpl {
 			myRotation = newRotation;
 			if (attachedIndex != NULL_INDEX) {
 				// Wouldn't think this needs to be done on render thread, but seems to be...
-				Future<Void> attachFuture = getRenderRegistryClient().getWorkaroundAppStub().enqueue(new Callable<Void>() { // Do this on main render thread
+				Future positionFuture = getRenderRegistryClient().getWorkaroundAppStub().enqueue(new Callable() { // Do this on main render thread
 
 					@Override
 					public Void call() throws Exception {
@@ -240,6 +243,7 @@ public class BasicGoodyImpl {
 						return null;
 					}
 				});
+				waitForJmeFuture(positionFuture);
 			}
 		}
 		
