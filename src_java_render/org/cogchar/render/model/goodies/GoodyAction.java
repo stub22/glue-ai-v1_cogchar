@@ -105,8 +105,12 @@ public class GoodyAction  {
 	 * @return rotational operator quaternion object encoding
 	 */
 	public Quaternion getRotationQuaternion() {
-		// 
-		return null;
+		float rotX = paramTVMap.getAsFloat(GoodyNames.ROTATION_AXIS_X);
+		float rotY = paramTVMap.getAsFloat(GoodyNames.ROTATION_AXIS_Y);
+		float rotZ = paramTVMap.getAsFloat(GoodyNames.ROTATION_AXIS_Z);
+		float rotMag = paramTVMap.getAsFloat(GoodyNames.ROTATION_MAG_DEG)*(float)Math.PI/180f;
+		Quaternion resultQuat = new Quaternion(rotX, rotY, rotZ, rotMag);
+		return resultQuat;
 	}
 	
 	// Still figuring this one out; right now assuming size may have up to three components, but sometimes fewer
