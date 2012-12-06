@@ -97,7 +97,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 			// Multiple worldConfigIdents? Possible. It's possible duplicate cinematic definitions might cause problems
 			// but we'll leave that for later, so sure, go ahead and load on multiple configs if they are requested.
 			for (Ident configIdent : worldConfigIdents) {
-				initCinematicStuff(gce, configIdent, rc);
+				initCinematicStuff(gce, configIdent, rc, gFactory);
 				// Like with everything else dependent on global config's graph settings (except for Lift, which uses a managed service
 				// version of GlobalConfigEmitter) it seems logical to set the key bindings here.
 				// Multiple worldConfigIdents? We decided above this is possible (if messy). If key bindings are duplicated
@@ -113,13 +113,6 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 					getLogger().error("Could not get valid graph on which to query for input bindings config of {}",
 							configIdent.getLocalName(), e);
 				}
-				try {
-					Ident graphIdent = gce.ergMap().get(configIdent).get(PumaModeConstants.THING_ACTIONS_BINDINGS_ROLE);
-					gFactory.getTheGoodySpace().readAndApplyGoodyActions(rc, graphIdent);
-				} catch (Exception e) {
-					getLogger().error("Could not initialize Thing actions with a config of {}",
-							configIdent.getLocalName(), e);
-				}
 			}
 		} catch (Exception e) {
 			getLogger().error("Could not retrieve any specified VirtualWorldEntity for this global configuration!");
@@ -128,7 +121,8 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		myHRC.refreshInputBindingsAndHelpScreen(currKeyBindCfg, cspace);
 	}
 	
-	private void initCinematicStuff(GlobalConfigEmitter gce, Ident worldConfigIdent, RepoClient repoCli) {
+	private void initCinematicStuff(GlobalConfigEmitter gce, Ident worldConfigIdent, RepoClient repoCli, 
+			GoodyFactory gFactory) {
 		HumanoidRenderWorldMapper renderMapper = new HumanoidRenderWorldMapper();
 		Ident graphIdent = null;
 		try {
@@ -140,6 +134,15 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 			renderMapper.initLightsAndCamera(repoCli, myHRC, graphIdent);
 		} catch (Exception e) {
 			getLogger().warn("Error attempting to initialize lights and cameras for {}: ", worldConfigIdent.getLocalName(), e);
+		}
+		graphIdent = null;
+		// Goodies should be initialized before Cinematics, so that Cinematics can reference Goodies!
+		try {
+			graphIdent = gce.ergMap().get(worldConfigIdent).get(PumaModeConstants.THING_ACTIONS_BINDINGS_ROLE);
+			gFactory.getTheGoodySpace().readAndApplyGoodyActions(repoCli, graphIdent);
+		} catch (Exception e) {
+			getLogger().error("Could not initialize Thing actions with a config of {}",
+					worldConfigIdent.getLocalName(), e);
 		}
 		graphIdent = null;
 		try {

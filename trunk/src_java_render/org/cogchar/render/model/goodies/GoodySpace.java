@@ -51,6 +51,11 @@ public class GoodySpace {
 		myGoodiesByID.remove(departingGoody.myUri);
 	}
 	
+	// Providing this so that CinematicMgr can access goodies to use in Cinematics
+	public BasicGoodyImpl getGoody(Ident goodyUri) {
+		return myGoodiesByID.get(goodyUri);
+	}
+	
 	/**
 	 * The targetThing is presumed to be a "goody", either existing or new.
 	 */

@@ -35,7 +35,7 @@ import org.appdapter.help.repo.SolutionHelper;
 public class CinematicTrack extends BasicDebugger {
 
 	public String trackName;
-	public String attachedItem;
+	public Ident attachedItem;
 	public AttachedItemType attachedItemType = AttachedItemType.NULLTYPE;
 	public TrackType trackType = TrackType.NULLTYPE;
 	public String directionType;
@@ -67,7 +67,7 @@ public class CinematicTrack extends BasicDebugger {
 		SolutionHelper sh = new SolutionHelper();
 		Ident myIdent = sh.pullIdent(solution, CinemaCN.TRACK_VAR_NAME);
 		trackName = myIdent.getLocalName();
-		attachedItem = sh.pullIdent(solution, CinemaCN.ATTACHED_ITEM_VAR_NAME).getLocalName();
+		attachedItem = sh.pullIdent(solution, CinemaCN.ATTACHED_ITEM_VAR_NAME);
 		String typeString = sh.pullIdent(solution, CinemaCN.ATTACHED_ITEM_TYPE_VAR_NAME).getLocalName().toUpperCase();
 		for (AttachedItemType testType : AttachedItemType.values()) {
 			if (testType.toString().equals(typeString)) {
@@ -100,7 +100,9 @@ public class CinematicTrack extends BasicDebugger {
 			endRotation = new RotationConfig(rotationIdent);
 		}
 	}
-
+	
+	/* Depreciated 5 Dec 2012 by Ryan -- no way to read attachedItem Ident via assembler
+	 * Changed from String to Ident on this date to support attaching multiple item types
 	public CinematicTrack(ItemAssemblyReader iaReader, Item configItem) {
 		// If this track has no name, it's likely an unnamed track defined in-line with a cinematic definition...
 		trackName = ItemFuncs.getString(configItem, CinemaAN.P_trackName, CinemaAN.unnamedTrackName);
@@ -156,11 +158,12 @@ public class CinematicTrack extends BasicDebugger {
 			endRotation = new RotationConfig(rotation);
 		}
 	}
+	*/
 
 	public enum AttachedItemType {
 
-		NULLTYPE, CAMERA
-	} // Initially only supporting cameras, but most of structure is in place to add others
+		NULLTYPE, CAMERA, GOODY
+	}
 
 	public enum TrackType {
 

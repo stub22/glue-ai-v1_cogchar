@@ -61,6 +61,9 @@ public class CinematicInstanceConfig extends QueryBackedConfigBase {
 			myTracks.add(new CinematicTrack(trackIdent));
 		}
 	}
+	
+	/* Depreciated 5 Dec 2012 by Ryan -- no way to read attachedItem Ident in CinematicTrack via assembler
+	 * Changed from String to Ident on this date to support attaching multiple item types
 	public CinematicInstanceConfig(ItemAssemblyReader iaReader, Item configItem) {
 		super(null);
 		myURI_Fragment = configItem.getIdent().getLocalName();
@@ -72,4 +75,5 @@ public class CinematicInstanceConfig extends QueryBackedConfigBase {
 			myTracks.add(ct);
 		}
 	}
+	*/
 }
