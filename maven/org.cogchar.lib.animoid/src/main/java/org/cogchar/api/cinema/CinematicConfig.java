@@ -71,9 +71,13 @@ public class CinematicConfig extends QueryBackedConfigBase {
 			myRCs.add(new RotationConfig(qi, rotSol));
 		}
 	}
+	
+	/* Depreciated 5 Dec 2012 by Ryan -- no way to read attachedItem Ident in CinematicTrack via assembler (I think)
+	 * Changed from String to Ident on this date to support attaching multiple item types
+	 * We can bring this back if we decide we like it enough to enhance the assembler-based methods
+	 *
 	/* This assembler-based Builder is made (arguably) unnecessary by the RepoClient based technique (above),
 	 * unless we LIKE having two separate routes to instantiation (enough to maintain both codebases)
-	 */
 	public static class Builder extends DynamicCachingComponentAssembler<CinematicConfig> {
 		
 		public Builder(Resource builderConfRes) {
@@ -142,4 +146,5 @@ public class CinematicConfig extends QueryBackedConfigBase {
 		bd.logInfo("=====================================================================");
 
 	}
+	*/
 }
