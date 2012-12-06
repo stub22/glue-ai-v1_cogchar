@@ -18,6 +18,8 @@ package org.cogchar.render.model.goodies;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.cinematic.MotionPath;
+import com.jme3.cinematic.events.MotionTrack;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -269,12 +271,31 @@ public class BasicGoodyImpl {
 			}
 		}
 		
+		private void translateToPosition(Vector3f newPosition, float speed) {
+			MotionPath path = new MotionPath();
+			path.addWayPoint(myPosition);
+			path.addWayPoint(newPosition);
+			// MotionTrack is depreciated in new jMonkey, but we must use it since we're using an older version:
+			MotionTrack event = new MotionTrack(myGeometries.get(attachedIndex).getJmeGeometry(), path);
+			// Current jMonkey uses this instead:
+			//MotionEvent event = new MotionEvent(myGeometries.get(attachedIndex).getJmeGeometry(), path);
+			event.setSpeed(speed);
+			event.play();
+			myPosition = newPosition;
+		}
+		
 		// Override this method to add functionality; be sure to call this super method if action is not handled
 		// by overriding method
 		public void applyAction(GoodyAction ga) {
 			switch (ga.getKind()) {
 				case MOVE : {
-					setPosition(ga.getLocationVector());
+					Vector3f newLocation = ga.getLocationVector();
+					float speed = ga.getSpeed();
+					if (speed == 0f) {
+						setPosition(newLocation);
+					} else {
+						translateToPosition(newLocation, speed);
+					}
 					// Shortly will also add rotation
 					break;
 				}
