@@ -44,9 +44,12 @@ public class GoodyNames  {
 	public	static Ident	SIZE_Y = makeID("sizeY");
 	public	static Ident	SIZE_Z = makeID("sizeZ");
 	
+	public	static Ident	SPEED = makeID("speed");
+	
 	public	static Ident	THING_TYPE = makeID("thingType");
 	
 	public static	Ident	TYPE_BIT_BOX = makeID("BitBox");
+	public static	Ident	TYPE_FLOOR = makeID("Floor");
 	
 	public  static Ident	RDF_TYPE = new FreeIdent(ComponentAssemblyNames.NS_rdf + "type");
 	

@@ -122,6 +122,12 @@ public class GoodyAction  {
 		return sizes;
 	}
 	
+	// May not need its own method, but since a speed of action may be a common feature of GoodyActions, let's
+	// assume for now it makes sense to get speed this way instead of with getSpecialString
+	public float getSpeed() {
+		return paramTVMap.getAsFloat(GoodyNames.SPEED);
+	}
+	
 	// Could have more elaborate type handling here, but for now, since params in repo are natively strings
 	// we'll provide a way to load those raw strings by param name
 	public String getSpecialString(Ident paramIdent) {
