@@ -305,4 +305,14 @@ public class BasicGoodyImpl {
 			}
 		};
 		
+	// Not clear whether this is a good thing to expose publically, especially since goodies can change their geometry
+	// Adding it to provide goody cinematic capabilities on a trial basis
+	public Geometry getCurrentGeometry() {
+		Geometry currentGeometry = null;
+		if (attachedIndex != NULL_INDEX) {
+			currentGeometry = myGeometries.get(attachedIndex).getJmeGeometry();
+		}
+		return currentGeometry;
+	}
+		
 }
