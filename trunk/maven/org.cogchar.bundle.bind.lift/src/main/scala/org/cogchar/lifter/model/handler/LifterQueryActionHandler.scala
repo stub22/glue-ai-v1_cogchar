@@ -43,7 +43,7 @@ class LifterQueryActionHandler extends AbstractLifterActionHandler {
 			actionList += item.getAction
 		  }
 		  state.stateBySession(sessionId).multiActionsBySlot(slotNum) = actionList.toArray
-		  PageCommander.setControl(sessionId, slotNum, LinkList.makeLinkList(control.text, namesList.toArray, sessionId, slotNum))
+		  PageCommander.setControl(sessionId, slotNum, LinkList.makeMultiControl(control.text, namesList.toArray, sessionId, slotNum, state))
 	  }
 	  case _ => {
 		  warn("Lifter does not know how to interpret a query as action for control type " + control.controlType +
