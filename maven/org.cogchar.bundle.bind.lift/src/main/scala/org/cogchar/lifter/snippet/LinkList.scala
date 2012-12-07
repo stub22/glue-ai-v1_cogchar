@@ -28,10 +28,6 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http.SHtml._
-	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
-	import S._
-	import scala.collection.mutable.{Buffer,HashMap}
 
 	object LinkList extends AbstractMultiSelectControlObject {
 	  
@@ -44,7 +40,7 @@ package org.cogchar.lifter {
 	  val titlePrefix = "linkListTitle"
 	  val listId = "list_item"
 
-	  def makeMultiControlImpl(titleText: String, labelList:Array[String], sessionId:String, idNum: Int): NodeSeq = {
+	  def makeMultiControlImpl(titleText: String, labelList:Array[String], idNum: Int): NodeSeq = {
 		val formIdForHtml: String = idNum.toString
 		val titleId: String = titlePrefix + formIdForHtml
 		val numberOfColumns = (labelList.length/maxPerColumn.doubleValue).ceil.intValue max 1
@@ -65,15 +61,15 @@ package org.cogchar.lifter {
 	  }
 	}
 	
-	class LinkList extends StatefulSnippet with AbstractMultiSelectControl {
+	class LinkList extends AbstractMultiSelectControl {
+	  
+	  // Specifies that this is a multi-action control; actions will be read from LifterState.SessionState.multiActionsBySlot
+	  override def multiActionFlag = true
 	  
 	  def getName: String = LinkList.matchingName
 	  
-	  def generateSelectors(sessionId: String, formId: Int, textData:MultiSelectControlData): CssSel = {
-		val title = textData title
-		val labels = textData labels
+	  def generateSelectors(sessionId: String, formId: Int, title: String, labels: Array[String]): CssSel = {
 		val listLength = labels.length
-		info("LinkList rendering: title: " + title + "; labels.length=" + listLength.toString) // TEST ONLY
 		val controlInstanceTitleId = LinkList.titlePrefix + formId
 		val titleSelectorText: String = "#"+controlInstanceTitleId+" *"
 		val buttonTags = (for (i <- 0 until listLength) yield i.toString)// There may be a simplier Scala way to do this

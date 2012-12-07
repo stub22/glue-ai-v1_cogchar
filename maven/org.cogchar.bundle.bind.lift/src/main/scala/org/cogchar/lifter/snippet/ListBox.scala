@@ -28,36 +28,19 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http.SHtml._
-	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
-	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
-	import org.cogchar.lifter.view.TextBox
-	import S._
 
-	object ListBox extends AbstractControlInitializationHandler {
+	object ListBox extends AbstractMultiSelectControlObject {
 	  
 	  protected val matchingName = "LISTBOX"
   
-	  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
-		// From the RDF "text" value we assume a comma separated list with the first item the title and the rest radiobutton labels
-		val textItems = List.fromArray(control.text.split(ActionStrings.stringAttributeSeparator))
-		val titleText = textItems(0)
-		val labelItems = textItems.tail
-		makeListBox(titleText, labelItems, slotNum)
-	  }
-	  
-	  val blankId = -1
-	  val responseText = "Title can change" // We can add bits to define this in XML if we want, or code in more fancy conditionals (Currently ignored here for demo purposes)
+	  // Not currently implemented:
+	  //val responseText = "Title can change" // We can add bits to define this in XML if we want, or code in more fancy conditionals
 	  val titlePrefix = "listformtitle"
 	  val boxId = "listbox"
-	  val titleMap = new scala.collection.mutable.HashMap[Int, String]
-	  val labelMap = new scala.collection.mutable.HashMap[Int, List[String]] // Map to hold all the labels for each ListBox control rendered
 	  
-	  def makeListBox(labelText: String, labelList:List[String], idNum: Int): NodeSeq = {
+	  def makeMultiControlImpl(labelText: String, labelList:Array[String], idNum: Int): NodeSeq = {
 		val formIdForHtml: String = idNum.toString
-		titleMap(idNum) = labelText
-		labelMap(idNum) = labelList
-		val titleId: String = titlePrefix + formIdForHtml // We need a unique ID here, because JavaScript may be updating the title after post
+		val titleId: String = titlePrefix + formIdForHtml // We need a unique ID here in case we'd like JavaScript to update the title after post
 		(
 		  <form class='lift:form.ajax'>
 			<lift:ListBox formId={formIdForHtml}>
@@ -69,51 +52,19 @@ package org.cogchar.lifter {
 	  }
 	}
 	  
-	class ListBox extends StatefulSnippet with Logger {
+	class ListBox extends AbstractMultiSelectControl {
 		
-	  var formId: Int = ListBox.blankId
-	  var sessionId: String = ""
-	  var idItems: Array[String] = new Array[String](2)
-	  lazy val listBoxInstanceTitle = ListBox.titlePrefix + formId
-		
-	  def dispatch = {case "render" => render}
-		
-	  def render(xhtml:NodeSeq): NodeSeq = {
-
-		def process(result: String): JsCmd = {
-		  info("ListBox says option number " + result + " on formId " + formId + " is selected in session " + sessionId + ".")
-		  //SetHtml(listBoxInstanceTitle, Text(ListBox.responseText)) // We'll leave the title the same for the demo
-		  PageCommander ! PageCommander.ControlMultiSelect(sessionId, formId, result.toInt)
-		}
-
-		S.session match {
-		  case Full(myLiftSession) => {
-			sessionId = myLiftSession.uniqueId
-			formId = (S.attr("formId") openOr "-1").toInt  
-			var valid = false
-			var selectors:CssSel = "i_eat_yaks_for_breakfast" #> "" // This is just to produce a "Null" CssSel so we can initialize this here, but not add any meaningful info until we have checked for valid formId. (As recommended by the inventor of Lift)
-			var errorSeq: NodeSeq = NodeSeq.Empty
-			if (ListBox.titleMap.contains(formId)) {
-			  valid = true
-			  val titleSelectorText: String = "#"+listBoxInstanceTitle+" *"
-			  val boxSelectorText: String = "#" + ListBox.boxId
-			  val rows = if (ListBox.labelMap(formId).length < 8) ListBox.labelMap(formId).length else 7
-			  val listPairs = (for (i <- 0 until ListBox.labelMap(formId).length) yield (i.toString, ListBox.labelMap(formId)(i)))// There may be a simplier Scala way to do this
-			  selectors = titleSelectorText #> ListBox.titleMap(formId) & boxSelectorText #> SHtml.ajaxSelect(listPairs, Empty, process _, "class" -> "formlabels", "size" -> rows.toString)
-			} else {
-			  error("ListBox.render cannot find a valid formId! Reported formId: " + formId)
-			  errorSeq = TextBox.makeBox("ListBox.render cannot find a valid formId! Reported formId: " + formId, "", true)
-			}
-			if (valid) selectors.apply(xhtml) else errorSeq // Blanks control if something is wrong with formId
-			//selectors.apply(xhtml) // This would be ok too, and would just apply the "null" selector transform to html if something is broken
-		  }
-		  case _ => {
-			  error("ListBox cannot get sessionId, not rendering!")
-			  TextBox.makeBox("ListBox cannot get sessionId, not rendering!", "", true)
-		  }
-		}
-		
-	  }
+	  def getName: String = ListBox.matchingName
+	  
+	  def generateSelectors(sessionId: String, formId: Int, title: String, labels: Array[String]): CssSel = {
+		val listLength = labels.length
+		val listBoxInstanceTitle = ListBox.titlePrefix + formId
+		val titleSelectorText: String = "#"+listBoxInstanceTitle+" *"
+		val boxSelectorText: String = "#" + ListBox.boxId
+		val rows = if (listLength < 8) listLength else 7
+		val listPairs = (for (i <- 0 until listLength) yield (i.toString, labels(i)))// There may be a simplier Scala way to do this
+		titleSelectorText #> title & boxSelectorText #> SHtml.ajaxSelect(listPairs, Empty, process _, "class" -> "formlabels", "size" -> rows.toString)
+	  }	  
 	}
 
   }
