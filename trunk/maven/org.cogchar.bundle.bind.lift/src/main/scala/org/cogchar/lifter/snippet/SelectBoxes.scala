@@ -28,39 +28,21 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http.SHtml._
-	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
-	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
-	import org.cogchar.lifter.view.TextBox
-	import S._
 
-	object SelectBoxes extends AbstractControlInitializationHandler {
+	object SelectBoxes extends AbstractMultiSelectControlObject {
 	  
 	  protected val matchingName = "SELECTBOXES"
-  
-	  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
-		// From the RDF "text" value we assume a comma separated list with the first item the title and the rest checkbox labels
-		val textItems = List.fromArray(control.text.split(ActionStrings.stringAttributeSeparator))
-		val titleText = textItems(0)
-		val labelItems = textItems.tail
-		makeSelectBoxes(titleText, labelItems, slotNum)
-	  }
 	  
-	  val responseText = "Title can change" // We can add bits to define this in XML if we want, or code in more fancy conditionals
+	  // Not currently implemented:
+	  //val responseText = "Title can change" // We can add bits to define this in XML if we want, or code in more fancy conditionals
   
 	  val titlePrefix = "selectformtitle"
 	  val labelPrefix = "label"
 	  val boxPrefix = "checkbox"
-	  val blankId = -1
-
-	  val titleMap = new scala.collection.mutable.HashMap[Int,String]
-	  val labelMap = new scala.collection.mutable.HashMap[Int,List[String]] // Map to hold all the labels for each SelectBoxes control rendered
 	  
-	  def makeSelectBoxes(labelText: String, labelList:List[String], idNum: Int): NodeSeq = {
+	  def makeMultiControlImpl(labelText: String, labelList:Array[String], idNum: Int): NodeSeq = {
 		val formIdForHtml: String = idNum.toString
-		titleMap(idNum) = labelText
-		labelMap(idNum) = labelList
-		val titleId: String = titlePrefix + formIdForHtml // We need a unique ID here, because JavaScript will be updating the title after post
+		val titleId: String = titlePrefix + formIdForHtml // We need a unique ID here in case we'd like JavaScript to update the title after post
 		var boxesHtmlString: String = "<form class='lift:form.ajax'><lift:SelectBoxes formId='" + formIdForHtml +"'><div id='" + titleId + "' class='labels'></div>"
 		// Add html for each box
 		for (boxIndex <- 0 until labelList.length) {
@@ -73,57 +55,36 @@ package org.cogchar.lifter {
 	  }
 	}
 	  
-	class SelectBoxes extends StatefulSnippet with Logger {
+	class SelectBoxes extends AbstractMultiSelectControl {
 		
-	  var formId: Int = SelectBoxes.blankId
-	  var sessionId: String = ""
-	  lazy val selectBoxesInstanceTitle = SelectBoxes.titlePrefix + formId
-		
-	  def dispatch = {case "render" => render}
-		
-	  def render(xhtml:NodeSeq): NodeSeq = {
-
-		def process(result: Boolean, boxNumber: Int): JsCmd = {
-		  // This control is set up as demo, but we yet need to have it do something on input other than print the result!
-		  info("SelectBoxes says box number " + boxNumber + " on formId " + formId + " is " + result + " for session " + sessionId)
-		  SetHtml(selectBoxesInstanceTitle, Text(SelectBoxes.responseText))
+	  def getName: String = SelectBoxes.matchingName
+	  
+		def generateSelectors(sessionId: String, formId: Int, title: String, labels: Array[String]): CssSel = {
+		  val selectBoxesInstanceTitle = SelectBoxes.titlePrefix + formId
+		  val titleSelectorText: String = "#"+selectBoxesInstanceTitle+" *"
+		  var selectors = titleSelectorText #> title
+		  for (boxIndex <- 0 until labels.length) {
+			selectors = selectors & makeABox(boxIndex, labels)
+		  }
+		  selectors
 		}
 
-		def makeABox(boxIndex:Int) = {
+		def makeABox(boxIndex:Int, labels:Array[String]) = {
 		  val labelId: String = "#" + SelectBoxes.labelPrefix + boxIndex.toString
 		  val boxId: String = "#" + SelectBoxes.boxPrefix + boxIndex.toString
-		  labelId #> SelectBoxes.labelMap(formId)(boxIndex) &
-		  boxId #> SHtml.ajaxCheckbox(false, (toggled: Boolean) => process(toggled, boxIndex))
-		}
-
-		S.session match {
-		  case Full(myLiftSession) => {
-			sessionId = myLiftSession.uniqueId
-			formId = (S.attr("formId") openOr "-1").toInt
-			var valid = false
-			var selectors:CssSel = "i_eat_yaks_for_breakfast" #> "" // This is just to produce a "Null" CssSel so we can initialize this here, but not add any meaningful info until we have checked for valid formId. (As recommended by the inventor of Lift)
-			var errorSeq: NodeSeq = NodeSeq.Empty
-			if (SelectBoxes.titleMap.contains(formId)) {
-			  valid = true
-			  val titleSelectorText: String = "#"+selectBoxesInstanceTitle+" *"
-			  selectors = titleSelectorText #> SelectBoxes.titleMap(formId)
-			  for (boxIndex <- 0 until SelectBoxes.labelMap(formId).length) {
-				selectors = selectors & makeABox(boxIndex)
-			  }
-			} else {
-			  error("SelectBox.render cannot find a valid formId! Reported formId: " + formId)
-			  errorSeq = TextBox.makeBox("SelectBox.render cannot find a valid formId! Reported formId: " + formId, "", true)
-			}
-			if (valid) selectors.apply(xhtml) else errorSeq // Blanks control if something is wrong with formId
-			//selectors.apply(xhtml) // This would be ok too, and would just apply the "null" selector transform to html if something is broken
-		  }
-		  case _ => {
-			error("SelectBoxes cannot get sessionId, not rendering!")
-			TextBox.makeBox("SelectBoxes cannot get sessionId, not rendering!", "", true)
-		  }
+		  labelId #> labels(boxIndex) &
+		  boxId #> SHtml.ajaxCheckbox(false, (toggled: Boolean) => processWithToggle(toggled, boxIndex))
 		}
 		
+	  def processWithToggle(result: Boolean, boxNumber:Int) {
+		if (result) {
+		  process(boxNumber.toString)
+		} else {
+		  // We may want to expand this class and/or AbstractMultiSelectControl to perform an action on deselect
+		  info(getName + " sees that the box was deselected, but currently we do not make use of that information.")
+		}
 	  }
+
 	}
 
   }
