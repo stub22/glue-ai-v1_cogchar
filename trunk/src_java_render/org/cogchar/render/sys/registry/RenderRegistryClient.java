@@ -83,6 +83,7 @@ public interface RenderRegistryClient {
 	public FlatOverlayMgr getSceneFlatFacade(String optionalName) ;
 	public ModelSpatialFactory getSceneSpatialModelFacade(String optionalName);
 	public TextMgr getSceneTextFacade(String optionalName);
+	public CinematicMgr getSceneCinematicsFacade(String optionalName);
 
 		
 	public AssetContext getAssetContext(String optionalName, String optJme3AssetManagerName);
