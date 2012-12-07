@@ -25,7 +25,6 @@ import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.bind.lift.LifterLifecycle;
 import org.cogchar.render.app.trigger.SceneActions;
-import org.cogchar.render.opengl.scene.CinematicMgr;
 
 
 import org.osgi.framework.BundleContext;

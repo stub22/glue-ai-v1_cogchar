@@ -47,16 +47,18 @@ import org.slf4j.Logger;
  *
  * @author Ryan Biggs
  */
+
 public class CinematicMgr extends BasicDebugger {
 
-	private static Map<String, Cinematic> myCinematicsByName = new HashMap<String, Cinematic>();
-	private static Map<String, CinematicTrack> myTracksByName = new HashMap<String, CinematicTrack>();
-	private static Map<String, WaypointConfig> myWaypointsByName = new HashMap<String, WaypointConfig>();
-	private static Map<String, RotationConfig> myRotationsByName = new HashMap<String, RotationConfig>();
-	private static Logger staticLogger = getLoggerForClass(CinematicMgr.class);
-	private static CogcharRenderContext myCRC;
+	private Map<String, Cinematic> myCinematicsByName = new HashMap<String, Cinematic>();
+	private Map<String, CinematicTrack> myTracksByName = new HashMap<String, CinematicTrack>();
+	private Map<String, WaypointConfig> myWaypointsByName = new HashMap<String, WaypointConfig>();
+	private Map<String, RotationConfig> myRotationsByName = new HashMap<String, RotationConfig>();
+	private Logger staticLogger = getLoggerForClass(CinematicMgr.class);
+	private CogcharRenderContext myCRC;
 
-	public static void storeCinematicsFromConfig(CinematicConfig config, CogcharRenderContext crc) {
+	// This monster method could use some refactoring!
+	public void storeCinematicsFromConfig(CinematicConfig config, CogcharRenderContext crc) {
 		BallBuilder.getTheBallBuilder().storeCinematicConfig(config); // Temporary for BallBuilder demo
 
 		myCRC = crc;
@@ -289,11 +291,11 @@ public class CinematicMgr extends BasicDebugger {
 		}
 	}
 
-	private static boolean noPosition(float[] waypointDef) {
+	private boolean noPosition(float[] waypointDef) {
 		return (new Float(waypointDef[0]).isNaN()) || (new Float(waypointDef[1]).isNaN()) || (new Float(waypointDef[2]).isNaN());
 	}
 
-	private static LoopMode setLoopMode(String modeString) {
+	private LoopMode setLoopMode(String modeString) {
 		LoopMode loopJmeType = null;
 		for (LoopMode testType : LoopMode.values()) {
 			if (modeString.equals(testType.toString())) {
@@ -303,7 +305,7 @@ public class CinematicMgr extends BasicDebugger {
 		return loopJmeType;
 	}
 
-	public static boolean controlCinematicByName(final String name, CinematicMgr.ControlAction action) {
+	public boolean controlCinematicByName(final String name, CinematicMgr.ControlAction action) {
 		boolean validAction = true;
 		final Cinematic cinematic = myCinematicsByName.get(name);
 		if (cinematic != null) {
@@ -341,7 +343,7 @@ public class CinematicMgr extends BasicDebugger {
 		return validAction;
 	}
 
-	public static void clearCinematics(CogcharRenderContext crc) {
+	public void clearCinematics(CogcharRenderContext crc) {
 		final AppStateManager manager = crc.getRenderRegistryClient().getJme3AppStateManager(null);
 
 		// Keeps getting AppStates of class Cinematic and detaching them until there are no more

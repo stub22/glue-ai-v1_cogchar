@@ -41,10 +41,14 @@ public class HumanoidRenderWorldMapper {
 		lf.initLightsFromConfig(lcc, hrc);
 	}
 
+	private CinematicMgr getCinematicMgr(HumanoidRenderContext hrc) {
+		return hrc.getRenderRegistryClient().getSceneCinematicsFacade(null);
+	}
+	
 	public void initCinematics(RepoClient qi, HumanoidRenderContext hrc, Ident qGraph) {
 		// The CinematicConfig constructor now automatically loads config from sheet
 		CinematicConfig cc = new CinematicConfig(qi, qGraph);
-		CinematicMgr.storeCinematicsFromConfig(cc, hrc);
+		getCinematicMgr(hrc).storeCinematicsFromConfig(cc, hrc);
 	}
 	
 	public void clearLights(HumanoidRenderContext hrc) {
@@ -54,7 +58,7 @@ public class HumanoidRenderWorldMapper {
 	}
 	
 	public void clearCinematics(HumanoidRenderContext hrc) {
-		CinematicMgr.clearCinematics(hrc);
+		getCinematicMgr(hrc).clearCinematics(hrc);
 	}
 	
 	public void clearViewPorts(HumanoidRenderContext hrc) {
