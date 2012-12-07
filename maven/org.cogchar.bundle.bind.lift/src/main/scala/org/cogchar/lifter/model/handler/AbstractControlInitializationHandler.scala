@@ -30,7 +30,8 @@ trait AbstractControlInitializationHandler extends Logger {
 	  if (this.nextHandler != null) {
 		result = nextHandler.processHandler(state, sessionId, slotNum, control)
 	  } else {
-		warn("Reached end of control initialization chain without finding handler for sessionId " + sessionId + " and slotNum:" + slotNum + " with control type: " + control.controlType) // Need to fix
+		warn("Reached end of control initialization chain without finding handler for sessionId " + sessionId +
+			 " and slotNum:" + slotNum + " with control type: " + control.controlType)
 	  }
 	}
 	result

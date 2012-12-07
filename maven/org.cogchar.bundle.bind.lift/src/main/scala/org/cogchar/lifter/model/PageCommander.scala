@@ -33,11 +33,18 @@ package org.cogchar.lifter {
 	import scala.collection.JavaConverters._
 	// import org.cogchar.platform.trigger.CogcharActionBinding
 	
+	/**
+	 *
+	 * @author Ryan Biggs <rbiggs@hansonrobokind.com>
+	 */
+	
 	// What do we think about this being an object and not a class?
 	// It appears to be standard practice for LiftActors which provide features to all sessions
 	// to be singleton Objects.
 	// We might eventually want parts of PageCommander to be performed via a class of 
 	// actors with an instance of that class created for each session.
+	// That would likely be a more natural approach in Lift and is the one I would have selected when starting this
+	// project, if I knew what I know now!
 	object PageCommander extends LiftActor with ListenerManager with Logger {
 	  
 	  private var theLiftAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods
@@ -49,6 +56,13 @@ package org.cogchar.lifter {
 	  private val firstControlInitializationHandler = HandlerConfigurator.initializeControlInitializationHandlers
 	  
 	  private def getSessionState(sessionId:String) = theLifterState.stateBySession(sessionId)
+	  
+	  // This hackish thing right here perhaps best illustrates what's wrong with the current PageCommander factoring.
+	  // Generally application state is held here in theLifterState and passed to other components only as a method
+	  // variable as needed. However, because of the combination of our unique situation of having snippets invoked via
+	  // Comet and the fact PageCommander is a non session-aware object natively (so SessionVars don't work here), it's
+	  // necessary to expose the state needed to populate snippet invocations here:
+	  def hackIntoSnippetDataMap(sessionId:String) = theLifterState.getSnippetDataMapForSession(sessionId).clone // cloned to prevent any changes to state
 	  
 	  def createUpdate = updateInfo
 	  
