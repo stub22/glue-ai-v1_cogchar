@@ -40,17 +40,17 @@ trait AbstractMultiSelectControlObject extends AbstractControlInitializationHand
 	val textItems = control.text.split(ActionStrings.stringAttributeSeparator)
 	val titleText = textItems(0)
 	val labelItems = textItems.tail
-	makeMultiControl(titleText, labelItems, sessionId, slotNum, state)
+	makeMultiControl(state, sessionId, slotNum, titleText, labelItems)
   }
   
   val titlePrefix: String
   
-  final def makeMultiControl(titleText: String, labelList:Array[String], sessionId:String, slotNum: Int, state:LifterState): NodeSeq = {
+  final def makeMultiControl(state:LifterState, sessionId:String, slotNum: Int, titleText: String, labelList:Array[String]): NodeSeq = {
 	initializeMaps(state, titleText, labelList, sessionId, slotNum);
-	makeMultiControlImpl(titleText, labelList, sessionId, slotNum)
+	makeMultiControlImpl(titleText, labelList, slotNum)
   }
   
-  def makeMultiControlImpl(titleText: String, labelList:Array[String], sessionId:String, slotNum: Int): NodeSeq
+  def makeMultiControlImpl(titleText: String, labelList:Array[String], slotNum: Int): NodeSeq
   
   def initializeMaps(state:LifterState, titleText: String, labelList:Array[String], sessionId:String, slotNum:Int) {
 	val controlData = new MultiSelectControlData
@@ -66,6 +66,9 @@ trait AbstractMultiSelectControl extends StatefulSnippet with Logger {
   var sessionId: String = ""
   
   final def snippetData(sessionId:String) = PageCommander.hackIntoSnippetDataMap(sessionId)
+  
+  // Override to true to specify a Multi-action control, leave false for Multi-select
+  def multiActionFlag = false
   
   def getName: String
   
@@ -84,7 +87,7 @@ trait AbstractMultiSelectControl extends StatefulSnippet with Logger {
 			case snippetResources: MultiSelectControlData => {
 				if (formId != blankId) {
 				  valid = true
-				  selectors = generateSelectors(sessionId, formId, snippetResources)
+				  selectors = generateSelectors(sessionId, formId, snippetResources.title, snippetResources.labels)
 				} else {
 				  errorSeq = produceErrorMessages(getName + ".render cannot find a valid formId!")
 				}
@@ -108,12 +111,12 @@ trait AbstractMultiSelectControl extends StatefulSnippet with Logger {
   }
   
   def process(result: String): JsCmd = {
-	info(getName + " says link number " + result + " on formId " + formId + " is selected in session " + sessionId)
-	PageCommander ! PageCommander.ControlMultiAction(sessionId, formId, result.toInt)
+	info(getName + " says item number " + result + " on slot " + formId + " is selected in session " + sessionId)
+	PageCommander ! PageCommander.ControlMultiAction(sessionId, formId, result.toInt, multiActionFlag)
 	JsCmds.Noop
   }
   
-  def generateSelectors(sessionId:String, formId:Int, snippetResources:MultiSelectControlData): CssSel
+  def generateSelectors(sessionId:String, formId:Int, title: String, labels: Array[String]): CssSel
 }
 
 class MultiSelectControlData {

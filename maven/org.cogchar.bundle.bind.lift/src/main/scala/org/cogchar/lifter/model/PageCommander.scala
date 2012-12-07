@@ -81,7 +81,7 @@ package org.cogchar.lifter {
 	  case class ControlAction(sessionId:String, slotNum:Int)
 	  case class ControlTextInput(sessionId:String, slotNum:Int, text:Array[String])
 	  case class ControlMultiSelect(sessionId:String, slotNum:Int, subControl:Int)
-	  case class ControlMultiAction(sessionId:String, slotNum:Int, subControl:Int)
+	  case class ControlMultiAction(sessionId:String, slotNum:Int, subControl:Int, multiActionFlag:Boolean)
 	  
 	  def getMarkup(sessionId:String, controlId: Int): NodeSeq = {
 		var nodeOut = NodeSeq.Empty
@@ -273,12 +273,19 @@ package org.cogchar.lifter {
 		case a:ControlTextInput => {
 			handleAction(a.sessionId:String, a.slotNum, a.text)
 		  }
+		// MultiSelectControls send substrings of the action string to the action handlers (as if they were text input) 
+		// according to the selected item
 		case a:ControlMultiSelect => {
-			val input:Array[String] = Array(ActionStrings.subControlIdentifier + a.subControl.toString)
-			handleAction(a.sessionId, a.slotNum, input)
+			handleMultiSelectInput(a.sessionId, a.slotNum, a.subControl)
 		  }
+		// MultiActionControls execute actions, populated in the LifterState.SessionState.multiActionsBySlot by "initial actions"
+		// upon control rendering, according to the selected item
 		case a:ControlMultiAction => {
-			if (theLifterState.stateBySession(a.sessionId).multiActionsBySlot contains a.slotNum) {
+			if (!a.multiActionFlag) {
+			  // If the multiActionFlag is not set, handle this control as a MultiSelect control.
+			  // Allows both MultiSelect and MultiAction controls to extend AbstractMultiSelectControl
+			  handleMultiSelectInput(a.sessionId, a.slotNum, a.subControl)
+			} else if (theLifterState.stateBySession(a.sessionId).multiActionsBySlot contains a.slotNum) {
 			  // Set the "main" action to the currently desired one; a workaround we may want to change to something more elegant in the future
 			  theLifterState.stateBySession(a.sessionId).controlConfigBySlot(a.slotNum).action = 
 				theLifterState.stateBySession(a.sessionId).multiActionsBySlot(a.slotNum)(a.subControl)
@@ -290,6 +297,11 @@ package org.cogchar.lifter {
 			}
 		}
 		case _: Any =>
+	  }
+	  
+	  def handleMultiSelectInput(sessionId:String, slotNum:Int, subControlSelected:Int) {
+		val input:Array[String] = Array(ActionStrings.subControlIdentifier + subControlSelected.toString)
+		handleAction(sessionId, slotNum, input)
 	  }
 	  
 	  // Likely should go in different class...

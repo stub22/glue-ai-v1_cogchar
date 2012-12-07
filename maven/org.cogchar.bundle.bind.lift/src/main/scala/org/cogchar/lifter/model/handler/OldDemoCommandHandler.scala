@@ -29,8 +29,10 @@ class OldDemoCommandHandler extends AbstractLifterCommandHandler {
 	input(0).stripPrefix(ActionStrings.subControlIdentifier).toInt match { 
 	  case 0 => PageCommander.setControl(sessionId, 6, PushyButton.makeButton("A button", "buttonred", "", 6))
 	  case 1 => PageCommander.setControl(sessionId, 6, TextForm.makeTextForm("A text box", 6))
-	  case 2 => PageCommander.setControl(sessionId, 6, SelectBoxes.makeSelectBoxes("Checkboxes", List("an option", "and another"), 6))
-	  case 3 => PageCommander.setControl(sessionId, 6, RadioButtons.makeRadioButtons("Radio buttons", List("Radio Option 1", "Radio Option 2"), 6))
+	  case 2 => PageCommander.setControl(sessionId, 6, 
+			SelectBoxes.makeMultiControl(state, sessionId, 6, "Checkboxes", Array("an option", "and another")))
+	  case 3 => PageCommander.setControl(sessionId, 6, 
+			RadioButtons.makeMultiControl(state, sessionId, 6, "Radio buttons", Array("Radio Option 1", "Radio Option 2")))
 	  case _ =>
 	}
   }
