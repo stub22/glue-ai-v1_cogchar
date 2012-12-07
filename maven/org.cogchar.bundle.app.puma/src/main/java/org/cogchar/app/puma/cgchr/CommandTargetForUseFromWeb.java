@@ -40,11 +40,11 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
 	}
 
 	@Override public boolean triggerNamedCinematic(String name) {
-		return CinematicMgr.controlCinematicByName(name, CinematicMgr.ControlAction.PLAY);
+		return myPCCB.getCinematicMgr().controlCinematicByName(name, CinematicMgr.ControlAction.PLAY);
 	}
 
 	@Override public boolean stopNamedCinematic(String name) {
-		return CinematicMgr.controlCinematicByName(name, CinematicMgr.ControlAction.STOP);
+		return myPCCB.getCinematicMgr().controlCinematicByName(name, CinematicMgr.ControlAction.STOP);
 	}
 
 	@Override public String queryCogbot(String query, String url) {

@@ -181,6 +181,11 @@ public class BasicRenderRegistryClientImpl implements RenderRegistryClient {
 	public TextMgr getSceneTextFacade(String optionalName) {
 		return RenderRegistryFuncs.findOrMakeSceneTextFacade(optionalName);
 	}
+	
+	@Override
+	public CinematicMgr getSceneCinematicsFacade(String optionalName) {
+		return RenderRegistryFuncs.findOrMakeSceneCinematicsFacade(optionalName);
+	}
 
 	@Override
 	public AssetContext getAssetContext(String optionalName, String optJme3AssetManagerName) {
