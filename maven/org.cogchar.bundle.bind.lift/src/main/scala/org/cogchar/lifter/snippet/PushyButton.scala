@@ -64,8 +64,9 @@ package org.cogchar.lifter {
 			})
 		  }
 		  case _ => {
-			error("PushyButton cannot get sessionId, not rendering!")
-			TextBox.makeBox("PushyButton cannot get sessionId, not rendering!", "", true)
+			val errorString = "PushyButton cannot get sessionId, not rendering!"
+			error(errorString)
+			TextBox.makeBox(errorString, "", true)
 		  }
 		}
 	  } 
