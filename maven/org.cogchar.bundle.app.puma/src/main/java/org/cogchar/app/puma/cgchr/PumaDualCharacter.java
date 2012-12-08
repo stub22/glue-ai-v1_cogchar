@@ -270,6 +270,7 @@ public class PumaDualCharacter extends CogcharScreenBox {
 			// myPHM.applyInitialBoneRotations();
 			// We connect animation output channels for triggering (regardless of whether we are doing virtual-world animation or not).
 			connectAnimOutChans();
+			myHumoidMapper.startVisemePump(clsForRKConf);
 		} else {
 			getLogger().warn("connectBonyCharToRobokindSvcs() aborting due to failed boneRobot init, for charIdent: {}", myCharIdent);
 		}
