@@ -40,6 +40,7 @@ import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.api.skeleton.config.BoneProjectionRange;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;
+import org.cogchar.bind.rk.robot.client.RobotVisemeClient;
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 
 import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
@@ -131,7 +132,13 @@ public class PumaHumanoidMapper extends BasicDebugger {
 			}
 		}
 		return false;
-	}		
+	}	
+	protected boolean startVisemePump(List<ClassLoader> clsForRKConf)  {
+		RobotVisemeClient robotVisCli = new RobotVisemeClient();
+		BundleContext bunCtx = myMBRSC.getBundleContext();
+		robotVisCli.startPumpingZenoAvatarVisemes(bunCtx, clsForRKConf);
+		return true;
+	}
 
 	protected void updateModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
 		ModelRobot targetRobot = getBonyRobot();
