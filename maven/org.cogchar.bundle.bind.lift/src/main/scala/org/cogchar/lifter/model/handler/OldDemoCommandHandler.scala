@@ -28,7 +28,7 @@ class OldDemoCommandHandler extends AbstractLifterCommandHandler {
   protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
 	input(0).stripPrefix(ActionStrings.subControlIdentifier).toInt match { 
 	  case 0 => PageCommander.setControl(sessionId, 6, PushyButton.makeButton("A button", "buttonred", "", 6))
-	  case 1 => PageCommander.setControl(sessionId, 6, TextForm.makeTextForm("A text box", 6))
+	  case 1 => PageCommander.setControl(sessionId, 6, TextForm.makeTextForm(state, sessionId, 6, "A text box"))
 	  case 2 => PageCommander.setControl(sessionId, 6, 
 			SelectBoxes.makeMultiControl(state, sessionId, 6, "Checkboxes", Array("an option", "and another")))
 	  case 3 => PageCommander.setControl(sessionId, 6, 
