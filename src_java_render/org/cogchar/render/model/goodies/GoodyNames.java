@@ -50,6 +50,7 @@ public class GoodyNames  {
 	
 	public static	Ident	TYPE_BIT_BOX = makeID("BitBox");
 	public static	Ident	TYPE_FLOOR = makeID("Floor");
+	public static	Ident	TYPE_TICTAC_MARK = makeID("TicTacMark");
 	
 	public  static Ident	RDF_TYPE = new FreeIdent(ComponentAssemblyNames.NS_rdf + "type");
 	
@@ -64,6 +65,9 @@ public class GoodyNames  {
 	public static	Ident	MOVE_URI = makeID("ActionMove");
 	public static	Ident	SET_URI = makeID("ActionSet");
 	
+	// This stuff gets pretty particular to the individual Goody types. Perhaps shouldn't live here but somehow in
+	// BasicGoodyImpl subclasses?
 	public static	Ident	BOOLEAN_STATE = makeID("booleanState");
+	public static	Ident	USE_O = makeID("isPlayerO");
 
 }
