@@ -74,9 +74,18 @@ public class GoodyFactory {
 	public BasicGoodyImpl createByAction(GoodyAction ga) {
 		BasicGoodyImpl newGoody = null;
 		if (ga.getKind() == GoodyAction.Kind.CREATE) {
+			// Switch on string local name would be nice
+			// Big problem here is that GoodyFactory needs to know about each Goody type and how to make them
+			// Ripe for refactoring to avoid that, perhaps via a Chain of Responsibility pattern?
 			if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
 				boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
 				newGoody = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0], bitBoxState);
+			} else if (GoodyNames.TYPE_FLOOR.equals(ga.getType())) {
+				// Assuming physical floor for now, but that may be a good thing to define in repo
+				newGoody = new VirtualFloor(myRRC, ga.getGoodyID(), ga.getLocationVector(), true);
+			} else if (GoodyNames.TYPE_TICTAC_MARK.equals(ga.getType())) {
+				boolean isAnO = Boolean.valueOf(ga.getSpecialString(GoodyNames.USE_O));
+				newGoody = new TicTacMark(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0], isAnO);
 			} else {
 				theLogger.warn("Did not recognize requested goody type for creation {}", ga.getType());
 			}

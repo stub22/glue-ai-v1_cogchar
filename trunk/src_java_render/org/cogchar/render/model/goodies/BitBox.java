@@ -46,7 +46,6 @@ public class BitBox extends BasicGoodyImpl {
 	private int zeroIndex;
 	private int oneIndex;
 	
-	// A new BitBox has false (0) state as currently implemented
 	BitBox(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size, boolean boxState) {
 		super(aRenderRegCli, boxUri);
 		setPosition(initialPosition);
