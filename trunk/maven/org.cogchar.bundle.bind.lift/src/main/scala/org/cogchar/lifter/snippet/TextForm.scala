@@ -34,12 +34,13 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.view.TextBox
 	import S._
 	
+	// This should eventually be refactored as an AbstractTextForm
 	object TextForm extends AbstractControlInitializationHandler {
 	  
 	  protected val matchingName = "TEXTINPUT"
   
 	  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
-		makeTextForm(control.text, slotNum)
+		makeTextForm(state, sessionId, slotNum, control.text)
 	  }
 	  
 	  val defaultText = "" // We can add bits to define this in XML if we want
@@ -51,11 +52,11 @@ package org.cogchar.lifter {
 	  
 	  val labelIdPrefix = "textformlabel"
 	  val textBoxIdPrefix = "text_in"
-	  val textMap = new scala.collection.mutable.HashMap[Int, String]
 	  
-	  def makeTextForm(initialText: String, idNum: Int): NodeSeq = {
+	  def makeTextForm(state:LifterState, sessionId:String, idNum:Int, initialText:String): NodeSeq = {
 		val formIdforHtml: String = idNum.toString
-		textMap(idNum) = initialText
+		val dataMap = state.getSnippetDataMapForSession(sessionId)
+		dataMap(idNum) = initialText
 		val labelId: String = labelIdPrefix + formIdforHtml // We need a unique ID here, because JavaScript will be updating the label after post
 		val inputId: String = textBoxIdPrefix + formIdforHtml // JavaScript may want to do things to the input box too, like clear it
 		// For good form and designer-friendliness, it would be nice to have all the XML in a template. But, we need to generate it here in order to set attributes. Maybe I can find a better way eventually.
@@ -71,6 +72,8 @@ package org.cogchar.lifter {
 	  var idItems: Array[String] = new Array[String](2)
 	  lazy val textFormInstanceLabel = TextForm.labelIdPrefix + formId
 	  lazy val textBoxInstanceLabel = TextForm.textBoxIdPrefix + formId
+	  
+	  final def snippetData(sessionId:String) = PageCommander.hackIntoSnippetDataMap(sessionId)
 	 
 	  def dispatch = {case "render" => render}	  
 	  
@@ -89,13 +92,19 @@ package org.cogchar.lifter {
 			formId = (S.attr("formId") openOr "-1").toInt
 			val labelSelectorText: String = "#"+textFormInstanceLabel+" *"
 			val boxSelectorText: String = "#"+textBoxInstanceLabel
-			val selectors = labelSelectorText #> TextForm.textMap(formId) &
+			var titleText = ""
+			snippetData(sessionId)(formId) match {
+			  case title: String => titleText = title
+			  case _ => warn("Title for TextForm in session " + sessionId + " and slot " + formId + " could not be found in snippet data map")
+			}
+			val selectors = labelSelectorText #> titleText &
 			  boxSelectorText #> (SHtml.textarea(text, text = _, "rows" -> TextForm.textBoxRows.toString, "id" -> textBoxInstanceLabel) ++ SHtml.hidden(process))
 			selectors.apply(xhtml)
 		  }
 		  case _ => {
-			error("TextForm cannot get sessionId, not rendering!")
-			TextBox.makeBox("TextForm cannot get sessionId, not rendering!", "", true)
+			val errorString = "TextForm cannot get sessionId, not rendering!"
+			error(errorString)
+			TextBox.makeBox(errorString, "", true)
 		  }
 		}
 	  }

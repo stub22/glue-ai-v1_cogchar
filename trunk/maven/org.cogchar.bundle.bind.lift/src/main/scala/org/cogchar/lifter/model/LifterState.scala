@@ -88,11 +88,11 @@ class LifterState {
   // Lift. This is required due to the combination of pushing our snippet markup via Coment and the fact that PageCommander is a
   // session stateless object, and hopefully will be eventually eliminated by future major refactorings.
   // For that reason, and because it has special status, it's being left out of SessionState for now...
-  private val snippetRenderDataMap:ConcurrentMap[String,HashMap[Int, Object]] = new DfltConcHashMap[String,HashMap[Int, Object]]
+  private val snippetRenderDataMap:ConcurrentMap[String,HashMap[Int, Any]] = new DfltConcHashMap[String,HashMap[Int, Any]]
 
   def getSnippetDataMapForSession(sessionId:String) = {
 	if (!(snippetRenderDataMap contains sessionId)) {
-	  snippetRenderDataMap(sessionId) = new HashMap[Int, Object]
+	  snippetRenderDataMap(sessionId) = new HashMap[Int, Any]
 	}
 	snippetRenderDataMap(sessionId)
   }
@@ -132,6 +132,7 @@ class LifterState {
 	stateBySession(INITIAL_CONFIG_ID) = new SessionState
 	globalLifterVariablesByName.clear
 	lastTimeAcutatedBySlot.clear
+	snippetRenderDataMap.clear
 	
   }
   
@@ -151,6 +152,7 @@ class LifterState {
 	activeSessions remove sessionId
 	stateBySession remove sessionId
 	lastTimeAcutatedBySlot remove sessionId
+	snippetRenderDataMap remove sessionId
   }
   
 }
