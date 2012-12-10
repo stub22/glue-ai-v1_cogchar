@@ -51,6 +51,7 @@ public class GoodyNames  {
 	public static	Ident	TYPE_BIT_BOX = makeID("BitBox");
 	public static	Ident	TYPE_FLOOR = makeID("Floor");
 	public static	Ident	TYPE_TICTAC_MARK = makeID("TicTacMark");
+	public static	Ident	TYPE_TICTAC_GRID = makeID("TicTacGrid");
 	
 	public  static Ident	RDF_TYPE = new FreeIdent(ComponentAssemblyNames.NS_rdf + "type");
 	

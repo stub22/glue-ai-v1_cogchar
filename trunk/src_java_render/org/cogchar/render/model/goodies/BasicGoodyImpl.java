@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
@@ -46,27 +45,28 @@ import org.slf4j.LoggerFactory;
 // and to make sure the BasicGoodyImpl has the sorts of properties we want it to have 
 public class BasicGoodyImpl {
 	
-		private static Logger theLogger = LoggerFactory.getLogger(BasicGoodyImpl.class);
+		// OK to have a logger instance for each goody instance?
+		protected Logger myLogger = LoggerFactory.getLogger(this.getClass()); 
 		
 		// Number of ms this Impl will wait for goody to attach or detach from jMonkey root node before timing out
 		// Currently not used -- timed futures are timing out for some reason
 		//private final static long ATTACH_DETACH_TIMEOUT = 3000; //ms
 
-		RenderRegistryClient myRenderRegCli;
-		Ident myUri;
-		Vector3f myPosition = new Vector3f(); // default: at origin
-		Quaternion myRotation = new Quaternion(); // default: no rotation
+		protected RenderRegistryClient myRenderRegCli;
+		protected Ident myUri;
+		protected Vector3f myPosition = new Vector3f(); // default: at origin
+		protected Quaternion myRotation = new Quaternion(); // default: no rotation
 		
 		// This allows a single "thing" to have multiple switchable geometries
 		List<BasicGoodieGeometry> myGeometries = new ArrayList<BasicGoodieGeometry>();
 		int attachedIndex = NULL_INDEX; // The index of the currently attached geometry, or -1 if none
 		final static int NULL_INDEX = -1;
 
-		Node myRootNode;
+		protected Node myRootNode;
 		
 		// May not want to allow this to be instantiated directly
 		// Might make sense to set more instance variables in the constructor as well, including perhaps rootNode?
-		BasicGoodyImpl(RenderRegistryClient aRenderRegCli, Ident uri) {
+		public BasicGoodyImpl(RenderRegistryClient aRenderRegCli, Ident uri) {
 			myRenderRegCli = aRenderRegCli;
 			myUri = uri;
 		}
@@ -125,20 +125,20 @@ public class BasicGoodyImpl {
 		
 		// Returns geometry index
 		// This method is intended to support physical objects
-		int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, CollisionShape shape, float mass) {
+		protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, CollisionShape shape, float mass) {
 			myGeometries.add(new BasicGoodieGeometry(mesh, material, color, rotation, shape, mass));
 			return myGeometries.size() - 1;
 		}
 		// For adding non-physical geometries
-		int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation) {
+		protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation) {
 			return addGeometry(mesh, material, color, rotation, null, 0f);
 		}
 		// For adding non-physical geometries with default material
-		int addGeometry(Mesh mesh, ColorRGBA color, Quaternion rotation) {
+		protected int addGeometry(Mesh mesh, ColorRGBA color, Quaternion rotation) {
 			return addGeometry(mesh, null, color, rotation, null, 0f);
 		}
 		// For adding non-physical geometries with default material and no rotation offset
-		int addGeometry(Mesh mesh, ColorRGBA color) {
+		protected int addGeometry(Mesh mesh, ColorRGBA color) {
 			return addGeometry(mesh, null, color, new Quaternion(), null, 0f);
 		}
 		
@@ -157,11 +157,11 @@ public class BasicGoodyImpl {
 				if (myGeometries.size() > geometryIndex) {
 					attachGeometryToRootNode(geometryIndex);
 				} else {
-					theLogger.error("Attempting to attach BasicVirtualThing {} with geometry index {}, but that geometry is not available",
+					myLogger.error("Attempting to attach BasicVirtualThing {} with geometry index {}, but that geometry is not available",
 						myUri.getAbsUriString(), geometryIndex);
 				}
 			} else {
-				theLogger.error("Attempting to set geometry by index, but no root node is set");
+				myLogger.error("Attempting to set geometry by index, but no root node is set");
 			}	
 		}
 		
@@ -219,7 +219,7 @@ public class BasicGoodyImpl {
 				//jmeFuture.get(ATTACH_DETACH_TIMEOUT, TimeUnit.MILLISECONDS);
 				jmeFuture.get();
 			} catch (Exception e) {
-				theLogger.warn("Exception attempting to attach or detach goody: ", e);
+				myLogger.warn("Exception attempting to attach or detach goody: ", e);
 			}
 			//theLogger.info("Jme Future has arrived"); // TEST ONLY
 		}
@@ -300,7 +300,7 @@ public class BasicGoodyImpl {
 					break;
 				}
 				default: {
-					theLogger.error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
+					myLogger.error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
 				}
 			}
 		};

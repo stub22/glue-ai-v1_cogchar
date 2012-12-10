@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies;
+package org.cogchar.render.model.goodies.robosteps;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -24,9 +24,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Torus;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.model.goodies.BasicGoodyImpl;
+import org.cogchar.render.model.goodies.GoodyAction;
+import org.cogchar.render.model.goodies.GoodyNames;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A class to implement the Robosteps "BitBox" objects, which may not turn out to be boxes at all
@@ -37,8 +38,6 @@ import org.slf4j.LoggerFactory;
 
 public class BitBox extends BasicGoodyImpl {
 	
-	private static Logger theLogger = LoggerFactory.getLogger(BitBox.class);
-	
 	private static final ColorRGBA FALSE_COLOR = ColorRGBA.Blue;
 	private static final ColorRGBA TRUE_COLOR = ColorRGBA.Red;
 	
@@ -46,7 +45,7 @@ public class BitBox extends BasicGoodyImpl {
 	private int zeroIndex;
 	private int oneIndex;
 	
-	BitBox(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size, boolean boxState) {
+	public BitBox(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size, boolean boxState) {
 		super(aRenderRegCli, boxUri);
 		setPosition(initialPosition);
 		Mesh zeroMesh = new Torus(40,20,size/5,size*5/6);
@@ -93,7 +92,7 @@ public class BitBox extends BasicGoodyImpl {
 					try {
 						setState(Boolean.valueOf(stateString));
 					} catch (Exception e) { // May not need try/catch after BasicTypedValueMap implementation is complete
-						theLogger.error("Error setting box state to state string {}", stateString, e);
+						myLogger.error("Error setting box state to state string {}", stateString, e);
 					}
 				}
 				break;

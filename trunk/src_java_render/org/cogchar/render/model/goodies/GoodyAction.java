@@ -18,11 +18,9 @@ package org.cogchar.render.model.goodies;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import java.util.HashMap;
-import java.util.Map;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.thing.TypedValueMap;
 import org.cogchar.api.thing.ThingActionSpec;
+import org.cogchar.api.thing.TypedValueMap;
 
 /**
  * Typically used in the OpenGL server process to interpret an actionSpec found in a repo.
