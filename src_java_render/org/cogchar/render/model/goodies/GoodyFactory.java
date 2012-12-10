@@ -16,6 +16,9 @@
 
 package org.cogchar.render.model.goodies;
 
+import org.cogchar.render.model.goodies.robosteps.TicTacMark;
+import org.cogchar.render.model.goodies.robosteps.BitBox;
+import org.cogchar.render.model.goodies.robosteps.TicTacGrid;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
@@ -86,6 +89,8 @@ public class GoodyFactory {
 			} else if (GoodyNames.TYPE_TICTAC_MARK.equals(ga.getType())) {
 				boolean isAnO = Boolean.valueOf(ga.getSpecialString(GoodyNames.USE_O));
 				newGoody = new TicTacMark(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0], isAnO);
+			} else if (GoodyNames.TYPE_TICTAC_GRID.equals(ga.getType())) {
+				newGoody = new TicTacGrid(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0]);
 			} else {
 				theLogger.warn("Did not recognize requested goody type for creation {}", ga.getType());
 			}

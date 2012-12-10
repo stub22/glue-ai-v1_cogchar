@@ -14,23 +14,24 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies;
+package org.cogchar.render.model.goodies.robosteps;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Torus;
 import java.util.ArrayList;
 import java.util.List;
-import jme3tools.optimize.GeometryBatchFactory;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.model.goodies.BasicGoodyImpl;
+import org.cogchar.render.model.goodies.CompositeMeshBuilder;
+import org.cogchar.render.model.goodies.CompositeMeshBuilder.MeshComponent;
+import org.cogchar.render.model.goodies.GoodyAction;
+import org.cogchar.render.model.goodies.GoodyNames;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A class to implement the Robosteps Tic-tac-toe mark objects
@@ -38,10 +39,8 @@ import org.slf4j.LoggerFactory;
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
 
-// Very similar to BitBox, so should probably be refactored as a descendent of a common "BinaryGoody" class
+// Very similar to BitBox, so should probably be refactored as a descendant of a common "BinaryGoody" class
 public class TicTacMark extends BasicGoodyImpl {
-	
-	private static Logger theLogger = LoggerFactory.getLogger(TicTacMark.class);
 	
 	private static final ColorRGBA X_COLOR = ColorRGBA.Black;
 	private static final ColorRGBA O_COLOR = ColorRGBA.Red;
@@ -50,7 +49,7 @@ public class TicTacMark extends BasicGoodyImpl {
 	private int indexX;
 	private int indexO;
 
-	TicTacMark(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size, boolean isPlayerO) {
+	public TicTacMark(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size, boolean isPlayerO) {
 		super(aRenderRegCli, boxUri);
 		setPosition(initialPosition);
 		Mesh meshX = makeCustomXMesh(size);
@@ -62,19 +61,14 @@ public class TicTacMark extends BasicGoodyImpl {
 	}
 	
 	private Mesh makeCustomXMesh(float size) {
+		CompositeMeshBuilder builder = new CompositeMeshBuilder();
 		Mesh meshXLeg = new Cylinder(20, 20, size/5, size*2.25f, true);
-		Geometry legGeometry1 = new Geometry("Xleg", meshXLeg);
-		Geometry legGeometry2 = legGeometry1.clone();
 		Quaternion rotate45DegAroundY = new Quaternion();
 		rotate45DegAroundY.fromAngleAxis((float)Math.PI/4, new Vector3f(0f,1f,0f));
-		legGeometry1.setLocalRotation(rotate45DegAroundY);
-		legGeometry2.setLocalRotation(rotate45DegAroundY.inverse());
-		List geoCollection = new ArrayList<Geometry>();
-		geoCollection.add(legGeometry1);
-		geoCollection.add(legGeometry2);
-		Mesh newMesh = new Mesh();
-		GeometryBatchFactory.mergeGeometries(geoCollection, newMesh);
-		return newMesh;
+		List<MeshComponent> meshComponents = new ArrayList<MeshComponent>();
+		meshComponents.add(new MeshComponent(meshXLeg, rotate45DegAroundY));
+		meshComponents.add(new MeshComponent(meshXLeg, rotate45DegAroundY.inverse()));
+		return builder.makeCompositeMesh(meshComponents);
 	}
 	
 	@Override
@@ -109,7 +103,7 @@ public class TicTacMark extends BasicGoodyImpl {
 					try {
 						setState(Boolean.valueOf(stateString));
 					} catch (Exception e) { // May not need try/catch after BasicTypedValueMap implementation is complete
-						theLogger.error("The TicTacMark {} parameter must be either \"true\" or \"false\"; observed value is {}",
+						myLogger.error("The TicTacMark {} parameter must be either \"true\" or \"false\"; observed value is {}",
 								new Object[]{GoodyNames.USE_O.getLocalName(), stateString}, e);
 					}
 				}
