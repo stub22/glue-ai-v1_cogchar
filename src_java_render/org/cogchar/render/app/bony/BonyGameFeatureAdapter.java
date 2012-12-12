@@ -16,7 +16,6 @@
 package org.cogchar.render.app.bony;
 
 import com.jme3.animation.AnimControl;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.font.BitmapText;
 import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
@@ -24,14 +23,14 @@ import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import java.util.List;
 import org.cogchar.blob.emit.RenderConfigEmitter;
-import org.cogchar.render.sys.context.CoreFeatureAdapter;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.model.bony.DemoBonyWireframeRagdoll;
 import org.cogchar.render.model.bony.SpatialManipFuncs;
 import org.cogchar.render.model.bony.StickFigureTwister;
-import org.cogchar.render.sys.physics.ProjectileLauncher;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.scene.ModelSpatialFactory;
+import org.cogchar.render.sys.context.CoreFeatureAdapter;
+import org.cogchar.render.sys.physics.ProjectileLauncher;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
@@ -140,15 +139,14 @@ public class BonyGameFeatureAdapter extends CoreFeatureAdapter {
 		Node rootNode = rrc.getJme3RootDeepNode(null);
 		myPrjctlMgr.fireProjectileFromCamera(defCam, rootNode, rrc.getJme3BulletPhysicsSpace());	
 	}	
-
-	/** A centred plus sign to help the player aim. */
+	
+	// Now added as a Goody, but this method retained for demo projects
+	// A centred plus sign to help the player aim.
 	static public void initCrossHairs(AppSettings settings, RenderRegistryClient rrc) {
 		rrc.getSceneFlatFacade(null).detachAllOverlays();
 		BitmapText crossBT = rrc.getSceneTextFacade(null).makeCrossHairs(2.0f, settings);
 		rrc.getSceneFlatFacade(null).attachOverlaySpatial(crossBT);
-	}	
-	// Should be able to remove this now as light comes from RDF, but will leave it in for now in case something weird is calling it
-	// Also should be able to get rid of fabulous DemoVectorFactory class!
+	}
 
 	static public ProjectileLauncher makeProjectileLauncher(RenderRegistryClient rrc) {
 		return new ProjectileLauncher(rrc.getMeshShapeFacade(null), rrc.getOpticMaterialFacade(null, null));		

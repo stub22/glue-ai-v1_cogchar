@@ -33,8 +33,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -43,17 +41,8 @@ import org.slf4j.LoggerFactory;
 
 // This will need some ongoing refactorings both to fix some oddness and bad form inherent in development of the concepts here,
 // and to make sure the BasicGoodyImpl has the sorts of properties we want it to have 
-public class BasicGoodyImpl {
-	
-		// OK to have a logger instance for each goody instance?
-		protected Logger myLogger = LoggerFactory.getLogger(this.getClass()); 
-		
-		// Number of ms this Impl will wait for goody to attach or detach from jMonkey root node before timing out
-		// Currently not used -- timed futures are timing out for some reason
-		//private final static long ATTACH_DETACH_TIMEOUT = 3000; //ms
+public class BasicGoodyImpl extends BasicGoody {
 
-		protected RenderRegistryClient myRenderRegCli;
-		protected Ident myUri;
 		protected Vector3f myPosition = new Vector3f(); // default: at origin
 		protected Quaternion myRotation = new Quaternion(); // default: no rotation
 		
@@ -66,7 +55,7 @@ public class BasicGoodyImpl {
 		
 		// May not want to allow this to be instantiated directly
 		// Might make sense to set more instance variables in the constructor as well, including perhaps rootNode?
-		public BasicGoodyImpl(RenderRegistryClient aRenderRegCli, Ident uri) {
+		protected BasicGoodyImpl(RenderRegistryClient aRenderRegCli, Ident uri) {
 			myRenderRegCli = aRenderRegCli;
 			myUri = uri;
 		}
@@ -89,7 +78,7 @@ public class BasicGoodyImpl {
 				}
 				if (material == null) {
 					// Set "standard" material; these hard coded values probably won't live here for long
-					myMaterial = getRenderRegistryClient().getOpticMaterialFacade(null, null)
+					myMaterial = myRenderRegCli.getOpticMaterialFacade(null, null)
 							.makeMatWithOptTexture("Common/MatDefs/Light/Lighting.j3md", "SpecularMap", null);
 					myMaterial.setBoolean("UseMaterialColors", true);
 					myMaterial.setFloat("Shininess", 25f);
@@ -101,7 +90,7 @@ public class BasicGoodyImpl {
 					myControl = new RigidBodyControl(shape, mass);
 					//myGeometry.addControl(myControl); should be automatically done in geomFactory.makeGeom
 				}
-				myGeometry = getRenderRegistryClient().getSceneGeometryFacade(null)
+				myGeometry = myRenderRegCli.getSceneGeometryFacade(null)
 						.makeGeom(myUri.getLocalName(), mesh, myMaterial, myControl);
 				//myGeometry.addControl(new RigidBodyControl(0)); // TEST ONLY -- in here only until I can figure out what's wrong with goody floor
 				myGeometry.setLocalRotation(rotation);
@@ -117,10 +106,6 @@ public class BasicGoodyImpl {
 			Geometry getJmeGeometry() {
 				return myGeometry;
 			}
-		}
-		
-		protected RenderRegistryClient getRenderRegistryClient() {
-			return myRenderRegCli;
 		}
 		
 		// Returns geometry index
@@ -143,6 +128,7 @@ public class BasicGoodyImpl {
 		}
 		
 		// For attaching "default" (zero index) geometry
+		@Override
 		public void attachToVirtualWorldNode(Node rootNode) {
 			attachToVirtualWorldNode(rootNode, 0);
 		}
@@ -165,6 +151,7 @@ public class BasicGoodyImpl {
 			}	
 		}
 		
+		@Override
 		public void detachFromVirtualWorldNode() {
 			if (attachedIndex != -1)  {
 				detachGeometryFromRootNode();
@@ -176,30 +163,28 @@ public class BasicGoodyImpl {
 			final BasicGoodieGeometry geometryToAttach = myGeometries.get(geometryIndex);
 			final Geometry jmeGeometry = geometryToAttach.getJmeGeometry();
 			setGeometryPositionAndRotation(geometryToAttach);
-			Future attachFuture = getRenderRegistryClient().getWorkaroundAppStub().enqueue(new Callable() { // Do this on main render thread
+			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
 					myRootNode.attachChild(jmeGeometry);
 					if (geometryToAttach.myControl != null) {
-						getRenderRegistryClient().getJme3BulletPhysicsSpace().add(jmeGeometry);
+						myRenderRegCli.getJme3BulletPhysicsSpace().add(jmeGeometry);
 					}
 					attachedIndex = geometryIndex;
 					return null;
 				}
 			});
-			// Method should block until attach completes to avoid collision with subsequent detach
-			waitForJmeFuture(attachFuture);
 		}
 		
 		private void detachGeometryFromRootNode() {
 			final BasicGoodieGeometry currentGeometry = myGeometries.get(attachedIndex);
-			Future<Void> detachFuture = getRenderRegistryClient().getWorkaroundAppStub().enqueue(new Callable<Void>() { // Do this on main render thread
+			enqueueForJmeAndWait(new Callable<Void>() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
 					if (currentGeometry.myControl != null) {
-						getRenderRegistryClient().getJme3BulletPhysicsSpace().remove(currentGeometry.myControl);
+						myRenderRegCli.getJme3BulletPhysicsSpace().remove(currentGeometry.myControl);
 					}
 					// Must detach by name; detaching by saved geometry does not work
 					myRootNode.detachChildNamed(myUri.getLocalName()); 
@@ -207,23 +192,9 @@ public class BasicGoodyImpl {
 					return null;
 				}
 			});
-			// Method should block until detach completes to avoid collision with subsequent attaches
-			waitForJmeFuture(detachFuture);
 		}
 		
-		
-		private void waitForJmeFuture(Future jmeFuture) {
-			try {
-				// Timed return seems to always time out -- are other things often blocking the render thread,
-				// or another reason?
-				//jmeFuture.get(ATTACH_DETACH_TIMEOUT, TimeUnit.MILLISECONDS);
-				jmeFuture.get();
-			} catch (Exception e) {
-				myLogger.warn("Exception attempting to attach or detach goody: ", e);
-			}
-			//theLogger.info("Jme Future has arrived"); // TEST ONLY
-		}
-		
+		@Override
 		public void setPosition(Vector3f newPosition) {
 			setPositionAndRotation(newPosition, myRotation);
 		}
@@ -236,8 +207,7 @@ public class BasicGoodyImpl {
 			myPosition = newPosition;
 			myRotation = newRotation;
 			if (attachedIndex != NULL_INDEX) {
-				// Wouldn't think this needs to be done on render thread, but seems to be...
-				Future positionFuture = getRenderRegistryClient().getWorkaroundAppStub().enqueue(new Callable() { // Do this on main render thread
+				enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 
 					@Override
 					public Void call() throws Exception {
@@ -245,7 +215,6 @@ public class BasicGoodyImpl {
 						return null;
 					}
 				});
-				waitForJmeFuture(positionFuture);
 			}
 		}
 		
@@ -286,6 +255,7 @@ public class BasicGoodyImpl {
 		
 		// Override this method to add functionality; be sure to call this super method if action is not handled
 		// by overriding method
+		@Override
 		public void applyAction(GoodyAction ga) {
 			switch (ga.getKind()) {
 				case MOVE : {

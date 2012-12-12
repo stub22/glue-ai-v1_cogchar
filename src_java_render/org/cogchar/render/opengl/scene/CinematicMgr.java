@@ -37,6 +37,8 @@ import java.util.concurrent.Future;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.cinema.*;
 import org.cogchar.render.model.databalls.BallBuilder;
+import org.cogchar.render.model.goodies.BasicGoody;
+import org.cogchar.render.model.goodies.BasicGoodyImpl;
 import org.cogchar.render.model.goodies.GoodyFactory;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.context.CogcharRenderContext;
@@ -146,8 +148,16 @@ public class CinematicMgr extends BasicDebugger {
 					}
 					case GOODY: {
 						try {
-							attachedSpatial = GoodyFactory.getTheFactory().getTheGoodySpace()
-									.getGoody(track.attachedItem).getCurrentGeometry();
+							BasicGoody desiredGoody = GoodyFactory.getTheFactory().getTheGoodySpace()
+									.getGoody(track.attachedItem);
+							if (desiredGoody instanceof BasicGoodyImpl) {
+								BasicGoodyImpl goody3d = (BasicGoodyImpl)desiredGoody;
+								attachedSpatial = goody3d.getCurrentGeometry();
+							} else {
+								staticLogger.warn("Attempting to attach goody of improper type to cinematic,: {}. Aborting.",
+										desiredGoody.getUri().getLocalName());
+								break trackLoop;
+							}
 						} catch (Exception e) {
 							staticLogger.error("Exception binding goody to cinematic: {}", e.toString());
 							break trackLoop;

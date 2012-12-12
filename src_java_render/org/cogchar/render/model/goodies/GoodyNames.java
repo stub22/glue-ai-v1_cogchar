@@ -53,6 +53,8 @@ public class GoodyNames  {
 	public static	Ident	TYPE_TICTAC_MARK = makeID("TicTacMark");
 	public static	Ident	TYPE_TICTAC_GRID = makeID("TicTacGrid");
 	
+	public static	Ident	CROSSHAIR = makeID("CrossHair");
+	
 	public  static Ident	RDF_TYPE = new FreeIdent(ComponentAssemblyNames.NS_rdf + "type");
 	
 	/* CRUD, or CREATE/DELETE/MOVE/SET as in GoodyAction?

@@ -37,22 +37,24 @@ public class GoodyFactory {
 	private static Logger theLogger = LoggerFactory.getLogger(GoodyFactory.class);
 	
 	// Just for now, making this a pseudo singleton. Later will figure out where the "main" instance will be 
-	// held more permanently
+	// held more permanently -- the render registry?
 	private static GoodyFactory theFactory;
 	public static GoodyFactory getTheFactory() {
 		return theFactory;
 	}
-	public static GoodyFactory createTheFactory(RenderRegistryClient rrc) {
+	public static GoodyFactory createTheFactory(RenderRegistryClient rrc, int[] screenDimensions) {
 		theLogger.info("Creating new GoodyFactory");
-		theFactory = new GoodyFactory(rrc);
+		theFactory = new GoodyFactory(rrc, screenDimensions);
 		return theFactory;
 	}
 	
 	private RenderRegistryClient myRRC;
 	private Node myRootNode = new Node("GoodyNode"); // A node for test, though we may want to have "finer grained" nodes to attach to
+	private int[] myScreenDimensions;
 	
-	GoodyFactory(RenderRegistryClient rrc) {
+	GoodyFactory(RenderRegistryClient rrc, int[] dimensions) {
 		myRRC = rrc;
+		myScreenDimensions = dimensions;
 		attachGoodyNode();
 	}
 	
@@ -60,6 +62,10 @@ public class GoodyFactory {
 	private GoodySpace theGoodySpace = new GoodySpace();
 	public GoodySpace getTheGoodySpace() {
 		return theGoodySpace;
+	}
+	
+	public int[] getScreenDimensions() {
+		return myScreenDimensions;
 	}
 	
 	public final void attachGoodyNode() {
@@ -74,10 +80,11 @@ public class GoodyFactory {
 		});
 	}
 	
-	public BasicGoodyImpl createByAction(GoodyAction ga) {
-		BasicGoodyImpl newGoody = null;
+	public BasicGoody createByAction(GoodyAction ga) {
+		BasicGoody newGoody = null;
 		if (ga.getKind() == GoodyAction.Kind.CREATE) {
 			// Switch on string local name would be nice
+			// This is getting out of hand
 			// Big problem here is that GoodyFactory needs to know about each Goody type and how to make them
 			// Ripe for refactoring to avoid that, perhaps via a Chain of Responsibility pattern?
 			if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
@@ -91,6 +98,8 @@ public class GoodyFactory {
 				newGoody = new TicTacMark(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0], isAnO);
 			} else if (GoodyNames.TYPE_TICTAC_GRID.equals(ga.getType())) {
 				newGoody = new TicTacGrid(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0]);
+			} else if (GoodyNames.CROSSHAIR.equals(ga.getType())) {
+				newGoody = new CrossHairGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0]);
 			} else {
 				theLogger.warn("Did not recognize requested goody type for creation {}", ga.getType());
 			}
@@ -103,8 +112,8 @@ public class GoodyFactory {
 	
 	// This way, GoodySpace doesn't need to know about the root node to attach. But this pattern can change if
 	// we decide we rather it did!
-	public BasicGoodyImpl createAndAttachByAction(GoodyAction ga) {
-		BasicGoodyImpl newGoody = createByAction(ga);
+	public BasicGoody createAndAttachByAction(GoodyAction ga) {
+		BasicGoody newGoody = createByAction(ga);
 		if (newGoody != null) {
 			newGoody.attachToVirtualWorldNode(myRootNode);
 		}
