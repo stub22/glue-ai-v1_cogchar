@@ -1,4 +1,4 @@
-/*
+ /*
  *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,45 +15,22 @@
  */
 package org.cogchar.render.app.humanoid;
 
-import org.cogchar.render.app.trigger.SceneActions;
-import org.cogchar.platform.gui.keybind.KeyBindingConfig;
-import org.cogchar.platform.gui.keybind.KeyBindingTracker;
-import org.appdapter.core.name.Ident;
-
-import com.jme3.asset.AssetManager;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.FlyByCamera;
-import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
-import com.jme3.scene.Node;
-import com.jme3.system.AppSettings;
-
-import java.util.HashMap;
-import java.util.Map;
-import org.cogchar.blob.emit.RenderConfigEmitter;
-import org.cogchar.render.app.core.WorkaroundAppStub;
-import org.cogchar.render.app.bony.BonyRenderContext;
-import org.cogchar.api.humanoid.HumanoidConfig;
-import org.cogchar.api.humanoid.HumanoidFigureConfig;
-import org.cogchar.render.model.humanoid.HumanoidFigureModule;
-import org.cogchar.render.model.humanoid.HumanoidFigure;
-import org.cogchar.render.model.humanoid.HumanoidFigureManager;
-import org.cogchar.render.sys.context.WorkaroundFuncsMustDie;
-import org.cogchar.render.opengl.optic.CameraMgr;
-// Below imports added for initHelpScreen - should go elsewhere eventually(?)
-
-import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
-import org.cogchar.render.app.bony.BonyVirtualCharApp;
-import org.cogchar.render.gui.bony.VirtualCharacterPanel;
-import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.cogchar.render.opengl.scene.FlatOverlayMgr;
-import org.cogchar.render.sys.input.VW_InputBindingFuncs;
-import org.cogchar.platform.trigger.CommandSpace;
-
-import javax.swing.JFrame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import javax.swing.JFrame;
+import org.cogchar.blob.emit.RenderConfigEmitter;
+import org.cogchar.platform.gui.keybind.KeyBindingConfig;
+import org.cogchar.platform.trigger.CommandSpace;
+import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
+import org.cogchar.render.app.bony.BonyRenderContext;
+import org.cogchar.render.app.bony.BonyVirtualCharApp;
+import org.cogchar.render.app.core.WorkaroundAppStub;
+import org.cogchar.render.gui.bony.VirtualCharacterPanel;
+import org.cogchar.render.model.humanoid.HumanoidFigureManager;
+import org.cogchar.render.opengl.optic.CameraMgr;
+import org.cogchar.render.sys.context.WorkaroundFuncsMustDie;
+import org.cogchar.render.sys.input.VW_InputBindingFuncs;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -80,13 +57,25 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		 * Now we are methodically tying all those debug features back into our AppdapterRepo-based config.
 		 *
 		 */
+		
+		/* Crosshairs are now initialized as a 2D Goody
 		AppSettings someSettings = getJMonkeyAppSettings();
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		BonyGameFeatureAdapter.initCrossHairs(someSettings, rrc);
+		*/
 		initBasicTestPhysics();
 		
 		myGameFeatureAdapter.initFeatures();
 		WorkaroundFuncsMustDie.initScoreBoard(this);
+	}
+	
+	// The screen dimensions must be accessable to PumaVirtualWorldMapper (or PumaAppContext from whence it's called)
+	// so that the GoodyFactory can be initialized with them. This allows 2D goodies to be aware of screen dimensions.
+	// We might rather this be somewhere else, but it has to be somewhere directly called from the CogcharRenderContext
+	// where it has protected access
+	public int[] getScreenSizeFromJmeAppSettings() {
+		int[] size = {getJMonkeyAppSettings().getWidth(), getJMonkeyAppSettings().getHeight()};
+		return size;
 	}
 
 	public void initCinematicParameters() {
