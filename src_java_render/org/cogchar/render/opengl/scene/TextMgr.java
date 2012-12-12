@@ -18,13 +18,11 @@ package org.cogchar.render.opengl.scene;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
-import com.jme3.system.AppSettings;
-import org.cogchar.render.sys.registry.RenderRegistryAware;
-// Below import for makeHelpScreen - not sure if we want it to work quite this way in long run
-import com.jme3.math.ColorRGBA;
-import org.cogchar.platform.gui.keybind.KeyBindingTracker;
 import com.jme3.input.KeyNames;
+import com.jme3.math.ColorRGBA;
+import com.jme3.system.AppSettings;
 import java.util.Map;
+import org.cogchar.render.sys.registry.RenderRegistryAware;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -54,6 +52,7 @@ public class TextMgr extends RenderRegistryAware {
 		return bt;
 	}
 
+	// Now added as a Goody, but this method retained for demo projects
 	public BitmapText makeCrossHairs(float scale, AppSettings settings) {
 		BitmapText bt = getScaledBitmapText("+", scale);
 		BitmapFont bf = bt.getFont();
@@ -65,6 +64,7 @@ public class TextMgr extends RenderRegistryAware {
 		bt.setLocalTranslation(xPos, yPos, zPos);
 		return bt;
 	}
+	
 	// KeyBindingTracker.getBindingMap()
 	public BitmapText makeHelpScreen(float scale, AppSettings settings, Map<String, Integer> keyBindingMap) {
 		String commandList = "";

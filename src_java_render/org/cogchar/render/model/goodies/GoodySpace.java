@@ -34,25 +34,25 @@ public class GoodySpace {
 	
 	private static Logger theLogger = LoggerFactory.getLogger(GoodySpace.class);
 	
-	private	Map<Ident, BasicGoodyImpl>		myGoodiesByID;
+	private	Map<Ident, BasicGoody>		myGoodiesByID;
 	
 	public GoodySpace() { 
-		myGoodiesByID = new HashMap<Ident, BasicGoodyImpl>();
+		myGoodiesByID = new HashMap<Ident, BasicGoody>();
 	}
 	
-	public void addGoody(BasicGoodyImpl newGoody) {
-		Ident goodyUri = newGoody.myUri;
+	public void addGoody(BasicGoody newGoody) {
+		Ident goodyUri = newGoody.getUri();
 		theLogger.info("Adding Goody with URI: {}", goodyUri);
 		myGoodiesByID.put(goodyUri, newGoody);
 	}
 	
-	public void removeGoody(BasicGoodyImpl departingGoody) {
+	public void removeGoody(BasicGoody departingGoody) {
 		departingGoody.detachFromVirtualWorldNode(); // Safe to perform even if it's not currently attached
-		myGoodiesByID.remove(departingGoody.myUri);
+		myGoodiesByID.remove(departingGoody.getUri());
 	}
 	
 	// Providing this so that CinematicMgr can access goodies to use in Cinematics
-	public BasicGoodyImpl getGoody(Ident goodyUri) {
+	public BasicGoody getGoody(Ident goodyUri) {
 		return myGoodiesByID.get(goodyUri);
 	}
 	
@@ -62,7 +62,7 @@ public class GoodySpace {
 	public void processAction(ThingActionSpec actionSpec) {
 		GoodyAction ga = new GoodyAction(actionSpec);
 		Ident gid = ga.getGoodyID();
-		BasicGoodyImpl goodyOne = myGoodiesByID.get(gid);
+		BasicGoody goodyOne = myGoodiesByID.get(gid);
 		switch (ga.getKind()) {
 			case CREATE: { // If it's a CREATE action, we will do some different stuff
 				if (myGoodiesByID.containsKey(gid)) {
