@@ -66,7 +66,9 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		initBasicTestPhysics();
 		
 		myGameFeatureAdapter.initFeatures();
-		WorkaroundFuncsMustDie.initScoreBoard(this);
+		
+		// ScoreBoard is now initialized as a 2D Goody
+		//WorkaroundFuncsMustDie.initScoreBoard(this);
 	}
 	
 	// The screen dimensions must be accessable to PumaVirtualWorldMapper (or PumaAppContext from whence it's called)
