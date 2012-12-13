@@ -41,9 +41,14 @@ public class GoodySpace {
 	}
 	
 	public void addGoody(BasicGoody newGoody) {
-		Ident goodyUri = newGoody.getUri();
-		theLogger.info("Adding Goody with URI: {}", goodyUri);
-		myGoodiesByID.put(goodyUri, newGoody);
+		if (newGoody != null) {
+			Ident goodyUri = newGoody.getUri();
+			theLogger.info("Adding Goody with URI: {}", goodyUri);
+			myGoodiesByID.put(goodyUri, newGoody);
+		} else {
+			theLogger.warn("Something is attempting to add a null goody to the GoodySpace, ignoring");
+		}
+		
 	}
 	
 	public void removeGoody(BasicGoody departingGoody) {
@@ -69,7 +74,9 @@ public class GoodySpace {
 					theLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid);
 				} else {
 					goodyOne = GoodyFactory.getTheFactory().createAndAttachByAction(ga);
-					addGoody(goodyOne);
+					if (goodyOne != null) {
+						addGoody(goodyOne);
+					}
 				}
 				break;
 			}
