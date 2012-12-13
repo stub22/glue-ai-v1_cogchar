@@ -120,10 +120,15 @@ public class GoodyAction  {
 		return sizes;
 	}
 	
+	// With the advent of 2D goodies, this seems like it will be needed often enough to warrant its own method:
+	public float getTextSize() {
+		return paramTVMap.getAsFloat(GoodyNames.TEXT_SIZE);
+	}
+	
 	// May not need its own method, but since a speed of action may be a common feature of GoodyActions, let's
 	// assume for now it makes sense to get speed this way instead of with getSpecialString
-	public float getSpeed() {
-		return paramTVMap.getAsFloat(GoodyNames.SPEED);
+	public float getTravelTime() {
+		return paramTVMap.getAsFloat(GoodyNames.TRAVEL_TIME);
 	}
 	
 	// Could have more elaborate type handling here, but for now, since params in repo are natively strings

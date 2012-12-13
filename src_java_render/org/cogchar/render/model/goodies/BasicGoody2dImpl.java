@@ -17,6 +17,7 @@
 package org.cogchar.render.model.goodies;
 
 import com.jme3.font.BitmapText;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
@@ -48,16 +49,37 @@ public class BasicGoody2dImpl extends BasicGoody {
 		myScreenHeight = dimensions[1];
 	}
 	
+	// Currently just uses default font for everything -- ok for what we need now, but ultimately may want to 
+	// add provisions to specify font
 	protected BitmapText setGoodyAttributes(String text, float scale) {
 		myOverlayText = myRenderRegCli.getSceneTextFacade(null).getScaledBitmapText(text, scale);
-		setPosition(myPosition);
+		setAbsolutePosition(myPosition);
 		return myOverlayText;
+	}
+	protected BitmapText setGoodyAttributes(String text, float scale, ColorRGBA color) {
+		myOverlayText = setGoodyAttributes(text, scale);
+		myOverlayText.setColor(color);
+		return myOverlayText;
+	}
+	
+	public void setText(String goodyText) {
+		if (myOverlayText != null) {
+			myOverlayText.setText(goodyText);
+		} else {
+			myLogger.warn("Attempting to set text for goody {}, but its attributes have not yet been specified", 
+					myUri.getLocalName());
+		}
 	}
 	
 	@Override
 	// Position is specified as fraction of screen width/height
 	public void setPosition(Vector3f scalePosition) {
-		final Vector3f position = scalePosition.multLocal(myScreenWidth, myScreenHeight, 0);
+		Vector3f absolutePosition = scalePosition.multLocal(myScreenWidth, myScreenHeight, 0);
+		setAbsolutePosition(absolutePosition);
+	}
+	
+	private void setAbsolutePosition(final Vector3f position) {
+		myLogger.debug("Setting position: {}", position); // TEST ONLY
 		myPosition = position;
 		if (myOverlayText != null) {
 			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
@@ -79,6 +101,7 @@ public class BasicGoody2dImpl extends BasicGoody {
 	public void attachToVirtualWorldNode() {
 		if (myOverlayText != null) {
 			//myRootNode = rootNode;
+			myLogger.debug("Attaching 2d goody to virtual world: {} at location {}", myUri.getLocalName(), myPosition);
 			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 
 				@Override
@@ -88,7 +111,8 @@ public class BasicGoody2dImpl extends BasicGoody {
 				}
 			});
 		} else {
-			myLogger.warn("Attempting to attach 2D Goody {} to virtual world, but overlay text has not been set", myUri);
+			myLogger.warn("Attempting to attach 2D Goody {} to virtual world, but its attributes have not been set",
+					myUri.getLocalName());
 		}
 	}
 	

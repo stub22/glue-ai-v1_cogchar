@@ -44,7 +44,9 @@ public class GoodyNames  {
 	public	static Ident	SIZE_Y = makeID("sizeY");
 	public	static Ident	SIZE_Z = makeID("sizeZ");
 	
-	public	static Ident	SPEED = makeID("speed");
+	public	static Ident	TRAVEL_TIME = makeID("travelTime");
+	
+	public	static Ident	TEXT_SIZE = makeID("textScale");
 	
 	public	static Ident	THING_TYPE = makeID("thingType");
 	
@@ -54,6 +56,7 @@ public class GoodyNames  {
 	public static	Ident	TYPE_TICTAC_GRID = makeID("TicTacGrid");
 	
 	public static	Ident	CROSSHAIR = makeID("CrossHair");
+	public static	Ident	SCOREBOARD = makeID("ScoreBoard");
 	
 	public  static Ident	RDF_TYPE = new FreeIdent(ComponentAssemblyNames.NS_rdf + "type");
 	
@@ -72,5 +75,6 @@ public class GoodyNames  {
 	// BasicGoodyImpl subclasses?
 	public static	Ident	BOOLEAN_STATE = makeID("booleanState");
 	public static	Ident	USE_O = makeID("isPlayerO");
+	public static	Ident	ROWS = makeID("rows");
 
 }
