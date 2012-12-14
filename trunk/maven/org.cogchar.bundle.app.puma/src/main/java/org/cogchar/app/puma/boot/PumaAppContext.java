@@ -26,7 +26,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.name.FreeIdent; // Only needed for resetMainConfigAndCheckThingActions
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 
@@ -47,7 +46,6 @@ import org.cogchar.platform.trigger.CogcharScreenBox;
 import org.cogchar.platform.trigger.BoxSpace;
 
 import org.cogchar.platform.trigger.CommandSpace;
-import org.cogchar.render.model.goodies.GoodyFactory; // Only needed for resetMainConfigAndCheckThingActions
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
@@ -353,25 +351,16 @@ public class PumaAppContext extends BasicDebugger {
 		}
 	}
 	
-	// Likely a temporary method for testing thing actions until the repo auto-update trigger features are alive
-	// Note this basically does what happens in PumaVirtualWorldMapper, so that's ripe for refactoring if this
-	// method attains any sort of permanent status
+	// Temporary method for testing goody/thing actions until the repo auto-update trigger features are alive
 	protected void resetMainConfigAndCheckThingActions() {
 		final PumaConfigManager pcm = getConfigManager();
 		pcm.clearMainConfigRepoClient();
 		RepoClient rc = getOrMakeMainConfigRC();
 		GlobalConfigEmitter gce = pcm.getGlobalConfig();
-		Ident worldConfigIdent = new FreeIdent("if/exception/while/reading/this/ident/report#null");
-		try {
-			// We shouldn't have more than one, so let's just assume there's one. This is a slightly different assumption
-			// to what happens in PumaVirtualWorldMapper.
-			worldConfigIdent = gce.entityMap().get(PumaModeConstants.VIRTUAL_WORLD_ENTITY_TYPE).get(0);
-			Ident graphIdent = gce.ergMap().get(worldConfigIdent).get(PumaModeConstants.THING_ACTIONS_BINDINGS_ROLE);
-			GoodyFactory.getTheFactory().getTheGoodySpace().readAndApplyGoodyActions(rc, graphIdent);
-		} catch (Exception e) {
-			getLogger().error("Could not recheck Thing actions with a config of {}",
-					worldConfigIdent.getLocalName(), e);
-		}	
+		if (hasVWorldMapper()) {
+			PumaVirtualWorldMapper vWorldMapper = getOrMakeVWorldMapper();
+			vWorldMapper.updateGoodySpace(rc, gce);
+		}
 	}
 
 }

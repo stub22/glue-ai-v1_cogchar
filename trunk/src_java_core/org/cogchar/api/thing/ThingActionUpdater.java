@@ -16,10 +16,13 @@
 
 package org.cogchar.api.thing;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionHelper;
@@ -40,7 +43,13 @@ public class ThingActionUpdater {
 	
 	private static Logger theLogger = LoggerFactory.getLogger(ThingActionUpdater.class);
 	
-	public List<ThingActionSpec> getThingActions(RepoClient rc, Ident graphIdent) {
+	/**
+	 * Fetches pending ThingActions from model, and deletes them from model.
+	 * @param rc
+	 * @param graphIdent
+	 * @return e
+	 */
+	public List<ThingActionSpec> takeThingActions(RepoClient rc, Ident graphIdent) {
 		List<ThingActionSpec> actionSpecList = new ArrayList<ThingActionSpec>();
 		SolutionHelper sh = new SolutionHelper();
 		SolutionList actionsList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, graphIdent);
@@ -48,12 +57,35 @@ public class ThingActionUpdater {
 			Ident actionIdent = sh.pullIdent(actionSoln, ThingCN.ACTION_URI_VAR_NAME);
 			Ident verbIdent = sh.pullIdent(actionSoln, ThingCN.VERB_VAR_NAME);
 			Ident targetIdent = sh.pullIdent(actionSoln, ThingCN.TARGET_VAR_NAME);
-			theLogger.info("Found new Thing action; ident: {} verb: {}, target: {}",
+			theLogger.info("Found new ThingAction; ident: {} verb: {}, target: {}",
 					new Object[]{actionIdent, verbIdent, targetIdent});
 			TypedValueMap actionParameters = buildActionParameterValueMap(rc, graphIdent, sh, actionIdent);
 			actionSpecList.add(new BasicThingActionSpec(actionIdent, targetIdent, verbIdent, sourceAgentID, actionParameters));
 		}
+		// TODO:  Delete the actions from model, so they are not returned on next call to this method.
+
+		for (ThingActionSpec tas : actionSpecList) {
+			deleteThingAction(rc, graphIdent, tas);
+		}
+		theLogger.info("Returning ThingAction list of length " + actionSpecList.size());
 		return actionSpecList;
+	}
+	
+	/**
+	 *  Q:  Under what conditions are we allowed to do this directly through Dataset.getNamedModel() actions?
+	 *  A:  Not sure - the clean-est way is to generate SPARQL-UPDATE and apply.
+     * If we are allowed to modify the model directly using Jena API, then it will be sufficient (for immediate
+	 *	practical purposes) to delete all triples with actionIdent as SUBJECT.
+	 * @param tas 
+	 */
+	private void deleteThingAction(RepoClient rc, Ident graphID, ThingActionSpec tas) { 
+		Ident actionID = tas.getActionSpecID();
+		Resource actionRes = rc.makeResourceForIdent(actionID);
+		Repo.WithDirectory repo = rc.getRepo();
+		Model gm = repo.getNamedModel(graphID);
+		theLogger.info("Prior to removal, graph size is " + gm.size());
+		gm.removeAll(actionRes, null, null);
+		theLogger.info("After removal, graph size is "  + gm.size());
 	}
 	
 	private TypedValueMap buildActionParameterValueMap(RepoClient rc, Ident graphIdent, SolutionHelper sh, Ident actionIdent) {

@@ -193,6 +193,16 @@ object RepoClientTester {
 		println("Got chanSpecs: " + chanSet)
 		
 		queryInboxEvents(dfltTestRC);
+		
+		import java.io.ByteArrayOutputStream;
+		
+		val baos : ByteArrayOutputStream = new ByteArrayOutputStream();
+		val outLang = "TURTLE";
+		lightsModelFromSheet.write(baos, outLang);
+		val encoding = "UTF8";
+		val lightsOutTurtle = baos.toString(encoding)
+		println ("Wrote turtle dump of lights model:\n" + lightsOutTurtle)
+		
 	}
 
   	def makeRepoClient(fr : FancyRepo, queryTargetVarName:  String, querySheetQN : String) : RepoClient = {

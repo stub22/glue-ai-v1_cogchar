@@ -18,6 +18,7 @@ package org.cogchar.app.puma.cgchr;
 import org.cogchar.app.puma.config.PumaModeConstants;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.buddy.busker.TriggerItem;
@@ -199,5 +200,19 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		VW_HelpScreenMgr hsm = VW_InputBindingFuncs.getHelpScreenMgr();
 		RenderRegistryClient rrc = myHRC.getRenderRegistryClient();
 		hsm.toggleHelpTextDisplay(rrc);
+	}
+	
+	public void updateGoodySpace(RepoClient rc, GlobalConfigEmitter gce) {
+		Ident worldConfigIdent = new FreeIdent("if/exception/while/reading/this/ident/report#null");
+		try {
+			// We shouldn't have more than one, so let's just assume there's one. This is a slightly different assumption
+			// to what happens in PumaVirtualWorldMapper.
+			worldConfigIdent = gce.entityMap().get(PumaModeConstants.VIRTUAL_WORLD_ENTITY_TYPE).get(0);
+			Ident graphIdent = gce.ergMap().get(worldConfigIdent).get(PumaModeConstants.THING_ACTIONS_BINDINGS_ROLE);
+			GoodyFactory.getTheFactory().getTheGoodySpace().readAndApplyGoodyActions(rc, graphIdent);
+		} catch (Exception e) {
+			getLogger().error("Could not recheck Thing actions with a config of {}",
+					worldConfigIdent.getLocalName(), e);
+		}			
 	}
 }
