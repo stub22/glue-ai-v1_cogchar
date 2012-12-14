@@ -3,7 +3,6 @@
  * All rights reserved.
  * [See end of file]
  */
-
 package org.cogchar.joswrap;
 
 import com.hp.hpl.jena.shared.JenaException;
@@ -26,133 +25,134 @@ import org.joseki.ServiceRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+public class ModJosDispatcher {
 
-public class ModJosDispatcher
-{
-    private static Logger log = LoggerFactory.getLogger(ModJosDispatcher.class) ;
-    
-    static ModJosConfiguration   configuration = null ;
-    static ServiceRegistry serviceRegistry = null ;
-    public static ModJosConfiguration   getConfiguration()      { return configuration ; }
-    public static ServiceRegistry getServiceRegistry()    { return serviceRegistry ; }
-    
-    //Dispatcher dispatcher = new Dispatcher() ;
-    
-    public static void dispatch(String serviceURI, Request request, Response response) throws ExecutionException
-    {
-        if ( serviceRegistry == null )
-        {
+	private static Logger log = LoggerFactory.getLogger(ModJosDispatcher.class);
+	static ModJosConfiguration configuration = null;
+	static ServiceRegistry serviceRegistry = null;
+
+	public static ModJosConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public static ServiceRegistry getServiceRegistry() {
+		return serviceRegistry;
+	}
+
+	//Dispatcher dispatcher = new Dispatcher() ;
+	public static void dispatch(final String serviceURI, Request request, Response response) throws ExecutionException {
+		if (serviceRegistry == null) {
 			buildServiceRegistry();
 			if (serviceRegistry == null) {
-	            log.error("Service registry not initialized") ;
-		        throw new ExecutionException(ReturnCodes.rcInternalError, "Service registry not initialized") ;
+				log.error("Service registry not initialized");
+				throw new ExecutionException(ReturnCodes.rcInternalError, "Service registry not initialized");
 			}
-        }
-        
-        try {
-            Service service = serviceRegistry.find(serviceURI) ;
-            if ( service == null )
-            {
-                log.info("404 - Service <"+serviceURI+"> not found") ;
-                throw new ExecutionException(ReturnCodes.rcNoSuchURI, "Service <"+serviceURI+"> not found") ;
-            }
-            
-            if ( !service.isAvailable() )
-            {
-                log.info("Service is not available") ;
-                throw new ExecutionException(ReturnCodes.rcServiceUnavailable, "Service <"+serviceURI+"> unavailable") ;
-            }
-    
-            final ServiceRequest serviceRequest = service.instance(request, response) ;
-            serviceRequest.start() ;
-            ResponseCallback cb = new ResponseCallback(){
-                public void callback(boolean successfulOperation)
-                {
-                    log.debug("ResponseCallback: service request finish") ;
-                    serviceRequest.finish() ;
-                }} ;
-            response.addCallback(cb) ;
-            serviceRequest.exec(request, response) ;
-            response.sendResponse() ;
-        }
-        catch (ExecutionException ex)
-        {
-            response.sendException(ex) ;
-            return ;
-        }
-    }
+		}
 
-    //  This method contains the pragmatic algorithm to determine the configuration URI.
-    //  
-    //  In this order (i.e. specific to general) to find the filename:
-    //  System property org.joseki.rdfserver.config => a URI.
-    
-    //  Resource:                
-    //  System property:         jena.rdfserver.modelmap => file name
-    //  Webapp init parameter:   jena.rdfserver.modelmap
-    //  Servlet init parameter:  jena.rdfserver.modelmap
-    //  and then the file is loaded.
+		try {
+			Service service = serviceRegistry.find(serviceURI);
+			if (service == null) {
+				log.info("404 - Service <" + serviceURI + "> not found");
+				throw new ExecutionException(ReturnCodes.rcNoSuchURI, "Service <" + serviceURI + "> not found");
+			}
 
-    public static void initServiceRegistry()
-    {
-        initServiceRegistry(FileManager.get()) ;
-    }
+			if (!service.isAvailable()) {
+				log.info("Service is not available");
+				throw new ExecutionException(ReturnCodes.rcServiceUnavailable, "Service <" + serviceURI + "> unavailable");
+			}
 
-    
-    public static void initServiceRegistry(FileManager fileManager)
-    {
-        initServiceRegistry(fileManager, null) ;
-    }
-    
-    public static void initServiceRegistry(String configURI)
-    {
-        initServiceRegistry(FileManager.get(), configURI) ;
-    }
-    
-    public static void initServiceRegistry(FileManager fileManager, String configURI)
-    {    
-        if ( configURI == null )
-            configURI = System.getProperty(Joseki.configurationFileProperty, DisabledRDFServer.defaultConfigFile) ;
-        setConfiguration(fileManager, configURI) ;
-    }
-	/**
-	 * Added by Stu to allow override, see edit at line 155 below.
-	 * Now we can hack it here (to produce RepoJosConfig, which doesn't do anything special yet)
-	 * OR extend this Dispatcher class.
-	 */
-    protected static ModJosConfiguration makeConfig(FileManager fileManager, String configURI, ServiceRegistry sreg) {
-		return new ModJosConfiguration(fileManager, configURI, sreg) ;
+			final ServiceRequest serviceRequest = service.instance(request, response);
+			serviceRequest.start();
+			ResponseCallback cb = new ResponseCallback() {
+
+				public void callback(boolean successfulOperation) {
+					log.debug("ResponseCallback: service request finish");
+					serviceRequest.finish();
+					// Stu hacked in this notification
+					if (serviceURI.toLowerCase().contains("update")) {
+						log.info("%%%%% Sending UPDATE notify-callbacks");
+						RepoUpdateCallbackAdapter.notifyCallbacks();
+					}
+					// End Stu's hack
+
+				}
+			};
+			response.addCallback(cb);
+			serviceRequest.exec(request, response);
+			response.sendResponse();
+		} catch (ExecutionException ex) {
+			response.sendException(ex);
+			return;
+		}
 	}
-	/*** 
-	 * 
+
+	//  This method contains the pragmatic algorithm to determine the configuration URI.
+	//  
+	//  In this order (i.e. specific to general) to find the filename:
+	//  System property org.joseki.rdfserver.config => a URI.
+	//  Resource:                
+	//  System property:         jena.rdfserver.modelmap => file name
+	//  Webapp init parameter:   jena.rdfserver.modelmap
+	//  Servlet init parameter:  jena.rdfserver.modelmap
+	//  and then the file is loaded.
+	public static void initServiceRegistry() {
+		initServiceRegistry(FileManager.get());
+	}
+
+	public static void initServiceRegistry(FileManager fileManager) {
+		initServiceRegistry(fileManager, null);
+	}
+
+	public static void initServiceRegistry(String configURI) {
+		initServiceRegistry(FileManager.get(), configURI);
+	}
+
+	public static void initServiceRegistry(FileManager fileManager, String configURI) {
+		if (configURI == null) {
+			configURI = System.getProperty(Joseki.configurationFileProperty, DisabledRDFServer.defaultConfigFile);
+		}
+		setConfiguration(fileManager, configURI);
+	}
+
+	/**
+	 * Added by Stu to allow override, see edit at line 155 below. Now we can hack it here (to produce RepoJosConfig,
+	 * which doesn't do anything special yet) OR extend this Dispatcher class.
 	 */
-	private static	FileManager		theGlueFM;
-	private static String			theConfigURI;
-	
-    public static synchronized void setConfiguration(FileManager fileManager, String configURI)  {
+	protected static ModJosConfiguration makeConfig(FileManager fileManager, String configURI, ServiceRegistry sreg) {
+		return new ModJosConfiguration(fileManager, configURI, sreg);
+	}
+	/**
+	 * *
+	 *
+	 */
+	private static FileManager theGlueFM;
+	private static String theConfigURI;
+
+	public static synchronized void setConfiguration(FileManager fileManager, String configURI) {
 		// In Joseki default impl, this method includes all the buildServiceRegistry stuff below.
-        if ( configURI == null ){
-            log.error("Null  configuration URI") ;
-            return ;
-        }
+		if (configURI == null) {
+			log.error("Null  configuration URI");
+			return;
+		}
 		theGlueFM = fileManager;
 		theConfigURI = configURI;
 	}
+
 	public static synchronized void buildServiceRegistry() {
-	
+
 		FileManager fileManager = theGlueFM;
 		String configURI = theConfigURI;
-		
-	    if ( serviceRegistry != null ) {
-            log.warn("Service registry already initialized") ;
-            return ;
-        }
-        // Already squirreled away somewhere?
-        serviceRegistry = (ServiceRegistry)Registry.find(DisabledRDFServer.ServiceRegistryName) ;
-        if ( serviceRegistry != null ) {
-            log.warn("Found globally registered service registry") ;
-            return ;
-        }
+
+		if (serviceRegistry != null) {
+			log.warn("Service registry already initialized");
+			return;
+		}
+		// Already squirreled away somewhere?
+		serviceRegistry = (ServiceRegistry) Registry.find(DisabledRDFServer.ServiceRegistryName);
+		if (serviceRegistry != null) {
+			log.warn("Found globally registered service registry");
+			return;
+		}
 		if (fileManager == null) {
 			log.error("Null File Manager");
 			return;
@@ -161,31 +161,31 @@ public class ModJosDispatcher
 			log.error("Null config URI");
 			return;
 		}
-        // Time to really build it!
-        ServiceRegistry tmp = new ServiceRegistry() ;
-        try {
+		// Time to really build it!
+		ServiceRegistry tmp = new ServiceRegistry();
+		try {
 			// Stu added classloader-reg this so our bundle-CL is on FM locator list
 			ClassLoader cl = ModJosDispatcher.class.getClassLoader();
 			JenaFileManagerUtils.ensureClassLoaderRegisteredWithJenaFM(fileManager, cl);
-			
-			// Stu replaced this:
-           //  configuration = new ModJosConfiguration(fileManager, configURI, tmp) ;
-			// with this:
-			configuration = makeConfig(fileManager, configURI, tmp) ;
-			
-            Registry.add(DisabledRDFServer.ServiceRegistryName, tmp) ;
-            serviceRegistry = (ServiceRegistry)Registry.find(DisabledRDFServer.ServiceRegistryName) ;
-            log.info("Loaded data source configuration: " + configURI);
-        } catch (NotFoundException ex)   {
-            throw new ConfigurationErrorException("Not found: "+ex.getMessage(), ex) ;
-            //return false;
-        } catch (JenaException rdfEx)  {
-            // Trouble processing a configuration 
-            throw new ConfigurationErrorException("RDF Exception: "+rdfEx.getMessage(), rdfEx) ;
-            //return false ;
-        }
 
-    }
+			// Stu replaced this:
+			//  configuration = new ModJosConfiguration(fileManager, configURI, tmp) ;
+			// with this:
+			configuration = makeConfig(fileManager, configURI, tmp);
+
+			Registry.add(DisabledRDFServer.ServiceRegistryName, tmp);
+			serviceRegistry = (ServiceRegistry) Registry.find(DisabledRDFServer.ServiceRegistryName);
+			log.info("Loaded data source configuration: " + configURI);
+		} catch (NotFoundException ex) {
+			throw new ConfigurationErrorException("Not found: " + ex.getMessage(), ex);
+			//return false;
+		} catch (JenaException rdfEx) {
+			// Trouble processing a configuration 
+			throw new ConfigurationErrorException("RDF Exception: " + rdfEx.getMessage(), rdfEx);
+			//return false ;
+		}
+
+	}
 }
 
 /*

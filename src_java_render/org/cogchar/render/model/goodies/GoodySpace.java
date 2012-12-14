@@ -103,7 +103,7 @@ public class GoodySpace {
 	// Not immediately clear if this should be here or elsewhere
 	public void readAndApplyGoodyActions(RepoClient rc, Ident graphIdent) {
 		ThingActionUpdater updater = new ThingActionUpdater();
-		List<ThingActionSpec> actionSpecList = updater.getThingActions(rc, graphIdent);
+		List<ThingActionSpec> actionSpecList = updater.takeThingActions(rc, graphIdent);
 		for (ThingActionSpec actionSpec : actionSpecList) {
 			processAction(actionSpec);
 		}

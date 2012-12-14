@@ -14,6 +14,7 @@ import org.cogchar.render.model.goodies.GoodyNames;
 import org.cogchar.api.thing.BasicTypedValueMap;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.impl.thing.ConcreteTVM;
+import org.cogchar.impl.thing.FancyThingModelWriter;
 import org.slf4j.Logger;
 /**
  * @author Stu B. <www.texpedient.com>
@@ -73,7 +74,10 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 	public void sendThingActionSpec(ThingActionSpec actionSpec) {
 		Logger log = getLogger();
 		log.info("Sending action spec: " + actionSpec);
-		String insertTriples = GoodyActionParamWriter.produceInsertDataTriples(actionSpec.getParamTVM(), "<parentURI>");
-		log.info("InsertTriples: " + insertTriples);
+		
+		FancyThingModelWriter ftmw = new FancyThingModelWriter();
+		String updateTxt = ftmw.writeTASpecToString(actionSpec);
+		
+		logInfo("UpdateTxt:\n" + updateTxt);
 	}
 }

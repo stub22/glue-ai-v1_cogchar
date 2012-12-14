@@ -23,7 +23,7 @@ import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 
-import  org.cogchar.api.thing.{ThingActionSpec, BasicTypedValueMap};
+import  org.cogchar.api.thing.{ThingActionSpec, BasicTypedValueMap, BasicTypedValueMapTemporaryImpl};
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -48,7 +48,8 @@ object FancyThingTest {
 	 */
 	
 }
-class ConcreteTVM() extends BasicTypedValueMap {
+class ConcreteTVM() extends BasicTypedValueMapTemporaryImpl {
+	/*
 	override def  getAsIdent( propName : Ident) : Ident = {
 		null;
 	}
@@ -70,6 +71,7 @@ class ConcreteTVM() extends BasicTypedValueMap {
 	override def  getSparqlText(propName : Ident) : String = {
 		"SPARQL_TEXT_FOR_" + getRaw(propName);
 	}
+	*/
 }
 class SparqlRenderContext() {
 	def whoopee() = {
