@@ -66,13 +66,16 @@ public class ModJosDispatcher {
 			ResponseCallback cb = new ResponseCallback() {
 
 				public void callback(boolean successfulOperation) {
-					log.debug("ResponseCallback: service request finish");
-					serviceRequest.finish();
 					// Stu hacked in this notification
+					// We want this to happen while the http-service is still exclusive locked.
+					// Otherwise, we might find part of the data from the *next* update during our callback processing.
 					if (serviceURI.toLowerCase().contains("update")) {
 						log.info("%%%%% Sending UPDATE notify-callbacks");
 						RepoUpdateCallbackAdapter.notifyCallbacks();
-					}
+					}					
+					log.debug("ResponseCallback: service request finish");
+					serviceRequest.finish();
+
 					// End Stu's hack
 
 				}

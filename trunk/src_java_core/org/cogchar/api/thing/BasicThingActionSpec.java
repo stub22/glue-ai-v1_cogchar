@@ -29,6 +29,9 @@ public class BasicThingActionSpec implements ThingActionSpec {
 	private		Ident					myActionRecordID;
 	// The "subject" of the update, and the subject of the prop-Vals
 	private		Ident					myTargetThingID;
+	
+	private		Ident					myTargetThingTypeID;
+	
 	// Verb is applied to the target, and can be simple C.(R.)U.D.  Or...can be more subtle.
 	private		Ident					myActionVerbID;	
 	
@@ -42,15 +45,16 @@ public class BasicThingActionSpec implements ThingActionSpec {
 	 * @param targetThingID - Non-null unless we are doing a "Create with new URI" thing.
 	 * @param verbID - occasionally null
 	 */
-	public BasicThingActionSpec(Ident actionRecID, Ident targetThingID, Ident verbID, Ident sourceAgentID, TypedValueMap paramTVMap) {
+	public BasicThingActionSpec(Ident actionRecID, Ident targetThingID, Ident targetThingTypeID,  Ident verbID, Ident sourceAgentID, TypedValueMap paramTVMap) {
 		myActionRecordID = actionRecID;
 		myTargetThingID = targetThingID;
+		myTargetThingTypeID = targetThingTypeID;
 		myActionVerbID = verbID;
 		mySourceAgentID = sourceAgentID;
 		
 		myParamTVMap = paramTVMap;
 	}
-	public BasicThingActionSpec(ThingActionSpec template) { 
+	private BasicThingActionSpec(ThingActionSpec template) { 
 		// myActionRecordID = template.getActionSpecID();
 		// mySourceAgentID = 
 		myTargetThingID = template.getTargetThingID();
@@ -72,7 +76,7 @@ public class BasicThingActionSpec implements ThingActionSpec {
 	}
 
 	@Override  public Ident getTargetThingTypeID() {
-		return myTargetThingID;
+		return myTargetThingTypeID;
 	}
 
 	
