@@ -40,7 +40,8 @@ public class ModJosDispatcher {
 	}
 
 	//Dispatcher dispatcher = new Dispatcher() ;
-	// Stu added "synchronized" keyword to ensure we don't have overlapping request processing.
+	// Stu added "synchronized" keyword to ensure we don't have overlapping update request processing.
+	// We are also relying on criticalSection of the LockMRSW below, not sure how that will 
 	public synchronized static void dispatch(final String serviceURI, Request request, Response response) throws ExecutionException {
 		if (serviceRegistry == null) {
 			buildServiceRegistry();
@@ -67,19 +68,10 @@ public class ModJosDispatcher {
 			ResponseCallback cb = new ResponseCallback() {
 
 				public void callback(boolean successfulOperation) {
-					// Stu hacked in this RepoUpdateCallbackAdapter notification.
-					
-					// Some kind of locking is necessary to prevent partial reads of data from the *next* update 
-					// during our callback processing.
-					
-					// So, we would like our callback-notifications to happen while the SPARQL-update-service is still exclusive 
-					// locked, but that would require deeper modifications to Joseki.  Instead, we have made the entire
-					// enclosing "dispatch"  method "static synchronized".  
-
-					if (serviceURI.toLowerCase().contains("update")) {
-						log.info("%%%%% Sending UPDATE notify-callbacks");
-						RepoUpdateCallbackAdapter.notifyCallbacks();
-					}					
+					// This is called during response.sendResponse, AFTER the LockMRSW.leaveCriticalSection call.
+					// So this is a chance for app to do work in that circumstance.
+					// Whether this is a "good" place to do work depends on the interaction of App threads with
+					// the SPARQL store and specifically with the LockMRSW.
 					log.info("ResponseCallback: starting serviceRequest.finish()");
 					serviceRequest.finish();
 					log.info("Finished serviceRequest.finish()");
@@ -88,14 +80,32 @@ public class ModJosDispatcher {
 				}
 			};
 			response.addCallback(cb);
-			log.info("Starting serviceRequest.exec()");
+			log.info("Starting serviceRequest.exec()  -- which enters a critical section and performs actual updates/queries");
 			serviceRequest.exec(request, response);
-			log.info("Starting response.sendResponse()");
+
+			// Stu hacked in this RepoUpdateCallbackAdapter notification.
+			// Some kind of locking is necessary to prevent partial reads of data from the *next* update 
+			// during our callback processing.
+			// So, we perform callback-notifications while the SPARQL-update-service is still write-locked.
+			// But currently we also have static-synchronized the entire enclosing dispatch method.
+			possiblySendRepoUpdateCallbacks(serviceURI);
+			log.info("Starting response.sendResponse() - which leaves the critical section.  ");
 			response.sendResponse();
 			log.info("Finished response.sendResponse()");
 		} catch (ExecutionException ex) {
 			response.sendException(ex);
 			return;
+		}
+	}
+
+	private static void possiblySendRepoUpdateCallbacks(String serviceURI) {
+		if (serviceURI.toLowerCase().contains("update")) {
+			log.info("%%%%% Sending Repo-UPDATE notification callbacks");
+			try {
+				RepoUpdateCallbackAdapter.notifyCallbacks();
+			} catch (Throwable t) {
+				log.error("Caught exception during notification callbacks for serviceURI=" + serviceURI, t);
+			}
 		}
 	}
 
