@@ -53,31 +53,5 @@ public class GoodyActionParamWriter {
 		myBTVMap.putNameAtName(GoodyNames.RDF_TYPE, someTypeID);
 	}
 
-	/**
-	 * Assume GRAPH is already taken care of by context.
-	 *
-	 * @param parentResToken - already rendered as either a URI or a variable-ref.
-	 * @return
-	 */
-	public static String produceInsertDataTriples(TypedValueMap	paramTVM, String parentResToken) {
-		StringBuffer resBuf = new StringBuffer();
-		int paramCount = paramTVM.getSize();
-		if (paramCount > 0) {
-			resBuf.append("INSERT {\n");
-			resBuf.append(parentResToken);
-			Iterator<Ident> nameIter = paramTVM.iterateKeys();
-			String preSep = "  ";
-			while (nameIter.hasNext()) {
-				resBuf.append(preSep);
-				Ident paramID = nameIter.next();
-				// TODO - shorten using prefix
-				resBuf.append("<" + paramID.getAbsUriString() + ">  ");
-				String sparqlText = paramTVM.getSparqlText(paramID);
-				resBuf.append(sparqlText);
-				preSep = ";  \n";
-			}
-			resBuf.append(". \n }\n");
-		}
-		return resBuf.toString();
-	}
+
 }
