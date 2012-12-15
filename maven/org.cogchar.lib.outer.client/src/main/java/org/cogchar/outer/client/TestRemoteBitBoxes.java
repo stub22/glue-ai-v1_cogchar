@@ -18,6 +18,7 @@ import org.cogchar.impl.thing.FancyThingModelWriter;
 import org.slf4j.Logger;
 
 import java.util.Random;
+import org.cogchar.api.thing.TypedValueMap;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -29,7 +30,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		Random ran = new Random();
 		TestRemoteBitBoxes test = new TestRemoteBitBoxes();
 		Ident boxOneID = test.makeOneBitBox(ran);
-		test.updateGoodyLocation(boxOneID, 700.0f, 800.0f, 900.0f, ran);
+		test.updateGoodyLocation(boxOneID, 200.0f, 250.0f, 300.0f, ran);
 		
 	}
 	public TestRemoteBitBoxes() {
@@ -42,22 +43,12 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		BasicTypedValueMap btvm = new ConcreteTVM();
 		GoodyActionParamWriter gapw = new GoodyActionParamWriter(btvm);
 		
-		gapw.putType(GoodyNames.TYPE_BIT_BOX);
 		gapw.putLocation(44.0f, 55.0f, 66.0f);
 		gapw.putRotation(1.0f, 1.0f, 1.0f, 90.0f);
 		
-		long tstamp = System.currentTimeMillis();
-		String dummyBoxURI = boxBaseURI + tstamp;
-		Ident dummyBoxID = new FreeIdent(dummyBoxURI);
-		
-		Ident actRecID = new FreeIdent("action_#" + ran.nextInt());
-		Ident tgtThingID = dummyBoxID;
-		Ident actVerbID = GoodyNames.CREATE_URI;
-		Ident srcAgentID = null;
-		
-		BasicThingActionSpec btas = new BasicThingActionSpec(actRecID, tgtThingID, actVerbID, srcAgentID, btvm);
+		Ident dummyBoxID = new FreeIdent(boxBaseURI + System.currentTimeMillis());
 
-		sendThingActionSpec(btas, ran);
+		sendBitBoxTAS(dummyBoxID, GoodyNames.CREATE_URI, btvm, ran);
 		return dummyBoxID;
 	}
 	public void updateGoodyLocation(Ident goodyID, float locX, float locY, float locZ, Random ran) {
@@ -65,18 +56,17 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		GoodyActionParamWriter gapw = new GoodyActionParamWriter(btvm);
 		
 		gapw.putLocation(locX, locY, locZ);
-
 		
+		sendBitBoxTAS(goodyID, GoodyNames.MOVE_URI, btvm, ran);
+	}
+	public void sendBitBoxTAS(Ident tgtThingID, Ident verbID, TypedValueMap paramTVMap, Random ran) {
 		Ident actRecID = new FreeIdent("action_#" + ran.nextInt());
-		Ident tgtThingID = goodyID;
-		Ident actVerbID = GoodyNames.MOVE_URI;
+		Ident tgtThingTypeID = GoodyNames.TYPE_BIT_BOX;
 		Ident srcAgentID = null;
 		
-		BasicThingActionSpec btas = new BasicThingActionSpec(actRecID, tgtThingID, actVerbID, srcAgentID, btvm);
-
+		BasicThingActionSpec btas = new BasicThingActionSpec(actRecID, tgtThingID, tgtThingTypeID, verbID, srcAgentID, paramTVMap);	
 		sendThingActionSpec(btas, ran);
 	}
-	
 	public void sendThingActionSpec(ThingActionSpec actionSpec, Random ran) {
 		Logger log = getLogger();
 		log.info("Sending action spec: " + actionSpec);

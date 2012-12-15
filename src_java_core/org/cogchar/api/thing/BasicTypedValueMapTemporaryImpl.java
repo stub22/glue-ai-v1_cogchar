@@ -33,9 +33,9 @@ public class BasicTypedValueMapTemporaryImpl extends BasicTypedValueMap {
 		return "";
 	}
 	
-	// For testing, everything is natively a string in repo, so I'll assume that FOR NOW
 	public Ident getAsIdent(Ident propName) {
-		return new FreeIdent(ThingCN.THING_NS + (String)getRaw(propName));
+		// return new FreeIdent(ThingCN.THING_NS + (String)getRaw(propName));
+		return null;
 	}
 	public String getAsString(Ident propName) {
 		return (String)getRaw(propName);
