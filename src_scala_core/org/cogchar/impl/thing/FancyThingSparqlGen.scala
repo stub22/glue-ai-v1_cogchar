@@ -122,6 +122,7 @@ class FancyThingModelWriter extends BasicDebugger {
 		val actionSpecID : Ident = tas.getActionSpecID();
 		val verbID : Ident = tas.getVerbID();
 		val targetThing : Ident = tas.getTargetThingID();
+		val targetThingType : Ident = tas.getTargetThingTypeID();
 		val srcAgentID : Ident	= tas.getSourceAgentID();
 		val tvm : TypedValueMap = tas.getParamTVM();
 
@@ -136,6 +137,7 @@ class FancyThingModelWriter extends BasicDebugger {
 		
 		val actionSpecRes : Resource = mci.makeResourceForIdent(actionSpecID)
 		val thingRes : Resource = mci.makeResourceForIdent(targetThing)
+		val thingTypeRes :  Resource = mci.makeResourceForIdent(targetThingType)
 		val verbRes : Resource = mci.makeResourceForIdent(verbID)
 
 
@@ -144,10 +146,12 @@ class FancyThingModelWriter extends BasicDebugger {
 		val actTypeStmt = m.createStatement(actionSpecRes, rdfTypeProp, taTypeRes)
 		val actVerbStmt = m.createStatement(actionSpecRes, verbProp, verbRes)
 		val actThingStmt = m.createStatement(actionSpecRes, targetThingProp, thingRes)
+		val actThingTypeStmt = m.createStatement(thingRes, rdfTypeProp, thingTypeRes)
 		
 		m.add(actTypeStmt)
 		m.add(actVerbStmt)
 		m.add(actThingStmt)
+		m.add(actThingTypeStmt)
 		
 		writeParamsUsingWeakConvention(mci, actionSpecRes, tvm, ran)
 		println("thingRes=" + thingRes)

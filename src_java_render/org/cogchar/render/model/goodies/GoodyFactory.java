@@ -88,6 +88,7 @@ public class GoodyFactory {
 			// Big problem here is that GoodyFactory needs to know about each Goody type and how to make them
 			// Ripe for refactoring to avoid that, perhaps via a Chain of Responsibility pattern?
 			try {
+				
 				if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
 					boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
 					newGoody = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0], bitBoxState);

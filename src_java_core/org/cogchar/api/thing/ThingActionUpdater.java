@@ -47,20 +47,21 @@ public class ThingActionUpdater {
 	 * Fetches pending ThingActions from model, and deletes them from model.
 	 * @param rc
 	 * @param graphIdent
-	 * @return e
+	 * @return 
 	 */
 	public List<ThingActionSpec> takeThingActions(RepoClient rc, Ident graphIdent) {
 		List<ThingActionSpec> actionSpecList = new ArrayList<ThingActionSpec>();
 		SolutionHelper sh = new SolutionHelper();
 		SolutionList actionsList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, graphIdent);
 		for (Solution actionSoln: actionsList.javaList()) {
-			Ident actionIdent = sh.pullIdent(actionSoln, ThingCN.ACTION_URI_VAR_NAME);
-			Ident verbIdent = sh.pullIdent(actionSoln, ThingCN.VERB_VAR_NAME);
-			Ident targetIdent = sh.pullIdent(actionSoln, ThingCN.TARGET_VAR_NAME);
+			Ident actionID = sh.pullIdent(actionSoln, ThingCN.ACTION_URI_VAR_NAME);
+			Ident verbID = sh.pullIdent(actionSoln, ThingCN.VERB_VAR_NAME);
+			Ident targetID = sh.pullIdent(actionSoln, ThingCN.TARGET_VAR_NAME);
+			Ident targetTypeID = sh.pullIdent(actionSoln, ThingCN.TARGET_TYPE_VAR_NAME);
 			theLogger.info("Found new ThingAction; ident: {} verb: {}, target: {}",
-					new Object[]{actionIdent, verbIdent, targetIdent});
-			TypedValueMap actionParameters = buildActionParameterValueMap(rc, graphIdent, sh, actionIdent);
-			actionSpecList.add(new BasicThingActionSpec(actionIdent, targetIdent, verbIdent, sourceAgentID, actionParameters));
+					new Object[]{actionID, verbID, targetID});
+			TypedValueMap actionParams = buildActionParameterValueMap(rc, graphIdent, sh, actionID);
+			actionSpecList.add(new BasicThingActionSpec(actionID, targetID, targetTypeID, verbID, sourceAgentID, actionParams));
 		}
 		// TODO:  Delete the actions from model, so they are not returned on next call to this method.
 
