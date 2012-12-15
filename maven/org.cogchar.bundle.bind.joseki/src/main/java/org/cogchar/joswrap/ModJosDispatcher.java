@@ -40,7 +40,8 @@ public class ModJosDispatcher {
 	}
 
 	//Dispatcher dispatcher = new Dispatcher() ;
-	public static void dispatch(final String serviceURI, Request request, Response response) throws ExecutionException {
+	// Stu added "synchronized" keyword to ensure we don't have overlapping request processing.
+	public synchronized static void dispatch(final String serviceURI, Request request, Response response) throws ExecutionException {
 		if (serviceRegistry == null) {
 			buildServiceRegistry();
 			if (serviceRegistry == null) {
@@ -66,23 +67,32 @@ public class ModJosDispatcher {
 			ResponseCallback cb = new ResponseCallback() {
 
 				public void callback(boolean successfulOperation) {
-					// Stu hacked in this notification
-					// We want this to happen while the http-service is still exclusive locked.
-					// Otherwise, we might find part of the data from the *next* update during our callback processing.
+					// Stu hacked in this RepoUpdateCallbackAdapter notification.
+					
+					// Some kind of locking is necessary to prevent partial reads of data from the *next* update 
+					// during our callback processing.
+					
+					// So, we would like our callback-notifications to happen while the SPARQL-update-service is still exclusive 
+					// locked, but that would require deeper modifications to Joseki.  Instead, we have made the entire
+					// enclosing "dispatch"  method "static synchronized".  
+
 					if (serviceURI.toLowerCase().contains("update")) {
 						log.info("%%%%% Sending UPDATE notify-callbacks");
 						RepoUpdateCallbackAdapter.notifyCallbacks();
 					}					
-					log.debug("ResponseCallback: service request finish");
+					log.info("ResponseCallback: starting serviceRequest.finish()");
 					serviceRequest.finish();
-
+					log.info("Finished serviceRequest.finish()");
 					// End Stu's hack
 
 				}
 			};
 			response.addCallback(cb);
+			log.info("Starting serviceRequest.exec()");
 			serviceRequest.exec(request, response);
+			log.info("Starting response.sendResponse()");
 			response.sendResponse();
+			log.info("Finished response.sendResponse()");
 		} catch (ExecutionException ex) {
 			response.sendException(ex);
 			return;

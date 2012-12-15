@@ -30,7 +30,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		Random ran = new Random();
 		TestRemoteBitBoxes test = new TestRemoteBitBoxes();
 		Ident boxOneID = test.makeOneBitBox(ran);
-		test.updateGoodyLocation(boxOneID, 200.0f, 250.0f, 300.0f, ran);
+	//	test.updateGoodyLocation(boxOneID, 200.0f, 250.0f, 300.0f, ran);
 		
 	}
 	public TestRemoteBitBoxes() {
@@ -43,8 +43,8 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		BasicTypedValueMap btvm = new ConcreteTVM();
 		GoodyActionParamWriter gapw = new GoodyActionParamWriter(btvm);
 		
-		gapw.putLocation(44.0f, 55.0f, 66.0f);
-		gapw.putRotation(1.0f, 1.0f, 1.0f, 90.0f);
+		gapw.putLocation(30.0f, 15.0f, 10.0f);
+		gapw.putRotation(1.0f, 1.0f, 1.0f, 10.0f);
 		
 		Ident dummyBoxID = new FreeIdent(boxBaseURI + System.currentTimeMillis());
 
