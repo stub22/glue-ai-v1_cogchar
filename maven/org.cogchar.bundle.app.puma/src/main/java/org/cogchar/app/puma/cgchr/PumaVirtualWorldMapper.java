@@ -15,22 +15,19 @@
  */
 package org.cogchar.app.puma.cgchr;
 
+import com.hp.hpl.jena.rdf.model.ModelChangedListener;
 import org.cogchar.app.puma.config.PumaModeConstants;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.app.buddy.busker.TriggerItem;
-import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 import org.osgi.framework.BundleContext;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
-import org.cogchar.app.puma.cgchr.PumaDualCharacter;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.platform.gui.keybind.KeyBindingConfig;
@@ -38,13 +35,9 @@ import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.render.model.databalls.BallBuilder;
 
 // Currently for BitBox / Virtual Thing development testing
-import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.api.thing.ThingActionUpdater;
 import org.cogchar.render.model.goodies.GoodyFactory;
-import org.cogchar.api.thing.ThingActionUpdater;
 
 import org.cogchar.render.sys.input.VW_HelpScreenMgr;
-import org.cogchar.render.sys.input.VW_InputDirector;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
@@ -215,4 +208,5 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 					worldConfigIdent.getLocalName(), e);
 		}			
 	}
+
 }
