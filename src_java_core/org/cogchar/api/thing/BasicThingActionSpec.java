@@ -59,23 +59,28 @@ public class BasicThingActionSpec implements ThingActionSpec {
 		myParamTVMap = null;  // copy of (paramTVMap)
 	}
 
-	public Ident getActionSpecID() {
+	@Override public Ident getActionSpecID() {
 		return myActionRecordID;
 	}
 
-	public Ident getVerbID() {
+	@Override  public Ident getVerbID() {
 		return myActionVerbID;
 	}
 
-	public Ident getTargetThingID() {
+	@Override  public Ident getTargetThingID() {
 		return myTargetThingID;
 	}
 
-	public Ident getSourceAgentID() {
+	@Override  public Ident getTargetThingTypeID() {
+		return myTargetThingID;
+	}
+
+	
+	@Override  public Ident getSourceAgentID() {
 		return mySourceAgentID;
 	}
 
-	public TypedValueMap getParamTVM() {
+	@Override  public TypedValueMap getParamTVM() {
 		return myParamTVMap;
 	}
 

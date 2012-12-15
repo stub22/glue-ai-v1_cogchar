@@ -35,9 +35,15 @@ public class ThingCN {
 
 	public  static String	ACTION_QUERY_VAR_NAME = "attachedToAction";
 	
-	public  static String	ACTION_URI_VAR_NAME = "thingAction";
-	public  static String	VERB_VAR_NAME = "verb";
-	public  static String	TARGET_VAR_NAME = "targetThing";
-	public  static String	PARAM_IDENT_VAR_NAME = "paramIdent";
-	public  static String	PARAM_VALUE_VAR_NAME = "paramValue";
+	// Stu renamed variables to make them obviously *different* from the RDF property names.
+	// In general, this is the pattern we want to follow.   In software, unlike poetry, ambiguity is the enemy!
+	
+	public  static String	ACTION_URI_VAR_NAME = "thingActionID";
+	
+	public  static String	VERB_VAR_NAME = "verbID";
+	public  static String	TARGET_VAR_NAME = "tgtThingID";
+	
+	public  static String	TARGET_TYPE_VAR_NAME = "tgtThingTypeID";
+	public  static String	PARAM_IDENT_VAR_NAME = "actParamID";
+	public  static String	PARAM_VALUE_VAR_NAME = "actParamVal";
 }

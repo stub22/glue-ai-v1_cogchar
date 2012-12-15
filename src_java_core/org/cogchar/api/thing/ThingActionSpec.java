@@ -40,6 +40,9 @@ public interface ThingActionSpec {
 
 	/** @return null or the target Thing-URI of the action.  What are we operating on?	 */
 	public	Ident			getTargetThingID();
+
+	/** @return null or the Type-URI of the target Thing.  What type of thing are we operating on?	 */
+	public  Ident			getTargetThingTypeID();
 	
 	/** @return null or the source Agent-URI of the action.  Who initiated the operation?	 */
 	public	Ident			getSourceAgentID();

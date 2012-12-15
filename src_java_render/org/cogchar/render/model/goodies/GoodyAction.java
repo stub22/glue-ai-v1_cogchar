@@ -50,12 +50,15 @@ public class GoodyAction  {
 	private		ThingActionSpec			mySpec;
 
 	private		Ident					myGoodyID;
+	private		Ident					myGoodyTypeID;
 	
 	private		TypedValueMap			paramTVMap;
 	
 	public GoodyAction(ThingActionSpec actionSpec) {
 		mySpec = actionSpec;
 		myGoodyID = actionSpec.getTargetThingID();
+		myGoodyTypeID = actionSpec.getTargetThingTypeID();
+		
 		paramTVMap = mySpec.getParamTVM();
 		String kindIdentString = actionSpec.getVerbID().getAbsUriString();
 		for (Kind kindToCheck : Kind.values()) {
@@ -81,7 +84,8 @@ public class GoodyAction  {
 	}
 	
 	public Ident getType() {
-		return paramTVMap.getAsIdent(GoodyNames.THING_TYPE);
+		return myGoodyTypeID;
+		// return paramTVMap.getAsIdent(GoodyNames.THING_TYPE);
 	}
 	/**
 	 * Example of actual application data read from spec, into an application specific type.
