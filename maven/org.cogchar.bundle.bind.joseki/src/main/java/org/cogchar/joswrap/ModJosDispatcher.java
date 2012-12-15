@@ -75,8 +75,6 @@ public class ModJosDispatcher {
 					log.info("ResponseCallback: starting serviceRequest.finish()");
 					serviceRequest.finish();
 					log.info("Finished serviceRequest.finish()");
-					// End Stu's hack
-
 				}
 			};
 			response.addCallback(cb);
