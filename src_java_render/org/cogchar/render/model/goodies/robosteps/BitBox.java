@@ -45,14 +45,15 @@ public class BitBox extends BasicGoodyImpl {
 	private int zeroIndex;
 	private int oneIndex;
 	
-	public BitBox(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size, boolean boxState) {
+	public BitBox(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
+			float size, boolean boxState) {
 		super(aRenderRegCli, boxUri);
 		//myLogger.info("Making a BitBox: size={}, position={}, state={}, URI={}", //TEST ONLY
 		//	new Object[]{size, initialPosition, boxState, boxUri.getAbsUriString()}); //TEST ONLY
 		if (size == 0f) {
 			myLogger.warn("BitBox being created with zero size! Was one specified?");
 		}
-		setPosition(initialPosition);
+		setPositionAndRotation(initialPosition, initialRotation);
 		Mesh zeroMesh = new Torus(40,20,size/5,size*5/6);
 		Mesh oneMesh = new Cylinder(20, 20, size/5, size*2, true);
 		zeroIndex = addGeometry(zeroMesh, FALSE_COLOR);

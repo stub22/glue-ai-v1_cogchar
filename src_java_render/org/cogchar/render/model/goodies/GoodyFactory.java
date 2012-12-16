@@ -93,7 +93,8 @@ public class GoodyFactory {
 				//theLogger.info("Trying to create a goody, type is {}", ga.getType()); // TEST ONLY
 				if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
 					boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
-					newGoody = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0], bitBoxState);
+					newGoody = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
+						ga.getSize()[0], bitBoxState);
 				} else if (GoodyNames.TYPE_FLOOR.equals(ga.getType())) {
 					// Assuming physical floor for now, but that may be a good thing to define in repo
 					newGoody = new VirtualFloor(myRRC, ga.getGoodyID(), ga.getLocationVector(), true);

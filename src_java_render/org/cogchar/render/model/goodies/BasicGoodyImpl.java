@@ -169,6 +169,7 @@ public class BasicGoodyImpl extends BasicGoody {
 		final BasicGoodieGeometry geometryToAttach = myGeometries.get(geometryIndex);
 		final Geometry jmeGeometry = geometryToAttach.getJmeGeometry();
 		setGeometryPositionAndRotation(geometryToAttach);
+		//myLogger.info("Attaching geometry {} for goody {}", geometryIndex, myUri); // TEST ONLY
 		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 
 			@Override
@@ -234,11 +235,12 @@ public class BasicGoodyImpl extends BasicGoody {
 
 	private void setGeometryPositionAndRotation(BasicGoodieGeometry goodieGeometry) {
 		Quaternion totalRotation = myRotation.mult(goodieGeometry.myRotationOffset);
+		//myLogger.info("Setting Goody position {}, rotation {} with offset {} for total rotation {}", // TEST ONLY
+		//	new Object[]{myPosition, myRotation, goodieGeometry.myRotationOffset, totalRotation}); // TEST ONLY
 		RigidBodyControl jmeControl = goodieGeometry.myControl;
 		if (jmeControl != null) {
 			jmeControl.setPhysicsLocation(myPosition); // Need to review this to see if it's necessary/proper
 			jmeControl.setPhysicsRotation(totalRotation);
-			goodieGeometry.getJmeGeometry().setLocalTranslation(myPosition); // TEST ONLY
 		} else {
 			Geometry jmeGeometry = goodieGeometry.getJmeGeometry();
 			jmeGeometry.setLocalTranslation(myPosition);
