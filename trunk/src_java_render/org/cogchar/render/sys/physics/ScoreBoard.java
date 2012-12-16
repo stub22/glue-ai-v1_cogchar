@@ -32,7 +32,7 @@ import java.util.List;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class ScoreBoard {
+public class ScoreBoard implements GeneralScoreBoard {
 	// Presents a set of lines containing "labels" and "scores".
 	Node		myParentNode;
 	BitmapFont	myLabelFont;
@@ -77,6 +77,7 @@ public class ScoreBoard {
 			aLine.setScoreText("line_" + rowIdx);
 		}
 	}
+	@Override
 	public void displayScore(int rowNum, String scoreText) {
 		Row l = myRows.get(rowNum);
 		l.setScoreText(scoreText);
