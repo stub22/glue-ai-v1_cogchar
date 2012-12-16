@@ -111,7 +111,7 @@ public class GoodyAction  {
 		float rotY = paramTVMap.getAsFloat(GoodyNames.ROTATION_AXIS_Y);
 		float rotZ = paramTVMap.getAsFloat(GoodyNames.ROTATION_AXIS_Z);
 		float rotMag = paramTVMap.getAsFloat(GoodyNames.ROTATION_MAG_DEG)*(float)Math.PI/180f;
-		Quaternion resultQuat = new Quaternion(rotX, rotY, rotZ, rotMag);
+		Quaternion resultQuat = new Quaternion().fromAngleAxis(rotMag, new Vector3f(rotX, rotY, rotZ));
 		return resultQuat;
 	}
 	
