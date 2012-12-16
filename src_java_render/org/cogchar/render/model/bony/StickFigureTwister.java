@@ -18,7 +18,7 @@ package org.cogchar.render.model.bony;
 
 import org.cogchar.render.gui.bony.VirtCharPanel;
 import org.cogchar.render.app.bony.BonyRenderContext;
-import org.cogchar.render.sys.physics.ScoreBoard;
+import org.cogchar.render.sys.physics.GeneralScoreBoard;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
@@ -92,7 +92,7 @@ public class StickFigureTwister extends RenderModule {
 
 		Quaternion q = makeRotQuatForSingleAxis(myWaistTwistAngle, direction);
 		applyBoneRotQuat(tgtBone, q);
-		ScoreBoard sb = myContext.getScoreBoard();
+		GeneralScoreBoard sb = myContext.getScoreBoard();
 		if ((myTwistScoringFlag) && (sb != null)) {
 			sb.displayScore(0, "tgtBone=" + tgtBone);
 			sb.displayScore(1, "xformRot=" + q);
