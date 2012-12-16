@@ -45,6 +45,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		
 		gapw.putLocation(30.0f, 15.0f, 10.0f);
 		gapw.putRotation(1.0f, 1.0f, 1.0f, 10.0f);
+		gapw.putSize(4f, 0f, 0f);
 		
 		Ident dummyBoxID = new FreeIdent(boxBaseURI + System.currentTimeMillis());
 
