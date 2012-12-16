@@ -49,6 +49,12 @@ public class GoodyActionParamWriter {
 		myBTVMap.putValueAtName(GoodyNames.ROTATION_MAG_DEG, magDeg);
 	}
 
+	public void putSize(float sizeX, float sizeY, float sizeZ) {
+		myBTVMap.putValueAtName(GoodyNames.SIZE_X, sizeX);
+		myBTVMap.putValueAtName(GoodyNames.SIZE_Y, sizeY);
+		myBTVMap.putValueAtName(GoodyNames.SIZE_Z, sizeZ);
+	}
+	
 	public void putType(Ident someTypeID) {
 		myBTVMap.putNameAtName(GoodyNames.RDF_TYPE, someTypeID);
 	}

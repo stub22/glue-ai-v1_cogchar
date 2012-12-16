@@ -87,8 +87,10 @@ public class GoodyFactory {
 			// This is getting out of hand
 			// Big problem here is that GoodyFactory needs to know about each Goody type and how to make them
 			// Ripe for refactoring to avoid that, perhaps via a Chain of Responsibility pattern?
+			// Or perhaps we would like to pass the GoodyAction to the goodies in their constructors
+			// Still would need a way (possibly reflection?) to get goody class from type
 			try {
-				
+				//theLogger.info("Trying to create a goody, type is {}", ga.getType()); // TEST ONLY
 				if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
 					boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
 					newGoody = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0], bitBoxState);
@@ -100,9 +102,9 @@ public class GoodyFactory {
 					newGoody = new TicTacMark(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0], isAnO);
 				} else if (GoodyNames.TYPE_TICTAC_GRID.equals(ga.getType())) {
 					newGoody = new TicTacGrid(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0]);
-				} else if (GoodyNames.CROSSHAIR.equals(ga.getType())) {
+				} else if (GoodyNames.TYPE_CROSSHAIR.equals(ga.getType())) {
 					newGoody = new CrossHairGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getTextSize());
-				} else if (GoodyNames.SCOREBOARD.equals(ga.getType())) {
+				} else if (GoodyNames.TYPE_SCOREBOARD.equals(ga.getType())) {
 					int rows = Integer.valueOf(ga.getSpecialString(GoodyNames.ROWS));
 					newGoody = new ScoreBoardGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(),
 							ga.getSize()[0], rows, ga.getTextSize());
