@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.sys.physics.GeneralScoreBoard;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
@@ -39,7 +40,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 // May eventually extend a standard "composite goody" superclass
 // Presents a set of lines containing "labels" and "scores".
-public class ScoreBoardGoody extends BasicGoody {
+public class ScoreBoardGoody extends BasicGoody implements GeneralScoreBoard {
 	
 	final static ColorRGBA MY_SCORE_COLOR = ColorRGBA.Magenta; // Likely only temporarily a constant
 	
@@ -74,10 +75,16 @@ public class ScoreBoardGoody extends BasicGoody {
 			myRows.add(aLine);
 			aLine.setScoreText("line_" + rowIdx);
 		}
+		//BonyRenderContext.setScoreBoard(this); //needs to happen somewhere, probably not here!
 	}
+	@Override
 	public void displayScore(int rowNum, String scoreText) {
-		ScoreBoardGoody.Row l = myRows.get(rowNum);
-		l.setScoreText(scoreText);
+		if ((rowNum >= 0) && (rowNum < myRows.size())) {
+			ScoreBoardGoody.Row l = myRows.get(rowNum);
+			l.setScoreText(scoreText);
+		} else {
+			myLogger.warn("A request was made to set text for Scoreboard row #{}, but that row does not exist!", rowNum);
+		}
 	}
 	
 	@Override
@@ -103,8 +110,6 @@ public class ScoreBoardGoody extends BasicGoody {
 		}
 	}
 	
-	// Override this method to add functionality; be sure to call this super method if action is not handled
-	// by overriding method
 	@Override
 	public void applyAction(GoodyAction ga) {
 		switch (ga.getKind()) {
@@ -113,7 +118,14 @@ public class ScoreBoardGoody extends BasicGoody {
 				break;
 			}
 			case SET : {
-				// Need to add code to set text in desired line
+				String scoreText = ga.getSpecialString(GoodyNames.TEXT);
+				int rowNum = 0;
+				try {
+					rowNum = Integer.valueOf(ga.getSpecialString(GoodyNames.SUBCOMPONENT));
+				} catch (Exception e) {
+					myLogger.error("Row (subcomponent) number not recognized for setting scoreboard, assuming 0");
+				}
+				displayScore(rowNum, scoreText);
 				break;
 			}
 			default: {

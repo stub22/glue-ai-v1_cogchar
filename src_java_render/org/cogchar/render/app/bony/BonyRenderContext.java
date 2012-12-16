@@ -15,16 +15,15 @@
  */
 package org.cogchar.render.app.bony;
 
-import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
-import org.cogchar.render.sys.physics.ScoreBoard;
 import com.jme3.animation.AnimControl;
 import java.util.List;
 import javax.swing.JFrame;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
+import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
 import org.cogchar.render.sys.context.WorkaroundFuncsMustDie;
-import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.cogchar.render.sys.physics.GeneralScoreBoard;
 /**
  * The contents of this class, are pimples to be squeezed.
  * @author Stu B. <www.texpedient.com>
@@ -35,7 +34,7 @@ public class BonyRenderContext extends ConfiguredPhysicalModularRenderContext {
 	
 	protected	VirtualCharacterPanel	myPanel;   
 	protected	JFrame					myFrame;
-	protected	ScoreBoard				myScoreBoard;
+	protected	GeneralScoreBoard		myScoreBoard;
 	protected	List<AnimControl>		myAnimControls;
 
 
@@ -67,11 +66,11 @@ public class BonyRenderContext extends ConfiguredPhysicalModularRenderContext {
 		this.myPanel = panel;
 	}
 
-	public ScoreBoard getScoreBoard() {
+	public GeneralScoreBoard getScoreBoard() {
 		return myScoreBoard;
 	}
 
-	public void setScoreBoard(ScoreBoard scoreBoard) {
+	public void setScoreBoard(GeneralScoreBoard scoreBoard) {
 		this.myScoreBoard = scoreBoard;
 	}
 
