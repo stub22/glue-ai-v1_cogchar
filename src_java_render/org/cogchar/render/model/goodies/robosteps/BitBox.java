@@ -46,12 +46,15 @@ public class BitBox extends BasicGoodyImpl {
 	private int oneIndex;
 	
 	public BitBox(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
-			float size, boolean boxState) {
+			Float size, boolean boxState) {
 		super(aRenderRegCli, boxUri);
 		//myLogger.info("Making a BitBox: size={}, position={}, state={}, URI={}", //TEST ONLY
 		//	new Object[]{size, initialPosition, boxState, boxUri.getAbsUriString()}); //TEST ONLY
-		if (size == 0f) {
-			myLogger.warn("BitBox being created with zero size! Was one specified?");
+		if (size.equals(0f)) {
+			myLogger.warn("BitBox being created with zero size!");
+		} else if (size == null) {
+			myLogger.warn("No size specified for BitBox, defaulting to size = 1");
+			size = 1f;
 		}
 		setPositionAndRotation(initialPosition, initialRotation);
 		Mesh zeroMesh = new Torus(40,20,size/5,size*5/6);
