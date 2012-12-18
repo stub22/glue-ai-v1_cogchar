@@ -41,39 +41,31 @@ public class BasicTypedValueMapTemporaryImpl extends BasicTypedValueMap {
 		return (String)getRaw(propName);
 	}
 	public Integer getAsInteger(Ident propName) {
-		Integer returnValue = 0;
 		try {
-			returnValue = Integer.valueOf((String)getRaw(propName));
+			return Integer.valueOf((String)getRaw(propName));
 		} catch (Exception e) {
-			// Right now just returns zero if not able to convert
+			return null;
 		}
-		return returnValue;
 	}
 	public Long getAsLong(Ident propName) {
-		Long returnValue = 0l;
 		try {
-			returnValue = Long.valueOf((String)getRaw(propName));
+			return Long.valueOf((String)getRaw(propName));
 		} catch (Exception e) {
-			// Right now just returns zero if not able to convert
+			return null;
 		}
-		return returnValue;
 	}
 	public Float getAsFloat(Ident propName) {
-		Float returnValue = 0f;
 		try {
-			returnValue = Float.valueOf((String)getRaw(propName));
+			return Float.valueOf((String)getRaw(propName));
 		} catch (Exception e) {
-			// Right now just returns zero if not able to convert
+			return null;
 		}
-		return returnValue;
 	}
 	public Double getAsDouble(Ident propName) {
-		Double returnValue = 0.0;
 		try {
-			returnValue = Double.valueOf((String)getRaw(propName));
+			return Double.valueOf((String)getRaw(propName));
 		} catch (Exception e) {
-			// Right now just returns zero if not able to convert
+			return null;
 		}
-		return returnValue;
 	}
 }
