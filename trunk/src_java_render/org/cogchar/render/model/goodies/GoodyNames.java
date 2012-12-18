@@ -66,10 +66,10 @@ public class GoodyNames  {
 	public static	Ident	ACTION_DELETE = makeID("ActionDelete");
 	*/
 	
-	public static	Ident	CREATE_URI = makeID("ActionCreate");
-	public static	Ident	DELETE_URI = makeID("ActionDelete");
-	public static	Ident	MOVE_URI = makeID("ActionMove");
-	public static	Ident	SET_URI = makeID("ActionSet");
+	public static	Ident	ACTION_CREATE = makeID("ActionCreate");
+	public static	Ident	ACTION_DELETE = makeID("ActionDelete");
+	public static	Ident	ACTION_MOVE = makeID("ActionMove");
+	public static	Ident	ACTION_SET = makeID("ActionSet");
 	
 	// This stuff gets pretty particular to the individual Goody types. Perhaps shouldn't live here but somehow in
 	// BasicGoodyImpl subclasses?

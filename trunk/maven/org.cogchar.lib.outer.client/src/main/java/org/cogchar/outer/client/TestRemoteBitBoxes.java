@@ -58,7 +58,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		
 		Ident dummyBoxID = new FreeIdent(boxBaseURI + System.currentTimeMillis());
 
-		sendBitBoxTAS(dummyBoxID, GoodyNames.CREATE_URI, btvm, ran, debugFlag);
+		sendBitBoxTAS(dummyBoxID, GoodyNames.ACTION_CREATE, btvm, ran, debugFlag);
 		return dummyBoxID;
 	}
 	public void updateGoodyLocation(Ident goodyID, float locX, float locY, float locZ, Random ran, boolean debugFlag) {
@@ -67,7 +67,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		
 		gapw.putLocation(locX, locY, locZ);
 		
-		sendBitBoxTAS(goodyID, GoodyNames.MOVE_URI, btvm, ran, debugFlag);
+		sendBitBoxTAS(goodyID, GoodyNames.ACTION_MOVE, btvm, ran, debugFlag);
 	}
 	public void sendBitBoxTAS(Ident tgtThingID, Ident verbID, TypedValueMap paramTVMap, Random ran, boolean debugFlag) {
 		Ident actRecID = new FreeIdent("action_#" + ran.nextInt());
