@@ -54,10 +54,13 @@ public class GoodyActionParamWriter {
 		myBTVMap.putValueAtName(GoodyNames.SIZE_Y, sizeY);
 		myBTVMap.putValueAtName(GoodyNames.SIZE_Z, sizeZ);
 	}
-	
+	public TypedValueMap	getValueMap() { 
+		return myBTVMap;
+	}
+	/**  type is not a param.
 	public void putType(Ident someTypeID) {
 		myBTVMap.putNameAtName(GoodyNames.RDF_TYPE, someTypeID);
 	}
-
+	*/
 
 }
