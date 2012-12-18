@@ -49,11 +49,11 @@ public class AgentRepoClient extends BasicDebugger {
 	 * @param updateText
 	 * @param svcUrl 
 	 */
-	public void execRemoteSparqlUpdate(String svcUrl, String updateText) {
+	public void execRemoteSparqlUpdate(String svcUrl, String updateText, boolean debugFlag) {
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		nvps.add(new BasicNameValuePair("request", updateText));
 		try {
-			myWebDataClient.execPost(svcUrl, nvps, true);
+			myWebDataClient.execPost(svcUrl, nvps, debugFlag);
 		} catch (Throwable t) {
 			getLogger().error("Caught Exception: ", t);
 		}

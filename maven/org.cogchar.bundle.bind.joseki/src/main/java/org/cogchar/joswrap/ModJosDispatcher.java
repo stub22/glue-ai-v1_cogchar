@@ -39,10 +39,17 @@ public class ModJosDispatcher {
 		return serviceRegistry;
 	}
 
+	public static void dispatchShortcut (String serviceURI, Request request, Response response) throws ExecutionException {
+		log.info("Start shortcut dispatch");
+		response.setOK();
+		response.sendResponse();
+		log.info("End shortcut dispatch");
+	}
 	//Dispatcher dispatcher = new Dispatcher() ;
 	// Stu added "synchronized" keyword to ensure we don't have overlapping update request processing.
 	// We are also relying on criticalSection of the LockMRSW below, not sure how that will 
 	public synchronized static void dispatch(final String serviceURI, Request request, Response response) throws ExecutionException {
+		
 		if (serviceRegistry == null) {
 			buildServiceRegistry();
 			if (serviceRegistry == null) {

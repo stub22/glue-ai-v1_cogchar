@@ -36,6 +36,15 @@ public class ServletUpdate extends Servlet
     @Override
     public void doPost(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {
+		// Skipping doCommon gets us under 0.03s average request processing, with full logging enabled (one
+		// log message per action), to file and screen, under Netbeans console.
+		// Disabling file logging and avoiding the screen print (by setting level to ERROR) gets us to 
+		//  0.005 sec = 200 xact per sec, even though client is still printing messages, and still sending
+		// us a full request blob.
+		//  When the shortcut is instead at the Dispatcher, our cost goes up only  to
+		//  0.006 sec = 160 xact per sec.
+		// So, the basic Jetty/PAX + Servlet-dispatch is working reasonably well.
+		// log.info("ignoring doPost()");
         doCommon(httpRequest, httpResponse) ;
     }
     

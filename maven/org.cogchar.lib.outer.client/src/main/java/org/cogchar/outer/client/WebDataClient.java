@@ -93,11 +93,14 @@ public class WebDataClient extends BasicDebugger {
 		HttpPost postReq = new HttpPost(postURL);
 		UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(nvps, HTTP.UTF_8);
 		postReq.setEntity(formEntity);
+		String rqSummary = "Posting [URL=" + postURL + "]";
 		if (debugFlag) {
+			rqSummary = rqSummary + ", pairs=[" + nvps + "]";
 			WebDataDumper.dumpRequestInfo(postReq, log);
 		}
-		String rqSummary = "Posting [URL=" + postURL + ", pairs=[" + nvps + "]]";
+		
 		HttpResponse response = httpCli.execute(postReq);
+		log.debug("HttpClient returned a response, now extracting");
 		String resultText = extractResponseEntityText(response, log, debugFlag, rqSummary);
 		if (debugFlag) {
 			WebDataDumper.dumpResponseInfo(response, rqSummary, resultText, log);

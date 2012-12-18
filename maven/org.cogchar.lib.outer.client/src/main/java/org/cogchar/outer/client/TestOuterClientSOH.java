@@ -66,7 +66,7 @@ public class TestOuterClientSOH extends BasicDebugger {
 		
 		// Here we write to a remote SPARQL repo, adding triples to it.  
 		// This writing can effectively "command" the system embedding that repo to take action.
-		myAgentRepoClient.execRemoteSparqlUpdate(glueUpdURL, glueUpSilly);
+		myAgentRepoClient.execRemoteSparqlUpdate(glueUpdURL, glueUpSilly, true);
 		// However, to see the effect of the action, we must monitor the state of the remote repo.
 		// By convention, our writes are restricted to contain only INSERT (not DELETE), except
 		// under special admin circumstances, under which we have less assurance of server 
