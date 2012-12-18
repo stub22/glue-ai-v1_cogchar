@@ -29,7 +29,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 	static float TEST_INIT_X = 30.0f, TEST_INIT_Y = 15.0f, TEST_INIT_Z = 10.0f;
 	public static void main(String[] args) {
 		TestRemoteBitBoxes tester = new TestRemoteBitBoxes();
-		tester.doBitBoxTest();
+		tester.doBitBoxTest(0);
 	}
 	public TestRemoteBitBoxes() {
 		forceLog4jConfig();
@@ -37,16 +37,16 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 	private static String goodyGraphQN = "ccrt:thing_sheet_22";
 	private static String boxBaseURI = "http://dummy.org/bitbox#num_";
 	
-	public void doBitBoxTest() {
+	public void doBitBoxTest(int outerLoopCount) {
 		Random ran = new Random();
 		Ident boxOneID = makeOneBitBox(ran, true);
-		for (int outer = 0; outer < 10; outer++) {
+		for (int outer = 0; outer < outerLoopCount; outer++) {
 			for (int i = 0; i < 100 ; i++) {
 				getLogger().info("Starting loop #" + outer + "." + i);
 				float disp = i / 10.0f;
 				updateGoodyLocation(boxOneID, TEST_INIT_X + disp, TEST_INIT_Y + disp, TEST_INIT_Z + disp, ran, false);
 			}
-		}		
+		}
 	}
 	public Ident makeOneBitBox(Random ran, boolean debugFlag) {
 		BasicTypedValueMap btvm = new ConcreteTVM();

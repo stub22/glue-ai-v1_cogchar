@@ -50,12 +50,16 @@ public class BitBox extends BasicGoodyImpl {
 		super(aRenderRegCli, boxUri);
 		//myLogger.info("Making a BitBox: size={}, position={}, state={}, URI={}", //TEST ONLY
 		//	new Object[]{size, initialPosition, boxState, boxUri.getAbsUriString()}); //TEST ONLY
-		if (size.equals(0f)) {
-			myLogger.warn("BitBox being created with zero size!");
-		} else if (size == null) {
+		if (size == null) {
 			myLogger.warn("No size specified for BitBox, defaulting to size = 1");
-			size = 1f;
-		}
+			size = 1.0f;
+		} else {
+			// Let's note that equality testing on floats is not, in general, reliable.
+			// http://stackoverflow.com/questions/1088216/whats-wrong-with-using-to-compare-floats-in-java
+			if (size.equals(0.0f)) {
+				myLogger.warn("BitBox being created with zero size!");
+			}
+		} 
 		setPositionAndRotation(initialPosition, initialRotation);
 		Mesh zeroMesh = new Torus(40,20,size/5,size*5/6);
 		Mesh oneMesh = new Cylinder(20, 20, size/5, size*2, true);
