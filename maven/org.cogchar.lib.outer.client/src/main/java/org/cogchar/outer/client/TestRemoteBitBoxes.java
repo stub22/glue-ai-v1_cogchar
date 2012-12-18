@@ -26,12 +26,10 @@ import org.cogchar.api.thing.TypedValueMap;
 public class TestRemoteBitBoxes  extends BasicDebugger {
 	AgentRepoClient	myAgentRepoClient = new AgentRepoClient();
 
+	static float TEST_INIT_X = 30.0f, TEST_INIT_Y = 15.0f, TEST_INIT_Z = 10.0f;
 	public static void main(String[] args) {
-		Random ran = new Random();
-		TestRemoteBitBoxes test = new TestRemoteBitBoxes();
-		Ident boxOneID = test.makeOneBitBox(ran);
-	//	test.updateGoodyLocation(boxOneID, 200.0f, 250.0f, 300.0f, ran);
-		
+		TestRemoteBitBoxes tester = new TestRemoteBitBoxes();
+		tester.doBitBoxTest();
 	}
 	public TestRemoteBitBoxes() {
 		forceLog4jConfig();
@@ -39,36 +37,47 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 	private static String goodyGraphQN = "ccrt:thing_sheet_22";
 	private static String boxBaseURI = "http://dummy.org/bitbox#num_";
 	
-	public Ident makeOneBitBox(Random ran) {
+	public void doBitBoxTest() {
+		Random ran = new Random();
+		Ident boxOneID = makeOneBitBox(ran, true);
+		for (int outer = 0; outer < 10; outer++) {
+			for (int i = 0; i < 100 ; i++) {
+				getLogger().info("Starting loop #" + outer + "." + i);
+				float disp = i / 10.0f;
+				updateGoodyLocation(boxOneID, TEST_INIT_X + disp, TEST_INIT_Y + disp, TEST_INIT_Z + disp, ran, false);
+			}
+		}		
+	}
+	public Ident makeOneBitBox(Random ran, boolean debugFlag) {
 		BasicTypedValueMap btvm = new ConcreteTVM();
 		GoodyActionParamWriter gapw = new GoodyActionParamWriter(btvm);
 		
-		gapw.putLocation(30.0f, 15.0f, 10.0f);
+		gapw.putLocation(TEST_INIT_X, TEST_INIT_Y, TEST_INIT_Z);
 		gapw.putRotation(1.0f, 1.0f, 1.0f, 10.0f);
 		gapw.putSize(4f, 0f, 0f);
 		
 		Ident dummyBoxID = new FreeIdent(boxBaseURI + System.currentTimeMillis());
 
-		sendBitBoxTAS(dummyBoxID, GoodyNames.CREATE_URI, btvm, ran);
+		sendBitBoxTAS(dummyBoxID, GoodyNames.CREATE_URI, btvm, ran, debugFlag);
 		return dummyBoxID;
 	}
-	public void updateGoodyLocation(Ident goodyID, float locX, float locY, float locZ, Random ran) {
+	public void updateGoodyLocation(Ident goodyID, float locX, float locY, float locZ, Random ran, boolean debugFlag) {
 		BasicTypedValueMap btvm = new ConcreteTVM();
 		GoodyActionParamWriter gapw = new GoodyActionParamWriter(btvm);
 		
 		gapw.putLocation(locX, locY, locZ);
 		
-		sendBitBoxTAS(goodyID, GoodyNames.MOVE_URI, btvm, ran);
+		sendBitBoxTAS(goodyID, GoodyNames.MOVE_URI, btvm, ran, debugFlag);
 	}
-	public void sendBitBoxTAS(Ident tgtThingID, Ident verbID, TypedValueMap paramTVMap, Random ran) {
+	public void sendBitBoxTAS(Ident tgtThingID, Ident verbID, TypedValueMap paramTVMap, Random ran, boolean debugFlag) {
 		Ident actRecID = new FreeIdent("action_#" + ran.nextInt());
 		Ident tgtThingTypeID = GoodyNames.TYPE_BIT_BOX;
 		Ident srcAgentID = null;
 		
 		BasicThingActionSpec btas = new BasicThingActionSpec(actRecID, tgtThingID, tgtThingTypeID, verbID, srcAgentID, paramTVMap);	
-		sendThingActionSpec(btas, ran);
+		sendThingActionSpec(btas, ran, debugFlag);
 	}
-	public void sendThingActionSpec(ThingActionSpec actionSpec, Random ran) {
+	public void sendThingActionSpec(ThingActionSpec actionSpec, Random ran, boolean debugFlag) {
 		Logger log = getLogger();
 		log.info("Sending action spec: " + actionSpec);
 
@@ -76,6 +85,6 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		String updateTxt = ftmw.writeTASpecToString(actionSpec, goodyGraphQN, ran);
 		
 		// logInfo("UpdateTxt:\n" + updateTxt);
-		myAgentRepoClient.execRemoteSparqlUpdate(TestOuterClientSOH.glueUpdURL, updateTxt);
+		myAgentRepoClient.execRemoteSparqlUpdate(TestOuterClientSOH.glueUpdURL, updateTxt, debugFlag);
 	}
 }

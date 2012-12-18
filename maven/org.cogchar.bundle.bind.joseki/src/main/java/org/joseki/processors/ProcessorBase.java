@@ -25,6 +25,9 @@ import com.hp.hpl.jena.query.Dataset;
 
 public abstract class ProcessorBase implements Processor
 {
+	public static boolean stusLockingEnabledFlag = true;
+	public static boolean stusTransactEnabledFlag = true;
+	
     private static final Logger log = LoggerFactory.getLogger(ProcessorBase.class) ; 
     Lock lock = new LockMutex() ;   // Default and safe choice
     
@@ -49,7 +52,7 @@ public abstract class ProcessorBase implements Processor
             thisLock = dataset.getLock() ;
             // Transactions - if and only if there is a default model supporting transactions
             defaultModel = dataset.getDefaultModel() ;
-            transactions = defaultModel.supportsTransactions() ;
+            transactions = defaultModel.supportsTransactions() && stusTransactEnabledFlag ;
         }
         
 //        if ( datasetDesc != null && datasetDesc.getDataset() != null )
@@ -65,12 +68,16 @@ public abstract class ProcessorBase implements Processor
         boolean needAbort = false ;     // Need to clear up?
         
         // -- Add callbacks
-        operationLock.enterCriticalSection(lockType) ;
+		if (stusLockingEnabledFlag) {
+	        operationLock.enterCriticalSection(lockType) ;		
+		}
         ResponseCallback cbLock = new ResponseCallback() {
             public void callback(boolean successfulOperation)
             {
                 log.debug("ResponseCallback: criticalSection") ;
-                operationLock.leaveCriticalSection() ;
+				if (stusLockingEnabledFlag) {
+	                operationLock.leaveCriticalSection() ;
+				}
             }} ;
         response.addCallback(cbLock) ;
         
@@ -122,7 +129,9 @@ public abstract class ProcessorBase implements Processor
 			// 2012-11-17   Stu uncommented this, since it appears that exceptions above leave Joseki hung
 			// on next update attempt.
 			log.warn("*********************** Leaving critical section from exception handler, using code uncommented by Stu!");
-          operationLock.leaveCriticalSection() ;
+			if (stusLockingEnabledFlag) {
+		          operationLock.leaveCriticalSection() ;
+			}
             throw ex ; 
         }
         // These should have been caught.
