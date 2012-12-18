@@ -211,8 +211,12 @@ public class BasicGoodyImpl extends BasicGoody {
 	}
 
 	public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation) {
-		myPosition = newPosition;
-		myRotation = newRotation;
+		if (newPosition != null) {
+			myPosition = newPosition;
+		}
+		if (newRotation != null) {
+			myRotation = newRotation;
+		}
 		if (attachedIndex != NULL_INDEX) {
 			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 
@@ -269,13 +273,14 @@ public class BasicGoodyImpl extends BasicGoody {
 		switch (ga.getKind()) {
 			case MOVE : {
 				Vector3f newLocation = ga.getLocationVector();
-				float timeEnroute = ga.getTravelTime();
-				if (timeEnroute == 0f) {
-					setPosition(newLocation);
+				Quaternion newRotation = ga.getRotationQuaternion();
+				Float timeEnroute = ga.getTravelTime();
+				if ((timeEnroute == null) || (timeEnroute.equals(0f))) {
+					setPositionAndRotation(newLocation, newRotation);
 				} else {
+					// Shortly will also add rotation
 					translateToPosition(newLocation, timeEnroute);
 				}
-				// Shortly will also add rotation
 				break;
 			}
 			default: {

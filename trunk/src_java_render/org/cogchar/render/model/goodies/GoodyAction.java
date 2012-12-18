@@ -90,48 +90,61 @@ public class GoodyAction  {
 	/**
 	 * Example of actual application data read from spec, into an application specific type.
 	 * Will be generalized to use for "goal location", "direction", etc.
+	 * Returns null if any of the components in the TVMap are unspecified
 	 * @return 
 	 */
 	public Vector3f getLocationVector() {
-		float locX = paramTVMap.getAsFloat(GoodyNames.LOCATION_X);
-		float locY = paramTVMap.getAsFloat(GoodyNames.LOCATION_Y);
-		float locZ = paramTVMap.getAsFloat(GoodyNames.LOCATION_Z);
-		Vector3f resultVec = new Vector3f(locX, locY, locZ);
-		// Read LocX, LocY, LocZ from some assumed properties.
+		Vector3f resultVec = null;
+		try {
+			// Read LocX, LocY, LocZ from some assumed properties.
+			float locX = paramTVMap.getAsFloat(GoodyNames.LOCATION_X);
+			float locY = paramTVMap.getAsFloat(GoodyNames.LOCATION_Y);
+			float locZ = paramTVMap.getAsFloat(GoodyNames.LOCATION_Z);
+			resultVec = new Vector3f(locX, locY, locZ);
+		} catch (Exception e) {
+			// Just leave resultVec null if the try fails
+		}
 		return resultVec;
 	}
 	/**
 	 * Here is a harder one.
 	 * Read rotation axis AxisX, AxisY, AxisZ and magDegrees from some assumed properties,
 	 * and produce a Quaternion.   Will also be generalized later.
+	 * Returns null if any of the components in the TVMap are unspecified
 	 * @return rotational operator quaternion object encoding
 	 */
 	public Quaternion getRotationQuaternion() {
-		float rotX = paramTVMap.getAsFloat(GoodyNames.ROTATION_AXIS_X);
-		float rotY = paramTVMap.getAsFloat(GoodyNames.ROTATION_AXIS_Y);
-		float rotZ = paramTVMap.getAsFloat(GoodyNames.ROTATION_AXIS_Z);
-		float rotMag = paramTVMap.getAsFloat(GoodyNames.ROTATION_MAG_DEG)*(float)Math.PI/180f;
-		Quaternion resultQuat = new Quaternion().fromAngleAxis(rotMag, new Vector3f(rotX, rotY, rotZ));
+		Quaternion resultQuat = null;
+		try {
+			float rotX = paramTVMap.getAsFloat(GoodyNames.ROTATION_AXIS_X);
+			float rotY = paramTVMap.getAsFloat(GoodyNames.ROTATION_AXIS_Y);
+			float rotZ = paramTVMap.getAsFloat(GoodyNames.ROTATION_AXIS_Z);
+			float rotMag = paramTVMap.getAsFloat(GoodyNames.ROTATION_MAG_DEG)*(float)Math.PI/180f;
+			resultQuat = new Quaternion().fromAngleAxis(rotMag, new Vector3f(rotX, rotY, rotZ));	
+		} catch (Exception e) {
+			// Just leave resultQuat null if the try fails
+		}
 		return resultQuat;
 	}
 	
 	// Still figuring this one out; right now assuming size may have up to three components, but sometimes fewer
-	public float[] getSize() {
-		float sizeX = paramTVMap.getAsFloat(GoodyNames.SIZE_X);
-		float sizeY = paramTVMap.getAsFloat(GoodyNames.SIZE_Y);
-		float sizeZ = paramTVMap.getAsFloat(GoodyNames.SIZE_Z);
-		float[] sizes = {sizeX, sizeY, sizeZ};
+	// Must be type Float[], not float[], since we pass null references on independently for the components
+	public Float[] getSize() {
+		Float sizeX = paramTVMap.getAsFloat(GoodyNames.SIZE_X);
+		Float sizeY = paramTVMap.getAsFloat(GoodyNames.SIZE_Y);
+		Float sizeZ = paramTVMap.getAsFloat(GoodyNames.SIZE_Z);
+		Float[] sizes = {sizeX, sizeY, sizeZ};
 		return sizes;
 	}
 	
 	// With the advent of 2D goodies, this seems like it will be needed often enough to warrant its own method:
-	public float getTextSize() {
+	public Float getTextSize() {
 		return paramTVMap.getAsFloat(GoodyNames.TEXT_SIZE);
 	}
 	
 	// May not need its own method, but since a speed of action may be a common feature of GoodyActions, let's
 	// assume for now it makes sense to get speed this way instead of with getSpecialString
-	public float getTravelTime() {
+	public Float getTravelTime() {
 		return paramTVMap.getAsFloat(GoodyNames.TRAVEL_TIME);
 	}
 	
