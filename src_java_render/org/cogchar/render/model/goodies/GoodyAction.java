@@ -33,10 +33,10 @@ public class GoodyAction  {
 	// We can optionallly play a game of equivalence between Java-enum-constant and URI, without an additional hashMap.
 	// The price is that we must initialize the value in the enum constants.
 	public enum Kind {
-		CREATE(GoodyNames.CREATE_URI.getAbsUriString()),
-		DELETE(GoodyNames.DELETE_URI.getAbsUriString()),
-		MOVE(GoodyNames.MOVE_URI.getAbsUriString()),
-		SET(GoodyNames.SET_URI.getAbsUriString());
+		CREATE(GoodyNames.ACTION_CREATE.getAbsUriString()),
+		DELETE(GoodyNames.ACTION_DELETE.getAbsUriString()),
+		MOVE(GoodyNames.ACTION_MOVE.getAbsUriString()),
+		SET(GoodyNames.ACTION_SET.getAbsUriString());
 		
 		public	String myKindUriString;
 		
