@@ -21,7 +21,6 @@ package org.cogchar.nbui.render;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -35,6 +34,7 @@ import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.registry.ResourceFileCategory;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 
@@ -42,8 +42,6 @@ import org.cogchar.platform.util.ClassLoaderUtils;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.robokind.api.motion.Robot;
 
 import org.slf4j.Logger;
@@ -91,6 +89,15 @@ public final class VirtualCharTopComponent extends TopComponent {
             }
 			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM,
 							resourceLoaders);
+		}
+        
+		@Override public List<ClassLoader> getExtraResFileCLsForCat(ResourceFileCategory cat) {
+            BundleContext context = OSGiUtils.getBundleContext(PumaBooter.class);
+            if(context == null){
+                return new ArrayList<ClassLoader>();
+            }
+            return ClassLoaderUtils.getFileResourceClassLoaders(
+                    context, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
 		}
 
 		@Override public boolean getFlagAllowJFrames() {
