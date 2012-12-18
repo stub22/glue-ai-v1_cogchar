@@ -154,8 +154,8 @@ class FancyThingModelWriter extends BasicDebugger {
 		m.add(actThingTypeStmt)
 		
 		writeParamsUsingWeakConvention(mci, actionSpecRes, tvm, ran)
-		println("thingRes=" + thingRes)
-		println("model after write=" + m)
+		// println("thingRes=" + thingRes)
+		// println("model after write=" + m)
 		m;
 	}
 	import java.io.ByteArrayOutputStream;	

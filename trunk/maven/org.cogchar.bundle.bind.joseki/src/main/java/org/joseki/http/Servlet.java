@@ -140,7 +140,7 @@ public class Servlet extends HttpServlet
         doCommon(httpRequest, httpResponse) ;
     }
         
-        
+	// Stu notes:  With logging turned off, and dispatch() method disabled, this method takes about 0.001 sec.
     protected void doCommon(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {
         try {
@@ -163,7 +163,7 @@ public class Servlet extends HttpServlet
             serviceURI = Service.canonical(serviceURI) ;
             
             String sender = httpRequest.getRemoteAddr() ; 
-            log.info("Request: "+httpRequest.getRequestURL().toString()) ;
+            log.info("Request [from " + sender + "] : "+httpRequest.getRequestURL().toString()) ;
             log.info("Service URI = <"+serviceURI+">") ;
             
             // MIME-Type
