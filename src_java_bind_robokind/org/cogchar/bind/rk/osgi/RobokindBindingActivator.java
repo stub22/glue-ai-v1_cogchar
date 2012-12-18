@@ -17,7 +17,6 @@
 package org.cogchar.bind.rk.osgi;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.cogchar.bind.rk.aniconv.AnimationTrimmer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.osgi.framework.BundleContext;
@@ -33,10 +32,7 @@ public class RobokindBindingActivator extends BundleActivatorBase {
 	}
     @Override public void start(BundleContext context) throws Exception {
 		// We assume some other bundle has configured SLF4J for us.
-		super.start(context);	
-//        AnimationTrimmer.trimAnimation(
-//                "/home/matt/dev/com_prj/rk_content/content/animations/zeno_R50_A04_20120707/AZR50_Cheer_FistPump_01_baked.anim", 
-//                "/home/matt/dev/com_prj/rk_content/content/animations/zeno_R50_A04_20120707/AZR50_Cheer_FistPump_01_baked.trim.anim");
+		super.start(context);
 	}
 	@Override public void stop(BundleContext context) throws Exception {
 		super.stop(context);	

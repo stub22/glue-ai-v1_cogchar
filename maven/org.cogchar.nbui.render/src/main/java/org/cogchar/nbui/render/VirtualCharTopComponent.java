@@ -16,13 +16,13 @@
 
 package org.cogchar.nbui.render;
 
-import java.io.File;
-import java.util.Properties;
 
+
+
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-
-
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -34,14 +34,16 @@ import org.robokind.api.common.osgi.OSGiUtils;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
-import org.cogchar.app.puma.cgchr.PumaDualCharacter;
 import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 
+import org.cogchar.platform.util.ClassLoaderUtils;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.robokind.api.motion.Robot;
 
 import org.slf4j.Logger;
@@ -79,9 +81,16 @@ public final class VirtualCharTopComponent extends TopComponent {
 		int   DFLT_DIRECTORY_SHEET_NUM = 8;
 		
 		@Override public RepoSpec getMainConfigRepoSpec() {
-			java.util.List<ClassLoader> fileResModelCLs = new java.util.ArrayList<ClassLoader>();
+            List<ClassLoader> resourceLoaders;
+            BundleContext context = OSGiUtils.getBundleContext(PumaBooter.class);
+            if(context == null){
+                resourceLoaders = new ArrayList<ClassLoader>();
+            }else{
+                resourceLoaders = ClassLoaderUtils.getFileResourceClassLoaders(
+                        context, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
+            }
 			return new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM,
-							fileResModelCLs);
+							resourceLoaders);
 		}
 
 		@Override public boolean getFlagAllowJFrames() {
