@@ -61,17 +61,19 @@ public class RobotServiceFuncs {
 	
 	
     public static <Param> void startJointGroup(
-            BundleContext bundleCtx, Robot robot, Param jointGroupConfigParam){
+            BundleContext bundleCtx, Robot robot, 
+            Param jointGroupConfigParam, Class<Param> paramClass){
 		Robot.Id robotId = robot.getRobotId();
-		startJointGroup(bundleCtx, robotId, jointGroupConfigParam);
+		startJointGroup(bundleCtx, robotId, jointGroupConfigParam, paramClass);
 	}
-    public static <Param> void startJointGroup(BundleContext bundleCtx, 
-            Robot.Id robotId, Param jointGroupConfigParam){
+    public static <Param> void startJointGroup(
+            BundleContext bundleCtx, Robot.Id robotId, 
+            Param jointGroupConfigParam, Class<Param> paramClass){
         String paramId = formatJointGroupParamId(robotId.getRobtIdString());
         Configuration<String> jgSvcConf = 
                 getValue(Configuration.class, SVCCONF_ROBOT_JOINTGROUP);
-        launchJointGroupLifecycle(bundleCtx, robotId, paramId, jgSvcConf);
-        launchJointGroupConfig(bundleCtx, jointGroupConfigParam, paramId, jgSvcConf);
+        launchJointGroupLifecycle(bundleCtx, robotId, paramClass, paramId, jgSvcConf);
+        launchJointGroupConfig(bundleCtx, jointGroupConfigParam, paramClass, paramId, jgSvcConf);
     }
     
     private static String formatJointGroupParamId(String robotId){
@@ -80,13 +82,14 @@ public class RobotServiceFuncs {
     }
     
     private static OSGiComponent launchJointGroupLifecycle(
-            BundleContext bundleCtx, Robot.Id robotId, 
-            String configFileId, Configuration<String> jgSvcConf){
+            BundleContext bundleCtx, Robot.Id robotId,
+            Class paramClass, String configParamId, 
+            Configuration<String> jgSvcConf){
         RobotJointGroupLifecycle lifecycle =
                 new RobotJointGroupLifecycle(
                         robotId, 
-                        get(Class.class, jgSvcConf, CONF_PARAM_CLASS), 
-                        configFileId, 
+                        paramClass, 
+                        configParamId, 
                         get(VersionProperty.class, 
                                 jgSvcConf, CONF_CONFIG_READER_VERSION));
         OSGiComponent jointGroupComp = new OSGiComponent(bundleCtx, lifecycle);
@@ -97,17 +100,16 @@ public class RobotServiceFuncs {
     
     private static <Param> OSGiComponent launchJointGroupConfig(
             BundleContext context, Param jointGroupConfigParam, 
-            String configFileId, Configuration<String> jgSvcConf){
+            Class<Param> paramClass, String configParamId, 
+            Configuration<String> jgSvcConf){
         Properties props = new Properties();
-        props.put(Constants.CONFIG_PARAM_ID, configFileId);
+        props.put(Constants.CONFIG_PARAM_ID, configParamId);
         props.put(Constants.CONFIG_FORMAT_VERSION, 
                 get(VersionProperty.class, jgSvcConf, 
                         CONF_CONFIG_READER_VERSION).toString());
         
         ServiceLifecycleProvider lifecycle = new SimpleLifecycle(
-                jointGroupConfigParam, 
-                get(Class.class, jgSvcConf, CONF_PARAM_CLASS), 
-                props);
+                jointGroupConfigParam, paramClass, props);
         OSGiComponent paramComp = new OSGiComponent(context, lifecycle);
         paramComp.start();
 		startedJointGroupConfigs.add(paramComp);
