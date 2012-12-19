@@ -16,6 +16,7 @@
 package org.cogchar.bind.rk.robot.svc;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.*;
 import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
@@ -88,7 +89,11 @@ public class RobotServiceContext<R extends Robot> extends BasicDebugger {
 	}
 	public void startJointGroup(File jointGroupConfigXML_file) { 
 		RobotServiceFuncs.startJointGroup(
-                myBundleCtx, myRobot, jointGroupConfigXML_file);
+                myBundleCtx, myRobot, jointGroupConfigXML_file, File.class);
+	}
+	public void startJointGroup(InputStream jointGroupConfigXML_stream) { 
+		RobotServiceFuncs.startJointGroup(
+                myBundleCtx, myRobot, jointGroupConfigXML_stream, InputStream.class);
 	}
 	
 	public static void clearRobots() {
