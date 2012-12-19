@@ -118,7 +118,9 @@ public abstract class CogcharPresumedApp<CRCT extends CogcharRenderContext> exte
 
 	@Override public void simpleInitApp() {
 		CRCT crc = getRenderContext();
+		
 		crc.setAppStub(this);
+
 		super.simpleInitApp();
 	}
 

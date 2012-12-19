@@ -25,6 +25,8 @@ import com.jme3.light.Light;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import org.cogchar.platform.task.CallableTask;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.sys.asset.AssetContext;
@@ -148,6 +150,7 @@ public abstract class BasicRenderContext extends BasicRenderRegistryClientFinder
 	 * Override this method to place your *initial* content into our context's OpenGL virtual world.
 	 */
 	abstract public void postInitLaunch();
+	abstract public Future<Object> enqueueCallable(Callable callThis);
 
 	public void runPostInitLaunchOnJmeThread() throws Throwable {
 		CallableTask ct = new BasicCallableRenderTask(this) {
@@ -159,6 +162,4 @@ public abstract class BasicRenderContext extends BasicRenderRegistryClientFinder
 		};
 		runTaskSafelyUntilComplete(ct);
 	}
-
-
 }
