@@ -108,11 +108,6 @@ public final class VirtualCharTopComponent extends TopComponent {
 			return Installer.getVirtcharNBClusterDir();
 		}
 		@Override public String getSysContextRootURI() {	
-		// Our sysContextURI is still hardcoded here, but by starting with "NB" we tell our (still stubbed out)
-		// config system that we are running under Netbeans Platform GUI (implying Netigso), so, only
-		// Robokind-Workshop-friendly features should be activated.  
-		// String dualCharURI = "urn:org.cogchar/platform/nb701?charName=HRK_Zeno_R50&version=20120302";    			
-			// return  "NBURI:huzzah";
 			return super.getSysContextRootURI();
 		}
 		@Override public void notifyContextBuilt(PumaAppContext pac) throws Throwable { 
