@@ -54,9 +54,7 @@ public class BitBox extends BasicGoodyImpl {
 			myLogger.warn("No size specified for BitBox, defaulting to size = 1");
 			size = 1.0f;
 		} else {
-			// Let's note that equality testing on floats is not, in general, reliable.
-			// http://stackoverflow.com/questions/1088216/whats-wrong-with-using-to-compare-floats-in-java
-			if (size.equals(0.0f)) {
+			if (Math.abs(size - 0.0f) < 0.001f) {
 				myLogger.warn("BitBox being created with zero size!");
 			}
 		} 
@@ -98,6 +96,8 @@ public class BitBox extends BasicGoodyImpl {
 	
 	@Override
 	public void applyAction(GoodyAction ga) {
+		super.applyAction(ga); // Applies "standard" set and move actions
+		// Now we act on anything else that won't be handled by BasicGoodyImpl but which has valid non-null parameters
 		switch (ga.getKind()) {
 			case SET : {
 				String stateString = ga.getSpecialString(GoodyNames.BOOLEAN_STATE);
@@ -110,7 +110,6 @@ public class BitBox extends BasicGoodyImpl {
 				}
 				break;
 			}
-			default: super.applyAction(ga);
 		}
 	}
 	

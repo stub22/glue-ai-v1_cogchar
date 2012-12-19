@@ -32,7 +32,7 @@ import org.appdapter.help.repo.SolutionHelper;
  */
 public class CinematicInstanceConfig extends QueryBackedConfigBase {
 
-	public String myURI_Fragment;
+	public Ident myUri;
 	public float duration;
 	public List<CinematicTrack> myTracks = new ArrayList<CinematicTrack>();
 	// private static final ItemAssemblyReader reader = new ItemAssemblyReaderImpl();
@@ -41,25 +41,35 @@ public class CinematicInstanceConfig extends QueryBackedConfigBase {
 
 	@Override
 	public String toString() {
-		return "CinematicInstanceConfig[uriFrag = " + myURI_Fragment + ", duration = " + Float.toString(duration) + ", Number of tracks = " + Integer.toString(myTracks.size());
+		return "CinematicInstanceConfig[uriFrag = " + myUri.getAbsUriString() + ", duration = " + Float.toString(duration) + 
+				", Number of tracks = " + Integer.toString(myTracks.size());
 	}
-
-	// TODO
 	
 	// A new constructor to build CinematicConfig from query results
 	public CinematicInstanceConfig(RepoClient qi, Solution querySolution, Ident qGraph) {
 		super(qi);
 		SolutionHelper sh = new SolutionHelper();
-		Ident myIdent = sh.pullIdent(querySolution, CinemaCN.CINEMATIC_VAR_NAME);
-		myURI_Fragment = myIdent.getLocalName();
+		myUri = sh.pullIdent(querySolution, CinemaCN.CINEMATIC_VAR_NAME);
 		duration = sh.pullFloat(querySolution, CinemaCN.DURATION_VAR_NAME, Float.NaN);
 		SolutionList solutionList = qi.queryIndirectForAllSolutions(CinemaCN.TRACKS_QUERY_TEMPLATE_URI, qGraph, 
-							CinemaCN.CINEMATIC_QUERY_VAR_NAME, myIdent);
+							CinemaCN.CINEMATIC_QUERY_VAR_NAME, myUri);
 
 		List<Ident> trackIdentList = sh.pullIdentsAsJava(solutionList, CinemaCN.TRACK_VAR_NAME);
 		for (Ident trackIdent : trackIdentList) {
 			myTracks.add(new CinematicTrack(trackIdent));
 		}
+	}
+	
+	// For use by goodies in generating cinematics for MOVE actions. We set the QueryBackedConfigBase RepoClient to 
+	// null, which is a little ugly, but appropriate for this application of CinematicInstanceConfig
+	public CinematicInstanceConfig(Ident newUri) {
+		super(null);
+		myUri = newUri;
+	}
+	
+	// You'll see this a lot; probably should be refactored into superclass
+	public String getName() {
+		return myUri.getLocalName();
 	}
 	
 	/* Depreciated 5 Dec 2012 by Ryan -- no way to read attachedItem Ident in CinematicTrack via assembler

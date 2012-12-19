@@ -34,7 +34,7 @@ import org.appdapter.help.repo.SolutionHelper;
  */
 public class CinematicTrack extends BasicDebugger {
 
-	public String trackName;
+	public Ident myUri;
 	public Ident attachedItem;
 	public AttachedItemType attachedItemType = AttachedItemType.NULLTYPE;
 	public TrackType trackType = TrackType.NULLTYPE;
@@ -51,7 +51,7 @@ public class CinematicTrack extends BasicDebugger {
 
 	@Override
 	public String toString() {
-		return "CinematicTrack = " + trackName + ", type = " + trackType.name() + ", Attached Item = " + attachedItem + "]";
+		return "CinematicTrack = " + myUri.getAbsUriString() + ", type = " + trackType.name() + ", Attached Item = " + attachedItem + "]";
 	}
 
 	// This constructor is called from within CinematicTrackInstance to correspond to Turtle configured usages of "named" tracks within CinematicTrackInstances
@@ -59,14 +59,13 @@ public class CinematicTrack extends BasicDebugger {
 	// Named entities. (Same for waypoints and rotations.) We're moving away from this with the spreadsheet config, and can
 	// simplify / clean up things if we decide we're permanently doing away with the inline definitions
 	public CinematicTrack(Ident trackIdent) {
-		trackName = trackIdent.getLocalName();
+		myUri = trackIdent;
 	}
 
 	// Called from CinematicConfig, corresponds to a "named" track definition
 	public CinematicTrack(RepoClient qi, Solution solution, Ident qGraph) {
 		SolutionHelper sh = new SolutionHelper();
-		Ident myIdent = sh.pullIdent(solution, CinemaCN.TRACK_VAR_NAME);
-		trackName = myIdent.getLocalName();
+		myUri = sh.pullIdent(solution, CinemaCN.TRACK_VAR_NAME);
 		attachedItem = sh.pullIdent(solution, CinemaCN.ATTACHED_ITEM_VAR_NAME);
 		String typeString = sh.pullIdent(solution, CinemaCN.ATTACHED_ITEM_TYPE_VAR_NAME).getLocalName().toUpperCase();
 		for (AttachedItemType testType : AttachedItemType.values()) {
@@ -90,7 +89,7 @@ public class CinematicTrack extends BasicDebugger {
 		startTime = sh.pullFloat(solution, CinemaCN.START_TIME_VAR_NAME, 0f);
 		trackDuration = sh.pullFloat(solution, CinemaCN.DURATION_VAR_NAME, 0f);
 		SolutionList solutionList  = qi.queryIndirectForAllSolutions(CinemaCN.WAYPOINTS_QUERY_TEMPLATE_URI, qGraph, 
-					CinemaCN.TRACK_QUERY_VAR_NAME, myIdent);
+					CinemaCN.TRACK_QUERY_VAR_NAME, myUri);
 		List<Ident> waypointIdentList = sh.pullIdentsAsJava(solutionList, CinemaCN.WAYPOINT_VAR_NAME);
 		for (Ident waypointIdent : waypointIdentList) {
 			waypoints.add(new WaypointConfig(waypointIdent));
@@ -99,6 +98,11 @@ public class CinematicTrack extends BasicDebugger {
 		if (rotationIdent != null) {
 			endRotation = new RotationConfig(rotationIdent);
 		}
+	}
+	
+	// You'll see this a lot; probably should be refactored into superclass
+	public String getName() {
+		return myUri.getLocalName();
 	}
 	
 	/* Depreciated 5 Dec 2012 by Ryan -- no way to read attachedItem Ident via assembler
