@@ -34,6 +34,7 @@ import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
@@ -140,6 +141,9 @@ public final class VirtualCharTopComponent extends TopComponent {
 		// Currently we are not going through the PumaGlobalPrebootInjector, so there is 
 		// no chance for customers to override the mediator in this particular form.
 		NbuiContextMediator mediator = new NbuiContextMediator();
+        
+		PumaGlobalPrebootInjector injector = PumaGlobalPrebootInjector.getTheInjector();
+		injector.setMediator(mediator, true);
 		PumaBooter booter = new PumaBooter();		
 		PumaBooter.BootResult bootResult = booter.bootUnderOSGi(bundleCtx, mediator);
 
