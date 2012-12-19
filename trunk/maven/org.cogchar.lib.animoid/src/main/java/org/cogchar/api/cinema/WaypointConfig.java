@@ -22,6 +22,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
+//import com.jme3.math.Vector3f; // Not available here
 
 
 /**
@@ -30,12 +31,13 @@ import org.appdapter.help.repo.SolutionHelper;
  */
 public class WaypointConfig {
 
-	public String waypointName;
-	public float[] waypointCoordinates = {Float.NaN, Float.NaN, Float.NaN};
+	public Ident myUri;
+	public float[] myCoordinates = {Float.NaN, Float.NaN, Float.NaN};
+	//public Vector3f myCoordinates; // This would likely be better, but can't do that in lib.animoid without adding dependencies -- does this package really belong here?
 
 	@Override
 	public String toString() {
-		return "WaypointConfig = " + waypointName + ", position = " + Arrays.toString(waypointCoordinates);
+		return "WaypointConfig = " + myUri.getAbsUriString() + ", position = " + Arrays.toString(myCoordinates);
 	}
 
 	// This constructor is called from within CinematicTrack to correspond to Turtle configured usages of "named" waypoints within CinematicTracks
@@ -43,19 +45,30 @@ public class WaypointConfig {
 	// Named entities. (Same for tracks and rotations.) We're moving away from this with the spreadsheet config, and can
 	// simplify / clean up things if we decide we're permanently doing away with the inline definitions
 	public WaypointConfig(Ident ident) {
-		waypointName = ident.getLocalName();
+		myUri = ident;
+	}
+	
+	// For use by goodies in generating cinematics for MOVE actions. Would like to modify this to use Vector3f eventually
+	public WaypointConfig(Ident ident, float[] waypointVector) {
+		this(ident);
+		myCoordinates = waypointVector;
 	}
 
 	// Called from CinematicConfig, corresponds to a "named" waypoint definition
 	public WaypointConfig(RepoClient qi, Solution solution) {
 		SolutionHelper sh = new SolutionHelper();
-		Ident myIdent = sh.pullIdent(solution, CinemaCN.WAYPOINT_VAR_NAME);
-		waypointName = myIdent.getLocalName();
-		for (int index = 0; index < waypointCoordinates.length; index++) {
-			waypointCoordinates[index] = sh.pullFloat(solution, CinemaCN.POSITION_VAR_NAME[index], Float.NaN);
+		myUri = sh.pullIdent(solution, CinemaCN.WAYPOINT_VAR_NAME);
+		for (int index = 0; index < myCoordinates.length; index++) {
+			myCoordinates[index] = sh.pullFloat(solution, CinemaCN.POSITION_VAR_NAME[index], Float.NaN);
 		}
 	}
+	
+	// You'll see this a lot; probably should be refactored into superclass
+	public String getName() {
+		return myUri.getLocalName();
+	}
 
+	/* Depreciated assembler-based constructor; removed since we're now "naming" waypoints by URI instead of string
 	public WaypointConfig(Item configItem) {
 		// If this waypoint has no name, it's likely an unnamed waypoint defined in-line with a track definition...
 		waypointName = ItemFuncs.getString(configItem, CinemaAN.P_waypointName, CinemaAN.unnamedWaypointName);
@@ -67,8 +80,9 @@ public class WaypointConfig {
 		if (waypointLocalName.startsWith(CinemaAN.P_namedWaypoint)) {
 			waypointName = waypointLocalName;
 		}
-		for (int index = 0; index < waypointCoordinates.length; index++) {
-			waypointCoordinates[index] = ItemFuncs.getDouble(configItem, CinemaAN.P_position[index], Double.NaN).floatValue();
+		for (int index = 0; index < myCoordinates.length; index++) {
+			myCoordinates[index] = ItemFuncs.getDouble(configItem, CinemaAN.P_position[index], Double.NaN).floatValue();
 		}
 	}
+	*/
 }

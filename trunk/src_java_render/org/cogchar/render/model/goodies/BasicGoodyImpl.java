@@ -16,6 +16,7 @@
 
 package org.cogchar.render.model.goodies;
 
+import com.jme3.animation.LoopMode;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.cinematic.MotionPath;
@@ -30,7 +31,10 @@ import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.cinema.*;
+import org.cogchar.render.opengl.scene.CinematicMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
@@ -256,30 +260,80 @@ public class BasicGoodyImpl extends BasicGoody {
 		MotionPath path = new MotionPath();
 		path.addWayPoint(myPosition);
 		path.addWayPoint(newPosition);
+		//path.setCurveTension(0.0f);
 		// MotionTrack is depreciated in new jMonkey, but we must use it since we're using an older version:
 		MotionTrack event = new MotionTrack(myGeometries.get(attachedIndex).getJmeGeometry(), path);
 		// Current jMonkey uses this instead:
 		//MotionEvent event = new MotionEvent(myGeometries.get(attachedIndex).getJmeGeometry(), path);
 		event.setSpeed(SPEED_TRIM_FACTOR);
+		event.setDirectionType(MotionTrack.Direction.None);
 		event.setInitialDuration(timeEnroute);
 		event.play();
 		myPosition = newPosition;
 	}
+	
+	// In somewhat ugly fashion, we build a CinematicInstanceConfig for the move operation
+	// Likely can be improved
+	// Currently rotations and timing need some work
+	private void moveViaCinematic(Vector3f newPosition, Quaternion newOrientation, float duration) {
+		Quaternion totalRotation = newOrientation.mult(myGeometries.get(attachedIndex).myRotationOffset);
+		Ident endWaypointUri = makeIdentForLocalCinematicEntity("MoveEndPoint");
+		Ident endRotationUri = makeIdentForLocalCinematicEntity("MoveEndRotation");
+		Ident motionTrackUri = makeIdentForLocalCinematicEntity("MoveTranslation");
+		Ident rotationTrackUri = makeIdentForLocalCinematicEntity("MoveRotation");
+		Ident moveCinematicUri = makeIdentForLocalCinematicEntity("MoveCinematic");
+		WaypointConfig endWaypoint = new WaypointConfig(endWaypointUri, newPosition.toArray(new float[3]));
+		RotationConfig endRotation = new RotationConfig(endRotationUri, totalRotation.toAngles(new float[3]));
+		CinematicTrack motionTrack = new CinematicTrack(motionTrackUri);
+		setBasicCinematicTrackProperties(motionTrack, duration);
+		motionTrack.trackType = CinematicTrack.TrackType.POSITIONTRACK;
+		motionTrack.waypoints.add(endWaypoint);
+		CinematicTrack rotationTrack = new CinematicTrack(rotationTrackUri);
+		setBasicCinematicTrackProperties(rotationTrack, duration);
+		rotationTrack.trackType = CinematicTrack.TrackType.ROTATIONTRACK;
+		rotationTrack.endRotation = endRotation;
+		CinematicInstanceConfig moveCinematic = new CinematicInstanceConfig(moveCinematicUri);
+		moveCinematic.duration = duration;
+		moveCinematic.myTracks.add(motionTrack);
+		moveCinematic.myTracks.add(rotationTrack);
+		CinematicMgr cineMgr = myRenderRegCli.getSceneCinematicsFacade(null);
+		cineMgr.buildCinematic(moveCinematic);
+		cineMgr.controlCinematicByName(moveCinematic.getName(), CinematicMgr.ControlAction.PLAY);
+		myPosition = newPosition;
+		myRotation = newOrientation;
+	}
+	
+	private Ident makeIdentForLocalCinematicEntity(String uriSuffix) {
+		String uriPrefixString = CinemaCN.CCRT + myUri.getLocalName();
+		return new FreeIdent(uriPrefixString + uriSuffix);
+	}
+	
+	private void setBasicCinematicTrackProperties(CinematicTrack track, float duration) {
+		track.attachedItem = myUri;
+		track.attachedItemType = CinematicTrack.AttachedItemType.GOODY;
+		track.trackDuration = duration;
+		track.startTime = 0.0f;
+		track.loopMode = "DontLoop";
+	}
 
-	// Override this method to add functionality; be sure to call this super method if action is not handled
-	// by overriding method
+	// Override this method to add functionality; be sure to call this super method to apply standard Goody actions
 	@Override
 	public void applyAction(GoodyAction ga) {
+		Vector3f newLocation = ga.getLocationVector();
+		Quaternion newRotation = ga.getRotationQuaternion();
 		switch (ga.getKind()) {
+			case SET : {
+				setPositionAndRotation(newLocation, newRotation);
+				break;
+			}
 			case MOVE : {
-				Vector3f newLocation = ga.getLocationVector();
-				Quaternion newRotation = ga.getRotationQuaternion();
 				Float timeEnroute = ga.getTravelTime();
-				if ((timeEnroute == null) || (timeEnroute.equals(0f))) {
+				if ((timeEnroute == null) || (Math.abs(timeEnroute-0f) < 0.001f)) {
 					setPositionAndRotation(newLocation, newRotation);
 				} else {
-					// Shortly will also add rotation
 					translateToPosition(newLocation, timeEnroute);
+					// Shortly will also add rotation via this:
+					//moveViaCinematic(newLocation, newRotation, timeEnroute);
 				}
 				break;
 			}

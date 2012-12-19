@@ -51,6 +51,13 @@ import org.slf4j.Logger;
  */
 
 public class CinematicMgr extends BasicDebugger {
+	
+	// The currently used (and depreciated) version of jMonkey doesn't appear to correctly apply durations
+	// The reported duration matches the value set via setInitialDuration, but the actual observed duration is shorter
+	// The result is this unfortunate trim factor to which we set the speed, so that the observed motion duration matches
+	// what we expect to see. Totally prone to variation and problems; hopefully we'll be able to get rid of this in the 
+	// not-too-distant future with a new version of jMonkey or etc!
+	final static float SPEED_TRIM_FACTOR = 0.77f; 
 
 	private Map<String, Cinematic> myCinematicsByName = new HashMap<String, Cinematic>();
 	private Map<String, CinematicTrack> myTracksByName = new HashMap<String, CinematicTrack>();
@@ -82,23 +89,25 @@ public class CinematicMgr extends BasicDebugger {
 		// First, any named waypoints defined outside track definitions are stored for later use
 		for (WaypointConfig wc : config.myWCs) {
 			staticLogger.info("Storing Named Waypoint from RDF: {}", wc);
-			myWaypointsByName.put(wc.waypointName, wc);
+			myWaypointsByName.put(wc.getName(), wc);
 		}
 
 		// Also "first", any named rotations are stored
 		for (RotationConfig rc : config.myRCs) {
 			staticLogger.info("Storing Named Rotation from RDF: {}", rc);
-			myRotationsByName.put(rc.rotationName, rc);
+			myRotationsByName.put(rc.getName(), rc);
 		}
 
 		// Second, any named tracks defined outside cinematics definitions are stored for later use
 		for (CinematicTrack ct : config.myCTs) {
 			staticLogger.info("Storing Named Track from RDF: {}", ct);
-			myTracksByName.put(ct.trackName, ct);
+			myTracksByName.put(ct.getName(), ct);
 		}
 	}
 
-	private void buildCinematic(CinematicInstanceConfig cic) {
+	// Public so that Goodies can build Cinematics for move operations, although a flat-out public scope is a little
+	// dangerous and may be ammended
+	public void buildCinematic(CinematicInstanceConfig cic) {
 		staticLogger.info("Building Cinematic from RDF: {}", cic);
 		CogcharRenderContext crc = myCRC;
 		RenderRegistryClient rrc = crc.getRenderRegistryClient();
@@ -108,7 +117,7 @@ public class CinematicMgr extends BasicDebugger {
 		trackLoop:
 		for (CinematicTrack track : cic.myTracks) {
 			if (track.trackType == CinematicTrack.TrackType.NULLTYPE) { // This usually indicates that the cinematic contains a reference to a named track defined elsewhere
-				String trackReference = track.trackName;
+				String trackReference = track.getName();
 				if (!trackReference.equals(CinemaAN.unnamedTrackName)) {
 					track = myTracksByName.get(trackReference); // Reset track to the CinematicTrack declared separately by name
 					if (track == null) { // If so, cinematic is calling for a track we don't know about
@@ -148,12 +157,13 @@ public class CinematicMgr extends BasicDebugger {
 				staticLogger.error("Unsupported track type: {}", track.trackType);
 			}
 			if (event != null) {
+				event.setSpeed(SPEED_TRIM_FACTOR);
 				cinematic.addCinematicEvent(track.startTime, event);
 			}
 		}
 		// Attach resulting cinematic and store it in map
 		rrc.getJme3AppStateManager(null).attach(cinematic);
-		myCinematicsByName.put(cic.myURI_Fragment, cinematic);
+		myCinematicsByName.put(cic.getName(), cinematic);
 	}
 	
 	private Spatial getSpatialForAttachedCamera(CinematicTrack track, final Cinematic cinematic, 
@@ -218,9 +228,9 @@ public class CinematicMgr extends BasicDebugger {
 		MotionPath path = new MotionPath();
 		path.setCycle(track.cycle);
 		for (WaypointConfig waypoint : track.waypoints) {
-			if (noPosition(waypoint.waypointCoordinates)) { // If we don't have coordinates for this waypoint...
+			if (noPosition(waypoint.myCoordinates)) { // If we don't have coordinates for this waypoint...
 				// First check to see if this waypoint refers to a stored waypoint previously defined
-				String waypointReference = waypoint.waypointName;
+				String waypointReference = waypoint.getName();
 				if (!waypointReference.equals(CinemaAN.unnamedWaypointName)) {
 					waypoint = myWaypointsByName.get(waypointReference); // Reset waypoint to the WaypointConfig declared separately by name
 					if (waypoint == null) { // If so, track is calling for a waypoint we don't know about
@@ -232,8 +242,8 @@ public class CinematicMgr extends BasicDebugger {
 					break; // If no coordinates and no waypointName, we don't really have a waypoint!
 				}
 			}
-			//staticLogger.info("Making new waypoint: " + new Vector3f(waypoint.waypointCoordinates[0], waypoint.waypointCoordinates[1], waypoint.waypointCoordinates[2])); // TEST ONLY
-			path.addWayPoint(new Vector3f(waypoint.waypointCoordinates[0], waypoint.waypointCoordinates[1], waypoint.waypointCoordinates[2]));
+			//staticLogger.info("Making new waypoint: " + new Vector3f(waypoint.myCoordinates[0], waypoint.myCoordinates[1], waypoint.myCoordinates[2])); // TEST ONLY
+			path.addWayPoint(new Vector3f(waypoint.myCoordinates[0], waypoint.myCoordinates[1], waypoint.myCoordinates[2]));
 		}
 		path.setCurveTension(track.tension);
 
@@ -269,17 +279,17 @@ public class CinematicMgr extends BasicDebugger {
 			staticLogger.warn("PositionTrack requested, but more than one waypoint provided for track: {}", track);
 			staticLogger.warn("Extra waypoints discarded for Positiontrack");
 		}
-		endPositionArray = track.waypoints.get(0).waypointCoordinates;
+		endPositionArray = track.waypoints.get(0).myCoordinates;
 		if (noPosition(endPositionArray)) { // If we don't have coordinates for this waypoint...
 			// First check to see if this waypoint refers to a stored waypoint previously defined
-			String waypointReference = track.waypoints.get(0).waypointName;
+			String waypointReference = track.waypoints.get(0).getName();
 			if (!waypointReference.equals(CinemaAN.unnamedWaypointName)) {
 				WaypointConfig waypoint = myWaypointsByName.get(waypointReference); // Set waypoint to the WaypointConfig declared separately by name
 				if (waypoint == null) { // If so, track is calling for a waypoint we don't know about
 					staticLogger.error("Track has requested undefined waypoint: {}; track is {}", waypointReference, track);
 					return null;
 				} else {
-					endPositionArray = waypoint.waypointCoordinates;
+					endPositionArray = waypoint.myCoordinates;
 				}
 
 			} else {
@@ -306,7 +316,7 @@ public class CinematicMgr extends BasicDebugger {
 		float[] rotationInArray = {rotation.pitch, rotation.yaw, rotation.roll};
 		if (noPosition(rotationInArray)) { // If we don't have values for this rotation...
 			// First check to see if this rotation refers to a stored rotation previously defined
-			String rotationReference = rotation.rotationName;
+			String rotationReference = rotation.getName();
 			if (!rotationReference.equals(CinemaAN.unnamedRotationName)) {
 				rotation = myRotationsByName.get(rotationReference); // Reset rotation to the RotationConfig declared separately by name
 				if (rotation == null) { // If so, track is calling for a rotation we don't know about

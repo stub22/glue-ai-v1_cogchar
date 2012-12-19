@@ -28,14 +28,15 @@ import org.appdapter.help.repo.SolutionHelper;
  */
 public class RotationConfig {
 
-	public String rotationName;
+	public Ident myUri;
 	public float yaw = Float.NaN;
 	public float roll = Float.NaN;
 	public float pitch = Float.NaN;
+	//public Quaternion rotation; // This would likely be better, but can't do that in lib.animoid without adding dependencies -- does this package really belong here?
 
 	@Override
 	public String toString() {
-		return "RotationConfig = " + rotationName + ", yaw = " + yaw + ", roll = " + roll + ", pitch = " + pitch;
+		return "RotationConfig = " + myUri.getAbsUriString() + ", yaw = " + yaw + ", roll = " + roll + ", pitch = " + pitch;
 	}
 
 	// This constructor is called from within CinematicTrack to correspond to Turtle configured usages of "named" rotations within CinematicTracks
@@ -43,19 +44,32 @@ public class RotationConfig {
 	// Named entities. (Same for tracks and waypoints.) We're moving away from this with the spreadsheet config, and can
 	// simplify / clean up things if we decide we're permanently doing away with the inline definitions
 	public RotationConfig(Ident ident) {
-		rotationName = ident.getLocalName();
+		myUri = ident;
+	}
+	
+	// For use by goodies in generating cinematics for MOVE actions. Would like to modify this to use Quaternion eventually
+	public RotationConfig(Ident ident, float[] eulerAngles) {
+		myUri = ident;
+		yaw = eulerAngles[0];
+		roll = eulerAngles[1];
+		pitch = eulerAngles[2];
 	}
 
 	// Called from CinematicConfig, corresponds to a "named" rotation definition
 	public RotationConfig(RepoClient qi, Solution solution) {
 		SolutionHelper sh = new SolutionHelper();
-		Ident myIdent = sh.pullIdent(solution, CinemaCN.ROTATION_VAR_NAME);
-		rotationName = myIdent.getLocalName();
+		myUri = sh.pullIdent(solution, CinemaCN.ROTATION_VAR_NAME);
 		yaw = sh.pullFloat(solution, CinemaCN.YAW_VAR_NAME, Float.NaN);
 		pitch = sh.pullFloat(solution, CinemaCN.PITCH_VAR_NAME, Float.NaN);
 		roll = sh.pullFloat(solution, CinemaCN.ROLL_VAR_NAME, Float.NaN);
 	}
+	
+	// You'll see this a lot; probably should be refactored into superclass
+	public String getName() {
+		return myUri.getLocalName();
+	}
 
+	/* Depreciated assembler-based constructor; removed since we're now "naming" rotations by URI instead of string
 	public RotationConfig(Item configItem) {
 		// If this rotation has no name, it's likely an unnamed rotation defined in-line with a track definition...
 		rotationName = ItemFuncs.getString(configItem, CinemaAN.P_rotationName, CinemaAN.unnamedRotationName);
@@ -70,6 +84,6 @@ public class RotationConfig {
 		yaw = ItemFuncs.getDouble(configItem, CinemaAN.P_yaw, Double.NaN).floatValue();
 		roll = ItemFuncs.getDouble(configItem, CinemaAN.P_roll, Double.NaN).floatValue();
 		pitch = ItemFuncs.getDouble(configItem, CinemaAN.P_pitch, Double.NaN).floatValue();
-
 	}
+	*/
 }
