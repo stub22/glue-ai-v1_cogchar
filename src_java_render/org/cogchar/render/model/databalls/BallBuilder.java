@@ -378,8 +378,8 @@ public class BallBuilder extends BasicDebugger {
 		
 		private void buildModelFromCinematicConfig(CinematicConfig cc) {
 			for (CinematicInstanceConfig cic : cc.myCICs) {
-				myLogger.info("Adding instanceBall with uri {}", cic.myURI_Fragment);
-				Ball instanceBall = addBall(cic.myURI_Fragment, ColorRGBA.Green, 1.5f);
+				myLogger.info("Adding instanceBall with uri {}", cic.getName());
+				Ball instanceBall = addBall(cic.getName(), ColorRGBA.Green, 1.5f);
 				for (CinematicTrack ct : cic.myTracks) {
 					buildFromTrack(ct, instanceBall);
 				}
@@ -399,11 +399,11 @@ public class BallBuilder extends BasicDebugger {
 		public void buildFromTrack(CinematicTrack ct, Ball parentBall) {
 			Ball trackBall;
 			String trackName;
-			if (ct.trackName.endsWith(CinemaAN.suffix_unnamed)) {
-				trackName = ct.trackName + incrementingTrack;
+			if (ct.getName().endsWith(CinemaAN.suffix_unnamed)) {
+				trackName = ct.getName() + incrementingTrack;
 				incrementingTrack++;
 			} else {
-				trackName = ct.trackName;
+				trackName = ct.getName();
 			}
 			if (myBalls.containsKey(trackName)) {
 				myLogger.info("Updating trackBall with uri {}", trackName);
@@ -425,11 +425,11 @@ public class BallBuilder extends BasicDebugger {
 
 		public void buildFromWaypoint(WaypointConfig wc, Ball parentBall) {
 			String waypointName;
-			if (wc.waypointName.endsWith(CinemaAN.suffix_unnamed)) {
-				waypointName = wc.waypointName + incrementingWaypoint;
+			if (wc.getName().endsWith(CinemaAN.suffix_unnamed)) {
+				waypointName = wc.getName() + incrementingWaypoint;
 				incrementingWaypoint++;
 			} else {
-				waypointName = wc.waypointName;
+				waypointName = wc.getName();
 			}
 			if (!myBalls.containsKey(waypointName)) {
 				myLogger.info("Adding waypointBall with uri {}", waypointName);
@@ -442,11 +442,11 @@ public class BallBuilder extends BasicDebugger {
 
 		public void buildFromRotation(RotationConfig rc, Ball parentBall) {
 			String rotationName;
-			if (rc.rotationName.endsWith(CinemaAN.suffix_unnamed)) {
-				rotationName = rc.rotationName + incrementingRotation;
+			if (rc.getName().endsWith(CinemaAN.suffix_unnamed)) {
+				rotationName = rc.getName() + incrementingRotation;
 				incrementingRotation++;
 			} else {
-				rotationName = rc.rotationName;
+				rotationName = rc.getName();
 			}
 			if (!myBalls.containsKey(rotationName)) {
 				myLogger.info("Adding waypointBall with uri {}", rotationName);

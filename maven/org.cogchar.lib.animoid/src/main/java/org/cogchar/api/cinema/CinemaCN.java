@@ -22,6 +22,8 @@ package org.cogchar.api.cinema;
  */
 
 public class CinemaCN {
+	public final static String CCRT = "urn:ftd:cogchar.org:2012:runtime#";
+	
 	public final static String CINEMATICS_QUERY_URI = "ccrt:find_cinematics_99";
 	public final static String TRACK_QUERY_URI = "ccrt:find_tracks_99";
 	public final static String WAYPOINT_QUERY_URI = "ccrt:find_waypoints_99";
