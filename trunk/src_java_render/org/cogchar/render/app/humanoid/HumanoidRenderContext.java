@@ -16,6 +16,7 @@
 package org.cogchar.render.app.humanoid;
 
 import com.jme3.input.FlyByCamera;
+import com.jme3.system.AppSettings;
 import java.awt.event.WindowListener;
 import javax.swing.JFrame;
 import org.cogchar.blob.emit.RenderConfigEmitter;
@@ -28,7 +29,6 @@ import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 import org.cogchar.render.opengl.optic.CameraMgr;
-import org.cogchar.render.sys.context.WorkaroundFuncsMustDie;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 

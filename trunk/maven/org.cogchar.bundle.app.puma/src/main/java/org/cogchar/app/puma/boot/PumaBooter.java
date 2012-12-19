@@ -197,15 +197,20 @@ public class PumaBooter extends BasicDebugger {
 			pac.startOpenGLCanvas(allowJFrames, winLis);
 			
 		}
-		getLogger().debug("%%%%%%%%%%%%%%%%%%% startOpenGLCanvas completed, enqueueing final boot phase on JME3 thread");
+		getLogger().debug("%%%%%%%%%%%%%%%%%%% startOpenGLCanvas completed, enqueueing final boot phase on JME3 thread, and waiting for completion.");
+
 		/**
 		 * Populate the virtual world with humanoids, cameras, lights, and other goodies. This step will load all the 3D
 		 * models (and other rendering resources) that Cogchar needs, based on what is implied by the sysContextURI we
 		 * supplied to the PumaAppContext constructor above.
 		 *
-		 * We enqueue this work to occur on JME3 update thread. Otherwise we'll get an: IllegalStateException: Scene
+		 * We enqueue this work to occur,on JME3 update thread. Otherwise we'll get an: IllegalStateException: Scene
 		 * graph is not properly updated for rendering.
-		 */
+		 * 
+		 * This call first waits for a WorkaroundAppStub to appear, so that it can enqueue the main call on the JME3 
+		 * thread.  THEN it waits for that enqueued call to finish, allowing us to be sure that all this init is
+		 * completed, on the proper thread, before we continue the PUMA boot process.
+		 */					
 		hrc.runPostInitLaunchOnJmeThread();
 		getLogger().debug("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed");
 	}

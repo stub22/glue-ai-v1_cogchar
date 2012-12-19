@@ -81,13 +81,25 @@ public class CogcharRenderContext extends BasicRenderContext {
 		// return myAppStub;
 	}
 	
-	public Future<Object> enqueueCallable(Callable callThis) {
+	@Override public Future<Object> enqueueCallable(Callable callThis) {
 		WorkaroundAppStub was = getAppStub();
 		return was.enqueue(callThis);
 	}	
 	
 	@Override public void runTaskSafelyUntilComplete(CallableTask task) throws Throwable {
 		WorkaroundAppStub appStub = getAppStub();
+		if (appStub == null) {
+			int waitCount = 50;
+			while ((appStub == null) && (waitCount > 0)) {
+				getLogger().warn("AppStub is null, indicating that CogcharPresumedApp.initialize() has not executed yet, sleeping for 200ms");
+				Thread.sleep(200);
+				appStub = getAppStub();
+				waitCount--;
+			}
+			if (appStub == null) {
+				throw new Exception("Cannot schedule CallableTask because WorkaroundAppStub has not yet been set (i.e. JME3 App init has not run yet)");
+			}
+		}
 		java.util.concurrent.Future<Throwable> taskFuture = appStub.enqueue(task);
 	
 		logInfo("%%%%%%%%%%%%%%%%%%%%%%%%% Task queued : runTaskSafelyUntilComplete(" + task + ")");
