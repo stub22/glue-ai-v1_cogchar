@@ -39,10 +39,10 @@ public class VirtualFloor extends BasicGoodyImpl {
 		setPosition(position);
 		// Constants and collision shape below taken from PhysicsStuffBuilder.
 		// How much of this stuff do we want to come from repo instead?
-		Mesh floorBox = new Box(140, 0.25f, 140);
+		Mesh floorBox = new Box(140f, 0.25f, 140f);
 		Plane plane = new Plane();
 		plane.setOriginNormal(new Vector3f(0, 0.25f, 0), Vector3f.UNIT_Y);
-		addGeometry(floorBox, null, ColorRGBA.LightGray, new Quaternion(), new PlaneCollisionShape(plane), 0);
+		addGeometry(floorBox, null, ColorRGBA.LightGray, new Quaternion(), 1f, new PlaneCollisionShape(plane), 0f);
 	}
 	
 	@Override

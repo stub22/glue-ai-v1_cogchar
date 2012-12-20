@@ -45,10 +45,8 @@ public class GoodyNames  {
 	public	static Ident	SIZE_Z = makeID("sizeZ");
 	
 	public	static Ident	TRAVEL_TIME = makeID("travelTime");
-	
-	public	static Ident	TEXT_SIZE = makeID("textScale");
-	
-	// public	static Ident	THING_TYPE = makeID("thingType");
+	//public	static Ident	TEXT_SIZE = makeID("textScale");
+	public	static Ident	SCALE = makeID("scale");
 	
 	public static	Ident	TYPE_BIT_BOX = makeID("BitBox");
 	public static	Ident	TYPE_FLOOR = makeID("Floor");
@@ -59,12 +57,6 @@ public class GoodyNames  {
 	public static	Ident	TYPE_SCOREBOARD = makeID("ScoreBoard");
 	
 	public  static Ident	RDF_TYPE = new FreeIdent(ComponentAssemblyNames.NS_rdf + "type");
-	
-	/* CRUD, or CREATE/DELETE/MOVE/SET as in GoodyAction?
-	public static	Ident	ACTION_CREATE = makeID("ActionCreate");
-	public static	Ident	ACTION_UPDATE = makeID("ActionUpdate");
-	public static	Ident	ACTION_DELETE = makeID("ActionDelete");
-	*/
 	
 	public static	Ident	ACTION_CREATE = makeID("ActionCreate");
 	public static	Ident	ACTION_DELETE = makeID("ActionDelete");

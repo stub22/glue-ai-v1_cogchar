@@ -51,6 +51,8 @@ public class BasicGoodyImpl extends BasicGoody {
 	// The result is this unfortunate trim factor to which we set the speed, so that the observed motion duration matches
 	// what we expect to see. Totally prone to variation and problems; hopefully we'll be able to get rid of this in the 
 	// not-too-distant future with a new version of jMonkey or etc!
+	// Update 19 Dec 2012: Seems the whole Cinematic system in jMonkey is depreciated. Probably using the AnimationFactory
+	// will produce better results and allow this to be eliminated:
 	final static float SPEED_TRIM_FACTOR = 0.77f; 
 
 	protected Vector3f myPosition = new Vector3f(); // default: at origin
@@ -81,7 +83,7 @@ public class BasicGoodyImpl extends BasicGoody {
 		Quaternion myRotationOffset;
 
 		BasicGoodieGeometry(Mesh mesh, Material material, ColorRGBA color, 
-				Quaternion rotation, CollisionShape shape, float mass) {
+				Quaternion rotation, float scale, CollisionShape shape, float mass) {
 			myRotationOffset = rotation;
 			if (color != null) {
 				myColor = color;
@@ -103,6 +105,7 @@ public class BasicGoodyImpl extends BasicGoody {
 			myGeometry = myRenderRegCli.getSceneGeometryFacade(null)
 					.makeGeom(myUri.getLocalName(), mesh, myMaterial, myControl);
 			//myGeometry.addControl(new RigidBodyControl(0)); // TEST ONLY -- in here only until I can figure out what's wrong with goody floor
+			myGeometry.setLocalScale(scale);
 			myGeometry.setLocalRotation(rotation);
 		}
 
@@ -120,21 +123,22 @@ public class BasicGoodyImpl extends BasicGoody {
 
 	// Returns geometry index
 	// This method is intended to support physical objects
-	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, CollisionShape shape, float mass) {
-		myGeometries.add(new BasicGoodieGeometry(mesh, material, color, rotation, shape, mass));
+	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, 
+			float scale, CollisionShape shape, float mass) {
+		myGeometries.add(new BasicGoodieGeometry(mesh, material, color, rotation, scale, shape, mass));
 		return myGeometries.size() - 1;
 	}
 	// For adding non-physical geometries
-	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation) {
-		return addGeometry(mesh, material, color, rotation, null, 0f);
+	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, float scale) {
+		return addGeometry(mesh, material, color, rotation, scale, null, 0f);
 	}
 	// For adding non-physical geometries with default material
-	protected int addGeometry(Mesh mesh, ColorRGBA color, Quaternion rotation) {
-		return addGeometry(mesh, null, color, rotation, null, 0f);
+	protected int addGeometry(Mesh mesh, ColorRGBA color, Quaternion rotation, float scale) {
+		return addGeometry(mesh, null, color, rotation, scale, null, 0f);
 	}
 	// For adding non-physical geometries with default material and no rotation offset
-	protected int addGeometry(Mesh mesh, ColorRGBA color) {
-		return addGeometry(mesh, null, color, new Quaternion(), null, 0f);
+	protected int addGeometry(Mesh mesh, ColorRGBA color, float scale) {
+		return addGeometry(mesh, null, color, new Quaternion(), scale, null, 0f);
 	}
 
 	// For attaching "default" (zero index) geometry
@@ -256,7 +260,7 @@ public class BasicGoodyImpl extends BasicGoody {
 		}
 	}
 
-	private void translateToPosition(Vector3f newPosition, float timeEnroute) {
+	protected void translateToPosition(Vector3f newPosition, float timeEnroute) {
 		MotionPath path = new MotionPath();
 		path.addWayPoint(myPosition);
 		path.addWayPoint(newPosition);
@@ -272,9 +276,11 @@ public class BasicGoodyImpl extends BasicGoody {
 		myPosition = newPosition;
 	}
 	
+	/*
 	// In somewhat ugly fashion, we build a CinematicInstanceConfig for the move operation
 	// Likely can be improved
 	// Currently rotations and timing need some work
+	// Oops, Cinematics ae depreciated! May want to do this via AnimationFactory instead.
 	private void moveViaCinematic(Vector3f newPosition, Quaternion newOrientation, float duration) {
 		Quaternion totalRotation = newOrientation.mult(myGeometries.get(attachedIndex).myRotationOffset);
 		Ident endWaypointUri = makeIdentForLocalCinematicEntity("MoveEndPoint");
@@ -302,7 +308,7 @@ public class BasicGoodyImpl extends BasicGoody {
 		myPosition = newPosition;
 		myRotation = newOrientation;
 	}
-	
+		
 	private Ident makeIdentForLocalCinematicEntity(String uriSuffix) {
 		String uriPrefixString = CinemaCN.CCRT + myUri.getLocalName();
 		return new FreeIdent(uriPrefixString + uriSuffix);
@@ -315,15 +321,34 @@ public class BasicGoodyImpl extends BasicGoody {
 		track.startTime = 0.0f;
 		track.loopMode = "DontLoop";
 	}
+	*/
+	
+	@Override
+	public void setScale(final Float scaleFactor) {
+		if (scaleFactor != null) {
+			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
+
+				@Override
+				public Void call() throws Exception {
+					for (BasicGoodieGeometry aGeometry : myGeometries) {
+						aGeometry.myGeometry.setLocalScale(scaleFactor);
+					}
+					return null;
+				}
+			});
+		}
+	}
 
 	// Override this method to add functionality; be sure to call this super method to apply standard Goody actions
 	@Override
 	public void applyAction(GoodyAction ga) {
 		Vector3f newLocation = ga.getLocationVector();
 		Quaternion newRotation = ga.getRotationQuaternion();
+		Float scaleFactor = ga.getScale();
 		switch (ga.getKind()) {
 			case SET : {
 				setPositionAndRotation(newLocation, newRotation);
+				setScale(scaleFactor);
 				break;
 			}
 			case MOVE : {
@@ -332,8 +357,7 @@ public class BasicGoodyImpl extends BasicGoody {
 					setPositionAndRotation(newLocation, newRotation);
 				} else {
 					translateToPosition(newLocation, timeEnroute);
-					// Shortly will also add rotation via this:
-					//moveViaCinematic(newLocation, newRotation, timeEnroute);
+					// Soon will also add rotation, scale via AnimationFactory techniques
 				}
 				break;
 			}

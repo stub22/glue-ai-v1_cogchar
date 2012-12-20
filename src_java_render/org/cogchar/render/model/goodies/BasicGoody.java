@@ -47,6 +47,7 @@ public abstract class BasicGoody {
 		return myUri;
 	}
 	public abstract void setPosition(Vector3f position);
+	public abstract void setScale(Float scale);
 	public abstract void attachToVirtualWorldNode(Node attachmentNode);
 	public abstract void detachFromVirtualWorldNode();
 	public abstract void applyAction(GoodyAction ga);
