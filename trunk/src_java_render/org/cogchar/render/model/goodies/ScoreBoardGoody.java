@@ -53,7 +53,7 @@ public class ScoreBoardGoody extends BasicGoody implements GeneralScoreBoard {
 		public Row(RenderRegistryClient aRenderRegCli, Ident uri, Vector3f rowPosition,	float textSize, ColorRGBA scoreColor) {
 			super(aRenderRegCli, uri);
 			//myLogger.info("In ScoreBoardGoody.Row, Window size is {}x{}, position is {}", new Object[]{myScreenWidth, myScreenHeight, rowPosition}); // TEST ONLY
-			setPosition(rowPosition);
+			this.setPosition(rowPosition);
 			setGoodyAttributes("_", textSize, scoreColor);
 		}
 		public void setScoreText(String scoreText) {
@@ -141,6 +141,19 @@ public class ScoreBoardGoody extends BasicGoody implements GeneralScoreBoard {
 			nextRow.setPosition(getPositionForRow(rowIdx, position));
 		}
 		myPosition = position;
+	}
+	
+	@Override
+	public void setScale(Float scale) {
+		myLogger.warn("Setting scale not currently implemented for the ScoreBoardGoody, coming soon...");
+		/*// This throws a java.lang.IllegalArgumentException deep in jME's LWJGL bits for some reason
+		// Will fix this soon, not very necessary for now and holding up a big commit...
+		if (scale != null) {
+			for (Row nextRow : myRows) {
+				nextRow.setScale(scale);
+			}
+		}
+		*/
 	}
 	
 	private Vector3f getPositionForRow(int row, Vector3f scoreboardPosition) {

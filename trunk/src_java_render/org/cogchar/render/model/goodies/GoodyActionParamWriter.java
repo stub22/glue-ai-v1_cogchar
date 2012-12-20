@@ -54,6 +54,11 @@ public class GoodyActionParamWriter {
 		myBTVMap.putValueAtName(GoodyNames.SIZE_Y, sizeY);
 		myBTVMap.putValueAtName(GoodyNames.SIZE_Z, sizeZ);
 	}
+	
+	public void putScale(float scale) {
+		myBTVMap.putValueAtName(GoodyNames.SCALE, scale);
+	}
+	
 	public TypedValueMap	getValueMap() { 
 		return myBTVMap;
 	}

@@ -94,23 +94,23 @@ public class GoodyFactory {
 				if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
 					boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
 					newGoody = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
-						ga.getSize()[0], bitBoxState);
+						ga.getScale(), bitBoxState);
 				} else if (GoodyNames.TYPE_FLOOR.equals(ga.getType())) {
 					// Assuming physical floor for now, but that may be a good thing to define in repo
 					newGoody = new VirtualFloor(myRRC, ga.getGoodyID(), ga.getLocationVector(), true);
 				} else if (GoodyNames.TYPE_TICTAC_MARK.equals(ga.getType())) {
 					boolean isAnO = Boolean.valueOf(ga.getSpecialString(GoodyNames.USE_O));
-					newGoody = new TicTacMark(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0], isAnO);
+					newGoody = new TicTacMark(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getScale(), isAnO);
 				} else if (GoodyNames.TYPE_TICTAC_GRID.equals(ga.getType())) {
-					newGoody = new TicTacGrid(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getSize()[0]);
+					newGoody = new TicTacGrid(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getScale());
 				} else if (GoodyNames.TYPE_CROSSHAIR.equals(ga.getType())) {
-					newGoody = new CrossHairGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getTextSize());
+					newGoody = new CrossHairGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getScale());
 				} else if (GoodyNames.TYPE_SCOREBOARD.equals(ga.getType())) {
 					int rows = Integer.valueOf(ga.getSpecialString(GoodyNames.ROWS));
 					newGoody = new ScoreBoardGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(),
-							ga.getSize()[0], rows, ga.getTextSize());
+							ga.getSize()[0], rows, ga.getScale());
 				} else {
-					theLogger.warn("Did not recognize requested goody type for creation {}", ga.getType());
+					theLogger.warn("Did not recognize requested goody type for creation: {}", ga.getType());
 				}
 			} catch (Exception e) {
 				theLogger.error("Error attempting to create goody {}", ga.getGoodyID(), e);

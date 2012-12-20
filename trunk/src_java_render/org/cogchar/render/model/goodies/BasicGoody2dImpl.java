@@ -74,12 +74,24 @@ public class BasicGoody2dImpl extends BasicGoody {
 	@Override
 	// Position is specified as fraction of screen width/height
 	public void setPosition(Vector3f scalePosition) {
-		Vector3f absolutePosition = scalePosition.multLocal(myScreenWidth, myScreenHeight, 0);
-		setAbsolutePosition(absolutePosition);
+		if (scalePosition != null) {
+			Vector3f absolutePosition = scalePosition.multLocal(myScreenWidth, myScreenHeight, 0);
+			setAbsolutePosition(absolutePosition);
+		}
+	}
+	
+	@Override
+	public void setScale(Float scale) {
+		//myLogger.info("Setting 2d Goody scale to {}", scale); // TEST ONLY
+		if (myOverlayText == null) {
+			myLogger.warn("Attemping to set scale on 2D Goody, but initial GoodyAttributes have not been set");
+		} else if (scale != null) {
+			myOverlayText.setSize(myOverlayText.getFont().getCharSet().getRenderedSize()*scale);
+		}
 	}
 	
 	private void setAbsolutePosition(final Vector3f position) {
-		myLogger.debug("Setting position: {}", position); // TEST ONLY
+		//myLogger.debug("Setting position: {}", position); // TEST ONLY
 		myPosition = position;
 		if (myOverlayText != null) {
 			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
@@ -128,13 +140,14 @@ public class BasicGoody2dImpl extends BasicGoody {
 			});
 	}
 	
-	// Override this method to add functionality; be sure to call this super method if action is not handled
-	// by overriding method
+	// Override this method to add functionality; be sure to call this super method to apply standard Goody actions
 	@Override
 		public void applyAction(GoodyAction ga) {
 			switch (ga.getKind()) {
-				case MOVE : {
+				case MOVE : 
+				case SET : {
 					setPosition(ga.getLocationVector());
+					setScale(ga.getScale());
 					break;
 				}
 				default: {
