@@ -59,14 +59,14 @@ public class BitBox extends BasicGoodyImpl {
 			}
 		} 
 		setPositionAndRotation(initialPosition, initialRotation);
-		Mesh zeroMesh = new Torus(40,20,size/5,size*5/6);
-		Mesh oneMesh = new Cylinder(20, 20, size/5, size*2, true);
-		zeroIndex = addGeometry(zeroMesh, FALSE_COLOR);
+		Mesh zeroMesh = new Torus(40,20,1f/5f,5f/6f);
+		Mesh oneMesh = new Cylinder(20, 20, 1f/5f, 2f, true);
+		zeroIndex = addGeometry(zeroMesh, FALSE_COLOR, size);
 		float[] oneRotationAngles = {(float)(Math.PI/2), 0f, 0f};
-		oneIndex = addGeometry(oneMesh, TRUE_COLOR, new Quaternion(oneRotationAngles));
+		oneIndex = addGeometry(oneMesh, TRUE_COLOR, new Quaternion(oneRotationAngles), size);
 		state = boxState;
 	}
-	
+
 	@Override
 	public void attachToVirtualWorldNode(final Node rootNode) {
 		attachToVirtualWorldNode(rootNode, state? oneIndex : zeroIndex);
@@ -75,7 +75,7 @@ public class BitBox extends BasicGoodyImpl {
 		state = boxState;
 		attachToVirtualWorldNode(rootNode);
 	}
-	
+
 	public void setZeroState() {
 		setState(false);
 	}

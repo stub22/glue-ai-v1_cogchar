@@ -30,12 +30,16 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 public class CrossHairGoody extends BasicGoody2dImpl {
 	
-	public CrossHairGoody(RenderRegistryClient aRenderRegCli, Ident uri, Vector3f positionOffset, float scale) {
+	public CrossHairGoody(RenderRegistryClient aRenderRegCli, Ident uri, Vector3f positionOffset, Float scale) {
 		super(aRenderRegCli, uri);
 		makeCrossHairs(scale, positionOffset);
 	}
 	
-	private void makeCrossHairs(float scale, Vector3f position) {
+	private void makeCrossHairs(Float scale, Vector3f position) {
+		if (scale == null) {
+			scale = 1f;
+			myLogger.warn("Scale for CrossHair not specified; using default of 1.");
+		}
 		BitmapText bt = setGoodyAttributes("+", scale);
 		BitmapFont bf = bt.getFont();
 		float crossHalfWidthFraction = (bf.getCharSet().getRenderedSize() / 3.0f * 2.0f) / myScreenWidth;
@@ -49,4 +53,6 @@ public class CrossHairGoody extends BasicGoody2dImpl {
 		}
 		setPosition(position.add(relativePosition));
 	}
+	
+	// TODO: Override setScale to recenter Crosshairs
 }

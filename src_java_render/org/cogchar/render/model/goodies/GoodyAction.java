@@ -99,10 +99,14 @@ public class GoodyAction  {
 			// Read LocX, LocY, LocZ from some assumed properties.
 			float locX = paramTVMap.getAsFloat(GoodyNames.LOCATION_X);
 			float locY = paramTVMap.getAsFloat(GoodyNames.LOCATION_Y);
-			float locZ = paramTVMap.getAsFloat(GoodyNames.LOCATION_Z);
+			Float locZ = paramTVMap.getAsFloat(GoodyNames.LOCATION_Z);
+			// If X and Y are specified but not Z, we can assume Z=0:
+			if ((locZ == null)) {
+				locZ = 0f;
+			}
 			resultVec = new Vector3f(locX, locY, locZ);
 		} catch (Exception e) {
-			// Just leave resultVec null if the try fails
+			// Just leave resultVec null if the try fails -- generally means coordinates are not specified
 		}
 		return resultVec;
 	}
@@ -137,15 +141,16 @@ public class GoodyAction  {
 		return sizes;
 	}
 	
-	// With the advent of 2D goodies, this seems like it will be needed often enough to warrant its own method:
-	public Float getTextSize() {
-		return paramTVMap.getAsFloat(GoodyNames.TEXT_SIZE);
-	}
-	
 	// May not need its own method, but since a speed of action may be a common feature of GoodyActions, let's
 	// assume for now it makes sense to get speed this way instead of with getSpecialString
 	public Float getTravelTime() {
 		return paramTVMap.getAsFloat(GoodyNames.TRAVEL_TIME);
+	}
+	
+	// Since we are supporting scale changes as a relatively fundamental feature of goody actions, it likely
+	// makes sense to add this method as well. This replaces the text size method.
+	public Float getScale() {
+		return paramTVMap.getAsFloat(GoodyNames.SCALE);
 	}
 	
 	// Could have more elaborate type handling here, but for now, since params in repo are natively strings

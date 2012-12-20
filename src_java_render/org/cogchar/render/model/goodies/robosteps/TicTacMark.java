@@ -52,17 +52,17 @@ public class TicTacMark extends BasicGoodyImpl {
 	public TicTacMark(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size, boolean isPlayerO) {
 		super(aRenderRegCli, boxUri);
 		setPosition(initialPosition);
-		Mesh meshX = makeCustomXMesh(size);
-		Mesh meshO = new Torus(40,20,size/5,size*5/6);
+		Mesh meshX = makeCustomXMesh();
+		Mesh meshO = new Torus(40,20,1f/5f,5f/6f);
 		float[] xRotationAngles = {(float)(Math.PI/2), 0f, 0f};
-		indexO = addGeometry(meshO, O_COLOR);
-		indexX = addGeometry(meshX, X_COLOR, new Quaternion(xRotationAngles));
+		indexO = addGeometry(meshO, O_COLOR, size);
+		indexX = addGeometry(meshX, X_COLOR, new Quaternion(xRotationAngles), size);
 		playerO = isPlayerO;
 	}
 	
-	private Mesh makeCustomXMesh(float size) {
+	private Mesh makeCustomXMesh() {
 		CompositeMeshBuilder builder = new CompositeMeshBuilder();
-		Mesh meshXLeg = new Cylinder(20, 20, size/5, size*2.25f, true);
+		Mesh meshXLeg = new Cylinder(20, 20, 1f/5f, 2.25f, true);
 		Quaternion rotate45DegAroundY = new Quaternion();
 		rotate45DegAroundY.fromAngleAxis((float)Math.PI/4, new Vector3f(0f,1f,0f));
 		List<MeshComponent> meshComponents = new ArrayList<MeshComponent>();

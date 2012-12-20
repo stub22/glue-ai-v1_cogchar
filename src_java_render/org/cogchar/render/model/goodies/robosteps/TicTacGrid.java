@@ -52,14 +52,15 @@ public class TicTacGrid extends BasicGoodyImpl {
 	public TicTacGrid(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size) {
 		super(aRenderRegCli, boxUri);
 		mySize = size;
-		setPosition(initialPosition);
-		Mesh gridMesh = makeCustomGridMesh(size);
-		addGeometry(gridMesh, GRID_COLOR, new Quaternion(ROTATE_UPRIGHT));
+		//setPosition(initialPosition); // This will work fine once setPositionAndRotation works in this method
+		super.setPositionAndRotation(initialPosition, null); // This works even though we've temporarily overriden setPositionAndRotation to do nothing locally
+		Mesh gridMesh = makeCustomGridMesh();
+		addGeometry(gridMesh, GRID_COLOR, new Quaternion(ROTATE_UPRIGHT), size);
 	}
 	
-	private Mesh makeCustomGridMesh(float size) {
-		Mesh gridLeg = new Cylinder(20, 20, size/5, size*SIZE_MULTIPLIER, true);
-		float offsetDistance = SIZE_MULTIPLIER*size/6f;
+	private Mesh makeCustomGridMesh() {
+		Mesh gridLeg = new Cylinder(20, 20, 1f/5f, SIZE_MULTIPLIER, true);
+		float offsetDistance = SIZE_MULTIPLIER/6f;
 		List<MeshComponent> meshComponents = new ArrayList<MeshComponent>();
 		meshComponents.add(new MeshComponent(gridLeg, new Vector3f(offsetDistance, 0f, 0f)));
 		meshComponents.add(new MeshComponent(gridLeg, new Vector3f(-offsetDistance, 0f, 0f)));
@@ -125,7 +126,36 @@ public class TicTacGrid extends BasicGoodyImpl {
 	}
 	
 	@Override
+	public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation) {
+		myLogger.warn("Position/Rotation change not yet supported for TicTacGrid, coming soon...");
+		/*
+		super.setPosition(newPosition);
+		for (BasicGoodyImpl markGoody : markMap.values()) {
+			//markGoody.setPosition(newPosition); // Nope not quite...
+		}
+		*/
+	}
+	
+	@Override
+	protected void translateToPosition(Vector3f newLocation, float timeEnroute) {
+		myLogger.warn("Position/Rotation change not yet supported for TicTacGrid, coming soon...");
+	}
+	
+	@Override
+	public void setScale(Float newScale) {
+		myLogger.warn("Scale change not currently supported for TicTacGrid, coming soon...");
+		/* Also need to adjust locations for proper scaling
+		super.setScale(newScale);
+		mySize = newScale;
+		for (BasicGoodyImpl markGoody : markMap.values()) {
+			markGoody.setScale(newScale);
+		}
+		*/
+	}
+	
+	@Override
 	public void applyAction(GoodyAction ga) {
+		super.applyAction(ga);
 		switch (ga.getKind()) {
 			case SET : {
 				String removeString = ga.getSpecialString(CLEAR_IDENT);
@@ -149,7 +179,6 @@ public class TicTacGrid extends BasicGoodyImpl {
 				}
 				break;
 			}
-			default: super.applyAction(ga);
 		}
 	}
 }
