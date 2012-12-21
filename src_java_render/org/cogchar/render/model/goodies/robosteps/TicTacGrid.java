@@ -73,17 +73,15 @@ public class TicTacGrid extends BasicGoodyImpl {
 	}
 	
 	public void addMarkAt(int xPos, int yPos, boolean isPlayerO) {
-		Ident markUri = getMarkIdent(xPos, yPos);
+		Ident markUri = createMarkIdent(xPos, yPos);
 		if ((xPos < 1) || (xPos > 3) || (yPos < 1) || (yPos > 3)) {
 			myLogger.error("Can't add TicTacMark to grid; position of ({}, {}) is invalid", xPos, yPos);
 		} else if (markMap.containsKey(markUri)) {
 			myLogger.warn("Can't add TicTacMark to grid; there is already a mark at position ({}, {})", xPos, yPos);
 		} else {
-			float markOffset = SIZE_MULTIPLIER*mySize/3f;
-			Vector3f relativeMarkPosition = new Vector3f(markOffset*(xPos-2), -markOffset*(yPos-2), 0);
-			
+			Vector3f markPosition = getPositionForMark(xPos, yPos);
 			BasicGoodyImpl markGoody = 
-					new TicTacMark(myRenderRegCli, markUri, myPosition.add(relativeMarkPosition), mySize, isPlayerO);
+					new TicTacMark(myRenderRegCli, markUri, markPosition, mySize, isPlayerO);
 			getTheGoodySpace().addGoody(markGoody);
 			markGoody.attachToVirtualWorldNode(myRootNode);
 			markMap.put(markUri, markGoody);
@@ -91,7 +89,7 @@ public class TicTacGrid extends BasicGoodyImpl {
 	}
 	
 	public void removeMark(int xPos, int yPos) {
-		Ident markIdent = getMarkIdent(xPos, yPos);
+		Ident markIdent = createMarkIdent(xPos, yPos);
 		BasicGoodyImpl markToRemove = markMap.get(markIdent);
 		if (markToRemove != null) {
 			getTheGoodySpace().removeGoody(markToRemove);
@@ -108,10 +106,16 @@ public class TicTacGrid extends BasicGoodyImpl {
 		markMap.clear();
 	}
 	
-	private Ident getMarkIdent(int xPos, int yPos) {
+	private Ident createMarkIdent(int xPos, int yPos) {
 		String uriString = myUri.getAbsUriString();
 		uriString += "Mark" + xPos + yPos;
 		return new FreeIdent(uriString);
+	}
+	
+	private Vector3f getPositionForMark(int xPos, int yPos) {
+		float markOffset = SIZE_MULTIPLIER*mySize/3f;
+		Vector3f relativeMarkPosition = new Vector3f(markOffset*(xPos-2), -markOffset*(yPos-2), 0);
+		return myPosition.add(relativeMarkPosition); 
 	}
 	
 	private GoodySpace getTheGoodySpace() {
@@ -127,7 +131,9 @@ public class TicTacGrid extends BasicGoodyImpl {
 	
 	@Override
 	public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation) {
-		myLogger.warn("Position/Rotation change not yet supported for TicTacGrid, coming soon...");
+		if ((newPosition != null) || (newRotation != null)) {
+			myLogger.warn("Position/Rotation change not yet supported for TicTacGrid, coming soon...");
+		}
 		/*
 		super.setPosition(newPosition);
 		for (BasicGoodyImpl markGoody : markMap.values()) {
@@ -143,14 +149,18 @@ public class TicTacGrid extends BasicGoodyImpl {
 	
 	@Override
 	public void setScale(Float newScale) {
-		myLogger.warn("Scale change not currently supported for TicTacGrid, coming soon...");
-		/* Also need to adjust locations for proper scaling
-		super.setScale(newScale);
-		mySize = newScale;
-		for (BasicGoodyImpl markGoody : markMap.values()) {
-			markGoody.setScale(newScale);
+		if (newScale != null) {
+			super.setScale(newScale);
+			mySize = newScale;
+			for (BasicGoodyImpl markGoody : markMap.values()) {
+				markGoody.setScale(newScale);
+				String markName = markGoody.getUri().getLocalName();
+				// Mark x and y are part of local name per createMarkIdent:
+				int xPos = Integer.valueOf(String.valueOf(markName.charAt(markName.length() - 2)));
+				int yPos = Integer.valueOf(String.valueOf(markName.charAt(markName.length() - 1)));
+				markGoody.setPosition(getPositionForMark(xPos, yPos));
+			}
 		}
-		*/
 	}
 	
 	@Override
