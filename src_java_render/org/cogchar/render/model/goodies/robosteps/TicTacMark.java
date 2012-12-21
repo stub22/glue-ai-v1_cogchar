@@ -52,11 +52,12 @@ public class TicTacMark extends BasicGoodyImpl {
 	public TicTacMark(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size, boolean isPlayerO) {
 		super(aRenderRegCli, boxUri);
 		setPosition(initialPosition);
+		setScale(size);
 		Mesh meshX = makeCustomXMesh();
 		Mesh meshO = new Torus(40,20,1f/5f,5f/6f);
 		float[] xRotationAngles = {(float)(Math.PI/2), 0f, 0f};
-		indexO = addGeometry(meshO, O_COLOR, size);
-		indexX = addGeometry(meshX, X_COLOR, new Quaternion(xRotationAngles), size);
+		indexO = addGeometry(meshO, O_COLOR);
+		indexX = addGeometry(meshX, X_COLOR, new Quaternion(xRotationAngles));
 		playerO = isPlayerO;
 	}
 	
