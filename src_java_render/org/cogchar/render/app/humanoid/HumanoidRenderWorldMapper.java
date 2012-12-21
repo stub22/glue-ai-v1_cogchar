@@ -46,9 +46,12 @@ public class HumanoidRenderWorldMapper {
 	}
 	
 	public void initCinematics(RepoClient qi, HumanoidRenderContext hrc, Ident qGraph) {
+		// Cinematics are currently disabled due to cinematic classes being depreciated in current jME version
+		/*
 		// The CinematicConfig constructor now automatically loads config from sheet
 		CinematicConfig cc = new CinematicConfig(qi, qGraph);
 		getCinematicMgr(hrc).storeCinematicsFromConfig(cc, hrc);
+		*/
 	}
 	
 	public void clearLights(HumanoidRenderContext hrc) {
@@ -58,7 +61,8 @@ public class HumanoidRenderWorldMapper {
 	}
 	
 	public void clearCinematics(HumanoidRenderContext hrc) {
-		getCinematicMgr(hrc).clearCinematics(hrc);
+		// Cinematics are currently disabled due to cinematic classes being depreciated in current jME version
+		//getCinematicMgr(hrc).clearCinematics(hrc);
 	}
 	
 	public void clearViewPorts(HumanoidRenderContext hrc) {
