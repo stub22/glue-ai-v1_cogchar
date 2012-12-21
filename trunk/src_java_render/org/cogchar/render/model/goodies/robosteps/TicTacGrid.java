@@ -45,17 +45,15 @@ public class TicTacGrid extends BasicGoodyImpl {
 	private static final float[] ROTATE_UPRIGHT = {(float)(Math.PI/2), 0f, 0f};
 	private static final Ident CLEAR_IDENT = GoodyNames.makeID("clearMarks");
 	
-	private float mySize;
-	
 	private Map<Ident, BasicGoodyImpl> markMap = new HashMap<Ident, BasicGoodyImpl>();
 	
 	public TicTacGrid(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size) {
 		super(aRenderRegCli, boxUri);
-		mySize = size;
 		//setPosition(initialPosition); // This will work fine once setPositionAndRotation works in this method
 		super.setPositionAndRotation(initialPosition, null); // This works even though we've temporarily overriden setPositionAndRotation to do nothing locally
+		super.setScale(size);
 		Mesh gridMesh = makeCustomGridMesh();
-		addGeometry(gridMesh, GRID_COLOR, new Quaternion(ROTATE_UPRIGHT), size);
+		addGeometry(gridMesh, GRID_COLOR, new Quaternion(ROTATE_UPRIGHT));
 	}
 	
 	private Mesh makeCustomGridMesh() {
@@ -81,7 +79,7 @@ public class TicTacGrid extends BasicGoodyImpl {
 		} else {
 			Vector3f markPosition = getPositionForMark(xPos, yPos);
 			BasicGoodyImpl markGoody = 
-					new TicTacMark(myRenderRegCli, markUri, markPosition, mySize, isPlayerO);
+					new TicTacMark(myRenderRegCli, markUri, markPosition, myScale, isPlayerO);
 			getTheGoodySpace().addGoody(markGoody);
 			markGoody.attachToVirtualWorldNode(myRootNode);
 			markMap.put(markUri, markGoody);
@@ -113,7 +111,7 @@ public class TicTacGrid extends BasicGoodyImpl {
 	}
 	
 	private Vector3f getPositionForMark(int xPos, int yPos) {
-		float markOffset = SIZE_MULTIPLIER*mySize/3f;
+		float markOffset = SIZE_MULTIPLIER*myScale/3f;
 		Vector3f relativeMarkPosition = new Vector3f(markOffset*(xPos-2), -markOffset*(yPos-2), 0);
 		return myPosition.add(relativeMarkPosition); 
 	}
@@ -143,15 +141,14 @@ public class TicTacGrid extends BasicGoodyImpl {
 	}
 	
 	@Override
-	protected void translateToPosition(Vector3f newLocation, float timeEnroute) {
-		myLogger.warn("Position/Rotation change not yet supported for TicTacGrid, coming soon...");
+	protected void moveViaAnimation(Vector3f newPosition, Quaternion newOrientation, Float newScale, float duration) {
+		myLogger.warn("MOVE not yet supported for TicTacGrid, coming soon...");
 	}
 	
 	@Override
 	public void setScale(Float newScale) {
 		if (newScale != null) {
 			super.setScale(newScale);
-			mySize = newScale;
 			for (BasicGoodyImpl markGoody : markMap.values()) {
 				markGoody.setScale(newScale);
 				String markName = markGoody.getUri().getLocalName();
@@ -170,7 +167,6 @@ public class TicTacGrid extends BasicGoodyImpl {
 			case SET : {
 				String removeString = ga.getSpecialString(CLEAR_IDENT);
 				String stateString = ga.getSpecialString(GoodyNames.USE_O);
-				Vector3f markGridLocation = ga.getLocationVector();
 				if (removeString != null) {
 					try {
 						if (Boolean.valueOf(removeString)) {
@@ -181,6 +177,7 @@ public class TicTacGrid extends BasicGoodyImpl {
 					}
 				} else if (stateString != null) {
 					try {
+						Vector3f markGridLocation = ga.getLocationVector();
 						addMarkAt((int)markGridLocation.getX(), (int)markGridLocation.getY(), 
 								Boolean.valueOf(stateString));
 					} catch (Exception e) { // May not need try/catch after BasicTypedValueMap implementation is complete

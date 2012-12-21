@@ -16,7 +16,7 @@
 
 package org.cogchar.render.model.goodies;
 
-import com.jme3.animation.LoopMode;
+import com.jme3.animation.*;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.cinematic.MotionPath;
@@ -31,10 +31,7 @@ import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.cinema.*;
-import org.cogchar.render.opengl.scene.CinematicMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
@@ -46,20 +43,19 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 // and to make sure the BasicGoodyImpl has the sorts of properties we want it to have 
 public class BasicGoodyImpl extends BasicGoody {
 	
-	// The currently used (and depreciated) version of jMonkey doesn't appear to correctly apply durations for MotionTracks
-	// The reported duration matches the value set via setInitialDuration, but the actual observed duration is shorter
+	// The current version of jMonkey (snapshot as of 20 Dec 2012) doesn't appear to correctly apply durations for Animations!
+	// The reported duration matches the value set, but the actual observed duration is shorter
 	// The result is this unfortunate trim factor to which we set the speed, so that the observed motion duration matches
 	// what we expect to see. Totally prone to variation and problems; hopefully we'll be able to get rid of this in the 
-	// not-too-distant future with a new version of jMonkey or etc!
-	// Update 19 Dec 2012: Seems the whole Cinematic system in jMonkey is depreciated. Probably using the AnimationFactory
-	// will produce better results and allow this to be eliminated:
+	// not-too-distant future with a new version of jMonkey or etc, but this seems to be a persistent problem in jME 3 versions!
 	final static float SPEED_TRIM_FACTOR = 0.77f; 
 
 	protected Vector3f myPosition = new Vector3f(); // default: at origin
 	protected Quaternion myRotation = new Quaternion(); // default: no rotation
+	protected float myScale = 1;
 
 	// This allows a single "thing" to have multiple switchable geometries
-	List<BasicGoodieGeometry> myGeometries = new ArrayList<BasicGoodieGeometry>();
+	List<BasicGoodyGeometry> myGeometries = new ArrayList<BasicGoodyGeometry>();
 	int attachedIndex = NULL_INDEX; // The index of the currently attached geometry, or -1 if none
 	final static int NULL_INDEX = -1;
 
@@ -75,15 +71,15 @@ public class BasicGoodyImpl extends BasicGoody {
 	// It would be good for clarity to have this in a separate file, but by having it as an inner class we allow
 	// access to getRenderRegistryClient() without awkwardness. And it seems it can be a private class. But we might
 	// end up reconsidering this being a private inner class eventually.
-	private class BasicGoodieGeometry {
+	private class BasicGoodyGeometry {
 		Geometry myGeometry;
 		ColorRGBA myColor = ColorRGBA.Blue; // A default color
 		RigidBodyControl myControl = null;
 		Material myMaterial;
 		Quaternion myRotationOffset;
 
-		BasicGoodieGeometry(Mesh mesh, Material material, ColorRGBA color, 
-				Quaternion rotation, float scale, CollisionShape shape, float mass) {
+		BasicGoodyGeometry(Mesh mesh, Material material, ColorRGBA color, 
+				Quaternion rotation, CollisionShape shape, float mass) {
 			myRotationOffset = rotation;
 			if (color != null) {
 				myColor = color;
@@ -105,7 +101,7 @@ public class BasicGoodyImpl extends BasicGoody {
 			myGeometry = myRenderRegCli.getSceneGeometryFacade(null)
 					.makeGeom(myUri.getLocalName(), mesh, myMaterial, myControl);
 			//myGeometry.addControl(new RigidBodyControl(0)); // TEST ONLY -- in here only until I can figure out what's wrong with goody floor
-			myGeometry.setLocalScale(scale);
+			myGeometry.setLocalScale(myScale);
 			myGeometry.setLocalRotation(rotation);
 		}
 
@@ -124,21 +120,21 @@ public class BasicGoodyImpl extends BasicGoody {
 	// Returns geometry index
 	// This method is intended to support physical objects
 	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, 
-			float scale, CollisionShape shape, float mass) {
-		myGeometries.add(new BasicGoodieGeometry(mesh, material, color, rotation, scale, shape, mass));
+			CollisionShape shape, float mass) {
+		myGeometries.add(new BasicGoodyGeometry(mesh, material, color, rotation, shape, mass));
 		return myGeometries.size() - 1;
 	}
 	// For adding non-physical geometries
-	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, float scale) {
-		return addGeometry(mesh, material, color, rotation, scale, null, 0f);
+	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation) {
+		return addGeometry(mesh, material, color, rotation, null, 0f);
 	}
 	// For adding non-physical geometries with default material
-	protected int addGeometry(Mesh mesh, ColorRGBA color, Quaternion rotation, float scale) {
-		return addGeometry(mesh, null, color, rotation, scale, null, 0f);
+	protected int addGeometry(Mesh mesh, ColorRGBA color, Quaternion rotation) {
+		return addGeometry(mesh, null, color, rotation, null, 0f);
 	}
 	// For adding non-physical geometries with default material and no rotation offset
-	protected int addGeometry(Mesh mesh, ColorRGBA color, float scale) {
-		return addGeometry(mesh, null, color, new Quaternion(), scale, null, 0f);
+	protected int addGeometry(Mesh mesh, ColorRGBA color) {
+		return addGeometry(mesh, null, color, new Quaternion(), null, 0f);
 	}
 
 	// For attaching "default" (zero index) geometry
@@ -174,7 +170,7 @@ public class BasicGoodyImpl extends BasicGoody {
 
 	private void attachGeometryToRootNode(final int geometryIndex) {
 		detachFromVirtualWorldNode();
-		final BasicGoodieGeometry geometryToAttach = myGeometries.get(geometryIndex);
+		final BasicGoodyGeometry geometryToAttach = myGeometries.get(geometryIndex);
 		final Geometry jmeGeometry = geometryToAttach.getJmeGeometry();
 		setGeometryPositionAndRotation(geometryToAttach);
 		//myLogger.info("Attaching geometry {} for goody {}", geometryIndex, myUri); // TEST ONLY
@@ -193,7 +189,7 @@ public class BasicGoodyImpl extends BasicGoody {
 	}
 
 	private void detachGeometryFromRootNode() {
-		final BasicGoodieGeometry currentGeometry = myGeometries.get(attachedIndex);
+		final BasicGoodyGeometry currentGeometry = getCurrentAttachedBasicGoodyGeometry();
 		enqueueForJmeAndWait(new Callable<Void>() { // Do this on main render thread
 
 			@Override
@@ -230,7 +226,7 @@ public class BasicGoodyImpl extends BasicGoody {
 
 				@Override
 				public Void call() throws Exception {
-					setGeometryPositionAndRotation(myGeometries.get(attachedIndex));
+					setGeometryPositionAndRotation(getCurrentAttachedBasicGoodyGeometry());
 					return null;
 				}
 			});
@@ -245,8 +241,12 @@ public class BasicGoodyImpl extends BasicGoody {
 		return myRotation;
 	}
 
-	private void setGeometryPositionAndRotation(BasicGoodieGeometry goodieGeometry) {
-		Quaternion totalRotation = myRotation.mult(goodieGeometry.myRotationOffset);
+	private Quaternion getTotalRotation(BasicGoodyGeometry goodieGeometry) {
+		return myRotation.mult(goodieGeometry.myRotationOffset);
+	}
+	
+	private void setGeometryPositionAndRotation(BasicGoodyGeometry goodieGeometry) {
+		Quaternion totalRotation = getTotalRotation(goodieGeometry);
 		//myLogger.info("Setting Goody position {}, rotation {} with offset {} for total rotation {}", // TEST ONLY
 		//	new Object[]{myPosition, myRotation, goodieGeometry.myRotationOffset, totalRotation}); // TEST ONLY
 		RigidBodyControl jmeControl = goodieGeometry.myControl;
@@ -259,69 +259,42 @@ public class BasicGoodyImpl extends BasicGoody {
 			jmeGeometry.setLocalRotation(totalRotation);
 		}
 	}
-
-	protected void translateToPosition(Vector3f newPosition, float timeEnroute) {
-		MotionPath path = new MotionPath();
-		path.addWayPoint(myPosition);
-		path.addWayPoint(newPosition);
-		//path.setCurveTension(0.0f);
-		// MotionTrack is depreciated in new jMonkey, but we must use it since we're using an older version:
-		MotionTrack event = new MotionTrack(myGeometries.get(attachedIndex).getJmeGeometry(), path);
-		// Current jMonkey uses this instead:
-		//MotionEvent event = new MotionEvent(myGeometries.get(attachedIndex).getJmeGeometry(), path);
-		event.setSpeed(SPEED_TRIM_FACTOR);
-		event.setDirectionType(MotionTrack.Direction.None);
-		event.setInitialDuration(timeEnroute);
-		event.play();
-		myPosition = newPosition;
+	
+	protected void moveViaAnimation(Vector3f newPosition, Quaternion newOrientation, Float newScale, float duration) {
+		final String moveAnimName = "BasicGoodyMoveFactory";
+		AnimationFactory aniFactory = new AnimationFactory(duration, moveAnimName);
+		// First add starting position/rotation/scale to timeline at index 0
+		aniFactory.addKeyFrameTranslation(0, myPosition);
+		aniFactory.addKeyFrameRotation(0, getTotalRotation(getCurrentAttachedBasicGoodyGeometry()));
+		aniFactory.addKeyFrameScale(0, new Vector3f(myScale, myScale, myScale));
+		// Now add new position/rotation/scale at duration:
+		setNewPositionAndRotationIfNonNull(newPosition, newOrientation);
+		if (newScale != null) {
+			myScale = newScale;
+		}
+		aniFactory.addTimeTranslation(duration, myPosition);
+		aniFactory.addTimeRotation(duration, getTotalRotation(getCurrentAttachedBasicGoodyGeometry()));
+		aniFactory.addTimeScale(duration, new Vector3f(myScale, myScale, myScale));
+		// Finally the Animation is generated and linked to the geometry via an AnimationControl
+		Animation moveAnimation = aniFactory.buildAnimation();
+		AnimControl goodyControl = new AnimControl(); // Should this be retained for reuse?
+		goodyControl.addAnim(moveAnimation);
+		getCurrentAttachedGeometry().addControl(goodyControl);
+		AnimChannel moveChannel = goodyControl.createChannel();
+		moveChannel.setAnim(moveAnimName, 0f);
+		// Oddly, it seems these need to be set *after* starting the animation with setAnim:
+		moveChannel.setLoopMode(LoopMode.DontLoop);
+		moveChannel.setSpeed(SPEED_TRIM_FACTOR); // Quite maddening that this is still required to get duration to come out correctly
 	}
 	
-	/*
-	// In somewhat ugly fashion, we build a CinematicInstanceConfig for the move operation
-	// Likely can be improved
-	// Currently rotations and timing need some work
-	// Oops, Cinematics ae depreciated! May want to do this via AnimationFactory instead.
-	private void moveViaCinematic(Vector3f newPosition, Quaternion newOrientation, float duration) {
-		Quaternion totalRotation = newOrientation.mult(myGeometries.get(attachedIndex).myRotationOffset);
-		Ident endWaypointUri = makeIdentForLocalCinematicEntity("MoveEndPoint");
-		Ident endRotationUri = makeIdentForLocalCinematicEntity("MoveEndRotation");
-		Ident motionTrackUri = makeIdentForLocalCinematicEntity("MoveTranslation");
-		Ident rotationTrackUri = makeIdentForLocalCinematicEntity("MoveRotation");
-		Ident moveCinematicUri = makeIdentForLocalCinematicEntity("MoveCinematic");
-		WaypointConfig endWaypoint = new WaypointConfig(endWaypointUri, newPosition.toArray(new float[3]));
-		RotationConfig endRotation = new RotationConfig(endRotationUri, totalRotation.toAngles(new float[3]));
-		CinematicTrack motionTrack = new CinematicTrack(motionTrackUri);
-		setBasicCinematicTrackProperties(motionTrack, duration);
-		motionTrack.trackType = CinematicTrack.TrackType.POSITIONTRACK;
-		motionTrack.waypoints.add(endWaypoint);
-		CinematicTrack rotationTrack = new CinematicTrack(rotationTrackUri);
-		setBasicCinematicTrackProperties(rotationTrack, duration);
-		rotationTrack.trackType = CinematicTrack.TrackType.ROTATIONTRACK;
-		rotationTrack.endRotation = endRotation;
-		CinematicInstanceConfig moveCinematic = new CinematicInstanceConfig(moveCinematicUri);
-		moveCinematic.duration = duration;
-		moveCinematic.myTracks.add(motionTrack);
-		moveCinematic.myTracks.add(rotationTrack);
-		CinematicMgr cineMgr = myRenderRegCli.getSceneCinematicsFacade(null);
-		cineMgr.buildCinematic(moveCinematic);
-		cineMgr.controlCinematicByName(moveCinematic.getName(), CinematicMgr.ControlAction.PLAY);
-		myPosition = newPosition;
-		myRotation = newOrientation;
+	private void setNewPositionAndRotationIfNonNull(Vector3f newPosition, Quaternion newRotation) {
+		if (newPosition != null) {
+			myPosition = newPosition;
+		}
+		if (newRotation != null) {
+			myRotation = newRotation;
+		}
 	}
-		
-	private Ident makeIdentForLocalCinematicEntity(String uriSuffix) {
-		String uriPrefixString = CinemaCN.CCRT + myUri.getLocalName();
-		return new FreeIdent(uriPrefixString + uriSuffix);
-	}
-	
-	private void setBasicCinematicTrackProperties(CinematicTrack track, float duration) {
-		track.attachedItem = myUri;
-		track.attachedItemType = CinematicTrack.AttachedItemType.GOODY;
-		track.trackDuration = duration;
-		track.startTime = 0.0f;
-		track.loopMode = "DontLoop";
-	}
-	*/
 	
 	@Override
 	public void setScale(final Float scaleFactor) {
@@ -330,15 +303,16 @@ public class BasicGoodyImpl extends BasicGoody {
 
 				@Override
 				public Void call() throws Exception {
-					for (BasicGoodieGeometry aGeometry : myGeometries) {
+					for (BasicGoodyGeometry aGeometry : myGeometries) {
 						aGeometry.myGeometry.setLocalScale(scaleFactor);
 					}
 					return null;
 				}
 			});
+			myScale = scaleFactor;
 		}
 	}
-
+	
 	// Override this method to add functionality; be sure to call this super method to apply standard Goody actions
 	@Override
 	public void applyAction(GoodyAction ga) {
@@ -356,8 +330,7 @@ public class BasicGoodyImpl extends BasicGoody {
 				if ((timeEnroute == null) || (Math.abs(timeEnroute-0f) < 0.001f)) {
 					setPositionAndRotation(newLocation, newRotation);
 				} else {
-					translateToPosition(newLocation, timeEnroute);
-					// Soon will also add rotation, scale via AnimationFactory techniques
+					moveViaAnimation(newLocation, newRotation, scaleFactor, timeEnroute);
 				}
 				break;
 			}
@@ -369,10 +342,19 @@ public class BasicGoodyImpl extends BasicGoody {
 
 	// Not clear whether this is a good thing to expose publically, especially since goodies can change their geometry
 	// Adding it to provide goody cinematic capabilities on a trial basis
-	public Geometry getCurrentGeometry() {
+	public Geometry getCurrentAttachedGeometry() {
 		Geometry currentGeometry = null;
+		BasicGoodyGeometry currentGoodyGeometry = getCurrentAttachedBasicGoodyGeometry();
+		if (currentGoodyGeometry != null) {
+			currentGeometry = currentGoodyGeometry.getJmeGeometry();
+		}
+		return currentGeometry;
+	}
+	
+	private BasicGoodyGeometry getCurrentAttachedBasicGoodyGeometry() {
+		BasicGoodyGeometry currentGeometry = null;
 		if (attachedIndex != NULL_INDEX) {
-			currentGeometry = myGeometries.get(attachedIndex).getJmeGeometry();
+			currentGeometry = myGeometries.get(attachedIndex);
 		}
 		return currentGeometry;
 	}
