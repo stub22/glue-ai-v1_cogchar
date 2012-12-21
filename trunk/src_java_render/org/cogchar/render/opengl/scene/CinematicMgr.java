@@ -15,6 +15,7 @@
  */
 package org.cogchar.render.opengl.scene;
 
+/*
 import com.jme3.animation.LoopMode;
 import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
@@ -44,14 +45,21 @@ import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
+*/
 
 /**
  *
  * @author Ryan Biggs
  */
 
-public class CinematicMgr extends BasicDebugger {
+public class CinematicMgr /*extends BasicDebugger*/ {
 	
+	/* CinematicMgr is currently disabled due to cinematics classes being depreciated in current jMonkey revision
+	 * This will eventually be replaced with a new spatial animation system
+	
+	
+	 
+	 
 	// The currently used (and depreciated) version of jMonkey doesn't appear to correctly apply durations
 	// The reported duration matches the value set via setInitialDuration, but the actual observed duration is shorter
 	// The result is this unfortunate trim factor to which we set the speed, so that the observed motion duration matches
@@ -313,7 +321,7 @@ public class CinematicMgr extends BasicDebugger {
 	private AbstractCinematicEvent getRotationTrackEvent(CinematicTrack track, Spatial attachedSpatial) {
 		// First make sure rotation is valid
 		RotationConfig rotation = track.endRotation;
-		float[] rotationInArray = {rotation.pitch, rotation.yaw, rotation.roll};
+		float[] rotationInArray = {rotation.yaw, rotation.roll, rotation.pitch};
 		if (noPosition(rotationInArray)) { // If we don't have values for this rotation...
 			// First check to see if this rotation refers to a stored rotation previously defined
 			String rotationReference = rotation.getName();
@@ -324,9 +332,9 @@ public class CinematicMgr extends BasicDebugger {
 					return null;
 				} else {
 					// Reset rotationInArray to values from loaded rotation
-					rotationInArray[0] = rotation.pitch;
-					rotationInArray[1] = rotation.yaw;
-					rotationInArray[2] = rotation.roll;
+					rotationInArray[0] = rotation.yaw;
+					rotationInArray[1] = rotation.roll;
+					rotationInArray[2] = rotation.pitch;
 				}
 			} else {
 				staticLogger.error("No valid rotation angles or rotationName in rotation contained in track: {}", track);
@@ -347,6 +355,7 @@ public class CinematicMgr extends BasicDebugger {
 			track.trackDuration = 0; // Just in case it is set to a negative number in RDF
 		}
 		Quaternion endRotation = new Quaternion(rotationInArray);
+		staticLogger.info("Adding new RotationTrack: yaw, pitch, roll: {}, {}, {}; duration {}, loop type {}", new Object[]{rotation.yaw, rotation.pitch, rotation.roll, track.trackDuration, track.loopMode}); // TEST ONLY
 		return new RotationTrack(attachedSpatial, endRotation, track.trackDuration, loopJmeType);
 	}
 	
@@ -431,6 +440,7 @@ public class CinematicMgr extends BasicDebugger {
 		myRotationsByName.clear();
 		staticLogger.info("Cinematics cleared. Number detached: {}", detachCounter);
 	}
+	*/ 
 
 	public enum ControlAction {
 

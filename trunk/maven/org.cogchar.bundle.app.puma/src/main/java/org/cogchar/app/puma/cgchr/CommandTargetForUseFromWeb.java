@@ -40,11 +40,15 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
 	}
 
 	@Override public boolean triggerNamedCinematic(String name) {
-		return myPCCB.getCinematicMgr().controlCinematicByName(name, CinematicMgr.ControlAction.PLAY);
+		getLogger().warn("Cinematics are currently disabled due to cinematic classes being depreciated in current jME version");
+		//return myPCCB.getCinematicMgr().controlCinematicByName(name, CinematicMgr.ControlAction.PLAY);
+		return false;
 	}
 
 	@Override public boolean stopNamedCinematic(String name) {
-		return myPCCB.getCinematicMgr().controlCinematicByName(name, CinematicMgr.ControlAction.STOP);
+		getLogger().warn("Cinematics are currently disabled due to cinematic classes being depreciated in current jME version");
+		//return myPCCB.getCinematicMgr().controlCinematicByName(name, CinematicMgr.ControlAction.STOP);
+		return false;
 	}
 
 	@Override public String queryCogbot(String query, String url) {
