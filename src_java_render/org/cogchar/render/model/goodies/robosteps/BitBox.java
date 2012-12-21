@@ -59,11 +59,12 @@ public class BitBox extends BasicGoodyImpl {
 			}
 		} 
 		setPositionAndRotation(initialPosition, initialRotation);
+		setScale(size);
 		Mesh zeroMesh = new Torus(40,20,1f/5f,5f/6f);
 		Mesh oneMesh = new Cylinder(20, 20, 1f/5f, 2f, true);
-		zeroIndex = addGeometry(zeroMesh, FALSE_COLOR, size);
+		zeroIndex = addGeometry(zeroMesh, FALSE_COLOR);
 		float[] oneRotationAngles = {(float)(Math.PI/2), 0f, 0f};
-		oneIndex = addGeometry(oneMesh, TRUE_COLOR, new Quaternion(oneRotationAngles), size);
+		oneIndex = addGeometry(oneMesh, TRUE_COLOR, new Quaternion(oneRotationAngles));
 		state = boxState;
 	}
 

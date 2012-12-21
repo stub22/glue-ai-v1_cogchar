@@ -42,7 +42,7 @@ public class VirtualFloor extends BasicGoodyImpl {
 		Mesh floorBox = new Box(140f, 0.25f, 140f);
 		Plane plane = new Plane();
 		plane.setOriginNormal(new Vector3f(0, 0.25f, 0), Vector3f.UNIT_Y);
-		addGeometry(floorBox, null, ColorRGBA.LightGray, new Quaternion(), 1f, new PlaneCollisionShape(plane), 0f);
+		addGeometry(floorBox, null, ColorRGBA.LightGray, new Quaternion(), new PlaneCollisionShape(plane), 0f);
 	}
 	
 	@Override
