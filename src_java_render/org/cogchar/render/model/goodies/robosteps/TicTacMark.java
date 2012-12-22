@@ -49,9 +49,10 @@ public class TicTacMark extends BasicGoodyImpl {
 	private int indexX;
 	private int indexO;
 
-	public TicTacMark(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size, boolean isPlayerO) {
+	public TicTacMark(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
+			float size, boolean isPlayerO) {
 		super(aRenderRegCli, boxUri);
-		setPosition(initialPosition);
+		setPositionAndRotation(initialPosition, initialRotation);
 		setScale(size);
 		Mesh meshX = makeCustomXMesh();
 		Mesh meshO = new Torus(40,20,1f/5f,5f/6f);

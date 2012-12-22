@@ -16,11 +16,11 @@
 
 package org.cogchar.render.model.goodies;
 
-import org.cogchar.render.model.goodies.robosteps.TicTacMark;
-import org.cogchar.render.model.goodies.robosteps.BitBox;
-import org.cogchar.render.model.goodies.robosteps.TicTacGrid;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
+import org.cogchar.render.model.goodies.robosteps.BitBox;
+import org.cogchar.render.model.goodies.robosteps.TicTacGrid;
+import org.cogchar.render.model.goodies.robosteps.TicTacMark;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
@@ -100,9 +100,11 @@ public class GoodyFactory {
 					newGoody = new VirtualFloor(myRRC, ga.getGoodyID(), ga.getLocationVector(), true);
 				} else if (GoodyNames.TYPE_TICTAC_MARK.equals(ga.getType())) {
 					boolean isAnO = Boolean.valueOf(ga.getSpecialString(GoodyNames.USE_O));
-					newGoody = new TicTacMark(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getScale(), isAnO);
+					newGoody = new TicTacMark(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
+							ga.getScale(), isAnO);
 				} else if (GoodyNames.TYPE_TICTAC_GRID.equals(ga.getType())) {
-					newGoody = new TicTacGrid(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getScale());
+					newGoody = new TicTacGrid(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
+							ga.getScale());
 				} else if (GoodyNames.TYPE_CROSSHAIR.equals(ga.getType())) {
 					newGoody = new CrossHairGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getScale());
 				} else if (GoodyNames.TYPE_SCOREBOARD.equals(ga.getType())) {
