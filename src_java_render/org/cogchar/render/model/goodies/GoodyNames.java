@@ -44,6 +44,9 @@ public class GoodyNames  {
 	public	static Ident	SIZE_Y = makeID("sizeY");
 	public	static Ident	SIZE_Z = makeID("sizeZ");
 	
+	public	static Ident	COORDINATE_X = makeID("coordinateX");
+	public	static Ident	COORDINATE_Y = makeID("coordinateY");
+	
 	public	static Ident	TRAVEL_TIME = makeID("travelTime");
 	//public	static Ident	TEXT_SIZE = makeID("textScale");
 	public	static Ident	SCALE = makeID("scale");
