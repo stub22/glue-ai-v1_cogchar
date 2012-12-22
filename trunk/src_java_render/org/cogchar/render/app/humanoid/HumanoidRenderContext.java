@@ -82,7 +82,11 @@ public class HumanoidRenderContext extends BonyRenderContext {
 
 	public void initCinematicParameters() {
 		WorkaroundAppStub stub = getAppStub();
-		stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
+		
+		// The below was throwing off the timing for the spatial animations used to move Goodies, etc.
+		// I suspect we probably don't want/need this:
+		//stub.setAppSpeed(1.3f);  // BowlAtSinbad uses 1.3f - is defined in Application.java, is this physics related?
+		
 		FlyByCamera fbCam = stub.getFlyByCamera();
 		fbCam.setMoveSpeed(50);
 		//initLightsCameraCinematics();

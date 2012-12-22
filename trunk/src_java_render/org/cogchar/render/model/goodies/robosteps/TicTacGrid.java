@@ -45,13 +45,12 @@ public class TicTacGrid extends BasicGoodyImpl {
 	private static final float[] ROTATE_UPRIGHT = {(float)(Math.PI/2), 0f, 0f};
 	private static final Ident CLEAR_IDENT = GoodyNames.makeID("clearMarks");
 	
-	private Map<Ident, BasicGoodyImpl> markMap = new HashMap<Ident, BasicGoodyImpl>();
+	private Map<Ident, TicTacMark> markMap = new HashMap<Ident, TicTacMark>();
 	
-	public TicTacGrid(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, float size) {
+	public TicTacGrid(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, 
+			Quaternion initialRotation, float size) {
 		super(aRenderRegCli, boxUri);
-		//setPosition(initialPosition); // This will work fine once setPositionAndRotation works in this method
-		super.setPositionAndRotation(initialPosition, null); // This works even though we've temporarily overriden setPositionAndRotation to do nothing locally
-		super.setScale(size);
+		setPositionRotationAndScale(initialPosition, initialRotation, size);
 		Mesh gridMesh = makeCustomGridMesh();
 		addGeometry(gridMesh, GRID_COLOR, new Quaternion(ROTATE_UPRIGHT));
 	}
@@ -77,9 +76,9 @@ public class TicTacGrid extends BasicGoodyImpl {
 		} else if (markMap.containsKey(markUri)) {
 			myLogger.warn("Can't add TicTacMark to grid; there is already a mark at position ({}, {})", xPos, yPos);
 		} else {
-			Vector3f markPosition = getPositionForMark(xPos, yPos);
-			BasicGoodyImpl markGoody = 
-					new TicTacMark(myRenderRegCli, markUri, markPosition, myScale, isPlayerO);
+			Vector3f markPosition = getWorldPositionForMark(xPos, yPos);
+			TicTacMark markGoody = 
+					new TicTacMark(myRenderRegCli, markUri, markPosition, myRotation, myScale, isPlayerO);
 			getTheGoodySpace().addGoody(markGoody);
 			markGoody.attachToVirtualWorldNode(myRootNode);
 			markMap.put(markUri, markGoody);
@@ -110,10 +109,25 @@ public class TicTacGrid extends BasicGoodyImpl {
 		return new FreeIdent(uriString);
 	}
 	
-	private Vector3f getPositionForMark(int xPos, int yPos) {
+	private int[] getGridPosition(Ident markIdent) {
+		String markName = markIdent.getLocalName();
+		// Mark x and y are part of local name per createMarkIdent:
+		int xPos = Integer.valueOf(String.valueOf(markName.charAt(markName.length() - 2)));
+		int yPos = Integer.valueOf(String.valueOf(markName.charAt(markName.length() - 1)));
+		return new int[]{xPos, yPos};
+	}
+	
+	private Vector3f getWorldPositionForMark(int xPos, int yPos) {
 		float markOffset = SIZE_MULTIPLIER*myScale/3f;
 		Vector3f relativeMarkPosition = new Vector3f(markOffset*(xPos-2), -markOffset*(yPos-2), 0);
+		// Now rotate positions according to myRotation
+		relativeMarkPosition = myRotation.mult(relativeMarkPosition);
 		return myPosition.add(relativeMarkPosition); 
+	}
+	
+	private Vector3f getWorldPositionForMark(TicTacMark mark) {
+		int[] gridPosition = getGridPosition(mark.getUri());
+		return getWorldPositionForMark(gridPosition[0], gridPosition[1]);
 	}
 	
 	private GoodySpace getTheGoodySpace() {
@@ -129,35 +143,26 @@ public class TicTacGrid extends BasicGoodyImpl {
 	
 	@Override
 	public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation) {
-		if ((newPosition != null) || (newRotation != null)) {
-			myLogger.warn("Position/Rotation change not yet supported for TicTacGrid, coming soon...");
+		setPositionRotationAndScale(newPosition, newRotation, myScale);
+	}
+	
+	@Override
+	public void setScale(Float newScale) {
+		setPositionRotationAndScale(myPosition, myRotation, newScale);
+	}
+	
+	final public void setPositionRotationAndScale(Vector3f newPosition, Quaternion newRotation, Float newScale) {
+		super.setPositionAndRotation(newPosition, newRotation);
+		super.setScale(newScale);
+		for (TicTacMark markGoody : markMap.values()) {
+			markGoody.setScale(newScale);
+			markGoody.setPositionAndRotation(getWorldPositionForMark(markGoody), newRotation);
 		}
-		/*
-		super.setPosition(newPosition);
-		for (BasicGoodyImpl markGoody : markMap.values()) {
-			//markGoody.setPosition(newPosition); // Nope not quite...
-		}
-		*/
 	}
 	
 	@Override
 	protected void moveViaAnimation(Vector3f newPosition, Quaternion newOrientation, Float newScale, float duration) {
 		myLogger.warn("MOVE not yet supported for TicTacGrid, coming soon...");
-	}
-	
-	@Override
-	public void setScale(Float newScale) {
-		if (newScale != null) {
-			super.setScale(newScale);
-			for (BasicGoodyImpl markGoody : markMap.values()) {
-				markGoody.setScale(newScale);
-				String markName = markGoody.getUri().getLocalName();
-				// Mark x and y are part of local name per createMarkIdent:
-				int xPos = Integer.valueOf(String.valueOf(markName.charAt(markName.length() - 2)));
-				int yPos = Integer.valueOf(String.valueOf(markName.charAt(markName.length() - 1)));
-				markGoody.setPosition(getPositionForMark(xPos, yPos));
-			}
-		}
 	}
 	
 	@Override
@@ -177,9 +182,9 @@ public class TicTacGrid extends BasicGoodyImpl {
 					}
 				} else if (stateString != null) {
 					try {
-						Vector3f markGridLocation = ga.getLocationVector();
-						addMarkAt((int)markGridLocation.getX(), (int)markGridLocation.getY(), 
-								Boolean.valueOf(stateString));
+						int xCoord = Integer.valueOf(ga.getSpecialString(GoodyNames.COORDINATE_X));
+						int yCoord = Integer.valueOf(ga.getSpecialString(GoodyNames.COORDINATE_Y));
+						addMarkAt(xCoord, yCoord, Boolean.valueOf(stateString));
 					} catch (Exception e) { // May not need try/catch after BasicTypedValueMap implementation is complete
 						myLogger.error("Error interpreting parameters for adding mark to TicTacGrid", e);
 					}

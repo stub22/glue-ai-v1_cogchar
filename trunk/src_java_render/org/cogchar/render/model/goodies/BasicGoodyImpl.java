@@ -19,8 +19,6 @@ package org.cogchar.render.model.goodies;
 import com.jme3.animation.*;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.cinematic.MotionPath;
-import com.jme3.cinematic.events.MotionTrack;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -42,13 +40,6 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 // This will need some ongoing refactorings both to fix some oddness and bad form inherent in development of the concepts here,
 // and to make sure the BasicGoodyImpl has the sorts of properties we want it to have 
 public class BasicGoodyImpl extends BasicGoody {
-	
-	// The current version of jMonkey (snapshot as of 20 Dec 2012) doesn't appear to correctly apply durations for Animations!
-	// The reported duration matches the value set, but the actual observed duration is shorter
-	// The result is this unfortunate trim factor to which we set the speed, so that the observed motion duration matches
-	// what we expect to see. Totally prone to variation and problems; hopefully we'll be able to get rid of this in the 
-	// not-too-distant future with a new version of jMonkey or etc, but this seems to be a persistent problem in jME 3 versions!
-	final static float SPEED_TRIM_FACTOR = 0.77f; 
 
 	protected Vector3f myPosition = new Vector3f(); // default: at origin
 	protected Quaternion myRotation = new Quaternion(); // default: no rotation
@@ -215,12 +206,7 @@ public class BasicGoodyImpl extends BasicGoody {
 	}
 
 	public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation) {
-		if (newPosition != null) {
-			myPosition = newPosition;
-		}
-		if (newRotation != null) {
-			myRotation = newRotation;
-		}
+		setNewPositionAndRotationIfNonNull(newPosition, newRotation);
 		if (attachedIndex != NULL_INDEX) {
 			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 
@@ -282,12 +268,11 @@ public class BasicGoodyImpl extends BasicGoody {
 		getCurrentAttachedGeometry().addControl(goodyControl);
 		AnimChannel moveChannel = goodyControl.createChannel();
 		moveChannel.setAnim(moveAnimName, 0f);
-		// Oddly, it seems these need to be set *after* starting the animation with setAnim:
+		// Oddly, it seems this needs to be set *after* starting the animation with setAnim:
 		moveChannel.setLoopMode(LoopMode.DontLoop);
-		moveChannel.setSpeed(SPEED_TRIM_FACTOR); // Quite maddening that this is still required to get duration to come out correctly
 	}
 	
-	private void setNewPositionAndRotationIfNonNull(Vector3f newPosition, Quaternion newRotation) {
+	protected void setNewPositionAndRotationIfNonNull(Vector3f newPosition, Quaternion newRotation) {
 		if (newPosition != null) {
 			myPosition = newPosition;
 		}
