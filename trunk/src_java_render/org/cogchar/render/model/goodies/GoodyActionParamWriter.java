@@ -59,6 +59,11 @@ public class GoodyActionParamWriter {
 		myBTVMap.putValueAtName(GoodyNames.SCALE, scale);
 	}
 	
+	// Not sure if this is how we want this to look or how we want it named, but good for starters...
+	public void putDuration(float duration) {
+		myBTVMap.putValueAtName(GoodyNames.TRAVEL_TIME, duration);
+	}
+	
 	public TypedValueMap	getValueMap() { 
 		return myBTVMap;
 	}
