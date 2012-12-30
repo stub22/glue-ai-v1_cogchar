@@ -15,20 +15,8 @@
  */
 package org.cogchar.render.model.databalls;
 
-import org.cogchar.api.cinema.CinemaAN;
-import org.cogchar.api.cinema.CinematicConfig;
-import org.cogchar.api.cinema.CinematicTrack;
-import org.cogchar.api.cinema.RotationConfig;
-import org.cogchar.api.cinema.CinematicInstanceConfig;
-import org.cogchar.api.cinema.WaypointConfig;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -38,7 +26,12 @@ import com.jme3.font.BitmapText;
 import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
-import com.jme3.math.*;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -46,7 +39,10 @@ import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
 import java.io.InputStream;
 import static java.lang.Math.pow;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.*;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.lift.LiftAmbassador;
@@ -91,7 +87,7 @@ public class BallBuilder extends BasicDebugger {
 	private CameraMgr myCameraMgr;
 	private Node myBallsNode = new Node("Databalls");
 	private Logger myLogger = getLoggerForClass(BallBuilder.class);
-	private CinematicConfig myDemoCinematicConfig;
+	//private CinematicConfig myDemoCinematicConfig;
 	private TextMgr myTextMgr;
 	private FlatOverlayMgr myFlatOverlayMgr;
 	private ClassLoader myResourceCl;
@@ -106,7 +102,7 @@ public class BallBuilder extends BasicDebugger {
 	// Probably it makes sense to retain an instance variable for the LiftAmbassador since it is used in several methods.
 	// However, it's probably even better to add an interface for BallBuilder->Lifter interactions
 	private LiftAmbassador myLiftAmbassador; 
-	private CinematicModelBuilder myCinematicModelBuilder;
+	//private CinematicModelBuilder myCinematicModelBuilder;
 
 	// Empty private default constructor to prevent outside instantiation
 	private BallBuilder() {}
@@ -364,11 +360,13 @@ public class BallBuilder extends BasicDebugger {
 		return BALL_INJECTION_POSITION[dimension] - BALL_INJECTION_BOX_SIZE[dimension] / 2;
 	}
 
+	/*
 	public void storeCinematicConfig(CinematicConfig config) {
 		myDemoCinematicConfig = config;
 	}
-
+	*/
 	
+	/* No longer applicable since Cinematics are no more - may be convertable to Paths, but we probably don't care...
 	class CinematicModelBuilder {
 		// These hold numbers to attach to the end of "Unnamed" track, waypoint, and rotation names
 
@@ -472,10 +470,11 @@ public class BallBuilder extends BasicDebugger {
 		getMyCinematicModelBuilder().buildModelFromCinematicConfig(myDemoCinematicConfig);
 		start();
 	}
+	*/
 
 	public void runBalls() {
 		if (myBalls.isEmpty() && myRenderContext != null) {
-			showCinematicConfig();
+			//showCinematicConfig();
 			start();
 		} else if (thisActivated) {
 			stop();
@@ -682,7 +681,8 @@ public class BallBuilder extends BasicDebugger {
 		} else if (action.equals(DataballStrings.clear)) {
 			clear();
 		} else if (action.equals(DataballStrings.demo)) {
-			showCinematicConfig();
+			//showCinematicConfig();
+			myLogger.warn("Cinematic demo is depreciated.");
 		} else if (action.equals(DataballStrings.viewSparqlQuery)) {
 			success = buildModelFromSpaqrlUsingLiftSettings(text);
 		} else if (action.equals(DataballStrings.viewSparqlQueryCloud)) {
