@@ -98,9 +98,9 @@ public class LiftAmbassador {
 
 	public interface LiftAppInterface {
 
-		boolean triggerNamedCinematic(String name);
+		boolean triggerNamedPath(String name);
 
-		boolean stopNamedCinematic(String name);
+		boolean stopNamedPath(String name);
 
 		String queryCogbot(String query, String cogbotConvoUrl);
 
@@ -122,6 +122,8 @@ public class LiftAmbassador {
 	}
 
 	// This (legacy) flavor of the method activates controls for the initial config for new sessions
+	// I *think* that due to improvements in LifterState, activation no longer needs to be synchronized
+	// But it's a small performance hit, so for now I'll leave it until we're really sure.
 	public void activateControlsFromConfig(LiftConfig newConfig) {
 		synchronized (activationLock) {
 			myInitialConfig = newConfig;
@@ -236,9 +238,9 @@ public class LiftAmbassador {
 		synchronized (cogcharLock) {
 			boolean success;
 			if (myTriggeredCinematics.contains(cinematicName)) {
-				myLiftAppInterface.stopNamedCinematic(cinematicName); // In order to replay, we need to stop previously played cinematic first
+				myLiftAppInterface.stopNamedPath(cinematicName); // In order to replay, we need to stop previously played cinematic first
 			}
-			success = myLiftAppInterface.triggerNamedCinematic(cinematicName);
+			success = myLiftAppInterface.triggerNamedPath(cinematicName);
 			if (success) {
 				myTriggeredCinematics.add(cinematicName);
 			}

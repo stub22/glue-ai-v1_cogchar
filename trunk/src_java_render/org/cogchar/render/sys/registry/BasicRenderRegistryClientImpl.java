@@ -183,8 +183,8 @@ public class BasicRenderRegistryClientImpl implements RenderRegistryClient {
 	}
 	
 	@Override
-	public CinematicMgr getSceneCinematicsFacade(String optionalName) {
-		return RenderRegistryFuncs.findOrMakeSceneCinematicsFacade(optionalName);
+	public PathMgr getScenePathFacade(String optionalName) {
+		return RenderRegistryFuncs.findOrMakeScenePathFacade(optionalName);
 	}
 
 	@Override
