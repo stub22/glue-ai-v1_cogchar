@@ -26,7 +26,7 @@ import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.model.humanoid.HumanoidFigureManager;
-import org.cogchar.render.opengl.scene.CinematicMgr;
+import org.cogchar.render.opengl.scene.PathMgr;
 /**
  * This class is intended to be the "public" API to the PUMA "system",
  * for use from direct commands sent by GUIs or network.  
@@ -58,8 +58,8 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 	public HumanoidFigureManager getFigureManager() { 
 		return getHRC().getHumanoidFigureManager();
 	}
-	public CinematicMgr getCinematicMgr() {
-		return getHRC().getRenderRegistryClient().getSceneCinematicsFacade(null);
+	public PathMgr getPathMgr() {
+		return getHRC().getRenderRegistryClient().getScenePathFacade(null);
 	}
 	public void resetMainCameraLocation() { 
 		getHRC().setDefaultCameraLocation();

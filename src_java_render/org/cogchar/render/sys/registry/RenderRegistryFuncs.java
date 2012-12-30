@@ -38,7 +38,6 @@ import org.cogchar.render.opengl.optic.LightFactory;
 import org.cogchar.render.opengl.optic.MatFactory;
 import org.cogchar.render.opengl.optic.TextureFactory;
 import org.cogchar.render.opengl.optic.ViewportFacade;
-import org.cogchar.render.opengl.scene.CinematicMgr;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 import org.cogchar.render.opengl.scene.GeomFactory;
@@ -47,6 +46,7 @@ import org.cogchar.render.opengl.scene.TextMgr;
 import org.cogchar.render.sys.asset.AssetContext;
 import org.osgi.framework.BundleContext;
 import org.cogchar.render.app.core.WorkaroundAppStub;
+import org.cogchar.render.opengl.scene.*;
 
 /**
  * This is a set of functions which statelessly defines the create/find behavior of Cogchar rendering core services.
@@ -88,7 +88,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		CC_SCENE_GEOMETRY_FACADE,
 		CC_SCENE_SPATIAL_MODEL_FACADE,
 		CC_SCENE_TEXT_FACADE,
-		CC_SCENE_CINEMATICS_FACADE,
+		CC_SCENE_PATH_FACADE,
 		
 		CC_PHYSICS_FACADE,
 		
@@ -160,7 +160,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static RFSpec<FlatOverlayMgr>			THE_CC_SCENE_FLAT_FACADE;
 	protected static RFSpec<ModelSpatialFactory>	THE_CC_SCENE_SPATIAL_MODEL_FACADE;
 	protected static RFSpec<TextMgr>				THE_CC_SCENE_TEXT_FACADE;
-	protected static RFSpec<CinematicMgr>			THE_CC_SCENE_CINEMATICS_FACADE;
+	protected static RFSpec<PathMgr>				THE_CC_SCENE_PATH_FACADE;
 
 	static {
 		THE_CC_SCENE_GEOMETRY_FACADE = new RFSpec<GeomFactory>(RFKind.CC_SCENE_GEOMETRY_FACADE, GeomFactory.class, false);
@@ -168,7 +168,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		THE_CC_SCENE_FLAT_FACADE = new RFSpec<FlatOverlayMgr>(RFKind.CC_SCENE_FLAT_FACADE, FlatOverlayMgr.class, false);
 		THE_CC_SCENE_SPATIAL_MODEL_FACADE = new RFSpec<ModelSpatialFactory>(RFKind.CC_SCENE_SPATIAL_MODEL_FACADE, ModelSpatialFactory.class, false);
 		THE_CC_SCENE_TEXT_FACADE = new RFSpec<TextMgr>(RFKind.CC_SCENE_TEXT_FACADE, TextMgr.class, false);	
-		THE_CC_SCENE_CINEMATICS_FACADE = new RFSpec<CinematicMgr>(RFKind.CC_SCENE_CINEMATICS_FACADE, CinematicMgr.class, false);
+		THE_CC_SCENE_PATH_FACADE = new RFSpec<PathMgr>(RFKind.CC_SCENE_PATH_FACADE, PathMgr.class, false);
 	}
 	
 	protected static RFSpec<WorkaroundAppStub>		THE_CC_WORKAROUND_APP_STUB;
@@ -288,8 +288,8 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static TextMgr findOrMakeSceneTextFacade(String optionalName) {
 		return findOrMakeInternalFacade(THE_CC_SCENE_TEXT_FACADE, optionalName, null);
 	}
-	protected static CinematicMgr findOrMakeSceneCinematicsFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_SCENE_CINEMATICS_FACADE, optionalName, null);
+	protected static PathMgr findOrMakeScenePathFacade(String optionalName) {
+		return findOrMakeInternalFacade(THE_CC_SCENE_PATH_FACADE, optionalName, null);
 	}
 
 		
