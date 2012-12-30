@@ -140,14 +140,14 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		}
 		graphIdent = null;
 		try {
-			graphIdent = gce.ergMap().get(worldConfigIdent).get(PumaModeConstants.CINEMATIC_CONFIG_ROLE);
+			graphIdent = gce.ergMap().get(worldConfigIdent).get(PumaModeConstants.MOTIONPATH_CONFIG_ROLE);
 		} catch (Exception e) {
-			getLogger().warn("Could not get valid graph on which to query for Cinematics config of {}", worldConfigIdent.getLocalName(), e);
+			getLogger().warn("Could not get valid graph on which to query for Paths config of {}", worldConfigIdent.getLocalName(), e);
 		}
 		try {
-			renderMapper.initCinematics(repoCli, myHRC, graphIdent);
+			renderMapper.initPaths(repoCli, myHRC, graphIdent);
 		} catch (Exception e) {
-			getLogger().warn("Error attempting to initialize Cinematics for {}: ", worldConfigIdent.getLocalName(), e);
+			getLogger().warn("Error attempting to initialize Paths for {}: ", worldConfigIdent.getLocalName(), e);
 		}
 
 	}

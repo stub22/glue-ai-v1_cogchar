@@ -18,11 +18,11 @@ package org.cogchar.render.app.humanoid;
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.api.cinema.CinematicConfig;
+import org.cogchar.api.cinema.PathConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.optic.LightFactory;
-import org.cogchar.render.opengl.scene.CinematicMgr;
+import org.cogchar.render.opengl.scene.PathMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
@@ -41,17 +41,13 @@ public class HumanoidRenderWorldMapper {
 		lf.initLightsFromConfig(lcc, hrc);
 	}
 
-	private CinematicMgr getCinematicMgr(HumanoidRenderContext hrc) {
-		return hrc.getRenderRegistryClient().getSceneCinematicsFacade(null);
+	private PathMgr getPathMgr(HumanoidRenderContext hrc) {
+		return hrc.getRenderRegistryClient().getScenePathFacade(null);
 	}
 	
-	public void initCinematics(RepoClient qi, HumanoidRenderContext hrc, Ident qGraph) {
-		// Cinematics are currently disabled due to cinematic classes being depreciated in current jME version
-		/*
-		// The CinematicConfig constructor now automatically loads config from sheet
-		CinematicConfig cc = new CinematicConfig(qi, qGraph);
-		getCinematicMgr(hrc).storeCinematicsFromConfig(cc, hrc);
-		*/
+	public void initPaths(RepoClient qi, HumanoidRenderContext hrc, Ident qGraph) {
+		PathConfig pc = new PathConfig(qi, qGraph);
+		getPathMgr(hrc).storePathsFromConfig(pc, hrc);
 	}
 	
 	public void clearLights(HumanoidRenderContext hrc) {

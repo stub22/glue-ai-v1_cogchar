@@ -20,7 +20,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
-import org.cogchar.render.opengl.scene.CinematicMgr;
+import org.cogchar.render.opengl.scene.PathMgr;
 import org.cogchar.render.model.databalls.BallBuilder;
 /**
 
@@ -39,16 +39,12 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
 		myPCCB = pccb;
 	}
 
-	@Override public boolean triggerNamedCinematic(String name) {
-		getLogger().warn("Cinematics are currently disabled due to cinematic classes being depreciated in current jME version");
-		//return myPCCB.getCinematicMgr().controlCinematicByName(name, CinematicMgr.ControlAction.PLAY);
-		return false;
+	@Override public boolean triggerNamedPath(String name) {
+		return myPCCB.getPathMgr().controlPathByName(name, PathMgr.ControlAction.PLAY);
 	}
 
-	@Override public boolean stopNamedCinematic(String name) {
-		getLogger().warn("Cinematics are currently disabled due to cinematic classes being depreciated in current jME version");
-		//return myPCCB.getCinematicMgr().controlCinematicByName(name, CinematicMgr.ControlAction.STOP);
-		return false;
+	@Override public boolean stopNamedPath(String name) {
+		return myPCCB.getPathMgr().controlPathByName(name, PathMgr.ControlAction.STOP);
 	}
 
 	@Override public String queryCogbot(String query, String url) {

@@ -48,11 +48,13 @@ public class WaypointConfig {
 		myUri = ident;
 	}
 	
+	/*
 	// For use by goodies in generating cinematics for MOVE actions. Would like to modify this to use Vector3f eventually
 	public WaypointConfig(Ident ident, float[] waypointVector) {
 		this(ident);
 		myCoordinates = waypointVector;
 	}
+	*/
 
 	// Called from CinematicConfig, corresponds to a "named" waypoint definition
 	public WaypointConfig(RepoClient qi, Solution solution) {
