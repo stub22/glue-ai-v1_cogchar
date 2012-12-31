@@ -67,14 +67,13 @@ public class PathInstanceConfig extends SpatialActionConfig {
 		loopMode = sh.pullIdent(solution, CinemaCN.LOOP_MODE_VAR_NAME).getLocalName();
 		SolutionList solutionList  = qi.queryIndirectForAllSolutions(CinemaCN.WAYPOINTS_QUERY_TEMPLATE_URI, qGraph, 
 					CinemaCN.PATH_INSTANCE_QUERY_VAR_NAME, myUri);
-		Map<Integer, Ident> wpMap = new TreeMap<Integer, Ident>();
+		Map<Integer, Solution> wpMap = new TreeMap<Integer, Solution>();
 		for (Solution wpSolution: solutionList.javaList()) {
 			int index = (int)(sh.pullFloat(wpSolution, CinemaCN.SEQUENCE_NUMBER_VAR_NAME, 0f)); // No pullInt in sh!
-			Ident wpIdent = sh.pullIdent(wpSolution, CinemaCN.WAYPOINT_VAR_NAME);
-			wpMap.put(index, wpIdent);
+			wpMap.put(index, wpSolution);
 		}
-		for (Ident waypointIdent : wpMap.values()) {
-			waypoints.add(new WaypointConfig(waypointIdent));
+		for (Solution waypointSoln : wpMap.values()) {
+			waypoints.add(new WaypointConfig(qi, waypointSoln));
 		}
 	}
 	

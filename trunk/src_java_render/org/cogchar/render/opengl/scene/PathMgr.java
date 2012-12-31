@@ -15,7 +15,7 @@
  */
 package org.cogchar.render.opengl.scene;
 
-import com.jme3.animation.*;
+import com.jme3.animation.LoopMode;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Vector3f;
@@ -28,7 +28,6 @@ import java.util.concurrent.Future;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.cinema.CinemaAN;
 import org.cogchar.api.cinema.PathConfig;
 import org.cogchar.api.cinema.PathInstanceConfig;
 import org.cogchar.api.cinema.WaypointConfig;
@@ -94,7 +93,9 @@ public class PathMgr extends BasicDebugger {
 		//staticLogger.info("The attached spatial is {} with requested uri {}", attachedSpatial, pic.attachedItem); // TEST ONLY
 		if (attachedSpatial != null) {
 			MotionEvent event = getMotionEvent(pic, attachedSpatial);
-			myPathsByUri.put(pic.myUri, event);
+			if (event != null) {
+				myPathsByUri.put(pic.myUri, event);
+			}
 		}
        
     }
@@ -106,41 +107,48 @@ public class PathMgr extends BasicDebugger {
             if (noPosition(waypoint.myCoordinates)) { // If we don't have coordinates for this waypoint...
                 // First check to see if this waypoint refers to a stored waypoint previously defined
                 Ident waypointReference = waypoint.myUri;
-                if (!waypointReference.getLocalName().equals(CinemaAN.unnamedWaypointName)) {
+                if (waypointReference != null) {
                     waypoint = myWaypointsByUri.get(waypointReference); // Reset waypoint to the WaypointConfig declared separately by name
                     if (waypoint == null) { // If so, track is calling for a waypoint we don't know about
-                        staticLogger.error("Track has requested undefined waypoint: {}; track is {}", waypointReference, track);
+                        staticLogger.error("Path has requested undefined waypoint: {}; track is {}", waypointReference, track);
                         break;
                     }
                 } else {
-                    staticLogger.error("No coordinates or waypointName in waypoint contained in track: {}", track);
+                    staticLogger.error("No coordinates or waypointName in waypoint contained in path: {}", track);
                     break; // If no coordinates and no waypointName, we don't really have a waypoint!
                 }
             }
             //staticLogger.info("Making new waypoint: " + new Vector3f(waypoint.myCoordinates[0], waypoint.myCoordinates[1], waypoint.myCoordinates[2])); // TEST ONLY
             path.addWayPoint(new Vector3f(waypoint.myCoordinates[0], waypoint.myCoordinates[1], waypoint.myCoordinates[2]));
         }
-        path.setCurveTension(track.tension);
+		
+		MotionEvent motionTrack = null;
+		
+		if (path.getNbWayPoints() < 2) {
+			staticLogger.warn("Less than two waypoints found in path {}; aborting build.", track.myUri);
+		} else {
+			path.setCurveTension(track.tension);
 
-        MotionEvent.Direction directionJmeType = null;
-        for (MotionEvent.Direction testType : MotionEvent.Direction.values()) {
-            if (track.directionType.equals(testType.toString())) {
-                directionJmeType = testType;
-            }
-        }
-        if (directionJmeType == null) {
-            staticLogger.error("Specified MotionEvent direction type not in MotionEvent.Direction: {}", track.directionType);
-            return null;
-        }
-        LoopMode loopJmeType = setLoopMode(track.loopMode);
-        if (loopJmeType == null) {
-            staticLogger.error("Specified MotionEvent loop mode not in com.jme3.animation.LoopMode: {}", track.loopMode);
-            return null;
-        }
-        MotionEvent motionTrack = new MotionEvent(attachedSpatial, path, track.duration);
-        motionTrack.setDirectionType(directionJmeType);
-        motionTrack.setLookAt(new Vector3f(track.lookAtDirection[0], track.lookAtDirection[1], track.lookAtDirection[2]), Vector3f.UNIT_Y);
-        motionTrack.setLoopMode(loopJmeType);
+			MotionEvent.Direction directionJmeType = null;
+			for (MotionEvent.Direction testType : MotionEvent.Direction.values()) {
+				if (track.directionType.equals(testType.toString())) {
+					directionJmeType = testType;
+				}
+			}
+			if (directionJmeType == null) {
+				staticLogger.error("Specified MotionEvent direction type not in MotionEvent.Direction: {}", track.directionType);
+				return null;
+			}
+			LoopMode loopJmeType = setLoopMode(track.loopMode);
+			if (loopJmeType == null) {
+				staticLogger.error("Specified MotionEvent loop mode not in com.jme3.animation.LoopMode: {}", track.loopMode);
+				return null;
+			}
+			motionTrack = new MotionEvent(attachedSpatial, path, track.duration);
+			motionTrack.setDirectionType(directionJmeType);
+			motionTrack.setLookAt(new Vector3f(track.lookAtDirection[0], track.lookAtDirection[1], track.lookAtDirection[2]), Vector3f.UNIT_Y);
+			motionTrack.setLoopMode(loopJmeType);
+		}
         return motionTrack;
 	}
 
