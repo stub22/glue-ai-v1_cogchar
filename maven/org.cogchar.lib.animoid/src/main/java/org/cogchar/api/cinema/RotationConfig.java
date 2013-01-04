@@ -16,10 +16,9 @@
  */
 package org.cogchar.api.cinema;
 
-import org.appdapter.core.item.*;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionHelper;
 
 /**
@@ -29,24 +28,19 @@ import org.appdapter.help.repo.SolutionHelper;
 public class RotationConfig {
 
 	public Ident myUri;
-	public float yaw = Float.NaN;
-	public float roll = Float.NaN;
-	public float pitch = Float.NaN;
+	public float rotX;
+	public float rotY;
+	public float rotZ;
+	public float rotMag;
 	//public Quaternion rotation; // This would likely be better, but can't do that in lib.animoid without adding dependencies -- does this package really belong here?
 
 	@Override
 	public String toString() {
-		return "RotationConfig = " + myUri.getAbsUriString() + ", yaw = " + yaw + ", roll = " + roll + ", pitch = " + pitch;
-	}
-
-	// This constructor is called from within CinematicTrack to correspond to Turtle configured usages of "named" rotations within CinematicTracks
-	// The need for this results from the flexibility of initial Turtle definition: rotations could be defined inline or as separate
-	// Named entities. (Same for tracks and waypoints.) We're moving away from this with the spreadsheet config, and can
-	// simplify / clean up things if we decide we're permanently doing away with the inline definitions
-	public RotationConfig(Ident ident) {
-		myUri = ident;
+		return "RotationConfig = " + myUri.getAbsUriString() + "; rotation axis is ("
+				+ rotX + ", " + rotY + ", " + rotZ + "), magnitude " + (rotMag*180f/Math.PI) + " degrees.";
 	}
 	
+	/* Currently unused; may add back something similar depending on how we decide to link this into Goody system / Robosteps
 	// For use by goodies in generating cinematics for MOVE actions. Would like to modify this to use Quaternion eventually
 	public RotationConfig(Ident ident, float[] eulerAngles) {
 		myUri = ident;
@@ -54,36 +48,19 @@ public class RotationConfig {
 		roll = eulerAngles[1];
 		pitch = eulerAngles[2];
 	}
-
-	// Called from CinematicConfig, corresponds to a "named" rotation definition
+	*/
+	
 	public RotationConfig(RepoClient qi, Solution solution) {
 		SolutionHelper sh = new SolutionHelper();
 		myUri = sh.pullIdent(solution, CinemaCN.ROTATION_VAR_NAME);
-		yaw = sh.pullFloat(solution, CinemaCN.YAW_VAR_NAME, Float.NaN);
-		pitch = sh.pullFloat(solution, CinemaCN.PITCH_VAR_NAME, Float.NaN);
-		roll = sh.pullFloat(solution, CinemaCN.ROLL_VAR_NAME, Float.NaN);
+		rotX = sh.pullFloat(solution, CinemaCN.ROT_X_VAR_NAME, Float.NaN);
+		rotY = sh.pullFloat(solution, CinemaCN.ROT_Y_VAR_NAME, Float.NaN);
+		rotZ = sh.pullFloat(solution, CinemaCN.ROT_Z_VAR_NAME, Float.NaN);
+		rotMag = (float) (sh.pullFloat(solution, CinemaCN.ROT_MAG_VAR_NAME, Float.NaN) * Math.PI/180f); // Read in degrees, store in radians
 	}
 	
 	// You'll see this a lot; probably should be refactored into superclass
 	public String getName() {
 		return myUri.getLocalName();
 	}
-
-	/* Depreciated assembler-based constructor; removed since we're now "naming" rotations by URI instead of string
-	public RotationConfig(Item configItem) {
-		// If this rotation has no name, it's likely an unnamed rotation defined in-line with a track definition...
-		rotationName = ItemFuncs.getString(configItem, CinemaAN.P_rotationName, CinemaAN.unnamedRotationName);
-		String rotationLocalName = configItem.getIdent().getLocalName();
-		// ... or a rotation with no name may be from a rotation resource not defined as part of a track
-		if (rotationLocalName == null) {
-			rotationLocalName = "no dice"; // Keeps expression below from throwing an NPE if rotationLocalName is null, which it is if rotation is defined within track definition
-		}
-		if (rotationLocalName.startsWith(CinemaAN.P_namedRotation)) {
-			rotationName = rotationLocalName;
-		}
-		yaw = ItemFuncs.getDouble(configItem, CinemaAN.P_yaw, Double.NaN).floatValue();
-		roll = ItemFuncs.getDouble(configItem, CinemaAN.P_roll, Double.NaN).floatValue();
-		pitch = ItemFuncs.getDouble(configItem, CinemaAN.P_pitch, Double.NaN).floatValue();
-	}
-	*/
 }
