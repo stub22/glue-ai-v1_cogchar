@@ -29,17 +29,12 @@ import org.appdapter.help.repo.SolutionList;
 public class PathConfig extends QueryBackedConfigBase {
 
 	public List<PathInstanceConfig> myPICs = new ArrayList<PathInstanceConfig>();
-	public List<WaypointConfig> myWCs = new ArrayList<WaypointConfig>();
 
 	public PathConfig(RepoClient qi, Ident qGraph) {
 		super(qi);
 		SolutionList cinematicSolList = qi.queryIndirectForAllSolutions(CinemaCN.PATHS_QUERY_URI, qGraph);
 		for (Solution cinematicSol : cinematicSolList.javaList()) {
 			myPICs.add(new PathInstanceConfig(qi, cinematicSol, qGraph));
-		}
-		SolutionList waypointSolList = qi.queryIndirectForAllSolutions(CinemaCN.WAYPOINT_QUERY_URI, qGraph);
-		for (Solution waypointSol : waypointSolList.javaList()) {
-			myWCs.add(new WaypointConfig(qi, waypointSol));
 		}
 	}
 }

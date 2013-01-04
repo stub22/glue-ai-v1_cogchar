@@ -130,12 +130,20 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 			getLogger().warn("Error attempting to initialize lights and cameras for {}: ", worldConfigIdent.getLocalName(), e);
 		}
 		graphIdent = null;
-		// Goodies should be initialized before Cinematics, so that Cinematics can reference Goodies!
+		// Goodies should be initialized before paths/animations so that they can reference Goodies!
 		try {
 			graphIdent = gce.ergMap().get(worldConfigIdent).get(PumaModeConstants.THING_ACTIONS_BINDINGS_ROLE);
 			gFactory.getTheGoodySpace().readAndApplyGoodyActions(repoCli, graphIdent);
 		} catch (Exception e) {
 			getLogger().error("Could not initialize Thing actions with a config of {}",
+					worldConfigIdent.getLocalName(), e);
+		}
+		graphIdent = null;
+		try {
+			graphIdent = gce.ergMap().get(worldConfigIdent).get(PumaModeConstants.WAYPOINTS_BINDINGS_ROLE);
+			renderMapper.initWaypoints(repoCli, graphIdent);
+		} catch (Exception e) {
+			getLogger().error("Could not initialize waypoints/orientations with a config of {}",
 					worldConfigIdent.getLocalName(), e);
 		}
 		graphIdent = null;

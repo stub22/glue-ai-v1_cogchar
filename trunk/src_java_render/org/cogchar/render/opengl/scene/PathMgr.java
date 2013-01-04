@@ -28,6 +28,7 @@ import java.util.concurrent.Future;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.cinema.AnimWaypointsConfig;
 import org.cogchar.api.cinema.PathConfig;
 import org.cogchar.api.cinema.PathInstanceConfig;
 import org.cogchar.api.cinema.WaypointConfig;
@@ -51,7 +52,8 @@ public class PathMgr extends BasicDebugger {
         myCRC = crc;
 
         // Store any items defined outside cinematic instances to the maps
-        storeLooseComponents(config);
+		AnimWaypointsConfig awc = AnimWaypointsConfig.getMainConfig();
+        storeLooseComponents(awc);
 
         // Next, we build the cinematics, using named tracks/waypoints/rotations if required.
         for (PathInstanceConfig pic : config.myPICs) {
@@ -64,12 +66,13 @@ public class PathMgr extends BasicDebugger {
         return (new Float(waypointDef[0]).isNaN()) || (new Float(waypointDef[1]).isNaN()) || (new Float(waypointDef[2]).isNaN());
     }
 
-    private void storeLooseComponents(PathConfig config) {
-        // First, any named waypoints defined outside track definitions are stored for later use
-        for (WaypointConfig wc : config.myWCs) {
-            staticLogger.info("Storing Named Waypoint from RDF: {}", wc);
-            myWaypointsByUri.put(wc.myUri, wc);
-        }
+    private void storeLooseComponents(AnimWaypointsConfig config) {
+		if (config != null) {
+			for (WaypointConfig wc : config.myWCs) {
+				staticLogger.info("Storing Named Waypoint from RDF: {}", wc);
+				myWaypointsByUri.put(wc.myUri, wc);
+			}
+		}
     }
 
     private void buildPath(PathInstanceConfig pic) {
