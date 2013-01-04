@@ -45,9 +45,10 @@ public class CinemaCN {
 	public final static String SEQUENCE_NUMBER_VAR_NAME = "order";
 	public final static String[] POSITION_VAR_NAME = {"xPos", "yPos", "zPos"};
 	public final static String ROTATION_VAR_NAME = "rotation";
-	public final static String YAW_VAR_NAME = "yaw";
-	public final static String PITCH_VAR_NAME = "pitch";
-	public final static String ROLL_VAR_NAME = "roll";
+	public final static String ROT_X_VAR_NAME = "rotX";
+	public final static String ROT_Y_VAR_NAME = "rotY";
+	public final static String ROT_Z_VAR_NAME = "rotZ";
+	public final static String ROT_MAG_VAR_NAME = "rotMag";
 	
 	public final static String PATH_INSTANCE_QUERY_VAR_NAME = "path";
 }

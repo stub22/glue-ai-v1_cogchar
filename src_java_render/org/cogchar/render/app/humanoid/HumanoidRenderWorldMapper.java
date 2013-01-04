@@ -18,6 +18,7 @@ package org.cogchar.render.app.humanoid;
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.cinema.AnimWaypointsConfig;
 import org.cogchar.api.cinema.PathConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.render.opengl.optic.CameraMgr;
@@ -43,6 +44,11 @@ public class HumanoidRenderWorldMapper {
 
 	private PathMgr getPathMgr(HumanoidRenderContext hrc) {
 		return hrc.getRenderRegistryClient().getScenePathFacade(null);
+	}
+	
+	public void initWaypoints(RepoClient qi, Ident qGraph) {
+		AnimWaypointsConfig awc = new AnimWaypointsConfig(qi, qGraph);
+		AnimWaypointsConfig.setMainConfig(awc);
 	}
 	
 	public void initPaths(RepoClient qi, HumanoidRenderContext hrc, Ident qGraph) {
