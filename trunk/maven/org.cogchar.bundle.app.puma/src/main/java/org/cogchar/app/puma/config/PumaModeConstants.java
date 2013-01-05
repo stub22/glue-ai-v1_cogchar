@@ -43,4 +43,5 @@ public class PumaModeConstants {
 	public static final Ident INPUT_BINDINGS_ROLE = makeRoleIdent("inputBindings");
 	public static final Ident THING_ACTIONS_BINDINGS_ROLE = makeRoleIdent("thingActions");
 	public static final Ident WAYPOINTS_BINDINGS_ROLE = makeRoleIdent("thingWaypoints");
+	public static final Ident THING_ANIM_BINDINGS_ROLE = makeRoleIdent("thingAnims");
 }

@@ -89,6 +89,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		CC_SCENE_SPATIAL_MODEL_FACADE,
 		CC_SCENE_TEXT_FACADE,
 		CC_SCENE_PATH_FACADE,
+		CC_SCENE_ANIM_FACADE,
 		
 		CC_PHYSICS_FACADE,
 		
@@ -161,6 +162,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static RFSpec<ModelSpatialFactory>	THE_CC_SCENE_SPATIAL_MODEL_FACADE;
 	protected static RFSpec<TextMgr>				THE_CC_SCENE_TEXT_FACADE;
 	protected static RFSpec<PathMgr>				THE_CC_SCENE_PATH_FACADE;
+	protected static RFSpec<SpatialAnimMgr>			THE_CC_SCENE_ANIM_FACADE;
 
 	static {
 		THE_CC_SCENE_GEOMETRY_FACADE = new RFSpec<GeomFactory>(RFKind.CC_SCENE_GEOMETRY_FACADE, GeomFactory.class, false);
@@ -169,6 +171,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		THE_CC_SCENE_SPATIAL_MODEL_FACADE = new RFSpec<ModelSpatialFactory>(RFKind.CC_SCENE_SPATIAL_MODEL_FACADE, ModelSpatialFactory.class, false);
 		THE_CC_SCENE_TEXT_FACADE = new RFSpec<TextMgr>(RFKind.CC_SCENE_TEXT_FACADE, TextMgr.class, false);	
 		THE_CC_SCENE_PATH_FACADE = new RFSpec<PathMgr>(RFKind.CC_SCENE_PATH_FACADE, PathMgr.class, false);
+		THE_CC_SCENE_ANIM_FACADE = new RFSpec<SpatialAnimMgr>(RFKind.CC_SCENE_ANIM_FACADE, SpatialAnimMgr.class, false);
 	}
 	
 	protected static RFSpec<WorkaroundAppStub>		THE_CC_WORKAROUND_APP_STUB;
@@ -290,6 +293,9 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	}
 	protected static PathMgr findOrMakeScenePathFacade(String optionalName) {
 		return findOrMakeInternalFacade(THE_CC_SCENE_PATH_FACADE, optionalName, null);
+	}
+	protected static SpatialAnimMgr findOrMakeSceneAnimFacade(String optionalName) {
+		return findOrMakeInternalFacade(THE_CC_SCENE_ANIM_FACADE, optionalName, null);
 	}
 
 		

@@ -16,6 +16,8 @@
 package org.cogchar.api.cinema;
 
 import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,11 +31,22 @@ public abstract class SpatialActionConfig {
 	
 	protected Logger myLogger = LoggerFactory.getLogger(this.getClass());
 	
+	public Ident myUri;
 	public Ident attachedItem;
 	public AttachedItemType attachedItemType = AttachedItemType.NULLTYPE;
 	
 	public enum AttachedItemType {
 		NULLTYPE, CAMERA, GOODY
+	}
+	
+	protected void pullAttachedItemAndType(SolutionHelper sh, Solution solution) {
+		attachedItem = sh.pullIdent(solution, CinemaCN.ATTACHED_ITEM_VAR_NAME);
+		String typeString = sh.pullIdent(solution, CinemaCN.ATTACHED_ITEM_TYPE_VAR_NAME).getLocalName().toUpperCase();
+		for (AttachedItemType testType : AttachedItemType.values()) {
+			if (testType.toString().equals(typeString)) {
+				attachedItemType = testType;
+			}
+		}
 	}
 	
 }

@@ -58,6 +58,7 @@ package org.cogchar.lifter {
 	  final val p_scenetrig = "http://www.cogchar.org/schema/scene/trigger#"
 	  final val p_liftconfig = "http://www.cogchar.org/lift/config/configroot#"
 	  final val p_cinematic = "http://www.cogchar.org/schema/path/definition#"
+	  final val p_thinganim = "http://www.cogchar.org/schema/thinganim/definition#"
 	  final val p_lifterQuery = "http://www.cogchar.org/lift/action/query#"
 	  // Right now animations use this prefix, but other things do too.
 	  // Really we should pick a unique one for animations (p_scenetrig derivative?) to avoid confusion

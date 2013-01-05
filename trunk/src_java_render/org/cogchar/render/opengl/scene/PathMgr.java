@@ -66,9 +66,10 @@ public class PathMgr extends BasicDebugger {
         return (new Float(waypointDef[0]).isNaN()) || (new Float(waypointDef[1]).isNaN()) || (new Float(waypointDef[2]).isNaN());
     }
 
+	// This and myWaypointsByUri could be eliminated by directly referencing AnimWaypointsConfig
     private void storeLooseComponents(AnimWaypointsConfig config) {
 		if (config != null) {
-			for (WaypointConfig wc : config.myWCs) {
+			for (WaypointConfig wc : config.myWCs.values()) {
 				staticLogger.info("Storing Named Waypoint from RDF: {}", wc);
 				myWaypointsByUri.put(wc.myUri, wc);
 			}
@@ -199,7 +200,7 @@ public class PathMgr extends BasicDebugger {
                 validAction = false;
             }
         } else {
-            staticLogger.error("No cinematic found by name {}", uri);
+            staticLogger.error("No path found by URI {}", uri);
             validAction = false;
         }
         return validAction;

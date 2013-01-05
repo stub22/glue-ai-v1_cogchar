@@ -1,5 +1,5 @@
 /*
- *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
+ *  Copyright 2013 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.cogchar.api.cinema;
 
 import java.util.ArrayList;
@@ -23,19 +24,21 @@ import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionList;
 
 /**
- * Holds a list of "Paths" from which we can create Thing MotionPaths/MotionEvents
+ * Holds a list of "Thing Animations" from which we can create keyframe-based spatial animations
  * 
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
-public class PathConfig extends QueryBackedConfigBase {
 
-	public List<PathInstanceConfig> myPICs = new ArrayList<PathInstanceConfig>();
 
-	public PathConfig(RepoClient qi, Ident qGraph) {
-		super(qi);
-		SolutionList cinematicSolList = qi.queryIndirectForAllSolutions(CinemaCN.PATHS_QUERY_URI, qGraph);
-		for (Solution cinematicSol : cinematicSolList.javaList()) {
-			myPICs.add(new PathInstanceConfig(qi, cinematicSol, qGraph));
+public class ThingAnimConfig {
+	
+	public List<ThingAnimInstanceConfig> myTAICs = new ArrayList<ThingAnimInstanceConfig>();
+
+	public ThingAnimConfig(RepoClient qi, Ident qGraph) {
+		SolutionList animSolnList = qi.queryIndirectForAllSolutions(CinemaCN.THING_ANIM_QUERY_URI, qGraph);
+		for (Solution animSoln : animSolnList.javaList()) {
+			myTAICs.add(new ThingAnimInstanceConfig(qi, animSoln, qGraph));
 		}
 	}
+	
 }
