@@ -23,7 +23,7 @@ import scala.collection.mutable.ArrayBuffer
 // A handler for action URIs consisting of a cinematic URI
 class CinematicHandler extends AbstractLifterActionHandler {
 
-  protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_cinematic)
+  protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_cinematic, ActionStrings.p_thinganim)
   
   protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
 	PageCommander.getLiftAmbassador.triggerCinematic(control.action.getLocalName)

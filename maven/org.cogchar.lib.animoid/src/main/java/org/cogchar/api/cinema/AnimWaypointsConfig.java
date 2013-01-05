@@ -16,8 +16,8 @@
 
 package org.cogchar.api.cinema;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
@@ -35,8 +35,8 @@ public class AnimWaypointsConfig {
 	
 	private static Logger theLogger = LoggerFactory.getLogger(AnimWaypointsConfig.class);
 	
-	public List<WaypointConfig> myWCs = new ArrayList<WaypointConfig>();
-	public List<RotationConfig> myRCs = new ArrayList<RotationConfig>();
+	public Map<Ident, WaypointConfig> myWCs = new HashMap<Ident, WaypointConfig>();
+	public Map<Ident, RotationConfig> myRCs = new HashMap<Ident, RotationConfig>();
 	
 	private static AnimWaypointsConfig mainConfig; // A possibly temporary place to store the "main" waypoint/orientation list
 	
@@ -56,11 +56,13 @@ public class AnimWaypointsConfig {
 	public AnimWaypointsConfig(RepoClient qi, Ident qGraph) {
 		SolutionList waypointSolList = qi.queryIndirectForAllSolutions(CinemaCN.WAYPOINT_QUERY_URI, qGraph);
 		for (Solution waypointSol : waypointSolList.javaList()) {
-			myWCs.add(new WaypointConfig(qi, waypointSol));
+			WaypointConfig newConfig = new WaypointConfig(qi, waypointSol);
+			myWCs.put(newConfig.myUri, newConfig);
 		}
 		waypointSolList = qi.queryIndirectForAllSolutions(CinemaCN.ROTATION_QUERY_URI, qGraph);
 		for (Solution waypointSol : waypointSolList.javaList()) {
-			myRCs.add(new RotationConfig(qi, waypointSol));
+			RotationConfig newConfig = new RotationConfig(qi, waypointSol);
+			myRCs.put(newConfig.myUri, newConfig);
 		}
 	}
 }

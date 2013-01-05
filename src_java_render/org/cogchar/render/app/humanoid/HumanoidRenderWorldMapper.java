@@ -15,15 +15,16 @@
  */
 package org.cogchar.render.app.humanoid;
 
-import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.cinema.AnimWaypointsConfig;
-import org.cogchar.api.cinema.PathConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
+import org.cogchar.api.cinema.PathConfig;
+import org.cogchar.api.cinema.ThingAnimConfig;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.optic.LightFactory;
 import org.cogchar.render.opengl.scene.PathMgr;
+import org.cogchar.render.opengl.scene.SpatialAnimMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
@@ -46,6 +47,10 @@ public class HumanoidRenderWorldMapper {
 		return hrc.getRenderRegistryClient().getScenePathFacade(null);
 	}
 	
+	private SpatialAnimMgr getSpatialAnimMgr(HumanoidRenderContext hrc) {
+		return hrc.getRenderRegistryClient().getSceneAnimFacade(null);
+	}
+	
 	public void initWaypoints(RepoClient qi, Ident qGraph) {
 		AnimWaypointsConfig awc = new AnimWaypointsConfig(qi, qGraph);
 		AnimWaypointsConfig.setMainConfig(awc);
@@ -54,6 +59,11 @@ public class HumanoidRenderWorldMapper {
 	public void initPaths(RepoClient qi, HumanoidRenderContext hrc, Ident qGraph) {
 		PathConfig pc = new PathConfig(qi, qGraph);
 		getPathMgr(hrc).storePathsFromConfig(pc, hrc);
+	}
+	
+	public void initThingAnims(RepoClient qi, HumanoidRenderContext hrc, Ident qGraph) {
+		ThingAnimConfig tac = new ThingAnimConfig(qi, qGraph);
+		getSpatialAnimMgr(hrc).storeAnimationsFromConfig(tac, hrc);
 	}
 	
 	public void clearLights(HumanoidRenderContext hrc) {

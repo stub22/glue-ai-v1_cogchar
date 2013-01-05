@@ -186,6 +186,11 @@ public class BasicRenderRegistryClientImpl implements RenderRegistryClient {
 	public PathMgr getScenePathFacade(String optionalName) {
 		return RenderRegistryFuncs.findOrMakeScenePathFacade(optionalName);
 	}
+	
+	@Override
+	public SpatialAnimMgr getSceneAnimFacade(String optionalName) {
+		return RenderRegistryFuncs.findOrMakeSceneAnimFacade(optionalName);
+	}
 
 	@Override
 	public AssetContext getAssetContext(String optionalName, String optJme3AssetManagerName) {

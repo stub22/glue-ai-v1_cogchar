@@ -17,11 +17,12 @@
 package org.cogchar.app.puma.cgchr;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.LiftAmbassador;
-import org.cogchar.app.puma.boot.PumaContextCommandBox;
-import org.cogchar.render.opengl.scene.PathMgr;
 import org.cogchar.render.model.databalls.BallBuilder;
+import org.cogchar.render.opengl.scene.PathMgr;
+import org.cogchar.render.opengl.scene.SpatialAnimMgr;
 /**
 
 /**
@@ -40,11 +41,19 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
 	}
 
 	@Override public boolean triggerNamedPath(String name) {
-		return myPCCB.getPathMgr().controlPathByName(name, PathMgr.ControlAction.PLAY);
+		boolean success = myPCCB.getPathMgr().controlPathByName(name, PathMgr.ControlAction.PLAY);
+		if (!success) {
+			success = myPCCB.getThingAnimMgr().controlAnimByName(name, SpatialAnimMgr.ControlAction.PLAY);
+		}
+		return success;
 	}
 
 	@Override public boolean stopNamedPath(String name) {
-		return myPCCB.getPathMgr().controlPathByName(name, PathMgr.ControlAction.STOP);
+		boolean success = myPCCB.getPathMgr().controlPathByName(name, PathMgr.ControlAction.STOP);
+		if (!success) {
+			success = myPCCB.getThingAnimMgr().controlAnimByName(name, SpatialAnimMgr.ControlAction.STOP);
+		}
+		return success;
 	}
 
 	@Override public String queryCogbot(String query, String url) {

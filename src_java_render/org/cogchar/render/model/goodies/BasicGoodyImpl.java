@@ -246,6 +246,7 @@ public class BasicGoodyImpl extends BasicGoody {
 		}
 	}
 	
+	// Likely will eventually want to refactor this to use SpatialAnimMgr
 	protected void moveViaAnimation(Vector3f newPosition, Quaternion newOrientation, Float newScale, float duration) {
 		final String moveAnimName = "BasicGoodyMoveFactory";
 		AnimationFactory aniFactory = new AnimationFactory(duration, moveAnimName);

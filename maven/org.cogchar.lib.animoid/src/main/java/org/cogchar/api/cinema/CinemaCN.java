@@ -28,11 +28,14 @@ public class CinemaCN {
 	public final static String TRACK_QUERY_URI = "ccrt:find_tracks_99";
 	public final static String WAYPOINT_QUERY_URI = "ccrt:find_waypoints_99";
 	public final static String ROTATION_QUERY_URI = "ccrt:find_rotations_99";
+	public final static String THING_ANIM_QUERY_URI = "ccrt:find_thing_anims_99";
 	
 	public final static String WAYPOINTS_QUERY_TEMPLATE_URI = "ccrt:template_waypoint_99";
-	public final static String ROTATIONS_QUERY_TEMPLATE_URI = "ccrt:template_rotation_99"; // not currently used but may be needed in future?
+	public final static String ROTATIONS_QUERY_TEMPLATE_URI = "ccrt:template_rotation_99";
+	public final static String KEYFRAMES_QUERY_TEMPLATE_URI = "ccrt:template_key_frames_99";
 	
 	public final static String PATH_VAR_NAME = "path";
+	public final static String ANIM_VAR_NAME = "anim";
 	public final static String DURATION_VAR_NAME = "duration";
 	public final static String ATTACHED_ITEM_VAR_NAME = "attachedItem";
 	public final static String ATTACHED_ITEM_TYPE_VAR_NAME = "attachedItemType";
@@ -49,6 +52,11 @@ public class CinemaCN {
 	public final static String ROT_Y_VAR_NAME = "rotY";
 	public final static String ROT_Z_VAR_NAME = "rotZ";
 	public final static String ROT_MAG_VAR_NAME = "rotMag";
+	public final static String TIME_VAR_NAME = "time";
+	public final static String LOCATION_CONFIG_VAR_NAME = "locationRef";
+	public final static String ORIENTATION_CONFIG_VAR_NAME = "orientationRef";
+	public final static String SCALE_VAR_NAME = "scale";
 	
 	public final static String PATH_INSTANCE_QUERY_VAR_NAME = "path";
+	public final static String ANIM_INSTANCE_QUERY_VAR_NAME = "anim";
 }
