@@ -23,13 +23,13 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.InputManager;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
+import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.opengl.mesh.FancyMeshFactory;
 import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
 import org.cogchar.render.opengl.mesh.WireMeshFactory;
 import org.cogchar.render.opengl.optic.*;
 import org.cogchar.render.opengl.scene.*;
 import org.cogchar.render.sys.asset.AssetContext;
-import org.cogchar.render.app.core.WorkaroundAppStub;
 
 /**
  * Preferred registry interface for the Cogchar rendering system.
@@ -84,6 +84,7 @@ public interface RenderRegistryClient {
 	public ModelSpatialFactory getSceneSpatialModelFacade(String optionalName);
 	public TextMgr getSceneTextFacade(String optionalName);
 	public PathMgr getScenePathFacade(String optionalName);
+	public SpatialAnimMgr getSceneAnimFacade(String optionalName);
 
 		
 	public AssetContext getAssetContext(String optionalName, String optJme3AssetManagerName);

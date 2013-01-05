@@ -15,31 +15,27 @@
  */
 package org.cogchar.app.puma.cgchr;
 
-import com.hp.hpl.jena.rdf.model.ModelChangedListener;
-import org.cogchar.app.puma.config.PumaModeConstants;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.blob.emit.KeystrokeConfigEmitter;
-import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
-import org.osgi.framework.BundleContext;
-import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaConfigManager;
+import org.cogchar.app.puma.config.PumaModeConstants;
+import org.cogchar.blob.emit.GlobalConfigEmitter;
+import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.trigger.CommandSpace;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 import org.cogchar.render.model.databalls.BallBuilder;
-
-// Currently for BitBox / Virtual Thing development testing
 import org.cogchar.render.model.goodies.GoodyFactory;
-
+import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.cogchar.render.sys.input.VW_HelpScreenMgr;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -157,8 +153,15 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		} catch (Exception e) {
 			getLogger().warn("Error attempting to initialize Paths for {}: ", worldConfigIdent.getLocalName(), e);
 		}
-
+		try {
+			graphIdent = gce.ergMap().get(worldConfigIdent).get(PumaModeConstants.THING_ANIM_BINDINGS_ROLE);
+			renderMapper.initThingAnims(repoCli, myHRC, graphIdent);
+		} catch (Exception e) {
+			getLogger().error("Could not initialize Thing spatial animations with a config of {}",
+					worldConfigIdent.getLocalName(), e);
+		}
 	}
+	
 
 	/**
 	 * Second (and most crucial) stage of OpenGL init. This method blocks until the canvas initialization is complete,
