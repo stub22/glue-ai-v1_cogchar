@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.cinema.AnimWaypointsConfig;
@@ -41,7 +40,7 @@ import org.slf4j.Logger;
  */
 
 
-public class PathMgr extends BasicDebugger {
+public class PathMgr extends AbstractThingCinematicMgr {
 	private Map<Ident, MotionEvent> myPathsByUri = new HashMap<Ident, MotionEvent>();
     private Map<Ident, WaypointConfig> myWaypointsByUri = new HashMap<Ident, WaypointConfig>();
     private Logger staticLogger = getLoggerForClass(PathMgr.class);
@@ -60,10 +59,6 @@ public class PathMgr extends BasicDebugger {
             buildPath(pic);
         }
 
-    }
-
-    private boolean noPosition(float[] waypointDef) {
-        return (new Float(waypointDef[0]).isNaN()) || (new Float(waypointDef[1]).isNaN()) || (new Float(waypointDef[2]).isNaN());
     }
 
 	// This and myWaypointsByUri could be eliminated by directly referencing AnimWaypointsConfig
@@ -156,16 +151,6 @@ public class PathMgr extends BasicDebugger {
         return motionTrack;
 	}
 
-    private LoopMode setLoopMode(String modeString) {
-        LoopMode loopJmeType = null;
-        for (LoopMode testType : LoopMode.values()) {
-            if (modeString.equals(testType.toString())) {
-                loopJmeType = testType;
-            }
-        }
-        return loopJmeType;
-    }
-
 	static final String PATH_URI_PREFIX = "http://www.cogchar.org/schema/path/definition#"; // Temporary
     public boolean controlPathByName(final String localName, PathMgr.ControlAction action) { // Soon switching to controlPathByUri
         boolean validAction = true;
@@ -213,8 +198,4 @@ public class PathMgr extends BasicDebugger {
         staticLogger.info("Paths cleared.");
     }
 
-    public enum ControlAction {
-
-        PLAY, STOP, PAUSE
-    }
 }

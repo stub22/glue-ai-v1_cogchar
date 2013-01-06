@@ -50,8 +50,9 @@ public class ThingAnimInstanceConfig extends SpatialActionConfig {
 			float time = sh.pullFloat(waypointSoln, CinemaCN.TIME_VAR_NAME, Float.NaN);
 			Ident locationIdent = sh.pullIdent(waypointSoln, CinemaCN.LOCATION_CONFIG_VAR_NAME);
 			Ident orientationIdent = sh.pullIdent(waypointSoln, CinemaCN.ORIENTATION_CONFIG_VAR_NAME);
+			Ident scaleIdent = sh.pullIdent(waypointSoln, CinemaCN.SCALE_CONFIG_VAR_NAME);
 			float scale = sh.pullFloat(waypointSoln, CinemaCN.SCALE_VAR_NAME, Float.NaN);
-			myKeyFrameDefinitions.add(new KeyFrameConfig(time, locationIdent, orientationIdent, scale));
+			myKeyFrameDefinitions.add(new KeyFrameConfig(time, locationIdent, orientationIdent, scaleIdent, scale));
 		}
 	}
 
@@ -60,18 +61,16 @@ public class ThingAnimInstanceConfig extends SpatialActionConfig {
 		public float myTime;
 		public Ident myLocation;
 		public Ident myOrientation;
-		public float myScale;
+		public Ident myScale;
+		public float myScalarScale;
 
-		KeyFrameConfig(float time, Ident locationIdent, Ident orientationIdent, float scale) {
+		KeyFrameConfig(float time, Ident locationIdent, Ident orientationIdent, Ident scaleIdent, float scale) {
 			myTime = time;
 			myLocation = locationIdent;
 			myOrientation = orientationIdent;
-			myScale = scale;
+			myScale = scaleIdent;
+			myScalarScale = scale;
 		}
-
-		// Temporary until we make vector ScaleConfigs:
-		public float[] getScaleVector() {
-			return new float[]{myScale, myScale, myScale};
-		}
+		
 	}
 }
