@@ -34,6 +34,7 @@ public abstract class SpatialActionConfig {
 	public Ident myUri;
 	public Ident attachedItem;
 	public AttachedItemType attachedItemType = AttachedItemType.NULLTYPE;
+	public String loopMode = "DontLoop"; // default
 	
 	public enum AttachedItemType {
 		NULLTYPE, CAMERA, GOODY
@@ -46,6 +47,10 @@ public abstract class SpatialActionConfig {
 			if (testType.toString().equals(typeString)) {
 				attachedItemType = testType;
 			}
+		}
+		Ident loopModeUri = sh.pullIdent(solution, CinemaCN.LOOP_MODE_VAR_NAME);
+		if (loopModeUri != null) {
+			loopMode = loopModeUri.getLocalName();
 		}
 	}
 	

@@ -13,28 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.cogchar.api.cinema;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionList;
 
 /**
- * Holds a list of "Paths" from which we can create Thing MotionPaths/MotionEvents
- * 
+ *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
-public class PathConfig extends SpatialActionSetConfig  {
 
-	public List<PathInstanceConfig> myPICs = new ArrayList<PathInstanceConfig>();
-
-	public PathConfig(RepoClient qi, Ident qGraph) {
-		SolutionList cinematicSolList = qi.queryIndirectForAllSolutions(CinemaCN.PATHS_QUERY_URI, qGraph);
-		for (Solution cinematicSol : cinematicSolList.javaList()) {
-			myPICs.add(new PathInstanceConfig(qi, cinematicSol, qGraph));
-		}
-	}
+// Being built to help in factoring out common features of PataMgr/SpatialAnimMgr and their configs
+public class SpatialActionSetConfig {
+	
+	public List<SpatialActionConfig> mySACs = new ArrayList<SpatialActionConfig>();
+	
 }

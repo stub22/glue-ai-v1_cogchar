@@ -14,6 +14,7 @@
  * limitations under the License.
  * 
  */
+
 package org.cogchar.api.cinema;
 
 import org.appdapter.core.name.Ident;
