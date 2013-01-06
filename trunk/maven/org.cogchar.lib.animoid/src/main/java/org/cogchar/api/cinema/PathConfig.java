@@ -15,8 +15,6 @@
  */
 package org.cogchar.api.cinema;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
@@ -29,12 +27,10 @@ import org.appdapter.help.repo.SolutionList;
  */
 public class PathConfig extends SpatialActionSetConfig  {
 
-	public List<PathInstanceConfig> myPICs = new ArrayList<PathInstanceConfig>();
-
 	public PathConfig(RepoClient qi, Ident qGraph) {
 		SolutionList cinematicSolList = qi.queryIndirectForAllSolutions(CinemaCN.PATHS_QUERY_URI, qGraph);
 		for (Solution cinematicSol : cinematicSolList.javaList()) {
-			myPICs.add(new PathInstanceConfig(qi, cinematicSol, qGraph));
+			mySACs.add(new PathInstanceConfig(qi, cinematicSol, qGraph));
 		}
 	}
 }

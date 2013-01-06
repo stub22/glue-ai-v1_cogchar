@@ -41,17 +41,17 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
 	}
 
 	@Override public boolean triggerNamedPath(String name) {
-		boolean success = myPCCB.getPathMgr().controlPathByName(name, PathMgr.ControlAction.PLAY);
+		boolean success = myPCCB.getPathMgr().controlAnimationByName(name, PathMgr.ControlAction.PLAY);
 		if (!success) {
-			success = myPCCB.getThingAnimMgr().controlAnimByName(name, SpatialAnimMgr.ControlAction.PLAY);
+			success = myPCCB.getThingAnimMgr().controlAnimationByName(name, SpatialAnimMgr.ControlAction.PLAY);
 		}
 		return success;
 	}
 
 	@Override public boolean stopNamedPath(String name) {
-		boolean success = myPCCB.getPathMgr().controlPathByName(name, PathMgr.ControlAction.STOP);
+		boolean success = myPCCB.getPathMgr().controlAnimationByName(name, PathMgr.ControlAction.STOP);
 		if (!success) {
-			success = myPCCB.getThingAnimMgr().controlAnimByName(name, SpatialAnimMgr.ControlAction.STOP);
+			success = myPCCB.getThingAnimMgr().controlAnimationByName(name, SpatialAnimMgr.ControlAction.STOP);
 		}
 		return success;
 	}

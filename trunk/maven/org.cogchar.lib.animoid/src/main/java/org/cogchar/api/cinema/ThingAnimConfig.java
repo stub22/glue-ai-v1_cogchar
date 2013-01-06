@@ -16,8 +16,6 @@
 
 package org.cogchar.api.cinema;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
@@ -31,13 +29,11 @@ import org.appdapter.help.repo.SolutionList;
 
 
 public class ThingAnimConfig extends SpatialActionSetConfig {
-	
-	public List<ThingAnimInstanceConfig> myTAICs = new ArrayList<ThingAnimInstanceConfig>();
 
 	public ThingAnimConfig(RepoClient qi, Ident qGraph) {
 		SolutionList animSolnList = qi.queryIndirectForAllSolutions(CinemaCN.THING_ANIM_QUERY_URI, qGraph);
 		for (Solution animSoln : animSolnList.javaList()) {
-			myTAICs.add(new ThingAnimInstanceConfig(qi, animSoln, qGraph));
+			mySACs.add(new ThingAnimInstanceConfig(qi, animSoln, qGraph));
 		}
 	}
 	
