@@ -28,11 +28,9 @@ import java.util.concurrent.Future;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.cinema.AnimWaypointsConfig;
-import org.cogchar.api.cinema.PathConfig;
 import org.cogchar.api.cinema.PathInstanceConfig;
+import org.cogchar.api.cinema.SpatialActionConfig;
 import org.cogchar.api.cinema.WaypointConfig;
-import org.cogchar.render.sys.context.CogcharRenderContext;
-import org.slf4j.Logger;
 
 /**
  *
@@ -42,53 +40,18 @@ import org.slf4j.Logger;
 
 public class PathMgr extends AbstractThingCinematicMgr {
 	private Map<Ident, MotionEvent> myPathsByUri = new HashMap<Ident, MotionEvent>();
-    private Map<Ident, WaypointConfig> myWaypointsByUri = new HashMap<Ident, WaypointConfig>();
-    private Logger staticLogger = getLoggerForClass(PathMgr.class);
-    private CogcharRenderContext myCRC;
 
-    public void storePathsFromConfig(PathConfig config, CogcharRenderContext crc) {
-
-        myCRC = crc;
-
-        // Store any items defined outside cinematic instances to the maps
-		AnimWaypointsConfig awc = AnimWaypointsConfig.getMainConfig();
-        storeLooseComponents(awc);
-
-        // Next, we build the cinematics, using named tracks/waypoints/rotations if required.
-        for (PathInstanceConfig pic : config.myPICs) {
-            buildPath(pic);
-        }
-
-    }
-
-	// This and myWaypointsByUri could be eliminated by directly referencing AnimWaypointsConfig
-    private void storeLooseComponents(AnimWaypointsConfig config) {
-		if (config != null) {
-			for (WaypointConfig wc : config.myWCs.values()) {
-				staticLogger.info("Storing Named Waypoint from RDF: {}", wc);
-				myWaypointsByUri.put(wc.myUri, wc);
-			}
+	@Override
+    public void buildAnimation(SpatialActionConfig sac) {
+        myLogger.info("Building Path from RDF: {}", sac);
+		if (sac.getClass() != PathInstanceConfig.class) {
+			myLogger.warn("buildAnimation was passed the wrong class of configuration object! Aborting.");
+			return;
 		}
-    }
-
-    private void buildPath(PathInstanceConfig pic) {
-        staticLogger.info("Building Path from RDF: {}", pic);
+		PathInstanceConfig pic = (PathInstanceConfig) sac;
         Map<String, CameraNode> boundCameras = new HashMap<String, CameraNode>(); // To keep track of cameras bound to this cinematic
-		Spatial attachedSpatial = null;
 		SpatialGrabber grabber = new SpatialGrabber(myCRC);
-		switch (pic.attachedItemType) {
-			case CAMERA: {
-				attachedSpatial = grabber.getSpatialForAttachedCamera(pic, boundCameras);
-				break;
-			}
-			case GOODY: {
-				attachedSpatial = grabber.getSpatialForAttachedGoody(pic);
-				break;
-			}
-			default: {
-				staticLogger.error("Unsupported attached item type in track: {}", pic.attachedItemType);
-			}
-		}
+		Spatial attachedSpatial = grabber.getSpatialForSpecifiedType(pic, boundCameras);
 		//staticLogger.info("The attached spatial is {} with requested uri {}", attachedSpatial, pic.attachedItem); // TEST ONLY
 		if (attachedSpatial != null) {
 			MotionEvent event = getMotionEvent(pic, attachedSpatial);
@@ -96,24 +59,24 @@ public class PathMgr extends AbstractThingCinematicMgr {
 				myPathsByUri.put(pic.myUri, event);
 			}
 		}
-       
     }
 
     private MotionEvent getMotionEvent(PathInstanceConfig track, Spatial attachedSpatial) {
         MotionPath path = new MotionPath();
         path.setCycle(track.cycle);
+		AnimWaypointsConfig waypointInfo = AnimWaypointsConfig.getMainConfig();
         for (WaypointConfig waypoint : track.waypoints) {
             if (noPosition(waypoint.myCoordinates)) { // If we don't have coordinates for this waypoint...
                 // First check to see if this waypoint refers to a stored waypoint previously defined
                 Ident waypointReference = waypoint.myUri;
                 if (waypointReference != null) {
-                    waypoint = myWaypointsByUri.get(waypointReference); // Reset waypoint to the WaypointConfig declared separately by name
+                    waypoint = waypointInfo.myWCs.get(waypointReference); // Reset waypoint to the WaypointConfig declared separately by name
                     if (waypoint == null) { // If so, track is calling for a waypoint we don't know about
-                        staticLogger.error("Path has requested undefined waypoint: {}; track is {}", waypointReference, track);
+                        myLogger.error("Path has requested undefined waypoint: {}; track is {}", waypointReference, track);
                         break;
                     }
                 } else {
-                    staticLogger.error("No coordinates or waypointName in waypoint contained in path: {}", track);
+                    myLogger.error("No coordinates or waypointName in waypoint contained in path: {}", track);
                     break; // If no coordinates and no waypointName, we don't really have a waypoint!
                 }
             }
@@ -124,7 +87,7 @@ public class PathMgr extends AbstractThingCinematicMgr {
 		MotionEvent motionTrack = null;
 		
 		if (path.getNbWayPoints() < 2) {
-			staticLogger.warn("Less than two waypoints found in path {}; aborting build.", track.myUri);
+			myLogger.warn("Less than two waypoints found in path {}; aborting build.", track.myUri);
 		} else {
 			path.setCurveTension(track.tension);
 
@@ -135,12 +98,12 @@ public class PathMgr extends AbstractThingCinematicMgr {
 				}
 			}
 			if (directionJmeType == null) {
-				staticLogger.error("Specified MotionEvent direction type not in MotionEvent.Direction: {}", track.directionType);
+				myLogger.error("Specified MotionEvent direction type not in MotionEvent.Direction: {}", track.directionType);
 				return null;
 			}
 			LoopMode loopJmeType = setLoopMode(track.loopMode);
 			if (loopJmeType == null) {
-				staticLogger.error("Specified MotionEvent loop mode not in com.jme3.animation.LoopMode: {}", track.loopMode);
+				myLogger.error("Specified MotionEvent loop mode not in com.jme3.animation.LoopMode: {}", track.loopMode);
 				return null;
 			}
 			motionTrack = new MotionEvent(attachedSpatial, path, track.duration);
@@ -152,13 +115,14 @@ public class PathMgr extends AbstractThingCinematicMgr {
 	}
 
 	static final String PATH_URI_PREFIX = "http://www.cogchar.org/schema/path/definition#"; // Temporary
-    public boolean controlPathByName(final String localName, PathMgr.ControlAction action) { // Soon switching to controlPathByUri
+	@Override
+    public boolean controlAnimationByName(final String localName, ControlAction action) { // Soon switching to controlPathByUri
         boolean validAction = true;
 		final Ident uri = new FreeIdent(PATH_URI_PREFIX + localName); // Just temporary until we upgrade the food chain to send URI directly from lifter
         final MotionEvent path = myPathsByUri.get(uri);
         if (path != null) {
             if (action.equals(PathMgr.ControlAction.PLAY)) {
-                staticLogger.info("Playing cinematic {}", uri);
+                myLogger.info("Playing cinematic {}", uri);
 				path.play();
             } else if (action.equals(PathMgr.ControlAction.STOP)) {
                 // Wouldn't you know, this has to be done on main thread
@@ -167,7 +131,7 @@ public class PathMgr extends AbstractThingCinematicMgr {
                     @Override
                     public Boolean call() throws Exception {
                         path.stop();
-                        staticLogger.info("Stopping cinematic {}", uri);
+                        myLogger.info("Stopping cinematic {}", uri);
                         return true;
                     }
                 });
@@ -175,27 +139,27 @@ public class PathMgr extends AbstractThingCinematicMgr {
                     // We call waitForThis.get (and discard the result) so that this method doesn't return until STOP is actially executed
                     waitForThis.get(3, java.util.concurrent.TimeUnit.SECONDS);
                 } catch (Exception e) {
-                    staticLogger.error("Exception stopping cinematic: {}", e.toString());
+                    myLogger.error("Exception stopping cinematic: {}", e.toString());
                 }
             } else if (action.equals(PathMgr.ControlAction.PAUSE)) { // NEEDS TO BE TESTED, MAY NEED TO BE EXECUTED ON MAIN jME RENDERING THREAD
-                staticLogger.info("Pausing cinematic {}", uri);
-                staticLogger.info("Pause has not been tested. If it throws an exception, we probably just need to add some code to cause it to be run on the main jME rendering thread");
+                myLogger.info("Pausing cinematic {}", uri);
+                myLogger.info("Pause has not been tested. If it throws an exception, we probably just need to add some code to cause it to be run on the main jME rendering thread");
                 path.pause();
             } else {
                 validAction = false;
             }
         } else {
-            staticLogger.error("No path found by URI {}", uri);
+            myLogger.error("No path found by URI {}", uri);
             validAction = false;
         }
         return validAction;
     }
 
-    public void clearCinematics(CogcharRenderContext crc) {
+	@Override
+    public void clearAnimations() {
         myPathsByUri.clear();
-        myWaypointsByUri.clear();
 		// Disable CameraNodes?
-        staticLogger.info("Paths cleared.");
+        myLogger.info("Paths cleared.");
     }
 
 }

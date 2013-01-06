@@ -18,6 +18,8 @@ package org.cogchar.render.opengl.scene;
 
 import com.jme3.animation.LoopMode;
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.api.cinema.SpatialActionConfig;
+import org.cogchar.api.cinema.SpatialActionSetConfig;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.slf4j.Logger;
 
@@ -27,23 +29,21 @@ import org.slf4j.Logger;
  */
 
 
-public class AbstractThingCinematicMgr extends BasicDebugger {
+abstract class AbstractThingCinematicMgr extends BasicDebugger {
 	
 	protected Logger myLogger = getLoggerForClass(this.getClass());
 	protected CogcharRenderContext myCRC;
 	
-	/* This will replace common methods in PathMgr/SpatialAnimMgr soon
 	public void storeAnimationsFromConfig(SpatialActionSetConfig config, CogcharRenderContext crc) {
-
 		myCRC = crc;
-
 		// Next, we build the cinematics, using named tracks/waypoints/rotations if required.
 		for (SpatialActionConfig sac : config.mySACs) {
 			buildAnimation(sac);
-		}
-			
+		}	
 	}
-	*/
+	
+	// Public so that Thing API can build animations, although a flat-out public scope is a little dangerous and may be ammended
+	public abstract void buildAnimation(SpatialActionConfig config);
 	
 	protected boolean noPosition(float[] waypointDef) {
         return (new Float(waypointDef[0]).isNaN()) || (new Float(waypointDef[1]).isNaN()) || (new Float(waypointDef[2]).isNaN());
@@ -58,6 +58,10 @@ public class AbstractThingCinematicMgr extends BasicDebugger {
         }
         return loopJmeType;
     }
+	
+	public abstract boolean controlAnimationByName(final String localName, ControlAction action);
+	
+	public abstract void clearAnimations();
 	
 	public enum ControlAction {
 

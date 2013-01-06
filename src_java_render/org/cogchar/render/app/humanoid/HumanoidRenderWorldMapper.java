@@ -58,7 +58,7 @@ public class HumanoidRenderWorldMapper {
 	
 	public void initPaths(RepoClient qi, HumanoidRenderContext hrc, Ident qGraph) {
 		PathConfig pc = new PathConfig(qi, qGraph);
-		getPathMgr(hrc).storePathsFromConfig(pc, hrc);
+		getPathMgr(hrc).storeAnimationsFromConfig(pc, hrc);
 	}
 	
 	public void initThingAnims(RepoClient qi, HumanoidRenderContext hrc, Ident qGraph) {
@@ -73,8 +73,9 @@ public class HumanoidRenderWorldMapper {
 	}
 	
 	public void clearCinematics(HumanoidRenderContext hrc) {
-		// Cinematics are currently disabled due to cinematic classes being depreciated in current jME version
-		//getCinematicMgr(hrc).clearCinematics(hrc);
+		// Now clears Paths / Spatial Animations
+		getPathMgr(hrc).clearAnimations();
+		getSpatialAnimMgr(hrc).clearAnimations();
 	}
 	
 	public void clearViewPorts(HumanoidRenderContext hrc) {
