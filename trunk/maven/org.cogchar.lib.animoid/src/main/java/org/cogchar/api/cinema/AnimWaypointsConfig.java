@@ -37,6 +37,7 @@ public class AnimWaypointsConfig {
 	
 	public Map<Ident, WaypointConfig> myWCs = new HashMap<Ident, WaypointConfig>();
 	public Map<Ident, RotationConfig> myRCs = new HashMap<Ident, RotationConfig>();
+	public Map<Ident, VectorScaleConfig> myVSCs = new HashMap<Ident, VectorScaleConfig>();
 	
 	private static AnimWaypointsConfig mainConfig; // A possibly temporary place to store the "main" waypoint/orientation list
 	
@@ -50,7 +51,8 @@ public class AnimWaypointsConfig {
 	
 	@Override
 	public String toString() {
-		return "[AnimWaypointsConfig: " + myWCs.size() + " positions, " + myRCs.size() + " rotations]"; 
+		return "[AnimWaypointsConfig: " + myWCs.size() + " positions, " + myRCs.size() + " rotations, " 
+				+ myVSCs.size() + " vector scalings]"; 
 	}
 	
 	public AnimWaypointsConfig(RepoClient qi, Ident qGraph) {
@@ -63,6 +65,11 @@ public class AnimWaypointsConfig {
 		for (Solution waypointSol : waypointSolList.javaList()) {
 			RotationConfig newConfig = new RotationConfig(qi, waypointSol);
 			myRCs.put(newConfig.myUri, newConfig);
+		}
+		waypointSolList = qi.queryIndirectForAllSolutions(CinemaCN.VECTOR_SCALINGS_QUERY_URI, qGraph);
+		for (Solution waypointSol : waypointSolList.javaList()) {
+			VectorScaleConfig newConfig = new VectorScaleConfig(qi, waypointSol);
+			myVSCs.put(newConfig.myUri, newConfig);
 		}
 	}
 }

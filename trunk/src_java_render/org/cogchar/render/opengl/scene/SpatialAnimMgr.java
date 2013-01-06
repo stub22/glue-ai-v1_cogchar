@@ -24,12 +24,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.cinema.*;
 import org.cogchar.render.sys.context.CogcharRenderContext;
-import org.slf4j.Logger;
 
 /**
  * Generates and controls jMonkey spatial animations for virtual world "things"
@@ -38,20 +36,12 @@ import org.slf4j.Logger;
  */
 
 // TODO:
-// - Add vector scale provisions
-// - Add LoopMode
 // - Implement pause
-// - Factor out common bits with PathMgr
+// - Factor out common bits with PathMgr (continue)
 
-public class SpatialAnimMgr extends BasicDebugger {
+public class SpatialAnimMgr extends AbstractThingCinematicMgr {
 
-	private Logger staticLogger = getLoggerForClass(SpatialAnimMgr.class);
-	private CogcharRenderContext myCRC;
 	private Map<Ident, AnimChannel> myChannelsByUri = new HashMap<Ident, AnimChannel>();
-	
-	private boolean noPosition(float[] waypointDef) {
-        return (new Float(waypointDef[0]).isNaN()) || (new Float(waypointDef[1]).isNaN()) || (new Float(waypointDef[2]).isNaN());
-    }
 
 	public void storeAnimationsFromConfig(ThingAnimConfig config, CogcharRenderContext crc) {
 
@@ -66,8 +56,7 @@ public class SpatialAnimMgr extends BasicDebugger {
 
 	// Public so that Thing API can build animations, although a flat-out public scope is a little dangerous and may be ammended
 	public void buildAnimation(ThingAnimInstanceConfig aic) {
-		staticLogger.info("Building Thing Spatial Animation from RDF: {}", aic);
-		CogcharRenderContext crc = myCRC;
+		myLogger.info("Building Thing Spatial Animation from RDF: {}", aic);
 		Map<String, CameraNode> boundCameras = new HashMap<String, CameraNode>(); // To keep track of cameras bound to this cinematic
 		
 		Spatial attachedSpatial = null;
@@ -82,7 +71,7 @@ public class SpatialAnimMgr extends BasicDebugger {
 				break;
 			}
 			default: {
-				staticLogger.error("Unsupported attached item type in animation: {}", aic.attachedItemType);
+				myLogger.error("Unsupported attached item type in animation: {}", aic.attachedItemType);
 			}
 		}
 		
@@ -91,56 +80,62 @@ public class SpatialAnimMgr extends BasicDebugger {
 		if (attachedSpatial != null) {
 			final String animName = aic.myUri.getLocalName();
 			AnimationFactory aniFactory = new AnimationFactory(aic.duration, animName);
-			Vector3f lastPosition = attachedSpatial.getLocalTranslation();
-			Quaternion lastOrientation = attachedSpatial.getLocalRotation();
-			Vector3f lastScale = attachedSpatial.getLocalScale();
 			// Set "zero frame" to original spatial parameters. Can be overriden by a repo defined frame with t=0.
-			aniFactory.addKeyFrameTranslation(0, lastPosition);
-			aniFactory.addKeyFrameRotation(0, lastOrientation);
-			aniFactory.addKeyFrameScale(0, lastScale);
+			aniFactory.addKeyFrameTranslation(0, attachedSpatial.getLocalTranslation());
+			aniFactory.addKeyFrameRotation(0, attachedSpatial.getLocalRotation());
+			aniFactory.addKeyFrameScale(0, attachedSpatial.getLocalScale());
 			// Add key frames from repo definition
 			for (ThingAnimInstanceConfig.KeyFrameConfig kfc : aic.myKeyFrameDefinitions) {
 				float time = kfc.myTime;
-				// Determine location for the key frame, or use last location if none
-				WaypointConfig frameLocationConfig = waypointInfo.myWCs.get(kfc.myLocation);
-				Vector3f frameLocation;
-				if (frameLocationConfig == null) {
-					frameLocation = lastPosition;
-				} else {
+				if (time == Float.NaN) {
+					getLogger().warn("Detected a key frame with unspecified time in animation {}; ignoring...", aic.myUri);
+					break;
+				}
+				// Determine location for the key frame
+				WaypointConfig frameLocationConfig = null;
+				if (kfc.myLocation != null) frameLocationConfig = waypointInfo.myWCs.get(kfc.myLocation);
+				if (frameLocationConfig != null) {
 					float[] frameLocationVector = frameLocationConfig.myCoordinates;
-					frameLocation = new Vector3f(frameLocationVector[0], frameLocationVector[1], frameLocationVector[2]);
-				}
-				// Determine orientation for the key frame, or use last orientation if none
-				RotationConfig frameRotationConfig = waypointInfo.myRCs.get(kfc.myOrientation);
-				Quaternion frameRotation;
-				if (frameRotationConfig == null) {
-					frameRotation = lastOrientation;
-				} else {
-					Vector3f rotationAxis = new Vector3f(frameRotationConfig.rotX, frameRotationConfig.rotY, frameRotationConfig.rotZ);
-					frameRotation = new Quaternion().fromAngleAxis(frameRotationConfig.rotMag, rotationAxis);
-				}
-				// Determine scale for the key frame, or use last scale if none
-				float[] frameScaleVector = kfc.getScaleVector();
-				Vector3f frameScale;
-				if (noPosition(frameScaleVector)) {
-					frameScale = lastScale;
-				} else {
-					frameScale = new Vector3f(frameScaleVector[0], frameScaleVector[1], frameScaleVector[2]);
-				}
-				// if this is a t=0 frame, so we'll put it at index 0 so AnimationFactory will replace the default identity transforms
-				// Probably want to modify this so that parameters are not specified at key frames unless specified in repo
-				if (time != Float.NaN) {
-					if (time < 0.01f) { 
+					Vector3f frameLocation = new Vector3f(frameLocationVector[0], frameLocationVector[1], frameLocationVector[2]);
+					// if this is a t=0 frame, so we'll put it at index 0 so AnimationFactory will replace the default identity transforms
+					if (time < 0.01f) {
 						aniFactory.addKeyFrameTranslation(0, frameLocation);
-						aniFactory.addKeyFrameRotation(0, frameRotation);
-						aniFactory.addKeyFrameScale(0, frameScale);
 					} else {
 						aniFactory.addTimeTranslation(time, frameLocation);
+					}
+				}
+				// Determine orientation for the key frame
+				RotationConfig frameRotationConfig = null;
+				if (kfc.myOrientation != null) frameRotationConfig = waypointInfo.myRCs.get(kfc.myOrientation);
+				if (frameRotationConfig != null) {
+					Vector3f rotationAxis = new Vector3f(frameRotationConfig.rotX, frameRotationConfig.rotY, frameRotationConfig.rotZ);
+					Quaternion frameRotation = new Quaternion().fromAngleAxis(frameRotationConfig.rotMag, rotationAxis);
+					// if this is a t=0 frame, so we'll put it at index 0 so AnimationFactory will replace the default identity transforms
+					if (time < 0.01f) {
+						aniFactory.addKeyFrameRotation(0, frameRotation);
+					} else {
 						aniFactory.addTimeRotation(time, frameRotation);
+					}
+				}
+				// Determine scale for the key frame
+				VectorScaleConfig frameScaleConfig = null;
+				Vector3f frameScale = null;
+				if (kfc.myScale != null) frameScaleConfig = waypointInfo.myVSCs.get(kfc.myScale);
+				if (frameScaleConfig != null) {
+					float[] frameScaleVector = frameScaleConfig.getScaleVector();
+					if (!noPosition(frameScaleVector)) {
+						frameScale = new Vector3f(frameScaleVector[0], frameScaleVector[1], frameScaleVector[2]);
+					}
+				} else if (kfc.myScalarScale != Float.NaN) {
+					frameScale = new Vector3f(kfc.myScalarScale, kfc.myScalarScale, kfc.myScalarScale);
+				}
+				// if this is a t=0 frame, so we'll put it at index 0 so AnimationFactory will replace the default identity transforms
+				if (frameScale != null) {
+					if (time < 0.01f) {
+						aniFactory.addKeyFrameScale(0, frameScale);
+					} else {
 						aniFactory.addTimeScale(time, frameScale);
 					}
-				} else {
-					getLogger().warn("Detected a key frame with unspecified time in animation {}; ignoring...", aic.myUri);
 				}
 			}
 			// Now the Animation is generated and linked to the geometry via an AnimationControl
@@ -153,6 +148,12 @@ public class SpatialAnimMgr extends BasicDebugger {
 			animControl.addAnim(newAnimation);
 			attachedSpatial.addControl(animControl);
 			AnimChannel animChannel = animControl.createChannel();
+			LoopMode loopJmeType = setLoopMode(aic.loopMode);
+			if (loopJmeType == null) {
+				myLogger.error("Specified AnimChannel loop mode not in com.jme3.animation.LoopMode: {}", aic.loopMode);
+			} else {
+				animChannel.setLoopMode(loopJmeType);
+			}
 			myChannelsByUri.put(aic.myUri, animChannel);
 		}
 	}
@@ -164,18 +165,18 @@ public class SpatialAnimMgr extends BasicDebugger {
 		final AnimChannel channel = myChannelsByUri.get(uri);
 		if (channel != null) {
 			if (action.equals(SpatialAnimMgr.ControlAction.PLAY)) {
-				staticLogger.info("Playing thing animation {}", uri);
+				myLogger.info("Playing thing animation {}", uri);
+				LoopMode desiredLoopMode = channel.getLoopMode();
 				channel.setAnim(localName, 0f);
-				// Oddly, it seems this needs to be set *after* starting the animation with setAnim:
-				// Likely we want to add the ability to make a looping anim via config
-				channel.setLoopMode(LoopMode.DontLoop);
+				// Oddly, it seems this needs to be set *after* starting the animation with setAnim, or else things reset back to Loop:
+				channel.setLoopMode(desiredLoopMode);
 			} else if (action.equals(SpatialAnimMgr.ControlAction.STOP)) {
 				// Wouldn't you know, this has to be done on main thread
 				Future<Object> waitForThis = myCRC.enqueueCallable(new Callable<Boolean>() {
 
 					@Override
 					public Boolean call() throws Exception {
-						staticLogger.info("Stopping thing animation {}", uri);
+						myLogger.info("Stopping thing animation {}", uri);
 						channel.reset(true);
 						return true;
 					}
@@ -184,17 +185,17 @@ public class SpatialAnimMgr extends BasicDebugger {
 					// We call waitForThis.get (and discard the result) so that this method doesn't return until STOP is actially executed
 					waitForThis.get(3, java.util.concurrent.TimeUnit.SECONDS);
 				} catch (Exception e) {
-					staticLogger.error("Exception stopping animation: {}", e.toString());
+					myLogger.error("Exception stopping animation: {}", e.toString());
 				}
 			} else if (action.equals(SpatialAnimMgr.ControlAction.PAUSE)) {
-				staticLogger.info("Pausing thing animation {}", uri);
-				staticLogger.info("Pause has not yet been implemented, ignoring...");
+				myLogger.info("Pausing thing animation {}", uri);
+				myLogger.info("Pause has not yet been implemented, ignoring...");
 				// Probably need to channel.reset(false) and retain time for restart?
 			} else {
 				validAction = false;
 			}
 		} else {
-			staticLogger.error("No thing animation found by URI: {}", uri);
+			myLogger.error("No thing animation found by URI: {}", uri);
 			validAction = false;
 		}
 		return validAction;
@@ -202,11 +203,7 @@ public class SpatialAnimMgr extends BasicDebugger {
 
 	public void clearAnims() {
 		myChannelsByUri.clear();
-		staticLogger.info("Animations cleared.");
+		myLogger.info("Animations cleared.");
 	}
 
-	public enum ControlAction {
-
-		PLAY, STOP, PAUSE
-	}
 }

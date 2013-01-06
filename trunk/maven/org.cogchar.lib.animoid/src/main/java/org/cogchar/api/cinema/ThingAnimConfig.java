@@ -30,7 +30,7 @@ import org.appdapter.help.repo.SolutionList;
  */
 
 
-public class ThingAnimConfig {
+public class ThingAnimConfig extends SpatialActionSetConfig {
 	
 	public List<ThingAnimInstanceConfig> myTAICs = new ArrayList<ThingAnimInstanceConfig>();
 

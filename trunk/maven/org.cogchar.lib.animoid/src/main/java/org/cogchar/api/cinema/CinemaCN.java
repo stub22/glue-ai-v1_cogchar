@@ -32,6 +32,7 @@ public class CinemaCN {
 	
 	public final static String WAYPOINTS_QUERY_TEMPLATE_URI = "ccrt:template_waypoint_99";
 	public final static String ROTATIONS_QUERY_TEMPLATE_URI = "ccrt:template_rotation_99";
+	public final static String VECTOR_SCALINGS_QUERY_URI = "ccrt:find_vector_scalings_99";
 	public final static String KEYFRAMES_QUERY_TEMPLATE_URI = "ccrt:template_key_frames_99";
 	
 	public final static String PATH_VAR_NAME = "path";
@@ -55,7 +56,12 @@ public class CinemaCN {
 	public final static String TIME_VAR_NAME = "time";
 	public final static String LOCATION_CONFIG_VAR_NAME = "locationRef";
 	public final static String ORIENTATION_CONFIG_VAR_NAME = "orientationRef";
+	public final static String SCALE_CONFIG_VAR_NAME = "scaleRef";
 	public final static String SCALE_VAR_NAME = "scale";
+	public final static String VECTOR_SCALE_VAR_NAME = "vectorScale";
+	public final static String SCALE_X_VAR_NAME = "scaleX";
+	public final static String SCALE_Y_VAR_NAME = "scaleY";
+	public final static String SCALE_Z_VAR_NAME = "scaleZ";
 	
 	public final static String PATH_INSTANCE_QUERY_VAR_NAME = "path";
 	public final static String ANIM_INSTANCE_QUERY_VAR_NAME = "anim";
