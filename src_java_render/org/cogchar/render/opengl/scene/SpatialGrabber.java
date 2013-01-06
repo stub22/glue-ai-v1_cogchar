@@ -29,6 +29,7 @@ import org.cogchar.render.model.goodies.GoodyFactory;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.slf4j.Logger;
 
 /**
  *
@@ -38,10 +39,30 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 public class SpatialGrabber extends BasicDebugger {
 	
+	private static Logger theLogger = getLoggerForClass(SpatialGrabber.class);
+	
 	private CogcharRenderContext myCRC;
 	
 	SpatialGrabber(CogcharRenderContext crc) {
 		myCRC = crc;
+	}
+	
+	Spatial getSpatialForSpecifiedType(SpatialActionConfig track, Map<String, CameraNode> boundCameras) {
+		Spatial attachedSpatial = null;
+		switch (track.attachedItemType) {
+			case CAMERA: {
+				attachedSpatial = getSpatialForAttachedCamera(track, boundCameras);
+				break;
+			}
+			case GOODY: {
+				attachedSpatial = getSpatialForAttachedGoody(track);
+				break;
+			}
+			default: {
+				theLogger.error("Unsupported attached item type in animation: {}", track.attachedItemType);
+			}
+		}
+		return attachedSpatial;
 	}
 	
 	Spatial getSpatialForAttachedCamera(SpatialActionConfig track, Map<String, CameraNode> boundCameras) {

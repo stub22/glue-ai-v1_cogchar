@@ -27,7 +27,6 @@ import java.util.concurrent.Future;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.cinema.*;
-import org.cogchar.render.sys.context.CogcharRenderContext;
 
 /**
  * Generates and controls jMonkey spatial animations for virtual world "things"
@@ -37,43 +36,24 @@ import org.cogchar.render.sys.context.CogcharRenderContext;
 
 // TODO:
 // - Implement pause
-// - Factor out common bits with PathMgr (continue)
 
 public class SpatialAnimMgr extends AbstractThingCinematicMgr {
-
+	
 	private Map<Ident, AnimChannel> myChannelsByUri = new HashMap<Ident, AnimChannel>();
-
-	public void storeAnimationsFromConfig(ThingAnimConfig config, CogcharRenderContext crc) {
-
-		myCRC = crc;
-
-		// Next, we build the cinematics, using named tracks/waypoints/rotations if required.
-		for (ThingAnimInstanceConfig taic : config.myTAICs) {
-			buildAnimation(taic);
+	
+	@Override
+	public void buildAnimation(SpatialActionConfig sac) {
+		myLogger.info("Building Thing Spatial Animation from RDF: {}", sac);
+		if (sac.getClass() != ThingAnimInstanceConfig.class) {
+			myLogger.warn("buildAnimation was passed the wrong class of configuration object! Aborting.");
+			return;
 		}
-			
-	}
-
-	// Public so that Thing API can build animations, although a flat-out public scope is a little dangerous and may be ammended
-	public void buildAnimation(ThingAnimInstanceConfig aic) {
-		myLogger.info("Building Thing Spatial Animation from RDF: {}", aic);
+		ThingAnimInstanceConfig aic = (ThingAnimInstanceConfig) sac;
 		Map<String, CameraNode> boundCameras = new HashMap<String, CameraNode>(); // To keep track of cameras bound to this cinematic
 		
-		Spatial attachedSpatial = null;
 		SpatialGrabber grabber = new SpatialGrabber(myCRC);
-		switch (aic.attachedItemType) {
-			case CAMERA: {
-				attachedSpatial = grabber.getSpatialForAttachedCamera(aic, boundCameras);
-				break;
-			}
-			case GOODY: {
-				attachedSpatial = grabber.getSpatialForAttachedGoody(aic);
-				break;
-			}
-			default: {
-				myLogger.error("Unsupported attached item type in animation: {}", aic.attachedItemType);
-			}
-		}
+		Spatial attachedSpatial = grabber.getSpatialForSpecifiedType(aic, boundCameras);
+
 		
 		AnimWaypointsConfig waypointInfo = AnimWaypointsConfig.getMainConfig();
 		
@@ -86,57 +66,7 @@ public class SpatialAnimMgr extends AbstractThingCinematicMgr {
 			aniFactory.addKeyFrameScale(0, attachedSpatial.getLocalScale());
 			// Add key frames from repo definition
 			for (ThingAnimInstanceConfig.KeyFrameConfig kfc : aic.myKeyFrameDefinitions) {
-				float time = kfc.myTime;
-				if (time == Float.NaN) {
-					getLogger().warn("Detected a key frame with unspecified time in animation {}; ignoring...", aic.myUri);
-					break;
-				}
-				// Determine location for the key frame
-				WaypointConfig frameLocationConfig = null;
-				if (kfc.myLocation != null) frameLocationConfig = waypointInfo.myWCs.get(kfc.myLocation);
-				if (frameLocationConfig != null) {
-					float[] frameLocationVector = frameLocationConfig.myCoordinates;
-					Vector3f frameLocation = new Vector3f(frameLocationVector[0], frameLocationVector[1], frameLocationVector[2]);
-					// if this is a t=0 frame, so we'll put it at index 0 so AnimationFactory will replace the default identity transforms
-					if (time < 0.01f) {
-						aniFactory.addKeyFrameTranslation(0, frameLocation);
-					} else {
-						aniFactory.addTimeTranslation(time, frameLocation);
-					}
-				}
-				// Determine orientation for the key frame
-				RotationConfig frameRotationConfig = null;
-				if (kfc.myOrientation != null) frameRotationConfig = waypointInfo.myRCs.get(kfc.myOrientation);
-				if (frameRotationConfig != null) {
-					Vector3f rotationAxis = new Vector3f(frameRotationConfig.rotX, frameRotationConfig.rotY, frameRotationConfig.rotZ);
-					Quaternion frameRotation = new Quaternion().fromAngleAxis(frameRotationConfig.rotMag, rotationAxis);
-					// if this is a t=0 frame, so we'll put it at index 0 so AnimationFactory will replace the default identity transforms
-					if (time < 0.01f) {
-						aniFactory.addKeyFrameRotation(0, frameRotation);
-					} else {
-						aniFactory.addTimeRotation(time, frameRotation);
-					}
-				}
-				// Determine scale for the key frame
-				VectorScaleConfig frameScaleConfig = null;
-				Vector3f frameScale = null;
-				if (kfc.myScale != null) frameScaleConfig = waypointInfo.myVSCs.get(kfc.myScale);
-				if (frameScaleConfig != null) {
-					float[] frameScaleVector = frameScaleConfig.getScaleVector();
-					if (!noPosition(frameScaleVector)) {
-						frameScale = new Vector3f(frameScaleVector[0], frameScaleVector[1], frameScaleVector[2]);
-					}
-				} else if (kfc.myScalarScale != Float.NaN) {
-					frameScale = new Vector3f(kfc.myScalarScale, kfc.myScalarScale, kfc.myScalarScale);
-				}
-				// if this is a t=0 frame, so we'll put it at index 0 so AnimationFactory will replace the default identity transforms
-				if (frameScale != null) {
-					if (time < 0.01f) {
-						aniFactory.addKeyFrameScale(0, frameScale);
-					} else {
-						aniFactory.addTimeScale(time, frameScale);
-					}
-				}
+				addKeyFrame(aniFactory, kfc, waypointInfo, aic.myUri);
 			}
 			// Now the Animation is generated and linked to the geometry via an AnimationControl
 			Animation newAnimation = aniFactory.buildAnimation();
@@ -157,9 +87,72 @@ public class SpatialAnimMgr extends AbstractThingCinematicMgr {
 			myChannelsByUri.put(aic.myUri, animChannel);
 		}
 	}
+	
+	private boolean addKeyFrame(AnimationFactory aniFactory, ThingAnimInstanceConfig.KeyFrameConfig kfc,
+			AnimWaypointsConfig waypointInfo, Ident aniUri) {
+		float time = kfc.myTime;
+		if (time == Float.NaN) {
+			getLogger().warn("Detected a key frame with unspecified time in animation {}; ignoring...", aniUri);
+			return false;
+		}
+		// Determine location for the key frame
+		WaypointConfig frameLocationConfig = null;
+		if (kfc.myLocation != null) {
+			frameLocationConfig = waypointInfo.myWCs.get(kfc.myLocation);
+		}
+		if (frameLocationConfig != null) {
+			float[] frameLocationVector = frameLocationConfig.myCoordinates;
+			Vector3f frameLocation = new Vector3f(frameLocationVector[0], frameLocationVector[1], frameLocationVector[2]);
+			// if this is a t=0 frame, so we'll put it at index 0 so AnimationFactory will replace the default identity transforms
+			if (time < 0.01f) {
+				aniFactory.addKeyFrameTranslation(0, frameLocation);
+			} else {
+				aniFactory.addTimeTranslation(time, frameLocation);
+			}
+		}
+		// Determine orientation for the key frame
+		RotationConfig frameRotationConfig = null;
+		if (kfc.myOrientation != null) {
+			frameRotationConfig = waypointInfo.myRCs.get(kfc.myOrientation);
+		}
+		if (frameRotationConfig != null) {
+			Vector3f rotationAxis = new Vector3f(frameRotationConfig.rotX, frameRotationConfig.rotY, frameRotationConfig.rotZ);
+			Quaternion frameRotation = new Quaternion().fromAngleAxis(frameRotationConfig.rotMag, rotationAxis);
+			// if this is a t=0 frame, so we'll put it at index 0 so AnimationFactory will replace the default identity transforms
+			if (time < 0.01f) {
+				aniFactory.addKeyFrameRotation(0, frameRotation);
+			} else {
+				aniFactory.addTimeRotation(time, frameRotation);
+			}
+		}
+		// Determine scale for the key frame
+		VectorScaleConfig frameScaleConfig = null;
+		Vector3f frameScale = null;
+		if (kfc.myScale != null) {
+			frameScaleConfig = waypointInfo.myVSCs.get(kfc.myScale);
+		}
+		if (frameScaleConfig != null) {
+			float[] frameScaleVector = frameScaleConfig.getScaleVector();
+			if (!noPosition(frameScaleVector)) {
+				frameScale = new Vector3f(frameScaleVector[0], frameScaleVector[1], frameScaleVector[2]);
+			}
+		} else if (kfc.myScalarScale != Float.NaN) {
+			frameScale = new Vector3f(kfc.myScalarScale, kfc.myScalarScale, kfc.myScalarScale);
+		}
+		// if this is a t=0 frame, so we'll put it at index 0 so AnimationFactory will replace the default identity transforms
+		if (frameScale != null) {
+			if (time < 0.01f) {
+				aniFactory.addKeyFrameScale(0, frameScale);
+			} else {
+				aniFactory.addTimeScale(time, frameScale);
+			}
+		}
+		return true;
+	}
 
 	static final String PATH_URI_PREFIX = "http://www.cogchar.org/schema/thinganim/definition#"; // Temporary
-	public boolean controlAnimByName(final String localName, SpatialAnimMgr.ControlAction action) { // Soon switching to controlAnimByUri
+	@Override
+	public boolean controlAnimationByName(final String localName, ControlAction action) { // Soon switching to controlAnimByUri
 		boolean validAction = true;
 		final Ident uri = new FreeIdent(PATH_URI_PREFIX + localName); // Just temporary until we upgrade the food chain to send URI directly from lifter
 		final AnimChannel channel = myChannelsByUri.get(uri);
@@ -201,7 +194,8 @@ public class SpatialAnimMgr extends AbstractThingCinematicMgr {
 		return validAction;
 	}
 
-	public void clearAnims() {
+	@Override
+	public void clearAnimations() {
 		myChannelsByUri.clear();
 		myLogger.info("Animations cleared.");
 	}
