@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.cinema.AnimWaypointsConfig;
 import org.cogchar.api.cinema.PathInstanceConfig;
@@ -114,11 +113,9 @@ public class PathMgr extends AbstractThingCinematicMgr {
         return motionTrack;
 	}
 
-	static final String PATH_URI_PREFIX = "http://www.cogchar.org/schema/path/definition#"; // Temporary
 	@Override
-    public boolean controlAnimationByName(final String localName, ControlAction action) { // Soon switching to controlPathByUri
+    public boolean controlAnimationByName(final Ident uri, ControlAction action) { // Soon switching to controlPathByUri
         boolean validAction = true;
-		final Ident uri = new FreeIdent(PATH_URI_PREFIX + localName); // Just temporary until we upgrade the food chain to send URI directly from lifter
         final MotionEvent path = myPathsByUri.get(uri);
         if (path != null) {
             if (action.equals(PathMgr.ControlAction.PLAY)) {

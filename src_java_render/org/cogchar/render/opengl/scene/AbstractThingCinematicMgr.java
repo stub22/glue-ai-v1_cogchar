@@ -18,6 +18,7 @@ package org.cogchar.render.opengl.scene;
 
 import com.jme3.animation.LoopMode;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.Ident;
 import org.cogchar.api.cinema.SpatialActionConfig;
 import org.cogchar.api.cinema.SpatialActionSetConfig;
 import org.cogchar.render.sys.context.CogcharRenderContext;
@@ -59,7 +60,7 @@ abstract class AbstractThingCinematicMgr extends BasicDebugger {
         return loopJmeType;
     }
 	
-	public abstract boolean controlAnimationByName(final String localName, ControlAction action);
+	public abstract boolean controlAnimationByName(final Ident uri, ControlAction action);
 	
 	public abstract void clearAnimations();
 	
