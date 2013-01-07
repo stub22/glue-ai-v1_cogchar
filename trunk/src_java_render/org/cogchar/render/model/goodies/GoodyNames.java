@@ -51,6 +51,10 @@ public class GoodyNames  {
 	//public	static Ident	TEXT_SIZE = makeID("textScale");
 	public	static Ident	SCALE = makeID("scale");
 	
+	public	static Ident	SCALE_X = makeID("scaleX");
+	public	static Ident	SCALE_Y = makeID("scaleY");
+	public	static Ident	SCALE_Z = makeID("scaleZ");
+	
 	public static	Ident	TYPE_BIT_BOX = makeID("BitBox");
 	public static	Ident	TYPE_FLOOR = makeID("Floor");
 	public static	Ident	TYPE_TICTAC_MARK = makeID("TicTacMark");

@@ -43,7 +43,7 @@ public class BasicGoodyImpl extends BasicGoody {
 
 	protected Vector3f myPosition = new Vector3f(); // default: at origin
 	protected Quaternion myRotation = new Quaternion(); // default: no rotation
-	protected float myScale = 1;
+	protected Vector3f myScale = new Vector3f(1f, 1f, 1f); // default: scale = 1 in all directions
 
 	// This allows a single "thing" to have multiple switchable geometries
 	List<BasicGoodyGeometry> myGeometries = new ArrayList<BasicGoodyGeometry>();
@@ -247,13 +247,13 @@ public class BasicGoodyImpl extends BasicGoody {
 	}
 	
 	// Likely will eventually want to refactor this to use SpatialAnimMgr
-	protected void moveViaAnimation(Vector3f newPosition, Quaternion newOrientation, Float newScale, float duration) {
+	protected void moveViaAnimation(Vector3f newPosition, Quaternion newOrientation, Vector3f newScale, float duration) {
 		final String moveAnimName = "BasicGoodyMoveFactory";
 		AnimationFactory aniFactory = new AnimationFactory(duration, moveAnimName);
 		// First add starting position/rotation/scale to timeline at index 0
 		aniFactory.addKeyFrameTranslation(0, myPosition);
 		aniFactory.addKeyFrameRotation(0, getTotalRotation(getCurrentAttachedBasicGoodyGeometry()));
-		aniFactory.addKeyFrameScale(0, new Vector3f(myScale, myScale, myScale));
+		aniFactory.addKeyFrameScale(0, myScale);
 		// Now add new position/rotation/scale at duration:
 		setNewPositionAndRotationIfNonNull(newPosition, newOrientation);
 		if (newScale != null) {
@@ -261,7 +261,7 @@ public class BasicGoodyImpl extends BasicGoody {
 		}
 		aniFactory.addTimeTranslation(duration, myPosition);
 		aniFactory.addTimeRotation(duration, getTotalRotation(getCurrentAttachedBasicGoodyGeometry()));
-		aniFactory.addTimeScale(duration, new Vector3f(myScale, myScale, myScale));
+		aniFactory.addTimeScale(duration, myScale);
 		// Finally the Animation is generated and linked to the geometry via an AnimationControl
 		Animation moveAnimation = aniFactory.buildAnimation();
 		AnimControl goodyControl = new AnimControl(); // Should this be retained for reuse?
@@ -284,18 +284,32 @@ public class BasicGoodyImpl extends BasicGoody {
 	
 	@Override
 	public void setScale(final Float scaleFactor) {
-		if (scaleFactor != null) {
+		setVectorScale(new Vector3f(scaleFactor, scaleFactor, scaleFactor));
+	}
+	
+	public void setVectorScale(final Vector3f scaleVector) {
+		if (scaleVector != null) {
 			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
 					for (BasicGoodyGeometry aGeometry : myGeometries) {
-						aGeometry.myGeometry.setLocalScale(scaleFactor);
+						Vector3f rotatedScale = aGeometry.myRotationOffset.mult(scaleVector);
+						aGeometry.myGeometry.setLocalScale(rotatedScale);
 					}
 					return null;
 				}
 			});
-			myScale = scaleFactor;
+			myScale = scaleVector;
+		}
+	}
+	
+	private void setPositionRotationAndScale(Vector3f position, Quaternion rotation, Vector3f scale, Float scalarScale) {
+		setPositionAndRotation(position, rotation);
+		if (scale != null) {
+			setVectorScale(scale);
+		} else if (scalarScale != null) {
+			setScale(scalarScale);
 		}
 	}
 	
@@ -304,19 +318,22 @@ public class BasicGoodyImpl extends BasicGoody {
 	public void applyAction(GoodyAction ga) {
 		Vector3f newLocation = ga.getLocationVector();
 		Quaternion newRotation = ga.getRotationQuaternion();
+		Vector3f newVectorScale = ga.getVectorScale();
 		Float scaleFactor = ga.getScale();
 		switch (ga.getKind()) {
 			case SET : {
-				setPositionAndRotation(newLocation, newRotation);
-				setScale(scaleFactor);
+				setPositionRotationAndScale(newLocation, newRotation, newVectorScale, scaleFactor);
 				break;
 			}
 			case MOVE : {
 				Float timeEnroute = ga.getTravelTime();
 				if ((timeEnroute == null) || (Math.abs(timeEnroute-0f) < 0.001f)) {
-					setPositionAndRotation(newLocation, newRotation);
+					setPositionRotationAndScale(newLocation, newRotation, newVectorScale, scaleFactor);
 				} else {
-					moveViaAnimation(newLocation, newRotation, scaleFactor, timeEnroute);
+					if ((newVectorScale == null) && (scaleFactor != null)) {
+						newVectorScale = new Vector3f(scaleFactor, scaleFactor, scaleFactor);
+					}
+					moveViaAnimation(newLocation, newRotation, newVectorScale, timeEnroute);
 				}
 				break;
 			}
