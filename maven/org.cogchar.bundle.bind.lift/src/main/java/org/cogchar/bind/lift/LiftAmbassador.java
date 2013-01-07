@@ -47,7 +47,7 @@ public class LiftAmbassador {
 	private LiftNetworkConfigInterface myNetConfigInterface;
 	private Ident myQGraph;
 	private boolean myConfigReady = false;
-	private List<String> myTriggeredCinematics = new ArrayList<String>(); // We need this so we can reset previously played cinematics on replay
+	private List<Ident> myTriggeredCinematics = new ArrayList<Ident>(); // We need this so we can reset previously played cinematics on replay
 	private Map<Ident, LiftConfig> myLiftConfigCache = new HashMap<Ident, LiftConfig>(); // To avoid query config if page is reselected
 	private Map<String, String> myChatConfigEntries = new HashMap<String, String>();
 	private Map<Ident, UserAccessConfig.UserConfig> myUserMap = new HashMap<Ident, UserAccessConfig.UserConfig>();
@@ -98,9 +98,9 @@ public class LiftAmbassador {
 
 	public interface LiftAppInterface {
 
-		boolean triggerNamedPath(String name);
+		boolean triggerAnimation(Ident uri);
 
-		boolean stopNamedPath(String name);
+		boolean stopAnimation(Ident uri);
 
 		String queryCogbot(String query, String cogbotConvoUrl);
 
@@ -234,15 +234,15 @@ public class LiftAmbassador {
 	}
 
 	
-	public boolean triggerCinematic(String cinematicName) {
+	public boolean triggerCinematic(Ident cinematicUri) {
 		synchronized (cogcharLock) {
 			boolean success;
-			if (myTriggeredCinematics.contains(cinematicName)) {
-				myLiftAppInterface.stopNamedPath(cinematicName); // In order to replay, we need to stop previously played cinematic first
+			if (myTriggeredCinematics.contains(cinematicUri)) {
+				myLiftAppInterface.stopAnimation(cinematicUri); // In order to replay, we need to stop previously played cinematic first
 			}
-			success = myLiftAppInterface.triggerNamedPath(cinematicName);
+			success = myLiftAppInterface.triggerAnimation(cinematicUri);
 			if (success) {
-				myTriggeredCinematics.add(cinematicName);
+				myTriggeredCinematics.add(cinematicUri);
 			}
 			return success;
 		}
