@@ -16,6 +16,7 @@
 
 package org.cogchar.render.model.goodies;
 
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
 import org.cogchar.render.model.goodies.robosteps.BitBox;
@@ -91,26 +92,31 @@ public class GoodyFactory {
 			// Still would need a way (possibly reflection?) to get goody class from type
 			try {
 				//theLogger.info("Trying to create a goody, type is {}", ga.getType()); // TEST ONLY
+				Vector3f scale = ga.getVectorScale();
+				Float scalarScale = ga.getScale();
+				if ((scale == null) && (scalarScale != null)) {
+					scale = new Vector3f(scalarScale, scalarScale, scalarScale);
+				}
 				if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
 					boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
 					newGoody = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
-						ga.getScale(), bitBoxState);
+						scale, bitBoxState);
 				} else if (GoodyNames.TYPE_FLOOR.equals(ga.getType())) {
 					// Assuming physical floor for now, but that may be a good thing to define in repo
 					newGoody = new VirtualFloor(myRRC, ga.getGoodyID(), ga.getLocationVector(), true);
 				} else if (GoodyNames.TYPE_TICTAC_MARK.equals(ga.getType())) {
 					boolean isAnO = Boolean.valueOf(ga.getSpecialString(GoodyNames.USE_O));
 					newGoody = new TicTacMark(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
-							ga.getScale(), isAnO);
+							scale, isAnO);
 				} else if (GoodyNames.TYPE_TICTAC_GRID.equals(ga.getType())) {
 					newGoody = new TicTacGrid(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
-							ga.getScale());
+							scale);
 				} else if (GoodyNames.TYPE_CROSSHAIR.equals(ga.getType())) {
-					newGoody = new CrossHairGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getScale());
+					newGoody = new CrossHairGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(), scalarScale);
 				} else if (GoodyNames.TYPE_SCOREBOARD.equals(ga.getType())) {
 					int rows = Integer.valueOf(ga.getSpecialString(GoodyNames.ROWS));
 					newGoody = new ScoreBoardGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(),
-							ga.getSize()[0], rows, ga.getScale());
+							ga.getSize()[0], rows, scalarScale);
 				} else {
 					theLogger.warn("Did not recognize requested goody type for creation: {}", ga.getType());
 				}

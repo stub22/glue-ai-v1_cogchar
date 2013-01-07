@@ -48,7 +48,7 @@ public class TicTacGrid extends BasicGoodyImpl {
 	private Map<Ident, TicTacMark> markMap = new HashMap<Ident, TicTacMark>();
 	
 	public TicTacGrid(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, 
-			Quaternion initialRotation, float size) {
+			Quaternion initialRotation, Vector3f size) {
 		super(aRenderRegCli, boxUri);
 		setPositionRotationAndScale(initialPosition, initialRotation, size);
 		Mesh gridMesh = makeCustomGridMesh();
@@ -118,8 +118,9 @@ public class TicTacGrid extends BasicGoodyImpl {
 	}
 	
 	private Vector3f getWorldPositionForMark(int xPos, int yPos) {
-		float markOffset = SIZE_MULTIPLIER*myScale/3f;
-		Vector3f relativeMarkPosition = new Vector3f(markOffset*(xPos-2), -markOffset*(yPos-2), 0);
+		float markOffsetX = SIZE_MULTIPLIER*myScale.getX()/3f;
+		float markOffsetY = SIZE_MULTIPLIER*myScale.getY()/3f;
+		Vector3f relativeMarkPosition = new Vector3f(markOffsetX*(xPos-2), -markOffsetY*(yPos-2), 0);
 		// Now rotate positions according to myRotation
 		relativeMarkPosition = myRotation.mult(relativeMarkPosition);
 		return myPosition.add(relativeMarkPosition); 
@@ -148,20 +149,24 @@ public class TicTacGrid extends BasicGoodyImpl {
 	
 	@Override
 	public void setScale(Float newScale) {
+		setVectorScale(new Vector3f(newScale, newScale, newScale));
+	}
+	@Override
+	public void setVectorScale(Vector3f newScale) {
 		setPositionRotationAndScale(myPosition, myRotation, newScale);
 	}
 	
-	final public void setPositionRotationAndScale(Vector3f newPosition, Quaternion newRotation, Float newScale) {
+	final public void setPositionRotationAndScale(Vector3f newPosition, Quaternion newRotation, Vector3f newScale) {
 		super.setPositionAndRotation(newPosition, newRotation);
-		super.setScale(newScale);
+		super.setVectorScale(newScale);
 		for (TicTacMark markGoody : markMap.values()) {
-			markGoody.setScale(newScale);
+			markGoody.setVectorScale(newScale);
 			markGoody.setPositionAndRotation(getWorldPositionForMark(markGoody), newRotation);
 		}
 	}
 	
 	@Override
-	protected void moveViaAnimation(Vector3f newPosition, Quaternion newOrientation, Float newScale, float duration) {
+	protected void moveViaAnimation(Vector3f newPosition, Quaternion newOrientation, Vector3f newScale, float duration) {
 		myLogger.warn("MOVE not yet supported for TicTacGrid, coming soon...");
 	}
 	
