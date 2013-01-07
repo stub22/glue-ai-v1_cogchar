@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.cinema.*;
 
@@ -150,17 +149,15 @@ public class SpatialAnimMgr extends AbstractThingCinematicMgr {
 		return true;
 	}
 
-	static final String PATH_URI_PREFIX = "http://www.cogchar.org/schema/thinganim/definition#"; // Temporary
 	@Override
-	public boolean controlAnimationByName(final String localName, ControlAction action) { // Soon switching to controlAnimByUri
+	public boolean controlAnimationByName(final Ident uri, ControlAction action) { // Soon switching to controlAnimByUri
 		boolean validAction = true;
-		final Ident uri = new FreeIdent(PATH_URI_PREFIX + localName); // Just temporary until we upgrade the food chain to send URI directly from lifter
 		final AnimChannel channel = myChannelsByUri.get(uri);
 		if (channel != null) {
 			if (action.equals(SpatialAnimMgr.ControlAction.PLAY)) {
 				myLogger.info("Playing thing animation {}", uri);
 				LoopMode desiredLoopMode = channel.getLoopMode();
-				channel.setAnim(localName, 0f);
+				channel.setAnim(uri.getLocalName(), 0f);
 				// Oddly, it seems this needs to be set *after* starting the animation with setAnim, or else things reset back to Loop:
 				channel.setLoopMode(desiredLoopMode);
 			} else if (action.equals(SpatialAnimMgr.ControlAction.STOP)) {
