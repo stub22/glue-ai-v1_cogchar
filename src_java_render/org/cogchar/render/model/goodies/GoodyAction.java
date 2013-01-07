@@ -153,6 +153,19 @@ public class GoodyAction  {
 		return paramTVMap.getAsFloat(GoodyNames.SCALE);
 	}
 	
+	public Vector3f getVectorScale() {
+		Vector3f resultVec = null;
+		try {
+			float scaleX = paramTVMap.getAsFloat(GoodyNames.SCALE_X);
+			float scaleY = paramTVMap.getAsFloat(GoodyNames.SCALE_Y);
+			float scaleZ = paramTVMap.getAsFloat(GoodyNames.SCALE_Z);
+			resultVec = new Vector3f(scaleX, scaleY, scaleZ);
+		} catch (Exception e) {
+			// Just leave resultVec null if the try fails -- generally means coordinates are not specified
+		}
+		return resultVec;
+	}
+	
 	// Could have more elaborate type handling here, but for now, since params in repo are natively strings
 	// we'll provide a way to load those raw strings by param name
 	public String getSpecialString(Ident paramIdent) {

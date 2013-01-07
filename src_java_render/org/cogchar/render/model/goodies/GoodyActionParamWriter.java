@@ -55,8 +55,14 @@ public class GoodyActionParamWriter {
 		myBTVMap.putValueAtName(GoodyNames.SIZE_Z, sizeZ);
 	}
 	
-	public void putScale(float scale) {
-		myBTVMap.putValueAtName(GoodyNames.SCALE, scale);
+	public void putScale(float scalarScale) {
+		putScale(scalarScale, scalarScale, scalarScale);
+	}
+	
+	public void putScale(float scaleX, float scaleY, float scaleZ) {
+		myBTVMap.putValueAtName(GoodyNames.SCALE_X, scaleX);
+		myBTVMap.putValueAtName(GoodyNames.SCALE_Y, scaleY);
+		myBTVMap.putValueAtName(GoodyNames.SCALE_Z, scaleZ);
 	}
 	
 	// Not sure if this is how we want this to look or how we want it named, but good for starters...
