@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
  */
 
 
-public class MayaModelMapLifecycle extends AbstractLifecycleProvider<MayaMapInterface, MayaModelMap> {
+public class MayaModelMapManagerLifecycle extends AbstractLifecycleProvider<MayaModelMapManagerInterface, MayaModelMapManager> {
 	
-	private final static Logger theLogger = LoggerFactory.getLogger(MayaModelMapLifecycle.class);
+	private final static Logger theLogger = LoggerFactory.getLogger(MayaModelMapManagerLifecycle.class);
 	
 	private static BundleContext theContext;
 	
@@ -64,7 +64,9 @@ public class MayaModelMapLifecycle extends AbstractLifecycleProvider<MayaMapInte
 		theContext = context;
 	}
 	
-	public MayaModelMapLifecycle() {
+	private MayaModelMapManager myManager;
+	
+	public MayaModelMapManagerLifecycle() {
 		super(OurDescriptorBuilder.get().getDescriptors());
 
 		if (myRegistrationProperties == null) {
@@ -73,13 +75,12 @@ public class MayaModelMapLifecycle extends AbstractLifecycleProvider<MayaMapInte
 	}
 	
 	@Override
-	protected synchronized MayaModelMap create(Map<String, Object> dependencies) {
-		theLogger.info("Creating MayaModelMap in MayaModelMapLifecycle");
-		MayaModelMap mayaMap = getMap((RepoClient)dependencies.get(repoClientId), 
+	protected synchronized MayaModelMapManager create(Map<String, Object> dependencies) {
+		theLogger.info("Creating MayaModelMapManager in MayaModelMapManagerLifecycle");
+		myManager = getManager((RepoClient)dependencies.get(repoClientId), 
 				(GlobalConfigEmitter.GlobalConfigService)dependencies.get(globalConfigId));
-		// Needs null checking below, but really needs more refactoring than that...
-		theContext.registerService(MayaModelMap.class.getName(), mayaMap, null);
-		return mayaMap;
+		registerMaps(myManager);
+		return myManager;
 	}
 	
 	@Override
@@ -88,23 +89,31 @@ public class MayaModelMapLifecycle extends AbstractLifecycleProvider<MayaMapInte
 		theLogger.info("MayaModelMapLifecycle handling change to {}, new dependency is: {}", serviceId, ((dependency == null)? "null" : "not null"));
 		// With only two dependencies, the handling here is simple:
 		if ((availableDependencies.get(repoClientId) != null) && (availableDependencies.get(globalConfigId) != null)) {
-			MayaModelMap mayaMap = getMap((RepoClient)availableDependencies.get(repoClientId), 
+			myManager = getManager((RepoClient)availableDependencies.get(repoClientId), 
 				(GlobalConfigEmitter.GlobalConfigService)availableDependencies.get(globalConfigId));
-			// Needs null checking below, also is a rote copy from create(), but really needs more refactoring than that...
-			theContext.registerService(MayaModelMap.class.getName(), mayaMap, null);
+			registerMaps(myManager);
 		} else {
 			theLogger.warn("A dependency was null; cannot make new Maya Map"); 
 		}
 		
 	}
 	
-	private MayaModelMap getMap(RepoClient rc, GlobalConfigEmitter.GlobalConfigService configService) {
+	private MayaModelMapManager getManager(RepoClient rc, GlobalConfigEmitter.GlobalConfigService configService) {
 		Ident qGraph = getGraph(configService);
-		MayaModelMap mayaMap = null;
+		MayaModelMapManager manager = null;
 		if (qGraph != null) {
-			mayaMap = new MayaModelMap(rc, qGraph);
+			manager = new MayaModelMapManager(rc, qGraph); 
 		}
-		return mayaMap;
+		return manager;
+	}
+	
+	// Registers maps so they can be found by aniconv dialog:
+	private void registerMaps(MayaModelMapManager mgr) {
+		if (mgr != null) {
+			for (MayaModelMap map : mgr.myMMMs) {
+				theContext.registerService(MayaModelMap.class.getName(), map, null);
+			}
+		}
 	}
 	
 	private Ident getGraph(GlobalConfigEmitter.GlobalConfigService configService) {
@@ -126,8 +135,8 @@ public class MayaModelMapLifecycle extends AbstractLifecycleProvider<MayaMapInte
 	
 	@Override
 	// Needs to be revisited
-	public Class<MayaMapInterface> getServiceClass() {
-		return MayaMapInterface.class;
+	public Class<MayaModelMapManagerInterface> getServiceClass() {
+		return MayaModelMapManagerInterface.class;
 	}
 
 }
