@@ -17,7 +17,10 @@ package org.cogchar.bind.rk.aniconv;
 
 import java.util.HashMap;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.*;
+import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionHelper;
+import org.appdapter.help.repo.SolutionList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,29 +30,25 @@ import org.slf4j.LoggerFactory;
  */
 
 
-public class MayaModelMap extends HashMap<String,MayaChannelMapping> implements MayaMapInterface {
+public class MayaModelMap extends HashMap<String,MayaChannelMapping> {
 	
 	//public Map<String,MayaChannelMapping> myMCMs = new HashMap<String,MayaChannelMapping>();
 	
 	private final static Logger theLogger = LoggerFactory.getLogger(MayaModelMap.class.getName());
 	
+	public Ident myUri;
+	
 	// A new constructor to build BoneRobotConfig from spreadsheet
-	public MayaModelMap(RepoClient rc, Ident graphIdent) {
+	public MayaModelMap(RepoClient rc, Ident graphIdent, Ident uri, SolutionList mappingSL) {
+		myUri = uri;
 		SolutionHelper sh = new SolutionHelper();
 		MayaCN mcn = new MayaCN();
 		theLogger.info("Building MayaModelConfig via queries using graph {} ", graphIdent);
-		SolutionList mappingSL = rc.queryIndirectForAllSolutions(mcn.MAYA_CHANNEL_QUERY_URI, graphIdent);
 		for (Solution channelMapping: mappingSL.javaList()) {
 			MayaChannelMapping newMapping = new MayaChannelMapping(channelMapping, sh, mcn);
 			theLogger.info("Adding new Maya channel mapping: " + newMapping.toString()); // TEST ONLY
 			this.put(newMapping.channelName, newMapping);
 		}
-	}
+	}	
 	
-	
-	
-}
-
-interface MayaMapInterface {
-	// Needed for LifeCycle, needs to be revisited
 }

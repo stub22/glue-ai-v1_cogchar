@@ -85,7 +85,7 @@ public class ChannelData<T> {
 			/* This section only needed for handling out-of-range animation channel values during conversion by substituting
 			 * nearest limit (0 or 1) as appropriate. This is a quick and very dirty band-aid. The functionality
 			 * to indicate which range is exceeded should be added to NormalizableRange if we need it in the long run
-			 * 
+			 */
 			// Set to limit normPos if out of range
 			// Wow needs some serious refactoring!
 			// Assumes position is a double, bad!
@@ -105,7 +105,7 @@ public class ChannelData<T> {
 					normPos = new NormalizedDouble(0.0);
 				}
 			} 
-			*/
+			
 			
             ControlPoint<NormalizedDouble> normPoint = new ControlPoint(point.getTime(), normPos);
             normPoints.add(normPoint);
