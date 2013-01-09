@@ -24,12 +24,16 @@ package org.cogchar.bind.rk.aniconv;
 
 public class MayaCN {
 	
-	public static final String MAYA_CHANNEL_QUERY_URI = "ccrt:find_maya_channel_mappings_99";
+	public final String MAYA_CHANNEL_QUERY_URI = "ccrt:find_maya_channel_mappings_99";
+	public final String MAYA_MAP_QUERY_URI = "ccrt:find_maya_channel_maps_99";
 	
-	public static final String MAYA_CHANNEL_VAR_NAME = "channel";
-	public static final String JOINT_NAME_VAR_NAME = "joint";
-	public static final String JOINT_NUM_VAR_NAME = "jointNum";
-	public static final String MINIMUM_VALUE_VAR_NAME = "min";
-	public static final String MAXIMUM_VALUE_VAR_NAME = "max";
+	public final String MAYA_CHANNEL_VAR_NAME = "channel";
+	public final String JOINT_NAME_VAR_NAME = "joint";
+	public final String JOINT_NUM_VAR_NAME = "jointNum";
+	public final String MINIMUM_VALUE_VAR_NAME = "min";
+	public final String MAXIMUM_VALUE_VAR_NAME = "max";
+	public final String MAP_VAR_NAME = "map";
+	
+	public final String MAP_INSTANCE_QUERY_VAR_NAME = MAP_VAR_NAME;
 	
 }
