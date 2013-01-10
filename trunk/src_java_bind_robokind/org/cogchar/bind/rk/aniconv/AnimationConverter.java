@@ -31,7 +31,7 @@ public class AnimationConverter {
     public static Animation convertAnimation(
             //String animName, BoneRobotConfig skeleton, StreamTokenizer st) {
 			String animName, MayaModelMap conversionMap, StreamTokenizer st) {
-		System.out.println("In AnimationConverter"); // TEST ONLY
+		//System.out.println("In AnimationConverter"); // TEST ONLY
         AnimationData ogreAnimData =
                 OgreAnimationParser.parseAnimation(animName, st);
 		

@@ -18,7 +18,8 @@ package org.cogchar.bind.rk.aniconv;
 import java.util.ArrayList;
 import java.util.List;
 import org.robokind.api.animation.ControlPoint;
-import org.robokind.api.common.position.*;
+import org.robokind.api.common.position.NormalizableRange;
+import org.robokind.api.common.position.NormalizedDouble;
 
 /**
  *
@@ -82,30 +83,21 @@ public class ChannelData<T> {
 			
             NormalizedDouble normPos = myRange.normalizeValue(point.getPosition()); // Returns null if out of range
 			
-			/* This section only needed for handling out-of-range animation channel values during conversion by substituting
-			 * nearest limit (0 or 1) as appropriate. This is a quick and very dirty band-aid. The functionality
-			 * to indicate which range is exceeded should be added to NormalizableRange if we need it in the long run
+			/* This section only needed for handling out-of-range animation channel Double values during conversion by substituting
+			 * nearest limit (0 or 1) as appropriate. Perhaps the functionality
+			 * to indicate which range is exceeded should be added to NormalizableRange if we need it in the long run, where we can
+			 * generalize it to be effective for more than just ControlPoint<Double>.
 			 */
-			// Set to limit normPos if out of range
-			// Wow needs some serious refactoring!
-			// Assumes position is a double, bad!
-			Double position = (Double)point.getPosition();
-			if (normPos == null) {
+			if ((normPos == null) && (point.getPosition() instanceof Double)){
+				Double position = (Double)point.getPosition();
 				if ((position == null) || (position.isNaN()))  {
 					normPos = new NormalizedDouble(0.5);
-				} else if ((Double)myRange.getMax() > (Double)myRange.getMin()) {
-					if (position > (Double)myRange.getMax()) {
-						normPos = new NormalizedDouble(1.0);
-					} else {
-						normPos = new NormalizedDouble(0.0);
-					}
-				} else if (position < (Double)myRange.getMax()) {
-					normPos = new NormalizedDouble(1.0);
 				} else {
-					normPos = new NormalizedDouble(0.0);
+					boolean normalPolarity = ((Double)myRange.getMax() > (Double)myRange.getMin());
+					boolean greaterThanMax = (position > (Double)myRange.getMax());
+					normPos = (normalPolarity ^ greaterThanMax)? new NormalizedDouble(0.0) : new NormalizedDouble(1.0);
 				}
 			} 
-			
 			
             ControlPoint<NormalizedDouble> normPoint = new ControlPoint(point.getTime(), normPos);
             normPoints.add(normPoint);
