@@ -208,7 +208,8 @@ public class PumaAppContext extends BasicDebugger {
 		pdc.initVWorldHumanoidFigure(rc, graphIdentForBony, humCfg);
 		pdc.setupCharacterBindingToRobokind(bunCtx, rc, graphIdentForBony, humCfg, rkConfCLs);
 		PumaConfigManager pcm = getConfigManager();
-		pdc.setupAndStartBehaviorTheater(pcm, vWorldMapper);
+		String chanGraphQN =  "ccrt:chan_sheet_AZR50",  behavGraphQN  =  "hrk:behav_file_44";
+		pdc.setupAndStartBehaviorTheater(pcm, chanGraphQN,  behavGraphQN);
 		return pdc;
 	}
 
