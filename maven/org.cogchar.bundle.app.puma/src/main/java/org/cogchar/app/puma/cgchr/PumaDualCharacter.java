@@ -106,14 +106,14 @@ public class PumaDualCharacter extends CogcharScreenBox {
 		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
 		myTheater.registerChannel(mySOC);
 	}
-	public void setupAndStartBehaviorTheater(PumaConfigManager pcm, PumaVirtualWorldMapper vWorldMapper) throws Throwable {
+	public void setupAndStartBehaviorTheater(PumaConfigManager pcm, String chanGraphQN, String behavGraphQN) throws Throwable {
 		boolean clearCachesFirst = true;
 		// Old way, may still be useful durnig behavior development by advanced users.
 		// loadBehaviorConfigFromTestFile(clearCachesFirst);
 		RepoClient rc = pcm.getMainConfigRepoClient();
-		Ident	chanGraphID = rc.makeIdentForQName("ccrt:chan_sheet_AZR50");
+		Ident	chanGraphID = rc.makeIdentForQName(chanGraphQN);
 		
-		Ident	behavGraphID = rc.makeIdentForQName("hrk:behav_file_44");
+		Ident	behavGraphID = rc.makeIdentForQName(behavGraphQN);
 		loadBehaviorConfigFromRepo(rc, chanGraphID, behavGraphID, clearCachesFirst);
 		
 		startTheater();
