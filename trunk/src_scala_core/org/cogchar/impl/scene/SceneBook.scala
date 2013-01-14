@@ -38,6 +38,7 @@ class SceneBook extends BasicDebugger {
 		mySceneSpecs.put(ss.getIdent(), ss);
 	}
 	
+	
 	def registerSceneSpecs (lss : List[SceneSpec] ) : Unit = {
 		for (val ss <- lss) {
 			addSceneSpec(ss);
@@ -54,6 +55,7 @@ class SceneBook extends BasicDebugger {
 		getLogger.info("Loading Channel Specs from: {}", chanGraphID);
 		val chanSet : java.util.Set[Object] = repoClient.assembleRootsFromNamedModel(chanGraphID)
 		getLogger.debug("Loaded chan objects {} ", chanSet);
+		// Channels are now available for wiring via the global builder cache - messy!
 		getLogger.info("Loading Scene/Behavior Specs from: {}", behavGraphID);
 		val behvSet : java.util.Set[Object] = repoClient.assembleRootsFromNamedModel(behavGraphID)
 		getLogger.debug("Loaded behav objects {} ", behvSet);	
