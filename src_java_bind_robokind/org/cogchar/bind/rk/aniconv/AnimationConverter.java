@@ -30,16 +30,21 @@ import org.robokind.api.animation.ControlPoint;
 public class AnimationConverter {
     public static Animation convertAnimation(
             //String animName, BoneRobotConfig skeleton, StreamTokenizer st) {
-			String animName, MayaModelMap conversionMap, StreamTokenizer st) {
+			String animName, BoneRobotConfig skeleton, MayaModelMap conversionMap, boolean useMayaMap, StreamTokenizer st) {
 		//System.out.println("In AnimationConverter"); // TEST ONLY
         AnimationData ogreAnimData =
                 OgreAnimationParser.parseAnimation(animName, st);
 		
 		//examineChannels(ogreAnimData);  // TEST ONLY ALL THIS
 		
-		OgreAnimationMayaMapper mayaMapper = new OgreAnimationMayaMapper();
-
-        AnimationData animData = mayaMapper.mapMayaModel(ogreAnimData, conversionMap);
+		AnimationData animData;
+		if (useMayaMap) {
+			OgreAnimationMayaMapper mayaMapper = new OgreAnimationMayaMapper();
+			animData = mayaMapper.mapMayaModel(ogreAnimData, conversionMap);
+		} else {
+			animData = OgreAnimationSkeletonMap.mapSkeleton(skeleton, ogreAnimData);
+		}
+		
 		
 		//examineChannels(animData);  // TEST ONLY ALL THIS
 
