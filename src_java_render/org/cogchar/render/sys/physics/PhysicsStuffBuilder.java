@@ -22,17 +22,13 @@
 
 package org.cogchar.render.sys.physics;
 
-import org.cogchar.render.opengl.scene.GeomFactory;
-import org.cogchar.render.opengl.optic.LightFactory;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
-import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.material.Material;
-import com.jme3.math.Plane;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
@@ -41,6 +37,11 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
+import org.cogchar.render.model.goodies.VirtualFloor;
+import org.cogchar.render.opengl.optic.LightFactory;
+import org.cogchar.render.opengl.scene.GeomFactory;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryAware;
 
@@ -83,9 +84,10 @@ public class PhysicsStuffBuilder extends RenderRegistryAware {
 		//Now configured from RDF instead
 		//LightFactory.addLightGrayAmbientLight(myParentNode);
 		
-		Material floorMat = findOrMakeOpticMaterialFacade(null, null).makeUnshadedMat();
-		
-		addFloor( true, floorMat);
+		// Now floor is generated as a goody
+		//Material floorMat = findOrMakeOpticMaterialFacade(null, null).makeUnshadedMat();
+		//addFloor(true, floorMat); // original
+		//addFloor(true); // As goody; now done from repo
 	}
 
 
@@ -95,7 +97,7 @@ public class PhysicsStuffBuilder extends RenderRegistryAware {
 		Material floorMat = findOrMakeOpticMaterialFacade(null, null).makeJmonkeyLogoMat();
 		Material ballMat = floorMat;
 
-		addFloor(false, floorMat);
+		addFloor(false);
 		//movable spheres
 		makeSpheres(ballMat);
 		
@@ -112,6 +114,8 @@ public class PhysicsStuffBuilder extends RenderRegistryAware {
 		 
 	}
 
+	/*
+	// Now floor is generated as a goodie
 	public void addFloor(boolean rigidBodyPhysFlag, Material floorMat) {
 
 		Box floorBox = new Box(140, 0.25f, 140);
@@ -127,8 +131,18 @@ public class PhysicsStuffBuilder extends RenderRegistryAware {
 		getParentNode().attachChild(floorGeometry);
 		getPhysicsSpace().add(floorGeometry);
 	}
-
+	*/
 	
+	// This method for adding the floor as a (non-repo) goody is retained for now for createPhysicsTestWorldSoccer
+	public void addFloor(boolean rigidBodyPhysFlag) {
+		// Temporary URI information and position here; will almost certainly be moving to repo soon
+		final String ccrt = "urn:ftd:cogchar.org:2012:runtime#";
+		final String floorLocalName = rigidBodyPhysFlag? "floor" : "noPhysicsFloor";
+		Ident floorUri = new FreeIdent(ccrt+floorLocalName);
+		VirtualFloor floor = new VirtualFloor(myCRC.getRenderRegistryClient(), floorUri, new Vector3f(0, -5, 0), rigidBodyPhysFlag);
+		floor.attachToVirtualWorldNode(myParentNode);
+	}
+
 	/**
 	 * creates a box geometry with a RigidBodyControl
 	 * @param assetManager
