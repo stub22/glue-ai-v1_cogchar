@@ -15,17 +15,15 @@
  */
 package org.cogchar.bind.rk.aniconv;
 
-import org.cogchar.api.skeleton.config.BoneJointConfig;
-import org.cogchar.api.skeleton.config.BoneRobotConfig;
-import org.cogchar.api.skeleton.config.BoneRotationAxis;
-import org.cogchar.api.skeleton.config.BoneProjectionRange;
-
-import org.robokind.api.common.position.*;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.cogchar.api.skeleton.config.BoneJointConfig;
+import org.cogchar.api.skeleton.config.BoneProjectionRange;
+import org.cogchar.api.skeleton.config.BoneRobotConfig;
+import org.cogchar.api.skeleton.config.BoneRotationAxis;
 import org.robokind.api.animation.ControlPoint;
+import org.robokind.api.common.position.DoubleRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +33,8 @@ import org.slf4j.LoggerFactory;
  */
 public class OgreAnimationSkeletonMap{
 
-    //public final static String ROTATE = "Ctrl_rotate";
 	public final static String ROTATE = "_rotate";
-    //public final static String TRANSLATE = "Ctrl_translate";
 	public final static String TRANSLATE = "_translate";
-    //public final static String SCALE = "Ctrl_scale";
 	public final static String SCALE = "_scale";
     public final static String X = "rotateX";
     public final static String Y = "rotateY";
@@ -49,11 +44,11 @@ public class OgreAnimationSkeletonMap{
 	
 	private static Logger theLogger = LoggerFactory.getLogger(OgreAnimationSkeletonMap.class); 
 
-    public static AnimationData mapMayaModel(
-            MayaModelMap conversionMap,
+    public static AnimationData mapSkeleton(
+            BoneRobotConfig skeleton,
             AnimationData oldAnimData){
         Map<BoneJointConfig, ChannelData<Double>> jointTable =
-                buildAnimationMap(conversionMap, oldAnimData);
+                buildAnimationMap(skeleton, oldAnimData);
 
         AnimationData animData =
                 buildAnimationData(oldAnimData.getName(), jointTable);
@@ -62,47 +57,24 @@ public class OgreAnimationSkeletonMap{
     }
 
     private static Map<BoneJointConfig, ChannelData<Double>> buildAnimationMap(
-            MayaModelMap conversionMap, AnimationData animData){
-        /*
+            BoneRobotConfig skeleton, AnimationData animData){
+        
 		Map<BoneJointConfig, ChannelData<Double>> jointTable =
                 new HashMap(skeleton.myBJCs.size());
-		*/
-		
-		/*
-		 for(ChannelData<Double> chan : animData.getChannels()){ // TEST ONLY
-			 System.out.println(chan.getName());
-		 }
-		 */ 
 
         for(ChannelData<Double> chan : animData.getChannels()){
 			
-			// Temporary ugly way to remove the following tag sometimes found in .anim channel names:
-			String strippedA04PrefixChanName = chan.getName().replaceAll("AZR50New_Rig_FINAL:", "");
+			String boneName = getBoneName(chan.getName());
 			
-			/*
-			if (strippedA04PrefixChanName.endsWith("1")) { // Clear off number from "Y1/Z1" suffix
-				strippedA04PrefixChanName = strippedA04PrefixChanName.substring(0, strippedA04PrefixChanName.length() - 1);
-			}
-			
-            String boneName = getBoneName(strippedA04PrefixChanName);
-            if(boneName == null){
-                continue;
-            }
             BoneRotationAxis axis = getRotationAxis(chan.getName());
-			
-			if (JUNKY.lookupTable.containsKey(strippedA04PrefixChanName)) {
-				JunkyConversionTable.JointInfo info = JUNKY.lookupTable.get(strippedA04PrefixChanName);
-				boneName = info.boneName;
-				axis = info.axis;
-			}
 
 			//theLogger.info("Processing bone {} with axis {} from chanName " + chan.getName(), boneName, axis); // TEST ONLY
-			if (axis == null) {continue;} // axis will be null unless chan.getName() suffix is rotateX/Y/Z
-			//System.out.println("Looking for boneName " + boneName + " and axis " + axis + " from name " + chan.getName()); // TEST ONLY
+			if ((axis == null) || (boneName == null)) {continue;} // will be true unless chan.getName() suffix is rotateX/Y/Z
+			//theLogger.info("Looking for boneName " + boneName + " and axis " + axis + " from name " + chan.getName()); // TEST ONLY
             BoneProjectionRange bpr = getProjectionRange(
                     boneName, axis, skeleton);
 			if (bpr == null) {
-				//theLogger.warn("Could not find BoneProjectionRange for bone: {} -- ignoring", boneName);
+				theLogger.warn("Could not find BoneProjectionRange for bone: {} -- ignoring", boneName);
 				continue;
 			}
 			theLogger.info("Adding joint for bone: {}", boneName);
@@ -119,12 +91,8 @@ public class OgreAnimationSkeletonMap{
             chan.setRange(range);
             jointTable.put(joint, chan);
         }
-		*/
 
-        
-        //return jointTable;
-		}
-		return null;
+        return jointTable;
     }
 
     private static BoneRotationAxis getRotationAxis(String chanName){
@@ -144,17 +112,19 @@ public class OgreAnimationSkeletonMap{
         }
 		
 		if (chanName.contains("Global")) {return "Root";} // Handles "root" rotations; we may or may not want this as such
-		String boneName = "None";
+		String boneName = null;
 
+		// Remove last character from chanName, which is typically the axis designation (X, Y, or Z)
         chanName = chanName.substring(0, chanName.length() - 1);
 
         if(chanName.endsWith(ROTATE)){
             boneName = chanName.substring(0, chanName.length() - ROTATE.length());
-        }else if(chanName.endsWith(TRANSLATE)){
+        }/*else if(chanName.endsWith(TRANSLATE)){
             boneName = chanName.substring(0, chanName.length() - TRANSLATE.length());
         }else if(chanName.endsWith(SCALE)){
             boneName = chanName.substring(0, chanName.length() - SCALE.length());
         }
+		*/
 
 		return boneName; 
     }
@@ -172,7 +142,6 @@ public class OgreAnimationSkeletonMap{
         }
         return null;
     }
-	
     
     private static AnimationData buildAnimationData(
             String animName,
@@ -191,7 +160,9 @@ public class OgreAnimationSkeletonMap{
 				ControlPoint millisecondPoint = new ControlPoint(point.getTime()*1000, point.getPosition());
 				chanData.addPoint(millisecondPoint); // We just copy them with no conversion except time -- this seems to be the right thing to do...
 			}
-            newAnimData.addChannel(chanData);
+			if (AnimationTrimmer.positionsChange(chanData)) {
+				newAnimData.addChannel(chanData);
+			}
         }
         return newAnimData;
     }
