@@ -89,6 +89,11 @@ public abstract class CogcharPresumedApp<CRCT extends CogcharRenderContext> exte
 		someSettings.setFrameRate(60); // No need to run faster than this; we'd just be wasting resources
 		setAppSettings(someSettings);
 	}
+	// Hide the diagnostic information
+	protected void hideJmonkeyDebugInfo() {
+		setDisplayFps(false);
+		setDisplayStatView(false);
+	}
     @Override  public void initialize() {
 		/*
 		// AssetManager does not exist yet.

@@ -53,6 +53,7 @@ public abstract class BonyVirtualCharApp<BRCT extends BonyRenderContext> extends
 	public void initCharPanelWithCanvas(VirtualCharacterPanel vcp) { 
 		// Works
 		applySettings();
+		hideJmonkeyDebugInfo();
 		this.createCanvas();
 		// Does not work at this time or subsq:
 		//applySettings();
