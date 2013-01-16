@@ -313,6 +313,14 @@ public class BasicGoodyImpl extends BasicGoody {
 		}
 	}
 	
+	public void setCurrentGeometryColor(final ColorRGBA geoColor) {
+		//myLogger.info("setting color with color {} to index {}", geoColor, attachedIndex); // TEST ONLY
+		if ((geoColor != null) && (attachedIndex != NULL_INDEX)) {
+			BasicGoodyGeometry currentGeometry = myGeometries.get(attachedIndex);
+			currentGeometry.setMaterialColor(geoColor);
+		}
+	}
+	
 	// Override this method to add functionality; be sure to call this super method to apply standard Goody actions
 	@Override
 	public void applyAction(GoodyAction ga) {
@@ -320,9 +328,11 @@ public class BasicGoodyImpl extends BasicGoody {
 		Quaternion newRotation = ga.getRotationQuaternion();
 		Vector3f newVectorScale = ga.getVectorScale();
 		Float scaleFactor = ga.getScale();
+		ColorRGBA newColor = ga.getColor();
 		switch (ga.getKind()) {
 			case SET : {
 				setPositionRotationAndScale(newLocation, newRotation, newVectorScale, scaleFactor);
+				setCurrentGeometryColor(newColor);
 				break;
 			}
 			case MOVE : {

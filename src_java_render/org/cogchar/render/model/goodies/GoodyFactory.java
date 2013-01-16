@@ -103,14 +103,14 @@ public class GoodyFactory {
 						scale, bitBoxState);
 				} else if (GoodyNames.TYPE_FLOOR.equals(ga.getType())) {
 					// Assuming physical floor for now, but that may be a good thing to define in repo
-					newGoody = new VirtualFloor(myRRC, ga.getGoodyID(), ga.getLocationVector(), true);
+					newGoody = new VirtualFloor(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getColor(), true);
 				} else if (GoodyNames.TYPE_TICTAC_MARK.equals(ga.getType())) {
 					boolean isAnO = Boolean.valueOf(ga.getSpecialString(GoodyNames.USE_O));
 					newGoody = new TicTacMark(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
 							scale, isAnO);
 				} else if (GoodyNames.TYPE_TICTAC_GRID.equals(ga.getType())) {
 					newGoody = new TicTacGrid(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
-							scale);
+							ga.getColor(), scale);
 				} else if (GoodyNames.TYPE_CROSSHAIR.equals(ga.getType())) {
 					newGoody = new CrossHairGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(), scalarScale);
 				} else if (GoodyNames.TYPE_SCOREBOARD.equals(ga.getType())) {

@@ -40,7 +40,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 public class TicTacGrid extends BasicGoodyImpl {
 	
-	private static final ColorRGBA GRID_COLOR = ColorRGBA.Blue;
+	private static final ColorRGBA DEFAULT_GRID_COLOR = ColorRGBA.Blue;
 	private static final float SIZE_MULTIPLIER = 9f;
 	private static final float[] ROTATE_UPRIGHT = {(float)(Math.PI/2), 0f, 0f};
 	private static final Ident CLEAR_IDENT = GoodyNames.makeID("clearMarks");
@@ -48,11 +48,14 @@ public class TicTacGrid extends BasicGoodyImpl {
 	private Map<Ident, TicTacMark> markMap = new HashMap<Ident, TicTacMark>();
 	
 	public TicTacGrid(RenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, 
-			Quaternion initialRotation, Vector3f size) {
+			Quaternion initialRotation, ColorRGBA color, Vector3f size) {
 		super(aRenderRegCli, boxUri);
 		setPositionRotationAndScale(initialPosition, initialRotation, size);
 		Mesh gridMesh = makeCustomGridMesh();
-		addGeometry(gridMesh, GRID_COLOR, new Quaternion(ROTATE_UPRIGHT));
+		if (color == null) {
+			color = DEFAULT_GRID_COLOR;
+		}
+		addGeometry(gridMesh, color, new Quaternion(ROTATE_UPRIGHT));
 	}
 	
 	private Mesh makeCustomGridMesh() {
