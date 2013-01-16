@@ -16,6 +16,7 @@
 
 package org.cogchar.render.model.goodies;
 
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import org.appdapter.core.name.Ident;
@@ -164,6 +165,24 @@ public class GoodyAction  {
 			// Just leave resultVec null if the try fails -- generally means coordinates are not specified
 		}
 		return resultVec;
+	}
+	
+	public ColorRGBA getColor() {
+		ColorRGBA resultColor = null;
+		try {
+			float colorR = paramTVMap.getAsFloat(GoodyNames.COLOR_RED);
+			float colorG = paramTVMap.getAsFloat(GoodyNames.COLOR_GREEN);
+			float colorB = paramTVMap.getAsFloat(GoodyNames.COLOR_BLUE);
+			Float colorAlpha = paramTVMap.getAsFloat(GoodyNames.COLOR_ALPHA);
+			// Default to alpha=1 if not specified
+			if (colorAlpha == null) {
+				colorAlpha = 1f;
+			}
+			resultColor = new ColorRGBA(colorR, colorG, colorB, colorAlpha);
+		} catch (Exception e) {
+			// Just leave resultColor null if the try fails -- generally means color is not specified
+		}
+		return resultColor;
 	}
 	
 	// Could have more elaborate type handling here, but for now, since params in repo are natively strings
