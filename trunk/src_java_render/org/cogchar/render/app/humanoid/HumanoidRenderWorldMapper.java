@@ -15,12 +15,15 @@
  */
 package org.cogchar.render.app.humanoid;
 
+import com.jme3.math.ColorRGBA;
+import com.jme3.renderer.ViewPort;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.cinema.AnimWaypointsConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.api.cinema.PathConfig;
 import org.cogchar.api.cinema.ThingAnimConfig;
+import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.optic.LightFactory;
 import org.cogchar.render.opengl.scene.PathMgr;
@@ -41,6 +44,7 @@ public class HumanoidRenderWorldMapper {
 		cm.initCamerasFromConfig(lcc, hrc);
 		LightFactory lf = rendRegCli.getOpticLightFacade(null);
 		lf.initLightsFromConfig(lcc, hrc);
+		setBackgroundColor(hrc, lcc);
 	}
 
 	private PathMgr getPathMgr(HumanoidRenderContext hrc) {
@@ -81,6 +85,13 @@ public class HumanoidRenderWorldMapper {
 	public void clearViewPorts(HumanoidRenderContext hrc) {
 		CameraMgr cm = hrc.getRenderRegistryClient().getOpticCameraFacade(null);
 		cm.clearViewPorts(hrc);
+	}
+	
+	private void setBackgroundColor(HumanoidRenderContext hrc, LightsCameraConfig lcc) {
+		ColorRGBA bgColor = new ColorRGBA(lcc.backgroundColor[0], lcc.backgroundColor[1], lcc.backgroundColor[2], lcc.backgroundColor[3]);
+		WorkaroundAppStub stub = hrc.getAppStub();
+		ViewPort vp = stub.getPrimaryAppViewPort();
+		vp.setBackgroundColor(bgColor);
 	}
 
 	/* No longer needed unless we want to init from Turtle again

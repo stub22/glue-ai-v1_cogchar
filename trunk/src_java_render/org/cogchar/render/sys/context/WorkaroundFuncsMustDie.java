@@ -43,8 +43,8 @@ public class WorkaroundFuncsMustDie {
         fbc.setDragToRotate(true);
 		//fbc.setMoveSpeed(10f); //This is set in HumanoidRenderContext.initCameraAndLights()
 		was.setPauseOnLostFocus(false);
-		ViewPort vp = was.getPrimaryAppViewPort();
-		vp.setBackgroundColor(ColorRGBA.LightGray);
+		//ViewPort vp = was.getPrimaryAppViewPort(); // Background color now set in HumanoidRenderWorldMapper.setBackgroundColor
+		//vp.setBackgroundColor(ColorRGBA.LightGray);
 //    initKeys();
 
 		// JME2-only so far, it seems

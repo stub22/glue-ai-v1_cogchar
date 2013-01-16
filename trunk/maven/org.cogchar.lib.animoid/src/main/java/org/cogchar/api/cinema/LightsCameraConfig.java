@@ -2,7 +2,8 @@
  *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
+ *  you may not use this file except in compliance with the License.http://www.paroscientific.com/Aerospace.htm
+
  *  You may obtain a copy of the License at
  * 
  *       http://www.apache.org/licenses/LICENSE-2.0
@@ -16,22 +17,15 @@
 // This is just a guess as to where this should live at this point
 package org.cogchar.api.cinema;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.rdf.model.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
-import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
-import org.appdapter.core.item.Item;
-import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
-import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.Solution;
+import org.appdapter.help.repo.SolutionHelper;
+import org.appdapter.help.repo.SolutionList;
+import org.slf4j.Logger;
 
 
 /**
@@ -40,9 +34,13 @@ import org.appdapter.help.repo.RepoClient;
  * @author Ryan Biggs
  */
 public class LightsCameraConfig extends KnownComponentImpl {
+	
+	private Logger myLogger = getLoggerForClass(this.getClass());
 
 	public List<CameraConfig> myCCs = new ArrayList<CameraConfig>();
 	public List<LightConfig> myLCs = new ArrayList<LightConfig>();
+	 // Sets default background color equivalent to ColorRGBA.LightGray if not specified in repo
+	public float[] backgroundColor = new float[]{0.8f, 0.8f, 0.8f, 1f};
 
 	// A new constructor to build LightsCameraConfig from spreadsheet
 	public LightsCameraConfig(RepoClient queryEmitter, Ident qGraph) {
@@ -54,6 +52,28 @@ public class LightsCameraConfig extends KnownComponentImpl {
 		for (Solution lightSolution : solutionList.javaList()) {
 			myLCs.add(new LightConfig(queryEmitter, lightSolution));
 		}
+		try {
+			solutionList = queryEmitter.queryIndirectForAllSolutions(LightsCameraCN.BACKGROUND_COLOR_QUERY_URI, qGraph);
+			List<Solution> javaSolnList = solutionList.javaList();
+			int listSize = javaSolnList.size();
+			if (listSize == 0) {
+				myLogger.info("No background color specified, using default");
+			} else {
+				if (listSize > 1) {
+					myLogger.warn("Found multiple background color specifications; ignoring all but one!");
+				}
+				// Seems usually the first item is read from the repo last, so if there are multiple color specifications
+				// listed, the last one in the list is most likely to be the first in the spreadsheet
+				Solution bgColorSoln = javaSolnList.get(listSize-1);
+				SolutionHelper sh = new SolutionHelper();
+				for (int i=0; i<backgroundColor.length; i++) {
+					backgroundColor[i] = sh.pullFloat(bgColorSoln, LightsCameraCN.COLOR_VAR_NAME[i], backgroundColor[i]);
+				}
+			}
+		} catch (Exception e) { // Could more specifically look for com.hp.hpl.jena.query.QueryParseException, but probably general catching is useful
+			myLogger.warn("Problem querying for background color; using default", e);
+		}
+				
 	}
 	
 	/* Assembler config not currently supported -- see CameraConfig for more info
