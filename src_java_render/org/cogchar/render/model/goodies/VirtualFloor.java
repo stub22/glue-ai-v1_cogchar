@@ -33,8 +33,11 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 
 public class VirtualFloor extends BasicGoodyImpl {
+	
+	private final ColorRGBA DEFAULT_COLOR = ColorRGBA.LightGray;
 
-	public VirtualFloor(RenderRegistryClient aRenderRegCli, Ident floorUri, Vector3f position, boolean rigidBodyPhysFlag) {
+	public VirtualFloor(RenderRegistryClient aRenderRegCli, Ident floorUri, Vector3f position, ColorRGBA color,
+			boolean rigidBodyPhysFlag) {
 		super(aRenderRegCli, floorUri);
 		setPosition(position);
 		// Constants and collision shape below taken from PhysicsStuffBuilder.
@@ -42,11 +45,16 @@ public class VirtualFloor extends BasicGoodyImpl {
 		Mesh floorBox = new Box(140f, 0.25f, 140f);
 		Plane plane = new Plane();
 		plane.setOriginNormal(new Vector3f(0, 0.25f, 0), Vector3f.UNIT_Y);
-		addGeometry(floorBox, null, ColorRGBA.LightGray, new Quaternion(), new PlaneCollisionShape(plane), 0f);
+		if (color == null) {
+			color = DEFAULT_COLOR;
+		}
+		addGeometry(floorBox, null, color, new Quaternion(), new PlaneCollisionShape(plane), 0f);
 	}
 	
+	/*
 	@Override
 	public void applyAction(GoodyAction ga) {
 		// Needs to be populated
 	}
+	*/
 }

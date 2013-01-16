@@ -139,7 +139,8 @@ public class PhysicsStuffBuilder extends RenderRegistryAware {
 		final String ccrt = "urn:ftd:cogchar.org:2012:runtime#";
 		final String floorLocalName = rigidBodyPhysFlag? "floor" : "noPhysicsFloor";
 		Ident floorUri = new FreeIdent(ccrt+floorLocalName);
-		VirtualFloor floor = new VirtualFloor(myCRC.getRenderRegistryClient(), floorUri, new Vector3f(0, -5, 0), rigidBodyPhysFlag);
+		VirtualFloor floor = new VirtualFloor(myCRC.getRenderRegistryClient(), floorUri, new Vector3f(0, -5, 0), 
+				null, rigidBodyPhysFlag);
 		floor.attachToVirtualWorldNode(myParentNode);
 	}
 

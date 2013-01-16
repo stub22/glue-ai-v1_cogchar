@@ -15,12 +15,7 @@
  */
 package org.cogchar.render.model.goodies;
 
-import java.util.Iterator;
-import org.appdapter.core.name.FreeIdent;
-import org.appdapter.core.name.Ident;
-import org.cogchar.api.thing.BasicThingActionSpec;
 import org.cogchar.api.thing.BasicTypedValueMap;
-import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.TypedValueMap;
 
 /**
