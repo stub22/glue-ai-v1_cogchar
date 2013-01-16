@@ -65,6 +65,13 @@ public class GoodyActionParamWriter {
 		myBTVMap.putValueAtName(GoodyNames.TRAVEL_TIME, duration);
 	}
 	
+	public void putColor(float colorR, float colorG, float colorB, float colorAlpha) {
+		myBTVMap.putValueAtName(GoodyNames.COLOR_RED, colorR);
+		myBTVMap.putValueAtName(GoodyNames.COLOR_GREEN, colorG);
+		myBTVMap.putValueAtName(GoodyNames.COLOR_BLUE, colorB);
+		myBTVMap.putValueAtName(GoodyNames.COLOR_ALPHA, colorAlpha);
+	}
+	
 	public TypedValueMap	getValueMap() { 
 		return myBTVMap;
 	}
