@@ -6,7 +6,6 @@ package org.cogchar.bind.rk.aniconv.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.jflux.api.core.Notifier;
 import org.jflux.api.core.util.DefaultNotifier;
 import org.osgi.framework.BundleContext;
@@ -16,39 +15,47 @@ import org.robokind.api.common.osgi.ServiceClassListener;
  *
  * @author Matthew Stevenson
  */
-public class ConfigSelector extends ServiceClassListener<BoneRobotConfig>{
-    private List<BoneRobotConfig> myConfigs;
-    private Notifier<BoneRobotConfig> myAddNotifier;
-    private Notifier<BoneRobotConfig> myRemoveNotifier;
+public class ConfigSelector<T> extends ServiceClassListener<T>{
+    private List<T> myConfigs;
+    private Notifier<T> myAddNotifier;
+    private Notifier<T> myRemoveNotifier;
+	private Class<T> myType;
     
-    public ConfigSelector(BundleContext context){
-        super(BoneRobotConfig.class, context, null);
-        myConfigs = new ArrayList<BoneRobotConfig>();
-        myAddNotifier = new DefaultNotifier<BoneRobotConfig>();
-        myRemoveNotifier = new DefaultNotifier<BoneRobotConfig>();
+	// The obnoxious type parameter in the constructor is required for the super(type, context, null) call below due to
+	// generic type erasure
+    public ConfigSelector(BundleContext context, Class<T> type){
+        super(type, context, null);
+		myType = type;
+        myConfigs = new ArrayList<T>();
+        myAddNotifier = new DefaultNotifier<T>();
+        myRemoveNotifier = new DefaultNotifier<T>();
     }
+	
+	public Class<T> getType() {
+		return myType;
+	}
 
     @Override
-    protected void addService(BoneRobotConfig t) {
+    protected void addService(T t) {
         myConfigs.add(t);
         myAddNotifier.notifyListeners(t);
     }
 
     @Override
-    protected void removeService(BoneRobotConfig t) {
+    protected void removeService(T t) {
         myConfigs.remove(t);
         myRemoveNotifier.notifyListeners(t);
     }
     
-    public List<BoneRobotConfig> getAvailableConfigs(){
+    public List<T> getAvailableConfigs(){
         return myConfigs;
     }
     
-    public Notifier<BoneRobotConfig> getAddNotifier(){
+    public Notifier<T> getAddNotifier(){
         return myAddNotifier;
     }
     
-    public Notifier<BoneRobotConfig> getRemoveNotifier(){
+    public Notifier<T> getRemoveNotifier(){
         return myRemoveNotifier;
     }
 }
