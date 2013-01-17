@@ -15,10 +15,11 @@
  */
 package org.cogchar.bind.rk.aniconv;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.StreamTokenizer;
+import org.robokind.api.animation.ControlPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.robokind.api.animation.ControlPoint;
 
 /**
  *
@@ -42,7 +43,7 @@ public class OgreAnimationParser{
 		 
         try{            
             while(StreamTokenizer.TT_WORD == st.nextToken()){
-				if(!"anim".equals(st.sval)){ // TEST ONLY
+				if(!"anim".equals(st.sval)){
                     continue;
                 }
                 //System.out.println("Adding channel, found " + st.toString()); // TEST ONLY
