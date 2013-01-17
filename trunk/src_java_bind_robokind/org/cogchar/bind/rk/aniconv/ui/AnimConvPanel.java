@@ -42,8 +42,8 @@ public class AnimConvPanel extends javax.swing.JPanel {
 	
 	private static Logger theLogger = LoggerFactory.getLogger(AnimConvPanel.class);
 	
-    private ConfigSelector myConfigSelector;
-	private MayaModelSelector myMayaMapSelector;
+    private ConfigSelector<BoneRobotConfig> myConfigSelector;
+	private ConfigSelector<MayaModelMap> myMayaMapSelector;
 	private List<BoneRobotConfig> myConfigs;
     private List<MayaModelMap> myMayaMaps;
 	private Listener<BoneRobotConfig> myConfigAddListener;
@@ -58,57 +58,55 @@ public class AnimConvPanel extends javax.swing.JPanel {
     /** Creates new form AnimConvPanel */
     public AnimConvPanel() {
         initComponents();
-		// LOTS of duplication here to factor out as possible...
 		myConfigs = new ArrayList<BoneRobotConfig>();
         myMayaMaps = new ArrayList<MayaModelMap>();
-		myConfigAddListener = new AddConfigListener();
-		myConfigRemoveListener = new RemoveConfigListener();
-        myMayaMapAddListener = new AddMayaMapListener();
-        myMayaMapRemoveListener = new RemoveMayaMapListener();
+		myConfigAddListener = new AddConfigListener<BoneRobotConfig>();
+		myConfigRemoveListener = new RemoveConfigListener<BoneRobotConfig>();
+        myMayaMapAddListener = new AddConfigListener<MayaModelMap>();
+        myMayaMapRemoveListener = new RemoveConfigListener<MayaModelMap>();
     }
-	class AddConfigListener implements Listener<BoneRobotConfig> {
-        @Override public void handleEvent(BoneRobotConfig input) {
+	class AddConfigListener<T> implements Listener<T> {
+        @Override public void handleEvent(T input) {
             addConfig(input);
         }
     }
-    class RemoveConfigListener implements Listener<BoneRobotConfig> {
-        @Override public void handleEvent(BoneRobotConfig input) {
+    class RemoveConfigListener<T> implements Listener<T> {
+        @Override public void handleEvent(T input) {
             removeConfig(input);
-        }
-    }
-    class AddMayaMapListener implements Listener<MayaModelMap> {
-        @Override public void handleEvent(MayaModelMap input) {
-            addMayaMap(input);
-        }
-    }
-    class RemoveMayaMapListener implements Listener<MayaModelMap> {
-        @Override public void handleEvent(MayaModelMap input) {
-            removeMayaMap(input);
         }
     }
 	
 	public void setConfigSelector(ConfigSelector selector){
-        if(myConfigSelector != null){
-            myConfigSelector.getAddNotifier().removeListener(myConfigAddListener);
-            myConfigSelector.getRemoveNotifier().removeListener(myConfigRemoveListener);
+		ConfigSelector selectorToSet;
+		Listener addListener;
+		Listener removeListener;
+		boolean mayaMapUsed = false;
+		if (selector.getType() == BoneRobotConfig.class) {
+			selectorToSet = myConfigSelector;
+			addListener = myConfigAddListener;
+			removeListener = myConfigRemoveListener;
+		} else if (selector.getType() == MayaModelMap.class) {
+			selectorToSet = myMayaMapSelector;
+			addListener = myMayaMapAddListener;
+			removeListener = myMayaMapRemoveListener;
+			mayaMapUsed = true;
+		} else {
+			theLogger.error("Method called with invalid ConfigSelector class: {}", selector.getType().getName());
+			return;
+		}
+        if(selectorToSet != null){
+            selectorToSet.getAddNotifier().removeListener(addListener);
+            selectorToSet.getRemoveNotifier().removeListener(removeListener);
         }
-        myConfigSelector = selector;
-        updateConfigList();
-        if(myConfigSelector != null){
-            myConfigSelector.getAddNotifier().addListener(myConfigAddListener);
-            myConfigSelector.getRemoveNotifier().addListener(myConfigRemoveListener);
-        }
-    }
-    public void setMayaMapSelector(MayaModelSelector selector){
-        if(myMayaMapSelector != null){
-            myMayaMapSelector.getAddNotifier().removeListener(myMayaMapAddListener);
-            myMayaMapSelector.getRemoveNotifier().removeListener(myMayaMapRemoveListener);
-        }
-        myMayaMapSelector = selector;
-        updateMayaMapList();
-        if(myMayaMapSelector != null){
-            myMayaMapSelector.getAddNotifier().addListener(myMayaMapAddListener);
-            myMayaMapSelector.getRemoveNotifier().addListener(myMayaMapRemoveListener);
+        selectorToSet = selector;
+		if (mayaMapUsed) {
+			updateMayaMapList();
+		} else {
+			updateConfigList();
+		}
+        if(selectorToSet != null){
+            selectorToSet.getAddNotifier().addListener(addListener);
+            selectorToSet.getRemoveNotifier().addListener(removeListener);
         }
     }
     
@@ -129,7 +127,7 @@ public class AnimConvPanel extends javax.swing.JPanel {
     }
     public void updateMayaMapList(){
         myMayaMaps.clear();
-        comboConfig.removeAllItems();
+        comboMayaMaps.removeAllItems();
         if(myMayaMapSelector == null){
             return;
         }
@@ -138,7 +136,7 @@ public class AnimConvPanel extends javax.swing.JPanel {
         
         for(MayaModelMap config : configs) {
             myMayaMaps.add(config);
-            comboConfig.addItem(config.myUri.getLocalName());
+            comboMayaMaps.addItem(config.myUri.getLocalName());
         }
         
     }
@@ -147,41 +145,54 @@ public class AnimConvPanel extends javax.swing.JPanel {
         return myConfigs.get(comboBoneConfig.getSelectedIndex());
     }
     public MayaModelMap getSelectedMayaMap(){
-        return myMayaMaps.get(comboConfig.getSelectedIndex());
+        return myMayaMaps.get(comboMayaMaps.getSelectedIndex());
     }
     
-	private void addConfig(BoneRobotConfig config){
-        if(myConfigs.contains(config)){
+	private void addConfig(Object config){
+		ConfigListAndSelector las = determineConfigListAndSelector(config);
+		if (!las.success) {return;}
+        if(las.configList.contains(config)){
             return;
         }
-        myConfigs.add(config);
-        comboBoneConfig.addItem(config.myRobotName);
-    }
-    private void addMayaMap(MayaModelMap config){
-        if(myMayaMaps.contains(config)){
-            return;
-        }
-        myMayaMaps.add(config);
-        comboConfig.addItem(config.myUri.getLocalName());
-    }
+        las.configList.add(config);
+		if (las.selectorBox == comboBoneConfig) {
+			las.selectorBox.addItem(((BoneRobotConfig)config).myRobotName);
+		} else {
+			las.selectorBox.addItem(((MayaModelMap)config).myUri.getLocalName());
+		}
+	}
     
-	 private void removeConfig(BoneRobotConfig config){
-        int i = myConfigs.indexOf(config);
+	 private void removeConfig(Object config){
+		ConfigListAndSelector las = determineConfigListAndSelector(config);
+		if (!las.success) {return;}
+        int i = las.configList.indexOf(config);
         if(i < 0){
             return;
         }
-        myConfigs.remove(i);
-        comboBoneConfig.removeItemAt(i);
+        las.configList.remove(i);
+        las.selectorBox.removeItemAt(i);
     }
-    private void removeMayaMap(MayaModelMap config){
-        int i = myMayaMaps.indexOf(config);
-        if(i < 0){
-            return;
-        }
-        myMayaMaps.remove(i);
-        comboConfig.removeItemAt(i);
-    }
-    
+	 
+	private ConfigListAndSelector determineConfigListAndSelector(Object configObject) {
+		ConfigListAndSelector output = new ConfigListAndSelector();
+		if (configObject instanceof BoneRobotConfig) {
+			output.configList = myConfigs; 
+			output.selectorBox = comboBoneConfig;
+		} else if (configObject instanceof MayaModelMap) {
+			output.configList = myMayaMaps;
+			output.selectorBox = comboMayaMaps;
+		} else {
+			output.success = false;
+			theLogger.error("Method called with invalid config object class: {}", configObject.getClass().getName());
+		}
+		return output;
+	}
+	
+	private class ConfigListAndSelector {
+		List configList;
+		JComboBox selectorBox;
+		boolean success = true;
+	}
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -200,7 +211,7 @@ public class AnimConvPanel extends javax.swing.JPanel {
         txtAnimationName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        comboConfig = new javax.swing.JComboBox();
+        comboMayaMaps = new javax.swing.JComboBox();
         btnPlay = new javax.swing.JButton();
         comboBoneConfig = new javax.swing.JComboBox();
         mapCheckBox = new javax.swing.JCheckBox();
@@ -232,7 +243,12 @@ public class AnimConvPanel extends javax.swing.JPanel {
 
         jLabel3.setText("Input File");
 
-        comboConfig.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboMayaMaps.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboMayaMaps.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mayaMapSelected(evt);
+            }
+        });
 
         btnPlay.setText("Play Last Conversion");
         btnPlay.addActionListener(new java.awt.event.ActionListener() {
@@ -243,6 +259,11 @@ public class AnimConvPanel extends javax.swing.JPanel {
 
         comboBoneConfig.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         comboBoneConfig.setActionCommand("boneBoxChanged");
+        comboBoneConfig.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boneConfigSelected(evt);
+            }
+        });
 
         mapCheckBox.setText("Use Conversion Map:");
         mapCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -273,7 +294,7 @@ public class AnimConvPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(comboBoneConfig, 0, 120, Short.MAX_VALUE)
-                            .addComponent(comboConfig, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(comboMayaMaps, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnPlay, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -321,7 +342,7 @@ public class AnimConvPanel extends javax.swing.JPanel {
                             .addComponent(boneConfigCheckBox))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(comboConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboMayaMaps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(mapCheckBox))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -447,6 +468,14 @@ public class AnimConvPanel extends javax.swing.JPanel {
 		setConvertButtonDefaultText();
 	}//GEN-LAST:event_boneConfigCheckBoxActionPerformed
 
+	private void boneConfigSelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boneConfigSelected
+		setConvertButtonDefaultText();
+	}//GEN-LAST:event_boneConfigSelected
+
+	private void mayaMapSelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mayaMapSelected
+		setConvertButtonDefaultText();
+	}//GEN-LAST:event_mayaMapSelected
+
     private File[] chooseFile(){
         JFileChooser chooser = new JFileChooser();
 		chooser.setMultiSelectionEnabled(true); // Allows multiple files to be selected for batch conversion
@@ -468,7 +497,7 @@ public class AnimConvPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnConvert;
     private javax.swing.JButton btnPlay;
     private javax.swing.JComboBox comboBoneConfig;
-    private javax.swing.JComboBox comboConfig;
+    private javax.swing.JComboBox comboMayaMaps;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
