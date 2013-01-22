@@ -39,16 +39,16 @@ public class OgreAnimationSkeletonMap{
     public final static String X = "rotateX";
     public final static String Y = "rotateY";
     public final static String Z = "rotateZ";
-	
-	//private final static JunkyConversionTable JUNKY = new JunkyConversionTable(); // A temporary and exceedingly ugly crutch
+	public final static String CONTROL_CURVE_PREFIX = "cc_";
 	
 	private static Logger theLogger = LoggerFactory.getLogger(OgreAnimationSkeletonMap.class); 
 
     public static AnimationData mapSkeleton(
             BoneRobotConfig skeleton,
-            AnimationData oldAnimData){
+            AnimationData oldAnimData,
+			boolean useControlCurves){
         Map<BoneJointConfig, ChannelData<Double>> jointTable =
-                buildAnimationMap(skeleton, oldAnimData);
+                buildAnimationMap(skeleton, oldAnimData, useControlCurves);
 
         AnimationData animData =
                 buildAnimationData(oldAnimData.getName(), jointTable);
@@ -57,14 +57,14 @@ public class OgreAnimationSkeletonMap{
     }
 
     private static Map<BoneJointConfig, ChannelData<Double>> buildAnimationMap(
-            BoneRobotConfig skeleton, AnimationData animData){
+            BoneRobotConfig skeleton, AnimationData animData, boolean useControlCurves){
         
 		Map<BoneJointConfig, ChannelData<Double>> jointTable =
                 new HashMap(skeleton.myBJCs.size());
 
         for(ChannelData<Double> chan : animData.getChannels()){
 			
-			String boneName = getBoneName(chan.getName());
+			String boneName = getBoneName(chan.getName(), useControlCurves);
 			
             BoneRotationAxis axis = getRotationAxis(chan.getName());
 
@@ -106,10 +106,17 @@ public class OgreAnimationSkeletonMap{
 		return null;
     }
 
-    private static String getBoneName(String chanName){
+    private static String getBoneName(String chanName, boolean useControlCurves){
         if(chanName.isEmpty()){
             throw new IllegalArgumentException();
         }
+		if (useControlCurves) {
+			if (!(chanName.contains(CONTROL_CURVE_PREFIX))) {
+				return null; // Ignore non-control curves
+			} else {
+				chanName = chanName.replaceFirst(CONTROL_CURVE_PREFIX, "");
+			}
+		}
 		
 		if (chanName.contains("Global")) {return "Root";} // Handles "root" rotations; we may or may not want this as such
 		String boneName = null;
@@ -158,7 +165,7 @@ public class OgreAnimationSkeletonMap{
 			// It appears that the channel pairs (control points) are never added! The loop below will try to do that, at least in a quick-and-dirty way:
 			for (ControlPoint<Double> point : chanDataOrig.getPoints()) {
 				ControlPoint millisecondPoint = new ControlPoint(point.getTime()*1000, point.getPosition());
-				chanData.addPoint(millisecondPoint); // We just copy them with no conversion except time -- this seems to be the right thing to do...
+				chanData.addPoint(millisecondPoint); // We just copy them with no conversion except time
 			}
 			if (AnimationTrimmer.positionsChange(chanData)) {
 				newAnimData.addChannel(chanData);
