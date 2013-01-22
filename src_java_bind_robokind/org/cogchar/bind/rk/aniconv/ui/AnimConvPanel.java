@@ -53,6 +53,7 @@ public class AnimConvPanel extends javax.swing.JPanel {
 	private Animation lastConvertedAnim;
 	
 	private boolean useMayaMap;
+	private boolean useControlCurves = true;
 	
 	private File[] filesToConvert = null; // Adding this array to allow batches of files to be selected and held ready for conversion - Ryan Biggs 15 Nov 2012
     /** Creates new form AnimConvPanel */
@@ -203,6 +204,7 @@ public class AnimConvPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup2 = new javax.swing.ButtonGroup();
         txtChooseFile = new javax.swing.JTextField();
         btnChooseFile = new javax.swing.JButton();
         txtOutputFile = new javax.swing.JTextField();
@@ -216,6 +218,8 @@ public class AnimConvPanel extends javax.swing.JPanel {
         comboBoneConfig = new javax.swing.JComboBox();
         mapCheckBox = new javax.swing.JCheckBox();
         boneConfigCheckBox = new javax.swing.JCheckBox();
+        controlCurveRadioButton = new javax.swing.JRadioButton();
+        boneRotationRadioButton = new javax.swing.JRadioButton();
 
         btnChooseFile.setText("Choose File");
         btnChooseFile.addActionListener(new java.awt.event.ActionListener() {
@@ -280,6 +284,23 @@ public class AnimConvPanel extends javax.swing.JPanel {
             }
         });
 
+        buttonGroup2.add(controlCurveRadioButton);
+        controlCurveRadioButton.setSelected(true);
+        controlCurveRadioButton.setText("with Control Curves");
+        controlCurveRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                controlCurveRadioButtonActionPerformed(evt);
+            }
+        });
+
+        buttonGroup2.add(boneRotationRadioButton);
+        boneRotationRadioButton.setText("with Baked bone rotations");
+        boneRotationRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boneRotationRadioButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -289,16 +310,21 @@ public class AnimConvPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(mapCheckBox)
-                            .addComponent(boneConfigCheckBox))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(comboBoneConfig, 0, 120, Short.MAX_VALUE)
-                            .addComponent(comboMayaMaps, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnPlay, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnConvert, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(boneConfigCheckBox)
+                                .addGap(36, 36, 36)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(controlCurveRadioButton)
+                                        .addGap(30, 30, 30))
+                                    .addComponent(boneRotationRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(comboBoneConfig, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnConvert, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnPlay))
                     .addComponent(txtOutputFile)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -310,7 +336,12 @@ public class AnimConvPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(txtAnimationName)))
+                        .addComponent(txtAnimationName))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(mapCheckBox)
+                        .addGap(18, 18, 18)
+                        .addComponent(comboMayaMaps, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -331,20 +362,22 @@ public class AnimConvPanel extends javax.swing.JPanel {
                     .addComponent(jLabel2)
                     .addComponent(txtAnimationName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnConvert)
-                        .addGap(44, 44, 44)
-                        .addComponent(btnPlay))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(comboBoneConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(boneConfigCheckBox))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(comboMayaMaps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(mapCheckBox))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboBoneConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(boneConfigCheckBox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(controlCurveRadioButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(boneRotationRadioButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboMayaMaps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(mapCheckBox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnPlay)
+                    .addComponent(btnConvert))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -396,7 +429,7 @@ public class AnimConvPanel extends javax.swing.JPanel {
 					try {
 						StreamTokenizer st = new StreamTokenizer(new FileReader(inFile));
 						Animation anim = AnimationConverter.convertAnimation(
-								animName, skeleton, config, useMayaMap, st);
+								animName, skeleton, config, useMayaMap, useControlCurves, st);
 
 						lastConvertedAnim = anim;
 
@@ -427,7 +460,7 @@ public class AnimConvPanel extends javax.swing.JPanel {
     }
     
     private void txtAnimationNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAnimationNameActionPerformed
-        // TODO add your handling code here:
+        setConvertButtonDefaultText();
     }//GEN-LAST:event_txtAnimationNameActionPerformed
 
 	private void btnPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayActionPerformed
@@ -476,6 +509,18 @@ public class AnimConvPanel extends javax.swing.JPanel {
 		setConvertButtonDefaultText();
 	}//GEN-LAST:event_mayaMapSelected
 
+	private void controlCurveRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_controlCurveRadioButtonActionPerformed
+		AbstractButton abstractButton = (AbstractButton) evt.getSource();
+		useControlCurves = abstractButton.getModel().isSelected();
+		setConvertButtonDefaultText();
+	}//GEN-LAST:event_controlCurveRadioButtonActionPerformed
+
+	private void boneRotationRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boneRotationRadioButtonActionPerformed
+		AbstractButton abstractButton = (AbstractButton) evt.getSource();
+		useControlCurves = !abstractButton.getModel().isSelected();
+		setConvertButtonDefaultText();
+	}//GEN-LAST:event_boneRotationRadioButtonActionPerformed
+
     private File[] chooseFile(){
         JFileChooser chooser = new JFileChooser();
 		chooser.setMultiSelectionEnabled(true); // Allows multiple files to be selected for batch conversion
@@ -493,11 +538,14 @@ public class AnimConvPanel extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox boneConfigCheckBox;
+    private javax.swing.JRadioButton boneRotationRadioButton;
     private javax.swing.JButton btnChooseFile;
     private javax.swing.JButton btnConvert;
     private javax.swing.JButton btnPlay;
+    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JComboBox comboBoneConfig;
     private javax.swing.JComboBox comboMayaMaps;
+    private javax.swing.JRadioButton controlCurveRadioButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
