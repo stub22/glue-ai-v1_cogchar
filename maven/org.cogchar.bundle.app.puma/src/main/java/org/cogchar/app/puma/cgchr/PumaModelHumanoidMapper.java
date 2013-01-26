@@ -17,6 +17,8 @@ package org.cogchar.app.puma.cgchr;
 
 
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import org.appdapter.core.log.BasicDebugger;
@@ -39,6 +41,7 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.api.skeleton.config.BoneProjectionRange;
+import org.cogchar.api.skeleton.config.BoneCN;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 import org.cogchar.bind.rk.robot.client.RobotVisemeClient;
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
@@ -47,21 +50,30 @@ import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.impl.perform.FancyTextChan;
 
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
+import org.osgi.framework.ServiceRegistration;
+import org.cogchar.platform.util.ClassLoaderUtils;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * A Puma character uses this class to control its embodiment, with or without an OpenGL avatar.
+ * Robokind animation is available at two different levels:  Through the 
+ * 
+ * ModelBlendingRobotServiceContext
+ * 
  */
-public class PumaHumanoidMapper extends BasicDebugger {
+public class PumaModelHumanoidMapper extends BasicDebugger {
 
 	
 	private	ModelBlendingRobotServiceContext		myMBRSC;
-	private	RobotAnimContext						myRAC;
+	// private	RobotAnimContext						myRAC;
 	
 	private	PumaVirtualWorldMapper					myVWorldMapper;
-	private	Ident									myCharIdent;
+	private	Ident									myCharID;
+	private	ServiceRegistration						myBoneRobotConfigServiceRegistration;	
 	
-	protected PumaHumanoidMapper(PumaVirtualWorldMapper vWorldMapper, BundleContext bundleCtx, Ident charIdent) {
-		myCharIdent = charIdent;
+	protected PumaModelHumanoidMapper(PumaVirtualWorldMapper vWorldMapper, BundleContext bundleCtx, Ident charIdent) {
+		myCharID = charIdent;
 		myVWorldMapper = vWorldMapper;
 		myMBRSC = new ModelBlendingRobotServiceContext(bundleCtx); 
 	}
@@ -93,14 +105,12 @@ public class PumaHumanoidMapper extends BasicDebugger {
 	 * (whether local or remote).
 	 * @return 
 	 */
-	protected FancyTextChan getBestAnimOutChan() { 
-		return myRAC.getTriggeringChannel();
-	}
+
 	protected boolean initVWorldHumanoid(RepoClient qi, final Ident qGraph, final HumanoidConfig hc) throws Throwable {
 		if (myVWorldMapper != null) {
 			HumanoidRenderContext hrc = myVWorldMapper.getHumanoidRenderContext();
 			// New with "GlobalModes": we'll run hrc.setupHumanoidFigure from here now
-			HumanoidFigure hf = hrc.getHumanoidFigureManager().setupHumanoidFigure(hrc, qi, myCharIdent, qGraph, hc);
+			HumanoidFigure hf = hrc.getHumanoidFigureManager().setupHumanoidFigure(hrc, qi, myCharID, qGraph, hc);
 			return (hf != null);
 		} else {
 			return false;
@@ -117,21 +127,15 @@ public class PumaHumanoidMapper extends BasicDebugger {
 	 * @return true  if the "boneRobot" is "OK".  That means it is animatable, but it may or may not have a VWorld humanoid figure.
 	 * @throws Throwable 
 	 */
-	protected boolean initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc, BehaviorConfigEmitter behavCE, List<ClassLoader> clsForRKConf) throws Throwable {
+	protected boolean initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {
 
 		if (brc != null) {
 			// This creates our ModelRobot instance, and calls registerAndStart() in the RobotServiceContext base class.
 			myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);
-			if (behavCE != null) {
-				// This gives us an animation triggering context, connecting behavior system to animation system.
-				myRAC = new RobotAnimContext(myCharIdent, behavCE);
-				// Setup classLoaders used to load animations
-				myRAC.setResourceClassLoaders(clsForRKConf);
-				// Connect the triggering RobotAnimContext to the running model robot.
-				return myRAC.initConn(myMBRSC);
-			}
+			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}	
 	protected boolean startVisemePump(List<ClassLoader> clsForRKConf)  {
 		RobotVisemeClient robotVisCli = new RobotVisemeClient();
@@ -148,7 +152,7 @@ public class PumaHumanoidMapper extends BasicDebugger {
 	protected void connectToVirtualChar() throws Exception {
 		final ModelRobot br = getBonyRobot();
 		if (br == null) {
-			getLogger().warn("connectToVirtualChar() aborting due to missing ModelRobot, for char: {}", myCharIdent);
+			getLogger().warn("connectToVirtualChar() aborting due to missing ModelRobot, for char: {}", myCharID);
 			return;
 		}
 		final HumanoidFigure hf = getHumanoidFigure();
@@ -167,33 +171,51 @@ public class PumaHumanoidMapper extends BasicDebugger {
 			});
 		}
 	}
-	
-	protected void stopAndReset() {
-		if (myRAC != null) {
-			myRAC.stopAndReset();
-		}else {
-			getLogger().warn("stopAndReset() ignored because RobotAnimContext = null for {}", myCharIdent);
+	protected boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, HumanoidConfig hc, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
+		// We useta read from a TTL file with: 	boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
+		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharID, qGraph, bqn); 	
+		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
+		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
+		boolean boneRobotOK = initModelRobotUsingBoneRobotConfig(boneRobotConf);
+		if (boneRobotOK) {
+			// This does nothing if there is no vWorld, or no human figure for this char in the vWorld.
+			connectToVirtualChar();
+			// This was an antiquated way of controlling initial char position, left here as reminder of the issue.
+			// myPHM.applyInitialBoneRotations();
+			startVisemePump(clsForRKConf);
+			startJointGroup(hc, clsForRKConf);
+			
+		} else {
+			getLogger().warn("connectBonyCharToRobokindSvcs() aborting due to failed boneRobot init, for charIdent: {}", myCharID);
+		}
+		return boneRobotOK;
+	}
+	protected void startJointGroup(HumanoidConfig hc, List<ClassLoader> possibleCLs) { 
+		String jgFullPath = hc.myJointConfigPath;
+		if (jgFullPath != null) {
+			ClassLoader cl = ClassLoaderUtils.findResourceClassLoader(jgFullPath, possibleCLs);
+			if (cl != null) {
+				InputStream stream = cl.getResourceAsStream(jgFullPath);
+				if (stream != null) {
+					myMBRSC.startJointGroup(stream);
+				}
+			}
 		}
 	}
+
 	
 	protected HumanoidFigure getHumanoidFigure() {
 		HumanoidFigure hf = null;
 		if (myVWorldMapper != null) {
 			HumanoidRenderContext hrc = myVWorldMapper.getHumanoidRenderContext();
 			if (hrc != null) {
-				hf = hrc.getHumanoidFigureManager().getHumanoidFigure(myCharIdent);
+				hf = hrc.getHumanoidFigureManager().getHumanoidFigure(myCharID);
 			}
 		}
 		return hf;
 	}
 	
-	protected void playBuiltinAnimNow(BuiltinAnimKind baKind) {
-		if (myRAC != null) {
-			myRAC.playBuiltinAnimNow(baKind);
-		} else {
-			getLogger().warn("playDangerYogaTestAnim() ignored because RobotAnimContext = null for {}", myCharIdent);
-		}
-	}
+
 	 
 	private FigureState setupFigureState(ModelRobot br) { 
 
@@ -218,5 +240,5 @@ public class PumaHumanoidMapper extends BasicDebugger {
 			}
 			 */
 	}
-	
+
 }

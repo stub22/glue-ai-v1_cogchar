@@ -17,6 +17,7 @@ package org.cogchar.app.buddy.busker;
 
 import java.util.List;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
+import org.cogchar.app.puma.cgchr.PumaBehaviorAgent;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CogcharActionBinding;
@@ -55,7 +56,7 @@ public class TriggerItems {
 			// pdc.sayText("The time is now, " + System.currentTimeMillis());
 		}
 	}	
-	
+	/*
 	public static abstract class DualCharTI extends TriggerItem {
 		abstract void fireOnPDC(PumaDualCharacter pdc);
 		@Override public void fire(CogcharScreenBox targetBox) {
@@ -63,42 +64,53 @@ public class TriggerItems {
 			PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 			fireOnPDC(pdc);
 		}
-	}	
-	public static class StopAndReset extends DualCharTI {
-		@Override public void fireOnPDC(PumaDualCharacter pdc) {
-			pdc.stopAndReset();
+	}
+	*/
+ 
+	public static abstract class BehaviorTI extends TriggerItem {
+		abstract void fireOnPBA(PumaBehaviorAgent pba);
+		@Override public void fire(CogcharScreenBox targetBox) {
+			logFiring(targetBox);
+			PumaBehaviorAgent pba = (PumaBehaviorAgent) targetBox;
+			fireOnPBA(pba);
+		}
+	}		
+	
+	public static class StopAndReset extends BehaviorTI {
+		@Override public void fireOnPBA(PumaBehaviorAgent pba) {
+			pba.stopAndReset();
 		}
 	}
-	public static class StopResetAndRecenter extends DualCharTI {
-		@Override public void fireOnPDC(PumaDualCharacter pdc) {
-			pdc.stopResetAndRecenter();
+	public static class StopResetAndRecenter extends BehaviorTI {
+		@Override public void fireOnPBA(PumaBehaviorAgent pba) {
+			pba.stopResetAndRecenter();
 		}
 	}	
-	public static class DangerYoga extends DualCharTI {
-		@Override public void fireOnPDC(PumaDualCharacter pdc) {
-			pdc.playBuiltinAnimNow(BuiltinAnimKind.BAK_DANGER_YOGA);
+	public static class DangerYoga extends BehaviorTI {
+		@Override public void fireOnPBA(PumaBehaviorAgent pba) {
+			pba.playBuiltinAnimNow(BuiltinAnimKind.BAK_DANGER_YOGA);
 		}
 	}
-	public static class SayTheTime extends DualCharTI {
-		@Override public void fireOnPDC(PumaDualCharacter pdc) {
-			pdc.sayText("The time is now, " + System.currentTimeMillis());
+	public static class SayTheTime extends BehaviorTI {
+		@Override public void fireOnPBA(PumaBehaviorAgent pba) {
+			pba.sayTextNow("The time is now, " + System.currentTimeMillis());
 		}
 	}
 
-	public static class ReloadBehavior extends DualCharTI {
+	public static class ReloadBehavior extends BehaviorTI {
 
 		public ClassLoader myOptResourceClassLoader;
 
-		@Override public void fireOnPDC(PumaDualCharacter pdc) {
+		@Override public void fireOnPBA(PumaBehaviorAgent pba) {
 
-			if (pdc != null) {
+			if (pba != null) {
 				try {
-					getLogger().info("Stopping theater for char [" + pdc + "]");
-					pdc.stopTheater();
-					getLogger().warn("Reloading behavior config FROM TEST FILE for char [" + pdc + "]");
-					pdc.loadBehaviorConfigFromTestFile(true);
-					getLogger().info("Restarting theater for char [" + pdc + "]");
-					pdc.startTheater();
+					getLogger().info("Stopping theater for char [" + pba + "]");
+					pba.stopTheater();
+					getLogger().warn("Reloading behavior config FROM TEST FILE for char [" + pba + "]");
+					pba.loadBehaviorConfigFromTestFile(true);
+					getLogger().info("Restarting theater for char [" + pba + "]");
+					pba.startTheater();
 				} catch (Throwable t) {
 					getLogger().error("Problem during ReloadBehavior_TI", t);
 				}
@@ -108,14 +120,14 @@ public class TriggerItems {
 		}
 	}
 
-	public static class UsePermAnims extends DualCharTI {
-		@Override public void fireOnPDC(PumaDualCharacter pdc) {
-			pdc.usePermAnims();
+	public static class UsePermAnims extends BehaviorTI {
+		@Override public void fireOnPBA(PumaBehaviorAgent pba) {
+			pba.usePermAnims();
 		}
 	}
-	public static class UseTempAnims extends DualCharTI {
-		@Override public void fireOnPDC(PumaDualCharacter pdc) {
-			pdc.useTempAnims();
+	public static class UseTempAnims extends BehaviorTI {
+		@Override public void fireOnPBA(PumaBehaviorAgent pba) {
+			pba.useTempAnims();
 		}
 	}
 
