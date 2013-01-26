@@ -17,7 +17,7 @@ package org.cogchar.app.puma.boot;
 
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.config.PumaConfigManager;
-import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.cgchr.PumaWebMapper;
 import org.cogchar.app.puma.config.PumaModeConstants;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
@@ -39,7 +39,7 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.api.skeleton.config.BoneCN;
 import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
-import org.cogchar.app.puma.cgchr.PumaModelHumanoidMapper;
+import org.cogchar.app.puma.vworld.PumaModelHumanoidMapper;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 import org.cogchar.platform.trigger.CogcharScreenBox;

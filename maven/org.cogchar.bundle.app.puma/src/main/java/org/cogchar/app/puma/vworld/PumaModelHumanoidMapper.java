@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.app.puma.cgchr;
+package org.cogchar.app.puma.vworld;
 
 
 
@@ -72,7 +72,7 @@ public class PumaModelHumanoidMapper extends BasicDebugger {
 	private	Ident									myCharID;
 	private	ServiceRegistration						myBoneRobotConfigServiceRegistration;	
 	
-	protected PumaModelHumanoidMapper(PumaVirtualWorldMapper vWorldMapper, BundleContext bundleCtx, Ident charIdent) {
+	public PumaModelHumanoidMapper(PumaVirtualWorldMapper vWorldMapper, BundleContext bundleCtx, Ident charIdent) {
 		myCharID = charIdent;
 		myVWorldMapper = vWorldMapper;
 		myMBRSC = new ModelBlendingRobotServiceContext(bundleCtx); 
@@ -96,7 +96,7 @@ public class PumaModelHumanoidMapper extends BasicDebugger {
 	 * 
 	 * @return 
 	 */
-	protected ModelBlendingRobotServiceContext getRobotServiceContext() { 
+	public ModelBlendingRobotServiceContext getRobotServiceContext() { 
 		return myMBRSC;
 	}
 	/**
@@ -106,7 +106,7 @@ public class PumaModelHumanoidMapper extends BasicDebugger {
 	 * @return 
 	 */
 
-	protected boolean initVWorldHumanoid(RepoClient qi, final Ident qGraph, final HumanoidConfig hc) throws Throwable {
+	public boolean initVWorldHumanoid(RepoClient qi, final Ident qGraph, final HumanoidConfig hc) throws Throwable {
 		if (myVWorldMapper != null) {
 			HumanoidRenderContext hrc = myVWorldMapper.getHumanoidRenderContext();
 			// New with "GlobalModes": we'll run hrc.setupHumanoidFigure from here now
@@ -144,12 +144,12 @@ public class PumaModelHumanoidMapper extends BasicDebugger {
 		return true;
 	}
 
-	protected void updateModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
+	public void updateModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
 		ModelRobot targetRobot = getBonyRobot();
 		boolean flag_hardResetGoalPosToDefault = false;
 		targetRobot.updateConfig(brc, flag_hardResetGoalPosToDefault);
 	}
-	protected void connectToVirtualChar() throws Exception {
+	public void connectToVirtualChar() throws Exception {
 		final ModelRobot br = getBonyRobot();
 		if (br == null) {
 			getLogger().warn("connectToVirtualChar() aborting due to missing ModelRobot, for char: {}", myCharID);
@@ -171,7 +171,7 @@ public class PumaModelHumanoidMapper extends BasicDebugger {
 			});
 		}
 	}
-	protected boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, HumanoidConfig hc, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
+	public boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, HumanoidConfig hc, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
 		// We useta read from a TTL file with: 	boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharID, qGraph, bqn); 	
 		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);

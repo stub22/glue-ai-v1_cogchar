@@ -22,7 +22,7 @@ import org.apache.avro.generic.GenericData;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaContextMediator;
-import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.cgchr.PumaWebMapper;
 import org.cogchar.app.puma.config.VanillaConfigManager;
 import org.cogchar.platform.trigger.BoxSpace;

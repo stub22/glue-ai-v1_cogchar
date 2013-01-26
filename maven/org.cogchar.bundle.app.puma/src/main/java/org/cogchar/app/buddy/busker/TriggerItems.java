@@ -17,7 +17,7 @@ package org.cogchar.app.buddy.busker;
 
 import java.util.List;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
-import org.cogchar.app.puma.cgchr.PumaBehaviorAgent;
+import org.cogchar.app.puma.behavior.PumaBehaviorAgent;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CogcharActionBinding;
@@ -26,7 +26,7 @@ import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.platform.trigger.CommandBinding;
 import org.cogchar.platform.trigger.BasicActionBindingImpl;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.blob.emit.RepoClientTester;
 import org.cogchar.blob.emit.RepoClientTester.CommandRec;
 

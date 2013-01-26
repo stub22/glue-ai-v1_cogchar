@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.app.puma.cgchr;
+package org.cogchar.app.puma.behavior;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;

@@ -17,7 +17,7 @@
 package org.cogchar.app.puma.boot;
 
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.platform.trigger.CogcharScreenBox;
