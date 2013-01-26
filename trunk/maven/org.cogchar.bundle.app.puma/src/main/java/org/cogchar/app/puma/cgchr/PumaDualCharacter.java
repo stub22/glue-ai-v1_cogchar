@@ -15,6 +15,9 @@
  */
 package org.cogchar.app.puma.cgchr;
 
+import org.cogchar.app.puma.behavior.PumaBehaviorAgent;
+import org.cogchar.app.puma.vworld.PumaModelHumanoidMapper;
+import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import java.io.File;
 import org.osgi.framework.BundleContext;
 
@@ -60,7 +63,7 @@ import org.cogchar.platform.trigger.BoxSpace;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaDualCharacter extends BasicDebugger { // CogcharScreenBox {
+public class PumaDualCharacter extends BasicDebugger { 
 
 	private		Ident						myCharID;
 	private		String						myNickName;
@@ -166,23 +169,4 @@ public class PumaDualCharacter extends BasicDebugger { // CogcharScreenBox {
 			return false;
 		}
 	}
-/*
-	private boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
-		// We useta read from a TTL file with: 	boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
-		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharID, qGraph, bqn); 	
-		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
-		//logInfo("Initializing new BoneRobotConfig: " + boneRobotConf.getFieldSummary()); // TEST ONLY
-		boolean boneRobotOK = myModelHumoidMapper.initModelRobotUsingBoneRobotConfig(boneRobotConf);
-		if (boneRobotOK) {
-			// This does nothing if there is no vWorld, or no human figure for this char in the vWorld.
-			myModelHumoidMapper.connectToVirtualChar();
-			// This was an antiquated way of controlling initial char position, left here as reminder of the issue.
-			// myPHM.applyInitialBoneRotations();
-			myModelHumoidMapper.startVisemePump(clsForRKConf);
-		} else {
-			getLogger().warn("connectBonyCharToRobokindSvcs() aborting due to failed boneRobot init, for charIdent: {}", myCharID);
-		}
-		return boneRobotOK;
-	}
-*/
 }

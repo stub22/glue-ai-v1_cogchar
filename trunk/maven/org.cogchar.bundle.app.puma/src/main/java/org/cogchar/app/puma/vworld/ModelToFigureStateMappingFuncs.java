@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.app.puma.cgchr;
+package org.cogchar.app.puma.vworld;
 import java.util.ArrayList;
 import org.robokind.api.motion.Joint;
 import org.robokind.api.motion.Robot;

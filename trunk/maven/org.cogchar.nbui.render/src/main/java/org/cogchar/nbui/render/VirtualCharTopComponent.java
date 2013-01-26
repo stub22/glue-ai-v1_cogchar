@@ -33,7 +33,7 @@ import org.robokind.api.common.osgi.OSGiUtils;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
-import org.cogchar.app.puma.cgchr.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 import org.cogchar.blob.emit.RepoSpec;
