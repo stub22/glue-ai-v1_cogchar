@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.app.puma.cgchr;
+package org.cogchar.app.puma.behavior;
 
 import java.lang.ClassLoader;
 import java.util.List;
@@ -60,10 +60,10 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 		myRobotMotionMapper = new PumaRobotMotionMapper (myAgentID, myBehaviorCE, clsForRKConf);
 		mySpeechOutputMapper = new PumaSpeechOutputMapper(myAgentID);
 	}
-	protected void connectRobotServiceContext(RobotServiceContext rsc) { 
+	public void connectRobotServiceContext(RobotServiceContext rsc) { 
 		myRobotMotionMapper.connectRobotSC(rsc);
 	}
-	protected void connectAnimOutChans() {
+	public void connectAnimOutChans() {
 		FancyTextChan bestAnimOutChan = myRobotMotionMapper.getBestAnimOutChan();
 		myTheater.registerChannel(bestAnimOutChan);
 	}
@@ -114,7 +114,7 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 		myTheater.fullyStop(killTimeWaitMsec);
 	}
 	
-	Ident getCharIdent() { 
+	public Ident getCharIdent() { 
 		return myAgentID;
 	}
 	public void stopEverything() {
