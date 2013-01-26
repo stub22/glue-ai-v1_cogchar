@@ -26,6 +26,8 @@ import org.osgi.framework.BundleContext;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * Talks to Robokind Speech Output services using SpeechOutputClient binding.
  */
 
 public class PumaSpeechOutputMapper extends BasicDebugger {

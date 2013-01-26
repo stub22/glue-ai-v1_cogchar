@@ -63,6 +63,8 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 	public void connectRobotServiceContext(RobotServiceContext rsc) { 
 		myRobotMotionMapper.connectRobotSC(rsc);
 	}
+
+	
 	public void connectAnimOutChans() {
 		FancyTextChan bestAnimOutChan = myRobotMotionMapper.getBestAnimOutChan();
 		myTheater.registerChannel(bestAnimOutChan);

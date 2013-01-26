@@ -56,23 +56,25 @@ import org.cogchar.platform.util.ClassLoaderUtils;
 /**
  * @author Stu B. <www.texpedient.com>
  * 
- * A Puma character uses this class to control its embodiment, with or without an OpenGL avatar.
- * Robokind animation is available at two different levels:  Through the 
+ * A Puma character uses this object to control its embodiment, with or without an OpenGL avatar.
+ * Here we create a ModelRobot and connect it to all the Robokind services.  
+ * Optionally, we also create an OpenGL Avatar, and bind it to the ModelRobot (via HumanoidFigure/State).
  * 
- * ModelBlendingRobotServiceContext
  * 
  */
-public class PumaModelHumanoidMapper extends BasicDebugger {
+public class PumaEmbodimentMapper extends BasicDebugger {
 
-	
-	private	ModelBlendingRobotServiceContext		myMBRSC;
-	// private	RobotAnimContext						myRAC;
-	
-	private	PumaVirtualWorldMapper					myVWorldMapper;
 	private	Ident									myCharID;
+	
+	// Gateway to all the Robokind robot services
+	private	ModelBlendingRobotServiceContext		myMBRSC;
+	
+	// Gateway to all the OpengL VWorld services 
+	private	PumaVirtualWorldMapper					myVWorldMapper;
+	
 	private	ServiceRegistration						myBoneRobotConfigServiceRegistration;	
 	
-	public PumaModelHumanoidMapper(PumaVirtualWorldMapper vWorldMapper, BundleContext bundleCtx, Ident charIdent) {
+	public PumaEmbodimentMapper(PumaVirtualWorldMapper vWorldMapper, BundleContext bundleCtx, Ident charIdent) {
 		myCharID = charIdent;
 		myVWorldMapper = vWorldMapper;
 		myMBRSC = new ModelBlendingRobotServiceContext(bundleCtx); 
@@ -99,12 +101,6 @@ public class PumaModelHumanoidMapper extends BasicDebugger {
 	public ModelBlendingRobotServiceContext getRobotServiceContext() { 
 		return myMBRSC;
 	}
-	/**
-	 * This method exposes our "best" AnimOutChan at protected scope.
-	 * This is the main pathway for wiring animation triggers from behavior systems
-	 * (whether local or remote).
-	 * @return 
-	 */
 
 	public boolean initVWorldHumanoid(RepoClient qi, final Ident qGraph, final HumanoidConfig hc) throws Throwable {
 		if (myVWorldMapper != null) {
@@ -113,6 +109,7 @@ public class PumaModelHumanoidMapper extends BasicDebugger {
 			HumanoidFigure hf = hrc.getHumanoidFigureManager().setupHumanoidFigure(hrc, qi, myCharID, qGraph, hc);
 			return (hf != null);
 		} else {
+			getLogger().warn("initVWorldHumanoid doing nothing, because no VWorldMapper is assigned.");
 			return false;
 		}
 	}
@@ -149,7 +146,7 @@ public class PumaModelHumanoidMapper extends BasicDebugger {
 		boolean flag_hardResetGoalPosToDefault = false;
 		targetRobot.updateConfig(brc, flag_hardResetGoalPosToDefault);
 	}
-	public void connectToVirtualChar() throws Exception {
+	public void connectBonyRobotToHumanoidFigure() throws Exception {
 		final ModelRobot br = getBonyRobot();
 		if (br == null) {
 			getLogger().warn("connectToVirtualChar() aborting due to missing ModelRobot, for char: {}", myCharID);
@@ -171,7 +168,7 @@ public class PumaModelHumanoidMapper extends BasicDebugger {
 			});
 		}
 	}
-	public boolean connectBonyCharToRobokindSvcs(BundleContext bundleCtx, HumanoidConfig hc, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
+	public boolean connectBonyRobotToRobokindAndVWorld(BundleContext bundleCtx, HumanoidConfig hc, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
 		// We useta read from a TTL file with: 	boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharID, qGraph, bqn); 	
 		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
@@ -179,7 +176,7 @@ public class PumaModelHumanoidMapper extends BasicDebugger {
 		boolean boneRobotOK = initModelRobotUsingBoneRobotConfig(boneRobotConf);
 		if (boneRobotOK) {
 			// This does nothing if there is no vWorld, or no human figure for this char in the vWorld.
-			connectToVirtualChar();
+			connectBonyRobotToHumanoidFigure();
 			// This was an antiquated way of controlling initial char position, left here as reminder of the issue.
 			// myPHM.applyInitialBoneRotations();
 			startVisemePump(clsForRKConf);
@@ -240,5 +237,7 @@ public class PumaModelHumanoidMapper extends BasicDebugger {
 			}
 			 */
 	}
-
+	public void disconnectBonyCharFromRobokindSvcs() {
+		myBoneRobotConfigServiceRegistration.unregister();
+	}
 }

@@ -22,6 +22,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaConfigManager;
+import org.cogchar.app.puma.config.PumaGlobalModeManager;
 import org.cogchar.app.puma.config.PumaModeConstants;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.blob.emit.KeystrokeConfigEmitter;
@@ -73,7 +74,9 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 	// set here
 	public void initVirtualWorlds(CommandSpace cspace, PumaConfigManager pcm) { 
 // , PumaWebMapper webMapper, 	BundleContext bundleCtx) {
-		GlobalConfigEmitter gce = pcm.getGlobalConfig();
+		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
+		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
+		
 		RepoClient rc = pcm.getMainConfigRepoClient();		
 
 		myHRC.initCinematicParameters();

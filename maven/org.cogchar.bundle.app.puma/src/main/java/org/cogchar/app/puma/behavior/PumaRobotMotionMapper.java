@@ -28,6 +28,9 @@ import org.cogchar.impl.perform.FancyTextChan;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * This object knows how to do fun and useful things with underlying Robokind motion + animation services
+ * using the RobotAnimContext and RobotServiceContext (latter is currently unused, except to init the RobotAnimContext).
  */
 
 public class PumaRobotMotionMapper extends BasicDebugger {
@@ -54,6 +57,12 @@ public class PumaRobotMotionMapper extends BasicDebugger {
 		// Connect the triggering RobotAnimContext to the running model robot.
 		myRAC.initConn(robotSvcContext);		
 	}
+	/**
+	 * This method exposes our "best" AnimOutChan at protected scope.
+	 * This is the main pathway for wiring animation triggers from behavior systems
+	 * (whether local or remote).
+	 * @return 
+	 */	
 	protected FancyTextChan getBestAnimOutChan() { 
 		return myRAC.getTriggeringChannel();
 	}
