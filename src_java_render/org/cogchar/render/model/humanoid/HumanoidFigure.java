@@ -299,68 +299,10 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 				
 				// For hinged bones, generally all we need is the rotation.
 				Quaternion boneRotQuat = bs.getRotQuat();	// Can cancel this with null or Quaternion.IDENTITY
-			
-                                // Below "hacks" are now generally accomplished - Ryan Biggs 9 April 2012
-				/* HACKME - add scales + translates for special bones, e.g. facial.
-				 *	1) Check the boneName to match what you want to hack, as defined in OgreModel and bc:jointName 
-				 *		of Bony config.
-				 *  2) Construct a Vector3f for translate and/or scale.    If you want to cancel out the rotation,
-				 *  replace it with null or  Quaternion.IDENTITY.
-				 * 
-				 *		Vector3f docs:
-				 *       http://jmonkeyengine.org/javadoc/com/jme3/math/Vector3f.html
-				 * 
-				 *		Vector3f code:
-				 *		http://code.google.com/p/jmonkeyengine/source/browse/trunk/engine/src/core/com/jme3/math/Vector3f.java
-				 * 
-				 *		Tutorial on JME3 math:
-				 *		http://jmonkeyengine.org/wiki/doku.php/jme3:math_for_dummies
-				 * 
-				 *		Tutorial on JME3 Scene Graph (but note: skeletons have additional properties)
-				 *		http://jmonkeyengine.org/wiki/doku.php/jme3:scenegraph_for_dummies
-				 * 
-			"be_Jaw2"		Translate close to XY, from 0,0 to   x="0.289509" y="0.318684"
-			"be_RevJaw2"	Translate along XY  x="-0.5" y="-0.5" to 0.0,0.0
-			"LtEye2"		Uses scale in Y [0.0, 1.0], + brief inversion rotation (to hide pupil?)
-			"RtEye2"		Uses scale in Y, [0.0, 1.0], and one frame of:  <rotate angle="3.14159"> <axis x="1" y="0" z="0" />
-			"RtBrow"		In model coords, uses Translate in Y [-1.0, 1.0] and rot about -Z
-			"LtBrow"		In model coords, uses Translate in Y [-1.0, 1.0] and rot about Z
-				 */
-				
+
 				Vector3f boneTranslateVec = null; // Same as Vector3f.ZERO = no local translation
                                 Vector3f boneScaleVec = null;   // Same as Vector3f.UNIT_XYZ = new Vector3f(1.0, 1.0, 1.0); = scale by 1 in all 3 directions
                                 
-                if("RtBrow".equals(boneName) || "LtBrow".equals(boneName)){
-                    float normalizedTranslation = getNormalizedLinearMap(bs.rot_Z_A2nd, true);
-                    boneTranslateVec = new Vector3f(0, normalizedTranslation, 0);
-                    float[] angles = {0f,0f,0f};
-                    angles[2] = ("LtBrow".equals(boneName))? normalizedTranslation/2 : -normalizedTranslation/2;
-                    boneRotQuat = new Quaternion(angles);
-                }
-                if("be_Jaw2".equals(boneName)){
-                    float normalizedTranslation = getNormalizedLinearMap(bs.rot_Z_A2nd, false);
-                    boneTranslateVec = new Vector3f(0.289509f*normalizedTranslation, 0.318684f*normalizedTranslation, 0f);
-                    boneRotQuat = null;
-                }
-                if("be_RevJaw2".equals(boneName)){
-                    float normalizedTranslation = getNormalizedLinearMap(bs.rot_Z_A2nd, false);
-                    boneTranslateVec = new Vector3f(0.5f*(normalizedTranslation-1f), 0.5f*(normalizedTranslation-1f), 0f);
-                    boneRotQuat = null;
-                }
-                if("LtEye2".equals(boneName)|| "RtEye2".equals(boneName)){
-                    float normalizedScale = getNormalizedLinearMap(bs.rot_Z_A2nd, false);
-                    if (normalizedScale < 0.05f) {normalizedScale = 0f;}
-                    boneScaleVec = new Vector3f(1f, normalizedScale, 1f);
-                    boneRotQuat = null;
-                    /*
-                    // This doesn't seem to work well to hide pupil since eyelids also "invert"
-                    if (normalizedScale < 0.05f) {
-                        float[] angles = {(float)Math.PI, 0f, 0f};
-                        boneRotQuat = new Quaternion(angles);
-                    }
-                    */
-                }
-                
 				StickFigureTwister.applyBoneTransforms(tgtBone, boneTranslateVec, boneRotQuat, boneScaleVec);
 			}
 		}

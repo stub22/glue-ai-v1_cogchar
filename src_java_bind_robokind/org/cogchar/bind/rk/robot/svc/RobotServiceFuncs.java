@@ -126,6 +126,7 @@ public class RobotServiceFuncs {
 		}
 		startedJointGroupLifecycles.clear();
 	}
+	/*
 	public static File copyJointGroupFile(String tgtFilePath, String jgFullPath, List<ClassLoader> possibleCLs) {
 		ClassLoader cl = ClassLoaderUtils.findResourceClassLoader(jgFullPath, possibleCLs);
 		if (cl != null) {
@@ -153,4 +154,6 @@ public class RobotServiceFuncs {
 		}
 		return outputFile;
 	}	
+	*/
+	 
 }
