@@ -39,7 +39,7 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.api.skeleton.config.BoneCN;
 import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
-import org.cogchar.app.puma.cgchr.PumaHumanoidMapper;
+import org.cogchar.app.puma.cgchr.PumaModelHumanoidMapper;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 import org.cogchar.platform.trigger.CogcharScreenBox;
@@ -195,23 +195,18 @@ public class PumaAppContext extends BasicDebugger {
 	protected PumaDualCharacter connectDualRobotChar(HumanoidConfig humCfg, Ident graphIdentForBony) throws Throwable {
 		Ident bonyCharID = humCfg.myCharIdent;
 		BundleContext bunCtx = getBundleContext();
-		PumaVirtualWorldMapper vWorldMapper = myRegClient.getVWorldMapper(null);
-		PumaContextMediator pcMediator = myRegClient.getCtxMediator(null);
-		BoxSpace bs = myRegClient.getTargetBoxSpace(null);
+		RepoClient rc = getOrMakeMainConfigRC();		
+		// PumaVirtualWorldMapper vWorldMapper = myRegClient.getVWorldMapper(null);
+		// PumaContextMediator pcMediator = myRegClient.getCtxMediator(null);
+		// BoxSpace bs = myRegClient.getTargetBoxSpace(null);
 		// note that vWorldMapper may be null.
-		PumaDualCharacter pdc = new PumaDualCharacter(vWorldMapper, bunCtx, bonyCharID, humCfg.myNickname);
+		PumaDualCharacter pdc = new PumaDualCharacter(bonyCharID, humCfg.myNickname);
 		myCharList.add(pdc);
-		bs.addBox(humCfg.myCharIdent, pdc);
-		pdc.absorbContext(pcMediator);
-		RepoClient rc = getOrMakeMainConfigRC();
-		List<ClassLoader> rkConfCLs = myRegClient.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
-		pdc.initVWorldHumanoidFigure(rc, graphIdentForBony, humCfg);
-		pdc.setupCharacterBindingToRobokind(bunCtx, rc, graphIdentForBony, humCfg, rkConfCLs);
-		PumaConfigManager pcm = getConfigManager();
-		String chanGraphQN =  "ccrt:chan_sheet_AZR50",  behavGraphQN  =  "hrk:behav_file_44";
-		pdc.setupAndStartBehaviorTheater(pcm, chanGraphQN,  behavGraphQN);
+		// bs.addBox(humCfg.myCharIdent, pdc);
+		pdc.absorbContext(myRegClient, bunCtx, rc, humCfg, graphIdentForBony);
 		return pdc;
 	}
+
 
 	private ClassLoader getSingleClassLoaderOrNull(ResourceFileCategory cat) {
 		List<ClassLoader> classLoaders = myRegClient.getResFileCLsForCat(cat);
@@ -296,7 +291,7 @@ public class PumaAppContext extends BasicDebugger {
 
 	protected void stopAndReleaseAllHumanoids() {
 		for (PumaDualCharacter pdc : myCharList) {
-			pdc.stopEverything();
+			pdc.stopAllBehavior();
 			pdc.disconnectBonyCharFromRobokindSvcs();
 		}
 		RobotServiceFuncs.clearJointGroups();
