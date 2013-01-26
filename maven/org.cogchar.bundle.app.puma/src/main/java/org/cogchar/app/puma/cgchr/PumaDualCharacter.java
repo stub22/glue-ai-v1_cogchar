@@ -16,7 +16,7 @@
 package org.cogchar.app.puma.cgchr;
 
 import org.cogchar.app.puma.behavior.PumaBehaviorAgent;
-import org.cogchar.app.puma.vworld.PumaModelHumanoidMapper;
+import org.cogchar.app.puma.vworld.PumaEmbodimentMapper;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import java.io.File;
 import org.osgi.framework.BundleContext;
@@ -67,11 +67,11 @@ public class PumaDualCharacter extends BasicDebugger {
 
 	private		Ident						myCharID;
 	private		String						myNickName;
-	private		PumaModelHumanoidMapper		myModelHumoidMapper;
+	private		PumaEmbodimentMapper		myModelHumoidMapper;
 
 	public		String					myUpdateBonyRdfPath;
 
-	private		ServiceRegistration		myBoneRobotConfigServiceRegistration;
+	// private		ServiceRegistration		myBoneRobotConfigServiceRegistration;
 	
 	private		PumaBehaviorAgent		myBehaviorAgent;
 
@@ -80,6 +80,15 @@ public class PumaDualCharacter extends BasicDebugger {
 		myNickName = nickName;
 			
 	}
+	/** 
+	 * Performs the substance of all character initialization, given explicit instructions.
+	 * @param prc
+	 * @param bundleCtx
+	 * @param rc
+	 * @param humCfg
+	 * @param graphIdentForBony
+	 * @throws Throwable 
+	 */
 	public void absorbContext(PumaRegistryClient prc, BundleContext bundleCtx, RepoClient rc, HumanoidConfig humCfg,  
 				Ident graphIdentForBony) throws Throwable {
 		PumaContextMediator mediator = prc.getCtxMediator(null);
@@ -95,25 +104,27 @@ public class PumaDualCharacter extends BasicDebugger {
 		myBehaviorAgent = new PumaBehaviorAgent(myCharID, behavCE, prc);
 		
 		PumaVirtualWorldMapper vWorldMapper = prc.getVWorldMapper(null);
-		// It's OK if vWorldMapper == null.
-		myModelHumoidMapper = new PumaModelHumanoidMapper(vWorldMapper, bundleCtx, myCharID);
-		List<ClassLoader> rkConfCLs = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
+		// It's OK if vWorldMapper == null.  We still construct a Humanoid Mapper, which will then 
+		// exist solely for the purpose of forwarding joint commands to connected Robots.
+		myModelHumoidMapper = new PumaEmbodimentMapper(vWorldMapper, bundleCtx, myCharID);
+
 		boolean vwHumOK = myModelHumoidMapper.initVWorldHumanoid(rc, graphIdentForBony, humCfg);
-		setupBonyModelBindingToRobokind(bundleCtx, rc, graphIdentForBony, humCfg, rkConfCLs);		
 		
+		List<ClassLoader> rkConfCLs = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
+		setupBonyModelBindingToRobokind(bundleCtx, rc, graphIdentForBony, humCfg, rkConfCLs);		
+		// We wait to do this until here, so that the agent can inspect myModelHumoidMapper during setup,
+		// if it wants to.
 		setupBehaviorAgent(bundleCtx, prc);
 	}
 
-	public void disconnectBonyCharFromRobokindSvcs() {
-		myBoneRobotConfigServiceRegistration.unregister();
-	}
+
 	public String getNickName() {
 		return myNickName;
 	}
 	public Ident getCharIdent() {
 		return myCharID;
 	}
-	public PumaModelHumanoidMapper getModelHumanoidMapper() {
+	public PumaEmbodimentMapper getModelHumanoidMapper() {
 		return myModelHumoidMapper;
 	}
 
@@ -156,7 +167,7 @@ public class PumaDualCharacter extends BasicDebugger {
 		getLogger().debug("Setup for {} using graph {} and humanoidConf {}", new Object[]{charIdent, graphIdentForBony, hc});
 		try {
 			BoneCN bqn = new BoneCN();
-			boolean connectedOK = myModelHumoidMapper.connectBonyCharToRobokindSvcs(bunCtx, hc, graphIdentForBony, rc, bqn, clsForRKConf);
+			boolean connectedOK = myModelHumoidMapper.connectBonyRobotToRobokindAndVWorld(bunCtx, hc, graphIdentForBony, rc, bqn, clsForRKConf);
 			if (connectedOK) {
 				myBehaviorAgent.connectRobotServiceContext(myModelHumoidMapper.getRobotServiceContext());
 				return true;

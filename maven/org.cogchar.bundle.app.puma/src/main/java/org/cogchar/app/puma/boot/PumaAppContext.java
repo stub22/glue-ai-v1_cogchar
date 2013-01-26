@@ -39,7 +39,8 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.api.skeleton.config.BoneCN;
 import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.app.puma.cgchr.PumaDualCharacter;
-import org.cogchar.app.puma.vworld.PumaModelHumanoidMapper;
+import org.cogchar.app.puma.config.PumaGlobalModeManager;
+import org.cogchar.app.puma.vworld.PumaEmbodimentMapper;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 import org.cogchar.platform.trigger.CogcharScreenBox;
@@ -144,8 +145,10 @@ public class PumaAppContext extends BasicDebugger {
 		pcm.applyDefaultRepoClientAsMainConfig(mediator, myBundleContext);
 		// This method performs the configuration actions associated with the developmental "Global Mode" concept
 		// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
-		// be updated to relect that		
-		pcm.applyGlobalConfig(myBundleContext);
+		// be updated to relect that	
+		RepoClient rc = getOrMakeMainConfigRC();
+		PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
+		pgmm.applyGlobalConfig(myBundleContext, rc);
 	}
 
 	/**
@@ -156,7 +159,8 @@ public class PumaAppContext extends BasicDebugger {
 	 */
 	protected List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
 		final PumaConfigManager pcm = getConfigManager();
-		GlobalConfigEmitter gce = pcm.getGlobalConfig();
+		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
+		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
 		RepoClient rc = getOrMakeMainConfigRC();
 		//List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 		List<Ident> charIdents = new ArrayList<Ident>(); // A blank list, so if the try fails below, the for loop won't throw an Exception
@@ -179,8 +183,8 @@ public class PumaAppContext extends BasicDebugger {
 				Ident graphIdentForBony;
 				Ident graphIdentForHumanoid;
 				try {
-					graphIdentForBony = pcm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.BONY_CONFIG_ROLE);
-					graphIdentForHumanoid = pcm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.HUMANOID_CONFIG_ROLE);
+					graphIdentForBony = pgmm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.BONY_CONFIG_ROLE);
+					graphIdentForHumanoid = pgmm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.HUMANOID_CONFIG_ROLE);
 				} catch (Exception e) {
 					getLogger().warn("Could not get valid graphs on which to query for config of {}", charIdent.getLocalName());
 					break;
@@ -260,7 +264,8 @@ public class PumaAppContext extends BasicDebugger {
 
 	protected void reloadBoneRobotConfig() {
 		final PumaConfigManager pcm = getConfigManager();
-
+		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
+		
 		RepoClient rc = getOrMakeMainConfigRC();
 
 		BoneCN bqn = new BoneCN();
@@ -268,7 +273,7 @@ public class PumaAppContext extends BasicDebugger {
 			Ident charID = pdc.getCharIdent();
 			getLogger().info("Updating bony config for char [" + pdc + "]");
 			try {
-				Ident graphIdent = pcm.resolveGraphForCharAndRole(charID, PumaModeConstants.BONY_CONFIG_ROLE);
+				Ident graphIdent = pgmm.resolveGraphForCharAndRole(charID, PumaModeConstants.BONY_CONFIG_ROLE);
 				try {
 					pdc.updateBonyConfig(rc, graphIdent, bqn);
 				} catch (Throwable t) {
@@ -282,17 +287,18 @@ public class PumaAppContext extends BasicDebugger {
 
 	protected void reloadGlobalConfig() {
 		final PumaConfigManager pcm = getConfigManager();
+		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();		
 		RepoClient rc = getOrMakeMainConfigRC();
 		// Below is needed for Lifter to obtain dependency from LifterLifecycle
 		// Will revisit once repo functionality stabilizes a bit
 		//PumaConfigManager.startRepoClientLifecyle(myBundleContext, rc);
-		pcm.startGlobalConfigService(myBundleContext);
+		pgmm.startGlobalConfigService(myBundleContext);
 	}
 
 	protected void stopAndReleaseAllHumanoids() {
 		for (PumaDualCharacter pdc : myCharList) {
 			pdc.stopAllBehavior();
-			pdc.disconnectBonyCharFromRobokindSvcs();
+			pdc.getModelHumanoidMapper().disconnectBonyCharFromRobokindSvcs();
 		}
 		RobotServiceFuncs.clearJointGroups();
 		ModelBlendingRobotServiceContext.clearRobots();
@@ -350,9 +356,10 @@ public class PumaAppContext extends BasicDebugger {
 	// Temporary method for testing goody/thing actions until the repo auto-update trigger features are alive
 	protected void resetMainConfigAndCheckThingActions() {
 		final PumaConfigManager pcm = getConfigManager();
+		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		pcm.clearMainConfigRepoClient();
 		RepoClient rc = getOrMakeMainConfigRC();
-		GlobalConfigEmitter gce = pcm.getGlobalConfig();
+		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
 		if (hasVWorldMapper()) {
 			PumaVirtualWorldMapper vWorldMapper = getOrMakeVWorldMapper();
 			vWorldMapper.updateGoodySpace(rc, gce);
