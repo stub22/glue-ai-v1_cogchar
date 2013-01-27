@@ -18,6 +18,7 @@ package org.cogchar.app.puma.behavior;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
@@ -31,7 +32,7 @@ import org.osgi.framework.BundleContext;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class PumaBehaviorManager {
+public class PumaBehaviorManager extends BasicDebugger {
 	private List<PumaBehaviorAgent>		myBehaviorAgentList = new ArrayList<PumaBehaviorAgent>();
 	
 	private	BehaviorConfigEmitter	myBehavCE;
@@ -57,10 +58,10 @@ public class PumaBehaviorManager {
 		if (pbm != null) {
 			RobotServiceContext  robotSvcCtx = pbm.getRobotServiceContext();
 			if (robotSvcCtx != null) {
+				getLogger().info("Connecting RobotServiceContext for agent {}", agentID);
 				pba.connectRobotServiceContext(robotSvcCtx);
 			}
 		}
-		pba.initMappers(prc);
 		String chanGraphQN =  "ccrt:chan_sheet_AZR50",  behavGraphQN  =  "hrk:behav_file_44";
 		pba.setupAndStart(bunCtx, prc, chanGraphQN, behavGraphQN);
 		
