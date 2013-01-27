@@ -44,12 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author Stu B. <www.texpedient.com>
  * 
  * 
- * In this class, all our huge design flaws are revealed!
- * EVERYTHING about this class is wrong, including it's very existence.
- * It's a perfect 0!  Except...it works for the moment
- * as a bit of glue for testing less-fun parts.  This junk
- * shall soon be absorbed into a proper state representation.
- * Stu: 2011-12-21
+ * Encodes our naive assumptions for bone rotation mappings.
  * 
  */
 public class ModelToFigureStateMappingFuncs {

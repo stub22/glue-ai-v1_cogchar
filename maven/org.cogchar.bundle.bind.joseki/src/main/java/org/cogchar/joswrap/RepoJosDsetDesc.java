@@ -18,7 +18,7 @@ package org.cogchar.joswrap;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Resource;
-import org.cogchar.app.puma.cgchr.PumaWebMapper;
+import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.bundle.bind.joseki.Activator;
 
 import org.cogchar.app.puma.registry.PumaRegistryClient;
