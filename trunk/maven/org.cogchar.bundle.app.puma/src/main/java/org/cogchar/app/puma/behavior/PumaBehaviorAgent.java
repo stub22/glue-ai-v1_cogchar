@@ -38,6 +38,7 @@ import org.cogchar.platform.trigger.CogcharEventActionBinder;
 import org.cogchar.platform.trigger.CogcharScreenBox;
 import org.cogchar.render.app.trigger.SceneActions;
 import org.osgi.framework.BundleContext;
+import org.cogchar.platform.trigger.BoxSpace;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -52,18 +53,33 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 	private		PumaRobotMotionMapper		myRobotMotionMapper;	
 	private		PumaSpeechOutputMapper		mySpeechOutputMapper;
 		
-	public PumaBehaviorAgent(Ident agentID, BehaviorConfigEmitter bce, PumaRegistryClient prc) throws Throwable {
+	public PumaBehaviorAgent(Ident agentID, BehaviorConfigEmitter bce)  {
 		myAgentID = agentID;
 		myBehaviorCE = bce;
 		myTheater = new Theater(myAgentID);	
+
+	}
+	public void initMappers(PumaRegistryClient prc) { 
 		List<ClassLoader> clsForRKConf = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
 		myRobotMotionMapper = new PumaRobotMotionMapper (myAgentID, myBehaviorCE, clsForRKConf);
-		mySpeechOutputMapper = new PumaSpeechOutputMapper(myAgentID);
+		mySpeechOutputMapper = new PumaSpeechOutputMapper(myAgentID);		
 	}
 	public void connectRobotServiceContext(RobotServiceContext rsc) { 
 		myRobotMotionMapper.connectRobotSC(rsc);
 	}
-
+	public void setupAndStart(BundleContext bunCtx, PumaRegistryClient prc, String chanGraphQN,  String behavGraphQN)  { 
+		try {
+			PumaConfigManager  pcm = prc.getConfigMgr(null);
+			setupAndStartBehaviorTheater(pcm, chanGraphQN,  behavGraphQN);
+			// We connect animation output channels for triggering (regardless of whether we are doing virtual-world animation or not).
+			connectAnimOutChans();
+			connectSpeechOutputSvcs(bunCtx);			
+			BoxSpace bs = prc.getTargetBoxSpace(null);
+			bs.addBox(getCharIdent(), this);
+		} catch (Throwable t) {
+			getLogger().error("Cannot setup+start behavior theater", t);
+		}
+	}
 	
 	public void connectAnimOutChans() {
 		FancyTextChan bestAnimOutChan = myRobotMotionMapper.getBestAnimOutChan();

@@ -18,7 +18,7 @@ package org.cogchar.app.puma.boot;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
-import org.cogchar.app.puma.cgchr.PumaWebMapper;
+import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.app.puma.config.PumaModeConstants;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.PumaRegistryClientImpl;
@@ -38,9 +38,12 @@ import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.osgi.framework.BundleContext;
 import org.cogchar.api.skeleton.config.BoneCN;
 import org.cogchar.app.buddy.busker.TriggerItems;
-import org.cogchar.app.puma.cgchr.PumaDualCharacter;
+import org.cogchar.app.puma.behavior.PumaBehaviorAgent;
+import org.cogchar.app.puma.behavior.PumaBehaviorManager;
+import org.cogchar.app.puma.body.PumaDualBody;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
-import org.cogchar.app.puma.vworld.PumaEmbodimentMapper;
+import org.cogchar.app.puma.body.PumaBodyGateway;
+import org.cogchar.app.puma.body.PumaDualBodyManager;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 import org.cogchar.platform.trigger.CogcharScreenBox;
@@ -59,11 +62,13 @@ public class PumaAppContext extends BasicDebugger {
 	private OSGiComponent				myRegClientOSGiComp;
 	
 	private BundleContext				myBundleContext;
-	private List<PumaDualCharacter>		myCharList = new ArrayList<PumaDualCharacter>();
+
+	private	PumaDualBodyManager			myBodyMgr;
+	
+	private PumaBehaviorManager			myBehavMgr;
+	
 	private	PumaContextCommandBox		myPCCB;
 	
-	
-
 	public PumaAppContext(BundleContext bc, PumaContextMediator mediator, Ident ctxID) {
 		myRegClient = new PumaRegistryClientImpl(bc, mediator);
 		advertisePumaRegClient(myRegClient);
@@ -72,6 +77,9 @@ public class PumaAppContext extends BasicDebugger {
 		BoxSpace bs = myRegClient.getTargetBoxSpace(null);
 		myPCCB = new PumaContextCommandBox(this);
 		bs.addBox(ctxID, myPCCB);
+		
+		myBodyMgr = new PumaDualBodyManager();
+		myBehavMgr = new PumaBehaviorManager();
 	}
 	
 	private void advertisePumaRegClient(PumaRegistryClient prc) {
@@ -157,7 +165,26 @@ public class PumaAppContext extends BasicDebugger {
 	 * @return
 	 * @throws Throwable
 	 */
-	protected List<PumaDualCharacter> connectDualRobotChars() throws Throwable {
+	
+	public void connectAllBodies() {
+		List<Ident> charIDs = getAllCharIdents();
+		connectDualBodies(charIDs);
+		makeAgentsForAllBodies(charIDs);
+	}
+	public void makeAgentsForAllBodies(List<Ident> charIdents) {
+		BundleContext bunCtx = getBundleContext();
+		final PumaConfigManager pcm = getConfigManager();
+		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
+		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
+		RepoClient rc = getOrMakeMainConfigRC();		
+		for (Ident charID : charIdents) {
+			PumaDualBody pdb = myBodyMgr.getBody(charID);
+			if (pdb != null) {
+				myBehavMgr.makeAgentForBody(bunCtx, myRegClient, pdb, charID);
+			}
+		}
+	}
+	protected List<Ident> getAllCharIdents() {
 		final PumaConfigManager pcm = getConfigManager();
 		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
@@ -167,7 +194,6 @@ public class PumaAppContext extends BasicDebugger {
 
 		List<Ident> identsFromConfig = gce.entityMap().get(PumaModeConstants.CHAR_ENTITY_TYPE);
 
-
 		if (identsFromConfig != null) {
 			charIdents = identsFromConfig;
 		} else {
@@ -175,40 +201,46 @@ public class PumaAppContext extends BasicDebugger {
 			getLogger().error(msg);
 			throw new RuntimeException(msg);
 		}
+		return charIdents;
+	}
+	protected void connectDualBodies(List<Ident> charIdents) {
+		final PumaConfigManager pcm = getConfigManager();
+		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
+		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
+		RepoClient rc = getOrMakeMainConfigRC();
+		
 		if (gce == null) {
 			getLogger().warn("GlobalConfigEmitter not available, cannot setup characters!");
 		} else {
 			for (Ident charIdent : charIdents) {
-				getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^^ Connecting dualRobotChar for charIdent: {}", charIdent);
-				Ident graphIdentForBony;
-				Ident graphIdentForHumanoid;
 				try {
-					graphIdentForBony = pgmm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.BONY_CONFIG_ROLE);
-					graphIdentForHumanoid = pgmm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.HUMANOID_CONFIG_ROLE);
-				} catch (Exception e) {
-					getLogger().warn("Could not get valid graphs on which to query for config of {}", charIdent.getLocalName());
-					break;
+					getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^^ Connecting dualRobotChar for charIdent: {}", charIdent);
+					Ident graphIdentForBony;
+					Ident graphIdentForHumanoid;
+					try {
+						graphIdentForBony = pgmm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.BONY_CONFIG_ROLE);
+						graphIdentForHumanoid = pgmm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.HUMANOID_CONFIG_ROLE);
+					} catch (Exception e) {
+						getLogger().warn("Could not get valid graphs on which to query for config of {}", charIdent.getLocalName());
+						break;
+					}
+					HumanoidConfig humConfig = new HumanoidConfig(rc, charIdent, graphIdentForHumanoid);
+					PumaDualBody pdc = connectDualBody(humConfig, graphIdentForBony);
+				} catch (Throwable t) {
+					getLogger().error("Problem initing dualBody for charIdent: " + charIdent, t);
 				}
-				HumanoidConfig humConfig = new HumanoidConfig(rc, charIdent, graphIdentForHumanoid);
-				PumaDualCharacter pdc = connectDualRobotChar(humConfig, graphIdentForBony);
 			}
 		}
-		return myCharList;
 	}
 
-	protected PumaDualCharacter connectDualRobotChar(HumanoidConfig humCfg, Ident graphIdentForBony) throws Throwable {
+	protected PumaDualBody connectDualBody(HumanoidConfig humCfg, Ident graphIdentForBony) throws Throwable {
 		Ident bonyCharID = humCfg.myCharIdent;
 		BundleContext bunCtx = getBundleContext();
 		RepoClient rc = getOrMakeMainConfigRC();		
-		// PumaVirtualWorldMapper vWorldMapper = myRegClient.getVWorldMapper(null);
-		// PumaContextMediator pcMediator = myRegClient.getCtxMediator(null);
-		// BoxSpace bs = myRegClient.getTargetBoxSpace(null);
-		// note that vWorldMapper may be null.
-		PumaDualCharacter pdc = new PumaDualCharacter(bonyCharID, humCfg.myNickname);
-		myCharList.add(pdc);
-		// bs.addBox(humCfg.myCharIdent, pdc);
-		pdc.absorbContext(myRegClient, bunCtx, rc, humCfg, graphIdentForBony);
-		return pdc;
+		PumaDualBody pdb = new PumaDualBody(bonyCharID, humCfg.myNickname);
+		pdb.absorbContext(myRegClient, bunCtx, rc, humCfg, graphIdentForBony);
+		myBodyMgr.addBody(pdb);
+		return pdb;
 	}
 
 
@@ -264,25 +296,9 @@ public class PumaAppContext extends BasicDebugger {
 
 	protected void reloadBoneRobotConfig() {
 		final PumaConfigManager pcm = getConfigManager();
-		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		
 		RepoClient rc = getOrMakeMainConfigRC();
-
-		BoneCN bqn = new BoneCN();
-		for (PumaDualCharacter pdc : myCharList) {
-			Ident charID = pdc.getCharIdent();
-			getLogger().info("Updating bony config for char [" + pdc + "]");
-			try {
-				Ident graphIdent = pgmm.resolveGraphForCharAndRole(charID, PumaModeConstants.BONY_CONFIG_ROLE);
-				try {
-					pdc.updateBonyConfig(rc, graphIdent, bqn);
-				} catch (Throwable t) {
-					getLogger().error("problem updating bony config from queries for {}", charID, t);
-				}
-			} catch (Exception e) {
-				getLogger().warn("Could not get a valid graph on which to query for config update of {}", charID.getLocalName());
-			}
-		}
+		myBodyMgr.reloadAllBoneRobotConfigs(pcm, rc);
 	}
 
 	protected void reloadGlobalConfig() {
@@ -296,15 +312,13 @@ public class PumaAppContext extends BasicDebugger {
 	}
 
 	protected void stopAndReleaseAllHumanoids() {
-		for (PumaDualCharacter pdc : myCharList) {
-			pdc.stopAllBehavior();
-			pdc.getModelHumanoidMapper().disconnectBonyCharFromRobokindSvcs();
-		}
+		myBehavMgr.stopAllAgents();
+		myBodyMgr.disconnectAllBodies();
 		RobotServiceFuncs.clearJointGroups();
 		ModelBlendingRobotServiceContext.clearRobots();
 		PumaVirtualWorldMapper pvwm = getOrMakeVWorldMapper();
 		pvwm.detachAllHumanoidFigures();
-		myCharList.clear();
+		myBodyMgr.clear();
 		// Oops - but they are STILL in the box-space!!!
 	}
 
@@ -343,7 +357,7 @@ public class PumaAppContext extends BasicDebugger {
 
 			// So NOW what we want to examine is the difference between the state right here, and the
 			// state at this moment during a full "boot" sequence.
-			connectDualRobotChars();
+			connectAllBodies();
 
 			initCinema(true);
 

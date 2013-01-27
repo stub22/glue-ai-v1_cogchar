@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.app.puma.vworld;
+package org.cogchar.app.puma.body;
 
 
 
@@ -42,6 +42,8 @@ import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.api.skeleton.config.BoneProjectionRange;
 import org.cogchar.api.skeleton.config.BoneCN;
+import org.cogchar.app.puma.vworld.ModelToFigureStateMappingFuncs;
+import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 import org.cogchar.bind.rk.robot.client.RobotVisemeClient;
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
@@ -62,7 +64,7 @@ import org.cogchar.platform.util.ClassLoaderUtils;
  * 
  * 
  */
-public class PumaEmbodimentMapper extends BasicDebugger {
+public class PumaBodyGateway extends BasicDebugger {
 
 	private	Ident									myCharID;
 	
@@ -74,7 +76,7 @@ public class PumaEmbodimentMapper extends BasicDebugger {
 	
 	private	ServiceRegistration						myBoneRobotConfigServiceRegistration;	
 	
-	public PumaEmbodimentMapper(PumaVirtualWorldMapper vWorldMapper, BundleContext bundleCtx, Ident charIdent) {
+	public PumaBodyGateway(PumaVirtualWorldMapper vWorldMapper, BundleContext bundleCtx, Ident charIdent) {
 		myCharID = charIdent;
 		myVWorldMapper = vWorldMapper;
 		myMBRSC = new ModelBlendingRobotServiceContext(bundleCtx); 
@@ -177,8 +179,10 @@ public class PumaEmbodimentMapper extends BasicDebugger {
 		if (boneRobotOK) {
 			// This does nothing if there is no vWorld, or no human figure for this char in the vWorld.
 			connectBonyRobotToHumanoidFigure();
-			// This was an antiquated way of controlling initial char position, left here as reminder of the issue.
+			// An old crude way to set initial joint positions, left here as reminder of the issue.
 			// myPHM.applyInitialBoneRotations();
+			
+			// Robokind has a built in viseme loop, which we configure from a path 
 			startVisemePump(clsForRKConf);
 			startJointGroup(hc, clsForRKConf);
 			
