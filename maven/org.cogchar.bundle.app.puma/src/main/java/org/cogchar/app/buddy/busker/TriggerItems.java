@@ -16,7 +16,7 @@
 package org.cogchar.app.buddy.busker;
 
 import java.util.List;
-import org.cogchar.app.puma.cgchr.PumaDualCharacter;
+import org.cogchar.app.puma.body.PumaDualBody;
 import org.cogchar.app.puma.behavior.PumaBehaviorAgent;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.platform.trigger.BoxSpace;

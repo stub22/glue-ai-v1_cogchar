@@ -140,7 +140,7 @@ public class PumaBooter extends BasicDebugger {
 
 			getLogger().debug("%%% calling connectDualRobotChars()");
 			
-			pac.connectDualRobotChars();
+			pac.connectAllBodies();
 
 			pac.reloadCommandSpace();
 			

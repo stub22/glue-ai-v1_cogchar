@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.app.puma.cgchr;
+package org.cogchar.app.puma.web;
 
 import com.hp.hpl.jena.query.Dataset;
 import org.appdapter.core.log.BasicDebugger;

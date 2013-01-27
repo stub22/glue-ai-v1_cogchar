@@ -38,7 +38,7 @@ public class PumaRobotMotionMapper extends BasicDebugger {
 	private	RobotServiceContext	myRSC;
 	private	RobotAnimContext	myRAC;
 	
-	public PumaRobotMotionMapper (Ident charID, BehaviorConfigEmitter behavCE, List<ClassLoader> clsForRKConf) throws Throwable {
+	public PumaRobotMotionMapper (Ident charID, BehaviorConfigEmitter behavCE, List<ClassLoader> clsForRKConf)  {
 		myCharIdent = charID;
 		
 		if (behavCE != null) {
