@@ -80,6 +80,7 @@ public class PumaAppContext extends BasicDebugger {
 		
 		myBodyMgr = new PumaDualBodyManager();
 		myBehavMgr = new PumaBehaviorManager();
+		myBehavMgr.init(myRegClient);
 	}
 	
 	private void advertisePumaRegClient(PumaRegistryClient prc) {
@@ -180,6 +181,7 @@ public class PumaAppContext extends BasicDebugger {
 		for (Ident charID : charIdents) {
 			PumaDualBody pdb = myBodyMgr.getBody(charID);
 			if (pdb != null) {
+				getLogger().info("Making agent for char={} and body={} ", charID, pdb);
 				myBehavMgr.makeAgentForBody(bunCtx, myRegClient, pdb, charID);
 			}
 		}
@@ -225,7 +227,7 @@ public class PumaAppContext extends BasicDebugger {
 						break;
 					}
 					HumanoidConfig humConfig = new HumanoidConfig(rc, charIdent, graphIdentForHumanoid);
-					PumaDualBody pdc = connectDualBody(humConfig, graphIdentForBony);
+					PumaDualBody pdb = connectDualBody(humConfig, graphIdentForBony);
 				} catch (Throwable t) {
 					getLogger().error("Problem initing dualBody for charIdent: " + charIdent, t);
 				}
