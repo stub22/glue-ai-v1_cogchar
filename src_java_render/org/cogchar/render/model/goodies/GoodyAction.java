@@ -185,6 +185,10 @@ public class GoodyAction  {
 		return resultColor;
 	}
 	
+	public String getText() {
+		return paramTVMap.getAsString(GoodyNames.TEXT);
+	}
+	
 	// Could have more elaborate type handling here, but for now, since params in repo are natively strings
 	// we'll provide a way to load those raw strings by param name
 	public String getSpecialString(Ident paramIdent) {
