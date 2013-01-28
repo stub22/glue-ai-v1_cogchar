@@ -117,6 +117,11 @@ public class GoodyFactory {
 					int rows = Integer.valueOf(ga.getSpecialString(GoodyNames.ROWS));
 					newGoody = new ScoreBoardGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(),
 							ga.getSize()[0], rows, scalarScale);
+				} else if (GoodyNames.TYPE_TEXT.equals(ga.getType())) {
+					// scale.getX() should return scalarScale if that is provided, or use Robosteps API scalar scale which
+					// is represented as a vector scale with identical components
+					newGoody = new TextGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(),
+							scale.getX(), ga.getColor(), ga.getText()); 
 				} else {
 					theLogger.warn("Did not recognize requested goody type for creation: {}", ga.getType());
 				}

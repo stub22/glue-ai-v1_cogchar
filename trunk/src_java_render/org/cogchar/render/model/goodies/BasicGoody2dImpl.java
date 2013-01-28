@@ -58,7 +58,7 @@ public class BasicGoody2dImpl extends BasicGoody {
 	}
 	protected BitmapText setGoodyAttributes(String text, float scale, ColorRGBA color) {
 		myOverlayText = setGoodyAttributes(text, scale);
-		myOverlayText.setColor(color);
+		setColor(color);
 		return myOverlayText;
 	}
 	
@@ -87,6 +87,12 @@ public class BasicGoody2dImpl extends BasicGoody {
 			myLogger.warn("Attemping to set scale on 2D Goody, but initial GoodyAttributes have not been set");
 		} else if (scale != null) {
 			myOverlayText.setSize(myOverlayText.getFont().getCharSet().getRenderedSize()*scale);
+		}
+	}
+	
+	public void setColor(ColorRGBA color) {
+		if (color != null) {
+			myOverlayText.setColor(color);
 		}
 	}
 	
@@ -142,19 +148,20 @@ public class BasicGoody2dImpl extends BasicGoody {
 	
 	// Override this method to add functionality; be sure to call this super method to apply standard Goody actions
 	@Override
-		public void applyAction(GoodyAction ga) {
-			switch (ga.getKind()) {
-				case MOVE : 
-				case SET : {
-					setPosition(ga.getLocationVector());
-					setScale(ga.getScale());
-					break;
-				}
-				default: {
-					myLogger.error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
-				}
+	public void applyAction(GoodyAction ga) {
+		switch (ga.getKind()) {
+			case MOVE : 
+			case SET : {
+				setPosition(ga.getLocationVector());
+				setScale(ga.getScale());
+				setColor(ga.getColor());
+				break;
 			}
-		};
+			default: {
+				myLogger.error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
+			}
+		}
+	};
 	
 	
 }
