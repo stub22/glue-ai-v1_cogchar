@@ -52,7 +52,7 @@ class RuledBehavior (myRBS: RuledBehaviorSpec) extends Behavior(myRBS) {
 		val baseModel = ModelFactory.createDefaultModel();
 		val sillyProperty = baseModel.createProperty("urn:sillyNamespace#", "sillyProperty");
 		
-		// Create a statement about each known channel
+		// Create a statement about each known channel, using sillyProperty
 		for (val cs <- scn.mySceneSpec.myChannelSpecs.values) {
 			val csJRI = cs.getIdent().asInstanceOf[JenaResourceItem];
 			val csJenaRes = csJRI.getJenaResource();
@@ -61,8 +61,10 @@ class RuledBehavior (myRBS: RuledBehaviorSpec) extends Behavior(myRBS) {
 			logInfo("Created statement: " + stmt);
 			baseModel.add(stmt);
 		}
-		// We are paying this serializatio-to-string cost on every start!
+		// We are paying this serializatio-to-string cost on every doStart()!
 		logInfo("Built dummy base model [" + baseModel + "]");
+		// The baseModel could instead be a union of graphs from a repo, which can be changing in between
+		// our different queries and reasoning sessions.
 		myInfModel = JenaReasonerUtils.createInferenceModelUsingGenericRulesWithMacros (baseModel, myRBS.myJenaGeneralRules);
 	}
 	override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
