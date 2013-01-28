@@ -61,6 +61,7 @@ class RuledBehavior (myRBS: RuledBehaviorSpec) extends Behavior(myRBS) {
 			logInfo("Created statement: " + stmt);
 			baseModel.add(stmt);
 		}
+		// We are paying this serializatio-to-string cost on every start!
 		logInfo("Built dummy base model [" + baseModel + "]");
 		myInfModel = JenaReasonerUtils.createInferenceModelUsingGenericRulesWithMacros (baseModel, myRBS.myJenaGeneralRules);
 	}
