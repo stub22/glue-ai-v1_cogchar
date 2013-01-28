@@ -164,27 +164,36 @@ object Theater extends BasicDebugger {
 		thtr.registerChannel(dtc);
 
 		// val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
-		val triplesFlexPath = "../org.cogchar.bundle.render.resources/src/main/resources/behavior/bhv_nugget_02.ttl";
-		
+		// val triplesFlexPath = "../org.cogchar.bundle.render.resources/src/main/resources/behavior/bhv_nugget_02.ttl";
+		val triplesFlexPath = "org/cogchar/test/assembly/demo_scenes_A.ttl";
 		thtr.loadSceneBookFromFile(triplesFlexPath, null, true);
 		
 		val sceneBook : SceneBook = thtr.getSceneBook;
-//		val ruledTestSceneIdent : Ident = "csi:bh_004";
-//		val ruledTestSS : SceneSpec = sceneBook.findSceneSpec(ruledTestSceneIdent);
+		val ruledTestSceneName = "scn_004";
+		val ruledTestSceneID : Ident = new FreeIdent(ChannelNames.NS_ccScnInst + ruledTestSceneName, ruledTestSceneName)
+		val ruledTestSS : SceneSpec = sceneBook.findSceneSpec(ruledTestSceneID);
+		
 		val aSceneSpec : SceneSpec = sceneBook.allSceneSpecs().head;
 		logInfo("Found first SceneSpec to build a trigger for: " + aSceneSpec);
 		
-		val trig : CogcharActionTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTriggerForScene(aSceneSpec);
-		
+		val trigHead : CogcharActionTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTriggerForScene(aSceneSpec);
 	
+		logInfo("Found ruled SceneSpec " + ruledTestSceneName + " to build a trigger for: " + ruledTestSS);
+		
+		val trigRuled : CogcharActionTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTriggerForScene(ruledTestSS);
+		
 		thtr.startThread();
 		
 		Thread.sleep(2000);
-		trig.fire(thtr);
+		trigHead.fire(thtr);
 		// thtr.myBM.setDebugImportanceThreshold(Loggable.IMPO_LOLO);
 		// thtr.myBM.runUntilDone(100);
 		// 
-		Thread.sleep(8000);
+		// 
+		Thread.sleep(4000);
+		logInfo("=======================================\nStarting ruled scene test");
+		trigRuled.fire(thtr);
+		Thread.sleep(4000);
 		logInfo("********************** stopping thread");
 		thtr.fullyStop(500);
 		Thread.sleep(2000);
