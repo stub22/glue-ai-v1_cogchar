@@ -32,12 +32,10 @@ public class GoodyNames  {
 		return new FreeIdent(GOODY_NS + nameTail);
 	}
 	
-	/* The following is for a future server-side "delete all goodies" function, not currently implemented
 	// Not sure if this is the best approach long term: a special Goody URI which corresponds to all goodies
-	// (Currently only supported for deletion)
+	// Intended for server-side goody deletion; not yet implemented
 	// Currently goodies use the ccrt prefix. If that changes, this should change too: 
 	public	static Ident	ALL_GOODY_URI = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#ALL");
-	*/
 	
 	public	static Ident 	LOCATION_X = makeID("locX");
 	public	static Ident	LOCATION_Y = makeID("locY");
@@ -75,6 +73,7 @@ public class GoodyNames  {
 	
 	public static	Ident	TYPE_CROSSHAIR = makeID("CrossHair");
 	public static	Ident	TYPE_SCOREBOARD = makeID("ScoreBoard");
+	public static	Ident	TYPE_TEXT = makeID("Text2D");
 	
 	public  static Ident	RDF_TYPE = new FreeIdent(ComponentAssemblyNames.NS_rdf + "type");
 	
