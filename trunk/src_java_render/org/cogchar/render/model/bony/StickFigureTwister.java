@@ -45,7 +45,7 @@ public class StickFigureTwister extends RenderModule {
 	public void setBodyController(BodyController tc) {
 		myBodyController = tc;
 	}
-	public void twist(float tpf) { 
+	private void twist(float tpf) { 
 				//	System.out.println("simpleUpdate, tpf=" + tpf);
 		if (myBodyController != null) {
 			List<AnimControl> animControls = myContext.getAnimControls();
@@ -77,7 +77,7 @@ public class StickFigureTwister extends RenderModule {
 		// System.out.println("================================================================");
 		//vcp.setDumpText(prefix + "qryBone=" + b + ", localPos=" + localPos + ", modelPos=" + modelPos + ", localRot=" + b.getLocalRotation());		
 	}
-	public void twistBone(float tpf, Bone tgtBone, String direction) {
+	private void twistBone(float tpf, Bone tgtBone, String direction) {
 
 		myWaistTwistAngle += tpf * myWaistTwistRate;
 		float posQuarterPi = FastMath.HALF_PI / 2f;
@@ -99,7 +99,7 @@ public class StickFigureTwister extends RenderModule {
 			sb.displayScore(2, "tpf=" + tpf);
 		}
 	}
-	public Quaternion makeRotQuatForSingleAxis(float angleMag, String direction) {
+	private Quaternion makeRotQuatForSingleAxis(float angleMag, String direction) {
 		Quaternion q = new Quaternion();
 		float pitchAngle = 0.0f;
 		float rollAngle = 0.0f;
@@ -115,7 +115,7 @@ public class StickFigureTwister extends RenderModule {
 		return q;
 	}
 	
-	public static void applyBoneRotQuat(Bone tgtBone, Quaternion rotation) {
+	private static void applyBoneRotQuat(Bone tgtBone, Quaternion rotation) {
 		applyBoneTransforms(tgtBone, null, rotation, null);
 	}
 	/**
