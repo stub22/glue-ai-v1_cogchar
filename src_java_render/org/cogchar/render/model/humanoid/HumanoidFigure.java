@@ -237,6 +237,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 	}
 
 	@Override public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+		theLogger.info("AnimCycleDone {}", animName);
 //        if(channel.getAnimationName().equals("StandUpFront")){
 //            channel.setAnim("Dance");
 //        }
