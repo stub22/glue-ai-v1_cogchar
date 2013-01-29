@@ -64,8 +64,9 @@ public class PhysicallyWigglingHumanoid extends HumanoidFigure {
 			//	continue;
 			//}
 			// Don't have a direct need for the PRB yet, but we're sure to later!
-			PhysicsRigidBody prb = myHumanoidKRC.getBoneRigidBody(boneName);
-			SixDofJoint boneJoint = myHumanoidKRC.getJoint(boneName);
+			HumanoidRagdollControl hkrc = getRagdollControl();
+			PhysicsRigidBody prb = hkrc.getBoneRigidBody(boneName);
+			SixDofJoint boneJoint = hkrc.getJoint(boneName);
 			RotationalLimitMotor xRotMotor =  boneJoint.getRotationalLimitMotor(0);
 			RotationalLimitMotor yRotMotor =  boneJoint.getRotationalLimitMotor(1);
 			RotationalLimitMotor zRotMotor =  boneJoint.getRotationalLimitMotor(2);

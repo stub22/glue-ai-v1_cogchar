@@ -37,17 +37,22 @@ public class HumanoidRagdollControl extends KinematicRagdollControl {
 	}
 
 	@Override public synchronized void setKinematicMode() {
-		theLogger.info("setKinematicMode()");
+		// theLogger.info("setKinematicMode()");
 		super.setKinematicMode();
 	}
 
 	@Override protected synchronized void setMode(Mode mode) {
 		theLogger.info("setMode({})", mode);
+		try {
+			throw new Exception("we want a stack trace, yo!");
+		} catch (Throwable t) {
+			theLogger.info("mode is being set by (see stack trace)", t);
+		}
 		super.setMode(mode);
 	}
 
 	@Override public synchronized void setRagdollMode() {
-		theLogger.info("setRagdollMode()");
+		// theLogger.info("setRagdollMode()");
 		super.setRagdollMode();
 	}
 
@@ -63,9 +68,8 @@ public class HumanoidRagdollControl extends KinematicRagdollControl {
 		theLogger.info("blendToKinematicMode({})", blendTime);
 		super.blendToKinematicMode(blendTime);
 	}
-	
+	// Should be called "checkForCollisions".  It is called with high frequency!
 	@Override  public synchronized void collision(PhysicsCollisionEvent event) {
-		// theLogger.info("collision({})", event);
 		super.collision(event);
 	}
 }
