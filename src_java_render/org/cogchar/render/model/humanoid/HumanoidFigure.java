@@ -64,9 +64,10 @@ import org.slf4j.LoggerFactory;
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidFigure extends BasicDebugger implements RagdollCollisionListener, AnimEventListener {
+	private static final Logger theLogger = LoggerFactory.getLogger(HumanoidFigure.class);
 	
 	private		Node						myHumanoidModelNode;
-	protected	KinematicRagdollControl		myHumanoidKRC;
+	private		HumanoidRagdollControl		myHumanoidKRC;
 	private		AnimChannel					myHumanoidAnimChannel;
 
 	// Skeleton is used for direct access to the graphic "spatial" bones of JME3 (bypassing JBullet physics bindings). 
@@ -100,7 +101,9 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		myConfig = hfc;
 		
 	}
-
+	protected HumanoidRagdollControl getRagdollControl() { 
+		return myHumanoidKRC;
+	}
 	protected Ident getCharIdent() { 
 		return myConfig.myCharIdent;
 	}
@@ -221,9 +224,14 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		Object userObj = pco.getUserObject();
 		if ((userObj != null) && (userObj instanceof Geometry)) {
 			Geometry geom = (Geometry) userObj;
-			if (PhysicsStuffBuilder.GEOM_FLOOR.equals(geom.getName())) {
+			// Floor name is now being set from config - need to revisit this area
+			// if (PhysicsStuffBuilder.GEOM_FLOOR.equals(geom.getName())) {
+			if (geom.getName().toLowerCase().contains(PhysicsStuffBuilder.GEOM_FLOOR.toLowerCase())) {
 				return;
 			}
+			theLogger.info("Bone {} collided with userObj-geom named {}, which is not the floor", bone.getName(), geom.getName());
+		} else {
+			theLogger.info("Bone {} collided with something, userObj is {}", bone.getName(), userObj);
 		}
 		myHumanoidKRC.setRagdollMode();
 	}

@@ -51,7 +51,7 @@ import org.cogchar.render.sys.registry.RenderRegistryAware;
 public class PhysicsStuffBuilder extends RenderRegistryAware {
 
 	public static final String GEOM_BOX = "Box";
-	public static final String GEOM_FLOOR = "Floor";
+	public static final String GEOM_FLOOR = "Floor";  // Actual Floor name is now set from Config, somewhere...
 	
 	public static String		SHOOT_ACTION_NAME	= "shoot";
 
