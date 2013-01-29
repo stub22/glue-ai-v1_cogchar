@@ -198,6 +198,7 @@ public class TriggerItems {
 			pccb.getGameFeatureAdapter().getProjectileMgr().cmdSmallerProjectile();
 		}		
 	}
+	/*
 	public static class ToggleKinMode extends CtxCmdBoxTI {
 		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
 			HumanoidFigure hw = pccb.getSinbad();
@@ -206,6 +207,8 @@ public class TriggerItems {
 			}
 		}		
 	}
+	* 
+	*/ 
 	public static class StandUp extends CtxCmdBoxTI {
 		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
 			HumanoidFigure hw = pccb.getSinbad();

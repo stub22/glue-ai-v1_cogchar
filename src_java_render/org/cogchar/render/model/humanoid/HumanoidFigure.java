@@ -145,8 +145,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		// Prepare the green bone skeleton debugger, but don't activate it.
 		initDebugSkeleton(assetMgr);
 
-		//Note: PhysicsRagdollControl is still TODO, constructor will change
-		myHumanoidKRC = new KinematicRagdollControl(KRC_WEIGHT_THRESHOLD);
+		myHumanoidKRC = new HumanoidRagdollControl(KRC_WEIGHT_THRESHOLD);
 		
 		attachRagdollBones();
 
@@ -177,10 +176,17 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 	protected void becomeKinematicPuppet() { 
 		myHumanoidKRC.setKinematicMode();
 	}
-	public void togglePhysicsKinematicModeEnabled() {
+	protected void becomeFloppyRagdoll() { 
+		myHumanoidKRC.setEnabled(true);
+		myHumanoidKRC.setRagdollMode();
+	}	
+	/*
+	private void togglePhysicsKinematicModeEnabled() {
 		myHumanoidKRC.setEnabled(!myHumanoidKRC.isEnabled());
 		myHumanoidKRC.setRagdollMode();
 	}
+	* 
+	*/ 
 	public void makeSinbadStandUp() { 
 		Vector3f v = new Vector3f();
 		v.set(myHumanoidModelNode.getLocalTranslation());
