@@ -54,7 +54,7 @@ import org.cogchar.impl.perform.FancyTextChan;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.osgi.framework.ServiceRegistration;
 import org.cogchar.platform.util.ClassLoaderUtils;
-
+import org.robokind.api.motion.Robot;
 /**
  * @author Stu B. <www.texpedient.com>
  * 
@@ -139,7 +139,9 @@ public class PumaBodyGateway extends BasicDebugger {
 	protected boolean startVisemePump(List<ClassLoader> clsForRKConf)  {
 		RobotVisemeClient robotVisCli = new RobotVisemeClient();
 		BundleContext bunCtx = myMBRSC.getBundleContext();
-		robotVisCli.startPumpingZenoAvatarVisemes(bunCtx, clsForRKConf);
+        ModelRobot r = getBonyRobot();
+        Robot.Id robotId = r.getRobotId();
+		robotVisCli.startPumpingZenoAvatarVisemes(bunCtx, clsForRKConf, robotId);
 		return true;
 	}
 
