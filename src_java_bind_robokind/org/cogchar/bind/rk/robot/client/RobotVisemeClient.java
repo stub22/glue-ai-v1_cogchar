@@ -37,16 +37,16 @@ import org.cogchar.platform.util.ClassLoaderUtils;
 
 public class RobotVisemeClient extends BasicDebugger {
 
-	public  void startPumpingZenoAvatarVisemes(BundleContext bunCtx, List<ClassLoader> clsForRKConf) { 
+	public  void startPumpingZenoAvatarVisemes(BundleContext bunCtx, List<ClassLoader> clsForRKConf, Robot.Id robotId) { 
 		String visConfResPath = "rk_conf/VisemeConf_AZR50_A12.json";
 		try {
-			startPumpingVisemeAnimation(bunCtx, null, null, visConfResPath, clsForRKConf);
+			startPumpingVisemeAnimation(bunCtx, null, null, visConfResPath, clsForRKConf, robotId);
 		} catch (Throwable t) {
 			getLogger().error("Problem starting Zeno viseme-pump with conf path " + visConfResPath , t);
 		}
 	}
 	public  void startPumpingVisemeAnimation(BundleContext bunCtx, Ident speechOutChanID, Ident charBodyChanID,
-					String visConfResPath, List<ClassLoader> clsForRKConf) throws Throwable { 
+					String visConfResPath, List<ClassLoader> clsForRKConf, Robot.Id robotId) throws Throwable { 
 		// As of 2012-11-23, the code below is based on sample code shown in comments of:
 		// org.robokind.integration.motion_speech.Activator
 		ManagedServiceFactory fact = new OSGiComponentFactory(bunCtx);
@@ -60,6 +60,6 @@ public class RobotVisemeClient extends BasicDebugger {
 		InputStream visemeConfigStream = visConfResURL.openStream();
 		getLogger().info("Opened viseme conf stream from " + visConfResURL.toExternalForm());
 		ManagedServiceGroup visFrameSourceServGroup = VisemeMotionUtils.startVisemeFrameSourceStreamGroup(fact, 
-						new Robot.Id(RKConstants.VIRTUAL_R50_ID), speechServiceId, visemeConfigStream);
+						robotId, speechServiceId, visemeConfigStream);
 	}
 }
