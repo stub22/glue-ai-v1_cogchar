@@ -32,8 +32,12 @@ import jme3tools.optimize.GeometryBatchFactory;
 
 public class CompositeMeshBuilder {
 	
-	//static final Quaternion ROTATE_45_DEG_AROUND_Y =
-	//static final Quaternion ROTATE_90_DEG_AROUND_Y = 
+	public static final Quaternion ROTATE_90_DEG_AROUND_X = 
+			new Quaternion().fromAngleAxis((float)Math.PI/2, new Vector3f(1f,0f,0f));
+	public static final Quaternion ROTATE_90_DEG_AROUND_Y = 
+			new Quaternion().fromAngleAxis((float)Math.PI/2, new Vector3f(0f,1f,0f));
+	public static final Quaternion ROTATE_90_DEG_AROUND_Z = 
+			new Quaternion().fromAngleAxis((float)Math.PI/2, new Vector3f(0f,0f,1f));
 	
 	public static class MeshComponent {
 		Mesh myMesh;

@@ -33,6 +33,12 @@ public class MatFactory extends RenderRegistryAware {
 	public static final String PATH_MAT_DEF_COLORED_TEXTURED = "Common/MatDefs/Misc/ColoredTextured.j3md";
 	public static final String PATH_MAT_DEF_PARTICLE = "Common/MatDefs/Misc/Particle.j3md";
 	public static final String PATH_MAT_DEF_SHOW_NORMALS = "Common/MatDefs/Misc/ShowNormals.j3md";
+	
+	// A temporary exposure of the asset manager so that goodies can build custom TextureAtlases
+	// Plan to move some of that functionality in here to clean this up soon
+	public AssetManager getAssetManager() {
+		return findJme3AssetManager(null);
+	}
 
 	public Material makeMatWithOptTexture(String matName, String matTextName, Texture t) {
 		Material mat = new Material(findJme3AssetManager(null), matName);
