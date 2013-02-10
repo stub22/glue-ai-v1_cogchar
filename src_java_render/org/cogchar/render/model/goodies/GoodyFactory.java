@@ -20,6 +20,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
 import org.cogchar.render.model.goodies.robosteps.BitBox;
+import org.cogchar.render.model.goodies.robosteps.BitCube;
 import org.cogchar.render.model.goodies.robosteps.TicTacGrid;
 import org.cogchar.render.model.goodies.robosteps.TicTacMark;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
@@ -100,6 +101,10 @@ public class GoodyFactory {
 				if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
 					boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
 					newGoody = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
+						scale, bitBoxState);
+				} else if (GoodyNames.TYPE_BIT_CUBE.equals(ga.getType())) {
+					boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
+					newGoody = new BitCube(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
 						scale, bitBoxState);
 				} else if (GoodyNames.TYPE_FLOOR.equals(ga.getType())) {
 					// Assuming physical floor for now, but that may be a good thing to define in repo
