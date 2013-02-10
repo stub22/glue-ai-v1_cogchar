@@ -195,6 +195,11 @@ public class BasicGoodyImpl extends BasicGoody {
 			}
 		});
 	}
+	
+	protected void setNewGeometryRotationOffset(int geomId, Quaternion offset) {
+		BasicGoodyGeometry geom = myGeometries.get(geomId);
+		geom.myRotationOffset = offset;
+	}
 
 	@Override
 	public void setPosition(Vector3f newPosition) {
