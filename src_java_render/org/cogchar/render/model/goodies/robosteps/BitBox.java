@@ -24,24 +24,21 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Torus;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.model.goodies.BasicGoodyImpl;
-import org.cogchar.render.model.goodies.GoodyAction;
-import org.cogchar.render.model.goodies.GoodyNames;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
- * A class to implement the Robosteps "BitBox" objects, which may not turn out to be boxes at all
+ * A class to implement the Robosteps "BitBox" objects, which as it turns out are not boxes at all
+ * See BitCube for a real BitBOX
  * 
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
 
 
-public class BitBox extends BasicGoodyImpl {
+public class BitBox extends AbstractBitGoody {
 	
 	private static final ColorRGBA FALSE_COLOR = ColorRGBA.Blue;
 	private static final ColorRGBA TRUE_COLOR = ColorRGBA.Red;
 	
-	private boolean state = false;
 	private int zeroIndex;
 	private int oneIndex;
 	
@@ -76,42 +73,12 @@ public class BitBox extends BasicGoodyImpl {
 		state = boxState;
 		attachToVirtualWorldNode(rootNode);
 	}
-
-	public void setZeroState() {
-		setState(false);
-	}
 	
-	public void setOneState() {
-		setState(true);
-	}
-	
+	@Override
 	public void setState(boolean boxState) {
 		int geometryIndex = boxState? oneIndex : zeroIndex;
 		setGeometryByIndex(geometryIndex);
 		state = boxState;
-	}
-	
-	public void toggleState() {
-		setState(!state);
-	}
-	
-	@Override
-	public void applyAction(GoodyAction ga) {
-		super.applyAction(ga); // Applies "standard" set and move actions
-		// Now we act on anything else that won't be handled by BasicGoodyImpl but which has valid non-null parameters
-		switch (ga.getKind()) {
-			case SET : {
-				String stateString = ga.getSpecialString(GoodyNames.BOOLEAN_STATE);
-				if (stateString != null) {
-					try {
-						setState(Boolean.valueOf(stateString));
-					} catch (Exception e) { // May not need try/catch after BasicTypedValueMap implementation is complete
-						myLogger.error("Error setting box state to state string {}", stateString, e);
-					}
-				}
-				break;
-			}
-		}
 	}
 	
 }
