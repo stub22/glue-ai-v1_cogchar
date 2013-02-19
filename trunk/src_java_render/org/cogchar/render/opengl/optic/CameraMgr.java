@@ -16,6 +16,7 @@
 package org.cogchar.render.opengl.optic;
 
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -132,7 +133,9 @@ public class CameraMgr {
 			//theLogger.info("Attaching head cam to robot ident: " + config.attachedRobot + " bone " + config.attachedItem); // TEST ONLY
 			hfm.attachNodeToHumanoidBone(hrc, headCamNode, config.attachedRobot, config.attachedItem);
 			float[] cameraPos = config.cameraPosition;
+			float[] cameraDir = config.cameraPointDir;
 			headCamNode.setLocalTranslation(new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]));
+			headCamNode.setLocalRotation(new Quaternion().fromAngles(cameraDir));
 		} else {
 			theLogger.warn("Attempting to add head camera, but HumanoidRenderContext has not been set!");
 		}
