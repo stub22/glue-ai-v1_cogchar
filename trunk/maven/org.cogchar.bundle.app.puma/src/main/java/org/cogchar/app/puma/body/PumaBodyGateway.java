@@ -77,7 +77,6 @@ public class PumaBodyGateway extends BasicDebugger {
 	
 	private	ServiceRegistration						myBoneRobotConfigServiceRegistration;	
 	
-	private	PumaJointMotionComputer				myDirectMotionComputer;
 	
 	public PumaBodyGateway(PumaVirtualWorldMapper vWorldMapper, BundleContext bundleCtx, Ident charIdent) {
 		myCharID = charIdent;
