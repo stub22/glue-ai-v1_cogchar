@@ -27,7 +27,7 @@ import org.cogchar.api.thing.TypedValueMap;
  * Typically used in the OpenGL server process to interpret an actionSpec found in a repo.
  * An HTTP-client would not normally use this class.
  * 
- * @author Stu B. <www.texpedient.com>
+ * @author Stu B. <www.texpedient.com> and Ryan B.
  */
 
 public class GoodyAction  {

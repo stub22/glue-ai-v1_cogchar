@@ -37,6 +37,7 @@ import org.cogchar.impl.perform.{DummyTextChan, FancyTime, ChannelNames};
 
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
+import org.cogchar.blob.emit.{RepoFabric, RepoSpec, FabricBox, RepoClientTester};
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.model.{JenaFileManagerUtils};
 import scala.collection.JavaConversions;
@@ -128,10 +129,21 @@ object Whackamole extends BasicDebugger {
 		for (mb <- moreBoxes) {
 			 tnc.addBoxToRoot(mb, reloadFlag)
 		}
+		
+		val	rf = new RepoFabric();
+
+		val fb = new FabricBox(rf);
+
+		tnc.addBoxToRoot(fb, true);
+		val dors = RepoClientTester.makeDfltOSRS
+		rf.addEntry(dors)
+		fb.resyncChildrenToTree
+		
 		logInfo(this.getClass.getCanonicalName() + ".main()-END");
 	}	
 }
 
+// Want to account for agents, channels, behaviors - commands, scenes, questItems - all as "boxes"
 class WhackBox extends FullBox[WhackTrig] {
 	
 }

@@ -97,6 +97,11 @@ object RepoClientTester {
 	val lightsQueryQN = "ccrt:find_lights_99" // The QName of a query in the "Queries" model/tab
 	val lightsGraphQN = "ccrt:lights_camera_sheet_22" // The QName of a graph = model = tab, as given by directory model.
 		
+	def makeDfltOSRS() : OnlineSheetRepoSpec = { 
+		val fileResModelCLs = new java.util.ArrayList[ClassLoader]();
+		new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, 
+											DFLT_DIRECTORY_SHEET_NUM, fileResModelCLs);
+	}
 	def main(args: Array[String]) : Unit = {
 		// Must enable "compile" scope for Log4J dep in order to compile this code.
 		org.apache.log4j.BasicConfigurator.configure();
@@ -105,10 +110,9 @@ object RepoClientTester {
 		// First load up a sheet repo, using 3 params described above.
 		// The repo resolves QNames using the namespaces applied to its directory model.
 		
-		val fileResModelCLs = new java.util.ArrayList[ClassLoader]();
 		
-		val rspec = new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, 
-											DFLT_DIRECTORY_SHEET_NUM, fileResModelCLs);
+		
+		val rspec = makeDfltOSRS();
 		 
 		val dfltTestRepo = rspec.makeRepo();
 		
@@ -175,7 +179,7 @@ object RepoClientTester {
 				println("Doing import for: " + gs)
 				val tgtModelID = dbRepo.makeIdentForURI(gs.graphURI)
 				val srcModel = dfltTestRepo.getNamedModel(tgtModelID)
-				dbRepo.addNamedModel(tgtModelID, srcModel)
+				dbRepo.addNamedModel(tgtModelID, srcModel)   // or use replaceNamedModel(tgtModelID, srcModel)
 			})
 		
 		
