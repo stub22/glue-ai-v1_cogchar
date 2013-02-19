@@ -50,22 +50,22 @@ public class PumaBehaviorManager extends BasicDebugger {
 		}		
 	}
 	
-	public void makeAgentForBody(BundleContext bunCtx, PumaRegistryClient prc, PumaDualBody pdb, Ident agentID) { 
+	public void makeAgentForBody(BundleContext bunCtx, PumaRegistryClient pRegCli, PumaDualBody pdb, Ident agentID) { 
 		
-		PumaBehaviorAgent pba = new PumaBehaviorAgent(agentID, myBehavCE);
-		pba.initMappers(prc);
-		PumaBodyGateway pbm = pdb.getBodyMapper();
-		if (pbm != null) {
-			RobotServiceContext  robotSvcCtx = pbm.getRobotServiceContext();
+		PumaBehaviorAgent pbAgent = new PumaBehaviorAgent(agentID, myBehavCE);
+		pbAgent.initMappers(pRegCli);
+		PumaBodyGateway pBodGate = pdb.getBodyGateway();
+		if (pBodGate != null) {
+			RobotServiceContext  robotSvcCtx = pBodGate.getRobotServiceContext();
 			if (robotSvcCtx != null) {
 				getLogger().info("Connecting RobotServiceContext for agent {}", agentID);
-				pba.connectRobotServiceContext(robotSvcCtx);
+				pbAgent.connectRobotServiceContext(robotSvcCtx);
 			}
 		}
 		String chanGraphQN =  "ccrt:chan_sheet_AZR50",  behavGraphQN  =  "hrk:behav_file_44";
-		pba.setupAndStart(bunCtx, prc, chanGraphQN, behavGraphQN);
+		pbAgent.setupAndStart(bunCtx, pRegCli, chanGraphQN, behavGraphQN);
 		
-		myBehaviorAgentList.add(pba);
+		myBehaviorAgentList.add(pbAgent);
 	}
 	public void stopAllAgents() {
 		for (PumaBehaviorAgent pba : myBehaviorAgentList) {

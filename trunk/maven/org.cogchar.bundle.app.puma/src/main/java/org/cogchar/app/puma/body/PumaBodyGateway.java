@@ -55,6 +55,7 @@ import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.osgi.framework.ServiceRegistration;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.robokind.api.motion.Robot;
+import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
 /**
  * @author Stu B. <www.texpedient.com>
  * 
@@ -76,6 +77,8 @@ public class PumaBodyGateway extends BasicDebugger {
 	
 	private	ServiceRegistration						myBoneRobotConfigServiceRegistration;	
 	
+	private	PumaJointMotionComputer				myDirectMotionComputer;
+	
 	public PumaBodyGateway(PumaVirtualWorldMapper vWorldMapper, BundleContext bundleCtx, Ident charIdent) {
 		myCharID = charIdent;
 		myVWorldMapper = vWorldMapper;
@@ -90,7 +93,7 @@ public class PumaBodyGateway extends BasicDebugger {
 		return hrc;
 	}
 	/**
-	 * Direct access to the Robokind-compliant Cogchar model of an Avatar's joints, at protected scope.
+	 * Unsafe access to the Robokind-compliant Cogchar model of an Avatar's joints, at protected scope.
 	 * @return 
 	 */
 	protected ModelRobot getBonyRobot() { 
@@ -102,6 +105,10 @@ public class PumaBodyGateway extends BasicDebugger {
 	 */
 	public ModelBlendingRobotServiceContext getRobotServiceContext() { 
 		return myMBRSC;
+	}
+	
+	protected CogcharMotionSource getCogcharMotionSource() { 
+		return myMBRSC.getCogcharMotionSource();
 	}
 
 	public boolean initVWorldHumanoid(RepoClient qi, final Ident qGraph, final HumanoidConfig hc) throws Throwable {
