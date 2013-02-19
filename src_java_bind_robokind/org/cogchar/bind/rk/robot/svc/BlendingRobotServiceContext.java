@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 package org.cogchar.bind.rk.robot.svc;
+import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
 import java.util.ArrayList;
 import java.util.List;
 import org.jflux.api.core.config.Configuration;
@@ -40,7 +41,7 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
 	private static List<ServiceRegistration> registeredFrameSources = new ArrayList<ServiceRegistration>();
 	
 	private	DefaultBlenderServiceGroup  myBlenderGroup;
-	private	RobotMoverFrameSource		myFrameSource;
+	private	CogcharMotionSource			myCogcharMotionSource;
 	
 	public BlendingRobotServiceContext(BundleContext bundleCtx) {
 		 super(bundleCtx);
@@ -60,40 +61,42 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
 		startedBlenderGroups.add(myBlenderGroup);
 	}
     
-	protected void  registerFrameSource() { 
+	private void  registerCogcharMotionSource() { 
 		R robot = getRobot();
         if(robot == null){
             return;
         }
 		Robot.Id robotID = robot.getRobotId();		
 		//create and register the MotionTargetFrameSource,
-        myFrameSource = new RobotMoverFrameSource(robot);
-		theLogger.info("Registering FrameSource for robotID: " + robotID);
-		ServiceRegistration frameSourceRegistration = RobotUtils.registerFrameSource(myBundleCtx, robot.getRobotId(), myFrameSource);
+        myCogcharMotionSource = new CogcharMotionSource(robot);
+		theLogger.info("Registering CogcharMotionSource for robotID: " + robotID);
+		ServiceRegistration frameSourceRegistration = RobotUtils.registerFrameSource(myBundleCtx, robot.getRobotId(), myCogcharMotionSource);
 		registeredFrameSources.add(frameSourceRegistration);
 	}
-    protected void testPositionMove() { 
+    protected void testPositionMoveToDefaultPositions() { 
 		R robot = getRobot();
         if(robot == null){
             return;
         }
 		RobotPositionMap positions = robot.getDefaultPositions();        
         //moves to the positions over 1.5 seconds
-        myFrameSource.move(positions, 1500);
+        myCogcharMotionSource.move(positions, 1500);
 	}	
+	
+	public CogcharMotionSource getCogcharMotionSource() {
+		return myCogcharMotionSource;
+	}
 
-    @Override
-	public void registerAndStart(
-            R robot, String connectionConfig) throws Throwable {
+    @Override public void registerAndStart(R robot, String connectionConfig) throws Throwable {
 		Robot.Id robotID = robot.getRobotId();
 		theLogger.info("super.registerAndStart(robotID=" + robotID + ")");
 		super.registerAndStart(robot, connectionConfig);
 		theLogger.info("startDefaultBlender(robotID=" + robotID + ")");
 		startDefaultBlender();
-		theLogger.info("registerFrameSource(robotID=" + robotID + ")");
-		registerFrameSource();
-		theLogger.info("testPositionMove(robotID=" + robotID + ")");
-		testPositionMove();
+		theLogger.info("registerCogcharMotionSource(robotID=" + robotID + ")");
+		registerCogcharMotionSource();
+		theLogger.info("testPositionMoveToDefaultPositions(robotID=" + robotID + ")");
+		testPositionMoveToDefaultPositions();
 		theLogger.info("registerAndStart COMPLETE for robotID=" + robotID);
 	}
 	

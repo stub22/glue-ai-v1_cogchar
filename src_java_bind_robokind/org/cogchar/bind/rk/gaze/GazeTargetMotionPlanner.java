@@ -19,7 +19,7 @@ import org.cogchar.animoid.gaze.IGazeTarget;
 import org.robokind.api.motion.Robot.RobotPositionMap;
 
 /**
- *
+ * This class is a stub showing how a Java service approach to gaze planning is constructed.
  */
 public class GazeTargetMotionPlanner implements 
         GazePlanner<IGazeTarget, RobotPositionMap> {

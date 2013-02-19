@@ -80,7 +80,7 @@ public class PumaDualBody extends BasicDebugger {
 	public Ident getCharIdent() {
 		return myDualBodyID;
 	}
-	public PumaBodyGateway getBodyMapper() {
+	public PumaBodyGateway getBodyGateway() {
 		return 		myBodyMapper;
 	}
 
