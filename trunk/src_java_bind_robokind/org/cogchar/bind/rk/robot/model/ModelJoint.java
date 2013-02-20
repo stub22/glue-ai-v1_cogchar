@@ -22,6 +22,7 @@ import org.cogchar.api.skeleton.config.BoneJointConfig;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.robokind.api.common.position.DoubleRange;
 import org.robokind.api.common.position.NormalizableRange;
 import org.robokind.api.common.position.NormalizedDouble;
 import org.robokind.api.common.utils.Utils;
@@ -44,9 +45,11 @@ public class ModelJoint extends AbstractJoint {
 	private	NormalizedDouble				myGoalPosNorm;
 	private	String							myJointName;
     private List<BoneProjectionRange>		myBoneProjectionRanges;
+    private NormalizableRange       myNormalizableRange;
 	
     protected ModelJoint(Joint.Id jointId, BoneJointConfig bjc) {
         super(jointId);
+        myNormalizableRange = NormalizableRange.NORMALIZED_RANGE;;
         myJointName = bjc.myJointName;
 		boolean flag_hardResetToDefaultOnJointInit = true;
 		updateConfig(bjc, flag_hardResetToDefaultOnJointInit);
@@ -55,7 +58,7 @@ public class ModelJoint extends AbstractJoint {
                 return getGoalPosition();
             }
             @Override public NormalizableRange<NormalizedDouble> getNormalizableRange() {
-                return getPositionRange();
+                return NormalizableRange.NORMALIZED_RANGE;
             }
         };
 		addProperty(currentPositionReader);
@@ -64,6 +67,14 @@ public class ModelJoint extends AbstractJoint {
 		double defPosVal = Utils.bound(bjc.myNormalDefaultPos, 0.0, 1.0);
 		myDefaultPosNorm = new NormalizedDouble(defPosVal);
         myBoneProjectionRanges =  bjc.myProjectionRanges;
+        List<BoneProjectionRange> projRanges = getBoneRotationRanges();
+        if(projRanges == null || projRanges.isEmpty()){
+            myNormalizableRange = NormalizableRange.NORMALIZED_RANGE;
+        }
+        BoneProjectionRange range = projRanges.get(0);
+        double min = range.getMinPosAngRad();
+        double max = range.getMaxPosAngRad();
+        myNormalizableRange = new DoubleRange(min, max);
 		if (flag_hardResetGoalPosToDefault) {
 			hardResetGoalPosToDefault();
 		}
@@ -94,12 +105,16 @@ public class ModelJoint extends AbstractJoint {
     @Override public NormalizedDouble getGoalPosition() {
         return myGoalPosNorm;
     }
-	/**
-	 * What impacts does this Range have?  Who uses it?
-	 * @return 
-	 */
     @Override public NormalizableRange getPositionRange() {
-         return NormalizableRange.NORMALIZED_RANGE;
+        /*
+         * What impacts does this Range have?  Who uses it? - (Ryan or Stu?)
+         * 
+         * This is used by ChannelRobotParameters when saving an animation to 
+         * include the ranges of the robot as animation metadata.  The metadata
+         * is currently unused, but intended to be used for doing automated 
+         * conversions of the animation later. - Matt 2013/02/19
+         */
+        return myNormalizableRange;
     }
     
     public List<BoneProjectionRange> getBoneRotationRanges(){

@@ -17,18 +17,28 @@ import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
+import org.cogchar.api.skeleton.config.BoneJointConfig;
+import org.cogchar.api.skeleton.config.BoneProjectionRange;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.bind.rk.aniconv.AnimationConverter;
 import org.cogchar.bind.rk.aniconv.MayaModelMap;
 import org.jflux.api.core.Listener;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.robokind.api.animation.Animation;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.animation.utils.AnimationUtils;
+import org.robokind.api.animation.utils.ChannelNode;
+import org.robokind.api.animation.utils.ChannelsParameter;
+import org.robokind.api.animation.utils.ChannelsParameterSource;
 import org.robokind.api.animation.xml.AnimationFileWriter;
 import org.robokind.api.animation.xml.AnimationXML;
 import org.robokind.api.common.osgi.OSGiUtils;
+import org.robokind.api.common.position.DoubleRange;
+import org.robokind.api.common.position.NormalizableRange;
+import org.robokind.api.common.position.NormalizedDouble;
+import org.robokind.api.common.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +61,8 @@ public class AnimConvPanel extends javax.swing.JPanel {
     private Listener<MayaModelMap> myMayaMapAddListener;
     private Listener<MayaModelMap> myMayaMapRemoveListener;
 	private Animation lastConvertedAnim;
-	
+	private ServiceRegistration myChanParamsRegistration;
+    
 	private boolean useMayaMap;
 	private boolean useControlCurves = true;
 	
@@ -434,10 +445,10 @@ public class AnimConvPanel extends javax.swing.JPanel {
 						lastConvertedAnim = anim;
 
 						AnimationFileWriter animWriter = AnimationXML.getRegisteredWriter();
-
+                        ChannelsParameterSource source = setRobotChannelParams(skeleton);
 						// The final null argument was added Oct 2012 for compatibility with current AnimationFileWriter 
 						animWriter.writeAnimation(
-								outFile, anim, AnimationUtils.getChannelsParameterSource(), null); // null should be Set<Synchronized Point Group>; SyncPointGroupXML.XPP3Writer.writeSyncGroups seems to handle null OK
+								outFile, anim, source, null); // null should be Set<Synchronized Point Group>; SyncPointGroupXML.XPP3Writer.writeSyncGroups seems to handle null OK
 					} catch (Exception e) {
 						theLogger.error("Exception converting file: ", e);
 						displayError(e.toString());
@@ -455,6 +466,60 @@ public class AnimConvPanel extends javax.swing.JPanel {
 		worker.execute();
     }//GEN-LAST:event_btnConvertActionPerformed
 
+    private ChannelsParameterSource setRobotChannelParams(BoneRobotConfig skeleton){
+        if(skeleton == null || skeleton.myBJCs == null){
+            return null;
+        }
+        BundleContext context = OSGiUtils.getBundleContext(Animation.class);
+        if(context == null){
+            return null;
+        }
+        final List<ChannelsParameter> boneParams = new ArrayList<ChannelsParameter>();
+        for(BoneJointConfig jc : skeleton.myBJCs){
+            if(jc == null){
+                continue;
+            }
+            int jointNum = jc.myJointNum;
+            String jointName = jc.myJointName;
+            double defaultPos = jc.myNormalDefaultPos;
+            if(!NormalizedDouble.isValid(defaultPos)){
+                defaultPos = Utils.bound(defaultPos, 0.0, 1.0);
+            }
+            NormalizedDouble normDefaultPos = new NormalizedDouble(defaultPos);
+            NormalizableRange<Double> range = null;
+            List<BoneProjectionRange> projRanges = jc.myProjectionRanges;
+            if(projRanges == null || projRanges.isEmpty()){
+                range = new DoubleRange(0,1);
+            }else{
+                BoneProjectionRange bpr = projRanges.get(0);
+                double min = bpr.getMinPosAngRad();
+                double max = bpr.getMaxPosAngRad();
+                range = new DoubleRange(min, max);
+            }
+            boneParams.add(new ChannelsParameter(
+                    jointNum, jointName, normDefaultPos, range));
+        }
+        
+        ChannelsParameterSource source = new ChannelsParameterSource() {
+            @Override public ChannelsParameter getChannelParameter(int index) {
+                return boneParams.get(index);
+            }
+            @Override public List<ChannelsParameter> getChannelParameters() {
+                return boneParams;
+            }
+            @Override public void addChannelParameter(ChannelsParameter param) {}
+            @Override public ChannelNode getChannelTree() {
+                return null;
+            }
+        };
+        if(myChanParamsRegistration != null){
+            myChanParamsRegistration.unregister();
+        }
+        myChanParamsRegistration = context.registerService(
+                ChannelsParameterSource.class.getName(), source, null);
+        return source;
+    }
+    
     private void displayError(String error) {
         JOptionPane.showMessageDialog(btnConvert, error, "Error while converting", JOptionPane.ERROR_MESSAGE);
     }
