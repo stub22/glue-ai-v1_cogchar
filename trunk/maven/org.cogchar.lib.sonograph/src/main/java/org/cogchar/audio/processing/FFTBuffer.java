@@ -16,8 +16,10 @@
 
 package org.cogchar.audio.processing;
 
-import org.apache.commons.math.complex.Complex;
-import org.apache.commons.math.transform.FastFourierTransformer;
+import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.transform.FastFourierTransformer;
+import org.apache.commons.math3.transform.DftNormalization;
+import org.apache.commons.math3.transform.TransformType;
 
 /**
  *
@@ -48,7 +50,8 @@ public class FFTBuffer {
         }
 		for(int c=0; c<myChannels; c++){
 			int i=0;
-			FastFourierTransformer fft = new FastFourierTransformer();
+			// 3.1.1 wants to know which normzlization convention we're using.  STANDARD or UNITARY?
+			FastFourierTransformer fft = new FastFourierTransformer(DftNormalization.STANDARD);
 			double[] temp = new double[mySize];
 			for(double x : data[c]){
 				if(normalize){
@@ -60,7 +63,7 @@ public class FFTBuffer {
 				temp[i] = x;
 				i++;
 			}
-			myFFTData[c] = fft.transform(temp);
+			myFFTData[c] = fft.transform(temp, TransformType.FORWARD);
 		}
 	}
 

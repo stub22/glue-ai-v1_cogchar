@@ -58,7 +58,8 @@
 			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
 			<groupId>org.appdapter</groupId>
 			<type>jar</type>
-			<version>${appdapter.version}</version>
+			<!-- Freezing to the 1.0.9 version of JScience wrapper -->
+			<version>1.0.9</version>
 			<scope>runtime</scope>
 		</dependency>		
 		
