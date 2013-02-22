@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.coghcar.org/onto/behavChan_2012/"
+     xml:base="http://www.coghcar.org/onto/behavChan_2012/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <owl:Ontology rdf:about="http://www.coghcar.org/onto/behavChan_2012/"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/actRelation -->
+
+    <owl:ObjectProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/actRelation"/>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/actSource -->
+
+    <owl:ObjectProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/actSource">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/actRelation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/actTarget -->
+
+    <owl:ObjectProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/actTarget">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/actRelation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/actVerb -->
+
+    <owl:ObjectProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/actVerb">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/actRelation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/Agent -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Agent">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/AnimJob -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AnimJob">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/Behav -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Behav">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:comment>Behav instances are pieces of behavior specification given in terms of 
+time,  
+channels, 
+things (affected by actions), 
+and jobs (updated by exec layer).</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/Chan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Chan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:comment>A chan represents a boundary usable in behavior.  It may refer to 
+
+ 1) a physical(-ish) media channel or network port
+ 2) a logical channel for assertions in repos
+ 3) a subtle combo of #1 and #2.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/Command -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Command">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/Goody -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Goody">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/Job -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Job">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/LoqSTMedia -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/LoqSTMedia">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SpeechTextMedia"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/Media -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Media">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/Scene -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Scene">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/SpeechTextMedia -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/SpeechTextMedia">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/TextMedia"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/TalkJob -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/TalkJob">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/TextMedia -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/TextMedia">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Media"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/ThingAct -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/ThingAct">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/#Thingy -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net -->
+
