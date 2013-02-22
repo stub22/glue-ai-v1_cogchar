@@ -82,6 +82,116 @@
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasA -->
+
+    <owl:ObjectProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasA"/>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasChan -->
+
+    <owl:ObjectProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasChan">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasA"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasJob -->
+
+    <owl:ObjectProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasJob">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasA"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasMedia -->
+
+    <owl:ObjectProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasMedia">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasA"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasPredicate -->
+
+    <owl:ObjectProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasPredicate">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasA"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasContentXml -->
+
+    <owl:DatatypeProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasContentXml">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasData"/>
+        <rdfs:range rdf:resource="&rdf;XMLLiteral"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasData -->
+
+    <owl:DatatypeProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasData"/>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasDurationSec -->
+
+    <owl:DatatypeProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasDurationSec">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasData"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasFormalTimestamp -->
+
+    <owl:DatatypeProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasFormalTimestamp">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasData"/>
+        <rdfs:range rdf:resource="&xsd;dateTimeStamp"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasJavaTStampMsec -->
+
+    <owl:DatatypeProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasJavaTStampMsec">
+        <rdfs:comment>A long number of millisec using the java convention.</rdfs:comment>
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasData"/>
+        <rdfs:range rdf:resource="&xsd;long"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasQueryText -->
+
+    <owl:DatatypeProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasQueryText">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasData"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasUnixTStampSec -->
+
+    <owl:DatatypeProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasUnixTStampSec">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasData"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -104,7 +214,7 @@
     <!-- http://www.coghcar.org/onto/behavChan_2012/Agent -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Agent">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SysThingy"/>
     </owl:Class>
     
 
@@ -117,10 +227,30 @@
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/AnimJobChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AnimJobChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/JobChan"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/AnimPlayJob -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AnimPlayJob">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/MediaPlayJob"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasMedia"/>
+                <owl:someValuesFrom rdf:resource="http://www.coghcar.org/onto/behavChan_2012/AnimFrameMedia"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasChan"/>
+                <owl:someValuesFrom rdf:resource="http://www.coghcar.org/onto/behavChan_2012/AnimJobChan"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     
 
@@ -141,10 +271,18 @@
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/AudioJobChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AudioJobChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/JobChan"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/AudioPlayJob -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AudioPlayJob">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/MediaPlayJob"/>
     </owl:Class>
     
 
@@ -161,7 +299,7 @@
     <!-- http://www.coghcar.org/onto/behavChan_2012/Behav -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Behav">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/ModelThingy"/>
         <rdfs:comment>Behav instances are pieces of behavior specification given in terms of 
 time,  
 channels, 
@@ -182,15 +320,81 @@ Some overlap with physic chan.</rdfs:comment>
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/BoogieChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/BoogieChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/GoalChan"/>
+        <rdfs:comment>Rhythmically oriented movement channel, i.e. dancing, involving one or more groove things.</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/Chan -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Chan">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
-        <rdfs:comment>A chan represents a boundary usable in behavior.  It may refer to 
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/ModelThingy"/>
+        <rdfs:comment>A chan represents a boundary between cognition and concrete I/O.  
+It may refer to 
 
  1) a physical(-ish) media channel or network port
  2) a logical channel for assertions in repos
- 3) a subtle combo of #1 and #2.</rdfs:comment>
+ 3) a subtle combo of #1 and #2.
+
+In practice, each piece of information is marked with the URI of the channel that it is VERB-ed on (where verb = sent, received, played, perceived...). </rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/ChanAct -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/ChanAct">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/ChanFrag"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/ThingAct"/>
+        <rdfs:comment>Represents a ThingAct strongly associated to a channel (but usually not a JobChannel).  It is normally a control command or an  event.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/ChanFrag -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/ChanFrag">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/ModelThingy"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasChan"/>
+                <owl:someValuesFrom rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Chan"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment>A fragment is a &quot;thing&quot; which is simply any piece of data referring to a channel.   
+
+Arbitrary perceptions, goals, and thoughts may be captured as fragments.    
+
+To &quot;send a message&quot; of the most general kind, convey a ThingAct which CREATEs a Fragment on some channel.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/ChanFrame -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/ChanFrame">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/ChanFrag"/>
+        <rdfs:comment>Describes a particular data-frame associated to some channel, which is part of a continuous stream of data on that channel (rather than a special &quot;command&quot; or &quot;event&quot;).
+
+The content data of the frame may be encoded in RDF somewhere, or it may not be.  </rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/ChanJob -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/ChanJob">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasChan"/>
+                <owl:someValuesFrom rdf:resource="http://www.coghcar.org/onto/behavChan_2012/JobChan"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     
 
@@ -199,7 +403,9 @@ Some overlap with physic chan.</rdfs:comment>
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/ChoiceInChan">
         <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SymbolChan"/>
-        <rdfs:comment>A user&apos;s explicit choice in some structured scenario is indicated on a ChoiceInChan.</rdfs:comment>
+        <rdfs:comment>A user&apos;s explicit choice in some structured scenario is indicated on a ChoiceInChan.
+
+Menu selections, restricted vocabulary interactions, and multiple-choice games all make use of this kind of chanel.</rdfs:comment>
     </owl:Class>
     
 
@@ -207,12 +413,21 @@ Some overlap with physic chan.</rdfs:comment>
     <!-- http://www.coghcar.org/onto/behavChan_2012/Command -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Command">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SysThingy"/>
         <rdfs:comment>Command is a direct instruction from client software or some GUI that is typically more disruptive than a channel message.   
 
 Commands cannot usually  be received from NUI, it must use channels.    
 
 Commands may be sent using ThingActs, but they may also be sent directly in code.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/CommandInChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/CommandInChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SymbolChan"/>
+        <rdfs:comment>Explicit commands may be conveyed on a Command chan, but they may also be conveyed through direct coding.</rdfs:comment>
     </owl:Class>
     
 
@@ -225,10 +440,39 @@ Commands may be sent using ThingActs, but they may also be sent directly in code
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/GazeChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/GazeChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/GoalChan"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/GestureChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/GestureChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Chan"/>
+        <rdfs:comment>Some expressive or indicative gesture, usually involving physical movement, with various parameters and constraints.  Some overlap with various GoalChans, but a Gesture can sometimes be relatively simple, e.g. open loop, but based on body starting state.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/GoalChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/GoalChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Chan"/>
+        <rdfs:comment>Represents macro control over closed-loop physical behaviors like gazing, pointing, walking, running, dancing.</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/Goody -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Goody">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SysThingy"/>
+        <rdfs:comment>A goody is generally just some arbitrary useful shape in a virtual world.  
+It is included in this ontology because it was the first working example
+of an entity controlled by ThingActs.</rdfs:comment>
     </owl:Class>
     
 
@@ -245,7 +489,7 @@ Commands may be sent using ThingActs, but they may also be sent directly in code
     <!-- http://www.coghcar.org/onto/behavChan_2012/Implication -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Implication">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SysThingy"/>
         <rdfs:comment>An implication defines a consequence asserted when a particular Predicate becomes satisfied.</rdfs:comment>
     </owl:Class>
     
@@ -254,7 +498,7 @@ Commands may be sent using ThingActs, but they may also be sent directly in code
     <!-- http://www.coghcar.org/onto/behavChan_2012/Job -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Job">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/ModelThingy"/>
         <rdfs:comment>A Job represents a temporarily continuous stream-oriented action that may be monitored and controlled.   
 
 Typically a Job involves the playing of Media.
@@ -273,6 +517,14 @@ A Job is controlled and monitored using ThingActs.</rdfs:comment>
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/LocomotionChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/LocomotionChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/GoalChan"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/LoqSTMedia -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/LoqSTMedia">
@@ -284,6 +536,29 @@ A Job is controlled and monitored using ThingActs.</rdfs:comment>
     <!-- http://www.coghcar.org/onto/behavChan_2012/Media -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Media">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:comment>Media provides metadata and optionally some subset of actual content.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/MediaPlayJob -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/MediaPlayJob">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/ChanJob"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasMedia"/>
+                <owl:someValuesFrom rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Media"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/ModelThingy -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/ModelThingy">
         <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
     </owl:Class>
     
@@ -325,10 +600,18 @@ A Job is controlled and monitored using ThingActs.</rdfs:comment>
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/PointChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/PointChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/GoalChan"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/Predicate -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Predicate">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SysThingy"/>
         <rdfs:comment>A predicate is an authoring convenience.  It is a named logical condition that may be empirically tested at any time in any context.  The condition itself may be extended without changing the URI of the predicate.</rdfs:comment>
     </owl:Class>
     
@@ -354,7 +637,7 @@ A Job is controlled and monitored using ThingActs.</rdfs:comment>
     <!-- http://www.coghcar.org/onto/behavChan_2012/Scene -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Scene">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/ModelThingy"/>
         <rdfs:comment>A scene is an written or generated collection of behavior that is deployed and undeployed as a unit.  </rdfs:comment>
     </owl:Class>
     
@@ -378,10 +661,18 @@ A Job is controlled and monitored using ThingActs.</rdfs:comment>
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/SpeechJobChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/SpeechJobChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/JobChan"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/SpeechPlayJob -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/SpeechPlayJob">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/MediaPlayJob"/>
     </owl:Class>
     
 
@@ -399,6 +690,14 @@ A Job is controlled and monitored using ThingActs.</rdfs:comment>
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/SymbolChan">
         <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Chan"/>
         <rdfs:comment>Information of apparently direct symbolic content, i.e. communication.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/SysThingy -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/SysThingy">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
     </owl:Class>
     
 
@@ -445,10 +744,18 @@ A Job is controlled and monitored using ThingActs.</rdfs:comment>
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/VideoJobChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/VideoJobChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/JobChan"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/VideoPlayJob -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/VideoPlayJob">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/MediaPlayJob"/>
     </owl:Class>
     
 
