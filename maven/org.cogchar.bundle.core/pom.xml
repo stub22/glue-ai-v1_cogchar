@@ -73,6 +73,11 @@
 			<version>${appdapter.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.math.symja_jas</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>		
+		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.xpp3</artifactId>
 			<version>1.1.4c_5</version>
