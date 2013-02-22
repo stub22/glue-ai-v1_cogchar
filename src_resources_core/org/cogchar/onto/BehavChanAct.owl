@@ -93,6 +93,14 @@
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/AcaSTMedia -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AcaSTMedia">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SpeechTextMedia"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/Agent -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Agent">
@@ -101,10 +109,51 @@
     
 
 
-    <!-- http://www.coghcar.org/onto/behavChan_2012/AnimJob -->
+    <!-- http://www.coghcar.org/onto/behavChan_2012/AnimFrameMedia -->
 
-    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AnimJob">
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AnimFrameMedia">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/FrameMedia"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/AnimPlayJob -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AnimPlayJob">
         <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/AudioFrameMedia -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AudioFrameMedia">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/FrameMedia"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/AudioInChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AudioInChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SenseChan"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/AudioPlayJob -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/AudioPlayJob">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/BeatInChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/BeatInChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/PercepChan"/>
+        <rdfs:comment>Tells us the signature, tempo, phase, volume, confidence of a discernible rhythm source.</rdfs:comment>
     </owl:Class>
     
 
@@ -122,6 +171,17 @@ and jobs (updated by exec layer).</rdfs:comment>
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/BodySenseChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/BodySenseChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SenseChan"/>
+        <rdfs:comment>Raw / fused information about our own body state, including servo positions, temperatures, errors, etc.
+
+Some overlap with physic chan.</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/Chan -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Chan">
@@ -135,10 +195,32 @@ and jobs (updated by exec layer).</rdfs:comment>
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/ChoiceInChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/ChoiceInChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SymbolChan"/>
+        <rdfs:comment>A user&apos;s explicit choice in some structured scenario is indicated on a ChoiceInChan.</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/Command -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Command">
         <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:comment>Command is a direct instruction from client software or some GUI that is typically more disruptive than a channel message.   
+
+Commands cannot usually  be received from NUI, it must use channels.    
+
+Commands may be sent using ThingActs, but they may also be sent directly in code.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/FrameMedia -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/FrameMedia">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Media"/>
     </owl:Class>
     
 
@@ -151,10 +233,42 @@ and jobs (updated by exec layer).</rdfs:comment>
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/HububInChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/HububInChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/PercepChan"/>
+        <rdfs:comment>Hubub vector refers to directions of interest from audio + video fusion.  Includes camera saliency (e.g. motion) and audio location.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/Implication -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Implication">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:comment>An implication defines a consequence asserted when a particular Predicate becomes satisfied.</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/Job -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Job">
         <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:comment>A Job represents a temporarily continuous stream-oriented action that may be monitored and controlled.   
+
+Typically a Job involves the playing of Media.
+
+A Job is controlled and monitored using ThingActs.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/JobChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/JobChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Chan"/>
+        <rdfs:comment>JobChan is a marker for an output Chan that has or may have jobs associated to it.</rdfs:comment>
     </owl:Class>
     
 
@@ -175,10 +289,99 @@ and jobs (updated by exec layer).</rdfs:comment>
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/OnceBehav -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/OnceBehav">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Behav"/>
+        <rdfs:comment>A OnceBehav may fire its action only once unless &amp; until it is explicitly reset.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/PercepChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/PercepChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Chan"/>
+        <rdfs:comment>A perceived entity input channel.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/PersonInChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/PersonInChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/PercepChan"/>
+        <rdfs:comment>Fused/fragmentary information about people we perceive, based on faces, skeletons, voices.  </rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/PhysicInChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/PhysicInChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SenseChan"/>
+        <rdfs:comment>Information about physical position and motion, including IMU, compass, etc.  Some overlap with BodySenseChan.  Note we expect SlamInChan  to provide  some ongoing location + motion estimates, so we needn&apos;t focus on details here when getting started.  </rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/Predicate -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Predicate">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:comment>A predicate is an authoring convenience.  It is a named logical condition that may be empirically tested at any time in any context.  The condition itself may be extended without changing the URI of the predicate.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/QueryBehav -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/QueryBehav">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Behav"/>
+        <rdfs:comment>Check a query against some set of graphs.  If result passes a predicate, take some action.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/SAPI_STMedia -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/SAPI_STMedia">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SpeechTextMedia"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/Scene -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/Scene">
         <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:comment>A scene is an written or generated collection of behavior that is deployed and undeployed as a unit.  </rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/SenseChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/SenseChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Chan"/>
+        <rdfs:comment>A signal-level input/internal sensory channel.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/SlamInChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/SlamInChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/PercepChan"/>
+        <rdfs:comment>SLAM - Simultaneous Location and Mapping - openslam.org - refers to information telling us where we are, how we are moving, and what is surrounding us. In a broad definition may include our velocity + accel  tensors.  Here the emphasis is on accuracy, while on HububInChan, the emphasis is on interest.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/SpeechPlayJob -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/SpeechPlayJob">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
     </owl:Class>
     
 
@@ -191,10 +394,11 @@ and jobs (updated by exec layer).</rdfs:comment>
     
 
 
-    <!-- http://www.coghcar.org/onto/behavChan_2012/TalkJob -->
+    <!-- http://www.coghcar.org/onto/behavChan_2012/SymbolChan -->
 
-    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/TalkJob">
-        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/SymbolChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Chan"/>
+        <rdfs:comment>Information of apparently direct symbolic content, i.e. communication.</rdfs:comment>
     </owl:Class>
     
 
@@ -211,6 +415,40 @@ and jobs (updated by exec layer).</rdfs:comment>
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/ThingAct">
         <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/#Thingy"/>
+        <rdfs:comment>&quot;Messages&quot; are propagated thru ThingActs describing state changes in Things in Graphs in Repos.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/TopicInChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/TopicInChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SymbolChan"/>
+        <rdfs:comment>Input heard or read/seen indicating symbolic (textual or iconic) content, especially proper names, titles, unusual words, logos, insignia.  Contrast to ChoiceInChan.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/VideoFrameMedia -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/VideoFrameMedia">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/FrameMedia"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/VideoInChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/VideoInChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SenseChan"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/VideoPlayJob -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/VideoPlayJob">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Job"/>
     </owl:Class>
     
 
