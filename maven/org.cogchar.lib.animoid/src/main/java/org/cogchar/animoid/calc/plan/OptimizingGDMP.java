@@ -6,17 +6,18 @@
 package org.cogchar.animoid.calc.plan;
 
 
-
-import org.apache.commons.math.FunctionEvaluationException;
-import org.apache.commons.math.analysis.DifferentiableMultivariateRealFunction;
-import org.apache.commons.math.analysis.MultivariateRealFunction;
-import org.apache.commons.math.analysis.MultivariateVectorialFunction;
-import org.apache.commons.math.optimization.GoalType;
-import org.apache.commons.math.optimization.RealConvergenceChecker;
-import org.apache.commons.math.optimization.RealPointValuePair;
-import org.apache.commons.math.optimization.SimpleScalarValueChecker;
-import org.apache.commons.math.optimization.direct.DirectSearchOptimizer;
-import org.apache.commons.math.optimization.direct.MultiDirectional;
+/*
+import org.apache.commons.math3.FunctionEvaluationException;
+import org.apache.commons.math3.analysis.DifferentiableMultivariateRealFunction;
+import org.apache.commons.math3.analysis.MultivariateRealFunction;
+import org.apache.commons.math3.analysis.MultivariateVectorialFunction;
+import org.apache.commons.math3.optimization.GoalType;
+import org.apache.commons.math3.optimization.RealConvergenceChecker;
+import org.apache.commons.math3.optimization.RealPointValuePair;
+import org.apache.commons.math3.optimization.SimpleScalarValueChecker;
+import org.apache.commons.math3.optimization.direct.DirectSearchOptimizer;
+import org.apache.commons.math3.optimization.direct.MultiDirectional;
+*/
 import org.cogchar.animoid.calc.optimize.MultiStepPJT;
 import org.cogchar.animoid.calc.optimize.ParameterVector;
 import org.jscience.mathematics.vector.Float64Vector;
@@ -36,7 +37,7 @@ public class OptimizingGDMP extends BudgetedGDMP {
 	public OptimizingGDMP(Integer numIntervals, Double planStartSec, Double maxDurSec, Double frameDurSec) {
 		super(numIntervals, planStartSec, maxDurSec, frameDurSec);
 	}
-
+/*
 	public double[] computeOptimalParams(double goalDeg) throws Throwable {
 		setGoalValue(goalDeg);
 		// DirectSearchOptimizer	optimizer = new NelderMead();
@@ -61,11 +62,17 @@ public class OptimizingGDMP extends BudgetedGDMP {
 		myLastOptimalParams = optimalParams;
 		return optimalParams;
 	}
+	* */
 	public void optimize(double goalDeg) throws Throwable {
+		throw new Exception("Needs update to Apache Commons Math 3.1.1");/*
+		 * 
+		 
 		double optimalParams[] = computeOptimalParams(goalDeg);
 		reconfigureUsingParams(optimalParams, 0);
+		* 
+		*/ 
 	}
-
+/*
 	public MultivariateRealFunction getCostFunction(final double targetPosDeg) {
 		return new MultivariateRealFunction() {
 			public double value(double[] args) throws FunctionEvaluationException, IllegalArgumentException {
@@ -134,7 +141,7 @@ public class OptimizingGDMP extends BudgetedGDMP {
 		}
 		return params;
 	}
-
+*/
 
 	/**
 	 * Compute partial derivatives w.r.t. acceleration and duration parameters,

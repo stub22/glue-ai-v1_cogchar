@@ -37,7 +37,7 @@ import org.cogchar.impl.perform.{DummyTextChan, FancyTime, ChannelNames};
 
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
-import org.cogchar.blob.emit.{RepoFabric, RepoSpec, FabricBox, RepoClientTester};
+import org.cogchar.blob.emit.{RepoFabric, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, FabricBox, RepoClientTester};
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.model.{JenaFileManagerUtils};
 import scala.collection.JavaConversions;
@@ -135,7 +135,8 @@ object Whackamole extends BasicDebugger {
 		val fb = new FabricBox(rf);
 
 		tnc.addBoxToRoot(fb, true);
-		val dors = RepoClientTester.makeDfltOSRS
+		val dors : OnlineSheetRepoSpec = RepoClientTester.makeDfltOSRS
+		// Add the onlineSheetRepo as an "entry" in the RepoFabric 
 		rf.addEntry(dors)
 		fb.resyncChildrenToTree
 		

@@ -29,9 +29,15 @@
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
-			<version>${appdapter.version}</version>
+			<!-- Now using frozen version which we do not expect to update -->
+			<version>1.0.9</version>
 		</dependency>
-		
+		<dependency>
+			<!-- Apache commons-math used in both o.c.l.animoid and o.c.l.sonograph, which we obtain indirectly via: -->	
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.math.symja_jas</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>		
 		<dependency>
 			<artifactId>ext.bundle.jena_all_264</artifactId>
 			<groupId>org.appdapter</groupId>
@@ -48,12 +54,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<!-- commons-math used in both o.c.l.animoid and o.c.l.sonograph -->
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math</artifactId>
-			<version>2.2</version>
-		</dependency>				
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.xpp3</artifactId>
