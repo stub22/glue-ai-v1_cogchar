@@ -18,7 +18,7 @@ package org.cogchar.audio.spectrogram;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.math.complex.Complex;
+import org.apache.commons.math3.complex.Complex;
 
 /**
  *
