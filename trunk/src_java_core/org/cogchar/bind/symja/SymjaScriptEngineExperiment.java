@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bundle.app.puma;
+package org.cogchar.bind.symja;
 
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class SymjaScriptEngineExperiment {
 		tse1.mySpaceName = "ONE";
 
 		// This is a static level call that affects the F registry used by the whole JVM.
-		registerFuncPackage("org.cogchar.bundle.app.puma");
+		registerFuncPackage("org.cogchar.bind.symja");
 
 		tse1.go(100);
 
