@@ -16,6 +16,7 @@
 
 package org.cogchar.render.model.goodies;
 
+import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.thing;
+package org.cogchar.name.thing;
 
 /**
  *

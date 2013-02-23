@@ -13,20 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.lift;
+package org.cogchar.name.lifter;
 
-import org.appdapter.api.trigger.BoxAssemblyNames;
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
 
 /**
  * @author Ryan Biggs
  */
-public class ChatAN extends BoxAssemblyNames {
-
-	public static final String NS_CgcChC = "http://www.cogchar.org/chat/config#";
-	public static final String partial_P_config = "config";
-	public static final String P_config = NS_CgcChC + partial_P_config;
-	public static final String P_entry = NS_CgcChC + "hasEntry";
-	public static final String P_name = NS_CgcChC + "hasName";
-	public static final String P_url = NS_CgcChC + "hasURL";
-	public static final String N_cogbotConvoUrl = "sendHeardAndGetSaid";
+public class ChatCN {
+	public static final String gri = "http://www.cogchar.org/general/config/instance#";
+	public static final String CATEGORY = "chatconfig";
+	
+	public static final Ident CATEGORY_URI = new FreeIdent(gri + CATEGORY, CATEGORY);
+	
+	public static final String GENRAL_CONFIG_TEMPLATE_URI = "ccrt:template_general_items_99";
+	
+	public static final String VARIABLE_VAR_NAME = "ident";
+	public static final String VALUE_VAR_NAME = "url";
+	
+	public static final String CATEGORY_QUERY_VAR_NAME = "category";
 }

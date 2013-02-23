@@ -15,6 +15,7 @@
  */
 package org.cogchar.render.model.databalls;
 
+import org.cogchar.name.goody.DataballStrings;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.jme3.bullet.PhysicsSpace;
