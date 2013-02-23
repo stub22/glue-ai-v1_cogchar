@@ -16,6 +16,7 @@
 
 package org.cogchar.bind.rk.aniconv;
 
+import org.cogchar.name.aniconv.MayaCN;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionHelper;
 
