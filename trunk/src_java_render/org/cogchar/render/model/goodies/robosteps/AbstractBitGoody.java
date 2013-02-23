@@ -19,7 +19,7 @@ package org.cogchar.render.model.goodies.robosteps;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.model.goodies.BasicGoodyImpl;
 import org.cogchar.render.model.goodies.GoodyAction;
-import org.cogchar.render.model.goodies.GoodyNames;
+import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**

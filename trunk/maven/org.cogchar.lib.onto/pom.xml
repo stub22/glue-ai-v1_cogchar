@@ -18,7 +18,12 @@
 			<artifactId>ext.bundle.jena_all_264</artifactId>
 			<groupId>org.appdapter</groupId>
 			<version>${appdapter.version}</version>
-		</dependency>			
+		</dependency>
+		<dependency>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+			<groupId>org.appdapter</groupId>
+			<version>${appdapter.version}</version>
+		</dependency>				
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

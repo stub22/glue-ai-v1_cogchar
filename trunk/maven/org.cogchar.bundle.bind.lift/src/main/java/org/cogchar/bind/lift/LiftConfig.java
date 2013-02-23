@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.lift;
 
+import org.cogchar.name.lifter.LiftCN;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.rdf.model.Resource;

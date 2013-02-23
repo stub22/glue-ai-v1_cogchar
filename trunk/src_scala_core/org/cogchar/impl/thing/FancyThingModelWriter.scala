@@ -43,25 +43,7 @@ import org.cogchar.blob.emit.{SparqlTextGen}
 
 class FancyThingModelWriter extends BasicDebugger {
 	
-	def writeParamsUsingStrongConvention(m : Model,  parentRes : Resource, tvm : TypedValueMap) : Unit = {
-		val mci = new ModelClientImpl(m);
-		val rr = new ResourceResolver(m, None);
-		// val tm = com.hp.hpl.jena.datatypes.TypeMapper.getInstance()
-		val nameIter : Iterator[Ident]  = tvm.iterateKeys();
-		while (nameIter.hasNext()) {
-			val paramID : Ident = nameIter.next();
-			// val paramProp : Property = rr.findOrMakeProperty(m, paramID.getAbsUriString)
-			val paramPropRes : Resource = mci.makeResourceForIdent(paramID)
-			val paramProp : Property = paramPropRes.as(classOf[Property])
-			val pvRaw = tvm.getRaw(paramID)
-			val pvNode : RDFNode = pvRaw match  {
-				case idVal: Ident =>  mci.makeResourceForIdent(idVal)
-				case other =>  m.createTypedLiteral(other)
-			}
-			val stmt = m.createStatement(parentRes, paramProp, pvNode) 
-			m.add(stmt)
-		}
-	}
+
 	val RDF_NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	val XSD_NS = "http://www.w3.org/2001/XMLSchema#"
 
@@ -187,4 +169,27 @@ class FancyThingModelWriter extends BasicDebugger {
 		
 		upRqTxt;
 	}
+	
+	// Unused
+	/*
+	def writeParamsUsingStrongConvention(m : Model,  parentRes : Resource, tvm : TypedValueMap) : Unit = {
+		val mci = new ModelClientImpl(m);
+		val rr = new ResourceResolver(m, None);
+		// val tm = com.hp.hpl.jena.datatypes.TypeMapper.getInstance()
+		val nameIter : Iterator[Ident]  = tvm.iterateKeys();
+		while (nameIter.hasNext()) {
+			val paramID : Ident = nameIter.next();
+			// val paramProp : Property = rr.findOrMakeProperty(m, paramID.getAbsUriString)
+			val paramPropRes : Resource = mci.makeResourceForIdent(paramID)
+			val paramProp : Property = paramPropRes.as(classOf[Property])
+			val pvRaw = tvm.getRaw(paramID)
+			val pvNode : RDFNode = pvRaw match  {
+				case idVal: Ident =>  mci.makeResourceForIdent(idVal)
+				case other =>  m.createTypedLiteral(other)
+			}
+			val stmt = m.createStatement(parentRes, paramProp, pvNode) 
+			m.add(stmt)
+		}
+	}
+	*/
 }

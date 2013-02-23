@@ -13,24 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.lift;
 
-import org.appdapter.core.name.FreeIdent;
-import org.appdapter.core.name.Ident;
+package org.cogchar.name.lifter;
 
 /**
- * @author Ryan Biggs
+ *
+ * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
-public class ChatCN {
-	public static final String gri = "http://www.cogchar.org/general/config/instance#";
-	public static final String CATEGORY = "chatconfig";
+
+
+public class UserCN {
 	
-	public static final Ident CATEGORY_URI = new FreeIdent(gri + CATEGORY, CATEGORY);
+	public static final String LOGIN_PAGE_QUERY_URI = "ccrt:find_login_page_99";
+	public static final String USER_QUERY_URI = "ccrt:find_users_99";
 	
-	public static final String GENRAL_CONFIG_TEMPLATE_URI = "ccrt:template_general_items_99";
+	public static final String LOGIN_PAGE_VAR_NAME = "loginPage";
+	public static final String USER_VAR_NAME = "user";
+	public static final String PASSWORD_VAR_NAME = "password";
+	public static final String SALT_VAR_NAME = "salt";
+	public static final String START_PAGE_VAR_NAME = "startPage";
 	
-	public static final String VARIABLE_VAR_NAME = "ident";
-	public static final String VALUE_VAR_NAME = "url";
-	
-	public static final String CATEGORY_QUERY_VAR_NAME = "category";
 }

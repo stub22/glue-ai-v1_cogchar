@@ -15,6 +15,8 @@
  */
 package org.cogchar.bind.lift;
 
+import org.cogchar.name.lifter.ChatCN;
+import org.cogchar.name.lifter.ChatAN;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

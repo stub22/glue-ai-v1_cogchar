@@ -10,7 +10,7 @@ import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.BasicThingActionSpec;
 import org.cogchar.render.model.goodies.GoodyActionParamWriter;
-import org.cogchar.render.model.goodies.GoodyNames;
+import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.api.thing.BasicTypedValueMap;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.impl.thing.ConcreteTVM;
