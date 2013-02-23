@@ -24,7 +24,7 @@ import org.appdapter.core.name.Ident;
  */
 
 
-public class PumaModeConstants {
+public class EntityRoleCN {
 	// The (temporarily fixed) "GlobalMode". This won't be a constant for long.
 	public static String DEFAULT_GLOBAL_MODE_NAME = "test_spread_reload";
 	
@@ -44,4 +44,16 @@ public class PumaModeConstants {
 	public static final Ident THING_ACTIONS_BINDINGS_ROLE = makeRoleIdent("thingActions");
 	public static final Ident WAYPOINTS_BINDINGS_ROLE = makeRoleIdent("thingWaypoints");
 	public static final Ident THING_ANIM_BINDINGS_ROLE = makeRoleIdent("thingAnims");
+	
+	// Moved these here from GlobalConfigEmitter, which is the only place they were used, at that time.  (They were private there).
+	public static final String GC_NS = "http://www.cogchar.org/general/config#";
+	public static final String GLOBALMODE_QUERY_QN = "ccrt:template_globalmode_99" ;
+	public static final String ENTITIES_QUERY_QN = "ccrt:template_global_entities_99";
+	public static final String GLOBALMODE_QUERY_VAR_NAME = "mode";
+	public static final String ENTITY_TYPE_QUERY_VAR_NAME = "type";
+	public static final String ENTITY_VAR_NAME = "entity";
+	public static final String ROLE_VAR_NAME = "role";
+	public static final String GRAPH_VAR_NAME = "graph";
+	public static final String ENTITY_TYPES[] = {"CharEntity", "VirtualWorldEntity", "WebappEntity", "SwingAppEntity", "MayaMappingEntity"};
+  	
 }

@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.rk.aniconv;
 
+import org.cogchar.name.aniconv.MayaCN;
 import java.util.HashMap;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;

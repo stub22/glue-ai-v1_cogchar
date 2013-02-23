@@ -26,21 +26,11 @@ import org.appdapter.core.name.{FreeIdent, Ident}
  * that we will incrementally make more "private" to each subsys.
  */
 
-object SubsystemConfigEmitters {
-}
 class SubsystemConfigEmitter {
 	val COGCHAR_URN_PREFIX = "urn:ftd:cogchar.org:2012:";
 	val	COGCHAR_CHAR_URN_PREFIX = COGCHAR_URN_PREFIX + "runtime#";
 }
-class ConvyConfigEmitter {
-}
-class RobokindBindingConfigEmitter {
-		/*
-	def getRobokindRobotID(robotURI : String) = {
-		NB_BONY_ROBOT_ID; // or DUMMY_ROBOT_ID, ...
-	}
-	*/
-}
+
 class RenderConfigEmitter(val myOptSysCtxURI : Option[String]) extends SubsystemConfigEmitter {
 	// Alternate no-args constructor
 	def this() = this(None)
