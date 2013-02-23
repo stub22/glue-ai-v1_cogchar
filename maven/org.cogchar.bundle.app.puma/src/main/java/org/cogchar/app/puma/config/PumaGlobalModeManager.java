@@ -16,6 +16,7 @@
 
 package org.cogchar.app.puma.config;
 
+import org.cogchar.name.entity.PumaModeConstants;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
