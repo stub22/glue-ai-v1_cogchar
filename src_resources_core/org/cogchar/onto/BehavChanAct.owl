@@ -643,6 +643,14 @@ A Job is controlled and monitored using ThingActs.</rdfs:comment>
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/ScreenChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/ScreenChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Chan"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/SenseChan -->
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/SenseChan">
@@ -756,6 +764,50 @@ A Job is controlled and monitored using ThingActs.</rdfs:comment>
 
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/VideoPlayJob">
         <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/MediaPlayJob"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/WebEntryFrag -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/WebEntryFrag">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/WebScreenFrag"/>
+        <rdfs:comment>Invites the user to submit some data, usually in the form of text and numbers.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/WebScreenChan -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/WebScreenChan">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/ScreenChan"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/WebScreenFrag -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/WebScreenFrag">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/ChanFrag"/>
+        <rdfs:comment>A fragment to be rendered on some web screen.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/WebSelectFrag -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/WebSelectFrag">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/WebScreenFrag"/>
+        <rdfs:comment>Invites a user to select from some range of choices.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/WebUploadFrag -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/WebUploadFrag">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/WebScreenFrag"/>
+        <rdfs:comment>Invite the user to upload some kind of file data.</rdfs:comment>
     </owl:Class>
     
 
