@@ -61,9 +61,9 @@ import org.slf4j.Logger;
  *
  * @author Ryan Biggs
  */
-public class BallBuilder extends BasicDebugger {
+public class DataballGoodyBuilder extends BasicDebugger {
 	
-	private static BallBuilder theBallBuilder;
+	private static DataballGoodyBuilder theBallBuilder;
 	
 	private static final float LOW_DAMPING_COEFFICIENT = 0.4f;
 	private static final float HIGH_DAMPING_COEFFICIENT = 0.98f;
@@ -87,7 +87,7 @@ public class BallBuilder extends BasicDebugger {
 	private InputManager myIM;
 	private CameraMgr myCameraMgr;
 	private Node myBallsNode = new Node("Databalls");
-	private Logger myLogger = getLoggerForClass(BallBuilder.class);
+	private Logger myLogger = getLoggerForClass(DataballGoodyBuilder.class);
 	//private CinematicConfig myDemoCinematicConfig;
 	private TextMgr myTextMgr;
 	private FlatOverlayMgr myFlatOverlayMgr;
@@ -106,14 +106,14 @@ public class BallBuilder extends BasicDebugger {
 	//private CinematicModelBuilder myCinematicModelBuilder;
 
 	// Empty private default constructor to prevent outside instantiation
-	private BallBuilder() {}
+	private DataballGoodyBuilder() {}
 	
 	// Provides a getter for the singleton instance. This method provides lazy initialization and is automatically thread-safe.
 	// Probably not a concern for BallBuilder, but not a bad practice just in case.
 	private static final class SingletonHolder {
-		private static final BallBuilder theBallBuilder = new BallBuilder();
+		private static final DataballGoodyBuilder theBallBuilder = new DataballGoodyBuilder();
 	}
-	public static BallBuilder getTheBallBuilder() {
+	public static DataballGoodyBuilder getTheBallBuilder() {
 		return SingletonHolder.theBallBuilder;
 	}	
 	

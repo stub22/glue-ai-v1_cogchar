@@ -19,7 +19,7 @@ import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.web.PumaWebMapper;
-import org.cogchar.app.puma.config.PumaModeConstants;
+import org.cogchar.name.entity.PumaModeConstants;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.PumaRegistryClientImpl;
 import java.io.*;

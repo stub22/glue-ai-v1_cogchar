@@ -32,7 +32,7 @@ import org.cogchar.blob.emit.RepoClientTester.CommandRec;
 
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.model.goodies.BallBuilder;
+import org.cogchar.render.model.goodies.DataballGoodyBuilder;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 
 import org.slf4j.Logger;
@@ -179,12 +179,12 @@ public class TriggerItems {
 	}
 	public static class ShowResourceBalls extends CtxCmdBoxTI {
 		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
-			BallBuilder.getTheBallBuilder().runBalls();
+			DataballGoodyBuilder.getTheBallBuilder().runBalls();
 		}		
 	}	
 	public static class PickBalls extends CtxCmdBoxTI {
 		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
-			BallBuilder.getTheBallBuilder().pick();
+			DataballGoodyBuilder.getTheBallBuilder().pick();
 		}		
 	}	
 	public static class BiggerProjectile extends CtxCmdBoxTI {
