@@ -18,7 +18,8 @@ package org.cogchar.lifter.snippet
 
 import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
+import org.cogchar.name.lifter.{ActionStrings}
+import org.cogchar.lifter.model.{LifterState,PageCommander}
 import org.cogchar.lifter.view.TextBox
 import net.liftweb._
 import net.liftweb.util._

@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter {
-  package model {
+package org.cogchar.lifter.model
+import org.cogchar.name.lifter.{ActionStrings}
 
 	import net.liftweb.common._
 	import net.liftweb.http._
@@ -402,6 +402,5 @@ package org.cogchar.lifter {
 	
 	}
 
-  }
-}
+  
 

@@ -19,6 +19,7 @@ package org.cogchar.lifter.model
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.bind.lift.ControlConfig
 import scala.xml.NodeSeq
+import org.cogchar.name.lifter.ActionStrings
 
 // We don't want control-specific logic in PageCommander, but the toggle behavior is handled in a fundamentally
 // special way. (Dual actions are stored in special map toggleButtonFullActionMap and controlDefMap is updated with
