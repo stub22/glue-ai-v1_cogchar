@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.model.databalls;
+package org.cogchar.render.model.goodies;
 
 import org.cogchar.name.goody.DataballStrings;
 import com.hp.hpl.jena.query.*;
