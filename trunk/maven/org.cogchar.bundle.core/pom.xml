@@ -56,7 +56,12 @@
 			<version>${project.version}</version>
 			<scope>provided</scope>		
 		</dependency>		
-		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.onto</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>		
+		</dependency>
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.core</artifactId>
