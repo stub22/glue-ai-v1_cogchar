@@ -16,7 +16,11 @@
 	<description>Cogchar core - does not include Render binding or Robot binding</description>
 
 	<dependencies>
-		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.onto</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
@@ -123,13 +127,13 @@
 			should always have this scope marked as "test", so that clients can use their own logger binding.  
 			-->
 			<scope>test</scope>
-		    <exclusions>
+			<exclusions>
 				<!-- This embedded Log4J version is not OSGi friendly -->				
-		        <exclusion>
-		            <artifactId>log4j</artifactId>
-		            <groupId>log4j</groupId>
-		        </exclusion>
-		    </exclusions>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!--  We include "correct" (OGSi-friendly) Log4J version in "provided"
 			scope, so that our test programs can invoke Log4J configuration code,
@@ -189,6 +193,9 @@
 					</includes>
 				</configuration>
 			</plugin>
+			
+		
+   			
 		</plugins>
 	</build>
 </project>
