@@ -29,7 +29,8 @@ package org.cogchar.lifter {
 	import Helpers._
 	import net.liftweb.http.SHtml._
 	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
+	import org.cogchar.name.lifter.{ActionStrings}
+	import org.cogchar.lifter.model.{LifterState,PageCommander}
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import S._

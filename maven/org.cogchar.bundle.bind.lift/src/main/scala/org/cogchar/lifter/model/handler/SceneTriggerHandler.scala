@@ -18,7 +18,8 @@ package org.cogchar.lifter.model.handler
 
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.bind.lift.{ControlConfig, LiftConfig}
-import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
+import org.cogchar.name.lifter.{ActionStrings}
+import org.cogchar.lifter.model.{LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
 // A handler for action URIs consisting of a LiftConfig

@@ -14,8 +14,10 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter {
-  package snippet {
+package org.cogchar.lifter.snippet
+
+
+ 
 
 	import scala.xml._
 	import net.liftweb._
@@ -28,8 +30,9 @@ package org.cogchar.lifter {
 	import net.liftweb.util._
 	import Helpers._
 	import net.liftweb.http.SHtml._
+	import org.cogchar.name.lifter.{ActionStrings}
 	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
+	import org.cogchar.lifter.model.{LifterState,PageCommander}
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import S._
@@ -143,5 +146,3 @@ package org.cogchar.lifter {
 	  
 	}
 
-  }
-}

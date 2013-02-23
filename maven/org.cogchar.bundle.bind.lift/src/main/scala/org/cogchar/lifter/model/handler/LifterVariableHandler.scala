@@ -19,7 +19,8 @@ package org.cogchar.lifter.model.handler
 import java.lang.NumberFormatException
 import org.appdapter.core.name.Ident
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.{ActionStrings,ControlToggler,LifterState,PageCommander}
+import org.cogchar.name.lifter.{ActionStrings}
+import org.cogchar.lifter.model.{ControlToggler,LifterState,PageCommander}
 import org.cogchar.lifter.snippet.PushyButton
 import net.liftweb.common.Logger
 import scala.collection.mutable.ArrayBuffer

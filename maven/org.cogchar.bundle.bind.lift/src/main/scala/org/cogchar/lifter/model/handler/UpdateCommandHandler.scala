@@ -15,8 +15,8 @@
  */
 
 package org.cogchar.lifter.model.handler
-
-import org.cogchar.lifter.model.{ActionStrings,LifterState,PageCommander}
+import org.cogchar.name.lifter.{ActionStrings}
+import org.cogchar.lifter.model.{LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
 class UpdateCommandHandler extends AbstractLifterCommandHandler {
