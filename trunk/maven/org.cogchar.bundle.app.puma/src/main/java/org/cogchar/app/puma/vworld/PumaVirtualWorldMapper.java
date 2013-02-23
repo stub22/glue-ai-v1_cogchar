@@ -23,14 +23,14 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
-import org.cogchar.app.puma.config.PumaModeConstants;
+import org.cogchar.name.entity.PumaModeConstants;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
-import org.cogchar.render.model.goodies.BallBuilder;
+import org.cogchar.render.model.goodies.DataballGoodyBuilder;
 import org.cogchar.render.model.goodies.GoodyFactory;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.cogchar.render.sys.input.VW_HelpScreenMgr;
@@ -193,7 +193,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		myHRC.getHumanoidFigureManager().detachHumanoidFigures(myHRC);
 	}
 	public void connectVisualizationResources(ClassLoader bonyRdfCl) {
-		BallBuilder ballBldr = BallBuilder.getTheBallBuilder();
+		DataballGoodyBuilder ballBldr = DataballGoodyBuilder.getTheBallBuilder();
 		ballBldr.setClassLoader("Cog Char", bonyRdfCl);
 		ballBldr.initialize(myHRC);
 		myHRC.setTheBallBuilder(ballBldr);
@@ -201,7 +201,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 	// Previous functions now mostly done from within LifterLifecycle on create(). 
 	// Retaining for now for legacy BallBuilder classloader hookup
 	public void connectHrkindVisualizationContent(ClassLoader hrkindResourceCL) {
-		BallBuilder.getTheBallBuilder().setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
+		DataballGoodyBuilder.getTheBallBuilder().setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
 	}
 	public void toggleHelpScreenDisplay() { 
 		VW_HelpScreenMgr hsm = VW_InputBindingFuncs.getHelpScreenMgr();

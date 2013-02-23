@@ -18,14 +18,14 @@ package org.cogchar.render.sys.context;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.appdapter.api.module.Module;
 import org.cogchar.render.model.bony.CogcharRenderModulator;
-import org.cogchar.render.model.goodies.BallBuilder;
+import org.cogchar.render.model.goodies.DataballGoodyBuilder;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class ModularRenderContext extends CogcharRenderContext {
 	private		CogcharRenderModulator			myRenderModulator;
-	private		BallBuilder						myBallBuilder;
+	private		DataballGoodyBuilder						myBallBuilder;
 	private		boolean							thisBallBuilderSet;
 	
 	@Override public void completeInit() {
@@ -49,7 +49,7 @@ public class ModularRenderContext extends CogcharRenderContext {
 	}
 	// Adding a method to manage locally stored BallBuilder instance. We could get it using BallBuilder.getBallBuilder
 	// each time we need it, but that's once per update cycle. 
-	public void setTheBallBuilder(BallBuilder theBallBuilder) {
+	public void setTheBallBuilder(DataballGoodyBuilder theBallBuilder) {
 		myBallBuilder = theBallBuilder;
 		if (myBallBuilder != null) {
 			thisBallBuilderSet = true; // In theory, this variable allows a fast boolean check in doUpdate instead of having to check for null each update

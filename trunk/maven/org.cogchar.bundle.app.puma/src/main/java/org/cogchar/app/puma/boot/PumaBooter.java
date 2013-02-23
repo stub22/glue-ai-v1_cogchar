@@ -16,7 +16,7 @@ package org.cogchar.app.puma.boot;
 
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
-import org.cogchar.app.puma.config.PumaModeConstants;
+import org.cogchar.name.entity.PumaModeConstants;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;

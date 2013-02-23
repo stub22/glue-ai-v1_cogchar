@@ -24,7 +24,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
-import org.cogchar.app.puma.config.PumaModeConstants;
+import org.cogchar.name.entity.PumaModeConstants;
 import org.cogchar.api.skeleton.config.BoneCN;
 /**
  * @author Stu B. <www.texpedient.com>
