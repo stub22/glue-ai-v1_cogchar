@@ -16,7 +16,7 @@
 
 package org.cogchar.app.puma.config;
 
-import org.cogchar.name.entity.PumaModeConstants;
+import org.cogchar.name.entity.EntityRoleCN;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
@@ -51,7 +51,7 @@ public class PumaGlobalModeManager {
 	// GlobalConfigService and myGlobalConfig always be updated at the same time. Not yet though, until the possible implications are worked through...
 
 	public void applyGlobalConfig(BundleContext optBundCtxForLifecycle, RepoClient repoCli) {
-		Ident gcIdent = PumaModeConstants.makeRoleIdent(PumaModeConstants.DEFAULT_GLOBAL_MODE_NAME);
+		Ident gcIdent = EntityRoleCN.makeRoleIdent(EntityRoleCN.DEFAULT_GLOBAL_MODE_NAME);
 		myGlobalConfig = new GlobalConfigEmitter(repoCli, gcIdent);
 		if (optBundCtxForLifecycle != null) {
 			startGlobalConfigService(optBundCtxForLifecycle);

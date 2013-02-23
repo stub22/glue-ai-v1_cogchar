@@ -24,7 +24,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
-import org.cogchar.name.entity.PumaModeConstants;
+import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.api.skeleton.config.BoneCN;
 /**
  * @author Stu B. <www.texpedient.com>
@@ -60,7 +60,7 @@ public class PumaDualBodyManager extends BasicDebugger {
 			Ident charID = pdb.getCharIdent();
 			getLogger().info("Updating bony config for char [" + pdb + "]");
 			try {
-				Ident graphIdent = pgmm.resolveGraphForCharAndRole(charID, PumaModeConstants.BONY_CONFIG_ROLE);
+				Ident graphIdent = pgmm.resolveGraphForCharAndRole(charID, EntityRoleCN.BONY_CONFIG_ROLE);
 				try {
 					pdb.updateBonyConfig(rc, graphIdent, bqn);
 				} catch (Throwable t) {

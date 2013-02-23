@@ -19,7 +19,7 @@ import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.web.PumaWebMapper;
-import org.cogchar.name.entity.PumaModeConstants;
+import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.PumaRegistryClientImpl;
 import java.io.*;
@@ -194,7 +194,7 @@ public class PumaAppContext extends BasicDebugger {
 		//List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 		List<Ident> charIdents = new ArrayList<Ident>(); // A blank list, so if the try fails below, the for loop won't throw an Exception
 
-		List<Ident> identsFromConfig = gce.entityMap().get(PumaModeConstants.CHAR_ENTITY_TYPE);
+		List<Ident> identsFromConfig = gce.entityMap().get(EntityRoleCN.CHAR_ENTITY_TYPE);
 
 		if (identsFromConfig != null) {
 			charIdents = identsFromConfig;
@@ -220,8 +220,8 @@ public class PumaAppContext extends BasicDebugger {
 					Ident graphIdentForBony;
 					Ident graphIdentForHumanoid;
 					try {
-						graphIdentForBony = pgmm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.BONY_CONFIG_ROLE);
-						graphIdentForHumanoid = pgmm.resolveGraphForCharAndRole(charIdent, PumaModeConstants.HUMANOID_CONFIG_ROLE);
+						graphIdentForBony = pgmm.resolveGraphForCharAndRole(charIdent, EntityRoleCN.BONY_CONFIG_ROLE);
+						graphIdentForHumanoid = pgmm.resolveGraphForCharAndRole(charIdent, EntityRoleCN.HUMANOID_CONFIG_ROLE);
 					} catch (Exception e) {
 						getLogger().warn("Could not get valid graphs on which to query for config of {}", charIdent.getLocalName());
 						break;

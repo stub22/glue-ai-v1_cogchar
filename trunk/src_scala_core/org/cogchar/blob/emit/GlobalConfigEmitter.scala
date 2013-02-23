@@ -20,23 +20,16 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 
 import org.appdapter.help.repo.{RepoClient, SolutionHelper}
 
+import org.cogchar.name.entity.EntityRoleCN._;
+
 
 // An object class to hold "global" configuration information loaded at "boot"
 // Currently corresponds to "GlobalMode" bindings
-class GlobalConfigEmitter(val myQI : RepoClient) {
+class GlobalConfigEmitter(val myQI : RepoClient)  {
 	// Constants for query config - this could live elsewhere but may make sense here
 	// As usual, meta-meta-data keeps squeezing out into code
-	private final val gr = "http://www.cogchar.org/general/config#"
-	private final val GLOBALMODE_QUERY_QN = "ccrt:template_globalmode_99" 
-	private final val ENTITIES_QUERY_QN = "ccrt:template_global_entities_99"
-	private final val GLOBALMODE_QUERY_VAR_NAME = "mode"
-	private final val ENTITY_TYPE_QUERY_VAR_NAME = "type"
-	private final val ENTITY_VAR_NAME = "entity"
-	private final val ROLE_VAR_NAME = "role"
-	private final val GRAPH_VAR_NAME = "graph"
-	private final val ENTITY_TYPES = Array("CharEntity", "VirtualWorldEntity", "WebappEntity", "SwingAppEntity", "MayaMappingEntity")
-  
-	def getEntityTypeIdent(i : Int) = new FreeIdent(gr+ENTITY_TYPES(i), ENTITY_TYPES(i))
+
+	def getEntityTypeIdent(i : Int) = new FreeIdent(GC_NS+ENTITY_TYPES(i), ENTITY_TYPES(i))
 	
 	private val sh = new SolutionHelper()
   

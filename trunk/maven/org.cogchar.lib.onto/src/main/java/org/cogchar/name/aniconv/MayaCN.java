@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.rk.aniconv;
+package org.cogchar.name.aniconv;
 
 /**
  *
