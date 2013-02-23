@@ -1,0 +1,132 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.cogchar</groupId>
+	<artifactId>org.cogchar.lib.onto</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>org.cogchar.lib.onto</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<plugins>
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>exec-maven-plugin</artifactId>
+			<version>1.2.1</version>
+			<executions>
+				<execution>
+					<goals>
+						<goal>java</goal>
+					</goals>
+				</execution>					
+				<execution>
+					<id>anim-motiv</id>
+					<phase>generate-sources</phase>
+					<goals>
+						<goal>java</goal>
+					</goals>
+					<configuration>
+						<mainClass>jena.schemagen</mainClass>
+						<arguments>
+							<argument>--inference</argument>
+							<argument>-i</argument>
+							<argument>${project.basedir}/src/main/resources/org/cogchar/onto/AnimMotivMapBlend.owl</argument>
+								<!--
+								<argument>-a</argument>
+								<argument>http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#</argument>
+								-->
+							<argument>--package</argument>
+							<argument>org.cogchar.gen.ontoname</argument>
+							<argument>-o</argument>
+							<argument>${project.build.directory}/generated-sources/java</argument>
+							<argument>-n</argument>
+							<argument>AnimMotivMapBlend</argument>
+							<argument>--uppercase</argument>
+
+						</arguments>
+					</configuration>
+				</execution>
+				<execution>
+					<id>behav-chan</id>
+					<phase>generate-sources</phase>
+					<goals>
+						<goal>java</goal>
+					</goals>
+					<configuration>
+						<mainClass>jena.schemagen</mainClass>
+						<arguments>
+							<argument>--inference</argument>
+							<argument>-i</argument>
+							<argument>${project.basedir}/src/main/resources/org/cogchar/onto/BehavChanAct.owl</argument>
+							<argument>--package</argument>
+							<argument>org.cogchar.gen.ontoname</argument>
+							<argument>-o</argument>
+							<argument>${project.build.directory}/generated-sources/java</argument>
+							<argument>-n</argument>
+							<argument>BehavChanAct</argument>
+							<argument>--uppercase</argument>
+						</arguments>
+					</configuration>
+				</execution>
+				<execution>
+					<id>hominoid-body</id>
+					<phase>generate-sources</phase>
+					<goals>
+						<goal>java</goal>
+					</goals>
+					<configuration>
+						<mainClass>jena.schemagen</mainClass>
+						<arguments>
+							<argument>--inference</argument>
+							<argument>-i</argument>
+							<argument>${project.basedir}/src/main/resources/org/cogchar/onto/HominoidBodySchema.owl</argument>
+							<argument>--package</argument>
+							<argument>org.cogchar.gen.ontoname</argument>
+							<argument>-o</argument>
+							<argument>${project.build.directory}/generated-sources/java</argument>
+							<argument>-n</argument>
+							<argument>HominoidBodySchema</argument>
+							<argument>--uppercase</argument>
+
+						</arguments>
+					</configuration>
+				</execution>					
+			</executions>
+		</plugin>
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>build-helper-maven-plugin</artifactId>
+			<version>1.7</version>
+			<executions>
+				<execution>
+					<id>add-source</id>
+					<goals>
+						<goal>add-source</goal>
+					</goals>
+					<configuration>
+						<sources>
+							<source>${project.build.directory}/generated-sources/java</source>
+						</sources>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+   			
+			  
+	</plugins>
+</project>
