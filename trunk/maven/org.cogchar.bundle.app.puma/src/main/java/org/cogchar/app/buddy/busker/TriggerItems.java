@@ -32,7 +32,7 @@ import org.cogchar.blob.emit.RepoClientTester.CommandRec;
 
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.model.databalls.BallBuilder;
+import org.cogchar.render.model.goodies.BallBuilder;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 
 import org.slf4j.Logger;

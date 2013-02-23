@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.platform.gui.keybind;
+package org.cogchar.name.cmdbind;
 
 import org.appdapter.core.name.Ident;
 

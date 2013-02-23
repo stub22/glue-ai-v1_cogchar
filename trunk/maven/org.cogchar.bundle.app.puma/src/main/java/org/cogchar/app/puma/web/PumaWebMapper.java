@@ -19,9 +19,7 @@ import com.hp.hpl.jena.query.Dataset;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.LiftAmbassador;
-import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.bind.lift.LifterLifecycle;
 import org.cogchar.render.app.trigger.SceneActions;
@@ -31,7 +29,6 @@ import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
-import org.cogchar.render.model.databalls.BallBuilder;
 /**
  * Able to wire and start both our current HTTP services:  1) SPARQL-HTTP repo and 2) Lifter WebUI
  * @author Stu B. <www.texpedient.com>
