@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies;
+package org.cogchar.name.goody;
 
 import org.appdapter.core.component.ComponentAssemblyNames;
 import org.appdapter.core.name.FreeIdent;

@@ -15,6 +15,7 @@
  */
 package org.cogchar.render.model.goodies;
 
+import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.api.thing.BasicTypedValueMap;
 import org.cogchar.api.thing.TypedValueMap;
 

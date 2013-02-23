@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.lift;
+package org.cogchar.name.lifter;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;

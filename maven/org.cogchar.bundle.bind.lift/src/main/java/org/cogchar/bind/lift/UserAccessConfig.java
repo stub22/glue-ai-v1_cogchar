@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.lift;
 
+import org.cogchar.name.lifter.UserCN;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;

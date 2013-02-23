@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.lift;
 
+import org.cogchar.name.lifter.LiftCN;
 import org.appdapter.core.name.Ident;
 
 import org.slf4j.Logger;

@@ -16,6 +16,7 @@
 
 package org.cogchar.api.thing;
 
+import org.cogchar.name.thing.ThingCN;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import java.util.ArrayList;
