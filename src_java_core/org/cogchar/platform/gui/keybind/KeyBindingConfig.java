@@ -15,6 +15,7 @@
  */
 package org.cogchar.platform.gui.keybind;
 
+import org.cogchar.name.cmdbind.KeystrokeConfigNames;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;

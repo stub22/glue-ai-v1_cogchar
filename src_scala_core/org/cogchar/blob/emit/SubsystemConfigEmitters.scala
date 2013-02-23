@@ -125,8 +125,8 @@ class RenderConfigEmitter(val myOptSysCtxURI : Option[String]) extends Subsystem
 	 */	
 }
 
-import org.cogchar.platform.gui.keybind.{KeystrokeConfigNames}
-import org.cogchar.platform.gui.keybind.KeystrokeConfigNames.{GENERAL_BINDING_NAME, SCENE_BINDING_NAME, COMMAND_KEYBINDING_TYPE_NAME}
+import org.cogchar.name.cmdbind.{KeystrokeConfigNames}
+import org.cogchar.name.cmdbind.KeystrokeConfigNames.{GENERAL_BINDING_NAME, SCENE_BINDING_NAME, COMMAND_KEYBINDING_TYPE_NAME}
 
 class KeystrokeConfigEmitter extends SubsystemConfigEmitter with KeystrokeConfigNames {
 	

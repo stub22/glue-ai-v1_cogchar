@@ -18,7 +18,7 @@ package org.cogchar.render.sys.context;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.appdapter.api.module.Module;
 import org.cogchar.render.model.bony.CogcharRenderModulator;
-import org.cogchar.render.model.databalls.BallBuilder;
+import org.cogchar.render.model.goodies.BallBuilder;
 
 /**
  * @author Stu B. <www.texpedient.com>
