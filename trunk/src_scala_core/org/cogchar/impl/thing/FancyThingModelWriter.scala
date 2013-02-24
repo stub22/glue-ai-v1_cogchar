@@ -56,50 +56,7 @@ class FancyThingModelWriter extends BasicDebugger {
 	
 	import java.util.Random;
 	
-	def writeParamsUsingWeakConvention(mci : ModelClientImpl,  actionRes : Resource, tvm : TypedValueMap, ran: Random) : Unit = {
-		val m : Model = mci.getModel;
 
-		val rr = new ResourceResolver(m, None);
-
-		// rdf:type	ta:targetAction	ta:verb	ta:targetThing	ta:paramIdent	ta:paramValue
-		
-		val paramLabelProp : Property = rr.findOrMakeProperty(m, TA_NS + "paramIdent")
-		val paramValueProp : Property = rr.findOrMakeProperty(m, TA_NS + "paramValue")
-		val rdfTypeProp : Property = rr.findOrMakeProperty(m, RDF_NS + "type")
-		val targetActionProp  : Property = rr.findOrMakeProperty(m, TA_NS + "targetAction")
-		
-		val ptRes : Resource = rr.findOrMakeResource(m, CCRT_NS + "ThingActionParam")
-		
-		// val tm = com.hp.hpl.jena.datatypes.TypeMapper.getInstance()
-		val nameIter : Iterator[Ident]  = tvm.iterateKeys();
-		
-		val random = new java.util.Random
-		val pBaseName = "tap_" + ran.nextInt + "_";
-		var paramNum = 1;
-		while (nameIter.hasNext()) {
-			val pName : String = pBaseName + paramNum;
-			val pRes : Resource = mci.makeResourceForURI(CCRT_NS + pName);
-			
-			val paramLabelID : Ident = nameIter.next();
-			// val paramProp : Property = rr.findOrMakeProperty(m, paramID.getAbsUriString)
-			val paramLabelRes : Resource = mci.makeResourceForIdent(paramLabelID)
-			val pvRaw = tvm.getRaw(paramLabelID)
-			val pvNode : RDFNode = pvRaw match  {
-				case idVal: Ident =>  mci.makeResourceForIdent(idVal)
-				case other =>  m.createTypedLiteral(other)
-			}
-			val ptStmt = m.createStatement(pRes, rdfTypeProp, ptRes) 
-			val paStmt = m.createStatement(pRes, targetActionProp, actionRes) 
-			val plStmt = m.createStatement(pRes, paramLabelProp, paramLabelRes) 
-			val pvStmt = m.createStatement(pRes, paramValueProp, pvNode)
-			
-			m.add(ptStmt);
-			m.add(paStmt);
-			m.add(plStmt);
-			m.add(pvStmt);
-			paramNum = paramNum + 1
-		}
-	}
 	def writeTASpecToNewModel(tas : ThingActionSpec, ran: Random) : Model  = {
 		val m : Model = ModelFactory.createDefaultModel();
 		val actionSpecID : Ident = tas.getActionSpecID();
@@ -171,8 +128,52 @@ class FancyThingModelWriter extends BasicDebugger {
 		upRqTxt;
 	}
 	
-	// Unused
-	/*
+	// In the weak convention, each param is held in a separate record attached to the parent thing.
+	def writeParamsUsingWeakConvention(mci : ModelClientImpl,  actionRes : Resource, tvm : TypedValueMap, ran: Random) : Unit = {
+		val m : Model = mci.getModel;
+
+		val rr = new ResourceResolver(m, None);
+
+		// rdf:type	ta:targetAction	ta:verb	ta:targetThing	ta:paramIdent	ta:paramValue
+		
+		val paramLabelProp : Property = rr.findOrMakeProperty(m, TA_NS + "paramIdent")
+		val paramValueProp : Property = rr.findOrMakeProperty(m, TA_NS + "paramValue")
+		val rdfTypeProp : Property = rr.findOrMakeProperty(m, RDF_NS + "type")
+		val targetActionProp  : Property = rr.findOrMakeProperty(m, TA_NS + "targetAction")
+		
+		val ptRes : Resource = rr.findOrMakeResource(m, CCRT_NS + "ThingActionParam")
+		
+		// val tm = com.hp.hpl.jena.datatypes.TypeMapper.getInstance()
+		val nameIter : Iterator[Ident]  = tvm.iterateKeys();
+		
+		val random = new java.util.Random
+		val pBaseName = "tap_" + ran.nextInt + "_";
+		var paramNum = 1;
+		while (nameIter.hasNext()) {
+			val pName : String = pBaseName + paramNum;
+			val pRes : Resource = mci.makeResourceForURI(CCRT_NS + pName);
+			
+			val paramLabelID : Ident = nameIter.next();
+			// val paramProp : Property = rr.findOrMakeProperty(m, paramID.getAbsUriString)
+			val paramLabelRes : Resource = mci.makeResourceForIdent(paramLabelID)
+			val pvRaw = tvm.getRaw(paramLabelID)
+			val pvNode : RDFNode = pvRaw match  {
+				case idVal: Ident =>  mci.makeResourceForIdent(idVal)
+				case other =>  m.createTypedLiteral(other)
+			}
+			val ptStmt = m.createStatement(pRes, rdfTypeProp, ptRes) 
+			val paStmt = m.createStatement(pRes, targetActionProp, actionRes) 
+			val plStmt = m.createStatement(pRes, paramLabelProp, paramLabelRes) 
+			val pvStmt = m.createStatement(pRes, paramValueProp, pvNode)
+			
+			m.add(ptStmt);
+			m.add(paStmt);
+			m.add(plStmt);
+			m.add(pvStmt);
+			paramNum = paramNum + 1
+		}
+	}
+	// Unused, so far.  In the stron convention, params are simply written as properties of the parent (probly the ActionSpec)
 	def writeParamsUsingStrongConvention(m : Model,  parentRes : Resource, tvm : TypedValueMap) : Unit = {
 		val mci = new ModelClientImpl(m);
 		val rr = new ResourceResolver(m, None);
@@ -192,5 +193,5 @@ class FancyThingModelWriter extends BasicDebugger {
 			m.add(stmt)
 		}
 	}
-	*/
+	
 }
