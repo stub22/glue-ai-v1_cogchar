@@ -13,15 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.skeleton.config;
+package org.cogchar.name.skeleton;
 
 import org.appdapter.api.trigger.BoxAssemblyNames;
+import org.cogchar.name.dir.NamespaceDir;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class BoneAN extends BoxAssemblyNames {
-	public static	String		NS_CgcBC		= "http://www.cogchar.org/bony/config#";
+	public static	String		NS_CgcBC		= NamespaceDir.NS_CgcBC; // "http://www.cogchar.org /bony/config#";
 	
 	public static 	String		P_robotName			= NS_CgcBC + "robotName";
 	

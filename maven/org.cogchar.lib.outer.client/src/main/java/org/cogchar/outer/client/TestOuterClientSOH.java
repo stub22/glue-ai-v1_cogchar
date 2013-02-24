@@ -1,34 +1,11 @@
 package org.cogchar.outer.client;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.ResultSetFactory;
 
 import com.hp.hpl.jena.query.ResultSetRewindable;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
-import org.appdapter.bind.rdf.jena.model.JenaModelUtils;
+
+import org.cogchar.name.dir.SparqlPrefixDir;
 import org.appdapter.core.log.BasicDebugger;
 import org.slf4j.Logger;
 
@@ -81,19 +58,19 @@ public class TestOuterClientSOH extends BasicDebugger {
 	}
 
 
-	static String PREFIX_FOAF = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n",
-			PREFIX_XSD = "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n",
-			PREFIX_DC = "PREFIX dc:      <http://purl.org/dc/elements/1.1/>\n",
-			PREFIX_DBO = "PREFIX dbo: <http://dbpedia.org/ontology/>\n",
-			PREFIX_BOOKS = "PREFIX books:   <http://example.org/book/>\n",
-			PREFIX_CCRT = "PREFIX ccrt:  <urn:ftd:cogchar.org:2012:runtime#>\n",
-			PREFIX_UA = "PREFIX ua:    <http://www.cogchar.org/lift/user/config#>\n";
+	static String PREFIX_FOAF = SparqlPrefixDir.PREFIX_FOAF, // "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n",
+			PREFIX_XSD = SparqlPrefixDir.PREFIX_XSD, // "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n",
+			PREFIX_DC = SparqlPrefixDir.PREFIX_DC, // "PREFIX dc:      <http://purl.org/dc/elements/1.1/>\n",
+			PREFIX_DBO = SparqlPrefixDir.PREFIX_DBO, // "PREFIX dbo: <http://dbpedia.org/ontology/>\n",
+		PREFIX_DBP = SparqlPrefixDir.PREFIX_DBP, // + "PREFIX : <http://dbpedia.org/resource/>\n"
+			PREFIX_BOOKS = SparqlPrefixDir.PREFIX_BOOKS, // "PREFIX books:   <http://example.org/book/>\n",
+			PREFIX_CCRT = SparqlPrefixDir.PREFIX_CCRT, // "PREFIX ccrt:  <urn:ftd:cogchar.org:2012:runtime#>\n",
+			PREFIX_UA = SparqlPrefixDir.PREFIX_UA; // "PREFIX ua:    <http://www.cogchar.org  /lift/user/config#>\n";
 	
 	// Regular SPARQL queries, sent through Jena/ARQ client infrastructure
 	
 	static String dbpQ =
-			PREFIX_DBO + PREFIX_FOAF + PREFIX_XSD
-			+ "PREFIX : <http://dbpedia.org/resource/>\n"
+			PREFIX_DBO + PREFIX_FOAF + PREFIX_XSD + PREFIX_DBP
 			+ "SELECT ?name ?birth ?death ?person WHERE {\n"
 			+ "?person dbo:birthPlace :Berlin .   ?person dbo:birthDate ?birth .   ?person foaf:name ?name .\n"
 			+ "?person dbo:deathDate ?death .   FILTER (?birth < '1900-01-01'^^xsd:date) }";

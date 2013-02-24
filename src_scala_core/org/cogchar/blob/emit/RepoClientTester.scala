@@ -94,8 +94,9 @@ object RepoClientTester {
 	// Queries may also pull in additional graphs, by explicit URI in SPARQL text, or by 
 	// binding additional variables to Idents (i.e. URIs) as part of the query invocation.
  
-	val lightsQueryQN = "ccrt:find_lights_99" // The QName of a query in the "Queries" model/tab
-	val lightsGraphQN = "ccrt:lights_camera_sheet_22" // The QName of a graph = model = tab, as given by directory model.
+	import org.cogchar.name.dir.{AssumedQueryDir, AssumedGraphDir};
+	val lightsQueryQN = AssumedQueryDir.LIGHT_QUERY_URI // "ccrt:find_lights_99" // The QName of a query in the "Queries" model/tab
+	val lightsGraphQN = AssumedGraphDir.lightsGraphQN //  "ccrt:lights_camera_sheet_22" // The QName of a graph = model = tab, as given by directory model.
 		
 	def makeDfltOSRS() : OnlineSheetRepoSpec = { 
 		val fileResModelCLs = new java.util.ArrayList[ClassLoader]();
@@ -128,10 +129,10 @@ object RepoClientTester {
 		// Found solutions for ccrt:find_lights_99 in ccrt:lights_camera_sheet_22 :
 		// [( ?light = <urn:ftd:cogchar.org:2012:runtime#light_Demo> ) 
 		// ( ?xDir = "-0.1" ) ( ?yDir = "-0.7" ) ( ?zDir = "-1" ) 
-		// ( ?lightType = <http://www.cogchar.org/lightscamera/config/instance#DIRECTIONAL> ) 
+		// ( ?lightType = <http://www.cogchar.org  /lightscamera/config/instance#DIRECTIONAL> ) 
 		// ( ?colorR = "1" ) ( ?colorG = "1" ) ( ?colorB = "1" ) ( ?colorAlpha = "1" ), 
 		// ( ?light = <urn:ftd:cogchar.org:2012:runtime#light_Ambient> ) 
-		// ( ?lightType = <http://www.cogchar.org/lightscamera/config/instance#AMBIENT> ) 
+		// ( ?lightType = <http://www.cogchar.org  /lightscamera/config/instance#AMBIENT> ) 
 		// ( ?colorR = "0.8" ) ( ?colorG = "0.8" ) ( ?colorB = "0.8" ) ( ?colorAlpha = "1" )]
 		// 
 		 
