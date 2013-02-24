@@ -19,6 +19,7 @@ package org.cogchar.name.goody;
 import org.appdapter.core.component.ComponentAssemblyNames;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.name.dir.NamespaceDir;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -26,7 +27,7 @@ import org.appdapter.core.name.Ident;
 
 public class GoodyNames  {
 	
-	public  static String	GOODY_NS = "urn:ftd:cogchar.org:2012:goody#";
+	public  static String	GOODY_NS = NamespaceDir.GOODY_NS;
 	
 	public static Ident makeID (String nameTail) {
 		return new FreeIdent(GOODY_NS + nameTail);
@@ -35,7 +36,7 @@ public class GoodyNames  {
 	// Not sure if this is the best approach long term: a special Goody URI which corresponds to all goodies
 	// Intended for server-side goody deletion; not yet implemented
 	// Currently goodies use the ccrt prefix. If that changes, this should change too: 
-	public	static Ident	ALL_GOODY_URI = new FreeIdent("urn:ftd:cogchar.org:2012:runtime#ALL");
+	public	static Ident	ALL_GOODY_URI = new FreeIdent(NamespaceDir.RKRT_NS_PREFIX + "ALL");
 	
 	public	static Ident 	LOCATION_X = makeID("locX");
 	public	static Ident	LOCATION_Y = makeID("locY");

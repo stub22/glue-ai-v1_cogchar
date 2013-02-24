@@ -14,7 +14,10 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.cinema;
+package org.cogchar.name.cinema;
+
+import org.cogchar.name.dir.AssumedQueryDir;
+import org.cogchar.name.dir.NamespaceDir;
 
 /**
  *
@@ -22,18 +25,18 @@ package org.cogchar.api.cinema;
  */
 
 public class CinemaCN {
-	public final static String CCRT = "urn:ftd:cogchar.org:2012:runtime#";
+	public final static String CCRT = NamespaceDir.NS_CCRT_RT; // "urn:ftd:cogchar.org:2012:runtime#";
 	
-	public final static String PATHS_QUERY_URI = "ccrt:find_paths_99";
-	public final static String TRACK_QUERY_URI = "ccrt:find_tracks_99";
-	public final static String WAYPOINT_QUERY_URI = "ccrt:find_waypoints_99";
-	public final static String ROTATION_QUERY_URI = "ccrt:find_rotations_99";
-	public final static String THING_ANIM_QUERY_URI = "ccrt:find_thing_anims_99";
+	public final static String PATHS_QUERY_URI = AssumedQueryDir.PATHS_QUERY_URI; // "ccrt:find_paths_99";
+	public final static String TRACK_QUERY_URI =  AssumedQueryDir.TRACK_QUERY_URI; //"ccrt:find_tracks_99";
+	public final static String WAYPOINT_QUERY_URI =  AssumedQueryDir.WAYPOINT_QUERY_URI; //"ccrt:find_waypoints_99";
+	public final static String ROTATION_QUERY_URI =  AssumedQueryDir.ROTATION_QUERY_URI; // "ccrt:find_rotations_99";
+	public final static String THING_ANIM_QUERY_URI =  AssumedQueryDir.THING_ANIM_QUERY_URI; // "ccrt:find_thing_anims_99";
 	
-	public final static String WAYPOINTS_QUERY_TEMPLATE_URI = "ccrt:template_waypoint_99";
-	public final static String ROTATIONS_QUERY_TEMPLATE_URI = "ccrt:template_rotation_99";
-	public final static String VECTOR_SCALINGS_QUERY_URI = "ccrt:find_vector_scalings_99";
-	public final static String KEYFRAMES_QUERY_TEMPLATE_URI = "ccrt:template_key_frames_99";
+	public final static String WAYPOINTS_QUERY_TEMPLATE_URI =  AssumedQueryDir.WAYPOINTS_QUERY_TEMPLATE_URI; // "ccrt:template_waypoint_99";
+	public final static String ROTATIONS_QUERY_TEMPLATE_URI =  AssumedQueryDir.ROTATIONS_QUERY_TEMPLATE_URI; // "ccrt:template_rotation_99";
+	public final static String VECTOR_SCALINGS_QUERY_URI =  AssumedQueryDir.VECTOR_SCALINGS_QUERY_URI; // "ccrt:find_vector_scalings_99";
+	public final static String KEYFRAMES_QUERY_TEMPLATE_URI =  AssumedQueryDir.KEYFRAMES_QUERY_TEMPLATE_URI; // "ccrt:template_key_frames_99";
 	
 	public final static String PATH_VAR_NAME = "path";
 	public final static String ANIM_VAR_NAME = "anim";
