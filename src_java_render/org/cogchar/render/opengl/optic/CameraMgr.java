@@ -26,7 +26,7 @@ import com.jme3.scene.control.CameraControl.ControlDirection;
 import java.util.*;
 import org.cogchar.api.cinema.CameraConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
-import org.cogchar.api.cinema.LightsCameraAN;
+import org.cogchar.name.cinema.LightsCameraAN;
 import org.cogchar.render.sys.context.CoreFeatureAdapter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigureManager;

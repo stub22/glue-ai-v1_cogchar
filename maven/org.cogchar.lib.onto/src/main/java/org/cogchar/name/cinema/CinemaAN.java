@@ -13,15 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.cinema;
+package org.cogchar.name.cinema;
 
 import org.appdapter.api.trigger.BoxAssemblyNames;
+import org.cogchar.name.dir.NamespaceDir;
 
 /**
  * @author Ryan Biggs
  */
 public class CinemaAN extends BoxAssemblyNames {
-	public static	String		NS_CgcCC		= "http://www.cogchar.org/schema/cinematic#";
+	public static	String		NS_CgcCC		= NamespaceDir.NS_CgcCC; // "http://www.cogchar.org/schema/cinematic#";
 	
 	public static	String		P_namedTrack	= "track_";
 	

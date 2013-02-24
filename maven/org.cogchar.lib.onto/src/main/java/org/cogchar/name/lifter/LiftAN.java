@@ -16,13 +16,14 @@
 package org.cogchar.name.lifter;
 
 import org.appdapter.api.trigger.BoxAssemblyNames;
+import org.cogchar.name.dir.NamespaceDir;
 
 /**
  * @author Ryan Biggs
  */
 public class LiftAN extends BoxAssemblyNames {
 
-	public static final String NS_CgcLC = "http://www.cogchar.org/lift/config#";
+	public static final String NS_CgcLC =  NamespaceDir.NS_CgcLC;
 	public static final String P_template = NS_CgcLC + "template";
 	public static final String partial_P_control = "control";
 	public static final String P_control = NS_CgcLC + partial_P_control;
@@ -31,7 +32,7 @@ public class LiftAN extends BoxAssemblyNames {
 	public static final String P_controlText = NS_CgcLC + "text";
 	public static final String P_controlStyle = NS_CgcLC + "style";
 	public static final String P_controlResource = NS_CgcLC + "resource";
-	public static final String P_user = "http://www.cogchar.org/lift/user#";
+	public static final String NS_user = NamespaceDir.NS_LifterUser; // "http://www.cogchar.org/lift/user#";
 	
 	// These are not used in RDF parsing, but help LiftAmbassador know how to interpret prefixes found in RDF defined actions - 
 	// really these should probably be replaced with real URIs
@@ -42,10 +43,12 @@ public class LiftAN extends BoxAssemblyNames {
 	public static final String partial_P_update = "reload";
 	public static final String refreshLift = "refreshliftcache";
 	
-	/// .. and now they are, in large part. Here are the relevant prefixes:
-	public static final String p_scenetrig = "http://www.cogchar.org/schema/scene/trigger#";
-	public static final String p_cinematic = "http://www.cogchar.org/schema/cinematic/definition#";
-	public static final String p_liftconfig = "http://www.cogchar.org/lift/config/configroot#";
-	public static final String p_liftcmd = "http://www.cogchar.org/lift/config/command#";
+	// These prefixes are/were three-quarters identical with ones in ActionStrings.
+
+	public static final String NS_scenetrig =  NamespaceDir.NS_SceneTrig; // "http://www.cogchar.org/schema/scene/trigger#";
+	// This is different from ActionStrings - which used schema/path/definition.
+	public static final String NS_cinematic = NamespaceDir.NS_CineDef; // "http://www.cogchar.org/schema/cinematic/definition#";
+	public static final String NS_liftconfig = NamespaceDir.NS_LifterConfig; //   "http://www.cogchar.org/lift/config/configroot#";
+	public static final String NS_liftcmd = NamespaceDir.NS_LifterCmd; //  "http://www.cogchar.org/lift/config/command#";
 	
 }

@@ -17,6 +17,8 @@ package org.cogchar.name.entity;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.name.dir.AssumedQueryDir;
+import org.cogchar.name.dir.NamespaceDir;
 
 /**
  *
@@ -28,7 +30,7 @@ public class EntityRoleCN {
 	// The (temporarily fixed) "GlobalMode". This won't be a constant for long.
 	public static String DEFAULT_GLOBAL_MODE_NAME = "test_spread_reload";
 	
-	public static final String RKRT_NS_PREFIX = "urn:ftd:robokind.org:2012:runtime#";
+	public static final String RKRT_NS_PREFIX = NamespaceDir.RKRT_NS_PREFIX;
 	
 	public static final String CHAR_ENTITY_TYPE = "CharEntity";
 	public static final String VIRTUAL_WORLD_ENTITY_TYPE = "VirtualWorldEntity";
@@ -46,9 +48,9 @@ public class EntityRoleCN {
 	public static final Ident THING_ANIM_BINDINGS_ROLE = makeRoleIdent("thingAnims");
 	
 	// Moved these here from GlobalConfigEmitter, which is the only place they were used, at that time.  (They were private there).
-	public static final String GC_NS = "http://www.cogchar.org/general/config#";
-	public static final String GLOBALMODE_QUERY_QN = "ccrt:template_globalmode_99" ;
-	public static final String ENTITIES_QUERY_QN = "ccrt:template_global_entities_99";
+	public static final String GC_NS = NamespaceDir.GC_NS;
+	public static final String GLOBALMODE_QUERY_QN = AssumedQueryDir.GLOBALMODE_QUERY_QN; // "ccrt:template_globalmode_99" ;
+	public static final String ENTITIES_QUERY_QN = AssumedQueryDir.ENTITIES_QUERY_QN; //  "ccrt:template_global_entities_99";
 	public static final String GLOBALMODE_QUERY_VAR_NAME = "mode";
 	public static final String ENTITY_TYPE_QUERY_VAR_NAME = "type";
 	public static final String ENTITY_VAR_NAME = "entity";

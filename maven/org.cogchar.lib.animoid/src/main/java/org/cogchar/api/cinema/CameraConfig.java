@@ -15,6 +15,7 @@
  */
 package org.cogchar.api.cinema;
 
+import org.cogchar.name.cinema.LightsCameraCN;
 import java.util.Arrays;
 import org.appdapter.core.name.Ident;
 

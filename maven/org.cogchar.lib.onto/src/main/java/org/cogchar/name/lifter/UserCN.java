@@ -16,6 +16,8 @@
 
 package org.cogchar.name.lifter;
 
+import org.cogchar.name.dir.AssumedQueryDir;
+
 /**
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
@@ -24,8 +26,8 @@ package org.cogchar.name.lifter;
 
 public class UserCN {
 	
-	public static final String LOGIN_PAGE_QUERY_URI = "ccrt:find_login_page_99";
-	public static final String USER_QUERY_URI = "ccrt:find_users_99";
+	public static final String LOGIN_PAGE_QUERY_URI = AssumedQueryDir.LOGIN_PAGE_QUERY_URI; // "ccrt:find_login_page_99";
+	public static final String USER_QUERY_URI = AssumedQueryDir.USER_QUERY_URI; //  "ccrt:find_users_99";
 	
 	public static final String LOGIN_PAGE_VAR_NAME = "loginPage";
 	public static final String USER_VAR_NAME = "user";

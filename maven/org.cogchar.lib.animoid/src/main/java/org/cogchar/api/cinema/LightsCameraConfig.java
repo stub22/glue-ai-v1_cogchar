@@ -17,6 +17,7 @@
 // This is just a guess as to where this should live at this point
 package org.cogchar.api.cinema;
 
+import org.cogchar.name.cinema.LightsCameraCN;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.component.KnownComponentImpl;

@@ -16,6 +16,8 @@
 
 package org.cogchar.name.aniconv;
 
+import org.cogchar.name.dir.AssumedQueryDir;
+
 /**
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
@@ -24,8 +26,8 @@ package org.cogchar.name.aniconv;
 
 public class MayaCN {
 	
-	public final String MAYA_CHANNEL_QUERY_URI = "ccrt:find_maya_channel_mappings_99";
-	public final String MAYA_MAP_QUERY_URI = "ccrt:find_maya_channel_maps_99";
+	public  final String MAYA_CHANNEL_QUERY_URI = AssumedQueryDir.MAYA_CHANNEL_QUERY_URI; // "ccrt:find_maya_channel_mappings_99";
+	public final String MAYA_MAP_QUERY_URI = AssumedQueryDir.MAYA_MAP_QUERY_URI; //  "ccrt:find_maya_channel_maps_99";
 	
 	public final String MAYA_CHANNEL_VAR_NAME = "channel";
 	public final String JOINT_NAME_VAR_NAME = "joint";
