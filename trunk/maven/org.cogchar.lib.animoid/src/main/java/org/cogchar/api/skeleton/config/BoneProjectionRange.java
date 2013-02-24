@@ -15,6 +15,7 @@
  */
 package org.cogchar.api.skeleton.config;
 
+import org.cogchar.name.skeleton.BoneAN;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 

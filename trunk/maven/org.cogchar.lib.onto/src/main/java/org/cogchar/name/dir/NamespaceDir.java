@@ -44,7 +44,7 @@ public class NamespaceDir {
 	
 	// "Config" NSs
 	// Note that this constant ends in "config#", thus it sorta collides with the prefix "config/" use below.
-	public static final String NS_CgcLC = "http://www.cogchar.org/lift/config#";
+	public static final String NS_CgcLC = NSP_LifterRoot + "config#"; // "http://www.cogchar.org  /lift/config#";
 	
 	final private static String NSP_LifterConfigRoot = NSP_LifterRoot + "config/";
 	final public static String NS_LifterCmd = NSP_LifterConfigRoot + "command#";
@@ -55,15 +55,32 @@ public class NamespaceDir {
 	// "Schema" NSs
 	final private static String NSP_SchemaRoot = NSP_Root + "schema/";
 	final public static String NS_SceneTrig = NSP_SchemaRoot + "scene/trigger#";
+	// Used in FancyChan.scala
+	public static	String 		NS_ccScn =	NSP_SchemaRoot + "scene#"; // http://www.cogchar.org  /schema/scene#";
+	public static	String 		NS_ccScnInst = NSP_SchemaRoot + "scene/instance#"; // http://www.cogchar.org  /schema/scene/instance#";	
 	//ActionStrings uses this
 	final public static String NS_CinePathDef = NSP_SchemaRoot + "path/definition#";
 	//But LiftAN uses this:
 	final public static String NS_CineDef = NSP_SchemaRoot + "cinematic/definition#";
 	final public static String NS_ThingAnim = NSP_SchemaRoot + "thinganim/definition#";
-	
-	// Used in LightsCameraAN - probably incorrect
-	public static	String		NS_CgcBC		= "http://www.cogchar.org/bony/config#";
 	// Used in CinemaAN
-	public static	String		NS_CgcCC		= "http://www.cogchar.org/schema/cinematic#";
+	public static	String		NS_CgcCC		= NSP_SchemaRoot + "cinematic#";  // "http://www.cogchar.org  /schema/cinematic#";
+	
+	// Used in LightsCameraAN - possibly incorrect - does repo data match this prefix?
+	public static	String		NS_CgcBC		= "http://www.cogchar.org/bony/config#";
+
+	
+	// From FancyThingModelWriter
+	
+	public static	String RDF_NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+	public static	String XSD_NS = "http://www.w3.org/2001/XMLSchema#";
+
+	public static	String CCRT_NS = NS_CCRT_RT; // "urn:ftd:cogchar.org:2012:runtime#";
+	
+	public static	String TA_NS = NSP_Root + "thing/action#";  // "http://www.cogchar.org  /thing/action#";
+	// public static	String GOODY_NS = "urn:ftd:cogchar.org:2012:goody#"	;
+	
+	public static   String DC_NS = "http://purl.org/dc/elements/1.1/";
+		
 		
 }

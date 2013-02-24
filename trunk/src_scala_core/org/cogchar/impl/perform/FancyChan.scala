@@ -82,9 +82,11 @@ class ChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingCompon
 	}
 }
 
+import org.cogchar.name.dir.NamespaceDir;
+
 object ChannelNames extends org.appdapter.api.trigger.BoxAssemblyNames {
-	val		NS_ccScn =	"http://www.cogchar.org/schema/scene#";
-	val		NS_ccScnInst = "http://www.cogchar.org/schema/scene/instance#";
+	val		NS_ccScn =	NamespaceDir.NS_ccScn // "http://www.cogchar.org /schema/scene#";
+	val		NS_ccScnInst = NamespaceDir.NS_ccScnInst // "http://www.cogchar.org /schema/scene/instance#";
 
 	val		P_details = NS_ccScn + "details";
 	

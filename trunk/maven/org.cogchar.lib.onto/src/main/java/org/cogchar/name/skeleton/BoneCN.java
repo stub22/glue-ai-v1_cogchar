@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.skeleton.config;
+package org.cogchar.name.skeleton;
 
 /**
  * @author Ryan Biggs

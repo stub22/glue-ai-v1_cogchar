@@ -62,15 +62,17 @@ class SparqlTextGen(val myPrefixMap : PrefixMapping ) {
 			PREFIX_DBO = "PREFIX dbo: <http://dbpedia.org/ontology/>\n",
 			PREFIX_BOOKS = "PREFIX books:   <http://example.org/book/>\n",
 			PREFIX_CCRT = "PREFIX ccrt:  <urn:ftd:cogchar.org:2012:runtime#>\n",
-			PREFIX_UA = "PREFIX ua:    <http://www.cogchar.org/lift/user/config#>\n";
+			PREFIX_UA = "PREFIX ua:    <http://www.cogchar.org      /lift/user/config#>\n";
 */
+import org.cogchar.name.dir.{NamespaceDir, AssumedQueryDir, AssumedGraphDir}
+
 object SparqlTextGen extends BasicDebugger {
 	def main(args: Array[String]) : Unit = {
 		// forceLog4jConfig();		
 		val prefixModel : Model = ModelFactory.createDefaultModel();
 		
-		prefixModel.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
-		prefixModel.setNsPrefix("dc", "http://purl.org/dc/elements/1.1/");
+		prefixModel.setNsPrefix("xsd", NamespaceDir.XSD_NS) // "http://www.w3.org/2001/XMLSchema#");
+		prefixModel.setNsPrefix("dc", NamespaceDir.DC_NS) // "http://purl.org/dc/elements/1.1/");
 		
 		val stg = new SparqlTextGen(prefixModel);
 		
@@ -82,7 +84,7 @@ object SparqlTextGen extends BasicDebugger {
 		
 		println("AllDecls:\n" + allDecls);
 		
-		val testGraphQN = "ccrt:user_access_sheet_22";
+		val testGraphQN = AssumedGraphDir.testUserAccessGraphQN // "ccrt:user_access_sheet_22";
 		val testBodyTTL = "<http://weird.com/stuff> dc:title 'Lets all be revolting' ;    dc:creator 'Ernesto G.'. ";
 		val upRqTxt = stg.emitSingleGraphInsert(testGraphQN, testBodyTTL);
 		println("Update Request:\n" + upRqTxt)

@@ -17,6 +17,7 @@
 package org.cogchar.name.thing;
 
 import org.cogchar.name.dir.AssumedQueryDir;
+import org.cogchar.name.dir.NamespaceDir;
 
 /**
  *
@@ -30,7 +31,7 @@ public class ThingCN {
 	// name form in repo. But we need this to be the same as the GOODY_NS for GoodyAction to return GoodyNames.TYPE_BIT_BOX
 	// for a "BitBox" string. So this is sort of nonsense, until we figure out (a) a more handsome BasicTypedValueMap implementation
 	// and/or (b) better ways to structure the repo.
-	public  static String	THING_NS = "urn:ftd:cogchar.org:2012:goody#";
+	public  static String	THING_NS = NamespaceDir.GOODY_NS ; // "urn:ftd:cogchar.org:2012:goody#";
 	
 	public  static String	ACTION_QUERY_URI = AssumedQueryDir.ACTION_QUERY_URI; //  "ccrt:find_thing_actions_99";
 	public  static String	PARAM_QUERY_URI = AssumedQueryDir.PARAM_QUERY_URI; // "ccrt:find_thing_action_params_99";
