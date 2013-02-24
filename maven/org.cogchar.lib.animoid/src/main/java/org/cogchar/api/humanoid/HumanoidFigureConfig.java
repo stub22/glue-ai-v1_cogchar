@@ -17,7 +17,7 @@ package org.cogchar.api.humanoid;
 
 import java.util.List;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.skeleton.config.BoneCN;
+import org.cogchar.name.skeleton.BoneCN;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.RepoClient;

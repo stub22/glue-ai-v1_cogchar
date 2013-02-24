@@ -41,7 +41,7 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.humanoid.HumanoidConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.api.skeleton.config.BoneProjectionRange;
-import org.cogchar.api.skeleton.config.BoneCN;
+import org.cogchar.name.skeleton.BoneCN;
 import org.cogchar.app.puma.vworld.ModelToFigureStateMappingFuncs;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;

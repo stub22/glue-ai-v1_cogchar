@@ -36,7 +36,7 @@ import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 
 import org.osgi.framework.BundleContext;
-import org.cogchar.api.skeleton.config.BoneCN;
+import org.cogchar.name.skeleton.BoneCN;
 import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.app.puma.behavior.PumaBehaviorAgent;
 import org.cogchar.app.puma.behavior.PumaBehaviorManager;

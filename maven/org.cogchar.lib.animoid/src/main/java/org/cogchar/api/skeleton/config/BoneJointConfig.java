@@ -15,6 +15,8 @@
  */
 package org.cogchar.api.skeleton.config;
 
+import org.cogchar.name.skeleton.BoneCN;
+import org.cogchar.name.skeleton.BoneAN;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

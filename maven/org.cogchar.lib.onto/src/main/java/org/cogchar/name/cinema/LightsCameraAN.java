@@ -22,7 +22,7 @@ import org.cogchar.name.dir.NamespaceDir;
  * @author Ryan Biggs
  */
 public class LightsCameraAN extends BoxAssemblyNames {
-	public static	String		NS_CgcBC		= NamespaceDir.NS_CgcBC; // "http://www.cogchar.org/bony/config#";
+	public static	String		NS_CgcBC		= NamespaceDir.NS_CgcBC; // "http://www.cogchar.org  /bony/config#";
 	
 	public static	String		partial_P_camera = "camera";
 	

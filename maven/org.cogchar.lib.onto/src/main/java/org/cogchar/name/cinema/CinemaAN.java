@@ -22,7 +22,7 @@ import org.cogchar.name.dir.NamespaceDir;
  * @author Ryan Biggs
  */
 public class CinemaAN extends BoxAssemblyNames {
-	public static	String		NS_CgcCC		= NamespaceDir.NS_CgcCC; // "http://www.cogchar.org/schema/cinematic#";
+	public static	String		NS_CgcCC		= NamespaceDir.NS_CgcCC; // "http://www.cogchar.org  /schema/cinematic#";
 	
 	public static	String		P_namedTrack	= "track_";
 	

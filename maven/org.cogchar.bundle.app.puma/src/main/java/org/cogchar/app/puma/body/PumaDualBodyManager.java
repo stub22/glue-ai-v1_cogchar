@@ -25,7 +25,7 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
 import org.cogchar.name.entity.EntityRoleCN;
-import org.cogchar.api.skeleton.config.BoneCN;
+import org.cogchar.name.skeleton.BoneCN;
 /**
  * @author Stu B. <www.texpedient.com>
  */

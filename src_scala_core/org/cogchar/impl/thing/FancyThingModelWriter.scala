@@ -40,17 +40,18 @@ import org.cogchar.api.thing.{TypedValueMap, ThingActionSpec}
 
 import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
 import org.cogchar.blob.emit.{SparqlTextGen}
+import org.cogchar.name.dir.{NamespaceDir}
 
 class FancyThingModelWriter extends BasicDebugger {
 	
 
-	val RDF_NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	val XSD_NS = "http://www.w3.org/2001/XMLSchema#"
+	val RDF_NS = NamespaceDir.RDF_NS; // "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	val XSD_NS = NamespaceDir.XSD_NS; // "http://www.w3.org/2001/XMLSchema#"
 
-	val CCRT_NS = "urn:ftd:cogchar.org:2012:runtime#"
+	val CCRT_NS = NamespaceDir.CCRT_NS; // "urn:ftd:cogchar.org:2012:runtime#"
 	
-	val TA_NS = "http://www.cogchar.org/thing/action#"
-	val GOODY_NS = "urn:ftd:cogchar.org:2012:goody#"
+	val TA_NS = NamespaceDir.TA_NS; // "http://www.cogchar.org  /thing/action#"
+	val GOODY_NS = NamespaceDir.GOODY_NS; // "urn:ftd:cogchar.org:2012:goody#"
 	
 	
 	import java.util.Random;
