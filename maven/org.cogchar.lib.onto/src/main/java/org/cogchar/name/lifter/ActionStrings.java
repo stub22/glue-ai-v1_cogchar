@@ -16,6 +16,9 @@
 
 package org.cogchar.name.lifter;
 
+import org.cogchar.name.dir.NamespaceDir;
+import org.cogchar.name.dir.TempNamespaceDir;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -54,17 +57,17 @@ public class ActionStrings {
 	  final public static String DATABALLS_TOKEN = "databalls";
 	  
 	  // These are URI prefixes for actions
-	  final public static String p_liftcmd = "http://www.cogchar.org/lift/config/command#";
-	  final public static String p_liftvar = "http://www.cogchar.org/lift/config/variable#";
-	  final public static String p_liftsessionvar = "http://www.cogchar.org/lift/config/sessionVariable#";
-	  final public static String p_scenetrig = "http://www.cogchar.org/schema/scene/trigger#";
-	  final public static String p_liftconfig = "http://www.cogchar.org/lift/config/configroot#";
-	  final public static String p_cinematic = "http://www.cogchar.org/schema/path/definition#";
-	  final public static String p_thinganim = "http://www.cogchar.org/schema/thinganim/definition#";
-	  final public static String p_lifterQuery = "http://www.cogchar.org/lift/action/query#";
+	  final public static String p_liftcmd = NamespaceDir.NS_LifterCmd;
+	  final public static String p_liftvar = NamespaceDir.NS_LifterVar;
+	  final public static String p_liftsessionvar = NamespaceDir.NS_LifterSessionVar;
+	  final public static String p_scenetrig = NamespaceDir.NS_SceneTrig;
+	  final public static String p_liftconfig = NamespaceDir.NS_LifterConfig;
+	  final public static String p_cinematic = NamespaceDir.NS_CinePathDef;
+	  final public static String p_thinganim = NamespaceDir.NS_ThingAnim;
+	  final public static String p_lifterQuery = NamespaceDir.NS_LifterQuery;
 	  // Right now animations use this prefix, but other things do too.
 	  // Really we should pick a unique one for animations (p_scenetrig derivative?) to avoid confusion
-	  final public static String p_anim = "http://www.hrkind.com/model#" ;
+	  final public static String p_anim = TempNamespaceDir.NS_TestAnimSrc;
 	  
 	  final public static String LIFT_REFRESH_UPDATE_NAME = "ManagedGlobalConfigService";
 	  

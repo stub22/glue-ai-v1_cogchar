@@ -16,6 +16,8 @@
 
 package org.cogchar.name.thing;
 
+import org.cogchar.name.dir.AssumedQueryDir;
+
 /**
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
@@ -30,8 +32,8 @@ public class ThingCN {
 	// and/or (b) better ways to structure the repo.
 	public  static String	THING_NS = "urn:ftd:cogchar.org:2012:goody#";
 	
-	public  static String	ACTION_QUERY_URI = "ccrt:find_thing_actions_99";
-	public  static String	PARAM_QUERY_URI = "ccrt:find_thing_action_params_99";
+	public  static String	ACTION_QUERY_URI = AssumedQueryDir.ACTION_QUERY_URI; //  "ccrt:find_thing_actions_99";
+	public  static String	PARAM_QUERY_URI = AssumedQueryDir.PARAM_QUERY_URI; // "ccrt:find_thing_action_params_99";
 
 	public  static String	ACTION_QUERY_VAR_NAME = "attachedToAction";
 	

@@ -17,6 +17,7 @@
 
 package org.cogchar.api.cinema;
 
+import org.cogchar.name.cinema.CinemaCN;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;

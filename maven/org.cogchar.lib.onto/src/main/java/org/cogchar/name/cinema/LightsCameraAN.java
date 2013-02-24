@@ -13,15 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.cinema;
+package org.cogchar.name.cinema;
 
 import org.appdapter.api.trigger.BoxAssemblyNames;
+import org.cogchar.name.dir.NamespaceDir;
 
 /**
  * @author Ryan Biggs
  */
 public class LightsCameraAN extends BoxAssemblyNames {
-	public static	String		NS_CgcBC		= "http://www.cogchar.org/bony/config#";
+	public static	String		NS_CgcBC		= NamespaceDir.NS_CgcBC; // "http://www.cogchar.org/bony/config#";
 	
 	public static	String		partial_P_camera = "camera";
 	

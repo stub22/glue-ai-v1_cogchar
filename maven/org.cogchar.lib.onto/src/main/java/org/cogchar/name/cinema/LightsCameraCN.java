@@ -14,7 +14,9 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.cinema;
+package org.cogchar.name.cinema;
+
+import org.cogchar.name.dir.AssumedQueryDir;
 
 /**
  *
@@ -23,9 +25,9 @@ package org.cogchar.api.cinema;
 
 
 public class LightsCameraCN {
-	public final static String CAMERA_QUERY_URI = "ccrt:find_cameras_99";
-	public final static String LIGHT_QUERY_URI = "ccrt:find_lights_99";
-	public final static String BACKGROUND_COLOR_QUERY_URI = "ccrt:find_background_color_99";
+	public final static String CAMERA_QUERY_URI = AssumedQueryDir.CAMERA_QUERY_URI; // "ccrt:find_cameras_99";
+	public final static String LIGHT_QUERY_URI = AssumedQueryDir.LIGHT_QUERY_URI; // "ccrt:find_lights_99";
+	public final static String BACKGROUND_COLOR_QUERY_URI = AssumedQueryDir.BACKGROUND_COLOR_QUERY_URI; //"ccrt:find_background_color_99";
 	
 	public final static String CAMERA_NAME_VAR_NAME = "camera";
 	public final static String[] POSITION_VAR_NAME = {"xPos", "yPos", "zPos"};

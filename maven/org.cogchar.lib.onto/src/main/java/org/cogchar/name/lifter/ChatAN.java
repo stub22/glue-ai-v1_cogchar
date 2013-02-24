@@ -16,13 +16,14 @@
 package org.cogchar.name.lifter;
 
 import org.appdapter.api.trigger.BoxAssemblyNames;
+import org.cogchar.name.dir.NamespaceDir;
 
 /**
  * @author Ryan Biggs
  */
 public class ChatAN extends BoxAssemblyNames {
 
-	public static final String NS_CgcChC = "http://www.cogchar.org/chat/config#";
+	public static final String NS_CgcChC =  NamespaceDir.NS_ChatAssmbl;
 	public static final String partial_P_config = "config";
 	public static final String P_config = NS_CgcChC + partial_P_config;
 	public static final String P_entry = NS_CgcChC + "hasEntry";

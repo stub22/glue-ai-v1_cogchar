@@ -363,7 +363,7 @@ public class LiftAmbassador {
 	public void login(String sessionId, String userName, String password) {
 		// I believe this doesn't need to be synchronized...
 		if (myUserMap != null) {
-			Ident userIdent = new FreeIdent(LiftAN.P_user + userName, userName);
+			Ident userIdent = new FreeIdent(LiftAN.NS_user + userName, userName);
 			if (myUserMap.containsKey(userIdent)) {
 				String hashedEnteredPassword = LiftCrypto.getStringFromBytes(LiftCrypto.getHash(password, myUserMap.get(userIdent).salt));
 				if (myUserMap.get(userIdent).hashedPassword.equals(hashedEnteredPassword)) {

@@ -16,6 +16,7 @@
 
 package org.cogchar.api.cinema;
 
+import org.cogchar.name.cinema.CinemaCN;
 import java.util.HashMap;
 import java.util.Map;
 import org.appdapter.core.name.Ident;

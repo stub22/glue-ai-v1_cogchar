@@ -15,6 +15,7 @@
  */
 package org.cogchar.api.cinema;
 
+import org.cogchar.name.cinema.CinemaCN;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
