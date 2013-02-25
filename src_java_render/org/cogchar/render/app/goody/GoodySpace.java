@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies;
+package org.cogchar.render.app.goody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +23,14 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.ThingActionUpdater;
+import org.cogchar.render.model.goodies.BasicGoody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * Render-side 
  */
 
 public class GoodySpace {

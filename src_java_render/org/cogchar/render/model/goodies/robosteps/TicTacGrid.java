@@ -16,6 +16,9 @@
 
 package org.cogchar.render.model.goodies.robosteps;
 
+import org.cogchar.render.app.goody.GoodyAction;
+import org.cogchar.render.app.goody.GoodySpace;
+import org.cogchar.render.app.goody.GoodyFactory;
 import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;

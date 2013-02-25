@@ -16,6 +16,7 @@
 
 package org.cogchar.render.model.bony;
 
+import org.cogchar.render.sys.module.RenderModule;
 import org.cogchar.render.gui.bony.VirtCharPanel;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.sys.physics.GeneralScoreBoard;

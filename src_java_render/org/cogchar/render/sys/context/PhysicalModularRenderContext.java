@@ -15,7 +15,7 @@
  */
 package org.cogchar.render.sys.context;
 
-import org.cogchar.render.sys.context.ModularRenderContext;
+import org.cogchar.render.sys.module.ModularRenderContext;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
