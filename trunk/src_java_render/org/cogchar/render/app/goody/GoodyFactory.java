@@ -14,12 +14,17 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies;
+package org.cogchar.render.app.goody;
 
 import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
+import org.cogchar.render.model.goodies.BasicGoody;
+import org.cogchar.render.model.goodies.CrossHairGoody;
+import org.cogchar.render.model.goodies.ScoreBoardGoody;
+import org.cogchar.render.model.goodies.TextGoody;
+import org.cogchar.render.model.goodies.VirtualFloor;
 import org.cogchar.render.model.goodies.robosteps.BitBox;
 import org.cogchar.render.model.goodies.robosteps.BitCube;
 import org.cogchar.render.model.goodies.robosteps.TicTacGrid;

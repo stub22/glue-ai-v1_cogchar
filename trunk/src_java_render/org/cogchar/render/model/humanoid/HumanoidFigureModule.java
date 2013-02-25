@@ -15,7 +15,7 @@
  */
 package org.cogchar.render.model.humanoid;
 
-import org.cogchar.render.model.bony.RenderModule;
+import org.cogchar.render.sys.module.RenderModule;
 import org.cogchar.render.model.bony.FigureState;
 import org.cogchar.render.app.bony.BonyRenderContext;
 

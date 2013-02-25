@@ -16,6 +16,8 @@
 
 package org.cogchar.render.model.goodies;
 
+import org.cogchar.render.app.goody.GoodyAction;
+import org.cogchar.render.app.goody.GoodyFactory;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;

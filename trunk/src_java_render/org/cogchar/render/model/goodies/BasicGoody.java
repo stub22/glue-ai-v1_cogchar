@@ -16,6 +16,7 @@
 
 package org.cogchar.render.model.goodies;
 
+import org.cogchar.render.app.goody.GoodyAction;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;

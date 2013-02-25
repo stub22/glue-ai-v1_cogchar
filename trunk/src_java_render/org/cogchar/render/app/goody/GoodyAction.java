@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies;
+package org.cogchar.render.app.goody;
 
 import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.ColorRGBA;
@@ -25,8 +25,9 @@ import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.TypedValueMap;
 
 /**
- * Typically used in the OpenGL server process to interpret an actionSpec found in a repo.
- * An HTTP-client would not normally use this class.
+ * Typically used in our OpenGL server process to interpret an actionSpec found in a repo.
+ * An HTTP-client would not normally use this class directly.  Instead,
+ * see the client side classes in the org.cogchar.outer.client.goody package.
  * 
  * @author Stu B. <www.texpedient.com> and Ryan B.
  */
