@@ -22,17 +22,12 @@ import org.cogchar.name.dir.NamespaceDir;
 /**
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
+ * @author stub22
  */
 
 
 public class ThingCN {
-	
-	// Hmmmm - this is used to by BasicTypedValueMapImpl to generate URIs from parameters originally in string local
-	// name form in repo. But we need this to be the same as the GOODY_NS for GoodyAction to return GoodyNames.TYPE_BIT_BOX
-	// for a "BitBox" string. So this is sort of nonsense, until we figure out (a) a more handsome BasicTypedValueMap implementation
-	// and/or (b) better ways to structure the repo.
-	public  static String	THING_NS = NamespaceDir.GOODY_NS ; // "urn:ftd:cogchar.org:2012:goody#";
-	
+	public  static String	THING_NS = NamespaceDir.TA_NS ; 
 	public  static String	ACTION_QUERY_URI = AssumedQueryDir.ACTION_QUERY_URI; //  "ccrt:find_thing_actions_99";
 	public  static String	PARAM_QUERY_URI = AssumedQueryDir.PARAM_QUERY_URI; // "ccrt:find_thing_action_params_99";
 
@@ -47,6 +42,17 @@ public class ThingCN {
 	public  static String	TARGET_VAR_NAME = "tgtThingID";
 	
 	public  static String	TARGET_TYPE_VAR_NAME = "tgtThingTypeID";
+	
+	 
+	 
+    /** This explicit PARAM representation is used in our "weak" form of ThingAct-Param rep. 
+	 * In this form, each param is explicitly reified as a resource.
+	 * The "strong" form simply uses all *qualified* RDF-properties of the ThingAct as params, 
+	 * where qual happens through RDF-sub-property relationship to an explicit/inferred marker.
+	 * 
+	 * Both forms are implemented in FancyThingModelWriter.scala.
+	 */
+
 	public  static String	PARAM_IDENT_VAR_NAME = "actParamID";
 	public  static String	PARAM_VALUE_VAR_NAME = "actParamVal";
 }
