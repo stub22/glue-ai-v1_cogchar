@@ -104,7 +104,7 @@ object RepoClientTester {
 											DFLT_DIRECTORY_SHEET_NUM, fileResModelCLs);
 	}
 	def main(args: Array[String]) : Unit = {
-		// Must enable "compile" scope for Log4J dep in order to compile this code.
+		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		
@@ -115,6 +115,11 @@ object RepoClientTester {
 		
 		val rspec = makeDfltOSRS();
 		 
+		// Since we've got a SheetRepoSpec, makeRepo calls:   
+		// 	RepoTester.loadSheetRepo(sheetKey, namespaceSheetNum, dirSheetNum, fileModelCLs)
+		// 	which loads the directory and then calls:
+		// 	shRepo.loadSheetModelsIntoMainDataset()
+		// 	shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
 		val dfltTestRepo = rspec.makeRepo();
 		
 		// At this point, we can forget that the repo came from a spreadsheet, at least for
@@ -136,7 +141,6 @@ object RepoClientTester {
 		// ( ?colorR = "0.8" ) ( ?colorG = "0.8" ) ( ?colorB = "0.8" ) ( ?colorAlpha = "1" )]
 		// 
 		 
-		
 		RepoTester.testRepoDirect(dfltTestRepo, rspec.getDfltQrySrcGraphQName, lightsQueryQN, 
 								  rspec.getDfltTgtGraphSparqlVarName, lightsGraphQN)
 		
@@ -207,7 +211,6 @@ object RepoClientTester {
 		val encoding = "UTF8";
 		val lightsOutTurtle = baos.toString(encoding)
 		println ("Wrote turtle dump of lights model:\n" + lightsOutTurtle)
-		
 	}
 
   	def makeRepoClient(fr : FancyRepo, queryTargetVarName:  String, querySheetQN : String) : RepoClient = {
