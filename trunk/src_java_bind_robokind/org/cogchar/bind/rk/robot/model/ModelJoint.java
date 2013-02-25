@@ -70,13 +70,14 @@ public class ModelJoint extends AbstractJoint {
         List<BoneProjectionRange> projRanges = getBoneRotationRanges();
         if(projRanges == null || projRanges.isEmpty()){
             myNormalizableRange = NormalizableRange.NORMALIZED_RANGE;
-        }
-        BoneProjectionRange range = projRanges.get(0);
-        double min = range.getMinPosAngRad();
-        double max = range.getMaxPosAngRad();
-        myNormalizableRange = new DoubleRange(min, max);
+		} else {
+	        BoneProjectionRange range = projRanges.get(0);
+			double min = range.getMinPosAngRad();
+			double max = range.getMaxPosAngRad();
+			myNormalizableRange = new DoubleRange(min, max);
+		}
 		if (flag_hardResetGoalPosToDefault) {
-			hardResetGoalPosToDefault();
+				hardResetGoalPosToDefault();
 		}
 	}
 	private void hardResetGoalPosToDefault() { 
