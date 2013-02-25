@@ -25,7 +25,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.cinema.SpatialActionConfig;
 import org.cogchar.render.model.goodies.BasicGoody;
 import org.cogchar.render.model.goodies.BasicGoodyImpl;
-import org.cogchar.render.model.goodies.GoodyFactory;
+import org.cogchar.render.app.goody.GoodyFactory;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;

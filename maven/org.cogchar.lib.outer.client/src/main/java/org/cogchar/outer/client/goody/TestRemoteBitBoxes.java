@@ -3,13 +3,13 @@
  * and open the template in the editor.
  */
 
-package org.cogchar.outer.client;
+package org.cogchar.outer.client.goody;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.BasicThingActionSpec;
-import org.cogchar.render.model.goodies.GoodyActionParamWriter;
+import org.cogchar.outer.client.goody.GoodyActionParamWriter;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.api.thing.BasicTypedValueMap;
 import org.cogchar.api.thing.ThingActionSpec;
@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 
 import java.util.Random;
 import org.cogchar.api.thing.TypedValueMap;
+import org.cogchar.outer.client.AgentRepoClient;
+import org.cogchar.outer.client.TestOuterClientSOH;
 /**
  * @author Stu B. <www.texpedient.com>
  */

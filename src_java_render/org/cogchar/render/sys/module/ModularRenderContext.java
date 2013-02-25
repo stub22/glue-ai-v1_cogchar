@@ -13,15 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.sys.context;
+package org.cogchar.render.sys.module;
 
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.appdapter.api.module.Module;
-import org.cogchar.render.model.bony.CogcharRenderModulator;
 import org.cogchar.render.model.goodies.DataballGoodyBuilder;
+import org.cogchar.render.sys.context.CogcharRenderContext;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * @author rbiggs
+ * Stu 2013-02-24: The ball-builder stuff probably doesn't belong here.
  */
 public class ModularRenderContext extends CogcharRenderContext {
 	private		CogcharRenderModulator			myRenderModulator;
@@ -47,6 +49,7 @@ public class ModularRenderContext extends CogcharRenderContext {
 		if (thisBallBuilderSet) {myBallBuilder.applyUpdates(tpf);} // tpf is passed to BallBuilder only for debugging now; it may get used more broadly eventally or may be removed from the method
 		myRenderModulator.runOneCycle(tpf);
 	}
+	
 	// Adding a method to manage locally stored BallBuilder instance. We could get it using BallBuilder.getBallBuilder
 	// each time we need it, but that's once per update cycle. 
 	public void setTheBallBuilder(DataballGoodyBuilder theBallBuilder) {

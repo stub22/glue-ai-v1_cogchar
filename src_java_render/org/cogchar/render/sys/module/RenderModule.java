@@ -1,5 +1,5 @@
 /*
- *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
+ *  Copyright 2012 by The Appdapter Project (www.appdapter.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,27 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.model.bony;
+package org.cogchar.render.sys.module;
 
-import org.appdapter.module.basic.BasicModulator;
+import org.cogchar.render.sys.module.CogcharRenderModulator;
+import org.appdapter.module.basic.EmptyTimedModule;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class CogcharRenderModulator extends BasicModulator<CogcharRenderModulator> {
+public abstract class RenderModule extends EmptyTimedModule<CogcharRenderModulator> {
 
-	private		float			myCurrentTimePerFrame;
-	
-	public CogcharRenderModulator() { 
-		super(null, true);
-		setDefaultContext(this);
+	protected abstract void doRenderCycle(long runSeqNum, float timePerFrame);
+
+	@Override public synchronized void doRunOnce(CogcharRenderModulator rm, long runSeqNum) {		
+		float currentTPF = rm.getCurrentTimePerFrame();
+		doRenderCycle(runSeqNum, currentTPF);
 	}
-	public float getCurrentTimePerFrame() { 
-		return myCurrentTimePerFrame;
-	}	
-	public synchronized void runOneCycle(float tpf) {
-		myCurrentTimePerFrame = tpf;
-		processOneBatch();
+	
+	public void setDebugRateModulus(int drm) {
+		myRunDebugModulus = drm;
 	}
 
 }

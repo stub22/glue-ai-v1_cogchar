@@ -29,7 +29,7 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.render.model.goodies.BasicGoodyImpl;
 import org.cogchar.render.model.goodies.CompositeMeshBuilder;
 import org.cogchar.render.model.goodies.CompositeMeshBuilder.MeshComponent;
-import org.cogchar.render.model.goodies.GoodyAction;
+import org.cogchar.render.app.goody.GoodyAction;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
