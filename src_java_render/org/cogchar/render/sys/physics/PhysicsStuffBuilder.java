@@ -39,7 +39,7 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.model.goodies.VirtualFloor;
+import org.cogchar.render.goody.basic.VirtualFloor;
 import org.cogchar.render.opengl.optic.LightFactory;
 import org.cogchar.render.opengl.scene.GeomFactory;
 import org.cogchar.render.sys.context.CogcharRenderContext;

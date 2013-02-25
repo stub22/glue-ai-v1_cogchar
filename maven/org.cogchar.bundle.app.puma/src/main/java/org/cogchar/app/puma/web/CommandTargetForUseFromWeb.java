@@ -21,7 +21,7 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.lift.LiftAmbassador;
-import org.cogchar.render.model.goodies.DataballGoodyBuilder;
+import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.cogchar.render.opengl.scene.PathMgr;
 import org.cogchar.render.opengl.scene.SpatialAnimMgr;
 /**

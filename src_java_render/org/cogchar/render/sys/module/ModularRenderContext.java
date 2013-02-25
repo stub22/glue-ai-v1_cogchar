@@ -17,7 +17,7 @@ package org.cogchar.render.sys.module;
 
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.appdapter.api.module.Module;
-import org.cogchar.render.model.goodies.DataballGoodyBuilder;
+import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 
 /**

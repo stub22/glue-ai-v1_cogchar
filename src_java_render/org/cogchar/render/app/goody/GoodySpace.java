@@ -23,7 +23,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.ThingActionUpdater;
-import org.cogchar.render.model.goodies.BasicGoody;
+import org.cogchar.render.goody.basic.BasicGoody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,6 +16,7 @@
 
 package org.cogchar.render.goody.bit;
 
+import org.cogchar.render.goody.basic.BasicGoodyImpl;
 import org.cogchar.render.app.goody.GoodyAction;
 import org.cogchar.render.app.goody.GoodySpace;
 import org.cogchar.render.app.goody.GoodyFactory;
@@ -31,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.model.goodies.CompositeMeshBuilder.MeshComponent;
-import org.cogchar.render.model.goodies.*;
+import org.cogchar.render.goody.basic.CompositeMeshBuilder;
+import org.cogchar.render.goody.basic.CompositeMeshBuilder.MeshComponent;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
