@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies;
+package org.cogchar.render.goody.basic;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
