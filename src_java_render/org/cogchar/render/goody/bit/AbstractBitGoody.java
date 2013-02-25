@@ -17,7 +17,7 @@
 package org.cogchar.render.goody.bit;
 
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.model.goodies.BasicGoodyImpl;
+import org.cogchar.render.goody.basic.BasicGoodyImpl;
 import org.cogchar.render.app.goody.GoodyAction;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.sys.registry.RenderRegistryClient;

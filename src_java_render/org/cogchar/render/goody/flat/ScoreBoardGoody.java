@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.model.goodies.BasicGoody;
+import org.cogchar.render.goody.basic.BasicGoody;
 import org.cogchar.render.sys.physics.GeneralScoreBoard;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 

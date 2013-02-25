@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies;
+package org.cogchar.render.goody.basic;
 
 import org.cogchar.render.app.goody.GoodyAction;
 import com.jme3.animation.*;

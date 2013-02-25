@@ -30,7 +30,7 @@ import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
-import org.cogchar.render.model.goodies.DataballGoodyBuilder;
+import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.cogchar.render.app.goody.GoodyFactory;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.cogchar.render.sys.input.VW_HelpScreenMgr;
