@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies.robosteps;
+package org.cogchar.render.goody.bit;
 
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.model.goodies.BasicGoodyImpl;

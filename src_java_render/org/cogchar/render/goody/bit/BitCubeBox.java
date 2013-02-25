@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.model.goodies.robosteps;
+package org.cogchar.render.goody.bit;
 
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.shape.Box;

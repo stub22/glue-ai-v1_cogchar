@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies;
+package org.cogchar.render.goody.flat;
 
 import org.cogchar.render.app.goody.GoodyAction;
 import org.cogchar.render.app.goody.GoodyFactory;
@@ -24,6 +24,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.model.goodies.BasicGoody;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 

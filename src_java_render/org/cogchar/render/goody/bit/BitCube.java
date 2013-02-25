@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies.robosteps;
+package org.cogchar.render.goody.bit;
 
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
