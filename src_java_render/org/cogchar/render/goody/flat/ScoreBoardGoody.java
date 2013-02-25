@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies;
+package org.cogchar.render.goody.flat;
 
 import org.cogchar.render.app.goody.GoodyAction;
 import org.cogchar.name.goody.GoodyNames;
@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.model.goodies.BasicGoody;
 import org.cogchar.render.sys.physics.GeneralScoreBoard;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 

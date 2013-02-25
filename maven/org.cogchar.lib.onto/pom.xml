@@ -34,7 +34,12 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.6.1</version>
-			<scope>runtime</scope>
+			<!-- This is needed if we want to see messages from jena running inside the codegen plugin below - 
+			how do we apply it only in that scope? 
+			   At "runtime" scope here, it propagates out and must be excluded by importers
+			   (unless they are "Simple" logger fans; but it doesn't let us configure by level!).  
+			   -->
+			<scope>test</scope>
 		</dependency>
 	
 		

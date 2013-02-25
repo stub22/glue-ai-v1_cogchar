@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.model.goodies;
+package org.cogchar.render.goody.flat;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
