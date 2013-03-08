@@ -28,6 +28,36 @@ public class ChannelBindingConfig {
     public ChannelType myChannelType;
     public String myOSGiFilterString;
     public String myChannelURI;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ChannelBindingConfig other = (ChannelBindingConfig) obj;
+        if (this.myChannelType != other.myChannelType) {
+            return false;
+        }
+        if ((this.myOSGiFilterString == null) ? (other.myOSGiFilterString != null) : !this.myOSGiFilterString.equals(other.myOSGiFilterString)) {
+            return false;
+        }
+        if ((this.myChannelURI == null) ? (other.myChannelURI != null) : !this.myChannelURI.equals(other.myChannelURI)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 83 * hash + (this.myChannelType != null ? this.myChannelType.hashCode() : 0);
+        hash = 83 * hash + (this.myOSGiFilterString != null ? this.myOSGiFilterString.hashCode() : 0);
+        hash = 83 * hash + (this.myChannelURI != null ? this.myChannelURI.hashCode() : 0);
+        return hash;
+    }
     
     public static enum ChannelType{
         SPEECH("fakeSpeechURI", SpeechService.class), 
