@@ -28,6 +28,7 @@ import com.hp.hpl.jena.assembler.{Assembler, Mode}
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
+import org.cogchar.name.behavior.{SceneFieldNames}
 import org.cogchar.api.perform.{Channel, Media, BasicChannel, Performance};
 import org.cogchar.impl.perform.{FancyTime, ChannelSpec, ChannelNames};
 
@@ -124,23 +125,5 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 
 	}
 }
-object SceneFieldNames extends org.appdapter.core.component.ComponentAssemblyNames {
-	val		NS_ccScn =	ChannelNames.NS_ccScn;
-	val		NS_ccScnInst = ChannelNames.NS_ccScnInst;
 
-	val		P_behavior	= NS_ccScn + "behavior";
-	val		P_channel	= NS_ccScn + "channel";	
-	val		P_trigger	= NS_ccScn + "trigger";
-	
-	val		P_steps				= NS_ccScn + "steps";	// Plural indicates RDF-collection
-	val		P_startOffsetSec	= NS_ccScn + "startOffsetSec";
-	val		P_text				= NS_ccScn + "text";
-	val		P_path				= NS_ccScn + "path";
-	
-	val		P_rules				= NS_ccScn + "rules";
-	val		P_query				= NS_ccScn + "query";	
-	
-	val		N_rooty		=		"rooty";
-	val		I_rooty		=		NS_ccScnInst + N_rooty;
-}
 

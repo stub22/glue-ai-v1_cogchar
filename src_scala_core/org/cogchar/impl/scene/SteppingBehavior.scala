@@ -31,6 +31,8 @@ import org.appdapter.api.module.Module.State;
 
 import org.cogchar.impl.perform.{ChannelSpec};
 import org.appdapter.core.log.{BasicDebugger, Loggable};
+import org.cogchar.name.behavior.{SceneFieldNames};
+
 /**
  * @author Stu B. <www.texpedient.com>
  */

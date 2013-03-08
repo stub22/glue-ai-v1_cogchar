@@ -38,7 +38,7 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.{Resource, Model, InfModel, ModelFactory};
 import com.hp.hpl.jena.query.{ResultSet, ResultSetFormatter, ResultSetFactory, ResultSetRewindable};
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-
+import org.cogchar.name.behavior.{SceneFieldNames};
 
 /**
  * @author Stu B. <www.texpedient.com>
