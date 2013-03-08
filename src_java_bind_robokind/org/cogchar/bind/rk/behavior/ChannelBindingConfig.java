@@ -15,12 +15,38 @@
  */
 package org.cogchar.bind.rk.behavior;
 
+import org.cogchar.api.perform.Channel;
+import org.robokind.api.animation.player.AnimationPlayer;
+import org.robokind.api.speech.SpeechService;
+
+
 /**
  *
  * @author Matthew Stevenson <www.robokind.org>
  */
 public class ChannelBindingConfig {
-    public Class myServiceClass;
+    public ChannelType myChannelType;
     public String myOSGiFilterString;
     public String myChannelURI;
+    
+    public static enum ChannelType{
+        SPEECH("fakeSpeechURI", SpeechService.class), 
+        ANIMATION("fakeAnimationURI", AnimationPlayer.class);
+        
+        private String myChannelTypeURI;
+        private Class myChannelTypeClass;
+        
+        private ChannelType(String uri, Class serviceClass){
+            myChannelTypeURI = uri;
+            myChannelTypeClass = serviceClass;
+        }
+        
+        public String getURI(){
+            return myChannelTypeURI;
+        }
+        
+        public Class getServiceClass(){
+            return myChannelTypeClass;
+        }
+    }
 }
