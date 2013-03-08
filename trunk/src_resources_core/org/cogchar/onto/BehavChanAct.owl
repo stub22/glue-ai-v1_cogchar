@@ -131,6 +131,14 @@
     
 
 
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasContentFilePath -->
+
+    <owl:DatatypeProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasContentFilePath">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasData"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.coghcar.org/onto/behavChan_2012/hasContentXml -->
 
     <owl:DatatypeProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasContentXml">
@@ -170,6 +178,14 @@
         <rdfs:comment>A long number of millisec using the java convention.</rdfs:comment>
         <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasData"/>
         <rdfs:range rdf:resource="&xsd;long"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/hasKeyframeCount -->
+
+    <owl:DatatypeProperty rdf:about="http://www.coghcar.org/onto/behavChan_2012/hasKeyframeCount">
+        <rdfs:subPropertyOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/hasData"/>
     </owl:DatatypeProperty>
     
 
@@ -622,6 +638,14 @@ A Job is controlled and monitored using ThingActs.</rdfs:comment>
     <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/QueryBehav">
         <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/Behav"/>
         <rdfs:comment>Check a query against some set of graphs.  If result passes a predicate, take some action.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.coghcar.org/onto/behavChan_2012/RepoGraph -->
+
+    <owl:Class rdf:about="http://www.coghcar.org/onto/behavChan_2012/RepoGraph">
+        <rdfs:subClassOf rdf:resource="http://www.coghcar.org/onto/behavChan_2012/SysThingy"/>
     </owl:Class>
     
 
