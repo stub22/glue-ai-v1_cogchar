@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.rk.behavior;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import org.cogchar.impl.scene.SceneSpec;
@@ -39,6 +40,7 @@ public class SceneSpecExtender extends ServiceClassListener<SceneSpec>{
         super(SceneSpec.class, context, bindingConfigOSGiFilter);
         myManagerFactory = new OSGiComponentFactory(context);
         mySceneRegistrationProperties = sceneRegistrationProps;
+        myManagerMap = new HashMap();
     }
 
     @Override
