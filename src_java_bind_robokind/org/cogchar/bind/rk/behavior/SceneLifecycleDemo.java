@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.rk.behavior;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -68,6 +69,11 @@ public class SceneLifecycleDemo {
         runnables.add(getRegistrationRunnable(context, ChannelBindingConfig.class, bindingConfig, null, null));
         runnables.add(theaterRun);
         
+        Collections.shuffle(runnables);
+        
+        for(Runnable run : runnables){
+            run.run();
+        }
     }
     
     private static Runnable getRegistrationRunnable(
