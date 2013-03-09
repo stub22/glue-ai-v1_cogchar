@@ -43,6 +43,7 @@ public class ServiceChannelExtender extends ServiceClassListener<ChannelBindingC
 
     @Override
     protected void addService(ChannelBindingConfig t) {
+        //Called whenever a ChannelBindingConfig matching the OSGi filter is registered
         if(t == null || myManagerMap.containsKey(t)){
             return;
         }
@@ -54,6 +55,7 @@ public class ServiceChannelExtender extends ServiceClassListener<ChannelBindingC
 
     @Override
     protected void removeService(ChannelBindingConfig t) {
+        //Called whenever a ChannelBindingConfig is unregistered
         if(t == null){
             return;
         }

@@ -17,11 +17,11 @@
 package org.cogchar.bind.rk.osgi;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
-import org.cogchar.bind.rk.behavior.SceneLifecycleDemo;
+//import org.cogchar.bind.rk.behavior.SceneLifecycleDemo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.osgi.framework.BundleContext;
-import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
+//import org.robokind.ui.swing.common.lifecycle.ServicesFrame;
 /**
  *
  * @author Stu B. <www.texpedient.com>
