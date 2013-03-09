@@ -19,6 +19,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import org.cogchar.impl.scene.SceneSpec;
 import org.cogchar.bind.rk.behavior.ChannelBindingConfig.ChannelType;
 import org.jflux.api.core.Listener;
 import org.osgi.framework.BundleContext;
@@ -62,15 +63,16 @@ public class SceneLifecycleDemo {
         
         SpeechService speechService = getSpeechService();
         
-//        SceneSpec spec = new SceneSpec();
+        SceneSpec spec = new SceneSpec();
         
+        //Showing that the start up order does not matter by shuffling the order
         List<Runnable> runnables = new ArrayList<Runnable>();
         runnables.add(sseRun);
         runnables.add(sceRun);
         runnables.add(getRegistrationRunnable(context, SpeechService.class, speechService, SpeechService.PROP_ID, "testService"));
         runnables.add(getRegistrationRunnable(context, ChannelBindingConfig.class, bindingConfig, null, null));
+        runnables.add(getRegistrationRunnable(context, SceneSpec.class, spec, null, null));
         runnables.add(theaterRun);
-        //Showing that the start up order does not matter.
         Collections.shuffle(runnables);
         
         for(Runnable run : runnables){
@@ -94,6 +96,7 @@ public class SceneLifecycleDemo {
     
     private static SpeechService getSpeechService(){
         return new SpeechService() {
+            String name;
             @Override public String getSpeechServiceId() {
                 return "";
             }

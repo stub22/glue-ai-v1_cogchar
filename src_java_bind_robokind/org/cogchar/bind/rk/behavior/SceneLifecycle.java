@@ -37,7 +37,8 @@ import org.robokind.api.common.osgi.OSGiUtils;
  * @author Matthew Stevenson <www.robokind.org>
  */
 public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
-
+    private SceneSpec mySceneSpec;
+    
     private static List<DependencyDescriptor> buildDescriptorList(SceneSpec spec){
         List<String> chanURIs = getChannelURIs(spec);
         List<DependencyDescriptor> descriptors = new ArrayList<DependencyDescriptor>();
@@ -54,12 +55,16 @@ public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
     
     public SceneLifecycle(SceneSpec spec){
         super(buildDescriptorList(spec));
+        mySceneSpec = spec;
     }
 
     @Override protected BScene create(Map<String, Object> dependencies) {
-        BScene scene = null;
+        BScene scene = new BScene(mySceneSpec);
         for(Entry<String,Object> e : dependencies.entrySet()){
             String chanURI = e.getKey();
+            if(e.getValue() == null || !Channel.class.isAssignableFrom(e.getValue().getClass())){
+                continue;
+            }
             Channel chan = (Channel)e.getValue();   //Dependency types already checked by AbstractLifecycle
             //Do something with channel
         }
