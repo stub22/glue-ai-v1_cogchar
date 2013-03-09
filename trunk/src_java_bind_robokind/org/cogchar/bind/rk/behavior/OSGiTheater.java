@@ -35,9 +35,9 @@ public class OSGiTheater extends ServiceClassListener<Scene> {
     // sceneOSGiFilter might filter by associated SceneSpecBook URI
     public OSGiTheater(BundleContext context, Theater theater, String sceneOSGiFilter){
         super(Scene.class, context, sceneOSGiFilter);
-        if(theater == null){
-            throw new NullPointerException();
-        }
+//        if(theater == null){
+//            throw new NullPointerException();
+//        }
         myTheater = theater;
         myScenes = new ArrayList<Scene>();
     }

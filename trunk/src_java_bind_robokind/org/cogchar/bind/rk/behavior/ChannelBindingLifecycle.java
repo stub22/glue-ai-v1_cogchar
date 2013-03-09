@@ -37,7 +37,7 @@ public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLife
                 .dependency("service", conf.myChannelType.getServiceClass()).with(conf.myOSGiFilterString)
                 .getDescriptors());
         myRegistrationProperties = new Properties();
-        myRegistrationProperties.put("ChannelURI", conf.myChannelURI);
+        myRegistrationProperties.put("URI", conf.myChannelURI);
     }
     
     @Override
