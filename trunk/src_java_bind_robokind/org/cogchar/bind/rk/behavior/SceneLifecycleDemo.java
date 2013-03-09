@@ -36,13 +36,17 @@ import org.robokind.api.speech.SpeechService;
  */
 public class SceneLifecycleDemo {
     public static void test(BundleContext context){
-        final ServiceChannelExtender sce = new ServiceChannelExtender(context, null, null);
+        Properties sceProps = new Properties();
+        sceProps.put("ServiceChannelExtenderId", "svc_chan_ext_19");
+        final ServiceChannelExtender sce = new ServiceChannelExtender(context, OSGiUtils.createFilter("ChannelBindingGroupId", "chan_bind_grp_19"), sceProps);
         Runnable sceRun = new Runnable() {
             @Override public void run() {
                 sce.start();
             }
         };
-        final SceneSpecExtender sse = new SceneSpecExtender(context, null, null);
+        Properties sseProps = new Properties();
+        sseProps.put("SceneSpecExtenderId", "scene_spec_ext_19");
+        final SceneSpecExtender sse = new SceneSpecExtender(context, OSGiUtils.createFilter("SceneSpecGroupId", "scene_spec_grp_19"), sseProps);
         Runnable sseRun = new Runnable() {
             @Override public void run() {
                 sse.start();
@@ -70,8 +74,8 @@ public class SceneLifecycleDemo {
         runnables.add(sseRun);
         runnables.add(sceRun);
         runnables.add(getRegistrationRunnable(context, SpeechService.class, speechService, SpeechService.PROP_ID, "testService"));
-        runnables.add(getRegistrationRunnable(context, ChannelBindingConfig.class, bindingConfig, null, null));
-        runnables.add(getRegistrationRunnable(context, SceneSpec.class, spec, null, null));
+        runnables.add(getRegistrationRunnable(context, ChannelBindingConfig.class, bindingConfig, "ChannelBindingGroupId", "chan_bind_grp_19"));
+        runnables.add(getRegistrationRunnable(context, SceneSpec.class, spec, "SceneSpecGroupId", "scene_spec_grp_19"));
         runnables.add(theaterRun);
         Collections.shuffle(runnables);
         

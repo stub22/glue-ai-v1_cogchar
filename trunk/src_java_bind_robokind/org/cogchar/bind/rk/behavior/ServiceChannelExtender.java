@@ -39,6 +39,7 @@ public class ServiceChannelExtender extends ServiceClassListener<ChannelBindingC
         super(ChannelBindingConfig.class, context, bindingConfigOSGiFilter);
         myManagerFactory = new OSGiComponentFactory(context);
         myManagerMap = new HashMap();
+        myBindingRegistrationProperties = bindingRegistrationProps;
     }
 
     @Override
