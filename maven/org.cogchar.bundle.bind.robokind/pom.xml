@@ -12,8 +12,8 @@
 	<packaging>bundle</packaging>
 
 	<name>${project.artifactId} - OSGi - binds motion, vision, speech</name>
-<!--    
-    <repositories>
+
+<!--    <repositories>
 		<repository>
 			<id>com.springsource.repository.bundles.external</id>
 			<name>Spring EBR External Release Repository</name>
@@ -39,29 +39,23 @@
 			<version>1.2.16</version>
 			<scope>runtime</scope>			
 		</dependency>-->
+			
+		
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>1.4.0</version>
-		</dependency>
+		</dependency>		
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.core</artifactId>
+			<version>${project.version}</version>
+		</dependency><dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${project.version}</version>
 		</dependency>		
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
-			<groupId>org.appdapter</groupId>
-			<type>jar</type>
-			<!-- Freezing to the 1.0.9 version of JScience wrapper -->
-			<version>1.0.9</version>
-			<scope>runtime</scope>
-		</dependency>		
+		
 		
 		<!--
         <dependency>
@@ -71,48 +65,59 @@
         </dependency>
 		-->
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		
+		<dependency>
+			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
+			<groupId>org.appdapter</groupId>
+			<type>jar</type>
+			<!-- Freezing to the 1.0.9 version of JScience wrapper -->
+			<version>1.0.9</version>
+			<scope>runtime</scope>
+		</dependency><dependency>
 			<artifactId>scalaquery_2.8.1</artifactId>
 			<groupId>org.scalaquery</groupId>
 			<type>jar</type>
 			<version>0.9.4</version>
 			<scope>provided</scope>
-		</dependency>
-
+		</dependency>	
 		
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.avrogen.speech</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>
+		</dependency>		
+
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.speech</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>	
-		<dependency>
+		</dependency><dependency>
 			<groupId>org.robokind</groupId>
 			<!-- Needed at compile time for PortableSpeechRequest  -->
 			<artifactId>org.robokind.impl.speech</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>		
-
+		</dependency>				
+		
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.motion</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>
+		</dependency>		
+
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.animation</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>				
-		<dependency>
+		</dependency><dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.vision</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>		
-
-		<dependency>
+		</dependency><dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.extern.utils.messaging</artifactId>
 			<version>${robokind.version}</version>
@@ -145,7 +150,12 @@
 			<artifactId>org.robokind.impl.animation</artifactId>
 			<version>${robokind.version}</version>
             <scope>compile</scope>
-		</dependency>		
+		</dependency>
+<!--	 <dependency>
+	  <groupId>org.robokind.ui</groupId>
+	  <artifactId>org.robokind.ui.swing.common</artifactId>
+	  <version>0.8.6</version>
+	 </dependency>-->
 	</dependencies>
 
 	<build>
@@ -159,6 +169,7 @@
 					<instructions>
 						<Bundle-Activator>org.cogchar.bind.rk.osgi.RobokindBindingActivator</Bundle-Activator>
 						<Export-Package>org.cogchar.bind.rk.*,org.cogchar.gaze.*</Export-Package>
+<!--                        <Private-Package>edu.emory.mathcs.backport.*</Private-Package>-->
 					</instructions>
 				</configuration>
 			</plugin>
@@ -286,6 +297,7 @@
 									<entry key="felix.auto.deploy.action" value="uninstall,install,update,start" />
 									<entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache" />
 									<entry key="org.osgi.framework.bootdelegation" value="*" />
+<!--									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc" />		-->
 								</propertyfile>
 								<makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />
 								<java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
