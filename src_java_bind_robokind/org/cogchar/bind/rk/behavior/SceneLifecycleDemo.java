@@ -22,7 +22,9 @@ import java.util.Properties;
 import org.cogchar.bind.rk.behavior.ChannelBindingConfig.ChannelType;
 import org.jflux.api.core.Listener;
 import org.osgi.framework.BundleContext;
+import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.OSGiUtils;
+import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.robokind.api.speech.SpeechEvent;
 import org.robokind.api.speech.SpeechRequest;
 import org.robokind.api.speech.SpeechService;
@@ -68,7 +70,7 @@ public class SceneLifecycleDemo {
         runnables.add(getRegistrationRunnable(context, SpeechService.class, speechService, SpeechService.PROP_ID, "testService"));
         runnables.add(getRegistrationRunnable(context, ChannelBindingConfig.class, bindingConfig, null, null));
         runnables.add(theaterRun);
-        
+        //Showing that the start up order does not matter.
         Collections.shuffle(runnables);
         
         for(Runnable run : runnables){
@@ -85,7 +87,7 @@ public class SceneLifecycleDemo {
                     props = new Properties();
                     props.put(key, val);
                 }
-                context.registerService(clazz.getName(), obj, props);
+                new OSGiComponent(context, new SimpleLifecycle(obj, clazz, props)).start();
             }
         };
     }
