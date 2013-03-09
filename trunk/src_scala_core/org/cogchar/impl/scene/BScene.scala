@@ -91,6 +91,23 @@ class SceneSpec () extends KnownComponentImpl {
 		return super.getFieldSummary() + ", details=" + myDetails + ", behaviors=" + myBehaviorSpecs + ", channels=" + 
 				myChannelSpecs;
 	}
+	def getChannelIdents() : scala.collection.Set[Ident] = {
+		myChannelSpecs.keySet;
+	} 
+	def getChannelUriStrings () : scala.collection.Set[String] = {
+		getChannelIdents.map({_.getAbsUriString()})
+	}
+	import collection.JavaConversions._
+	def getChannelUriStringsJList() : java.util.List[String] = {
+		getChannelUriStrings.toList
+	}
+	/*
+		: java.util.List[String] { 
+		for (val cs <- scn.mySceneSpec.myChannelSpecs.values) {
+			val csJRI = cs.getIdent().asInstanceOf[JenaResourceItem];
+		}
+	*/	
+
 }
 
 class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[SceneSpec](builderConfRes) {

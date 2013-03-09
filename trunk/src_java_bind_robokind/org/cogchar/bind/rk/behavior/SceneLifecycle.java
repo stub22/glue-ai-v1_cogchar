@@ -49,15 +49,14 @@ public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
     }
     
     private static List<String> getChannelURIs(SceneSpec spec){
-        return null;
+        return spec.getChannelUriStringsJList();
     }
     
     public SceneLifecycle(SceneSpec spec){
         super(buildDescriptorList(spec));
     }
 
-    @Override
-    protected BScene create(Map<String, Object> dependencies) {
+    @Override protected BScene create(Map<String, Object> dependencies) {
         BScene scene = null;
         for(Entry<String,Object> e : dependencies.entrySet()){
             String chanURI = e.getKey();
@@ -67,8 +66,7 @@ public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
         return scene;
     }
 
-    @Override
-    protected void handleChange(String dependencyKey, Object dependency, Map<String, Object> availableDependencies) {
+    @Override protected void handleChange(String dependencyKey, Object dependency, Map<String, Object> availableDependencies) {
         //simple way to recreate the Scene when dependencies change.
         myService = isSatisfied() ? create(availableDependencies) : null;
         
