@@ -17,8 +17,12 @@ package org.cogchar.bind.rk.behavior;
 
 import java.util.Map;
 import java.util.Properties;
+import org.appdapter.core.name.Ident;
 import org.cogchar.api.perform.Channel;
+import org.cogchar.api.perform.Channel.Status;
 import org.cogchar.api.perform.Media;
+import org.cogchar.api.perform.Performance;
+import org.cogchar.api.perform.Performance.Action;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
@@ -36,6 +40,7 @@ public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLife
                 //The name "service" is used only within the lifecycle
                 .dependency("service", conf.myChannelType.getServiceClass()).with(conf.myOSGiFilterString)
                 .getDescriptors());
+        myBindingConfig = conf;
         myRegistrationProperties = new Properties();
         myRegistrationProperties.put("URI", conf.myChannelURI);
     }
@@ -53,7 +58,38 @@ public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLife
     }
     
     private Channel createSpeechChannel(SpeechService service){
-        return null;
+        return new Channel() {
+
+            @Override
+            public Status getStatus() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public Ident getIdent() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public String getName() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public int getMaxAllowedPerformances() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public Performance makePerformanceForMedia(Media media) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public boolean schedulePerfAction(Performance perf, Action action, Object actionTime) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
     }
     
     private Channel createAnimationChannel(AnimationPlayer service){

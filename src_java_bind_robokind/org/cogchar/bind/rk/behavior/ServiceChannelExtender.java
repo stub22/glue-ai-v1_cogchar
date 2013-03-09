@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.rk.behavior;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import org.osgi.framework.BundleContext;
@@ -37,6 +38,7 @@ public class ServiceChannelExtender extends ServiceClassListener<ChannelBindingC
             String bindingConfigOSGiFilter, Properties bindingRegistrationProps){
         super(ChannelBindingConfig.class, context, bindingConfigOSGiFilter);
         myManagerFactory = new OSGiComponentFactory(context);
+        myManagerMap = new HashMap();
     }
 
     @Override
