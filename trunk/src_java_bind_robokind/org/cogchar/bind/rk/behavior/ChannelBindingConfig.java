@@ -49,6 +49,7 @@ public class ChannelBindingConfig {
         }
         return true;
     }
+	
 
     @Override
     public int hashCode() {

@@ -40,7 +40,7 @@ public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
     private SceneSpec mySceneSpec;
     
     private static List<DependencyDescriptor> buildDescriptorList(SceneSpec spec){
-        List<String> chanURIs = getChannelURIs(spec);
+        List<String> chanURIs = getRequiredChannelURIs(spec);
         List<DependencyDescriptor> descriptors = new ArrayList<DependencyDescriptor>();
         for(String uri : chanURIs){
             descriptors.add(new DependencyDescriptor(uri, Channel.class, 
@@ -49,7 +49,7 @@ public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
         return descriptors;
     }
     
-    private static List<String> getChannelURIs(SceneSpec spec){
+    private static List<String> getRequiredChannelURIs(SceneSpec spec){
         return spec.getChannelUriStringsJList();
     }
     
