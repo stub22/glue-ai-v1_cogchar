@@ -16,7 +16,6 @@
 
 package org.cogchar.render.goody.basic;
 
-import org.cogchar.render.app.goody.GoodyAction;
 import com.jme3.animation.*;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -31,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.app.goody.GoodyAction;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**

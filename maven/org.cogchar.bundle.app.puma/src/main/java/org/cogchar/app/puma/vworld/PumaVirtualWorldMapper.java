@@ -84,7 +84,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		KeyBindingConfig currKeyBindCfg = new KeyBindingConfig();
 		// Hook-in for Goody system
 		RenderRegistryClient rrc = myHRC.getRenderRegistryClient();
-		GoodyFactory gFactory = GoodyFactory.createTheFactory(rrc, myHRC.getScreenSizeFromJmeAppSettings());
+		GoodyFactory gFactory = GoodyFactory.createTheFactory(rrc, myHRC.getScreenSizeFromJmeAppSettings(), myHRC);
 		try {
 			List<Ident> worldConfigIdents = gce.entityMap().get(EntityRoleCN.VIRTUAL_WORLD_ENTITY_TYPE);
 			// Multiple worldConfigIdents? Possible. It's possible duplicate cinematic definitions might cause problems
