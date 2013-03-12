@@ -67,6 +67,13 @@ public class HumanoidFigureManager extends BasicDebugger {
 	public HumanoidFigure getHumanoidFigure(Ident charIdent) {
 		return myFiguresByCharIdent.get(charIdent);
 	}
+	
+	// This method is probably even more problematic than getHumanoidFigure(Ident), but for now it provides a way for 
+	// the Goody/Entity system to get a list of figures to be able to control. Soon this will probably be done directly
+	// from the repo.
+	public Map<Ident, HumanoidFigure> getHumanoidFigures() {
+		return myFiguresByCharIdent;
+	}
 
 	// Now does more, but does less on jME thread!
 	public HumanoidFigure setupHumanoidFigure(final BonyRenderContext brc, RepoClient qi, final Ident charIdent, 
