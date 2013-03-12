@@ -23,7 +23,10 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.ThingActionUpdater;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.goody.basic.BasicGoody;
+import org.cogchar.render.goody.basic.HumanoidFigureGoodyWrapper;
+import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +42,9 @@ public class GoodySpace {
 	
 	private	Map<Ident, BasicGoody>		myGoodiesByID;
 	
-	public GoodySpace() { 
+	public GoodySpace(HumanoidRenderContext hrc) { 
 		myGoodiesByID = new HashMap<Ident, BasicGoody>();
+		addHumanoidGoodies(hrc); // Humanoids aren't really goodies, but we can pretend for the moment!
 	}
 	
 	public void addGoody(BasicGoody newGoody) {
@@ -100,6 +104,16 @@ public class GoodySpace {
 					theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);
 				}
 			}
+		}
+	}
+	
+	// A temporary way to make it possible to interact with figures... ultimately Humanoids aren't goodies!
+	private void addHumanoidGoodies(HumanoidRenderContext hrc) {
+		theLogger.info("addHumanoidGoodies hrc is {}", hrc); // TEST ONLY
+		Map<Ident, HumanoidFigure> humanoidFigures = hrc.getHumanoidFigureManager().getHumanoidFigures();
+		for (Ident figureUri : humanoidFigures.keySet()) {
+			theLogger.info("Adding a HumanoidFigureGoodyWrapper for {}", figureUri);
+			addGoody(new HumanoidFigureGoodyWrapper(hrc.getRenderRegistryClient(), figureUri, humanoidFigures.get(figureUri)));
 		}
 	}
 	

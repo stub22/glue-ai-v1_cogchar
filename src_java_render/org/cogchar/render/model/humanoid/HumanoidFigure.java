@@ -219,6 +219,10 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		v.z += deltaZ;
 		myHumanoidModelNode.setLocalTranslation(v);		
 	}
+	
+	public Node getNode() {
+		return myHumanoidModelNode;
+	}
 
 	@Override public void collide(Bone bone, PhysicsCollisionObject pco, PhysicsCollisionEvent pce) {
 		Object userObj = pco.getUserObject();

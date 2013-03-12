@@ -20,6 +20,7 @@ import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.goody.basic.BasicGoody;
 import org.cogchar.render.goody.flat.CrossHairGoody;
 import org.cogchar.render.goody.flat.ScoreBoardGoody;
@@ -50,9 +51,9 @@ public class GoodyFactory {
 	public static GoodyFactory getTheFactory() {
 		return theFactory;
 	}
-	public static GoodyFactory createTheFactory(RenderRegistryClient rrc, int[] screenDimensions) {
+	public static GoodyFactory createTheFactory(RenderRegistryClient rrc, int[] screenDimensions, HumanoidRenderContext hrc) {
 		theLogger.info("Creating new GoodyFactory");
-		theFactory = new GoodyFactory(rrc, screenDimensions);
+		theFactory = new GoodyFactory(rrc, screenDimensions, hrc);
 		return theFactory;
 	}
 	
@@ -60,14 +61,15 @@ public class GoodyFactory {
 	private Node myRootNode = new Node("GoodyNode"); // A node for test, though we may want to have "finer grained" nodes to attach to
 	private int[] myScreenDimensions;
 	
-	GoodyFactory(RenderRegistryClient rrc, int[] dimensions) {
+	GoodyFactory(RenderRegistryClient rrc, int[] dimensions, HumanoidRenderContext hrc) {
 		myRRC = rrc;
 		myScreenDimensions = dimensions;
 		attachGoodyNode();
+		theGoodySpace = new GoodySpace(hrc);
 	}
 	
 	// Is this a good place for the relevant instance of GoodySpace to live, or should it be moved elsewhere?
-	private GoodySpace theGoodySpace = new GoodySpace();
+	private GoodySpace theGoodySpace;
 	public GoodySpace getTheGoodySpace() {
 		return theGoodySpace;
 	}
