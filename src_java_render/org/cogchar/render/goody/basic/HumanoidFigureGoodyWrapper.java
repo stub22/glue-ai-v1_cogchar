@@ -37,30 +37,35 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 public class HumanoidFigureGoodyWrapper extends BasicGoody {
 	
-	HumanoidFigure myHumanoidFigure;
+	final static String MOVE_ANIM_NAME = "HumanoidFigureMoveFactory";
+	
+	private Node myNode;
+	private AnimControl figureControl = new AnimControl();
 	
 	public HumanoidFigureGoodyWrapper(RenderRegistryClient aRenderRegCli, Ident figureUri, HumanoidFigure hf) {
 		myRenderRegCli = aRenderRegCli;
 		myUri = figureUri;
-		myHumanoidFigure = hf;
+		myNode = hf.getNode();
 	}
 	
 	@Override
 	public void setPosition(final Vector3f position) {
+		clearMoveAnimationBindings(); // Removes animation control so we can set position directly after MOVE
 		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 				@Override
 				public Void call() throws Exception {
-					myHumanoidFigure.getNode().setLocalTranslation(position);
+					myNode.setLocalTranslation(position);
 					return null;
 				}
 			});	
 	}
 	
 	public void setRotation(final Quaternion rotation) {
+		clearMoveAnimationBindings();  // Removes animation control so we can set rotation directly after MOVE
 		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 				@Override
 				public Void call() throws Exception {
-					myHumanoidFigure.getNode().setLocalRotation(rotation);
+					myNode.setLocalRotation(rotation);
 					return null;
 				}
 			});	
@@ -76,23 +81,38 @@ public class HumanoidFigureGoodyWrapper extends BasicGoody {
 	}
 	
 	protected void moveViaAnimation(Vector3f newPosition, Quaternion newOrientation, float duration) {
-		final String moveAnimName = "HumanoidFigureMoveFactory";
-		AnimationFactory aniFactory = new AnimationFactory(duration, moveAnimName);
+		clearMoveAnimationBindings();
+		Vector3f currentPosition = myNode.getLocalTranslation();
+		Quaternion currentOrientation = myNode.getLocalRotation();
+		if (newPosition == null) {
+			newPosition = currentPosition;
+		}
+		if (newOrientation == null) {
+			newOrientation = currentOrientation;
+		}
+		AnimationFactory aniFactory = new AnimationFactory(duration, MOVE_ANIM_NAME);
 		// First add starting position/rotation to timeline at index 0
-		aniFactory.addKeyFrameTranslation(0, myHumanoidFigure.getNode().getLocalTranslation());
-		aniFactory.addKeyFrameRotation(0, myHumanoidFigure.getNode().getLocalRotation());
+		aniFactory.addKeyFrameTranslation(0, currentPosition);
+		aniFactory.addKeyFrameRotation(0, currentOrientation);
 		// Now add new position/rotation at duration:
 		aniFactory.addTimeTranslation(duration, newPosition);
 		aniFactory.addTimeRotation(duration, newOrientation);
 		// Finally the Animation is generated and linked to the geometry via an AnimationControl
 		Animation moveAnimation = aniFactory.buildAnimation();
-		AnimControl figureControl = new AnimControl(); // Should this be retained for reuse?
 		figureControl.addAnim(moveAnimation);
-		myHumanoidFigure.getNode().addControl(figureControl);
+		myNode.addControl(figureControl);
 		AnimChannel moveChannel = figureControl.createChannel();
-		moveChannel.setAnim(moveAnimName, 0f);
+		moveChannel.setAnim(MOVE_ANIM_NAME, 0f);
 		// Oddly, it seems this needs to be set *after* starting the animation with setAnim:
 		moveChannel.setLoopMode(LoopMode.DontLoop);
+	}
+	
+	private void clearMoveAnimationBindings() {
+		myNode.removeControl(figureControl); // Just returns false if not attached
+		Animation oldAnim = figureControl.getAnim(MOVE_ANIM_NAME);
+		if (oldAnim != null) {
+			figureControl.removeAnim(oldAnim);
+		}
 	}
 	
 	@Override
@@ -125,6 +145,7 @@ public class HumanoidFigureGoodyWrapper extends BasicGoody {
 				} else {
 					moveViaAnimation(newLocation, newRotation, timeEnroute);
 				}
+				break;
 			}
 			default: {
 				myLogger.error("Unknown action requested in HumanoidFigureGoodyWrapper {}: {}", myUri.getLocalName(), ga.getKind().name());
