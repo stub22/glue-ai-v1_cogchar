@@ -20,7 +20,6 @@ package org.cogchar.name.dir;
  */
 public class NamespaceDir {
 	// Formal prefix for Robokind 2012 runtime 
-
 	public static String RKRT_NS_PREFIX = "urn:ftd:robokind.org:2012:runtime#";
 	// Formal prefix for Cogchar 2012 runtime 
 	public static String NS_CCRT_RT = "urn:ftd:cogchar.org:2012:runtime#";
