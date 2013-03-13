@@ -16,15 +16,19 @@
 
 package org.cogchar.render.app.goody;
 
+import com.jme3.renderer.Camera;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.ThingActionUpdater;
+import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.goody.basic.BasicGoody;
+import org.cogchar.render.goody.basic.CameraGoodyWrapper;
 import org.cogchar.render.goody.basic.HumanoidFigureGoodyWrapper;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.slf4j.Logger;
@@ -42,9 +46,12 @@ public class GoodySpace {
 	
 	private	Map<Ident, BasicGoody>		myGoodiesByID;
 	
+	// We only need hrc here for the temporary way to get camera and character lists -- eventually will come directly
+	// from RDF
 	public GoodySpace(HumanoidRenderContext hrc) { 
 		myGoodiesByID = new HashMap<Ident, BasicGoody>();
 		addHumanoidGoodies(hrc); // Humanoids aren't really goodies, but we can pretend for the moment!
+		addCameraGoodies(hrc); // Cameras aren't really goodies, but we can pretend for the moment!
 	}
 	
 	public void addGoody(BasicGoody newGoody) {
@@ -109,11 +116,20 @@ public class GoodySpace {
 	
 	// A temporary way to make it possible to interact with figures... ultimately Humanoids aren't goodies!
 	private void addHumanoidGoodies(HumanoidRenderContext hrc) {
-		theLogger.info("addHumanoidGoodies hrc is {}", hrc); // TEST ONLY
 		Map<Ident, HumanoidFigure> humanoidFigures = hrc.getHumanoidFigureManager().getHumanoidFigures();
 		for (Ident figureUri : humanoidFigures.keySet()) {
 			theLogger.info("Adding a HumanoidFigureGoodyWrapper for {}", figureUri);
 			addGoody(new HumanoidFigureGoodyWrapper(hrc.getRenderRegistryClient(), figureUri, humanoidFigures.get(figureUri)));
+		}
+	}
+	
+	private void addCameraGoodies(HumanoidRenderContext hrc) {
+		Map<String, Camera> cameras = hrc.getRenderRegistryClient().getOpticCameraFacade(null).getCameraMap();
+		for (String cameraName : cameras.keySet()) {
+			theLogger.info("Adding a Camera for {}", cameraName);
+			// This evidences the fact that the CameraMgr needs to switch to URIs to identify cameras, not strings:
+			addGoody(new CameraGoodyWrapper(hrc.getRenderRegistryClient(), new FreeIdent(NamespaceDir.NS_CCRT_RT + cameraName), 
+					cameras.get(cameraName)));
 		}
 	}
 	

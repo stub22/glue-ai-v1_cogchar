@@ -23,11 +23,13 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.control.CameraControl.ControlDirection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.cogchar.api.cinema.CameraConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.name.cinema.LightsCameraAN;
-import org.cogchar.render.sys.context.CoreFeatureAdapter;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 import org.slf4j.Logger;
@@ -69,6 +71,12 @@ public class CameraMgr {
 		Camera cam = myCamerasByName.get(name);
 		// System.out.println("**********######################*********************###############*************** cameraMgr: " + this + " - found cam " + cam + " at " + name);		
 		return cam;
+	}
+	
+	// Needed for interim GoodySpace additions to allow control of cameras. Can be removed once Robosteps VirtualWorld
+	// gets list of cameras directly from RDF.
+	public Map<String, Camera> getCameraMap() {
+		return myCamerasByName;
 	}
 
 	public void registerCommonCamera(CommonCameras id, Camera cam) {
