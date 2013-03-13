@@ -77,8 +77,9 @@ public class GoodyNames  {
 	public static	Ident	TYPE_SCOREBOARD = makeID("ScoreBoard");
 	public static	Ident	TYPE_TEXT = makeID("Text2D");
 	
-	// Not really a goody, but we're pretending for now until handling of VirtualEntities is more generalized
+	// Not really goodies, but we're pretending for now until handling of VirtualEntities is more generalized
 	public static	Ident	TYPE_AVATAR = makeID("Avatar");
+	public static	Ident	TYPE_CAMERA = makeID("Camera");
 	
 	public  static Ident	RDF_TYPE = new FreeIdent(ComponentAssemblyNames.NS_rdf + "type");
 	
