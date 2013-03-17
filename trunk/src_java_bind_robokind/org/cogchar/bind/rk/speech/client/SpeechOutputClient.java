@@ -40,86 +40,9 @@ public class SpeechOutputClient extends FancyTextChan {
 		myBundleCtx = bundleCtx;
 	}
 
-	public class ServiceContext {
-
-		public ServiceReference serviceRef;
-		public SpeechService speechService;
-
-		public void release() {
-			if (serviceRef != null) {
-				myBundleCtx.ungetService(serviceRef);
-			}
-		}
-
-		public void speak() {
-		}
-	}
-
-	public ServiceContext lookupSpeechServiceContext() throws Throwable {
-		ServiceContext servCtx = new ServiceContext();
-		servCtx.serviceRef = myBundleCtx.getServiceReference(SpeechService.class.getName());
-		if (servCtx.serviceRef != null) {
-			try {
-				Object serviceObj = myBundleCtx.getService(servCtx.serviceRef);
-				if (serviceObj != null) {
-					servCtx.speechService = (SpeechService) serviceObj;
-				}
-			} finally {
-				if (servCtx.speechService == null) {
-					servCtx.release();
-					return null;
-				}
-			}
-			return servCtx;
-		} else {
-			return null;
-		}
-	}
-
-	public void speakText(String txt) {
-		if (txt == null) {
-			getLogger().warn("************************* Received null speech text, ignoring");
-			return;
-		}
-		try {
-			ServiceContext servCtx = lookupSpeechServiceContext();
-			if (servCtx != null) {
-				try {
-					getLogger().info("Trying to speakText[{}]", txt);
-					servCtx.speechService.speak(txt);
-				} finally {
-					servCtx.release();
-				}
-			} else {
-				getLogger().warn("************************* speech-output ServiceContext == null, ignoring speech text: " + txt);
-			}
-		} catch (Throwable t) {
-			getLogger().error("Problem in speakText(txt=[" + txt + "])", t);
-		}
-	}
-
-	public void cancelAllRunningSpeechTasks() {
-		try {
-			ServiceContext servCtx = lookupSpeechServiceContext();
-			if (servCtx != null) {
-				try {
-					logWarning("************************* We don't have speech-cancel feature yet, sorry");
-					// TODO:  Plug in code to kill speech jobs.
-					// servCtx.speechService.???????
-				} finally {
-					servCtx.release();
-				}
-			} else {
-				logWarning("**************** speech-output ServiceContext == null,  ignoring request to cancelAllRunningSpeechTasks");
-			}
-		} catch (Throwable t) {
-			logError("Exception in cancelAllRunningSpeechTasks()", t);
-		}
-	}
-
 	@Override protected void attemptMediaStartNow(Media.Text m) throws Throwable {
 		String textStr = m.getFullText();
-		speakText(textStr);
+		oldLookupServiceAndSpeakText(textStr);
 	}
 
 	@Override public Performance<Media.Text, FancyTime> makePerformanceForMedia(Media.Text m) {
@@ -129,6 +52,7 @@ public class SpeechOutputClient extends FancyTextChan {
 //
 //	}
 //	 public long getTimestampMillisecUTC()
+
 	/**
 	 * Returns the name of the event of this event.
 	 *
@@ -179,4 +103,81 @@ public class SpeechOutputClient extends FancyTextChan {
 	 * @return duration of the event in milliseconds
 	 */
 	//   public Integer getDuration();
+	
+	private class ServiceContext {
+
+		public ServiceReference serviceRef;
+		public SpeechService speechService;
+
+		public void release() {
+			if (serviceRef != null) {
+				myBundleCtx.ungetService(serviceRef);
+			}
+		}
+
+		public void speak() {
+		}
+	}
+	@Deprecated
+	public void oldLookupServiceAndSpeakText(String txt) {
+		if (txt == null) {
+			getLogger().warn("************************* Received null speech text, ignoring");
+			return;
+		}
+		try {
+			ServiceContext servCtx = oldLookupSpeechServiceContext();
+			if (servCtx != null) {
+				try {
+					getLogger().info("Trying to speakText[{}]", txt);
+					servCtx.speechService.speak(txt);
+				} finally {
+					servCtx.release();
+				}
+			} else {
+				getLogger().warn("************************* speech-output ServiceContext == null, ignoring speech text: " + txt);
+			}
+		} catch (Throwable t) {
+			getLogger().error("Problem in speakText(txt=[" + txt + "])", t);
+		}
+	}
+	@Deprecated
+	public void oldCancelAllRunningSpeechTasks() {
+		try {
+			ServiceContext servCtx = oldLookupSpeechServiceContext();
+			if (servCtx != null) {
+				try {
+					logWarning("************************* We don't have speech-cancel feature yet, sorry");
+					// TODO:  Plug in code to kill speech jobs.
+					// servCtx.speechService.???????
+				} finally {
+					servCtx.release();
+				}
+			} else {
+				logWarning("**************** speech-output ServiceContext == null,  ignoring request to cancelAllRunningSpeechTasks");
+			}
+		} catch (Throwable t) {
+			logError("Exception in cancelAllRunningSpeechTasks()", t);
+		}
+	}
+
+	private ServiceContext oldLookupSpeechServiceContext() throws Throwable {
+		ServiceContext servCtx = new ServiceContext();
+		servCtx.serviceRef = myBundleCtx.getServiceReference(SpeechService.class.getName());
+		if (servCtx.serviceRef != null) {
+			try {
+				Object serviceObj = myBundleCtx.getService(servCtx.serviceRef);
+				if (serviceObj != null) {
+					servCtx.speechService = (SpeechService) serviceObj;
+				}
+			} finally {
+				if (servCtx.speechService == null) {
+					servCtx.release();
+					return null;
+				}
+			}
+			return servCtx;
+		} else {
+			return null;
+		}
+	}
 }

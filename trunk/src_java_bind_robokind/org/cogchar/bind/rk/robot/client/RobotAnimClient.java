@@ -48,7 +48,10 @@ import org.robokind.impl.animation.xml.AnimationXMLReader;
 
 
 /**
- * This class is able to invoke animations
+ * This class is able to invoke animations.
+ * 
+ * It currently holds two separate implementations, one used when we have an AnimPlayer already,
+ * another when we want to search OSGi every time.
  * 
  * @author Stu B. <www.texpedient.com>
  */
@@ -56,10 +59,14 @@ public class RobotAnimClient extends BasicDebugger {
 	private	BundleContext		myBundleCtx;
 	private	String				myAnimPlayerOsgiFilterString;
 	private AnimationFileReader	myAnimationReader;
+	private	AnimationPlayer		myCachedAnimPlayer;
 	
 	public RobotAnimClient(BundleContext bundleCtx, String animationPlayerOsgiFilterString) throws Exception {
 		myBundleCtx = bundleCtx;
 		myAnimPlayerOsgiFilterString = animationPlayerOsgiFilterString;
+	}
+	public RobotAnimClient(AnimationPlayer cachedPlayer) {
+		myCachedAnimPlayer = cachedPlayer;
 	}
 	public AnimationFileReader getAnimationReader() { 
 		if (myAnimationReader == null) {
@@ -78,11 +85,19 @@ public class RobotAnimClient extends BasicDebugger {
      * if unsuccessful
      */	
 	public AnimationJob playAnimationSegmentNow(Animation anim, long segBeginOffsetMsec, long segEndOffsetMsec){
-        return AnimationUtils.playAnimation(myBundleCtx, myAnimPlayerOsgiFilterString , anim, 
+		if (myCachedAnimPlayer != null) {
+			return myCachedAnimPlayer.playAnimation(anim, segBeginOffsetMsec, segEndOffsetMsec);
+		} else {
+	        return AnimationUtils.playAnimation(myBundleCtx, myAnimPlayerOsgiFilterString , anim, 
 						segBeginOffsetMsec, segEndOffsetMsec);
+		}
     }
 	public AnimationJob playFullAnimationNow(Animation anim) { 
-        return AnimationUtils.playAnimation(myBundleCtx, myAnimPlayerOsgiFilterString, anim);
+		if (myCachedAnimPlayer != null) {
+			return myCachedAnimPlayer.playAnimation(anim);
+		} else {
+			return AnimationUtils.playAnimation(myBundleCtx, myAnimPlayerOsgiFilterString, anim);
+		}		
     }
 	
 	/*
