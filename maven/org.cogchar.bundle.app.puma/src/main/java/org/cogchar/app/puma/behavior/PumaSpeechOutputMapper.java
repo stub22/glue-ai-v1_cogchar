@@ -34,10 +34,11 @@ public class PumaSpeechOutputMapper extends BasicDebugger {
 	
 	private		Ident						myAgentID;
 	private		SpeechOutputClient			mySOC;
-		
+
 	public PumaSpeechOutputMapper(Ident agentID) {
 		myAgentID = agentID;
 	}
+	
 	public void connectSpeechOutputSvcs(BundleContext bundleCtx, Theater t) {
 		Ident speechChanIdent = ChannelNames.getOutChanIdent_SpeechMain();
 		
@@ -48,7 +49,7 @@ public class PumaSpeechOutputMapper extends BasicDebugger {
 		// TODO:  Prevent/blend concurrent activity through the channel/behavior systerm
 		try {
 			if (mySOC != null) {
-				mySOC.speakText(txt);
+				mySOC.oldLookupServiceAndSpeakText(txt);
 			} else {
 				getLogger().warn("Character {} ignoring request to sayText, because SpeechOutputClient is null", myAgentID);
 			}
@@ -58,7 +59,8 @@ public class PumaSpeechOutputMapper extends BasicDebugger {
 	}
 	public void stopAllSpeechOutput() { 
 		if (mySOC != null) {
-			mySOC.cancelAllRunningSpeechTasks();
+			mySOC.oldCancelAllRunningSpeechTasks();
 		}	
 	}
+	
 }

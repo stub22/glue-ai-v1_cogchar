@@ -52,10 +52,11 @@ public class PumaRobotMotionMapper extends BasicDebugger {
 			getLogger().warn("Cannot init with behavCE == null");
 		}
 	}
+	// Can probably be dropped in favor of channel-lifecycle wiring
 	public void connectRobotSC (RobotServiceContext robotSvcContext) {
 		myRSC = robotSvcContext;
 		// Connect the triggering RobotAnimContext to the running model robot.
-		myRAC.initConn(robotSvcContext);		
+		myRAC.initConnForTargetRobot(robotSvcContext);		
 	}
 	/**
 	 * This method exposes our "best" AnimOutChan at protected scope.
@@ -63,6 +64,7 @@ public class PumaRobotMotionMapper extends BasicDebugger {
 	 * (whether local or remote).
 	 * @return 
 	 */	
+	// Can probably be dropped in favor of channel-lifecycle wiring
 	protected FancyTextChan getBestAnimOutChan() { 
 		return myRAC.getTriggeringChannel();
 	}
