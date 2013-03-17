@@ -23,6 +23,11 @@ import org.cogchar.api.perform.Channel.Status;
 import org.cogchar.api.perform.Media;
 import org.cogchar.api.perform.Performance;
 import org.cogchar.api.perform.Performance.Action;
+import org.cogchar.bind.rk.robot.client.RobotAnimContext;
+import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
+import org.cogchar.blob.emit.BehaviorConfigEmitter;
+import org.cogchar.impl.perform.FancyTextChan;
+import org.osgi.framework.BundleContext;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
@@ -57,43 +62,21 @@ public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLife
         return null;
     }
     
-    private Channel createSpeechChannel(SpeechService service){
-        return new Channel() {
-
-            @Override
-            public Status getStatus() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public Ident getIdent() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public int getMaxAllowedPerformances() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public Performance makePerformanceForMedia(Media media) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean schedulePerfAction(Performance perf, Action action, Object actionTime) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        };
+    private Channel createSpeechChannel(SpeechService speechSvc){
+		BundleContext bundleCtx = null;
+		Ident chanIdent = null;
+		return new SpeechOutputClient(bundleCtx, chanIdent);
     }
     
-    private Channel createAnimationChannel(AnimationPlayer service){
-        return null;
+    private Channel createAnimationChannel(AnimationPlayer animPlayerSvc){
+		Ident charIdent = null;
+		BehaviorConfigEmitter behavCE = null;
+		/* charIdent - so far, used only for log messages
+		 * behavCE  - only used to resolve local files, in case animResURL does not resolve within classpath.
+		 */
+		RobotAnimContext	roboAnimContext = new RobotAnimContext(charIdent, behavCE);
+		roboAnimContext.initConnForAnimPlayer(animPlayerSvc);
+		return roboAnimContext.getTriggeringChannel();
     }
 
     @Override

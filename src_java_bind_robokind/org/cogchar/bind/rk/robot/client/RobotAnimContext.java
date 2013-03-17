@@ -41,10 +41,11 @@ import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import java.net.URL;
 import org.cogchar.platform.util.ClassLoaderUtils;
+import org.robokind.api.animation.player.AnimationPlayer;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class RobotAnimContext extends BasicDebugger {
+	public class RobotAnimContext extends BasicDebugger {
 
 	enum AnimChannel {
 
@@ -61,6 +62,11 @@ public class RobotAnimContext extends BasicDebugger {
 	
 	private	List<ClassLoader>	myResourceCLs = new ArrayList<ClassLoader>();
 
+	/**
+	 * 
+	 * @param charIdent - so far, used only for log messages
+	 * @param behavCE  - only used to resolve local files, in case animResURL does not resolve within classpath. 
+	 */
 	public RobotAnimContext(Ident charIdent, BehaviorConfigEmitter behavCE) {
 		myCharIdent = charIdent;
 		myBehaviorCE = behavCE;
@@ -68,7 +74,7 @@ public class RobotAnimContext extends BasicDebugger {
 	public void setResourceClassLoaders(List<ClassLoader>  resCLs) {
 		myResourceCLs = resCLs;
 	}
-	public boolean initConn(RobotServiceContext robotSvcContext) {
+	public boolean initConnForTargetRobot(RobotServiceContext robotSvcContext) {
 		try {
 			BundleContext osgiBundleCtx = robotSvcContext.getBundleContext();
 			myTargetRobot = robotSvcContext.getRobot();
@@ -86,6 +92,10 @@ public class RobotAnimContext extends BasicDebugger {
 			getLogger().error("Cannot init RobotAnimClient for char[" + myCharIdent + "]", t);
 			return false;
 		}
+	}
+	public boolean initConnForAnimPlayer(AnimationPlayer player) {
+		myAnimClient = new RobotAnimClient(player);
+		return true;
 	}
 
 	public void stopAndReset() {
