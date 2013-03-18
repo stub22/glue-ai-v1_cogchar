@@ -139,7 +139,6 @@
 					<instructions>
 						<Bundle-Activator>org.cogchar.bind.rk.osgi.RobokindBindingActivator</Bundle-Activator>
 						<Export-Package>org.cogchar.bind.rk.*,org.cogchar.gaze.*</Export-Package>
-						<Private-Package>edu.emory.mathcs.backport.*</Private-Package>
 					</instructions>
 				</configuration>
 			</plugin>

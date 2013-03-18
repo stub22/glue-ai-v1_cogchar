@@ -15,8 +15,8 @@
  */
 package org.cogchar.bind.rk.behavior;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import org.cogchar.impl.scene.SceneSpec;
