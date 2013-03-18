@@ -15,7 +15,6 @@
  */
 package org.cogchar.bind.rk.behavior;
 
-import org.cogchar.api.perform.Channel;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.speech.SpeechService;
 
@@ -78,6 +77,15 @@ public class ChannelBindingConfig {
         
         public Class getServiceClass(){
             return myChannelTypeClass;
+        }
+        
+        public static ChannelType getByURI(String channelTypeURI){
+            for(ChannelType t : values()){
+                if(t.getURI().equals(channelTypeURI)){
+                    return t;
+                }
+            }
+            return null;
         }
     }
 }
