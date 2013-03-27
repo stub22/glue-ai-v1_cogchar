@@ -31,13 +31,13 @@ import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, Cog
  */
 
 class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
-	val	myBM = new BehaviorModulator();
-	val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
+	private val	myBM = new BehaviorModulator();
+	private val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
 	// var myBinder : DummyBinder = null;
-	var	mySceneBook : SceneBook = null;
+	private var	mySceneBook : SceneBook = null;
 	
-	var myWorkThread : Thread = null;
-	var myStopFlag : Boolean = false;
+	private var myWorkThread : Thread = null;
+	private var myStopFlag : Boolean = false;
 	
 	def registerChannel (c : Channel[_ <: Media, FancyTime]) {
 		getLogger().info("Registering channel [{}] in theater for char-theater {}", c, myDebugCharID);
@@ -150,8 +150,19 @@ class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
 object Theater extends BasicDebugger {
 
 	def main(args: Array[String])  : Unit = {
+		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);		
 		test();
 	}
+	
+	def loadTestSceneBook() : SceneBook = {
+		val triplesFlexPath = "org/cogchar/test/assembly/demo_scenes_A.ttl";
+		val sb = new SceneBook()
+		// sb.loadSceneSpecsFromFile(triplesFlexPath, optResourceClassLoader);
+		sb
+		// val sb = 		thtr.loadSceneBookFromFile(triplesFlexPath, null, true);		
+	} 
+	
 	def test() : Unit = {
 		val dbgCharName="PhonyChar";
 		val dbgCharID = new FreeIdent(ChannelNames.NS_ccScnInst + dbgCharName, dbgCharName);
