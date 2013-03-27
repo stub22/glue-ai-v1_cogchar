@@ -20,9 +20,17 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.cinema.PathInstanceConfig;
+import org.cogchar.api.cinema.SpatialActionConfig;
+import org.cogchar.api.cinema.WaypointConfig;
+import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.render.app.goody.GoodyAction;
+import org.cogchar.render.opengl.scene.PathMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
@@ -73,6 +81,28 @@ public class CameraGoodyWrapper extends BasicGoody {
 		}
 	}
 	
+	protected void moveViaPath(Vector3f newPosition, Quaternion newOrientation, float duration) {
+		Vector3f currentPosition = myCamera.getLocation();
+		Quaternion currentOrientation = myCamera.getRotation();
+		if (newPosition == null) {
+			//newPosition = currentPosition; // Eventually this should work, but...
+			myLogger.warn("No new position specified for Camera MOVE operation -- currently MOVEs of rotation only are not supported.");
+			return;
+		}
+		if (newOrientation == null) {
+			newOrientation = currentOrientation;
+		}
+		List<WaypointConfig> waypoints = new ArrayList<WaypointConfig>();
+		waypoints.add(new WaypointConfig(new FreeIdent(NamespaceDir.NS_CCRT_RT + "Start"), currentPosition.toArray(new float[3])));
+		waypoints.add(new WaypointConfig(new FreeIdent(NamespaceDir.NS_CCRT_RT + "End"), newPosition.toArray(new float[3])));
+		Ident pathUri = new FreeIdent(NamespaceDir.NS_CCRT_RT + "CamMovePath");
+		PathInstanceConfig cameraPath = new PathInstanceConfig(myUri, SpatialActionConfig.AttachedItemType.CAMERA, 
+				duration, newOrientation.toAngles(new float[3]), waypoints, pathUri);
+		PathMgr pMgr = myRenderRegCli.getScenePathFacade(null);
+		pMgr.buildAnimation(cameraPath);
+		pMgr.controlAnimationByName(pathUri, PathMgr.ControlAction.PLAY);
+	}
+	
 	@Override
 	public void setScale(Float scale) {
 		myLogger.warn("setScale not supported in CameraGoodyWrapper");
@@ -97,7 +127,12 @@ public class CameraGoodyWrapper extends BasicGoody {
 				break;
 			}
 			case MOVE : {
-				myLogger.warn("MOVE not currently supported in CameraGoodyWrapper");
+				Float timeEnroute = ga.getTravelTime();
+				if (timeEnroute == null) {	
+					setNewPositionAndRotationIfNonNull(newLocation, newRotation);
+				} else {
+					moveViaPath(newLocation, newRotation, timeEnroute);
+				}
 				break;
 			}
 			default: {
