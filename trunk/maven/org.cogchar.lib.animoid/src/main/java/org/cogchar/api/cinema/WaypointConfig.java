@@ -56,6 +56,11 @@ public class WaypointConfig {
 		}
 	}
 	
+	public WaypointConfig(Ident newIdent, float[] position) {
+		myUri = newIdent;
+		myCoordinates = position;
+	}
+	
 	// You'll see this a lot; probably should be refactored into superclass
 	public String getName() {
 		return myUri.getLocalName();

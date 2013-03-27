@@ -68,6 +68,20 @@ public class PathInstanceConfig extends SpatialActionConfig {
 		}
 	}
 	
+	public PathInstanceConfig(Ident item, AttachedItemType itemType, float newDuration, float[] newDirection, 
+			List<WaypointConfig> theWaypoints, Ident pathUri) {
+		duration = newDuration;
+		directionType = "Rotation";
+		lookAtDirection = newDirection;
+		tension = 0.83f;
+		cycle = false;
+		loopMode = "DontLoop";
+		waypoints = theWaypoints;
+		attachedItem = item;
+		attachedItemType = itemType;
+		myUri = pathUri;
+	}
+	
 	// This could move to SpatialActionConfig if it's needed elsewhere
 	final Map<Integer, Solution> pullOrderedStatesFromList(SolutionHelper sh, SolutionList solutionList) {
 		Map<Integer, Solution> stateMap = new TreeMap<Integer, Solution>();

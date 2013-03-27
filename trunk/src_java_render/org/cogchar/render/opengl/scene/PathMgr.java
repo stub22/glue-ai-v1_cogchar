@@ -18,6 +18,7 @@ package org.cogchar.render.opengl.scene;
 import com.jme3.animation.LoopMode;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.events.MotionEvent;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Spatial;
@@ -108,6 +109,7 @@ public class PathMgr extends AbstractThingCinematicMgr {
 			motionTrack = new MotionEvent(attachedSpatial, path, track.duration);
 			motionTrack.setDirectionType(directionJmeType);
 			motionTrack.setLookAt(new Vector3f(track.lookAtDirection[0], track.lookAtDirection[1], track.lookAtDirection[2]), Vector3f.UNIT_Y);
+			motionTrack.setRotation(new Quaternion(track.lookAtDirection)); // Used for "Rotation" MotionEvent.Direction -- still experimental
 			motionTrack.setLoopMode(loopJmeType);
 		}
         return motionTrack;
