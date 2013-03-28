@@ -41,7 +41,10 @@ class ChannelSpec extends KnownComponentImpl {
 	override def getFieldSummary() : String = {
 		return super.getFieldSummary() + ", details=" + myDetails + ", osgiFilteringString=" + myOsgiFilterString + 
 				", chanType=" + myChanType;
-	}	
+	}
+	def getOSGiFilterString() = myOsgiFilterString;
+	def getChannelTypeID() = myChanType;
+	def getChannelID() = getIdent();
 }
 class ChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[ChannelSpec](builderConfRes) {
 
