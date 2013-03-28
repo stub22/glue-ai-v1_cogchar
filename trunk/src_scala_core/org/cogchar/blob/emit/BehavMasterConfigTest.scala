@@ -27,16 +27,12 @@ import org.cogchar.impl.perform.{ChannelSpec, ChannelNames};
 import org.appdapter.core.log.BasicDebugger;
 
 object BehavMasterConfigTest extends BasicDebugger {
+	// These constants are used to test the ChanBinding model found in "GluePuma_BehavMasterDemo"
 	//   https://docs.google.com/spreadsheet/ccc?key=0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c
-	
 	final val BMC_SHEET_KEY = "0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c"
-	
 	final val BMC_NAMESPACE_SHEET_NUM = 4
-	
 	final val BMC_DIRECTORY_SHEET_NUM = 3
-	
-	// val chanBindQueryQN = AssumedQueryDir.LIGHT_QUERY_URI // "ccrt:find_lights_99" // The QName of a query in the "Queries" model/tab
-	val CHAN_BIND_GRAPH_QN = "hrk:chan_sheet_77"
+	final val CHAN_BIND_GRAPH_QN = "hrk:chan_sheet_77"
 	
 	def makeBMC_RepoSpec() : OnlineSheetRepoSpec = { 
 		val fileResModelCLs = new java.util.ArrayList[ClassLoader]();
@@ -57,16 +53,16 @@ object BehavMasterConfigTest extends BasicDebugger {
 	} 
 	def main(args: Array[String]) : Unit = {
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		// org.apache.log4j.BasicConfigurator.configure();
+		// org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 
 		val bmcRepoSpec = makeBMC_RepoSpec();
 		
 		val bmcMemoryRepoHandle = bmcRepoSpec.makeRepo();	
-		// println("OK to ignore error above about metadata/behavior/zeno_demo_scenes_A.ttl")
 		
 		val bmcRepoCli = bmcRepoSpec.makeRepoClient(bmcMemoryRepoHandle);
 		
+		// Use an arbitrarily assumed name for the ChannelBinding Graph (as set in the "Dir" model of the source repo).
 		val chanSpecs = readChannelSpecs(bmcRepoCli, CHAN_BIND_GRAPH_QN);
 		println("Found chanSpecs: " + chanSpecs)
 		import scala.collection.JavaConversions._;
@@ -76,7 +72,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 			val chanOSGiFilter = c.getOSGiFilterString();
 			println("Channel id=" + chanID + ", type=" + chanTypeID + ", filter=" + chanOSGiFilter)
 		}
-	
+		// Dump out some channel-type constants
 		// println ("AnimOut-Best=" + ChannelNames.getOutChanIdent_AnimBest)
 		// println("SpeechOut-Best=" + ChannelNames.getOutChanIdent_SpeechMain)
 	}
