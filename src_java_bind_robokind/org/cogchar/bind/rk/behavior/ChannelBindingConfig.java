@@ -15,21 +15,42 @@
  */
 package org.cogchar.bind.rk.behavior;
 
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.speech.SpeechService;
 
-
+import org.cogchar.impl.perform.ChannelSpec;
+import org.cogchar.impl.perform.ChannelNames;
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.robokind.org> and Stu B.
  */
 public class ChannelBindingConfig {
-    public ChannelType myChannelType;
-    public String myOSGiFilterString;
-    public String myChannelURI;
+    private Ident		myChannelID;
+    private ChannelType myChannelType;
+    private String		myOSGiFilterString;
 
-    @Override
-    public boolean equals(Object obj) {
+	public void initFromChannelSpec(ChannelSpec cspec) { 
+		myChannelID = cspec.getChannelID();
+		myChannelType = ChannelType.getByTypeID(cspec.getChannelTypeID());
+		myOSGiFilterString = cspec.getOSGiFilterString();
+	}
+	public void initExplicitly(ChannelType chanType, String chanUri, String osgiFilter) {
+		myChannelType = chanType;
+		myChannelID = new FreeIdent(chanUri);
+		myOSGiFilterString = osgiFilter;
+	}
+	public String getChannelURI() { 
+		return myChannelID.getAbsUriString();
+	}
+	public String getOSGiFilterString() {
+		return myOSGiFilterString;
+	}
+	public ChannelType getChannelType() {
+		return myChannelType;
+	}
+    @Override public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
@@ -43,7 +64,7 @@ public class ChannelBindingConfig {
         if ((this.myOSGiFilterString == null) ? (other.myOSGiFilterString != null) : !this.myOSGiFilterString.equals(other.myOSGiFilterString)) {
             return false;
         }
-        if ((this.myChannelURI == null) ? (other.myChannelURI != null) : !this.myChannelURI.equals(other.myChannelURI)) {
+        if ((this.myChannelID == null) ? (other.myChannelID != null) : !this.myChannelID.equals(other.myChannelID)) {
             return false;
         }
         return true;
@@ -55,37 +76,45 @@ public class ChannelBindingConfig {
         int hash = 5;
         hash = 83 * hash + (this.myChannelType != null ? this.myChannelType.hashCode() : 0);
         hash = 83 * hash + (this.myOSGiFilterString != null ? this.myOSGiFilterString.hashCode() : 0);
-        hash = 83 * hash + (this.myChannelURI != null ? this.myChannelURI.hashCode() : 0);
+        hash = 83 * hash + (this.myChannelID != null ? this.myChannelID.hashCode() : 0);
         return hash;
     }
+	
+	private static Ident	CHANTYPE_SPEECH_OUT = ChannelNames.getOutChanIdent_SpeechMain();
+	private static Ident	CHANTYPE_ANIM_OUT = ChannelNames.getOutChanIdent_AnimBest();
     
     public static enum ChannelType{
-        SPEECH("fakeSpeechURI", SpeechService.class), 
-        ANIMATION("fakeAnimationURI", AnimationPlayer.class);
+        SPEECH(CHANTYPE_SPEECH_OUT, SpeechService.class), 
+        ANIMATION(CHANTYPE_ANIM_OUT, AnimationPlayer.class);
         
-        private String myChannelTypeURI;
+        private	Ident	myChannelTypeID;
         private Class myChannelTypeClass;
         
-        private ChannelType(String uri, Class serviceClass){
-            myChannelTypeURI = uri;
+        private ChannelType(Ident typeID, Class serviceClass){
+            myChannelTypeID = typeID;
             myChannelTypeClass = serviceClass;
         }
-        
+        public Ident	getTypeID() { 
+			return myChannelTypeID;
+		}
         public String getURI(){
-            return myChannelTypeURI;
+            return myChannelTypeID.getAbsUriString(); //  myChannelTypeURI;
         }
         
         public Class getServiceClass(){
             return myChannelTypeClass;
         }
-        
-        public static ChannelType getByURI(String channelTypeURI){
+        public static ChannelType getByTypeID(Ident channelTypeURI){
             for(ChannelType t : values()){
-                if(t.getURI().equals(channelTypeURI)){
+                if(t.getTypeID().equals(channelTypeURI)){
                     return t;
                 }
             }
             return null;
+        }        
+        public static ChannelType getByURI(String channelTypeURI){
+			Ident queryID = new FreeIdent(channelTypeURI);
+			return getByTypeID(queryID);
         }
     }
 }
