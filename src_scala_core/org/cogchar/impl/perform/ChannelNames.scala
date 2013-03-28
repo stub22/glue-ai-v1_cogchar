@@ -36,7 +36,8 @@ object ChannelNames extends org.appdapter.api.trigger.BoxAssemblyNames {
 	val		NS_ccScnInst = NamespaceDir.NS_ccScnInst // "http://www.cogchar.org /schema/scene/instance#";
 
 	val		P_details = NS_ccScn + "details";
-	val		P_osgiFilterString = NamespaceDir.NS_CCRT_RT + "OSGI_Filter";
+	val		P_osgiFilterString = NamespaceDir.NS_CCRT_RT + "OSGiFilter";
+	val		P_channelType = NamespaceDir.NS_CCRT_RT + "chanType";
 	
 	val		N_PRE_verbalOut =   "speechOut";
 	val		N_PRE_animOut	=	"animOut";
