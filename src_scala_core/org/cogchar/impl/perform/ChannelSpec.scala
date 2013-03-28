@@ -16,7 +16,6 @@
 
 package org.cogchar.impl.perform
 
-import  org.cogchar.api.event.{Event}
 import  org.cogchar.api.perform.{Media, Channel, Performance, BasicTextChannel, BasicFramedChannel, BasicTextPerformance, BasicFramedPerformance};
 
 import org.appdapter.api.module.Module.State;
@@ -31,38 +30,25 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
+// The ChannelSpec has not advanced beyond a URI rendevous point, which SceneSpecs can refer to.
+// Through 2012 our behavior demos relied on PUMA to inject actual channels with matching URIs into a Theater.
 
-
-/**
- * @author Stu B. <www.texpedient.com>
- */
-
-class FancyTime (val myStampMsec : Long) {
-}
-
-trait FancyChanStuff {
-}
-
-abstract class FancyTextChan(id: Ident) extends BasicTextChannel[FancyTime](id) {}
-abstract class FancyFramedChan[F](id: Ident) extends BasicFramedChannel[FancyTime,F](id) {}	
+class ChannelSpec extends KnownComponentImpl {
+	var		myDetails : String = "EMPTY";
+	var		myOsgiFilterString : String = "NONE";
 	
-
-class FancyTextPerf(media : Media.Text, chan: Channel.Text[FancyTime]) 
-		extends  BasicTextPerformance[FancyTime, FancyTextPerf, Event[FancyTextPerf, FancyTime]](media, chan) {
-}
-class FancyFramedPerf[F](media : Media.Framed[F], chan: Channel.Framed[FancyTime,F]) 
-		extends  BasicFramedPerformance[FancyTime, F, FancyFramedPerf[F], Event[FancyFramedPerf[F], FancyTime]](media, chan) {
-}
-
-class DummyTextChan(id: Ident) extends FancyTextChan(id) {
-	@throws(classOf[Throwable])	
-	override protected def attemptMediaStartNow(m : Media.Text) {
-		val textString = m.getFullText();
-		logInfo("************* START DUMMY TEXT PERFORMANCE on [" + getName() + "] of [" + textString + "]");
-	}
-	override def  makePerformanceForMedia(media : Media.Text) : Performance[Media.Text, FancyTime] =  {
-		return new FancyTextPerf(media, this);
+	override def getFieldSummary() : String = {
+		return super.getFieldSummary() + ", details=" + myDetails + ", osgiFilteringString=" + myOsgiFilterString;
 	}	
 }
+class ChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[ChannelSpec](builderConfRes) {
 
-
+	override protected def initExtendedFieldsAndLinks(cs: ChannelSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
+		getLogger().warn("ChannelSpecBuilder.initExtendedFieldsAndLinks");
+		val reader = getReader();
+		cs.myDetails = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_details, configItem, null);
+		cs.myOsgiFilterString = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_osgiFilterString, configItem, null);
+		//val linkedBehaviorSpecs : java.util.List[Object] = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_behavior, assmblr, mode, null);
+		//logInfo("Scene found linkedBehaviorSpecs: " + linkedBehaviorSpecs)
+	}
+}
