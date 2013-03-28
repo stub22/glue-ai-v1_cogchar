@@ -36,9 +36,11 @@ import com.hp.hpl.jena.rdf.model.Resource;
 class ChannelSpec extends KnownComponentImpl {
 	var		myDetails : String = "EMPTY";
 	var		myOsgiFilterString : String = "NONE";
+	var		myChanType : Ident = null;
 	
 	override def getFieldSummary() : String = {
-		return super.getFieldSummary() + ", details=" + myDetails + ", osgiFilteringString=" + myOsgiFilterString;
+		return super.getFieldSummary() + ", details=" + myDetails + ", osgiFilteringString=" + myOsgiFilterString + 
+				", chanType=" + myChanType;
 	}	
 }
 class ChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[ChannelSpec](builderConfRes) {
@@ -48,7 +50,12 @@ class ChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingCompon
 		val reader = getReader();
 		cs.myDetails = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_details, configItem, null);
 		cs.myOsgiFilterString = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_osgiFilterString, configItem, null);
-		//val linkedBehaviorSpecs : java.util.List[Object] = findOrMakeLinkedObjects(configItem, SceneFieldNames.P_behavior, assmblr, mode, null);
-		//logInfo("Scene found linkedBehaviorSpecs: " + linkedBehaviorSpecs)
+		val chanTypePropID = reader.getConfigPropertyIdent(configItem, configItem.getIdent(), ChannelNames.P_channelType);
+		val linkedChanTypes : java.util.Set[Item] = configItem.getLinkedItemSet(chanTypePropID);
+		
+		getLogger().info("ChannelSpec has linkedChanTypes: " + linkedChanTypes);
+		if (linkedChanTypes.size() == 1) {
+			cs.myChanType =  linkedChanTypes.iterator.next.asInstanceOf[Ident]
+		}
 	}
 }
