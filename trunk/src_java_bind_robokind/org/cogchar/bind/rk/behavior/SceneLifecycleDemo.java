@@ -61,10 +61,10 @@ public class SceneLifecycleDemo {
         };
         
         ChannelBindingConfig bindingConfig = new ChannelBindingConfig();
-        bindingConfig.myChannelType = ChannelType.SPEECH;
-        bindingConfig.myChannelURI = "fakeURI";
-        bindingConfig.myOSGiFilterString = OSGiUtils.createFilter(SpeechService.PROP_ID, "testService");
-        
+		
+        String speechTestFilterString = OSGiUtils.createFilter(SpeechService.PROP_ID, "testService");
+        bindingConfig.initExplicitly(ChannelType.SPEECH, "fakeURI", speechTestFilterString);
+				
         SpeechService speechService = getSpeechService();
         
         SceneSpec spec = new SceneSpec();

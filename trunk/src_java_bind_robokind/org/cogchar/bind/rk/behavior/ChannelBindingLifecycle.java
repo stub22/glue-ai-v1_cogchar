@@ -43,17 +43,17 @@ public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLife
     public ChannelBindingLifecycle(ChannelBindingConfig conf){
         super(new DescriptorListBuilder()
                 //The name "service" is used only within the lifecycle
-                .dependency("service", conf.myChannelType.getServiceClass()).with(conf.myOSGiFilterString)
+                .dependency("service", conf.getChannelType().getServiceClass()).with(conf.getOSGiFilterString())
                 .getDescriptors());
         myBindingConfig = conf;
         myRegistrationProperties = new Properties();
-        myRegistrationProperties.put("URI", conf.myChannelURI);
+        myRegistrationProperties.put("URI", conf.getChannelURI());
     }
     
     @Override
     protected Channel<M, Time> create(Map<String, Object> dependencies) {
         Object service = dependencies.get("service");
-        switch(myBindingConfig.myChannelType){
+        switch(myBindingConfig.getChannelType()){
             case SPEECH:
                 return createSpeechChannel((SpeechService)service);
             case ANIMATION:

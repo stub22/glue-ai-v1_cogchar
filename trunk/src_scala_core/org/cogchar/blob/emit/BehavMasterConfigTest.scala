@@ -23,9 +23,10 @@ import org.appdapter.impl.store.{FancyRepo};
 import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
-import org.cogchar.impl.perform.ChannelSpec;
+import org.cogchar.impl.perform.{ChannelSpec, ChannelNames};
+import org.appdapter.core.log.BasicDebugger;
 
-object BehavMasterConfigTest {
+object BehavMasterConfigTest extends BasicDebugger {
 	//   https://docs.google.com/spreadsheet/ccc?key=0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c
 	
 	final val BMC_SHEET_KEY = "0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c"
@@ -42,6 +43,18 @@ object BehavMasterConfigTest {
 		new OnlineSheetRepoSpec(BMC_SHEET_KEY, BMC_NAMESPACE_SHEET_NUM, 
 											BMC_DIRECTORY_SHEET_NUM, fileResModelCLs);
 	}
+	def readChannelSpecs(repoClient : RepoClient, chanGraphQN : String) : java.util.Set[ChannelSpec] = {
+		val specSet = new java.util.HashSet[ChannelSpec]();
+		val objectsFound : java.util.Set[Object] = repoClient.assembleRootsFromNamedModel(chanGraphQN);
+		import scala.collection.JavaConversions._;
+		for (o <- objectsFound) {
+			o match {
+				case cspec : ChannelSpec => objectsFound.add(cspec)
+				case _ => getLogger().warn("Unexpected object found in {} = {}", chanGraphQN, o);
+			}
+		}
+		specSet;
+	} 
 	def main(args: Array[String]) : Unit = {
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
 		org.apache.log4j.BasicConfigurator.configure();
@@ -54,8 +67,17 @@ object BehavMasterConfigTest {
 		
 		val bmcRepoCli = bmcRepoSpec.makeRepoClient(bmcMemoryRepoHandle);
 		
-		val chanSpecs = bmcRepoCli.assembleRootsFromNamedModel(CHAN_BIND_GRAPH_QN);
+		val chanSpecs = readChannelSpecs(bmcRepoCli, CHAN_BIND_GRAPH_QN);
 		println("Found chanSpecs: " + chanSpecs)
+		import scala.collection.JavaConversions._;
+		for (c <- chanSpecs) {
+			val chanID = c.getChannelID();
+			val chanTypeID = c.getChannelTypeID();
+			val chanOSGiFilter = c.getOSGiFilterString();
+			println("Channel id=" + chanID + ", type=" + chanTypeID + ", filter=" + chanOSGiFilter)
+		}
 	
+		// println ("AnimOut-Best=" + ChannelNames.getOutChanIdent_AnimBest)
+		// println("SpeechOut-Best=" + ChannelNames.getOutChanIdent_SpeechMain)
 	}
 }
