@@ -49,7 +49,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 		import scala.collection.JavaConversions._;
 		for (o <- objectsFound) {
 			o match {
-				case cspec : ChannelSpec => objectsFound.add(cspec)
+				case cspec : ChannelSpec => specSet.add(cspec)
 				case _ => getLogger().warn("Unexpected object found in {} = {}", chanGraphQN, o);
 			}
 		}
@@ -63,7 +63,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 		val bmcRepoSpec = makeBMC_RepoSpec();
 		
 		val bmcMemoryRepoHandle = bmcRepoSpec.makeRepo();	
-		println("OK to ignore error above about metadata/behavior/zeno_demo_scenes_A.ttl")
+		// println("OK to ignore error above about metadata/behavior/zeno_demo_scenes_A.ttl")
 		
 		val bmcRepoCli = bmcRepoSpec.makeRepoClient(bmcMemoryRepoHandle);
 		
