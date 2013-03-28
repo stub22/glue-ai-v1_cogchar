@@ -82,7 +82,7 @@ object RepoClientTester {
 	// readonly, although it is also possible to write out files containing graphs in
 	// numerous formats..
 	
-	final val DFLT_FILE_REPO_CONFIG_PATH = "/ok"
+	// final val DFLT_FILE_REPO_CONFIG_PATH = "/ok"
 
 	// ----------------------------------------------------------------------------------
 
