@@ -16,6 +16,7 @@
 
 package org.cogchar.render.app.goody;
 
+import org.cogchar.render.app.entity.EntitySpace;
 import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -65,12 +66,12 @@ public class GoodyFactory {
 		myRRC = rrc;
 		myScreenDimensions = dimensions;
 		attachGoodyNode();
-		theGoodySpace = new GoodySpace(hrc);
+		theGoodySpace = new EntitySpace(hrc);
 	}
 	
-	// Is this a good place for the relevant instance of GoodySpace to live, or should it be moved elsewhere?
-	private GoodySpace theGoodySpace;
-	public GoodySpace getTheGoodySpace() {
+	// Is this a good place for the relevant instance of EntitySpace to live, or should it be moved elsewhere?
+	private EntitySpace theGoodySpace;
+	public EntitySpace getTheGoodySpace() {
 		return theGoodySpace;
 	}
 	
@@ -148,7 +149,7 @@ public class GoodyFactory {
 		return newGoody;
 	}
 	
-	// This way, GoodySpace doesn't need to know about the root node to attach. But this pattern can change if
+	// This way, EntitySpace doesn't need to know about the root node to attach. But this pattern can change if
 	// we decide we rather it did!
 	public BasicGoody createAndAttachByAction(GoodyAction ga) {
 		BasicGoody newGoody = createByAction(ga);

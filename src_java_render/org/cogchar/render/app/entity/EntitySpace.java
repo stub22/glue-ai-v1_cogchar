@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.app.goody;
+package org.cogchar.render.app.entity;
 
 import com.jme3.renderer.Camera;
 import java.util.HashMap;
@@ -25,8 +25,14 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.ThingActionUpdater;
+import org.cogchar.bind.lift.ControlConfig;
+import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.name.dir.NamespaceDir;
+import org.cogchar.name.web.WebActionNames;
+import org.cogchar.render.app.goody.GoodyAction;
+import org.cogchar.render.app.goody.GoodyFactory;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.app.web.WebAction;
 import org.cogchar.render.goody.basic.BasicGoody;
 import org.cogchar.render.goody.basic.CameraGoodyWrapper;
 import org.cogchar.render.goody.basic.HumanoidFigureGoodyWrapper;
@@ -35,20 +41,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Stu B. <www.texpedient.com>
+ * Formerly GoodySpace, this class manages actions for Entities. Mostly this still focuses on Goodies, but now this
+ * is being generalized for web actions as well. Much refinement, additions, and refactoring TBD.
+ * 
+ * @author Stu B. <www.texpedient.com>, Ryan Biggs <rbiggs@hansonrobokind.com>
  * 
  * Render-side 
  */
 
-public class GoodySpace {
+public class EntitySpace {
 	
-	private static Logger theLogger = LoggerFactory.getLogger(GoodySpace.class);
+	private static Logger theLogger = LoggerFactory.getLogger(EntitySpace.class);
 	
 	private	Map<Ident, BasicGoody>		myGoodiesByID;
 	
 	// We only need hrc here for the temporary way to get camera and character lists -- eventually will come directly
 	// from RDF
-	public GoodySpace(HumanoidRenderContext hrc) { 
+	public EntitySpace(HumanoidRenderContext hrc) { 
 		myGoodiesByID = new HashMap<Ident, BasicGoody>();
 		addHumanoidGoodies(hrc); // Humanoids aren't really goodies, but we can pretend for the moment!
 		addCameraGoodies(hrc); // Cameras aren't really goodies, but we can pretend for the moment!
@@ -75,43 +84,69 @@ public class GoodySpace {
 		return myGoodiesByID.get(goodyUri);
 	}
 	
-	/**
-	 * The targetThing is presumed to be a "goody", either existing or new.
-	 */
+
 	public void processAction(ThingActionSpec actionSpec) {
-		GoodyAction ga = new GoodyAction(actionSpec);
-		Ident gid = ga.getGoodyID();
-		BasicGoody goodyOne = myGoodiesByID.get(gid);
-		switch (ga.getKind()) {
-			case CREATE: { // If it's a CREATE action, we will do some different stuff
-				if (myGoodiesByID.containsKey(gid)) {
-					theLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid);
-				} else {
-					goodyOne = GoodyFactory.getTheFactory().createAndAttachByAction(ga);
-					if (goodyOne != null) {
-						addGoody(goodyOne);
+		// Temporary (and ugly) way to tie in web actions:
+		if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) {
+			WebAction wa = new WebAction(actionSpec);
+			// Assuming for now it's CREATE only
+			ControlConfig newCC = generateControlConfig(wa);
+			Integer slotNum = wa.getSlotID();
+			if (slotNum != null) {
+				LiftAmbassador.getLiftAmbassador().activateControlFromConfig(wa.getSlotID(), newCC);
+			} else {
+				theLogger.warn("Could not display control by action spec -- desired control slot is null");
+			}
+		} else { //  else the targetThing is presumed to be a "goody", either existing or new.
+			GoodyAction ga = new GoodyAction(actionSpec);
+			Ident gid = ga.getGoodyID();
+			BasicGoody goodyOne = myGoodiesByID.get(gid);
+			switch (ga.getKind()) {
+				case CREATE: { // If it's a CREATE action, we will do some different stuff
+					if (myGoodiesByID.containsKey(gid)) {
+						theLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid);
+					} else {
+						goodyOne = GoodyFactory.getTheFactory().createAndAttachByAction(ga);
+						if (goodyOne != null) {
+							addGoody(goodyOne);
+						}
 					}
+					break;
 				}
-				break;
-			}
-			case DELETE: {
-				if (!myGoodiesByID.containsKey(gid)) {
-					theLogger.warn("Could not delete goody because it does not exist: {}", gid);
-				} else {
-					removeGoody(goodyOne);
+				case DELETE: {
+					if (!myGoodiesByID.containsKey(gid)) {
+						theLogger.warn("Could not delete goody because it does not exist: {}", gid);
+					} else {
+						removeGoody(goodyOne);
+					}
+					break;
 				}
-				break;
-			}
-			default: {
-				// For the moment, let's focus on "update"
-				try {
-					// Now - apply the action to goodyOne
-					goodyOne.applyAction(ga);
-				} catch (Exception e) {
-					theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);
+				default: {
+					// For the moment, let's focus on "update"
+					try {
+						// Now - apply the action to goodyOne
+						goodyOne.applyAction(ga);
+					} catch (Exception e) {
+						theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);
+					}
 				}
 			}
 		}
+	}
+	
+	// A method to generate a new ControlConfig for display from a WebAction
+	private ControlConfig generateControlConfig(WebAction wa) {
+		ControlConfig cc = new ControlConfig();
+		if (wa.getControlType() == null) {
+			cc.controlType = "NULLTYPE";
+		} else {
+			cc.controlType = wa.getControlType().getLocalName().toUpperCase(); // Ensures lc:type property is case insensitive to local name
+		}
+		cc.action = wa.getControlAction();
+		cc.text = wa.getControlText();
+		cc.style = wa.getControlStyle();
+		cc.resource = wa.getControlResource();
+		return cc;
 	}
 	
 	// A temporary way to make it possible to interact with figures... ultimately Humanoids aren't goodies!

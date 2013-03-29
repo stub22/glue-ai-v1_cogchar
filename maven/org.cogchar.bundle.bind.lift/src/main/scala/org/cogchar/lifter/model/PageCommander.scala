@@ -181,15 +181,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 			  warn("Maximum number of controls exceeded (" + theLifterState.MAX_CONTROL_QUANTITY + "); some controls may not be cleared upon page change!")
 			  warn("MAX_CONTROL_QUANTITY in LifterState can be increased if this is necessary.")
 			}
-			// Below, we clone the controlDef with a copy constructor so the ControlConfigs in the controlDefMap are 
-			// not the same objects as in LiftAmbassador's page cache.
-			// That's important largly because ToggleButton modifies the actions in the controlDefMap.
-			// Pretty darn messy, and likely a topic for further refactoring.
-			sessionState.controlConfigBySlot(slotNum) = new ControlConfig(controlDef) 
-			// Trigger control initialization handler chain to fill proper XML into controlsMap
-			sessionState.controlXmlBySlot(slotNum) = getXmlForControl(sessionId, slotNum, controlDef)
-			// Check for initial nee "local" actions which PageCommander needs to handle, such as text display
-			firstActionHandler.checkForInitialAction(theLifterState, sessionId, slotNum, controlDef)
+			loadControlDefToState(sessionId, slotNum, controlDef)
 		  })
 		// Blank unspecified slots (out to MAX_CONTROL_QUANTITY)
 		for (slot <- 1 to theLifterState.MAX_CONTROL_QUANTITY) {
@@ -226,6 +218,19 @@ import org.cogchar.name.lifter.{ActionStrings}
 		}
 	  }							
 	  
+	  def loadControlDefToState(sessionId:String, slotNum:Int, controlDef:ControlConfig) {
+		val sessionState = getSessionState(sessionId)
+		// Below, we clone the controlDef with a copy constructor so the ControlConfigs in the controlDefMap are 
+		// not the same objects as in LiftAmbassador's page cache.
+		// That's important largly because ToggleButton modifies the actions in the controlDefMap.
+		// Pretty darn messy, and likely a topic for further refactoring.
+		sessionState.controlConfigBySlot(slotNum) = new ControlConfig(controlDef) 
+		// Trigger control initialization handler chain to fill proper XML into controlsMap
+		sessionState.controlXmlBySlot(slotNum) = getXmlForControl(sessionId, slotNum, controlDef)
+		// Check for initial nee "local" actions which PageCommander needs to handle, such as text display
+		firstActionHandler.checkForInitialAction(theLifterState, sessionId, slotNum, controlDef)
+	  }
+  
 	  def handleAction(sessionId:String, formId:Int, input:Array[String]) {
 		//info("Handling action: " + getSessionState(sessionId).controlConfigBySlot(formId).action) // TEST ONLY
 		firstActionHandler.processHandler(theLifterState, sessionId, formId, 
@@ -355,8 +360,11 @@ import org.cogchar.name.lifter.{ActionStrings}
 		  initFromCogcharRDF(sessionId, config)
 		}
 		def setControlForSessionAndSlot(sessionId:String, slotNum:Int, newConfig:ControlConfig) {
+		  // Set control on display
 		  val newControlXml = getXmlForControl(sessionId, slotNum, newConfig)
 		  setControl(sessionId, slotNum, newControlXml)
+		  // Write control to state
+		  loadControlDefToState(sessionId, slotNum, newConfig)
 		}
 		def loadPage(sessionId:String, pagePath:String) {
 		  updateListeners(HtmlPageRequest(sessionId, Some(pagePath)))
@@ -397,6 +405,12 @@ import org.cogchar.name.lifter.{ActionStrings}
 				}
 			  }
 		  }
+		}
+		// Get list of active sessionIds -- to control independent sessions from repo updates, but not sure how we'll
+		// really want to handle that need. This is a temporary(?) idea:
+		import collection.JavaConversions._
+		def getActiveSessions() : java.util.List[String] = {
+		  theLifterState.activeSessions
 		}
 	  }
 	
