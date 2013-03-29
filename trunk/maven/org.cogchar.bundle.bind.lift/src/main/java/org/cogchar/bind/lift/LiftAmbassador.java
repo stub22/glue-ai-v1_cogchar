@@ -97,6 +97,8 @@ public class LiftAmbassador {
 		void showError(String errorSourceKey, String errorText);
 		
 		void showError(String errorSourceKey, String errorText, String sessionId);
+		
+		List<String> getActiveSessions();
 	}
 
 	public interface LiftAppInterface {
@@ -158,6 +160,13 @@ public class LiftAmbassador {
 			} else {
 				theLogger.error("A new control was requested for session {}, but no liftInterface was found!", sessionId);
 			}
+		}
+	}
+		
+	// Activate a control in all sessions -- probably just for temporary testing
+	public void activateControlFromConfig(int slotNum, ControlConfig newConfig) {
+		for (String sessionId : myLift.getActiveSessions()) {
+			activateControlFromConfig(sessionId, slotNum, newConfig);
 		}
 	}
 	
