@@ -44,7 +44,13 @@ public class BasicTypedValueMapTemporaryImpl extends BasicTypedValueMap {
 	
 	public Ident getAsIdent(Ident propName) {
 		// return new FreeIdent(ThingCN.THING_NS + (String)getRaw(propName));
-		return null;
+		Ident identResult = null;
+		String identString = (String)getRaw(propName);
+		if (identString != null) {
+			identResult = new FreeIdent(identString);
+		}
+		return identResult;
+		//return null;
 	}
 	public String getAsString(Ident propName) {
 		return (String)getRaw(propName);

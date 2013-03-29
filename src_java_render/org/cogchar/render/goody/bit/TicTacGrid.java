@@ -18,7 +18,7 @@ package org.cogchar.render.goody.bit;
 
 import org.cogchar.render.goody.basic.BasicGoodyImpl;
 import org.cogchar.render.app.goody.GoodyAction;
-import org.cogchar.render.app.goody.GoodySpace;
+import org.cogchar.render.app.entity.EntitySpace;
 import org.cogchar.render.app.goody.GoodyFactory;
 import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.ColorRGBA;
@@ -139,7 +139,7 @@ public class TicTacGrid extends BasicGoodyImpl {
 		return getWorldPositionForMark(gridPosition[0], gridPosition[1]);
 	}
 	
-	private GoodySpace getTheGoodySpace() {
+	private EntitySpace getTheGoodySpace() {
 		return GoodyFactory.getTheFactory().getTheGoodySpace();
 	}
 	

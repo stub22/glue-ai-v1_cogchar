@@ -25,6 +25,8 @@ public class NamespaceDir {
 	public static String NS_CCRT_RT = "urn:ftd:cogchar.org:2012:runtime#";
 	// Formal prefix for Cogchar 2012 goody
 	public static String GOODY_NS = "urn:ftd:cogchar.org:2012:goody#";
+	// Formal prefix for Cogchar Web
+	public static String WEB_NS = "http://www.cogchar.org/lift/config#";
 	
 	// Less formal web prefix still widely used:
 	final private static String NSP_Root = "http://www.cogchar.org/";
