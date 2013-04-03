@@ -46,43 +46,4 @@ class ScheduledActionStep (val myOffsetMillisec : Int, val myAction: BehaviorAct
 
 }
 
-trait BehaviorAction {
-	def perform(s: BScene);
-}
-abstract class BasicBehaviorAction extends BasicDebugger with BehaviorAction {
-	var	myChannelIdents : List[Ident] = List();
-	def addChannelIdent(id  : Ident) {
-		myChannelIdents = myChannelIdents :+ id;
-		logInfo("************ appended " + id + "  so list is now: " + myChannelIdents);
-	}
-}
-
-class TextAction(val myActionText : String) extends BasicBehaviorAction() { 
-	override def perform(s: BScene) {
-		val media = new Media.BasicText(myActionText);
-		for (val chanId : Ident <- myChannelIdents) {
-			getLogger().info("Looking for channel[" + chanId + "] in scene [" + s + "]");
-			val chan : Channel[_ <: Media, FancyTime] = s.getChannel(chanId);
-			getLogger().info("Found channel: " + chan);
-			if (chan != null) {
-				
-				chan match {
-					case txtChan : Channel.Text[FancyTime] => {
-						val perf : Performance[Media.Text, FancyTime] = txtChan.makePerformanceForMedia(media);
-						val startResFlag = perf.attemptToScheduleAction(Performance.Action.START, null);
-					}
-					case  _ => {
-						getLogger().warn("************* TextAction cannot perform on non Text-Channel: " + chan);
-					}
-				}
-			} else {
-				getLogger().warn("******************* Could not locate channel for: " + chanId);
-			}
-		}
-	}
-	override def toString() : String = {
-		"TextAction[actionTxt=" + myActionText + ", channelIds=" + myChannelIdents + "]";
-	}	
-}
-
 

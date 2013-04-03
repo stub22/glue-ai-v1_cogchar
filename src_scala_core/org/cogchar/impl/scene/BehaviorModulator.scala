@@ -15,7 +15,6 @@
  */
 
 package org.cogchar.impl.scene
-
 import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
 
@@ -39,45 +38,37 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
  * @author Stu B. <www.texpedient.com>
  */
 
-abstract class Behavior (val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
-
-	var	myStartStamp : Long = -1;
-	// def logMe(msg: String) {logInfo("[" + this + "]-" + msg);}
-	override protected def doStart(scn : BScene) {
-		myStartStamp = System.currentTimeMillis();
-		myRunDebugModulus = 20;
+class BehaviorModulator() extends BasicModulator[BScene](null, true) {
+	def setSceneContext(scene : BScene) { 
+		setDefaultContext(scene);
 	}
-	override protected def doStop(scn : BScene) {
-		getLogger().info("doStop called for behavior {}", this)
+	def runUntilDone(msecDelay : Int) {
+		var done = false;
+		while (!done) {
+			processOneBatch();
+			val amc = activeModuleCount();
+			done = (amc == 0);
+			if (!done) {
+				logInfo(Loggable.IMPO_LO, "runUntilDone() loop finished processOneBatch, active module count=" + amc + ", sleeping for " + msecDelay + "msec.");
+				Thread.sleep(msecDelay);
+			}
+		}
 	}
-	def getMillsecSinceStart() : Long = { 
-		System.currentTimeMillis() - myStartStamp;
+	def  activeModuleCount() : Int = {
+		val unfinishedModules : java.util.List[Module[BScene]] = getUnfinishedModules();
+		return unfinishedModules.size();	
 	}
-	
-}
-
-class TStamp () {
-	val	mySysStamp : Long = System.currentTimeMillis();
-	val	myFullSec = mySysStamp / 1000;
-	val myMilSec = mySysStamp - myFullSec * 1000;
-}
-class TimelineBehavior (bs: BehaviorSpec) {
-	
-} 
-//class BoorishBehavior(val itemSpecs : List[OffsetItemSpec]) extends Behavior() { 
-//	var	nextItemIndex = 0;
-// }
-
-abstract class BehaviorSpec() extends KnownComponentImpl {
-	var		myDetails : String = "EMPTY";
-	
-	def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode);
-	def makeBehavior() : Behavior;
-}
-
-class BehaviorSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[BehaviorSpec](builderConfRes) {
-	
-	override protected def initExtendedFieldsAndLinks(bs: BehaviorSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
-		bs.completeInit(configItem, getReader(), assmblr, mode);
+	import scala.collection.JavaConversions._;
+	def stopAllModules() {
+		val unfinishedModules : java.util.List[Module[BScene]] = getUnfinishedModules();
+		for (val um <- unfinishedModules) {
+			um.markStopRequested();
+		}
+	}
+	def detachAllFinishedModules() {
+		val finishedModules : java.util.List[Module[BScene]] = getFinishedModules();
+		for (val fm <- finishedModules) {
+			detachModule(fm);
+		}
 	}
 }

@@ -87,6 +87,7 @@ class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
 			logInfo("Theater.killThread is interrupting its own thread");
 			// It's possible (and has happened) that the thread goes null upon normal completion in the run loop
 			// between the check above and the interrupt call. This try block makes killThread more resistant to that problem.
+			// Question:  Why wouldn't we just synchronize on either the Theater object or the Thread object?
 			try {
 			  myWorkThread.interrupt();
 			} catch {
@@ -131,7 +132,7 @@ class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
 		myWorkThread = new Thread(r);
 		myWorkThread.start();
 	}
-	// Negave value avoids thread kill.
+	// Negative value avoids thread kill.
 	// 0 forces thread kill immediately.
 	// positive value waits (in *calling* thead) that many millsec before killing thread.
 	def fullyStop(waitMsecThenForce : Int) {
