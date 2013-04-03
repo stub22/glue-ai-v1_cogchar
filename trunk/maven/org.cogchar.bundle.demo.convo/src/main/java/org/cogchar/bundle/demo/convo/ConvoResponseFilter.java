@@ -87,6 +87,7 @@ public class ConvoResponseFilter<R extends GenRespWithConf> implements
         
         resp = resp.replaceAll("[Rr][Oo][Bb][Oo][Kk][Ii][Nn][Dd]", "Robo-kind");
         resp = resp.replaceAll("[Aa]utism", "aw-tisum");
+        resp = resp.replaceAll("([a-zA-Z0-9]):", "$1, ");
         
         resp = trimPannousSource(resp);
         
