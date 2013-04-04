@@ -25,6 +25,8 @@ import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecut
 import com.hp.hpl.jena.rdf.model.{Model}
 import org.cogchar.impl.perform.{ChannelSpec, ChannelNames};
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.platform.util.ClassLoaderUtils;
+import org.osgi.framework.BundleContext;
 
 object BehavMasterConfigTest extends BasicDebugger {
 	// These constants are used to test the ChanBinding model found in "GluePuma_BehavMasterDemo"
@@ -33,11 +35,14 @@ object BehavMasterConfigTest extends BasicDebugger {
 	final val BMC_NAMESPACE_SHEET_NUM = 4
 	final val BMC_DIRECTORY_SHEET_NUM = 3
 	final val CHAN_BIND_GRAPH_QN = "hrk:chan_sheet_77"
-	
-	def makeBMC_RepoSpec() : OnlineSheetRepoSpec = { 
-		val fileResModelCLs = new java.util.ArrayList[ClassLoader]();
-		new OnlineSheetRepoSpec(BMC_SHEET_KEY, BMC_NAMESPACE_SHEET_NUM, 
-											BMC_DIRECTORY_SHEET_NUM, fileResModelCLs);
+
+	def makeBMC_RepoSpec(ctx : BundleContext) : OnlineSheetRepoSpec = { 				
+		val fileResModelCLs : java.util.List[ClassLoader] = 
+				ClassLoaderUtils.getFileResourceClassLoaders(ctx, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
+		makeBMC_RepoSpec(fileResModelCLs);
+	}
+	def makeBMC_RepoSpec(fileResModelCLs : java.util.List[ClassLoader]) : OnlineSheetRepoSpec = { 				
+		new OnlineSheetRepoSpec(BMC_SHEET_KEY, BMC_NAMESPACE_SHEET_NUM, BMC_DIRECTORY_SHEET_NUM, fileResModelCLs);
 	}
 	def readChannelSpecs(repoClient : RepoClient, chanGraphQN : String) : java.util.Set[ChannelSpec] = {
 		val specSet = new java.util.HashSet[ChannelSpec]();
@@ -56,7 +61,8 @@ object BehavMasterConfigTest extends BasicDebugger {
 		// org.apache.log4j.BasicConfigurator.configure();
 		// org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 
-		val bmcRepoSpec = makeBMC_RepoSpec();
+		val fileResModelCLs =  new java.util.ArrayList[ClassLoader]();
+		val bmcRepoSpec = makeBMC_RepoSpec(fileResModelCLs);
 		
 		val bmcMemoryRepoHandle = bmcRepoSpec.makeRepo();	
 		

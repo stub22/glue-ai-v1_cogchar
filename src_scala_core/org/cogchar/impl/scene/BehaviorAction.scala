@@ -32,6 +32,7 @@ trait BehaviorAction {
 	def perform(s: BScene);
 }
 abstract class BasicBehaviorAction extends BasicDebugger with BehaviorAction {
+	// Usually there will be just one channel ID attached to each Action.
 	var	myChannelIdents : List[Ident] = List();
 	def addChannelIdent(id  : Ident) {
 		myChannelIdents = myChannelIdents :+ id;
