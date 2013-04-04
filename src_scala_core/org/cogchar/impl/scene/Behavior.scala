@@ -64,9 +64,7 @@ class TStamp () {
 class TimelineBehavior (bs: BehaviorSpec) {
 	
 } 
-//class BoorishBehavior(val itemSpecs : List[OffsetItemSpec]) extends Behavior() { 
-//	var	nextItemIndex = 0;
-// }
+
 
 abstract class BehaviorSpec() extends KnownComponentImpl {
 	var		myDetails : String = "EMPTY";

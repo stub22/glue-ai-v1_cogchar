@@ -25,6 +25,7 @@ import org.appdapter.help.repo.{RepoClient}
 
 import org.cogchar.impl.perform.{ChannelSpecBuilder};
 import scala.collection.mutable.HashMap;
+import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;	
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -32,7 +33,7 @@ import scala.collection.mutable.HashMap;
 
 class SceneBook extends BasicDebugger {
 	val		mySceneSpecs = new HashMap[Ident,SceneSpec]();
-	import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;	
+
 
 	def addSceneSpec(ss: SceneSpec) {
 		mySceneSpecs.put(ss.getIdent(), ss);
@@ -49,8 +50,8 @@ class SceneBook extends BasicDebugger {
 	}
 	def allSceneSpecs() : Iterable[SceneSpec] = mySceneSpecs.values ;
 	
-	
-	
+}
+object SceneBook extends BasicDebugger {
 	def loadSceneSpecsFromRepo(repoClient : RepoClient, chanGraphID : Ident, behavGraphID : Ident) : List[SceneSpec] = { 
 		getLogger.info("Loading Channel Specs from: {}", chanGraphID);
 		val chanSet : java.util.Set[Object] = repoClient.assembleRootsFromNamedModel(chanGraphID)
@@ -70,8 +71,7 @@ class SceneBook extends BasicDebugger {
 		val loadedStuff = AssemblerUtils.buildAllObjectsInRdfFile(rdfConfigFlexPath);
 		getLogger.debug("Loaded {} objects", loadedStuff.size());
 		yieldSceneSpecs(loadedStuff)
-	//	logInfo("Stuff: " + loadedStuff);
-	}
+	}	
 	def yieldSceneSpecs(loadedStuff : java.util.Set[Object]) : List[SceneSpec] = { 		
 
 		var sceneSpecList = List[SceneSpec]()
@@ -90,19 +90,20 @@ class SceneBook extends BasicDebugger {
 		getLogger.debug("Loaded SceneSpecList: {}", sceneSpecList);
 		getLogger.debug("===========================================================================================")
 		sceneSpecList;
+	}	
+	def filterSceneSpecs (stuff : java.util.Set[Object]) : java.util.List[SceneSpec] = {
+		import scala.collection.JavaConversions._;
+		yieldSceneSpecs(stuff);
 	}
-}
-object SceneBook extends BasicDebugger {
-	
 	def  readSceneBookFromFile(triplesFlexPath : String, optCL : ClassLoader ) : SceneBook = {
 		val sb = new SceneBook();
-		val sceneSpecList : List[SceneSpec] = sb.loadSceneSpecsFromFile(triplesFlexPath, optCL);
+		val sceneSpecList : List[SceneSpec] = loadSceneSpecsFromFile(triplesFlexPath, optCL);
 		sb.registerSceneSpecs(sceneSpecList);
 		sb;
 	}
 	def  readSceneBookFromRepo(repoClient : RepoClient, chanGraphID : Ident, behavGraphID : Ident) : SceneBook = {
 		val sb = new SceneBook();
-		val sceneSpecList : List[SceneSpec] = sb.loadSceneSpecsFromRepo(repoClient, chanGraphID, behavGraphID);
+		val sceneSpecList : List[SceneSpec] = loadSceneSpecsFromRepo(repoClient, chanGraphID, behavGraphID);
 		sb.registerSceneSpecs(sceneSpecList);
 		sb;
 	}
