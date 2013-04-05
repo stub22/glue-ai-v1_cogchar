@@ -19,7 +19,6 @@ package org.cogchar.bundle.demo.convo;
 import org.jflux.impl.transport.jms.MessageHeaderAdapter;
 import org.jflux.api.encode.EncodeRequest;
 import org.robokind.avrogen.speech.SpeechRequestRecord;
-import org.robokind.impl.speech.PortableSpeechRequest;
 import org.jflux.api.core.Adapter;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.Source;
@@ -34,9 +33,9 @@ import org.jflux.api.core.node.chain.NodeChain;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
 import org.jflux.impl.messaging.JMSAvroUtils;
 import org.robokind.api.speech.SpeechRequest;
+import org.robokind.api.speechrec.SpeechRecEvent;
 import org.robokind.api.speechrec.SpeechRecEventList;
 import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
-import org.robokind.impl.speechrec.PortableSpeechRecEventList;
 
 import static org.cogchar.bundle.demo.convo.osgi.ConvoConfigUtils.*;
 /**
@@ -45,7 +44,7 @@ import static org.cogchar.bundle.demo.convo.osgi.ConvoConfigUtils.*;
 
 public class ConvoFacade {
    private final static Logger theLogger = Logger.getLogger(ConvoFacade.class.getName());
-    ProducerNode<SpeechRecEventList> mySpeechProducer;
+    ProducerNode<SpeechRecEventList<SpeechRecEvent>> mySpeechProducer;
     Adapter<String,ConvoResponse> myConvoProc;
     ConsumerNode<SpeechRequest> myResponseSender;
     private NodeChain myChain;
@@ -134,13 +133,13 @@ public class ConvoFacade {
             .attach(myResponseSender);
     }
     
-    private ProducerNode<SpeechRecEventList> buildSpeechRecChain(
+    private ProducerNode<SpeechRecEventList<SpeechRecEvent>> buildSpeechRecChain(
             Session session, Destination dest){
         try{
             return JMSAvroUtils.buildEventReceiverChain(
                     SpeechRecEventListRecord.class, 
                     SpeechRecEventListRecord.SCHEMA$, 
-                    new PortableSpeechRecEventList.RecordMessageAdapter(), 
+                    new EmptyAdapter(), 
                     session, dest);
         }catch(JMSException ex){
             theLogger.log(Level.WARNING,"Error connecting to Speech Rec.",ex);
@@ -156,7 +155,7 @@ public class ConvoFacade {
                 .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
                     SpeechRequestRecord.class, 
                     SpeechRequestRecord.SCHEMA$, 
-                    new PortableSpeechRequest.MessageRecordAdapter(), 
+                    new EmptyAdapter(), 
                     session, dest, 
                     new MessageHeaderAdapter("application/speechRequest")));
         }catch(Exception ex){

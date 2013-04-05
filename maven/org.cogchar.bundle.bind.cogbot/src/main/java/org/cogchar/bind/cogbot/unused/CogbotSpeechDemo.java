@@ -12,6 +12,7 @@ import org.cogchar.bind.cogbot.main.GenRespWithConf;
 
 
 import org.jflux.api.core.Listener;
+import org.jflux.api.core.util.EmptyAdapter;
 import org.robokind.api.messaging.DefaultMessageAsyncReceiver;
 import org.robokind.api.messaging.DefaultMessageSender;
 import org.robokind.api.messaging.MessageAsyncReceiver;
@@ -135,7 +136,7 @@ public class CogbotSpeechDemo {
         bytesSender.setDestination(dest);
         RecordSender<SpeechRequestRecord> recSender =
                 new JMSAvroRecordSender<SpeechRequestRecord>(bytesSender);
-        sender.setAdapter(new PortableSpeechRequest.MessageRecordAdapter());
+        sender.setAdapter(new EmptyAdapter());
         sender.setRecordSender(recSender);
         try{
             sender.start();
@@ -164,7 +165,7 @@ public class CogbotSpeechDemo {
                         SpeechRequestRecord.SCHEMA$,
                         consumer);
         receiver.setRecordReceiver(recReceiver);
-        receiver.setAdapter(new PortableSpeechRequest.RecordMessageAdapter());
+        receiver.setAdapter(new EmptyAdapter());
         return receiver;
     }
 

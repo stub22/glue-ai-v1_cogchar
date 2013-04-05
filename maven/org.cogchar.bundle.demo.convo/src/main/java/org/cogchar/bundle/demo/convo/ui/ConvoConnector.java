@@ -29,25 +29,25 @@ import org.cogchar.bundle.demo.convo.PannousProcessor;
 import org.cogchar.bundle.demo.convo.SpeechFormatter;
 import org.cogchar.bundle.demo.convo.SpeechRecFilter;
 import org.cogchar.bundle.demo.convo.SpeechRecStringFilter;
-import org.jflux.api.core.Listener;
 import org.jflux.api.core.node.ConsumerNode;
 import org.jflux.api.core.node.DefaultProcessorNode;
 import org.jflux.api.core.node.ProcessorNode;
 import org.jflux.api.core.node.ProducerNode;
 import org.jflux.api.core.node.chain.NodeChain;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
+import org.jflux.api.core.util.EmptyAdapter;
 import org.jflux.api.encode.EncodeRequest;
 import org.jflux.impl.messaging.JMSAvroUtils;
 import org.jflux.impl.transport.jms.MessageHeaderAdapter;
 import org.robokind.api.messaging.services.ServiceCommand;
 import org.robokind.api.speech.SpeechRequest;
+import org.robokind.api.speechrec.SpeechRecEvent;
 import org.robokind.api.speechrec.SpeechRecEventList;
 import org.robokind.avrogen.messaging.ServiceCommandRecord;
 import org.robokind.avrogen.speech.SpeechRequestRecord;
 import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
 import org.robokind.impl.messaging.services.PortableServiceCommand;
 import org.robokind.impl.speech.PortableSpeechRequest;
-import org.robokind.impl.speechrec.PortableSpeechRecEventList;
 
 /**
  *
@@ -57,7 +57,7 @@ import org.robokind.impl.speechrec.PortableSpeechRecEventList;
 
 public class ConvoConnector {
     private final static Logger theLogger = Logger.getLogger(ConvoConnectionPanel.class.getName());
-    ProducerNode<SpeechRecEventList> mySpeechProducer;
+    ProducerNode<SpeechRecEventList<SpeechRecEvent>> mySpeechProducer;
     ProcessorNode<String,ConvoResponse> myConvoProc;
     ConsumerNode<ServiceCommand> myTTSCommnadSender;
     ConsumerNode<ServiceCommand> myAnimPromptSender;
@@ -166,13 +166,13 @@ public class ConvoConnector {
 //        }
     }
     
-    private ProducerNode<SpeechRecEventList> buildSpeechRecChain(
+    private ProducerNode<SpeechRecEventList<SpeechRecEvent>> buildSpeechRecChain(
             Session session, Destination dest){
         try{
             return JMSAvroUtils.buildEventReceiverChain(
                     SpeechRecEventListRecord.class, 
                     SpeechRecEventListRecord.SCHEMA$, 
-                    new PortableSpeechRecEventList.RecordMessageAdapter(), 
+                    new EmptyAdapter(), 
                     session, dest);
         }catch(JMSException ex){
             theLogger.log(Level.WARNING,"Error connecting to Speech Rec.",ex);
@@ -188,7 +188,7 @@ public class ConvoConnector {
                 .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
                     SpeechRequestRecord.class, 
                     SpeechRequestRecord.SCHEMA$, 
-                    new PortableSpeechRequest.MessageRecordAdapter(), 
+                    new EmptyAdapter(), 
                     session, dest, 
                     new MessageHeaderAdapter("application/speechRequest")));
         }catch(Exception ex){
@@ -205,7 +205,7 @@ public class ConvoConnector {
                 .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
                     ServiceCommandRecord.class, 
                     ServiceCommandRecord.SCHEMA$, 
-                    new PortableServiceCommand.MessageRecordAdapter(), 
+                    new EmptyAdapter(), 
                     session, dest, 
                     new MessageHeaderAdapter("application/service-command")));
         }catch(JMSException ex){

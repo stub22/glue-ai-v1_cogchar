@@ -34,15 +34,15 @@ import org.jflux.api.core.node.ConsumerNode;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
 import org.jflux.api.core.Adapter;
 import org.jflux.api.core.util.DefaultNotifier;
+import org.jflux.api.core.util.EmptyAdapter;
 import org.jflux.impl.messaging.JMSAvroUtils;
 import org.jflux.impl.transport.jms.MessageHeaderAdapter;
 import org.robokind.api.common.utils.TimeUtils;
 import org.robokind.api.speechrec.SpeechRecEvent;
 import org.robokind.api.speechrec.SpeechRecEventList;
 import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
+import org.robokind.avrogen.speechrec.SpeechRecEventRecord;
 import org.robokind.impl.messaging.utils.ConnectionManager;
-import org.robokind.impl.speechrec.PortableSpeechRecEvent;
-import org.robokind.impl.speechrec.PortableSpeechRecEventList;
 import static org.cogchar.bundle.demo.dictation.osgi.DictationConfigUtils.*;
 
 /**
@@ -205,7 +205,7 @@ public class DefaultDictationGrabber implements DictationGrabber{
                 .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
                     SpeechRecEventListRecord.class, 
                     SpeechRecEventListRecord.SCHEMA$, 
-                    new PortableSpeechRecEventList.MessageRecordAdapter(), 
+                    new EmptyAdapter(), 
                     mySession, dest, 
                     new MessageHeaderAdapter("application/speechRecEventList")));
         return NodeChainBuilder.build(
@@ -228,12 +228,23 @@ public class DefaultDictationGrabber implements DictationGrabber{
 
         @Override
         public SpeechRecEventList adapt(String a) {
-            SpeechRecEvent event = new PortableSpeechRecEvent(
-                    mySourceId, a, 1.0, TimeUtils.now());
-            List<SpeechRecEvent> list = new ArrayList<SpeechRecEvent>(1);
+            SpeechRecEventRecord event = new SpeechRecEventRecord();
+            event.setRecognizerId(mySourceId);
+            event.setRecognizedText(a);
+            event.setConfidence(1.0);
+            event.setTimestampMillisecUTC(TimeUtils.now());
+
+            List<SpeechRecEventRecord> list =
+                    new ArrayList<SpeechRecEventRecord>(1);
             list.add(event);
-            return new PortableSpeechRecEventList(
-                    mySourceId, myDestId, list, TimeUtils.now());
+            
+            SpeechRecEventListRecord eventList = new SpeechRecEventListRecord();
+            eventList.setSpeechRecServiceId(mySourceId);
+            eventList.setEventDestinationId(myDestId);
+            eventList.setSpeechRecEvents(list);
+            eventList.setTimestampMillisecUTC(TimeUtils.now());
+            
+            return eventList;
         }
 
     }
