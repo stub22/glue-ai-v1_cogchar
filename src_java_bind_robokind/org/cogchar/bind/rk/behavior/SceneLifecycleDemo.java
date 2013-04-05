@@ -27,6 +27,7 @@ import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.OSGiUtils;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.robokind.api.speech.SpeechEvent;
+import org.robokind.api.speech.SpeechEventList;
 import org.robokind.api.speech.SpeechRequest;
 import org.robokind.api.speech.SpeechService;
 
@@ -114,8 +115,8 @@ public class SceneLifecycleDemo {
             @Override public void stop() {}
             @Override public void addRequestListener(Listener<SpeechRequest> ll) {}
             @Override public void removeRequestListener(Listener<SpeechRequest> ll) {}
-            @Override public void addSpeechEventListener(Listener<SpeechEvent> ll) {}
-            @Override public void removeSpeechEventListener(Listener<SpeechEvent> ll) {}
+            @Override public void addSpeechEventListener(Listener<SpeechEventList<SpeechEvent>> ll) {}
+            @Override public void removeSpeechEventListener(Listener<SpeechEventList<SpeechEvent>> ll) {}
         };
     }
 }
