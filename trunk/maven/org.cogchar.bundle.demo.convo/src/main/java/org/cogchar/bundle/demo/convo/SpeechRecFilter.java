@@ -24,10 +24,10 @@ import org.robokind.api.speechrec.SpeechRecEventList;
  * @author Matthew Stevenson <www.robokind.org>
  */
 public class SpeechRecFilter implements 
-        Adapter<SpeechRecEventList, SpeechRecEvent> {
+        Adapter<SpeechRecEventList<SpeechRecEvent>, SpeechRecEvent> {
     
     @Override
-    public SpeechRecEvent adapt(SpeechRecEventList in) {
+    public SpeechRecEvent adapt(SpeechRecEventList<SpeechRecEvent> in) {
         if(in == null 
                 || in.getSpeechRecEvents() == null
                 || in.getSpeechRecEvents().isEmpty()){

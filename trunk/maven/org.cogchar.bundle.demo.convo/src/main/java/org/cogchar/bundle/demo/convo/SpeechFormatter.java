@@ -18,7 +18,7 @@ package org.cogchar.bundle.demo.convo;
 import org.jflux.api.core.Adapter;
 import org.robokind.api.common.utils.TimeUtils;
 import org.robokind.api.speech.SpeechRequest;
-import org.robokind.impl.speech.PortableSpeechRequest;
+import org.robokind.avrogen.speech.SpeechRequestRecord;
 
 /**
  *
@@ -38,8 +38,13 @@ public class SpeechFormatter implements Adapter<String, SpeechRequest> {
     
     @Override
     public SpeechRequest adapt(String a) {
-        return new PortableSpeechRequest(
-                        mySourceId, myDestId, TimeUtils.now(), a);
+        SpeechRequestRecord rec = new SpeechRequestRecord();
+        rec.setRequestSourceId(mySourceId);
+        rec.setSpeechServiceId(myDestId);
+        rec.setTimestampMillisecUTC(TimeUtils.now());
+        rec.setPhrase(a);
+        
+        return rec;
     }
     
 }
