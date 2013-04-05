@@ -21,11 +21,10 @@ import org.jflux.api.core.Listener;
 import org.jflux.api.core.Notifier;
 import org.jflux.api.core.util.Repeater;
 import org.robokind.api.common.utils.TimeUtils;
-import org.robokind.api.speechrec.SpeechRecEvent;
 import org.robokind.api.speechrec.SpeechRecEventList;
 import org.robokind.api.speechrec.SpeechRecService;
-import org.robokind.impl.speechrec.PortableSpeechRecEvent;
-import org.robokind.impl.speechrec.PortableSpeechRecEventList;
+import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
+import org.robokind.avrogen.speechrec.SpeechRecEventRecord;
 
 /**
  *
@@ -50,13 +49,21 @@ public class SpeechRecEngine implements Notifier<SpeechRecEventList>{
     }
     
     public void test(String text){
-        SpeechRecEvent e = 
-                new PortableSpeechRecEvent("rec", text, 1.0, TimeUtils.now());
-        List<SpeechRecEvent> list = new ArrayList<SpeechRecEvent>();
+        SpeechRecEventRecord e = new SpeechRecEventRecord();
+        e.setRecognizerId("rec");
+        e.setRecognizedText(text);
+        e.setConfidence(1.0);
+        e.setTimestampMillisecUTC(TimeUtils.now());
+        
+        List<SpeechRecEventRecord> list = new ArrayList<SpeechRecEventRecord>();
         list.add(e);
-        SpeechRecEventList l = 
-                new PortableSpeechRecEventList(
-                        "source", "dest", list, TimeUtils.now());
+        
+        SpeechRecEventListRecord l = new SpeechRecEventListRecord();
+        l.setSpeechRecServiceId("source");
+        l.setEventDestinationId("dest");
+        l.setSpeechRecEvents(list);
+        l.setTimestampMillisecUTC(TimeUtils.now());
+
         notifyListeners(l);
     }
 
