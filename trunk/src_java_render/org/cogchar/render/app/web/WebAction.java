@@ -34,6 +34,10 @@ public class WebAction extends EntityAction {
 		super(actionSpec);
 	}
 	
+	public Ident getConfigIdent() {
+		return paramTVMap.getAsIdent(WebActionNames.CONFIG);
+	}
+	
 	public Integer getSlotID() {
 		return paramTVMap.getAsInteger(WebActionNames.SLOT);
 	}

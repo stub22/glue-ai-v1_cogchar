@@ -34,6 +34,17 @@ public class WebActionParamWriter {
 		myBTVMap = btvMap;
 	}
 	
+	
+	// For setting entire LiftConfig (screen definition)
+	public void putLiftConfigIdent(Ident configIdent) {
+		// We can't do the following because ThingActionUpdater.buildActionParameterValueMap assumes all parameters are Strings in repo:
+		//myBTVMap.putNameAtName(WebActionNames.CONFIG, configIdent);
+		// So instead we convert to String:
+		myBTVMap.putValueAtName(WebActionNames.CONFIG, configIdent.getAbsUriString());
+	}
+	
+	
+	// The next six methods for setting a single control:
 	public void putSlotNum(int slotNum) {
 		myBTVMap.putValueAtName(WebActionNames.SLOT, slotNum);
 	}

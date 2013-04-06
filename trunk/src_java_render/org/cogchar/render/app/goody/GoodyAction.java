@@ -29,6 +29,8 @@ import org.cogchar.api.thing.TypedValueMap;
  * An HTTP-client would not normally use this class directly.  Instead,
  * see the client side classes in the org.cogchar.outer.client.goody package.
  * 
+ * Soon this should be refactored as a subclass of the new generalized superclass, EntityAction.
+ * 
  * @author Stu B. <www.texpedient.com> and Ryan B.
  */
 
