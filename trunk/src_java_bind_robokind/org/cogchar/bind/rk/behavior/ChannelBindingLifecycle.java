@@ -32,12 +32,15 @@ import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
 import org.robokind.api.speech.SpeechService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Matthew Stevenson <www.robokind.org>
  */
 public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLifecycleProvider<Channel, Channel<M,Time>> {
+	private static Logger theLogger =  LoggerFactory.getLogger(ChannelBindingLifecycle.class);
     private ChannelBindingConfig myBindingConfig;
     
     public ChannelBindingLifecycle(ChannelBindingConfig conf){
@@ -63,12 +66,14 @@ public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLife
     }
     
     private Channel createSpeechChannel(SpeechService speechSvc){
+		theLogger.warn("Creating speechChannel for[{}]", speechSvc);
 		BundleContext bundleCtx = null;
 		Ident chanIdent = null;
 		return new SpeechOutputClient(bundleCtx, chanIdent);
     }
     
     private Channel createAnimationChannel(AnimationPlayer animPlayerSvc){
+		theLogger.warn("Creating speechChannel for[{}]", animPlayerSvc);
 		Ident charIdent = null;
 		BehaviorConfigEmitter behavCE = null;
 		/* charIdent - so far, used only for log messages
