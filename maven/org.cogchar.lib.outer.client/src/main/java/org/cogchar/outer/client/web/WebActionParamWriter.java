@@ -69,6 +69,12 @@ public class WebActionParamWriter {
 		myBTVMap.putValueAtName(WebActionNames.ACTION, actionIdent.getAbsUriString());
 	}
 	
+	
+	public void putUserName(String userName) {
+		myBTVMap.putValueAtName(WebActionNames.USERNAME, userName);
+	}
+	
+	
 	public TypedValueMap	getValueMap() { 
 		return myBTVMap;
 	}
