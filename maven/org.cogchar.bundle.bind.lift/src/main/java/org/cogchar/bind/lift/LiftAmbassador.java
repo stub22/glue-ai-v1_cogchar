@@ -143,6 +143,7 @@ public class LiftAmbassador {
 	
 	// This flavor activates a new set of controls for a single session
 	public void activateControlsFromConfig(String sessionId, LiftConfig newConfig) {
+		//theLogger.info("Activating controls for session {}: {}", sessionId, newConfig); // TEST ONLY
 		synchronized (activationLock) { // Likely doesn't actually need synchronization since LifterState is now threadsafe...
 			if (myLift != null) {
 				myLift.setConfigForSession(sessionId, newConfig);
@@ -193,6 +194,13 @@ public class LiftAmbassador {
 				activateControlsFromConfig(sessionId, newConfig);
 				success = true;
 			}
+		}
+	}
+	
+	// Activates controls identified by a LiftConfig URI in all sessions -- probably just for temporary testing
+	public void activateControlsFromUri(Ident configIdent) {
+		for (String sessionId : myLift.getActiveSessions()) {
+			activateControlsFromUri(sessionId, configIdent);
 		}
 	}
 	

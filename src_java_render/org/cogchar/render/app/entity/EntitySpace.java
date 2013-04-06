@@ -97,6 +97,15 @@ public class EntitySpace {
 			} else {
 				theLogger.warn("Could not display control by action spec -- desired control slot is null");
 			}
+		} else if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONFIG)) { // Big ugly if-else-if chain must go -- really need switch on Ident! (or Scala...)
+			WebAction wa = new WebAction(actionSpec);
+			// Assuming for now it's CREATE only
+			Ident configIdent = wa.getConfigIdent();
+			if (configIdent != null) {
+				LiftAmbassador.getLiftAmbassador().activateControlsFromUri(configIdent);
+			} else {
+				theLogger.warn("Could not set web config by action spec -- desired config URI is null");
+			}
 		} else { //  else the targetThing is presumed to be a "goody", either existing or new.
 			GoodyAction ga = new GoodyAction(actionSpec);
 			Ident gid = ga.getGoodyID();
