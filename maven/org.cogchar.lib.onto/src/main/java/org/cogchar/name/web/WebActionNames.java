@@ -32,7 +32,7 @@ public class WebActionNames  {
 		return new FreeIdent(WEB_NS + nameTail);
 	}
 	
-	public	static Ident	CONFIG = makeID("configIdent");
+	public	static Ident	CONFIG = makeID("configident");
 	
 	public	static Ident	SLOT = makeID("slotID");
 	public	static Ident	TYPE = makeID("type");
@@ -41,6 +41,7 @@ public class WebActionNames  {
 	public	static Ident	RESOURCE = makeID("resource");
 	public	static Ident	ACTION = makeID("action");
 	
+	public	static Ident	USERNAME = makeID("username");
 	
 	public	static Ident	WEBCONTROL = makeID("control");
 	public	static Ident	WEBCONFIG = makeID("liftconfig");

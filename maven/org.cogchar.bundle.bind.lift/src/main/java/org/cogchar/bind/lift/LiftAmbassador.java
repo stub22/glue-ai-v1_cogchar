@@ -15,9 +15,6 @@
  */
 package org.cogchar.bind.lift;
 
-import org.cogchar.name.lifter.LiftCN;
-import org.cogchar.name.lifter.LiftAN;
-import org.cogchar.name.lifter.ChatAN;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +22,9 @@ import java.util.Map;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.name.lifter.ChatAN;
+import org.cogchar.name.lifter.LiftAN;
+import org.cogchar.name.lifter.LiftCN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +54,7 @@ public class LiftAmbassador {
 	private Map<Ident, LiftConfig> myLiftConfigCache = new HashMap<Ident, LiftConfig>(); // To avoid query config if page is reselected
 	private Map<String, String> myChatConfigEntries = new HashMap<String, String>();
 	private Map<Ident, UserAccessConfig.UserConfig> myUserMap = new HashMap<Ident, UserAccessConfig.UserConfig>();
+	private Map<Ident, String> userSessionMap = new HashMap<Ident, String>(); // Tracks the session IDs corresponding to named users' last login
 	private LiftQueryEnvoy myQueryEnvoy = new LiftQueryEnvoy();
 	
 	private final Object activationLock = new Object();
@@ -171,6 +172,16 @@ public class LiftAmbassador {
 		}
 	}
 	
+	// Activates a single control in a single session based on user
+	public void activateControlFromConfigForUser(String userName, int slotNum, ControlConfig newConfig) {
+		String sessionId = userSessionMap.get(getUserIdentFromName(userName));
+		if (sessionId != null) {
+			activateControlFromConfig(sessionId, slotNum, newConfig);
+		} else {
+			theLogger.warn("Could not set control based on user name; no login on record for user {}", userName);
+		}
+	}
+	
 	// Activates controls identified by a LiftConfig URI
 	public void activateControlsFromUri(String sessionId, Ident configIdent) {
 		// May be OK not to have this synchronized if appdapter repo code is threadsafe, and if myLiftConfigCache
@@ -201,6 +212,16 @@ public class LiftAmbassador {
 	public void activateControlsFromUri(Ident configIdent) {
 		for (String sessionId : myLift.getActiveSessions()) {
 			activateControlsFromUri(sessionId, configIdent);
+		}
+	}
+	
+	// Activates controls in a single session based on user
+	public void activateControlsFromUriForUser(String userName, Ident configIdent) {
+		String sessionId = userSessionMap.get(getUserIdentFromName(userName));
+		if (sessionId != null) {
+			activateControlsFromUri(sessionId, configIdent);
+		} else {
+			theLogger.warn("Could not set Lifter config based on user name; no login on record for user {}", userName);
 		}
 	}
 	
@@ -380,10 +401,11 @@ public class LiftAmbassador {
 	public void login(String sessionId, String userName, String password) {
 		// I believe this doesn't need to be synchronized...
 		if (myUserMap != null) {
-			Ident userIdent = new FreeIdent(LiftAN.NS_user + userName, userName);
+			Ident userIdent = getUserIdentFromName(userName);
 			if (myUserMap.containsKey(userIdent)) {
 				String hashedEnteredPassword = LiftCrypto.getStringFromBytes(LiftCrypto.getHash(password, myUserMap.get(userIdent).salt));
 				if (myUserMap.get(userIdent).hashedPassword.equals(hashedEnteredPassword)) {
+					userSessionMap.put(userIdent, sessionId); // Add last logged-in sessionID to userSessionMap to track userName-sessionID correspondence
 					activateControlsFromUri(sessionId, myUserMap.get(userIdent).startConfig);
 				} else {
 					displayError("login", "Password not recognized", sessionId); // <- move strings to resource
@@ -395,6 +417,10 @@ public class LiftAmbassador {
 			theLogger.error("Attempting to log in user, but myUserMap is not set!");
 			displayError("login", "User database not set!", sessionId); // <- move strings to resource
 		}
+	}
+	
+	private Ident getUserIdentFromName(String userName) {
+		return new FreeIdent(LiftAN.NS_user + userName, userName);
 	}
 	
 	public List<NameAndAction> getNamesAndActionsFromQuery(Ident queryUri) {

@@ -87,22 +87,38 @@ public class EntitySpace {
 
 	public void processAction(ThingActionSpec actionSpec) {
 		// Temporary (and ugly) way to tie in web actions:
-		if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) {
-			WebAction wa = new WebAction(actionSpec);
+		// We do the following commands now, to avoid repeated code below. Still rather ugly though!
+		WebAction wa = null;
+		String webUser = null;
+		LiftAmbassador la = LiftAmbassador.getLiftAmbassador();
+		if ((actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) || 
+				(actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONFIG))) {
+			wa = new WebAction(actionSpec);
+			webUser = wa.getUserName();
+			
+		}
+		if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) { // Big ugly if-else-if chain must go -- really need switch on Ident! (or Scala...)
 			// Assuming for now it's CREATE only
 			ControlConfig newCC = generateControlConfig(wa);
 			Integer slotNum = wa.getSlotID();
 			if (slotNum != null) {
-				LiftAmbassador.getLiftAmbassador().activateControlFromConfig(wa.getSlotID(), newCC);
+				if (webUser == null) {
+					la.activateControlFromConfig(wa.getSlotID(), newCC);
+				} else {
+					la.activateControlFromConfigForUser(webUser, wa.getSlotID(), newCC);
+				}
 			} else {
 				theLogger.warn("Could not display control by action spec -- desired control slot is null");
 			}
-		} else if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONFIG)) { // Big ugly if-else-if chain must go -- really need switch on Ident! (or Scala...)
-			WebAction wa = new WebAction(actionSpec);
+		} else if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONFIG)) {
 			// Assuming for now it's CREATE only
 			Ident configIdent = wa.getConfigIdent();
 			if (configIdent != null) {
-				LiftAmbassador.getLiftAmbassador().activateControlsFromUri(configIdent);
+				if (webUser == null) {
+					la.activateControlsFromUri(configIdent);
+				} else {
+					la.activateControlsFromUriForUser(webUser, configIdent);
+				}
 			} else {
 				theLogger.warn("Could not set web config by action spec -- desired config URI is null");
 			}
