@@ -92,6 +92,9 @@ public class SceneLifecycleDemo {
 				final String key, final String val) {
 		return getRegistrationRunnable(context, SceneSpec.class, scnSpec, key, val);
 	}
+    public static Runnable makeTheaterRegRunnable(BundleContext context, OSGiTheater osgiTheater, final String key, final String val) {
+		return getRegistrationRunnable(context, OSGiTheater.class, osgiTheater, key, val);
+	}
 	
 	
     private static Runnable getRegistrationRunnable(
