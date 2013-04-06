@@ -61,4 +61,8 @@ public class WebAction extends EntityAction {
 	public Ident getControlAction() {
 		return paramTVMap.getAsIdent(WebActionNames.ACTION);
 	}
+	
+	public String getUserName() {
+		return paramTVMap.getAsString(WebActionNames.USERNAME);
+	}
 }
