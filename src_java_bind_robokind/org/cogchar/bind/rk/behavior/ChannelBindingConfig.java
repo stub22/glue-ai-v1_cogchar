@@ -69,6 +69,9 @@ public class ChannelBindingConfig {
         }
         return true;
     }
+	@Override public String toString() {
+		return getClass().getSimpleName() + "[ id=" + myChannelID + ", type=" + myChannelType + ", filter=" + myOSGiFilterString;
+	}
 	
 
     @Override
