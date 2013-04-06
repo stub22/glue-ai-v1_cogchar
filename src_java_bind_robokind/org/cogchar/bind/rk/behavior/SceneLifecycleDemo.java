@@ -84,7 +84,7 @@ public class SceneLifecycleDemo {
             run.run();
         }
     }
-    public Runnable registerChanBindConfAndMakeRunnable(BundleContext context, ChannelBindingConfig cbc, 
+    public static Runnable registerChanBindConfAndMakeRunnable(BundleContext context, ChannelBindingConfig cbc, 
 				final String key, final String val) {
 		return getRegistrationRunnable(context, ChannelBindingConfig.class, cbc, key, val);
 	} 
