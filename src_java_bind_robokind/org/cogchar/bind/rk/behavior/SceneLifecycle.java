@@ -31,12 +31,15 @@ import org.robokind.api.common.lifecycle.DependencyDescriptor;
 import org.robokind.api.common.lifecycle.DependencyDescriptor.DependencyType;
 import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
 import org.robokind.api.common.osgi.OSGiUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Matthew Stevenson <www.robokind.org>
  */
 public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
+	private static Logger theLogger =  LoggerFactory.getLogger(SceneLifecycle.class);
     private SceneSpec mySceneSpec;
     
     private static List<DependencyDescriptor> buildDescriptorList(SceneSpec spec){
@@ -60,14 +63,19 @@ public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
 
     @Override protected BScene create(Map<String, Object> dependencies) {
         BScene scene = new BScene(mySceneSpec);
+		List chansForWiring = new ArrayList<Channel>();
         for(Entry<String,Object> e : dependencies.entrySet()){
             String chanURI = e.getKey();
-            if(e.getValue() == null || !Channel.class.isAssignableFrom(e.getValue().getClass())){
+			Object entryVal = e.getValue();
+            if(entryVal == null || !Channel.class.isAssignableFrom(entryVal.getClass())){
+				theLogger.warn("Ignoring non-channel dependency {} for scene {}", entryVal, scene);
                 continue;
             }
             Channel chan = (Channel)e.getValue();   //Dependency types already checked by AbstractLifecycle
-            //Do something with channel
+			theLogger.warn("Found channel dependency {} for scene {}", chan, scene);
+			chansForWiring.add(chan);
         }
+		scene.wireSubChannels(chansForWiring);
         return scene;
     }
 

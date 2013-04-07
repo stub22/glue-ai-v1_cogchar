@@ -72,6 +72,9 @@ class BScene(val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyT
 	def getChannel(id : Ident) : Channel[_ <: Media, FancyTime] = {
 		return myWiredChannels.getOrElse(id, null);
 	}
+	override def toString() : String = {
+		"BScene[id=" + rootyID + ", chanMap=" + myWiredChannels + "]";
+	}
 }
 
 
