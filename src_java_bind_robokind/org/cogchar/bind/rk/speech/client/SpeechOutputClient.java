@@ -33,16 +33,26 @@ import org.robokind.api.speech.SpeechService;
  */
 public class SpeechOutputClient extends FancyTextChan {
 
-	BundleContext myBundleCtx;
+	BundleContext	myCachedBundleCtx;
+	SpeechService	myCachedSpeechSvc;
 
 	public SpeechOutputClient(BundleContext bundleCtx, Ident chanIdent) {
 		super(chanIdent);
-		myBundleCtx = bundleCtx;
+		myCachedBundleCtx = bundleCtx;
+	}
+	public SpeechOutputClient(SpeechService speechSvc, Ident chanIdent) {
+		super(chanIdent);
+		myCachedSpeechSvc = speechSvc;
 	}
 
+	
 	@Override protected void attemptMediaStartNow(Media.Text m) throws Throwable {
 		String textStr = m.getFullText();
-		oldLookupServiceAndSpeakText(textStr);
+		if (myCachedSpeechSvc != null) {
+			myCachedSpeechSvc.speak(textStr);
+		} else {
+			oldLookupServiceAndSpeakText(textStr);
+		}
 	}
 
 	@Override public Performance<Media.Text, FancyTime> makePerformanceForMedia(Media.Text m) {
@@ -111,7 +121,7 @@ public class SpeechOutputClient extends FancyTextChan {
 
 		public void release() {
 			if (serviceRef != null) {
-				myBundleCtx.ungetService(serviceRef);
+				myCachedBundleCtx.ungetService(serviceRef);
 			}
 		}
 
@@ -162,10 +172,10 @@ public class SpeechOutputClient extends FancyTextChan {
 
 	private ServiceContext oldLookupSpeechServiceContext() throws Throwable {
 		ServiceContext servCtx = new ServiceContext();
-		servCtx.serviceRef = myBundleCtx.getServiceReference(SpeechService.class.getName());
+		servCtx.serviceRef = myCachedBundleCtx.getServiceReference(SpeechService.class.getName());
 		if (servCtx.serviceRef != null) {
 			try {
-				Object serviceObj = myBundleCtx.getService(servCtx.serviceRef);
+				Object serviceObj = myCachedBundleCtx.getService(servCtx.serviceRef);
 				if (serviceObj != null) {
 					servCtx.speechService = (SpeechService) serviceObj;
 				}
