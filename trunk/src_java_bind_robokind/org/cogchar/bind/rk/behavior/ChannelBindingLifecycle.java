@@ -17,16 +17,13 @@ package org.cogchar.bind.rk.behavior;
 
 import java.util.Map;
 import java.util.Properties;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.perform.Channel;
-import org.cogchar.api.perform.Channel.Status;
 import org.cogchar.api.perform.Media;
-import org.cogchar.api.perform.Performance;
-import org.cogchar.api.perform.Performance.Action;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
-import org.cogchar.impl.perform.FancyTextChan;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
@@ -68,8 +65,8 @@ public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLife
     private Channel createSpeechChannel(SpeechService speechSvc){
 		theLogger.warn("Creating speechChannel for[{}]", speechSvc);
 		BundleContext bundleCtx = null;
-		Ident chanIdent = null;
-		return new SpeechOutputClient(bundleCtx, chanIdent);
+		Ident chanIdent = new FreeIdent(myBindingConfig.getChannelURI());
+		return new SpeechOutputClient(speechSvc, chanIdent);
     }
     
     private Channel createAnimationChannel(AnimationPlayer animPlayerSvc){
