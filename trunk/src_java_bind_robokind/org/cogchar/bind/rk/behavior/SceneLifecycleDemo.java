@@ -28,6 +28,7 @@ import org.robokind.api.common.osgi.OSGiUtils;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.robokind.api.speech.SpeechEvent;
 import org.robokind.api.speech.SpeechEventList;
+import org.robokind.api.speech.SpeechJob;
 import org.robokind.api.speech.SpeechRequest;
 import org.robokind.api.speech.SpeechService;
 
@@ -119,8 +120,9 @@ public class SceneLifecycleDemo {
             }
 
             @Override public void start() throws Exception { }
-            @Override public void speak(String string) {
+            @Override public SpeechJob speak(String string) {
                 System.out.println(string);
+                return null;
             }
 
             @Override public void cancelSpeech() {}
