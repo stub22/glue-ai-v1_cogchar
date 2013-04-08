@@ -63,7 +63,7 @@ class ConcreteTVM() extends BasicTypedValueMapTemporaryImpl {
 		0;
 	}
 	override def   getAsFloat(propName : Ident) : java.lang.Float = {
-		0.0f;
+		0.0f;[HEZ]
 	}
 	override def   getAsDouble(propName : Ident) :  java.lang.Double = {
 		0.0d;
