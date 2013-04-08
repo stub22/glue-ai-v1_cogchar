@@ -59,13 +59,10 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 		myTheater = new Theater(myAgentID);	
 
 	}
-	public void initMappers(PumaRegistryClient prc) { 
+	public void initMappers(PumaRegistryClient prc, RobotServiceContext rsc) { 
 		List<ClassLoader> clsForRKConf = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
-		myRobotMotionMapper = new PumaRobotMotionMapper (myAgentID, myBehaviorCE, clsForRKConf);
+		myRobotMotionMapper = new PumaRobotMotionMapper (myAgentID, myBehaviorCE, clsForRKConf, rsc);
 		mySpeechOutputMapper = new PumaSpeechOutputMapper(myAgentID);		
-	}
-	public void connectRobotServiceContext(RobotServiceContext rsc) { 
-		myRobotMotionMapper.connectRobotSC(rsc);
 	}
 	public void setupAndStart(BundleContext bunCtx, PumaRegistryClient prc, String chanGraphQN,  String behavGraphQN)  { 
 		try {

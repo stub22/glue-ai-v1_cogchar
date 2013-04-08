@@ -45,7 +45,7 @@ import org.robokind.api.animation.player.AnimationPlayer;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-	public class RobotAnimContext extends BasicDebugger {
+public class RobotAnimContext extends BasicDebugger {
 
 	enum AnimChannel {
 
@@ -53,46 +53,29 @@ import org.robokind.api.animation.player.AnimationPlayer;
 		RK_XML_PERM,
 		RK_XML_TEMP
 	}
-	private Ident myCharIdent;
-	private Robot myTargetRobot;
-	private RobotAnimClient myAnimClient;
-	private List<AnimationJob> myJobsInStartOrder = new ArrayList<AnimationJob>();
-	private TriggeringChannel myTriggeringChannel;
-	private BehaviorConfigEmitter myBehaviorCE;
+	protected Ident				myAnimOutChanID;
+	private AnimOutTrigChan	myTriggeringChannel;
 	
-	private	List<ClassLoader>	myResourceCLs = new ArrayList<ClassLoader>();
+	protected RobotAnimClient		myAnimClient;
+	private List<AnimationJob>	myJobsInStartOrder = new ArrayList<AnimationJob>();
+
+	protected BehaviorConfigEmitter myBehaviorCE;
+	
+	protected	List<ClassLoader>	myResourceCLs = new ArrayList<ClassLoader>();
 
 	/**
 	 * 
-	 * @param charIdent - so far, used only for log messages
+	 * @param animOutChanID - so far, used only for log messages
 	 * @param behavCE  - only used to resolve local files, in case animResURL does not resolve within classpath. 
 	 */
-	public RobotAnimContext(Ident charIdent, BehaviorConfigEmitter behavCE) {
-		myCharIdent = charIdent;
+	public RobotAnimContext(Ident animOutChanID, BehaviorConfigEmitter behavCE) {
+		myAnimOutChanID = animOutChanID;
 		myBehaviorCE = behavCE;
 	}
 	public void setResourceClassLoaders(List<ClassLoader>  resCLs) {
 		myResourceCLs = resCLs;
 	}
-	public boolean initConnForTargetRobot(RobotServiceContext robotSvcContext) {
-		try {
-			BundleContext osgiBundleCtx = robotSvcContext.getBundleContext();
-			myTargetRobot = robotSvcContext.getRobot();
-			if (myTargetRobot == null) {
-				getLogger().warn("initConn() aborting due to missing target robot, for charIdent: " + myCharIdent);
-				return false;
-			}
-			Robot.Id robotId = myTargetRobot.getRobotId();
-			getLogger().info("***************************** Using robotId: " + robotId);
-			String osgiFilterStringForAnimPlayer = RobotUtils.getRobotFilter(robotId);
-			getLogger().info("***************************** Using osgiFilterStringForAnimPlayer: " + osgiFilterStringForAnimPlayer);
-			myAnimClient = new RobotAnimClient(osgiBundleCtx, osgiFilterStringForAnimPlayer);
-			return true;
-		} catch (Throwable t) {
-			getLogger().error("Cannot init RobotAnimClient for char[" + myCharIdent + "]", t);
-			return false;
-		}
-	}
+
 	public boolean initConnForAnimPlayer(AnimationPlayer player) {
 		myAnimClient = new RobotAnimClient(player);
 		return true;
@@ -133,75 +116,39 @@ import org.robokind.api.animation.player.AnimationPlayer;
 			getLogger().warn("********************* Could not start animation[" + anim + "]");
 		}
 	}
-
+	protected ModelRobot getModelRobot() { 
+		return null;
+	}
 	public void playBuiltinAnimNow(BuiltinAnimKind baKind) {
-		if (myAnimClient != null) {
-			Animation builtinAnim = null;
-			// TODO: check cache
-			try {
-				builtinAnim = myAnimClient.makeBuiltinAnim(baKind, (ModelRobot) myTargetRobot);
-
-			} catch (Throwable t) {
-				getLogger().error("Problem creating builtin anim: {} ", baKind, t);
-				return;
-			}
-			if (builtinAnim != null) {
-				startFullAnimationNow(builtinAnim);
-			}
-			getLogger().info("Started builtin anim {} on robot {} ", builtinAnim, myCharIdent);
-		} else {
-			getLogger().warn("Cannot play builtin anim {}, because myAnimClient == null, on robot: {} ", baKind, myCharIdent);
+		if (myAnimClient == null) {
+			getLogger().warn("Cannot play builtin anim-kind {}, because myAnimClient == null, for chan: {} ", baKind, myAnimOutChanID);
+			return;
 		}
+		ModelRobot modelRobot = getModelRobot();
+		if (modelRobot == null) {
+			getLogger().warn("Cannot play builtin anim-kind {}, because modelRobot== null, for chan: {} ", baKind, myAnimOutChanID);
+			return;			
+		}
+		Animation builtinAnim = null;
+		// TODO: check cache
+		try {
+			builtinAnim = myAnimClient.makeBuiltinAnim(baKind, modelRobot);
+		} catch (Throwable t) {
+			getLogger().error("Problem creating builtin anim: {} ", baKind, t);
+			return;
+		}
+		if (builtinAnim != null) {
+			startFullAnimationNow(builtinAnim);
+		}
+		getLogger().info("Started builtin anim {} on robot {} ", builtinAnim, myAnimOutChanID);			
 	}
 
-	public TriggeringChannel getTriggeringChannel() {
+	public AnimOutTrigChan getTriggeringChannel() {
 		if (myTriggeringChannel == null) {
-			Ident id = ChannelNames.getOutChanIdent_AnimBest();
+			Ident id = myAnimOutChanID; // ChannelNames.getOutChanIdent_AnimBest();
 			getLogger().info("Creating triggering channel with ident=" + id);
-			myTriggeringChannel = new TriggeringChannel(id);
+			myTriggeringChannel = new AnimOutTrigChan(id, this);
 		}
 		return myTriggeringChannel;
-	}
-
-	public class TriggeringChannel extends FancyTextChan {
-
-		private boolean myUseTempAnimsFlag = false;
-
-		public TriggeringChannel(Ident id) {
-			super(id);
-		}
-
-		public void setUseTempAnims(boolean flag) {
-			myUseTempAnimsFlag = flag;
-		}
-
-		@Override protected void attemptMediaStartNow(Media.Text m) throws Throwable {
-			String animPathStr = m.getFullText();
-			Animation anim = null;
-			URL animResURL = ClassLoaderUtils.findResourceURL(animPathStr, myResourceCLs);
-			if (animResURL != null) {
-				getLogger().warn("Found Animation Resource URL: " + animResURL);
-				String aruString = animResURL.toExternalForm();
-				anim = myAnimClient.readAnimationFromURL(aruString);
-			} else {
-				String fullPath = null;
-				// Temporarily we always use the temp path, because it's just a file and we don't have to turn
-				// the resource lookup into a URL.
-				//if (myUseTempAnimsFlag) {
-				fullPath = myBehaviorCE.getRKAnimationTempFilePath(animPathStr);
-				//} else {
-				//	fullPath = myBehaviorCE.getRKAnimationPermPath(animPathStr);
-				//}
-				getLogger().info("Attempting to start animation at relative path[" + fullPath + "]");
-				anim = myAnimClient.readAnimationFromFile(fullPath);
-			}
-			if (anim != null) {
-				startFullAnimationNow(anim);
-			}
-		}
-
-		@Override public Performance<Media.Text, FancyTime> makePerformanceForMedia(Media.Text m) {
-			return new FancyTextPerf(m, this);
-		}
 	}
 }

@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.rk.behavior;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import org.appdapter.core.name.FreeIdent;
@@ -24,6 +25,7 @@ import org.cogchar.api.perform.Media;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
+import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
@@ -31,6 +33,8 @@ import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
 import org.robokind.api.speech.SpeechService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *
@@ -61,23 +65,30 @@ public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLife
         }
         return null;
     }
-    
+    protected Ident getChannelIdent() { 
+		return new FreeIdent(myBindingConfig.getChannelURI());
+	}
     private Channel createSpeechChannel(SpeechService speechSvc){
-		theLogger.warn("Creating speechChannel for[{}]", speechSvc);
-		BundleContext bundleCtx = null;
-		Ident chanIdent = new FreeIdent(myBindingConfig.getChannelURI());
+		Ident chanIdent = getChannelIdent();
+		theLogger.warn("Creating SpeechOutChan at [{}] for [{}]", chanIdent, speechSvc);
 		return new SpeechOutputClient(speechSvc, chanIdent);
     }
     
     private Channel createAnimationChannel(AnimationPlayer animPlayerSvc){
-		theLogger.warn("Creating speechChannel for[{}]", animPlayerSvc);
-		Ident charIdent = null;
-		BehaviorConfigEmitter behavCE = null;
+		Ident chanIdent = getChannelIdent();
+		theLogger.warn("Creating AnimPlayChan at [{}] for [{}]", chanIdent, animPlayerSvc);
+		// If we wind up keeping this emitter thing, it can be added as a dependency.
+		BehaviorConfigEmitter behavCE = new BehaviorConfigEmitter();
 		/* charIdent - so far, used only for log messages
 		 * behavCE  - only used to resolve local files, in case animResURL does not resolve within classpath.
 		 */
-		RobotAnimContext	roboAnimContext = new RobotAnimContext(charIdent, behavCE);
+		RobotAnimContext	roboAnimContext = new RobotAnimContext(chanIdent, behavCE);
 		roboAnimContext.initConnForAnimPlayer(animPlayerSvc);
+		// This list of classloaders to be used to look for animation resources could also be defined as a dependency.
+		// But right now, what we need is a BundleContext!
+		BundleContext ctx = FrameworkUtil.getBundle(ChannelBindingLifecycle.class).getBundleContext();
+		List<ClassLoader> clsForRKConf = ClassLoaderUtils.getFileResourceClassLoaders(ctx, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
+		roboAnimContext.setResourceClassLoaders(clsForRKConf);
 		return roboAnimContext.getTriggeringChannel();
     }
 
