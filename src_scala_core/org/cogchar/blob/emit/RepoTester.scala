@@ -19,7 +19,7 @@ import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.store.{Repo, InitialBinding}
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
 import org.appdapter.impl.store.{FancyRepo, DatabaseRepo, FancyRepoFactory};
-import org.appdapter.core.matdat.{SheetRepo}
+import org.appdapter.core.matdat.{SheetRepo, GoogSheetRepo, XLSXSheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 /**
@@ -28,18 +28,33 @@ import com.hp.hpl.jena.rdf.model.{Model}
 
 object RepoTester {
 	// Modeled on SheetRepo.loadTestSheetRepo
-	def loadSheetRepo(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int, 
+	def loadGoogSheetRepo(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int, 
 						fileModelCLs : java.util.List[ClassLoader]) : SheetRepo = {
 		// Read the namespaces and directory sheets into a single directory model.
-		val dirModel : Model = SheetRepo.readDirectoryModelFromGoog(sheetKey, namespaceSheetNum, dirSheetNum) 
+		val dirModel : Model = GoogSheetRepo.readDirectoryModelFromGoog(sheetKey, namespaceSheetNum, dirSheetNum) 
 		// Construct a repo around that directory
-		val shRepo = new SheetRepo(dirModel)
+		val shRepo = new GoogSheetRepo(dirModel)
 		// Load the rest of the repo's initial *sheet* models, as instructed by the directory.
 		shRepo.loadSheetModelsIntoMainDataset()
 		// Load the rest of the repo's initial *file/resource* models, as instructed by the directory.
 		shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
 		shRepo
 	}
+	
+		// Modeled on SheetRepo.loadTestSheetRepo
+	def loadXLSXSheetRepo(sheetLocation : String, namespaceSheetNum : Int, dirSheetNum : Int, 
+						fileModelCLs : java.util.List[ClassLoader]) : SheetRepo = {
+		// Read the namespaces and directory sheets into a single directory model.
+		val dirModel : Model = XLSXSheetRepo.readDirectoryModelFromXLSX(sheetLocation, namespaceSheetNum, dirSheetNum) 
+		// Construct a repo around that directory
+		val shRepo = new XLSXSheetRepo(dirModel)
+		// Load the rest of the repo's initial *sheet* models, as instructed by the directory.
+		shRepo.loadSheetModelsIntoMainDataset()
+		// Load the rest of the repo's initial *file/resource* models, as instructed by the directory.
+		shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
+		shRepo
+	}
+	
 	def loadDatabaseRepo(configPath : String, optConfigResolveCL : ClassLoader, dirGraphID : Ident) : DatabaseRepo = {
 		 val dbRepo = FancyRepoFactory.makeDatabaseRepo(configPath, optConfigResolveCL, dirGraphID)
 		 dbRepo;
