@@ -73,7 +73,7 @@ public abstract class BasicChannel<M extends Media, Time> extends BasicDebugger 
 					break;
 			}
 		} catch (Throwable t) {
-			logError("Problem scehduling " + debugDesc, t);
+			getLogger().error("Problem scehduling " + debugDesc, t);
 		}
 		return resultFlag;
 	}
