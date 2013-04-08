@@ -16,6 +16,8 @@
 
 package com.thoughtworks.xstream.io.xml;
 
+import com.thoughtworks.xstream.io.xml.AbstractDocumentWriter;
+
 /**
  * @author Stu B. <www.texpedient.com>
  * This class lives in the thoughtworks package so it can get access
