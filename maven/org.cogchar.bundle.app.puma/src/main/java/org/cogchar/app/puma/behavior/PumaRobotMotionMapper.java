@@ -22,6 +22,7 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.bind.rk.robot.client.RobotAnimClient;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;
+import org.cogchar.bind.rk.robot.client.DirectRobotAnimContext;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.perform.FancyTextChan;
@@ -34,30 +35,33 @@ import org.cogchar.impl.perform.FancyTextChan;
  */
 
 public class PumaRobotMotionMapper extends BasicDebugger {
-	private	Ident				myCharIdent;
-	private	RobotServiceContext	myRSC;
-	private	RobotAnimContext	myRAC;
+	private	Ident				myAnimOutTrigChanID;
+	private	RobotServiceContext	myRobotSvcCtx;
+	private	RobotAnimContext	myRobotAnimCtx;
 	
-	public PumaRobotMotionMapper (Ident charID, BehaviorConfigEmitter behavCE, List<ClassLoader> clsForRKConf)  {
-		myCharIdent = charID;
-		
-		if (behavCE != null) {
-			// This gives us an animation triggering context, connecting behavior system to animation system.
-			myRAC = new RobotAnimContext(myCharIdent, behavCE);
-			if (clsForRKConf != null) {
-				// Setup classLoaders used to load animations
-				myRAC.setResourceClassLoaders(clsForRKConf);
-			}
-		} else {
+	public PumaRobotMotionMapper (Ident animOutTrigChanID, BehaviorConfigEmitter behavCE, List<ClassLoader> clsForRKConf,
+				RobotServiceContext optLocalRobotSvcContext)  {
+		myAnimOutTrigChanID = animOutTrigChanID;
+		myRobotSvcCtx = optLocalRobotSvcContext;
+		if (behavCE == null) {
 			getLogger().warn("Cannot init with behavCE == null");
+			return;
+		}
+		// Set up our animation triggering context, connecting behavior system to scripted-animation system.
+		if (optLocalRobotSvcContext != null) {
+				// This way is used for direct connect to a local robot graph, bypassing some abstractions.
+			DirectRobotAnimContext drac = new DirectRobotAnimContext(animOutTrigChanID, behavCE, optLocalRobotSvcContext);
+			myRobotAnimCtx = drac;
+		} else {
+			// This way is most general case for channel + lifecycle wiring.
+			myRobotAnimCtx = new RobotAnimContext(myAnimOutTrigChanID, behavCE);
+		}
+		if (clsForRKConf != null) {
+			// Setup classLoaders used to load animations
+			myRobotAnimCtx.setResourceClassLoaders(clsForRKConf);
 		}
 	}
-	// Can probably be dropped in favor of channel-lifecycle wiring
-	public void connectRobotSC (RobotServiceContext robotSvcContext) {
-		myRSC = robotSvcContext;
-		// Connect the triggering RobotAnimContext to the running model robot.
-		myRAC.initConnForTargetRobot(robotSvcContext);		
-	}
+
 	/**
 	 * This method exposes our "best" AnimOutChan at protected scope.
 	 * This is the main pathway for wiring animation triggers from behavior systems
@@ -66,20 +70,20 @@ public class PumaRobotMotionMapper extends BasicDebugger {
 	 */	
 	// Can probably be dropped in favor of channel-lifecycle wiring
 	protected FancyTextChan getBestAnimOutChan() { 
-		return myRAC.getTriggeringChannel();
+		return myRobotAnimCtx.getTriggeringChannel();
 	}
 	protected void stopAndReset() {
-		if (myRAC != null) {
-			myRAC.stopAndReset();
+		if (myRobotAnimCtx != null) {
+			myRobotAnimCtx.stopAndReset();
 		}else {
-			getLogger().warn("stopAndReset() ignored because RobotAnimContext = null for {}", myCharIdent);
+			getLogger().warn("stopAndReset() ignored because RobotAnimContext = null for {}", myAnimOutTrigChanID);
 		}
 	}
 	protected void playBuiltinAnimNow(RobotAnimClient.BuiltinAnimKind baKind) {
-		if (myRAC != null) {
-			myRAC.playBuiltinAnimNow(baKind);
+		if (myRobotAnimCtx != null) {
+			myRobotAnimCtx.playBuiltinAnimNow(baKind);
 		} else {
-			getLogger().warn("playDangerYogaTestAnim() ignored because RobotAnimContext = null for {}", myCharIdent);
+			getLogger().warn("playDangerYogaTestAnim() ignored because RobotAnimContext = null for {}", myAnimOutTrigChanID);
 		}
 	}	
 }

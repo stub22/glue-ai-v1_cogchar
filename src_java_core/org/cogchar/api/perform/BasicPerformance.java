@@ -64,6 +64,10 @@ public class BasicPerformance<M extends Media, Time, EPT extends Performance<M, 
 	public boolean attemptToScheduleAction(Action action, Time t) {
 		return myChannel.schedulePerfAction(this, action, t);
 	}
+	
+	@Override public String toString() { 
+		return getClass().getSimpleName() + "[chan=" + myChannel + ", state=" + myState + "media=" + myMedia  + "]";
+	}
 
 
 }

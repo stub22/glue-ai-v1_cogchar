@@ -53,15 +53,12 @@ public class PumaBehaviorManager extends BasicDebugger {
 	public void makeAgentForBody(BundleContext bunCtx, PumaRegistryClient pRegCli, PumaDualBody pdb, Ident agentID) { 
 		
 		PumaBehaviorAgent pbAgent = new PumaBehaviorAgent(agentID, myBehavCE);
-		pbAgent.initMappers(pRegCli);
+		RobotServiceContext  optLocalRobotSvcCtx = null;
 		PumaBodyGateway pBodGate = pdb.getBodyGateway();
 		if (pBodGate != null) {
-			RobotServiceContext  robotSvcCtx = pBodGate.getRobotServiceContext();
-			if (robotSvcCtx != null) {
-				getLogger().info("Connecting RobotServiceContext for agent {}", agentID);
-				pbAgent.connectRobotServiceContext(robotSvcCtx);
-			}
+			optLocalRobotSvcCtx = pBodGate.getRobotServiceContext();
 		}
+		pbAgent.initMappers(pRegCli, optLocalRobotSvcCtx);
 		String chanGraphQN =  "ccrt:chan_sheet_AZR50",  behavGraphQN  =  "hrk:behav_file_44";
 		pbAgent.setupAndStart(bunCtx, pRegCli, chanGraphQN, behavGraphQN);
 		
