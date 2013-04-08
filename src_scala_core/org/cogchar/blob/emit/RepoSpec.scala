@@ -18,6 +18,7 @@ package org.cogchar.blob.emit
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.store.{Repo, InitialBinding}
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl} 
+import org.appdapter.core.matdat.{SheetRepo, GoogSheetRepo, XLSXSheetRepo}
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -59,6 +60,12 @@ case class OnlineSheetRepoSpec(sheetKey : String, namespaceSheetNum : Int, dirSh
 							fileModelCLs : java.util.List[ClassLoader]) extends RepoSpec {
 	override def makeRepo() : Repo.WithDirectory = {
 		RepoTester.loadGoogSheetRepo(sheetKey, namespaceSheetNum, dirSheetNum, fileModelCLs)
+	}
+}
+case class OfflineXlsSheetRepoSpec(sheetLocation : String, namespaceSheet : String, dirSheet : String, 
+							fileModelCLs : java.util.List[ClassLoader]) extends RepoSpec {
+	override def makeRepo() : Repo.WithDirectory = {
+		XLSXSheetRepo.loadXLSXSheetRepo(sheetLocation, namespaceSheet, dirSheet, fileModelCLs)
 	}
 }
 case class DatabaseRepoSpec(configPath : String, optConfResCL : ClassLoader, dirGraphID : Ident) extends RepoSpec {
