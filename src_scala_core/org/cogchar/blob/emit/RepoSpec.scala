@@ -58,7 +58,7 @@ abstract class RepoSpec {
 case class OnlineSheetRepoSpec(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int, 
 							fileModelCLs : java.util.List[ClassLoader]) extends RepoSpec {
 	override def makeRepo() : Repo.WithDirectory = {
-		RepoTester.loadSheetRepo(sheetKey, namespaceSheetNum, dirSheetNum, fileModelCLs)
+		RepoTester.loadGoogSheetRepo(sheetKey, namespaceSheetNum, dirSheetNum, fileModelCLs)
 	}
 }
 case class DatabaseRepoSpec(configPath : String, optConfResCL : ClassLoader, dirGraphID : Ident) extends RepoSpec {
