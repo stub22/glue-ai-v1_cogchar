@@ -45,9 +45,9 @@ object RepoTester {
 	def loadXLSXSheetRepo(sheetLocation : String, namespaceSheetNum : Int, dirSheetNum : Int, 
 						fileModelCLs : java.util.List[ClassLoader]) : SheetRepo = {
 		// Read the namespaces and directory sheets into a single directory model.
-		val dirModel : Model = XLSXSheetRepo.readDirectoryModelFromXLSX(sheetLocation, namespaceSheetNum, dirSheetNum) 
+		val dirModel : Model = XLSXSheetRepo.readDirectoryModelFromXLSX(sheetLocation, namespaceSheetNum, dirSheetNum, fileModelCLs) 
 		// Construct a repo around that directory
-		val shRepo = new XLSXSheetRepo(dirModel)
+		val shRepo = new XLSXSheetRepo(dirModel, fileModelCLs)
 		// Load the rest of the repo's initial *sheet* models, as instructed by the directory.
 		shRepo.loadSheetModelsIntoMainDataset()
 		// Load the rest of the repo's initial *file/resource* models, as instructed by the directory.
