@@ -77,15 +77,29 @@ case class SteppingBehaviorSpec() extends BehaviorSpec {
 		val stepItems = reader.readLinkedItemSeq(configItem, SceneFieldNames.P_steps);
 		getLogger().debug("BSB got stepItems: {}", stepItems);
 		for (val stepItem : Item <- stepItems) {
+			
+			// Abstractly, a step has a guard and an action.  
+			// The guard is a predicate that must be satisfied for the step to be taken.
+			// This guard is not checked until all previous steps have been taken, so they
+			// are part of the implied guard.  This point is relevant when we consider 
+			// structures beyond lists of steps.  Some simple guard types are provided inline:
+			//   a) absolute clock time
+			
+			
 			getLogger().debug("Got stepItem: {}", stepItem)
 			val stepIdent = stepItem.getIdent();
 			val offsetSec = reader.readConfigValDouble(stepIdent, SceneFieldNames.P_startOffsetSec, stepItem, null);
 			val offsetMillisec : Int = (1000.0 * offsetSec.doubleValue()).toInt;
-			
-			// Text actions
+
+			// Once the guard is passed, the step may "proceed", meaning the action is taken and then this step 
+			// is complete.   We generally define action as an asynchronous act that cannot "fail" - that would
+			// be a system failure rather than a step failure.
+			// Simple action types:
+			//    a) A piece of text to be passed to a channel, for example:
+			//			a1) Animation name or command
+			//			a2) Output speech text			
+
 			val text = reader.readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
-			// val path = readConfigValString(stepItem.getIdent(), SceneFieldNames.P_path, stepItem, null);
-			
 			val action = new TextAction(text);
 			
 			val stepChannelSpecs = reader.findOrMakeLinkedObjects(stepItem, SceneFieldNames.P_channel, assmblr, mode, null);

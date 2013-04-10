@@ -251,7 +251,8 @@ object RepoClientTester {
 		val solList = rc.queryIndirectForAllSolutions(cmdQueryQN, cmdGraphQN)
 		val resultJList = new java.util.ArrayList[CommandRec]();
 		import scala.collection.JavaConversions._
-		solList.javaList foreach (cmd  => {
+		val solJList = solList.javaList
+		solJList foreach (cmd  => {
 				val cmdID = cmd.getIdentResultVar("cmdID")
 				val boxID = cmd.getIdentResultVar("boxID")
 				val trigID = cmd.getIdentResultVar("trigID")
