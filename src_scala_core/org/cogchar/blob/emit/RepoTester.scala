@@ -22,11 +22,12 @@ import org.appdapter.impl.store.{FancyRepo, DatabaseRepo, FancyRepoFactory};
 import org.appdapter.core.matdat.{SheetRepo, GoogSheetRepo, XLSXSheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
+import org.appdapter.core.log.BasicDebugger;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-object RepoTester {
+object RepoTester extends BasicDebugger {
 	// Modeled on SheetRepo.loadTestSheetRepo
 	def loadGoogSheetRepo(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int, 
 						fileModelCLs : java.util.List[ClassLoader]) : SheetRepo = {
@@ -35,8 +36,10 @@ object RepoTester {
 		// Construct a repo around that directory
 		val shRepo = new GoogSheetRepo(dirModel)
 		// Load the rest of the repo's initial *sheet* models, as instructed by the directory.
+		getLogger().debug("Loading Sheet Models") 
 		shRepo.loadSheetModelsIntoMainDataset()
 		// Load the rest of the repo's initial *file/resource* models, as instructed by the directory.
+		getLogger().debug("Loading File Models") 
 		shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
 		shRepo
 	}

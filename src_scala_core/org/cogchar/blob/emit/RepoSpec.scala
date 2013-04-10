@@ -23,7 +23,7 @@ import org.appdapter.core.matdat.{SheetRepo, GoogSheetRepo, XLSXSheetRepo}
  * @author Stu B. <www.texpedient.com>
  */
 
-abstract class RepoSpec {
+object RepoSpecDefaultNames {
 	// These 2 string constants establish repo-client wrapper defaults, giving a default 
 	// query context to easily fetch from.
 	// Either value may be bypassed/overidden using either 
@@ -45,7 +45,11 @@ abstract class RepoSpec {
 	// use cases, wherein the query needs a single graph to operate on that is switched
 	// by application logic or user selection.
 	
-	final val DFLT_TGT_GRAPH_SPARQL_VAR = "qGraph"
+	final val DFLT_TGT_GRAPH_SPARQL_VAR = "qGraph"	
+}
+
+abstract class RepoSpec {
+
 	
 	def makeRepo() : Repo.WithDirectory;
 	
@@ -53,8 +57,8 @@ abstract class RepoSpec {
 		new RepoClientImpl(repo, getDfltTgtGraphSparqlVarName, getDfltQrySrcGraphQName);
 	}
 	
-	def getDfltQrySrcGraphQName = DFLT_QRY_SRC_GRAPH_QN;
-	def getDfltTgtGraphSparqlVarName : String = DFLT_TGT_GRAPH_SPARQL_VAR;
+	def getDfltQrySrcGraphQName = RepoSpecDefaultNames.DFLT_QRY_SRC_GRAPH_QN;
+	def getDfltTgtGraphSparqlVarName : String = RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR;
 }
 case class OnlineSheetRepoSpec(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int, 
 							fileModelCLs : java.util.List[ClassLoader]) extends RepoSpec {
