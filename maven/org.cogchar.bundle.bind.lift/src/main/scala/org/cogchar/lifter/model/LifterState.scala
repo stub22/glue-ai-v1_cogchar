@@ -95,7 +95,7 @@ class LifterState {
 	  if (sessionId.equals(INITIAL_CONFIG_ID)) {
 		snippetRenderDataMap(sessionId) = new HashMap[Int, Any]
 	  } else {
-		snippetRenderDataMap(sessionId) = snippetRenderDataMap(INITIAL_CONFIG_ID)
+		snippetRenderDataMap(sessionId) = snippetRenderDataMap(INITIAL_CONFIG_ID).clone
 	  }
 	}
 	//println("getSnippetDataMapForSession: Session " + sessionId + " has state with size " + snippetRenderDataMap(sessionId).size) // TEST ONLY
