@@ -62,7 +62,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  // variable as needed. However, because of the combination of our unique situation of having snippets invoked via
 	  // Comet and the fact PageCommander is a non session-aware object natively (so SessionVars don't work here), it's
 	  // necessary to expose the state needed to populate snippet invocations here:
-	  def hackIntoSnippetDataMap(sessionId:String) = theLifterState.getSnippetDataMapForSession(sessionId).clone // cloned to prevent any changes to state
+	  def hackIntoSnippetDataMap(sessionId:String) = theLifterState.getSnippetDataMapForSession(sessionId)
 	  
 	  def createUpdate = updateInfo
 	  
