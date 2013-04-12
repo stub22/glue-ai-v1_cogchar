@@ -107,6 +107,9 @@ object Whackamole extends BasicDebugger {
 		ndt;
 	}
 	def main(args: Array[String]) :Unit = {
+		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
+		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);		
 		logInfo(this.getClass.getCanonicalName() + ".main(" + args + ")-BEGIN");
 		logInfo("Whack-em-ole, Vaquera!");
 		val time = java.lang.System.currentTimeMillis();

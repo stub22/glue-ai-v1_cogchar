@@ -24,6 +24,7 @@ import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 import org.cogchar.impl.perform.{ChannelSpec, ChannelNames};
+import org.cogchar.impl.scene.{SceneSpec, SceneBook};
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
@@ -38,6 +39,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 	final val TGT_GRAPH_SPARQL_VAR = RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR; // "qGraph"
 	final val CHAN_BIND_GRAPH_QN = "hrk:chan_sheet_77"
 	final val BEHAV_STEP_GRAPH_QN = "hrk:behavStep_sheet_77"
+	final val BEHAV_SCENE_GRAPH_QN = "hrk:behavScene_sheet_77"
 	final val PIPELINE_GRAPH_QN = "hrk:pipeline_sheet_77"
 	
 
@@ -65,7 +67,15 @@ object BehavMasterConfigTest extends BasicDebugger {
 		}
 		specSet;
 	} 
-
+	def readSceneSpecs(repoClient : RepoClient, behavGraphQN : String) : java.util.List[SceneSpec] = {
+		val	behavGraphID = repoClient.makeIdentForQName(behavGraphQN);
+		
+		val allBehavSpecs = repoClient.assembleRootsFromNamedModel(behavGraphID);
+		val ssList = SceneBook.filterSceneSpecs(allBehavSpecs);
+		getLogger().info("Loaded SceneSpecs: " + ssList);
+		
+		ssList
+	}
 	def queryPipelineSpecs (rc : RepoClient) : java.util.Collection[PipelineSpec] = {
 		
 		val pplnQueryQN = "ccrt:find_pipes_77" // The QName of a query in the "Queries" model/tab
@@ -133,6 +143,8 @@ object BehavMasterConfigTest extends BasicDebugger {
 		 for (ps <- pipeSpecs) {
 			 println("Got PipeSpec: " + ps)
 		 }
+		 
+		val sceneSpecs = readSceneSpecs(bmcRepoCli, BEHAV_SCENE_GRAPH_QN)
 	}
 	
 }
