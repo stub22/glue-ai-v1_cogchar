@@ -50,10 +50,11 @@ public class AnimOutTrigChan extends FancyTextChan {
 		Animation anim = null;
 		URL animResURL = ClassLoaderUtils.findResourceURL(animPathStr, myRobotAnimContext.myResourceCLs);
 		if (animResURL != null) {
-			getLogger().warn("Found Animation Resource URL: " + animResURL);
+			getLogger().info("Found Animation Resource URL: " + animResURL);
 			String aruString = animResURL.toExternalForm();
 			anim = myRobotAnimContext.myAnimClient.readAnimationFromURL(aruString);
 		} else {
+			getLogger().warn("Cannot locate animMediaFile {} in classpath {}, now checking local files", animPathStr, myRobotAnimContext.myResourceCLs);
 			String fullPath = null;
 			// Temporarily we always use the temp path, because it's just a file and we don't have to turn
 			// the resource lookup into a URL.
@@ -63,7 +64,7 @@ public class AnimOutTrigChan extends FancyTextChan {
 			//} else {
 			//	fullPath = myBehaviorCE.getRKAnimationPermPath(animPathStr);
 			//}
-			getLogger().info("Attempting to start animation at relative path[" + fullPath + "]");
+			getLogger().info("Attempting to read animation from relative file path[" + fullPath + "]");
 			anim = myRobotAnimContext.myAnimClient.readAnimationFromFile(fullPath);
 		}
 		if (anim != null) {
