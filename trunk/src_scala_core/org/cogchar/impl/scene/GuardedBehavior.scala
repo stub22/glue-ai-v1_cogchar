@@ -37,16 +37,16 @@ import org.cogchar.name.behavior.{SceneFieldNames};
  * @author Stu B. <www.texpedient.com>
  */
 
-class GuardedBehavior (val mySBS: GuardedBehaviorSpec) extends Behavior(mySBS) {
+class GuardedBehavior (val myGBS: GuardedBehaviorSpec) extends Behavior(myGBS) {
 	var myNextStepIndex : Int = 0;
 
 	override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
-		if (myNextStepIndex >= mySBS.mySteps.size) {
+		if (myNextStepIndex >= myGBS.mySteps.size) {
 			getLogger().debug("Reached end of its steps at #{} self-requesting module stop on : {}", myNextStepIndex, this);
 			markStopRequested();
 			getLogger().info("Finished requesting stop, so this should be my last runOnce().");
 		} else {
-			val step = mySBS.mySteps(myNextStepIndex);
+			val step = myGBS.mySteps(myNextStepIndex);
 			if (step.proceed(scn, this)) {
 				val osi = myNextStepIndex;
 				myNextStepIndex += 1;

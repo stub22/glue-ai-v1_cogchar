@@ -32,44 +32,64 @@ import org.cogchar.name.behavior.{SceneFieldNames}
 import org.cogchar.api.perform.{Channel, Media, BasicChannel, Performance};
 import org.cogchar.impl.perform.{FancyTime, ChannelSpec, ChannelNames};
 
-import org.cogchar.api.scene.{Scene, SceneBuilder};
+import org.cogchar.api.scene.{Scene};
 
 import scala.collection.mutable.HashMap;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-class BSceneRootChan (id : Ident, val scn: BScene) extends BasicChannel[Media, FancyTime](id) {
-	override protected def attemptMediaStartNow(m : Media ) : Unit = {
+class BSceneRootCursor() {
+}
+abstract class BSceneRootMedia() extends Media[BSceneRootCursor] {
+	
+}
+class BSceneRootChan (id : Ident, val scn: BScene) extends BasicChannel(id){ // [BSceneRootCursor, BSceneRootMedia, FancyTime](id) {
+	override protected def attemptMediaPlayNow( m : Media[_]) : Unit = {
+		// Match on BSceneRootMedia or throw a fit!
 	}
-	override def makePerformanceForMedia(media : Media ) : Performance[Media, FancyTime] = {
+	
+	/*
+	override def makePerformanceForMedia(media : BSceneRootMedia) : Performance[BSceneRootCursor, BSceneRootMedia, FancyTime] = {
 		null;
 	}
+	*/
 	override def getMaxAllowedPerformances() : Int = 1;
 }
-// trait SubChan extends Channel[Media, FancyTime] {}
 
-class BScene(val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyTime, BSceneRootChan] {
+// BScene stands for BehaviorScene, which is constructed from a SceneSpec.
+// // The "___Spec" Layer is considered immutable and reusable.
+// In theory, a BScene could be "played" more than once.  
+// However, we want extensions to be able to define mutable variables.
+
+
+class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyTime, BSceneRootChan] {
 	val rootyID = new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
 	val myRootChan = new BSceneRootChan(rootyID, this);
-	val		myWiredChannels  = new HashMap[Ident,Channel[_ <: Media, FancyTime]]();
+	// val		myWiredChannels  = new HashMap[Ident,Channel[SubCursor, _ <: Media[SubCursor], FancyTime]]();
+	val		myWiredChannels  = new HashMap[Ident,Channel]();
 	
 	override def getRootChannel() : BSceneRootChan = {	myRootChan	}
 	import scala.collection.JavaConversions._;
-	override def wireSubChannels(chans : java.util.Collection[Channel[_ <: Media, FancyTime]]) : Unit = {
-		// TODO:  reconcile the actually wired channels with the ones in the SceneSpecs.		
+	// override def wireSubChannels(chans : java.util.Collection[Channel[SubCursor, _ <: Media[SubCursor], FancyTime]]) : Unit = {
+	override def wireSubChannels(chans : java.util.Collection[Channel]) : Unit = {
+		// Currently, all we do is copy references to all chans into our wired channel map.
+		// TODO:  reconcile the actually wired channels with the ones in the SceneSpecs.
+		// Open question:  What would it mean to "re-wire" a BScene?
 		for (val c <- chans) {
 			getLogger().info("Wiring scene[{}] to channel: {}", mySceneSpec.getIdent.getLocalName, c);
 			myWiredChannels.put(c.getIdent, c)
 		}
 	}
+	// If the modulator has "autoDetachOnFinish" set to true, then the modules will be auto-detached.
 	def attachBehaviorsToModulator(bm : BehaviorModulator) {
 		for (val bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
 			val b = bs.makeBehavior();
 			bm.attachModule(b);
 		}
 	}
-	def getChannel(id : Ident) : Channel[_ <: Media, FancyTime] = {
+//	def getChannel[Cursor, M <: Media[Cursor]](id : Ident) : Channel[Cursor, M, FancyTime] = {
+	def getChannel(id : Ident) : Channel = {
 		return myWiredChannels.getOrElse(id, null);
 	}
 	override def toString() : String = {

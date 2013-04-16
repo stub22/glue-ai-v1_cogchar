@@ -20,13 +20,19 @@ import org.cogchar.api.event.Event;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * We expect that the channel is usually a BasicTextChannel, 
+ * and that the media is usually a Media.BasicText.
+ * 
  */
 
-public class BasicTextPerformance<Time, EPT extends Performance.TextPerf<Time>, E extends Event<EPT, Time>> 
-			extends BasicPerformance<Media.Text, Time, EPT, E> 
-			implements Performance.TextPerf<Time> {
+public abstract class BasicTextPerformance<Cursor, M extends Media.Text<Cursor>, WorldTime>
+				//	EPT extends Performance.TextPerf<Cursor, M, WorldTime>, 
+				//	E extends Event<EPT, WorldTime>> 
+			extends BasicPerformance<Cursor, M, WorldTime> // , EPT, E> 
+			implements Performance.TextPerf<Cursor, M, WorldTime> {
 	
-	public BasicTextPerformance(Media.Text media, Channel.Text<Time> chan) {
-		super(media, chan);
+	// public BasicTextPerformance(M media, Channel.Text<Cursor, M, WorldTime> chan, Cursor initCursor) {
+	public BasicTextPerformance(M media, Channel chan, Cursor initCursor) {	
+		super(media, chan, initCursor);
 	}
 }

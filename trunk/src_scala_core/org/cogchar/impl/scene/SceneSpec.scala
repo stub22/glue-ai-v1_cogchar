@@ -32,7 +32,7 @@ import org.cogchar.name.behavior.{SceneFieldNames}
 import org.cogchar.api.perform.{Channel, Media, BasicChannel, Performance};
 import org.cogchar.impl.perform.{FancyTime, ChannelSpec, ChannelNames};
 
-import org.cogchar.api.scene.{Scene, SceneBuilder};
+import org.cogchar.api.scene.{Scene};
 
 import scala.collection.mutable.HashMap;
 

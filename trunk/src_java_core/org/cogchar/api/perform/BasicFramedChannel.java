@@ -22,7 +22,7 @@ import org.appdapter.core.name.Ident;
  * @author Stu B. <www.texpedient.com>
  */
 
-public abstract class BasicFramedChannel<Time, F> extends BasicChannel<Media.Framed<F>, Time> implements Channel.Framed<Time, F>  {
+public abstract class BasicFramedChannel extends BasicChannel {  // <Cursor, Time, F> extends BasicChannel<Cursor, Media.Framed<F, Cursor>, Time> implements Channel.Framed<F, Cursor, Time>  {
 	public BasicFramedChannel(Ident ident) {
 		super(ident);
 	}

@@ -25,7 +25,7 @@ import java.util.List;
  * @param <Time> Time unit used by the channel for timekeeping and scheduling
  * @author Stu B. <www.texpedient.com>
  */
-public interface Channel<M extends Media, Time> // , C extends Channel<M, Time, C>> {
+public interface Channel  // <Cursor, M extends Media<Cursor>, Time> // , C extends Channel<M, Time, C>> {
 {
     public enum Status {
         /**
@@ -75,7 +75,7 @@ public interface Channel<M extends Media, Time> // , C extends Channel<M, Time, 
      * @param media the media to be used by the performance
      * @return new Performance to act on the given media
      */
-    public Performance<M, Time> makePerformanceForMedia(M media);
+    // public Performance<Cursor, M, Time> makePerformanceForMedia(M media);
 	
     /**
      * ??
@@ -84,20 +84,24 @@ public interface Channel<M extends Media, Time> // , C extends Channel<M, Time, 
      * @param actionTime
      * @return
      */
-    public boolean schedulePerfAction(Performance<M, Time> perf, Performance.Action action, Time actionTime);
+    public <Cursor, M extends Media<Cursor>, Time> boolean schedulePerfInstruction(Performance<Cursor, M, Time> perf, Time worldTime, 
+					Performance.Instruction<Cursor> instruct);
 
-
-    public interface Text<Time> extends Channel<Media.Text, Time> {
+/*
+    public interface Text<Cursor, M extends Media.Text<Cursor>, Time> extends Channel<Cursor, M, Time> {
 		
 	}
-    public interface Framed<Time, F> extends Channel<Media.Framed<F>, Time> {
+    public interface Framed<F, Cursor, Time> extends Channel<Cursor, Media.Framed<F, Cursor>, Time> {
 		
 	}
+	* 
+	*/ 
 	
     /**
      * ??
      * @param <Time> 
      */
+	/*
     public class Bank<Time> {
         public	List<Channel<?, Time>>	myWildcardChannels;
         
@@ -105,4 +109,6 @@ public interface Channel<M extends Media, Time> // , C extends Channel<M, Time, 
 			myWildcardChannels.add(textChan);
 		}
 	}
+	* 
+	*/
 }

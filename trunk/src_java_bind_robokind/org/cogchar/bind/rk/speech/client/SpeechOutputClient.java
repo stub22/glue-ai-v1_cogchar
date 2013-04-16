@@ -46,8 +46,12 @@ public class SpeechOutputClient extends FancyTextChan {
 	}
 
 	
-	@Override protected void attemptMediaStartNow(Media.Text m) throws Throwable {
-		String textStr = m.getFullText();
+	@Override protected void attemptMediaPlayNow(Media<?> m) throws Throwable {
+		if (!(m instanceof Media.Text<?>)) {
+			throw new Exception("Got unexpected media type: " + m.getClass().getName());
+		}
+		Media.Text<?> textMedia = (Media.Text<?>) m;
+		String textStr = textMedia.getFullText();
 		if (myCachedSpeechSvc != null) {
 			myCachedSpeechSvc.speak(textStr);
 		} else {
@@ -55,12 +59,6 @@ public class SpeechOutputClient extends FancyTextChan {
 		}
 	}
 
-	@Override public Performance<Media.Text, FancyTime> makePerformanceForMedia(Media.Text m) {
-		return new FancyTextPerf(m, this);
-	}
-//	@Override  public void startTextPerformance (String txt) throws Throwable {
-//
-//	}
 //	 public long getTimestampMillisecUTC()
 
 	/**
