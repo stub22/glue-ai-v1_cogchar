@@ -84,6 +84,7 @@ public interface Performance<Cursor, MediaType extends Media<Cursor>, WorldTime>
 	 * A TextPerf is a Performance constrained to use Text Media.
 	 * @param WorldTime 
 	 */
+	
 	public interface TextPerf<Cursor, M extends Media.Text<Cursor>, WorldTime> 	extends Performance<Cursor, M, WorldTime> {	
 	}
 	/**
