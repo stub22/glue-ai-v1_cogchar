@@ -38,12 +38,12 @@ public abstract class BasicPerformance<Cursor, M extends Media<Cursor>, WorldTim
 	
 	private	M								myMedia;
 	// private	Channel<Cursor, M, WorldTime>	myChannel;
-	private	Channel							myChannel;
+	private	PerfChannel							myChannel;
 	private State							myState;
 	// This cursor *may* be updatable in place.
 	private	Cursor							myMediaCursor;
 
-	public BasicPerformance(M media, Channel chan, Cursor initialCursor) {
+	public BasicPerformance(M media, PerfChannel chan, Cursor initialCursor) {
 	// public BasicPerformance(M media, Channel<Cursor, M, WorldTime> chan, Cursor initialCursor) {
 		myMedia = media;
 		myChannel = chan;
@@ -51,7 +51,7 @@ public abstract class BasicPerformance<Cursor, M extends Media<Cursor>, WorldTim
 		// TODO:  Be smarter about copying an immutable cursor, and whatnot.
 		myMediaCursor = initialCursor;
 	}
-	@Override public Channel getChannel() { 
+	@Override public PerfChannel getChannel() { 
 	// @Override public Channel<Cursor, M, WorldTime> getChannel() { 
 		return myChannel;
 	}
@@ -98,7 +98,7 @@ public abstract class BasicPerformance<Cursor, M extends Media<Cursor>, WorldTim
 	protected void impl_attemptStart() throws Throwable { 
 		markState(State.PAUSING);
 		if (myChannel instanceof BasicChannel) { 
-			((BasicChannel) myChannel).attemptPerformanceStart(this);
+			((BasicPerfChan) myChannel).attemptPerformanceStart(this);
 		}
 		markState(State.PLAYING);
 	}

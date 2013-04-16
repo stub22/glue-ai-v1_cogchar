@@ -61,7 +61,7 @@ public interface Performance<Cursor, MediaType extends Media<Cursor>, WorldTime>
      * @return Channel which created this Performance
      */
 	//public	Channel<Cursor, MediaType, WorldTime>		getChannel();
-	public	Channel				getChannel();
+	public	PerfChannel				getChannel();
 	
     /**
      * Returns the current State of this Performance.
