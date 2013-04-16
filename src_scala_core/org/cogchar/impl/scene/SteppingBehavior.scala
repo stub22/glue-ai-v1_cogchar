@@ -36,6 +36,7 @@ import org.cogchar.name.behavior.{SceneFieldNames};
 /**
  * @author Stu B. <www.texpedient.com>
  */
+// SteppingBehavior is *stateful*, it contains the mutable nextStepIndex counter.
 
 class SteppingBehavior (val mySBS: SteppingBehaviorSpec) extends Behavior(mySBS) {
 	var myNextStepIndex : Int = 0;

@@ -19,16 +19,14 @@ package org.cogchar.bind.rk.robot.client;
 import java.net.URL;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.perform.Media;
-import org.cogchar.api.perform.Performance;
-import org.cogchar.impl.perform.FancyTextPerf;
 import org.cogchar.impl.perform.FancyTextChan;
-import org.cogchar.impl.perform.FancyTime;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.robokind.api.animation.Animation;
+import org.robokind.api.animation.player.AnimationJob;
 
 /**
  *
- * @author Owner
+ * @author StuB22
  */
 
 
@@ -45,16 +43,24 @@ public class AnimOutTrigChan extends FancyTextChan {
 		myUseTempAnimsFlag = flag;
 	}
 
-	@Override protected void attemptMediaStartNow(Media.Text m) throws Throwable {
-		String animPathStr = m.getFullText();
+	@Override protected void attemptMediaPlayNow(Media<?> m) throws Throwable {
+		if (!(m instanceof Media.Text<?>)) {
+			throw new Exception("Got unexpected media type: " + m.getClass().getName());
+		}
+		Media.Text<?> textMedia = (Media.Text<?>) m;
+		String animPathStr = textMedia.getFullText();
 		Animation anim = null;
+		// Normally we expect the URL lookup for an animation file to work.  But if it does not, we look to an 
+		// somewhat vestigal filesystem location called "the animationTempFilePath".  If that fails, we get
+		// an error.
 		URL animResURL = ClassLoaderUtils.findResourceURL(animPathStr, myRobotAnimContext.myResourceCLs);
+		
 		if (animResURL != null) {
-			getLogger().info("Found Animation Resource URL: " + animResURL);
+			getLogger().info("Resolved animation resource URL: {}", animResURL);
 			String aruString = animResURL.toExternalForm();
 			anim = myRobotAnimContext.myAnimClient.readAnimationFromURL(aruString);
 		} else {
-			getLogger().warn("Cannot locate animMediaFile {} in classpath {}, now checking local files", animPathStr, myRobotAnimContext.myResourceCLs);
+			getLogger().warn("Cannot locate animMedia resource {} in classpath {}, now checking local files", animPathStr, myRobotAnimContext.myResourceCLs);
 			String fullPath = null;
 			// Temporarily we always use the temp path, because it's just a file and we don't have to turn
 			// the resource lookup into a URL.
@@ -68,13 +74,8 @@ public class AnimOutTrigChan extends FancyTextChan {
 			anim = myRobotAnimContext.myAnimClient.readAnimationFromFile(fullPath);
 		}
 		if (anim != null) {
-			myRobotAnimContext.startFullAnimationNow(anim);
+			AnimationJob animJob = myRobotAnimContext.startFullAnimationNow(anim);
 		}
-	}
-
-	@Override
-	public Performance<Media.Text, FancyTime> makePerformanceForMedia(Media.Text m) {
-		return new FancyTextPerf(m, this);
 	}
 	
 }

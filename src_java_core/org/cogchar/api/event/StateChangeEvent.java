@@ -16,21 +16,19 @@
 
 package org.cogchar.api.event;
 
-import org.appdapter.api.module.Module;
-
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class StateChangeEvent<Source, Time> extends BasicEvent<Source, Time> {
-	private		 Module.State		myPrevState, myNextState;
-	public StateChangeEvent(Source src, Time t,  Module.State prevState,  Module.State nextState) {
-		super(src, t);
+public class StateChangeEvent<Source, Time, StateKind> extends BasicEvent<Source, Time> {
+	private		 StateKind		myPrevState, myNextState;
+	public StateChangeEvent(Source src, Time worldTime, StateKind prevState, StateKind nextState) {
+		super(src, worldTime);
 	}
-	public Module.State getPrevState() {
+	public StateKind getPrevState() {
 		return myPrevState;
 	}
-	public Module.State getNextState() {
+	public StateKind getNextState() {
 		return myNextState;
 	}
 }

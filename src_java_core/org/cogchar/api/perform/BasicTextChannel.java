@@ -23,9 +23,14 @@ import org.cogchar.api.perform.Media;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * BasicTextChannel supports a single Text-Media performance at any one time.
+ * That performance would usually be a BasicTextPerformance.
  */
 
-public abstract class BasicTextChannel<Time> extends BasicChannel<Media.Text, Time> implements Channel.Text<Time>  {
+public abstract class BasicTextChannel extends BasicChannel { 
+	// <Cursor, M extends Media.Text<Cursor>, Time> extends BasicChannel<Cursor, M, Time> 
+	//	implements Channel.Text<Cursor, M, Time>  {
 	public BasicTextChannel(Ident ident) {
 		super(ident);
 	}

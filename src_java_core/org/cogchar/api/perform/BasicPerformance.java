@@ -20,53 +20,87 @@ import org.cogchar.api.event.Event;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.appdapter.api.module.Module.State;
 import org.cogchar.api.event.BasicNotifier;
 import org.cogchar.api.event.Notifier;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * BasicPerformance adds Notifier functionality to the essentials of Performance.
+ * EPT stands for the EventPerformanceType - some extension of the present type that is incorporated into Event contract.
  */
-public class BasicPerformance<M extends Media, Time, EPT extends Performance<M, Time>, E extends Event<EPT, Time>>
-		extends BasicNotifier<EPT, Time, E>
-		implements Performance<M, Time>, Notifier<EPT, Time, E> {
+public abstract class BasicPerformance<Cursor, M extends Media<Cursor>, WorldTime>
+				//EPT extends Performance<Cursor, M, WorldTime>, 
+				//E extends Event<EPT, WorldTime>>
+		extends BasicNotifier<BasicPerformanceEvent<Cursor, M, WorldTime>>
+		implements Performance<Cursor, M, WorldTime> {
 	
 	
-	private	M						myMedia;
-	private	Channel<M, Time>		myChannel;
-	private State					myState;
+	private	M								myMedia;
+	// private	Channel<Cursor, M, WorldTime>	myChannel;
+	private	Channel							myChannel;
+	private State							myState;
+	// This cursor *may* be updatable in place.
+	private	Cursor							myMediaCursor;
 
-	public BasicPerformance(M media, Channel<M, Time> chan) {
+	public BasicPerformance(M media, Channel chan, Cursor initialCursor) {
+	// public BasicPerformance(M media, Channel<Cursor, M, WorldTime> chan, Cursor initialCursor) {
 		myMedia = media;
 		myChannel = chan;
-		myState = State.IN_INIT;
+		myState = State.INITING;
+		// TODO:  Be smarter about copying an immutable cursor, and whatnot.
+		myMediaCursor = initialCursor;
 	}
-
-	@Override public Channel<M, Time> getChannel() { 
+	@Override public Channel getChannel() { 
+	// @Override public Channel<Cursor, M, WorldTime> getChannel() { 
 		return myChannel;
 	}
 	@Override public M getMedia() { 
 		return myMedia;
 	}
-	public State getState() {
+	@Override public State getState() {
 		return myState;
-	}	
-	protected void markState(State s) {
-		myState = s;
-		notifyListeners();
 	}
-	protected void notifyListeners() { 
-		//for (Listener<M, C> l : myListeners) {
-		//	l.notifyChange(this);
-		//}
+	@Override public Cursor getCursor() { 
+		return myMediaCursor;
+	}
+	protected void markState(State s) {
+		State prevState = myState;
+		myState = s;
+		WorldTime eventTime = getCurrentWorldTime();
+		BasicPerformanceEvent<Cursor, M, WorldTime> stateChangeEvent = makeStateChangeEvent(eventTime, prevState, s, myMediaCursor);
+		notifyListeners(stateChangeEvent);
+	}
+	protected void markCursor(Cursor c, boolean notify) {
+		myMediaCursor = c;
+		if (notify) {
+			// Lazy version.  Do a trivial self-state update.  Acceptable?
+			markState(myState);
+		}
 	}
 
-	public boolean attemptToScheduleAction(Action action, Time t) {
-		return myChannel.schedulePerfAction(this, action, t);
+	@Override public boolean attemptToScheduleInstruction(WorldTime worldTime, Instruction instruct) {
+		// So far, BasicChannel only responds to the START-PERFORMANCE action, others are ignored.
+		return myChannel.schedulePerfInstruction(this, worldTime, instruct);
 	}
 	
 	@Override public String toString() { 
 		return getClass().getSimpleName() + "[chan=" + myChannel + ", state=" + myState + "media=" + myMedia  + "]";
+	}
+	
+	protected abstract BasicPerformanceEvent<Cursor, M, WorldTime> 
+			makeStateChangeEvent(WorldTime worldTime, State prevState, State nextState, Cursor cursor);
+		
+	
+	protected abstract WorldTime getCurrentWorldTime();
+	
+	// This is used only from BasicChannel, and is not part of our public API!
+	protected void impl_attemptStart() throws Throwable { 
+		markState(State.PAUSING);
+		if (myChannel instanceof BasicChannel) { 
+			((BasicChannel) myChannel).attemptPerformanceStart(this);
+		}
+		markState(State.PLAYING);
 	}
 
 

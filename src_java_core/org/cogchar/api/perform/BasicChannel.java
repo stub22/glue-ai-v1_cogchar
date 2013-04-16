@@ -18,14 +18,14 @@ package org.cogchar.api.perform;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;
-import org.cogchar.api.perform.Performance.Action;
+import org.cogchar.api.perform.Performance.Instruction;
 
-import org.appdapter.api.module.Module.State;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public abstract class BasicChannel<M extends Media, Time> extends BasicDebugger implements Channel<M, Time> {
+public abstract class BasicChannel extends BasicDebugger implements Channel {
+// <Cursor, M extends Media<Cursor>, WorldTime> extends BasicDebugger implements Channel<Cursor, M, WorldTime> {
 
 	private Ident myIdent;
 	private Channel.Status myStatus = Channel.Status.INIT;
@@ -50,24 +50,33 @@ public abstract class BasicChannel<M extends Media, Time> extends BasicDebugger 
 	public String getName() {
 		return myIdent.getLocalName();
 	}
-
-	public synchronized  boolean schedulePerfAction(Performance<M, Time> perf, Action action, Time actionTime) {
+	/**
+	 * This implementation currently handles only the "START" action, and only for BasicPerformance.
+	 * (We delegate to BasicPerformance.impl_attemptStart(), which delegates right back to us).
+	 * Other actions and performance types are ignored.
+	 * This is the area ripe for deeper implementation in Scala, keeping in mind error handling,
+	 * interruption, and notification requirements.
+	 * 
+	 * @param perf
+	 * @param action
+	 * @param actionTime
+	 * @return 
+	 */
+//	public synchronized  boolean schedulePerfAction(Performance<Cursor, M, WorldTime> perf, Instruction action, WorldTime actionTime) {
+    public <Cursor, M extends Media<Cursor>, Time> boolean schedulePerfInstruction(Performance<Cursor, M, Time> perf, Time worldTime, 
+					Performance.Instruction<Cursor> instruct) {
 		boolean resultFlag = true;
-		String debugDesc = "Action[" + action + "] for Time[" + actionTime + "] for Performance [" + perf + "]";
+		String debugDesc = "Scheduling instruct[" + instruct + "] for Time[" + worldTime + "] for Performance [" + perf + "]";
 		try {
-			switch (action) {
-				case START:
+			switch (instruct.myKind) {
+				// So far we can only handle START, see comments above.
+				case PLAY:
 					if (myStatus == Channel.Status.IDLE) {
 						markStatus(Channel.Status.PERFORMING);
 					}
-
-					// hack to raw type
+					// So far we can only handle BasicPerformance, see comments above.
 					if (perf instanceof BasicPerformance) {
-						((BasicPerformance) perf).markState(State.IN_START);
-					}
-					attemptPerformanceStart(perf);
-					if (perf instanceof BasicPerformance) {
-						((BasicPerformance) perf).markState(State.IN_RUN);
+						((BasicPerformance) perf).impl_attemptStart();
 					}
 					resultFlag = true;
 					break;
@@ -77,12 +86,13 @@ public abstract class BasicChannel<M extends Media, Time> extends BasicDebugger 
 		}
 		return resultFlag;
 	}
-
-	public void attemptPerformanceStart(Performance<M, Time> perf) throws Throwable {
+	// TODO:  Generalize to handle media cursor position (e.g. to "resume" after "pause" or "cue").
+	public <Cursor, M extends Media<Cursor>, Time> void attemptPerformanceStart(Performance<Cursor, M, Time> perf) throws Throwable {
 		M	media = perf.getMedia();
-		attemptMediaStartNow(media);
+		attemptMediaPlayNow(media);
 	}
-	protected abstract void attemptMediaStartNow(M m) throws Throwable;
+	// protected abstract <Cursor, M extends Media<Cursor>>  void attemptMediaStartNow(M m) throws Throwable;
+	protected abstract void attemptMediaPlayNow(Media<?> m) throws Throwable;
 	
 	@Override public String toString() { 
 		return getClass().getSimpleName() + " ident=" + myIdent + ", stat=" + myStatus;

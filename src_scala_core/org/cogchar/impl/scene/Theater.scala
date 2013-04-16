@@ -32,14 +32,16 @@ import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, Cog
 
 class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
 	private val	myBM = new BehaviorModulator();
-	private val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
+	// private val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
+	private val myChanSet = new java.util.HashSet[Channel]();
 	// var myBinder : DummyBinder = null;
 	private var	mySceneBook : SceneBook = null;
 	
 	private var myWorkThread : Thread = null;
 	private var myStopFlag : Boolean = false;
 	
-	def registerChannel (c : Channel[_ <: Media, FancyTime]) {
+	def registerChannel (c : Channel) {
+	// def registerChannel (c : Channel[_ <: Media, FancyTime]) {
 		getLogger().info("Registering channel [{}] in theater for char-theater {}", c, myDebugCharID);
 		myChanSet.add(c);
 	}
