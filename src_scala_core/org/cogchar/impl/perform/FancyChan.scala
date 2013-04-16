@@ -17,7 +17,8 @@
 package org.cogchar.impl.perform
 
 import  org.cogchar.api.event.{Event}
-import  org.cogchar.api.perform.{Media, PerfChannel, Performance, BasicTextChannel, BasicFramedChannel, BasicTextPerformance, BasicFramedPerformance, BasicPerformanceEvent};
+import  org.cogchar.api.perform.{Media, PerfChannel, BasicPerfChan, Performance, BasicPerformance, BasicPerformanceEvent}
+// , BasicTextChannel, BasicFramedChannel, BasicTextPerformance, BasicFramedPerformance, BasicPerformanceEvent};
 
 import org.appdapter.api.module.Module.State;
 import org.appdapter.core.log.{BasicDebugger};
@@ -64,21 +65,14 @@ class FancyTextPerfEvent(src: FancyTextPerf, worldTime: FancyTime, prevState : P
 					mediaCursor : FancyTextCursor) extends BasicPerformanceEvent[FancyTextCursor,FancyTextMedia, 
 					FancyTime](src, worldTime, prevState, nextState, mediaCursor)
 
-abstract class FancyTextChan(id: Ident)//  extends BasicTextChannel[FancyTextCursor, FancyTextMedia, FancyTime](id) {
-		extends BasicTextChannel(id) {
-			/*
-	override def  makePerformanceForMedia(media : FancyTextMedia, initCursor: FancyTextCursor) 
-			: Performance[FancyTextCursor, FancyTextMedia, FancyTime] =  {
-		new FancyTextPerf(media, this, initCursor);
-			
-	}		
-	*/
+abstract class FancyTextChan(id: Ident) extends BasicPerfChan(id) {
+    override def getMaxAllowedPerformances : Int = 1
 }
 // abstract class FancyFramedChan[F](id: Ident) extends BasicFramedChannel[FancyTime,F](id) {}	
 
 
 class FancyTextPerf(media : FancyTextMedia, chan: FancyTextChan, initCursor: FancyTextCursor) 
-		extends  BasicTextPerformance[FancyTextCursor, FancyTextMedia, FancyTime] (media, chan, initCursor) {
+		extends  BasicPerformance[FancyTextCursor, FancyTextMedia, FancyTime] (media, chan, initCursor) {
 		//, FancyTextPerf, Event[FancyTextPerf, FancyTime]]
 		override protected def getCurrentWorldTime() = new FancyTime(System.currentTimeMillis);
 		
