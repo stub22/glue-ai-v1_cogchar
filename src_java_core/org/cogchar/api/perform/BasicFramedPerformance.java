@@ -22,10 +22,11 @@ import org.cogchar.api.event.Event;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class BasicFramedPerformance<Time, F, EPT extends Performance.FramedPerf<Time, F>,  E extends Event<EPT, Time>> 
-		extends BasicPerformance<Media.Framed<F>, Time, EPT, E> implements Performance.FramedPerf<Time, F> {
-	public BasicFramedPerformance(Media.Framed<F> media, Channel.Framed<Time, F> chan) {
-		super(media, chan);
-	}
+public abstract class BasicFramedPerformance {
+//<Cursor, Time, F, EPT extends Performance.FramedPerf<F, Cursor, Time>,  E extends Event<EPT, Time>> 
+//		extends BasicPerformance<Cursor, Media.Framed<F, Cursor>, Time, EPT, E> implements Performance.FramedPerf<F, Cursor, Time> {
+//	public BasicFramedPerformance(Media.Framed<F, Cursor> media, Channel.Framed<F, Cursor, Time> chan, Cursor initCursor) {
+//		super(media, chan, initCursor);
+//	}
 
 }

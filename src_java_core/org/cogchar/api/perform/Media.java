@@ -17,14 +17,18 @@
 package org.cogchar.api.perform;
 
 /**
- * Interface to tag the type and format of a piece of data
+ * Interface to tag the type and format of a piece of data.
+ * A "cursor" is a potentially-mutable position/pointer type for the media.
  * @author Stu B. <www.texpedient.com>
  */
-public interface Media {
+public interface Media<Cursor> {
+	
+	public Cursor	getCursorBeforeStart();
+	public Cursor	getCursorAfterEnd();
     /**
      * Text data in the form of a standard Java String
      */
-	public interface Text extends Media {
+	public interface Text<Cursor> extends Media<Cursor> {
         /**
          * Returns the Text data as a String.
          * @return Text data as a String
@@ -37,7 +41,7 @@ public interface Media {
      * video stream, or audio data from an audio stream.
      * @param <F> the type of Frame used by this Framed Media
      */
-	public interface Framed<F> extends Media {
+	public interface Framed<F, Cursor> extends Media<Cursor> {
         /**
          * Returns the number of available frames.
          * @return number of available frames
@@ -49,11 +53,20 @@ public interface Media {
          * @return frame at the given index
          */
 		public F getFrameAtIndex (long idx);
-	}	
+	}
+	public class ImmutableTextPosition {
+		private int myPos;
+		public ImmutableTextPosition(int pos) {
+			myPos = pos;
+		}
+		int getTextPosition() { 
+			return myPos;
+		}
+	}
 	/**
      * Simple implementation of Text Media which wraps a String.
      */
-	public class BasicText implements Text {
+	public class BasicText  implements Text<ImmutableTextPosition> {
 		String	myTextString;
         
         /**
@@ -67,6 +80,14 @@ public interface Media {
         @Override
 		public String getFullText() {
 			return myTextString;
+		}
+
+		public ImmutableTextPosition getCursorBeforeStart() {
+			return new ImmutableTextPosition(0);
+		}
+
+		public ImmutableTextPosition getCursorAfterEnd() {
+			return new ImmutableTextPosition(myTextString.length());
 		}
 		
 	}

@@ -42,4 +42,11 @@ public class SceneFieldNames {
 	
 	public static String		N_rooty		=		"rooty";
 	public static String		I_rooty		=		NS_ccScnInst + N_rooty;	
+	
+	public static String		P_initialStep		= NS_ccScn + "initialStep";
+	public static String		P_step				= NS_ccScn + "step";
+	public static String		P_finalStep			= NS_ccScn + "finalStep";
+	public static String		P_waitForStart		= NS_ccScn + "waitForStart";
+	public static String		P_waitForEnd		= NS_ccScn + "waitForEnd";
+	
 }

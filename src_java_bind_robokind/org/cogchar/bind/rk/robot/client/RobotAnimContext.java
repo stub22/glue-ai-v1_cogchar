@@ -107,7 +107,7 @@ public class RobotAnimContext extends BasicDebugger {
 		getLogger().info("endAndClear complete, succeededCount=" + clearedCount + ", failedCount=" + unclearedCount);
 	}
 
-	public synchronized void startFullAnimationNow(Animation anim) {
+	public synchronized AnimationJob startFullAnimationNow(Animation anim) {
 		AnimationJob aj = myAnimClient.playFullAnimationNow(anim);
 		if (aj != null) {
 			myJobsInStartOrder.add(aj);
@@ -115,6 +115,7 @@ public class RobotAnimContext extends BasicDebugger {
 		} else {
 			getLogger().warn("********************* Could not start animation[" + anim + "]");
 		}
+		return aj;
 	}
 	protected ModelRobot getModelRobot() { 
 		return null;

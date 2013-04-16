@@ -13,37 +13,68 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.cogchar.api.event;
 
-import org.cogchar.api.event.Notifier;
-import org.cogchar.api.event.Listener;
-import org.cogchar.api.event.Event;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.appdapter.core.log.BasicDebugger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
+public class BasicNotifier<E extends Event<?, ?>> extends BasicDebugger implements Notifier<E> {
+	 // BasicNotifier<Source, Time, E extends Event<Source, Time>> extends BasicDebugger implements Notifier<Source, Time, E> {
 
-public class BasicNotifier<Source, Time, E extends Event<Source, Time>> implements Notifier<Source, Time, E>  {
+	private Map<Class<E>, // List<Listener<Source, Time, E>>> myListenerListsByFilterClaz;
+			List<Listener<E>>> myListenerListsByFilterClaz;
 
-	private	Map<Class<E>, List<Listener<Source, Time, E>>>		myListenerListsByFilterClass;
-	
 	public BasicNotifier() {
-		myListenerListsByFilterClass = new HashMap<Class<E>, List<Listener<Source, Time, E>>>();
-	}
-	
-	public void addListener(Class<E> eventClassFilter, Listener<Source, Time, E> l) {
-		
+		myListenerListsByFilterClaz = new HashMap<Class<E>, List<Listener<E>>>(); // Source, Time, E>>>();
 	}
 
-	public void removeListener(Class<E> eventClassFilter, Listener<Source, Time, E> l) {
+	protected List<Listener<E>> findOrMakeListenerList(Class<E> eventClass) {
+	// protected List<Listener<Source, Time, E>> findOrMakeListenerList(Class<E> eventClass) {
+		// List<Listener<Source, Time, E>> lstnrLst = myListenerListsByFilterClaz.get(eventClass);
+		List<Listener<E>> lstnrLst = myListenerListsByFilterClaz.get(eventClass);
+		if (lstnrLst == null) {
+			lstnrLst = new ArrayList<Listener<E>>();  //Source, Time, E>>();
+			myListenerListsByFilterClaz.put(eventClass, lstnrLst);
+		}
+		return lstnrLst;
 
 	}
-	public void notifyListeners(E event) {
+
+	public void addListener(Class<E> eventClassFilter, Listener<E> lstnr) {
+		List<Listener<E>> lstnrLst = findOrMakeListenerList(eventClassFilter);
+		lstnrLst.add(lstnr);
+	}
+
+	public void removeListener(Class<E> eventClassFilter, Listener<E> lstnr) {
+		List<Listener<E>> lstnrLst = findOrMakeListenerList(eventClassFilter);
+		lstnrLst.remove(lstnr);
+	}
+
+	protected void notifyListeners(E event) {
+		Class eventClaz = event.getClass();
+		for (Class<E> candFilterClaz : myListenerListsByFilterClaz.keySet()) {
+			if (candFilterClaz.isAssignableFrom(eventClaz)) {
+				List<Listener<E>> lstnrLst = myListenerListsByFilterClaz.get(candFilterClaz);
+				for (Listener<E> lstnr : lstnrLst) {
+					try {
+						lstnr.notify(event);
+					} catch (Throwable t) {
+						getLogger().error("Notifier caught exception: ", t);
+					}
+				}
+			}
+		}
+	}
+	/*
+	protected void notifyStateChange() {
 		
 	}
-	
+	* 
+	*/
 }

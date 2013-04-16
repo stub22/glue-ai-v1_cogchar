@@ -20,17 +20,17 @@ package org.cogchar.api.event;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class BasicEvent<Source, Time> implements Event<Source, Time>  {
+public class BasicEvent<Source, WorldTime> implements Event<Source, WorldTime>  {
 	private		Source		mySource;
-	private		Time		myTimeStamp;
-	public BasicEvent(Source src, Time t) {
+	private		WorldTime		myWorldTimeStamp;
+	public BasicEvent(Source src, WorldTime t) {
 		mySource = src;
-		myTimeStamp = t;
+		myWorldTimeStamp = t;
 	}
 	public Source getSource() {
 		return mySource;
 	}
-	public Time getTimeStamp() {
-		return myTimeStamp;
+	public WorldTime getWorldTimeStamp() {
+		return myWorldTimeStamp;
 	}
 }

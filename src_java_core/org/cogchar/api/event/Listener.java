@@ -22,6 +22,7 @@ import org.cogchar.api.event.Event;
  * @author Stu B. <www.texpedient.com>
  */
 
-public interface Listener<Source, Time, E extends Event<Source, Time>> {
+public interface  Listener<E extends Event<?, ?>> {
+				//  Listener<Source, Time, E extends Event<Source, Time>> {
 	public void notify(E event);
 }

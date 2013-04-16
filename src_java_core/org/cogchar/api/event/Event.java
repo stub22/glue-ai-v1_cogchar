@@ -20,7 +20,7 @@ package org.cogchar.api.event;
  * @author Stu B. <www.texpedient.com>
  */
 
-public interface Event<Source, Time> {
-	public	Source	getSource();
-	public	Time	getTimeStamp();
+public interface Event<Source, WorldTime> {
+	public	Source		getSource();
+	public	WorldTime	getWorldTimeStamp();
 }

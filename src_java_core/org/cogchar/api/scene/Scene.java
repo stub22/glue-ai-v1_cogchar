@@ -21,8 +21,21 @@ import org.cogchar.api.perform.Media;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * We have not yet precisely defined or committed fully to this "rootChannel" idea.
+ * It is not currently used for any practical purpose.  (2013-04-14).
+ * However, the concept is that "our scene is controlled from a high-order symbolic 'root' channel, 
+ * and pumps data to/from specific datastream (sub-)channels."  Thus we might say that temporarily the
+ * rootChannel and sub-channels are "bound".  In practice this binding happens through the evolution of
+ * "Performance" objects, which form the shared state + notification pathway between subChannels and 
+ * scene/rootChannel.
  */
-public interface Scene<Time, RootC extends Channel<?, Time>> {
-	public	void wireSubChannels(Collection<Channel<? extends Media, Time>> chans);
-	public RootC getRootChannel();
+public interface Scene<WorldTime, RootChanType> 
+/*RootChanCursor, RootChanMedia extends Media<RootChanCursor>, 
+			RootChanType extends Channel<RootChanCursor, RootChanMedia, WorldTime>> 
+			*/ 
+{
+	// public <SubChanType> 	void wireSubChannels(Collection<SubChanType> chans);
+	public 	void wireSubChannels(Collection<Channel> chans);
+	public RootChanType getRootChannel();
 }

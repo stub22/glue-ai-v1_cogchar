@@ -16,34 +16,52 @@
 package org.cogchar.api.perform;
 import org.cogchar.api.event.Notifier;
 import org.cogchar.api.event.Event;
-import org.appdapter.api.module.Module.State;
 /**
- * A Performance acts on some Media.  It can be scheduled to start, pause, 
- * resume, and stop at given times.
- * @param <M> Type of Media the Performance acts upon
- * @param <Time> Time unit used within this Performance
+ * A Performance performs some Media, over some Time-space.  
+ * It can be scheduled to start, pause, resume, and stop at given times.
+ * It is controlled through Actions, and reports on itself through State.
+ * Performance does not itself promise to be a Notifier, but BasicPerformance does.
+ * @param MediaType Type of Media the Performance uses
+ * @param WorldTime Time unit used within this Performance
  * @author Stu B. <www.texpedient.com>
+ * 
+ * See Also:  Appdapter Module.State.
  */
-public interface Performance<M extends Media, Time> // ,  C extends Channel<M, Time, C>> //, P extends Performance<M, Time, C, P>> //, E extends Event<Performance<M, Time, C, E>, Time>> 
+public interface Performance<Cursor, MediaType extends Media<Cursor>, WorldTime> // ,  C extends Channel<M, Time, C>> //, P extends Performance<M, Time, C, P>> //, E extends Event<Performance<M, Time, C, E>, Time>> 
 								//extends Notifier<Performance<M, Time, C, E>, Time, E> {
 {
-	public enum Action {
-		START, 
-		PAUSE, 
-		RESUME, 
-		STOP
+	public  class Instruction<Cur> {
+		public	Kind	myKind;
+		public	Cur		myCursor;
+		
+		public enum Kind {
+			CUE,
+			PLAY,
+			PAUSE,  
+			STOP
+		}
+		
+	}
+	
+	public enum State {
+		INITING,
+		CUEING,		
+		PLAYING,
+		PAUSING,
+		STOPPING
 	}
     /**
      * Returns the Media used by this Performance.
      * @return Media used by this Performance
      */
-	public	M						getMedia();
+	public	MediaType						getMedia();
     
     /**
      * Returns the Channel which created this Performance.
      * @return Channel which created this Performance
      */
-	public	Channel<M, Time>		getChannel();
+	//public	Channel<Cursor, MediaType, WorldTime>		getChannel();
+	public	Channel				getChannel();
 	
     /**
      * Returns the current State of this Performance.
@@ -51,17 +69,29 @@ public interface Performance<M extends Media, Time> // ,  C extends Channel<M, T
      */
 	public State	getState();
 	
+	public Cursor getCursor();
+
+	
     /**
      * Attempts to schedule the given Action at the desired Time.
      * @param action Action to be scheduled
      * @param t desired time to perform the Action
      * @return true if successful
      */
-	public boolean attemptToScheduleAction(Action action, Time t);
+	public boolean attemptToScheduleInstruction(WorldTime t, Instruction instruct);
 	
-	public interface TextPerf<Time> 	extends Performance<Media.Text, Time> {	
+	/**
+	 * A TextPerf is a Performance constrained to use Text Media.
+	 * @param WorldTime 
+	 */
+	public interface TextPerf<Cursor, M extends Media.Text<Cursor>, WorldTime> 	extends Performance<Cursor, M, WorldTime> {	
 	}
-	public interface FramedPerf<Time, F> 	extends Performance<Media.Framed<F>, Time> {	
+	/**
+	 * A FramePerf is a Performance constrained to use Framed Media.
+	 * @param WorldTime
+	 * @param <F> 
+	 */
+	public interface FramedPerf<F, Cursor, WorldTime> 	extends Performance<Cursor, Media.Framed<F, Cursor>, WorldTime> {	
 	}
 
 

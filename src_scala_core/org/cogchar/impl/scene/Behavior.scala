@@ -39,7 +39,8 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
  * @author Stu B. <www.texpedient.com>
  */
 
-abstract class Behavior (val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
+// Behavior as defined so far is *stateless*
+abstract class Behavior(val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
 
 	var	myStartStamp : Long = -1;
 	// def logMe(msg: String) {logInfo("[" + this + "]-" + msg);}

@@ -40,7 +40,8 @@ import org.osgi.framework.FrameworkUtil;
  *
  * @author Matthew Stevenson <www.robokind.org>
  */
-public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLifecycleProvider<Channel, Channel<M,Time>> {
+// public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLifecycleProvider<Channel, Channel<M,Time>> {
+public class ChannelBindingLifecycle extends AbstractLifecycleProvider<Channel, Channel> {
 	private static Logger theLogger =  LoggerFactory.getLogger(ChannelBindingLifecycle.class);
     private ChannelBindingConfig myBindingConfig;
     
@@ -54,8 +55,7 @@ public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLife
         myRegistrationProperties.put("URI", conf.getChannelURI());
     }
     
-    @Override
-    protected Channel<M, Time> create(Map<String, Object> dependencies) {
+    @Override protected Channel create(Map<String, Object> dependencies) {
         Object service = dependencies.get("service");
         switch(myBindingConfig.getChannelType()){
             case SPEECH:
