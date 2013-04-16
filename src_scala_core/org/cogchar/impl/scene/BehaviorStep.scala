@@ -19,7 +19,7 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
 
 import org.appdapter.core.name.{Ident}
 
-import  org.cogchar.api.perform.{Media, Channel, Performance, BasicPerformance}
+import  org.cogchar.api.perform.{Media, PerfChannel, Performance, BasicPerformance}
 
 import org.cogchar.impl.perform.{FancyTime};
 /**

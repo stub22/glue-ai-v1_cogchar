@@ -29,7 +29,7 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import org.cogchar.name.behavior.{SceneFieldNames}
-import org.cogchar.api.perform.{Channel, Media, BasicChannel, Performance};
+import org.cogchar.api.perform.{PerfChannel, Media, BasicChannel, BasicPerfChan, Performance};
 import org.cogchar.impl.perform.{FancyTime, ChannelSpec, ChannelNames};
 
 import org.cogchar.api.scene.{Scene};
@@ -44,16 +44,12 @@ class BSceneRootCursor() {
 abstract class BSceneRootMedia() extends Media[BSceneRootCursor] {
 	
 }
-class BSceneRootChan (id : Ident, val scn: BScene) extends BasicChannel(id){ // [BSceneRootCursor, BSceneRootMedia, FancyTime](id) {
+class BSceneRootChan (id : Ident, val scn: BScene) extends BasicPerfChan(id){ 
 	override protected def attemptMediaPlayNow( m : Media[_]) : Unit = {
 		// Match on BSceneRootMedia or throw a fit!
 	}
 	
-	/*
-	override def makePerformanceForMedia(media : BSceneRootMedia) : Performance[BSceneRootCursor, BSceneRootMedia, FancyTime] = {
-		null;
-	}
-	*/
+
 	override def getMaxAllowedPerformances() : Int = 1;
 }
 
@@ -67,12 +63,12 @@ class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[Fancy
 	val rootyID = new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
 	val myRootChan = new BSceneRootChan(rootyID, this);
 	// val		myWiredChannels  = new HashMap[Ident,Channel[SubCursor, _ <: Media[SubCursor], FancyTime]]();
-	val		myWiredChannels  = new HashMap[Ident,Channel]();
+	val		myWiredChannels  = new HashMap[Ident,PerfChannel]();
 	
 	override def getRootChannel() : BSceneRootChan = {	myRootChan	}
 	import scala.collection.JavaConversions._;
 	// override def wireSubChannels(chans : java.util.Collection[Channel[SubCursor, _ <: Media[SubCursor], FancyTime]]) : Unit = {
-	override def wireSubChannels(chans : java.util.Collection[Channel]) : Unit = {
+	override def wireSubChannels(chans : java.util.Collection[PerfChannel]) : Unit = {
 		// Currently, all we do is copy references to all chans into our wired channel map.
 		// TODO:  reconcile the actually wired channels with the ones in the SceneSpecs.
 		// Open question:  What would it mean to "re-wire" a BScene?
@@ -89,7 +85,7 @@ class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[Fancy
 		}
 	}
 //	def getChannel[Cursor, M <: Media[Cursor]](id : Ident) : Channel[Cursor, M, FancyTime] = {
-	def getChannel(id : Ident) : Channel = {
+	def getChannel(id : Ident) : PerfChannel = {
 		return myWiredChannels.getOrElse(id, null);
 	}
 	override def toString() : String = {

@@ -22,7 +22,7 @@ import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
 import org.appdapter.help.repo.{RepoClient}
 
-import org.cogchar.api.perform.{Media, Channel};
+import org.cogchar.api.perform.{Media, PerfChannel};
 import org.cogchar.impl.perform.{DummyTextChan, FancyTime, ChannelNames};
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
@@ -33,14 +33,14 @@ import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, Cog
 class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
 	private val	myBM = new BehaviorModulator();
 	// private val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
-	private val myChanSet = new java.util.HashSet[Channel]();
+	private val myChanSet = new java.util.HashSet[PerfChannel]();
 	// var myBinder : DummyBinder = null;
 	private var	mySceneBook : SceneBook = null;
 	
 	private var myWorkThread : Thread = null;
 	private var myStopFlag : Boolean = false;
 	
-	def registerChannel (c : Channel) {
+	def registerChannel (c : PerfChannel) {
 	// def registerChannel (c : Channel[_ <: Media, FancyTime]) {
 		getLogger().info("Registering channel [{}] in theater for char-theater {}", c, myDebugCharID);
 		myChanSet.add(c);

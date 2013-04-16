@@ -32,7 +32,7 @@ public abstract class BasicTextPerformance<Cursor, M extends Media.Text<Cursor>,
 			implements Performance.TextPerf<Cursor, M, WorldTime> {
 	
 	// public BasicTextPerformance(M media, Channel.Text<Cursor, M, WorldTime> chan, Cursor initCursor) {
-	public BasicTextPerformance(M media, Channel chan, Cursor initCursor) {	
+	public BasicTextPerformance(M media, PerfChannel chan, Cursor initCursor) {	
 		super(media, chan, initCursor);
 	}
 }

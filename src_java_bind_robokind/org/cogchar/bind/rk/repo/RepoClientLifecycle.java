@@ -22,7 +22,7 @@ import java.util.Map;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.RepoClientImpl;
 import org.appdapter.impl.store.FancyRepo;
-import org.cogchar.api.perform.Channel;
+import org.cogchar.api.perform.PerfChannel;
 import org.cogchar.impl.scene.SceneSpec;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
 import org.robokind.api.common.lifecycle.DependencyDescriptor;

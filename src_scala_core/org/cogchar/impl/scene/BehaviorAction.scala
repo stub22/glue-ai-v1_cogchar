@@ -20,7 +20,7 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
 
 import org.appdapter.core.name.{Ident}
 
-import  org.cogchar.api.perform.{Media, Channel, Performance, BasicPerformance}
+import  org.cogchar.api.perform.{Media, PerfChannel, Performance, BasicPerformance}
 
 import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyTextChan, FancyTextInstruction};
 
@@ -47,7 +47,7 @@ class TextAction(val myActionText : String) extends BasicBehaviorAction() {
 			getLogger().info("Looking for channel[" + chanId + "] in scene [" + s + "]");
 			// val chan : Channel[_ <: Media, FancyTime] = s.getChannel(chanId);
 			// val chan : Channel[_, _, _] = s.getChannel(chanId);
-			val chan : Channel = s.getChannel(chanId);
+			val chan : PerfChannel = s.getChannel(chanId);
 			getLogger().info("Found channel: " + chan);
 			if (chan != null) {
 				
