@@ -16,7 +16,7 @@
 package org.cogchar.api.scene;
 
 import java.util.Collection;
-import org.cogchar.api.perform.Channel;
+import org.cogchar.api.perform.PerfChannel;
 import org.cogchar.api.perform.Media;
 
 /**
@@ -36,6 +36,6 @@ public interface Scene<WorldTime, RootChanType>
 			*/ 
 {
 	// public <SubChanType> 	void wireSubChannels(Collection<SubChanType> chans);
-	public 	void wireSubChannels(Collection<Channel> chans);
+	public 	void wireSubChannels(Collection<PerfChannel> chans);
 	public RootChanType getRootChannel();
 }

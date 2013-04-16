@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Properties;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.perform.Channel;
+import org.cogchar.api.perform.PerfChannel;
 import org.cogchar.api.perform.Media;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
@@ -41,7 +41,7 @@ import org.osgi.framework.FrameworkUtil;
  * @author Matthew Stevenson <www.robokind.org>
  */
 // public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLifecycleProvider<Channel, Channel<M,Time>> {
-public class ChannelBindingLifecycle extends AbstractLifecycleProvider<Channel, Channel> {
+public class ChannelBindingLifecycle extends AbstractLifecycleProvider<PerfChannel, PerfChannel> {
 	private static Logger theLogger =  LoggerFactory.getLogger(ChannelBindingLifecycle.class);
     private ChannelBindingConfig myBindingConfig;
     
@@ -55,7 +55,7 @@ public class ChannelBindingLifecycle extends AbstractLifecycleProvider<Channel, 
         myRegistrationProperties.put("URI", conf.getChannelURI());
     }
     
-    @Override protected Channel create(Map<String, Object> dependencies) {
+    @Override protected PerfChannel create(Map<String, Object> dependencies) {
         Object service = dependencies.get("service");
         switch(myBindingConfig.getChannelType()){
             case SPEECH:
@@ -68,13 +68,13 @@ public class ChannelBindingLifecycle extends AbstractLifecycleProvider<Channel, 
     protected Ident getChannelIdent() { 
 		return new FreeIdent(myBindingConfig.getChannelURI());
 	}
-    private Channel createSpeechChannel(SpeechService speechSvc){
+    private PerfChannel createSpeechChannel(SpeechService speechSvc){
 		Ident chanIdent = getChannelIdent();
 		theLogger.warn("Creating SpeechOutChan at [{}] for [{}]", chanIdent, speechSvc);
 		return new SpeechOutputClient(speechSvc, chanIdent);
     }
     
-    private Channel createAnimationChannel(AnimationPlayer animPlayerSvc){
+    private PerfChannel createAnimationChannel(AnimationPlayer animPlayerSvc){
 		Ident chanIdent = getChannelIdent();
 		theLogger.warn("Creating AnimPlayChan at [{}] for [{}]", chanIdent, animPlayerSvc);
 		// If we wind up keeping this emitter thing, it can be added as a dependency.
@@ -98,8 +98,8 @@ public class ChannelBindingLifecycle extends AbstractLifecycleProvider<Channel, 
     }
 
     @Override
-    protected Class<Channel> getServiceClass() {
-        return Channel.class;
+    protected Class<PerfChannel> getServiceClass() {
+        return PerfChannel.class;
     }
     
 }

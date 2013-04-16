@@ -17,7 +17,7 @@
 package org.cogchar.impl.perform
 
 import  org.cogchar.api.event.{Event}
-import  org.cogchar.api.perform.{Media, Channel, Performance, BasicTextChannel, BasicFramedChannel, BasicTextPerformance, BasicFramedPerformance, BasicPerformanceEvent};
+import  org.cogchar.api.perform.{Media, PerfChannel, Performance, BasicTextChannel, BasicFramedChannel, BasicTextPerformance, BasicFramedPerformance, BasicPerformanceEvent};
 
 import org.appdapter.api.module.Module.State;
 import org.appdapter.core.log.{BasicDebugger};

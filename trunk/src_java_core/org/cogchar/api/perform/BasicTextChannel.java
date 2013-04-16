@@ -28,7 +28,7 @@ import org.cogchar.api.perform.Media;
  * That performance would usually be a BasicTextPerformance.
  */
 
-public abstract class BasicTextChannel extends BasicChannel { 
+public abstract class BasicTextChannel extends BasicPerfChan { 
 	// <Cursor, M extends Media.Text<Cursor>, Time> extends BasicChannel<Cursor, M, Time> 
 	//	implements Channel.Text<Cursor, M, Time>  {
 	public BasicTextChannel(Ident ident) {
