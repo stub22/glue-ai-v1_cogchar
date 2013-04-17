@@ -15,6 +15,7 @@
  */
 package org.cogchar.api.perform;
 
+import org.cogchar.api.channel.BasicChannel;
 import org.cogchar.api.event.Listener;
 import org.cogchar.api.event.Event;
 import java.util.List;

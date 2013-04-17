@@ -15,6 +15,7 @@
  */
 package org.cogchar.api.perform;
 
+import org.cogchar.api.channel.BasicChannel;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;

@@ -19,7 +19,7 @@ package org.cogchar.bind.rk.robot.client;
 import java.net.URL;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.perform.Media;
-import org.cogchar.impl.perform.FancyTextChan;
+import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.robokind.api.animation.Animation;
 import org.robokind.api.animation.player.AnimationJob;
@@ -30,7 +30,7 @@ import org.robokind.api.animation.player.AnimationJob;
  */
 
 
-public class AnimOutTrigChan extends FancyTextChan {
+public class AnimOutTrigChan extends FancyTextPerfChan {
 	private boolean myUseTempAnimsFlag = false;
 	private RobotAnimContext myRobotAnimContext;
 
