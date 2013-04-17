@@ -15,21 +15,20 @@
  */
 package org.cogchar.outer.client.goody;
 
-import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.api.thing.BasicTypedValueMap;
-import org.cogchar.api.thing.TypedValueMap;
+import org.cogchar.name.goody.GoodyNames;
+import org.cogchar.outer.client.ActionParamWriter;
 
 /**
  * Typically used from a remote client to capture values for encoding in SPARQL-Update.
  *
  * @author Stu B. <www.texpedient.com>
  */
-public class GoodyActionParamWriter {
+public class GoodyActionParamWriter extends ActionParamWriter {
 
-	private BasicTypedValueMap myBTVMap;
 
 	public GoodyActionParamWriter(BasicTypedValueMap btvMap) {
-		myBTVMap = btvMap;
+		super(btvMap);
 	}
 
 	public void putLocation(float locX, float locY, float locZ) {
@@ -73,9 +72,6 @@ public class GoodyActionParamWriter {
 		myBTVMap.putValueAtName(GoodyNames.COLOR_ALPHA, colorAlpha);
 	}
 	
-	public TypedValueMap	getValueMap() { 
-		return myBTVMap;
-	}
 	/**  type is not a param.
 	public void putType(Ident someTypeID) {
 		myBTVMap.putNameAtName(GoodyNames.RDF_TYPE, someTypeID);

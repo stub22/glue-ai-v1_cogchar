@@ -16,21 +16,21 @@
 
 package org.cogchar.render.app.goody;
 
-import org.cogchar.render.app.entity.EntitySpace;
-import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
+import org.cogchar.name.goody.GoodyNames;
+import org.cogchar.render.app.entity.EntitySpace;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.goody.basic.BasicGoody;
-import org.cogchar.render.goody.flat.CrossHairGoody;
-import org.cogchar.render.goody.flat.ScoreBoardGoody;
-import org.cogchar.render.goody.flat.TextGoody;
 import org.cogchar.render.goody.basic.VirtualFloor;
 import org.cogchar.render.goody.bit.BitBox;
 import org.cogchar.render.goody.bit.BitCube;
 import org.cogchar.render.goody.bit.TicTacGrid;
 import org.cogchar.render.goody.bit.TicTacMark;
+import org.cogchar.render.goody.flat.CrossHairGoody;
+import org.cogchar.render.goody.flat.ScoreBoardGoody;
+import org.cogchar.render.goody.flat.TextGoody;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
@@ -52,31 +52,27 @@ public class GoodyFactory {
 	public static GoodyFactory getTheFactory() {
 		return theFactory;
 	}
-	public static GoodyFactory createTheFactory(RenderRegistryClient rrc, int[] screenDimensions, HumanoidRenderContext hrc) {
+	public static GoodyFactory createTheFactory(RenderRegistryClient rrc, HumanoidRenderContext hrc) {
 		theLogger.info("Creating new GoodyFactory");
-		theFactory = new GoodyFactory(rrc, screenDimensions, hrc);
+		theFactory = new GoodyFactory(rrc, hrc);
+		hrc.setTheEntitySpace(theFactory.theGoodySpace); // Notify hrc (ModularRenderContext) of the EntitySpace so it can apply screen dimension updates
 		return theFactory;
 	}
 	
 	private RenderRegistryClient myRRC;
 	private Node myRootNode = new Node("GoodyNode"); // A node for test, though we may want to have "finer grained" nodes to attach to
-	private int[] myScreenDimensions;
 	
-	GoodyFactory(RenderRegistryClient rrc, int[] dimensions, HumanoidRenderContext hrc) {
+	GoodyFactory(RenderRegistryClient rrc, HumanoidRenderContext hrc) {
 		myRRC = rrc;
-		myScreenDimensions = dimensions;
 		attachGoodyNode();
 		theGoodySpace = new EntitySpace(hrc);
+		theGoodySpace.applyNewScreenDimension(hrc.myVCP.getSize(null));
 	}
 	
 	// Is this a good place for the relevant instance of EntitySpace to live, or should it be moved elsewhere?
 	private EntitySpace theGoodySpace;
 	public EntitySpace getTheGoodySpace() {
 		return theGoodySpace;
-	}
-	
-	public int[] getScreenDimensions() {
-		return myScreenDimensions;
 	}
 	
 	public final void attachGoodyNode() {
