@@ -29,7 +29,8 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import org.cogchar.name.behavior.{SceneFieldNames}
-import org.cogchar.api.perform.{PerfChannel, Media, BasicChannel, Performance};
+import org.cogchar.api.channel.{Channel, BasicChannel}
+import org.cogchar.api.perform.{PerfChannel, Media, Performance};
 import org.cogchar.impl.perform.{FancyTime, ChannelSpec, ChannelNames};
 
 import org.cogchar.api.scene.{Scene};

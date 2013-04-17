@@ -49,7 +49,7 @@ import org.cogchar.bind.rk.robot.client.RobotVisemeClient;
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 
 import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
-import org.cogchar.impl.perform.FancyTextChan;
+import org.cogchar.impl.perform.FancyTextPerfChan;
 
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.osgi.framework.ServiceRegistration;

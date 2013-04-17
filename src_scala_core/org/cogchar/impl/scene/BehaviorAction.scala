@@ -22,7 +22,7 @@ import org.appdapter.core.name.{Ident}
 
 import  org.cogchar.api.perform.{Media, PerfChannel, Performance, BasicPerformance}
 
-import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyTextChan, FancyTextInstruction};
+import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyTextPerfChan, FancyTextInstruction};
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -44,17 +44,13 @@ class TextAction(val myActionText : String) extends BasicBehaviorAction() {
 	override def perform(s: BScene) {
 		val media = new FancyTextMedia(myActionText);
 		for (val chanId : Ident <- myChannelIdents) {
-			getLogger().info("Looking for channel[" + chanId + "] in scene [" + s + "]");
-			// val chan : Channel[_ <: Media, FancyTime] = s.getChannel(chanId);
-			// val chan : Channel[_, _, _] = s.getChannel(chanId);
+			getLogger().info("Looking for channel[{}] in scene [{}]", chanId, s);
 			val chan : PerfChannel = s.getChannel(chanId);
-			getLogger().info("Found channel: " + chan);
+			getLogger().info("Found channel {}", chan);
 			if (chan != null) {
 				
 				chan match {
-					case txtChan : FancyTextChan => { // Channel.Text[FancyTime] => {
-						// val perf : Performance[Media.Text, FancyTime] = txtChan.makePerformanceForMedia(media);
-						// val perf = txtChan.makePerformanceForMedia(media);
+					case txtChan : FancyTextPerfChan => { 
 						val initCursor  : FancyTextCursor = media.getCursorBeforeStart();
 						val perf = new FancyTextPerf(media, txtChan, initCursor)
 						val actionTime  = new FancyTime(0);
