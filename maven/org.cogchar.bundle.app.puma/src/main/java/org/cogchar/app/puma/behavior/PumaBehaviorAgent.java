@@ -30,7 +30,7 @@ import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.perform.ChannelNames;
-import org.cogchar.impl.perform.FancyTextChan;
+import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.scene.SceneBook;
 import org.cogchar.impl.scene.Theater;
 import org.cogchar.impl.trigger.FancyTriggerFacade;
@@ -79,7 +79,7 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 	}
 	
 	public void connectAnimOutChans() {
-		FancyTextChan bestAnimOutChan = myRobotMotionMapper.getBestAnimOutChan();
+		FancyTextPerfChan bestAnimOutChan = myRobotMotionMapper.getBestAnimOutChan();
 		myTheater.registerChannel(bestAnimOutChan);
 	}
 	public void connectSpeechOutputSvcs(BundleContext bundleCtx) {

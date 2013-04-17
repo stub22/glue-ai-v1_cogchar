@@ -19,7 +19,7 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.api.perform.Performance;
 import org.cogchar.api.perform.Media;
 
-import org.cogchar.impl.perform.FancyTextChan;
+import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.perform.FancyTextPerf;
 import org.cogchar.impl.perform.FancyTime;
 
@@ -31,7 +31,7 @@ import org.robokind.api.speech.SpeechService;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class SpeechOutputClient extends FancyTextChan {
+public class SpeechOutputClient extends FancyTextPerfChan {
 
 	BundleContext	myCachedBundleCtx;
 	SpeechService	myCachedSpeechSvc;

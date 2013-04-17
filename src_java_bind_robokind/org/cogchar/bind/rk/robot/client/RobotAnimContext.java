@@ -20,22 +20,11 @@ import java.util.List;
 
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.api.perform.Media;
-import org.cogchar.api.perform.Performance;
-import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
-import org.cogchar.impl.perform.ChannelNames;
-import org.cogchar.impl.perform.FancyTextChan;
-import org.cogchar.impl.perform.FancyTextPerf;
-import org.cogchar.impl.perform.FancyTime;
-
-import org.osgi.framework.BundleContext;
 import org.robokind.api.animation.Animation;
 import org.robokind.api.animation.player.AnimationJob;
-import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.utils.RobotUtils;
 
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
@@ -54,7 +43,7 @@ public class RobotAnimContext extends BasicDebugger {
 		RK_XML_TEMP
 	}
 	protected Ident				myAnimOutChanID;
-	private AnimOutTrigChan	myTriggeringChannel;
+	private AnimOutTrigChan		myTriggeringChannel;
 	
 	protected RobotAnimClient		myAnimClient;
 	private List<AnimationJob>	myJobsInStartOrder = new ArrayList<AnimationJob>();

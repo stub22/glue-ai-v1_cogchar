@@ -25,7 +25,7 @@ import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 import org.cogchar.bind.rk.robot.client.DirectRobotAnimContext;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
-import org.cogchar.impl.perform.FancyTextChan;
+import org.cogchar.impl.perform.FancyTextPerfChan;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -69,7 +69,7 @@ public class PumaRobotMotionMapper extends BasicDebugger {
 	 * @return 
 	 */	
 	// Can probably be dropped in favor of channel-lifecycle wiring
-	protected FancyTextChan getBestAnimOutChan() { 
+	protected FancyTextPerfChan getBestAnimOutChan() { 
 		return myRobotAnimCtx.getTriggeringChannel();
 	}
 	protected void stopAndReset() {
