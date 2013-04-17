@@ -40,6 +40,8 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	private	HumanoidFigureManager	myHFM;
 	private BonyGameFeatureAdapter	myGameFeatureAdapter;
 
+
+	
 	public HumanoidRenderContext(RenderConfigEmitter rce) {
 		super(rce);
 		myGameFeatureAdapter = new BonyGameFeatureAdapter(this);
@@ -69,15 +71,6 @@ public class HumanoidRenderContext extends BonyRenderContext {
 		
 		// ScoreBoard is now initialized as a 2D Goody
 		//WorkaroundFuncsMustDie.initScoreBoard(this);
-	}
-	
-	// The screen dimensions must be accessable to PumaVirtualWorldMapper (or PumaAppContext from whence it's called)
-	// so that the GoodyFactory can be initialized with them. This allows 2D goodies to be aware of screen dimensions.
-	// We might rather this be somewhere else, but it has to be somewhere directly called from the CogcharRenderContext
-	// where it has protected access
-	public int[] getScreenSizeFromJmeAppSettings() {
-		int[] size = {getJMonkeyAppSettings().getWidth(), getJMonkeyAppSettings().getHeight()};
-		return size;
 	}
 
 	public void initCinematicParameters() {
@@ -127,15 +120,15 @@ public class HumanoidRenderContext extends BonyRenderContext {
 	public void startOpenGLCanvas(boolean wrapInJFrameFlag, WindowListener optWindowEventListener) throws Exception {
 
 		if (wrapInJFrameFlag) {
-			VirtualCharacterPanel vcp = getPanel();
-			logInfo("Making enclosing JFrame for VirtCharPanel: " + vcp);
+			myVCP = getPanel();
+			logInfo("Making enclosing JFrame for VirtCharPanel: " + myVCP);
 			// Frame must be packed after panel created, but created  before startJMonkey.  
 			// If startJMonkey is called first, we often hang in frame.setVisible() as JMonkey tries
 			// to do some magic restart deal that doesn't work as of jme3-alpha4-August_2011.
 
 			// During the Frame-pack portion of this method, we get all the way to:
 			//  CogcharPresumedApp - ********************* DemoApp.initialize() called
-			JFrame jf = vcp.makeEnclosingJFrame("CCRK-PUMA Virtual World");
+			JFrame jf = myVCP.makeEnclosingJFrame("CCRK-PUMA Virtual World");
 			logInfo("Got Enclosing Frame, adding to BonyRenderContext for WindowClose triggering: " + jf);
 			// Frame will receive a close event when org.cogchar.bundle.render.opengl is STOPPED
 			// So, that's our attempt to close the window gracefully on app exit (under OSGi).

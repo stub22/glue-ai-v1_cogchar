@@ -17,6 +17,7 @@
 package org.cogchar.render.app.entity;
 
 import com.jme3.renderer.Camera;
+import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,8 @@ public class EntitySpace {
 	
 	private	Map<Ident, BasicGoody>		myGoodiesByID;
 	
+	private Dimension myScreenDimension;
+	
 	// We only need hrc here for the temporary way to get camera and character lists -- eventually will come directly
 	// from RDF
 	public EntitySpace(HumanoidRenderContext hrc) { 
@@ -84,6 +87,17 @@ public class EntitySpace {
 		return myGoodiesByID.get(goodyUri);
 	}
 	
+	public void applyNewScreenDimension(Dimension newDimension) {
+		myScreenDimension = newDimension;
+		// Notify goodies of new dimensions
+		for (BasicGoody aGoody : myGoodiesByID.values()) {
+			aGoody.applyScreenDimension(myScreenDimension);
+		}
+	}
+	
+	public Dimension getScreenDimension() {
+		return myScreenDimension;
+	}
 
 	public void processAction(ThingActionSpec actionSpec) {
 		// Temporary (and ugly) way to tie in web actions:
@@ -97,6 +111,7 @@ public class EntitySpace {
 			webUser = wa.getUserName();
 			
 		}
+		//theLogger.info("The targetThing is {}", actionSpec.getTargetThingTypeID()); // TEST ONLY
 		if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) { // Big ugly if-else-if chain must go -- really need switch on Ident! (or Scala...)
 			// Assuming for now it's CREATE only
 			ControlConfig newCC = generateControlConfig(wa);
@@ -126,6 +141,7 @@ public class EntitySpace {
 			GoodyAction ga = new GoodyAction(actionSpec);
 			Ident gid = ga.getGoodyID();
 			BasicGoody goodyOne = myGoodiesByID.get(gid);
+			//theLogger.info("The kind for Goody is {}", ga.getKind()); // TEST ONLY
 			switch (ga.getKind()) {
 				case CREATE: { // If it's a CREATE action, we will do some different stuff
 					if (myGoodiesByID.containsKey(gid)) {
