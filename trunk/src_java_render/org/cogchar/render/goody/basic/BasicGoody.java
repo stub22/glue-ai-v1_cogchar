@@ -18,6 +18,7 @@ package org.cogchar.render.goody.basic;
 
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import java.awt.Dimension;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.appdapter.core.name.Ident;
@@ -53,10 +54,17 @@ public abstract class BasicGoody {
 	public abstract void detachFromVirtualWorldNode();
 	public abstract void applyAction(GoodyAction ga);
 	
+	public void applyScreenDimension(Dimension screenDimension) {}; // No operation necessary unless desired, as in BasicGoody2dImpl
+	
 	protected void enqueueForJmeAndWait(Callable task) {
 		Future<Void> jmeFuture = myRenderRegCli.getWorkaroundAppStub().enqueue(task);
 			// Method should block until detach completes to avoid collision with subsequent V-world operations
 			waitForJmeFuture(jmeFuture);
+	}
+	
+	// Added for repositioning 2d goodies on size change, which hangs if we wait for the enqueue while the window is being resized
+	protected void enqueueForJmeButDontWait(Callable task) {
+		myRenderRegCli.getWorkaroundAppStub().enqueue(task);
 	}
 	
 	private void waitForJmeFuture(Future jmeFuture) {

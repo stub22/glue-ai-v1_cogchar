@@ -16,6 +16,7 @@
 package org.cogchar.render.gui.bony;
 
 import java.awt.Canvas;
+import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.cogchar.render.app.bony.BodyController;
@@ -30,4 +31,5 @@ public interface VirtualCharacterPanel {
 	public JPanel getJPanel();
 	public BodyController getBodyController();
 	public VerbalController getVerbalController();
+	public Dimension getSize(Dimension rv);
 }

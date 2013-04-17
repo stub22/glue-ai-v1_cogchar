@@ -22,6 +22,7 @@ import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import java.awt.Dimension;
 import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.goody.basic.BasicGoody;
@@ -38,6 +39,7 @@ public class BasicGoody2dImpl extends BasicGoody {
 	
 	protected FlatOverlayMgr myOverlayMgr;
 	protected Vector3f myPosition = new Vector3f(); // default: at lower left corner (0,0)
+	protected Vector3f myScalePosition = new Vector3f();
 	protected BitmapText myOverlayText;
 	protected int myScreenWidth, myScreenHeight;
 	
@@ -47,9 +49,7 @@ public class BasicGoody2dImpl extends BasicGoody {
 		myRenderRegCli = aRenderRegCli;
 		myUri = uri;
 		myOverlayMgr = myRenderRegCli.getSceneFlatFacade(null);
-		int[] dimensions = GoodyFactory.getTheFactory().getScreenDimensions();
-		myScreenWidth = dimensions[0];
-		myScreenHeight = dimensions[1];
+		applyScreenDimension(GoodyFactory.getTheFactory().getTheGoodySpace().getScreenDimension());
 	}
 	
 	// Currently just uses default font for everything -- ok for what we need now, but ultimately may want to 
@@ -75,11 +75,18 @@ public class BasicGoody2dImpl extends BasicGoody {
 	}
 	
 	@Override
-	// Position is specified as fraction of screen width/height
 	public void setPosition(Vector3f scalePosition) {
+		setPosition(scalePosition, true);
+	}
+	
+	// Position is specified as fraction of screen width/height
+	// Usually we want wait = true, but not for repositioning during window size change
+	public void setPosition(Vector3f scalePosition, boolean wait) {
+		//myLogger.info("Setting scalePosition: {}", scalePosition); // TEST ONLY
 		if (scalePosition != null) {
+			myScalePosition = scalePosition.clone();
 			Vector3f absolutePosition = scalePosition.multLocal(myScreenWidth, myScreenHeight, 0);
-			setAbsolutePosition(absolutePosition);
+			setAbsolutePosition(absolutePosition, wait);
 		}
 	}
 	
@@ -100,17 +107,26 @@ public class BasicGoody2dImpl extends BasicGoody {
 	}
 	
 	private void setAbsolutePosition(final Vector3f position) {
-		//myLogger.debug("Setting position: {}", position); // TEST ONLY
-		myPosition = position;
+		setAbsolutePosition(position, true);
+	}
+	
+	// Usually we want wait = true, but not for repositioning during window size change
+	private void setAbsolutePosition(final Vector3f position, boolean wait) {
+		//myLogger.info("Setting position: {}", position); // TEST ONLY
+		myPosition = position.clone();
 		if (myOverlayText != null) {
-			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
-
+			Callable positioningCallable = new Callable() { // Do this on main render thread
 				@Override
 				public Void call() throws Exception {
 					myOverlayText.setLocalTranslation(position);
 					return null;
 				}
-			});
+			};
+			if (wait) {
+				enqueueForJmeAndWait(positioningCallable);
+			} else {
+				enqueueForJmeButDontWait(positioningCallable);
+			}
 		}
 	}
 	
@@ -166,5 +182,10 @@ public class BasicGoody2dImpl extends BasicGoody {
 		}
 	};
 	
-	
+	@Override
+	public final void applyScreenDimension(Dimension screenDimension) {
+		myScreenWidth = screenDimension.width;
+		myScreenHeight = screenDimension.height;
+		setPosition(myScalePosition, false); // Reset absolute position using new screen dimensions. No waiting!
+	}
 }

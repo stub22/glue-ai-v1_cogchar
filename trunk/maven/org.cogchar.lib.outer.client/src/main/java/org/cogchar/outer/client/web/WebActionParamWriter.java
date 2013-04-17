@@ -17,8 +17,8 @@ package org.cogchar.outer.client.web;
 
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.BasicTypedValueMap;
-import org.cogchar.api.thing.TypedValueMap;
 import org.cogchar.name.web.WebActionNames;
+import org.cogchar.outer.client.ActionParamWriter;
 
 /**
  * Typically used from a remote client to capture values for encoding in SPARQL-Update.
@@ -26,12 +26,10 @@ import org.cogchar.name.web.WebActionNames;
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
-public class WebActionParamWriter {
-
-	private BasicTypedValueMap myBTVMap;
+public class WebActionParamWriter extends ActionParamWriter {
 
 	public WebActionParamWriter(BasicTypedValueMap btvMap) {
-		myBTVMap = btvMap;
+		super(btvMap);
 	}
 	
 	
@@ -74,14 +72,4 @@ public class WebActionParamWriter {
 		myBTVMap.putValueAtName(WebActionNames.USERNAME, userName);
 	}
 	
-	
-	public TypedValueMap	getValueMap() { 
-		return myBTVMap;
-	}
-	/**  type is not a param.
-	public void putType(Ident someTypeID) {
-		myBTVMap.putNameAtName(GoodyNames.RDF_TYPE, someTypeID);
-	}
-	*/
-
 }
