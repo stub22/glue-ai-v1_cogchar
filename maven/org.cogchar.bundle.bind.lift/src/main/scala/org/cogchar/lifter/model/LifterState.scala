@@ -92,11 +92,7 @@ class LifterState {
 
   def getSnippetDataMapForSession(sessionId:String) = {
 	if (!(snippetRenderDataMap contains sessionId)) {
-	  if (sessionId.equals(INITIAL_CONFIG_ID)) {
-		snippetRenderDataMap(sessionId) = new HashMap[Int, Any]
-	  } else {
-		snippetRenderDataMap(sessionId) = snippetRenderDataMap(INITIAL_CONFIG_ID).clone
-	  }
+	  snippetRenderDataMap(sessionId) = snippetRenderDataMap(INITIAL_CONFIG_ID).clone
 	}
 	//println("getSnippetDataMapForSession: Session " + sessionId + " has state with size " + snippetRenderDataMap(sessionId).size) // TEST ONLY
 	snippetRenderDataMap(sessionId)
@@ -139,7 +135,7 @@ class LifterState {
 	globalLifterVariablesByName.clear
 	lastTimeAcutatedBySlot.clear
 	snippetRenderDataMap.clear
-	
+	snippetRenderDataMap(INITIAL_CONFIG_ID) = new HashMap[Int, Any]
   }
   
   def prepareSessionForNewConfig(sessionId:String) {
