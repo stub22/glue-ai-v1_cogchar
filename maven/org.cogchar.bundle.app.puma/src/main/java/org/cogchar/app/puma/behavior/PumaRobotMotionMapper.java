@@ -50,8 +50,13 @@ public class PumaRobotMotionMapper extends BasicDebugger {
 		// Set up our animation triggering context, connecting behavior system to scripted-animation system.
 		if (optLocalRobotSvcContext != null) {
 				// This way is used for direct connect to a local robot graph, bypassing some abstractions.
-			DirectRobotAnimContext drac = new DirectRobotAnimContext(animOutTrigChanID, behavCE, optLocalRobotSvcContext);
-			myRobotAnimCtx = drac;
+            try{
+                DirectRobotAnimContext drac = new DirectRobotAnimContext(animOutTrigChanID, behavCE, optLocalRobotSvcContext);
+                myRobotAnimCtx = drac;
+            }catch(RuntimeException ex){
+                getLogger().warn("Error creating DirectRobotAnimContext.", ex);
+                myRobotAnimCtx = new RobotAnimContext(myAnimOutTrigChanID, behavCE);
+            }
 		} else {
 			// This way is most general case for channel + lifecycle wiring.
 			myRobotAnimCtx = new RobotAnimContext(myAnimOutTrigChanID, behavCE);
