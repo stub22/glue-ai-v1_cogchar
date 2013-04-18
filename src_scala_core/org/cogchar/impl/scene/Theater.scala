@@ -62,22 +62,7 @@ class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
 		myBM.setSceneContext(scene);
 		scene.attachBehaviorsToModulator(myBM);
 	}
-	def loadSceneBookFromFile(triplesFlexPath : String, optCL : ClassLoader, clearCachesFirst : Boolean ) {
-		if (clearCachesFirst) {
-			// Issue: this is a global operation, but we are loading one Theater/SceneBook per character.
-			SceneBook.clearBuilderCaches();
-		}
-		val sceneBook = SceneBook.readSceneBookFromFile(triplesFlexPath, optCL);
-		registerSceneBook(sceneBook);		
-	}
-	def loadSceneBookFromRepo(repoClient : RepoClient, chanGraphID : Ident, behavGraphID : Ident, clearCachesFirst : Boolean ) {
-		if (clearCachesFirst) {
-			// Issue: this is a global operation, but we are loading one Theater/SceneBook per character.
-			SceneBook.clearBuilderCaches();
-		}
-		val sceneBook = SceneBook.readSceneBookFromRepo(repoClient, chanGraphID, behavGraphID);
-		registerSceneBook(sceneBook);		
-	}	
+	
 	def stopAllScenes() {
 		myBM.stopAllModules();
 	}
@@ -147,82 +132,4 @@ class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
 			killThread();
 		}
 	}
-	
-
 }
-object Theater extends BasicDebugger {
-
-	def main(args: Array[String])  : Unit = {
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);		
-		test();
-	}
-	
-	def loadTestSceneBook() : SceneBook = {
-		val triplesFlexPath = "org/cogchar/test/assembly/demo_scenes_A.ttl";
-		val sb = new SceneBook()
-		// sb.loadSceneSpecsFromFile(triplesFlexPath, optResourceClassLoader);
-		sb
-		// val sb = 		thtr.loadSceneBookFromFile(triplesFlexPath, null, true);		
-	} 
-	
-	def test() : Unit = {
-		val dbgCharName="PhonyChar";
-		val dbgCharID = new FreeIdent(ChannelNames.NS_ccScnInst + dbgCharName, dbgCharName);
-		val		thtr = new Theater(dbgCharID);
-
-		// logInfo("Tricky: " + ChannelNames.getNumericChannelName("hmm", 22, 4));
-		
-		val dummySpeechChanID = ChannelNames.getOutChanIdent_SpeechMain();
-		val dtc = new DummyTextChan(dummySpeechChanID);
-		thtr.registerChannel(dtc);
-
-		// val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
-		// val triplesFlexPath = "../org.cogchar.bundle.render.resources/src/main/resources/behavior/bhv_nugget_02.ttl";
-		val triplesFlexPath = "org/cogchar/test/assembly/demo_scenes_A.ttl";
-		thtr.loadSceneBookFromFile(triplesFlexPath, null, true);
-		
-		val sceneBook : SceneBook = thtr.getSceneBook;
-		val ruledTestSceneName = "scn_004";
-		val ruledTestSceneID : Ident = new FreeIdent(ChannelNames.NS_ccScnInst + ruledTestSceneName, ruledTestSceneName)
-		val ruledTestSS : SceneSpec = sceneBook.findSceneSpec(ruledTestSceneID);
-		
-		val aSceneSpec : SceneSpec = sceneBook.allSceneSpecs().head;
-		logInfo("Found first SceneSpec to build a trigger for: " + aSceneSpec);
-		
-		val trigHead : CogcharActionTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTriggerForScene(aSceneSpec);
-	
-		logInfo("Found ruled SceneSpec " + ruledTestSceneName + " to build a trigger for: " + ruledTestSS);
-		
-		val trigRuled : CogcharActionTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTriggerForScene(ruledTestSS);
-		
-		thtr.startThread();
-		
-		Thread.sleep(2000);
-		trigHead.fire(thtr);
-		// thtr.myBM.setDebugImportanceThreshold(Loggable.IMPO_LOLO);
-		// thtr.myBM.runUntilDone(100);
-		// 
-		// 
-		Thread.sleep(4000);
-		logInfo("=======================================\nStarting ruled scene test");
-		trigRuled.fire(thtr);
-		Thread.sleep(4000);
-		logInfo("********************** stopping thread");
-		thtr.fullyStop(500);
-		Thread.sleep(2000);
-		
-		logInfo("************************  BehaviorModulator Test #1 Finished ***************************************");
-	}  
-}
-
-/*		val testSceneName = "scn_001";
-//		val testSceneURI = 	SceneFieldNames.NS_ccScnInst + testSceneName;
-//		val testSceneID =  new FreeIdent(testSceneURI, testSceneName);
-		
-		val testSceneSpec = mySceneBook.findSceneSpec(testSceneID);
-		
-		val scene = thtr.makeSceneFromBook(testSceneID);
-		
-		thtr.activateScene(scene);
-*/	

@@ -35,11 +35,17 @@ import org.appdapter.api.module.Module.State;
 
 import org.cogchar.impl.perform.{ChannelSpec};
 import org.appdapter.core.log.{BasicDebugger, Loggable};
-/**
+
+/**  A Behavior is a thread of activity run by a BehaviorModulator.
+ *   State information is generally shared with other behaviors through the BScene object
+ *  that serves as context for the BehaviorModulator, which is passed in to each
+ *  action method.  
+ *   Behaviors are generally internally stateless, except for keeping track of 
+ *  where they are in their own program of activity.
  * @author Stu B. <www.texpedient.com>
  */
 
-// Behavior as defined so far is *stateless*
+
 abstract class Behavior(val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
 
 	var	myStartStamp : Long = -1;

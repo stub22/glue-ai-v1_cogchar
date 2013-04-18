@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.perform.PerfChannel;
+import org.cogchar.api.channel.Channel;
 import org.cogchar.api.scene.Scene;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.SceneSpec;
@@ -46,7 +46,7 @@ public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
         List<String> chanURIs = getRequiredChannelURIs(spec);
         List<DependencyDescriptor> descriptors = new ArrayList<DependencyDescriptor>();
         for(String uri : chanURIs){
-            descriptors.add(new DependencyDescriptor(uri, PerfChannel.class, 
+            descriptors.add(new DependencyDescriptor(uri, Channel.class, 
                     OSGiUtils.createFilter("URI", uri), DependencyType.REQUIRED));
         }
         return descriptors;
@@ -63,15 +63,15 @@ public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
 
     @Override protected BScene create(Map<String, Object> dependencies) {
         BScene scene = new BScene(mySceneSpec);
-		List chansForWiring = new ArrayList<PerfChannel>();
+		List chansForWiring = new ArrayList<Channel>();
         for(Entry<String,Object> e : dependencies.entrySet()){
             String chanURI = e.getKey();
 			Object entryVal = e.getValue();
-            if(entryVal == null || !PerfChannel.class.isAssignableFrom(entryVal.getClass())){
+            if(entryVal == null || !Channel.class.isAssignableFrom(entryVal.getClass())){
 				theLogger.warn("Ignoring non-channel dependency {} for scene {}", entryVal, scene);
                 continue;
             }
-            PerfChannel chan = (PerfChannel)e.getValue();   //Dependency types already checked by AbstractLifecycle
+            Channel chan = (Channel)e.getValue();   //Dependency types already checked by AbstractLifecycle
 			theLogger.warn("Found channel dependency {} for scene {}", chan, scene);
 			chansForWiring.add(chan);
         }

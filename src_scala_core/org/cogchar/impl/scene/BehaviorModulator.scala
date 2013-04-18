@@ -35,6 +35,9 @@ import org.appdapter.api.module.Module.State;
 import org.cogchar.impl.perform.{ChannelSpec};
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 /**
+ * The behavior-modulator uses a BScene as the (potentially writable) 
+ * application "Context" for the modules.   Through this context they
+ * can share access to state and resources.
  * @author Stu B. <www.texpedient.com>
  */
 

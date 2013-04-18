@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Properties;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.channel.Channel;
 import org.cogchar.api.perform.PerfChannel;
 import org.cogchar.api.perform.Media;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;
@@ -37,11 +38,17 @@ import org.slf4j.LoggerFactory;
 import org.osgi.framework.FrameworkUtil;
 
 /**
- *
- * @author Matthew Stevenson <www.robokind.org>
+ * A channelBindingLifecycle manages the service lifecycle for a Channel object.
+ * The channel is identified by a URI, and defined by properties in a ChannelBindingConfig,
+ * which is independently obtained, but usually comes from a Cogchar RDF-backed ChannelSpec.
+ * 
+ * TODO:  Capture formal unit tests that build ChannelBindingConfigs manually and test them
+ * in different JFlux contexts.
+ * 
+ * @author Matthew Stevenson <www.robokind.org> 
+ * @author Stub22
  */
-// public class ChannelBindingLifecycle<M extends Media, Time> extends AbstractLifecycleProvider<Channel, Channel<M,Time>> {
-public class ChannelBindingLifecycle extends AbstractLifecycleProvider<PerfChannel, PerfChannel> {
+public class ChannelBindingLifecycle extends AbstractLifecycleProvider<Channel, Channel> {
 	private static Logger theLogger =  LoggerFactory.getLogger(ChannelBindingLifecycle.class);
     private ChannelBindingConfig myBindingConfig;
     
@@ -55,51 +62,19 @@ public class ChannelBindingLifecycle extends AbstractLifecycleProvider<PerfChann
         myRegistrationProperties.put("URI", conf.getChannelURI());
     }
     
-    @Override protected PerfChannel create(Map<String, Object> dependencies) {
+    @Override protected Channel create(Map<String, Object> dependencies) {
         Object service = dependencies.get("service");
-        switch(myBindingConfig.getChannelType()){
-            case SPEECH:
-                return createSpeechChannel((SpeechService)service);
-            case ANIMATION:
-                return createAnimationChannel((AnimationPlayer)service);
-        }
-        return null;
-    }
-    protected Ident getChannelIdent() { 
-		return new FreeIdent(myBindingConfig.getChannelURI());
-	}
-    private PerfChannel createSpeechChannel(SpeechService speechSvc){
-		Ident chanIdent = getChannelIdent();
-		theLogger.warn("Creating SpeechOutChan at [{}] for [{}]", chanIdent, speechSvc);
-		return new SpeechOutputClient(speechSvc, chanIdent);
-    }
-    
-    private PerfChannel createAnimationChannel(AnimationPlayer animPlayerSvc){
-		Ident chanIdent = getChannelIdent();
-		theLogger.warn("Creating AnimPlayChan at [{}] for [{}]", chanIdent, animPlayerSvc);
-		// If we wind up keeping this emitter thing, it can be added as a dependency.
-		BehaviorConfigEmitter behavCE = new BehaviorConfigEmitter();
-		/* charIdent - so far, used only for log messages
-		 * behavCE  - only used to resolve local files, in case animResURL does not resolve within classpath.
-		 */
-		RobotAnimContext	roboAnimContext = new RobotAnimContext(chanIdent, behavCE);
-		roboAnimContext.initConnForAnimPlayer(animPlayerSvc);
-		// This list of classloaders to be used to look for animation resources could also be defined as a dependency.
-		// But right now, what we need is a BundleContext!
-		BundleContext ctx = FrameworkUtil.getBundle(ChannelBindingLifecycle.class).getBundleContext();
-		List<ClassLoader> clsForRKConf = ClassLoaderUtils.getFileResourceClassLoaders(ctx, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
-		roboAnimContext.setResourceClassLoaders(clsForRKConf);
-		return roboAnimContext.getTriggeringChannel();
+		CCRK_ServiceChannelFactory factory = new CCRK_ServiceChannelFactory();		
+		Channel channel = factory.makeServiceChannel(myBindingConfig, service);
+        return channel;
     }
 
-    @Override
-    protected void handleChange(String dependencyKey, Object dependency, Map<String, Object> availableDependencies) {
+    @Override protected void handleChange(String dependencyKey, Object dependency, Map<String, Object> availableDependencies) {
         myService = isSatisfied() ? create(availableDependencies) : null;
     }
 
-    @Override
-    protected Class<PerfChannel> getServiceClass() {
-        return PerfChannel.class;
+    @Override protected Class<Channel> getServiceClass() {
+        return Channel.class;
     }
     
 }

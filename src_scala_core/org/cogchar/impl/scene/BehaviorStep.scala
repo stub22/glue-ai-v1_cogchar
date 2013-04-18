@@ -26,24 +26,33 @@ import org.cogchar.impl.perform.{FancyTime};
  * @author Stu B. <www.texpedient.com>
  */
 
-trait BehaviorStep {
+trait BehaviorStepExec {
+	// Generally all comm should be through the scene, and the behavior should be ignored by the step.
 	def proceed(s: BScene, b: Behavior) : Boolean;
 }
-
-class ScheduledActionStep (val myOffsetMillisec : Int, val myAction: BehaviorAction) extends BehaviorStep() { 
-	override def toString() : String = {
-		"ScheduledActionStep[offsetMsec=" + myOffsetMillisec + ", action=" + myAction + "]"
-	}
+abstract class BehaviorStepSpec extends BasicDebugger {
+	def makeStepExecutor() : BehaviorStepExec
+}
+class ScheduledActionStepExec(mySpec : ScheduledActionStepSpec) extends BehaviorStepExec {
 	def proceed(s: BScene, b: Behavior) : Boolean = {
 		val msecSinceStart = b.getMillsecSinceStart();
-		if (msecSinceStart >= myOffsetMillisec) {
-			myAction.perform(s);
+		if (msecSinceStart >= mySpec.myOffsetMillisec) {
+			val actionExec = mySpec.myActionSpec.makeActionExec()
+			actionExec.perform(s);
 			true;
 		} else {
 			false;
 		}
-	}
+	}	
+}
 
+class ScheduledActionStepSpec (val myOffsetMillisec : Int, val myActionSpec: BehaviorActionSpec) extends BehaviorStepSpec() { 
+	def makeStepExecutor() : BehaviorStepExec = {
+		new ScheduledActionStepExec(this)
+	}
+	override def toString() : String = {
+		"ScheduledActionStepSpec[offsetMsec=" + myOffsetMillisec + ", action=" + myActionSpec + "]"
+	}
 }
 
 

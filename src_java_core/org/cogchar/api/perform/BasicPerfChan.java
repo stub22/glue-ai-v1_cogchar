@@ -16,7 +16,6 @@
 package org.cogchar.api.perform;
 
 import org.cogchar.api.channel.BasicChannel;
-import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;
 import org.cogchar.api.perform.Performance.Instruction;
@@ -49,7 +48,6 @@ public abstract class BasicPerfChan extends BasicChannel implements PerfChannel 
 	 * @param actionTime
 	 * @return 
 	 */
-//	public synchronized  boolean schedulePerfAction(Performance<Cursor, M, WorldTime> perf, Instruction action, WorldTime actionTime) {
     public <Cursor, M extends Media<Cursor>, Time> boolean schedulePerfInstruction(Performance<Cursor, M, Time> perf, Time worldTime, 
 					Performance.Instruction<Cursor> instruct) {
 		boolean resultFlag = true;
