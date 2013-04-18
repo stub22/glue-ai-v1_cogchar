@@ -30,12 +30,7 @@ import org.cogchar.api.perform.Media;
  * "Performance" objects, which form the shared state + notification pathway between subChannels and 
  * scene/rootChannel.
  */
-public interface Scene<WorldTime, RootChanType> 
-/*RootChanCursor, RootChanMedia extends Media<RootChanCursor>, 
-			RootChanType extends Channel<RootChanCursor, RootChanMedia, WorldTime>> 
-			*/ 
-{
-	// public <SubChanType> 	void wireSubChannels(Collection<SubChanType> chans);
+public interface Scene<WorldTime, RootChanType> {
 	public 	void wireSubChannels(Collection<PerfChannel> chans);
 	public RootChanType getRootChannel();
 }

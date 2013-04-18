@@ -24,7 +24,9 @@ import org.cogchar.api.event.StateChangeEvent;
 
 public class BasicPerformanceEvent<Cursor, M extends Media<Cursor>, WorldTime> 
 			extends StateChangeEvent<BasicPerformance<Cursor, M, WorldTime>, WorldTime, Performance.State> {
+	
 	public Cursor myCursor;
+	
 	public BasicPerformanceEvent(BasicPerformance<Cursor, M, WorldTime> src, WorldTime worldTime,
 				Performance.State prevState, Performance.State nextState, Cursor cursor) {
 		super(src, worldTime, prevState, nextState);

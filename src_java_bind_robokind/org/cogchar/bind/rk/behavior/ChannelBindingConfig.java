@@ -23,8 +23,15 @@ import org.robokind.api.speech.SpeechService;
 import org.cogchar.impl.perform.ChannelSpec;
 import org.cogchar.impl.perform.ChannelNames;
 /**
- *
- * @author Matthew Stevenson <www.robokind.org> and Stu B.
+ * Current approach requires us to define, for each "Type" of channel:
+ * An ChannelType-enum value yielding a build-time URI with a Java service class handle.
+   Then each actual ChannelBindingConfig refers to such a type, and binds a flexible
+ * "channelID" uri, plus an OSGi filter string.
+ * 
+ * 
+ * 
+ * @author Matthew Stevenson <www.robokind.org> 
+ * @author Stub22
  */
 public class ChannelBindingConfig {
     private Ident		myChannelID;
@@ -44,6 +51,9 @@ public class ChannelBindingConfig {
 	public String getChannelURI() { 
 		return myChannelID.getAbsUriString();
 	}
+    protected Ident getChannelIdent() { 
+		return myChannelID;
+	}	
 	public String getOSGiFilterString() {
 		return myOSGiFilterString;
 	}

@@ -33,6 +33,7 @@ import org.cogchar.impl.perform.ChannelNames;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.scene.SceneBook;
 import org.cogchar.impl.scene.Theater;
+import org.cogchar.impl.scene.TheaterTest;
 import org.cogchar.impl.trigger.FancyTriggerFacade;
 import org.cogchar.platform.trigger.CogcharEventActionBinder;
 import org.cogchar.platform.trigger.CogcharScreenBox;
@@ -106,11 +107,11 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 		String behavPath = myBehaviorCE.getBehaviorPermPath(pathTail);
 		// if (useTempFiles) {	//behavPath = behavCE.getBehaviorTempFilePath(pathTail);
 		ClassLoader optCLforJenaFM = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
-		myTheater.loadSceneBookFromFile(behavPath, optCLforJenaFM, clearCachesFirst);
+		TheaterTest.loadSceneBookFromFile(myTheater, behavPath, optCLforJenaFM, clearCachesFirst);
 	}
 	public void loadBehaviorConfigFromRepo(RepoClient repoClient, Ident chanGraphID, Ident behavGraphID, 
 					boolean clearCachesFirst) throws Throwable {
-		myTheater.loadSceneBookFromRepo(repoClient, chanGraphID, behavGraphID, clearCachesFirst);
+		TheaterTest.loadSceneBookFromRepo(myTheater, repoClient, chanGraphID, behavGraphID, clearCachesFirst);
 	}
 	public void startTheater() {
 		SceneBook sb = myTheater.getSceneBook();

@@ -28,22 +28,32 @@ import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, Fancy
  * @author Stu B. <www.texpedient.com>
  */
 
-trait BehaviorAction {
+trait BehaviorActionExec {
 	def perform(s: BScene);
 }
-abstract class BasicBehaviorAction extends BasicDebugger with BehaviorAction {
+
+abstract class BehaviorActionSpec extends BasicDebugger {
 	// Usually there will be just one channel ID attached to each Action.
 	var	myChannelIdents : List[Ident] = List();
 	def addChannelIdent(id  : Ident) {
 		myChannelIdents = myChannelIdents :+ id;
 		logInfo("************ appended " + id + "  so list is now: " + myChannelIdents);
 	}
+	def makeActionExec() : BehaviorActionExec
 }
 
-class TextAction(val myActionText : String) extends BasicBehaviorAction() { 
+class TextActionSpec(val myActionText : String) extends BehaviorActionSpec() { 
+	override def makeActionExec() : BehaviorActionExec = {
+		new TextActionExec(this)
+	}
+	override def toString() : String = {
+		"TextActionSpec[actionTxt=" + myActionText + ", channelIds=" + myChannelIdents + "]";
+	}		
+}
+class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with BehaviorActionExec {
 	override def perform(s: BScene) {
-		val media = new FancyTextMedia(myActionText);
-		for (val chanId : Ident <- myChannelIdents) {
+		val media = new FancyTextMedia(mySpec.myActionText);
+		for (val chanId : Ident <- mySpec.myChannelIdents) {
 			getLogger().info("Looking for channel[{}] in scene [{}]", chanId, s);
 			val chan : PerfChannel = s.getChannel(chanId);
 			getLogger().info("Found channel {}", chan);
@@ -69,6 +79,6 @@ class TextAction(val myActionText : String) extends BasicBehaviorAction() {
 		}
 	}
 	override def toString() : String = {
-		"TextAction[actionTxt=" + myActionText + ", channelIds=" + myChannelIdents + "]";
+		"TextActionExec[spec=" + mySpec + "]";
 	}	
 }

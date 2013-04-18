@@ -41,18 +41,6 @@ class GuardedBehavior (val myGBS: GuardedBehaviorSpec) extends Behavior(myGBS) {
 	var myNextStepIndex : Int = 0;
 
 	override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
-		if (myNextStepIndex >= myGBS.mySteps.size) {
-			getLogger().debug("Reached end of its steps at #{} self-requesting module stop on : {}", myNextStepIndex, this);
-			markStopRequested();
-			getLogger().info("Finished requesting stop, so this should be my last runOnce().");
-		} else {
-			val step = myGBS.mySteps(myNextStepIndex);
-			if (step.proceed(scn, this)) {
-				val osi = myNextStepIndex;
-				myNextStepIndex += 1;
-				getLogger().debug("Proceed succeeded for step # {} will attempt step# {} on next runOnce()", osi, myNextStepIndex);
-			}
-		}
 	}
 	override def getFieldSummary() : String = {
 		return  super.getFieldSummary() +  ", nextStepIndex=" + myNextStepIndex;
@@ -62,11 +50,11 @@ class GuardedBehavior (val myGBS: GuardedBehaviorSpec) extends Behavior(myGBS) {
 case class GuardedBehaviorSpec() extends BehaviorSpec {
 	import scala.collection.JavaConversions._;
 		
-	var		mySteps : List[BehaviorStep] = List();
+	var		myStepSpecs : List[BehaviorStepSpec] = List();
 
 	// The field summary is used only for logging
 	override def getFieldSummary() : String = {
-		return  super.getFieldSummary() +  ", details=" + myDetails + ", steps=" + mySteps;
+		return  super.getFieldSummary() +  ", details=" + myDetails + ", steps=" + myStepSpecs;
 	}
 	
 	override def makeBehavior() : Behavior = {
@@ -100,7 +88,7 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 			//			a2) Output speech text			
 
 			val text = reader.readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
-			val action = new TextAction(text);
+			val actionSpec = new TextActionSpec(text);
 			
 			val stepChannelSpecs = reader.findOrMakeLinkedObjects(stepItem, SceneFieldNames.P_channel, assmblr, mode, null);
 			getLogger().debug("Got step channel specs: {} ", stepChannelSpecs);
@@ -109,16 +97,16 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 					case scs: ChannelSpec => {
 						val chanId = scs.getIdent();
 						val freeChanIdent = new FreeIdent(chanId);
-						action.addChannelIdent(freeChanIdent);
+						actionSpec.addChannelIdent(freeChanIdent);
 					}
 					case _ => getLogger().warn("Unexpected object found in step at {} = {}", SceneFieldNames.P_channel, stepChanSpec);
 				}
 			}
 				
 		
-			val step = new ScheduledActionStep(offsetMillisec, action);
-			getLogger().debug("Built step: {}", step);
-			mySteps = mySteps :+ step;
+			val stepSpec = new ScheduledActionStepSpec(offsetMillisec, actionSpec);
+			getLogger().debug("Built stepSpec: {}", stepSpec);
+			myStepSpecs = myStepSpecs :+ stepSpec;
 		}		
 	}
 }

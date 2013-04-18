@@ -54,21 +54,23 @@ class BSceneRootChan (id : Ident, val scn: BScene) extends BasicPerfChan(id){
 	override def getMaxAllowedPerformances() : Int = 1;
 }
 
+
 // BScene stands for BehaviorScene, which is constructed from a SceneSpec.
 // // The "___Spec" Layer is considered immutable and reusable.
 // In theory, a BScene could be "played" more than once.  
 // However, we want extensions to be able to define mutable variables.
 
+/**
+ * A BScene is a BehaviorScene, which is used as the app-context for the Behavior(Modules)
+ */
 
 class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyTime, BSceneRootChan] {
 	val rootyID = new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
 	val myRootChan = new BSceneRootChan(rootyID, this);
-	// val		myWiredChannels  = new HashMap[Ident,Channel[SubCursor, _ <: Media[SubCursor], FancyTime]]();
 	val		myWiredChannels  = new HashMap[Ident,PerfChannel]();
 	
 	override def getRootChannel() : BSceneRootChan = {	myRootChan	}
 	import scala.collection.JavaConversions._;
-	// override def wireSubChannels(chans : java.util.Collection[Channel[SubCursor, _ <: Media[SubCursor], FancyTime]]) : Unit = {
 	override def wireSubChannels(chans : java.util.Collection[PerfChannel]) : Unit = {
 		// Currently, all we do is copy references to all chans into our wired channel map.
 		// TODO:  reconcile the actually wired channels with the ones in the SceneSpecs.
@@ -85,7 +87,6 @@ class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[Fancy
 			bm.attachModule(b);
 		}
 	}
-//	def getChannel[Cursor, M <: Media[Cursor]](id : Ident) : Channel[Cursor, M, FancyTime] = {
 	def getChannel(id : Ident) : PerfChannel = {
 		return myWiredChannels.getOrElse(id, null);
 	}
