@@ -31,14 +31,11 @@ import org.cogchar.api.event.Notifier;
  * EPT stands for the EventPerformanceType - some extension of the present type that is incorporated into Event contract.
  */
 public abstract class BasicPerformance<Cursor, M extends Media<Cursor>, WorldTime>
-				//EPT extends Performance<Cursor, M, WorldTime>, 
-				//E extends Event<EPT, WorldTime>>
 		extends BasicNotifier<BasicPerformanceEvent<Cursor, M, WorldTime>>
 		implements Performance<Cursor, M, WorldTime> {
 	
 	
 	private	M								myMedia;
-	// private	Channel<Cursor, M, WorldTime>	myChannel;
 	private	PerfChannel							myChannel;
 	private State							myState;
 	// This cursor *may* be updatable in place.
@@ -79,11 +76,6 @@ public abstract class BasicPerformance<Cursor, M extends Media<Cursor>, WorldTim
 			markState(myState);
 		}
 	}
-
-	@Override public boolean attemptToScheduleInstruction(WorldTime worldTime, Instruction instruct) {
-		// So far, BasicChannel only responds to the START-PERFORMANCE action, others are ignored.
-		return myChannel.schedulePerfInstruction(this, worldTime, instruct);
-	}
 	
 	@Override public String toString() { 
 		return getClass().getSimpleName() + "[chan=" + myChannel + ", state=" + myState + "media=" + myMedia  + "]";
@@ -91,14 +83,19 @@ public abstract class BasicPerformance<Cursor, M extends Media<Cursor>, WorldTim
 	
 	protected abstract BasicPerformanceEvent<Cursor, M, WorldTime> 
 			makeStateChangeEvent(WorldTime worldTime, State prevState, State nextState, Cursor cursor);
-		
+	
 	
 	protected abstract WorldTime getCurrentWorldTime();
+	
+	@Override public boolean attemptToScheduleInstruction(WorldTime worldTime, Instruction instruct) {
+		// So far, BasicChannel only responds to the START-PERFORMANCE action, others are ignored.
+		return myChannel.schedulePerfInstruction(this, worldTime, instruct);
+	}	
 	
 	// This is used only from BasicChannel, and is not part of our public API!
 	protected void impl_attemptStart() throws Throwable { 
 		markState(State.PAUSING);
-		if (myChannel instanceof BasicChannel) { 
+		if (myChannel instanceof BasicPerfChan) { 
 			((BasicPerfChan) myChannel).attemptPerformanceStart(this);
 		}
 		markState(State.PLAYING);

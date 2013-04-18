@@ -39,13 +39,16 @@ class GuardSpec {
 	}
 	*/
 }
+class GuardedStep {
+	
+}
 /** If the step has any internal *state*, then it can only be used once, in one scene.
  *  But if we are going to notice that our performance is "complete", then that requires state 
  *  - somewhere.  Since the "spec" layer already forms an immutable + cachable structure, we
- *  will allow this implementation level to contain state.
+ *  will allow the implementation level "step" to contain state.
  *  
  */
-class GuardedStepSpec(val myActionSpec: BehaviorAction, val myGuardSpecs : Set[GuardSpec]) {
+class GuardedStepSpec(val myActionSpec: BehaviorActionSpec, val myGuardSpecs : Set[GuardSpec]) {
 	private def startExec(s: BScene) {
 		
 	}
