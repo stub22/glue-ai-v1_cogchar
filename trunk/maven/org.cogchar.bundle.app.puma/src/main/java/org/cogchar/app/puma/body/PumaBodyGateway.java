@@ -143,10 +143,13 @@ public class PumaBodyGateway extends BasicDebugger {
 		}
 	}	
 	protected boolean startVisemePump(List<ClassLoader> clsForRKConf)  {
-		RobotVisemeClient robotVisCli = new RobotVisemeClient();
 		BundleContext bunCtx = myMBRSC.getBundleContext();
         ModelRobot r = getBonyRobot();
+        if(r == null){
+            return false;
+        }
         Robot.Id robotId = r.getRobotId();
+		RobotVisemeClient robotVisCli = new RobotVisemeClient();
 		robotVisCli.startPumpingZenoAvatarVisemes(bunCtx, clsForRKConf, robotId);
 		return true;
 	}
