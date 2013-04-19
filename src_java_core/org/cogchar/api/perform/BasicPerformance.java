@@ -94,11 +94,11 @@ public abstract class BasicPerformance<Cursor, M extends Media<Cursor>, WorldTim
 	
 	// This is used only from BasicChannel, and is not part of our public API!
 	protected void impl_attemptStart() throws Throwable { 
-		markState(State.PAUSING);
+		
 		if (myChannel instanceof BasicPerfChan) { 
-			((BasicPerfChan) myChannel).attemptPerformanceStart(this);
+			((BasicPerfChan) myChannel).startPerfFromBegin(this);
 		}
-		markState(State.PLAYING);
+		
 	}
 
 
