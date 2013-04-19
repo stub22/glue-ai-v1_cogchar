@@ -1,5 +1,5 @@
 /*
- *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
+ *  Copyright 2013 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -70,6 +70,10 @@ public class WebActionParamWriter extends ActionParamWriter {
 	
 	public void putUserName(String userName) {
 		myBTVMap.putValueAtName(WebActionNames.USERNAME, userName);
+	}
+	
+	public void putUserClass(String userClass) {
+		myBTVMap.putValueAtName(WebActionNames.USERCLASS, userClass);
 	}
 	
 }

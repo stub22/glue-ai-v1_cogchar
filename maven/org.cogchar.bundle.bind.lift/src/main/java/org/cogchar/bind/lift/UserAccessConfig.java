@@ -15,15 +15,15 @@
  */
 package org.cogchar.bind.lift;
 
-import org.cogchar.name.lifter.UserCN;
-import java.util.HashMap;
+import java.util.HashMap; // Not needed once javaMap is added to SolutionMap
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.*;
-import org.cogchar.blob.emit.HelpRepoExtensions; // Not needed once javaMap is added to SolutionMap
+import org.cogchar.blob.emit.HelpRepoExtensions;
+import org.cogchar.name.lifter.UserCN;
 
 /**
  *
@@ -68,12 +68,14 @@ public class UserAccessConfig extends KnownComponentImpl {
 		public String hashedPassword;
 		public String salt;
 		public Ident startConfig;
+		public Ident userClass;
 
 		public UserConfig(RepoClient qi, Ident graphIdent, Solution userSolution) {
 			SolutionHelper sh = new SolutionHelper();
 			hashedPassword = sh.pullString(userSolution, UserCN.PASSWORD_VAR_NAME);
 			salt = sh.pullString(userSolution, UserCN.SALT_VAR_NAME);
 			startConfig = sh.pullIdent(userSolution, UserCN.START_PAGE_VAR_NAME);
+			userClass = sh.pullIdent(userSolution, UserCN.USER_CLASS_VAR_NAME);
 		}
 	}
 }

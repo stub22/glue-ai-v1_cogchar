@@ -47,6 +47,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Stu B. <www.texpedient.com>, Ryan Biggs <rbiggs@hansonrobokind.com>
  * 
+ * Web stuff is currently glomming on here, and EntitySpace needs refactoring, probably into multiple classes, to 
+ * separate the web, goody, and other future entity functions. - Ryan 18 April 2013
+ * 
  * Render-side 
  */
 
@@ -100,27 +103,32 @@ public class EntitySpace {
 	}
 
 	public void processAction(ThingActionSpec actionSpec) {
+		// The horrors of this method abound!
 		// Temporary (and ugly) way to tie in web actions:
 		// We do the following commands now, to avoid repeated code below. Still rather ugly though!
 		WebAction wa = null;
 		String webUser = null;
+		String webUserClass = null;
 		LiftAmbassador la = LiftAmbassador.getLiftAmbassador();
+		theLogger.info("The targetThing is {}", actionSpec.getTargetThingTypeID()); // TEST ONLY
 		if ((actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) || 
 				(actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONFIG))) {
 			wa = new WebAction(actionSpec);
 			webUser = wa.getUserName();
-			
+			webUserClass = wa.getUserClass();
 		}
-		//theLogger.info("The targetThing is {}", actionSpec.getTargetThingTypeID()); // TEST ONLY
 		if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) { // Big ugly if-else-if chain must go -- really need switch on Ident! (or Scala...)
 			// Assuming for now it's CREATE only
 			ControlConfig newCC = generateControlConfig(wa);
 			Integer slotNum = wa.getSlotID();
 			if (slotNum != null) {
-				if (webUser == null) {
-					la.activateControlFromConfig(wa.getSlotID(), newCC);
+				if (webUser != null) {
+					// Activate for user
+					la.activateControlFromConfigForUser(webUser, slotNum, newCC);
+				} else if (webUserClass != null) {
+					la.activateControlFromConfigForUserClass(webUserClass,  slotNum, newCC);
 				} else {
-					la.activateControlFromConfigForUser(webUser, wa.getSlotID(), newCC);
+					la.activateControlFromConfig(slotNum, newCC);
 				}
 			} else {
 				theLogger.warn("Could not display control by action spec -- desired control slot is null");

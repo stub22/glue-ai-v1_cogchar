@@ -182,6 +182,18 @@ public class LiftAmbassador {
 		}
 	}
 	
+	// Activates a single control in all sessions of a given user class local name
+	// Should the full URI be accepted as input instead? Perhaps, but for now local name is accepted to simplify
+	// user experience in Robosteps and etc.
+	public void activateControlFromConfigForUserClass(String desiredUserClassLN, int slotNum, ControlConfig newConfig) {
+		Ident desiredUserClassURI  = getUserClassIdentFromLN(desiredUserClassLN);
+		for (Ident activeUser : userSessionMap.keySet()) {
+			if (myUserMap.get(activeUser).userClass.equals(desiredUserClassURI)) {
+				activateControlFromConfig(userSessionMap.get(activeUser), slotNum, newConfig);
+			}
+		}
+	}
+	
 	// Activates controls identified by a LiftConfig URI
 	public void activateControlsFromUri(String sessionId, Ident configIdent) {
 		// May be OK not to have this synchronized if appdapter repo code is threadsafe, and if myLiftConfigCache
@@ -421,6 +433,10 @@ public class LiftAmbassador {
 	
 	private Ident getUserIdentFromName(String userName) {
 		return new FreeIdent(LiftAN.NS_user + userName, userName);
+	}
+	
+	private Ident getUserClassIdentFromLN(String classLN) {
+		return new FreeIdent(LiftAN.NS_uai + classLN, classLN);
 	}
 	
 	public List<NameAndAction> getNamesAndActionsFromQuery(Ident queryUri) {
