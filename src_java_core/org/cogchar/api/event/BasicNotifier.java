@@ -27,14 +27,14 @@ import org.appdapter.core.log.BasicDebugger;
 public class BasicNotifier<E extends Event<?, ?>> extends BasicDebugger implements Notifier<E> {
 	 // BasicNotifier<Source, Time, E extends Event<Source, Time>> extends BasicDebugger implements Notifier<Source, Time, E> {
 
-	private Map<Class<E>, // List<Listener<Source, Time, E>>> myListenerListsByFilterClaz;
+	private Map<Class<? extends E>, // List<Listener<Source, Time, E>>> myListenerListsByFilterClaz;
 			List<Listener<E>>> myListenerListsByFilterClaz;
 
 	public BasicNotifier() {
-		myListenerListsByFilterClaz = new HashMap<Class<E>, List<Listener<E>>>(); // Source, Time, E>>>();
+		myListenerListsByFilterClaz = new HashMap<Class<? extends E>, List<Listener<E>>>(); // Source, Time, E>>>();
 	}
 
-	protected List<Listener<E>> findOrMakeListenerList(Class<E> eventClass) {
+	protected List<Listener<E>> findOrMakeListenerList(Class<? extends E> eventClass) {
 	// protected List<Listener<Source, Time, E>> findOrMakeListenerList(Class<E> eventClass) {
 		// List<Listener<Source, Time, E>> lstnrLst = myListenerListsByFilterClaz.get(eventClass);
 		List<Listener<E>> lstnrLst = myListenerListsByFilterClaz.get(eventClass);
@@ -46,19 +46,19 @@ public class BasicNotifier<E extends Event<?, ?>> extends BasicDebugger implemen
 
 	}
 
-	public void addListener(Class<E> eventClassFilter, Listener<E> lstnr) {
+	public void addListener(Class<? extends E> eventClassFilter, Listener<E> lstnr) {
 		List<Listener<E>> lstnrLst = findOrMakeListenerList(eventClassFilter);
 		lstnrLst.add(lstnr);
 	}
 
-	public void removeListener(Class<E> eventClassFilter, Listener<E> lstnr) {
+	public void removeListener(Class<? extends E> eventClassFilter, Listener<E> lstnr) {
 		List<Listener<E>> lstnrLst = findOrMakeListenerList(eventClassFilter);
 		lstnrLst.remove(lstnr);
 	}
 
 	protected void notifyListeners(E event) {
 		Class eventClaz = event.getClass();
-		for (Class<E> candFilterClaz : myListenerListsByFilterClaz.keySet()) {
+		for (Class<? extends E> candFilterClaz : myListenerListsByFilterClaz.keySet()) {
 			if (candFilterClaz.isAssignableFrom(eventClaz)) {
 				List<Listener<E>> lstnrLst = myListenerListsByFilterClaz.get(candFilterClaz);
 				for (Listener<E> lstnr : lstnrLst) {
