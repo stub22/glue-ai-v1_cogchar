@@ -47,15 +47,7 @@ public class SpeechOutputClient extends FancyTextPerfChan {
 		super(chanIdent);
 		myCachedSpeechSvc = speechSvc;
 	}
-/** This is allowed but unnecessary 
-	@Override protected <Cursor, M extends Media<Cursor>, Time> void  fastCueAndPlay(M m, Cursor startCursor, 
-				BasicPerformance<Cursor, M, Time> perf) throws Throwable {
 
-		if (!(m instanceof Media.Text<?>)) {
-			throw new Exception("Got unexpected media type: " + m.getClass().getName());
-		}
-		Media.Text<?> textMedia = (Media.Text<?>) m;
-**/
 	// Java thinks this method is "public", even though it's marked "protected" in the Scala.
 	// https://issues.scala-lang.org/browse/SI-6097
 	// Also, Java does not recognize the Throwable annotation.
@@ -132,5 +124,12 @@ public class SpeechOutputClient extends FancyTextPerfChan {
 	 * milliseconds. For phonemes and visemes, this is the duration of event in milliseconds.
 	//   public Integer getDuration();
 */	
+
+/*
+ * /** Note This more flexible override is allowed but unnecessary if we are satisfied with the fancy-typed(nonparametric) approach above.
+	@Override protected <Cursor, M extends Media<Cursor>, Time> void  fastCueAndPlay(M m, Cursor startCursor, 
+				BasicPerformance<Cursor, M, Time> perf) throws Throwable 
+
+ */
 
 

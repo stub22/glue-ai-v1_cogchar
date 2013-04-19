@@ -25,6 +25,6 @@ import org.cogchar.api.event.Event;
 
 public interface // Notifier<Source, Time, E extends Event<Source, Time>> {
 		Notifier<E extends Event<?, ?>> {
-	public	void	addListener(Class<E> eventClassFilter, Listener<E> l); // Listener<Source, Time, E> l);
-	public	void	removeListener(Class<E> eventClassFilter,  Listener<E> l); // Listener<Source, Time, E> l);
+	public	void	addListener(Class<? extends E> eventClassFilter, Listener<E> l); // Listener<Source, Time, E> l);
+	public	void	removeListener(Class<? extends E> eventClassFilter,  Listener<E> l); // Listener<Source, Time, E> l);
 }
