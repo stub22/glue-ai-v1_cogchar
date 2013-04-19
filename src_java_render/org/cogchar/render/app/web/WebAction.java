@@ -65,4 +65,8 @@ public class WebAction extends EntityAction {
 	public String getUserName() {
 		return paramTVMap.getAsString(WebActionNames.USERNAME);
 	}
+	
+	public String getUserClass() {
+		return paramTVMap.getAsString(WebActionNames.USERCLASS);
+	}
 }

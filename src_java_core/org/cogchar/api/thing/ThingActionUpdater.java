@@ -59,8 +59,8 @@ public class ThingActionUpdater {
 			Ident verbID = sh.pullIdent(actionSoln, ThingCN.VERB_VAR_NAME);
 			Ident targetID = sh.pullIdent(actionSoln, ThingCN.TARGET_VAR_NAME);
 			Ident targetTypeID = sh.pullIdent(actionSoln, ThingCN.TARGET_TYPE_VAR_NAME);
-			theLogger.info("Found new ThingAction; ident: {} verb: {}, target: {}",
-					new Object[]{actionID, verbID, targetID});
+			theLogger.info("Found new ThingAction; ident: {} verb: {}, target: {}, targetTypeID: {}",
+					new Object[]{actionID, verbID, targetID, targetTypeID});
 			TypedValueMap actionParams = buildActionParameterValueMap(rc, graphIdent, sh, actionID);
 			actionSpecList.add(new BasicThingActionSpec(actionID, targetID, targetTypeID, verbID, sourceAgentID, actionParams));
 		}

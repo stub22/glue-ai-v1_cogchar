@@ -34,5 +34,5 @@ public class UserCN {
 	public static final String PASSWORD_VAR_NAME = "password";
 	public static final String SALT_VAR_NAME = "salt";
 	public static final String START_PAGE_VAR_NAME = "startPage";
-	
+	public static final String USER_CLASS_VAR_NAME = "userClass";
 }
