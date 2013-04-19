@@ -21,33 +21,25 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.name.dir.NamespaceDir;
 
 /**
- * 
- * Names for actions to be invoked upon the web UI
+ *
+ * Names for actions invoked within the web UI by users
  * 
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
 
-public class WebActionNames  {
+
+public class WebUserActionNames {
 	
-	public  static String	WEB_NS = NamespaceDir.NS_CgcLC;
+	public  static String	USER_ACTION_NS = NamespaceDir.NS_LifterUserAction;
 	
+	// A common method which should be factored out to a superclass
 	public static Ident makeID (String nameTail) {
-		return new FreeIdent(WEB_NS + nameTail);
+		return new FreeIdent(USER_ACTION_NS + nameTail);
 	}
 	
-	public	static Ident	CONFIG = makeID("configident");
-	
-	public	static Ident	SLOT = makeID("slotID");
-	public	static Ident	TYPE = makeID("type");
-	public	static Ident	TEXT = makeID("text");
-	public	static Ident	STYLE = makeID("style");
-	public	static Ident	RESOURCE = makeID("resource");
-	public	static Ident	ACTION = makeID("action");
-	
-	public	static Ident	USERNAME = makeID("username");
-	public	static Ident	USERCLASS = makeID("userclass");
-	
-	public	static Ident	WEBCONTROL = makeID("control");
-	public	static Ident	WEBCONFIG = makeID("liftconfig");
+	public	static Ident	USER = makeID("user");
+	public	static Ident	SESSION = makeID("session");
+	public	static Ident	USER_CLASS = makeID("userclass");
+	public	static Ident	USER_TEXT = makeID("inputtext");
 
 }

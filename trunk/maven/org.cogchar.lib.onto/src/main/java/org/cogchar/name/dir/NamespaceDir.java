@@ -26,7 +26,7 @@ public class NamespaceDir {
 	// Formal prefix for Cogchar 2012 goody
 	public static String GOODY_NS = "urn:ftd:cogchar.org:2012:goody#";
 	// Formal prefix for Cogchar Web
-	public static String WEB_NS = "http://www.cogchar.org/lift/config#";
+	//public static String WEB_NS = "http://www.cogchar.org/lift/config#";
 	
 	// Less formal web prefix still widely used:
 	final private static String NSP_Root = "http://www.cogchar.org/";
@@ -40,8 +40,12 @@ public class NamespaceDir {
 	// Big section of Lifter namespaces, broken down by common prefixes.
 	final private static String NSP_LifterRoot = NSP_Root + "lift/";
 	// Lifter 
+	// Some of these may be revisited to be sure we have a coherent scema
 	final public static String NS_LifterQuery = NSP_LifterRoot + "action/query#";
 	final public static String NS_LifterUser = NSP_LifterRoot + "user#";
+	final public static String NS_LifterUserAccessInstance = NSP_LifterRoot + "user/config/instance#";
+	final public static String NS_LifterUserAction = NSP_LifterRoot + "user/action#";
+	
 	
 	// "Config" NSs
 	// Note that this constant ends in "config#", thus it sorta collides with the prefix "config/" use below.
