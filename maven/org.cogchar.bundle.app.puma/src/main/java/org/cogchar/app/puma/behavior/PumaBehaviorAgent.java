@@ -165,7 +165,7 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 		myRobotMotionMapper.playBuiltinAnimNow(baKind);
 	}
 	public void sayTextNow(String txt) {
-		mySpeechOutputMapper.sayText(txt);
+		mySpeechOutputMapper._directlyStartSpeakingText(txt);
 	}
 	public void usePermAnims() {
 		getLogger().warn("usePermAnims() not implemented yet");

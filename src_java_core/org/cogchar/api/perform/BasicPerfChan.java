@@ -72,11 +72,16 @@ public abstract class BasicPerfChan extends BasicChannel implements PerfChannel 
 		return resultFlag;
 	}
 	// TODO:  Generalize to handle media cursor position (e.g. to "resume" after "pause" or "cue").
-	public <Cursor, M extends Media<Cursor>, Time> void attemptPerformanceStart(Performance<Cursor, M, Time> perf) throws Throwable {
-		M	media = perf.getMedia();
-		attemptMediaPlayNow(media);
+	public <Cur, MedForCur extends Media<Cur>, Time> void startPerfFromBegin(BasicPerformance<Cur, MedForCur, Time> perf) throws Throwable {
+		perf.markState(Performance.State.PAUSING);
+		perf.markState(Performance.State.CUEING);
+		MedForCur	media = perf.getMedia();
+		Cur beginCursor = media.getCursorBeforeStart();
+		fastCueAndPlay(media, beginCursor, perf);
+		perf.markState(Performance.State.PLAYING);
 	}
-	protected abstract void attemptMediaPlayNow(Media<?> m) throws Throwable;
+	protected abstract <Cursor, M extends Media<Cursor>, Time> void  fastCueAndPlay(M m, Cursor cursor, 
+				BasicPerformance<Cursor, M, Time> perf) throws Throwable;
 	
 	@Override public String toString() { 
 		return getClass().getSimpleName() + " ident=" + getIdent() + ", stat=" + myStatus;

@@ -45,11 +45,11 @@ public class PumaSpeechOutputMapper extends BasicDebugger {
 		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
 		t.registerChannel(mySOC);
 	}
-	public void sayText(String txt) {
+	@Deprecated protected void _directlyStartSpeakingText(String txt) {
 		// TODO:  Prevent/blend concurrent activity through the channel/behavior systerm
 		try {
 			if (mySOC != null) {
-				mySOC.oldLookupServiceAndSpeakText(txt);
+				mySOC._directlyStartSpeakingText(txt);
 			} else {
 				getLogger().warn("Character {} ignoring request to sayText, because SpeechOutputClient is null", myAgentID);
 			}
@@ -59,7 +59,7 @@ public class PumaSpeechOutputMapper extends BasicDebugger {
 	}
 	public void stopAllSpeechOutput() { 
 		if (mySOC != null) {
-			mySOC.oldCancelAllRunningSpeechTasks();
+			mySOC._directlyCancelAllRunningSpeechTasks();
 		}	
 	}
 	

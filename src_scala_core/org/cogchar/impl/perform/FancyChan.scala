@@ -43,19 +43,6 @@ class FancyTime (val myStampMsec : Long) {
 }
 
 
-class DummyTextChan(id: Ident) extends FancyTextPerfChan(id) {
-	@throws(classOf[Throwable])	
-	override protected def attemptMediaPlayNow(m : Media[_]) {
-		m match {
-			case ftm : FancyTextMedia => {
-				val textString = ftm.getFullText();
-				getLogger().info("************* START DUMMY TEXT PERFORMANCE on [" + getName() + "] of [" + textString + "]");
-			}
-			case _ => {
-				getLogger().warn("Could not play media [{}] ", m)
-			}
-		}
-	}
-}
+
 
 
