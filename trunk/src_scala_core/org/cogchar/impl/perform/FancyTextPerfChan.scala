@@ -17,7 +17,7 @@
 package org.cogchar.impl.perform
 
 import  org.cogchar.api.event.{Event}
-import  org.cogchar.api.perform.{Media, PerfChannel, BasicPerfChan, Performance, BasicPerformance, BasicPerformanceEvent}
+import  org.cogchar.api.perform.{Media, PerfChannel, BasicPerfChan, Performance, BasicPerformance, BasicPerformanceListener, BasicPerformanceEvent}
 // , BasicTextChannel, BasicFramedChannel, BasicTextPerformance, BasicFramedPerformance, BasicPerformanceEvent};
 
 import org.appdapter.api.module.Module.State;
@@ -72,6 +72,8 @@ abstract class FancyTextPerfChan(id: Ident) extends BasicPerfChan(id) {
 	}
 	// Override this method to do real "fancy" work.
 	protected def fancyFastCueAndPlay (ftm : FancyTextMedia, cur : FancyTextCursor, perf:FancyTextPerf) 
+	
+	
 }
 
 class FancyTextCursor(pos : Int) extends Media.ImmutableTextPosition(pos) {
@@ -96,16 +98,42 @@ class FancyTextPerfEvent(src: FancyTextPerf, worldTime: FancyTime, prevState : P
 					mediaCursor : FancyTextCursor) extends BasicPerformanceEvent[FancyTextCursor,FancyTextMedia, 
 					FancyTime](src, worldTime, prevState, nextState, mediaCursor)
 
+trait FancyTextPerfListener extends BasicPerformanceListener[FancyTextCursor, FancyTextMedia, FancyTime] {
+	override def notify(bpe : BasicPerformanceEvent[FancyTextCursor, FancyTextMedia, FancyTime]) {
+		bpe match {
+			case ftpe : FancyTextPerfEvent => {
+				notifyFTPE(ftpe)
+			}
+			case _ => {
+				getLogger().warn("Notified of un-fancy event [{}] ", bpe)
+			}
+		}
+	}
+	def notifyFTPE(ftpe : FancyTextPerfEvent)
+	def getLogger() :  org.slf4j.Logger;
+}
 
 class FancyTextPerf(media : FancyTextMedia, chan: FancyTextPerfChan, initCursor: FancyTextCursor) 
 		extends  BasicPerformance[FancyTextCursor, FancyTextMedia, FancyTime] (media, chan, initCursor) {
 		
-		override protected def getCurrentWorldTime() = new FancyTime(System.currentTimeMillis);
+	override protected def getCurrentWorldTime() = new FancyTime(System.currentTimeMillis);
 		
-		override protected def	makeStateChangeEvent(worldTime: FancyTime, prevState : Performance.State,  nextState: Performance.State, 
+	override protected def	makeStateChangeEvent(worldTime: FancyTime, prevState : Performance.State,  nextState: Performance.State, 
 					mediaCursor : FancyTextCursor )	= new FancyTextPerfEvent(this, worldTime, prevState, nextState, mediaCursor)
-			
-					
+	
+	
+	def addUnfilteredListener(listener : FancyTextPerfListener) { 
+		addListener(classOf[FancyTextPerfEvent], listener);
+	}
+	def removeUnfilteredListener(listener : FancyTextPerfListener) { 
+		removeListener(classOf[FancyTextPerfEvent], listener);
+	}
+	def addFilteredListener(eventClazz : Class[_ <: FancyTextPerfEvent], listener : FancyTextPerfListener) { 
+		addListener(eventClazz, listener);
+	}
+	def removeFilteredListener(eventClazz : Class[_ <: FancyTextPerfEvent], listener : FancyTextPerfListener) { 
+		removeListener(eventClazz, listener);
+	}	
 }
 class DummyTextChan(id: Ident) extends FancyTextPerfChan(id) {
 	@throws(classOf[Throwable])	
