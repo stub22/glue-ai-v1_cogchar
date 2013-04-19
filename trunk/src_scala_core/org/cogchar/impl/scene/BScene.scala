@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import org.cogchar.name.behavior.{SceneFieldNames}
 import org.cogchar.api.channel.{Channel, BasicChannel}
-import org.cogchar.api.perform.{PerfChannel, Media, BasicPerfChan, Performance};
+import org.cogchar.api.perform.{PerfChannel, Media, BasicPerfChan, Performance, BasicPerformance};
 import org.cogchar.impl.perform.{FancyTime, ChannelSpec, ChannelNames};
 
 import org.cogchar.api.scene.{Scene};
@@ -46,7 +46,7 @@ abstract class BSceneRootMedia() extends Media[BSceneRootCursor] {
 	
 }
 class BSceneRootChan (id : Ident, val scn: BScene) extends BasicPerfChan(id){ 
-	override protected def attemptMediaPlayNow( m : Media[_]) : Unit = {
+	override protected def fastCueAndPlay[Cur, M <: Media[Cur], Time] (m : M, c : Cur,perf: BasicPerformance[Cur, M, Time]) {
 		// Match on BSceneRootMedia or throw a fit!
 	}
 	

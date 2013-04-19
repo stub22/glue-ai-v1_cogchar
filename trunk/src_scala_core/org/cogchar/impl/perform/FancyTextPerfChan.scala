@@ -45,6 +45,33 @@ import com.hp.hpl.jena.rdf.model.Resource;
  */
 abstract class FancyTextPerfChan(id: Ident) extends BasicPerfChan(id) {
     override def getMaxAllowedPerformances : Int = 1
+	@throws(classOf[Throwable])	
+	override protected def fastCueAndPlay[Cur, M <: Media[Cur], Time] (m : M, c : Cur,perf: BasicPerformance[Cur, M, Time]) {
+		m match {
+			case ftm : FancyTextMedia => {
+				c match {
+					case ftc : FancyTextCursor => {
+						perf match {
+							case ftp : FancyTextPerf => {
+								fancyFastCueAndPlay(ftm, ftc, ftp);
+							}
+							case _ => {
+								getLogger().warn("Cannot play un-fancy performance [{}] ", perf)
+							}
+						}
+					}
+					case _ => {
+						getLogger().warn("Cannot play un-fancy cursor [{}] ", c)					
+					}
+				}
+			}
+			case _ => {
+				getLogger().warn("Cannot play un-fancy media [{}] ", m)
+			}
+		}
+	}
+	// Override this method to do real "fancy" work.
+	protected def fancyFastCueAndPlay (ftm : FancyTextMedia, cur : FancyTextCursor, perf:FancyTextPerf) 
 }
 
 class FancyTextCursor(pos : Int) extends Media.ImmutableTextPosition(pos) {
@@ -79,4 +106,11 @@ class FancyTextPerf(media : FancyTextMedia, chan: FancyTextPerfChan, initCursor:
 					mediaCursor : FancyTextCursor )	= new FancyTextPerfEvent(this, worldTime, prevState, nextState, mediaCursor)
 			
 					
+}
+class DummyTextChan(id: Ident) extends FancyTextPerfChan(id) {
+	@throws(classOf[Throwable])	
+	override protected def fancyFastCueAndPlay (ftm : FancyTextMedia, cur : FancyTextCursor, perf:FancyTextPerf)  {
+		val textString = ftm.getFullText();
+		getLogger().info("************* START DUMMY TEXT PERFORMANCE on [" + getName() + "] of [" + textString + "]");
+	}
 }
