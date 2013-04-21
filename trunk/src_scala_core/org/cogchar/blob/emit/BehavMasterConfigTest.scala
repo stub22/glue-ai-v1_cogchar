@@ -79,19 +79,20 @@ object BehavMasterConfigTest extends BasicDebugger {
 	def queryPipelineSpecs (rc : RepoClient) : java.util.Collection[PipelineSpec] = {
 		
 		val pplnQueryQN = "ccrt:find_pipes_77" // The QName of a query in the "Queries" model/tab
-		val pplnGraphQN = "hrk:pipeline_sheet_77" // The QName of a graph = model = tab, as given by directory model.
+		val pplnGraphQN = PIPELINE_GRAPH_QN;//"hrk:pipeline_sheet_77" // The QName of a graph = model = tab, as given by directory model.
 		val solList = rc.queryIndirectForAllSolutions(pplnQueryQN, pplnGraphQN)
 		
 		val resultJMap = new java.util.HashMap[Ident, PipelineSpec]();
 		import scala.collection.JavaConversions._
 		val solJList = solList.javaList
 		getLogger().info("Got pipeSpec-piece solJList: {}", solJList)
+        val withDir = rc.getRepo;
 		solJList foreach (psp  => {
 				val pipeID = psp.getIdentResultVar("pipeID")
 				val sourceID = psp.getIdentResultVar("sourceID")
 				var pipeSpec = resultJMap.get(pipeID);
 				if (pipeSpec == null) {
-					pipeSpec = new PipelineSpec(pipeID);
+					pipeSpec = new PipelineSpec(pipeID, withDir);
 					resultJMap.put(pipeID, pipeSpec)
 				}
 				pipeSpec.mySourceIdSet.add(sourceID)
@@ -142,16 +143,11 @@ object BehavMasterConfigTest extends BasicDebugger {
 		 val pipeSpecs = queryPipelineSpecs(bmcRepoCli)
 		 for (ps <- pipeSpecs) {
 			 println("Got PipeSpec: " + ps)
+			 ps.makeRepo().loadSheetModelsIntoMainDataset();
 		 }
 		 
 		val sceneSpecs = readSceneSpecs(bmcRepoCli, BEHAV_SCENE_GRAPH_QN)
 	}
 	
-}
-class PipelineSpec(val myPipeID : Ident) {
-	val mySourceIdSet = new java.util.HashSet[Ident]();
-	override def toString() : String = {
-		"PipelineSpec[pipeID=" + myPipeID + ", sourceIDS=" + mySourceIdSet + "]";
-	}
 }
 
