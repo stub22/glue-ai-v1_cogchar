@@ -24,6 +24,9 @@ import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl}
 import org.appdapter.impl.store.{FancyRepo};
 import org.appdapter.core.matdat.{SheetRepo}
 
+import com.hp.hpl.jena.rdf.model.Model
+import com.hp.hpl.jena.rdf.model.ModelFactory
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -32,6 +35,16 @@ import org.appdapter.core.matdat.{SheetRepo}
 class DerivedGraphSpec(val myTargetID : Ident, val myOp : String, var myInGraphIDs : List[Ident]) extends BasicDebugger {
 	override def toString() : String = {
 		"DerivedGraphSpec[targetID=" + myTargetID + ", inGraphs=" + myInGraphIDs + "]";
+	}
+	
+	def makeDerivedModel(sourceRepo : Repo) : Model = {
+		// TODO : match on myOp
+		var cumUnionModel = ModelFactory.createDefaultModel();
+		for (srcGraphID <- myInGraphIDs) {
+			val srcGraph = sourceRepo.getNamedModel(srcGraphID)
+			cumUnionModel = cumUnionModel.union(srcGraph)
+		}
+		cumUnionModel
 	}
 }
 
