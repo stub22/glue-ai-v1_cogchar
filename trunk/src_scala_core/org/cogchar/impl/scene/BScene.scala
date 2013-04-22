@@ -64,7 +64,7 @@ class BSceneRootChan (id : Ident, val scn: BScene) extends BasicPerfChan(id){
  * A BScene is a BehaviorScene, which is used as the app-context for the Behavior(Modules)
  */
 
-class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyTime, BSceneRootChan] {
+abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyTime, BSceneRootChan] {
 	val rootyID = new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
 	val myRootChan = new BSceneRootChan(rootyID, this);
 	val		myWiredChannels  = new HashMap[Ident,PerfChannel]();

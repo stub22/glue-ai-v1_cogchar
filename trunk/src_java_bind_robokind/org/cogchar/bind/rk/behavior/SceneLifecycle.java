@@ -25,6 +25,7 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.api.channel.Channel;
 import org.cogchar.api.scene.Scene;
 import org.cogchar.impl.scene.BScene;
+import org.cogchar.impl.scene.FancyBScene;
 import org.cogchar.impl.scene.SceneSpec;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
 import org.robokind.api.common.lifecycle.DependencyDescriptor;
@@ -62,7 +63,7 @@ public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
     }
 
     @Override protected BScene create(Map<String, Object> dependencies) {
-        BScene scene = new BScene(mySceneSpec);
+        BScene scene = new FancyBScene(mySceneSpec);
 		List chansForWiring = new ArrayList<Channel>();
         for(Entry<String,Object> e : dependencies.entrySet()){
             String chanURI = e.getKey();

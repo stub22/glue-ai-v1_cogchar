@@ -33,13 +33,14 @@ import scala.collection.JavaConversions.asScalaSet
 
 // FIXME:  The srcRepo should really not be given to the RepoSpec, because it
 // is not serializable specData.
-class PipelineRepoSpec(val myDGSpecs : Set[DerivedGraphSpec], val mySrcRepo : Repo.WithDirectory) extends RepoSpec {
+class DerivedRepoSpec(val myDGSpecs : Set[DerivedGraphSpec], val mySrcRepo : Repo.WithDirectory) extends RepoSpec {
 	override def toString(): String = {
 		"PipelineRepoSpec[pipeSpecs= " + myDGSpecs + "]";
 	}
-	override def makeRepo(): PipelineRepo = {
+	override def makeRepo(): DerivedRepo = {
+		// TODO:  Copy over prefix-abbreviations from the source repo
 		val emptyDirModel = ModelFactory.createDefaultModel();			
-		val derivedRepo = new PipelineRepo(emptyDirModel, this) 
+		val derivedRepo = new DerivedRepo(emptyDirModel, this) 
 		for (dgSpec <- myDGSpecs) {
 			val derivedModel = dgSpec.makeDerivedModel(mySrcRepo)
 			derivedRepo.replaceNamedModel(dgSpec.myTargetID, derivedModel)
@@ -49,7 +50,7 @@ class PipelineRepoSpec(val myDGSpecs : Set[DerivedGraphSpec], val mySrcRepo : Re
 }
 
 // @TODO to be moved to org.appdapter.lib.core
-class PipelineRepo(emptyDirModel : Model, val myRepoSpec : PipelineRepoSpec) extends DirectRepo(emptyDirModel) {
+class DerivedRepo(emptyDirModel : Model, val myRepoSpec : DerivedRepoSpec) extends DirectRepo(emptyDirModel) {
 
 	// TODO:  Move this method up to Appdapter.DirectRepo
 	def replaceNamedModel(modelID : Ident, jenaModel : Model) {

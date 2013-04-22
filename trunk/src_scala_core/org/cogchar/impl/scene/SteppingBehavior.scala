@@ -104,19 +104,8 @@ case class SteppingBehaviorSpec() extends BehaviorSpec {
 			val text = reader.readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
 			val actionSpec = new TextActionSpec(text);
 			
-			val stepChannelSpecs = reader.findOrMakeLinkedObjects(stepItem, SceneFieldNames.P_channel, assmblr, mode, null);
-			getLogger().debug("Got step channel specs: {} ", stepChannelSpecs);
-			for (val stepChanSpec <- stepChannelSpecs) {
-				stepChanSpec match {
-					case scs: ChannelSpec => {
-						val chanId = scs.getIdent();
-						val freeChanIdent = new FreeIdent(chanId);
-						actionSpec.addChannelIdent(freeChanIdent);
-					}
-					case _ => getLogger().warn("Unexpected object found in step at {} = {}", SceneFieldNames.P_channel, stepChanSpec);
-				}
-			}
-				
+			actionSpec.readChannels(stepItem, reader, assmblr, mode)
+			
 		
 			val stepSpec = new ScheduledActionStepSpec(offsetMillisec, actionSpec);
 			getLogger().debug("Built step: {}", stepSpec);
