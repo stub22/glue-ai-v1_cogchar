@@ -126,6 +126,8 @@ object BehavMasterConfigTest extends BasicDebugger {
 		 val pipeRepoSpec  = new PipelineRepoSpec(dgSpecSet, bmcMemoryRepoHandle)
 		 
 		val pipeRepo = pipeRepoSpec.makeRepo;
+		
+		println ("Got pipeRepo: " + pipeRepo)
 		// val sceneSpecs = readSceneSpecs(bmcRepoCli, BEHAV_SCENE_GRAPH_QN)
 	}
 	
