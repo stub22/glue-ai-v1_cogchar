@@ -51,4 +51,8 @@ public class WebOutTriggerChan extends FancyTextPerfChan {
 					+ "I got this URI, which I don't know how to handle: {}", commandUriString);
 		}
 	}
+	@Override public void updatePerfStatusQuickly(FancyTextPerf perf) {
+		// TODO:  Keep track of output job associated with the performance, and report it
+		// in this callback using perf.markState (and possibly even perf.markCursor, for finer grained info).  
+	}
 }

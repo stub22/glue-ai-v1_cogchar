@@ -57,10 +57,13 @@ public class SpeechOutputClient extends FancyTextPerfChan {
 		// TODO:  Deliver progress updates to the perf.
 		_directlyStartSpeakingText(textStr);
 	}
+	@Override public void updatePerfStatusQuickly(FancyTextPerf perf) {
+		// TODO:  Keep track of job associated with the performance, and use perf.markState (and even perf.markCursor)
+	}
 	// We want this method to be private
 	@Deprecated	public void _directlyStartSpeakingText(String textStr) {
 		if (myCachedSpeechSvc != null) {
-			myCachedSpeechSvc.speak(textStr);
+			Object speechJob = myCachedSpeechSvc.speak(textStr);
 		} else if (myOldCtxWrap != null) {
 			myOldCtxWrap.oldLookupServiceAndSpeakText(textStr);
 		}

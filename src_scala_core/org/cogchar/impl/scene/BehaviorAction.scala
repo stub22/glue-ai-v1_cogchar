@@ -22,14 +22,14 @@ import org.appdapter.core.name.{Ident}
 
 import  org.cogchar.api.perform.{Media, PerfChannel, Performance, BasicPerformance}
 
-import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyTextPerfChan, FancyTextInstruction};
+import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyPerformance, FancyTextPerfChan, FancyTextInstruction};
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 trait BehaviorActionExec {
-	def perform(s: BScene);
+	def perform(s: BScene) : List[FancyPerformance]
 }
 
 abstract class BehaviorActionSpec extends BasicDebugger {
@@ -51,16 +51,21 @@ class TextActionSpec(val myActionText : String) extends BehaviorActionSpec() {
 	}		
 }
 class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with BehaviorActionExec {
-	override def perform(s: BScene) {
+	override def perform(s: BScene) : List[FancyPerformance] = {
+		var perfListReverseOrder : List[FancyPerformance] = Nil
 		val media = new FancyTextMedia(mySpec.myActionText);
 		for (val chanId : Ident <- mySpec.myChannelIdents) {
 			getLogger().info("Looking for channel[{}] in scene [{}]", chanId, s);
 			val chan : PerfChannel = s.getChannel(chanId);
 			getLogger().info("Found channel {}", chan);
 			if (chan != null) {
-				
 				chan match {
 					case txtChan : FancyTextPerfChan => { 
+						val perf  = txtChan.makePerfAndPlayAtBeginNow(media)
+						// prepending to the list is fastest, hence the "reverseOrder" approach.
+						perfListReverseOrder = perf :: perfListReverseOrder
+						/*
+						 2013-04-21 This inline prototype code has been refactored out and will be removed soon.
 						val initCursor  : FancyTextCursor = media.getCursorBeforeStart();
 						val perf = new FancyTextPerf(media, txtChan, initCursor)
 						val actionTime  = new FancyTime(0);
@@ -68,6 +73,8 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
 						val instruction  = new FancyTextInstruction(Performance.Instruction.Kind.PLAY, initCursor)
 					
 						val startResFlag = perf.attemptToScheduleInstruction(actionTime, instruction);
+						*/
+						
 					}
 					case  _ => {
 						getLogger().warn("************* TextAction cannot perform on non Text-Channel: " + chan);
@@ -77,6 +84,7 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
 				getLogger().warn("******************* Could not locate channel for: " + chanId);
 			}
 		}
+		perfListReverseOrder.reverse  // we presume that Nil.reverse == Nil !
 	}
 	override def toString() : String = {
 		"TextActionExec[spec=" + mySpec + "]";
