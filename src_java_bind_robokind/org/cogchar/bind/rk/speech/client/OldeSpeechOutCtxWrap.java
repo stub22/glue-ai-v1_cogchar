@@ -19,6 +19,7 @@ import org.appdapter.core.log.BasicDebugger;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.robokind.api.speech.SpeechJob;
 
 import org.robokind.api.speech.SpeechService;
 
@@ -47,17 +48,18 @@ public class OldeSpeechOutCtxWrap extends BasicDebugger {
 		}
 	}
 	@Deprecated
-	public void oldLookupServiceAndSpeakText(String txt) {
+	public SpeechJob oldLookupServiceAndSpeakText(String txt) {
 		if (txt == null) {
 			getLogger().warn("************************* Received null speech text, ignoring");
-			return;
+			return null;
 		}
+		SpeechJob resultJob = null;
 		try {
 			ServiceContext servCtx = oldLookupSpeechServiceContext();
 			if (servCtx != null) {
 				try {
 					getLogger().info("Trying to speakText[{}]", txt);
-					servCtx.speechService.speak(txt);
+					resultJob = servCtx.speechService.speak(txt); 
 				} finally {
 					servCtx.release();
 				}
@@ -67,6 +69,7 @@ public class OldeSpeechOutCtxWrap extends BasicDebugger {
 		} catch (Throwable t) {
 			getLogger().error("Problem in speakText(txt=[" + txt + "])", t);
 		}
+		return resultJob;
 	}
 	@Deprecated
 	public void oldCancelAllRunningSpeechTasks() {

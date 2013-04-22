@@ -52,7 +52,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	def makeSceneFromBook(sceneID: Ident) : BScene = {
 		getLogger().info("MakeSceneFromBook for SceneID={}, char-theater ={}", sceneID, myIdent);
 		val sceneSpec = mySceneBook.findSceneSpec(sceneID);
-		val scene = new BScene(sceneSpec);
+		val scene = new FancyBScene(sceneSpec); // new BScene(sceneSpec);
 		scene.wireSubChannels(myChanSet);
 		scene;
 	}

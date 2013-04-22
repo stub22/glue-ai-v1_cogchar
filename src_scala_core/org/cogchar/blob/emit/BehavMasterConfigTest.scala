@@ -117,16 +117,15 @@ object BehavMasterConfigTest extends BasicDebugger {
 		// println ("AnimOut-Best=" + ChannelNames.getOutChanIdent_AnimBest)
 		// println("SpeechOut-Best=" + ChannelNames.getOutChanIdent_SpeechMain)
 		 
-		// Create a new repo of kind "computed" or "derived"
-		println(EQBAR + "\nReading sceneSpecs from: " + BEHAV_SCENE_GRAPH_QN)
-		val sceneSpecs = readSceneSpecs(bmcRepoCli, BEHAV_SCENE_GRAPH_QN)
+		// Create a new repo of kind  "derived"
+		
 		println(EQBAR + "\nReading derived graph specs")
 		 val dgSpecSet : Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(bmcRepoCli)
 		 for (dg <- dgSpecSet) {
 			 println("Got: " + dg)
 			 // ps.makeRepo().loadSheetModelsIntoMainDataset();
 		 }
-		 val derivedRepoSpec  = new PipelineRepoSpec(dgSpecSet, bmcMemoryRepoHandle)
+		 val derivedRepoSpec  = new DerivedRepoSpec(dgSpecSet, bmcMemoryRepoHandle)
 		 
 		val derivedRepo = derivedRepoSpec.makeRepo;
 		
@@ -138,7 +137,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 		val	derivedBehavGraphID = bmcRepoCli.makeIdentForQName("hrk:merged_model_5001");
 		val derivedBehavSpecs = derivedRepo.assembleRootsFromNamedModel(derivedBehavGraphID);
 		val derivedSceneSpecList = SceneBook.filterSceneSpecs(derivedBehavSpecs);		
-		println ("Got derived scene specs:  " + derivedSceneSpecList)
+		println ( EQBAR + "\nGot derived scene specs from " + derivedBehavGraphID +  " : " + derivedSceneSpecList)
 
 	}
 	

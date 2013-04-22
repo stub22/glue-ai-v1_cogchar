@@ -44,9 +44,9 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * at present - see AnimOutTrigChan in the o.c.b.bind.robokind project.).
  */
 
-trait FancyPerfChan 
 
-abstract class FancyTextPerfChan(id: Ident) extends BasicPerfChan(id) with FancyPerfChan {
+
+abstract class FancyTextPerfChan[OutJob >: Null](id: Ident) extends BasicPerfChan(id) with FancyPerfChan[OutJob] {
     override def getMaxAllowedPerformances : Int = 1
 
 
@@ -135,17 +135,11 @@ trait FancyTextPerfListener extends BasicPerformanceListener[FancyTextCursor, Fa
 	def notifyFTPE(ftpe : FancyTextPerfEvent)
 	def getLogger() :  org.slf4j.Logger;
 }
-/**
- * This trait sets up the monitorModule, using features from our abstract types.
- */
-trait FancyPerformance  { //  extends Performance[_, _, _ <: FancyTime] {
-	def getFancyPerfState : Performance.State
-	def syncWithFancyPerfChanNow : Unit
-}
 
-class FancyTextPerf(media : FancyTextMedia, chan: FancyTextPerfChan, initCursor: FancyTextCursor) 
-	extends  BasicPerformance[FancyTextCursor, FancyTextMedia, FancyTime] (media, chan, initCursor) 
-		with FancyPerformance {
+
+class FancyTextPerf(media : FancyTextMedia, chan: FancyTextPerfChan[_], initCursor: FancyTextCursor) 
+			extends  BasicPerformance[FancyTextCursor, FancyTextMedia, FancyTime] (media, chan, initCursor) 
+			with FancyPerformance {
 		
 	override protected def getCurrentWorldTime() = new FancyTime(System.currentTimeMillis);
 		
@@ -153,9 +147,12 @@ class FancyTextPerf(media : FancyTextMedia, chan: FancyTextPerfChan, initCursor:
 												mediaCursor : FancyTextCursor )	= new FancyTextPerfEvent(this, worldTime, prevState, nextState, mediaCursor)
 
 	// Implement the two easy-peasy typed methods from FancyPerformance, using our fancier-typed equivalents.
-	override def getFancyPerfState = getState
-	override def syncWithFancyPerfChanNow = updateFromChan
+	override def getFancyPerfState : Performance.State = getState
+	override def syncWithFancyPerfChanNow : Unit = updateFromChan
 	
+	override def markFancyState(s : Performance.State) {	super.markState(s) }
+	def markFancyTextCursor(ftc : FancyTextCursor, notify : Boolean) {super.markCursor(ftc, notify)}
+		
 	def updateFromChan {
 		chan.updatePerfStatusQuickly(this)
 	}

@@ -16,7 +16,7 @@
 
 package org.cogchar.impl.scene
 import org.appdapter.core.name.{Ident, FreeIdent};
-import org.appdapter.core.item.{Item};
+import org.appdapter.core.item.{Item, ItemFuncs};
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 
 
@@ -24,6 +24,8 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
+import org.cogchar.name.behavior.{SceneFieldNames};
+
 
 import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
 import org.appdapter.api.module.{Module, Modulator}
@@ -31,8 +33,8 @@ import org.appdapter.api.module.Module.State;
 
 import org.cogchar.impl.perform.{ChannelSpec};
 import org.appdapter.core.log.{BasicDebugger, Loggable};
-import org.cogchar.name.behavior.{SceneFieldNames};
 
+import scala.collection.mutable.HashSet
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -61,23 +63,23 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 		new GuardedBehavior(this);
 	}
 	override def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
+		/**
+	public static String		P_initialStep		= NS_ccScn + "initialStep";
+	public static String		P_step				= NS_ccScn + "step";
+	public static String		P_finalStep			= NS_ccScn + "finalStep";
+	public static String		P_waitForStart		= NS_ccScn + "waitForStart";
+	public static String		P_waitForEnd		= NS_ccScn + "waitForEnd";
+		 */
 		myDetails = "brimmingOver";
-		val stepItems = reader.readLinkedItemSeq(configItem, SceneFieldNames.P_steps);
-		getLogger().debug("BSB got stepItems: {}", stepItems);
-		for (val stepItem : Item <- stepItems) {
-			
-			// Abstractly, a step has a guard and an action.  
-			// The guard is a predicate that must be satisfied for the step to be taken.
-			// This guard is not checked until all previous steps have been taken, so they
-			// are part of the implied guard.  This point is relevant when we consider 
-			// structures beyond lists of steps.  Some simple guard types are provided inline:
-			//   a) absolute clock time
-			
-			
-			getLogger().debug("Got stepItem: {}", stepItem)
-			val stepIdent = stepItem.getIdent();
-			val offsetSec = reader.readConfigValDouble(stepIdent, SceneFieldNames.P_startOffsetSec, stepItem, null);
-			val offsetMillisec : Int = (1000.0 * offsetSec.doubleValue()).toInt;
+		
+		val stepPropID = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_step)
+		val stepItems : java.util.Set[Item] = configItem.getLinkedItemSet(stepPropID)
+		
+		getLogger().debug("GBS got stepItems: {}", stepItems);
+		for (val stepItem : Item  <- stepItems) {
+		
+			// Abstractly, a step has a set of guards and an action.  
+			// The guards are predicates that must be satisfied for the step to be taken.			
 
 			// Once the guard is passed, the step may "proceed", meaning the action is taken and then this step 
 			// is complete.   We generally define action as an asynchronous act that cannot "fail" - that would
@@ -86,25 +88,21 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 			//    a) A piece of text to be passed to a channel, for example:
 			//			a1) Animation name or command
 			//			a2) Output speech text			
+			
+			getLogger().debug("Got stepItem: {}", stepItem)
+			val stepIdent = stepItem.getIdent();
+			
+			// Haven't decided yet what to do with this "offsetSec" in the GuardedBehaviorStep case. 
+			val offsetSec = reader.readConfigValDouble(stepIdent, SceneFieldNames.P_startOffsetSec, stepItem, null);
+			val offsetMillisec : Int = if (offsetSec == null) 0 else (1000.0 * offsetSec.doubleValue()).toInt;
 
 			val text = reader.readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
 			val actionSpec = new TextActionSpec(text);
-			
-			val stepChannelSpecs = reader.findOrMakeLinkedObjects(stepItem, SceneFieldNames.P_channel, assmblr, mode, null);
-			getLogger().debug("Got step channel specs: {} ", stepChannelSpecs);
-			for (val stepChanSpec <- stepChannelSpecs) {
-				stepChanSpec match {
-					case scs: ChannelSpec => {
-						val chanId = scs.getIdent();
-						val freeChanIdent = new FreeIdent(chanId);
-						actionSpec.addChannelIdent(freeChanIdent);
-					}
-					case _ => getLogger().warn("Unexpected object found in step at {} = {}", SceneFieldNames.P_channel, stepChanSpec);
-				}
-			}
-				
-		
-			val stepSpec = new ScheduledActionStepSpec(offsetMillisec, actionSpec);
+			actionSpec.readChannels(stepItem, reader, assmblr, mode)
+
+			val guardSpecSet = new HashSet[GuardSpec]()
+							
+			val stepSpec = new GuardedStepSpec(stepIdent, actionSpec, guardSpecSet.toSet) // offsetMillisec, actionSpec);
 			getLogger().debug("Built stepSpec: {}", stepSpec);
 			myStepSpecs = myStepSpecs :+ stepSpec;
 		}		
