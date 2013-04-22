@@ -24,8 +24,7 @@ import org.cogchar.api.event.Event;
  * @param MediaType Type of Media the Performance uses
  * @param WorldTime Time unit used within this Performance
  * @author Stu B. <www.texpedient.com>
- * 
- * See Also:  Appdapter Module.State.
+ * Perhaps later the Instruction will also be a type parameter.
  */
 public interface Performance<Cursor, MediaType extends Media<Cursor>, WorldTime> // ,  C extends Channel<M, Time, C>> //, P extends Performance<M, Time, C, P>> //, E extends Event<Performance<M, Time, C, E>, Time>> 
 								//extends Notifier<Performance<M, Time, C, E>, Time, E> {
@@ -84,16 +83,19 @@ public interface Performance<Cursor, MediaType extends Media<Cursor>, WorldTime>
 	 * A TextPerf is a Performance constrained to use Text Media.
 	 * @param WorldTime 
 	 */
-	
+	/*
 	public interface TextPerf<Cursor, M extends Media.Text<Cursor>, WorldTime> 	extends Performance<Cursor, M, WorldTime> {	
 	}
+	* 
+	*/ 
 	/**
 	 * A FramePerf is a Performance constrained to use Framed Media.
 	 * @param WorldTime
 	 * @param <F> 
 	 */
+	/*
 	public interface FramedPerf<F, Cursor, WorldTime> 	extends Performance<Cursor, Media.Framed<F, Cursor>, WorldTime> {	
 	}
-
+*/
 
 }

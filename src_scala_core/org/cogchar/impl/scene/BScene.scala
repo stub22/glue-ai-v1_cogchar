@@ -31,7 +31,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import org.cogchar.name.behavior.{SceneFieldNames}
 import org.cogchar.api.channel.{Channel, BasicChannel}
 import org.cogchar.api.perform.{PerfChannel, Media, BasicPerfChan, Performance, BasicPerformance};
-import org.cogchar.impl.perform.{FancyTime, ChannelSpec, ChannelNames};
+import org.cogchar.impl.perform.{FancyTime, ChannelSpec, ChannelNames, FancyTextPerf, FancyPerformance};
 
 import org.cogchar.api.scene.{Scene};
 
@@ -80,11 +80,21 @@ class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[Fancy
 			myWiredChannels.put(c.getIdent, c)
 		}
 	}
+	var myCachedModulator : BehaviorModulator = null
 	// If the modulator has "autoDetachOnFinish" set to true, then the modules will be auto-detached.
 	def attachBehaviorsToModulator(bm : BehaviorModulator) {
+		myCachedModulator = bm;
 		for (val bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
 			val b = bs.makeBehavior();
 			bm.attachModule(b);
+		}
+	}
+	import org.appdapter.api.module.{Module}
+	
+	// Temporary approach to attaching perf-monitor-modules
+	def attachModule(aModule : Module[BScene]) {
+		if (myCachedModulator != null) {
+			myCachedModulator.attachModule(aModule)
 		}
 	}
 	def getChannel(id : Ident) : PerfChannel = {
@@ -95,5 +105,51 @@ class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[Fancy
 	}
 }
 
+class LocalGraph(graphQN : String)
+
+import scala.collection.mutable.Map
+class FancyBScene(ss: SceneSpec) extends BScene(ss) {
+	val		myPerfMonModsByStepSpecID : Map[Ident, FancyPerfMonitorModule] = Map()
+	val		myLocGraphsByID : Map[Ident, LocalGraph] = Map()
+	
+	def registerPerfForStep(stepSpecID : Ident, perf : FancyPerformance) {
+		perf match {
+			case ftp : FancyTextPerf => {
+				val perfMonMod = new FancyPerfMonitorModule(ftp)
+				// TODO:  if already a module at that ID, print warning, tell module to stop, replace it.
+				myPerfMonModsByStepSpecID.put(stepSpecID, perfMonMod)
+				attachModule(perfMonMod)
+			}
+			case  _ => {
+				getLogger().warn("************* Cannot yet register a non-text perf = {} ", perf);
+			}			
+		}
+	}
+	def getPerfStatusForStep(stepSpecID : Ident) : Performance.State = {
+		val optPMM = myPerfMonModsByStepSpecID.get(stepSpecID) 
+		optPMM match {
+			case Some(monitorModule: FancyPerfMonitorModule) => {
+				monitorModule.getPerfState
+			}
+			case None => {
+				// We treat a performance not created "yet" as INITING, which cleanly allows check against the
+				// stepSpecID at anytime.  
+				Performance.State.INITING		
+			}
+			case  Some(x) => {
+				getLogger().error("*************    Found weird performanceMonitorModule = {} ", x);	
+				// Treat an error/weirdness as INITING too, for now.  Performance is not a public API.  Use channels!
+				Performance.State.INITING	
+			}
+			// Plus an (unnecessary?) catchall case as tutorial + experiment:  
+			// Seems Scala 2.8.1 compiler cannot recognize "all cases are covered already", so it allows this pattern.  
+			case _ => {
+				getLogger().error("**************   How did we avoid all the cases above?  optPMM={} ", optPMM);
+				Performance.State.INITING
+			}
+
+		}
+	}
+}
 
 

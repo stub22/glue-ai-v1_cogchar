@@ -21,26 +21,83 @@ import org.appdapter.core.name.{Ident}
 
 import  org.cogchar.api.perform.{Media, PerfChannel, Performance, BasicPerformance}
 
-import org.cogchar.impl.perform.{FancyTime};
+import org.cogchar.impl.perform.{FancyTime, FancyPerformance};
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 trait Guard {
-	def isSatisfied() : Boolean
+	def isSatisfied(scn : BScene) : Boolean
 }
-abstract class PerformanceGuard() extends Guard {
-	
-}
-class GuardSpec {
-	/*
-	def makeGuard(scene : BScene) : NotifyingGuard = {
-		new NotifyingGuard();
+// Watches the performance of a previous step, and is satisfied when that Perf is marked STOPPING.
+// Note that the guard itself is immutable (so far) and in principle could be used by many scenes.
+// So far, the separation of the Guard and the spec is unnecessarily formal in this case, but that
+// will probably help us soon.
+class PerfMonitorGuard(mySpec : PerfMonGuardSpec) extends Guard {
+	override def isSatisfied(scn : BScene) : Boolean = {
+		scn match {
+			case fbs : FancyBScene => {
+				val perfStatus = fbs.getPerfStatusForStep(mySpec.myUpstreamStepID)
+				perfStatus == mySpec.myStateToMatch 
+			}
+			case  _ => {
+				throw new RuntimeException("Coding error:  PerfMonitorGuard asked to check on a non-fancy scene")
+			}			
+		}
 	}
-	*/
 }
-class GuardedStep {
+trait GuardSpec {
+	def makeGuard : Guard
+}
+class PerfMonGuardSpec(val myUpstreamStepID : Ident, val myStateToMatch : Performance.State) extends GuardSpec {
+	override def makeGuard  = 	new PerfMonitorGuard(this)
+}
+class GuardedStepExec(val myStepSpec : GuardedStepSpec, val myActionExec : BehaviorActionExec) extends BehaviorStepExec {
+	var	myGuards : List[Guard] = Nil
 	
+	def addGuard(g : Guard) {
+		myGuards = g :: myGuards
+	}
+	def checkAllGuardsSatisfied(scn: BScene) : Boolean = {
+		for (g <- myGuards) {
+			if (!g.isSatisfied(scn)) {
+				return false
+			}
+		}
+		true
+	}	
+	override def proceed(s: BScene, b: Behavior) : Boolean = {
+		// Check guards, if all are satisfied, then perform action, register performance(s), and return true = complete.
+		if (!checkAllGuardsSatisfied(s)) {
+			return false
+		}
+		val perfList : List[FancyPerformance] = myActionExec.perform(s)
+		val stepSpecID = myStepSpec.myOptID.get
+		// We can't truly support multiple-performances yet (which happens if a step is bound to multiple output
+		// channels).  Doing that now will lead to only the last performance being monitor-able.
+		if (perfList.size != 1) {
+			throw new RuntimeException("PerfList has unexpected size (!=1) : " +  perfList.size)
+		}
+		for (perf <- perfList) {
+			// This registration allows the perf to satisfy guards of other steps, who find it by looking under
+			// our stepSpecID - for now.
+			registerPerfWithScene(s, stepSpecID, perf)
+		}
+		true
+	}
+
+	
+	def registerPerfWithScene(scn: BScene, stepSpecID : Ident, perf: FancyPerformance) {
+		scn match {
+			case fbs : FancyBScene => {		
+				val perfMonMod = new FancyPerfMonitorModule(perf)
+				fbs.registerPerfForStep(stepSpecID, perf)
+			}
+			case  _ => {
+				getLogger().warn("Cannot register FancyPerf with non-Fancy scene")
+			}					
+		}
+	}
 }
 /** If the step has any internal *state*, then it can only be used once, in one scene.
  *  But if we are going to notice that our performance is "complete", then that requires state 
@@ -48,8 +105,16 @@ class GuardedStep {
  *  will allow the implementation level "step" to contain state.
  *  
  */
-class GuardedStepSpec(val myActionSpec: BehaviorActionSpec, val myGuardSpecs : Set[GuardSpec]) {
-	private def startExec(s: BScene) {
-		
+class GuardedStepSpec(stepSpecID : Ident, val myActionSpec: BehaviorActionSpec, val myGuardSpecs : Set[GuardSpec]) 
+			extends BehaviorStepSpec(Some(stepSpecID)) {
+				
+	override def makeStepExecutor() : BehaviorStepExec = {
+		val actionExec = myActionSpec.makeActionExec
+		val gse = new GuardedStepExec(this, actionExec)
+		for (gs <- myGuardSpecs) {
+			val guardExec = gs.makeGuard
+			gse.addGuard(guardExec)
+		}
+		gse
 	}
 }

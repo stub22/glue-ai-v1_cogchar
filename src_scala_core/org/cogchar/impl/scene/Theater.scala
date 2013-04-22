@@ -30,7 +30,7 @@ import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, Cog
  * @author Stu B. <www.texpedient.com>
  */
 
-class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
+class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	private val	myBM = new BehaviorModulator();
 	// private val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
 	private val myChanSet = new java.util.HashSet[PerfChannel]();
@@ -42,7 +42,7 @@ class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
 	
 	def registerChannel (c : PerfChannel) {
 	// def registerChannel (c : Channel[_ <: Media, FancyTime]) {
-		getLogger().info("Registering channel [{}] in theater for char-theater {}", c, myDebugCharID);
+		getLogger().info("Registering channel [{}] in theater for char-theater {}", c, myIdent);
 		myChanSet.add(c);
 	}
 	def getSceneBook = mySceneBook;
@@ -50,7 +50,7 @@ class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
 		mySceneBook = sb;
 	}
 	def makeSceneFromBook(sceneID: Ident) : BScene = {
-		getLogger().info("MakeSceneFromBook for SceneID={}, CharacterID={}", sceneID, myDebugCharID);
+		getLogger().info("MakeSceneFromBook for SceneID={}, char-theater ={}", sceneID, myIdent);
 		val sceneSpec = mySceneBook.findSceneSpec(sceneID);
 		val scene = new BScene(sceneSpec);
 		scene.wireSubChannels(myChanSet);
@@ -58,7 +58,7 @@ class Theater(val myDebugCharID : Ident) extends CogcharScreenBox {
 	}
 	def activateScene(scene: BScene) {
 		// TODO:  Ensure previous scene is complete, and modulator is idle or fresh or something.
-		getLogger().info("Activating scene with spec[{}] for char-theater {}", scene.mySceneSpec, myDebugCharID);
+		getLogger().info("Activating scene with spec[{}] for char-theater {}", scene.mySceneSpec, myIdent);
 		myBM.setSceneContext(scene);
 		scene.attachBehaviorsToModulator(myBM);
 	}

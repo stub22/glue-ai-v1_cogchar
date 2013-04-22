@@ -62,14 +62,15 @@ public abstract class BasicPerformance<Cursor, M extends Media<Cursor>, WorldTim
 	@Override public Cursor getCursor() { 
 		return myMediaCursor;
 	}
-	protected void markState(State s) {
+	// Maybe markState and markCursor should be exposed by an UpdatablePerformance interface.
+	public synchronized void markState(State s) {
 		State prevState = myState;
 		myState = s;
 		WorldTime eventTime = getCurrentWorldTime();
 		BasicPerformanceEvent<Cursor, M, WorldTime> stateChangeEvent = makeStateChangeEvent(eventTime, prevState, s, myMediaCursor);
 		notifyListeners(stateChangeEvent);
 	}
-	protected void markCursor(Cursor c, boolean notify) {
+	public synchronized  void markCursor(Cursor c, boolean notify) {
 		myMediaCursor = c;
 		if (notify) {
 			// Lazy version.  Do a trivial self-state update.  Acceptable?
