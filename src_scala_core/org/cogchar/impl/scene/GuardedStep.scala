@@ -52,6 +52,13 @@ trait GuardSpec {
 class PerfMonGuardSpec(val myUpstreamStepID : Ident, val myStateToMatch : Performance.State) extends GuardSpec {
 	override def makeGuard  = 	new PerfMonitorGuard(this)
 }
+/** If the StepExec has any internal *state*, then it can only be used once, in one scene.
+ *  But if we are going to notice that our performance is "complete", then that requires state 
+ *  - somewhere.  Since the "spec" layer already forms an immutable + cachable structure, we
+ *  will allow the implementation level "step" to contain state.
+ *  
+ */
+
 class GuardedStepExec(val myStepSpec : GuardedStepSpec, val myActionExec : BehaviorActionExec) extends BehaviorStepExec {
 	var	myGuards : List[Guard] = Nil
 	
@@ -99,12 +106,6 @@ class GuardedStepExec(val myStepSpec : GuardedStepSpec, val myActionExec : Behav
 		}
 	}
 }
-/** If the step has any internal *state*, then it can only be used once, in one scene.
- *  But if we are going to notice that our performance is "complete", then that requires state 
- *  - somewhere.  Since the "spec" layer already forms an immutable + cachable structure, we
- *  will allow the implementation level "step" to contain state.
- *  
- */
 class GuardedStepSpec(stepSpecID : Ident, val myActionSpec: BehaviorActionSpec, val myGuardSpecs : Set[GuardSpec]) 
 			extends BehaviorStepSpec(Some(stepSpecID)) {
 				
