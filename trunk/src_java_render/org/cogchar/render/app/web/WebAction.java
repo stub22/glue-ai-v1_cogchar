@@ -38,6 +38,11 @@ public class WebAction extends EntityAction {
 		return paramTVMap.getAsIdent(WebActionNames.CONFIG);
 	}
 	
+	// For repo encoded control activation action URIs
+	public Ident getControlActionUri() {
+		return paramTVMap.getAsIdent(WebActionNames.WEBCONTROL_ACTION);
+	}
+	
 	public Integer getSlotID() {
 		return paramTVMap.getAsInteger(WebActionNames.SLOT);
 	}

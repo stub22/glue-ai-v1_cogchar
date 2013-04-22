@@ -15,15 +15,14 @@
  */
 package org.cogchar.bind.lift;
 
-import org.cogchar.name.lifter.LiftCN;
 import org.appdapter.core.name.Ident;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
+import org.cogchar.name.lifter.LiftCN;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Ryan Biggs

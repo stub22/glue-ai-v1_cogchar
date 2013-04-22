@@ -33,6 +33,7 @@ public class AssumedQueryDir {
 	public static final String START_CONFIG_QUERY_URI = "ccrt:find_lift_startConfig_99";	
 	public static final String CONTROL_QUERY_TEMPLATE_URI = "ccrt:template_lift_control_99";
 	public static final String FREE_CONTROL_QUERY_TEMPLATE_URI = "ccrt:template_find_free_control_99";
+	public static final String FREE_CONTROL_ACTION_QUERY_TEMPLATE_URI = "ccrt:template_find_free_control_action_99";
 	public static final String GENRAL_CONFIG_TEMPLATE_URI = "ccrt:template_general_items_99";
 	public static final String LOGIN_PAGE_QUERY_URI = "ccrt:find_login_page_99";
 	public static final String USER_QUERY_URI = "ccrt:find_users_99";

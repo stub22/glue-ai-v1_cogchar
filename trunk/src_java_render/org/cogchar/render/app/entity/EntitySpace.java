@@ -104,47 +104,11 @@ public class EntitySpace {
 
 	public void processAction(ThingActionSpec actionSpec) {
 		// The horrors of this method abound!
-		// Temporary (and ugly) way to tie in web actions:
-		// We do the following commands now, to avoid repeated code below. Still rather ugly though!
-		WebAction wa = null;
-		String webUser = null;
-		String webUserClass = null;
-		LiftAmbassador la = LiftAmbassador.getLiftAmbassador();
+		// Temporary (and ugly) way to tie in web actions
 		theLogger.info("The targetThing is {}", actionSpec.getTargetThingTypeID()); // TEST ONLY
 		if ((actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) || 
 				(actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONFIG))) {
-			wa = new WebAction(actionSpec);
-			webUser = wa.getUserName();
-			webUserClass = wa.getUserClass();
-		}
-		if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) { // Big ugly if-else-if chain must go -- really need switch on Ident! (or Scala...)
-			// Assuming for now it's CREATE only
-			ControlConfig newCC = generateControlConfig(wa);
-			Integer slotNum = wa.getSlotID();
-			if (slotNum != null) {
-				if (webUser != null) {
-					// Activate for user
-					la.activateControlFromConfigForUser(webUser, slotNum, newCC);
-				} else if (webUserClass != null) {
-					la.activateControlFromConfigForUserClass(webUserClass,  slotNum, newCC);
-				} else {
-					la.activateControlFromConfig(slotNum, newCC);
-				}
-			} else {
-				theLogger.warn("Could not display control by action spec -- desired control slot is null");
-			}
-		} else if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONFIG)) {
-			// Assuming for now it's CREATE only
-			Ident configIdent = wa.getConfigIdent();
-			if (configIdent != null) {
-				if (webUser == null) {
-					la.activateControlsFromUri(configIdent);
-				} else {
-					la.activateControlsFromUriForUser(webUser, configIdent);
-				}
-			} else {
-				theLogger.warn("Could not set web config by action spec -- desired config URI is null");
-			}
+			performWebActions(actionSpec);	
 		} else { //  else the targetThing is presumed to be a "goody", either existing or new.
 			GoodyAction ga = new GoodyAction(actionSpec);
 			Ident gid = ga.getGoodyID();
@@ -179,6 +143,47 @@ public class EntitySpace {
 						theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);
 					}
 				}
+			}
+		}
+	}
+	
+	private void performWebActions(ThingActionSpec actionSpec) {
+		LiftAmbassador la = LiftAmbassador.getLiftAmbassador();
+		WebAction wa = new WebAction(actionSpec);
+		String webUser = wa.getUserName();
+		String webUserClass = wa.getUserClass();
+		if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) { // Big ugly if-else-if chain must go -- really need switch on Ident! (or Scala...)
+			// Assuming for now it's CREATE only
+			Ident controlAction = wa.getControlActionUri();
+			if (controlAction != null) {
+				la.activateControlAction(controlAction);
+			} else {
+				ControlConfig newCC = generateControlConfig(wa);
+				Integer slotNum = wa.getSlotID();
+				if (slotNum != null) {
+					if (webUser != null) {
+						// Activate for user
+						la.activateControlFromConfigForUser(webUser, slotNum, newCC);
+					} else if (webUserClass != null) {
+						la.activateControlFromConfigForUserClass(webUserClass, slotNum, newCC);
+					} else {
+						la.activateControlFromConfig(slotNum, newCC);
+					}
+				} else {
+					theLogger.warn("Could not display control by action spec -- desired control slot is null");
+				}
+			}
+		} else if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONFIG)) {
+			// Assuming for now it's CREATE only
+			Ident configIdent = wa.getConfigIdent();
+			if (configIdent != null) {
+				if (webUser == null) {
+					la.activateControlsFromUri(configIdent);
+				} else {
+					la.activateControlsFromUriForUser(webUser, configIdent);
+				}
+			} else {
+				theLogger.warn("Could not set web config by action spec -- desired config URI is null");
 			}
 		}
 	}

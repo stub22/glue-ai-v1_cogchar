@@ -36,6 +36,7 @@ import org.cogchar.name.lifter.LiftAN;
 
 
 public class WebOutTriggerChan extends FancyTextPerfChan {
+	
 	public WebOutTriggerChan(Ident id) {
 		super(id);
 	}
@@ -44,8 +45,10 @@ public class WebOutTriggerChan extends FancyTextPerfChan {
 		String commandUriString = textMedia.getFullText();
 		if (commandUriString == null) { // is this check necessary? 
 			getLogger().warn("WebOutTriggerChan received a null FancyTextMedia message");
-		} else if (commandUriString.startsWith(LiftAN.partial_P_liftConfig)) {
+		} else if (commandUriString.startsWith(LiftAN.NS_LifterConfig)) {
 			LiftAmbassador.getLiftAmbassador().activateControlsFromUri(new FreeIdent(commandUriString));
+		} else if (commandUriString.startsWith(LiftAN.NS_LifterInstance)) {
+			LiftAmbassador.getLiftAmbassador().activateControlAction(new FreeIdent(commandUriString));
 		} else {
 			getLogger().warn("WebOutTriggerChan is currently a prototype can can only handle full liftconfigs by URI. "
 					+ "I got this URI, which I don't know how to handle: {}", commandUriString);

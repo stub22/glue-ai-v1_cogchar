@@ -34,6 +34,9 @@ public class LiftAN extends BoxAssemblyNames {
 	public static final String P_controlResource = NS_CgcLC + "resource";
 	public static final String NS_user = NamespaceDir.NS_LifterUser; // "http://www.cogchar.org  /lift/user#";
 	public static final String NS_uai = NamespaceDir.NS_LifterUserAccessInstance;
+	public static final String NS_LifterConfig = NamespaceDir.NS_LifterConfig;
+	public static final String NS_LifterInstance = NamespaceDir.NS_LifterInstance;
+	
 	
 	// These are not used in RDF parsing, but help LiftAmbassador know how to interpret prefixes found in RDF defined actions - 
 	// really these should probably be replaced with real URIs
