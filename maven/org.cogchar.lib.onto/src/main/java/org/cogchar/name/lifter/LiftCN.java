@@ -37,15 +37,20 @@ public class LiftCN {
 	public static final String STYLE_VAR_NAME = "style";
 	public static final String RESOURCE_VAR_NAME = "resource";
 	public static final String NAME_VAR_NAME = "name";
+	public static final String CONTROL_ACTION_VAR_NAME = "controlaction";
+	public static final String SLOTNUM_VAR_NAME = "position";
+	public static final String USER_CLASS_VAR_NAME = "userclass";
 	
 	public static final String TEMPLATE_QUERY_URI = AssumedQueryDir.TEMPLATE_QUERY_URI;
 	public static final String START_CONFIG_QUERY_URI = AssumedQueryDir.START_CONFIG_QUERY_URI;
 	
 	public static final String CONTROL_QUERY_TEMPLATE_URI = AssumedQueryDir.CONTROL_QUERY_TEMPLATE_URI;
 	public static final String FREE_CONTROL_QUERY_TEMPLATE_URI = AssumedQueryDir.FREE_CONTROL_QUERY_TEMPLATE_URI;
+	public static final String FREE_CONTROL_ACTION_QUERY_TEMPLATE_URI = AssumedQueryDir.FREE_CONTROL_ACTION_QUERY_TEMPLATE_URI;
 	
 	public static final String CONFIG_QUERY_VAR_NAME = "config";
 	public static final String CONTROL_QUERY_VAR_NAME = "desiredControl";
+	public static final String CONTROL_ACTION_QUERY_VAR_NAME = "controlaction";
 	
 	public static final String LIFT_CONFIG_INSTANCE_PREFIX = NamespaceDir.NS_LifterInstance;
 }

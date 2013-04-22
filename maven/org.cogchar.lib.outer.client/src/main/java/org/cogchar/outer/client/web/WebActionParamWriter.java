@@ -15,8 +15,10 @@
  */
 package org.cogchar.outer.client.web;
 
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.BasicTypedValueMap;
+import org.cogchar.name.lifter.LiftCN;
 import org.cogchar.name.web.WebActionNames;
 import org.cogchar.outer.client.ActionParamWriter;
 
@@ -42,7 +44,12 @@ public class WebActionParamWriter extends ActionParamWriter {
 	}
 	
 	
-	// The next six methods for setting a single control:
+	// The next method is for setting a single control by repo-encoded "control action":
+	public void putControlAction(Ident actionIdent) {
+		myBTVMap.putValueAtName(WebActionNames.WEBCONTROL_ACTION, actionIdent.getAbsUriString());
+	}
+	
+	// The next six methods are for setting a single control by specification:
 	public void putSlotNum(int slotNum) {
 		myBTVMap.putValueAtName(WebActionNames.SLOT, slotNum);
 	}
@@ -52,18 +59,21 @@ public class WebActionParamWriter extends ActionParamWriter {
 	}
 
 	public void putText(String controlText) {
-		myBTVMap.putValueAtName(WebActionNames.TEXT, controlText);
+		myBTVMap.putValueAtName(WebActionNames.TEXT, blankNotNull(controlText));
 	}
 
 	public void putStyle(String styleName) {
-		myBTVMap.putValueAtName(WebActionNames.STYLE, styleName);
+		myBTVMap.putValueAtName(WebActionNames.STYLE, blankNotNull(styleName));
 	}
 	
 	public void putResource(String resourceName) {
-		myBTVMap.putValueAtName(WebActionNames.RESOURCE, resourceName);
+		myBTVMap.putValueAtName(WebActionNames.RESOURCE, blankNotNull(resourceName));
 	}
 	
 	public void putAction(Ident actionIdent) {
+		if (actionIdent == null) {
+			actionIdent = new FreeIdent(LiftCN.BLANK_ACTION); 
+		}
 		myBTVMap.putValueAtName(WebActionNames.ACTION, actionIdent.getAbsUriString());
 	}
 	

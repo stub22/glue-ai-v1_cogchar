@@ -67,6 +67,7 @@ public class LiftAmbassador {
 	// Empty private default constructor to prevent outside instantiation
 	private LiftAmbassador() {}
 	
+	// Should this be moved to a registry soon?
 	public static LiftAmbassador getLiftAmbassador() {
 		synchronized (theClassLock) {
 			if (theLiftAmbassador == null) {
@@ -262,6 +263,27 @@ public class LiftAmbassador {
 	public void activateControlFromLocalName(String sessionId, int slotNum, String localName) {
 		Ident controlIdent = new FreeIdent(LiftCN.LIFT_CONFIG_INSTANCE_PREFIX + localName, localName);
 		activateControlFromUri(sessionId, slotNum, controlIdent);
+	}
+	
+	public void activateControlAction(Ident actionIdent) {
+		// May be OK not to have this synchronized if appdapter repo code is threadsafe
+		synchronized(activationLock) {
+			if (myRepoClient != null) {
+				ControlActionConfig action = ControlActionConfig.getControlActionConfigFromUri(myRepoClient, myQGraph, actionIdent);
+				if (action != null) {
+					theLogger.info("Loaded lift control {} from sheet", actionIdent.getLocalName());
+					// Still need to add code to check for user class -- this currently acts in all sessions
+					for (String sessionId : myLift.getActiveSessions()) {
+						activateControlFromUri(sessionId, action.slotNum, action.control);
+					}
+				} else {
+					theLogger.warn("Control action requested, but it was not found: {}", actionIdent);
+				}
+				
+			} else {
+				theLogger.error("Lift control action requested, but no RepoClient set!");
+			}
+		}
 	}
 	
 	

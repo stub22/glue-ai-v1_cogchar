@@ -37,4 +37,11 @@ public abstract class ActionParamWriter {
 		return myBTVMap;
 	}
 	
+	protected String blankNotNull(String inputString) {
+		if (inputString == null) {
+			inputString = "";
+		}
+		return inputString;
+	}
+	
 }
