@@ -49,5 +49,6 @@ public class WebActionNames  {
 	
 	public	static Ident	WEBCONTROL = makeID("control");
 	public	static Ident	WEBCONFIG = makeID("liftconfig");
+	public	static Ident	WEBCONTROL_ACTION = makeID("controlaction");
 
 }
