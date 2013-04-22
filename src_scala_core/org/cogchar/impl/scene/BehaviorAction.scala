@@ -16,13 +16,21 @@
 
 package org.cogchar.impl.scene
 
-import org.appdapter.core.log.{BasicDebugger, Loggable};
+import org.appdapter.core.name.{Ident, FreeIdent};
+import org.appdapter.core.item.{Item, ItemFuncs};
+import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 
-import org.appdapter.core.name.{Ident}
+import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.Mode;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.rdf.model.Resource;
+import org.cogchar.name.behavior.{SceneFieldNames};
+
+import org.appdapter.core.log.{BasicDebugger, Loggable};
 
 import  org.cogchar.api.perform.{Media, PerfChannel, Performance, BasicPerformance}
 
-import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyPerformance, FancyTextPerfChan, FancyTextInstruction};
+import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyPerformance, FancyTextPerfChan, FancyTextInstruction, ChannelSpec};
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -40,6 +48,28 @@ abstract class BehaviorActionSpec extends BasicDebugger {
 		logInfo("************ appended " + id + "  so list is now: " + myChannelIdents);
 	}
 	def makeActionExec() : BehaviorActionExec
+	
+	def readChannels(parentItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
+		val chanPropName = SceneFieldNames.P_channel
+		val actionChannelSpecs = reader.findOrMakeLinkedObjects(parentItem, chanPropName, assmblr, mode, null);
+		getLogger().debug("Got action-channel specs: {} ", actionChannelSpecs);
+		// Having more than one channel on an action will lead to exceptions later on
+		// (because we are not set-up to monitor that situation).  		
+		if (actionChannelSpecs.size != 1) {
+			getLogger().warn("Unexpected action-channel-specs size (!=1) : {}", actionChannelSpecs.size)
+		}
+		for (val actChanSpec <- actionChannelSpecs.toArray) {
+			actChanSpec match {
+				case acs: ChannelSpec => {
+					val chanId = acs.getIdent();
+					// What does this freeing accomplish?  Are we trying to ensure the source model can be garbage collected?
+					val freeChanIdent = new FreeIdent(chanId);
+					addChannelIdent(freeChanIdent);
+				}
+				case _ => getLogger().warn("Unexpected object found in step at {} = {}", chanPropName, actChanSpec);
+			}
+		}		
+	}
 }
 
 class TextActionSpec(val myActionText : String) extends BehaviorActionSpec() { 
@@ -60,20 +90,11 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
 			getLogger().info("Found channel {}", chan);
 			if (chan != null) {
 				chan match {
-					case txtChan : FancyTextPerfChan => { 
+					case txtChan : FancyTextPerfChan[_] => { 
 						val perf  = txtChan.makePerfAndPlayAtBeginNow(media)
 						// prepending to the list is fastest, hence the "reverseOrder" approach.
 						perfListReverseOrder = perf :: perfListReverseOrder
-						/*
-						 2013-04-21 This inline prototype code has been refactored out and will be removed soon.
-						val initCursor  : FancyTextCursor = media.getCursorBeforeStart();
-						val perf = new FancyTextPerf(media, txtChan, initCursor)
-						val actionTime  = new FancyTime(0);
-						val actionCursor = initCursor;
-						val instruction  = new FancyTextInstruction(Performance.Instruction.Kind.PLAY, initCursor)
-					
-						val startResFlag = perf.attemptToScheduleInstruction(actionTime, instruction);
-						*/
+		
 						
 					}
 					case  _ => {

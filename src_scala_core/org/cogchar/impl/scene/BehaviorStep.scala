@@ -32,6 +32,10 @@ trait BehaviorStepExec extends BasicDebugger {
 }
 abstract class BehaviorStepSpec(val myOptID : Option[Ident]) extends BasicDebugger {
 	def makeStepExecutor() : BehaviorStepExec
+	
+	
+	
+	
 }
 class ScheduledActionStepExec(mySpec : ScheduledActionStepSpec) extends BehaviorStepExec {
 	def proceed(s: BScene, b: Behavior) : Boolean = {

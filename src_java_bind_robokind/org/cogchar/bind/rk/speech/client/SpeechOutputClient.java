@@ -16,25 +16,23 @@
 package org.cogchar.bind.rk.speech.client;
 
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.perform.BasicPerformance;
-import org.cogchar.api.perform.Performance;
-import org.cogchar.api.perform.Media;
 
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.perform.FancyTextPerf;
 import org.cogchar.impl.perform.FancyTextMedia;
 import org.cogchar.impl.perform.FancyTextCursor;
-import org.cogchar.impl.perform.FancyTime;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
+import org.robokind.api.animation.player.AnimationJob;
+import org.robokind.api.speech.SpeechJob;
 
 import org.robokind.api.speech.SpeechService;
+import org.robokind.api.speech.utils.DefaultSpeechJob;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class SpeechOutputClient extends FancyTextPerfChan {
+public class SpeechOutputClient extends FancyTextPerfChan<SpeechJob> {
 
 	private SpeechService			myCachedSpeechSvc;
 	private OldeSpeechOutCtxWrap	myOldCtxWrap;
@@ -55,17 +53,38 @@ public class SpeechOutputClient extends FancyTextPerfChan {
 		String textStr = ftm.getFullText();
 		// TODO:  "Cue" within the text, according to cursor
 		// TODO:  Deliver progress updates to the perf.
-		_directlyStartSpeakingText(textStr);
+		SpeechJob sjob = _directlyStartSpeakingText(textStr);
+		registerOutJobForPerf(perf, sjob);
 	}
 	@Override public void updatePerfStatusQuickly(FancyTextPerf perf) {
 		// TODO:  Keep track of job associated with the performance, and use perf.markState (and even perf.markCursor)
+		boolean finished = false;
+		SpeechJob jobToCheck = getOutJobOrNull(perf);
+		if (jobToCheck != null) {
+		int speechJobStatus = jobToCheck.getStatus();
+		switch (speechJobStatus) {
+			case DefaultSpeechJob.CANCELED:
+			case DefaultSpeechJob.COMPLETE:
+				finished = true;
+		}
+		} else {
+			getLogger().error("Found no job for performance, marking STOPPED: {}", perf);
+		}
+		if (finished) {
+			getLogger().info("Marking performance stopped");
+			markPerfStoppedAndForget(perf);
+		}		
+		
 	}
-	// We want this method to be private
-	@Deprecated	public void _directlyStartSpeakingText(String textStr) {
+	// We want this method to be private, but currently it cannot be because _____
+	@Deprecated	public SpeechJob _directlyStartSpeakingText(String textStr) {
 		if (myCachedSpeechSvc != null) {
-			Object speechJob = myCachedSpeechSvc.speak(textStr);
+			SpeechJob speechJob = myCachedSpeechSvc.speak(textStr);
+			return speechJob;
 		} else if (myOldCtxWrap != null) {
-			myOldCtxWrap.oldLookupServiceAndSpeakText(textStr);
+			return myOldCtxWrap.oldLookupServiceAndSpeakText(textStr);
+		} else {
+			return null;
 		}
 	}
 	@Deprecated	public void _directlyCancelAllRunningSpeechTasks() {
