@@ -43,8 +43,25 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * (The latter is actually driven by the animation resource/file *pathname* as the FancyTextMedia, 
  * at present - see AnimOutTrigChan in the o.c.b.bind.robokind project.).
  */
-abstract class FancyTextPerfChan(id: Ident) extends BasicPerfChan(id) {
+
+trait FancyPerfChan 
+
+abstract class FancyTextPerfChan(id: Ident) extends BasicPerfChan(id) with FancyPerfChan {
     override def getMaxAllowedPerformances : Int = 1
+
+
+	// Override this method to do real "fancy" work.  We assume it can be done with no delay
+	// (hence the name "fast")
+	protected def fancyFastCueAndPlay (ftm : FancyTextMedia, cur : FancyTextCursor, perf:FancyTextPerf) 
+	
+
+	def updatePerfStatusQuickly(perf: FancyTextPerf)
+
+/**
+ * This override plugs us into the type superstructure.  However,  the Throwable and Protected do not propagate
+ * to Java visibility- it is just a public method according to Java - compiler.  Thus the @throws is superfluous but 
+ * we keep it to remind us.  
+ */
 	@throws(classOf[Throwable])	
 	override protected def fastCueAndPlay[Cur, M <: Media[Cur], Time] (m : M, c : Cur,perf: BasicPerformance[Cur, M, Time]) {
 		m match {
@@ -70,10 +87,16 @@ abstract class FancyTextPerfChan(id: Ident) extends BasicPerfChan(id) {
 			}
 		}
 	}
-	// Override this method to do real "fancy" work.
-	protected def fancyFastCueAndPlay (ftm : FancyTextMedia, cur : FancyTextCursor, perf:FancyTextPerf) 
-	
-	
+
+	// This convenience method may or may not be supplied by other kinds of PerfChans (non FancyText).  
+	def makePerfAndPlayAtBeginNow(media : FancyTextMedia) : FancyTextPerf = {
+		val initCursor  : FancyTextCursor = media.getCursorBeforeStart();
+		val perf = new FancyTextPerf(media, this, initCursor)
+		// TODO : make a time representing now
+		val nowTime  = new FancyTime(0);
+		perf.scheduleInstructPlayAtBegin(nowTime)
+		perf;
+	}
 }
 
 class FancyTextCursor(pos : Int) extends Media.ImmutableTextPosition(pos) {
@@ -88,40 +111,60 @@ class FancyTextMedia (val myTxt: String) extends  Media.Text[FancyTextCursor] {
 }
 
 class FancyTextInstruction(kind : Performance.Instruction.Kind, cursor : FancyTextCursor) 
-		extends Performance.Instruction[FancyTextCursor] {
+extends Performance.Instruction[FancyTextCursor] {
 	myKind = kind
 	myCursor = cursor;
 }
 
 
 class FancyTextPerfEvent(src: FancyTextPerf, worldTime: FancyTime, prevState : Performance.State,  nextState: Performance.State, 
-					mediaCursor : FancyTextCursor) extends BasicPerformanceEvent[FancyTextCursor,FancyTextMedia, 
-					FancyTime](src, worldTime, prevState, nextState, mediaCursor)
+						 mediaCursor : FancyTextCursor) extends BasicPerformanceEvent[FancyTextCursor,FancyTextMedia, 
+																					  FancyTime](src, worldTime, prevState, nextState, mediaCursor)
 
 trait FancyTextPerfListener extends BasicPerformanceListener[FancyTextCursor, FancyTextMedia, FancyTime] {
 	override def notify(bpe : BasicPerformanceEvent[FancyTextCursor, FancyTextMedia, FancyTime]) {
 		bpe match {
 			case ftpe : FancyTextPerfEvent => {
-				notifyFTPE(ftpe)
-			}
+					notifyFTPE(ftpe)
+				}
 			case _ => {
-				getLogger().warn("Notified of un-fancy event [{}] ", bpe)
-			}
+					getLogger().warn("Notified of un-fancy event [{}] ", bpe)
+				}
 		}
 	}
 	def notifyFTPE(ftpe : FancyTextPerfEvent)
 	def getLogger() :  org.slf4j.Logger;
 }
+/**
+ * This trait sets up the monitorModule, using features from our abstract types.
+ */
+trait FancyPerformance  { //  extends Performance[_, _, _ <: FancyTime] {
+	def getFancyPerfState : Performance.State
+	def syncWithFancyPerfChanNow : Unit
+}
 
 class FancyTextPerf(media : FancyTextMedia, chan: FancyTextPerfChan, initCursor: FancyTextCursor) 
-		extends  BasicPerformance[FancyTextCursor, FancyTextMedia, FancyTime] (media, chan, initCursor) {
+	extends  BasicPerformance[FancyTextCursor, FancyTextMedia, FancyTime] (media, chan, initCursor) 
+		with FancyPerformance {
 		
 	override protected def getCurrentWorldTime() = new FancyTime(System.currentTimeMillis);
 		
 	override protected def	makeStateChangeEvent(worldTime: FancyTime, prevState : Performance.State,  nextState: Performance.State, 
-					mediaCursor : FancyTextCursor )	= new FancyTextPerfEvent(this, worldTime, prevState, nextState, mediaCursor)
+												mediaCursor : FancyTextCursor )	= new FancyTextPerfEvent(this, worldTime, prevState, nextState, mediaCursor)
+
+	// Implement the two easy-peasy typed methods from FancyPerformance, using our fancier-typed equivalents.
+	override def getFancyPerfState = getState
+	override def syncWithFancyPerfChanNow = updateFromChan
+	
+	def updateFromChan {
+		chan.updatePerfStatusQuickly(this)
+	}
 	
 	
+	/**
+	 * This  async listener API is  are for integration outside the Theater/Scene/Perf system.
+	 * They are not currently used within it.
+	 */
 	def addUnfilteredListener(listener : FancyTextPerfListener) { 
 		addListener(classOf[FancyTextPerfEvent], listener);
 	}
@@ -133,12 +176,23 @@ class FancyTextPerf(media : FancyTextMedia, chan: FancyTextPerfChan, initCursor:
 	}
 	def removeFilteredListener(eventClazz : Class[_ <: FancyTextPerfEvent], listener : FancyTextPerfListener) { 
 		removeListener(eventClazz, listener);
-	}	
+	}
+
+	def scheduleInstructPlayAtBegin(playStartTime : FancyTime) {
+		val actionCursor = initCursor;
+		val instruction  = new FancyTextInstruction(Performance.Instruction.Kind.PLAY, initCursor)
+		val startResFlag = attemptToScheduleInstruction(playStartTime, instruction);
+	}
+
 }
+
 class DummyTextChan(id: Ident) extends FancyTextPerfChan(id) {
 	@throws(classOf[Throwable])	
 	override protected def fancyFastCueAndPlay (ftm : FancyTextMedia, cur : FancyTextCursor, perf:FancyTextPerf)  {
 		val textString = ftm.getFullText();
-		getLogger().info("************* START DUMMY TEXT PERFORMANCE on [" + getName() + "] of [" + textString + "]");
+		getLogger().info("************* START DUMMY TEXT PERFORMANCE on dummy-chan [" + getName() + "]");
+	}
+	override def updatePerfStatusQuickly(perf: FancyTextPerf) {
+		getLogger().info("************* Updating status of perf on dummy-chan [" + getName() + "]")
 	}
 }

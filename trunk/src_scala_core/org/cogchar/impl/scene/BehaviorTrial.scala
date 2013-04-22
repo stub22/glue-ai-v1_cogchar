@@ -78,7 +78,7 @@ class  WorkThing extends BasicDebugger {
 				 *  As it is, the framework rather cleverly ends a react by throwing a SuspendActorException, which 
 				 *  is caught by the looping code which then runs the react again via the andThen method.
 				 */
-				log("*************************** this method call after 'react' is never reached")
+				log("*************************** this method call after 'react' is never reached - WE THINK!")
 			}
 			// This doesn't happen, process remains running
 			log("sillyActor - ************************************  passed the loop construct")

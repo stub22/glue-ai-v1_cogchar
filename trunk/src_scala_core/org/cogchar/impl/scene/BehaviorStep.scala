@@ -26,11 +26,11 @@ import org.cogchar.impl.perform.{FancyTime};
  * @author Stu B. <www.texpedient.com>
  */
 
-trait BehaviorStepExec {
+trait BehaviorStepExec extends BasicDebugger {
 	// Generally all comm should be through the scene, and the behavior should be ignored by the step.
 	def proceed(s: BScene, b: Behavior) : Boolean;
 }
-abstract class BehaviorStepSpec extends BasicDebugger {
+abstract class BehaviorStepSpec(val myOptID : Option[Ident]) extends BasicDebugger {
 	def makeStepExecutor() : BehaviorStepExec
 }
 class ScheduledActionStepExec(mySpec : ScheduledActionStepSpec) extends BehaviorStepExec {
@@ -46,7 +46,9 @@ class ScheduledActionStepExec(mySpec : ScheduledActionStepSpec) extends Behavior
 	}	
 }
 
-class ScheduledActionStepSpec (val myOffsetMillisec : Int, val myActionSpec: BehaviorActionSpec) extends BehaviorStepSpec() { 
+class ScheduledActionStepSpec (val myOffsetMillisec : Int, val myActionSpec: BehaviorActionSpec) 
+			extends BehaviorStepSpec(None) { 
+				
 	def makeStepExecutor() : BehaviorStepExec = {
 		new ScheduledActionStepExec(this)
 	}

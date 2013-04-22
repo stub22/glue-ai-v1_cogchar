@@ -98,5 +98,8 @@ public class AnimOutTrigChan extends FancyTextPerfChan {
 			AnimationJob animJob = myRobotAnimContext.startFullAnimationNow(anim);
 		}
 	}
+	@Override public void updatePerfStatusQuickly(FancyTextPerf perf) {
+		
+	}	
 	
 }
