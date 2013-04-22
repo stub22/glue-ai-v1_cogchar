@@ -40,7 +40,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 	final val CHAN_BIND_GRAPH_QN = "hrk:chan_sheet_77"
 	final val BEHAV_STEP_GRAPH_QN = "hrk:behavStep_sheet_77"
 	final val BEHAV_SCENE_GRAPH_QN = "hrk:behavScene_sheet_77"
-	final val PIPELINE_GRAPH_QN = "hrk:pipeline_sheet_77"
+
 	
 
 	def makeBMC_RepoSpec(ctx : BundleContext) : OnlineSheetRepoSpec = { 				
@@ -76,30 +76,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 		
 		ssList
 	}
-	def queryPipelineSpecs (rc : RepoClient) : java.util.Collection[PipelineSpec] = {
-		
-		val pplnQueryQN = "ccrt:find_pipes_77" // The QName of a query in the "Queries" model/tab
-		val pplnGraphQN = PIPELINE_GRAPH_QN;//"hrk:pipeline_sheet_77" // The QName of a graph = model = tab, as given by directory model.
-		val solList = rc.queryIndirectForAllSolutions(pplnQueryQN, pplnGraphQN)
-		
-		val resultJMap = new java.util.HashMap[Ident, PipelineSpec]();
-		import scala.collection.JavaConversions._
-		val solJList = solList.javaList
-		getLogger().info("Got pipeSpec-piece solJList: {}", solJList)
-        val withDir = rc.getRepo;
-		solJList foreach (psp  => {
-				val pipeID = psp.getIdentResultVar("pipeID")
-				val sourceID = psp.getIdentResultVar("sourceID")
-				var pipeSpec = resultJMap.get(pipeID);
-				if (pipeSpec == null) {
-					pipeSpec = new PipelineSpec(pipeID, withDir);
-					resultJMap.put(pipeID, pipeSpec)
-				}
-				pipeSpec.mySourceIdSet.add(sourceID)
-			})
-		resultJMap.values
 
-	}	
 	def main(args: Array[String]) : Unit = {
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
 		org.apache.log4j.BasicConfigurator.configure();
@@ -140,13 +117,16 @@ object BehavMasterConfigTest extends BasicDebugger {
 		// println("SpeechOut-Best=" + ChannelNames.getOutChanIdent_SpeechMain)
 		 
 		// Create a new repo of kind "computed" or "derived"
-		 val pipeSpecs = queryPipelineSpecs(bmcRepoCli)
-		 for (ps <- pipeSpecs) {
-			 println("Got PipeSpec: " + ps)
-			 ps.makeRepo().loadSheetModelsIntoMainDataset();
+		
+		 val dgSpecSet : Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(bmcRepoCli)
+		 for (dg <- dgSpecSet) {
+			 println("Got: " + dg)
+			 // ps.makeRepo().loadSheetModelsIntoMainDataset();
 		 }
+		 val pipeRepoSpec  = new PipelineRepoSpec(dgSpecSet, bmcMemoryRepoHandle)
 		 
-		val sceneSpecs = readSceneSpecs(bmcRepoCli, BEHAV_SCENE_GRAPH_QN)
+		val pipeRepo = pipeRepoSpec.makeRepo;
+		// val sceneSpecs = readSceneSpecs(bmcRepoCli, BEHAV_SCENE_GRAPH_QN)
 	}
 	
 }
