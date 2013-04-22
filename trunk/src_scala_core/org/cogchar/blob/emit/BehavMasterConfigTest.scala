@@ -76,7 +76,8 @@ object BehavMasterConfigTest extends BasicDebugger {
 		
 		ssList
 	}
-
+	val EQBAR = "=========================================================================================="
+	
 	def main(args: Array[String]) : Unit = {
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
 		org.apache.log4j.BasicConfigurator.configure();
@@ -117,18 +118,28 @@ object BehavMasterConfigTest extends BasicDebugger {
 		// println("SpeechOut-Best=" + ChannelNames.getOutChanIdent_SpeechMain)
 		 
 		// Create a new repo of kind "computed" or "derived"
-		
+		println(EQBAR + "\nReading sceneSpecs from: " + BEHAV_SCENE_GRAPH_QN)
+		val sceneSpecs = readSceneSpecs(bmcRepoCli, BEHAV_SCENE_GRAPH_QN)
+		println(EQBAR + "\nReading derived graph specs")
 		 val dgSpecSet : Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(bmcRepoCli)
 		 for (dg <- dgSpecSet) {
 			 println("Got: " + dg)
 			 // ps.makeRepo().loadSheetModelsIntoMainDataset();
 		 }
-		 val pipeRepoSpec  = new PipelineRepoSpec(dgSpecSet, bmcMemoryRepoHandle)
+		 val derivedRepoSpec  = new PipelineRepoSpec(dgSpecSet, bmcMemoryRepoHandle)
 		 
-		val pipeRepo = pipeRepoSpec.makeRepo;
+		val derivedRepo = derivedRepoSpec.makeRepo;
 		
-		println ("Got pipeRepo: " + pipeRepo)
-		// val sceneSpecs = readSceneSpecs(bmcRepoCli, BEHAV_SCENE_GRAPH_QN)
+		val derivedGraphStats = derivedRepo.getGraphStats;
+		for (dgStat <- derivedGraphStats) {
+			println("Got repo graph stat: " + dgStat)
+		}
+		
+		val	derivedBehavGraphID = bmcRepoCli.makeIdentForQName("hrk:merged_model_5001");
+		val derivedBehavSpecs = derivedRepo.assembleRootsFromNamedModel(derivedBehavGraphID);
+		val derivedSceneSpecList = SceneBook.filterSceneSpecs(derivedBehavSpecs);		
+		println ("Got derived scene specs:  " + derivedSceneSpecList)
+
 	}
 	
 }

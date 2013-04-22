@@ -33,83 +33,29 @@ import scala.collection.JavaConversions.asScalaSet
 
 // FIXME:  The srcRepo should really not be given to the RepoSpec, because it
 // is not serializable specData.
-class PipelineRepoSpec(val myPipeSpecs : Set[DerivedGraphSpec], val mySrcRepo : Repo.WithDirectory) extends RepoSpec {
+class PipelineRepoSpec(val myDGSpecs : Set[DerivedGraphSpec], val mySrcRepo : Repo.WithDirectory) extends RepoSpec {
 	override def toString(): String = {
-		"PipelineRepoSpec[pipeSpecs= " + myPipeSpecs + "]";
+		"PipelineRepoSpec[pipeSpecs= " + myDGSpecs + "]";
 	}
 	override def makeRepo(): PipelineRepo = {
 		val emptyDirModel = ModelFactory.createDefaultModel();			
-		new PipelineRepo(emptyDirModel, this) 
-		
+		val derivedRepo = new PipelineRepo(emptyDirModel, this) 
+		for (dgSpec <- myDGSpecs) {
+			val derivedModel = dgSpec.makeDerivedModel(mySrcRepo)
+			derivedRepo.replaceNamedModel(dgSpec.myTargetID, derivedModel)
+		}
+		derivedRepo
 	}
 }
 
 // @TODO to be moved to org.appdapter.lib.core
 class PipelineRepo(emptyDirModel : Model, val myRepoSpec : PipelineRepoSpec) extends DirectRepo(emptyDirModel) {
-	/*  Don't need this right away
-	@Override def getDfltQrySrcGraphQName(): String = {
-		mySrcPipeGraphID.getAbsUriString()
-	}
-	*/
-	/*  We inherit this from DirectRepo
-	 override def makeMainQueryDataset(): Dataset = {
-	 // this is lazy as we can get
-	 val mainDset: Dataset = DatasetFactory.create() // becomes   createMem() in later Jena versions.
-	 val mainDsource: DataSource = mainDset.asInstanceOf[DataSource];
-	 populateFromSourceSet(mainDsource, mySourceIdSet)
-	 mainDset;
-	 }
-	 */
+
 	// TODO:  Move this method up to Appdapter.DirectRepo
 	def replaceNamedModel(modelID : Ident, jenaModel : Model) {
 		val	repoDset : Dataset = getMainQueryDataset
 		val repoDsource : DataSource = repoDset.asInstanceOf[DataSource];
 		repoDsource.replaceNamedModel(modelID.getAbsUriString, jenaModel);
-	}
-  
-	def loadSheetModelsIntoMainDataset() = {
-		// this calls our 
-		getMainQueryDataset; // calls makeMainQueryDataset
-	}
-	protected def populateUnionGraphFromSourceRepo(tgtUnionGraphID : Ident, srcGraphIDs: java.util.Set[Ident]) = {
-		val sourceRepo = myRepoSpec.mySrcRepo;
-		var cumUnionModel = ModelFactory.createDefaultModel();
-		for (srcGraphID <- srcGraphIDs.toList) {
-			val srcGraph = sourceRepo.getNamedModel(srcGraphID)
-			cumUnionModel = cumUnionModel.union(srcGraph)
-		}
-		replaceNamedModel(tgtUnionGraphID, cumUnionModel)
-	}
-	/*
-	import scala.collection.JavaConversions._;
-	protected def populateFromSourceSet(mainDset: DataSource, aSourceIdSet: java.util.Set[Ident]) = {
-		val pipeUri = mySrcPipeGraphID.getAbsUriString;
-		for (srcModelID <- aSourceIdSet.toList) {
-			try {
-				val srcModel: Model = dirRepo.getNamedModel(srcModelID);
-				if (srcModel == null)
-					throw new RuntimeException("PipelineRepo: no named repo called " + name + " findable by " + myName)
-				var destModel: Model = mainDset.getNamedModel(pipeUri);
-				if (destModel == null) {
-					destModel = ModelFactory.createDefaultModel();
-				}
-				val resultModel = destModel.union(srcModel);
-				mainDset.replaceNamedModel(pipeUri, resultModel);
-				getLogger.debug("Loaded: " + name + " s=" + srcModel.size + " d=" + destModel.size + " r=" + resultModel.size + " into " + myName)
-			} catch {
-				case except => {
-						println(" ex " + except);
-						getLogger.error("PipelineRepo: error loading " + name + " into " + myName, except)
-					}
-			}
-
-		}
-	}
-	*/
-
-	def showDebugInfo() = {
-		loadSheetModelsIntoMainDataset()
-		//findAllSolutions(JenaArqQueryFuncs.parseQueryText(""))
 	}
 
 }
