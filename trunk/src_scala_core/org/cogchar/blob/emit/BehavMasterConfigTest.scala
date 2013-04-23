@@ -35,6 +35,14 @@ object BehavMasterConfigTest extends BasicDebugger {
 	final val BMC_SHEET_KEY = "0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c"
 	final val BMC_NAMESPACE_SHEET_NUM = 4
 	final val BMC_DIRECTORY_SHEET_NUM = 3
+	
+	// These constants are used to test the ChanBinding model found in "GluePuma_BehavMasterDemo"
+	//   https://docs.google.com/spreadsheet/ccc?key=0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c
+	// When exported to Disk
+    final val BMC_WORKBOOK_PATH = "GluePuma_BehavMasterDemo.xlsx"
+	final val BMC_NAMESPACE_SHEET_NAME = "Nspc"
+    final val BMC_DIRECTORY_SHEET_NAME = "Dir"
+	
 	final val QUERY_SOURCE_GRAPH_QN = "ccrt:qry_sheet_77";
 	final val TGT_GRAPH_SPARQL_VAR = RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR; // "qGraph"
 	final val CHAN_BIND_GRAPH_QN = "hrk:chan_sheet_77"
@@ -51,6 +59,17 @@ object BehavMasterConfigTest extends BasicDebugger {
 	def makeBMC_RepoSpec(fileResModelCLs : java.util.List[ClassLoader]) : OnlineSheetRepoSpec = { 				
 		new OnlineSheetRepoSpec(BMC_SHEET_KEY, BMC_NAMESPACE_SHEET_NUM, BMC_DIRECTORY_SHEET_NUM, fileResModelCLs);
 	}
+    
+  
+  	def makeBMC_OfflineRepoSpec(ctx : BundleContext) : OfflineXlsSheetRepoSpec = { 				
+		val fileResModelCLs : java.util.List[ClassLoader] = 
+				ClassLoaderUtils.getFileResourceClassLoaders(ctx, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
+		makeBMC_OfflineRepoSpec(fileResModelCLs);
+	}
+	def makeBMC_OfflineRepoSpec(fileResModelCLs : java.util.List[ClassLoader]) : OfflineXlsSheetRepoSpec = { 				
+		new OfflineXlsSheetRepoSpec(BMC_WORKBOOK_PATH, BMC_NAMESPACE_SHEET_NAME, BMC_DIRECTORY_SHEET_NAME, fileResModelCLs);
+	}
+  
 	def readChannelSpecs(repoClient : RepoClient, chanGraphQN : String) : java.util.Set[ChannelSpec] = {
 		val specSet = new java.util.HashSet[ChannelSpec]();
 		val objectsFound : java.util.Set[Object] = repoClient.assembleRootsFromNamedModel(chanGraphQN);
