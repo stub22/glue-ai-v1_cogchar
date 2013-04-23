@@ -273,8 +273,22 @@ public class LiftAmbassador {
 				if (action != null) {
 					theLogger.info("Loaded lift control {} from sheet", actionIdent.getLocalName());
 					// Still need to add code to check for user class -- this currently acts in all sessions
+					boolean controlAction = false;
+					boolean configAction = false;
+					if (action.control != null) {
+						controlAction = true;
+					}
+					if (action.config != null) {
+						configAction = true;
+					}
 					for (String sessionId : myLift.getActiveSessions()) {
-						activateControlFromUri(sessionId, action.slotNum, action.control);
+						if (configAction) { // Config actions take precidence over control actions if both are specified
+							activateControlsFromUri(action.config);
+						} else if (controlAction) {
+							activateControlFromUri(sessionId, action.slotNum, action.control);
+						} else {
+							theLogger.warn("Control action did not specifiy a LiftConfig or control!");
+						}
 					}
 				} else {
 					theLogger.warn("Control action requested, but it was not found: {}", actionIdent);
