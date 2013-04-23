@@ -32,6 +32,7 @@ import org.appdapter.api.module.{Module, Modulator}
 import org.appdapter.api.module.Module.State;
 
 import org.cogchar.impl.perform.{ChannelSpec};
+import org.cogchar.api.perform.{Performance};
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 
 import scala.collection.mutable.HashSet
@@ -101,6 +102,21 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 			actionSpec.readChannels(stepItem, reader, assmblr, mode)
 
 			val guardSpecSet = new HashSet[GuardSpec]()
+			
+			val waitStartGuardProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_waitForStart)
+			val waitEndGuardProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_waitForEnd)
+			
+			val waitStartGuardItems = stepItem.getLinkedItemSet(waitStartGuardProp)
+			val waitEndGuardItems = stepItem.getLinkedItemSet(waitEndGuardProp)
+			
+			for (wsg : Item <- waitStartGuardItems) {
+				val guardSpec = new PerfMonGuardSpec(wsg.getIdent, Performance.State.PLAYING)
+				guardSpecSet.add(guardSpec)
+			}
+			for (weg : Item <- waitEndGuardItems) {
+				val guardSpec = new PerfMonGuardSpec(weg.getIdent, Performance.State.STOPPING)
+				guardSpecSet.add(guardSpec)
+			}
 							
 			val stepSpec = new GuardedStepSpec(stepIdent, actionSpec, guardSpecSet.toSet) // offsetMillisec, actionSpec);
 			getLogger().debug("Built stepSpec: {}", stepSpec);

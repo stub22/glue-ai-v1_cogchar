@@ -78,6 +78,26 @@ object BehavMasterConfigTest extends BasicDebugger {
 	}
 	val EQBAR = "=========================================================================================="
 	
+	def readSceneSpecsFromDerivedRepo(srcRepo : Repo.WithDirectory, srcRepoCli : RepoClient, derivedBehavGraphID : Ident) : java.util.List[SceneSpec] = {
+		println(EQBAR + "\nReading derived graph specs")
+		 val dgSpecSet : Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(srcRepoCli)
+		 for (dg <- dgSpecSet) {
+			 println("Got: " + dg)
+			 // ps.makeRepo().loadSheetModelsIntoMainDataset();
+		 }
+		 val derivedRepoSpec  = new DerivedRepoSpec(dgSpecSet, srcRepo)
+		 
+		val derivedRepo = derivedRepoSpec.makeRepo;
+		
+		val derivedGraphStats = derivedRepo.getGraphStats.toArray;
+		for (dgStat <- derivedGraphStats) {
+			println("Got repo graph stat: " + dgStat)
+		}
+		
+		val derivedBehavSpecs = derivedRepo.assembleRootsFromNamedModel(derivedBehavGraphID);
+		val derivedSceneSpecList = SceneBook.filterSceneSpecs(derivedBehavSpecs);	
+		derivedSceneSpecList
+	}
 	def main(args: Array[String]) : Unit = {
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
 		org.apache.log4j.BasicConfigurator.configure();
@@ -119,24 +139,9 @@ object BehavMasterConfigTest extends BasicDebugger {
 		 
 		// Create a new repo of kind  "derived"
 		
-		println(EQBAR + "\nReading derived graph specs")
-		 val dgSpecSet : Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(bmcRepoCli)
-		 for (dg <- dgSpecSet) {
-			 println("Got: " + dg)
-			 // ps.makeRepo().loadSheetModelsIntoMainDataset();
-		 }
-		 val derivedRepoSpec  = new DerivedRepoSpec(dgSpecSet, bmcMemoryRepoHandle)
-		 
-		val derivedRepo = derivedRepoSpec.makeRepo;
-		
-		val derivedGraphStats = derivedRepo.getGraphStats;
-		for (dgStat <- derivedGraphStats) {
-			println("Got repo graph stat: " + dgStat)
-		}
 		
 		val	derivedBehavGraphID = bmcRepoCli.makeIdentForQName("hrk:merged_model_5001");
-		val derivedBehavSpecs = derivedRepo.assembleRootsFromNamedModel(derivedBehavGraphID);
-		val derivedSceneSpecList = SceneBook.filterSceneSpecs(derivedBehavSpecs);		
+		val derivedSceneSpecList = readSceneSpecsFromDerivedRepo(bmcMemoryRepoHandle, bmcRepoCli, derivedBehavGraphID);		
 		println ( EQBAR + "\nGot derived scene specs from " + derivedBehavGraphID +  " : " + derivedSceneSpecList)
 
 	}
