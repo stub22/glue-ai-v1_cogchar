@@ -33,13 +33,15 @@ object RepoTester extends BasicDebugger {
 						fileModelCLs : java.util.List[ClassLoader]) : SheetRepo = {
 		// Read the namespaces and directory sheets into a single directory model.
 		val dirModel : Model = GoogSheetRepo.readDirectoryModelFromGoog(sheetKey, namespaceSheetNum, dirSheetNum) 
-		// Construct a repo around that directory
-		val shRepo = new GoogSheetRepo(dirModel)
+		// Construct a repo around that directory        
+        val shRepo = new GoogSheetRepo(dirModel);
+        // Doug's locally testing this replacement
+        //val shRepo = new OmniLoaderRepo("goog:" + sheetKey + "/" + namespaceSheetNum + "/" + dirSheetNum, dirModel, fileModelCLs)
 		// Load the rest of the repo's initial *sheet* models, as instructed by the directory.
 		getLogger().debug("Loading Sheet Models") 
 		shRepo.loadSheetModelsIntoMainDataset()
 		// Load the rest of the repo's initial *file/resource* models, as instructed by the directory.
-		getLogger().debug("Loading File Models") 
+		getLogger().debug("Loading File Models")
 		shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
 		shRepo
 	}
@@ -50,10 +52,14 @@ object RepoTester extends BasicDebugger {
 		// Read the namespaces and directory sheets into a single directory model.
 		val dirModel : Model = XLSXSheetRepo.readDirectoryModelFromXLSX(sheetLocation, namespaceSheetName, dirSheetName, fileModelCLs) 
 		// Construct a repo around that directory
-		val shRepo = new XLSXSheetRepo(dirModel, fileModelCLs)
+        val shRepo = new XLSXSheetRepo(dirModel, fileModelCLs);   
+		// Doug's locally testing this replacement   
+        //val shRepo = new OmniLoaderRepo("xlsx:" + sheetLocation + "/" + namespaceSheetName + "/" + dirSheetName, dirModel, fileModelCLs)
 		// Load the rest of the repo's initial *sheet* models, as instructed by the directory.
+		getLogger().debug("Loading Sheet Models") 
 		shRepo.loadSheetModelsIntoMainDataset()
 		// Load the rest of the repo's initial *file/resource* models, as instructed by the directory.
+		getLogger().debug("Loading File Models")
 		shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
 		shRepo
 	}

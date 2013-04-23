@@ -57,9 +57,13 @@ object DerivedGraphSpecReader extends BasicDebugger {
 	val PIPELINE_GRAPH_QN = "hrk:pipeline_sheet_77"
 	val PIPELINE_QUERY_QN = "ccrt:find_pipes_77" // The QName of a query in the "Queries" model/tab
 	
-	def queryDerivedGraphSpecs (rc : RepoClient) : Set[DerivedGraphSpec] = {
-		val pplnQueryQN = PIPELINE_QUERY_QN; // The QName of a query in the presumed "Queries" model/tab
-		val pplnGraphQN = PIPELINE_GRAPH_QN;// The QName of a graph = model = tab, as registered with dset and/or dirModel
+	def queryDerivedGraphSpecs (rc : RepoClient) : Set[DerivedGraphSpec] = queryDerivedGraphSpecs(rc,PIPELINE_QUERY_QN, PIPELINE_GRAPH_QN )
+    
+	/** 
+     * pplnQueryQN: The QName of a query in the presumed "Queries" model/tab
+     * pplnGraphQN:  The QName of a graph = model = tab, as registered with dset and/or dirModel
+     */
+    def queryDerivedGraphSpecs (rc : RepoClient, pplnQueryQN : String, pplnGraphQN : String  ) : Set[DerivedGraphSpec] = {
 		val solList = rc.queryIndirectForAllSolutions(pplnQueryQN, pplnGraphQN)
 		
 		val resultMMap = new scala.collection.mutable.HashMap[Ident, DerivedGraphSpec]()

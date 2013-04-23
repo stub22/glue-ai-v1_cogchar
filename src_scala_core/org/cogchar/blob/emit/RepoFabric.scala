@@ -63,7 +63,7 @@ class ScreenBoxForImmutableRepo(val myRepo : Repo) extends BoxOne {
 		for (gs  <- graphStats) {
 			val graphBox = new GraphBox(gs.graphURI);
 			val gt  = new GraphTrigger();
-			gt.setShortLabel("have-some-fun")
+			gt.setShortLabel("have-some-fun with " + gs)
 			graphBox.attachTrigger(gt);				
 			ctx.contextualizeAndAttachChildBox(this, graphBox)
 		}
