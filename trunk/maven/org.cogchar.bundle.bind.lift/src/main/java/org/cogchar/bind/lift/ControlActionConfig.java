@@ -37,7 +37,8 @@ public class ControlActionConfig {
 	private static Logger theLogger = LoggerFactory.getLogger(ControlActionConfig.class);
 	
 	public String myURI_Fragment;
-	public Ident control;
+	public Ident control; // For a Lifter control action
+	public Ident config; // For a Lifter config (web screen) action
 	public int slotNum;
 	public Ident userClass;
 	
@@ -50,6 +51,7 @@ public class ControlActionConfig {
 			myURI_Fragment = myIdent.getLocalName();
 		}
 		control = sh.pullIdent(solution, LiftCN.CONTROL_VAR_NAME);
+		config = sh.pullIdent(solution, LiftCN.CONFIG_VAR_NAME);
 		slotNum = Math.round(sh.pullFloat(solution, LiftCN.SLOTNUM_VAR_NAME, 0)); // We still need SolutionHelper.pullInteger for a single solution!
 		userClass = sh.pullIdent(solution, LiftCN.USER_CLASS_VAR_NAME);
 	}

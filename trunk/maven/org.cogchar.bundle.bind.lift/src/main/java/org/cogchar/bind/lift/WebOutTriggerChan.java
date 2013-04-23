@@ -50,8 +50,7 @@ public class WebOutTriggerChan extends FancyTextPerfChan {
 		} else if (commandUriString.startsWith(LiftAN.NS_LifterInstance)) {
 			LiftAmbassador.getLiftAmbassador().activateControlAction(new FreeIdent(commandUriString));
 		} else {
-			getLogger().warn("WebOutTriggerChan is currently a prototype can can only handle full liftconfigs by URI. "
-					+ "I got this URI, which I don't know how to handle: {}", commandUriString);
+			getLogger().warn("WebOutTriggerChan doesn't know how to handle the following URI: {}", commandUriString);
 		}
 	}
 	@Override public void updatePerfStatusQuickly(FancyTextPerf perf) {
