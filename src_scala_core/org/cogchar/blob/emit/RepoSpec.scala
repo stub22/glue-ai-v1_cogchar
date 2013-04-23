@@ -69,7 +69,7 @@ case class OnlineSheetRepoSpec(sheetKey : String, namespaceSheetNum : Int, dirSh
 case class OfflineXlsSheetRepoSpec(sheetLocation : String, namespaceSheet : String, dirSheet : String, 
 							fileModelCLs : java.util.List[ClassLoader]) extends RepoSpec {
 	override def makeRepo() : Repo.WithDirectory = {
-		XLSXSheetRepo.loadXLSXSheetRepo(sheetLocation, namespaceSheet, dirSheet, fileModelCLs)
+		RepoTester.loadXLSXSheetRepo(sheetLocation, namespaceSheet, dirSheet, fileModelCLs)
 	}
 }
 case class DatabaseRepoSpec(configPath : String, optConfResCL : ClassLoader, dirGraphID : Ident) extends RepoSpec {
