@@ -166,11 +166,12 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
         } else {
           traceHere("OnmiRepo was UpToDate")
         }
-        addToWhackmole()
+        if (popupWackamole) addToWhackmole()
       }
     }
   }
 
+  var popupWackamole = false;
   var wasAdded = false;
   def addToWhackmole() = {
 
