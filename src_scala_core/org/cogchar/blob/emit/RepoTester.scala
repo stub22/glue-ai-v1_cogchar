@@ -34,9 +34,10 @@ object RepoTester extends BasicDebugger {
 		// Read the namespaces and directory sheets into a single directory model.
 		val dirModel : Model = GoogSheetRepo.readDirectoryModelFromGoog(sheetKey, namespaceSheetNum, dirSheetNum) 
 		// Construct a repo around that directory        
-        val shRepo = new GoogSheetRepo(dirModel);
+        //val shRepo = new GoogSheetRepo(dirModel);
         // Doug's locally testing this replacement
-        //val shRepo = new OmniLoaderRepo("goog:" + sheetKey + "/" + namespaceSheetNum + "/" + dirSheetNum, dirModel, fileModelCLs)
+		val spec = new OnlineSheetRepoSpec(sheetKey,namespaceSheetNum,dirSheetNum,fileModelCLs);
+        val shRepo = new OmniLoaderRepo(spec, "goog:" + sheetKey + "/" + namespaceSheetNum + "/" + dirSheetNum, dirModel, fileModelCLs)
 		// Load the rest of the repo's initial *sheet* models, as instructed by the directory.
 		getLogger().debug("Loading Sheet Models") 
 		shRepo.loadSheetModelsIntoMainDataset()
@@ -52,9 +53,10 @@ object RepoTester extends BasicDebugger {
 		// Read the namespaces and directory sheets into a single directory model.
 		val dirModel : Model = XLSXSheetRepo.readDirectoryModelFromXLSX(sheetLocation, namespaceSheetName, dirSheetName, fileModelCLs) 
 		// Construct a repo around that directory
-        val shRepo = new XLSXSheetRepo(dirModel, fileModelCLs);   
+        //val shRepo = new XLSXSheetRepo(dirModel, fileModelCLs);   
 		// Doug's locally testing this replacement   
-        //val shRepo = new OmniLoaderRepo("xlsx:" + sheetLocation + "/" + namespaceSheetName + "/" + dirSheetName, dirModel, fileModelCLs)
+		val spec = new OfflineXlsSheetRepoSpec(sheetLocation, namespaceSheetName, dirSheetName, fileModelCLs);
+        val shRepo = new OmniLoaderRepo(spec, "xlsx:" + sheetLocation + "/" + namespaceSheetName + "/" + dirSheetName, dirModel, fileModelCLs)
 		// Load the rest of the repo's initial *sheet* models, as instructed by the directory.
 		getLogger().debug("Loading Sheet Models") 
 		shRepo.loadSheetModelsIntoMainDataset()

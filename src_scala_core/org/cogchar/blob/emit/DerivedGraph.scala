@@ -39,6 +39,7 @@ class DerivedGraphSpec(val myTargetID : Ident, val myOp : String, var myInGraphI
 	
 	def makeDerivedModel(sourceRepo : Repo) : Model = {
 		// TODO : match on myOp
+	    // TODO : when upgrading use  ModelFactory.createUnion();
 		var cumUnionModel = ModelFactory.createDefaultModel();
 		for (srcGraphID <- myInGraphIDs) {
 			val srcGraph = sourceRepo.getNamedModel(srcGraphID)
