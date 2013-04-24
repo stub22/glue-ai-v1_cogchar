@@ -91,15 +91,48 @@ import com.hp.hpl.jena.rdf.model.ModelFactory
 import org.cogchar.impl.trigger.Whackamole
 
 /**
- * Takes a directory model and uses Goog,Xlsx,Pipeline,CSV,.ttl,rdf sources and loads them
+ * Takes a directory model and uses Goog, Xlsx, Pipeline,CSV,.ttl,rdf sources and loads them
  */
+class OmniLoaderSpec(var myDebugName: String, dirModelURI: String)
+  extends RepoSpec {
 
-class OmniLoaderRepo(var myDebugName: String, directoryModel: Model, fmcls: java.util.List[ClassLoader])
+  override def makeRepo(): OmniLoaderRepo = {
+    null
+  }
+}
+class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, directoryModel: Model, fmcls: java.util.List[ClassLoader])
   extends XLSXSheetRepo(directoryModel: Model, fmcls: java.util.List[ClassLoader]) {
+  //var myNewDirectoryModel = myDirectoryModel;
+  var myNewMainQueryDataset: Dataset = null
+
+  override def getNamedModel(ifNUllReload: Ident): Model = {
+    if (ifNUllReload != null) {
+      super.getNamedModel(ifNUllReload)
+    } else {
+      completeReloadFromSpec
+      null
+    }
+  }
+  def completeReloadFromSpec() = {
+    val repo = myRepoSpec.makeRepo();
+    val oldDataset = getMainQueryDataset();
+    val oldDirModel = getDirectoryModel();
+    val myNewDirectoryModel = repo.getDirectoryModel();
+    val myPNewMainQueryDataset = repo.getMainQueryDataset();
+    RepoNavigator.replaceModelElements(oldDirModel, myNewDirectoryModel)
+    RepoNavigator.replaceDatasetElements(oldDataset, myPNewMainQueryDataset)
+    //    replaceInMemoryModel();
+    oldDirModel.removeAll();
+    oldDirModel.union(myNewDirectoryModel);
+    oldDataset.listNames()
+    reloadMainDataset();
+    val newDataset = getMainQueryDataset();
+
+  }
 
   override def toString(): String = {
     val dm = getDirectoryModel();
-    "OmniLoaderRepo[targetID=" + myDebugName + ", dir=" + dm + "Yet-TODO]";
+    "OmniLoaderRepo[name=" + myDebugName + ", dir=" + dm.size() + "Yet-TODO]";
   }
 
   var isUpdated = false
@@ -184,23 +217,33 @@ class OmniLoaderRepo(var myDebugName: String, directoryModel: Model, fmcls: java
     traceHere("Done");
   }
 
-  class ReloadTrigger() {
-
-  }
-
   def traceHere(str: String) {
     println("*!*!*! OmniLoaderRepo: " + str)
   }
   override def getDirectoryModel(): Model = {
-    super.getDirectoryModel();
+    //myNewDirectoryModel;
+    super.getDirectoryModel
+  }
+
+  override def makeMainQueryDataset(): Dataset = {
+    if (myNewMainQueryDataset == null) {
+      myNewMainQueryDataset = DatasetFactory.create() // becomes   createMem() in later Jena versions.
+    }
+    myNewMainQueryDataset;
   }
 
   override def getMainQueryDataset(): Dataset = {
     ensureUpdated;
-    super.getMainQueryDataset();
+    if (myNewMainQueryDataset != null) {
+      myNewMainQueryDataset
+    } else {
+      super.getMainQueryDataset();
+    }
   }
 
   def reloadMainDataset() = {
+    myNewMainQueryDataset = null;
+    isUpdated = false
     loadSheetModelsIntoMainDataset();
   }
 
@@ -247,7 +290,7 @@ object OmniLoaderRepo {
         // Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
         org.apache.log4j.BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-        theWhackamole = RepoNavigator.makeRepoNavigatorCtrl(new Array[String](0), null)
+        theWhackamole = RepoNavigator.makeRepoNavigatorCtrl(new Array[String](0))
         theWhackamole.launchFrame("Whackamolopy " + theWhackamole);
         theWhackamole
       }
