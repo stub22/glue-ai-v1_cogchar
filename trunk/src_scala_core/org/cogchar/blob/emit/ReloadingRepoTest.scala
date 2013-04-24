@@ -288,9 +288,6 @@ object OmniLoaderRepo {
     OmniLoaderRepo.synchronized {
       if (!isWhackamoleStarted) {
         isWhackamoleStarted = true;
-        // Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
-        org.apache.log4j.BasicConfigurator.configure();
-        org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
         theWhackamole = RepoNavigator.makeRepoNavigatorCtrl(new Array[String](0))
         theWhackamole.launchFrame("Whackamolopy " + theWhackamole);
         theWhackamole
