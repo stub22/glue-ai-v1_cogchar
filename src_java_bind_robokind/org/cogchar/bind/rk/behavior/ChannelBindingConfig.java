@@ -95,10 +95,21 @@ public class ChannelBindingConfig {
 	
 	private static Ident	CHANTYPE_SPEECH_OUT = PerfChannelNames.getOutChanIdent_SpeechMain();
 	private static Ident	CHANTYPE_ANIM_OUT = PerfChannelNames.getOutChanIdent_AnimBest();
+	
+	private static Ident	CHANTYPE_WEB_PAGE_OUT = PerfChannelNames.getOutChanIdent_WebPage();
+	private static Ident	CHANTYPE_WEB_VIDEO_OUT = PerfChannelNames.getOutChanIdent_WebVideo();
+	
+	// This one needs to evolve towards being a GraphChanel
+	private static Ident	CHANTYPE_WEB_ACTION_IN = PerfChannelNames.getInChanIdent_WebAction();
+	
     
     public static enum ChannelType{
-        SPEECH(CHANTYPE_SPEECH_OUT, SpeechService.class), 
-        ANIMATION(CHANTYPE_ANIM_OUT, AnimationPlayer.class);
+        SPEECH_BLOCK_OUT(CHANTYPE_SPEECH_OUT, SpeechService.class), 
+        ANIMATION_PLAYER(CHANTYPE_ANIM_OUT, AnimationPlayer.class),
+		// TODO:  Plug in good classes here:
+        WEB_PAGE_OUT(CHANTYPE_WEB_PAGE_OUT, AnimationPlayer.class), 
+		WEB_VIDEO_OUT(CHANTYPE_WEB_VIDEO_OUT, AnimationPlayer.class), 
+		WEB_ACTION_IN(CHANTYPE_WEB_ACTION_IN, AnimationPlayer.class);		
         
         private	Ident	myChannelTypeID;
         private Class myChannelTypeClass;
