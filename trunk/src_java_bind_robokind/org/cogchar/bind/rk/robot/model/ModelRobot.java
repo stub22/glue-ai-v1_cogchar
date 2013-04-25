@@ -96,10 +96,10 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
             throw new NullPointerException();
         }
         for(Entry<Robot.JointId, NormalizedDouble> e : positions.entrySet()){
-            Robot.JointId id = e.getKey();
-            ModelJoint bj = myJointMap.get(id);
+            Robot.JointId jointID = e.getKey();
+            ModelJoint bj = myJointMap.get(jointID);
             if(bj == null){
-				theLogger.warn("ignoring unknown joint id: " + id);
+				theLogger.warn("ignoring unknown joint-id {} requested on model-robot[id={}] ", jointID, getRobotId());
                 continue;
             }
             NormalizedDouble pos = e.getValue();
