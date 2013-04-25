@@ -16,11 +16,15 @@
 package org.cogchar.bind.rk.behavior;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import org.osgi.framework.BundleContext;
+import org.robokind.api.common.lifecycle.DependencyDescriptor;
 import org.robokind.api.common.lifecycle.ManagedService;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
+import org.robokind.api.common.lifecycle.utils.DescriptorBuilder;
+import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
 import org.robokind.api.common.lifecycle.utils.ManagedServiceFactory;
 import org.robokind.api.common.osgi.ServiceClassListener;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
@@ -43,24 +47,47 @@ public class ServiceChannelExtender extends ServiceClassListener<ChannelBindingC
     }
 
     @Override
-    protected void addService(ChannelBindingConfig t) {
+    protected void addService(ChannelBindingConfig cbc) {
         //Called whenever a ChannelBindingConfig matching the OSGi filter is registered
-        if(t == null || myManagerMap.containsKey(t)){
+        if(cbc == null || myManagerMap.containsKey(cbc)){
             return;
         }
-        ServiceLifecycleProvider provider = new ChannelBindingLifecycle(t);
+		List<DependencyDescriptor> depDescList = makeDepDescList(cbc);
+        ServiceLifecycleProvider provider = new ChannelBindingLifecycle(depDescList, cbc);
         ManagedService ms = myManagerFactory.createService(provider, myBindingRegistrationProperties);
         ms.start();
-        myManagerMap.put(t, ms);
+        myManagerMap.put(cbc, ms);
     }
+	
+	private List<DependencyDescriptor> makeDepDescList(ChannelBindingConfig cbc) { 
+		/* was in lifecycleconstructor first line:
+		 *   super(new DescriptorListBuilder()
+                //The name "service" is used only within the lifecycle
+                .dependency("service", conf.getChannelType().getServiceClass()).with(conf.getOSGiFilterString())
+                .getDescriptors());
+		 */
+		
+		DescriptorListBuilder firstListBuilder = new DescriptorListBuilder();
+                //The name "service" is used only within the lifecycle
+		ChannelBindingConfig.ChannelType chanType = cbc.getChannelType();
+		Class depClazz = chanType.getServiceClass();
+		String osgiFilter = cbc.getOSGiFilterString();
+		 // This serviceName is used only within the lifecycle
+		String serviceName = ChannelBindingLifecycle.SERVICE_DEP_KEY; // "service";
+		DescriptorBuilder firstDBuilder = firstListBuilder.dependency(serviceName, depClazz);
+		DescriptorBuilder secondDBuilder = firstDBuilder.with(osgiFilter);
+		List<DependencyDescriptor> finishedList = secondDBuilder.getDescriptors();
+		return finishedList;
+	}
+
 
     @Override
-    protected void removeService(ChannelBindingConfig t) {
+    protected void removeService(ChannelBindingConfig cbc) {
         //Called whenever a ChannelBindingConfig is unregistered
-        if(t == null){
+        if(cbc == null){
             return;
         }
-        ManagedService ms = myManagerMap.remove(t);
+        ManagedService ms = myManagerMap.remove(cbc);
         if(ms == null){
             return;
         }

@@ -46,14 +46,14 @@ import org.osgi.framework.FrameworkUtil;
 
 public class CCRK_ServiceChannelFactory extends BasicDebugger {
 	
-	public Channel makeServiceChannel(ChannelBindingConfig cbc, Object service) {
+	public Channel makeServiceChannel(ChannelBindingConfig cbc, Object serviceDepObj) {
 		ChannelBindingConfig.ChannelType chanTypeConstant = cbc.getChannelType();
 		Ident chanID = cbc.getChannelIdent();
         switch(chanTypeConstant){
-            case SPEECH:
-                return createSpeechChannel(chanID, (SpeechService)service);
-            case ANIMATION:
-                return createAnimationChannel(chanID, (AnimationPlayer)service);
+            case SPEECH_BLOCK_OUT:
+                return createSpeechChannel(chanID, (SpeechService) serviceDepObj);
+            case ANIMATION_PLAYER:
+                return createAnimationChannel(chanID, (AnimationPlayer) serviceDepObj);
 			default:
 				getLogger().error("Cannot resolve service channel type: {}", chanTypeConstant);
         }

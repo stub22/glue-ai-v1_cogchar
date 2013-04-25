@@ -65,7 +65,7 @@ public class SceneLifecycleDemo {
         ChannelBindingConfig bindingConfig = new ChannelBindingConfig();
 		
         String speechTestFilterString = OSGiUtils.createFilter(SpeechService.PROP_ID, "testService");
-        bindingConfig.initExplicitly(ChannelType.SPEECH, "fakeURI", speechTestFilterString);
+        bindingConfig.initExplicitly(ChannelType.SPEECH_BLOCK_OUT, "fakeURI", speechTestFilterString);
 				
         SpeechService speechService = getSpeechService();
         
