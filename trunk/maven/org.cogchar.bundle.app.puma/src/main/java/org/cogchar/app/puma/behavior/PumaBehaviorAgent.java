@@ -80,7 +80,7 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 	
 	public void connectAnimOutChans() {
 		FancyTextPerfChan bestAnimOutChan = myRobotMotionMapper.getBestAnimOutChan();
-		myTheater.registerChannel(bestAnimOutChan);
+		myTheater.registerPerfChannel(bestAnimOutChan);
 	}
 	public void connectSpeechOutputSvcs(BundleContext bundleCtx) {
 		try {

@@ -33,6 +33,7 @@ import org.cogchar.api.channel.{Channel, BasicChannel}
 import org.cogchar.api.perform.{PerfChannel, Media, BasicPerfChan, Performance, BasicPerformance};
 import org.cogchar.impl.perform.{FancyTime, ChannelSpec, PerfChannelNames, FancyTextPerf, FancyPerformance};
 
+import org.cogchar.api.channel.{GraphChannel};
 import org.cogchar.api.scene.{Scene};
 
 import scala.collection.mutable.HashMap;
@@ -61,23 +62,27 @@ class BSceneRootChan (id : Ident, val scn: BScene) extends BasicPerfChan(id){
 // However, we want extensions to be able to define mutable variables.
 
 /**
- * A BScene is a BehaviorScene, which is used as the app-context for the Behavior(Modules)
+ * A BScene is a BehaviorScene, which is used as the app-context for a group of cooperative/competitive Behaviors(Modules).
+ * The idea of the scene having a "rootChannel" is not fully implemented.
  */
 
 abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyTime, BSceneRootChan] {
-	val rootyID = new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
-	val myRootChan = new BSceneRootChan(rootyID, this);
-	val		myWiredChannels  = new HashMap[Ident,PerfChannel]();
+	val		rootyID = new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
+	val		myRootChan = new BSceneRootChan(rootyID, this);
+	val		myWiredPerfChannels  = new HashMap[Ident,PerfChannel]();
 	
 	override def getRootChannel() : BSceneRootChan = {	myRootChan	}
 	import scala.collection.JavaConversions._;
-	override def wireSubChannels(chans : java.util.Collection[PerfChannel]) : Unit = {
+	override def wirePerfChannels(perfChans : java.util.Collection[PerfChannel]) : Unit = {
 		// Currently, all we do is copy references to all chans into our wired channel map.
 		// TODO:  reconcile the actually wired channels with the ones in the SceneSpecs.
-		// Open question:  What would it mean to "re-wire" a BScene?
-		for (val c <- chans) {
+		// Open question:  What does it mean to "re-wire" a BScene?
+		if (myWiredPerfChannels.size > 0) {
+			throw new RuntimeException("Wiring new perfChannels [" + perfChans + "] into a scene with existing channels: " + myWiredPerfChannels)
+		}
+		for (val c <- perfChans) {
 			getLogger().info("Wiring scene[{}] to channel: {}", mySceneSpec.getIdent.getLocalName, c);
-			myWiredChannels.put(c.getIdent, c)
+			myWiredPerfChannels.put(c.getIdent, c)
 		}
 	}
 	var myCachedModulator : BehaviorModulator = null
@@ -98,19 +103,24 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 		}
 	}
 	def getChannel(id : Ident) : PerfChannel = {
-		return myWiredChannels.getOrElse(id, null);
+		return myWiredPerfChannels.getOrElse(id, null);
 	}
 	override def toString() : String = {
-		"BScene[id=" + rootyID + ", chanMap=" + myWiredChannels + "]";
+		"BScene[id=" + rootyID + ", chanMap=" + myWiredPerfChannels + "]";
 	}
 }
 
 class LocalGraph(graphQN : String)
 
 import scala.collection.mutable.Map
+
 class FancyBScene(ss: SceneSpec) extends BScene(ss) {
 	val		myPerfMonModsByStepSpecID : Map[Ident, FancyPerfMonitorModule] = Map()
 	val		myLocGraphsByID : Map[Ident, LocalGraph] = Map()
+	val		myWiredGraphChannels  = new HashMap[Ident,GraphChannel]();	
+	
+	override def wireGraphChannels(graphChans : java.util.Collection[GraphChannel]) : Unit = {
+	}
 	
 	def registerPerfForStep(stepSpecID : Ident, perf : FancyPerformance) {
 		perf match {

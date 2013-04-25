@@ -60,7 +60,7 @@ public class ChannelBindingLifecycle extends AbstractLifecycleProvider<Channel, 
 	// filter strings, e.g. in performance scenes that will only instantiate if all their REQUIRED
 	// channels are present).  
 	protected static String SERVICE_DEP_KEY = "serviceDep";
-	protected static String URI_PROPERTY_NAME = "URI";
+	public static String URI_PROPERTY_NAME = "URI";
 	private static Logger theLogger =  LoggerFactory.getLogger(ChannelBindingLifecycle.class);
     private ChannelBindingConfig myBindingConfig;
     // Superclass takes 
