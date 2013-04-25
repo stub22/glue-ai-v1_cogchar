@@ -18,6 +18,7 @@ package org.cogchar.bind.rk.robot.client;
 
 import java.net.URL;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.perform.Performance;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.perform.FancyTextPerf;
 import org.cogchar.impl.perform.FancyTextMedia;
@@ -25,6 +26,7 @@ import org.cogchar.impl.perform.FancyTextCursor;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.robokind.api.animation.Animation;
 import org.robokind.api.animation.player.AnimationJob;
+import org.robokind.api.common.playable.PlayState;
 import org.robokind.api.common.utils.TimeUtils;
 
 /**
@@ -110,13 +112,21 @@ Do not use any listeners, they are not implemented in the RemoteAnimationJob.
 		AnimationJob jobToCheck = getOutJobOrNull(perf);
 		if (jobToCheck != null) {
 			long remainingTime = jobToCheck.getRemainingTime(TimeUtils.now());
-			getLogger().debug("Animation remaining time is {}", remainingTime);
+			// Can we use this "PlayState"?  Or is it unreliable on remote jobs?
+			// Currently seems to stay stuck at RUNNING even after remaining time is <= 0.
+			PlayState ps = jobToCheck.getPlayState();
+			getLogger().debug("Animation remaining time is {}, playState={}", remainingTime, ps);
 			// Optional Todo:  Use this remaining time to update the current-position-cursor of the performance.
 			// Stu is using <= 0 rather than <0 , in case impl changes (0 time left should mean over, right?) - double check with Matt.
 			if (remainingTime <= 0) {
-				getLogger().debug("Animation remaining time is {}, which is <= 0, so perf is done.", remainingTime);
+				getLogger().debug("Animation remaining time is <= 0, so perf is done. ");
 				finished = true;
+			} else {
+				
+				getLogger().debug("Animation remaining time is which is > 0.  Marking perfSate = PLAYING");
+				perf.markFancyState(Performance.State.PLAYING);
 			}
+
 		} else {
 			getLogger().error("Cannot find AnimationJob for performance, marking it stopped: {}", perf);
 			finished = true;
@@ -124,7 +134,7 @@ Do not use any listeners, they are not implemented in the RemoteAnimationJob.
 		if (finished) {
 			getLogger().info("Marking performance [{}] stopped", perf);
 			markPerfStoppedAndForget(perf);
-		}
+		} 
 	}	
 	
 }
