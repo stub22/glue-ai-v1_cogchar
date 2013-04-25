@@ -41,6 +41,12 @@ class FancyPerfMonitorModule(myPerf : FancyPerformance) extends EmptyTimedModule
 						getLogger.info("Performance state is STOPPING, so now stopping the perf-monitor-module")
 						markStopRequested
 					}
+					case Performance.State.PLAYING => {
+						getLogger.debug("Performance state is {} (=PLAYING!), so doing nothing.", myCachedPerfState)
+					}
+					case _ => {
+						getLogger.debug("Performance state is {}, so doing nothing.", myCachedPerfState)
+					}					
 				}
 			}
 			case _ => {
