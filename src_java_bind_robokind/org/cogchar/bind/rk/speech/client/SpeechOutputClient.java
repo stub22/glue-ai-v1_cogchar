@@ -16,6 +16,7 @@
 package org.cogchar.bind.rk.speech.client;
 
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.perform.Performance;
 
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.perform.FancyTextPerf;
@@ -70,13 +71,27 @@ public class SpeechOutputClient extends FancyTextPerfChan<SpeechJob> {
 				case DefaultSpeechJob.CANCELED:
 				case DefaultSpeechJob.COMPLETE:
 					finished = true;
+					getLogger().info("Found speech-job status {}, (where CANCELED=" + 
+							DefaultSpeechJob.CANCELED + " and COMPLETE=" + DefaultSpeechJob.COMPLETE  + 
+							") so perf-monitor will now be STOPPED: {}", speechJobStatus, perf);
+				break;
+				case DefaultSpeechJob.RUNNING:
+					getLogger().debug("Status is now RUNNING/PLAYING for perf {}", perf);
+					perf.markFancyState(Performance.State.PLAYING);
+				break;
+				case DefaultSpeechJob.PENDING:
+					getLogger().debug("Status is now PENDING/CUEING (= queing) for perf {}", perf);
+					perf.markFancyState(Performance.State.CUEING);
+				break;
+				default:
+					getLogger().info("Found unknown speech-job status {}, so perf will continue: {}", speechJobStatus, perf);
 			}
 		} else {
 			finished = true;
 			getLogger().error("Found no job for performance, marking STOPPED: {}", perf);
 		}
 		if (finished) {
-			getLogger().info("Marking performance stopped");
+			getLogger().info("Marking performance STOPPED: {} ", perf);
 			markPerfStoppedAndForget(perf);
 		}
 

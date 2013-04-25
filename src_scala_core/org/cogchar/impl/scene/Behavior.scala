@@ -42,6 +42,9 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
  *  action method.  
  *   Behaviors are generally internally stateless, except for keeping track of 
  *  where they are in their own program of activity.
+ *  
+ *  FIXME:  Behavior ultimately extends Appdapter.BasicModule, which is currently a KnownComponentImpl,
+ *  which isn't a proper fit for the Spec/Exec pattern.  
  * @author Stu B. <www.texpedient.com>
  */
 
