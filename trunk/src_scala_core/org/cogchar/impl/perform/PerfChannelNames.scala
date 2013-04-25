@@ -44,9 +44,14 @@ object PerfChannelNames extends org.appdapter.api.trigger.BoxAssemblyNames with 
 	val		N_PRE_animOut	=	"animOut";
 	val		N_PRE_blendOut	=	"blendOut";
 	
+	val		N_PRE_webOut	=	"webOut";
+	
 	val		N_PRE_verbalIn	=	"verbalIn";
 	val		N_PRE_spatialIn	=	"spatialIn"
 	val		N_PRE_triggerIn	=	"triggerIn";
+	
+	val		N_PRE_webIn		=	"webIn";
+	
 	
 	// The apparent complexity here is due to a lack of *deep* assumption that all
 	// channels can or should fit in a uniform numbering space.  There is a shallow
@@ -87,7 +92,11 @@ object PerfChannelNames extends org.appdapter.api.trigger.BoxAssemblyNames with 
 	val		CHN_IN_TRIGGER_ACTION					= 720;
 	val		CHN_IN_TRIGGER_ANIMATION				= 730;
 	
-
+	val		WEB_CHANNEL_NUM_DIGITS					= 3;
+	val		CHN_OUT_WEB_PAGE						= 810;
+	val		CHN_OUT_WEB_VIDEO						= 830;
+	val		CHN_IN_WEB_ACTION						= 860;
+	
 	
 	private def getChannelIdent(localName : String) : Ident = { 
 		val absURI = NS_ccScnInst + localName;
@@ -146,4 +155,20 @@ object PerfChannelNames extends org.appdapter.api.trigger.BoxAssemblyNames with 
 	def getInChanIdent_TriggerAction() = getInChanIdent_Trigger(CHN_IN_TRIGGER_ACTION);
 	def getInChanIdent_TriggerAnimation() = getInChanIdent_Trigger(CHN_IN_TRIGGER_ANIMATION);
 	
+	
+	private def getOutChanIdent_Web(chanNum  : Int) : Ident = { 
+		val chanName = getNumericChannelName(N_PRE_webOut, chanNum, WEB_CHANNEL_NUM_DIGITS);
+		getChannelIdent(chanName);
+	}		
+	
+	def getOutChanIdent_WebPage = getOutChanIdent_Web(CHN_OUT_WEB_PAGE)
+	def getOutChanIdent_WebVideo = getOutChanIdent_Web(CHN_OUT_WEB_VIDEO)
+
+	
+	private def getInChanIdent_Web(chanNum  : Int) : Ident = { 
+		val chanName = getNumericChannelName(N_PRE_webIn, chanNum, WEB_CHANNEL_NUM_DIGITS);
+		getChannelIdent(chanName);
+	}	
+	
+	def getInChanIdent_WebAction() = getInChanIdent_Trigger(CHN_IN_WEB_ACTION);
 }
