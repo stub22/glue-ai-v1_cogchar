@@ -24,6 +24,14 @@ import org.cogchar.api.channel.Channel;
  * A GraphChannel is used to read, write, and listen for updates on a particular graph in a repo.
  * Because it is a Channel, it has its own URI, and it is managable via a JFlux lifecycle.
  * Behavior features should work through GraphChannels rather than directly through repos.
+ * 
+Graph" channel is part of channel-core, not performance.
+Graph channels (like all channels) can interact with JFlux lifecycles.
+* Channels are the only fully-Lifecycled objects in the public API of Cogchar-core
+(besides RepoSpecLifecycle, Theater, and Scene lifecycle, which are only 
+semi-public).  Note that Channels are an injection API rather than a service 
+API.  Outside projects will not call methods on channels directly, but they 
+can implement new channels to be called by Cogchar, and wire them up by URI.
  */
 
 public interface GraphChannel extends Channel {
