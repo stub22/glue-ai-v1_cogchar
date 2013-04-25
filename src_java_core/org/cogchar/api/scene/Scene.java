@@ -16,8 +16,8 @@
 package org.cogchar.api.scene;
 
 import java.util.Collection;
+import org.cogchar.api.channel.GraphChannel;
 import org.cogchar.api.perform.PerfChannel;
-import org.cogchar.api.perform.Media;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -31,6 +31,7 @@ import org.cogchar.api.perform.Media;
  * scene/rootChannel.
  */
 public interface Scene<WorldTime, RootChanType> {
-	public 	void wireSubChannels(Collection<PerfChannel> chans);
+	public 	void wirePerfChannels(Collection<PerfChannel> chans);
+	public 	void wireGraphChannels(Collection<GraphChannel> chans);	
 	public RootChanType getRootChannel();
 }

@@ -33,17 +33,17 @@ import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, Cog
 class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	private val	myBM = new BehaviorModulator();
 	// private val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
-	private val myChanSet = new java.util.HashSet[PerfChannel]();
+	private val myPerfChanSet = new java.util.HashSet[PerfChannel]();
 	// var myBinder : DummyBinder = null;
 	private var	mySceneBook : SceneBook = null;
 	
 	private var myWorkThread : Thread = null;
 	private var myStopFlag : Boolean = false;
 	
-	def registerChannel (c : PerfChannel) {
+	def registerPerfChannel (c : PerfChannel) {
 	// def registerChannel (c : Channel[_ <: Media, FancyTime]) {
-		getLogger().info("Registering channel [{}] in theater for char-theater {}", c, myIdent);
-		myChanSet.add(c);
+		getLogger().info("Registering perf-channel [{}] in behavior-theater {}", c, myIdent);
+		myPerfChanSet.add(c);
 	}
 	def getSceneBook = mySceneBook;
 	def registerSceneBook(sb : SceneBook) {
@@ -53,7 +53,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		getLogger().info("MakeSceneFromBook for SceneID={}, char-theater ={}", sceneID, myIdent);
 		val sceneSpec = mySceneBook.findSceneSpec(sceneID);
 		val scene = new FancyBScene(sceneSpec); // new BScene(sceneSpec);
-		scene.wireSubChannels(myChanSet);
+		scene.wirePerfChannels(myPerfChanSet);
 		scene;
 	}
 	def activateScene(scene: BScene) {

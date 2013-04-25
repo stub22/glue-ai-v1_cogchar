@@ -43,7 +43,7 @@ public class PumaSpeechOutputMapper extends BasicDebugger {
 		Ident speechChanIdent = PerfChannelNames.getOutChanIdent_SpeechMain();
 		
 		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
-		t.registerChannel(mySOC);
+		t.registerPerfChannel(mySOC);
 	}
 	@Deprecated protected void _directlyStartSpeakingText(String txt) {
 		// TODO:  Prevent/blend concurrent activity through the channel/behavior systerm

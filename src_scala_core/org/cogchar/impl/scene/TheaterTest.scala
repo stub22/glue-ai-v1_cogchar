@@ -47,7 +47,7 @@ object TheaterTest extends BasicDebugger {
 		
 		val dummySpeechChanID = PerfChannelNames.getOutChanIdent_SpeechMain();
 		val dtc = new DummyTextChan(dummySpeechChanID);
-		thtr.registerChannel(dtc);
+		thtr.registerPerfChannel(dtc);
 
 		// val triplesFlexPath = "org/cogchar/test/assembly/ca_test.ttl";
 		// val triplesFlexPath = "../org.cogchar.bundle.render.resources/src/main/resources/behavior/bhv_nugget_02.ttl";
