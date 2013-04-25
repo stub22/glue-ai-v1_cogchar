@@ -33,7 +33,7 @@ import org.appdapter.core.item.{Item};
 import scala.collection.mutable.HashMap;
 
 import org.cogchar.api.perform.{Media, PerfChannel};
-import org.cogchar.impl.perform.{DummyTextChan, FancyTime, ChannelNames};
+import org.cogchar.impl.perform.{FancyTime};
 
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
@@ -147,7 +147,7 @@ object Whackamole extends BasicDebugger {
 	}	
 }
 
-// Want to account for agents, channels, behaviors - commands, scenes, questItems - all as "boxes"
+// Want to account for agents, repos, channels, scenes, questItems - all as "boxes"
 class WhackBox extends FullBox[WhackTrig] {
 	
 }

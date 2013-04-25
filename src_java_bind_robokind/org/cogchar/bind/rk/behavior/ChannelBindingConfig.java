@@ -20,8 +20,8 @@ import org.appdapter.core.name.Ident;
 import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.speech.SpeechService;
 
-import org.cogchar.impl.perform.ChannelSpec;
-import org.cogchar.impl.perform.ChannelNames;
+import org.cogchar.impl.channel.FancyChannelSpec;
+import org.cogchar.impl.perform.PerfChannelNames;
 /**
  * Current approach requires us to define, for each "Type" of channel:
  * An ChannelType-enum value yielding a build-time URI with a Java service class handle.
@@ -38,7 +38,7 @@ public class ChannelBindingConfig {
     private ChannelType myChannelType;
     private String		myOSGiFilterString;
 
-	public void initFromChannelSpec(ChannelSpec cspec) { 
+	public void initFromChannelSpec(FancyChannelSpec cspec) { 
 		myChannelID = cspec.getChannelID();
 		myChannelType = ChannelType.getByTypeID(cspec.getChannelTypeID());
 		myOSGiFilterString = cspec.getOSGiFilterString();
@@ -93,8 +93,8 @@ public class ChannelBindingConfig {
         return hash;
     }
 	
-	private static Ident	CHANTYPE_SPEECH_OUT = ChannelNames.getOutChanIdent_SpeechMain();
-	private static Ident	CHANTYPE_ANIM_OUT = ChannelNames.getOutChanIdent_AnimBest();
+	private static Ident	CHANTYPE_SPEECH_OUT = PerfChannelNames.getOutChanIdent_SpeechMain();
+	private static Ident	CHANTYPE_ANIM_OUT = PerfChannelNames.getOutChanIdent_AnimBest();
     
     public static enum ChannelType{
         SPEECH(CHANTYPE_SPEECH_OUT, SpeechService.class), 

@@ -23,7 +23,8 @@ import org.appdapter.impl.store.{FancyRepo};
 import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
-import org.cogchar.impl.perform.{ChannelSpec, ChannelNames};
+import org.cogchar.impl.perform.{PerfChannelNames};
+import org.cogchar.impl.channel.{FancyChannelSpec};
 import org.cogchar.impl.scene.{SceneSpec, SceneBook};
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.platform.util.ClassLoaderUtils;
@@ -70,14 +71,14 @@ object BehavMasterConfigTest extends BasicDebugger {
 		new OfflineXlsSheetRepoSpec(BMC_WORKBOOK_PATH, BMC_NAMESPACE_SHEET_NAME, BMC_DIRECTORY_SHEET_NAME, fileResModelCLs);
 	}
   
-	def readChannelSpecs(repoClient : RepoClient, chanGraphQN : String) : java.util.Set[ChannelSpec] = {
-		val specSet = new java.util.HashSet[ChannelSpec]();
+	def readChannelSpecs(repoClient : RepoClient, chanGraphQN : String) : java.util.Set[FancyChannelSpec] = {
+		val specSet = new java.util.HashSet[FancyChannelSpec]();
 		val objectsFound : java.util.Set[Object] = repoClient.assembleRootsFromNamedModel(chanGraphQN);
 		if (objectsFound != null) {
 			import scala.collection.JavaConversions._;
 			for (o <- objectsFound) {
 				o match {
-					case cspec : ChannelSpec => specSet.add(cspec)
+					case cspec : FancyChannelSpec => specSet.add(cspec)
 					case _ => getLogger().warn("Unexpected object found in {} = {}", chanGraphQN, o);
 				}
 			}
