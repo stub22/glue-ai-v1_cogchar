@@ -262,7 +262,7 @@ object RepoClientTester {
 			})
 		resultJList
 	}	
-	import org.cogchar.impl.perform.ChannelSpec;
+	import org.cogchar.impl.channel.FancyChannelSpec;
 	def assembleChannelSpecs (rc : RepoClient) : java.util.Set[Object] = {
 		rc.assembleRootsFromNamedModel("ccrt:chan_sheet_AZR50")
 	}

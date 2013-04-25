@@ -23,7 +23,7 @@ import org.appdapter.core.item.{Item};
 import org.appdapter.help.repo.{RepoClient}
 
 import org.cogchar.api.perform.{Media, PerfChannel};
-import org.cogchar.impl.perform.{DummyTextChan, FancyTime, ChannelNames};
+import org.cogchar.impl.perform.{DummyTextChan, FancyTime, PerfChannelNames};
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
 /**  
@@ -40,12 +40,12 @@ object TheaterTest extends BasicDebugger {
 		
 	def test() : Unit = {
 		val dbgCharName="PhonyChar";
-		val dbgCharID = new FreeIdent(ChannelNames.NS_ccScnInst + dbgCharName, dbgCharName);
+		val dbgCharID = new FreeIdent(PerfChannelNames.NS_ccScnInst + dbgCharName, dbgCharName);
 		val		thtr = new Theater(dbgCharID);
 
 		// logInfo("Tricky: " + ChannelNames.getNumericChannelName("hmm", 22, 4));
 		
-		val dummySpeechChanID = ChannelNames.getOutChanIdent_SpeechMain();
+		val dummySpeechChanID = PerfChannelNames.getOutChanIdent_SpeechMain();
 		val dtc = new DummyTextChan(dummySpeechChanID);
 		thtr.registerChannel(dtc);
 
@@ -56,7 +56,7 @@ object TheaterTest extends BasicDebugger {
 		
 		val sceneBook : SceneBook = thtr.getSceneBook;
 		val ruledTestSceneName = "scn_004";
-		val ruledTestSceneID : Ident = new FreeIdent(ChannelNames.NS_ccScnInst + ruledTestSceneName, ruledTestSceneName)
+		val ruledTestSceneID : Ident = new FreeIdent(PerfChannelNames.NS_ccScnInst + ruledTestSceneName, ruledTestSceneName)
 		val ruledTestSS : SceneSpec = sceneBook.findSceneSpec(ruledTestSceneID);
 		
 		val aSceneSpec : SceneSpec = sceneBook.allSceneSpecs().head;

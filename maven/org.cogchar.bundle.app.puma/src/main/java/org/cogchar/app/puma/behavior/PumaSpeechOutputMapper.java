@@ -20,7 +20,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
-import org.cogchar.impl.perform.ChannelNames;
+import org.cogchar.impl.perform.PerfChannelNames;
 import org.cogchar.impl.scene.Theater;
 import org.osgi.framework.BundleContext;
 
@@ -40,7 +40,7 @@ public class PumaSpeechOutputMapper extends BasicDebugger {
 	}
 	
 	public void connectSpeechOutputSvcs(BundleContext bundleCtx, Theater t) {
-		Ident speechChanIdent = ChannelNames.getOutChanIdent_SpeechMain();
+		Ident speechChanIdent = PerfChannelNames.getOutChanIdent_SpeechMain();
 		
 		mySOC = new SpeechOutputClient(bundleCtx, speechChanIdent);
 		t.registerChannel(mySOC);
