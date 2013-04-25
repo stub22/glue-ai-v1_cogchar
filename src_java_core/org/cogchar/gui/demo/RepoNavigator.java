@@ -93,8 +93,8 @@ public class RepoNavigator extends DemoNavigatorCtrl {
 			return;
 		dest.removeAll();
 		dest.add(src);
-		dest.setNsPrefixes(src.getNsPrefixMap());	
-        //dest.getGraph().getPrefixMapping().equals(obj)
+		dest.setNsPrefixes(src.getNsPrefixMap());
+		// dest.getGraph().getPrefixMapping().equals(obj)
 		dest.setNsPrefix("", src.getNsPrefixURI(""));
 		dest.setNsPrefix("#", src.getNsPrefixURI("#"));
 	}
@@ -139,8 +139,7 @@ public class RepoNavigator extends DemoNavigatorCtrl {
 			}
 		} else {
 			// dnames > 0
-			if (snames.size() == 0) 
-			{
+			if (snames.size() == 0) {
 				// some graphs might need cleared?
 				for (String nym : dnames) {
 					sdest.getNamedModel(nym).removeAll();
@@ -189,9 +188,11 @@ public class RepoNavigator extends DemoNavigatorCtrl {
 		Class repoBoxClass = MutableScreenBoxForImmutableRepo.class;
 		RepoTriggers.DumpStatsTrigger dumpStatsTrigger = new RepoTriggers.DumpStatsTrigger();
 		MutableScreenBoxForImmutableRepo r1Box = (MutableScreenBoxForImmutableRepo) makeRepoBoxImpl(repoBoxClass, dumpStatsTrigger, labeled, inner);
-		btf.attachTrigger(r1Box, new DatabaseTriggers.InitTrigger(), "openDB");
-		btf.attachTrigger(r1Box, new RepoTriggers.OpenTrigger(), "openMetaRepo");
-		btf.attachTrigger(r1Box, new RepoTriggers.InitTrigger(), "initMetaRepo");
+		if (inner instanceof Repo.Stored) {
+			btf.attachTrigger(r1Box, new DatabaseTriggers.InitTrigger(), "openDB");
+			btf.attachTrigger(r1Box, new RepoTriggers.OpenTrigger(), "openMetaRepo");
+			btf.attachTrigger(r1Box, new RepoTriggers.InitTrigger(), "initMetaRepo");
+		}
 		btf.attachTrigger(r1Box, new RepoTriggers.UploadTrigger(), "upload into MetaRepo");
 		btf.attachTrigger(r1Box, new RepoTriggers.QueryTrigger(), "query repo");
 		btf.attachTrigger(r1Box, new ReloadTrigger(inner), "reload repo");
@@ -247,7 +248,7 @@ public class RepoNavigator extends DemoNavigatorCtrl {
 	}
 	
 	public static RepoNavigator makeRepoNavigatorCtrl(String[] args) {
-		RepoSubBoxFinder rsbf = new RepoSubBoxFinder() {			
+		RepoSubBoxFinder rsbf = new RepoSubBoxFinder() {
 			@Override
 			public Box findGraphBox(RepoBox parentBox, String graphURI) {
 				
@@ -370,8 +371,7 @@ public class RepoNavigator extends DemoNavigatorCtrl {
 		}
 	}
 	
-	static class MutableScreenBoxForImmutableRepo<TT extends Trigger<? extends RepoBoxImpl<TT>>>
-	extends RepoRepoBoxImpl<TT> implements MutableRepoBox<TT> {
+	static class MutableScreenBoxForImmutableRepo<TT extends Trigger<? extends RepoBoxImpl<TT>>> extends RepoRepoBoxImpl<TT> implements MutableRepoBox<TT> {
 		final Repo.WithDirectory myRepoWD;
 		final String myDebugName;
 		public List<MutableRepoBox> childBoxes = new ArrayList<MutableRepoBox>();
@@ -515,7 +515,7 @@ public class RepoNavigator extends DemoNavigatorCtrl {
 		public String getUploadHomePath() {
 			return super.getUploadHomePath();
 		}
-
+		
 	}
 	
 	/**

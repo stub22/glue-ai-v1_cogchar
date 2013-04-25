@@ -143,7 +143,6 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
 
   // TODO synchronize
   def ensureUpdated() = {
-    org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
     OmniLoaderRepo.synchronized {
       this.synchronized {
         if (!this.isUpdated) {
