@@ -129,6 +129,15 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
     val newDataset = getMainQueryDataset();
 
   }
+  
+  def reloadSingleModel(modelName: String) = {
+    val repo = myRepoSpec.makeRepo();
+    val oldDataset = getMainQueryDataset();
+    val myPNewMainQueryDataset = repo.getMainQueryDataset();
+    RepoNavigator.replaceDatasetElements(oldDataset, myPNewMainQueryDataset, modelName)
+  }
+  
+
 
   override def toString(): String = {
     val dm = getDirectoryModel();
@@ -140,10 +149,9 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
   override def loadSheetModelsIntoMainDataset() = {
     ensureUpdated;
   }
-
-  // TODO synchronize
   def ensureUpdated() = {
-    OmniLoaderRepo.synchronized {
+    //OmniLoaderRepo.synchronized 
+    {
       this.synchronized {
         if (!this.isUpdated) {
           traceHere("Loading OnmiRepo to make UpToDate")
@@ -259,7 +267,13 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
 					?model a ccrt:PipelineModel;
 				}
 		"""
-
+    
+    val msqText2 = """
+			select ?model 
+				{
+					?model a ccrt:PipelineModel;
+				}
+		"""
     val msRset = QueryHelper.execModelQueryWithPrefixHelp(myDirectoryModel, msqText);
     import scala.collection.JavaConversions._;
     while (msRset.hasNext()) {
@@ -267,18 +281,22 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
 
       //val repoRes : Resource = qSoln.getResource("repo");
       val modelRes = qSoln.get("model");
-      val modelName = modelRes.asResource().asNode()
-
+      val modelName = modelRes.asResource().asNode().getURI
+      
       val dbgArray = Array[Object](modelRes, modelName);
-      getLogger.warn("modelName={}, modelName={}", dbgArray);
+      getLogger.warn("DerivedModelsIntoMainDataset modelRes={}, modelName={}", dbgArray);
+      //val msRset = QueryHelper.execModelQueryWithPrefixHelp(mainDset.getNamedModel(modelName), msqText2);
+      
+      
+     // DerivedGraphSpecReader.queryDerivedGraphSpecs(getRepoClient,DerivedGraphSpecReader.PIPELINE_QUERY_QN,modelName)
     }
   }
-  class SimplistSpec(var wd: Repo.WithDirectory) extends RepoSpec {
+  class SimplistSpec(val wd: Repo.WithDirectory) extends RepoSpec {
     override def makeRepo(): Repo.WithDirectory = {
       wd;
     }
     override def toString(): String = {
-      "[SimplestSpec: " + wd + "]";
+      "SimplestSpec[" + wd + "]";
     }
   }
 }

@@ -95,10 +95,44 @@ public class RepoNavigator extends DemoNavigatorCtrl {
 		dest.add(src);
 		dest.setNsPrefixes(src.getNsPrefixMap());
 		// dest.getGraph().getPrefixMapping().equals(obj)
-		dest.setNsPrefix("", src.getNsPrefixURI(""));
-		dest.setNsPrefix("#", src.getNsPrefixURI("#"));
+		//if (src.getGraph() )dest.setNsPrefix("", src.getNsPrefixURI(""));
+		///dest.setNsPrefix("#", src.getNsPrefixURI("#"));
 	}
-	
+    
+	public static void replaceDatasetElements(Dataset dest, Dataset src, String onlyModel) { 
+		if (!(dest instanceof DataSource)) {
+			theLogger.error("Destination is not a datasource! " + dest.getClass() + " " + dest);
+			return;
+		}
+		DataSource sdest = (DataSource) dest;
+        boolean onSrc = true,onDest = true;
+		if (!dest.containsNamedModel(onlyModel)) {
+            onSrc = false;
+            theLogger.warn("Orginal did not contain model" + onlyModel);
+            
+        }
+		if (!src.containsNamedModel(onlyModel)) {
+            onDest = false;
+            theLogger.warn("New did not contain model " + onlyModel);
+        }
+        if (onSrc && onDest) {
+            Model destModel = src.getNamedModel(onlyModel);				
+            Model srcModel = dest.getNamedModel(onlyModel);           
+            replaceModelElements(destModel, srcModel);    
+            theLogger.info("Replaced model " + onlyModel);
+            return;        
+        }
+        if (onSrc) {
+            sdest.addNamedModel(onlyModel, src.getNamedModel(onlyModel));
+            theLogger.info("Added model " + onlyModel);
+            return;
+        }
+        if (onDest) {
+             dest.getNamedModel(onlyModel).removeAll();
+            theLogger.info("clearing model " + onlyModel);
+            return;
+        }
+    }
 	public static void replaceDatasetElements(Dataset dest, Dataset src) {
 		if (!(dest instanceof DataSource)) {
 			theLogger.error("Destination is not a datasource! " + dest.getClass() + " " + dest);
