@@ -218,7 +218,8 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
   }
 
   def traceHere(str: String) {
-    println("*!*!*! OmniLoaderRepo: " + str)
+	  getLogger().debug(str)
+    // println("*!*!*! OmniLoaderRepo: " + str)
   }
   override def getDirectoryModel(): Model = {
     //myNewDirectoryModel;
