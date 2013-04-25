@@ -25,7 +25,6 @@ import org.cogchar.api.perform.Performance.Instruction;
  * @author Stu B. <www.texpedient.com>
  */
 public class BasicChannel extends BasicDebugger implements Channel {
-// <Cursor, M extends Media<Cursor>, WorldTime> extends BasicDebugger implements Channel<Cursor, M, WorldTime> {
 
 	private Ident myIdent;
 

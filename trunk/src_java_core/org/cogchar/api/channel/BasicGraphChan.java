@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.perform;
+package org.cogchar.api.channel;
 
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.channel.BasicChannel;
