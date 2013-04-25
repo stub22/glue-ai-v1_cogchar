@@ -15,6 +15,19 @@
  */
 
 package org.cogchar.impl.perform
+
+import org.cogchar.impl.channel.FancyChannelSpec
+import org.appdapter.core.name.{Ident, FreeIdent};
+import org.appdapter.core.item.{Item};
+import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
+
+import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.Mode;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.rdf.model.Resource;
+import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
+
 import  org.cogchar.api.perform.{Media, PerfChannel, BasicPerfChan, Performance, BasicPerformance, BasicPerformanceListener, BasicPerformanceEvent}
 
 /**
@@ -44,4 +57,15 @@ trait FancyPerformance  { //  extends Performance[_, _, _ <: FancyTime] {
 	// We cannot narrow the type of this type param in the overrides.  We can only widen it!
 	// So, this def winds up being no better than passing in Object as the argument.
 	// def markFancyCursor[Cur](c : Cur, notify : Boolean) : Unit
+}
+class FancyPerfChanSpec  extends ChannelSpec {
+	var		myDetails : String = "EMPTY";
+	override def getFieldSummary() : String = {
+		return super.getFieldSummary() + ", details=" + myDetails;
+	}
+	override def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
+		super.completeInit(configItem, reader, assmblr, mode)
+		myDetails = reader.readConfigValString(configItem.getIdent(), PerfChannelNames.P_details, configItem, null);
+	}
+
 }

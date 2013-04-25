@@ -39,7 +39,7 @@ import org.appdapter.core.item.{ Item };
 import scala.collection.mutable.HashMap;
 
 import org.cogchar.api.perform.{ Media, PerfChannel };
-import org.cogchar.impl.perform.{ DummyTextChan, FancyTime, ChannelNames };
+import org.cogchar.impl.perform.{ DummyTextChan, FancyTime, PerfChannelNames };
 
 import org.cogchar.platform.trigger.{
   CogcharScreenBox,

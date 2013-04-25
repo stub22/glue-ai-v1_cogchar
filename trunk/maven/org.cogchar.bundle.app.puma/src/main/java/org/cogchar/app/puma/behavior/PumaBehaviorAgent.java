@@ -29,7 +29,6 @@ import org.cogchar.bind.rk.robot.client.RobotAnimClient;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
-import org.cogchar.impl.perform.ChannelNames;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.scene.SceneBook;
 import org.cogchar.impl.scene.Theater;

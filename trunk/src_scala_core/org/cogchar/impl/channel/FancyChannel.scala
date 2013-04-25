@@ -1,5 +1,5 @@
 /*
- *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
+ *  Copyright 2013 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,15 +14,12 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.perform
-
-import  org.cogchar.api.perform.{Media, PerfChannel, Performance}
-// , BasicTextChannel, BasicFramedChannel, BasicTextPerformance, BasicFramedPerformance};
-
-import org.appdapter.api.module.Module.State;
-import org.appdapter.core.log.{BasicDebugger};
+package org.cogchar.impl.channel
 import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
+
+import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
+
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 
@@ -31,28 +28,53 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
+import org.cogchar.name.channel.ChannelNames;
+
+/**
+ * @author Stu B. <www.texpedient.com>
+ */
+
+trait FancyChannel {
+
+}
+
 // The ChannelSpec has not advanced beyond a URI rendevous point, which SceneSpecs can refer to.
 // Through 2012 our behavior demos relied on PUMA to inject actual channels with matching URIs into a Theater.
 
-class ChannelSpec extends KnownComponentImpl {
-	var		myDetails : String = "EMPTY";
+class FancyChannelSpec extends KnownComponentImpl {
 	var		myOsgiFilterString : String = "NONE";
 	var		myChanType : Ident = null;
 	
 	override def getFieldSummary() : String = {
-		return super.getFieldSummary() + ", details=" + myDetails + ", osgiFilteringString=" + myOsgiFilterString + 
+		return super.getFieldSummary() + ", osgiFilteringString=" + myOsgiFilterString + 
 				", chanType=" + myChanType;
 	}
 	def getOSGiFilterString() = myOsgiFilterString;
 	def getChannelTypeID() = myChanType;
 	def getChannelID() = getIdent();
+	
+	
+	def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
+		
+		myOsgiFilterString = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_osgiFilterString, configItem, null);
+		
+		val chanTypePropID = reader.getConfigPropertyIdent(configItem, configItem.getIdent(), ChannelNames.P_channelType);
+		val linkedChanTypes : java.util.Set[Item] = configItem.getLinkedItemSet(chanTypePropID);
+		
+		getLogger().info("ChannelSpec has linkedChanTypes: " + linkedChanTypes);
+		if (linkedChanTypes.size() == 1) {
+			myChanType =  linkedChanTypes.iterator.next.asInstanceOf[Ident]
+		}		
+	}	
 }
-class ChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[ChannelSpec](builderConfRes) {
+class FancyChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[FancyChannelSpec](builderConfRes) {
 
-	override protected def initExtendedFieldsAndLinks(cs: ChannelSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
+	override protected def initExtendedFieldsAndLinks(cs: FancyChannelSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
 		getLogger().warn("ChannelSpecBuilder.initExtendedFieldsAndLinks");
 		val reader = getReader();
-		cs.myDetails = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_details, configItem, null);
+		cs.completeInit(configItem, reader, assmblr, mode)
+		// cs.myDetails = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_details, configItem, null);
+		/*
 		cs.myOsgiFilterString = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_osgiFilterString, configItem, null);
 		val chanTypePropID = reader.getConfigPropertyIdent(configItem, configItem.getIdent(), ChannelNames.P_channelType);
 		val linkedChanTypes : java.util.Set[Item] = configItem.getLinkedItemSet(chanTypePropID);
@@ -61,5 +83,6 @@ class ChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingCompon
 		if (linkedChanTypes.size() == 1) {
 			cs.myChanType =  linkedChanTypes.iterator.next.asInstanceOf[Ident]
 		}
+		*/
 	}
 }

@@ -31,14 +31,14 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import org.cogchar.name.dir.NamespaceDir;
+import org.cogchar.name.channel.ChannelNames;
 
-object ChannelNames extends org.appdapter.api.trigger.BoxAssemblyNames {
+
+object PerfChannelNames extends org.appdapter.api.trigger.BoxAssemblyNames with ChannelNames {
 	val		NS_ccScn =	NamespaceDir.NS_ccScn // "http://www.cogchar.org /schema/scene#";
 	val		NS_ccScnInst = NamespaceDir.NS_ccScnInst // "http://www.cogchar.org /schema/scene/instance#";
 
 	val		P_details = NS_ccScn + "details";
-	val		P_osgiFilterString = NamespaceDir.NS_CCRT_RT + "OSGiFilter";
-	val		P_channelType = NamespaceDir.NS_CCRT_RT + "chanType";
 	
 	val		N_PRE_verbalOut =   "speechOut";
 	val		N_PRE_animOut	=	"animOut";
