@@ -43,7 +43,7 @@ class SteppingBehavior (val mySBS: SteppingBehaviorSpec) extends Behavior(mySBS)
 
 	override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
 		if (myNextStepIndex >= mySBS.myStepSpecs.size) {
-			getLogger().debug("Reached end of its steps at #{} self-requesting module stop on : {}", myNextStepIndex, this);
+			getLogger().debug("Reached end of its steps at #{} self-requesting module stop on : {}", myNextStepIndex, mySBS.getIdent);
 			markStopRequested();
 			getLogger().info("Finished requesting stop, so this should be my last runOnce().");
 		} else {

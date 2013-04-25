@@ -33,26 +33,38 @@ trait Guard {
 // Note that the guard itself is immutable (so far) and in principle could be used by many scenes.
 // So far, the separation of the Guard and the spec is unnecessarily formal in this case, but that
 // will probably help us soon.
-class PerfMonitorGuard(mySpec : PerfMonGuardSpec) extends Guard {
+class PerfMonitorGuard(mySpec : PerfMonGuardSpec) extends BasicDebugger with Guard {
 	override def isSatisfied(scn : BScene) : Boolean = {
 		scn match {
 			case fbs : FancyBScene => {
 				val perfStatus = fbs.getPerfStatusForStep(mySpec.myUpstreamStepID)
-				perfStatus == mySpec.myStateToMatch 
+				// FIXME:  We actually need to check for any state "equal or later" than the stateToMatch.
+				if ( (perfStatus == mySpec.myStateToMatchOrExceed) ||
+						 ((mySpec.myStateToMatchOrExceed == Performance.State.PLAYING) 
+						  && (perfStatus == Performance.State.STOPPING))) {
+					getLogger().debug("Treating perf-state {} as a match for guard {}", perfStatus,  mySpec )
+					true
+				} else {
+					getLogger().debug("Perf-state {} is not a match for guard {}", perfStatus,  mySpec )
+					false
+				}
 			}
 			case  _ => {
 				throw new RuntimeException("Coding error:  PerfMonitorGuard asked to check on a non-fancy scene")
 			}			
 		}
 	}
+	override def toString() : String = {
+		"PerfMonitorGuard[spec=" + mySpec + "]";
+	}	
 }
 trait GuardSpec {
 	def makeGuard : Guard
 }
-class PerfMonGuardSpec(val myUpstreamStepID : Ident, val myStateToMatch : Performance.State) extends GuardSpec {
+class PerfMonGuardSpec(val myUpstreamStepID : Ident, val myStateToMatchOrExceed : Performance.State) extends GuardSpec {
 	override def makeGuard  = 	new PerfMonitorGuard(this)
 	override def toString() : String = {
-		"PerfMonGuardSpec[upStepID=" + myUpstreamStepID + ", stateToMatch=" + myStateToMatch + "]"
+		"PerfMonGuardSpec[upStepID=" + myUpstreamStepID + ", stateToMatchOrExceed=" + myStateToMatchOrExceed + "]"
 	}	
 }
 /** If the StepExec has any internal *state*, then it can only be used once, in one scene.
@@ -71,6 +83,7 @@ class GuardedStepExec(val myStepSpec : GuardedStepSpec, val myActionExec : Behav
 	def checkAllGuardsSatisfied(scn: BScene) : Boolean = {
 		for (g <- myGuards) {
 			if (!g.isSatisfied(scn)) {
+				getLogger().debug("Guard is not satisfied: {}", g)
 				return false
 			}
 		}
@@ -81,6 +94,7 @@ class GuardedStepExec(val myStepSpec : GuardedStepSpec, val myActionExec : Behav
 		if (!checkAllGuardsSatisfied(s)) {
 			return false
 		}
+		getLogger().info("All {} guards are satisfied, now proceeding with step {}", myGuards.size, myStepSpec.myOptID)
 		val perfList : List[FancyPerformance] = myActionExec.perform(s)
 		val stepSpecID = myStepSpec.myOptID.get
 		// We can't truly support multiple-performances yet (which happens if a step is bound to multiple output
@@ -90,7 +104,7 @@ class GuardedStepExec(val myStepSpec : GuardedStepSpec, val myActionExec : Behav
 		}
 		for (perf <- perfList) {
 			// This registration allows the perf to satisfy guards of other steps, who find it by looking under
-			// our stepSpecID - for now.
+			// our stepSpecID - for now.1
 			registerPerfWithScene(s, stepSpecID, perf)
 		}
 		true
