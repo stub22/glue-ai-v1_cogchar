@@ -21,6 +21,7 @@ import java.util.List;
 /**
  
  * A Channel is a handle to a useful symbol/signal stream resource producer/consumer.  
+ * Either/either, both/both.  Hello Algebra!
  * @author Stu B. <www.texpedient.com>
  */
 
