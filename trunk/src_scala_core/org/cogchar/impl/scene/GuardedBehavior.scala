@@ -38,6 +38,7 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
 import scala.collection.mutable.HashSet
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
  */
 
 class GuardedBehavior (val myGBS: GuardedBehaviorSpec) extends Behavior(myGBS) {
@@ -67,7 +68,7 @@ class GuardedBehavior (val myGBS: GuardedBehaviorSpec) extends Behavior(myGBS) {
 		}
 		// TODO:  Check for "finalStep" processed without other steps necessary.
 		if (myPendingStepExecs.size == 0) {
-			getLogger().debug("Used up all my steps, so self-requesting module stop on : {}", getIdent);
+			getLogger().debug("Used up all my steps, so self-requesting module stop on : {}", myGBS.getIdent);
 			markStopRequested();
 			getLogger().info("Finished requesting stop, so this should be my last runOnce().");			
 		}
