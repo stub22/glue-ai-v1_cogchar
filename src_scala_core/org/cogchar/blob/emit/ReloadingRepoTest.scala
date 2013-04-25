@@ -103,7 +103,6 @@ class OmniLoaderSpec(var myDebugName: String, dirModelURI: String)
 class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, directoryModel: Model, fmcls: java.util.List[ClassLoader])
   extends XLSXSheetRepo(directoryModel: Model, fmcls: java.util.List[ClassLoader]) {
   //var myNewDirectoryModel = myDirectoryModel;
-  var myNewMainQueryDataset: Dataset = null
 
   override def getNamedModel(ifNUllReload: Ident): Model = {
     if (ifNUllReload != null) {
@@ -121,23 +120,17 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
     val myPNewMainQueryDataset = repo.getMainQueryDataset();
     RepoNavigator.replaceModelElements(oldDirModel, myNewDirectoryModel)
     RepoNavigator.replaceDatasetElements(oldDataset, myPNewMainQueryDataset)
-    //    replaceInMemoryModel();
-    oldDirModel.removeAll();
-    oldDirModel.union(myNewDirectoryModel);
-    oldDataset.listNames()
-    reloadMainDataset();
-    val newDataset = getMainQueryDataset();
-
+    //reloadMainDataset();
   }
   
   def reloadSingleModel(modelName: String) = {
     val repo = myRepoSpec.makeRepo();
     val oldDataset = getMainQueryDataset();
     val myPNewMainQueryDataset = repo.getMainQueryDataset();
+    getLogger.info("START: Trying to do reloading of model named.. " + modelName)
     RepoNavigator.replaceDatasetElements(oldDataset, myPNewMainQueryDataset, modelName)
+    getLogger.info("START: Trying to do reloading of model named.. " + modelName)
   }
-  
-
 
   override def toString(): String = {
     val dm = getDirectoryModel();
@@ -234,26 +227,9 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
     super.getDirectoryModel
   }
 
-  override def makeMainQueryDataset(): Dataset = {
-    if (myNewMainQueryDataset == null) {
-      myNewMainQueryDataset = DatasetFactory.create() // becomes   createMem() in later Jena versions.
-    }
-    myNewMainQueryDataset;
-  }
-
   override def getMainQueryDataset(): Dataset = {
     ensureUpdated;
-    if (myNewMainQueryDataset != null) {
-      myNewMainQueryDataset
-    } else {
-      super.getMainQueryDataset();
-    }
-  }
-
-  def reloadMainDataset() = {
-    myNewMainQueryDataset = null;
-    isUpdated = false
-    loadSheetModelsIntoMainDataset();
+    super.getMainQueryDataset();
   }
 
   def loadDerivedModelsIntoMainDataset() = {
