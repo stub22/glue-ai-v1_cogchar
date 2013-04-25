@@ -52,17 +52,17 @@ public class OSGiTheater extends ServiceClassListener<Scene> {
     }
 
     @Override
-    protected void addService(Scene t) {
+    protected void addService(Scene matchingScene) {
         // called by framework
-        myScenes.add(t);
-        System.out.println("OSGiTheater added scene:" + t);
+        myScenes.add(matchingScene);
+        System.out.println("OSGiTheater added scene:" + matchingScene);
     }
 
     @Override
-    protected void removeService(Scene t) {
+    protected void removeService(Scene matchingScene) {
         // called by framework
-        myScenes.remove(t);
-        System.out.println("OSGiTheater removed scene:" + t);
+        myScenes.remove(matchingScene);
+        System.out.println("OSGiTheater removed scene:" + matchingScene);
     }
 
     @Override

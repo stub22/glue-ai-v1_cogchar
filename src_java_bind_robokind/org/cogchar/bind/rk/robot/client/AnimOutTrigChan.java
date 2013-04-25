@@ -110,8 +110,11 @@ Do not use any listeners, they are not implemented in the RemoteAnimationJob.
 		AnimationJob jobToCheck = getOutJobOrNull(perf);
 		if (jobToCheck != null) {
 			long remainingTime = jobToCheck.getRemainingTime(TimeUtils.now());
+			getLogger().debug("Animation remaining time is {}", remainingTime);
 			// Optional Todo:  Use this remaining time to update the current-position-cursor of the performance.
-			if (remainingTime < 0) {
+			// Stu is using <= 0 rather than <0 , in case impl changes (0 time left should mean over, right?) - double check with Matt.
+			if (remainingTime <= 0) {
+				getLogger().debug("Animation remaining time is {}, which is <= 0, so perf is done.", remainingTime);
 				finished = true;
 			}
 		} else {
@@ -119,7 +122,7 @@ Do not use any listeners, they are not implemented in the RemoteAnimationJob.
 			finished = true;
 		}
 		if (finished) {
-			getLogger().info("Marking performance stopped");
+			getLogger().info("Marking performance [{}] stopped", perf);
 			markPerfStoppedAndForget(perf);
 		}
 	}	
