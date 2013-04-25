@@ -20,6 +20,10 @@ import org.cogchar.api.channel.Channel;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * A GraphChannel is used to read, write, and listen for updates on a particular graph in a repo.
+ * Because it is a Channel, it has its own URI, and it is managable via a JFlux lifecycle.
+ * Behavior features should work through GraphChannels rather than directly through repos.
  */
 
 public interface GraphChannel extends Channel {

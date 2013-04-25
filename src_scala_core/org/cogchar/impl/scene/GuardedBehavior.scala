@@ -43,7 +43,34 @@ import scala.collection.mutable.HashSet
 class GuardedBehavior (val myGBS: GuardedBehaviorSpec) extends Behavior(myGBS) {
 	var myNextStepIndex : Int = 0;
 
+	import scala.collection.mutable.HashSet
+	
+	val myPendingStepExecs  = new HashSet[GuardedStepExec]()
+	
+	def makeStepExecs() {
+		for (gss <- myGBS.myStepSpecs) {
+			val gse = gss.makeStepExecutor.asInstanceOf[GuardedStepExec]
+			myPendingStepExecs.add(gse)
+		}
+	}
+	override protected def doStart(scn : BScene) {
+		super.doStart(scn)
+		makeStepExecs();
+	}
 	override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
+		val pendingList = myPendingStepExecs.toList
+		for (gse <- pendingList) {
+			val didIt = gse.proceed(scn, this)
+			if (didIt) {
+				myPendingStepExecs.remove(gse)
+			}
+		}
+		// TODO:  Check for "finalStep" processed without other steps necessary.
+		if (myPendingStepExecs.size == 0) {
+			getLogger().debug("Used up all my steps, so self-requesting module stop on : {}", getIdent);
+			markStopRequested();
+			getLogger().info("Finished requesting stop, so this should be my last runOnce().");			
+		}
 	}
 	override def getFieldSummary() : String = {
 		return  super.getFieldSummary() +  ", nextStepIndex=" + myNextStepIndex;
