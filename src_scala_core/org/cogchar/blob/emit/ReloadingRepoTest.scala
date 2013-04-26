@@ -15,6 +15,7 @@
  */
 
 package org.cogchar.blob.emit
+
 import org.appdapter.api.registry.VerySimpleRegistry;
 import org.appdapter.osgi.registry.RegistryServiceFuncs;
 
@@ -28,8 +29,23 @@ import org.appdapter.api.trigger.{
   Trigger,
   TriggerImpl
 };
+
+import org.appdapter.core.name.{ Ident, FreeIdent }
+import org.appdapter.core.store.{ Repo, InitialBinding }
+import org.appdapter.help.repo.{ RepoClient, RepoClientImpl, InitialBindingImpl }
+import org.appdapter.impl.store.{ FancyRepo };
+import org.appdapter.core.matdat.{ SheetRepo }
+import com.hp.hpl.jena.query.{ QuerySolution } // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
+import com.hp.hpl.jena.rdf.model.{ Model }
+import org.cogchar.impl.perform.{ PerfChannelNames };
+import org.cogchar.impl.channel.{ FancyChannelSpec };
+import org.cogchar.impl.scene.{ SceneSpec, SceneBook };
+import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.platform.util.ClassLoaderUtils;
+import org.osgi.framework.BundleContext;
+
 import org.appdapter.gui.demo.{ DemoNavigatorCtrl };
-import org.cogchar.gui.demo.{ RepoNavigator };
+import org.cogchar.gui.demo.{ RepoNavigator, RepoOper };
 
 import org.appdapter.scafun.{ Boxy, GoFish, FullBox, FullTrigger }
 
@@ -95,33 +111,40 @@ import org.cogchar.impl.trigger.Whackamole
 /**
  * Takes a directory model and uses Goog, Xlsx, Pipeline,CSV,.ttl,rdf sources and loads them
  */
-class OmniLoaderSpec(var myDebugName: String, dirModelURI: String)
+class OmniLoaderSpec_UnusedForNow(var myDebugName: String, var dirModelURI: String)
   extends RepoSpec {
 
   override def makeRepo(): OmniLoaderRepo = {
-    null
-  }
-}
-class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, directoryModel: Model, fmcls: java.util.List[ClassLoader])
-  extends XLSXSheetRepo(directoryModel: Model, fmcls: java.util.List[ClassLoader]) {
-  //var myNewDirectoryModel = myDirectoryModel;
+    if (dirModelURI.startsWith("xlsx:")) {
+      var stuff = dirModelURI.substring(5)
+      var v3: Array[String] = stuff.split('/')
+      //(new OfflineXlsSheetRepoSpec(v3[0],v3[1],v3[2])).makeRepo;     
+      null
 
-  override def getNamedModel(ifNUllReload: Ident): Model = {
-    if (ifNUllReload != null) {
-      super.getNamedModel(ifNUllReload)
+    } else if (dirModelURI.startsWith("goog:")) {
+      var stuff = dirModelURI.substring(5)
+      var v3: Array[String] = stuff.split('/')
+      //(new OfflineXlsSheetRepoSpec(v3[0],v3[1].toInt,v3[2].toInt)).makeRepo;     
+      null
     } else {
-      completeReloadFromSpec
       null
     }
   }
-  def completeReloadFromSpec() = {
+}
+
+
+class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, directoryModel: Model, fmcls: java.util.List[ClassLoader])
+  extends XLSXSheetRepo(directoryModel: Model, fmcls: java.util.List[ClassLoader])
+  with RepoOper.Reloadable {
+  
+  def reloadAllModels() = {
     val repo = myRepoSpec.makeRepo();
     val oldDataset = getMainQueryDataset();
     val oldDirModel = getDirectoryModel();
     val myNewDirectoryModel = repo.getDirectoryModel();
     val myPNewMainQueryDataset = repo.getMainQueryDataset();
-    RepoNavigator.replaceModelElements(oldDirModel, myNewDirectoryModel)
-    RepoNavigator.replaceDatasetElements(oldDataset, myPNewMainQueryDataset)
+    RepoOper.replaceModelElements(oldDirModel, myNewDirectoryModel)
+    RepoOper.replaceDatasetElements(oldDataset, myPNewMainQueryDataset)
     //reloadMainDataset();
   }
 
@@ -130,13 +153,13 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
     val oldDataset = getMainQueryDataset();
     val myPNewMainQueryDataset = repo.getMainQueryDataset();
     getLogger.info("START: Trying to do reloading of model named.. " + modelName)
-    RepoNavigator.replaceDatasetElements(oldDataset, myPNewMainQueryDataset, modelName)
+    RepoOper.replaceDatasetElements(oldDataset, myPNewMainQueryDataset, modelName)
     getLogger.info("START: Trying to do reloading of model named.. " + modelName)
   }
 
   override def toString(): String = {
-    val dm = getDirectoryModel();
-    "OmniLoaderRepo[name=" + myDebugName + ", dir=" + dm.size() + "Yet-TODO]";
+    val dm = getDirectoryModel();    
+    getClass.getSimpleName + "[name=" + myDebugName + ", dir=" + dm.size() + " setof=" + RepoOper.setOF(getMainQueryDataset.listNames) + "]";    
   }
 
   var isUpdated = false
@@ -166,14 +189,13 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
             traceHere("OnmiRepo Dir.size changed!  " + dirModelSize + " -> " + newModelSize)
           }
         } else {
-          traceHere("OnmiRepo was UpToDate")
+          //traceHere("OnmiRepo was UpToDate")
         }
-        if (popupWackamole) addToWhackmole()
+        if (OmniLoaderRepo.popupWackamole) addToWhackmole()
       }
     }
   }
 
-  var popupWackamole = false;
   var wasAdded = false;
   def addToWhackmole() = {
 
@@ -286,7 +308,20 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
   }
 }
 
+object ReloadingRepoTest {
+  def main(args: Array[String]) = {
+    val fileResModelCLs: java.util.List[ClassLoader] =
+      ClassLoaderUtils.getFileResourceClassLoaders(null, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
+    val repoSpec = new OnlineSheetRepoSpec(BehavMasterConfigTest.BMC_SHEET_KEY, BehavMasterConfigTest.BMC_NAMESPACE_SHEET_NUM, BehavMasterConfigTest.BMC_DIRECTORY_SHEET_NUM, fileResModelCLs);
+    val repo: OmniLoaderRepo  = repoSpec.makeRepo.asInstanceOf[OmniLoaderRepo];
+    repo.addToWhackmole();
+    java.lang.Thread.sleep(60000000);
+  }
+}
 object OmniLoaderRepo {
+
+  var popupWackamole = false;
+
   def ensureWhackamole(): RepoNavigator = {
     OmniLoaderRepo.synchronized {
       if (!isWhackamoleStarted) {
