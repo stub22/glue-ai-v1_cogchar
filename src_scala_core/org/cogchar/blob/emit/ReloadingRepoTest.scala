@@ -18,6 +18,8 @@ package org.cogchar.blob.emit
 import org.appdapter.api.registry.VerySimpleRegistry;
 import org.appdapter.osgi.registry.RegistryServiceFuncs;
 
+import org.appdapter.core.name.{ Ident, FreeIdent }
+
 import org.appdapter.api.trigger.{
   Box,
   BoxContext,
@@ -122,7 +124,7 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
     RepoNavigator.replaceDatasetElements(oldDataset, myPNewMainQueryDataset)
     //reloadMainDataset();
   }
-  
+
   def reloadSingleModel(modelName: String) = {
     val repo = myRepoSpec.makeRepo();
     val oldDataset = getMainQueryDataset();
@@ -219,7 +221,7 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
   }
 
   def traceHere(str: String) {
-	  getLogger().debug(str)
+    getLogger().debug(str)
     // println("*!*!*! OmniLoaderRepo: " + str)
   }
   override def getDirectoryModel(): Model = {
@@ -243,13 +245,7 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
 					?model a ccrt:PipelineModel;
 				}
 		"""
-    
-    val msqText2 = """
-			select ?model 
-				{
-					?model a ccrt:PipelineModel;
-				}
-		"""
+
     val msRset = QueryHelper.execModelQueryWithPrefixHelp(myDirectoryModel, msqText);
     import scala.collection.JavaConversions._;
     while (msRset.hasNext()) {
@@ -258,13 +254,26 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
       //val repoRes : Resource = qSoln.getResource("repo");
       val modelRes = qSoln.get("model");
       val modelName = modelRes.asResource().asNode().getURI
-      
+
       val dbgArray = Array[Object](modelRes, modelName);
+      loadPipeline(modelName)
       getLogger.warn("DerivedModelsIntoMainDataset modelRes={}, modelName={}", dbgArray);
       //val msRset = QueryHelper.execModelQueryWithPrefixHelp(mainDset.getNamedModel(modelName), msqText2);
-      
-      
-     // DerivedGraphSpecReader.queryDerivedGraphSpecs(getRepoClient,DerivedGraphSpecReader.PIPELINE_QUERY_QN,modelName)
+
+      // DerivedGraphSpecReader.queryDerivedGraphSpecs(getRepoClient,DerivedGraphSpecReader.PIPELINE_QUERY_QN,modelName)
+    }
+  }
+
+  def loadPipeline(pplnGraphQN: String) = {
+
+    val mainDset: DataSource = getMainQueryDataset().asInstanceOf[DataSource];
+    val rc = new RepoClientImpl(this, RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR, BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN)
+    val solList = DerivedGraphSpecReader.queryDerivedGraphSpecs(rc, DerivedGraphSpecReader.PIPELINE_QUERY_QN, pplnGraphQN);
+
+    for (solC <- solList) {
+      val pipeSpec = solC
+      val model = pipeSpec.makeDerivedModel(this)
+      mainDset.replaceNamedModel(pplnGraphQN, model)
     }
   }
   class SimplistSpec(val wd: Repo.WithDirectory) extends RepoSpec {
