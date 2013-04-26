@@ -35,7 +35,7 @@
             <artifactId>org.cogchar.bundle.render.resources</artifactId>
             <version>${project.version}</version>
         </dependency>
-		<!--
+		<!--  This drags along some HTTP-Client deps that we would rather not have in PUMA.
 		<dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.cogchar.bundle.bind.cogbot</artifactId>
