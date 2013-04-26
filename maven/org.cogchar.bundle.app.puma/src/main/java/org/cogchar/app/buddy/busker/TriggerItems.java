@@ -16,7 +16,6 @@
 package org.cogchar.app.buddy.busker;
 
 import java.util.List;
-import org.cogchar.app.puma.body.PumaDualBody;
 import org.cogchar.app.puma.behavior.PumaBehaviorAgent;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.platform.trigger.BoxSpace;
@@ -26,12 +25,12 @@ import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.platform.trigger.CommandBinding;
 import org.cogchar.platform.trigger.BasicActionBindingImpl;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.app.puma.behavior.DirectBehaviorAgent;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.blob.emit.RepoClientTester;
 import org.cogchar.blob.emit.RepoClientTester.CommandRec;
 
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 
@@ -86,13 +85,21 @@ public class TriggerItems {
 			pba.stopResetAndRecenter();
 		}
 	}	
-	public static class DangerYoga extends BehaviorTI {
-		@Override public void fireOnPBA(PumaBehaviorAgent pba) {
+	public static abstract class DirectBehaviorTI extends TriggerItem {
+		abstract void fireOnDBA(DirectBehaviorAgent dba);
+		@Override public void fire(CogcharScreenBox targetBox) {
+			logFiring(targetBox);
+			DirectBehaviorAgent dba = (DirectBehaviorAgent) targetBox;
+			fireOnDBA(dba);
+		}
+	}			
+	public static class DangerYoga extends DirectBehaviorTI {
+		@Override public void fireOnDBA(DirectBehaviorAgent pba) {
 			pba.playBuiltinAnimNow(BuiltinAnimKind.BAK_DANGER_YOGA);
 		}
 	}
-	public static class SayTheTime extends BehaviorTI {
-		@Override public void fireOnPBA(PumaBehaviorAgent pba) {
+	public static class SayTheTime extends DirectBehaviorTI {
+		@Override public void fireOnDBA(DirectBehaviorAgent pba) {
 			pba.sayTextNow("The time is now, " + System.currentTimeMillis());
 		}
 	}
@@ -110,7 +117,7 @@ public class TriggerItems {
 					getLogger().warn("Reloading behavior config FROM TEST FILE for char [" + pba + "]");
 					pba.loadBehaviorConfigFromTestFile(true);
 					getLogger().info("Restarting theater for char [" + pba + "]");
-					pba.startTheater();
+					pba.startTheater(null);
 				} catch (Throwable t) {
 					getLogger().error("Problem during ReloadBehavior_TI", t);
 				}

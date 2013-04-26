@@ -22,7 +22,6 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
-import org.cogchar.app.puma.behavior.PumaBehaviorAgent;
 import org.cogchar.app.puma.body.PumaBodyGateway;
 import org.cogchar.app.puma.body.PumaDualBody;
 import org.cogchar.bind.rk.robot.svc.*;
@@ -52,7 +51,7 @@ public class PumaBehaviorManager extends BasicDebugger {
 	
 	public void makeAgentForBody(BundleContext bunCtx, PumaRegistryClient pRegCli, PumaDualBody pdb, Ident agentID) { 
 		
-		PumaBehaviorAgent pbAgent = new PumaBehaviorAgent(agentID, myBehavCE);
+		DirectBehaviorAgent pbAgent = new DirectBehaviorAgent(agentID, myBehavCE);
 		RobotServiceContext  optLocalRobotSvcCtx = null;
 		PumaBodyGateway pBodGate = pdb.getBodyGateway();
 		if (pBodGate != null) {

@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cogchar.bind.rk.behavior;
+package org.cogchar.app.puma.behavior;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.cogchar.api.scene.Scene;
+import org.cogchar.bind.rk.behavior.SceneLifecycleDemo;
 import org.cogchar.impl.scene.Theater;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.ServiceClassListener;
@@ -71,4 +72,7 @@ public class OSGiTheater extends ServiceClassListener<Scene> {
         super.stop();
         myScenes.clear();
     }
+    public static Runnable makeTheaterRegRunnable(BundleContext context, OSGiTheater osgiTheater, final String key, final String val) {
+		return SceneLifecycleDemo.getRegistrationRunnable(context, OSGiTheater.class, osgiTheater, key, val);
+	}	
 }
