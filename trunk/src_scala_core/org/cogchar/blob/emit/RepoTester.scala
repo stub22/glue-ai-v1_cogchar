@@ -42,8 +42,8 @@ object RepoTester extends BasicDebugger {
 		getLogger().debug("Loading Sheet Models") 
 		shRepo.loadSheetModelsIntoMainDataset()
 		// Load the rest of the repo's initial *file/resource* models, as instructed by the directory.
-		getLogger().debug("Loading File Models")
-		shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
+		//getLogger().debug("Loading File Models")
+		//shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
 		shRepo
 	}
 	
@@ -61,8 +61,8 @@ object RepoTester extends BasicDebugger {
 		getLogger().debug("Loading Sheet Models") 
 		shRepo.loadSheetModelsIntoMainDataset()
 		// Load the rest of the repo's initial *file/resource* models, as instructed by the directory.
-		getLogger().debug("Loading File Models")
-		shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
+		//getLogger().debug("Loading File Models")
+		//shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
 		shRepo
 	}
 	
