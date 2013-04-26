@@ -13,14 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.cogchar.gui.demo;
 
-import com.hp.hpl.jena.graph.Node;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.tree.DefaultTreeModel;
@@ -40,7 +35,6 @@ import org.appdapter.gui.box.DisplayContextProvider;
 import org.appdapter.gui.box.ScreenBoxContextImpl;
 import org.appdapter.gui.box.ScreenBoxImpl;
 import org.appdapter.gui.box.ScreenBoxPanel;
-import org.appdapter.gui.box.ScreenBoxPanel.Kind;
 import org.appdapter.gui.box.ScreenBoxTreeNode;
 import org.appdapter.gui.browse.BrowsePanel;
 import org.appdapter.gui.demo.DemoNavigatorCtrl;
@@ -53,616 +47,436 @@ import org.appdapter.gui.repo.RepoBoxImpl;
 import org.appdapter.gui.repo.RepoModelBoxImpl;
 import org.appdapter.gui.trigger.BootstrapTriggerFactory;
 import org.appdapter.gui.trigger.SysTriggers;
-import org.appdapter.impl.store.FancyRepo;
 import org.appdapter.impl.store.QueryHelper;
 import org.appdapter.scafun.BoxOne;
 import org.appdapter.scafun.TriggerOne;
-import org.matheclipse.core.reflection.system.For;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 
+//import org.cogchar.blob.emit.OmniLoaderRepo;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-
 // / Dmiles needed something in java to cover Scala blindspots
 public class RepoNavigator extends DemoNavigatorCtrl {
-	
-	private TreeModel myTM;
-	private BoxContext myBoxCtx;
-	private ScreenBoxTreeNode myRootBTN;
-	private DisplayContextProvider myDCP;
-	private BrowsePanel myBP;
-	
-	public RepoNavigator(BoxContext bc, TreeModel tm, ScreenBoxTreeNode rootBTN, DisplayContextProvider dcp) {
-		super(bc, tm, rootBTN, dcp);
-		myBoxCtx = bc;
-		myTM = tm;
-		myRootBTN = rootBTN;
-		myDCP = dcp;
-	}
-	
-	public static void replaceModelElements(Model dest, Model src) {
-		if (src == dest)
-			return;
-		dest.removeAll();
-		dest.add(src);
-		dest.setNsPrefixes(src.getNsPrefixMap());
-		// dest.getGraph().getPrefixMapping().equals(obj)
-		//if (src.getGraph() )dest.setNsPrefix("", src.getNsPrefixURI(""));
-		///dest.setNsPrefix("#", src.getNsPrefixURI("#"));
-	}
-    
-	public static void replaceDatasetElements(Dataset dest, Dataset src, String onlyModel) { 
-		if (!(dest instanceof DataSource)) {
-			theLogger.error("Destination is not a datasource! " + dest.getClass() + " " + dest);
-			return;
-		}
-		DataSource sdest = (DataSource) dest;
-        boolean onSrc = true,onDest = true;
-		if (!dest.containsNamedModel(onlyModel)) {
-            onSrc = false;
-            theLogger.warn("Orginal did not contain model" + onlyModel);
-            
+
+    private TreeModel myTM;
+    private BoxContext myBoxCtx;
+    private ScreenBoxTreeNode myRootBTN;
+    private DisplayContextProvider myDCP;
+    private BrowsePanel myBP;
+
+    public RepoNavigator(BoxContext bc, TreeModel tm, ScreenBoxTreeNode rootBTN, DisplayContextProvider dcp) {
+        super(bc, tm, rootBTN, dcp);
+        myBoxCtx = bc;
+        myTM = tm;
+        myRootBTN = rootBTN;
+        myDCP = dcp;
+    }
+
+    public void addRepo(String labeled, Repo.WithDirectory inner) {
+        // (MutableScreenBoxForImmutableRepo)makeRepoChildBoxImpl(rootBox,
+        // MutableScreenBoxForImmutableRepo.class,
+        // ReloadTrigger.class,
+        // labeled,
+        // finderRepo);
+        BootstrapTriggerFactory btf = new BootstrapTriggerFactory();
+
+        Class repoBoxClass = MutableScreenBoxForImmutableRepo.class;
+        RepoTriggers.DumpStatsTrigger dumpStatsTrigger = new RepoTriggers.DumpStatsTrigger();
+        MutableScreenBoxForImmutableRepo r1Box = (MutableScreenBoxForImmutableRepo) makeRepoBoxImpl(repoBoxClass, dumpStatsTrigger, labeled, inner);
+        if (inner instanceof Repo.Stored) {
+            btf.attachTrigger(r1Box, new DatabaseTriggers.InitTrigger(), "openDB");
+            btf.attachTrigger(r1Box, new RepoTriggers.OpenTrigger(), "openMetaRepo");
+            btf.attachTrigger(r1Box, new RepoTriggers.InitTrigger(), "initMetaRepo");
         }
-		if (!src.containsNamedModel(onlyModel)) {
-            onDest = false;
-            theLogger.warn("New did not contain model " + onlyModel);
-        }
-        if (onSrc && onDest) {
-            Model destModel = src.getNamedModel(onlyModel);				
-            Model srcModel = dest.getNamedModel(onlyModel);           
-            replaceModelElements(destModel, srcModel);    
-            theLogger.info("Replaced model " + onlyModel);
-            return;        
-        }
-        if (onSrc) {
-            sdest.addNamedModel(onlyModel, src.getNamedModel(onlyModel));
-            theLogger.info("Added model " + onlyModel);
-            return;
-        }
-        if (onDest) {
-             dest.getNamedModel(onlyModel).removeAll();
-            theLogger.info("clearing model " + onlyModel);
-            return;
+        btf.attachTrigger(r1Box, new RepoTriggers.UploadTrigger(), "upload into MetaRepo");
+        btf.attachTrigger(r1Box, new RepoTriggers.QueryTrigger(), "query repo");
+        btf.attachTrigger(r1Box, new RepoOper.ReloadAllModelsTrigger(inner), "reload repo");
+        btf.attachTrigger(r1Box, dumpStatsTrigger, "dump stats");
+        btf.attachTrigger(r1Box, new SysTriggers.DumpTrigger(), "dump");
+        btf.attachTrigger(r1Box, new BridgeTriggers.MountSubmenuFromTriplesTrigger(), "loadSubmenus");
+        DemoServiceWrapFuncs.attachPanelOpenTrigger(r1Box, "manage repo", ScreenBoxPanel.Kind.REPO_MANAGER);
+        addBoxToRoot(r1Box, true);
+    }
+
+    @Override
+    public void addBoxToRoot(MutableBox childBox, boolean reload) {
+
+        // Add the child
+        Box rootBox = myBoxCtx.getRootBox();
+        myBoxCtx.contextualizeAndAttachChildBox(rootBox, childBox);
+        if (reload) {
+            ((DefaultTreeModel) myTM).reload();
         }
     }
-	public static void replaceDatasetElements(Dataset dest, Dataset src) {
-		if (!(dest instanceof DataSource)) {
-			theLogger.error("Destination is not a datasource! " + dest.getClass() + " " + dest);
-			return;
-		}
-		DataSource sdest = (DataSource) dest;
-		Model defDestModel = dest.getDefaultModel();
-		Model defSrcModel = src.getDefaultModel();
-		replaceModelElements(defDestModel, defSrcModel);
-		HashSet<String> dnames = setOF(sdest.listNames());
-		HashSet<String> snames = setOF(src.listNames());
-		HashSet<String> replacedModels = new HashSet<String>();
-		
-		for (String nym : snames) {
-			Model getsrc = src.getNamedModel(nym);
-			if (dest.containsNamedModel(nym)) {
-				Model getdest = dest.getNamedModel(nym);
-				replacedModels.add(nym);
-				replaceModelElements(getdest, getsrc);
-				dnames.remove(nym);
-				continue;
-			}
-		}
-		for (String nym : replacedModels) {
-			snames.remove(nym);
-		}
-		
-		if (dnames.size() == 0) {
-			if (snames.size() == 0) {// perfect!
-				return;
-			} else {
-				// add the new models to the datasource
-				for (String nym : snames) {
-					sdest.addNamedModel(nym, src.getNamedModel(nym));
-				}
-				// still good
-				return;
-			}
-		} else {
-			// dnames > 0
-			if (snames.size() == 0) {
-				// some graphs might need cleared?
-				for (String nym : dnames) {
-					sdest.getNamedModel(nym).removeAll();
-					sdest.removeNamedModel(nym);
-				}
-				return;
-			} else {
-				// New names to add AND graphs might need cleared
-				for (String nym : dnames) {
-					sdest.getNamedModel(nym).removeAll();
-					sdest.removeNamedModel(nym);
-				}
-				for (String nym : snames) {
-					sdest.addNamedModel(nym, src.getNamedModel(nym));
-				}
-			}
-		}
-	}
-	
-	private static <E> HashSet<E> setOF(Enumeration<E> en) {
-		HashSet<E> hs = new HashSet<E>();
-		while (en.hasMoreElements()) {
-			E e = (E) en.nextElement();
-			hs.add(e);
-		}
-		return hs;
-	}
-	
-	private static <E> HashSet<E> setOF(Iterator<E> en) {
-		HashSet<E> hs = new HashSet<E>();
-		while (en.hasNext()) {
-			E e = (E) en.next();
-			hs.add(e);
-		}
-		return hs;
-	}
-	
-	public void addRepo(String labeled, Repo.WithDirectory inner) {
-		// (MutableScreenBoxForImmutableRepo)makeRepoChildBoxImpl(rootBox,
-		// MutableScreenBoxForImmutableRepo.class,
-		// ReloadTrigger.class,
-		// labeled,
-		// finderRepo);
-		BootstrapTriggerFactory btf = new BootstrapTriggerFactory();
-		
-		Class repoBoxClass = MutableScreenBoxForImmutableRepo.class;
-		RepoTriggers.DumpStatsTrigger dumpStatsTrigger = new RepoTriggers.DumpStatsTrigger();
-		MutableScreenBoxForImmutableRepo r1Box = (MutableScreenBoxForImmutableRepo) makeRepoBoxImpl(repoBoxClass, dumpStatsTrigger, labeled, inner);
-		if (inner instanceof Repo.Stored) {
-			btf.attachTrigger(r1Box, new DatabaseTriggers.InitTrigger(), "openDB");
-			btf.attachTrigger(r1Box, new RepoTriggers.OpenTrigger(), "openMetaRepo");
-			btf.attachTrigger(r1Box, new RepoTriggers.InitTrigger(), "initMetaRepo");
-		}
-		btf.attachTrigger(r1Box, new RepoTriggers.UploadTrigger(), "upload into MetaRepo");
-		btf.attachTrigger(r1Box, new RepoTriggers.QueryTrigger(), "query repo");
-		btf.attachTrigger(r1Box, new ReloadTrigger(inner), "reload repo");
-		btf.attachTrigger(r1Box, dumpStatsTrigger, "dump stats");
-		btf.attachTrigger(r1Box, new SysTriggers.DumpTrigger(), "dump");
-		btf.attachTrigger(r1Box, new BridgeTriggers.MountSubmenuFromTriplesTrigger(), "loadSubmenus");
-		DemoServiceWrapFuncs.attachPanelOpenTrigger(r1Box, "manage repo", ScreenBoxPanel.Kind.REPO_MANAGER);
-		addBoxToRoot(r1Box, true);
-	}
-	
-	@Override
-	public void addBoxToRoot(MutableBox childBox, boolean reload) {
-		
-		// Add the child
-		Box rootBox = myBoxCtx.getRootBox();
-		myBoxCtx.contextualizeAndAttachChildBox(rootBox, childBox);
-		if (reload) {
-			((DefaultTreeModel) myTM).reload();
-		}
-	}
-	
-	static Logger theLogger = LoggerFactory.getLogger(RepoNavigator.class);
-	
-	public static void testLoggingSetup() {
-		System.out.println("[System.out] - RepoNavigator.pretendToBeAwesome()");
-		theLogger.info("[SLF4J] - RepoNavigator.pretendToBeAwesome()");
-	}
-	
-	public static void main(String[] args) {
-		testLoggingSetup();
-		theLogger.info("RepoNavigator.main()-START");
-		RepoNavigator dnc = makeRepoNavigatorCtrl(args);
-		dnc.launchFrame("Appdapter Repo Browser");
-		theLogger.info("RepoNavigator.main()-END");
-	}
-	
-	public static interface RepoSubBoxFinder {
-		public Box findGraphBox(RepoBox parentBox, String graphURI);
-	}
-	
-	public static RepoSubBoxFinder theRSBF;
-	
-	public static class RepoRepoBoxImpl<TT extends Trigger<? extends RepoBoxImpl<TT>>> extends RepoBoxImpl<TT> {
-		RepoSubBoxFinder myRSBF;
-		
-		@Override
-		public Box findGraphBox(String graphURI) {
-			if (myRSBF == null) {
-				myRSBF = theRSBF;
-			}
-			return myRSBF.findGraphBox(this, graphURI);
-		}
-	}
-	
-	public static RepoNavigator makeRepoNavigatorCtrl(String[] args) {
-		RepoSubBoxFinder rsbf = new RepoSubBoxFinder() {
-			@Override
-			public Box findGraphBox(RepoBox parentBox, String graphURI) {
-				
-				theLogger.info("finding graph box for " + graphURI + " in " + parentBox);
-				MutableBox mb = new RepoModelBoxImpl();
-				TriggerImpl dti = new SysTriggers.DumpTrigger();
-				dti.setShortLabel("ping-" + graphURI);
-				mb.attachTrigger(dti);
-				
-				Repo parentRepo = parentBox.getRepo();
-				
-				return mb;
-			}
-		};
-		RepoNavigator dnc = makeRepoNavigatorCtrl(args, rsbf);
-		return dnc;
-	}
-	
-	public static RepoNavigator makeRepoNavigatorCtrl(String[] args, RepoSubBoxFinder rsbf) {
-		theRSBF = rsbf;
-		// From this BoxImpl.class, is makeBCI is able to infer the full
-		// BT=BoxImpl<... tree?
-		return makeRepoNavigatorCtrl(args, ScreenBoxImpl.class, RepoRepoBoxImpl.class);
-	}
-	
-	public static RepoNavigator makeRepoNavigatorCtrl(String[] args, Class<? extends ScreenBoxImpl> boxClass, Class<? extends RepoBoxImpl> repoBoxClass) {
-		// From this BoxImpl.class, is makeBCI is able to infer the full
-		// BT=BoxImpl<... tree?
-		ScreenBoxContextImpl bctx = makeBCI(boxClass, repoBoxClass);
-		TreeModel tm = bctx.getTreeModel();
-		ScreenBoxTreeNode rootBTN = (ScreenBoxTreeNode) tm.getRoot();
-		
-		DisplayContextProvider dcp = bctx;
-		RepoNavigator tn = new RepoNavigator(bctx, tm, rootBTN, dcp);
-		return tn;
-	}
-	
-	public static <BT extends ScreenBoxImpl<TriggerImpl<BT>>, RBT extends RepoBoxImpl<TriggerImpl<RBT>>>
-	
-	ScreenBoxContextImpl makeBCI(Class<BT> boxClass, Class<RBT> repoBoxClass) {
-		TriggerImpl regTrigProto = makeTriggerPrototype(boxClass);
-		TriggerImpl repoTrigProto = makeTriggerPrototype(repoBoxClass);
-		return makeBoxContextImpl(boxClass, repoBoxClass, regTrigProto, repoTrigProto);
-	}
-	
-	public static <BT extends ScreenBoxImpl<TriggerImpl<BT>>> TriggerImpl<BT> makeTriggerPrototype(Class<BT> boxClass) {
-		// The trigger subtype does not matter - what matters is capturing BT
-		// into the type.
-		return new SysTriggers.QuitTrigger<BT>();
-	}
-	
-	// static class ConcBootstrapTF extends
-	// BootstrapTriggerFactory<TriggerImpl<BoxImpl<TriggerImpl>>> {
-	// } // TT extends TriggerImpl<BT>
-	
-	public static class ReloadTrigger<RB extends RepoBox<TriggerImpl<RB>>> extends TriggerImpl<RB> {
-		
-		Repo.WithDirectory myRepoWD;
-		
-		// @TODO obviouly we should be using specs and not repos! but
-		// With.Directory may as well be the spec for now.
-		// Also consider we are using the actual Repo (not the Spec) due to the
-		// fact we must have something to clear and update right?
-		public ReloadTrigger(Repo.WithDirectory repo) {
-			myRepoWD = repo;
-		}
-		
-		@Override
-		public void fire(RB targetBox) {
-			String resolvedQueryURL = DemoResources.QUERY_PATH;
-			ClassLoader optCL = RepoNavigator.class.getClassLoader();
-			if (myRepoWD != null) {
-				myRepoWD.getNamedModel(null);
-			}
-			String resultXML = targetBox.processQueryAtUrlAndProduceXml(resolvedQueryURL, optCL);
-			logInfo("ResultXML\n-----------------------------------" + resultXML + "\n---------------------------------");
-		}
-	}
-	
-	static class ScreenModelBox extends BoxOne {
-		final String myURI;
-		private Model myModel;
-		
-		public ScreenModelBox(String uri) {
-			myURI = uri;
-		}
-		
-		@Override
-		public String toString() {
-			return getClass().getName() + "[uri=" + myURI + "model=" + myModel + "]";
-		}
-		
-		// setShortLabel("tweak-" + myURI);
-		
-		public void setModel(Model m) {
-			this.myModel = m;
-		}
-	}
-	
-	static class ScreenGraphTrigger extends TriggerOne /*
-														 * with
-														 * FullTrigger<GraphBox>
-														 */{
-		
-		final String myDebugName;
-		
-		public ScreenGraphTrigger(String myDebugNym) {
-			myDebugName = myDebugNym;
-		}
-		
-		@Override
-		public String toString() {
-			return getClass().getName() + "[name=" + myDebugName + "]";
-		}
-		
-		@Override
-		public void fire(BoxOne targetBox) {
-			getLogger().debug(this.toString() + " firing on " + targetBox.toString());
-			
-		}
-	}
-	
-	static class MutableScreenBoxForImmutableRepo<TT extends Trigger<? extends RepoBoxImpl<TT>>> extends RepoRepoBoxImpl<TT> implements MutableRepoBox<TT> {
-		final Repo.WithDirectory myRepoWD;
-		final String myDebugName;
-		public List<MutableRepoBox> childBoxes = new ArrayList<MutableRepoBox>();
-		
-		public MutableScreenBoxForImmutableRepo(String myDebugNym, Repo.WithDirectory repo) {
-			myDebugName = myDebugNym;
-			myRepoWD = (WithDirectory) repo;
-			// resyncChildrenToTree();
-		}
-		
-		void resyncChildrenToTree() {
-			BoxContext ctx = getBoxContext();
-			List<Repo.GraphStat> graphStats = getAllGraphStats();
-			Repo.WithDirectory repo = getRepoWD();
-			
-			// OmniLoaderRepo fr = (OmniLoaderRepo) repo;//
-			// repo.getDirectoryModelClient();
-			QuerySolution qInitBinding = null;
-			String qText = "";
-			ResultSet rset = QueryHelper.execModelQueryWithPrefixHelp(repo.getDirectoryModel(), "select distinct ?s ?o {?s a ?o}");
-			
-			// cp to list (since will be doing this differntly later)
-			List<QuerySolution> solnList = new ArrayList<QuerySolution>();
-			while (rset.hasNext()) {
-				QuerySolution qsoln = rset.next();
-				solnList.add(qsoln);
-			}
-			
-			for (QuerySolution gs : solnList) {
-				String constituentRepoName = gs.getResource("s").asNode().getURI();
-				ScreenModelBox graphBox = new ScreenModelBox(constituentRepoName);
-				ScreenGraphTrigger gt = new ScreenGraphTrigger(constituentRepoName);
-				gt.setShortLabel("have-some-fun with Repo " + constituentRepoName + " type " + gs.get("o"));
-				graphBox.attachTrigger(gt);
-				ctx.contextualizeAndAttachChildBox(this, graphBox);
-			}
-			
-			for (Repo.GraphStat gs : graphStats) {
-				ScreenModelBox graphBox = new ScreenModelBox(gs.graphURI);
-				ScreenGraphTrigger gt = new ScreenGraphTrigger("graph=" + gs.graphURI);
-				gt.setShortLabel("have-some-fun with uri=" + gs);
-				graphBox.attachTrigger(gt);
-				ctx.contextualizeAndAttachChildBox(this, graphBox);
-			}
-		}
-		
-		@Override
-		public Repo getRepo() {
-			// TODO Auto-generated method stub
-			return myRepoWD;
-		}
-		
-		public Repo.WithDirectory getRepoWD() {
-			// TODO Auto-generated method stub
-			return myRepoWD;
-		}
-		
-		@Override
-		public List getAllGraphStats() {
-			Repo myRepo = getRepo();
-			return myRepo.getGraphStats();
-		}
-		
-		int callnum = 666;
-		
-		@Override
-		public Box findGraphBox(String graphURI) {
-			Logger logger = theLogger;
-			
-			Box fnd = super.findGraphBox(graphURI);
-			boolean madeAlready = false;
-			if (fnd != null) {
-				logger.trace("Found graphURI=" + graphURI + " on super.findGraphBox" + fnd);
-				madeAlready = true;
-			}
-			
-			callnum++;
-			if ((callnum % 2) == 0)
-				if (fnd != null) {
-					// trace how the parent did it
-					if (myRSBF != null)
-						fnd = myRSBF.findGraphBox(this, graphURI);
-					
-					if (fnd != null) {
-						logger.trace("Found graphURI=" + graphURI + " on myRSBF" + fnd);
-						return fnd;
-					}
-					if (theRSBF != null)
-						fnd = theRSBF.findGraphBox(this, graphURI);
-					
-					if (fnd != null) {
-						logger.trace("Found graphURI=" + graphURI + " on theRSBF" + fnd);
-						return fnd;
-					}
-				}
-			
-			BoxContext ctx = getBoxContext();
-			List<Repo.GraphStat> graphStats = getAllGraphStats();
-			Model m = myRepoWD.getNamedModel(new FreeIdent(graphURI));
-			
-			for (Repo.GraphStat gs : graphStats) {
-				if (gs.graphURI.equals(graphURI)) {
-					ScreenModelBox graphBox = new ScreenModelBox(gs.graphURI);
-					graphBox.setModel(m);
-					ScreenGraphTrigger gt = new ScreenGraphTrigger(gs.graphURI);
-					gt.setShortLabel("found " + callnum + " " + gs);
-					graphBox.attachTrigger(gt);
-					if (!madeAlready)
-						ctx.contextualizeAndAttachChildBox(this, graphBox);
-					return graphBox;
-				}
-			}
-			
-			fnd = super.findGraphBox(graphURI);
-			
-			if (fnd != null) {
-				logger.trace("Wierdly!?! Found graphURI=" + graphURI + " on super.findGraphBox " + fnd);
-				return fnd;
-			}
-			
-			logger.trace("NOT FOUND graphURI=" + graphURI + " on findGraphBox");
-			return null;
-		}
-		
-		@Override
-		public void mount(String configPath) {
-			super.mount(configPath);
-		}
-		
-		@Override
-		public void formatStoreIfNeeded() {
-			super.formatStoreIfNeeded();
-		}
-		
-		@Override
-		public void importGraphFromURL(String tgtGraphName, String sourceURL, boolean replaceTgtFlag) {
-			super.importGraphFromURL(tgtGraphName, sourceURL, replaceTgtFlag);
-		}
-		
-		@Override
-		public String getUploadHomePath() {
-			return super.getUploadHomePath();
-		}
-		
-	}
-	
-	/**
-	 * Here is a humdinger of a static method, that constructs a demontration
-	 * application tree
-	 * 
-	 * @param <BT>
-	 * @param <RBT>
-	 * @param regBoxClass
-	 * @param repoBoxClass
-	 * @param regTrigProto
-	 *            - defines the BT trigger parameter type for screen boxes. The
-	 *            regTrigProto instance data is unused.
-	 * @param repoTrigProto
-	 *            - defines the RBT trigger parameter type for repo boxes. The
-	 *            repoTrigProto instance data is unused.
-	 * @return
-	 */
-	static public <BT extends ScreenBoxImpl<TriggerImpl<BT>>,
-	
-	RBT extends RepoBoxImpl<TriggerImpl<RBT>>> ScreenBoxContextImpl
-	
-	makeBoxContextImpl(Class<BT> regBoxClass, Class<RBT> repoBoxClass, TriggerImpl<BT> regTrigProto, TriggerImpl<RBT> repoTrigProto) {
-		try {
-			ScreenBoxContextImpl bctx = new ScreenBoxContextImpl();
-			BT rootBox = DemoServiceWrapFuncs.makeTestBoxImpl(regBoxClass, regTrigProto, "rooty");
-			bctx.contextualizeAndAttachRootBox(rootBox);
-			
-			BootstrapTriggerFactory btf = new BootstrapTriggerFactory();
-			btf.attachTrigger(rootBox, new SysTriggers.QuitTrigger(), "quit");
-			
-			BT repoBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(rootBox, regBoxClass, regTrigProto, "repo");
-			BT appBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(rootBox, regBoxClass, regTrigProto, "app");
-			BT sysBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(rootBox, regBoxClass, regTrigProto, "sys");
-			
-			if (false) {
-				
-				/**
-				 * Good examples of making boxes
-				 */
-				{
-					RBT r1Box = DemoServiceWrapFuncs.makeTestChildBoxImpl(repoBox, repoBoxClass, repoTrigProto, "h2.td_001");
-					
-					btf.attachTrigger(r1Box, new DatabaseTriggers.InitTrigger(), "openDB");
-					btf.attachTrigger(r1Box, new RepoTriggers.OpenTrigger(), "openMetaRepo");
-					btf.attachTrigger(r1Box, new RepoTriggers.InitTrigger(), "initMetaRepo");
-					btf.attachTrigger(r1Box, new RepoTriggers.UploadTrigger(), "upload into MetaRepo");
-					btf.attachTrigger(r1Box, new RepoTriggers.QueryTrigger(), "query repo");
-					btf.attachTrigger(r1Box, new RepoTriggers.DumpStatsTrigger(), "dump stats");
-					DemoServiceWrapFuncs.attachPanelOpenTrigger(r1Box, "manage repo", ScreenBoxPanel.Kind.REPO_MANAGER);
-					
-					r1Box = DemoServiceWrapFuncs.makeTestChildBoxImpl(repoBox, repoBoxClass, repoTrigProto, "h2.td_002");
-					
-					btf.attachTrigger(r1Box, new DatabaseTriggers.InitTrigger(), "openDB");
-					btf.attachTrigger(r1Box, new RepoTriggers.OpenTrigger(), "openMetaRepo");
-					btf.attachTrigger(r1Box, new RepoTriggers.InitTrigger(), "initMetaRepo");
-					btf.attachTrigger(r1Box, new RepoTriggers.UploadTrigger(), "upload into MetaRepo");
-					btf.attachTrigger(r1Box, new RepoTriggers.QueryTrigger(), "query repo");
-					btf.attachTrigger(r1Box, new RepoTriggers.DumpStatsTrigger(), "dump stats");
-					DemoServiceWrapFuncs.attachPanelOpenTrigger(r1Box, "manage repo", ScreenBoxPanel.Kind.REPO_MANAGER);
-				}
-				
-				RBT r2Box = DemoServiceWrapFuncs.makeTestChildBoxImpl(repoBox, repoBoxClass, repoTrigProto, "repo_002");
-				btf.attachTrigger(r2Box, new SysTriggers.DumpTrigger(), "dumpD");
-				btf.attachTrigger(r2Box, new SysTriggers.DumpTrigger(), "dumpC");
-				btf.attachTrigger(r2Box, new SysTriggers.DumpTrigger(), "dumpA");
-				
-				BT fishBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(appBox, regBoxClass, regTrigProto, "fishy");
-				DemoServiceWrapFuncs.attachPanelOpenTrigger(fishBox, "open-matrix-f", ScreenBoxPanel.Kind.MATRIX);
-				
-				btf.attachTrigger(fishBox, new SysTriggers.DumpTrigger(), "dumpF");
-				
-				BT pumappBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(appBox, regBoxClass, regTrigProto, "pumapp");
-				DemoServiceWrapFuncs.attachPanelOpenTrigger(pumappBox, "open-matrix-p", ScreenBoxPanel.Kind.MATRIX);
-				btf.attachTrigger(pumappBox, new SysTriggers.DumpTrigger(), "dumpP");
-				
-				BT buckTreeBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(appBox, regBoxClass, regTrigProto, "bucksum");
-				btf.attachTrigger(buckTreeBox, new BridgeTriggers.MountSubmenuFromTriplesTrigger(), "loadSubmenus");
-				
-				/*
-				 * makeChildNode(appNode, "custy"); makeChildNode(appNode,
-				 * "rakedown");
-				 * 
-				 * makeChildNode(sysNode, "memory"); makeChildNode(sysNode,
-				 * "log"); makeChildNode(sysNode, "job");
-				 */
-			}
-			
-			return bctx;
-		} catch (Throwable t) {
-			theLogger.error("problem in tree init", t);
-			return null;
-		}
-		
-	}
-	
-	public <BT extends ScreenBoxImpl<TriggerImpl<BT>>> BT makeRepoChildBoxImpl(Box parentBox, Class<BT> childBoxClass, TriggerImpl<BT> trigProto, String label, Repo.WithDirectory inner) {
-		BT result = null;
-		BoxContext ctx = parentBox.getBoxContext();
-		result = makeRepoBoxImpl(childBoxClass, trigProto, label, inner);
-		ctx.contextualizeAndAttachChildBox(parentBox, result);
-		return result;
-	}
-	
-	public <BT extends ScreenBoxImpl<TriggerImpl<BT>>> BT makeRepoBoxImpl(Class<BT> boxClass, TriggerImpl<BT> trigProto, String label, Repo.WithDirectory inner) {
-		MutableScreenBoxForImmutableRepo result = new MutableScreenBoxForImmutableRepo(label, inner);// CachingComponentAssembler.makeEmptyComponent(boxClass);
-		result.setShortLabel(label);
-		// set the child's BoxContext (redundant since the next line does it)
-		BoxContext cctx = result.getBoxContext();
-		if (cctx == null)
-			result.setContext(myBoxCtx);
-		
-		result.setDescription("full description for " + boxClass.getName() + " with label: " + label);
-		return (BT) (Object) result;
-	}
+    static Logger theLogger = LoggerFactory.getLogger(RepoNavigator.class);
+
+    public static void testLoggingSetup() {
+        System.out.println("[System.out] - RepoNavigator.pretendToBeAwesome()");
+        theLogger.info("[SLF4J] - RepoNavigator.pretendToBeAwesome()");
+    }
+
+    public static void mainly_not_here(String[] args) {
+        testLoggingSetup();
+        theLogger.info("RepoNavigator.main()-START");
+        RepoNavigator dnc = makeRepoNavigatorCtrl(args);
+        // .main(args);
+        // dnc.launchFrame("Appdapter Repo Browser");
+        theLogger.info("RepoNavigator.main()-END");
+    }
+
+    public static interface RepoSubBoxFinder {
+
+        public Box findGraphBox(RepoBox parentBox, String graphURI);
+    }
+    public static RepoSubBoxFinder theRSBF;
+
+    public static class RepoRepoBoxImpl<TT extends Trigger<? extends RepoBoxImpl<TT>>> extends RepoBoxImpl<TT> {
+
+        RepoSubBoxFinder myRSBF;
+
+        @Override
+        public Box findGraphBox(String graphURI) {
+            if (myRSBF == null) {
+                myRSBF = theRSBF;
+            }
+            return myRSBF.findGraphBox(this, graphURI);
+        }
+    }
+
+    public static RepoNavigator makeRepoNavigatorCtrl(String[] args) {
+        RepoSubBoxFinder rsbf = new RepoSubBoxFinder() {
+
+            @Override
+            public Box findGraphBox(RepoBox parentBox, String graphURI) {
+
+                theLogger.info("finding graph box for " + graphURI + " in " + parentBox);
+                MutableBox mb = new RepoModelBoxImpl();
+                TriggerImpl dti = new SysTriggers.DumpTrigger();
+                dti.setShortLabel("DumpTrigger " + graphURI);
+                mb.attachTrigger(dti);
+
+                Repo parentRepo = parentBox.getRepo();
+                if (parentRepo instanceof RepoOper.Reloadable) {
+                    dti = new RepoOper.ReloadSingleModelTrigger(graphURI, (RepoOper.Reloadable) parentRepo);
+                    dti.setShortLabel("reload model " + graphURI);
+                    mb.attachTrigger(dti);
+                }
+
+                return mb;
+            }
+        };
+        RepoNavigator dnc = makeRepoNavigatorCtrl(args, rsbf);
+        return dnc;
+    }
+
+    public static RepoNavigator makeRepoNavigatorCtrl(String[] args, RepoSubBoxFinder rsbf) {
+        theRSBF = rsbf;
+        // From this BoxImpl.class, is makeBCI is able to infer the full
+        // BT=BoxImpl<... tree?
+        return makeRepoNavigatorCtrl(args, ScreenBoxImpl.class, RepoRepoBoxImpl.class);
+    }
+
+    public static RepoNavigator makeRepoNavigatorCtrl(String[] args, Class<? extends ScreenBoxImpl> boxClass, Class<? extends RepoBoxImpl> repoBoxClass) {
+        // From this BoxImpl.class, is makeBCI is able to infer the full
+        // BT=BoxImpl<... tree?
+        ScreenBoxContextImpl bctx = makeBCI(boxClass, repoBoxClass);
+        TreeModel tm = bctx.getTreeModel();
+        ScreenBoxTreeNode rootBTN = (ScreenBoxTreeNode) tm.getRoot();
+
+        DisplayContextProvider dcp = bctx;
+        RepoNavigator tn = new RepoNavigator(bctx, tm, rootBTN, dcp);
+        return tn;
+    }
+
+    public static <BT extends ScreenBoxImpl<TriggerImpl<BT>>, RBT extends RepoBoxImpl<TriggerImpl<RBT>>> ScreenBoxContextImpl makeBCI(Class<BT> boxClass, Class<RBT> repoBoxClass) {
+        TriggerImpl regTrigProto = makeTriggerPrototype(boxClass);
+        TriggerImpl repoTrigProto = makeTriggerPrototype(repoBoxClass);
+        return makeBoxContextImpl(boxClass, repoBoxClass, regTrigProto, repoTrigProto);
+    }
+
+    public static <BT extends ScreenBoxImpl<TriggerImpl<BT>>> TriggerImpl<BT> makeTriggerPrototype(Class<BT> boxClass) {
+        // The trigger subtype does not matter - what matters is capturing BT
+        // into the type.
+        return new SysTriggers.QuitTrigger<BT>();
+    }
+
+
+    static class ScreenModelBox extends BoxOne {
+
+        final String myURI;
+        private Model myModel;
+
+        public ScreenModelBox(String uri) {
+            myURI = uri;
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getName() + "[uri=" + myURI + "model=" + myModel + "]";
+        }
+
+        // setShortLabel("tweak-" + myURI);
+        public void setModel(Model m) {
+            this.myModel = m;
+        }
+    }
+
+    static class ScreenGraphTrigger extends TriggerOne /*
+     * with FullTrigger<GraphBox>
+     */ {
+
+        final String myDebugName;
+
+        public ScreenGraphTrigger(String myDebugNym) {
+            myDebugName = myDebugNym;
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getName() + "[name=" + myDebugName + "]";
+        }
+
+        @Override
+        public void fire(BoxOne targetBox) {
+            getLogger().debug(this.toString() + " firing on " + targetBox.toString());
+
+        }
+    }
+
+    static class MutableScreenBoxForImmutableRepo<TT extends Trigger<? extends RepoBoxImpl<TT>>> extends RepoRepoBoxImpl<TT> implements MutableRepoBox<TT> {
+
+        final Repo.WithDirectory myRepoWD;
+        final String myDebugName;
+        public List<MutableRepoBox> childBoxes = new ArrayList<MutableRepoBox>();
+
+        public MutableScreenBoxForImmutableRepo(String myDebugNym, Repo.WithDirectory repo) {
+            myDebugName = myDebugNym;
+            myRepoWD = (WithDirectory) repo;
+            // resyncChildrenToTree();
+        }
+
+        void resyncChildrenToTree() {
+            BoxContext ctx = getBoxContext();
+            List<Repo.GraphStat> graphStats = getAllGraphStats();
+            Repo.WithDirectory repo = getRepoWD();
+
+            // OmniLoaderRepo fr = (OmniLoaderRepo) repo;//
+            // repo.getDirectoryModelClient();
+            QuerySolution qInitBinding = null;
+            String qText = "";
+            ResultSet rset = QueryHelper.execModelQueryWithPrefixHelp(repo.getDirectoryModel(), "select distinct ?s ?o {?s a ?o}");
+
+            // cp to list (since will be doing this differntly later)
+            List<QuerySolution> solnList = new ArrayList<QuerySolution>();
+            while (rset.hasNext()) {
+                QuerySolution qsoln = rset.next();
+                solnList.add(qsoln);
+            }
+
+            for (QuerySolution gs : solnList) {
+                String constituentRepoName = gs.getResource("s").asNode().getURI();
+                ScreenModelBox graphBox = new ScreenModelBox(constituentRepoName);
+                ScreenGraphTrigger gt = new ScreenGraphTrigger(constituentRepoName);
+                gt.setShortLabel("have-some-fun with Repo " + constituentRepoName + " type " + gs.get("o"));
+                graphBox.attachTrigger(gt);
+                ctx.contextualizeAndAttachChildBox(this, graphBox);
+            }
+
+            for (Repo.GraphStat gs : graphStats) {
+                ScreenModelBox graphBox = new ScreenModelBox(gs.graphURI);
+                ScreenGraphTrigger gt = new ScreenGraphTrigger("graph=" + gs.graphURI);
+                gt.setShortLabel("have-some-fun with uri=" + gs);
+                graphBox.attachTrigger(gt);
+                ctx.contextualizeAndAttachChildBox(this, graphBox);
+            }
+        }
+
+        @Override
+        public Repo getRepo() {
+            // TODO Auto-generated method stub
+            return myRepoWD;
+        }
+
+        public Repo.WithDirectory getRepoWD() {
+            // TODO Auto-generated method stub
+            return myRepoWD;
+        }
+
+        @Override
+        public List getAllGraphStats() {
+            Repo myRepo = getRepo();
+            return myRepo.getGraphStats();
+        }
+
+        @Override
+        public Box findGraphBox(String graphURI) {
+            Logger logger = theLogger;
+
+            Box fnd = super.findGraphBox(graphURI);
+            boolean madeAlready = false;
+            if (fnd != null) {
+                logger.trace("Found graphURI=" + graphURI + " on super.findGraphBox" + fnd);
+                madeAlready = true;
+            }
+
+            BoxContext ctx = getBoxContext();
+            List<Repo.GraphStat> graphStats = getAllGraphStats();
+            Model m = myRepoWD.getNamedModel(new FreeIdent(graphURI));
+
+            for (Repo.GraphStat gs : graphStats) {
+                if (gs.graphURI.equals(graphURI)) {
+                    ScreenModelBox graphBox = new ScreenModelBox(gs.graphURI);
+                    graphBox.setModel(m);
+                    ScreenGraphTrigger gt = new ScreenGraphTrigger(gs.graphURI);
+                    graphBox.attachTrigger(gt);
+                    if (!madeAlready) {
+                        ctx.contextualizeAndAttachChildBox(this, graphBox);
+                    }
+                    return graphBox;
+                }
+            }
+
+            fnd = super.findGraphBox(graphURI);
+
+            if (fnd != null) {
+                logger.trace("Wierdly!?! Found graphURI=" + graphURI + " on super.findGraphBox " + fnd);
+                return fnd;
+            }
+
+            logger.trace("NOT FOUND graphURI=" + graphURI + " on findGraphBox");
+            return null;
+        }
+
+        @Override
+        public void mount(String configPath) {
+            super.mount(configPath);
+        }
+
+        @Override
+        public void formatStoreIfNeeded() {
+            super.formatStoreIfNeeded();
+        }
+
+        @Override
+        public void importGraphFromURL(String tgtGraphName, String sourceURL, boolean replaceTgtFlag) {
+            super.importGraphFromURL(tgtGraphName, sourceURL, replaceTgtFlag);
+        }
+
+        @Override
+        public String getUploadHomePath() {
+            return super.getUploadHomePath();
+        }
+    }
+
+    /**
+     * Here is a humdinger of a static method, that constructs a demontration application tree
+     *
+     * @param <BT>
+     * @param <RBT>
+     * @param regBoxClass
+     * @param repoBoxClass
+     * @param regTrigProto - defines the BT trigger parameter type for screen boxes. The regTrigProto instance data is
+     * unused.
+     * @param repoTrigProto - defines the RBT trigger parameter type for repo boxes. The repoTrigProto instance data is
+     * unused.
+     * @return
+     */
+    static public <BT extends ScreenBoxImpl<TriggerImpl<BT>>, RBT extends RepoBoxImpl<TriggerImpl<RBT>>> ScreenBoxContextImpl makeBoxContextImpl(Class<BT> regBoxClass, Class<RBT> repoBoxClass, TriggerImpl<BT> regTrigProto, TriggerImpl<RBT> repoTrigProto) {
+        try {
+            ScreenBoxContextImpl bctx = new ScreenBoxContextImpl();
+            BT rootBox = DemoServiceWrapFuncs.makeTestBoxImpl(regBoxClass, regTrigProto, "rooty");
+            bctx.contextualizeAndAttachRootBox(rootBox);
+
+            BootstrapTriggerFactory btf = new BootstrapTriggerFactory();
+            btf.attachTrigger(rootBox, new SysTriggers.QuitTrigger(), "quit");
+
+            BT repoBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(rootBox, regBoxClass, regTrigProto, "repo");
+            BT appBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(rootBox, regBoxClass, regTrigProto, "app");
+            BT sysBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(rootBox, regBoxClass, regTrigProto, "sys");
+
+            if (false) {
+
+                /**
+                 * Good examples of making boxes
+                 */
+                {
+                    RBT r1Box = DemoServiceWrapFuncs.makeTestChildBoxImpl(repoBox, repoBoxClass, repoTrigProto, "h2.td_001");
+
+                    btf.attachTrigger(r1Box, new DatabaseTriggers.InitTrigger(), "openDB");
+                    btf.attachTrigger(r1Box, new RepoTriggers.OpenTrigger(), "openMetaRepo");
+                    btf.attachTrigger(r1Box, new RepoTriggers.InitTrigger(), "initMetaRepo");
+                    btf.attachTrigger(r1Box, new RepoTriggers.UploadTrigger(), "upload into MetaRepo");
+                    btf.attachTrigger(r1Box, new RepoTriggers.QueryTrigger(), "query repo");
+                    btf.attachTrigger(r1Box, new RepoTriggers.DumpStatsTrigger(), "dump stats");
+                    DemoServiceWrapFuncs.attachPanelOpenTrigger(r1Box, "manage repo", ScreenBoxPanel.Kind.REPO_MANAGER);
+
+                    r1Box = DemoServiceWrapFuncs.makeTestChildBoxImpl(repoBox, repoBoxClass, repoTrigProto, "h2.td_002");
+
+                    btf.attachTrigger(r1Box, new DatabaseTriggers.InitTrigger(), "openDB");
+                    btf.attachTrigger(r1Box, new RepoTriggers.OpenTrigger(), "openMetaRepo");
+                    btf.attachTrigger(r1Box, new RepoTriggers.InitTrigger(), "initMetaRepo");
+                    btf.attachTrigger(r1Box, new RepoTriggers.UploadTrigger(), "upload into MetaRepo");
+                    btf.attachTrigger(r1Box, new RepoTriggers.QueryTrigger(), "query repo");
+                    btf.attachTrigger(r1Box, new RepoTriggers.DumpStatsTrigger(), "dump stats");
+                    DemoServiceWrapFuncs.attachPanelOpenTrigger(r1Box, "manage repo", ScreenBoxPanel.Kind.REPO_MANAGER);
+                }
+
+                RBT r2Box = DemoServiceWrapFuncs.makeTestChildBoxImpl(repoBox, repoBoxClass, repoTrigProto, "repo_002");
+                btf.attachTrigger(r2Box, new SysTriggers.DumpTrigger(), "dumpD");
+                btf.attachTrigger(r2Box, new SysTriggers.DumpTrigger(), "dumpC");
+                btf.attachTrigger(r2Box, new SysTriggers.DumpTrigger(), "dumpA");
+
+                BT fishBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(appBox, regBoxClass, regTrigProto, "fishy");
+                DemoServiceWrapFuncs.attachPanelOpenTrigger(fishBox, "open-matrix-f", ScreenBoxPanel.Kind.MATRIX);
+
+                btf.attachTrigger(fishBox, new SysTriggers.DumpTrigger(), "dumpF");
+
+                BT pumappBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(appBox, regBoxClass, regTrigProto, "pumapp");
+                DemoServiceWrapFuncs.attachPanelOpenTrigger(pumappBox, "open-matrix-p", ScreenBoxPanel.Kind.MATRIX);
+                btf.attachTrigger(pumappBox, new SysTriggers.DumpTrigger(), "dumpP");
+
+                BT buckTreeBox = DemoServiceWrapFuncs.makeTestChildBoxImpl(appBox, regBoxClass, regTrigProto, "bucksum");
+                btf.attachTrigger(buckTreeBox, new BridgeTriggers.MountSubmenuFromTriplesTrigger(), "loadSubmenus");
+
+                /*
+                 * makeChildNode(appNode, "custy"); makeChildNode(appNode, "rakedown");
+                 *
+                 * makeChildNode(sysNode, "memory"); makeChildNode(sysNode, "log"); makeChildNode(sysNode, "job");
+                 */
+            }
+
+            return bctx;
+        } catch (Throwable t) {
+            theLogger.error("problem in tree init", t);
+            return null;
+        }
+
+    }
+
+    public <BT extends ScreenBoxImpl<TriggerImpl<BT>>> BT makeRepoChildBoxImpl(Box parentBox, Class<BT> childBoxClass, TriggerImpl<BT> trigProto, String label, Repo.WithDirectory inner) {
+        BT result = null;
+        BoxContext ctx = parentBox.getBoxContext();
+        result = makeRepoBoxImpl(childBoxClass, trigProto, label, inner);
+        ctx.contextualizeAndAttachChildBox(parentBox, result);
+        return result;
+    }
+
+    public <BT extends ScreenBoxImpl<TriggerImpl<BT>>> BT makeRepoBoxImpl(Class<BT> boxClass, TriggerImpl<BT> trigProto, String label, Repo.WithDirectory inner) {
+        MutableScreenBoxForImmutableRepo result = new MutableScreenBoxForImmutableRepo(label, inner);// CachingComponentAssembler.makeEmptyComponent(boxClass);
+        result.setShortLabel(label);
+        // set the child's BoxContext (redundant since the next line does it)
+        BoxContext cctx = result.getBoxContext();
+        if (cctx == null) {
+            result.setContext(myBoxCtx);
+        }
+
+        result.setDescription("full description for " + boxClass.getName() + " with label: " + label);
+        return (BT) (Object) result;
+    }
 }
