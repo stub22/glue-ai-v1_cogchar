@@ -55,12 +55,15 @@ public class SceneLifecycleDemo {
             }
         };
         
+		/*
         final OSGiTheater theater = new OSGiTheater(context, null, null);
         Runnable theaterRun = new Runnable() {
             @Override public void run() {
                 theater.start();
             }
         };
+		* 
+		*/
         
         ChannelBindingConfig bindingConfig = new ChannelBindingConfig();
 		
@@ -78,7 +81,7 @@ public class SceneLifecycleDemo {
         runnables.add(getRegistrationRunnable(context, SpeechService.class, speechService, SpeechService.PROP_ID, "testService"));
         runnables.add(getRegistrationRunnable(context, ChannelBindingConfig.class, bindingConfig, "ChannelBindingGroupId", "chan_bind_grp_19"));
         runnables.add(getRegistrationRunnable(context, SceneSpec.class, spec, "SceneSpecGroupId", "scene_spec_grp_19"));
-        runnables.add(theaterRun);
+       // runnables.add(theaterRun);
         Collections.shuffle(runnables);
         
         for(Runnable run : runnables){
@@ -93,12 +96,10 @@ public class SceneLifecycleDemo {
 				final String key, final String val) {
 		return getRegistrationRunnable(context, SceneSpec.class, scnSpec, key, val);
 	}
-    public static Runnable makeTheaterRegRunnable(BundleContext context, OSGiTheater osgiTheater, final String key, final String val) {
-		return getRegistrationRunnable(context, OSGiTheater.class, osgiTheater, key, val);
-	}
+
 	
 	
-    private static Runnable getRegistrationRunnable(
+    public static Runnable getRegistrationRunnable(
             final BundleContext context, final Class clazz, final Object obj, final String key, final String val){
         return new Runnable() {
             @Override public void run() {

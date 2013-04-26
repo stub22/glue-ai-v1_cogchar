@@ -19,7 +19,7 @@ package org.cogchar.app.puma.web;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
-import org.cogchar.bind.cogbot.main.CogbotCommunicator;
+
 import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.cogchar.render.opengl.scene.PathMgr;
@@ -32,10 +32,13 @@ import org.cogchar.render.opengl.scene.SpatialAnimMgr;
 
 class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador.LiftAppInterface {
 	private PumaContextCommandBox		myPCCB;
-	private String						myCogbotConvoUrl;
-	private CogbotCommunicator			myCogbotComm;
+
 	private final PumaWebMapper			myWebMapper;
 
+	@Override public String queryCogbot(String query, String url) {
+		// See CogbotWebClientWrapper for old impl, now disabled to prevent dragging HTTP-client deps with PUMA.
+		return null;
+	}
 	public CommandTargetForUseFromWeb(PumaContextCommandBox pccb, final PumaWebMapper outer) {
 		this.myWebMapper = outer;
 		myPCCB = pccb;
@@ -57,13 +60,7 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
 		return success;
 	}
 
-	@Override public String queryCogbot(String query, String url) {
-		if ((myCogbotComm == null) || (!url.equals(myCogbotConvoUrl))) {
-			myCogbotConvoUrl = url;
-			myCogbotComm = new CogbotCommunicator(myCogbotConvoUrl);
-		}
-		return myCogbotComm.getResponse(query).getResponse();
-	}
+
 
 	@Override public boolean performDataballAction(String action, String text) {
 		return DataballGoodyBuilder.getTheBallBuilder().performAction(action, text);
