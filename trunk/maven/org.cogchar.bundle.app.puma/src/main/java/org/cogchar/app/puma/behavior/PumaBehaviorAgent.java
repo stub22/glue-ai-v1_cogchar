@@ -44,33 +44,30 @@ import org.cogchar.platform.trigger.BoxSpace;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class PumaBehaviorAgent extends CogcharScreenBox {
+public abstract class PumaBehaviorAgent extends CogcharScreenBox {
 	
-	private		Ident						myAgentID;
-	private		BehaviorConfigEmitter		myBehaviorCE;
-	public		Theater						myTheater;
-
-	private		PumaRobotMotionMapper		myRobotMotionMapper;	
-	private		PumaSpeechOutputMapper		mySpeechOutputMapper;
+	protected		Ident						myAgentID;
+	protected		BehaviorConfigEmitter		myBehaviorCE;
+	public			Theater						myTheater;
+	
+	private		static		BundleContext	BUNCTX_FOR_CRUDE_RESTART = null;
 		
 	public PumaBehaviorAgent(Ident agentID, BehaviorConfigEmitter bce)  {
 		myAgentID = agentID;
 		myBehaviorCE = bce;
 		myTheater = new Theater(myAgentID);	
+	}
+	protected Ident getAgentID() {
+		return myAgentID;
+	}
+	
 
-	}
-	public void initMappers(PumaRegistryClient prc, RobotServiceContext rsc) { 
-		List<ClassLoader> clsForRKConf = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
-		myRobotMotionMapper = new PumaRobotMotionMapper (myAgentID, myBehaviorCE, clsForRKConf, rsc);
-		mySpeechOutputMapper = new PumaSpeechOutputMapper(myAgentID);		
-	}
 	public void setupAndStart(BundleContext bunCtx, PumaRegistryClient prc, String chanGraphQN,  String behavGraphQN)  { 
 		try {
 			PumaConfigManager  pcm = prc.getConfigMgr(null);
-			setupAndStartBehaviorTheater(pcm, chanGraphQN,  behavGraphQN);
+			setupAndStartBehaviorTheater(bunCtx, pcm, chanGraphQN,  behavGraphQN);
 			// We connect animation output channels for triggering (regardless of whether we are doing virtual-world animation or not).
-			connectAnimOutChans();
-			connectSpeechOutputSvcs(bunCtx);			
+			// Hard-wired local channels were once crudely setup right here.  See doWiringPostStart().
 			BoxSpace bs = prc.getTargetBoxSpace(null);
 			bs.addBox(getCharIdent(), this);
 		} catch (Throwable t) {
@@ -78,18 +75,8 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 		}
 	}
 	
-	public void connectAnimOutChans() {
-		FancyTextPerfChan bestAnimOutChan = myRobotMotionMapper.getBestAnimOutChan();
-		myTheater.registerPerfChannel(bestAnimOutChan);
-	}
-	public void connectSpeechOutputSvcs(BundleContext bundleCtx) {
-		try {
-			mySpeechOutputMapper.connectSpeechOutputSvcs(bundleCtx, myTheater);
-		} catch (Throwable t) {
-			getLogger().error("Cannot connect speech output", t);
-		}
-	}
-	public void setupAndStartBehaviorTheater(PumaConfigManager pcm, String chanGraphQN, String behavGraphQN) throws Throwable {
+
+	public void setupAndStartBehaviorTheater(BundleContext bunCtx, PumaConfigManager pcm, String chanGraphQN, String behavGraphQN) throws Throwable {
 		boolean clearCachesFirst = true;
 		// Old way, may still be useful durnig behavior development by advanced users.
 		// loadBehaviorConfigFromTestFile(clearCachesFirst);
@@ -99,27 +86,30 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 		Ident	behavGraphID = rc.makeIdentForQName(behavGraphQN);
 		loadBehaviorConfigFromRepo(rc, chanGraphID, behavGraphID, clearCachesFirst);
 		
-		startTheater();
+		startTheater(bunCtx);
 	}	
-	public void loadBehaviorConfigFromTestFile(boolean clearCachesFirst) throws Throwable {
-		String pathTail = "bhv_nugget_02.ttl";
-		String behavPath = myBehaviorCE.getBehaviorPermPath(pathTail);
-		// if (useTempFiles) {	//behavPath = behavCE.getBehaviorTempFilePath(pathTail);
-		ClassLoader optCLforJenaFM = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
-		TheaterTest.loadSceneBookFromFile(myTheater, behavPath, optCLforJenaFM, clearCachesFirst);
-	}
-	public void loadBehaviorConfigFromRepo(RepoClient repoClient, Ident chanGraphID, Ident behavGraphID, 
-					boolean clearCachesFirst) throws Throwable {
-		TheaterTest.loadSceneBookFromRepo(myTheater, repoClient, chanGraphID, behavGraphID, clearCachesFirst);
-	}
-	public void startTheater() {
+
+	public void startTheater(BundleContext optBunCtxForWiring) {
+		doWiringPreStart(optBunCtxForWiring, myTheater);
 		SceneBook sb = myTheater.getSceneBook();
 		CogcharEventActionBinder trigBinder = SceneActions.getBinder();
 		//myWebMapper.connectLiftSceneInterface(myBundleCtx); // Now done in PumaAppContext.initCinema
 		FancyTriggerFacade.registerTriggersForAllScenes(trigBinder, myTheater, sb);
 		myTheater.startThread();
+		doWiringPostStart(optBunCtxForWiring, myTheater);
 	}
-
+	protected void doWiringPreStart(BundleContext optBunCtxForWiring, Theater t) {
+		
+	}
+	protected void doWiringPostStart(BundleContext optBunCtxForWiring, Theater t) {
+		
+	}
+	protected void doStopOutputs() {
+		
+	}
+	protected void doResetOutputs() {
+		
+	}	
 	public void stopTheater() {
 		// Should be long enough for the 100 Msec loop to cleanly exit.
 		// Was 200, but very occasionally this wasn't quite long enough, and myWorkThread was becoming null after the
@@ -136,10 +126,6 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 		Ident charID = getCharIdent();
 		getLogger().info("stopEverything for {} - Stopping Theater.", charID);
 		stopTheater();
-		getLogger().info("stopEverything for {} - Stopping Anim Jobs.", charID);
-		myRobotMotionMapper.stopAndReset();
-		getLogger().info("stopEverything for {} - Stopping Speech-Output Jobs.", charID);
-		mySpeechOutputMapper.stopAllSpeechOutput();
 	}
 
 	public void stopAndReset() {
@@ -147,25 +133,29 @@ public class PumaBehaviorAgent extends CogcharScreenBox {
 		stopEverything();
 		// TODO:  Send character to default positions.
 		getLogger().info("stopAndReset for {} - Restarting behavior theater.", charID);
-		startTheater();
+		startTheater(BUNCTX_FOR_CRUDE_RESTART);
 		getLogger().info("stopAndReset - Complete.");
 	}
 
 	public void stopResetAndRecenter() {
 		Ident charID = getCharIdent();
 		stopEverything();
-		getLogger().info("stopResetAndRecenter - Starting GOTO_DEFAULTS anim");
-		myRobotMotionMapper.playBuiltinAnimNow(RobotAnimClient.BuiltinAnimKind.BAK_GOTO_DEFAULTS);
+		doResetOutputs();
 		getLogger().info("stopResetAndRecenter - Restarting behavior theater.");
-		startTheater();
+		startTheater(BUNCTX_FOR_CRUDE_RESTART);
 		getLogger().info("stopResetAndRecenter - Complete.");
 	}
-	public void playBuiltinAnimNow(RobotAnimClient.BuiltinAnimKind baKind) {
-		myRobotMotionMapper.playBuiltinAnimNow(baKind);
+	public void loadBehaviorConfigFromTestFile(boolean clearCachesFirst) throws Throwable {
+		String pathTail = "bhv_nugget_02.ttl";
+		String behavPath = myBehaviorCE.getBehaviorPermPath(pathTail);
+		// if (useTempFiles) {	//behavPath = behavCE.getBehaviorTempFilePath(pathTail);
+		ClassLoader optCLforJenaFM = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+		TheaterTest.loadSceneBookFromFile(myTheater, behavPath, optCLforJenaFM, clearCachesFirst);
 	}
-	public void sayTextNow(String txt) {
-		mySpeechOutputMapper._directlyStartSpeakingText(txt);
-	}
+	public void loadBehaviorConfigFromRepo(RepoClient repoClient, Ident chanGraphID, Ident behavGraphID, 
+					boolean clearCachesFirst) throws Throwable {
+		TheaterTest.loadSceneBookFromRepo(myTheater, repoClient, chanGraphID, behavGraphID, clearCachesFirst);
+	}	
 	public void usePermAnims() {
 		getLogger().warn("usePermAnims() not implemented yet");
 	}

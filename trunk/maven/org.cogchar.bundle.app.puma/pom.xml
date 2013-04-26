@@ -35,11 +35,13 @@
             <artifactId>org.cogchar.bundle.render.resources</artifactId>
             <version>${project.version}</version>
         </dependency>
+		<!--
 		<dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.cogchar.bundle.bind.cogbot</artifactId>
             <version>${project.version}</version>
         </dependency>
+		-->
 		<dependency>
 			<!-- And this so LiftAmbassador can hook in. Soon we want this all to move to a general interface in lib.core that everything can use -->
 			<groupId>${project.groupId}</groupId>

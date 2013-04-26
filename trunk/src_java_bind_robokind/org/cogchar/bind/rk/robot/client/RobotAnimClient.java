@@ -93,11 +93,23 @@ public class RobotAnimClient extends BasicDebugger {
 		}
     }
 	public AnimationJob playFullAnimationNow(Animation anim) { 
-		if (myCachedAnimPlayer != null) {
-			return myCachedAnimPlayer.playAnimation(anim);
+		long lengthMsec = anim.getLength();
+		return playAnimationSegmentNow(anim, 0, lengthMsec);		
+		
+	/*"The PlayState is not implemented for the RemoteAnimationJob."
+	To get correct "remainingTime", when using a networked animation player.
+Before you play an animation set the start time and stop time on the animation, 
+* or use the play animation with time args:
+    anim.setStartTime(0);
+    anim.setStopTime(anim.getLength());
+or    animPlayer.playAnimation(anim, 0, anim.getLength());			 */
+		/*
+		 * if (myCachedAnimPlayer != null) {
+		 
+			// return myCachedAnimPlayer.playAnimation(anim);
 		} else {
 			return AnimationUtils.playAnimation(myBundleCtx, myAnimPlayerOsgiFilterString, anim);
-		}		
+		}	*/
     }
 	
 	/*
