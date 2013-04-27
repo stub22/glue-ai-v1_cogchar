@@ -37,6 +37,11 @@ public class MasterDemo extends BasicDebugger {
 	public	SceneWiringDemo		mySceneWiringDemo;
 	public  TheaterWiringDemo	myTheaterWiringDemo;
 	
+	public void preLaunchSetup(BundleContext bundleCtx, String robotEnvVarKey) { 
+		AnimationConnector.launchPortableAnimEventFactory(bundleCtx);
+		RobotConnector.connectRobotsFromSysEnv(bundleCtx, robotEnvVarKey);
+	}
+	
 	public void launchDefaultDemo(BundleContext bundleCtx) { 
 		RepoClient defDemoRepoCli = makeDefaultRepoClient(bundleCtx);
 		initMajorParts(bundleCtx, defDemoRepoCli);
