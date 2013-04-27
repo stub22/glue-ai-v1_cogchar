@@ -47,11 +47,12 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 	}
 
 	public void makeModelRobotWithBlenderAndFrameSource(BoneRobotConfig config) throws Throwable {
-		logInfo("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START makeBonyRobot__, using config: " + config);
+		getLogger().info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START makeModelRobot__ for robot {} ",  config.myRobotName);		
+		getLogger().debug("BoneRobtConfig details: {} ",  config);
 		//Create your Robot and register it
 		ModelRobot br = ModelRobotFactory.buildRobot(config);
         if(br == null){
-            getLogger().warn("Error building ModelRobot from config: " + config);
+            getLogger().warn("Error building ModelRobot from config {}",  config);
             return;
         }
         Configuration<String> connectionConf = getValue(Configuration.class, MSGCONF_ROBOT_HOST);
@@ -60,12 +61,12 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
                 null, new OSGiComponentFactory(myBundleCtx));
 		registeredConnectionConfigServices.add(connectionConfigService);
 		registerAndStart(br, MSGCONF_ROBOT_HOST);
-		getLogger().info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeBonyRobotWithBlenderAndFrameSource ");
+		getLogger().info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeModelRobotWithBlenderAndFrameSource ");
 	}	
 	
 
 	// Old test method, currently unused.
-	public void registerDummyModelRobot() throws Throwable {
+	@Deprecated public void registerDummyModelRobot() throws Throwable {
 		logInfo("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START registerDummyBlendingRobot");
 		//Create your Robot and register it
 		Robot.Id hbID = new Robot.Id("temp"); // HARDCODED_DUMMY_ROBOT_ID);

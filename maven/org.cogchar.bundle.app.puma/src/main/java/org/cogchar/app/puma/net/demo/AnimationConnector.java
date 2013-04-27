@@ -38,7 +38,7 @@ public class AnimationConnector {
     private final static String REQUEST_DEST_CONFIG_ID = "animationRequestDestConfig";    
     private final static String REQUEST_SERIALIZE_CONFIG_ID = AnimationEvent.class.toString();
     private final static String REQUEST_DEST_NAME = "animationRequest";
-    private final static String REQUEST_SENDER_ID = "animationReques";
+    private final static String REQUEST_SENDER_ID = "animReqSndr";
     public final static String GROUP_PREFIX = "RKAnimGroup";
     
     public static void connect(BundleContext context, 

@@ -67,7 +67,7 @@ class BSceneRootChan (id : Ident, val scn: BScene) extends BasicPerfChan(id){
  */
 
 abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyTime, BSceneRootChan] {
-	val		rootyID = new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
+	val		rootyID = mySceneSpec.getIdent() // new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
 	val		myRootChan = new BSceneRootChan(rootyID, this);
 	val		myWiredPerfChannels  = new HashMap[Ident,PerfChannel]();
 	

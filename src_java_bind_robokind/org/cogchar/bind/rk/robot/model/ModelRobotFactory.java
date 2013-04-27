@@ -54,24 +54,24 @@ public class ModelRobotFactory implements ServiceFactory<Robot, BoneRobotConfig>
     public static ModelRobot buildRobot(BoneRobotConfig config) {
 		String robotName = config.myRobotName;
 		if (robotName == null) {
-			theLogger.warn("robotName is null, aborting robot build for config: " + config);
+			theLogger.warn("robotName is null, aborting robot build for config {}", config);
 			return null;
 		}
 		Robot.Id robotID = new Robot.Id(robotName);
 		ModelRobot robot = new ModelRobot(robotID);
 		theLogger.info("Robot.Id=" + robotID);
 		for (BoneJointConfig bjc : config.myBJCs) {
-			theLogger.info("Building Joint for config: " + bjc);
+			theLogger.debug("Building Joint for config {} ", bjc);
 			Integer jointNum = bjc.myJointNum;
 			if (jointNum != null) {
 				Joint.Id jointId = new Joint.Id(bjc.myJointNum);
 				ModelJoint mj = new ModelJoint(jointId, bjc);
 				robot.registerBonyJoint(mj);
 			} else {
-				theLogger.warn("Found null jointNum at: " + bjc);
+				theLogger.warn("Found null jointNum for config {} " + bjc);
 			}
 		}
-		theLogger.info("Built robot " + robot + " with ID=" + robot.getRobotId());
+		theLogger.info("Built robot {} with ID={}", robot, robot.getRobotId());
 		return robot;
 	}	
 }

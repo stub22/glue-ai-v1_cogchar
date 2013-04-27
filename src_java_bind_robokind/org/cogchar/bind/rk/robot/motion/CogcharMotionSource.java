@@ -19,19 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.robokind.api.motion.utils.RobotMoverFrameSource;
 
-import java.util.Map.Entry;
-import java.util.logging.Level;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import org.robokind.api.common.position.NormalizedDouble;
-import org.robokind.api.common.utils.Utils;
 import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.Robot.JointId;
-import org.robokind.api.motion.Robot.RobotPositionHashMap;
-import org.robokind.api.motion.Robot.RobotPositionMap;
 import org.robokind.api.motion.blending.FrameSource;
-import org.robokind.api.motion.protocol.DefaultMotionFrame;
 import org.robokind.api.motion.protocol.MotionFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
