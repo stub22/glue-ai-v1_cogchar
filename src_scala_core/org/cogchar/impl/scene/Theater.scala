@@ -35,6 +35,8 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	// private val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
 	private val myPerfChanSet = new java.util.HashSet[PerfChannel]();
 	// var myBinder : DummyBinder = null;
+	
+	// This SceneBook is *not* used when we are wired up using Scene+Channel lifecycles (except in a minor role as stateless filtering delegate)
 	private var	mySceneBook : SceneBook = null;
 	
 	private var myWorkThread : Thread = null;
