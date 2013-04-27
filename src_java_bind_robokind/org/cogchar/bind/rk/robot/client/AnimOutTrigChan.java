@@ -136,5 +136,11 @@ Do not use any listeners, they are not implemented in the RemoteAnimationJob.
 			markPerfStoppedAndForget(perf);
 		} 
 	}	
+	@Override public void requestOutJobCancel(AnimationJob aj) {
+		getLogger().info("************* Cancelling AnimationJob  on chan [" + getName() + "]");
+		long stopTime = 0;
+		// This method is defined by the Playable interface.
+		aj.stop(stopTime);
+	}	
 	
 }

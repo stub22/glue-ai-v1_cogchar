@@ -35,7 +35,7 @@ import org.cogchar.name.lifter.LiftAN;
  */
 
 
-public class WebOutTriggerChan extends FancyTextPerfChan {
+public class WebOutTriggerChan extends FancyTextPerfChan<WebOutTriggerChan.WebOutJob> {
 	
 	public WebOutTriggerChan(Ident id) {
 		super(id);
@@ -57,4 +57,11 @@ public class WebOutTriggerChan extends FancyTextPerfChan {
 		// TODO:  Keep track of output job associated with the performance, and report it
 		// in this callback using perf.markState (and possibly even perf.markCursor, for finer grained info).  
 	}
+	@Override public void requestOutJobCancel(WebOutJob woj) {
+		getLogger().info("************* Cancelling WebOut job on chan [" + getName() + "]");
+	}	
+	static class WebOutJob {
+	
+	}
+	
 }

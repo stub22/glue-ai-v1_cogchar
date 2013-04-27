@@ -148,6 +148,7 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 	override def toString() : String = {
 		"BScene[id=" + rootyID + ", chanMap=" + myWiredPerfChannels + ", modules=" + myCachedModules + "]";
 	}
+	def cancelAllPerfJobs()
 
 }
 
@@ -163,6 +164,12 @@ class FancyBScene(ss: SceneSpec) extends BScene(ss) {
 	override def wireGraphChannels(graphChans : java.util.Collection[GraphChannel]) : Unit = {
 	}
 	
+	override def cancelAllPerfJobs() { 
+		for (knownPerfMod  <- myPerfMonModsByStepSpecID.values) {
+			val knownPerf  = knownPerfMod.myPerf
+			knownPerf.requestOutputJobCancel
+		}
+	}
 	override def forgetAllModules() {
 		getLogger.info("FancyBScene {} is forgetting all modules (and stepSpec-perf mappings!)", mySceneSpec.getIdent)
 		super.forgetAllModules()
