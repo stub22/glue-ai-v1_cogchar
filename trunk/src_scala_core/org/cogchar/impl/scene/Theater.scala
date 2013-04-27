@@ -83,7 +83,9 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		myUnfinishedScenes.add(scene);
 	}
 	protected def deactivateScene(scene: BScene) {
-		// We want the modules to stop running
+		// We want any output playback to be canceled.
+		scene.cancelAllPerfJobs()
+		// We want all modules (i.e. Behavior + Perf-Monitor) to stop running
 		scene.requestStopAllModules()
 		// AND we want the scene to forget them, so that any monitoring it was doing (e.g. in FancyBScene) 
 		// is now cleared and reset for future re-use of the scene.   This approach allows us to re-use scene
@@ -95,8 +97,9 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		
 		// Note that we cannot yet assume the scene's modules have actually finished executing.
 		// So *THIS* scene will probably not get forgotten yet.  But we take this chance to forget
-		// any other finished scenes that are accumulating dust.  (This task would ideally be done
-		// at "user" level, i.e. within an admin corouting module).
+		// any other finished scenes in the theater that are accumulating dust.  (This task would 
+		// ideally be done at "user" level, i.e. within an admin coroutine module, rather than here
+		// in the outer-"kernel")
 		forgetFinishedScenes()
 	}
 	protected def forgetFinishedScene(scene: BScene) {

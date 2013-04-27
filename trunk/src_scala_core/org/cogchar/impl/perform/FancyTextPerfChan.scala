@@ -56,6 +56,8 @@ abstract class FancyTextPerfChan[OutJob >: Null](id: Ident) extends BasicPerfCha
 	
 
 	def updatePerfStatusQuickly(perf: FancyTextPerf)
+	
+	def getMyLogger() = getLogger()
 
 /**
  * This override plugs us into the type superstructure.  However,  the Throwable and Protected do not propagate
@@ -148,6 +150,8 @@ class FancyTextPerf(media : FancyTextMedia, chan: FancyTextPerfChan[_], initCurs
 
 	// Implement the two easy-peasy typed methods from FancyPerformance, using our fancier-typed equivalents.
 	override def getFancyPerfState : Performance.State = getState
+	override def getFancyPerfChan = chan
+	
 	override def syncWithFancyPerfChanNow : Unit = updateFromChan
 	
 	override def markFancyState(s : Performance.State) {	super.markState(s) }
@@ -183,7 +187,9 @@ class FancyTextPerf(media : FancyTextMedia, chan: FancyTextPerfChan[_], initCurs
 
 }
 
-class DummyTextChan(id: Ident) extends FancyTextPerfChan(id) {
+class DummyOutJob
+
+class DummyTextChan(id: Ident) extends FancyTextPerfChan[DummyOutJob](id) {
 	@throws(classOf[Throwable])	
 	override protected def fancyFastCueAndPlay (ftm : FancyTextMedia, cur : FancyTextCursor, perf:FancyTextPerf)  {
 		val textString = ftm.getFullText();
@@ -192,4 +198,7 @@ class DummyTextChan(id: Ident) extends FancyTextPerfChan(id) {
 	override def updatePerfStatusQuickly(perf: FancyTextPerf) {
 		getLogger().info("************* Updating status of perf on dummy-chan [" + getName() + "]")
 	}
+	override def requestOutJobCancel(doj : DummyOutJob) {
+		getLogger().info("************* Cancelling output job for dummy-chan [" + getName() + "]")
+	}	
 }

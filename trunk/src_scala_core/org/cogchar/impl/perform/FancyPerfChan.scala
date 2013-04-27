@@ -27,6 +27,7 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
+import org.slf4j.Logger;
 
 import  org.cogchar.api.perform.{Media, PerfChannel, BasicPerfChan, Performance, BasicPerformance, BasicPerformanceListener, BasicPerformanceEvent}
 
@@ -45,6 +46,19 @@ trait FancyPerfChan[OutJob >: Null] {
 		perf.markFancyState(Performance.State.STOPPING);
 	}
 	def getOutJobOrNull(perf : FancyPerformance) : OutJob = myJobsByPerf.getOrElse(perf, null)
+	
+	protected def requestOutJobCancel(oj : OutJob)
+	
+	def getMyLogger() : Logger
+	
+	def requestOutJobCancelForPerf(perf : FancyPerformance) { 
+		val oj = getOutJobOrNull(perf)
+		if (oj != null) {
+			requestOutJobCancel(oj)
+		} else {
+			getMyLogger().warn("Cannot find output job to cancel for perf {}", perf);
+		}
+	}
 }
 
 /**
@@ -57,6 +71,13 @@ trait FancyPerformance  { //  extends Performance[_, _, _ <: FancyTime] {
 	// We cannot narrow the type of this type param in the overrides.  We can only widen it!
 	// So, this def winds up being no better than passing in Object as the argument.
 	// def markFancyCursor[Cur](c : Cur, notify : Boolean) : Unit
+	
+	def getFancyPerfChan : FancyPerfChan[_]
+	
+	def requestOutputJobCancel : Unit = {
+		val chan = getFancyPerfChan
+		chan.requestOutJobCancelForPerf(this)
+	}
 }
 class FancyPerfChanSpec  extends ChannelSpec {
 	var		myDetails : String = "EMPTY";
