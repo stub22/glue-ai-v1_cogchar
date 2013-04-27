@@ -29,7 +29,10 @@ class FancyPerfMonitorModule(myPerf : FancyPerformance) extends EmptyTimedModule
 	private var		myCachedPerfState = Performance.State.INITING
 	
 	def getPerfState : Performance.State = myCachedPerfState
-	
+
+	override protected def doStart(scn : BScene) {
+		myRunDebugModulus = 25;
+	}	
 	override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
 		// This outer match on FancyBScene is now superfluous and may be removed if it gets in the way.
 		scn match {

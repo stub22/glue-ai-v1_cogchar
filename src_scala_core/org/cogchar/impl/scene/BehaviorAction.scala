@@ -45,7 +45,7 @@ abstract class BehaviorActionSpec extends BasicDebugger {
 	var	myChannelIdents : List[Ident] = List();
 	def addChannelIdent(id  : Ident) {
 		myChannelIdents = myChannelIdents :+ id;
-		logInfo("************ appended " + id + "  so list is now: " + myChannelIdents);
+		getLogger().debug("************ appended {} so list is now: {} ", id, myChannelIdents);
 	}
 	def makeActionExec() : BehaviorActionExec
 	
@@ -85,9 +85,9 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
 		var perfListReverseOrder : List[FancyPerformance] = Nil
 		val media = new FancyTextMedia(mySpec.myActionText);
 		for (val chanId : Ident <- mySpec.myChannelIdents) {
-			getLogger().info("Looking for channel[{}] in scene [{}]", chanId, s);
+			getLogger().debug("Looking for channel[{}] in scene [{}]", chanId, s);
 			val chan : PerfChannel = s.getChannel(chanId);
-			getLogger().info("Found channel {}", chan);
+			getLogger().debug("Found channel {}", chan);
 			if (chan != null) {
 				chan match {
 					case txtChan : FancyTextPerfChan[_] => { 
