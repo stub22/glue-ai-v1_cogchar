@@ -23,6 +23,8 @@ import org.cogchar.impl.scene.Theater;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.osgi.ServiceClassListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * You must call start() before the OSGiTheater begins tracking Scenes.
  * 
@@ -32,6 +34,8 @@ import org.robokind.api.common.osgi.ServiceClassListener;
 public class OSGiTheater extends ServiceClassListener<Scene> {
     private List<Scene> myScenes;
     private Theater myTheater;
+	
+	static Logger theLogger = LoggerFactory.getLogger(OSGiTheater.class);
     
     // sceneOSGiFilter might filter by associated SceneSpecBook URI
     public OSGiTheater(BundleContext context, Theater theater, String sceneOSGiFilter){
@@ -56,14 +60,14 @@ public class OSGiTheater extends ServiceClassListener<Scene> {
     protected void addService(Scene matchingScene) {
         // called by framework
         myScenes.add(matchingScene);
-        System.out.println("OSGiTheater added scene:" + matchingScene);
+        theLogger.info("OSGiTheater added scene with rootChan={}",  matchingScene.getRootChannel());
     }
 
     @Override
     protected void removeService(Scene matchingScene) {
         // called by framework
         myScenes.remove(matchingScene);
-        System.out.println("OSGiTheater removed scene:" + matchingScene);
+        theLogger.info("OSGiTheater removed scene with rootChan={}", matchingScene.getRootChannel());
     }
 
     @Override

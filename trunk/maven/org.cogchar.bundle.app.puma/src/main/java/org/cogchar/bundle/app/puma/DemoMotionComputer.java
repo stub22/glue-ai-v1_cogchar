@@ -42,11 +42,12 @@ public class DemoMotionComputer extends CogcharMotionComputer {
 			Joint.Id waistJointId = new Joint.Id(waistJointNum);
 			Robot.JointId waistRJID = new Robot.JointId(srcBotID, waistJointId);
 			NormalizedDouble oldWaistPos = rpm.get(waistRJID);
-			NormalizedDouble nextWaistPos = new NormalizedDouble ((myCycleCount % 125) / 125.0);
+			double zeroToTwoCycle = (myCycleCount % 250) / 125.0;
+			NormalizedDouble nextWaistPos = new NormalizedDouble (0.5 + 0.5 * Math.sin(Math.PI * zeroToTwoCycle));
 			Robot.RobotPositionHashMap goalPosMap = new Robot.RobotPositionHashMap();
 			goalPosMap.put(waistRJID, nextWaistPos);
 			source.move(goalPosMap, moveLengthMilliSec);
-			if ((myCycleCount % 100) == 1) {
+			if ((myCycleCount % 1000) == 1) {
 				theLogger.info("notify[cycle=" + myCycleCount + ", currentTime" + currentTimeUTC + ", moveLen="
 					+ moveLengthMilliSec + ", src=" + source + ", botID=" + srcBotID + ", oldWaistPos=" + oldWaistPos 
 					+ ", nextWaistPos=" + nextWaistPos + ", curPosMap=" + rpm + "]");
