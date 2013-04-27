@@ -161,5 +161,6 @@ public class SceneWiringDemo extends WiringDemo {
 		return getRegistrationRunnable(context, SceneSpec.class, scnSpec, key, val);
 	}
 
+
 	
 }
