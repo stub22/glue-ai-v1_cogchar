@@ -69,6 +69,7 @@ public class MasterDemo extends BasicDebugger {
 		
 		cwd.registerJFluxExtenders(bundleCtx);
 		swd.registerJFluxExtenders(bundleCtx);
+		twd.registerJFluxExtenders(bundleCtx);
 		
 		String chanGroupQName = cwd.myDefaultChanGroupQName;
 		cwd.initialChannelLoad(bundleCtx, demoRepoClient, chanGroupQName);

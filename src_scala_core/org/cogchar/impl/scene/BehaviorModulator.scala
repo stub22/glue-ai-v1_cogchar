@@ -62,7 +62,7 @@ class BehaviorModulator() extends BasicModulator[BScene](null, true) {
 		return unfinishedModules.size();	
 	}
 	import scala.collection.JavaConversions._;
-	def stopAllModules() {
+	def requestStopOnAllModules() {
 		val unfinishedModules : java.util.List[Module[BScene]] = getUnfinishedModules();
 		for (val um <- unfinishedModules) {
 			um.markStopRequested();
@@ -73,5 +73,8 @@ class BehaviorModulator() extends BasicModulator[BScene](null, true) {
 		for (val fm <- finishedModules) {
 			detachModule(fm);
 		}
+	}
+	def findUnfinishedModules(modSet : Set[Module[BScene]]) : Set[Module[BScene]] = {
+		getUnfinishedModules().toSet.intersect(modSet)
 	}
 }
