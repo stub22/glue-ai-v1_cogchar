@@ -29,6 +29,8 @@ import org.robokind.impl.messaging.config.MessagingLifecycleGroupConfigUtils;
 import org.robokind.impl.messaging.config.RKMessagingConfigUtils;
 import static org.robokind.impl.messaging.config.MessagingLifecycleGroupConfigUtils.*;
 import static org.robokind.api.common.lifecycle.config.RKManagedGroupConfigUtils.*;
+import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
+import org.robokind.impl.animation.messaging.PortableAnimationEvent;
 
 /**
  *
@@ -109,4 +111,11 @@ public class AnimationConnector {
     private static String groupId(String groupId, String suffix, String component){
         return MessagingLifecycleGroupConfigUtils.childId(groupId + "/" + suffix, component);   
     } 
+	
+	public static void launchPortableAnimEventFactory(BundleContext context) { 
+        new OSGiComponent(context, 
+                new SimpleLifecycle(
+                        new PortableAnimationEvent.Factory(), 
+                        AnimationEvent.AnimationEventFactory.class)).start();		
+	}
 }
