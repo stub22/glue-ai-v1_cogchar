@@ -25,7 +25,7 @@ import org.cogchar.impl.perform.{FancyPerformance}
  */
 
 
-class FancyPerfMonitorModule(myPerf : FancyPerformance) extends EmptyTimedModule[BScene] {
+class FancyPerfMonitorModule(val myPerf : FancyPerformance) extends EmptyTimedModule[BScene] {
 	private var		myCachedPerfState = Performance.State.INITING
 	
 	def getPerfState : Performance.State = myCachedPerfState
