@@ -31,7 +31,7 @@ import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, Cog
  */
 
 class Theater(val myIdent : Ident) extends CogcharScreenBox {
-	private val	myBM = new BehaviorModulator();
+	private var	myBM = new BehaviorModulator();
 	// private val myChanSet = new java.util.HashSet[Channel[_ <: Media, FancyTime]]();
 	private val myPerfChanSet = new java.util.HashSet[PerfChannel]();
 	// var myBinder : DummyBinder = null;
@@ -42,9 +42,13 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	private var myWorkThread : Thread = null;
 	private var myStopFlag : Boolean = false;
 	
+	// The behaviorModulator we use currently needs to treat a single scene as its context.
+	// However role could be refactored out, so we are leaving the door open to a multi-scene theater.
+	private val	myUnfinishedScenes = scala.collection.mutable.HashSet[BScene]()
+	
 	def registerPerfChannel (c : PerfChannel) {
 	// def registerChannel (c : Channel[_ <: Media, FancyTime]) {
-		getLogger().info("Registering perf-channel [{}] in behavior-theater {}", c, myIdent);
+		getLogger.info("Registering perf-channel [{}] in behavior-theater {}", c, myIdent);
 		myPerfChanSet.add(c);
 	}
 	def getSceneBook = mySceneBook;
@@ -52,26 +56,92 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		mySceneBook = sb;
 	}
 	def makeSceneFromBook(sceneID: Ident) : BScene = {
-		getLogger().info("MakeSceneFromBook for SceneID={}, char-theater ={}", sceneID, myIdent);
+		getLogger.info("MakeSceneFromBook for SceneID={}, char-theater ={}", sceneID, myIdent);
 		val sceneSpec = mySceneBook.findSceneSpec(sceneID);
 		val scene = new FancyBScene(sceneSpec); // new BScene(sceneSpec);
 		scene.wirePerfChannels(myPerfChanSet);
 		scene;
 	}
-	def activateScene(scene: BScene) {
-		// TODO:  Ensure previous scene is complete, and modulator is idle or fresh or something.
-		getLogger().info("Activating scene with spec[{}] for char-theater {}", scene.mySceneSpec, myIdent);
+	def exclusiveActivateScene(scene: BScene) {	
+		// This rq-stops all their modules, and asks them each to forget/reset, but does not "forget" them at theater or BM level.
+		deactivateAllScenes
+		activateScene(scene)
+	}
+
+	protected def activateScene(scene: BScene) {
+		// See comments about multi-scene above.  For now we expect to be used in a single-active-scene approach.
+		// IF we are strict single-scene, then we SHOULD ensure previous scene is complete, and modulator is idle or 
+		// fresh or something.
+		val prevModuleCnt = myBM.getAttachedModuleCount
+		if (prevModuleCnt > 1) {
+			getLogger.warn("activateScene({}) called but prevModuleCount={}", prevModuleCnt)
+		}
+		getLogger.info("Activating scene with spec[{}] for char-theater {}", scene.mySceneSpec.getIdent, myIdent);
+		// Here is the single-active-scene contraint currently enforced by BehaviorModulator.
 		myBM.setSceneContext(scene);
 		scene.attachBehaviorsToModulator(myBM);
+		myUnfinishedScenes.add(scene);
 	}
+	protected def deactivateScene(scene: BScene) {
+		// We want the modules to stop running
+		scene.requestStopAllModules()
+		// AND we want the scene to forget them, so that any monitoring it was doing (e.g. in FancyBScene) 
+		// is now cleared and reset for future re-use of the scene.   This approach allows us to re-use scene
+		// objects piped in through the OSGi theater, although that generally is kind of a messy idea.
+		// So, would probably be better to dispose of this scene object, and reconstitute from sceneSpec
+		// when desired.  
+		scene.forgetAllModules();
+		// TODO : Consider disposing of the scene object, preventing it from being reused.
+		
+		// Note that we cannot yet assume the scene's modules have actually finished executing.
+		// So *THIS* scene will probably not get forgotten yet.  But we take this chance to forget
+		// any other finished scenes that are accumulating dust.  (This task would ideally be done
+		// at "user" level, i.e. within an admin corouting module).
+		forgetFinishedScenes()
+	}
+	protected def forgetFinishedScene(scene: BScene) {
+		// This would have happened already if the scene was "deactivated", but NOT if it merely "expired"
+		scene.forgetAllModules();
+		// TODO:  dbl-check that it is really "finished"
+		if (myUnfinishedScenes.contains(scene)) {
+			myUnfinishedScenes.remove(scene)
+		} else {
+			getLogger.warn("Asked to forget a scene we don't even remember: {}", scene)
+		}
+	}
+	// Currently this is called in thread below when the BehaviorModulator takes a break, 
+	// and also in 
+	protected def forgetFinishedScenes() {
+		for (sc <- myUnfinishedScenes.toArray) {
+			if (!sc.hasUnfinishedModules) {
+				getLogger.warn("Found 'expired' scene to forget: {}", sc.mySceneSpec.getIdent)
+				forgetFinishedScene(sc)
+			}			
+		}
+	}	
 	
-	def stopAllScenes() {
-		myBM.stopAllModules();
+	def deactivateAllScenes() {
+		// copy toArray to avoid interference with delete ops.  myActiveScenes.toArray.apply{}
+		for (sc <- myUnfinishedScenes.toArray) {
+			deactivateScene(sc)
+		}
 	}
-	def stopThread() { 
+	def stopAllScenesAndModules() {
+		deactivateAllScenes()
+		// We can't know if this is necessary. 
+		requestStopAllModules();
+	}
+	private def requestStopAllModules() {
+		myBM.requestStopOnAllModules();
+	}
+	protected def replaceBehaviorModulator() { 
+		getLogger.info("#$^%#$^#$^#$^%#$^% Replacing a BehaviorModulator - wow!  Is this necessary?")
+		myBM = new BehaviorModulator();
+	}
+	private def stopThread() { 
 		myStopFlag = true;
 	}
-	def killThread() { 
+	private def killThread() { 
 		if (myWorkThread != null) {
 			logInfo("Theater.killThread is interrupting its own thread");
 			// It's possible (and has happened) that the thread goes null upon normal completion in the run loop
@@ -104,6 +174,8 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 			override def run() {
 				while (!myStopFlag) {
 					myBM.runUntilDone(sleepTimeMsec);
+					
+					forgetFinishedScenes()
 					// logInfo("Theater behavior module is 'done', detaching all finished modules");
 					// We turned auto-detach back on, so we don't currently need to do:   myBM.detachAllFinishedModules();
 					// logInfo("Sleeping for " + sleepTimeMsec + "msec");
@@ -125,7 +197,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	// 0 forces thread kill immediately.
 	// positive value waits (in *calling* thead) that many millsec before killing thread.
 	def fullyStop(waitMsecThenForce : Int) {
-		stopAllScenes();
+		stopAllScenesAndModules();
 		stopThread();
 		if (waitMsecThenForce >= 0) {
 			if (waitMsecThenForce > 0) {
