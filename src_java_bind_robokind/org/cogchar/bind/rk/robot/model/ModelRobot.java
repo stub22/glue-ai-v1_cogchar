@@ -99,7 +99,10 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
             Robot.JointId jointID = e.getKey();
             ModelJoint bj = myJointMap.get(jointID);
             if(bj == null){
-				theLogger.warn("ignoring unknown joint-id {} requested on model-robot[id={}] ", jointID, getRobotId());
+				// Would like to see these at warning level, but at low frequency.  
+				// Would be nice to have Logback's DuplicateMessageFilter.
+				// Could instead try to use/extend the BasicDebugger's stuff.
+				theLogger.debug("ignoring unknown joint-id {} requested on model-robot[id={}] ", jointID, getRobotId());
                 continue;
             }
             NormalizedDouble pos = e.getValue();

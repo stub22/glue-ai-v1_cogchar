@@ -55,7 +55,7 @@ abstract class Behavior(val mySpec: BehaviorSpec) extends EmptyTimedModule[BScen
 	// def logMe(msg: String) {logInfo("[" + this + "]-" + msg);}
 	override protected def doStart(scn : BScene) {
 		myStartStamp = System.currentTimeMillis();
-		myRunDebugModulus = 20;
+		myRunDebugModulus = 25;
 	}
 	override protected def doStop(scn : BScene) {
 		getLogger().info("doStop called for behavior {}", this)
