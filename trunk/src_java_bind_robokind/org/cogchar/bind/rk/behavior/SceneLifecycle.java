@@ -70,7 +70,7 @@ public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
                 continue;
             }
             PerfChannel chan = (PerfChannel) e.getValue();   //Dependency types already checked by AbstractLifecycle
-			theLogger.warn("Found channel dependency {} for scene {}", chan, scene);
+			theLogger.debug("Found channel dependency {} for scene {}", chan, scene);
 			perfChansForWiring.add(chan);
         }
 		scene.wirePerfChannels(perfChansForWiring);
