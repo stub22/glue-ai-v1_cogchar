@@ -35,11 +35,11 @@ object FancyTriggerFacade extends BasicDebugger {
 			// So, this trigger can be used on any theater, but of course,
 			// the matching sceneID must be found in the book of that theater!
 			override def fire(db : CogcharScreenBox) : Unit = {
-				getLogger().info("Firing scene trigger for: " + freeSceneID)
+				getLogger().info("Firing scene trigger for {} ", freeSceneID)
 				val t : Theater = db.asInstanceOf[Theater];
-				t.stopAllScenes();
+				t.stopAllScenesAndModules()
 				val scn : BScene = t.makeSceneFromBook(freeSceneID);
-				t.activateScene(scn);
+				t.exclusiveActivateScene(scn);
 			}
 		}
 		ndt;

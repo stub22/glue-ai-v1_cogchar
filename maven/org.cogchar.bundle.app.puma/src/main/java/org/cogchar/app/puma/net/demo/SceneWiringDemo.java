@@ -101,6 +101,13 @@ public class SceneWiringDemo extends WiringDemo {
 		List<SceneSpec> ssList = SceneBook.filterSceneSpecs(allBehavSpecs);
 		return ssList;
 	}
+	public void playSceneCleanly(OSGiTheater osgiThtr, BScene scene) {
+		Theater thtr = osgiThtr.getTheater();
+		if (thtr != null) {
+			thtr.stopAllScenesAndModules();
+			thtr.exclusiveActivateScene(scene);
+		}		
+	}
 	public void reloadScenes(OSGiTheater osgiThtr) {
 		Theater thtr = osgiThtr.getTheater();
 		if (thtr != null) {

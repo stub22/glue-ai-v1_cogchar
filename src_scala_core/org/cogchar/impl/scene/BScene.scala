@@ -37,6 +37,10 @@ import org.cogchar.api.channel.{GraphChannel};
 import org.cogchar.api.scene.{Scene};
 
 import scala.collection.mutable.HashMap;
+import org.appdapter.api.module.{Module, Modulator}
+import org.appdapter.api.module.Module.State;
+
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -71,6 +75,10 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 	val		myRootChan = new BSceneRootChan(rootyID, this);
 	val		myWiredPerfChannels  = new HashMap[Ident,PerfChannel]();
 	
+	val		myCachedModules = new scala.collection.mutable.HashSet[Module[BScene]]()
+	var		myCachedModulator : BehaviorModulator = null
+
+	
 	override def getRootChannel() : BSceneRootChan = {	myRootChan	}
 	import scala.collection.JavaConversions._;
 	override def wirePerfChannels(perfChans : java.util.Collection[PerfChannel]) : Unit = {
@@ -85,29 +93,62 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 			myWiredPerfChannels.put(c.getIdent, c)
 		}
 	}
-	var myCachedModulator : BehaviorModulator = null
 	// If the modulator has "autoDetachOnFinish" set to true, then the modules will be auto-detached.
 	def attachBehaviorsToModulator(bm : BehaviorModulator) {
+		// We are intercepting this method as a signal to treat this bm as our new cached modulator.
+		if (myCachedModulator != bm) {
+			if (myCachedModulator != null) {
+				getLogger.warn("Whoah!  Scene {} is being attached to a different modulator than before!", mySceneSpec.getIdent)
+				if (myCachedModules.nonEmpty) {
+					// Indicates the scene was not properly stopped before and is now being reused.  Ick.
+					getLogger.error("Double-Woah!  Scene {} has cached modules and is now moving to a different modulator!"
+										+ "Now stopping the old modules, and hoping for the best.", mySceneSpec.getIdent)
+					requestStopAllModules
+					forgetAllModules
+				}
+			}
+		}
 		myCachedModulator = bm;
+		if (myCachedModules.nonEmpty) {
+			getLogger.warn("#############  Hey, we already have some cached modules in this scene: {}", myCachedModules)
+		}
 		for (val bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
 			val b = bs.makeBehavior();
-			bm.attachModule(b);
+			attachModule(b);
 		}
 	}
-	import org.appdapter.api.module.{Module}
 	
-	// Temporary approach to attaching perf-monitor-modules
-	def attachModule(aModule : Module[BScene]) {
+	// Direct approach to attaching perf-monitor-modules
+	protected def attachModule(aModule : Module[BScene]) {
 		if (myCachedModulator != null) {
 			myCachedModulator.attachModule(aModule)
+			myCachedModules.add(aModule)			
 		}
 	}
+	def requestStopAllModules() {
+		for (mod <- myCachedModules) {
+			mod.markStopRequested
+		}
+	}
+	def forgetAllModules() {
+		myCachedModules.clear
+	}
+	def getUnfinishedModules() : Set[Module[BScene]] = {
+		if (myCachedModulator != null) {
+			myCachedModulator.findUnfinishedModules(myCachedModules.toSet)
+		} else {
+			Set[Module[BScene]]()
+		}
+	}
+	def hasUnfinishedModules() : Boolean = getUnfinishedModules.nonEmpty
+
 	def getChannel(id : Ident) : PerfChannel = {
 		return myWiredPerfChannels.getOrElse(id, null);
 	}
 	override def toString() : String = {
-		"BScene[id=" + rootyID + ", chanMap=" + myWiredPerfChannels + "]";
+		"BScene[id=" + rootyID + ", chanMap=" + myWiredPerfChannels + ", modules=" + myCachedModules + "]";
 	}
+
 }
 
 class LocalGraph(graphQN : String)
@@ -122,6 +163,11 @@ class FancyBScene(ss: SceneSpec) extends BScene(ss) {
 	override def wireGraphChannels(graphChans : java.util.Collection[GraphChannel]) : Unit = {
 	}
 	
+	override def forgetAllModules() {
+		getLogger.info("FancyBScene {} is forgetting all modules (and stepSpec-perf mappings!)", mySceneSpec.getIdent)
+		super.forgetAllModules()
+		myPerfMonModsByStepSpecID.clear
+	}
 	def registerPerfForStep(stepSpecID : Ident, perf : FancyPerformance) {
 		perf match {
 			case ftp : FancyTextPerf => {
