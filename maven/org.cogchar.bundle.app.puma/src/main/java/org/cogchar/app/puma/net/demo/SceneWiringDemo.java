@@ -91,6 +91,7 @@ public class SceneWiringDemo extends WiringDemo {
 		List<SceneSpec> comboList = new ArrayList<SceneSpec>();
 		comboList.addAll(ssList);
 		comboList.addAll(bonusList);
+		getLogger().info("Loaded {} SceneSpecs ", comboList.size());
 		getLogger().debug("Loaded SceneSpecs {} ", comboList);
 		return comboList;
 	}
@@ -136,7 +137,8 @@ public class SceneWiringDemo extends WiringDemo {
 
 			
 			Runnable ssRegRunnable = makeSceneSpecRegRunnable(bundleCtx, ss, GROUP_KEY_SCENE_SPEC, sceneGroupQN);
-			getLogger().info("Registered scene-spec and made runnable for {} ", ss);
+			getLogger().info("Registered scene-spec and made runnable for {} ", ss.getIdent());
+			getLogger().debug("Registered scene-spec details: {} ", ss);
 			runnables.add(ssRegRunnable);
 		}
 		return runnables;
