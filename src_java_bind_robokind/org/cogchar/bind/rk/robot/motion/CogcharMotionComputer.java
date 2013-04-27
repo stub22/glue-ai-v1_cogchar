@@ -23,6 +23,6 @@ package org.cogchar.bind.rk.robot.motion;
 public abstract class CogcharMotionComputer {
 	
 	
-	public abstract void notifySourceComputingCycle(CogcharMotionSource source, long currentTimeUTC, 
+	public abstract void notifySourceComputingCycle(CogcharMotionSource source, long currentJavaTimeMsecUTC, 
 			long moveLengthMilliSec);
 }

@@ -61,7 +61,7 @@ class FancyChannelSpec extends KnownComponentImpl {
 		val chanTypePropID = reader.getConfigPropertyIdent(configItem, configItem.getIdent(), ChannelNames.P_channelType);
 		val linkedChanTypes : java.util.Set[Item] = configItem.getLinkedItemSet(chanTypePropID);
 		
-		getLogger().info("ChannelSpec has linkedChanTypes: " + linkedChanTypes);
+		getLogger().debug("ChannelSpec has linkedChanTypes: {} ",  linkedChanTypes);
 		if (linkedChanTypes.size() == 1) {
 			myChanType =  linkedChanTypes.iterator.next.asInstanceOf[Ident]
 		}		
@@ -70,7 +70,7 @@ class FancyChannelSpec extends KnownComponentImpl {
 class FancyChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[FancyChannelSpec](builderConfRes) {
 
 	override protected def initExtendedFieldsAndLinks(cs: FancyChannelSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
-		getLogger().warn("ChannelSpecBuilder.initExtendedFieldsAndLinks");
+		getLogger().debug("ChannelSpecBuilder.initExtendedFieldsAndLinks using {}", configItem);
 		val reader = getReader();
 		cs.completeInit(configItem, reader, assmblr, mode)
 		// cs.myDetails = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_details, configItem, null);
