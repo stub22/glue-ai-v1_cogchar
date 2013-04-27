@@ -29,13 +29,15 @@ import org.osgi.framework.BundleContext;
  */
 
 public class TheaterWiringDemo extends WiringDemo {
+	public String myDefaultDebugCharQN = "hrk:debug_QN_for_theater_70";
+	
 	public TheaterWiringDemo(BundleContext bundleCtx,  RepoClient demoRepoClient) {
 		super(bundleCtx, demoRepoClient);
 	}	
-	public OSGiTheater testTheaterStartup(BundleContext bundleCtx, RepoClient demoRepoClient) {
+	public OSGiTheater testTheaterStartup(BundleContext bundleCtx, RepoClient demoRepoClient, String debugCharQN) {
 		String sceneOSGiFilterForTheater = null;
 
-		String debugCharQN = "hrk:debug_QN_for_theater_70";
+
 		Theater t = makeTheater(demoRepoClient, debugCharQN);
 		OSGiTheater osgiT = setupTheatreOSGiComp(bundleCtx, t, sceneOSGiFilterForTheater);
 		getLogger().info("************************ Starting Theater thread()");
