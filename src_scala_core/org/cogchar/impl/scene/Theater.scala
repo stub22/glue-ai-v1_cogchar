@@ -76,6 +76,9 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 			getLogger.warn("activateScene({}) called but prevModuleCount={}", prevModuleCnt)
 		}
 		getLogger.info("Activating scene with spec[{}] for char-theater {}", scene.mySceneSpec.getIdent, myIdent);
+		// TODO: Check if the scene still has any cached modules.
+		// Clear out anything laying around (e.g. if the scene is interrupting itself with a re-activation)
+		scene.forgetAllModules()
 		// Here is the single-active-scene contraint currently enforced by BehaviorModulator.
 		myBM.setSceneContext(scene);
 		scene.attachBehaviorsToModulator(myBM);
