@@ -95,6 +95,27 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 	}
 	// If the modulator has "autoDetachOnFinish" set to true, then the modules will be auto-detached.
 	def attachBehaviorsToModulator(bm : BehaviorModulator) {
+		updateModuleCaches(bm);
+		makeAndAttachBehavsFromSpecs();
+	}
+		
+	/**
+	 * HERE our BScene is acting like a tidy immutable behavior-factory, which is nice.  
+	 * However, we are invokind attachModule, which is making use of a BehaviorModulator
+	 * that might already have copies of these fresh Behaviors we are making.  Also, the
+	 * running scene may cache information by stepSpec-ID at present (rather than by say, 
+	 * step-EXEC-ID, which would be generated at runtime, thus safer but harder to find).    
+	 * That cache in FancyBScene below is how GuardedBehaviors check their guard-perfs.
+	 * A BScene might choose
+	 */
+	protected def makeAndAttachBehavsFromSpecs() {
+		for (val bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
+			val b = bs.makeBehavior();
+			attachModule(b);
+		}		
+	}		
+		
+	protected def updateModuleCaches(bm : BehaviorModulator) {
 		// We are intercepting this method as a signal to treat this bm as our new cached modulator.
 		if (myCachedModulator != bm) {
 			if (myCachedModulator != null) {
@@ -112,15 +133,12 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 		if (myCachedModules.nonEmpty) {
 			getLogger.warn("#############  Hey, we already have some cached modules in this scene: {}", myCachedModules)
 		}
-		for (val bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
-			val b = bs.makeBehavior();
-			attachModule(b);
-		}
 	}
-	
+
 	// Direct approach to attaching perf-monitor-modules
 	protected def attachModule(aModule : Module[BScene]) {
 		if (myCachedModulator != null) {
+			// If the modulator has "autoDetachOnFinish" set to true, then the modules will be auto-detached.
 			myCachedModulator.attachModule(aModule)
 			myCachedModules.add(aModule)			
 		}
@@ -132,6 +150,12 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 	}
 	def forgetAllModules() {
 		myCachedModules.clear
+	}
+	// If we want a module to be detached from a modulator without waiting for auto-detach-on-finish, then
+	// we must use something like this.  However, we cannot detach a module which is currently in an action method.
+	// (doRun, stop, start) - we will instead get an exception.  To proceed without blocking or async requests,
+	// this method must catch those exceptions.  
+	def attemptImmediateDetachAllModules() { 
 	}
 	def getUnfinishedModules() : Set[Module[BScene]] = {
 		if (myCachedModulator != null) {
@@ -152,13 +176,22 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 
 }
 
-class LocalGraph(graphQN : String)
+//class LocalGraph(graphQN : String)
 
 import scala.collection.mutable.Map
 
+/**
+ * Implements the features beyond BScene that we need to make behavior decisions.
+ *    1) Tracks performances of its own steps for others to guard on
+ *    2) [TODO] - Tracks GraphChannels supplying useful input+state data
+ *    
+ *    These two features above should be separated into traits, which are then 
+ *    mixed in by FancyBScene.  Consider having those traits extend Scene interface.
+ *    
+ */
 class FancyBScene(ss: SceneSpec) extends BScene(ss) {
-	val		myPerfMonModsByStepSpecID : Map[Ident, FancyPerfMonitorModule] = Map()
-	val		myLocGraphsByID : Map[Ident, LocalGraph] = Map()
+	val		myPerfMonModsByStepSpecID  = new HashMap[Ident, FancyPerfMonitorModule]()
+	// val		myLocGraphsByID : Map[Ident, LocalGraph] = Map()
 	val		myWiredGraphChannels  = new HashMap[Ident,GraphChannel]();	
 	
 	override def wireGraphChannels(graphChans : java.util.Collection[GraphChannel]) : Unit = {
