@@ -45,6 +45,7 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
 	}
 
 	@Override public boolean triggerAnimation(Ident uri) {
+		getLogger().info("Got request to trigger animation {}", uri);
 		boolean success = myPCCB.getPathMgr().controlAnimationByName(uri, PathMgr.ControlAction.PLAY);
 		if (!success) {
 			success = myPCCB.getThingAnimMgr().controlAnimationByName(uri, SpatialAnimMgr.ControlAction.PLAY);
@@ -53,6 +54,7 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
 	}
 
 	@Override public boolean stopAnimation(Ident uri) {
+		getLogger().info("Got request to stop animation {}", uri);
 		boolean success = myPCCB.getPathMgr().controlAnimationByName(uri, PathMgr.ControlAction.STOP);
 		if (!success) {
 			success = myPCCB.getThingAnimMgr().controlAnimationByName(uri, SpatialAnimMgr.ControlAction.STOP);
