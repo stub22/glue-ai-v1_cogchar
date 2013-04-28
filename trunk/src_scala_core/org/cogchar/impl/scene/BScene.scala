@@ -176,8 +176,6 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 
 }
 
-//class LocalGraph(graphQN : String)
-
 import scala.collection.mutable.Map
 
 /**
@@ -191,7 +189,6 @@ import scala.collection.mutable.Map
  */
 class FancyBScene(ss: SceneSpec) extends BScene(ss) {
 	val		myPerfMonModsByStepSpecID  = new HashMap[Ident, FancyPerfMonitorModule]()
-	// val		myLocGraphsByID : Map[Ident, LocalGraph] = Map()
 	val		myWiredGraphChannels  = new HashMap[Ident,GraphChannel]();	
 	
 	override def wireGraphChannels(graphChans : java.util.Collection[GraphChannel]) : Unit = {

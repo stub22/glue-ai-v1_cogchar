@@ -17,44 +17,80 @@
 package org.cogchar.impl.scene
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 
-import org.appdapter.core.name.{Ident}
+import org.appdapter.core.name.{Ident, FreeIdent}
 
 import  org.cogchar.api.perform.{Media, PerfChannel, Performance, BasicPerformance}
 
-import org.cogchar.impl.perform.{FancyTime};
+import org.cogchar.impl.perform.{FancyTime, FancyPerformance};
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-trait BehaviorStepExec extends BasicDebugger {
+abstract class BehaviorStepExec(val myStepSpec : BehaviorStepSpec, val myActionExec : BehaviorActionExec) extends BasicDebugger  {
 	// Generally all comm should be through the scene, and the behavior should be ignored by the step.
 	def proceed(s: BScene, b: Behavior) : Boolean;
+	
+	protected def beginPerformances(s: BScene, b: Behavior) : Boolean = {
+	
+		val perfList : List[FancyPerformance] = myActionExec.perform(s)
+
+		// We can't truly support multiple-performances yet (which happens if a step is bound to multiple output
+		// channels).  Doing that now will lead to only the last performance being monitor-able.
+		if (perfList.size != 1) {
+			throw new RuntimeException("PerfList has unexpected size (!=1) : " +  perfList.size)
+		}
+		for (perf <- perfList) {
+			val perfKeyID = getPerfKeyID(perf, s, b);
+			// This registration allows the perf to satisfy guards of other steps, who find it by looking under
+			// our stepSpecID - for now.1
+			registerPerfWithScene(s, perfKeyID, perf)
+		}
+		true
+	}
+	protected def registerPerfWithScene(scn: BScene, stepSpecID : Ident, perf: FancyPerformance) {
+		scn match {
+			case fbs : FancyBScene => {		
+				val perfMonMod = new FancyPerfMonitorModule(perf)
+				fbs.registerPerfForStep(stepSpecID, perf)
+			}
+			case  _ => {
+				getLogger().warn("Cannot register FancyPerf with non-Fancy scene")
+			}					
+		}
+	}	
+	protected def getPerfKeyID(perf : FancyPerformance, s: BScene, b: Behavior) : Ident = {
+		myStepSpec.myOptID match {
+			case Some(stepSpecID) => stepSpecID
+			case None => new FreeIdent(org.cogchar.name.behavior.SceneFieldNames.NS_ccScnInst + "perf_" + perf.hashCode);
+		}
+	}
+
 }
 abstract class BehaviorStepSpec(val myOptID : Option[Ident]) extends BasicDebugger {
 	def makeStepExecutor() : BehaviorStepExec
-	
-	
+
 	
 	
 }
-class ScheduledActionStepExec(mySpec : ScheduledActionStepSpec) extends BehaviorStepExec {
+class ScheduledActionStepExec(stepSpec : ScheduledActionStepSpec, actionExec : BehaviorActionExec) 
+			extends BehaviorStepExec (stepSpec, actionExec) {
 	def proceed(s: BScene, b: Behavior) : Boolean = {
 		val msecSinceStart = b.getMillsecSinceStart();
-		if (msecSinceStart >= mySpec.myOffsetMillisec) {
-			val actionExec = mySpec.myActionSpec.makeActionExec()
-			actionExec.perform(s);
-			true;
+		if (msecSinceStart >= stepSpec.myOffsetMillisec) {
+			beginPerformances(s, b);
 		} else {
 			false;
 		}
-	}	
+	}
+	
 }
 
 class ScheduledActionStepSpec (val myOffsetMillisec : Int, val myActionSpec: BehaviorActionSpec) 
 			extends BehaviorStepSpec(None) { 
 				
 	def makeStepExecutor() : BehaviorStepExec = {
-		new ScheduledActionStepExec(this)
+		val actionExec = myActionSpec.makeActionExec
+		new ScheduledActionStepExec(this, actionExec)
 	}
 	override def toString() : String = {
 		"ScheduledActionStepSpec[offsetMsec=" + myOffsetMillisec + ", action=" + myActionSpec + "]"

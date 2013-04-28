@@ -74,7 +74,9 @@ class PerfMonGuardSpec(val myUpstreamStepID : Ident, val myStateToMatchOrExceed 
  *  
  */
 
-class GuardedStepExec(val myStepSpec : GuardedStepSpec, val myActionExec : BehaviorActionExec) extends BehaviorStepExec {
+class GuardedStepExec(stepSpec : GuardedStepSpec, actionExec : BehaviorActionExec) 
+		extends BehaviorStepExec(stepSpec, actionExec) {
+			
 	var	myGuards : List[Guard] = Nil
 	
 	def addGuard(g : Guard) {
@@ -94,34 +96,10 @@ class GuardedStepExec(val myStepSpec : GuardedStepSpec, val myActionExec : Behav
 		if (!checkAllGuardsSatisfied(s)) {
 			return false
 		}
-		getLogger().info("All {} guards are satisfied, now proceeding with step {}", myGuards.size, myStepSpec.myOptID)
-		val perfList : List[FancyPerformance] = myActionExec.perform(s)
-		val stepSpecID = myStepSpec.myOptID.get
-		// We can't truly support multiple-performances yet (which happens if a step is bound to multiple output
-		// channels).  Doing that now will lead to only the last performance being monitor-able.
-		if (perfList.size != 1) {
-			throw new RuntimeException("PerfList has unexpected size (!=1) : " +  perfList.size)
-		}
-		for (perf <- perfList) {
-			// This registration allows the perf to satisfy guards of other steps, who find it by looking under
-			// our stepSpecID - for now.1
-			registerPerfWithScene(s, stepSpecID, perf)
-		}
-		true
+		getLogger().info("All {} guards are satisfied, now proceeding with step {}", myGuards.size, stepSpec.myOptID)
+		beginPerformances(s, b)
 	}
 
-	
-	def registerPerfWithScene(scn: BScene, stepSpecID : Ident, perf: FancyPerformance) {
-		scn match {
-			case fbs : FancyBScene => {		
-				val perfMonMod = new FancyPerfMonitorModule(perf)
-				fbs.registerPerfForStep(stepSpecID, perf)
-			}
-			case  _ => {
-				getLogger().warn("Cannot register FancyPerf with non-Fancy scene")
-			}					
-		}
-	}
 }
 class GuardedStepSpec(stepSpecID : Ident, val myActionSpec: BehaviorActionSpec, val myGuardSpecs : Set[GuardSpec]) 
 			extends BehaviorStepSpec(Some(stepSpecID)) {
