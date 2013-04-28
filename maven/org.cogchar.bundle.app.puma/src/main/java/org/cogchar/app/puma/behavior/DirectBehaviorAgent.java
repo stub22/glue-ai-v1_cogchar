@@ -54,6 +54,7 @@ public class DirectBehaviorAgent extends PumaBehaviorAgent {
 	}
 	public void connectAnimOutChans(Theater thtr) {
 		FancyTextPerfChan bestAnimOutChan = myRobotMotionMapper.getBestAnimOutChan();
+		getLogger().warn("Found bestAnimOutChan {}", bestAnimOutChan);
 		thtr.registerPerfChannel(bestAnimOutChan);
 	}
 	public void playBuiltinAnimNow(RobotAnimClient.BuiltinAnimKind baKind) {
