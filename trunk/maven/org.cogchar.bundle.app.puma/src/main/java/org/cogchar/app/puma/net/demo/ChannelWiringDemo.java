@@ -27,6 +27,7 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.bind.rk.behavior.ChannelBindingConfig;
 
 import org.cogchar.bind.rk.behavior.ServiceChannelExtender;
+import org.cogchar.blob.emit.EnhancedRepoClient;
 
 
 /**
@@ -38,7 +39,7 @@ public class ChannelWiringDemo extends WiringDemo {
 	
 	public String myDefaultChanGroupQName = "csi:demo_master_chan_group_22";
 
-	public ChannelWiringDemo(BundleContext bundleCtx, RepoClient demoRepoClient) {
+	public ChannelWiringDemo(BundleContext bundleCtx, EnhancedRepoClient demoRepoClient) {
 		super(bundleCtx, demoRepoClient);
 	}
 	public void initialChannelLoad(BundleContext bundleCtx, RepoClient demoRepoClient, String chanGroupName)  { 

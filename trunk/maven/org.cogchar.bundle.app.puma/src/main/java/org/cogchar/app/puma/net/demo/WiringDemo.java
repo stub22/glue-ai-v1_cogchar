@@ -20,6 +20,7 @@ package org.cogchar.app.puma.net.demo;
 import java.util.Properties;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.blob.emit.EnhancedRepoClient;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
@@ -29,19 +30,19 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
  */
 
 public abstract class WiringDemo extends BasicDebugger {
-	private		BundleContext		myDefaultBundleContext;
-	private		RepoClient			myDefaultRepoClient;
+	private		BundleContext			myDefaultBundleContext;
+	private		EnhancedRepoClient		myDefaultRepoClient;
 	
 	abstract public void registerJFluxExtenders(BundleContext bundleCtx);
 	
-	public WiringDemo(BundleContext bc, RepoClient rc) {
+	public WiringDemo(BundleContext bc, EnhancedRepoClient rc) {
 		myDefaultBundleContext = bc;
 		myDefaultRepoClient = rc;
 	}
 	protected BundleContext getDefaultBundleContext() { 
 		return myDefaultBundleContext;
 	}
-	protected RepoClient getDefaultRepoClient() {
+	protected EnhancedRepoClient getDefaultRepoClient() {
 		return myDefaultRepoClient;
 	}
     public static Runnable getRegistrationRunnable(

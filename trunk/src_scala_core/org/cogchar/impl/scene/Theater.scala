@@ -62,16 +62,15 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		scene.wirePerfChannels(myPerfChanSet);
 		scene;
 	}
-	def exclusiveActivateScene(scene: BScene) {	
+	def exclusiveActivateScene(scene: BScene, cancelPrevJobs : Boolean) {	
 		// This rq-stops all their modules, and asks them each to forget/reset, but does not "forget" them at theater or BM level.
-		deactivateAllScenes
+		deactivateAllScenes(cancelPrevJobs)
 		activateScene(scene)
 	}
 
 	protected def activateScene(scene: BScene) {
 		// See comments about multi-scene above.  For now we expect to be used in a single-active-scene approach.
-		// IF we are strict single-scene, then we SHOULD ensure previous scene is complete, and modulator is idle or 
-		// fresh or something.
+		// IF we are strict single-scene, then we SHOULD ensure previous scene is complete, and modulator is idle.
 		val prevModuleCnt = myBM.getAttachedModuleCount
 		if (prevModuleCnt > 1) {
 			getLogger.warn("activateScene({}) called but prevModuleCount={}", prevModuleCnt)
@@ -82,9 +81,11 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		scene.attachBehaviorsToModulator(myBM);
 		myUnfinishedScenes.add(scene);
 	}
-	protected def deactivateScene(scene: BScene) {
-		// We want any output playback to be canceled.
-		scene.cancelAllPerfJobs()
+	protected def deactivateScene(scene: BScene, cancelPerfJobs : Boolean) {
+		if (cancelPerfJobs) {
+			// We want any output playback to be canceled.
+			scene.cancelAllPerfJobs()
+		}
 		// We want all modules (i.e. Behavior + Perf-Monitor) to stop running
 		scene.requestStopAllModules()
 		// AND we want the scene to forget them, so that any monitoring it was doing (e.g. in FancyBScene) 
@@ -102,6 +103,13 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		// in the outer-"kernel")
 		forgetFinishedScenes()
 	}
+	def deactivateAllScenes(cancelPerfJobs : Boolean) {
+		// copy toArray to avoid interference with delete ops.  myActiveScenes.toArray.apply{}
+		for (sc <- myUnfinishedScenes.toArray) {
+			deactivateScene(sc, cancelPerfJobs)
+		}
+	}
+	
 	protected def forgetFinishedScene(scene: BScene) {
 		// This would have happened already if the scene was "deactivated", but NOT if it merely "expired"
 		scene.forgetAllModules();
@@ -122,15 +130,9 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 			}			
 		}
 	}	
-	
-	def deactivateAllScenes() {
-		// copy toArray to avoid interference with delete ops.  myActiveScenes.toArray.apply{}
-		for (sc <- myUnfinishedScenes.toArray) {
-			deactivateScene(sc)
-		}
-	}
-	def stopAllScenesAndModules() {
-		deactivateAllScenes()
+
+	def stopAllScenesAndModules(cancelOutputJobs : Boolean) {
+		deactivateAllScenes(cancelOutputJobs)
 		// We can't know if this is necessary. 
 		requestStopAllModules();
 	}
@@ -199,8 +201,8 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	// Negative value avoids thread kill.
 	// 0 forces thread kill immediately.
 	// positive value waits (in *calling* thead) that many millsec before killing thread.
-	def fullyStop(waitMsecThenForce : Int) {
-		stopAllScenesAndModules();
+	def fullyStop(waitMsecThenForce : Int, cancelOutputJobs : Boolean) {
+		stopAllScenesAndModules(cancelOutputJobs);
 		stopThread();
 		if (waitMsecThenForce >= 0) {
 			if (waitMsecThenForce > 0) {

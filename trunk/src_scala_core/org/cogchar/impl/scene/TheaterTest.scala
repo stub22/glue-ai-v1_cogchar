@@ -60,11 +60,11 @@ object TheaterTest extends BasicDebugger {
 		val ruledTestSS : SceneSpec = sceneBook.findSceneSpec(ruledTestSceneID);
 		
 		val aSceneSpec : SceneSpec = sceneBook.allSceneSpecs().head;
-		logInfo("Found first SceneSpec to build a trigger for: " + aSceneSpec);
+		getLogger.info("Found first SceneSpec to build a trigger for: " + aSceneSpec);
 		
 		val trigHead : CogcharActionTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTriggerForScene(aSceneSpec);
 	
-		logInfo("Found ruled SceneSpec " + ruledTestSceneName + " to build a trigger for: " + ruledTestSS);
+		getLogger.info("Found ruled SceneSpec " + ruledTestSceneName + " to build a trigger for: " + ruledTestSS);
 		
 		val trigRuled : CogcharActionTrigger = org.cogchar.impl.trigger.FancyTriggerFacade.makeTriggerForScene(ruledTestSS);
 		
@@ -77,14 +77,15 @@ object TheaterTest extends BasicDebugger {
 		// 
 		// 
 		Thread.sleep(4000);
-		logInfo("=======================================\nStarting ruled scene test");
+		getLogger.info("=======================================\nStarting ruled scene test");
 		trigRuled.fire(thtr);
 		Thread.sleep(4000);
-		logInfo("********************** stopping thread");
-		thtr.fullyStop(500);
+		val cancelOutputJobs = true;
+		getLogger.info("********************** stopping theater thread, cancelOutputJobs={}", cancelOutputJobs);
+		thtr.fullyStop(500, cancelOutputJobs);
 		Thread.sleep(2000);
 		
-		logInfo("************************  BehaviorModulator Test #1 Finished ***************************************");
+		getLogger.info("************************  BehaviorModulator Test #1 Finished ***************************************");
 	}  
 	def loadSceneBookFromFile(thtr : Theater, triplesFlexPath : String, optCL : ClassLoader, clearCachesFirst : Boolean ) {
 		if (clearCachesFirst) {
