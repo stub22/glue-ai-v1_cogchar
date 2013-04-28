@@ -36,8 +36,12 @@ abstract class BehaviorStepExec(val myStepSpec : BehaviorStepSpec, val myActionE
 
 		// We can't truly support multiple-performances yet (which happens if a step is bound to multiple output
 		// channels).  Doing that now will lead to only the last performance being monitor-able.
-		if (perfList.size != 1) {
-			throw new RuntimeException("PerfList has unexpected size (!=1) : " +  perfList.size)
+		// 
+		// If actionExec failed in some way, then we will have 0 perfs, and that is OK.
+		// But then any other (guarded) steps blocked on this one will then not be able to proceed.
+
+		if (perfList.size > 1) {
+			throw new RuntimeException("PerfList has unexpected size (> 1) : " +  perfList.size)
 		}
 		for (perf <- perfList) {
 			val perfKeyID = getPerfKeyID(perf, s, b);
