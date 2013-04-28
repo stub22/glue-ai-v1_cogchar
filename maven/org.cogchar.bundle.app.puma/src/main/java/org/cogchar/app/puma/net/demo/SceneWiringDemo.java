@@ -109,10 +109,18 @@ public class SceneWiringDemo extends WiringDemo {
 			thtr.exclusiveActivateScene(scene, cancelPrevOutJobs);
 		}		
 	}
+	public void stopAndRestartTheater(OSGiTheater osgiThtr, boolean cancelOutJobs) {
+		Theater thtr = osgiThtr.getTheater();
+		if (thtr != null) {
+			int killTimeWaitMsec = 250;
+			thtr.fullyStop(killTimeWaitMsec, cancelOutJobs);
+			thtr.startThread();
+		}
+	}
 	public void reloadScenes(OSGiTheater osgiThtr, boolean cancelOutJobs) {
 		Theater thtr = osgiThtr.getTheater();
 		if (thtr != null) {
-			// TODO:  Get/save the bundleCtx from somewhere, as it is needed when we register new scene specs.
+			// BundleCtx is needed when we register new scene specs.
 			BundleContext bundleCtx = getDefaultBundleContext();
 			EnhancedRepoClient srcRepoCli = getDefaultRepoClient();
 			EnhancedRepoClient reloadedClient = srcRepoCli.reloadRepoAndClient();
