@@ -21,6 +21,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.behavior.OSGiTheater;
 import org.cogchar.blob.emit.EnhancedRepoClient;
+import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.Theater;
 import org.osgi.framework.BundleContext;
 
@@ -29,7 +30,7 @@ import org.osgi.framework.BundleContext;
  */
 
 public class TheaterWiringDemo extends WiringDemo {
-	public String myDefaultDebugCharQN = "hrk:debug_QN_for_theater_70";
+	public String myDefaultDebugCharQN = "csi:debug_QN_for_theater_70";
 	
 	public TheaterWiringDemo(BundleContext bundleCtx,  EnhancedRepoClient demoRepoClient) {
 		super(bundleCtx, demoRepoClient);
@@ -68,4 +69,34 @@ public class TheaterWiringDemo extends WiringDemo {
 	@Override public void registerJFluxExtenders(BundleContext bundleCtx) {	
 		
 	}
+	public void stopAndClearTheater(OSGiTheater osgiThtr, boolean cancelOutJobs) {
+		Theater thtr = osgiThtr.getTheater();
+		if (thtr != null) {
+			int killTimeWaitMsec = 250;
+			thtr.fullyStop(killTimeWaitMsec, cancelOutJobs);
+		}
+	}
+	public void startEmptyTheater(OSGiTheater osgiThtr) {
+		Theater thtr = osgiThtr.getTheater();
+		if (thtr != null) {
+			// Start Theater again
+			thtr.startThread();
+		}
+	}
+	public void playSceneCleanly(OSGiTheater osgiThtr, BScene scene, boolean cancelPrevOutJobs) {
+		Theater thtr = osgiThtr.getTheater();
+		if (thtr != null) {
+			thtr.stopAllScenesAndModules(cancelPrevOutJobs);
+			thtr.exclusiveActivateScene(scene, cancelPrevOutJobs);
+		}		
+	}
+	public void stopAndRestartTheater(OSGiTheater osgiThtr, boolean cancelOutJobs) {
+		Theater thtr = osgiThtr.getTheater();
+		if (thtr != null) {
+			int killTimeWaitMsec = 250;
+			thtr.fullyStop(killTimeWaitMsec, cancelOutJobs);
+			thtr.startThread();
+		}
+	}
+	
 }
