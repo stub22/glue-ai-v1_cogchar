@@ -84,7 +84,37 @@ public class MasterDemo extends BasicDebugger {
 		OSGiTheater osgiTheater = twd.testTheaterStartup(bundleCtx, demoRepoClient, theaterDebugQN);
         new OSGiComponent(bundleCtx, new SimpleLifecycle(osgiTheater, OSGiTheater.class)).start();	
 	}
-	public void runTestSceneSequence(OSGiTheater osgiTheater) { 
+
+	
+	public void reloadScenesAndRestartTheater(OSGiTheater osgiThtr, boolean cancelOutJobs) {
+		BundleContext bundleCtx = mySceneWiringDemo.getDefaultBundleContext();
+		EnhancedRepoClient origRepoCli = mySceneWiringDemo.getDefaultRepoClient();		
+		reloadScenesAndRestartTheater(bundleCtx, osgiThtr, origRepoCli, cancelOutJobs);
+	}
+	
+	public void reloadScenesAndRestartTheater(BundleContext bunCtx, OSGiTheater osgiThtr, EnhancedRepoClient origRepoCli, boolean cancelOutJobs) {
+		
+		myTheaterWiringDemo.stopAndClearTheater(osgiThtr, cancelOutJobs);
+		// Create a new fresh repo + client connection based on the origRepoCli's repoSpec.
+		// This is a long operation, during which we are blocking the GUI.  
+		// (Unless it is just a virtual version update, which trades
+		//  off against the length of load time during reloadSceneSpecs below).  
+		// That's why we did the stop above, to make sure user at least feels the keypress response quickly.
+		// But in a real character app, we want to be silently loading all the time without interrupting current perfs.
+		// TODO: Tell the repo to just reload certain graphs (need Appdapter >= 1.1.1 features to do this cleanly)
+		EnhancedRepoClient reloadedRepoClient = origRepoCli.reloadRepoAndClient();
+		
+		// Now we do the comparatively fast (but still somewhat lengthy) step of unregistering, 
+		// loading, and registering scene spec objects from the reloaded repo.  But note that if
+		// this not an in-memory repoImpl,  (e.g. if it is SQL to disk or network) then
+		// this may be a longer op as we read in the data.  
+		
+		mySceneWiringDemo.reloadSceneSpecs(bunCtx, reloadedRepoClient);
+		myTheaterWiringDemo.startEmptyTheater(osgiThtr);
+	}	
+
+	
+	@Deprecated public void runTestSceneSequence(OSGiTheater osgiTheater) { 
 		Theater thtr = osgiTheater.getTheater();
 		// OSGiTheater gets notified of all matching available scenes.
 		try {

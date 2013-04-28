@@ -101,52 +101,26 @@ public class SceneWiringDemo extends WiringDemo {
 		Set<Object> allBehavSpecs = repoCli.assembleRootsFromNamedModel(behavGraphID);
 		List<SceneSpec> ssList = SceneBook.filterSceneSpecs(allBehavSpecs);
 		return ssList;
-	}
-	public void playSceneCleanly(OSGiTheater osgiThtr, BScene scene, boolean cancelPrevOutJobs) {
-		Theater thtr = osgiThtr.getTheater();
-		if (thtr != null) {
-			thtr.stopAllScenesAndModules(cancelPrevOutJobs);
-			thtr.exclusiveActivateScene(scene, cancelPrevOutJobs);
-		}		
-	}
-	public void stopAndRestartTheater(OSGiTheater osgiThtr, boolean cancelOutJobs) {
-		Theater thtr = osgiThtr.getTheater();
-		if (thtr != null) {
-			int killTimeWaitMsec = 250;
-			thtr.fullyStop(killTimeWaitMsec, cancelOutJobs);
-			thtr.startThread();
-		}
-	}
-	public void reloadScenes(OSGiTheater osgiThtr, boolean cancelOutJobs) {
-		Theater thtr = osgiThtr.getTheater();
-		if (thtr != null) {
-			// BundleCtx is needed when we register new scene specs.
-			BundleContext bundleCtx = getDefaultBundleContext();
-			EnhancedRepoClient srcRepoCli = getDefaultRepoClient();
-			EnhancedRepoClient reloadedClient = srcRepoCli.reloadRepoAndClient();
-		// Reload the whole dang source repo:
-		// TODO: Tell the repo to just reload certain graphs (need Appdapter 1.1.1 features to do this cleanly)			
-			reloadScenes(bundleCtx, thtr, reloadedClient, cancelOutJobs);
-		}
-	}
-	public void reloadScenes(BundleContext bunCtx, Theater thtr, EnhancedRepoClient srcRepoCli, boolean cancelOutJobs) {
-		int killTimeWaitMsec = 250;
-		//myWebMapper.disconnectLiftSceneInterface(myBundleCtx); // Now done in PumaAppContext.reloadAll
-		thtr.fullyStop(killTimeWaitMsec, cancelOutJobs);
-		// Dump old scenes
+	}	
+	/**
+	 * 
+	 * @param bunCtx - needed when we register + unregister scene spces to OSGi
+	 * @param freshRepoCli - a source of data assumed to already be in a fresh + tasty state.
+	 */
+	public void reloadSceneSpecs(BundleContext bunCtx, EnhancedRepoClient freshRepoCli) {
+		// Dump old scenes from OSGi registry.  
 		unregisterAllSceneSpecs(bunCtx);
 		
 		// Clear the yucky global swizzle-caches (for scenes + behaviors, but not channels)
 		CachingComponentAssembler.clearCacheForAssemblerSubclass(SceneSpecBuilder.class);
 		CachingComponentAssembler.clearCacheForAssemblerSubclass(BehaviorSpecBuilder.class);
 
-		
-		// This method will automatically rebuild the DerivedRepo we are currently reading behavior from.
-		// If bundleCtx != null, then it will 
-		loadAndRegisterSceneSpecs(bunCtx, srcRepoCli, myDefaultDirectGraphQN, myDefaultDerivedGraphQN, myDefaultSceneGroupQN);
-		// Start Theater again
-		thtr.startThread();
+		// This method will both reload sceneSpecs from the given repoCli, and also
+		//  automatically rebuild+reload-from any DerivedRepo we are currently reading 
+		// "bonus" behavior from.  (For example, guarded behavior demos using Cogchar 1.0.6).
+		loadAndRegisterSceneSpecs(bunCtx, freshRepoCli, myDefaultDirectGraphQN, myDefaultDerivedGraphQN, myDefaultSceneGroupQN);
 	}
+
 	
 	public List<Runnable> makeSceneSpecRegRunnables(BundleContext bundleCtx, Collection<SceneSpec> sceneSpecs,
 					String sceneGroupQN) {
