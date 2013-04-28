@@ -97,7 +97,8 @@ public class SpeechOutputClient extends FancyTextPerfChan<SpeechJob> {
 
 	}
 	@Override public void requestOutJobCancel(SpeechJob soj) {
-		getLogger().info("************* [Not Really] cancelling SpeechJob job on chan [" + getName() + "]");
+		getLogger().info("************* cancelling SpeechJob job on chan [{}]", getName());
+		soj.cancel();
 		// myCachedSpeechSvc.cancelSpeech();
 	}		
 	// We want this method to be private, but currently it cannot be because _____
