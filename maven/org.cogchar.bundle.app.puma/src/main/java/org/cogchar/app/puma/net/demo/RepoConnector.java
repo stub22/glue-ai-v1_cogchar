@@ -23,6 +23,7 @@ import org.appdapter.help.repo.RepoClientImpl;
 import org.cogchar.blob.emit.BehavMasterConfigTest;
 import org.cogchar.blob.emit.OnlineSheetRepoSpec;
 import org.cogchar.blob.emit.RepoSpec;
+import org.cogchar.blob.emit.EnhancedRepoClient;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -42,10 +43,10 @@ public class RepoConnector {
 		return localSheetRepoSpec;
 	}
 
-	public RepoClient connectDemoRepoClient(RepoSpec repoSpec) {
+	public EnhancedRepoClient connectDemoRepoClient(RepoSpec repoSpec) {
 		Repo.WithDirectory bmcMemoryRepoHandle = repoSpec.makeRepo();
 
-		RepoClient bmcRepoCli = new RepoClientImpl(bmcMemoryRepoHandle, BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR(),
+		EnhancedRepoClient bmcRepoCli = new EnhancedRepoClient(repoSpec, bmcMemoryRepoHandle, BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR(),
 				BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN());
 		// repoSpec.makeRepoClient(bmcMemoryRepoHandle);
 		return bmcRepoCli;

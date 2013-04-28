@@ -112,8 +112,9 @@ public class TriggerItems {
 
 			if (pba != null) {
 				try {
-					getLogger().info("Stopping theater for char [" + pba + "]");
-					pba.stopTheater();
+					boolean cancelOutJobs = true;
+					getLogger().info("Stopping theater for PBA [{}], cancelOutJobs={}", pba, cancelOutJobs);
+					pba.stopTheater(cancelOutJobs);
 					getLogger().warn("Reloading behavior config FROM TEST FILE for char [" + pba + "]");
 					pba.loadBehaviorConfigFromTestFile(true);
 					getLogger().info("Restarting theater for char [" + pba + "]");

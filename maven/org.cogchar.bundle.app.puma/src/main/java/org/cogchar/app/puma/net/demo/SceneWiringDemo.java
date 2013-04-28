@@ -26,6 +26,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.behavior.OSGiTheater;
 import org.cogchar.blob.emit.BehavMasterConfigTest;
+import org.cogchar.blob.emit.EnhancedRepoClient;
 import org.cogchar.impl.scene.*;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -46,7 +47,7 @@ public class SceneWiringDemo extends WiringDemo {
 	public	String		myDefaultDirectGraphQN = "hrk:behav_file_82";
 	public	String		myDefaultDerivedGraphQN = "hrk:merged_model_5001";
 				
-	public SceneWiringDemo(BundleContext bc, RepoClient rc) {
+	public SceneWiringDemo(BundleContext bc, EnhancedRepoClient rc) {
 		super(bc, rc);
 	}
 
@@ -101,26 +102,29 @@ public class SceneWiringDemo extends WiringDemo {
 		List<SceneSpec> ssList = SceneBook.filterSceneSpecs(allBehavSpecs);
 		return ssList;
 	}
-	public void playSceneCleanly(OSGiTheater osgiThtr, BScene scene) {
+	public void playSceneCleanly(OSGiTheater osgiThtr, BScene scene, boolean cancelPrevOutJobs) {
 		Theater thtr = osgiThtr.getTheater();
 		if (thtr != null) {
-			thtr.stopAllScenesAndModules();
-			thtr.exclusiveActivateScene(scene);
+			thtr.stopAllScenesAndModules(cancelPrevOutJobs);
+			thtr.exclusiveActivateScene(scene, cancelPrevOutJobs);
 		}		
 	}
-	public void reloadScenes(OSGiTheater osgiThtr) {
+	public void reloadScenes(OSGiTheater osgiThtr, boolean cancelOutJobs) {
 		Theater thtr = osgiThtr.getTheater();
 		if (thtr != null) {
 			// TODO:  Get/save the bundleCtx from somewhere, as it is needed when we register new scene specs.
 			BundleContext bundleCtx = getDefaultBundleContext();
-			RepoClient srcRepoCli = getDefaultRepoClient();
-			reloadScenes(bundleCtx, thtr, srcRepoCli);
+			EnhancedRepoClient srcRepoCli = getDefaultRepoClient();
+			EnhancedRepoClient reloadedClient = srcRepoCli.reloadRepoAndClient();
+		// Reload the whole dang source repo:
+		// TODO: Tell the repo to just reload certain graphs (need Appdapter 1.1.1 features to do this cleanly)			
+			reloadScenes(bundleCtx, thtr, reloadedClient, cancelOutJobs);
 		}
 	}
-	public void reloadScenes(BundleContext bunCtx, Theater thtr, RepoClient srcRepoCli) {
+	public void reloadScenes(BundleContext bunCtx, Theater thtr, EnhancedRepoClient srcRepoCli, boolean cancelOutJobs) {
 		int killTimeWaitMsec = 250;
 		//myWebMapper.disconnectLiftSceneInterface(myBundleCtx); // Now done in PumaAppContext.reloadAll
-		thtr.fullyStop(killTimeWaitMsec);
+		thtr.fullyStop(killTimeWaitMsec, cancelOutJobs);
 		// Dump old scenes
 		unregisterAllSceneSpecs(bunCtx);
 		
@@ -128,8 +132,7 @@ public class SceneWiringDemo extends WiringDemo {
 		CachingComponentAssembler.clearCacheForAssemblerSubclass(SceneSpecBuilder.class);
 		CachingComponentAssembler.clearCacheForAssemblerSubclass(BehaviorSpecBuilder.class);
 
-		// Load new scenes
-		// TODO: Tell the repo to reload certain graphs.
+		
 		// This method will automatically rebuild the DerivedRepo we are currently reading behavior from.
 		// If bundleCtx != null, then it will 
 		loadAndRegisterSceneSpecs(bunCtx, srcRepoCli, myDefaultDirectGraphQN, myDefaultDerivedGraphQN, myDefaultSceneGroupQN);
