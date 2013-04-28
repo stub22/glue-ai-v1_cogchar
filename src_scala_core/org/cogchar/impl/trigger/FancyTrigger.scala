@@ -37,9 +37,10 @@ object FancyTriggerFacade extends BasicDebugger {
 			override def fire(db : CogcharScreenBox) : Unit = {
 				getLogger().info("Firing scene trigger for {} ", freeSceneID)
 				val t : Theater = db.asInstanceOf[Theater];
-				t.stopAllScenesAndModules()
+				val cancelOutJobs = true;
+				t.stopAllScenesAndModules(cancelOutJobs)
 				val scn : BScene = t.makeSceneFromBook(freeSceneID);
-				t.exclusiveActivateScene(scn);
+				t.exclusiveActivateScene(scn, cancelOutJobs);
 			}
 		}
 		ndt;

@@ -67,7 +67,7 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 
 /**
- * @author Stu B. <www.texpedient.com>
+ * @author Dmiles
  */
 // / Dmiles needed something in java to cover Dmiles's Scala blindspots
 public class RepoOper implements AnyOper {

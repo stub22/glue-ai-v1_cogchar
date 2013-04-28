@@ -110,13 +110,13 @@ public abstract class PumaBehaviorAgent extends CogcharScreenBox {
 	protected void doResetOutputs() {
 		
 	}	
-	public void stopTheater() {
+	public void stopTheater(boolean cancelOutJobs) {
 		// Should be long enough for the 100 Msec loop to cleanly exit.
 		// Was 200, but very occasionally this wasn't quite long enough, and myWorkThread was becoming null after the
 		// check in Theater.killThread, causing a NPE
 		int killTimeWaitMsec = 250; 
 		//myWebMapper.disconnectLiftSceneInterface(myBundleCtx); // Now done in PumaAppContext.reloadAll
-		myTheater.fullyStop(killTimeWaitMsec);
+		myTheater.fullyStop(killTimeWaitMsec, cancelOutJobs);
 	}
 	
 	public Ident getCharIdent() { 
@@ -124,8 +124,9 @@ public abstract class PumaBehaviorAgent extends CogcharScreenBox {
 	}
 	public void stopEverything() {
 		Ident charID = getCharIdent();
-		getLogger().info("stopEverything for {} - Stopping Theater.", charID);
-		stopTheater();
+		boolean cancelOutJobs = true;
+		getLogger().info("stopEverything for {} - Stopping Theater, cancelOutJobs={}", charID, cancelOutJobs);
+		stopTheater(cancelOutJobs);
 	}
 
 	public void stopAndReset() {

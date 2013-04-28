@@ -17,10 +17,10 @@
 
 package org.cogchar.app.puma.net.demo;
 
-import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.behavior.OSGiTheater;
+import org.cogchar.blob.emit.EnhancedRepoClient;
 import org.cogchar.impl.scene.Theater;
 import org.osgi.framework.BundleContext;
 
@@ -31,7 +31,7 @@ import org.osgi.framework.BundleContext;
 public class TheaterWiringDemo extends WiringDemo {
 	public String myDefaultDebugCharQN = "hrk:debug_QN_for_theater_70";
 	
-	public TheaterWiringDemo(BundleContext bundleCtx,  RepoClient demoRepoClient) {
+	public TheaterWiringDemo(BundleContext bundleCtx,  EnhancedRepoClient demoRepoClient) {
 		super(bundleCtx, demoRepoClient);
 	}	
 	public OSGiTheater testTheaterStartup(BundleContext bundleCtx, RepoClient demoRepoClient, String debugCharQN) {

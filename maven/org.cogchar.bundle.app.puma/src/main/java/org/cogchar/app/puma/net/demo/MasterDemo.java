@@ -21,6 +21,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.scene.Scene;
 import org.cogchar.app.puma.behavior.OSGiTheater;
+import org.cogchar.blob.emit.EnhancedRepoClient;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.Theater;
@@ -43,19 +44,19 @@ public class MasterDemo extends BasicDebugger {
 	}
 	
 	public void launchDefaultDemo(BundleContext bundleCtx) { 
-		RepoClient defDemoRepoCli = makeDefaultRepoClient(bundleCtx);
+		EnhancedRepoClient defDemoRepoCli = makeDefaultRepoClient(bundleCtx);
 		initMajorParts(bundleCtx, defDemoRepoCli);
 		launchDefaultDemoObjects(bundleCtx, defDemoRepoCli);
 	}
-	public RepoClient makeDefaultRepoClient (BundleContext bundleCtx) { 
+	public EnhancedRepoClient makeDefaultRepoClient (BundleContext bundleCtx) { 
 		RepoConnector repoConn = new RepoConnector();
 		// TODO:  Add ability to load from a LocalSheetRepoSpec
 		RepoSpec demoRepoSpec = repoConn.makeDefaultOnlineSheetRepoSpec(bundleCtx);
-		RepoClient demoRepoClient = repoConn.connectDemoRepoClient(demoRepoSpec);
+		EnhancedRepoClient demoRepoClient = repoConn.connectDemoRepoClient(demoRepoSpec);
 		return demoRepoClient;
 	}
 	
-	public void initMajorParts(BundleContext bundleCtx, RepoClient demoRepoClient) {
+	public void initMajorParts(BundleContext bundleCtx, EnhancedRepoClient demoRepoClient) {
 		myChannelWiringDemo = new ChannelWiringDemo(bundleCtx, demoRepoClient);
 		mySceneWiringDemo = new SceneWiringDemo(bundleCtx, demoRepoClient);
 		myTheaterWiringDemo = new TheaterWiringDemo(bundleCtx, demoRepoClient);
