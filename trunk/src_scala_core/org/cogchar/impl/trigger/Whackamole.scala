@@ -65,12 +65,12 @@ object Whackamole extends BasicDebugger {
 		// this module (e.g. OSGi bundle).  If we happen to be outside a container, this classloader-add has no
 		// practical effect.
 		val cl = getClass().getClassLoader();
-		logDebug("Ensuring classloader registered for RDF-model resource URL resolution: " + cl);
+		getLogger.debug("Ensuring classloader registered for RDF-model resource URL resolution: " + cl);
 		JenaFileManagerUtils.ensureClassLoaderRegisteredWithDefaultJenaFM(cl);
-		logInfo("Loading RDF triples directly from resource URL: " + triplesURL);
+		getLogger.info("Loading RDF triples directly from resource URL: " + triplesURL);
 		
 		val loadedStuff : java.util.Set[Object] = AssemblerUtils.buildAllObjectsInRdfFile(triplesURL);
-		logInfo("Loaded " + loadedStuff.size() + " objects of various types.");		
+		getLogger.info("Loaded " + loadedStuff.size() + " objects of various types.");		
 		val mutSet : scala.collection.mutable.Set[Object] = JavaConversions.asScalaSet[Object](loadedStuff);
 		mutSet.toSet[Object]
 	}
@@ -79,11 +79,11 @@ object Whackamole extends BasicDebugger {
 		// Filter the loaded objects down to a list of the MutableBoxes found, and return that.
 		var winnerList = List [MutableBox[CogcharActionTrigger]]()
 		for (x <- loadedStuff) {
-			logInfo("Got Thing[" + x + "]")
+			getLogger.info("Got Thing[" + x + "]")
 			x match {
 				// Scala "match" may be ignoring the [ParameterType]
 				case mb : MutableBox[CogcharActionTrigger] => { winnerList = mb :: winnerList }
-				case _ => logInfo("Ignoring.")
+				case _ => getLogger.info("Ignoring.")
 			}
 		}
 		winnerList;
@@ -97,7 +97,7 @@ object Whackamole extends BasicDebugger {
 			// the matching sceneID must be found in the book of that theater!
 			override def fire(db : CogcharScreenBox) : Unit = {
 				
-				logInfo("Firing [" + toString + " on " + db);
+				getLogger.info("Firing [" + toString + " on " + db);
 	//			val t : Theater = db.asInstanceOf[Theater];
 	//			t.stopAllScenes();
 	//			val scn : BScene = t.makeSceneFromBook(freeSceneID);
@@ -110,8 +110,13 @@ object Whackamole extends BasicDebugger {
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);		
-		logInfo(this.getClass.getCanonicalName() + ".main(" + args + ")-BEGIN");
-		logInfo("Whack-em-ole, Vaquera!");
+		getLogger.info(this.getClass.getCanonicalName() + ".main(" + args + ")-BEGIN");
+		launchWhackamoleGui(args)
+		getLogger.info(this.getClass.getCanonicalName() + ".main()-END");
+	}
+		
+	def launchWhackamoleGui(args: Array[String])  {
+		getLogger.info("Whack-em-ole, Vaquera!");
 		val time = java.lang.System.currentTimeMillis();
 		logInfo("El tiempo es: " + time);
 		val tnc : DemoNavigatorCtrl = makeTNC(args);
@@ -127,7 +132,7 @@ object Whackamole extends BasicDebugger {
 		val moreBoxesModelURL : String = "org/cogchar/test/assembly/whackam.ttl";
 		
 		val moreBoxes : List[MutableBox[CogcharActionTrigger]] = loadBoxesFromModelAtURL(moreBoxesModelURL)
-		logInfo("Got MoreBoxes: " + moreBoxes)
+		getLogger.info("Got MoreBoxes: " + moreBoxes)
 		val reloadFlag : Boolean = true;
 		for (mb <- moreBoxes) {
 			 tnc.addBoxToRoot(mb, reloadFlag)
@@ -143,7 +148,7 @@ object Whackamole extends BasicDebugger {
 		rf.addEntry(dors)
 		fb.resyncChildrenToTree
 		
-		logInfo(this.getClass.getCanonicalName() + ".main()-END");
+		
 	}	
 }
 
