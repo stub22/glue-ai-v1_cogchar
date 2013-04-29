@@ -76,9 +76,11 @@ public class MasterDemo extends BasicDebugger {
 		cwd.initialChannelLoad(bundleCtx, demoRepoClient, chanGroupQName);
 		
 		String directGraphQN = swd.myDefaultDirectGraphQN;
+		String pipeQueryQN = swd.myDefaultPipelineQueryQN;
+		String pipeGraphQN = swd.myDefaultPipelineGraphQN;
 		String derivedGraphQN = swd.myDefaultDerivedGraphQN;
 		String sceneGroupQN = swd.myDefaultSceneGroupQN;
-		swd.initialSceneLoad(bundleCtx, demoRepoClient, directGraphQN, derivedGraphQN, sceneGroupQN);
+		swd.initialSceneLoad(bundleCtx, demoRepoClient, directGraphQN, pipeQueryQN, pipeGraphQN, derivedGraphQN, sceneGroupQN);
 		
 		String theaterDebugQN = twd.myDefaultDebugCharQN;
 		OSGiTheater osgiTheater = twd.testTheaterStartup(bundleCtx, demoRepoClient, theaterDebugQN);

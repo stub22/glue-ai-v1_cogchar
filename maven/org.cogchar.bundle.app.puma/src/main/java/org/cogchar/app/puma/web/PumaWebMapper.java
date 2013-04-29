@@ -81,12 +81,6 @@ public class PumaWebMapper extends BasicDebugger {
     	OSGiComponent lifterComp = new OSGiComponent(bunCtx, lifecycle);
     	lifterComp.start();
 	}	
-	
-	// Previous functions now mostly done from within LifterLifecycle on create(). 
-	// Retaining for now for legacy BallBuilder classloader hookup
-//	public void connectHrkindWebContent(ClassLoader hrkindResourceCL) {
-//	}
-
 
 	public Dataset getMainSparqlDataset() {
 		PumaContextCommandBox pccb = getCommandBox();

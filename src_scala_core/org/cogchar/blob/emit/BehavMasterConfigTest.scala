@@ -24,6 +24,7 @@ import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 import org.cogchar.impl.perform.{PerfChannelNames};
+import org.cogchar.name.behavior.{MasterDemoNames};
 import org.cogchar.impl.channel.{FancyChannelSpec};
 import org.cogchar.impl.scene.{SceneSpec, SceneBook};
 import org.appdapter.core.log.BasicDebugger;
@@ -44,12 +45,25 @@ object BehavMasterConfigTest extends BasicDebugger {
 	final val BMC_NAMESPACE_SHEET_NAME = "Nspc"
     final val BMC_DIRECTORY_SHEET_NAME = "Dir"
 	
-	final val QUERY_SOURCE_GRAPH_QN = "ccrt:qry_sheet_77";
+	
 	final val TGT_GRAPH_SPARQL_VAR = RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR; // "qGraph"
-	final val CHAN_BIND_GRAPH_QN = "hrk:chan_sheet_77"
-	final val BEHAV_STEP_GRAPH_QN = "hrk:behavStep_sheet_77"
-	final val BEHAV_SCENE_GRAPH_QN = "hrk:behavScene_sheet_77"
+/*	
+	final val QUERY_SOURCE_GRAPH_QN = "ccrt:qry_sheet_77";	
+	final val CHAN_BIND_GRAPH_QN = "csi:chan_sheet_77"
+	final val BEHAV_STEP_GRAPH_QN = "csi:behavStep_sheet_77"
+	final val BEHAV_SCENE_GRAPH_QN = "csi:behavScene_sheet_77"
+	final val DERIVED_BEHAV_GRAPH_QN = "csi:merged_model_5001"
+*/
+	
+	val QUERY_SOURCE_GRAPH_QN = MasterDemoNames.QUERY_SOURCE_GRAPH_QN;
+	val CHAN_BIND_GRAPH_QN = MasterDemoNames.CHAN_BIND_GRAPH_QN;
+	val BEHAV_STEP_GRAPH_QN = MasterDemoNames.BEHAV_STEP_GRAPH_QN;
+	val BEHAV_SCENE_GRAPH_QN = MasterDemoNames.BEHAV_SCENE_GRAPH_QN;
+	val DERIVED_BEHAV_GRAPH_QN = MasterDemoNames.DERIVED_BEHAV_GRAPH_QN;
 
+	val PIPELINE_GRAPH_QN = MasterDemoNames.PIPELINE_GRAPH_QN;
+	val PIPELINE_QUERY_QN = MasterDemoNames.PIPELINE_QUERY_QN;
+	
 	
 
 	def makeBMC_RepoSpec(ctx : BundleContext) : OnlineSheetRepoSpec = { 				
@@ -98,13 +112,14 @@ object BehavMasterConfigTest extends BasicDebugger {
 	}
 	val EQBAR = "=========================================================================================="
 	
-	def readSceneSpecsFromDerivedRepo(srcRepo : Repo.WithDirectory, srcRepoCli : RepoClient, derivedBehavGraphID : Ident) : java.util.List[SceneSpec] = {
+	def readSceneSpecsFromDerivedRepo(srcRepoCli : RepoClient, pplnQueryQN : String, pplnGraphQN : String, derivedBehavGraphID : Ident) : java.util.List[SceneSpec] = {
 		println(EQBAR + "\nReading derived graph specs")
-		 val dgSpecSet : Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(srcRepoCli)
+		 val dgSpecSet : Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(srcRepoCli, pplnQueryQN, pplnGraphQN)
 		 for (dg <- dgSpecSet) {
 			 println("Got: " + dg)
 			 // ps.makeRepo().loadSheetModelsIntoMainDataset();
 		 }
+		 val srcRepo = srcRepoCli.getRepo
 		 val derivedRepoSpec  = new DerivedRepoSpec(dgSpecSet, srcRepo)
 		 
 		val derivedRepo = derivedRepoSpec.makeRepo;
@@ -160,8 +175,8 @@ object BehavMasterConfigTest extends BasicDebugger {
 		// Create a new repo of kind  "derived"
 		
 		
-		val	derivedBehavGraphID = bmcRepoCli.makeIdentForQName("hrk:merged_model_5001");
-		val derivedSceneSpecList = readSceneSpecsFromDerivedRepo(bmcMemoryRepoHandle, bmcRepoCli, derivedBehavGraphID);		
+		val	derivedBehavGraphID = bmcRepoCli.makeIdentForQName(DERIVED_BEHAV_GRAPH_QN);
+		val derivedSceneSpecList = readSceneSpecsFromDerivedRepo(bmcRepoCli, PIPELINE_QUERY_QN, PIPELINE_GRAPH_QN, derivedBehavGraphID);		
 		println ( EQBAR + "\nGot derived scene specs from " + derivedBehavGraphID +  " : " + derivedSceneSpecList)
 
 	}
