@@ -43,19 +43,21 @@ public class MasterDemo extends BasicDebugger {
 		RobotConnector.connectRobotsFromSysEnv(bundleCtx, robotEnvVarKey);
 	}
 	
-	public void launchDefaultDemo(BundleContext bundleCtx) { 
-		EnhancedRepoClient defDemoRepoCli = makeDefaultRepoClient(bundleCtx);
-		initMajorParts(bundleCtx, defDemoRepoCli);
-		launchDefaultDemoObjects(bundleCtx, defDemoRepoCli);
-	}
-	public EnhancedRepoClient makeDefaultRepoClient (BundleContext bundleCtx) { 
+	public void launchDemoUsingDefaultOnlineRepoSheet(BundleContext bundleCtx) { 
 		RepoConnector repoConn = new RepoConnector();
-		// TODO:  Add ability to load from a LocalSheetRepoSpec
-		RepoSpec demoRepoSpec = repoConn.makeDefaultOnlineSheetRepoSpec(bundleCtx);
-		EnhancedRepoClient demoRepoClient = repoConn.connectDemoRepoClient(demoRepoSpec);
-		return demoRepoClient;
+		EnhancedRepoClient defDemoRepoCli = repoConn.makeRepoClientForDefaultOnlineSheet(bundleCtx);
+		launchDemo(bundleCtx, defDemoRepoCli);
+	}
+	public void launchDemo(BundleContext bundleCtx, RepoSpec demoRepoSpec) { 
+		RepoConnector repoConn = new RepoConnector();
+		EnhancedRepoClient demoRepoCli = repoConn.connectDemoRepoClient(demoRepoSpec);
+		launchDemo(bundleCtx, demoRepoCli);
 	}
 	
+	public void launchDemo(BundleContext bundleCtx, EnhancedRepoClient defDemoRepoCli) { 
+		initMajorParts(bundleCtx, defDemoRepoCli);
+		launchDefaultDemoObjects(bundleCtx, defDemoRepoCli);		
+	}
 	public void initMajorParts(BundleContext bundleCtx, EnhancedRepoClient demoRepoClient) {
 		myChannelWiringDemo = new ChannelWiringDemo(bundleCtx, demoRepoClient);
 		mySceneWiringDemo = new SceneWiringDemo(bundleCtx, demoRepoClient);
