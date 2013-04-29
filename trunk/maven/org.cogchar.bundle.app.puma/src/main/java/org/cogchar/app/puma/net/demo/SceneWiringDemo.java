@@ -35,31 +35,37 @@ import org.robokind.api.common.osgi.OSGiUtils;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 
 import org.cogchar.bind.rk.behavior.SceneSpecExtender;
+
+import org.cogchar.name.behavior.MasterDemoNames;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class SceneWiringDemo extends WiringDemo {
 	
-	public static String GROUP_KEY_SCENE_SPEC = "SceneSpecGroupId";
-	public String		myDefaultSceneGroupQN = "demo_master_scene_group_33";
+	public static String GROUP_KEY_SCENE_SPEC = MasterDemoNames.GROUP_KEY_SCENE_SPEC;
+	public String		myDefaultSceneGroupQN = MasterDemoNames.SCENE_GROUP_QN;
 	
-	public	String		myDefaultDirectGraphQN = "hrk:behav_file_82";
-	public	String		myDefaultDerivedGraphQN = "hrk:merged_model_5001";
+	public	String		myDefaultDirectGraphQN = MasterDemoNames.DIRECT_BEHAV_GRAPH_QN;
+	
+	public	String		myDefaultPipelineQueryQN = MasterDemoNames.PIPELINE_QUERY_QN;
+	public	String		myDefaultPipelineGraphQN = MasterDemoNames.PIPELINE_GRAPH_QN;
+	public	String		myDefaultDerivedGraphQN = MasterDemoNames.DERIVED_BEHAV_GRAPH_QN;
 				
 	public SceneWiringDemo(BundleContext bc, EnhancedRepoClient rc) {
 		super(bc, rc);
 	}
 
-	public void initialSceneLoad(BundleContext bundleCtx, RepoClient demoRepoClient,  String directGraphQN, String derivedGraphQN,
-					String sceneGroupQN) {
+	public void initialSceneLoad(BundleContext bundleCtx, RepoClient demoRepoClient,  String directGraphQN, 
+					String pipeQueryQN, String pipeGraphQN, String derivedGraphQN, String sceneGroupQN) {
 		getLogger().info("************************ initialSceneLoad()");
 		
-		loadAndRegisterSceneSpecs(bundleCtx, demoRepoClient, directGraphQN, derivedGraphQN, sceneGroupQN);
+		loadAndRegisterSceneSpecs(bundleCtx, demoRepoClient, directGraphQN, pipeQueryQN, pipeGraphQN, derivedGraphQN, sceneGroupQN);
 	}
 
-	public void loadAndRegisterSceneSpecs(BundleContext bundleCtx, RepoClient demoRepoClient, String directGraphQN, String derivedGraphQN, String sceneGroupQN) {
-		Collection<SceneSpec> sceneSpecs = loadDemoSceneSpecs(demoRepoClient, directGraphQN, derivedGraphQN);
+	public void loadAndRegisterSceneSpecs(BundleContext bundleCtx, RepoClient demoRepoClient, String directGraphQN, 
+					String pipeQueryQN, String pipeGraphQN, String derivedGraphQN, String sceneGroupQN) {
+		Collection<SceneSpec> sceneSpecs = loadDemoSceneSpecs(demoRepoClient, directGraphQN, pipeQueryQN, pipeGraphQN, derivedGraphQN);
 		setupSceneSpecOSGiComps(bundleCtx, sceneSpecs,  sceneGroupQN);
 	}
 
@@ -79,7 +85,8 @@ public class SceneWiringDemo extends WiringDemo {
 	}
 
 	
-	public List<SceneSpec> loadDemoSceneSpecs(RepoClient bmcRepoCli, String directGraphQN, String derivedGraphQN) {
+	public List<SceneSpec> loadDemoSceneSpecs(RepoClient bmcRepoCli, String directGraphQN, String pipelineQueryQN, 
+					String pipelineGraphQN, String derivedGraphQN) {
 		getLogger().info("************************ loadDemoSceneSpecs()");
 
 		// SceneBook sceneBook = SceneBook.readSceneBookFromRepo(bmcRepoCli, chanGraphID, behavGraphID);
@@ -87,7 +94,8 @@ public class SceneWiringDemo extends WiringDemo {
 
 		
 		Ident derivedBehavGraphID = bmcRepoCli.makeIdentForQName(derivedGraphQN);
-		List<SceneSpec> bonusList = BehavMasterConfigTest.readSceneSpecsFromDerivedRepo(bmcRepoCli.getRepo(), bmcRepoCli, derivedBehavGraphID);
+		List<SceneSpec> bonusList = BehavMasterConfigTest.readSceneSpecsFromDerivedRepo(bmcRepoCli, pipelineQueryQN, 
+						pipelineGraphQN, derivedBehavGraphID);
 
 		List<SceneSpec> comboList = new ArrayList<SceneSpec>();
 		comboList.addAll(ssList);
@@ -118,7 +126,8 @@ public class SceneWiringDemo extends WiringDemo {
 		// This method will both reload sceneSpecs from the given repoCli, and also
 		//  automatically rebuild+reload-from any DerivedRepo we are currently reading 
 		// "bonus" behavior from.  (For example, guarded behavior demos using Cogchar 1.0.6).
-		loadAndRegisterSceneSpecs(bunCtx, freshRepoCli, myDefaultDirectGraphQN, myDefaultDerivedGraphQN, myDefaultSceneGroupQN);
+		loadAndRegisterSceneSpecs(bunCtx, freshRepoCli, myDefaultDirectGraphQN, myDefaultPipelineQueryQN, 
+						myDefaultPipelineGraphQN, myDefaultDerivedGraphQN, myDefaultSceneGroupQN);
 	}
 
 	

@@ -28,16 +28,16 @@ import org.cogchar.bind.rk.behavior.ChannelBindingConfig;
 
 import org.cogchar.bind.rk.behavior.ServiceChannelExtender;
 import org.cogchar.blob.emit.EnhancedRepoClient;
-
+import org.cogchar.name.behavior.MasterDemoNames;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class ChannelWiringDemo extends WiringDemo {
 	
-	public static String GROUP_KEY_CHAN_BIND = "ChannelBindingGroupId";
+	public static String GROUP_KEY_CHAN_BIND = MasterDemoNames.GROUP_KEY_CHAN_BIND; // "ChannelBindingGroupId";
 	
-	public String myDefaultChanGroupQName = "csi:demo_master_chan_group_22";
+	public String myDefaultChanGroupQName = MasterDemoNames.CHAN_GROUP_QN; // "csi:demo_master_chan_group_22";
 
 	public ChannelWiringDemo(BundleContext bundleCtx, EnhancedRepoClient demoRepoClient) {
 		super(bundleCtx, demoRepoClient);
