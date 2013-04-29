@@ -47,13 +47,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 	
 	
 	final val TGT_GRAPH_SPARQL_VAR = RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR; // "qGraph"
-/*	
-	final val QUERY_SOURCE_GRAPH_QN = "ccrt:qry_sheet_77";	
-	final val CHAN_BIND_GRAPH_QN = "csi:chan_sheet_77"
-	final val BEHAV_STEP_GRAPH_QN = "csi:behavStep_sheet_77"
-	final val BEHAV_SCENE_GRAPH_QN = "csi:behavScene_sheet_77"
-	final val DERIVED_BEHAV_GRAPH_QN = "csi:merged_model_5001"
-*/
+
 	
 	val QUERY_SOURCE_GRAPH_QN = MasterDemoNames.QUERY_SOURCE_GRAPH_QN;
 	val CHAN_BIND_GRAPH_QN = MasterDemoNames.CHAN_BIND_GRAPH_QN;
