@@ -55,10 +55,6 @@ class DerivedGraph extends BasicDebugger  {
 
 
 object DerivedGraphSpecReader extends BasicDebugger {
-	val PIPELINE_GRAPH_QN = "hrk:pipeline_sheet_77"
-	val PIPELINE_QUERY_QN = "ccrt:find_pipes_77" // The QName of a query in the "Queries" model/tab
-	
-	def queryDerivedGraphSpecs (rc : RepoClient) : Set[DerivedGraphSpec] = queryDerivedGraphSpecs(rc,PIPELINE_QUERY_QN, PIPELINE_GRAPH_QN )
     
 	/** 
      * pplnQueryQN: The QName of a query in the presumed "Queries" model/tab

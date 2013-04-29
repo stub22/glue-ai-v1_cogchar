@@ -107,6 +107,7 @@ import org.appdapter.help.repo.InitialBindingImpl
 import com.hp.hpl.jena.rdf.model.Model
 import com.hp.hpl.jena.rdf.model.ModelFactory
 import org.cogchar.impl.trigger.Whackamole
+import org.cogchar.name.behavior.{MasterDemoNames};
 
 /**
  * Takes a directory model and uses Goog, Xlsx, Pipeline,CSV,.ttl,rdf sources and loads them
@@ -290,7 +291,7 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
 
     val mainDset: DataSource = getMainQueryDataset().asInstanceOf[DataSource];
     val rc = new RepoClientImpl(this, RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR, BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN)
-    val solList = DerivedGraphSpecReader.queryDerivedGraphSpecs(rc, DerivedGraphSpecReader.PIPELINE_QUERY_QN, pplnGraphQN);
+    val solList = DerivedGraphSpecReader.queryDerivedGraphSpecs(rc, MasterDemoNames.PIPELINE_QUERY_QN, pplnGraphQN);
 
     for (solC <- solList) {
       val pipeSpec = solC

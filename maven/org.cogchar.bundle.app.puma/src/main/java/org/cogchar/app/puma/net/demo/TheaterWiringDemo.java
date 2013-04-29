@@ -30,6 +30,7 @@ import org.osgi.framework.BundleContext;
  */
 
 public class TheaterWiringDemo extends WiringDemo {
+	
 	public String myDefaultDebugCharQN = "csi:debug_QN_for_theater_70";
 	
 	public TheaterWiringDemo(BundleContext bundleCtx,  EnhancedRepoClient demoRepoClient) {
@@ -47,8 +48,9 @@ public class TheaterWiringDemo extends WiringDemo {
 	}
 	
 	public OSGiTheater makeOSGiTheaterAndStart(BundleContext bundleCtx, Theater t, String sceneFilterText) {
-		String key = "TheaterGroupId";
-		String val = "demo_master_theater_group_44";
+		// TODO:  Grab the constantsfrom MasterDemoNames and include here in registration.
+		// String key = "TheaterGroupId";
+		// String val = "demo_master_theater_group_44";
 		OSGiTheater osgiTheatre = new OSGiTheater(bundleCtx, t, sceneFilterText);
 		osgiTheatre.start();
 		return osgiTheatre;
