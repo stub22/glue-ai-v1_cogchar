@@ -45,10 +45,15 @@ public class RepoConnector {
 
 	public EnhancedRepoClient connectDemoRepoClient(RepoSpec repoSpec) {
 		Repo.WithDirectory bmcMemoryRepoHandle = repoSpec.makeRepo();
-
-		EnhancedRepoClient bmcRepoCli = new EnhancedRepoClient(repoSpec, bmcMemoryRepoHandle, BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR(),
-				BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN());
-		// repoSpec.makeRepoClient(bmcMemoryRepoHandle);
+		// Before we enhanced the repoCli, this was just:  repoSpec.makeRepoClient(bmcMemoryRepoHandle);
+		EnhancedRepoClient bmcRepoCli = new EnhancedRepoClient(repoSpec, bmcMemoryRepoHandle, 
+					BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR(), BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN());
 		return bmcRepoCli;
 	}
+	
+	public EnhancedRepoClient makeRepoClientForDefaultOnlineSheet(BundleContext bundleCtx) { 
+		RepoSpec demoRepoSpec = makeDefaultOnlineSheetRepoSpec(bundleCtx);
+		EnhancedRepoClient demoRepoClient = connectDemoRepoClient(demoRepoSpec);
+		return demoRepoClient;
+	}	
 }
