@@ -1,0 +1,337 @@
+## This file contains RDF in Turtle (".ttl") format.
+## See:   http://www.w3.org/TeamSubmission/turtle/
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+@prefix apsb:	<http://www.appdapter.org/schema/box#> .
+@prefix apt:	<http://www.appdapter.org/test#> .
+
+@prefix cs:		<http://www.cogchar.org/schema/scene#> .
+@prefix csi:	<http://www.cogchar.org/schema/scene/instance#> .
+
+
+<>  rdfs:comment     "Chewy nuggets of real behavior"   .
+### TODO:  We can't yet use imports with relative paths or in a way that matches
+### both our "perm" and "temp" directory structures.
+###	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl";
+
+##  Here we have 3 minimal RDFS classes to prime Jena Assembler's pump.
+## TODO:  Build real RDFS and OWL schemas to help work with this data.
+
+
+cs:BuildableSceneSpec
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.impl.scene.SceneSpecBuilder" 
+		.		
+
+cs:BuildableBehaviorSpec
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.impl.scene.BehaviorSpecBuilder" 
+		.	
+
+cs:BuildableChannelSpec
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.impl.perform.ChannelSpecBuilder" 
+		.		
+
+csi:speechOut_100		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]SpeechOutMain for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]SpeechOutMain for Avatar_ZenoR50";
+	cs:details			"Acapela 'Nelly' timed for Linux";
+	.
+
+csi:animOut_200		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]AnimOut-VirtualBest for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]AnimOut-VirtualBest for Avatar_ZenoR50";
+	cs:details			"Robokind XML animations - 'best' version (perm or temp) based on current settings in GUI";
+	.
+
+
+csi:animOut_210		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]AnimOut-PermBundle for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]AnimOut-PermBundle for Avatar_ZenoR50";
+	cs:details			"Robokind XML animations - 'permanent' version from resource bundle";
+	.
+
+csi:animOut_220		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]AnimOut-TempFolder for Avatar_ZenoR50";
+	rdfs:label 			"[rdfs:]AnimOut-TempFolder for Avatar_ZenoR50";
+	cs:details			"Robokind XML animations - 'temp' version from NB module filesys APP/org_cogchar_nbui_render/config/cogchar/rk_bind_temp";
+.
+
+# behavior_temp
+# logging_temp
+# rk_bind_temp
+
+
+################################################################################################################
+### Test scenes 1-10  are launched with numeric keypad
+################################################################################################################
+
+csi:scn_001 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn-001 apsb label";
+	cs:details			"scene-specific-details-go-here";
+	cs:behavior			csi:bh_001;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_01"
+	.
+
+csi:scn_002 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn-001 apsb label";
+	cs:behavior			csi:bh_002;
+	cs:channel			csi:speechOut_100;
+	cs:channel			csi:animOut_200;
+	cs:trigger			"sceneTrig_02"
+	.
+
+csi:scn_003 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn-001 apsb label";
+	cs:behavior			csi:bh_002, csi:bh_001;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_03"
+	.
+
+csi:bh_001		
+	rdf:type			cs:BuildableBehaviorSpec;
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.7;
+			cs:text				"I have a positive contribution to make"
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	5.2;
+			cs:text				"I am not a nattering nabob"
+		]
+## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
+	)
+	.
+
+csi:bh_002		
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	1.2;
+			cs:text				"Started after 1.2 seconds"
+		] 
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	2.0;
+			cs:text				"dir_101_sysTest_vol_01/UNSAFE_allJoints_fullRange_01.xml"
+		] 
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	7;
+			cs:text				"Started after 7 seconds"
+		]
+## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
+	)
+	.
+
+################################################################################################################
+###   Demo Scenes 11-20 are launched with top-row number keys ("1" launches "11", "2" launches "12", ...)
+################################################################################################################
+
+
+csi:scn_011 	
+#  Conveying: Enthusiasm, excitement.
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn_011 - I Feel Good";
+	cs:behavior			csi:bh_011;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_11"
+	.
+
+csi:bh_011		
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text				"Wow. So many people here today. How do you all feel? I’ll tell you how I feel."
+			#Robot looks around, moves head back and forth. Opens eyes and mouth, Spreads arms. 
+
+		] 
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	10;
+			# Trigger audio file, with some leading and trailing text to help Acapela.  
+			cs:text				"well hey now \\aud=\"/mnt/vm_shared/wav_samples/DancingFeet_MAG.wav\"\\ can you dig it?"
+	#  Robot shrugs head, looks down, looks up, opens mouth, raises one arm, starts replaying 
+	#  song and pumps arms in rock and roll time.
+		]
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	10.1;
+			cs:text				"dir_301_meetAndGreet_vol_01/dance_arms.xml"
+		] 
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	10.2;
+			cs:text				"dir_301_meetAndGreet_vol_01/dance_legs.xml"
+		] 
+	)
+	.
+################################################################################################################
+
+csi:scn_012 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn_012 - Take My Picture";
+	cs:behavior			csi:bh_012;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_12"
+	.
+
+csi:bh_012		
+#  Conveying: Friendliness. Inviting.
+
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text				"Hi there.  Would you like to have your picture taken with me?"
+			#  Robot nods head and beckons with hand. 
+			#  Robot turns head as if looking at person   standing next to it, 
+
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	9.0;
+			cs:text				"Well OK then.  Stand right here."
+			# Gestures
+		]
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	15.0;
+			cs:text				"Now, look at the camera and say, Chitty-chitty bang-bang!"
+			# Artificial Grin
+		]
+	)
+	.
+################################################################################################################
+
+csi:scn_013 	
+#   Conveying: Helpfulness (Like a tour guide).
+
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn_013 - Have I Got a Course for You";
+	cs:behavior			csi:bh_013;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_13"
+	.
+
+
+csi:bh_013		
+
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text		"""	
+How would You like for me to come to your classroom.  I can help you out with your 
+students.  I will help you teach a Computer Science Course bu telling your students 
+about science, technology, and what it’s like to be a robot.   """;
+
+# Robot tilts head back, spreading arms as if asking a question. 
+
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	20.0;
+			cs:text				"Look over there. See that stack of pamphlets?"
+			#2) Robot turns head toward table, points at something on table. 
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	25.0;
+			cs:text				"You can grab one and take it with you!"
+			# Robot makes grabbing or picking up motion with hand and then turns head back 
+			# toward where the its listener would be standing.
+		]
+
+	)
+	.
+
+################################################################################################################
+
+csi:scn_014
+# Conveying: Enthusiasm. Helpfulness.
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn_014 - Meet Me, Call Me";
+	cs:behavior			csi:bh_014;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_14"
+	.
+
+
+csi:bh_014
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text				"""
+Hi, my name is Xeno, and my job is to help your school meet its objectives in computer science. 
+How do I do that? Well, for one thing, I’m going to hang out and help out, right in your classrooms. 
+Computer Science and Robotics.   Coming to your school!
+			"""
+
+			# Routine: Robot addressing circle of conferees, looks around as if scanning faces. 
+			# Points to self and then extends arm. Stabs hand in air in downward motion.
+
+		]
+	)
+	.
+
+################################################################################################################
+
+
+csi:scn_015
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn_015 - Hey, Everybody";
+	cs:behavior			csi:bh_015;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_15"
+	.
+
+
+csi:bh_015
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text				"Hey, Everybody. Wanna meet a robot?"
+			# Routine: Robot tilts head to one side, opens an eye wide, raises arm with hand close to face.
+			# Conveying: Teasing. Childish enthusiasm. Expectation.
+		] 
+	)
+	.

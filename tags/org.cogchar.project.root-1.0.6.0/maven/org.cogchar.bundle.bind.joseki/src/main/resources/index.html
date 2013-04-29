@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>GLUE-AI.Cogchar wrapper of Joseki 3.8.7 (8?) HTTP-SPARQL Query/Update Server</title>
+    <link rel="stylesheet" type="text/css" href="StyleSheets/joseki.css" />
+  </head>
+<body>
+    <h1>GLUE-AI.Cogchar HTTP-SPARQL Query/Update Server</h1>
+    
+    <p>&nbsp;</p>
+
+    <h2>Query forms</h2>
+
+    <ul>
+      
+      <li><a href="sparql_glueai.html">GLUE-AI SPARQL Query</a></li>
+	  <li><a href="update.html">GLUE-AI SPARQL Update</a></li>
+	  <li><a href="query_books.html">Query Joseski "books" file</a> - good sanity check if other stuff isn't working.</li>
+    </ul>
+
+    <h2>Validators</h2>
+    <ul>
+      <li><a href="query-validator.html">SPARQL query validator</a></li>
+      <li><a href="update-validator.html">SPARQL update validator</a></li>
+      <li><a href="data-validator.html">RDF data validator</a></li>
+    </ul>
+
+    <h2>SPARQL Services</h2>
+
+    <p>The forms above use the following services, which are bound in the WEB-INF/web.xml 
+		and joseki-config-friendu.ttl files of this bundle.</p>
+
+    <ul>
+      <li><code>sparql/glue-ai</code> </li>
+      <li><code>sparql-update/glue-ai</code></li>
+      <li><code>books</code> :  SPARQL query processor for a small book model in Data/books.ttl.</li>
+    </ul>
+
+    <hr/>
+
+    <p>SPARQL doc links</p>
+ 
+    <ul>
+      <li>
+	  <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language</a>
+      </li>
+      <li>
+	  <a href="http://www.w3.org/TR/rdf-sparql-protocol/">SPARQL protocol</a>
+      </li>
+      <li>
+	  <a href="http://www.w3.org/TR/rdf-sparql-XMLres/">SPARQL XML results format</a>
+      </li>
+    </ul>
+    <hr/>
+    <p>This web interface is derived from the <a href="http://www.joseki.org/download.html">Joseki</a> project,
+		which has recently been superceded by Fuseki, which GLUE-AI will upgrade to use, eventually.</p>
+</body>
+</html>
