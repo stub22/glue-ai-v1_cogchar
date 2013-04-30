@@ -1,0 +1,595 @@
+## This file contains RDF in Turtle (".ttl") format.
+## See:   http://www.w3.org/TeamSubmission/turtle/
+
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+@prefix apsb:	<http://www.appdapter.org/schema/box#> .
+@prefix apt:	<http://www.appdapter.org/test#> .
+
+@prefix bc:		<http://www.cogchar.org/bony/config#> .
+@prefix bci:	<http://www.cogchar.org/bony/config/instance#> .
+
+
+<>  rdfs:comment     "All of this metadata is optional, unused, and just for fun/future" ;
+    dc:creator       "Stu B. <www.texpedient.com>" ;
+    dc:subject       "Zeno R-50 config" ;
+    dc:publisher     "cogchar.org" ;
+    dc:title         "(title) Bony config for Zeno R-50" ;
+    dc:description   "(desc) Bony config for Zeno R-50" ;
+    dc:date          "2012-03-13" ;
+
+    dc:format        "RDF" ;
+    dc:identifier    "what_does_this_dublin_core_identifier_mean"
+#####   ja:imports  is how we can include files, which can include others
+#####  The imports will be resolved using Jena FileManager, which reads
+#####  both filesystem and classpath.
+#####	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl"
+##### The period on next line is important:  It ends this block of triples.
+    .
+    
+
+#### This "Buildable" resource defines a factory for a particular kind of component.
+#### The factory might keep a cache allowing it to stitch identical URI references to a
+#### context-unique runtime object, or it might not.  As it turns out, BoneRobotConfig$Builder
+#### does inherit that feature, but we aren't using it at this time.
+#### Formally, we are defining an RDFS:class, which has the URI
+#### bc:BuildableBoneRobotConfig, which you'll see used below as the "rdf:type"
+#### of the bci:zenoR50 robot instance. 
+
+bc:BuildableBoneRobotConfig
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.api.skeleton.config.BoneRobotConfig$Builder" 
+#####  Again, note the period ending the description of this resource, and all other
+#####  top-level (*syntactically, but not semantically*) resources below.
+		.
+
+
+##########################################################################
+#####   The Robot Resource
+#####  The URI of the robot is (the expanded form of) bci:zenoR50	
+##### rdf:type allows Jena Assembler to construct the factory   (BoneRobotConfig.Builder)
+##### defined by the BuildableBoneRobotconfig above.
+##########################################################################
+
+bci:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
+####  Here is the class name of the actual config object instance we are constructing.
+	apsb:javaFQCN		"org.cogchar.api.skeleton.config.BoneRobotConfig";
+#### Some additional descriptive metadata
+	apsb:label			"Zeno R-50 Avatar Bone Config apsb:label";
+	rdfs:label			"Zeno R-50 Avatar Bone Config rdfs:label";
+#### bc:robotName is used for the Robokind "Robot.Id"
+	bc:robotName		"Avatar_AZR50";
+
+### bc:joint property contains the URIs of each joint.  The order does not matter.
+### Commas indicate multiple values for the same property, which can be
+### interpreted as an *unordered* collection.  An ordered collection uses parens, and
+### has a distinctly different form (although it does also make use of commas).  
+###  See the o.c.test.assembly "Nugget" example.
+
+	bc:joint		
+
+		bci:joint_Root_Spin, bci:joint_Spine_Yaw, 
+
+		bci:joint_Neck_Yaw, bci:joint_Neck_Roll, bci:joint_Neck_Pitch, 
+
+		bci:joint_Brows_Up, bci:joint_Blink_Open,
+		bci:joint_Eyes_Pitch, bci:joint_LtEye_Yaw, bci:joint_RtEye_Yaw,
+		bci:joint_Upper_Jaw, bci:joint_Lower_Jaw,
+		bci:joint_Jaw,
+
+		bci:joint_LtShoulder_Pitch, bci:joint_LtShoulder_Roll, 
+		bci:joint_LtElbow_Yaw,	bci:joint_LtElbow_Pitch,
+		bci:joint_LtWrist_Yaw,
+
+		bci:joint_RtShoulder_Pitch, bci:joint_RtShoulder_Roll,
+		bci:joint_RtElbow_Yaw, bci:joint_RtElbow_Pitch,
+		bci:joint_RtWrist_Yaw, 
+
+		bci:joint_LtHip_Roll, bci:joint_LtHip_Yaw, bci:joint_LtHip_Pitch,
+		bci:joint_LtKnee_Pitch, 
+		bci:joint_LtAnkle_Pitch, bci:joint_LtAnkle_Roll,
+
+		bci:joint_RtHip_Roll, bci:joint_RtHip_Yaw, bci:joint_RtHip_Pitch,
+		bci:joint_RtKnee_Pitch, 
+		bci:joint_RtAnkle_Pitch, bci:joint_RtAnkle_Roll
+		.
+
+#### Other bones that seem not too useful:
+###  Head, LtClav, RtClav
+
+#################################################################################
+#### Note the period above, so the robot resource is now done, and we can move on to:
+####    The Joint Resources
+#### Note that minAngle may be numerically greater than maxAngle, indicating an inverted relationship
+#### between the joint's sense and the coordinate system of the bone.
+#### "min" = fully retracted,  "max" = fully extended.
+#################################################################################
+### bci:joint_Root is a URI, which has properties, defined by triples.
+### Each joint may have one or more projection ranges, each of which is 
+### also a resource, which may be an explicit URI or a blank node.  
+### (So far we are using blank nodes).
+######################################################################
+
+
+######################################################################
+##### Torso
+######################################################################
+
+bci:joint_Root_Spin
+	# We put jointNum and boneName on same line to make it easy to grep this file for mappings.
+	bc:jointNum			42;			bc:jointName			"Root_Spin";
+	bc:defaultPosNorm	0.5;
+	
+	bc:projectionRange	[
+		# This resource is a "blank node", because it doesn't have an explicit URI.
+		bc:boneName			"Root";
+		bc:rotationAxis		"X_ROT";
+		bc:minAngleDeg		-180.0;
+		bc:maxAngleDeg		 180.0;
+	]
+.
+
+bci:joint_Spine_Yaw
+	bc:jointNum			100;			bc:jointName			"Waist_Yaw";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"Spine1";
+		bc:rotationAxis		"X_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+######################################################################
+##### Neck
+######################################################################
+
+bci:joint_Neck_Yaw
+	bc:jointNum			200;			bc:jointName			"Neck_Yaw";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"bn_neck01";
+		bc:rotationAxis		"X_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_Neck_Roll
+	bc:jointNum			201;			bc:jointName			"Neck_Roll";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"bn_neck01";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-45.0;
+		bc:maxAngleDeg		 45.0;
+	]
+.
+
+bci:joint_Neck_Pitch
+	bc:jointNum			202;			bc:jointName			"Neck_Pitch";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"bn_neck01";
+		bc:rotationAxis		"Y_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+
+
+
+######################################################################
+##### Face
+######################################################################
+#        <boneparent bone="bn_neck01" parent="Spine1" />
+#        <boneparent bone="bn_HeadPivot2" parent="bn_neck01" />
+#        <boneparent bone="bn_Jaw01" parent="bn_HeadPivot2" />
+#        <boneparent bone="be_Jaw2" parent="bn_Jaw01" />			Translate close to XY, from 0,0 to   x="0.289509" y="0.318684"
+#        <boneparent bone="be_RevJaw2" parent="bn_Jaw01" />			Translate along XY  x="-0.5" y="-0.5" to 0.0,0.0
+#        <boneparent bone="LtEye1" parent="bn_HeadPivot2" />
+#        <boneparent bone="LtEye2" parent="LtEye1" />				Uses scale in Y [0.0, 1.0], + brief inversion rotation (to hide pupil?)
+#        <boneparent bone="RtEeye1" parent="bn_HeadPivot2" />		
+#        <boneparent bone="RtEye2" parent="RtEeye1" />				Uses scale in Y, [0.0, 1.0], and one frame of:  <rotate angle="3.14159"> <axis x="1" y="0" z="0" />
+#        <boneparent bone="RtBrow" parent="bn_HeadPivot2" />		In model coords, uses Translate in Y [-1.0, 1.0] and rot about -Z
+#        <boneparent bone="LtBrow" parent="bn_HeadPivot2" />		In model coords, uses Translate in Y [-1.0, 1.0] and rot about Z
+
+
+bci:joint_Brows_Up
+	bc:jointNum			300;			bc:jointName			"Brows_Up";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtBrow";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	],
+	[
+		bc:boneName			"RtBrow";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+
+bci:joint_Blink_Open
+	bc:jointNum			301;			bc:jointName			"Blink_Open";
+	bc:defaultPosNorm	1;
+	bc:projectionRange	[
+		bc:boneName			"LtEye2";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	],
+        [
+		bc:boneName			"RtEye2";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+        ]
+.
+
+
+bci:joint_Eyes_Pitch
+	bc:jointNum			310;			bc:jointName			"Eyes_Vert";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtEye1";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-35.0;
+		bc:maxAngleDeg		 35.0;
+	],
+	[
+		bc:boneName			"RtEeye1";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-35.0;
+		bc:maxAngleDeg		 35.0;
+	]
+.
+bci:joint_LtEye_Yaw
+	bc:jointNum			311;			bc:jointName			"LtEye_Yaw";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtEye1";
+		bc:rotationAxis		"Y_ROT";
+		bc:minAngleDeg		-35.0;
+		bc:maxAngleDeg		 35.0;
+	]
+.
+
+bci:joint_RtEye_Yaw
+	bc:jointNum			312;			bc:jointName			"RtEye_Yaw";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		# RtEeye1 (sic) 
+		bc:boneName			"RtEeye1";
+		bc:rotationAxis		"Y_ROT";
+		bc:minAngleDeg		-35.0;
+		bc:maxAngleDeg		 35.0;
+	]
+.
+bci:joint_Upper_Jaw
+	bc:jointNum			1001;			bc:jointName			"Unused"; #"Upper_Jaw";
+	bc:defaultPosNorm	0.7991;
+	bc:projectionRange	[
+		bc:boneName			"be_RevJaw2";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+bci:joint_Lower_Jaw
+	bc:jointNum			322;			bc:jointName			"Jaw"; #"Lower_Jaw";
+	bc:defaultPosNorm	0.125;
+	bc:projectionRange	[
+		bc:boneName			"be_Jaw2";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_Jaw
+	bc:jointNum			1000;			bc:jointName			"Unused"; #"Jaw";
+	bc:defaultPosNorm	0.2301;
+	bc:projectionRange	[
+		bc:boneName			"bn_Jaw01";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-12.0;
+		bc:maxAngleDeg		 30.0;
+	]
+.
+
+
+######################################################################
+##### Left Arm
+######################################################################
+
+bci:joint_LtShoulder_Pitch
+	bc:jointNum			400;			bc:jointName			"LtShoulder_Pitch";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtShoulder";
+		bc:rotationAxis		"Y_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+bci:joint_LtShoulder_Roll
+
+	bc:jointNum				401;			bc:jointName			"LtShoulder_Roll";
+	bc:defaultPosNorm		0.1;
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
+	bc:projectionRange	[
+		bc:boneName			"LtShoulder";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-10.0;
+		bc:maxAngleDeg		 170.0;
+	]
+.
+
+bci:joint_LtElbow_Yaw
+	bc:jointNum			410;			bc:jointName			"LtElbow_Yaw";
+	bc:defaultPosNorm	0.5;
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
+	bc:projectionRange	[
+		bc:boneName			"LtElbow";
+		bc:rotationAxis		"X_ROT";
+		bc:minAngleDeg		180.0;
+		bc:maxAngleDeg		0.0;
+	]
+.
+
+bci:joint_LtElbow_Pitch
+	bc:jointNum			411;			bc:jointName			"LtElbow_Pitch";
+	bc:defaultPosNorm	0.9;
+	bc:projectionRange	[
+		bc:boneName			"LtElbow";
+		bc:rotationAxis		"Y_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		30.0;
+
+	]
+.
+
+
+bci:joint_LtWrist_Yaw
+	bc:jointNum			420;			bc:jointName			"LtWrist_Yaw";
+	bc:defaultPosNorm	0.5;
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
+	bc:projectionRange	[
+		bc:boneName			"LtWrist";
+		bc:rotationAxis		"X_ROT";
+		bc:minAngleDeg		 90.0;
+		bc:maxAngleDeg		-90.0;
+	]
+.
+
+######################################################################
+##### Right Arm
+######################################################################
+
+bci:joint_RtShoulder_Pitch
+	bc:jointNum			500;			bc:jointName			"RtShoulder_Pitch";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtShoulder";
+		bc:rotationAxis		"Y_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_RtShoulder_Roll
+	bc:jointNum			501;			bc:jointName			"RtShoulder_Roll";
+	bc:defaultPosNorm	0.9;
+	bc:projectionRange	[
+		bc:boneName			"RtShoulder";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		 170.0;
+		bc:maxAngleDeg		-10.0;
+	]
+.
+
+bci:joint_RtElbow_Yaw
+	bc:jointNum			510;			bc:jointName			"RtElbow_Yaw";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtElbow";
+		bc:rotationAxis		"X_ROT";
+		bc:minAngleDeg		0.0;
+		bc:maxAngleDeg		180.0;
+	]
+.
+
+bci:joint_RtElbow_Pitch
+	bc:jointNum			511;			bc:jointName			"RtElbow_Pitch";
+	bc:defaultPosNorm	0.9;
+	bc:projectionRange	[
+		bc:boneName			"RtElbow";
+		bc:rotationAxis		"Y_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		30.0;
+
+	]
+.
+
+
+bci:joint_RtWrist_Yaw
+	bc:jointNum			520;			bc:jointName			"RtWrist_Yaw";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtWrist";
+		bc:rotationAxis		"X_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+
+######################################################################
+##### Left Leg
+######################################################################
+
+bci:joint_LtHip_Roll
+	bc:jointNum			600;			bc:jointName			"LtHip_Roll";
+	bc:defaultPosNorm	0.2;
+
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
+
+	bc:projectionRange	[
+		bc:boneName			"LtHip";
+		bc:rotationAxis		"Y_ROT";
+		bc:minAngleDeg		 10.0;
+		bc:maxAngleDeg		 -40.0;
+	]
+.
+
+bci:joint_LtHip_Yaw
+	bc:jointNum			601;			bc:jointName			"LtHip_Yaw";
+	bc:defaultPosNorm	0.5;
+
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
+
+	bc:projectionRange	[
+		bc:boneName			"LtHip";
+		bc:rotationAxis		"X_ROT";
+		bc:minAngleDeg		 45.0;
+		bc:maxAngleDeg		-45.0;
+	]
+.
+
+bci:joint_LtHip_Pitch
+	bc:jointNum			602;			bc:jointName			"LtHip_Pitch";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtHip";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+
+bci:joint_LtKnee_Pitch
+	bc:jointNum			610;			bc:jointName			"LtKnee_Pitch";
+	bc:defaultPosNorm	0.1;
+	bc:projectionRange	[
+		bc:boneName			"LtKnee";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		  0.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_LtAnkle_Pitch
+	bc:jointNum			620;			bc:jointName			"LtAnkle_Pitch";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"LtAnkle";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		 90.0;
+		bc:maxAngleDeg		 -90.0;
+	]
+.
+bci:joint_LtAnkle_Roll
+	bc:jointNum			621;			bc:jointName			"LtAnkle_Roll";
+	bc:defaultPosNorm	0.5;
+
+	# Invert left limb roll and yaw (but not pitch) for symmetric motion about body axis w/ right limb
+	bc:invertForSymmetry	true;
+
+	bc:projectionRange	[
+		bc:boneName			"LtAnkle";
+		bc:rotationAxis		"Y_ROT";
+		bc:minAngleDeg		-45.0;
+		bc:maxAngleDeg		 45.0;
+	]
+.
+######################################################################
+##### Right Leg
+######################################################################
+
+bci:joint_RtHip_Roll
+	bc:jointNum			700;			bc:jointName		"RtHip_Roll";
+	bc:defaultPosNorm	0.8;
+	bc:projectionRange	[
+		bc:boneName			"RtHip";
+		bc:rotationAxis		"Y_ROT";
+		bc:minAngleDeg		-40.0;
+		bc:maxAngleDeg		 10.0;
+	]
+.
+
+bci:joint_RtHip_Yaw
+	bc:jointNum			701;			bc:jointName			"RtHip_Yaw";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtHip";
+		bc:rotationAxis		"X_ROT";
+		bc:minAngleDeg		-45.0;
+		bc:maxAngleDeg		 45.0;
+	]
+.
+
+bci:joint_RtHip_Pitch
+	bc:jointNum			702;			bc:jointName		"RtHip_Pitch";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtHip";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		-90.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+
+bci:joint_RtKnee_Pitch
+	bc:jointNum			710;			bc:jointName			"RtKnee_Pitch";
+	bc:defaultPosNorm	0.1;
+	bc:projectionRange	[
+		bc:boneName			"RtKnee";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		 0.0;
+		bc:maxAngleDeg		 90.0;
+	]
+.
+
+bci:joint_RtAnkle_Pitch
+	bc:jointNum			720;			bc:jointName			"RtAnkle_Pitch";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtAnkle";
+		bc:rotationAxis		"Z_ROT";
+		bc:minAngleDeg		 90.0;
+		bc:maxAngleDeg		 -90.0;
+	]
+.
+
+
+bci:joint_RtAnkle_Roll
+	bc:jointNum			721;			bc:jointName			"RtAnkle_Roll";
+	bc:defaultPosNorm	0.5;
+	bc:projectionRange	[
+		bc:boneName			"RtAnkle";
+		bc:rotationAxis		"Y_ROT";
+		bc:minAngleDeg		 45.0;
+		bc:maxAngleDeg		 -45.0;
+	]
+.

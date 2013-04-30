@@ -1,0 +1,78 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.0.6.1</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>	
+	<artifactId>org.cogchar.lib.outer.client</artifactId>
+	<packaging>jar</packaging>
+
+	<name>${project.artifactId} - POJO</name>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.render	</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient-osgi</artifactId>
+			<version>4.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore-osgi</artifactId>
+			<version>4.1.4</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.ow2.bundles</groupId>
+			<artifactId>ow2-bundles-externals-commons-logging</artifactId>
+			<version>1.0.33</version>
+		</dependency>
+		<!--
+		<dependency>
+			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
+			<groupId>org.appdapter</groupId>
+			<version>${appdapter.version}</version>
+		</dependency>
+		-->
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.1</version>
+			<!-- You must temporarily change scope to "runtime" or "compile" in order to activate Log4J for 
+			dev unit testing (outside of JUnit).  But the svn-committed (and mvn-deployed, etc.) versions
+			should always have this scope marked as "test", so that clients can use their own logger binding. 
+			
+			TEMPORARY:
+			During early testing of this standalone web client, we are ignoring the proviso above, and committing
+			with scope=runtime.
+			-->
+			<scope>runtime</scope>
+		    <exclusions>
+				<!-- This embedded Log4J version is not OSGi friendly -->				
+		        <exclusion>
+		            <artifactId>log4j</artifactId>
+		            <groupId>log4j</groupId>
+		        </exclusion>
+		    </exclusions>			
+		</dependency>
+	</dependencies>
+</project>

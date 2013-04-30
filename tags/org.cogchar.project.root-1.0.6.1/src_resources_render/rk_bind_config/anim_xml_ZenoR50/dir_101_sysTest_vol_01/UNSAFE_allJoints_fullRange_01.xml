@@ -1,0 +1,535 @@
+<?xml version="1.0"?>
+<Animation>
+	<Version type="Animation">
+		<Name>New Animation</Name>
+		<Number>1.0</Number>
+	</Version>
+	<Channels>
+		<Channel id="42" name="Root_Spin">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0423728813559322</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="100" name="Waist_Yaw">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="200" name="Neck_Yaw">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="201" name="Neck_Roll">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="202" name="Neck_Pitch">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="300" name="Brows_Up">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="301" name="Blink_Open">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="310" name="Eyes_Vert">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="311" name="LtEye_Yaw">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="312" name="RtEye_Yaw">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="320" name="Smile_Left">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="321" name="Smile_Right">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="322" name="Jaw">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="400" name="LtShoulder_Pitch">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="401" name="LtShoulder_Roll">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.1</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="410" name="LtElbow_Yaw">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.1</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="411" name="LtElbow_Pitch">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.1</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="420" name="LtWrist_Yaw">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="500" name="RtShoulder_Pitch">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="501" name="RtShoulder_Roll">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.1</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="510" name="RtElbow_Yaw">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.1</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="511" name="RtElbow_Pitch">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.1</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="520" name="RtWrist_Yaw">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="600" name="LtHip_Roll">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.2</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="601" name="LtHip_Yaw">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="602" name="LtHip_Pitch">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="610" name="LtKnee_Pitch">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.1</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="620" name="LtAnkle_Pitch">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="621" name="LtAnkle_Roll">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="700" name="RtHip_Roll">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.8008474576271186</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="701" name="RtHip_Yaw">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="702" name="RtHip_Pitch">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="710" name="RtKnee_Pitch">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.1</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="720" name="RtAnkle_Pitch">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>1.0</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+		<Channel id="721" name="RtAnkle_Roll">
+			<MotionPaths>
+				<MotionPath name="path">
+					<Version type="Interpolation">
+						<Name>C-Spline Interpolation</Name>
+						<Number>1.0</Number>
+					</Version>
+					<ControlPoints>
+						<ControlPoint><Time>0.0</Time><Position>0.5042372881355932</Position></ControlPoint>
+						<ControlPoint><Time>2282.0</Time><Position>0.978494623655914</Position></ControlPoint>
+						<ControlPoint><Time>4615.0</Time><Position>0.0</Position></ControlPoint>
+					</ControlPoints>
+				</MotionPath>
+			</MotionPaths>
+		</Channel>
+	</Channels>
+	<AddOns />
+</Animation>
