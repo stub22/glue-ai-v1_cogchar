@@ -101,12 +101,8 @@
 			<artifactId>org.cogchar.lib.animoid</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<!-- Stu sez:  But this is pretty bad! -->
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+		
+			<!-- Ryan sez: the worse one (o.c.bundle.bind.lift) is now gone! -->
 		
 		<!--
 		<dependency>

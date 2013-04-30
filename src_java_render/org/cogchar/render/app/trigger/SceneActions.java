@@ -30,14 +30,13 @@ import org.cogchar.platform.trigger.CogcharActionTrigger;
 import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.platform.trigger.CogcharEventActionBinder;
 
-import org.cogchar.bind.lift.LiftAmbassador;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.TreeMap;
+import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
 
 /**
@@ -121,7 +120,7 @@ public class SceneActions {
 		return theLauncher;
 	}
 
-	static class SceneLauncher implements LiftAmbassador.LiftSceneInterface {
+	static class SceneLauncher implements WebAppInterface.WebSceneInterface {
 		@Override public boolean triggerScene(String scene) {
 			boolean success = false;
 			CogcharActionBinding triggerBinding = getTriggerBinding(scene);

@@ -20,6 +20,7 @@ import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
+import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.name.lifter.LiftCN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Ryan Biggs
  */
-public class ControlConfig {
+public class ControlConfig implements WebAppInterface.Control {
 
 	static Logger theLogger = LoggerFactory.getLogger(ControlConfig.class);
 	public String myURI_Fragment;
@@ -95,7 +96,56 @@ public class ControlConfig {
 		}
 		return newConfig;
 	}
-
+	
+	// A factory method to get a ControlConfig from a WebAppInterface.Control. The Control probably already is a ControlConfig,
+	// but since we can't count on that in general, here we explicitly build a ControlConfig
+	public static ControlConfig getControlConfigFromControlInterface(WebAppInterface.Control appControl) {
+		ControlConfig newConfig = new ControlConfig();
+		newConfig.controlType = appControl.getType();
+		newConfig.action = appControl.getAction();
+		newConfig.resource = appControl.getResource();
+		newConfig.style = appControl.getStyle();
+		newConfig.text = appControl.getText();
+		return newConfig;
+	}
+	
+	// Getters and setters to implement WebAppInterface.Control
+	public void setType(String type) {
+		controlType = type;
+	}
+	public String getType() {
+		return controlType;
+	}
+	
+	public void setAction(Ident action) {
+		this.action = action;
+	}
+	public Ident getAction() {
+		return action;
+	}
+	
+	public void setText(String text) {
+		this.text = text;
+	}
+	public String getText() {
+		return text;
+	}
+	
+	public void setStyle(String style) {
+		this.style = style;
+	}
+	public String getStyle() {
+		return style;
+	}
+	
+	public void setResource(String resource) {
+		this.resource = resource;
+	}
+	public String getResource() {
+		return resource;
+	}
+	
+	
 	/* No longer available unless we fix this up to support the new action URIs instead of strings
 	public ControlConfig(Item configItem) {
 		myURI_Fragment = configItem.getIdent().getLocalName();

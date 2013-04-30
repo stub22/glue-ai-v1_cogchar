@@ -37,6 +37,7 @@ public class WebUserActionNames {
 		return new FreeIdent(USER_ACTION_NS + nameTail);
 	}
 	
+	public	static Ident	SENDER = makeID("sender");
 	public	static Ident	USER = makeID("user");
 	public	static Ident	SESSION = makeID("session");
 	public	static Ident	USER_CLASS = makeID("userclass");
