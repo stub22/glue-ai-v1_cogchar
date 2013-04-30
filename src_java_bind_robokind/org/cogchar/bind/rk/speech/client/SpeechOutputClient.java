@@ -100,7 +100,9 @@ public class SpeechOutputClient extends FancyTextPerfChan<SpeechJob> {
 		getLogger().info("************* cancelling SpeechJob job on chan [{}]", getName());
 		// This cast was unnecessary using 0.8.9.1-SNAPSHOT, but somehow became necessary
 		// with 0.8.9.1 RELEASE.  Weird.
-		((DefaultSpeechJob) soj).cancel();
+		// ((DefaultSpeechJob) soj).cancel();
+		// Fixed in 0.8.9.2
+		soj.cancel();
 	}		
 	// We want this method to be private, but currently it cannot be because _____
 
