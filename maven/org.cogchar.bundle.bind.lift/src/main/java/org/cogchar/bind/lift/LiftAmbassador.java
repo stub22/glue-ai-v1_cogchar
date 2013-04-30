@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.name.lifter.ChatAN;
 import org.cogchar.name.lifter.LiftAN;
 import org.cogchar.name.lifter.LiftCN;
@@ -32,13 +34,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author Ryan Biggs
  */
-public class LiftAmbassador {
+public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebSceneInterface {
 
 	private static LiftAmbassador theLiftAmbassador;
 	private static final Object theClassLock = LiftAmbassador.class;
 	private static Logger theLogger = LoggerFactory.getLogger(LiftAmbassador.class); //OK?
 	private LiftConfig myInitialConfig;
-	private LiftSceneInterface mySceneLauncher;
+	private WebSceneInterface mySceneLauncher;
 	private LiftInterface myLift;
 	private LiftAppInterface myLiftAppInterface;
 	// The following RepoClient is now an instance variable, but currently is set with a setter (setRepoClient)
@@ -56,6 +58,14 @@ public class LiftAmbassador {
 	private Map<Ident, UserAccessConfig.UserConfig> myUserMap = new HashMap<Ident, UserAccessConfig.UserConfig>();
 	private Map<Ident, String> userSessionMap = new HashMap<Ident, String>(); // Tracks the session IDs corresponding to named users' last login
 	private LiftQueryEnvoy myQueryEnvoy = new LiftQueryEnvoy();
+	
+	// The updateTargetURL and updateGraphQN are made up for testing for now! This needs to be revisited, and this stuff moved to onto at the very least...
+	// Probably will want to be able to select the updateGraphQN somehow...
+	// Our test repository URLs.
+	private static final String repoBaseURL = "http://localhost:8080/cchr_josk/";
+	private static final String repoBaseUpdURL = repoBaseURL + "sparql-update/";
+	private static final String glueUpdURL = repoBaseUpdURL + "glue-ai";
+	private LiftRepoMessenger myRepoMessenger = new LiftRepoMessenger(glueUpdURL,  "ccrt:thing_sheet_22"); 
 	
 	private final Object activationLock = new Object();
 	private final Object cogcharLock = new Object();
@@ -77,11 +87,6 @@ public class LiftAmbassador {
 		}
 	}
 	
-	public interface LiftSceneInterface {
-
-		boolean triggerScene(String scene);
-	}
-
 	public interface LiftInterface {
 
 		void notifyConfigReady();
@@ -165,12 +170,18 @@ public class LiftAmbassador {
 			}
 		}
 	}
+	public void activateControlFromConfig(String sessionId, int slotNum, WebAppInterface.Control newControl) {
+		activateControlFromConfig(sessionId, slotNum, ControlConfig.getControlConfigFromControlInterface(newControl));
+	}
 		
 	// Activate a control in all sessions -- probably just for temporary testing
 	public void activateControlFromConfig(int slotNum, ControlConfig newConfig) {
 		for (String sessionId : myLift.getActiveSessions()) {
 			activateControlFromConfig(sessionId, slotNum, newConfig);
 		}
+	}
+	public void activateControlFromConfig(int slotNum, WebAppInterface.Control newControl) {
+		activateControlFromConfig(slotNum, ControlConfig.getControlConfigFromControlInterface(newControl));
 	}
 	
 	// Activates a single control in a single session based on user
@@ -181,6 +192,9 @@ public class LiftAmbassador {
 		} else {
 			theLogger.warn("Could not set control based on user name; no login on record for user {}", userName);
 		}
+	}
+	public void activateControlFromConfigForUser(String userName, int slotNum, WebAppInterface.Control newControl) {
+		activateControlFromConfigForUser(userName, slotNum, ControlConfig.getControlConfigFromControlInterface(newControl));
 	}
 	
 	// Activates a single control in all sessions of a given user class local name
@@ -193,6 +207,9 @@ public class LiftAmbassador {
 				activateControlFromConfig(userSessionMap.get(activeUser), slotNum, newConfig);
 			}
 		}
+	}
+	public void activateControlFromConfigForUserClass(String desiredUserClassLN, int slotNum, WebAppInterface.Control newControl) {
+		activateControlFromConfigForUserClass(desiredUserClassLN, slotNum, ControlConfig.getControlConfigFromControlInterface(newControl));
 	}
 	
 	// Activates controls identified by a LiftConfig URI
@@ -322,6 +339,29 @@ public class LiftAmbassador {
 		myUserMap = uac.users;
 	}
 
+	// Synchronize this?
+	public void sendUserTextViaRepo(Ident senderIdent, String userText, String sessionId) {
+		WebUserActionParamWriter paramWriter = myRepoMessenger.resetAndGetParamWriter();
+		paramWriter.putSessionID(sessionId);
+		paramWriter.putOutputText(userText);
+		paramWriter.putSender(senderIdent);
+		Ident userId = getKeyByValue(userSessionMap, sessionId);
+		paramWriter.putUserID(userId);
+		paramWriter.putUserClass(myUserMap.get(userId).userClass);
+		myRepoMessenger.sendMessage();
+	}
+	
+	// A way to get the first matched key from a value in a map, from
+	// http://stackoverflow.com/questions/1383797/java-hashmap-how-to-get-key-from-value
+	// Currently used by sendUserTextViaRepo to look up a UserID from a session ID string; there may be a better way
+	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+		for (Entry<T, E> entry : map.entrySet()) {
+			if (value.equals(entry.getValue())) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
 	
 	public boolean triggerCinematic(Ident cinematicUri) {
 		synchronized (cogcharLock) {
@@ -481,7 +521,7 @@ public class LiftAmbassador {
 		return myQueryEnvoy.getNamesAndActionsFromQuery(myRepoClient, myQGraph, queryUri, LiftCN.ACTION_VAR_NAME, LiftCN.NAME_VAR_NAME);
 	}
 
-	void setSceneLauncher(LiftSceneInterface launcher) {
+	void setSceneLauncher(WebSceneInterface launcher) {
 		mySceneLauncher = launcher;
 	}
 
@@ -505,5 +545,11 @@ public class LiftAmbassador {
 
 	public boolean checkConfigReady() {
 		return myConfigReady;
+	}
+	
+	// Used by external classes which need to directly construct new ControlConfigs
+	@Override
+	public WebAppInterface.Control getNewControl() {
+		return new ControlConfig();
 	}
 }

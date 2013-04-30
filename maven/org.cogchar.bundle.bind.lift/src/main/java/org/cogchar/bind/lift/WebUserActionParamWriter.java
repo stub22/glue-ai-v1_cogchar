@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.outer.client.web;
+package org.cogchar.bind.lift;
 
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.BasicTypedValueMap;
@@ -22,7 +22,9 @@ import org.cogchar.name.web.WebUserActionNames;
 import org.cogchar.outer.client.ActionParamWriter;
 
 /**
- *
+ * This would be in o.c.lib.outer.client, except that's outer and we're not!
+ * This probably ultimately belongs in a general location for Cogchar repo update bits instead of here.
+ * 
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
 
@@ -30,6 +32,10 @@ import org.cogchar.outer.client.ActionParamWriter;
 public class WebUserActionParamWriter extends ActionParamWriter {
 	public WebUserActionParamWriter(BasicTypedValueMap btvMap) {
 		super(btvMap);
+	}
+	
+	public void putSender(Ident senderId) {
+		myBTVMap.putValueAtName(WebUserActionNames.SENDER, senderId.getAbsUriString());
 	}
 	
 	public void putUserID(Ident typeIdent) {
@@ -40,8 +46,8 @@ public class WebUserActionParamWriter extends ActionParamWriter {
 		myBTVMap.putValueAtName(WebUserActionNames.SESSION, sessionId);
 	}
 	
-	public void putUserClass(String userClassLN) {
-		myBTVMap.putValueAtName(WebUserActionNames.USER_CLASS, userClassLN);
+	public void putUserClass(Ident userClass) {
+		myBTVMap.putValueAtName(WebUserActionNames.USER_CLASS, userClass.getAbsUriString());
 	}
 
 	public void putOutputText(String controlText) {

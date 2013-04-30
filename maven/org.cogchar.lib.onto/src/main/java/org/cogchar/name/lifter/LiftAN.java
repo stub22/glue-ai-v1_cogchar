@@ -36,6 +36,7 @@ public class LiftAN extends BoxAssemblyNames {
 	public static final String NS_uai = NamespaceDir.NS_LifterUserAccessInstance;
 	public static final String NS_LifterConfig = NamespaceDir.NS_LifterConfig;
 	public static final String NS_LifterInstance = NamespaceDir.NS_LifterInstance;
+	public static final String NS_LifterUserAction = NamespaceDir.NS_LifterUserAction;
 	
 	
 	// These are not used in RDF parsing, but help LiftAmbassador know how to interpret prefixes found in RDF defined actions - 

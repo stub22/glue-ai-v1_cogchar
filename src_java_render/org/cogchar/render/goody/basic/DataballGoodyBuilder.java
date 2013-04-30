@@ -46,7 +46,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.*;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.bind.lift.LiftAmbassador;
+import org.cogchar.api.web.WebAppInterface;
+import org.cogchar.api.web.WebAppInterfaceTracker;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.optic.MatFactory;
@@ -100,9 +101,8 @@ public class DataballGoodyBuilder extends BasicDebugger {
 	private float myDamping = LOW_DAMPING_COEFFICIENT;
 	private Material myStandardMaterial;
 	private Model myLastModel; // May be only temporary; holds last model loaded so we can run SPARQL queries on it
-	// Probably it makes sense to retain an instance variable for the LiftAmbassador since it is used in several methods.
-	// However, it's probably even better to add an interface for BallBuilder->Lifter interactions
-	private LiftAmbassador myLiftAmbassador; 
+	// Probably it makes sense to retain an instance variable for the WebAppInterface (LiftAmbassador) since it is used in several methods.
+	private WebAppInterface myWebInterface; 
 	//private CinematicModelBuilder myCinematicModelBuilder;
 
 	// Empty private default constructor to prevent outside instantiation
@@ -137,11 +137,11 @@ public class DataballGoodyBuilder extends BasicDebugger {
 		//bulletState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // Does the bulletState need to be attached to the state manager, or is it already?
 	}
 	
-	private LiftAmbassador getLiftAmbassador() {
-		if (myLiftAmbassador == null) {
-			myLiftAmbassador = LiftAmbassador.getLiftAmbassador();
+	private WebAppInterface getWebInterface() {
+		if (myWebInterface == null) {
+			myWebInterface = WebAppInterfaceTracker.getTracker().getWebInterface();;
 		}
-		return myLiftAmbassador;
+		return myWebInterface;
 	}
 
 	class Ball {
@@ -567,14 +567,14 @@ public class DataballGoodyBuilder extends BasicDebugger {
 	public boolean buildModelFromTurtleUsingLiftSettings(String configPath) {
 		boolean success = false;
 		myResourceCl = null;
-		String classloaderKey = getLiftAmbassador().getLiftVariable(DataballStrings.classloaderKey);
+		String classloaderKey = getWebInterface().getLiftVariable(DataballStrings.classloaderKey);
 		if (classloaderKey != null) {
 			if (myClassloaders.containsKey(classloaderKey)) {
 				myResourceCl = myClassloaders.get(classloaderKey);
 			}
 		}
 		boolean showAllObjects = false;
-		String liftShowAllObjectsString = getLiftAmbassador().getLiftVariable(DataballStrings.showAllObjects);
+		String liftShowAllObjectsString = getWebInterface().getLiftVariable(DataballStrings.showAllObjects);
 		if (liftShowAllObjectsString != null) {
 			showAllObjects = Boolean.valueOf(liftShowAllObjectsString);
 		}
@@ -665,13 +665,13 @@ public class DataballGoodyBuilder extends BasicDebugger {
 	
 	void showErrorInLift(String errorText) {
 		myLogger.error(errorText);
-		getLiftAmbassador().displayError(DataballStrings.liftErrorCode, errorText);
+		getWebInterface().displayError(DataballStrings.liftErrorCode, errorText);
 	}
 
 	public boolean performAction(String action, String text) {
 		boolean success = true;
 		// Clear error shown in Lift, if any
-		getLiftAmbassador().displayError(DataballStrings.liftErrorCode, "");
+		getWebInterface().displayError(DataballStrings.liftErrorCode, "");
 		if (action.equals(DataballStrings.viewRdfGraph)) { // Oh, Java 6 and your non-String supporting case statements...
 			success = buildModelFromTurtleUsingLiftSettings(text);
 		} else if (action.equals(DataballStrings.onOff)) {

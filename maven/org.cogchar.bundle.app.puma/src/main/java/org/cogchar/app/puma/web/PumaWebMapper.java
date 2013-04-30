@@ -19,12 +19,11 @@ import com.hp.hpl.jena.query.Dataset;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.bind.lift.LiftAmbassador;
+import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
+import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.bind.lift.LifterLifecycle;
 import org.cogchar.render.app.trigger.SceneActions;
-
-
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
@@ -59,7 +58,7 @@ public class PumaWebMapper extends BasicDebugger {
 	
 	public void connectLiftSceneInterface(BundleContext bundleCtx) {
 		if (myLiftSceneComp == null) {
-			ServiceLifecycleProvider lifecycle = new SimpleLifecycle(SceneActions.getLauncher(), LiftAmbassador.LiftSceneInterface.class);
+			ServiceLifecycleProvider lifecycle = new SimpleLifecycle(SceneActions.getLauncher(), WebAppInterface.WebSceneInterface.class);
 			myLiftSceneComp = new OSGiComponent(bundleCtx, lifecycle);
 		}
 		myLiftSceneComp.start();

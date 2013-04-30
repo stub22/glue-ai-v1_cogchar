@@ -30,12 +30,14 @@ object HandlerConfigurator {
 	val sceneHandler = new SceneTriggerHandler
 	val commandHandler = new LifterCommandActionHandler
 	val lifterQueryHandler = new LifterQueryActionHandler
+	val repoOutputHandler = new RepoOutputHandler
 	// Set up the chain
 	liftConfigHandler setNextHandler cinematicHandler
 	cinematicHandler setNextHandler variableHandler
 	variableHandler setNextHandler sceneHandler
 	sceneHandler setNextHandler commandHandler
 	commandHandler setNextHandler lifterQueryHandler
+	lifterQueryHandler setNextHandler repoOutputHandler
 	// Return the first handler in chain
 	liftConfigHandler
   }

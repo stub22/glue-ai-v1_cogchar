@@ -45,7 +45,7 @@ public class NamespaceDir {
 	final public static String NS_LifterUser = NSP_LifterRoot + "user#";
 	final public static String NS_LifterUserAccessInstance = NSP_LifterRoot + "user/config/instance#";
 	final public static String NS_LifterUserAction = NSP_LifterRoot + "user/action#";
-	
+	final public static String NS_RequestLifterRepoOutput = NSP_LifterRoot + "repooutput#";
 	
 	// "Config" NSs
 	// Note that this constant ends in "config#", thus it sorta collides with the prefix "config/" use below.
@@ -57,6 +57,7 @@ public class NamespaceDir {
 	final public static String NS_LifterSessionVar = NSP_LifterConfigRoot + "sessionVariable#";
 	final public static String NS_LifterConfig = NSP_LifterConfigRoot + "configroot#";
 	final public static String NS_LifterInstance = NSP_LifterConfigRoot + "instance#";
+
 	// "Schema" NSs
 	final private static String NSP_SchemaRoot = NSP_Root + "schema/";
 	final public static String NS_SceneTrig = NSP_SchemaRoot + "scene/trigger#";
