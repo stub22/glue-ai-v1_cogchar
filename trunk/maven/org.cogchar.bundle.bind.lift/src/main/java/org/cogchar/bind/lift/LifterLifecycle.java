@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.lift;
 
+import org.cogchar.api.web.WebAppInterfaceTracker;
 import org.cogchar.name.lifter.LiftCN;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 					.dependency(queryEmitterId, RepoClient.class)
 					.dependency(globalConfigId, GlobalConfigEmitter.GlobalConfigService.class)
 					.dependency(theLiftAppInterfaceId, LiftAmbassador.LiftAppInterface.class).optional()
-					.dependency(theLiftSceneInterfaceId, LiftAmbassador.LiftSceneInterface.class).optional()
+					.dependency(theLiftSceneInterfaceId, LiftAmbassador.WebSceneInterface.class).optional()
 					.dependency(theLiftNetConfigInterfaceId, LiftAmbassador.LiftNetworkConfigInterface.class).optional();
 			return dlb;
 		}
@@ -75,10 +76,11 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		theLogger.info("Creating LiftAmbassador.inputInterface in LifterLifecycle");
 		LiftAmbassador myLiftAmbassador = LiftAmbassador.getLiftAmbassador();
 		myLiftAmbassador.setAppInterface((LiftAmbassador.LiftAppInterface) dependencies.get(theLiftAppInterfaceId));
-		myLiftAmbassador.setSceneLauncher((LiftAmbassador.LiftSceneInterface) dependencies.get(theLiftSceneInterfaceId));
+		myLiftAmbassador.setSceneLauncher((LiftAmbassador.WebSceneInterface) dependencies.get(theLiftSceneInterfaceId));
 		myLiftAmbassador.setNetConfigInterface((LiftAmbassador.LiftNetworkConfigInterface) dependencies.get(theLiftNetConfigInterfaceId));
 		connectWebContent(myLiftAmbassador, (RepoClient) dependencies.get(queryEmitterId),
 				(GlobalConfigEmitter.GlobalConfigService) dependencies.get(globalConfigId));
+		WebAppInterfaceTracker.getTracker().setWebInterface(myLiftAmbassador);
 		return new LiftAmbassador.inputInterface();
 	}
 
@@ -96,7 +98,7 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		} else if (theLiftAppInterfaceId.equals(serviceId)) {
 			myLiftAmbassador.setAppInterface((LiftAmbassador.LiftAppInterface) dependency);
 		} else if (theLiftSceneInterfaceId.equals(serviceId)) {
-			myLiftAmbassador.setSceneLauncher((LiftAmbassador.LiftSceneInterface) dependency);
+			myLiftAmbassador.setSceneLauncher((LiftAmbassador.WebSceneInterface) dependency);
 		} else if (theLiftNetConfigInterfaceId.equals(serviceId)) {
 			myLiftAmbassador.setNetConfigInterface((LiftAmbassador.LiftNetworkConfigInterface) dependency);
 		}

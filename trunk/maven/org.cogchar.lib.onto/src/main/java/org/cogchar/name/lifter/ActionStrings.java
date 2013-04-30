@@ -65,6 +65,10 @@ public class ActionStrings {
 	  final public static String p_cinematic = NamespaceDir.NS_CinePathDef;
 	  final public static String p_thinganim = NamespaceDir.NS_ThingAnim;
 	  final public static String p_lifterQuery = NamespaceDir.NS_LifterQuery;
+	  final public static String p_requestRepoOutput = NamespaceDir.NS_RequestLifterRepoOutput;
+	  // Not sure if this is exactly what we want, schema-wise. The repoSender identifies the control from which a user
+	  // action is received, currently in the form of text. So maybe calling this NS_LifterUserAction makes sense, maybe not...
+	  final public static String p_repoSender = NamespaceDir.NS_LifterUserAction; 
 	  // Right now animations use this prefix, but other things do too.
 	  // Really we should pick a unique one for animations (p_scenetrig derivative?) to avoid confusion
 	  final public static String p_anim = TempNamespaceDir.NS_TestAnimSrc;

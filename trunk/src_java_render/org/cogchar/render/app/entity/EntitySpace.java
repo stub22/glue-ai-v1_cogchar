@@ -24,10 +24,10 @@ import java.util.Map;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.ThingActionUpdater;
-import org.cogchar.bind.lift.ControlConfig;
-import org.cogchar.bind.lift.LiftAmbassador;
+import org.cogchar.api.web.WebAppInterfaceTracker;
 import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.name.web.WebActionNames;
 import org.cogchar.render.app.goody.GoodyAction;
@@ -148,58 +148,62 @@ public class EntitySpace {
 	}
 	
 	private void performWebActions(ThingActionSpec actionSpec) {
-		LiftAmbassador la = LiftAmbassador.getLiftAmbassador();
-		WebAction wa = new WebAction(actionSpec);
-		String webUser = wa.getUserName();
-		String webUserClass = wa.getUserClass();
-		if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) { // Big ugly if-else-if chain must go -- really need switch on Ident! (or Scala...)
-			// Assuming for now it's CREATE only
-			Ident controlAction = wa.getControlActionUri();
-			if (controlAction != null) {
-				la.activateControlAction(controlAction);
-			} else {
-				ControlConfig newCC = generateControlConfig(wa);
-				Integer slotNum = wa.getSlotID();
-				if (slotNum != null) {
-					if (webUser != null) {
-						// Activate for user
-						la.activateControlFromConfigForUser(webUser, slotNum, newCC);
-					} else if (webUserClass != null) {
-						la.activateControlFromConfigForUserClass(webUserClass, slotNum, newCC);
+		WebAppInterface la = WebAppInterfaceTracker.getTracker().getWebInterface();
+		if (la == null) {
+			theLogger.error("Attempting to perform a web action, but the WebAppInterface is not available!");
+		} else {
+			WebAction wa = new WebAction(actionSpec);
+			String webUser = wa.getUserName();
+			String webUserClass = wa.getUserClass();
+			if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) { // Big ugly if-else-if chain must go -- really need switch on Ident! (or Scala...)
+				// Assuming for now it's CREATE only
+				Ident controlAction = wa.getControlActionUri();
+				if (controlAction != null) {
+					la.activateControlAction(controlAction);
+				} else {
+					WebAppInterface.Control newCC = generateControlConfig(wa, la);
+					Integer slotNum = wa.getSlotID();
+					if (slotNum != null) {
+						if (webUser != null) {
+							// Activate for user
+							la.activateControlFromConfigForUser(webUser, slotNum, newCC);
+						} else if (webUserClass != null) {
+							la.activateControlFromConfigForUserClass(webUserClass, slotNum, newCC);
+						} else {
+							la.activateControlFromConfig(slotNum, newCC);
+						}
 					} else {
-						la.activateControlFromConfig(slotNum, newCC);
+						theLogger.warn("Could not display control by action spec -- desired control slot is null");
+					}
+				}
+			} else if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONFIG)) {
+				// Assuming for now it's CREATE only
+				Ident configIdent = wa.getConfigIdent();
+				if (configIdent != null) {
+					if (webUser == null) {
+						la.activateControlsFromUri(configIdent);
+					} else {
+						la.activateControlsFromUriForUser(webUser, configIdent);
 					}
 				} else {
-					theLogger.warn("Could not display control by action spec -- desired control slot is null");
+					theLogger.warn("Could not set web config by action spec -- desired config URI is null");
 				}
-			}
-		} else if (actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONFIG)) {
-			// Assuming for now it's CREATE only
-			Ident configIdent = wa.getConfigIdent();
-			if (configIdent != null) {
-				if (webUser == null) {
-					la.activateControlsFromUri(configIdent);
-				} else {
-					la.activateControlsFromUriForUser(webUser, configIdent);
-				}
-			} else {
-				theLogger.warn("Could not set web config by action spec -- desired config URI is null");
 			}
 		}
 	}
 	
 	// A method to generate a new ControlConfig for display from a WebAction
-	private ControlConfig generateControlConfig(WebAction wa) {
-		ControlConfig cc = new ControlConfig();
+	private WebAppInterface.Control generateControlConfig(WebAction wa, WebAppInterface webInterface) {
+		WebAppInterface.Control cc = webInterface.getNewControl();
 		if (wa.getControlType() == null) {
-			cc.controlType = "NULLTYPE";
+			cc.setType("NULLTYPE");
 		} else {
-			cc.controlType = wa.getControlType().getLocalName().toUpperCase(); // Ensures lc:type property is case insensitive to local name
+			cc.setType(wa.getControlType().getLocalName().toUpperCase()); // Ensures lc:type property is case insensitive to local name
 		}
-		cc.action = wa.getControlAction();
-		cc.text = wa.getControlText();
-		cc.style = wa.getControlStyle();
-		cc.resource = wa.getControlResource();
+		cc.setAction(wa.getControlAction());
+		cc.setText(wa.getControlText());
+		cc.setStyle(wa.getControlStyle());
+		cc.setResource(wa.getControlResource());
 		return cc;
 	}
 	
