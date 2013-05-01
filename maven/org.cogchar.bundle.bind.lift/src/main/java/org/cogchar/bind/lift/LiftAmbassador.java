@@ -255,6 +255,16 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		}
 	}
 	
+	// Activates controls in a single session based on user class
+	public void activateControlsFromUriForUserClass(String desiredUserClassLN, Ident configIdent) {
+		Ident desiredUserClassURI  = getUserClassIdentFromLN(desiredUserClassLN);
+		for (Ident activeUser : userSessionMap.keySet()) {
+			if (myUserMap.get(activeUser).userClass.equals(desiredUserClassURI)) {
+				activateControlsFromUri(userSessionMap.get(activeUser), configIdent);
+			}
+		}
+	}
+	
 	// Activates a single control in a single session
 	public void activateControlFromUri(String sessionId, int slotNum, Ident configIdent) {
 		// May be OK not to have this synchronized if appdapter repo code is threadsafe
