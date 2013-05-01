@@ -180,10 +180,12 @@ public class EntitySpace {
 				// Assuming for now it's CREATE only
 				Ident configIdent = wa.getConfigIdent();
 				if (configIdent != null) {
-					if (webUser == null) {
-						la.activateControlsFromUri(configIdent);
-					} else {
+					if (webUser != null) {
 						la.activateControlsFromUriForUser(webUser, configIdent);
+					} else if (webUserClass != null) {
+						la.activateControlsFromUriForUserClass(webUserClass, configIdent);
+					} else {
+						la.activateControlsFromUri(configIdent);
 					}
 				} else {
 					theLogger.warn("Could not set web config by action spec -- desired config URI is null");
