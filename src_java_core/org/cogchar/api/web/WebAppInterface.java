@@ -31,6 +31,7 @@ public interface WebAppInterface {
 	public void activateControlAction(Ident controlActionUri);
 	public void activateControlsFromUri(Ident configUri);
 	public void activateControlsFromUriForUser(String user, Ident configUri);
+	public void activateControlsFromUriForUserClass(String webUserClass, Ident configIdent);
 	public void activateControlFromConfig(int slotNum, Control controlConfig);
 	public void activateControlFromConfigForUser(String user, int slotNum, Control controlConfig);
 	public void activateControlFromConfigForUserClass(String userClass, int slotNum, Control controlConfig);
