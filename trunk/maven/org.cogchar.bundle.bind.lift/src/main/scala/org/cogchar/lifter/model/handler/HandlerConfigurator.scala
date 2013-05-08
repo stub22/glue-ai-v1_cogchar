@@ -31,6 +31,7 @@ object HandlerConfigurator {
 	val commandHandler = new LifterCommandActionHandler
 	val lifterQueryHandler = new LifterQueryActionHandler
 	val repoOutputHandler = new RepoOutputHandler
+	val robotAnimHandler = new RobotAnimationHandler
 	// Set up the chain
 	liftConfigHandler setNextHandler cinematicHandler
 	cinematicHandler setNextHandler variableHandler
@@ -38,6 +39,7 @@ object HandlerConfigurator {
 	sceneHandler setNextHandler commandHandler
 	commandHandler setNextHandler lifterQueryHandler
 	lifterQueryHandler setNextHandler repoOutputHandler
+	repoOutputHandler setNextHandler robotAnimHandler
 	// Return the first handler in chain
 	liftConfigHandler
   }

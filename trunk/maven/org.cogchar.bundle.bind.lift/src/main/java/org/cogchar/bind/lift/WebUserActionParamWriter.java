@@ -35,11 +35,11 @@ public class WebUserActionParamWriter extends ActionParamWriter {
 	}
 	
 	public void putSender(Ident senderId) {
-		myBTVMap.putValueAtName(WebUserActionNames.SENDER, senderId.getAbsUriString());
+		putIfNonNull(senderId, WebUserActionNames.SENDER);
 	}
 	
-	public void putUserID(Ident typeIdent) {
-		myBTVMap.putValueAtName(WebUserActionNames.USER, typeIdent.getAbsUriString());
+	public void putUserID(Ident userIdent) {
+		putIfNonNull(userIdent, WebUserActionNames.USER);
 	}
 	
 	public void putSessionID(String sessionId) {
@@ -47,10 +47,21 @@ public class WebUserActionParamWriter extends ActionParamWriter {
 	}
 	
 	public void putUserClass(Ident userClass) {
-		myBTVMap.putValueAtName(WebUserActionNames.USER_CLASS, userClass.getAbsUriString());
+		putIfNonNull(userClass, WebUserActionNames.USER_CLASS);
 	}
 
 	public void putOutputText(String controlText) {
 		myBTVMap.putValueAtName(WebUserActionNames.USER_TEXT, controlText);
+	}
+	
+	public void putActionUri(Ident actionUri) {
+		putIfNonNull(actionUri, WebUserActionNames.ACTION);
+	}
+	
+	
+	private void putIfNonNull(Ident identToPut, Ident propIdent) {
+		if (identToPut != null) {
+			myBTVMap.putValueAtName(propIdent, identToPut.getAbsUriString());
+		}
 	}
 }
