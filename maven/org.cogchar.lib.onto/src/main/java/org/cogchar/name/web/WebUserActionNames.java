@@ -42,5 +42,6 @@ public class WebUserActionNames {
 	public	static Ident	SESSION = makeID("session");
 	public	static Ident	USER_CLASS = makeID("userclass");
 	public	static Ident	USER_TEXT = makeID("inputtext");
+	public	static Ident	ACTION = makeID("action");
 
 }

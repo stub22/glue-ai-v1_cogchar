@@ -22,10 +22,11 @@ import org.cogchar.name.lifter.{ActionStrings}
 import org.cogchar.lifter.model.{LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
-// A handler for action URIs consisting of a LiftConfig
+// A handler for action URIs consisting of a "scene trigger"
+// Is this really just an old paradigm for the functionality in RobotAnimationHandler?
 class SceneTriggerHandler extends AbstractLifterActionHandler {
 
-  protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_scenetrig, ActionStrings.p_anim)
+  protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_scenetrig)
   
   protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
 	val success = PageCommander.getLiftAmbassador.triggerScene(control.action.getLocalName)
