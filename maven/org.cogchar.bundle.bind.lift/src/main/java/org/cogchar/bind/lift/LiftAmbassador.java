@@ -349,22 +349,41 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		myUserMap = uac.users;
 	}
 
-	// Synchronize this?
+	// Two "prototype" methods for sending repo updates follow. These will probably eventually evolve into something much more
+	// general and elegant.
+	// Synchronize these next two methods? Could be triggered concurrently by repo actions in multiple simultaneous Lift sessions.
+	// Probably not a problem *if* repo update code is thread safe
 	public void sendUserTextViaRepo(Ident senderIdent, String userText, String sessionId) {
+		WebUserActionParamWriter paramWriter = getInitializedParamWriter(sessionId);
+		paramWriter.putOutputText(userText);
+		// The below "Sender" is intended to identify the control action which initialized the repo output.
+		// Currently as defined in RepoOutputHandler: 
+		// senderIdent = new FreeIdent(ActionStrings.p_repoSender + control.action.getLocalName());
+		paramWriter.putSender(senderIdent); 
+		myRepoMessenger.sendMessage("userOutputActionRecord", "userOutput");
+	}
+	
+	public void sendActionViaRepo(Ident actionIdent, String sessionId) {
+		WebUserActionParamWriter paramWriter = getInitializedParamWriter(sessionId);
+		paramWriter.putActionUri(actionIdent);
+		myRepoMessenger.sendMessage("lifterActionRecord", "lifterAction");
+	}
+	
+	private WebUserActionParamWriter getInitializedParamWriter(String sessionId) {
 		WebUserActionParamWriter paramWriter = myRepoMessenger.resetAndGetParamWriter();
 		paramWriter.putSessionID(sessionId);
-		paramWriter.putOutputText(userText);
-		paramWriter.putSender(senderIdent);
 		Ident userId = getKeyByValue(userSessionMap, sessionId);
-		paramWriter.putUserID(userId);
-		paramWriter.putUserClass(myUserMap.get(userId).userClass);
-		myRepoMessenger.sendMessage();
+		if (userId != null) {
+			paramWriter.putUserID(userId);
+			paramWriter.putUserClass(myUserMap.get(userId).userClass);
+		}
+		return paramWriter;
 	}
 	
 	// A way to get the first matched key from a value in a map, from
 	// http://stackoverflow.com/questions/1383797/java-hashmap-how-to-get-key-from-value
-	// Currently used by sendUserTextViaRepo to look up a UserID from a session ID string; there may be a better way
-	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+	// Currently used by getInitializedParamWriter to look up a UserID from a session ID string; there may be a better way
+	private <T, E> T getKeyByValue(Map<T, E> map, E value) {
 		for (Entry<T, E> entry : map.entrySet()) {
 			if (value.equals(entry.getValue())) {
 				return entry.getKey();

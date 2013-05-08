@@ -73,11 +73,11 @@ public class LiftRepoMessenger extends BasicDebugger {
 		return myPendingActionParamWriter;
 	}
 	
-	protected void sendMessage() { 
+	protected void sendMessage(String actionRecordBase, String entityBase) { 
 		//getLogger().info("Posting Lifter repo update message"); // TEST ONLY
 		// The following IDs are currently being pulled from hand-waving; we'll want to formalize this stuff and at least move these ID strings elsewhere:
-		Ident actRecID = mintInstanceID("userOutputActionRecord");
-		Ident entityID = mintInstanceID("userOutput");
+		Ident actRecID = mintInstanceID(actionRecordBase);
+		Ident entityID = mintInstanceID(entityBase);
 		Ident srcAgentID = mintInstanceID("liftMessageAgent");
 		Ident verbID =  GoodyNames.ACTION_CREATE; // Probably shouldn't come from GoodyNames. Right now we are only CREATEing an output message
 		TypedValueMap valueMap = myPendingActionParamWriter.getValueMap();
