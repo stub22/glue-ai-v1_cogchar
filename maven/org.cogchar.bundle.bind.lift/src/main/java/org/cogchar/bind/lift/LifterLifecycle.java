@@ -15,8 +15,6 @@
  */
 package org.cogchar.bind.lift;
 
-import org.cogchar.api.web.WebAppInterfaceTracker;
-import org.cogchar.name.lifter.LiftCN;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -25,7 +23,9 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
+import org.cogchar.api.web.WebAppInterfaceTracker;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
+import org.cogchar.name.lifter.LiftCN;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
 import org.slf4j.Logger;

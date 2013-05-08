@@ -17,19 +17,14 @@
 package org.cogchar.lifter.model
 import org.cogchar.name.lifter.{ActionStrings}
 
-	import net.liftweb.common._
-	import net.liftweb.http._
-	import net.liftweb.util._
-	import Helpers._
-	import scala.xml._
-	import _root_.net.liftweb.util.Log
-	import net.liftweb.actor._
+	import net.liftweb.http.ListenerManager
+	import scala.xml.NodeSeq
+	import net.liftweb.actor.LiftActor
 	import org.appdapter.core.name.{FreeIdent, Ident}
 	import org.cogchar.lifter.model.handler.{HandlerConfigurator, LifterVariableHandler}
-	import org.cogchar.lifter.lib._
-	import org.cogchar.lifter.snippet._
-	import org.cogchar.lifter.view._
-	import org.cogchar.bind.lift._
+	import org.cogchar.lifter.view.TextBox
+	import org.cogchar.bind.lift.{ControlConfig, LiftAmbassador, LiftConfig}
+	import org.slf4j.LoggerFactory
 	import scala.collection.JavaConverters._
 	// import org.cogchar.platform.trigger.CogcharActionBinding
 	
@@ -45,8 +40,10 @@ import org.cogchar.name.lifter.{ActionStrings}
 	// actors with an instance of that class created for each session.
 	// That would likely be a more natural approach in Lift and is the one I would have selected when starting this
 	// project, if I knew what I know now!
-	object PageCommander extends LiftActor with ListenerManager with Logger {
+	object PageCommander extends LiftActor with ListenerManager{
 	  
+	  private val myLogger = LoggerFactory.getLogger(PageCommander.getClass);
+  
 	  private var theLiftAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods
 	  
 	  private var updateInfo: String = ""
@@ -90,7 +87,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 		} catch {
 		  case _: Any => // Implies nothing in map for this controlId, do nothing and return empty nodeOut
 		}
-		//info("nodeOut for session " + sessionId + " and control " + controlId + " is " + nodeOut) // TEST ONLY
+		//myLogger.info("nodeOut for session " + sessionId + " and control " + controlId + " is " + nodeOut) // TEST ONLY
 		nodeOut
 	  }
 	  
@@ -104,14 +101,14 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  def getInitialConfigId = theLifterState.INITIAL_CONFIG_ID
 	  
 	  def initializeSession(sessionId:String) {
-		  info("Initializing Session %s".format(sessionId))
+		  myLogger.info("Initializing Session {}", sessionId)
 		  theLifterState.initializeSession(sessionId)
 	  }
 	  
 	  // This method clears the state info for a session from the state maps.
 	  // Performed on session shutdown via LiftSession.onShutdownSession (in Boot.scala)
 	  def removeSession(sessionId:String) {
-		info("Removing state for session " + sessionId)
+		myLogger.info("Removing state for session {}", sessionId)
 		theLifterState.removeSession(sessionId)
 	  }
 	  
@@ -156,7 +153,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  }
 									
 	  def initFromCogcharRDF(sessionId:String, liftConfig:LiftConfig) {
-		info("Loading LiftConfig for session " + sessionId)
+		myLogger.info("Loading LiftConfig for session {}", sessionId)
 		if (sessionId.equals(theLifterState.INITIAL_CONFIG_ID)) {
 		  theLifterState.clearAndInitializeState
 		} else { // otherwise reset maps for this session
@@ -175,11 +172,11 @@ import org.cogchar.name.lifter.{ActionStrings}
 			  val finalSplitterIndex = controlDef.myURI_Fragment.lastIndexOf("_")
 			  slotNum = controlDef.myURI_Fragment.splitAt(finalSplitterIndex+1)._2.toInt
 			} catch {
-			  case _: Any =>  warn("Unable to get valid slotNum from loaded control; URI fragment was " + controlDef.myURI_Fragment) // The control will still be loaded into slot -1; could "break" here but it's messy and unnecessary
+			  case _: Any =>  myLogger.warn("Unable to get valid slotNum from loaded control; URI fragment was {}", controlDef.myURI_Fragment) // The control will still be loaded into slot -1; could "break" here but it's messy and unnecessary
 			}
 			if (slotNum > theLifterState.MAX_CONTROL_QUANTITY) {
-			  warn("Maximum number of controls exceeded (" + theLifterState.MAX_CONTROL_QUANTITY + "); some controls may not be cleared upon page change!")
-			  warn("MAX_CONTROL_QUANTITY in LifterState can be increased if this is necessary.")
+			  myLogger.warn("Maximum number of controls exceeded ({}); some controls may not be cleared upon page change!", theLifterState.MAX_CONTROL_QUANTITY)
+			  myLogger.warn("MAX_CONTROL_QUANTITY in LifterState can be increased if this is necessary.")
 			}
 			loadControlDefToState(sessionId, slotNum, controlDef)
 		  })
@@ -232,7 +229,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  }
   
 	  def handleAction(sessionId:String, formId:Int, input:Array[String]) {
-		//info("Handling action: " + getSessionState(sessionId).controlConfigBySlot(formId).action) // TEST ONLY
+		//myLogger.info("Handling action: {}", getSessionState(sessionId).controlConfigBySlot(formId).action) // TEST ONLY
 		firstActionHandler.processHandler(theLifterState, sessionId, formId, 
 											getSessionState(sessionId).controlConfigBySlot(formId), input)
 	  }
@@ -257,12 +254,12 @@ import org.cogchar.name.lifter.{ActionStrings}
 		  val time = new Date().getTime()
 		  val bounceMap = theLifterState.lastTimeAcutatedBySlot(sessionId)
 		  var ignore = false
-		  //info("Checking for bounce with session " + sessionId + " and slot " + id + " time=" + time) // TEST ONLY
+		  //myLogger.info("Checking for bounce with session " + sessionId + " and slot " + id + " time=" + time) // TEST ONLY
 		  if (bounceMap contains id) {
-			//info("Last time=" + bounceMap(id) + " diff=" + (time - bounceMap(id))) // TEST ONLY
+			//myLogger.info("Last time=" + bounceMap(id) + " diff=" + (time - bounceMap(id))) // TEST ONLY
 			if ((time - bounceMap(id)) < IGNORE_BOUNCE_TIME) {
 			  ignore = true;
-			  warn("Debouncing control " + id + " in session " + sessionId)
+			  myLogger.warn("Debouncing control {} in session {}", id, sessionId)
 			}
 		  }
 		  bounceMap(id) = time
@@ -297,8 +294,8 @@ import org.cogchar.name.lifter.{ActionStrings}
 			  // Using triggerAction to check for bounce, which I believe should work properly here...
 			  triggerAction(a.sessionId, a.slotNum)
 			} else {
-			  warn("Multi action control is attempting to execute an action, but no multiAction data found in Lifter state. Session = " 
-				   + a.sessionId + "; slot = " + a.slotNum)
+			  myLogger.warn("Multi action control is attempting to execute an action, but no multiAction data found in Lifter state. " +
+							"Session = {}; slot = {}", a.sessionId, a.slotNum)
 			}
 		}
 		case _: Any =>
@@ -321,7 +318,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  
 	  // Likely should go in different class...
 	  def requestContinuousSpeech(sessionId:String, slotNum: Int, desired: Boolean) {
-		info("In requestContinuousSpeech, setting to " + desired + " for session " + sessionId)
+		myLogger.info("In requestContinuousSpeech, setting to {} for session {}", desired, sessionId)
 		if (desired) {
 		  updateListeners(ContinuousSpeechInStartRequest(sessionId, slotNum))
 		} else {
@@ -383,7 +380,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 		}
 		// Show error globally
 		def showError(errorSourceCode:String, errorText:String) {
-		  info("In showError; code = " + errorSourceCode + "; text = " + errorText);
+		  myLogger.info("In showError; code = {}; text = {}", errorSourceCode, errorText);
 		  val activeSessionIterator = theLifterState.activeSessions.iterator
 		  while (activeSessionIterator.hasNext) {
 			val sessionId = activeSessionIterator.next
@@ -392,7 +389,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 		}
 		// Show error in session
 		def showError(errorSourceCode:String, errorText:String, sessionId:String) {
-		  info("In showError; code = " + errorSourceCode + "; text = " + errorText + "; session = " + sessionId);
+		  myLogger.info("In showError; code = {}; text = {}; session = {}", Array[AnyRef](errorSourceCode, errorText, sessionId));
 		  if (theLifterState.stateBySession contains sessionId) {
 			  val sessionErrorMap = getSessionState(sessionId).errorDisplaySlotsByType
 			  if (sessionErrorMap contains errorSourceCode) {
