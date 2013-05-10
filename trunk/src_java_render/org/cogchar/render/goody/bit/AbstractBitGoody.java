@@ -17,8 +17,8 @@
 package org.cogchar.render.goody.bit;
 
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.goody.basic.BasicGoodyImpl;
-import org.cogchar.render.app.goody.GoodyAction;
+import org.cogchar.render.goody.basic.BasicGoodyEntity;
+import org.cogchar.render.app.entity.GoodyAction;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
@@ -29,7 +29,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 
 
-public abstract class AbstractBitGoody extends BasicGoodyImpl {
+public abstract class AbstractBitGoody extends BasicGoodyEntity {
 	
 	protected boolean state = false;
 	

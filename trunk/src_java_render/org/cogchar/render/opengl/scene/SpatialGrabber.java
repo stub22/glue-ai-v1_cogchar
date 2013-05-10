@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.cinema.SpatialActionConfig;
-import org.cogchar.render.goody.basic.BasicGoody;
-import org.cogchar.render.goody.basic.BasicGoodyImpl;
-import org.cogchar.render.app.goody.GoodyFactory;
+import org.cogchar.render.app.entity.VWorldEntity;
+import org.cogchar.render.goody.basic.BasicGoodyEntity;
+import org.cogchar.render.app.entity.GoodyFactory;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
@@ -102,9 +102,9 @@ public class SpatialGrabber extends BasicDebugger {
 	Spatial getSpatialForAttachedGoody(SpatialActionConfig track) {
 		Spatial attachedSpatial = null;
 		try {
-			BasicGoody desiredGoody = GoodyFactory.getTheFactory().getTheGoodySpace().getGoody(track.attachedItem);
-			if (desiredGoody instanceof BasicGoodyImpl) {
-				BasicGoodyImpl goody3d = (BasicGoodyImpl) desiredGoody;
+			VWorldEntity desiredGoody = GoodyFactory.getTheFactory().getActionConsumer().getGoody(track.attachedItem);
+			if (desiredGoody instanceof BasicGoodyEntity) {
+				BasicGoodyEntity goody3d = (BasicGoodyEntity) desiredGoody;
 				attachedSpatial = goody3d.getCurrentAttachedGeometry();
 			} else {
 				getLogger().warn("Attempting to attach goody of improper type to cinematic: {}. Aborting.",

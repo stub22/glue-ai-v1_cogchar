@@ -16,10 +16,10 @@
 
 package org.cogchar.render.goody.bit;
 
-import org.cogchar.render.goody.basic.BasicGoodyImpl;
-import org.cogchar.render.app.goody.GoodyAction;
-import org.cogchar.render.app.entity.EntitySpace;
-import org.cogchar.render.app.goody.GoodyFactory;
+import org.cogchar.render.goody.basic.BasicGoodyEntity;
+import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
+import org.cogchar.render.app.entity.GoodyFactory;
 import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -43,7 +43,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 
 
-public class TicTacGrid extends BasicGoodyImpl {
+public class TicTacGrid extends BasicGoodyEntity {
 	
 	private static final ColorRGBA DEFAULT_GRID_COLOR = ColorRGBA.Blue;
 	private static final float SIZE_MULTIPLIER = 9f;
@@ -95,7 +95,7 @@ public class TicTacGrid extends BasicGoodyImpl {
 	
 	public void removeMark(int xPos, int yPos) {
 		Ident markIdent = createMarkIdent(xPos, yPos);
-		BasicGoodyImpl markToRemove = markMap.get(markIdent);
+		BasicGoodyEntity markToRemove = markMap.get(markIdent);
 		if (markToRemove != null) {
 			getTheGoodySpace().removeGoody(markToRemove);
 			markMap.remove(markIdent);
@@ -105,7 +105,7 @@ public class TicTacGrid extends BasicGoodyImpl {
 	}
 	
 	public void clearMarks() {
-		for (BasicGoodyImpl mark : markMap.values()) {
+		for (BasicGoodyEntity mark : markMap.values()) {
 			getTheGoodySpace().removeGoody(mark);
 		}
 		markMap.clear();
@@ -139,8 +139,8 @@ public class TicTacGrid extends BasicGoodyImpl {
 		return getWorldPositionForMark(gridPosition[0], gridPosition[1]);
 	}
 	
-	private EntitySpace getTheGoodySpace() {
-		return GoodyFactory.getTheFactory().getTheGoodySpace();
+	private VWorldEntityActionConsumer getTheGoodySpace() {
+		return GoodyFactory.getTheFactory().getActionConsumer();
 	}
 	
 	// On detach, we also want to remove all marks

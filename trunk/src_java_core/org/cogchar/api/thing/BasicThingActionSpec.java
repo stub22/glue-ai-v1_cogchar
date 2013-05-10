@@ -29,10 +29,13 @@ public class BasicThingActionSpec implements ThingActionSpec {
 	private		Ident					myActionRecordID;
 	// The "subject" of the update, and the subject of the prop-Vals
 	private		Ident					myTargetThingID;
-	
+	// A type classifier for the target thing.  May be omitted, unless we need to create the targetThing.
 	private		Ident					myTargetThingTypeID;
 	
 	// Verb is applied to the target, and can be simple C.(R.)U.D.  Or...can be more subtle.
+	// Combined with targetThingType (and potentially other fields), determines the full (implied)
+	// "type" of this action.  Working with that imlied type through RDF-rules + scala-cases, 
+	// operating on the thing itself using the param data below, is our bread and butter.
 	private		Ident					myActionVerbID;	
 	
 	private		Ident					mySourceAgentID;

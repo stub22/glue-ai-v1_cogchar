@@ -20,6 +20,8 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.thing.ThingActionConsumer;
+import org.cogchar.api.thing.ThingActionRouter;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
@@ -31,7 +33,7 @@ import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
-import org.cogchar.render.app.goody.GoodyFactory;
+import org.cogchar.render.app.entity.GoodyFactory;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.cogchar.render.sys.input.VW_HelpScreenMgr;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
@@ -72,7 +74,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 	// back to HRC if there are philosophical reasons for doing so. (We'd also have to pass two graph flavors to it for this.)
 	// Added: since jMonkey key bindings are part of "virtual world" config like Lights/Camera/Cinematics, they are also 
 	// set here
-	public void initVirtualWorlds(CommandSpace cspace, PumaConfigManager pcm) { 
+	public void initVirtualWorlds(CommandSpace cspace, PumaConfigManager pcm, ThingActionRouter router) { 
 // , PumaWebMapper webMapper, 	BundleContext bundleCtx) {
 		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
@@ -90,7 +92,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 			// Multiple worldConfigIdents? Possible. It's possible duplicate cinematic definitions might cause problems
 			// but we'll leave that for later, so sure, go ahead and load on multiple configs if they are requested.
 			for (Ident configIdent : worldConfigIdents) {
-				initCinematicStuff(gce, configIdent, rc, gFactory);
+				initCinematicStuff(gce, configIdent, rc, gFactory, router);
 				// Like with everything else dependent on global config's graph settings (except for Lift, which uses a managed service
 				// version of GlobalConfigEmitter) it seems logical to set the key bindings here.
 				// Multiple worldConfigIdents? We decided above this is possible (if messy). If key bindings are duplicated
@@ -115,7 +117,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 	}
 	
 	private void initCinematicStuff(GlobalConfigEmitter gce, Ident worldConfigIdent, RepoClient repoCli, 
-			GoodyFactory gFactory) {
+			GoodyFactory gFactory, ThingActionRouter router) {
 		HumanoidRenderWorldMapper renderMapper = new HumanoidRenderWorldMapper();
 		Ident graphIdent = null;
 		try {
@@ -128,15 +130,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		} catch (Exception e) {
 			getLogger().warn("Error attempting to initialize lights and cameras for {}: ", worldConfigIdent.getLocalName(), e);
 		}
-		graphIdent = null;
-		// Goodies should be initialized before paths/animations so that they can reference Goodies!
-		try {
-			graphIdent = gce.ergMap().get(worldConfigIdent).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
-			gFactory.getTheGoodySpace().readAndApplyGoodyActions(repoCli, graphIdent);
-		} catch (Exception e) {
-			getLogger().error("Could not initialize Thing actions with a config of {}",
-					worldConfigIdent.getLocalName(), e);
-		}
+		setupActionConsumer(router, gce, worldConfigIdent, repoCli, gFactory);
 		graphIdent = null;
 		try {
 			graphIdent = gce.ergMap().get(worldConfigIdent).get(EntityRoleCN.WAYPOINTS_BINDINGS_ROLE);
@@ -165,7 +159,19 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		}
 	}
 	
-
+	public void setupActionConsumer(ThingActionRouter router, GlobalConfigEmitter gce, Ident worldConfigID, RepoClient repoCli, 
+			GoodyFactory gFactory){
+		// Goodies should be initialized before paths/animations so that they can reference Goodies!
+		try {
+			Ident actionGraphID = gce.ergMap().get(worldConfigID).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
+			ThingActionConsumer consumer = 	gFactory.getActionConsumer();
+			consumer.consumeAllActions(repoCli, actionGraphID);
+			router.appendConsumer(actionGraphID, consumer);
+		} catch (Exception e) {
+			getLogger().error("Could not initialize Thing actions with a config of {}",
+					worldConfigID.getLocalName(), e);
+		}		
+	}
 	/**
 	 * Second (and most crucial) stage of OpenGL init. This method blocks until the canvas initialization is complete,
 	 * which requires that the simpleInitApp() methods have all completed.
@@ -207,20 +213,6 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		VW_HelpScreenMgr hsm = VW_InputBindingFuncs.getHelpScreenMgr();
 		RenderRegistryClient rrc = myHRC.getRenderRegistryClient();
 		hsm.toggleHelpTextDisplay(rrc);
-	}
-	
-	public void updateGoodySpace(RepoClient rc, GlobalConfigEmitter gce) {
-		Ident worldConfigIdent = new FreeIdent("if/exception/while/reading/this/ident/report#null");
-		try {
-			// We shouldn't have more than one, so let's just assume there's one. This is a slightly different assumption
-			// to what happens in PumaVirtualWorldMapper.
-			worldConfigIdent = gce.entityMap().get(EntityRoleCN.VIRTUAL_WORLD_ENTITY_TYPE).get(0);
-			Ident graphIdent = gce.ergMap().get(worldConfigIdent).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
-			GoodyFactory.getTheFactory().getTheGoodySpace().readAndApplyGoodyActions(rc, graphIdent);
-		} catch (Exception e) {
-			getLogger().error("Could not recheck Thing actions with a config of {}",
-					worldConfigIdent.getLocalName(), e);
-		}			
 	}
 
 }

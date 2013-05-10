@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.goody.basic;
+package org.cogchar.render.opengl.optic;
 
+import org.cogchar.render.app.entity.VWorldEntity;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -29,7 +30,9 @@ import org.cogchar.api.cinema.PathInstanceConfig;
 import org.cogchar.api.cinema.SpatialActionConfig;
 import org.cogchar.api.cinema.WaypointConfig;
 import org.cogchar.name.dir.NamespaceDir;
-import org.cogchar.render.app.goody.GoodyAction;
+import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.opengl.scene.PathMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
@@ -41,11 +44,11 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 
 
-public class CameraGoodyWrapper extends BasicGoody {
+public class VWorldCameraEntity extends VWorldEntity {
 	
 	private Camera myCamera;
 	
-	public CameraGoodyWrapper(RenderRegistryClient aRenderRegCli, Ident cameraUri, Camera theCamera) {
+	public VWorldCameraEntity(RenderRegistryClient aRenderRegCli, Ident cameraUri, Camera theCamera) {
 		myRenderRegCli = aRenderRegCli;
 		myUri = cameraUri;
 		myCamera = theCamera;
