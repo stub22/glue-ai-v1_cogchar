@@ -32,7 +32,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 
 
-public class VirtualFloor extends BasicGoodyImpl {
+public class VirtualFloor extends BasicGoodyEntity {
 	
 	private final ColorRGBA DEFAULT_COLOR = ColorRGBA.LightGray;
 

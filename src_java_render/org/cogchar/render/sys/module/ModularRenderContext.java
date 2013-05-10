@@ -17,7 +17,7 @@ package org.cogchar.render.sys.module;
 
 import java.awt.Dimension;
 import org.appdapter.api.module.Module;
-import org.cogchar.render.app.entity.EntitySpace;
+import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.context.CogcharRenderContext;
@@ -33,7 +33,7 @@ public class ModularRenderContext extends CogcharRenderContext {
 	private		CogcharRenderModulator			myRenderModulator;
 	private		DataballGoodyBuilder			myBallBuilder;
 	private		boolean							thisBallBuilderSet;
-	private		EntitySpace						myEntitySpace;						
+	private		VWorldEntityActionConsumer		myEntitySpace;						
 	private		boolean							thisEntitySpaceSet;
 	
 	private Dimension myScreenDimension = new Dimension();
@@ -79,7 +79,7 @@ public class ModularRenderContext extends CogcharRenderContext {
 		}
 	}
 	
-	public void setTheEntitySpace(EntitySpace theSpace) {
+	public void setTheEntitySpace(VWorldEntityActionConsumer theSpace) {
 		myEntitySpace = theSpace;
 		if (theSpace != null) {
 			thisEntitySpaceSet = true; // In theory, this variable allows a fast boolean check in doUpdate instead of having to check for null each update

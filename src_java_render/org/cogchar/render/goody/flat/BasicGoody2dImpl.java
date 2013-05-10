@@ -16,8 +16,8 @@
 
 package org.cogchar.render.goody.flat;
 
-import org.cogchar.render.app.goody.GoodyAction;
-import org.cogchar.render.app.goody.GoodyFactory;
+import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyFactory;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -25,7 +25,7 @@ import com.jme3.scene.Node;
 import java.awt.Dimension;
 import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.goody.basic.BasicGoody;
+import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
@@ -35,7 +35,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 
 
-public class BasicGoody2dImpl extends BasicGoody { 
+public class BasicGoody2dImpl extends VWorldEntity { 
 	
 	protected FlatOverlayMgr myOverlayMgr;
 	protected Vector3f myPosition = new Vector3f(); // default: at lower left corner (0,0)
@@ -49,7 +49,7 @@ public class BasicGoody2dImpl extends BasicGoody {
 		myRenderRegCli = aRenderRegCli;
 		myUri = uri;
 		myOverlayMgr = myRenderRegCli.getSceneFlatFacade(null);
-		applyScreenDimension(GoodyFactory.getTheFactory().getTheGoodySpace().getScreenDimension());
+		applyScreenDimension(GoodyFactory.getTheFactory().getActionConsumer().getScreenDimension());
 	}
 	
 	// Currently just uses default font for everything -- ok for what we need now, but ultimately may want to 

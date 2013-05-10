@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 
 
-public class ThingActionUpdater {
+class ThingActionUpdater {
 	
 	// This is just a temporary definition of the sourceAgentID until it becomes clear where this best comes from
 	public static final Ident sourceAgentID = new FreeIdent(ThingCN.THING_NS + "RepoThingAction"); 
@@ -69,7 +69,7 @@ public class ThingActionUpdater {
 		for (ThingActionSpec tas : actionSpecList) {
 			deleteThingAction(rc, graphIdent, tas);
 		}
-		theLogger.info("Returning ThingAction list of length " + actionSpecList.size());
+		theLogger.info("Returning ThingAction list of length {} from graph {}",  actionSpecList.size(), graphIdent);
 		return actionSpecList;
 	}
 	
@@ -85,9 +85,9 @@ public class ThingActionUpdater {
 		Resource actionRes = rc.makeResourceForIdent(actionID);
 		Repo.WithDirectory repo = rc.getRepo();
 		Model gm = repo.getNamedModel(graphID);
-		theLogger.info("Prior to removal, graph size is " + gm.size());
+		theLogger.info("Prior to removal from {}, graph size is {}", graphID, gm.size());
 		gm.removeAll(actionRes, null, null);
-		theLogger.info("After removal, graph size is "  + gm.size());
+		theLogger.info("After remova from {}, graph size is {}", graphID, gm.size());
 	}
 	
 	private TypedValueMap buildActionParameterValueMap(RepoClient rc, Ident graphIdent, SolutionHelper sh, Ident actionIdent) {

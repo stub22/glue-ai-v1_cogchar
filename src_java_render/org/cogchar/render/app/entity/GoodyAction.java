@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.app.goody;
+package org.cogchar.render.app.entity;
 
 import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.ColorRGBA;

@@ -16,6 +16,7 @@
 
 package org.cogchar.render.goody.basic;
 
+import org.cogchar.render.app.entity.VWorldEntity;
 import com.jme3.animation.*;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.app.goody.GoodyAction;
+import org.cogchar.render.app.entity.GoodyAction;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
@@ -40,7 +41,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 // This will need some ongoing refactorings both to fix some oddness and bad form inherent in development of the concepts here,
 // and to make sure the BasicGoodyImpl has the sorts of properties we want it to have 
-public class BasicGoodyImpl extends BasicGoody {
+public class BasicGoodyEntity extends VWorldEntity {
 
 	protected Vector3f myPosition = new Vector3f(); // default: at origin
 	protected Quaternion myRotation = new Quaternion(); // default: no rotation
@@ -55,7 +56,7 @@ public class BasicGoodyImpl extends BasicGoody {
 
 	// May not want to allow this to be instantiated directly
 	// Might make sense to set more instance variables in the constructor as well, including perhaps rootNode?
-	protected BasicGoodyImpl(RenderRegistryClient aRenderRegCli, Ident uri) {
+	protected BasicGoodyEntity(RenderRegistryClient aRenderRegCli, Ident uri) {
 		myRenderRegCli = aRenderRegCli;
 		myUri = uri;
 	}

@@ -14,11 +14,10 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.app.entity;
+package org.cogchar.api.vworld;
 
-import org.appdapter.core.name.Ident;
+import org.cogchar.api.thing.BasicEntityAction;
 import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.api.thing.TypedValueMap;
 import org.cogchar.name.goody.GoodyNames;
 
 /**
@@ -27,7 +26,7 @@ import org.cogchar.name.goody.GoodyNames;
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
 
-public class EntityAction  {
+public class VWorldEntityAction extends BasicEntityAction  {
 	// We can optionallly play a game of equivalence between Java-enum-constant and URI, without an additional hashMap.
 	// The price is that we must initialize the value in the enum constants.
 	public enum Kind {
@@ -42,20 +41,8 @@ public class EntityAction  {
 
 	protected	Kind					myKind;
 	
-	
-	protected	ThingActionSpec			mySpec;
-
-	protected	Ident					myEntityID;
-	protected	Ident					myEntityTypeID;
-	
-	protected	TypedValueMap			paramTVMap;
-	
-	public EntityAction(ThingActionSpec actionSpec) {
-		mySpec = actionSpec;
-		myEntityID = actionSpec.getTargetThingID();
-		myEntityTypeID = actionSpec.getTargetThingTypeID();
-		
-		paramTVMap = mySpec.getParamTVM();
+	public VWorldEntityAction(ThingActionSpec actionSpec) {
+		super(actionSpec);
 		String kindIdentString = actionSpec.getVerbID().getAbsUriString();
 		for (Kind kindToCheck : Kind.values()) {
 			if (kindToCheck.myKindUriString.equals(kindIdentString)) {
@@ -64,30 +51,9 @@ public class EntityAction  {
 			}
 		}
 	}
-	
-	/**
-	 * If our ThingActionSpec supplied a targetThingID, we use that by default.
-	 * However, during creation or other "special" operation, our GoodyAction action may 
-	 * set its GoodyID differently.
-	 * @return 
-	 */
-	public Ident getEntityID() {
-		return myEntityID;
-	}
 	// Is this something we want to expose publically? Seems we may need to...
 	public Kind getKind() {
 		return myKind;
-	}
-	
-	public Ident getType() {
-		return myEntityTypeID;
-	}
-	
-	
-	// Could have more elaborate type handling here, but for now, since params in repo are natively strings
-	// we'll provide a way to load those raw strings by param name
-	public String getSpecialString(Ident paramIdent) {
-		return paramTVMap.getAsString(paramIdent);
 	}
 
 }

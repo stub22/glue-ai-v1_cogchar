@@ -22,7 +22,6 @@ import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.PumaRegistryClientImpl;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
@@ -30,28 +29,23 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 
 import org.cogchar.api.humanoid.HumanoidConfig;
+import org.cogchar.api.thing.ThingActionRouter;
 import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
-import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 
 import org.osgi.framework.BundleContext;
-import org.cogchar.name.skeleton.BoneCN;
 import org.cogchar.app.buddy.busker.TriggerItems;
-import org.cogchar.app.puma.behavior.PumaBehaviorAgent;
 import org.cogchar.app.puma.behavior.PumaBehaviorManager;
 import org.cogchar.app.puma.body.PumaDualBody;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
-import org.cogchar.app.puma.body.PumaBodyGateway;
 import org.cogchar.app.puma.body.PumaDualBodyManager;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
-import org.cogchar.platform.trigger.CogcharScreenBox;
+import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.platform.trigger.BoxSpace;
 
 import org.cogchar.platform.trigger.CommandSpace;
-import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 /**
  * @author Stu B. <www.texpedient.com>
@@ -158,6 +152,7 @@ public class PumaAppContext extends BasicDebugger {
 		RepoClient rc = getOrMakeMainConfigRC();
 		PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		pgmm.applyGlobalConfig(myBundleContext, rc);
+
 	}
 
 	/**
@@ -272,7 +267,8 @@ public class PumaAppContext extends BasicDebugger {
 			}
 			CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
 			PumaConfigManager pcm = getConfigManager();
-			pvwm.initVirtualWorlds(cmdSpc, pcm);
+			ThingActionRouter router = PumaAppUtils.getActionRouter();
+			pvwm.initVirtualWorlds(cmdSpc, pcm, router);
 			connectWeb();
 
 			ClassLoader vizResCL = getSingleClassLoaderOrNull(ResourceFileCategory.RESFILE_OPENGL_JME3_OGRE);
@@ -374,12 +370,18 @@ public class PumaAppContext extends BasicDebugger {
 		final PumaConfigManager pcm = getConfigManager();
 		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		pcm.clearMainConfigRepoClient();
+		PumaAppUtils.processPendingThingActions();
+		/*
+		* 
 		RepoClient rc = getOrMakeMainConfigRC();
 		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
 		if (hasVWorldMapper()) {
 			PumaVirtualWorldMapper vWorldMapper = getOrMakeVWorldMapper();
-			vWorldMapper.updateGoodySpace(rc, gce);
+			vWorldMapper.updateVWorldEntitySpaces(rc, gce);
 		}
+		* 
+		*/ 
 	}
+	
 
 }

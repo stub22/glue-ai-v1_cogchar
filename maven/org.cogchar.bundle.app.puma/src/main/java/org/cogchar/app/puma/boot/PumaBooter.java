@@ -31,6 +31,7 @@ import org.cogchar.app.buddy.busker.TriggerItems;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import org.cogchar.bundle.app.puma.PumaAppUtils;
 
 
 import org.osgi.framework.Bundle;
@@ -159,7 +160,7 @@ public class PumaBooter extends BasicDebugger {
 			// We'll let pac take care of this, since it is currently "Home of the Global Mode"
 			pac.initCinema(false);
 		}
-		
+		PumaAppUtils.registerActionConsumers();
 		mediator.notifyBeforeBootComplete(pac);
 	}
 

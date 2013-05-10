@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.app.goody;
+package org.cogchar.render.app.entity;
 
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
 import org.cogchar.name.goody.GoodyNames;
-import org.cogchar.render.app.entity.EntitySpace;
+import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.goody.basic.BasicGoody;
+import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.goody.basic.VirtualFloor;
 import org.cogchar.render.goody.bit.BitBox;
 import org.cogchar.render.goody.bit.BitCube;
@@ -49,30 +49,32 @@ public class GoodyFactory {
 	// Just for now, making this a pseudo singleton. Later will figure out where the "main" instance will be 
 	// held more permanently -- the render registry?
 	private static GoodyFactory theFactory;
+	
+	private VWorldEntityActionConsumer myActionConsumer;
+	
 	public static GoodyFactory getTheFactory() {
 		return theFactory;
 	}
 	public static GoodyFactory createTheFactory(RenderRegistryClient rrc, HumanoidRenderContext hrc) {
 		theLogger.info("Creating new GoodyFactory");
 		theFactory = new GoodyFactory(rrc, hrc);
-		hrc.setTheEntitySpace(theFactory.theGoodySpace); // Notify hrc (ModularRenderContext) of the EntitySpace so it can apply screen dimension updates
+		// This is used in ModularRenderContext.doUpdate to do 2-D screen resizing stuff.  
+		hrc.setTheEntitySpace(theFactory.getActionConsumer()); // Notify hrc (ModularRenderContext) of the EntitySpace so it can apply screen dimension updates
 		return theFactory;
 	}
 	
 	private RenderRegistryClient myRRC;
 	private Node myRootNode = new Node("GoodyNode"); // A node for test, though we may want to have "finer grained" nodes to attach to
 	
-	GoodyFactory(RenderRegistryClient rrc, HumanoidRenderContext hrc) {
+	private GoodyFactory(RenderRegistryClient rrc, HumanoidRenderContext hrc) {
 		myRRC = rrc;
 		attachGoodyNode();
-		theGoodySpace = new EntitySpace(hrc);
-		theGoodySpace.applyNewScreenDimension(hrc.myVCP.getSize(null));
+		myActionConsumer = new VWorldEntityActionConsumer(hrc);
+		myActionConsumer.applyNewScreenDimension(hrc.myVCP.getSize(null));
 	}
 	
-	// Is this a good place for the relevant instance of EntitySpace to live, or should it be moved elsewhere?
-	private EntitySpace theGoodySpace;
-	public EntitySpace getTheGoodySpace() {
-		return theGoodySpace;
+	public VWorldEntityActionConsumer getActionConsumer() {
+		return myActionConsumer;
 	}
 	
 	public final void attachGoodyNode() {
@@ -87,8 +89,8 @@ public class GoodyFactory {
 		});
 	}
 	
-	public BasicGoody createByAction(GoodyAction ga) {
-		BasicGoody newGoody = null;
+	public VWorldEntity createByAction(GoodyAction ga) {
+		VWorldEntity newGoody = null;
 		if (ga.getKind() == GoodyAction.Kind.CREATE) {
 			// Switch on string local name would be nice
 			// This is getting out of hand
@@ -147,8 +149,8 @@ public class GoodyFactory {
 	
 	// This way, EntitySpace doesn't need to know about the root node to attach. But this pattern can change if
 	// we decide we rather it did!
-	public BasicGoody createAndAttachByAction(GoodyAction ga) {
-		BasicGoody newGoody = createByAction(ga);
+	public VWorldEntity createAndAttachByAction(GoodyAction ga) {
+		VWorldEntity newGoody = createByAction(ga);
 		if (newGoody != null) {
 			newGoody.attachToVirtualWorldNode(myRootNode);
 		}

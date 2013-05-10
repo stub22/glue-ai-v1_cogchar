@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.goody.basic;
+package org.cogchar.render.app.entity;
 
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -22,7 +22,6 @@ import java.awt.Dimension;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.app.goody.GoodyAction;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 
 
-public abstract class BasicGoody {
+public abstract class VWorldEntity {
 	
 	// OK to have a logger instance for each goody instance?
 	protected Logger myLogger = LoggerFactory.getLogger(this.getClass()); 
