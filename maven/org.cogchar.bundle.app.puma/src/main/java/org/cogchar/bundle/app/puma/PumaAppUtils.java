@@ -16,14 +16,15 @@
 package org.cogchar.bundle.app.puma;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
-import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.thing.ThingActionRouter;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
 import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
@@ -32,17 +33,35 @@ import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
  * @author Stu B. <www.texpedient.com>
  */
 public class PumaAppUtils extends BasicDebugger {
-
-	public static void pumpGoodyUpdatesToVWorld() {
+	
+	private static ThingActionRouter	theRouter;
+	public static ThingActionRouter	getActionRouter() {
+		if (theRouter == null) {
+			theRouter = new ThingActionRouter();
+		}
+		return theRouter;
+	}
+	
+	public static void registerActionConsumers() { 
 		PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
 		PumaRegistryClient pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
-		PumaWebMapper pwm = pumaRegClient.getWebMapper(null);
 		final PumaConfigManager pcm = pumaRegClient.getConfigMgr(null);
 		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		RepoClient rc = pcm.getMainConfigRepoClient();
 		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
-		PumaVirtualWorldMapper vWorldMapper = pumaRegClient.getVWorldMapper(null);
-		vWorldMapper.updateGoodySpace(rc, gce);
+		//PumaVirtualWorldMapper vWorldMapper = pumaRegClient.getVWorldMapper(null);
+		//vWorldMapper.updateVWorldEntitySpaces(rc, gce);
+		PumaWebMapper pwm = pumaRegClient.getWebMapper(null);
+		ThingActionRouter router = getActionRouter();
+		pwm.registerActionConsumers(router, rc, gce);		
+	}
+	public static void processPendingThingActions() {
+		PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
+		PumaRegistryClient pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
+		final PumaConfigManager pcm = pumaRegClient.getConfigMgr(null);
+		RepoClient rc = pcm.getMainConfigRepoClient();		
+		ThingActionRouter router = getActionRouter();
+		router.consumeAllActions(rc);
 	}
 	public static 	void startMotionComputers(BundleContext bundleCtx) { 
 		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx);

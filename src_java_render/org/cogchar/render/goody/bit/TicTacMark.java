@@ -26,10 +26,10 @@ import com.jme3.scene.shape.Torus;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.goody.basic.BasicGoodyImpl;
+import org.cogchar.render.goody.basic.BasicGoodyEntity;
 import org.cogchar.render.goody.basic.CompositeMeshBuilder;
 import org.cogchar.render.goody.basic.CompositeMeshBuilder.MeshComponent;
-import org.cogchar.render.app.goody.GoodyAction;
+import org.cogchar.render.app.entity.GoodyAction;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
@@ -40,7 +40,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 
 // Very similar to BitBox, so should probably be refactored as a descendant of a common "BinaryGoody" class
-public class TicTacMark extends BasicGoodyImpl {
+public class TicTacMark extends BasicGoodyEntity {
 	
 	private static final ColorRGBA X_COLOR = ColorRGBA.Black;
 	private static final ColorRGBA O_COLOR = ColorRGBA.Red;

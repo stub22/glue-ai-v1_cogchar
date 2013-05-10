@@ -73,16 +73,5 @@ class FancyChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingC
 		getLogger().debug("ChannelSpecBuilder.initExtendedFieldsAndLinks using {}", configItem);
 		val reader = getReader();
 		cs.completeInit(configItem, reader, assmblr, mode)
-		// cs.myDetails = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_details, configItem, null);
-		/*
-		cs.myOsgiFilterString = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_osgiFilterString, configItem, null);
-		val chanTypePropID = reader.getConfigPropertyIdent(configItem, configItem.getIdent(), ChannelNames.P_channelType);
-		val linkedChanTypes : java.util.Set[Item] = configItem.getLinkedItemSet(chanTypePropID);
-		
-		getLogger().info("ChannelSpec has linkedChanTypes: " + linkedChanTypes);
-		if (linkedChanTypes.size() == 1) {
-			cs.myChanType =  linkedChanTypes.iterator.next.asInstanceOf[Ident]
-		}
-		*/
 	}
 }

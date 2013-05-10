@@ -14,15 +14,18 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.goody.basic;
+package org.cogchar.render.model.humanoid;
 
+import org.cogchar.render.app.entity.VWorldEntity;
 import com.jme3.animation.*;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.app.goody.GoodyAction;
+import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
@@ -35,14 +38,14 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 
 
-public class HumanoidFigureGoodyWrapper extends BasicGoody {
+public class VWorldHumanoidFigureEntity extends VWorldEntity {
 	
 	final static String MOVE_ANIM_NAME = "HumanoidFigureMoveFactory";
 	
 	private Node myNode;
 	private AnimControl figureControl = new AnimControl();
 	
-	public HumanoidFigureGoodyWrapper(RenderRegistryClient aRenderRegCli, Ident figureUri, HumanoidFigure hf) {
+	public VWorldHumanoidFigureEntity(RenderRegistryClient aRenderRegCli, Ident figureUri, HumanoidFigure hf) {
 		myRenderRegCli = aRenderRegCli;
 		myUri = figureUri;
 		myNode = hf.getNode();

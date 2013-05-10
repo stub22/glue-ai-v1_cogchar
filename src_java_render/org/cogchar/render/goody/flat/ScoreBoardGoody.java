@@ -16,7 +16,7 @@
 
 package org.cogchar.render.goody.flat;
 
-import org.cogchar.render.app.goody.GoodyAction;
+import org.cogchar.render.app.entity.GoodyAction;
 import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.goody.basic.BasicGoody;
+import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.sys.physics.GeneralScoreBoard;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
@@ -43,7 +43,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 // May eventually extend a standard "composite goody" superclass
 // Presents a set of lines containing "labels" and "scores".
-public class ScoreBoardGoody extends BasicGoody implements GeneralScoreBoard {
+public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 	
 	final static ColorRGBA MY_SCORE_COLOR = ColorRGBA.Magenta; // Likely only temporarily a constant
 	

@@ -17,12 +17,18 @@ package org.cogchar.app.puma.web;
 
 import com.hp.hpl.jena.query.Dataset;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.thing.ThingActionRouter;
 import org.cogchar.api.web.WebAppInterface;
+import org.cogchar.api.web.WebEntityAction;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.bind.lift.LifterLifecycle;
+import org.cogchar.blob.emit.GlobalConfigEmitter;
+import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.render.app.trigger.SceneActions;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
@@ -38,7 +44,7 @@ public class PumaWebMapper extends BasicDebugger {
 
 	private OSGiComponent					myLiftAppComp;
 	private OSGiComponent					myLiftSceneComp;
-	private PumaContextCommandBox					myPCCB;
+	private PumaContextCommandBox			myPCCB;
 	
 	// Make default constuctor private to prevent PumaWebMapper from being instantiated without a PumaAppContext
 	private PumaWebMapper() {}
@@ -93,5 +99,19 @@ public class PumaWebMapper extends BasicDebugger {
 		}		
 		return mainConfDset;
 	}
-	
+	public void registerActionConsumers(ThingActionRouter router, RepoClient rc, GlobalConfigEmitter gce) { 
+
+		Ident worldConfigIdent = new FreeIdent("if/exception/while/reading/this/ident/report#null");
+		try {
+			// We shouldn't have more than one, so let's just assume there's one. This is a slightly different assumption
+			// to what happens in PumaVirtualWorldMapper.
+			worldConfigIdent = gce.entityMap().get(EntityRoleCN.VIRTUAL_WORLD_ENTITY_TYPE).get(0);
+			Ident graphIdent = gce.ergMap().get(worldConfigIdent).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
+			
+			WebEntityAction.Consumer consumer = new WebEntityAction.Consumer();
+			router.appendConsumer(graphIdent, consumer);
+		} catch (Exception e) {
+			getLogger().error("Could not register ThingActionConsumer for config {}", worldConfigIdent.getLocalName(), e);
+		}		
+	}
 }
