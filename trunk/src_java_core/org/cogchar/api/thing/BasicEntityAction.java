@@ -28,14 +28,14 @@ public abstract class BasicEntityAction {
 	protected Ident				myEntityID;
 	protected Ident				myEntityTypeID;
 	
-	protected TypedValueMap		paramTVMap;
+	protected TypedValueMap		myParamTVMap;
 	
 	public BasicEntityAction(ThingActionSpec actionSpec) {
 		myActionSpec = actionSpec;
 		myEntityID = actionSpec.getTargetThingID();
 		myEntityTypeID = actionSpec.getTargetThingTypeID();
 		
-		paramTVMap = myActionSpec.getParamTVM();
+		myParamTVMap = myActionSpec.getParamTVM();
 	}
 
 
@@ -52,7 +52,7 @@ public abstract class BasicEntityAction {
 	// Could have more elaborate type handling here, but for now, since params in repo are natively strings
 	// we'll provide a way to load those raw strings by param name
 	public String getSpecialString(Ident paramIdent) {
-		return paramTVMap.getAsString(paramIdent);
+		return myParamTVMap.getAsString(paramIdent);
 	}
 
 	public Ident getType() {

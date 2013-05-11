@@ -40,44 +40,44 @@ public class WebEntityAction extends BasicEntityAction {
 	}
 	
 	public Ident getConfigIdent() {
-		return paramTVMap.getAsIdent(WebActionNames.CONFIG);
+		return myParamTVMap.getAsIdent(WebActionNames.CONFIG);
 	}
 	
 	// For repo encoded control activation action URIs
 	public Ident getControlActionUri() {
-		return paramTVMap.getAsIdent(WebActionNames.WEBCONTROL_ACTION);
+		return myParamTVMap.getAsIdent(WebActionNames.WEBCONTROL_ACTION);
 	}
 	
 	public Integer getSlotID() {
-		return paramTVMap.getAsInteger(WebActionNames.SLOT);
+		return myParamTVMap.getAsInteger(WebActionNames.SLOT);
 	}
 	
 	public Ident getControlType() {
-		return paramTVMap.getAsIdent(WebActionNames.TYPE);
+		return myParamTVMap.getAsIdent(WebActionNames.TYPE);
 	}
 	
 	public String getControlText() {
-		return paramTVMap.getAsString(WebActionNames.TEXT);
+		return myParamTVMap.getAsString(WebActionNames.TEXT);
 	}
 	
 	public String getControlStyle() {
-		return paramTVMap.getAsString(WebActionNames.STYLE);
+		return myParamTVMap.getAsString(WebActionNames.STYLE);
 	}
 	
 	public String getControlResource() {
-		return paramTVMap.getAsString(WebActionNames.RESOURCE);
+		return myParamTVMap.getAsString(WebActionNames.RESOURCE);
 	}
 	
 	public Ident getControlAction() {
-		return paramTVMap.getAsIdent(WebActionNames.ACTION);
+		return myParamTVMap.getAsIdent(WebActionNames.ACTION);
 	}
 	
 	public String getUserName() {
-		return paramTVMap.getAsString(WebActionNames.USERNAME);
+		return myParamTVMap.getAsString(WebActionNames.USERNAME);
 	}
 	
 	public String getUserClass() {
-		return paramTVMap.getAsString(WebActionNames.USERCLASS);
+		return myParamTVMap.getAsString(WebActionNames.USERCLASS);
 	}
 	
 	public void perform(WebAppInterface la) {
@@ -143,10 +143,9 @@ public class WebEntityAction extends BasicEntityAction {
 	}
 	
 	public static boolean makeAndPerformForTAS(ThingActionSpec actionSpec) {
-		theLogger.info("The targetThingType is {}", actionSpec.getTargetThingTypeID()); // TEST ONLY
-		if ((actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONTROL)) || 
-				(actionSpec.getTargetThingTypeID().equals(WebActionNames.WEBCONFIG))) {
-
+		Ident	tgtThingTypeID = actionSpec.getTargetThingTypeID();
+		theLogger.debug("The targetThingType is {}", tgtThingTypeID); // TEST ONLY
+		if (WebActionNames.WEBCONTROL.equals(tgtThingTypeID) || WebActionNames.WEBCONFIG.equals(tgtThingTypeID)) {
 			WebAppInterface la = WebAppInterfaceTracker.getTracker().getWebInterface();
 			if (la != null) {
 				WebEntityAction wa = new WebEntityAction(actionSpec);
@@ -156,7 +155,7 @@ public class WebEntityAction extends BasicEntityAction {
 				theLogger.error("Attempting to perform a web action, but the WebAppInterface is not available!");
 			}
 		} else {
-			theLogger.warn("WebEntitySpace igoring irrelevant actionSpec {}", actionSpec);
+			theLogger.warn("WebEntitySpace igoring irrelevant actionSpec of type {}", tgtThingTypeID);
 		}
 		return false;
 	}

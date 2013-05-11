@@ -49,8 +49,8 @@ public class PumaAppUtils extends BasicDebugger {
 		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		RepoClient rc = pcm.getMainConfigRepoClient();
 		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
-		//PumaVirtualWorldMapper vWorldMapper = pumaRegClient.getVWorldMapper(null);
-		//vWorldMapper.updateVWorldEntitySpaces(rc, gce);
+		// The VWorld does its own registration in a separate ballet.
+		// Here we are just handling the reg for Web + Behavior.
 		PumaWebMapper pwm = pumaRegClient.getWebMapper(null);
 		ThingActionRouter router = getActionRouter();
 		pwm.registerActionConsumers(router, rc, gce);		

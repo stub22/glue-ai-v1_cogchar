@@ -90,5 +90,12 @@ public class BasicThingActionSpec implements ThingActionSpec {
 	@Override  public TypedValueMap getParamTVM() {
 		return myParamTVMap;
 	}
+	
+	@Override  public String toString() {
+		return "BasicThingActionSpec[actRecID=" + myActionRecordID + ", tgtThgID=" + myTargetThingID +
+					", tgtThgTypeID=" + myTargetThingTypeID + ", actVerbID=" + myActionVerbID 
+					+ ", srcAgtID=" + mySourceAgentID + ", paramTVMap=" + myParamTVMap + "]";
+	}
+	
 
 }
