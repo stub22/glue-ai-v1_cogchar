@@ -59,12 +59,13 @@ class ThingActionUpdater {
 			Ident verbID = sh.pullIdent(actionSoln, ThingCN.VERB_VAR_NAME);
 			Ident targetID = sh.pullIdent(actionSoln, ThingCN.TARGET_VAR_NAME);
 			Ident targetTypeID = sh.pullIdent(actionSoln, ThingCN.TARGET_TYPE_VAR_NAME);
-			theLogger.info("Found new ThingAction; ident: {} verb: {}, target: {}, targetTypeID: {}",
-					new Object[]{actionID, verbID, targetID, targetTypeID});
+			
 			TypedValueMap actionParams = buildActionParameterValueMap(rc, graphIdent, sh, actionID);
-			actionSpecList.add(new BasicThingActionSpec(actionID, targetID, targetTypeID, verbID, sourceAgentID, actionParams));
+			ThingActionSpec spec = new BasicThingActionSpec(actionID, targetID, targetTypeID, verbID, sourceAgentID, actionParams);
+			theLogger.debug("Found new ThingAction: {}", spec);
+			actionSpecList.add(spec);
 		}
-		// TODO:  Delete the actions from model, so they are not returned on next call to this method.
+		// Delete the actions from graph, so they are not returned on next call to this method.
 
 		for (ThingActionSpec tas : actionSpecList) {
 			deleteThingAction(rc, graphIdent, tas);
@@ -97,7 +98,7 @@ class ThingActionUpdater {
 		for (Solution paramSoln: paramList.javaList()) {
 			Ident paramIdent = sh.pullIdent(paramSoln, ThingCN.PARAM_IDENT_VAR_NAME);
 			String paramValue = sh.pullString(paramSoln, ThingCN.PARAM_VALUE_VAR_NAME);
-			theLogger.info("Adding new param for Thing action {}: ident: {}, value: {}",
+			theLogger.debug("Adding new param for Thing action {}: ident: {}, value: {}",
 					new Object[]{actionIdent, paramIdent, paramValue});
 			paramMap.putValueAtName(paramIdent, paramValue);
 		}

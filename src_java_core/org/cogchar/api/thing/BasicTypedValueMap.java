@@ -57,4 +57,7 @@ public abstract class BasicTypedValueMap implements TypedValueMap {
 	public Ident getNameAtName(Ident name) {
 		return getValueAtNameAs(name, Ident.class);
 	}
+	@Override  public String toString() {
+		return "BasicTypedValueMap[objsByID=" + myRawObjsByID + "]";
+	}	
 }
