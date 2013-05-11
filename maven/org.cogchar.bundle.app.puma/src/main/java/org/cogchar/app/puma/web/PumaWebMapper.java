@@ -21,6 +21,7 @@ import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.perform.AnimLaunchEntityAction;
 import org.cogchar.api.thing.ThingActionRouter;
 import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.api.web.WebEntityAction;
@@ -108,8 +109,11 @@ public class PumaWebMapper extends BasicDebugger {
 			worldConfigIdent = gce.entityMap().get(EntityRoleCN.VIRTUAL_WORLD_ENTITY_TYPE).get(0);
 			Ident graphIdent = gce.ergMap().get(worldConfigIdent).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
 			
-			WebEntityAction.Consumer consumer = new WebEntityAction.Consumer();
-			router.appendConsumer(graphIdent, consumer);
+			WebEntityAction.Consumer weaConsumer = new WebEntityAction.Consumer();
+			router.appendConsumer(graphIdent, weaConsumer);
+			
+			AnimLaunchEntityAction.Consumer aleaConsumer = new AnimLaunchEntityAction.Consumer();
+			router.appendConsumer(graphIdent, aleaConsumer);
 		} catch (Exception e) {
 			getLogger().error("Could not register ThingActionConsumer for config {}", worldConfigIdent.getLocalName(), e);
 		}		

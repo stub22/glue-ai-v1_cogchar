@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class ThingActionRouter extends ThingActionConsumer {
-	private static Logger theLogger = LoggerFactory.getLogger(ThingActionRouter.class);
+
 	
 	private	Map<Ident, List<ThingActionConsumer>>	myConsumersBySrcGraphID = new HashMap<Ident, List<ThingActionConsumer>>();
 
@@ -70,7 +70,7 @@ public class ThingActionRouter extends ThingActionConsumer {
 	}
 	public void consumeAllActions(RepoClient rc) {
 		for (Ident srcGraphID : myConsumersBySrcGraphID.keySet()) {
-			theLogger.info("Consuming actions from ThingAction-graph: {}", srcGraphID);
+			getLogger().info("Consuming actions from ThingAction-graph: {}", srcGraphID);
 			consumeAllActions(rc, srcGraphID);
 		}
 	}

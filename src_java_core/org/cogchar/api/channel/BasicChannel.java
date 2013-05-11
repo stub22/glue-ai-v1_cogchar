@@ -17,8 +17,6 @@ package org.cogchar.api.channel;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
-import org.appdapter.core.name.FreeIdent;
-import org.cogchar.api.perform.Performance.Instruction;
 
 
 /**

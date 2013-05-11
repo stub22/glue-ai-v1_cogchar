@@ -17,16 +17,15 @@
 package org.cogchar.api.thing;
 
 import java.util.List;
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public abstract class ThingActionConsumer {
+public abstract class ThingActionConsumer extends BasicDebugger {
 	
 	
 	public enum Status {
@@ -42,6 +41,7 @@ public abstract class ThingActionConsumer {
 		ThingActionUpdater updater = new ThingActionUpdater();
 		List<ThingActionSpec> actionSpecList = updater.takeThingActions(rc, srcGraphID);
 		for (ThingActionSpec actionSpec : actionSpecList) {
+			getLogger().info("Consuming from graph {} : {} ", srcGraphID, actionSpec);
 			consumeAction(actionSpec, srcGraphID);
 		}
 	}	
