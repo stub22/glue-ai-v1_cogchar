@@ -928,7 +928,7 @@ public class DataballGoodyBuilder extends BasicDebugger {
 		
 		/*
 		// (Print the results so we see what is going on:)
-		for (int i = 0; i < results.size(); i++) { // (For each “hit”, we know distance, impact point, geometry.)
+		for (int i = 0; i < results.size(); i++) { // (For each  * hit , we know distance, impact point, geometry.)
 		float dist = results.getCollision(i).getDistance();
 		Vector3f pt = results.getCollision(i).getContactPoint();
 		String target = results.getCollision(i).getGeometry().getName(); logger.info("Selection #" + i + ": " + target + " at " + pt + ", " + dist + " WU away."); }
