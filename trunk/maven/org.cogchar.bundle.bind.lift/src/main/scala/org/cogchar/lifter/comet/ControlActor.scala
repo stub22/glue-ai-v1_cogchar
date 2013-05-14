@@ -17,17 +17,17 @@
 package org.cogchar.lifter {
   package comet {
 
-	import net.liftweb.common._
-	import net.liftweb.http._
-	import net.liftweb.http.js.JsCmds._
-	import net.liftweb.util._
-	import Helpers._
+	import net.liftweb.common.Full
+	import net.liftweb.http.{CometActor, CometListener, S}
+	import net.liftweb.http.js.JsCmds.SetHtml
 	import org.cogchar.lifter.model.PageCommander
 	import org.cogchar.lifter.view.TextBox
-	import S._
+	import org.slf4j.LoggerFactory
 
 	
 	class ControlActor extends CometActor with CometListener {
+	  
+	  private val myLogger = LoggerFactory.getLogger(this.getClass); //ControlActor.getClass is not found -- why?
 	  
 	  final val SLOT_ID_PREFIX = "slot"
   
@@ -55,7 +55,7 @@ package org.cogchar.lifter {
 
 	  def render = {
 		if (mySessionId.isEmpty) {
-		  error("ControlActor cannot get sessionId, not rendering!")
+		  myLogger.error("ControlActor cannot get sessionId, not rendering!")
 		  TextBox.makeBox("ControlActor cannot get sessionId, not rendering!", "", true)
 	  } else {
 		  ("#" + slotId + " *") #> PageCommander.getMarkup(mySessionId, slotNum)
