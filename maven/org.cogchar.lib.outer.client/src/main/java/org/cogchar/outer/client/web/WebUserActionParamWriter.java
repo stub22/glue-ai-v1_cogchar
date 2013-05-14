@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.lift;
+package org.cogchar.outer.client.web;
 
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.BasicTypedValueMap;

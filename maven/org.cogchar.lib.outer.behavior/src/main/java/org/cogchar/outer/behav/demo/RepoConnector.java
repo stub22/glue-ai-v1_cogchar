@@ -15,7 +15,7 @@
  */
 
 
-package org.cogchar.app.puma.net.demo;
+package org.cogchar.outer.behav.demo;
 
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;

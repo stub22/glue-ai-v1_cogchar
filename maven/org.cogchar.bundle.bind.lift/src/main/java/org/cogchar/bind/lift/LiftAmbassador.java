@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.lift;
 
+import org.cogchar.outer.client.web.WebUserActionParamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

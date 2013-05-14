@@ -131,7 +131,7 @@
 			dev unit testing (outside of JUnit).  But the svn-committed (and mvn-deployed, etc.) versions
 			should always have this scope marked as "test", so that clients can use their own logger binding.  
 			-->
-			<scope>test</scope>
+			<scope>runtime</scope>
 			<exclusions>
 				<!-- This embedded Log4J version is not OSGi friendly -->				
 				<exclusion>
