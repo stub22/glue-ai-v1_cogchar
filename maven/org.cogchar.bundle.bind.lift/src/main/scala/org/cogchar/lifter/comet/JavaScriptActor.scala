@@ -17,18 +17,18 @@
 package org.cogchar.lifter {
   package comet {
 
-	import net.liftweb.common._
-	import net.liftweb.http.js.JE._
-	import net.liftweb.http._
+	import net.liftweb.common.Full
+	import net.liftweb.http.{CometActor, CometListener, S}
 	import net.liftweb.http.js.JsCmd
 	import net.liftweb.http.js.JsCmds
-	import net.liftweb.util._
-	import Helpers._
-	import scala.xml._
+	import scala.xml.NodeSeq
 	import org.cogchar.lifter.model.PageCommander
-	import org.cogchar.lifter.model.PageCommander._
+	import org.cogchar.lifter.model.PageCommander._ // Six imports here: case classes. Wildcard OK?
+	import org.slf4j.LoggerFactory
 
-	class JavaScriptActor extends CometActor with CometListener with Logger {
+	class JavaScriptActor extends CometActor with CometListener {
+	  
+	  private val myLogger = LoggerFactory.getLogger(this.getClass) //JavaScriptActor.getClass is not found -- why?
       
 	  // On initial render, just blank anything in JavaScriptActor comet div
 	  def render = "@JSCommandSlot" #> NodeSeq.Empty
@@ -58,7 +58,7 @@ package org.cogchar.lifter {
 			}  
 		  }
 		case req: SpeechOutRequest if (req.sessionId == mySessionId) => {
-			info("Sending speech to Android...")
+			myLogger.info("Sending speech to Android...")
 			partialUpdate(new JsCmd { 
 				def toJsCmd = "try{Android.outputSpeech(\"" + req.text + "\");} catch(err) {}"
 			  })

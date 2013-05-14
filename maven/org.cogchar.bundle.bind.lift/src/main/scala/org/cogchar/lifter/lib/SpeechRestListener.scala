@@ -17,14 +17,9 @@
 package org.cogchar.lifter {
   package lib {
   
-	import model._
-	import net.liftweb._
-	import common._
-	import http._
-	import rest._
-	import util._
-	import Helpers._
-	import json._
+	import model.SpeechChunk
+	import net.liftweb.http.rest.RestHelper
+	import net.liftweb.json.JValue
 
 	object SpeechRestListener extends RestHelper {  
 	  serve{ 
