@@ -20,6 +20,7 @@ import org.appdapter.core.name.FreeIdent
 import org.cogchar.bind.lift.ControlConfig
 import scala.xml.NodeSeq
 import org.cogchar.name.lifter.ActionStrings
+import org.slf4j.LoggerFactory
 
 // We don't want control-specific logic in PageCommander, but the toggle behavior is handled in a fundamentally
 // special way. (Dual actions are stored in special map toggleButtonFullActionMap and controlDefMap is updated with
@@ -36,6 +37,8 @@ object ControlToggler {
 
 
 class ControlToggler {
+
+  private val myLogger = LoggerFactory.getLogger(ControlToggler.getClass);
   
   def toggle(appState:LifterState, sessionId:String, slotNum: Int) {
 	val sessionState = appState.stateBySession(sessionId)
@@ -111,8 +114,8 @@ class ControlToggler {
   }
   
   private def togglerMapError(sessionId:String, slotNum:Int, mapName:String) {
-	error("ControlToggler called for slotNum " + slotNum + " of session " + sessionId + 
-		  ", but no entry found in " + mapName)
+	myLogger.error("ControlToggler called for slotNum {} of session {}" + 
+		  ", but no entry found in {}", Array[AnyRef](slotNum.asInstanceOf[AnyRef], sessionId, mapName))
   }
   
 }

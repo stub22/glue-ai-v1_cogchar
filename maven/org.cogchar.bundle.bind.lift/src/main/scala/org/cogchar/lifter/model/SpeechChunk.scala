@@ -16,12 +16,10 @@
 
 package org.cogchar.lifter {
   package model {
-
-	import net.liftweb._
-	import util._
-	import Helpers._
-	import common._
-	import json._
+	
+	import net.liftweb.common.Box
+	import net.liftweb.json.{DefaultFormats,Extraction,JValue}
+	import net.liftweb.util.Helpers.tryo
 
 // This is essentially the JSON template. Right now it contains a string labeled speechText and a requesting control id.
 // But if we wanted, we could, say, also receive the lower-confidence results which Google speech generates, or etc.
@@ -29,10 +27,9 @@ package org.cogchar.lifter {
 
 // Right now this model is very basic: it just sits on the last piece of text sent, 
 // plus it notifies PageCommander when speech is PUT, so PageCommander can do something with it if it chooses.	
-	object SpeechChunk extends Logger {
+	object SpeechChunk {
 
-	  private implicit val formats =
-		net.liftweb.json.DefaultFormats
+	  private implicit val formats = DefaultFormats
 
 	  // A map of lastSpeech by sessionId
 	  private var lastSpeech = new scala.collection.mutable.HashMap[String,String]
@@ -41,7 +38,7 @@ package org.cogchar.lifter {
 	   * Convert a JValue to an Item if possible (extracts incoming JSON into SpeechChunk object)
 	   */
 	  def apply(in: JValue): Box[SpeechChunk] = {
-		Helpers.tryo{in.extract[SpeechChunk]}
+		tryo{in.extract[SpeechChunk]}
 	  }
 	  /**
 	   * Extract a JValue to an Item (allows pattern matching on incoming JSON in SpeechRestListener)
