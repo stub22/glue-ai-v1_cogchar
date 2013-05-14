@@ -26,6 +26,7 @@ public class AssumedQueryDir {
 	
 	// ThingAct queries
 	public  static String	ACTION_QUERY_URI = "ccrt:find_thing_actions_99";
+	public  static String	UNSEEN_ACTION_QUERY_URI = "ccrt:find_unseen_thing_actions_99";
 	public  static String	PARAM_QUERY_URI = "ccrt:find_thing_action_params_99";
 	
 	// Lifter Queries 

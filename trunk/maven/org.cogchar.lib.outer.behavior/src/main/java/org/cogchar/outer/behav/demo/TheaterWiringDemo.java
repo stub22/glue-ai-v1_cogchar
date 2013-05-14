@@ -15,11 +15,11 @@
  */
 
 
-package org.cogchar.app.puma.net.demo;
+package org.cogchar.outer.behav.demo;
 
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.app.puma.behavior.OSGiTheater;
+import org.cogchar.outer.behav.impl.OSGiTheater;
 import org.cogchar.blob.emit.EnhancedRepoClient;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.Theater;

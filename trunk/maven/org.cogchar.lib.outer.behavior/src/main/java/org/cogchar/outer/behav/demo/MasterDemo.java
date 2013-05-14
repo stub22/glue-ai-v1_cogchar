@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
-package org.cogchar.app.puma.net.demo;
+package org.cogchar.outer.behav.demo;
 
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.scene.Scene;
-import org.cogchar.app.puma.behavior.OSGiTheater;
+import org.cogchar.outer.behav.impl.OSGiTheater;
 import org.cogchar.blob.emit.EnhancedRepoClient;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.impl.scene.BScene;

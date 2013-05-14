@@ -29,6 +29,7 @@ import org.cogchar.name.dir.NamespaceDir;
 public class ThingCN {
 	public  static String	THING_NS = NamespaceDir.TA_NS ; 
 	public  static String	ACTION_QUERY_URI = AssumedQueryDir.ACTION_QUERY_URI; //  "ccrt:find_thing_actions_99";
+	public  static String	UNSEEN_ACTION_QUERY_URI = AssumedQueryDir.UNSEEN_ACTION_QUERY_URI; 
 	public  static String	PARAM_QUERY_URI = AssumedQueryDir.PARAM_QUERY_URI; // "ccrt:find_thing_action_params_99";
 
 	public  static String	ACTION_QUERY_VAR_NAME = "attachedToAction";
