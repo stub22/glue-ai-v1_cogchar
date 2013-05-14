@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.app.puma.net.demo;
+package org.cogchar.outer.behav.demo;
 
 import java.util.ArrayList;
 import java.util.Collection;

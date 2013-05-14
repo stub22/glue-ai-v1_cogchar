@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.app.puma.net.demo;
+package org.cogchar.outer.behav.demo;
 
 import java.util.Properties;
 import org.jflux.api.core.Listener;

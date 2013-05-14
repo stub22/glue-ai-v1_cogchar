@@ -15,7 +15,7 @@
  */
 
 
-package org.cogchar.app.puma.net.demo;
+package org.cogchar.outer.behav.demo;
 
 import java.util.Properties;
 import org.appdapter.core.log.BasicDebugger;

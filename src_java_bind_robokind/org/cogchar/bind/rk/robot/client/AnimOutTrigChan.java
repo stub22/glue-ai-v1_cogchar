@@ -46,6 +46,10 @@ public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> {
 		super(id);
 		myRobotAnimContext = rac;
 	}
+	public AnimOutTrigChan(Ident id, AnimOutTrigChan chanToWrap) {
+		super(id);
+		myRobotAnimContext = chanToWrap.myRobotAnimContext;
+	}
 
 	public void setUseTempAnims(boolean flag) {
 		myUseTempAnimsFlag = flag;

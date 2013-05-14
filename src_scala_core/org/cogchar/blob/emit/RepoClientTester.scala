@@ -194,7 +194,8 @@ object RepoClientTester {
 		val resolvedQueryURL = org.appdapter.demo.DemoResources.QUERY_PATH;
 		// RepoTester.testRepoDirect(dbRepo, )
 		
-		queryAnims(dfltTestRC);
+		val animFiles = org.cogchar.impl.channel.AnimFileReader.queryAnims(dfltTestRC);
+		println("Got animFiles: " + animFiles);
 		val cmdList = queryCommands(dfltTestRC);
 		println("Got commands: " + cmdList);
 		
@@ -222,25 +223,6 @@ object RepoClientTester {
 		
 	 }
 	 */
-	val ANIM_IDENT = "anim"
-	val ANIM_REL_PATH = "relPath"
-	val ANIM_FOLDER_PATH = "folderPath"
-	val animQueryQN = "ccrt:find_anims_99" // The QName of a query in the "Queries" model/tab
-	val animGraphQN = "ccrt:anim_sheet_22" // The QName of a graph = model = tab, as given by directory model.   
-   
-	def queryAnims (rc : RepoClient) = {
-
-		val solList = rc.queryIndirectForAllSolutions(animQueryQN, animGraphQN)
-		import scala.collection.JavaConversions._
-		solList.javaList foreach (animFile => {
-				println("Got animFile soln: " + animFile);
-				val animIdent = animFile.getIdentResultVar(ANIM_IDENT);
-				val animRelPath = animFile.getStringResultVar(ANIM_REL_PATH);
-				val animFolderPath = animFile.getStringResultVar(ANIM_FOLDER_PATH);
-				println("ident=" + animIdent + ", relPath=" + animRelPath + ", folderPath=" + animFolderPath)
-			})
-
-	}
 	class CommandRec (val cmdID : Ident, val boxID : Ident, val trigID : Ident, val trigFQCN : String) {
 		override def toString() : String = "[cmdID=" + cmdID + ", boxID=" + boxID + ", trigID=" + trigID + ", trigFQCN=" + trigFQCN + "]";
 	}

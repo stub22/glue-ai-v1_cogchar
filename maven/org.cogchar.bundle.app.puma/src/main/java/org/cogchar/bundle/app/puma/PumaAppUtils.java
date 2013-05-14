@@ -16,7 +16,6 @@
 package org.cogchar.bundle.app.puma;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
@@ -28,6 +27,8 @@ import org.cogchar.api.thing.ThingActionRouter;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
 import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
+import org.cogchar.impl.channel.AnimFileReader;
+import org.cogchar.impl.channel.FancyFile;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -41,27 +42,31 @@ public class PumaAppUtils extends BasicDebugger {
 		}
 		return theRouter;
 	}
-	
+	static class StuffRec {
+		public PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
+		public PumaRegistryClient pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
+		public final PumaConfigManager pcm = pumaRegClient.getConfigMgr(null);
+		public final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
+		public RepoClient rc = pcm.getMainConfigRepoClient();
+		public GlobalConfigEmitter gce = pgmm.getGlobalConfig();
+		public PumaWebMapper pwm = pumaRegClient.getWebMapper(null);
+	}
 	public static void registerActionConsumers() { 
-		PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
-		PumaRegistryClient pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
-		final PumaConfigManager pcm = pumaRegClient.getConfigMgr(null);
-		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
-		RepoClient rc = pcm.getMainConfigRepoClient();
-		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
+		StuffRec srec = new StuffRec();
 		// The VWorld does its own registration in a separate ballet.
 		// Here we are just handling the reg for Web + Behavior.
-		PumaWebMapper pwm = pumaRegClient.getWebMapper(null);
+
 		ThingActionRouter router = getActionRouter();
-		pwm.registerActionConsumers(router, rc, gce);		
+		srec.pwm.registerActionConsumers(router, srec.rc, srec.gce);		
 	}
 	public static void processPendingThingActions() {
-		PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
-		PumaRegistryClient pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
-		final PumaConfigManager pcm = pumaRegClient.getConfigMgr(null);
-		RepoClient rc = pcm.getMainConfigRepoClient();		
+		StuffRec srec = new StuffRec();	
 		ThingActionRouter router = getActionRouter();
-		router.consumeAllActions(rc);
+		router.consumeAllActions(srec.rc);
+	}
+	public static List<FancyFile> getKnownAnimationFiles() { 
+		StuffRec srec = new StuffRec();
+		return AnimFileReader.queryAnimsForJava(srec.rc);
 	}
 	public static 	void startMotionComputers(BundleContext bundleCtx) { 
 		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx);

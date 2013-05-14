@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cogchar.app.puma.net.demo;
+package org.cogchar.outer.behav.demo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,8 +11,8 @@ import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.utils.ManagedServiceFactory;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
 import org.robokind.impl.messaging.config.RKMessagingConfigUtils;
-import org.cogchar.app.puma.net.demo.AnimationConnector;
-import org.cogchar.app.puma.net.demo.SpeechConnector;
+import org.cogchar.outer.behav.demo.AnimationConnector;
+import org.cogchar.outer.behav.demo.SpeechConnector;
 
 /**
  *

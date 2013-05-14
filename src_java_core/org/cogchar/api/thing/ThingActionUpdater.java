@@ -37,43 +37,53 @@ import org.slf4j.LoggerFactory;
  */
 
 
-class ThingActionUpdater {
+public class ThingActionUpdater {
 	
 	// This is just a temporary definition of the sourceAgentID until it becomes clear where this best comes from
-	public static final Ident sourceAgentID = new FreeIdent(ThingCN.THING_NS + "RepoThingAction"); 
+	public static final Ident SOURCE_AGENT_ID = new FreeIdent(ThingCN.THING_NS + "RepoThingAction"); 
 	
 	private static Logger theLogger = LoggerFactory.getLogger(ThingActionUpdater.class);
 	
 	/**
-	 * Fetches pending ThingActions from model, and deletes them from model.
+	 * Fetches pending ThingActions from model, and physically deletes them (or at least the part of them
+	 * that makes them matchable) from source model.
 	 * @param rc
-	 * @param graphIdent
+	 * @param srcGraphID
 	 * @return 
 	 */
-	public List<ThingActionSpec> takeThingActions(RepoClient rc, Ident graphIdent) {
-		List<ThingActionSpec> actionSpecList = new ArrayList<ThingActionSpec>();
-		SolutionHelper sh = new SolutionHelper();
-		SolutionList actionsList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, graphIdent);
-		for (Solution actionSoln: actionsList.javaList()) {
-			Ident actionID = sh.pullIdent(actionSoln, ThingCN.ACTION_URI_VAR_NAME);
-			Ident verbID = sh.pullIdent(actionSoln, ThingCN.VERB_VAR_NAME);
-			Ident targetID = sh.pullIdent(actionSoln, ThingCN.TARGET_VAR_NAME);
-			Ident targetTypeID = sh.pullIdent(actionSoln, ThingCN.TARGET_TYPE_VAR_NAME);
-			
-			TypedValueMap actionParams = buildActionParameterValueMap(rc, graphIdent, sh, actionID);
-			ThingActionSpec spec = new BasicThingActionSpec(actionID, targetID, targetTypeID, verbID, sourceAgentID, actionParams);
-			theLogger.debug("Found new ThingAction: {}", spec);
-			actionSpecList.add(spec);
-		}
+	public List<ThingActionSpec> takeThingActions(RepoClient rc, Ident srcGraphID) {
+		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
+		ThingActionQResAdapter taqra = new ThingActionQResAdapter();
+		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
 		// Delete the actions from graph, so they are not returned on next call to this method.
-
 		for (ThingActionSpec tas : actionSpecList) {
-			deleteThingAction(rc, graphIdent, tas);
+			deleteThingAction(rc, srcGraphID, tas);
 		}
-		theLogger.info("Returning ThingAction list of length {} from graph {}",  actionSpecList.size(), graphIdent);
+		theLogger.info("Returning ThingAction list of length {} from graph {}",  actionSpecList.size(), srcGraphID);
 		return actionSpecList;
 	}
-	
+	/**
+	 * Finds actions not yet seen by a particular reading agent, pulls their data, and marks them seen for that agent.
+	 * @param rc
+	 * @param srcGraphID
+	 * @param seeingAgentID
+	 * @return 
+	 */
+	public List<ThingActionSpec> seeActions(RepoClient rc, Ident srcGraphID, Ident seeingAgentID) {
+		String seeingAgentVarName = "";
+		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.UNSEEN_ACTION_QUERY_URI, srcGraphID, 
+						seeingAgentVarName, seeingAgentID);
+		ThingActionQResAdapter taqra = new ThingActionQResAdapter();
+		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
+		// Delete the actions from graph, so they are not returned on next call to this method.
+		for (ThingActionSpec tas : actionSpecList) {
+			markThingActionSeen(rc, srcGraphID, tas, seeingAgentID);
+		}
+		theLogger.info("Returning ThingAction list of length {} from graph {}",  actionSpecList.size(), srcGraphID);
+		return actionSpecList;
+	}	
+
+			
 	/**
 	 *  Q:  Under what conditions are we allowed to do this directly through Dataset.getNamedModel() actions?
 	 *  A:  Not sure - the clean-est way is to generate SPARQL-UPDATE and apply.
@@ -91,17 +101,8 @@ class ThingActionUpdater {
 		theLogger.info("After remova from {}, graph size is {}", graphID, gm.size());
 	}
 	
-	private TypedValueMap buildActionParameterValueMap(RepoClient rc, Ident graphIdent, SolutionHelper sh, Ident actionIdent) {
-		BasicTypedValueMap paramMap = new BasicTypedValueMapTemporaryImpl();
-		SolutionList paramList = rc.queryIndirectForAllSolutions(ThingCN.PARAM_QUERY_URI, graphIdent,
-				ThingCN.ACTION_QUERY_VAR_NAME, actionIdent);
-		for (Solution paramSoln: paramList.javaList()) {
-			Ident paramIdent = sh.pullIdent(paramSoln, ThingCN.PARAM_IDENT_VAR_NAME);
-			String paramValue = sh.pullString(paramSoln, ThingCN.PARAM_VALUE_VAR_NAME);
-			theLogger.debug("Adding new param for Thing action {}: ident: {}, value: {}",
-					new Object[]{actionIdent, paramIdent, paramValue});
-			paramMap.putValueAtName(paramIdent, paramValue);
-		}
-		return paramMap;
+	private void markThingActionSeen(RepoClient rc, Ident graphID, ThingActionSpec tas,  Ident seeingAgentID) { 
+		
 	}
+
 }

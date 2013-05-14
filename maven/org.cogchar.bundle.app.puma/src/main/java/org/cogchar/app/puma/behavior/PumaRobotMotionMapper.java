@@ -19,12 +19,10 @@ package org.cogchar.app.puma.behavior;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.skeleton.config.BoneRobotConfig;
-import org.cogchar.bind.rk.robot.client.RobotAnimClient;
-import org.cogchar.bind.rk.robot.client.RobotAnimContext;
-import org.cogchar.bind.rk.robot.client.DirectRobotAnimContext;
+import org.cogchar.bind.rk.robot.client.*;
 import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
+import org.cogchar.impl.perform.PerfChannelNames;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 
 /**
@@ -73,9 +71,16 @@ public class PumaRobotMotionMapper extends BasicDebugger {
 	 * (whether local or remote).
 	 * @return 
 	 */	
-	// Can probably be dropped in favor of channel-lifecycle wiring
+	// Can eventually be dropped in favor of channel-lifecycle wiring
 	protected FancyTextPerfChan getBestAnimOutChan() { 
-		return myRobotAnimCtx.getTriggeringChannel();
+		AnimOutTrigChan aotc = myRobotAnimCtx.getTriggeringChannel();
+		Ident chanID = aotc.getIdent();
+		Ident bestOutChanID =  PerfChannelNames.getOutChanIdent_AnimBest();
+		if (!chanID.equals(bestOutChanID)) {
+			AnimOutTrigChan wrappedChan = new AnimOutTrigChan(bestOutChanID, aotc);
+			aotc = wrappedChan;
+		}
+		return aotc;
 	}
 	protected void stopAndReset() {
 		if (myRobotAnimCtx != null) {
