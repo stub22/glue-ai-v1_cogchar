@@ -19,14 +19,13 @@ package org.cogchar.lifter.model.handler
 import java.lang.NumberFormatException
 import org.appdapter.core.name.Ident
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.name.lifter.{ActionStrings}
+import org.cogchar.name.lifter.ActionStrings
 import org.cogchar.lifter.model.{ControlToggler,LifterState,PageCommander}
 import org.cogchar.lifter.snippet.PushyButton
-import net.liftweb.common.Logger
 import scala.collection.mutable.ArrayBuffer
 
 // A handler for lifter variables
-class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
+class LifterVariableHandler extends AbstractLifterActionHandler {
   
   protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_liftvar, ActionStrings.p_liftsessionvar)
   
@@ -70,7 +69,8 @@ class LifterVariableHandler extends AbstractLifterActionHandler with Logger {
 	  }
 	}
 	var variableTypeString = if (sessionVar) "session" else "global"
-	info("Exiting LifterVariableHandler; " + variableTypeString + " lifter variable " + varName + " is now set to " + variablesMap(varName))
+	myLogger.info("Exiting LifterVariableHandler; {} lifter variable {} is now set to {}",
+				  Array[AnyRef](variableTypeString, varName, variablesMap(varName)))
   }
 }
 

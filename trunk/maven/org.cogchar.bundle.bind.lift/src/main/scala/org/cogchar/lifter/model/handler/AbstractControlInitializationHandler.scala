@@ -16,12 +16,12 @@
 
 package org.cogchar.lifter.model.handler
 
-import net.liftweb.common.Logger
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.LifterState;
+import org.cogchar.lifter.LifterLogger
+import org.cogchar.lifter.model.LifterState
 import scala.xml.NodeSeq
 
-trait AbstractControlInitializationHandler extends Logger {
+trait AbstractControlInitializationHandler extends LifterLogger {
   
   def processHandler(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
 	var result = NodeSeq.Empty
@@ -30,8 +30,8 @@ trait AbstractControlInitializationHandler extends Logger {
 	  if (this.nextHandler != null) {
 		result = nextHandler.processHandler(state, sessionId, slotNum, control)
 	  } else {
-		warn("Reached end of control initialization chain without finding handler for sessionId " + sessionId +
-			 " and slotNum:" + slotNum + " with control type: " + control.controlType)
+		myLogger.warn("Reached end of control initialization chain without finding handler for sessionId {}" +
+			 " and slotNum:{} with control type: {}", Array[AnyRef](sessionId, slotNum.asInstanceOf[AnyRef], control.controlType))
 	  }
 	}
 	result

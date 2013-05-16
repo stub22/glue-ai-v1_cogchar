@@ -37,6 +37,7 @@ class SceneTriggerHandler extends AbstractLifterActionHandler {
   }
   
   // A method to create a liftconfig locally to serve as a "Scene Playing" info screen
+  // This is an early hard coded demo that needs to be refactored or eliminated
   def createSceneInfoScreen(state:LifterState, sessionId:String, control:ControlConfig): LiftConfig = {
 	val sceneInfoConfig = new LiftConfig(state.SINGLE_SLOT_TEMPLATE)
 	val infoButton = new ControlConfig()

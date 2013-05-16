@@ -16,13 +16,13 @@
 
 package org.cogchar.lifter.model.handler
 
-import net.liftweb.common.Logger
 import org.appdapter.core.name.Ident
 import org.cogchar.bind.lift.ControlConfig
+import org.cogchar.lifter.LifterLogger
 import org.cogchar.lifter.model.{LifterState,PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
-trait AbstractLifterActionHandler extends Logger {
+trait AbstractLifterActionHandler extends LifterLogger {
   
   def processHandler(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
 	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {this.handleHere(state, sessionId, slotNum, control, input)}
@@ -30,7 +30,8 @@ trait AbstractLifterActionHandler extends Logger {
 	  if (this.nextHandler != null) {
 		nextHandler.processHandler(state, sessionId, slotNum, control, input)
 	  } else {
-		warn("Reached end of action handling chain without finding handler for sessionId:" + sessionId + " and slotNum:" + slotNum + " with action: " + control.action) // Need to fix
+		myLogger.warn("Reached end of action handling chain without finding handler for sessionId:{}" + 
+					  " and slotNum:{} with action: {}", Array[AnyRef](sessionId, slotNum.asInstanceOf[AnyRef], control.action))
 	  }
 	}
   }
