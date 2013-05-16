@@ -17,16 +17,15 @@
 package org.cogchar.lifter.model.handler
 import org.cogchar.name.lifter.{ActionStrings}
 import org.cogchar.lifter.model.{LifterState,PageCommander}
-import net.liftweb.common.Logger
 import scala.collection.mutable.ArrayBuffer
 
-class ShowTextCommandHandler extends AbstractLifterCommandHandler with Logger {
+class ShowTextCommandHandler extends AbstractLifterCommandHandler {
   
   protected val matchingTokens = ArrayBuffer(ActionStrings.showText)
   
   // This command shouldn't be attached to a control which is actuated
   protected def handleHere(state:LifterState, sessionId:String, slotId:Int, command:String, input:Array[String]) {
-	warn("Handling actuated control with command showtext - that's strange! Nothing to do...")
+	myLogger.warn("Handling actuated control with command showtext - that's strange! Nothing to do...")
   }
   
   override protected def handleInitialActionHere(state:LifterState, sessionId:String, slotNum:Int, command:String) {
@@ -42,7 +41,7 @@ class ShowTextCommandHandler extends AbstractLifterCommandHandler with Logger {
 	  case ActionStrings.ERROR_TOKEN => { // Associate the error source name with the slotNum where errors will display
 		  sessionState.errorDisplaySlotsByType(splitAction(2)) = slotNum
 		}
-	  case _ => warn("ShowTextCommandHandler doesn't know what to do in order to display text with token " + splitAction(1))
+	  case _ => myLogger.warn("ShowTextCommandHandler doesn't know what to do in order to display text with token {}", splitAction(1))
 	}
   }
 }

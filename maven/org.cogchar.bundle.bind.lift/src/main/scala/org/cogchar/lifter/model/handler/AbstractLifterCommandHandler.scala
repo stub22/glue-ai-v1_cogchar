@@ -16,12 +16,12 @@
 
 package org.cogchar.lifter.model.handler
 
-import net.liftweb.common.Logger
-import org.cogchar.name.lifter.{ActionStrings}
-import org.cogchar.lifter.model.{LifterState}
+import org.cogchar.name.lifter.ActionStrings
+import org.cogchar.lifter.LifterLogger
+import org.cogchar.lifter.model.LifterState
 import scala.collection.mutable.ArrayBuffer
 
-trait AbstractLifterCommandHandler extends Logger {
+trait AbstractLifterCommandHandler extends LifterLogger {
   
   def processHandler(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
 	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {this.handleHere(state, sessionId, slotNum, command, input)}
@@ -29,7 +29,8 @@ trait AbstractLifterCommandHandler extends Logger {
 	  if (this.nextHandler != null) {
 		nextHandler.processHandler(state, sessionId, slotNum, command, input)
 	  } else {
-		warn("Reached end of Lifter Command handling chain without finding handler for sessionId:" + sessionId + " and slotNum:" + slotNum + " with action: " + command) // Need to fix
+		myLogger.warn("Reached end of Lifter Command handling chain without finding handler for sessionId:{} " +
+					  "and slotNum:{} with action: {}", Array[AnyRef](sessionId, slotNum.asInstanceOf[AnyRef], command))
 	  }
 	}
   }

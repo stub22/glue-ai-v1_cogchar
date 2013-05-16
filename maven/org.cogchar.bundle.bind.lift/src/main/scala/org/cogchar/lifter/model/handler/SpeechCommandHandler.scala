@@ -16,14 +16,13 @@
 
 package org.cogchar.lifter.model.handler
 
-import net.liftweb.common.Logger
 import org.cogchar.name.lifter.{ActionStrings}
 import org.cogchar.lifter.model.{LifterState,PageCommander}
 import org.cogchar.lifter.view.TextBox
 import scala.collection.mutable.ArrayBuffer
 
-class SpeechCommandHandler extends AbstractLifterCommandHandler with Logger {
-
+class SpeechCommandHandler extends AbstractLifterCommandHandler {
+  
   protected val matchingTokens = ArrayBuffer(ActionStrings.acquireSpeech, ActionStrings.getContinuousSpeech,
 											 ActionStrings.stopContinuousSpeech, ActionStrings.cogbotSpeech)
   
@@ -63,7 +62,7 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler with Logger {
 		  secondToken match {
 			case ActionStrings.ENABLE_TOKEN => sessionState.cogbotTextToSpeechActive = true
 			case ActionStrings.DISABLE_TOKEN => sessionState.cogbotTextToSpeechActive = false
-			case _ => error("Cogbot Speech lifter command seen, but following token " + secondToken + " is not understood")
+			case _ => myLogger.error("Cogbot Speech lifter command seen, but following token {} is not understood", secondToken)
 		  }  
 		}
 	  case _ =>

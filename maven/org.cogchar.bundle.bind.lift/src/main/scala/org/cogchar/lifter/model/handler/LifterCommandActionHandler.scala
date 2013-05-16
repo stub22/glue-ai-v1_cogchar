@@ -17,8 +17,8 @@
 package org.cogchar.lifter.model.handler
 
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.name.lifter.{ActionStrings}
-import org.cogchar.lifter.model.{LifterState}
+import org.cogchar.name.lifter.ActionStrings
+import org.cogchar.lifter.model.LifterState
 import scala.collection.mutable.ArrayBuffer
 
 class LifterCommandActionHandler extends AbstractLifterActionHandler {
