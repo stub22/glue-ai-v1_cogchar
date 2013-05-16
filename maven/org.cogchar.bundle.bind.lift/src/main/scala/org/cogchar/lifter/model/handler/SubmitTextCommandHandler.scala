@@ -16,13 +16,12 @@
 
 package org.cogchar.lifter.model.handler
 
-import net.liftweb.common.Logger
 import org.cogchar.name.lifter.{ActionStrings}
 import org.cogchar.lifter.model.{LifterState,PageCommander}
 import org.cogchar.lifter.view.TextBox
 import scala.collection.mutable.ArrayBuffer
 
-class SubmitTextCommandHandler extends AbstractLifterCommandHandler with Logger {
+class SubmitTextCommandHandler extends AbstractLifterCommandHandler {
   
   protected val matchingTokens = ArrayBuffer(ActionStrings.submitText)
   
@@ -47,11 +46,11 @@ class SubmitTextCommandHandler extends AbstractLifterCommandHandler with Logger 
 			val databallsAction = command.split(ActionStrings.commandTokenSeparator)(2)
 			PageCommander.getLiftAmbassador.performDataballAction(databallsAction, input(0));
 		  } else {
-			warn("Request found to submit text to databalls, but no destination (third Lifter command token) found during session " + sessionId)
+			myLogger.warn("Request found to submit text to databalls, but no destination (third Lifter command token) found during session {}", sessionId)
 		  }
 		}
 	  case _ => {
-		  warn("No action found in SubmitTextCommandHandler for token " + actionToken + " during session " + sessionId)
+		  myLogger.warn("No action found in SubmitTextCommandHandler for token {} during session {}", actionToken, sessionId)
 		}
 	}
   }

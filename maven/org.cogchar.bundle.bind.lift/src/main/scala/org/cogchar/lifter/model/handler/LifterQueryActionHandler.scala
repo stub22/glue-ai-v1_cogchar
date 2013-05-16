@@ -18,9 +18,9 @@ package org.cogchar.lifter.model.handler
 
 import org.appdapter.core.name.Ident
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.name.lifter.{ActionStrings}
+import org.cogchar.name.lifter.ActionStrings
 import org.cogchar.lifter.model.{LifterState,PageCommander}
-import org.cogchar.lifter.snippet.LinkList;
+import org.cogchar.lifter.snippet.LinkList
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.JavaConversions.asScalaBuffer
 
@@ -30,7 +30,8 @@ class LifterQueryActionHandler extends AbstractLifterActionHandler {
   protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_lifterQuery)
   
   protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
-	warn("Lifter does not know how handle a lifter query as a triggered action in session " + sessionId + ", control " + slotNum)
+	myLogger.warn("Lifter does not know how handle a lifter query as a triggered action in session {}, control []",
+				  sessionId, slotNum)
   }
   
   override def checkForInitialAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig) {
@@ -47,8 +48,8 @@ class LifterQueryActionHandler extends AbstractLifterActionHandler {
 		  PageCommander.setControl(sessionId, slotNum, LinkList.makeMultiControl(state, sessionId, slotNum, control.text, namesList.toArray))
 	  }
 	  case _ => {
-		  warn("Lifter does not know how to interpret a query as action for control type " + control.controlType +
-			" in session " + sessionId + ", control " + slotNum)
+		  myLogger.warn("Lifter does not know how to interpret a query as action for control type {}" +
+			" in session {}, control {}", Array[AnyRef](control.controlType, sessionId, slotNum.asInstanceOf[AnyRef]))
 	  }
 	}
   }
