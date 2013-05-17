@@ -16,7 +16,6 @@
 
 package org.cogchar.lifter.snippet
 
-import org.appdapter.core.name.FreeIdent
 import org.cogchar.bind.lift.ControlConfig
 import org.cogchar.lifter.model.{ControlToggler,LifterState}
 import org.cogchar.lifter.model.handler.{AbstractControlInitializationHandler,LifterVariableHandler}

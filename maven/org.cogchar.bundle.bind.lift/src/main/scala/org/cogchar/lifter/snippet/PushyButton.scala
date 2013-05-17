@@ -17,21 +17,18 @@
 package org.cogchar.lifter {
   package snippet {
 
-	import scala.xml._	
-	import net.liftweb.common._
-	import net.liftweb.http._
-	import net.liftweb.http.SHtml._
-	import net.liftweb.util._
-	import net.liftweb.http.js.JsCmd
+	
+	import net.liftweb.common.Full
+	import net.liftweb.http.{S,SHtml}
 	import net.liftweb.http.js.JsCmds
-	import Helpers._
-	import S._
+	import net.liftweb.util.Helpers._
 	import org.cogchar.bind.lift.ControlConfig
 	import org.cogchar.lifter.model.{LifterState,PageCommander}
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
+	import scala.xml.NodeSeq
 
-	object PushyButton extends AbstractControlInitializationHandler with Logger {
+	object PushyButton extends AbstractControlInitializationHandler {
 	  
 	  protected val matchingName = "PUSHYBUTTON"
   
@@ -58,14 +55,14 @@ package org.cogchar.lifter {
 			val buttonName: String = "pushbutton" + buttonId
 			val selectorString = "@" + buttonName + " [onclick]"
 			selectorString #> SHtml.ajaxInvoke (() => {
-				info("Starting action mapped to button " + buttonId + " in session " + sessionId)
+				myLogger.info("Starting action mapped to button {} in session {}", buttonId, sessionId)
 				PageCommander ! PageCommander.ControlAction(sessionId, buttonId)
 				JsCmds.Noop
 			})
 		  }
 		  case _ => {
 			val errorString = "PushyButton cannot get sessionId, not rendering!"
-			error(errorString)
+			myLogger.error(errorString)
 			TextBox.makeBox(errorString, "", true)
 		  }
 		}
