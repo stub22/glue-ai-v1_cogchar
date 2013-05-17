@@ -20,14 +20,11 @@ package org.cogchar.lifter {
 	import net.liftweb.common.Full
 	import net.liftweb.http.{CometActor, CometListener, S}
 	import net.liftweb.http.js.JsCmds.SetHtml
+	import org.cogchar.lifter.LifterLogger
 	import org.cogchar.lifter.model.PageCommander
 	import org.cogchar.lifter.view.TextBox
-	import org.slf4j.LoggerFactory
 
-	
-	class ControlActor extends CometActor with CometListener {
-	  
-	  private val myLogger = LoggerFactory.getLogger(this.getClass); //ControlActor.getClass is not found -- why?
+	class ControlActor extends CometActor with CometListener with LifterLogger {
 	  
 	  final val SLOT_ID_PREFIX = "slot"
   
