@@ -16,13 +16,10 @@
 
 package org.cogchar.lifter.view
 
-import scala.xml.NodeSeq	
-import net.liftweb.http._
-import net.liftweb.util._
-import Helpers._
 import org.cogchar.bind.lift.ControlConfig
 import org.cogchar.lifter.model.LifterState
 import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
+import scala.xml.NodeSeq
 
 object InsertMarkup extends AbstractControlInitializationHandler {
   
