@@ -22,14 +22,12 @@ package org.cogchar.lifter {
 	import net.liftweb.http.js.JsCmd
 	import net.liftweb.http.js.JsCmds
 	import scala.xml.NodeSeq
+	import org.cogchar.lifter.LifterLogger
 	import org.cogchar.lifter.model.PageCommander
 	import org.cogchar.lifter.model.PageCommander._ // Six imports here: case classes. Wildcard OK?
-	import org.slf4j.LoggerFactory
 
-	class JavaScriptActor extends CometActor with CometListener {
+	class JavaScriptActor extends CometActor with CometListener with LifterLogger {
 	  
-	  private val myLogger = LoggerFactory.getLogger(this.getClass) //JavaScriptActor.getClass is not found -- why?
-      
 	  // On initial render, just blank anything in JavaScriptActor comet div
 	  def render = "@JSCommandSlot" #> NodeSeq.Empty
   

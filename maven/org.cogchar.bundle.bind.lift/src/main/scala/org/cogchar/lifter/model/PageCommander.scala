@@ -21,10 +21,10 @@ import org.cogchar.name.lifter.{ActionStrings}
 	import scala.xml.NodeSeq
 	import net.liftweb.actor.LiftActor
 	import org.appdapter.core.name.{FreeIdent, Ident}
+	import org.cogchar.lifter.LifterLogger
 	import org.cogchar.lifter.model.handler.{HandlerConfigurator, LifterVariableHandler}
 	import org.cogchar.lifter.view.TextBox
 	import org.cogchar.bind.lift.{ControlConfig, LiftAmbassador, LiftConfig}
-	import org.slf4j.LoggerFactory
 	import scala.collection.JavaConverters._
 	// import org.cogchar.platform.trigger.CogcharActionBinding
 	
@@ -40,9 +40,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	// actors with an instance of that class created for each session.
 	// That would likely be a more natural approach in Lift and is the one I would have selected when starting this
 	// project, if I knew what I know now!
-	object PageCommander extends LiftActor with ListenerManager{
-	  
-	  private val myLogger = LoggerFactory.getLogger(PageCommander.getClass);
+	object PageCommander extends LiftActor with ListenerManager with LifterLogger {
   
 	  private var theLiftAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods
 	  
