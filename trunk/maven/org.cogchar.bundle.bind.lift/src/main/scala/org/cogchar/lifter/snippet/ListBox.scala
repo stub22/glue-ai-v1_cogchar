@@ -17,18 +17,12 @@
 package org.cogchar.lifter {
   package snippet {
 
-	import scala.xml._
-	import net.liftweb._
-	import http._
-	import common._
-	import js._
-	import JsCmds._
-	import JE._
-	import net.liftweb.http.js.JsCmd
-	import net.liftweb.util._
-	import Helpers._
-	import net.liftweb.http.SHtml._
-
+	import net.liftweb.common.Empty
+	import net.liftweb.http.SHtml
+	import net.liftweb.util.CssSel
+	import net.liftweb.util.Helpers._
+	import scala.xml.NodeSeq
+	
 	object ListBox extends AbstractMultiSelectControlObject {
 	  
 	  protected val matchingName = "LISTBOX"

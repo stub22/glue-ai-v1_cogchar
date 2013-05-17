@@ -32,7 +32,8 @@ package org.cogchar.lifter {
 	  val textBoxIdPrefix: String = DualTextForm.textBoxIdPrefix
 	  
 	  override def process(): JsCmd = {
-		info("Input text for form " + formId + " for session " + sessionId + ": " + text1 + "; " + text2)
+		myLogger.info("Input text for form {} for session {}: {}; {}",
+		  Array[AnyRef](formId.asInstanceOf[AnyRef], sessionId, text1, text2))
 		super.process();
 	  } 
 
