@@ -16,25 +16,21 @@
 
 package org.cogchar.lifter.snippet
 
-import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.name.lifter.{ActionStrings}
+import org.cogchar.lifter.LifterLogger
 import org.cogchar.lifter.model.{LifterState,PageCommander}
+import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 import org.cogchar.lifter.view.TextBox
-import net.liftweb._
-import net.liftweb.util._
-import http._
-import common._
-import js._
-import JsCmds._
-import JE._
-import Helpers._
-import net.liftweb.http.SHtml._
-import S._
-import scala.xml._
+import org.cogchar.name.lifter.ActionStrings
+import net.liftweb.common.Full
+import net.liftweb.http.{S, StatefulSnippet}
+import net.liftweb.http.js.{JsCmd, JsCmds}
+import net.liftweb.util.CssSel
+import net.liftweb.util.Helpers._ // This wildcard import is the way Lift Helpers roll for CssSel operations and etc.
 import scala.collection.mutable.HashMap
+import scala.xml.NodeSeq
 
-trait AbstractMultiSelectControlObject extends AbstractControlInitializationHandler with Logger {
+trait AbstractMultiSelectControlObject extends AbstractControlInitializationHandler {
   
   protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq =  {
 	// From the RDF "text" value we assume a comma separated list with the first item the title and the rest option labels
@@ -61,7 +57,7 @@ trait AbstractMultiSelectControlObject extends AbstractControlInitializationHand
   }
 }
 
-trait AbstractMultiSelectControl extends StatefulSnippet with Logger {
+trait AbstractMultiSelectControl extends StatefulSnippet with LifterLogger {
   var formId: Int = blankId
   val blankId = -1
   var sessionId: String = ""
@@ -107,12 +103,13 @@ trait AbstractMultiSelectControl extends StatefulSnippet with Logger {
   }
   
   def produceErrorMessages(errorText:String): NodeSeq = {
-	error(errorText)
+	myLogger.error(errorText)
 	TextBox.makeBox(errorText, "", true)
   }
   
   def process(result: String): JsCmd = {
-	info(getName + " says item number " + result + " on slot " + formId + " is selected in session " + sessionId)
+	myLogger.info("{} says item number {} on slot {} is selected in session {}",
+	Array[AnyRef](getName, result.asInstanceOf[AnyRef], formId.asInstanceOf[AnyRef], sessionId))
 	PageCommander ! PageCommander.ControlMultiAction(sessionId, formId, result.toInt, multiActionFlag)
 	JsCmds.Noop
   }

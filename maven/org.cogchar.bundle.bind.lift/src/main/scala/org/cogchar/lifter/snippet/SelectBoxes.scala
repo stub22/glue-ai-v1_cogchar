@@ -17,17 +17,10 @@
 package org.cogchar.lifter {
   package snippet {
 
-	import scala.xml._
-	import net.liftweb._
-	import http._
-	import common._
-	import js._
-	import JsCmds._
-	import JE._
-	import net.liftweb.http.js.JsCmd
-	import net.liftweb.util._
-	import Helpers._
-	import net.liftweb.http.SHtml._
+	import net.liftweb.http.SHtml
+	import net.liftweb.util.CssSel
+	import net.liftweb.util.Helpers._
+	import scala.xml.{NodeSeq,XML}
 
 	object SelectBoxes extends AbstractMultiSelectControlObject {
 	  
@@ -81,7 +74,7 @@ package org.cogchar.lifter {
 		  process(boxNumber.toString)
 		} else {
 		  // We may want to expand this class and/or AbstractMultiSelectControl to perform an action on deselect
-		  info(getName + " sees that the box was deselected, but currently we do not make use of that information.")
+		  myLogger.info("{} sees that the box was deselected, but currently we do not make use of that information.", getName)
 		}
 	  }
 

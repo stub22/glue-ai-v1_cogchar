@@ -16,24 +16,11 @@
 
 package org.cogchar.lifter {
   package snippet {
-
-	import scala.xml._
-	import net.liftweb._
-	import http._
-	import common._
-	import js._
-	import JsCmds._
-	import JE._
+	
+	import net.liftweb.http.SHtml
 	import net.liftweb.http.js.JsCmd
-	import net.liftweb.util._
-	import Helpers._
-	import net.liftweb.http.SHtml._
-	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.name.lifter.{ActionStrings}
-	import org.cogchar.lifter.model.{LifterState,PageCommander}
-	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
-	import org.cogchar.lifter.view.TextBox
-	import S._
+   	import net.liftweb.util.CssSel
+	import net.liftweb.util.Helpers._
 	
 	object LoginForm extends AbstractTextFormObject {
 	  
@@ -48,12 +35,13 @@ package org.cogchar.lifter {
 	  val textBoxIdPrefix: String = LoginForm.textBoxIdPrefix
    
 	  override def process(): JsCmd = {
-		info("Input text for form #" + formId + ": " + text1 + "; [password hidden] in session " + sessionId)
+		myLogger.info("Input text for form #{}: {}; [password hidden] in session {}",
+					  Array[AnyRef](formId.asInstanceOf[AnyRef], text1, sessionId))
 		super.process();
 	  }
 	  
 	  override def generateSelectors(titleText: Array[String]): CssSel = {
-	  labelSelectorText1 #> titleText(0) & labelSelectorText2 #> titleText(1) &
+		labelSelectorText1 #> titleText(0) & labelSelectorText2 #> titleText(1) &
 		boxSelectorText1 #> (SHtml.text(text1, text1 = _, "id" -> textBoxInstanceLabel1)) &
 		boxSelectorText2 #> (SHtml.password(text2, text2 = _, "id" -> textBoxInstanceLabel2) ++ SHtml.hidden(process))
 	  }

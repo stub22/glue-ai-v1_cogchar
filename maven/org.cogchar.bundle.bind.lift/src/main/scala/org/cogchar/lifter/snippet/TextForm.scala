@@ -17,24 +17,19 @@
 package org.cogchar.lifter {
   package snippet {
 
-	import scala.xml.NodeSeq
-	import net.liftweb._
-	import http._
-	import common._
-	import js._
-	import JsCmds._
-	import JE._
+   	import net.liftweb.common.Full
+	import net.liftweb.http.{S,SHtml,StatefulSnippet}
 	import net.liftweb.http.js.JsCmd
-	import net.liftweb.util._
-	import Helpers._
-	import net.liftweb.http.SHtml._
+	import net.liftweb.http.js.JsCmds.SetValById
+	import net.liftweb.util.Helpers._ 
 	import org.cogchar.bind.lift.ControlConfig
+	import org.cogchar.lifter.LifterLogger
 	import org.cogchar.lifter.model.{LifterState,PageCommander}
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
-	import S._
+	import scala.xml.NodeSeq
 	
-	// This should eventually be refactored as an AbstractTextForm
+	// This should eventually [er, soon] be refactored as an AbstractTextForm
 	object TextForm extends AbstractControlInitializationHandler {
 	  
 	  protected val matchingName = "TEXTINPUT"
@@ -65,7 +60,7 @@ package org.cogchar.lifter {
 	  
 	}
 
-	class TextForm extends StatefulSnippet with Logger {
+	class TextForm extends StatefulSnippet with LifterLogger {
 	  var text: String = TextForm.defaultText
 	  var formId: Int = TextForm.blankId
 	  var sessionId: String = ""
@@ -80,7 +75,8 @@ package org.cogchar.lifter {
 	  def render(xhtml:NodeSeq) = {
    
 		def process(): JsCmd = {
-		  info("Input text for form #" + formId + ": " + text + " in session " + sessionId)
+		  myLogger.info("Input text for form #{}: {} in session {}",
+						 Array[AnyRef](formId.asInstanceOf[AnyRef], text, sessionId))
 		  PageCommander ! PageCommander.ControlTextInput(sessionId, formId, Array(text)) // Let PageCommander know about the text so it can figure out what to do with it
 		  //SetHtml(textFormInstanceLabel, Text(TextForm.responseText)) & // for now, this is disabled for the "operational" demo requirements
 		  SetValById(textBoxInstanceLabel, TextForm.afterEntryText)
@@ -95,7 +91,8 @@ package org.cogchar.lifter {
 			var titleText = ""
 			snippetData(sessionId)(formId) match {
 			  case title: String => titleText = title
-			  case _ => warn("Title for TextForm in session " + sessionId + " and slot " + formId + " could not be found in snippet data map")
+			  case _ => myLogger.warn("Title for TextForm in session {} and slot {} could not be found in snippet data map",
+									  sessionId, formId)
 			}
 			val selectors = labelSelectorText #> titleText &
 			  boxSelectorText #> (SHtml.textarea(text, text = _, "rows" -> TextForm.textBoxRows.toString, "id" -> textBoxInstanceLabel) ++ SHtml.hidden(process))

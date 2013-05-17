@@ -15,27 +15,20 @@
  */
 
 package org.cogchar.lifter.snippet
-
-
- 
-
-	import scala.xml._
-	import net.liftweb._
-	import http._
-	import common._
-	import js._
-	import JsCmds._
-	import JE._
+	
+	import net.liftweb.common.Full
+	import net.liftweb.http.{S,SHtml,StatefulSnippet}
 	import net.liftweb.http.js.JsCmd
-	import net.liftweb.util._
-	import Helpers._
-	import net.liftweb.http.SHtml._
-	import org.cogchar.name.lifter.{ActionStrings}
+	import net.liftweb.http.js.JsCmds.SetValById
+	import net.liftweb.util.CssSel
+	import net.liftweb.util.Helpers._ // This wildcard import is the way Lift Helpers roll for CssSel operations and etc.
 	import org.cogchar.bind.lift.ControlConfig
+	import org.cogchar.lifter.LifterLogger
 	import org.cogchar.lifter.model.{LifterState,PageCommander}
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
-	import S._
+	import org.cogchar.name.lifter.ActionStrings
+	import scala.xml.{NodeSeq,XML}
 	
 	// An abstracted text form control. Right now only supports two entry fields, but will be refactored soon to generalize
 	// to an arbitrary number of entry fields
@@ -72,7 +65,7 @@ package org.cogchar.lifter.snippet
 	  }
 	}
 
-	trait AbstractTextForm extends StatefulSnippet with Logger {
+	trait AbstractTextForm extends StatefulSnippet with LifterLogger {
 	  
 	  // Right now these must be set equal to the object values in the subclass - nasty... :(
 	  val labelIdPrefix: String
@@ -116,7 +109,8 @@ package org.cogchar.lifter.snippet
 			var titleText = new Array[String](2) // Soon: ArrayBuffer
 			snippetData(sessionId)(formId) match {
 			  case titles: Array[String] => titleText = titles
-			  case _ => warn("Title(s) for text form in session " + sessionId + " and slot " + formId + " could not be found in snippet data map")
+			  case _ => myLogger.warn("Title(s) for text form in session {} and slot {} could not be found in snippet data map",
+				sessionId, formId)
 			}
 			val selectors = generateSelectors(titleText)
 			selectors.apply(xhtml)
@@ -124,7 +118,7 @@ package org.cogchar.lifter.snippet
 		  case _ => {
 			// This common code needs to be refactored into a common location:
 			val errorString = "Text form cannot get sessionId, not rendering!"
-			error(errorString)
+			myLogger.error(errorString)
 			TextBox.makeBox(errorString, "", true)
 		  }
 		}
