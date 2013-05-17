@@ -17,13 +17,10 @@
 package org.cogchar.lifter {
   package view {
 
-	import scala.xml.NodeSeq	
-	import net.liftweb.util._
-	import Helpers._
-	import net.liftweb.http._
 	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.model.LifterState;
+	import org.cogchar.lifter.model.LifterState
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
+	import scala.xml.NodeSeq
 
 	object VideoBox extends AbstractControlInitializationHandler {
 	  
