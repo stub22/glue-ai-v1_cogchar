@@ -37,7 +37,7 @@ public abstract class ThingActionConsumer extends BasicDebugger {
 	
 	public abstract Status consumeAction(ThingActionSpec actionSpec, Ident srcGraphID);
 	
-	public void consumeAllActions(RepoClient rc, Ident srcGraphID) {
+	@Deprecated public void consumeAllActions(RepoClient rc, Ident srcGraphID) {
 		ThingActionUpdater updater = new ThingActionUpdater();
 		List<ThingActionSpec> actionSpecList = updater.takeThingActions(rc, srcGraphID);
 		for (ThingActionSpec actionSpec : actionSpecList) {

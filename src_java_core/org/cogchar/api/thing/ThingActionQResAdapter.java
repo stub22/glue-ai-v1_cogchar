@@ -16,6 +16,7 @@
 
 package org.cogchar.api.thing;
 
+import com.hp.hpl.jena.rdf.model.Literal;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
@@ -43,7 +44,10 @@ public class ThingActionQResAdapter extends BasicDebugger {
 			Ident targetTypeID = sh.pullIdent(actionSoln, ThingCN.TARGET_TYPE_VAR_NAME);
 			
 			TypedValueMap actionParams = buildActionParameterValueMap(rc, srcGraphID, sh, actionID);
-			ThingActionSpec spec = new BasicThingActionSpec(actionID, targetID, targetTypeID, verbID, srcAgentID, actionParams);
+			Literal tstampLiteral = actionSoln.getLiteralResultVar(ThingCN.POSTED_TIMESTAMP_MSEC_VAR_NAME);
+			Long actionPostedTStampMsec = (tstampLiteral != null) ? tstampLiteral.getLong() : null;
+			ThingActionSpec spec = new BasicThingActionSpec(actionID, targetID, targetTypeID, verbID, srcAgentID, 
+					actionParams, actionPostedTStampMsec);
 			getLogger().debug("Found new ThingAction: {}", spec);
 			actionSpecList.add(spec);
 		}		

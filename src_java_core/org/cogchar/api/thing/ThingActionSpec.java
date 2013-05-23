@@ -50,4 +50,11 @@ public interface ThingActionSpec {
 	/**  @return  Parameters of the action (keyed by URI), which are usually the updated properties of the target 
 	 * thing.	 */
 	public	TypedValueMap	getParamTVM();
+
+	/**
+	 * 
+	 * @return null or the Java-timestamp (MSec since 1970) at which this ThingActionSpec was "posted" into a repo.
+	 * This is non-null only on the "receiving" side of the spec-transmission.
+	 */
+	public Long				getPostedTimestamp();
 }

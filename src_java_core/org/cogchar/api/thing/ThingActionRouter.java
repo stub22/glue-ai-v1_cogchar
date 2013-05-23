@@ -68,7 +68,7 @@ public class ThingActionRouter extends ThingActionConsumer {
 		List<ThingActionConsumer> consumerList = findConsumersForSourceGraph(srcGraphID);
 		consumerList.add(consumer);
 	}
-	public void consumeAllActions(RepoClient rc) {
+	@Deprecated public void consumeAllActions(RepoClient rc) {
 		for (Ident srcGraphID : myConsumersBySrcGraphID.keySet()) {
 			getLogger().info("Consuming actions from ThingAction-graph: {}", srcGraphID);
 			consumeAllActions(rc, srcGraphID);

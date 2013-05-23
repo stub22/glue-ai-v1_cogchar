@@ -41,6 +41,7 @@ import org.cogchar.api.thing.{TypedValueMap, ThingActionSpec}
 import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
 import org.cogchar.blob.emit.{SparqlTextGen}
 import org.cogchar.name.dir.{NamespaceDir}
+import org.cogchar.name.thing.ThingCN;
 
 class FancyThingModelWriter extends BasicDebugger {
 	
@@ -53,6 +54,7 @@ class FancyThingModelWriter extends BasicDebugger {
 	val TA_NS = NamespaceDir.TA_NS; // "http://www.cogchar.org  /thing/action#"
 	val GOODY_NS = NamespaceDir.GOODY_NS; // "urn:ftd:cogchar.org:2012:goody#"
 	
+	val P_rdfType = RDF_NS + "type";
 	
 	import java.util.Random;
 	
@@ -65,21 +67,24 @@ class FancyThingModelWriter extends BasicDebugger {
 		val targetThingType : Ident = tas.getTargetThingTypeID();
 		val srcAgentID : Ident	= tas.getSourceAgentID();
 		val tvm : TypedValueMap = tas.getParamTVM();
+		val postedStampMSec : java.lang.Long = tas.getPostedTimestamp();
 
 		val mci = new ModelClientImpl(m);
 		val rr = new ResourceResolver(m, None);
 		
-		val rdfTypeProp : Property = rr.findOrMakeProperty(m, RDF_NS + "type")
-		val verbProp  : Property = rr.findOrMakeProperty(m, TA_NS + "verb")
-		val targetThingProp  : Property = rr.findOrMakeProperty(m, TA_NS + "targetThing")		
+		val rdfTypeProp : Property = rr.findOrMakeProperty(m, P_rdfType)
+		val verbProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_verb);
+		val targetThingProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_targetThing);
+		val postedTSMProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_postedTSMsec);
 
-		val taTypeRes : Resource =  rr.findOrMakeResource(m, CCRT_NS + "ThingAction")
+		val taTypeRes : Resource =  rr.findOrMakeResource(m, ThingCN.T_ThingAction);
 		
 		val actionSpecRes : Resource = mci.makeResourceForIdent(actionSpecID)
 		val thingRes : Resource = mci.makeResourceForIdent(targetThing)
 		val thingTypeRes :  Resource = mci.makeResourceForIdent(targetThingType)
 		val verbRes : Resource = mci.makeResourceForIdent(verbID)
-
+		
+		val tstampLit : Literal = mci.makeTypedLiteral(postedStampMSec.toString(), XSDDatatype.XSDlong);
 
 		// Write statements for TAS top facts
 		// rdf:type	ta:verb	ta:targetThing
@@ -87,11 +92,13 @@ class FancyThingModelWriter extends BasicDebugger {
 		val actVerbStmt = m.createStatement(actionSpecRes, verbProp, verbRes)
 		val actThingStmt = m.createStatement(actionSpecRes, targetThingProp, thingRes)
 		val actThingTypeStmt = m.createStatement(thingRes, rdfTypeProp, thingTypeRes)
+		val actStampStmt = m.createStatement(actionSpecRes, postedTSMProp, tstampLit);
 		
 		m.add(actTypeStmt)
 		m.add(actVerbStmt)
 		m.add(actThingStmt)
 		m.add(actThingTypeStmt)
+		m.add(actStampStmt)
 		
 		writeParamsUsingWeakConvention(mci, actionSpecRes, tvm, ran)
 		// println("thingRes=" + thingRes)
@@ -136,12 +143,12 @@ class FancyThingModelWriter extends BasicDebugger {
 
 		// rdf:type	ta:targetAction	ta:verb	ta:targetThing	ta:paramIdent	ta:paramValue
 		
-		val paramLabelProp : Property = rr.findOrMakeProperty(m, TA_NS + "paramIdent")
-		val paramValueProp : Property = rr.findOrMakeProperty(m, TA_NS + "paramValue")
-		val rdfTypeProp : Property = rr.findOrMakeProperty(m, RDF_NS + "type")
-		val targetActionProp  : Property = rr.findOrMakeProperty(m, TA_NS + "targetAction")
+		val paramLabelProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdent)
+		val paramValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramValue)
+		val rdfTypeProp : Property = rr.findOrMakeProperty(m, P_rdfType);
+		val targetActionProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_targetAction);
 		
-		val ptRes : Resource = rr.findOrMakeResource(m, CCRT_NS + "ThingActionParam")
+		val ptRes : Resource = rr.findOrMakeResource(m, ThingCN.T_ThingActionParam);
 		
 		// val tm = com.hp.hpl.jena.datatypes.TypeMapper.getInstance()
 		val nameIter : Iterator[Ident]  = tvm.iterateKeys();
