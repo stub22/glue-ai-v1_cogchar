@@ -17,19 +17,11 @@
 package org.cogchar.app.puma.behavior;
 
 import java.lang.ClassLoader;
-import java.util.List;
-import java.util.List;
-import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
-import org.cogchar.app.puma.registry.ResourceFileCategory;
-import org.cogchar.bind.rk.robot.client.RobotAnimClient;
-import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
-import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
-import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.scene.SceneBook;
 import org.cogchar.impl.scene.Theater;
 import org.cogchar.impl.scene.TheaterTest;
