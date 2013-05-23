@@ -82,8 +82,9 @@ public class LiftRepoMessenger extends BasicDebugger {
 		Ident srcAgentID = mintInstanceID("liftMessageAgent");
 		Ident verbID =  GoodyNames.ACTION_CREATE; // Probably shouldn't come from GoodyNames. Right now we are only CREATEing an output message
 		TypedValueMap valueMap = myPendingActionParamWriter.getValueMap();
+		Long postedTStampMsec = System.currentTimeMillis();
 		BasicThingActionSpec actionSpec = 
-				new BasicThingActionSpec(actRecID, entityID, getEntityTypeID(), verbID, srcAgentID, valueMap);	
+				new BasicThingActionSpec(actRecID, entityID, getEntityTypeID(), verbID, srcAgentID, valueMap, postedTStampMsec);	
 		sendActionSpec(actionSpec);
 	}
 	

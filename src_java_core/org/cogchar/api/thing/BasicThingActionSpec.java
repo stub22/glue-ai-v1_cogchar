@@ -42,13 +42,16 @@ public class BasicThingActionSpec implements ThingActionSpec {
 	
 	private		TypedValueMap			myParamTVMap;
 	
+	private		Long					myPostedTimestamp;
+	
 	/**
 	 * 
 	 * @param actionRecID - can often be null, sometimes set later
 	 * @param targetThingID - Non-null unless we are doing a "Create with new URI" thing.
 	 * @param verbID - occasionally null
 	 */
-	public BasicThingActionSpec(Ident actionRecID, Ident targetThingID, Ident targetThingTypeID,  Ident verbID, Ident sourceAgentID, TypedValueMap paramTVMap) {
+	public BasicThingActionSpec(Ident actionRecID, Ident targetThingID, Ident targetThingTypeID,  Ident verbID, 
+				Ident sourceAgentID, TypedValueMap paramTVMap, Long postedTimestamp) {
 		myActionRecordID = actionRecID;
 		myTargetThingID = targetThingID;
 		myTargetThingTypeID = targetThingTypeID;
@@ -56,6 +59,7 @@ public class BasicThingActionSpec implements ThingActionSpec {
 		mySourceAgentID = sourceAgentID;
 		
 		myParamTVMap = paramTVMap;
+		myPostedTimestamp = postedTimestamp;
 	}
 	private BasicThingActionSpec(ThingActionSpec template) { 
 		// myActionRecordID = template.getActionSpecID();
@@ -91,11 +95,18 @@ public class BasicThingActionSpec implements ThingActionSpec {
 		return myParamTVMap;
 	}
 	
+	public Long getPostedTimestamp() {
+		return myPostedTimestamp;
+	}
+	
 	@Override  public String toString() {
 		return "BasicThingActionSpec[actRecID=" + myActionRecordID + ", tgtThgID=" + myTargetThingID +
 					", tgtThgTypeID=" + myTargetThingTypeID + ", actVerbID=" + myActionVerbID 
-					+ ", srcAgtID=" + mySourceAgentID + ", paramTVMap=" + myParamTVMap + "]";
+					+ ", srcAgtID=" + mySourceAgentID + ", paramTVMap=" + myParamTVMap + ", "
+					+ "postedTStamp=" + myPostedTimestamp + "]";
 	}
+
+
 	
 
 }

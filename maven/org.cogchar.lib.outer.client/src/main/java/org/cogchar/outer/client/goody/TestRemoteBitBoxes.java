@@ -76,8 +76,8 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		Ident actRecID = new FreeIdent("action_#" + ran.nextInt());
 		Ident tgtThingTypeID = GoodyNames.TYPE_BIT_BOX;
 		Ident srcAgentID = null;
-		
-		BasicThingActionSpec btas = new BasicThingActionSpec(actRecID, tgtThingID, tgtThingTypeID, verbID, srcAgentID, paramTVMap);	
+		Long postedTStampMsec = System.currentTimeMillis();
+		BasicThingActionSpec btas = new BasicThingActionSpec(actRecID, tgtThingID, tgtThingTypeID, verbID, srcAgentID, paramTVMap, postedTStampMsec);	
 		sendThingActionSpec(btas, ran, debugFlag);
 	}
 	public void sendThingActionSpec(ThingActionSpec actionSpec, Random ran, boolean debugFlag) {

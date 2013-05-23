@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class ThingActionUpdater {
 	
 	// This is just a temporary definition of the sourceAgentID until it becomes clear where this best comes from
-	public static final Ident SOURCE_AGENT_ID = new FreeIdent(ThingCN.THING_NS + "RepoThingAction"); 
+	public static final Ident SOURCE_AGENT_ID = new FreeIdent(ThingCN.TA_NS + "RepoThingAction"); 
 	
 	private static Logger theLogger = LoggerFactory.getLogger(ThingActionUpdater.class);
 	
@@ -51,7 +51,7 @@ public class ThingActionUpdater {
 	 * @param srcGraphID
 	 * @return 
 	 */
-	public List<ThingActionSpec> takeThingActions(RepoClient rc, Ident srcGraphID) {
+	@Deprecated protected List<ThingActionSpec> takeThingActions(RepoClient rc, Ident srcGraphID) {
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
 		ThingActionQResAdapter taqra = new ThingActionQResAdapter();
 		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
