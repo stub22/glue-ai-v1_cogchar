@@ -38,13 +38,13 @@ public class ThingActionQResAdapter extends BasicDebugger {
 		List<ThingActionSpec> actionSpecList = new ArrayList<ThingActionSpec>();
 		SolutionHelper sh = new SolutionHelper();
 		for (Solution actionSoln: actionsList.javaList()) {
-			Ident actionID = sh.pullIdent(actionSoln, ThingCN.ACTION_URI_VAR_NAME);
-			Ident verbID = sh.pullIdent(actionSoln, ThingCN.VERB_VAR_NAME);
-			Ident targetID = sh.pullIdent(actionSoln, ThingCN.TARGET_VAR_NAME);
-			Ident targetTypeID = sh.pullIdent(actionSoln, ThingCN.TARGET_TYPE_VAR_NAME);
+			Ident actionID = sh.pullIdent(actionSoln, ThingCN.V_actionID);
+			Ident verbID = sh.pullIdent(actionSoln, ThingCN.V_verbID);
+			Ident targetID = sh.pullIdent(actionSoln, ThingCN.V_targetThingID);
+			Ident targetTypeID = sh.pullIdent(actionSoln, ThingCN.V_targetThingTypeID);
 			
 			TypedValueMap actionParams = buildActionParameterValueMap(rc, srcGraphID, sh, actionID);
-			Literal tstampLiteral = actionSoln.getLiteralResultVar(ThingCN.POSTED_TIMESTAMP_MSEC_VAR_NAME);
+			Literal tstampLiteral = actionSoln.getLiteralResultVar(ThingCN.V_postedTStampMsec);
 			Long actionPostedTStampMsec = (tstampLiteral != null) ? tstampLiteral.getLong() : null;
 			ThingActionSpec spec = new BasicThingActionSpec(actionID, targetID, targetTypeID, verbID, srcAgentID, 
 					actionParams, actionPostedTStampMsec);
@@ -56,10 +56,10 @@ public class ThingActionQResAdapter extends BasicDebugger {
 	protected TypedValueMap buildActionParameterValueMap(RepoClient rc, Ident srcGraphID, SolutionHelper sh, Ident actionIdent) {
 		BasicTypedValueMap paramMap = new BasicTypedValueMapTemporaryImpl();
 		SolutionList paramList = rc.queryIndirectForAllSolutions(ThingCN.PARAM_QUERY_URI, srcGraphID,
-				ThingCN.ACTION_QUERY_VAR_NAME, actionIdent);
+				ThingCN.V_attachedActionID, actionIdent);
 		for (Solution paramSoln: paramList.javaList()) {
-			Ident paramIdent = sh.pullIdent(paramSoln, ThingCN.PARAM_IDENT_VAR_NAME);
-			String paramValue = sh.pullString(paramSoln, ThingCN.PARAM_VALUE_VAR_NAME);
+			Ident paramIdent = sh.pullIdent(paramSoln, ThingCN.V_actParamID);
+			String paramValue = sh.pullString(paramSoln, ThingCN.V_actParamVal);
 			getLogger().debug("Adding new param for Thing action {}: ident: {}, value: {}",
 					new Object[]{actionIdent, paramIdent, paramValue});
 			paramMap.putValueAtName(paramIdent, paramValue);
