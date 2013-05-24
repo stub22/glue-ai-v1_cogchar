@@ -27,6 +27,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * Will dissolve and be mostly replaced by MarkingAgent pattern, but this still may serve as hub of
+ * a crude notification propagator until better options are in place.
  */
 
 public class ThingActionRouter extends ThingActionConsumer {

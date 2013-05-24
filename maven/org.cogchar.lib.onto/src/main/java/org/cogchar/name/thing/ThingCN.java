@@ -63,6 +63,7 @@ public class ThingCN {
 	public  static String	V_viewingAgentID = "viewingAgentID";
 
 	public	static String	P_sourceAgent = TA_NS + "srcAgent";
+	public	static String	P_viewedBy = TA_NS + "viewedBy";
 
 	public	static String	P_verb = TA_NS + "verb";
 	public	static String	P_targetThing = TA_NS + "targetThing";

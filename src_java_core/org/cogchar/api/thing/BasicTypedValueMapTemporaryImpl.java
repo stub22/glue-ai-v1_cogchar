@@ -37,12 +37,12 @@ import org.appdapter.core.name.Ident;
  */
  
 public class BasicTypedValueMapTemporaryImpl extends BasicTypedValueMap {
-	public String getSparqlText(Ident propName) {
+	@Override public String getSparqlText(Ident propName) {
 		// Not sure how we'll be using this exactly, so for the moment we'll just return an empty string
 		return "";
 	}
 	
-	public Ident getAsIdent(Ident propName) {
+	@Override public Ident getAsIdent(Ident propName) {
 		// return new FreeIdent(ThingCN.THING_NS + (String)getRaw(propName));
 		Ident identResult = null;
 		String identString = (String)getRaw(propName);
@@ -52,31 +52,31 @@ public class BasicTypedValueMapTemporaryImpl extends BasicTypedValueMap {
 		return identResult;
 		//return null;
 	}
-	public String getAsString(Ident propName) {
+	@Override public String getAsString(Ident propName) {
 		return (String)getRaw(propName);
 	}
-	public Integer getAsInteger(Ident propName) {
+	@Override public Integer getAsInteger(Ident propName) {
 		try {
 			return Integer.valueOf((String)getRaw(propName));
 		} catch (Exception e) {
 			return null;
 		}
 	}
-	public Long getAsLong(Ident propName) {
+	@Override public Long getAsLong(Ident propName) {
 		try {
 			return Long.valueOf((String)getRaw(propName));
 		} catch (Exception e) {
 			return null;
 		}
 	}
-	public Float getAsFloat(Ident propName) {
+	@Override public Float getAsFloat(Ident propName) {
 		try {
 			return Float.valueOf((String)getRaw(propName));
 		} catch (Exception e) {
 			return null;
 		}
 	}
-	public Double getAsDouble(Ident propName) {
+	@Override public Double getAsDouble(Ident propName) {
 		try {
 			return Double.valueOf((String)getRaw(propName));
 		} catch (Exception e) {

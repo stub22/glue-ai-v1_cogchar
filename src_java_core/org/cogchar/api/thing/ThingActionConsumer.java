@@ -23,6 +23,8 @@ import org.appdapter.help.repo.RepoClient;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * We expect to dissolve most of this functionality in favor of our MarkingAgent pattern.
  */
 
 public abstract class ThingActionConsumer extends BasicDebugger {
