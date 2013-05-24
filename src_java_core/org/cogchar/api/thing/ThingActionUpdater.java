@@ -101,8 +101,12 @@ public class ThingActionUpdater {
 		theLogger.info("After remova from {}, graph size is {}", graphID, gm.size());
 	}
 	
-	private void markThingActionSeen(RepoClient rc, Ident graphID, ThingActionSpec tas,  Ident seeingAgentID) { 
-		
+	private void markThingActionSeen(RepoClient rc, Ident graphToMark, ThingActionSpec tas,  Ident seeingAgentID) { 
+		Ident actionID = tas.getActionSpecID();
+		Resource actionRes = rc.makeResourceForIdent(actionID);
+		Resource agentRes = rc.makeResourceForIdent(seeingAgentID);
+		Repo.WithDirectory repo = rc.getRepo();
+		Model gm = repo.getNamedModel(graphToMark);		
 	}
 
 }
