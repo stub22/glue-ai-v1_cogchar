@@ -76,4 +76,6 @@ public class ThingCN {
 	public   static String   T_ThingAction = CCRT_NS + "ThingAction";
 	public   static String   T_ThingActionParam = CCRT_NS + "ThingActionParam";
 	
+	
+	
 }

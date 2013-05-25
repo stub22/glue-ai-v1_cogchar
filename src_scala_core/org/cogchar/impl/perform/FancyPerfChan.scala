@@ -79,7 +79,7 @@ trait FancyPerformance  { //  extends Performance[_, _, _ <: FancyTime] {
 		chan.requestOutJobCancelForPerf(this)
 	}
 }
-class FancyPerfChanSpec  extends ChannelSpec {
+class FancyPerfChanSpec  extends FancyChannelSpec {
 	var		myDetails : String = "EMPTY";
 	override def getFieldSummary() : String = {
 		return super.getFieldSummary() + ", details=" + myDetails;
