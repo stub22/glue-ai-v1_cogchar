@@ -15,6 +15,7 @@
  */
 
 package org.cogchar.impl.scene
+
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 
 import org.appdapter.core.name.{Ident}
@@ -22,51 +23,7 @@ import org.appdapter.core.name.{Ident}
 import  org.cogchar.api.perform.{Media, PerfChannel, Performance, BasicPerformance}
 
 import org.cogchar.impl.perform.{FancyTime, FancyPerformance};
-/**
- * @author Stu B. <www.texpedient.com>
- */
 
-trait Guard {
-	def isSatisfied(scn : BScene) : Boolean
-}
-// Watches the performance of a previous step, and is satisfied when that Perf is marked STOPPING.
-// Note that the guard itself is immutable (so far) and in principle could be used by many scenes.
-// So far, the separation of the Guard and the spec is unnecessarily formal in this case, but that
-// will probably help us soon.
-class PerfMonitorGuard(mySpec : PerfMonGuardSpec) extends BasicDebugger with Guard {
-	override def isSatisfied(scn : BScene) : Boolean = {
-		scn match {
-			case fbs : FancyBScene => {
-				val perfStatus = fbs.getPerfStatusForStep(mySpec.myUpstreamStepID)
-				// FIXME:  We actually need to check for any state "equal or later" than the stateToMatch.
-				if ( (perfStatus == mySpec.myStateToMatchOrExceed) ||
-						 ((mySpec.myStateToMatchOrExceed == Performance.State.PLAYING) 
-						  && (perfStatus == Performance.State.STOPPING))) {
-					getLogger().debug("Treating perf-state {} as a match for guard {}", perfStatus,  mySpec )
-					true
-				} else {
-					getLogger().debug("Perf-state {} is not a match for guard {}", perfStatus,  mySpec )
-					false
-				}
-			}
-			case  _ => {
-				throw new RuntimeException("Coding error:  PerfMonitorGuard asked to check on a non-fancy scene")
-			}			
-		}
-	}
-	override def toString() : String = {
-		"PerfMonitorGuard[spec=" + mySpec + "]";
-	}	
-}
-trait GuardSpec {
-	def makeGuard : Guard
-}
-class PerfMonGuardSpec(val myUpstreamStepID : Ident, val myStateToMatchOrExceed : Performance.State) extends GuardSpec {
-	override def makeGuard  = 	new PerfMonitorGuard(this)
-	override def toString() : String = {
-		"PerfMonGuardSpec[upStepID=" + myUpstreamStepID + ", stateToMatchOrExceed=" + myStateToMatchOrExceed + "]"
-	}	
-}
 /** If the StepExec has any internal *state*, then it can only be used once, in one scene.
  *  But if we are going to notice that our performance is "complete", then that requires state 
  *  - somewhere.  Since the "spec" layer already forms an immutable + cachable structure, we

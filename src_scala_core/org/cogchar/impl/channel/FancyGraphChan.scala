@@ -38,14 +38,37 @@ class TypePollingGraphChan(chanID : Ident, rc : RepoClient, matchGraphID : Ident
 	
 }
 // chanID is used as the agent
-class ThingActionGraphChan(chanID : Ident, rc : RepoClient, matchGraphID : Ident) 
+class ThingActionGraphChan(chanID : Ident, rc : RepoClient, matchGraphID : Ident, cutoffTStamp : Long) 
 		extends SingleSourceGraphChan(chanID, rc, matchGraphID) {
+			
 	
 	def seeThingActions() : java.util.List[ThingActionSpec] = {
 		val tau = new ThingActionUpdater();
-		val tasList : java.util.List[ThingActionSpec] = tau.seeActions(rc, matchGraphID, chanID);
+		val viewingAgentID = chanID;
+		val tasList : java.util.List[ThingActionSpec] = tau.viewActionsAndMark(rc, matchGraphID, cutoffTStamp, viewingAgentID);
 		tasList;
 	}
 	
 	
+}
+
+import org.appdapter.core.name.{Ident, FreeIdent};
+import org.appdapter.core.item.{Item};
+import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
+import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.Mode;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.rdf.model.Resource;
+
+
+class ThingActionChanSpec  extends FancyChannelSpec {
+	var		myDetails : String = "EMPTY";
+	override def getFieldSummary() : String = {
+		return super.getFieldSummary() + ", details=" + myDetails;
+	}
+	override def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
+		super.completeInit(configItem, reader, assmblr, mode)
+		// myDetails = reader.readConfigValString(configItem.getIdent(), PerfChannelNames.P_details, configItem, null);
+	}
+
 }
