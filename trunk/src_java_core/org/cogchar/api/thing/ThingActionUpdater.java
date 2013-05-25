@@ -16,18 +16,21 @@
 
 package org.cogchar.api.thing;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.rdf.model.Literal;
 import org.cogchar.name.thing.ThingCN;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
-import java.util.ArrayList;
+import com.hp.hpl.jena.rdf.model.Statement;
 import java.util.List;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.appdapter.core.store.InitialBinding;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
+import org.appdapter.impl.store.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,15 +72,23 @@ public class ThingActionUpdater {
 	 * @param seeingAgentID
 	 * @return 
 	 */
-	public List<ThingActionSpec> seeActions(RepoClient rc, Ident srcGraphID, Ident seeingAgentID) {
-		String seeingAgentVarName = "";
-		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.UNSEEN_ACTION_QUERY_URI, srcGraphID, 
-						seeingAgentVarName, seeingAgentID);
+	public List<ThingActionSpec> viewActionsAndMark(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {
+		InitialBinding queryIB = rc.makeInitialBinding();
+		Literal cutoffTimeLit = rc.makeTypedLiteral(cutoffTStamp.toString(), XSDDatatype.XSDlong);
+		queryIB.bindNode(ThingCN.V_cutoffTStampMsec, cutoffTimeLit);
+		queryIB.bindIdent(ThingCN.V_viewingAgentID, viewingAgentID);
+		// TODO:  Get the queryVarName exposed by RepoClient, currently it is private.
+		// Also:  Consider keeping marker statements in a viewer-specific model, queried in compound with the source 
+		// data model (so source data model is not marked by viewers, and viewers marks remain private and resettable)
+		
+		String queryGraphVarName =  "qGraph"; // RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR;
+		queryIB.bindIdent(queryGraphVarName, srcGraphID);
+		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.UNSEEN_ACTION_QUERY_URI, queryIB);
 		ThingActionQResAdapter taqra = new ThingActionQResAdapter();
 		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
 		// Delete the actions from graph, so they are not returned on next call to this method.
 		for (ThingActionSpec tas : actionSpecList) {
-			markThingActionSeen(rc, srcGraphID, tas, seeingAgentID);
+			markThingActionSeen(rc, srcGraphID, tas, viewingAgentID);
 		}
 		theLogger.info("Returning ThingAction list of length {} from graph {}",  actionSpecList.size(), srcGraphID);
 		return actionSpecList;
@@ -106,7 +117,12 @@ public class ThingActionUpdater {
 		Resource actionRes = rc.makeResourceForIdent(actionID);
 		Resource agentRes = rc.makeResourceForIdent(seeingAgentID);
 		Repo.WithDirectory repo = rc.getRepo();
-		Model gm = repo.getNamedModel(graphToMark);		
+		Model gm = repo.getNamedModel(graphToMark);
+		scala.Option<String> optStr = scala.Option.apply(null);
+		ResourceResolver rr = new ResourceResolver(gm, optStr);
+		Property viewedByProp  = rr.findOrMakeProperty(gm, ThingCN.P_viewedBy);
+		Statement viewedByStmt = gm.createStatement(actionRes, viewedByProp, agentRes);
+		gm.add(viewedByStmt);
 	}
 
 }
