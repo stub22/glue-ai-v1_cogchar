@@ -33,4 +33,8 @@ class EnhancedRepoClient(val myRepoSpec : RepoSpec, repo : Repo.WithDirectory, d
 		reloadedClient
 	} 
 	
+	override def toString() : String = {
+		getClass.getName + "[repoSpec=" + myRepoSpec + ", dfltTgtGraphVar=" + dfltTgtGraphVarName +
+			 ", dfltQrySrcGrphName=" + dfltQrySrcGrphName + ", repo=" + repo + "]"
+	}
 }
