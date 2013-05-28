@@ -16,6 +16,7 @@
 
 package org.cogchar.bind.rk.robot.client;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import java.net.URL;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.perform.Performance;
@@ -55,9 +56,12 @@ public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> {
 		myUseTempAnimsFlag = flag;
 	}
 
-	// Java thinks this method is "public", even though it's marked "protected" in the Scala.
+	// Java thinks the superclass-def of this method is "public", even though it's marked "protected" in the Scala.
 	// https://issues.scala-lang.org/browse/SI-6097
-	// Also, Java does not recognize the Throwable annotation.
+	// Also, Java does not recognize the Throwable annotation made in Scala.
+	
+	// Proposed:  Replacement for this method should process a ThingAction ontologized description of a performance
+	// instruction.  
 	@Override public void fancyFastCueAndPlay (FancyTextMedia textMedia, FancyTextCursor cuePos, FancyTextPerf perf)  {	
 		String animPathStr = textMedia.getFullText();
 		Animation anim = null;
@@ -147,4 +151,5 @@ Do not use any listeners, they are not implemented in the RemoteAnimationJob.
 		aj.stop(stopTime);
 	}	
 	
+
 }
