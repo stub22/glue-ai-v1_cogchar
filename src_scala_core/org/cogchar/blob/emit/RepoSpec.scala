@@ -59,12 +59,14 @@ abstract class RepoSpec {
 	
 	def getDfltQrySrcGraphQName = RepoSpecDefaultNames.DFLT_QRY_SRC_GRAPH_QN;
 	def getDfltTgtGraphSparqlVarName : String = RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR;
+	
 }
 case class OnlineSheetRepoSpec(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int, 
 							fileModelCLs : java.util.List[ClassLoader]) extends RepoSpec {
 	override def makeRepo() : Repo.WithDirectory = {
 		RepoTester.loadGoogSheetRepo(sheetKey, namespaceSheetNum, dirSheetNum, fileModelCLs)
 	}
+
 }
 case class OfflineXlsSheetRepoSpec(sheetLocation : String, namespaceSheet : String, dirSheet : String, 
 							fileModelCLs : java.util.List[ClassLoader]) extends RepoSpec {

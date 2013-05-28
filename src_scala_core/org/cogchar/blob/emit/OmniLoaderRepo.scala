@@ -160,7 +160,7 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
 
   override def toString(): String = {
     val dm = getDirectoryModel();    
-    getClass.getSimpleName + "[name=" + myDebugName + ", dir=" + dm.size() + " setof=" + RepoOper.setOF(getMainQueryDataset.listNames) + "]";    
+    getClass.getSimpleName + "[name=" + myDebugName + ", dirModelSize=" + dm.size() + " mainDsetGraphNames=" + RepoOper.setOF(getMainQueryDataset.listNames) + "]";    
   }
 
   var isUpdated = false
