@@ -60,6 +60,7 @@ public class MasterDemo extends BasicDebugger {
 	
 	public void launchDemo(BundleContext bundleCtx, EnhancedRepoClient defDemoRepoCli) { 
 		try {
+			getLogger().info("Launching demo using repoClient={}", defDemoRepoCli);
 			initMajorParts(bundleCtx, defDemoRepoCli);
 			launchDefaultDemoObjects(bundleCtx, defDemoRepoCli);
 		} catch (Throwable t) {
