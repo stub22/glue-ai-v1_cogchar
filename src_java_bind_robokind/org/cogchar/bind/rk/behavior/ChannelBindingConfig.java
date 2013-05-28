@@ -21,7 +21,11 @@ import org.robokind.api.animation.player.AnimationPlayer;
 import org.robokind.api.speech.SpeechService;
 
 import org.cogchar.impl.channel.FancyChannelSpec;
+import org.cogchar.impl.channel.GraphChannelNames;
 import org.cogchar.impl.perform.PerfChannelNames;
+
+import org.appdapter.help.repo.RepoClient;
+
 /**
  * Current approach requires us to define, for each "Type" of channel:
  * An ChannelType-enum value yielding a build-time URI with a Java service class handle.
@@ -95,6 +99,7 @@ public class ChannelBindingConfig {
 	
 	private static Ident	CHANTYPE_SPEECH_OUT = PerfChannelNames.getOutChanIdent_SpeechMain();
 	private static Ident	CHANTYPE_ANIM_OUT = PerfChannelNames.getOutChanIdent_AnimBest();
+	private static Ident	CHANTYPE_ANIM_CLC = PerfChannelNames.getOutChanIdent_AnimPerm();
 	
 	private static Ident	CHANTYPE_WEB_PAGE_OUT = PerfChannelNames.getOutChanIdent_WebPage();
 	private static Ident	CHANTYPE_WEB_VIDEO_OUT = PerfChannelNames.getOutChanIdent_WebVideo();
@@ -102,14 +107,21 @@ public class ChannelBindingConfig {
 	// This one needs to evolve towards being a GraphChanel
 	private static Ident	CHANTYPE_WEB_ACTION_IN = PerfChannelNames.getInChanIdent_WebAction();
 	
+	private static Ident	CHANTYPE_GRAPH_PRIMARY = GraphChannelNames.getChanTypeID_graphPrimary();
+	private static Ident	CHANTYPE_GRAPH_SECONDARY = GraphChannelNames.getChanTypeID_graphSecondary();
     
     public static enum ChannelType{
         SPEECH_BLOCK_OUT(CHANTYPE_SPEECH_OUT, SpeechService.class), 
         ANIMATION_PLAYER(CHANTYPE_ANIM_OUT, AnimationPlayer.class),
+		ANIMATION_CACHE(CHANTYPE_ANIM_CLC, AnimationPlayer.class),
 		// TODO:  Plug in good classes here:
         WEB_PAGE_OUT(CHANTYPE_WEB_PAGE_OUT, AnimationPlayer.class), 
 		WEB_VIDEO_OUT(CHANTYPE_WEB_VIDEO_OUT, AnimationPlayer.class), 
-		WEB_ACTION_IN(CHANTYPE_WEB_ACTION_IN, AnimationPlayer.class);		
+		WEB_ACTION_IN(CHANTYPE_WEB_ACTION_IN, AnimationPlayer.class),
+		
+		GRAPH_PRIMARY(CHANTYPE_GRAPH_PRIMARY, RepoClient.class),
+		GRAPH_SECONDARY(CHANTYPE_GRAPH_SECONDARY, RepoClient.class);
+				
         
         private	Ident	myChannelTypeID;
         private Class myChannelTypeClass;

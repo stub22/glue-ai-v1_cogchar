@@ -20,7 +20,7 @@ import org.appdapter.core.name.Ident
 import org.appdapter.core.log.{BasicDebugger};
 import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.store.{Repo, InitialBinding }
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
+import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl, SolutionList} 
 import org.appdapter.impl.store.{FancyRepo};
 import org.appdapter.core.matdat.{SheetRepo}
 
@@ -31,6 +31,14 @@ import com.hp.hpl.jena.rdf.model.ModelFactory
  * @author Stu B. <www.texpedient.com>
  */
 
+object DerivedGraphNames {
+	val		OPCODE_UNION = "UNION";
+	
+	val		P_pipeID = "pipeID"
+	val		P_sourceID = "sourceID"
+	val		P_operationID = "operID"
+	// TODO: Define URIs for all Opcodes (by using them in config), map from those URIs to hacked OPCODE above.
+}
 
 class DerivedGraphSpec(val myTargetID : Ident, val myOp : String, var myInGraphIDs : List[Ident]) extends BasicDebugger {
 	override def toString() : String = {
@@ -38,14 +46,18 @@ class DerivedGraphSpec(val myTargetID : Ident, val myOp : String, var myInGraphI
 	}
 	
 	def makeDerivedModel(sourceRepo : Repo) : Model = {
-		// TODO : match on myOp
-	    // TODO : when upgrading use  ModelFactory.createUnion();
-		var cumUnionModel = ModelFactory.createDefaultModel();
-		for (srcGraphID <- myInGraphIDs) {
-			val srcGraph = sourceRepo.getNamedModel(srcGraphID)
-			cumUnionModel = cumUnionModel.union(srcGraph)
+		myOp match { 
+			case DerivedGraphNames.OPCODE_UNION => {
+				var cumUnionModel = ModelFactory.createDefaultModel();
+				for (srcGraphID <- myInGraphIDs) {
+					val srcGraph = sourceRepo.getNamedModel(srcGraphID)
+					// TODO : when upgrading (to Jena v2.8?) use  ModelFactory.createUnion();
+					cumUnionModel = cumUnionModel.union(srcGraph)
+				}
+				cumUnionModel
+			}
 		}
-		cumUnionModel
+	    
 	}
 }
 
@@ -55,13 +67,25 @@ class DerivedGraph extends BasicDebugger  {
 
 
 object DerivedGraphSpecReader extends BasicDebugger {
+	
+
     
 	/** 
      * pplnQueryQN: The QName of a query in the presumed "Queries" model/tab
      * pplnGraphQN:  The QName of a graph = model = tab, as registered with dset and/or dirModel
      */
     def queryDerivedGraphSpecs (rc : RepoClient, pplnQueryQN : String, pplnGraphQN : String  ) : Set[DerivedGraphSpec] = {
-		val solList = rc.queryIndirectForAllSolutions(pplnQueryQN, pplnGraphQN)
+		
+		var solList : SolutionList = null;
+		try {
+			solList = rc.queryIndirectForAllSolutions(pplnQueryQN, pplnGraphQN)
+		} catch {
+			case t: Throwable =>  {
+				getLogger().error("Problem executing query {} on graph {}", pplnQueryQN, pplnGraphQN)
+				getLogger().error("Stack trace: ", t)
+				return Set[DerivedGraphSpec]()
+			}
+		}
 		
 		val resultMMap = new scala.collection.mutable.HashMap[Ident, DerivedGraphSpec]()
 		val resultJMap = new java.util.HashMap[Ident, DerivedGraphSpec]();
@@ -69,16 +93,20 @@ object DerivedGraphSpecReader extends BasicDebugger {
 		val solJList = solList.javaList
 		getLogger().info("Got dgSpec-piece solJList: {}", solJList)
 		solJList foreach (psp  => {
-				val pipeID = psp.getIdentResultVar("pipeID")
-				val sourceID = psp.getIdentResultVar("sourceID")
+				// A pipe is the result of a single operation applied to a (poss. ordered by query) set of sources
+				val pipeID = psp.getIdentResultVar(DerivedGraphNames.P_pipeID)
+				val sourceID = psp.getIdentResultVar(DerivedGraphNames.P_sourceID)
 				val pipeSpec = if (resultMMap.contains(pipeID)) {
 					resultMMap.get(pipeID).get
 				} else {
-					val opCode = "UNKNOWN"
+					val operationID = psp.getIdentResultVar(DerivedGraphNames.P_operationID)				
+					// FIXME:  Fake the opcode mapping until we really need the second one: inference by reasoner
+					val opCode = DerivedGraphNames.OPCODE_UNION;
 					val freshPipeSpec = new DerivedGraphSpec(pipeID, opCode, List());
 					resultMMap.put(pipeID, freshPipeSpec)
 					freshPipeSpec
 				}
+				// Prepend this source
 				pipeSpec.myInGraphIDs = sourceID :: pipeSpec.myInGraphIDs
 			})
 		resultMMap.values.toSet

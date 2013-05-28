@@ -39,8 +39,12 @@ public class MasterDemo extends BasicDebugger {
 	public  TheaterWiringDemo	myTheaterWiringDemo;
 	
 	public void preLaunchSetup(BundleContext bundleCtx, String robotEnvVarKey) { 
-		AnimationConnector.launchPortableAnimEventFactory(bundleCtx);
-		RobotConnector.connectRobotsFromSysEnv(bundleCtx, robotEnvVarKey);
+		try {
+			AnimationConnector.launchPortableAnimEventFactory(bundleCtx);
+			RobotConnector.connectRobotsFromSysEnv(bundleCtx, robotEnvVarKey);
+		} catch (Throwable t) {
+			getLogger().error("Connection Problem", t);
+		}
 	}
 	
 	public void launchDemoUsingDefaultOnlineRepoSheet(BundleContext bundleCtx) { 
@@ -55,8 +59,12 @@ public class MasterDemo extends BasicDebugger {
 	}
 	
 	public void launchDemo(BundleContext bundleCtx, EnhancedRepoClient defDemoRepoCli) { 
-		initMajorParts(bundleCtx, defDemoRepoCli);
-		launchDefaultDemoObjects(bundleCtx, defDemoRepoCli);		
+		try {
+			initMajorParts(bundleCtx, defDemoRepoCli);
+			launchDefaultDemoObjects(bundleCtx, defDemoRepoCli);
+		} catch (Throwable t) {
+			getLogger().error("Error Launching 'Master' Demo", t);
+		}
 	}
 	public void initMajorParts(BundleContext bundleCtx, EnhancedRepoClient demoRepoClient) {
 		myChannelWiringDemo = new ChannelWiringDemo(bundleCtx, demoRepoClient);

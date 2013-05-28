@@ -58,6 +58,11 @@ class GuardedStepExec(stepSpec : GuardedStepSpec, actionExec : BehaviorActionExe
 	}
 
 }
+class ThingActionGuardedStepExec(stepSpec : GuardedStepSpec, actionExec : BehaviorActionExec) 
+		extends GuardedStepExec(stepSpec, actionExec) {
+
+	
+}
 class GuardedStepSpec(stepSpecID : Ident, val myActionSpec: BehaviorActionSpec, val myGuardSpecs : Set[GuardSpec]) 
 			extends BehaviorStepSpec(Some(stepSpecID)) {
 
