@@ -56,7 +56,8 @@ object BehavMasterConfigTest extends BasicDebugger {
 	val DERIVED_BEHAV_GRAPH_QN = MasterDemoNames.DERIVED_BEHAV_GRAPH_QN;
 
 	val PIPELINE_GRAPH_QN = MasterDemoNames.PIPELINE_GRAPH_QN;
-	val PIPELINE_QUERY_QN = MasterDemoNames.PIPELINE_QUERY_QN;
+	val PIPE_ATTR_QQN = MasterDemoNames.PIPE_QUERY_QN; 
+	val PIPE_SOURCE_QQN = MasterDemoNames.PIPE_SOURCE_QUERY_QN;
 	
 	
 
@@ -106,11 +107,14 @@ object BehavMasterConfigTest extends BasicDebugger {
 	}
 	val EQBAR = "=========================================================================================="
 	
-	def readSceneSpecsFromDerivedRepo(srcRepoCli : RepoClient, pplnQueryQN : String, pplnGraphQN : String, derivedBehavGraphID : Ident) : java.util.List[SceneSpec] = {
-		println(EQBAR + "\nReading derived graph specs")
-		 val dgSpecSet : Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(srcRepoCli, pplnQueryQN, pplnGraphQN)
+	def readSceneSpecsFromDerivedRepo(srcRepoCli : RepoClient, pqs : PipelineQuerySpec, derivedBehavGraphID : Ident) : java.util.List[SceneSpec] = {
+		println(EQBAR + "\nReading derived graph specs using " + pqs + "thru repoClient [" + srcRepoCli + "]");
+				// queri		[attr=" + pplnAttrQueryQN + ", sources=" + pplnSrcQueryQN + "] on graph [" 	+ pplnGraphQN +  "] 
+				
+				
+		 val dgSpecSet : Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(srcRepoCli, pqs)
 		 for (dg <- dgSpecSet) {
-			 println("Got: " + dg)
+			 println("Got derived graph spec: " + dg)
 			 // ps.makeRepo().loadSheetModelsIntoMainDataset();
 		 }
 		 val srcRepo = srcRepoCli.getRepo
@@ -120,7 +124,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 		
 		val derivedGraphStats = derivedRepo.getGraphStats.toArray;
 		for (dgStat <- derivedGraphStats) {
-			println("Got repo graph stat: " + dgStat)
+			println("Got derived-graph-stat: " + dgStat)
 		}
 		
 		val derivedBehavSpecs = derivedRepo.assembleRootsFromNamedModel(derivedBehavGraphID);
@@ -154,7 +158,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 		println("Repo Client: " + bmcRepoCli)
 		// Use an arbitrarily assumed name for the ChannelBinding Graph (as set in the "Dir" model of the source repo).
 		val chanSpecs = readChannelSpecs(bmcRepoCli, CHAN_BIND_GRAPH_QN);
-		getLogger().info("Found chanSpecs: " + chanSpecs)
+		getLogger().info("Found chanSpecs in " + CHAN_BIND_GRAPH_QN + " : " + chanSpecs)
 		import scala.collection.JavaConversions._;
 		for (c <- chanSpecs) {
 			val chanID = c.getChannelID();
@@ -170,8 +174,9 @@ object BehavMasterConfigTest extends BasicDebugger {
 		
 		
 		val	derivedBehavGraphID = bmcRepoCli.makeIdentForQName(DERIVED_BEHAV_GRAPH_QN);
-		val derivedSceneSpecList = readSceneSpecsFromDerivedRepo(bmcRepoCli, PIPELINE_QUERY_QN, PIPELINE_GRAPH_QN, derivedBehavGraphID);		
-		println ( EQBAR + "\nGot derived scene specs from " + derivedBehavGraphID +  " : " + derivedSceneSpecList)
+		val pqs = new PipelineQuerySpec(PIPE_ATTR_QQN, PIPE_SOURCE_QQN, PIPELINE_GRAPH_QN);
+		val derivedSceneSpecList = readSceneSpecsFromDerivedRepo(bmcRepoCli, pqs, derivedBehavGraphID);		
+		println ( EQBAR + "\nGot derived scene specs : " + derivedSceneSpecList)
 
 	}
 	
