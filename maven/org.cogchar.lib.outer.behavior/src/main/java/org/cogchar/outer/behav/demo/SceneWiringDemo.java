@@ -26,6 +26,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.impl.store.FancyRepo;
 import org.cogchar.blob.emit.BehavMasterConfigTest;
+import org.cogchar.blob.emit.PipelineQuerySpec;
 import org.cogchar.blob.emit.EnhancedRepoClient;
 import org.cogchar.impl.scene.*;
 import org.osgi.framework.BundleContext;
@@ -48,24 +49,29 @@ public class SceneWiringDemo extends WiringDemo {
 	
 	public	String		myDefaultDirectGraphQN = MasterDemoNames.DIRECT_BEHAV_GRAPH_QN;
 	
-	public	String		myDefaultPipelineQueryQN = MasterDemoNames.PIPELINE_QUERY_QN;
-	public	String		myDefaultPipelineGraphQN = MasterDemoNames.PIPELINE_GRAPH_QN;
+	public	PipelineQuerySpec myDefaultPipelineQuerySpec = new PipelineQuerySpec(MasterDemoNames.PIPE_QUERY_QN, 	
+			MasterDemoNames.PIPE_SOURCE_QUERY_QN, 	MasterDemoNames.PIPELINE_GRAPH_QN);
+			
+//	public	String		myDefaultPipelineQueryQN = MasterDemoNames.PIPELINE_QUERY_QN;
+//	public	String		myDefaultPipelineGraphQN = MasterDemoNames.PIPELINE_GRAPH_QN;
 	public	String		myDefaultDerivedGraphQN = MasterDemoNames.DERIVED_BEHAV_GRAPH_QN;
 				
+	
 	public SceneWiringDemo(BundleContext bc, EnhancedRepoClient rc) {
 		super(bc, rc);
 	}
 
+
 	public void initialSceneLoad(BundleContext bundleCtx, RepoClient demoRepoClient,  String directGraphQN, 
-					String pipeQueryQN, String pipeGraphQN, String derivedGraphQN, String sceneGroupQN) {
+					PipelineQuerySpec pipeQuerySpec, String derivedGraphQN, String sceneGroupQN) {
 		getLogger().info("************************ initialSceneLoad()");
 		
-		loadAndRegisterSceneSpecs(bundleCtx, demoRepoClient, directGraphQN, pipeQueryQN, pipeGraphQN, derivedGraphQN, sceneGroupQN);
+		loadAndRegisterSceneSpecs(bundleCtx, demoRepoClient, directGraphQN, pipeQuerySpec, derivedGraphQN, sceneGroupQN);
 	}
 
 	public void loadAndRegisterSceneSpecs(BundleContext bundleCtx, RepoClient demoRepoClient, String directGraphQN, 
-					String pipeQueryQN, String pipeGraphQN, String derivedGraphQN, String sceneGroupQN) {
-		Collection<SceneSpec> sceneSpecs = loadDemoSceneSpecs(demoRepoClient, directGraphQN, pipeQueryQN, pipeGraphQN, derivedGraphQN);
+					PipelineQuerySpec pipeQuerySpec, String derivedGraphQN, String sceneGroupQN) {
+		Collection<SceneSpec> sceneSpecs = loadDemoSceneSpecs(demoRepoClient, directGraphQN, pipeQuerySpec, derivedGraphQN);
 		setupSceneSpecOSGiComps(bundleCtx, sceneSpecs,  sceneGroupQN);
 	}
 
@@ -85,16 +91,15 @@ public class SceneWiringDemo extends WiringDemo {
 	}
 
 	
-	public List<SceneSpec> loadDemoSceneSpecs(RepoClient bmcRepoCli, String directGraphQN, String pipelineQueryQN, 
-					String pipelineGraphQN, String derivedGraphQN) {
+	public List<SceneSpec> loadDemoSceneSpecs(RepoClient bmcRepoCli, String directGraphQN, 
+				PipelineQuerySpec pipeQuerySpec, String derivedGraphQN) {
 
 		
 		// SceneBook = "old" way, in which it was more obvious that channels are being resolved from Swizzle cache 
 		// SceneBook sceneBook = SceneBook.readSceneBookFromRepo(bmcRepoCli, chanGraphID, behavGraphID);
 		// Swizzle-caches are still used to find channels here, but are hidden in static variables.  Ewww!
 		List<SceneSpec> ssList = readSceneSpecsFromDirectGraph(bmcRepoCli, directGraphQN);
-		List<SceneSpec> bonusList = readSceneSpecsFromDerivedGraph(bmcRepoCli, pipelineQueryQN, 
-						pipelineGraphQN, derivedGraphQN);
+		List<SceneSpec> bonusList = readSceneSpecsFromDerivedGraph(bmcRepoCli, pipeQuerySpec, derivedGraphQN);
 
 		List<SceneSpec> comboList = new ArrayList<SceneSpec>();
 		comboList.addAll(ssList);
@@ -115,17 +120,14 @@ public class SceneWiringDemo extends WiringDemo {
 		}
 		return ssList;
 	}
-	public List<SceneSpec> readSceneSpecsFromDerivedGraph(RepoClient bmcRepoCli, String pipelineQueryQN, 
-					String pipelineGraphQN, String derivedGraphQN) {
+	public List<SceneSpec> readSceneSpecsFromDerivedGraph(RepoClient bmcRepoCli,PipelineQuerySpec pipeQuerySpec,  
+					String derivedGraphQN) {
 		getLogger().info("loading SceneSpecs from derived graph {}", derivedGraphQN);
 		List<SceneSpec> ssList = new ArrayList<SceneSpec>();
 		try {
 			FancyRepo fr = (FancyRepo) bmcRepoCli.getRepo();
-			String resolvedQueryText = fr.resolveIndirectQueryText("ccrt:qry_sheet_77", pipelineQueryQN);
-			getLogger().info("Found query text: {}", resolvedQueryText);		
 			Ident derivedBehavGraphID = bmcRepoCli.makeIdentForQName(derivedGraphQN);
-			ssList = BehavMasterConfigTest.readSceneSpecsFromDerivedRepo(bmcRepoCli, pipelineQueryQN, 
-						pipelineGraphQN, derivedBehavGraphID);	
+			ssList = BehavMasterConfigTest.readSceneSpecsFromDerivedRepo(bmcRepoCli, pipeQuerySpec, derivedBehavGraphID);	
 		} catch (Throwable t) {
 			getLogger().error("Problem loading sceneSpecs from derived graph {}", derivedGraphQN, t);
 		}
@@ -147,8 +149,8 @@ public class SceneWiringDemo extends WiringDemo {
 		// This method will both reload sceneSpecs from the given repoCli, and also
 		//  automatically rebuild+reload-from any DerivedRepo we are currently reading 
 		// "bonus" behavior from.  (For example, guarded behavior demos using Cogchar 1.0.6).
-		loadAndRegisterSceneSpecs(bunCtx, freshRepoCli, myDefaultDirectGraphQN, myDefaultPipelineQueryQN, 
-						myDefaultPipelineGraphQN, myDefaultDerivedGraphQN, myDefaultSceneGroupQN);
+		loadAndRegisterSceneSpecs(bunCtx, freshRepoCli, myDefaultDirectGraphQN, myDefaultPipelineQuerySpec, 
+				myDefaultDerivedGraphQN, myDefaultSceneGroupQN);
 	}
 
 	

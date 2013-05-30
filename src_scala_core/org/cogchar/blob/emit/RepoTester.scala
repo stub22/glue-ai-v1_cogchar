@@ -34,16 +34,21 @@ object RepoTester extends BasicDebugger {
 		// Read the namespaces and directory sheets into a single directory model.
 		val dirModel : Model = GoogSheetRepo.readDirectoryModelFromGoog(sheetKey, namespaceSheetNum, dirSheetNum) 
 		// Construct a repo around that directory        
-        //val shRepo = new GoogSheetRepo(dirModel);
-        // Doug's locally testing this replacement
+		// 2013-05-28: Stu temp restored old version of loader
+        val shRepo = new GoogSheetRepo(dirModel);
 		val spec = new OnlineSheetRepoSpec(sheetKey,namespaceSheetNum,dirSheetNum,fileModelCLs);
-        val shRepo = new OmniLoaderRepo(spec, "goog:" + sheetKey + "/" + namespaceSheetNum + "/" + dirSheetNum, dirModel, fileModelCLs)
+		// Doug's locally testing this replacement [and comitted about April 25, on purpose?]
+        // val shRepo = new OmniLoaderRepo(spec, "goog:" + sheetKey + "/" + namespaceSheetNum + "/" + dirSheetNum, dirModel, fileModelCLs)
+	   	
 		// Load the rest of the repo's initial *sheet* models, as instructed by the directory.
 		getLogger().debug("Loading Sheet Models") 
+		// if shRepo is an OmniLoaderRepo, this results in a call to ensureUpdated(), which does a lot of stuff.
 		shRepo.loadSheetModelsIntoMainDataset()
 		// Load the rest of the repo's initial *file/resource* models, as instructed by the directory.
-		//getLogger().debug("Loading File Models")
-		//shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
+		// 2013-05-28: Stu temp restored old version of loader
+		getLogger().debug("Loading File Models")
+		// unnecessary if shRepo is an OmniLoaderRepo
+		shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
 		shRepo
 	}
 	

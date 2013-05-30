@@ -34,7 +34,8 @@ public interface MasterDemoNames {
 	public final static String DERIVED_BEHAV_GRAPH_QN = "csi:merged_model_5001";
 	
 	public final static String  PIPELINE_GRAPH_QN = "csi:pipeline_sheet_77";
-	public final static String  PIPELINE_QUERY_QN = "ccrt:find_pipes_77";
+	public final static String  PIPE_QUERY_QN = "ccrt:find_pipes_77";
+	public final static String  PIPE_SOURCE_QUERY_QN = "ccrt:find_pipe_sources_78";
 	
 	
 	public final static String GROUP_KEY_SCENE_SPEC = "SceneSpecGroupId";

@@ -22,6 +22,7 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.scene.Scene;
 import org.cogchar.outer.behav.impl.OSGiTheater;
 import org.cogchar.blob.emit.EnhancedRepoClient;
+import org.cogchar.blob.emit.PipelineQuerySpec;
 import org.cogchar.blob.emit.RepoSpec;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.Theater;
@@ -87,11 +88,12 @@ public class MasterDemo extends BasicDebugger {
 		cwd.initialChannelLoad(bundleCtx, demoRepoClient, chanGroupQName);
 		
 		String directGraphQN = swd.myDefaultDirectGraphQN;
-		String pipeQueryQN = swd.myDefaultPipelineQueryQN;
-		String pipeGraphQN = swd.myDefaultPipelineGraphQN;
+		// String pipeQueryQN = swd.myDefaultPipelineQueryQN;
+		// String pipeGraphQN = swd.myDefaultPipelineGraphQN;
+		PipelineQuerySpec pqs = swd.myDefaultPipelineQuerySpec;
 		String derivedGraphQN = swd.myDefaultDerivedGraphQN;
 		String sceneGroupQN = swd.myDefaultSceneGroupQN;
-		swd.initialSceneLoad(bundleCtx, demoRepoClient, directGraphQN, pipeQueryQN, pipeGraphQN, derivedGraphQN, sceneGroupQN);
+		swd.initialSceneLoad(bundleCtx, demoRepoClient, directGraphQN, pqs, derivedGraphQN, sceneGroupQN);
 		
 		String theaterDebugQN = twd.myDefaultDebugCharQN;
 		OSGiTheater osgiTheater = twd.testTheaterStartup(bundleCtx, demoRepoClient, theaterDebugQN);

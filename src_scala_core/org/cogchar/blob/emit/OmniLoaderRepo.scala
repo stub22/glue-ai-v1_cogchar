@@ -291,11 +291,11 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
 
     val mainDset: DataSource = getMainQueryDataset().asInstanceOf[DataSource];
     val rc = new RepoClientImpl(this, RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR, BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN)
-    val solList = DerivedGraphSpecReader.queryDerivedGraphSpecs(rc, MasterDemoNames.PIPELINE_QUERY_QN, pplnGraphQN);
+	val pqs = new PipelineQuerySpec(BehavMasterConfigTest.PIPE_ATTR_QQN, BehavMasterConfigTest.PIPE_SOURCE_QQN, pplnGraphQN);
+		val dgSpecSet: Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(rc, pqs);
 
-    for (solC <- solList) {
-      val pipeSpec = solC
-      val model = pipeSpec.makeDerivedModel(this)
+    for (dgSpec <- dgSpecSet) {
+      val model = dgSpec.makeDerivedModel(this)
       mainDset.replaceNamedModel(pplnGraphQN, model)
     }
   }
