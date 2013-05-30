@@ -31,6 +31,8 @@ import com.hp.hpl.jena.rdf.model.ModelFactory
  * @author Stu B. <www.texpedient.com>
  */
 
+case class PipelineQuerySpec(val pplnAttrQueryQN : String, val pplnSrcQueryQN : String, val pplnGraphQN : String)
+
 object DerivedGraphNames {
 	val		OPCODE_UNION = "UNION";
 	
@@ -74,14 +76,14 @@ object DerivedGraphSpecReader extends BasicDebugger {
      * pplnQueryQN: The QName of a query in the presumed "Queries" model/tab
      * pplnGraphQN:  The QName of a graph = model = tab, as registered with dset and/or dirModel
      */
-    def queryDerivedGraphSpecs (rc : RepoClient, pplnQueryQN : String, pplnGraphQN : String  ) : Set[DerivedGraphSpec] = {
+    def queryDerivedGraphSpecs (rc : RepoClient, pqs : PipelineQuerySpec) : Set[DerivedGraphSpec] = {
 		
 		var solList : SolutionList = null;
 		try {
-			solList = rc.queryIndirectForAllSolutions(pplnQueryQN, pplnGraphQN)
+			solList = rc.queryIndirectForAllSolutions(pqs.pplnAttrQueryQN, pqs.pplnGraphQN)
 		} catch {
 			case t: Throwable =>  {
-				getLogger().error("Problem executing query {} on graph {}", pplnQueryQN, pplnGraphQN)
+				getLogger().error("Problem executing querySoec {} on repoClient {} ", pqs, rc)
 				getLogger().error("Stack trace: ", t)
 				return Set[DerivedGraphSpec]()
 			}
