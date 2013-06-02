@@ -45,7 +45,7 @@ class DerivedRepoSpec(val myDGSpecs: Set[DerivedGraphSpec], val mySrcRepo: Repo.
     val derivedRepo = new DerivedRepo(emptyDirModel, this)
     for (dgSpec <- myDGSpecs) {
       val derivedModel = dgSpec.makeDerivedModel(mySrcRepo)
-      derivedRepo.replaceNamedModel(dgSpec.myTargetID, derivedModel)
+      derivedRepo.replaceNamedModel(dgSpec.myTargetGraphTR, derivedModel)
     }
     derivedRepo
   }

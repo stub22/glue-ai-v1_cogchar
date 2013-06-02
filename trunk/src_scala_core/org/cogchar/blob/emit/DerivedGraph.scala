@@ -29,27 +29,52 @@ import com.hp.hpl.jena.rdf.model.ModelFactory
 
 /**
  * @author Stu B. <www.texpedient.com>
+ *
  */
 
-case class PipelineQuerySpec(val pplnAttrQueryQN : String, val pplnSrcQueryQN : String, val pplnGraphQN : String)
+import com.hp.hpl.jena.rdf.model.Resource;
+import org.appdapter.core.item.{Item, JenaResourceItem}
+trait TypedResrc extends Ident with Item {
+	def hasTypeMark(typeID : Ident) : Boolean = false
+}
+class JenaTR(r : Resource, val myTypes : Set[Ident]) extends JenaResourceItem(r) with TypedResrc {
+	override def hasTypeMark(typeID : Ident) : Boolean = myTypes.contains(typeID)
+}
+/*
+object JTR_Factory {
+	 def wacky() : Unit { }
+}
+*/
+case class PipelineQuerySpec(val pplnAttrQueryQN : String, val pplnSrcQueryQN : String, val pplnGraphQN : String) 
+
+import org.cogchar.name.dir.NamespaceDir;
 
 object DerivedGraphNames {
-	val		OPCODE_UNION = "UNION";
+	// val		OPCODE_UNION = "UNION";
+	val		V_pipeID = "pipeID"
+	val		V_typeID = "typeID"
 	
-	val		P_pipeID = "pipeID"
-	val		P_sourceID = "sourceID"
-	val		P_operationID = "operID"
-	// TODO: Define URIs for all Opcodes (by using them in config), map from those URIs to hacked OPCODE above.
-}
+	/* opTypeID is one of ccrt:UnionModel, 
+	 * useTypeID is one of ccrt:BehaviorModel, 	 */
 
-class DerivedGraphSpec(val myTargetID : Ident, val myOp : String, var myInGraphIDs : List[Ident]) extends BasicDebugger {
+	val		T_union = new FreeIdent(NamespaceDir.NS_CCRT_RT + "UnionModel");
+	val		P_sourceModel = new FreeIdent(NamespaceDir.NS_CCRT_RT + "sourceModel");
+}
+class DerivedGraphSpec(val myTargetGraphTR : TypedResrc,  var myInGraphIDs : Set[Ident]) extends BasicDebugger {
 	override def toString() : String = {
-		"DerivedGraphSpec[targetID=" + myTargetID + ", inGraphs=" + myInGraphIDs + "]";
+		"DerivedGraphSpec[targetTR=" + myTargetGraphTR + ", inGraphs=" + myInGraphIDs + "]";
 	}
-	
+	def isUnion() : Boolean = myTargetGraphTR.hasTypeMark(DerivedGraphNames.T_union)
+	def getStructureTypeID() : Ident = {
+		if (isUnion()) {
+			DerivedGraphNames.T_union
+		} else  {
+			DerivedGraphNames.T_union
+		}
+	}
 	def makeDerivedModel(sourceRepo : Repo) : Model = {
-		myOp match { 
-			case DerivedGraphNames.OPCODE_UNION => {
+		getStructureTypeID() match { 
+			case DerivedGraphNames.T_union => {
 				var cumUnionModel = ModelFactory.createDefaultModel();
 				for (srcGraphID <- myInGraphIDs) {
 					val srcGraph = sourceRepo.getNamedModel(srcGraphID)
@@ -58,8 +83,11 @@ class DerivedGraphSpec(val myTargetID : Ident, val myOp : String, var myInGraphI
 				}
 				cumUnionModel
 			}
+			case x => {
+				getLogger().warn("Unknown structure type {}", x)
+				ModelFactory.createDefaultModel()
+			}
 		}
-	    
 	}
 }
 
@@ -69,48 +97,52 @@ class DerivedGraph extends BasicDebugger  {
 
 
 object DerivedGraphSpecReader extends BasicDebugger {
-	
 
-    
-	/** 
-     * pplnQueryQN: The QName of a query in the presumed "Queries" model/tab
-     * pplnGraphQN:  The QName of a graph = model = tab, as registered with dset and/or dirModel
-     */
     def queryDerivedGraphSpecs (rc : RepoClient, pqs : PipelineQuerySpec) : Set[DerivedGraphSpec] = {
 		
-		var solList : SolutionList = null;
+		var pipeAttrSL : SolutionList = null;
 		try {
-			solList = rc.queryIndirectForAllSolutions(pqs.pplnAttrQueryQN, pqs.pplnGraphQN)
+			pipeAttrSL = rc.queryIndirectForAllSolutions(pqs.pplnAttrQueryQN, pqs.pplnGraphQN)		
 		} catch {
 			case t: Throwable =>  {
-				getLogger().error("Problem executing querySoec {} on repoClient {} ", pqs, rc)
+				getLogger().error("Problem executing querySpec {} on repoClient {} ", pqs, rc)
 				getLogger().error("Stack trace: ", t)
 				return Set[DerivedGraphSpec]()
 			}
 		}
 		
-		val resultMMap = new scala.collection.mutable.HashMap[Ident, DerivedGraphSpec]()
-		val resultJMap = new java.util.HashMap[Ident, DerivedGraphSpec]();
+		val pipeTypeSetsByID = new scala.collection.mutable.HashMap[Ident, Set[Ident]]() 
 		import scala.collection.JavaConversions._
-		val solJList = solList.javaList
-		getLogger().info("Got dgSpec-piece solJList: {}", solJList)
-		solJList foreach (psp  => {
-				// A pipe is the result of a single operation applied to a (poss. ordered by query) set of sources
-				val pipeID = psp.getIdentResultVar(DerivedGraphNames.P_pipeID)
-				val sourceID = psp.getIdentResultVar(DerivedGraphNames.P_sourceID)
-				val pipeSpec = if (resultMMap.contains(pipeID)) {
-					resultMMap.get(pipeID).get
-				} else {
-					val operationID = psp.getIdentResultVar(DerivedGraphNames.P_operationID)				
-					// FIXME:  Fake the opcode mapping until we really need the second one: inference by reasoner
-					val opCode = DerivedGraphNames.OPCODE_UNION;
-					val freshPipeSpec = new DerivedGraphSpec(pipeID, opCode, List());
-					resultMMap.put(pipeID, freshPipeSpec)
-					freshPipeSpec
-				}
-				// Prepend this source
-				pipeSpec.myInGraphIDs = sourceID :: pipeSpec.myInGraphIDs
-			})
-		resultMMap.values.toSet
+		val pjl = pipeAttrSL.javaList
+		getLogger().info("Got pipeAttribute list : {}", pjl)
+		pjl foreach (psp  => {
+			// A pipe is the result of a single operation applied to a (poss. ordered by query) set of sources
+			val pipeID = psp.getIdentResultVar(DerivedGraphNames.V_pipeID)
+			// Each pipe-spec will have one or more types, which may be viewed as classifiers of both how the pipe
+			// is constructed (the type of pipe structure) and how its output is used (the type of pipe-outut contents).
+			// For now we assume that it is viable to recognize the opTypeID and useTypeID during this read process.
+			val aTypeID = psp.getIdentResultVar(DerivedGraphNames.V_typeID)
+			val pipeTypeSet : Set[Ident] = if (pipeTypeSetsByID.contains(pipeID)) {
+				pipeTypeSetsByID.get(pipeID).get + aTypeID
+			} else {
+				Set(aTypeID)
+			}
+			pipeTypeSetsByID.put(pipeID, pipeTypeSet)
+		})
+		val pipesByID = new scala.collection.mutable.HashMap[Ident, DerivedGraphSpec]()
+		val pipeGraphID = rc.getRepo.makeIdentForQName(pqs.pplnGraphQN)
+		val pipeModel = rc.getRepo.getNamedModel(pipeGraphID)
+		var dgSpecSet = Set[DerivedGraphSpec]()
+		for ((pipeKeyID, typeSet) <- pipeTypeSetsByID) {
+			val pipeGraphRes = pipeModel.getResource(pipeKeyID.getAbsUriString())
+			val typedRes = new JenaTR(pipeGraphRes, typeSet)
+			val linkedPipeSrcItems = typedRes.getLinkedItemSet(DerivedGraphNames.P_sourceModel);
+			// Note JavaConverters is not the same as JavaConversions
+			import scala.collection.JavaConverters._
+			val scalaSet : Set[Ident] = linkedPipeSrcItems.asScala.map(_.asInstanceOf[Ident]).toSet
+			val dgSpec = new DerivedGraphSpec(typedRes, scalaSet)
+			dgSpecSet = dgSpecSet + dgSpec
+		}
+		dgSpecSet
 	}		
 }
