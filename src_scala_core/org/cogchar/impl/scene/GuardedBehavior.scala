@@ -42,7 +42,7 @@ import scala.collection.mutable.HashSet
  */
 
 class GuardedBehavior (val myGBS: GuardedBehaviorSpec) extends Behavior(myGBS) {
-	var myNextStepIndex : Int = 0;
+	// var myNextStepIndex : Int = 0;
 
 	import scala.collection.mutable.HashSet
 	
@@ -76,7 +76,7 @@ class GuardedBehavior (val myGBS: GuardedBehaviorSpec) extends Behavior(myGBS) {
 		}
 	}
 	override def getFieldSummary() : String = {
-		return  super.getFieldSummary() +  ", nextStepIndex=" + myNextStepIndex;
+		return  super.getFieldSummary() // +  ", nextStepIndex=" + myNextStepIndex;
 	}	
 }
 
