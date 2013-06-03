@@ -27,6 +27,11 @@ import org.cogchar.api.thing.{ThingActionUpdater, ThingActionSpec}
  * @author Stu B. <www.texpedient.com>
  */
 
+import org.cogchar.blob.emit.{RepoFabric, DerivedGraphSpec, BoundModelProvider}
+
+class ProvidedGraphChan(chanID : Ident, val myModelProvider : BoundModelProvider) extends BasicGraphChan(chanID) with FancyChannel {
+	
+}
 class FancyGraphChan(chanID : Ident, val myRepoClient : RepoClient) extends BasicGraphChan(chanID) with FancyChannel {
 	
 }

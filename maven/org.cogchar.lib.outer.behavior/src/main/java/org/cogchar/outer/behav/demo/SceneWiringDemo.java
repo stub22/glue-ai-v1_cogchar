@@ -28,6 +28,9 @@ import org.appdapter.impl.store.FancyRepo;
 import org.cogchar.blob.emit.BehavMasterConfigTest;
 import org.cogchar.blob.emit.PipelineQuerySpec;
 import org.cogchar.blob.emit.EnhancedRepoClient;
+import org.cogchar.blob.emit.BoundModelProvider;
+import org.cogchar.blob.emit.DirectRepoGraph;
+import org.cogchar.blob.emit.DerivedGraphSpecReader;
 import org.cogchar.impl.scene.*;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -51,10 +54,10 @@ public class SceneWiringDemo extends WiringDemo {
 	
 	public	PipelineQuerySpec myDefaultPipelineQuerySpec = new PipelineQuerySpec(MasterDemoNames.PIPE_QUERY_QN, 	
 			MasterDemoNames.PIPE_SOURCE_QUERY_QN, 	MasterDemoNames.PIPELINE_GRAPH_QN);
-			
+		public	String		myDefaultDerivedGraphQN = MasterDemoNames.DERIVED_BEHAV_GRAPH_QN;		
 //	public	String		myDefaultPipelineQueryQN = MasterDemoNames.PIPELINE_QUERY_QN;
 //	public	String		myDefaultPipelineGraphQN = MasterDemoNames.PIPELINE_GRAPH_QN;
-	public	String		myDefaultDerivedGraphQN = MasterDemoNames.DERIVED_BEHAV_GRAPH_QN;
+
 				
 	
 	public SceneWiringDemo(BundleContext bc, EnhancedRepoClient rc) {
@@ -62,16 +65,16 @@ public class SceneWiringDemo extends WiringDemo {
 	}
 
 
-	public void initialSceneLoad(BundleContext bundleCtx, RepoClient demoRepoClient,  String directGraphQN, 
+	public void initialSceneLoad(BundleContext bundleCtx, RepoClient directRepoClient,  String directGraphQN, 
 					PipelineQuerySpec pipeQuerySpec, String derivedGraphQN, String sceneGroupQN) {
 		getLogger().info("************************ initialSceneLoad()");
 		
-		loadAndRegisterSceneSpecs(bundleCtx, demoRepoClient, directGraphQN, pipeQuerySpec, derivedGraphQN, sceneGroupQN);
+		loadAndRegisterSceneSpecs(bundleCtx, directRepoClient, directGraphQN, pipeQuerySpec, derivedGraphQN, sceneGroupQN);
 	}
 
-	public void loadAndRegisterSceneSpecs(BundleContext bundleCtx, RepoClient demoRepoClient, String directGraphQN, 
+	public void loadAndRegisterSceneSpecs(BundleContext bundleCtx, RepoClient directRC, String directGraphQN, 
 					PipelineQuerySpec pipeQuerySpec, String derivedGraphQN, String sceneGroupQN) {
-		Collection<SceneSpec> sceneSpecs = loadDemoSceneSpecs(demoRepoClient, directGraphQN, pipeQuerySpec, derivedGraphQN);
+		Collection<SceneSpec> sceneSpecs = loadDemoSceneSpecs(directRC, directGraphQN, pipeQuerySpec, derivedGraphQN);
 		setupSceneSpecOSGiComps(bundleCtx, sceneSpecs,  sceneGroupQN);
 	}
 
@@ -98,8 +101,14 @@ public class SceneWiringDemo extends WiringDemo {
 		// SceneBook = "old" way, in which it was more obvious that channels are being resolved from Swizzle cache 
 		// SceneBook sceneBook = SceneBook.readSceneBookFromRepo(bmcRepoCli, chanGraphID, behavGraphID);
 		// Swizzle-caches are still used to find channels here, but are hidden in static variables.  Ewww!
-		List<SceneSpec> ssList = readSceneSpecsFromDirectGraph(bmcRepoCli, directGraphQN);
-		List<SceneSpec> bonusList = readSceneSpecsFromDerivedGraph(bmcRepoCli, pipeQuerySpec, derivedGraphQN);
+		Ident directBehavGraphID = bmcRepoCli.makeIdentForQName(directGraphQN);
+		BoundModelProvider directBMP = DerivedGraphSpecReader.makeOneDirectModelProvider(bmcRepoCli, directBehavGraphID);
+		List<SceneSpec> ssList = readSceneSpecsFromBMP(directBMP);
+		// readSceneSpecsFromDirectGraph(bmcRepoCli, directGraphQN);
+		Ident derivedBehavGraphID =   bmcRepoCli.makeIdentForQName(derivedGraphQN);
+		BoundModelProvider derivedBMP = DerivedGraphSpecReader.makeOneDerivedModelProvider(bmcRepoCli, pipeQuerySpec, derivedBehavGraphID);
+		// List<SceneSpec> bonusList = readSceneSpecsFromDerivedGraph(bmcRepoCli, pipeQuerySpec, derivedGraphQN);
+		List<SceneSpec> bonusList = readSceneSpecsFromBMP(derivedBMP);
 
 		List<SceneSpec> comboList = new ArrayList<SceneSpec>();
 		comboList.addAll(ssList);
@@ -108,31 +117,20 @@ public class SceneWiringDemo extends WiringDemo {
 		getLogger().debug("Loaded SceneSpecs {} ", comboList);
 		return comboList;
 	}
-	public List<SceneSpec> readSceneSpecsFromDirectGraph(RepoClient repoCli, String sceneSpecsGraphQN) {
-		getLogger().info("loading SceneSpecs from direct graph {}", sceneSpecsGraphQN);
+	public List<SceneSpec> readSceneSpecsFromBMP(BoundModelProvider bmp) {
+		getLogger().info("loading SceneSpecs from BMP: {}", bmp);
 		List<SceneSpec> ssList = new ArrayList<SceneSpec>();
 		try {
-			Ident behavGraphID = repoCli.makeIdentForQName(sceneSpecsGraphQN);
-			Set<Object> allBehavSpecs = repoCli.assembleRootsFromNamedModel(behavGraphID);
-			ssList = SceneBook.filterSceneSpecs(allBehavSpecs);
+		//	FancyRepo fr = (FancyRepo) bmcRepoCli.getRepo();
+		//	Ident derivedBehavGraphID = bmcRepoCli.makeIdentForQName(derivedGraphQN);
+			ssList = BehavMasterConfigTest.readSceneSpecsFromBMP(bmp);
 		} catch (Throwable t) {
-			getLogger().error("Problem loading sceneSpecs from direct graph {}", sceneSpecsGraphQN, t);
+			getLogger().error("Problem loading sceneSpecs from bound graph {}", bmp, t);
 		}
 		return ssList;
 	}
-	public List<SceneSpec> readSceneSpecsFromDerivedGraph(RepoClient bmcRepoCli,PipelineQuerySpec pipeQuerySpec,  
-					String derivedGraphQN) {
-		getLogger().info("loading SceneSpecs from derived graph {}", derivedGraphQN);
-		List<SceneSpec> ssList = new ArrayList<SceneSpec>();
-		try {
-			FancyRepo fr = (FancyRepo) bmcRepoCli.getRepo();
-			Ident derivedBehavGraphID = bmcRepoCli.makeIdentForQName(derivedGraphQN);
-			ssList = BehavMasterConfigTest.readSceneSpecsFromDerivedRepo(bmcRepoCli, pipeQuerySpec, derivedBehavGraphID);	
-		} catch (Throwable t) {
-			getLogger().error("Problem loading sceneSpecs from derived graph {}", derivedGraphQN, t);
-		}
-		return ssList;
-	}
+
+
 	/**
 	 * 
 	 * @param bunCtx - needed when we register + unregister scene spces to OSGi
@@ -184,7 +182,32 @@ public class SceneWiringDemo extends WiringDemo {
 				final String key, final String val) {
 		return getRegistrationRunnable(context, SceneSpec.class, scnSpec, key, val);
 	}
+/*
+	@Deprecated private List<SceneSpec> readSceneSpecsFromDirectGraph(RepoClient repoCli, String sceneSpecsGraphQN) {
+		getLogger().info("loading SceneSpecs from direct graph {}", sceneSpecsGraphQN);
+		List<SceneSpec> ssList = new ArrayList<SceneSpec>();
+		try {
+			Ident behavGraphID = repoCli.makeIdentForQName(sceneSpecsGraphQN);
+			Set<Object> allBehavSpecs = repoCli.assembleRootsFromNamedModel(behavGraphID);
+			ssList = SceneBook.filterSceneSpecs(allBehavSpecs);
+		} catch (Throwable t) {
+			getLogger().error("Problem loading sceneSpecs from direct graph {}", sceneSpecsGraphQN, t);
+		}
+		return ssList;
+	}
+	@Deprecated private List<SceneSpec> readSceneSpecsFromDerivedGraph(RepoClient bmcRepoCli,PipelineQuerySpec pipeQuerySpec,  
+					String derivedGraphQN) {
+		getLogger().info("loading SceneSpecs from derived graph {}", derivedGraphQN);
+		List<SceneSpec> ssList = new ArrayList<SceneSpec>();
+		try {
+			FancyRepo fr = (FancyRepo) bmcRepoCli.getRepo();
+			Ident derivedBehavGraphID = bmcRepoCli.makeIdentForQName(derivedGraphQN);
+			ssList = BehavMasterConfigTest.readSceneSpecsFromDerivedRepo(bmcRepoCli, pipeQuerySpec, derivedBehavGraphID);	
+		} catch (Throwable t) {
+			getLogger().error("Problem loading sceneSpecs from derived graph {}", derivedGraphQN, t);
+		}
+		return ssList;
+	}
 
-
-	
+*/
 }

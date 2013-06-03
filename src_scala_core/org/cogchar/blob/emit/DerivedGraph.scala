@@ -19,7 +19,7 @@ import org.appdapter.core.name.Ident
 
 import org.appdapter.core.log.{BasicDebugger};
 import org.appdapter.core.name.{Ident, FreeIdent};
-import org.appdapter.core.store.{Repo, InitialBinding }
+import org.appdapter.core.store.{Repo, InitialBinding, ModelClient }
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl, SolutionList} 
 import org.appdapter.impl.store.{FancyRepo};
 import org.appdapter.core.matdat.{SheetRepo}
@@ -36,18 +36,54 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import org.appdapter.core.item.{Item, JenaResourceItem}
 trait TypedResrc extends Ident with Item {
 	def hasTypeMark(typeID : Ident) : Boolean = false
+	def getTypeIdents: Set[Ident] = Set()
 }
-class JenaTR(r : Resource, val myTypes : Set[Ident]) extends JenaResourceItem(r) with TypedResrc {
+trait ExtensiblyTypedResrc extends TypedResrc {
+	// Consider:  This would be difficult for a virtually-backed TypedResrc to implement.
+	def addTypeMarkings(moreTypeMarks : Set[Ident]) : TypedResrc
+}
+class JenaTR(r : Resource, private val myTypes : Set[Ident]) extends JenaResourceItem(r) with ExtensiblyTypedResrc {
 	override def hasTypeMark(typeID : Ident) : Boolean = myTypes.contains(typeID)
+	override def getTypeIdents: Set[Ident] = myTypes
+	def addTypeMarkings(moreTypeMarks : Set[Ident]) : TypedResrc = {
+		if (moreTypeMarks.subsetOf(myTypes)) {
+			this
+		} else {
+			val unionOfTypes = myTypes.union(moreTypeMarks)
+			val jres = getJenaResource()
+			new JenaTR(jres, unionOfTypes)			
+		}
+	}
 }
-/*
-object JTR_Factory {
-	 def wacky() : Unit { }
+
+object TypedResrcFactory extends BasicDebugger {
+	// Produce a TypedResource equal to anyID whose types are the union of:
+	//	1) any types already associated with anyID (because anyID is already a TR)
+	//	2) knownTypeIDs.
+	//	3) Other type markings for anyID discoverable through modelCli.
+	//		(But note that modelCli does not currently support access to the underlying model,
+	//		so the answer is effectively "none", for the present.  TODO: Expand on this use case).
+	//		
+	// If anyID does not already contain a resource, use modelCli to produce the resource.
+
+	def exposeTypedResrc(anyID : Ident, knownTypeIDs : Set[Ident], modelCli : ModelClient) : TypedResrc = {
+		anyID match {
+			case extensiblyTypedAlready : ExtensiblyTypedResrc => extensiblyTypedAlready.addTypeMarkings(knownTypeIDs)
+			case otherTypedAlready : TypedResrc => { 
+				throw new RuntimeException("Trying to add types " + knownTypeIDs + " to a non-extensible TypedResource " + otherTypedAlready);
+			}
+			case otherJRI : JenaResourceItem => new JenaTR(otherJRI.getJenaResource(), knownTypeIDs)
+			case otherID : Ident => {
+				val jres = modelCli.makeResourceForIdent(otherID)
+				new JenaTR(jres, knownTypeIDs)
+			}
+			case _ => throw new RuntimeException ("Confused by anyID " + anyID);
+		}
+	}
+
 }
-*/
 case class PipelineQuerySpec(val pplnAttrQueryQN : String, val pplnSrcQueryQN : String, val pplnGraphQN : String) 
 
-import org.cogchar.name.dir.NamespaceDir;
 
 object DerivedGraphNames {
 	// val		OPCODE_UNION = "UNION";
@@ -56,7 +92,7 @@ object DerivedGraphNames {
 	
 	/* opTypeID is one of ccrt:UnionModel, 
 	 * useTypeID is one of ccrt:BehaviorModel, 	 */
-
+	import org.cogchar.name.dir.NamespaceDir;
 	val		T_union = new FreeIdent(NamespaceDir.NS_CCRT_RT + "UnionModel");
 	val		P_sourceModel = new FreeIdent(NamespaceDir.NS_CCRT_RT + "sourceModel");
 }
@@ -72,12 +108,66 @@ class DerivedGraphSpec(val myTargetGraphTR : TypedResrc,  var myInGraphIDs : Set
 			DerivedGraphNames.T_union
 		}
 	}
-	def makeDerivedModel(sourceRepo : Repo) : Model = {
-		getStructureTypeID() match { 
+	def makeDerivedModelProvider(sourceRC : RepoClient) : BoundModelProvider = new DirectDerivedGraph(this, new ClientModelProvider(sourceRC))
+	def makeDerivedModelProvider(srcRepo: Repo.WithDirectory) : BoundModelProvider = new DirectDerivedGraph(this, new ServerModelProvider(srcRepo))
+}
+trait NamedModelProvider {
+	def  getNamedModel(graphNameID : Ident) : Model
+}
+
+class ServerModelProvider(mySrcRepo: Repo.WithDirectory) extends NamedModelProvider {
+	override def  getNamedModel(graphID : Ident) : Model = mySrcRepo.getNamedModel(graphID)
+}
+class ClientModelProvider(myRepoClient : RepoClient) extends NamedModelProvider {
+	override def  getNamedModel(graphID : Ident) : Model = myRepoClient.getRepo.getNamedModel(graphID)
+}
+
+trait BoundModelProvider {
+	// This name + set of types tells us "everything important" about the model provided, including where it comes from 
+	// and what kind of stuff it contains, to the extent known at time of (re-?)binding.
+	def getTypedName() : TypedResrc
+	def getModel() : Model
+	import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
+	def assembleModelRoots() : java.util.Set[Object] = AssemblerUtils.buildAllRootsInModel(getModel())
+}
+class BoundModelProviderGroup (myProviders : Set[BoundModelProvider]) {
+	//def makeAggregateModel()  : Model = {
+	//	
+	//}
+	//// def makeNewRepo()
+}
+//object BoundModelFuncs {
+//	def 
+//}
+case class DirectRepoGraph (val myUpstreamGraphID : TypedResrc, val myUpstreamNMP : NamedModelProvider) 
+				extends BoundModelProvider {
+	override def getModel()  = myUpstreamNMP.getNamedModel(myUpstreamGraphID);
+	override def getTypedName()  = myUpstreamGraphID
+}
+case class IndirectDerivedGraph(myPipeQuerySpec : PipelineQuerySpec, val myPipeSpecRC : RepoClient,
+				drvGraphID : Ident, val myUpstreamNMP : NamedModelProvider) extends BoundModelProvider {
+	lazy val myDGSpec = DerivedGraphSpecReader.findOneDerivedGraphSpec(myPipeSpecRC, myPipeQuerySpec, drvGraphID)
+	lazy val myDirectDG = new DirectDerivedGraph(myDGSpec, myUpstreamNMP)
+	override def getModel() = myDirectDG.getModel
+	override def getTypedName() = myDirectDG.getTypedName
+}
+case class DirectDerivedGraph(val mySpec : DerivedGraphSpec, val myUpstreamNMP : NamedModelProvider) 
+		extends BasicDebugger with BoundModelProvider {
+	private var myCachedModel : Option[Model] = None
+	override def getTypedName() = mySpec.myTargetGraphTR
+	def getModel() : Model = {
+		if (myCachedModel.isEmpty) {
+			val m = makeModel
+			myCachedModel = Some(m)
+		}
+		myCachedModel.get
+	}
+	private def makeModel() : Model = {
+		mySpec.getStructureTypeID() match { 
 			case DerivedGraphNames.T_union => {
 				var cumUnionModel = ModelFactory.createDefaultModel();
-				for (srcGraphID <- myInGraphIDs) {
-					val srcGraph = sourceRepo.getNamedModel(srcGraphID)
+				for (srcGraphID <- mySpec.myInGraphIDs) {
+					val srcGraph = myUpstreamNMP.getNamedModel(srcGraphID)
 					// TODO : when upgrading (to Jena v2.8?) use  ModelFactory.createUnion();
 					cumUnionModel = cumUnionModel.union(srcGraph)
 				}
@@ -91,13 +181,34 @@ class DerivedGraphSpec(val myTargetGraphTR : TypedResrc,  var myInGraphIDs : Set
 	}
 }
 
-class DerivedGraph extends BasicDebugger  {
-
-}
-
 
 object DerivedGraphSpecReader extends BasicDebugger {
 
+	def makeOneDirectModelProvider (rc : RepoClient, graphID: Ident) : BoundModelProvider = {
+		val upstreamNMP = new ClientModelProvider(rc)
+		// TODO:  This line of code is an example of where RepoClient is not yet general enough in the
+		// services it can provide to a true client which doesn't have the "server" repo so handy as 
+		// we assumer here!  It's also not strictly true that we need the "Directory" model client, specifically,
+		// to perform this exposeTypedResrc operation.  Actual requirement is an algebraic expression to be worked out.
+		val dirModelClient = rc.getRepo.getDirectoryModelClient
+		val typedGraphID : TypedResrc = TypedResrcFactory.exposeTypedResrc(graphID, Set(), dirModelClient)
+		new DirectRepoGraph(typedGraphID, upstreamNMP)
+	}
+
+	def makeOneDerivedModelProvider (rc : RepoClient, pqs : PipelineQuerySpec, outGraphID: Ident) : BoundModelProvider = {
+		val dgSpec = findOneDerivedGraphSpec(rc, pqs, outGraphID)
+		// Assume we want to read from same repo-client as was used to fetch the spec.
+		dgSpec.makeDerivedModelProvider(rc)
+	}
+	// This form allows user to decide what repo/client to apply the spec against to yield actual DerivedGraph.
+	def findOneDerivedGraphSpec (rc : RepoClient, pqs : PipelineQuerySpec, outGraphID: Ident) : DerivedGraphSpec = {
+		val dgSpecSet : Set[DerivedGraphSpec]=  queryDerivedGraphSpecs(rc, pqs)
+		dgSpecSet.find(x => outGraphID.equals(x.myTargetGraphTR)).get
+	}
+	def makeAllDerivedModelProviders (rc : RepoClient, pqs : PipelineQuerySpec) : Set[BoundModelProvider] = {
+		val dgSpecSet = queryDerivedGraphSpecs(rc, pqs)
+		dgSpecSet.map(_.makeDerivedModelProvider(rc))
+	}
     def queryDerivedGraphSpecs (rc : RepoClient, pqs : PipelineQuerySpec) : Set[DerivedGraphSpec] = {
 		
 		var pipeAttrSL : SolutionList = null;
@@ -111,36 +222,37 @@ object DerivedGraphSpecReader extends BasicDebugger {
 			}
 		}
 		
-		val pipeTypeSetsByID = new scala.collection.mutable.HashMap[Ident, Set[Ident]]() 
+		val outPipeTypeSetsByID = new scala.collection.mutable.HashMap[Ident, Set[Ident]]() 
 		import scala.collection.JavaConversions._
 		val pjl = pipeAttrSL.javaList
 		getLogger().info("Got pipeAttribute list : {}", pjl)
 		pjl foreach (psp  => {
 			// A pipe is the result of a single operation applied to a (poss. ordered by query) set of sources
-			val pipeID = psp.getIdentResultVar(DerivedGraphNames.V_pipeID)
+			val outPipeID = psp.getIdentResultVar(DerivedGraphNames.V_pipeID)
 			// Each pipe-spec will have one or more types, which may be viewed as classifiers of both how the pipe
 			// is constructed (the type of pipe structure) and how its output is used (the type of pipe-outut contents).
 			// For now we assume that it is viable to recognize the opTypeID and useTypeID during this read process.
 			val aTypeID = psp.getIdentResultVar(DerivedGraphNames.V_typeID)
-			val pipeTypeSet : Set[Ident] = if (pipeTypeSetsByID.contains(pipeID)) {
-				pipeTypeSetsByID.get(pipeID).get + aTypeID
+			val pipeTypeSet : Set[Ident] = if (outPipeTypeSetsByID.contains(outPipeID)) {
+				outPipeTypeSetsByID.get(outPipeID).get + aTypeID
 			} else {
 				Set(aTypeID)
 			}
-			pipeTypeSetsByID.put(pipeID, pipeTypeSet)
+			outPipeTypeSetsByID.put(outPipeID, pipeTypeSet)
 		})
-		val pipesByID = new scala.collection.mutable.HashMap[Ident, DerivedGraphSpec]()
-		val pipeGraphID = rc.getRepo.makeIdentForQName(pqs.pplnGraphQN)
-		val pipeModel = rc.getRepo.getNamedModel(pipeGraphID)
+		val outDGSpecsByID = new scala.collection.mutable.HashMap[Ident, DerivedGraphSpec]()
+		// In theory, there is no reason that we cannot use a FreeIdent, which is oft done elsewhere.
+		val pipeSpecGraphID = rc.getRepo.makeIdentForQName(pqs.pplnGraphQN)
+		val pipeSpecModel = rc.getRepo.getNamedModel(pipeSpecGraphID)
 		var dgSpecSet = Set[DerivedGraphSpec]()
-		for ((pipeKeyID, typeSet) <- pipeTypeSetsByID) {
-			val pipeGraphRes = pipeModel.getResource(pipeKeyID.getAbsUriString())
-			val typedRes = new JenaTR(pipeGraphRes, typeSet)
+		for ((outPipeKeyID, typeSet) <- outPipeTypeSetsByID) {
+			val outPipeDGSpecRes = pipeSpecModel.getResource(outPipeKeyID.getAbsUriString())
+			val typedRes = new JenaTR(outPipeDGSpecRes, typeSet)
 			val linkedPipeSrcItems = typedRes.getLinkedItemSet(DerivedGraphNames.P_sourceModel);
 			// Note JavaConverters is not the same as JavaConversions
 			import scala.collection.JavaConverters._
-			val scalaSet : Set[Ident] = linkedPipeSrcItems.asScala.map(_.asInstanceOf[Ident]).toSet
-			val dgSpec = new DerivedGraphSpec(typedRes, scalaSet)
+			val linkedUpstreamPipeIDSet : Set[Ident] = linkedPipeSrcItems.asScala.map(_.asInstanceOf[Ident]).toSet
+			val dgSpec = new DerivedGraphSpec(typedRes, linkedUpstreamPipeIDSet)
 			dgSpecSet = dgSpecSet + dgSpec
 		}
 		dgSpecSet
