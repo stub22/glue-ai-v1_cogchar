@@ -108,10 +108,12 @@ object BehavMasterConfigTest extends BasicDebugger {
 	val EQBAR = "=========================================================================================="
 	
 	def readSceneSpecsFromDerivedRepo(srcRepoCli : RepoClient, pqs : PipelineQuerySpec, derivedBehavGraphID : Ident) : java.util.List[SceneSpec] = {
-		println(EQBAR + "\nReading derived graph specs using " + pqs + "thru repoClient [" + srcRepoCli + "]");
+		println(EQBAR + "\nReading indirect graph " + derivedBehavGraphID + " using " + pqs + "thru repoClient [" + srcRepoCli + "]");
 				// queri		[attr=" + pplnAttrQueryQN + ", sources=" + pplnSrcQueryQN + "] on graph [" 	+ pplnGraphQN +  "] 
 				
-				
+		val bmp =  DerivedGraphSpecReader.makeOneDerivedModelProvider (srcRepoCli, pqs, derivedBehavGraphID)
+		readSceneSpecsFromBMP(bmp)
+		/*
 		 val dgSpecSet : Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(srcRepoCli, pqs)
 		 for (dg <- dgSpecSet) {
 			 println("Got derived graph spec: " + dg)
@@ -126,11 +128,17 @@ object BehavMasterConfigTest extends BasicDebugger {
 		for (dgStat <- derivedGraphStats) {
 			println("Got derived-graph-stat: " + dgStat)
 		}
-		
 		val derivedBehavSpecs = derivedRepo.assembleRootsFromNamedModel(derivedBehavGraphID);
 		val derivedSceneSpecList = SceneBook.filterSceneSpecs(derivedBehavSpecs);	
 		derivedSceneSpecList
+		*/
 	}
+	def readSceneSpecsFromBMP(bmp : BoundModelProvider) : java.util.List[SceneSpec] = {
+		val allObjects : java.util.Set[Object] = bmp.assembleModelRoots()
+		val sceneSpecList : java.util.List[SceneSpec] = SceneBook.filterSceneSpecs(allObjects);
+		sceneSpecList
+	}
+
 	def main(args: Array[String]) : Unit = {
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
 		org.apache.log4j.BasicConfigurator.configure();

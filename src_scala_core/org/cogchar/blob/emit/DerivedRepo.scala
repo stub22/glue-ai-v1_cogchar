@@ -32,6 +32,7 @@ import scala.collection.JavaConversions.asScalaSet
  * @author LogicMOO <www.logicmoo.org>
  */
 
+
 // FIXME:  The srcRepo should really not be given to the RepoSpec, because it
 // is not serializable specData.
 class DerivedRepoSpec(val myDGSpecs: Set[DerivedGraphSpec], val mySrcRepo: Repo.WithDirectory) extends RepoSpec {
@@ -44,8 +45,9 @@ class DerivedRepoSpec(val myDGSpecs: Set[DerivedGraphSpec], val mySrcRepo: Repo.
     emptyDirModel.setNsPrefixes(mySrcRepo.getDirectoryModel.getNsPrefixMap);
     val derivedRepo = new DerivedRepo(emptyDirModel, this)
     for (dgSpec <- myDGSpecs) {
-      val derivedModel = dgSpec.makeDerivedModel(mySrcRepo)
-      derivedRepo.replaceNamedModel(dgSpec.myTargetGraphTR, derivedModel)
+		val derivedModelProvider = dgSpec.makeDerivedModelProvider(mySrcRepo);
+		val derivedModel = derivedModelProvider.getModel()
+		derivedRepo.replaceNamedModel(dgSpec.myTargetGraphTR, derivedModel)
     }
     derivedRepo
   }

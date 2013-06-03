@@ -23,7 +23,7 @@ import org.appdapter.core.item.{Item};
 import org.appdapter.help.repo.{RepoClient}
 
 import org.cogchar.api.channel.{GraphChannel}
-import org.cogchar.blob.emit.{RepoFabric}
+import org.cogchar.blob.emit.{RepoFabric, DirectDerivedGraph, DerivedGraphSpec}
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -36,19 +36,16 @@ class GraphChannelHub(bootRepoClient : RepoClient) {
 	// Can promote this to EnhancedRepoClient when needed.
 	var		myMainRepoClient : RepoClient = bootRepoClient
 	
+	// dg includes a spec which includes a (multi-)TypedResource, which is used as the channel ID.
+	// Ta-Da!
+
+	def makeVanillaDGChannel(ddg : DirectDerivedGraph) : GraphChannel = {
+		val chanID = ddg.mySpec.myTargetGraphTR
+		val dgChan = new ProvidedGraphChan(chanID, ddg)
+		myGraphChans.put(chanID, dgChan)
+		dgChan
+	}
 	
+	// Next layer is 
 	
 }
-/*
- * 	public List<SceneSpec> loadDemoSceneSpecs(RepoClient bmcRepoCli, String directGraphQN, String pipelineQueryQN, 
-					String pipelineGraphQN, String derivedGraphQN) {
-		getLogger().info("************************ loadDemoSceneSpecs()");
-
-		// SceneBook sceneBook = SceneBook.readSceneBookFromRepo(bmcRepoCli, chanGraphID, behavGraphID);
-		List<SceneSpec> ssList = readSceneSpecsFromRepoClient(bmcRepoCli, directGraphQN);
-
-		
-		Ident derivedBehavGraphID = bmcRepoCli.makeIdentForQName(derivedGraphQN);
-		List<SceneSpec> bonusList = BehavMasterConfigTest.readSceneSpecsFromDerivedRepo(bmcRepoCli, pipelineQueryQN, 
-						pipelineGraphQN, derivedBehavGraphID);
- */
