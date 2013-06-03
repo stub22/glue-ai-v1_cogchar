@@ -295,8 +295,9 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
 		val dgSpecSet: Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(rc, pqs);
 
     for (dgSpec <- dgSpecSet) {
-      val model = dgSpec.makeDerivedModel(this)
-      mainDset.replaceNamedModel(pplnGraphQN, model)
+		val derivedModelProvider = dgSpec.makeDerivedModelProvider(this);
+		val derivedModel = derivedModelProvider.getModel()
+		mainDset.replaceNamedModel(pplnGraphQN, derivedModel)
     }
   }
   class SimplistSpec(val wd: Repo.WithDirectory) extends RepoSpec {
