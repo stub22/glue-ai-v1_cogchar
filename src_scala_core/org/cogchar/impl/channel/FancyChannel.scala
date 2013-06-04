@@ -70,7 +70,7 @@ class FancyChannelSpec extends KnownComponentImpl {
 class FancyChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[FancyChannelSpec](builderConfRes) {
 
 	override protected def initExtendedFieldsAndLinks(cs: FancyChannelSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
-		getLogger().debug("ChannelSpecBuilder.initExtendedFieldsAndLinks using {}", configItem);
+		getLogger().debug("FancyChannelSpecBuilder.initExtendedFieldsAndLinks using {}", configItem);
 		val reader = getReader();
 		cs.completeInit(configItem, reader, assmblr, mode)
 	}

@@ -29,8 +29,8 @@ import org.cogchar.name.behavior.{SceneFieldNames};
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 
 import  org.cogchar.api.perform.{Media, PerfChannel, Performance, BasicPerformance}
-
-import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyPerformance, FancyTextPerfChan, FancyTextInstruction, ChannelSpec};
+import org.cogchar.impl.channel.{FancyChannelSpec};
+import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyPerformance, FancyTextPerfChan, FancyTextInstruction};
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -60,7 +60,7 @@ abstract class BehaviorActionSpec extends BasicDebugger {
 		}
 		for (val actChanSpec <- actionChannelSpecs.toArray) {
 			actChanSpec match {
-				case acs: ChannelSpec => {
+				case acs: FancyChannelSpec => {
 					val chanId = acs.getIdent();
 					// What does this freeing accomplish?  Are we trying to ensure the source model can be garbage collected?
 					val freeChanIdent = new FreeIdent(chanId);
