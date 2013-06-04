@@ -33,7 +33,7 @@ import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
 import org.appdapter.api.module.{Module, Modulator}
 import org.appdapter.api.module.Module.State;
 
-import org.cogchar.impl.perform.{ChannelSpec};
+import org.cogchar.impl.channel.{FancyChannelSpec};
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 
 /**  A Behavior is a thread of activity run by a BehaviorModulator.

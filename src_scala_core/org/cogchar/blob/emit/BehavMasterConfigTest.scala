@@ -113,25 +113,6 @@ object BehavMasterConfigTest extends BasicDebugger {
 				
 		val bmp =  DerivedGraphSpecReader.makeOneDerivedModelProvider (srcRepoCli, pqs, derivedBehavGraphID)
 		readSceneSpecsFromBMP(bmp)
-		/*
-		 val dgSpecSet : Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(srcRepoCli, pqs)
-		 for (dg <- dgSpecSet) {
-			 println("Got derived graph spec: " + dg)
-			 // ps.makeRepo().loadSheetModelsIntoMainDataset();
-		 }
-		 val srcRepo = srcRepoCli.getRepo
-		 val derivedRepoSpec  = new DerivedRepoSpec(dgSpecSet, srcRepo)
-		 
-		val derivedRepo = derivedRepoSpec.makeRepo;
-		
-		val derivedGraphStats = derivedRepo.getGraphStats.toArray;
-		for (dgStat <- derivedGraphStats) {
-			println("Got derived-graph-stat: " + dgStat)
-		}
-		val derivedBehavSpecs = derivedRepo.assembleRootsFromNamedModel(derivedBehavGraphID);
-		val derivedSceneSpecList = SceneBook.filterSceneSpecs(derivedBehavSpecs);	
-		derivedSceneSpecList
-		*/
 	}
 	def readSceneSpecsFromBMP(bmp : BoundModelProvider) : java.util.List[SceneSpec] = {
 		val allObjects : java.util.Set[Object] = bmp.assembleModelRoots()

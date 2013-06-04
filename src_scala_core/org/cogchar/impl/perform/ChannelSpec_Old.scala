@@ -21,12 +21,22 @@ import com.hp.hpl.jena.rdf.model.Resource;
 /**
  * @author Stu B. <www.texpedient.com>
  * 
- * We are temporarily supporting these old names, since there is extant data using them.
- */
+ * Currently we are in the middle of a move to deprecate the name 
+ * o.c.impl.perform.ChannelSpec*, in favor of 
+ * o.c.impl.channel.FancyChanSpec*
+ * 
+ * 
+ * However, we have a lot of data that points to:
+ * o.c.impl.perform.ChannelSpecBuilder
+ * 
+ * Specifically, these sheets:
+ * GluePuma_HRKR50_TestFull.Chan
+ * GluePuma_BehavMasterDemo.ChanBinding
+ * - also some .TTL files, yes?
+ We have now removed all dependencies on THIS class:  class ChannelSpec extends  FancyChannelSpec  {}
 
-class ChannelSpec extends  FancyChannelSpec  {
-
-}
+However, keeping this type extension below allows that data to still load successfully.
+*/
 
 class ChannelSpecBuilder(builderConfRes : Resource) extends FancyChannelSpecBuilder(builderConfRes) {
 

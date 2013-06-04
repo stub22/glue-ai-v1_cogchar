@@ -31,7 +31,7 @@ import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
 import org.appdapter.api.module.{Module, Modulator}
 import org.appdapter.api.module.Module.State;
 
-import org.cogchar.impl.perform.{ChannelSpec};
+
 import org.cogchar.api.perform.{Performance};
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 

@@ -30,8 +30,10 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import org.cogchar.name.behavior.{SceneFieldNames}
 import org.cogchar.api.channel.{Channel, BasicChannel}
+import org.cogchar.impl.channel.{FancyChannelSpec};
 import org.cogchar.api.perform.{PerfChannel, Media, Performance};
-import org.cogchar.impl.perform.{FancyTime, ChannelSpec, PerfChannelNames};
+
+import org.cogchar.impl.perform.{FancyTime, PerfChannelNames};
 
 import org.cogchar.api.scene.{Scene};
 
@@ -45,13 +47,13 @@ class SceneSpec () extends KnownComponentImpl {
 	var		myDetails : String = "EMPTY";
 	var		myTrigName : Option[String] = None;
 	val		myBehaviorSpecs = new HashMap[Ident,BehaviorSpec]();
-	val		myChannelSpecs  = new HashMap[Ident,ChannelSpec]();
+	val		myChannelSpecs  = new HashMap[Ident,FancyChannelSpec]();
 
 	
 	def addBehaviorSpec(bs: BehaviorSpec) {
 		myBehaviorSpecs.put(bs.getIdent(), bs);
 	}
-	def addChannelSpec(cs: ChannelSpec) {
+	def addChannelSpec(cs: FancyChannelSpec) {
 		myChannelSpecs.put(cs.getIdent(), cs);
 	}
 	// The field summary is used only for logging
@@ -101,7 +103,7 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 		val linkedChannelSpecs : java.util.List[Object] = reader.findOrMakeLinkedObjects(configItem, SceneFieldNames.P_channel, assmblr, mode, null);
 		for (val o <- linkedChannelSpecs) {
 			o match {
-				case cs: ChannelSpec => ss.addChannelSpec(cs);
+				case cs: FancyChannelSpec => ss.addChannelSpec(cs);
 				case _ => getLogger().warn("Unexpected object found at {} = {}", SceneFieldNames.P_channel, o);
 			}
 		}		
