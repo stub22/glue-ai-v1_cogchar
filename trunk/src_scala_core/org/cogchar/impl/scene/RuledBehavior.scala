@@ -16,8 +16,6 @@
 
 package org.cogchar.impl.scene
 
-import org.cogchar.impl.perform.{ChannelSpec};
-
 import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item, JenaResourceItem}
 import org.appdapter.core.log.{BasicDebugger, Loggable};

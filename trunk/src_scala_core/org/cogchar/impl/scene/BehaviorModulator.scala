@@ -32,7 +32,6 @@ import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
 import org.appdapter.api.module.{Module, Modulator}
 import org.appdapter.api.module.Module.State;
 
-import org.cogchar.impl.perform.{ChannelSpec};
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 /**
  * The behavior-modulator uses a BScene as the (potentially writable) 
