@@ -109,9 +109,8 @@ object BehavMasterConfigTest extends BasicDebugger {
 	
 	def readSceneSpecsFromDerivedRepo(srcRepoCli : RepoClient, pqs : PipelineQuerySpec, derivedBehavGraphID : Ident) : java.util.List[SceneSpec] = {
 		println(EQBAR + "\nReading indirect graph " + derivedBehavGraphID + " using " + pqs + "thru repoClient [" + srcRepoCli + "]");
-				// queri		[attr=" + pplnAttrQueryQN + ", sources=" + pplnSrcQueryQN + "] on graph [" 	+ pplnGraphQN +  "] 
 				
-		val bmp =  DerivedGraphSpecReader.makeOneDerivedModelProvider (srcRepoCli, pqs, derivedBehavGraphID)
+		val bmp =  ModelProviderFactory.makeOneDerivedModelProvider (srcRepoCli, pqs, derivedBehavGraphID)
 		readSceneSpecsFromBMP(bmp)
 	}
 	def readSceneSpecsFromBMP(bmp : BoundModelProvider) : java.util.List[SceneSpec] = {
@@ -160,8 +159,6 @@ object BehavMasterConfigTest extends BasicDebugger {
 		// println("SpeechOut-Best=" + ChannelNames.getOutChanIdent_SpeechMain)
 		 
 		// Create a new repo of kind  "derived"
-		
-		
 		val	derivedBehavGraphID = bmcRepoCli.makeIdentForQName(DERIVED_BEHAV_GRAPH_QN);
 		val pqs = new PipelineQuerySpec(PIPE_ATTR_QQN, PIPE_SOURCE_QQN, PIPELINE_GRAPH_QN);
 		val derivedSceneSpecList = readSceneSpecsFromDerivedRepo(bmcRepoCli, pqs, derivedBehavGraphID);		

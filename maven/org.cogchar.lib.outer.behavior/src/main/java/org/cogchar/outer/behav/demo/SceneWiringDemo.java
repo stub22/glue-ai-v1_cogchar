@@ -31,6 +31,7 @@ import org.cogchar.blob.emit.EnhancedRepoClient;
 import org.cogchar.blob.emit.BoundModelProvider;
 import org.cogchar.blob.emit.DirectRepoGraph;
 import org.cogchar.blob.emit.DerivedGraphSpecReader;
+import org.cogchar.blob.emit.ModelProviderFactory;
 import org.cogchar.impl.scene.*;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -102,11 +103,11 @@ public class SceneWiringDemo extends WiringDemo {
 		// SceneBook sceneBook = SceneBook.readSceneBookFromRepo(bmcRepoCli, chanGraphID, behavGraphID);
 		// Swizzle-caches are still used to find channels here, but are hidden in static variables.  Ewww!
 		Ident directBehavGraphID = bmcRepoCli.makeIdentForQName(directGraphQN);
-		BoundModelProvider directBMP = DerivedGraphSpecReader.makeOneDirectModelProvider(bmcRepoCli, directBehavGraphID);
+		BoundModelProvider directBMP = ModelProviderFactory.makeOneDirectModelProvider(bmcRepoCli, directBehavGraphID);
 		List<SceneSpec> ssList = readSceneSpecsFromBMP(directBMP);
 		// readSceneSpecsFromDirectGraph(bmcRepoCli, directGraphQN);
 		Ident derivedBehavGraphID =   bmcRepoCli.makeIdentForQName(derivedGraphQN);
-		BoundModelProvider derivedBMP = DerivedGraphSpecReader.makeOneDerivedModelProvider(bmcRepoCli, pipeQuerySpec, derivedBehavGraphID);
+		BoundModelProvider derivedBMP = ModelProviderFactory.makeOneDerivedModelProvider(bmcRepoCli, pipeQuerySpec, derivedBehavGraphID);
 		// List<SceneSpec> bonusList = readSceneSpecsFromDerivedGraph(bmcRepoCli, pipeQuerySpec, derivedGraphQN);
 		List<SceneSpec> bonusList = readSceneSpecsFromBMP(derivedBMP);
 
@@ -182,32 +183,4 @@ public class SceneWiringDemo extends WiringDemo {
 				final String key, final String val) {
 		return getRegistrationRunnable(context, SceneSpec.class, scnSpec, key, val);
 	}
-/*
-	@Deprecated private List<SceneSpec> readSceneSpecsFromDirectGraph(RepoClient repoCli, String sceneSpecsGraphQN) {
-		getLogger().info("loading SceneSpecs from direct graph {}", sceneSpecsGraphQN);
-		List<SceneSpec> ssList = new ArrayList<SceneSpec>();
-		try {
-			Ident behavGraphID = repoCli.makeIdentForQName(sceneSpecsGraphQN);
-			Set<Object> allBehavSpecs = repoCli.assembleRootsFromNamedModel(behavGraphID);
-			ssList = SceneBook.filterSceneSpecs(allBehavSpecs);
-		} catch (Throwable t) {
-			getLogger().error("Problem loading sceneSpecs from direct graph {}", sceneSpecsGraphQN, t);
-		}
-		return ssList;
-	}
-	@Deprecated private List<SceneSpec> readSceneSpecsFromDerivedGraph(RepoClient bmcRepoCli,PipelineQuerySpec pipeQuerySpec,  
-					String derivedGraphQN) {
-		getLogger().info("loading SceneSpecs from derived graph {}", derivedGraphQN);
-		List<SceneSpec> ssList = new ArrayList<SceneSpec>();
-		try {
-			FancyRepo fr = (FancyRepo) bmcRepoCli.getRepo();
-			Ident derivedBehavGraphID = bmcRepoCli.makeIdentForQName(derivedGraphQN);
-			ssList = BehavMasterConfigTest.readSceneSpecsFromDerivedRepo(bmcRepoCli, pipeQuerySpec, derivedBehavGraphID);	
-		} catch (Throwable t) {
-			getLogger().error("Problem loading sceneSpecs from derived graph {}", derivedGraphQN, t);
-		}
-		return ssList;
-	}
-
-*/
 }
