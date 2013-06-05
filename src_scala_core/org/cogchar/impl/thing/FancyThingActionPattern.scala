@@ -16,12 +16,11 @@
 
 package org.cogchar.impl.thing
 import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.api.thing.ThingActionRouter;
-
+import org.cogchar.api.thing.ThingActionPattern;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-class FancyThingActionRouter extends ThingActionRouter {
-	
+class FancyThingActionPattern extends ThingActionPattern {
+
 }

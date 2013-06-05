@@ -15,7 +15,6 @@
  */
 
 package org.cogchar.blob.emit
-import org.appdapter.core.name.Ident
 
 import org.appdapter.core.log.{BasicDebugger};
 import org.appdapter.core.name.{Ident, FreeIdent};
@@ -32,58 +31,8 @@ import com.hp.hpl.jena.rdf.model.ModelFactory
  *
  */
 
-import com.hp.hpl.jena.rdf.model.Resource;
-import org.appdapter.core.item.{Item, JenaResourceItem}
-trait TypedResrc extends Ident with Item {
-	def hasTypeMark(typeID : Ident) : Boolean = false
-	def getTypeIdents: Set[Ident] = Set()
-}
-trait ExtensiblyTypedResrc extends TypedResrc {
-	// Consider:  This would be difficult for a virtually-backed TypedResrc to implement.
-	def addTypeMarkings(moreTypeMarks : Set[Ident]) : TypedResrc
-}
-class JenaTR(r : Resource, private val myTypes : Set[Ident]) extends JenaResourceItem(r) with ExtensiblyTypedResrc {
-	override def hasTypeMark(typeID : Ident) : Boolean = myTypes.contains(typeID)
-	override def getTypeIdents: Set[Ident] = myTypes
-	def addTypeMarkings(moreTypeMarks : Set[Ident]) : TypedResrc = {
-		if (moreTypeMarks.subsetOf(myTypes)) {
-			this
-		} else {
-			val unionOfTypes = myTypes.union(moreTypeMarks)
-			val jres = getJenaResource()
-			new JenaTR(jres, unionOfTypes)			
-		}
-	}
-}
 
-object TypedResrcFactory extends BasicDebugger {
-	// Produce a TypedResource equal to anyID whose types are the union of:
-	//	1) any types already associated with anyID (because anyID is already a TR)
-	//	2) knownTypeIDs.
-	//	3) Other type markings for anyID discoverable through modelCli.
-	//		(But note that modelCli does not currently support access to the underlying model,
-	//		so the answer is effectively "none", for the present.  TODO: Expand on this use case).
-	//		
-	// If anyID does not already contain a resource, use modelCli to produce the resource.
-
-	def exposeTypedResrc(anyID : Ident, knownTypeIDs : Set[Ident], modelCli : ModelClient) : TypedResrc = {
-		anyID match {
-			case extensiblyTypedAlready : ExtensiblyTypedResrc => extensiblyTypedAlready.addTypeMarkings(knownTypeIDs)
-			case otherTypedAlready : TypedResrc => { 
-				throw new RuntimeException("Trying to add types " + knownTypeIDs + " to a non-extensible TypedResource " + otherTypedAlready);
-			}
-			case otherJRI : JenaResourceItem => new JenaTR(otherJRI.getJenaResource(), knownTypeIDs)
-			case otherID : Ident => {
-				val jres = modelCli.makeResourceForIdent(otherID)
-				new JenaTR(jres, knownTypeIDs)
-			}
-			case _ => throw new RuntimeException ("Confused by anyID " + anyID);
-		}
-	}
-
-}
 case class PipelineQuerySpec(val pplnAttrQueryQN : String, val pplnSrcQueryQN : String, val pplnGraphQN : String) 
-
 
 object DerivedGraphNames {
 	// val		OPCODE_UNION = "UNION";
@@ -111,34 +60,7 @@ class DerivedGraphSpec(val myTargetGraphTR : TypedResrc,  var myInGraphIDs : Set
 	def makeDerivedModelProvider(sourceRC : RepoClient) : BoundModelProvider = new DirectDerivedGraph(this, new ClientModelProvider(sourceRC))
 	def makeDerivedModelProvider(srcRepo: Repo.WithDirectory) : BoundModelProvider = new DirectDerivedGraph(this, new ServerModelProvider(srcRepo))
 }
-trait NamedModelProvider {
-	def  getNamedModel(graphNameID : Ident) : Model
-}
 
-class ServerModelProvider(mySrcRepo: Repo.WithDirectory) extends NamedModelProvider {
-	override def  getNamedModel(graphID : Ident) : Model = mySrcRepo.getNamedModel(graphID)
-}
-class ClientModelProvider(myRepoClient : RepoClient) extends NamedModelProvider {
-	override def  getNamedModel(graphID : Ident) : Model = myRepoClient.getRepo.getNamedModel(graphID)
-}
-
-trait BoundModelProvider {
-	// This name + set of types tells us "everything important" about the model provided, including where it comes from 
-	// and what kind of stuff it contains, to the extent known at time of (re-?)binding.
-	def getTypedName() : TypedResrc
-	def getModel() : Model
-	import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
-	def assembleModelRoots() : java.util.Set[Object] = AssemblerUtils.buildAllRootsInModel(getModel())
-}
-class BoundModelProviderGroup (myProviders : Set[BoundModelProvider]) {
-	//def makeAggregateModel()  : Model = {
-	//	
-	//}
-	//// def makeNewRepo()
-}
-//object BoundModelFuncs {
-//	def 
-//}
 case class DirectRepoGraph (val myUpstreamGraphID : TypedResrc, val myUpstreamNMP : NamedModelProvider) 
 				extends BoundModelProvider {
 	override def getModel()  = myUpstreamNMP.getNamedModel(myUpstreamGraphID);
@@ -184,22 +106,7 @@ case class DirectDerivedGraph(val mySpec : DerivedGraphSpec, val myUpstreamNMP :
 
 object DerivedGraphSpecReader extends BasicDebugger {
 
-	def makeOneDirectModelProvider (rc : RepoClient, graphID: Ident) : BoundModelProvider = {
-		val upstreamNMP = new ClientModelProvider(rc)
-		// TODO:  This line of code is an example of where RepoClient is not yet general enough in the
-		// services it can provide to a true client which doesn't have the "server" repo so handy as 
-		// we assumer here!  It's also not strictly true that we need the "Directory" model client, specifically,
-		// to perform this exposeTypedResrc operation.  Actual requirement is an algebraic expression to be worked out.
-		val dirModelClient = rc.getRepo.getDirectoryModelClient
-		val typedGraphID : TypedResrc = TypedResrcFactory.exposeTypedResrc(graphID, Set(), dirModelClient)
-		new DirectRepoGraph(typedGraphID, upstreamNMP)
-	}
 
-	def makeOneDerivedModelProvider (rc : RepoClient, pqs : PipelineQuerySpec, outGraphID: Ident) : BoundModelProvider = {
-		val dgSpec = findOneDerivedGraphSpec(rc, pqs, outGraphID)
-		// Assume we want to read from same repo-client as was used to fetch the spec.
-		dgSpec.makeDerivedModelProvider(rc)
-	}
 	// This form allows user to decide what repo/client to apply the spec against to yield actual DerivedGraph.
 	def findOneDerivedGraphSpec (rc : RepoClient, pqs : PipelineQuerySpec, outGraphID: Ident) : DerivedGraphSpec = {
 		val dgSpecSet : Set[DerivedGraphSpec]=  queryDerivedGraphSpecs(rc, pqs)
