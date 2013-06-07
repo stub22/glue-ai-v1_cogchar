@@ -16,11 +16,11 @@
 
 package org.cogchar.impl.thing
 import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.api.thing.ThingActionPattern;
+import org.cogchar.api.thing.ThingActionFilter;
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-class FancyThingActionPattern extends ThingActionPattern {
+class FancyThingActionFilter extends ThingActionFilter {
 
 }

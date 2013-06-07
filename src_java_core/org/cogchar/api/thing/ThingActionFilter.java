@@ -42,6 +42,6 @@ import org.appdapter.core.name.Ident;
  *			Match by the parameter name, value contents, types, and other related metadata.
  */
 
-public interface ThingActionPattern {
+public interface ThingActionFilter {
 
 }
