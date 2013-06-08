@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import java.net.URL;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.perform.Performance;
+import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.perform.FancyTextPerf;
 import org.cogchar.impl.perform.FancyTextMedia;
@@ -29,20 +30,28 @@ import org.robokind.api.animation.Animation;
 import org.robokind.api.animation.player.AnimationJob;
 import org.robokind.api.common.playable.PlayState;
 import org.robokind.api.common.utils.TimeUtils;
+import org.cogchar.api.thing.WantsThingAction;
 
 /**
- *
  * @author StuB22
- * 
-
- * 
  */
 
 
-public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> {
+public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> implements WantsThingAction {
 	private boolean myUseTempAnimsFlag = false;
 	private RobotAnimContext myRobotAnimContext;
 
+	// As of 2013-06-08, the srcGraphID passed is actually the outChannel ID, same as ID of this receiver object.
+	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
+		getLogger().info("***** consumeAction({})", actionSpec);
+		// TODO : Use the actionSpec to determine an animation command, using as few assumptions and as
+		// little code as possible, allowing the actionSpec itself to "do the work".  In particular, we
+		// interpret the typing information of the actionSpec (Verb (is-a type) and TargetThing-type, potentially 
+		// also types of params).
+		
+		return ConsumpStatus.CONSUMED;
+	}
+		
 	public AnimOutTrigChan(Ident id, RobotAnimContext rac) {
 		super(id);
 		myRobotAnimContext = rac;
@@ -62,6 +71,8 @@ public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> {
 	
 	// Proposed:  Replacement for this method should process a ThingAction ontologized description of a performance
 	// instruction.  
+	// See above new method consumeAction() implementing WantsThingAction, which we seek to map into the guts of
+	// this animation command interface.
 	@Override public void fancyFastCueAndPlay (FancyTextMedia textMedia, FancyTextCursor cuePos, FancyTextPerf perf)  {	
 		String animPathStr = textMedia.getFullText();
 		Animation anim = null;
@@ -149,7 +160,9 @@ Do not use any listeners, they are not implemented in the RemoteAnimationJob.
 		long stopTime = 0;
 		// This method is defined by the Playable interface.
 		aj.stop(stopTime);
-	}	
+	}
+
+
 	
 
 }

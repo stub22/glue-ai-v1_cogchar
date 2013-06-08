@@ -48,7 +48,7 @@ public class AnimLaunchEntityAction extends BasicEntityAction {
 	}
 	public static class Consumer extends ThingActionConsumer {
 
-		@Override public ThingActionConsumer.Status consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
+		@Override public ThingActionConsumer.ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
 			Ident			tgtThingEntityTypeID = actionSpec.getTargetThingTypeID();
 		
 			if (WebActionNames.WEB_USER_INPUT.equals(tgtThingEntityTypeID)) {
@@ -59,9 +59,9 @@ public class AnimLaunchEntityAction extends BasicEntityAction {
 				if (animID != null) {
 					
 				}
-				return Status.USED;
+				return ConsumpStatus.USED;
 			}
-			return Status.IGNORED;
+			return ConsumpStatus.IGNORED;
 		}
 		
 	}

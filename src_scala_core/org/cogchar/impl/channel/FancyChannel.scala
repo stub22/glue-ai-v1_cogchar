@@ -28,14 +28,14 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-import org.cogchar.name.channel.ChannelNames;
-
+import org.cogchar.name.channel.{ChannelNames};
+import org.cogchar.api.channel.{Channel};
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-trait FancyChannel {
-
+trait FancyChannel extends Channel {
+	//def getChannelSpec() : FancyChannelSpec
 }
 
 // The ChannelSpec has not advanced beyond a URI rendevous point, which SceneSpecs can refer to.

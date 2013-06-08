@@ -37,20 +37,20 @@ public class ThingActionRouter extends ThingActionConsumer {
 	
 	private	Map<Ident, List<ThingActionConsumer>>	myConsumersBySrcGraphID = new HashMap<Ident, List<ThingActionConsumer>>();
 
-	@Override public Status consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
+	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
 		List<ThingActionConsumer> consumerList = findConsumersForSourceGraph(srcGraphID);
-		Status highestSoFar = Status.IGNORED;
+		ConsumpStatus highestSoFar = ConsumpStatus.IGNORED;
 		for (ThingActionConsumer consumer : consumerList) {
-			Status stat = consumer.consumeAction(actionSpec, srcGraphID);
+			ConsumpStatus stat = consumer.consumeAction(actionSpec, srcGraphID);
 			switch (stat) {
 				case	CONSUMED:	
-					return Status.CONSUMED;
+					return ConsumpStatus.CONSUMED;
 				case	USED:		
-					highestSoFar = Status.USED;
+					highestSoFar = ConsumpStatus.USED;
 					break;
 				case	QUEUED:
-					if (highestSoFar != Status.USED) {
-						highestSoFar = Status.QUEUED;
+					if (highestSoFar != ConsumpStatus.USED) {
+						highestSoFar = ConsumpStatus.QUEUED;
 					}
 					break;
 				case	IGNORED:

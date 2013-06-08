@@ -16,13 +16,16 @@
 
 package org.cogchar.platform.time;
 
-import org.jscience.mathematics.number.FieldNumber;
+// JSci 5.0 import org.jscience.mathematics.number.FieldNumber;
+// JSci 4.3
+import org.jscience.mathematics.number.Number;
+
 
 /**
  *
  * @author Stu B.  <www.texpedient.com>
  */
-class RelativeTimePoint<OffsetSecondsFN extends FieldNumber<OffsetSecondsFN>> extends ExactTimePoint<OffsetSecondsFN> {
+class RelativeTimePoint<OffsetSecondsFN extends Number<OffsetSecondsFN>> extends ExactTimePoint<OffsetSecondsFN> {
 	private		ExactTimePoint<OffsetSecondsFN>			myReferencePoint;
 	private		OffsetSecondsFN						myOffsetSeconds;
 	public RelativeTimePoint(ExactTimePoint<OffsetSecondsFN> refPoint, OffsetSecondsFN offsetSec) {

@@ -16,9 +16,9 @@
 
 package org.cogchar.platform.time;
 
-import org.jscience.mathematics.number.FieldNumber;
-
-
+// JSci 5.0 import org.jscience.mathematics.number.FieldNumber;
+// JSci 4.3
+import org.jscience.mathematics.number.Number;
 
 /**
  *
@@ -26,7 +26,7 @@ import org.jscience.mathematics.number.FieldNumber;
  *
  * Duration must be positive <--->   End point must be after start point.
  */
-public class TimeInterval<SecondsFN extends FieldNumber<SecondsFN>> {
+public class TimeInterval<SecondsFN extends Number<SecondsFN>> {
 	private		ExactTimePoint<SecondsFN>		myStartPoint;
 	private		ExactTimePoint<SecondsFN>		myEndPoint;
 	private		SecondsFN					myDurationSec;
