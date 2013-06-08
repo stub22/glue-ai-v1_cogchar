@@ -36,12 +36,6 @@
 			redundant direct deps below.
 		-->
 		<dependency>
-			<groupId>org.appdapter</groupId>
-			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
-			<!-- Now using frozen version which we do not expect to update -->
-			<version>1.0.9</version>
-		</dependency>
-		<dependency>
 			<!-- Apache commons-math used in both o.c.l.animoid and o.c.l.sonograph, which we obtain indirectly via: -->	
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.math.symja_jas</artifactId>
@@ -142,8 +136,8 @@
 		</dependency>
 		<!--  We include "correct" (OGSi-friendly) Log4J version in "provided"
 			scope, so that our test programs can invoke Log4J configuration code,
-			and so that client projects can correctly+easily use Log4J (preferably
-			via SLF4J!), if they choose.
+			and so that client non-OSGi projects can more correctly+easily use Log4J 
+			(preferably	via SLF4J!), if they choose.
 			
 			However, there is no SLF4J binding without the above dependency.
 			Also, in an OSGi environment, our Log4J dep will not pass through

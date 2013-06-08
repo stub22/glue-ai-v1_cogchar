@@ -88,7 +88,7 @@ public class VWorldEntityActionConsumer extends ThingActionConsumer { //  extend
 	public Dimension getScreenDimension() {
 		return myScreenDimension;
 	}
-	@Override public Status consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
+	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
 		theLogger.info("The targetThingType is {}", actionSpec.getTargetThingTypeID()); // TEST ONLY
 
 		// How do we decide whether it's really a VWorld / Goody action?
@@ -105,7 +105,7 @@ public class VWorldEntityActionConsumer extends ThingActionConsumer { //  extend
 					goodyOne = GoodyFactory.getTheFactory().createAndAttachByAction(ga);
 					if (goodyOne != null) {
 						addGoody(goodyOne);
-						return Status.USED;
+						return ConsumpStatus.USED;
 					}
 				}
 				break;
@@ -115,7 +115,7 @@ public class VWorldEntityActionConsumer extends ThingActionConsumer { //  extend
 					theLogger.warn("Could not delete goody because it does not exist: {}", gid);
 				} else {
 					removeGoody(goodyOne);
-					return Status.USED;
+					return ConsumpStatus.USED;
 				}
 				break;
 			}
@@ -124,13 +124,13 @@ public class VWorldEntityActionConsumer extends ThingActionConsumer { //  extend
 				try {
 					// Now - apply the action to goodyOne
 					goodyOne.applyAction(ga);
-					return Status.USED;
+					return ConsumpStatus.USED;
 				} catch (Exception e) {
 					theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);
 				}
 			}
 		}
-		return Status.IGNORED;
+		return ConsumpStatus.IGNORED;
 	}
 
 	// A temporary way to make it possible to interact with figures... ultimately Humanoids aren't goodies!

@@ -16,16 +16,17 @@
 
 package org.cogchar.platform.time;
 
-import org.jscience.mathematics.number.FieldNumber;
-
+// JSci 5.0 import org.jscience.mathematics.number.FieldNumber;
+// JSci 4.3
+import org.jscience.mathematics.number.Number;
 
 
 /**
  * Positive offset seconds indicates "later than" a reference point.
  * @author Stu B.  <www.texpedient.com>
  */
-public abstract class ExactTimePoint<OffsetSecondsFN extends FieldNumber<OffsetSecondsFN>> {
-
+// public abstract class ExactTimePoint<OffsetSecondsFN extends FieldNumber<OffsetSecondsFN>> {
+public abstract class ExactTimePoint<OffsetSecondsFN extends Number<OffsetSecondsFN>> {
 	public abstract OffsetSecondsFN findMyOffsetToReferencePoint(ExactTimePoint<OffsetSecondsFN> refPoint) ;
 
 	public ExactTimePoint<OffsetSecondsFN> addOffsetSeconds(OffsetSecondsFN offset) {

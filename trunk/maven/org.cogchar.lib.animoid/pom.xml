@@ -10,8 +10,8 @@
 	</parent>		
 	
 	<artifactId>org.cogchar.lib.animoid</artifactId>
-	<name>${project.artifactId} - POJO</name>
-	<description>Cogchar "animoid" - (old) physical + vision calculations</description>
+	<name>${project.artifactId} - POJO + Scala</name>
+	<description>Physical and spatial calculations</description>
 
 	<packaging>jar</packaging>
 
@@ -27,6 +27,12 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.core</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
+					<groupId>org.appdapter</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
   
 		<dependency>
@@ -36,5 +42,29 @@
 			<scope>test</scope>
 		</dependency>
 	
+		<dependency>
+			<groupId>org.jscience</groupId>
+			<artifactId>jscience</artifactId>
+			<version>4.3.1</version>
+		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<version>2.15.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<!-- We're not actually using any scala tests right now
+							<goal>testCompile</goal>
+							-->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
