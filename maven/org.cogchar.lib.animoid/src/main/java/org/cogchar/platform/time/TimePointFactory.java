@@ -19,13 +19,16 @@ package org.cogchar.platform.time;
 import java.util.HashMap;
 import java.util.Map;
 import org.appdapter.bind.math.jscience.number.NumberFactory;
-import org.jscience.mathematics.number.FieldNumber;
+
+// JSci 5.0 import org.jscience.mathematics.number.FieldNumber;
+// JSci 4.3
+import org.jscience.mathematics.number.Number;
 
 /**
  *
  * @author Stu B.  <www.texpedient.com>
  */
-public class TimePointFactory<OffsetSecondsFN extends FieldNumber<OffsetSecondsFN>> {
+public class TimePointFactory<OffsetSecondsFN extends Number<OffsetSecondsFN>> {
 	public enum EpochName {
 		UNIX_EPOCH_1970,
 		MILLENIUM_EPOCH_2000,

@@ -162,8 +162,8 @@ public class WebEntityAction extends BasicEntityAction {
 	
 	public static class Consumer extends ThingActionConsumer {
 
-		@Override public Status consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
-			return makeAndPerformForTAS(actionSpec) ? Status.CONSUMED : Status.IGNORED;
+		@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
+			return makeAndPerformForTAS(actionSpec) ? ConsumpStatus.CONSUMED : ConsumpStatus.IGNORED;
 		}
 		
 	}

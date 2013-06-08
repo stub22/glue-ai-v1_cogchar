@@ -103,7 +103,7 @@ case class SteppingBehaviorSpec() extends BehaviorSpec {
 			val text = reader.readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
 			val actionSpec = new TextActionSpec(text);
 			
-			actionSpec.readChannels(stepItem, reader, assmblr, mode)
+			actionSpec.wireChannelSpecs(stepItem, reader, assmblr, mode)
 			
 		
 			val stepSpec = new ScheduledActionStepSpec(offsetMillisec, actionSpec);

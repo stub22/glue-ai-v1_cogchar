@@ -37,6 +37,8 @@ import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, Fancy
  */
 
 trait BehaviorActionExec {
+	// Must execute very quickly, as it is blocking the whole coroutine system!
+	// Returns a list of all ongoing tasks started by this perform-ance.
 	def perform(s: BScene) : List[FancyPerformance]
 }
 
@@ -49,7 +51,7 @@ abstract class BehaviorActionSpec extends BasicDebugger {
 	}
 	def makeActionExec() : BehaviorActionExec
 	
-	def readChannels(parentItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
+	def wireChannelSpecs(parentItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
 		val chanPropName = SceneFieldNames.P_channel
 		val actionChannelSpecs = reader.findOrMakeLinkedObjects(parentItem, chanPropName, assmblr, mode, null);
 		getLogger().debug("Got action-channel specs: {} ", actionChannelSpecs);
@@ -60,15 +62,18 @@ abstract class BehaviorActionSpec extends BasicDebugger {
 		}
 		for (val actChanSpec <- actionChannelSpecs.toArray) {
 			actChanSpec match {
-				case acs: FancyChannelSpec => {
-					val chanId = acs.getIdent();
-					// What does this freeing accomplish?  Are we trying to ensure the source model can be garbage collected?
-					val freeChanIdent = new FreeIdent(chanId);
-					addChannelIdent(freeChanIdent);
+				case fcs: FancyChannelSpec => {
+					wireFancyChannelSpec(fcs)
 				}
 				case _ => getLogger().warn("Unexpected object found in step at {} = {}", chanPropName, actChanSpec);
 			}
 		}		
+	}
+	protected def wireFancyChannelSpec(fcs : FancyChannelSpec) {
+		val chanId = fcs.getIdent();
+		// What does this freeing accomplish?  Are we trying to ensure the source model can be garbage collected?
+		val freeChanIdent = new FreeIdent(chanId);
+		addChannelIdent(freeChanIdent);		
 	}
 }
 
@@ -91,15 +96,15 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
 			if (chan != null) {
 				chan match {
 					case txtChan : FancyTextPerfChan[_] => { 
-						val perf  = txtChan.makePerfAndPlayAtBeginNow(media)
-						// prepending to the list is fastest, hence the "reverseOrder" approach.
-						perfListReverseOrder = perf :: perfListReverseOrder
+							val perf  = txtChan.makePerfAndPlayAtBeginNow(media)
+							// prepending to the list is fastest, hence the "reverseOrder" approach.
+							perfListReverseOrder = perf :: perfListReverseOrder
 		
 						
-					}
+						}
 					case  _ => {
-						getLogger().warn("************* TextAction cannot perform on non Text-Channel: " + chan);
-					}
+							getLogger().warn("************* TextAction cannot perform on non Text-Channel: " + chan);
+						}
 				}
 			} else {
 				getLogger().warn("******************* Could not locate channel for: " + chanId);
@@ -111,3 +116,46 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
 		"TextActionExec[spec=" + mySpec + "]";
 	}	
 }
+
+import org.cogchar.impl.channel.{FancyChannel}
+import org.cogchar.api.thing.{ThingActionSpec, ThingActionFilter, WantsThingAction}
+/*
+trait WantsThingAction {
+	def consumeSpec(inTASpec : ThingActionSpec) : Unit 
+}
+*/
+/*
+ * Consumes filtered ThingActions from an input channel, and uses them to write to some output channel.
+ * But - that can be accomplished as a pure-graph operation, so there would be no reason to deserialize for that case.
+ * So - 
+ */
+class UseThingActionExec(val mySpec : UseThingActionSpec) extends BasicDebugger with BehaviorActionExec {
+	def perform(s: BScene) : List[FancyPerformance] = {
+		// Find and "take" the most obvious input ThingAction, by marking a seen-it bag for this agent.
+		Nil
+	}
+	def useIt(inTASpec : ThingActionSpec, outChan : FancyChannel) {
+		// By default, we look for an obvious way to pass taSpec to outChan.
+		outChan match {
+			case wtaChan : WantsThingAction => {
+				val consumpStatus = wtaChan.consumeAction(inTASpec, outChan.getIdent)
+			}
+		}
+	}
+}
+class UseThingActionSpec (val myInChanID : Ident, val myFilterID : Ident, val myOutChanID : Ident) extends BehaviorActionSpec() { 
+	// This object supplies information 
+	// Where should perform() look for the input ThingAction?  
+	// What filter should we use to *take* one/all of the the input-TAs before then passing them on?
+	// Where is the implied "seen-it" bag for this agent on this channel, used to mark ? 
+	// When did this agent "start"?
+	// Where should perform() send the output ThingAction
+	
+	override def makeActionExec() : BehaviorActionExec = {
+		new UseThingActionExec(this)
+	}
+	override def toString() : String = {
+		"PassThingActionSpec[actionTxt= + myActionText + , channelIds=" + myChannelIdents + "]";
+	}		
+}
+

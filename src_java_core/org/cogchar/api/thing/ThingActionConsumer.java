@@ -27,17 +27,9 @@ import org.appdapter.help.repo.RepoClient;
  * We expect to dissolve most of this functionality in favor of our MarkingAgent pattern.
  */
 
-public abstract class ThingActionConsumer extends BasicDebugger {
+public abstract class ThingActionConsumer extends BasicDebugger implements WantsThingAction {
 	
-	
-	public enum Status {
-		IGNORED,	// The action was definitely not useful to this Consumer.
-		QUEUED,		// The action was asynchronously queued, we won't know until later if it was used/consumed.
-		USED,		// The action was used or understood, but others still may want to process it.
-		CONSUMED	// The action has been consumed in some final way, upstream processors should consider it "done".
-	}
-	
-	public abstract Status consumeAction(ThingActionSpec actionSpec, Ident srcGraphID);
+	// public abstract ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID);
 	
 	@Deprecated public void consumeAllActions(RepoClient rc, Ident srcGraphID) {
 		ThingActionUpdater updater = new ThingActionUpdater();
