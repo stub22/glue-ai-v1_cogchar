@@ -16,7 +16,6 @@
 
 package org.cogchar.render.goody.basic;
 
-import org.cogchar.render.app.entity.VWorldEntity;
 import com.jme3.animation.*;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -32,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
@@ -93,7 +93,6 @@ public class BasicGoodyEntity extends VWorldEntity {
 			}
 			myGeometry = myRenderRegCli.getSceneGeometryFacade(null)
 					.makeGeom(myUri.getLocalName(), mesh, myMaterial, myControl);
-			//myGeometry.addControl(new RigidBodyControl(0)); // TEST ONLY -- in here only until I can figure out what's wrong with goody floor
 			myGeometry.setLocalScale(myScale);
 			myGeometry.setLocalRotation(rotation);
 		}
