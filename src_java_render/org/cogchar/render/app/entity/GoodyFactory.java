@@ -23,6 +23,7 @@ import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.entity.VWorldEntity;
+import org.cogchar.render.goody.basic.GoodyBox;
 import org.cogchar.render.goody.basic.VirtualFloor;
 import org.cogchar.render.goody.bit.BitBox;
 import org.cogchar.render.goody.bit.BitCube;
@@ -134,6 +135,9 @@ public class GoodyFactory {
 					// is represented as a vector scale with identical components
 					newGoody = new TextGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(),
 							scale.getX(), ga.getColor(), ga.getText()); 
+				} else if (GoodyNames.TYPE_BOX.equals(ga.getType())) {
+					newGoody = new GoodyBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
+							ga.getColor(), scale);
 				} else {
 					theLogger.warn("Did not recognize requested goody type for creation: {}", ga.getType());
 				}

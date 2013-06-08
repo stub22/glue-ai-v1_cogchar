@@ -67,6 +67,7 @@ public class GoodyNames  {
 	public	static Ident	COLOR_BLUE = makeID("colorB");
 	public	static Ident	COLOR_ALPHA = makeID("colorAlpha");
 			
+	public static	Ident	TYPE_BOX = makeID("GoodyBox");
 	public static	Ident	TYPE_BIT_BOX = makeID("BitBox");
 	public static	Ident	TYPE_BIT_CUBE = makeID("BitCube");
 	public static	Ident	TYPE_FLOOR = makeID("Floor");
