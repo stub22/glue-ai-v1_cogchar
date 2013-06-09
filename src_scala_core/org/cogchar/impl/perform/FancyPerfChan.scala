@@ -29,8 +29,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.slf4j.Logger;
 
-import  org.cogchar.api.perform.{Media, PerfChannel, BasicPerfChan, Performance, BasicPerformance, BasicPerformanceListener, BasicPerformanceEvent}
-
+import  org.cogchar.api.perform.{Media, PerfChannel, Performance}
+import  org.cogchar.impl.perform.basic.{BasicPerfChan, BasicPerformance, BasicPerformanceListener, BasicPerformanceEvent}
 /**
  * @author Stu B. <www.texpedient.com>
  */

@@ -21,8 +21,8 @@ import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.api.perform.AnimLaunchEntityAction;
-import org.cogchar.api.thing.ThingActionRouter;
+import org.cogchar.impl.perform.basic.AnimLaunchEntityAction;
+import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.api.web.WebEntityAction;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
@@ -100,7 +100,7 @@ public class PumaWebMapper extends BasicDebugger {
 		}		
 		return mainConfDset;
 	}
-	public void registerActionConsumers(ThingActionRouter router, RepoClient rc, GlobalConfigEmitter gce) { 
+	public void registerActionConsumers(BasicThingActionRouter router, RepoClient rc, GlobalConfigEmitter gce) { 
 
 		Ident worldConfigIdent = new FreeIdent("if/exception/while/reading/this/ident/report#null");
 		try {

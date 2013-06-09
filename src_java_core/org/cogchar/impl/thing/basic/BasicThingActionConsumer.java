@@ -14,12 +14,14 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.thing;
+package org.cogchar.impl.thing.basic;
 
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.thing.ThingActionSpec;
+import org.cogchar.api.thing.WantsThingAction;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -27,12 +29,12 @@ import org.appdapter.help.repo.RepoClient;
  * We expect to dissolve most of this functionality in favor of our MarkingAgent pattern.
  */
 
-public abstract class ThingActionConsumer extends BasicDebugger implements WantsThingAction {
+public abstract class BasicThingActionConsumer extends BasicDebugger implements WantsThingAction {
 	
 	// public abstract ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID);
 	
 	@Deprecated public void consumeAllActions(RepoClient rc, Ident srcGraphID) {
-		ThingActionUpdater updater = new ThingActionUpdater();
+		BasicThingActionUpdater updater = new BasicThingActionUpdater();
 		List<ThingActionSpec> actionSpecList = updater.takeThingActions(rc, srcGraphID);
 		for (ThingActionSpec actionSpec : actionSpecList) {
 			getLogger().info("Consuming from graph {} : {} ", srcGraphID, actionSpec);

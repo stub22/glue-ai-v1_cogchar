@@ -8,13 +8,13 @@ package org.cogchar.outer.client.goody;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.thing.BasicThingActionSpec;
+import org.cogchar.impl.thing.basic.BasicThingActionSpec;
 import org.cogchar.outer.client.goody.GoodyActionParamWriter;
 import org.cogchar.name.goody.GoodyNames;
-import org.cogchar.api.thing.BasicTypedValueMap;
+import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.impl.thing.ConcreteTVM;
-import org.cogchar.impl.thing.FancyThingModelWriter;
+import org.cogchar.impl.thing.fancy.ConcreteTVM;
+import org.cogchar.impl.thing.fancy.FancyThingModelWriter;
 import org.slf4j.Logger;
 
 import java.util.Random;

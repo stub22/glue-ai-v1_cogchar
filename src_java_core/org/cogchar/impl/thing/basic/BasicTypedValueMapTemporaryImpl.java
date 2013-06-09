@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.thing;
+package org.cogchar.impl.thing.basic;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;

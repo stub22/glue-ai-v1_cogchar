@@ -16,7 +16,7 @@
 
 package org.cogchar.outer.client;
 
-import org.cogchar.api.thing.BasicTypedValueMap;
+import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.api.thing.TypedValueMap;
 
 /**

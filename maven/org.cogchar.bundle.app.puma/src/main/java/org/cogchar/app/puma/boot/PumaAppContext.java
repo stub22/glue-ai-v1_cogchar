@@ -29,7 +29,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 
 import org.cogchar.api.humanoid.HumanoidConfig;
-import org.cogchar.api.thing.ThingActionRouter;
+import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
@@ -267,7 +267,7 @@ public class PumaAppContext extends BasicDebugger {
 			}
 			CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
 			PumaConfigManager pcm = getConfigManager();
-			ThingActionRouter router = PumaAppUtils.getActionRouter();
+			BasicThingActionRouter router = PumaAppUtils.getActionRouter();
 			pvwm.initVirtualWorlds(cmdSpc, pcm, router);
 			connectWeb();
 

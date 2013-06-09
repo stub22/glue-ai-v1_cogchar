@@ -23,7 +23,7 @@ import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.api.thing.ThingActionRouter;
+import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
 import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
@@ -35,10 +35,10 @@ import org.cogchar.impl.channel.FancyFile;
  */
 public class PumaAppUtils extends BasicDebugger {
 	
-	private static ThingActionRouter	theRouter;
-	public static ThingActionRouter	getActionRouter() {
+	private static BasicThingActionRouter	theRouter;
+	public static BasicThingActionRouter	getActionRouter() {
 		if (theRouter == null) {
-			theRouter = new ThingActionRouter();
+			theRouter = new BasicThingActionRouter();
 		}
 		return theRouter;
 	}
@@ -56,12 +56,12 @@ public class PumaAppUtils extends BasicDebugger {
 		// The VWorld does its own registration in a separate ballet.
 		// Here we are just handling the reg for Web + Behavior.
 
-		ThingActionRouter router = getActionRouter();
+		BasicThingActionRouter router = getActionRouter();
 		srec.pwm.registerActionConsumers(router, srec.rc, srec.gce);		
 	}
 	public static void processPendingThingActions() {
 		StuffRec srec = new StuffRec();	
-		ThingActionRouter router = getActionRouter();
+		BasicThingActionRouter router = getActionRouter();
 		router.consumeAllActions(srec.rc);
 	}
 	public static List<FancyFile> getKnownAnimationFiles() { 

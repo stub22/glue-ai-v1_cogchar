@@ -22,7 +22,8 @@ import org.appdapter.core.store.{Repo, InitialBinding }
 import org.appdapter.help.repo.{RepoClient} 
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
-import org.cogchar.api.thing.{ThingActionUpdater, ThingActionSpec}
+import org.cogchar.api.thing.{ThingActionSpec}
+import org.cogchar.impl.thing.basic.{BasicThingActionUpdater}
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -48,7 +49,7 @@ class ThingActionGraphChan(chanID : Ident, rc : RepoClient, matchGraphID : Ident
 			
 	
 	def seeThingActions() : java.util.List[ThingActionSpec] = {
-		val tau = new ThingActionUpdater();
+		val tau = new BasicThingActionUpdater();
 		val viewingAgentID = chanID;
 		val tasList : java.util.List[ThingActionSpec] = tau.viewActionsAndMark(rc, matchGraphID, cutoffTStamp, viewingAgentID);
 		tasList;

@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.perform;
+package org.cogchar.impl.perform.basic;
 
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.BasicEntityAction;
-import org.cogchar.api.thing.ThingActionConsumer;
+import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.TypedValueMap;
 import org.cogchar.api.web.WebEntityAction;
@@ -34,7 +34,7 @@ In the latest updates, the animations in the Lifter animation list page should n
 These updates have entity type:
 
 WebActionNames.WEB_USER_INPUT = http://www.cogchar.org/lift/config#userinput
-[The http://www.cogchar.org/lift/config# prefix is overused and should only correspond to LiftConfigs; I'll probably address that soon]
+[The http://www.cogchar.org/lift/config# prefix is overused and should only correspond to LiftConfigs; [We'll] probably address that soon]
 
 and the animation URI appears at the parameter called:
 WebUserActionNames.ACTION = http://www.cogchar.org/lift/user/action#action
@@ -46,9 +46,9 @@ public class AnimLaunchEntityAction extends BasicEntityAction {
 	public AnimLaunchEntityAction(ThingActionSpec actionSpec) {
 		super(actionSpec);
 	}
-	public static class Consumer extends ThingActionConsumer {
+	public static class Consumer extends BasicThingActionConsumer {
 
-		@Override public ThingActionConsumer.ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
+		@Override public BasicThingActionConsumer.ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
 			Ident			tgtThingEntityTypeID = actionSpec.getTargetThingTypeID();
 		
 			if (WebActionNames.WEB_USER_INPUT.equals(tgtThingEntityTypeID)) {

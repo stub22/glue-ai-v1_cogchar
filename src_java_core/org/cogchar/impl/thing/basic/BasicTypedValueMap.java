@@ -14,12 +14,13 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.thing;
+package org.cogchar.impl.thing.basic;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.thing.TypedValueMap;
 
 /**
  * @author Stu B. <www.texpedient.com>

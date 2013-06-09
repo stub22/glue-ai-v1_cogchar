@@ -20,8 +20,8 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.api.thing.ThingActionConsumer;
-import org.cogchar.api.thing.ThingActionRouter;
+import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
+import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
@@ -74,7 +74,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 	// back to HRC if there are philosophical reasons for doing so. (We'd also have to pass two graph flavors to it for this.)
 	// Added: since jMonkey key bindings are part of "virtual world" config like Lights/Camera/Cinematics, they are also 
 	// set here
-	public void initVirtualWorlds(CommandSpace cspace, PumaConfigManager pcm, ThingActionRouter router) { 
+	public void initVirtualWorlds(CommandSpace cspace, PumaConfigManager pcm, BasicThingActionRouter router) { 
 // , PumaWebMapper webMapper, 	BundleContext bundleCtx) {
 		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
@@ -117,7 +117,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 	}
 	
 	private void initCinematicStuff(GlobalConfigEmitter gce, Ident worldConfigIdent, RepoClient repoCli, 
-			GoodyFactory gFactory, ThingActionRouter router) {
+			GoodyFactory gFactory, BasicThingActionRouter router) {
 		HumanoidRenderWorldMapper renderMapper = new HumanoidRenderWorldMapper();
 		Ident graphIdent = null;
 		try {
@@ -159,12 +159,12 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		}
 	}
 	
-	public void setupActionConsumer(ThingActionRouter router, GlobalConfigEmitter gce, Ident worldConfigID, RepoClient repoCli, 
+	public void setupActionConsumer(BasicThingActionRouter router, GlobalConfigEmitter gce, Ident worldConfigID, RepoClient repoCli, 
 			GoodyFactory gFactory){
 		// Goodies should be initialized before paths/animations so that they can reference Goodies!
 		try {
 			Ident actionGraphID = gce.ergMap().get(worldConfigID).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
-			ThingActionConsumer consumer = 	gFactory.getActionConsumer();
+			BasicThingActionConsumer consumer = 	gFactory.getActionConsumer();
 			consumer.consumeAllActions(repoCli, actionGraphID);
 			router.appendConsumer(actionGraphID, consumer);
 		} catch (Exception e) {
