@@ -13,11 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.perform;
+package org.cogchar.impl.perform.basic;
 
 import org.cogchar.api.channel.BasicChannel;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;
+import org.cogchar.api.perform.Media;
+import org.cogchar.api.perform.PerfChannel;
+import org.cogchar.api.perform.Performance;
 import org.cogchar.api.perform.Performance.Instruction;
 
 

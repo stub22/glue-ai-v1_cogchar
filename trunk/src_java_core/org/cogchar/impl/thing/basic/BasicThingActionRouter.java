@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.thing;
+package org.cogchar.impl.thing.basic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.thing.ThingActionSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,15 +33,14 @@ import org.slf4j.LoggerFactory;
  * a crude notification propagator until better options are in place.
  */
 
-public class ThingActionRouter extends ThingActionConsumer {
+public class BasicThingActionRouter extends BasicThingActionConsumer {
 
-	
-	private	Map<Ident, List<ThingActionConsumer>>	myConsumersBySrcGraphID = new HashMap<Ident, List<ThingActionConsumer>>();
+	private	Map<Ident, List<BasicThingActionConsumer>>	myConsumersBySrcGraphID = new HashMap<Ident, List<BasicThingActionConsumer>>();
 
 	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
-		List<ThingActionConsumer> consumerList = findConsumersForSourceGraph(srcGraphID);
+		List<BasicThingActionConsumer> consumerList = findConsumersForSourceGraph(srcGraphID);
 		ConsumpStatus highestSoFar = ConsumpStatus.IGNORED;
-		for (ThingActionConsumer consumer : consumerList) {
+		for (BasicThingActionConsumer consumer : consumerList) {
 			ConsumpStatus stat = consumer.consumeAction(actionSpec, srcGraphID);
 			switch (stat) {
 				case	CONSUMED:	
@@ -59,16 +59,16 @@ public class ThingActionRouter extends ThingActionConsumer {
 		}
 		return highestSoFar;
 	}
-	protected	List<ThingActionConsumer>	findConsumersForSourceGraph(Ident srcGraphID) {
-		List<ThingActionConsumer> consumerList = myConsumersBySrcGraphID.get(srcGraphID);
+	protected	List<BasicThingActionConsumer>	findConsumersForSourceGraph(Ident srcGraphID) {
+		List<BasicThingActionConsumer> consumerList = myConsumersBySrcGraphID.get(srcGraphID);
 		if (consumerList == null) {
-			consumerList = new ArrayList<ThingActionConsumer>();
+			consumerList = new ArrayList<BasicThingActionConsumer>();
 			myConsumersBySrcGraphID.put(srcGraphID, consumerList);
 		}
 		return consumerList;
 	}
-	public void appendConsumer(Ident srcGraphID, ThingActionConsumer consumer) {
-		List<ThingActionConsumer> consumerList = findConsumersForSourceGraph(srcGraphID);
+	public void appendConsumer(Ident srcGraphID, BasicThingActionConsumer consumer) {
+		List<BasicThingActionConsumer> consumerList = findConsumersForSourceGraph(srcGraphID);
 		consumerList.add(consumer);
 	}
 	@Deprecated public void consumeAllActions(RepoClient rc) {

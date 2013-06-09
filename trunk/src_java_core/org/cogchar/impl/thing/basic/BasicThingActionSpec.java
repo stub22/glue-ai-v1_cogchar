@@ -14,11 +14,13 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.thing;
+package org.cogchar.impl.thing.basic;
 
 import java.util.HashMap;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.thing.ThingActionSpec;
+import org.cogchar.api.thing.TypedValueMap;
 
 /**  Equivalent to the action of a certain subset of SPARQL-Update.
  * @author Stu B. <www.texpedient.com>

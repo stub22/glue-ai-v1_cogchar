@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.thing;
+package org.cogchar.impl.thing.basic;
 
 import com.hp.hpl.jena.rdf.model.Literal;
 import java.util.ArrayList;
@@ -25,13 +25,15 @@ import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
+import org.cogchar.api.thing.ThingActionSpec;
+import org.cogchar.api.thing.TypedValueMap;
 import org.cogchar.name.thing.ThingCN;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class ThingActionQResAdapter extends BasicDebugger {
+public class BasicThingActionQResAdapter extends BasicDebugger {
 	
 	
 	protected List<ThingActionSpec> reapActionSpecList(SolutionList actionsList, RepoClient rc, Ident srcGraphID, Ident srcAgentID) {

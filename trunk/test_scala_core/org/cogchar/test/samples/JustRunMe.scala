@@ -14,13 +14,19 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.thing
-import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.api.thing.ThingActionFilter;
+package org.cogchar.test.samples
+import org.appdapter.core.log.BasicDebugger;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-class FancyThingActionFilter extends ThingActionFilter {
-
+object JustRunMe extends BasicDebugger  {
+	def main(args: Array[String]) : Unit = {
+		// Either not running or not printing anything, yet!
+		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		getLogger().info("Hey this is a nice computer to run on, thanks!")
+		println("How about println, eh?")
+	}
 }

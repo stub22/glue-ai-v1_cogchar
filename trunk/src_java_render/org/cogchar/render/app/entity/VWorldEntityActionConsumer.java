@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.thing.ThingActionConsumer;
+import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * Render-side
  */
-public class VWorldEntityActionConsumer extends ThingActionConsumer { //  extends BasicEntitySpace {
+public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  extends BasicEntitySpace {
 
 	private static Logger theLogger = LoggerFactory.getLogger(VWorldEntityActionConsumer.class);
 	private Map<Ident, VWorldEntity> myGoodiesByID;

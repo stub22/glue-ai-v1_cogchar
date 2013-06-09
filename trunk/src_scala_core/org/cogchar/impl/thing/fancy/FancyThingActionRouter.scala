@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.thing
+package org.cogchar.impl.thing.fancy
 import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.api.thing.ThingActionRouter;
+import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-class FancyThingActionRouter extends ThingActionRouter {
+class FancyThingActionRouter extends BasicThingActionRouter {
 	
 }

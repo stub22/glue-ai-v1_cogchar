@@ -27,12 +27,6 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.core</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
-					<groupId>org.appdapter</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
   
 		<dependency>
@@ -41,7 +35,9 @@
 			<version>1.6.1</version>
 			<scope>test</scope>
 		</dependency>
-	
+		<!-- This works well enough at runtime for us to at least run the old "CurveTest".
+		
+		-->
 		<dependency>
 			<groupId>org.jscience</groupId>
 			<artifactId>jscience</artifactId>
