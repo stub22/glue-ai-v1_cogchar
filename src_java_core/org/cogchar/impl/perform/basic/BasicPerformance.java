@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.perform;
+package org.cogchar.impl.perform.basic;
 
 import org.cogchar.api.channel.BasicChannel;
 import org.cogchar.api.event.Listener;
@@ -23,6 +23,9 @@ import java.util.ArrayList;
 
 import org.cogchar.api.event.BasicNotifier;
 import org.cogchar.api.event.Notifier;
+import org.cogchar.api.perform.Media;
+import org.cogchar.api.perform.PerfChannel;
+import org.cogchar.api.perform.Performance;
 
 /**
  * @author Stu B. <www.texpedient.com>

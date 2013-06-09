@@ -30,7 +30,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import org.cogchar.name.behavior.{SceneFieldNames}
 import org.cogchar.api.channel.{Channel, BasicChannel}
-import org.cogchar.api.perform.{PerfChannel, Media, BasicPerfChan, Performance, BasicPerformance};
+import org.cogchar.api.perform.{PerfChannel, Media, Performance};
+import org.cogchar.impl.perform.basic.{BasicPerfChan, BasicPerformance};
 import org.cogchar.impl.channel.{FancyChannelSpec};
 import org.cogchar.impl.perform.{FancyTime, PerfChannelNames, FancyTextPerf, FancyPerformance};
 

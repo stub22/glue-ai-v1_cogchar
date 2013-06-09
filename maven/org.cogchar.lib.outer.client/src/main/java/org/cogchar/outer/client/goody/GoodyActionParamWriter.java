@@ -15,7 +15,7 @@
  */
 package org.cogchar.outer.client.goody;
 
-import org.cogchar.api.thing.BasicTypedValueMap;
+import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.outer.client.ActionParamWriter;
 

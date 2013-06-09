@@ -17,7 +17,7 @@ package org.cogchar.outer.client.web;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.thing.BasicTypedValueMap;
+import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.name.lifter.LiftCN;
 import org.cogchar.name.web.WebActionNames;
 import org.cogchar.outer.client.ActionParamWriter;

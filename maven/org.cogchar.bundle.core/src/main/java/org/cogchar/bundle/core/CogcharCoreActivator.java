@@ -8,7 +8,10 @@ import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
 
 
-
+/**
+ * Does nothing important, just contains a few print statements to signal when the entire OSGi Framework is started.
+ * @author Stu B. <www.texpedient.com>
+ */
 public class CogcharCoreActivator  extends BundleActivatorBase {
 
 

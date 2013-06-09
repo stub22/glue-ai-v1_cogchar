@@ -13,10 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.perform;
+package org.cogchar.impl.perform.basic;
 
 import org.cogchar.api.event.StateChangeEvent;
 import org.cogchar.api.event.Listener;
+import org.cogchar.api.perform.Media;
 
 /**
  * @author Stu B. <www.texpedient.com>

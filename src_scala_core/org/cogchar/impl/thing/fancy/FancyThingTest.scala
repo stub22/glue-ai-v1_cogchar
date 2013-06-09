@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.thing
+package org.cogchar.impl.thing.fancy
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.store.{Repo, InitialBinding }
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
@@ -23,7 +23,8 @@ import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 
-import  org.cogchar.api.thing.{ThingActionSpec, BasicTypedValueMap, BasicTypedValueMapTemporaryImpl};
+import  org.cogchar.api.thing.{ThingActionSpec};
+import  org.cogchar.impl.thing.basic.{BasicTypedValueMap, BasicTypedValueMapTemporaryImpl}
 /**
  * @author Stu B. <www.texpedient.com>
  */

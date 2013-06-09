@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.thing;
+package org.cogchar.impl.thing.basic;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.rdf.model.Literal;
@@ -31,6 +31,7 @@ import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.impl.store.ResourceResolver;
+import org.cogchar.api.thing.ThingActionSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,12 +41,12 @@ import org.slf4j.LoggerFactory;
  */
 
 
-public class ThingActionUpdater {
+public class BasicThingActionUpdater {
 	
 	// This is just a temporary definition of the sourceAgentID until it becomes clear where this best comes from
 	public static final Ident SOURCE_AGENT_ID = new FreeIdent(ThingCN.TA_NS + "RepoThingAction"); 
 	
-	private static Logger theLogger = LoggerFactory.getLogger(ThingActionUpdater.class);
+	private static Logger theLogger = LoggerFactory.getLogger(BasicThingActionUpdater.class);
 	
 	/**
 	 * Fetches pending ThingActions from model, and physically deletes them (or at least the part of them
@@ -56,7 +57,7 @@ public class ThingActionUpdater {
 	 */
 	@Deprecated protected List<ThingActionSpec> takeThingActions(RepoClient rc, Ident srcGraphID) {
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
-		ThingActionQResAdapter taqra = new ThingActionQResAdapter();
+		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
 		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
 		// Delete the actions from graph, so they are not returned on next call to this method.
 		for (ThingActionSpec tas : actionSpecList) {
@@ -84,7 +85,7 @@ public class ThingActionUpdater {
 		String queryGraphVarName =  "qGraph"; // RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR;
 		queryIB.bindIdent(queryGraphVarName, srcGraphID);
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.UNSEEN_ACTION_QUERY_URI, queryIB);
-		ThingActionQResAdapter taqra = new ThingActionQResAdapter();
+		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
 		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
 		// Delete the actions from graph, so they are not returned on next call to this method.
 		for (ThingActionSpec tas : actionSpecList) {
