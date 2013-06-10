@@ -77,7 +77,7 @@ public class PumaRobotMotionMapper extends BasicDebugger {
 		Ident chanID = aotc.getIdent();
 		Ident bestOutChanID =  PerfChannelNames.getOutChanIdent_AnimBest();
 		if (!chanID.equals(bestOutChanID)) {
-			AnimOutTrigChan wrappedChan = new AnimOutTrigChan(bestOutChanID, aotc);
+			AnimOutTrigChan wrappedChan =  new AnimOutTrigChan(bestOutChanID, aotc);
 			aotc = wrappedChan;
 		}
 		return aotc;

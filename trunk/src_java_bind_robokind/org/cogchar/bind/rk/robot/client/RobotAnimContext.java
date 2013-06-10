@@ -15,6 +15,7 @@
  */
 package org.cogchar.bind.rk.robot.client;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,9 +137,16 @@ public class RobotAnimContext extends BasicDebugger {
 	public AnimOutTrigChan getTriggeringChannel() {
 		if (myTriggeringChannel == null) {
 			Ident id = myAnimOutChanID; 
-			getLogger().info("Creating triggering channel with ident=" + id);
-			myTriggeringChannel = new AnimOutTrigChan(id, this);
+			getLogger().warn("Manually creating media cache and triggering channel for ID: " + id);
+			AnimMediaHandle.Cache mediaCache = makeMediaHandleCache();
+			myTriggeringChannel = new AnimOutTrigChan(id, this, mediaCache);
 		}
 		return myTriggeringChannel;
 	}
+	private AnimMediaHandle.Cache makeMediaHandleCache() {
+		BehaviorConfigEmitter behavCE = myBehaviorCE;
+		Model pathModel = behavCE.getAnimPathResolverModel();
+		Ident pathPropID = behavCE.myAnimPathPropID();
+		return new AnimMediaHandle.Cache(myAnimClient, pathModel, pathPropID, myResourceCLs);
+	}	
 }

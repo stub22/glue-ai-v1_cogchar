@@ -51,33 +51,48 @@ abstract class BaseUrlMediaHandle[MediaType](val myID : Ident) extends UrlMediaH
 		getMediaFromUrl(mediaURL)
 	}
 	protected def getMediaFromUrl(url : URL) : Option[MediaType]
-}	
-trait ClassLoaderUrlResolver {
+}
+
+abstract class FancyUrlMediaHandle[MediaType](mediaID : Ident, myResolver : MediaPathResolver) 
+			extends BaseUrlMediaHandle[MediaType](mediaID)  {
+	override def getMediaURL() : URL = {
+		val resolvedPath = myResolver.getMediaResourcePath(mediaID)
+		new URL(resolvedPath)
+	}
+}
+
+trait MediaPathResolver {
+	def getMediaResourcePath(mediaID : Ident) : String
+}
+trait ClassLoaderUrlResolver extends MediaPathResolver {
 	protected def getClassLoaders() : java.util.List[ClassLoader]
-	protected def getMediaResourcePath() : String
-	def getMediaURL() : URL = {
-		val	mediaResPath = getMediaResourcePath()
+
+	def resolveMediaURL(mediaID : Ident) : URL = {
+		val	mediaResPath = getMediaResourcePath(mediaID)
 		val clList = getClassLoaders()
 		ClassLoaderUtils.findResourceURL(mediaResPath, clList)
 	}	
 }
 
-trait MediaPathModelResolver {
+trait MediaPathModelResolver extends MediaPathResolver {
+	val dummy : Int = -99
 	protected def getPathModel() : Model 
 	protected def getPathPropertyID () : Ident
-	protected def getMediaResourcePath() : String = {
-		""
+	override def getMediaResourcePath(mediaID : Ident) : String = {
+		"" // Use Jena-API directly(?) to fetch out the path value for this piece of media
 	}
 }
 
-abstract class FancyUrlMediaHandle[MediaType](mediaID : Ident, myPathModel : Model, myPathPropID : Ident, myCLLoaders : java.util.List[ClassLoader]) 
-		extends BaseUrlMediaHandle[MediaType](mediaID) with ClassLoaderUrlResolver with MediaPathModelResolver {
+
+
+class FancyMediaPathResolver(myPathModel : Model, myPathPropID : Ident, myCLLoaders : java.util.List[ClassLoader]) 
+		extends ClassLoaderUrlResolver with MediaPathModelResolver {
 	
 	override 	protected def getPathModel() : Model = myPathModel
-	override	protected def getClassLoaders()  : java.util.List[ClassLoader] = myCLLoaders
 	override	protected def getPathPropertyID() : Ident = myPathPropID
+	override	protected def getClassLoaders()  : java.util.List[ClassLoader] = myCLLoaders
 }
-abstract class BaseMediaHandleCache[MediaType]() {
+trait MediaHandleCache[MediaType] {
 	val		myHandlesByID = new scala.collection.mutable.HashMap[Ident, MediaHandle[MediaType]]()
 	
 	protected def makeMediaHandle(mediaID : Ident) : MediaHandle[MediaType]
@@ -86,13 +101,14 @@ abstract class BaseMediaHandleCache[MediaType]() {
 	}
 }
 
-abstract class FancyUrlMediaHandleCache[MediaType](myPathModel : Model, myPathPropID : Ident, myCLLoaders : java.util.List[ClassLoader]) 
-		extends BaseMediaHandleCache[MediaType] {
-	protected def makeMediaHandle(mediaID : Ident, pathModel : Model, pathPropID : Ident, clLoaders : java.util.List[ClassLoader]) 
+abstract class FancyMediaHandleCache[MediaType](pathModel : Model, pathPropID : Ident, clLoaders : java.util.List[ClassLoader]) 
+		extends  FancyMediaPathResolver(pathModel, pathPropID, clLoaders) with MediaHandleCache[MediaType] {
+			
+	protected def makeMediaHandle(mediaID : Ident, resolver: MediaPathResolver ) 
 			: MediaHandle[MediaType]		
 			
 	override protected def makeMediaHandle(mediaID : Ident) : MediaHandle[MediaType] = {
-		makeMediaHandle(mediaID, myPathModel,  myPathPropID, myCLLoaders)
+		makeMediaHandle(mediaID, this) //  getPathModel,  getPathPropertyID, getClassLoaders)
 	}
 
 }
