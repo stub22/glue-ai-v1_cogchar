@@ -21,8 +21,10 @@ import java.net.URL;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.perform.Performance;
 import org.cogchar.api.thing.ThingActionSpec;
+import org.cogchar.api.thing.TypedValueMap;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.perform.FancyTextPerf;
+import org.cogchar.impl.perform.FancyPerformance;
 import org.cogchar.impl.perform.FancyTextMedia;
 import org.cogchar.impl.perform.FancyTextCursor;
 import org.cogchar.platform.util.ClassLoaderUtils;
@@ -31,6 +33,11 @@ import org.robokind.api.animation.player.AnimationJob;
 import org.robokind.api.common.playable.PlayState;
 import org.robokind.api.common.utils.TimeUtils;
 import org.cogchar.api.thing.WantsThingAction;
+import org.cogchar.impl.anim.AnimCommandBuilder;
+import org.cogchar.name.web.WebActionNames;
+import org.cogchar.name.web.WebUserActionNames;
+
+import org.cogchar.impl.perform.MediaHandle;
 
 /**
  * @author StuB22
@@ -40,29 +47,56 @@ import org.cogchar.api.thing.WantsThingAction;
 public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> implements WantsThingAction {
 	private boolean myUseTempAnimsFlag = false;
 	private RobotAnimContext myRobotAnimContext;
+	
+	private	AnimMediaHandle.Cache		myMediaHandleCache;
 
-	// As of 2013-06-08, the srcGraphID passed is actually the outChannel ID, same as ID of this receiver object.
-	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
-		getLogger().info("***** consumeAction({})", actionSpec);
-		// TODO : Use the actionSpec to determine an animation command, using as few assumptions and as
-		// little code as possible, allowing the actionSpec itself to "do the work".  In particular, we
-		// interpret the typing information of the actionSpec (Verb (is-a type) and TargetThing-type, potentially 
-		// also types of params).
-		
-		return ConsumpStatus.CONSUMED;
-	}
-		
-	public AnimOutTrigChan(Ident id, RobotAnimContext rac) {
+	public AnimOutTrigChan(Ident id, RobotAnimContext rac, AnimMediaHandle.Cache mediaCache) {
 		super(id);
 		myRobotAnimContext = rac;
+		myMediaHandleCache = mediaCache;
 	}
 	public AnimOutTrigChan(Ident id, AnimOutTrigChan chanToWrap) {
 		super(id);
 		myRobotAnimContext = chanToWrap.myRobotAnimContext;
+		myMediaHandleCache = chanToWrap.myMediaHandleCache;
 	}
+	// TODO : Use the actionSpec to determine an animation command, using as few assumptions and as
+	// little code as possible, allowing the actionSpec itself to "do the work".  In particular, we
+	// interpret the typing information of the actionSpec (Verb (is-a type) and TargetThing-type, potentially 
+	// also types of params).	
+	// As of 2013-06-08, the srcGraphID passed is actually the outChannel ID, same as ID of this receiver object.
+	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
+		getLogger().info("***** consumeAction({})", actionSpec);
+
+		Ident			tgtThingEntityTypeID = actionSpec.getTargetThingTypeID();
+
+		// We want this comparison to be done by the behavior mapper of the scene, rather than here in launch action.
+		if (WebActionNames.WEB_USER_INPUT.equals(tgtThingEntityTypeID)) {
+			getLogger().info("Found WebUserInput action, is it an animation launch?");
+			TypedValueMap	paramTVM = actionSpec.getParamTVM();
+			Ident			animID = paramTVM.getAsIdent(WebUserActionNames.ACTION);	
+			getLogger().info("Got animID: {} ", animID);
+			if (animID != null) {
+				MediaHandle<Animation> amh = myMediaHandleCache.makeMediaHandle(animID);
+				String startCommand = "yowza"; // AnimCommandBuilder
+				// Yuck, now resolve the path using some presumed model that animID refers into, and make that into 
+				// something "playable", e.g. an ugly TextMedia path for the methods below.
+			}
+			return ConsumpStatus.USED;
+		}
+		return ConsumpStatus.CONSUMED;
+	}
+		
+
 
 	public void setUseTempAnims(boolean flag) {
 		myUseTempAnimsFlag = flag;
+	}
+	
+	public void fastCueAndPlayFromMediaHandle(MediaHandle<Animation> handle) {
+		Animation anim = handle.getMedia().getOrElse(null);
+		FancyPerformance perf = null;
+		launchFullAnimJobNow(anim, perf);
 	}
 
 	// Java thinks the superclass-def of this method is "public", even though it's marked "protected" in the Scala.
@@ -102,10 +136,12 @@ public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> implements 
 		if (anim != null) {
 			// TODO:  "Cue" within the animation (technically, within the "name" of the animation, at present), 
 			// according to cursor
-			// TODO:  Record the relationship between this job + perf.		
-			AnimationJob animJob = myRobotAnimContext.startFullAnimationNow(anim);
-			registerOutJobForPerf(perf, animJob);
+			launchFullAnimJobNow(anim, perf);
 		}
+	}
+	protected void launchFullAnimJobNow(Animation anim, FancyPerformance perf) {
+			AnimationJob animJob = myRobotAnimContext.startFullAnimationNow(anim);
+			registerOutJobForPerf(perf, animJob);		
 	}
 	// TODO:  Keep track of job associated with the performance, and use perf.markState 
 	// (and even perf.markCursor) to report on the job's status and position.

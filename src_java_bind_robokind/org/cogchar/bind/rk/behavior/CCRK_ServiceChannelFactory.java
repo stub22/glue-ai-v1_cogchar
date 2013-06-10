@@ -16,25 +16,18 @@
 package org.cogchar.bind.rk.behavior;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.channel.Channel;
 import org.cogchar.api.perform.PerfChannel;
-import org.cogchar.api.perform.Media;
 import org.cogchar.bind.rk.robot.client.RobotAnimContext;
 import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.animation.player.AnimationPlayer;
-import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
 import org.robokind.api.speech.SpeechService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.osgi.framework.FrameworkUtil;
 
@@ -46,6 +39,11 @@ import org.osgi.framework.FrameworkUtil;
 
 public class CCRK_ServiceChannelFactory extends BasicDebugger {
 	
+	// See extensive comments in ChannelBindingLifecycle about the current need for this workaround.
+	// Used to construct a BehavConfigEmitter which an AnimChannel may use to look up animation metadata.
+	protected	RepoClient		myWorkaroundRepoClient;
+	
+	// Another cruddy workaround is the whole enum-binding thing, discussed in the ChannelBindingConfig.java file.
 	public Channel makeServiceChannel(ChannelBindingConfig cbc, Object serviceDepObj) {
 		ChannelBindingConfig.ChannelType chanTypeConstant = cbc.getChannelType();
 		Ident chanID = cbc.getChannelIdent();
@@ -67,7 +65,9 @@ public class CCRK_ServiceChannelFactory extends BasicDebugger {
     private PerfChannel createAnimationChannel(Ident chanID, AnimationPlayer animPlayerSvc){
 		getLogger().info("Creating AnimPlayChan at [{}] for [{}]", chanID, animPlayerSvc);
 		// If we wind up keeping this emitter thing, it can be added as a dependency.
-		BehaviorConfigEmitter behavCE = new BehaviorConfigEmitter();
+		Ident pathModelID = null;
+		Ident pathPropID = null;
+		BehaviorConfigEmitter behavCE = new BehaviorConfigEmitter(myWorkaroundRepoClient, pathModelID, pathPropID);
 		/* charIdent - so far, used only for log messages
 		 * behavCE  - only used to resolve local files, in case animResURL does not resolve within classpath.
 		 */

@@ -16,11 +16,22 @@
 
 package org.cogchar.blob.emit
 
+import org.appdapter.core.name.{Ident, FreeIdent}
+import org.appdapter.core.store.{Repo, InitialBinding }
+import org.appdapter.help.repo.{RepoClient}
+import com.hp.hpl.jena.rdf.model.Model;
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * This class has always been a workaround, but by adding a repoClient field, we hope to now make it more respectable.
  */
 
-class BehaviorConfigEmitter {
+class BehaviorConfigEmitter(val myDefaultRepoClient : RepoClient, val myAnimPathModelID : Ident, val myAnimPathPropID : Ident) {
+	
+	
+	def getAnimPathResolverModel() : Model  = {
+		myDefaultRepoClient.getRepo.getNamedModel(myAnimPathModelID)
+	}
 	
 	val DEFAULT_SYS_CONTEXT_URI = "urn:org.cogchar/syscontext/default";
 	

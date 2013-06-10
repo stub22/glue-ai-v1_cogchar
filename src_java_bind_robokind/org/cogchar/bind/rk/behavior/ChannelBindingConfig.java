@@ -110,6 +110,10 @@ public class ChannelBindingConfig {
 	private static Ident	CHANTYPE_GRAPH_PRIMARY = GraphChannelNames.getChanTypeID_graphPrimary();
 	private static Ident	CHANTYPE_GRAPH_SECONDARY = GraphChannelNames.getChanTypeID_graphSecondary();
     
+	/* This enum binding is the lynchpin-workaround of our interim approach to channel lifecycle management
+	 * 
+	 * Another important workaround is the WorkaroundRepoClient transmitted via CCRK_ServiceChannelFactory
+	 */
     public static enum ChannelType{
         SPEECH_BLOCK_OUT(CHANTYPE_SPEECH_OUT, SpeechService.class), 
         ANIMATION_PLAYER(CHANTYPE_ANIM_OUT, AnimationPlayer.class),
