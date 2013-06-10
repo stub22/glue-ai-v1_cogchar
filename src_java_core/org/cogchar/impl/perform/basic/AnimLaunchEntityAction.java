@@ -51,6 +51,7 @@ public class AnimLaunchEntityAction extends BasicEntityAction {
 		@Override public BasicThingActionConsumer.ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
 			Ident			tgtThingEntityTypeID = actionSpec.getTargetThingTypeID();
 		
+			// We want this comparison to be done by the behavior mapper of the scene, rather than here in launch action.
 			if (WebActionNames.WEB_USER_INPUT.equals(tgtThingEntityTypeID)) {
 				getLogger().info("Found WebUserInput action, is it an animation launch?");
 				TypedValueMap	paramTVM = actionSpec.getParamTVM();

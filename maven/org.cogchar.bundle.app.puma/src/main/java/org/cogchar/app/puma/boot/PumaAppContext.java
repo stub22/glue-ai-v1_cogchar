@@ -74,7 +74,6 @@ public class PumaAppContext extends BasicDebugger {
 		
 		myBodyMgr = new PumaDualBodyManager();
 		myBehavMgr = new PumaBehaviorManager();
-		myBehavMgr.init(myRegClient);
 	}
 	
 	private void advertisePumaRegClient(PumaRegistryClient prc) {
@@ -152,7 +151,8 @@ public class PumaAppContext extends BasicDebugger {
 		RepoClient rc = getOrMakeMainConfigRC();
 		PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		pgmm.applyGlobalConfig(myBundleContext, rc);
-
+		
+		myBehavMgr.initConfigLinks(myRegClient);
 	}
 
 	/**

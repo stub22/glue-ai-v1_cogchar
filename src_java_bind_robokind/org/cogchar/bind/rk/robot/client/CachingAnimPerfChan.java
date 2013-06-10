@@ -26,8 +26,9 @@ import org.robokind.api.animation.Animation;
 import org.robokind.api.animation.player.AnimationJob;
 
 import org.cogchar.impl.perform.MediaHandle;
+import org.cogchar.impl.perform.MediaPathResolver;
 import org.cogchar.impl.perform.FancyUrlMediaHandle;
-import org.cogchar.impl.perform.FancyUrlMediaHandleCache;
+import org.cogchar.impl.perform.FancyMediaHandleCache;
 import scala.Option;
 import scala.Some;
 /**
@@ -55,12 +56,13 @@ public class CachingAnimPerfChan extends FancyTextPerfChan<AnimationJob> {
 		// This method is defined by the Playable interface.
 		aj.stop(stopTime);
 	}	
-
+/*
 
 	static class AnimMediaHandle extends FancyUrlMediaHandle<Animation> {
 		private	RobotAnimClient	myAnimClient;
-		public AnimMediaHandle(RobotAnimClient animClient, Ident mediaID, Model pathModel, Ident pathPropID, java.util.List<ClassLoader> cloaders) {
-			super (mediaID, pathModel, pathPropID, cloaders);
+		public AnimMediaHandle(RobotAnimClient animClient, Ident mediaID, MediaPathResolver resolver) {
+				// Model pathModel, Ident pathPropID, java.util.List<ClassLoader> cloaders) {
+			super (mediaID, resolver); // pathModel, pathPropID, cloaders);
 			myAnimClient = animClient;
 		}
 		@Override public Option<Animation> getMediaFromUrl(URL url) {
@@ -71,14 +73,17 @@ public class CachingAnimPerfChan extends FancyTextPerfChan<AnimationJob> {
 
 	}
 	
-	static class AnimMediaHandleCache extends FancyUrlMediaHandleCache<Animation> {
+	static class AnimMediaHandleCache extends FancyMediaHandleCache<Animation> {
 		private	RobotAnimClient	myAnimClient;
 		public AnimMediaHandleCache(RobotAnimClient animClient, Model pathModel, Ident pathPropID, java.util.List<ClassLoader> cloaders) {
 			super (pathModel, pathPropID, cloaders);
 			myAnimClient = animClient;
 		}
-		@Override public MediaHandle<Animation> makeMediaHandle(Ident mediaID, Model pathModel, Ident pathPropID, java.util.List<ClassLoader> cloaders)  {
-			return new AnimMediaHandle(myAnimClient, mediaID, pathModel, pathPropID, cloaders);
+		@Override public MediaHandle<Animation> makeMediaHandle(Ident mediaID, MediaPathResolver resolver) {
+			// Model pathModel, Ident pathPropID, java.util.List<ClassLoader> cloaders)  {
+			return new AnimMediaHandle(myAnimClient, mediaID, resolver); //  , pathModel, pathPropID, cloaders);
 		}
 	}
+	* 
+	*/ 
 }

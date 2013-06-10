@@ -37,6 +37,10 @@ class AnimCommandBuilder {
 
 
 object AnimCommandBuilder extends BasicDebugger {
+	
+	def makeStartCommandForAnimID(animID : Ident ) : String = {
+		""
+	}
 
 	def main(args: Array[String])  : Unit = {
 		org.apache.log4j.BasicConfigurator.configure();
