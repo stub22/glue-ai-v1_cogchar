@@ -24,7 +24,8 @@ import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.perform.FancyMediaHandleCache;
 import org.cogchar.impl.perform.FancyUrlMediaHandle;
 import org.cogchar.impl.perform.MediaHandle;
-import org.cogchar.impl.perform.MediaPathResolver;
+import org.cogchar.impl.perform.MediaPathFinder;
+import org.cogchar.impl.perform.UrlSearcher;
 import org.robokind.api.animation.Animation;
 import scala.Option;
 import scala.Some;
@@ -36,9 +37,9 @@ public class AnimMediaHandle extends FancyUrlMediaHandle<Animation> {
 
 	private RobotAnimClient myAnimClient;
 
-	public AnimMediaHandle(RobotAnimClient animClient, Ident mediaID, MediaPathResolver resolver) {
+	public AnimMediaHandle(RobotAnimClient animClient, Ident mediaID, MediaPathFinder pathFinder, UrlSearcher urlSearcher) {
 		// Model pathModel, Ident pathPropID, java.util.List<ClassLoader> cloaders) {
-		super(mediaID, resolver); // pathModel, pathPropID, cloaders);
+		super(mediaID, pathFinder, urlSearcher); // pathModel, pathPropID, cloaders);
 		myAnimClient = animClient;
 	}
 
@@ -52,13 +53,13 @@ public class AnimMediaHandle extends FancyUrlMediaHandle<Animation> {
 
 		private RobotAnimClient myAnimClient;
 
-		public Cache(RobotAnimClient animClient, Model pathModel, Ident pathPropID, java.util.List<ClassLoader> cloaders) {
-			super(pathModel, pathPropID, cloaders);
+		public Cache(RobotAnimClient animClient, MediaPathFinder pathFinder, UrlSearcher urlSearcher) { // Model pathModel, Ident pathPropID, java.util.List<ClassLoader> cloaders) {
+			super(pathFinder, urlSearcher); // pathModel, //  pathPropID, cloaders);
 			myAnimClient = animClient;
 		}
 
-		@Override public MediaHandle<Animation> makeMediaHandle(Ident mediaID, MediaPathResolver resolver) {
-			return new AnimMediaHandle(myAnimClient, mediaID, resolver); 
+		@Override public FancyUrlMediaHandle<Animation> makeFancyUrlMediaHandle(Ident mediaID, MediaPathFinder pathFinder, UrlSearcher urlSearcher) { // MediaPathResolver resolver) {
+			return new AnimMediaHandle(myAnimClient, mediaID, pathFinder, urlSearcher); //  resolver); 
 		}
 	}
 }
