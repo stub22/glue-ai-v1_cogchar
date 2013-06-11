@@ -29,7 +29,7 @@ import org.cogchar.bind.rk.robot.svc.*;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.osgi.framework.BundleContext;
 
-import org.cogchar.impl.channel.AnimFileReader;
+import org.cogchar.impl.channel.AnimFileSpecReader;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -52,7 +52,7 @@ public class PumaBehaviorManager extends BasicDebugger {
 		// and finally into the AnimMediaHandle.Cache  which is used by the AnimOutTrigChan.
 		
 		RepoClient animResRepoClient = prc.getConfigMgr(null).getMainConfigRepoClient();
-		Ident animPathModelID =  animResRepoClient.makeIdentForQName(AnimFileReader.animGraphQN());
+		Ident animPathModelID =  animResRepoClient.makeIdentForQName(AnimFileSpecReader.animGraphQN());
 		Ident animPathPropID = null;
 		myBehavCE = new BehaviorConfigEmitter(animResRepoClient, animPathModelID, animPathPropID);
 		

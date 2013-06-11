@@ -27,7 +27,8 @@ import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
 import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
-import org.cogchar.impl.channel.AnimFileReader;
+import org.cogchar.blob.emit.BehaviorConfigEmitter;
+import org.cogchar.impl.channel.AnimFileSpecReader;
 import org.cogchar.impl.channel.FancyFile;
 
 /**
@@ -50,6 +51,7 @@ public class PumaAppUtils extends BasicDebugger {
 		public RepoClient rc = pcm.getMainConfigRepoClient();
 		public GlobalConfigEmitter gce = pgmm.getGlobalConfig();
 		public PumaWebMapper pwm = pumaRegClient.getWebMapper(null);
+		public BehaviorConfigEmitter animBCE = new BehaviorConfigEmitter(rc, rc.makeIdentForQName(AnimFileSpecReader.animGraphQN()), null);
 	}
 	public static void registerActionConsumers() { 
 		StuffRec srec = new StuffRec();
@@ -66,7 +68,7 @@ public class PumaAppUtils extends BasicDebugger {
 	}
 	public static List<FancyFile> getKnownAnimationFiles() { 
 		StuffRec srec = new StuffRec();
-		return AnimFileReader.queryAnimsForJava(srec.rc);
+		return AnimFileSpecReader.findAnimFileSpecsForJava(srec.animBCE);
 	}
 	public static 	void startMotionComputers(BundleContext bundleCtx) { 
 		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx);
