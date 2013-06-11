@@ -30,8 +30,14 @@ import org.robokind.api.animation.player.AnimationJob;
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import java.net.URL;
+import org.cogchar.impl.channel.AnimFileSpecReader;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.robokind.api.animation.player.AnimationPlayer;
+
+import org.cogchar.impl.perform.MediaResolverFactory;
+import org.cogchar.impl.perform.UrlSearcher;
+import org.cogchar.impl.perform.MediaPathFinder;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -144,9 +150,12 @@ public class RobotAnimContext extends BasicDebugger {
 		return myTriggeringChannel;
 	}
 	private AnimMediaHandle.Cache makeMediaHandleCache() {
+		// This behavCE was set up by either:    PumaBehaviorManager   or    CCRK_ServiceChannelFactory
 		BehaviorConfigEmitter behavCE = myBehaviorCE;
-		Model pathModel = behavCE.getAnimPathResolverModel();
-		Ident pathPropID = behavCE.myAnimPathPropID();
-		return new AnimMediaHandle.Cache(myAnimClient, pathModel, pathPropID, myResourceCLs);
+		// If there is not enough info in the behavCE, the returned list will be empty.
+		scala.collection.immutable.List animFancyFileSpecs = AnimFileSpecReader.findAnimFileSpecs(behavCE);
+		MediaPathFinder pathFinder = MediaResolverFactory.makeFancyFileSpecMediaPathFinder(animFancyFileSpecs);
+		UrlSearcher searcher = MediaResolverFactory.makeClasspathUrlSearcher(myResourceCLs);
+		return new AnimMediaHandle.Cache(myAnimClient, pathFinder, searcher); //  pathModel, pathPropID, myResourceCLs);
 	}	
 }

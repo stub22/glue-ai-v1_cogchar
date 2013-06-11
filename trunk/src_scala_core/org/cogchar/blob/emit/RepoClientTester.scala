@@ -194,7 +194,11 @@ object RepoClientTester {
 		val resolvedQueryURL = org.appdapter.demo.DemoResources.QUERY_PATH;
 		// RepoTester.testRepoDirect(dbRepo, )
 		
-		val animFiles = org.cogchar.impl.channel.AnimFileReader.queryAnims(dfltTestRC);
+		import org.cogchar.impl.channel.AnimFileSpecReader;
+		val animGraphID = dfltTestRC.makeIdentForQName(AnimFileSpecReader.animGraphQN);
+		val behavCE = new org.cogchar.blob.emit.BehaviorConfigEmitter(dfltTestRC, animGraphID, null)
+		
+		val animFiles = AnimFileSpecReader.findAnimFileSpecs(behavCE);
 		println("Got animFiles: " + animFiles);
 		val cmdList = queryCommands(dfltTestRC);
 		println("Got commands: " + cmdList);

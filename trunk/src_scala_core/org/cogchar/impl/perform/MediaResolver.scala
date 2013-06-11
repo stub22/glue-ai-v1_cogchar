@@ -40,6 +40,11 @@ trait UrlMediaHandle[MediaType] extends MediaHandle[MediaType] {
 abstract class BaseUrlMediaHandle[MediaType](val myID : Ident) extends UrlMediaHandle[MediaType] {
 	var	myCachedMedia : Option[MediaType] = None
 	override def getMediaID() : Ident = myID
+	/**
+	 * Public API method used by the handle consumer.  If it fails it returns None.
+	 * If called again, it will re-attempt to load the media on each call until it succeeds,
+	 * after which time it always returns our cached result.
+	 */
 	def getMedia() : Option[MediaType] = {
 		if (myCachedMedia.isEmpty) {
 			myCachedMedia = resolveUrlAndFetchMedia() 
@@ -50,48 +55,75 @@ abstract class BaseUrlMediaHandle[MediaType](val myID : Ident) extends UrlMediaH
 		val mediaURL = getMediaURL()
 		getMediaFromUrl(mediaURL)
 	}
+	/** This is what each concrete MediaHandle type must implement for its allowed range of MediaTypes */
 	protected def getMediaFromUrl(url : URL) : Option[MediaType]
 }
+trait MediaPathFinder {
+	def findMediaPath(mediaID : Ident) : String
+}
+trait UrlSearcher  {
+	def resolveMediaPathToURL(rawMediaPath : String) : URL 
+}
+class ClasspathUrlSearcher(classLoaders : Seq[ClassLoader]) extends UrlSearcher {
+	import scala.collection.JavaConversions._
+	val		myClassLoadersJL : java.util.List[ClassLoader] = classLoaders
 
-abstract class FancyUrlMediaHandle[MediaType](mediaID : Ident, myResolver : MediaPathResolver) 
+	override def resolveMediaPathToURL(rawMediaPath : String) : URL = {
+		ClassLoaderUtils.findResourceURL(rawMediaPath, myClassLoadersJL)
+	}	
+}
+abstract class FancyUrlMediaHandle[MediaType](mediaID : Ident, myPathFinder : MediaPathFinder, myUrlSearcher : UrlSearcher) 
 			extends BaseUrlMediaHandle[MediaType](mediaID)  {
+				
 	override def getMediaURL() : URL = {
-		val resolvedPath = myResolver.getMediaResourcePath(mediaID)
-		new URL(resolvedPath)
+		val rawPath : String = myPathFinder.findMediaPath(mediaID)
+		myUrlSearcher.resolveMediaPathToURL(rawPath)
 	}
 }
 
-trait MediaPathResolver {
-	def getMediaResourcePath(mediaID : Ident) : String
-}
-trait ClassLoaderUrlResolver extends MediaPathResolver {
-	protected def getClassLoaders() : java.util.List[ClassLoader]
+import scala.collection.mutable.HashMap
+import org.cogchar.impl.channel.FancyFile
 
-	def resolveMediaURL(mediaID : Ident) : URL = {
-		val	mediaResPath = getMediaResourcePath(mediaID)
-		val clList = getClassLoaders()
-		ClassLoaderUtils.findResourceURL(mediaResPath, clList)
-	}	
+class FancyFileSpecMediaPathFinder extends MediaPathFinder {
+	
+	val	myFilesByID = new HashMap[Ident, FancyFile]()
+	
+	override def findMediaPath(mediaID : Ident) : String = {
+		if (myFilesByID.contains(mediaID)) {
+			// From scaladoc (v.2.10) for HashMap.apply:  Retrieves the value which is associated with the given key. 
+			// This method invokes the default method of the map if there is no mapping from the given key to a value. 
+			// Unless overridden, the default method throws a NoSuchElementException.
+			val ff : FancyFile = myFilesByID.apply(mediaID)
+			ff.myResolvedFullPath
+		} else {
+			"could_not_resolve_media_id[" + mediaID + "]";
+		}
+	}
+	def absorbFancyFileSpecs(fileSpecs : Traversable[FancyFile]) : Unit = {
+		for (ff <- fileSpecs) {
+			
+		}
+	}
+	// Optional :  Add "absorb path model" or similar
 }
 
-trait MediaPathModelResolver extends MediaPathResolver {
+/*
+trait ModelBackedPathResolver extends MediaPathResolver {
 	val dummy : Int = -99
 	protected def getPathModel() : Model 
 	protected def getPathPropertyID () : Ident
 	override def getMediaResourcePath(mediaID : Ident) : String = {
-		"" // Use Jena-API directly(?) to fetch out the path value for this piece of media
+		"" // TODO:  Use Jena-API directly(?) to fetch out the path value for this piece of media
 	}
 }
-
-
-
-class FancyMediaPathResolver(myPathModel : Model, myPathPropID : Ident, myCLLoaders : java.util.List[ClassLoader]) 
-		extends ClassLoaderUrlResolver with MediaPathModelResolver {
+class FancyModelBackedPathResolver(myPathModel : Model, myPathPropID : Ident, myCLLoaders : java.util.List[ClassLoader]) 
+		extends ClassLoaderUrlResolver with ModelBackedPathResolver {
 	
 	override 	protected def getPathModel() : Model = myPathModel
 	override	protected def getPathPropertyID() : Ident = myPathPropID
 	override	protected def getClassLoaders()  : java.util.List[ClassLoader] = myCLLoaders
 }
+*/
 trait MediaHandleCache[MediaType] {
 	val		myHandlesByID = new scala.collection.mutable.HashMap[Ident, MediaHandle[MediaType]]()
 	
@@ -101,15 +133,35 @@ trait MediaHandleCache[MediaType] {
 	}
 }
 
-abstract class FancyMediaHandleCache[MediaType](pathModel : Model, pathPropID : Ident, clLoaders : java.util.List[ClassLoader]) 
-		extends  FancyMediaPathResolver(pathModel, pathPropID, clLoaders) with MediaHandleCache[MediaType] {
+// abstract class FancyMediaHandleCache[MediaType](pathModel : Model, pathPropID : Ident, clLoaders : java.util.List[ClassLoader]) 
+abstract class FancyMediaHandleCache[MediaType](private val myPathFinder : MediaPathFinder, 
+		private val myUrlSearcher : UrlSearcher) extends MediaHandleCache[MediaType]   {
 			
-	protected def makeMediaHandle(mediaID : Ident, resolver: MediaPathResolver ) 
-			: MediaHandle[MediaType]		
-			
-	override protected def makeMediaHandle(mediaID : Ident) : MediaHandle[MediaType] = {
-		makeMediaHandle(mediaID, this) //  getPathModel,  getPathPropertyID, getClassLoaders)
-	}
+	//protected def getMediaPathFinder() = myPathFinder
+	// protected def getUrlSearcher() = myUrlSearcher
 
+	override def makeMediaHandle(mediaID : Ident) : MediaHandle[MediaType]	= {
+		makeFancyUrlMediaHandle(mediaID, myPathFinder, myUrlSearcher)
+	}
+	
+	// Override this factory method for particular MediaHandle/MediaType subtypes.
+	protected def makeFancyUrlMediaHandle(mediaID : Ident, pathFinder : MediaPathFinder, 
+		urlSearcher : UrlSearcher) : FancyUrlMediaHandle[MediaType]
+	
 }
 
+object MediaResolverFactory {
+	def  makeFancyFileSpecMediaPathFinder (fancyFileSpecs : Traversable[FancyFile]) : MediaPathFinder = {
+		val ffResolver = new FancyFileSpecMediaPathFinder()
+		ffResolver.absorbFancyFileSpecs(fancyFileSpecs);
+		ffResolver
+	}
+	def makeClasspathUrlSearcher(classLoaders : Seq[ClassLoader]) :  UrlSearcher =  {
+		new ClasspathUrlSearcher(classLoaders)
+	}
+	def makeClasspathUrlSearcher(classLoaders : java.util.List[ClassLoader]) :  UrlSearcher =  {
+		import scala.collection.JavaConversions._
+		val clSeq : Seq[ClassLoader] = classLoaders;
+		makeClasspathUrlSearcher(clSeq)
+	}
+}

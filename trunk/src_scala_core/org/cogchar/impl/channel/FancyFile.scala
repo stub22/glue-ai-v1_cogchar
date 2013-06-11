@@ -43,17 +43,22 @@ class FancyFile(val mySpec : FileSpec, val myResolvedFullPath : String) {
 }
 class FancyFolder {
 }
-object AnimFileReader {
+import org.cogchar.blob.emit.BehaviorConfigEmitter
+object AnimFileSpecReader {
 	val ANIM_IDENT = "anim"
 	val ANIM_REL_PATH = "relPath"
 	val ANIM_FOLDER_PATH = "folderPath"
 	val animQueryQN = "ccrt:find_anims_99" // The QName of a query in the "Queries" model/tab
 	val animGraphQN = "ccrt:anim_sheet_22" // The QName of a graph = model = tab, as given by directory model.   
 	import scala.collection.JavaConversions._   
-	def queryAnims (rc : RepoClient) : List[FancyFile] = {
+	def findAnimFileSpecs (behavCE : BehaviorConfigEmitter) : List[FancyFile] = {
 		var daList : List[FancyFile] = Nil
+		if ((behavCE.myDefaultRepoClient == null) || (behavCE.myAnimPathModelID == null)) {
+			return Nil;
+		}
+		val repoClient = behavCE.myDefaultRepoClient
 		val folderz = new scala.collection.mutable.HashMap[String,FolderSpec]()
-		val solList = rc.queryIndirectForAllSolutions(animQueryQN, animGraphQN)
+		val solList = repoClient.queryIndirectForAllSolutions(animQueryQN, animGraphQN)
 
 		solList.javaList foreach (animFile => {
 				println("Got animFile soln: " + animFile);
@@ -72,5 +77,5 @@ object AnimFileReader {
 		daList.reverse
 	}
 
-	def queryAnimsForJava (rc : RepoClient) : java.util.List[FancyFile] = queryAnims(rc)
+	def findAnimFileSpecsForJava (behavCE : BehaviorConfigEmitter) : java.util.List[FancyFile] = findAnimFileSpecs(behavCE)
 }
