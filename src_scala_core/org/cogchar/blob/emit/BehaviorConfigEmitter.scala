@@ -26,7 +26,7 @@ import com.hp.hpl.jena.rdf.model.Model;
  * This class has always been a workaround, but by adding a repoClient field, we hope to now make it more respectable.
  */
 
-class BehaviorConfigEmitter(val myDefaultRepoClient : RepoClient, val myAnimPathModelID : Ident, val myAnimPathPropID : Ident) {
+class BehaviorConfigEmitter(val myDefaultRepoClient : RepoClient, val myAnimPathModelID : Ident) {
 	
 	
 	def getAnimPathResolverModel() : Model  = {

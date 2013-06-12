@@ -16,6 +16,7 @@
 package org.cogchar.bundle.app.puma;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
@@ -51,7 +52,8 @@ public class PumaAppUtils extends BasicDebugger {
 		public RepoClient rc = pcm.getMainConfigRepoClient();
 		public GlobalConfigEmitter gce = pgmm.getGlobalConfig();
 		public PumaWebMapper pwm = pumaRegClient.getWebMapper(null);
-		public BehaviorConfigEmitter animBCE = new BehaviorConfigEmitter(rc, rc.makeIdentForQName(AnimFileSpecReader.animGraphQN()), null);
+		private Ident animPathGraphID = rc.makeIdentForQName(AnimFileSpecReader.animGraphQN());
+		public BehaviorConfigEmitter animBCE = new BehaviorConfigEmitter(rc, animPathGraphID);
 	}
 	public static void registerActionConsumers() { 
 		StuffRec srec = new StuffRec();
