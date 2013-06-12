@@ -22,8 +22,10 @@ import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
 import org.appdapter.help.repo.{RepoClient}
 
+import org.cogchar.api.channel.{GraphChannel}
 import org.cogchar.api.perform.{Media, PerfChannel};
 import org.cogchar.impl.perform.{DummyTextChan, FancyTime, PerfChannelNames};
+import org.cogchar.impl.channel.{GraphChannelHub};
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
 /**  A theater is an execution context for scene-based behavior.
@@ -46,6 +48,10 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	// However role could be refactored out, so we are leaving the door open to a multi-scene theater.
 	private val	myUnfinishedScenes = scala.collection.mutable.HashSet[BScene]()
 	
+	private var myGraphChanHub : GraphChannelHub = null;
+	
+	def setGraphChanHub(gch : GraphChannelHub) {  myGraphChanHub = gch	}
+	
 	def registerPerfChannel (c : PerfChannel) {
 	// def registerChannel (c : Channel[_ <: Media, FancyTime]) {
 		getLogger.info("Registering perf-channel [{}] in behavior-theater {}", c, myIdent);
@@ -60,6 +66,10 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		val sceneSpec = mySceneBook.findSceneSpec(sceneID);
 		val scene = new FancyBScene(sceneSpec); // new BScene(sceneSpec);
 		scene.wirePerfChannels(myPerfChanSet);
+		if (myGraphChanHub != null) {
+			val graphChans = new java.util.HashSet[GraphChannel]()
+			scene.wireGraphChannels(graphChans)
+		}
 		scene;
 	}
 	def exclusiveActivateScene(scene: BScene, cancelPrevJobs : Boolean) {	

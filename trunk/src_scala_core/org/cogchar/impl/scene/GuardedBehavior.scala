@@ -127,8 +127,30 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 			val offsetSec = reader.readConfigValDouble(stepIdent, SceneFieldNames.P_startOffsetSec, stepItem, null);
 			val offsetMillisec : Int = if (offsetSec == null) 0 else (1000.0 * offsetSec.doubleValue()).toInt;
 
-			val text = reader.readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
-			val actionSpec = new TextActionSpec(text);
+			/***
+			 * We need to decide what kind of ActionSpec to construct, based on the available data in the step spec.
+			 * First demos were all done with TextActionSpec, but now we are making UseActionSpecs as well.
+			 * Eventually we should fetch an inferred type from the datamodel to fully specify the class of the ActionSpec.
+			 * Meanwhile, we use some ugly heuristics based on which fields are present in the step.
+			 * 
+			 * Note that these BehaviorActionSpecs used within our Behavior Steps are, so far, mostly separate from the concept 
+			 * of ThingActionSpec.   The name collision is unfortunate but we are living with it for the present.
+			 */
+			val stepActionText = reader.readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
+			val waitChanGuardProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_waitForChan);
+			val chanFilterProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_chanFilter);
+			val chanGuardItems = stepItem.getLinkedItemSet(waitChanGuardProp)
+			val chanGuardCount = chanGuardItems.size
+			val chanFilterItems = stepItem.getLinkedItemSet(chanFilterProp)
+			val chanFilterCount = chanFilterItems.size
+			getLogger().info("Step {} has {} chanGuards and {} chanFilters", Array(stepIdent, chanGuardCount, chanFilterCount))
+			val actionSpec : BehaviorActionSpec = if (stepActionText != null) new TextActionSpec(stepActionText) else {
+				if (chanGuardCount == 1) {
+					val guardedChanID = chanGuardItems.head.getIdent
+					val optFilterID = if (chanFilterCount == 1) Some(chanFilterItems.head.getIdent) else None
+					new UseThingActionSpec(guardedChanID, optFilterID)
+				} else new TextActionSpec("This Action is Broken")
+			}
 			actionSpec.wireChannelSpecs(stepItem, reader, assmblr, mode)
 
 			val guardSpecSet = new HashSet[GuardSpec]()

@@ -18,6 +18,7 @@ package org.cogchar.bind.rk.speech.client;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.perform.Performance;
 
+import org.cogchar.impl.perform.FancyPerformance;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.perform.FancyTextPerf;
 import org.cogchar.impl.perform.FancyTextMedia;
@@ -61,7 +62,7 @@ public class SpeechOutputClient extends FancyTextPerfChan<SpeechJob> {
 	}
 
 	@Override
-	public void updatePerfStatusQuickly(FancyTextPerf perf) {
+	public void updatePerfStatusQuickly(FancyPerformance perf) {
 		// TODO:  Keep track of job associated with the performance, and use perf.markState (and even perf.markCursor)
 		boolean finished = false;
 		SpeechJob jobToCheck = getOutJobOrNull(perf);
