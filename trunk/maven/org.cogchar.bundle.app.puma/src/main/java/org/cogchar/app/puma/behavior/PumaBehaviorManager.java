@@ -53,8 +53,7 @@ public class PumaBehaviorManager extends BasicDebugger {
 		
 		RepoClient animResRepoClient = prc.getConfigMgr(null).getMainConfigRepoClient();
 		Ident animPathModelID =  animResRepoClient.makeIdentForQName(AnimFileSpecReader.animGraphQN());
-		Ident animPathPropID = null; // not used
-		myBehavCE = new BehaviorConfigEmitter(animResRepoClient, animPathModelID, animPathPropID);
+		myBehavCE = new BehaviorConfigEmitter(animResRepoClient, animPathModelID);
 		
 		// Here are some older config properties serving a related config/anim path-resolving role.
 		String sysContextURI = mediator.getSysContextRootURI();

@@ -43,5 +43,5 @@ import org.appdapter.core.name.Ident;
  */
 
 public interface ThingActionFilter {
-
+	public	boolean test(ThingActionSpec aSpec);
 }

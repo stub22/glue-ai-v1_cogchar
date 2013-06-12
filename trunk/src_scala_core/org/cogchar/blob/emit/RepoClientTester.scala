@@ -196,7 +196,7 @@ object RepoClientTester {
 		
 		import org.cogchar.impl.channel.AnimFileSpecReader;
 		val animGraphID = dfltTestRC.makeIdentForQName(AnimFileSpecReader.animGraphQN);
-		val behavCE = new org.cogchar.blob.emit.BehaviorConfigEmitter(dfltTestRC, animGraphID, null)
+		val behavCE = new org.cogchar.blob.emit.BehaviorConfigEmitter(dfltTestRC, animGraphID)
 		
 		val animFiles = AnimFileSpecReader.findAnimFileSpecs(behavCE);
 		println("Got animFiles: " + animFiles);

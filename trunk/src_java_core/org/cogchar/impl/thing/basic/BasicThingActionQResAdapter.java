@@ -31,6 +31,8 @@ import org.cogchar.name.thing.ThingCN;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * This class knows how to pull ThingAction(Spec) data from 
  */
 
 public class BasicThingActionQResAdapter extends BasicDebugger {
