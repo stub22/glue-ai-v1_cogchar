@@ -65,9 +65,8 @@ public class CCRK_ServiceChannelFactory extends BasicDebugger {
     private PerfChannel createAnimationChannel(Ident chanID, AnimationPlayer animPlayerSvc){
 		getLogger().info("Creating AnimPlayChan at [{}] for [{}]", chanID, animPlayerSvc);
 		// If we wind up keeping this emitter thing, it can be added as a dependency.
-		Ident pathModelID = null; // Not currently used, as we are relying on hardcodes in the AnimFileReader
-		Ident pathPropID = null;  // Not used, will probably be dropped.
-		BehaviorConfigEmitter behavCE = new BehaviorConfigEmitter(myWorkaroundRepoClient, pathModelID, pathPropID);
+		Ident animPathModelID = null; // Not currently used, as we are relying on hardcodes in the AnimFileReader
+		BehaviorConfigEmitter behavCE = new BehaviorConfigEmitter(myWorkaroundRepoClient, animPathModelID);
 		/* charIdent - so far, used only for log messages
 		 * behavCE  - only used to resolve local files, in case animResURL does not resolve within classpath.
 		 */

@@ -19,8 +19,11 @@ import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.ThingActionFilter;
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * We would really prefer to implement this concept virtually, using pipelines of 
+ * SPARQL CONSTRUCT operations.
  */
 
-class FancyThingActionFilter extends ThingActionFilter {
+abstract class FancyThingActionFilter extends ThingActionFilter {
 
 }
