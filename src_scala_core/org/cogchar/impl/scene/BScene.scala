@@ -168,9 +168,11 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 	}
 	def hasUnfinishedModules() : Boolean = getUnfinishedModules.nonEmpty
 
-	def getChannel(id : Ident) : PerfChannel = {
+	override def getPerfChannel(id : Ident) : PerfChannel = {
 		return myWiredPerfChannels.getOrElse(id, null);
 	}
+
+	
 	override def toString() : String = {
 		"BScene[id=" + rootyID + ", chanMap=" + myWiredPerfChannels + ", modules=" + myCachedModules + "]";
 	}
@@ -194,8 +196,21 @@ class FancyBScene(ss: SceneSpec) extends BScene(ss) {
 	val		myWiredGraphChannels  = new HashMap[Ident,GraphChannel]();	
 	
 	override def wireGraphChannels(graphChans : java.util.Collection[GraphChannel]) : Unit = {
+		import scala.collection.JavaConversions._
+		for (val gc : GraphChannel <- graphChans)  {
+			val chanID = gc.getIdent
+			// TODO:  Check the scene spec to see whether we want this channel, and if so, how it should be wired.
+			// In particular, do we want to apply a thingAction-viewed filter onto it?
+			// But also, orthogonally, do we want to interact more directly with the GraphChannel hub to pull out
+			// what we want?  Do we assume that has already happened before this wire() method is called?
+			myWiredGraphChannels.put(chanID, gc)
+		}
 	}
-	
+	// This is used by the step-actions to find a graphChannel of interest.
+	// It depends on wireGraphChannels having been called earlier with a matching channel.
+	override def getGraphChannel(id : Ident) : GraphChannel = {
+		return myWiredGraphChannels.getOrElse(id, null);
+	}	
 	override def cancelAllPerfJobs() { 
 		for (knownPerfMod  <- myPerfMonModsByStepSpecID.values) {
 			val knownPerf  = knownPerfMod.myPerf

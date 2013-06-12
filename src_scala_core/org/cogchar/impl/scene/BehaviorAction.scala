@@ -33,6 +33,12 @@ import  org.cogchar.impl.perform.basic.{BasicPerformance}
 import org.cogchar.impl.channel.{FancyChannelSpec};
 import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyPerformance, FancyTextPerfChan, FancyTextInstruction};
 
+import org.cogchar.api.channel.{GraphChannel}
+import org.cogchar.impl.channel.{FancyChannel}
+import org.cogchar.api.thing.{ThingActionSpec, ThingActionFilter, WantsThingAction}
+
+
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -90,9 +96,10 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
 	override def perform(s: BScene) : List[FancyPerformance] = {
 		var perfListReverseOrder : List[FancyPerformance] = Nil
 		val media = new FancyTextMedia(mySpec.myActionText);
+		// We don't yet have a practical use case where there is really more than one outChan here.
 		for (val chanId : Ident <- mySpec.myChannelIdents) {
 			getLogger().debug("Looking for channel[{}] in scene [{}]", chanId, s);
-			val chan : PerfChannel = s.getChannel(chanId);
+			val chan : PerfChannel = s.getPerfChannel(chanId);
 			getLogger().debug("Found channel {}", chan);
 			if (chan != null) {
 				chan match {
@@ -118,8 +125,6 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
 	}	
 }
 
-import org.cogchar.impl.channel.{FancyChannel}
-import org.cogchar.api.thing.{ThingActionSpec, ThingActionFilter, WantsThingAction}
 /*
 trait WantsThingAction {
 	def consumeSpec(inTASpec : ThingActionSpec) : Unit 
@@ -133,30 +138,65 @@ trait WantsThingAction {
 class UseThingActionExec(val mySpec : UseThingActionSpec) extends BasicDebugger with BehaviorActionExec {
 	def perform(s: BScene) : List[FancyPerformance] = {
 		// Find and "take" the most obvious input ThingAction, by marking a seen-it bag for this agent.
-		Nil
+		var perfListReverseOrder : List[FancyPerformance] = Nil
+		val inChanID : Ident = mySpec.myInChanID;
+		getLogger().info("UseThingActionExec.perform inChanID=", inChanID)
+		
+		val graphChanHub = Nil
+		val inTASpec = Nil
+		if (mySpec.myChannelIdents.size == 1) {
+			val outChanID = mySpec.myChannelIdents.head
+			val outChan : PerfChannel = s.getPerfChannel(outChanID);			
+			val inChan : GraphChannel = s.getGraphChannel(mySpec.myInChanID)
+			val taSpec = Nil
+		}
+		// Lookup the inChan from GraphChannelHub
+		/*
+		val inChan 
+		
+		val media = new FancyTextMedia(mySpec.myActionText);		
+		for (val chanId : Ident <- mySpec.myChannelIdents) {
+			getLogger().debug("Looking for channel[{}] in scene [{}]", chanId, s);
+			val chan : PerfChannel = s.getChannel(chanId);
+			getLogger().debug("Found channel {}", chan);
+			if (chan != null) {
+				chan match {
+					case txtChan : FancyTextPerfChan[_] => { 
+							
+					}
+				}
+			}
+
+		}
+		*/
+	   Nil
 	}
-	def useIt(inTASpec : ThingActionSpec, outChan : FancyChannel) {
+	def useIt(inTASpec : ThingActionSpec, outChan : FancyChannel) : Option[FancyPerformance] = {
 		// By default, we look for an obvious way to pass taSpec to outChan.
+		// We also sometimes need a way to capture + return a FancyPerformance for monitoring.
 		outChan match {
+			// Experiment:  We try matching the Channel against a broader ThingAction-Consumer object
+			// (not specific to our Cogchar Behavior system, per se).  This should work, but cannot yet yield us a perf.
 			case wtaChan : WantsThingAction => {
 				val consumpStatus = wtaChan.consumeAction(inTASpec, outChan.getIdent)
 			}
 		}
+		None
 	}
 }
-class UseThingActionSpec (val myInChanID : Ident, val myFilterID : Ident, val myOutChanID : Ident) extends BehaviorActionSpec() { 
-	// This object supplies information 
+class UseThingActionSpec (val myInChanID : Ident, val myOptFilterID : Option[Ident]) extends BehaviorActionSpec() { 
+	// This object needs to configure a number of decisions:
 	// Where should perform() look for the input ThingAction?  
 	// What filter should we use to *take* one/all of the the input-TAs before then passing them on?
 	// Where is the implied "seen-it" bag for this agent on this channel, used to mark ? 
-	// When did this agent "start"?
-	// Where should perform() send the output ThingAction
+	// When did this agent "start"?  (For input ThingAction filtering purposes)
+	// Where should perform() send the output ThingAction?
 	
 	override def makeActionExec() : BehaviorActionExec = {
 		new UseThingActionExec(this)
 	}
 	override def toString() : String = {
-		"PassThingActionSpec[actionTxt= + myActionText + , channelIds=" + myChannelIdents + "]";
+		"UseThingActionSpec[inChanID= " + myInChanID + ", optFilterID=" + myOptFilterID + ", outChanIDs=" + myChannelIdents + "]";
 	}		
 }
 

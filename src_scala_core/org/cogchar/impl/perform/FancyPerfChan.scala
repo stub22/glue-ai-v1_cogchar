@@ -51,6 +51,8 @@ trait FancyPerfChan[OutJob >: Null] {
 	
 	def getMyLogger() : Logger
 	
+	def updatePerfStatusQuickly(perf: FancyPerformance)
+	
 	def requestOutJobCancelForPerf(perf : FancyPerformance) { 
 		val oj = getOutJobOrNull(perf)
 		if (oj != null) {
