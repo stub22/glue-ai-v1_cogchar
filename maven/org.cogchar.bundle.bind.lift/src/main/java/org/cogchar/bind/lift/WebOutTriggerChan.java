@@ -20,6 +20,7 @@ import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.impl.perform.FancyTextCursor;
 import org.cogchar.impl.perform.FancyTextMedia;
+import org.cogchar.impl.perform.FancyPerformance;
 import org.cogchar.impl.perform.FancyTextPerf;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.name.lifter.LiftAN;
@@ -53,7 +54,7 @@ public class WebOutTriggerChan extends FancyTextPerfChan<WebOutTriggerChan.WebOu
 			getLogger().warn("WebOutTriggerChan doesn't know how to handle the following URI: {}", commandUriString);
 		}
 	}
-	@Override public void updatePerfStatusQuickly(FancyTextPerf perf) {
+	@Override public void updatePerfStatusQuickly(FancyPerformance perf) {
 		// TODO:  Keep track of output job associated with the performance, and report it
 		// in this callback using perf.markState (and possibly even perf.markCursor, for finer grained info).  
 	}

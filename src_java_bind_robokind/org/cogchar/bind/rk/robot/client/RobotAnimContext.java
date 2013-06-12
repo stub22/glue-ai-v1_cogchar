@@ -152,7 +152,7 @@ public class RobotAnimContext extends BasicDebugger {
 	private AnimMediaHandle.Cache makeMediaHandleCache() {
 		// This behavCE was set up by either:    PumaBehaviorManager   or    CCRK_ServiceChannelFactory
 		BehaviorConfigEmitter behavCE = myBehaviorCE;
-		// If there is not enough info in the behavCE, the returned list will be empty.
+		// If there is not enough info in the behavCE, the returned list will be empty 
 		scala.collection.immutable.List animFancyFileSpecs = AnimFileSpecReader.findAnimFileSpecs(behavCE);
 		MediaPathFinder pathFinder = MediaResolverFactory.makeFancyFileSpecMediaPathFinder(animFancyFileSpecs);
 		UrlSearcher searcher = MediaResolverFactory.makeClasspathUrlSearcher(myResourceCLs);

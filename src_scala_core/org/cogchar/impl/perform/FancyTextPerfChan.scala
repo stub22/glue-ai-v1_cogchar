@@ -56,9 +56,9 @@ abstract class FancyTextPerfChan[OutJob >: Null](id: Ident) extends BasicPerfCha
 	protected def fancyFastCueAndPlay (ftm : FancyTextMedia, cur : FancyTextCursor, perf:FancyTextPerf) 
 	
 
-	def updatePerfStatusQuickly(perf: FancyTextPerf)
+	// def updatePerfStatusQuickly(perf: FancyTextPerf)
 	
-	def getMyLogger() = getLogger()
+	override def getMyLogger() = getLogger()
 
 /**
  * This override plugs us into the type superstructure.  However,  the Throwable and Protected do not propagate
@@ -196,7 +196,7 @@ class DummyTextChan(id: Ident) extends FancyTextPerfChan[DummyOutJob](id) {
 		val textString = ftm.getFullText();
 		getLogger().info("************* START DUMMY TEXT PERFORMANCE on dummy-chan [" + getName() + "]");
 	}
-	override def updatePerfStatusQuickly(perf: FancyTextPerf) {
+	override def updatePerfStatusQuickly(perf: FancyPerformance) {
 		getLogger().info("************* Updating status of perf on dummy-chan [" + getName() + "]")
 	}
 	override def requestOutJobCancel(doj : DummyOutJob) {

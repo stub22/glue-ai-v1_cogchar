@@ -78,13 +78,12 @@ public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> implements 
 			getLogger().info("Got animID: {} ", animID);
 			if (animID != null) {
 				MediaHandle<Animation> amh = myMediaHandleCache.makeMediaHandle(animID);
-				String startCommand = "yowza"; // AnimCommandBuilder
-				// Yuck, now resolve the path using some presumed model that animID refers into, and make that into 
-				// something "playable", e.g. an ugly TextMedia path for the methods below.
+				fastCueAndPlayFromMediaHandle(amh);
+				return ConsumpStatus.CONSUMED;
 			}
 			return ConsumpStatus.USED;
 		}
-		return ConsumpStatus.CONSUMED;
+		return ConsumpStatus.IGNORED;
 	}
 		
 
@@ -95,6 +94,7 @@ public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> implements 
 	
 	public void fastCueAndPlayFromMediaHandle(MediaHandle<Animation> handle) {
 		Animation anim = handle.getMedia().getOrElse(null);
+		// TODO:  Get a proper performance set up for monitor + cancel, possibly based on the Media.Framed type.
 		FancyPerformance perf = null;
 		launchFullAnimJobNow(anim, perf);
 	}
@@ -140,13 +140,15 @@ public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> implements 
 		}
 	}
 	protected void launchFullAnimJobNow(Animation anim, FancyPerformance perf) {
-			AnimationJob animJob = myRobotAnimContext.startFullAnimationNow(anim);
-			registerOutJobForPerf(perf, animJob);		
+		AnimationJob animJob = myRobotAnimContext.startFullAnimationNow(anim);
+		if (perf != null) {
+			registerOutJobForPerf(perf, animJob);
+		}
 	}
 	// TODO:  Keep track of job associated with the performance, and use perf.markState 
 	// (and even perf.markCursor) to report on the job's status and position.
 	
-	@Override public void updatePerfStatusQuickly(FancyTextPerf perf) {
+	@Override public void updatePerfStatusQuickly(FancyPerformance perf) {
 		// This method is invoked repeatedly as soon as we return from fancyFastCueAndPlay() above.
 		// It will keep being invoked until we call perf.markState(STOPPING).
 		// If multiple performances are outstanding on the channel, they will all be updated through
@@ -178,7 +180,7 @@ Do not use any listeners, they are not implemented in the RemoteAnimationJob.
 				finished = true;
 			} else {
 				
-				getLogger().debug("Animation remaining time is which is > 0.  Marking perfSate = PLAYING");
+				getLogger().debug("Animation remaining time is > 0.  Marking perfSate = PLAYING");
 				perf.markFancyState(Performance.State.PLAYING);
 			}
 
