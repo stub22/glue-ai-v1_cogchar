@@ -79,9 +79,9 @@ class ThingActionGuard(mySpec : ThingActionGuardSpec) extends BasicDebugger with
 		false;
 	}
 }
-class ThingActionGuardSpec(val myListenChanID : Ident, val myPattern : String) extends GuardSpec {
+class ThingActionGuardSpec(val myListenChanID : Ident, val myFilterID : Ident) extends GuardSpec {
 	override def makeGuard  = 	new ThingActionGuard(this)
 	override def toString() : String = {
-		"ThingActionGuardSpec[listenChanID=" + myListenChanID + ", pattern=" + myPattern + "]"
+		"ThingActionGuardSpec[listenChanID=" + myListenChanID + ", filter=" + myFilterID + "]"
 	}	
 }

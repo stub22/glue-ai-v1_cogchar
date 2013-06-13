@@ -51,6 +51,7 @@ public class BasicThingActionUpdater {
 	/**
 	 * Fetches pending ThingActions from model, and physically deletes them (or at least the part of them
 	 * that makes them matchable) from source model.
+	 * 
 	 * @param rc
 	 * @param srcGraphID
 	 * @return 
