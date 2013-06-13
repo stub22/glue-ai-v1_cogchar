@@ -29,8 +29,16 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * This class was used as a test that we can receive animURIs through ThingActions,
+ * but it is being replaced with proper scene+guard+filter+graphChannel wiring, as
+ * discussed in the doc:  BudE_Missing_Technology_Pieces
+ * 
+
  
-In the latest updates, the animations in the Lifter animation list page should now generate ThingAction repo updates. 
+ * Email from RyanB in May 2013:
+ * 
+" the animations in the Lifter animation list page should now generate ThingAction repo updates. 
 These updates have entity type:
 
 WebActionNames.WEB_USER_INPUT = http://www.cogchar.org/lift/config#userinput
@@ -38,6 +46,7 @@ WebActionNames.WEB_USER_INPUT = http://www.cogchar.org/lift/config#userinput
 
 and the animation URI appears at the parameter called:
 WebUserActionNames.ACTION = http://www.cogchar.org/lift/user/action#action
+"
  */
 
 public class AnimLaunchEntityAction extends BasicEntityAction {
