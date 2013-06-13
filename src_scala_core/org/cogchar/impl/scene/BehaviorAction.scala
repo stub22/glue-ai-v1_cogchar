@@ -132,8 +132,10 @@ trait WantsThingAction {
 */
 /*
  * Consumes filtered ThingActions from an input channel, and uses them to write to some output channel.
- * But - that can be accomplished as a pure-graph operation, so there would be no reason to deserialize for that case.
- * So - 
+ * For an output *graph*-channel, this passthru can be accomplished as a pure-graph operation, so 
+ * there would be no reason to deserialize for that case.
+ * However, when the output channel downstream is a more concrete kind of Java perf-channel, then the
+ * deserialization of the ThingActionSpec into this perform method is useful.  
  */
 class UseThingActionExec(val mySpec : UseThingActionSpec) extends BasicDebugger with BehaviorActionExec {
 	def perform(s: BScene) : List[FancyPerformance] = {
@@ -149,26 +151,9 @@ class UseThingActionExec(val mySpec : UseThingActionSpec) extends BasicDebugger 
 			val outChan : PerfChannel = s.getPerfChannel(outChanID);			
 			val inChan : GraphChannel = s.getGraphChannel(mySpec.myInChanID)
 			val taSpec = Nil
+			// TODO - "take" (= deserialize + mark-seen) the input taSpec from inChan, and then call 
+			// useIt() to pass to outChan.
 		}
-		// Lookup the inChan from GraphChannelHub
-		/*
-		val inChan 
-		
-		val media = new FancyTextMedia(mySpec.myActionText);		
-		for (val chanId : Ident <- mySpec.myChannelIdents) {
-			getLogger().debug("Looking for channel[{}] in scene [{}]", chanId, s);
-			val chan : PerfChannel = s.getChannel(chanId);
-			getLogger().debug("Found channel {}", chan);
-			if (chan != null) {
-				chan match {
-					case txtChan : FancyTextPerfChan[_] => { 
-							
-					}
-				}
-			}
-
-		}
-		*/
 	   Nil
 	}
 	def useIt(inTASpec : ThingActionSpec, outChan : FancyChannel) : Option[FancyPerformance] = {
