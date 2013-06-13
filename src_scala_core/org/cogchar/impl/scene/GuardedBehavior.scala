@@ -143,7 +143,8 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 			val chanGuardCount = chanGuardItems.size
 			val chanFilterItems = stepItem.getLinkedItemSet(chanFilterProp)
 			val chanFilterCount = chanFilterItems.size
-			getLogger().info("Step {} has {} chanGuards and {} chanFilters", Array(stepIdent, chanGuardCount, chanFilterCount))
+			getLogger().info("Step {} has {} chanGuards and {} chanFilters", Array(stepIdent, chanGuardCount, chanFilterCount).asInstanceOf[Array[AnyRef]])
+			// Right now we are treating Text vs. Use actions as either-or, but there is some potential future overlap.
 			val actionSpec : BehaviorActionSpec = if (stepActionText != null) new TextActionSpec(stepActionText) else {
 				if (chanGuardCount == 1) {
 					val guardedChanID = chanGuardItems.head.getIdent
