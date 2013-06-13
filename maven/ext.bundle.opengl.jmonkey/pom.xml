@@ -22,7 +22,7 @@
 	<parent>
 		<groupId>org.cogchar</groupId>
 		<artifactId>org.cogchar.modules.main</artifactId>
-		<version>1.0.6.2-SNAPSHOT</version>
+		<version>1.0.6.2</version>
 		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
 	</parent>	
 	<artifactId>ext.bundle.opengl.jmonkey</artifactId>
