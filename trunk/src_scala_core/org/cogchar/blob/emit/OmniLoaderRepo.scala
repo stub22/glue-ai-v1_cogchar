@@ -45,7 +45,7 @@ import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.gui.demo.{ DemoNavigatorCtrl };
-import org.cogchar.gui.demo.{ RepoNavigator, RepoOper };
+import org.appdapter.core.store.RepoOper;
 
 import org.appdapter.scafun.{ Boxy, GoFish, FullBox, FullTrigger }
 
@@ -107,7 +107,7 @@ import org.appdapter.help.repo.InitialBindingImpl
 import com.hp.hpl.jena.rdf.model.Model
 import com.hp.hpl.jena.rdf.model.ModelFactory
 import org.cogchar.impl.trigger.Whackamole
-import org.cogchar.name.behavior.{MasterDemoNames};
+import org.cogchar.name.behavior.{ MasterDemoNames };
 
 /**
  * Takes a directory model and uses Goog, Xlsx, Pipeline,CSV,.ttl,rdf sources and loads them
@@ -133,11 +133,10 @@ class OmniLoaderSpec_UnusedForNow(var myDebugName: String, var dirModelURI: Stri
   }
 }
 
-
 class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, directoryModel: Model, fmcls: java.util.List[ClassLoader])
   extends XLSXSheetRepo(directoryModel: Model, fmcls: java.util.List[ClassLoader])
   with RepoOper.Reloadable {
-  
+
   def reloadAllModels() = {
     val repo = myRepoSpec.makeRepo();
     val oldDataset = getMainQueryDataset();
@@ -159,8 +158,8 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
   }
 
   override def toString(): String = {
-    val dm = getDirectoryModel();    
-    getClass.getSimpleName + "[name=" + myDebugName + ", dirModelSize=" + dm.size() + " mainDsetGraphNames=" + RepoOper.setOF(getMainQueryDataset.listNames) + "]";    
+    val dm = getDirectoryModel();
+    getClass.getSimpleName + "[name=" + myDebugName + ", dirModelSize=" + dm.size() + " mainDsetGraphNames=" + RepoOper.setOF(getMainQueryDataset.listNames) + "]";
   }
 
   var isUpdated = false
@@ -192,12 +191,12 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
         } else {
           //traceHere("OnmiRepo was UpToDate")
         }
-        if (OmniLoaderRepo.popupWackamole) addToWhackmole()
+        //if (OmniLoaderRepo.popupWackamole) addToWhackmole()
       }
     }
   }
 
-  var wasAdded = false;
+  var wasAdded = false;/*
   def addToWhackmole() = {
 
     var doIt = false;
@@ -241,7 +240,7 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
     // var bc = fb.attachTrigger(new ReloadTrigger())
 
     traceHere("Done");
-  }
+  }*/
 
   def traceHere(str: String) {
     getLogger().debug(str)
@@ -291,13 +290,13 @@ class OmniLoaderRepo(var myRepoSpec: RepoSpec, var myDebugName: String, director
 
     val mainDset: DataSource = getMainQueryDataset().asInstanceOf[DataSource];
     val rc = new RepoClientImpl(this, RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR, BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN)
-	val pqs = new PipelineQuerySpec(BehavMasterConfigTest.PIPE_ATTR_QQN, BehavMasterConfigTest.PIPE_SOURCE_QQN, pplnGraphQN);
-		val dgSpecSet: Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(rc, pqs);
+    val pqs = new PipelineQuerySpec(BehavMasterConfigTest.PIPE_ATTR_QQN, BehavMasterConfigTest.PIPE_SOURCE_QQN, pplnGraphQN);
+    val dgSpecSet: Set[DerivedGraphSpec] = DerivedGraphSpecReader.queryDerivedGraphSpecs(rc, pqs);
 
     for (dgSpec <- dgSpecSet) {
-		val derivedModelProvider = dgSpec.makeDerivedModelProvider(this);
-		val derivedModel = derivedModelProvider.getModel()
-		mainDset.replaceNamedModel(pplnGraphQN, derivedModel)
+      val derivedModelProvider = dgSpec.makeDerivedModelProvider(this);
+      val derivedModel = derivedModelProvider.getModel()
+      mainDset.replaceNamedModel(pplnGraphQN, derivedModel)
     }
   }
   class SimplistSpec(val wd: Repo.WithDirectory) extends RepoSpec {
@@ -315,15 +314,15 @@ object ReloadingRepoTest {
     val fileResModelCLs: java.util.List[ClassLoader] =
       ClassLoaderUtils.getFileResourceClassLoaders(null, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
     val repoSpec = new OnlineSheetRepoSpec(BehavMasterConfigTest.BMC_SHEET_KEY, BehavMasterConfigTest.BMC_NAMESPACE_SHEET_NUM, BehavMasterConfigTest.BMC_DIRECTORY_SHEET_NUM, fileResModelCLs);
-    val repo: OmniLoaderRepo  = repoSpec.makeRepo.asInstanceOf[OmniLoaderRepo];
-    repo.addToWhackmole();
+    val repo: OmniLoaderRepo = repoSpec.makeRepo.asInstanceOf[OmniLoaderRepo];
+  //  repo.addToWhackmole();
     java.lang.Thread.sleep(60000000);
   }
 }
 object OmniLoaderRepo {
 
   var popupWackamole = false;
-
+/*
   def ensureWhackamole(): RepoNavigator = {
     OmniLoaderRepo.synchronized {
       if (!isWhackamoleStarted) {
@@ -334,7 +333,7 @@ object OmniLoaderRepo {
       }
     }
     theWhackamole;
-  }
+  }*/
   var isWhackamoleStarted = false;
-  var theWhackamole: RepoNavigator = null;
+  //var theWhackamole: RepoNavigator = null;
 }
