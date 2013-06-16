@@ -23,7 +23,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory
 import org.appdapter.core.log.BasicDebugger
 import org.appdapter.core.name.Ident
 import org.appdapter.core.store.Repo
-import org.cogchar.gui.demo.{ RepoNavigator,RepoOper }
+import org.appdapter.core.store.RepoOper;
 import org.appdapter.help.repo.InitialBindingImpl
 import org.appdapter.impl.store.DirectRepo
 import scala.collection.JavaConversions.asScalaSet
