@@ -23,7 +23,7 @@ import org.appdapter.core.item.{Item};
 import org.appdapter.help.repo.{RepoClient}
 
 import org.cogchar.api.channel.{GraphChannel}
-import org.cogchar.blob.emit.{RepoFabric, DirectDerivedGraph, DerivedGraphSpec}
+import org.appdapter.core.matdat.{RepoFabric, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, FabricBox, RepoClientTester, DirectDerivedGraph, DerivedGraphSpec}
 /**
  * @author Stu B. <www.texpedient.com>
  */

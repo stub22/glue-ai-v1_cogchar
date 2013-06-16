@@ -20,7 +20,6 @@ import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.store.{Repo, InitialBinding }
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
 import org.appdapter.impl.store.{FancyRepo};
-import org.appdapter.core.matdat.{SheetRepo}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 import org.cogchar.impl.perform.{PerfChannelNames};
@@ -30,6 +29,7 @@ import org.cogchar.impl.scene.{SceneSpec, SceneBook};
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
+import org.appdapter.core.matdat.{SheetRepo, RepoFabric, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, FabricBox, RepoClientTester, DirectDerivedGraph, DerivedGraphSpec, _}
 
 object BehavMasterConfigTest extends BasicDebugger {
 	// These constants are used to test the ChanBinding model found in "GluePuma_BehavMasterDemo"
