@@ -27,8 +27,8 @@ import org.cogchar.platform.trigger.BasicActionBindingImpl;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.behavior.DirectBehaviorAgent;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
-import org.cogchar.blob.emit.RepoClientTester;
-import org.cogchar.blob.emit.RepoClientTester.CommandRec;
+import org.appdapter.core.matdat.RepoClientTester;
+import org.appdapter.core.matdat.RepoClientTester.CommandRec;
 
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;

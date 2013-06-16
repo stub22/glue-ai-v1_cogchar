@@ -28,7 +28,7 @@ import org.cogchar.impl.thing.basic.{BasicThingActionUpdater}
  * @author Stu B. <www.texpedient.com>
  */
 
-import org.cogchar.blob.emit.{RepoFabric, DerivedGraphSpec, BoundModelProvider}
+import org.appdapter.core.matdat.{SheetRepo, BoundModelProvider, RepoFabric, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, FabricBox, DirectDerivedGraph, DerivedGraphSpec, _}
 
 class ProvidedGraphChan(chanID : Ident, val myModelProvider : BoundModelProvider) extends BasicGraphChan(chanID) with FancyChannel {
 	

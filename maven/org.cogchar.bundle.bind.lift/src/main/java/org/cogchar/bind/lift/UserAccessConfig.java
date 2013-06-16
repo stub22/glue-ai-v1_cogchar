@@ -22,7 +22,7 @@ import java.util.Map;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.*;
-import org.cogchar.blob.emit.HelpRepoExtensions;
+import org.appdapter.core.matdat.HelpRepoExtensions;
 import org.cogchar.name.lifter.UserCN;
 
 /**

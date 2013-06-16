@@ -19,7 +19,7 @@ import org.cogchar.app.puma.registry.PumaRegistryClient;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.blob.emit.RepoSpec;
+import org.appdapter.core.matdat.RepoSpec;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 

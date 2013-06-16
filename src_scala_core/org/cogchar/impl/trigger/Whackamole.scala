@@ -37,7 +37,7 @@ import org.cogchar.impl.perform.{FancyTime};
 
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
-import org.cogchar.blob.emit.{RepoFabric, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, FabricBox, RepoClientTester};
+import org.appdapter.core.matdat.{RepoFabric, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, FabricBox, RepoClientTester};
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.model.{JenaFileManagerUtils};
 import scala.collection.JavaConversions;

@@ -27,7 +27,7 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.bind.rk.behavior.ChannelBindingConfig;
 
 import org.cogchar.bind.rk.behavior.ServiceChannelExtender;
-import org.cogchar.blob.emit.EnhancedRepoClient;
+import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.cogchar.name.behavior.MasterDemoNames;
 
 /**
