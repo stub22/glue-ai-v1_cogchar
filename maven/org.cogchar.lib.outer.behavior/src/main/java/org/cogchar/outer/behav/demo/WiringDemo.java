@@ -20,7 +20,7 @@ package org.cogchar.outer.behav.demo;
 import java.util.Properties;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.blob.emit.EnhancedRepoClient;
+import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;

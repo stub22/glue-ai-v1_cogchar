@@ -36,8 +36,8 @@ import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
-import org.cogchar.blob.emit.RepoSpec;
-import org.cogchar.blob.emit.OnlineSheetRepoSpec;
+import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.cogchar.render.app.bony.BonyRenderContext;

@@ -18,8 +18,8 @@ package org.cogchar.app.puma.config;
 
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.impl.store.FancyRepo;
-import org.cogchar.blob.emit.RepoSpec;
-import org.cogchar.blob.emit.RepoClientTester;
+import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.core.matdat.RepoClientTester;
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.store.Repo;
