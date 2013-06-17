@@ -77,7 +77,7 @@ case class SteppingBehaviorSpec() extends BehaviorSpec {
 		myDetails = "brimmingOver";
 		val stepItems = reader.readLinkedItemSeq(configItem, SceneFieldNames.P_steps);
 		getLogger().debug("BSB got stepItems: {}", stepItems);
-		for (val stepItem : Item <- stepItems) {
+		for (stepItem : Item <- stepItems) {
 			
 			// Abstractly, a step has a guard and an action.  
 			// The guard is a predicate that must be satisfied for the step to be taken.

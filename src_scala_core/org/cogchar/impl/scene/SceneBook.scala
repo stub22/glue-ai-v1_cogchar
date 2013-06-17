@@ -41,7 +41,7 @@ class SceneBook extends BasicDebugger {
 	
 	
 	def registerSceneSpecs (lss : List[SceneSpec] ) : Unit = {
-		for (val ss <- lss) {
+		for (ss <- lss) {
 			addSceneSpec(ss);
 		}
 	}

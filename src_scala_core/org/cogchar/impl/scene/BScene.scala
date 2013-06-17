@@ -90,7 +90,7 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 		if (myWiredPerfChannels.size > 0) {
 			throw new RuntimeException("Wiring new perfChannels [" + perfChans + "] into a scene with existing channels: " + myWiredPerfChannels)
 		}
-		for (val c <- perfChans) {
+		for (c <- perfChans) {
 			getLogger().debug("Wiring scene[{}] to channel: {}", mySceneSpec.getIdent.getLocalName, c);
 			myWiredPerfChannels.put(c.getIdent, c)
 		}
@@ -111,7 +111,7 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 	 * A BScene might choose
 	 */
 	protected def makeAndAttachBehavsFromSpecs() {
-		for (val bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
+		for (bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
 			val b = bs.makeBehavior();
 			attachModule(b);
 		}		
@@ -197,7 +197,7 @@ class FancyBScene(ss: SceneSpec) extends BScene(ss) {
 	
 	override def wireGraphChannels(graphChans : java.util.Collection[GraphChannel]) : Unit = {
 		import scala.collection.JavaConversions._
-		for (val gc : GraphChannel <- graphChans)  {
+		for (gc : GraphChannel <- graphChans)  {
 			val chanID = gc.getIdent
 			// TODO:  Check the scene spec to see whether we want this channel, and if so, how it should be wired.
 			// In particular, do we want to apply a thingAction-viewed filter onto it?

@@ -63,13 +63,13 @@ class BehaviorModulator() extends BasicModulator[BScene](null, true) {
 	import scala.collection.JavaConversions._;
 	def requestStopOnAllModules() {
 		val unfinishedModules : java.util.List[Module[BScene]] = getUnfinishedModules();
-		for (val um <- unfinishedModules) {
+		for (um <- unfinishedModules) {
 			um.markStopRequested();
 		}
 	}
 	def detachAllFinishedModules() {
 		val finishedModules : java.util.List[Module[BScene]] = getFinishedModules();
-		for (val fm <- finishedModules) {
+		for (fm <- finishedModules) {
 			detachModule(fm);
 		}
 	}

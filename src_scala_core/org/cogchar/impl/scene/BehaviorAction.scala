@@ -67,7 +67,7 @@ abstract class BehaviorActionSpec extends BasicDebugger {
 		if (actionChannelSpecs.size != 1) {
 			getLogger().warn("Unexpected action-channel-specs size (!=1) : {}", actionChannelSpecs.size)
 		}
-		for (val actChanSpec <- actionChannelSpecs.toArray) {
+		for (actChanSpec <- actionChannelSpecs.toArray) {
 			actChanSpec match {
 				case fcs: FancyChannelSpec => {
 					wireFancyChannelSpec(fcs)
@@ -97,7 +97,7 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
 		var perfListReverseOrder : List[FancyPerformance] = Nil
 		val media = new FancyTextMedia(mySpec.myActionText);
 		// We don't yet have a practical use case where there is really more than one outChan here.
-		for (val chanId : Ident <- mySpec.myChannelIdents) {
+		for (chanId : Ident <- mySpec.myChannelIdents) {
 			getLogger().debug("Looking for channel[{}] in scene [{}]", chanId, s);
 			val chan : PerfChannel = s.getPerfChannel(chanId);
 			getLogger().debug("Found channel {}", chan);
