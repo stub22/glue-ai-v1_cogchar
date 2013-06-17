@@ -29,7 +29,9 @@ import org.cogchar.impl.scene.{SceneSpec, SceneBook};
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
-import org.appdapter.core.matdat.{SheetRepo, RepoFabric, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, FabricBox, RepoClientTester, DirectDerivedGraph, DerivedGraphSpec, _}
+import org.appdapter.core.matdat.{SheetRepo, RepoFabric, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, FabricBox,  DirectDerivedGraph, DerivedGraphSpec, _}
+
+// import org.cogchar.blob.emit.RepoClientTester from here
 
 object BehavMasterConfigTest extends BasicDebugger {
 	// These constants are used to test the ChanBinding model found in "GluePuma_BehavMasterDemo"
