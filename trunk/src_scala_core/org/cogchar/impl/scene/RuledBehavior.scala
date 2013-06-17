@@ -51,7 +51,7 @@ class RuledBehavior (myRBS: RuledBehaviorSpec) extends Behavior(myRBS) {
 		val sillyProperty = baseModel.createProperty("urn:sillyNamespace#", "sillyProperty");
 		
 		// Create a statement about each known channel, using sillyProperty
-		for (val cs <- scn.mySceneSpec.myChannelSpecs.values) {
+		for (cs <- scn.mySceneSpec.myChannelSpecs.values) {
 			val csJRI = cs.getIdent().asInstanceOf[JenaResourceItem];
 			val csJenaRes = csJRI.getJenaResource();
 			val sillyLit = baseModel.createTypedLiteral(cs.getShortLabel(), XSDDatatype.XSDstring);

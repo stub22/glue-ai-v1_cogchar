@@ -62,7 +62,7 @@ object FancyTriggerFacade extends BasicDebugger {
 		}
 	}
 	def registerTriggersForAllScenes(binder: CogcharEventActionBinder, box: CogcharScreenBox, sb : SceneBook) {
-		for (val aSceneSpec : SceneSpec <- sb.mySceneSpecs.values) {
+		for (aSceneSpec : SceneSpec <- sb.mySceneSpecs.values) {
 			registerTriggerForScene(binder, box, aSceneSpec);
 		}
 	}

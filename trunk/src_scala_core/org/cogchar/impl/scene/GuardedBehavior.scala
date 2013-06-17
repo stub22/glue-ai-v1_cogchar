@@ -107,7 +107,7 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 		val stepItems : java.util.Set[Item] = configItem.getLinkedItemSet(stepPropID)
 		
 		getLogger().debug("GBS got stepItems: {}", stepItems);
-		for (val stepItem : Item  <- stepItems) {
+		for (stepItem : Item  <- stepItems) {
 		
 			// Abstractly, a step has a set of guards and an action.  
 			// The guards are predicates that must be satisfied for the step to be taken.			
