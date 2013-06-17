@@ -22,7 +22,7 @@ import org.appdapter.osgi.registry.RegistryServiceFuncs;
 import org.appdapter.api.trigger.{Box, BoxContext, BoxImpl, MutableBox, Trigger, TriggerImpl};
 import org.appdapter.gui.demo.{DemoBrowser, DemoNavigatorCtrl};
 
-import org.appdapter.scafun.{Boxy, GoFish, FullBox, FullTrigger}
+import org.appdapter.scafun.{Boxy, FullBox, FullTrigger}
 
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 
@@ -37,7 +37,9 @@ import org.cogchar.impl.perform.{FancyTime};
 
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
-import org.appdapter.core.matdat.{RepoFabric, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, FabricBox, RepoClientTester};
+import org.appdapter.core.matdat.{ RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, RepoClientTester};
+import org.cogchar.blob.emit.{ FabricBox, RepoFabric }
+
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.model.{JenaFileManagerUtils};
 import scala.collection.JavaConversions;

@@ -29,7 +29,7 @@ import org.cogchar.impl.scene.{SceneSpec, SceneBook};
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
-import org.appdapter.core.matdat.{SheetRepo, RepoFabric, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, FabricBox,  DirectDerivedGraph, DerivedGraphSpec, _}
+import org.appdapter.core.matdat.{SheetRepo, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, DirectDerivedGraph, DerivedGraphSpec, _}
 
 // import org.cogchar.blob.emit.RepoClientTester from here
 
