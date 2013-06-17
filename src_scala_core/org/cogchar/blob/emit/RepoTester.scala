@@ -19,7 +19,7 @@ import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.store.{Repo, InitialBinding}
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
 import org.appdapter.impl.store.{FancyRepo, DatabaseRepo, FancyRepoFactory};
-import org.appdapter.core.matdat.{SheetRepo, GoogSheetRepo, XLSXSheetRepo}
+import org.appdapter.core.matdat.{SheetRepo, GoogSheetRepo, XLSXSheetRepo, _}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 import org.appdapter.core.log.BasicDebugger; 
