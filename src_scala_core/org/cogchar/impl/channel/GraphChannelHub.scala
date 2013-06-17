@@ -17,36 +17,37 @@
 package org.cogchar.impl.channel
 import scala.collection.mutable.HashMap;
 
-import org.appdapter.core.log.{BasicDebugger, Loggable};
-import org.appdapter.core.name.{Ident, FreeIdent};
-import org.appdapter.core.item.{Item};
-import org.appdapter.help.repo.{RepoClient}
+import org.appdapter.core.log.{ BasicDebugger, Loggable };
+import org.appdapter.core.name.{ Ident, FreeIdent };
+import org.appdapter.core.item.{ Item };
+import org.appdapter.help.repo.{ RepoClient }
 
-import org.cogchar.api.channel.{GraphChannel}
-import org.appdapter.core.matdat.{RepoFabric, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, FabricBox, RepoClientTester, DirectDerivedGraph, DerivedGraphSpec}
+import org.cogchar.api.channel.{ GraphChannel }
+import org.appdapter.core.matdat.{ RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, RepoClientTester, DirectDerivedGraph, DerivedGraphSpec }
+import org.cogchar.blob.emit.{ RepoFabric, FabricBox }
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-class GraphChannelHub(bootRepoClient : RepoClient) {
-	val		myGraphChans = new HashMap[Ident, GraphChannel]
-	
-	// This is here suggestively rather than necessarily so far.
-	val		myMainRepoFabric : RepoFabric = new RepoFabric()
-	// Can promote this to EnhancedRepoClient when needed.
-	var		myMainRepoClient : RepoClient = bootRepoClient
-	
-	// dg includes a spec which includes a (multi-)TypedResource, which is used as the channel ID.
-	// Ta-Da!
+class GraphChannelHub(bootRepoClient: RepoClient) {
+  val myGraphChans = new HashMap[Ident, GraphChannel]
 
-	def makeVanillaDGChannel(ddg : DirectDerivedGraph) : GraphChannel = {
-		val chanID = ddg.mySpec.myTargetGraphTR
-		val dgChan = new ProvidedGraphChan(chanID, ddg)
-		myGraphChans.put(chanID, dgChan)
-		dgChan
-	}
-	
-	// Next layer is 
-	
-	
+  // This is here suggestively rather than necessarily so far.
+  val myMainRepoFabric: RepoFabric = new RepoFabric()
+  // Can promote this to EnhancedRepoClient when needed.
+  var myMainRepoClient: RepoClient = bootRepoClient
+
+  // dg includes a spec which includes a (multi-)TypedResource, which is used as the channel ID.
+  // Ta-Da!
+
+  def makeVanillaDGChannel(ddg: DirectDerivedGraph): GraphChannel = {
+    val chanID = ddg.mySpec.myTargetGraphTR
+    val dgChan = new ProvidedGraphChan(chanID, ddg)
+    myGraphChans.put(chanID, dgChan)
+    dgChan
+  }
+
+  // Next layer is 
+
 }
