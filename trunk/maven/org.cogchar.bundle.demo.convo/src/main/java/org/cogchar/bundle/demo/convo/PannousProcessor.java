@@ -104,11 +104,38 @@ public class PannousProcessor implements Adapter<String, ConvoResponse>{
         }
         JSONObject sObj = (JSONObject) obj;
         String text = sObj.getString("text");
-        JSONArray arr = sObj.getJSONArray("moreText");
-        for (int i = 0; i < arr.length(); i++) {
-            text += " " + arr.getString(i);
-        }
+        text += getMoreText(sObj);
         return text;
+    }
+
+    private String getMoreText(JSONObject sObj) {
+        if(sObj == null){
+            return "";
+        }
+        if(!sObj.has("moreText")){
+            return "";
+        }
+        try{
+            StringBuilder sb = new StringBuilder();
+            JSONArray arr = sObj.getJSONArray("moreText");
+            if(arr == null){
+                return "";
+            }
+            for (int i = 0; i < arr.length(); i++) {
+                if(sb.length() > 0){
+                    sb.append(" ");
+                }
+                String s = arr.getString(i);
+                if(s == null){
+                    continue;
+                }
+                sb.append(s);
+            }
+            return sb.toString();
+        }catch(JSONException ex){
+            theLogger.log(Level.WARNING, "JSON Parse Exception for: " + sObj, ex);
+            return "";
+        }
     }
 
     private String buildRequestURL(String input) {
