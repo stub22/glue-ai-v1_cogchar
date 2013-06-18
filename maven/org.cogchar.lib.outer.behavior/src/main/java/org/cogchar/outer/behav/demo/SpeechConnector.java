@@ -29,7 +29,7 @@ import org.robokind.api.messaging.services.ServiceError;
 import org.robokind.api.speech.SpeechConfig;
 import org.robokind.api.speech.SpeechEventList;
 import org.robokind.api.speech.SpeechRequest;
-import org.robokind.api.speech.lifecycle.RemoteSpeechServiceLifecycle;
+import org.robokind.api.speech.lifecycle.RemoteSpeechServiceClientLifecycle;
 import org.robokind.impl.messaging.config.DependentLifecycle;
 import org.robokind.impl.messaging.config.MessagingLifecycleGroupConfigUtils;
 import org.robokind.impl.messaging.config.RKMessagingConfigUtils;
@@ -148,8 +148,8 @@ public class SpeechConnector {
             String errorReceiverId, String speechRequestSenderId,
             String speechEventsReceiverId){
         String idBase = speechClientId + "/" + GROUP_PREFIX;
-        RemoteSpeechServiceLifecycle lifecycle =
-                new RemoteSpeechServiceLifecycle(
+        RemoteSpeechServiceClientLifecycle lifecycle =
+                new RemoteSpeechServiceClientLifecycle(
                         speechClientId, speechHostId, 
                         groupId(idBase, commandSenderId, NOTIFIER_COMPONENT), 
                         groupId(idBase, configSenderId, NOTIFIER_COMPONENT), 
