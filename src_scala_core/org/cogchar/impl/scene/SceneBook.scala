@@ -111,9 +111,9 @@ object SceneBook extends BasicDebugger {
 	import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
 	
 	def  clearBuilderCaches() {
-		CachingComponentAssembler.clearCacheForAssemblerSubclass(classOf[SceneSpecBuilder]);
-		CachingComponentAssembler.clearCacheForAssemblerSubclass(classOf[BehaviorSpecBuilder]);
-		CachingComponentAssembler.clearCacheForAssemblerSubclass(classOf[ChannelSpecBuilder]);
+        AssemblerUtils.clearCacheForAssemblerSubclassForSession(classOf[SceneSpecBuilder], AssemblerUtils.getDefaultSession());
+		AssemblerUtils.clearCacheForAssemblerSubclassForSession(classOf[BehaviorSpecBuilder], AssemblerUtils.getDefaultSession());
+		AssemblerUtils.clearCacheForAssemblerSubclassForSession(classOf[ChannelSpecBuilder], AssemblerUtils.getDefaultSession());
 	}
 
 }
