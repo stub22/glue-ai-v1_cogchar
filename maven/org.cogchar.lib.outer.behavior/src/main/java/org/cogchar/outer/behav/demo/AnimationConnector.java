@@ -119,7 +119,8 @@ public class AnimationConnector {
 //                new AnimationPlayerClientLifecycle(
 //                        animClientId, animHostId, 
 //                        groupId(idBase, animationSenderId, NOTIFIER_COMPONENT),
-//                        groupId(idBase, signalReceiverId, NOTIFIER_COMPONENT));
+//                        groupId(idBase, signalReceiverId, NOTIFIER_COMPONENT),
+//                        context);
         OSGiComponent speechComp = new OSGiComponent(context, lifecycle);
         speechComp.start();
     }
