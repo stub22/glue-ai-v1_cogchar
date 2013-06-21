@@ -69,8 +69,8 @@ public class ChatConfig extends KnownComponentImpl {
 			}
 		}
 
-		public static void clearCacheForThisAssemblerType() {
-			clearCacheForAssemblerSubclass(ChatConfig.Builder.class);
+		public void clearCacheForThisAssemblerType() {
+			AssemblerUtils.clearCacheForAssemblerSubclassForSession(ChatConfig.Builder.class, getSession());
 		}
 	}
 	private static String UNIT_TEST_RDF_PATH = "metadata/chatbird/cogbotZenoAmazonEC.ttl";
