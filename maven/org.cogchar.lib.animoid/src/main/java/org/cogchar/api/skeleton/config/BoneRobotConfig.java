@@ -105,9 +105,9 @@ public class BoneRobotConfig extends KnownComponentImpl {
 			});
 		}
 		
-		public static void clearCacheForThisAssemblerType() { 
-			clearCacheForAssemblerSubclass(Builder.class);
-		}
+		public void clearCacheForThisAssemblerType() { 
+			AssemblerUtils.clearCacheForAssemblerSubclassForSession(Builder.class, getSession());
+        }
 	}	
 	private static String	UNIT_TEST_RDF_PATH 
 		= "../org.cogchar.bundle.render.resources/src/main/resources/rk_bind_config/motion/bonyRobot_ZenoR50.ttl";	

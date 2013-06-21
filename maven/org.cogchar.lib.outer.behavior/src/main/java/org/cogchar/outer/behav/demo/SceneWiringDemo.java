@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.appdapter.bind.rdf.jena.assembly.CachingComponentAssembler;
+import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.impl.store.FancyRepo;
@@ -141,9 +141,9 @@ public class SceneWiringDemo extends WiringDemo {
 		// Dump old scenes from OSGi registry.  
 		unregisterAllSceneSpecs(bunCtx);
 		
-		// Clear the yucky global swizzle-caches (for scenes + behaviors, but not channels)
-		CachingComponentAssembler.clearCacheForAssemblerSubclass(SceneSpecBuilder.class);
-		CachingComponentAssembler.clearCacheForAssemblerSubclass(BehaviorSpecBuilder.class);
+		// Clear the swizzle-caches (for scenes + behaviors, but not channels)
+		AssemblerUtils.clearCacheForAssemblerSubclassForSession(SceneSpecBuilder.class, AssemblerUtils.getDefaultSession());
+		AssemblerUtils.clearCacheForAssemblerSubclassForSession(BehaviorSpecBuilder.class, AssemblerUtils.getDefaultSession());
 
 		// This method will both reload sceneSpecs from the given repoCli, and also
 		//  automatically rebuild+reload-from any DerivedRepo we are currently reading 
