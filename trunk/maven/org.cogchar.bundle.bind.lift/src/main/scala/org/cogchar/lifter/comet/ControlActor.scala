@@ -28,7 +28,7 @@ package org.cogchar.lifter {
 	  
 	  final val SLOT_ID_PREFIX = "slot"
   
-	  lazy val slotNum = (name openOr"-1").toInt
+	  lazy val slotNum = (name openOr "-1").toInt;
 	  
 	  lazy val slotId = SLOT_ID_PREFIX + slotNum.toString
 	  
