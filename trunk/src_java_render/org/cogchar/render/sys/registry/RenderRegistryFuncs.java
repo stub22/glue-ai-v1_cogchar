@@ -15,21 +15,12 @@
  */
 package org.cogchar.render.sys.registry;
 
-import com.jme3.app.state.AppStateManager;
-import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
-import com.jme3.input.InputManager;
-import com.jme3.scene.Node;
-import com.jme3.renderer.RenderManager;
-
 import org.appdapter.api.facade.FacadeSpec;
-
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.subreg.SubsystemHandle;
-import org.appdapter.subreg.BasicSubsystemHandle;
-
-import org.cogchar.blob.emit.SubsystemHandleFinder;
 import org.appdapter.subreg.FacadeHandle;
+import org.appdapter.subreg.SubsystemHandle;
+import org.cogchar.blob.emit.SubsystemHandleFinder;
+import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.opengl.mesh.FancyMeshFactory;
 import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
 import org.cogchar.render.opengl.mesh.WireMeshFactory;
@@ -42,11 +33,19 @@ import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 import org.cogchar.render.opengl.scene.GeomFactory;
 import org.cogchar.render.opengl.scene.ModelSpatialFactory;
+import org.cogchar.render.opengl.scene.PathMgr;
+import org.cogchar.render.opengl.scene.SpatialAnimMgr;
 import org.cogchar.render.opengl.scene.TextMgr;
 import org.cogchar.render.sys.asset.AssetContext;
-import org.osgi.framework.BundleContext;
-import org.cogchar.render.app.core.WorkaroundAppStub;
-import org.cogchar.render.opengl.scene.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jme3.app.state.AppStateManager;
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.input.InputManager;
+import com.jme3.renderer.RenderManager;
+import com.jme3.scene.Node;
 
 /**
  * This is a set of functions which statelessly defines the create/find behavior of Cogchar rendering core services.
@@ -199,9 +198,15 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		SubsystemHandle shand = SubsystemHandleFinder.getRenderSubsysHandle(fs,  optCredClaz);
 		shand.registerExternalFacade(fs, facade, optOverrideName);	
 	}
-	private static <IFT, IFK> IFT  findOrMakeInternalFacade(FacadeSpec<IFT, IFK> fs, String optOverrideName, Class optCredClaz ) {
+	private static <IFT, IFK> IFT  findOrMakeInternalFacade(FacadeSpec<IFT, IFK> fs, String optOverrideName, Class optCredClaz ) {		
+		try {
 		SubsystemHandle shand = SubsystemHandleFinder.getRenderSubsysHandle(fs,  optCredClaz);
 		return shand.findOrMakeInternalFacade(fs, optOverrideName);
+		} catch (java.lang.NoClassDefFoundError cnf) {
+			Logger theLogger = LoggerFactory.getLogger(RenderRegistryFuncs.class);
+			theLogger.error("Cannot findOrMakeInternalFacade " + fs + " ovn=" + optOverrideName + " {}", optCredClaz, cnf);
+			throw cnf;
+		}
 	}
 	protected static AssetManager findJme3AssetManager(String optionalName) {
 		return findExternalFacadeOrNull(THE_JME3_ASSET_MANAGER, optionalName, null);
