@@ -41,8 +41,7 @@ public class AnimationConnector {
     private final static String REQUEST_SERIALIZE_CONFIG_ID = AnimationEvent.class.toString();
     private final static String REQUEST_DEST_NAME = "animationRequest";
     private final static String REQUEST_SENDER_ID = "animReqSndr";
-// When we switch to Robokind 0.9.1-SNAPSHOT, uncomment the below:
-//    private final static String SIGNAL_RECEIVER_ID = "animSigRecvr";
+    private final static String SIGNAL_RECEIVER_ID = "animSigRecvr";
     public final static String GROUP_PREFIX = "RKAnimGroup";
     
     public static void connect(BundleContext context, 
@@ -56,10 +55,7 @@ public class AnimationConnector {
         launchComponents(animPlayerId, connectionConfigId, null, fact);
         
         launchRemoteAnimClient(context, animPlayerId, 
-                animPlayerId, REQUEST_SENDER_ID);
-// When we switch to Robokind 0.9.1-SNAPSHOT, replace the above with this:
-//        launchRemoteAnimClient(context, animPlayerId, 
-//                animPlayerId, REQUEST_SENDER_ID, SIGNAL_RECEIVER_ID);
+                animPlayerId, REQUEST_SENDER_ID, SIGNAL_RECEIVER_ID);
     }
     
     private static void registerDestConfigs(String groupId, String destPrefix, ManagedServiceFactory fact){
@@ -104,23 +100,14 @@ public class AnimationConnector {
     
     private static void launchRemoteAnimClient(
             BundleContext context, String animClientId, String animHostId,
-            String animationSenderId){
-// When we switch to Robokind 0.9.1-SNAPSHOT, replace the above with this:
-//    private static void launchRemoteAnimClient(
-//            BundleContext context, String animClientId, String animHostId,
-//            String animationSenderId, String signalReceiverId){
+            String animationSenderId, String signalReceiverId){
         String idBase = animClientId + "/" + GROUP_PREFIX;
         AnimationPlayerClientLifecycle lifecycle =
                 new AnimationPlayerClientLifecycle(
                         animClientId, animHostId, 
-                        groupId(idBase, animationSenderId, NOTIFIER_COMPONENT));
-// When we switch to Robokind 0.9.1-SNAPSHOT, replace the above with this:
-//        AnimationPlayerClientLifecycle lifecycle =
-//                new AnimationPlayerClientLifecycle(
-//                        animClientId, animHostId, 
-//                        groupId(idBase, animationSenderId, NOTIFIER_COMPONENT),
-//                        groupId(idBase, signalReceiverId, NOTIFIER_COMPONENT),
-//                        context);
+                        groupId(idBase, animationSenderId, NOTIFIER_COMPONENT),
+                        groupId(idBase, signalReceiverId, NOTIFIER_COMPONENT),
+                        context);
         OSGiComponent speechComp = new OSGiComponent(context, lifecycle);
         speechComp.start();
     }
