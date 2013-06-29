@@ -74,6 +74,8 @@ public class SpatialGrabber extends BasicDebugger {
 			// Hey, we already bound this to the cinematic! We'll just get the node to attach to the track.
 			getLogger().info("Attached camera already bound, reusing in track: {}", track);
 			attachedSpatial = boundCameras.get(cameraLocalName);
+			// Must reattach since probably was unattached in PathMgr.DetachingMotionEvent.onStop
+			rrc.getJme3RootDeepNode(null).attachChild(attachedSpatial);
 		} else {
 			final Camera cineCam = cm.getNamedCamera(cameraLocalName);
 			if (cineCam != null) {
