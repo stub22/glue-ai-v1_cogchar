@@ -21,6 +21,7 @@ import com.jme3.cinematic.events.MotionEvent;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +61,23 @@ public class PathMgr extends AbstractThingCinematicMgr {
 			}
 		}
     }
+
+	// A class to extend MotionEvent to detach MotionEvent's spatial from the root node when the animation completes
+	// This allows the flycam to operate normally after an animation if we animate the default camera
+	class DetachingMotionEvent extends MotionEvent {
+
+		Node myRootNode;
+
+		DetachingMotionEvent(Spatial spatial, MotionPath path, float initialDuration, Node rootNode) {
+			super(spatial, path, initialDuration);
+			myRootNode = rootNode;
+		}
+
+		@Override
+		public void onStop() {
+			myRootNode.detachChild(this.getSpatial());
+		}
+	}
 
     private MotionEvent getMotionEvent(PathInstanceConfig track, Spatial attachedSpatial) {
         MotionPath path = new MotionPath();
@@ -106,7 +124,8 @@ public class PathMgr extends AbstractThingCinematicMgr {
 				myLogger.error("Specified MotionEvent loop mode not in com.jme3.animation.LoopMode: {}", track.loopMode);
 				return null;
 			}
-			motionTrack = new MotionEvent(attachedSpatial, path, track.duration);
+			motionTrack = new DetachingMotionEvent(attachedSpatial, path, track.duration, 
+					myCRC.getRenderRegistryClient().getJme3RootDeepNode(null));
 			motionTrack.setDirectionType(directionJmeType);
 			motionTrack.setLookAt(new Vector3f(track.lookAtDirection[0], track.lookAtDirection[1], track.lookAtDirection[2]), Vector3f.UNIT_Y);
 			motionTrack.setRotation(new Quaternion(track.lookAtDirection)); // Used for "Rotation" MotionEvent.Direction -- still experimental
