@@ -16,11 +16,12 @@
 
 package org.cogchar.render.opengl.optic;
 
-import org.cogchar.render.app.entity.VWorldEntity;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
+import com.jme3.scene.control.CameraControl.ControlDirection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -30,9 +31,12 @@ import org.cogchar.api.cinema.PathInstanceConfig;
 import org.cogchar.api.cinema.SpatialActionConfig;
 import org.cogchar.api.cinema.WaypointConfig;
 import org.cogchar.name.dir.NamespaceDir;
+import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.app.entity.GoodyAction;
-import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyFactory;
 import org.cogchar.render.app.entity.VWorldEntity;
+import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
+import org.cogchar.render.goody.basic.BasicGoodyEntity;
 import org.cogchar.render.opengl.scene.PathMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
@@ -106,6 +110,48 @@ public class VWorldCameraEntity extends VWorldEntity {
 		pMgr.controlAnimationByName(pathUri, PathMgr.ControlAction.PLAY);
 	}
 	
+	public void attachToGoody(BasicGoodyEntity attachedGoody) {
+		//create the camera Node
+		final CameraNode camNode = new CameraNode("Camera Node of " + myUri.getLocalName(), myCamera);
+		//Get the Goody's Node
+		final Node goodyNode = attachedGoody.getNode();
+		myLogger.info("Attaching camNode to goodyNode {}", attachedGoody.getUri()); // TEST ONLY
+		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
+			@Override
+			public Void call() throws Exception {
+				//Move camNode, e.g. behind and above the target:
+				camNode.setLocalTranslation(new Vector3f(0, 5, -5)); // ... for initial hack-up; probably these offsets need to come from GoodyAction
+				//Rotate the camNode to look at the target:
+				camNode.lookAt(goodyNode.getLocalTranslation(), Vector3f.UNIT_Y);
+				//This mode means that camera copies the movements of the target:
+				camNode.setControlDir(ControlDirection.SpatialToCamera);
+				//Attach the camNode to the Goody Node:
+				goodyNode.attachChild(camNode);
+				//And the root node -- required?
+				myRenderRegCli.getJme3RootDeepNode(null).attachChild(camNode);
+				return null;
+			}
+		});
+		
+		camNode.setEnabled(true);
+	}
+
+	// Searches for the URI specified by the input string and attaches to the Goody if found
+	// Fairly ugly getting into the list of goodies by GoodyFactory.getTheFactory().getActionConsumer().getGoody
+	private void attachToGoody(String goodyUriString) {
+		if (goodyUriString != null) {
+			Ident goodyUri = new FreeIdent(goodyUriString);
+			VWorldEntityActionConsumer consumer = GoodyFactory.getTheFactory().getActionConsumer();
+			VWorldEntity goodyToAttach = consumer.getGoody(goodyUri);
+			// Can avoid this instanceof code smell by refactoring here or in VWorldEntityActionConsumer;
+			// All this stuff needs refactoring in any case to separate cameras out from the "Goody" concept, among many
+			// other reasons...
+			if ((goodyToAttach != null) && (goodyToAttach instanceof BasicGoodyEntity)) {
+				attachToGoody((BasicGoodyEntity)goodyToAttach);
+			}
+		}
+	}
+	
 	@Override
 	public void setScale(Float scale) {
 		myLogger.warn("setScale not supported in CameraGoodyWrapper");
@@ -124,9 +170,11 @@ public class VWorldCameraEntity extends VWorldEntity {
 	public void applyAction(GoodyAction ga) {
 		Vector3f newLocation = ga.getLocationVector();
 		Quaternion newRotation = ga.getRotationQuaternion();
+		String attachToGoodyUriString = ga.getSpecialString(GoodyNames.ATTACH_TO_GOODY);
 		switch (ga.getKind()) {
 			case SET : {
 				setNewPositionAndRotationIfNonNull(newLocation, newRotation);
+				attachToGoody(attachToGoodyUriString);
 				break;
 			}
 			case MOVE : {

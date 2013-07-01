@@ -52,6 +52,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 	int attachedIndex = NULL_INDEX; // The index of the currently attached geometry, or -1 if none
 	final static int NULL_INDEX = -1;
 
+	protected Node myNode;
 	protected Node myRootNode;
 
 	// May not want to allow this to be instantiated directly
@@ -59,6 +60,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 	protected BasicGoodyEntity(RenderRegistryClient aRenderRegCli, Ident uri) {
 		myRenderRegCli = aRenderRegCli;
 		myUri = uri;
+		myNode = new Node("Goody Node of " + uri.getLocalName());
 	}
 
 	// It would be good for clarity to have this in a separate file, but by having it as an inner class we allow
@@ -109,6 +111,11 @@ public class BasicGoodyEntity extends VWorldEntity {
 		}
 	}
 
+	//This may not be a great thing to expose publically. For now it's used to attach a GoodyEntity to a CameraEntity
+	public Node getNode() {
+		return myNode;
+	}
+	
 	// Returns geometry index
 	// This method is intended to support physical objects
 	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, 
@@ -134,9 +141,30 @@ public class BasicGoodyEntity extends VWorldEntity {
 	public void attachToVirtualWorldNode(Node rootNode) {
 		attachToVirtualWorldNode(rootNode, 0);
 	}
+	
 	// For attaching geometry by index
+	// A bit messy now that we're using a myNode, especially in the multiple enqueueForJmeAndWait calls
+	// in this method; perhaps has potental to be refactored into something more satisfying...
 	protected void attachToVirtualWorldNode(Node rootNode, int geometryIndex) {
-		myRootNode = rootNode;
+		if (rootNode != myRootNode) { 
+			if (myRootNode != null) {
+				enqueueForJmeAndWait(new Callable() { // Do this on main render thread
+					@Override
+					public Void call() throws Exception {
+						myRootNode.detachChild(myNode);
+						return null;
+					}
+				});
+			}
+			myRootNode = rootNode;
+		}
+		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
+			@Override
+			public Void call() throws Exception {
+				myRootNode.attachChild(myNode);
+				return null;
+			}
+		});		
 		attachGeometryToRootNode(geometryIndex);
 	}
 	// For switching to geometry from a new index, attached to existing root node
@@ -170,7 +198,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 
 			@Override
 			public Void call() throws Exception {
-				myRootNode.attachChild(jmeGeometry);
+				myNode.attachChild(jmeGeometry);
 				if (geometryToAttach.myControl != null) {
 					myRenderRegCli.getJme3BulletPhysicsSpace().add(jmeGeometry);
 				}
@@ -190,7 +218,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 					myRenderRegCli.getJme3BulletPhysicsSpace().remove(currentGeometry.myControl);
 				}
 				// Must detach by name; detaching by saved geometry does not work
-				myRootNode.detachChildNamed(myUri.getLocalName()); 
+				myNode.detachChildNamed(myUri.getLocalName()); 
 				attachedIndex = NULL_INDEX;
 				return null;
 			}

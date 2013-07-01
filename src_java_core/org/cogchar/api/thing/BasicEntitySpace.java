@@ -16,11 +16,6 @@
 
 package org.cogchar.api.thing;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-
 /**
  * @author Stu B. <www.texpedient.com>
  */

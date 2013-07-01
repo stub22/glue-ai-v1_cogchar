@@ -17,12 +17,12 @@
 package org.cogchar.render.app.entity;
 
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
+import org.appdapter.core.name.Ident;
 import org.cogchar.name.goody.GoodyNames;
-import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.goody.basic.GoodyBox;
 import org.cogchar.render.goody.basic.VirtualFloor;
 import org.cogchar.render.goody.bit.BitBox;
@@ -32,6 +32,7 @@ import org.cogchar.render.goody.bit.TicTacMark;
 import org.cogchar.render.goody.flat.CrossHairGoody;
 import org.cogchar.render.goody.flat.ScoreBoardGoody;
 import org.cogchar.render.goody.flat.TextGoody;
+import org.cogchar.render.opengl.optic.VWorldCameraEntity;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
@@ -138,6 +139,18 @@ public class GoodyFactory {
 				} else if (GoodyNames.TYPE_BOX.equals(ga.getType())) {
 					newGoody = new GoodyBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
 							ga.getColor(), scale);
+				} else if (GoodyNames.TYPE_CAMERA.equals(ga.getType())) {
+					Ident cameraUri = ga.getGoodyID();
+					if (myActionConsumer.getGoody(cameraUri) == null) { //Otherwise this camera wrapper is already created
+						theLogger.info("Adding a VWorldCameraEntity for {}", cameraUri);
+						// This evidences the fact that the CameraMgr needs to switch to URIs to identify cameras, not strings:
+						Camera cam = myRRC.getOpticCameraFacade(null).getNamedCamera(cameraUri.getLocalName());
+						if (cam != null) {
+							newGoody = (new VWorldCameraEntity(myRRC, cameraUri, cam));
+						} else {
+							theLogger.warn("Couldn't find camera with URI {} for goody", cameraUri);
+						}
+					}
 				} else {
 					theLogger.warn("Did not recognize requested goody type for creation: {}", ga.getType());
 				}
