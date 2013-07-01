@@ -96,5 +96,6 @@ public class GoodyNames  {
 	public static	Ident	ROWS = makeID("rows");
 	public static	Ident	TEXT = makeID("text");
 	public static	Ident	SUBCOMPONENT = makeID("subComponent");
+	public static	Ident	ATTACH_TO_GOODY = makeID("attachToGoody");
 
 }
