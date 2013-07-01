@@ -15,17 +15,13 @@
  */
 package org.cogchar.render.app.entity;
 
-import org.cogchar.render.opengl.optic.VWorldCameraEntity;
 import org.cogchar.render.model.humanoid.VWorldHumanoidFigureEntity;
-import com.jme3.renderer.Camera;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
-import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.slf4j.Logger;
@@ -53,7 +49,8 @@ public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  e
 	public VWorldEntityActionConsumer(HumanoidRenderContext hrc) {
 		myGoodiesByID = new HashMap<Ident, VWorldEntity>();
 		addHumanoidGoodies(hrc); // Humanoids aren't really goodies, but we can pretend for the moment!
-		addCameraGoodies(hrc); // Cameras aren't really goodies, but we can pretend for the moment!
+		// Now camera goody wrappers are added as required by GoodyFactory
+		//addCameraGoodies(hrc); // Cameras aren't really goodies, but we can pretend for the moment!
 	}
 
 	public void addGoody(VWorldEntity newGoody) {
@@ -142,6 +139,8 @@ public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  e
 		}
 	}
 
+	// Now camera goody wrappers are added as required by GoodyFactory
+	/*
 	private void addCameraGoodies(HumanoidRenderContext hrc) {
 		Map<String, Camera> cameras = hrc.getRenderRegistryClient().getOpticCameraFacade(null).getCameraMap();
 		for (String cameraName : cameras.keySet()) {
@@ -151,6 +150,7 @@ public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  e
 					cameras.get(cameraName)));
 		}
 	}
+	*/
 
 
 
