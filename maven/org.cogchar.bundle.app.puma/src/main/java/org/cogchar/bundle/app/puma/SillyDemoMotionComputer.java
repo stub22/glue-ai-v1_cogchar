@@ -26,10 +26,10 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class DemoMotionComputer extends CogcharMotionComputer {
+public class SillyDemoMotionComputer extends CogcharMotionComputer {
 
 	long myCycleCount = 0;
-	static Logger theLogger = LoggerFactory.getLogger(CogcharMotionSource.class);
+	static Logger theLogger = LoggerFactory.getLogger(SillyDemoMotionComputer.class);
 
 	@Override public void notifySourceComputingCycle(CogcharMotionSource source, long currentTimeUTC, long moveLengthMilliSec) {
 		myCycleCount++;
@@ -37,7 +37,8 @@ public class DemoMotionComputer extends CogcharMotionComputer {
 		Robot.Id srcBotID = srcBot.getRobotId();
 		String robotIdString = srcBotID.getRobtIdString();
 		Robot.RobotPositionMap rpm = srcBot.getCurrentPositions();
-		if (robotIdString.equals("Avatar_ZenoR50")) {
+		// if (robotIdString.equals("Avatar_ZenoR50")) {
+		if (robotIdString.equals("Sinbad")) {
 			int waistJointNum = 100;
 			Joint.Id waistJointId = new Joint.Id(waistJointNum);
 			Robot.JointId waistRJID = new Robot.JointId(srcBotID, waistJointId);

@@ -17,7 +17,6 @@ package org.cogchar.app.puma.vworld;
 
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
@@ -26,7 +25,6 @@ import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
 import org.cogchar.name.entity.EntityRoleCN;
-import org.appdapter.core.matdat.*;
 import org.cogchar.blob.emit.*;
 import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.trigger.CommandSpace;
@@ -37,13 +35,15 @@ import org.cogchar.render.app.entity.GoodyFactory;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.cogchar.render.sys.input.VW_HelpScreenMgr;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
+import org.cogchar.render.sys.module.RenderGateway;
+import org.cogchar.render.sys.module.RenderModule;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.osgi.framework.BundleContext;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaVirtualWorldMapper extends BasicDebugger {
+public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGateway {
 
 	private HumanoidRenderContext myHRC;
 	private PumaAppContext myPAC;
@@ -52,7 +52,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		myPAC = pac;
 	}
 
-	public HumanoidRenderContext getHumanoidRenderContext() {
+	@Override public HumanoidRenderContext getHumanoidRenderContext() {
 		return myHRC;
 	}
 
@@ -214,5 +214,13 @@ public class PumaVirtualWorldMapper extends BasicDebugger {
 		RenderRegistryClient rrc = myHRC.getRenderRegistryClient();
 		hsm.toggleHelpTextDisplay(rrc);
 	}
-
+	public void attachRenderModule(RenderModule rModule) {
+		rModule.setRenderGateway(this);
+		myHRC.attachModule(rModule);
+		
+	}
+	public void detachRenderModule(RenderModule rModule) {
+		myHRC.detachModule(rModule);
+		rModule.setRenderGateway(null);
+	}
 }

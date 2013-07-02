@@ -24,6 +24,7 @@ import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.motion.Robot;
@@ -31,12 +32,17 @@ import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.channel.AnimFileSpecReader;
 import org.cogchar.impl.channel.FancyFile;
+import org.cogchar.render.sys.module.RenderModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * High level workarounds - vintage Spring+Summer 2013.
  */
 public class PumaAppUtils extends BasicDebugger {
-	
+	static Logger theLogger = LoggerFactory.getLogger(PumaAppUtils.class);
 	private static BasicThingActionRouter	theRouter;
 	public static BasicThingActionRouter	getActionRouter() {
 		if (theRouter == null) {
@@ -72,14 +78,24 @@ public class PumaAppUtils extends BasicDebugger {
 		StuffRec srec = new StuffRec();
 		return AnimFileSpecReader.findAnimFileSpecsForJava(srec.animBCE);
 	}
-	public static 	void startMotionComputers(BundleContext bundleCtx) { 
+	public static 	void startSillyMotionComputersDemoForVWorldOnly(BundleContext bundleCtx) { 
 		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx);
 		for (CogcharMotionSource cms : cogMotSrcList) {
+			
 			Robot srcBot = cms.getRobot();
 			Robot.Id srcBotID = srcBot.getRobotId();
 			// getLogger().info("Found CogcharMotionSource for Robot-ID: " + srcBotID);
-			DemoMotionComputer dmc = new DemoMotionComputer();
+			SillyDemoMotionComputer dmc = new SillyDemoMotionComputer();
 			cms.addJointComputer(dmc);
 		}
 	}
+	public static 	void attachVWorldRenderModule(BundleContext bundleCtx, RenderModule rMod, Ident optVWorldSpecID) {
+		StuffRec srec = new StuffRec();	
+		PumaVirtualWorldMapper pvwm = srec.pumaRegClient.getVWorldMapper(optVWorldSpecID);
+		if (pvwm != null) {
+			pvwm.attachRenderModule(rMod);
+		} else {
+			theLogger.error("Cannot find VWorld to attach renderModel [optVWorldSpecID={}]", optVWorldSpecID);
+		}
+	} 
 }
