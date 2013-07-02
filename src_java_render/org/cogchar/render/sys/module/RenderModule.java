@@ -22,7 +22,7 @@ import org.appdapter.module.basic.EmptyTimedModule;
  * @author Stu B. <www.texpedient.com>
  */
 public abstract class RenderModule extends EmptyTimedModule<CogcharRenderModulator> {
-
+	private		RenderGateway	myRenderGateway;
 	protected abstract void doRenderCycle(long runSeqNum, float timePerFrame);
 
 	@Override public synchronized void doRunOnce(CogcharRenderModulator rm, long runSeqNum) {		
@@ -34,4 +34,10 @@ public abstract class RenderModule extends EmptyTimedModule<CogcharRenderModulat
 		myRunDebugModulus = drm;
 	}
 
+	public void setRenderGateway(RenderGateway rg) {
+		myRenderGateway = rg;
+	}
+	public RenderGateway getRenderGateway() { 
+		return myRenderGateway;
+	}
 }
