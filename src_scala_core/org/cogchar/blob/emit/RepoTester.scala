@@ -19,7 +19,7 @@ import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.store.{Repo, InitialBinding}
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
 import org.appdapter.impl.store.{FancyRepo, DatabaseRepo, FancyRepoFactory};
-import org.appdapter.core.matdat.{SheetRepo, GoogSheetRepo, XLSXSheetRepo, _}
+import org.appdapter.core.matdat.{SheetRepo, GoogSheetRepo, XLSXSheetRepoLoader, _}
 import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
 import com.hp.hpl.jena.rdf.model.{Model}
 import org.appdapter.core.log.BasicDebugger; 
@@ -56,7 +56,7 @@ object RepoTester extends BasicDebugger {
 	def loadXLSXSheetRepo(sheetLocation : String, namespaceSheetName : String, dirSheetName : String, 
 						fileModelCLs : java.util.List[ClassLoader]) : SheetRepo = {
 		// Read the namespaces and directory sheets into a single directory model.
-		val dirModel : Model = XLSXSheetRepo.readDirectoryModelFromXLSX(sheetLocation, namespaceSheetName, dirSheetName, fileModelCLs) 
+		val dirModel : Model = XLSXSheetRepoLoader.readDirectoryModelFromXLSX(sheetLocation, namespaceSheetName, dirSheetName, fileModelCLs) 
 		// Construct a repo around that directory
         //val shRepo = new XLSXSheetRepo(dirModel, fileModelCLs);   
 		// Doug's locally testing this replacement   
