@@ -66,15 +66,26 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		val sceneSpec = mySceneBook.findSceneSpec(sceneID);
 		val scene = new FancyBScene(sceneSpec); // new BScene(sceneSpec);
 		scene.wirePerfChannels(myPerfChanSet);
-		if (myGraphChanHub != null) {
-			val graphChans = new java.util.HashSet[GraphChannel]()
-			scene.wireGraphChannels(graphChans)
-		}
+		safelyWireGraphChannels(scene);
 		scene;
 	}
+  
+    def safelyWireGraphChannels(scene: BScene){
+        if (myGraphChanHub != null) {
+            //we'll give the scene a copy of the hub's full map
+			val graphChans = new java.util.HashSet[GraphChannel]()
+            for(gc <- myGraphChanHub.myGraphChans.values){
+              graphChans.add(gc);
+            }
+			scene.wireGraphChannels(graphChans)
+		}
+    }
+  
 	def exclusiveActivateScene(scene: BScene, cancelPrevJobs : Boolean) {	
 		// This rq-stops all their modules, and asks them each to forget/reset, but does not "forget" them at theater or BM level.
 		deactivateAllScenes(cancelPrevJobs)
+		scene.wirePerfChannels(myPerfChanSet);
+        safelyWireGraphChannels(scene);
 		activateScene(scene)
 	}
 
