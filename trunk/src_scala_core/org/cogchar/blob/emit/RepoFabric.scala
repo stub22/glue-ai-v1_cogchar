@@ -101,7 +101,12 @@ object RepoFabricTest {
     val repo = repoSpec.makeRepo;
     repo.loadSheetModelsIntoMainDataset();
     repo.loadDerivedModelsIntoMainDataset(null);
-    repoNav.attachChildUI(repo.toString(), repo, true);
+	
+		/* 2013-07-02 Compile error
+		 * org/cogchar/blob/emit/RepoFabric.scala:104: error: 
+		 * value attachChildUI is not a member of org.appdapter.demo.DemoBrowserCtrl
+	 repoNav.attachChildUI(repo.toString(), repo, true);
+   		 */
     print("Make RepoFabric");
     val rf = new RepoFabric();
     print("Make FabricBox");
@@ -111,7 +116,9 @@ object RepoFabricTest {
     print("Add to Entry");
     rf.addEntry(new SimplistRepoSpec(repo))
     print("Resync");
+	/* 2013-07-02 same compile error as above
     repoNav.attachChildUI(null, fb, true);
+	*/
     java.lang.Thread.sleep(60000000);
   }
 }
