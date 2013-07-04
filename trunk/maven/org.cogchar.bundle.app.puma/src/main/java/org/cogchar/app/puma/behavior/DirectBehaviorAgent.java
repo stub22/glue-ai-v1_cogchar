@@ -18,6 +18,7 @@ package org.cogchar.app.puma.behavior;
 
 import java.util.List;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.thing.WantsThingAction;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 import org.cogchar.bind.rk.robot.client.RobotAnimClient;
@@ -25,7 +26,9 @@ import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.scene.Theater;
+import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.osgi.framework.BundleContext;
+import org.robokind.api.common.osgi.OSGiUtils;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -56,6 +59,11 @@ public class DirectBehaviorAgent extends PumaBehaviorAgent {
 		FancyTextPerfChan bestAnimOutChan = myRobotMotionMapper.getBestAnimOutChan();
 		getLogger().warn("Found bestAnimOutChan {}", bestAnimOutChan);
 		thtr.registerPerfChannel(bestAnimOutChan);
+        
+        BundleContext context = OSGiUtils.getBundleContext(WantsThingAction.class);
+        if(context != null && WantsThingAction.class.isAssignableFrom(bestAnimOutChan.getClass())){
+            context.registerService(WantsThingAction.class.getName(), bestAnimOutChan, null);
+        }
 	}
 	public void playBuiltinAnimNow(RobotAnimClient.BuiltinAnimKind baKind) {
 		myRobotMotionMapper.playBuiltinAnimNow(baKind);
