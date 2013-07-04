@@ -101,7 +101,7 @@ class FancyFileSpecMediaPathFinder extends MediaPathFinder {
 	}
 	def absorbFancyFileSpecs(fileSpecs : Traversable[FancyFile]) : Unit = {
 		for (ff <- fileSpecs) {
-			
+			myFilesByID.put(ff.mySpec.getIdent, ff)
 		}
 	}
 	// Optional :  Add "absorb path model" or similar
