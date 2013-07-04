@@ -38,6 +38,8 @@ import org.cogchar.name.web.WebActionNames;
 import org.cogchar.name.web.WebUserActionNames;
 
 import org.cogchar.impl.perform.MediaHandle;
+import org.robokind.api.animation.Channel;
+import org.robokind.api.animation.MotionPath;
 
 /**
  * @author StuB22
@@ -93,8 +95,24 @@ public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> implements 
 	}
 	
 	public void fastCueAndPlayFromMediaHandle(MediaHandle<Animation> handle) {
-		Animation anim = handle.getMedia().getOrElse(null);
-		// TODO:  Get a proper performance set up for monitor + cancel, possibly based on the Media.Framed type.
+        
+		Animation anim = null;
+        try{
+            anim = handle.getMedia().getOrElse(null);
+        }catch(Exception ex){}
+		// TODO:  Get a proper performance set up for monitor + cancel, possibly based on the Media.Framed type.handle
+        if(anim == null){
+            anim = new Animation();
+            Channel c = new Channel(100, "waist");
+            MotionPath mp = new MotionPath();
+            mp.addPoint(0, 0.5);
+            mp.addPoint(1500, 1.0);
+            mp.addPoint(3000, 0.5);
+            mp.addPoint(4500, 0.0);
+            mp.addPoint(6000, 0.5);
+            c.addPath(mp);
+            anim.addChannel(c);
+        }
 		FancyPerformance perf = null;
 		launchFullAnimJobNow(anim, perf);
 	}

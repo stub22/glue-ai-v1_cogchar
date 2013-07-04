@@ -21,6 +21,7 @@ import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.thing.WantsThingAction;
 import org.cogchar.impl.perform.basic.AnimLaunchEntityAction;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.cogchar.api.web.WebAppInterface;
@@ -28,12 +29,17 @@ import org.cogchar.api.web.WebEntityAction;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.bind.lift.LiftAmbassador;
 import org.cogchar.bind.lift.LifterLifecycle;
+import org.cogchar.bind.rk.robot.client.AnimMediaHandle;
+import org.cogchar.bind.rk.robot.client.AnimOutTrigChan;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
+import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.render.app.trigger.SceneActions;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
+import org.robokind.api.common.osgi.OSGiUtils;
+import org.robokind.api.common.osgi.ServiceClassListener;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 /**
  * Able to wire and start both our current HTTP services:  1) SPARQL-HTTP repo and 2) Lifter WebUI
@@ -111,11 +117,35 @@ public class PumaWebMapper extends BasicDebugger {
 			
 			WebEntityAction.Consumer weaConsumer = new WebEntityAction.Consumer();
 			router.appendConsumer(graphIdent, weaConsumer);
-			
-			AnimLaunchEntityAction.Consumer aleaConsumer = new AnimLaunchEntityAction.Consumer();
-			router.appendConsumer(graphIdent, aleaConsumer);
+			BundleContext context = OSGiUtils.getBundleContext(WantsThingAction.class);
+            if(context != null){
+                new TAConsumerTracker(context, null, router, graphIdent).start();
+            }
 		} catch (Exception e) {
 			getLogger().error("Could not register ThingActionConsumer for config {}", worldConfigIdent.getLocalName(), e);
 		}		
 	}
+    
+    static class TAConsumerTracker extends ServiceClassListener<WantsThingAction> {
+        private BasicThingActionRouter myRouter;
+        private Ident myGraphIdent;
+        
+        public TAConsumerTracker(BundleContext context, String serviceFilter, BasicThingActionRouter router, Ident graphIdent) {
+            super(WantsThingAction.class, context, serviceFilter);
+            myRouter = router;
+            myGraphIdent = graphIdent;
+        }
+
+        @Override
+        protected void addService(WantsThingAction t) {
+			myRouter.appendConsumer(myGraphIdent, t);
+        }
+
+        @Override
+        protected void removeService(WantsThingAction t) {
+        }
+        
+        
+    }
+    
 }

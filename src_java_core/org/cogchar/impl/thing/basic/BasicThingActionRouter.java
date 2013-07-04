@@ -23,6 +23,7 @@ import java.util.Map;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.ThingActionSpec;
+import org.cogchar.api.thing.WantsThingAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,12 +36,12 @@ import org.slf4j.LoggerFactory;
 
 public class BasicThingActionRouter extends BasicThingActionConsumer {
 
-	private	Map<Ident, List<BasicThingActionConsumer>>	myConsumersBySrcGraphID = new HashMap<Ident, List<BasicThingActionConsumer>>();
+	private	Map<Ident, List<WantsThingAction>>	myConsumersBySrcGraphID = new HashMap<Ident, List<WantsThingAction>>();
 
 	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
-		List<BasicThingActionConsumer> consumerList = findConsumersForSourceGraph(srcGraphID);
+		List<WantsThingAction> consumerList = findConsumersForSourceGraph(srcGraphID);
 		ConsumpStatus highestSoFar = ConsumpStatus.IGNORED;
-		for (BasicThingActionConsumer consumer : consumerList) {
+		for (WantsThingAction consumer : consumerList) {
 			ConsumpStatus stat = consumer.consumeAction(actionSpec, srcGraphID);
 			switch (stat) {
 				case	CONSUMED:	
@@ -59,16 +60,16 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 		}
 		return highestSoFar;
 	}
-	protected	List<BasicThingActionConsumer>	findConsumersForSourceGraph(Ident srcGraphID) {
-		List<BasicThingActionConsumer> consumerList = myConsumersBySrcGraphID.get(srcGraphID);
+	protected	List<WantsThingAction>	findConsumersForSourceGraph(Ident srcGraphID) {
+		List<WantsThingAction> consumerList = myConsumersBySrcGraphID.get(srcGraphID);
 		if (consumerList == null) {
-			consumerList = new ArrayList<BasicThingActionConsumer>();
+			consumerList = new ArrayList<WantsThingAction>();
 			myConsumersBySrcGraphID.put(srcGraphID, consumerList);
 		}
 		return consumerList;
 	}
-	public void appendConsumer(Ident srcGraphID, BasicThingActionConsumer consumer) {
-		List<BasicThingActionConsumer> consumerList = findConsumersForSourceGraph(srcGraphID);
+	public void appendConsumer(Ident srcGraphID, WantsThingAction consumer) {
+		List<WantsThingAction> consumerList = findConsumersForSourceGraph(srcGraphID);
 		consumerList.add(consumer);
 	}
 	@Deprecated public void consumeAllActions(RepoClient rc) {
