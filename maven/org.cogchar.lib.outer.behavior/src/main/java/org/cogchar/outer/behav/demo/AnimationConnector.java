@@ -21,6 +21,7 @@ import org.jflux.api.core.config.Configuration;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.animation.lifecycle.AnimationPlayerClientLifecycle;
 import org.robokind.api.animation.protocol.AnimationEvent;
+import org.robokind.api.animation.protocol.AnimationSignal;
 import org.robokind.api.common.lifecycle.utils.ManagedServiceFactory;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
@@ -37,9 +38,12 @@ import org.robokind.impl.animation.messaging.PortableAnimationEvent;
  * @author matt
  */
 public class AnimationConnector {
-    private final static String REQUEST_DEST_CONFIG_ID = "animationRequestDestConfig";    
+    private final static String REQUEST_DEST_CONFIG_ID = "animationRequestDestConfig";
+    private final static String SIGNAL_DEST_CONFIG_ID = "animationSignalDestConfig";
     private final static String REQUEST_SERIALIZE_CONFIG_ID = AnimationEvent.class.toString();
+    private final static String SIGNAL_SERIALIZE_CONFIG_ID = AnimationSignal.class.toString();
     private final static String REQUEST_DEST_NAME = "animationRequest";
+    private final static String SIGNAL_DEST_NAME = "animationSignal";
     private final static String REQUEST_SENDER_ID = "animReqSndr";
     private final static String SIGNAL_RECEIVER_ID = "animSigRecvr";
     public final static String GROUP_PREFIX = "RKAnimGroup";
@@ -64,6 +68,9 @@ public class AnimationConnector {
         RKMessagingConfigUtils.registerTopicConfig(
                 idBase + "/" + REQUEST_DEST_CONFIG_ID, 
                 destBase + REQUEST_DEST_NAME,  null, fact);
+        RKMessagingConfigUtils.registerTopicConfig(
+                idBase + "/" + SIGNAL_DEST_CONFIG_ID, 
+                destBase + SIGNAL_DEST_NAME,  null, fact);
     }
     
     private static void launchComponents(
@@ -73,6 +80,9 @@ public class AnimationConnector {
         launchComponent(idBase + "/" + REQUEST_SENDER_ID, props, REMOTE_NOTIFIER, 
                 idBase + "/" + REQUEST_DEST_CONFIG_ID, connectionConfigId, 
                 REQUEST_SERIALIZE_CONFIG_ID, fact);
+        launchComponent(idBase + "/" + SIGNAL_RECEIVER_ID, props, REMOTE_LISTENER, 
+                idBase + "/" + SIGNAL_DEST_CONFIG_ID, connectionConfigId, 
+                SIGNAL_SERIALIZE_CONFIG_ID, fact);
     }
     
     private static String launchComponent(
