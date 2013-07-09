@@ -16,6 +16,10 @@
 
 package org.cogchar.api.thing;
 
+import java.util.Set;
+
+import org.appdapter.core.component.KnownComponent;
+import org.appdapter.core.component.MutableKnownComponent;
 import org.appdapter.core.name.Ident;
 
 /**
@@ -42,6 +46,38 @@ import org.appdapter.core.name.Ident;
  *			Match by the parameter name, value contents, types, and other related metadata.
  */
 
-public interface ThingActionFilter {
-	public	boolean test(ThingActionSpec aSpec);
+public interface ThingActionFilter extends MutableKnownComponent, KnownComponent {
+	/**
+	 *  Return true if the params are are matchable
+	 */
+	public boolean test(ThingActionSpec aSpec);
+
+	/** @return  null or the Ident-URI of the reified filter spec (essentially: this object).	 */
+	public abstract Ident getFilterSpecID();
+
+	/** @return Should not be null.   The Verb-URI of the action (which is often an RDF:type of this actionSpec's 
+	 * resource).     What are we doing to the target thing?	 */
+	public abstract Ident getHasVerb();
+
+	/** @return null or the Type-URI of the target Thing.  What type of thing are we operating on?	 */
+	public abstract Set<Ident> getHasThingType();
+
+	/** @return null or the source Agent-URI of the action.  Who initiated the operation?	 */
+	public abstract Ident getHasSourceAgent();
+
+	/**
+	 * 
+	 * @return null or the Java-timestamp (MSec since 1970) at which this ThingFilterSpec must be greater than
+	 * This is non-null only on the "receiving" side of the spec-transmission.
+	 */
+	public abstract Long getHasTStampGT();
+
+	/**
+	 * @return the getNotMarkedByAgent
+	 */
+	public abstract Ident getGetNotMarkedByAgent();
+
+	/**  @return  Parameters of the action (keyed by URI), which are usually the updated properties of the target 
+	 * thing.	 */
+	public abstract TypedValueMap getParamTVM();
 }
