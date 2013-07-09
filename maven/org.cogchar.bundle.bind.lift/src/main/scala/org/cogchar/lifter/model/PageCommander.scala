@@ -348,6 +348,10 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  }
 
 	  class CogcharMessenger extends LiftAmbassador.LiftInterface {
+                def info(msg: String, params: Any*) {
+                  myLogger.info(msg, params.map(_.asInstanceOf[Object]).toArray:_*)
+                }        
+    
 		def notifyConfigReady {
 		  initFromCogcharRDF(theLifterState.INITIAL_CONFIG_ID, getLiftAmbassador.getInitialConfig)
 		}
@@ -378,7 +382,8 @@ import org.cogchar.name.lifter.{ActionStrings}
 		}
 		// Show error globally
 		def showError(errorSourceCode:String, errorText:String) {
-		  myLogger.info("In showError; code = {}; text = {}", errorSourceCode, errorText);
+		 info("In showError; code = {}; text = {}", errorSourceCode, errorText);
+                  
 		  val activeSessionIterator = theLifterState.activeSessions.iterator
 		  while (activeSessionIterator.hasNext) {
 			val sessionId = activeSessionIterator.next
