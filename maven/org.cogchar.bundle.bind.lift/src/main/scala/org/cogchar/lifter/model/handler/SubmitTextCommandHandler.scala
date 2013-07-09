@@ -24,7 +24,7 @@ import scala.collection.mutable.ArrayBuffer
 class SubmitTextCommandHandler extends AbstractLifterCommandHandler {
   
   def warn(msg: String, params: Any*) {
-    myLogger.warn(msg, params.map(_.asInstanceOf[Object]).toArray:_*)
+    myLogger.warn(msg, params.map(_.asInstanceOf[Object]).toArray)
   }
   
   protected val matchingTokens = ArrayBuffer(ActionStrings.submitText)
