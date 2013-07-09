@@ -42,7 +42,7 @@ package org.cogchar.lifter.snippet
   
 	  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
 		// From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
-		val textItems = List.fromArray(control.text.split(ActionStrings.stringAttributeSeparator))
+		val textItems = control.text.split(ActionStrings.stringAttributeSeparator)
 		val label1 = textItems(0)
 		val label2 = textItems(1)
 		val submitLabel = textItems(2)
