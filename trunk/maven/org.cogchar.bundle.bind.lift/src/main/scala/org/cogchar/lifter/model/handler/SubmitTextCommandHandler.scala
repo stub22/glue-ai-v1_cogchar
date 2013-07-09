@@ -23,6 +23,10 @@ import scala.collection.mutable.ArrayBuffer
 
 class SubmitTextCommandHandler extends AbstractLifterCommandHandler {
   
+  def warn(msg: String, params: Any*) {
+    myLogger.warn(msg, params.map(_.asInstanceOf[Object]).toArray:_*)
+  }
+  
   protected val matchingTokens = ArrayBuffer(ActionStrings.submitText)
   
   protected def handleHere(appState:LifterState, sessionId:String, slotId:Int, command:String, input:Array[String]) {
@@ -46,11 +50,11 @@ class SubmitTextCommandHandler extends AbstractLifterCommandHandler {
 			val databallsAction = command.split(ActionStrings.commandTokenSeparator)(2)
 			PageCommander.getLiftAmbassador.performDataballAction(databallsAction, input(0));
 		  } else {
-			myLogger.warn("Request found to submit text to databalls, but no destination (third Lifter command token) found during session {}", sessionId)
+			warn("Request found to submit text to databalls, but no destination (third Lifter command token) found during session {}", sessionId)
 		  }
 		}
 	  case _ => {
-		  myLogger.warn("No action found in SubmitTextCommandHandler for token {} during session {}", actionToken, sessionId)
+		  //myLogger.warn("No action found in SubmitTextCommandHandler for token {} during session {}", actionToken, sessionId)
 		}
 	}
   }
