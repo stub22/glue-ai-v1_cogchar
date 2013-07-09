@@ -349,7 +349,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 
 	  class CogcharMessenger extends LiftAmbassador.LiftInterface {
                 def info(msg: String, params: Any*) {
-                  myLogger.info(msg, params.map(_.asInstanceOf[Object]).toArray:_*)
+                  myLogger.info(msg, params.map(_.asInstanceOf[Object]).toArray)
                 }        
     
 		def notifyConfigReady {
