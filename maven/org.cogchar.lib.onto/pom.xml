@@ -29,6 +29,13 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>		
+        
+		<dependency>
+			<artifactId>slf4j-api</artifactId>
+			<groupId>org.slf4j</groupId>
+			<type>jar</type>
+			<version>1.6.1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
