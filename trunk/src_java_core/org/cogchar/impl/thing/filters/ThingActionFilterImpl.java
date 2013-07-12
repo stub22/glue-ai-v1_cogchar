@@ -60,7 +60,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 
 	private Ident hasThing;
 
-	private Set<Ident> hasThingType;
+	private Ident hasThingType;
 
 	private Ident hasSourceAgent;
 
@@ -133,13 +133,13 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 		return hasThing;
 	}
 
-	public void setHasThingType(Set<Ident> val) {
+	public void setHasThingType(Ident val) {
 		this.hasThingType = val;
 	}
 
 	/** @return null or the Type-URI of the target Thing.  What type of thing are we operating on?	 */
 	@Override
-	public Set<Ident> getHasThingType() {
+	public Ident getHasThingType() {
 		return hasThingType;
 	}
 
@@ -195,36 +195,36 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 		return myTypedValueMap;
 	}
 
+	/**
+	 * @return the hasParamNameURI
+	 */
+	public Ident getHasParamNameURI() {
+		return hasParamNameURI;
+	}
+
+	/**
+	 * @return the hasParamNameURI
+	 */
+	public void setHasParamNameURI(Ident val) {
+		hasParamNameURI = val;
+	}
+
+	/**
+	 * @param val the hasParamName to set
+	 */
+	public void setHasParamName(String val) {
+		val = hasParamName;
+	}
+
+	/**
+	 * @return the hasParamName
+	 */
+	public String getHasParamName() {
+		return hasParamName;
+	}
+
 	public class ParamMapFromFields extends BasicTypedValueMapTemporaryImpl {
 		boolean typeMapSet;
-
-		/**
-		 * @return the hasParamNameURI
-		 */
-		public Ident getHasParamNameURI() {
-			return hasParamNameURI;
-		}
-
-		/**
-		 * @return the hasParamNameURI
-		 */
-		public void setHasParamNameURI(Ident val) {
-			hasParamNameURI = val;
-		}
-
-		/**
-		 * @param val the hasParamName to set
-		 */
-		public void setHasParamName(String val) {
-			val = hasParamName;
-		}
-
-		/**
-		 * @return the hasParamName
-		 */
-		public String getHasParamName() {
-			return hasParamName;
-		}
 
 		/**
 		 * @param val the hasParamObject to set

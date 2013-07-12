@@ -27,20 +27,15 @@ import org.slf4j.LoggerFactory;
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
 
-
 public abstract class SpatialActionConfig {
-	
+
 	protected Logger myLogger = LoggerFactory.getLogger(this.getClass());
-	
+
 	public Ident myUri;
 	public Ident attachedItem;
 	public AttachedItemType attachedItemType = AttachedItemType.NULLTYPE;
 	public String loopMode = "DontLoop"; // default
-	
-	public enum AttachedItemType {
-		NULLTYPE, CAMERA, GOODY
-	}
-	
+
 	protected void pullAttachedItemAndType(SolutionHelper sh, Solution solution) {
 		attachedItem = sh.pullIdent(solution, CinemaCN.ATTACHED_ITEM_VAR_NAME);
 		String typeString = sh.pullIdent(solution, CinemaCN.ATTACHED_ITEM_TYPE_VAR_NAME).getLocalName().toUpperCase();
@@ -54,5 +49,5 @@ public abstract class SpatialActionConfig {
 			loopMode = loopModeUri.getLocalName();
 		}
 	}
-	
+
 }

@@ -24,6 +24,7 @@ import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.Dom4JDriver;
 import java.net.URL;
+import org.apache.log4j.BasicConfigurator;
 
 
 import org.cogchar.animoid.gaze.GazeStrategyCue;
@@ -35,7 +36,7 @@ import org.cogchar.api.sight.SightPort;
 import org.cogchar.api.animoid.protocol.Robot;
 import org.cogchar.api.animoid.world.WorldJoint;
 import org.dom4j.io.SAXReader;
-
+import org.cogchar.impl.perform.DummyTextChan;
 
 /**
  * @author Stu B. <www.texpedient.com>

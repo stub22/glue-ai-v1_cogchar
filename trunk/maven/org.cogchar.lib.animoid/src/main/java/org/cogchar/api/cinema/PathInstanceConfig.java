@@ -25,13 +25,14 @@ import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
+import org.appdapter.help.repo.*;
+import org.appdapter.core.matdat.*;
 
 /**
  * Holds instances of "Paths" from which we can create Thing MotionPaths/MotionEvents
  * 
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
-
 
 public class PathInstanceConfig extends SpatialActionConfig {
 	public float duration;
@@ -41,13 +42,12 @@ public class PathInstanceConfig extends SpatialActionConfig {
 	public boolean cycle;
 	public String loopMode;
 	public List<WaypointConfig> waypoints = new ArrayList<WaypointConfig>();
-	
 
 	@Override
 	public String toString() {
-		return "PathInstanceConfig[uriFrag = " + myUri.getAbsUriString() + ", duration = " + Float.toString(duration); 
+		return "PathInstanceConfig[uriFrag = " + myUri.getAbsUriString() + ", duration = " + Float.toString(duration);
 	}
-	
+
 	public PathInstanceConfig(RepoClient qi, Solution solution, Ident qGraph) {
 		SolutionHelper sh = new SolutionHelper();
 		myUri = sh.pullIdent(solution, CinemaCN.PATH_VAR_NAME);
@@ -60,16 +60,14 @@ public class PathInstanceConfig extends SpatialActionConfig {
 		tension = sh.pullFloat(solution, CinemaCN.TENSION_VAR_NAME, 0f);
 		cycle = sh.pullBoolean(solution, CinemaCN.CYCLE_VAR_NAME);
 		loopMode = sh.pullIdent(solution, CinemaCN.LOOP_MODE_VAR_NAME).getLocalName();
-		SolutionList solutionList  = qi.queryIndirectForAllSolutions(CinemaCN.WAYPOINTS_QUERY_TEMPLATE_URI, qGraph, 
-					CinemaCN.PATH_INSTANCE_QUERY_VAR_NAME, myUri);
+		SolutionList solutionList = qi.queryIndirectForAllSolutions(CinemaCN.WAYPOINTS_QUERY_TEMPLATE_URI, qGraph, CinemaCN.PATH_INSTANCE_QUERY_VAR_NAME, myUri);
 		Map<Integer, Solution> wpMap = pullOrderedStatesFromList(sh, solutionList);
 		for (Solution waypointSoln : wpMap.values()) {
 			waypoints.add(new WaypointConfig(qi, waypointSoln));
 		}
 	}
-	
-	public PathInstanceConfig(Ident item, AttachedItemType itemType, float newDuration, float[] newDirection, 
-			List<WaypointConfig> theWaypoints, Ident pathUri) {
+
+	public PathInstanceConfig(Ident item, AttachedItemType itemType, float newDuration, float[] newDirection, List<WaypointConfig> theWaypoints, Ident pathUri) {
 		duration = newDuration;
 		directionType = "Rotation";
 		lookAtDirection = newDirection;
@@ -81,15 +79,15 @@ public class PathInstanceConfig extends SpatialActionConfig {
 		attachedItemType = itemType;
 		myUri = pathUri;
 	}
-	
+
 	// This could move to SpatialActionConfig if it's needed elsewhere
 	final Map<Integer, Solution> pullOrderedStatesFromList(SolutionHelper sh, SolutionList solutionList) {
 		Map<Integer, Solution> stateMap = new TreeMap<Integer, Solution>();
-		for (Solution wpSolution: solutionList.javaList()) {
-			int index = (int)(sh.pullFloat(wpSolution, CinemaCN.SEQUENCE_NUMBER_VAR_NAME, 0f)); // No pullInt in sh!
+		for (Solution wpSolution : solutionList.javaList()) {
+			int index = (int) (sh.pullFloat(wpSolution, CinemaCN.SEQUENCE_NUMBER_VAR_NAME, 0f)); // No pullInt in sh!
 			stateMap.put(index, wpSolution);
 		}
 		return stateMap;
 	}
-	
+
 }

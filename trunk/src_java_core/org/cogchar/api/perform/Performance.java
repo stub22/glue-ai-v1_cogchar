@@ -14,8 +14,7 @@
  *  limitations under the License.
  */
 package org.cogchar.api.perform;
-import org.cogchar.api.event.Notifier;
-import org.cogchar.api.event.Event;
+
 /**
  * A Performance performs some Media, over some Time-space.  
  * It can be scheduled to start, pause, resume, and stop at given times.
@@ -27,58 +26,51 @@ import org.cogchar.api.event.Event;
  * Perhaps later the Instruction will also be a type parameter.
  */
 public interface Performance<Cursor, MediaType extends Media<Cursor>, WorldTime> // ,  C extends Channel<M, Time, C>> //, P extends Performance<M, Time, C, P>> //, E extends Event<Performance<M, Time, C, E>, Time>> 
-								//extends Notifier<Performance<M, Time, C, E>, Time, E> {
+//extends Notifier<Performance<M, Time, C, E>, Time, E> {
 {
-	public  class Instruction<Cur> {
-		public	Kind	myKind;
-		public	Cur		myCursor;
-		
+	public class Instruction<Cur> {
+		public Kind myKind;
+		public Cur myCursor;
+
 		public enum Kind {
-			CUE,
-			PLAY,
-			PAUSE,  
-			STOP
+			CUE, PLAY, PAUSE, STOP
 		}
-		
+
 	}
-	
+
 	public enum State {
-		INITING,
-		CUEING,		
-		PLAYING,
-		PAUSING,
-		STOPPING
+		INITING, CUEING, PLAYING, PAUSING, STOPPING
 	}
-    /**
-     * Returns the Media used by this Performance.
-     * @return Media used by this Performance
-     */
-	public	MediaType						getMedia();
-    
-    /**
-     * Returns the Channel which created this Performance.
-     * @return Channel which created this Performance
-     */
+
+	/**
+	 * Returns the Media used by this Performance.
+	 * @return Media used by this Performance
+	 */
+	public MediaType getMedia();
+
+	/**
+	 * Returns the Channel which created this Performance.
+	 * @return Channel which created this Performance
+	 */
 	//public	Channel<Cursor, MediaType, WorldTime>		getChannel();
-	public	PerfChannel				getChannel();
-	
-    /**
-     * Returns the current State of this Performance.
-     * @return current State of this Performance
-     */
-	public State	getState();
-	
+	public PerfChannel getChannel();
+
+	/**
+	 * Returns the current State of this Performance.
+	 * @return current State of this Performance
+	 */
+	public State getState();
+
 	public Cursor getCursor();
 
-	
-    /**
-     * Attempts to schedule the given Action at the desired Time.
-     * @param action Action to be scheduled
-     * @param t desired time to perform the Action
-     * @return true if successful
-     */
-	public boolean attemptToScheduleInstruction(WorldTime t, Instruction instruct);
-	
+	/**
+	 * Attempts to schedule the given Action at the desired Time.
+	 * @param action Action to be scheduled
+	 * @param t desired time to perform the Action
+	 * @return true if successful
+	 */
+	public boolean attemptToScheduleInstruction(WorldTime t, org.cogchar.api.perform.Performance.Instruction instruct);
+
 	/**
 	 * A TextPerf is a Performance constrained to use Text Media.
 	 * @param WorldTime 
@@ -87,7 +79,7 @@ public interface Performance<Cursor, MediaType extends Media<Cursor>, WorldTime>
 	public interface TextPerf<Cursor, M extends Media.Text<Cursor>, WorldTime> 	extends Performance<Cursor, M, WorldTime> {	
 	}
 	* 
-	*/ 
+	*/
 	/**
 	 * A FramePerf is a Performance constrained to use Framed Media.
 	 * @param WorldTime
@@ -96,6 +88,6 @@ public interface Performance<Cursor, MediaType extends Media<Cursor>, WorldTime>
 	/*
 	public interface FramedPerf<F, Cursor, WorldTime> 	extends Performance<Cursor, Media.Framed<F, Cursor>, WorldTime> {	
 	}
-*/
+	*/
 
 }
