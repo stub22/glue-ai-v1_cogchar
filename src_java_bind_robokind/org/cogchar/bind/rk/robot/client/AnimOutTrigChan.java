@@ -81,7 +81,7 @@ public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> implements 
 			if (animID != null) {
 				MediaHandle<Animation> amh = myMediaHandleCache.makeMediaHandle(animID);
 				fastCueAndPlayFromMediaHandle(amh);
-				return ConsumpStatus.CONSUMED;
+				return ConsumpStatus.USED;
 			}
 			return ConsumpStatus.USED;
 		}
