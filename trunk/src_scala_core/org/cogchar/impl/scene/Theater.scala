@@ -84,7 +84,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	def exclusiveActivateScene(scene: BScene, cancelPrevJobs : Boolean) {	
 		// This rq-stops all their modules, and asks them each to forget/reset, but does not "forget" them at theater or BM level.
 		deactivateAllScenes(cancelPrevJobs)
-		scene.wirePerfChannels(myPerfChanSet);
+//		scene.wirePerfChannels(myPerfChanSet);
         safelyWireGraphChannels(scene);
 		activateScene(scene)
 	}
