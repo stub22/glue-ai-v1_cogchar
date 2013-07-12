@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.cinema.AttachedItemType;
 import org.cogchar.api.cinema.PathInstanceConfig;
-import org.cogchar.api.cinema.SpatialActionConfig;
 import org.cogchar.api.cinema.WaypointConfig;
 import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.name.goody.GoodyNames;
@@ -103,7 +103,7 @@ public class VWorldCameraEntity extends VWorldEntity {
 		waypoints.add(new WaypointConfig(new FreeIdent(NamespaceDir.NS_CCRT_RT + "Start"), currentPosition.toArray(new float[3])));
 		waypoints.add(new WaypointConfig(new FreeIdent(NamespaceDir.NS_CCRT_RT + "End"), newPosition.toArray(new float[3])));
 		Ident pathUri = new FreeIdent(NamespaceDir.NS_CCRT_RT + "CamMovePath");
-		PathInstanceConfig cameraPath = new PathInstanceConfig(myUri, SpatialActionConfig.AttachedItemType.CAMERA, 
+		PathInstanceConfig cameraPath = new PathInstanceConfig(myUri, AttachedItemType.CAMERA, 
 				duration, newOrientation.toAngles(new float[3]), waypoints, pathUri);
 		PathMgr pMgr = myRenderRegCli.getScenePathFacade(null);
 		pMgr.buildAnimation(cameraPath);

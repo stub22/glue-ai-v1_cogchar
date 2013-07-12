@@ -15,27 +15,29 @@
  */
 package org.cogchar.api.skeleton.config;
 
-import org.cogchar.name.skeleton.BoneCN;
-import org.cogchar.name.skeleton.BoneAN;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import org.appdapter.help.repo.*;
+import org.appdapter.core.matdat.*;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.*;
+import org.cogchar.name.skeleton.BoneAN;
+import org.cogchar.name.skeleton.BoneCN;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BoneJointConfig extends KnownComponentImpl{
-	public String						myURI_Fragment;
-	public Integer						myJointNum;
-	public String						myJointName;
-	public String						myBoneName; // Needed for aniconv
-	public Double						myNormalDefaultPos;
-	public List<BoneProjectionRange>	myProjectionRanges = new ArrayList<BoneProjectionRange>();
+public class BoneJointConfig extends KnownComponentImpl {
+	public String myURI_Fragment;
+	public Integer myJointNum;
+	public String myJointName;
+	public String myBoneName; // Needed for aniconv
+	public Double myNormalDefaultPos;
+	public List<BoneProjectionRange> myProjectionRanges = new ArrayList<BoneProjectionRange>();
 
 	// Original assembler constructor
 	public BoneJointConfig(Item configItem) {
@@ -44,23 +46,22 @@ public class BoneJointConfig extends KnownComponentImpl{
 		myJointName = ItemFuncs.getString(configItem, BoneAN.P_jointName, null);
 		myNormalDefaultPos = ItemFuncs.getDouble(configItem, BoneAN.P_defaultPosNorm, null);
 		Set<Item> bprItems = ItemFuncs.getLinkedItemSet(configItem, BoneAN.P_projectionRange);
-		
+
 		for (Item bpri : bprItems) {
 			BoneProjectionRange bpr = BoneProjectionRange.makeOne(this, bpri);
 			myProjectionRanges.add(bpr);
 		}
 	}
-	
+
 	// This constructor is used to build BoneJointConfig from queries
-	public BoneJointConfig(RepoClient qi, Ident jointIdent, SolutionMap solutionMap, Ident graphIdent) {
+	public BoneJointConfig(RepoClient qi, Ident jointIdent, SolutionMap<Ident> solutionMap, Ident graphIdent) {
 		SolutionHelper sh = new SolutionHelper();
 		myURI_Fragment = jointIdent.getLocalName();
 		myJointNum = sh.pullInteger(solutionMap, jointIdent, BoneCN.JOINT_NUM_VAR_NAME);
 		myJointName = sh.pullString(solutionMap, jointIdent, BoneCN.JOINT_NAME_VAR_NAME);
 		myNormalDefaultPos = sh.pullDouble(solutionMap, jointIdent, BoneCN.DEFAULT_POS_VAR_NAME);
 		// What about bc:invertForSymmetry?
-		SolutionList solutionList = qi.queryIndirectForAllSolutions(BoneCN.BONEPROJECTION_QUERY_QN, graphIdent,
-						 BoneCN.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
+		SolutionList solutionList = qi.queryIndirectForAllSolutions(BoneCN.BONEPROJECTION_QUERY_QN, graphIdent, BoneCN.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
 		if (solutionList.javaList().size() == 1) {
 			Solution projRangeSoln = solutionList.javaList().get(0);
 			String boneName = sh.pullString(projRangeSoln, BoneCN.BONE_NAME_VAR_NAME);
@@ -69,8 +70,7 @@ public class BoneJointConfig extends KnownComponentImpl{
 			Double maxAngle = sh.pullDouble(projRangeSoln, BoneCN.MAX_ANGLE_VAR_NAME, 0);
 			BoneRotationAxis rotationAxis = BoneRotationAxis.valueOf(rotationAxisName);
 			myProjectionRanges.add(new BoneProjectionRange(this, boneName, rotationAxis, Math.toRadians(minAngle), Math.toRadians(maxAngle)));
-			solutionList = qi.queryIndirectForAllSolutions(BoneCN.ADDITIONAL_BONES_QUERY_QN, graphIdent, 
-							BoneCN.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
+			solutionList = qi.queryIndirectForAllSolutions(BoneCN.ADDITIONAL_BONES_QUERY_QN, graphIdent, BoneCN.BONE_JOINT_CONFIG_QUERY_VAR, jointIdent);
 			for (Solution solution : solutionList.javaList()) {
 				boneName = sh.pullString(solution, BoneCN.BONE_NAME_VAR_NAME, "");
 				rotationAxisName = sh.pullString(solution, BoneCN.ROTATION_AXIS_VAR_NAME, "");
@@ -80,12 +80,12 @@ public class BoneJointConfig extends KnownComponentImpl{
 				myProjectionRanges.add(new BoneProjectionRange(this, boneName, rotationAxis, Math.toRadians(minAngle), Math.toRadians(maxAngle)));
 			}
 		} else {
-			logWarning("More than one bone projection range definition in primary bone joint config declaration for " 
-					+ myURI_Fragment + " -- not initializing projection ranges for this bone joint config");
+			logWarning("More than one bone projection range definition in primary bone joint config declaration for " + myURI_Fragment
+					+ " -- not initializing projection ranges for this bone joint config");
 		}
 		//System.out.println("Created new BoneJointConfig: " + this.toString()); // TEST ONLY
 	}
-	
+
 	@Override
 	public String toString() {
 		return "BJC[uriFrag=" + myURI_Fragment + ", num=" + myJointNum + ", name=" + myJointName + ", defPos=" + myNormalDefaultPos + ", projs=" + myProjectionRanges + "]";
