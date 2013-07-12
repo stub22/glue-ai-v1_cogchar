@@ -23,9 +23,9 @@ import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
 import org.appdapter.help.repo.{RepoClient}
 
-import org.cogchar.api.perform.{Media, PerfChannel};
-import org.cogchar.impl.perform.{DummyTextChan, FancyTime, PerfChannelNames};
-
+import org.cogchar.api.perform.{Media, PerfChannel}
+import org.cogchar.impl.perform.{DummyTextChan, FancyTime, PerfChannelNames}
+import org.apache.log4j.BasicConfigurator
 
 /**
  * @author Stu B. <www.texpedient.com>
