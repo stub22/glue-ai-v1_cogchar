@@ -8,7 +8,7 @@ import com.hp.hpl.jena.query.ResultSetRewindable;
 import org.cogchar.name.dir.SparqlPrefixDir;
 import org.appdapter.core.log.BasicDebugger;
 import org.slf4j.Logger;
-
+import com.hp.hpl.jena.rdf.model.Model;  //so we can see when the class is not a transitive dependacny
 /**
  * Some of this code was copied-and-modified from our old web-client for Cogbot.
  */

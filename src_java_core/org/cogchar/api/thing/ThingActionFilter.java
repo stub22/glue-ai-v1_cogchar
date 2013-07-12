@@ -60,7 +60,7 @@ public interface ThingActionFilter extends MutableKnownComponent, KnownComponent
 	public abstract Ident getHasVerb();
 
 	/** @return null or the Type-URI of the target Thing.  What type of thing are we operating on?	 */
-	public abstract Set<Ident> getHasThingType();
+	public abstract Ident getHasThingType();
 
 	/** @return null or the source Agent-URI of the action.  Who initiated the operation?	 */
 	public abstract Ident getHasSourceAgent();

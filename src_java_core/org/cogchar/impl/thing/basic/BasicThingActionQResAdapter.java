@@ -28,6 +28,7 @@ import org.appdapter.help.repo.SolutionList;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.TypedValueMap;
 import org.cogchar.name.thing.ThingCN;
+import org.slf4j.Logger;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -36,36 +37,43 @@ import org.cogchar.name.thing.ThingCN;
  */
 
 public class BasicThingActionQResAdapter extends BasicDebugger {
-	
-	
+
 	protected List<ThingActionSpec> reapActionSpecList(SolutionList actionsList, RepoClient rc, Ident srcGraphID, Ident srcAgentID) {
+		return reapActionSpecList(actionsList, rc, srcGraphID, srcAgentID, getLogger());
+	}
+
+	static public List<ThingActionSpec> reapActionSpecList(SolutionList actionsList, RepoClient rc, Ident srcGraphID, Ident srcAgentID, Logger theLogger) {
 		List<ThingActionSpec> actionSpecList = new ArrayList<ThingActionSpec>();
 		SolutionHelper sh = new SolutionHelper();
-		for (Solution actionSoln: actionsList.javaList()) {
+		for (Object actionSoln0 : actionsList.javaList()) {
+			Solution actionSoln = (Solution) actionSoln0;
 			Ident actionID = sh.pullIdent(actionSoln, ThingCN.V_actionID);
 			Ident verbID = sh.pullIdent(actionSoln, ThingCN.V_verbID);
 			Ident targetID = sh.pullIdent(actionSoln, ThingCN.V_targetThingID);
 			Ident targetTypeID = sh.pullIdent(actionSoln, ThingCN.V_targetThingTypeID);
-			
-			TypedValueMap actionParams = buildActionParameterValueMap(rc, srcGraphID, sh, actionID);
+
+			TypedValueMap actionParams = buildActionParameterValueMap(rc, srcGraphID, sh, actionID, theLogger);
 			Literal tstampLiteral = actionSoln.getLiteralResultVar(ThingCN.V_postedTStampMsec);
 			Long actionPostedTStampMsec = (tstampLiteral != null) ? tstampLiteral.getLong() : null;
-			ThingActionSpec spec = new BasicThingActionSpec(actionID, targetID, targetTypeID, verbID, srcAgentID, 
-					actionParams, actionPostedTStampMsec);
-			getLogger().debug("Found new ThingAction: {}", spec);
+			ThingActionSpec spec = new BasicThingActionSpec(actionID, targetID, targetTypeID, verbID, srcAgentID, actionParams, actionPostedTStampMsec);
+			theLogger.debug("Found new ThingAction: {}", spec);
 			actionSpecList.add(spec);
-		}		
+		}
 		return actionSpecList;
-	}	
+	}
+
 	protected TypedValueMap buildActionParameterValueMap(RepoClient rc, Ident srcGraphID, SolutionHelper sh, Ident actionIdent) {
+		return buildActionParameterValueMap(rc, srcGraphID, sh, actionIdent, getLogger());
+	}
+
+	static public TypedValueMap buildActionParameterValueMap(RepoClient rc, Ident srcGraphID, SolutionHelper sh, Ident actionIdent, Logger theLogger) {
 		BasicTypedValueMap paramMap = new BasicTypedValueMapTemporaryImpl();
-		SolutionList paramList = rc.queryIndirectForAllSolutions(ThingCN.PARAM_QUERY_URI, srcGraphID,
-				ThingCN.V_attachedActionID, actionIdent);
-		for (Solution paramSoln: paramList.javaList()) {
+		SolutionList paramList = rc.queryIndirectForAllSolutions(ThingCN.PARAM_QUERY_URI, srcGraphID, ThingCN.V_attachedActionID, actionIdent);
+		for (Object paramSoln0 : paramList.javaList()) {
+			Solution paramSoln = (Solution) paramSoln0;
 			Ident paramIdent = sh.pullIdent(paramSoln, ThingCN.V_actParamID);
 			String paramValue = sh.pullString(paramSoln, ThingCN.V_actParamVal);
-			getLogger().debug("Adding new param for Thing action {}: ident: {}, value: {}",
-					new Object[]{actionIdent, paramIdent, paramValue});
+			theLogger.debug("Adding new param for Thing action {}: ident: {}, value: {}", new Object[] { actionIdent, paramIdent, paramValue });
 			paramMap.putValueAtName(paramIdent, paramValue);
 		}
 		return paramMap;

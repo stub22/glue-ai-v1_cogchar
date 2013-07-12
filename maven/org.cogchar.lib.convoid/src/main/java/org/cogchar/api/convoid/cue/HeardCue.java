@@ -18,15 +18,15 @@ package org.cogchar.api.convoid.cue;
 
 
 import org.cogchar.zzz.platform.stub.CueStub;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author matt
  */
 public class HeardCue extends CueStub {
-	private static Logger theLogger = LoggerFactory.getLogger(HeardCue.class.getName());
+	//private static Logger theLogger = LoggerFactory.getLogger(HeardCue.class.getName());
 	private String		myHeardText;
 
 	public HeardCue(String text){
