@@ -17,6 +17,7 @@
 package org.cogchar.app.puma.behavior;
 
 import java.util.List;
+import java.util.Properties;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.WantsThingAction;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
@@ -62,7 +63,9 @@ public class DirectBehaviorAgent extends PumaBehaviorAgent {
         
         BundleContext context = OSGiUtils.getBundleContext(WantsThingAction.class);
         if(context != null && WantsThingAction.class.isAssignableFrom(bestAnimOutChan.getClass())){
-            context.registerService(WantsThingAction.class.getName(), bestAnimOutChan, null);
+            Properties props = new Properties();
+            props.put("thingActionChannelAgentId", myAgentID.getAbsUriString());
+            context.registerService(WantsThingAction.class.getName(), bestAnimOutChan, props);
         }
 	}
 	public void playBuiltinAnimNow(RobotAnimClient.BuiltinAnimKind baKind) {

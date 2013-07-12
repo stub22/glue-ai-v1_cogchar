@@ -119,7 +119,8 @@ public class PumaWebMapper extends BasicDebugger {
 			router.appendConsumer(graphIdent, weaConsumer);
 			BundleContext context = OSGiUtils.getBundleContext(WantsThingAction.class);
             if(context != null){
-                new TAConsumerTracker(context, null, router, graphIdent).start();
+                String filter = null;//OSGiUtils.createFilter("thingActionChannelAgentId", "*aZR50");
+                new TAConsumerTracker(context, filter, router, graphIdent).start();
             }
 		} catch (Exception e) {
 			getLogger().error("Could not register ThingActionConsumer for config {}", worldConfigIdent.getLocalName(), e);
