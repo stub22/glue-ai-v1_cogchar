@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.6.1</version>
+			<version>1.7.5</version>
 			<!-- This is needed if we want to see messages from jena running inside the codegen plugin below - 
 			how do we apply it only in that scope? 
 			   At "runtime" scope here, it propagates out and must be excluded by importers

@@ -22,16 +22,17 @@ import org.cogchar.sight.vision.PortableImage;
 
 import java.util.logging.Logger;
 
-import org.scalaquery.session._
-import org.scalaquery.ql._
-import org.scalaquery.ql.TypeMapper._
+import scala.slick.driver._
+import scala.slick.lifted._
+import scala.slick.lifted.TypeMapper._
+import scala.slick.session._
 
 // "Basic" cannot use AutoInc, so we use H2.
 //import org.scalaquery.ql.basic.{BasicTable => Table}
 //
-import org.scalaquery.ql.extended.{ExtendedProfile, H2Driver}
-import org.scalaquery.ql.extended.{ExtendedTable => ExTable}
-import org.scalaquery.ql.extended.H2Driver.Implicit._
+import scala.slick.driver.{ExtendedProfile, H2Driver}
+import scala.slick.driver.H2Driver.{Table => ExTable}
+import scala.slick.driver.H2Driver.Implicit._
 
 // TODO : Maybe add some status info about the results of this attempt.
 // E.G - Was profile expanded?  If not, why not?

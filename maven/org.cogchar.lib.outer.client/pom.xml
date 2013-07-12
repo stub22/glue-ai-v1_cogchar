@@ -56,7 +56,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.1</version>
+			<version>1.7.5</version>
 			<!-- You must temporarily change scope to "runtime" or "compile" in order to activate Log4J for 
 			dev unit testing (outside of JUnit).  But the svn-committed (and mvn-deployed, etc.) versions
 			should always have this scope marked as "test", so that clients can use their own logger binding. 
