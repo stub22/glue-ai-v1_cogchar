@@ -66,7 +66,7 @@ abstract class FancyTextPerfChan[OutJob >: Null](id: Ident) extends BasicPerfCha
  * we keep it to remind us.  
  */
 	@throws(classOf[Throwable])	
-	override protected def fastCueAndPlay[Cur, M <: Media[Cur], Time] (m : M, c : Cur,perf: BasicPerformance[Cur, M, Time]) {
+	override def fastCueAndPlay[Cur, M <: Media[Cur], Time] (m : M, c : Cur,perf: BasicPerformance[Cur, M, Time]) {
 		m match {
 			case ftm : FancyTextMedia => {
 				c match {
@@ -144,9 +144,9 @@ class FancyTextPerf(media : FancyTextMedia, chan: FancyTextPerfChan[_], initCurs
 			extends  BasicPerformance[FancyTextCursor, FancyTextMedia, FancyTime] (media, chan, initCursor) 
 			with FancyPerformance {
 		
-	override protected def getCurrentWorldTime() = new FancyTime(System.currentTimeMillis);
+	override def getCurrentWorldTime() = new FancyTime(System.currentTimeMillis);
 		
-	override protected def	makeStateChangeEvent(worldTime: FancyTime, prevState : Performance.State,  nextState: Performance.State, 
+	override def	makeStateChangeEvent(worldTime: FancyTime, prevState : Performance.State,  nextState: Performance.State, 
 												mediaCursor : FancyTextCursor )	= new FancyTextPerfEvent(this, worldTime, prevState, nextState, mediaCursor)
 
 	// Implement the two easy-peasy typed methods from FancyPerformance, using our fancier-typed equivalents.
