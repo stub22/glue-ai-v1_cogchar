@@ -78,6 +78,6 @@ object TestSQ {
 		val rfo : PTypes.Obs = Observations.readOneOrThrow(fullObsID)(explicitSession);
 		println("Reconstituted full obs: " + rfo);
 		QueryUtils.updateValue(Observations.tableName, Observations.c_recogStatus.name, fullObsID, "FIXED")(explicitSession);
-		fullObsID;
+		//	fullObsID;
 	}
 }
