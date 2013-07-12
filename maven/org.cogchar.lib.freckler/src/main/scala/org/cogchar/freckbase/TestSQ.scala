@@ -16,22 +16,23 @@
 
 package org.cogchar.freckbase
 
-import org.scalaquery.session._
-import org.scalaquery.ql._
-import org.scalaquery.ql.TypeMapper._
+import scala.slick.driver._
+import scala.slick.lifted._
+import scala.slick.lifted.TypeMapper._
+import scala.slick.session._
 
 // "Basic" cannot use AutoInc, so we use H2.
 //import org.scalaquery.ql.basic.{BasicTable => Table}
 //
-import org.scalaquery.ql.extended.{ExtendedProfile, H2Driver}
-import org.scalaquery.ql.extended.{ExtendedTable => ExTable}
-import org.scalaquery.ql.extended.H2Driver.Implicit._
+import scala.slick.driver.{ExtendedProfile, H2Driver}
+import scala.slick.driver.H2Driver.{Table => ExTable}
+import scala.slick.driver.H2Driver.Implicit._
 
 object TestSQ {
 
 	def main(args: Array[String]): Unit = {
 		// Bring the implicit session into scope
-		import org.scalaquery.session.Database.threadLocalSession
+		import scala.slick.session.Database.threadLocalSession
 		// import org.scalaquery.session.SessionFactory._
 		println("TestSQ starting");
 		val fbs = FreckbaseSession.serverSession();
@@ -72,7 +73,7 @@ object TestSQ {
 
 	def testExplicitSession(mgr : Manager) {
 		val dummyImage = new Array[Byte](186000);
-		val explicitSession = org.scalaquery.session.Database.threadLocalSession; // SessionFactory.getThreadSession;
+		val explicitSession = scala.slick.session.Database.threadLocalSession; // SessionFactory.getThreadSession;
 		val fullObsID = mgr.recordObs(explicitSession, 777, 8484, "SPIFFY",	1024, 768, dummyImage);
 		println("Recorded full obs with ID: " + fullObsID);
 		val rfo : PTypes.Obs = Observations.readOneOrThrow(fullObsID)(explicitSession);

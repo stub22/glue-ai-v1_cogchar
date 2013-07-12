@@ -41,6 +41,10 @@ import org.cogchar.name.lifter.{ActionStrings}
 	// That would likely be a more natural approach in Lift and is the one I would have selected when starting this
 	// project, if I knew what I know now!
 	object PageCommander extends LiftActor with ListenerManager with LifterLogger {
+      
+      def info(msg: String, params: Any*) {
+          myLogger.info(msg, params.map(_.asInstanceOf[Object]).toArray:_*)
+      }
   
 	  private var theLiftAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods
 	  
@@ -85,7 +89,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 		} catch {
 		  case _: Any => // Implies nothing in map for this controlId, do nothing and return empty nodeOut
 		}
-		//myLogger.info("nodeOut for session " + sessionId + " and control " + controlId + " is " + nodeOut) // TEST ONLY
+		//info("nodeOut for session " + sessionId + " and control " + controlId + " is " + nodeOut) // TEST ONLY
 		nodeOut
 	  }
 	  
@@ -99,14 +103,14 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  def getInitialConfigId = theLifterState.INITIAL_CONFIG_ID
 	  
 	  def initializeSession(sessionId:String) {
-		  myLogger.info("Initializing Session {}", sessionId)
+		  info("Initializing Session {}", sessionId)
 		  theLifterState.initializeSession(sessionId)
 	  }
 	  
 	  // This method clears the state info for a session from the state maps.
 	  // Performed on session shutdown via LiftSession.onShutdownSession (in Boot.scala)
 	  def removeSession(sessionId:String) {
-		myLogger.info("Removing state for session {}", sessionId)
+		info("Removing state for session {}", sessionId)
 		theLifterState.removeSession(sessionId)
 	  }
 	  
@@ -151,7 +155,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  }
 									
 	  def initFromCogcharRDF(sessionId:String, liftConfig:LiftConfig) {
-		myLogger.info("Loading LiftConfig for session {}", sessionId)
+		info("Loading LiftConfig for session {}", sessionId)
 		if (sessionId.equals(theLifterState.INITIAL_CONFIG_ID)) {
 		  theLifterState.clearAndInitializeState
 		} else { // otherwise reset maps for this session
@@ -227,7 +231,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  }
   
 	  def handleAction(sessionId:String, formId:Int, input:Array[String]) {
-		//myLogger.info("Handling action: {}", getSessionState(sessionId).controlConfigBySlot(formId).action) // TEST ONLY
+		//info("Handling action: {}", getSessionState(sessionId).controlConfigBySlot(formId).action) // TEST ONLY
 		firstActionHandler.processHandler(theLifterState, sessionId, formId, 
 											getSessionState(sessionId).controlConfigBySlot(formId), input)
 	  }
@@ -252,9 +256,9 @@ import org.cogchar.name.lifter.{ActionStrings}
 		  val time = new Date().getTime()
 		  val bounceMap = theLifterState.lastTimeAcutatedBySlot(sessionId)
 		  var ignore = false
-		  //myLogger.info("Checking for bounce with session " + sessionId + " and slot " + id + " time=" + time) // TEST ONLY
+		  //info("Checking for bounce with session " + sessionId + " and slot " + id + " time=" + time) // TEST ONLY
 		  if (bounceMap contains id) {
-			//myLogger.info("Last time=" + bounceMap(id) + " diff=" + (time - bounceMap(id))) // TEST ONLY
+			//info("Last time=" + bounceMap(id) + " diff=" + (time - bounceMap(id))) // TEST ONLY
 			if ((time - bounceMap(id)) < IGNORE_BOUNCE_TIME) {
 			  ignore = true;
 			  myLogger.warn("Debouncing control {} in session {}", id, sessionId)
@@ -316,7 +320,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  
 	  // Likely should go in different class...
 	  def requestContinuousSpeech(sessionId:String, slotNum: Int, desired: Boolean) {
-		myLogger.info("In requestContinuousSpeech, setting to {} for session {}", desired, sessionId)
+		info("In requestContinuousSpeech, setting to {} for session {}", desired, sessionId)
 		if (desired) {
 		  updateListeners(ContinuousSpeechInStartRequest(sessionId, slotNum))
 		} else {
@@ -382,8 +386,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 		}
 		// Show error globally
 		def showError(errorSourceCode:String, errorText:String) {
-		 info("In showError; code = {}; text = {}", errorSourceCode, errorText);
-                  
+		  info("In showError; code = {}; text = {}", errorSourceCode, errorText);
 		  val activeSessionIterator = theLifterState.activeSessions.iterator
 		  while (activeSessionIterator.hasNext) {
 			val sessionId = activeSessionIterator.next
@@ -392,7 +395,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 		}
 		// Show error in session
 		def showError(errorSourceCode:String, errorText:String, sessionId:String) {
-		  myLogger.info("In showError; code = {}; text = {}; session = {}", Array[AnyRef](errorSourceCode, errorText, sessionId));
+		  info("In showError; code = {}; text = {}; session = {}", Array[AnyRef](errorSourceCode, errorText, sessionId));
 		  if (theLifterState.stateBySession contains sessionId) {
 			  val sessionErrorMap = getSessionState(sessionId).errorDisplaySlotsByType
 			  if (sessionErrorMap contains errorSourceCode) {

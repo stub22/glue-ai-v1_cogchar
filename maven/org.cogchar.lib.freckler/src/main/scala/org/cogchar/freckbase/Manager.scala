@@ -17,16 +17,17 @@
 package org.cogchar.freckbase
 
 
-import org.scalaquery.session._
-import org.scalaquery.ql._
-import org.scalaquery.ql.TypeMapper._
+import scala.slick.driver._
+import scala.slick.lifted._
+import scala.slick.lifted.TypeMapper._
+import scala.slick.session._
 
 // "Basic" cannot use AutoInc, so we use H2.
 //import org.scalaquery.ql.basic.{BasicTable => Table}
 //
-import org.scalaquery.ql.extended.{ExtendedProfile, H2Driver}
-import org.scalaquery.ql.extended.{ExtendedTable => ExTable}
-import org.scalaquery.ql.extended.H2Driver.Implicit._
+import scala.slick.driver.{ExtendedProfile, H2Driver}
+import scala.slick.driver.H2Driver.{Table => ExTable}
+import scala.slick.driver.H2Driver.Implicit._
 
 import java.sql.{Connection, DriverManager, Statement, PreparedStatement, ResultSet, Blob};
 
@@ -46,7 +47,7 @@ class Manager(val  mySession : FreckbaseSession) {
 	val sqSessionFactory : Database = new FreckbaseSquerySessionFactory(mySession);
 
 	def initTables() {
-		import org.scalaquery.session.Database._
+		import scala.slick.session.Database._
 		sqSessionFactory.withSession {
 			println(Entries.ddl.createStatements);
 			Entries.ddl.create;

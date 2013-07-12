@@ -73,7 +73,7 @@
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>nbm-maven-plugin</artifactId>
+                <artifactId>nbm-maven-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
 					<brandingToken>${brandingToken}</brandingToken>
@@ -167,7 +167,8 @@
 				<plugins>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>nbm-maven-plugin</artifactId>
+                        <artifactId>nbm-maven-plugin</artifactId>
+                        <version>3.8.1</version>
 						<executions>
 							<execution>
 								<id>extra</id>

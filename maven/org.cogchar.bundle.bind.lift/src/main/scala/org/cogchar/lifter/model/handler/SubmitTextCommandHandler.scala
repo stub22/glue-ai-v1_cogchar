@@ -24,7 +24,7 @@ import scala.collection.mutable.ArrayBuffer
 class SubmitTextCommandHandler extends AbstractLifterCommandHandler {
   
   def warn(msg: String, params: Any*) {
-    myLogger.warn(msg, params.map(_.asInstanceOf[Object]).toArray)
+      myLogger.warn(msg, params.map(_.asInstanceOf[Object]).toArray:_*)
   }
   
   protected val matchingTokens = ArrayBuffer(ActionStrings.submitText)
@@ -54,7 +54,7 @@ class SubmitTextCommandHandler extends AbstractLifterCommandHandler {
 		  }
 		}
 	  case _ => {
-		  //myLogger.warn("No action found in SubmitTextCommandHandler for token {} during session {}", actionToken, sessionId)
+		  warn("No action found in SubmitTextCommandHandler for token {} during session {}", actionToken, sessionId)
 		}
 	}
   }
