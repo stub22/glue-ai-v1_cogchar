@@ -18,16 +18,17 @@ package org.cogchar.freckbase
 
 import java.sql.{Blob};
 
-import org.scalaquery.session._
-import org.scalaquery.ql._
-import org.scalaquery.ql.TypeMapper._
+import scala.slick.driver._
+import scala.slick.lifted._
+import scala.slick.lifted.TypeMapper._
+import scala.slick.session._
 
 // "Basic" cannot use AutoInc, so we use H2.
 //import org.scalaquery.ql.basic.{BasicTable => Table}
 //
-import org.scalaquery.ql.extended.{ExtendedProfile, H2Driver}
-import org.scalaquery.ql.extended.{ExtendedTable => ExTable}
-import org.scalaquery.ql.extended.H2Driver.Implicit._
+import scala.slick.driver.{ExtendedProfile, H2Driver}
+import scala.slick.driver.H2Driver.Implicit._
+import scala.slick.driver.H2Driver.{Table => ExTable}
 
 
 import java.util.logging.Logger;
@@ -38,7 +39,7 @@ import java.util.logging.Logger;
 */
 abstract class RecordTable[Tup, Rec](tabName: String) extends ExTable[Tup](tabName) {
 	val myLogger = Logger.getLogger(getClass.getName);
-	// All tables have an auto-increment column called object_id.
+	// All tables have an auto-increment column called objec  t_id.
 	// We fetch the value of this ID after each insert.
 	val c_oid =		column[Long]("object_id", O.AutoInc, O.NotNull);
 	val c_cstamp =	colReqLong("create_stamp");

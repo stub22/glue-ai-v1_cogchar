@@ -14,7 +14,13 @@
 	<name>org.cogchar.bundle.render.opengl - OSGi</name>
 
 	<dependencies>
-	
+		<dependency>
+			<artifactId>slf4j-api</artifactId>
+			<groupId>org.slf4j</groupId>
+			<type>jar</type>
+			<version>1.7.5</version>
+            <scope>provided</scope>
+		</dependency>
 		<dependency>
 			 <!-- This bundle repackages this lib, so it is depended with scope provided, and exported below -->			
 			<groupId>${project.groupId}</groupId>
@@ -31,7 +37,7 @@
 			<artifactId>ext.bundle.opengl.jmonkey</artifactId>
 			<groupId>org.cogchar</groupId>
 			<version>${project.version}</version>
-		</dependency>
+		</dependency>		
 
 	</dependencies>
 	<build>
@@ -111,7 +117,7 @@
 				<dependency>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>2.0.2</version>
+					<version>4.2.1</version>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
@@ -157,11 +163,19 @@
 											</mapper>
 										</pathconvert>
 										<makeurl property="main.bundle.url" file="${project.build.directory}/${project.artifactId}-${project.version}.jar" />
+                                        <!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
 										<echo file="${project.build.directory}/run.properties">
                                             felix.auto.install=${urls}
                                             felix.auto.start=${main.bundle.url}
                                             org.osgi.framework.storage=${project.build.url}/felix-cache
                                             org.osgi.framework.bootdelegation=*
+                                            org.osgi.framework.system.packages.extra="org.w3c.dom.css,
+                                                     org.w3c.dom.html,
+                                                     org.w3c.dom.stylesheets,
+                                                     org.w3c.dom.traversal,
+                                                     org.w3c.dom.ranges,
+                                                     org.w3c.dom.views,
+                                                     org.w3c.dom.xpath"
 										</echo>
 										<replace file="${project.build.directory}/run.properties" token="\" value="\\" />
 										<echo file="${project.build.directory}/config.properties">

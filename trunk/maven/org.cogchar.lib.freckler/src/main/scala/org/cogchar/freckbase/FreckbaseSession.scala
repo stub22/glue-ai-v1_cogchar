@@ -119,6 +119,6 @@ object FreckbaseSession {
 
 }
 class FreckbaseSquerySessionFactory (val myFBS : FreckbaseSession)
-		extends org.scalaquery.session.Database {
+		extends scala.slick.session.Database {
 	override def createConnection(): Connection = myFBS.getConn();
 }

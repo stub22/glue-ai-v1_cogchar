@@ -22,16 +22,17 @@ import javax.sql.rowset.serial.SerialBlob;
 import org.cogchar.sight.vision.PortableImage;
 import org.cogchar.sight.vision.OpenCVImage;
 
-import org.scalaquery.session._
-import org.scalaquery.ql._
-import org.scalaquery.ql.TypeMapper._
+import scala.slick.driver._
+import scala.slick.lifted._
+import scala.slick.lifted.TypeMapper._
+import scala.slick.session._
 
 // "Basic" cannot use AutoInc, so we use H2.
 //import org.scalaquery.ql.basic.{BasicTable => Table}
 //
-import org.scalaquery.ql.extended.{ExtendedProfile, H2Driver}
-import org.scalaquery.ql.extended.{ExtendedTable => ExTable}
-import org.scalaquery.ql.extended.H2Driver.Implicit._
+import scala.slick.driver.{ExtendedProfile, H2Driver}
+import scala.slick.driver.H2Driver.{Table => ExTable}
+import scala.slick.driver.H2Driver.Implicit._
 
 
 case class Photo (	val myImageWidth : Int,
@@ -118,7 +119,7 @@ object Photos extends RecordTable[Tuples.Photo, Photo]("Photo") {
 	def main(args: Array[String]): Unit = {
 		// Bring the implicit session into scope
 		// import org.scalaquery.session.SessionFactory._
-		import org.scalaquery.session.Database.threadLocalSession
+		import scala.slick.session.Database.threadLocalSession
 		println("Photo.main starting");
 		val fbs = FreckbaseSession.serverSession();
 		val mgr = new Manager(fbs);

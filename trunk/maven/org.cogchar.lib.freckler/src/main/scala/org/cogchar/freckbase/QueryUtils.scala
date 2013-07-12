@@ -20,9 +20,9 @@ import java.util.logging.Logger;
 
 import java.sql.{Connection, DriverManager, Statement, PreparedStatement, ResultSet, Blob};
 
-import org.scalaquery.session._
-import org.scalaquery.simple._
-import org.scalaquery.simple.StaticQuery._
+import scala.slick.jdbc._
+import scala.slick.jdbc.StaticQuery._
+import scala.slick.session._
 // import org.scalaquery.simple.Implicit._
 
 object QueryUtils {
