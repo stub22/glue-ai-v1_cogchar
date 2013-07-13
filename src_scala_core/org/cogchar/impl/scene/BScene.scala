@@ -91,7 +91,7 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 			throw new RuntimeException("Wiring new perfChannels [" + perfChans + "] into a scene with existing channels: " + myWiredPerfChannels)
 		}
 		for (c <- perfChans) {
-			getLogger().debug("Wiring scene[{}] to channel: {}", mySceneSpec.getIdent.getLocalName, c);
+			getLogger.debug("Wiring scene[{}] to channel: {}", Array[Object]( mySceneSpec.getIdent.getLocalName, c));
 			myWiredPerfChannels.put(c.getIdent, c)
 		}
 	}
