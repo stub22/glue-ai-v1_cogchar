@@ -43,7 +43,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	object PageCommander extends LiftActor with ListenerManager with LifterLogger {
       
       def info(msg: String, params: Any*) {
-          myLogger.info(msg, params.map(_.asInstanceOf[Object]).toArray:_*)
+          myLogger.info(msg, params.map(_.asInstanceOf[Object]).toArray)
       }
   
 	  private var theLiftAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods
