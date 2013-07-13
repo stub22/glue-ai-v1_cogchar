@@ -20,5 +20,5 @@ import org.slf4j.LoggerFactory
 
 // A simple trait to add SLF4j logging
 trait LifterLogger {
-  protected val myLogger = LoggerFactory.getLogger(this.getClass);
+  val myLogger = LoggerFactory.getLogger(this.getClass);
 }
