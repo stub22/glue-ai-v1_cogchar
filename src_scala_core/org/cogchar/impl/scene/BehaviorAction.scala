@@ -54,7 +54,7 @@ abstract class BehaviorActionSpec extends BasicDebugger {
 	var	myChannelIdents : List[Ident] = List();
 	def addChannelIdent(id  : Ident) {
 		myChannelIdents = myChannelIdents :+ id;
-		getLogger().debug("************ appended {} so list is now: {} ", id, myChannelIdents);
+		getLogger().debug("************ appended {} so list is now: {} ", Array[Object]( id, myChannelIdents));
 	}
 	def makeActionExec() : BehaviorActionExec
 	
@@ -72,7 +72,7 @@ abstract class BehaviorActionSpec extends BasicDebugger {
 				case fcs: FancyChannelSpec => {
 					wireFancyChannelSpec(fcs)
 				}
-				case _ => getLogger().warn("Unexpected object found in step at {} = {}", chanPropName, actChanSpec);
+				case _ => getLogger().warn("Unexpected object found in step at {} = {}", Array[Object]( chanPropName, actChanSpec));
 			}
 		}		
 	}
@@ -98,7 +98,7 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
 		val media = new FancyTextMedia(mySpec.myActionText);
 		// We don't yet have a practical use case where there is really more than one outChan here.
 		for (chanId : Ident <- mySpec.myChannelIdents) {
-			getLogger().debug("Looking for channel[{}] in scene [{}]", chanId, s);
+			getLogger().debug("Looking for channel[{}] in scene [{}]", Array[Object]( chanId, s));
 			val chan : PerfChannel = s.getPerfChannel(chanId);
 			getLogger().debug("Found channel {}", chan);
 			if (chan != null) {

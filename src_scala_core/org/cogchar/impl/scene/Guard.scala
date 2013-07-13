@@ -52,10 +52,10 @@ class PerfMonitorGuard(mySpec: PerfMonGuardSpec) extends BasicDebugger with Guar
         if ((perfStatus == mySpec.myStateToMatchOrExceed) ||
           ((mySpec.myStateToMatchOrExceed == Performance.State.PLAYING)
             && (perfStatus == Performance.State.STOPPING))) {
-          getLogger().debug("Treating perf-state {} as a match for guard {}", perfStatus, mySpec)
+          getLogger().debug("Treating perf-state {} as a match for guard {}", Array[Object]( perfStatus, mySpec))
           true
         } else {
-          getLogger().debug("Perf-state {} is not a match for guard {}", perfStatus, mySpec)
+          getLogger().debug("Perf-state {} is not a match for guard {}", Array[Object]( perfStatus, mySpec))
           false
         }
       }
@@ -95,10 +95,10 @@ class ThingActionGuard(val mySpec: ThingActionGuardSpec) extends BasicDebugger w
               val tasList : java.util.List[ThingActionSpec] = tagc.seeThingActions();
               for (tas <- tasList.asScala) {
                 if (filterToCheck.test(tas)) {
-                  getLogger().debug("ThingAction {} is a MATCH for TA-Filter {}", tas, filterToCheck)
+                  getLogger().debug("ThingAction {} is a MATCH for TA-Filter {}", Array[Object]( tas, filterToCheck))
                   return true
                 } else {
-                  getLogger().debug("ThingAction {} is NOT a match for TA-Filter {}", tas, filterToCheck)
+                  getLogger().debug("ThingAction {} is NOT a match for TA-Filter {}", Array[Object]( tas, filterToCheck))
                 }
               }
           }
