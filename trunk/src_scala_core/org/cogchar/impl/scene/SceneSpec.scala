@@ -84,7 +84,7 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 	import scala.collection.JavaConversions._;
 	
 	override protected def initExtendedFieldsAndLinks(ss: SceneSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
-		getLogger().debug("SceneBuilder.initExtendedFieldsAndLinks");	
+		getLogger.debug("SceneBuilder.initExtendedFieldsAndLinks");	
 		ss.myDetails = "ChockFilledUp";
 		
 		val reader = getReader();
@@ -97,18 +97,18 @@ class SceneSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponen
 		for (o <- linkedBehaviorSpecs) {
 			o match {
 				case bs: BehaviorSpec => ss.addBehaviorSpec(bs);
-				case _ => getLogger().warn("Unexpected object found at {} = {}", SceneFieldNames.P_behavior, o);
+				case _ => getLogger.warn("Unexpected object found at {} = {}", Array[Object]( SceneFieldNames.P_behavior, o));
 			}
 		}
 		val linkedChannelSpecs : java.util.List[Object] = reader.findOrMakeLinkedObjects(configItem, SceneFieldNames.P_channel, assmblr, mode, null);
 		for (o <- linkedChannelSpecs) {
 			o match {
 				case cs: FancyChannelSpec => ss.addChannelSpec(cs);
-				case _ => getLogger().warn("Unexpected object found at {} = {}", SceneFieldNames.P_channel, o);
+				case _ => getLogger.warn("Unexpected object found at {} = {}", Array[Object]( SceneFieldNames.P_channel, o));
 			}
 		}		
-		getLogger().debug("Scene found linkedBehaviorSpecs: {}",  linkedBehaviorSpecs)
-		getLogger().debug("Scene found linkedChannelSpecs: {} ",  linkedChannelSpecs)
+		getLogger.debug("Scene found linkedBehaviorSpecs: {}",  linkedBehaviorSpecs)
+		getLogger.debug("Scene found linkedChannelSpecs: {} ",  linkedChannelSpecs)
 
 	}
 }

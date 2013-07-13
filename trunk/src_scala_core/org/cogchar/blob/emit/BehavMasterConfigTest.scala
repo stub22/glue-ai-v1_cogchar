@@ -90,7 +90,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 			for (o <- objectsFound) {
 				o match {
 					case cspec : FancyChannelSpec => specSet.add(cspec)
-					case _ => getLogger().warn("Unexpected object found in {} = {}", chanGraphQN, o);
+					case _ => getLogger().warn("Unexpected object found in {} = {}", Array[Object]( chanGraphQN, o));
 				}
 			}
 		} else {

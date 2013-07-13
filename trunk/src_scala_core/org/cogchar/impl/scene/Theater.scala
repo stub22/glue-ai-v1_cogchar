@@ -54,7 +54,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	
 	def registerPerfChannel (c : PerfChannel) {
 	// def registerChannel (c : Channel[_ <: Media, FancyTime]) {
-		getLogger.info("Registering perf-channel [{}] in behavior-theater {}", c, myIdent);
+		getLogger.info("Registering perf-channel [{}] in behavior-theater {}", Array[Object]( c, myIdent));
 		myPerfChanSet.add(c);
 	}
 	def getSceneBook = mySceneBook;
@@ -62,7 +62,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		mySceneBook = sb;
 	}
 	def makeSceneFromBook(sceneID: Ident) : BScene = {
-		getLogger.info("MakeSceneFromBook for SceneID={}, char-theater ={}", sceneID, myIdent);
+		getLogger.info("MakeSceneFromBook for SceneID={}, char-theater ={}", Array[Object]( sceneID, myIdent));
 		val sceneSpec = mySceneBook.findSceneSpec(sceneID);
 		val scene = new FancyBScene(sceneSpec); // new BScene(sceneSpec);
 		scene.wirePerfChannels(myPerfChanSet);
@@ -96,7 +96,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		if (prevModuleCnt > 1) {
 			getLogger.warn("activateScene({}) called but prevModuleCount={}", prevModuleCnt)
 		}
-		getLogger.info("Activating scene with spec[{}] for char-theater {}", scene.mySceneSpec.getIdent, myIdent);
+		getLogger.info("Activating scene with spec[{}] for char-theater {}", Array[Object]( scene.mySceneSpec.getIdent, myIdent));
 		// TODO: Check if the scene still has any cached modules.
 		// Clear out anything laying around (e.g. if the scene is interrupting itself with a re-activation)
 		scene.forgetAllModules()
