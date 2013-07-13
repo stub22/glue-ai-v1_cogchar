@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="src" path="/org.cogchar.lib.core"/>
-	<classpathentry kind="src" path="/org.appdapter.lib.core"/>
-	<classpathentry kind="src" path="/org.cogchar.lib.animoid"/>
-	<classpathentry kind="src" path="/org.cogchar.lib.convoid"/>
-	<classpathentry kind="output" path="target/classes"/>
+	<classpathentry including="**/*.java" kind="src" output="target/eclipse-classes" path="src/test/java"/>
+	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.core"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.onto"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.jena_all_264"/>
+	<classpathentry exported="true" kind="src" path="/org.appdapter.bundle.core"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.osgi.common"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.xml.dom4j_161"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.math.symja_jas"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.animoid"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.convoid"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ClientRepoSpec"/>
+	<classpathentry kind="output" path="target/eclipse-classes"/>
 </classpath>

@@ -1,84 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
-	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.hrkind.bundle.opengl.R50"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.hrkind.content.preview"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ext.bundle.apache_avro_151"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ext.bundle.apache_qpid_010"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ext.bundle.felix.shell"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ext.bundle.jena_all_264"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ext.bundle.math.symja_jas"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ext.bundle.opengl.jmonkey"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ext.bundle.opengl.nifty"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ext.bundle.osgi.common"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ext.bundle.xml.dom4j_161"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.appdapter.bundle.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.appdapter.bundle.felix.shell"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.appdapter.demo.noscala"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.appdapter.demo.standalone"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.appdapter.lib.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.appdapter.lib.registry"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.bundle.app.puma"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.bundle.bind.cogbot"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.bundle.bind.joseki"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.bundle.bind.lift"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.bundle.bind.robokind"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.bundle.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.bundle.demo.all"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.bundle.demo.dictation"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.bundle.render.opengl"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.bundle.render.resources"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.demo.render.opengl"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.animoid"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.convoid"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.freckler"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.integroid"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.onto"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.outer.client"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.render"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.sonograph"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.api.animation"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.api.audio"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.api.common"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.api.messaging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.api.motion"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.api.sensor"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.api.speech"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.api.speechrec"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.api.vision"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.avrogen.animation"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.avrogen.audio"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.avrogen.messaging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.avrogen.motion"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.avrogen.sensor"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.avrogen.speech"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.avrogen.speechrec"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.avrogen.vision"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.basic"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.demo.robot.replication"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.extern.utils.apache_commons_configuration"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.extern.utils.messaging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.extern.utils.xpp3"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.headless.animation"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.headless.messaging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.headless.motion"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.headless.r50"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.headless.speech"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.impl.animation"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.impl.audio"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.impl.common"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.impl.messaging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.impl.motion"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.impl.motion.dynamixel"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.impl.motion.pololu"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.impl.sensor"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.impl.speech"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.impl.speechrec"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.impl.vision"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.integration.animation_motion"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.robokind.integration.motion_speech"/>
-	<classpathentry kind="output" path="target/classes"/>
+	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
+	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.bundle.bind.cogbot"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.xml.dom4j_161"/>
+	<classpathentry kind="src" path="/FeClipse"/>
+	<classpathentry kind="src" path="/Robokind"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ClientRepoSpec"/>
+	<classpathentry kind="output" path="target/eclipse-classes"/>
 </classpath>
