@@ -17,15 +17,16 @@
 
 package org.cogchar.outer.behav.demo;
 
-import org.appdapter.core.matdat.DirectDerivedGraph;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.outer.behav.impl.OSGiTheater;
 import org.cogchar.impl.channel.GraphChannelHub;
 import org.appdapter.core.matdat.EnhancedRepoClient;
+import org.cogchar.impl.channel.ThingActionChanSpec;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.Theater;
 import org.osgi.framework.BundleContext;
+import org.robokind.api.common.osgi.ServiceClassListener;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -44,8 +45,11 @@ public class TheaterWiringDemo extends WiringDemo {
 
 		Theater t = makeTheater(demoRepoClient, debugCharQN);
 		OSGiTheater osgiT = setupTheatreOSGiComp(bundleCtx, t, sceneOSGiFilterForTheater);
+        GraphChannelHub hub = new GraphChannelHub(demoRepoClient);
+        t.setGraphChanHub(hub);
 		getLogger().info("************************ Starting Theater thread()");
 		t.startThread();
+        new TAGraphChanSpecListener(bundleCtx, null, hub).start();
 		return osgiT;
 	}
 	
@@ -68,9 +72,6 @@ public class TheaterWiringDemo extends WiringDemo {
 		// This makeTheater method does not yet do any smart stuff, but it could.
 		Ident debugCharID = bmcRepoCli.makeIdentForQName(debugCharQN);
 		Theater t = new Theater(debugCharID);
-        GraphChannelHub hub = new GraphChannelHub(bmcRepoCli);
-        hub.makeThingActionGraphChan(debugCharID, debugCharID, 0);
-        t.setGraphChanHub(hub);
 		return t;
 	}
 	@Override public void registerJFluxExtenders(BundleContext bundleCtx) {	
@@ -106,4 +107,24 @@ public class TheaterWiringDemo extends WiringDemo {
 		}
 	}
 	
+    static class TAGraphChanSpecListener extends ServiceClassListener<ThingActionChanSpec> {
+        private GraphChannelHub myHub;
+        
+        public TAGraphChanSpecListener(BundleContext context, String serviceFilter, GraphChannelHub hub) {
+            super(ThingActionChanSpec.class, context, serviceFilter);
+            myHub = hub;
+        }
+
+        @Override
+        protected void addService(ThingActionChanSpec t) {
+            myHub.makeThingActionGraphChan(t.getIdent(), t.mySourceModel(), 0);
+        }
+
+        @Override
+        protected void removeService(ThingActionChanSpec t) {
+        }
+        
+        
+        
+    }
 }
