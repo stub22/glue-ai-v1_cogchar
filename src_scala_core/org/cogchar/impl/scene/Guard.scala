@@ -28,6 +28,7 @@ import org.cogchar.impl.perform.{ FancyTime, FancyPerformance }
 import org.cogchar.impl.channel.{ ThingActionGraphChan }
 import org.cogchar.api.thing._
 import scala.collection.JavaConverters._
+import org.cogchar.impl.thing.filters.ThingActionFilterBuilder
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -79,8 +80,7 @@ class ThingActionGuard(val mySpec: ThingActionGuardSpec) extends BasicDebugger w
   
   def makeTAFilter(myFilterID: Ident): ThingActionFilter = {
     //@todo use the assembler to make a TAF
-    // ( ThingActionFilterBuilder )
-    null
+    ThingActionFilterBuilder.makeTAFilter(myFilterID)
   }
   override def isSatisfied(scn: BScene): Boolean = {
     val filterToCheck: ThingActionFilter = makeTAFilter(mySpec.myFilterID);
