@@ -69,7 +69,7 @@ public class TheaterWiringDemo extends WiringDemo {
 		Ident debugCharID = bmcRepoCli.makeIdentForQName(debugCharQN);
 		Theater t = new Theater(debugCharID);
         GraphChannelHub hub = new GraphChannelHub(bmcRepoCli);
-        hub.makeThingActionGraphChan(debugCharID, bmcRepoCli, debugCharID, 0);
+        hub.makeThingActionGraphChan(debugCharID, debugCharID, 0);
         t.setGraphChanHub(hub);
 		return t;
 	}
