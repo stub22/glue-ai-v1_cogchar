@@ -17,9 +17,11 @@
 
 package org.cogchar.outer.behav.demo;
 
+import org.appdapter.core.matdat.DirectDerivedGraph;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.outer.behav.impl.OSGiTheater;
+import org.cogchar.impl.channel.GraphChannelHub;
 import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.Theater;
@@ -66,6 +68,9 @@ public class TheaterWiringDemo extends WiringDemo {
 		// This makeTheater method does not yet do any smart stuff, but it could.
 		Ident debugCharID = bmcRepoCli.makeIdentForQName(debugCharQN);
 		Theater t = new Theater(debugCharID);
+        GraphChannelHub hub = new GraphChannelHub(bmcRepoCli);
+        hub.makeThingActionGraphChan(debugCharID, bmcRepoCli, debugCharID, 0);
+        t.setGraphChanHub(hub);
 		return t;
 	}
 	@Override public void registerJFluxExtenders(BundleContext bundleCtx) {	
