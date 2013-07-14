@@ -16,33 +16,19 @@
 
 package org.cogchar.impl.trigger
 
-import org.appdapter.api.registry.VerySimpleRegistry;
-import org.appdapter.osgi.registry.RegistryServiceFuncs;
-
-import org.appdapter.api.trigger.{Box, BoxContext, BoxImpl, MutableBox, Trigger, TriggerImpl};
-import org.appdapter.gui.demo.{DemoBrowser, DemoNavigatorCtrl};
-
-import org.appdapter.scafun.{Boxy, FullBox, FullTrigger}
-
-import org.appdapter.core.log.{BasicDebugger, Loggable};
-
-import org.appdapter.core.name.{Ident, FreeIdent};
-import org.appdapter.core.item.{Item};
-
-
-import scala.collection.mutable.HashMap;
-
-import org.cogchar.api.perform.{Media, PerfChannel};
-import org.cogchar.impl.perform.{FancyTime};
-
-import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
-
-import org.appdapter.core.matdat.{ RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, RepoClientTester};
-import org.cogchar.blob.emit.{ FabricBox, RepoFabric }
-
-import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
-import org.appdapter.bind.rdf.jena.model.{JenaFileManagerUtils};
-import scala.collection.JavaConversions;
+import org.appdapter.api.trigger.MutableBox
+import org.appdapter.api.registry.VerySimpleRegistry
+import org.appdapter.api.trigger.TriggerImpl
+import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils
+import org.appdapter.bind.rdf.jena.model.JenaFileManagerUtils
+import org.appdapter.core.log.BasicDebugger
+import org.appdapter.core.matdat.{RepoClientTester, OnlineSheetRepoSpec}
+import org.appdapter.gui.demo.{DemoNavigatorCtrl, DemoBrowser}
+import org.appdapter.osgi.registry.RegistryServiceFuncs
+import org.appdapter.scafun.{FullTrigger, FullBox, Boxy}
+import org.cogchar.blob.emit.{RepoFabric, FabricBox}
+import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger}
+import scala.collection.JavaConversions
 
 /**
  *	Designed to work with or without OSGi context.

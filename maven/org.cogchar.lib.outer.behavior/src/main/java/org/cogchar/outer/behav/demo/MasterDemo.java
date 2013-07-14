@@ -17,15 +17,17 @@
 package org.cogchar.outer.behav.demo;
 
 import java.util.List;
+
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.RepoClient;
-import org.cogchar.api.scene.Scene;
-import org.cogchar.outer.behav.impl.OSGiTheater;
 import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.appdapter.core.matdat.PipelineQuerySpec;
 import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.scene.Scene;
 import org.cogchar.impl.scene.BScene;
+import org.cogchar.impl.scene.SceneSpec;
 import org.cogchar.impl.scene.Theater;
+import org.cogchar.outer.behav.impl.OSGiTheater;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
@@ -35,11 +37,11 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
  */
 
 public class MasterDemo extends BasicDebugger {
-	public	ChannelWiringDemo	myChannelWiringDemo;	
-	public	SceneWiringDemo		mySceneWiringDemo;
-	public  TheaterWiringDemo	myTheaterWiringDemo;
-	
-	public void preLaunchSetup(BundleContext bundleCtx, String robotEnvVarKey) { 
+	public ChannelWiringDemo myChannelWiringDemo;
+	public SceneWiringDemo mySceneWiringDemo;
+	public TheaterWiringDemo myTheaterWiringDemo;
+
+	public void preLaunchSetup(BundleContext bundleCtx, String robotEnvVarKey) {
 		try {
 			AnimationConnector.launchPortableAnimEventFactory(bundleCtx);
 			RobotConnector.connectRobotsFromSysEnv(bundleCtx, robotEnvVarKey);
@@ -47,19 +49,20 @@ public class MasterDemo extends BasicDebugger {
 			getLogger().error("Connection Problem", t);
 		}
 	}
-	
-	public void launchDemoUsingDefaultOnlineRepoSheet(BundleContext bundleCtx) { 
+
+	public void launchDemoUsingDefaultOnlineRepoSheet(BundleContext bundleCtx) {
 		RepoConnector repoConn = new RepoConnector();
 		EnhancedRepoClient defDemoRepoCli = repoConn.makeRepoClientForDefaultOnlineSheet(bundleCtx);
 		launchDemo(bundleCtx, defDemoRepoCli);
 	}
-	public void launchDemo(BundleContext bundleCtx, RepoSpec demoRepoSpec) { 
+
+	public void launchDemo(BundleContext bundleCtx, RepoSpec demoRepoSpec) {
 		RepoConnector repoConn = new RepoConnector();
 		EnhancedRepoClient demoRepoCli = repoConn.connectDemoRepoClient(demoRepoSpec);
 		launchDemo(bundleCtx, demoRepoCli);
 	}
-	
-	public void launchDemo(BundleContext bundleCtx, EnhancedRepoClient defDemoRepoCli) { 
+
+	public void launchDemo(BundleContext bundleCtx, EnhancedRepoClient defDemoRepoCli) {
 		try {
 			getLogger().info("Launching demo using repoClient={}", defDemoRepoCli);
 			initMajorParts(bundleCtx, defDemoRepoCli);
@@ -68,25 +71,26 @@ public class MasterDemo extends BasicDebugger {
 			getLogger().error("Error Launching 'Master' Demo", t);
 		}
 	}
+
 	public void initMajorParts(BundleContext bundleCtx, EnhancedRepoClient demoRepoClient) {
 		myChannelWiringDemo = new ChannelWiringDemo(bundleCtx, demoRepoClient);
 		mySceneWiringDemo = new SceneWiringDemo(bundleCtx, demoRepoClient);
 		myTheaterWiringDemo = new TheaterWiringDemo(bundleCtx, demoRepoClient);
 	}
-	
-	public void launchDefaultDemoObjects(BundleContext bundleCtx, RepoClient demoRepoClient) { 
-	
+
+	public void launchDefaultDemoObjects(BundleContext bundleCtx, RepoClient demoRepoClient) {
+
 		ChannelWiringDemo cwd = myChannelWiringDemo;
 		SceneWiringDemo swd = mySceneWiringDemo;
 		TheaterWiringDemo twd = myTheaterWiringDemo;
-		
+
 		cwd.registerJFluxExtenders(bundleCtx);
 		swd.registerJFluxExtenders(bundleCtx);
 		twd.registerJFluxExtenders(bundleCtx);
-		
+
 		String chanGroupQName = cwd.myDefaultChanGroupQName;
 		cwd.initialChannelLoad(bundleCtx, demoRepoClient, chanGroupQName);
-		
+
 		String directGraphQN = swd.myDefaultDirectGraphQN;
 		// String pipeQueryQN = swd.myDefaultPipelineQueryQN;
 		// String pipeGraphQN = swd.myDefaultPipelineGraphQN;
@@ -94,21 +98,29 @@ public class MasterDemo extends BasicDebugger {
 		String derivedGraphQN = swd.myDefaultDerivedGraphQN;
 		String sceneGroupQN = swd.myDefaultSceneGroupQN;
 		swd.initialSceneLoad(bundleCtx, demoRepoClient, directGraphQN, pqs, derivedGraphQN, sceneGroupQN);
-		
+
 		String theaterDebugQN = twd.myDefaultDebugCharQN;
 		OSGiTheater osgiTheater = twd.testTheaterStartup(bundleCtx, demoRepoClient, theaterDebugQN);
-        new OSGiComponent(bundleCtx, new SimpleLifecycle(osgiTheater, OSGiTheater.class)).start();	
+		List<Scene> scenes = osgiTheater.getScenes();
+		if (scenes.size() == 0) {
+			int i = 1;
+			getLogger().warn("No scenes yet these specs exist");
+			for (SceneSpec s : mySceneWiringDemo.debugSceneList) {
+				getLogger().warn(" " + i + " " + s);
+				i++;
+			}
+		}
+		new OSGiComponent(bundleCtx, new SimpleLifecycle(osgiTheater, OSGiTheater.class)).start();
 	}
 
-	
 	public void reloadScenesAndRestartTheater(OSGiTheater osgiThtr, boolean cancelOutJobs) {
 		BundleContext bundleCtx = mySceneWiringDemo.getDefaultBundleContext();
-		EnhancedRepoClient origRepoCli = mySceneWiringDemo.getDefaultRepoClient();		
+		EnhancedRepoClient origRepoCli = mySceneWiringDemo.getDefaultRepoClient();
 		reloadScenesAndRestartTheater(bundleCtx, osgiThtr, origRepoCli, cancelOutJobs);
 	}
-	
+
 	public void reloadScenesAndRestartTheater(BundleContext bunCtx, OSGiTheater osgiThtr, EnhancedRepoClient origRepoCli, boolean cancelOutJobs) {
-		
+
 		myTheaterWiringDemo.stopAndClearTheater(osgiThtr, cancelOutJobs);
 		// Create a new fresh repo + client connection based on the origRepoCli's repoSpec.
 		// This is a long operation, during which we are blocking the GUI.  
@@ -118,18 +130,18 @@ public class MasterDemo extends BasicDebugger {
 		// But in a real character app, we want to be silently loading all the time without interrupting current perfs.
 		// TODO: Tell the repo to just reload certain graphs (need Appdapter >= 1.1.1 features to do this cleanly)
 		EnhancedRepoClient reloadedRepoClient = origRepoCli.reloadRepoAndClient();
-		
+
 		// Now we do the comparatively fast (but still somewhat lengthy) step of unregistering, 
 		// loading, and registering scene spec objects from the reloaded repo.  But note that if
 		// this not an in-memory repoImpl,  (e.g. if it is SQL to disk or network) then
 		// this may be a longer op as we read in the data.  
-		
+
 		mySceneWiringDemo.reloadSceneSpecs(bunCtx, reloadedRepoClient);
 		myTheaterWiringDemo.startEmptyTheater(osgiThtr);
-	}	
+	}
 
-	
-	@Deprecated public void runTestSceneSequence(OSGiTheater osgiTheater) { 
+	@Deprecated
+	public void runTestSceneSequence(OSGiTheater osgiTheater) {
 		Theater thtr = osgiTheater.getTheater();
 		// OSGiTheater gets notified of all matching available scenes.
 		try {
@@ -147,7 +159,7 @@ public class MasterDemo extends BasicDebugger {
 			getLogger().info("Finished triggering all scenes");
 		} catch (Throwable t) {
 			getLogger().error("Caught exception", t);
-		}		
+		}
 	}
-	
+
 }
