@@ -89,7 +89,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		activateScene(scene)
 	}
 
-	protected def activateScene(scene: BScene) {
+	def activateScene(scene: BScene) {
 		// See comments about multi-scene above.  For now we expect to be used in a single-active-scene approach.
 		// IF we are strict single-scene, then we SHOULD ensure previous scene is complete, and modulator is idle.
 		val prevModuleCnt = myBM.getAttachedModuleCount
