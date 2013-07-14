@@ -38,6 +38,11 @@ class GraphChannelHub(bootRepoClient: RepoClient) {
   // Can promote this to EnhancedRepoClient when needed.
   var myMainRepoClient: RepoClient = bootRepoClient
 
+  def makeThingActionGraphChan(chanID : Ident, matchGraphID : Ident, cutoffTStamp : Long): GraphChannel = {
+    val tagc = new ThingActionGraphChan(chanID, myMainRepoClient, matchGraphID, cutoffTStamp)
+    myGraphChans.put(chanID, tagc)
+    tagc
+  }
   // dg includes a spec which includes a (multi-)TypedResource, which is used as the channel ID.
   // Ta-Da!
 
