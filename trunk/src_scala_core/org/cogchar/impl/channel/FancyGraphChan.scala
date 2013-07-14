@@ -65,16 +65,37 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
+import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
+
+import org.cogchar.name.dir.{NamespaceDir};
 
 
-class ThingActionChanSpec  extends FancyChannelSpec {
+class ThingActionChanSpec  extends KnownComponentImpl {
 	var		myDetails : String = "EMPTY";
+  var   mySourceModel : Ident = null;
+  
 	override def getFieldSummary() : String = {
-		return super.getFieldSummary() + ", details=" + myDetails;
+		return super.getFieldSummary() + ", details=" + myDetails + ", sourec graph=" + mySourceModel;
 	}
-	override def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
-		super.completeInit(configItem, reader, assmblr, mode)
-		// myDetails = reader.readConfigValString(configItem.getIdent(), PerfChannelNames.P_details, configItem, null);
-	}
+	def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
+    val sourceModelPropID = reader.getConfigPropertyIdent(configItem, configItem.getIdent(), NamespaceDir.NS_CCRT_RT + "sourceModel");
+		val linkedSourceModels : java.util.Set[Item] = configItem.getLinkedItemSet(sourceModelPropID);
+		
+		getLogger().debug("ThingActionChanSpec has linkedSourceModels: {} ",  linkedSourceModels);
+		if (linkedSourceModels.size() == 1) {
+			mySourceModel =  linkedSourceModels.iterator.next.asInstanceOf[Ident]
+		}		
+		myDetails = reader.readConfigValString(configItem.getIdent(), NamespaceDir.NS_CCRT_RT + "details", configItem, null);		
+	}	
 
+}
+
+  class ThingActionChanSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[ThingActionChanSpec](builderConfRes) {
+
+	override protected def initExtendedFieldsAndLinks(cs: ThingActionChanSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
+		getLogger().debug("ThingActionChanSpecBuilder.initExtendedFieldsAndLinks using {}", configItem);
+		val reader = getReader();
+		cs.completeInit(configItem, reader, assmblr, mode)
+	}
 }
