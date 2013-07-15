@@ -33,6 +33,7 @@ import org.appdapter.core.matdat.DirectRepoGraph;
 import org.appdapter.core.matdat.DerivedGraphSpecReader;
 import org.appdapter.core.matdat.ModelProviderFactory;
 import org.cogchar.impl.scene.*;
+import org.cogchar.impl.thing.filters.ThingActionFilterBuilder;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.robokind.api.common.lifecycle.ManagedService;
@@ -146,6 +147,7 @@ public class SceneWiringDemo extends WiringDemo {
 		// Clear the swizzle-caches (for scenes + behaviors, but not channels)
 		AssemblerUtils.clearCacheForAssemblerSubclassForSession(SceneSpecBuilder.class, AssemblerUtils.getDefaultSession());
 		AssemblerUtils.clearCacheForAssemblerSubclassForSession(BehaviorSpecBuilder.class, AssemblerUtils.getDefaultSession());
+		AssemblerUtils.clearCacheForAssemblerSubclassForSession(ThingActionFilterBuilder.class, AssemblerUtils.getDefaultSession());
 
 		// This method will both reload sceneSpecs from the given repoCli, and also
 		//  automatically rebuild+reload-from any DerivedRepo we are currently reading 

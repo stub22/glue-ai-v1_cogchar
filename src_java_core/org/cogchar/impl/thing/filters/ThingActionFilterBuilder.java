@@ -16,23 +16,18 @@
 package org.cogchar.impl.thing.filters;
 
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.util.Map;
 
-import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
-import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReaderImpl;
-import org.appdapter.core.component.ComponentAssemblyNames;
-import org.appdapter.core.component.ComponentCache;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.JenaResourceItem;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.ThingActionFilter;
-import org.cogchar.test.assembly.AssemblyTestNames;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
@@ -48,6 +43,7 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 	public static Class<ThingActionFilterImpl> TAClass = ThingActionFilterImpl.class;
 	static ThingActionFilterBuilder oneInstance;
 	Resource builderConfResource;
+	public static Logger theLogger = LoggerFactory.getLogger(ThingActionFilterBuilder.class);
 
 	public ThingActionFilterBuilder(Resource builderConfRes) {
 		super(builderConfRes);
@@ -98,10 +94,14 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 				String pdn = pd.getName();
 				pdn = pdn.substring(0, 1).toLowerCase() + pdn.substring(1);
 				Class pdt = pd.getPropertyType();
+				String sv = reader.readConfigValString(item.getIdent(), pdn, item, null);
+				theLogger.warn("Setting field: " + pdn + " type " + pdt.getSimpleName() + " = " + sv);
 				if (pdt == String.class) {
-					pd.getWriteMethod().invoke(thingActionFilterImpl, reader.readConfigValString(item.getIdent(), pdn, item, null));
+					pd.getWriteMethod().invoke(thingActionFilterImpl, sv);
 				} else if (pdt == Ident.class) {
-					pd.getWriteMethod().invoke(thingActionFilterImpl, new FreeIdent(reader.readConfigValString(item.getIdent(), pdn, item, null)));
+					pd.getWriteMethod().invoke(thingActionFilterImpl, new FreeIdent(sv));
+				} else {
+					
 				}
 			}
 		} catch (Throwable e) {
