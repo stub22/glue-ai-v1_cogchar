@@ -18,11 +18,19 @@ package org.cogchar.impl.thing.filters;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
 
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
+import org.appdapter.bind.rdf.jena.model.JenaLiteralUtils;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.JenaResourceItem;
+import org.appdapter.core.log.Debuggable;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.ThingActionFilter;
@@ -32,7 +40,11 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import feclipse.PromiscuousClassUtils;
 
 /**
  * Used by Jena, not meant to be created and used directly.
@@ -85,6 +97,20 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 	@Override protected void initExtendedFieldsAndLinks(MKC thingActionFilterImpl, Item item, Assembler asmblr, Mode mode) {
 		ItemAssemblyReader reader = getReader();
 		Class tafc = thingActionFilterImpl.getClass();
+		JenaResourceItem resourceItem = null;
+		if (item instanceof JenaResourceItem) {
+			resourceItem = (JenaResourceItem) item;
+			Map<Property, List<RDFNode>> properties = resourceItem.getPropertyMap();
+			for (Map.Entry<Property, List<RDFNode>> e : properties.entrySet()) {
+				try {
+					setObjectFieldValue(thingActionFilterImpl, tafc, e.getKey().getLocalName(), e.getValue(), asmblr, mode, true);
+				} catch (Throwable t) {
+					t.printStackTrace();
+					throw Debuggable.reThrowable(t);
+				}
+			}
+			return;
+		}
 		BeanInfo info;
 		try {
 			info = Introspector.getBeanInfo(tafc);
@@ -94,17 +120,75 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 				String pdn = pd.getName();
 				pdn = pdn.substring(0, 1).toLowerCase() + pdn.substring(1);
 				Class pdt = pd.getPropertyType();
-				String sv = reader.readConfigValString(item.getIdent(), pdn, item, null);
-				theLogger.warn("Setting field: " + pdn + " type " + pdt.getSimpleName() + " = " + sv);
-				if (pdt == String.class) {
-					pd.getWriteMethod().invoke(thingActionFilterImpl, sv);
-				} else if (pdt == Ident.class) {
-					pd.getWriteMethod().invoke(thingActionFilterImpl, new FreeIdent(sv));
-				} else {
-					
-				}
+				setObjectField(thingActionFilterImpl, item, reader, pd.getWriteMethod(), pdn, pdt, asmblr, mode);
 			}
 		} catch (Throwable e) {
+			throw Debuggable.reThrowable(e);
+		}
+	}
+
+	private void setObjectFieldValue(Object object, Class c, String localName,
+			List<RDFNode> e, Assembler assembler, Mode mode, boolean replaceCollections) {
+		try {
+			Field f = getDeclaredField(c, localName);
+			f.setAccessible(true);
+			Object value = JenaLiteralUtils.convertList(e, f.getType());
+			f.set(object, value);
+		} catch (Throwable t) {
+			throw Debuggable.reThrowable(t);
+		}
+	}
+
+
+	private Field getDeclaredField(Class c, String name) throws SecurityException, NoSuchFieldException {
+		NoSuchFieldException nsf = null;
+		try {
+			return c.getField(name);
+		} catch (SecurityException e) {
+		} catch (NoSuchFieldException e) {
+			nsf = e;
+		}
+		while (c != null) {
+			try {
+				return c.getDeclaredField(name);
+			} catch (SecurityException se) {
+				throw se;
+			} catch (NoSuchFieldException nsf2) {
+				c = c.getSuperclass();
+				continue;
+			}
+		}
+		throw nsf;
+	}
+
+	private void setObjectField(MKC thingActionFilterImpl, Item item, ItemAssemblyReader reader, Method writeMethod, String pdn, Class pdt, Assembler asmblr, Mode mode) throws IllegalAccessException,
+			InvocationTargetException {
+		if (pdt == null) {
+			if (writeMethod != null) {
+				pdt = writeMethod.getParameterTypes()[0];
+			} else {
+				pdt = Object.class;
+			}
+		}
+		if (pdt.isPrimitive()) {
+			pdt = PromiscuousClassUtils.nonPrimitiveTypeFor(pdt);
+		}
+		String sv = reader.readConfigValString(item.getIdent(), pdn, item, null);
+		if (sv == null) {
+			List<Object> res = reader.findOrMakeLinkedObjects(item, pdn, asmblr, mode, null);
+			return;
+		}
+		if (writeMethod == null) {
+			theLogger.warn("Missing write method on field: " + pdn + " type " + pdt.getSimpleName() + " = " + sv);
+			return;
+		}
+		theLogger.warn("Setting field: " + pdn + " type " + pdt.getSimpleName() + " = " + sv);
+		if (pdt == String.class) {
+			writeMethod.invoke(thingActionFilterImpl, sv);
+		} else if (pdt == Ident.class) {
+			writeMethod.invoke(thingActionFilterImpl, new FreeIdent(sv));
+		} else {
+
 		}
 	}
 }
