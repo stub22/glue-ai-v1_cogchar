@@ -141,12 +141,6 @@
 			<groupId>org.appdapter</groupId>
 			<version>${appdapter.version}</version>
 		</dependency>	
-		
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.avrogen.speech</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.speech</artifactId>
@@ -217,11 +211,6 @@
 		</dependency>
 		<dependency>
 			<artifactId>org.robokind.api.messaging</artifactId>
-			<groupId>org.robokind</groupId>
-			<version>${robokind.version}</version>
-		</dependency>
-		<dependency>
-			<artifactId>org.robokind.avrogen.motion</artifactId>
 			<groupId>org.robokind</groupId>
 			<version>${robokind.version}</version>
 		</dependency>
