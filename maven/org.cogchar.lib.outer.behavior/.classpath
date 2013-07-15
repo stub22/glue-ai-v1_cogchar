@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="/org.cogchar.lib.onto"/>
+	<classpathentry kind="src" path="/org.cogchar.lib.core"/>
+	<classpathentry kind="src" path="/org.cogchar.bundle.render.opengl"/>
+	<classpathentry kind="src" path="/org.cogchar.bundle.core"/>
+	<classpathentry kind="src" path="/org.cogchar.bundle.bind.robokind"/>
+	<classpathentry kind="src" path="/org.appdapter.bundle.core"/>
+	<classpathentry kind="src" path="/ext.bundle.xml.dom4j_161"/>
+	<classpathentry kind="src" path="/ext.bundle.osgi.common"/>
+	<classpathentry kind="src" path="/ext.bundle.opengl.jmonkey"/>
+	<classpathentry kind="src" path="/ext.bundle.math.symja_jas"/>
+	<classpathentry kind="src" path="/ext.bundle.jena_all_264"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ClientRepoSpec"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/FeClipse"/>
+	<classpathentry kind="src" path="/Robokind"/>
+	<classpathentry kind="output" path="target/eclipse-classes"/>
+</classpath>
