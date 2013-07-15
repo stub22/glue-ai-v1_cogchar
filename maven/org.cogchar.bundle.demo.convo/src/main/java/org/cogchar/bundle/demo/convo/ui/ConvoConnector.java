@@ -43,11 +43,10 @@ import org.robokind.api.messaging.services.ServiceCommand;
 import org.robokind.api.speech.SpeechRequest;
 import org.robokind.api.speechrec.SpeechRecEvent;
 import org.robokind.api.speechrec.SpeechRecEventList;
-import org.robokind.avrogen.messaging.ServiceCommandRecord;
-import org.robokind.avrogen.speech.SpeechRequestRecord;
-import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
+import org.robokind.impl.messaging.ServiceCommandRecord;
+import org.robokind.impl.speech.SpeechRequestRecord;
+import org.robokind.impl.speechrec.SpeechRecEventListRecord;
 import org.robokind.impl.messaging.services.PortableServiceCommand;
-import org.robokind.impl.speech.PortableSpeechRequest;
 
 /**
  *

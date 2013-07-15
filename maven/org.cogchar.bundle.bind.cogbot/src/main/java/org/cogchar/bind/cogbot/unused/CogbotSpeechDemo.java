@@ -21,7 +21,7 @@ import org.robokind.api.messaging.RecordAsyncReceiver;
 import org.robokind.api.messaging.RecordSender;
 import org.robokind.api.speech.SpeechRequest;
 import org.robokind.api.speech.SpeechRequestFactory;
-import org.robokind.avrogen.speech.SpeechRequestRecord;
+import org.robokind.impl.speech.SpeechRequestRecord;
 import org.robokind.impl.messaging.JMSAvroRecordAsyncReceiver;
 import org.robokind.impl.messaging.JMSAvroRecordSender;
 import org.robokind.impl.messaging.JMSBytesMessageSender;

@@ -40,8 +40,8 @@ import org.jflux.impl.transport.jms.MessageHeaderAdapter;
 import org.robokind.api.common.utils.TimeUtils;
 import org.robokind.api.speechrec.SpeechRecEvent;
 import org.robokind.api.speechrec.SpeechRecEventList;
-import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
-import org.robokind.avrogen.speechrec.SpeechRecEventRecord;
+import org.robokind.impl.speechrec.SpeechRecEventListRecord;
+import org.robokind.impl.speechrec.SpeechRecEventRecord;
 import org.robokind.impl.messaging.utils.ConnectionManager;
 import static org.cogchar.bundle.demo.dictation.osgi.DictationConfigUtils.*;
 

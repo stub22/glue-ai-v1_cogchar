@@ -23,8 +23,8 @@ import org.jflux.api.core.util.Repeater;
 import org.robokind.api.common.utils.TimeUtils;
 import org.robokind.api.speechrec.SpeechRecEventList;
 import org.robokind.api.speechrec.SpeechRecService;
-import org.robokind.avrogen.speechrec.SpeechRecEventListRecord;
-import org.robokind.avrogen.speechrec.SpeechRecEventRecord;
+import org.robokind.impl.speechrec.SpeechRecEventListRecord;
+import org.robokind.impl.speechrec.SpeechRecEventRecord;
 
 /**
  *
