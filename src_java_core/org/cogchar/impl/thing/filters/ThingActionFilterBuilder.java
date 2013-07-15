@@ -18,12 +18,11 @@ package org.cogchar.impl.thing.filters;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
@@ -43,8 +42,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-
-import feclipse.PromiscuousClassUtils;
 
 /**
  * Used by Jena, not meant to be created and used directly.
@@ -139,7 +136,6 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 		}
 	}
 
-
 	private Field getDeclaredField(Class c, String name) throws SecurityException, NoSuchFieldException {
 		NoSuchFieldException nsf = null;
 		try {
@@ -171,7 +167,7 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 			}
 		}
 		if (pdt.isPrimitive()) {
-			pdt = PromiscuousClassUtils.nonPrimitiveTypeFor(pdt);
+			pdt = JenaLiteralUtils.nonPrimitiveTypeFor(pdt);
 		}
 		String sv = reader.readConfigValString(item.getIdent(), pdn, item, null);
 		if (sv == null) {
