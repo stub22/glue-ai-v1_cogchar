@@ -18,6 +18,7 @@ package org.cogchar.impl.thing.filters;
 
 import java.util.Set;
 
+import org.appdapter.bind.rdf.jena.model.JenaLiteralUtils;
 import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.ThingActionFilter;
@@ -51,9 +52,12 @@ import org.cogchar.impl.thing.basic.BasicTypedValueMapTemporaryImpl;
 
 public class ThingActionFilterImpl extends KnownComponentImpl implements ThingActionFilter {
 	/** @return  null or the Ident-URI of the reified filter spec (essentially: this object).	 */
-	@Override
-	public Ident getFilterSpecID() {
+	@Override public Ident getFilterSpecID() {
 		return getIdent();
+	}
+
+	public ThingActionFilterImpl() {
+
 	}
 
 	private Ident hasVerb;
@@ -64,7 +68,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 
 	private Ident hasSourceAgent;
 
-	private long hasTStampGT;
+	private Long hasTStampGT = null;
 
 	private Ident getNotMarkedByAgent;
 
@@ -87,10 +91,29 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 	/**
 	 *  Return true if the params are are matchable
 	 */
-	@Override
-	public boolean test(ThingActionSpec aSpec) {
-		//TODO
-		return false;
+	@Override public boolean test(ThingActionSpec aSpec) {
+		boolean anythingMatched = false;
+		if (hasTStampGT != null && !(aSpec.getPostedTimestamp() > hasTStampGT))
+			return false;
+
+		if (!JenaLiteralUtils.isMatchAny(hasThingType)) {
+			if (!JenaLiteralUtils.isTypeMatch(hasThingType, aSpec.getTargetThingTypeID()))
+				return false;
+			anythingMatched = true;
+		}
+		if (!JenaLiteralUtils.isMatchAny(hasThing)) {
+			if (!JenaLiteralUtils.isIndividualMatch(hasThing, aSpec.getTargetThingID()))
+				return false;
+			anythingMatched = true;
+		}
+		if (!JenaLiteralUtils.isMatchAny(hasParamNameURI)) {
+			Object raw = aSpec.getParamTVM().getRaw(hasParamNameURI);
+			Object mustBe = getParamTVM().getRaw(hasParamNameURI);
+			if (!JenaLiteralUtils.isMatch(mustBe, raw))
+				return false;
+			anythingMatched = true;
+		}
+		return anythingMatched;
 	}
 
 	/**
@@ -116,8 +139,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 
 	/** @return Should not be null.   The Verb-URI of the action (which is often an RDF:type of this actionSpec's 
 	 * resource).     What are we doing to the target thing?	 */
-	@Override
-	public Ident getHasVerb() {
+	@Override public Ident getHasVerb() {
 		return hasVerb;
 	}
 
@@ -138,8 +160,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 	}
 
 	/** @return null or the Type-URI of the target Thing.  What type of thing are we operating on?	 */
-	@Override
-	public Ident getHasThingType() {
+	@Override public Ident getHasThingType() {
 		return hasThingType;
 	}
 
@@ -151,8 +172,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 	}
 
 	/** @return null or the source Agent-URI of the action.  Who initiated the operation?	 */
-	@Override
-	public Ident getHasSourceAgent() {
+	@Override public Ident getHasSourceAgent() {
 		return hasSourceAgent;
 	}
 
@@ -168,8 +188,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 	 * @return null or the Java-timestamp (MSec since 1970) at which this ThingFilterSpec must be greater than
 	 * This is non-null only on the "receiving" side of the spec-transmission.
 	 */
-	@Override
-	public Long getHasTStampGT() {
+	@Override public Long getHasTStampGT() {
 		return hasTStampGT;
 	}
 
@@ -183,15 +202,13 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 	/**
 	 * @return the getNotMarkedByAgent
 	 */
-	@Override
-	public Ident getGetNotMarkedByAgent() {
+	@Override public Ident getGetNotMarkedByAgent() {
 		return getNotMarkedByAgent;
 	}
 
 	/**  @return  Parameters of the action (keyed by URI), which are usually the updated properties of the target 
 	 * thing.	 */
-	@Override
-	public TypedValueMap getParamTVM() {
+	@Override public TypedValueMap getParamTVM() {
 		return myTypedValueMap;
 	}
 
