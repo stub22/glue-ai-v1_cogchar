@@ -49,6 +49,7 @@ public class SceneFieldNames {
 	public static String		P_waitForStart		= NS_ccScn + "waitForStart";
 	public static String		P_waitForEnd		= NS_ccScn + "waitForEnd";
 	public static String		P_waitForChan		= NS_ccScn + "waitForChan";
-	public static String		P_chanFilter		= NS_ccScn + "chanFilter";
+	public static String		P_chanFilter        = NS_ccScn + "chanFilter";
+	public static String		P_taGuard           = NS_ccScn + "taGuard";
 	
 }
