@@ -158,9 +158,11 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 			
 			val waitStartGuardProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_waitForStart)
 			val waitEndGuardProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_waitForEnd)
+			val taGuardProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_taGuard)
 			
 			val waitStartGuardItems = stepItem.getLinkedItemSet(waitStartGuardProp)
 			val waitEndGuardItems = stepItem.getLinkedItemSet(waitEndGuardProp)
+			val taGuardItems = stepItem.getLinkedItemSet(taGuardProp)
 			
 			for (wsg : Item <- waitStartGuardItems) {
 				val guardSpec = new PerfMonGuardSpec(wsg.getIdent, Performance.State.PLAYING)
@@ -168,6 +170,12 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 			}
 			for (weg : Item <- waitEndGuardItems) {
 				val guardSpec = new PerfMonGuardSpec(weg.getIdent, Performance.State.STOPPING)
+				guardSpecSet.add(guardSpec)
+			}
+			for (tag : Item <- taGuardItems) {
+        val chanID : Ident = tag.getSingleLinkedItem(waitChanGuardProp).getIdent
+				val filterID : Ident = tag.getSingleLinkedItem(chanFilterProp).getIdent
+				val guardSpec = new ThingActionGuardSpec(chanID, filterID)
 				guardSpecSet.add(guardSpec)
 			}
 							

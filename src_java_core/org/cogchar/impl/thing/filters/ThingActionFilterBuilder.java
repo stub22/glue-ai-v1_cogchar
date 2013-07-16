@@ -99,6 +99,10 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 			resourceItem = (JenaResourceItem) item;
 			Map<Property, List<RDFNode>> properties = resourceItem.getPropertyMap();
 			for (Map.Entry<Property, List<RDFNode>> e : properties.entrySet()) {
+				//rdf:type is used by the jena assembler and we should ignore it                
+				if("type".equals(e.getKey().getLocalName())){
+                    continue;
+                }
 				try {
 					setObjectFieldValue(thingActionFilterImpl, tafc, e.getKey().getLocalName(), e.getValue(), asmblr, mode, true);
 				} catch (Throwable t) {
