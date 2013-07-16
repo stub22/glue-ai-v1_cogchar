@@ -170,7 +170,6 @@ class UseThingActionExec(val mySpec : UseThingActionSpec) extends BasicDebugger 
 	   Nil
 	}
   
-  //TODO: Create a PerfChan that implements WantsThingAction to test this out
 	def useIt(inTASpec : ThingActionSpec, outChan : PerfChannel) : Option[FancyPerformance] = {
 		// By default, we look for an obvious way to pass taSpec to outChan.
 		// We also sometimes need a way to capture + return a FancyPerformance for monitoring.
