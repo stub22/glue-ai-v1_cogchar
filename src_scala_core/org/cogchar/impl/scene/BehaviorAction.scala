@@ -31,12 +31,13 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
 import  org.cogchar.api.perform.{Media, PerfChannel, Performance}
 import  org.cogchar.impl.perform.basic.{BasicPerformance}
 import org.cogchar.impl.channel.{FancyChannelSpec};
-import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyPerformance, FancyTextPerfChan, FancyTextInstruction};
+import org.cogchar.impl.perform.{FancyPerfChan, FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyPerformance, FancyTextPerfChan, FancyTextInstruction};
 
 import org.cogchar.api.channel.{GraphChannel}
-import org.cogchar.impl.channel.{FancyChannel}
+import org.cogchar.impl.channel.{ThingActionGraphChan}
 import org.cogchar.api.thing.{ThingActionSpec, ThingActionFilter, WantsThingAction}
 
+import scala.collection.JavaConverters._
 
 
 /**
@@ -150,13 +151,27 @@ class UseThingActionExec(val mySpec : UseThingActionSpec) extends BasicDebugger 
 			val outChanID = mySpec.myChannelIdents.head
 			val outChan : PerfChannel = s.getPerfChannel(outChanID);			
 			val inChan : GraphChannel = s.getGraphChannel(mySpec.myInChanID)
-			val taSpec = Nil
-			// TODO - "take" (= deserialize + mark-seen) the input taSpec from inChan, and then call 
-			// useIt() to pass to outChan.
+      
+      //Sending unseen ThingActions to outChan
+      /* 
+       * We will want to control how many ThingActions get processed per execution.
+       * TAGraphChane views and marks all unseen ThingActions at once, that will 
+       * need to be changed to give us finer control.
+       */
+      inChan match {
+        case taChan :ThingActionGraphChan => {
+            val tasList : java.util.List[ThingActionSpec] = taChan.seeThingActions
+            for(tas : ThingActionSpec <- tasList.asScala){
+              useIt(tas, outChan)
+            }
+        }
+      }
 		}
 	   Nil
 	}
-	def useIt(inTASpec : ThingActionSpec, outChan : FancyChannel) : Option[FancyPerformance] = {
+  
+  //TODO: Create a PerfChan that implements WantsThingAction to test this out
+	def useIt(inTASpec : ThingActionSpec, outChan : PerfChannel) : Option[FancyPerformance] = {
 		// By default, we look for an obvious way to pass taSpec to outChan.
 		// We also sometimes need a way to capture + return a FancyPerformance for monitoring.
 		outChan match {
