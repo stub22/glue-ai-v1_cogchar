@@ -104,7 +104,7 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
                     continue;
                 }
 				try {
-					setObjectFieldValue(thingActionFilterImpl, tafc, e.getKey().getLocalName(), e.getValue(), asmblr, mode, true);
+					setObjectFieldValue(thingActionFilterImpl, tafc, e.getKey().getLocalName(), e.getValue(), asmblr, mode, true, true);
 				} catch (Throwable t) {
 					t.printStackTrace();
 					throw Debuggable.reThrowable(t);
@@ -129,12 +129,17 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 	}
 
 	private void setObjectFieldValue(Object object, Class c, String localName,
-			List<RDFNode> e, Assembler assembler, Mode mode, boolean replaceCollections) {
+			List<RDFNode> e, Assembler assembler, Mode mode, boolean replaceCollections, boolean okIfFieldNotFound) {
+
 		try {
 			Field f = getDeclaredField(c, localName);
 			f.setAccessible(true);
 			Object value = JenaLiteralUtils.convertList(e, f.getType());
 			f.set(object, value);
+		} catch (NoSuchFieldException nsf) {
+			if (okIfFieldNotFound)
+				return;
+			throw Debuggable.reThrowable(nsf);
 		} catch (Throwable t) {
 			throw Debuggable.reThrowable(t);
 		}
@@ -170,9 +175,7 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 				pdt = Object.class;
 			}
 		}
-		if (pdt.isPrimitive()) {
-			pdt = JenaLiteralUtils.nonPrimitiveTypeFor(pdt);
-		}
+		pdt = JenaLiteralUtils.nonPrimitiveTypeFor(pdt);
 		String sv = reader.readConfigValString(item.getIdent(), pdn, item, null);
 		if (sv == null) {
 			List<Object> res = reader.findOrMakeLinkedObjects(item, pdn, asmblr, mode, null);
