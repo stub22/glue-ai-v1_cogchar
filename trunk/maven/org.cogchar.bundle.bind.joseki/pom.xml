@@ -35,6 +35,12 @@
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<version>${appdapter.version}</version>
+		    <exclusions>
+		        <exclusion>
+		            <artifactId>ext.bundle.jena_all_2_10_1</artifactId>
+		            <groupId>org.appdapter</groupId>
+		        </exclusion>
+		    </exclusions>
 		</dependency>		
 		<dependency>
 			<groupId>org.appdapter</groupId>
@@ -52,7 +58,13 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>org.cogchar.bundle.app.puma</artifactId>
             <version>${project.version}</version>
-        </dependency>	
+	            <exclusions>
+	                <exclusion>
+	                    <artifactId>ext.bundle.jena_all_2_10_1</artifactId>
+	                    <groupId>org.appdapter</groupId>
+	                </exclusion>
+	            </exclusions>
+	        </dependency>	
 		
 	</dependencies>
 
