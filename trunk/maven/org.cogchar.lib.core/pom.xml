@@ -42,7 +42,7 @@
 			<version>${appdapter.version}</version>
 		</dependency>		
 		<dependency>
-			<artifactId>ext.bundle.jena_all_264</artifactId>
+			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
 			<groupId>org.appdapter</groupId>
 			<version>${appdapter.version}</version>
 		</dependency>

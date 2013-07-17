@@ -125,8 +125,8 @@ class BetterDatabaseRepo(sdbStore : Store, dirGraphID : Ident) extends DatabaseR
         val loadReq : UpdateLoad = new UpdateLoad("etc/update-data.ttl", graphName) ;
         
         // Add the two operations and execute the request
-        upSpec.addUpdate(creReq) ;
-        upSpec.addUpdate(loadReq) ;
+        upSpec.add(creReq) ;
+        upSpec.add(loadReq) ;
 
         // Execute 
         UpdateAction.execute(upSpec, sdbUpdateGraphStore) ;
