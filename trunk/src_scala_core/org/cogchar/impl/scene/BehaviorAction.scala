@@ -162,12 +162,15 @@ class UseThingActionExec(val mySpec : UseThingActionSpec) extends BasicDebugger 
         case taChan :ThingActionGraphChan => {
             val tasList : java.util.List[ThingActionSpec] = taChan.seeThingActions
             for(tas : ThingActionSpec <- tasList.asScala){
-              useIt(tas, outChan)
+              val perf = useIt(tas, outChan)
+              if(perf.isInstanceOf[FancyPerformance]){
+                perfListReverseOrder = perf.asInstanceOf[FancyPerformance] :: perfListReverseOrder
+              }
             }
         }
       }
 		}
-	   Nil
+	  perfListReverseOrder
 	}
   
 	def useIt(inTASpec : ThingActionSpec, outChan : PerfChannel) : Option[FancyPerformance] = {
