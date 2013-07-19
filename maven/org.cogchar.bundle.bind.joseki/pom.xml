@@ -34,17 +34,11 @@
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
-			<version>${appdapter.version}</version>
-		    <exclusions>
-		        <exclusion>
-		            <artifactId>ext.bundle.jena_all_2_10_1</artifactId>
-		            <groupId>org.appdapter</groupId>
-		        </exclusion>
-		    </exclusions>
+			<version>${appdapter.version}</version>		   
 		</dependency>		
 		<dependency>
 			<groupId>org.appdapter</groupId>
-			<artifactId>ext.bundle.jena_all_264</artifactId>
+			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
 			<type>jar</type>
 			<version>${appdapter.version}</version>
 		</dependency>
@@ -54,17 +48,11 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
-	        <dependency>
+	    <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.cogchar.bundle.app.puma</artifactId>
             <version>${project.version}</version>
-	            <exclusions>
-	                <exclusion>
-	                    <artifactId>ext.bundle.jena_all_2_10_1</artifactId>
-	                    <groupId>org.appdapter</groupId>
-	                </exclusion>
-	            </exclusions>
-	        </dependency>	
+        </dependency>	
 		
 	</dependencies>
 
