@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.lang.ParserARQUpdate ;
+import com.hp.hpl.jena.sparql.modify.UpdateSink;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
 import com.hp.hpl.jena.update.UpdateExecutionFactory ;
@@ -75,7 +76,7 @@ public class SPARQLUpdate extends ProcessorBase implements Loadable
 
         ParserARQUpdate p = new ParserARQUpdate() ;
         UpdateRequest updateRequest = new UpdateRequest() ;
-        p.parse(updateRequest, in) ;
+        p.parse((UpdateSink)updateRequest, in) ;
         GraphStore graphStore = GraphStoreFactory.create(dataset) ;
         UpdateProcessor uProc = UpdateExecutionFactory.create(updateRequest, graphStore) ;
         try {
