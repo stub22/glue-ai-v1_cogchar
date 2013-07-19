@@ -187,7 +187,9 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		try {
 			SubsystemHandle shand = SubsystemHandleFinder.getRenderSubsysHandle(fs, optCredClaz);
 			return shand.findOrMakeInternalFacade(fs, optOverrideName);
-		} catch (java.lang.NoClassDefFoundError cnf) {
+		} catch (java.lang.VirtualMachineError cnf) {
+			// we also want to cover UnsupportedClassVersionError and other possilbe classloading errors
+			// Most all virtualmachine errors right here are class loading errros!
 			Logger theLogger = LoggerFactory.getLogger(RenderRegistryFuncs.class);
 			theLogger.error("Cannot findOrMakeInternalFacade " + fs + " ovn=" + optOverrideName + " {}", optCredClaz, cnf);
 			throw cnf;
