@@ -85,7 +85,7 @@ class ThingActionGuard(val mySpec: ThingActionGuardSpec) extends BasicDebugger w
   override def isSatisfied(scn: BScene): Boolean = {
     val filterToCheck: ThingActionFilter = makeTAFilter(mySpec.myFilterID);
     scn match {
-      case fbs: FancyBScene => {
+      case fbs: BScene => {
         val channelToCheck = fbs.getGraphChannel(mySpec.myListenChanID)
         val mustBeLaterThan = filterToCheck.getHasTStampGT();
         // FIXME:  We actually need to check for any state "equal or later" than the timestamp?
