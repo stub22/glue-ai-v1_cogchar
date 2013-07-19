@@ -5,17 +5,17 @@
 
 package org.joseki.module;
 
-import org.joseki.util.PrintUtils ;
-import org.joseki.vocabulary.JosekiModule ;
-import org.openjena.atlas.lib.SystemUtils ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.joseki.util.PrintUtils;
+import org.joseki.vocabulary.JosekiModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.shared.PropertyNotFoundException ;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.PropertyNotFoundException;
+import com.hp.hpl.jena.util.SystemUtils;
 
 /**
  * Load classes and instantiate new objects based on loadable classes.

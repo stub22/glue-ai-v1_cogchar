@@ -7,24 +7,24 @@
 
 package org.joseki.validation;
 
-import java.io.IOException ;
+import java.io.IOException;
 
-import javax.servlet.ServletConfig ;
-import javax.servlet.ServletException ;
-import javax.servlet.ServletOutputStream ;
-import javax.servlet.http.HttpServlet ;
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.io.IndentedWriter ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateRequest;
 
 public class UpdateValidator extends HttpServlet 
 {
