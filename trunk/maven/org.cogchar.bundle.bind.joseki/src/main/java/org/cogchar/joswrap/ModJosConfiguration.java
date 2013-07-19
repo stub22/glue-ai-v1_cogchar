@@ -6,38 +6,15 @@
 
 package org.cogchar.joswrap;
 
-import org.cogchar.joswrap.ModJosDatasetDesc;
-import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.joseki.module.Loadable ;
-import org.joseki.module.Loader ;
-import org.joseki.module.LoaderException ;
-import org.openjena.atlas.lib.StrUtils ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.Statement ;
-import com.hp.hpl.jena.rdf.model.StmtIterator ;
-import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.shared.NotFoundException ;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
-import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.vocabulary.RDF ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
+import org.apache.jena.atlas.lib.StrUtils;
 import org.joseki.ConfigurationErrorException;
 import org.joseki.JosekiVocab;
 import org.joseki.Processor;
@@ -45,6 +22,38 @@ import org.joseki.ServerInitialization;
 import org.joseki.Service;
 import org.joseki.ServiceRegistry;
 import org.joseki.Utils;
+import org.joseki.module.Loadable;
+import org.joseki.module.Loader;
+import org.joseki.module.LoaderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QueryParseException;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFactory;
+import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.ResultSetRewindable;
+import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.NotFoundException;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
+import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 /** This processes config during its own *constructor* 
  * 
@@ -280,7 +289,7 @@ public class ModJosConfiguration
         QueryExecution qexec = QueryExecutionFactory.create(query, confModel) ;
         try {
             
-            ResultSetRewindable rs = ResultSetFactory.makeRewindable(qexec.execSelect()) ;
+            com.hp.hpl.jena.query.ResultSetRewindable rs = ResultSetFactory.makeRewindable(qexec.execSelect()) ;
             if ( log.isDebugEnabled() )
             {
                 String x = ResultSetFormatter.asText(rs) ;

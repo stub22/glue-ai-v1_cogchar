@@ -16,11 +16,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.riot.SysRIOT;
+import org.apache.jena.atlas.io.*;
+import org.apache.jena.atlas.lib.*;
+
+//import org.openjena.atlas.io.IndentedLineBuffer ;
+//import org.openjena.atlas.io.IndentedWriter ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.assembler.Content;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
@@ -162,7 +167,7 @@ public class QueryValidator extends HttpServlet
                 outStream.println("<p>Input:</p>") ;
                 // Not Java's finest hour.
                 Content c = new Content(){
-                    public void print(IndentedWriter out)
+                    public void print(org.apache.jena.atlas.io.IndentedWriter out)
                     { out.print(queryString) ; }
                 } ;
                 output(outStream, c, lineNumbers) ;
@@ -265,12 +270,12 @@ public class QueryValidator extends HttpServlet
         outStream.println("</head>") ;
     }
 
-    interface Content { void print(IndentedWriter out) ; }
+    interface Content { void print(org.apache.jena.atlas.io.IndentedWriter out) ; }
     
     private void output(ServletOutputStream outStream, Content content, boolean lineNumbers) throws IOException
     {
         startFixed(outStream) ;
-        IndentedLineBuffer out = new IndentedLineBuffer(lineNumbers) ; 
+        org.apache.jena.atlas.io.IndentedLineBuffer out = new IndentedLineBuffer(lineNumbers) ; 
         content.print(out) ;
         out.flush() ;  
         String x = htmlQuote(out.asString()) ;
