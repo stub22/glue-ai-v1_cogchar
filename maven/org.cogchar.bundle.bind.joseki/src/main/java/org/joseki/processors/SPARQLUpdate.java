@@ -6,90 +6,95 @@
 
 package org.joseki.processors;
 
-import java.io.Reader ;
-import java.io.StringReader ;
+import java.io.Reader;
+import java.io.StringReader;
 
-import org.joseki.ExecutionException ;
-import org.joseki.Joseki ;
-import org.joseki.QueryExecutionException ;
-import org.joseki.Request ;
-import org.joseki.Response ;
-import org.joseki.ReturnCodes ;
-import org.joseki.module.Loadable ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.joseki.ExecutionException;
+import org.joseki.Joseki;
+import org.joseki.QueryExecutionException;
+import org.joseki.Request;
+import org.joseki.Response;
+import org.joseki.ReturnCodes;
+import org.joseki.module.Loadable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.lang.ParserARQUpdate ;
-import com.hp.hpl.jena.sparql.modify.UpdateSink;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateExecutionFactory ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.lang.ParserARQUpdate;
+import com.hp.hpl.jena.sparql.modify.UpdateRequestSink;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateExecutionFactory;
+import com.hp.hpl.jena.update.UpdateProcessor;
+import com.hp.hpl.jena.update.UpdateRequest;
 
 public class SPARQLUpdate extends ProcessorBase implements Loadable
 {
-    private static Logger log = LoggerFactory.getLogger(SPARQLUpdate.class) ;
-    
-    public void init(Resource service, Resource implementation)
-    {}
+	private static Logger log = LoggerFactory.getLogger(SPARQLUpdate.class);
 
-    @Override
-    public void execOperation(Request request, Response response, Dataset dataset) throws ExecutionException
-    {
-        if ( ! request.getParam(Joseki.VERB).equals("POST") )
-            // Because nasty things happen otherwise.
-            throw new QueryExecutionException(ReturnCodes.rcBadRequest, "Updates must use POST") ;
-        log.info("SPARQL/Update Operation") ;
-        // Is it a form or is it a plain SPARQL/Update?
-        // Touching the form causes the body to be processed. 
-        
-//        for ( Iterator iter= request.parameterNames() ; iter.hasNext(); )
-//        {
-//            System.out.println(iter.next()) ;
-//        }
+	public void init(Resource service, Resource implementation)
+	{
+	}
 
-        // Find the request 
-        // 1/ request= in the query string
-        // 2/ as the body.
-        
-        String x = request.getParam("request") ;
-        if ( x == null )
-            request.getParam("update") ;
+	@Override public void execOperation(Request request, Response response, Dataset dataset) throws ExecutionException
+	{
+		if (!request.getParam(Joseki.VERB).equals("POST"))
+			// Because nasty things happen otherwise.
+			throw new QueryExecutionException(ReturnCodes.rcBadRequest, "Updates must use POST");
+		log.info("SPARQL/Update Operation");
+		// Is it a form or is it a plain SPARQL/Update?
+		// Touching the form causes the body to be processed. 
 
-        Reader in = null ;
-        if ( x == null )
-            in = request.getStream() ;
-        else
-            in = new StringReader(x) ;
-        
-        if ( in == null )
-        {
-            ExecutionException execEx = new ExecutionException(ReturnCodes.rcArgumentError, "Can't find request from 'request' parameter or POST body") ;
-            throw execEx ;
-        }
+		//        for ( Iterator iter= request.parameterNames() ; iter.hasNext(); )
+		//        {
+		//            System.out.println(iter.next()) ;
+		//        }
 
-        // Parsing with a Reader.  Normally discouraged because of charset issues 
-        // Hence no UpdateFactory operations and a need to go direct.
+		// Find the request 
+		// 1/ request= in the query string
+		// 2/ as the body.
 
-        ParserARQUpdate p = new ParserARQUpdate() ;
-        UpdateRequest updateRequest = new UpdateRequest() ;
-        p.parse((UpdateSink)updateRequest, in) ;
-        GraphStore graphStore = GraphStoreFactory.create(dataset) ;
-        UpdateProcessor uProc = UpdateExecutionFactory.create(updateRequest, graphStore) ;
-        try {
-            uProc.execute() ;
-            response.setOK() ;
-        }
-        catch (Exception ex)
-        {
-            log.warn("Update failed", ex) ;
-            ExecutionException execEx = new ExecutionException(ReturnCodes.rcUpdateExecutionFailure,"Update failed ("+ex.getMessage()+")") ;
-            throw execEx ;
-        }
-    }
+		String x = request.getParam("request");
+		if (x == null)
+			request.getParam("update");
+
+		Reader in = null;
+		if (x == null)
+			in = request.getStream();
+		else
+			in = new StringReader(x);
+
+		if (in == null)
+		{
+			ExecutionException execEx = new ExecutionException(ReturnCodes.rcArgumentError, "Can't find request from 'request' parameter or POST body");
+			throw execEx;
+		}
+
+		// Parsing with a Reader.  Normally discouraged because of charset issues 
+		// Hence no UpdateFactory operations and a need to go direct.
+
+		ParserARQUpdate p = new ParserARQUpdate();
+		UpdateRequest updateRequest = new UpdateRequest();
+		UpdateRequestSink requestSink = new UpdateRequestSink(updateRequest);
+		p.parse(requestSink, in);
+		GraphStore graphStore = GraphStoreFactory.create(dataset);
+		UpdateProcessor uProc = UpdateExecutionFactory.create(updateRequest, graphStore);
+		try {
+			if (uProc == null)
+				throw new ARQException("No suitable update procesors are registered/able to execute your updates");
+			uProc.execute();
+			response.setOK();
+		} catch (Exception ex)
+		{
+			log.warn("Update failed", ex);
+			ExecutionException execEx = new ExecutionException(ReturnCodes.rcUpdateExecutionFailure, "Update failed (" + ex.getMessage() + ")");
+			throw execEx;
+		} finally {
+			requestSink.close();
+		}
+	}
 }
 
 /*
