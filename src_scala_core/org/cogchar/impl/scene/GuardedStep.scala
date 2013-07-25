@@ -41,11 +41,16 @@ class GuardedStepExec(stepSpec : GuardedStepSpec, actionExec : BehaviorActionExe
 		myGuards = g :: myGuards
 	}
 	def checkAllGuardsSatisfied(scn: BScene) : Boolean = {
+	    var oneTested = false;
 		for (g <- myGuards) {
 			if (!g.isSatisfied(scn)) {
 				getLogger().debug("Guard is not satisfied: {}", g)
 				return false
 			}
+			oneTested = true
+		}
+		if (!oneTested) {
+		  getLogger().debug("No guards tested: {}", this)
 		}
 		true
 	}	
