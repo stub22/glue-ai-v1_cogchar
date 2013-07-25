@@ -56,6 +56,18 @@ public class BasicThingActionUpdater {
 	 * @param srcGraphID
 	 * @return 
 	 */
+	@Deprecated protected List<ThingActionSpec> viewActions(RepoClient rc, Ident srcGraphID) {
+		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
+		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
+		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
+		// Delete the actions from graph, so they are not returned on next call to this method.
+		for (ThingActionSpec tas : actionSpecList) {
+			//deleteThingAction(rc, srcGraphID, tas);
+		}
+		theLogger.info("Returning ThingAction list of length {} from graph {}",  actionSpecList.size(), srcGraphID);
+		return actionSpecList;
+	}
+	
 	@Deprecated protected List<ThingActionSpec> takeThingActions(RepoClient rc, Ident srcGraphID) {
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
 		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
@@ -67,6 +79,7 @@ public class BasicThingActionUpdater {
 		theLogger.info("Returning ThingAction list of length {} from graph {}",  actionSpecList.size(), srcGraphID);
 		return actionSpecList;
 	}
+	
 	/**
 	 * Finds actions not yet seen by a particular reading agent, pulls their data, and marks them seen for that agent.
 	 * @param rc
@@ -74,7 +87,14 @@ public class BasicThingActionUpdater {
 	 * @param seeingAgentID
 	 * @return 
 	 */
-	public List<ThingActionSpec> viewActionsAndMark(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {
+	public List<ThingActionSpec> viewActionsAndMark(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {		
+		if (true) {
+			List<ThingActionSpec> actionSpecList0 = takeThingActions(rc, srcGraphID);
+			if (actionSpecList0.size()==0) {
+				return actionSpecList0;
+			}
+			return actionSpecList0;
+		}
 		InitialBinding queryIB = rc.makeInitialBinding();
 		Literal cutoffTimeLit = rc.makeTypedLiteral(cutoffTStamp.toString(), XSDDatatype.XSDlong);
 		queryIB.bindNode(ThingCN.V_cutoffTStampMsec, cutoffTimeLit);

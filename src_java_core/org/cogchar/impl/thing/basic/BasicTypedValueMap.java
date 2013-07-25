@@ -28,6 +28,9 @@ import org.cogchar.api.thing.TypedValueMap;
 
 public abstract class BasicTypedValueMap implements TypedValueMap {
 	
+	public BasicTypedValueMap() {
+		
+	}
 	private	Map<Ident, Object>		myRawObjsByID = new HashMap<Ident, Object>();
 
 	@Override public int getSize() { 

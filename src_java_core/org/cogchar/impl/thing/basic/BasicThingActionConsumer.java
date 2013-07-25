@@ -35,7 +35,7 @@ public abstract class BasicThingActionConsumer extends BasicDebugger implements 
 	
 	@Deprecated public void consumeAllActions(RepoClient rc, Ident srcGraphID) {
 		BasicThingActionUpdater updater = new BasicThingActionUpdater();
-		List<ThingActionSpec> actionSpecList = updater.takeThingActions(rc, srcGraphID);
+		List<ThingActionSpec> actionSpecList = updater.viewActions(rc, srcGraphID);
 		for (ThingActionSpec actionSpec : actionSpecList) {
 			getLogger().info("Consuming from graph {} : {} ", srcGraphID, actionSpec);
 			consumeAction(actionSpec, srcGraphID);
