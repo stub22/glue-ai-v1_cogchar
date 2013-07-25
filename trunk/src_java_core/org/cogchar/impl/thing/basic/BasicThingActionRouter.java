@@ -45,9 +45,13 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 			ConsumpStatus stat = consumer.consumeAction(actionSpec, srcGraphID);
 			switch (stat) {
 				case	CONSUMED:	
-					return ConsumpStatus.CONSUMED;
-				case	USED:		
+					if (highestSoFar != ConsumpStatus.CONSUMED) {
+						highestSoFar = ConsumpStatus.CONSUMED;
+					}
+				case	USED:
+					if (highestSoFar == ConsumpStatus.IGNORED) {
 					highestSoFar = ConsumpStatus.USED;
+					}
 					break;
 				case	QUEUED:
 					if (highestSoFar != ConsumpStatus.USED) {

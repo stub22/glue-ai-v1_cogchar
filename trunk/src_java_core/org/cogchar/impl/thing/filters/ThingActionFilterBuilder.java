@@ -21,12 +21,17 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.appdapter.bind.rdf.jena.assembly.AssemblerConverter;
+import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.bind.rdf.jena.model.JenaLiteralUtils;
+import org.appdapter.core.convert.Converter;
+import org.appdapter.core.convert.ReflectUtils;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.JenaResourceItem;
 import org.appdapter.core.log.Debuggable;
@@ -49,7 +54,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  */
 public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends DynamicCachingComponentAssembler<MKC> {
 
-	public static Class<ThingActionFilterImpl> TAClass = ThingActionFilterImpl.class;
+	public static Class<ThingActionFilterImpl> TAFilterClass = ThingActionFilterImpl.class;
 	static ThingActionFilterBuilder oneInstance;
 	Resource builderConfResource;
 	public static Logger theLogger = LoggerFactory.getLogger(ThingActionFilterBuilder.class);
@@ -80,7 +85,7 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 	}
 
 	@Override protected Class<MKC> decideComponentClass(Ident ident, Item item) {
-		return (Class<MKC>) TAClass;
+		return (Class<MKC>) TAFilterClass;
 	}
 
 	/**
@@ -94,104 +99,6 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 	@Override protected void initExtendedFieldsAndLinks(MKC thingActionFilterImpl, Item item, Assembler asmblr, Mode mode) {
 		ItemAssemblyReader reader = getReader();
 		Class tafc = thingActionFilterImpl.getClass();
-		JenaResourceItem resourceItem = null;
-		if (item instanceof JenaResourceItem) {
-			resourceItem = (JenaResourceItem) item;
-			Map<Property, List<RDFNode>> properties = resourceItem.getPropertyMap();
-			for (Map.Entry<Property, List<RDFNode>> e : properties.entrySet()) {
-				//rdf:type is used by the jena assembler and we should ignore it                
-				if("type".equals(e.getKey().getLocalName())){
-                    continue;
-                }
-				try {
-					setObjectFieldValue(thingActionFilterImpl, tafc, e.getKey().getLocalName(), e.getValue(), asmblr, mode, true, true);
-				} catch (Throwable t) {
-					t.printStackTrace();
-					throw Debuggable.reThrowable(t);
-				}
-			}
-			return;
-		}
-		BeanInfo info;
-		try {
-			info = Introspector.getBeanInfo(tafc);
-			Ident mainIdent = item.getIdent();
-
-			for (PropertyDescriptor pd : info.getPropertyDescriptors()) {
-				String pdn = pd.getName();
-				pdn = pdn.substring(0, 1).toLowerCase() + pdn.substring(1);
-				Class pdt = pd.getPropertyType();
-				setObjectField(thingActionFilterImpl, item, reader, pd.getWriteMethod(), pdn, pdt, asmblr, mode);
-			}
-		} catch (Throwable e) {
-			throw Debuggable.reThrowable(e);
-		}
-	}
-
-	private void setObjectFieldValue(Object object, Class c, String localName,
-			List<RDFNode> e, Assembler assembler, Mode mode, boolean replaceCollections, boolean okIfFieldNotFound) {
-
-		try {
-			Field f = getDeclaredField(c, localName);
-			f.setAccessible(true);
-			Object value = JenaLiteralUtils.convertList(e, f.getType());
-			f.set(object, value);
-		} catch (NoSuchFieldException nsf) {
-			if (okIfFieldNotFound)
-				return;
-			throw Debuggable.reThrowable(nsf);
-		} catch (Throwable t) {
-			throw Debuggable.reThrowable(t);
-		}
-	}
-
-	private Field getDeclaredField(Class c, String name) throws SecurityException, NoSuchFieldException {
-		NoSuchFieldException nsf = null;
-		try {
-			return c.getField(name);
-		} catch (SecurityException e) {
-		} catch (NoSuchFieldException e) {
-			nsf = e;
-		}
-		while (c != null) {
-			try {
-				return c.getDeclaredField(name);
-			} catch (SecurityException se) {
-				throw se;
-			} catch (NoSuchFieldException nsf2) {
-				c = c.getSuperclass();
-				continue;
-			}
-		}
-		throw nsf;
-	}
-
-	private void setObjectField(MKC thingActionFilterImpl, Item item, ItemAssemblyReader reader, Method writeMethod, String pdn, Class pdt, Assembler asmblr, Mode mode) throws IllegalAccessException,
-			InvocationTargetException {
-		if (pdt == null) {
-			if (writeMethod != null) {
-				pdt = writeMethod.getParameterTypes()[0];
-			} else {
-				pdt = Object.class;
-			}
-		}
-		pdt = JenaLiteralUtils.nonPrimitiveTypeFor(pdt);
-		String sv = reader.readConfigValString(item.getIdent(), pdn, item, null);
-		if (sv == null) {
-			List<Object> res = reader.findOrMakeLinkedObjects(item, pdn, asmblr, mode, null);
-			return;
-		}
-		if (writeMethod == null) {
-			theLogger.warn("Missing write method on field: " + pdn + " type " + pdt.getSimpleName() + " = " + sv);
-			return;
-		}
-		theLogger.warn("Setting field: " + pdn + " type " + pdt.getSimpleName() + " = " + sv);
-		if (pdt == String.class) {
-			writeMethod.invoke(thingActionFilterImpl, sv);
-		} else if (pdt == Ident.class) {
-			writeMethod.invoke(thingActionFilterImpl, new FreeIdent(sv));
-		} else {
-
-		}
+		AssemblerConverter.initObjectProperties(thingActionFilterImpl, item, asmblr, mode, reader, tafc);
 	}
 }

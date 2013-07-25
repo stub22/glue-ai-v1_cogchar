@@ -74,9 +74,9 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 
 	private Set<Ident> hasPattern;
 
-	private String hasParamName;
+	private Ident hasParamName;
 
-	private Ident hasParamNameURI;
+	private String hasParamNameAsString;
 
 	private Ident hasParamObject;
 
@@ -106,9 +106,9 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 				return false;
 			anythingMatched = true;
 		}
-		if (!JenaLiteralUtils.isMatchAny(hasParamNameURI)) {
-			Object raw = aSpec.getParamTVM().getRaw(hasParamNameURI);
-			Object mustBe = getParamTVM().getRaw(hasParamNameURI);
+		if (!JenaLiteralUtils.isMatchAny(hasParamName)) {
+			Object raw = aSpec.getParamTVM().getRaw(hasParamName);
+			Object mustBe = getParamTVM().getRaw(hasParamName);
 			if (!JenaLiteralUtils.isMatch(mustBe, raw))
 				return false;
 			anythingMatched = true;
@@ -213,31 +213,33 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 	}
 
 	/**
-	 * @return the hasParamNameURI
+	 * @return the hasParamName
 	 */
-	public Ident getHasParamNameURI() {
-		return hasParamNameURI;
-	}
-
-	/**
-	 * @return the hasParamNameURI
-	 */
-	public void setHasParamNameURI(Ident val) {
-		hasParamNameURI = val;
-	}
-
-	/**
-	 * @param val the hasParamName to set
-	 */
-	public void setHasParamName(String val) {
-		val = hasParamName;
+	public Ident getHasParamName() {
+		return hasParamName;
 	}
 
 	/**
 	 * @return the hasParamName
 	 */
-	public String getHasParamName() {
-		return hasParamName;
+	public void sethasParamName(Ident val) {
+		hasParamName = val;
+	}
+
+	/**
+	 * @param val the hasParamName to set
+	 */
+	public void setHasParamNameAsString(String val) {
+		val = hasParamNameAsString;
+	}
+
+	/**
+	 * @return the hasParamName
+	 */
+	public String getHasParamNameAsString() {
+		if (hasParamNameAsString == null && hasParamName != null	)
+			return hasParamName.getLocalName();
+		return hasParamNameAsString;
 	}
 
 	public class ParamMapFromFields extends BasicTypedValueMapTemporaryImpl {
@@ -269,7 +271,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 		 */
 		public Integer getHasParamInt() {
 			if (typeMapSet)
-				return getAsInteger(hasParamNameURI);
+				return getAsInteger(hasParamName);
 			return hasParamInt;
 		}
 
@@ -285,7 +287,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 		 */
 		public float getHasParamFloat() {
 			if (typeMapSet)
-				return getAsInteger(hasParamNameURI);
+				return getAsInteger(hasParamName);
 			return hasParamFloat;
 		}
 
