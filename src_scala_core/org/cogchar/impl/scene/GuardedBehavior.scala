@@ -175,6 +175,14 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 			for (tag : Item <- taGuardItems) {
         val chanID : Ident = tag.getSingleLinkedItem(waitChanGuardProp).getIdent
 				val filterID : Ident = tag.getSingleLinkedItem(chanFilterProp).getIdent
+        
+        //How to get a list of filters
+//        val chanFilterProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_chanFilter);
+//        val filterItems = stepItem.getLinkedItemSet(chanFilterProp)
+//        for (filter : Item <- filterItems) {
+//          filter.getIdent
+//        }
+        
 				val guardSpec = new ThingActionGuardSpec(chanID, filterID)
 				guardSpecSet.add(guardSpec)
 			}
