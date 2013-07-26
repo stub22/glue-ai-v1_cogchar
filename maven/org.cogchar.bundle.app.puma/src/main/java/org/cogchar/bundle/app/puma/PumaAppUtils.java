@@ -78,13 +78,12 @@ public class PumaAppUtils extends BasicDebugger {
 		StuffRec srec = new StuffRec();
 		return AnimFileSpecReader.findAnimFileSpecsForJava(srec.animBCE);
 	}
-	public static 	void startSillyMotionComputersDemoForVWorldOnly(BundleContext bundleCtx) { 
-		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx);
+	public static 	void startSillyMotionComputersDemoForVWorldOnly(BundleContext bundleCtx, Robot.Id optRobotID_elseAllRobots) { 
+		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx, optRobotID_elseAllRobots);
 		for (CogcharMotionSource cms : cogMotSrcList) {
-			
 			Robot srcBot = cms.getRobot();
 			Robot.Id srcBotID = srcBot.getRobotId();
-			// getLogger().info("Found CogcharMotionSource for Robot-ID: " + srcBotID);
+			theLogger.info("Starting silly motion computer for actual Robot-ID {} found when looking for {} ", srcBotID, optRobotID_elseAllRobots);
 			SillyDemoMotionComputer dmc = new SillyDemoMotionComputer();
 			cms.addJointComputer(dmc);
 		}

@@ -19,6 +19,7 @@ package org.cogchar.render.goody.flat;
 import org.cogchar.render.app.entity.GoodyAction;
 import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.ArrayList;
@@ -51,6 +52,11 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 	float myRowHeight; // as a fraction of window height
 	Vector3f myPosition; // of top left corner of scoreboard in fraction of window width/height
 	List<ScoreBoardGoody.Row>	myRows;
+
+	@Override
+	public void setRotation(Quaternion newRotation) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
 
 	public class Row extends BasicGoody2dImpl {
 		public Row(RenderRegistryClient aRenderRegCli, Ident uri, Vector3f rowPosition,	float textSize, ColorRGBA scoreColor) {
@@ -147,7 +153,7 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 	}
 	
 	@Override
-	public void setScale(Float scale) {
+	public void setUniformScaleFactor(Float scale) {
 		myLogger.warn("Setting scale not currently implemented for the ScoreBoardGoody, coming soon...");
 		/*// This throws a java.lang.IllegalArgumentException deep in jME's LWJGL bits for some reason
 		// Will fix this soon, not very necessary for now and holding up a big commit...
