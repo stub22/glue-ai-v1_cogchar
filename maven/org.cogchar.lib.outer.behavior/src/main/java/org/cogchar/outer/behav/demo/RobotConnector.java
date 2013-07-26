@@ -11,8 +11,6 @@ import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.utils.ManagedServiceFactory;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
 import org.robokind.impl.messaging.config.RKMessagingConfigUtils;
-import org.cogchar.outer.behav.demo.AnimationConnector;
-import org.cogchar.outer.behav.demo.SpeechConnector;
 
 /**
  *
@@ -24,6 +22,7 @@ public class RobotConnector {
     public final static String SPEECH_SERVICE_ID_SUFFIX = "SpeechService";
     public final static String ROBOT_CONNECTIONS_DELIMETER = ",";
     public final static String ROBOT_CONNECTION_PARTS_DELIMETER = ";";
+    public final static String ROBOT_EXTRA_SPEECH_CHANS_DELIMETER = ":";
     
     /**
      * Reads the system environment variable with the given key, parses the 
@@ -61,7 +60,7 @@ public class RobotConnector {
             throw new NullPointerException();
         }
         String animDestPrefix = "";
-        String speechDestPrefix = "";
+        String speechDestPrefix = "speech";
         String connectConfigId = con.robotId + "/" + ROBOT_CONNECTION_CONFIG_ID_SUFFIX;
         ManagedServiceFactory fact = new OSGiComponentFactory(context);
         RKMessagingConfigUtils.registerConnectionConfig(
@@ -70,8 +69,21 @@ public class RobotConnector {
                 context, con.robotId + "/" + ANIM_PLAYER_ID_SUFFIX, 
                 animDestPrefix, connectConfigId);
         SpeechConnector.connect(
-                context, con.robotId + "/" + SPEECH_SERVICE_ID_SUFFIX, 
+                fact, con.robotId + "/" + SPEECH_SERVICE_ID_SUFFIX, 
                 speechDestPrefix, connectConfigId);
+        connectExtraSpeechChans(fact, con, connectConfigId);
+    }
+    
+    private static void connectExtraSpeechChans(
+            ManagedServiceFactory fact, RobotConnection con, String connectConfigId){
+        String[] chans = con.extraSpeechChannels;
+        if(chans == null){
+            return;
+        }
+        for(String chan : chans){
+            String groupId = con.robotId + "/" + chan + SPEECH_SERVICE_ID_SUFFIX;
+            SpeechConnector.connect(fact, groupId, chan, connectConfigId);
+        }
     }
     
     private static List<RobotConnection> getRobotConnectionsFromSysEnv(String envVarKey){
@@ -99,19 +111,33 @@ public class RobotConnector {
     
     private static RobotConnection parseConnection(String conStr){
         String[] parts = conStr.split(ROBOT_CONNECTION_PARTS_DELIMETER);
-        if(parts.length != 2){
+        if(parts.length < 2){
             return null;
         }
-        return new RobotConnection(parts[0].trim(), parts[1].trim());
+        String[] extraSpeechChans = null;
+        if(parts.length > 2){
+            String[] chans = parts[2].split(ROBOT_EXTRA_SPEECH_CHANS_DELIMETER);
+            extraSpeechChans = new String[chans.length];
+            for(int i=0; i<chans.length; i++){
+                extraSpeechChans[i] = chans[i].trim();
+            }
+        }
+        return new RobotConnection(parts[0].trim(), parts[1].trim(), extraSpeechChans);
     }
     
     public static class RobotConnection {
         public String robotId;
         public String ipAddress;
+        public String[] extraSpeechChannels;
 
-        public RobotConnection(String robotId, String ipAddress) {
+        public RobotConnection(
+                String robotId, String ipAddress, String[] extraSpeechChannels) {
             this.robotId = robotId;
             this.ipAddress = ipAddress;
+            this.extraSpeechChannels = extraSpeechChannels;
+            if(this.extraSpeechChannels == null){
+                this.extraSpeechChannels = new String[0];
+            }
         }
     }
 }
