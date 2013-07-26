@@ -23,6 +23,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import org.robokind.api.motion.Robot;
+import org.robokind.api.motion.Robot.RobotPositionMap;
 import org.robokind.api.motion.blending.FrameSource;
 import org.robokind.api.motion.protocol.MotionFrame;
 import org.slf4j.Logger;
@@ -30,6 +31,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * Each instance binds to the RK joint-frame protocol for one jointed robot.
+ * Holds an ordered list of joint computers, each of which receives one notifySourceComputingCycle() each time
+ * we process getMovements().  No protocol among those computers is enforced at this level, we simply presume they
+ * will somehow call our "move()" method (inherited from RobotMoverFrameSource) in a sensible way, with the
+ * last joint-computer in our collection having the last word.  So, this class provides capability, without policy,
+ * and is a good place to begin investigating your own custom low-level (in Cogchar terms) movement planning systems.
+ * 
+ * Under OSGi (or other JFlux binding), instances of CogcharMotionSource can be found in the registry using
+ * findCogcharMotionSources, which can be extended to use robotID as a filter parameter.
  */
 public class CogcharMotionSource extends RobotMoverFrameSource {
 
@@ -37,6 +47,8 @@ public class CogcharMotionSource extends RobotMoverFrameSource {
 	private boolean myComputingFlag = false;
 	private List<CogcharMotionComputer> myComputers = new ArrayList<CogcharMotionComputer>();
 
+	private Robot.RobotPositionHashMap myGoalPosMap = new Robot.RobotPositionHashMap(), myLastGoalPosMap;
+	
 	public CogcharMotionSource(Robot robot) {
 		super(robot);
 	}
@@ -54,21 +66,44 @@ public class CogcharMotionSource extends RobotMoverFrameSource {
 				theLogger.warn("Problem notifying motion computer", t);
 			}
 		}
+		super.move(myGoalPosMap, moveLengthMilliSec);
 		MotionFrame result = super.getMovements(currentTimeUTC, moveLengthMilliSec);
+		// We are imposing a well defined GC burden here, in order to keep a lastGoalPosMap.
+		// If we instead just cleared the goalMap in place, we would not force the map itself to be
+		// reallocated on each frame.  Either way, we are GC-ing and re-allocing all the positions
+		// in the goal map, on each cycle.  So, we have an area for optimization here, once the
+		// Cogchar character motion is looking more interesting, and after more of the Symja 
+		// possibilities for supplying equivalent/better continuity of state frames are explored.
+		myLastGoalPosMap = myGoalPosMap;
+		myGoalPosMap = null;
 		myComputingFlag = false;
 		return result;
+	}
+	@Override public void move(RobotPositionMap positions, long lenMillisec) {
+		if (myGoalPosMap == null) {
+			myGoalPosMap = new Robot.RobotPositionHashMap();
+		}
+		myGoalPosMap.putAll(positions);
 	}
 	
 	public boolean isComputingNow() { 
 		return myComputingFlag;
 	}
 
-	public static List<CogcharMotionSource> findCogcharMotionSources(BundleContext bunCtx) {
+	/**
+	 * TODO:  Add robotID filtering parameter.
+	 * @param bunCtx
+	 * @return 
+	 */
+	public static List<CogcharMotionSource> findCogcharMotionSources(BundleContext bunCtx, Robot.Id optRobotID) {
 
 		List<CogcharMotionSource> resList = new ArrayList<CogcharMotionSource>();
 		// This classname is used to register motion sources in RobotUtils.
 		String svcClsName = FrameSource.class.getName();
-		String filter = null; // String.format( "(%s=%s)", Robot.PROP_ID, robotId.toString());
+		String filter = null; 
+		if (optRobotID != null) {
+			String.format( "(%s=%s)", Robot.PROP_ID, optRobotID.toString());
+		}
 		try {
 			ServiceReference[] refs = bunCtx.getServiceReferences(svcClsName, filter);
 			if (refs != null) {

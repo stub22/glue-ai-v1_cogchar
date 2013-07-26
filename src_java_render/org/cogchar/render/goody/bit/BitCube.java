@@ -82,12 +82,14 @@ public class BitCube extends AbstractBitGoody {
 	@Override
 	public void setState(boolean boxState) {
 		if (boxState != state) {
-			Quaternion initialRotation = myRotation;
+			Quaternion initialRotation = getRotation();
+			Vector3f position = getPosition();
+			Vector3f scale = getScale();
 			// A little trick: we use moveViaAnimation to rotate smoothly to the new orientation,
 			// then set the new rotation offset and set myRotation back to the original "base" orientation
-			moveViaAnimation(myPosition, initialRotation.mult(new Quaternion().fromAngles(0f, (float)Math.PI, 0f)), myScale, STATE_TRANSITION_TIME);
+			moveViaAnimation(position, initialRotation.mult(new Quaternion().fromAngles(0f, (float)Math.PI, 0f)), scale, STATE_TRANSITION_TIME);
 			setNewGeometryRotationOffset(geomIndex, getStateAdjustedRotationOffset(boxState));
-			myRotation = initialRotation;
+			setRotation(initialRotation);
 			state = boxState;
 		}
 	}

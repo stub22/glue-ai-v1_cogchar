@@ -43,37 +43,49 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 // and to make sure the BasicGoodyImpl has the sorts of properties we want it to have 
 public class BasicGoodyEntity extends VWorldEntity {
 
-	protected Vector3f myPosition = new Vector3f(); // default: at origin
-	protected Quaternion myRotation = new Quaternion(); // default: no rotation
-	protected Vector3f myScale = new Vector3f(1f, 1f, 1f); // default: scale = 1 in all directions
+	private Vector3f		myPosition = new Vector3f(); // default: at origin (relative to parentNode)
+	private Quaternion		myRotation = new Quaternion(); // default: no rotation (relative to parentNode)
+	private Vector3f		myScaleVec = new Vector3f(1f, 1f, 1f); // default: scale = 1 in all directions
 
-	// This allows a single "thing" to have multiple switchable geometries
-	List<BasicGoodyGeometry> myGeometries = new ArrayList<BasicGoodyGeometry>();
-	int attachedIndex = NULL_INDEX; // The index of the currently attached geometry, or -1 if none
-	final static int NULL_INDEX = -1;
+	// This collection allows a single "thing" to have multiple switchable geometry bindings.
+	// Only one of these geometries is attached to our JME3 node at any particular time.
+	private List<BasicGoodyGeomBinding> myGeomBindings = new ArrayList<BasicGoodyGeomBinding>();
+	private int myCurrAttachedBindingIndex = NULL_INDEX; // The index of the currently attached geom-binding, or -1 if none
+	private final static int NULL_INDEX = -1;
 
-	protected Node myNode;
-	protected Node myRootNode;
+	private Node myContentNode;
+	private Node myParentNode;
 
 	// May not want to allow this to be instantiated directly
 	// Might make sense to set more instance variables in the constructor as well, including perhaps rootNode?
 	protected BasicGoodyEntity(RenderRegistryClient aRenderRegCli, Ident uri) {
 		myRenderRegCli = aRenderRegCli;
 		myUri = uri;
-		myNode = new Node("Goody Node of " + uri.getLocalName());
+		myContentNode = new Node("Goody Node of " + uri.getLocalName());
 	}
-
+	protected Quaternion getRotation() {
+		return myRotation;
+	}
+	protected Vector3f getPosition() {
+		return myPosition;
+	}
+	protected Vector3f getScale() {
+		return myScaleVec;
+	}
+	@Override public void setUniformScaleFactor(final Float scaleFactor) {
+		setVectorScale(new Vector3f(scaleFactor, scaleFactor, scaleFactor));
+	}
 	// It would be good for clarity to have this in a separate file, but by having it as an inner class we allow
 	// access to getRenderRegistryClient() without awkwardness. And it seems it can be a private class. But we might
 	// end up reconsidering this being a private inner class eventually.
-	private class BasicGoodyGeometry {
+	private class BasicGoodyGeomBinding {
 		Geometry myGeometry;
 		ColorRGBA myColor = ColorRGBA.Blue; // A default color
 		RigidBodyControl myControl = null;
 		Material myMaterial;
 		Quaternion myRotationOffset;
 
-		BasicGoodyGeometry(Mesh mesh, Material material, ColorRGBA color, 
+		BasicGoodyGeomBinding(Mesh mesh, Material material, ColorRGBA color, 
 				Quaternion rotation, CollisionShape shape, float mass) {
 			myRotationOffset = rotation;
 			if (color != null) {
@@ -95,7 +107,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 			}
 			myGeometry = myRenderRegCli.getSceneGeometryFacade(null)
 					.makeGeom(myUri.getLocalName(), mesh, myMaterial, myControl);
-			myGeometry.setLocalScale(myScale);
+			myGeometry.setLocalScale(myScaleVec);
 			myGeometry.setLocalRotation(rotation);
 		}
 
@@ -112,16 +124,18 @@ public class BasicGoodyEntity extends VWorldEntity {
 	}
 
 	//This may not be a great thing to expose publically. For now it's used to attach a GoodyEntity to a CameraEntity
-	public Node getNode() {
-		return myNode;
+	public Node getContentNode() {
+		return myContentNode;
 	}
-	
+	protected Node getParentNode() { 
+		return myParentNode;
+	}
 	// Returns geometry index
 	// This method is intended to support physical objects
 	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, 
 			CollisionShape shape, float mass) {
-		myGeometries.add(new BasicGoodyGeometry(mesh, material, color, rotation, shape, mass));
-		return myGeometries.size() - 1;
+		myGeomBindings.add(new BasicGoodyGeomBinding(mesh, material, color, rotation, shape, mass));
+		return myGeomBindings.size() - 1;
 	}
 	// For adding non-physical geometries
 	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation) {
@@ -138,40 +152,40 @@ public class BasicGoodyEntity extends VWorldEntity {
 
 	// For attaching "default" (zero index) geometry
 	@Override
-	public void attachToVirtualWorldNode(Node rootNode) {
-		attachToVirtualWorldNode(rootNode, 0);
+	public void attachToVirtualWorldNode(Node parentNode) {
+		attachToVirtualWorldNode(parentNode, 0);
 	}
 	
 	// For attaching geometry by index
 	// A bit messy now that we're using a myNode, especially in the multiple enqueueForJmeAndWait calls
 	// in this method; perhaps has potental to be refactored into something more satisfying...
-	protected void attachToVirtualWorldNode(Node rootNode, int geometryIndex) {
-		if (rootNode != myRootNode) { 
-			if (myRootNode != null) {
+	protected void attachToVirtualWorldNode(Node parentNode, int geometryIndex) {
+		if (parentNode != myParentNode) { 
+			if (myParentNode != null) {
 				enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 					@Override
 					public Void call() throws Exception {
-						myRootNode.detachChild(myNode);
+						myParentNode.detachChild(myContentNode);
 						return null;
 					}
 				});
 			}
-			myRootNode = rootNode;
+			myParentNode = parentNode;
 		}
 		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 			@Override
 			public Void call() throws Exception {
-				myRootNode.attachChild(myNode);
+				myParentNode.attachChild(myContentNode);
 				return null;
 			}
 		});		
-		attachGeometryToRootNode(geometryIndex);
+		setActiveBoundGeomIndex(geometryIndex);
 	}
 	// For switching to geometry from a new index, attached to existing root node
 	public void setGeometryByIndex(int geometryIndex) {
-		if (myRootNode != null) {
-			if (myGeometries.size() > geometryIndex) {
-				attachGeometryToRootNode(geometryIndex);
+		if (myParentNode != null) {
+			if (myGeomBindings.size() > geometryIndex) {
+				setActiveBoundGeomIndex(geometryIndex);
 			} else {
 				myLogger.error("Attempting to attach BasicVirtualThing {} with geometry index {}, but that geometry is not available",
 					myUri.getAbsUriString(), geometryIndex);
@@ -183,89 +197,81 @@ public class BasicGoodyEntity extends VWorldEntity {
 
 	@Override
 	public void detachFromVirtualWorldNode() {
-		if (attachedIndex != -1)  {
-			detachGeometryFromRootNode();
+		if (myCurrAttachedBindingIndex != -1)  {
+			detachActiveBoundGeom();
 		}
 	}
 
-	private void attachGeometryToRootNode(final int geometryIndex) {
+	private void setActiveBoundGeomIndex(final int geomBindIndex) {
 		detachFromVirtualWorldNode();
-		final BasicGoodyGeometry geometryToAttach = myGeometries.get(geometryIndex);
-		final Geometry jmeGeometry = geometryToAttach.getJmeGeometry();
-		setGeometryPositionAndRotation(geometryToAttach);
+		final BasicGoodyGeomBinding geomBindingToAttach = myGeomBindings.get(geomBindIndex);
+		final Geometry jmeGeometry = geomBindingToAttach.getJmeGeometry();
+		setGeometryPositionAndRotation(geomBindingToAttach);
 		//myLogger.info("Attaching geometry {} for goody {}", geometryIndex, myUri); // TEST ONLY
 		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 
 			@Override
 			public Void call() throws Exception {
-				myNode.attachChild(jmeGeometry);
-				if (geometryToAttach.myControl != null) {
+				myContentNode.attachChild(jmeGeometry);
+				if (geomBindingToAttach.myControl != null) {
 					myRenderRegCli.getJme3BulletPhysicsSpace().add(jmeGeometry);
 				}
-				attachedIndex = geometryIndex;
+				myCurrAttachedBindingIndex = geomBindIndex;
 				return null;
 			}
 		});
 	}
 
-	private void detachGeometryFromRootNode() {
-		final BasicGoodyGeometry currentGeometry = getCurrentAttachedBasicGoodyGeometry();
+	private void detachActiveBoundGeom() {
+		final BasicGoodyGeomBinding currentGeomBinding = getCurrentAttachedGeomBinding();
 		enqueueForJmeAndWait(new Callable<Void>() { // Do this on main render thread
 
 			@Override
 			public Void call() throws Exception {
-				if (currentGeometry.myControl != null) {
-					myRenderRegCli.getJme3BulletPhysicsSpace().remove(currentGeometry.myControl);
+				if (currentGeomBinding.myControl != null) {
+					myRenderRegCli.getJme3BulletPhysicsSpace().remove(currentGeomBinding.myControl);
 				}
 				// Must detach by name; detaching by saved geometry does not work
-				myNode.detachChildNamed(myUri.getLocalName()); 
-				attachedIndex = NULL_INDEX;
+				myContentNode.detachChildNamed(myUri.getLocalName()); 
+				myCurrAttachedBindingIndex = NULL_INDEX;
 				return null;
 			}
 		});
 	}
 	
 	protected void setNewGeometryRotationOffset(int geomId, Quaternion offset) {
-		BasicGoodyGeometry geom = myGeometries.get(geomId);
-		geom.myRotationOffset = offset;
+		BasicGoodyGeomBinding geomBinding = myGeomBindings.get(geomId);
+		geomBinding.myRotationOffset = offset;
 	}
 
-	@Override
-	public void setPosition(Vector3f newPosition) {
+	@Override public void setPosition(Vector3f newPosition) {
 		setPositionAndRotation(newPosition, myRotation);
 	}
 
-	public void setRotation(Quaternion newRotation) {
+	@Override public void setRotation(Quaternion newRotation) {
 		setPositionAndRotation(myPosition, newRotation); 
 	}
 
 	public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation) {
 		setNewPositionAndRotationIfNonNull(newPosition, newRotation);
-		if (attachedIndex != NULL_INDEX) {
+		if (myCurrAttachedBindingIndex != NULL_INDEX) {
 			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
-					setGeometryPositionAndRotation(getCurrentAttachedBasicGoodyGeometry());
+					setGeometryPositionAndRotation(getCurrentAttachedGeomBinding());
 					return null;
 				}
 			});
 		}
 	}
 
-	public Vector3f getPosition() {
-		return myPosition;
-	}
 
-	public Quaternion getRotation() {
-		return myRotation;
-	}
-
-	private Quaternion getTotalRotation(BasicGoodyGeometry goodieGeometry) {
+	private Quaternion getTotalRotation(BasicGoodyGeomBinding goodieGeometry) {
 		return myRotation.mult(goodieGeometry.myRotationOffset);
 	}
 	
-	private void setGeometryPositionAndRotation(BasicGoodyGeometry goodieGeometry) {
+	private void setGeometryPositionAndRotation(BasicGoodyGeomBinding goodieGeometry) {
 		Quaternion totalRotation = getTotalRotation(goodieGeometry);
 		//myLogger.info("Setting Goody position {}, rotation {} with offset {} for total rotation {}", // TEST ONLY
 		//	new Object[]{myPosition, myRotation, goodieGeometry.myRotationOffset, totalRotation}); // TEST ONLY
@@ -286,16 +292,16 @@ public class BasicGoodyEntity extends VWorldEntity {
 		AnimationFactory aniFactory = new AnimationFactory(duration, moveAnimName);
 		// First add starting position/rotation/scale to timeline at index 0
 		aniFactory.addKeyFrameTranslation(0, myPosition);
-		aniFactory.addKeyFrameRotation(0, getTotalRotation(getCurrentAttachedBasicGoodyGeometry()));
-		aniFactory.addKeyFrameScale(0, myScale);
+		aniFactory.addKeyFrameRotation(0, getTotalRotation(getCurrentAttachedGeomBinding()));
+		aniFactory.addKeyFrameScale(0, myScaleVec);
 		// Now add new position/rotation/scale at duration:
 		setNewPositionAndRotationIfNonNull(newPosition, newOrientation);
 		if (newScale != null) {
-			myScale = newScale;
+			myScaleVec = newScale;
 		}
 		aniFactory.addTimeTranslation(duration, myPosition);
-		aniFactory.addTimeRotation(duration, getTotalRotation(getCurrentAttachedBasicGoodyGeometry()));
-		aniFactory.addTimeScale(duration, myScale);
+		aniFactory.addTimeRotation(duration, getTotalRotation(getCurrentAttachedGeomBinding()));
+		aniFactory.addTimeScale(duration, myScaleVec);
 		// Finally the Animation is generated and linked to the geometry via an AnimationControl
 		Animation moveAnimation = aniFactory.buildAnimation();
 		AnimControl goodyControl = new AnimControl(); // Should this be retained for reuse?
@@ -316,25 +322,22 @@ public class BasicGoodyEntity extends VWorldEntity {
 		}
 	}
 	
-	@Override
-	public void setScale(final Float scaleFactor) {
-		setVectorScale(new Vector3f(scaleFactor, scaleFactor, scaleFactor));
-	}
+
 	
-	public void setVectorScale(final Vector3f scaleVector) {
+	@Override public void setVectorScale(final Vector3f scaleVector) {
 		if (scaleVector != null) {
 			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
-					for (BasicGoodyGeometry aGeometry : myGeometries) {
-						Vector3f rotatedScale = aGeometry.myRotationOffset.mult(scaleVector);
-						aGeometry.myGeometry.setLocalScale(rotatedScale);
+					for (BasicGoodyGeomBinding aGeomBinding : myGeomBindings) {
+						Vector3f rotatedScale = aGeomBinding.myRotationOffset.mult(scaleVector);
+						aGeomBinding.myGeometry.setLocalScale(rotatedScale);
 					}
 					return null;
 				}
 			});
-			myScale = scaleVector;
+			myScaleVec = scaleVector;
 		}
 	}
 	
@@ -343,14 +346,14 @@ public class BasicGoodyEntity extends VWorldEntity {
 		if (scale != null) {
 			setVectorScale(scale);
 		} else if (scalarScale != null) {
-			setScale(scalarScale);
+			setUniformScaleFactor(scalarScale);
 		}
 	}
 	
 	public void setCurrentGeometryColor(final ColorRGBA geoColor) {
 		//myLogger.info("setting color with color {} to index {}", geoColor, attachedIndex); // TEST ONLY
-		if ((geoColor != null) && (attachedIndex != NULL_INDEX)) {
-			BasicGoodyGeometry currentGeometry = myGeometries.get(attachedIndex);
+		if ((geoColor != null) && (myCurrAttachedBindingIndex != NULL_INDEX)) {
+			BasicGoodyGeomBinding currentGeometry = myGeomBindings.get(myCurrAttachedBindingIndex);
 			currentGeometry.setMaterialColor(geoColor);
 		}
 	}
@@ -391,17 +394,17 @@ public class BasicGoodyEntity extends VWorldEntity {
 	// Adding it to provide goody cinematic capabilities on a trial basis
 	public Geometry getCurrentAttachedGeometry() {
 		Geometry currentGeometry = null;
-		BasicGoodyGeometry currentGoodyGeometry = getCurrentAttachedBasicGoodyGeometry();
-		if (currentGoodyGeometry != null) {
-			currentGeometry = currentGoodyGeometry.getJmeGeometry();
+		BasicGoodyGeomBinding currGeomBind = getCurrentAttachedGeomBinding();
+		if (currGeomBind != null) {
+			currentGeometry = currGeomBind.getJmeGeometry();
 		}
 		return currentGeometry;
 	}
 	
-	private BasicGoodyGeometry getCurrentAttachedBasicGoodyGeometry() {
-		BasicGoodyGeometry currentGeometry = null;
-		if (attachedIndex != NULL_INDEX) {
-			currentGeometry = myGeometries.get(attachedIndex);
+	private BasicGoodyGeomBinding getCurrentAttachedGeomBinding() {
+		BasicGoodyGeomBinding currentGeometry = null;
+		if (myCurrAttachedBindingIndex != NULL_INDEX) {
+			currentGeometry = myGeomBindings.get(myCurrAttachedBindingIndex);
 		}
 		return currentGeometry;
 	}

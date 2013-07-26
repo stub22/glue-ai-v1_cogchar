@@ -48,13 +48,11 @@ public class SillyDemoMotionComputer extends CogcharMotionComputer {
 			Robot.RobotPositionHashMap goalPosMap = new Robot.RobotPositionHashMap();
 			goalPosMap.put(waistRJID, nextWaistPos);
 			source.move(goalPosMap, moveLengthMilliSec);
-			if ((myCycleCount % 1000) == 1) {
+			if ((myCycleCount % 200) == 1) {
 				theLogger.info("notify[cycle=" + myCycleCount + ", currentTime" + currentTimeUTC + ", moveLen="
-					+ moveLengthMilliSec + ", src=" + source + ", botID=" + srcBotID + ", oldWaistPos=" + oldWaistPos 
-					+ ", nextWaistPos=" + nextWaistPos + ", curPosMap=" + rpm + "]");
+					+ moveLengthMilliSec + ", src=" + source + ", botID=" + srcBotID + ", waistRJID" + waistRJID 
+					+ ", oldWaistPos=" + oldWaistPos + ", nextWaistPos=" + nextWaistPos + ", curPosMap=" + rpm + "]");
 			}
-			
-			
 		}
 
 	}

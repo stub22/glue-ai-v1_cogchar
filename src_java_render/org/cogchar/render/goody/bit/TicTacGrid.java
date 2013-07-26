@@ -26,6 +26,8 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.shape.Cylinder;
+import com.jme3.scene.Node;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,10 +87,13 @@ public class TicTacGrid extends BasicGoodyEntity {
 			myLogger.warn("Can't add TicTacMark to grid; there is already a mark at position ({}, {})", xPos, yPos);
 		} else {
 			Vector3f markPosition = getWorldPositionForMark(xPos, yPos);
+			Quaternion rotation = getRotation();
+			Vector3f scale = getScale();
 			TicTacMark markGoody = 
-					new TicTacMark(myRenderRegCli, markUri, markPosition, myRotation, myScale, isPlayerO);
+					new TicTacMark(myRenderRegCli, markUri, markPosition, rotation, scale, isPlayerO);
 			getTheGoodySpace().addGoody(markGoody);
-			markGoody.attachToVirtualWorldNode(myRootNode);
+			Node parentNode = getParentNode();
+			markGoody.attachToVirtualWorldNode(parentNode);
 			markMap.put(markUri, markGoody);
 		}
 	}
@@ -126,12 +131,15 @@ public class TicTacGrid extends BasicGoodyEntity {
 	}
 	
 	private Vector3f getWorldPositionForMark(int xPos, int yPos) {
-		float markOffsetX = SIZE_MULTIPLIER*myScale.getX()/3f;
-		float markOffsetY = SIZE_MULTIPLIER*myScale.getY()/3f;
+		Quaternion rotation = getRotation();
+		Vector3f scale = getScale();
+		Vector3f position = getPosition();
+		float markOffsetX = SIZE_MULTIPLIER*scale.getX()/3f;
+		float markOffsetY = SIZE_MULTIPLIER*scale.getY()/3f;
 		Vector3f relativeMarkPosition = new Vector3f(markOffsetX*(xPos-2), -markOffsetY*(yPos-2), 0);
 		// Now rotate positions according to myRotation
-		relativeMarkPosition = myRotation.mult(relativeMarkPosition);
-		return myPosition.add(relativeMarkPosition); 
+		relativeMarkPosition = rotation.mult(relativeMarkPosition);
+		return position.add(relativeMarkPosition); 
 	}
 	
 	private Vector3f getWorldPositionForMark(TicTacMark mark) {
@@ -152,16 +160,19 @@ public class TicTacGrid extends BasicGoodyEntity {
 	
 	@Override
 	public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation) {
-		setPositionRotationAndScale(newPosition, newRotation, myScale);
+		Vector3f scale = getScale();
+		setPositionRotationAndScale(newPosition, newRotation, scale);
 	}
 	
 	@Override
-	public void setScale(Float newScale) {
+	public void setUniformScaleFactor(Float newScale) {
 		setVectorScale(new Vector3f(newScale, newScale, newScale));
 	}
 	@Override
 	public void setVectorScale(Vector3f newScale) {
-		setPositionRotationAndScale(myPosition, myRotation, newScale);
+		Quaternion rotation = getRotation();
+		Vector3f position = getPosition();		
+		setPositionRotationAndScale(position, rotation, newScale);
 	}
 	
 	final public void setPositionRotationAndScale(Vector3f newPosition, Quaternion newRotation, Vector3f newScale) {
