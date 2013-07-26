@@ -20,6 +20,7 @@ import org.cogchar.render.app.entity.GoodyAction;
 import org.cogchar.render.app.entity.GoodyFactory;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.awt.Dimension;
@@ -91,7 +92,7 @@ public class BasicGoody2dImpl extends VWorldEntity {
 	}
 	
 	@Override
-	public void setScale(Float scale) {
+	public void setUniformScaleFactor(Float scale) {
 		//myLogger.info("Setting 2d Goody scale to {}", scale); // TEST ONLY
 		if (myOverlayText == null) {
 			myLogger.warn("Attemping to set scale on 2D Goody, but initial GoodyAttributes have not been set");
@@ -172,7 +173,7 @@ public class BasicGoody2dImpl extends VWorldEntity {
 			case MOVE : 
 			case SET : {
 				setPosition(ga.getLocationVector());
-				setScale(ga.getScale());
+				setUniformScaleFactor(ga.getScale());
 				setColor(ga.getColor());
 				break;
 			}
@@ -188,4 +189,6 @@ public class BasicGoody2dImpl extends VWorldEntity {
 		myScreenHeight = screenDimension.height;
 		setPosition(myScalePosition, false); // Reset absolute position using new screen dimensions. No waiting!
 	}
+
+
 }

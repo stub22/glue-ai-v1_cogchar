@@ -119,7 +119,7 @@ public class VWorldHumanoidFigureEntity extends VWorldEntity {
 	}
 	
 	@Override
-	public void setScale(Float scale) {
+	public void setUniformScaleFactor(Float scale) {
 		myLogger.warn("setScale not supported in HumanoidFigureGoodyWrapper");
 	}
 	

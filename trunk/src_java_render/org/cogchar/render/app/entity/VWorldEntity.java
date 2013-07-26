@@ -16,6 +16,7 @@
 
 package org.cogchar.render.app.entity;
 
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.awt.Dimension;
@@ -48,10 +49,30 @@ public abstract class VWorldEntity {
 		return myUri;
 	}
 	public abstract void setPosition(Vector3f position);
-	public abstract void setScale(Float scale);
-	public abstract void attachToVirtualWorldNode(Node attachmentNode);
-	public abstract void detachFromVirtualWorldNode();
+
+	public void setRotation(Quaternion newRotation) {
+		throw new UnsupportedOperationException("Not supported by  " + this); 
+	}
+
+	public void setVectorScale(Vector3f scaleVector) {
+		throw new UnsupportedOperationException("Not supported by " + this); 
+	}	
+	public void setUniformScaleFactor(Float scale) {
+		myLogger.warn("setUniformScaleFactor not supported by " + this);
+	}
+
+	// public abstract void attachToVirtualWorldNode(Node attachmentNode);
+	// public abstract void detachFromVirtualWorldNode();
 	public abstract void applyAction(GoodyAction ga);
+	
+
+	public void attachToVirtualWorldNode(Node attachmentNode) {
+		myLogger.warn("attachToVirtualWorldNode not supported by " + this);
+	}
+
+	public  void detachFromVirtualWorldNode() {
+		myLogger.warn("detachFromVirtualWorldNode not supported by " + this);
+	}
 	
 	public void applyScreenDimension(Dimension screenDimension) {}; // No operation necessary unless desired, as in BasicGoody2dImpl
 	

@@ -114,7 +114,7 @@ public class VWorldCameraEntity extends VWorldEntity {
 		//create the camera Node
 		final CameraNode camNode = new CameraNode("Camera Node of " + myUri.getLocalName(), myCamera);
 		//Get the Goody's Node
-		final Node goodyNode = attachedGoody.getNode();
+		final Node goodyNode = attachedGoody.getContentNode();
 		myLogger.info("Attaching camNode to goodyNode {}", attachedGoody.getUri()); // TEST ONLY
 		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
 			@Override
@@ -153,19 +153,11 @@ public class VWorldCameraEntity extends VWorldEntity {
 	}
 	
 	@Override
-	public void setScale(Float scale) {
+	public void setUniformScaleFactor(Float scale) {
 		myLogger.warn("setScale not supported in CameraGoodyWrapper");
 	}
 	
-	@Override
-	public void attachToVirtualWorldNode(Node attachmentNode) {
-		myLogger.warn("attachToVirtualWorldNode not supported in CameraGoodyWrapper");
-	}
-	@Override
-	public  void detachFromVirtualWorldNode() {
-		myLogger.warn("detachFromVirtualWorldNode not supported in CameraGoodyWrapper");
-	}
-	
+
 	@Override
 	public void applyAction(GoodyAction ga) {
 		Vector3f newLocation = ga.getLocationVector();
