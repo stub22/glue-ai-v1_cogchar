@@ -35,6 +35,13 @@ public class RobotConnector {
      * id of robotName/RobotConnection, 
      * a speech service with an id of robotName/SpeechService, 
      * and animation player with id robotName/AnimPlayer
+     * You may specify additional speech services for a robot by adding colon 
+     * separated speech service prefixes after the ip address:
+     * robot01;127.0.0.1;klauss:saul, robot02...
+     * This will create speech services with ids robot01/klaussSpeechService 
+     * and robot01/saulSpeechService.  Klauss will use destinations such as 
+     * klaussRequest and klaussEvent instead of the default destinations of 
+     * speechRequest and speechEvent.
      * @param context
      * @param envVarKey 
      */
