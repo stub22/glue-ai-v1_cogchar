@@ -20,10 +20,8 @@ package org.cogchar.outer.behav.demo;
 import java.util.Properties;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.config.Configuration;
-import org.osgi.framework.BundleContext;
+import org.robokind.api.common.lifecycle.ManagedService;
 import org.robokind.api.common.lifecycle.utils.ManagedServiceFactory;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
 import org.robokind.api.messaging.services.ServiceCommand;
 import org.robokind.api.messaging.services.ServiceError;
 import org.robokind.api.speech.SpeechConfig;
@@ -41,11 +39,11 @@ import static org.robokind.api.common.lifecycle.config.RKManagedGroupConfigUtils
  * @author matt
  */
 public class SpeechConnector {
-    private final static String COMMAND_DEST_CONFIG_ID = "speechCommandDestConfig";
-    private final static String CONFIG_DEST_CONFIG_ID = "speechConfigDestConfig";
-    private final static String ERROR_DEST_CONFIG_ID = "speechErrorDestConfig";
-    private final static String REQUEST_DEST_CONFIG_ID = "speechRequestDestConfig";
-    private final static String EVENT_DEST_CONFIG_ID = "speechEventDestConfig";
+    private final static String COMMAND_DEST_CONFIG_ID = "CommandDestConfig";
+    private final static String CONFIG_DEST_CONFIG_ID = "ConfigDestConfig";
+    private final static String ERROR_DEST_CONFIG_ID = "ErrorDestConfig";
+    private final static String REQUEST_DEST_CONFIG_ID = "RequestDestConfig";
+    private final static String EVENT_DEST_CONFIG_ID = "EventDestConfig";
     
     private final static String COMMAND_SERIALIZE_CONFIG_ID = ServiceCommand.class.toString();
     private final static String CONFIG_SERIALIZE_CONFIG_ID = SpeechConfig.class.toString();
@@ -53,68 +51,81 @@ public class SpeechConnector {
     private final static String REQUEST_SERIALIZE_CONFIG_ID = SpeechRequest.class.toString();
     private final static String EVENT_SERIALIZE_CONFIG_ID = SpeechEventList.class.toString();
     
-    private final static String COMMAND_DEST_NAME = "speechCommand";
-    private final static String CONFIG_DEST_NAME = "speechCommand";
-    private final static String ERROR_DEST_NAME = "speechError";
-    private final static String REQUEST_DEST_NAME = "speechRequest";
-    private final static String EVENT_DEST_NAME = "speechEvent";
+    private final static String COMMAND_DEST_NAME = "Command";
+    private final static String CONFIG_DEST_NAME = "Command";
+    private final static String ERROR_DEST_NAME = "Error";
+    private final static String REQUEST_DEST_NAME = "Request";
+    private final static String EVENT_DEST_NAME = "Event";
     
-    private final static String COMMAND_SENDER_ID = "speechCommand";
-    private final static String CONFIG_SENDER_ID = "speechConfig";
-    private final static String ERROR_RECEIVER_ID = "speechError";
-    private final static String REQUEST_SENDER_ID = "speechRequest";
-    private final static String EVENT_RECEIVER_ID = "speechEvent";
+    private final static String COMMAND_SENDER_ID = "Command";
+    private final static String CONFIG_SENDER_ID = "Config";
+    private final static String ERROR_RECEIVER_ID = "Error";
+    private final static String REQUEST_SENDER_ID = "Request";
+    private final static String EVENT_RECEIVER_ID = "Event";
         
     public final static String GROUP_PREFIX = "RKSpeechGroup";
     
-    public static void connect(BundleContext context, 
-            String speechGroupId, String destPrefix, String connectionConfigId) {
-        if(context == null 
+    public static void connect(ManagedServiceFactory fact, 
+            String speechGroupId, String speechPrefix, String connectionConfigId) {
+        if(fact == null 
                 || speechGroupId ==  null || connectionConfigId == null){
             throw new NullPointerException();
         }
-        ManagedServiceFactory fact = new OSGiComponentFactory(context);
-        registerDestConfigs(speechGroupId, destPrefix, fact);
-        launchComponents(speechGroupId, connectionConfigId, null, fact);
+        registerDestConfigs(speechGroupId, speechPrefix, fact);
+        launchComponents(speechGroupId, connectionConfigId, speechPrefix, null, fact);
         
-        launchRemoteSpeechClient(context, speechGroupId, 
-                speechGroupId,  COMMAND_SENDER_ID, CONFIG_SENDER_ID, 
-                ERROR_RECEIVER_ID, REQUEST_SENDER_ID, EVENT_RECEIVER_ID);
+        launchRemoteSpeechClient(fact, speechGroupId, 
+                speechGroupId,  
+                speechPrefix + COMMAND_SENDER_ID, 
+                speechPrefix + CONFIG_SENDER_ID, 
+                speechPrefix + ERROR_RECEIVER_ID, 
+                speechPrefix + REQUEST_SENDER_ID, 
+                speechPrefix + EVENT_RECEIVER_ID);
     }
     
-    private static void registerDestConfigs(String groupId, String destPrefix, ManagedServiceFactory fact){
+    private static void registerDestConfigs(String groupId, String speechPrefix, ManagedServiceFactory fact){
         String idBase =  groupId + "/" + GROUP_PREFIX;
-        String destBase = destPrefix; //groupId + GROUP_PREFIX;
+        String destBase = ""; //groupId + GROUP_PREFIX;
         RKMessagingConfigUtils.registerQueueConfig(
-                idBase + "/" + COMMAND_DEST_CONFIG_ID, destBase + COMMAND_DEST_NAME,  null, fact);
+                idBase + "/" + speechPrefix + COMMAND_DEST_CONFIG_ID, 
+                destBase + speechPrefix + COMMAND_DEST_NAME,  null, fact);
         RKMessagingConfigUtils.registerQueueConfig(
-                idBase + "/" + CONFIG_DEST_CONFIG_ID, destBase + CONFIG_DEST_NAME,  null, fact);
+                idBase + "/" + speechPrefix + CONFIG_DEST_CONFIG_ID, 
+                destBase + speechPrefix + CONFIG_DEST_NAME,  null, fact);
         RKMessagingConfigUtils.registerTopicConfig(
-                idBase + "/" + ERROR_DEST_CONFIG_ID, destBase + ERROR_DEST_NAME,  null, fact);
+                idBase + "/" + speechPrefix + ERROR_DEST_CONFIG_ID, 
+                destBase + speechPrefix + ERROR_DEST_NAME,  null, fact);
         RKMessagingConfigUtils.registerQueueConfig(
-                idBase + "/" + REQUEST_DEST_CONFIG_ID, destBase + REQUEST_DEST_NAME,  null, fact);
+                idBase + "/" + speechPrefix + REQUEST_DEST_CONFIG_ID, 
+                destBase + speechPrefix + REQUEST_DEST_NAME,  null, fact);
         RKMessagingConfigUtils.registerTopicConfig(
-                idBase + "/" + EVENT_DEST_CONFIG_ID, destBase + EVENT_DEST_NAME,  null, fact);
+                idBase + "/" + speechPrefix + EVENT_DEST_CONFIG_ID, 
+                destBase + speechPrefix + EVENT_DEST_NAME,  null, fact);
     }
     
     private static void launchComponents(
-            String groupId, String connectionConfigId,
+            String groupId, String connectionConfigId, String speechPrefix,
             Properties props, ManagedServiceFactory fact){
         String idBase = groupId + "/" + GROUP_PREFIX;
-        launchComponent(idBase + "/" + COMMAND_SENDER_ID, props, REMOTE_NOTIFIER, 
-                idBase + "/" + COMMAND_DEST_CONFIG_ID, connectionConfigId,
+        launchComponent(
+                idBase + "/" + speechPrefix + COMMAND_SENDER_ID, props, REMOTE_NOTIFIER, 
+                idBase + "/" + speechPrefix + COMMAND_DEST_CONFIG_ID, connectionConfigId,
                 COMMAND_SERIALIZE_CONFIG_ID, fact);
-        launchComponent(idBase + "/" + CONFIG_SENDER_ID, props, REMOTE_NOTIFIER, 
-                idBase + "/" + CONFIG_DEST_CONFIG_ID, connectionConfigId,
+        launchComponent(
+                idBase + "/" + speechPrefix + CONFIG_SENDER_ID, props, REMOTE_NOTIFIER, 
+                idBase + "/" + speechPrefix + CONFIG_DEST_CONFIG_ID, connectionConfigId,
                 CONFIG_SERIALIZE_CONFIG_ID, fact);
-        launchComponent(idBase + "/" + ERROR_RECEIVER_ID, props, REMOTE_LISTENER, 
-                idBase + "/" + ERROR_DEST_CONFIG_ID, connectionConfigId, 
+        launchComponent(
+                idBase + "/" + speechPrefix + ERROR_RECEIVER_ID, props, REMOTE_LISTENER, 
+                idBase + "/" + speechPrefix + ERROR_DEST_CONFIG_ID, connectionConfigId, 
                 ERROR_SERIALIZE_CONFIG_ID, fact);
-        launchComponent(idBase + "/" + REQUEST_SENDER_ID, props, REMOTE_NOTIFIER, 
-                idBase + "/" + REQUEST_DEST_CONFIG_ID, connectionConfigId, 
+        launchComponent(
+                idBase + "/" + speechPrefix + REQUEST_SENDER_ID, props, REMOTE_NOTIFIER, 
+                idBase + "/" + speechPrefix + REQUEST_DEST_CONFIG_ID, connectionConfigId, 
                 REQUEST_SERIALIZE_CONFIG_ID, fact);
-        launchComponent(idBase + "/" + EVENT_RECEIVER_ID, props, REMOTE_LISTENER, 
-                idBase + "/" + EVENT_DEST_CONFIG_ID, connectionConfigId, 
+        launchComponent(
+                idBase + "/" + speechPrefix + EVENT_RECEIVER_ID, props, REMOTE_LISTENER, 
+                idBase + "/" + speechPrefix + EVENT_DEST_CONFIG_ID, connectionConfigId, 
                 EVENT_SERIALIZE_CONFIG_ID, fact);
     }
     
@@ -142,7 +153,7 @@ public class SpeechConnector {
     }
     
     private static void launchRemoteSpeechClient(
-            BundleContext context,
+            ManagedServiceFactory fact,
             String speechClientId, String speechHostId,
             String commandSenderId, String configSenderId, 
             String errorReceiverId, String speechRequestSenderId,
@@ -156,7 +167,7 @@ public class SpeechConnector {
                         groupId(idBase, errorReceiverId, LISTENER_COMPONENT), 
                         groupId(idBase, speechRequestSenderId, NOTIFIER_COMPONENT), 
                         groupId(idBase, speechEventsReceiverId, LISTENER_COMPONENT));
-        OSGiComponent speechComp = new OSGiComponent(context, lifecycle);
+        ManagedService speechComp = fact.createService(lifecycle, null);
         speechComp.start();
     }
     private static String groupId(String groupId, String suffix, String component){
