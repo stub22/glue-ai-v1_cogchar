@@ -39,7 +39,7 @@ public class ChannelWiringDemo extends WiringDemo {
 	
 	public String myDefaultChanGroupQName = MasterDemoNames.CHAN_GROUP_QN; // "csi:demo_master_chan_group_22";
 
-	public ChannelWiringDemo(BundleContext bundleCtx, EnhancedRepoClient demoRepoClient) {
+	public ChannelWiringDemo(BundleContext bundleCtx, RepoClient demoRepoClient) {
 		super(bundleCtx, demoRepoClient);
 	}
 	public void initialChannelLoad(BundleContext bundleCtx, RepoClient demoRepoClient, String chanGroupName)  { 

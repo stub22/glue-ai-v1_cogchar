@@ -36,7 +36,7 @@ public class TheaterWiringDemo extends WiringDemo {
 	
 	public String myDefaultDebugCharQN = "csi:debug_QN_for_theater_70";
 	
-	public TheaterWiringDemo(BundleContext bundleCtx,  EnhancedRepoClient demoRepoClient) {
+	public TheaterWiringDemo(BundleContext bundleCtx,  RepoClient demoRepoClient) {
 		super(bundleCtx, demoRepoClient);
 	}	
 	public OSGiTheater testTheaterStartup(BundleContext bundleCtx, RepoClient demoRepoClient, String debugCharQN) {

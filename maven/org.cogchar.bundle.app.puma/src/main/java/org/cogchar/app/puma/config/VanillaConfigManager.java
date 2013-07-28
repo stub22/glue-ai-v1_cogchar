@@ -16,14 +16,14 @@
 
 package org.cogchar.app.puma.config;
 
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.impl.store.FancyRepo;
 import org.appdapter.core.matdat.RepoSpec;
-import org.appdapter.core.matdat.RepoClientTester;
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.robokind.api.common.osgi.OSGiUtils;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -56,22 +56,42 @@ public class VanillaConfigManager extends PumaConfigManager {
 	 * -compatible lifecycles should be started.
 	 */
 	protected void applyVanillaRepoClientAsMainConfig( PumaContextMediator mediator, BundleContext optBundCtxForLifecycle) {
-		// TODO:  "turn off" any previous config's lifecycle
-		RepoClient vanRC = makeVanillaRepoClient(mediator);
-		if (vanRC != null) {
-			setMainConfigRepoClient(vanRC);
+        RepoClient repoClient = getExistingRepoClient(optBundCtxForLifecycle);
+        // TODO:  "turn off" any previous config's lifecycle
+        if(repoClient == null){
+            repoClient = makeVanillaRepoClient(mediator);
+        }
+		if (repoClient != null) {
+			setMainConfigRepoClient(repoClient);
 			if (optBundCtxForLifecycle != null)  {
-				myQueryComp = startRepoClientLifecyle(optBundCtxForLifecycle, vanRC);
+				myQueryComp = startRepoClientLifecyle(optBundCtxForLifecycle, repoClient);
 			}
 		}
 	}
+    
+    private RepoClient getExistingRepoClient(BundleContext context){
+        ServiceReference[] refs = null;
+        try{
+            refs = context.getServiceReferences(RepoClient.class.getName(), null);
+        }catch(InvalidSyntaxException ex){ }
+        if(refs == null){
+            return null;
+        }
+        for(ServiceReference ref : refs){
+            RepoClient rc = OSGiUtils.getService(RepoClient.class, context, ref);
+            if(rc != null){
+                return rc;
+            }
+        }
+        return null;
+    }
 	/**
 	 * Ask client Mediator for its MainConfig RepoSpec, and then make a repo for that spec,
 	 * thus implementing the crux of Cogchar-PUMA boot customization.
 	 * @param mediator
 	 * @return 
 	 */
-	protected static RepoClient makeVanillaRepoClient(PumaContextMediator mediator) {
+	private static RepoClient makeVanillaRepoClient(PumaContextMediator mediator) {
 		RepoSpec rspec = mediator.getMainConfigRepoSpec();
 				
 		Repo.WithDirectory testRepo = rspec.makeRepo();

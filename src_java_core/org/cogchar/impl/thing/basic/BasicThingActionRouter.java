@@ -38,6 +38,16 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 
 	private	Map<Ident, List<WantsThingAction>>	myConsumersBySrcGraphID = new HashMap<Ident, List<WantsThingAction>>();
 
+    private Ident myViewingAgentID;
+    private Long myCutoffTime;
+    
+//    public BasicThingActionRouter(){}
+    
+    public BasicThingActionRouter(Long cutoffTime, Ident viewingAgentID){
+        myCutoffTime = cutoffTime;
+        myViewingAgentID = viewingAgentID;
+    }
+    
 	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
 		List<WantsThingAction> consumerList = findConsumersForSourceGraph(srcGraphID);
 		ConsumpStatus highestSoFar = ConsumpStatus.IGNORED;
@@ -79,7 +89,8 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 	@Deprecated public void consumeAllActions(RepoClient rc) {
 		for (Ident srcGraphID : myConsumersBySrcGraphID.keySet()) {
 			getLogger().info("Consuming actions from ThingAction-graph: {}", srcGraphID);
-			consumeAllActions(rc, srcGraphID);
+//            consumeAllActions(rc, srcGraphID);
+			viewAndMarkAllActions(rc, srcGraphID, myCutoffTime, myViewingAgentID);
 		}
 	}
 	

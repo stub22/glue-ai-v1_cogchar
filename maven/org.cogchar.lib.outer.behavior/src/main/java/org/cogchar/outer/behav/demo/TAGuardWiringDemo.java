@@ -24,8 +24,8 @@ import java.util.Set;
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.model.JenaFileManagerUtils;
-import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.RepoClient;
 import org.cogchar.impl.scene.ThingActionGuardSpec;
 import org.cogchar.impl.thing.filters.ThingActionFilterBuilder;
 import org.osgi.framework.BundleContext;
@@ -44,12 +44,12 @@ public class TAGuardWiringDemo {
 	public static final String TA_Guard_GROUP_QN = "demoTAGuardGroup";
 
 	public static Map<ThingActionGuardSpec, ManagedService> loadAndRegisterSpecs(
-			BundleContext context, EnhancedRepoClient defaultDemoRepoClient, String... taGuardGraphQNs) {
+			BundleContext context, RepoClient defaultDemoRepoClient, String... taGuardGraphQNs) {
 		
 		JenaFileManagerUtils.ensureClassLoaderRegisteredWithDefaultJenaFM(TAGuardWiringDemo.class.getClassLoader());
 		JenaFileManagerUtils.ensureClassLoaderRegisteredWithDefaultJenaFM(ThingActionGuardSpec.class.getClassLoader());
 		JenaFileManagerUtils.ensureClassLoaderRegisteredWithDefaultJenaFM(ThingActionFilterBuilder.class.getClassLoader());
-		AssemblerUtils.buildAllObjectsInRdfFile("file:./bmd_A.ttl");
+//		AssemblerUtils.buildAllObjectsInRdfFile("file:./bmd_A.ttl");
 
 		Map<ThingActionGuardSpec, ManagedService> specServices = new HashMap<ThingActionGuardSpec, ManagedService>();
 
@@ -67,7 +67,7 @@ public class TAGuardWiringDemo {
 		return specServices;
 	}
 
-	private static List<ThingActionGuardSpec> loadTAGuardSpecs(EnhancedRepoClient defaultDemoRepoClient, String taGuardGraphQN) {
+	private static List<ThingActionGuardSpec> loadTAGuardSpecs(RepoClient defaultDemoRepoClient, String taGuardGraphQN) {
 		List<ThingActionGuardSpec> specs = new ArrayList();
 		// Determine the URI for the 'qualified name' which identifies the data in the repo
 		Ident taGuardGraphID = defaultDemoRepoClient.makeIdentForQName(taGuardGraphQN);

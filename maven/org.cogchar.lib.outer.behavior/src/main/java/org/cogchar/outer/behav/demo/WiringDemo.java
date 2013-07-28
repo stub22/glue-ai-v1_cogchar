@@ -31,18 +31,18 @@ import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 
 public abstract class WiringDemo extends BasicDebugger {
 	private		BundleContext			myDefaultBundleContext;
-	private		EnhancedRepoClient		myDefaultRepoClient;
+	private		RepoClient		myDefaultRepoClient;
 	
 	abstract public void registerJFluxExtenders(BundleContext bundleCtx);
 	
-	public WiringDemo(BundleContext bc, EnhancedRepoClient rc) {
+	public WiringDemo(BundleContext bc, RepoClient rc) {
 		myDefaultBundleContext = bc;
 		myDefaultRepoClient = rc;
 	}
 	protected BundleContext getDefaultBundleContext() { 
 		return myDefaultBundleContext;
 	}
-	protected EnhancedRepoClient getDefaultRepoClient() {
+	protected RepoClient getDefaultRepoClient() {
 		return myDefaultRepoClient;
 	}
     public static Runnable getRegistrationRunnable(
