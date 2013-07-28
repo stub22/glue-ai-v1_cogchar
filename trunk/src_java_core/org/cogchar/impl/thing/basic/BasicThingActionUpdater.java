@@ -88,13 +88,6 @@ public class BasicThingActionUpdater {
 	 * @return 
 	 */
 	public List<ThingActionSpec> viewActionsAndMark(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {		
-		if (true) {
-			List<ThingActionSpec> actionSpecList0 = takeThingActions(rc, srcGraphID);
-			if (actionSpecList0.size()==0) {
-				return actionSpecList0;
-			}
-			return actionSpecList0;
-		}
 		InitialBinding queryIB = rc.makeInitialBinding();
 		Literal cutoffTimeLit = rc.makeTypedLiteral(cutoffTStamp.toString(), XSDDatatype.XSDlong);
 		queryIB.bindNode(ThingCN.V_cutoffTStampMsec, cutoffTimeLit);

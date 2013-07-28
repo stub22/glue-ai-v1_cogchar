@@ -16,6 +16,7 @@
 package org.cogchar.bundle.app.puma;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
@@ -32,6 +33,8 @@ import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.channel.AnimFileSpecReader;
 import org.cogchar.impl.channel.FancyFile;
+import org.cogchar.name.entity.EntityRoleCN;
+import static org.cogchar.name.entity.EntityRoleCN.RKRT_NS_PREFIX;
 import org.cogchar.render.sys.module.RenderModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +49,9 @@ public class PumaAppUtils extends BasicDebugger {
 	private static BasicThingActionRouter	theRouter;
 	public static BasicThingActionRouter	getActionRouter() {
 		if (theRouter == null) {
-			theRouter = new BasicThingActionRouter();
+            String localName = "theRouter";
+            Ident agentID = new FreeIdent(RKRT_NS_PREFIX + localName, localName);
+            theRouter = new BasicThingActionRouter(0L, agentID);
 		}
 		return theRouter;
 	}

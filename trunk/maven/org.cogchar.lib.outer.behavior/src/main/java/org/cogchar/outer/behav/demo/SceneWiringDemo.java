@@ -63,7 +63,7 @@ public class SceneWiringDemo extends WiringDemo {
 
 				
 	
-	public SceneWiringDemo(BundleContext bc, EnhancedRepoClient rc) {
+	public SceneWiringDemo(BundleContext bc, RepoClient rc) {
 		super(bc, rc);
 	}
 
@@ -140,7 +140,7 @@ public class SceneWiringDemo extends WiringDemo {
 	 * @param bunCtx - needed when we register + unregister scene spces to OSGi
 	 * @param freshRepoCli - a source of data assumed to already be in a fresh + tasty state.
 	 */
-	public void reloadSceneSpecs(BundleContext bunCtx, EnhancedRepoClient freshRepoCli) {
+	public void reloadSceneSpecs(BundleContext bunCtx, RepoClient freshRepoCli) {
 		// Dump old scenes from OSGi registry.  
 		unregisterAllSceneSpecs(bunCtx);
 		

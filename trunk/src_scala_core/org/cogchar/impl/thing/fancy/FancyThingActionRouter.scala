@@ -22,6 +22,6 @@ import org.cogchar.impl.thing.basic.BasicThingActionRouter;
  * @author Stu B. <www.texpedient.com>
  */
 
-class FancyThingActionRouter extends BasicThingActionRouter {
+class FancyThingActionRouter {// extends BasicThingActionRouter {
 	
 }

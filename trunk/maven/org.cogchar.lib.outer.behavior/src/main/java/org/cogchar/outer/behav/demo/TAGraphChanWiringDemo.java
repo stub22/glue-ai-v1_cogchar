@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.RepoClient;
 import org.cogchar.impl.channel.ThingActionChanSpec;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.ManagedService;
@@ -40,7 +40,7 @@ public class TAGraphChanWiringDemo {
     public static final String TA_CHAN_GROUP_QN = "demoTAChanGroup";
     
     public static Map<ThingActionChanSpec,ManagedService> loadAndRegisterSpecs(
-            BundleContext context, EnhancedRepoClient defaultDemoRepoClient, String taChanGraphQN) {
+            BundleContext context, RepoClient defaultDemoRepoClient, String taChanGraphQN) {
         Map<ThingActionChanSpec,ManagedService> specServices = new HashMap<ThingActionChanSpec, ManagedService>();
         List<ThingActionChanSpec> specs = loadTAChanSpecs(defaultDemoRepoClient, taChanGraphQN);
         for(ThingActionChanSpec spec : specs){
@@ -53,7 +53,7 @@ public class TAGraphChanWiringDemo {
         return specServices;
     }
     
-    private static List<ThingActionChanSpec> loadTAChanSpecs(EnhancedRepoClient defaultDemoRepoClient, String taChanGraphQN) {
+    private static List<ThingActionChanSpec> loadTAChanSpecs(RepoClient defaultDemoRepoClient, String taChanGraphQN) {
         List<ThingActionChanSpec> specs = new ArrayList();
         // Determine the URI for the 'qualified name' which identifies the data in the repo
         Ident taChanGraphID = defaultDemoRepoClient.makeIdentForQName(taChanGraphQN);
