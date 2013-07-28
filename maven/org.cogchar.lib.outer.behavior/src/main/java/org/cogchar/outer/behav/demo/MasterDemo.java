@@ -23,6 +23,7 @@ import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.appdapter.core.matdat.PipelineQuerySpec;
 import org.appdapter.core.matdat.RepoSpec;
 import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.RepoClientImpl;
 import org.cogchar.api.scene.Scene;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.SceneSpec;
@@ -62,7 +63,7 @@ public class MasterDemo extends BasicDebugger {
 		launchDemo(bundleCtx, demoRepoCli);
 	}
 
-	public void launchDemo(BundleContext bundleCtx, EnhancedRepoClient defDemoRepoCli) {
+	public void launchDemo(BundleContext bundleCtx, RepoClient defDemoRepoCli) {
 		try {
 			getLogger().info("Launching demo using repoClient={}", defDemoRepoCli);
 			initMajorParts(bundleCtx, defDemoRepoCli);
@@ -72,7 +73,7 @@ public class MasterDemo extends BasicDebugger {
 		}
 	}
 
-	public void initMajorParts(BundleContext bundleCtx, EnhancedRepoClient demoRepoClient) {
+	public void initMajorParts(BundleContext bundleCtx, RepoClient demoRepoClient) {
 		myChannelWiringDemo = new ChannelWiringDemo(bundleCtx, demoRepoClient);
 		mySceneWiringDemo = new SceneWiringDemo(bundleCtx, demoRepoClient);
 		myTheaterWiringDemo = new TheaterWiringDemo(bundleCtx, demoRepoClient);
@@ -115,11 +116,11 @@ public class MasterDemo extends BasicDebugger {
 
 	public void reloadScenesAndRestartTheater(OSGiTheater osgiThtr, boolean cancelOutJobs) {
 		BundleContext bundleCtx = mySceneWiringDemo.getDefaultBundleContext();
-		EnhancedRepoClient origRepoCli = mySceneWiringDemo.getDefaultRepoClient();
+		RepoClient origRepoCli = mySceneWiringDemo.getDefaultRepoClient();
 		reloadScenesAndRestartTheater(bundleCtx, osgiThtr, origRepoCli, cancelOutJobs);
 	}
 
-	public void reloadScenesAndRestartTheater(BundleContext bunCtx, OSGiTheater osgiThtr, EnhancedRepoClient origRepoCli, boolean cancelOutJobs) {
+	public void reloadScenesAndRestartTheater(BundleContext bunCtx, OSGiTheater osgiThtr, RepoClient origRepoCli, boolean cancelOutJobs) {
 
 		myTheaterWiringDemo.stopAndClearTheater(osgiThtr, cancelOutJobs);
 		// Create a new fresh repo + client connection based on the origRepoCli's repoSpec.
@@ -129,7 +130,14 @@ public class MasterDemo extends BasicDebugger {
 		// That's why we did the stop above, to make sure user at least feels the keypress response quickly.
 		// But in a real character app, we want to be silently loading all the time without interrupting current perfs.
 		// TODO: Tell the repo to just reload certain graphs (need Appdapter >= 1.1.1 features to do this cleanly)
-		EnhancedRepoClient reloadedRepoClient = origRepoCli.reloadRepoAndClient();
+        
+        /* We may not always have an EnhancedRepoClient, and just have to 
+         * deal with it.  Reload if we can, otherwise reload what we can.
+         * -Matt 2013-07-27 */
+        RepoClient reloadedRepoClient = origRepoCli;
+        if(origRepoCli instanceof EnhancedRepoClient){
+            reloadedRepoClient = ((EnhancedRepoClient)origRepoCli).reloadRepoAndClient();
+        }
 
 		// Now we do the comparatively fast (but still somewhat lengthy) step of unregistering, 
 		// loading, and registering scene spec objects from the reloaded repo.  But note that if

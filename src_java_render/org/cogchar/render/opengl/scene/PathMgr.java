@@ -75,6 +75,7 @@ public class PathMgr extends AbstractThingCinematicMgr {
 
 		@Override
 		public void onStop() {
+            //super.onStop(); //maybe? -Matt (from MotionEvent: currentWaypoint = 0;)
 			myRootNode.detachChild(this.getSpatial());
 		}
 	}
