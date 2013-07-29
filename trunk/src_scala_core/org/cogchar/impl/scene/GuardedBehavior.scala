@@ -104,7 +104,7 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 		myDetails = "brimmingOver";
 		
 		val stepPropID = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_step)
-		val stepItems : java.util.Set[Item] = configItem.getLinkedItemSet(stepPropID)
+		val stepItems : java.util.Set[Item] = configItem.getLinkedItemSet(stepPropID, Item.LinkDirection.FORWARD)
 		
 		getLogger().debug("GBS got stepItems: {}", stepItems);
 		for (stepItem : Item  <- stepItems) {
@@ -139,9 +139,9 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 			val stepActionText = reader.readConfigValString(stepItem.getIdent(), SceneFieldNames.P_text, stepItem, null);
 			val waitChanGuardProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_waitForChan);
 			val chanFilterProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_chanFilter);
-			val chanGuardItems = stepItem.getLinkedItemSet(waitChanGuardProp)
+			val chanGuardItems = stepItem.getLinkedItemSet(waitChanGuardProp, Item.LinkDirection.FORWARD)
 			val chanGuardCount = chanGuardItems.size
-			val chanFilterItems = stepItem.getLinkedItemSet(chanFilterProp)
+			val chanFilterItems = stepItem.getLinkedItemSet(chanFilterProp, Item.LinkDirection.FORWARD)
 			val chanFilterCount = chanFilterItems.size
 			getLogger().info("Step {} has {} chanGuards and {} chanFilters", Array(stepIdent, chanGuardCount, chanFilterCount).asInstanceOf[Array[AnyRef]])
 			// Right now we are treating Text vs. Use actions as either-or, but there is some potential future overlap.
@@ -160,9 +160,9 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 			val waitEndGuardProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_waitForEnd)
 			val taGuardProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_taGuard)
 			
-			val waitStartGuardItems = stepItem.getLinkedItemSet(waitStartGuardProp)
-			val waitEndGuardItems = stepItem.getLinkedItemSet(waitEndGuardProp)
-			val taGuardItems = stepItem.getLinkedItemSet(taGuardProp)
+			val waitStartGuardItems = stepItem.getLinkedItemSet(waitStartGuardProp, Item.LinkDirection.FORWARD)
+			val waitEndGuardItems = stepItem.getLinkedItemSet(waitEndGuardProp, Item.LinkDirection.FORWARD)
+			val taGuardItems = stepItem.getLinkedItemSet(taGuardProp, Item.LinkDirection.FORWARD)
 			
 			for (wsg : Item <- waitStartGuardItems) {
 				val guardSpec = new PerfMonGuardSpec(wsg.getIdent, Performance.State.PLAYING)
@@ -173,8 +173,8 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
 				guardSpecSet.add(guardSpec)
 			}
 			for (tag : Item <- taGuardItems) {
-        val chanID : Ident = tag.getSingleLinkedItem(waitChanGuardProp).getIdent
-				val filterID : Ident = tag.getSingleLinkedItem(chanFilterProp).getIdent
+        val chanID : Ident = tag.getSingleLinkedItem(waitChanGuardProp, Item.LinkDirection.FORWARD).getIdent
+				val filterID : Ident = tag.getSingleLinkedItem(chanFilterProp, Item.LinkDirection.FORWARD).getIdent
         
         //How to get a list of filters
 //        val chanFilterProp = ItemFuncs.getNeighborIdent(configItem, SceneFieldNames.P_chanFilter);

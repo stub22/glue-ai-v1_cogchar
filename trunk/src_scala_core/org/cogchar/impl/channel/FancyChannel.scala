@@ -59,7 +59,7 @@ class FancyChannelSpec extends KnownComponentImpl {
 		myOsgiFilterString = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_osgiFilterString, configItem, null);
 		
 		val chanTypePropID = reader.getConfigPropertyIdent(configItem, configItem.getIdent(), ChannelNames.P_channelType);
-		val linkedChanTypes : java.util.Set[Item] = configItem.getLinkedItemSet(chanTypePropID);
+		val linkedChanTypes : java.util.Set[Item] = configItem.getLinkedItemSet(chanTypePropID, Item.LinkDirection.FORWARD);
 		
 		getLogger().debug("ChannelSpec has linkedChanTypes: {} ",  linkedChanTypes);
 		if (linkedChanTypes.size() == 1) {

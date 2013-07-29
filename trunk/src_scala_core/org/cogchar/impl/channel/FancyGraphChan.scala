@@ -80,7 +80,7 @@ class ThingActionChanSpec  extends KnownComponentImpl {
 	}
 	def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
     val sourceModelPropID = reader.getConfigPropertyIdent(configItem, configItem.getIdent(), NamespaceDir.NS_CCRT_RT + "sourceModel");
-		val linkedSourceModels : java.util.Set[Item] = configItem.getLinkedItemSet(sourceModelPropID);
+		val linkedSourceModels : java.util.Set[Item] = configItem.getLinkedItemSet(sourceModelPropID, Item.LinkDirection.FORWARD);
 		
 		getLogger().debug("ThingActionChanSpec has linkedSourceModels: {} ",  linkedSourceModels);
 		if (linkedSourceModels.size() == 1) {
