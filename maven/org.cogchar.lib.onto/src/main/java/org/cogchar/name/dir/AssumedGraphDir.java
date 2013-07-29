@@ -26,4 +26,6 @@ public class AssumedGraphDir {
 	public static String lightsGraphQN = "ccrt:lights_camera_sheet_22";
 	
 	public static String  testUserAccessGraphQN = "ccrt:user_access_sheet_22";
+	
+	public static String  estimVizTestCfgGraphQN  = "ccrt:estim_viz_test_60";
 }
