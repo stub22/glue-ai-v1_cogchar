@@ -47,7 +47,7 @@ import org.cogchar.render.model.bony.SpatialManipFuncs;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.cogchar.render.sys.physics.CollisionMgr;
+import org.cogchar.render.opengl.optic.RayCollisionMgr;
 
 /** Sample 8 - how to let the user pick (select) objects in the scene 
  * using the mouse or key presses. Can be used for shooting, opening doors, etc. 
@@ -153,8 +153,8 @@ public class DemoYouPickStuff extends UnfinishedDemoApp {
 			public void onAction(String name, boolean keyPressed, float tpf) {
 				if (name.equals(MARK_ACTION) && !keyPressed) {
 
-					CollisionResults coRes = CollisionMgr.getCameraCollisions(cam, myShootablesRootNode);
-					CollisionMgr.printCollisionDebug(getLogger(), coRes);
+					CollisionResults coRes = RayCollisionMgr.getCameraCollisions(cam, myShootablesRootNode);
+					RayCollisionMgr.printCollisionDebug(getLogger(), coRes);
 					RenderRegistryClient rrc = getRenderRegistryClient();
 					// Mark the hit object
 					if (coRes.size() > 0) {
@@ -223,7 +223,7 @@ public class DemoYouPickStuff extends UnfinishedDemoApp {
 			Ray ray = new Ray(origin, direction);
 			 */
 
-			CollisionResults coRes = CollisionMgr.getCameraCollisions(cam, myShootablesRootNode);
+			CollisionResults coRes = RayCollisionMgr.getCameraCollisions(cam, myShootablesRootNode);
 
 			if (coRes.size() > 0) {
 				CollisionResult closest = coRes.getClosestCollision();

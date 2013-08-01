@@ -32,12 +32,15 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.cogchar.render.app.entity.GoodyFactory;
+import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
+import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.input.VW_HelpScreenMgr;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
 import org.cogchar.render.sys.module.RenderGateway;
 import org.cogchar.render.sys.module.RenderModule;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -45,17 +48,19 @@ import org.osgi.framework.BundleContext;
  */
 public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGateway {
 
-	private HumanoidRenderContext myHRC;
+	private CogcharRenderContext myCRC;
 	private PumaAppContext myPAC;
 
 	public PumaVirtualWorldMapper(PumaAppContext pac) {
 		myPAC = pac;
 	}
 
-	@Override public HumanoidRenderContext getHumanoidRenderContext() {
-		return myHRC;
+	public HumanoidRenderContext getHumanoidRenderContext() {
+		return (HumanoidRenderContext) myCRC;
 	}
-
+	@Override public CogcharRenderContext getCogcharRenderContext() {
+		return myCRC;
+	}
 	/**
 	 * First (of three) stage init of world, done BEFORE startOpenGLCanvas().
 	 *
@@ -64,9 +69,9 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 	 */
 	public HumanoidRenderContext initHumanoidRenderContext(String panelKind) {
 		BundleContext bundleCtx = myPAC.getBundleContext();
-		myHRC = (HumanoidRenderContext) RenderBundleUtils.buildBonyRenderContextInOSGi(bundleCtx, panelKind);
+		myCRC = (HumanoidRenderContext) RenderBundleUtils.buildBonyRenderContextInOSGi(bundleCtx, panelKind);
 
-		return myHRC;
+		return (HumanoidRenderContext)  myCRC;
 	}
 
 // The Lights/Camera/Cinematics init used to be done from HumanoidRenderContext, but the global config lives
@@ -80,18 +85,25 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
 		
 		RepoClient rc = pcm.getMainConfigRepoClient();		
-
-		myHRC.initCinematicParameters();
+		HumanoidRenderContext hrc = getHumanoidRenderContext();
+		hrc.initCinematicParameters();
+		hrc.setupHominoidCameraManager();
 		
 		KeyBindingConfig currKeyBindCfg = new KeyBindingConfig();
 		// Hook-in for Goody system
-		RenderRegistryClient rrc = myHRC.getRenderRegistryClient();
-		GoodyFactory gFactory = GoodyFactory.createTheFactory(rrc, myHRC);
+		GoodyRenderRegistryClient grrc = hrc.getGoodyRenderRegistryClient();
+		GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, hrc);
+		// Setup the humanoid "goodies"
+		HumanoidRenderWorldMapper hrwMapper = new HumanoidRenderWorldMapper();
+		VWorldEntityActionConsumer veActConsumer = gFactory.getActionConsumer();
+		hrwMapper.addHumanoidGoodies(veActConsumer, hrc);
 		try {
 			List<Ident> worldConfigIdents = gce.entityMap().get(EntityRoleCN.VIRTUAL_WORLD_ENTITY_TYPE);
 			// Multiple worldConfigIdents? Possible. It's possible duplicate cinematic definitions might cause problems
 			// but we'll leave that for later, so sure, go ahead and load on multiple configs if they are requested.
 			for (Ident configIdent : worldConfigIdents) {
+				// This may try to add a head-cam, so we need to have injected the HominoidCameraManager already
+				// (done 10 lines above).
 				initCinematicStuff(gce, configIdent, rc, gFactory, router);
 				// Like with everything else dependent on global config's graph settings (except for Lift, which uses a managed service
 				// version of GlobalConfigEmitter) it seems logical to set the key bindings here.
@@ -113,12 +125,13 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 			getLogger().error("Could not retrieve any specified VirtualWorldEntity for this global configuration!");
 		}
 		
-		myHRC.refreshInputBindingsAndHelpScreen(currKeyBindCfg, cspace);
+		hrc.refreshInputBindingsAndHelpScreen(currKeyBindCfg, cspace);
 	}
 	
 	private void initCinematicStuff(GlobalConfigEmitter gce, Ident worldConfigIdent, RepoClient repoCli, 
 			GoodyFactory gFactory, BasicThingActionRouter router) {
 		HumanoidRenderWorldMapper renderMapper = new HumanoidRenderWorldMapper();
+		HumanoidRenderContext hrc = getHumanoidRenderContext();
 		Ident graphIdent = null;
 		try {
 			graphIdent = gce.ergMap().get(worldConfigIdent).get(EntityRoleCN.LIGHTS_CAMERA_CONFIG_ROLE);
@@ -126,7 +139,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 			getLogger().warn("Could not get valid graph on which to query for Lights/Cameras config of {}", worldConfigIdent.getLocalName(), e);
 		}
 		try {
-			renderMapper.initLightsAndCamera(repoCli, myHRC, graphIdent);
+			renderMapper.initLightsAndCamera(repoCli, hrc, graphIdent);
 		} catch (Exception e) {
 			getLogger().warn("Error attempting to initialize lights and cameras for {}: ", worldConfigIdent.getLocalName(), e);
 		}
@@ -146,13 +159,13 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 			getLogger().warn("Could not get valid graph on which to query for Paths config of {}", worldConfigIdent.getLocalName(), e);
 		}
 		try {
-			renderMapper.initPaths(repoCli, myHRC, graphIdent);
+			renderMapper.initPaths(repoCli, hrc, graphIdent);
 		} catch (Exception e) {
 			getLogger().warn("Error attempting to initialize Paths for {}: ", worldConfigIdent.getLocalName(), e);
 		}
 		try {
 			graphIdent = gce.ergMap().get(worldConfigIdent).get(EntityRoleCN.THING_ANIM_BINDINGS_ROLE);
-			renderMapper.initThingAnims(repoCli, myHRC, graphIdent);
+			renderMapper.initThingAnims(repoCli, hrc, graphIdent);
 		} catch (Exception e) {
 			getLogger().error("Could not initialize Thing spatial animations with a config of {}",
 					worldConfigIdent.getLocalName(), e);
@@ -190,19 +203,22 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 
 	public void clearCinematicStuff() {
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
-		myRenderMapper.clearLights(myHRC);
-		myRenderMapper.clearCinematics(myHRC);
-		myRenderMapper.clearViewPorts(myHRC);
+		HumanoidRenderContext hrc = getHumanoidRenderContext();
+		myRenderMapper.clearLights(hrc);
+		myRenderMapper.clearCinematics(hrc);
+		myRenderMapper.clearViewPorts(hrc);
 	}
 
 	public void detachAllHumanoidFigures() {
-		myHRC.getHumanoidFigureManager().detachHumanoidFigures(myHRC);
+		HumanoidRenderContext hrc = getHumanoidRenderContext();
+		hrc.getHumanoidFigureManager().detachHumanoidFigures(hrc);
 	}
 	public void connectVisualizationResources(ClassLoader bonyRdfCl) {
+		HumanoidRenderContext hrc = getHumanoidRenderContext();
 		DataballGoodyBuilder ballBldr = DataballGoodyBuilder.getTheBallBuilder();
 		ballBldr.setClassLoader("Cog Char", bonyRdfCl);
-		ballBldr.initialize(myHRC);
-		myHRC.setTheBallBuilder(ballBldr);
+		ballBldr.initialize(hrc);
+		hrc.setTheBallBuilder(ballBldr);
 	}	
 	// Previous functions now mostly done from within LifterLifecycle on create(). 
 	// Retaining for now for legacy BallBuilder classloader hookup
@@ -211,16 +227,18 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 	}
 	public void toggleHelpScreenDisplay() { 
 		VW_HelpScreenMgr hsm = VW_InputBindingFuncs.getHelpScreenMgr();
-		RenderRegistryClient rrc = myHRC.getRenderRegistryClient();
+		RenderRegistryClient rrc = myCRC.getRenderRegistryClient();
 		hsm.toggleHelpTextDisplay(rrc);
 	}
 	public void attachRenderModule(RenderModule rModule) {
+		HumanoidRenderContext hrc = getHumanoidRenderContext();
 		rModule.setRenderGateway(this);
-		myHRC.attachModule(rModule);
+		hrc.attachModule(rModule);
 		
 	}
 	public void detachRenderModule(RenderModule rModule) {
-		myHRC.detachModule(rModule);
+		HumanoidRenderContext hrc = getHumanoidRenderContext();
+		hrc.detachModule(rModule);
 		rModule.setRenderGateway(null);
 	}
 }

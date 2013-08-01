@@ -16,12 +16,14 @@
 
 package org.cogchar.render.sys.module;
 
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+// import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.sys.context.CogcharRenderContext;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public interface RenderGateway {
-	public HumanoidRenderContext getHumanoidRenderContext();
+	// public HumanoidRenderContext getHumanoidRenderContext();
+	public CogcharRenderContext getCogcharRenderContext();
 }

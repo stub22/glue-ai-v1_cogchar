@@ -34,8 +34,11 @@ public class PhysicalModularRenderContext extends ModularRenderContext {
 	 */
 	
 	// private		BulletAppState			myBulletAS;
-	private		PhysicsStuffBuilder		myPSB;
-	
+	protected		PhysicsStuffBuilder		myPSB;
+
+	public PhysicalModularRenderContext(RenderRegistryClient rrc) {
+		super(rrc);
+	}
 	@Override public void completeInit() {
 		super.completeInit();
 		CoreFeatureAdapter.unrolledInitPRC(this);
@@ -48,12 +51,6 @@ public class PhysicalModularRenderContext extends ModularRenderContext {
         appStateMgr.attach(bas);
 		
 		rrc.putJme3BulletAppState(bas, null);
-	}
-	protected void initPhysicsStuffBuilder() { 
-		PhysicsSpace ps = getPhysicsSpace();
-		// TODO: Check config for initial debug setting
-		Node rootNode = getRenderRegistryClient().getJme3RootDeepNode(null);
-		myPSB =  new PhysicsStuffBuilder(this, ps, rootNode);				
 	}
 	public void enablePhysicsDebug() {
 		PhysicsSpace ps = getPhysicsSpace();

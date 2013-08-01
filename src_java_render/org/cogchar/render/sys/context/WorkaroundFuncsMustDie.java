@@ -25,9 +25,9 @@ import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 import com.jme3.system.JmeContext;
 import java.awt.Canvas;
-import org.cogchar.render.app.bony.BonyRenderContext;
+
 import org.cogchar.render.app.core.WorkaroundAppStub;
-import org.cogchar.render.sys.physics.ScoreBoard;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,18 +51,7 @@ public class WorkaroundFuncsMustDie {
 		// JoystickInput.setProvider( InputSystem.INPUT_SYSTEM_LWJGL );
 
 	}	
-	public static void initScoreBoard(BonyRenderContext bc) {
-		SimpleApplication app = bc.getApp(); // Should be from registry, not this way
-		AppSettings settings = app.getContext().getSettings(); // Should be from registry, not this way
-		int numScoreRows = 4;
-		int rowHeight = 50;
-		int boardWidth = settings.getWidth();
-		int baseX = 20;
-		int baseY = settings.getHeight() - numScoreRows * rowHeight;
-		float textSizeMult = 0.5f;
-		ScoreBoard sb = new ScoreBoard(app.getAssetManager(), app.getGuiNode(), baseX, baseY, boardWidth, rowHeight, numScoreRows, textSizeMult);
-		bc.setScoreBoard(sb); // Goofy way to do it
-	}
+
 	public static Canvas makeAWTCanvas(SimpleApplication app) {
 		AppSettings settings = app.getContext().getSettings();
 		theLogger.info("making AWTCanvas in WorkaroundFuncsMustDie: Size is {}x{}", settings.getWidth(), settings.getHeight());

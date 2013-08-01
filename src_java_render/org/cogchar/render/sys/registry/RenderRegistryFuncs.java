@@ -33,8 +33,8 @@ import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 import org.cogchar.render.opengl.scene.GeomFactory;
 import org.cogchar.render.opengl.scene.ModelSpatialFactory;
-import org.cogchar.render.opengl.scene.PathMgr;
-import org.cogchar.render.opengl.scene.SpatialAnimMgr;
+//import org.cogchar.render.scene.goody.PathMgr;
+// import org.cogchar.render.scene.goody.SpatialAnimMgr;
 import org.cogchar.render.opengl.scene.TextMgr;
 import org.cogchar.render.sys.asset.AssetContext;
 import org.slf4j.Logger;
@@ -83,7 +83,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	}
 
 	protected static class RFSpec<RFType> extends FacadeSpec<RFType, RFKind> {
-		RFSpec(RFKind kind, Class<RFType> sClz, boolean extFlag) {
+		public RFSpec(RFKind kind, Class<RFType> sClz, boolean extFlag) {
 			super(kind, sClz, extFlag);
 		}
 	}
@@ -145,8 +145,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	protected static RFSpec<FlatOverlayMgr> THE_CC_SCENE_FLAT_FACADE;
 	protected static RFSpec<ModelSpatialFactory> THE_CC_SCENE_SPATIAL_MODEL_FACADE;
 	protected static RFSpec<TextMgr> THE_CC_SCENE_TEXT_FACADE;
-	protected static RFSpec<PathMgr> THE_CC_SCENE_PATH_FACADE;
-	protected static RFSpec<SpatialAnimMgr> THE_CC_SCENE_ANIM_FACADE;
+
 
 	static {
 		THE_CC_SCENE_GEOMETRY_FACADE = new RFSpec<GeomFactory>(RFKind.CC_SCENE_GEOMETRY_FACADE, GeomFactory.class, false);
@@ -154,18 +153,12 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		THE_CC_SCENE_FLAT_FACADE = new RFSpec<FlatOverlayMgr>(RFKind.CC_SCENE_FLAT_FACADE, FlatOverlayMgr.class, false);
 		THE_CC_SCENE_SPATIAL_MODEL_FACADE = new RFSpec<ModelSpatialFactory>(RFKind.CC_SCENE_SPATIAL_MODEL_FACADE, ModelSpatialFactory.class, false);
 		THE_CC_SCENE_TEXT_FACADE = new RFSpec<TextMgr>(RFKind.CC_SCENE_TEXT_FACADE, TextMgr.class, false);
-		THE_CC_SCENE_PATH_FACADE = new RFSpec<PathMgr>(RFKind.CC_SCENE_PATH_FACADE, PathMgr.class, false);
-		THE_CC_SCENE_ANIM_FACADE = new RFSpec<SpatialAnimMgr>(RFKind.CC_SCENE_ANIM_FACADE, SpatialAnimMgr.class, false);
 	}
 
 	protected static RFSpec<WorkaroundAppStub> THE_CC_WORKAROUND_APP_STUB;
 	static {
 		THE_CC_WORKAROUND_APP_STUB = new RFSpec<WorkaroundAppStub>(RFKind.CC_WORKAROUND_APP_STUB, WorkaroundAppStub.class, false);
 	}
-
-	// protected static FacadeSpec<PhysicsStuffBuilder>	THE_CC_PHYSICS_FACADE;
-
-	//		CC_PHYSICS_FACADE	
 
 	private static <EFT, EFK> EFT findExternalFacadeOrNull(FacadeSpec<EFT, EFK> fs, String optOverrideName, Class optCredClaz) {
 		EFT result = null;
@@ -183,7 +176,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		shand.registerExternalFacade(fs, facade, optOverrideName);
 	}
 
-	private static <IFT, IFK> IFT findOrMakeInternalFacade(FacadeSpec<IFT, IFK> fs, String optOverrideName, Class optCredClaz) {
+	protected static <IFT, IFK> IFT findOrMakeInternalFacade(FacadeSpec<IFT, IFK> fs, String optOverrideName, Class optCredClaz) {
 		try {
 			SubsystemHandle shand = SubsystemHandleFinder.getRenderSubsysHandle(fs, optCredClaz);
 			return shand.findOrMakeInternalFacade(fs, optOverrideName);
@@ -305,13 +298,7 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		return findOrMakeInternalFacade(THE_CC_SCENE_TEXT_FACADE, optionalName, null);
 	}
 
-	protected static PathMgr findOrMakeScenePathFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_SCENE_PATH_FACADE, optionalName, null);
-	}
 
-	protected static SpatialAnimMgr findOrMakeSceneAnimFacade(String optionalName) {
-		return findOrMakeInternalFacade(THE_CC_SCENE_ANIM_FACADE, optionalName, null);
-	}
 
 	// This one needs to be public, so that BundleActivators can find it, to register their classloader-markers.
 	public static AssetContext findOrMakeAssetContext(String optionalName, String optJme3AssetManagerName) {

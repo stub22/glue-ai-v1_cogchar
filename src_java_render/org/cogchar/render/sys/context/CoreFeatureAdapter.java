@@ -28,9 +28,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.WorkaroundAppStub;
-import org.cogchar.render.app.bony.BonyRenderContext;
-import org.cogchar.render.model.humanoid.HumanoidFigure;
-import org.cogchar.render.model.humanoid.HumanoidFigureManager;
+
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.physics.DemoVectorFactory;
@@ -57,7 +55,7 @@ public class CoreFeatureAdapter extends BasicDebugger {
 		prc.initBulletAppState();
 		//prc.enablePhysicsDebug();
 		//prc.disablePhysicsDebug();
-		prc.initPhysicsStuffBuilder();
+		//	prc.initPhysicsStuffBuilder();
 	}
 
 	static public void registerJMonkeyDefaultCameras(RenderRegistryClient rrc, Camera defCam, FlyByCamera fbc) {

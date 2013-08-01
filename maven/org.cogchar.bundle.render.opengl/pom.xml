@@ -22,12 +22,26 @@
             <scope>provided</scope>
 		</dependency>
 		<dependency>
-			 <!-- This bundle repackages this lib, so it is depended with scope provided, and exported below -->			
+			 <!-- This bundle repackages this lib, so it is depended with scope provided, and pkgs are exported below -->			
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.render</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>		
+		<dependency>
+			 <!-- This bundle repackages this lib, so it is depended with scope provided, and pkgs are exported below -->			
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.render.hominoid</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			 <!-- This bundle repackages this lib, so it is depended with scope provided, and pkgs are exported below -->			
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.render.goody</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>			
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.bundle.core</artifactId>
