@@ -18,7 +18,7 @@ package org.cogchar.render.sys.input;
 
 import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.render.app.core.WorkaroundAppStub;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+// import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 
@@ -59,7 +59,7 @@ public class VW_InputDirector extends BasicDebugger {
 	public	RenderRegistryClient	myRenderRegCli;
 	public	KeyBindingConfig		myKeyBindCfg;
 	public	WorkaroundAppStub		myAppStub;
-	public	HumanoidRenderContext	myHRC_elim;
+//	public	HumanoidRenderContext	myHRC_elim;
 
 	public	AppSettings				myAppSettings;
 	

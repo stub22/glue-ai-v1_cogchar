@@ -22,7 +22,7 @@
 
 package org.cogchar.demo.render.opengl.brick;
 
-import org.cogchar.render.sys.physics.LaunchableCollidingRigidBodyControl;
+import org.cogchar.render.goody.physical.LaunchableCollidingRigidBodyControl;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;

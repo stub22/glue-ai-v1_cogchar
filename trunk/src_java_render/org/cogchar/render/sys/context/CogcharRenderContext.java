@@ -49,10 +49,11 @@ public class CogcharRenderContext extends BasicRenderContext {
 	public CogcharRenderContext(RenderRegistryClient rrc) {
 		super(rrc);
 	}
-	
+	// Used only from single-feature tests
 	public CogcharRenderContext() {
 		this(new BasicRenderRegistryClientImpl());
 	}
+	
 	
 	@Override public void postInitLaunch() {
 		logInfo("CogcharRenderContext.postInitLaunch() does nothing.  Override to make it juicy!");

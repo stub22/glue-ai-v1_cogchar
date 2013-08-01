@@ -21,7 +21,7 @@
  */
 package org.cogchar.demo.render.opengl;
 
-import org.cogchar.render.sys.physics.LaunchableCollidingRigidBodyControl;
+import org.cogchar.render.goody.physical.LaunchableCollidingRigidBodyControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;

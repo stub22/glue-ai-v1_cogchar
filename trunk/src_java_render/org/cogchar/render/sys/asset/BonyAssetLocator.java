@@ -27,7 +27,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class BonyAssetLocator implements AssetLocator {
+public class BonyAssetLocator  {}
+/*
+ * implements AssetLocator {
 	static Logger theLogger = LoggerFactory.getLogger(BonyAssetLocator.class);
 	ClasspathLocator  myDelegate = new ClasspathLocator();
 	public BonyAssetLocator() { 
@@ -45,3 +47,4 @@ public class BonyAssetLocator implements AssetLocator {
 		//  return UrlAssetInfo.create(manager, key, url);
 	}
 }
+*/

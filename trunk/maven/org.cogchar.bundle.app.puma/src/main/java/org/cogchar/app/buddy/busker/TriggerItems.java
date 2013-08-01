@@ -197,13 +197,13 @@ public class TriggerItems {
 	}	
 	public static class BiggerProjectile extends CtxCmdBoxTI {
 		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
-			pccb.getGameFeatureAdapter().getProjectileMgr().cmdBiggerProjectile();
+			pccb.getGameFeatureAdapter().cmdBiggerProjectile();
 		}		
 	}	
 
 	public static class SmallerProjectile extends CtxCmdBoxTI {
 		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
-			pccb.getGameFeatureAdapter().getProjectileMgr().cmdSmallerProjectile();
+			pccb.getGameFeatureAdapter().cmdSmallerProjectile();
 		}		
 	}
 	/*

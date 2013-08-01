@@ -79,6 +79,9 @@
 		<module>../org.cogchar.lib.core</module>
 		
 		<module>../org.cogchar.lib.render</module>
+		<module>../org.cogchar.lib.render.bony</module>
+		<module>../org.cogchar.lib.render.goody</module>
+		<module>../org.cogchar.lib.render.hominoid</module>
 		
 		<module>../org.cogchar.lib.animoid</module>
 		<module>../org.cogchar.lib.convoid</module>

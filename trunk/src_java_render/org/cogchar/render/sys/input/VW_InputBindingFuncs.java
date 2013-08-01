@@ -24,7 +24,7 @@ import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.gui.keybind.KeyBindingConfigItem;
 import org.cogchar.platform.gui.keybind.KeyBindingTracker;
 
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+// import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.trigger.SceneActions;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
@@ -135,7 +135,7 @@ static Logger theLogger = LoggerFactory.getLogger(VW_InputBindingFuncs.class);
 	 * 
 	 */
 	public static void setupKeyBindingsAndHelpScreen(final RenderRegistryClient rrc, KeyBindingConfig keyBindConfig, 
-					WorkaroundAppStub appStub, HumanoidRenderContext hrc, AppSettings someSettings, CommandSpace cspace) {
+					WorkaroundAppStub appStub, AppSettings someSettings, CommandSpace cspace) {
 		if (theOpenGLInputDirector == null) {
 			theOpenGLInputDirector = new VW_InputDirector();
 		}
@@ -143,7 +143,7 @@ static Logger theLogger = LoggerFactory.getLogger(VW_InputBindingFuncs.class);
 		theOpenGLInputDirector.myRenderRegCli = rrc;
 		theOpenGLInputDirector.myKeyBindCfg = keyBindConfig;
 		theOpenGLInputDirector.myAppStub = appStub;
-		theOpenGLInputDirector.myHRC_elim = hrc;
+	//	theOpenGLInputDirector.myHRC_elim = hrc;
 		theOpenGLInputDirector.myAppSettings = someSettings;
 		
 		theOpenGLInputDirector.myCommandSpace = cspace;
