@@ -17,10 +17,11 @@ package org.cogchar.render.sys.module;
 
 import java.awt.Dimension;
 import org.appdapter.api.module.Module;
-import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
-import org.cogchar.render.goody.basic.DataballGoodyBuilder;
-import org.cogchar.render.gui.bony.VirtualCharacterPanel;
+// import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
+// import org.cogchar.render.goody.basic.DataballGoodyBuilder;
+// import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -31,15 +32,12 @@ import org.cogchar.render.sys.context.CogcharRenderContext;
  */
 public class ModularRenderContext extends CogcharRenderContext {
 	private		CogcharRenderModulator			myRenderModulator;
-	private		DataballGoodyBuilder			myBallBuilder;
-	private		boolean							thisBallBuilderSet;
-	private		VWorldEntityActionConsumer		myEntitySpace;						
-	private		boolean							thisEntitySpaceSet;
+
+	public ModularRenderContext(RenderRegistryClient rrc) {
+		super(rrc);
+	}
 	
-	private Dimension myScreenDimension = new Dimension();
-	private Dimension lastScreenDimension = new Dimension();
-	
-	public VirtualCharacterPanel myVCP;
+//	public VirtualCharacterPanel myVCP;
 	
 	@Override public void completeInit() {
 		super.completeInit();
@@ -57,32 +55,8 @@ public class ModularRenderContext extends CogcharRenderContext {
 		return myRenderModulator;
 	}
 	@Override public void doUpdate(float tpf) {
-		// Update screen dimension for 2D Goodies:
-		if (thisEntitySpaceSet) {
-			myScreenDimension = myVCP.getSize(myScreenDimension);
-			if (!myScreenDimension.equals(lastScreenDimension)) {
-				myEntitySpace.applyNewScreenDimension(myScreenDimension);
-				lastScreenDimension = (Dimension)myScreenDimension.clone();
-			}
-		}
-		
-		if (thisBallBuilderSet) {myBallBuilder.applyUpdates(tpf);} // tpf is passed to BallBuilder only for debugging now; it may get used more broadly eventally or may be removed from the method
 		myRenderModulator.runOneCycle(tpf);
 	}
 	
-	// Adding a method to manage locally stored BallBuilder instance. We could get it using BallBuilder.getBallBuilder
-	// each time we need it, but that's once per update cycle. 
-	public void setTheBallBuilder(DataballGoodyBuilder theBallBuilder) {
-		myBallBuilder = theBallBuilder;
-		if (myBallBuilder != null) {
-			thisBallBuilderSet = true; // In theory, this variable allows a fast boolean check in doUpdate instead of having to check for null each update
-		}
-	}
-	
-	public void setTheEntitySpace(VWorldEntityActionConsumer theSpace) {
-		myEntitySpace = theSpace;
-		if (theSpace != null) {
-			thisEntitySpaceSet = true; // In theory, this variable allows a fast boolean check in doUpdate instead of having to check for null each update
-		}
-	}
+
 }

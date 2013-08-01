@@ -16,6 +16,8 @@
 package org.cogchar.render.sys.context;
 
 import org.cogchar.blob.emit.RenderConfigEmitter;
+import org.cogchar.render.sys.registry.BasicRenderRegistryClientImpl;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -23,13 +25,16 @@ import org.cogchar.blob.emit.RenderConfigEmitter;
 public class ConfiguredPhysicalModularRenderContext extends PhysicalModularRenderContext {
 	RenderConfigEmitter		myRCE;
 	
-	public ConfiguredPhysicalModularRenderContext(RenderConfigEmitter rce) {
+	public ConfiguredPhysicalModularRenderContext(RenderRegistryClient rrc, RenderConfigEmitter rce) {
+		super(rrc);
 		myRCE = rce;
 	}
-	public ConfiguredPhysicalModularRenderContext() { 
-		this(new RenderConfigEmitter());
+	public ConfiguredPhysicalModularRenderContext(RenderRegistryClient rrc) { 
+		this(rrc, new RenderConfigEmitter());
 	}
-
+	public ConfiguredPhysicalModularRenderContext() { 
+		this(new BasicRenderRegistryClientImpl());
+	}
 	public RenderConfigEmitter getConfigEmitter() { 
 		return myRCE;
 	}

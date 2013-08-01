@@ -16,6 +16,8 @@
 
 package org.cogchar.render.sys.registry;
 
+// import org.cogchar.render.scene.goody.SpatialAnimMgr;
+// import org.cogchar.render.scene.goody.PathMgr;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
@@ -182,15 +184,6 @@ public class BasicRenderRegistryClientImpl implements RenderRegistryClient {
 		return RenderRegistryFuncs.findOrMakeSceneTextFacade(optionalName);
 	}
 	
-	@Override
-	public PathMgr getScenePathFacade(String optionalName) {
-		return RenderRegistryFuncs.findOrMakeScenePathFacade(optionalName);
-	}
-	
-	@Override
-	public SpatialAnimMgr getSceneAnimFacade(String optionalName) {
-		return RenderRegistryFuncs.findOrMakeSceneAnimFacade(optionalName);
-	}
 
 	@Override
 	public AssetContext getAssetContext(String optionalName, String optJme3AssetManagerName) {

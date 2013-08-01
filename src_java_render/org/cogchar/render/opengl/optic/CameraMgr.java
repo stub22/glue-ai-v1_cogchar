@@ -30,8 +30,10 @@ import java.util.Map;
 import org.cogchar.api.cinema.CameraConfig;
 import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.name.cinema.LightsCameraAN;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.model.humanoid.HumanoidFigureManager;
+import org.cogchar.render.sys.context.CogcharRenderContext;
+// import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+// import org.cogchar.render.model.humanoid.HumanoidFigureManager;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +51,9 @@ public class CameraMgr {
 		WIDE_VIEW,
 		HEAD_CAM
 	}
+	public static interface HeadCameraManager {
+		public void addHeadCamera(Camera headCam, CameraConfig config, CogcharRenderContext crc);
+	}
 	
 	private Map<String, Camera> myCamerasByName = new HashMap<String, Camera>();
 	// A list of names of cameras (viewports have the same names) which have an active ViewPort
@@ -57,11 +62,13 @@ public class CameraMgr {
 	private Vector3f defaultDirection;
 	
 	private static final String DEFAULT_VIEWPORT_NAME = "Gui Default"; // This is what jME calls the flycam viewport. We won't mess with it in clearViewPorts and such.
-
+	private HeadCameraManager myHeadCamMgr;
 	public Camera cloneCamera(Camera orig) {
 		return orig.clone();
 	}
-
+	public void setHeadCameraManager(HeadCameraManager hcm) {
+		myHeadCamMgr = hcm;
+	}
 	public void registerNamedCamera(String name, Camera cam) {
 		// System.out.println("**********######################*********************###############*************** cameraMgr: " + this + " - storing cam " + cam + " at " + name);
 		myCamerasByName.put(name, cam);
@@ -86,8 +93,15 @@ public class CameraMgr {
 	public Camera getCommonCamera(CommonCameras id) {
 		return getNamedCamera(id.name());
 	}
-
-	public void initCamerasFromConfig(LightsCameraConfig config, HumanoidRenderContext hrc) {
+	public void addHeadCamera(Camera headCam, CameraConfig config, CogcharRenderContext crc) {
+		if (myHeadCamMgr != null) {
+			myHeadCamMgr.addHeadCamera(headCam, config, crc);
+		} else {
+			throw new RuntimeException("No HeadCameraMgr registered");
+		}
+	}
+	public void initCamerasFromConfig(LightsCameraConfig config, CogcharRenderContext crc) {
+		RenderRegistryClient rrc = crc.getRenderRegistryClient();
 		for (CameraConfig cc : config.myCCs) {
 			theLogger.info("Building Camera for config: {}", cc);
 			String cameraName = cc.cameraName;
@@ -106,7 +120,7 @@ public class CameraMgr {
 			float[] cameraViewPort = cc.cameraViewPort;
 			loadingCamera.setViewPort(cameraViewPort[0], cameraViewPort[1], cameraViewPort[2], cameraViewPort[3]);
 			if (cameraName.equals(CommonCameras.HEAD_CAM.name())) {
-				addHeadCamera(loadingCamera, cc, hrc); // Special handling for head cam
+				addHeadCamera(loadingCamera, cc, crc); // Special handling for head cam
 			} else {
 				float[] cameraPos = cc.cameraPosition;
 				loadingCamera.setLocation(new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]));
@@ -119,7 +133,7 @@ public class CameraMgr {
 			}
 			if ((!attachedViewPortNames.contains(cameraName)) && (!CommonCameras.DEFAULT.name().equals(cameraName))) {
 				theLogger.info("Camera with config: {} is new from RDF, creating new viewport...", cc);
-				addViewPort(cameraName, loadingCamera, hrc);
+				addViewPort(cameraName, loadingCamera, rrc);
 				attachedViewPortNames.add(cameraName);
 			}
 		}
@@ -133,38 +147,24 @@ public class CameraMgr {
 		}
 	}
 
-	public void addHeadCamera(Camera headCam, CameraConfig config, HumanoidRenderContext hrc) {
-		if (hrc != null) {
-			HumanoidFigureManager hfm = hrc.getHumanoidFigureManager();
-			CameraNode headCamNode = new CameraNode(CommonCameras.HEAD_CAM.name() + "_NODE", headCam);
-			headCamNode.setControlDir(ControlDirection.SpatialToCamera);
-			//theLogger.info("Attaching head cam to robot ident: " + config.attachedRobot + " bone " + config.attachedItem); // TEST ONLY
-			hfm.attachNodeToHumanoidBone(hrc, headCamNode, config.attachedRobot, config.attachedItem);
-			float[] cameraPos = config.cameraPosition;
-			float[] cameraDir = config.cameraPointDir;
-			headCamNode.setLocalTranslation(new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]));
-			headCamNode.setLocalRotation(new Quaternion().fromAngles(cameraDir));
-		} else {
-			theLogger.warn("Attempting to add head camera, but HumanoidRenderContext has not been set!");
-		}
-	}
+
 	
 	// Moving this here from DeepSceneMgr. A judgement call, but it seeems invoking 3 additional facades
 	// (CoreFeatureAdapter, DeepSceneMgr, ViewPortFacade) is needlessly complex when really the RenderRegistryClient
 	// is all we need. We need RenderContext to get RenderRegistryClient, but we need it to get other facades anyway.
 	// ViewPort stuff is inherently camera stuff, so why not have it live here for less confusion?
-	public ViewPort addViewPort(String label, Camera c, HumanoidRenderContext hrc) {
-		ViewPort vp = hrc.getRenderRegistryClient().getJme3RenderManager(null).createPostView(label, c); // PostView or MainView?
+	public ViewPort addViewPort(String label, Camera c, RenderRegistryClient rrc) {
+		ViewPort vp = rrc.getJme3RenderManager(null).createPostView(label, c); // PostView or MainView?
 		vp.setClearFlags(true, true, true);
 		vp.setBackgroundColor(ColorRGBA.LightGray); // This is set for main window right now in WorkaroundFuncsMustDie.setupCameraLightAndViewport - yuck. May want a more consistent way to do this in long run.
-		vp.attachScene(hrc.getRenderRegistryClient().getJme3RootDeepNode(null));
+		vp.attachScene(rrc.getJme3RootDeepNode(null));
 		return vp;
 	}
 	
 	
 	// Does not remove cameras from myCamerasByName, but removes additional viewports to "clear" RDF cameras
-	public void clearViewPorts(HumanoidRenderContext hrc) {
-		RenderManager rm = hrc.getRenderRegistryClient().getJme3RenderManager(null);
+	public void clearViewPorts(RenderRegistryClient rrc) {
+		RenderManager rm = rrc.getJme3RenderManager(null);
 		List<ViewPort> attachedViewPorts = rm.getPostViews();
 		theLogger.info("Clearing ViewPorts...");
 		Object[] viewPortArray = attachedViewPorts.toArray(); 
