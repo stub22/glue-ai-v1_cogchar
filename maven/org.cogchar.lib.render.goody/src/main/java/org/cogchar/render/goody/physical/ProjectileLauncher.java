@@ -69,14 +69,23 @@ public class ProjectileLauncher {
 		projSphere.setTextureMode(TextureMode.Projected);
 		return projSphere;
 	}
+	
+	// 2013-08-01 It appears that doing this repeatedly (in different directions) (and never detaching the 
+	// projectiles) causes a significant memory+CPUleak 
+	// in JME3. Seems probably due to either/boh:  The tracking required for the projectiles themselves
+	// (even after they are "far" in the distance and hence invisible)
+	// and/or the total "volume of space" that they require JME3/OpenGL to think about.
+	
 	public RigidBodyControl fireProjectileFromCamera(Camera cam, 
 			Node parentNode, PhysicsSpace ps) { 
+		
 		Vector3f prjLoc = cam.getLocation();
 		Vector3f prjVel = cam.getDirection().mult(80);  // bomb was 180
 		RigidBodyControl prjctlRBC = makeProjectileGeometryAndRBC(GEOM_PRJCT, 
 				myProjectileSphereMesh, parentNode, prjLoc, prjVel);
 		ps.add(prjctlRBC);
 		return prjctlRBC;
+		
 	}
 	
 	public void fireBombFromCamera(Camera cam, 
@@ -126,7 +135,8 @@ public class ProjectileLauncher {
 		CameraMgr cm = rrc.getOpticCameraFacade(null);
 		Camera defCam = cm.getCommonCamera(CameraMgr.CommonCameras.DEFAULT);
 		Node rootNode = rrc.getJme3RootDeepNode(null);
-		fireProjectileFromCamera(defCam, rootNode, rrc.getJme3BulletPhysicsSpace());	
+		// 2013-08-01     Disabling to assess leak impact.
+		// fireProjectileFromCamera(defCam, rootNode, rrc.getJme3BulletPhysicsSpace());	
 	}	
 	static public ProjectileLauncher makeProjectileLauncher(RenderRegistryClient rrc) {
 		return new ProjectileLauncher(rrc.getMeshShapeFacade(null), rrc.getOpticMaterialFacade(null, null));		
