@@ -151,6 +151,7 @@
 			(preferably	via SLF4J!), if they choose.
 			
 			However, there is no SLF4J binding without the above dependency.
+			A client can ignore this Log4J library, and use its own SLF4J binding (e.g. for Logback, or JDK logger).
 			Also, in an OSGi environment, our Log4J dep will not pass through
 			unless also declared by our wrapping bundle (i.e. o.c.bundle.core,
 			which in fact does *not* declare this dep, at present).  
@@ -168,6 +169,7 @@
 
 	<build>
 <!--	  
+	These two sourceDir params are unnecessary, since our project conforms to maven-scala-plugin conventions.
     <sourceDirectory>src/main/scala</sourceDirectory>
     <testSourceDirectory>src/test/scala</testSourceDirectory>
 -->
