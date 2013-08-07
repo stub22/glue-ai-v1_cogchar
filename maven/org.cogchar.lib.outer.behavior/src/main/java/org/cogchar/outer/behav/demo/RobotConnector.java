@@ -4,19 +4,28 @@
  */
 package org.cogchar.outer.behav.demo;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.utils.ManagedServiceFactory;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
+import org.robokind.api.motion.Robot;
 import org.robokind.impl.messaging.config.RKMessagingConfigUtils;
+import org.robokind.integration.motion_speech.VisemeMotionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author matt
  */
 public class RobotConnector {
+    private final static Logger theLogger = LoggerFactory.getLogger(RobotConnector.class);
     public final static String ROBOT_CONNECTION_CONFIG_ID_SUFFIX = "RobotConnection";
     public final static String ANIM_PLAYER_ID_SUFFIX = "AnimPlayer";
     public final static String SPEECH_SERVICE_ID_SUFFIX = "SpeechService";
@@ -78,10 +87,10 @@ public class RobotConnector {
         SpeechConnector.connect(
                 fact, con.robotId + "/" + SPEECH_SERVICE_ID_SUFFIX, 
                 speechDestPrefix, connectConfigId);
-        connectExtraSpeechChans(fact, con, connectConfigId);
+        connectExtraSpeechChans(context, fact, con, connectConfigId);
     }
     
-    private static void connectExtraSpeechChans(
+    private static void connectExtraSpeechChans(BundleContext context,
             ManagedServiceFactory fact, RobotConnection con, String connectConfigId){
         String[] chans = con.extraSpeechChannels;
         if(chans == null){
@@ -90,6 +99,16 @@ public class RobotConnector {
         for(String chan : chans){
             String groupId = con.robotId + "/" + chan + SPEECH_SERVICE_ID_SUFFIX;
             SpeechConnector.connect(fact, groupId, chan, connectConfigId);
+            Robot.Id rId = new Robot.Id(con.robotId.contains("robot") ? "myRobot" : "Avatar_ZenoR50");
+            List<ClassLoader> loaders = ClassLoaderUtils.getFileResourceClassLoaders(context, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
+            URL visConfResURL = ClassLoaderUtils.findResourceURL("rk_conf/VisemeConf_AZR50_A12.json", loaders);
+            InputStream visemeConfigStream = null;
+            try{
+                visemeConfigStream = visConfResURL.openStream();
+            }catch(IOException ex){
+                theLogger.error("Unable to load Viseme config as resource.", ex);
+            }
+            VisemeMotionUtils.startVisemeFrameSourceStreamGroup(fact, rId, groupId, visemeConfigStream);
         }
     }
     
