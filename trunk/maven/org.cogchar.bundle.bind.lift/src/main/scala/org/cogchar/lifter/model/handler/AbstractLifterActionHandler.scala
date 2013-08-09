@@ -25,7 +25,8 @@ import scala.collection.mutable.ArrayBuffer
 trait AbstractLifterActionHandler extends LifterLogger {
   
   def processHandler(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
-	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {this.handleHere(state, sessionId, slotNum, control, input)}
+	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {
+      this.handleHere(state, sessionId, slotNum, control, input)}
 	else {
 	  if (this.nextHandler != null) {
 		nextHandler.processHandler(state, sessionId, slotNum, control, input)
