@@ -22,6 +22,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.appdapter.core.matdat.PipelineQuerySpec;
 import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.gui.demo.DemoBrowser;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.RepoClientImpl;
 import org.cogchar.api.scene.Scene;
@@ -111,6 +112,10 @@ public class MasterDemo extends BasicDebugger {
 				i++;
 			}
 		}
+		DemoBrowser.showObject(null, this, false, true);
+		DemoBrowser.showObject(null, demoRepoClient, false, true);
+		DemoBrowser.showObject(null, demoRepoClient.getRepo(), true, true);
+		DemoBrowser.showObject(null, demoRepoClient.getRepo().getDirectoryModel(), true, true);
 		new OSGiComponent(bundleCtx, new SimpleLifecycle(osgiTheater, OSGiTheater.class)).start();
 	}
 
@@ -148,8 +153,7 @@ public class MasterDemo extends BasicDebugger {
 		myTheaterWiringDemo.startEmptyTheater(osgiThtr);
 	}
 
-	@Deprecated
-	public void runTestSceneSequence(OSGiTheater osgiTheater) {
+	@Deprecated public void runTestSceneSequence(OSGiTheater osgiTheater) {
 		Theater thtr = osgiTheater.getTheater();
 		// OSGiTheater gets notified of all matching available scenes.
 		try {
