@@ -80,9 +80,9 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 
 	private Ident hasParamObject;
 
-	private int hasParamInt;
+	private Integer hasParamInt;
 
-	private float hasParamFloat;
+	private Float hasParamFloat;
 
 	private String hasParamString;
 
@@ -108,7 +108,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 		}
 		if (!JenaLiteralUtils.isMatchAny(hasParamName)) {
 			Object raw = aSpec.getParamTVM().getRaw(hasParamName);
-			Object mustBe = getParamTVM().getRaw(hasParamName);
+			Object mustBe = getExpectedParamValue();
 			if (!JenaLiteralUtils.isMatch(mustBe, raw))
 				return false;
 			anythingMatched = true;
@@ -241,6 +241,17 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 			return hasParamName.getLocalName();
 		return hasParamNameAsString;
 	}
+
+    private Object getExpectedParamValue() {
+        if(hasParamString != null){
+            return hasParamString;
+        }else if(hasParamInt != null){
+            return hasParamInt;
+        }else if(hasParamFloat != null){
+            return hasParamFloat;
+        }
+        return null;
+    }
 
 	public class ParamMapFromFields extends BasicTypedValueMapTemporaryImpl {
 		boolean typeMapSet;
