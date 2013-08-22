@@ -22,12 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.cogchar.api.freckler.protocol.FaceNoticeConfig;
-import org.cogchar.api.freckler.protocol.FreckleMatchConfig;
-import org.cogchar.api.animoid.gaze.GazeJoint;
-import org.cogchar.api.animoid.gaze.StereoGazeConfig;
-import org.cogchar.api.sight.SightPort;
-import org.cogchar.animoid.gaze.GazeStrategyCue;
+
 
 import org.cogchar.api.animoid.protocol.Joint;
 import org.cogchar.api.animoid.protocol.Robot;
@@ -35,17 +30,9 @@ import org.cogchar.api.animoid.protocol.Robot;
  * @author Stu B. <www.texpedient.com>
  */
 public class AnimoidConfig implements Serializable {
-	// These core things all come from animoid_config.xml
-	private		List<GazeStrategyCue>		myGazeStrategies;
-	private		List<GazeJoint>				myGazeJoints;
-	private		SightPort					myViewPort;
-	private		FaceNoticeConfig			myFaceNoticeConfig;
-	private		StereoGazeConfig			myStereoGazeConfig;
-	private		FreckleMatchConfig			myFreckleMatchConfig;
+
 	private		AnimationBlendConfig		myAnimationBlendConfig;
 
-	public		Double						holdEntryNormDeg;
-	public		Double						holdExitNormDeg;
 
 	// These extra things don't come from XML, they are supplied during completeInit
 	private		Robot						myMainRobot;
@@ -56,40 +43,26 @@ public class AnimoidConfig implements Serializable {
 		mySecPerFrame = msecPerFrame.doubleValue() / 1000.0;
 		myFrameDurationSmoothingFactor = frameDurSmoothFactor;
 		myMainRobot = mainRobot;
+		/*
 		for (GazeJoint gj: myGazeJoints) {
 			if (myMainRobot != null) {
 				Joint j = myMainRobot.getJointForOldLogicalNumber(gj.getLogicalJointID());
 				gj.setJoint(j);
 			}
 		}
+		
 		if (myStereoGazeConfig != null) {
 			myStereoGazeConfig.completeInit(this);
 		}
 		for (GazeStrategyCue gp : myGazeStrategies) {
 			gp.completeInit(this);
 		}
+		*/
 	}
 	public Robot getMainRobot() {
 		return myMainRobot;
 	}
-	public GazeStrategyCue getDefaultGazeStrategy() {
-		return myGazeStrategies.get(0);
-	}
-	public GazeStrategyCue getNamedGazeStrategy(String name) {
-		for (GazeStrategyCue gp : myGazeStrategies) {
-			if (name.equals(gp.getName())) {
-				return gp;
-			}
-		}
-		return null;
-	}
-	public List<String> getGazeStrategyNameList() {
-		List<String> planNameList = new ArrayList<String>();
-		for (GazeStrategyCue gp : myGazeStrategies) {
-			planNameList.add(gp.getName());
-		}
-		return planNameList;
-	}
+/*
 	public SightPort getViewPort() {
 		return myViewPort;
 	}
@@ -124,6 +97,7 @@ public class AnimoidConfig implements Serializable {
 	public FreckleMatchConfig getFreckleMatchConfig() {
 		return myFreckleMatchConfig;
 	}
+	*/
 	public AnimationBlendConfig getAnimationBlendConfig() {
 		return myAnimationBlendConfig;
 	}
@@ -134,7 +108,8 @@ public class AnimoidConfig implements Serializable {
 		return myFrameDurationSmoothingFactor;
 	}
 	public String toString() { 
-		return "\nAnimoidConfig[viewPort=" + myViewPort 
+		return "AnimoidConfig[..."; 
+/*\nAnimoidConfig[viewPort=" + myViewPort 
 				+ ",\n gazeStrategies=" + myGazeStrategies
 				+ ",\n faceNoticeConfig=" + myFaceNoticeConfig
 				+ ",\n stereoGazeConfig=" + myStereoGazeConfig
@@ -142,5 +117,6 @@ public class AnimoidConfig implements Serializable {
 				+ ",\n freckleMatchConfig=" + myFreckleMatchConfig
 				+ ",\n animationBlendConfig=" + myAnimationBlendConfig
 				+ "]";
+				*/
 	}
 }

@@ -35,7 +35,7 @@ import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
 import org.cogchar.api.animoid.protocol.JointVelocityAROMPS;
 import org.cogchar.zzz.platform.stub.JobSpaceStub;
 import org.cogchar.platform.util.TimeUtils;
-import org.cogchar.sight.hypo.SightModel;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public class BlenderJob extends AnimoidJob implements PositionEstimator, TimeKee
 	// dubious: list of jobs duplicates Thalamus contents.
 	private		List<MotionJob>		myMotionJobs;
 	// Doubly dubious!  And publicly so!
-	public		AttentionJob		theTestAttentionJob;
+	// public		AttentionJob		theTestAttentionJob;
 	public		BlinkJob			theTestBlinkJob;
 	public		VisemeJob			theTestVisemeJob;
 
@@ -196,9 +196,9 @@ public class BlenderJob extends AnimoidJob implements PositionEstimator, TimeKee
 		return nextP;
 	}
 
-	public void setupTestMotionJobs(SightModel sm, AnimoidConfig aconf, JobSpaceStub jobSpace) {
-		theTestAttentionJob = new AttentionJob(this, sm, aconf, jobSpace);
-		jobSpace.postManualJob(theTestAttentionJob);
+	public void setupTestMotionJobs( AnimoidConfig aconf, JobSpaceStub jobSpace) { // SightModel sm,
+		//theTestAttentionJob = new AttentionJob(this, sm, aconf, jobSpace);
+	//	jobSpace.postManualJob(theTestAttentionJob);
 		theTestBlinkJob = new BlinkJob(aconf);
 		registerMotionJob(theTestBlinkJob);
 		jobSpace.postManualJob(theTestBlinkJob);
