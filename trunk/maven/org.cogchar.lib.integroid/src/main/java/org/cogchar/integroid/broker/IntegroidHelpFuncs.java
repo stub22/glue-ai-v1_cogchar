@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.cogchar.animoid.gaze.IGazeTarget;
+
 import org.cogchar.animoid.job.AnimationExecJob;
 import org.cogchar.api.animoid.protocol.Library;
 import org.cogchar.api.integroid.cue.AwarenessCue;
@@ -111,16 +111,7 @@ public class IntegroidHelpFuncs {
 		return choices[choiceIndex];
 	}
 	
-	public static void setGazeStrategy(IntegroidFacade igf, String name){
-		igf.getAnimoidFacade().suggestGazeStrategyName(name);
-	}
-	public static void setHoldAndRecenterStrategy(IntegroidFacade igf, String name){
-		igf.getAnimoidFacade().suggestHoldStrategyName(name);
-	}
 
-	public static void suggestGazeTarget(IntegroidFacade igf, IGazeTarget igt){
-		igf.getAnimoidFacade().suggestAttentionTarget(igt);
-	}
 	public static List<String> getAnimNamesMatchingRegexp
 				(IntegroidFacade igf, String regexpText) {
 		Pattern pat = Pattern.compile(regexpText);

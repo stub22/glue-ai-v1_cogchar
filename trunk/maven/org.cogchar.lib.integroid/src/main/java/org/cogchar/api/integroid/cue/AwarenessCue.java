@@ -20,7 +20,6 @@ package org.cogchar.api.integroid.cue;
 
 import org.cogchar.zzz.platform.stub.CueStub;
 import org.cogchar.platform.util.TimeUtils;
-import org.cogchar.api.sight.SightCue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

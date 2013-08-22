@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.cogchar.api.animoid.gaze.GazeJoint;
+
 import org.cogchar.api.animoid.protocol.Animation;
 import org.cogchar.api.animoid.protocol.Frame;
 import org.cogchar.api.animoid.protocol.Joint;
@@ -69,20 +69,7 @@ public class AnimationBuilder {
 		JointPosition centerJP = j.getCenterPosition();
 		return centerJP;
 	}
-	public static Frame makeGazeCenteringFrame(List<GazeJoint> gazeJoints) {
-		Frame frame = new Frame();
-		for (GazeJoint gj: gazeJoints) {
-			JointPosition jp = gj.getJoint().getCenterPosition();
-			frame.addPosition(jp);
-		}
-		/*
-		frame.addPosition(makeCenteringJointPosition(r, MuscleJoint.BothEyes_Up.name()));
-		frame.addPosition(makeCenteringJointPosition(r, MuscleJoint.BothEyes_TurnRight.name()));
-		frame.addPosition(makeCenteringJointPosition(r, MuscleJoint.Head_TurnRight.name()));
-		frame.addPosition(makeCenteringJointPosition(r, MuscleJoint.UpperNod_Forward.name()));
-		*/
-		return frame;
-	}
+
 	public static Frame makeRobotCenteringFrame(Robot r) {
 		Frame frame = new Frame();
 		for (Joint j : r.getJoints()) {

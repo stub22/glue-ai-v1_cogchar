@@ -55,7 +55,7 @@ public class PumaAppUtils extends BasicDebugger {
 		}
 		return theRouter;
 	}
-	static class StuffRec {
+	public static class GreedyHandleSet {
 		public PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
 		public PumaRegistryClient pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
 		public final PumaConfigManager pcm = pumaRegClient.getConfigMgr(null);
@@ -67,7 +67,7 @@ public class PumaAppUtils extends BasicDebugger {
 		public BehaviorConfigEmitter animBCE = new BehaviorConfigEmitter(rc, animPathGraphID);
 	}
 	public static void registerActionConsumers() { 
-		StuffRec srec = new StuffRec();
+		GreedyHandleSet srec = new GreedyHandleSet();
 		// The VWorld does its own registration in a separate ballet.
 		// Here we are just handling the reg for Web + Behavior.
 
@@ -75,12 +75,12 @@ public class PumaAppUtils extends BasicDebugger {
 		srec.pwm.registerActionConsumers(router, srec.rc, srec.gce);		
 	}
 	public static void processPendingThingActions() {
-		StuffRec srec = new StuffRec();	
+		GreedyHandleSet srec = new GreedyHandleSet();	
 		BasicThingActionRouter router = getActionRouter();
 		router.consumeAllActions(srec.rc);
 	}
 	public static List<FancyFile> getKnownAnimationFiles() { 
-		StuffRec srec = new StuffRec();
+		GreedyHandleSet srec = new GreedyHandleSet();
 		return AnimFileSpecReader.findAnimFileSpecsForJava(srec.animBCE);
 	}
 	public static 	void startSillyMotionComputersDemoForVWorldOnly(BundleContext bundleCtx, Robot.Id optRobotID_elseAllRobots) { 
@@ -94,7 +94,7 @@ public class PumaAppUtils extends BasicDebugger {
 		}
 	}
 	public static 	void attachVWorldRenderModule(BundleContext bundleCtx, RenderModule rMod, Ident optVWorldSpecID) {
-		StuffRec srec = new StuffRec();	
+		GreedyHandleSet srec = new GreedyHandleSet();	
 		PumaVirtualWorldMapper pvwm = srec.pumaRegClient.getVWorldMapper(optVWorldSpecID);
 		if (pvwm != null) {
 			pvwm.attachRenderModule(rMod);
