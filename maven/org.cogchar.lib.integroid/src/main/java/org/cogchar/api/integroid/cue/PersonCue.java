@@ -16,7 +16,6 @@
 package org.cogchar.api.integroid.cue;
 
 
-import org.cogchar.api.sight.SightCue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

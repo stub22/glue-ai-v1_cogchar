@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.sight;
+package org.cogchar.api.integroid.cue;
 
 import org.cogchar.zzz.platform.stub.CueStub;
 import org.cogchar.platform.util.TimeUtils;
@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.appdapter.help.repo.*;
 import org.appdapter.core.matdat.*;
+
 
 /**
  *

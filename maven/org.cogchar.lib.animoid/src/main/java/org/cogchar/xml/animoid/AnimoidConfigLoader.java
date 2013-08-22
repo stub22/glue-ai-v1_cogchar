@@ -18,8 +18,7 @@ package org.cogchar.xml.animoid;
 
 
 import org.cogchar.api.animoid.config.bonus.AnimationBlendConfig;
-import org.cogchar.api.freckler.protocol.FreckleMatchConfig;
-import org.cogchar.api.freckler.protocol.FaceNoticeConfig;
+
 import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.Dom4JDriver;
@@ -27,12 +26,6 @@ import java.net.URL;
 import org.apache.log4j.BasicConfigurator;
 
 
-import org.cogchar.animoid.gaze.GazeStrategyCue;
-import org.cogchar.api.animoid.gaze.GazeJoint;
-import org.cogchar.api.animoid.gaze.GazeJointStrategy;
-import org.cogchar.api.animoid.gaze.GlanceStrategy;
-import org.cogchar.api.animoid.gaze.StereoGazeConfig;
-import org.cogchar.api.sight.SightPort;
 import org.cogchar.api.animoid.protocol.Robot;
 import org.cogchar.api.animoid.world.WorldJoint;
 import org.dom4j.io.SAXReader;
@@ -52,6 +45,7 @@ public class AnimoidConfigLoader {
 		return xstream;
 	}
 	public static void initConfigXStream(XStream xstream) {
+		/*
 		xstream.alias("GazeJoint", GazeJoint.class);
 		xstream.alias("GazeStrategy", GazeStrategyCue.class);
 		xstream.alias("GazeJointStrategy", GazeJointStrategy.class);
@@ -85,6 +79,7 @@ public class AnimoidConfigLoader {
 		xstream.aliasField("StereoGazeConfig", AnimoidConfig.class, "myStereoGazeConfig");
 		xstream.aliasField("FreckleMatchConfig", AnimoidConfig.class, "myFreckleMatchConfig");
 		xstream.aliasField("AnimationBlendConfig", AnimoidConfig.class, "myAnimationBlendConfig");
+		*/
 		/* Switched to elements for these to facilitate commenting in the XML
 		xstream.useAttributeFor(FaceNoticeConfig.class, "initialStrength");
 		...

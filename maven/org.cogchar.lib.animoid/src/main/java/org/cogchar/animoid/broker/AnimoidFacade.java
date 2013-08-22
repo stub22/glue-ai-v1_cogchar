@@ -23,20 +23,19 @@ import java.util.Map;
 
 
 import org.cogchar.animoid.job.AnimationExecJob;
-import org.cogchar.animoid.job.AttentionJob;
+
 import org.cogchar.animoid.job.BlenderJob;
 import org.cogchar.animoid.job.VisemeJob;
 import org.cogchar.animoid.calc.estimate.PositionEstimator;
 import org.cogchar.api.animoid.config.bonus.AnimoidConfig;
 import org.cogchar.xml.animoid.AnimoidConfigLoader;
-import org.cogchar.api.animoid.gaze.GazeJoint;
+
 import org.cogchar.api.animoid.config.bonus.ServoChannelConfig;
 import org.cogchar.api.animoid.config.bonus.VisemeConfig;
-import org.cogchar.animoid.gaze.GazeStrategyCue;
-import org.cogchar.animoid.gaze.IGazeTarget;
+
 import org.cogchar.api.animoid.protocol.Animation;
 import org.cogchar.api.animoid.protocol.Device;
-import org.cogchar.api.animoid.protocol.EgocentricDirection;
+
 import org.cogchar.api.animoid.protocol.Frame;
 import org.cogchar.api.animoid.protocol.Joint;
 import org.cogchar.api.animoid.protocol.JointPosition;
@@ -45,8 +44,7 @@ import org.cogchar.api.animoid.protocol.JointStateCoordinateType;
 import org.cogchar.api.animoid.protocol.Library;
 import org.cogchar.api.animoid.protocol.Robot;
 import org.cogchar.zzz.platform.stub.JobSpaceStub;
-import org.cogchar.sight.hypo.SightHypothesis;
-import org.cogchar.sight.hypo.SightModel;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +61,9 @@ public class AnimoidFacade implements Animator {
 	// private		Animator				myAnimator;
 	private		MotionController		myMotionController;
 	private		BlenderJob				myBlenderJob;
+	/*
 	private		SightModel				mySightModel;
+	*/
 	private		Robot					myMainRobot;
 	private		Device					myMainDevice;
 	private		Library					myAnimationLibrary;
@@ -83,15 +83,17 @@ public class AnimoidFacade implements Animator {
 		theLogger.info("Reading animoid config from URL: " + animoidConfigURL);
 		myAnimoidConfig = AnimoidConfigLoader.loadAnimoidConfig(animoidConfigURL,
 					myMainRobot, msecPerFrame, frameDurationSmoothingFactor);
-		SightHypothesis.loadConfig(myAnimoidConfig.getFaceNoticeConfig());
+		// SightHypothesis.loadConfig(myAnimoidConfig.getFaceNoticeConfig());
 		loadVisemeConfig(visemeConfigPath);
 	}
+	/*
 	public void setSightModel(SightModel sm) {
 		mySightModel = sm;
 	}
 	public SightModel getSightModel() {
 		return mySightModel;
 	}
+	*/
 	public void setJobSpace(JobSpaceStub jobSpace) {
 		myJobSpace = jobSpace;
 	}
@@ -120,7 +122,7 @@ public class AnimoidFacade implements Animator {
 		myJobSpace.postManualJob(myBlenderJob);
 	}
 	public void setTestMotionJobs() {
-		myBlenderJob.setupTestMotionJobs(mySightModel, myAnimoidConfig, myJobSpace);
+		myBlenderJob.setupTestMotionJobs(myAnimoidConfig, myJobSpace); // mySightModel, 
 		myBlenderJob.theTestVisemeJob.setCurrentTargetPosFrame(getVisemeFrameInAbsROM(0));
 		myBlenderJob.theTestVisemeJob.setNextTargetPosFrame(getVisemeFrameInAbsROM(0));
 	}
@@ -203,31 +205,13 @@ public class AnimoidFacade implements Animator {
 	public ServoChannelConfig[] getServoChannelConfigSparseArray() {
 		return myServoConfigSparseArray;
 	}	
-	public void suggestGazeStrategyName(String gazeStrategyName) {
-		GazeStrategyCue gazeStrategy = myAnimoidConfig.getNamedGazeStrategy(gazeStrategyName);
-		myBlenderJob.theTestAttentionJob.suggestGazeStrategy(gazeStrategy);
-	}
-	public void suggestHoldStrategyName(String holdStrategyName) {
-		GazeStrategyCue holdAndRecenterStrategy = myAnimoidConfig.getNamedGazeStrategy(holdStrategyName);
-		myBlenderJob.theTestAttentionJob.suggestHoldAndRecenterStrategy(holdAndRecenterStrategy);
-	}
-	public void suggestAttentionTarget(IGazeTarget target) {
-		// Please do not call this method.  It's not really public!!!
-		// As of 2010-3-27, it should only be called from PersonResolver.
-		myBlenderJob.theTestAttentionJob.suggestAttentionTarget(target);
-	}
-	public AttentionJob getAttentionJob() { 
-		return myBlenderJob.theTestAttentionJob;
-	}
 	public VisemeJob getVisemeJob() {
 		return myBlenderJob.theTestVisemeJob;
 	}
-	public IGazeTarget getAttentionTarget() {
-		return getAttentionJob().getAttentionTarget();
+	public VisemeConfig getVisemeConfig(){
+		return myVisemeConfig;
 	}
-	public void suggestAttentionState(boolean state) {
-		theLogger.warn("Requested gaze attention state: " + state);
-	}
+
 	public void suggestViseme(int curViseme, int duration, byte flags, int nextViseme) {
 		theLogger.trace("Suggesting a viseme: curViseme-" + curViseme +
 				", nextViseme-" + nextViseme + ", durration-" + duration);
@@ -262,46 +246,7 @@ public class AnimoidFacade implements Animator {
 		JointPosition jp = posEstimate.getJointPositionForOldLogicalJointNumber(oldLogicalJointNumber);
 		return jp.convertToCooordinateType(JointStateCoordinateType.FLOAT_ABS_RANGE_OF_MOTION);
 	}
-	/*
-	public JointPositionSnapshot getCurrentGazeSnapshot(){
-		Frame thisFrame = myBlenderJob.estimatePositionNow(true);
-		// Note - this uses hardcoded muscle joint IDs!
-		return JointPositionSnapshot.getGazeSnapshot(thisFrame);
-	}
-	 */
-	public EgocentricDirection getCurrentEgocentricDirection(){
-		Frame f = myBlenderJob.estimatePositionNow(true);
-		if (f != null) {
-			return mySightModel.getGazeDirectionComputer().computeGazeCenterDirection(f);
-		} else {
-			return null;
-		}
-	}
 
-	public List<GazeJoint> getAllGazeJoints() {
-		return getAnimoidConfig().getGazeJoints();
-	}
-
-	public VisemeConfig getVisemeConfig(){
-		return myVisemeConfig;
-	}
-	public void rebalanceGazeJobs() {
-		AttentionJob aj = myBlenderJob.theTestAttentionJob;
-		if (aj != null) {
-			aj.rebalanceGazeJobs();
-		}
-	}
-
-	public String getAttentionDebugText() {
-		String attentionDebugText = "No Attention Job";
-		AttentionJob aj = getAttentionJob();
-		if (aj != null) {
-			attentionDebugText = aj.getAttentionDebugText();
-		}
-		EgocentricDirection currDir = getCurrentEgocentricDirection();
-		String debugText ="currDir=" + currDir + "\n\n" + attentionDebugText;
-		return debugText;
-	}
 	public static final String	T_VISEMES_ENABLED = "T_VISEMES_ENABLED";
 	public static final String	T_VISEMES_DISABLED = "T_VISEMES_DISABLED";
 	public static final String	T_SCRIPTED_ENABLED = "T_ALL_ANIMS_ENABLED";
@@ -339,24 +284,6 @@ public class AnimoidFacade implements Animator {
 		myCueSpace.clearMatchingNamedCues(T_SCRIPTED_ENABLED);
 		myCueSpace.addThoughtCueForName(T_SCRIPTED_DISABLED, 1.0);
 	}
-	public void enableAttentionGaze() {
-		theLogger.info("Enabling attention gaze");
-		AttentionJob aj = getAttentionJob();
-		if (aj != null) {
-			aj.enableMotion();
-		}
-		myCueSpace.clearMatchingNamedCues(T_ATTENTION_DISABLED);
-		myCueSpace.addThoughtCueForName(T_ATTENTION_ENABLED, 1.0);
-	}
-	public void disableAttentionGaze() {
-		theLogger.info("Disabling attention gaze");
-		AttentionJob aj = getAttentionJob();
-		if (aj != null) {
-			aj.disableMotion();
-		}
-		myCueSpace.clearMatchingNamedCues(T_ATTENTION_ENABLED);
-		myCueSpace.addThoughtCueForName(T_ATTENTION_DISABLED, 1.0);
-	}
 	public void killAllAnimations() {
 		theLogger.info("Killing all animations via thalamus (not Blender)");
 		myJobSpace.terminateAndClearJobsInClass(AnimationExecJob.class);
@@ -381,135 +308,4 @@ public class AnimoidFacade implements Animator {
         }
         return map;
     }
-
-	/*
-	public Boolean getGazeHoldStatus() {
-		AttentionJob aj = myBlenderJob.theTestAttentionJob;
-		if (aj != null) {
-			return aj.getHoldingStatusFlag();
-		} else {
-			return null;
-		}
-	}
-	 */
-	/*
-	public double getEgocentricXAbsRoM(){
-		ensureEgoExtremes();
-		Double range = myMaxEgoX - myMinEgoX;
-		Double curAz = getCurrentEgocentricDirection().getAzimuth().getDegrees();
-		curAz -= myMinEgoX;
-		return curAz/range;
-	}
-	public double getEgocentricYAbsRoM(){
-		ensureEgoExtremes();
-		Double range = myMaxEgoY - myMinEgoY;
-		Double curEl = getCurrentEgocentricDirection().getElevation().getDegrees();
-		curEl -= myMinEgoY;
-		return curEl/range;
-	}
-	private void ensureEgoExtremes(){
-		if(myMinEgoX != null && myMaxEgoX != null &&
-				myMinEgoY != null && myMaxEgoY != null){
-			return;
-		}
-		Frame center = AnimationBuilder.makeGazeCenteringFrame(getAllGazeJoints());
-		Frame minF = getJointPositionFrame(center, 0.0);
-		Frame maxF = getJointPositionFrame(center, 1.0);
-
-		GazeDirectionComputer gdc = mySightModel.getGazeDirectionComputer();
-		if(gdc == null){
-			theLogger.fine("Gaze Direction Computer is null, cannot continue.");
-			return;
-		}
-		EgocentricDirection edMax = gdc.computeGazeCenterDirection(maxF);
-		EgocentricDirection edMin = gdc.computeGazeCenterDirection(minF);
-		if(edMax == null || edMin == null){
-			theLogger.fine("Egocentric Direction is null, cannot continue.");
-			return;
-		}
-		myMinEgoX = edMin.getAzimuth().getDegrees();
-		myMaxEgoX = edMax.getAzimuth().getDegrees();
-		myMinEgoY = edMin.getElevation().getDegrees();
-		myMaxEgoY = edMax.getElevation().getDegrees();
-	}
-*/
-		/*
-	public Animation convertDenseAbsROMtoDenseRelROM(Animation absAnim) {
-		Animation relAnim = new Animation(absAnim.getName(), absAnim.getFramePeriodSeconds());
-		int frameCount = absAnim.getFrameCount();
-		// First rel frame will always be all 0.0's
-		Frame prevAbsFrame = absAnim.getFrameAt(0);
-		for(int frameIDX=0; frameIDX < frameCount; frameIDX++) {
-			Frame nextAbsFrame = absAnim.getFrameAt(frameIDX);
-			Frame nextRelFrame = new Frame();
-			List<JointPosition> nextAbsJPs = nextAbsFrame.getAllPositions();
-			for (JointPosition nextAbsJP : nextAbsJPs) {
-				Joint j = nextAbsJP.getJoint();
-				JointPosition prevAbsJP = prevAbsFrame.getJointPositionForJoint(j);
-				double nextAbsPos = nextAbsJP.getCoordinateFloat(JointPosition.CoordinateType.FLOAT_ABS_RANGE_OF_MOTION);
-				double prevAbsPos = prevAbsJP.getCoordinateFloat(JointPosition.CoordinateType.FLOAT_ABS_RANGE_OF_MOTION);
-				double moveDelta = nextAbsPos - prevAbsPos;
-				JointPosition nextRelJP = new JointPosition(j);
-				nextRelJP.setCoordinateFloat(JointPosition.CoordinateType.FLOAT_REL_RANGE_OF_MOTION, moveDelta);
-				nextRelFrame.addPosition(nextRelJP);
-			}
-			relAnim.appendFrame(nextRelFrame);
-			prevAbsFrame = nextAbsFrame;
-		}
-		return relAnim;
-	}
-	*/
-	/*
-	public void initGazeReturnAnim(){
-		//using "INIT" as a temporary placeholder.  Works fine now, but we will
-		//need to make many animations on the fly.  This is a temporary method
-		initGazeReturnAnim("INIT");
-	}
-	public void initGazeReturnAnim(String init){
-		Animation a = new Animation(init, 1.0);
-		Frame snapshot = getCurrentGazeSnapshot();
-		a.appendFrame(snapshot);
-		myAnimationLibrary.registerAnimation(a);
-	}
-	public void completeGazeReturnAnim(String name, int length){
-		//same as initGazeReturnAnim
-		completeGazeReturnAnim("INIT", name, length);
-	}
-	public void completeGazeReturnAnim(String init, String name, int length){
-		//same as initGazeReturnAnim
-		Animation base = myAnimationLibrary.getAnimationForName(init);
-		Frame start = getCurrentGazeSnapshot();
-		Frame end = base.getFrameAt(0);
-		Animation a = AnimationBuilder.makeLinearAnimation(name, start, end, length);
-		myAnimationLibrary.registerAnimation(a);
-	}
-	public void makeCenteringAnimation(){
-		Frame start = getCurrentGazeSnapshot();
-		Frame end = AnimationBuilder.makeGazeCenteringFrame(getAllGazeJoints());
-		Animation complete = AnimationBuilder.makeLinearAnimation("Centering", start, end, 10);
-		myAnimationLibrary.registerAnimation(complete);
-	}
-    public void makeNeckHoldAnimation(int frameCount){
-        List<JointPosition> pos = new ArrayList();
-        Frame<JointPosition> f = myBlenderJob.estimatePositionNow(true);
-        for(GazeJoint j : getAllGazeJoints()){
-            pos.add(f.getJointPositionForJoint(j.getJoint()));
-        }
-        Animation a = AnimationBuilder.makeConstantAnimation("HOLD_NECK", frameCount, pos, 0.05);
-        myAnimationLibrary.registerAnimation(a);
-    }
-	 */
-	/*
-	private Frame getJointPositionFrame(Frame center, double val) {
-		Frame f = new Frame();
-		List<JointPosition> jps = center.getAllPositions();
-		for (JointPosition jp : jps) {
-			JointPosition newJp = jp.convertToCooordinateType(JointStateCoordinateType.FLOAT_ABS_RANGE_OF_MOTION);
-			newJp.setCoordinateFloat(JointStateCoordinateType.FLOAT_ABS_RANGE_OF_MOTION, val);
-			f.addPosition(newJp);
-		}
-		return f;
-	}
-	*/
-
 }

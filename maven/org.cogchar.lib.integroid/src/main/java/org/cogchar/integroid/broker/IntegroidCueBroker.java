@@ -29,7 +29,7 @@ import org.cogchar.api.convoid.cue.VerbalCue;
 
 import java.util.Map;
 import org.cogchar.api.integroid.cue.AwarenessCue;
-import org.cogchar.api.integroid.cue.MotionCue;
+
 import org.cogchar.api.integroid.cue.PersonCue;
 import org.cogchar.animoid.broker.AnimoidCueSpaceStub;
 import org.cogchar.zzz.platform.stub.CueBrokerStub;
@@ -102,12 +102,5 @@ public class IntegroidCueBroker extends CueBrokerStub implements ConvoidCueSpace
 		}
         return null;
 	}
-	public MotionCue getMotionCue() {
-        try{
-            return getSingleFactMatchingClass(MotionCue.class);
-        } catch(Throwable t) {
-			theLogger.warning("Can't find MotionCue");
-		}
-        return null;
-	}
+
 }
