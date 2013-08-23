@@ -57,10 +57,13 @@ import org.slf4j.LoggerFactory;
 public class AnimoidFacade implements Animator {
 	private static Logger	theLogger = LoggerFactory.getLogger(AnimoidFacade.class.getName());
 
-	private		AnimoidConfig			myAnimoidConfig;	
+	protected		JobSpaceStub			myJobSpace;
+	protected		AnimoidCueSpaceStub			myCueSpace;
+	
+	protected		AnimoidConfig			myAnimoidConfig;	
 	// private		Animator				myAnimator;
-	private		MotionController		myMotionController;
-	private		BlenderJob				myBlenderJob;
+	protected		MotionController		myMotionController;
+	protected		BlenderJob				myBlenderJob;
 	/*
 	private		SightModel				mySightModel;
 	*/
@@ -70,8 +73,7 @@ public class AnimoidFacade implements Animator {
 
 	private		VisemeConfig			myVisemeConfig;	
 	private		ServoChannelConfig[]	myServoConfigSparseArray;
-	private		JobSpaceStub			myJobSpace;
-	private		AnimoidCueSpaceStub			myCueSpace;
+
 
 	private		boolean					myAnimationsEnabledFlag = false;
 	
@@ -86,14 +88,7 @@ public class AnimoidFacade implements Animator {
 		// SightHypothesis.loadConfig(myAnimoidConfig.getFaceNoticeConfig());
 		loadVisemeConfig(visemeConfigPath);
 	}
-	/*
-	public void setSightModel(SightModel sm) {
-		mySightModel = sm;
-	}
-	public SightModel getSightModel() {
-		return mySightModel;
-	}
-	*/
+
 	public void setJobSpace(JobSpaceStub jobSpace) {
 		myJobSpace = jobSpace;
 	}
