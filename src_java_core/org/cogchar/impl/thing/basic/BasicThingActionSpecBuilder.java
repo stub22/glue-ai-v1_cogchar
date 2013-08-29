@@ -27,87 +27,107 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import java.util.Set;
 import org.appdapter.core.item.Item.LinkDirection;
+import static org.cogchar.name.thing.ThingCN.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This is the SpecBuilder to construct RuntimeTAs for use in steps that fire
+ * a TA directly.
  *
  * @author Jason Randolph Eads <jeads362@gmail.com>
  */
-public class BasicThingActionSpecBuilder extends CachingComponentAssembler<BasicThingActionSpec> {
+public class BasicThingActionSpecBuilder extends 
+        CachingComponentAssembler<BasicThingActionSpec> {
     
-    private final static Logger logger = LoggerFactory.getLogger(BasicThingActionSpecBuilder.class);
+    private final static Logger logger =
+            LoggerFactory.getLogger(BasicThingActionSpecBuilder.class);
     
-    protected Class<BasicThingActionSpec> decideComponentClass(Ident ident, Item item) {
+    protected Class<BasicThingActionSpec> decideComponentClass(
+            Ident ident,
+            Item item) {
         return BasicThingActionSpec.class;
     }
     
-    private final static String theActionRecordID_Prefix = "http://www.cogchar.org/thing/action/instance#stepTA-";
+    private final static String theActionRecordIdentPrefix = TA_NS + "stepTA-";
     
-    //TODO: Extract idents to ontology
-    private final static String theTargetThingID_FieldURI = "http://www.cogchar.org/thing/action#targetThing";
-    private final static String theTargetThingTypeID_FieldURI = "http://www.cogchar.org/thing/action#targetThingType";
-    private final static String theActionVerbID_FieldURI = "http://www.cogchar.org/thing/action#verb";
-    private final static String theSourceAgentID_FieldURI = "http://www.cogchar.org/thing/action#sourceAgent";
-    private final static String thePostedTimestamp_FieldURI = "http://www.cogchar.org/thing/action#postTStampMsec";
+    private final static FreeIdent theTargetThingFieldIdent =
+            new FreeIdent(P_targetThing);
+    private final static FreeIdent theTargetThingTypeFieldIdent =
+            new FreeIdent(P_targetThingType);
+    private final static FreeIdent theActionVerbFieldIdent =
+            new FreeIdent(P_verb);
+    private final static FreeIdent theSourceAgentFieldIdent =
+            new FreeIdent(P_sourceAgent);
+    private final static FreeIdent thePostedTimestampFieldIdent =
+            new FreeIdent(P_postedTSMsec);
+    private final static FreeIdent theThingActionParamAttachedTAFieldIdent =
+            new FreeIdent(V_IdentAttachedToThingAction);
     
-    private final static String theThingActionParamList_FieldURI = "http://www.cogchar.org/thing/action#hasParam";
-    private final static String theParamIdent_FieldURI = "http://www.cogchar.org/thing/action#paramIdent";
-    private final static String theParamIdentValue_FieldURI = "http://www.cogchar.org/thing/action#paramIdentValue";
-    private final static String theParamStringValue_FieldURI = "http://www.cogchar.org/thing/action#paramStringValue";
-    private final static String theParamIntValue_FieldURI = "http://www.cogchar.org/thing/action#paramIntValue";
-    private final static String theParamFloatValue_FieldURI = "http://www.cogchar.org/thing/action#paramFloatValue";
-    
-    private final static String theThingActionParamLacksIdent_formatString =
-            "ThingActionParam \"{}\" did not provide a \"paramIdent\" and was discarded";
-    
-    private final static String theThingActionParamHasNoValue_formatString =
-            "ThingActionParam \"{}\" has no value and was discarded";
-    
-    private final static String theThingActionParamHasMultipleValues_formatString =
-            "ThingActionParam \"{}\" provided multiple values illegally and was discarded";
+    private final static FreeIdent theParamIdentFieldIdent =
+            new FreeIdent(P_paramIdent);
+    private final static FreeIdent theParamIdentValueFieldIdent =
+            new FreeIdent(P_paramIdentValue);
+    private final static FreeIdent theParamStringValueFieldIdent =
+            new FreeIdent(P_paramStringValue);
+    private final static FreeIdent theParamIntValueFieldIdent =
+            new FreeIdent(P_paramIntValue);
+    private final static FreeIdent theParamFloatValueFieldIdent =
+            new FreeIdent(P_paramFloatValue);
     
     
-    protected void initExtendedFieldsAndLinks(BasicThingActionSpec spec, Item item, Assembler asmblr, Mode mode) {
+    protected void initExtendedFieldsAndLinks(
+            BasicThingActionSpec spec, 
+            Item item,
+            Assembler asmblr,
+            Mode mode) {
         ItemAssemblyReader reader =  getReader();
         
         //Create a ActionRecordID on load
         spec.setMyActionRecordID(
                 new FreeIdent(
-                    theActionRecordID_Prefix + 
+                    theActionRecordIdentPrefix + 
                         Long.toString(System.currentTimeMillis())));
+        
 
-        Ident targetThingField = new FreeIdent(theTargetThingID_FieldURI);
-        Item targetThingItem = item.getOptionalSingleLinkedItem(targetThingField, LinkDirection.FORWARD);
+        Item targetThingItem = item.getOptionalSingleLinkedItem(
+                theTargetThingFieldIdent, 
+                LinkDirection.FORWARD);
         if(targetThingItem != null){
             spec.setMyTargetThingID(targetThingItem.getIdent());
         }
         
-        Ident targetTypeField = new FreeIdent(theTargetThingTypeID_FieldURI);
-        Item targetTypeItem = item.getOptionalSingleLinkedItem(targetTypeField, LinkDirection.FORWARD);
+        Item targetTypeItem = item.getOptionalSingleLinkedItem(
+                theTargetThingTypeFieldIdent, 
+                LinkDirection.FORWARD);
         if(targetTypeItem != null){
             spec.setMyTargetThingTypeID(targetTypeItem.getIdent());
         }
         
-        Ident actionVerbField = new FreeIdent(theActionVerbID_FieldURI);
-        Item actionVerbItem = item.getOptionalSingleLinkedItem(actionVerbField, LinkDirection.FORWARD);
+        Item actionVerbItem =item.getOptionalSingleLinkedItem(
+                theActionVerbFieldIdent, 
+                LinkDirection.FORWARD);
         if(actionVerbItem != null){
             spec.setMyActionVerbID(actionVerbItem.getIdent());
         }
         
-        Ident sourceAgentField = new FreeIdent(theSourceAgentID_FieldURI);
-        Item sourceAgentItem = item.getOptionalSingleLinkedItem(sourceAgentField, LinkDirection.FORWARD);
+        Item sourceAgentItem = item.getOptionalSingleLinkedItem(
+                theSourceAgentFieldIdent, 
+                LinkDirection.FORWARD);
         if(sourceAgentItem != null){
             spec.setMySourceAgentID(sourceAgentItem.getIdent());
         }
         
-        Ident postedTimestampField = new FreeIdent(thePostedTimestamp_FieldURI);
-        Long postedTimestamp = item.getValLong(postedTimestampField, System.currentTimeMillis());
+        Long postedTimestamp = item.getValLong(
+                thePostedTimestampFieldIdent,
+                System.currentTimeMillis());
         spec.setMyPostedTimestamp(postedTimestamp);
         
         // Pull in the parameters
         Set<Item> paramItems = item.getLinkedItemSet(
-                new FreeIdent(theThingActionParamList_FieldURI), LinkDirection.FORWARD);
+                new FreeIdent(
+                    theThingActionParamAttachedTAFieldIdent),
+                    LinkDirection.FORWARD);
         
         BasicTypedValueMap paramDictionary =
                 new BasicTypedValueMapTemporaryImpl();
@@ -117,11 +137,11 @@ public class BasicThingActionSpecBuilder extends CachingComponentAssembler<Basic
             Ident name = null;
             Set<Item> nameItem_RawSet = 
                     i.getLinkedItemSet( 
-                    new FreeIdent(theParamIdent_FieldURI),
+                    new FreeIdent(theParamIdentFieldIdent),
                     Item.LinkDirection.FORWARD);
             if( nameItem_RawSet == null && nameItem_RawSet.size() != 1 ) {
                 logger.warn(
-                        theThingActionParamLacksIdent_formatString,
+                        "ThingActionParam \"{}\" did not provide a \"paramIdent\" and was discarded",
                         i.getIdent());
                 continue;
             }   
@@ -131,22 +151,22 @@ public class BasicThingActionSpecBuilder extends CachingComponentAssembler<Basic
             // There should be only one type.
             Set<Item> identTypeItems =
                     i.getLinkedItemSet(
-                        new FreeIdent(theParamIdentValue_FieldURI), 
+                        new FreeIdent(theParamIdentValueFieldIdent), 
                         Item.LinkDirection.FORWARD);
             
             Set<Item> stringTypeItems =
                     i.getLinkedItemSet( 
-                        new FreeIdent(theParamStringValue_FieldURI), 
+                        new FreeIdent(theParamStringValueFieldIdent), 
                         Item.LinkDirection.FORWARD);
 
             Set<Item> intTypeItems =
                     i.getLinkedItemSet( 
-                        new FreeIdent(theParamIntValue_FieldURI), 
+                        new FreeIdent(theParamIntValueFieldIdent), 
                         Item.LinkDirection.FORWARD);
             
             Set<Item> floatTypeItems =
                     i.getLinkedItemSet( 
-                        new FreeIdent(theParamFloatValue_FieldURI), 
+                        new FreeIdent(theParamFloatValueFieldIdent), 
                         Item.LinkDirection.FORWARD);
             
             
@@ -161,12 +181,12 @@ public class BasicThingActionSpecBuilder extends CachingComponentAssembler<Basic
                 //Log sheet problem
                 if( typeCount > 1 ) {
                     logger.warn(
-                            theThingActionParamHasMultipleValues_formatString,
+                            "ThingActionParam \"{}\" provided multiple values illegally and was discarded",
                             i.getIdent());
                 }
                 else {    
                     logger.warn(
-                            theThingActionParamHasNoValue_formatString,
+                            "ThingActionParam \"{}\" has no value and was discarded",
                             i.getIdent());
                 }
                 continue;
@@ -178,16 +198,16 @@ public class BasicThingActionSpecBuilder extends CachingComponentAssembler<Basic
                 }
                 else if( stringTypeItems.size() == 1 ) {
                     value = stringTypeItems.iterator().next().getValString(
-                            new FreeIdent(theParamStringValue_FieldURI), "");
+                            new FreeIdent(theParamStringValueFieldIdent), "");
                 } 
                 else if( intTypeItems.size() == 1 ) {
                     value = intTypeItems.iterator().next().getValInteger(
-                            new FreeIdent(theParamIntValue_FieldURI),
+                            new FreeIdent(theParamIntValueFieldIdent),
                             new Integer(-1));
                 }
                 else if( floatTypeItems.size() == 1 ) {
                     value = intTypeItems.iterator().next().getValDouble(
-                            new FreeIdent(theParamFloatValue_FieldURI),
+                            new FreeIdent(theParamFloatValueFieldIdent),
                             new Double(-1));
                 }
             }
