@@ -212,6 +212,7 @@ class FireThingActionExec( val mySpec : FireThingActionSpec) extends BasicDebugg
   val theTargetGraphQN = "ccrt:thing_sheet_22"
   
   def perform(s: BScene) : List[FancyPerformance] = {
+    var perfs : List[FancyPerformance] = Nil
     val taList = mySpec.myThingActionSpecList
     for ( ta : ThingActionSpec <- taList ) {
       val fmw : FancyThingModelWriter = new FancyThingModelWriter()
@@ -222,7 +223,7 @@ class FireThingActionExec( val mySpec : FireThingActionSpec) extends BasicDebugg
       fixme_functions.execRemoteSparqlUpdate("", updateTextToAddTA, debugFlag)
       
     }
-    null;
+    perfs;
   }
 }
 class FireThingActionSpec (val myThingActionSpecList: List[ThingActionSpec], val myOutputTAGraph: Ident ) extends BehaviorActionSpec() {

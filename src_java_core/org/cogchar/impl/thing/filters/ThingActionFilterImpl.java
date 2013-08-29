@@ -106,6 +106,11 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 				return false;
 			anythingMatched = true;
 		}
+		if (!JenaLiteralUtils.isMatchAny(hasVerb)) {
+			if (!JenaLiteralUtils.isIndividualMatch(hasVerb, aSpec.getVerbID()))
+				return false;
+			anythingMatched = true;
+		}
 		if (!JenaLiteralUtils.isMatchAny(hasParamName)) {
 			Object raw = aSpec.getParamTVM().getRaw(hasParamName);
 			Object mustBe = getExpectedParamValue();
@@ -243,7 +248,9 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 	}
 
     private Object getExpectedParamValue() {
-        if(hasParamString != null){
+        if(hasParamObject != null){
+            return hasParamObject;
+        }else if(hasParamString != null){
             return hasParamString;
         }else if(hasParamInt != null){
             return hasParamInt;
