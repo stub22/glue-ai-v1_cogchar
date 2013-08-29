@@ -71,9 +71,11 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 	private Long hasTStampGT = null;
 
 	private Ident getNotMarkedByAgent;
-
+    
+    //Don't need to match yet
 	private Set<Ident> hasPattern;
 
+    //Param stuff below already matched
 	private Ident hasParamName;
 
 	private String hasParamNameAsString;
@@ -92,33 +94,28 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 	 *  Return true if the params are are matchable
 	 */
 	@Override public boolean test(ThingActionSpec aSpec) {
-		boolean anythingMatched = false;
 		if (hasTStampGT != null && !(aSpec.getPostedTimestamp() > hasTStampGT))
 			return false;
 
 		if (!JenaLiteralUtils.isMatchAny(hasThingType)) {
 			if (!JenaLiteralUtils.isTypeMatch(hasThingType, aSpec.getTargetThingTypeID()))
 				return false;
-			anythingMatched = true;
 		}
 		if (!JenaLiteralUtils.isMatchAny(hasThing)) {
 			if (!JenaLiteralUtils.isIndividualMatch(hasThing, aSpec.getTargetThingID()))
 				return false;
-			anythingMatched = true;
 		}
 		if (!JenaLiteralUtils.isMatchAny(hasVerb)) {
 			if (!JenaLiteralUtils.isIndividualMatch(hasVerb, aSpec.getVerbID()))
 				return false;
-			anythingMatched = true;
 		}
 		if (!JenaLiteralUtils.isMatchAny(hasParamName)) {
 			Object raw = aSpec.getParamTVM().getRaw(hasParamName);
 			Object mustBe = getExpectedParamValue();
 			if (!JenaLiteralUtils.isMatch(mustBe, raw))
 				return false;
-			anythingMatched = true;
 		}
-		return anythingMatched;
+		return true;
 	}
 
 	/**
