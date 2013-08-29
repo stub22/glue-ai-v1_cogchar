@@ -112,10 +112,10 @@ public class MasterDemo extends BasicDebugger {
 				i++;
 			}
 		}
-		DemoBrowser.showObject(null, this, false, true);
-		DemoBrowser.showObject(null, demoRepoClient, false, true);
-		DemoBrowser.showObject(null, demoRepoClient.getRepo(), true, true);
-		DemoBrowser.showObject(null, demoRepoClient.getRepo().getDirectoryModel(), true, true);
+//		DemoBrowser.showObject(null, this, false, true);
+//		DemoBrowser.showObject(null, demoRepoClient, false, true);
+//		DemoBrowser.showObject(null, demoRepoClient.getRepo(), true, true);
+//		DemoBrowser.showObject(null, demoRepoClient.getRepo().getDirectoryModel(), true, true);
 		new OSGiComponent(bundleCtx, new SimpleLifecycle(osgiTheater, OSGiTheater.class)).start();
 	}
 
