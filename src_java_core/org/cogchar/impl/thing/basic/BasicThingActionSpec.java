@@ -18,6 +18,7 @@ package org.cogchar.impl.thing.basic;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.appdapter.core.component.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.TypedValueMap;
@@ -26,7 +27,7 @@ import org.cogchar.api.thing.TypedValueMap;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class BasicThingActionSpec implements ThingActionSpec {
+public class BasicThingActionSpec extends KnownComponentImpl implements ThingActionSpec {
 	// Including the actionRecordID formally reifies the action for posterity.  
 	private		Ident					myActionRecordID;
 	// The "subject" of the update, and the subject of the prop-Vals
@@ -71,6 +72,8 @@ public class BasicThingActionSpec implements ThingActionSpec {
 		
 		myParamTVMap = null;  // copy of (paramTVMap)
 	}
+    // Empty constructor for assembler usage
+    public BasicThingActionSpec() {}
 
 	@Override public Ident getActionSpecID() {
 		return myActionRecordID;
@@ -108,7 +111,31 @@ public class BasicThingActionSpec implements ThingActionSpec {
 					+ "postedTStamp=" + myPostedTimestamp + "]";
 	}
 
+    public void setMyActionRecordID(Ident myActionRecordID) {
+        this.myActionRecordID = myActionRecordID;
+    }
 
-	
+    public void setMyTargetThingID(Ident myTargetThingID) {
+        this.myTargetThingID = myTargetThingID;
+    }
 
+    public void setMyTargetThingTypeID(Ident myTargetThingTypeID) {
+        this.myTargetThingTypeID = myTargetThingTypeID;
+    }
+
+    public void setMyActionVerbID(Ident myActionVerbID) {
+        this.myActionVerbID = myActionVerbID;
+    }
+
+    public void setMySourceAgentID(Ident mySourceAgentID) {
+        this.mySourceAgentID = mySourceAgentID;
+    }
+
+    public void setMyParamTVMap(TypedValueMap myParamTVMap) {
+        this.myParamTVMap = myParamTVMap;
+    }
+
+    public void setMyPostedTimestamp(Long myPostedTimestamp) {
+        this.myPostedTimestamp = myPostedTimestamp;
+    }
 }

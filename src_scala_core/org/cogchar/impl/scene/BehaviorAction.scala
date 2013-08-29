@@ -36,6 +36,12 @@ import org.cogchar.impl.perform.{FancyPerfChan, FancyTime, FancyTextMedia, Fancy
 import org.cogchar.api.channel.{GraphChannel}
 import org.cogchar.impl.channel.{ThingActionGraphChan}
 import org.cogchar.api.thing.{ThingActionSpec, ThingActionFilter, WantsThingAction}
+import org.cogchar.impl.thing.fancy.{FancyThingModelWriter}
+import org.apache.http.impl.client.{DefaultHttpClient}
+
+import org.cogchar.impl.thing.basic.BasicThingActionSpecBuilderTempFunctions
+
+import java.util.Random;
 
 import scala.collection.JavaConverters._
 
@@ -202,3 +208,30 @@ class UseThingActionSpec (val myInChanID : Ident, val myOptFilterID : Option[Ide
 	}		
 }
 
+class FireThingActionExec( val mySpec : FireThingActionSpec) extends BasicDebugger with BehaviorActionExec {
+  val theTargetGraphQN = "ccrt:thing_sheet_22"
+  
+  def perform(s: BScene) : List[FancyPerformance] = {
+    val taList = mySpec.myThingActionSpecList
+    for ( ta : ThingActionSpec <- taList ) {
+      val fmw : FancyThingModelWriter = new FancyThingModelWriter()
+      val updateTextToAddTA : String = fmw.writeTASpecToString(ta, theTargetGraphQN, new Random())
+      
+      val debugFlag : Boolean = false;
+      val fixme_functions : BasicThingActionSpecBuilderTempFunctions = new BasicThingActionSpecBuilderTempFunctions()
+      fixme_functions.execRemoteSparqlUpdate("", updateTextToAddTA, debugFlag)
+      
+    }
+    null;
+  }
+}
+class FireThingActionSpec (val myThingActionSpecList: List[ThingActionSpec], val myOutputTAGraph: Ident ) extends BehaviorActionSpec() {
+  
+  override def makeActionExec() : BehaviorActionExec = {
+		new FireThingActionExec(this)
+	}
+    
+	override def toString() : String = {
+      "FireThingActionSpec[firesThingActions= " + myThingActionSpecList.toString + ", outputTAGraph = " + myOutputTAGraph.toString;
+	}
+}
