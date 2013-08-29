@@ -26,6 +26,7 @@ import org.cogchar.impl.thing.basic.BasicTypedValueMapTemporaryImpl;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import java.util.Set;
+import org.appdapter.core.item.Item.LinkDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,13 +42,13 @@ public class BasicThingActionSpecBuilder extends CachingComponentAssembler<Basic
         return BasicThingActionSpec.class;
     }
     
-    private final static String theActionRecordID_Prefix = "Assembled_ActionRecordID#";
+    private final static String theActionRecordID_Prefix = "http://www.cogchar.org/thing/action/instance#stepTA-";
     
     //TODO: Extract idents to ontology
     private final static String theTargetThingID_FieldURI = "http://www.cogchar.org/thing/action#targetThing";
     private final static String theTargetThingTypeID_FieldURI = "http://www.cogchar.org/thing/action#targetThingType";
     private final static String theActionVerbID_FieldURI = "http://www.cogchar.org/thing/action#verb";
-    private final static String theSourceAgentID_FieldURI = "http://www.cogchar.org/thing/action#";
+    private final static String theSourceAgentID_FieldURI = "http://www.cogchar.org/thing/action#sourceAgent";
     private final static String thePostedTimestamp_FieldURI = "http://www.cogchar.org/thing/action#postTStampMsec";
     
     private final static String theThingActionParamList_FieldURI = "http://www.cogchar.org/thing/action#hasParam";
@@ -76,49 +77,37 @@ public class BasicThingActionSpecBuilder extends CachingComponentAssembler<Basic
                     theActionRecordID_Prefix + 
                         Long.toString(System.currentTimeMillis())));
 
-        // Load in data from sheet
-        spec.setMyTargetThingID(
-                new FreeIdent(
-                    reader.readConfigValString(
-                        item.getIdent(), 
-                        theTargetThingID_FieldURI, 
-                        item, 
-                        "")));
+        Ident targetThingField = new FreeIdent(theTargetThingID_FieldURI);
+        Item targetThingItem = item.getOptionalSingleLinkedItem(targetThingField, LinkDirection.FORWARD);
+        if(targetThingItem != null){
+            spec.setMyTargetThingID(targetThingItem.getIdent());
+        }
         
-        spec.setMyTargetThingTypeID(
-                new FreeIdent(
-                    reader.readConfigValString(
-                        item.getIdent(), 
-                        theTargetThingTypeID_FieldURI, 
-                        item, 
-                        "")));
+        Ident targetTypeField = new FreeIdent(theTargetThingTypeID_FieldURI);
+        Item targetTypeItem = item.getOptionalSingleLinkedItem(targetTypeField, LinkDirection.FORWARD);
+        if(targetTypeItem != null){
+            spec.setMyTargetThingTypeID(targetTypeItem.getIdent());
+        }
         
-        spec.setMyActionVerbID(
-                new FreeIdent(
-                    reader.readConfigValString(
-                        item.getIdent(), 
-                        theActionVerbID_FieldURI, 
-                        item, 
-                        "")));
+        Ident actionVerbField = new FreeIdent(theActionVerbID_FieldURI);
+        Item actionVerbItem = item.getOptionalSingleLinkedItem(actionVerbField, LinkDirection.FORWARD);
+        if(actionVerbItem != null){
+            spec.setMyActionVerbID(actionVerbItem.getIdent());
+        }
         
-        spec.setMySourceAgentID(
-                new FreeIdent(
-                    reader.readConfigValString(
-                        item.getIdent(), 
-                        theSourceAgentID_FieldURI, 
-                        item, 
-                        "")));
+        Ident sourceAgentField = new FreeIdent(theSourceAgentID_FieldURI);
+        Item sourceAgentItem = item.getOptionalSingleLinkedItem(sourceAgentField, LinkDirection.FORWARD);
+        if(sourceAgentItem != null){
+            spec.setMySourceAgentID(sourceAgentItem.getIdent());
+        }
         
-        spec.setMyPostedTimestamp(
-            reader.readConfigValLong(
-                item.getIdent(), 
-                thePostedTimestamp_FieldURI, 
-                item, 
-                Long.valueOf(-1)));
+        Ident postedTimestampField = new FreeIdent(thePostedTimestamp_FieldURI);
+        Long postedTimestamp = item.getValLong(postedTimestampField, System.currentTimeMillis());
+        spec.setMyPostedTimestamp(postedTimestamp);
         
         // Pull in the parameters
-        List<Item> paramItems = item.getLinkedOrderedList(
-                new FreeIdent(theThingActionParamList_FieldURI));
+        Set<Item> paramItems = item.getLinkedItemSet(
+                new FreeIdent(theThingActionParamList_FieldURI), LinkDirection.FORWARD);
         
         BasicTypedValueMap paramDictionary =
                 new BasicTypedValueMapTemporaryImpl();
