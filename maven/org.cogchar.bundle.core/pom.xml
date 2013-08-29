@@ -96,23 +96,12 @@
                     <instructions>
                         <Bundle-Activator>org.cogchar.bundle.core.CogcharCoreActivator</Bundle-Activator>
 						<Export-Package>org.cogchar.*</Export-Package>
-						<!-- 
-						TODO:  Check if this export of org.apache.commons.math necessary if we are wired to appdapter-Symja.
 						
-						QUESTION:    Export org.jscience + org.javolution, or treat them as privatePackages?
-						-->
-<!--						<Private-Package>com.thoughtworks.xstream.*, scala.slick.*, org.apache.commons.math.*</Private-Package>
+						<Private-Package>com.thoughtworks.xstream.*, scala.slick.*, org.apache.commons.math.*</Private-Package>
 						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !nu.xom.*, !org.codehaus.jettison.*, 
 										!org.jdom.*, !org.joda.*, !org.kxml2.*, sun.*;resolution:='optional', 
                                         !org.scalaquery.*, *
-						</Import-Package>-->
-                        
-                                             
-						<Private-Package>com.thoughtworks.xstream.*, scala.slick.*, org.apache.commons.math.*, org.apache.http.*</Private-Package>
-						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !nu.xom.*, !org.codehaus.jettison.*, 
-										!org.jdom.*, !org.joda.*, !org.kxml2.*, sun.*;resolution:='optional', 
-                                        !org.scalaquery.*, *
-						</Import-Package>   
+						</Import-Package>	 
                                                                         
 <!--                                                                                                
 						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
