@@ -230,7 +230,7 @@ public class BasicThingActionSpecBuilder extends
 
 	protected static FreeIdent safeFreeIdent(String uri) {
 		if (uri.indexOf('#') == -1) {
-			logger.warn("Not URI so prefixing with TA_NS ", uri);
+			logger.warn("Not URI so prefixing {} with TA_NS ", uri);
 			uri = TA_NS + uri;
 		}
 		return new FreeIdent(uri);
