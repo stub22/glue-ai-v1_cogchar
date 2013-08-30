@@ -20,14 +20,21 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;
+
 import java.util.List;
+
 import org.cogchar.api.thing.TypedValueMap;
 import org.cogchar.impl.thing.basic.BasicTypedValueMapTemporaryImpl;
+
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
+
 import java.util.Set;
+
 import org.appdapter.core.item.Item.LinkDirection;
+
 import static org.cogchar.name.thing.ThingCN.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,28 +59,28 @@ public class BasicThingActionSpecBuilder extends
     private final static String theActionRecordIdentPrefix = TA_NS + "stepTA-";
     
     private final static FreeIdent theTargetThingFieldIdent =
-            new FreeIdent(P_targetThing);
+            safeFreeIdent(P_targetThing);
     private final static FreeIdent theTargetThingTypeFieldIdent =
-            new FreeIdent(P_targetThingType);
+            safeFreeIdent(P_targetThingType);
     private final static FreeIdent theActionVerbFieldIdent =
-            new FreeIdent(P_verb);
+            safeFreeIdent(P_verb);
     private final static FreeIdent theSourceAgentFieldIdent =
-            new FreeIdent(P_sourceAgent);
+            safeFreeIdent(P_sourceAgent);
     private final static FreeIdent thePostedTimestampFieldIdent =
-            new FreeIdent(P_postedTSMsec);
+            safeFreeIdent(P_postedTSMsec);
     private final static FreeIdent theThingActionParamAttachedTAFieldIdent =
-            new FreeIdent(V_IdentAttachedToThingAction);
+            safeFreeIdent(V_IdentAttachedToThingAction);
     
     private final static FreeIdent theParamIdentFieldIdent =
-            new FreeIdent(P_paramIdent);
+            safeFreeIdent(P_paramIdent);
     private final static FreeIdent theParamIdentValueFieldIdent =
-            new FreeIdent(P_paramIdentValue);
+            safeFreeIdent(P_paramIdentValue);
     private final static FreeIdent theParamStringValueFieldIdent =
-            new FreeIdent(P_paramStringValue);
+            safeFreeIdent(P_paramStringValue);
     private final static FreeIdent theParamIntValueFieldIdent =
-            new FreeIdent(P_paramIntValue);
+            safeFreeIdent(P_paramIntValue);
     private final static FreeIdent theParamFloatValueFieldIdent =
-            new FreeIdent(P_paramFloatValue);
+            safeFreeIdent(P_paramFloatValue);
     
     
     protected void initExtendedFieldsAndLinks(
@@ -85,7 +92,7 @@ public class BasicThingActionSpecBuilder extends
         
         //Create a ActionRecordID on load
         spec.setMyActionRecordID(
-                new FreeIdent(
+                safeFreeIdent(
                     theActionRecordIdentPrefix + 
                         Long.toString(System.currentTimeMillis())));
         
@@ -125,7 +132,7 @@ public class BasicThingActionSpecBuilder extends
         
         // Pull in the parameters
         Set<Item> paramItems = item.getLinkedItemSet(
-                new FreeIdent(
+        		new FreeIdent(
                     theThingActionParamAttachedTAFieldIdent),
                     LinkDirection.FORWARD);
         
@@ -137,7 +144,7 @@ public class BasicThingActionSpecBuilder extends
             Ident name = null;
             Set<Item> nameItem_RawSet = 
                     i.getLinkedItemSet( 
-                    new FreeIdent(theParamIdentFieldIdent),
+                    		new FreeIdent(theParamIdentFieldIdent),
                     Item.LinkDirection.FORWARD);
             if( nameItem_RawSet == null && nameItem_RawSet.size() != 1 ) {
                 logger.warn(
@@ -151,22 +158,22 @@ public class BasicThingActionSpecBuilder extends
             // There should be only one type.
             Set<Item> identTypeItems =
                     i.getLinkedItemSet(
-                        new FreeIdent(theParamIdentValueFieldIdent), 
+                    		new FreeIdent(theParamIdentValueFieldIdent), 
                         Item.LinkDirection.FORWARD);
             
             Set<Item> stringTypeItems =
                     i.getLinkedItemSet( 
-                        new FreeIdent(theParamStringValueFieldIdent), 
+                    		new FreeIdent(theParamStringValueFieldIdent), 
                         Item.LinkDirection.FORWARD);
 
             Set<Item> intTypeItems =
                     i.getLinkedItemSet( 
-                        new FreeIdent(theParamIntValueFieldIdent), 
+                    		new FreeIdent(theParamIntValueFieldIdent), 
                         Item.LinkDirection.FORWARD);
             
             Set<Item> floatTypeItems =
                     i.getLinkedItemSet( 
-                        new FreeIdent(theParamFloatValueFieldIdent), 
+                    	new FreeIdent(theParamFloatValueFieldIdent), 
                         Item.LinkDirection.FORWARD);
             
             
@@ -198,11 +205,11 @@ public class BasicThingActionSpecBuilder extends
                 }
                 else if( stringTypeItems.size() == 1 ) {
                     value = stringTypeItems.iterator().next().getValString(
-                            new FreeIdent(theParamStringValueFieldIdent), "");
+                    		new FreeIdent(theParamStringValueFieldIdent), "");
                 } 
                 else if( intTypeItems.size() == 1 ) {
                     value = intTypeItems.iterator().next().getValInteger(
-                            new FreeIdent(theParamIntValueFieldIdent),
+                    		new FreeIdent(theParamIntValueFieldIdent),
                             new Integer(-1));
                 }
                 else if( floatTypeItems.size() == 1 ) {
@@ -219,4 +226,13 @@ public class BasicThingActionSpecBuilder extends
         }
         spec.setMyParamTVMap(paramDictionary);
     }
+
+
+	protected static FreeIdent safeFreeIdent(String uri) {
+		if (uri.indexOf('#') == -1) {
+			logger.warn("Not URI so prefixing with TA_NS ", uri);
+			uri = TA_NS + uri;
+		}
+		return new FreeIdent(uri);
+	}
 }
