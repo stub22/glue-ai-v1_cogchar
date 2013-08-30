@@ -1,12 +1,12 @@
 /*
  *  Copyright 2013 by The Cogchar Project (www.cogchar.org).
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,21 +28,21 @@ import org.cogchar.impl.thing.basic.BasicTypedValueMapTemporaryImpl;
 
 /**
  * @author Stu B. <www.texpedient.com>
- * 
+ *
  * This concept is primarily implemented in Scala.
- * 
+ *
  * Includes patterns across all aspects of the entire contents of a ThingAction(Spec)
  * Not all of this data is present for every ThingAction(Spec)
- * 
+ *
  * First the more administrative aspects:
  *		actionSpecID - Resource-URI of the spec itself, sometimes absent.
  *		actionSpecPostedTimestamp - needed for filtering out "old" stuff.
  *		sourceAgentID - usually we shouldn't care
- * 
+ *
  * Then the meatier part - what the source agent "said":
  *		verbID (which is often a TypeID of the ThingAction, and we probably do *not* want verbTypeID).
- *			Often is along the lines of Know(/Create)Thing or UpdateThing or ForgetThing, where 
- *			actionParams are then the "contents" of the update, and targetThing is the handle for all 
+ *			Often is along the lines of Know(/Create)Thing or UpdateThing or ForgetThing, where
+ *			actionParams are then the "contents" of the update, and targetThing is the handle for all
  *			agents to use for followup references.
  *		targetThingID
  *		targetThingTypeID
@@ -88,6 +88,8 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 
 	private String hasParamString;
 
+	private Ident hasParamIdent;
+
 	private TypedValueMap myTypedValueMap;
 
 	/**
@@ -119,7 +121,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 	}
 
 	/**
-	 * @param hasPattern Set is the set of sub ThingActionFilters that must be true in test(...) 
+	 * @param hasPattern Set is the set of sub ThingActionFilters that must be true in test(...)
 	 */
 	void setHasPattern(Set<Ident> val) {
 		this.hasPattern = val;
@@ -139,7 +141,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 		this.hasVerb = verbID;
 	}
 
-	/** @return Should not be null.   The Verb-URI of the action (which is often an RDF:type of this actionSpec's 
+	/** @return Should not be null.   The Verb-URI of the action (which is often an RDF:type of this actionSpec's
 	 * resource).     What are we doing to the target thing?	 */
 	@Override public Ident getHasVerb() {
 		return hasVerb;
@@ -186,7 +188,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 	}
 
 	/**
-	 * 
+	 *
 	 * @return null or the Java-timestamp (MSec since 1970) at which this ThingFilterSpec must be greater than
 	 * This is non-null only on the "receiving" side of the spec-transmission.
 	 */
@@ -208,7 +210,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 		return getNotMarkedByAgent;
 	}
 
-	/**  @return  Parameters of the action (keyed by URI), which are usually the updated properties of the target 
+	/**  @return  Parameters of the action (keyed by URI), which are usually the updated properties of the target
 	 * thing.	 */
 	@Override public TypedValueMap getParamTVM() {
 		return myTypedValueMap;
@@ -273,6 +275,15 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
 		public Ident getHasParamObject() {
 			return hasParamObject;
 		}
+
+
+		/**
+		 * @return the hasParamObject
+		 */
+		public Ident getHasParamIdent() {
+			return hasParamIdent;
+		}
+
 
 		/**
 		 * @param val the hasParamInt to set
