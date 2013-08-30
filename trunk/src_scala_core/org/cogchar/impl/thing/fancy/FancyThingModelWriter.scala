@@ -42,6 +42,12 @@ import org.cogchar.blob.emit.{SparqlTextGen}
 import org.cogchar.name.dir.{NamespaceDir}
 import org.cogchar.name.thing.ThingCN;
 
+/**
+ * ...
+ *
+ * @author ?
+ * @author Jason Randolph Eads <jeads362@gmail.com>
+ */
 class FancyThingModelWriter extends BasicDebugger {
 	
 
@@ -74,6 +80,7 @@ class FancyThingModelWriter extends BasicDebugger {
 //		val rdfTypeProp : Property = rr.findOrMakeProperty(m, P_rdfType)
 //		val verbProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_verb);
 //		val targetThingProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_targetThing);
+//		val targetThingTypeProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_targetThingType);
 //		val postedTSMProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_postedTSMsec);
 //
 //		val taTypeRes : Resource =  rr.findOrMakeResource(m, ThingCN.T_ThingAction);
@@ -147,9 +154,12 @@ class FancyThingModelWriter extends BasicDebugger {
 //		// rdf:type	ta:targetAction	ta:verb	ta:targetThing	ta:paramIdent	ta:paramValue
 //		
 //		val paramLabelProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdent)
-//		val paramValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramValue)
+//        val paramIdentValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdentValue)
+//        val paramStringValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramStringValue)
+//        val paramIntValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIntValue)
+//        val paramFloatValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramFloatValue)
 //		val rdfTypeProp : Property = rr.findOrMakeProperty(m, P_rdfType);
-//		val targetActionProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_targetAction);
+//		val identAttachedToThingActionProp  : Property = rr.findOrMakeProperty(m, ThingCN.V_IdentAttachedToThingAction);
 //		
 //		val ptRes : Resource = rr.findOrMakeResource(m, ThingCN.T_ThingActionParam);
 //		
@@ -164,7 +174,7 @@ class FancyThingModelWriter extends BasicDebugger {
 //			val pRes : Resource = mci.makeResourceForURI(CCRT_NS + pName);
 //			
 //			val paramLabelID : Ident = nameIter.next();
-//			// val paramProp : Property = rr.findOrMakeProperty(m, paramID.getAbsUriString)
+////			 val paramProp : Property = rr.findOrMakeProperty(m, paramID.getAbsUriString)
 //			val paramLabelRes : Resource = mci.makeResourceForIdent(paramLabelID)
 //			val pvRaw = tvm.getRaw(paramLabelID)
 //			val pvNode : RDFNode = pvRaw match  {
@@ -172,20 +182,26 @@ class FancyThingModelWriter extends BasicDebugger {
 //				case other =>  m.createTypedLiteral(other)
 //			}
 //			val ptStmt = m.createStatement(pRes, rdfTypeProp, ptRes) 
-//			val paStmt = m.createStatement(pRes, targetActionProp, actionRes) 
+//			val paStmt = m.createStatement(pRes, identAttachedToThingActionProp, actionRes) 
 //			val plStmt = m.createStatement(pRes, paramLabelProp, paramLabelRes) 
-//			val pvStmt = m.createStatement(pRes, paramValueProp, pvNode)
-//			
+//			val pIdentValStmt = m.createStatement(pRes, paramIdentValueProp, pvNode)
+//			val pStringValStmt = m.createStatement(pRes, paramStringValueProp, pvNode)
+//            val pIntValStmt = m.createStatement(pRes, paramIntValueProp, pvNode)
+//            val pFloatValStmt = m.createStatement(pRes, paramFloatValueProp, pvNode)
+//            
 //			m.add(ptStmt);
 //			m.add(paStmt);
 //			m.add(plStmt);
-//			m.add(pvStmt);
+//			m.add(pIdentValStmt);
+//            m.add(pStringValStmt);
+//            m.add(pIntValStmt);
+//            m.add(pFloatValStmt);
 //			paramNum = paramNum + 1
 //		}
-//		
-//    // TEMPORARY NULL OUT TO COMMIT UNBROKEN BUILD
-      Nil
+//		//TODO: TEMPORARY
+		Nil
 	}
+    
 	// Unused, so far.  In the stron convention, params are simply written as properties of the parent (probly the ActionSpec)
 	def writeParamsUsingStrongConvention(m : Model,  parentRes : Resource, tvm : TypedValueMap) : Unit = {
 		val mci = new ModelClientImpl(m);
