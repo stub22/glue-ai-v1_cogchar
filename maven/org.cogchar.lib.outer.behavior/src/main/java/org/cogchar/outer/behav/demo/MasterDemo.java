@@ -103,17 +103,9 @@ public class MasterDemo extends BasicDebugger {
 
 		String theaterDebugQN = twd.myDefaultDebugCharQN;
 		OSGiTheater osgiTheater = twd.testTheaterStartup(bundleCtx, demoRepoClient, theaterDebugQN);
-		List<Scene> scenes = osgiTheater.getScenes();
-		if (scenes.size() == 0) {
-			int i = 1;
-			getLogger().warn("No scenes yet these specs exist");
-			for (SceneSpec s : mySceneWiringDemo.debugSceneList) {
-				getLogger().warn(" " + i + " " + s);
-				i++;
-			}
-		}
-//		DemoBrowser.showObject(null, this, false, true);
-//		DemoBrowser.showObject(null, demoRepoClient, false, true);
+
+		DemoBrowser.showObject(null, this, false, true);
+		DemoBrowser.showObject(null, demoRepoClient, false, true);
 //		DemoBrowser.showObject(null, demoRepoClient.getRepo(), true, true);
 //		DemoBrowser.showObject(null, demoRepoClient.getRepo().getDirectoryModel(), true, true);
 		new OSGiComponent(bundleCtx, new SimpleLifecycle(osgiTheater, OSGiTheater.class)).start();

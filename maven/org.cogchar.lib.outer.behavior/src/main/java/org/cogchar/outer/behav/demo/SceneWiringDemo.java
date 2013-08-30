@@ -59,7 +59,6 @@ public class SceneWiringDemo extends WiringDemo {
 		public	String		myDefaultDerivedGraphQN = MasterDemoNames.DERIVED_BEHAV_GRAPH_QN;		
 //	public	String		myDefaultPipelineQueryQN = MasterDemoNames.PIPELINE_QUERY_QN;
 //	public	String		myDefaultPipelineGraphQN = MasterDemoNames.PIPELINE_GRAPH_QN;
-		public List<SceneSpec> debugSceneList;
 
 				
 	
@@ -118,7 +117,6 @@ public class SceneWiringDemo extends WiringDemo {
 		comboList.addAll(bonusList);
 		getLogger().info("Loaded {} SceneSpecs ", comboList.size());
 		getLogger().debug("Loaded SceneSpecs {} ", comboList);
-		this.debugSceneList = comboList;
 		return comboList;
 	}
 	public List<SceneSpec> readSceneSpecsFromBMP(BoundModelProvider bmp) {
