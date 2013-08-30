@@ -69,7 +69,7 @@ public class BasicThingActionSpecBuilder extends
     private final static FreeIdent thePostedTimestampFieldIdent =
             safeFreeIdent(P_postedTSMsec);
     private final static FreeIdent theThingActionParamAttachedTAFieldIdent =
-            safeFreeIdent(V_IdentAttachedToThingAction);
+            safeFreeIdent(P_IdentAttachedToThingAction);
     
     private final static FreeIdent theParamIdentFieldIdent =
             safeFreeIdent(P_paramIdent);
