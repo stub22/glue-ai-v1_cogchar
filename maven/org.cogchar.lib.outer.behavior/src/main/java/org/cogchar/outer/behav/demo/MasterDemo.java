@@ -104,10 +104,10 @@ public class MasterDemo extends BasicDebugger {
 		String theaterDebugQN = twd.myDefaultDebugCharQN;
 		OSGiTheater osgiTheater = twd.testTheaterStartup(bundleCtx, demoRepoClient, theaterDebugQN);
 
-		DemoBrowser.showObject(null, this, false, true);
-		DemoBrowser.showObject(null, demoRepoClient, false, true);
-//		DemoBrowser.showObject(null, demoRepoClient.getRepo(), true, true);
-//		DemoBrowser.showObject(null, demoRepoClient.getRepo().getDirectoryModel(), true, true);
+		//DemoBrowser.showObject(null, this, false, true);
+		//DemoBrowser.showObject(null, demoRepoClient, false, true);
+		//		DemoBrowser.showObject(null, demoRepoClient.getRepo(), true, true);
+		//		DemoBrowser.showObject(null, demoRepoClient.getRepo().getDirectoryModel(), true, true);
 		new OSGiComponent(bundleCtx, new SimpleLifecycle(osgiTheater, OSGiTheater.class)).start();
 	}
 
@@ -127,14 +127,14 @@ public class MasterDemo extends BasicDebugger {
 		// That's why we did the stop above, to make sure user at least feels the keypress response quickly.
 		// But in a real character app, we want to be silently loading all the time without interrupting current perfs.
 		// TODO: Tell the repo to just reload certain graphs (need Appdapter >= 1.1.1 features to do this cleanly)
-        
-        /* We may not always have an EnhancedRepoClient, and just have to 
-         * deal with it.  Reload if we can, otherwise reload what we can.
-         * -Matt 2013-07-27 */
-        RepoClient reloadedRepoClient = origRepoCli;
-        if(origRepoCli instanceof EnhancedRepoClient){
-            reloadedRepoClient = ((EnhancedRepoClient)origRepoCli).reloadRepoAndClient();
-        }
+
+		/* We may not always have an EnhancedRepoClient, and just have to 
+		 * deal with it.  Reload if we can, otherwise reload what we can.
+		 * -Matt 2013-07-27 */
+		RepoClient reloadedRepoClient = origRepoCli;
+		if (origRepoCli instanceof EnhancedRepoClient) {
+			reloadedRepoClient = ((EnhancedRepoClient) origRepoCli).reloadRepoAndClient();
+		}
 
 		// Now we do the comparatively fast (but still somewhat lengthy) step of unregistering, 
 		// loading, and registering scene spec objects from the reloaded repo.  But note that if
