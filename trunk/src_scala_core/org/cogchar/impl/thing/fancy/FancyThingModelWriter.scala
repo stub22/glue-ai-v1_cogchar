@@ -65,55 +65,67 @@ class FancyThingModelWriter extends BasicDebugger {
 	
 
 	def writeTASpecToNewModel(tas : ThingActionSpec, ran: Random) : Model  = {
-//		val m : Model = ModelFactory.createDefaultModel();
-//		val actionSpecID : Ident = tas.getActionSpecID();
-//		val verbID : Ident = tas.getVerbID();
-//		val targetThing : Ident = tas.getTargetThingID();
-//		val targetThingType : Ident = tas.getTargetThingTypeID();
-//		val srcAgentID : Ident	= tas.getSourceAgentID();
-//		val tvm : TypedValueMap = tas.getParamTVM();
-//		val postedStampMSec : java.lang.Long = tas.getPostedTimestamp();
-//
-//		val mci = new ModelClientImpl(m);
-//		val rr = new ResourceResolver(m, None);
-//		
-//		val rdfTypeProp : Property = rr.findOrMakeProperty(m, P_rdfType)
-//		val verbProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_verb);
-//		val targetThingProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_targetThing);
-//		val targetThingTypeProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_targetThingType);
-//		val postedTSMProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_postedTSMsec);
-//
-//		val taTypeRes : Resource =  rr.findOrMakeResource(m, ThingCN.T_ThingAction);
-//		
-//        //TODO: Make these optional for null values
-//		val actionSpecRes : Resource = mci.makeResourceForIdent(actionSpecID)
-//		val thingRes : Resource = mci.makeResourceForIdent(targetThing)
-//		val thingTypeRes :  Resource = mci.makeResourceForIdent(targetThingType)
-//		val verbRes : Resource = mci.makeResourceForIdent(verbID)
-//		
-//		val tstampLit : Literal = mci.makeTypedLiteral(postedStampMSec.toString(), XSDDatatype.XSDlong);
-//
-//		// Write statements for TAS top facts
-//		// rdf:type	ta:verb	ta:targetThing
-//		val actTypeStmt = m.createStatement(actionSpecRes, rdfTypeProp, taTypeRes)
-//		val actVerbStmt = m.createStatement(actionSpecRes, verbProp, verbRes)
-//		val actThingStmt = m.createStatement(actionSpecRes, targetThingProp, thingRes)
-//		val actThingTypeStmt = m.createStatement(thingRes, rdfTypeProp, thingTypeRes)
-//		val actStampStmt = m.createStatement(actionSpecRes, postedTSMProp, tstampLit);
-//		
-//		m.add(actTypeStmt)
-//		m.add(actVerbStmt)
-//		m.add(actThingStmt)
-//		m.add(actThingTypeStmt)
-//		m.add(actStampStmt)
-//		
-//		writeParamsUsingWeakConvention(mci, actionSpecRes, tvm, ran)
-//		// println("thingRes=" + thingRes)
-//		// println("model after write=" + m)
-//		m;
-//		
-//		//TEMPORARY NULL OUT TO COMMIT UNBROKEN BUILD
-		null
+        if(tas == null){
+          throw new NullPointerException("Unable to write null ThingActionSpec to model")
+        }
+		val m : Model = ModelFactory.createDefaultModel();
+		val mci = new ModelClientImpl(m);
+		val rr = new ResourceResolver(m, None);
+		val actionSpecID : Ident = tas.getActionSpecID(); //Must always be present
+        if(actionSpecID == null){
+          throw new NullPointerException("Found ThingActionSpec with null actionSpecIdent: " + tas)
+        }
+		val actionSpecRes : Resource = mci.makeResourceForIdent(actionSpecID) //Must always be present
+        
+        
+        val rdfTypeProp : Property = rr.findOrMakeProperty(m, P_rdfType)
+		val taTypeRes : Resource =  rr.findOrMakeResource(m, ThingCN.T_ThingAction);
+		val actTypeStmt = m.createStatement(actionSpecRes, rdfTypeProp, taTypeRes)
+		m.add(actTypeStmt)
+        
+        // Collect the ThingAction's verb, if any
+		val verbID : Ident = tas.getVerbID();
+        if(verbID != null){
+          val verbProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_verb);
+          val verbRes : Resource = mci.makeResourceForIdent(verbID)
+          val actVerbStmt = m.createStatement(actionSpecRes, verbProp, verbRes)
+          m.add(actVerbStmt)
+        }
+    
+        // Collect the ThingAction's targetThing and targetThingType, if any
+		val targetThing : Ident = tas.getTargetThingID();
+        val targetThingType : Ident = tas.getTargetThingTypeID();
+        if(targetThing != null){
+          val targetThingProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_targetThing);
+          val thingRes : Resource = mci.makeResourceForIdent(targetThing)
+          val actThingStmt = m.createStatement(actionSpecRes, targetThingProp, thingRes)
+          m.add(actThingStmt)  
+    
+          if(targetThingType != null){
+            val targetThingTypeProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_targetThingType);
+            val thingTypeRes :  Resource = mci.makeResourceForIdent(targetThingType)
+            val actThingTypeStmt = m.createStatement(thingRes, rdfTypeProp, thingTypeRes)
+            m.add(actThingTypeStmt)
+          }
+        }
+    
+		val srcAgentID : Ident	= tas.getSourceAgentID();
+    
+		val tvm : TypedValueMap = tas.getParamTVM();
+    
+        //TODO: this may need additional validation to avoid bad data in the system.
+		val postedStampMSec : java.lang.Long = tas.getPostedTimestamp();
+        if( postedStampMSec != null ) {
+          val postedTSMProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_postedTSMsec);
+          val tstampLit : Literal = mci.makeTypedLiteral(postedStampMSec.toString(), XSDDatatype.XSDlong);
+          val actStampStmt = m.createStatement(actionSpecRes, postedTSMProp, tstampLit);
+          m.add(actStampStmt)
+        }
+
+		writeParamsUsingWeakConvention(mci, actionSpecRes, tvm, ran)
+		// println("thingRes=" + thingRes)
+		// println("model after write=" + m)
+		m;
 	}
 	import java.io.ByteArrayOutputStream;	
 	
@@ -147,59 +159,59 @@ class FancyThingModelWriter extends BasicDebugger {
 	
 	// In the weak convention, each param is held in a separate record attached to the parent thing.
 	def writeParamsUsingWeakConvention(mci : ModelClientImpl,  actionRes : Resource, tvm : TypedValueMap, ran: Random) : Unit = {
-//		val m : Model = mci.getModel;
-//
-//		val rr = new ResourceResolver(m, None);
-//
-//		// rdf:type	ta:targetAction	ta:verb	ta:targetThing	ta:paramIdent	ta:paramValue
-//		
-//		val paramLabelProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdent)
-//        val paramIdentValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdentValue)
-//        val paramStringValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramStringValue)
-//        val paramIntValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIntValue)
-//        val paramFloatValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramFloatValue)
-//		val rdfTypeProp : Property = rr.findOrMakeProperty(m, P_rdfType);
-//		val identAttachedToThingActionProp  : Property = rr.findOrMakeProperty(m, ThingCN.V_IdentAttachedToThingAction);
-//		
-//		val ptRes : Resource = rr.findOrMakeResource(m, ThingCN.T_ThingActionParam);
-//		
-//		// val tm = com.hp.hpl.jena.datatypes.TypeMapper.getInstance()
-//		val nameIter : Iterator[Ident]  = tvm.iterateKeys();
-//		
-//		val random = new java.util.Random
-//		val pBaseName = "tap_" + ran.nextInt + "_";
-//		var paramNum = 1;
-//		while (nameIter.hasNext()) {
-//			val pName : String = pBaseName + paramNum;
-//			val pRes : Resource = mci.makeResourceForURI(CCRT_NS + pName);
-//			
-//			val paramLabelID : Ident = nameIter.next();
-////			 val paramProp : Property = rr.findOrMakeProperty(m, paramID.getAbsUriString)
-//			val paramLabelRes : Resource = mci.makeResourceForIdent(paramLabelID)
-//			val pvRaw = tvm.getRaw(paramLabelID)
-//			val pvNode : RDFNode = pvRaw match  {
-//				case idVal: Ident =>  mci.makeResourceForIdent(idVal)
-//				case other =>  m.createTypedLiteral(other)
-//			}
-//			val ptStmt = m.createStatement(pRes, rdfTypeProp, ptRes) 
-//			val paStmt = m.createStatement(pRes, identAttachedToThingActionProp, actionRes) 
-//			val plStmt = m.createStatement(pRes, paramLabelProp, paramLabelRes) 
-//			val pIdentValStmt = m.createStatement(pRes, paramIdentValueProp, pvNode)
-//			val pStringValStmt = m.createStatement(pRes, paramStringValueProp, pvNode)
-//            val pIntValStmt = m.createStatement(pRes, paramIntValueProp, pvNode)
-//            val pFloatValStmt = m.createStatement(pRes, paramFloatValueProp, pvNode)
-//            
-//			m.add(ptStmt);
-//			m.add(paStmt);
-//			m.add(plStmt);
-//			m.add(pIdentValStmt);
-//            m.add(pStringValStmt);
-//            m.add(pIntValStmt);
-//            m.add(pFloatValStmt);
-//			paramNum = paramNum + 1
-//		}
+		val m : Model = mci.getModel;
+
+		val rr = new ResourceResolver(m, None);
+
+		// rdf:type	ta:targetAction	ta:verb	ta:targetThing	ta:paramIdent	ta:paramValue
+		
+		val paramLabelProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdent)
+        val paramIdentValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdentValue)
+        val paramStringValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramStringValue)
+        val paramIntValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIntValue)
+        val paramFloatValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramFloatValue)
+		val rdfTypeProp : Property = rr.findOrMakeProperty(m, P_rdfType);
+		val identAttachedToThingActionProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_IdentAttachedToThingAction);
+		
+		val ptRes : Resource = rr.findOrMakeResource(m, ThingCN.T_ThingActionParam);
+		
+		// val tm = com.hp.hpl.jena.datatypes.TypeMapper.getInstance()
+		val nameIter : Iterator[Ident]  = tvm.iterateKeys();
+		
+		val random = new java.util.Random
+		val pBaseName = "tap_" + ran.nextInt + "_";
+		var paramNum = 1;
+		while (nameIter.hasNext()) {
+			val pName : String = pBaseName + paramNum;
+			val pRes : Resource = mci.makeResourceForURI(CCRT_NS + pName);
+			
+			val paramLabelID : Ident = nameIter.next();
+//			 val paramProp : Property = rr.findOrMakeProperty(m, paramID.getAbsUriString)
+			val paramLabelRes : Resource = mci.makeResourceForIdent(paramLabelID)
+			val pvRaw = tvm.getRaw(paramLabelID)
+			val pvNode : RDFNode = pvRaw match  {
+				case idVal: Ident =>  mci.makeResourceForIdent(idVal)
+				case other =>  m.createTypedLiteral(other)
+			}
+			val ptStmt = m.createStatement(pRes, rdfTypeProp, ptRes) 
+			val paStmt = m.createStatement(pRes, identAttachedToThingActionProp, actionRes) 
+			val plStmt = m.createStatement(pRes, paramLabelProp, paramLabelRes) 
+			val pIdentValStmt = m.createStatement(pRes, paramIdentValueProp, pvNode)
+			val pStringValStmt = m.createStatement(pRes, paramStringValueProp, pvNode)
+            val pIntValStmt = m.createStatement(pRes, paramIntValueProp, pvNode)
+            val pFloatValStmt = m.createStatement(pRes, paramFloatValueProp, pvNode)
+            
+			m.add(ptStmt);
+			m.add(paStmt);
+			m.add(plStmt);
+			m.add(pIdentValStmt);
+            m.add(pStringValStmt);
+            m.add(pIntValStmt);
+            m.add(pFloatValStmt);
+			paramNum = paramNum + 1
+		}
 //		//TODO: TEMPORARY
-		Nil
+//		Nil
 	}
     
 	// Unused, so far.  In the stron convention, params are simply written as properties of the parent (probly the ActionSpec)
