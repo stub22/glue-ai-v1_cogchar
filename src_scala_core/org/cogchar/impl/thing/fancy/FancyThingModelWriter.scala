@@ -45,7 +45,7 @@ import org.cogchar.name.thing.ThingCN;
 /**
  * ...
  *
- * @author ?
+ * @author stub22
  * @author Jason Randolph Eads <jeads362@gmail.com>
  */
 class FancyThingModelWriter extends BasicDebugger {
@@ -162,9 +162,9 @@ class FancyThingModelWriter extends BasicDebugger {
 		val m : Model = mci.getModel;
 
 		val rr = new ResourceResolver(m, None);
-
-		// rdf:type	ta:targetAction	ta:verb	ta:targetThing	ta:paramIdent	ta:paramValue
 		
+        // TODO: Extract this to ontology?
+        // Declare URIs
 		val paramLabelProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdent)
         val paramIdentValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdentValue)
         val paramStringValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramStringValue)
@@ -188,30 +188,45 @@ class FancyThingModelWriter extends BasicDebugger {
 			val paramLabelID : Ident = nameIter.next();
 //			 val paramProp : Property = rr.findOrMakeProperty(m, paramID.getAbsUriString)
 			val paramLabelRes : Resource = mci.makeResourceForIdent(paramLabelID)
-			val pvRaw = tvm.getRaw(paramLabelID)
+			
+            // TODO: Test for robust handling
+			val ptStmt = m.createStatement(pRes, rdfTypeProp, ptRes) 
+			val paStmt = m.createStatement(pRes, identAttachedToThingActionProp, actionRes) 
+			val plStmt = m.createStatement(pRes, paramLabelProp, paramLabelRes) 
+            m.add(ptStmt);
+			m.add(paStmt);
+			m.add(plStmt);
+            
+            // Collect the param value
+            val pvRaw = tvm.getRaw(paramLabelID)
+            
+            // Aquire writable node
 			val pvNode : RDFNode = pvRaw match  {
 				case idVal: Ident =>  mci.makeResourceForIdent(idVal)
 				case other =>  m.createTypedLiteral(other)
 			}
-			val ptStmt = m.createStatement(pRes, rdfTypeProp, ptRes) 
-			val paStmt = m.createStatement(pRes, identAttachedToThingActionProp, actionRes) 
-			val plStmt = m.createStatement(pRes, paramLabelProp, paramLabelRes) 
-			val pIdentValStmt = m.createStatement(pRes, paramIdentValueProp, pvNode)
-			val pStringValStmt = m.createStatement(pRes, paramStringValueProp, pvNode)
-            val pIntValStmt = m.createStatement(pRes, paramIntValueProp, pvNode)
-            val pFloatValStmt = m.createStatement(pRes, paramFloatValueProp, pvNode)
             
-			m.add(ptStmt);
-			m.add(paStmt);
-			m.add(plStmt);
-			m.add(pIdentValStmt);
-            m.add(pStringValStmt);
-            m.add(pIntValStmt);
-            m.add(pFloatValStmt);
+            // TODO: This needs to be tested for detection of non-string params
+            // TODO: This also fires for the session entry, the effect is unclear.
+            if(pvRaw.isInstanceOf[String]) {
+              val pValStmt = m.createStatement(pRes, paramStringValueProp, pvNode)
+              m.add(pValStmt)
+            }
+            else if (pvRaw.isInstanceOf[Ident]) {
+              val pValStmt = m.createStatement(pRes, paramIdentValueProp, pvNode)
+              m.add(pValStmt)
+            }
+            else if (pvRaw.isInstanceOf[Int]) {
+              val pValStmt = m.createStatement(pRes, paramIntValueProp, pvNode)
+              m.add(pValStmt)
+            }
+            else if (pvRaw.isInstanceOf[Float]) {
+              val pValStmt = m.createStatement(pRes, paramFloatValueProp, pvNode)
+              m.add(pValStmt)
+            }
+            
 			paramNum = paramNum + 1
 		}
-//		//TODO: TEMPORARY
-//		Nil
 	}
     
 	// Unused, so far.  In the stron convention, params are simply written as properties of the parent (probly the ActionSpec)

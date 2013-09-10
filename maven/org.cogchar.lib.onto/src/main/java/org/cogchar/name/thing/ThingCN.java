@@ -34,7 +34,7 @@ public class ThingCN {
 	public final static String	UNSEEN_ACTION_QUERY_URI = AssumedQueryDir.UNSEEN_ACTION_QUERY_URI; 
 	public final static String	PARAM_QUERY_URI = AssumedQueryDir.PARAM_QUERY_URI; // "ccrt:find_thing_action_params_99";
 
-	public final static String	V_attachedActionID = TA_NS + "attachedToThingAction";
+	public final static String	V_attachedActionID = "attachedToAction";
 
 	
 	// Stu renamed variables to make them obviously *different* from the RDF property names.
@@ -78,7 +78,7 @@ public class ThingCN {
     public final static String  P_paramStringValue  = TA_NS + "paramStringValue";
     public final static String  P_paramIntValue  = TA_NS + "paramIntValue";
     public final static String  P_paramFloatValue  = TA_NS + "paramFloatValue";
-    public final static String	P_IdentAttachedToThingAction = TA_NS + V_attachedActionID;
+    public final static String	P_IdentAttachedToThingAction = TA_NS + "targetAction";
         
 	public final static String  T_ThingAction = CCRT_NS + "ThingAction";
 	public final static String  T_ThingActionParam = CCRT_NS + "ThingActionParam";
