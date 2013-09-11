@@ -166,10 +166,7 @@ class FancyThingModelWriter extends BasicDebugger {
         // TODO: Extract this to ontology?
         // Declare URIs
 		val paramLabelProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdent)
-        val paramIdentValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdentValue)
-        val paramStringValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramStringValue)
-        val paramIntValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIntValue)
-        val paramFloatValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramFloatValue)
+        val paramValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramValue)
 		val rdfTypeProp : Property = rr.findOrMakeProperty(m, P_rdfType);
 		val identAttachedToThingActionProp  : Property = rr.findOrMakeProperty(m, ThingCN.P_IdentAttachedToThingAction);
 		
@@ -206,24 +203,30 @@ class FancyThingModelWriter extends BasicDebugger {
 				case other =>  m.createTypedLiteral(other)
 			}
             
-            // TODO: This needs to be tested for detection of non-string params
-            // TODO: This also fires for the session entry, the effect is unclear.
-            if(pvRaw.isInstanceOf[String]) {
-              val pValStmt = m.createStatement(pRes, paramStringValueProp, pvNode)
-              m.add(pValStmt)
-            }
-            else if (pvRaw.isInstanceOf[Ident]) {
-              val pValStmt = m.createStatement(pRes, paramIdentValueProp, pvNode)
-              m.add(pValStmt)
-            }
-            else if (pvRaw.isInstanceOf[Int]) {
-              val pValStmt = m.createStatement(pRes, paramIntValueProp, pvNode)
-              m.add(pValStmt)
-            }
-            else if (pvRaw.isInstanceOf[Float]) {
-              val pValStmt = m.createStatement(pRes, paramFloatValueProp, pvNode)
-              m.add(pValStmt)
-            }
+            
+            val pValStmt = m.createStatement(pRes, paramValueProp, pvNode)
+            m.add(pValStmt)
+//            val paramIdentValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIdentValue)
+//            val paramStringValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramStringValue)
+//            val paramIntValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramIntValue)
+//            val paramFloatValueProp : Property = rr.findOrMakeProperty(m, ThingCN.P_paramFloatValue)
+//            // TODO: This needs to be tested for detection of non-string params
+//            if(pvRaw.isInstanceOf[String]) {
+//              val pValStmt = m.createStatement(pRes, paramStringValueProp, pvNode)
+//              m.add(pValStmt)
+//            }
+//            else if (pvRaw.isInstanceOf[Ident]) {
+//              val pValStmt = m.createStatement(pRes, paramIdentValueProp, pvNode)
+//              m.add(pValStmt)
+//            }
+//            else if (pvRaw.isInstanceOf[Int]) {
+//              val pValStmt = m.createStatement(pRes, paramIntValueProp, pvNode)
+//              m.add(pValStmt)
+//            }
+//            else if (pvRaw.isInstanceOf[Float]) {
+//              val pValStmt = m.createStatement(pRes, paramFloatValueProp, pvNode)
+//              m.add(pValStmt)
+//            }
             
 			paramNum = paramNum + 1
 		}

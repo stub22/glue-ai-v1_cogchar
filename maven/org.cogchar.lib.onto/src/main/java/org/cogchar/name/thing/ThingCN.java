@@ -73,12 +73,18 @@ public class ThingCN {
 	public final static String	P_targetThing = TA_NS + "targetThing";
     public final static String  P_targetThingType  = TA_NS + "targetThingType";
 	public final static String	P_postedTSMsec = TA_NS + "postTStampMsec";
+    
+    
+    public final static String	P_IdentAttachedToThingAction = TA_NS + "targetAction";
 	public final static String	P_paramIdent = TA_NS + "paramIdent";
+    public final static String  P_paramValue  = TA_NS + "paramValue";
+    
+    //Convenience properties for loading typed values from spreadsheets
     public final static String  P_paramIdentValue  = TA_NS + "paramIdentValue";
     public final static String  P_paramStringValue  = TA_NS + "paramStringValue";
     public final static String  P_paramIntValue  = TA_NS + "paramIntValue";
     public final static String  P_paramFloatValue  = TA_NS + "paramFloatValue";
-    public final static String	P_IdentAttachedToThingAction = TA_NS + "targetAction";
+    
         
 	public final static String  T_ThingAction = CCRT_NS + "ThingAction";
 	public final static String  T_ThingActionParam = CCRT_NS + "ThingActionParam";
