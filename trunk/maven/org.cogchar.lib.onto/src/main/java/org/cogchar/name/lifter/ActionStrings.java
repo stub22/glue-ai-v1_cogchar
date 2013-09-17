@@ -74,5 +74,7 @@ public class ActionStrings {
 	  final public static String p_anim = TempNamespaceDir.NS_TestAnimSrc;
 	  
 	  final public static String LIFT_REFRESH_UPDATE_NAME = "ManagedGlobalConfigService";
-	  
+      
+      final public static String BEHAVIOR_MASTER_SCENE_PREFIXES = NamespaceDir.NS_ccScnInst;
+      final public static String BEHAVIOR_MASTER_ADMIN_PREFIXES = NamespaceDir.NS_ccScnAdminInst;
 }

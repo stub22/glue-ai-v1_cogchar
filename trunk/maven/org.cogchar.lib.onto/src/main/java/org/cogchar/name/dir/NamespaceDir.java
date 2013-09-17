@@ -61,9 +61,12 @@ public class NamespaceDir {
 	// "Schema" NSs
 	final private static String NSP_SchemaRoot = NSP_Root + "schema/";
 	final public static String NS_SceneTrig = NSP_SchemaRoot + "scene/trigger#";
-	// Used in FancyChan.scala
+	// Used in FancyChan.scala & Lifter handlers
 	public static	String 		NS_ccScn =	NSP_SchemaRoot + "scene#"; // http://www.cogchar.org  /schema/scene#";
-	public static	String 		NS_ccScnInst = NSP_SchemaRoot + "scene/instance#"; // http://www.cogchar.org  /schema/scene/instance#";	
+	public static	String 		NS_ccScnInst = NSP_SchemaRoot + "scene/instance#"; // http://www.cogchar.org  /schema/scene/instance#";
+    // Used in Lifter handlers
+    public static	String 		NS_ccScnAdmin = NSP_SchemaRoot + "scene/admin#";
+	public static	String 		NS_ccScnAdminInst = NSP_SchemaRoot + "scene/admin/instance#";
 	//ActionStrings uses this
 	final public static String NS_CinePathDef = NSP_SchemaRoot + "path/definition#";
 	//But LiftAN uses this:
