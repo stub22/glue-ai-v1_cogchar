@@ -33,6 +33,10 @@ object HandlerConfigurator {
 	val repoOutputHandler = new RepoOutputHandler
 	val robotAnimHandler = new RobotAnimationHandler
     val questionAndAnswerHandler = new QuestionAndAnswerHandler
+    val behaviorMasterAdminHandler = new BehaviorMasterAdminHandler
+//    val behaviorMasterHandler = new BehaviorMasterHandler
+
+
 	// Set up the chain
 	liftConfigHandler setNextHandler cinematicHandler
 	cinematicHandler setNextHandler variableHandler
@@ -42,11 +46,13 @@ object HandlerConfigurator {
 	lifterQueryHandler setNextHandler repoOutputHandler
 	repoOutputHandler setNextHandler robotAnimHandler
     robotAnimHandler setNextHandler questionAndAnswerHandler
+    questionAndAnswerHandler setNextHandler behaviorMasterAdminHandler
+//    behaviorMasterAdminHandler setNextHandler behaviorMasterHandler
 	// Return the first handler in chain
 	liftConfigHandler
   }
   def initializeCommandHandlers:AbstractLifterCommandHandler = {
-	// Instantiate each of the action handlers
+	// Instantiate each of the command handlers
 	val speechCommandHandler = new SpeechCommandHandler
 	val submitHandler = new SubmitCommandHandler
 	val submitTextHandler = new SubmitTextCommandHandler
