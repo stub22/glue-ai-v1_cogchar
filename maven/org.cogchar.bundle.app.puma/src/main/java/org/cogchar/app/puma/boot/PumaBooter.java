@@ -16,27 +16,22 @@ package org.cogchar.app.puma.boot;
 
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
-import org.cogchar.name.entity.EntityRoleCN;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
-import org.osgi.framework.BundleContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.appdapter.core.store.Repo;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.app.buddy.busker.TriggerItems;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
 
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
 
 import org.slf4j.LoggerFactory;
 
@@ -146,7 +141,11 @@ public class PumaBooter extends BasicDebugger {
 			pac.reloadCommandSpace();
 			
 			mediator.notifyCharactersLoaded(pac);
-		}
+		//}
+        //We should chek the flag, but oglweb doesn't have it on, so we'll go with the chars flag - Matt
+        //if(mediator.getFlagIncludeWebServices()){
+            pac.connectWeb();
+        }
 		
 		// NOW we are ready to set up the command-processing system, making use of our boxSpace to find
 		// characters and other commandable entities.
