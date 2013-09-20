@@ -58,6 +58,8 @@ public class NamespaceDir {
 	final public static String NS_LifterConfig = NSP_LifterConfigRoot + "configroot#";
 	final public static String NS_LifterInstance = NSP_LifterConfigRoot + "instance#";
 
+    final public static String NS_LifterSpeechRecognition = NSP_LifterRoot + "speech_recognition#";
+    
 	// "Schema" NSs
 	final private static String NSP_SchemaRoot = NSP_Root + "schema/";
 	final public static String NS_SceneTrig = NSP_SchemaRoot + "scene/trigger#";

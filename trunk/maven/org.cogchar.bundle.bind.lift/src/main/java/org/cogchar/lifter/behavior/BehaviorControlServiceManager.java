@@ -38,7 +38,7 @@ import org.jflux.impl.registry.OSGiRegistry;
  */
 public class BehaviorControlServiceManager {
 
-    public static void initiateLifterBehaviorControl(OSGiRegistry anOSGiRegistry) {
+    public static void init(OSGiRegistry anOSGiRegistry) {
 
 //        ServiceLifecycle lifecycle = new BehaviorControlLifecycle();
 //        new OSGiComponent(context, lifecycle).start();
@@ -155,8 +155,6 @@ public class BehaviorControlServiceManager {
 //                "sceneActionCallbackMap",
 //                "BehaviorControlSceneActionCallbackMap",
 //                false);
-//                
-//                
 //                
 //        ServiceBinding adminActionCallbackMapBinding =
 //                getServiceBinding(
