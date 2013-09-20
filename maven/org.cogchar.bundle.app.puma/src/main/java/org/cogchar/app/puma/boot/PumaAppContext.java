@@ -269,7 +269,8 @@ public class PumaAppContext extends BasicDebugger {
 			PumaConfigManager pcm = getConfigManager();
 			BasicThingActionRouter router = PumaAppUtils.getActionRouter();
 			pvwm.initVirtualWorlds(cmdSpc, pcm, router);
-			connectWeb();
+//          Moved connectWeb call to PumaBooter so we can get lifter without the VWorld - Matt, Sep 20 2013
+//			connectWeb();
 
 			ClassLoader vizResCL = getSingleClassLoaderOrNull(ResourceFileCategory.RESFILE_OPENGL_JME3_OGRE);
 			pvwm.connectVisualizationResources(vizResCL);
