@@ -77,4 +77,6 @@ public class ActionStrings {
       
       final public static String BEHAVIOR_MASTER_SCENE_PREFIXES = NamespaceDir.NS_ccScnInst;
       final public static String BEHAVIOR_MASTER_ADMIN_PREFIXES = NamespaceDir.NS_ccScnAdminInst;
+      
+      final public static String SPEECH_RECOGNITION_PREFIX = NamespaceDir.NS_LifterSpeechRecognition;
 }
