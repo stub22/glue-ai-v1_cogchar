@@ -79,6 +79,7 @@ public class BehaviorControl implements WantsThingAction {
                     .getLocalName();
 
             ActionListener adminActionListener = 
+                    myAdminActionCallbackMap == null ? null :
                     myAdminActionCallbackMap.getActionCallback(sceneName);
             
             if( adminActionListener != null ) {
@@ -91,6 +92,7 @@ public class BehaviorControl implements WantsThingAction {
             }
             else {
                 ActionListener sceneActionListener = 
+                        mySceneActionCallbackMap == null ? null :
                         mySceneActionCallbackMap.getActionCallback(sceneName);
                 if(sceneActionListener != null ) {
                     // Handle Scene Trigger action.

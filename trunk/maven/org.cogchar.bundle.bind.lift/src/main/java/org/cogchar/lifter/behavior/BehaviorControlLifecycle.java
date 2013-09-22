@@ -84,7 +84,7 @@ public class BehaviorControlLifecycle implements ServiceLifecycle<BehaviorContro
     public BehaviorControlLifecycle() {}
     
     @Override
-    public List getDependencySpecs() {
+    public List<ServiceDependency> getDependencySpecs() {
         return Arrays.asList(theDependencyArray);
     }
 
@@ -127,63 +127,7 @@ public class BehaviorControlLifecycle implements ServiceLifecycle<BehaviorContro
             String dependencyName, 
             Object dependency, 
             Map<String, Object> availableDependencies) {
-        
-        /**
-         * If the callbackMaps are lost, bring down the service
-         */
-        if(changeType.equals(ServiceLifecycle.PROP_DEPENDENCY_UNAVAILABLE)) {
-            this.disposeService(service, availableDependencies);
-            return null;
-        }
-        /**
-         * If a new callbackMap is provided, use it instead
-         */
-        else if(changeType.equals(ServiceLifecycle.PROP_DEPENDENCY_CHANGED)) {
-            if( dependencyName.equals(theSceneActionCallbackMapID)) {
-                theLogger.info("sceneActionCallbackMap replaced.");
-                service.setMySceneActionCallbackMap(
-                        (ActionCallbackMap)dependency);
-                return service;
-            }
-            else if( dependencyName.equals(theAdminActionCallbackMapID)) {
-                theLogger.info("adminActionCallbackMap replaced.");
-                service.setMyAdminActionCallbackMap(
-                        (ActionCallbackMap)dependency);
-                return service;
-            } 
-            else {
-                theLogger.error(
-                        "Dependency label unrecognized: {} ...for dependancy: {} ...ignoring",
-                        dependencyName,
-                        dependency.toString());
-                return service;
-            }
-        }
-        /**
-         * If both callbackMaps are available, bring up the service
-         */
-        else {
-            if( availableDependencies.containsKey(theSceneActionCallbackMapID) &&
-                availableDependencies.containsKey(theAdminActionCallbackMapID)) {
-                
-                ActionCallbackMap sceneActionCallbackMap =
-                        (ActionCallbackMap)availableDependencies
-                            .get(theSceneActionCallbackMapID);
-                
-                ActionCallbackMap theAdminActionCallbackMap =
-                        (ActionCallbackMap)availableDependencies
-                            .get(theAdminActionCallbackMapID);
-                                
-                return new BehaviorControl(
-                        sceneActionCallbackMap,
-                        theAdminActionCallbackMap);
-            }
-            /**
-             * Less than both of the maps are available, as before.
-             */
-            theLogger.warn("The dependencies changed, but service remains inactive");
-            return null;
-        }
+        return service;
     }
 
     /**
@@ -196,6 +140,8 @@ public class BehaviorControlLifecycle implements ServiceLifecycle<BehaviorContro
     public void disposeService(
         BehaviorControl service, 
         Map<String, Object> availableDependencies) {
+        service.setMyAdminActionCallbackMap(null);
+        service.setMySceneActionCallbackMap(null);
     }
 
     /**
