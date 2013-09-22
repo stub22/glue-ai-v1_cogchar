@@ -27,7 +27,7 @@ public interface MasterDemoNames {
 	public final static String	GROUP_KEY_CHAN_BIND = "ChannelBindingGroupId";
 	public final static String	CHAN_GROUP_QN = "csi:dm_chan_group_22";
 	
-	public final static String	DIRECT_BEHAV_GRAPH_QN = "csi:behav_file_82";	
+	public final static String	DIRECT_BEHAV_GRAPH_QN = "csi:behavScene_sheet_77";	
 
 	public final static String BEHAV_STEP_GRAPH_QN = "csi:behavStep_sheet_77";
 	public final static String BEHAV_SCENE_GRAPH_QN = "csi:behavScene_sheet_77";
