@@ -160,7 +160,7 @@
 		</dependency>
         <dependency>
 			<groupId>org.jflux</groupId>
-			<artifactId>org.jflux.impl.registry.osgi</artifactId>
+			<artifactId>org.jflux.api.registry</artifactId>
 			<version>${jflux.version}</version>
 		</dependency>
 		
