@@ -78,17 +78,17 @@
      .
 
 # "book" serv:  file-backed SPARQL processor only handling a given dataset
-<#bookServ>
-    rdf:type            joseki:Service ;
-    rdfs:label          "SPARQL on the books model" ;
-    joseki:serviceRef   "sparql/books" ;   # web.xml must route this name to Joseki
-    # dataset part
-    joseki:dataset      <#bookDset> ;
-    # Service part.
-    # This processor will not allow either the protocol,
-    # nor the query, to specify the dataset.
-    joseki:processor    joseki:ProcessorSPARQL_FixedDS ;
-    .
+#<#bookServ>
+#    rdf:type            joseki:Service ;
+#    rdfs:label          "SPARQL on the books model" ;
+#    joseki:serviceRef   "sparql/books" ;   # web.xml must route this name to Joseki
+#    # dataset part
+#    joseki:dataset      <#bookDset> ;
+#    # Service part.
+#    # This processor will not allow either the protocol,
+#    # nor the query, to specify the dataset.
+#    joseki:processor    joseki:ProcessorSPARQL_FixedDS ;
+#    .
 
 <#anyServ>
     rdf:type            joseki:Service ;
@@ -135,14 +135,14 @@
 ## --------------------------------------------------------------
 ## Datasets
 
-<#bookDset>   rdf:type ja:RDFDataset ;
-    rdfs:label "Books" ;
-    ja:defaultGraph 
-      [ rdfs:label "books.ttl" ;
-        a ja:MemoryModel ;
-        ja:content [ja:externalContent </Data/books.ttl> ] ;
-      ] ;
-    .
+#<#bookDset>   rdf:type ja:RDFDataset ;
+#    rdfs:label "Books" ;
+#    ja:defaultGraph 
+#      [ rdfs:label "books.ttl" ;
+#        a ja:MemoryModel ;
+#        ja:content [ja:externalContent </Data/books.ttl> ] ;
+#      ] ;
+#    .
 
 <#memDset>  rdf:type ja:RDFDataset ;
     rdfs:label "MEM" ;
