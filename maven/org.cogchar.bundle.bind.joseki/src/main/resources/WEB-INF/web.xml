@@ -97,10 +97,10 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
 
 
   <!-- Joseki demo service - queries an RDF file-->
-  <servlet-mapping>
+<!--  <servlet-mapping>
     <servlet-name>SPARQL service processor</servlet-name>
     <url-pattern>/sparql/books</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>-->
   
   <!-- Open service for messing with graphs speced by FROM, FROM NAMED, or servlet-param -->
   <servlet-mapping>
