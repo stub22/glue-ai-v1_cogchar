@@ -103,9 +103,9 @@ public class SceneWiringDemo extends WiringDemo {
 		// SceneBook = "old" way, in which it was more obvious that channels are being resolved from Swizzle cache 
 		// SceneBook sceneBook = SceneBook.readSceneBookFromRepo(bmcRepoCli, chanGraphID, behavGraphID);
 		// Swizzle-caches are still used to find channels here, but are hidden in static variables.  Ewww!
-		Ident directBehavGraphID = bmcRepoCli.makeIdentForQName(directGraphQN);
-		BoundModelProvider directBMP = ModelProviderFactory.makeOneDirectModelProvider(bmcRepoCli, directBehavGraphID);
-		List<SceneSpec> ssList = readSceneSpecsFromBMP(directBMP);
+//		Ident directBehavGraphID = bmcRepoCli.makeIdentForQName(directGraphQN);
+//		BoundModelProvider directBMP = ModelProviderFactory.makeOneDirectModelProvider(bmcRepoCli, directBehavGraphID);
+//		List<SceneSpec> ssList = readSceneSpecsFromBMP(directBMP);
 		// readSceneSpecsFromDirectGraph(bmcRepoCli, directGraphQN);
 		Ident derivedBehavGraphID =   bmcRepoCli.makeIdentForQName(derivedGraphQN);
 		BoundModelProvider derivedBMP = ModelProviderFactory.makeOneDerivedModelProvider(bmcRepoCli, pipeQuerySpec, derivedBehavGraphID);
@@ -113,7 +113,7 @@ public class SceneWiringDemo extends WiringDemo {
 		List<SceneSpec> bonusList = readSceneSpecsFromBMP(derivedBMP);
 
 		List<SceneSpec> comboList = new ArrayList<SceneSpec>();
-		comboList.addAll(ssList);
+//		comboList.addAll(ssList);
 		comboList.addAll(bonusList);
 		getLogger().info("Loaded {} SceneSpecs ", comboList.size());
 		getLogger().debug("Loaded SceneSpecs {} ", comboList);
