@@ -102,16 +102,17 @@ public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> implements 
         }catch(Exception ex){}
 		// TODO:  Get a proper performance set up for monitor + cancel, possibly based on the Media.Framed type.handle
         if(anim == null){
-            anim = new Animation();
-            Channel c = new Channel(100, "waist");
-            MotionPath mp = new MotionPath();
-            mp.addPoint(0, 0.5);
-            mp.addPoint(1500, 1.0);
-            mp.addPoint(3000, 0.5);
-            mp.addPoint(4500, 0.0);
-            mp.addPoint(6000, 0.5);
-            c.addPath(mp);
-            anim.addChannel(c);
+//            anim = new Animation();
+//            Channel c = new Channel(100, "waist");
+//            MotionPath mp = new MotionPath();
+//            mp.addPoint(0, 0.5);
+//            mp.addPoint(1500, 1.0);
+//            mp.addPoint(3000, 0.5);
+//            mp.addPoint(4500, 0.0);
+//            mp.addPoint(6000, 0.5);
+//            c.addPath(mp);
+//            anim.addChannel(c);
+            return;
         }
 		FancyPerformance perf = null;
 		launchFullAnimJobNow(anim, perf);
