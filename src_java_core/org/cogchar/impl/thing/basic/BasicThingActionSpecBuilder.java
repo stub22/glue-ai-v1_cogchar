@@ -132,9 +132,10 @@ public class BasicThingActionSpecBuilder extends
         
         // Pull in the parameters
         Set<Item> paramItems = item.getLinkedItemSet(
-        		new FreeIdent(
-                    theThingActionParamAttachedTAFieldIdent),
+                    theThingActionParamAttachedTAFieldIdent,
                     LinkDirection.FORWARD);
+        
+        //reader.//
         
         BasicTypedValueMap paramDictionary =
                 new BasicTypedValueMapTemporaryImpl();
@@ -144,8 +145,8 @@ public class BasicThingActionSpecBuilder extends
             Ident name = null;
             Set<Item> nameItem_RawSet = 
                     i.getLinkedItemSet( 
-                    		new FreeIdent(theParamIdentFieldIdent),
-                    Item.LinkDirection.FORWARD);
+                        theParamIdentFieldIdent,
+                        Item.LinkDirection.FORWARD);
             if( nameItem_RawSet == null && nameItem_RawSet.size() != 1 ) {
                 logger.warn(
                         "ThingActionParam \"{}\" did not provide a \"paramIdent\" and was discarded",
@@ -158,22 +159,22 @@ public class BasicThingActionSpecBuilder extends
             // There should be only one type.
             Set<Item> identTypeItems =
                     i.getLinkedItemSet(
-                    		new FreeIdent(theParamIdentValueFieldIdent), 
+                    		theParamIdentValueFieldIdent, 
                         Item.LinkDirection.FORWARD);
             
             Set<Item> stringTypeItems =
                     i.getLinkedItemSet( 
-                    		new FreeIdent(theParamStringValueFieldIdent), 
+                    		theParamStringValueFieldIdent, 
                         Item.LinkDirection.FORWARD);
 
             Set<Item> intTypeItems =
                     i.getLinkedItemSet( 
-                    		new FreeIdent(theParamIntValueFieldIdent), 
+                    		theParamIntValueFieldIdent, 
                         Item.LinkDirection.FORWARD);
             
             Set<Item> floatTypeItems =
                     i.getLinkedItemSet( 
-                    	new FreeIdent(theParamFloatValueFieldIdent), 
+                    	theParamFloatValueFieldIdent, 
                         Item.LinkDirection.FORWARD);
             
             
@@ -205,16 +206,16 @@ public class BasicThingActionSpecBuilder extends
                 }
                 else if( stringTypeItems.size() == 1 ) {
                     value = stringTypeItems.iterator().next().getValString(
-                    		new FreeIdent(theParamStringValueFieldIdent), "");
+                    		theParamStringValueFieldIdent, "");
                 } 
                 else if( intTypeItems.size() == 1 ) {
                     value = intTypeItems.iterator().next().getValInteger(
-                    		new FreeIdent(theParamIntValueFieldIdent),
+                    		theParamIntValueFieldIdent,
                             new Integer(-1));
                 }
                 else if( floatTypeItems.size() == 1 ) {
                     value = intTypeItems.iterator().next().getValDouble(
-                            new FreeIdent(theParamFloatValueFieldIdent),
+                            theParamFloatValueFieldIdent,
                             new Double(-1));
                 }
             }

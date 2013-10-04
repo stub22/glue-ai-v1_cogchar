@@ -365,8 +365,14 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	}
 	
 	public void sendActionViaRepo(Ident actionIdent, String sessionId) {
+        
+        // hook up to the user channel
 		WebUserActionParamWriter paramWriter = getInitializedParamWriter(sessionId);
+        
+        // send the TA over that channel
 		paramWriter.putActionUri(actionIdent);
+        
+        // notify the world a TA exists this may cause WantsThingAction Routers to notice 
 		myRepoMessenger.sendMessage("lifterActionRecord", "lifterAction");
 	}
 	

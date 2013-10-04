@@ -12,16 +12,26 @@ import Helpers._
 //import _root_.net.liftweb.mapper.{DB, ConnectionManager, Schemifier, DefaultConnectionIdentifier, StandardDBVendor}
 import _root_.java.sql.{Connection, DriverManager}
 import _root_.org.cogchar.lifter.lib._
+import org.cogchar.lifter.model.{LifterClientRegistration, LifterThingActionScanner}
 import _root_.org.cogchar.lifter.model._
 import _root_.org.cogchar.bind.lift.LiftAmbassador
 
+import org.robokind.api.common.lifecycle.ManagedService;
+import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
+import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
+import org.robokind.api.common.osgi.OSGiUtils;
+import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.cogchar.api.thing.WantsThingAction
+//import org.cogchar.bundle.app.puma.PumaAppUtils
 
+import java.util.Properties;
 
 /**
  * A class that's instantiated early and run.  It allows the application
  * to modify lift's environment
  */
 class Boot {
+  
   def boot {
 	
 	// where to search snippet
@@ -51,8 +61,40 @@ class Boot {
 	// so that Lifter knows the browser has read the default template (or another one already loaded in browser at
 	// Lifter startup) and is ready to receive a page redirect to the desired template)
 	LiftSession.onShutdownSession ::= ((ls:LiftSession) => PageCommander.removeSession(ls.uniqueId))
+    
+	// Kind of a WAG as to how to use this, just trying it out. Actually seems 
+    // to perhaps be making Comet behave better, but too early to say (and why 
+    // would we expect it to?).
+//    LiftRules.cometLogger = ActorLogger 
+    
+    /*
+     * Register these ThingAction consumers with JFlux
+     */
+    
+    val context = OSGiUtils.getBundleContext(classOf[Boot]);
 
-	//LiftRules.cometLogger = ActorLogger // Kind of a WAG as to how to use this, just trying it out. Actually seems to perhaps be making Comet behave better, but too early to say (and why would we expect it to?).
+    // This handles registration of clients
+    val registration = new LifterClientRegistration()
+    val registrationLifecycle = new SimpleLifecycle(
+      registration,
+      Predef.classOf[WantsThingAction])
+//    val registrationProps = new Properties()
+//    registrationProps.put(x$1, x$2)
+    val registrationService = new OSGiComponent(
+      context,
+      registrationLifecycle).start//,
+//      registrationProps).start
+    
+    // This scans for 'flow' ThingActions that influence lifter
+    val scanner = new LifterThingActionScanner()
+    val scannerLifecycle = new SimpleLifecycle(
+      scanner,
+      Predef.classOf[WantsThingAction])
+    val scannerProps = new Properties()
+    val scannerService = new OSGiComponent(
+      context,
+      scannerLifecycle).start//,
+//      scannerProps).start
   }
 
   /**
