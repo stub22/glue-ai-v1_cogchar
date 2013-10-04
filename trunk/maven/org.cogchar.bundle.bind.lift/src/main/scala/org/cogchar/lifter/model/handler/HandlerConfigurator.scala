@@ -33,6 +33,7 @@ object HandlerConfigurator {
 	val repoOutputHandler = new RepoOutputHandler
 	val robotAnimHandler = new RobotAnimationHandler
     val questionAndAnswerHandler = new QuestionAndAnswerHandler
+    val flowActionHandler = new FlowActionHandler
 
 
 	// Set up the chain
@@ -44,6 +45,7 @@ object HandlerConfigurator {
 	lifterQueryHandler setNextHandler repoOutputHandler
 	repoOutputHandler setNextHandler robotAnimHandler
     robotAnimHandler setNextHandler questionAndAnswerHandler
+    questionAndAnswerHandler setNextHandler flowActionHandler
 	// Return the first handler in chain
 	liftConfigHandler
   }
