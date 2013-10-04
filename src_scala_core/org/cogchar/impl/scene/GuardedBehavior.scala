@@ -62,8 +62,9 @@ class GuardedBehavior (val myGBS: GuardedBehaviorSpec) extends Behavior(myGBS) {
     makeStepExecs();
   }
   override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
-    // Every "pending" StepExec is given a chance to proceed, then removed from "pending" on success.
-    // We copy the pending collection before iterating it to remove any ambiguity.
+    // Every "pending" StepExec is given a chance to proceed, then removed from 
+    // "pending" on success. We copy the pending collection before iterating it 
+    // to remove any ambiguity.
     val pendingList = myPendingStepExecs.toList
     for (gse <- pendingList) {
       val didIt = gse.proceed(scn, this)
