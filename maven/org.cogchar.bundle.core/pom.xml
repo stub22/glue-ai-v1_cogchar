@@ -95,9 +95,9 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.cogchar.bundle.core.CogcharCoreActivator</Bundle-Activator>
-						<Export-Package>org.cogchar.*, org.apache.http.*</Export-Package>
+						<Export-Package>org.cogchar.*</Export-Package>
 						
-						<Private-Package>com.thoughtworks.xstream.*, scala.slick.*, org.apache.commons.math.*</Private-Package>
+						<Private-Package>com.thoughtworks.xstream.*, scala.slick.*, org.apache.commons.math.*, org.apache.http.*</Private-Package>
 						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !nu.xom.*, !org.codehaus.jettison.*, 
 										!org.jdom.*, !org.joda.*, !org.kxml2.*, sun.*;resolution:='optional', 
                                         !org.scalaquery.*, *
