@@ -93,6 +93,7 @@
                 <configuration>
                     <instructions>
 						<Export-Package>org.cogchar.outer.client.*</Export-Package>
+                        <Private-Package>org.apache.http.*</Private-Package>
 					</instructions>
                 </configuration>
             </plugin>
