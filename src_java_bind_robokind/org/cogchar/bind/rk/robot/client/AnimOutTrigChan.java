@@ -24,7 +24,7 @@ import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.TypedValueMap;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.perform.FancyTextPerf;
-import org.cogchar.impl.perform.FancyPerformance;
+import org.cogchar.api.perform.FancyPerformance;
 import org.cogchar.impl.perform.FancyTextMedia;
 import org.cogchar.impl.perform.FancyTextCursor;
 import org.cogchar.platform.util.ClassLoaderUtils;

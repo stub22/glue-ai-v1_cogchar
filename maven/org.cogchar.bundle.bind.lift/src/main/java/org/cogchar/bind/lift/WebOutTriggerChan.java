@@ -20,7 +20,7 @@ import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.impl.perform.FancyTextCursor;
 import org.cogchar.impl.perform.FancyTextMedia;
-import org.cogchar.impl.perform.FancyPerformance;
+import org.cogchar.api.perform.FancyPerformance;
 import org.cogchar.impl.perform.FancyTextPerf;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.name.lifter.LiftAN;
