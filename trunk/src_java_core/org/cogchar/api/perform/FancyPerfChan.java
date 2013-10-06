@@ -14,11 +14,12 @@ public interface FancyPerfChan<OutJob> {
 
 	public OutJob getOutJobOrNull(FancyPerformance perf);
 
-	//protected void requestOutJobCancel(OutJob oj);
+	public void requestOutJobCancel(OutJob woj);
 
 	public Logger getMyLogger();
 
 	public void updatePerfStatusQuickly(FancyPerformance perf);
 
 	public void requestOutJobCancelForPerf(FancyPerformance perf);
+
 }
