@@ -31,13 +31,15 @@ import org.appdapter.api.module.Module.State;
 
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 import org.cogchar.name.behavior.{SceneFieldNames};
+import org.cogchar.api.scene.Behavior
+
 
 /**
  *SteppingBehavior is *stateful*, it contains the mutable nextStepIndex counter.
  * @author Stu B. <www.texpedient.com>
  */
 
-class SteppingBehavior (val mySBS: SteppingBehaviorSpec) extends Behavior(mySBS) {
+class SteppingBehavior (val mySBS: SteppingBehaviorSpec) extends BehaviorImpl(mySBS) {
 	var myNextStepIndex : Int = 0;
 
 	override protected def doRunOnce(scn : BScene,  runSeqNum : Long) {
@@ -70,7 +72,7 @@ case class SteppingBehaviorSpec() extends BehaviorSpec {
 		return  super.getFieldSummary() +  ", details=" + myDetails + ", stepSpecs=" + myStepSpecs;
 	}
 	
-	override def makeBehavior() : Behavior = {
+	override def makeBehavior() : Behavior[BScene] = {
 		new SteppingBehavior(this);
 	}
 	override def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {

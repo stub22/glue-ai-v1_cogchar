@@ -1,12 +1,12 @@
 /*
  *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +29,7 @@ import org.appdapter.bind.rdf.jena.reason.JenaReasonerUtils;
 import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
 import org.appdapter.api.module.{Module, Modulator}
 import org.appdapter.api.module.Module.State;
+import org.cogchar.api.scene.Behavior
 
 
 import com.hp.hpl.jena.assembler.{Assembler, Mode}
@@ -42,14 +43,14 @@ import org.cogchar.name.behavior.{SceneFieldNames};
  * @author Stu B. <www.texpedient.com>
  */
 
-class RuledBehavior (myRBS: RuledBehaviorSpec) extends Behavior(myRBS) {
+class RuledBehavior (myRBS: RuledBehaviorSpec) extends BehaviorImpl(myRBS) {
 	var	myInfModel : InfModel = null;
-	
+
 	override protected def doStart(scn : BScene) {
 		super.doStart(scn);
 		val baseModel = ModelFactory.createDefaultModel();
 		val sillyProperty = baseModel.createProperty("urn:sillyNamespace#", "sillyProperty");
-		
+
 		// Create a statement about each known channel, using sillyProperty
 		for (cs <- scn.mySceneSpec.myChannelSpecs.values) {
 			val csJRI = cs.getIdent().asInstanceOf[JenaResourceItem];
@@ -70,23 +71,23 @@ class RuledBehavior (myRBS: RuledBehaviorSpec) extends Behavior(myRBS) {
 		//	1) Check for stopping fact, and mark ourselves stopped if we're told to.
 		//		markStopRequested();
 		//		logMe("Finished requesting stop, so this should be my last runOnce().");
-		//		
+		//
 		//	2) Check for "new" action facts, and act on them!
 		First options for fact queries:
 			A) SPARQL - (using regular text syntax, or pre-parsed SPIN) query to produce a result set.
 				Recent SPARQL versions support path-based queries.  Is that in Jena 2.6.4?
 						If not, we could still use FresnelQuery, but it's becoming obsolete.
-						
+
 				SPARQL-UPDATE is supported, so we can treat it as a command language for marking models.
-				
+
 			B) Jena API - treat the model as a java collection of statement objects.
 		*/
-	   
+
 		logInfo("********************************************************************\nExecuting query");
-		
+
 		// Could speed this up by caching the parsed query
 		val resultSet = SPARQL_Utils.execQueryToProduceResultSet(myInfModel, myRBS.mySparqlQuery);
-		
+
 		val rsRewindable = ResultSetFactory.makeRewindable(resultSet);
 		val resultXML = ResultSetFormatter.asXMLString(rsRewindable);
 		// This XML can be routed/transformed as a packet using XLST, Dom4J, Cocoon, XProc, or other XML services.
@@ -94,10 +95,10 @@ class RuledBehavior (myRBS: RuledBehaviorSpec) extends Behavior(myRBS) {
 		rsRewindable.reset();
 		while (rsRewindable.hasNext()) {
 			val qSoln = rsRewindable.next();
-			logInfo("Got qsoln" + qSoln + " with s=[" + qSoln.get("s") + "], p=[" + qSoln.get("p") + "], o=[" 
+			logInfo("Got qsoln" + qSoln + " with s=[" + qSoln.get("s") + "], p=[" + qSoln.get("p") + "], o=["
 							+ qSoln.get("o") +"]");
 		}
-		
+
 		// Since action-processing logic is not ready, currently we always stop immediately
 		logInfo("********************************************************************\nRequesting Stop");
 		markStopRequested();
@@ -106,9 +107,9 @@ class RuledBehavior (myRBS: RuledBehaviorSpec) extends Behavior(myRBS) {
 		logInfo("##############################################  Stopping");
 	}
 }
-class RuledBehaviorSpec() extends BehaviorSpec {	
-	import scala.collection.JavaConversions._;	
-	
+class RuledBehaviorSpec() extends BehaviorSpec {
+	import scala.collection.JavaConversions._;
+
 	var		myJenaGeneralRules : String = "";
 	var		mySparqlQuery : String = "";
 
@@ -116,13 +117,13 @@ class RuledBehaviorSpec() extends BehaviorSpec {
 	override def getFieldSummary() : String = {
 		return  super.getFieldSummary() +  ", rules=" + myJenaGeneralRules + ", query=" + mySparqlQuery;
 	}
-	
-	override def makeBehavior() : Behavior = {
+
+	override def makeBehavior() : Behavior[BScene] = {
 		new RuledBehavior(this);
 	}
 	override def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
 		myDetails = "spar-QLY!";
-		
+
 		myJenaGeneralRules = reader.readConfigValString(configItem.getIdent(), SceneFieldNames.P_rules, configItem, null);
 		mySparqlQuery = reader.readConfigValString(configItem.getIdent(), SceneFieldNames.P_query, configItem, null);
 
@@ -132,11 +133,11 @@ class RuledBehaviorSpec() extends BehaviorSpec {
 /*
  *  From:  http://jena.sourceforge.net/inference/#rules
  *
- * To keep rules readable qname syntax is supported for URI refs. The set of known prefixes is those registered 
- * with the PrintUtil object. This initially knows about rdf, rdfs, owl, daml, xsd and a test namespace eg, but 
- * more mappings can be registered in java code. In addition it is possible to define additional prefix mappings 
+ * To keep rules readable qname syntax is supported for URI refs. The set of known prefixes is those registered
+ * with the PrintUtil object. This initially knows about rdf, rdfs, owl, daml, xsd and a test namespace eg, but
+ * more mappings can be registered in java code. In addition it is possible to define additional prefix mappings
  * in the rule file, see below.
- * 
+ *
  * Rule files may be loaded and parsed using:
 
 List rules = Rule.rulesFromURL("file:myfile.rules");
@@ -164,5 +165,5 @@ So an example complete rule file which includes the RDFS rules and defines a sin
 @include <RDFS>.
 
 [rule1: (?f pre:father ?a) (?u pre:brother ?f) -> (?u pre:uncle ?a)]
- * 
+ *
  */

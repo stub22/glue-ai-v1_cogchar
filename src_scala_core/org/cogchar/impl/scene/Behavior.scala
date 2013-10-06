@@ -1,12 +1,12 @@
 /*
  *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,23 +33,28 @@ import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
 import org.appdapter.api.module.{Module, Modulator}
 import org.appdapter.api.module.Module.State;
 
-import org.cogchar.impl.channel.{FancyChannelSpec};
+//import org.cogchar.impl.channel.{FancyChannelSpec};
 import org.appdapter.core.log.{BasicDebugger, Loggable};
+
+import org.appdapter.api.module.Module
+import org.cogchar.api.scene.Behavior
+import org.cogchar.api.scene.Scene
+
 
 /**  A Behavior is a thread of activity run by a BehaviorModulator.
  *   State information is generally shared with other behaviors through the BScene object
  *  that serves as context for the BehaviorModulator, which is passed in to each
- *  action method.  
- *   Behaviors are generally internally stateless, except for keeping track of 
+ *  action method.
+ *   Behaviors are generally internally stateless, except for keeping track of
  *  where they are in their own program of activity.
- *  
+ *
  *  FIXME:  Behavior ultimately extends Appdapter.BasicModule, which is currently a KnownComponentImpl,
- *  which isn't a proper fit for the Spec/Exec pattern.  
+ *  which isn't a proper fit for the Spec/Exec pattern.
  * @author Stu B. <www.texpedient.com>
  */
 
 
-abstract class Behavior(val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] {
+abstract class BehaviorImpl(val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] with Behavior[BScene] {
 
 	var	myStartStamp : Long = -1;
 	// def logMe(msg: String) {logInfo("[" + this + "]-" + msg);}
@@ -60,10 +65,10 @@ abstract class Behavior(val mySpec: BehaviorSpec) extends EmptyTimedModule[BScen
 	override protected def doStop(scn : BScene) {
 		getLogger().info("doStop called for behavior {}", this)
 	}
-	def getMillsecSinceStart() : Long = { 
+	def getMillsecSinceStart() : Long = {
 		System.currentTimeMillis() - myStartStamp;
 	}
-	
+
 }
 
 class TStamp () {
@@ -72,19 +77,19 @@ class TStamp () {
 	val myMilSec = mySysStamp - myFullSec * 1000;
 }
 class TimelineBehavior (bs: BehaviorSpec) {
-	
-} 
+
+}
 
 
 abstract class BehaviorSpec() extends KnownComponentImpl {
 	var		myDetails : String = "EMPTY";
-	
+
 	def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode);
-	def makeBehavior() : Behavior;
+	def makeBehavior() : Behavior[BScene]
 }
 
 class BehaviorSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[BehaviorSpec](builderConfRes) {
-	
+
 	override protected def initExtendedFieldsAndLinks(bs: BehaviorSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
 		bs.completeInit(configItem, getReader(), assmblr, mode);
 	}
