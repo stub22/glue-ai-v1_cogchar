@@ -1,12 +1,12 @@
 /*
  *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,13 +30,15 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import org.cogchar.name.behavior.{SceneFieldNames}
 import org.cogchar.api.channel.{Channel, BasicChannel}
-import org.cogchar.api.perform.{PerfChannel, Media, Performance};
+import org.cogchar.api.perform.{PerfChannel, Media, Performance, FancyPerformance};
 import org.cogchar.impl.perform.basic.{BasicPerfChan, BasicPerformance};
 import org.cogchar.impl.channel.{FancyChannelSpec};
-import org.cogchar.impl.perform.{FancyTime, PerfChannelNames, FancyTextPerf, FancyPerformance};
+import org.cogchar.impl.perform.{FancyTime, PerfChannelNames, FancyTextPerf};
 
 import org.cogchar.api.channel.{GraphChannel};
 import org.cogchar.api.scene.{Scene};
+import org.cogchar.api.perform.{PerfChannel, Media, Performance, FancyPerformance};
+import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyTextPerfChan, FancyTextInstruction}
 
 import scala.collection.mutable.HashMap;
 import org.appdapter.api.module.{Module, Modulator}
@@ -50,13 +52,13 @@ import org.appdapter.api.module.Module.State;
 class BSceneRootCursor() {
 }
 abstract class BSceneRootMedia() extends Media[BSceneRootCursor] {
-	
+
 }
-class BSceneRootChan (id : Ident, val scn: BScene) extends BasicPerfChan(id){ 
+class BSceneRootChan (id : Ident, val scn: BScene) extends BasicPerfChan(id){
 	override protected def fastCueAndPlay[Cur, M <: Media[Cur], Time] (m : M, c : Cur,perf: BasicPerformance[Cur, M, Time]) {
 		// Match on BSceneRootMedia or throw a fit!
 	}
-	
+
 
 	override def getMaxAllowedPerformances() : Int = 1;
 }
@@ -64,7 +66,7 @@ class BSceneRootChan (id : Ident, val scn: BScene) extends BasicPerfChan(id){
 
 // BScene stands for BehaviorScene, which is constructed from a SceneSpec.
 // // The "___Spec" Layer is considered immutable and reusable.
-// In theory, a BScene could be "played" more than once.  
+// In theory, a BScene could be "played" more than once.
 // However, we want extensions to be able to define mutable variables.
 
 /**
@@ -76,11 +78,11 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 	val		rootyID = mySceneSpec.getIdent() // new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
 	val		myRootChan = new BSceneRootChan(rootyID, this);
 	val		myWiredPerfChannels  = new HashMap[Ident,PerfChannel]();
-	
+
 	val		myCachedModules = new scala.collection.mutable.HashSet[Module[BScene]]()
 	var		myCachedModulator : BehaviorModulator = null
 
-	
+
 	override def getRootChannel() : BSceneRootChan = {	myRootChan	}
 	import scala.collection.JavaConversions._;
 	override def wirePerfChannels(perfChans : java.util.Collection[PerfChannel]) : Unit = {
@@ -100,13 +102,13 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 		updateModuleCaches(bm);
 		makeAndAttachBehavsFromSpecs();
 	}
-		
+
 	/**
-	 * HERE our BScene is acting like a tidy immutable behavior-factory, which is nice.  
+	 * HERE our BScene is acting like a tidy immutable behavior-factory, which is nice.
 	 * However, we are invokind attachModule, which is making use of a BehaviorModulator
 	 * that might already have copies of these fresh Behaviors we are making.  Also, the
-	 * running scene may cache information by stepSpec-ID at present (rather than by say, 
-	 * step-EXEC-ID, which would be generated at runtime, thus safer but harder to find).    
+	 * running scene may cache information by stepSpec-ID at present (rather than by say,
+	 * step-EXEC-ID, which would be generated at runtime, thus safer but harder to find).
 	 * That cache in FancyBScene below is how GuardedBehaviors check their guard-perfs.
 	 * A BScene might choose
 	 */
@@ -114,9 +116,9 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 		for (bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
 			val b = bs.makeBehavior();
 			attachModule(b);
-		}		
-	}		
-		
+		}
+	}
+
 	protected def updateModuleCaches(bm : BehaviorModulator) {
 		// We are intercepting this method as a signal to treat this bm as our new cached modulator.
 		if (myCachedModulator != bm) {
@@ -142,7 +144,7 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 		if (myCachedModulator != null) {
 			// If the modulator has "autoDetachOnFinish" set to true, then the modules will be auto-detached.
 			myCachedModulator.attachModule(aModule)
-			myCachedModules.add(aModule)			
+			myCachedModules.add(aModule)
 		}
 	}
 	def requestStopAllModules() {
@@ -156,8 +158,8 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 	// If we want a module to be detached from a modulator without waiting for auto-detach-on-finish, then
 	// we must use something like this.  However, we cannot detach a module which is currently in an action method.
 	// (doRun, stop, start) - we will instead get an exception.  To proceed without blocking or async requests,
-	// this method must catch those exceptions.  
-	def attemptImmediateDetachAllModules() { 
+	// this method must catch those exceptions.
+	def attemptImmediateDetachAllModules() {
 	}
 	def getUnfinishedModules() : Set[Module[BScene]] = {
 		if (myCachedModulator != null) {
@@ -172,7 +174,7 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 		return myWiredPerfChannels.getOrElse(id, null);
 	}
 
-	
+
 	override def toString() : String = {
 		"BScene[id=" + rootyID + ", chanMap=" + myWiredPerfChannels + ", modules=" + myCachedModules + "]";
 	}
@@ -186,15 +188,15 @@ import scala.collection.mutable.Map
  * Implements the features beyond BScene that we need to make behavior decisions.
  *    1) Tracks performances of its own steps for others to guard on
  *    2) [TODO] - Tracks GraphChannels supplying useful input+state data
- *    
- *    These two features above should be separated into traits, which are then 
+ *
+ *    These two features above should be separated into traits, which are then
  *    mixed in by FancyBScene.  Consider having those traits extend Scene interface.
- *    
+ *
  */
 class FancyBScene(ss: SceneSpec) extends BScene(ss) {
 	val		myPerfMonModsByStepSpecID  = new HashMap[Ident, FancyPerfMonitorModule]()
-	val		myWiredGraphChannels  = new HashMap[Ident,GraphChannel]();	
-	
+	val		myWiredGraphChannels  = new HashMap[Ident,GraphChannel]();
+
 	override def wireGraphChannels(graphChans : java.util.Collection[GraphChannel]) : Unit = {
 		import scala.collection.JavaConversions._
 		for (gc : GraphChannel <- graphChans)  {
@@ -210,8 +212,8 @@ class FancyBScene(ss: SceneSpec) extends BScene(ss) {
 	// It depends on wireGraphChannels having been called earlier with a matching channel.
 	override def getGraphChannel(id : Ident) : GraphChannel = {
 		return myWiredGraphChannels.getOrElse(id, null);
-	}	
-	override def cancelAllPerfJobs() { 
+	}
+	override def cancelAllPerfJobs() {
 		for (knownPerfMod  <- myPerfMonModsByStepSpecID.values) {
 			val knownPerf  = knownPerfMod.myPerf
 			knownPerf.requestOutputJobCancel
@@ -232,27 +234,27 @@ class FancyBScene(ss: SceneSpec) extends BScene(ss) {
 			}
 			case  _ => {
 				getLogger().warn("************* Cannot yet register a non-text perf = {} ", perf);
-			}			
+			}
 		}
 	}
 	def getPerfStatusForStep(stepSpecID : Ident) : Performance.State = {
-		val optPMM = myPerfMonModsByStepSpecID.get(stepSpecID) 
+		val optPMM = myPerfMonModsByStepSpecID.get(stepSpecID)
 		optPMM match {
 			case Some(monitorModule: FancyPerfMonitorModule) => {
 				monitorModule.getPerfState
 			}
 			case None => {
 				// We treat a performance not created "yet" as INITING, which cleanly allows check against the
-				// stepSpecID at anytime.  
-				Performance.State.INITING		
+				// stepSpecID at anytime.
+				Performance.State.INITING
 			}
 			case  Some(x) => {
-				getLogger().error("*************    Found weird performanceMonitorModule = {} ", x);	
+				getLogger().error("*************    Found weird performanceMonitorModule = {} ", x);
 				// Treat an error/weirdness as INITING too, for now.  Performance is not a public API.  Use channels!
-				Performance.State.INITING	
+				Performance.State.INITING
 			}
-			// Plus an (unnecessary?) catchall case as tutorial + experiment:  
-			// Seems Scala 2.8.1 compiler cannot recognize "all cases are covered already", so it allows this pattern.  
+			// Plus an (unnecessary?) catchall case as tutorial + experiment:
+			// Seems Scala 2.8.1 compiler cannot recognize "all cases are covered already", so it allows this pattern.
 			case _ => {
 				getLogger().error("**************   How did we avoid all the cases above?  optPMM={} ", optPMM);
 				Performance.State.INITING
