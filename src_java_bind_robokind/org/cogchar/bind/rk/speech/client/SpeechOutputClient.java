@@ -18,7 +18,7 @@ package org.cogchar.bind.rk.speech.client;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.perform.Performance;
 
-import org.cogchar.impl.perform.FancyPerformance;
+import org.cogchar.api.perform.FancyPerformance;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.perform.FancyTextPerf;
 import org.cogchar.impl.perform.FancyTextMedia;
