@@ -16,6 +16,7 @@
 package org.cogchar.app.buddy.busker;
 
 import java.util.List;
+import java.util.concurrent.Future;
 import org.cogchar.app.puma.behavior.PumaBehaviorAgent;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.platform.trigger.BoxSpace;
@@ -139,9 +140,10 @@ public class TriggerItems {
 		}
 	}
 
-	protected static boolean forceFreshDefaultMainConfig = false;
+
 	
 	public static abstract class CtxCmdBoxTI extends TriggerItem {
+		protected boolean myForceMainConfigResetFlag = false;
 		abstract void fireOnPCCB(PumaContextCommandBox pccb);
 		@Override public void fire(CogcharScreenBox targetBox) {
 			logFiring(targetBox);
@@ -157,17 +159,17 @@ public class TriggerItems {
 	}	
 	public static class UpdateWorldConfig extends CtxCmdBoxTI {
 		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
-			pccb.updateConfigByRequest("WorldConfig", forceFreshDefaultMainConfig);
+			Future<Boolean> resultFuture = pccb.processUpdateRequestAsync(PumaContextCommandBox.WORLD_CONFIG, myForceMainConfigResetFlag);
 		}
 	}
 	public static class UpdateBoneRobotConfig extends CtxCmdBoxTI {
 		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
-			pccb.updateConfigByRequest("BoneRobotConfig", forceFreshDefaultMainConfig);
+			Future<Boolean> resultFuture = pccb.processUpdateRequestAsync(PumaContextCommandBox.BONE_ROBOT_CONFIG, myForceMainConfigResetFlag);
 		}
 	}
 	public static class UpdateAllHumanoidConfig extends CtxCmdBoxTI {
 		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
-			pccb.updateConfigByRequest("AllHumanoidConfig", forceFreshDefaultMainConfig);
+			Future<Boolean> resultFuture = pccb.processUpdateRequestAsync(PumaContextCommandBox.ALL_HUMANOID_CONFIG, myForceMainConfigResetFlag);
 		}
 	}
 	public static class ToggleSkeletonHilite extends CtxCmdBoxTI {

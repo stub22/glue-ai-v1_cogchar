@@ -16,6 +16,7 @@
 
 package org.cogchar.app.puma.web;
 
+import java.util.concurrent.Future;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
@@ -72,7 +73,8 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
 		boolean forceFreshDefaultRepo = false;
 		boolean success = false;
 		if (myPCCB != null) {
-			success = myPCCB.updateConfigByRequest(request, forceFreshDefaultRepo);
+			Future<Boolean> resultFuture = myPCCB.processUpdateRequestAsync(request, forceFreshDefaultRepo);
+			// 
 		} else {
 			getLogger().warn("Update requested, but PumaWebMapper cannot find PumaAppContext for RQ=" + request);
 		}

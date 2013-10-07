@@ -46,39 +46,26 @@ import org.slf4j.LoggerFactory;
  */
 public class PumaAppUtils extends BasicDebugger {
 	static Logger theLogger = LoggerFactory.getLogger(PumaAppUtils.class);
-	private static BasicThingActionRouter	theRouter;
-	public static BasicThingActionRouter	getActionRouter() {
-		if (theRouter == null) {
-            String localName = "theRouter";
-            Ident agentID = new FreeIdent(RKRT_NS_PREFIX + localName, localName);
-            theRouter = new BasicThingActionRouter(0L, agentID);
-		}
-		return theRouter;
-	}
+
+	/**
+	 * This is a conve
+	 */
 	public static class GreedyHandleSet {
 		public PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
 		public PumaRegistryClient pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
 		public final PumaConfigManager pcm = pumaRegClient.getConfigMgr(null);
-		public final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		public RepoClient rc = pcm.getMainConfigRepoClient();
-		public GlobalConfigEmitter gce = pgmm.getGlobalConfig();
-		public PumaWebMapper pwm = pumaRegClient.getWebMapper(null);
+		public PumaWebMapper pumaWebMapper = pumaRegClient.getWebMapper(null);
 		private Ident animPathGraphID = rc.makeIdentForQName(AnimFileSpecReader.animGraphQN());
+		
+		// Junky old stuff of dubious value.  All three of these classes were created as placeholders for
+		// difficult concepts, better treated as free variables than known designs.
+		public final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();		
+		public GlobalConfigEmitter gce = pgmm.getGlobalConfig();
 		public BehaviorConfigEmitter animBCE = new BehaviorConfigEmitter(rc, animPathGraphID);
 	}
-	public static void registerActionConsumers() { 
-		GreedyHandleSet srec = new GreedyHandleSet();
-		// The VWorld does its own registration in a separate ballet.
-		// Here we are just handling the reg for Web + Behavior.
 
-		BasicThingActionRouter router = getActionRouter();
-		srec.pwm.registerActionConsumers(router, srec.rc, srec.gce);		
-	}
-	public static void processPendingThingActions() {
-		GreedyHandleSet srec = new GreedyHandleSet();	
-		BasicThingActionRouter router = getActionRouter();
-		router.consumeAllActions(srec.rc);
-	}
+	
 	public static List<FancyFile> getKnownAnimationFiles() { 
 		GreedyHandleSet srec = new GreedyHandleSet();
 		return AnimFileSpecReader.findAnimFileSpecsForJava(srec.animBCE);

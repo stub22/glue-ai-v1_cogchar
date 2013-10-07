@@ -22,6 +22,8 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.cogchar.app.puma.boot.PumaAppContext;
+import static org.cogchar.app.puma.boot.PumaContextCommandBox.ALL_HUMANOID_CONFIG;
+import static org.cogchar.app.puma.boot.PumaContextCommandBox.WORLD_CONFIG;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
 import org.cogchar.name.entity.EntityRoleCN;
@@ -127,7 +129,17 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 		
 		hrc.refreshInputBindingsAndHelpScreen(currKeyBindCfg, cspace);
 	}
-	
+	/**
+	 * 
+	 * @param gce
+	 * @param worldConfigIdent
+	 * @param repoCli
+	 * @param gFactory
+	 * @param router 
+	 * 
+	 * This method embodies many of our brittle old assumption-scaffolding used to get our 
+	 * configurable V-world up and running.
+	 */
 	private void initCinematicStuff(GlobalConfigEmitter gce, Ident worldConfigIdent, RepoClient repoCli, 
 			GoodyFactory gFactory, BasicThingActionRouter router) {
 		HumanoidRenderWorldMapper renderMapper = new HumanoidRenderWorldMapper();
@@ -171,13 +183,31 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 					worldConfigIdent.getLocalName(), e);
 		}
 	}
-	
-	public void setupActionConsumer(BasicThingActionRouter router, GlobalConfigEmitter gce, Ident worldConfigID, RepoClient repoCli, 
-			GoodyFactory gFactory){
+	/**
+	 * 
+	 * @param router
+	 * @param gce
+	 * @param worldConfigID
+	 * @param repoCli
+	 * @param gFactory 
+	 * 
+	 * Let's review and figure out what is really going on here.
+	 * 
+	 * The stack at this point [as of 2013-10-06] is:
+	 *	initCinematicStuff
+	 *	initVirtualWorlds
+	 *	PumaAppContext.initCinema - *  (see Javadoc comment above this method).
+	 *		- called from 3 different places, including pumaBoot and processUpdateRequestNow()
+	 */
+	public void setupActionConsumer(BasicThingActionRouter router, GlobalConfigEmitter gce, Ident worldConfigID, 
+				RepoClient repoCli, GoodyFactory gFactory){
 		// Goodies should be initialized before paths/animations so that they can reference Goodies!
 		try {
 			Ident actionGraphID = gce.ergMap().get(worldConfigID).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
 			BasicThingActionConsumer consumer = 	gFactory.getActionConsumer();
+			// We consume the actions here because...(?) [Something-something clear the "old"[/"init"] actions]
+			// Note here is the *only* use of this deprecated 2-args method form (in all of Cogchar), so refactoring 
+			// it out of this call in Puma will allow us to remove it from o.c.lib.core.
 			consumer.consumeAllActions(repoCli, actionGraphID);
 			router.appendConsumer(actionGraphID, consumer);
 		} catch (Exception e) {
@@ -201,6 +231,10 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 		}
 	}
 
+	/**
+	 * Called from PumaAppContext.initCinema  (if clearFirst arg-flag is true)
+	 * and PumaAppContext.disconnectAllCharsAndMappers
+	 */
 	public void clearCinematicStuff() {
 		HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
 		HumanoidRenderContext hrc = getHumanoidRenderContext();
@@ -208,11 +242,18 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 		myRenderMapper.clearCinematics(hrc);
 		myRenderMapper.clearViewPorts(hrc);
 	}
-
+/**
+ * Called from PumaAppContext.stopAndReleaseAllHumanoids, which is called only from  
+ * PumaContextCommandBox.processUpdateRequestNow
+ */
 	public void detachAllHumanoidFigures() {
 		HumanoidRenderContext hrc = getHumanoidRenderContext();
 		hrc.getHumanoidFigureManager().detachHumanoidFigures(hrc);
 	}
+	/**
+	 * Called from PumaAppContext.initCinema
+	 * @param bonyRdfCl 
+	 */
 	public void connectVisualizationResources(ClassLoader bonyRdfCl) {
 		HumanoidRenderContext hrc = getHumanoidRenderContext();
 		DataballGoodyBuilder ballBldr = DataballGoodyBuilder.getTheBallBuilder();
@@ -225,11 +266,18 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 	public void connectHrkindVisualizationContent(ClassLoader hrkindResourceCL) {
 		DataballGoodyBuilder.getTheBallBuilder().setClassLoader("hrkind.content.preview", hrkindResourceCL); // Adds this classloader to the ones Databalls know about
 	}
+	/**
+	 * Called from TriggerItems.ToggleHelp.fireOnPCCB
+	 */
 	public void toggleHelpScreenDisplay() { 
 		VW_HelpScreenMgr hsm = VW_InputBindingFuncs.getHelpScreenMgr();
 		RenderRegistryClient rrc = myCRC.getRenderRegistryClient();
 		hsm.toggleHelpTextDisplay(rrc);
 	}
+	/**
+	 * Called from PumaAppUtils.attachVWorldRenderModule, which is typically called from a FrameworkStartedEvent.
+	 * @param rModule 
+	 */
 	public void attachRenderModule(RenderModule rModule) {
 		HumanoidRenderContext hrc = getHumanoidRenderContext();
 		rModule.setRenderGateway(this);

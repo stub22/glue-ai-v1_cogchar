@@ -62,13 +62,18 @@ public class PumaWebMapper extends BasicDebugger {
 	public PumaContextCommandBox getCommandBox() { 
 		return myPCCB;
 	}
+	/**
+	 * 
+	 * @return 
+	 * Called only from	connectLiftInterface()  
+	 */
 	protected CommandTargetForUseFromWeb geWebCommandTarget() {
 		if (myCmdTargetForWeb == null) {
 			myCmdTargetForWeb = new CommandTargetForUseFromWeb(myPCCB, this);
 		}
 		return myCmdTargetForWeb;
 	}
-	
+
 	public void connectLiftSceneInterface(BundleContext bundleCtx) {
 		if (myLiftSceneComp == null) {
 			ServiceLifecycleProvider lifecycle = new SimpleLifecycle(SceneActions.getLauncher(), WebAppInterface.WebSceneInterface.class);
@@ -80,20 +85,36 @@ public class PumaWebMapper extends BasicDebugger {
 	public void disconnectLiftSceneInterface(BundleContext bundleCtx) {
 		myLiftSceneComp.stop();
 	}
-
+/**
+ * 
+ * @param bundleCtx 
+ * Called only from 
+	 * PumaAppContext.connectWeb(), which is called from PUMA booter, typically from a Framework-started event
+	 * handler in some "top" application bundle.
+ */
 	public void connectLiftInterface(BundleContext bundleCtx) {
 		CommandTargetForUseFromWeb webCmdTarget = geWebCommandTarget();
 		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(webCmdTarget, LiftAmbassador.LiftAppInterface.class);
 		myLiftAppComp = new OSGiComponent(bundleCtx, lifecycle);
 		myLiftAppComp.start();
 	}
-	// Tell the lifter lifecycle to start, once its OSGi dependencies are satisfied
+	// 
+/**
+ * Tell the lifter lifecycle to start, once its OSGi dependencies are satisfied.
+ * So far, it is only called from Friendularity tests:  o.f.b.lifter - Activator and o.f.b.repo - Activator.
+ * @param bunCtx 
+ */
 	public void startLifterLifecycle(BundleContext bunCtx) { 
 		LifterLifecycle lifecycle = new LifterLifecycle();
     	OSGiComponent lifterComp = new OSGiComponent(bunCtx, lifecycle);
     	lifterComp.start();
 	}	
-
+/**
+ * Called from o.f.b.repo - Activator 
+ * and from 
+ * o.c.b.bind.joseki - o.c.joswrap.RepoJosDsetDesc
+ * @return 
+ */
 	public Dataset getMainSparqlDataset() {
 		PumaContextCommandBox pccb = getCommandBox();
 		RepoClient mainConfRC = pccb.getMainConfigRepoClient();
@@ -106,6 +127,12 @@ public class PumaWebMapper extends BasicDebugger {
 		}		
 		return mainConfDset;
 	}
+	/**
+	 * Called only from  GruesomeTAProcessingFuncs.registerActionConsumers()
+	 * @param router
+	 * @param rc
+	 * @param gce 
+	 */
 	public void registerActionConsumers(BasicThingActionRouter router, RepoClient rc, GlobalConfigEmitter gce) { 
 
 		Ident worldConfigIdent = new FreeIdent("if/exception/while/reading/this/ident/report#null");
