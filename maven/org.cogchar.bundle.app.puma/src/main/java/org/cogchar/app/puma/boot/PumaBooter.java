@@ -27,6 +27,7 @@ import org.appdapter.core.name.Ident;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
 
 
@@ -82,10 +83,10 @@ public class PumaBooter extends BasicDebugger {
 	}
 	/**
 	 * Protected initialization of an OSGi context - the guts.
-	 * Normally this is called from the FrameworkStarted-EventHandler 
-	 * (NOT the BundleActivator.start() method !) of some "top" application 
-	 * bundle client.  That client controls our boot process through supplied
-	 * mediator.
+	 * Normally this is called from bootUnderOSGi, which is called from a 
+	 * FrameworkStarted-EventHandler (NOT the BundleActivator.start() method !) 
+	 * of some "top" application bundle client, e.g. Friendularity CCRK_DemoActivator.
+	 * That client controls our boot process through supplied mediator.
 	 *
 	 * @param bundleCtx
 	 * @param mediator
@@ -159,7 +160,7 @@ public class PumaBooter extends BasicDebugger {
 			// We'll let pac take care of this, since it is currently "Home of the Global Mode"
 			pac.initCinema(false);
 		}
-		PumaAppUtils.registerActionConsumers();
+		GruesomeTAProcessingFuncs.registerActionConsumers();
 		mediator.notifyBeforeBootComplete(pac);
 	}
 

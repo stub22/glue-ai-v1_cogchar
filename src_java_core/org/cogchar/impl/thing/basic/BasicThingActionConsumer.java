@@ -32,7 +32,14 @@ import org.cogchar.api.thing.WantsThingAction;
 public abstract class BasicThingActionConsumer extends BasicDebugger implements WantsThingAction {
 	
 	// public abstract ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID);
-	
+
+	/**
+	 * 
+	 * @param rc
+	 * @param srcGraphID
+	 * @deprecated
+	 * Still called from PumaVirtualWorldMapper.setupActionConsumer() - to "clear()" old/init actions? 
+	 */
 	@Deprecated public void consumeAllActions(RepoClient rc, Ident srcGraphID) {
 		BasicThingActionUpdater updater = new BasicThingActionUpdater();
 		// takeThingActions is our obsolete, deprecated legacy prototype implementation of message reaping
@@ -46,7 +53,7 @@ public abstract class BasicThingActionConsumer extends BasicDebugger implements 
 			consumeAction(actionSpec, srcGraphID);
 		}
 	}	
-    
+    /*
 	@Deprecated public void viewAndConsumeAllActions(RepoClient rc, Ident srcGraphID) {
 		BasicThingActionUpdater updater = new BasicThingActionUpdater();
 		// takeThingActions is our obsolete, deprecated legacy prototype implementation of message reaping
@@ -60,7 +67,20 @@ public abstract class BasicThingActionConsumer extends BasicDebugger implements 
 			consumeAction(actionSpec, srcGraphID);
 		}
 	}	
-    
+    */
+	/**
+	 * 
+	 * @param rc
+	 * @param srcGraphID
+	 * @param cutoffTime
+	 * @param viewingAgent
+	 * @deprecated
+	 * 
+	 * Still called from 
+	 * BasicThingActionRouter.consumeAllActions(), 
+	 * which is still called from
+	 * Puma.GruesomeTAProcessingFuncs.processPendingThingActions()
+	 */
 	@Deprecated public void viewAndMarkAllActions(RepoClient rc, Ident srcGraphID, Long cutoffTime, Ident viewingAgent) {
 		BasicThingActionUpdater updater = new BasicThingActionUpdater();
 		// takeThingActions is our obsolete, deprecated legacy prototype implementation of message reaping
@@ -73,5 +93,6 @@ public abstract class BasicThingActionConsumer extends BasicDebugger implements 
 			getLogger().info("Consuming from graph {} : {} ", srcGraphID, actionSpec);
 			consumeAction(actionSpec, srcGraphID);
 		}
-	}	
+	}
+
 }

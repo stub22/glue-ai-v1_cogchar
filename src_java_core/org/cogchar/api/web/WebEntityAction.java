@@ -40,44 +40,44 @@ public class WebEntityAction extends BasicEntityAction {
 	}
 	
 	public Ident getConfigIdent() {
-		return myParamTVMap.getAsIdent(WebActionNames.CONFIG);
+		return getParameterMap().getAsIdent(WebActionNames.CONFIG);
 	}
 	
 	// For repo encoded control activation action URIs
 	public Ident getControlActionUri() {
-		return myParamTVMap.getAsIdent(WebActionNames.WEBCONTROL_ACTION);
+		return getParameterMap().getAsIdent(WebActionNames.WEBCONTROL_ACTION);
 	}
 	
 	public Integer getSlotID() {
-		return myParamTVMap.getAsInteger(WebActionNames.SLOT);
+		return getParameterMap().getAsInteger(WebActionNames.SLOT);
 	}
 	
 	public Ident getControlType() {
-		return myParamTVMap.getAsIdent(WebActionNames.TYPE);
+		return getParameterMap().getAsIdent(WebActionNames.TYPE);
 	}
 	
 	public String getControlText() {
-		return myParamTVMap.getAsString(WebActionNames.TEXT);
+		return getParameterMap().getAsString(WebActionNames.TEXT);
 	}
 	
 	public String getControlStyle() {
-		return myParamTVMap.getAsString(WebActionNames.STYLE);
+		return getParameterMap().getAsString(WebActionNames.STYLE);
 	}
 	
 	public String getControlResource() {
-		return myParamTVMap.getAsString(WebActionNames.RESOURCE);
+		return getParameterMap().getAsString(WebActionNames.RESOURCE);
 	}
 	
 	public Ident getControlAction() {
-		return myParamTVMap.getAsIdent(WebActionNames.ACTION);
+		return getParameterMap().getAsIdent(WebActionNames.ACTION);
 	}
 	
 	public String getUserName() {
-		return myParamTVMap.getAsString(WebActionNames.USERNAME);
+		return getParameterMap().getAsString(WebActionNames.USERNAME);
 	}
 	
 	public String getUserClass() {
-		return myParamTVMap.getAsString(WebActionNames.USERCLASS);
+		return getParameterMap().getAsString(WebActionNames.USERCLASS);
 	}
 	
 	public void perform(WebAppInterface la) {
