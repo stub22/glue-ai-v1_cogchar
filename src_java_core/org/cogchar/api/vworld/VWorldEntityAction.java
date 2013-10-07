@@ -29,6 +29,7 @@ import org.cogchar.name.goody.GoodyNames;
 public class VWorldEntityAction extends BasicEntityAction  {
 	// We can optionallly play a game of equivalence between Java-enum-constant and URI, without an additional hashMap.
 	// The price is that we must initialize the value in the enum constants.
+	// But, well - the values inside those enum objects *could* be updatable from config, right? 
 	public enum Kind {
 		CREATE(GoodyNames.ACTION_CREATE.getAbsUriString());
 		
@@ -51,7 +52,7 @@ public class VWorldEntityAction extends BasicEntityAction  {
 			}
 		}
 	}
-	// Is this something we want to expose publically? Seems we may need to...
+	// Is this something we want to expose publicly? Seems we may need to...
 	public Kind getKind() {
 		return myKind;
 	}

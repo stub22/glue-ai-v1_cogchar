@@ -16,6 +16,10 @@
 
 package org.cogchar.app.puma.boot;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.config.PumaConfigManager;
@@ -40,8 +44,8 @@ import org.cogchar.render.sys.goody.GoodyGameFeatureAdapter;
  * PumaContextMediator.getSysContextURI() method.
  * 
  * Having "public" methods on this object helps us to keep more
- * of PumaAppContext's methods "protected", and also keep track
- * in one place of what we're officially "exposing" to the command 
+ * of PumaAppContext's methods *protected*, and also keep track
+ * in one place of what we're officially *exposing* to the command 
  * layer.
  * 
  * @author Stu B. <www.texpedient.com>
@@ -49,6 +53,8 @@ import org.cogchar.render.sys.goody.GoodyGameFeatureAdapter;
 
 public class PumaContextCommandBox extends CogcharScreenBox {
 	private		PumaAppContext		myPAC;
+	
+	private		ExecutorService		myExecService;
 	
 	protected PumaContextCommandBox(PumaAppContext pac) {
 		myPAC = pac;
@@ -82,9 +88,18 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 		return myPAC.getOrMakeVWorldMapper();
 	}
 	
+	private ExecutorService getExecService() { 
+		if (myExecService == null) {
+			myExecService = Executors.newSingleThreadExecutor();
+		}
+		return myExecService;
+	}
+	
 	// A half baked (3/4 baked?) idea. Since PumaAppContext is basically in charge of global config right now, this will be a general
 	// way to ask that config be updated. Why the string argument? See UpdateInterface comments...
-	private boolean myUpdateInProgressFlag = false;
+//	private boolean myUpdateInProgressFlag = false;
+	
+	
 	// Here I have removed the method variable passed in for the RepoClient. Why? Because right now PumaAppContext really
 	// is the central clearing house for the RepoClient for config -- ideally we want it to be passed down from one master instance here to
 	// all the objects that use it. Methods calling for config updates via this method shouldn't be responsible for 
@@ -102,18 +117,30 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 	// Currently used from two places:
 	// org/cogchar/app/puma/cgchr/PumaVirtualWorldMapper.java:[74,15] 
 	// org/cogchar/app/puma/cgchr/CommandTargetForUseFromWeb.java:[66,25] 
-	public boolean updateConfigByRequest(final String request, final boolean resetMainConfigFlag) {
+			// which is set up by PumaWebMapper
+	public Future<Boolean> processUpdateRequestAsync(final String request, final boolean resetMainConfigFlag) {
 		// Do the actual updates on a new thread. That way we don't block the render thread. Much less intrusive, plus this way things
 		// we need to enqueue on main render thread will actually complete -  it must not be blocked during some of the update operations!
 		// This brings up an interesting point: we are probably doing far too much on the main jME thread!
-		logInfo("Updating config by request: " + request);
-		boolean success = true;
+		logInfo("Requesting async-processing of kind: " + request);
+		// boolean success = true;
+		ExecutorService execSvc = getExecService();
+
+		Callable<Boolean> c = new Callable<Boolean> () { 
+			@Override public Boolean call() {
+				return processUpdateRequestNow(request, resetMainConfigFlag);
+			}
+		};
+		Future<Boolean> resultFuture = execSvc.submit(c);
+		return resultFuture;
+		
+		/*
 		if (myUpdateInProgressFlag) {
 			getLogger().warn("Update currently underway, ignoring additional request");
 			success = false;
 		} else {
 			myUpdateInProgressFlag = true;
-			//  Such direct thread spawning is not as good an approach as submitting a Callable object to an existing thread.		
+			//  Such direct thread spawning is not as good an approach as submitting a Callable object to an existing thread.	
 			Thread updateThread = new Thread("GoofyUpdateThread") {
 				public void run() {
 					processUpdateRequestNow(request, resetMainConfigFlag);
@@ -122,7 +149,9 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 			};
 			updateThread.start();
 		}
-		return success;
+		return success; 
+		*/
+		
 	}
 
 	private boolean processUpdateRequestNow(String request, final boolean resetMainConfigFlag) {
@@ -136,6 +165,7 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 			pcm.clearOSGiComps();
 			myPAC.reloadGlobalConfig();
 		} else if (ALL_HUMANOID_CONFIG.equals(request.toLowerCase())) {
+			// This also calls initCinema
 			myPAC.reloadAll(resetMainConfigFlag);
 		} else if (THING_ACTIONS.equals(request.toLowerCase())) {
 			myPAC.resetMainConfigAndCheckThingActions();

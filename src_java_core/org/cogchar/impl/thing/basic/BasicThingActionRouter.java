@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.monitor.AppDebugMonitor;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.WantsThingAction;
 import org.slf4j.Logger;
@@ -40,6 +41,7 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 
     private Ident myViewingAgentID;
     private Long myCutoffTime;
+	private	AppDebugMonitor	myAppMonitor;
     
 //    public BasicThingActionRouter(){}
     
@@ -47,8 +49,14 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
         myCutoffTime = cutoffTime;
         myViewingAgentID = viewingAgentID;
     }
+	public void setAppMonitor(AppDebugMonitor appMonitor) {
+		myAppMonitor = appMonitor;
+	}
     
 	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
+		if (myAppMonitor != null) {
+			myAppMonitor.notifyThingActionTransit(AppDebugMonitor.TransitKind.TASTED_BY_ROUTER, actionSpec);
+		}
 		List<WantsThingAction> consumerList = findConsumersForSourceGraph(srcGraphID);
 		ConsumpStatus highestSoFar = ConsumpStatus.IGNORED;
 		for (WantsThingAction consumer : consumerList) {
@@ -86,6 +94,13 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 		List<WantsThingAction> consumerList = findConsumersForSourceGraph(srcGraphID);
 		consumerList.add(consumer);
 	}
+/**
+ * 
+ * @param rc
+ * @deprecated
+ * 
+ * Still called from Puma.GruesomeTAProcessingFuncs.processPendingThingActions() ! 
+ */
 	@Deprecated public void consumeAllActions(RepoClient rc) {
 		for (Ident srcGraphID : myConsumersBySrcGraphID.keySet()) {
 			getLogger().info("Consuming actions from ThingAction-graph: {}", srcGraphID);
@@ -93,5 +108,6 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 			viewAndMarkAllActions(rc, srcGraphID, myCutoffTime, myViewingAgentID);
 		}
 	}
+
 	
 }

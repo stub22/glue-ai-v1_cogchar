@@ -40,8 +40,10 @@ import org.cogchar.app.puma.behavior.PumaBehaviorManager;
 import org.cogchar.app.puma.body.PumaDualBody;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
 import org.cogchar.app.puma.body.PumaDualBodyManager;
+import static org.cogchar.app.puma.boot.PumaContextCommandBox.THING_ACTIONS;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
+import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.platform.trigger.BoxSpace;
 
@@ -258,7 +260,18 @@ public class PumaAppContext extends BasicDebugger {
 		// TODO:  stuff to clear out the command space
 		TriggerItems.populateCommandSpace(repoCli, cmdSpc, boxSpc);
 	}
-
+/**
+ * 	 * Called from one of these three places:
+	 * 
+	 *  1) PumaBooter.pumaBootUnsafeUnderOSGi
+	 * 
+	 *  2)  PumaContextCommandBox.processUpdateRequestNow(WORLD_CONFIG)
+	 * 
+	 *	3)  PumaAppContext.reloadAll
+	 *		PumaContextCommandBox.processUpdateRequestNow(ALL_HUMANOID_CONFIG)
+	 * 
+ * @param clearFirst 
+ */
 	protected void initCinema(boolean clearFirst) {
 		if (hasVWorldMapper()) {
 			PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
@@ -267,7 +280,7 @@ public class PumaAppContext extends BasicDebugger {
 			}
 			CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
 			PumaConfigManager pcm = getConfigManager();
-			BasicThingActionRouter router = PumaAppUtils.getActionRouter();
+			BasicThingActionRouter router = GruesomeTAProcessingFuncs.getActionRouter();
 			pvwm.initVirtualWorlds(cmdSpc, pcm, router);
 //          Moved connectWeb call to PumaBooter so we can get lifter without the VWorld - Matt, Sep 20 2013
 //			connectWeb();
@@ -279,6 +292,9 @@ public class PumaAppContext extends BasicDebugger {
 		}
 	}
 
+	/**
+	 * Called only from 	 PumaBooter.pumaBootUnsafeUnderOSGi
+	 */
 	protected void connectWeb() {
 		PumaWebMapper webMapper = getOrMakeWebMapper();
 		BundleContext bunCtx = getBundleContext();
@@ -367,12 +383,17 @@ public class PumaAppContext extends BasicDebugger {
 	}
 	
 	// Temporary method for testing goody/thing actions until the repo auto-update trigger features are alive
+	/**
+	 * Called from PumaContextCommandBox.processUpdateRequestNow(THING_ACTIONS)
+	 */
 	protected void resetMainConfigAndCheckThingActions() {
 		final PumaConfigManager pcm = getConfigManager();
 		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		pcm.clearMainConfigRepoClient();
-		PumaAppUtils.processPendingThingActions();
+		GruesomeTAProcessingFuncs.processPendingThingActions();
 		/*
+		 * Old way, where the GlobalConfigEmitter was passed in explicitly on each update.
+		 * That is not necessarily a bad approach!
 		* 
 		RepoClient rc = getOrMakeMainConfigRC();
 		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
