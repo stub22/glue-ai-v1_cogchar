@@ -72,7 +72,14 @@ public class BasicThingActionQResAdapter extends BasicDebugger {
 		for (Object paramSoln0 : paramList.javaList()) {
 			Solution paramSoln = (Solution) paramSoln0;
 			Ident paramIdent = sh.pullIdent(paramSoln, ThingCN.V_actParamID);
-			String paramValue = sh.pullString(paramSoln, ThingCN.V_actParamVal);
+            String paramValue = null;
+            try {
+                Ident paramValueIdent = sh.pullIdent(paramSoln, ThingCN.V_actParamVal);
+                paramValue = paramValueIdent.getAbsUriString();
+            }
+            catch(ClassCastException ex) {
+                paramValue = sh.pullString(paramSoln, ThingCN.V_actParamVal);
+            }
 			theLogger.debug("Adding new param for Thing action {}: ident: {}, value: {}", new Object[] { actionIdent, paramIdent, paramValue });
 			paramMap.putValueAtName(paramIdent, paramValue);
 		}
