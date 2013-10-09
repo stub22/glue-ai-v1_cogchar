@@ -32,27 +32,34 @@ class LifterThingActionScanner extends WantsThingAction {
   private val lifterActionID : Ident = 
             new FreeIdent("http://www.cogchar.org/lift/user/action#action");
   
+  private val lifterConfigIDPrefix : String = "http://www.cogchar.org/lift/config/configroot#";
+  
   @Override
   def consumeAction(
     actionSpec:ThingActionSpec, srcGraphID:Ident ): ConsumpStatus = {
     
     val t: TypedValueMap = actionSpec.getParamTVM();
     if(t.getAsIdent(lifterActionID) == null) {
-      return ConsumpStatus.IGNORED;
+      return ConsumpStatus.IGNORED
     }
     else {
       // This ensures the TA is a student registration
-      val action:Ident = t.getAsIdent(lifterActionID);
+      val configControlID:Ident = t.getAsIdent(lifterActionID);
             
       // Pull the student's lifter session ID
       val sessionID: String = 
-        LifterClientRegistration.getCurrentStudentLifterSession();
+        LifterClientRegistration.getCurrentStudentLifterSession()
             
-      if(sessionID == null) return ConsumpStatus.IGNORED;
+      if(sessionID == null) return ConsumpStatus.IGNORED
         
+      if( !configControlID.getAbsUriString.startsWith(lifterConfigIDPrefix)) {
+        return ConsumpStatus.IGNORED
+      }
+      
       // Fire an action
-      PageCommander.handleAction(sessionID, scala.Int.box(-2), null);
-      return ConsumpStatus.CONSUMED;
+      PageCommander.getLiftAmbassador.activateControlsFromUri(
+        sessionID, configControlID)
+      return ConsumpStatus.USED;
     }
   }
 }
