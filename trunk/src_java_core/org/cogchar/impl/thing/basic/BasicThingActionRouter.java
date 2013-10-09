@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
  */
 
 public class BasicThingActionRouter extends BasicThingActionConsumer {
+    
+    private Logger theLogger = LoggerFactory.getLogger(BasicThingActionRouter.class);
 
 	private	Map<Ident, List<WantsThingAction>>	myConsumersBySrcGraphID = new HashMap<Ident, List<WantsThingAction>>();
 
@@ -60,7 +62,20 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 		List<WantsThingAction> consumerList = findConsumersForSourceGraph(srcGraphID);
 		ConsumpStatus highestSoFar = ConsumpStatus.IGNORED;
 		for (WantsThingAction consumer : consumerList) {
-			ConsumpStatus stat = consumer.consumeAction(actionSpec, srcGraphID);
+            ConsumpStatus stat = null;
+            try {
+                stat = consumer.consumeAction(actionSpec, srcGraphID);
+            }
+            // TODO: more specific exception(s) ...?
+            catch( Exception e ) {
+			getLogger().info("Consuming actions from ThingAction-graph: {}", srcGraphID);
+                theLogger.error("TA Consumer:{} ...failed to handle ThingAction:{}  \n{}", consumer.toString(),  actionSpec.toString(), e.toString());
+                continue;
+            }
+            if(stat == null) {
+                theLogger.error("TA Consumer:{} ...failed to handle ThingAction:{}  \n", consumer.toString(),  actionSpec.toString());
+                continue;
+            }
 			switch (stat) {
 				case	CONSUMED:	
 					if (highestSoFar != ConsumpStatus.CONSUMED) {
