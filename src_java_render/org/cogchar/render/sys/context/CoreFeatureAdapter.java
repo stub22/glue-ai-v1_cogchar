@@ -19,6 +19,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.FlyByCamera;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.Light;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
@@ -90,4 +91,9 @@ public class CoreFeatureAdapter extends BasicDebugger {
 	static public void setupLight(CogcharRenderContext crc) {
 		addDemoDirLightToRootNode(crc);
 	}
+	
+	static public void addLightToRootNode(CogcharRenderContext crc, Light l) {
+		crc.addLightToRootNode(l);
+	}
+	
 }

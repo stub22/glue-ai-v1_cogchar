@@ -55,7 +55,9 @@ public class ModularRenderContext extends CogcharRenderContext {
 		return myRenderModulator;
 	}
 	@Override public void doUpdate(float tpf) {
-		myRenderModulator.runOneCycle(tpf);
+		if (myRenderModulator != null) {
+			myRenderModulator.runOneCycle(tpf);
+		}
 	}
 	
 
