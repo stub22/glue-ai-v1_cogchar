@@ -52,6 +52,8 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 
 	private CogcharRenderContext myCRC;
 	private PumaAppContext myPAC;
+	
+	private	VWorldMonitorBinding	myVWMonitorBinding;
 
 	public PumaVirtualWorldMapper(PumaAppContext pac) {
 		myPAC = pac;
@@ -210,6 +212,12 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 			// it out of this call in Puma will allow us to remove it from o.c.lib.core.
 			consumer.consumeAllActions(repoCli, actionGraphID);
 			router.appendConsumer(actionGraphID, consumer);
+			getLogger().info("Finished consumingActions and appending consumer, now attaching AppMonitor binding");
+			if (myVWMonitorBinding == null) {
+				myVWMonitorBinding = new VWorldMonitorBinding();
+			}
+			router.setAppMonitor(myVWMonitorBinding);
+			
 		} catch (Exception e) {
 			getLogger().error("Could not initialize Thing actions with a config of {}",
 					worldConfigID.getLocalName(), e);
