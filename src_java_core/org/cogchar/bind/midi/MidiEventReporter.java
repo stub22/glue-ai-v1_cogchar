@@ -41,7 +41,14 @@ public class MidiEventReporter {
 		deliverEvent(ime);
 	}
 	protected void noticeNoteOn(int channel, int note, int vel) {
-		InterestingMidiEvent ime = new InterestingMidiEvent.NoteOn(channel, note, vel);
+		InterestingMidiEvent ime;
+		if (vel == 0) {
+			// Zero-velocity note-on implies note-off.  Sweet!
+			// http://www.kvraudio.com/forum/viewtopic.php?t=291892
+			ime = new InterestingMidiEvent.NoteOff(channel, note, vel);
+		} else {
+			ime = new InterestingMidiEvent.NoteOn(channel, note, vel);
+		}
 		deliverEvent(ime);
 	}
 	protected void noticeNoteOff(int channel, int note, int vel) {
