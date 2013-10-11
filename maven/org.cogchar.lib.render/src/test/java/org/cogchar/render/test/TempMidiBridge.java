@@ -36,7 +36,7 @@ public class TempMidiBridge extends BasicDebugger {
 		TempMidiBridge tmb = new TempMidiBridge();
 		try {
 			tmb.initMidiRouter();
-			Thread.sleep(30 * 1000);			
+			Thread.sleep(15 * 1000);			
 		}  catch (Throwable t) {
 			tmb.getLogger().error("caught: ", t);
 		}
@@ -54,7 +54,7 @@ public class TempMidiBridge extends BasicDebugger {
 		}
 	}
 	public void initMidiRouter() { 
-		if (myFMER == null) {
+		if (myFMER != null) {
 			getLogger().warn("a FunMidiEventRouter is already running - returning.");
 			return;
 		}

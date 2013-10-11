@@ -51,7 +51,7 @@ public class FunMidiEventRouter extends BasicDebugger {
 			MidiDevMatchPattern devPattern = new MidiDevMatchPattern();
 			List<MidiDevWrap> devs = MidiDevWrap.findMatchingDevs(devPattern, getLogger());
 			List<MidiTransmitDevWrap> tmits = MidiTransmitDevWrap.findMatchingTransmitters(devs, devPattern, getLogger());
-			getLogger().info("*********************************\nGot {} devs and {} transmitters", devs.size(), tmits.size());
+			getLogger().info("*********************************\nFound {} MIDI devs and {} MIDI transmitters", devs.size(), tmits.size());
 			myTransmitters = tmits;
 		} catch (Throwable t) {
 			getLogger().error("Caught: ", t);
