@@ -19,6 +19,8 @@ import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.input.KeyNames;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.system.AppSettings;
 import java.util.Map;
@@ -52,6 +54,18 @@ public class TextMgr extends RenderRegistryAware {
 		return bt;
 	}
 
+	public void disableCullingForFont(BitmapFont bf) {
+		// We will only see the backside of the text unless we set the material of the font to not cull faces.
+		// The materials of the font are called its "pages".
+		// http://hub.jmonkeyengine.org/forum/topic/render-back-of-bitmaptext/
+		int pageCount = bf.getPageSize();
+		System.out.println("Disabling culling for a total of " + pageCount + " font materials");
+		for (int i = 0; i < pageCount; i++) {
+			Material fontMat = bf.getPage(i);
+			fontMat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+		}
+	}
+
 	// Now added as a Goody, but this method retained for demo projects
 	public BitmapText makeCrossHairs(float scale, AppSettings settings) {
 		BitmapText bt = getScaledBitmapText("+", scale);
@@ -64,13 +78,13 @@ public class TextMgr extends RenderRegistryAware {
 		bt.setLocalTranslation(xPos, yPos, zPos);
 		return bt;
 	}
-	
+
 	// KeyBindingTracker.getBindingMap()
 	public BitmapText makeHelpScreen(float scale, AppSettings settings, Map<String, Integer> keyBindingMap) {
 		String commandList = "";
 		String commandLine;
 		int longestLineLength = 0;
-		KeyNames keyNamesConverter = new KeyNames(); 
+		KeyNames keyNamesConverter = new KeyNames();
 		for (Map.Entry<String, Integer> entry : keyBindingMap.entrySet()) {
 			String entryKey = entry.getKey();
 			Integer entryVal = entry.getValue();
@@ -88,7 +102,7 @@ public class TextMgr extends RenderRegistryAware {
 		}
 		BitmapText bt = getScaledBitmapText(commandList, scale);
 		// Sets offset to make sure text doesn't extend past right edge of screen - the last "fudge factors" might not want to be hard coded
-		float xPos = settings.getWidth() - (longestLineLength*scale*9.6f + 2f);
+		float xPos = settings.getWidth() - (longestLineLength * scale * 9.6f + 2f);
 		float yPos = settings.getHeight() - 2f;
 		float zPos = 0.0f;
 		bt.setLocalTranslation(xPos, yPos, zPos);
