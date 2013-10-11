@@ -14,30 +14,26 @@
  *  limitations under the License.
  */
 
-package org.cogchar.test.mainers;
+package org.cogchar.bind.midi;
 
-import org.cogchar.bind.midi.FunMidiEventRouter;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.Transmitter;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class CogcharMidiTestMain {
-	public static void main(String[] args) {
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-		FunMidiEventRouter fmer = new FunMidiEventRouter();
-		try {
-			fmer.startPumpingMidiEvents();
-			FunMidiEventRouter.FunListener fl = new FunMidiEventRouter.FunListener();
-			fmer.registerListener(fl);
-			Thread.sleep(10 * 1000);
-		} catch (Throwable t) {
-			t.printStackTrace();
-		} finally {
-			fmer.logInfo("Doing cleanup");
-			fmer.cleanup();
+public class MidiDevMatchPattern {
+		public boolean matchInfo(MidiDevice.Info infoCand) {
+			String name = infoCand.getName();
+			return true;
 		}
-		fmer.logInfo("main() is done!");
-	}	
+
+		public boolean matchDevice(MidiDevice devCand, MidiDevice.Info infoCand) {
+			return true;
+		}
+
+		public boolean matchTransmitter(Transmitter tmit, MidiDevice devCand, MidiDevice.Info infoCand) {
+			return true;
+		}
 }

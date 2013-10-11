@@ -13,31 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package org.cogchar.bind.midi;
 
-package org.cogchar.test.mainers;
-
-import org.cogchar.bind.midi.FunMidiEventRouter;
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.Receiver;
+import org.appdapter.core.log.BasicDebugger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
+public class MidiReceiverOurs extends BasicDebugger implements Receiver {
 
-public class CogcharMidiTestMain {
-	public static void main(String[] args) {
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-		FunMidiEventRouter fmer = new FunMidiEventRouter();
-		try {
-			fmer.startPumpingMidiEvents();
-			FunMidiEventRouter.FunListener fl = new FunMidiEventRouter.FunListener();
-			fmer.registerListener(fl);
-			Thread.sleep(10 * 1000);
-		} catch (Throwable t) {
-			t.printStackTrace();
-		} finally {
-			fmer.logInfo("Doing cleanup");
-			fmer.cleanup();
-		}
-		fmer.logInfo("main() is done!");
-	}	
+	@Override public void send(MidiMessage message, long timeStamp) {
+		getLogger().info("Received at " + timeStamp + ": " + message);
+	}
+
+	@Override public void close() {
+		getLogger().info("Closing");
+	}
 }
