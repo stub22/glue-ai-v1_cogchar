@@ -75,7 +75,7 @@ public class FunMidiEventRouter extends BasicDebugger {
 	public static class FunListener extends BasicDebugger implements MidiEventReporter.Listener {
 
 		@Override public void reportEvent(InterestingMidiEvent ime) {
-			getLogger().info("******************* Received interesting midi event: {} ", ime);
+			getLogger().info("*** Received midi event: {} ", ime);
 		}
 	}
 
