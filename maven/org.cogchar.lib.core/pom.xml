@@ -132,20 +132,27 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.5</version>
-			<!-- You must temporarily change scope to "runtime" or "compile" in order to activate Log4J for 
+			<!-- 
+			This test scope *does* work for classes with main() methods filed under "Test Packages".
+			These can be launched with Run->File, without going through JUnit balderdash.
+			Also [check this], these test classes can also refer to Scala classes, legitimately.
+
+			You may temporarily change scope to "runtime" or "compile" in order to activate Log4J for 
 			dev unit testing (outside of JUnit).  But the svn-committed (and mvn-deployed, etc.) versions
 			should always have this scope marked as "test", so that clients can use their own logger binding.  
 			-->
 			<scope>test</scope>
 			<exclusions>
-				<!-- This embedded Log4J version is not OSGi friendly -->				
+				<!-- This embedded Log4J version is not OSGi friendly.  That doesn't matter for unit-test
+						purposes, but it's cleaner to keep the bad dep "far away" from this crucial project.
+				-->				
 				<exclusion>
 					<artifactId>log4j</artifactId>
 					<groupId>log4j</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!--  We include "correct" (OGSi-friendly) Log4J version in "provided"
+		<!--  We include "correct" (OGSi-friendly) Log4J version in "compile" or "provided"
 			scope, so that our test programs can invoke Log4J configuration code,
 			and so that client non-OSGi projects can more correctly+easily use Log4J 
 			(preferably	via SLF4J!), if they choose.
