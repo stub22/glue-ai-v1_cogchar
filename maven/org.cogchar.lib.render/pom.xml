@@ -102,7 +102,14 @@
 			<artifactId>org.cogchar.lib.animoid</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+	
+		<!-- For local testing only - checkin scope as *test* or not at all! -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+			<scope>test</scope>	
+		</dependency>
 			<!-- Ryan sez: the worse one (o.c.bundle.bind.lift) is now gone! -->
 		
 		<!--

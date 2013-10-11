@@ -69,7 +69,7 @@ public class TrialBalloon extends UnfinishedDemoApp {
 			// shedMoreLight();
 			BitmapText btSpatial = makeTextSpatial();
 			myMainNode.attachChild(btSpatial);
-			BillboardControl bbCont =new BillboardControl();
+			BillboardControl bbCont = new BillboardControl();
 			/**
 			 AxialY           Aligns this Billboard to the screen, but keeps the Y axis fixed.
 			 AxialZ           Aligns this Billboard to the screen, but keeps the Z axis fixed.
