@@ -111,6 +111,7 @@ public class GoodyFactory {
 				if ((scale == null) && (scalarScale != null)) {
 					scale = new Vector3f(scalarScale, scalarScale, scalarScale);
 				}
+				
 				if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
 					boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
 					newGoody = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),

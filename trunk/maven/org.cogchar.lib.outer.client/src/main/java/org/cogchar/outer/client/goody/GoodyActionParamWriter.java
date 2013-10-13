@@ -15,6 +15,7 @@
  */
 package org.cogchar.outer.client.goody;
 
+import org.appdapter.core.name.Ident;
 import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.outer.client.ActionParamWriter;
@@ -70,6 +71,13 @@ public class GoodyActionParamWriter extends ActionParamWriter {
 		myBTVMap.putValueAtName(GoodyNames.COLOR_GREEN, colorG);
 		myBTVMap.putValueAtName(GoodyNames.COLOR_BLUE, colorB);
 		myBTVMap.putValueAtName(GoodyNames.COLOR_ALPHA, colorAlpha);
+	}
+	
+	public void putObjectAtName(Ident pName, Object pVal) {
+		myBTVMap.putValueAtName(pName, pVal);
+	}
+	public void putNameAtName(Ident pName, Ident pVal) {
+		myBTVMap.putNameAtName(pName, pVal);
 	}
 	
 	/**  type is not a param.

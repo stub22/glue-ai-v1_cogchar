@@ -134,7 +134,8 @@ public class TrialBalloon extends CogcharPresumedApp {
 
 	private void shedLight() {
 
-		ConfiguredPhysicalModularRenderContext cpmrc = (ConfiguredPhysicalModularRenderContext) getRenderContext();
+		// ConfiguredPhysicalModularRenderContext cpmrc = (ConfiguredPhysicalModularRenderContext) getRenderContext();
+		CogcharRenderContext cpmrc = getRenderContext();
 		CoreFeatureAdapter.setupLight(cpmrc);
 		shedMoreLight(cpmrc);
 	}
