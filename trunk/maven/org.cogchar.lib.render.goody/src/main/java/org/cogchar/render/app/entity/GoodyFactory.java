@@ -33,6 +33,7 @@ import org.cogchar.render.goody.bit.TicTacMark;
 import org.cogchar.render.goody.flat.CrossHairGoody;
 import org.cogchar.render.goody.flat.ScoreBoardGoody;
 import org.cogchar.render.goody.flat.TextGoody;
+import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 
 import org.cogchar.render.optic.goody.VWorldCameraEntity;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
@@ -77,7 +78,10 @@ public class GoodyFactory {
 		myRRC = rrc;
 		attachGoodyNode();
 		myGoodySpace = new GoodySpace(gmrc);
-		myGoodySpace.applyNewScreenDimension(gmrc.getPanel().getSize(null));
+		VirtualCharacterPanel optCharPanel = gmrc.getPanel();
+		if (optCharPanel != null) {
+			myGoodySpace.applyNewScreenDimension(optCharPanel.getSize(null));
+		}
 	}
 	
 	public GoodySpace getGoodySpace() { 
