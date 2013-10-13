@@ -40,6 +40,7 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.goody.basic.VirtualFloor;
 import org.cogchar.render.opengl.optic.LightFactory;
 import org.cogchar.render.opengl.scene.GeomFactory;
@@ -146,7 +147,7 @@ public class GoodyPhysicsStuffBuilder extends RenderRegistryAware implements Phy
 		GoodyRenderRegistryClient grrc = (GoodyRenderRegistryClient) myCRC.getRenderRegistryClient();
 		VirtualFloor floor = new VirtualFloor(grrc, floorUri, new Vector3f(0, -5, 0), 
 				null, rigidBodyPhysFlag);
-		floor.attachToVirtualWorldNode(myParentNode);
+		floor.attachToVirtualWorldNode(myParentNode, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 	}
 
 	/**

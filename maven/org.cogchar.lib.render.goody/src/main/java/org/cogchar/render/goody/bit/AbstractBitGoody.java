@@ -38,32 +38,31 @@ public abstract class AbstractBitGoody extends BasicGoodyEntity {
 		super(aRenderRegCli, uri);
 	}
 	
-	public void setZeroState() {
-		setState(false);
+	public void setZeroState(QueueingStyle qStyle) {
+		setState(false, qStyle);
 	}
 	
-	public void setOneState() {
-		setState(true);
+	public void setOneState(QueueingStyle qStyle) {
+		setState(true, qStyle);
 	}
 	
-	public void toggleState() {
-		setState(!state);
+	public void toggleState(QueueingStyle qStyle) {
+		setState(!state, qStyle);
 	}
 	
-	public abstract void setState(boolean boxState);
+	public abstract void setState(boolean boxState, QueueingStyle qStyle);
 	
-	@Override
-	public void applyAction(GoodyAction ga) {
-		super.applyAction(ga); // Applies "standard" set and move actions
+	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
+		super.applyAction(ga, qStyle); // Applies "standard" set and move actions
 		// Now we act on anything else that won't be handled by BasicGoodyImpl but which has valid non-null parameters
 		switch (ga.getKind()) {
 			case SET : {
 				String stateString = ga.getSpecialString(GoodyNames.BOOLEAN_STATE);
 				if (stateString != null) {
 					try {
-						setState(Boolean.valueOf(stateString));
+						setState(Boolean.valueOf(stateString), qStyle);
 					} catch (Exception e) { // May not need try/catch after BasicTypedValueMap implementation is complete
-						myLogger.error("Error setting box state to state string {}", stateString, e);
+						getLogger().error("Error setting box state to state string {}", stateString, e);
 					}
 				}
 				break;

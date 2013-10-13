@@ -53,8 +53,9 @@ public class TicTacMark extends BasicGoodyEntity {
 	public TicTacMark(GoodyRenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
 			Vector3f size, boolean isPlayerO) {
 		super(aRenderRegCli, boxUri);
-		setPositionAndRotation(initialPosition, initialRotation);
-		setVectorScale(size);
+		QueueingStyle qStyle = QueueingStyle.QUEUE_AND_RETURN;
+		setPositionAndRotation(initialPosition, initialRotation, qStyle);
+		setVectorScale(size, qStyle);
 		Mesh meshX = makeCustomXMesh();
 		Mesh meshO = new Torus(40,20,1f/5f,5f/6f);
 		float[] xRotationAngles = {(float)(Math.PI/2), 0f, 0f};
@@ -74,45 +75,43 @@ public class TicTacMark extends BasicGoodyEntity {
 		return builder.makeCompositeMesh(meshComponents);
 	}
 	
-	@Override
-	public void attachToVirtualWorldNode(final Node rootNode) {
-		attachToVirtualWorldNode(rootNode, playerO? indexO : indexX);
+	@Override public void attachToVirtualWorldNode(final Node rootNode, QueueingStyle qStyle) {
+		attachToVirtualWorldNode(rootNode, playerO? indexO : indexX, qStyle);
 	}
-	public void attachToVirtualWorldNode(final Node rootNode, boolean isAnO) {
+	public void attachToVirtualWorldNode(final Node rootNode, boolean isAnO, QueueingStyle qStyle) {
 		playerO = isAnO;
-		attachToVirtualWorldNode(rootNode);
+		attachToVirtualWorldNode(rootNode, qStyle);
 	}
 	
-	public void setAsX() {
-		setState(false);
+	public void setAsX(QueueingStyle qStyle) {
+		setState(false, qStyle);
 	}
 	
-	public void setAsO() {
-		setState(true);
+	public void setAsO(QueueingStyle qStyle) {
+		setState(true, qStyle);
 	}
 	
-	private void setState(boolean isAnO) {
+	private void setState(boolean isAnO, QueueingStyle qStyle) {
 		int geometryIndex = isAnO? indexO : indexX;
-		setGeometryByIndex(geometryIndex);
+		setGeometryByIndex(geometryIndex, qStyle);
 		playerO = isAnO;
 	}
 	
-	@Override
-	public void applyAction(GoodyAction ga) {
+	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
 		switch (ga.getKind()) {
 			case SET : {
 				String stateString = ga.getSpecialString(GoodyNames.USE_O);
 				if (stateString != null) {
 					try {
-						setState(Boolean.valueOf(stateString));
+						setState(Boolean.valueOf(stateString), qStyle);
 					} catch (Exception e) { // May not need try/catch after BasicTypedValueMap implementation is complete
-						myLogger.error("The TicTacMark {} parameter must be either \"true\" or \"false\"; observed value is {}",
+						getLogger().error("The TicTacMark {} parameter must be either \"true\" or \"false\"; observed value is {}",
 								new Object[]{GoodyNames.USE_O.getLocalName(), stateString}, e);
 					}
 				}
 				break;
 			}
-			default: super.applyAction(ga);
+			default: super.applyAction(ga, qStyle);
 		}
 	}
 	

@@ -46,18 +46,19 @@ public class BitBox extends AbstractBitGoody {
 	public BitBox(GoodyRenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
 			Vector3f size, boolean boxState) {
 		super(aRenderRegCli, boxUri);
+		QueueingStyle qStyle = QueueingStyle.QUEUE_AND_RETURN;
 		//myLogger.info("Making a BitBox: size={}, position={}, state={}, URI={}", //TEST ONLY
 		//	new Object[]{size, initialPosition, boxState, boxUri.getAbsUriString()}); //TEST ONLY
 		if (size == null) {
-			myLogger.warn("No size specified for BitBox, defaulting to size = 1");
+			getLogger().warn("No size specified for BitBox, defaulting to size = 1");
 			size = new Vector3f(1.0f, 1.0f, 1.0f);
 		} else {
 			if (Math.abs(size.length() - 0.0f) < 0.001f) {
-				myLogger.warn("BitBox being created with zero size!");
+				getLogger().warn("BitBox being created with zero size!");
 			}
 		} 
-		setPositionAndRotation(initialPosition, initialRotation);
-		setVectorScale(size);
+		setPositionAndRotation(initialPosition, initialRotation, qStyle);
+		setVectorScale(size, qStyle);
 		Mesh zeroMesh = new Torus(40,20,1f/5f,5f/6f);
 		Mesh oneMesh = new Cylinder(20, 20, 1f/5f, 2f, true);
 		zeroIndex = addGeometry(zeroMesh, FALSE_COLOR);
@@ -66,19 +67,17 @@ public class BitBox extends AbstractBitGoody {
 		state = boxState;
 	}
 
-	@Override
-	public void attachToVirtualWorldNode(final Node rootNode) {
-		attachToVirtualWorldNode(rootNode, state? oneIndex : zeroIndex);
+	@Override public void attachToVirtualWorldNode(final Node rootNode, QueueingStyle qStyle) {
+		attachToVirtualWorldNode(rootNode, state? oneIndex : zeroIndex, qStyle);
 	}
-	public void attachToVirtualWorldNode(final Node rootNode, boolean boxState) {
+	public void attachToVirtualWorldNode(final Node rootNode, boolean boxState, QueueingStyle qStyle) {
 		state = boxState;
-		attachToVirtualWorldNode(rootNode);
+		attachToVirtualWorldNode(rootNode, qStyle);
 	}
 	
-	@Override
-	public void setState(boolean boxState) {
+	@Override public void setState(boolean boxState, QueueingStyle qStyle) {
 		int geometryIndex = boxState? oneIndex : zeroIndex;
-		setGeometryByIndex(geometryIndex);
+		setGeometryByIndex(geometryIndex, qStyle);
 		state = boxState;
 	}
 	

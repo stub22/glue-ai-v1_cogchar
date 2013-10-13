@@ -66,7 +66,7 @@ public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  e
 	}
 
 	public void removeGoody(VWorldEntity departingGoody) {
-		departingGoody.detachFromVirtualWorldNode(); // Safe to perform even if it's not currently attached
+		departingGoody.detachFromVirtualWorldNode(VWorldEntity.QueueingStyle.QUEUE_AND_RETURN); // Safe to perform even if it's not currently attached
 		myGoodiesByID.remove(departingGoody.getUri());
 	}
 
@@ -100,7 +100,7 @@ public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  e
 				if (myGoodiesByID.containsKey(gid)) {
 					theLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid);
 				} else {
-					goodyOne = GoodyFactory.getTheFactory().createAndAttachByAction(ga);
+					goodyOne = GoodyFactory.getTheFactory().createAndAttachByAction(ga, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 					if (goodyOne != null) {
 						addGoody(goodyOne);
 						return ConsumpStatus.USED;
@@ -121,7 +121,7 @@ public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  e
 				// For the moment, let's focus on "update"
 				try {
 					// Now - apply the action to goodyOne
-					goodyOne.applyAction(ga);
+					goodyOne.applyAction(ga, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 					return ConsumpStatus.USED;
 				} catch (Exception e) {
 					theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);

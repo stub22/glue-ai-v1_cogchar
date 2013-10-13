@@ -25,6 +25,7 @@ import java.util.concurrent.Future;
 import org.appdapter.core.name.Ident;
 // import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
+import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +36,15 @@ import org.slf4j.LoggerFactory;
 
 
 public abstract class VWorldEntity {
+	public enum QueueingStyle {
+		INLINE,				// Works only if we are already on the JME3 thread.  Else exception.
+		QUEUE_AND_RETURN,	// Should always work.
+		QUEUE_AND_WAIT		// Works only if we are *not* already on the JME3 thread.  Else deadlock.
+	} 
+	
 	
 	// OK to have a logger instance for each goody instance?
-	protected Logger					myLogger = LoggerFactory.getLogger(this.getClass()); 
+	private Logger					myLogger = LoggerFactory.getLogger(this.getClass()); 
 	
 	protected GoodyRenderRegistryClient myRenderRegCli;
 	protected Ident						myUri;
@@ -46,46 +53,80 @@ public abstract class VWorldEntity {
 	// Currently not used -- timed futures are timing out for some reason
 	//private final static long ATTACH_DETACH_TIMEOUT = 3000; //ms
 	
+	protected Logger getLogger() { 
+		return myLogger;
+	}
 	public Ident getUri() {
 		return myUri;
 	}
-	public abstract void setPosition(Vector3f position);
+	public abstract void setPosition(Vector3f position, QueueingStyle style);
 
-	public void setRotation(Quaternion newRotation) {
+	public void setRotation(Quaternion newRotation, QueueingStyle style) {
 		throw new UnsupportedOperationException("Not supported by  " + this); 
 	}
 
-	public void setVectorScale(Vector3f scaleVector) {
+	public void setVectorScale(Vector3f scaleVector, QueueingStyle style) {
 		throw new UnsupportedOperationException("Not supported by " + this); 
 	}	
-	public void setUniformScaleFactor(Float scale) {
+	public void setUniformScaleFactor(Float scale, QueueingStyle style) {
 		myLogger.warn("setUniformScaleFactor not supported by " + this);
 	}
 
 	// public abstract void attachToVirtualWorldNode(Node attachmentNode);
 	// public abstract void detachFromVirtualWorldNode();
-	public abstract void applyAction(GoodyAction ga);
+	public abstract void applyAction(GoodyAction ga, QueueingStyle style);
 	
 
-	public void attachToVirtualWorldNode(Node attachmentNode) {
+	public void attachToVirtualWorldNode(Node attachmentNode, QueueingStyle style) {
 		myLogger.warn("attachToVirtualWorldNode not supported by " + this);
 	}
 
-	public  void detachFromVirtualWorldNode() {
+	public  void detachFromVirtualWorldNode(QueueingStyle style) {
 		myLogger.warn("detachFromVirtualWorldNode not supported by " + this);
 	}
 	
 	public void applyScreenDimension(Dimension screenDimension) {}; // No operation necessary unless desired, as in BasicGoody2dImpl
 	
-	protected void enqueueForJmeAndWait(Callable task) {
-		Future<Void> jmeFuture = myRenderRegCli.getWorkaroundAppStub().enqueue(task);
-			// Method should block until detach completes to avoid collision with subsequent V-world operations
-			waitForJmeFuture(jmeFuture);
-	}
+
 	
-	// Added for repositioning 2d goodies on size change, which hangs if we wait for the enqueue while the window is being resized
-	protected void enqueueForJmeButDontWait(Callable task) {
-		myRenderRegCli.getWorkaroundAppStub().enqueue(task);
+	protected void enqueueForJme(Callable task, QueueingStyle style) {
+		if (style == null) {
+			style = QueueingStyle.QUEUE_AND_RETURN;
+		}
+		switch (style) {
+			case INLINE:
+				invokeTask(task);
+			break;
+			case QUEUE_AND_RETURN:
+				enqueueForJme(task, false);
+			break;
+			case QUEUE_AND_WAIT:
+				enqueueForJme(task, true);
+			break;
+			default:
+				throw new RuntimeException("Bad Queueing Style: " + style);
+		}
+	}
+	private void invokeTask(Callable task) { 
+		try {
+			task.call();
+		} catch (Throwable t) {
+			myLogger.error("Problem invoking task inline", t);
+		}
+	}
+	private void enqueueForJme(Callable task, boolean waitFlag) {
+		if (myRenderRegCli == null) {
+			throw new RuntimeException("No renderRegistryClient found");
+		}
+		WorkaroundAppStub stub = myRenderRegCli.getWorkaroundAppStub();
+		if (stub == null) {
+			throw new RuntimeException("No WorkaroundAppStub found");
+		}
+		Future<Void> jmeFuture = stub.enqueue(task);
+		if (waitFlag) {
+			// We will block until detach completes to avoid collision with subsequent V-world operations
+			waitForJmeFuture(jmeFuture);
+		}
 	}
 	
 	private void waitForJmeFuture(Future jmeFuture) {
@@ -95,7 +136,7 @@ public abstract class VWorldEntity {
 			//jmeFuture.get(ATTACH_DETACH_TIMEOUT, TimeUnit.MILLISECONDS);
 			jmeFuture.get();
 		} catch (Exception e) {
-			myLogger.warn("Exception attempting to attach or detach goody: ", e);
+			myLogger.warn("Exception while waiting for JME3 future, probably while attempting to attach or detach goody: ", e);
 		}
 		//theLogger.info("Jme Future has arrived"); // TEST ONLY
 	}

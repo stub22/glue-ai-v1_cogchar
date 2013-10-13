@@ -57,7 +57,7 @@ public class BasicGoody2dImpl extends VWorldEntity {
 	// add provisions to specify font
 	protected BitmapText setGoodyAttributes(String text, float scale) {
 		myOverlayText = myRenderRegCli.getSceneTextFacade(null).getScaledBitmapText(text, scale);
-		setAbsolutePosition(myPosition);
+		setAbsolutePosition(myPosition, QueueingStyle.QUEUE_AND_RETURN);
 		return myOverlayText;
 	}
 	protected BitmapText setGoodyAttributes(String text, float scale, ColorRGBA color) {
@@ -70,32 +70,26 @@ public class BasicGoody2dImpl extends VWorldEntity {
 		if (myOverlayText != null) {
 			myOverlayText.setText(goodyText);
 		} else {
-			myLogger.warn("Attempting to set text for goody {}, but its attributes have not yet been specified", 
+			getLogger().warn("Attempting to set text for goody {}, but its attributes have not yet been specified", 
 					myUri.getLocalName());
 		}
 	}
 	
-	@Override
-	public void setPosition(Vector3f scalePosition) {
-		setPosition(scalePosition, true);
-	}
-	
 	// Position is specified as fraction of screen width/height
 	// Usually we want wait = true, but not for repositioning during window size change
-	public void setPosition(Vector3f scalePosition, boolean wait) {
+	@Override  public void setPosition(Vector3f scalePosition, QueueingStyle qStyle) {
 		//myLogger.info("Setting scalePosition: {}", scalePosition); // TEST ONLY
 		if (scalePosition != null) {
 			myScalePosition = scalePosition.clone();
 			Vector3f absolutePosition = scalePosition.multLocal(myScreenWidth, myScreenHeight, 0);
-			setAbsolutePosition(absolutePosition, wait);
+			setAbsolutePosition(absolutePosition, qStyle);
 		}
 	}
 	
-	@Override
-	public void setUniformScaleFactor(Float scale) {
+	@Override public void setUniformScaleFactor(Float scale, QueueingStyle qStyle) {
 		//myLogger.info("Setting 2d Goody scale to {}", scale); // TEST ONLY
 		if (myOverlayText == null) {
-			myLogger.warn("Attemping to set scale on 2D Goody, but initial GoodyAttributes have not been set");
+			getLogger().warn("Attemping to set scale on 2D Goody, but initial GoodyAttributes have not been set");
 		} else if (scale != null) {
 			myOverlayText.setSize(myOverlayText.getFont().getCharSet().getRenderedSize()*scale);
 		}
@@ -107,12 +101,8 @@ public class BasicGoody2dImpl extends VWorldEntity {
 		}
 	}
 	
-	private void setAbsolutePosition(final Vector3f position) {
-		setAbsolutePosition(position, true);
-	}
-	
 	// Usually we want wait = true, but not for repositioning during window size change
-	private void setAbsolutePosition(final Vector3f position, boolean wait) {
+	private void setAbsolutePosition(final Vector3f position, QueueingStyle qStyle) {
 		//myLogger.info("Setting position: {}", position); // TEST ONLY
 		myPosition = position.clone();
 		if (myOverlayText != null) {
@@ -123,71 +113,63 @@ public class BasicGoody2dImpl extends VWorldEntity {
 					return null;
 				}
 			};
-			if (wait) {
-				enqueueForJmeAndWait(positioningCallable);
-			} else {
-				enqueueForJmeButDontWait(positioningCallable);
-			}
+			enqueueForJme(positioningCallable, qStyle);
 		}
 	}
 	
-	@Override
-	public void attachToVirtualWorldNode(Node vWorldNode) {
+	@Override public void attachToVirtualWorldNode(Node vWorldNode, QueueingStyle qStyle) {
 		// Currently any specified node is ignored since we are attaching via the FlatOverlayMgr
-		attachToVirtualWorldNode();
+		attachToOverlaySpatial(qStyle);
 	}
-	public void attachToVirtualWorldNode() {
+	protected void attachToOverlaySpatial(QueueingStyle style) {
 		if (myOverlayText != null) {
 			//myRootNode = rootNode;
-			myLogger.debug("Attaching 2d goody to virtual world: {} at location {}", myUri.getLocalName(), myPosition);
-			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
+			getLogger().debug("Attaching 2d goody to virtual world: {} at location {}", myUri.getLocalName(), myPosition);
+			enqueueForJme(new Callable() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
 					myOverlayMgr.attachOverlaySpatial(myOverlayText);
 					return null;
 				}
-			});
+			}, style);
 		} else {
-			myLogger.warn("Attempting to attach 2D Goody {} to virtual world, but its attributes have not been set",
+			getLogger().warn("Attempting to attach 2D Goody {} to virtual world, but its attributes have not been set",
 					myUri.getLocalName());
 		}
 	}
 	
-	@Override
-	public void detachFromVirtualWorldNode() {
-		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
+	@Override public void detachFromVirtualWorldNode(QueueingStyle style) {
+		enqueueForJme(new Callable() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
 					myOverlayMgr.detachOverlaySpatial(myOverlayText);
 					return null;
 				}
-			});
+			}, style);
 	}
 	
 	// Override this method to add functionality; be sure to call this super method to apply standard Goody actions
-	@Override
-	public void applyAction(GoodyAction ga) {
+	@Override	public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
 		switch (ga.getKind()) {
 			case MOVE : 
 			case SET : {
-				setPosition(ga.getLocationVector());
-				setUniformScaleFactor(ga.getScale());
+				setPosition(ga.getLocationVector(), qStyle);
+				setUniformScaleFactor(ga.getScale(), qStyle);
 				setColor(ga.getColor());
 				break;
 			}
 			default: {
-				myLogger.error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
+				getLogger().error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
 			}
 		}
 	};
 	
-	@Override
-	public final void applyScreenDimension(Dimension screenDimension) {
+	@Override public final void applyScreenDimension(Dimension screenDimension) {
 		myScreenWidth = screenDimension.width;
 		myScreenHeight = screenDimension.height;
-		setPosition(myScalePosition, false); // Reset absolute position using new screen dimensions. No waiting!
+		setPosition(myScalePosition, QueueingStyle.QUEUE_AND_RETURN); // Reset absolute position using new screen dimensions. No waiting!
 	}
 
 

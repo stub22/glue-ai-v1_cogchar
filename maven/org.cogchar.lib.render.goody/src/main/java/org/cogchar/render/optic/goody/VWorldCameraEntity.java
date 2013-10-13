@@ -59,33 +59,30 @@ public class VWorldCameraEntity extends VWorldEntity {
 		myCamera = theCamera;
 	}
 	
-	@Override
-	public void setPosition(final Vector3f position) {
-		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
-				@Override
-				public Void call() throws Exception {
+	@Override public void setPosition(final Vector3f position, QueueingStyle qStyle) {
+		enqueueForJme(new Callable() { // Do this on main render thread
+				@Override public Void call() throws Exception {
 					myCamera.setLocation(position);
 					return null;
 				}
-			});	
+			}, qStyle);	
 	}
 	
-	public void setRotation(final Quaternion rotation) {
-		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
-				@Override
-				public Void call() throws Exception {
+	public void setRotation(final Quaternion rotation, QueueingStyle qStyle) {
+		enqueueForJme(new Callable() { // Do this on main render thread
+				@Override public Void call() throws Exception {
 					myCamera.setRotation(rotation);
 					return null;
 				}
-			});	
+			}, qStyle);	
 	}
 	
-	protected void setNewPositionAndRotationIfNonNull(Vector3f newPosition, Quaternion newRotation) {
+	protected void setNewPositionAndRotationIfNonNull(Vector3f newPosition, Quaternion newRotation, QueueingStyle qStyle) {
 		if (newPosition != null) {
-			setPosition(newPosition);
+			setPosition(newPosition, qStyle);
 		}
 		if (newRotation != null) {
-			setRotation(newRotation);
+			setRotation(newRotation, qStyle);
 		}
 	}
 	
@@ -94,7 +91,7 @@ public class VWorldCameraEntity extends VWorldEntity {
 		Quaternion currentOrientation = myCamera.getRotation();
 		if (newPosition == null) {
 			//newPosition = currentPosition; // Eventually this should work, but...
-			myLogger.warn("No new position specified for Camera MOVE operation -- currently MOVEs of rotation only are not supported.");
+			getLogger().warn("No new position specified for Camera MOVE operation -- currently MOVEs of rotation only are not supported.");
 			return;
 		}
 		if (newOrientation == null) {
@@ -111,15 +108,14 @@ public class VWorldCameraEntity extends VWorldEntity {
 		pMgr.controlAnimationByName(pathUri, PathMgr.ControlAction.PLAY);
 	}
 	
-	public void attachToGoody(BasicGoodyEntity attachedGoody) {
+	public void attachToGoody(BasicGoodyEntity attachedGoody, QueueingStyle qStyle) {
 		//create the camera Node
 		final CameraNode camNode = new CameraNode("Camera Node of " + myUri.getLocalName(), myCamera);
 		//Get the Goody's Node
 		final Node goodyNode = attachedGoody.getContentNode();
-		myLogger.info("Attaching camNode to goodyNode {}", attachedGoody.getUri()); // TEST ONLY
-		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
-			@Override
-			public Void call() throws Exception {
+		getLogger().info("Attaching camNode to goodyNode {}", attachedGoody.getUri()); // TEST ONLY
+		enqueueForJme(new Callable() { // Do this on main render thread
+			@Override public Void call() throws Exception {
 				//Move camNode, e.g. behind and above the target:
 				camNode.setLocalTranslation(new Vector3f(0, 5, -5)); // ... for initial hack-up; probably these offsets need to come from GoodyAction
 				//Rotate the camNode to look at the target:
@@ -132,14 +128,14 @@ public class VWorldCameraEntity extends VWorldEntity {
 				myRenderRegCli.getJme3RootDeepNode(null).attachChild(camNode);
 				return null;
 			}
-		});
+		}, qStyle);
 		
 		camNode.setEnabled(true);
 	}
 
 	// Searches for the URI specified by the input string and attaches to the Goody if found
 	// Fairly ugly getting into the list of goodies by GoodyFactory.getTheFactory().getActionConsumer().getGoody
-	private void attachToGoody(String goodyUriString) {
+	private void attachToGoody(String goodyUriString, QueueingStyle qStyle) {
 		if (goodyUriString != null) {
 			Ident goodyUri = new FreeIdent(goodyUriString);
 			VWorldEntityActionConsumer consumer = GoodyFactory.getTheFactory().getActionConsumer();
@@ -148,39 +144,37 @@ public class VWorldCameraEntity extends VWorldEntity {
 			// All this stuff needs refactoring in any case to separate cameras out from the "Goody" concept, among many
 			// other reasons...
 			if ((goodyToAttach != null) && (goodyToAttach instanceof BasicGoodyEntity)) {
-				attachToGoody((BasicGoodyEntity)goodyToAttach);
+				attachToGoody((BasicGoodyEntity)goodyToAttach, qStyle);
 			}
 		}
 	}
 	
-	@Override
-	public void setUniformScaleFactor(Float scale) {
-		myLogger.warn("setScale not supported in CameraGoodyWrapper");
+	@Override public void setUniformScaleFactor(Float scale, QueueingStyle qStyle) {
+		getLogger().warn("setScale not supported in CameraGoodyWrapper");
 	}
 	
 
-	@Override
-	public void applyAction(GoodyAction ga) {
+	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
 		Vector3f newLocation = ga.getLocationVector();
 		Quaternion newRotation = ga.getRotationQuaternion();
 		String attachToGoodyUriString = ga.getSpecialString(GoodyNames.ATTACH_TO_GOODY);
 		switch (ga.getKind()) {
 			case SET : {
-				setNewPositionAndRotationIfNonNull(newLocation, newRotation);
-				attachToGoody(attachToGoodyUriString);
+				setNewPositionAndRotationIfNonNull(newLocation, newRotation, qStyle);
+				attachToGoody(attachToGoodyUriString, qStyle);
 				break;
 			}
 			case MOVE : {
 				Float timeEnroute = ga.getTravelTime();
 				if (timeEnroute == null) {	
-					setNewPositionAndRotationIfNonNull(newLocation, newRotation);
+					setNewPositionAndRotationIfNonNull(newLocation, newRotation, qStyle);
 				} else {
 					moveViaPath(newLocation, newRotation, timeEnroute);
 				}
 				break;
 			}
 			default: {
-				myLogger.error("Unknown action requested in CameraGoodyWrapper {}: {}", myUri.getLocalName(), ga.getKind().name());
+				getLogger().error("Unknown action requested in CameraGoodyWrapper {}: {}", myUri.getLocalName(), ga.getKind().name());
 			}
 		}
 	};

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.goody.basic.CompositeMeshBuilder;
 import org.cogchar.render.goody.basic.CompositeMeshBuilder.MeshComponent;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
@@ -58,7 +59,7 @@ public class TicTacGrid extends BasicGoodyEntity {
 	public TicTacGrid(GoodyRenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, 
 			Quaternion initialRotation, ColorRGBA color, Vector3f size) {
 		super(aRenderRegCli, boxUri);
-		setPositionRotationAndScale(initialPosition, initialRotation, size);
+		setPositionRotationAndScale(initialPosition, initialRotation, size, QueueingStyle.QUEUE_AND_RETURN);
 		Mesh gridMesh = makeCustomGridMesh();
 		if (color == null) {
 			color = DEFAULT_GRID_COLOR;
@@ -83,9 +84,9 @@ public class TicTacGrid extends BasicGoodyEntity {
 	public void addMarkAt(int xPos, int yPos, boolean isPlayerO) {
 		Ident markUri = createMarkIdent(xPos, yPos);
 		if ((xPos < 1) || (xPos > 3) || (yPos < 1) || (yPos > 3)) {
-			myLogger.error("Can't add TicTacMark to grid; position of ({}, {}) is invalid", xPos, yPos);
+			getLogger().error("Can't add TicTacMark to grid; position of ({}, {}) is invalid", xPos, yPos);
 		} else if (markMap.containsKey(markUri)) {
-			myLogger.warn("Can't add TicTacMark to grid; there is already a mark at position ({}, {})", xPos, yPos);
+			getLogger().warn("Can't add TicTacMark to grid; there is already a mark at position ({}, {})", xPos, yPos);
 		} else {
 			Vector3f markPosition = getWorldPositionForMark(xPos, yPos);
 			Quaternion rotation = getRotation();
@@ -94,7 +95,7 @@ public class TicTacGrid extends BasicGoodyEntity {
 					new TicTacMark(myRenderRegCli, markUri, markPosition, rotation, scale, isPlayerO);
 			getTheGoodySpace().addGoody(markGoody);
 			Node parentNode = getParentNode();
-			markGoody.attachToVirtualWorldNode(parentNode);
+			markGoody.attachToVirtualWorldNode(parentNode, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 			markMap.put(markUri, markGoody);
 		}
 	}
@@ -106,7 +107,7 @@ public class TicTacGrid extends BasicGoodyEntity {
 			getTheGoodySpace().removeGoody(markToRemove);
 			markMap.remove(markIdent);
 		} else {
-			myLogger.warn("No TicTacMark to remove at location ({}, {})", xPos, yPos);
+			getLogger().warn("No TicTacMark to remove at location ({}, {})", xPos, yPos);
 		}
 	}
 	
@@ -153,46 +154,41 @@ public class TicTacGrid extends BasicGoodyEntity {
 	}
 	
 	// On detach, we also want to remove all marks
-	@Override
-	public void detachFromVirtualWorldNode() {
+	@Override public void detachFromVirtualWorldNode(QueueingStyle qStyle) {
 		clearMarks();
-		super.detachFromVirtualWorldNode();
+		super.detachFromVirtualWorldNode(qStyle);
 	}
 	
-	@Override
-	public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation) {
+	@Override public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation, QueueingStyle qStyle) {
 		Vector3f scale = getScale();
-		setPositionRotationAndScale(newPosition, newRotation, scale);
+		setPositionRotationAndScale(newPosition, newRotation, scale, qStyle);
 	}
 	
-	@Override
-	public void setUniformScaleFactor(Float newScale) {
-		setVectorScale(new Vector3f(newScale, newScale, newScale));
+	@Override public void setUniformScaleFactor(Float newScale, QueueingStyle qStyle) {
+		setVectorScale(new Vector3f(newScale, newScale, newScale), qStyle);
 	}
-	@Override
-	public void setVectorScale(Vector3f newScale) {
+	@Override public void setVectorScale(Vector3f newScale, QueueingStyle qStyle) {
 		Quaternion rotation = getRotation();
 		Vector3f position = getPosition();		
-		setPositionRotationAndScale(position, rotation, newScale);
+		setPositionRotationAndScale(position, rotation, newScale, qStyle);
 	}
 	
-	final public void setPositionRotationAndScale(Vector3f newPosition, Quaternion newRotation, Vector3f newScale) {
-		super.setPositionAndRotation(newPosition, newRotation);
-		super.setVectorScale(newScale);
+	 final public void setPositionRotationAndScale(Vector3f newPosition, Quaternion newRotation, Vector3f newScale, QueueingStyle qStyle) {
+		super.setPositionAndRotation(newPosition, newRotation, qStyle);
+		super.setVectorScale(newScale, qStyle);
 		for (TicTacMark markGoody : markMap.values()) {
-			markGoody.setVectorScale(newScale);
-			markGoody.setPositionAndRotation(getWorldPositionForMark(markGoody), newRotation);
+			markGoody.setVectorScale(newScale, qStyle);
+			markGoody.setPositionAndRotation(getWorldPositionForMark(markGoody), newRotation, qStyle);
 		}
 	}
 	
 	@Override
 	protected void moveViaAnimation(Vector3f newPosition, Quaternion newOrientation, Vector3f newScale, float duration) {
-		myLogger.warn("MOVE not yet supported for TicTacGrid, coming soon...");
+		getLogger().warn("MOVE not yet supported for TicTacGrid, coming soon...");
 	}
 	
-	@Override
-	public void applyAction(GoodyAction ga) {
-		super.applyAction(ga);
+	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
+		super.applyAction(ga, qStyle);
 		switch (ga.getKind()) {
 			case SET : {
 				String removeString = ga.getSpecialString(CLEAR_IDENT);
@@ -203,7 +199,7 @@ public class TicTacGrid extends BasicGoodyEntity {
 							clearMarks();
 						}
 					} catch (Exception e) {	
-						myLogger.error("Error interpreting string for {}", CLEAR_IDENT.getLocalName());
+						getLogger().error("Error interpreting string for {}", CLEAR_IDENT.getLocalName());
 					}
 				} else if (stateString != null) {
 					try {
@@ -211,7 +207,7 @@ public class TicTacGrid extends BasicGoodyEntity {
 						int yCoord = Integer.valueOf(ga.getSpecialString(GoodyNames.COORDINATE_Y));
 						addMarkAt(xCoord, yCoord, Boolean.valueOf(stateString));
 					} catch (Exception e) { // May not need try/catch after BasicTypedValueMap implementation is complete
-						myLogger.error("Error interpreting parameters for adding mark to TicTacGrid", e);
+						getLogger().error("Error interpreting parameters for adding mark to TicTacGrid", e);
 					}
 				}
 				break;
