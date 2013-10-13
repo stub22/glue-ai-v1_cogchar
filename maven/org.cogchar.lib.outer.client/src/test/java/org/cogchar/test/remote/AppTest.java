@@ -1,4 +1,4 @@
-package org.cogchar.lib.client;
+package org.cogchar.test.remote;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
