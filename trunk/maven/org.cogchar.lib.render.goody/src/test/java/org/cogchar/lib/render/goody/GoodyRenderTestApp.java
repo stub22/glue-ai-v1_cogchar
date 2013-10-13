@@ -30,7 +30,13 @@ import com.jme3.scene.control.BillboardControl;
 import org.cogchar.render.app.core.CogcharPresumedApp;
 import org.cogchar.render.opengl.scene.TextMgr;
 import com.jme3.math.ColorRGBA;
+import com.jme3.renderer.ViewPort;
+import com.jme3.input.FlyByCamera;
+
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.vworld.GoodyActionParamWriter;
+import org.cogchar.impl.thing.basic.BasicThingActionSpec;
 import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.name.goody.GoodyNames;
 
@@ -53,35 +59,72 @@ import org.cogchar.render.sys.context.CoreFeatureAdapter;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 import static org.cogchar.name.goody.GoodyNames.*;
+import org.cogchar.render.app.entity.GoodySpace;
+import org.cogchar.render.sys.goody.GoodyModularRenderContext;
+import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
+import org.cogchar.render.sys.goody.GoodyRenderRegistryClientImpl;
+
+import org.cogchar.blob.emit.RenderConfigEmitter;
+import org.cogchar.platform.gui.keybind.KeyBindingConfig;
+import org.cogchar.platform.trigger.CommandSpace;
+import org.cogchar.render.app.bony.BonyVirtualCharApp;
+import org.cogchar.render.app.entity.GoodyFactory;
+import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
+import org.cogchar.render.sys.input.VW_InputBindingFuncs;
+
+
 /**
  * @author Stu B. <www.texpedient.com>
  * 
- * Goal is to make each of the Goody types display and do each of its "moves", in 
- * a way that is straightforward to check visually, allowing us to check position,
- * size, color of everything displayed.
+ * Goal is to use the Goody-ThingAction API to directly (without a repo) make each of the Goody types display and do 
+ * each of its "moves", in a way that is straightforward to check visually, allowing us to check position, size, 
+ * color of everything displayed.
  */
 
-public class GoodyRenderTestSteps extends CogcharPresumedApp {
+public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderContext> {
+
 	public static void main(String[] args) {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-		GoodyRenderTestSteps app = new GoodyRenderTestSteps();
+		RenderConfigEmitter rce = new RenderConfigEmitter();
+		GoodyRenderTestApp app = new GoodyRenderTestApp(rce);
 		app.start();
 	}
-
-	@Override protected CogcharRenderContext makeCogcharRenderContext() {
-		return new ConfiguredPhysicalModularRenderContext();
+	public GoodyRenderTestApp(RenderConfigEmitter rce) { 
+		super(rce);
+	}
+	@Override protected GoodyModularRenderContext makeCogcharRenderContext() {
+		GoodyRenderRegistryClient grrc = new GoodyRenderRegistryClientImpl();
+		RenderConfigEmitter rce = getConfigEmitter();
+		GoodyModularRenderContext gmrc = new GoodyModularRenderContext(grrc, rce);
+		gmrc.setApp(this);
+		return gmrc;
 	}
 	@Override public void simpleInitApp() {
 		getLogger().info("Hooray for Goodies!");
 		super.simpleInitApp();
-		flyCam.setMoveSpeed(20);
+		FlyByCamera fbc = getFlyByCamera();
+		fbc.setMoveSpeed(20);
+				
+		GoodyModularRenderContext renderCtx = getBonyRenderContext();
+		GoodyRenderRegistryClient grrc = renderCtx.getGoodyRenderRegistryClient();
+		GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, renderCtx);	
+		
 		initContent();
+		// hideJmonkeyDebugInfo();
 	}
-
-	public void initContent() {
-		viewPort.setBackgroundColor(ColorRGBA.Blue);
+	private GoodySpace getGoodySpace() { 
+		GoodyFactory gFactory = GoodyFactory.getTheFactory();
+		return gFactory.getGoodySpace();
+	}
+	private void initContent() {
+		ViewPort  pvp = getPrimaryAppViewPort();		
+		pvp.setBackgroundColor(ColorRGBA.Blue);
 		shedLight();
+		// Hook-in for Goody system
+		
+		GoodySpace gSpace = getGoodySpace();
+		// hrwMapper.addHumanoidGoodies(veActConsumer, hrc);		
 	}
 	
 	static class GoodyOuterWrapper {
@@ -100,6 +143,12 @@ public class GoodyRenderTestSteps extends CogcharPresumedApp {
 	
 	Ident	goodyTypes[] = {TYPE_BIT_BOX, TYPE_BIT_CUBE, TYPE_FLOOR, TYPE_TICTAC_MARK, TYPE_TICTAC_GRID, 
 		TYPE_CROSSHAIR, TYPE_SCOREBOARD, TYPE_TEXT, TYPE_BOX, TYPE_CAMERA};
+		static final float	locX1 = 28.0f, locY1 = 19.0f, locZ1 = 16.0f;
+		static final float	locX2 = locX1, locY2 = 30.0f, locZ2 = locZ1;
+		static final float	locXtt = -locX1, locYtt = locY2, locZtt = -locZ1;
+		static final float	scale = 3.0f;
+		static final float	rotDeg = 33.0f;
+		static final float	standardDuration = 10f; // seconds
 	
 	 
 	
@@ -166,13 +215,17 @@ public class GoodyRenderTestSteps extends CogcharPresumedApp {
 		// TicTacGrid and the Floor [also now Text Things], but can be applied to the currently displayed geometry of any active thing after creation
 		ticTac.setColor(1f,1f,0f);
 				BasicTypedValueMap title_createParamMap = (BasicTypedValueMap) title.getParamWriter().getValueMap();		
-		title_createParamMap.putValueAtName(GoodyNames.TEXT, "A VirtualWorld Test");
+
 		
 		vWorld.sendUpdates();
+		bb1_createParamMap.putValueAtName(GoodyNames.BOOLEAN_STATE, "true");* 
 		ticTac_createParamMap.putValueAtName(GoodyNames.COORDINATE_X, 2);
 		ticTac_createParamMap.putValueAtName(GoodyNames.COORDINATE_Y, 2);
 		ticTac_createParamMap.putValueAtName(GoodyNames.USE_O, "false");
+		title_createParamMap.putValueAtName(GoodyNames.TEXT, "A VirtualWorld Test");* 
+		* 
 		ticTac.myPendingActionVerbID = GoodyNames.ACTION_SET;
+		* 	bb2.myPendingActionVerbID = GoodyNames.ACTION_MOVE;* 
 		bb1.moveLocation(locX1 + 20f, locY1 + 35f, locZ1, standardDuration);
 		
 		bb2_paramWriter.putScale(3*scale, scale, 10*scale);* 
@@ -186,7 +239,30 @@ public class GoodyRenderTestSteps extends CogcharPresumedApp {
 	public void putDuration(float duration) 	
 	public void putColor(float colorR, float colorG, float colorB, float colorAlpha) 
 * 
-		* 
+
+* 
+* 			bb2_paramWriter.putLocation(locX2 - 10f, locY2 + 10f, locZ2 + 10f);
+			bb2_paramWriter.putRotation(1.0f, 0.0f, 1.0f, rotDeg + 90f);
+			// Here's a vector scaling. We can also use setScale/moveScale with either scalar or vector scalings
+			// if we just want to adjust scale.
+			bb2_paramWriter.putScale(3*scale, scale, 10*scale);
+			* 
+			* vWorld.removeAllThings();
+			* 
+			* 		ticTac.setRotation(0.0f, 1.0f, 0.0f, rotDeg);
+			* 
+			* 
+		BasicTypedValueMap btvm = new ConcreteTVM();
+		GoodyActionParamWriter gapw = new GoodyActionParamWriter(btvm);
+		
+		gapw.putLocation(locX, locY, locZ);
+		Ident actRecID = new FreeIdent("action_#" + ran.nextInt());
+		Ident tgtThingTypeID = GoodyNames.TYPE_BIT_BOX;
+		Ident srcAgentID = null;
+		Long postedTStampMsec = System.currentTimeMillis();
+		BasicThingActionSpec btas = new BasicThingActionSpec(actRecID, tgtThingID, tgtThingTypeID, verbID, srcAgentID, paramTVMap, postedTStampMsec);	
+		sendThingActionSpec(btas, ran, debugFlag);
+* 
 		
 		* 
  */	
@@ -204,4 +280,11 @@ public class GoodyRenderTestSteps extends CogcharPresumedApp {
 		DirectionalLight odl = rrc.getOpticLightFacade(null).makeWhiteOpaqueDirectionalLight(otherLightDir);
 		CoreFeatureAdapter.addLightToRootNode(crc, odl);
 	}
+	/*
+	public void refreshInputBindingsAndHelpScreen(KeyBindingConfig keyBindConfig, CommandSpace cspace) {
+		RenderRegistryClient rrc = getRenderRegistryClient();
+		VW_InputBindingFuncs.setupKeyBindingsAndHelpScreen(rrc, keyBindConfig, getAppStub(), 
+					getJMonkeyAppSettings(), cspace);
+	}	
+	*/
 }

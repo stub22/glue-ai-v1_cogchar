@@ -56,7 +56,8 @@ public class GoodyFactory {
 	// held more permanently -- the render registry?
 	private static GoodyFactory theGoodyFactory;
 	
-	private VWorldEntityActionConsumer myActionConsumer;
+	private GoodySpace myGoodySpace;
+	
 	
 	public static GoodyFactory getTheFactory() {
 		return theGoodyFactory;
@@ -75,12 +76,15 @@ public class GoodyFactory {
 	private GoodyFactory(GoodyRenderRegistryClient rrc, GoodyModularRenderContext gmrc) {
 		myRRC = rrc;
 		attachGoodyNode();
-		myActionConsumer = new VWorldEntityActionConsumer(gmrc);
-		myActionConsumer.applyNewScreenDimension(gmrc.getPanel().getSize(null));
+		myGoodySpace = new GoodySpace(gmrc);
+		myGoodySpace.applyNewScreenDimension(gmrc.getPanel().getSize(null));
 	}
 	
+	public GoodySpace getGoodySpace() { 
+		return myGoodySpace;
+	}
 	public VWorldEntityActionConsumer getActionConsumer() {
-		return myActionConsumer;
+		return myGoodySpace;
 	}
 	
 	public final void attachGoodyNode() {
@@ -146,7 +150,7 @@ public class GoodyFactory {
 							ga.getColor(), scale);
 				} else if (GoodyNames.TYPE_CAMERA.equals(ga.getType())) {
 					Ident cameraUri = ga.getGoodyID();
-					if (myActionConsumer.getGoody(cameraUri) == null) { //Otherwise this camera wrapper is already created
+					if (myGoodySpace.getGoody(cameraUri) == null) { //Otherwise this camera wrapper is already created
 						theLogger.info("Adding a VWorldCameraEntity for {}", cameraUri);
 						// This evidences the fact that the CameraMgr needs to switch to URIs to identify cameras, not strings:
 						Camera cam = myRRC.getOpticCameraFacade(null).getNamedCamera(cameraUri.getLocalName());

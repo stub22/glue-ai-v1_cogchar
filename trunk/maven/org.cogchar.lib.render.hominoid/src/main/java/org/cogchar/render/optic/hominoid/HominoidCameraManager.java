@@ -32,8 +32,8 @@ import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- *
- * @author Owner
+ *	@author RyanB
+ *	@author StuB22
  */
 public class HominoidCameraManager implements CameraMgr.HeadCameraManager {
 	static Logger theLogger = LoggerFactory.getLogger(HominoidCameraManager.class);
