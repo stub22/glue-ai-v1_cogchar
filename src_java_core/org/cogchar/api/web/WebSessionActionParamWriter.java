@@ -22,15 +22,13 @@ import org.cogchar.name.web.WebUserActionNames;
 import org.cogchar.api.thing.ActionParamWriter;
 
 /**
- * This would be in o.c.lib.outer.client, except that's outer and we're not!
- * This probably ultimately belongs in a general location for Cogchar repo update bits instead of here.
+ * This has something to do with session-level state management.
  * 
- * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
 
 
-public class WebUserActionParamWriter extends ActionParamWriter {
-	public WebUserActionParamWriter(BasicTypedValueMap btvMap) {
+public class WebSessionActionParamWriter extends ActionParamWriter {
+	public WebSessionActionParamWriter(BasicTypedValueMap btvMap) {
 		super(btvMap);
 	}
 	
