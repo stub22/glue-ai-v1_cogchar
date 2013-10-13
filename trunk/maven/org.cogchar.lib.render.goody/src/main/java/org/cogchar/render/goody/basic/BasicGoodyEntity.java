@@ -72,8 +72,8 @@ public class BasicGoodyEntity extends VWorldEntity {
 	protected Vector3f getScale() {
 		return myScaleVec;
 	}
-	@Override public void setUniformScaleFactor(final Float scaleFactor) {
-		setVectorScale(new Vector3f(scaleFactor, scaleFactor, scaleFactor));
+	@Override public void setUniformScaleFactor(final Float scaleFactor, QueueingStyle qStyle) {
+		setVectorScale(new Vector3f(scaleFactor, scaleFactor, scaleFactor), qStyle);
 	}
 	// It would be good for clarity to have this in a separate file, but by having it as an inner class we allow
 	// access to getRenderRegistryClient() without awkwardness. And it seems it can be a private class. But we might
@@ -150,68 +150,67 @@ public class BasicGoodyEntity extends VWorldEntity {
 		return addGeometry(mesh, null, color, new Quaternion(), null, 0f);
 	}
 
+
+	
 	// For attaching "default" (zero index) geometry
-	@Override
-	public void attachToVirtualWorldNode(Node parentNode) {
-		attachToVirtualWorldNode(parentNode, 0);
+	@Override public void attachToVirtualWorldNode(Node parentNode, QueueingStyle style) {
+		attachToVirtualWorldNode(parentNode, 0, style);
 	}
 	
 	// For attaching geometry by index
 	// A bit messy now that we're using a myNode, especially in the multiple enqueueForJmeAndWait calls
 	// in this method; perhaps has potental to be refactored into something more satisfying...
-	protected void attachToVirtualWorldNode(Node parentNode, int geometryIndex) {
+	
+	// Note that if we are already on the JME3 render thread, and we try to block synchronously, we will deadlock!
+	protected void attachToVirtualWorldNode(Node parentNode, int geometryIndex, QueueingStyle style) {
 		if (parentNode != myParentNode) { 
 			if (myParentNode != null) {
-				enqueueForJmeAndWait(new Callable() { // Do this on main render thread
-					@Override
-					public Void call() throws Exception {
+				enqueueForJme(new Callable() { // Do this on main render thread
+					@Override public Void call() throws Exception {
 						myParentNode.detachChild(myContentNode);
 						return null;
 					}
-				});
+				}, style);
 			}
 			myParentNode = parentNode;
 		}
-		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
-			@Override
-			public Void call() throws Exception {
+		enqueueForJme(new Callable() { // Do this on main render thread
+			@Override public Void call() throws Exception {
 				myParentNode.attachChild(myContentNode);
 				return null;
 			}
-		});		
-		setActiveBoundGeomIndex(geometryIndex);
+		}, style);		
+		setActiveBoundGeomIndex(geometryIndex, style);
 	}
 	// For switching to geometry from a new index, attached to existing root node
-	public void setGeometryByIndex(int geometryIndex) {
+	public void setGeometryByIndex(int geometryIndex, QueueingStyle style) {
 		if (myParentNode != null) {
 			if (myGeomBindings.size() > geometryIndex) {
-				setActiveBoundGeomIndex(geometryIndex);
+				setActiveBoundGeomIndex(geometryIndex, style);
 			} else {
-				myLogger.error("Attempting to attach BasicVirtualThing {} with geometry index {}, but that geometry is not available",
+				getLogger().error("Attempting to attach BasicVirtualThing {} with geometry index {}, but that geometry is not available",
 					myUri.getAbsUriString(), geometryIndex);
 			}
 		} else {
-			myLogger.error("Attempting to set geometry by index, but no root node is set");
+			getLogger().error("Attempting to set geometry by index, but no root node is set");
 		}	
 	}
 
-	@Override
-	public void detachFromVirtualWorldNode() {
+	@Override public void detachFromVirtualWorldNode(QueueingStyle style) {
 		if (myCurrAttachedBindingIndex != -1)  {
-			detachActiveBoundGeom();
+			detachActiveBoundGeom(style);
 		}
 	}
 
-	private void setActiveBoundGeomIndex(final int geomBindIndex) {
-		detachFromVirtualWorldNode();
+	private void setActiveBoundGeomIndex(final int geomBindIndex, QueueingStyle style) {
+		detachFromVirtualWorldNode(style);
 		final BasicGoodyGeomBinding geomBindingToAttach = myGeomBindings.get(geomBindIndex);
 		final Geometry jmeGeometry = geomBindingToAttach.getJmeGeometry();
 		setGeometryPositionAndRotation(geomBindingToAttach);
 		//myLogger.info("Attaching geometry {} for goody {}", geometryIndex, myUri); // TEST ONLY
-		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
+		enqueueForJme(new Callable() { // Do this on main render thread
 
-			@Override
-			public Void call() throws Exception {
+			@Override public Void call() throws Exception {
 				myContentNode.attachChild(jmeGeometry);
 				if (geomBindingToAttach.myControl != null) {
 					myRenderRegCli.getJme3BulletPhysicsSpace().add(jmeGeometry);
@@ -219,15 +218,13 @@ public class BasicGoodyEntity extends VWorldEntity {
 				myCurrAttachedBindingIndex = geomBindIndex;
 				return null;
 			}
-		});
+		}, style);
 	}
 
-	private void detachActiveBoundGeom() {
+	private void detachActiveBoundGeom(QueueingStyle style) {
 		final BasicGoodyGeomBinding currentGeomBinding = getCurrentAttachedGeomBinding();
-		enqueueForJmeAndWait(new Callable<Void>() { // Do this on main render thread
-
-			@Override
-			public Void call() throws Exception {
+		enqueueForJme(new Callable<Void>() { // Do this on main render thread
+			@Override public Void call() throws Exception {
 				if (currentGeomBinding.myControl != null) {
 					myRenderRegCli.getJme3BulletPhysicsSpace().remove(currentGeomBinding.myControl);
 				}
@@ -236,7 +233,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 				myCurrAttachedBindingIndex = NULL_INDEX;
 				return null;
 			}
-		});
+		}, style);
 	}
 	
 	protected void setNewGeometryRotationOffset(int geomId, Quaternion offset) {
@@ -244,25 +241,23 @@ public class BasicGoodyEntity extends VWorldEntity {
 		geomBinding.myRotationOffset = offset;
 	}
 
-	@Override public void setPosition(Vector3f newPosition) {
-		setPositionAndRotation(newPosition, myRotation);
+	@Override public void setPosition(Vector3f newPosition, QueueingStyle qStyle) {
+		setPositionAndRotation(newPosition, myRotation, qStyle);
 	}
 
-	@Override public void setRotation(Quaternion newRotation) {
-		setPositionAndRotation(myPosition, newRotation); 
+	@Override public void setRotation(Quaternion newRotation, QueueingStyle qStyle) {
+		setPositionAndRotation(myPosition, newRotation, qStyle); 
 	}
 
-	public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation) {
+	public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation, QueueingStyle style) {
 		setNewPositionAndRotationIfNonNull(newPosition, newRotation);
 		if (myCurrAttachedBindingIndex != NULL_INDEX) {
-			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
-
-				@Override
-				public Void call() throws Exception {
+			enqueueForJme(new Callable() { // Do this on main render thread
+				@Override public Void call() throws Exception {
 					setGeometryPositionAndRotation(getCurrentAttachedGeomBinding());
 					return null;
 				}
-			});
+			}, style);
 		}
 	}
 
@@ -324,9 +319,9 @@ public class BasicGoodyEntity extends VWorldEntity {
 	
 
 	
-	@Override public void setVectorScale(final Vector3f scaleVector) {
+	@Override public void setVectorScale(final Vector3f scaleVector, QueueingStyle style) {
 		if (scaleVector != null) {
-			enqueueForJmeAndWait(new Callable() { // Do this on main render thread
+			enqueueForJme(new Callable() { // Do this on main render thread
 
 				@Override
 				public Void call() throws Exception {
@@ -336,17 +331,18 @@ public class BasicGoodyEntity extends VWorldEntity {
 					}
 					return null;
 				}
-			});
+			}, style);
 			myScaleVec = scaleVector;
 		}
 	}
 	
-	private void setPositionRotationAndScale(Vector3f position, Quaternion rotation, Vector3f scale, Float scalarScale) {
-		setPositionAndRotation(position, rotation);
+	private void setPositionRotationAndScale(Vector3f position, Quaternion rotation, Vector3f scale, Float scalarScale,
+				QueueingStyle qStyle) {
+		setPositionAndRotation(position, rotation, qStyle);
 		if (scale != null) {
-			setVectorScale(scale);
+			setVectorScale(scale, qStyle);
 		} else if (scalarScale != null) {
-			setUniformScaleFactor(scalarScale);
+			setUniformScaleFactor(scalarScale, qStyle);
 		}
 	}
 	
@@ -358,9 +354,8 @@ public class BasicGoodyEntity extends VWorldEntity {
 		}
 	}
 	
-	// Override this method to add functionality; be sure to call this super method to apply standard Goody actions
-	@Override
-	public void applyAction(GoodyAction ga) {
+	// Override this method to add functionality for particular goodies, but  be sure to call this super method.
+	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
 		Vector3f newLocation = ga.getLocationVector();
 		Quaternion newRotation = ga.getRotationQuaternion();
 		Vector3f newVectorScale = ga.getVectorScale();
@@ -368,14 +363,14 @@ public class BasicGoodyEntity extends VWorldEntity {
 		ColorRGBA newColor = ga.getColor();
 		switch (ga.getKind()) {
 			case SET : {
-				setPositionRotationAndScale(newLocation, newRotation, newVectorScale, scaleFactor);
+				setPositionRotationAndScale(newLocation, newRotation, newVectorScale, scaleFactor, qStyle);
 				setCurrentGeometryColor(newColor);
 				break;
 			}
 			case MOVE : {
 				Float timeEnroute = ga.getTravelTime();
 				if ((timeEnroute == null) || (Math.abs(timeEnroute-0f) < 0.001f)) {
-					setPositionRotationAndScale(newLocation, newRotation, newVectorScale, scaleFactor);
+					setPositionRotationAndScale(newLocation, newRotation, newVectorScale, scaleFactor, qStyle);
 				} else {
 					if ((newVectorScale == null) && (scaleFactor != null)) {
 						newVectorScale = new Vector3f(scaleFactor, scaleFactor, scaleFactor);
@@ -385,7 +380,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 				break;
 			}
 			default: {
-				myLogger.error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
+				getLogger().error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
 			}
 		}
 	};

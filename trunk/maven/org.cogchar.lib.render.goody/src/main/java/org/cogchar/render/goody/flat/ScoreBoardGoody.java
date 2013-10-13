@@ -53,16 +53,15 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 	Vector3f myPosition; // of top left corner of scoreboard in fraction of window width/height
 	List<ScoreBoardGoody.Row>	myRows;
 
-	@Override
-	public void setRotation(Quaternion newRotation) {
+	@Override public void setRotation(Quaternion newRotation, QueueingStyle qStyle) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	public class Row extends BasicGoody2dImpl {
-		public Row(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f rowPosition,	float textSize, ColorRGBA scoreColor) {
+		public Row(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f rowPosition, float textSize, ColorRGBA scoreColor) {
 			super(aRenderRegCli, uri);
 			//myLogger.info("In ScoreBoardGoody.Row, Window size is {}x{}, position is {}", new Object[]{myScreenWidth, myScreenHeight, rowPosition}); // TEST ONLY
-			this.setPosition(rowPosition);
+			this.setPosition(rowPosition, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 			setGoodyAttributes("_", textSize, scoreColor);
 		}
 		public void setScoreText(String scoreText) {
@@ -92,38 +91,35 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 			ScoreBoardGoody.Row l = myRows.get(rowNum);
 			l.setScoreText(scoreText);
 		} else {
-			myLogger.warn("A request was made to set text for Scoreboard row #{}, but that row does not exist!", rowNum);
+			getLogger().warn("A request was made to set text for Scoreboard row #{}, but that row does not exist!", rowNum);
 		}
 	}
 	
-	@Override
-	public void attachToVirtualWorldNode(Node vWorldNode) {
+	@Override public void attachToVirtualWorldNode(Node vWorldNode, QueueingStyle qStyle) {
 		// Currently any specified node is ignored since we are attaching via the FlatOverlayMgr
-		attachToVirtualWorldNode();
+		attachToVirtualWorldNode(qStyle);
 	}
 	// For this composite goody, we must attach all rows
-	public void attachToVirtualWorldNode() {
+	public void attachToVirtualWorldNode(QueueingStyle qStyle) {
 		if (!myRows.isEmpty()) {
 			for (Row nextRow : myRows) {
-				nextRow.attachToVirtualWorldNode();
+				nextRow.attachToOverlaySpatial(qStyle);
 			}
 		} else {
-			myLogger.warn("Attempting to attach scoreboard to virtual world, but it has no rows!");
+			getLogger().warn("Attempting to attach scoreboard to virtual world, but it has no rows!");
 		}
 	}
 	
-	@Override
-	public void detachFromVirtualWorldNode() {
+	@Override public void detachFromVirtualWorldNode(QueueingStyle qStyle) {
 		for (Row nextRow : myRows) {
-			nextRow.detachFromVirtualWorldNode();
+			nextRow.detachFromVirtualWorldNode(qStyle);
 		}
 	}
 	
-	@Override
-	public void applyAction(GoodyAction ga) {
+	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
 		switch (ga.getKind()) {
 			case MOVE : {
-				setPosition(ga.getLocationVector());
+				setPosition(ga.getLocationVector(), qStyle);
 				break;
 			}
 			case SET : {
@@ -132,29 +128,27 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 				try {
 					rowNum = Integer.valueOf(ga.getSpecialString(GoodyNames.SUBCOMPONENT));
 				} catch (Exception e) {
-					myLogger.error("Row (subcomponent) number not recognized for setting scoreboard, assuming 0");
+					getLogger().error("Row (subcomponent) number not recognized for setting scoreboard, assuming 0");
 				}
 				displayScore(rowNum, scoreText);
 				break;
 			}
 			default: {
-				myLogger.error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
+				getLogger().error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
 			}
 		}
 	};
 	
-	@Override
-	public void setPosition(Vector3f position) {
+	@Override public void setPosition(Vector3f position, QueueingStyle qStyle) {
 		for (int rowIdx=0; rowIdx < myRows.size(); rowIdx++) {
 			Row nextRow = myRows.get(rowIdx);
-			nextRow.setPosition(getPositionForRow(rowIdx, position));
+			nextRow.setPosition(getPositionForRow(rowIdx, position), qStyle);
 		}
 		myPosition = position;
 	}
 	
-	@Override
-	public void setUniformScaleFactor(Float scale) {
-		myLogger.warn("Setting scale not currently implemented for the ScoreBoardGoody, coming soon...");
+	@Override public void setUniformScaleFactor(Float scale, QueueingStyle qStyle) {
+		getLogger().warn("Setting scale not currently implemented for the ScoreBoardGoody, coming soon...");
 		/*// This throws a java.lang.IllegalArgumentException deep in jME's LWJGL bits for some reason
 		// Will fix this soon, not very necessary for now and holding up a big commit...
 		if (scale != null) {

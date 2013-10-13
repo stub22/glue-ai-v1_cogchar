@@ -39,14 +39,14 @@ public class GoodyBox extends BasicGoodyEntity {
 		super(aRenderRegCli, boxUri);
 		// This check is shared with BitCube and BitBox and should be factored out:
 		if (size == null) {
-			myLogger.warn("No size specified for GoodyBox, defaulting to size = 1");
+			getLogger().warn("No size specified for GoodyBox, defaulting to size = 1");
 			size = new Vector3f(1.0f, 1.0f, 1.0f);
 		} else {
 			if (Math.abs(size.length() - 0.0f) < 0.001f) {
-				myLogger.warn("GoodyBox being created with zero size!");
+				getLogger().warn("GoodyBox being created with zero size!");
 			}
 		} 
-		setPosition(position);
+		setPosition(position, QueueingStyle.QUEUE_AND_RETURN);
 		Mesh goodyBox = new Box(size.getX(), size.getY(), size.getZ());
 		if (color == null) {
 			color = DEFAULT_COLOR;

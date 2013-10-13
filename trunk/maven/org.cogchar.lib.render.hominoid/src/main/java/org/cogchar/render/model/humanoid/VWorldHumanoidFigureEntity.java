@@ -52,35 +52,34 @@ public class VWorldHumanoidFigureEntity extends VWorldEntity {
 		myNode = hf.getNode();
 	}
 	
-	@Override
-	public void setPosition(final Vector3f position) {
+	@Override public void setPosition(final Vector3f position, QueueingStyle qStyle) {
 		clearMoveAnimationBindings(); // Removes animation control so we can set position directly after MOVE
-		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
+		enqueueForJme(new Callable() { // Do this on main render thread
 				@Override
 				public Void call() throws Exception {
 					myNode.setLocalTranslation(position);
 					return null;
 				}
-			});	
+			}, qStyle);	
 	}
 	
-	public void setRotation(final Quaternion rotation) {
+	public void setRotation(final Quaternion rotation, QueueingStyle qStyle) {
 		clearMoveAnimationBindings();  // Removes animation control so we can set rotation directly after MOVE
-		enqueueForJmeAndWait(new Callable() { // Do this on main render thread
+		enqueueForJme(new Callable() { // Do this on main render thread
 				@Override
 				public Void call() throws Exception {
 					myNode.setLocalRotation(rotation);
 					return null;
 				}
-			});	
+			}, qStyle);	
 	}
 	
-	protected void setNewPositionAndRotationIfNonNull(Vector3f newPosition, Quaternion newRotation) {
+	protected void setNewPositionAndRotationIfNonNull(Vector3f newPosition, Quaternion newRotation, QueueingStyle qStyle) {
 		if (newPosition != null) {
-			setPosition(newPosition);
+			setPosition(newPosition, qStyle);
 		}
 		if (newRotation != null) {
-			setRotation(newRotation);
+			setRotation(newRotation, qStyle);
 		}
 	}
 	
@@ -119,40 +118,36 @@ public class VWorldHumanoidFigureEntity extends VWorldEntity {
 		}
 	}
 	
-	@Override
-	public void setUniformScaleFactor(Float scale) {
-		myLogger.warn("setScale not supported in HumanoidFigureGoodyWrapper");
+	@Override public void setUniformScaleFactor(Float scale, QueueingStyle qStyle) {
+		getLogger().warn("setScale not supported in HumanoidFigureGoodyWrapper");
 	}
 	
-	@Override
-	public void attachToVirtualWorldNode(Node attachmentNode) {
-		myLogger.warn("attachToVirtualWorldNode not supported in HumanoidFigureGoodyWrapper");
+	@Override public void attachToVirtualWorldNode(Node attachmentNode, QueueingStyle qStyle) {
+		getLogger().warn("attachToVirtualWorldNode not supported in HumanoidFigureGoodyWrapper");
 	}
-	@Override
-	public  void detachFromVirtualWorldNode() {
-		myLogger.warn("detachFromVirtualWorldNode not supported in HumanoidFigureGoodyWrapper");
+	@Override public  void detachFromVirtualWorldNode(QueueingStyle qStyle) {
+		getLogger().warn("detachFromVirtualWorldNode not supported in HumanoidFigureGoodyWrapper");
 	}
 	
-	@Override
-	public void applyAction(GoodyAction ga) {
+	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
 		Vector3f newLocation = ga.getLocationVector();
 		Quaternion newRotation = ga.getRotationQuaternion();
 		switch (ga.getKind()) {
 			case SET : {
-				setNewPositionAndRotationIfNonNull(newLocation, newRotation);
+				setNewPositionAndRotationIfNonNull(newLocation, newRotation, qStyle);
 				break;
 			}
 			case MOVE : {
 				Float timeEnroute = ga.getTravelTime();
 				if (timeEnroute == null) {	
-					setNewPositionAndRotationIfNonNull(newLocation, newRotation);
+					setNewPositionAndRotationIfNonNull(newLocation, newRotation, qStyle);
 				} else {
 					moveViaAnimation(newLocation, newRotation, timeEnroute);
 				}
 				break;
 			}
 			default: {
-				myLogger.error("Unknown action requested in HumanoidFigureGoodyWrapper {}: {}", myUri.getLocalName(), ga.getKind().name());
+				getLogger().error("Unknown action requested in HumanoidFigureGoodyWrapper {}: {}", myUri.getLocalName(), ga.getKind().name());
 			}
 		}
 	};

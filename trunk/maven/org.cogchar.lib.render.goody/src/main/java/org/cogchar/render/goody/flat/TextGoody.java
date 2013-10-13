@@ -43,12 +43,11 @@ public class TextGoody extends BasicGoody2dImpl {
 		if (scale == null) scale = DEFAULT_SCALE;
 		if (text == null) text = DEFAULT_TEXT;
 		setGoodyAttributes(text, scale, color);
-		setPosition(position);
+		setPosition(position, QueueingStyle.QUEUE_AND_RETURN);
 	}
 	
-	@Override
-	public void applyAction(GoodyAction ga) {
-		super.applyAction(ga); // Applies "standard" set and move actions
+	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
+		super.applyAction(ga, qStyle); // Applies "standard" set and move actions
 		switch (ga.getKind()) {
 			case SET : {
 				String text = ga.getText();

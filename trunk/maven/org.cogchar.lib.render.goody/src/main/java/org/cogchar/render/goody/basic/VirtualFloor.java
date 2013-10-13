@@ -24,6 +24,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.shape.Box;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
@@ -40,7 +41,7 @@ public class VirtualFloor extends BasicGoodyEntity {
 	public VirtualFloor(GoodyRenderRegistryClient aRenderRegCli, Ident floorUri, Vector3f position, ColorRGBA color,
 			boolean rigidBodyPhysFlag) {
 		super(aRenderRegCli, floorUri);
-		setPosition(position);
+		setPosition(position, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 		// Constants and collision shape below taken from PhysicsStuffBuilder.
 		// How much of this stuff do we want to come from repo instead?
 		Mesh floorBox = new Box(140f, 0.25f, 140f);
