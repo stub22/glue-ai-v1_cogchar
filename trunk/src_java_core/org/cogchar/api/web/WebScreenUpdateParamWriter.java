@@ -28,9 +28,9 @@ import org.cogchar.api.thing.ActionParamWriter;
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
-public class WebActionParamWriter extends ActionParamWriter {
+public class WebScreenUpdateParamWriter extends ActionParamWriter {
 
-	public WebActionParamWriter(BasicTypedValueMap btvMap) {
+	public WebScreenUpdateParamWriter(BasicTypedValueMap btvMap) {
 		super(btvMap);
 	}
 	
