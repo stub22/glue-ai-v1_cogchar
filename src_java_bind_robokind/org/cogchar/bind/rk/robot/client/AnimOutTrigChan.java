@@ -68,7 +68,8 @@ public class AnimOutTrigChan extends FancyTextPerfChan<AnimationJob> implements 
 	// also types of params).	
 	// As of 2013-06-08, the srcGraphID passed is actually the outChannel ID, same as ID of this receiver object.
 	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
-		getLogger().info("***** consumeAction({})", actionSpec);
+		getLogger().info("***** consumeAction({})", actionSpec.getActionSpecID());
+		getLogger().debug("Full action spec dump: {}", actionSpec);
 
 		Ident			tgtThingEntityTypeID = actionSpec.getTargetThingTypeID();
 

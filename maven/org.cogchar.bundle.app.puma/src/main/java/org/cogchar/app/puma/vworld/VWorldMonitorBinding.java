@@ -28,12 +28,14 @@ import org.cogchar.api.thing.ThingActionSpec;
 public class VWorldMonitorBinding extends BasicDebugger implements AppDebugMonitor {
 
 	@Override public void notifyThingActionTransit(TransitKind kind, ThingActionSpec taSpec) {
-		getLogger().info("notified of TA-Spec transit kind=[{}], spec=[{}]", kind, taSpec);
+		getLogger().info("notified of TA-Spec transit kind=[{}], spec-ID=[{}]", kind, taSpec.getActionSpecID());
+		getLogger().debug("Full action spec dump: {}", taSpec);
 	}
 
 	@Override
 	public void notifyEntityActionTransit(TransitKind kind, BasicEntityAction action) {
-		getLogger().info("notified of EntityAction transit kind=[{}], entity-action=[{}]", kind, action);
+		getLogger().info("notified of EntityAction transit kind=[{}], entity-action.entity-ID=[{}]", kind, action.getEntityID());
+		getLogger().debug("Full action dump: {}", action);
 	}
 
 }
