@@ -80,10 +80,8 @@ public class GoodyActionParamWriter extends ActionParamWriter {
 		myBTVMap.putNameAtName(pName, pVal);
 	}
 	
-	/**  type is not a param.
-	public void putType(Ident someTypeID) {
-		myBTVMap.putNameAtName(GoodyNames.RDF_TYPE, someTypeID);
-	}
+	/**  type is *not* a param.  So, we don't want to have code like this:
+	void putType(Ident someTypeID) {myBTVMap.putNameAtName(GoodyNames.RDF_TYPE, someTypeID);}
 	*/
 
 }

@@ -56,31 +56,27 @@ public class GoodyRenderTestContent {
 		static final float	rotDeg = 33.0f;
 		static final float	standardDuration = 10f; // seconds
 	
-	 
-	
-
-	
 
 	public void makeRegularGoodyOrbits() { 
 		// Goal is to make at least one of each goody type, and make it move + rotate.  
 		// Let's put them all (except for "floor" and other large/weird ones) orbiting in a circle (then ellipse!),
 		// and rotating as they orbit.  We do this by pumping arrays of phased numbers to GoodyActions.
 		// Each goody instance in this setup is called a "planet".
-		
-	//	ThingActionSpec	taMakeTTG 
-		
+		//	ThingActionSpec	taMakeTTG 
 	}
+	
 	public void updatePlanets() {
 		myTotalStepCum ++;
 		myRotPhaseRadCum += rotPhaseRadPerStep;
 		updateGoodyPlanetPositions();
 		updateGoodyPlanetRotations();
 	}
+	
 	private void updateGoodyPlanetPositions() {
 		int myPosOffset = myTotalStepCum % myGlobalPosCycleLen;
-		double myPosPhase = myPosOffset * posPhaseRadPerStep;
-		
+		double myPosPhase = myPosOffset * posPhaseRadPerStep;	
 	}
+	
 	private void updateGoodyPlanetRotations() { 
 		
 	}
@@ -88,15 +84,13 @@ public class GoodyRenderTestContent {
 		
 	}
 	
-/*
- * 
+/***** 
  	// ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),	scale, bitBoxState);
 
 		// ga.getSize()[0]
 		// scale.getX(), ga.getColor(), 
 		// ga.getText()); 
-/*
- * 				Vector3f scale = ga.getVectorScale();
+				Vector3f scale = ga.getVectorScale();
 				Float scalarScale = ga.getScale();
 				if ((scale == null) && (scalarScale != null)) {
 					scale = new Vector3f(scalarScale, scalarScale, scalarScale);
@@ -144,8 +138,9 @@ public class GoodyRenderTestContent {
 	putScale(float scaleX, float scaleY, float scaleZ) 
 	public void putDuration(float duration) 	
 	public void putColor(float colorR, float colorG, float colorB, float colorAlpha) 
-* 
-* 			bb2_paramWriter.putLocation(locX2 - 10f, locY2 + 10f, locZ2 + 10f);
+	* 
+	* 
+	bb2_paramWriter.putLocation(locX2 - 10f, locY2 + 10f, locZ2 + 10f);
 			bb2_paramWriter.putRotation(1.0f, 0.0f, 1.0f, rotDeg + 90f);
 			// Here's a vector scaling. We can also use setScale/moveScale with either scalar or vector scalings
 			// if we just want to adjust scale.
@@ -154,7 +149,6 @@ public class GoodyRenderTestContent {
 			* vWorld.removeAllThings();
 			* 
 			* 		ticTac.setRotation(0.0f, 1.0f, 0.0f, rotDeg);
-			* 
 			* 
 		BasicTypedValueMap btvm = new ConcreteTVM();
 		GoodyActionParamWriter gapw = new GoodyActionParamWriter(btvm);

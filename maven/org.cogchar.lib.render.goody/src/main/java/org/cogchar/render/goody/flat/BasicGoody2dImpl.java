@@ -16,7 +16,7 @@
 
 package org.cogchar.render.goody.flat;
 
-import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyActionExtractor;
 import org.cogchar.render.app.entity.GoodyFactory;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
@@ -151,7 +151,7 @@ public class BasicGoody2dImpl extends VWorldEntity {
 	}
 	
 	// Override this method to add functionality; be sure to call this super method to apply standard Goody actions
-	@Override	public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
+	@Override	public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		switch (ga.getKind()) {
 			case MOVE : 
 			case SET : {

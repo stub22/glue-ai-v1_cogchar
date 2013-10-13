@@ -24,7 +24,7 @@ import org.appdapter.core.name.FreeIdent;
 import java.util.List;
 
 import org.cogchar.api.thing.TypedValueMap;
-import org.cogchar.impl.thing.basic.BasicTypedValueMapTemporaryImpl;
+import org.cogchar.impl.thing.basic.BasicTypedValueMapWithConversion;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
@@ -138,7 +138,7 @@ public class BasicThingActionSpecBuilder extends
         //reader.//
         
         BasicTypedValueMap paramDictionary =
-                new BasicTypedValueMapTemporaryImpl();
+                new BasicTypedValueMapWithConversion();
         for( Item i : paramItems ) {
             
             // Collect the Ident to be used as the dictionary key

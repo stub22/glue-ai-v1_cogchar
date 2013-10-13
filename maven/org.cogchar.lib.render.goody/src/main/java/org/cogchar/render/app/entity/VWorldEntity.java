@@ -74,7 +74,7 @@ public abstract class VWorldEntity {
 
 	// public abstract void attachToVirtualWorldNode(Node attachmentNode);
 	// public abstract void detachFromVirtualWorldNode();
-	public abstract void applyAction(GoodyAction ga, QueueingStyle style);
+	public abstract void applyAction(GoodyActionExtractor ga, QueueingStyle style);
 	
 
 	public void attachToVirtualWorldNode(Node attachmentNode, QueueingStyle style) {

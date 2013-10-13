@@ -18,7 +18,7 @@ package org.cogchar.render.goody.bit;
 
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.goody.basic.BasicGoodyEntity;
-import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyActionExtractor;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
@@ -52,7 +52,7 @@ public abstract class AbstractBitGoody extends BasicGoodyEntity {
 	
 	public abstract void setState(boolean boxState, QueueingStyle qStyle);
 	
-	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
+	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		super.applyAction(ga, qStyle); // Applies "standard" set and move actions
 		// Now we act on anything else that won't be handled by BasicGoodyImpl but which has valid non-null parameters
 		switch (ga.getKind()) {

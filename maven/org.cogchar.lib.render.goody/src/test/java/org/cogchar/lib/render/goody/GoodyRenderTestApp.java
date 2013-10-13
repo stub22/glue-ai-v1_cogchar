@@ -135,6 +135,9 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 		gar01.scaleX = gar01.scaleY = gar01.scaleZ = 3.0f;
 		
 		lgh.makeActionSpecAndSend(gar01);
+		gar01.verbID = GoodyNames.ACTION_SET;
+		// String removeString = ga.getSpecialString(CLEAR_IDENT);
+		lgh.makeActionSpecAndSend(gar01);
 		
 	//	GoodyRenderTestContent grtc = new GoodyRenderTestContent();
 		// GoodySpace gSpace = getGoodySpace();

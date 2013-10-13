@@ -34,7 +34,7 @@ import org.cogchar.api.thing.TypedValueMap;
  * @author Stu B. <www.texpedient.com> and Ryan B.
  */
 
-public class GoodyAction  {
+public class GoodyActionExtractor  {
 	// We can optionallly play a game of equivalence between Java-enum-constant and URI, without an additional hashMap.
 	// The price is that we must initialize the value in the enum constants.
 	public enum Kind {
@@ -59,7 +59,7 @@ public class GoodyAction  {
 	
 	private		TypedValueMap			paramTVMap;
 	
-	public GoodyAction(ThingActionSpec actionSpec) {
+	public GoodyActionExtractor(ThingActionSpec actionSpec) {
 		mySpec = actionSpec;
 		myGoodyID = actionSpec.getTargetThingID();
 		myGoodyTypeID = actionSpec.getTargetThingTypeID();
@@ -76,7 +76,7 @@ public class GoodyAction  {
 	
 	/**
 	 * If our ThingActionSpec supplied a targetThingID, we use that by default.
-	 * However, during creation or other "special" operation, our GoodyAction action may 
+	 * However, during creation or other "special" operation, our GoodyActionExtractor action may 
 	 * set its GoodyID differently.
 	 * @return 
 	 */
@@ -197,6 +197,14 @@ public class GoodyAction  {
 	// we'll provide a way to load those raw strings by param name
 	public String getSpecialString(Ident paramIdent) {
 		return paramTVMap.getAsString(paramIdent);
+	}
+
+	public Boolean getSpecialBoolean(Ident paramIdent) {
+		return paramTVMap.getAsBoolean(paramIdent);
+	}
+
+	public Integer getSpecialInteger(Ident paramIdent) {
+		return paramTVMap.getAsInteger(paramIdent);
 	}
 
 }

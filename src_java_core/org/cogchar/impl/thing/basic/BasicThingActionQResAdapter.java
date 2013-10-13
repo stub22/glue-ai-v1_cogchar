@@ -67,7 +67,7 @@ public class BasicThingActionQResAdapter extends BasicDebugger {
 	}
 
 	static public TypedValueMap buildActionParameterValueMap(RepoClient rc, Ident srcGraphID, SolutionHelper sh, Ident actionIdent, Logger theLogger) {
-		BasicTypedValueMap paramMap = new BasicTypedValueMapTemporaryImpl();
+		BasicTypedValueMap paramMap = new BasicTypedValueMapWithConversion();
 		SolutionList paramList = rc.queryIndirectForAllSolutions(ThingCN.PARAM_QUERY_URI, srcGraphID, ThingCN.V_attachedActionID, actionIdent);
 		for (Object paramSoln0 : paramList.javaList()) {
 			Solution paramSoln = (Solution) paramSoln0;
