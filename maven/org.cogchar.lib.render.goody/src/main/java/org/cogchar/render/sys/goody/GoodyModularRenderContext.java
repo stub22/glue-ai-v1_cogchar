@@ -101,7 +101,11 @@ public class GoodyModularRenderContext extends BonyRenderContext {
 			}
 		}
 		
-		if (thisBallBuilderSet) {myBallBuilder.applyUpdates(tpf);} // tpf is passed to BallBuilder only for debugging now; it may get used more broadly eventally or may be removed from the method
+		if (thisBallBuilderSet) {
+			// tpf is passed to BallBuilder only for debugging now; it may get used more broadly eventally
+			// or may be removed from the method			
+			myBallBuilder.applyUpdates(tpf);
+		} 
 		
 		super.doUpdate(tpf);
 	}	
