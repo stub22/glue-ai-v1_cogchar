@@ -16,7 +16,7 @@
 
 package org.cogchar.render.goody.flat;
 
-import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyActionExtractor;
 import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -116,7 +116,7 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 		}
 	}
 	
-	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
+	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		switch (ga.getKind()) {
 			case MOVE : {
 				setPosition(ga.getLocationVector(), qStyle);

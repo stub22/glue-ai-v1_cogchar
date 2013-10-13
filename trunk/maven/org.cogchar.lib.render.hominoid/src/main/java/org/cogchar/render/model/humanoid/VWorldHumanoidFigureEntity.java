@@ -23,8 +23,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.app.entity.GoodyAction;
-import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyActionExtractor;
+import org.cogchar.render.app.entity.GoodyActionExtractor;
 import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
@@ -129,7 +129,7 @@ public class VWorldHumanoidFigureEntity extends VWorldEntity {
 		getLogger().warn("detachFromVirtualWorldNode not supported in HumanoidFigureGoodyWrapper");
 	}
 	
-	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
+	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		Vector3f newLocation = ga.getLocationVector();
 		Quaternion newRotation = ga.getRotationQuaternion();
 		switch (ga.getKind()) {

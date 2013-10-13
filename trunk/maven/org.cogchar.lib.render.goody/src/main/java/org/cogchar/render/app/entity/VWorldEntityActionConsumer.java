@@ -91,7 +91,7 @@ public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  e
 
 		// How do we decide whether it's really a VWorld / Goody action?
 		// Below, the targetThing is presumed to be a "goody", either existing or new.
-		GoodyAction ga = new GoodyAction(actionSpec);
+		GoodyActionExtractor ga = new GoodyActionExtractor(actionSpec);
 		Ident gid = ga.getGoodyID();
 		VWorldEntity goodyOne = myGoodiesByID.get(gid);
 		//theLogger.info("The kind for Goody is {}", ga.getKind()); // TEST ONLY

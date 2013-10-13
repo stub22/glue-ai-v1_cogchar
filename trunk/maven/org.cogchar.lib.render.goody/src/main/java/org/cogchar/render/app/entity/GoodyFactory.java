@@ -103,14 +103,14 @@ public class GoodyFactory {
 		});
 	}
 	
-	public VWorldEntity createByAction(GoodyAction ga) {
+	public VWorldEntity createByAction(GoodyActionExtractor ga) {
 		VWorldEntity newGoody = null;
-		if (ga.getKind() == GoodyAction.Kind.CREATE) {
+		if (ga.getKind() == GoodyActionExtractor.Kind.CREATE) {
 			// Switch on string local name would be nice
 			// This is getting out of hand
 			// Big problem here is that GoodyFactory needs to know about each Goody type and how to make them
 			// Ripe for refactoring to avoid that, perhaps via a Chain of Responsibility pattern?
-			// Or perhaps we would like to pass the GoodyAction to the goodies in their constructors
+			// Or perhaps we would like to pass the GoodyActionExtractor to the goodies in their constructors
 			// Still would need a way (possibly reflection?) to get goody class from type
 			try {
 				//theLogger.info("Trying to create a goody, type is {}", ga.getType()); // TEST ONLY
@@ -179,7 +179,7 @@ public class GoodyFactory {
 	
 	// This way, EntitySpace doesn't need to know about the root node to attach. But this pattern can change if
 	// we decide we rather it did!
-	public VWorldEntity createAndAttachByAction(GoodyAction ga, VWorldEntity.QueueingStyle qStyle) {
+	public VWorldEntity createAndAttachByAction(GoodyActionExtractor ga, VWorldEntity.QueueingStyle qStyle) {
 		VWorldEntity newGoody = createByAction(ga);
 		if (newGoody != null) {
 			newGoody.attachToVirtualWorldNode(myRootNode, qStyle);

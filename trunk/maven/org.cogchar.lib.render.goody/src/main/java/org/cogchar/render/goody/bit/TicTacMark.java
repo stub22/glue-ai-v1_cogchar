@@ -29,7 +29,7 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.render.goody.basic.BasicGoodyEntity;
 import org.cogchar.render.goody.basic.CompositeMeshBuilder;
 import org.cogchar.render.goody.basic.CompositeMeshBuilder.MeshComponent;
-import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyActionExtractor;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
@@ -97,7 +97,7 @@ public class TicTacMark extends BasicGoodyEntity {
 		playerO = isAnO;
 	}
 	
-	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
+	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		switch (ga.getKind()) {
 			case SET : {
 				String stateString = ga.getSpecialString(GoodyNames.USE_O);

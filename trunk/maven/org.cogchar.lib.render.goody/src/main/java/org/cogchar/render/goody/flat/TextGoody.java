@@ -16,7 +16,7 @@
 
 package org.cogchar.render.goody.flat;
 
-import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyActionExtractor;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import org.appdapter.core.name.Ident;
@@ -46,7 +46,7 @@ public class TextGoody extends BasicGoody2dImpl {
 		setPosition(position, QueueingStyle.QUEUE_AND_RETURN);
 	}
 	
-	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
+	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		super.applyAction(ga, qStyle); // Applies "standard" set and move actions
 		switch (ga.getKind()) {
 			case SET : {

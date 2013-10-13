@@ -24,7 +24,7 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.ThingActionFilter;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.TypedValueMap;
-import org.cogchar.impl.thing.basic.BasicTypedValueMapTemporaryImpl;
+import org.cogchar.impl.thing.basic.BasicTypedValueMapWithConversion;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -259,7 +259,7 @@ public class ThingActionFilterImpl extends KnownComponentImpl implements ThingAc
         return null;
     }
 
-	public class ParamMapFromFields extends BasicTypedValueMapTemporaryImpl {
+	public class ParamMapFromFields extends BasicTypedValueMapWithConversion {
 		boolean typeMapSet;
 
 		/**
