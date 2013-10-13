@@ -19,7 +19,7 @@ package org.cogchar.outer.client.web;
 import org.appdapter.core.name.Ident;
 import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.name.web.WebUserActionNames;
-import org.cogchar.outer.client.ActionParamWriter;
+import org.cogchar.api.thing.ActionParamWriter;
 
 /**
  * This would be in o.c.lib.outer.client, except that's outer and we're not!
