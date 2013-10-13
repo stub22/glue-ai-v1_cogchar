@@ -26,6 +26,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 public class GoodyGameFeatureAdapter extends BonyGameFeatureAdapter {
 	private		ProjectileLauncher			myPrjctlMgr;
+	
 	public GoodyGameFeatureAdapter(GoodyModularRenderContext gmrc) {
 		super(gmrc);
 	}
