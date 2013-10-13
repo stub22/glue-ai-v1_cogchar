@@ -13,12 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.outer.client.goody;
+package org.cogchar.api.vworld;
 
 import org.appdapter.core.name.Ident;
 import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.name.goody.GoodyNames;
-import org.cogchar.outer.client.ActionParamWriter;
+import org.cogchar.api.thing.ActionParamWriter;
 
 /**
  * Typically used from a remote client to capture values for encoding in SPARQL-Update.
