@@ -44,20 +44,29 @@ public class GoodyModularRenderContext extends BonyRenderContext {
 	private		boolean							thisEntitySpaceSet;
 	
 	protected	GeneralScoreBoard				myScoreBoard;
-	
 
+	private GoodyGameFeatureAdapter		myGameFeatureAdapter;
 	
 	private Dimension myScreenDimension = new Dimension();
 	private Dimension lastScreenDimension = new Dimension();
 	
 	public GoodyModularRenderContext(GoodyRenderRegistryClient grrc, RenderConfigEmitter rce) { 
 		super(grrc, rce);
+		myGameFeatureAdapter = new GoodyGameFeatureAdapter(this);
 	}
-
+	public GoodyGameFeatureAdapter getGameFeatureAdapter() {
+		return myGameFeatureAdapter;
+	}
+	public GoodyRenderRegistryClient getGoodyRenderRegistryClient(){ 
+		return (GoodyRenderRegistryClient) getRenderRegistryClient();
+	}	
 	@Override public void completeInit() {
 		super.completeInit();
 		initPhysicsStuffBuilder();
 	}
+	@Override public void postInitLaunch() {
+		myGameFeatureAdapter.initFeatures();
+	}	
 	protected void initPhysicsStuffBuilder() {  
 		PhysicsSpace ps = getPhysicsSpace();
 		// TODO: Check config for initial debug setting

@@ -41,13 +41,9 @@ import org.cogchar.render.sys.goody.GoodyGameFeatureAdapter;
 public class HumanoidRenderContext extends GoodyModularRenderContext {
 
 	private	HumanoidFigureManager	myHFM;
-	private GoodyGameFeatureAdapter	myGameFeatureAdapter;
 
-
-	
 	public HumanoidRenderContext(GoodyRenderRegistryClient grrc, RenderConfigEmitter rce) {
 		super(grrc, rce);
-		myGameFeatureAdapter = new GoodyGameFeatureAdapter(this);
 		myHFM = new HumanoidFigureManager();
 	}
 
@@ -70,8 +66,7 @@ public class HumanoidRenderContext extends GoodyModularRenderContext {
 		BonyGameFeatureAdapter.initCrossHairs(someSettings, rrc);
 		*/
 		initBasicTestPhysics();
-		
-		myGameFeatureAdapter.initFeatures();
+
 		
 		// ScoreBoard is now initialized as a 2D Goody
 		//WorkaroundFuncsMustDie.initScoreBoard(this);
@@ -111,9 +106,7 @@ public class HumanoidRenderContext extends GoodyModularRenderContext {
 		cmgr.resetDefaultCamera();
 	}
 
-	public GoodyGameFeatureAdapter getGameFeatureAdapter() {
-		return myGameFeatureAdapter;
-	}
+
 
 	public HumanoidFigureManager getHumanoidFigureManager() { 
 		return myHFM;
@@ -159,7 +152,5 @@ public class HumanoidRenderContext extends GoodyModularRenderContext {
 			logInfo("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]  Finished starting JMonkey canvas!");
 		}
 	}
-	public GoodyRenderRegistryClient getGoodyRenderRegistryClient(){ 
-		return (GoodyRenderRegistryClient) getRenderRegistryClient();
-	}
+
 }
