@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.cogchar.outer.client.goody;
+package org.cogchar.test.remote;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
