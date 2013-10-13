@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.outer.client.web;
+package org.cogchar.api.web;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;

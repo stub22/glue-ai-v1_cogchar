@@ -16,7 +16,7 @@
 
 package org.cogchar.bind.lift;
 
-import org.cogchar.outer.client.web.WebUserActionParamWriter;
+import org.cogchar.api.web.WebUserActionParamWriter;
 import java.util.Random;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
