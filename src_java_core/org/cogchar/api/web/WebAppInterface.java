@@ -21,7 +21,6 @@ import org.appdapter.core.name.Ident;
 /**
  *
  * An interface which will be implemented by Lifter so that Cogchar modules won't have to depend on o.c.bundle.bind.lift
- * Is this the right package for this to live in?
  * 
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */

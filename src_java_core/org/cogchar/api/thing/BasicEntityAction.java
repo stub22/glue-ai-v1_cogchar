@@ -71,9 +71,15 @@ public abstract class BasicEntityAction {
 	protected TypedValueMap getParameterMap() { 
 		return getActionSpec().getParamTVM();
 	}
+	/**
+	 * This should probably dissolve.
+	 * 
+	 * @param paramIdent
+	 * @return 
+	 */
 	// Could have more elaborate type handling here, but for now, since params in repo are natively strings
 	// we'll provide a way to load those raw strings by param name
-	public String getSpecialString(Ident paramIdent) {
+	@Deprecated public String getSpecialString(Ident paramIdent) {
 		return getParameterMap().getAsString(paramIdent);
 	}
 
