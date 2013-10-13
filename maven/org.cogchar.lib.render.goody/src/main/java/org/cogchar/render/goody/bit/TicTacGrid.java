@@ -17,7 +17,7 @@
 package org.cogchar.render.goody.bit;
 
 import org.cogchar.render.goody.basic.BasicGoodyEntity;
-import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyActionExtractor;
 import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.app.entity.GoodyFactory;
 import org.cogchar.name.goody.GoodyNames;
@@ -52,7 +52,7 @@ public class TicTacGrid extends BasicGoodyEntity {
 	private static final ColorRGBA DEFAULT_GRID_COLOR = ColorRGBA.Blue;
 	private static final float SIZE_MULTIPLIER = 9f;
 	private static final float[] ROTATE_UPRIGHT = {(float)(Math.PI/2), 0f, 0f};
-	private static final Ident CLEAR_IDENT = GoodyNames.makeID("clearMarks");
+	public static final Ident CLEAR_IDENT = GoodyNames.makeID("clearMarks");
 	
 	private Map<Ident, TicTacMark> markMap = new HashMap<Ident, TicTacMark>();
 	
@@ -187,25 +187,24 @@ public class TicTacGrid extends BasicGoodyEntity {
 		getLogger().warn("MOVE not yet supported for TicTacGrid, coming soon...");
 	}
 	
-	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
+	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		super.applyAction(ga, qStyle);
 		switch (ga.getKind()) {
 			case SET : {
-				String removeString = ga.getSpecialString(CLEAR_IDENT);
-				String stateString = ga.getSpecialString(GoodyNames.USE_O);
-				if (removeString != null) {
+				Boolean clearMarksFlag = ga.getSpecialBoolean(CLEAR_IDENT);
+				Boolean stateFlag = ga.getSpecialBoolean(GoodyNames.USE_O);
+				if ((clearMarksFlag != null) && clearMarksFlag.booleanValue()) {
 					try {
-						if (Boolean.valueOf(removeString)) {
+						if (Boolean.valueOf(clearMarksFlag)) {
 							clearMarks();
 						}
 					} catch (Exception e) {	
-						getLogger().error("Error interpreting string for {}", CLEAR_IDENT.getLocalName());
 					}
-				} else if (stateString != null) {
+				} else if (stateFlag != null) {
 					try {
-						int xCoord = Integer.valueOf(ga.getSpecialString(GoodyNames.COORDINATE_X));
-						int yCoord = Integer.valueOf(ga.getSpecialString(GoodyNames.COORDINATE_Y));
-						addMarkAt(xCoord, yCoord, Boolean.valueOf(stateString));
+						int xCoord = ga.getSpecialInteger(GoodyNames.COORDINATE_X);
+						int yCoord = ga.getSpecialInteger(GoodyNames.COORDINATE_Y);
+						addMarkAt(xCoord, yCoord, stateFlag);
 					} catch (Exception e) { // May not need try/catch after BasicTypedValueMap implementation is complete
 						getLogger().error("Error interpreting parameters for adding mark to TicTacGrid", e);
 					}

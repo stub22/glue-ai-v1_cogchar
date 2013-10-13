@@ -29,6 +29,7 @@ import org.cogchar.impl.thing.fancy.ConcreteTVM;
 import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.render.app.entity.GoodyFactory;
 import org.cogchar.render.app.entity.GoodySpace;
+import org.cogchar.render.goody.bit.TicTacGrid;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -52,7 +53,7 @@ public class LocalGoodyHarness {
 		public float	scaleX, scaleY, scaleZ;
 		
 		public float	colorR, colorG, colorB, colorA;
-		public boolean	flag_state, flag_useO;
+		public boolean	flag_state, flag_useO, flag_clearMarks;
 		public int		rows;
 		public int		coordX, coordY;
 		public String	text;
@@ -68,6 +69,7 @@ public class LocalGoodyHarness {
 			gapw.putObjectAtName(GoodyNames.BOOLEAN_STATE, flag_state);
 			gapw.putObjectAtName(GoodyNames.USE_O, flag_useO);
 			gapw.putObjectAtName(GoodyNames.TEXT, text);
+			gapw.putObjectAtName(TicTacGrid.CLEAR_IDENT, flag_clearMarks);
 		}
 	}
 

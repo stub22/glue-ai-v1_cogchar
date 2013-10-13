@@ -24,7 +24,7 @@ import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecut
 import com.hp.hpl.jena.rdf.model.{Model}
 
 import  org.cogchar.api.thing.{ThingActionSpec};
-import  org.cogchar.impl.thing.basic.{BasicTypedValueMap, BasicTypedValueMapTemporaryImpl}
+import  org.cogchar.impl.thing.basic.{BasicTypedValueMap, BasicTypedValueMapWithConversion}
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -49,7 +49,7 @@ object FancyThingTest {
 	 */
 	
 }
-class ConcreteTVM() extends BasicTypedValueMapTemporaryImpl {
+class ConcreteTVM() extends BasicTypedValueMapWithConversion {
 	/*
 	override def  getAsIdent( propName : Ident) : Ident = {
 		null;

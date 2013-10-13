@@ -32,7 +32,7 @@ import org.cogchar.api.cinema.PathInstanceConfig;
 import org.cogchar.api.cinema.WaypointConfig;
 import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.name.goody.GoodyNames;
-import org.cogchar.render.app.entity.GoodyAction;
+import org.cogchar.render.app.entity.GoodyActionExtractor;
 import org.cogchar.render.app.entity.GoodyFactory;
 import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
@@ -117,7 +117,7 @@ public class VWorldCameraEntity extends VWorldEntity {
 		enqueueForJme(new Callable() { // Do this on main render thread
 			@Override public Void call() throws Exception {
 				//Move camNode, e.g. behind and above the target:
-				camNode.setLocalTranslation(new Vector3f(0, 5, -5)); // ... for initial hack-up; probably these offsets need to come from GoodyAction
+				camNode.setLocalTranslation(new Vector3f(0, 5, -5)); // ... for initial hack-up; probably these offsets need to come from GoodyActionExtractor
 				//Rotate the camNode to look at the target:
 				camNode.lookAt(goodyNode.getLocalTranslation(), Vector3f.UNIT_Y);
 				//This mode means that camera copies the movements of the target:
@@ -154,7 +154,7 @@ public class VWorldCameraEntity extends VWorldEntity {
 	}
 	
 
-	@Override public void applyAction(GoodyAction ga, QueueingStyle qStyle) {
+	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		Vector3f newLocation = ga.getLocationVector();
 		Quaternion newRotation = ga.getRotationQuaternion();
 		String attachToGoodyUriString = ga.getSpecialString(GoodyNames.ATTACH_TO_GOODY);

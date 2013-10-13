@@ -27,13 +27,14 @@ import org.appdapter.core.name.Ident;
  */
 
 public interface TypedValueMap {
-	
+	// All of these methods may return null if there is no matching property, or if multi-props are considered illegit.
 	public Ident getAsIdent(Ident propName);
 	public String getAsString(Ident propName);
 	public Integer getAsInteger(Ident propName);
 	public Long getAsLong(Ident propName);
 	public Float getAsFloat(Ident propName);
 	public Double getAsDouble(Ident propName);
+	public Boolean getAsBoolean(Ident propName);
 	
 	public static class TV_Exception extends RuntimeException {
 		
