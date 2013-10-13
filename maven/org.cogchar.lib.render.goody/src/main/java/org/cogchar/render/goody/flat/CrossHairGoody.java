@@ -20,6 +20,7 @@ import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.Vector3f;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
@@ -39,7 +40,7 @@ public class CrossHairGoody extends BasicGoody2dImpl {
 	private void makeCrossHairs(Float scale, Vector3f position) {
 		if (scale == null) {
 			scale = 1f;
-			myLogger.warn("Scale for CrossHair not specified; using default of 1.");
+			getLogger().warn("Scale for CrossHair not specified; using default of 1.");
 		}
 		BitmapText bt = setGoodyAttributes("+", scale);
 		BitmapFont bf = bt.getFont();
@@ -52,7 +53,7 @@ public class CrossHairGoody extends BasicGoody2dImpl {
 			// Default to center position if none specified
 			position = new Vector3f(0.5f, 0.5f, 0f);
 		}
-		setPosition(position.add(relativePosition));
+		setPosition(position.add(relativePosition), VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 	}
 	
 	// TODO: Override setScale to recenter Crosshairs

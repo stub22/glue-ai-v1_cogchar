@@ -43,16 +43,17 @@ public class BitCube extends AbstractBitGoody {
 	public BitCube(GoodyRenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
 			Vector3f size, Boolean boxState) {
 		super(aRenderRegCli, boxUri);
+		QueueingStyle qStyle = QueueingStyle.QUEUE_AND_RETURN;
 		if (size == null) {
-			myLogger.warn("No size specified for BitCube, defaulting to size = 1");
+			getLogger().warn("No size specified for BitCube, defaulting to size = 1");
 			size = new Vector3f(1.0f, 1.0f, 1.0f);
 		} else {
 			if (Math.abs(size.length() - 0.0f) < 0.001f) {
-				myLogger.warn("BitCube being created with zero size!");
+				getLogger().warn("BitCube being created with zero size!");
 			}
 		} 
-		setPositionAndRotation(initialPosition, initialRotation);
-		setVectorScale(size);
+		setPositionAndRotation(initialPosition, initialRotation, qStyle);
+		setVectorScale(size, qStyle);
 		geomIndex = addCubeGeometry();
 		state = boxState;
 		setNewGeometryRotationOffset(geomIndex, getStateAdjustedRotationOffset(boxState));
@@ -80,8 +81,7 @@ public class BitCube extends AbstractBitGoody {
 		return new Quaternion().fromAngles(0f, yaw, 0f);
 	}
 	
-	@Override
-	public void setState(boolean boxState) {
+	@Override public void setState(boolean boxState, QueueingStyle qStyle) {
 		if (boxState != state) {
 			Quaternion initialRotation = getRotation();
 			Vector3f position = getPosition();
@@ -90,7 +90,7 @@ public class BitCube extends AbstractBitGoody {
 			// then set the new rotation offset and set myRotation back to the original "base" orientation
 			moveViaAnimation(position, initialRotation.mult(new Quaternion().fromAngles(0f, (float)Math.PI, 0f)), scale, STATE_TRANSITION_TIME);
 			setNewGeometryRotationOffset(geomIndex, getStateAdjustedRotationOffset(boxState));
-			setRotation(initialRotation);
+			setRotation(initialRotation, qStyle);
 			state = boxState;
 		}
 	}

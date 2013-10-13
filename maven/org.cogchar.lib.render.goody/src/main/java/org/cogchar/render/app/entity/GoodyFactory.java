@@ -179,10 +179,10 @@ public class GoodyFactory {
 	
 	// This way, EntitySpace doesn't need to know about the root node to attach. But this pattern can change if
 	// we decide we rather it did!
-	public VWorldEntity createAndAttachByAction(GoodyAction ga) {
+	public VWorldEntity createAndAttachByAction(GoodyAction ga, VWorldEntity.QueueingStyle qStyle) {
 		VWorldEntity newGoody = createByAction(ga);
 		if (newGoody != null) {
-			newGoody.attachToVirtualWorldNode(myRootNode);
+			newGoody.attachToVirtualWorldNode(myRootNode, qStyle);
 		}
 		return newGoody;
 	}
