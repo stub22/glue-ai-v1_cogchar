@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.outer.client;
+package org.cogchar.api.thing;
 
 import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.api.thing.TypedValueMap;

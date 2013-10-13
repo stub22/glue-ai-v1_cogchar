@@ -24,6 +24,7 @@ import org.cogchar.name.goody.GoodyNames;
  * A superclass to hold actions from ActionSpecs for execution by various Entity subclasses
  * 
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
+ * @author Stu B22
  */
 
 public class VWorldEntityAction extends BasicEntityAction  {

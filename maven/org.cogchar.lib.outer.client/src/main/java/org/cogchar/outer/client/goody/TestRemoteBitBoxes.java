@@ -9,7 +9,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.impl.thing.basic.BasicThingActionSpec;
-import org.cogchar.outer.client.goody.GoodyActionParamWriter;
+import org.cogchar.api.vworld.GoodyActionParamWriter;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.api.thing.ThingActionSpec;
