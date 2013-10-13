@@ -92,10 +92,12 @@ public class GoodyModularRenderContext extends BonyRenderContext {
 		// Update screen dimension for 2D Goodies:
 		if (thisEntitySpaceSet) {
 			VirtualCharacterPanel vcp = getPanel();
-			myScreenDimension = vcp.getSize(myScreenDimension);
-			if (!myScreenDimension.equals(lastScreenDimension)) {
-				myEntitySpace.applyNewScreenDimension(myScreenDimension);
-				lastScreenDimension = (Dimension)myScreenDimension.clone();
+			if (vcp != null) {
+				myScreenDimension = vcp.getSize(myScreenDimension);
+				if (!myScreenDimension.equals(lastScreenDimension)) {
+					myEntitySpace.applyNewScreenDimension(myScreenDimension);
+					lastScreenDimension = (Dimension)myScreenDimension.clone();
+				}
 			}
 		}
 		
