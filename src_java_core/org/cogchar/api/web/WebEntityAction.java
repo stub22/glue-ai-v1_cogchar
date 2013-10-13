@@ -26,7 +26,9 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * A class to hold actions for execution in the Lifter web interface
+ * A class to hold actions for execution in the Lifter web interface.
+ * 
+ * This builds on top of 
  * 
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
