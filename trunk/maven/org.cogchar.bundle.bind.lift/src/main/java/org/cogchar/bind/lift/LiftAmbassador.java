@@ -15,7 +15,7 @@
  */
 package org.cogchar.bind.lift;
 
-import org.cogchar.api.web.WebUserActionParamWriter;
+import org.cogchar.api.web.WebSessionActionParamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -355,7 +355,7 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	// Synchronize these next two methods? Could be triggered concurrently by repo actions in multiple simultaneous Lift sessions.
 	// Probably not a problem *if* repo update code is thread safe
 	public void sendUserTextViaRepo(Ident senderIdent, String userText, String sessionId) {
-		WebUserActionParamWriter paramWriter = getInitializedParamWriter(sessionId);
+		WebSessionActionParamWriter paramWriter = getInitializedParamWriter(sessionId);
 		paramWriter.putOutputText(userText);
 		// The below "Sender" is intended to identify the control action which initialized the repo output.
 		// Currently as defined in RepoOutputHandler: 
@@ -367,7 +367,7 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	public void sendActionViaRepo(Ident actionIdent, String sessionId) {
         
         // hook up to the user channel
-		WebUserActionParamWriter paramWriter = getInitializedParamWriter(sessionId);
+		WebSessionActionParamWriter paramWriter = getInitializedParamWriter(sessionId);
         
         // send the TA over that channel
 		paramWriter.putActionUri(actionIdent);
@@ -376,8 +376,8 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		myRepoMessenger.sendMessage("lifterActionRecord", "lifterAction");
 	}
 	
-	private WebUserActionParamWriter getInitializedParamWriter(String sessionId) {
-		WebUserActionParamWriter paramWriter = myRepoMessenger.resetAndGetParamWriter();
+	private WebSessionActionParamWriter getInitializedParamWriter(String sessionId) {
+		WebSessionActionParamWriter paramWriter = myRepoMessenger.resetAndGetParamWriter();
 		paramWriter.putSessionID(sessionId);
 		Ident userId = getKeyByValue(userSessionMap, sessionId);
 		if (userId != null) {

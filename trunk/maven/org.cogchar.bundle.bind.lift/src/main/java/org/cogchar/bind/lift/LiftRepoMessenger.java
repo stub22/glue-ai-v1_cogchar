@@ -16,7 +16,7 @@
 
 package org.cogchar.bind.lift;
 
-import org.cogchar.api.web.WebUserActionParamWriter;
+import org.cogchar.api.web.WebSessionActionParamWriter;
 import java.util.Random;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
@@ -45,10 +45,10 @@ import org.cogchar.outer.client.AgentRepoClient;
 
 public class LiftRepoMessenger extends BasicDebugger {
 	
-	protected	Random					myRandomizer = new Random();
-	protected	AgentRepoClient			myAgentRepoClient = new AgentRepoClient();
-	protected	String					myUpdateTargetURL, myUpdateGraphQN;
-	protected	WebUserActionParamWriter	myPendingActionParamWriter;
+	protected	Random							myRandomizer = new Random();
+	protected	AgentRepoClient					myAgentRepoClient = new AgentRepoClient();
+	protected	String							myUpdateTargetURL, myUpdateGraphQN;
+	protected	WebSessionActionParamWriter		myPendingActionParamWriter;
 	
 	public LiftRepoMessenger(String updateTargetURL, String updateGraphQN) {
 		myUpdateTargetURL = updateTargetURL;
@@ -68,9 +68,9 @@ public class LiftRepoMessenger extends BasicDebugger {
 		myAgentRepoClient.execRemoteSparqlUpdate(myUpdateTargetURL, updateTxt, debugFlag);
 	}
 	
-	public WebUserActionParamWriter resetAndGetParamWriter() { 
+	public WebSessionActionParamWriter resetAndGetParamWriter() { 
 		BasicTypedValueMap btvm = new ConcreteTVM();
-		myPendingActionParamWriter = new WebUserActionParamWriter(btvm);
+		myPendingActionParamWriter = new WebSessionActionParamWriter(btvm);
 		return myPendingActionParamWriter;
 	}
 	
