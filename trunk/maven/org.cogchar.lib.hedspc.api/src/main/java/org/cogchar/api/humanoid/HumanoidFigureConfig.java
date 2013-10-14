@@ -18,7 +18,7 @@ package org.cogchar.api.humanoid;
 import java.util.List;
 import org.appdapter.core.name.Ident;
 import org.cogchar.name.skeleton.BoneCN;
-import org.cogchar.blob.emit.RenderConfigEmitter;
+// import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
@@ -36,11 +36,13 @@ public class HumanoidFigureConfig {
 	public HumanoidBoneConfig myBoneConfig;
 	public float myInitX, myInitY, myInitZ, myScale;
 
-	public HumanoidFigureConfig(RepoClient qi, HumanoidConfig hc, RenderConfigEmitter rce, Ident bonyGraphIdent) {
+//	public HumanoidFigureConfig(RepoClient qi, HumanoidConfig hc, RenderConfigEmitter rce, Ident bonyGraphIdent) {
+	public HumanoidFigureConfig(RepoClient qi, HumanoidConfig hc, String matPath, Ident bonyGraphIdent) {
 		myCharIdent = hc.myCharIdent;
 		myNickname = hc.myNickname;
 		myMeshPath = hc.myMeshPath;
-		myDebugSkelMatPath = rce.getMaterialPath();
+		myDebugSkelMatPath = matPath;
+//		myDebugSkelMatPath = rce.getMaterialPath();
 		myBoneConfig = new HumanoidBoneConfig();
 		myInitX = hc.myInitialPosition[0];
 		myInitY = hc.myInitialPosition[1];
