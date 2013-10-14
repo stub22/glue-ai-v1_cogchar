@@ -32,10 +32,17 @@ import org.cogchar.render.opengl.scene.TextMgr;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.ViewPort;
 import com.jme3.input.FlyByCamera;
+import java.awt.Canvas;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.List;
 import java.util.Random;
+import javax.swing.JFrame;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.vworld.GoodyActionParamWriter;
 import org.cogchar.impl.thing.basic.BasicThingActionSpec;
@@ -68,12 +75,18 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClientImpl;
 
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.name.dir.NamespaceDir;
+import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.trigger.CommandSpace;
+import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import org.cogchar.render.app.entity.GoodyFactory;
 import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
+import org.cogchar.render.gui.bony.PanelUtils;
+import org.cogchar.render.gui.bony.VirtualCharacterPanel;
+import org.cogchar.render.sys.context.WorkaroundFuncsMustDie;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
+import org.osgi.framework.BundleContext;
 
 
 /**
@@ -91,6 +104,7 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		RenderConfigEmitter rce = new RenderConfigEmitter();
 		GoodyRenderTestApp app = new GoodyRenderTestApp(rce);
+		// This will trigger the makeCogcharRenderContext() and then the simpleInitApp() below.
 		app.start();
 	}
 	public GoodyRenderTestApp(RenderConfigEmitter rce) { 
@@ -103,6 +117,9 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 		gmrc.setApp(this);
 		return gmrc;
 	}
+	// This occurs during start(), *on the JME3 thread* (so any attempts to wait() for something to happen 
+	// on that thread would deadlock this execution!).
+	
 	@Override public void simpleInitApp() {
 		getLogger().info("Hooray for Goodies!");
 		super.simpleInitApp();
@@ -113,11 +130,11 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 		GoodyRenderRegistryClient grrc = renderCtx.getGoodyRenderRegistryClient();
 		GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, renderCtx);	
 		
-		initContent();
+		initContentOnJME3Thread();
 		// hideJmonkeyDebugInfo();
 	}
-
-	private void initContent() {
+	// We are on the JME3 thread!
+	private void initContentOnJME3Thread() {
 		ViewPort  pvp = getPrimaryAppViewPort();		
 		pvp.setBackgroundColor(ColorRGBA.Blue);
 		shedLight();
@@ -167,3 +184,124 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 	}	
 	*/
 }
+
+
+/*** What does the o.c.b.render.opengl bundle do instead of the simple   Mainly this, from
+ * 
+ * 
+ *  RenderBundleUUtils.buildBonyRenderContextInOSGi(BundleContext bundleCtx, String panelKind)
+ * 
+		RenderConfigEmitter bce = new RenderConfigEmitter();
+		BonyVirtualCharApp bvcApp = new HumanoidPuppetApp(bce);
+		VirtualCharacterPanel vcp = PanelUtils.makeVCPanel(bce, panelKind);
+		theDbg.logInfo("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Value of org.lwjgl.librarypath = " + System.getProperty("org.lwjgl.librarypath"));		
+		theDbg.logInfo("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Forcing lowPermissions during initCharPanelWithCanvas(), to prevent JME3 forcing value into org.lwjgl.librarypath");
+		JmeSystem.setLowPermissions(true);
+		bvcApp.initCharPanelWithCanvas(vcp);
+		*			applySettings();
+					hideJmonkeyDebugInfo();
+					this.createCanvas();
+					// Does not work at this time or subsq:
+					//applySettings();
+					Canvas c = WorkaroundFuncsMustDie.makeAWTCanvas(this);
+					vcp.setRenderCanvas(c);
+					getBonyRenderContext().setPanel(vcp);
+		// assetManager does not exist until start is called, triggering simpleInit callback.
+		JmeSystem.setLowPermissions(false);
+		resultBRC = bvcApp.getBonyRenderContext();
+		bundleCtx.registerService(BonyRenderContext.class.getName(), resultBRC, null);
+		return resultBRC;
+		* 
+		* 
+		* ---------------------------------------------------------------
+		* 
+Above is what the o.c.b.render.opengl BundleActivator does during it's start() method.
+Note that this does *not* launch an actual JME3 window, it just sets the table for the process below
+		* 
+		* 
+		* 
+That happens
+* 
+* 	private void initVWorldUnsafe(final PumaAppContext pac, PumaContextMediator mediator) throws Throwable {
+		// Mediator must be able to decide panelKind before the HumanoidRenderContext is built.
+		String panelKind = mediator.getPanelKind();
+		getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling initHumanoidRenderContext()");
+		PumaVirtualWorldMapper pvwm = pac.getOrMakeVWorldMapper();
+		HumanoidRenderContext hrc = pvwm.initHumanoidRenderContext(panelKind);
+		getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling mediator.notifyPanelsConstructed()");
+		mediator.notifyPanelsConstructed(pac);
+		/*
+		 * Start up the JME OpenGL canvas, which will in turn initialize the Cogchar rendering "App" (in JME3 lingo).
+		 *
+		 * Firing up the OpenGL canvas requires access to sun.misc.Unsafe, which must be explicitly imported by
+		 * ext.bundle.osgi.jmonkey, and explicitly allowed by the container when using Netigso
+
+		boolean allowJFrames = mediator.getFlagAllowJFrames();
+		if (allowJFrames) {
+			WindowAdapter winLis = new WindowAdapter() {
+				@Override public void	windowClosed(WindowEvent e) {
+					getLogger().warn("PumaBooter caught window CLOSED event for OpenGL frame:  {}", e);
+					notifyVWorldWindowClosed();
+				}
+			};
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling startOpenGLCanvas");
+			pac.startOpenGLCanvas(allowJFrames, winLis);
+			* calls  pvwm.startOpenGLCanvas(wrapInJFrameFlag, optWinLis); 
+			* 
+			* 	public void startOpenGLCanvas(boolean wrapInJFrameFlag, WindowListener optWindowEventListener) throws Exception {
+
+		if (wrapInJFrameFlag) {
+			VirtualCharacterPanel vcp = getPanel();
+			logInfo("Making enclosing JFrame for VirtCharPanel: " + vcp);
+			JFrame jf = vcp.makeEnclosingJFrame("CCRK-PUMA Virtual World");
+			setFrame(jf);
+			if (optWindowEventListener != null) { 
+				jf.addWindowListener(optWindowEventListener);
+			}
+		}
+		BonyVirtualCharApp app = getApp();
+		if (app.isCanvasStarted()) {
+			logWarning("JMonkey Canvas was already started!");
+		} else {
+			logInfo("Starting JMonkey canvas - hold yer breath! [[[[[[[[[[[[[[[[[[[[[[[[[[");
+			app.startJMonkeyCanvas();
+			logInfo("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]  Finished starting JMonkey canvas!");
+		}
+			* which does this:
+			*			final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
+						GlobalConfigEmitter gce = pgmm.getGlobalConfig();
+		
+						RepoClient rc = pcm.getMainConfigRepoClient();		
+						HumanoidRenderContext hrc = getHumanoidRenderContext();
+							hrc.initCinematicParameters();
+							hrc.setupHominoidCameraManager();
+		
+						KeyBindingConfig currKeyBindCfg = new KeyBindingConfig();
+						// Hook-in for Goody system
+						GoodyRenderRegistryClient grrc = hrc.getGoodyRenderRegistryClient();
+						GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, hrc);
+					// Setup the humanoid "goodies"
+					HumanoidRenderWorldMapper hrwMapper = new HumanoidRenderWorldMapper();
+						VWorldEntityActionConsumer veActConsumer = gFactory.getActionConsumer();
+						hrwMapper.addHumanoidGoodies(veActConsumer, hrc);
+							List<Ident> worldConfigIdents = gce.entityMap().get(EntityRoleCN.VIRTUAL_WORLD_ENTITY_TYPE);
+							for (Ident configIdent : worldConfigIdents) {
+							initCinematicStuff(gce, configIdent, rc, gFactory, router);
+							Ident graphIdent = gce.ergMap().get(configIdent).get(EntityRoleCN.INPUT_BINDINGS_ROLE);
+							KeystrokeConfigEmitter kce = new KeystrokeConfigEmitter();
+
+						currKeyBindCfg.addBindings(rc, graphIdent, kce);
+		
+				hrc.refreshInputBindingsAndHelpScreen(currKeyBindCfg, cspace);
+			
+			getLogger().debug("%%%%%%%%%%%%%%%%%%% startOpenGLCanvas completed, enqueueing final boot phase on JME3 thread, and waiting for completion.");
+
+	------------------------
+	* After all that, PumaBooter does this.
+		 * This call first waits for a WorkaroundAppStub to appear, so that it can enqueue the main call on the JME3 
+		 * thread.  THEN it waits for that enqueued call to finish, allowing us to be sure that all this init is
+		 * completed, on the proper thread, before we continue the PUMA boot process.
+				
+		hrc.runPostInitLaunchOnJmeThread();
+		getLogger().debug("%%%%%%%%%%%%%%%%%%% Context.runPostInitLaunch completed");
+ */

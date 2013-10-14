@@ -27,6 +27,12 @@ import org.appdapter.core.name.Ident;
 
 
 public interface WebAppInterface {
+	
+	// What does it mean to "activateControl" ?
+	
+	// Does this mean we are displaying it for the user, or that the user has interacted with it and we
+	// are receiving information from that user?
+	
 	public void activateControlAction(Ident controlActionUri);
 	public void activateControlsFromUri(Ident configUri);
 	public void activateControlsFromUriForUser(String user, Ident configUri);

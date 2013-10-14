@@ -90,7 +90,8 @@ public abstract class BonyVirtualCharApp<BRCT extends BonyRenderContext> extends
     public boolean isCanvasStarted(){
         return myCanvasStartedFlag;
     }
-
+	// This will get called during the startJMonkeyCanvas invocation above, *or* during any alternative
+	// App-start invoked from a test harness, e.g. GoodyRenderTestApp.
 	@Override public void simpleInitApp() {
 		theLogger.info("*********** BonyVirtualCharApp.simpleInitApp() is starting");
 		super.simpleInitApp();
