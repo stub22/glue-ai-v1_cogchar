@@ -90,39 +90,21 @@
 		
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.lib.core</artifactId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${project.version}</version>
-			<scope>provided</scope>
 		</dependency>
 	 
-	 <!-- Eventually it will be good to do away with following dependencies by acting via a central interface in o.c.lib.core -->
-		<dependency>
-			<!-- Stu sez:  The animoid dep is not horrible -->
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.lib.animoid</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 	
 		<!-- For local testing only - checkin scope as *test* or not at all! -->
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.5</version>
 			<scope>test</scope>	
 		</dependency>
-			<!-- Ryan sez: the worse one (o.c.bundle.bind.lift) is now gone! -->
-		
-		<!--
-		<dependency>
-				It's possible to uncomment this dep during dev testing.
-				However, this "simple" binding should not be checkedn in (or deployed in a binary).
-				Let's consider using scope=test, or a maven profile.
-				
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.5</version>
-		</dependency>
-		-->		
+	
+
 	</dependencies>
 </project>
 

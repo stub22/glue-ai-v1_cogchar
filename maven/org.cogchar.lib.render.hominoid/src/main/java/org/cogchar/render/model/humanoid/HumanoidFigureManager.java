@@ -51,7 +51,8 @@ public class HumanoidFigureManager extends BasicDebugger {
 		HumanoidFigure hf = myFiguresByCharIdent.get(charIdent);
 		if (hf == null) {
 			//BonyConfigEmitter bce = getBonyConfigEmitter();
-			HumanoidFigureConfig hfc = new HumanoidFigureConfig(qi, hc, rce, bonyConfigGraph);
+			String matPath = rce.getMaterialPath();
+			HumanoidFigureConfig hfc = new HumanoidFigureConfig(qi, hc, matPath, bonyConfigGraph); // rce, bonyConfigGraph);
 			if (hfc.isComplete()) {
 				hf = new HumanoidFigure(hfc);
 				myFiguresByCharIdent.put(charIdent, hf);
