@@ -27,6 +27,8 @@
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- It appears these JFlux deps are now bringing in a slf4j-log4j binding.  Le sigh.
+		-->
         <dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.core</artifactId>
