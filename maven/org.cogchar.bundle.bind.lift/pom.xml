@@ -146,18 +146,12 @@
 			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
-		<dependency>
-            <groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.lib.outer.client</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.common</artifactId>
 			<version>${robokind.version}</version>
-		</dependency>
+		</dependency>	
         <dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.registry</artifactId>

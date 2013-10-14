@@ -11,7 +11,7 @@
 		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
 	</parent>		
 	
-	<artifactId>org.cogchar.lib.core</artifactId>
+	<artifactId>org.cogchar.lib.core.api</artifactId>
 	<name>${project.artifactId} - POJO + Scala</name>
 	<description>Cogchar core - does not include Render binding or Robot binding</description>
 

@@ -557,7 +557,7 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		return myQueryEnvoy.getNamesAndActionsFromQuery(myRepoClient, myQGraph, queryUri, LiftCN.ACTION_VAR_NAME, LiftCN.NAME_VAR_NAME);
 	}
 
-	void setSceneLauncher(WebSceneInterface launcher) {
+	public void setSceneLauncher(WebSceneInterface launcher) {
 		mySceneLauncher = launcher;
 	}
 
@@ -566,16 +566,16 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		myLift = li;
 	}
 
-	void setAppInterface(LiftAppInterface lai) {
+	public void setAppInterface(LiftAppInterface lai) {
 		myLiftAppInterface = lai;
 	}
 
-	void setRepoClient(RepoClient qi, Ident graphIdent) {
+	public void setRepoClient(RepoClient qi, Ident graphIdent) {
 		myRepoClient = qi;
 		myQGraph = graphIdent;
 	}
 	
-	void setNetConfigInterface(LiftNetworkConfigInterface lnci) {
+	public void setNetConfigInterface(LiftNetworkConfigInterface lnci) {
 		myNetConfigInterface = lnci;
 	}
 
@@ -584,8 +584,7 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	}
 	
 	// Used by external classes which need to directly construct new ControlConfigs
-	@Override
-	public WebAppInterface.Control getNewControl() {
+	@Override public WebAppInterface.Control getNewControl() {
 		return new ControlConfig();
 	}
 }
