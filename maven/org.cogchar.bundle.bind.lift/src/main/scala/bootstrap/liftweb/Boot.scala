@@ -67,34 +67,6 @@ class Boot {
     // would we expect it to?).
 //    LiftRules.cometLogger = ActorLogger 
     
-    /*
-     * Register these ThingAction consumers with JFlux
-     */
-    
-    val context = OSGiUtils.getBundleContext(classOf[Boot]);
-
-    // This handles registration of clients
-    val registration = new LifterClientRegistration()
-    val registrationLifecycle = new SimpleLifecycle(
-      registration,
-      Predef.classOf[WantsThingAction])
-//    val registrationProps = new Properties()
-//    registrationProps.put(x$1, x$2)
-    val registrationService = new OSGiComponent(
-      context,
-      registrationLifecycle).start//,
-//      registrationProps).start
-    
-    // This scans for 'flow' ThingActions that influence lifter
-    val scanner = new LifterThingActionScanner()
-    val scannerLifecycle = new SimpleLifecycle(
-      scanner,
-      Predef.classOf[WantsThingAction])
-    val scannerProps = new Properties()
-    val scannerService = new OSGiComponent(
-      context,
-      scannerLifecycle).start//,
-//      scannerProps).start
   }
 
   /**
