@@ -32,8 +32,7 @@ public class VWorldMonitorBinding extends BasicDebugger implements AppDebugMonit
 		getLogger().debug("Full action spec dump: {}", taSpec);
 	}
 
-	@Override
-	public void notifyEntityActionTransit(TransitKind kind, BasicEntityAction action) {
+	@Override public void notifyEntityActionTransit(TransitKind kind, BasicEntityAction action) {
 		getLogger().info("notified of EntityAction transit kind=[{}], entity-action.entity-ID=[{}]", kind, action.getEntityID());
 		getLogger().debug("Full action dump: {}", action);
 	}

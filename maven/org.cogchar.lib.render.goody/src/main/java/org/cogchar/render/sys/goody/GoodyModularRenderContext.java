@@ -65,6 +65,7 @@ public class GoodyModularRenderContext extends BonyRenderContext {
 		initPhysicsStuffBuilder();
 	}
 	@Override public void postInitLaunch() {
+		super.postInitLaunch();
 		myGameFeatureAdapter.initFeatures();
 	}	
 	protected void initPhysicsStuffBuilder() {  

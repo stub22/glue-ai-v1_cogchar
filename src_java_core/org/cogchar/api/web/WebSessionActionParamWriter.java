@@ -23,6 +23,7 @@ import org.cogchar.api.thing.ActionParamWriter;
 
 /**
  * This has something to do with session-level state management.
+ * But it facilitates sending a message from what sources to what destinations?
  * 
  */
 
