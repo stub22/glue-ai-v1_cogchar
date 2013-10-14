@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.lift;
+package org.cogchar.app.puma.web;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +24,10 @@ import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
 import org.cogchar.api.web.WebAppInterfaceTracker;
+import org.cogchar.bind.lift.ChatConfig;
+import org.cogchar.bind.lift.LiftAmbassador;
+import org.cogchar.bind.lift.LiftConfig;
+import org.cogchar.bind.lift.UserAccessConfig;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.name.lifter.LiftCN;
 import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
@@ -32,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ *Lives in the  Puma project so it can access the Robokind Lifecycle API.
  * @author Ryan Biggs
  */
 public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.LiftAmbassadorInterface, LiftAmbassador.inputInterface> {
