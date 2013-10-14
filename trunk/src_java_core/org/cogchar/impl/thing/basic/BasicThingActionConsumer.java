@@ -34,11 +34,18 @@ public abstract class BasicThingActionConsumer extends BasicDebugger implements 
 	// public abstract ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID);
 
 	/**
+	 * This form is called only from PumaVirtualWorldMapper.setupActionConsumer() - to "clear()" 
+ * old/init actions, before we start listening for new ones. 
+ * The graph it wants to clear is identified by:
+ * Ident actionGraphID = gce.ergMap().get(worldConfigID).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
+ * 
+ * 
+	 * But note also the distinct 1-arg form of this method defined in BasicThingActionRouter, which is
+	 * the one called from ordinary runtime callbacks, after each time that the repo is updated. 
 	 * 
 	 * @param rc
 	 * @param srcGraphID
 	 * @deprecated
-	 * Still called from PumaVirtualWorldMapper.setupActionConsumer() - to "clear()" old/init actions? 
 	 */
 	@Deprecated public void consumeAllActions(RepoClient rc, Ident srcGraphID) {
 		BasicThingActionUpdater updater = new BasicThingActionUpdater();
