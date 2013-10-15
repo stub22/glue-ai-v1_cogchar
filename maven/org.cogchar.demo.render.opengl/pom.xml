@@ -53,7 +53,7 @@
 		<!-- We have direct lib dependencies instead of OSGi-bundle deps on the other cogchar components. -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.lib.core</artifactId>
+			<artifactId>org.cogchar.lib.core.api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

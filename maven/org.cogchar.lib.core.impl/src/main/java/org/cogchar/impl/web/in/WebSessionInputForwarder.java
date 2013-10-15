@@ -48,8 +48,6 @@ public class WebSessionInputForwarder extends BasicThingActionForwarder implemen
 		return myPendingActionParamWriter;
 	}
 	
-
-
 	@Override public void sendMessage(String actionRecordBase, String entityBase) { 
 		//getLogger().info("Posting Lifter repo update message"); // TEST ONLY
 		// The following IDs are currently being pulled from hand-waving; we'll want to formalize this stuff and at least move these ID strings elsewhere:
