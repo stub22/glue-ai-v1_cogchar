@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry including="**/*.java" kind="src" output="target/eclipse-classes" path="src/test/java"/>
-	<classpathentry excluding="**/*.java" kind="src" output="target/eclipse-classes" path="src/test/resources"/>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
-	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.render"/>
 	<classpathentry exported="true" kind="src" path="/ext.bundle.opengl.jmonkey"/>
@@ -15,8 +13,8 @@
 	<classpathentry exported="true" kind="src" path="/ext.bundle.osgi.common"/>
 	<classpathentry exported="true" kind="src" path="/ext.bundle.xml.dom4j_161"/>
 	<classpathentry exported="true" kind="src" path="/ext.bundle.math.symja_jas"/>
-	<classpathentry exported="true" kind="src" path="/org.cogchar.bundle.core"/>
-	<classpathentry kind="src" exported="true" path="/org.cogchar.lib.render.bony"/>
-	<classpathentry kind="src" exported="true" path="/org.cogchar.lib.render.hominoid"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.render.bony"/>
+	<classpathentry exported="true" kind="src" path="/org.storychat.bundle.osgi"/>
+	<classpathentry kind="src" path="/org.cogchar.lib.hedspc.api"/>
 	<classpathentry kind="output" path="target/eclipse-classes"/>
-<classpathentry exported="true" kind="src" path="/org.storychat.bundle.osgi"/></classpath>
+</classpath>

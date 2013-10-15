@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry including="**/*.java" kind="src" output="target/eclipse-classes" path="src/test/java"/>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/webapp"/>
 	<classpathentry kind="src" path="src/main/scala"/>
+	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
-	<classpathentry kind="src" path="/Robokind"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.bundle.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.appdapter.bundle.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ClientRepoSpec"/>
-	<classpathentry kind="src" path="/FeClipse"/>
-	<classpathentry kind="src" path="/org.cogchar.lib.outer.client"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.cogchar.lib.onto"/>
-	<classpathentry kind="src" path="/org.cogchar.lib.core"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.bundle.core"/>
+	<classpathentry exported="true" kind="src" path="/org.appdapter.bundle.core"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.osgi.common"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.jena_all_2_10_1"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.xml.dom4j_161"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.math.symja_jas"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.core.impl"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.core.api"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.onto"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.render"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.opengl.jmonkey"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.animoid"/>
+	<classpathentry exported="true" kind="src" path="/org.jflux.api.core"/>
+	<classpathentry exported="true" kind="src" path="/org.robokind.api.common"/>
+	<classpathentry kind="src" path="/org.jflux.impl.registry.osgi"/>
 	<classpathentry kind="output" path="target/eclipse-classes"/>
-</classpath>
+<classpathentry exported="true" kind="src" path="/org.storychat.bundle.osgi"/></classpath>

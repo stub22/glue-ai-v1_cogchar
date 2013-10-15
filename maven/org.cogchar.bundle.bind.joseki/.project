@@ -1,49 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.cogchar.bundle.bind.joseki</name>
-	<comment>All libraries and OSGi bundles - everything EXCEPT nbui projects. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
-	<projects>
-		<project>org.appdapter.bundle.core</project>
-		<project>ext.bundle.osgi.common</project>
-		<project>ext.bundle.xml.dom4j_161</project>
-		<project>org.cogchar.bundle.app.puma</project>
-		<project>org.cogchar.bundle.bind.robokind</project>
-		<project>org.cogchar.lib.core</project>
-		<project>org.cogchar.lib.onto</project>
-		<project>ext.bundle.math.symja_jas</project>
-		<project>org.cogchar.bundle.core</project>
-		<project>org.cogchar.bundle.render.opengl</project>
-		<project>ext.bundle.opengl.jmonkey</project>
-		<project>org.robokind.api.speech</project>
-		<project>org.robokind.api.common</project>
-		<project>org.robokind.api.messaging</project>
-		<project>org.robokind.impl.speech</project>
-		<project>org.robokind.impl.messaging</project>
-		<project>org.robokind.extern.utils.messaging</project>
-		<project>org.robokind.api.motion</project>
-		<project>org.robokind.api.animation</project>
-		<project>org.robokind.api.vision</project>
-		<project>org.robokind.impl.motion</project>
-		<project>org.robokind.extern.utils.apache_commons_configuration</project>
-		<project>org.robokind.extern.utils.xpp3</project>
-		<project>org.robokind.integration.animation_motion</project>
-		<project>org.robokind.impl.animation</project>
-		<project>org.robokind.integration.motion_speech</project>
-		<project>org.cogchar.bundle.render.resources</project>
-		<project>org.cogchar.bundle.bind.lift</project>
-		<project>org.cogchar.lib.outer.client</project>
-		<project>org.cogchar.lib.render</project>
-		<project>org.cogchar.lib.animoid</project>
-	</projects>
-	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-	</buildSpec>
-	<natures>
-		<nature>org.eclipse.pde.PluginNature</nature>
-		<nature>org.eclipse.jdt.core.javanature</nature>
-	</natures>
+  <name>org.cogchar.bundle.bind.joseki</name>
+  <comment>All libraries and OSGi bundles - everything EXCEPT nbui projects. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects/>
+      <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
 </projectDescription>

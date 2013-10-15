@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>org.cogchar.bundle.app.puma</name>
-  <comment>All libraries and OSGi bundles - everything EXCEPT nbui projects. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <name>org.cogchar.lib.core.impl</name>
+  <comment>Cogchar core - does not include Render binding or Robot binding. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects/>
+  
+ 
       <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
