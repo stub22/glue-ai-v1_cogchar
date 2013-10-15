@@ -189,7 +189,7 @@
 			-->
 
 						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
-						<Export-Package>org.cogchar.lifter.*, org.cogchar.bind.lift.*, bootstrap.*, props, net.liftweb.*, toserve.*,  nu.validator.*</Export-Package>
+						<Export-Package>org.cogchar.lifter.*, bootstrap.*, props, net.liftweb.*, toserve.*,  nu.validator.*</Export-Package>
 						<Private-Package>com.thoughtworks.xstream.*, com.bea.xml.stream.*, org.apache.commons.codec.*, org.apache.http.*</Private-Package>
 						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !org.codehaus.jettison.*, !org.kxml2.*, !nu.xom.*,!org.mozilla.*,!org.specs.*,!ch.qos.logback.*, sun.*;resolution:='optional', !org.scalaquery.*, !org.specs2.*, !scala.tools.scalap.*, *</Import-Package>
 
