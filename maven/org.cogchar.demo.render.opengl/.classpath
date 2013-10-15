@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="org/cogchar/demo/render/opengl/|org/cogchar/demo/render/opengl/brick/|org/cogchar/demo/render/opengl/interact/gui/|org/cogchar/demo/render/opengl/jme3/" including="**/*.java" kind="src" path="src/main/java"/>
+	<classpathentry including="**/*.java" kind="src" output="target/eclipse-classes" path="src/test/java"/>
+	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
-	<classpathentry kind="src" path="/ext.bundle.opengl.nifty"/>
-	<classpathentry kind="src" path="/org.cogchar.bundle.render.resources"/>
-	<classpathentry kind="src" path="/org.appdapter.bundle.core"/>
-	<classpathentry kind="src" path="/ext.bundle.osgi.common"/>
-	<classpathentry kind="src" path="/ext.bundle.jena_all_264"/>
-	<classpathentry kind="src" path="/ext.bundle.xml.dom4j_161"/>
-	<classpathentry kind="src" path="/org.cogchar.bundle.render.opengl"/>
-	<classpathentry kind="src" path="/org.cogchar.bundle.core"/>
-	<classpathentry kind="src" path="/ext.bundle.math.symja_jas"/>
-	<classpathentry kind="src" path="/ext.bundle.opengl.jmonkey"/>
-	<classpathentry kind="src" path="/org.cogchar.lib.render"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.opengl.nifty"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.bundle.render.resources"/>
+	<classpathentry exported="true" kind="src" path="/org.appdapter.bundle.core"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.osgi.common"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.jena_all_2_10_1"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.xml.dom4j_161"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.bundle.render.opengl"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.bundle.core"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.math.symja_jas"/>
+	<classpathentry exported="true" kind="src" path="/ext.bundle.opengl.jmonkey"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.core.api"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.onto"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.render"/>
+	<classpathentry exported="true" kind="src" path="/org.cogchar.lib.animoid"/>
+	<classpathentry kind="src" exported="true" path="/org.cogchar.lib.render.hominoid"/>
+	<classpathentry kind="src" exported="true" path="/org.cogchar.lib.render.goody"/>
+	<classpathentry kind="src" exported="true" path="/org.cogchar.lib.render.bony"/>
 	<classpathentry kind="output" path="target/eclipse-classes"/>
-</classpath>
+<classpathentry exported="true" kind="src" path="/org.storychat.bundle.osgi"/></classpath>

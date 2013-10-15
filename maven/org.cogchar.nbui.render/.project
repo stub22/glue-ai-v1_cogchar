@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>org.cogchar.bundle.app.puma</name>
-  <comment>All libraries and OSGi bundles - everything EXCEPT nbui projects. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <name>org.cogchar.nbui.render</name>
+  <comment>Project Root Folder pom.xml - includes all code + doc directories when snapped. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects/>
       <buildSpec>
     <buildCommand>

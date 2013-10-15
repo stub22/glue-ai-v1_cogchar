@@ -4,13 +4,14 @@
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="/FeClipse"/>
 	<classpathentry kind="src" path="/org.appdapter.bundle.core"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.cogchar.lib.animoid"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.cogchar.lib.convoid"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.cogchar.lib.core"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.cogchar.lib.freckler"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.cogchar.lib.core.api"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.cogchar.lib.core.impl"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.cogchar.lib.hedspc.api"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.cogchar.lib.integroid"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.cogchar.lib.onto"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.storychat.bundle.osgi"/>
 	<classpathentry kind="output" path="target/eclipse-classes"/>
 </classpath>
