@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
-	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="src" path="/org.cogchar.bundle.bind.cogbot"/>
-	<classpathentry exported="true" kind="src" path="/ext.bundle.xml.dom4j_161"/>
-	<classpathentry kind="src" path="/FeClipse"/>
-	<classpathentry kind="src" path="/Robokind"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ClientRepoSpec"/>
-	<classpathentry kind="output" path="target/eclipse-classes"/>
-</classpath>
+  <classpathentry exported="true" kind="src" path="src/main/java" including="**/*.java"/>
+  <classpathentry exported="true" kind="src" path="src/main/resources" excluding="**/*.java"/>
+  <classpathentry kind="output" path="target/eclipse-classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry exported="true" kind="src" path="/org.jflux.api.core"/>
+  <classpathentry exported="true" kind="src" path="/org.cogchar.bundle.bind.cogbot"/>
+  <classpathentry exported="true" kind="src" path="/ext.bundle.xml.dom4j_161"/>
+  <classpathentry exported="true" kind="src" path="/org.robokind.impl.speech"/>
+  <classpathentry exported="true" kind="src" path="/org.jflux.impl.encode.avro"/>
+  <classpathentry exported="true" kind="src" path="/org.jflux.api.data"/>
+  <classpathentry exported="true" kind="src" path="/org.robokind.impl.messaging"/>
+  <classpathentry exported="true" kind="src" path="/org.robokind.api.common"/>
+  <classpathentry exported="true" kind="src" path="/org.robokind.api.messaging"/>
+  <classpathentry exported="true" kind="src" path="/org.robokind.extern.utils.messaging"/>
+  <classpathentry exported="true" kind="src" path="/org.jflux.impl.transport.qpid"/>
+  <classpathentry exported="true" kind="src" path="/org.robokind.api.speech"/>
+  <classpathentry exported="true" kind="src" path="/org.robokind.api.speechrec"/>
+  <classpathentry exported="true" kind="src" path="/org.robokind.impl.speechrec"/>
+<classpathentry exported="true" kind="src" path="/org.storychat.bundle.osgi"/></classpath>
