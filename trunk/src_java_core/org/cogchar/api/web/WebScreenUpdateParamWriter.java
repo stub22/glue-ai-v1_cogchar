@@ -17,10 +17,11 @@ package org.cogchar.api.web;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.impl.thing.basic.BasicTypedValueMap;
+
 import org.cogchar.name.lifter.LiftCN;
 import org.cogchar.name.web.WebActionNames;
 import org.cogchar.api.thing.ActionParamWriter;
+import org.cogchar.api.thing.TypedValueMap;
 
 /**
  * Typically used from a remote client to capture values for encoding in SPARQL-Update.
@@ -30,8 +31,8 @@ import org.cogchar.api.thing.ActionParamWriter;
  */
 public class WebScreenUpdateParamWriter extends ActionParamWriter {
 
-	public WebScreenUpdateParamWriter(BasicTypedValueMap btvMap) {
-		super(btvMap);
+	public WebScreenUpdateParamWriter(TypedValueMap tvMap) {
+		super(tvMap);
 	}
 	
 	
@@ -40,50 +41,60 @@ public class WebScreenUpdateParamWriter extends ActionParamWriter {
 		// We can't do the following because ThingActionUpdater.buildActionParameterValueMap assumes all parameters are Strings in repo:
 		//myBTVMap.putNameAtName(WebActionNames.CONFIG, configIdent);
 		// So instead we convert to String:
-		myBTVMap.putValueAtName(WebActionNames.CONFIG, configIdent.getAbsUriString());
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(WebActionNames.CONFIG, configIdent.getAbsUriString());
 	}
 	
 	
 	// The next method is for setting a single control by repo-encoded "control action":
 	public void putControlAction(Ident actionIdent) {
-		myBTVMap.putValueAtName(WebActionNames.WEBCONTROL_ACTION, actionIdent.getAbsUriString());
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(WebActionNames.WEBCONTROL_ACTION, actionIdent.getAbsUriString());
 	}
 	
 	// The next six methods are for setting a single control by specification:
 	public void putSlotNum(int slotNum) {
-		myBTVMap.putValueAtName(WebActionNames.SLOT, slotNum);
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(WebActionNames.SLOT, slotNum);
 	}
 
 	public void putType(Ident typeIdent) {
-		myBTVMap.putValueAtName(WebActionNames.TYPE, typeIdent.getAbsUriString());
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(WebActionNames.TYPE, typeIdent.getAbsUriString());
 	}
 
 	public void putText(String controlText) {
-		myBTVMap.putValueAtName(WebActionNames.TEXT, blankNotNull(controlText));
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(WebActionNames.TEXT, blankNotNull(controlText));
 	}
 
 	public void putStyle(String styleName) {
-		myBTVMap.putValueAtName(WebActionNames.STYLE, blankNotNull(styleName));
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(WebActionNames.STYLE, blankNotNull(styleName));
 	}
 	
 	public void putResource(String resourceName) {
-		myBTVMap.putValueAtName(WebActionNames.RESOURCE, blankNotNull(resourceName));
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(WebActionNames.RESOURCE, blankNotNull(resourceName));
 	}
 	
 	public void putAction(Ident actionIdent) {
+		TypedValueMap tvm = getValueMap();
 		if (actionIdent == null) {
 			actionIdent = new FreeIdent(LiftCN.BLANK_ACTION); 
 		}
-		myBTVMap.putValueAtName(WebActionNames.ACTION, actionIdent.getAbsUriString());
+		tvm.putValueAtName(WebActionNames.ACTION, actionIdent.getAbsUriString());
 	}
 	
 	
 	public void putUserName(String userName) {
-		myBTVMap.putValueAtName(WebActionNames.USERNAME, userName);
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(WebActionNames.USERNAME, userName);
 	}
 	
 	public void putUserClass(String userClass) {
-		myBTVMap.putValueAtName(WebActionNames.USERCLASS, userClass);
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(WebActionNames.USERCLASS, userClass);
 	}
 	
 }

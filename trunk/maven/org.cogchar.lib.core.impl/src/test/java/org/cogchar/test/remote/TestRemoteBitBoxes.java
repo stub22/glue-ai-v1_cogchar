@@ -14,7 +14,7 @@ import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.impl.thing.fancy.ConcreteTVM;
-import org.cogchar.impl.thing.fancy.FancyThingModelWriter;
+import org.cogchar.api.fancy.FancyThingModelWriter;
 import org.slf4j.Logger;
 
 import java.util.Random;

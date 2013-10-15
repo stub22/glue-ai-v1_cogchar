@@ -16,7 +16,6 @@
 
 package org.cogchar.api.thing;
 
-import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.api.thing.TypedValueMap;
 
 /**
@@ -27,14 +26,14 @@ import org.cogchar.api.thing.TypedValueMap;
 
 public abstract class ActionParamWriter {
 	
-	protected BasicTypedValueMap myBTVMap;
+	protected TypedValueMap		myTVMap;
 
-	public ActionParamWriter(BasicTypedValueMap btvMap) {
-		myBTVMap = btvMap;
+	public ActionParamWriter(TypedValueMap tvm) {
+		myTVMap = tvm;
 	}
 	
 	public TypedValueMap	getValueMap() { 
-		return myBTVMap;
+		return myTVMap;
 	}
 	
 	protected String blankNotNull(String inputString) {

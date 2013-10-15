@@ -38,7 +38,7 @@ import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, Fancy
 import org.cogchar.api.channel.{GraphChannel}
 import org.cogchar.impl.channel.{ThingActionGraphChan}
 import org.cogchar.api.thing.{ThingActionSpec, ThingActionFilter, WantsThingAction}
-import org.cogchar.impl.thing.fancy.{FancyThingModelWriter}
+import org.cogchar.api.fancy.{FancyThingModelWriter}
 import org.apache.http.impl.client.{DefaultHttpClient}
 
 import org.cogchar.impl.thing.basic.BasicThingActionSpecBuilderTempFunctions

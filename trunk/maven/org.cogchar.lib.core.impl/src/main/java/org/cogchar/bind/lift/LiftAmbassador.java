@@ -15,7 +15,8 @@
  */
 package org.cogchar.bind.lift;
 
-import org.cogchar.api.web.WebSessionActionParamWriter;
+import org.cogchar.impl.thing.basic.BasicThingActionForwarder;
+import org.cogchar.api.web.in.WebSessionActionParamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,10 @@ import java.util.Map.Entry;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.thing.ThingActionSender;
 import org.cogchar.api.web.WebAppInterface;
+import org.cogchar.api.web.in.WebSessionInputSender;
+import org.cogchar.impl.web.in.WebSessionInputForwarder;
 import org.cogchar.name.lifter.ChatAN;
 import org.cogchar.name.lifter.LiftAN;
 import org.cogchar.name.lifter.LiftCN;
@@ -66,8 +70,10 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	private static final String repoBaseURL = "http://localhost:8080/cchr_josk/";
 	private static final String repoBaseUpdURL = repoBaseURL + "sparql-update/";
 	private static final String glueUpdURL = repoBaseUpdURL + "glue-ai";
-	private LiftRepoMessenger myRepoMessenger = new LiftRepoMessenger(glueUpdURL,  "ccrt:thing_sheet_22"); 
 	
+	// private BasicThingActionForwarder myRepoMessenger = new BasicThingActionForwarder(glueUpdURL,  "ccrt:thing_sheet_22"); 
+	private WebSessionInputSender myWSISender = new WebSessionInputForwarder(glueUpdURL,  "ccrt:thing_sheet_22");
+		
 	private final Object activationLock = new Object();
 	private final Object cogcharLock = new Object();
 	private final Object databallsLock = new Object();
@@ -86,6 +92,10 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 			}
 			return theLiftAmbassador;
 		}
+	}
+	
+	public void setWebSessionInputSender(WebSessionInputSender tas) {
+		myWSISender = tas;
 	}
 	
 	public interface LiftInterface {
@@ -361,7 +371,7 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		// Currently as defined in RepoOutputHandler: 
 		// senderIdent = new FreeIdent(ActionStrings.p_repoSender + control.action.getLocalName());
 		paramWriter.putSender(senderIdent); 
-		myRepoMessenger.sendMessage("userOutputActionRecord", "userOutput");
+		myWSISender.sendMessage("userOutputActionRecord", "userOutput");
 	}
 	
 	public void sendActionViaRepo(Ident actionIdent, String sessionId) {
@@ -373,11 +383,11 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		paramWriter.putActionUri(actionIdent);
         
         // notify the world a TA exists this may cause WantsThingAction Routers to notice 
-		myRepoMessenger.sendMessage("lifterActionRecord", "lifterAction");
+		myWSISender.sendMessage("lifterActionRecord", "lifterAction");
 	}
 	
 	private WebSessionActionParamWriter getInitializedParamWriter(String sessionId) {
-		WebSessionActionParamWriter paramWriter = myRepoMessenger.resetAndGetParamWriter();
+		WebSessionActionParamWriter paramWriter = myWSISender.resetAndGetParamWriter();
 		paramWriter.putSessionID(sessionId);
 		Ident userId = getKeyByValue(userSessionMap, sessionId);
 		if (userId != null) {

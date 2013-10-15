@@ -16,9 +16,10 @@
 package org.cogchar.api.vworld;
 
 import org.appdapter.core.name.Ident;
-import org.cogchar.impl.thing.basic.BasicTypedValueMap;
+// import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.api.thing.ActionParamWriter;
+import org.cogchar.api.thing.TypedValueMap;
 
 /**
  * Typically used from a remote client to capture values for encoding in SPARQL-Update.
@@ -28,60 +29,69 @@ import org.cogchar.api.thing.ActionParamWriter;
 public class GoodyActionParamWriter extends ActionParamWriter {
 
 
-	public GoodyActionParamWriter(BasicTypedValueMap btvMap) {
-		super(btvMap);
+	public GoodyActionParamWriter(TypedValueMap  tvm) {
+		super(tvm);
 	}
 
 	public void putLocation(float locX, float locY, float locZ) {
-		myBTVMap.putValueAtName(GoodyNames.LOCATION_X, locX);
-		myBTVMap.putValueAtName(GoodyNames.LOCATION_Y, locY);
-		myBTVMap.putValueAtName(GoodyNames.LOCATION_Z, locZ);
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(GoodyNames.LOCATION_X, locX);
+		tvm.putValueAtName(GoodyNames.LOCATION_Y, locY);
+		tvm.putValueAtName(GoodyNames.LOCATION_Z, locZ);
 	}
 
 	public void putRotation(float rotAxisX, float rotAxisY, float rotAxisZ, float magDeg) {
-		myBTVMap.putValueAtName(GoodyNames.ROTATION_AXIS_X, rotAxisX);
-		myBTVMap.putValueAtName(GoodyNames.ROTATION_AXIS_Y, rotAxisY);
-		myBTVMap.putValueAtName(GoodyNames.ROTATION_AXIS_Z, rotAxisZ);
-		myBTVMap.putValueAtName(GoodyNames.ROTATION_MAG_DEG, magDeg);
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(GoodyNames.ROTATION_AXIS_X, rotAxisX);
+		tvm.putValueAtName(GoodyNames.ROTATION_AXIS_Y, rotAxisY);
+		tvm.putValueAtName(GoodyNames.ROTATION_AXIS_Z, rotAxisZ);
+		tvm.putValueAtName(GoodyNames.ROTATION_MAG_DEG, magDeg);
 	}
 
 	public void putSize(float sizeX, float sizeY, float sizeZ) {
-		myBTVMap.putValueAtName(GoodyNames.SIZE_X, sizeX);
-		myBTVMap.putValueAtName(GoodyNames.SIZE_Y, sizeY);
-		myBTVMap.putValueAtName(GoodyNames.SIZE_Z, sizeZ);
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(GoodyNames.SIZE_X, sizeX);
+		tvm.putValueAtName(GoodyNames.SIZE_Y, sizeY);
+		tvm.putValueAtName(GoodyNames.SIZE_Z, sizeZ);
 	}
 	
 	public void putScale(float scalarScale) {
+		TypedValueMap tvm = getValueMap();
 		putScale(scalarScale, scalarScale, scalarScale);
 	}
 	
 	public void putScale(float scaleX, float scaleY, float scaleZ) {
-		myBTVMap.putValueAtName(GoodyNames.SCALE_X, scaleX);
-		myBTVMap.putValueAtName(GoodyNames.SCALE_Y, scaleY);
-		myBTVMap.putValueAtName(GoodyNames.SCALE_Z, scaleZ);
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(GoodyNames.SCALE_X, scaleX);
+		tvm.putValueAtName(GoodyNames.SCALE_Y, scaleY);
+		tvm.putValueAtName(GoodyNames.SCALE_Z, scaleZ);
 	}
 	
 	// Not sure if this is how we want this to look or how we want it named, but good for starters...
 	public void putDuration(float duration) {
-		myBTVMap.putValueAtName(GoodyNames.TRAVEL_TIME, duration);
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(GoodyNames.TRAVEL_TIME, duration);
 	}
 	
 	public void putColor(float colorR, float colorG, float colorB, float colorAlpha) {
-		myBTVMap.putValueAtName(GoodyNames.COLOR_RED, colorR);
-		myBTVMap.putValueAtName(GoodyNames.COLOR_GREEN, colorG);
-		myBTVMap.putValueAtName(GoodyNames.COLOR_BLUE, colorB);
-		myBTVMap.putValueAtName(GoodyNames.COLOR_ALPHA, colorAlpha);
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(GoodyNames.COLOR_RED, colorR);
+		tvm.putValueAtName(GoodyNames.COLOR_GREEN, colorG);
+		tvm.putValueAtName(GoodyNames.COLOR_BLUE, colorB);
+		tvm.putValueAtName(GoodyNames.COLOR_ALPHA, colorAlpha);
 	}
 	
 	public void putObjectAtName(Ident pName, Object pVal) {
-		myBTVMap.putValueAtName(pName, pVal);
+		TypedValueMap tvm = getValueMap();
+		tvm.putValueAtName(pName, pVal);
 	}
 	public void putNameAtName(Ident pName, Ident pVal) {
-		myBTVMap.putNameAtName(pName, pVal);
+		TypedValueMap tvm = getValueMap();
+		tvm.putNameAtName(pName, pVal);
 	}
 	
 	/**  type is *not* a param.  So, we don't want to have code like this:
-	void putType(Ident someTypeID) {myBTVMap.putNameAtName(GoodyNames.RDF_TYPE, someTypeID);}
+	void putType(Ident someTypeID) {tvm.putNameAtName(GoodyNames.RDF_TYPE, someTypeID);}
 	*/
 
 }

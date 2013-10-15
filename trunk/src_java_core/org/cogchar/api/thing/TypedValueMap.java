@@ -44,5 +44,7 @@ public interface TypedValueMap {
 	
 	public Object getRaw(Ident propName);
 	public String getSparqlText(Ident propName);
-
+	public void putValueAtName(Ident name, Object val) ;
+	public void putNameAtName(Ident name, Ident nameVal);
+	public Ident getNameAtName(Ident name);
 }
