@@ -21,7 +21,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.blob.emit.BehavMasterConfigTest;
+// import org.cogchar.blob.emit.BehavMasterConfigTest;
+import org.cogchar.impl.scene.read.SceneSpecReader;
 import org.cogchar.impl.channel.FancyChannelSpec;
 import org.osgi.framework.BundleContext;
 import org.cogchar.bind.rk.behavior.ChannelBindingConfig;
@@ -38,7 +39,8 @@ public class ChannelWiringDemo extends WiringDemo {
 	public static String GROUP_KEY_CHAN_BIND = MasterDemoNames.GROUP_KEY_CHAN_BIND; // "ChannelBindingGroupId";
 	
 	public String myDefaultChanGroupQName = MasterDemoNames.CHAN_GROUP_QN; // "csi:demo_master_chan_group_22";
-
+	public String CHAN_BIND_GRAPH_QN = MasterDemoNames.CHAN_BIND_GRAPH_QN;
+	
 	public ChannelWiringDemo(BundleContext bundleCtx, RepoClient demoRepoClient) {
 		super(bundleCtx, demoRepoClient);
 	}
@@ -49,8 +51,9 @@ public class ChannelWiringDemo extends WiringDemo {
 
 	public Set<FancyChannelSpec> loadDemoChannelSpecs(RepoClient bmcRepoCli) {
 		getLogger().info("************************ loadDemoChannelSpecs()");
+		SceneSpecReader ssr = getSceneSpecReader();
 		// Use an arbitrarily assumed name for the ChannelBinding Graph (as set in the "Dir" model of the source repo).
-		Set<FancyChannelSpec> chanSpecs = BehavMasterConfigTest.readChannelSpecs(bmcRepoCli, BehavMasterConfigTest.CHAN_BIND_GRAPH_QN());
+		Set<FancyChannelSpec> chanSpecs = ssr.readChannelSpecs(bmcRepoCli, CHAN_BIND_GRAPH_QN);
 
 		getLogger().info("Loaded ChanSpecs: " + chanSpecs);
 		return chanSpecs;

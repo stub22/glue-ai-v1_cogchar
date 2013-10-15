@@ -29,7 +29,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.cogchar.api.animoid.protocol.Robot;
 import org.cogchar.api.animoid.world.WorldJoint;
 import org.dom4j.io.SAXReader;
-import org.cogchar.impl.perform.DummyTextChan;
+
 
 /**
  * @author Stu B. <www.texpedient.com>
