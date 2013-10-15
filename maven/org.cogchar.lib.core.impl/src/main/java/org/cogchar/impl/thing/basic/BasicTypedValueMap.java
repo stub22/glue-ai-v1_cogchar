@@ -52,13 +52,13 @@ public abstract class BasicTypedValueMap implements TypedValueMap {
 		}
 		return typedResult;
 	}
-	public void putValueAtName(Ident name, Object val) {
+	@Override public void putValueAtName(Ident name, Object val) {
 		myRawObjsByID.put(name, val);
 	}
-	public void putNameAtName(Ident name, Ident nameVal) { 
+	@Override public void putNameAtName(Ident name, Ident nameVal) { 
 		putValueAtName(name, nameVal);
 	}
-	public Ident getNameAtName(Ident name) {
+	@Override public Ident getNameAtName(Ident name) {
 		return getValueAtNameAs(name, Ident.class);
 	}
 	@Override  public String toString() {

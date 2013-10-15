@@ -18,8 +18,10 @@ package org.cogchar.api.web;
 
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.BasicEntityAction;
-import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
+// import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.api.thing.ThingActionSpec;
+import org.cogchar.api.thing.WantsThingAction;
+import org.cogchar.api.thing.WantsThingAction.ConsumpStatus;
 import org.cogchar.name.web.WebActionNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,7 +164,7 @@ public class WebEntityAction extends BasicEntityAction {
 		return false;
 	}
 	
-	public static class Consumer extends BasicThingActionConsumer {
+	public static class Consumer implements WantsThingAction { //  extends BasicThingActionConsumer {
 
 		@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
 			return makeAndPerformForTAS(actionSpec) ? ConsumpStatus.CONSUMED : ConsumpStatus.IGNORED;
