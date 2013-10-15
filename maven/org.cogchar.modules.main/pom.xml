@@ -70,7 +70,8 @@
 		<module>../org.cogchar.bundle.bind.cogbot</module>
 		<module>../org.cogchar.bundle.bind.lift</module>
 		<module>../org.cogchar.bundle.bind.joseki</module>
-		<module>../org.cogchar.bundle.bind.storychat</module>
+
+
 		<module>../org.cogchar.bundle.demo.convo</module>
 		<module>../org.cogchar.bundle.demo.dictation</module>
 		<module>../org.cogchar.demo.render.opengl</module>
