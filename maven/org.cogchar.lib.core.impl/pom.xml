@@ -23,9 +23,8 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.lib.core</artifactId>
+			<artifactId>org.cogchar.lib.core.api</artifactId>
 			<version>${project.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<!-- It appears these JFlux deps are now bringing in a slf4j-log4j binding.  Le sigh.
 		-->

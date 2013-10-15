@@ -26,15 +26,6 @@
 			<version>${project.version}</version>
 		</dependency>		
 		
-		
-		<!--
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		-->
-		
 		<dependency>
 			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
 			<groupId>org.appdapter</groupId>
@@ -53,7 +44,9 @@
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.speech</artifactId>
 			<version>${robokind.version}</version>
-		</dependency><dependency>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.robokind</groupId>
 			<!-- Needed at compile time for PortableSpeechRequest  -->
 			<artifactId>org.robokind.impl.speech</artifactId>
