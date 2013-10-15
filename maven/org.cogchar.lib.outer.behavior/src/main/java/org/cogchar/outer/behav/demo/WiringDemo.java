@@ -24,6 +24,8 @@ import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.osgi.framework.BundleContext;
 import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.cogchar.impl.scene.read.SceneSpecReader;
+import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -34,7 +36,7 @@ public abstract class WiringDemo extends BasicDebugger {
 	private		RepoClient		myDefaultRepoClient;
 	
 	abstract public void registerJFluxExtenders(BundleContext bundleCtx);
-	
+
 	public WiringDemo(BundleContext bc, RepoClient rc) {
 		myDefaultBundleContext = bc;
 		myDefaultRepoClient = rc;
@@ -44,6 +46,10 @@ public abstract class WiringDemo extends BasicDebugger {
 	}
 	protected RepoClient getDefaultRepoClient() {
 		return myDefaultRepoClient;
+	}
+	
+	protected SceneSpecReader getSceneSpecReader() { 
+		return BehavMasterConfigTest.getSceneSpecReader();
 	}
     public static Runnable getRegistrationRunnable(
             final BundleContext context, final Class clazz, final Object obj, final String key, final String val){

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.test.impl.scene
+package org.cogchar.impl.scene.read
 
 import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.store.{Repo, InitialBinding }
@@ -31,9 +31,10 @@ import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.BundleContext;
 import org.appdapter.core.matdat.{SheetRepo, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, DirectDerivedGraph, DerivedGraphSpec, _}
 
+
 // import org.cogchar.blob.emit.RepoClientTester from here
 
-object BehavMasterConfigTest extends BasicDebugger {
+object BehavMasterConfigTest extends SceneSpecReader {
 	// These constants are used to test the ChanBinding model found in "GluePuma_BehavMasterDemo"
 	//   https://docs.google.com/spreadsheet/ccc?key=0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c
 	final val BMC_SHEET_KEY = "0AlpQRNQ-L8QUdFh5YWswSzdYZFJMb1N6aEhJVWwtR3c"
@@ -63,6 +64,8 @@ object BehavMasterConfigTest extends BasicDebugger {
 	
 	
 
+	def  getSceneSpecReader : SceneSpecReader = this
+	
 	def makeBMC_RepoSpec(ctx : BundleContext) : OnlineSheetRepoSpec = { 				
 		val fileResModelCLs : java.util.List[ClassLoader] = 
 				ClassLoaderUtils.getFileResourceClassLoaders(ctx, ClassLoaderUtils.ALL_RESOURCE_CLASSLOADER_TYPES);
@@ -82,44 +85,7 @@ object BehavMasterConfigTest extends BasicDebugger {
 		new OfflineXlsSheetRepoSpec(BMC_WORKBOOK_PATH, BMC_NAMESPACE_SHEET_NAME, BMC_DIRECTORY_SHEET_NAME, fileResModelCLs);
 	}
   
-	def readChannelSpecs(repoClient : RepoClient, chanGraphQN : String) : java.util.Set[FancyChannelSpec] = {
-		val specSet = new java.util.HashSet[FancyChannelSpec]();
-		val objectsFound : java.util.Set[Object] = repoClient.assembleRootsFromNamedModel(chanGraphQN);
-		if (objectsFound != null) {
-			import scala.collection.JavaConversions._;
-			for (o <- objectsFound) {
-				o match {
-					case cspec : FancyChannelSpec => specSet.add(cspec)
-					case _ => getLogger().warn("Unexpected object found in {} = {}", Array[Object]( chanGraphQN, o));
-				}
-			}
-		} else {
-			getLogger().error("Channel root assemble returned null for graph {}", chanGraphQN);
-		}
-		specSet;
-	} 
-	def readSceneSpecs(repoClient : RepoClient, behavGraphQN : String) : java.util.List[SceneSpec] = {
-		val	behavGraphID = repoClient.makeIdentForQName(behavGraphQN);
-		
-		val allBehavSpecs = repoClient.assembleRootsFromNamedModel(behavGraphID);
-		val ssList = SceneBook.filterSceneSpecs(allBehavSpecs);
-		getLogger().info("Loaded SceneSpecs: " + ssList);
-		
-		ssList
-	}
-	val EQBAR = "=========================================================================================="
-	
-	def readSceneSpecsFromDerivedRepo(srcRepoCli : RepoClient, pqs : PipelineQuerySpec, derivedBehavGraphID : Ident) : java.util.List[SceneSpec] = {
-		println(EQBAR + "\nReading indirect graph " + derivedBehavGraphID + " using " + pqs + "thru repoClient [" + srcRepoCli + "]");
-				
-		val bmp =  ModelProviderFactory.makeOneDerivedModelProvider (srcRepoCli, pqs, derivedBehavGraphID)
-		readSceneSpecsFromBMP(bmp)
-	}
-	def readSceneSpecsFromBMP(bmp : BoundModelProvider) : java.util.List[SceneSpec] = {
-		val allObjects : java.util.Set[Object] = bmp.assembleModelRoots()
-		val sceneSpecList : java.util.List[SceneSpec] = SceneBook.filterSceneSpecs(allObjects);
-		sceneSpecList
-	}
+
 
 	def main(args: Array[String]) : Unit = {
 		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
@@ -147,6 +113,8 @@ object BehavMasterConfigTest extends BasicDebugger {
 		
 		println("Repo Client: " + bmcRepoCli)
 		// Use an arbitrarily assumed name for the ChannelBinding Graph (as set in the "Dir" model of the source repo).
+		
+		
 		val chanSpecs = readChannelSpecs(bmcRepoCli, CHAN_BIND_GRAPH_QN);
 		getLogger().info("Found chanSpecs in " + CHAN_BIND_GRAPH_QN + " : " + chanSpecs)
 		import scala.collection.JavaConversions._;

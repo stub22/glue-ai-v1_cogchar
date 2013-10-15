@@ -25,7 +25,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>org.cogchar.lib.core</artifactId>
+      <artifactId>org.cogchar.lib.core.api</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

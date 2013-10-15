@@ -20,10 +20,16 @@ package org.cogchar.outer.behav.demo;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.RepoClientImpl;
-// normally we dont use * in imports but this way we can work/test with both appdapter 1.1.0 or 1.1.1 and the respective version of cogchars
-import org.appdapter.core.matdat.*;
-import org.cogchar.blob.emit.*;
+
+import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 import org.osgi.framework.BundleContext;
+
+// Stu sez:   Booo!   Don't do this!!!!  
+// import org.appdapter.core.matdat.*;
+
+import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.core.matdat.OnlineSheetRepoSpec;
+import org.appdapter.core.matdat.EnhancedRepoClient;
 
 /**
  * @author Stu B. <www.texpedient.com>

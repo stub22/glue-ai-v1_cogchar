@@ -25,7 +25,7 @@ import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.impl.store.FancyRepo;
-import org.cogchar.blob.emit.BehavMasterConfigTest;
+
 import org.appdapter.core.matdat.PipelineQuerySpec;
 import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.appdapter.core.matdat.BoundModelProvider;
@@ -41,7 +41,7 @@ import org.robokind.api.common.osgi.OSGiUtils;
 import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
 
 import org.cogchar.bind.rk.behavior.SceneSpecExtender;
-
+import org.cogchar.impl.scene.read.SceneSpecReader;
 import org.cogchar.name.behavior.MasterDemoNames;
 /**
  * @author Stu B. <www.texpedient.com>
@@ -125,7 +125,8 @@ public class SceneWiringDemo extends WiringDemo {
 		try {
 		//	FancyRepo fr = (FancyRepo) bmcRepoCli.getRepo();
 		//	Ident derivedBehavGraphID = bmcRepoCli.makeIdentForQName(derivedGraphQN);
-			ssList = BehavMasterConfigTest.readSceneSpecsFromBMP(bmp);
+			SceneSpecReader ssr = getSceneSpecReader();
+			ssList = ssr.readSceneSpecsFromBMP(bmp);
 		} catch (Throwable t) {
 			getLogger().error("Problem loading sceneSpecs from bound graph {}", bmp, t);
 		}
