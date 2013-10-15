@@ -14,19 +14,20 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.lift;
+package org.cogchar.impl.thing.basic;
 
-import org.cogchar.api.web.WebSessionActionParamWriter;
+import org.cogchar.api.web.in.WebSessionActionParamWriter;
 import java.util.Random;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.thing.ThingActionSender;
 import org.cogchar.impl.thing.basic.BasicThingActionSpec;
 import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.TypedValueMap;
-import org.cogchar.impl.thing.fancy.ConcreteTVM;
-import org.cogchar.impl.thing.fancy.FancyThingModelWriter;
+
+import org.cogchar.api.fancy.FancyThingModelWriter;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.name.lifter.LiftAN;
 import org.cogchar.name.web.WebActionNames;
@@ -40,17 +41,19 @@ import org.cogchar.outer.client.AgentRepoClient;
  * For starters, we're sending good ole ThingActions, but we may well make something more bespoke soon
  * 
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
+ * 
+ * // Ick, this is used by LiftAmbassador!
  */
 
 
-public class LiftRepoMessenger extends BasicDebugger {
+public abstract class BasicThingActionForwarder extends BasicDebugger implements ThingActionSender {
 	
 	protected	Random							myRandomizer = new Random();
 	protected	AgentRepoClient					myAgentRepoClient = new AgentRepoClient();
 	protected	String							myUpdateTargetURL, myUpdateGraphQN;
-	protected	WebSessionActionParamWriter		myPendingActionParamWriter;
+
 	
-	public LiftRepoMessenger(String updateTargetURL, String updateGraphQN) {
+	public BasicThingActionForwarder(String updateTargetURL, String updateGraphQN) {
 		myUpdateTargetURL = updateTargetURL;
 		myUpdateGraphQN = updateGraphQN;
 	}
@@ -60,36 +63,12 @@ public class LiftRepoMessenger extends BasicDebugger {
 		return new FreeIdent(LiftAN.NS_LifterUserAction + instanceLabel + "_" + rNum);
 	}
 	
-	private void sendActionSpec(ThingActionSpec actionSpec) {
+	protected void sendActionSpec(ThingActionSpec actionSpec) {
 		FancyThingModelWriter ftmw = new FancyThingModelWriter();
 		String updateTxt = ftmw.writeTASpecToString(actionSpec, myUpdateGraphQN, myRandomizer);
 		getLogger().debug("Sending update message:\n{}", updateTxt);
 		boolean debugFlag = false;
 		myAgentRepoClient.execRemoteSparqlUpdate(myUpdateTargetURL, updateTxt, debugFlag);
-	}
-	
-	public WebSessionActionParamWriter resetAndGetParamWriter() { 
-		BasicTypedValueMap btvm = new ConcreteTVM();
-		myPendingActionParamWriter = new WebSessionActionParamWriter(btvm);
-		return myPendingActionParamWriter;
-	}
-	
-	protected void sendMessage(String actionRecordBase, String entityBase) { 
-		//getLogger().info("Posting Lifter repo update message"); // TEST ONLY
-		// The following IDs are currently being pulled from hand-waving; we'll want to formalize this stuff and at least move these ID strings elsewhere:
-		Ident actRecID = mintInstanceID(actionRecordBase);
-		Ident entityID = mintInstanceID(entityBase);
-		Ident srcAgentID = mintInstanceID("liftMessageAgent");
-		Ident verbID =  GoodyNames.ACTION_CREATE; // Probably shouldn't come from GoodyNames. Right now we are only CREATEing an output message
-		TypedValueMap valueMap = myPendingActionParamWriter.getValueMap();
-		Long postedTStampMsec = System.currentTimeMillis();
-		BasicThingActionSpec actionSpec = 
-				new BasicThingActionSpec(actRecID, entityID, getEntityTypeID(), verbID, srcAgentID, valueMap, postedTStampMsec);	
-		sendActionSpec(actionSpec);
-	}
-	
-	protected Ident getEntityTypeID() {
-		return WebActionNames.WEB_USER_INPUT;
 	}
 	
 }

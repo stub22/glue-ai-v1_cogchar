@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.thing.fancy
+package org.cogchar.api.fancy
 
 
 import java.io.Reader;
@@ -23,7 +23,7 @@ import org.appdapter.bind.csv.datmat.TestSheetReadMain;
 import au.com.bytecode.opencsv.CSVReader;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMap}
+// import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMap}
 
 
 import org.appdapter.core.log.BasicDebugger;

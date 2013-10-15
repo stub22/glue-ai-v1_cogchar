@@ -14,23 +14,24 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.web;
+package org.cogchar.api.web.in;
 
 import org.appdapter.core.name.Ident;
-import org.cogchar.impl.thing.basic.BasicTypedValueMap;
+// import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.name.web.WebUserActionNames;
 import org.cogchar.api.thing.ActionParamWriter;
+import org.cogchar.api.thing.TypedValueMap;
 
 /**
- * This has something to do with session-level state management.
- * But it facilitates sending a message from what sources to what destinations?
+ * This class has something to do with session-level state management.
+ * IDK:  it facilitates sending a message from what sources to what destinations?
  * 
  */
 
 
 public class WebSessionActionParamWriter extends ActionParamWriter {
-	public WebSessionActionParamWriter(BasicTypedValueMap btvMap) {
-		super(btvMap);
+	public WebSessionActionParamWriter(TypedValueMap ttvMap) {
+		super(ttvMap);
 	}
 	
 	public void putSender(Ident senderId) {
@@ -42,7 +43,7 @@ public class WebSessionActionParamWriter extends ActionParamWriter {
 	}
 	
 	public void putSessionID(String sessionId) {
-		myBTVMap.putValueAtName(WebUserActionNames.SESSION, sessionId);
+		myTVMap.putValueAtName(WebUserActionNames.SESSION, sessionId);
 	}
 	
 	public void putUserClass(Ident userClass) {
@@ -50,7 +51,7 @@ public class WebSessionActionParamWriter extends ActionParamWriter {
 	}
 
 	public void putOutputText(String controlText) {
-		myBTVMap.putValueAtName(WebUserActionNames.USER_TEXT, controlText);
+		myTVMap.putValueAtName(WebUserActionNames.USER_TEXT, controlText);
 	}
 	
 	public void putActionUri(Ident actionUri) {
@@ -60,7 +61,7 @@ public class WebSessionActionParamWriter extends ActionParamWriter {
 	
 	private void putIfNonNull(Ident identToPut, Ident propIdent) {
 		if (identToPut != null) {
-			myBTVMap.putValueAtName(propIdent, identToPut.getAbsUriString());
+			myTVMap.putValueAtName(propIdent, identToPut.getAbsUriString());
 		}
 	}
 }
