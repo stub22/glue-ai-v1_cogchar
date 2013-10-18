@@ -119,7 +119,7 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		switch (ga.getKind()) {
 			case MOVE : {
-				setPosition(ga.getLocationVector(), qStyle);
+				setPosition(ga.getLocationVec3f(), qStyle);
 				break;
 			}
 			case SET : {
