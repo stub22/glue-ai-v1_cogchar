@@ -37,39 +37,51 @@ import org.cogchar.render.goody.bit.TicTacGrid;
 public class LocalGoodyHarness {
 
 	protected Random myRandomizer = new Random();
-	
 	protected Ident myAgentID = new FreeIdent(NamespaceDir.CCRT_NS + "test_agent_LGH");
-	
-	public static class GARecipe {
-	
-		public	Ident entityID = null;
-		public	Ident entityTypeID = null; // getEntityTypeID();
-		public	Ident verbID = null; // myPendingActionVerbID;	
-	
-		public float	duration;
-		
-		public float	locX, locY, locZ;
-		public float	rotX, rotY, rotZ, rotMag;
-		public float	scaleX, scaleY, scaleZ;
-		
-		public float	colorR, colorG, colorB, colorA;
-		public boolean	flag_state, flag_useO, flag_clearMarks;
-		public int		rows;
-		public int		coordX, coordY;
-		public String	text;
-		
-		public void writeToMap(GoodyActionParamWriter gapw) { 
+
+	public static class GARecipe implements Cloneable {
+
+		public Ident entityID = null;
+		public Ident entityTypeID = null; // getEntityTypeID();
+		public Ident verbID = null; // myPendingActionVerbID;	
+		public float duration;
+		public float locX, locY, locZ;
+		public float rotX, rotY, rotZ, rotMag;
+		public float scaleX, scaleY, scaleZ;
+		public float scalarScale;
+		public float sizeX, sizeY, sizeZ;
+		public float colorR, colorG, colorB, colorA;
+		public boolean flag_state, flag_useO, flag_clearMarks;
+		public int rows;
+		public int coordX, coordY;
+		public String text;
+
+		public void writeToMap(GoodyActionParamWriter gapw) {
 			gapw.putDuration(duration);
 			gapw.putLocation(locX, locY, locZ);
 			gapw.putRotation(rotX, rotY, rotZ, rotMag);
-			gapw.putScale(scaleX, scaleY, scaleZ);
+			gapw.putScaleVec(scaleX, scaleY, scaleZ);
+			gapw.putScaleUniform(scalarScale);
+			gapw.putSize(sizeX, sizeY, sizeZ);
 			gapw.putColor(colorR, colorG, colorB, colorA);
+			gapw.putObjectAtName(GoodyNames.ROWS, rows);
 			gapw.putObjectAtName(GoodyNames.COORDINATE_X, coordX);
-			gapw.putObjectAtName(GoodyNames.COORDINATE_Y, coordY);			
+			gapw.putObjectAtName(GoodyNames.COORDINATE_Y, coordY);
 			gapw.putObjectAtName(GoodyNames.BOOLEAN_STATE, flag_state);
 			gapw.putObjectAtName(GoodyNames.USE_O, flag_useO);
 			gapw.putObjectAtName(GoodyNames.TEXT, text);
 			gapw.putObjectAtName(TicTacGrid.CLEAR_IDENT, flag_clearMarks);
+			
+		}
+
+		public GARecipe copyMe() {
+			GARecipe c = null;
+			try {
+				c = (GARecipe) this.clone();
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+			return c;
 		}
 	}
 
@@ -79,13 +91,13 @@ public class LocalGoodyHarness {
 		gar.writeToMap(paramWriter);
 		String mintedInstIdPrefix = NamespaceDir.CCRT_NS + "minted_";
 		Ident actRecID = mintInstanceID(mintedInstIdPrefix);
-		
+
 		Ident srcAgentID = myAgentID;
 		Long postedTStampMsec = System.currentTimeMillis();
 
 		TypedValueMap valueMap = paramWriter.getValueMap();
-		BasicThingActionSpec actionSpec =	new BasicThingActionSpec(actRecID, 
-					gar.entityID, gar.entityTypeID, gar.verbID, srcAgentID, valueMap,postedTStampMsec);
+		BasicThingActionSpec actionSpec = new BasicThingActionSpec(actRecID,
+			gar.entityID, gar.entityTypeID, gar.verbID, srcAgentID, valueMap, postedTStampMsec);
 
 		GoodySpace gSpace = getGoodySpace();
 		Ident srcGraphID = srcAgentID;

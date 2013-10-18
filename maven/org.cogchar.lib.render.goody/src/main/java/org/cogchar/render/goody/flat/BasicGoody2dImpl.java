@@ -155,8 +155,8 @@ public class BasicGoody2dImpl extends VWorldEntity {
 		switch (ga.getKind()) {
 			case MOVE : 
 			case SET : {
-				setPosition(ga.getLocationVector(), qStyle);
-				setUniformScaleFactor(ga.getScale(), qStyle);
+				setPosition(ga.getLocationVec3f(), qStyle);
+				setUniformScaleFactor(ga.getScaleUniform(), qStyle);
 				setColor(ga.getColor());
 				break;
 			}

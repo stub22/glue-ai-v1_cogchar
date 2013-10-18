@@ -130,7 +130,7 @@ public class VWorldHumanoidFigureEntity extends VWorldEntity {
 	}
 	
 	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
-		Vector3f newLocation = ga.getLocationVector();
+		Vector3f newLocation = ga.getLocationVec3f();
 		Quaternion newRotation = ga.getRotationQuaternion();
 		switch (ga.getKind()) {
 			case SET : {

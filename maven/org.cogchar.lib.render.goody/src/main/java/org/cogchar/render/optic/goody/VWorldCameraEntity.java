@@ -155,7 +155,7 @@ public class VWorldCameraEntity extends VWorldEntity {
 	
 
 	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
-		Vector3f newLocation = ga.getLocationVector();
+		Vector3f newLocation = ga.getLocationVec3f();
 		Quaternion newRotation = ga.getRotationQuaternion();
 		String attachToGoodyUriString = ga.getSpecialString(GoodyNames.ATTACH_TO_GOODY);
 		switch (ga.getKind()) {

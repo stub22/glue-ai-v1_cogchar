@@ -135,6 +135,7 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 	}
 	// We are on the JME3 thread!
 	private void initContentOnJME3Thread() {
+		
 		ViewPort  pvp = getPrimaryAppViewPort();		
 		pvp.setBackgroundColor(ColorRGBA.Blue);
 		shedLight();
@@ -142,19 +143,39 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 		
 		LocalGoodyHarness lgh = new LocalGoodyHarness();
 		
-		LocalGoodyHarness.GARecipe gar01 = new LocalGoodyHarness.GARecipe();
 		
-		gar01.entityID =  new FreeIdent(NamespaceDir.CCRT_NS +  "ttg_01");
+		LocalGoodyHarness.GARecipe garTemplate_AA = new LocalGoodyHarness.GARecipe();
+
+		garTemplate_AA.verbID = GoodyNames.ACTION_CREATE;
+		garTemplate_AA.colorG = garTemplate_AA.colorA = 0.6f;
+		garTemplate_AA.scaleX = garTemplate_AA.scaleY = garTemplate_AA.scaleZ = 3.0f;
+		garTemplate_AA.scalarScale = 1.5f;
+		garTemplate_AA.sizeX = garTemplate_AA.sizeY = garTemplate_AA.sizeZ = 10.0f;
+		garTemplate_AA.rows = 5;
 		
-		gar01.entityTypeID = GoodyNames.TYPE_TICTAC_GRID;
-		gar01.verbID = GoodyNames.ACTION_CREATE;
-		gar01.colorG = gar01.colorA = 1.0f;
-		gar01.scaleX = gar01.scaleY = gar01.scaleZ = 3.0f;
+		int		garCount = 20;
+
+		LocalGoodyHarness.GARecipe	garBlock[] = new LocalGoodyHarness.GARecipe[garCount];
 		
-		lgh.makeActionSpecAndSend(gar01);
-		gar01.verbID = GoodyNames.ACTION_SET;
+		for (int idx=0; idx < garCount; idx++) {
+			garBlock[idx] = garTemplate_AA.copyMe();
+			garBlock[idx].entityID =  new FreeIdent(NamespaceDir.CCRT_NS +  "ttg_" + idx);
+		}
+		LocalGoodyHarness.GARecipe gb = garBlock[0];
+		
+		gb.entityTypeID = GoodyNames.TYPE_TICTAC_GRID; 
+		lgh.makeActionSpecAndSend(gb);
+		gb.verbID = GoodyNames.ACTION_SET;
 		// String removeString = ga.getSpecialString(CLEAR_IDENT);
-		lgh.makeActionSpecAndSend(gar01);
+		lgh.makeActionSpecAndSend(gb);
+		gb = garBlock[1];
+		gb.entityTypeID = GoodyNames.TYPE_BIT_BOX;
+		lgh.makeActionSpecAndSend(gb);
+		gb.verbID = GoodyNames.ACTION_SET;
+		lgh.makeActionSpecAndSend(gb);
+		gb = garBlock[2];
+		gb.entityTypeID = GoodyNames.TYPE_SCOREBOARD;
+		lgh.makeActionSpecAndSend(gb);
 		
 	//	GoodyRenderTestContent grtc = new GoodyRenderTestContent();
 		// GoodySpace gSpace = getGoodySpace();
