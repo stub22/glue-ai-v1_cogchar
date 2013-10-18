@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.app.entity.VWorldEntity;
+import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 // import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
@@ -50,7 +51,13 @@ public class BasicGoody2dImpl extends VWorldEntity {
 		myRenderRegCli = aRenderRegCli;
 		myUri = uri;
 		myOverlayMgr = myRenderRegCli.getSceneFlatFacade(null);
-		applyScreenDimension(GoodyFactory.getTheFactory().getActionConsumer().getScreenDimension());
+		VWorldEntityActionConsumer vweac = GoodyFactory.getTheFactory().getActionConsumer();
+		Dimension screenDimension = vweac.getScreenDimension();
+		if (screenDimension != null) {
+			applyScreenDimension(screenDimension);
+		} else {
+			getLogger().warn("Cannot find screen dimension.");
+		}
 	}
 	
 	// Currently just uses default font for everything -- ok for what we need now, but ultimately may want to 
