@@ -17,6 +17,8 @@
 package org.cogchar.render.app.entity;
 
 import com.jme3.math.Vector3f;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
@@ -104,7 +106,7 @@ public class GoodyFactory {
 	}
 	
 	public VWorldEntity createByAction(GoodyActionExtractor ga) {
-		VWorldEntity newGoody = null;
+		VWorldEntity novGoody = null;
 		if (ga.getKind() == GoodyActionExtractor.Kind.CREATE) {
 			// Switch on string local name would be nice
 			// This is getting out of hand
@@ -114,52 +116,59 @@ public class GoodyFactory {
 			// Still would need a way (possibly reflection?) to get goody class from type
 			try {
 				//theLogger.info("Trying to create a goody, type is {}", ga.getType()); // TEST ONLY
-				Vector3f scale = ga.getVectorScale();
-				Float scalarScale = ga.getScale();
-				if ((scale == null) && (scalarScale != null)) {
-					scale = new Vector3f(scalarScale, scalarScale, scalarScale);
+				Vector3f scaleVec = ga.getScaleVec3f();
+				Float scaleUniform = ga.getScaleUniform();
+				if ((scaleVec == null) && (scaleUniform != null)) {
+					scaleVec = new Vector3f(scaleUniform, scaleUniform, scaleUniform);
 				}
+				Vector3f locVec = ga.getLocationVec3f();
+				Quaternion rotQuat = ga.getRotationQuaternion();
+				Ident goodyID = ga.getGoodyID();
+				Ident goodyType = ga.getType();
+				ColorRGBA gcolor = ga.getColor();
+				String goodyText = ga.getText();
+				Boolean bitBoxState = ga.getSpecialBoolean(GoodyNames.BOOLEAN_STATE);
+				Boolean isAnO =  ga.getSpecialBoolean(GoodyNames.USE_O);				
+				Integer rowCount = ga.getSpecialInteger(GoodyNames.ROWS);
 				
-				if (GoodyNames.TYPE_BIT_BOX.equals(ga.getType())) {
-					boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
-					newGoody = new BitBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
-						scale, bitBoxState);
-				} else if (GoodyNames.TYPE_BIT_CUBE.equals(ga.getType())) {
-					boolean bitBoxState = Boolean.valueOf(ga.getSpecialString(GoodyNames.BOOLEAN_STATE));
-					newGoody = new BitCube(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
-						scale, bitBoxState);
-				} else if (GoodyNames.TYPE_FLOOR.equals(ga.getType())) {
+				
+				if (GoodyNames.TYPE_BIT_BOX.equals(goodyType)) {
+					novGoody = new BitBox(myRRC, goodyID, locVec, rotQuat,	scaleVec, bitBoxState);
+				} else if (GoodyNames.TYPE_BIT_CUBE.equals(goodyType)) {
+					novGoody = new BitCube(myRRC, goodyID, locVec, rotQuat,	scaleVec, bitBoxState);
+				} else if (GoodyNames.TYPE_FLOOR.equals(goodyType)) {
 					// Assuming physical floor for now, but that may be a good thing to define in repo
-					newGoody = new VirtualFloor(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getColor(), true);
-				} else if (GoodyNames.TYPE_TICTAC_MARK.equals(ga.getType())) {
-					boolean isAnO = Boolean.valueOf(ga.getSpecialString(GoodyNames.USE_O));
-					newGoody = new TicTacMark(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
-							scale, isAnO);
-				} else if (GoodyNames.TYPE_TICTAC_GRID.equals(ga.getType())) {
-					newGoody = new TicTacGrid(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
-							ga.getColor(), scale);
-				} else if (GoodyNames.TYPE_CROSSHAIR.equals(ga.getType())) {
-					newGoody = new CrossHairGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(), scalarScale);
-				} else if (GoodyNames.TYPE_SCOREBOARD.equals(ga.getType())) {
-					int rows = Integer.valueOf(ga.getSpecialString(GoodyNames.ROWS));
-					newGoody = new ScoreBoardGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(),
-							ga.getSize()[0], rows, scalarScale);
-				} else if (GoodyNames.TYPE_TEXT.equals(ga.getType())) {
+					novGoody = new VirtualFloor(myRRC, ga.getGoodyID(), locVec, gcolor, true);
+				} else if (GoodyNames.TYPE_TICTAC_MARK.equals(goodyType)) {
+					novGoody = new TicTacMark(myRRC, goodyID, locVec, rotQuat, scaleVec, isAnO);
+				} else if (GoodyNames.TYPE_TICTAC_GRID.equals(goodyType)) {
+					novGoody = new TicTacGrid(myRRC, goodyID, locVec, rotQuat, gcolor, scaleVec);
+				} else if (GoodyNames.TYPE_CROSSHAIR.equals(goodyType)) {
+					novGoody = new CrossHairGoody(myRRC, goodyID, locVec, scaleUniform);
+				} else if (GoodyNames.TYPE_SCOREBOARD.equals(goodyType)) {
+					float sizeX = ga.getSizeVec3D()[0];
+					float rowHeight = sizeX;
+					float textSize = scaleUniform;					
+					theLogger.info("Scoreboard row count=" + rowCount + ", rowHeight=" + rowHeight 
+								+ ", textSize=" + textSize+ ", locVec=" + locVec);
+	
+					novGoody = new ScoreBoardGoody(myRRC, goodyID, locVec, rowHeight, rowCount, textSize);
+					
+				} else if (GoodyNames.TYPE_TEXT.equals(goodyType)) {
 					// scale.getX() should return scalarScale if that is provided, or use Robosteps API scalar scale which
 					// is represented as a vector scale with identical components
-					newGoody = new TextGoody(myRRC, ga.getGoodyID(), ga.getLocationVector(),
-							scale.getX(), ga.getColor(), ga.getText()); 
-				} else if (GoodyNames.TYPE_BOX.equals(ga.getType())) {
-					newGoody = new GoodyBox(myRRC, ga.getGoodyID(), ga.getLocationVector(), ga.getRotationQuaternion(),
-							ga.getColor(), scale);
-				} else if (GoodyNames.TYPE_CAMERA.equals(ga.getType())) {
-					Ident cameraUri = ga.getGoodyID();
+					novGoody = new TextGoody(myRRC, goodyID, locVec, scaleVec.getX(), gcolor, goodyText); 
+					
+				} else if (GoodyNames.TYPE_BOX.equals(goodyType)) {
+					novGoody = new GoodyBox(myRRC, goodyID, locVec, rotQuat, gcolor, scaleVec);
+				} else if (GoodyNames.TYPE_CAMERA.equals(goodyType)) {
+					Ident cameraUri = goodyID;
 					if (myGoodySpace.getGoody(cameraUri) == null) { //Otherwise this camera wrapper is already created
 						theLogger.info("Adding a VWorldCameraEntity for {}", cameraUri);
 						// This evidences the fact that the CameraMgr needs to switch to URIs to identify cameras, not strings:
 						Camera cam = myRRC.getOpticCameraFacade(null).getNamedCamera(cameraUri.getLocalName());
 						if (cam != null) {
-							newGoody = (new VWorldCameraEntity(myRRC, cameraUri, cam));
+							novGoody = (new VWorldCameraEntity(myRRC, cameraUri, cam));
 						} else {
 							theLogger.warn("Couldn't find camera with URI {} for goody", cameraUri);
 						}
@@ -174,7 +183,7 @@ public class GoodyFactory {
 			theLogger.warn("GoodyFactory received request to add a goody, but the GoodyAction kind was not CREATE! Goody URI: {}",
 					ga.getGoodyID());
 		}
-		return newGoody;
+		return novGoody;
 	}
 	
 	// This way, EntitySpace doesn't need to know about the root node to attach. But this pattern can change if

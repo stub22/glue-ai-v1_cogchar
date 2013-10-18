@@ -356,10 +356,10 @@ public class BasicGoodyEntity extends VWorldEntity {
 	
 	// Override this method to add functionality for particular goodies, but  be sure to call this super method.
 	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
-		Vector3f newLocation = ga.getLocationVector();
+		Vector3f newLocation = ga.getLocationVec3f();
 		Quaternion newRotation = ga.getRotationQuaternion();
-		Vector3f newVectorScale = ga.getVectorScale();
-		Float scaleFactor = ga.getScale();
+		Vector3f newVectorScale = ga.getScaleVec3f();
+		Float scaleFactor = ga.getScaleUniform();
 		ColorRGBA newColor = ga.getColor();
 		switch (ga.getKind()) {
 			case SET : {

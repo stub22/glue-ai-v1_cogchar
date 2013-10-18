@@ -55,12 +55,13 @@ public class GoodyActionParamWriter extends ActionParamWriter {
 		tvm.putValueAtName(GoodyNames.SIZE_Z, sizeZ);
 	}
 	
-	public void putScale(float scalarScale) {
+	public void putScaleUniform(float scalarScale) {
 		TypedValueMap tvm = getValueMap();
-		putScale(scalarScale, scalarScale, scalarScale);
+		tvm.putValueAtName(GoodyNames.SCALE_UNIFORM, scalarScale);
+		putScaleVec(scalarScale, scalarScale, scalarScale);
 	}
 	
-	public void putScale(float scaleX, float scaleY, float scaleZ) {
+	public void putScaleVec(float scaleX, float scaleY, float scaleZ) {
 		TypedValueMap tvm = getValueMap();
 		tvm.putValueAtName(GoodyNames.SCALE_X, scaleX);
 		tvm.putValueAtName(GoodyNames.SCALE_Y, scaleY);
