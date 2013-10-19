@@ -18,24 +18,25 @@
 package org.cogchar.outer.behav.demo;
 
 import org.appdapter.core.store.Repo;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.RepoClientImpl;
+
 
 import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 import org.osgi.framework.BundleContext;
 
-// Stu sez:   Booo!   Don't do this!!!!  
-// import org.appdapter.core.matdat.*;
 
 import org.appdapter.core.matdat.RepoSpec;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 import org.appdapter.core.matdat.EnhancedRepoClient;
 
 /**
+ * This object is a crutch for this particular demo, not a general piece of test infrastructure.
+ * 
+ * The class is no longer public.
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 
-public class RepoConnector {
+class RepoConnector {
 	
 	public RepoSpec makeDefaultOnlineSheetRepoSpec(BundleContext bundleCtx) {
 		OnlineSheetRepoSpec bmcRepoSpec = BehavMasterConfigTest.makeBMC_RepoSpec(bundleCtx);

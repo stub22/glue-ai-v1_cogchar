@@ -48,7 +48,7 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 	
 	final static ColorRGBA MY_SCORE_COLOR = ColorRGBA.Magenta; // Likely only temporarily a constant
 	
-	int	myScreenWidth, myScreenHeight; // in pixels
+//	int	myScreenWidth, myScreenHeight; // in pixels
 	float myRowHeight; // as a fraction of window height
 	Vector3f myPosition; // of top left corner of scoreboard in fraction of window width/height
 	List<ScoreBoardGoody.Row>	myRows;
@@ -85,8 +85,7 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 		}
 		//BonyRenderContext.setScoreBoard(this); //needs to happen somewhere, probably not here!
 	}
-	@Override
-	public void displayScore(int rowNum, String scoreText) {
+	@Override public void displayScore(int rowNum, String scoreText) {
 		if ((rowNum >= 0) && (rowNum < myRows.size())) {
 			ScoreBoardGoody.Row l = myRows.get(rowNum);
 			l.setScoreText(scoreText);
