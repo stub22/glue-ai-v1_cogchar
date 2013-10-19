@@ -174,7 +174,8 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 		getLogger().info("********************************************** Make TICTAC GRID");
 		// First we CREATE a GRID
 		gb.entityTypeID = GoodyNames.TYPE_TICTAC_GRID; 
-		gb.locX = -10.0f;
+		gb.locX = -8.0f;
+		gb.locZ = -5.0f;
 		lgh.makeActionSpecAndSend(gb);
 		// Now we (set some properties on that GRID
 		gb.verbID = GoodyNames.ACTION_SET;
@@ -183,10 +184,12 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 
 		int gbi = 1;
 		getLogger().info("********************************************** Make TICTAC MARK");
-
+		gb.locX = -2.0f;
+		gb.locY = 4.0f;
+		gb.locY = 3.0f;
 		gb = garBlock[++gbi];
 		gb.entityTypeID = GoodyNames.TYPE_TICTAC_MARK;
-
+		lgh.makeActionSpecAndSend(gb);
 		
 		getLogger().info("********************************************** Make BITBOX");
 		// Now let's CREATE a BIT_BOX
