@@ -39,6 +39,7 @@ import java.awt.event.WindowListener;
 import java.util.List;
 import java.util.Random;
 import javax.swing.JFrame;
+import org.apache.log4j.Level;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
@@ -102,6 +103,13 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 	public static void main(String[] args) {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		/* Suppress:
+		 * 7532 [LWJGL Renderer Thread] WARN org.appdapter.osgi.registry.RegistryServiceFuncs  - 
+		 * %%%%%%%%%% Cannot get local bundle, so we are assumed to be outside OSGi (credentialClaz=class org.cogchar.blob.emit.SubsystemHandleFinder$)
+		 * 7532 [LWJGL Renderer Thread] INFO org.appdapter.osgi.registry.RegistryServiceFuncs  - 
+		 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Getting singleton WellKnownRegistry in non-OSGi cont
+		 */
+		org.apache.log4j.Logger.getLogger(org.appdapter.osgi.registry.RegistryServiceFuncs.class).setLevel(Level.ERROR);
 		RenderConfigEmitter rce = new RenderConfigEmitter();
 		GoodyRenderTestApp app = new GoodyRenderTestApp(rce);
 		// This will trigger the makeCogcharRenderContext() and then the simpleInitApp() below.
@@ -163,29 +171,62 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 		}
 		LocalGoodyHarness.GARecipe gb = garBlock[0];
 		
+		// First we CREATE a GRID
 		gb.entityTypeID = GoodyNames.TYPE_TICTAC_GRID; 
+		gb.locX = -10.0f;
 		lgh.makeActionSpecAndSend(gb);
+		// Now we (set some properties on that GRID
 		gb.verbID = GoodyNames.ACTION_SET;
 		// String removeString = ga.getSpecialString(CLEAR_IDENT);
 		lgh.makeActionSpecAndSend(gb);
+		// Now let's CREATE a BIT_BOX
 		gb = garBlock[1];
+		
 		gb.entityTypeID = GoodyNames.TYPE_BIT_BOX;
+		gb.locX = -5.0f;
 		lgh.makeActionSpecAndSend(gb);
+		// ...and finish setting the properties on the BIT_BOX
 		gb.verbID = GoodyNames.ACTION_SET;
 		lgh.makeActionSpecAndSend(gb);
+		// CREATE a SCOREBOARD
 		gb = garBlock[2];
 		gb.entityTypeID = GoodyNames.TYPE_SCOREBOARD;
+		gb.locX = 5.0f;
 		lgh.makeActionSpecAndSend(gb);
+		gb = garBlock[3];
+		gb.entityTypeID = GoodyNames.TYPE_BOX;
+		gb.locX = 10.0f;
+		lgh.makeActionSpecAndSend(gb);
+		gb = garBlock[4];
+		gb.entityTypeID = GoodyNames.TYPE_TICTAC_MARK;
 		
-	//	GoodyRenderTestContent grtc = new GoodyRenderTestContent();
+		gb.locX = 5.0f; gb.locY = 5.0f;
+		lgh.makeActionSpecAndSend(gb);		
+		gb = garBlock[5];
+		gb.entityTypeID = GoodyNames.TYPE_CROSSHAIR;
+		gb.locX = -8.0f; gb.locY = 3.0f;
+		lgh.makeActionSpecAndSend(gb);		
+		gb = garBlock[6];
+		gb.entityTypeID = GoodyNames.TYPE_TEXT;
+		gb.locX = 6.0f; gb.locY = -4.0f;
+		gb.text = "Oh yes indeedy!";
+		lgh.makeActionSpecAndSend(gb);		
+		gb = garBlock[7];
+		gb.entityTypeID = GoodyNames.TYPE_AVATAR;
+		gb.locX = 12.0f; gb.locY = 3.0f;
+		lgh.makeActionSpecAndSend(gb);		
+		gb = garBlock[8];
+		gb.entityTypeID = GoodyNames.TYPE_CAMERA;
+		gb.locX = -7.0f; gb.locY = -3.0f;
+		lgh.makeActionSpecAndSend(gb);		
+
+		//	GoodyRenderTestContent grtc = new GoodyRenderTestContent();
 		// GoodySpace gSpace = getGoodySpace();
 		// hrwMapper.addHumanoidGoodies(veActConsumer, hrc);		
 	}
 	
 
 	private void shedLight() {
-
-		// ConfiguredPhysicalModularRenderContext cpmrc = (ConfiguredPhysicalModularRenderContext) getRenderContext();
 		CogcharRenderContext cpmrc = getRenderContext();
 		CoreFeatureAdapter.setupLight(cpmrc);
 		shedMoreLight(cpmrc);
@@ -207,7 +248,10 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 }
 
 
-/*** What does the o.c.b.render.opengl bundle do instead of the simple   Mainly this, from
+/*** 
+ * For comparative study:
+ * 
+ * During full OSGi character init, what does the o.c.b.render.opengl bundle and o.c.b.app.puma bundes do?
  * 
  * 
  *  RenderBundleUUtils.buildBonyRenderContextInOSGi(BundleContext bundleCtx, String panelKind)
