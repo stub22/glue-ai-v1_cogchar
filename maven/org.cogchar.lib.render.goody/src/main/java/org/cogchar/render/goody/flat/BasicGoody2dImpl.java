@@ -39,11 +39,13 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
 public class BasicGoody2dImpl extends VWorldEntity { 
 	
-	protected FlatOverlayMgr myOverlayMgr;
-	protected Vector3f myPosition = new Vector3f(); // default: at lower left corner (0,0)
-	protected Vector3f myScalePosition = new Vector3f();
-	protected BitmapText myOverlayText;
-	protected int myScreenWidth, myScreenHeight;
+	private FlatOverlayMgr myOverlayMgr;
+	private Vector3f myPosition = new Vector3f(); // default: at lower left corner (0,0)
+	private Vector3f myScalePosition = new Vector3f();
+	private BitmapText myOverlayText;
+	// protected int myScreenWidth, myScreenHeight;
+	private	Dimension myStoredScreenDim;
+
 	
 	//protected Node myRootNode;
 	
@@ -83,13 +85,21 @@ public class BasicGoody2dImpl extends VWorldEntity {
 	}
 	
 	// Position is specified as fraction of screen width/height
-	// Usually we want wait = true, but not for repositioning during window size change
+	// This is called again every time the screen dimension changes.
+	// Questionable assumps about what is now called qStyle:   
+	//				Usually we want wait = true, but not for repositioning during window size change
 	@Override  public void setPosition(Vector3f scalePosition, QueueingStyle qStyle) {
-		//myLogger.info("Setting scalePosition: {}", scalePosition); // TEST ONLY
+		getLogger().debug("Setting scalePosition: {}", scalePosition); // TEST ONLY
 		if (scalePosition != null) {
 			myScalePosition = scalePosition.clone();
-			Vector3f absolutePosition = scalePosition.multLocal(myScreenWidth, myScreenHeight, 0);
-			setAbsolutePosition(absolutePosition, qStyle);
+			int screenWidth = 640, screenHeight = 480;
+			Dimension sDim = getScreenDim(); 
+			if (sDim != null) {
+				screenWidth = sDim.width;
+				screenHeight = sDim.height;
+			}
+			Vector3f nextAbsPos = scalePosition.multLocal(screenWidth, screenHeight, 0);
+			setAbsolutePosition(nextAbsPos, qStyle);
 		}
 	}
 	
@@ -174,9 +184,16 @@ public class BasicGoody2dImpl extends VWorldEntity {
 	};
 	
 	@Override public final void applyScreenDimension(Dimension screenDimension) {
-		myScreenWidth = screenDimension.width;
-		myScreenHeight = screenDimension.height;
+		myStoredScreenDim = screenDimension;
+//		myScreenWidth = screenDimension.width;
+//		myScreenHeight = screenDimension.height;
 		setPosition(myScalePosition, QueueingStyle.QUEUE_AND_RETURN); // Reset absolute position using new screen dimensions. No waiting!
+	}
+	protected Dimension getScreenDim() { 
+		if (myStoredScreenDim == null) { 
+			myStoredScreenDim = new Dimension (640, 480);
+		}
+		return myStoredScreenDim;
 	}
 
 
