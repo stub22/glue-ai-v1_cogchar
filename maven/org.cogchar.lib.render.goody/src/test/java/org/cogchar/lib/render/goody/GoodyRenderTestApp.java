@@ -171,6 +171,7 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 		}
 		LocalGoodyHarness.GARecipe gb = garBlock[0];
 		
+		getLogger().info("********************************************** Make TICTAC GRID");
 		// First we CREATE a GRID
 		gb.entityTypeID = GoodyNames.TYPE_TICTAC_GRID; 
 		gb.locX = -10.0f;
@@ -179,43 +180,63 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 		gb.verbID = GoodyNames.ACTION_SET;
 		// String removeString = ga.getSpecialString(CLEAR_IDENT);
 		lgh.makeActionSpecAndSend(gb);
-		// Now let's CREATE a BIT_BOX
-		gb = garBlock[1];
+
+		int gbi = 1;
+		getLogger().info("********************************************** Make TICTAC MARK");
+
+		gb = garBlock[++gbi];
+		gb.entityTypeID = GoodyNames.TYPE_TICTAC_MARK;
+
 		
+		getLogger().info("********************************************** Make BITBOX");
+		// Now let's CREATE a BIT_BOX
+		gb = garBlock[++gbi];
 		gb.entityTypeID = GoodyNames.TYPE_BIT_BOX;
 		gb.locX = -5.0f;
 		lgh.makeActionSpecAndSend(gb);
 		// ...and finish setting the properties on the BIT_BOX
 		gb.verbID = GoodyNames.ACTION_SET;
 		lgh.makeActionSpecAndSend(gb);
-		// CREATE a SCOREBOARD
-		gb = garBlock[2];
-		gb.entityTypeID = GoodyNames.TYPE_SCOREBOARD;
-		gb.locX = 5.0f;
-		lgh.makeActionSpecAndSend(gb);
-		gb = garBlock[3];
+		getLogger().info("********************************************** Make BOX");
+		gb = garBlock[++gbi];
 		gb.entityTypeID = GoodyNames.TYPE_BOX;
 		gb.locX = 10.0f;
 		lgh.makeActionSpecAndSend(gb);
-		gb = garBlock[4];
-		gb.entityTypeID = GoodyNames.TYPE_TICTAC_MARK;
 		
-		gb.locX = 5.0f; gb.locY = 5.0f;
+		
+		// 2D Goodies
+		// CREATE a SCOREBOARD
+		getLogger().info("********************************************** Make SCOREBOARD");
+		gb = garBlock[++gbi];
+		gb.entityTypeID = GoodyNames.TYPE_SCOREBOARD;
+		gb.locX = 0.1f;
 		lgh.makeActionSpecAndSend(gb);		
-		gb = garBlock[5];
+		
+		getLogger().info("********************************************** Make CROSSHAIR");		
+		gb = garBlock[++gbi];
 		gb.entityTypeID = GoodyNames.TYPE_CROSSHAIR;
-		gb.locX = -8.0f; gb.locY = 3.0f;
+		gb.locX = 0.7f; gb.locY = 0.2f;
+		gb.scaleX = 5.0f;
 		lgh.makeActionSpecAndSend(gb);		
-		gb = garBlock[6];
+		
+		getLogger().info("********************************************** Make TEXT");
+		gb = garBlock[++gbi];
 		gb.entityTypeID = GoodyNames.TYPE_TEXT;
-		gb.locX = 6.0f; gb.locY = -4.0f;
+		gb.locX = 0.3f; gb.locY = 0.7f;
 		gb.text = "Oh yes indeedy!";
 		lgh.makeActionSpecAndSend(gb);		
-		gb = garBlock[7];
+		
+		// Hominoid entities 
+		getLogger().info("********************************************** Make AVATAR-link");
+		gb = garBlock[++gbi];		
 		gb.entityTypeID = GoodyNames.TYPE_AVATAR;
 		gb.locX = 12.0f; gb.locY = 3.0f;
 		lgh.makeActionSpecAndSend(gb);		
-		gb = garBlock[8];
+		
+
+		// Camera entities 
+		getLogger().info("********************************************** Make CAMERA-link");
+		gb = garBlock[++gbi];
 		gb.entityTypeID = GoodyNames.TYPE_CAMERA;
 		gb.locX = -7.0f; gb.locY = -3.0f;
 		lgh.makeActionSpecAndSend(gb);		
