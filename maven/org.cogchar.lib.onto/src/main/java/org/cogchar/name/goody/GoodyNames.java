@@ -22,6 +22,8 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.name.dir.NamespaceDir;
 
 /**
+ * Defines all the type+property names used to describe our GoodyActions.  
+ * This class is ripe for mapping into a proper ontology of goodies and v-world entities.
  * @author Stu B. <www.texpedient.com>
  */
 
@@ -33,11 +35,7 @@ public class GoodyNames  {
 		return new FreeIdent(GOODY_NS + nameTail);
 	}
 	
-	// Not sure if this is the best approach long term: a special Goody URI which corresponds to all goodies
-	// Intended for server-side goody deletion; not yet implemented
-	// Currently goodies use the ccrt prefix. If that changes, this should change too: 
-	public	static Ident	ALL_GOODY_URI = new FreeIdent(NamespaceDir.RKRT_NS_PREFIX + "ALL");
-	
+	// Loc + Rot are for truly 3D goodies/entities only
 	public	static Ident 	LOCATION_X = makeID("locX");
 	public	static Ident	LOCATION_Y = makeID("locY");
 	public	static Ident	LOCATION_Z = makeID("locZ");
@@ -47,28 +45,43 @@ public class GoodyNames  {
 	public	static Ident	ROTATION_AXIS_Z = makeID("rotAxisZ");
 	public	static Ident	ROTATION_MAG_DEG = makeID("rotMagDeg");
 	
+	// "Size" (not "Scale") is still ambiguous re 2D vs. 3D
 	public	static Ident	SIZE_X = makeID("sizeX");
 	public	static Ident	SIZE_Y = makeID("sizeY");
 	public	static Ident	SIZE_Z = makeID("sizeZ");
 	
 	public	static Ident	SIZE_SCALAR = makeID("sizeScalar");
-	
-	public	static Ident	COORDINATE_X = makeID("coordinateX");
-	public	static Ident	COORDINATE_Y = makeID("coordinateY");
-	
-	public	static Ident	TRAVEL_TIME = makeID("travelTime");
-	//public	static Ident	TEXT_SIZE = makeID("textScale");
-	public	static Ident	SCALE_UNIFORM = makeID("scaleUni");
-	
+
+	// Scale is usable in both 2D + 3D contexts.
 	public	static Ident	SCALE_X = makeID("scaleX");
 	public	static Ident	SCALE_Y = makeID("scaleY");
 	public	static Ident	SCALE_Z = makeID("scaleZ");
+	
+	// For 2D goodies only = screen fraction position
+	public	static Ident 	LOC_FRAC_X = makeID("locFracX");
+	public	static Ident	LOC_FRAC_Y = makeID("locFracY");
+	
+	// 2D application subspace used within a goody, e.g. tic-tac-toe board
+	// (TODO: Verify this description)
+	public	static Ident	COORDINATE_X = makeID("coordinateX");
+	public	static Ident	COORDINATE_Y = makeID("coordinateY");
+	
+	// Used to specify duration of the 
+	public	static Ident	TRAVEL_TIME = makeID("travelTime");
+	
+	//public	static Ident	TEXT_SIZE = makeID("textScale");
+	public	static Ident	SCALE_UNIFORM = makeID("scaleUni");
+	
+
 	
 	public	static Ident	COLOR_RED = makeID("colorR");
 	public	static Ident	COLOR_GREEN = makeID("colorG");
 	public	static Ident	COLOR_BLUE = makeID("colorB");
 	public	static Ident	COLOR_ALPHA = makeID("colorAlpha");
 			
+	
+	// Here are the allowed Types/Kinds of goody (and other entities)
+	// Proper 3D goody types:
 	public static	Ident	TYPE_BOX = makeID("GoodyBox");
 	public static	Ident	TYPE_BIT_BOX = makeID("BitBox");
 	public static	Ident	TYPE_BIT_CUBE = makeID("BitCube");
@@ -76,6 +89,7 @@ public class GoodyNames  {
 	public static	Ident	TYPE_TICTAC_MARK = makeID("TicTacMark");
 	public static	Ident	TYPE_TICTAC_GRID = makeID("TicTacGrid");
 	
+	// 2D overlay goodies with weird behaviors - this approach is problematic.
 	public static	Ident	TYPE_CROSSHAIR = makeID("CrossHair");
 	public static	Ident	TYPE_SCOREBOARD = makeID("ScoreBoard");
 	public static	Ident	TYPE_TEXT = makeID("Text2D");
@@ -84,15 +98,17 @@ public class GoodyNames  {
 	public static	Ident	TYPE_AVATAR = makeID("Avatar");
 	public static	Ident	TYPE_CAMERA = makeID("Camera");
 	
+	// technical construct used in RDF conveyance of goody actions
 	public  static Ident	RDF_TYPE = new FreeIdent(ComponentAssemblyNames.NS_rdf + "type");
 	
+	// The actions it is possible to take on a goody/entity
 	public static	Ident	ACTION_CREATE = makeID("ActionCreate");
 	public static	Ident	ACTION_DELETE = makeID("ActionDelete");
 	public static	Ident	ACTION_MOVE = makeID("ActionMove");
 	public static	Ident	ACTION_SET = makeID("ActionSet");
 	
-	// This stuff gets pretty particular to the individual Goody types. Perhaps shouldn't live here but somehow in
-	// BasicGoodyImpl subclasses?
+	// Goody-guts description specifics, which apply meaningfully only to particular goody-kinds.
+	
 	public static	Ident	BOOLEAN_STATE = makeID("booleanState");
 	public static	Ident	USE_O = makeID("isPlayerO");
 	public static	Ident	ROWS = makeID("rows");
@@ -100,4 +116,9 @@ public class GoodyNames  {
 	public static	Ident	SUBCOMPONENT = makeID("subComponent");
 	public static	Ident	ATTACH_TO_GOODY = makeID("attachToGoody");
 
+	
+	// Not sure if this is the best approach long term: a special Goody URI which corresponds to all goodies
+	// Intended for server-side goody deletion; not yet implemented
+	// Currently goodies use the ccrt prefix. If that changes, this should change too: 
+	public	static Ident	ALL_GOODY_URI = new FreeIdent(NamespaceDir.RKRT_NS_PREFIX + "ALL");	
 }
