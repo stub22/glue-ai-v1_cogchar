@@ -50,7 +50,7 @@ public abstract class FlatGoody extends VWorldEntity {
 		final Node fgn = getFlatGoodyNode();
 		if (fgn != null) {
 			
-			getLogger().debug("Attaching 2d goody to virtual world: {} at location {}", getUri().getLocalName(), 
+			getLogger().debug("Attaching 2d goody to virtual world: {} at location {} :" + fgn, getUri().getLocalName(), 
 						fgn.getLocalTranslation());
 			enqueueForJme(new Callable() { // Do this on main render thread
 				@Override public Void call() throws Exception {
@@ -59,7 +59,7 @@ public abstract class FlatGoody extends VWorldEntity {
 				}
 			}, style);
 		} else {
-			getLogger().warn("Attempting to attach 2D Goody {} to virtual world, but its attributes have not been set",
+			getLogger().warn("Attempting to attach 2D Goody {} to virtual world, but no FlatGoody Node was found",
 					getUri().getLocalName());
 		}
 	}
@@ -75,14 +75,14 @@ public abstract class FlatGoody extends VWorldEntity {
 			}, style);
 	}
 	// Usually we want wait = true, but not for repositioning during window size change
-	protected void setScreenPosition(final Vector3f position, QueueingStyle qStyle) {
+	protected void setScreenPosition(final Vector3f screenPos, QueueingStyle qStyle) {
 		final Node fgn = getFlatGoodyNode();
 		//myLogger.info("Setting position: {}", position); // TEST ONLY
 		if (fgn != null) {
 			Callable positioningCallable = new Callable() { // Do this on main render thread
-				@Override
-				public Void call() throws Exception {
-					fgn.setLocalTranslation(position);
+				@Override public Void call() throws Exception {
+					getLogger().debug("Setting screen position for {} to {}", getUri().getLocalName(), 	screenPos);					
+					fgn.setLocalTranslation(screenPos);
 					return null;
 				}
 			};
@@ -111,7 +111,7 @@ public abstract class FlatGoody extends VWorldEntity {
 		}
 	}
 	@Override public void setPosition(Vector3f position, QueueingStyle style) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	//	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 	
 }

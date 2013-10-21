@@ -61,15 +61,18 @@ public class ScoreBoardGoody extends FlatGoody implements GeneralScoreBoard {
 			super(aRenderRegCli);
 			//myLogger.info("In ScoreBoardGoody.Row, Window size is {}x{}, position is {}", new Object[]{myScreenWidth, myScreenHeight, rowPosition}); // TEST ONLY
 			this.setScreenPosRelToParent(rowPosition, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
-			setGoodyAttributes("_", textSize, scoreColor);
+			setContentText("_");
+			setUniformScaleFactor(textSize, QueueingStyle.QUEUE_AND_RETURN);
+			setColor(scoreColor);
 		}
 		public void setScoreText(String scoreText) {
-			setText(scoreText);
+			setContentText(scoreText);
 		}
 	}
 	public ScoreBoardGoody(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f topPosition, 
 				float rowHeight, int numRows, float textSize) {
 		super(aRenderRegCli, uri);
+		myNode = new Node("ScoreBoardGoody_" + uri.getLocalName());
 		myRows = new ArrayList<ScoreBoardGoody.Row>();
 		myRowHeight = rowHeight;
 		myPosition = topPosition;
