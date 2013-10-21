@@ -23,6 +23,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.math.ColorRGBA;
 import java.awt.Dimension;
 import java.util.concurrent.Callable;
 import org.appdapter.core.log.BasicDebugger;
@@ -47,6 +48,9 @@ public class FlatGoodyTextElement extends BasicDebugger {
 
 	private BitmapText					myOverlayText;
 	private GoodyRenderRegistryClient	myRenderRegCli;
+	private	float						myScale = 1.0f;
+	private ColorRGBA					myColor;
+	private String						myContent = "No Content Set";
 	
 	public FlatGoodyTextElement(GoodyRenderRegistryClient aRenderRegCli) {
 		myRenderRegCli = aRenderRegCli;
@@ -55,43 +59,36 @@ public class FlatGoodyTextElement extends BasicDebugger {
 		myScreenPosRelToParent = sprtp;
 	}
 	
-	// Currently just uses default font for everything -- ok for what we need now, but ultimately may want to 
-	// add provisions to specify font
-	protected BitmapText setGoodyAttributes(String text, float scale) {
-		myOverlayText = myRenderRegCli.getSceneTextFacade(null).getScaledBitmapText(text, scale);
-		// Stu 2013-10-20  setAbsolutePosition(myScreenPosRelToParent, QueueingStyle.QUEUE_AND_RETURN);
-		return myOverlayText;
-	}
-	protected BitmapText setGoodyAttributes(String text, float scale, ColorRGBA color) {
-		myOverlayText = setGoodyAttributes(text, scale);
-		setColor(color);
-		return myOverlayText;
-	}
-	
-	public void setText(String goodyText) {
+	public void setContentText(String goodyText) {
+		myContent = goodyText;
 		if (myOverlayText != null) {
 			myOverlayText.setText(goodyText);
-		} else {
-			getLogger().warn("Attempting to set text for goody to {}, but its attributes have not yet been specified", 
-					goodyText);
-		}
+		} 
 	}
 	
 	public void setUniformScaleFactor(Float scale, QueueingStyle qStyle) {
-		//myLogger.info("Setting 2d Goody scale to {}", scale); // TEST ONLY
-		if (myOverlayText == null) {
-			getLogger().warn("Attemping to set scale on 2D Goody, but initial GoodyAttributes have not been set");
-		} else if (scale != null) {
-			myOverlayText.setSize(myOverlayText.getFont().getCharSet().getRenderedSize()*scale);
+		getLogger().debug("Setting 2d Goody scale to {}", scale); 
+		if (scale != null) {
+			myScale = scale;
+			if (myOverlayText != null) {
+					// Stu 2013-10-20  do we need: setAbsolutePosition(myScreenPosRelToParent, QueueingStyle.QUEUE_AND_RETURN);
+				myOverlayText.setSize(myOverlayText.getFont().getCharSet().getRenderedSize()* scale);
+			}
 		}
 	}
 	
 	public void setColor(ColorRGBA color) {
 		if (color != null) {
-			myOverlayText.setColor(color);
+			myColor = color;
+			if (myOverlayText != null) {
+				myOverlayText.setColor(color);
+			}
 		}
 	}
 	public BitmapText getTextNode() { 
+		if (myOverlayText == null) {
+			myOverlayText = myRenderRegCli.getSceneTextFacade(null).getScaledBitmapText(myContent, myScale);
+		}
 		return myOverlayText;
 	}
 }
