@@ -59,8 +59,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 	// May not want to allow this to be instantiated directly
 	// Might make sense to set more instance variables in the constructor as well, including perhaps rootNode?
 	protected BasicGoodyEntity(GoodyRenderRegistryClient aRenderRegCli, Ident uri) {
-		myRenderRegCli = aRenderRegCli;
-		myUri = uri;
+		super(aRenderRegCli, uri);
 		myContentNode = new Node("Goody Node of " + uri.getLocalName());
 	}
 	protected Quaternion getRotation() {
@@ -93,7 +92,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 			}
 			if (material == null) {
 				// Set "standard" material; these hard coded values probably won't live here for long
-				myMaterial = myRenderRegCli.getOpticMaterialFacade(null, null)
+				myMaterial = getRenderRegCli().getOpticMaterialFacade(null, null)
 						.makeMatWithOptTexture("Common/MatDefs/Light/Lighting.j3md", "SpecularMap", null);
 				myMaterial.setBoolean("UseMaterialColors", true);
 				myMaterial.setFloat("Shininess", 25f);
@@ -105,8 +104,8 @@ public class BasicGoodyEntity extends VWorldEntity {
 				myControl = new RigidBodyControl(shape, mass);
 				//myGeometry.addControl(myControl); should be automatically done in geomFactory.makeGeom
 			}
-			myGeometry = myRenderRegCli.getSceneGeometryFacade(null)
-					.makeGeom(myUri.getLocalName(), mesh, myMaterial, myControl);
+			myGeometry = getRenderRegCli().getSceneGeometryFacade(null)
+					.makeGeom(getUri().getLocalName(), mesh, myMaterial, myControl);
 			myGeometry.setLocalScale(myScaleVec);
 			myGeometry.setLocalRotation(rotation);
 		}
@@ -189,7 +188,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 				setActiveBoundGeomIndex(geometryIndex, style);
 			} else {
 				getLogger().error("Attempting to attach BasicVirtualThing {} with geometry index {}, but that geometry is not available",
-					myUri.getAbsUriString(), geometryIndex);
+					getUri().getAbsUriString(), geometryIndex);
 			}
 		} else {
 			getLogger().error("Attempting to set geometry by index, but no root node is set");
@@ -213,7 +212,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 			@Override public Void call() throws Exception {
 				myContentNode.attachChild(jmeGeometry);
 				if (geomBindingToAttach.myControl != null) {
-					myRenderRegCli.getJme3BulletPhysicsSpace().add(jmeGeometry);
+					getRenderRegCli().getJme3BulletPhysicsSpace().add(jmeGeometry);
 				}
 				myCurrAttachedBindingIndex = geomBindIndex;
 				return null;
@@ -226,10 +225,10 @@ public class BasicGoodyEntity extends VWorldEntity {
 		enqueueForJme(new Callable<Void>() { // Do this on main render thread
 			@Override public Void call() throws Exception {
 				if (currentGeomBinding.myControl != null) {
-					myRenderRegCli.getJme3BulletPhysicsSpace().remove(currentGeomBinding.myControl);
+					getRenderRegCli().getJme3BulletPhysicsSpace().remove(currentGeomBinding.myControl);
 				}
 				// Must detach by name; detaching by saved geometry does not work
-				myContentNode.detachChildNamed(myUri.getLocalName()); 
+				myContentNode.detachChildNamed(getUri().getLocalName()); 
 				myCurrAttachedBindingIndex = NULL_INDEX;
 				return null;
 			}
@@ -380,7 +379,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 				break;
 			}
 			default: {
-				getLogger().error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
+				getLogger().error("Unknown action requested in Goody {}: {}", getUri().getLocalName(), ga.getKind().name());
 			}
 		}
 	};

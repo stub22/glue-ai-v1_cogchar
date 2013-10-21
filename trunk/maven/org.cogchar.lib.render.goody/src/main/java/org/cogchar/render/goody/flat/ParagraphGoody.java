@@ -19,9 +19,12 @@ package org.cogchar.render.goody.flat;
 import org.cogchar.render.app.entity.GoodyActionExtractor;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
+import org.cogchar.render.app.entity.VWorldEntity.QueueingStyle;
 
 /**
  * This class defines general purpose 2d text display goodies
@@ -30,19 +33,28 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
  */
 
 
-public class TextGoody extends BasicGoody2dImpl {
+public class ParagraphGoody extends FlatGoody {
 	
 	private static final ColorRGBA DEFAULT_COLOR = ColorRGBA.Black;
 	private static final float DEFAULT_SCALE = 1.0f;
 	private static final String DEFAULT_TEXT = "No text set";
 	
-	public TextGoody(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f position, Float scale, ColorRGBA color, 
-			String text) {
+	private	FlatGoodyTextElement		myTextElement;
+	
+	public ParagraphGoody(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f position, Float scale, 
+				ColorRGBA color, String text) {
 		super(aRenderRegCli, uri);
-		if (color == null) color = DEFAULT_COLOR;
-		if (scale == null) scale = DEFAULT_SCALE;
-		if (text == null) text = DEFAULT_TEXT;
-		setGoodyAttributes(text, scale, color);
+		myTextElement = new FlatGoodyTextElement(aRenderRegCli);
+		if (color == null) {
+			color = DEFAULT_COLOR;
+		}
+		if (scale == null) {
+			scale = DEFAULT_SCALE;
+		}
+		if (text == null) {
+			text = DEFAULT_TEXT;
+		}
+//		setGoodyAttributes(text, scale, color);
 		setPosition(position, QueueingStyle.QUEUE_AND_RETURN);
 	}
 	
@@ -52,11 +64,16 @@ public class TextGoody extends BasicGoody2dImpl {
 			case SET : {
 				String text = ga.getText();
 				if (text != null) {
-					setText(text);
+					myTextElement.setText(text);
 				}
 				break;
 			}
 		}
 	}
+
+	@Override protected Node getFlatGoodyNode() {
+		return myTextElement.getTextNode();
+	}
+
 
 }

@@ -47,8 +47,7 @@ public class VWorldHumanoidFigureEntity extends VWorldEntity {
 	private AnimControl figureControl = new AnimControl();
 	
 	public VWorldHumanoidFigureEntity(GoodyRenderRegistryClient aRenderRegCli, Ident figureUri, HumanoidFigure hf) {
-		myRenderRegCli = aRenderRegCli;
-		myUri = figureUri;
+		super(aRenderRegCli, figureUri);
 		myNode = hf.getNode();
 	}
 	
@@ -147,7 +146,7 @@ public class VWorldHumanoidFigureEntity extends VWorldEntity {
 				break;
 			}
 			default: {
-				getLogger().error("Unknown action requested in HumanoidFigureGoodyWrapper {}: {}", myUri.getLocalName(), ga.getKind().name());
+				getLogger().error("Unknown action requested in HumanoidFigureGoodyWrapper {}: {}", getUri().getLocalName(), ga.getKind().name());
 			}
 		}
 	};
