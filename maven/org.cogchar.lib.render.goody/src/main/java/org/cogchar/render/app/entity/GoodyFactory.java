@@ -34,7 +34,7 @@ import org.cogchar.render.goody.bit.TicTacGrid;
 import org.cogchar.render.goody.bit.TicTacMark;
 import org.cogchar.render.goody.flat.CrossHairGoody;
 import org.cogchar.render.goody.flat.ScoreBoardGoody;
-import org.cogchar.render.goody.flat.TextGoody;
+import org.cogchar.render.goody.flat.ParagraphGoody;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 
 import org.cogchar.render.optic.goody.VWorldCameraEntity;
@@ -157,7 +157,7 @@ public class GoodyFactory {
 				} else if (GoodyNames.TYPE_TEXT.equals(goodyType)) {
 					// scale.getX() should return scalarScale if that is provided, or use Robosteps API scalar scale which
 					// is represented as a vector scale with identical components
-					novGoody = new TextGoody(myRRC, goodyID, locVec, scaleVec.getX(), gcolor, goodyText); 
+					novGoody = new ParagraphGoody(myRRC, goodyID, locVec, scaleVec.getX(), gcolor, goodyText); 
 					
 				} else if (GoodyNames.TYPE_BOX.equals(goodyType)) {
 					novGoody = new GoodyBox(myRRC, goodyID, locVec, rotQuat, gcolor, scaleVec);

@@ -59,7 +59,7 @@ import org.cogchar.render.goody.bit.TicTacGrid;
 import org.cogchar.render.goody.bit.TicTacMark;
 import org.cogchar.render.goody.flat.CrossHairGoody;
 import org.cogchar.render.goody.flat.ScoreBoardGoody;
-import org.cogchar.render.goody.flat.TextGoody;
+import org.cogchar.render.goody.flat.ParagraphGoody;
 import org.cogchar.render.optic.goody.VWorldCameraEntity;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;

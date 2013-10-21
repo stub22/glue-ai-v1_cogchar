@@ -19,6 +19,7 @@ package org.cogchar.render.goody.flat;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import java.awt.Dimension;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.app.entity.VWorldEntity;
@@ -31,10 +32,13 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
  */
 
 
-public class CrossHairGoody extends BasicGoody2dImpl {
+public class CrossHairGoody extends FlatGoodyWithScreenFracPos {
+	Node myNode;
+	FlatGoodyTextElement myTextEl;
 	
 	public CrossHairGoody(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f positionOffset, Float scale) {
 		super(aRenderRegCli, uri);
+		myTextEl = new FlatGoodyTextElement(aRenderRegCli);
 		makeCrossHairs(scale, positionOffset);
 	}
 	
@@ -43,7 +47,8 @@ public class CrossHairGoody extends BasicGoody2dImpl {
 			scale = 1f;
 			getLogger().warn("Scale for CrossHair not specified; using default of 1.");
 		}
-		BitmapText bt = setGoodyAttributes("+", scale);
+		BitmapText bt = myTextEl.setGoodyAttributes("+", scale);
+		myNode = bt;
 		BitmapFont bf = bt.getFont();
 		Dimension screenDim = getScreenDim();
 		float crossHalfWidthFraction = (bf.getCharSet().getRenderedSize() / 3.0f * 2.0f) / screenDim.width;
@@ -59,4 +64,8 @@ public class CrossHairGoody extends BasicGoody2dImpl {
 	}
 	
 	// TODO: Override setScale to recenter Crosshairs
+
+	@Override protected Node getFlatGoodyNode() {
+		return myNode;
+	}
 }

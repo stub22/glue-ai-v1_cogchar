@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
+ * @author stub22
  */
 
 
@@ -46,8 +47,17 @@ public abstract class VWorldEntity {
 	// OK to have a logger instance for each goody instance?
 	private Logger					myLogger = LoggerFactory.getLogger(this.getClass()); 
 	
-	protected GoodyRenderRegistryClient myRenderRegCli;
-	protected Ident						myUri;
+	private	 GoodyRenderRegistryClient	myRenderRegCli;
+	private	 Ident						myUri;
+	
+	
+	protected VWorldEntity(GoodyRenderRegistryClient aRenderRegCli, Ident uri) {
+		myRenderRegCli = aRenderRegCli;
+		myUri = uri;
+	}
+	protected GoodyRenderRegistryClient getRenderRegCli() {
+		return myRenderRegCli;
+	}
 	
 	// Number of ms this Impl will wait for goody to attach or detach from jMonkey root node before timing out
 	// Currently not used -- timed futures are timing out for some reason

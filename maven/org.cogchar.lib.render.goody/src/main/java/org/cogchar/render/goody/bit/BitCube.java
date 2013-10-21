@@ -16,6 +16,7 @@
 
 package org.cogchar.render.goody.bit;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -23,6 +24,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.texture.Texture;
 import jme3tools.optimize.TextureAtlas;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.opengl.optic.MatFactory;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
@@ -62,17 +64,16 @@ public class BitCube extends AbstractBitGoody {
 	private int addCubeGeometry() {
 		Mesh cubeMesh = new BitCubeBox(1f, 1f, 1f);
 		TextureAtlas atlas = new TextureAtlas(400, 1200);
-		Texture zeroTexture = myRenderRegCli.getOpticMaterialFacade(null, null).getAssetManager()
-				.loadTexture("textures/robosteps/Zero.png");
-		Texture oneTexture = myRenderRegCli.getOpticMaterialFacade(null, null).getAssetManager()
-				.loadTexture("textures/robosteps/One.png");
-		Texture blankTexture = myRenderRegCli.getOpticMaterialFacade(null, null).getAssetManager()
-				.loadTexture("textures/robosteps/BlankGray.png");
+		MatFactory matFact = getRenderRegCli().getOpticMaterialFacade(null, null);
+		AssetManager assetMgr = matFact.getAssetManager();
+		Texture zeroTexture = assetMgr.loadTexture("textures/robosteps/Zero.png");
+		Texture oneTexture = assetMgr.loadTexture("textures/robosteps/One.png");
+		Texture blankTexture = assetMgr.loadTexture("textures/robosteps/BlankGray.png");
 		atlas.addTexture(zeroTexture, "ColorMap");
 		atlas.addTexture(oneTexture, "ColorMap");
 		atlas.addTexture(blankTexture, "ColorMap");
-		Material cubeMaterial = myRenderRegCli.getOpticMaterialFacade(null, null)
-			.makeMatWithOptTexture("Common/MatDefs/Misc/Unshaded.j3md", "ColorMap", atlas.getAtlasTexture("ColorMap"));
+		Material cubeMaterial = matFact.makeMatWithOptTexture("Common/MatDefs/Misc/Unshaded.j3md", "ColorMap", 
+					atlas.getAtlasTexture("ColorMap"));
 		return addGeometry(cubeMesh, cubeMaterial, null, new Quaternion());
 	}
 	
