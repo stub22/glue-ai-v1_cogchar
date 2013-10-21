@@ -145,10 +145,11 @@ class PosBlock(val myPRs : Array[PosRange]) extends KnowsOrthoDim {
 	//0.0 -> min, 0.5 -> center, 1.0 -> max
 	def getVecFromMainDiagonal(p: Float) : Array[Float] = {
 		val dimCount = getOrthoDimCount
-		val res = Array[Float](dimCount)
+		val res = new Array[Float](dimCount)
 		for (d <- 0 to (dimCount - 1)) {
-			val posRange = myPRs(d)
-			res(d) = posRange.getFracPos(p)
+			val posRange : PosRange = myPRs(d)
+			val fracPos : Float = posRange.getFracPos(p)
+			res(d) = fracPos
 		}
 		res
 	}
@@ -220,9 +221,15 @@ object CellSpaceTest extends BasicDebugger {
 
 		val posBlock = cellBlock.computePosBlockInSpace(space)
 		getLogger().info("Computed result PosBlock description={}", posBlock.describe)
+		val vecOnDiag = posBlock.getVecFromMainDiagonal(2.0f)
+		getLogger().info("Vec on pos-block diag at 2.0f * MAX ={}", vecOnDiag)
+		
+		val vecAtMin = posBlock.getVecFromMainDiagonal(0.0f)
+		getLogger().info("Vec on pos-block diag at 0.0f * MAX ={}", vecAtMin)		
 		
 		val blockAt729 = CellRangeFactory.makeUnitBlock3D(7, 2, 9)
 		getLogger().info("blockAt729 description={}", blockAt729.describe(1))
+		
 	}
 	
 }
