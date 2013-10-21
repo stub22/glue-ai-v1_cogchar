@@ -54,8 +54,7 @@ public class VWorldCameraEntity extends VWorldEntity {
 	private Camera myCamera;
 	
 	public VWorldCameraEntity(GoodyRenderRegistryClient aRenderRegCli, Ident cameraUri, Camera theCamera) {
-		myRenderRegCli = aRenderRegCli;
-		myUri = cameraUri;
+		super(aRenderRegCli, cameraUri);
 		myCamera = theCamera;
 	}
 	
@@ -101,16 +100,16 @@ public class VWorldCameraEntity extends VWorldEntity {
 		waypoints.add(new WaypointConfig(new FreeIdent(NamespaceDir.NS_CCRT_RT + "Start"), currentPosition.toArray(new float[3])));
 		waypoints.add(new WaypointConfig(new FreeIdent(NamespaceDir.NS_CCRT_RT + "End"), newPosition.toArray(new float[3])));
 		Ident pathUri = new FreeIdent(NamespaceDir.NS_CCRT_RT + "CamMovePath");
-		PathInstanceConfig cameraPath = new PathInstanceConfig(myUri, AttachedItemType.CAMERA, 
+		PathInstanceConfig cameraPath = new PathInstanceConfig(getUri(), AttachedItemType.CAMERA, 
 				duration, newOrientation.toAngles(new float[3]), waypoints, pathUri);
-		PathMgr pMgr = myRenderRegCli.getScenePathFacade(null);
+		PathMgr pMgr = getRenderRegCli().getScenePathFacade(null);
 		pMgr.buildAnimation(cameraPath);
 		pMgr.controlAnimationByName(pathUri, PathMgr.ControlAction.PLAY);
 	}
 	
 	public void attachToGoody(BasicGoodyEntity attachedGoody, QueueingStyle qStyle) {
 		//create the camera Node
-		final CameraNode camNode = new CameraNode("Camera Node of " + myUri.getLocalName(), myCamera);
+		final CameraNode camNode = new CameraNode("Camera Node of " + getUri().getLocalName(), myCamera);
 		//Get the Goody's Node
 		final Node goodyNode = attachedGoody.getContentNode();
 		getLogger().info("Attaching camNode to goodyNode {}", attachedGoody.getUri()); // TEST ONLY
@@ -125,7 +124,7 @@ public class VWorldCameraEntity extends VWorldEntity {
 				//Attach the camNode to the Goody Node:
 				goodyNode.attachChild(camNode);
 				//And the root node -- required?
-				myRenderRegCli.getJme3RootDeepNode(null).attachChild(camNode);
+				getRenderRegCli().getJme3RootDeepNode(null).attachChild(camNode);
 				return null;
 			}
 		}, qStyle);
@@ -174,7 +173,7 @@ public class VWorldCameraEntity extends VWorldEntity {
 				break;
 			}
 			default: {
-				getLogger().error("Unknown action requested in CameraGoodyWrapper {}: {}", myUri.getLocalName(), ga.getKind().name());
+				getLogger().error("Unknown action requested in CameraGoodyWrapper {}: {}", getUri().getLocalName(), ga.getKind().name());
 			}
 		}
 	};

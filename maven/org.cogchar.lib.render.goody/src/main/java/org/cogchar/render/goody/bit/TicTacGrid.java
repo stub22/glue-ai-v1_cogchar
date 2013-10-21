@@ -92,7 +92,7 @@ public class TicTacGrid extends BasicGoodyEntity {
 			Quaternion rotation = getRotation();
 			Vector3f scale = getScale();
 			TicTacMark markGoody = 
-					new TicTacMark(myRenderRegCli, markUri, markPosition, rotation, scale, isPlayerO);
+					new TicTacMark(getRenderRegCli(), markUri, markPosition, rotation, scale, isPlayerO);
 			getTheGoodySpace().addGoody(markGoody);
 			Node parentNode = getParentNode();
 			markGoody.attachToVirtualWorldNode(parentNode, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
@@ -119,7 +119,7 @@ public class TicTacGrid extends BasicGoodyEntity {
 	}
 	
 	private Ident createMarkIdent(int xPos, int yPos) {
-		String uriString = myUri.getAbsUriString();
+		String uriString = getUri().getAbsUriString();
 		uriString += "Mark" + xPos + yPos;
 		return new FreeIdent(uriString);
 	}

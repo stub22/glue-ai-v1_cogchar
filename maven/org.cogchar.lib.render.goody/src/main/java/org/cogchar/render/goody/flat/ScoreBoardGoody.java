@@ -44,7 +44,7 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
 // May eventually extend a standard "composite goody" superclass
 // Presents a set of lines containing "labels" and "scores".
-public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
+public class ScoreBoardGoody extends FlatGoody implements GeneralScoreBoard {
 	
 	final static ColorRGBA MY_SCORE_COLOR = ColorRGBA.Magenta; // Likely only temporarily a constant
 	
@@ -53,15 +53,14 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 	Vector3f myPosition; // of top left corner of scoreboard in fraction of window width/height
 	List<ScoreBoardGoody.Row>	myRows;
 
-	@Override public void setRotation(Quaternion newRotation, QueueingStyle qStyle) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
+	private	Node	myNode;
+	
 
-	public class Row extends BasicGoody2dImpl {
+	public class Row extends FlatGoodyTextElement {
 		public Row(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f rowPosition, float textSize, ColorRGBA scoreColor) {
-			super(aRenderRegCli, uri);
+			super(aRenderRegCli);
 			//myLogger.info("In ScoreBoardGoody.Row, Window size is {}x{}, position is {}", new Object[]{myScreenWidth, myScreenHeight, rowPosition}); // TEST ONLY
-			this.setPosition(rowPosition, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
+			this.setScreenPosRelToParent(rowPosition, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 			setGoodyAttributes("_", textSize, scoreColor);
 		}
 		public void setScoreText(String scoreText) {
@@ -70,8 +69,7 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 	}
 	public ScoreBoardGoody(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f topPosition, 
 				float rowHeight, int numRows, float textSize) {
-		myRenderRegCli = aRenderRegCli;
-		myUri = uri;
+		super(aRenderRegCli, uri);
 		myRows = new ArrayList<ScoreBoardGoody.Row>();
 		myRowHeight = rowHeight;
 		myPosition = topPosition;
@@ -85,6 +83,9 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 		}
 		//BonyRenderContext.setScoreBoard(this); //needs to happen somewhere, probably not here!
 	}
+	@Override protected Node getFlatGoodyNode() {
+		return myNode;
+	}	
 	@Override public void displayScore(int rowNum, String scoreText) {
 		if ((rowNum >= 0) && (rowNum < myRows.size())) {
 			ScoreBoardGoody.Row l = myRows.get(rowNum);
@@ -94,10 +95,7 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 		}
 	}
 	
-	@Override public void attachToVirtualWorldNode(Node vWorldNode, QueueingStyle qStyle) {
-		// Currently any specified node is ignored since we are attaching via the FlatOverlayMgr
-		attachToVirtualWorldNode(qStyle);
-	}
+	/*
 	// For this composite goody, we must attach all rows
 	public void attachToVirtualWorldNode(QueueingStyle qStyle) {
 		if (!myRows.isEmpty()) {
@@ -114,7 +112,7 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 			nextRow.detachFromVirtualWorldNode(qStyle);
 		}
 	}
-	
+	*/
 	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		switch (ga.getKind()) {
 			case MOVE : {
@@ -133,7 +131,7 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 				break;
 			}
 			default: {
-				getLogger().error("Unknown action requested in Goody {}: {}", myUri.getLocalName(), ga.getKind().name());
+				getLogger().error("Unknown action requested in Goody {}: {}", getUri().getLocalName(), ga.getKind().name());
 			}
 		}
 	};
@@ -141,7 +139,7 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 	@Override public void setPosition(Vector3f position, QueueingStyle qStyle) {
 		for (int rowIdx=0; rowIdx < myRows.size(); rowIdx++) {
 			Row nextRow = myRows.get(rowIdx);
-			nextRow.setPosition(getPositionForRow(rowIdx, position), qStyle);
+			nextRow.setScreenPosRelToParent(getPositionForRow(rowIdx, position), qStyle);
 		}
 		myPosition = position;
 	}
@@ -163,4 +161,7 @@ public class ScoreBoardGoody extends VWorldEntity implements GeneralScoreBoard {
 		float topY = scoreboardPosition.getY() - row * myRowHeight;
 		return new Vector3f(leftX, topY, 0);
 	}
+	@Override public void setRotation(Quaternion newRotation, QueueingStyle qStyle) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}	
 }
