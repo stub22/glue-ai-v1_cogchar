@@ -33,7 +33,7 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
 
 public class CrossHairGoody extends FlatGoodyWithScreenFracPos {
-	Node myNode;
+	BitmapText myNode;
 	FlatGoodyTextElement myTextEl;
 	
 	public CrossHairGoody(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f positionOffset, Float scale) {
@@ -47,12 +47,13 @@ public class CrossHairGoody extends FlatGoodyWithScreenFracPos {
 			scale = 1f;
 			getLogger().warn("Scale for CrossHair not specified; using default of 1.");
 		}
-		BitmapText bt = myTextEl.setGoodyAttributes("+", scale);
-		myNode = bt;
-		BitmapFont bf = bt.getFont();
+		myTextEl.setContentText("+");
+		myTextEl.setUniformScaleFactor(scale, QueueingStyle.QUEUE_AND_RETURN);
+		myNode = myTextEl.getTextNode();
+		BitmapFont bf = myNode.getFont();
 		Dimension screenDim = getScreenDim();
 		float crossHalfWidthFraction = (bf.getCharSet().getRenderedSize() / 3.0f * 2.0f) / screenDim.width;
-		float crossHalfHeightFraction = (bt.getLineHeight() / 2.0f) / screenDim.height;
+		float crossHalfHeightFraction = (myNode.getLineHeight() / 2.0f) / screenDim.height;
 		Vector3f relativePosition = new Vector3f(-crossHalfWidthFraction, crossHalfHeightFraction, 0f);
 		// This conditional is somewhat dependent on the TypedValueMap implementation and may need to be 
 		// revisited. Will this catch position==null and continue before throwing an NPE?

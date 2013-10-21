@@ -44,7 +44,7 @@ public class ParagraphGoody extends FlatGoody {
 	public ParagraphGoody(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f position, Float scale, 
 				ColorRGBA color, String text) {
 		super(aRenderRegCli, uri);
-		myTextElement = new FlatGoodyTextElement(aRenderRegCli);
+
 		if (color == null) {
 			color = DEFAULT_COLOR;
 		}
@@ -54,7 +54,10 @@ public class ParagraphGoody extends FlatGoody {
 		if (text == null) {
 			text = DEFAULT_TEXT;
 		}
-//		setGoodyAttributes(text, scale, color);
+		myTextElement = new FlatGoodyTextElement(aRenderRegCli);		
+		myTextElement.setContentText(text);
+		myTextElement.setUniformScaleFactor(scale, QueueingStyle.QUEUE_AND_RETURN);
+		myTextElement.setColor(color);
 		setPosition(position, QueueingStyle.QUEUE_AND_RETURN);
 	}
 	
@@ -64,7 +67,7 @@ public class ParagraphGoody extends FlatGoody {
 			case SET : {
 				String text = ga.getText();
 				if (text != null) {
-					myTextElement.setText(text);
+					myTextElement.setContentText(text);
 				}
 				break;
 			}

@@ -16,51 +16,23 @@
 
 package org.cogchar.lib.render.goody;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState.FaceCullMode;
+
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Node;
-import com.jme3.scene.control.BillboardControl;
-import org.cogchar.render.app.core.CogcharPresumedApp;
-import org.cogchar.render.opengl.scene.TextMgr;
+
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.ViewPort;
 import com.jme3.input.FlyByCamera;
-import java.awt.Canvas;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.util.List;
-import java.util.Random;
-import javax.swing.JFrame;
+
 import org.apache.log4j.Level;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.api.vworld.GoodyActionParamWriter;
-import org.cogchar.impl.thing.basic.BasicThingActionSpec;
-import org.cogchar.impl.thing.basic.BasicTypedValueMap;
+
 import org.cogchar.name.goody.GoodyNames;
 
-import org.cogchar.render.app.core.CogcharPresumedApp;
-import org.cogchar.render.goody.basic.GoodyBox;
-import org.cogchar.render.goody.basic.VirtualFloor;
-import org.cogchar.render.goody.bit.BitBox;
-import org.cogchar.render.goody.bit.BitCube;
-import org.cogchar.render.goody.bit.TicTacGrid;
-import org.cogchar.render.goody.bit.TicTacMark;
-import org.cogchar.render.goody.flat.CrossHairGoody;
-import org.cogchar.render.goody.flat.ScoreBoardGoody;
-import org.cogchar.render.goody.flat.ParagraphGoody;
-import org.cogchar.render.optic.goody.VWorldCameraEntity;
+
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
 
@@ -68,26 +40,17 @@ import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
 import org.cogchar.render.sys.context.CoreFeatureAdapter;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
-import static org.cogchar.name.goody.GoodyNames.*;
-import org.cogchar.render.app.entity.GoodySpace;
 import org.cogchar.render.sys.goody.GoodyModularRenderContext;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClientImpl;
 
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.name.dir.NamespaceDir;
-import org.cogchar.name.entity.EntityRoleCN;
-import org.cogchar.platform.gui.keybind.KeyBindingConfig;
-import org.cogchar.platform.trigger.CommandSpace;
-import org.cogchar.render.app.bony.BonyRenderContext;
+
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 import org.cogchar.render.app.entity.GoodyFactory;
-import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
-import org.cogchar.render.gui.bony.PanelUtils;
-import org.cogchar.render.gui.bony.VirtualCharacterPanel;
-import org.cogchar.render.sys.context.WorkaroundFuncsMustDie;
-import org.cogchar.render.sys.input.VW_InputBindingFuncs;
-import org.osgi.framework.BundleContext;
+
+
 
 
 /**
