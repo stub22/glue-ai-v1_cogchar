@@ -20,12 +20,16 @@ import com.jme3.font.BitmapText;
 import com.jme3.font.Rectangle;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.BillboardControl;
+import com.jme3.scene.shape.Quad;
 import org.cogchar.render.app.core.CogcharPresumedApp;
 import org.cogchar.render.opengl.scene.TextMgr;
 
@@ -42,8 +46,9 @@ import org.cogchar.render.sys.context.CoreFeatureAdapter;
  */
 public class TrialBalloon extends CogcharPresumedApp {
 
-	private		TempMidiBridge myTMB = new TempMidiBridge();
-	private		CogcharRenderContext myCRC;
+	private		TempMidiBridge			myTMB = new TempMidiBridge();
+	// In this test, we have the luxury of knowing the exact class of our associated context.
+	private		TB_RenderContext		myTBRC;
 
 	public static void main(String[] args) {
 		org.apache.log4j.BasicConfigurator.configure();
@@ -56,40 +61,48 @@ public class TrialBalloon extends CogcharPresumedApp {
 		super.start();
 		myTMB.initMidiRouter();
 	}
-
+	// This is an important setup callback, linking us in to the Cogchar rendering abstraction layer.
+	// We minimize our dependence on JME3 by coding against the Cogchar RenderContext APIs, rather than
+	// in our "Application" class (TrialBalloon, in this case).
 	@Override protected CogcharRenderContext makeCogcharRenderContext() {
+		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Making CogcharRenderContext");
 		TB_RenderContext rc = new TB_RenderContext();
-		myCRC = rc;
+		myTBRC = rc;
 		return rc;
 	}
 
 	@Override public void simpleInitApp() {
+		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling super.simpleInitApp()");
 		super.simpleInitApp();
+		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.simpleInitApp()");
+		// At this point, the R
 		flyCam.setMoveSpeed(20);
-		initContent();
+		initContent3D();
+		initContent2D();
 	}
-
-	public void initContent() {
+		String letters = "abcd\nABCD\nEFGHIKLMNOPQRS\nTUVWXYZ";
+		String digits = "1\n234567890";
+		String syms = "`~!@#$\n%^&*()-=_+[]\\;',./{}|:<>?";
+		
+	public void initContent3D() {
 		Node myMainNode;
 		myMainNode = new Node("my_main");
 		rootNode.attachChild(myMainNode);
 		//	BonyGameFeatureAdapter.initCrossHairs(settings, getRenderRegistryClient()); // a "+" in the middle of the screen to help aiming
 
 		shedLight();
-		String letters = "abcd\nABCD\nEFGHIKLMNOPQRS\nTUVWXYZ";
-		String digits = "1\n234567890";
-		String syms = "`~!@#$\n%^&*()-=_+[]\\;',./{}|:<>?";
+
 		// This scale factor will be multiplied by the getRenderedSize value of the font, which is 17.0f
 		// for the default font (on JDK6.Win7, YMMV).
 
 		// Not really clear what "size" of the font means.  It
 		// seems that if we want the rectangle to really contain
 
-		BitmapText lettersBTS = makeTextSpatial(letters, 0.2f); // eff-scale 3.4f, wraps after 2-3 chars
-		BitmapText digitsBTS = makeTextSpatial(digits, 0.1f);  // eff-scale 1.7f, wraps after 6 chars
-		BitmapText symsBTS = makeTextSpatial(syms, 0.05f);   // eff-scale 1.05f, wraps after ~ 18 oddly shaped chars
+		BitmapText lettersBTS = makeTextSpatial(letters, 0.2f, RenderQueue.Bucket.Transparent, 6); // eff-scale 3.4f, wraps after 2-3 chars
+		BitmapText digitsBTS = makeTextSpatial(digits, 0.1f, RenderQueue.Bucket.Transparent, 6);  // eff-scale 1.7f, wraps after 6 chars
+		BitmapText symsBTS = makeTextSpatial(syms, 0.05f, RenderQueue.Bucket.Transparent, 6);   // eff-scale 1.05f, wraps after ~ 18 oddly shaped chars
 		myMainNode.attachChild(lettersBTS);
-		lettersBTS.move(10.0f, 10.0f, 10.0f);
+		lettersBTS.move(3.0f, 3.0f, -50.0f);
 		//lettersBTS.setSize(0.5f);	//digitsBTS.setSize(0.5f); //symsBTS.setSize(0.5f);
 		myMainNode.attachChild(digitsBTS);
 		myMainNode.attachChild(symsBTS);
@@ -106,10 +119,56 @@ public class TrialBalloon extends CogcharPresumedApp {
 		lettersBTS.addControl(bbCont);
 		viewPort.setBackgroundColor(ColorRGBA.Blue);
 	}
+	public void initContent2D () {
+		Node myGuiNode = new Node("my_gui");
+		
+		guiNode.attachChild(myGuiNode);
+		guiNode.setLocalTranslation(20.0f, 40.0f, 0.0f);
+		BitmapText flatDigitsBTS = makeTextSpatial(digits, 1.0f, RenderQueue.Bucket.Gui, 30);
+		
+		flatDigitsBTS.setQueueBucket(RenderQueue.Bucket.Gui); // Inherit, Opaque, Trans{parent, lucent}, ...
+		// flatDigitsBTS.move(20.0f, 20.0f, 0.0f);
+		flatDigitsBTS.setLocalTranslation(200.0f, 60.0f, 0.0f);
+		myGuiNode.attachChild(flatDigitsBTS);
+		
+		RenderRegistryClient rrc = myTBRC.getRenderRegistryClient();
+		// rrc.getSceneFlatFacade(null).detachAllOverlays();
+		BitmapText bt = rrc.getSceneTextFacade(null).getScaledBitmapText("X+Y", 2.0f);
+		// Text is rendered downward and right from the origin (local 0.0,0.0) position of the spatial.
+		// Thus overlay text is "off the screen" unless the Y-coordinate of the spatial is high enough.
+		// If positioned at y=10.0f, we can just barely see the top edge of the first line of text.
+		bt.setLocalTranslation(300.0f, 250.0f, 0.0f);
+		// guiNode.attachChild(crossBT);  is equiv to   rrc.getSceneFlatFacade(null).attachOverlaySpatial(crossBT);	
+		myGuiNode.attachChild(bt);
+		
+		Material unshMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        unshMat.setColor("Color", new ColorRGBA(0,1.0f,0,0.5f));
+		
+	/*
+	 // http://hub.jmonkeyengine.org/javadoc/com/jme3/material/RenderState.BlendMode.html
+	  
+	Additive - Additive blending.
+Alpha - Alpha blending, interpolates to source color from dest color using source alpha.
+AlphaAdditive -      Additive blending that is multiplied with source alpha.
+Color -     Color blending, blends in color from dest color using source color.
+Modulate -   Multiplies the source and dest colors.
+ModulateX2 -  Multiplies the source and dest colors then doubles the result.
+Off - No blending mode is used.
+PremultAlpha -  Premultiplied alpha blending, for use with premult alpha textures.
+	 */
+        unshMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+		Geometry quadGeo = new Geometry("wideQuad", new Quad(200, 100));
+		quadGeo.setMaterial(unshMat);
+		
+		quadGeo.setCullHint(Spatial.CullHint.Never); // Others are CullHint.Always, CullHint.Inherit
+		quadGeo.setLocalTranslation(50.0f, 300.0f, -1.0f);
+		myGuiNode.attachChild(quadGeo);
+		
+	}
 
-	private BitmapText makeTextSpatial(String txtB, float renderScale) {
+	private BitmapText makeTextSpatial(String txtB, float renderScale, RenderQueue.Bucket bucket, int rectWidth) {
 
-		RenderRegistryClient rrc = myCRC.getRenderRegistryClient();
+		RenderRegistryClient rrc = myTBRC.getRenderRegistryClient();
 		TextMgr txtMgr = rrc.getSceneTextFacade(null);
 		BitmapText txtSpatial = txtMgr.getScaledBitmapText(txtB, renderScale);
 
@@ -122,12 +181,14 @@ public class TrialBalloon extends CogcharPresumedApp {
 		// font-mat, then cached] on our spatials make this  management cleaner?
 
 		txtMgr.disableCullingForFont(bf);
-		Rectangle rect = new Rectangle(0, 0, 6, 3);
-
+		
+		// This rectangle controls how the text is wrapped.   
+		// Explicit newlines embedded in the text also work.
+		Rectangle rect = new Rectangle(0, 0, rectWidth, 3);
 		txtSpatial.setBox(rect);
-		// If we want effective transparency or translucency, need to use this bucket, marking the object to be 
-		// processed during the transparent object rendering pass.
-		txtSpatial.setQueueBucket(RenderQueue.Bucket.Transparent);
+		
+
+		txtSpatial.setQueueBucket(bucket);
 
 		return txtSpatial;
 	}
@@ -146,7 +207,15 @@ public class TrialBalloon extends CogcharPresumedApp {
 		DirectionalLight odl = rrc.getOpticLightFacade(null).makeWhiteOpaqueDirectionalLight(otherLightDir);
 		CoreFeatureAdapter.addLightToRootNode(crc, odl);
 	}
-
+	@Override public void destroy(){
+		getLogger().info("JME3 destroy() called");
+		super.destroy();
+		getLogger().info("Cleaing up MIDI bridge");
+		myTMB.cleanup();
+		getLogger().info("MIDI cleanup finished");
+	}
 	public class TB_RenderContext extends ConfiguredPhysicalModularRenderContext {
+		@Override public void doUpdate(float tpf) {
+		}
 	}
 }
