@@ -21,6 +21,8 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Transmitter;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.midi.FunMidiEventRouter;
+import org.cogchar.bind.midi.InterestingMidiEvent;
+import org.cogchar.bind.midi.MidiEventReporter;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -60,11 +62,17 @@ public class TempMidiBridge extends BasicDebugger {
 		}
 		myFMER = new FunMidiEventRouter();
 		myFMER.startPumpingMidiEvents();
-		FunMidiEventRouter.FunListener fl = new FunMidiEventRouter.FunListener();
-		myFMER.registerListener(fl);		
+		OurListener ol = new OurListener();
+		myFMER.registerListener(ol);		
 	}
 	// Something not unlike a Novation Nocturn, in x Channels
 	public void connectAndMapContSurf (String devName, int chanCount) {
 		
 	}
+	public static class OurListener extends BasicDebugger implements MidiEventReporter.Listener {
+
+		@Override public void reportEvent(InterestingMidiEvent ime) {
+			getLogger().info("*** Oulist received midi event: {} ", ime);
+		}
+	}	
 }

@@ -47,9 +47,11 @@ public class TrialContent extends BasicDebugger {
 	String syms = "`~!@#$\n%^&*()-=_+[]\\;',./{}|:<>?";
 	
 	Node myMainNode, myGuiNode;
+	BitmapText		myLettersBTS, myDigitsBTS, mySymsBTS, myFlatDigitsBTS, myOverlayEqnBT;
+	Geometry		myQuadGeo;
 	
 	// The other args are really implied by the rrc, so can be factored out
-	public void initContent3D_onJME3thread(RenderRegistryClient rrc, Node appRootNode, ViewPort appViewPort) {
+	public void initContent3D_onRendThread(RenderRegistryClient rrc, Node appRootNode, ViewPort appViewPort) {
 		
 		myMainNode = new Node("my_main");
 		appRootNode.attachChild(myMainNode);
@@ -60,16 +62,16 @@ public class TrialContent extends BasicDebugger {
 		// Not really clear what "size" of the font means.  It
 		// seems that if we want the rectangle to really contain
 
-		BitmapText lettersBTS = makeTextSpatial(rrc, letters, 0.2f, RenderQueue.Bucket.Transparent, 6); // eff-scale 3.4f, wraps after 2-3 chars
-		BitmapText digitsBTS = makeTextSpatial(rrc, digits, 0.1f, RenderQueue.Bucket.Transparent, 6);  // eff-scale 1.7f, wraps after 6 chars
-		BitmapText symsBTS = makeTextSpatial(rrc, syms, 0.05f, RenderQueue.Bucket.Transparent, 6);   // eff-scale 1.05f, wraps after ~ 18 oddly shaped chars
-		myMainNode.attachChild(lettersBTS);
-		lettersBTS.move(3.0f, 3.0f, -50.0f);
+		myLettersBTS = makeTextSpatial(rrc, letters, 0.2f, RenderQueue.Bucket.Transparent, 6); // eff-scale 3.4f, wraps after 2-3 chars
+		myDigitsBTS = makeTextSpatial(rrc, digits, 0.1f, RenderQueue.Bucket.Transparent, 6);  // eff-scale 1.7f, wraps after 6 chars
+		mySymsBTS = makeTextSpatial(rrc, syms, 0.05f, RenderQueue.Bucket.Transparent, 6);   // eff-scale 1.05f, wraps after ~ 18 oddly shaped chars
+		myMainNode.attachChild(myLettersBTS);
+		myLettersBTS.move(3.0f, 3.0f, -50.0f);
 		//lettersBTS.setSize(0.5f);	//digitsBTS.setSize(0.5f); //symsBTS.setSize(0.5f);
-		myMainNode.attachChild(digitsBTS);
-		myMainNode.attachChild(symsBTS);
+		myMainNode.attachChild(myDigitsBTS);
+		myMainNode.attachChild(mySymsBTS);
 
-		digitsBTS.move(-10f, -10f, -10f);
+		myDigitsBTS.move(-10f, -10f, -10f);
 		BillboardControl bbCont = new BillboardControl();
 		/**
 		 * AxialY Aligns this Billboard to the screen, but keeps the Y axis fixed. AxialZ Aligns this Billboard to the
@@ -77,31 +79,31 @@ public class TrialContent extends BasicDebugger {
 		 * Billboard to the screen.
 		 */
 		bbCont.setAlignment(BillboardControl.Alignment.Screen);
-		lettersBTS.addControl(bbCont);
+		myLettersBTS.addControl(bbCont);
 		appViewPort.setBackgroundColor(ColorRGBA.Blue);
 	}
 	// The other args are really implied by the rrc, so can be factored out
-	public void initContent2D_onJME3thread(RenderRegistryClient rrc, Node appGuiNode, AssetManager assetMgr) {
+	public void initContent2D_onRendThread(RenderRegistryClient rrc, Node appGuiNode, AssetManager assetMgr) {
 		myGuiNode = new Node("my_gui");
 
 		appGuiNode.attachChild(myGuiNode);
 		appGuiNode.setLocalTranslation(20.0f, 40.0f, 0.0f);
-		BitmapText flatDigitsBTS = makeTextSpatial(rrc, digits, 1.0f, RenderQueue.Bucket.Gui, 30);
+		myFlatDigitsBTS = makeTextSpatial(rrc, digits, 1.0f, RenderQueue.Bucket.Gui, 30);
 
-		flatDigitsBTS.setQueueBucket(RenderQueue.Bucket.Gui); // Inherit, Opaque, Trans{parent, lucent}, ...
+		myFlatDigitsBTS.setQueueBucket(RenderQueue.Bucket.Gui); // Inherit, Opaque, Trans{parent, lucent}, ...
 		// flatDigitsBTS.move(20.0f, 20.0f, 0.0f);
-		flatDigitsBTS.setLocalTranslation(200.0f, 60.0f, 0.0f);
-		myGuiNode.attachChild(flatDigitsBTS);
+		myFlatDigitsBTS.setLocalTranslation(200.0f, 60.0f, 0.0f);
+		myGuiNode.attachChild(myFlatDigitsBTS);
 
 		
 		// rrc.getSceneFlatFacade(null).detachAllOverlays();
-		BitmapText bt = rrc.getSceneTextFacade(null).getScaledBitmapText("X+Y", 2.0f);
+		myOverlayEqnBT = rrc.getSceneTextFacade(null).getScaledBitmapText("X+Y", 2.0f);
 		// Text is rendered downward and right from the origin (local 0.0,0.0) position of the spatial.
 		// Thus overlay text is "off the screen" unless the Y-coordinate of the spatial is high enough.
 		// If positioned at y=10.0f, we can just barely see the top edge of the first line of text.
-		bt.setLocalTranslation(300.0f, 250.0f, 0.0f);
+		myOverlayEqnBT.setLocalTranslation(300.0f, 250.0f, 0.0f);
 		// guiNode.attachChild(crossBT);  is equiv to   rrc.getSceneFlatFacade(null).attachOverlaySpatial(crossBT);	
-		myGuiNode.attachChild(bt);
+		myGuiNode.attachChild(myOverlayEqnBT);
 
 		Material unshMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
 		unshMat.setColor("Color", new ColorRGBA(0, 1.0f, 0, 0.5f));
@@ -119,12 +121,12 @@ public class TrialContent extends BasicDebugger {
 		 PremultAlpha -  Premultiplied alpha blending, for use with premult alpha textures.
 		 */
 		unshMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-		Geometry quadGeo = new Geometry("wideQuad", new Quad(200, 100));
-		quadGeo.setMaterial(unshMat);
+		myQuadGeo = new Geometry("wideQuad", new Quad(200, 100));
+		myQuadGeo.setMaterial(unshMat);
 
-		quadGeo.setCullHint(Spatial.CullHint.Never); // Others are CullHint.Always, CullHint.Inherit
-		quadGeo.setLocalTranslation(50.0f, 300.0f, -1.0f);
-		myGuiNode.attachChild(quadGeo);
+		myQuadGeo.setCullHint(Spatial.CullHint.Never); // Others are CullHint.Always, CullHint.Inherit
+		myQuadGeo.setLocalTranslation(50.0f, 300.0f, -1.0f);
+		myGuiNode.attachChild(myQuadGeo);
 
 	}
 	
@@ -154,12 +156,12 @@ public class TrialContent extends BasicDebugger {
 		return txtSpatial;
 	}
 
-	public void shedLight(CogcharRenderContext crc) {
+	public void shedLight_onRendThread(CogcharRenderContext crc) {
 		CoreFeatureAdapter.setupLight(crc);
-		shedMoreLight(crc);
+		shedMoreLight_onRendThread(crc);
 	}
 
-	private void shedMoreLight(CogcharRenderContext crc) {
+	private void shedMoreLight_onRendThread(CogcharRenderContext crc) {
 		RenderRegistryClient rrc = crc.getRenderRegistryClient();
 		Vector3f otherLightDir = new Vector3f(0.1f, 0.7f, 1.0f).normalizeLocal();
 		DirectionalLight odl = rrc.getOpticLightFacade(null).makeWhiteOpaqueDirectionalLight(otherLightDir);
