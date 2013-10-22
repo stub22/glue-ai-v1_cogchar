@@ -46,29 +46,52 @@ import org.cogchar.render.sys.context.CoreFeatureAdapter;
  */
 public class TrialBalloon extends CogcharPresumedApp {
 
-	private		TempMidiBridge			myTMB = new TempMidiBridge();
+	private TempMidiBridge myTMB = new TempMidiBridge();
 	// In this test, we have the luxury of knowing the exact class of our associated context.
-	private		TB_RenderContext		myTBRC;
+	private TB_RenderContext myTBRC;
 
 	public static void main(String[] args) {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		TrialBalloon app = new TrialBalloon();
 		app.start();
+		org.cogchar.api.space.CellSpaceTest.go();
 		app.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ End of main()");
 	}
 
 	@Override public void start() {
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling super.start()");
-		super.start();
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.start(), calling initMidiRouter()");
-		myTMB.initMidiRouter();
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from initMidiRouter(), returning from start()");
-
+		try {
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling super.start()");
+			super.start();
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.start() - render thread (probably LWJGL) is now launched.");
+			boolean flag_sleepTest = false;
+			if (flag_sleepTest) {
+				getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Sleeping 5 sec as a test.");
+				Thread.sleep(5000);
+				getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from sleep()");
+			}
+			// With no sleep, we get:
+			// 1992 [main] INFO org.cogchar.render.test.TrialBalloon  - ^^^^^^^^^^^^^^^^^^^^^^^^ Returned from initMidiRouter(), returning from start()
+			// 2154 [main] INFO org.cogchar.render.test.TrialBalloon  - ^^^^^^^^^^^^^^^^^^^^^^^^ End of main()
+			// 2345 [LWJGLRenderer Thread] INFO org.cogchar.render.app.core.CogcharPresumedApp  - ********************* CogcharPresumedApp.initialize() called
+			// But with sleep:
+			// 2536 [main] INFO org.cogchar.render.test.TrialBalloon  - ^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.start() - render thread is now launched? Sleeping 5 sec
+			// 2982 [LWJGL Renderer Thread] INFO org.cogchar.render.app.core.CogcharPresumedApp  - ********************* CogcharPresumedApp.initialize() called
+			// It is bad to depend on whether the rest of this start() method executes before or after the App-init()
+			// or subsequent activity.  So, generally speaking, this start() is an uncertain place to do anything
+			// involving JME3.  But launching some other system threads, e.g. MIDI, is a reasonable thing to do.
+			
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling initMidiRouter()");
+			myTMB.initMidiRouter();
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from initMidiRouter(), returning from start()");
+		} catch (Throwable t) {
+			getLogger().error("start() caught: ", t);
+		}
 	}
 	// This is an important setup callback, linking us in to the Cogchar rendering abstraction layer.
 	// We minimize our dependence on JME3 by coding against the Cogchar RenderContext APIs, rather than
 	// in our "Application" class (TrialBalloon, in this case).
+
 	@Override protected CogcharRenderContext makeCogcharRenderContext() {
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Making CogcharRenderContext");
 		TB_RenderContext rc = new TB_RenderContext();
@@ -80,28 +103,30 @@ public class TrialBalloon extends CogcharPresumedApp {
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling super.simpleInitApp()");
 		super.simpleInitApp();
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.simpleInitApp()");
-		// At this point, the R
-		flyCam.setMoveSpeed(20);
+		// flyCam.setMoveSpeed(20);
 		TrialContent tc = new TrialContent();
 		CogcharRenderContext crc = getRenderContext();
 		RenderRegistryClient rrc = crc.getRenderRegistryClient();
-		tc.shedLight(crc);
-		tc.initContent3D_onJME3thread(rrc, rootNode, viewPort);
-		tc.initContent2D_onJME3thread(rrc, guiNode, assetManager);
+		tc.shedLight_onRendThread(crc);
+		tc.initContent3D_onRendThread(rrc, rootNode, viewPort);
+		tc.initContent2D_onRendThread(rrc, guiNode, assetManager);
 	}
 
-	@Override public void destroy(){
+	@Override public void destroy() {
 		getLogger().info("JME3 destroy() called");
 		super.destroy();
 		getLogger().info("Cleaning up MIDI bridge");
 		myTMB.cleanup();
 		getLogger().info("MIDI cleanup finished");
 	}
+
 	public class TB_RenderContext extends ConfiguredPhysicalModularRenderContext {
+
 		@Override public void doUpdate(float tpf) {
 			// We are on the JME3 thread, so: 
 			// 1) We want to be quick (avoid logging) 
 			// 2) We have direct access to the scene graph.
+			super.doUpdate(tpf);
 		}
 	}
 }
