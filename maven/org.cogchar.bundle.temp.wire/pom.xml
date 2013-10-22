@@ -27,6 +27,11 @@
             <version>4.3.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.impl.registry.osgi</artifactId>
+            <version>${jflux.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
