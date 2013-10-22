@@ -106,6 +106,13 @@ public abstract class BasicRenderContext extends BasicRenderRegistryClientFinder
 
 	/**
 	 * Subclasses override this method to recieve a callback on each JME3 update cycle, supplied by the app.
+	 * Note that this method is called on the JME3 thread, which has two important implications:
+	 *		1) We are "on the JME3 thread" for rendering purposes, which means that we may make updates to
+	 *		the scene graph directly.
+	 * 
+	 *		2) We are blocking the JME3 update loop, so any lengthy operations will slow down the apparent
+	 *		responsiveness/smoothness of the 3D world.  In particular, we should avoid unnecessary logging 
+	 *		in the operations called from this method.
 	 */
 	public void doUpdate(float tpf) {
 	}
