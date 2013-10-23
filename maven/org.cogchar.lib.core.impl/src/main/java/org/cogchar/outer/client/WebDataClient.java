@@ -72,7 +72,8 @@ public class WebDataClient extends BasicDebugger {
 		try {
 			resultText = execPostRequest(myHttpCli, url, nvps, getLogger(), debugFlag);
 		} catch (Throwable t) {
-			getLogger().error("Problem during execGet", t);
+			getLogger().error("execPost() caught exception: {} \n================== Bonus Direct Stack Trace to STDERR", t);
+			t.printStackTrace();			
 		}
 		return resultText;
 	}

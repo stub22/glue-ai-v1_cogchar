@@ -55,7 +55,9 @@ public class AgentRepoClient extends BasicDebugger {
 		try {
 			myWebDataClient.execPost(svcUrl, nvps, debugFlag);
 		} catch (Throwable t) {
-			getLogger().error("Caught Exception: ", t);
+			// For some reason the 2-args form isn't printing stack traces from OutOf-Permgen exceptions.
+			getLogger().error("Caught Exception: {} \n********************* Bonus Direct Stack Trace to STDERR", t);
+			t.printStackTrace();
 		}
 	}
 	

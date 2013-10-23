@@ -74,5 +74,7 @@ public class TempMidiBridge extends BasicDebugger {
 		@Override public void reportEvent(InterestingMidiEvent ime) {
 			getLogger().info("*** Oulist received midi event: {} ", ime);
 		}
-	}	
+		
+		
+	}
 }
