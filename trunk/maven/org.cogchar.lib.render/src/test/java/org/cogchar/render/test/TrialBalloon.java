@@ -103,11 +103,14 @@ public class TrialBalloon extends CogcharPresumedApp {
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling super.simpleInitApp()");
 		super.simpleInitApp();
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.simpleInitApp()");
-		// flyCam.setMoveSpeed(20);
+		// Sets the speed of our POV camera movement.  The default is pretty slow.
+		flyCam.setMoveSpeed(20);
 		TrialContent tc = new TrialContent();
 		CogcharRenderContext crc = getRenderContext();
 		RenderRegistryClient rrc = crc.getRenderRegistryClient();
 		tc.shedLight_onRendThread(crc);
+		// The other args besides rrc are superfluous, since they are indirectly accessible through rrc.
+		// Note that these other args are all instance variables of this TrialBalloon app, inherited from JME3 SimpleApp.
 		tc.initContent3D_onRendThread(rrc, rootNode, viewPort);
 		tc.initContent2D_onRendThread(rrc, guiNode, assetManager);
 	}
@@ -127,6 +130,9 @@ public class TrialBalloon extends CogcharPresumedApp {
 			// 1) We want to be quick (avoid logging) 
 			// 2) We have direct access to the scene graph.
 			super.doUpdate(tpf);
+			// Goals:  Demonstrate moving+changing intersections of JME3 features, influenced by MIDI-input.
+			// (Later the 3D output will be supplemented by useful MIDI LED output).
+			// Making use of avail math infrastructre:  Symja and the Cogchar-core "Space" API.
 		}
 	}
 }

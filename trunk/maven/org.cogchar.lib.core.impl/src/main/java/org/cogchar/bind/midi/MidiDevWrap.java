@@ -27,8 +27,8 @@ import org.slf4j.Logger;
  */
 public class MidiDevWrap extends BasicDebugger {
 
-	MidiDevice.Info myDevInfo;
-	MidiDevice myDevice;
+	public	MidiDevice.Info		myDevInfo;
+	public	MidiDevice			myDevice;
 
 	public String toString() {
 		return "DEVICE[" + myDevice + "], vendor[" + myDevInfo.getVendor() + "], name[" + myDevInfo.getName()
