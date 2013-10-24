@@ -31,7 +31,8 @@ public class CogcharMidiInputTestMain {
 			fmer.startPumpingMidiEvents();
 			FunMidiEventRouter.FunListener fl = new FunMidiEventRouter.FunListener();
 			fmer.registerListener(fl);
-			Thread.sleep(10 * 1000);
+			fmer.logInfo("Showing MIDI events received in next 30 sec...");
+			Thread.sleep(30 * 1000);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
