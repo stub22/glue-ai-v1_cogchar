@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.lib.render.goody;
+package org.cogchar.test.rendgood.basic;
 
 import java.util.Random;
 import org.appdapter.core.name.FreeIdent;
