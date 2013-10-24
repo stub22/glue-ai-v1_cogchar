@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.lifter.behavior;
+package org.cogchar.svc.behav.control;
 
 import java.util.Collections;
 import java.util.HashMap;

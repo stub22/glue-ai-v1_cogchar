@@ -19,9 +19,15 @@ package org.cogchar.test.mainers;
 import java.util.List;
 import javax.sound.midi.Instrument;
 import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Patch;
+import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequencer;
+import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Soundbank;
 import javax.sound.midi.Synthesizer;
+import javax.sound.midi.VoiceStatus;
+import javax.sound.midi.MidiChannel;
+
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.midi.FunMidiEventRouter;
 import org.cogchar.bind.midi.MidiDevMatchPattern;
@@ -87,12 +93,46 @@ public class CogcharMidiOutTestMain extends BasicDebugger {
 		Synthesizer dsynth = MidiSystem.getSynthesizer();
 		getLogger().info("System default synthesizer is {}, of class {}", dsynth, (dsynth != null) ? dsynth.getClass() : "NULL");
 		if (dsynth != null) {
+			getLogger().info("Synth latency={}, polyphony={}", dsynth.getLatency(), dsynth.getMaxPolyphony());
 			Soundbank	dsdbk = dsynth.getDefaultSoundbank();
 			getLogger().info("Default synth has default soundbank {}, of class {}", dsdbk, (dsdbk != null) ? dsdbk.getClass() : "NULL");
+			
+			// Until we do this, all the instruments are still *AVAIL*, but not LOADED.
+			dsynth.open();
+			
+			
 			Instrument[] loadedInstrms = dsynth.getLoadedInstruments();
-			Instrument[] availInstrms = dsynth.getLoadedInstruments();
+			Instrument[] availInstrms = dsynth.getAvailableInstruments();
 			getLogger().info("Instrument counts: loaded={}, avail={}", loadedInstrms.length, availInstrms.length);
-
+			getLogger().info("Loaded Instruments: {}",  loadedInstrms);
+			getLogger().info("Avail Instruments: {}",  availInstrms);
+			StringBuffer all = new StringBuffer();
+			for (Instrument inst : availInstrms) {
+				Patch instPath = inst.getPatch();
+				all.append("[" + inst.toString() + "], ");
+			}
+			getLogger().info("All avail instruments: {}", all.toString());
+			
+			VoiceStatus[] synthVoiceStatusArr = dsynth.getVoiceStatus();
+			getLogger().info("VoiceStatus array size={}, firstEntry={}", synthVoiceStatusArr.length, synthVoiceStatusArr[0]);
+			
+			// TODO:  Set the programs of the channels
+			
+			MidiChannel[] midChans = dsynth.getChannels();
+			for(int cidx = 0; cidx < midChans.length; cidx++) {
+				getLogger().info("Channel at position {} is {} ", cidx, midChans[cidx]);
+			}
+			
+			
+			// THEN this will work:
+			// Play the note Middle C (60) moderately loud
+			// (velocity = 93)on channel 4 (zero-based).
+			ShortMessage noteOnMsg = new ShortMessage();
+			noteOnMsg.setMessage(ShortMessage.NOTE_ON, 4, 60, 93); 
+			
+			Receiver synthRcvr = dsynth.getReceiver();
+			synthRcvr.send(noteOnMsg, -1); // -1 means no time stamp
+	
 		}
 		
 	}
