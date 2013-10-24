@@ -44,6 +44,7 @@ import org.cogchar.bind.midi.FunMidiEventRouter;
 import org.cogchar.bind.midi.MidiDevMatchPattern;
 import org.cogchar.bind.midi.MidiDevWrap;
 
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -56,7 +57,11 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		FunMidiEventRouter fmer = new FunMidiEventRouter();
 		try {
 			CogcharMidiOutputTestMain cmotm = new CogcharMidiOutputTestMain();
-			cmotm.playSomeNotes();
+			
+			NovLpadTest nlt = new NovLpadTest();
+			nlt.lpadLightDemo();
+
+			cmotm.playSomeNotes();			
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
@@ -66,16 +71,7 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		fmer.logInfo("main() is done!");
 	}
 
-	public void findLaunchpadOutput() throws Throwable {
-		MidiDevMatchPattern devPattern = new MidiDevMatchPattern();
-		List<MidiDevWrap> devs = MidiDevWrap.findMatchingDevs(devPattern, getLogger());
 
-		for (MidiDevWrap dev : devs) {
-			if (dev instanceof Synthesizer) {
-			}
-		}
-	}
-	
 
 	public void findNocturnOutput() throws Throwable {
 		MidiDevMatchPattern devPattern = new MidiDevMatchPattern();
@@ -87,7 +83,8 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 
 		List<MidiDevWrap> devs = MidiDevWrap.findMatchingDevs(devPattern, getLogger());
 
-		for (MidiDevWrap dev : devs) {
+		for (MidiDevWrap devWrap : devs) {
+			MidiDevice dev = devWrap.myDevice;
 			if (dev instanceof Synthesizer) {
 				getLogger().info("Found synthesizer {} of class {}", dev, dev.getClass());
 			}

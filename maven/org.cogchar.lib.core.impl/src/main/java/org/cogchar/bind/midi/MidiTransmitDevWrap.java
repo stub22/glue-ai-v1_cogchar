@@ -19,11 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sound.midi.Transmitter;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class MidiTransmitDevWrap extends MidiDevWrap {
+	static Logger theLogger = LoggerFactory.getLogger(MidiTransmitDevWrap.class);
 
 	Transmitter myTransmitter;
 
@@ -41,6 +43,9 @@ public class MidiTransmitDevWrap extends MidiDevWrap {
 				MidiDevMatchPattern pattern, Logger logger) {
 		List<MidiTransmitDevWrap> results = new ArrayList<MidiTransmitDevWrap>();
 		for (MidiDevWrap mdw : devs) {
+			int maxTmit = mdw.myDevice.getMaxTransmitters();
+			int maxRecv = mdw.myDevice.getMaxReceivers();
+			theLogger.info("mdw {} reported maxTransmitters={}, maxReceivers={}", mdw, maxTmit, maxRecv);
 			try {
 				// Is it important to ensureDevOpen() before doing this fetch?
 				Transmitter tmit = mdw.myDevice.getTransmitter();
