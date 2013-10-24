@@ -47,7 +47,7 @@ import org.cogchar.bind.midi.MidiDevWrap;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class CogcharMidiOutTestMain extends BasicDebugger {
+public class CogcharMidiOutputTestMain extends BasicDebugger {
 
 	public static void main(String[] args) {
 		org.apache.log4j.BasicConfigurator.configure();
@@ -55,7 +55,7 @@ public class CogcharMidiOutTestMain extends BasicDebugger {
 
 		FunMidiEventRouter fmer = new FunMidiEventRouter();
 		try {
-			CogcharMidiOutTestMain cmotm = new CogcharMidiOutTestMain();
+			CogcharMidiOutputTestMain cmotm = new CogcharMidiOutputTestMain();
 			cmotm.playSomeNotes();
 		} catch (Throwable t) {
 			t.printStackTrace();
