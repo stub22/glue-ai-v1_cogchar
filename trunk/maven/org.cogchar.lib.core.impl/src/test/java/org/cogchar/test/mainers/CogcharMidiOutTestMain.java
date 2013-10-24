@@ -132,10 +132,45 @@ public class CogcharMidiOutTestMain extends BasicDebugger {
 			
 			Receiver synthRcvr = dsynth.getReceiver();
 			synthRcvr.send(noteOnMsg, -1); // -1 means no time stamp
-	
+			
+		//	channel.noteOn(nNoteNumber, nVelocity);
+		//	channel.noteOff(nNoteNumber);
+			
+			
+			Thread.sleep(5000);
+			dsynth.close();
 		}
 		
 	}
 	
 
 }
+
+/*
+ * 			nChannelNumber = Math.min(15, Math.max(0, nChannelNumber));
+			nNoteNumberArgIndex = 1;
+			// FALL THROUGH
+
+		case 3:
+			nNoteNumber = Integer.parseInt(args[nNoteNumberArgIndex]);
+			nNoteNumber = Math.min(127, Math.max(0, nNoteNumber));
+			nVelocity = Integer.parseInt(args[nNoteNumberArgIndex + 1]);
+			nVelocity = Math.min(127, Math.max(0, nVelocity));
+			nDuration = Integer.parseInt(args[nNoteNumberArgIndex + 2]);
+			nDuration = Math.max(0, nDuration);
+ * 
+ * 
+ * 
+ * 	<formalpara><title>Bugs, limitations</title>
+	<para>The precision of the duration depends on the precision
+	of <function>Thread.sleep()</function>, which in turn depends on
+	the precision of the system time and the latency of th
+	thread scheduling of the Java VM. For many VMs, this
+	means about 20 ms. When playing multiple notes, it is
+	recommended to use a <classname>Sequence</classname> and the
+	<classname>Sequencer</classname>, which is supposed to give better
+	timing.</para>
+	</formalpara>
+	* 
+	* 
+ */
