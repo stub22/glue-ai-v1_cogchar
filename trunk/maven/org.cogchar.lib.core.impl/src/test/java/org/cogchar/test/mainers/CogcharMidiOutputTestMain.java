@@ -411,11 +411,15 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		sm_openedMidiDeviceList.add(midiDevice);
 		Receiver	midiDevReceiver = midiDevice.getReceiver();
 		midiTransmitter.setReceiver(midiDevReceiver);
+		// Later
+		midiDevReceiver.close();
+		midiDevice.close();			
 		
 		// Dumping sequencer output to text, or our intermediate
 			//	Receiver	dumpReceiver = new DumpReceiver(System.out);
 			//	Transmitter	dumpTransmitter = sm_sequencer.getTransmitter();
-			//	dumpTransmitter.setReceiver(dumpReceiver);		
+			//	dumpTransmitter.setReceiver(dumpReceiver);	
+	
 	}
 }
 
