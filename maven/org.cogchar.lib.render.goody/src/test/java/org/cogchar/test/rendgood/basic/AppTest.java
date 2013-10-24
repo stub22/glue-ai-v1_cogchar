@@ -1,4 +1,4 @@
-package org.cogchar.lib.render.goody;
+package org.cogchar.test.rendgood.basic;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

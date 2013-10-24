@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lib.render.goody;
+package org.cogchar.test.rendgood.basic;
 
 import com.jme3.light.DirectionalLight;
 

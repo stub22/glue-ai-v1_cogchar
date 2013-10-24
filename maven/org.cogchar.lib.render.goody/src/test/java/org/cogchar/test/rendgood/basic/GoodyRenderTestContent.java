@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lib.render.goody;
+package org.cogchar.test.rendgood.basic;
 
 import org.appdapter.core.name.Ident;
 import static org.cogchar.name.goody.GoodyNames.TYPE_BIT_BOX;
