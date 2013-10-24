@@ -22,7 +22,7 @@ import org.cogchar.bind.midi.FunMidiEventRouter;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class CogcharMidiTestMain {
+public class CogcharMidiInputTestMain {
 	public static void main(String[] args) {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
