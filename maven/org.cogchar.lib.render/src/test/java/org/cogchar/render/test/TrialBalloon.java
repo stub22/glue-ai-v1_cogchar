@@ -15,31 +15,10 @@
  */
 package org.cogchar.render.test;
 
-import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
-import com.jme3.font.Rectangle;
-import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState.BlendMode;
-import com.jme3.material.RenderState.FaceCullMode;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.control.BillboardControl;
-import com.jme3.scene.shape.Quad;
 import org.cogchar.render.app.core.CogcharPresumedApp;
-import org.cogchar.render.opengl.scene.TextMgr;
-
-
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-
-// import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
-import org.cogchar.render.sys.context.CoreFeatureAdapter;
 
 /**
  * @author Stu B. <www.texpedient.com>
