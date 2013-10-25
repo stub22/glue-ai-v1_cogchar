@@ -23,12 +23,14 @@ import javax.sound.midi.ShortMessage;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.midi.MidiDevMatchPattern;
 import org.cogchar.bind.midi.MidiDevWrap;
+import org.cogchar.bind.midi.MidiReceiverDevWrap;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class NovLpadTest extends BasicDebugger {
+	MidiReceiverDevWrap		myLpadDevWrap;
 	public static void main(String[] args) {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
@@ -42,33 +44,37 @@ public class NovLpadTest extends BasicDebugger {
 			// nlt   fmer.cleanup();
 		}		
 	}
-	public void lpadLightDemo() throws Throwable {
-		Receiver lpadRcvr = findAndOpenLaunchpadOutRcvr();
-		if (lpadRcvr != null) {
-			playLightStates(lpadRcvr);
-		} else {
-			getLogger().warn("Cannot find/open launchpad for light-output");
+	public void lpadLightDemo()  {
+		try {
+			myLpadDevWrap = findLaunchpadOutRcvr();
+			if (myLpadDevWrap != null) {
+				myLpadDevWrap.ensureDevOpen();
+				playLightStates();
+				myLpadDevWrap.ensureDevClosed();
+
+			} else {
+				getLogger().warn("Cannot find/open launchpad for light-output");
+			}
+		} catch (Throwable t) {
+			getLogger().error("Caught: ", t);
 		}
 		
 	}
-	public Receiver findAndOpenLaunchpadOutRcvr() throws Throwable {
+	public MidiReceiverDevWrap findLaunchpadOutRcvr() throws Throwable {
 		MidiDevMatchPattern devPattern = new MidiDevMatchPattern();
 		List<MidiDevWrap> devWrapsAll = MidiDevWrap.findMatchingDevs(devPattern, getLogger());
-		Receiver lpadReceiver = null;
+		MidiReceiverDevWrap lpadDevWrap = null;
 		for (MidiDevWrap devWrapCand : devWrapsAll) {
 			MidiDevice devCand = devWrapCand.myDevice;
 			if (devWrapCand.myDevInfo.getName().toLowerCase().contains("launchpad")) {
 				getLogger().info("Found launchpad dev: {}, opening it", devWrapCand);
-				devWrapCand.ensureDevOpen();
-				// -1 -> unknown or something?
+				// devWrapCand.ensureDevOpen();
+				// MaxReceivers == -1 -> unknown, unlimited, or what? 
 				if (devCand.getMaxReceivers() != 0) {
 					Receiver lpadRecvrCand = devCand.getReceiver();
 					if (lpadRecvrCand != null) {
 						getLogger().info("%%%%%%%%%%%%%%%%%% Found launchpad dev receiver: {}", lpadRecvrCand);
-						lpadReceiver = lpadRecvrCand;
-						if (!devCand.isOpen()) {
-							devCand.open();
-						}
+						lpadDevWrap = new MidiReceiverDevWrap(lpadRecvrCand, devWrapCand);
 						break;
 					}
 				} else {
@@ -76,22 +82,23 @@ public class NovLpadTest extends BasicDebugger {
 				}
 			}
 		}
-		return lpadReceiver;
+		return lpadDevWrap;
 	}
-	public void playLightStates(Receiver lpadRcvr) throws Throwable {
+	public void playLightStates() throws Throwable {
 		for (int rowIdx = 0; rowIdx < 8; rowIdx++) {
 			for (int colIdx = 0; colIdx < 9; colIdx++) {
 				int cellNum = rowIdx * 16 + colIdx;
 				int stateVal = 58;
-				writeLaunchpadLightState(lpadRcvr, cellNum, stateVal);
+				writeLaunchpadLightState(cellNum, stateVal);
 			}
 		}
 	}
-	public void writeLaunchpadLightState(Receiver lpadRcvr, int lightNum, int lightState) throws Throwable {
+	public void writeLaunchpadLightState(int lightNum, int lightState) throws Throwable {
+		
 		ShortMessage noteOnMsg = new ShortMessage();
 		// Novation LPad listens on channel "1" = zero-offset 0.
 		noteOnMsg.setMessage(ShortMessage.NOTE_ON, 0, lightNum, lightState);
-		lpadRcvr.send(noteOnMsg, -1);
+		myLpadDevWrap.myReceiver.send(noteOnMsg, -1);
 	}
 	//  Invalid column numbers (9 to 15) are also interpreted as column 8. 
 }
