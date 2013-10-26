@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.cogchar.test.mainers;
+package org.cogchar.test.hedspc.api;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
@@ -23,6 +23,8 @@ import org.cogchar.outer.client.AgentRepoClient;
 import org.cogchar.outer.client.TestOuterClientSOH;
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * This test uses an AgentRepoClient HTTP connection to talk to a Goody-server in a remote process.
  */
 
 public class TestRemoteBitBoxes  extends BasicDebugger {
