@@ -48,6 +48,8 @@ public class LiftAN extends BoxAssemblyNames {
 	public static final String partial_P_update = "reload";
 	public static final String refreshLift = "refreshliftcache";
 	
+    public static final String P_liftConfig = NS_CgcLC + "liftconfig";
+    
 	// These prefixes are/were three-quarters identical with ones in ActionStrings.
 
 	public static final String NS_scenetrig =  NamespaceDir.NS_SceneTrig; // "http://www.cogchar.org  /schema/scene/trigger#";
