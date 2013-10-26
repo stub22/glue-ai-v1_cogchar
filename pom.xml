@@ -108,6 +108,7 @@ Version-less parent will be allowed in Maven 3.1.
 							<!-- Compile ONLY the Scala code.  The Java code is compiled by a previous goal.
 								This works OK as long as we don't refer to Scala classes from Java (in this
 								project).  Other projects can of course call our Scala classes like Java.
+								"Test Packages" of Java can also see Scala within the same project.
 								
 								This goes a little faster.  More issues are discussed in org.appdapter.lib.core pom.xml.
 							-->						 
