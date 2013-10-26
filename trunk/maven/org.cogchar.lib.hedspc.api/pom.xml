@@ -24,7 +24,18 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.onto</artifactId>
 			<version>${project.version}</version>
-		</dependency>					
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.core.api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.core.impl</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>			
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

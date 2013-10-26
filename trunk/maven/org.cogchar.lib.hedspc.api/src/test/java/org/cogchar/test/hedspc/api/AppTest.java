@@ -1,4 +1,4 @@
-package org.cogchar.lib.render.hedspc.api;
+package org.cogchar.test.hedspc.api;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
