@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013 by The Cogchar Project (www.cogchar.org).
+ *  Copyright 2013 by The Friendularity Project (www.friendularity.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,17 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.sys.goody;
+package org.cogchar.sight.api.core;
 
-import org.cogchar.render.scene.goody.PathMgr;
-import org.cogchar.render.scene.goody.SpatialAnimMgr;
-import org.cogchar.render.sys.registry.RenderRegistryClient;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 /**
  *
- * @author stub22
+ * @author Stu B22 <stub22@appstract.com>
  */
-public interface GoodyRenderRegistryClient extends RenderRegistryClient {
-	public PathMgr getScenePathFacade(String optionalName);
-	public SpatialAnimMgr getSceneAnimFacade(String optionalName);	
+public class SightDirectionComputer {
+	private SightPort			myViewPort;
+	public SightDirectionComputer(SightPort vp) {
+		myViewPort = vp;
+	}
+	public static Point getRectangleCenterPoint(Rectangle r) {
+		int x = (int) Math.round(r.getCenterX());
+		int y = (int) Math.round(r.getCenterY());
+		Point p = new Point(x, y);
+		return p;
+	}
+	public SightPort getViewPort() {
+		return myViewPort;
+	}	
 }

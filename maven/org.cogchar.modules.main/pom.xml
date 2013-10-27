@@ -64,8 +64,6 @@
 		<module>../org.cogchar.bundle.demo.all</module>
 		<module>../org.cogchar.bundle.app.puma</module>
 		<module>../org.cogchar.bundle.core</module>		
-		<module>../org.cogchar.bundle.render.opengl</module>
-		<module>../org.cogchar.bundle.render.resources</module>
 		<module>../org.cogchar.bundle.bind.robokind</module>
 		<module>../org.cogchar.bundle.bind.cogbot</module>
 		<module>../org.cogchar.bundle.bind.lift</module>
@@ -75,36 +73,65 @@
 
 		<module>../org.cogchar.bundle.demo.convo</module>
 		<module>../org.cogchar.bundle.demo.dictation</module>
-		<module>../org.cogchar.demo.render.opengl</module>
 		
 		<module>../org.cogchar.lib.onto</module>
 		<module>../org.cogchar.lib.core.api</module>
 		<module>../org.cogchar.lib.core.impl</module>
 		
+		<!-- These modules will stay in Cogchar.org permanently. -->
 		<module>../org.cogchar.lib.hedspc.api</module>
+		<module>../org.cogchar.lib.freckler.api</module>
+		<!-- Proposed:  
+		Each other major plugin project gets one API lib in Cogchar.
+		However, the code in these APIs should be minimized, in favor of ontology binding 
+		through repo-based mechanisms.
 		
+		The 3 major plugins are currently defined to be
+				o.c.l.hedspc.api
+				o.c.l.storychat.api
+				o.c.l.freckler.api
+				
+		In contrast, TinkerBot.org does not have such a plugin, because
+		Cogchar actually functions as a plugin to TinkerBot, and wrapper around it.
+		-->
+<!--		<module>../org.cogchar.lib.freckler</module>		-->
+		
+		<module>../org.cogchar.lib.animoid</module>
+		<module>../org.cogchar.lib.convoid</module>
+		<module>../org.cogchar.lib.integroid</module>		
+
+		
+		<module>../org.cogchar.lib.sonograph</module>
+		
+		<module>../org.cogchar.lib.outer.behavior</module>
+		
+		
+	<!-- ********************************************************************************
+			These 9 modules will move to HeDSpc.org before the release of Cogchar 1.1.0 
+	*************************************************************************************
+	-->
 		<module>../org.cogchar.lib.render</module>
 		<module>../org.cogchar.lib.render.bony</module>
 		<module>../org.cogchar.lib.render.goody</module>
 		<module>../org.cogchar.lib.render.hominoid</module>
 		
+		<module>../org.cogchar.bundle.render.opengl</module>
+		<module>../org.cogchar.bundle.render.resources</module>
 		
-		<module>../org.cogchar.lib.animoid</module>
-		<module>../org.cogchar.lib.convoid</module>
-		<module>../org.cogchar.lib.integroid</module>		
-<!--		<module>../org.cogchar.lib.freckler</module>		-->
-		
-		<module>../org.cogchar.lib.sonograph</module>
-		
-		<module>../org.cogchar.lib.outer.behavior</module>
-		<!--
-		<module>../org.cogchar.lib.outer.client</module>
-		-->
+			<!-- Extra tests and demos, can dissolve into "Test Packages" of the libs -->
+			<module>../org.cogchar.demo.render.opengl</module>
+				
+		<!-- OSGi + Maven wrappers for JME3 + Nifty -->
 		<module>../ext.bundle.opengl.jmonkey</module>
 		<module>../ext.bundle.opengl.nifty</module>
+		<!-- End of modules that are moving to HeDSpc.org -->		
+
 	</modules>
 	
-	<!-- This single bundle-launch profile is available to all subprojects. 
+	<!-- ***********************************************************************************
+	****************************************************************************************
+		DO NOT EDIT WITHOUT MAVEN+FELIX SAVVY:  SHARED FELIX LAUNCHER PROFILES 
+		This single bundle-launch profile is available to all subprojects. 
 		TODO: allow for per-project vmargs customization using properties.
 	-->
 	<profiles>

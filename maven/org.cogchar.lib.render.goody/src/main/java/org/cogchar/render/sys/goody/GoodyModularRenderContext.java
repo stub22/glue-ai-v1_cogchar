@@ -35,7 +35,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  *
- * @author Owner
+ * @author stub22
  */
 public class GoodyModularRenderContext extends BonyRenderContext {
 	private		DataballGoodyBuilder			myBallBuilder;
