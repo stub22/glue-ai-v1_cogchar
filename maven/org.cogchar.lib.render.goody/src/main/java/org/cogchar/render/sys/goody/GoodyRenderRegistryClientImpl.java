@@ -22,7 +22,7 @@ import org.cogchar.render.sys.registry.RenderRegistryFuncs;
 
 /**
  *
- * @author Owner
+ * @author stub22
  */
 public class GoodyRenderRegistryClientImpl extends BasicRenderRegistryClientImpl implements GoodyRenderRegistryClient {
 	@Override

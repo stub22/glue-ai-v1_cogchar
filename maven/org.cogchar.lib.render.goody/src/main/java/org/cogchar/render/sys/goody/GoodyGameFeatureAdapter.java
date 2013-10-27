@@ -22,7 +22,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  *
- * @author Owner
+ * @author stub22
  */
 public class GoodyGameFeatureAdapter extends BonyGameFeatureAdapter {
 	private		ProjectileLauncher			myPrjctlMgr;

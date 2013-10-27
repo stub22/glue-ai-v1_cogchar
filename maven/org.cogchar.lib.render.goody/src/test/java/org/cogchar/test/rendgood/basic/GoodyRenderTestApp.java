@@ -168,8 +168,21 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 		gb.entityTypeID = GoodyNames.TYPE_BOX;
 		gb.locX = 10.0f;
 		lgh.makeActionSpecAndSend(gb);
-		
-		
+
+		getLogger().info("********************************************** Make BitCube");
+		gb = garBlock[++gbi];
+		gb.entityTypeID = GoodyNames.TYPE_BIT_CUBE;
+		gb.locX = 6.5f;
+		lgh.makeActionSpecAndSend(gb);
+
+		getLogger().info("********************************************** Make Floor");
+		gb = garBlock[++gbi];
+		gb.entityTypeID = GoodyNames.TYPE_FLOOR;
+		gb.locX = -2.0f;
+		gb.locZ = -3.0f;
+		gb.locY = -4.0f;
+		lgh.makeActionSpecAndSend(gb);
+
 		// 2D Goodies
 		// CREATE a SCOREBOARD
 		getLogger().info("********************************************** Make SCOREBOARD");
