@@ -21,7 +21,7 @@ import org.cogchar.render.sys.registry.RenderRegistryFuncs;
 
 /**
  *
- * @author Owner
+ * @author stub22
  */
 public class GoodyRenderRegistryFuncs extends RenderRegistryFuncs {
 	protected static RFSpec<PathMgr> THE_CC_SCENE_PATH_FACADE;

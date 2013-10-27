@@ -52,10 +52,22 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.lib.hedspc.api</artifactId>
+			<artifactId>org.cogchar.lib.integroid</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>		
 		</dependency>		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.hedspc.api</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>		
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.freckler.api</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>		
+		</dependency>			
 		<!--
 		<dependency>
 			<groupId>${project.groupId}</groupId>
