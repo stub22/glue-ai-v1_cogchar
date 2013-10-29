@@ -60,6 +60,11 @@
 			<version>${appdapter.version}</version>
 			<scope>provided</scope>
 		</dependency>	
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.lib.gui</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
 
 		<dependency>
 			<!-- This dep is used in addition to ext.bundle, to help NB. -->
