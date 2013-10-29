@@ -28,6 +28,12 @@
 			<artifactId>org.cogchar.lib.core.api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+        <dependency>
+			<groupId>org.appdapter.</groupId>
+			<artifactId>org.appdapter.lib.bind.math</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
   
 		<dependency>
 			<groupId>org.slf4j</groupId>
