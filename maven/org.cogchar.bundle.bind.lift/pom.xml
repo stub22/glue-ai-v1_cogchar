@@ -215,6 +215,10 @@
 							!org.scalaquery.*, 
 							!org.specs2.*, 
 							!scala.tools.scalap.*, 
+							<!-- We do not want import links to this *old* version of httpclient 
+							-->
+							!org.apache.commons.httpclient.*,
+							!org.jdom.*,
 							*
 						</Import-Package>
 
