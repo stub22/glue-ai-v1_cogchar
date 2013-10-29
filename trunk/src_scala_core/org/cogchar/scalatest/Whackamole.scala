@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.trigger
+package org.cogchar.scalatest
 
 import org.appdapter.api.trigger.MutableBox
 import org.appdapter.api.registry.VerySimpleRegistry
