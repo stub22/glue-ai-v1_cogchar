@@ -29,10 +29,10 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.impl.scene.ThingActionGuardSpec;
 import org.cogchar.impl.thing.filters.ThingActionFilterBuilder;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.lifecycle.ManagedService;
-import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.lifecycle.ManagedService;
+import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 
 /**
  *

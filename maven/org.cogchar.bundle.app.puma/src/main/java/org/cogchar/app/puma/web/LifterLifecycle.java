@@ -30,8 +30,8 @@ import org.cogchar.bind.lift.LiftConfig;
 import org.cogchar.bind.lift.UserAccessConfig;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.name.lifter.LiftCN;
-import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
+import org.jflux.impl.services.rk.lifecycle.AbstractLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.utils.DescriptorListBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -21,13 +21,13 @@ import java.net.URL;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.lifecycle.utils.ManagedServiceFactory;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
+import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceFactory;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
 import org.robokind.api.common.utils.RKConstants;
 import org.robokind.api.motion.Robot;
 import org.robokind.integration.motion_speech.VisemeMotionUtils;
 import org.appdapter.core.name.Ident;
-import org.robokind.api.common.lifecycle.utils.ManagedServiceGroup;
+import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceGroup;
 
 import org.cogchar.platform.util.ClassLoaderUtils;
 

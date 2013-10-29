@@ -44,7 +44,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.cogchar.bundle.temp.wire.Activator</Bundle-Activator>
-                        <Export-Package/>
+                        <Export-Package>org.cogchar.bundle.temp.wire</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

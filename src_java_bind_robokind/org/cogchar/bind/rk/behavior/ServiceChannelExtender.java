@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.lifecycle.DependencyDescriptor;
-import org.robokind.api.common.lifecycle.ManagedService;
-import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.DescriptorBuilder;
-import org.robokind.api.common.lifecycle.utils.DescriptorListBuilder;
-import org.robokind.api.common.lifecycle.utils.ManagedServiceFactory;
-import org.robokind.api.common.osgi.ServiceClassListener;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
+import org.jflux.impl.services.rk.lifecycle.DependencyDescriptor;
+import org.jflux.impl.services.rk.lifecycle.ManagedService;
+import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.utils.DescriptorBuilder;
+import org.jflux.impl.services.rk.lifecycle.utils.DescriptorListBuilder;
+import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceFactory;
+import org.jflux.impl.services.rk.osgi.ServiceClassListener;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
 
 /**
  *
