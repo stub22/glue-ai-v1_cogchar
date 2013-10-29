@@ -30,12 +30,19 @@
         
 	<dependencies>
 		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+				
+		<!--
+		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>1.4.0</version>
 			<scope>provided</scope>
 		</dependency>          
-
+		-->
 
 		<!--  Main lift Jar -->
 		<dependency>
@@ -85,13 +92,14 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-			
+		<!-- Pick this up from ext.bundles.osgi.common
 		<dependency>
 			<artifactId>scala-library</artifactId>
 			<groupId>org.scala-lang</groupId>
 			<type>jar</type>
 			<version>2.10.2</version>
 		</dependency>
+		-->
 
 <!-- javax.servlet may be included in pax web, not sure if this is still needed -->
 		<dependency>
@@ -113,11 +121,13 @@
 			<artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
 			<version>1_2</version>
 		</dependency>
+		<!-- 2013-10-29 - we now get HTTPClient through 
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.commons-httpclient</artifactId>
 			<version>3.1_7</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.apache.directory.studio</groupId>
 			<artifactId>org.apache.commons.io</artifactId>
@@ -141,11 +151,7 @@
 			<version>1.1.4c_6</version>
 		</dependency>	
 		
-		<dependency>
-			<groupId>org.cogchar</groupId>
-			<artifactId>org.cogchar.bundle.core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+
 		
 		<dependency>
 			<groupId>org.robokind</groupId>
