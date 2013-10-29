@@ -15,18 +15,14 @@
 	<packaging>jar</packaging>  
 
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.core.api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!-- It appears these JFlux deps are now bringing in a slf4j-log4j binding.  Le sigh.
+		<!-- It appears these JFlux deps are now bringing in a slf4j-log4j binding.  
+			Le sigh.  Fixed?
 		-->
         <dependency>
 			<groupId>org.jflux</groupId>
@@ -53,6 +49,12 @@
 					<groupId>org.scala-lang</groupId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
 		</dependency>					
 	</dependencies>
 	<build>	

@@ -9,7 +9,7 @@
 		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
 	</parent>	
 	
-    <artifactId>org.cogchar.bundle.bind.lift</artifactId>
+	<artifactId>org.cogchar.bundle.bind.lift</artifactId>
 	
 
 	<!--
@@ -34,6 +34,16 @@
 			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.robokind</groupId>
+			<artifactId>org.robokind.api.common</artifactId>
+			<version>${robokind.version}</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.registry</artifactId>
+			<version>${jflux.version}</version>
+		</dependency>		
 				
 		<!--
 		<dependency>
@@ -78,10 +88,10 @@
 			<artifactId>lift-testkit_2.10</artifactId>
 			<version>2.5.1</version>
 			<exclusions>
-<!--				<exclusion>
+				<exclusion>
 					<artifactId>commons-codec</artifactId>
 					<groupId>commons-codec</groupId>
-				</exclusion>-->
+				</exclusion>
 				<exclusion>
 					<artifactId>commons-httpclient</artifactId>
 					<groupId>commons-httpclient</groupId>
@@ -101,7 +111,7 @@
 		</dependency>
 		-->
 
-<!-- javax.servlet may be included in pax web, not sure if this is still needed -->
+		<!-- javax.servlet may be included in pax web, not sure if this is still needed -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -150,26 +160,9 @@
 			<artifactId>org.apache.servicemix.bundles.xpp3</artifactId>
 			<version>1.1.4c_6</version>
 		</dependency>	
-		
-
-		
-		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.api.common</artifactId>
-			<version>${robokind.version}</version>
-		</dependency>	
-        <dependency>
-			<groupId>org.jflux</groupId>
-			<artifactId>org.jflux.api.registry</artifactId>
-			<version>${jflux.version}</version>
-		</dependency>
-		
 	</dependencies>
 
-
 	<build>
-		
-
 		<resources>
 			<resource>
 				<directory>${project.basedir}/src/main/webapp</directory>
@@ -177,9 +170,8 @@
 		</resources>
 		
 		<plugins>    
-            
 			<plugin>
-        <!-- Reconfigured based on http://leshazlewood.com/2010/09/08/osgi-maven-pax-and-web-applications/  -->
+				<!-- Reconfigured based on http://leshazlewood.com/2010/09/08/osgi-maven-pax-and-web-applications/  -->
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>2.3.7</version>
@@ -187,12 +179,12 @@
 				<configuration>
 					<instructions>
 
-			<!--	"Webapp-Context"  is PAX-specific and deprecated since PAX 1.0.0.
-								<Webapp-Context>${web.contextPath}</Webapp-Context>
-								Web-ContextPath is from the OSGi spec.
-								With no Web-ContextPath, PAX assigns a default context path like:
-								http://localhost:8080/org.cogchar.org.cogchar.lifter/
-			-->
+						<!--	"Webapp-Context"  is PAX-specific and deprecated since PAX 1.0.0.
+											<Webapp-Context>${web.contextPath}</Webapp-Context>
+											Web-ContextPath is from the OSGi spec.
+											With no Web-ContextPath, PAX assigns a default context path like:
+											http://localhost:8080/org.cogchar.org.cogchar.lifter/
+						-->
 
 						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
 						<Export-Package>
@@ -204,9 +196,9 @@
 							nu.validator.*
 						</Export-Package>
 						<Private-Package>
-						<!-- 2013-10-29 -  These were private packaged, but should be available from other bundles 
-								org.apache.commons.codec.*, org.apache.http.*
-						-->
+							<!-- 2013-10-29 -  These were private packaged, but should be available from other bundles 
+									org.apache.commons.codec.*, org.apache.http.*
+							-->
 							com.thoughtworks.xstream.*, 
 							com.bea.xml.stream.*
 						</Private-Package>
