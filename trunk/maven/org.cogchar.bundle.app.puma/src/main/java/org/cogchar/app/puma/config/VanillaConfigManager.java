@@ -23,7 +23,7 @@ import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.robokind.api.common.osgi.OSGiUtils;
+import org.jflux.impl.services.rk.osgi.OSGiUtils;
 
 /**
  * @author Stu B. <www.texpedient.com>

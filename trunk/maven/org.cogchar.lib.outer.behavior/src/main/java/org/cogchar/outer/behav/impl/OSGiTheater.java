@@ -21,7 +21,7 @@ import org.cogchar.api.scene.Scene;
 import org.cogchar.bind.rk.behavior.SceneLifecycleDemo;
 import org.cogchar.impl.scene.Theater;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.osgi.ServiceClassListener;
+import org.jflux.impl.services.rk.osgi.ServiceClassListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

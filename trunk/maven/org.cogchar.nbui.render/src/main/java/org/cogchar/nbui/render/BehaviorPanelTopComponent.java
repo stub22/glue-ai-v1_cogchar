@@ -24,9 +24,9 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
-import org.robokind.api.common.osgi.OSGiUtils;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
+import org.jflux.impl.services.rk.osgi.OSGiUtils;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.robokind.api.motion.Robot;
 
 /**

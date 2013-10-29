@@ -24,9 +24,9 @@ import org.appdapter.help.repo.RepoClientImpl;
 import org.appdapter.impl.store.FancyRepo;
 import org.cogchar.api.perform.PerfChannel;
 import org.cogchar.impl.scene.SceneSpec;
-import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
-import org.robokind.api.common.lifecycle.DependencyDescriptor;
-import org.robokind.api.common.osgi.OSGiUtils;
+import org.jflux.impl.services.rk.lifecycle.AbstractLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.DependencyDescriptor;
+import org.jflux.impl.services.rk.osgi.OSGiUtils;
 
 /**
  * @author Stu B. <www.texpedient.com>

@@ -36,9 +36,9 @@ import org.cogchar.impl.scene.*;
 import org.cogchar.impl.thing.filters.ThingActionFilterBuilder;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.robokind.api.common.lifecycle.ManagedService;
-import org.robokind.api.common.osgi.OSGiUtils;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.lifecycle.ManagedService;
+import org.jflux.impl.services.rk.osgi.OSGiUtils;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 
 import org.cogchar.bind.rk.behavior.SceneSpecExtender;
 import org.cogchar.impl.scene.read.SceneSpecReader;

@@ -31,8 +31,8 @@ import org.cogchar.impl.scene.SceneSpec;
 import org.cogchar.impl.scene.Theater;
 import org.cogchar.outer.behav.impl.OSGiTheater;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 
 /**
  * @author Stu B. <www.texpedient.com>

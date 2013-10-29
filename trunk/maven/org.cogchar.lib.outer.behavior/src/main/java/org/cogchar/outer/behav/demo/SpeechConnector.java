@@ -20,8 +20,8 @@ package org.cogchar.outer.behav.demo;
 import java.util.Properties;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.config.Configuration;
-import org.robokind.api.common.lifecycle.ManagedService;
-import org.robokind.api.common.lifecycle.utils.ManagedServiceFactory;
+import org.jflux.impl.services.rk.lifecycle.ManagedService;
+import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceFactory;
 import org.robokind.api.messaging.services.ServiceCommand;
 import org.robokind.api.messaging.services.ServiceError;
 import org.robokind.api.speech.SpeechConfig;
@@ -32,7 +32,7 @@ import org.robokind.impl.messaging.config.DependentLifecycle;
 import org.robokind.impl.messaging.config.MessagingLifecycleGroupConfigUtils;
 import org.robokind.impl.messaging.config.RKMessagingConfigUtils;
 import static org.robokind.impl.messaging.config.MessagingLifecycleGroupConfigUtils.*;
-import static org.robokind.api.common.lifecycle.config.RKManagedGroupConfigUtils.*;
+import static org.jflux.impl.services.rk.lifecycle.config.RKManagedGroupConfigUtils.*;
 
 /**
  *

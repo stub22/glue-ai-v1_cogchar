@@ -29,7 +29,7 @@ import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.scene.Theater;
 import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.osgi.OSGiUtils;
+import org.jflux.impl.services.rk.osgi.OSGiUtils;
 
 /**
  * @author Stu B. <www.texpedient.com>

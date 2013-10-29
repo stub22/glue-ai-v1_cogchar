@@ -21,8 +21,8 @@ import java.util.Properties;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.channel.Channel;
 
-import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
-import org.robokind.api.common.lifecycle.DependencyDescriptor;
+import org.jflux.impl.services.rk.lifecycle.AbstractLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.DependencyDescriptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

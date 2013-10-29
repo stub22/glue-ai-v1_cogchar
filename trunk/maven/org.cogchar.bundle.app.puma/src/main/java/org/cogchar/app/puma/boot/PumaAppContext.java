@@ -48,7 +48,7 @@ import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.platform.trigger.BoxSpace;
 
 import org.cogchar.platform.trigger.CommandSpace;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 /**
  * @author Stu B. <www.texpedient.com>
  */

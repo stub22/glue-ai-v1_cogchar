@@ -180,6 +180,11 @@
 			<artifactId>org.jflux.impl.encode.avro</artifactId>
 			<version>${jflux.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.impl.services.rk</artifactId>
+			<version>${jflux.version}</version>
+		</dependency>
  
 		
 		<dependency>
