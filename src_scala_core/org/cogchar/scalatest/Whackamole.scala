@@ -25,8 +25,8 @@ import org.appdapter.core.log.BasicDebugger
 import org.appdapter.core.matdat.{RepoClientTester, OnlineSheetRepoSpec}
 import org.appdapter.gui.demo.{DemoNavigatorCtrl, DemoBrowser}
 import org.appdapter.osgi.registry.RegistryServiceFuncs
-import org.appdapter.scafun.{Boxy}
-import org.appdapter.trigger.bind.java.{FullBox, FullTrigger}
+import org.appdapter.trigger.scafun.{Boxy}
+import org.appdapter.trigger.bind.jena.{FullBox, FullTrigger}
 //import org.appdapter.scafun.{ BoxOne, TriggerOne}
 import org.cogchar.blob.emit.{RepoFabric, FabricBox}
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger}
