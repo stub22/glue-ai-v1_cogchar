@@ -76,13 +76,13 @@
             <artifactId>org.appdapter.bundle.core</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
-
+<!--
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.gui</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
-		
+-->		
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
@@ -108,7 +108,23 @@
 					<groupId>org.scala-lang</groupId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+
+        <dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.core</artifactId>
+			<version>${jflux.version}</version>
 		</dependency>			
+        <dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.registry</artifactId>
+			<version>${jflux.version}</version>
+		</dependency>		
+        <dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.services</artifactId>
+			<version>${jflux.version}</version>
+		</dependency>		
     </dependencies>
 
     <build>
