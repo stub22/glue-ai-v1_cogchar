@@ -22,7 +22,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.appdapter.core.matdat.PipelineQuerySpec;
 import org.appdapter.core.matdat.RepoSpec;
-import org.appdapter.gui.demo.DemoBrowser;
+// import org.appdapter.gui.demo.DemoBrowser;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.RepoClientImpl;
 import org.cogchar.api.scene.Scene;

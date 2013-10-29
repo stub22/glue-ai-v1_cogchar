@@ -16,12 +16,7 @@
 	<name>${project.artifactId} - POJO</name>
 
 	<dependencies>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>1.4.0</version>
-            <scope>provided</scope>
-        </dependency>
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.bundle.bind.robokind</artifactId>
