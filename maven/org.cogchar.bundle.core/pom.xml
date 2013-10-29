@@ -14,12 +14,6 @@
     <name>${artifactId} - OSGi Bundle</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>1.4.0</version>
-            <scope>provided</scope>
-        </dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.core.api</artifactId>
@@ -68,40 +62,27 @@
 			<version>${project.version}</version>
 			<scope>provided</scope>		
 		</dependency>			
-		<!--
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.lib.integroid</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>		
-		</dependency>
-		-->
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.onto</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>		
 		</dependency>
+		
+		<!-- Appdapter  and other platform deps -->
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.core</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.appdapter</groupId>
-            <artifactId>org.appdapter.lib.bind.math</artifactId>
-            <version>${appdapter.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.gui</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
-		<dependency>
-			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
-			<groupId>org.appdapter</groupId>
-			<version>${appdapter.version}</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
@@ -140,20 +121,30 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.cogchar.bundle.core.CogcharCoreActivator</Bundle-Activator>
-						<Export-Package>org.cogchar.*</Export-Package>
+						<Export-Package>
+							org.cogchar.*;-split-package:=merge-first
+						</Export-Package>
 						
-						<Private-Package>com.thoughtworks.xstream.*, scala.slick.*, org.apache.commons.math.*, org.apache.http.*</Private-Package>
-						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !nu.xom.*, !org.codehaus.jettison.*, 
-										!org.jdom.*, !org.joda.*, !org.kxml2.*, sun.*;resolution:='optional', 
-                                        !org.scalaquery.*, *
+						<Private-Package>
+							com.thoughtworks.xstream.*;-split-package:=merge-first
+							<!-- Where do we need  this?
+							scala.slick.*, 
+							 -->
+							<!-- REMOVED 2013-10-29:   org.apache.commons.math.*, org.apache.http.* -->
+						</Private-Package>
+						<Import-Package>
+							!com.bea.xml.*, 
+							!net.sf.cglib.*, 
+							!nu.xom.*, 
+							!org.codehaus.jettison.*, 
+							!org.jdom.*, 
+							!org.joda.*, 
+							!org.kxml2.*, 
+							sun.*;resolution:='optional', 
+                            !org.scalaquery.*, 
+							*
 						</Import-Package>	 
                                                                         
-<!--                                                                                                
-						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
-						<Export-Package>org.cogchar.lifter.*, org.cogchar.bind.lift.*, bootstrap.*, props, net.liftweb.*, toserve.*,  nu.validator.*</Export-Package>
-						<Private-Package>com.thoughtworks.xstream.*, org.cogchar.outer.client.*, com.bea.xml.stream.*, org.apache.commons.codec.*</Private-Package>
-						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !org.codehaus.jettison.*, !org.kxml2.*, !nu.xom.*,!org.mozilla.*,!org.specs.*,!ch.qos.logback.*, sun.*;resolution:='optional', !org.scalaquery.*, !org.specs2.*, !scala.tools.scalap.*, *</Import-Package>
-						-->
 					</instructions>
                 </configuration>
             </plugin>
