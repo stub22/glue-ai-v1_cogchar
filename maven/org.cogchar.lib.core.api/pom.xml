@@ -26,9 +26,19 @@
 			<artifactId>org.cogchar.lib.actor</artifactId>
 			<version>${project.version}</version>
 		</dependency -->	                
-		<dependency>
+    	<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
+    	<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.lib.bind.jena</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
+   	<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.gui</artifactId>
 			<version>${appdapter.version}</version>
 		</dependency>
 		<!-- From the appdapter bundle above, we get transitive *runtime* dependence on many of the extern bundles

@@ -2,7 +2,7 @@ package org.cogchar.bundle.temp.wire;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.jflux.api.service.ServiceDependency.Cardinality;
 import org.jflux.api.service.ServiceDependency.UpdateStrategy;
 

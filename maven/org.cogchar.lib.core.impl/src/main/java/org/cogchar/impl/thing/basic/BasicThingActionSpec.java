@@ -18,7 +18,7 @@ package org.cogchar.impl.thing.basic;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.TypedValueMap;

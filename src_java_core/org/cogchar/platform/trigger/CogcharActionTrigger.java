@@ -15,7 +15,7 @@
  */
 package org.cogchar.platform.trigger;
 
-import org.appdapter.scafun.FullTrigger;
+import org.appdapter.trigger.bind.java.FullTrigger;
 
 /**
  * @author Stu B. <www.texpedient.com>

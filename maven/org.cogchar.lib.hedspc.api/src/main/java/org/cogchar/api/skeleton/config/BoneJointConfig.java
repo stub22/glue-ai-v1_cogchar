@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.appdapter.help.repo.*;
 import org.appdapter.core.matdat.*;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.name.Ident;

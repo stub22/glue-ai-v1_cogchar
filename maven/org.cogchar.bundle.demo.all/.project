@@ -2,8 +2,55 @@
 <projectDescription>
   <name>org.cogchar.bundle.demo.all</name>
   <comment>All libraries and OSGi bundles - everything EXCEPT nbui projects. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
-  <projects/>
-      <buildSpec>
+  <projects>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </projects>
+  <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
     </buildCommand>

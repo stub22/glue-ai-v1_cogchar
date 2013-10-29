@@ -19,7 +19,7 @@ import java.util.HashMap; // Not needed once javaMap is added to SolutionMap
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.*;
 import org.appdapter.core.matdat.HelpRepoExtensions;
