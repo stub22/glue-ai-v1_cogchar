@@ -21,9 +21,6 @@
 			<artifactId>org.cogchar.lib.core.api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!-- It appears these JFlux deps are now bringing in a slf4j-log4j binding.  
-			Le sigh.  Fixed?
-		-->
         <dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.core</artifactId>
