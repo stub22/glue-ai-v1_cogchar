@@ -15,11 +15,7 @@
 
 	<dependencies>
 
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>1.4.0</version>
-		</dependency>		
+	
         <dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.bundle.core</artifactId>
@@ -27,19 +23,14 @@
 		</dependency>		
 		
 		<dependency>
-			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
 			<groupId>org.appdapter</groupId>
-			<type>jar</type>
+			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
+
 			<!-- Freezing to the 1.0.9 version of JScience wrapper -->
 			<version>1.0.9</version>
 			<scope>runtime</scope>
 		</dependency>
-        <dependency>
-			<artifactId>slick_2.10</artifactId>
-			<groupId>com.typesafe.slick</groupId>
-			<version>1.0.1</version>
-			<scope>provided</scope>
-		</dependency>	
+
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<artifactId>org.robokind.api.speech</artifactId>
