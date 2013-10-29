@@ -23,7 +23,7 @@ import org.appdapter.core.matdat.OmniLoaderRepoTest
 import org.appdapter.core.matdat.RepoSpec
 import org.appdapter.core.matdat.SimplistRepoSpec
 import org.appdapter.demo.DemoBrowserUI
-import org.appdapter.trigger.bind.java.{FullBox, FullTrigger}
+import org.appdapter.trigger.bind.jena.{FullBox, FullTrigger}
 //import org.appdapter.scafun.{ BoxOne, TriggerOne}
 //import org.appdapter.gui.trigger.SysTriggers;
 /**
@@ -52,15 +52,15 @@ class RepoFabric {
     }
   }
 }
-class GraphBox(val myURI: String) extends org.appdapter.trigger.bind.java.FullBox[GraphTrigger] {
+class GraphBox(val myURI: String) extends org.appdapter.trigger.bind.jena.FullBox[GraphTrigger] {
   setShortLabel("tweak-" + myURI);
 }
-class GraphTrigger extends TriggerImpl[GraphBox] with org.appdapter.trigger.bind.java.FullTrigger[GraphBox] {
+class GraphTrigger extends TriggerImpl[GraphBox] with org.appdapter.trigger.bind.jena.FullTrigger[GraphBox] {
   override def fire(box: GraphBox): Unit = {
     println(this.toString() + " firing on " + box.toString());
   }
 }
-class ScreenBoxForImmutableRepo(val myRepo: Repo) extends org.appdapter.trigger.bind.java.FullBox[GraphTrigger] {
+class ScreenBoxForImmutableRepo(val myRepo: Repo) extends org.appdapter.trigger.bind.jena.FullBox[GraphTrigger] {
   import scala.collection.JavaConversions._;
   def resyncChildrenToTree(): Unit = {
     val ctx: BoxContext = getBoxContext();
@@ -74,7 +74,7 @@ class ScreenBoxForImmutableRepo(val myRepo: Repo) extends org.appdapter.trigger.
     }
   }
 }
-class FabricBox(val myFabric: RepoFabric) extends org.appdapter.trigger.bind.java.FullBox[GraphTrigger] {
+class FabricBox(val myFabric: RepoFabric) extends org.appdapter.trigger.bind.jena.FullBox[GraphTrigger] {
   /*		BT result = CachingComponentAssembler.makeEmptyComponent(boxClass);
 	 result.setShortLabel(label);
 	 result.setDescription("full description for box with label: " + label);
