@@ -87,6 +87,16 @@
             <artifactId>org.appdapter.bundle.core</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.lib.bind.math</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.gui</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
 		<dependency>
 			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
 			<groupId>org.appdapter</groupId>
