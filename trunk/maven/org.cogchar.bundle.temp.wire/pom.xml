@@ -21,12 +21,7 @@
 			<artifactId>org.cogchar.bundle.bind.robokind</artifactId>
 			<version>${project.version}</version>
 		</dependency>		
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.3.0</version>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.jflux</groupId>
             <artifactId>org.jflux.impl.registry.osgi</artifactId>
