@@ -10,7 +10,7 @@
 
     <artifactId>org.cogchar.bundle.temp.wire</artifactId>
 	
-    <name>${artifactId} - OSGi Bundle</name>	
+    <name>${project.artifactId} - OSGi Bundle</name>	
 	
     <packaging>bundle</packaging>
 
