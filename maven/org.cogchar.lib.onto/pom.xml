@@ -13,16 +13,13 @@
 	<name>${project.artifactId} - POJO</name>
 
 	<dependencies>
-		<dependency>
-			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
-			<groupId>org.appdapter</groupId>
-			<version>${appdapter.version}</version>
-		</dependency>
+
 		<dependency>
 			<artifactId>org.appdapter.bundle.core</artifactId>
 			<groupId>org.appdapter</groupId>
 			<version>${appdapter.version}</version>
-		</dependency>				
+		</dependency>	
+					
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -30,25 +27,7 @@
 			<scope>test</scope>
 		</dependency>		
         
-		<dependency>
-			<artifactId>slf4j-api</artifactId>
-			<groupId>org.slf4j</groupId>
-			<type>jar</type>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.5</version>
-			<!-- This is needed if we want to see messages from jena running inside the codegen plugin below - 
-			how do we apply it only in that scope? 
-			   At "runtime" scope here, it propagates out and must be excluded by importers
-			   (unless they are "Simple" logger fans; but it doesn't let us configure by level!).  
-			   -->
-			<scope>test</scope>
-		</dependency>
 	
-		
 	</dependencies>
 	<build>
 		<plugins>

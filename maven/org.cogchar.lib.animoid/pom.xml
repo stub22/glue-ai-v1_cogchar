@@ -31,16 +31,10 @@
 
         <dependency>
 			<groupId>org.appdapter.</groupId>
-			<artifactId>org.appdapter.lib.bind.math</artifactId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
 			<version>${appdapter.version}</version>
 		</dependency>
   
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
-			<scope>test</scope>
-		</dependency>
 		<!-- This works well enough at runtime for us to at least run the old "CurveTest".
 		
 		-->
