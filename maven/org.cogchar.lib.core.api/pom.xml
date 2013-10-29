@@ -32,15 +32,6 @@
 			<version>${appdapter.version}</version>
 		</dependency>
 
-		<dependency>
-			<!-- This dependency is MARKED FOR DEATH
-				...we are migrating the Cogchar-GUI classes into their own bundle
-			-->
-			<groupId>org.appdapter</groupId>
-			<artifactId>org.appdapter.bundle.gui</artifactId>
-			<version>${appdapter.version}</version>
-		</dependency>
-
 
 		<dependency>
 			<!-- Apache commons-math used in both o.c.l.animoid and o.c.l.sonograph, which we obtain indirectly via: -->	
