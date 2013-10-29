@@ -1,6 +1,6 @@
 package org.cogchar.bundle.temp.wire;
 
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.robokind.impl.messaging.utils.ConnectionUtils;
 
 /**

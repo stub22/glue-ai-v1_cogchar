@@ -21,7 +21,7 @@ import org.appdapter.core.item.{Item};
 
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 
 import com.hp.hpl.jena.assembler.Assembler;

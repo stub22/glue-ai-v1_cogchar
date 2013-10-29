@@ -24,7 +24,7 @@ import org.cogchar.platform.trigger.CogcharActionTrigger;
  * Base impl class for CogcharTriggers, providing the inherited identifier+name features of KnownComponentImpl,
  * and providing a convenience logging method.
  */
-public abstract class TriggerItem extends org.appdapter.core.component.KnownComponentImpl implements CogcharActionTrigger {
+public abstract class TriggerItem extends org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl implements CogcharActionTrigger {
 	protected void logFiring(CogcharScreenBox targetBox) {
 		logInfo("trigger[" + toString() + "] firing on " + targetBox.toString());
 	}

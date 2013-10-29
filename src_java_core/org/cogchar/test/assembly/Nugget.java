@@ -15,7 +15,7 @@
  */
 package org.cogchar.test.assembly;
 
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 /**
  * @author Stu B. <www.texpedient.com>
  */

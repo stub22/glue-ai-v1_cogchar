@@ -18,7 +18,7 @@ package org.cogchar.api.skeleton.config;
 import org.cogchar.name.skeleton.BoneCN;
 import org.cogchar.name.skeleton.BoneAN;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 

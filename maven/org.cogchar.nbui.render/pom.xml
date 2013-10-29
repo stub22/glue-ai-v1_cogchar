@@ -146,6 +146,11 @@
 			<artifactId>org.robokind.api.speech</artifactId>
 			<version>${robokind.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.impl.services.rk</artifactId>
+            <version>${jflux.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.robokind</groupId>
 			<!-- Needed at compile time for PortableSpeechRequest in CogbotSpeechDemo -->

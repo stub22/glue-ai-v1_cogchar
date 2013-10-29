@@ -17,7 +17,7 @@ package org.cogchar.test.symcalc;
 
 
 
-import org.appdapter.api.trigger.ABoxImpl;
+import org.appdapter.trigger.bind.jena.ABoxImpl;
 import org.appdapter.api.trigger.Box;
 import org.appdapter.api.trigger.Trigger;
 import org.appdapter.core.log.BasicDebugger;

@@ -65,7 +65,7 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 
 import org.cogchar.name.dir.{NamespaceDir};

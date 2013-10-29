@@ -1,9 +1,5 @@
 package org.cogchar.ext.bundle.fuseki;
 
-import java.net.Socket;
-
-import net.liftweb.actor.PingerException;
-
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.FusekiConfig;
@@ -26,11 +22,9 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
 import com.hp.hpl.jena.sparql.modify.request.Target;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDrop;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.update.Update;
 import com.hp.hpl.jena.update.UpdateExecutionFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 public class Activator implements BundleActivator, FrameworkListener {
 

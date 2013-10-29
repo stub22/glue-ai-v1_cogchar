@@ -28,7 +28,7 @@ import org.appdapter.api.module.Module.State;
 import org.appdapter.core.log.{ BasicDebugger };
 import org.appdapter.core.name.{ Ident, FreeIdent };
 import org.appdapter.core.item.{ Item };
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 
 import com.hp.hpl.jena.assembler.Assembler;
