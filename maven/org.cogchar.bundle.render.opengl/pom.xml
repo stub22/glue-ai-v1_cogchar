@@ -15,13 +15,6 @@
 
 	<dependencies>
 		<dependency>
-			<artifactId>slf4j-api</artifactId>
-			<groupId>org.slf4j</groupId>
-			<type>jar</type>
-			<version>1.7.5</version>
-            <scope>provided</scope>
-		</dependency>
-		<dependency>
 			 <!-- This bundle repackages this lib, so it is depended with scope provided, and pkgs are exported below -->			
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.render</artifactId>
