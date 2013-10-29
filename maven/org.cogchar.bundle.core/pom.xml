@@ -11,7 +11,7 @@
 
     <packaging>bundle</packaging>
 
-    <name>${artifactId} - OSGi Bundle</name>
+    <name>${project.artifactId} - OSGi Bundle</name>
 
     <dependencies>
 		<dependency>
