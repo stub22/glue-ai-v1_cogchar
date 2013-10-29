@@ -22,15 +22,15 @@ import org.osgi.framework.BundleContext;
 import org.robokind.api.animation.lifecycle.AnimationPlayerClientLifecycle;
 import org.robokind.api.animation.protocol.AnimationEvent;
 import org.robokind.api.animation.protocol.AnimationSignal;
-import org.robokind.api.common.lifecycle.utils.ManagedServiceFactory;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
+import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceFactory;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
 import org.robokind.impl.messaging.config.DependentLifecycle;
 import org.robokind.impl.messaging.config.MessagingLifecycleGroupConfigUtils;
 import org.robokind.impl.messaging.config.RKMessagingConfigUtils;
 import static org.robokind.impl.messaging.config.MessagingLifecycleGroupConfigUtils.*;
-import static org.robokind.api.common.lifecycle.config.RKManagedGroupConfigUtils.*;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
+import static org.jflux.impl.services.rk.lifecycle.config.RKManagedGroupConfigUtils.*;
+import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.robokind.impl.animation.messaging.PortableAnimationEvent;
 
 /**

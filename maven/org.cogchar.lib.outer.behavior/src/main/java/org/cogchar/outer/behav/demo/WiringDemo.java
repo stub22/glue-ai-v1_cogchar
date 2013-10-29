@@ -22,8 +22,8 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.cogchar.impl.scene.read.SceneSpecReader;
 import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 

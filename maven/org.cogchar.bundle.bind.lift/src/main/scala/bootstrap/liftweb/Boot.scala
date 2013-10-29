@@ -16,11 +16,11 @@ import org.cogchar.lifter.model.{LifterClientRegistration, LifterThingActionScan
 import _root_.org.cogchar.lifter.model._
 import _root_.org.cogchar.bind.lift.LiftAmbassador
 
-import org.robokind.api.common.lifecycle.ManagedService;
-import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
-import org.robokind.api.common.osgi.OSGiUtils;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.lifecycle.ManagedService;
+import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
+import org.jflux.impl.services.rk.osgi.OSGiUtils;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.cogchar.api.thing.WantsThingAction
 //import org.cogchar.bundle.app.puma.PumaAppUtils
 

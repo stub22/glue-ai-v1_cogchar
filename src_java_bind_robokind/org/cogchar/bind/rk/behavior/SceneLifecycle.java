@@ -25,10 +25,10 @@ import org.cogchar.api.scene.Scene;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.FancyBScene;
 import org.cogchar.impl.scene.SceneSpec;
-import org.robokind.api.common.lifecycle.AbstractLifecycleProvider;
-import org.robokind.api.common.lifecycle.DependencyDescriptor;
-import org.robokind.api.common.lifecycle.DependencyDescriptor.DependencyType;
-import org.robokind.api.common.osgi.OSGiUtils;
+import org.jflux.impl.services.rk.lifecycle.AbstractLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.DependencyDescriptor;
+import org.jflux.impl.services.rk.lifecycle.DependencyDescriptor.DependencyType;
+import org.jflux.impl.services.rk.osgi.OSGiUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

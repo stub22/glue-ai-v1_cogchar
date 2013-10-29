@@ -20,11 +20,11 @@ import java.util.Map;
 import java.util.Properties;
 import org.cogchar.impl.scene.SceneSpec;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.lifecycle.ManagedService;
-import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.ManagedServiceFactory;
-import org.robokind.api.common.osgi.ServiceClassListener;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
+import org.jflux.impl.services.rk.lifecycle.ManagedService;
+import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceFactory;
+import org.jflux.impl.services.rk.osgi.ServiceClassListener;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
 
 /**
  *

@@ -26,7 +26,7 @@ import org.cogchar.impl.channel.ThingActionChanSpec;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.Theater;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.osgi.ServiceClassListener;
+import org.jflux.impl.services.rk.osgi.ServiceClassListener;
 
 /**
  * @author Stu B. <www.texpedient.com>

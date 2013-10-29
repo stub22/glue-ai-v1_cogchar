@@ -36,11 +36,11 @@ import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.render.app.trigger.SceneActions;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
-import org.robokind.api.common.osgi.OSGiUtils;
-import org.robokind.api.common.osgi.ServiceClassListener;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
+import org.jflux.impl.services.rk.osgi.OSGiUtils;
+import org.jflux.impl.services.rk.osgi.ServiceClassListener;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 /**
  * Able to wire and start both our current HTTP services:  1) SPARQL-HTTP repo and 2) Lifter WebUI
  * @author Stu B. <www.texpedient.com>

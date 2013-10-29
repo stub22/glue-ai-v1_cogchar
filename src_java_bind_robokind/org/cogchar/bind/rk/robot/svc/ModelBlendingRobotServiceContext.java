@@ -24,12 +24,12 @@ import org.jflux.api.core.config.Configuration;
 import org.robokind.api.motion.Robot;
 import org.osgi.framework.BundleContext;
 
-import org.robokind.api.common.lifecycle.config.RKLifecycleConfigUtils.GenericLifecycleFactory;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponentFactory;
+import org.jflux.impl.services.rk.lifecycle.config.RKLifecycleConfigUtils.GenericLifecycleFactory;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
 import org.robokind.impl.messaging.config.RKMessagingConfigUtils;
 import static org.cogchar.bind.rk.osgi.RobokindBindingConfigUtils.*;
-import org.robokind.api.common.lifecycle.ManagedService;
+import org.jflux.impl.services.rk.lifecycle.ManagedService;
 
 
 /**

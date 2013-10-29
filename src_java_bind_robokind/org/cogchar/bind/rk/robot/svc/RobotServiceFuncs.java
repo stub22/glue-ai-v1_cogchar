@@ -26,9 +26,9 @@ import org.jflux.api.core.config.Configuration;
 import java.util.Properties;
 
 import org.osgi.framework.BundleContext;
-import org.robokind.api.common.lifecycle.ServiceLifecycleProvider;
-import org.robokind.api.common.lifecycle.utils.SimpleLifecycle;
-import org.robokind.api.common.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
+import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.robokind.api.common.services.Constants;
 import org.robokind.api.motion.Robot;
 
