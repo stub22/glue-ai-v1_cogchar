@@ -17,7 +17,7 @@ package org.cogchar.bind.lift;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.*;
 import org.cogchar.name.lifter.LiftCN;

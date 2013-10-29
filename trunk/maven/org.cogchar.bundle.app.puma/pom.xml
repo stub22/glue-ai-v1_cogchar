@@ -42,6 +42,12 @@
             <version>${project.version}</version>
         </dependency>
 		-->
+         <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>org.appdapter.bundle.gui</artifactId>
+            <version>${appdapter.version}</version>
+        </dependency>
+
 		<dependency>
 			<!-- And this so LiftAmbassador can hook in. Soon we want this all to move to a general interface in lib.core that everything can use -->
 			<groupId>${project.groupId}</groupId>

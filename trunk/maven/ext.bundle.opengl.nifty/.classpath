@@ -4,6 +4,10 @@
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ext.bundle.osgi.common"/>
+	<classpathentry exported="true" kind="var" path="M2_REPO/com/jme3/jME3-niftygui/3.0.0.20121220-SNAPSHOT/jME3-niftygui-3.0.0.20121220-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="var" path="M2_REPO/com/jme3/nifty/3.0.0.20121220-SNAPSHOT/nifty-3.0.0.20121220-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="var" path="M2_REPO/org/bushe/eventbus/1.3/eventbus-1.3.jar"/>
+	<classpathentry exported="true" kind="var" path="M2_REPO/xpp3/xpp3/1.1.4c/xpp3-1.1.4c.jar"/>
+	<classpathentry kind="src" path="/ext.bundle.osgi.common"/>
 	<classpathentry kind="output" path="target/eclipse-classes"/>
-<classpathentry exported="true" kind="src" path="/org.storychat.bundle.osgi"/></classpath>
+</classpath>

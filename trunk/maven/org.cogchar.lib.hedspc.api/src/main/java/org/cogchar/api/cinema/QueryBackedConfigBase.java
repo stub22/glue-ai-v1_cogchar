@@ -15,7 +15,7 @@
  */
 
 package org.cogchar.api.cinema;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.help.repo.RepoClient;
 /**
  * @author Stu B. <www.texpedient.com>

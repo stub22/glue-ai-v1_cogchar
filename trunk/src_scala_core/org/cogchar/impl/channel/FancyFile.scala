@@ -17,7 +17,7 @@
 package org.cogchar.impl.channel
 import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
 // import org.appdapter.impl.store.{FancyRepo};
 // import org.appdapter.core.matdat.{SheetRepo}

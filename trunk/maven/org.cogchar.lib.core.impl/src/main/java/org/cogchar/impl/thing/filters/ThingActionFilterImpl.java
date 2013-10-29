@@ -19,7 +19,7 @@ package org.cogchar.impl.thing.filters;
 import java.util.Set;
 
 import org.appdapter.bind.rdf.jena.model.JenaLiteralUtils;
-import org.appdapter.core.component.KnownComponentImpl;
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.ThingActionFilter;
 import org.cogchar.api.thing.ThingActionSpec;

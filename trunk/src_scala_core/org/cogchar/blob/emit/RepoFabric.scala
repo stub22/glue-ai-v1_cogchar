@@ -1,12 +1,12 @@
 /*
  *  Copyright 2013 by The Cogchar Project (www.cogchar.org).
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,14 +15,16 @@
  */
 package org.cogchar.blob.emit
 
-import org.appdapter.api.trigger.{BoxContext, TriggerImpl}
+import org.appdapter.trigger.bind.jena.TriggerImpl
+import org.appdapter.api.trigger.{BoxContext}
 import org.appdapter.core.store.{ Repo }
 import org.appdapter.core.matdat.GoogSheetRepoSpec
 import org.appdapter.core.matdat.OmniLoaderRepoTest
 import org.appdapter.core.matdat.RepoSpec
 import org.appdapter.core.matdat.SimplistRepoSpec
 import org.appdapter.demo.DemoBrowserUI
-import org.appdapter.scafun.{ FullBox, FullTrigger, BoxOne, TriggerOne}
+import org.appdapter.trigger.bind.java.{FullBox, FullTrigger}
+//import org.appdapter.scafun.{ BoxOne, TriggerOne}
 //import org.appdapter.gui.trigger.SysTriggers;
 /**
  * @author Stu B. <www.texpedient.com>
@@ -50,15 +52,15 @@ class RepoFabric {
     }
   }
 }
-class GraphBox(val myURI: String) extends FullBox[GraphTrigger] {
+class GraphBox(val myURI: String) extends org.appdapter.trigger.bind.java.FullBox[GraphTrigger] {
   setShortLabel("tweak-" + myURI);
 }
-class GraphTrigger extends TriggerImpl[GraphBox] with FullTrigger[GraphBox] {
+class GraphTrigger extends TriggerImpl[GraphBox] with org.appdapter.trigger.bind.java.FullTrigger[GraphBox] {
   override def fire(box: GraphBox): Unit = {
     println(this.toString() + " firing on " + box.toString());
   }
 }
-class ScreenBoxForImmutableRepo(val myRepo: Repo) extends BoxOne {
+class ScreenBoxForImmutableRepo(val myRepo: Repo) extends org.appdapter.trigger.bind.java.FullBox[GraphTrigger] {
   import scala.collection.JavaConversions._;
   def resyncChildrenToTree(): Unit = {
     val ctx: BoxContext = getBoxContext();
@@ -72,7 +74,7 @@ class ScreenBoxForImmutableRepo(val myRepo: Repo) extends BoxOne {
     }
   }
 }
-class FabricBox(val myFabric: RepoFabric) extends BoxOne {
+class FabricBox(val myFabric: RepoFabric) extends org.appdapter.trigger.bind.java.FullBox[GraphTrigger] {
   /*		BT result = CachingComponentAssembler.makeEmptyComponent(boxClass);
 	 result.setShortLabel(label);
 	 result.setDescription("full description for box with label: " + label);
@@ -107,7 +109,7 @@ object RepoFabricTest {
     print("Make FabricBox");
     val fb = new FabricBox(rf);
     fb.setShortLabel("Short Label")
-    // Add this as an "entry" in the RepoFabric 
+    // Add this as an "entry" in the RepoFabric
     print("Add to Entry");
     rf.addEntry(new SimplistRepoSpec(repo))
     print("Resync");
