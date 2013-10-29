@@ -195,9 +195,36 @@
 			-->
 
 						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
-						<Export-Package>org.cogchar.lifter.*, bootstrap.*, props, net.liftweb.*, toserve.*,  nu.validator.*</Export-Package>
-						<Private-Package>com.thoughtworks.xstream.*, com.bea.xml.stream.*, org.apache.commons.codec.*, org.apache.http.*</Private-Package>
-						<Import-Package>!com.bea.xml.*, !net.sf.cglib.*, !org.codehaus.jettison.*, !org.kxml2.*, !nu.xom.*,!org.mozilla.*,!org.specs.*,!ch.qos.logback.*, sun.*;resolution:='optional', !org.scalaquery.*, !org.specs2.*, !scala.tools.scalap.*, *</Import-Package>
+						<Export-Package>
+							org.cogchar.lifter.*, 
+							bootstrap.*, 
+							props, 
+							net.liftweb.*, 
+							toserve.*,  
+							nu.validator.*
+						</Export-Package>
+						<Private-Package>
+						<!-- 2013-10-29 -  These were private packaged, but should be available from other bundles 
+								org.apache.commons.codec.*, org.apache.http.*
+						-->
+							com.thoughtworks.xstream.*, 
+							com.bea.xml.stream.*
+						</Private-Package>
+						<Import-Package>
+							!com.bea.xml.*, 
+							!net.sf.cglib.*, 
+							!org.codehaus.jettison.*, 
+							!org.kxml2.*, 
+							!nu.xom.*,
+							!org.mozilla.*,
+							!org.specs.*,
+							!ch.qos.logback.*, 
+							sun.*;resolution:='optional', 
+							!org.scalaquery.*, 
+							!org.specs2.*, 
+							!scala.tools.scalap.*, 
+							*
+						</Import-Package>
 
 					</instructions>
 
