@@ -21,7 +21,7 @@ import org.appdapter.trigger.bind.jena.ABoxImpl;
 import org.appdapter.api.trigger.Box;
 import org.appdapter.api.trigger.Trigger;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.gui.demo.DemoBrowser;
+// import org.appdapter.gui.demo.DemoBrowser;
 import org.cogchar.bind.symja.MathGate;
 import org.cogchar.bind.symja.MathGateUnscripted;
 import org.cogchar.bind.symja.MathSpaceFactory;
@@ -53,6 +53,7 @@ public class MathEditor extends BasicDebugger {
 		final MathEditor editor = new MathEditor();
 		MathSpaceFactory msf = new MathSpaceFactory();
 		final MathGateUnscripted mgu = msf.makeUnscriptedMathGate();
+	/*  Disabled 2013-10-29
 		DemoBrowser.showObject("aMathEditor", editor, false, false);
 		// werm.setMathGate(mg);
 
@@ -64,6 +65,6 @@ public class MathEditor extends BasicDebugger {
 				// assert(box.getValue()==myTestRepo);
 			}
 		});
-
+		*/
 	}
 }
