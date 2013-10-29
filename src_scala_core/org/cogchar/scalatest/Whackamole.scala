@@ -23,7 +23,7 @@ import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils
 import org.appdapter.bind.rdf.jena.model.JenaFileManagerUtils
 import org.appdapter.core.log.BasicDebugger
 import org.appdapter.core.matdat.{RepoClientTester, OnlineSheetRepoSpec}
-import org.appdapter.gui.demo.{DemoNavigatorCtrl, DemoBrowser}
+// import org.appdapter.gui.demo.{DemoNavigatorCtrl, DemoBrowser}
 import org.appdapter.osgi.registry.RegistryServiceFuncs
 import org.appdapter.trigger.scafun.{Boxy}
 import org.appdapter.trigger.bind.jena.{FullBox, FullTrigger}
@@ -41,6 +41,7 @@ object Whackamole extends BasicDebugger {
 	def getVerySimpleRegistry() : VerySimpleRegistry = {
 		RegistryServiceFuncs.getTheWellKnownRegistry(this.getClass());
 	}
+	/*
 	// Started with code from Appdapter GoFish.makeTNC
 	def makeTNC(args: Array[String]) : DemoNavigatorCtrl = {
 		val tnc = DemoBrowser.makeDemoNavigatorCtrl(args);
@@ -48,7 +49,7 @@ object Whackamole extends BasicDebugger {
 		tnc.addBoxToRoot(box1, false);
 		tnc;
 	}
-
+	*/
 	// Started with code from Appdapter demo BridgeTriggers
 	def getAssembledObjsFromModelAtURL(triplesURL : String) : Set[Object] = {
 		// Make sure that the classpath of this app class is known to Jena, in case the URL refers to a resource of
@@ -109,6 +110,7 @@ object Whackamole extends BasicDebugger {
 		getLogger.info("Whack-em-ole, Vaquera!");
 		val time = java.lang.System.currentTimeMillis();
 		logInfo("El tiempo es: " + time);
+		/*
 		val tnc : DemoNavigatorCtrl = makeTNC(args);
 
 		tnc.launchFrame("Whackamole");
@@ -138,7 +140,7 @@ object Whackamole extends BasicDebugger {
 		rf.addEntry(dors)
 		fb.resyncChildrenToTree
 
-
+		*/
 	}
 }
 
