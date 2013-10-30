@@ -44,24 +44,25 @@ import org.cogchar.bind.midi.FunMidiEventRouter;
 import org.cogchar.bind.midi.MidiDevMatchPattern;
 import org.cogchar.bind.midi.MidiDevWrap;
 
-
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * Some of the code and comments in this file are copied/adapted from the JSResources.org code + docs.
  */
 public class CogcharMidiOutputTestMain extends BasicDebugger {
 
 	public static void main(String[] args) {
 		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		// org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 
 		FunMidiEventRouter fmer = new FunMidiEventRouter();
 		try {
 			CogcharMidiOutputTestMain cmotm = new CogcharMidiOutputTestMain();
-			
+
 			NovLpadTest nlt = new NovLpadTest();
 			nlt.lpadLightDemo();
 
-			cmotm.playSomeNotes();			
+			cmotm.playSomeNotes();
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
@@ -70,8 +71,6 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		}
 		fmer.logInfo("main() is done!");
 	}
-
-
 
 	public void findNocturnOutput() throws Throwable {
 		MidiDevMatchPattern devPattern = new MidiDevMatchPattern();
@@ -112,89 +111,29 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		boolean doConnectSeqToSynth = true;
 		Sequencer dseq = MidiSystem.getSequencer(doConnectSeqToSynth);
 		getLogger().info("System default sequencer is {}, of class {}", dseq, (dseq != null) ? dseq.getClass() : "NULL");
-
+		if (dseq != null) {
+			playChordSequence(dseq);
+		}
 		Synthesizer dsynth = MidiSystem.getSynthesizer();
 		getLogger().info("System default synthesizer is {}, of class {}", dsynth, (dsynth != null) ? dsynth.getClass() : "NULL");
 		if (dsynth != null) {
-			getLogger().info("Synth latency={}, polyphony={}", dsynth.getLatency(), dsynth.getMaxPolyphony());
-			Soundbank dsdbk = dsynth.getDefaultSoundbank();
-			getLogger().info("Default synth has default soundbank {}, of class {}", dsdbk, (dsdbk != null) ? dsdbk.getClass() : "NULL");
-
-			// Until we do this, all the instruments are still *AVAIL*, but not LOADED.
-			dsynth.open();
-
-
-			Instrument[] loadedInstrms = dsynth.getLoadedInstruments();
-			Instrument[] availInstrms = dsynth.getAvailableInstruments();
-			getLogger().info("Instrument counts: loaded={}, avail={}", loadedInstrms.length, availInstrms.length);
-			getLogger().info("Loaded Instruments: {}", loadedInstrms);
-			getLogger().info("Avail Instruments: {}", availInstrms);
-			StringBuffer all = new StringBuffer();
-			for (Instrument inst : availInstrms) {
-				Patch instPatch = inst.getPatch();
-	
-				all.append("[" + inst.toString() + "], ");
-			}
-			getLogger().info("All avail instruments: {}", all.toString());
-
-			VoiceStatus[] synthVoiceStatusArr = dsynth.getVoiceStatus();
-			getLogger().info("VoiceStatus array size={}, firstEntry={}", synthVoiceStatusArr.length, synthVoiceStatusArr[0]);
-
-			// TODO:  Set the programs of the channels
-
-			MidiChannel[] midChans = dsynth.getChannels();
-			for (int cidx = 0; cidx < midChans.length; cidx++) {
-				MidiChannel chan = midChans[cidx];
-				getLogger().info("****************************\nChannel at position {} is {} ", cidx, midChans[cidx]);
-				if (chan != null) {
-					printChanFacts(chan);
-				}
-			}
-
-			Receiver synthRcvr = dsynth.getReceiver();
-
-
-			// THEN this will work:
-			// Play the note Middle C (60) moderately loud
-			// (velocity = 93)on channel 4 (zero-based).
-			ShortMessage noteOnMsg = new ShortMessage();
-			ShortMessage progChangeMsg = new ShortMessage();
-			ShortMessage notesOffMsg = new ShortMessage();
-			for (int j=0; j < 25; j++) {
-				for (int i = 0; i < 16; i++) {
-					int instIdx = (i + 16 * j) % (loadedInstrms.length);
-					Instrument tgtInst = loadedInstrms[instIdx];
-					Patch tgtPatch = tgtInst.getPatch();
-					
-					notesOffMsg.setMessage(ShortMessage.NOTE_OFF, i, 59 + i, 0);
-					synthRcvr.send(notesOffMsg, -1);
-					getLogger().debug("Program change chanFromZ={} to {}", i, tgtInst);
-					progChangeMsg.setMessage(ShortMessage.PROGRAM_CHANGE, i, tgtPatch.getProgram(), tgtPatch.getBank());
-					synthRcvr.send(progChangeMsg, -1);
-					noteOnMsg.setMessage(ShortMessage.NOTE_ON, i, 59 + i, 93);
-					// Nice riff!  We hear a drum hit on channel "10" = 9
-					synthRcvr.send(noteOnMsg, -1); // -1 means no time stamp
-					Thread.sleep(125);
-				}
-			}
-
-			//	channel.noteOn(nNoteNumber, nVelocity);
-			//	channel.noteOff(nNoteNumber);
-
-
-			Thread.sleep(5000);
-			
-			dsynth.close();
+			playSoundbankDemo(dsynth);
 		}
 		if (dseq != null) {
-			Sequence seq = makeSequence();
+			playChordSequence(dseq);
+		}
+	}
+
+	private void playChordSequence(Sequencer dseq) throws Throwable {
+		getLogger().info("Playing sequence of chords on {}", dseq);
+		if (dseq != null) {
+			Sequence seq = makeSequenceOfChords();
 			dseq.open();
 			dseq.setSequence(seq);
-			dseq.start();				
-			Thread.sleep(5000);	
+			dseq.start();
+			Thread.sleep(5000);
 			dseq.close();
 		}
-
 	}
 
 	private void printChanFacts(MidiChannel chan) {
@@ -212,6 +151,80 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 
 		int controllerNum = 20;
 		getLogger().info("controllerVal(controlNum={})={}", controllerNum, chan.getController(controllerNum));
+	}
+
+	private void playSoundbankDemo(Synthesizer dsynth) throws Throwable {
+
+		getLogger().info("Synth latency={}, polyphony={}", dsynth.getLatency(), dsynth.getMaxPolyphony());
+		Soundbank dsdbk = dsynth.getDefaultSoundbank();
+		getLogger().info("Default synth has default soundbank {}, of class {}", dsdbk, (dsdbk != null) ? dsdbk.getClass() : "NULL");
+
+		// Until we do this, all the instruments are still *AVAIL*, but not LOADED.
+		dsynth.open();
+
+
+		Instrument[] loadedInstrms = dsynth.getLoadedInstruments();
+		Instrument[] availInstrms = dsynth.getAvailableInstruments();
+		getLogger().info("Instrument counts: loaded={}, avail={}", loadedInstrms.length, availInstrms.length);
+		getLogger().info("Loaded Instruments: {}", loadedInstrms);
+		getLogger().info("Avail Instruments: {}", availInstrms);
+		StringBuffer all = new StringBuffer();
+		for (Instrument inst : availInstrms) {
+			Patch instPatch = inst.getPatch();
+			List<Instrument> drumInstrs = new ArrayList<Instrument>();
+			List<Instrument> keyInstrs = new ArrayList<Instrument>();
+			getLogger().info("Instrument name=[{}] class=[{}] data-class=[{}] ", inst.getName(), inst.getClass(), inst.getDataClass());
+			all.append("[" + inst.toString() + "], ");
+		}
+		
+		getLogger().info("All avail instruments: {}", all.toString());
+
+		VoiceStatus[] synthVoiceStatusArr = dsynth.getVoiceStatus();
+		getLogger().info("VoiceStatus array size={}, firstEntry={}", synthVoiceStatusArr.length, synthVoiceStatusArr[0]);
+
+		MidiChannel[] midChans = dsynth.getChannels();
+		for (int cidx = 0; cidx < midChans.length; cidx++) {
+			MidiChannel chan = midChans[cidx];
+			getLogger().info("****************************\nChannel at position {} is {} ", cidx, midChans[cidx]);
+			if (chan != null) {
+				printChanFacts(chan);
+			}
+		}
+
+		Receiver synthRcvr = dsynth.getReceiver();
+
+		ShortMessage noteOnMsg = new ShortMessage();
+		ShortMessage progChangeMsg = new ShortMessage();
+		ShortMessage notesOffMsg = new ShortMessage();
+		for (int j = 0; j < 18; j++) {
+			for (int i = 0; i < 16; i++) {
+				int instIdx = (i + 16 * j) % (loadedInstrms.length);
+				Instrument tgtInst = loadedInstrms[instIdx];
+				Patch tgtPatch = tgtInst.getPatch();
+
+				notesOffMsg.setMessage(ShortMessage.NOTE_OFF, i, 59 + i, 0);
+				synthRcvr.send(notesOffMsg, -1);
+				getLogger().debug("Program change chanFromZ={} to {}", i, tgtInst);
+				progChangeMsg.setMessage(ShortMessage.PROGRAM_CHANGE, i, tgtPatch.getProgram(), tgtPatch.getBank());
+				synthRcvr.send(progChangeMsg, -1);
+				noteOnMsg.setMessage(ShortMessage.NOTE_ON, i, 59 + i, 93);
+				// Nice riff!  Note that when we play on channel "10" = 9, we get drum hits rather than "notes" 
+				synthRcvr.send(noteOnMsg, -1); // -1 means no time stamp
+				Thread.sleep(75);
+			}
+		}
+		// We prefer the message sending form above, although the channels may also be treated as invokable.method().
+		// The latter API does not (AFAWK) apply to general "device" channels, only to local synthesizers, so we
+		// prefer to invest in wrapping the more general "message" approach above, which also maps well into our
+		// ontology approach.
+		//	channel.noteOn(nNoteNumber, nVelocity);
+		//	channel.noteOff(nNoteNumber);
+
+
+		Thread.sleep(2000);
+
+		dsynth.close();
+
 	}
 
 	private void callAllChannelMutators(MidiChannel chan) {
@@ -235,10 +248,11 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		chan.localControl(localControlState);
 
 	}
-	private Sequence makeSequence() throws Throwable { 
+
+	private Sequence makeSequenceOfChords() throws Throwable {
 		Sequence sequence = new Sequence(Sequence.PPQ, 1);
 		sequence.createTrack();
-		Track	track = sequence.createTrack();
+		Track track = sequence.createTrack();
 
 		// first chord: C major
 		track.add(createNoteOnEvent(60, 0));
@@ -268,7 +282,7 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		track.add(createNoteOffEvent(64, 3));
 		track.add(createNoteOffEvent(72, 3));
 
-		// forth chord: G major 7
+		// fourth chord: G major 7
 		track.add(createNoteOnEvent(65, 3));
 		track.add(createNoteOnEvent(71, 3));
 		track.add(createNoteOffEvent(55, 4));
@@ -285,68 +299,45 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		track.add(createNoteOffEvent(64, 8));
 		track.add(createNoteOffEvent(67, 8));
 		track.add(createNoteOffEvent(72, 8));
-		
+
 		return sequence;
 	}
-	private static final int	VELOCITY = 64;
-	private static MidiEvent createNoteOnEvent(int nKey, long lTick)
-	{
+	private static final int VELOCITY = 64;
+
+	private static MidiEvent createNoteOnEvent(int nKey, long lTick) {
 		return createNoteEvent(ShortMessage.NOTE_ON,
-							   nKey,
-							   VELOCITY,
-							   lTick);
+			nKey,
+			VELOCITY,
+			lTick);
 	}
 
-	private static MidiEvent createNoteOffEvent(int nKey, long lTick)
-	{
+	private static MidiEvent createNoteOffEvent(int nKey, long lTick) {
 		return createNoteEvent(ShortMessage.NOTE_OFF,
-							   nKey,
-							   0,
-							   lTick);
+			nKey,
+			0,
+			lTick);
 	}
+
 	private static MidiEvent createNoteEvent(int nCommand,
-											 int nKey,
-											 int nVelocity,
-											 long lTick)
-	{
-		ShortMessage	message = new ShortMessage();
-		try
-		{
+		int nKey,
+		int nVelocity,
+		long lTick) {
+		ShortMessage message = new ShortMessage();
+		try {
 			message.setMessage(nCommand,
-							   0,	// always on channel 1
-							   nKey,
-							   nVelocity);
-		}
-		catch (InvalidMidiDataException e)
-		{
+				0, // always on channel 1
+				nKey,
+				nVelocity);
+		} catch (InvalidMidiDataException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		MidiEvent	event = new MidiEvent(message,
-										  lTick);
+		MidiEvent event = new MidiEvent(message,
+			lTick);
 		return event;
-	}	
-	private void callSequencerMethods(Sequencer seqr) throws Throwable {
-
-
-
-		Sequence sequence = null;
-		String mfName = "filename.mid";
-		File midiFile = new File(mfName);
-		sequence = MidiSystem.getSequence(midiFile);
-
-
-		seqr.open();
-		seqr.setSequence(sequence);
-		seqr.start();
-		/*
-		 * 	 *	To accomplish this, we register a Listener to the Sequencer.
-		 *	It is called when there are "meta" events. Meta event
-		 *	47 is end of track.
-
-		 * 
-		 */
 	}
+
+
 
 	private void noticeSeqrTrackEnd(final Sequencer seqr) {
 		getLogger().info("MidiPlayer.<...>.meta(): end of track message received, closing sequencer and attached MidiDevices...");
@@ -385,10 +376,29 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		 } if (DEBUG) { out("MidiPlayer.<...>.meta(): ...closed, now exiting"); }	 //System.exit(0);	 */
 	}
 
+	private void callSequencerMethods(Sequencer seqr) throws Throwable {
+		// Scratchpad method calls, not ready for invocation yet.
+		Sequence sequence = null;
+		String mfName = "filename.mid";
+		File midiFile = new File(mfName);
+		sequence = MidiSystem.getSequence(midiFile);
+
+		seqr.open();
+		seqr.setSequence(sequence);
+		seqr.start();
+		/*
+		 * 	 *	To accomplish this, we register a Listener to the Sequencer.
+		 *	It is called when there are "meta" events. Meta event
+		 *	47 is end of track.
+
+		 * 
+		 */
+	}
 	private void synthMapperCode(Sequencer seqr) throws Throwable {
+		// This is just a bunch of nonsensical but compilable code to validate that we *could* call these methods.
 		ArrayList<MidiDevice> sm_openedMidiDeviceList = new ArrayList<MidiDevice>();
 
-		Transmitter	midiTransmitter = seqr.getTransmitter();
+		Transmitter midiTransmitter = seqr.getTransmitter();
 		// Synth-receiver target
 		Synthesizer synth = MidiSystem.getSynthesizer();
 		synth.open();
@@ -396,27 +406,27 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		Receiver synthReceiver = synth.getReceiver();
 		Transmitter seqTransmitter = seqr.getTransmitter();
 		seqTransmitter.setReceiver(synthReceiver);
-		
+
 		// OR: Default receiver target:
-		Receiver	midiReceiver = MidiSystem.getReceiver();
+		Receiver midiReceiver = MidiSystem.getReceiver();
 		midiTransmitter.setReceiver(midiReceiver);
-		
+
 		// OR:  specific dev version		
-		MidiDevice.Info		info = null; // new MidiDevice.Info(); //  MidiCommon.getMidiDeviceInfo(devName, true);
-		MidiDevice	midiDevice = MidiSystem.getMidiDevice(info);
+		MidiDevice.Info info = null; // new MidiDevice.Info(); //  MidiCommon.getMidiDeviceInfo(devName, true);
+		MidiDevice midiDevice = MidiSystem.getMidiDevice(info);
 		midiDevice.open();
 		sm_openedMidiDeviceList.add(midiDevice);
-		Receiver	midiDevReceiver = midiDevice.getReceiver();
+		Receiver midiDevReceiver = midiDevice.getReceiver();
 		midiTransmitter.setReceiver(midiDevReceiver);
 		// Later
 		midiDevReceiver.close();
-		midiDevice.close();			
-		
+		midiDevice.close();
+
 		// Dumping sequencer output to text, or our intermediate
-			//	Receiver	dumpReceiver = new DumpReceiver(System.out);
-			//	Transmitter	dumpTransmitter = sm_sequencer.getTransmitter();
-			//	dumpTransmitter.setReceiver(dumpReceiver);	
-	
+		//	Receiver	dumpReceiver = new DumpReceiver(System.out);
+		//	Transmitter	dumpTransmitter = sm_sequencer.getTransmitter();
+		//	dumpTransmitter.setReceiver(dumpReceiver);	
+
 	}
 }
 
@@ -439,8 +449,6 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
  nVelocity = Math.min(127, Math.max(0, nVelocity));
  nDuration = Integer.parseInt(args[nNoteNumberArgIndex + 2]);
  nDuration = Math.max(0, nDuration);
- * 
- * 
  * 
  * 	<formalpara><title>Bugs, limitations</title>
  <para>The precision of the duration depends on the precision

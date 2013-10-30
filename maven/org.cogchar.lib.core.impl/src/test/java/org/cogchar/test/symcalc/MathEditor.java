@@ -28,6 +28,8 @@ import org.cogchar.bind.symja.MathSpaceFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * This editor plugs into the Appdapter GUI, which we have currently disabled.
  */
 public class MathEditor extends BasicDebugger {
 
