@@ -42,14 +42,32 @@ public class LifterAnswerPageGenerator implements WantsThingAction {
     String lifterAnswerPageControlActionPrefix = "action_";
     String lifterAnswerPageControlColorPrefix = "color_";
     
-    Model myModel = null;
+    Model myLifterModel = null;
+    Model myThingActionModel = null;
     
-    //TODO Document model purpose better.
-    public LifterAnswerPageGenerator( Model model ) {
-        myModel = model;
-    }
-    
+    /**
+     * Provide models to which the new RDF data will be stored. One model will
+     * be the source Lifter draws its web data from, the other will be where it
+     * scans for thing actions.
+     * 
+     * @param lifterModel The data model that will receive the new RDF data
+     * @param thingActionModel The data model that will receive the trigger TA
+     */
+    public LifterAnswerPageGenerator(
+            Model lifterModel, 
+            Model thingActionModel ) {
         
+        myLifterModel = lifterModel;
+        myThingActionModel = thingActionModel;
+    }
+        
+    /**
+     * Consumes TAs that indicate a Lifter web page should be created.
+     * 
+     * @param actionSpec
+     * @param sourceGraphID
+     * @return 
+     */
     @Override
     public ConsumpStatus consumeAction(
             ThingActionSpec actionSpec,
@@ -120,12 +138,18 @@ public class LifterAnswerPageGenerator implements WantsThingAction {
         }
         
         // Generate the model with the new page
-        Model pageModel = PageGeneratorUtils.generate12SlotLifterPageWithPushyButtons(
+        Model pageModel = PageGeneratorUtils.make12SlotLifterPageWithPushyButtons(
                 liftconfigID, controlDescriptions);
         
         // Merge the model into the main model
-        myModel.add(pageModel);
+        myLifterModel.add(pageModel);
         
+        // Fire the TA that triggers the lifter page to display.
+        Model taModel = PageGeneratorUtils.
+                makeThingActionTriggerForLifterPage(liftconfigID);
+        myThingActionModel.add(taModel);
+        
+        // The page is available and the triggering TA is in transit.
         return ConsumpStatus.CONSUMED;
     }
 
@@ -137,6 +161,14 @@ public class LifterAnswerPageGenerator implements WantsThingAction {
         return new Integer(Integer.parseInt(localName.replaceFirst(prefix, "")));
     }
 
+    /**
+     * This function helps build up the RDF that defines a Lifter control.
+     * 
+     * @param controlElements
+     * @param controlNumber
+     * @param elementType
+     * @param element 
+     */
     private void addControlElement(
             Map<Integer, LifterControlDescription> controlElements,
             Integer controlNumber,
@@ -161,6 +193,14 @@ public class LifterAnswerPageGenerator implements WantsThingAction {
         }
     }
     
+    /**
+     * This function helps build up the RDF that defines a Lifter control.
+     * 
+     * @param controlElements
+     * @param controlNumber
+     * @param elementType
+     * @param element 
+     */
     private void addControlElement(
             Map<Integer, LifterControlDescription> controlElements,
             Integer controlNumber,
