@@ -37,14 +37,17 @@
             <version>${project.version}</version>
         </dependency>
 		-->
+		
+		<!--  
          <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.gui</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
-
+		-->
 		<dependency>
-			<!-- And this so LiftAmbassador can hook in. Soon we want this all to move to a general interface in lib.core that everything can use -->
+			<!-- We want this dependence to be replaced by cleaner mechanisms in o.c.b.temp.wire 
+			-->
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.bundle.bind.lift</artifactId>
 			<version>${project.version}</version>
