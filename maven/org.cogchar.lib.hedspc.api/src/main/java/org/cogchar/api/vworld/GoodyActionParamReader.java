@@ -97,8 +97,12 @@ public class GoodyActionParamReader {
 	public Float[] getRotAxisVec3D() {
 		return getVec3D(GoodyNames.ROTATION_AXIS_X, GoodyNames.ROTATION_AXIS_Y, GoodyNames.ROTATION_AXIS_Z);		
 	}
-	public Float getRotMagRadians() { 
-		return myTVM.getAsFloat(GoodyNames.ROTATION_MAG_DEG)*(float)Math.PI/180f;		
+	public Float getRotMagRadians() {
+        Float rot = myTVM.getAsFloat(GoodyNames.ROTATION_MAG_DEG);
+        if(rot == null){
+            return 0f;
+        }
+		return rot*(float)Math.PI/180f;		
 	}
 	public String getText() {
 		return myTVM.getAsString(GoodyNames.TEXT);
