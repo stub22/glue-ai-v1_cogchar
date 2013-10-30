@@ -1,3 +1,4 @@
+
 /*
  *  Copyright 2013 by The Cogchar Project (www.cogchar.org).
  * 
@@ -21,16 +22,10 @@ import com.hp.hpl.jena.rdf.model.Property;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
 import com.hp.hpl.jena.rdf.model.Resource;
+import org.appdapter.core.name.FreeIdent;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.name.lifter.LiftAN;
-        
-        
-//        import com.hp.hpl.jena.rdf.model.{Model, Statement, Resource, Property, Literal, RDFNode, ModelFactory}
-//import com.hp.hpl.jena.query.{ResultSet, ResultSetFormatter, ResultSetRewindable, ResultSetFactory, QuerySolution};
-//import com.hp.hpl.jena.ontology.{OntProperty, ObjectProperty, DatatypeProperty}
-//import com.hp.hpl.jena.datatypes.{RDFDatatype, TypeMapper}
-//import com.hp.hpl.jena.datatypes.xsd.{XSDDatatype}
-//import com.hp.hpl.jena.shared.{PrefixMapping}
+import org.cogchar.name.thing.ThingCN;
 
 /**
  * This class provides a mechanism for dynamically generating lifter pages for
@@ -46,7 +41,7 @@ public class PageGeneratorUtils {
      * @param lifterConfigID ID of the page to be generated
      * @param answerLabelsAndAction button label => button action
      */
-    public static Model generate12SlotLifterPageWithPushyButtons(
+    public static Model make12SlotLifterPageWithPushyButtons(
             Ident lifterConfigID,
             Map<Integer, LifterControlDescription> controlDescriptions) {
         
@@ -71,6 +66,7 @@ public class PageGeneratorUtils {
         return dataModel;
     }
     
+    
     /**
      * Collection of values to describe a button that should be generated
      */
@@ -88,6 +84,144 @@ public class PageGeneratorUtils {
         public Ident action = null;
     }
     
+    public static Model makeThingActionTriggerForLifterPage(
+            Ident liftConfigID) {
+        
+        // The RDF container
+        Model dataModel = ModelFactory.createDefaultModel();
+        
+        // Derive name for new ThingAction
+        String thingActionName = liftConfigID.getAbsUriString() + 
+                "_Trigger_ThingAction";
+        Ident thingActionID = new FreeIdent(thingActionName);
+        
+        // Derive Param name
+        String thingActionParamName = liftConfigID.getAbsUriString() + 
+                "_Trigger_ThingActionParam1";
+        Ident thinActionParamID = new FreeIdent(thingActionParamName);
+        
+        // Generate the ThingActionParam that carries the payload
+        generateThingActionTriggerForLifterParam(
+                dataModel,
+                liftConfigID,
+                thinActionParamID);
+        
+        // Generate the base ThingAction
+        generateThingActionTriggerForLifter(
+                dataModel,
+                thingActionID,
+                thinActionParamID);
+        
+        // Return the Model containing the trigger
+        return dataModel;
+    }
+    
+    // *** private members ***
+    
+    
+    /**
+     * 
+     * @param dataModel
+     * @param liftConfigID
+     * @param thingActionParamID 
+     */
+    private static void generateThingActionTriggerForLifterParam(
+            Model dataModel,
+            Ident liftConfigID,
+            Ident thingActionParamID) {
+        
+        // Generate ThingAction individual
+        String taParamIDString = thingActionParamID.getAbsUriString();
+        Resource taParamResource = dataModel.createResource(taParamIDString);
+        
+        // Define the RDF type to be ThingActionParam
+        Property rdfTypeProp = dataModel.createProperty(
+                GoodyNames.RDF_TYPE.getAbsUriString());
+        taParamResource.addProperty(
+                rdfTypeProp,
+                ThingCN.T_ThingActionParam);
+        
+        // Define the parameters's key (paramIdent)
+        Property paramKeyProp = dataModel.createProperty(
+                ThingCN.P_paramIdent);
+        taParamResource.addProperty(
+                paramKeyProp,
+                lifterActionID.getAbsUriString());
+        
+        // Define the parameters's value (paramIdentValue)
+        Property paramValueProp = dataModel.createProperty(
+                ThingCN.P_paramIdentValue);
+        taParamResource.addProperty(
+                paramValueProp,
+                liftConfigID.getAbsUriString());
+        
+        // The Model now contains the TA Parameter which specifies the lift page
+    }
+
+    //TODO: FIX THIS. This is  a namespace problem.
+    private final static Ident lifterActionID = null;
+    
+    
+    private static void generateThingActionTriggerForLifter(
+            Model dataModel,
+            Ident thingActionID,
+            Ident thingActionParamID) {
+        
+        // Generate ThingAction individual
+        String taIDString = thingActionID.getAbsUriString();
+        Resource taResource = dataModel.createResource(taIDString);
+        
+        // Defines the RDF type to be that of a ThingAction
+        Property rdfTypeProp = dataModel.createProperty(
+                GoodyNames.RDF_TYPE.getAbsUriString());
+        taResource.addProperty(
+                rdfTypeProp,
+                ThingCN.T_ThingAction);
+        
+        // Defines the TA's verb as the TA itself
+        // ( currently a verb is required by the query system for a valid TA )
+        Property verbProp = dataModel.createProperty(
+                ThingCN.P_verb);
+        taResource.addProperty(
+                verbProp,
+                thingActionID.getAbsUriString());
+        
+        // Defines the TA's targetThing as the TA itself
+        // ( currently a target is required by the query system for a valid TA )
+        Property targetThingProp = dataModel.createProperty(
+                ThingCN.P_targetThing);
+        taResource.addProperty(
+                targetThingProp,
+                thingActionID.getAbsUriString());
+        
+        // Defines the TA's targetThing as the TA itself
+        // ( currently a target is required by the query system for a valid TA )
+        Property targetThingTypeProp = dataModel.createProperty(
+                ThingCN.P_targetThingType);
+        taResource.addProperty(
+                targetThingTypeProp,
+                ThingCN.T_ThingAction);
+
+        // Declares the TA's creation-time in a timestamp
+        Property timestampProp = dataModel.createProperty(
+                ThingCN.P_postedTSMsec);
+        taResource.addProperty(
+                timestampProp,
+                Long.toString(System.currentTimeMillis()));
+        
+        //TODO: FIX THIS MESS, the values used in the system are inverted...
+        // This declares the targetAction ... as the param....
+        // This is interpreted as a reference to the param, not the param's action
+        // The namespace needs to  change, not the code
+        Property targetActionProp = dataModel.createProperty( 
+                ThingCN.P_IdentAttachedToThingAction);
+        taResource.addProperty(
+                targetActionProp,
+                thingActionParamID.getAbsUriString());
+        
+        // The Model now contains the ThingAction.
+    }
+    
     private static void generate12SlotLifterConfig(
             Model dataModel, 
             Ident lifterConfigID) {
@@ -101,7 +235,7 @@ public class PageGeneratorUtils {
                 GoodyNames.RDF_TYPE.getAbsUriString());
         lifterConfigResource.addProperty(
                 rdfType, 
-                "liftconfig");
+                LiftAN.NS_LifterConfig);
         
         // Sets the page template to be used by the page
         Property pageTemplate = dataModel.createProperty(LiftAN.P_template);
@@ -131,7 +265,7 @@ public class PageGeneratorUtils {
             GoodyNames.RDF_TYPE.getAbsUriString());
         controlResource.addProperty(
                 rdfType, 
-                "liftcontrol");
+                "liftcontrol"); //TODO: <- EXPAND URI!
         
         // Attach the control to its parent page
         Property parentConfig = dataModel.createProperty(
@@ -183,6 +317,5 @@ public class PageGeneratorUtils {
                     buttonAction,
                     thingAction.getAbsUriString());
         }
-        
     }
 }
