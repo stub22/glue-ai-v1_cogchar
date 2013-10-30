@@ -70,7 +70,14 @@
 								http://localhost:8080/org.cogchar.org.cogchar.lifter/
 			-->						
 						<Web-ContextPath>${web.contextPath}</Web-ContextPath>							
-						<Export-Package>org.joseki.*, org.cogchar.joswrap, org.cogchar.bundle.bind.joseki, etc.*, Data.*, WEB-INF.*</Export-Package>
+						<Export-Package>
+							org.joseki.*, 
+							org.cogchar.joswrap, 
+							org.cogchar.bundle.bind.joseki, 
+							etc.*;-split-package:=merge-first, 
+							Data.*, 
+							WEB-INF.*;-split-package:=merge-first
+						</Export-Package>
 						<Bundle-Activator>org.cogchar.bundle.bind.joseki.Activator</Bundle-Activator>
 					</instructions>
 				</configuration>

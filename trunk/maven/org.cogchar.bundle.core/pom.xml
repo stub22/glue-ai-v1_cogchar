@@ -19,12 +19,6 @@
 			<artifactId>org.cogchar.lib.core.api</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>osgi_R4_core</artifactId>
-					<groupId>org.osgi</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -76,13 +70,7 @@
             <artifactId>org.appdapter.bundle.core</artifactId>
             <version>${appdapter.version}</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.appdapter</groupId>
-            <artifactId>org.appdapter.bundle.gui</artifactId>
-            <version>${appdapter.version}</version>
-        </dependency>
--->		
+
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
@@ -138,29 +126,21 @@
                     <instructions>
                         <Bundle-Activator>org.cogchar.bundle.core.CogcharCoreActivator</Bundle-Activator>
 						<Export-Package>
-							org.cogchar.*;-split-package:=merge-first
-						</Export-Package>
-						
-						<Private-Package>
+							org.cogchar.*;-split-package:=merge-first,
 							com.thoughtworks.xstream.*;-split-package:=merge-first
-							<!-- Where do we need  this?
-							scala.slick.*, 
-							 -->
-							<!-- REMOVED 2013-10-29:   org.apache.commons.math.*, org.apache.http.* -->
-						</Private-Package>
+						</Export-Package>
 						<Import-Package>
-							!com.bea.xml.*, 
-							!net.sf.cglib.*, 
+							<!-- All of these are wanted by the xstream stuff ?-->
+							!com.bea.xml.*,
+							!net.sf.cglib.*,
 							!nu.xom.*, 
 							!org.codehaus.jettison.*, 
 							!org.jdom.*, 
 							!org.joda.*, 
-							!org.kxml2.*, 
-							sun.*;resolution:='optional', 
-                            !org.scalaquery.*, 
+							!org.kxml2.*,
+							sun.*;resolution:='optional', 					
 							*
-						</Import-Package>	 
-                                                                        
+						</Import-Package>
 					</instructions>
                 </configuration>
             </plugin>
