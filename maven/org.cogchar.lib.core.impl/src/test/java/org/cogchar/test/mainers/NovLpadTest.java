@@ -27,13 +27,17 @@ import org.cogchar.bind.midi.MidiReceiverDevWrap;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * Here we test our ability to connect to a Novation Launchpad (tm) device, and control its LED light output.
  */
 
 public class NovLpadTest extends BasicDebugger {
 	MidiReceiverDevWrap		myLpadDevWrap;
+	
 	public static void main(String[] args) {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+
 		NovLpadTest nlt  = new NovLpadTest();
 		try {
 			nlt.lpadLightDemo();
@@ -58,6 +62,9 @@ public class NovLpadTest extends BasicDebugger {
 		} catch (Throwable t) {
 			getLogger().error("Caught: ", t);
 		}
+		
+	}
+	public void cleanup() { 
 		
 	}
 	public MidiReceiverDevWrap findLaunchpadOutRcvr() throws Throwable {
@@ -103,6 +110,8 @@ public class NovLpadTest extends BasicDebugger {
 	//  Invalid column numbers (9 to 15) are also interpreted as column 8. 
 }
 /*
+ * From Launchpad Programmer's Reference:
+ * 
  * The following tables of pre-calculated velocity values for normal use may also be helpful: 
         Hex   Decimal   Colour     Brightness 
         0Ch   12        Off        Off 
