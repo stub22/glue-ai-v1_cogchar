@@ -190,35 +190,21 @@
 						<Export-Package>
 							org.cogchar.lifter.*, 
 							bootstrap.*, 
-							props, 
 							net.liftweb.*, 
 							toserve.*,  
 							nu.validator.*
 						</Export-Package>
-						<Private-Package>
-							<!-- 2013-10-29 -  These were private packaged, but should be available from other bundles 
-									org.apache.commons.codec.*, org.apache.http.*
-							-->
-							com.thoughtworks.xstream.*, 
-							com.bea.xml.stream.*
-						</Private-Package>
 						<Import-Package>
-							!com.bea.xml.*, 
-							!net.sf.cglib.*, 
-							!org.codehaus.jettison.*, 
-							!org.kxml2.*, 
 							!nu.xom.*,
 							!org.mozilla.*,
-							!org.specs.*,
 							!ch.qos.logback.*, 
-							sun.*;resolution:='optional', 
-							!org.scalaquery.*, 
 							!org.specs2.*, 
 							!scala.tools.scalap.*, 
-							<!-- We do not want import links to this *old* version of httpclient 
+							<!-- We do not want import links to this *old* version of httpclient.
+								We are using httpclient 4.3.1.   When we see "commons" in the name,
+								that is referring to version 3.* (or earlier).
 							-->
 							!org.apache.commons.httpclient.*,
-							!org.jdom.*,
 							*
 						</Import-Package>
 
