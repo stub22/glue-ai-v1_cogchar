@@ -233,8 +233,21 @@ The jmonkey.verson property is inherited from our parent project's pom.xml.
 					<instructions>
 						<Bundle-Activator>org.cogchar.ext.bundle.opengl.jmonkey.OpenglJmonkeyBundleActivator</Bundle-Activator>
 						<!-- Explicit import of sun.misc is necessary for running under netigso (Netbeans-OSGI) -->
-						<Import-Package>sun.misc, *;resolution:=optional</Import-Package>
-						<Export-Package>com.jme3.*, native.*, jme3tools.*, org.lwjgl.*, com.bulletphysics.*, javax.vecmath.*, de.jarnbjo.*, Common.*, Interface.*</Export-Package>
+						<Import-Package>
+							sun.misc, 
+							*;resolution:=optional
+						</Import-Package>
+						<Export-Package>
+							com.jme3.*;-split-package:=merge-first, 
+							native.*, 
+							jme3tools.*;-split-package:=merge-first, 
+							org.lwjgl.*, 
+							com.bulletphysics.*, 
+							javax.vecmath.*, 
+							de.jarnbjo.*, 
+							Common.*, 
+							Interface.*
+						</Export-Package>
                         <Bundle-NativeCode>
                             native/linux/liblwjgl.so;
 							native/linux/libjinput-linux.so;
