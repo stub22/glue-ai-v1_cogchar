@@ -149,6 +149,11 @@ public class GoodyActionExtractor extends GoodyActionParamReader {
 	
 	public ColorRGBA getColor() {
 		Float cVals[] = getColorVec4D();
+        for(Float f : cVals){
+            if(f == null){
+                return new ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f);
+            }
+        }
 		ColorRGBA resultColor =  new ColorRGBA(cVals[0], cVals[1], cVals[2], cVals[3]);
 		return resultColor;
 	}
