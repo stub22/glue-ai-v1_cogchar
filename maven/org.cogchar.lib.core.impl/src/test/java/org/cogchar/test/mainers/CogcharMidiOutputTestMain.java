@@ -169,10 +169,10 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		getLogger().info("Loaded Instruments: {}", loadedInstrms);
 		getLogger().info("Avail Instruments: {}", availInstrms);
 		StringBuffer all = new StringBuffer();
+		List<Instrument> drumInstrs = new ArrayList<Instrument>();
+		List<Instrument> keyInstrs = new ArrayList<Instrument>();		
 		for (Instrument inst : availInstrms) {
 			Patch instPatch = inst.getPatch();
-			List<Instrument> drumInstrs = new ArrayList<Instrument>();
-			List<Instrument> keyInstrs = new ArrayList<Instrument>();
 			getLogger().info("Instrument name=[{}] class=[{}] data-class=[{}] ", inst.getName(), inst.getClass(), inst.getDataClass());
 			all.append("[" + inst.toString() + "], ");
 		}
