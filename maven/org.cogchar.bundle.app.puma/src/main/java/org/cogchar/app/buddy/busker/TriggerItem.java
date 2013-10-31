@@ -25,8 +25,13 @@ import org.cogchar.platform.trigger.CogcharActionTrigger;
  * and providing a convenience logging method.
  */
 public abstract class TriggerItem extends org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl implements CogcharActionTrigger {
-	protected void logFiring(CogcharScreenBox targetBox) {
-		logInfo("trigger[" + toString() + "] firing on " + targetBox.toString());
+	protected void logFiring(CogcharScreenBox targetBox, Object extraInfoObj, Object extraDebugObj) {
+		getLogger().info("Trigger[class={}, id={}] firing on box [class={}, id={}], extraInfo=[{}]", this.getClass(), 
+					this.getIdent(), targetBox.getClass().getName(), targetBox.getIdent(), extraInfoObj);	
+		getLogger().debug("Full debug dump of trigger [{}]\nand box:\n[{}]\nextraDebug=[{}]", this, targetBox, extraDebugObj);
 	}
+	protected void logFiring(CogcharScreenBox targetBox) {
+		logFiring(targetBox, null, null);
+	}	
 	
 }

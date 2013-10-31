@@ -51,7 +51,7 @@ public class TriggerItems {
 	public static class SceneMsg extends TriggerItem {
 		public String sceneInfo = "none";
 		@Override public void fire(CogcharScreenBox targetBox) {
-			logInfo("trigger[" + toString() + "] sending [" + sceneInfo + " to " + targetBox.toString());
+			logFiring(targetBox, sceneInfo, sceneInfo);
 			// PumaDualCharacter pdc = (PumaDualCharacter) targetBox;
 			// pdc.sayText("The time is now, " + System.currentTimeMillis());
 		}
