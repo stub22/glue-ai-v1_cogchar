@@ -49,9 +49,10 @@ public class SillyDemoMotionComputer extends CogcharMotionComputer {
 			goalPosMap.put(waistRJID, nextWaistPos);
 			source.move(goalPosMap, moveLengthMilliSec);
 			if ((myCycleCount % 200) == 1) {
-				theLogger.info("notify[cycle=" + myCycleCount + ", currentTime" + currentTimeUTC + ", moveLen="
-					+ moveLengthMilliSec + ", src=" + source + ", botID=" + srcBotID + ", waistRJID" + waistRJID 
-					+ ", oldWaistPos=" + oldWaistPos + ", nextWaistPos=" + nextWaistPos + ", curPosMap=" + rpm + "]");
+				theLogger.info("heatbeat cycle={} currentTime={} moveLen={} src={} botID={}", 
+							myCycleCount, currentTimeUTC, moveLengthMilliSec, source, srcBotID);
+			
+				theLogger.debug("more detail:  waistRJID={} oldWaistPos={} nextWaistPos={} curPosMap={}", waistRJID, oldWaistPos , nextWaistPos, rpm);
 			}
 		}
 
