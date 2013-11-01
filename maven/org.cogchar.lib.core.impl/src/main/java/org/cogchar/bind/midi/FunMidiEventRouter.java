@@ -27,25 +27,26 @@ import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Transmitter;
 import org.appdapter.core.log.BasicDebugger;
+import org.matheclipse.core.reflection.system.Outer;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class FunMidiEventRouter extends BasicDebugger {
+public class FunMidiEventRouter extends MidiEventReporter  {
 
 	List<MidiTransmitDevWrap> myTransmitters = new ArrayList<MidiTransmitDevWrap>();
-	private MidiReceiverDumpsAndNotifies myReceiver = null;
-
+// 	private MidiReceiverDumpsAndNotifies myReceiver = null;
+	PrintStream noPrint = null; 
 	public FunMidiEventRouter() {
 		// OutputStream noOut = new NullOutputStream();
-		PrintStream noPrint = null; // new PrintStream(noOut);
-		myReceiver = new MidiReceiverDumpsAndNotifies(noPrint); // System.out);
+		// new PrintStream(noOut);
+		// myReceiver = new MidiReceiverDumpsAndNotifies(noPrint); // System.out);
 	}
-
+/*
 	public void registerListener(MidiEventReporter.Listener listener) {
 		myReceiver.registerListener(listener);
 	}
-
+*/
 	private void findTransmitters() {
 		try {
 			MidiDevMatchPattern devPattern = new MidiDevMatchPattern();
@@ -59,9 +60,15 @@ public class FunMidiEventRouter extends BasicDebugger {
 	}
 
 	public void startPumpingMidiEvents() {
+		MyForwardingListener mfl = new MyForwardingListener();
 		findTransmitters();
+		
 		for (MidiTransmitDevWrap tdw : myTransmitters) {
-			tdw.myTransmitter.setReceiver(myReceiver);
+			MidiReceiverDumpsAndNotifies rcvr = new MidiReceiverDumpsAndNotifies(noPrint);
+			rcvr.myName = "rcvr_for_" + tdw.myDevInfo.getName();
+			rcvr.registerListener(mfl);
+			getLogger().info("Connecting tmitter for {} to receiver {}", tdw.myDevInfo.getName(), rcvr);
+			tdw.myTransmitter.setReceiver(rcvr);
 			tdw.ensureDevOpen();			
 		}
 	}
@@ -71,7 +78,13 @@ public class FunMidiEventRouter extends BasicDebugger {
 			tdw.ensureDevClosed();
 		}
 	}
+	public class MyForwardingListener extends BasicDebugger implements MidiEventReporter.Listener {
 
+		@Override public void reportEvent(InterestingMidiEvent ime) {
+			getLogger().debug("*** Forwarding midi event: {} ", ime);
+			deliverEvent(ime);
+		}
+	}
 	public static class FunListener extends BasicDebugger implements MidiEventReporter.Listener {
 
 		@Override public void reportEvent(InterestingMidiEvent ime) {
