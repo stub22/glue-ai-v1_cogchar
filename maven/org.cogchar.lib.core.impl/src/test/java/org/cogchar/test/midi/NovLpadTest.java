@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.test.mainers;
+package org.cogchar.test.midi;
 
 import java.util.List;
 import javax.sound.midi.MidiDevice;
