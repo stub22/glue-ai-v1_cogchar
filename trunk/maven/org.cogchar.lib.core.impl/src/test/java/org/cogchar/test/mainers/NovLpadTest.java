@@ -35,8 +35,6 @@ public class NovLpadTest extends BasicDebugger {
 	MidiReceiverDevWrap		myLpadDevWrap;
 	
 	public static void main(String[] args) {
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 
 		NovLpadTest nlt  = new NovLpadTest();
 		try {
