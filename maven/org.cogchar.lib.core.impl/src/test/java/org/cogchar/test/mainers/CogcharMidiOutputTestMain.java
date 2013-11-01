@@ -52,7 +52,10 @@ import org.cogchar.bind.midi.MidiDevWrap;
 public class CogcharMidiOutputTestMain extends BasicDebugger {
 
 	public static void main(String[] args) {
-		org.apache.log4j.BasicConfigurator.configure();
+		// Because there is a log4j.properties file in this project, we do not need to do this Log4J config from code.
+		// It seems that when we do, we get two sets of loggers, which is kinda gross looking in the console output.
+		// But in another main, somewhere else, we might want these two lines uncommented to make logging output go.
+		// org.apache.log4j.BasicConfigurator.configure();
 		// org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 
 		FunMidiEventRouter fmer = new FunMidiEventRouter();
@@ -175,6 +178,7 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 			Patch instPatch = inst.getPatch();
 			getLogger().info("Instrument name=[{}] class=[{}] data-class=[{}] ", inst.getName(), inst.getClass(), inst.getDataClass());
 			all.append("[" + inst.toString() + "], ");
+		
 		}
 		
 		getLogger().info("All avail instruments: {}", all.toString());
