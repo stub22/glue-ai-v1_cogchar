@@ -46,15 +46,23 @@ public class MidiTransmitDevWrap extends MidiDevWrap {
 			int maxTmit = mdw.myDevice.getMaxTransmitters();
 			int maxRecv = mdw.myDevice.getMaxReceivers();
 			theLogger.info("mdw {} reported maxTransmitters={}, maxReceivers={}", mdw, maxTmit, maxRecv);
-			try {
-				// Is it important to ensureDevOpen() before doing this fetch?
-				Transmitter tmit = mdw.myDevice.getTransmitter();
-				if (tmit != null) {
-					MidiTransmitDevWrap tdw = new MidiTransmitDevWrap(tmit, mdw);
-					results.add(tdw);
+			// -1 == unknown/unlimited?
+			// 0 == definitely none
+			if (maxTmit != 0) {
+				try {
+
+					// Is it important to ensureDevOpen() before doing this fetch?
+					Transmitter tmit = mdw.myDevice.getTransmitter();
+					if (tmit != null) {
+						MidiTransmitDevWrap tdw = new MidiTransmitDevWrap(tmit, mdw);
+						results.add(tdw);
+						logger.info("Made transmit-devWrap OK: {}", tdw);
+					} else {
+						logger.info("No tranmitter found for {}", mdw);
+					}
+				} catch (Throwable t) {
+					logger.warn("Problem looking up transmitter for: {}", mdw, t);
 				}
-			} catch (Throwable t) {
-				logger.warn("Problem looking up transmitter for: {}", mdw, t);
 			}
 		}
 		return results;

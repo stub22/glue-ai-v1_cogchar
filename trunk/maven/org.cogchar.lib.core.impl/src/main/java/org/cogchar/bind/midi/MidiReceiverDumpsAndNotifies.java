@@ -59,6 +59,12 @@ import	javax.sound.midi.Receiver;
 public class MidiReceiverDumpsAndNotifies extends MidiEventReporter 
 	implements	Receiver
 {
+	
+	public String myName = "Unnamed_" + System.currentTimeMillis();
+	
+	public String toString() { 
+		return "[name=" + myName + "]";
+	}
 
 	public static long seByteCount = 0;
 	public static long seCount = 0;
@@ -184,12 +190,12 @@ public class MidiReceiverDumpsAndNotifies extends MidiEventReporter
 		{
 		case 0x80:
 			strMessage = "note Off " + getKeyName(message.getData1()) + " velocity: " + message.getData2();
-			noticeNoteOff(message.getChannel() + 1, message.getData1(), message.getData2());
+			noticeNoteOff(this, message.getChannel() + 1, message.getData1(), message.getData2());
 			break;
 
 		case 0x90:
 			strMessage = "note On " + getKeyName(message.getData1()) + " velocity: " + message.getData2();
-			noticeNoteOn(message.getChannel() + 1, message.getData1(), message.getData2());
+			noticeNoteOn(this, message.getChannel() + 1, message.getData1(), message.getData2());
 			break;
 
 		case 0xa0:
@@ -198,7 +204,7 @@ public class MidiReceiverDumpsAndNotifies extends MidiEventReporter
 
 		case 0xb0:
 			strMessage = "control change " + message.getData1() + " value: " + message.getData2();
-			noticeControlChange(message.getChannel() + 1, message.getData1(), message.getData2());
+			noticeControlChange(this, message.getChannel() + 1, message.getData1(), message.getData2());
 			break;
 
 		case 0xc0:

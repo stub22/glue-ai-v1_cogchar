@@ -16,51 +16,58 @@
 
 package org.cogchar.bind.midi;
 
+import javax.sound.midi.Receiver;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class InterestingMidiEvent {
 
-	public int	myChannel;
+	public	Receiver	myReceiver;
+	public	int			myChannel;
 	
+	protected InterestingMidiEvent(Receiver rcvr, int channel) {
+		myReceiver = rcvr;
+		myChannel = channel;		
+	}
 	
 	public static class ControlChange extends InterestingMidiEvent {
 		public int	myController;
 		public int	myValue;
 		
-		public ControlChange(int channel, int controller, int value) {
-			myChannel = channel;
+		public ControlChange(Receiver rcvr, int channel, int controller, int value) {
+			super(rcvr, channel);
 			myController = controller;
 			myValue = value;
 		}
 		public String toString() {
-			return "ControlChange[chan=" + myChannel + ", ctrl=" + myController + ", val=" + myValue + "]";
+			return "ControlChange[rcvr=" + myReceiver + ", chan=" + myChannel + ", ctrl=" + myController + ", val=" + myValue + "]";
 		}
 	}
 	public static abstract class Note extends InterestingMidiEvent {
 		public int myNote;
 		public int myVelocity;
-		public Note(int channel, int note, int vel) {
-			myChannel = channel; 
+		public Note(Receiver rcvr, int channel, int note, int vel) {
+			super(rcvr, channel);
 			myNote = note;
 			myVelocity = vel;
 		}
 	}
 	public static class NoteOn  extends Note  {
-		public NoteOn(int channel, int note, int vel) {
-			super(channel, note, vel);
+		public NoteOn(Receiver rcvr, int channel, int note, int vel) {
+			super(rcvr, channel, note, vel);
 		}
 		public String toString() {
-			return "NoteOn[chan=" + myChannel + ", note=" + myNote + ", vel=" + myVelocity + "]";
+			return "NoteOn[rcvr=" + myReceiver + ", chan=" + myChannel + ", note=" + myNote + ", vel=" + myVelocity + "]";
 		}		
 	}
 	public static class NoteOff  extends Note {
-		public NoteOff(int channel, int note, int vel) {
-			super(channel, note, vel);
+		public NoteOff(Receiver rcvr, int channel, int note, int vel) {
+			super(rcvr, channel, note, vel);
 		}
 		public String toString() {
-			return "NoteOff[chan=" + myChannel + ", note=" + myNote + ", vel=" + myVelocity + "]";
+			return "NoteOff[rcvr=" + myReceiver + ", chan=" + myChannel + ", note=" + myNote + ", vel=" + myVelocity + "]";
 		}		
 	}
 }
