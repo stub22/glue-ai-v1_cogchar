@@ -178,6 +178,14 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 			Patch instPatch = inst.getPatch();
 			getLogger().info("Instrument name=[{}] class=[{}] data-class=[{}] ", inst.getName(), inst.getClass(), inst.getDataClass());
 			all.append("[" + inst.toString() + "], ");
+			String instrDumpTxt = inst.toString();
+			// Based on the toString() impl of com.sun.media.sound.DLSInstrument
+			// http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b14/com/sun/media/sound/DLSInstrument.java#DLSInstrument.toString
+			if (instrDumpTxt.toLowerCase().contains("drumkit")) {
+				drumInstrs.add(inst);
+			} else {
+				keyInstrs.add(inst);
+			}
 		
 		}
 		
@@ -197,26 +205,14 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 
 		Receiver synthRcvr = dsynth.getReceiver();
 
-		ShortMessage noteOnMsg = new ShortMessage();
-		ShortMessage progChangeMsg = new ShortMessage();
-		ShortMessage notesOffMsg = new ShortMessage();
-		for (int j = 0; j < 18; j++) {
-			for (int i = 0; i < 16; i++) {
-				int instIdx = (i + 16 * j) % (loadedInstrms.length);
-				Instrument tgtInst = loadedInstrms[instIdx];
-				Patch tgtPatch = tgtInst.getPatch();
+		int onVelocity = 93, delayMsec = 75;
+		Instrument[] dka = drumInstrs.toArray(new Instrument[0]);
+		drumkitsTest(synthRcvr, dka, onVelocity, delayMsec);
+		patchSwitchTest(synthRcvr, loadedInstrms, onVelocity, delayMsec);
+		
+		int drumInstIdx = 0, keyInstIdx = 0;
+		int drumChanIdx = 9, keyChanIdx=7;
 
-				notesOffMsg.setMessage(ShortMessage.NOTE_OFF, i, 59 + i, 0);
-				synthRcvr.send(notesOffMsg, -1);
-				getLogger().debug("Program change chanFromZ={} to {}", i, tgtInst);
-				progChangeMsg.setMessage(ShortMessage.PROGRAM_CHANGE, i, tgtPatch.getProgram(), tgtPatch.getBank());
-				synthRcvr.send(progChangeMsg, -1);
-				noteOnMsg.setMessage(ShortMessage.NOTE_ON, i, 59 + i, 93);
-				// Nice riff!  Note that when we play on channel "10" = 9, we get drum hits rather than "notes" 
-				synthRcvr.send(noteOnMsg, -1); // -1 means no time stamp
-				Thread.sleep(75);
-			}
-		}
 		// We prefer the message sending form above, although the channels may also be treated as invokable.method().
 		// The latter API does not (AFAWK) apply to general "device" channels, only to local synthesizers, so we
 		// prefer to invest in wrapping the more general "message" approach above, which also maps well into our
@@ -230,7 +226,66 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		dsynth.close();
 
 	}
+	private void patchSwitchTest(Receiver synthRcvr, Instrument[] loadedInstrms, int onVel, int interSleepMsec) throws Throwable { 
+		ShortMessage noteOnMsg = new ShortMessage();
+		ShortMessage progChangeMsg = new ShortMessage();
+		ShortMessage notesOffMsg = new ShortMessage();		
+		for (int j = 0; j < 18; j++) {
+			for (int i = 0; i < 16; i++) {
+				int instIdx = (i + 16 * j) % (loadedInstrms.length);
+				Instrument tgtInst = loadedInstrms[instIdx];
+				
+				Patch tgtPatch = tgtInst.getPatch();
+				
+				int noteIdx = 59 + i;
+				int offVel = 0;
+				int timeStampImmediate = -1;
 
+				notesOffMsg.setMessage(ShortMessage.NOTE_OFF, i, noteIdx, offVel);
+				synthRcvr.send(notesOffMsg, timeStampImmediate);
+				getLogger().debug("Program change chanFromZ={} to {}", i, tgtInst);
+				progChangeMsg.setMessage(ShortMessage.PROGRAM_CHANGE, i, tgtPatch.getProgram(), tgtPatch.getBank());
+				synthRcvr.send(progChangeMsg, timeStampImmediate);
+				noteOnMsg.setMessage(ShortMessage.NOTE_ON, i, noteIdx, onVel);
+				// Nice riff!  Note that when we play on channel "10" = 9, we get drum hits rather than "notes" 
+				synthRcvr.send(noteOnMsg, timeStampImmediate); 
+				Thread.sleep(interSleepMsec);
+			}
+		}		
+	}
+	private void drumkitsTest(Receiver synthRcvr, Instrument[] drumInstrums, int onVel, int interSleepMsec) throws Throwable { 
+		ShortMessage noteOnMsg = new ShortMessage();
+		ShortMessage progChangeMsg = new ShortMessage();
+		ShortMessage notesOffMsg = new ShortMessage();		
+		ShortMessage allNotesOffMsg = new ShortMessage();	
+		int drumChanIdx = 9;
+		for (int j = 0; j < drumInstrums.length; j++) {
+			Instrument tgtInst = drumInstrums[j];
+			Patch tgtPatch = tgtInst.getPatch();
+			getLogger().debug("Program change chanFromZ={} to {}", drumChanIdx, tgtInst);
+			int timeStampImmediate = -1;
+			
+			progChangeMsg.setMessage(ShortMessage.PROGRAM_CHANGE, drumChanIdx, tgtPatch.getProgram(), tgtPatch.getBank());
+			synthRcvr.send(progChangeMsg, timeStampImmediate);
+			for (int noteIdx = 0; noteIdx < 128; noteIdx++) {		
+				
+				int offVel = 0;
+				
+				notesOffMsg.setMessage(ShortMessage.NOTE_OFF, drumChanIdx, noteIdx, offVel);
+				synthRcvr.send(notesOffMsg, timeStampImmediate);
+				
+				noteOnMsg.setMessage(ShortMessage.NOTE_ON, drumChanIdx, noteIdx, onVel);
+				// Nice riff!  Note that when we play on channel "10" = 9, we get drum hits rather than "notes" 
+				synthRcvr.send(noteOnMsg, timeStampImmediate); 
+				Thread.sleep(interSleepMsec);
+			}
+			int CC_allNotesOff  = 123;
+			int valIgnored = 0;
+			allNotesOffMsg.setMessage(ShortMessage.CONTROL_CHANGE, drumChanIdx, CC_allNotesOff, valIgnored);
+			synthRcvr.send(allNotesOffMsg, timeStampImmediate);
+		}
+		
+	}	
 	private void callAllChannelMutators(MidiChannel chan) {
 		int bendVal = 0, noteNum = 0, pressure = 0, program = 0, bank = 0, controllerNum = 0, ctrlValue = 0;
 
