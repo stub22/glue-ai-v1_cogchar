@@ -18,12 +18,14 @@ package org.cogchar.bind.midi;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.sound.midi.Receiver;
+import org.appdapter.core.log.BasicDebugger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class MidiEventReporter {
+public class MidiEventReporter extends BasicDebugger {
 	public static interface Listener {
 		public void reportEvent(InterestingMidiEvent ime);
 	}
@@ -36,23 +38,23 @@ public class MidiEventReporter {
 			l.reportEvent(ime);
 		}
 	}
-	protected void noticeControlChange(int channel, int controller, int value) {
-		InterestingMidiEvent ime = new InterestingMidiEvent.ControlChange(channel, controller, value);
+	protected void noticeControlChange(Receiver rcvr, int channel, int controller, int value) {
+		InterestingMidiEvent ime = new InterestingMidiEvent.ControlChange(rcvr, channel, controller, value);
 		deliverEvent(ime);
 	}
-	protected void noticeNoteOn(int channel, int note, int vel) {
+	protected void noticeNoteOn(Receiver rcvr, int channel, int note, int vel) {
 		InterestingMidiEvent ime;
 		if (vel == 0) {
 			// Zero-velocity note-on implies note-off.  Sweet!
 			// http://www.kvraudio.com/forum/viewtopic.php?t=291892
-			ime = new InterestingMidiEvent.NoteOff(channel, note, vel);
+			ime = new InterestingMidiEvent.NoteOff(rcvr, channel, note, vel);
 		} else {
-			ime = new InterestingMidiEvent.NoteOn(channel, note, vel);
+			ime = new InterestingMidiEvent.NoteOn(rcvr, channel, note, vel);
 		}
 		deliverEvent(ime);
 	}
-	protected void noticeNoteOff(int channel, int note, int vel) {
-		InterestingMidiEvent ime = new InterestingMidiEvent.NoteOff(channel, note, vel);
+	protected void noticeNoteOff(Receiver rcvr, int channel, int note, int vel) {
+		InterestingMidiEvent ime = new InterestingMidiEvent.NoteOff(rcvr, channel, note, vel);
 		deliverEvent(ime);
 	}	
 }
