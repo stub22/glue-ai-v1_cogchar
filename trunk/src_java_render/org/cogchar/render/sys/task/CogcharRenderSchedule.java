@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.app.core;
+package org.cogchar.render.sys.task;
 
 /**
  * @author Stu B. <www.texpedient.com>

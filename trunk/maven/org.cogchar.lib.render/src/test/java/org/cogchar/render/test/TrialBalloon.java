@@ -40,6 +40,9 @@ public class TrialBalloon extends CogcharPresumedApp {
 
 	@Override public void start() {
 		try {
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling initMidiRouter()");
+			myTMB.initMidiRouter();
+			
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling super.start()");
 			super.start();
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.start() - JME3 render thread (probably LWJGL) is now launched.");
@@ -60,8 +63,7 @@ public class TrialBalloon extends CogcharPresumedApp {
 			// or subsequent activity.  So, generally speaking, this start() is an uncertain place to do anything
 			// involving JME3.  But launching some other system threads, e.g. MIDI, is a reasonable thing to do.
 			
-			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling initMidiRouter()");
-			myTMB.initMidiRouter();
+
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from initMidiRouter(), returning from start()");
 		} catch (Throwable t) {
 			getLogger().error("start() caught: ", t);
@@ -92,6 +94,7 @@ public class TrialBalloon extends CogcharPresumedApp {
 		// Note that these other args are all instance variables of this TrialBalloon app, inherited from JME3 SimpleApp.
 		tc.initContent3D_onRendThread(rrc, rootNode, viewPort);
 		tc.initContent2D_onRendThread(rrc, guiNode, assetManager);
+		tc.attachMidiCCs(myTMB);
 	}
 
 	@Override public void destroy() {

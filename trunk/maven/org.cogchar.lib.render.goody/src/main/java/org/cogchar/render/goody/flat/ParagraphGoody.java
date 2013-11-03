@@ -24,7 +24,7 @@ import com.jme3.scene.Node;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
-import org.cogchar.render.app.entity.VWorldEntity.QueueingStyle;
+import org.cogchar.render.sys.task.Queuer.QueueingStyle;
 
 /**
  * This class defines general purpose 2d text display goodies

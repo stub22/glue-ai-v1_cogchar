@@ -15,6 +15,7 @@
  */
 package org.cogchar.render.app.core;
 
+import org.cogchar.render.sys.task.CogcharRenderSchedule;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.FlyByCamera;
 import com.jme3.system.AppSettings;
