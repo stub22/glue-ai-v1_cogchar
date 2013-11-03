@@ -35,6 +35,9 @@ public class TextSpatialFactory extends BasicDebugger {
 	}
 	public BitmapText makeTextSpatial(String txtB, float renderScale, RenderQueue.Bucket bucket, int rectWidth) {
 
+		if (bucket == null) {
+			bucket = RenderQueue.Bucket.Inherit;
+		}
 		TextMgr txtMgr = myRRC.getSceneTextFacade(null);
 		BitmapText txtSpatial = txtMgr.getScaledBitmapText(txtB, renderScale);
 
