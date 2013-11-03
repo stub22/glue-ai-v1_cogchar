@@ -28,8 +28,9 @@ import java.awt.Dimension;
 import java.util.concurrent.Callable;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.sys.task.Queuer.QueueingStyle;
 import org.cogchar.render.app.entity.VWorldEntity;
-import org.cogchar.render.app.entity.VWorldEntity.QueueingStyle;
+
 import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
 // import org.cogchar.render.sys.registry.RenderRegistryClient;

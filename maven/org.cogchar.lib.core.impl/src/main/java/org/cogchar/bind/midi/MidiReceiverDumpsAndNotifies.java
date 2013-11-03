@@ -56,15 +56,11 @@ import	javax.sound.midi.Receiver;
  * Modified in place by StuB22 to call our "notice" methods from the strapped-on superclass.
  * 
  */
-public class MidiReceiverDumpsAndNotifies extends MidiEventReporter 
+public class MidiReceiverDumpsAndNotifies extends MidiReceiverOurs 
 	implements	Receiver
 {
 	
-	public String myName = "Unnamed_" + System.currentTimeMillis();
-	
-	public String toString() { 
-		return "[name=" + myName + "]";
-	}
+
 
 	public static long seByteCount = 0;
 	public static long seCount = 0;

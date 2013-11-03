@@ -24,16 +24,18 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.cogchar.render.sys.task.Queuer;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class TextBox2D extends BasicDebugger {
+public class TextBox2D extends RectangularWidget2D {
 	private	static Material theBaseUnshadedMat;
 	// Remember:  Both nodes and geometries are spatials.  Spatial is an abstract class, not an interface.
 	// A BitmapText is a node, and thus also a spatial.
@@ -45,41 +47,28 @@ public class TextBox2D extends BasicDebugger {
 	// When loading meshes from Ogre, we get some other private Mesh sub-class from that plugin MeshLoader.
 	
 	private	ColorRGBA	myQuadColor, myTextColor;
-	private	Node		myNode, myParentNode;
+
 	private BitmapText	myBmapTextSpat;
 	private Geometry	myQuadGeo;
-	private	Ident		myIdent;
+
 	private String		myTextString;
-	private	Integer		myX = 0, myY = 0, myWidth = 100, myHeight = 100;
-	private Float		myZOrder = -0.5f;
+
+
+
 	// private TextSpatialFactory	myTextSpatialFactory;
 	
-	public TextBox2D(Ident requiredID, String optInitText, ColorRGBA optInitTextColor, ColorRGBA optInitQuadColor) {
-		myIdent = requiredID;
+	public TextBox2D(RenderRegistryClient rrc, Ident requiredID, String optInitText, ColorRGBA optInitTextColor, ColorRGBA optInitQuadColor) {
+		super(rrc, requiredID);
 		if (optInitText != null) {
 			myTextString = optInitText;
 		} else {
-			myTextString = myIdent.getAbsUriString();
+			myTextString = requiredID.getAbsUriString();
 		}
 		myQuadColor = optInitQuadColor;
 		myTextColor = optInitTextColor;
 	}
-	public void setCoordinates(Integer x, Integer y, Float zOrder, Integer width, Integer height) { 
-		myX = x;   myY = y;  myZOrder = zOrder;  myWidth = width;   myHeight = height;
-		applyTranslation();
-	}
-	private void applyTranslation() { 
-		if ((myX != null) && (myY != null)) { 
-			Node n = getMyNode();
-			n.setLocalTranslation(myX, myY, myZOrder);
-		}
-	}
-	private Node getMyNode() { 
-		if (myNode == null) {
-			myNode = new Node("TextBox2D-mainNode:" + myIdent.getLocalName());
-		}
-		return myNode;
-	}
+
+
 	public void setTextVal(String val) { 
 		myTextString = val;
 		myBmapTextSpat.setText(myTextString);
@@ -87,8 +76,9 @@ public class TextBox2D extends BasicDebugger {
 	}
 
 	public void setupContentsAndAttachToParent(Node parentNode, RenderRegistryClient rrc, AssetManager assetMgr) { 
+		// We expect this is done on the JME3 render thread.
 		Node mn = getMyNode();
-
+		
 		String quadGeoName = "TextBox2D-mainNode:" + myIdent.getLocalName();
 		
 		// BEGIN - general form, unused
@@ -116,7 +106,7 @@ public class TextBox2D extends BasicDebugger {
 		myParentNode = parentNode;
 		Node mn = getMyNode();
 		myParentNode.attachChild(mn);
-		applyTranslation();
+		applyTranslation(Queuer.QueueingStyle.QUEUE_AND_RETURN);
 	}
 		/*
 		 // http://hub.jmonkeyengine.org/javadoc/com/jme3/material/RenderState.BlendMode.html
@@ -136,7 +126,7 @@ public class TextBox2D extends BasicDebugger {
 		Material ourMat = baseMat.clone();
 		ourMat.getAdditionalRenderState().setBlendMode(blendMode);		
 		ourMat.setColor("Color", col);
-
+		
 		return makeQuadGeoWithOptMat(name, width, height, ourMat);
 	} 
 	public static Geometry makeQuadGeoWithOptMat(String name, int width, int height, Material optMatToUseDirectly) { 
@@ -144,6 +134,7 @@ public class TextBox2D extends BasicDebugger {
 		quadGeo = new Geometry("name", new Quad(width, height));
 		if (optMatToUseDirectly != null) {
 			quadGeo.setMaterial(optMatToUseDirectly);
+			// quadGeo.setCullHint(Spatial.CullHint.Never); // Others are CullHint.Always, CullHint.Inherit
 		}
 		return quadGeo;
 	}	

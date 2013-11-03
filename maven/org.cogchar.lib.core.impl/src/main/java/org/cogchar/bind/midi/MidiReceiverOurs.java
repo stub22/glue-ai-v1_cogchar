@@ -22,8 +22,18 @@ import org.appdapter.core.log.BasicDebugger;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class MidiReceiverOurs extends BasicDebugger implements Receiver {
-
+public class MidiReceiverOurs extends MidiEventReporter implements Receiver {
+	public String myName = "Unnamed_" + System.currentTimeMillis();
+	public KnownKind myKind = null;
+	public enum KnownKind {
+		NovationLaunchpad,
+		NovationNocturn,
+		NovationAutomap,
+		QuNexus
+	}
+	public String toString() { 
+		return "[kind=" + myKind + ", name=" + myName + ", clz=" + getClass().getName() + "]";
+	}
 	@Override public void send(MidiMessage message, long timeStamp) {
 		getLogger().info("Received at " + timeStamp + ": " + message);
 	}
