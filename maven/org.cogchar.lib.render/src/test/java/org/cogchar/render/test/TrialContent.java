@@ -32,6 +32,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.BillboardControl;
 import com.jme3.scene.shape.Quad;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.FreeIdent;
 import org.cogchar.render.opengl.scene.TextMgr;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.context.CoreFeatureAdapter;
@@ -42,34 +43,34 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 public class TrialContent extends BasicDebugger {
 
-	String letters = "abcd\nABCD\nEFGHIKLMNOPQRS\nTUVWXYZ";
-	String digits = "1\n234567890";
-	String syms = "`~!@#$\n%^&*()-=_+[]\\;',./{}|:<>?";
+	private String letters = "abcd\nABCD\nEFGHIKLMNOPQRS\nTUVWXYZ";
+	private String digits = "1\n234567890";
+	private String syms = "`~!@#$\n%^&*()-=_+[]\\;',./{}|:<>?";
+	private String myCamStatTxt = "cam stat\ntext goest\nhere";
 	
-	Node myMainNode, myGuiNode;
-	BitmapText		myLettersBTS, myDigitsBTS, mySymsBTS, myFlatDigitsBTS, myOverlayEqnBT;
-	Geometry		myQuadGeo;
+	private Node myMainDeepNode, myMainGuiNode;
+	private BitmapText		myLettersBTS, myDigitsBTS, mySymsBTS, myFlatDigitsBTS, myOverlayEqnBT, myCamStatBT;
+	private Geometry		myQuadGeo;
 	
 	// The other args are really implied by the rrc, so can be factored out
 	public void initContent3D_onRendThread(RenderRegistryClient rrc, Node appRootNode, ViewPort appViewPort) {
 		
-		myMainNode = new Node("my_main");
-		appRootNode.attachChild(myMainNode);
+		myMainDeepNode = new Node("my_main_deep");
+		appRootNode.attachChild(myMainDeepNode);
 		
 		// This scale factor will be multiplied by the getRenderedSize value of the font, which is 17.0f
 		// for the default font (on JDK6.Win7, YMMV).
 
-		// Not really clear what "size" of the font means.  It
-		// seems that if we want the rectangle to really contain
-
-		myLettersBTS = makeTextSpatial(rrc, letters, 0.2f, RenderQueue.Bucket.Transparent, 6); // eff-scale 3.4f, wraps after 2-3 chars
-		myDigitsBTS = makeTextSpatial(rrc, digits, 0.1f, RenderQueue.Bucket.Transparent, 6);  // eff-scale 1.7f, wraps after 6 chars
-		mySymsBTS = makeTextSpatial(rrc, syms, 0.05f, RenderQueue.Bucket.Transparent, 6);   // eff-scale 1.05f, wraps after ~ 18 oddly shaped chars
-		myMainNode.attachChild(myLettersBTS);
+		// Not clear yet what "size" of the font means.  It seems that if we want the rectangle to really contain
+		TextSpatialFactory tsf = new TextSpatialFactory(rrc);
+		myLettersBTS = tsf.makeTextSpatial(letters, 0.2f, RenderQueue.Bucket.Transparent, 6); // eff-scale 3.4f, wraps after 2-3 chars
+		myDigitsBTS = tsf.makeTextSpatial(digits, 0.1f, RenderQueue.Bucket.Transparent, 6);  // eff-scale 1.7f, wraps after 6 chars
+		mySymsBTS = tsf.makeTextSpatial(syms, 0.05f, RenderQueue.Bucket.Transparent, 6);   // eff-scale 1.05f, wraps after ~ 18 oddly shaped chars
+		myMainDeepNode.attachChild(myLettersBTS);
 		myLettersBTS.move(3.0f, 3.0f, -50.0f);
 		//lettersBTS.setSize(0.5f);	//digitsBTS.setSize(0.5f); //symsBTS.setSize(0.5f);
-		myMainNode.attachChild(myDigitsBTS);
-		myMainNode.attachChild(mySymsBTS);
+		myMainDeepNode.attachChild(myDigitsBTS);
+		myMainDeepNode.attachChild(mySymsBTS);
 
 		myDigitsBTS.move(-10f, -10f, -10f);
 		BillboardControl bbCont = new BillboardControl();
@@ -82,19 +83,25 @@ public class TrialContent extends BasicDebugger {
 		myLettersBTS.addControl(bbCont);
 		appViewPort.setBackgroundColor(ColorRGBA.Blue);
 	}
-	// The other args are really implied by the rrc, so can be factored out
-	public void initContent2D_onRendThread(RenderRegistryClient rrc, Node appGuiNode, AssetManager assetMgr) {
-		myGuiNode = new Node("my_gui");
+	// The other args are actually available from the rrc, so can be factored out of these params.
+	public void initContent2D_onRendThread(RenderRegistryClient rrc, Node parentGUInode, AssetManager assetMgr) {
+		myMainGuiNode = new Node("my_main_gui");
 
-		appGuiNode.attachChild(myGuiNode);
-		appGuiNode.setLocalTranslation(20.0f, 40.0f, 0.0f);
-		myFlatDigitsBTS = makeTextSpatial(rrc, digits, 1.0f, RenderQueue.Bucket.Gui, 30);
+		TextSpatialFactory tsf = new TextSpatialFactory(rrc);
+		
+		parentGUInode.attachChild(myMainGuiNode);
+		myMainGuiNode.setLocalTranslation(20.0f, 40.0f, 0.0f);
+		myFlatDigitsBTS = tsf.makeTextSpatial(digits, 1.0f, RenderQueue.Bucket.Gui, 30);
 
+		// Set the time of rendering for this piece
 		myFlatDigitsBTS.setQueueBucket(RenderQueue.Bucket.Gui); // Inherit, Opaque, Trans{parent, lucent}, ...
 		// flatDigitsBTS.move(20.0f, 20.0f, 0.0f);
 		myFlatDigitsBTS.setLocalTranslation(200.0f, 60.0f, 0.0f);
-		myGuiNode.attachChild(myFlatDigitsBTS);
+		myMainGuiNode.attachChild(myFlatDigitsBTS);
 
+		myCamStatBT = tsf.makeTextSpatial(myCamStatTxt, 1.0f, RenderQueue.Bucket.Gui, 30);
+		myCamStatBT.setLocalTranslation(580.0f, 40.0f, -5.0f);
+		myMainGuiNode.attachChild(myCamStatBT);
 		
 		// rrc.getSceneFlatFacade(null).detachAllOverlays();
 		myOverlayEqnBT = rrc.getSceneTextFacade(null).getScaledBitmapText("X+Y", 2.0f);
@@ -103,58 +110,37 @@ public class TrialContent extends BasicDebugger {
 		// If positioned at y=10.0f, we can just barely see the top edge of the first line of text.
 		myOverlayEqnBT.setLocalTranslation(300.0f, 250.0f, 0.0f);
 		// guiNode.attachChild(crossBT);  is equiv to   rrc.getSceneFlatFacade(null).attachOverlaySpatial(crossBT);	
-		myGuiNode.attachChild(myOverlayEqnBT);
+		myMainGuiNode.attachChild(myOverlayEqnBT);
 
+		// On a mat, we frequently set color, and for transparency/lucency we set the BlendMode on addtlRenderState.
+		// On a mat, we could choose to set the cull mode, but that can also be done on shapes - as below.
+		// 
 		Material unshMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
 		unshMat.setColor("Color", new ColorRGBA(0, 1.0f, 0, 0.5f));
 
-		/*
-		 // http://hub.jmonkeyengine.org/javadoc/com/jme3/material/RenderState.BlendMode.html
-	  
-		 Additive - Additive blending.
-		 Alpha - Alpha blending, interpolates to source color from dest color using source alpha.
-		 AlphaAdditive -      Additive blending that is multiplied with source alpha.
-		 Color -     Color blending, blends in color from dest color using source color.
-		 Modulate -   Multiplies the source and dest colors.
-		 ModulateX2 -  Multiplies the source and dest colors then doubles the result.
-		 Off - No blending mode is used.
-		 PremultAlpha -  Premultiplied alpha blending, for use with premult alpha textures.
-		 */
+
 		unshMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 		myQuadGeo = new Geometry("wideQuad", new Quad(200, 100));
 		myQuadGeo.setMaterial(unshMat);
 
 		myQuadGeo.setCullHint(Spatial.CullHint.Never); // Others are CullHint.Always, CullHint.Inherit
 		myQuadGeo.setLocalTranslation(50.0f, 300.0f, -1.0f);
-		myGuiNode.attachChild(myQuadGeo);
+		myMainGuiNode.attachChild(myQuadGeo);
+		
+		TextBox2D camStatBox = new TextBox2D(new FreeIdent("uri:org.cogchar/goody_inst#camStatBox2D"), "opt init txt", 
+					ColorRGBA.White, ColorRGBA.Magenta);
+		// param-set ops can be called in any order, but setupAndAttach should generally be called only
+		// once in the lifetime of the box.
 
+		camStatBox.setCoordinates(380, 150, -2.5f, 110, 90);
+		// This should be called only once, but can be at any point relative to the parameter/content setting calls,
+		// which can then be repeated anytime to update the contents (modulo thread concerns).  
+		camStatBox.setupContentsAndAttachToParent(myMainGuiNode, rrc, assetMgr);
+		
 	}
 	
-	private BitmapText makeTextSpatial(RenderRegistryClient rrc, String txtB, float renderScale, RenderQueue.Bucket bucket, int rectWidth) {
-
-		TextMgr txtMgr = rrc.getSceneTextFacade(null);
-		BitmapText txtSpatial = txtMgr.getScaledBitmapText(txtB, renderScale);
-
-		BitmapFont bf = txtSpatial.getFont();
-		float fontRenderedSize = bf.getCharSet().getRenderedSize();
-
-		getLogger().info("Font rendered size={}", fontRenderedSize);
-		// This action disables culling for *all* spatials made with the font, so it should really be happening
-		// further out, in concert with font and material management.    Would using a material [cloned from 
-		// font-mat, then cached] on our spatials make this  management cleaner?
-
-		txtMgr.disableCullingForFont(bf);
-
-		// This rectangle controls how the text is wrapped.   
-		// Explicit newlines embedded in the text also work.
-		Rectangle rect = new Rectangle(0, 0, rectWidth, 3);
-		txtSpatial.setBox(rect);
 
 
-		txtSpatial.setQueueBucket(bucket);
-
-		return txtSpatial;
-	}
 
 	public void shedLight_onRendThread(CogcharRenderContext crc) {
 		CoreFeatureAdapter.setupLight(crc);

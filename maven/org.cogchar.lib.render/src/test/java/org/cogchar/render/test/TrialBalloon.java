@@ -42,10 +42,10 @@ public class TrialBalloon extends CogcharPresumedApp {
 		try {
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling super.start()");
 			super.start();
-			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.start() - render thread (probably LWJGL) is now launched.");
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.start() - JME3 render thread (probably LWJGL) is now launched.");
 			boolean flag_sleepTest = false;
 			if (flag_sleepTest) {
-				getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Sleeping 5 sec as a test.");
+				getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Sleeping 5 sec as a test, to allow JME3 thread to get ahead.");
 				Thread.sleep(5000);
 				getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from sleep()");
 			}
@@ -110,6 +110,8 @@ public class TrialBalloon extends CogcharPresumedApp {
 			// 2) We have direct access to the scene graph.
 			super.doUpdate(tpf);
 			// Goals:  Demonstrate moving+changing intersections of JME3 features, influenced by MIDI-input.
+			// Make 3D cameras+viewports flexible and useful.
+			// Manage the OpenGL canvas space in efficient, useful ways.
 			// (Later the 3D output will be supplemented by useful MIDI LED output).
 			// Making use of avail math infrastructre:  Symja and the Cogchar-core "Space" API.
 		}
