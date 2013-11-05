@@ -30,11 +30,13 @@ public class TrialBalloon extends CogcharPresumedApp {
 	private TB_RenderContext myTBRC;
 
 	public static void main(String[] args) {
+		// These two lines activate Log4J without requiring a log4j.properties file.  
+		// However, when a log4j.properties file is present, these commands should not be used.
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		TrialBalloon app = new TrialBalloon();
 		app.start();
-		org.cogchar.api.space.CellSpaceTest.go();
+		org.cogchar.api.space.GridSpaceTest.go();
 		app.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ End of main()");
 	}
 
