@@ -14,16 +14,13 @@
  *  limitations under the License.
  */
 
-package org.cogchar.test.alpha;
+package org.cogchar.api.space
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class TestSpaceAPI {
-	public static void main(String args[]) {
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-		org.cogchar.api.space.GridSpaceTest.go();
-	}
-}	
+trait KnowsOrthoDim {
+	// An object which knows how many orthogonal dimensions it has
+	def		getOrthoDimCount	: Int
+}

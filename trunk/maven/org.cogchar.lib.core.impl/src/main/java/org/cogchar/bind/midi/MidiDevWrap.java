@@ -63,10 +63,12 @@ public class MidiDevWrap extends BasicDebugger {
 	public void ensureDevClosed() {
 		try {
 			if (myDevice != null) {
-				myDevice.close();
+				if (myDevice.isOpen()) {
+					myDevice.close();
+				}
 			}
 		} catch (Throwable t) {
-			getLogger().error("Problem opening device for: {}", this, t);
+			getLogger().error("Problem closing device for: {}", this, t);
 		}
 	}
 	
