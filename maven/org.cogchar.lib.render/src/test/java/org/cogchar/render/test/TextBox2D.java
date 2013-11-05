@@ -70,9 +70,9 @@ public class TextBox2D extends RectangularWidget2D {
 
 
 	public void setTextVal(String val) { 
+		// This does not need to be execed on the JME3 thread, even if myBmapTextSpat is already in the scene graph.
 		myTextString = val;
 		myBmapTextSpat.setText(myTextString);
-		
 	}
 
 	public void setupContentsAndAttachToParent(Node parentNode, RenderRegistryClient rrc, AssetManager assetMgr) { 
@@ -102,6 +102,7 @@ public class TextBox2D extends RectangularWidget2D {
 		mn.attachChild(myQuadGeo);
 		attachToParentGuiNode(parentNode);	
 	}
+	// This must be done on the JME3 thread, right?
 	private void attachToParentGuiNode(Node parentNode) {
 		myParentNode = parentNode;
 		Node mn = getMyNode();
@@ -144,5 +145,14 @@ public class TextBox2D extends RectangularWidget2D {
 			theBaseUnshadedMat.setColor("Color", new ColorRGBA(0, 1.0f, 0, 0.5f));
 		}
 		return theBaseUnshadedMat;
+	}	
+	public static String TEXT_VAL_PARAM_NAME = "TextVal";
+	public static String T_VAL_PARAM_NAME = "TextVal";
+	@Override public void setNormalizedNumericParam(String paramName, float normZeroToOne) {
+		if (TEXT_VAL_PARAM_NAME.equals(paramName)) {
+			setTextVal("Param=" + normZeroToOne);
+		} else {
+			super.setNormalizedNumericParam(paramName, normZeroToOne);
+		}
 	}	
 }

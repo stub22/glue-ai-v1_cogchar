@@ -139,10 +139,12 @@ public class TrialContent extends BasicDebugger {
 
 	
 	protected void attachMidiCCs(TempMidiBridge tmb) { 
+		// Controller numbers starting with 21 are the default CC numbers Automap applies to the knobs of a Nocturn
 		tmb.putControlChangeParamBinding(21, RectangularWidget2D.CoordName.X.name(), myCamStatBox); 
 		tmb.putControlChangeParamBinding(22, RectangularWidget2D.CoordName.Y.name(), myCamStatBox); 
 		tmb.putControlChangeParamBinding(23, RectangularWidget2D.CoordName.Width.name(), myCamStatBox); 
 		tmb.putControlChangeParamBinding(24, RectangularWidget2D.CoordName.Height.name(), myCamStatBox); 
+		tmb.putControlChangeParamBinding(25, TextBox2D.TEXT_VAL_PARAM_NAME, myCamStatBox); 
 	}
 	
 	
