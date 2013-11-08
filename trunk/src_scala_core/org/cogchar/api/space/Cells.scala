@@ -49,30 +49,10 @@ class CellBlock(val myCIRs : Array[CellIndexRange]) extends KnowsOrthoDim {
 	// A rectilinear uniform clump of cells, usually considered within some multi-D grid space.
 	// However, by itself, the CellBlock does not define any metric concepts, only index concepts.
 	// The number of ortho dimensions is implied by the length of the myCIRs array.
-	// Each of the entries in that array gives a pair of cell indices.
+	// Each of the entries in that array has a CellIndexRange = (possibly changing) pair of cell indices.
 
 	override def getOrthoDimCount() = myCIRs.length
 	
-	// Given some arbitrary grid space, compute the position range of this cell block in that grid space.
-	// Our cells do not need to be "inside" the grid space, however the size of our cells is presumed to
-	// be the same as what is in the grid space, and our position is determined by the obvious extension
-	// of the source grid space to the index range of our space.
-	def computePosBlockInSpace(mdgs : MultiDimGridSpace) : PosBlock = {
-		val dimCount = getOrthoDimCount
-		val spaceDimCount = mdgs.getOrthoDimCount
-		if (dimCount != spaceDimCount) {
-			throw new RuntimeException("CellBlock dimCount " + dimCount + " does not match space dim count " + spaceDimCount)
-		}
-		val resArr = new Array[PosRange](dimCount)
-		for (d <- 0 to (dimCount - 1)) {
-			val cir = myCIRs(d)
-			val gsd : GridSpaceDim = mdgs.getDim(d)
-			resArr(d) = gsd.calcPosRange(cir)
-		}
-		new PosBlock(resArr)
-	}
-	
-
 	def describe(cellFrom : Int) : String = {
 		val buffer = new StringBuffer("[cirs=[")
 		for ( cir <- myCIRs) {
