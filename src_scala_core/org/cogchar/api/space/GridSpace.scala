@@ -58,6 +58,23 @@ trait MultiDimGridSpace extends KnowsOrthoDim {
 	// A multi-dimensional grid, which in principle could dynamically change shape, dimension, position, ...
 	def getDim(indexFrom0 : Int) : GridSpaceDim
 	def describe() : String 
+	// Given some arbitrary grid space, compute the position range of this cell block in that grid space.
+	// Our cells do not need to be "inside" the grid space, however the size of our cells is presumed to
+	// be the same as what is in the grid space, and our position is determined by the obvious extension
+	// of the source grid space to the index range of our space.
+	def computePosBlockForCellBlock(cb : CellBlock) : PosBlock = {
+
+		assertSameDim(cb)
+		
+		val dimCount = getOrthoDimCount
+		val resArr = new Array[PosRange](dimCount)
+		for (d <- 0 to (dimCount - 1)) {
+			val cir = cb.myCIRs(d)
+			val gsd : GridSpaceDim = getDim(d)
+			resArr(d) = gsd.calcPosRange(cir)
+		}
+		new PosBlock(resArr)
+	}	
 }
 
 
@@ -105,7 +122,7 @@ object GridSpaceTest extends BasicDebugger {
 		val space : MultiDimGridSpace = GridSpaceFactory.makeSpace2D(5, 80.0f, 120.0f, 7, -20.0f, 15.0f)
 		getLogger().info("Space description={}", space.describe()) // cellFrom == 1 -> base-1 labelling
 
-		val posBlock = cellBlock.computePosBlockInSpace(space)
+		val posBlock = space.computePosBlockForCellBlock(cellBlock);
 		getLogger().info("Computed result PosBlock description={}", posBlock.describe)
 		val vecOnDiag = posBlock.getVecFromMainDiagonal(2.0f)
 		getLogger().info("Vec on pos-block diag at 2.0f * MAX ={}", vecOnDiag)

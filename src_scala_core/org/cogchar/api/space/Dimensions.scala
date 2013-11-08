@@ -23,4 +23,13 @@ package org.cogchar.api.space
 trait KnowsOrthoDim {
 	// An object which knows how many orthogonal dimensions it has
 	def		getOrthoDimCount	: Int
+	
+	def assertSameDim(otherKOD : KnowsOrthoDim) : Unit = {
+		val dimCount : Int = getOrthoDimCount
+		val otherDimCount : Int = otherKOD.getOrthoDimCount
+			if (dimCount != otherDimCount) {
+			throw new RuntimeException("DimCount " + dimCount + " of " + this + " does not match otherDimCount " +
+										otherDimCount + " of " + otherKOD);
+		}
+	}
 }
