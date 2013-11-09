@@ -28,6 +28,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.control.CameraControl.ControlDirection;
+import org.cogchar.render.app.entity.CameraBinding;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,12 +44,12 @@ public class HominoidCameraManager implements CameraMgr.HeadCameraManager {
 		if (crc != null) {
 			HumanoidRenderContext hrc = (HumanoidRenderContext) crc;
 			HumanoidFigureManager hfm = hrc.getHumanoidFigureManager();
-			CameraNode headCamNode = new CameraNode(CameraMgr.CommonCameras.HEAD_CAM.name() + "_NODE", headCam);
+			CameraNode headCamNode = new CameraNode(CameraBinding.Kind.HEAD_CAM.name() + "_NODE", headCam);
 			headCamNode.setControlDir(ControlDirection.SpatialToCamera);
 			//theLogger.info("Attaching head cam to robot ident: " + config.attachedRobot + " bone " + config.attachedItem); // TEST ONLY
 			hfm.attachNodeToHumanoidBone(hrc, headCamNode, config.attachedRobot, config.attachedItem);
-			float[] cameraPos = config.cameraPosition;
-			float[] cameraDir = config.cameraPointDir;
+			float[] cameraPos = config.myCamPos;
+			float[] cameraDir = config.myCamPointDir;
 			headCamNode.setLocalTranslation(new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]));
 			headCamNode.setLocalRotation(new Quaternion().fromAngles(cameraDir));
 		} else {

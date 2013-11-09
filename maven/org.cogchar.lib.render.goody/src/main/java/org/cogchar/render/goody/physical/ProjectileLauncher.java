@@ -27,6 +27,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import org.cogchar.render.opengl.mesh.ShapeMeshFactory;
+import org.cogchar.render.app.entity.CameraBinding;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
@@ -133,7 +134,7 @@ public class ProjectileLauncher {
 	public void cmdShoot(RenderRegistryClient rrc) {
 		// RenderRegistryClient rrc = myBRC.getRenderRegistryClient();
 		CameraMgr cm = rrc.getOpticCameraFacade(null);
-		Camera defCam = cm.getCommonCamera(CameraMgr.CommonCameras.DEFAULT);
+		Camera defCam = cm.getCommonCamera(CameraBinding.Kind.DEFAULT);
 		Node rootNode = rrc.getJme3RootDeepNode(null);
 		// 2013-08-01     Disabling to assess leak impact.
 		// fireProjectileFromCamera(defCam, rootNode, rrc.getJme3BulletPhysicsSpace());	

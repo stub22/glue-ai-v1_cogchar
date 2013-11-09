@@ -29,19 +29,29 @@ import org.appdapter.help.repo.RepoClient;
 public class CameraConfig {
 
 	//public String myURI_Fragment;
-	public String cameraName;
-	public float[] cameraPosition = new float[3];
-	public float[] cameraPointDir = new float[3];
-	public float[] cameraViewPort = new float[4];
-	public Ident attachedRobot;
-	public String attachedItem;
+	public String	myCamName;
+	
+	public float[] myCamPos = new float[3];
+	
+	public float[] myCamPointDir = new float[3];
+	
+	/*http://hub.jmonkeyengine.org/wiki/doku.php/jme3:advanced:multiple_camera_views
+	 * The four values are read in the following order:
+		cam.setViewPort(x1,x2 , y1,y2);
+				X-axis from left to right
+				Y-axis upwards from bottom to top
+	 */			
+	public float[] myDisplayRect = new float[4];
+	
+	public Ident	attachedRobot;
+	public String	attachedItem;
 	
 	
 
 	@Override
 	public String toString() {
-		return "CameraConfig[name=" + cameraName + ", pos=" + Arrays.toString(cameraPosition) + ", dir=" 
-				+ Arrays.toString(cameraPointDir) + ", viewport=" + Arrays.toString(cameraViewPort) + "]";
+		return "CameraConfig[name=" + myCamName + ", pos=" + Arrays.toString(myCamPos) + ", dir=" 
+				+ Arrays.toString(myCamPointDir) + ", viewport=" + Arrays.toString(myDisplayRect) + "]";
 	}
 
 	// A new constructor to build CameraConfig from spreadsheet
@@ -49,17 +59,24 @@ public class CameraConfig {
 		
 
 		SolutionHelper sh = new SolutionHelper();
-		cameraName = sh.pullIdent(qSoln, LightsCameraCN.CAMERA_NAME_VAR_NAME).getLocalName();
+		myCamName = sh.pullIdent(qSoln, LightsCameraCN.CAMERA_NAME_VAR_NAME).getLocalName();
 		for (int index = 0; index < 3; index++) {
-			cameraPosition[index] = sh.pullFloat(qSoln, LightsCameraCN.POSITION_VAR_NAME[index], 0f);
-			cameraPointDir[index] = sh.pullFloat(qSoln, LightsCameraCN.DIRECTION_VAR_NAME[index], 0f);
+			myCamPos[index] = sh.pullFloat(qSoln, LightsCameraCN.POSITION_VAR_NAME[index], 0f);
+			myCamPointDir[index] = sh.pullFloat(qSoln, LightsCameraCN.DIRECTION_VAR_NAME[index], 0f);
 		}
-		for (int index = 0; index < cameraViewPort.length; index++) {
-			cameraViewPort[index] = sh.pullFloat(qSoln, LightsCameraCN.VIEWPORT_VAR_NAME[index], Float.NaN);
+		for (int index = 0; index < myDisplayRect.length; index++) {
+			myDisplayRect[index] = sh.pullFloat(qSoln, LightsCameraCN.VIEWPORT_VAR_NAME[index], Float.NaN);
 		}
 		attachedRobot = sh.pullIdent(qSoln, LightsCameraCN.ATTACHED_ROBOT_VAR_NAME);
 		attachedItem = sh.pullString(qSoln, LightsCameraCN.ATTACHED_BONE_VAR_NAME);
 	}
+	
+	public CameraConfig(String camName, float[] camPos, float[] camPointDir, float[] displayRect) { 
+		myCamName = camName;
+		myCamPos = camPos;
+		myCamPointDir = camPointDir;
+		myDisplayRect = displayRect;
+	}	
 
 	/* Disabled for now because we needed a method from HumanoidConfigEmitter, which is going away (see below). We can find a way to solve this problem if we decide we need assembler config again
 	public CameraConfig(Item configItem) {
