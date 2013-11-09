@@ -55,6 +55,8 @@ public class TrialContent extends BasicDebugger {
 	
 	private TextBox2D		myCamStatBox;
 	
+
+	
 	// The other args are really implied by the rrc, so can be factored out
 	public void initContent3D_onRendThread(RenderRegistryClient rrc, Node appRootNode, ViewPort appViewPort) {
 		
@@ -145,6 +147,8 @@ public class TrialContent extends BasicDebugger {
 		tmb.putControlChangeParamBinding(23, RectangularWidget2D.CoordName.Width.name(), myCamStatBox); 
 		tmb.putControlChangeParamBinding(24, RectangularWidget2D.CoordName.Height.name(), myCamStatBox); 
 		tmb.putControlChangeParamBinding(25, TextBox2D.TEXT_VAL_PARAM_NAME, myCamStatBox); 
+		
+
 	}
 	
 	

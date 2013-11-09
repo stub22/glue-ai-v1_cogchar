@@ -29,6 +29,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.WorkaroundAppStub;
+import org.cogchar.render.app.entity.CameraBinding;
 
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
@@ -61,7 +62,7 @@ public class CoreFeatureAdapter extends BasicDebugger {
 
 	static public void registerJMonkeyDefaultCameras(RenderRegistryClient rrc, Camera defCam, FlyByCamera fbc) {
 		CameraMgr cm = rrc.getOpticCameraFacade(null);
-		cm.registerCommonCamera(CameraMgr.CommonCameras.DEFAULT, defCam);
+		cm.registerCommonCamera(CameraBinding.Kind.DEFAULT, defCam);
 	}
 
 	static public void initGuiFont(CogcharRenderContext crc, String fontPath) {

@@ -77,32 +77,24 @@ public class RectangularWidget2D extends BasicDebugger implements ParamValueList
 		Queuer.QueueingStyle qStyle = Queuer.QueueingStyle.QUEUE_AND_RETURN;
 		switch (coord) {
 			case X:
-				myX = getIntValInRange(0, 640, normZeroToOne);
+				myX = MathUtils.getIntValInRange(0, 640, normZeroToOne);
 				applyTranslation(qStyle);
 			break;
 			case Y:
-				myY = getIntValInRange(0, 480, normZeroToOne);
+				myY = MathUtils.getIntValInRange(0, 480, normZeroToOne);
 				applyTranslation(qStyle);
 			break;
 			case ZOrder:
-				myZOrder = getFloatValInRange(-10.0f, 10.0f, normZeroToOne);
+				myZOrder = MathUtils.getFloatValInRange(-10.0f, 10.0f, normZeroToOne);
 				applyTranslation(qStyle);
 			break;
 			case Width:
-				myWidth = getIntValInRange(0, 640, normZeroToOne);
+				myWidth = MathUtils.getIntValInRange(0, 640, normZeroToOne);
 			break;				
 			case Height:
-				myHeight = getIntValInRange(0, 480, normZeroToOne);
+				myHeight = MathUtils.getIntValInRange(0, 480, normZeroToOne);
 			break;				
 		}
 	}
-	private int getIntValInRange(int min, int max, float rangeFrac) {
-		int result = Math.round(rangeFrac * (max - min) + min);
-		return result;
-	}
 
-	private float getFloatValInRange(float min, float max, float rangeFrac) {
-		float result = rangeFrac * (max - min) + min;
-		return result;
-	}
 }

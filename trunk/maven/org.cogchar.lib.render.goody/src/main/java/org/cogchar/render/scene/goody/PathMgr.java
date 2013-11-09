@@ -143,6 +143,8 @@ public class PathMgr extends AbstractThingCinematicMgr {
         if (path != null) {
             if (action.equals(PathMgr.ControlAction.PLAY)) {
                 myLogger.info("Playing cinematic {}", uri);
+				// Stu added time reset so that anims with "DontLoop" can be played more than once.
+				path.setTime(0.0f);
 				path.play();
             } else if (action.equals(PathMgr.ControlAction.STOP)) {
                 // Wouldn't you know, this has to be done on main thread

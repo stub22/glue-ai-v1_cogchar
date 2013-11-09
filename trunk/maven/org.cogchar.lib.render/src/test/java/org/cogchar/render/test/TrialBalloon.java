@@ -97,6 +97,11 @@ public class TrialBalloon extends CogcharPresumedApp {
 		tc.initContent3D_onRendThread(rrc, rootNode, viewPort);
 		tc.initContent2D_onRendThread(rrc, guiNode, assetManager);
 		tc.attachMidiCCs(myTMB);
+		
+		TrialCameras tcam = new TrialCameras();
+		tcam.setupCamerasAndViews(rrc, crc);
+		
+		tcam.attachMidiCCs(myTMB);
 	}
 
 	@Override public void destroy() {
