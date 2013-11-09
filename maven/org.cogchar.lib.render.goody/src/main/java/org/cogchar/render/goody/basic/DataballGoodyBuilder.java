@@ -48,6 +48,7 @@ import java.util.concurrent.*;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.api.web.WebAppInterfaceTracker;
+import org.cogchar.render.app.entity.CameraBinding;
 // import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.opengl.optic.MatFactory;
@@ -919,8 +920,8 @@ public class DataballGoodyBuilder extends BasicDebugger {
 		CollisionResults results = new CollisionResults();
 		// Convert screen click to 3d position
 		Vector2f click2d = myIM.getCursorPosition();
-		Vector3f click3d = myCameraMgr.getCommonCamera(CameraMgr.CommonCameras.DEFAULT).getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
-		Vector3f dir = myCameraMgr.getCommonCamera(CameraMgr.CommonCameras.DEFAULT).getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+		Vector3f click3d = myCameraMgr.getCommonCamera(CameraBinding.Kind.DEFAULT).getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+		Vector3f dir = myCameraMgr.getCommonCamera(CameraBinding.Kind.DEFAULT).getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
 		// Aim the ray from the clicked spot forwards.
 		Ray ray = new Ray(click3d, dir);
 		// Collect intersections between ray and all nodes in results list.
