@@ -36,6 +36,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
 import java.io.InputStream;
@@ -920,8 +921,10 @@ public class DataballGoodyBuilder extends BasicDebugger {
 		CollisionResults results = new CollisionResults();
 		// Convert screen click to 3d position
 		Vector2f click2d = myIM.getCursorPosition();
-		Vector3f click3d = myCameraMgr.getCommonCamera(CameraBinding.Kind.DEFAULT).getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
-		Vector3f dir = myCameraMgr.getCommonCamera(CameraBinding.Kind.DEFAULT).getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+		CameraBinding defCamBind = myCameraMgr.getDefaultCameraBinding();
+		Camera defCam = defCamBind.getCamera();
+		Vector3f click3d = defCam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+		Vector3f dir = defCam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
 		// Aim the ray from the clicked spot forwards.
 		Ray ray = new Ray(click3d, dir);
 		// Collect intersections between ray and all nodes in results list.

@@ -71,7 +71,7 @@ public class DemoMultiViews extends CogcharPresumedApp {
 			cam.setRotation(new Quaternion(-0.07680723f, 0.92299235f, -0.2564353f, -0.27645364f));
 
 			// Setup second view
-			Camera cam2 = rrc.getOpticCameraFacade(null).cloneCamera(cam);
+			Camera cam2 = cam.clone(); // rrc.getOpticCameraFacade(null).cloneCamera(cam);
 			cam2.setViewPort(0f, 0.5f, 0f, 0.5f);
 			cam2.setLocation(new Vector3f(-0.10947256f, 1.5760219f, 4.81758f));
 			cam2.setRotation(new Quaternion(0.0010108891f, 0.99857414f, -0.04928594f, 0.020481428f));

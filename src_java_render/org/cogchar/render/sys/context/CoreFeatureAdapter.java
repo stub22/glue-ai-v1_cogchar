@@ -34,6 +34,7 @@ import org.cogchar.render.app.entity.CameraBinding;
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.physics.DemoVectorFactory;
+import org.cogchar.render.sys.task.Queuer;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -62,7 +63,8 @@ public class CoreFeatureAdapter extends BasicDebugger {
 
 	static public void registerJMonkeyDefaultCameras(RenderRegistryClient rrc, Camera defCam, FlyByCamera fbc) {
 		CameraMgr cm = rrc.getOpticCameraFacade(null);
-		cm.registerCommonCamera(CameraBinding.Kind.DEFAULT, defCam);
+		Queuer q = new Queuer(rrc);
+		cm.registerDefaultCamera(defCam, q);
 	}
 
 	static public void initGuiFont(CogcharRenderContext crc, String fontPath) {
