@@ -15,13 +15,16 @@
  */
 
 package org.cogchar.render.app.entity;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.cinema.CameraConfig;
+import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.task.Queuer;
 
@@ -29,11 +32,17 @@ import org.cogchar.render.sys.task.Queuer;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class CameraBinding  {
+public class CameraBinding extends BasicDebugger {
+	public static class  ViewRectSpec { 
+		public		float			myX1, myX2, myY1, myY2;
+		public ViewRectSpec(float[] initVals) {
+			myX1 = initVals[0]; myX2 = initVals[1]; myY1 = initVals[2]; myY2 = initVals[3];
+		}
+	}
 	public enum Kind {
 		DEFAULT,
-		TOP_VIEW,
-		WIDE_VIEW,
+//		TOP_VIEW,
+//		WIDE_VIEW,
 		HEAD_CAM
 	}	
 	private		Kind			myKind;
@@ -41,36 +50,71 @@ public class CameraBinding  {
 	
 	private		String			myCamName;
 	private		Vector3f		myWorldPosVec3f, myPointDirVec3f;
+	private		Vector3f		myDefWorldPosV3f, myDefPointDirV3f;
 	
-	private		float			myViewX1, myViewX2, myViewY1, myViewY2;
+	private		ViewRectSpec	myViewRectSpec;
+	
 	
 	private		Camera			myCam;
 	private		ViewPort		myViewport;
-	private		Node			myAttachmentNode;
+
 	
 	private		Queuer			myQueuer;
-	private		RenderRegistryClient	myRRC;
+	// private		RenderRegistryClient	myRRC;
 
-	public CameraBinding(RenderRegistryClient rrc, Ident requiredID) {
+	// public CameraBinding(RenderRegistryClient rrc, Ident requiredID) {
+	public CameraBinding(Queuer queuer, Ident requiredID) {		
 		myIdent = requiredID;
-		myQueuer = new Queuer(rrc);
-		myRRC = rrc;
-	}
-
-	public void setupCamera() { 
-		
+		myQueuer = queuer; // new Queuer(rrc);
+		// myRRC = rrc;
 	}
 	
-	public void setValsFromConfig(CameraConfig cc) { 
+	public Ident getIdent() { 
+		return myIdent;
+	}
+	public CameraBinding makeClone(String name, Ident id) { 
+		CameraBinding clonedCB = new CameraBinding(myQueuer, id);
+		Camera clonedCam = myCam.clone();
+		clonedCB.setCamera(clonedCam);
+		return clonedCB;
+	}
+	public Camera getCamera() { 
+		return myCam;
+	}
+	public void setCamera(Camera cam) {
+		myCam = cam;
+	}
+
+	public void setValsFromConfig(CameraConfig cc, boolean flag_storeDefaults) { 
 		if (cc.myCamName != null) {
 			myCamName = cc.myCamName;
 		}
 		if (cc.myCamPos != null) {
 			myWorldPosVec3f = new Vector3f(cc.myCamPos[0], cc.myCamPos[1], cc.myCamPos[2]);
+			if (flag_storeDefaults) {
+				myDefWorldPosV3f = myWorldPosVec3f.clone();
+			}
 		}
 		if (cc.myCamPointDir != null) {
 			myPointDirVec3f = new Vector3f(cc.myCamPointDir[0], cc.myCamPointDir[1], cc.myCamPointDir[2]);
-		}		
+			if (flag_storeDefaults) {
+				myPointDirVec3f = myPointDirVec3f.clone();
+			}
+		}
+		if (cc.myDisplayRect != null) { 
+			myViewRectSpec = new ViewRectSpec(cc.myDisplayRect);
+		}
+	}
+	public void resetToDefault() {
+		if (myDefWorldPosV3f != null) {
+			getLogger().info("Resetting worldPos to {} ", myDefWorldPosV3f);
+			myWorldPosVec3f = myDefWorldPosV3f.clone();
+		} else {
+			getLogger().warn("Cannot reset worldPos - default is null for name={}", myCamName);
+		}
+		if (myDefPointDirV3f != null) {
+			myPointDirVec3f = myPointDirVec3f.clone();
+		}
 	}
 	public void setWorldPos(Vector3f worldPosVec3f) {
 		myWorldPosVec3f = worldPosVec3f;
@@ -101,10 +145,24 @@ public class CameraBinding  {
 			if (myPointDirVec3f != null) {
 				myCam.lookAtDirection(myPointDirVec3f, Vector3f.UNIT_Y);
 			}
-			myCam.setViewPort(myViewX1, myViewX2, myViewY1, myViewY2);
+			if (myViewRectSpec != null)	{
+				myCam.setViewPort(myViewRectSpec.myX1, myViewRectSpec.myX2, myViewRectSpec.myY1, myViewRectSpec.myY2);
+			}
 		}
+	}
+	public void attachViewPort(RenderRegistryClient rrc) { 
+		if (myViewport == null) {
+			myViewport = rrc.getJme3RenderManager(null).createPostView(myCamName, myCam); // PostView or MainView?
+			myViewport.setClearFlags(true, true, true);
+			// BackroundColor is set for main window right now in WorkaroundFuncsMustDie.setupCameraLightAndViewport - yuck. 
+			myViewport.setBackgroundColor(ColorRGBA.LightGray); 
+			myViewport.attachScene(rrc.getJme3RootDeepNode(null));		
+		}
+	}
+	public void detachViewPort(RenderRegistryClient rrc) { 
 		if (myViewport != null) {
-			
+			rrc.getJme3RenderManager(null).removePostView(myViewport);
+			myViewport = null;
 		}
 	}
 }
