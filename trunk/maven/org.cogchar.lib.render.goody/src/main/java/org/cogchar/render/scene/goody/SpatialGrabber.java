@@ -22,6 +22,7 @@ import com.jme3.scene.control.CameraControl.ControlDirection;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.Ident;
 import org.cogchar.api.cinema.SpatialActionConfig;
 import org.cogchar.render.app.entity.CameraBinding;
 import org.cogchar.render.app.entity.VWorldEntity;
@@ -70,7 +71,8 @@ public class SpatialGrabber extends BasicDebugger {
 		Spatial attachedSpatial;
 		final RenderRegistryClient rrc = myCRC.getRenderRegistryClient();
 		CameraMgr cm = rrc.getOpticCameraFacade(null);
-		final String cameraLocalName = track.attachedItem.getLocalName();
+		Ident camID = track.attachedItem;
+		final String cameraLocalName = camID.getLocalName();
 		if (boundCameras.containsKey(cameraLocalName)) {
 			// Hey, we already bound this to the cinematic! We'll just get the node to attach to the track.
 			getLogger().info("Attached camera already bound, reusing in track: {}", track);
@@ -78,9 +80,10 @@ public class SpatialGrabber extends BasicDebugger {
 			// Must reattach since probably was unattached in PathMgr.DetachingMotionEvent.onStop
 			rrc.getJme3RootDeepNode(null).attachChild(attachedSpatial);
 		} else {
-			CameraBinding cineCB = cm.getNamedCameraBinding(cameraLocalName);
-			final Camera cineCam = cineCB.getCamera();
-			if (cineCam != null) {
+			CameraBinding cineCB = cm.getCameraBinding(camID);
+			if (cineCB != null) {
+				final Camera cineCam = cineCB.getCamera();
+
 				final CameraNode camNode = new CameraNode(cameraLocalName, cineCam);
 				rrc.getWorkaroundAppStub().enqueue(new Callable() {
 					@Override
@@ -96,7 +99,7 @@ public class SpatialGrabber extends BasicDebugger {
 				attachedSpatial = camNode;
 				boundCameras.put(cameraLocalName, (CameraNode) attachedSpatial); // Could just use Node as type of HashMap and not cast back and forth, but this makes it explicit
 			} else {
-				getLogger().error("Specified Camera not found for Cinematic config from RDF: {}", track.attachedItem);
+				getLogger().error("No CameraBinding found at camID={}", camID);
 				return null;
 			}
 		}

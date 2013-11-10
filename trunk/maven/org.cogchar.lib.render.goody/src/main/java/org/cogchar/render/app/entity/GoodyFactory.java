@@ -164,14 +164,17 @@ public class GoodyFactory {
 				} else if (GoodyNames.TYPE_CAMERA.equals(goodyType)) {
 					Ident cameraUri = goodyID;
 					if (myGoodySpace.getGoody(cameraUri) == null) { //Otherwise this camera wrapper is already created
-						theLogger.info("Adding a VWorldCameraEntity for {}", cameraUri);
-						// This evidences the fact that the CameraMgr needs to switch to URIs to identify cameras, not strings:
-						String camLocalName = cameraUri.getLocalName();
-						CameraBinding camBinding = myRRC.getOpticCameraFacade(null).getNamedCameraBinding(camLocalName);
-						Camera cam = camBinding.getCamera();
-						if (cam != null) {
-							novGoody = (new VWorldCameraEntity(myRRC, cameraUri, cam));
-						} else {
+						theLogger.info("Adding a VWorldCameraEntity for {}", cameraUri);						
+						CameraBinding camBinding = myRRC.getOpticCameraFacade(null).getCameraBinding(cameraUri);
+						if (camBinding != null) {
+							Camera cam = camBinding.getCamera();
+							if (cam != null) {
+								novGoody = (new VWorldCameraEntity(myRRC, cameraUri, cam));
+							} else {
+								throw new RuntimeException("No actual camera found in binding at " + cameraUri);
+							}
+						}
+						else {
 							theLogger.warn("Couldn't find camera with URI {} for goody", cameraUri);
 						}
 					}

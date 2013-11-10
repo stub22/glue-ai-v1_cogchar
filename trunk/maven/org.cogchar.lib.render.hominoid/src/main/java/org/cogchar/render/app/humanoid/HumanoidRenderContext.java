@@ -75,7 +75,7 @@ public class HumanoidRenderContext extends GoodyModularRenderContext {
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		CameraMgr cmgr = rrc.getOpticCameraFacade(null);
 		HominoidCameraManager homCM = new HominoidCameraManager();
-		cmgr.setHeadCameraManager(homCM);		
+		cmgr.setAttachmentNodeFinder(homCM);		
 	}
 	public void initCinematicParameters() {
 		WorkaroundAppStub stub = getAppStub();
