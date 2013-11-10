@@ -35,11 +35,18 @@ public class TrialBalloon extends CogcharPresumedApp {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		TrialBalloon app = new TrialBalloon();
+		
 		app.start();
+		app.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest");
 		org.cogchar.api.space.GridSpaceTest.go();
+		app.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting config-load test");
+		// app.optLoadConfig();
 		app.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ End of main()");
 	}
-
+	private void optLoadConfig() {
+		ZZConfigReader zzcr = new ZZConfigReader();
+		zzcr.readConf();
+	}
 	@Override public void start() {
 		try {
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling initMidiRouter()");
@@ -102,6 +109,8 @@ public class TrialBalloon extends CogcharPresumedApp {
 		tcam.setupCamerasAndViews(rrc, crc);
 		
 		tcam.attachMidiCCs(myTMB);
+		
+		
 	}
 
 	@Override public void destroy() {

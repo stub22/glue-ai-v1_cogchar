@@ -17,6 +17,7 @@
 package org.cogchar.render.test;
 
 import com.jme3.math.Vector3f;
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.opengl.optic.CameraMgr;
@@ -31,7 +32,7 @@ import org.cogchar.render.sys.task.Queuer;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class TrialCameras implements ParamValueListener {
+public class TrialCameras extends BasicDebugger implements ParamValueListener {
 
 	enum CamCoord {
 		AZIMUTH,
@@ -44,28 +45,30 @@ public class TrialCameras implements ParamValueListener {
 	private	Float	myAzimuth, myElevation, myDepth;
 	
 	public void setupCamerasAndViews(RenderRegistryClient rrc, CogcharRenderContext crc) { 
-		CameraMgr camMgr = rrc.getOpticCameraFacade(null);
-		
+
 		float[] camPos = new float[] {0.0f, 10.0f, 10.0f}; 
 		float[] camPointDir = new float[] {0.0f, -2.0f, -1.0f};
 		float[] displayRect = new float[] {0.7f, 0.9f, 0.7f, 0.9f};
 		String camName = "trialCam01";
 		CameraConfig cconf_ul = new CameraConfig(camName, camPos, camPointDir, displayRect);
-	//	camMgr.applyCameraConfig(cconf_ul, rrc, crc);
 		
-		Ident wackyCamBindID = new FreeIdent("uri:wackycam#" + camName);
-		myWackyCamBinding = new CameraBinding(rrc, wackyCamBindID);
-		myWackyCamBinding.setValsFromConfig(cconf_ul);
-		// applyCameraConfig(CameraConfig cConf, RenderRegistryClient rrc, CogcharRenderContext crc)
+		CameraMgr camMgr = rrc.getOpticCameraFacade(null);
+		// In order for the resulting Queuer to be non-null
+		myWackyCamBinding =  camMgr.findOrMakeCameraBinding(camName);
+
+		boolean assignDefaults = true;
+		
+		myWackyCamBinding.setValsFromConfig(cconf_ul, assignDefaults);
+		myWackyCamBinding.attachViewPort(rrc);
+		myWackyCamBinding.applyInVWorld(Queuer.QueueingStyle.QUEUE_AND_RETURN);
+		
 	}
-	
 	
 	protected void attachMidiCCs(TempMidiBridge tmb) { 
 		tmb.putControlChangeParamBinding(27, CamCoord.AZIMUTH.name(), this); 
 		tmb.putControlChangeParamBinding(28, CamCoord.ELEVATION.name(), this); 
 		tmb.putControlChangeParamBinding(40, CamCoord.DEPTH.name(), this); 				
 	}	
-
 	
 	@Override public void setNormalizedNumericParam(String paramName, float normZeroToOne) {
 		Queuer.QueueingStyle qStyle = Queuer.QueueingStyle.QUEUE_AND_RETURN;
@@ -81,6 +84,8 @@ public class TrialCameras implements ParamValueListener {
 			case DEPTH:
 				myDepth = MathUtils.getFloatValInRange(-100.0f,  100.0f, normZeroToOne);				
 			break;
+			default:
+				getLogger().warn("Unknown numeric-param channel name: {} resolved to: {}", paramName, ccoord);
 		}
 		applyToCamBinding();
 	}

@@ -16,23 +16,40 @@
 
 package org.cogchar.render.test;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
 import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.core.name.Ident;
+import org.appdapter.core.store.Repo;
+import org.appdapter.help.repo.RepoClient;
+import org.cogchar.name.dir.AssumedQueryDir;
+import org.cogchar.name.dir.AssumedGraphDir;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class ZZConfigReader {
+public class ZZConfigReader extends BasicDebugger {
 	String TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc";
 	int  DFLT_NAMESPACE_SHEET_NUM = 9;
 	int   DFLT_DIRECTORY_SHEET_NUM = 8;
+
+	String lightsQueryQN = AssumedQueryDir.LIGHT_QUERY_URI;
+	String lightsGraphQN = AssumedGraphDir.lightsGraphQN; 
 	
 	public void readConf() {
 		
 		java.util.List<ClassLoader> fileResModelCLs = new java.util.ArrayList<ClassLoader>();
 		RepoSpec rs = new OnlineSheetRepoSpec(TEST_REPO_SHEET_KEY, DFLT_NAMESPACE_SHEET_NUM, DFLT_DIRECTORY_SHEET_NUM,
 							fileResModelCLs);
+		
+		Repo.WithDirectory dfltTestRepo = rs.makeRepo();
+		RepoClient dfltTestRC = rs.makeRepoClient(dfltTestRepo);
+		
+		Ident lightsGraphID = dfltTestRC.makeIdentForQName(lightsGraphQN);
+		Model lightsModelFromSheet = dfltTestRepo.getNamedModel(lightsGraphID);
+		getLogger().info("Fetched lights model: {} ", lightsModelFromSheet);
 	}
 
 

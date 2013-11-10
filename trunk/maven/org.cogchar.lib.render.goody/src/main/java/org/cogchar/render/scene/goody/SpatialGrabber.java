@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.cinema.SpatialActionConfig;
+import org.cogchar.render.app.entity.CameraBinding;
 import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.goody.basic.BasicGoodyEntity;
 import org.cogchar.render.app.entity.GoodyFactory;
@@ -77,7 +78,8 @@ public class SpatialGrabber extends BasicDebugger {
 			// Must reattach since probably was unattached in PathMgr.DetachingMotionEvent.onStop
 			rrc.getJme3RootDeepNode(null).attachChild(attachedSpatial);
 		} else {
-			final Camera cineCam = cm.getNamedCamera(cameraLocalName);
+			CameraBinding cineCB = cm.getNamedCameraBinding(cameraLocalName);
+			final Camera cineCam = cineCB.getCamera();
 			if (cineCam != null) {
 				final CameraNode camNode = new CameraNode(cameraLocalName, cineCam);
 				rrc.getWorkaroundAppStub().enqueue(new Callable() {

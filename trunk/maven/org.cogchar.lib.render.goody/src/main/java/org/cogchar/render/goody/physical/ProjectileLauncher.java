@@ -134,7 +134,8 @@ public class ProjectileLauncher {
 	public void cmdShoot(RenderRegistryClient rrc) {
 		// RenderRegistryClient rrc = myBRC.getRenderRegistryClient();
 		CameraMgr cm = rrc.getOpticCameraFacade(null);
-		Camera defCam = cm.getCommonCamera(CameraBinding.Kind.DEFAULT);
+		CameraBinding defCamBind = cm.getDefaultCameraBinding();
+		Camera defCam = defCamBind.getCamera();
 		Node rootNode = rrc.getJme3RootDeepNode(null);
 		// 2013-08-01     Disabling to assess leak impact.
 		// fireProjectileFromCamera(defCam, rootNode, rrc.getJme3BulletPhysicsSpace());	
