@@ -49,12 +49,13 @@ public class TrialCameras extends BasicDebugger implements ParamValueListener {
 		float[] camPos = new float[] {0.0f, 10.0f, 10.0f}; 
 		float[] camPointDir = new float[] {0.0f, -2.0f, -1.0f};
 		float[] displayRect = new float[] {0.7f, 0.9f, 0.7f, 0.9f};
-		String camName = "trialCam01";
-		CameraConfig cconf_ul = new CameraConfig(camName, camPos, camPointDir, displayRect);
+		
+		Ident id01 = new FreeIdent("uri:TestCam#cam_01");
+		CameraConfig cconf_ul = new CameraConfig(id01, camPos, camPointDir, displayRect);
 		
 		CameraMgr camMgr = rrc.getOpticCameraFacade(null);
 		// In order for the resulting Queuer to be non-null
-		myWackyCamBinding =  camMgr.findOrMakeCameraBinding(camName);
+		myWackyCamBinding =  camMgr.findOrMakeCameraBinding(id01);
 
 		boolean assignDefaults = true;
 		

@@ -29,7 +29,8 @@ import org.appdapter.help.repo.RepoClient;
 public class CameraConfig {
 
 	//public String myURI_Fragment;
-	public String	myCamName;
+//	public String	myCamName;
+	public Ident	myCamID;
 	
 	public float[] myCamPos = new float[3];
 	
@@ -45,12 +46,9 @@ public class CameraConfig {
 	
 	public Ident	attachedRobot;
 	public String	attachedItem;
-	
-	
 
-	@Override
-	public String toString() {
-		return "CameraConfig[name=" + myCamName + ", pos=" + Arrays.toString(myCamPos) + ", dir=" 
+	@Override public String toString() {
+		return "CameraConfig[id=" + myCamID + ", pos=" + Arrays.toString(myCamPos) + ", dir=" 
 				+ Arrays.toString(myCamPointDir) + ", viewport=" + Arrays.toString(myDisplayRect) + "]";
 	}
 
@@ -59,7 +57,8 @@ public class CameraConfig {
 		
 
 		SolutionHelper sh = new SolutionHelper();
-		myCamName = sh.pullIdent(qSoln, LightsCameraCN.CAMERA_NAME_VAR_NAME).getLocalName();
+		// myCamName = sh.pullIdent(qSoln, LightsCameraCN.CAMERA_NAME_VAR_NAME).getLocalName();
+		myCamID = sh.pullIdent(qSoln, LightsCameraCN.CAMERA_NAME_VAR_NAME);
 		for (int index = 0; index < 3; index++) {
 			myCamPos[index] = sh.pullFloat(qSoln, LightsCameraCN.POSITION_VAR_NAME[index], 0f);
 			myCamPointDir[index] = sh.pullFloat(qSoln, LightsCameraCN.DIRECTION_VAR_NAME[index], 0f);
@@ -71,8 +70,9 @@ public class CameraConfig {
 		attachedItem = sh.pullString(qSoln, LightsCameraCN.ATTACHED_BONE_VAR_NAME);
 	}
 	
-	public CameraConfig(String camName, float[] camPos, float[] camPointDir, float[] displayRect) { 
-		myCamName = camName;
+//	public CameraConfig(String camName, float[] camPos, float[] camPointDir, float[] displayRect) { 
+	public CameraConfig(Ident camID, float[] camPos, float[] camPointDir, float[] displayRect) { 
+		myCamID = camID;
 		myCamPos = camPos;
 		myCamPointDir = camPointDir;
 		myDisplayRect = displayRect;

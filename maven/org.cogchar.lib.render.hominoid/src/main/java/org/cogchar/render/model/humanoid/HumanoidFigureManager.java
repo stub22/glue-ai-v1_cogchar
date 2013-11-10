@@ -143,30 +143,31 @@ public class HumanoidFigureManager extends BasicDebugger {
 	}
 	
 	
-	/**
-	 * Mainly for attaching cameras to parts of robot, but potentially somewhat general purpose so I'll leave it here.
-	 * Currently (2012-09-28) called only from CameraMgr.addHeadCamera.
-	 * Note that it actually executes the attachment on the OpenGL render thread
-	 */
-	public void attachNodeToHumanoidBone(BonyRenderContext brc, final Node toAttach, final Ident robotIdent, final String boneName) {
+	public Node findHumanoidBone(BonyRenderContext brc, final Ident robotIdent, final String boneName) {
 		final HumanoidFigure robot = getHumanoidFigure(robotIdent);
+		Node attachmentNode = null;
 		if (robot == null) {
-			getLogger().warn("Failed to attach node[{}] to humanoid's {} due to missing robot: {}", new Object[]{toAttach, boneName, robotIdent});
+			getLogger().warn("Failed to find bone {} due to missing robot: {}", boneName, robotIdent);
 		} else {
-			brc.enqueueCallable(new Callable<Void>() {
-
-				@Override
-				public Void call() throws Exception {
-					// getBoneAttachmentsNode attaches things to the rootNode, so this next line must be enqueued for the main render thread. Convenient!
-					Node attachToBone = robot.getBoneAttachmentsNode(boneName);
+			attachmentNode =  robot.getBoneAttachmentsNode(boneName);
+			if (attachmentNode == null) {
+				getLogger().warn("Could not find bone {} on robot: {}", boneName, robotIdent);	
+			}
+		}
+		return attachmentNode;
+	}
+		/*
+		// getBoneAttachmentsNode attaches things to the rootNode, so this next line must be enqueued for the main render thread. Convenient!
+		
 					if (attachToBone != null) {
 						attachToBone.attachChild(toAttach);
 					} else {
-						getLogger().warn("Delayed failure to attach node[{}] to humanoid, due to missing bone {} on robot: {}", new Object[]{toAttach, boneName, robotIdent});	
+						
 					}
 					return null;
 				}
 			});
 		}
 	}	
+	*/ 
 }
