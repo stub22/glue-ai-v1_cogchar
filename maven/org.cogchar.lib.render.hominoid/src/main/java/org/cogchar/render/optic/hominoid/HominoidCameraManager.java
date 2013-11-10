@@ -26,6 +26,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.control.CameraControl.ControlDirection;
 import org.cogchar.render.app.entity.CameraBinding;
@@ -36,25 +37,19 @@ import org.slf4j.LoggerFactory;
  *	@author RyanB
  *	@author StuB22
  */
-public class HominoidCameraManager implements CameraMgr.HeadCameraManager {
+public class HominoidCameraManager implements CameraMgr.AttachmentNodeFinder {
 	static Logger theLogger = LoggerFactory.getLogger(HominoidCameraManager.class);
 	
-	@Override public void addHeadCamera(Camera headCam, CameraConfig config, CogcharRenderContext crc) {
-	
+	@Override public Node findNode(CameraConfig config, CogcharRenderContext crc) {
+		Node attachmentNode = null;
 		if (crc != null) {
 			HumanoidRenderContext hrc = (HumanoidRenderContext) crc;
 			HumanoidFigureManager hfm = hrc.getHumanoidFigureManager();
-			CameraNode headCamNode = new CameraNode(CameraBinding.Kind.HEAD_CAM.name() + "_NODE", headCam);
-			headCamNode.setControlDir(ControlDirection.SpatialToCamera);
-			//theLogger.info("Attaching head cam to robot ident: " + config.attachedRobot + " bone " + config.attachedItem); // TEST ONLY
-			hfm.attachNodeToHumanoidBone(hrc, headCamNode, config.attachedRobot, config.attachedItem);
-			float[] cameraPos = config.myCamPos;
-			float[] cameraDir = config.myCamPointDir;
-			headCamNode.setLocalTranslation(new Vector3f(cameraPos[0], cameraPos[1], cameraPos[2]));
-			headCamNode.setLocalRotation(new Quaternion().fromAngles(cameraDir));
+			attachmentNode = hfm.findHumanoidBone(hrc, config.attachedRobot, config.attachedItem);
 		} else {
 			theLogger.warn("Attempting to add head camera, but HumanoidRenderContext has not been set!");
 		}
+		return attachmentNode;
 	}	
 
 

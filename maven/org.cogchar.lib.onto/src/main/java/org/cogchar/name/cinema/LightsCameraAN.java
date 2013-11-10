@@ -22,11 +22,11 @@ import org.cogchar.name.dir.NamespaceDir;
  * @author Ryan Biggs
  */
 public class LightsCameraAN extends BoxAssemblyNames {
-	public static	String		NS_CgcBC		= NamespaceDir.NS_CgcBC; // "http://www.cogchar.org  /bony/config#";
+	private static	String		NS_CgcBC		= NamespaceDir.NS_CgcBC; // "http://www.cogchar.org  /bony/config#";
 	
-	public static	String		partial_P_camera = "camera";
+	private static	String		partial_P_camera = "camera";
 	
-	public static 	String		P_camera		= NS_CgcBC + partial_P_camera;
+	// public static 	String		P_camera		= NS_CgcBC + partial_P_camera;
 	
         public static   String[]        P_position              = {NS_CgcBC + "xPos", NS_CgcBC + "yPos", NS_CgcBC + "zPos"};
         
@@ -46,9 +46,15 @@ public class LightsCameraAN extends BoxAssemblyNames {
 	
         public static   String[]        P_color                 = {NS_CgcBC + "colorR", NS_CgcBC + "colorG", NS_CgcBC + "colorB", NS_CgcBC + "colorAlpha"};
 		
-		public static	String			suffix_DEFAULT			= "default";
+		// public static	String			suffix_DEFAULT			= "default";
+		public static	String			suffix_DEFAULT			= "DEFAULT";
 		
-		public static	String			suffix_HEAD_CAM			= "head_cam";
+		// public static	String			suffix_HEAD_CAM			= "head_cam";
+		public static	String			suffix_HEAD_CAM			= "HEAD_CAM";
+		
+		// This is an individual, not a property
+		public static	String			URI_defaultCam = NamespaceDir.CCRT_NS + partial_P_camera + "_" + suffix_DEFAULT;
+		// public static	String			URI_headCam = P_camera + "_" + suffix_HEAD_CAM;
         
 	
 }
