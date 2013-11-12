@@ -22,6 +22,15 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ 	// Goals:  Demonstrate moving+changing intersections of JME3 features, influenced by MIDI-input,
+	// suppementing visual cues with optional MIDI output sounds and MIDI LED output.
+	// Make 3D cameras+viewports flexible and useful.
+	// Mark coordinates in space, on objects, and in camera views - to help the user/author visualize dimensions
+	// Manage the OpenGL canvas space in efficient, useful ways.
+	// (Later the 3D output will be supplemented by useful MIDI LED output).
+	// Making use of avail math infrastructre:  Symja and the Cogchar-core "Space" API.
+	// Make use of JME3 builtin mesh shapes, color effects, transparency, fonts, and node hierarchies.
+	// Show uses of path-based animation, reconciled into world coordinates for analysis and action.
  */
 public class TrialBalloon extends CogcharPresumedApp {
 
@@ -34,14 +43,28 @@ public class TrialBalloon extends CogcharPresumedApp {
 		// However, when a log4j.properties file is present, these commands should not be used.
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-		TrialBalloon app = new TrialBalloon();
-		
-		app.start();
-		app.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest");
+		TrialBalloon tbApp = new TrialBalloon();
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() calling initMidi()");
+		// Initialize any MIDI stuff.
+		tbApp.initMidi();
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() calling JME3 start()");
+		// Start the JME3 Virtual world.
+		tbApp.start();
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest");
 		org.cogchar.api.space.GridSpaceTest.go();
-		app.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting config-load test");
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting config-load test");
+		
 		// app.optLoadConfig();
-		app.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ End of main()");
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ main() calling playMidiOutput()");
+		tbApp.playMidiOutput();
+		
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ End of main()");
+	}
+	public void initMidi() { 
+		myTMB.initMidiRouter();
+	}
+	public void playMidiOutput() { 
+		myTMB.playSomeOutput();
 	}
 	private void optLoadConfig() {
 		ZZConfigReader zzcr = new ZZConfigReader();
@@ -49,8 +72,7 @@ public class TrialBalloon extends CogcharPresumedApp {
 	}
 	@Override public void start() {
 		try {
-			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling initMidiRouter()");
-			myTMB.initMidiRouter();
+
 			
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling super.start()");
 			super.start();
@@ -102,6 +124,9 @@ public class TrialBalloon extends CogcharPresumedApp {
 		// The other args besides rrc are superfluous, since they are indirectly accessible through rrc.
 		// Note that these other args are all instance variables of this TrialBalloon app, inherited from JME3 SimpleApp.
 		tc.initContent3D_onRendThread(rrc, rootNode, viewPort);
+		
+		// Camera-viewports are placed in the screen coordinate system, so we might consider them to be a kind
+		// of 2-D content.  They are part of that layout, anyhoo.
 		tc.initContent2D_onRendThread(rrc, guiNode, assetManager);
 		tc.attachMidiCCs(myTMB);
 		
@@ -128,11 +153,7 @@ public class TrialBalloon extends CogcharPresumedApp {
 			// 1) We want to be quick (avoid logging) 
 			// 2) We have direct access to the scene graph.
 			super.doUpdate(tpf);
-			// Goals:  Demonstrate moving+changing intersections of JME3 features, influenced by MIDI-input.
-			// Make 3D cameras+viewports flexible and useful.
-			// Manage the OpenGL canvas space in efficient, useful ways.
-			// (Later the 3D output will be supplemented by useful MIDI LED output).
-			// Making use of avail math infrastructre:  Symja and the Cogchar-core "Space" API.
+
 		}
 	}
 }

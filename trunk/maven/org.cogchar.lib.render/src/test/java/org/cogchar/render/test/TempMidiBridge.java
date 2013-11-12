@@ -25,6 +25,8 @@ import org.cogchar.bind.midi.FunMidiEventRouter;
 import org.cogchar.bind.midi.InterestingMidiEvent;
 import org.cogchar.bind.midi.MidiEventReporter;
 import org.cogchar.bind.midi.MidiReceiverOurs;
+import org.cogchar.bind.midi.out.CogcharMidiOutputTestMain;
+import org.cogchar.bind.midi.out.NovLpadTest;
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -117,5 +119,22 @@ public class TempMidiBridge extends BasicDebugger {
 		myBindingsByNumber[ccNum] = ccpb;
 	}
 	
+	public void playSomeOutput() { 
+	
+		FunMidiEventRouter fmer = new FunMidiEventRouter();
+		try {
+			CogcharMidiOutputTestMain cmotm = new CogcharMidiOutputTestMain();
+
+			NovLpadTest nlt = new NovLpadTest();
+			nlt.lpadLightDemo();
+
+			cmotm.playSomeNotes();
+		} catch (Throwable t) {
+			t.printStackTrace();
+		} finally {
+			fmer.logInfo("Doing cleanup");
+			fmer.cleanup();
+		}	
+	}
 	
 }
