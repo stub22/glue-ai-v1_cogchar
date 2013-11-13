@@ -193,11 +193,18 @@ The jmonkey.verson property is inherited from our parent project's pom.xml.
 		</dependency>	
 		
 
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>4.2.0</version>
-		</dependency>
+        <!--dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+			 TODO:  Are we ready for 4.3? Lets let appdatper provide
+            <version>4.2.0</version-></dependency--> 
+
+       <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.osgi.common</artifactId>
+            <version>${appdapter.version}</version>
+			<scope>provided</scope>
+        </dependency>
 		
 		<!-- The jmonkeyengine3 contains just the jme3test demo classes,
 			and so is not part of our bundle exports.	 
