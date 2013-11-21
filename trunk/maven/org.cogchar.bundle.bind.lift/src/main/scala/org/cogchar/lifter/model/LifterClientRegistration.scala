@@ -37,8 +37,8 @@ class LifterClientRegistration extends WantsThingAction {
     private val lifterActionID : Ident = 
             new FreeIdent("http://www.cogchar.org/lift/user/action#action");
 
-  private val theStudentRegistrationLocalName : String = "student";
-  private val theFacilitatorRegistrationLocalName : String = "facilitator";
+  private val theStudentRegistrationLocalName : String = lifterStudentRegistrationActionID.getLocalName;
+//  private val theFacilitatorRegistrationLocalName : String = lifterFacilitatorRegistrationActionID.getLocalName;
   
   private val lifterSessionID :Ident = 
     new FreeIdent("http://www.cogchar.org/lift/user/action#session");
