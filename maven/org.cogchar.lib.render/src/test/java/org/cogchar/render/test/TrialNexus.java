@@ -16,11 +16,28 @@
 
 package org.cogchar.render.test;
 
+import org.cogchar.api.space.MultiDimGridSpace;
+import org.cogchar.api.space.GridSpaceFactory;
+import org.cogchar.api.space.CellBlock;
+import org.cogchar.api.space.CellRangeFactory;
+import org.cogchar.api.space.PosBlock;
+
 import com.jme3.scene.Geometry;
+
+import org.appdapter.core.log.BasicDebugger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class TrialNexus {
+public class TrialNexus extends BasicDebugger {
+	public void makeSheetspace() {
+		
+		MultiDimGridSpace deepSpace = GridSpaceFactory.makeSpace3D(7, -40.0f, 40.0f, 5, -20.0f, 20.0f, 9, -50.0f, 20.0f);
+
+		getLogger().info("Space description={}", deepSpace.describe()); // cellFrom == 1 -> base-1 labelling
+		CellBlock extrudedCellBlock = CellRangeFactory.makeBlock3D(3, 5, -1, 6, 2, 7);
+		PosBlock extrudedPosBlock = deepSpace.computePosBlockForCellBlock(extrudedCellBlock);
+		getLogger().info("Computed result PosBlock description={}", extrudedPosBlock.describe());	
+	}	
 }
