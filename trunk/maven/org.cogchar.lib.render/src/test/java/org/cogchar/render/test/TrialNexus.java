@@ -16,10 +16,11 @@
 
 package org.cogchar.render.test;
 
+import com.jme3.scene.Geometry;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class TrialNexus {
-	
 }
