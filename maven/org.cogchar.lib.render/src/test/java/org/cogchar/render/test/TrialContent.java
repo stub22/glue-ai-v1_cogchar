@@ -22,6 +22,7 @@ import com.jme3.font.Rectangle;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
@@ -41,6 +42,46 @@ import org.cogchar.render.sys.task.Queuer;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * JME3 gotchas:
+ * 
+ *  per-spatial
+ *		1) Which queue bucket is your spatial in?   Constants from RenderQueue.Bucket  are Transparent, GUI, ...
+ *			[Which is the default?  Inherit or Opaque?  Does it vary by spatial type?]
+ *		If you want transparency/alpha-blend for 3D objects, must set this explicitly, and see also #4 below.
+ * 
+ 			 Gui -   This is a special mode, for drawing 2D object without perspective (such as GUI or HUD parts).
+			Inherit-  A special mode, that will ensure that this spatial uses the same mode as the parent Node does.
+			Opaque - The renderer will try to find the optimal order for rendering all objects using this mode.
+			Sky -   A special mode used for rendering really far away, flat objects - e.g.
+			Translucent -  A special mode used for rendering transparent objects that should not be effected by SceneProcessor.
+			Transparent -    This is the mode you should use for object with transparency in them.  
+			
+		2) What culling is applied to your spatial?   :  Never, Inherit, Always
+
+		3) What parent node are you attaching to?  (Regular/"deep",  GUI/"flat", other?)
+	-------
+ 
+	per-material
+
+ 		4) What blend mode does your material have?  Off [default], Alpha, AlphaAdditive ...
+ 			See RenderStates, blending, and culling info here:
+			* http://hub.jmonkeyengine.org/wiki/doku.php/jme3:advanced:materials_overview
+ 
+ 		5) What face-cull mode is applied to your material?  :  Back [default], Off, FrontAndBack [good for quick visual disable]
+		
+ * ---------
+     per-app-feature
+ 		6) What thread are you writing to your OpenGL scene graph from?  
+		* 
+------
+*   per text-block
+		7) A font includes a material, which determines color and transparency.
+		* 
+		8) Text runs "downward" = decreasing 3D Y value, but increasing 2D Y value.  [Todo:  recheck this interp]
+		* 
+		9) "Size" parameter of text-font is in some other frame of reference
+ 
  */
 public class TrialContent extends BasicDebugger {
 
@@ -51,7 +92,7 @@ public class TrialContent extends BasicDebugger {
 	
 	private Node myMainDeepNode, myMainGuiNode;
 	private BitmapText		myLettersBTS, myDigitsBTS, mySymsBTS, myFlatDigitsBTS, myOverlayEqnBT, myCamStatBT;
-	private Geometry		myQuadGeo;
+	
 	
 	private TextBox2D		myCamStatBox;
 	
@@ -87,6 +128,9 @@ public class TrialContent extends BasicDebugger {
 		bbCont.setAlignment(BillboardControl.Alignment.Screen);
 		myLettersBTS.addControl(bbCont);
 		appViewPort.setBackgroundColor(ColorRGBA.Blue);
+		
+		AssetManager assetMgr = rrc.getJme3AssetManager(null);
+		makeRectilinearParamViz(assetMgr);
 	}
 	// The other args are actually available from the rrc, so can be factored out of these params.
 	public void initContent2D_onRendThread(RenderRegistryClient rrc, Node parentGUInode, AssetManager assetMgr) {
@@ -164,7 +208,9 @@ public class TrialContent extends BasicDebugger {
 		CoreFeatureAdapter.addLightToRootNode(crc, odl);
 	}
 	
-	private void testOldQuadGeo(AssetManager assetMgr) { 
+	public void makeRectilinearParamViz(AssetManager assetMgr) { 
+		
+		Node paramVizNode = new Node("param_viz_root");
 
 		// On a mat, we frequently set color, and for transparency/lucency we set the BlendMode on addtlRenderState.
 		// On a mat, we could choose to set the cull mode, but that can also be done on shapes - as below.
@@ -172,13 +218,28 @@ public class TrialContent extends BasicDebugger {
 		Material unshMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
 		unshMat.setColor("Color", new ColorRGBA(0, 1.0f, 0, 0.5f));
 
-
+		// To get transparency, we also need to put spatials into eligible buckets
 		unshMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-		myQuadGeo = new Geometry("wideQuad", new Quad(200, 100));
-		myQuadGeo.setMaterial(unshMat);
+		
+		// Render both sides
+		unshMat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);		
+		for (int i =0; i< 10; i++) {
+			float d = i * 25.0f;
+			Geometry qg = new Geometry("pvq_" + i, new Quad(10, 20));
+			qg.setMaterial(unshMat);
+			// Controls when in the rendering cycle this obj is drawn, 
+			/* 
 
-		myQuadGeo.setCullHint(Spatial.CullHint.Never); // Others are CullHint.Always, CullHint.Inherit
-		myQuadGeo.setLocalTranslation(50.0f, 300.0f, -1.0f);
-		myMainGuiNode.attachChild(myQuadGeo);		
+			 */
+			// RenderQueue.Bucket transpBucket  = RenderQueue.Bucket.
+			qg.setQueueBucket(RenderQueue.Bucket.Transparent);
+
+			qg.setCullHint(Spatial.CullHint.Never); // Others are CullHint.Always, CullHint.Inherit
+			qg.setLocalTranslation(0.8f * d, -20.0f + 0.5f * d , -3.0f - 1.0f * d);
+			paramVizNode.attachChild(qg);
+		}
+		paramVizNode.setLocalTranslation(-10.0f, 10.0f, 5.0f);
+		myMainDeepNode.attachChild(paramVizNode);
 	}
+
 }

@@ -15,6 +15,7 @@
  */
 package org.cogchar.render.test;
 
+import com.jme3.scene.Geometry;
 import org.cogchar.render.app.core.CogcharPresumedApp;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
@@ -138,6 +139,7 @@ public class TrialBalloon extends CogcharPresumedApp {
 		
 	}
 
+
 	@Override public void destroy() {
 		getLogger().info("JME3 destroy() called");
 		super.destroy();
@@ -145,7 +147,6 @@ public class TrialBalloon extends CogcharPresumedApp {
 		myTMB.cleanup();
 		getLogger().info("MIDI cleanup finished");
 	}
-
 	public class TB_RenderContext extends ConfiguredPhysicalModularRenderContext {
 
 		@Override public void doUpdate(float tpf) {
@@ -156,4 +157,5 @@ public class TrialBalloon extends CogcharPresumedApp {
 
 		}
 	}
+
 }

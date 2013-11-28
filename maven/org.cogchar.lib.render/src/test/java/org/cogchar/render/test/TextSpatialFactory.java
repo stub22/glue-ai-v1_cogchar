@@ -51,13 +51,14 @@ public class TextSpatialFactory extends BasicDebugger {
 		
 		txtMgr.disableCullingForFont(bf);
 
-		// This rectangle width controls how the text is wrapped.   Don't know if height gets used in any way.
+		// This bounding rectangle width controls how the text is wrapped.   Don't know if height gets used in any 
+		// way. (Maybe for collision-detect?)
 		// For wrapping, explicit newlines embedded in the text also work.
 		int rectHeight = 3;
 		Rectangle rect = new Rectangle(0, 0, rectWidth, rectHeight);
 		txtSpatial.setBox(rect);
 
-		// Controls when in the cycle this this 
+		// Controls when in the cycle this spatial gets rendered;  relevant to transparency and 2D/3D assignment. 
 		txtSpatial.setQueueBucket(bucket);
 
 		return txtSpatial;

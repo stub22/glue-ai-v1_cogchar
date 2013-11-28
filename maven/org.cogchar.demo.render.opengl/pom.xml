@@ -13,9 +13,6 @@
 	<packaging>jar</packaging>
 	<name>org.cogchar.demo.render.opengl - POJO - runnable</name>
 	
-
-
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
