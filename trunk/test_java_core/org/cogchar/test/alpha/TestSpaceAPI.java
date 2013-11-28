@@ -15,15 +15,30 @@
  */
 
 package org.cogchar.test.alpha;
+import org.cogchar.api.space.*;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class TestSpaceAPI {
+	static org.slf4j.Logger theLogger = LoggerFactory.getLogger(TestSpaceAPI.class);
+
 	public static void main(String args[]) {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-		org.cogchar.api.space.GridSpaceTest.go();
+		// This scala test object is defined in GridSpace.scala, in this same maven project.
+		org.cogchar.api.space.GridSpaceTest.go();  // compiles and runs fine despite Netbeans highlighter complaint.
+		
+		wozers();
+	}
+	public static void wozers() {	
+		MultiDimGridSpace space = GridSpaceFactory.makeSpace2D(5, 80.0f, 120.0f, 7, -20.0f, 15.0f);
+
+		theLogger.info("Space description={}", space.describe()); // cellFrom == 1 -> base-1 labelling
+		CellBlock cellBlock = CellRangeFactory.makeBlock2D(3, 5, -1, 6);
+		PosBlock posBlock = space.computePosBlockForCellBlock(cellBlock);
+		theLogger.info("Computed result PosBlock description={}", posBlock.describe());
 	}
 }	

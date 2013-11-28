@@ -76,11 +76,23 @@ object CellRangeFactory {
 		ranges(1) = makeCellRangeFrom1(firstY, lastY)
 		ranges
 	}
+	def makeRanges3D(firstX: Int, lastX : Int, firstY : Int, lastY : Int, firstZ : Int, lastZ : Int) : Array[CellIndexRange] = {
+		val ranges = new Array[CellIndexRange](3)
+		ranges(0) = makeCellRangeFrom1(firstX, lastX)
+		ranges(1) = makeCellRangeFrom1(firstY, lastY)
+		ranges(2) = makeCellRangeFrom1(firstZ, lastZ)
+		ranges
+	}	
 	// All args are 1-Based
 	def makeBlock2D(firstX: Int, lastX : Int, firstY : Int, lastY : Int) : CellBlock = {
 		val cellIndexRanges = makeRanges2D(firstX, lastX, firstY, lastY)
 		new CellBlock(cellIndexRanges)
 	}
+	// All args are 1-Based
+	def makeBlock3D(firstX: Int, lastX : Int, firstY : Int, lastY : Int, firstZ : Int, lastZ : Int) : CellBlock = {
+		val cellIndexRanges = makeRanges3D(firstX, lastX, firstY, lastY, firstZ, lastZ)
+		new CellBlock(cellIndexRanges)
+	}	
 	// Facilitate making "unit blocks", of length = 1 in each dimension.
 	// A unit block is fully specified by an array of cellIndices, i.e. integers,  an equivalent construct.
 	// A unitBlock is really just a handle for an integer tuple, applicable within our cell/pos/grid concepts.
