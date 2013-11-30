@@ -227,7 +227,7 @@ public class TrialContent extends BasicDebugger {
 	}
 	
 	public void makeRectilinearParamViz(TrialNexus tNexus, AssetManager assetMgr) { 
-		tNexus.makeSheetspace();
+
 		
 		Node paramVizNode = new Node("param_viz_root");
 
@@ -257,6 +257,7 @@ public class TrialContent extends BasicDebugger {
 		}
 		paramVizNode.setLocalTranslation(-10.0f, 10.0f, 5.0f);
 		myMainDeepNode.attachChild(paramVizNode);
+		tNexus.makeSheetspace(myMainDeepNode, unshMat);		
 	}
 
 
