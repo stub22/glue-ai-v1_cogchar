@@ -110,3 +110,10 @@ public class TrialCameras extends BasicDebugger implements ParamValueListener {
 	}
 	
 }
+/*
+ * 		FlyByCamera fbc = was.getFlyByCamera();
+        fbc.setDragToRotate(true);
+		//fbc.setMoveSpeed(10f); //This is set in HumanoidRenderContext.initCameraAndLights()
+		was.setPauseOnLostFocus(false);
+ * 
+ */
