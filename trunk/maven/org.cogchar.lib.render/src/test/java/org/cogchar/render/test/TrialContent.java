@@ -110,7 +110,7 @@ public class TrialContent extends BasicDebugger {
 	private BitmapText		myLettersBTS, myDigitsBTS, mySymsBTS, myFlatDigitsBTS, myOverlayEqnBT, myCamStatBT;
 	
 	
-	private TextBox2D		myCamStatBox;
+	private TextBox2D		myFloatingStatBox;
 	
 
 	
@@ -147,7 +147,7 @@ public class TrialContent extends BasicDebugger {
 		
 		AssetManager assetMgr = rrc.getJme3AssetManager(null);
 		
-		TrialNexus tNexus = new TrialNexus();
+		TrialNexus tNexus = new TrialNexus(rrc);
 		makeRectilinearParamViz(tNexus, assetMgr);
 	}
 	// The other args are actually available from the rrc, so can be factored out of these params.
@@ -168,7 +168,7 @@ public class TrialContent extends BasicDebugger {
 		// The guiBucket isn't really necessary, since spatial will inherit the guiBucket from the gui parent Node.
 		RenderQueue.Bucket guiBucket = RenderQueue.Bucket.Gui;
 		myFlatDigitsBTS = tsf.makeTextSpatial(digits, txtRegScale, guiBucket, textWrapPixWidth);
-		myCamStatBT = tsf.makeTextSpatial(myCamStatTxt, txtRegScale, null, textWrapPixWidth);
+		myCamStatBT = tsf.makeTextSpatial(myCamStatTxt, txtRegScale * 0.7f, null, 95 );
 		myOverlayEqnBT = tsf.makeTextSpatial("X+Y", txtDoubleScale, null, textWrapPixWidth);
 		
 		// Text is rendered downward and right from the origin (local 0.0,0.0) position of the spatial.
@@ -176,7 +176,7 @@ public class TrialContent extends BasicDebugger {
 		// If positioned at y=10.0f, we can just barely see the top edge of the first line of text.
 		
 		myFlatDigitsBTS.setLocalTranslation(200.0f, 60.0f, 0.0f);
-		myCamStatBT.setLocalTranslation(580.0f, 40.0f, -5.0f);
+		myCamStatBT.setLocalTranslation(540.0f, 80.0f, -5.0f);
 		myOverlayEqnBT.setLocalTranslation(300.0f, 250.0f, 0.0f);
 		
 		myMainGuiNode.attachChild(myCamStatBT);
@@ -184,15 +184,15 @@ public class TrialContent extends BasicDebugger {
 		myMainGuiNode.attachChild(myOverlayEqnBT);
 		
 
-		myCamStatBox = new TextBox2D(rrc, new FreeIdent("uri:org.cogchar/goody_inst#camStatBox2D"), "opt init txt", 
+		myFloatingStatBox = new TextBox2D(rrc, new FreeIdent("uri:org.cogchar/goody_inst#camStatBox2D"), "opt init txt", 
 					ColorRGBA.White, ColorRGBA.Magenta);
 		// param-set ops can be called in any order, but setupAndAttach should generally be called only
 		// once in the lifetime of the box.
 
-		myCamStatBox.setCoordinates(380, 150, -2.5f, 110, 90, Queuer.QueueingStyle.INLINE);  // x, y, z-order, width, height
+		myFloatingStatBox.setCoordinates(380, 150, -2.5f, 110, 90, Queuer.QueueingStyle.INLINE);  // x, y, z-order, width, height
 		// This should be called only once, but can be at any point relative to the parameter/content setting calls,
 		// which can then be repeated anytime to update the contents (modulo thread concerns).  
-		myCamStatBox.setupContentsAndAttachToParent(myMainGuiNode, rrc, assetMgr);
+		myFloatingStatBox.setupContentsAndAttachToParent(myMainGuiNode, rrc, assetMgr);
 		
 	}
 		// rrc.getSceneFlatFacade(null).detachAllOverlays();
@@ -204,11 +204,11 @@ public class TrialContent extends BasicDebugger {
 	
 	protected void attachMidiCCs(TempMidiBridge tmb) { 
 		// Controller numbers starting with 21 are the default CC numbers Automap applies to the knobs of a Nocturn
-		tmb.putControlChangeParamBinding(21, RectangularWidget2D.CoordName.X.name(), myCamStatBox); 
-		tmb.putControlChangeParamBinding(22, RectangularWidget2D.CoordName.Y.name(), myCamStatBox); 
-		tmb.putControlChangeParamBinding(23, RectangularWidget2D.CoordName.Width.name(), myCamStatBox); 
-		tmb.putControlChangeParamBinding(24, RectangularWidget2D.CoordName.Height.name(), myCamStatBox); 
-		tmb.putControlChangeParamBinding(25, TextBox2D.TEXT_VAL_PARAM_NAME, myCamStatBox); 
+		tmb.putControlChangeParamBinding(21, RectangularWidget2D.CoordName.X.name(), myFloatingStatBox); 
+		tmb.putControlChangeParamBinding(22, RectangularWidget2D.CoordName.Y.name(), myFloatingStatBox); 
+		tmb.putControlChangeParamBinding(23, RectangularWidget2D.CoordName.Width.name(), myFloatingStatBox); 
+		tmb.putControlChangeParamBinding(24, RectangularWidget2D.CoordName.Height.name(), myFloatingStatBox); 
+		tmb.putControlChangeParamBinding(25, TextBox2D.TEXT_VAL_PARAM_NAME, myFloatingStatBox); 
 		
 
 	}
@@ -260,6 +260,9 @@ public class TrialContent extends BasicDebugger {
 		tNexus.makeSheetspace(myMainDeepNode, unshMat);		
 	}
 
+	public void setCamDebugText(String dbgTxt) { 
+		myCamStatBT.setText(dbgTxt);
+	}
 
 
 

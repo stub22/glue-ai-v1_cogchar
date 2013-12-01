@@ -200,4 +200,8 @@ public class CameraBinding extends BasicDebugger {
 			}
 		}, Queuer.QueueingStyle.QUEUE_AND_RETURN);
 	}
+	
+	public String getDebugText() { 
+		return "pos=[" + myWorldPosVec3f + "]\npointDir=[" + myPointDirVec3f + "]\nline 3";
+	}
 }
