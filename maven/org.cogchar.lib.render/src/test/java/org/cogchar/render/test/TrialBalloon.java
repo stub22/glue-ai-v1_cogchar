@@ -118,21 +118,21 @@ public class TrialBalloon extends CogcharPresumedApp {
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.simpleInitApp()");
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
 		flyCam.setMoveSpeed(20);
-		TrialContent tc = new TrialContent();
+		TrialContent trialCont = new TrialContent();
 		CogcharRenderContext crc = getRenderContext();
 		RenderRegistryClient rrc = crc.getRenderRegistryClient();
-		tc.shedLight_onRendThread(crc);
+		trialCont.shedLight_onRendThread(crc);
 		// The other args besides rrc are superfluous, since they are indirectly accessible through rrc.
 		// Note that these other args are all instance variables of this TrialBalloon app, inherited from JME3 SimpleApp.
-		tc.initContent3D_onRendThread(rrc, rootNode, viewPort);
+		trialCont.initContent3D_onRendThread(rrc, rootNode, viewPort);
 		
 		// Camera-viewports are placed in the screen coordinate system, so we might consider them to be a kind
 		// of 2-D content.  They are part of that layout, anyhoo.
-		tc.initContent2D_onRendThread(rrc, guiNode, assetManager);
-		tc.attachMidiCCs(myTMB);
+		trialCont.initContent2D_onRendThread(rrc, guiNode, assetManager);
+		trialCont.attachMidiCCs(myTMB);
 		
 		TrialCameras tcam = new TrialCameras();
-		tcam.setupCamerasAndViews(rrc, crc);
+		tcam.setupCamerasAndViews(rrc, crc, trialCont);
 		
 		tcam.attachMidiCCs(myTMB);
 		

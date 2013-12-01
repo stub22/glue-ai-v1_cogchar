@@ -42,11 +42,15 @@ public class TrialCameras extends BasicDebugger implements ParamValueListener {
 
 	private		CameraBinding		myWackyCamBinding;
 	
-	private	Float	myAzimuth, myElevation, myDepth;
+	private	Float	myAzimuth = 0.0f, myElevation = 0.0f, myDepth = 0.0f;
+	private float[] camPos = new float[] {0.0f, 10.0f, 10.0f}; 
 	
-	public void setupCamerasAndViews(RenderRegistryClient rrc, CogcharRenderContext crc) { 
-
-		float[] camPos = new float[] {0.0f, 10.0f, 10.0f}; 
+	private TrialContent myContentBridge;
+	
+	public void setupCamerasAndViews(RenderRegistryClient rrc, CogcharRenderContext crc, TrialContent tc) { 
+		
+		myContentBridge = tc;
+		
 		float[] camPointDir = new float[] {0.0f, -2.0f, -1.0f};
 		float[] displayRect = new float[] {0.7f, 0.9f, 0.7f, 0.9f};
 		
@@ -68,6 +72,8 @@ public class TrialCameras extends BasicDebugger implements ParamValueListener {
 	protected void attachMidiCCs(TempMidiBridge tmb) { 
 		tmb.putControlChangeParamBinding(27, CamCoord.AZIMUTH.name(), this); 
 		tmb.putControlChangeParamBinding(28, CamCoord.ELEVATION.name(), this); 
+		
+		// Experiment:  assign CC #40 to a crossfader, e.g. on a Nocturn
 		tmb.putControlChangeParamBinding(40, CamCoord.DEPTH.name(), this); 				
 	}	
 	
@@ -105,6 +111,16 @@ public class TrialCameras extends BasicDebugger implements ParamValueListener {
 		pointDir.y = dirY;
 		// May or may not be necessary, depending on assumptoins about the get/set methods
 		myWackyCamBinding.setPointDir(pointDir);
+		
+		camPos[2] = -25.0f + myDepth;
+		
+		Vector3f camPosV3f = new Vector3f(camPos[0], camPos[1], camPos[2]);
+	
+		myWackyCamBinding.setWorldPos(camPosV3f);
+			
+		String camBindingStats = myWackyCamBinding.getDebugText();
+		getLogger().debug("Cam binding stats: {}", camBindingStats);
+		myContentBridge.setCamDebugText(camBindingStats);
 		
 		myWackyCamBinding.applyInVWorld(Queuer.QueueingStyle.QUEUE_AND_RETURN);
 	}

@@ -17,6 +17,7 @@
 package org.cogchar.render.test;
 
 import com.jme3.collision.CollisionResult;
+import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -38,12 +39,17 @@ import com.jme3.scene.control.CameraControl;
 import com.jme3.scene.shape.Quad;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class TrialNexus extends BasicDebugger {
+	private RenderRegistryClient	myRRC;
+	public TrialNexus(RenderRegistryClient rrc) {
+		myRRC = rrc;
+	}
 	public void makeSheetspace(Node parentNode, Material  baseMat) {
 		int xCount= 7, yCount = 5, zCount = 9;
 		MultiDimGridSpace deepSpace = GridSpaceFactory.makeSpace3D(xCount, -40.0f, 40.0f, yCount, -20.0f, 20.0f, zCount, -50.0f, 20.0f);
@@ -66,6 +72,8 @@ public class TrialNexus extends BasicDebugger {
 		baseMat.getAdditionalRenderState().setBlendMode(matBlendMode);
 		baseMat.getAdditionalRenderState().setFaceCullMode(matFaceCullMode);	
 		
+		TextSpatialFactory tsf = new TextSpatialFactory(myRRC);
+	
 		int cellCount = xCount * yCount * zCount;
 		int seq = 0;
 		
@@ -83,18 +91,23 @@ public class TrialNexus extends BasicDebugger {
 					PosRange ypr = unitPB.myPRs()[1];
 					PosRange zpr = unitPB.myPRs()[2];
 					
-					Geometry qg1 = new Geometry("bq_" + seq  + "_1", new Quad(5, 5));
+					String qlabTxt01 = "bq_" + seq  + "_1";
+					Geometry qg1 = new Geometry(qlabTxt01, new Quad(5, 5));
 					qg1.setMaterial(localMat1);
 					qg1.setQueueBucket(spatRenderBucket);
 					qg1.setCullHint(spatCullHint);
 					
 					qg1.setLocalTranslation(xpr.getMin(), ypr.getMin(), zpr.getMin());
 					vizNode.attachChild(qg1);
+					BitmapText qlabBT_01 = tsf.makeTextSpatial(qlabTxt01, 0.2f, RenderQueue.Bucket.Transparent, 6);	
+					qlabBT_01.setLocalTranslation(xpr.getCenter(), ypr.getCenter(), zpr.getMin());
+					vizNode.attachChild(qlabBT_01);
 					
 					Material localMat2 = baseMat.clone();		
 					localMat1.setColor("Color", new ColorRGBA(0.9f, 0.8f, 0.1f, 0.5f));					
 					
-					Geometry qg2 = new Geometry("bq_" + seq + "_2", new Quad(5, 5));
+					String qlabTxt02 = "bq_" + seq + "_2";
+					Geometry qg2 = new Geometry(qlabTxt02, new Quad(5, 5));
 					qg2.setMaterial(localMat2);
 					qg2.setQueueBucket(spatRenderBucket);
 					qg2.setCullHint(spatCullHint);
@@ -105,6 +118,8 @@ public class TrialNexus extends BasicDebugger {
 					qg2.setLocalRotation(rotAboutY_90);
 					
 					vizNode.attachChild(qg2);
+	
+									
 
 				}
 			}
