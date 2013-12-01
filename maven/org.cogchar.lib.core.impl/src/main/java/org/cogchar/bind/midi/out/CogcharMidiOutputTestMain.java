@@ -389,7 +389,7 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 				nVelocity);
 		} catch (InvalidMidiDataException e) {
 			e.printStackTrace();
-			System.exit(1);
+			return null;
 		}
 		MidiEvent event = new MidiEvent(message,
 			lTick);
