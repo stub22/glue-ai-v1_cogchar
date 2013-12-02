@@ -107,7 +107,7 @@ public class CameraMgr {
 		}
 	}
 	
-	private void applyCameraConfig(CameraConfig cConf, RenderRegistryClient rrc, CogcharRenderContext crc) { // CogcharRenderContext crc) {
+	public void applyCameraConfig(CameraConfig cConf, RenderRegistryClient rrc, CogcharRenderContext crc) { // CogcharRenderContext crc) {
 		
 		Ident camID = cConf.myCamID;
 		CameraBinding camBind = findOrMakeCameraBinding(camID); 
@@ -117,9 +117,10 @@ public class CameraMgr {
 			camBind.attachViewPort(rrc);
 			camBind.applyInVWorld(Queuer.QueueingStyle.QUEUE_AND_RETURN);
 		}
-		// Special handling for head cams, currently recognized by a string pattern in the ID.
 		// TODO:  Use rdf:type
-		boolean flag_isHeadCam = camID.getLocalName().contains(LightsCameraAN.suffix_HEAD_CAM);
+		// Old way:
+		// boolean flag_isHeadCam = camID.getLocalName().contains(LightsCameraAN.suffix_HEAD_CAM);
+		boolean flag_isHeadCam = cConf.myBoneAttachmentFlag;
 		if (flag_isHeadCam) {
 			if (myAttachmentNodeFinder != null) {
 				Node attachmentNode = myAttachmentNodeFinder.findNode(cConf, crc);

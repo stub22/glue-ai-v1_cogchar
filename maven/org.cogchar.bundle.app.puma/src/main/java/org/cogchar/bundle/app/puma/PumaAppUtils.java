@@ -48,7 +48,19 @@ public class PumaAppUtils extends BasicDebugger {
 	static Logger theLogger = LoggerFactory.getLogger(PumaAppUtils.class);
 
 	/**
-	 * This is a conve
+	 * This is a crude handle-grabbing entry pont, which assumes "the application"
+	 * has already been initialized.  
+	 * It is used from:
+	 *		PumaAppUtils.attachVWorldRenderModule
+	 *		PumaAppUtils.getKnownAnimationFiles
+	 * 
+	 *		GruesomeTAProcessingFuncs.registerActionConsumers
+	 *		GreedyHandleSet.processPendingThingActions
+	 * 
+	 *		CCRK_DemoActivator.startDeicticMonitoring - New capstone features for viz of gaze, pointing, throwing, kicking
+	 *		CCRK_DemoActivator.setupDebuggingScaffold - disabled exposure to Swing GUI
+	 *		
+	 * 
 	 */
 	public static class GreedyHandleSet {
 		public PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
