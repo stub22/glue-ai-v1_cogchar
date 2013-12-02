@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.test;
+package org.cogchar.render.trial;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Receiver;

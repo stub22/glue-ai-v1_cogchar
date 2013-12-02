@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.test;
+package org.cogchar.render.trial;
 
 import com.jme3.math.Vector3f;
 import org.appdapter.core.log.BasicDebugger;
@@ -27,6 +27,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.api.cinema.CameraConfig;
 import org.cogchar.render.app.entity.CameraBinding;
 import org.cogchar.render.sys.task.Queuer;
+
 
 /**
  * @author Stu B. <www.texpedient.com>

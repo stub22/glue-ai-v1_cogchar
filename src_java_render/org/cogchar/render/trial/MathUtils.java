@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.test;
+package org.cogchar.render.trial;
 
 /**
  * @author Stu B. <www.texpedient.com>
