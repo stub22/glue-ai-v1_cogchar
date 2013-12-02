@@ -20,16 +20,8 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 import org.cogchar.render.opengl.optic.CameraMgr;
 
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import com.jme3.scene.CameraNode;
-import com.jme3.scene.control.CameraControl.ControlDirection;
-import org.cogchar.render.app.entity.CameraBinding;
+
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +37,7 @@ public class HominoidCameraManager implements CameraMgr.AttachmentNodeFinder {
 		if (crc != null) {
 			HumanoidRenderContext hrc = (HumanoidRenderContext) crc;
 			HumanoidFigureManager hfm = hrc.getHumanoidFigureManager();
-			attachmentNode = hfm.findHumanoidBone(hrc, config.attachedRobot, config.attachedItem);
+			attachmentNode = hfm.findHumanoidBone(hrc, config.myAttachedRobotID, config.myAttachedBoneName);
 		} else {
 			theLogger.warn("Attempting to add head camera, but HumanoidRenderContext has not been set!");
 		}

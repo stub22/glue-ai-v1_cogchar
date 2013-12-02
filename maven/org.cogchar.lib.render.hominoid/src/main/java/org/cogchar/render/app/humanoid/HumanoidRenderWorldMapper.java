@@ -42,8 +42,17 @@ import org.slf4j.LoggerFactory;
 public class HumanoidRenderWorldMapper {
 	private static Logger theLogger = LoggerFactory.getLogger(HumanoidRenderWorldMapper.class);
 
+	
 	public void initLightsAndCamera(RepoClient qi, HumanoidRenderContext hrc, Ident qGraph) {
-		// The LightsCameraConfig constructor now automatically loads config from sheet
+		// Note that this requires the magical hrc power object, whereas we would prefer it didn't.
+		// Called from a stack like this:
+		// PumaVirtualWorldMapper.initCinematicStuff()
+		// PumaVirtualWorldMapper.initVirtualWorlds()
+		// PumaAppContext.initCinema()
+		// which may be called from 3 places:
+		// PumaBooter.pumaBootUnsafeUnderOSGi(), PumaAppContext.reloadAll(), PumaContextCommandBox.processUpdateRequestNow()
+		
+		// Builds a config object set from the supplied graph:
 		LightsCameraConfig lcc = new LightsCameraConfig(qi, qGraph);
 		RenderRegistryClient rendRegCli = hrc.getRenderRegistryClient();
 		CameraMgr cm = rendRegCli.getOpticCameraFacade(null);
@@ -102,7 +111,7 @@ public class HumanoidRenderWorldMapper {
 	}
 	
 	
-	// A temporary way to make it possible to interact with figures... ultimately Humanoids aren't goodies!
+	// A temporary way to make it possible to interact with figures... but ultimately, Humanoids aren't quite goodies!
 	public void addHumanoidGoodies(VWorldEntityActionConsumer consumer, HumanoidRenderContext hrc) {
 		GoodyRenderRegistryClient grrc = hrc.getGoodyRenderRegistryClient();
 		Map<Ident, HumanoidFigure> humanoidFigures = hrc.getHumanoidFigureManager().getHumanoidFigures();
