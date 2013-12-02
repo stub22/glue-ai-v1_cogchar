@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.test;
+package org.cogchar.render.trial;
 
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
@@ -22,6 +22,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.sys.task.Queuer;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
+
 
 /**
  * @author Stu B. <www.texpedient.com>

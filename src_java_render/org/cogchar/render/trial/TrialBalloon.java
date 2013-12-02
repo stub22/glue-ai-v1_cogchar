@@ -13,13 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.test;
+package org.cogchar.render.trial;
 
+import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import org.cogchar.render.app.core.CogcharPresumedApp;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
+// import org.cogchar.render.test.ZZConfigReader;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -67,10 +69,12 @@ public class TrialBalloon extends CogcharPresumedApp {
 	public void playMidiOutput() { 
 		myTMB.playSomeOutput();
 	}
+	/*
 	private void optLoadConfig() {
 		ZZConfigReader zzcr = new ZZConfigReader();
 		zzcr.readConf();
 	}
+	*/
 	@Override public void start() {
 		try {
 
@@ -124,7 +128,9 @@ public class TrialBalloon extends CogcharPresumedApp {
 		trialCont.shedLight_onRendThread(crc);
 		// The other args besides rrc are superfluous, since they are indirectly accessible through rrc.
 		// Note that these other args are all instance variables of this TrialBalloon app, inherited from JME3 SimpleApp.
-		trialCont.initContent3D_onRendThread(rrc, rootNode, viewPort);
+		trialCont.initContent3D_onRendThread(rrc, rootNode);
+		
+		viewPort.setBackgroundColor(ColorRGBA.Blue);
 		
 		// Camera-viewports are placed in the screen coordinate system, so we might consider them to be a kind
 		// of 2-D content.  They are part of that layout, anyhoo.
