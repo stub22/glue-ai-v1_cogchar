@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.test;
+package org.cogchar.render.trial;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
@@ -115,7 +115,7 @@ public class TrialContent extends BasicDebugger {
 
 	
 	// The other args are really implied by the rrc, so can be factored out
-	public void initContent3D_onRendThread(RenderRegistryClient rrc, Node appRootNode, ViewPort appViewPort) {
+	public void initContent3D_onRendThread(RenderRegistryClient rrc, Node appRootNode) {
 		
 		myMainDeepNode = new Node("my_main_deep");
 		appRootNode.attachChild(myMainDeepNode);
@@ -143,7 +143,7 @@ public class TrialContent extends BasicDebugger {
 		 */
 		bbCont.setAlignment(BillboardControl.Alignment.Screen);
 		myLettersBTS.addControl(bbCont);
-		appViewPort.setBackgroundColor(ColorRGBA.Blue);
+
 		
 		AssetManager assetMgr = rrc.getJme3AssetManager(null);
 		
@@ -202,7 +202,7 @@ public class TrialContent extends BasicDebugger {
 
 
 	
-	protected void attachMidiCCs(TempMidiBridge tmb) { 
+	public void attachMidiCCs(TempMidiBridge tmb) { 
 		// Controller numbers starting with 21 are the default CC numbers Automap applies to the knobs of a Nocturn
 		tmb.putControlChangeParamBinding(21, RectangularWidget2D.CoordName.X.name(), myFloatingStatBox); 
 		tmb.putControlChangeParamBinding(22, RectangularWidget2D.CoordName.Y.name(), myFloatingStatBox); 

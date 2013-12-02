@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.test;
+package org.cogchar.render.trial;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapText;
