@@ -16,12 +16,13 @@
 
 package org.cogchar.nbui.render.trigger;
 
-import org.cogchar.api.scene.ActionCallbackMap;
+import org.cogchar.svc.behav.control.ActionCallbackMap;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JButton;
+import org.jflux.api.core.Listener;
 
 /**
  *
@@ -90,4 +91,13 @@ public class TriggerPanel extends javax.swing.JPanel implements ActionCallbackMa
 		}
 		return result;		
 	}
+    
+    public void addActionListener(Listener<String> listener){}
+    
+    public void removeActionListener(Listener<String> listener){}
+    
+    public void addActionRemoveListener(Listener<String> listener){}
+    
+    public void removeActionRemoveListener(Listener<String> listener){}
+
 }
