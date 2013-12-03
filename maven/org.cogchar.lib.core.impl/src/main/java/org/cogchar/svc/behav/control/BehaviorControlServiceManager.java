@@ -18,7 +18,6 @@ package org.cogchar.svc.behav.control;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.cogchar.api.scene.ActionCallbackMap;
 import org.jflux.api.registry.basic.BasicDescriptor;
 import org.jflux.api.service.ServiceManager;
 import org.jflux.api.service.binding.ServiceBinding;

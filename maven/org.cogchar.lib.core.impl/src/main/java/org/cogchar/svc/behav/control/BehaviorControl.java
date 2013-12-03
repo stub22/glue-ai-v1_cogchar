@@ -20,7 +20,6 @@ import java.awt.event.ActionListener;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.WantsThingAction;
-import org.cogchar.api.scene.ActionCallbackMap;
 import org.cogchar.name.web.WebUserActionNames;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
