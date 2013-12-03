@@ -13,9 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.api.scene;
+package org.cogchar.svc.behav.control;
 
 import java.awt.event.ActionListener;
+import org.jflux.api.core.Listener;
 
 /**
  *
@@ -29,4 +30,12 @@ public interface ActionCallbackMap {
     public ActionListener getActionCallback(String actionCallbackName);	
     
 	public void removeActionCallback(String actionCallbackName);
+    
+    public void addActionListener(Listener<String> listener);
+    
+    public void removeActionListener(Listener<String> listener);
+    
+    public void addActionRemoveListener(Listener<String> listener);
+    
+    public void removeActionRemoveListener(Listener<String> listener);
 }

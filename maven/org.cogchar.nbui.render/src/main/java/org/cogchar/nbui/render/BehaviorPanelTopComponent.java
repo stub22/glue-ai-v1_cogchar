@@ -17,7 +17,7 @@ package org.cogchar.nbui.render;
 
 import org.cogchar.bind.rk.robot.client.RobotSelector;
 import org.cogchar.bind.rk.robot.client.RobotSelector.OSGiRobotSelector;
-import org.cogchar.api.scene.ActionCallbackMap;
+import org.cogchar.svc.behav.control.ActionCallbackMap;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.netbeans.api.settings.ConvertAsProperties;
