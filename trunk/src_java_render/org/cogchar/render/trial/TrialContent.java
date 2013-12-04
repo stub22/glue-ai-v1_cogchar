@@ -24,6 +24,8 @@ import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
@@ -31,6 +33,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.BillboardControl;
+import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Quad;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
@@ -113,6 +116,9 @@ public class TrialContent extends BasicDebugger {
 	private TextBox2D		myFloatingStatBox;
 	
 
+	public Node getMainDeepNode() { 
+		return myMainDeepNode;
+	}
 	
 	// The other args are really implied by the rrc, so can be factored out
 	public void initContent3D_onRendThread(RenderRegistryClient rrc, Node appRootNode) {
@@ -149,6 +155,7 @@ public class TrialContent extends BasicDebugger {
 		
 		TrialNexus tNexus = new TrialNexus(rrc);
 		makeRectilinearParamViz(tNexus, assetMgr);
+		makeCones(assetMgr);
 	}
 	// The other args are actually available from the rrc, so can be factored out of these params.
 	public void initContent2D_onRendThread(RenderRegistryClient rrc, Node parentGUInode, AssetManager assetMgr) {
@@ -265,5 +272,77 @@ public class TrialContent extends BasicDebugger {
 	}
 
 
+	public void makeCones( AssetManager assetMgr) { 
 
+		Node coneDemoNode = new Node("cone_demo_root");
+
+		// On a mat, we frequently set color, and for transparency/lucency we set the BlendMode on addtlRenderState.
+		// On a mat, we could choose to set the cull mode, but that can also be done on shapes - as below.
+		// 
+		Material unshMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
+		unshMat.setColor("Color", new ColorRGBA(0.9f, 0.5f, 0.3f, 0.4f));
+		RenderState.BlendMode matBlendMode = RenderState.BlendMode.Alpha;
+		RenderQueue.Bucket spatRenderBucket  = RenderQueue.Bucket.Transparent;
+		FaceCullMode matFaceCullMode = FaceCullMode.Off;  		// Render both sides
+		Spatial.CullHint spatCullHint = Spatial.CullHint.Never;  // Others are CullHint.Always, CullHint.Inherit
+		
+		// To get transparency, we also need to put spatials into eligible buckets
+		unshMat.getAdditionalRenderState().setBlendMode(matBlendMode);
+		
+		unshMat.getAdditionalRenderState().setFaceCullMode(matFaceCullMode);	
+		for (int i =0; i< 10; i++) {
+			float p = i * 3.0f;
+			// Javadocs say this is insideView, but source code calls it outsideView.
+			// Huh?  
+			// TODO: recheck
+			// boolean insideView = false;
+			boolean insideView = ((i %2) == 0);
+			Vector3f innerCenter = new Vector3f(0.0f, 0.0f, 0.0f);
+			Vector3f outerPos = new Vector3f(-15.0f + p, 25.0f, -3.0f);
+			int numPlanes = 2;
+			float radius = 1.5f;
+			int numBasePoints = i+1;
+			Dome d = new Dome(innerCenter, numPlanes, numBasePoints, radius, insideView);
+			
+			Geometry dg = new Geometry("dome_" + i, d);
+			// Make em taller
+			dg.setLocalScale(1.0f, 10.0f, 1.0f);
+			dg.setMaterial(unshMat);
+			dg.setQueueBucket(spatRenderBucket);
+			dg.setCullHint(spatCullHint);
+			dg.setLocalTranslation(outerPos);
+			coneDemoNode.attachChild(dg);
+		}
+		myMainDeepNode.attachChild(coneDemoNode);
+			
+	}
+	public Node makeVisionPyramidNode(AssetManager assetMgr, String nameSuffix) { 
+		Node vizPyrNode = new Node("visionPyramid_" + nameSuffix);
+		Material unshMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
+		unshMat.setColor("Color", new ColorRGBA(0.7f, 0.0f, 0.9f, 0.7f));
+		RenderState.BlendMode matBlendMode = RenderState.BlendMode.Alpha;
+		RenderQueue.Bucket spatRenderBucket  = RenderQueue.Bucket.Transparent;
+		FaceCullMode matFaceCullMode = FaceCullMode.Off;  		// Render both sides
+		Spatial.CullHint spatCullHint = Spatial.CullHint.Never;  // Others are CullHint.Always, CullHint.Inherit
+		unshMat.getAdditionalRenderState().setBlendMode(matBlendMode);
+		unshMat.getAdditionalRenderState().setFaceCullMode(matFaceCullMode);		
+		boolean insideView = false;
+		Vector3f innerCenter = new Vector3f(0.0f, 0.0f, 0.0f);
+		int numPlanes = 2;
+		float radius = 1.0f;	
+		int numBasePoints = 4;
+		Dome d = new Dome(innerCenter, numPlanes, numBasePoints, radius, insideView);
+		Geometry dg = new Geometry("vpg_" + nameSuffix, d);
+		dg.setLocalScale(2.0f, 40.0f, 2.0f);
+		dg.setLocalTranslation(0.0f, -40.0f, 0.0f);
+		dg.setMaterial(unshMat);
+		dg.setQueueBucket(spatRenderBucket);
+		dg.setCullHint(spatCullHint);
+	
+		vizPyrNode.attachChild(dg);
+		Matrix3f rotMatrix = new Matrix3f();
+		rotMatrix.fromAngleAxis(-1.0f * FastMath.HALF_PI, Vector3f.UNIT_X);
+		vizPyrNode.setLocalRotation(rotMatrix);
+		return vizPyrNode;
+	}
 }

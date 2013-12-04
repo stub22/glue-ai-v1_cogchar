@@ -16,6 +16,7 @@
 
 package org.cogchar.render.trial;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
@@ -28,6 +29,7 @@ import org.cogchar.api.cinema.CameraConfig;
 import org.cogchar.render.app.entity.CameraBinding;
 import org.cogchar.render.sys.task.Queuer;
 
+import com.jme3.scene.Node;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -49,6 +51,7 @@ public class TrialCameras extends BasicDebugger implements ParamValueListener {
 	private TrialContent myContentBridge;
 	
 	public void setupCamerasAndViews(RenderRegistryClient rrc, CogcharRenderContext crc, TrialContent tc) { 
+		AssetManager assetMgr = rrc.getJme3AssetManager(null);
 		
 		myContentBridge = tc;
 		
@@ -68,6 +71,16 @@ public class TrialCameras extends BasicDebugger implements ParamValueListener {
 		myWackyCamBinding.attachViewPort(rrc);
 		myWackyCamBinding.applyInVWorld(Queuer.QueueingStyle.QUEUE_AND_RETURN);
 		
+		Node wackyVizPyrNode = myContentBridge.makeVisionPyramidNode(assetMgr, "wacky");
+		
+		Node mainDeepNode = myContentBridge.getMainDeepNode();
+		myWackyCamBinding.attachSceneNodeToCamera(wackyVizPyrNode, mainDeepNode);
+
+		CameraBinding	defFlyByCamBind = camMgr.getDefaultCameraBinding();
+		Node dfbVizPyrNode = myContentBridge.makeVisionPyramidNode(assetMgr, "defFlyBy");
+		
+		defFlyByCamBind.attachSceneNodeToCamera(dfbVizPyrNode, mainDeepNode);
+
 	}
 	
 	protected void attachMidiCCs(TempMidiBridge tmb) { 
