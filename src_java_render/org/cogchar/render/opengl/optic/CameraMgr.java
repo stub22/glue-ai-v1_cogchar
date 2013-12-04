@@ -46,6 +46,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com> & Ryan Biggs
+ * 
+ * We note that a CameraControl can pump in two different directions:  Cam to Node, or Node to Cam.
+ * 
+ * The default FlyByCamera that we control with keystrokes is a subclass of Cam that does not
+ * use a CameraNode.  To show a vision cone coming out of it, in theory we can attach a cone-Node
+ * to a CameraNode, then attach that to the camera with location-pumping from Camera-to-Node.
+ * 
+ * For binding a camera to a character, we go in the other direction.
  */
 public class CameraMgr {
 
@@ -68,7 +76,9 @@ public class CameraMgr {
 	
 
 	public void registerDefaultCamera(Camera defCam, Queuer aQueuer) { 
-		// This method gets called from  CoreFeatureAdapter.registerJMonkeyDefaultCameras()		
+		// This method gets called from  
+		// CoreFeatureAdapter.registerJMonkeyDefaultCameras(),
+		// which is called from CogharRenderApp.simpleInitApp().
 		theLogger.info("Registering DefaultCamera and Queuer");
 		myQueuer = aQueuer;
 		CameraBinding defCB = new MainCameraBinding(myQueuer, DEF_CAM_ID);
@@ -120,12 +130,12 @@ public class CameraMgr {
 		// TODO:  Use rdf:type
 		// Old way:
 		// boolean flag_isHeadCam = camID.getLocalName().contains(LightsCameraAN.suffix_HEAD_CAM);
-		boolean flag_isHeadCam = cConf.myBoneAttachmentFlag;
-		if (flag_isHeadCam) {
+		boolean flag_isBoneAttached = cConf.myBoneAttachmentFlag;
+		if (flag_isBoneAttached) {
 			if (myAttachmentNodeFinder != null) {
 				Node attachmentNode = myAttachmentNodeFinder.findNode(cConf, crc);
 				if (attachmentNode != null) {
-					camBind.attachToNode(attachmentNode);
+					camBind.attachCameraToSceneNode(attachmentNode);
 				}
 			}
 			else {

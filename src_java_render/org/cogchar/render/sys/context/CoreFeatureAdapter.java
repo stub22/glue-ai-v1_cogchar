@@ -62,6 +62,7 @@ public class CoreFeatureAdapter extends BasicDebugger {
 	}
 
 	static public void registerJMonkeyDefaultCameras(RenderRegistryClient rrc, Camera defCam, FlyByCamera fbc) {
+		// Called from CogharRenderApp.simpleInitApp()
 		CameraMgr cm = rrc.getOpticCameraFacade(null);
 		Queuer q = new Queuer(rrc);
 		cm.registerDefaultCamera(defCam, q);
