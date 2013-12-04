@@ -37,7 +37,7 @@ public class HominoidCameraManager implements CameraMgr.AttachmentNodeFinder {
 		if (crc != null) {
 			HumanoidRenderContext hrc = (HumanoidRenderContext) crc;
 			HumanoidFigureManager hfm = hrc.getHumanoidFigureManager();
-			attachmentNode = hfm.findHumanoidBone(hrc, config.myAttachedRobotID, config.myAttachedBoneName);
+			attachmentNode = hfm.findHumanoidBoneAttachNode(hrc, config.myAttachedRobotID, config.myAttachedBoneName);
 		} else {
 			theLogger.warn("Attempting to add head camera, but HumanoidRenderContext has not been set!");
 		}

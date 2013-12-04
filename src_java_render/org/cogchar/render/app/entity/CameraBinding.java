@@ -63,6 +63,10 @@ public class CameraBinding extends BasicDebugger {
 	private ViewPort myViewport;
 	private Queuer myQueuer;
 
+	// Only used when Camera is attached to a node (not the other way around!)
+	
+	private	CameraNode	myCamNode;
+	
 	public CameraBinding(Queuer queuer, Ident requiredID) {
 		myIdent = requiredID;
 		myQueuer = queuer;
@@ -177,16 +181,22 @@ public class CameraBinding extends BasicDebugger {
 			myViewport = null;
 		}
 	}
-
-	public void attachToNode(final Node parentNode) {
-		final CameraNode camNode = new CameraNode("NodeFor_" + getShortName(), myCam);
-		camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera);
+	public CameraNode getCameraNode() { 
+		return myCamNode;
+	}
+	public void attachCameraToSceneNode(final Node parentNode) {
+		if (myCamNode != null) {
+			throw new RuntimeException("Camera is already attached to a node!");
+		}
+		// Called from CameraMgr.applyCameraConfig()
+		myCamNode = new CameraNode("CamNodeFor_" + getShortName(), myCam);
+		myCamNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera);
 
 		myQueuer.enqueueForJme(new Callable() { // Do this on main render thread
 			@Override public Void call() throws Exception {
-				parentNode.attachChild(camNode);
+				parentNode.attachChild(myCamNode);
 				if (myWorldPosVec3f != null) {
-					camNode.setLocalTranslation(myWorldPosVec3f);
+					myCamNode.setLocalTranslation(myWorldPosVec3f);
 				}
 				if (myPointDirVec3f != null) {
 					// Was doing this, but should be fromAxis?
@@ -204,4 +214,20 @@ public class CameraBinding extends BasicDebugger {
 	public String getDebugText() { 
 		return "pos=[" + myWorldPosVec3f + "]\npointDir=[" + myPointDirVec3f + "]\nline 3";
 	}
+	
+	// This approach is used when we want the camera's location to drive the location of
+	// a sceneNode.  For example, when we want to attach a visible-field-pyramid onto a FlyByCamera,
+	// such as the default one JME3 supplies.
+	public void attachSceneNodeToCamera(final Node displayNode, Node camNodeParent) {
+		if (myCamNode != null) {
+			throw new RuntimeException("Camera is already attached to a node!");
+		}
+		
+		myCamNode = new CameraNode("CamNodeFor_" + getShortName(), myCam);
+		myCamNode.setControlDir(CameraControl.ControlDirection.CameraToSpatial);
+		myCamNode.attachChild(displayNode);
+		camNodeParent.attachChild(myCamNode);
+		myCamNode.setEnabled(true);
+	}
 }
+	

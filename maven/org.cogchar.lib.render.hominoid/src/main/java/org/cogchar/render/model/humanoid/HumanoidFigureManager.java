@@ -143,7 +143,7 @@ public class HumanoidFigureManager extends BasicDebugger {
 	}
 	
 	
-	public Node findHumanoidBone(BonyRenderContext brc, final Ident robotIdent, final String boneName) {
+	public Node findHumanoidBoneAttachNode(BonyRenderContext brc, final Ident robotIdent, final String boneName) {
 		final HumanoidFigure robot = getHumanoidFigure(robotIdent);
 		Node attachmentNode = null;
 		if (robot == null) {
