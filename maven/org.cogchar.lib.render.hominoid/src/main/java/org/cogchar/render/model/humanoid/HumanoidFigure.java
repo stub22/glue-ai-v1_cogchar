@@ -353,6 +353,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 			return null;
 		}
 	}
+	
 		
 	public static void applyHumanoidJointLimits(KinematicRagdollControl krc) {
 		float eighth_pi = FastMath.PI * 0.125f;
