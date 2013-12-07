@@ -71,13 +71,13 @@ public class TrialCameras extends BasicDebugger implements ParamValueListener {
 		myWackyCamBinding.attachViewPort(rrc);
 		myWackyCamBinding.applyInVWorld(Queuer.QueueingStyle.QUEUE_AND_RETURN);
 		
-		Node wackyVizPyrNode = myContentBridge.makeVisionPyramidNode(assetMgr, "wacky");
+		Node wackyVizPyrNode = myContentBridge.makePointerCone(rrc, "wacky");
 		
 		Node mainDeepNode = myContentBridge.getMainDeepNode();
 		myWackyCamBinding.attachSceneNodeToCamera(wackyVizPyrNode, mainDeepNode);
 
 		CameraBinding	defFlyByCamBind = camMgr.getDefaultCameraBinding();
-		Node dfbVizPyrNode = myContentBridge.makeVisionPyramidNode(assetMgr, "defFlyBy");
+		Node dfbVizPyrNode = myContentBridge.makePointerCone(rrc, "defFlyBy");
 		
 		defFlyByCamBind.attachSceneNodeToCamera(dfbVizPyrNode, mainDeepNode);
 

@@ -40,6 +40,7 @@ public class TrialBalloon extends CogcharPresumedApp {
 	private TempMidiBridge myTMB = new TempMidiBridge();
 	// In this test, we have the luxury of knowing the exact class of our associated context.
 	private TB_RenderContext myTBRC;
+	private	TrialContent		myContent;
 
 	public static void main(String[] args) {
 		// These two lines activate Log4J without requiring a log4j.properties file.  
@@ -122,26 +123,25 @@ public class TrialBalloon extends CogcharPresumedApp {
 		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.simpleInitApp()");
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
 		flyCam.setMoveSpeed(20);
-		TrialContent trialCont = new TrialContent();
+		myContent = new TrialContent();
 		CogcharRenderContext crc = getRenderContext();
 		RenderRegistryClient rrc = crc.getRenderRegistryClient();
-		trialCont.shedLight_onRendThread(crc);
+		myContent.shedLight_onRendThread(crc);
 		// The other args besides rrc are superfluous, since they are indirectly accessible through rrc.
 		// Note that these other args are all instance variables of this TrialBalloon app, inherited from JME3 SimpleApp.
-		trialCont.initContent3D_onRendThread(rrc, rootNode);
+		myContent.initContent3D_onRendThread(rrc, rootNode);
 		
 		viewPort.setBackgroundColor(ColorRGBA.Blue);
 		
 		// Camera-viewports are placed in the screen coordinate system, so we might consider them to be a kind
 		// of 2-D content.  They are part of that layout, anyhoo.
-		trialCont.initContent2D_onRendThread(rrc, guiNode, assetManager);
-		trialCont.attachMidiCCs(myTMB);
+		myContent.initContent2D_onRendThread(rrc, guiNode, assetManager);
+		myContent.attachMidiCCs(myTMB);
 		
 		TrialCameras tcam = new TrialCameras();
-		tcam.setupCamerasAndViews(rrc, crc, trialCont);
+		tcam.setupCamerasAndViews(rrc, crc, myContent);
 		
 		tcam.attachMidiCCs(myTMB);
-		
 		
 	}
 
@@ -160,7 +160,10 @@ public class TrialBalloon extends CogcharPresumedApp {
 			// 1) We want to be quick (avoid logging) 
 			// 2) We have direct access to the scene graph.
 			super.doUpdate(tpf);
-
+			if (myContent != null) {
+				RenderRegistryClient rrc = getRenderRegistryClient();
+				myContent.doUpdate(rrc, tpf);
+			}
 		}
 	}
 

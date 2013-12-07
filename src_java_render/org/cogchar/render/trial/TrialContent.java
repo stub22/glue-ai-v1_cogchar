@@ -43,6 +43,9 @@ import org.cogchar.render.sys.context.CoreFeatureAdapter;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.task.Queuer;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * @author Stu B. <www.texpedient.com>
  * 
@@ -115,6 +118,7 @@ public class TrialContent extends BasicDebugger {
 	
 	private TextBox2D		myFloatingStatBox;
 	
+	private	List<PointerCone>	myPointerCones = new ArrayList<PointerCone>();
 
 	public Node getMainDeepNode() { 
 		return myMainDeepNode;
@@ -154,11 +158,12 @@ public class TrialContent extends BasicDebugger {
 		AssetManager assetMgr = rrc.getJme3AssetManager(null);
 		
 		TrialNexus tNexus = new TrialNexus(rrc);
-		makeRectilinearParamViz(tNexus, assetMgr);
-		makeCones(assetMgr);
+		makeRectilinearParamViz(tNexus, rrc);
+		makeDisplayTestCones(rrc);
 	}
 	// The other args are actually available from the rrc, so can be factored out of these params.
 	public void initContent2D_onRendThread(RenderRegistryClient rrc, Node parentGUInode, AssetManager assetMgr) {
+		
 		myMainGuiNode = new Node("my_main_gui");
 
 		TextSpatialFactory tsf = new TextSpatialFactory(rrc);
@@ -233,63 +238,43 @@ public class TrialContent extends BasicDebugger {
 		CoreFeatureAdapter.addLightToRootNode(crc, odl);
 	}
 	
-	public void makeRectilinearParamViz(TrialNexus tNexus, AssetManager assetMgr) { 
-
-		
+	public void makeRectilinearParamViz(TrialNexus tNexus, RenderRegistryClient rrc) { 	
 		Node paramVizNode = new Node("param_viz_root");
 
-		// On a mat, we frequently set color, and for transparency/lucency we set the BlendMode on addtlRenderState.
-		// On a mat, we could choose to set the cull mode, but that can also be done on shapes - as below.
-		// 
-		Material unshMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
-		unshMat.setColor("Color", new ColorRGBA(0, 1.0f, 0, 0.5f));
-		
-		RenderState.BlendMode matBlendMode = RenderState.BlendMode.Alpha;
-		RenderQueue.Bucket spatRenderBucket  = RenderQueue.Bucket.Transparent;
-		FaceCullMode matFaceCullMode = FaceCullMode.Off;  		// Render both sides
-		Spatial.CullHint spatCullHint = Spatial.CullHint.Never;  // Others are CullHint.Always, CullHint.Inherit
-		
-		// To get transparency, we also need to put spatials into eligible buckets
-		unshMat.getAdditionalRenderState().setBlendMode(matBlendMode);
-		
-		unshMat.getAdditionalRenderState().setFaceCullMode(matFaceCullMode);	
+		Material mat = makeAlphaBlendedUnshadedMaterial(rrc, 0f, 1.0f, 0, 0.5f);
+			
+		// On a mat, we could choose to set the cull mode, but that can also be done 
+		// on shapes - as below.
+	
 		for (int i =0; i< 10; i++) {
 			float d = i * 25.0f;
 			Geometry qg = new Geometry("pvq_" + i, new Quad(10, 20));
-			qg.setMaterial(unshMat);
-			qg.setQueueBucket(spatRenderBucket);
-			qg.setCullHint(spatCullHint);
+			qg.setMaterial(mat);
+			configureRenderingForSpatial(qg);  // Sets the rendering bucket and cull mode
+
 			qg.setLocalTranslation(0.8f * d, -20.0f + 0.5f * d , -3.0f - 1.0f * d);
 			paramVizNode.attachChild(qg);
 		}
 		paramVizNode.setLocalTranslation(-10.0f, 10.0f, 5.0f);
 		myMainDeepNode.attachChild(paramVizNode);
-		tNexus.makeSheetspace(myMainDeepNode, unshMat);		
+		tNexus.makeSheetspace(myMainDeepNode, mat);		
 	}
 
 	public void setCamDebugText(String dbgTxt) { 
 		myCamStatBT.setText(dbgTxt);
 	}
 
-
-	public void makeCones( AssetManager assetMgr) { 
+	public Node makePointerCone(RenderRegistryClient rrc, String nameSuffix) { 
+		PointerCone pc = new PointerCone(nameSuffix);
+		pc.setup(rrc);
+		myPointerCones.add(pc);
+		return pc.getAssemblyNode();
+	}
+	public void makeDisplayTestCones(RenderRegistryClient rrc) { 
 
 		Node coneDemoNode = new Node("cone_demo_root");
+		Material mat = makeAlphaBlendedUnshadedMaterial(rrc, 0.9f, 0.5f, 0.3f, 0.4f);
 
-		// On a mat, we frequently set color, and for transparency/lucency we set the BlendMode on addtlRenderState.
-		// On a mat, we could choose to set the cull mode, but that can also be done on shapes - as below.
-		// 
-		Material unshMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
-		unshMat.setColor("Color", new ColorRGBA(0.9f, 0.5f, 0.3f, 0.4f));
-		RenderState.BlendMode matBlendMode = RenderState.BlendMode.Alpha;
-		RenderQueue.Bucket spatRenderBucket  = RenderQueue.Bucket.Transparent;
-		FaceCullMode matFaceCullMode = FaceCullMode.Off;  		// Render both sides
-		Spatial.CullHint spatCullHint = Spatial.CullHint.Never;  // Others are CullHint.Always, CullHint.Inherit
-		
-		// To get transparency, we also need to put spatials into eligible buckets
-		unshMat.getAdditionalRenderState().setBlendMode(matBlendMode);
-		
-		unshMat.getAdditionalRenderState().setFaceCullMode(matFaceCullMode);	
 		for (int i =0; i< 10; i++) {
 			float p = i * 3.0f;
 			// Javadocs say this is insideView, but source code calls it outsideView.
@@ -305,44 +290,47 @@ public class TrialContent extends BasicDebugger {
 			Dome d = new Dome(innerCenter, numPlanes, numBasePoints, radius, insideView);
 			
 			Geometry dg = new Geometry("dome_" + i, d);
+			dg.setMaterial(mat);
+			configureRenderingForSpatial(dg);  // Sets the rendering bucket and cull mode
 			// Make em taller
 			dg.setLocalScale(1.0f, 10.0f, 1.0f);
-			dg.setMaterial(unshMat);
-			dg.setQueueBucket(spatRenderBucket);
-			dg.setCullHint(spatCullHint);
 			dg.setLocalTranslation(outerPos);
 			coneDemoNode.attachChild(dg);
 		}
 		myMainDeepNode.attachChild(coneDemoNode);
 			
 	}
-	public Node makeVisionPyramidNode(AssetManager assetMgr, String nameSuffix) { 
-		Node vizPyrNode = new Node("visionPyramid_" + nameSuffix);
-		Material unshMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
-		unshMat.setColor("Color", new ColorRGBA(0.7f, 0.0f, 0.9f, 0.7f));
-		RenderState.BlendMode matBlendMode = RenderState.BlendMode.Alpha;
-		RenderQueue.Bucket spatRenderBucket  = RenderQueue.Bucket.Transparent;
+
+	protected static Material makeAlphaBlendedUnshadedMaterial(RenderRegistryClient rrc, float red,
+				float green, float blue, float alpha) { 
+
+		AssetManager assetMgr = rrc.getJme3AssetManager(null);
+		ColorRGBA color = new ColorRGBA(red, green, blue, alpha);
+		return makeAlphaBlendedUnshadedMaterial(assetMgr, color);	
+	}
+	protected static Material makeAlphaBlendedUnshadedMaterial(AssetManager assetMgr, ColorRGBA color) { 
 		FaceCullMode matFaceCullMode = FaceCullMode.Off;  		// Render both sides
-		Spatial.CullHint spatCullHint = Spatial.CullHint.Never;  // Others are CullHint.Always, CullHint.Inherit
+		Material unshMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
+		// For transparency/lucency we set the BlendMode on addtlRenderState.
+		RenderState.BlendMode matBlendMode = RenderState.BlendMode.Alpha;
+		// But note that to get transparency, we also need to put spatials into eligible buckets
 		unshMat.getAdditionalRenderState().setBlendMode(matBlendMode);
-		unshMat.getAdditionalRenderState().setFaceCullMode(matFaceCullMode);		
-		boolean insideView = false;
-		Vector3f innerCenter = new Vector3f(0.0f, 0.0f, 0.0f);
-		int numPlanes = 2;
-		float radius = 1.0f;	
-		int numBasePoints = 4;
-		Dome d = new Dome(innerCenter, numPlanes, numBasePoints, radius, insideView);
-		Geometry dg = new Geometry("vpg_" + nameSuffix, d);
-		dg.setLocalScale(2.0f, 40.0f, 2.0f);
-		dg.setLocalTranslation(0.0f, -40.0f, 0.0f);
-		dg.setMaterial(unshMat);
-		dg.setQueueBucket(spatRenderBucket);
-		dg.setCullHint(spatCullHint);
+		unshMat.getAdditionalRenderState().setFaceCullMode(matFaceCullMode);
+		unshMat.setColor("Color", color);
+		return unshMat;
+	}
+	protected static void configureRenderingForSpatial(Spatial spat) {
+		RenderQueue.Bucket spatRenderBucket  = RenderQueue.Bucket.Transparent;
+		Spatial.CullHint spatCullHint = Spatial.CullHint.Never;  // Others are CullHint.Always, CullHint.Inherit
+		// Setup transparency for the spatia, but note that the material blend-mode must 
+		// also support transparency.
+		spat.setQueueBucket(spatRenderBucket); 
+		spat.setCullHint(spatCullHint);	
+	}
 	
-		vizPyrNode.attachChild(dg);
-		Matrix3f rotMatrix = new Matrix3f();
-		rotMatrix.fromAngleAxis(-1.0f * FastMath.HALF_PI, Vector3f.UNIT_X);
-		vizPyrNode.setLocalRotation(rotMatrix);
-		return vizPyrNode;
+	public void doUpdate(RenderRegistryClient rrc, float tpf)	{
+		for (PointerCone pc : myPointerCones) {
+			pc.doUpdate(rrc, tpf);
+		}
 	}
 }
