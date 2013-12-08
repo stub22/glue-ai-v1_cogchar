@@ -39,6 +39,9 @@ public class PointerCone {
 	private	String		myStatusText;
 	private	BitmapText	myStatusBTS;
 	
+	private float		myConeLength = 40.0f;
+	private float		myConeWidth = 2.0f;
+	
 	public PointerCone( String nameSuffix) {
 		myNameSuffix = nameSuffix;
 	}
@@ -55,27 +58,40 @@ public class PointerCone {
 		int numPlanes = 2;
 		float radius = 1.0f;	
 		int numBasePoints = 4;
+		// The dome extends in the positive-Y hemisphere, with the top at Y=radius, X=0.0, Z=0.0.
 		Dome d = new Dome(innerCenter, numPlanes, numBasePoints, radius, insideView);
 		Geometry dg = new Geometry("vpg_" + myNameSuffix, d);
-		dg.setLocalScale(2.0f, 40.0f, 2.0f);
-		dg.setLocalTranslation(0.0f, -40.0f, 0.0f);
+		// Size the cone by width and length
+		dg.setLocalScale(myConeWidth, myConeLength, myConeWidth);
+		// Position the cone so that the tip is at y=0, and the base is at -ConeLength
+		dg.setLocalTranslation(0.0f, -1 * myConeLength, 0.0f);
 		dg.setMaterial(mat);
 		TrialContent.configureRenderingForSpatial(dg);
 	
 		myAssemblyNode.attachChild(dg);
 		TextSpatialFactory tsf = new TextSpatialFactory(rrc);
-		
 		int textWrapCharWidth = 35;
-		float txtRegScale = 0.1f;		
+		float txtRegScale = 0.02f;		
 		myStatusBTS = tsf.makeTextSpatial(myNameSuffix + "\nstatusText\nst-two\nst-three", txtRegScale, RenderQueue.Bucket.Transparent, textWrapCharWidth);
 		myAssemblyNode.attachChild(myStatusBTS);
+		// Rotate cone so that tip-to-base points in the Z direction, appropriate for indicating
+		// the direction of a camera.
 		Matrix3f rotMatrix = new Matrix3f();
 		rotMatrix.fromAngleAxis(-1.0f * FastMath.HALF_PI, Vector3f.UNIT_X);
 		myAssemblyNode.setLocalRotation(rotMatrix);
+		// Rotate status-text the opposite way, so it is facing same direction as camera lens.
+		Matrix3f oppRotMatrix = rotMatrix.transposeNew();
+		myStatusBTS.setLocalRotation(oppRotMatrix);
+	}
+	public void setTextPositionFraction(float posFrac) {
+		float lengthFrac = myConeLength * posFrac;
+		myStatusBTS.setLocalTranslation(0.0f, -1.0f * lengthFrac, 0.0f);
+		
 	}
 	public void doUpdate(RenderRegistryClient rrc, float tpf) {
+		// TODO:  Make this update less frequent, and more thrify in terms of object alloc.
 		Transform worldXform = myAssemblyNode.getWorldTransform();
-		myStatusText = worldXform.toString();
+		myStatusText = myNameSuffix + "\n" + worldXform.toString();
 		myStatusBTS.setText(myStatusText);
 	}
 }
