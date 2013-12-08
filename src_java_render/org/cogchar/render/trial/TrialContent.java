@@ -153,9 +153,6 @@ public class TrialContent extends BasicDebugger {
 		 */
 		bbCont.setAlignment(BillboardControl.Alignment.Screen);
 		myLettersBTS.addControl(bbCont);
-
-		
-		AssetManager assetMgr = rrc.getJme3AssetManager(null);
 		
 		TrialNexus tNexus = new TrialNexus(rrc);
 		makeRectilinearParamViz(tNexus, rrc);
@@ -267,6 +264,7 @@ public class TrialContent extends BasicDebugger {
 	public Node makePointerCone(RenderRegistryClient rrc, String nameSuffix) { 
 		PointerCone pc = new PointerCone(nameSuffix);
 		pc.setup(rrc);
+		pc.setTextPositionFraction(0.75f);
 		myPointerCones.add(pc);
 		return pc.getAssemblyNode();
 	}
