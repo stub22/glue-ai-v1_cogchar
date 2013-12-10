@@ -39,23 +39,7 @@
 			<artifactId>ext.bundle.math.symja_jas</artifactId>
 			<version>${appdapter.version}</version>
 		</dependency>		
-<!-- Where do we actually use this? 
-		<dependency>
-			<groupId>com.typesafe.slick</groupId>
-			<artifactId>slick_2.10</artifactId>
-			<version>1.0.1</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>scala-library</artifactId>
-					<groupId>org.scala-lang</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
--->
+
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.xpp3</artifactId>
