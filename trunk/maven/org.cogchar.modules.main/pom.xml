@@ -80,7 +80,7 @@
 		<module>../org.cogchar.lib.core.impl</module>
 		
 		<!-- These modules will stay in Cogchar.org permanently. -->
-		<module>../org.cogchar.lib.hedspc.api</module>
+		<module>../org.cogchar.lib.vworld.api</module>
 		<module>../org.cogchar.lib.sight.api</module>
 		<!-- Proposed:  
 		Each other major plugin project gets one API lib in Cogchar.
@@ -88,7 +88,7 @@
 		through repo-based mechanisms.
 		
 		The 3 major plugins are currently defined to be
-				o.c.l.render.api - for Hedspc
+				o.c.l.vworld.api - for Hedspc
 				o.c.l.?.api - for Storychat
 				o.c.l.sight.api - for Freckler
 				
@@ -111,7 +111,7 @@
 			These 9 modules will move to HeDSpc.org before the release of Cogchar 1.1.0 
 	*************************************************************************************
 	-->
-		<module>../org.cogchar.lib.render</module>
+		<module>../org.cogchar.lib.render.impl</module>
 		<module>../org.cogchar.lib.render.bony</module>
 		<module>../org.cogchar.lib.render.goody</module>
 		<module>../org.cogchar.lib.render.hominoid</module>
