@@ -8,9 +8,9 @@
 		<version>1.0.8.0-SNAPSHOT</version>
 		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
 	</parent>		
-	<artifactId>org.cogchar.lib.freckler.api</artifactId>
+	<artifactId>org.cogchar.lib.sight.api</artifactId>
 	
-	<name>org.cogchar.lib.freckler.api - POJO</name>
+	<name>org.cogchar.lib.sight.api - POJO</name>
 
 	<packaging>jar</packaging>
 

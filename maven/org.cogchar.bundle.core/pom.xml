@@ -52,7 +52,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.lib.freckler.api</artifactId>
+			<artifactId>org.cogchar.lib.sight.api</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>		
 		</dependency>			
