@@ -7,9 +7,9 @@
 		<version>1.0.8.0-SNAPSHOT</version>
 		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
 	</parent>	
-	<name>${project.artifactId} - POJO</name>
+	<name>org.cogchar.lib.vworld.api - POJO</name>
 
-	<artifactId>org.cogchar.lib.hedspc.api</artifactId>
+	<artifactId>org.cogchar.lib.vworld.api</artifactId>
 	<packaging>jar</packaging>
 	
 	<dependencies>
