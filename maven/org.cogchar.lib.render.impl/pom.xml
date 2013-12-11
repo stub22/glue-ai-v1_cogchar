@@ -11,8 +11,8 @@
 		<version>1.0.8.0-SNAPSHOT</version>
 		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
 	</parent>	
-	<name>${project.artifactId} - POJO</name>
-	<artifactId>org.cogchar.lib.render</artifactId>
+	<name>org.cogchar.lib.render.impl - POJO</name>
+	<artifactId>org.cogchar.lib.render.impl</artifactId>
 	
 	<packaging>jar</packaging>
 
