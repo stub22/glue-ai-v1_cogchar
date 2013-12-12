@@ -13,13 +13,14 @@
 
 
 	<dependencies>
-		<dependency>		
+		<dependency>
+			<!-- is also implied by o.c.l.render.goody, below -->		
 			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.lib.render</artifactId>
+			<artifactId>org.cogchar.lib.render.impl</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>		
+		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.render.goody</artifactId>
 			<version>${project.version}</version>
