@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>		
 			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.lib.render</artifactId>
+			<artifactId>org.cogchar.lib.render.impl</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>	  
