@@ -104,8 +104,7 @@ public class BehaviorControl implements WantsThingAction {
                 theLogger.info("BehaviorControl is consuming admin action {}", actionSpec);
                 return ConsumpStatus.CONSUMED;
             }
-        }
-        else if ( mySceneActionCallbackMap != null ) {
+        } if ( mySceneActionCallbackMap != null ) {
             // Pull a scene from the ACBM, if one with given name exists
             ActionListener sceneActionListener = 
                     mySceneActionCallbackMap.getActionCallback(sceneName);
