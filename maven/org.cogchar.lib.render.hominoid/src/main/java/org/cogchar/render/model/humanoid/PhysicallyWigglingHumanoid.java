@@ -15,8 +15,8 @@
  */
 package org.cogchar.render.model.humanoid;
 
-import org.cogchar.api.humanoid.HumanoidBoneDesc;
-import org.cogchar.api.humanoid.HumanoidBoneConfig;
+import org.cogchar.api.humanoid.FigureBoneDesc;
+import org.cogchar.api.humanoid.FigureBoneConfig;
 
 import com.jme3.bullet.joints.SixDofJoint;
 import com.jme3.bullet.joints.motors.RotationalLimitMotor;
@@ -38,7 +38,7 @@ public class PhysicallyWigglingHumanoid extends HumanoidFigure {
 	public void wiggleUsingPhysics(float tpf) { 
 		wiggleUsingPhysicsMotors(getHBConfig(), tpf);
 	}
-	public void wiggleUsingPhysicsMotors(HumanoidBoneConfig hbc, float tpf) {
+	public void wiggleUsingPhysicsMotors(FigureBoneConfig hbc, float tpf) {
 		myPhysicsWigglePhase += tpf / 10.0f;
 		if (myPhysicsWigglePhase > 1.0f) {
 			System.out.println("************ Wiggle phase reset ------ hmmmm, OK");
@@ -55,10 +55,10 @@ public class PhysicallyWigglingHumanoid extends HumanoidFigure {
 		}
 		wiggleAllBonesUsingRotMotors(hbc, wiggleVel);
 	}
-	private void wiggleAllBonesUsingRotMotors(HumanoidBoneConfig hbc, float wiggleVel) {
-		List<HumanoidBoneDesc> descs = hbc.getBoneDescs();
-		for(HumanoidBoneDesc hbd : descs) {
-			String boneName = hbd.getSpatialName();
+	private void wiggleAllBonesUsingRotMotors(FigureBoneConfig hbc, float wiggleVel) {
+		List<FigureBoneDesc> descs = hbc.getBoneDescs();
+		for(FigureBoneDesc hbd : descs) {
+			String boneName = hbd.getBoneName();
 			// Uncomment to wigle just the "Head" bone.
 			//if (!boneName.equals("Head")) {
 			//	continue;

@@ -24,32 +24,27 @@ import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
 
 /**
+ * This is essentially a wrapper around the HumanoidConfig.
+ * TODO:  Let's privatize these variables!
  * @author Stu B. <www.texpedient.com>
  */
-public class HumanoidFigureConfig {
+public class HumanoidFigureConfig extends FigureConfig {
 
-	public Ident myCharIdent;
-	public String myNickname;
-	public String myMeshPath;
-	public String myDebugSkelMatPath;
-	public boolean myPhysicsFlag;
-	public HumanoidBoneConfig myBoneConfig;
-	public float myInitX, myInitY, myInitZ, myScale;
+	private String myDebugSkelMatPath;
+
+	private FigureBoneConfig myFigureBoneConfig;
 
 //	public HumanoidFigureConfig(RepoClient qi, HumanoidConfig hc, RenderConfigEmitter rce, Ident bonyGraphIdent) {
-	public HumanoidFigureConfig(RepoClient qi, HumanoidConfig hc, String matPath, Ident bonyGraphIdent) {
-		myCharIdent = hc.myCharIdent;
-		myNickname = hc.myNickname;
-		myMeshPath = hc.myMeshPath;
+	public HumanoidFigureConfig(RepoClient qi, FigureConfig hc, String matPath, Ident bonyGraphIdent) {
+		super(hc.myFigureID);
+		copyValuesFrom(hc);
+		
 		myDebugSkelMatPath = matPath;
 //		myDebugSkelMatPath = rce.getMaterialPath();
-		myBoneConfig = new HumanoidBoneConfig();
-		myInitX = hc.myInitialPosition[0];
-		myInitY = hc.myInitialPosition[1];
-		myInitZ = hc.myInitialPosition[2];
-		myScale = hc.myScale;
-		myPhysicsFlag = hc.myPhysicsFlag;
-		addBoneDescsFromBoneRobotConfig(qi, myCharIdent, bonyGraphIdent, this);
+		myFigureBoneConfig = new FigureBoneConfig();
+		
+
+		addBoneDescsFromBoneRobotConfig(qi, myFigureID, bonyGraphIdent, this);
 	}
 
 	// A method to add the bone descriptions by querying the bony config resource. Might should live somewhere else,
@@ -61,11 +56,27 @@ public class HumanoidFigureConfig {
 						BoneCN.ROBOT_IDENT_QUERY_VAR, charIdent);
 		List<String> boneNames = sh.pullStringsAsJava(solutionList, BoneCN.BONE_NAME_VAR_NAME);
 		for (String boneName : boneNames) {
-			myBoneConfig.addBoneDesc(boneName);
+			myFigureBoneConfig.addBoneDesc(boneName);
 		}
 	}
 
 	public boolean isComplete() {
 		return myMeshPath != null;
 	}
+	public FigureBoneConfig getFigureBoneConfig() {
+		return myFigureBoneConfig;
+	}
+	public Float getInitX() { 
+		return myInitialPosition[0];
+	}
+	public Float getInitY() { 
+		return myInitialPosition[1];
+	}
+	public Float getInitZ() { 
+		return myInitialPosition[2];
+	}
+	public String getDebugSkelMatPath() { 
+		return myDebugSkelMatPath;
+	}
+	
 }

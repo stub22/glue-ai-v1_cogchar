@@ -22,7 +22,8 @@ import java.io.Serializable;
  * @author Stu B. <www.texpedient.com>
  * A "small angle" is always between -pi=-180 and +pi=+180.
  * Attempts to set outside this range result in silent wrapping of the angle,
- * so +197 deg becomes -163deg.
+ * so +197 deg becomes -163deg.  See "Principal Branch".  
+ * http://en.wikipedia.org/wiki/Principal_branch
  */
 public class SmallAngle implements Serializable {
 	private		double		myValueRad;

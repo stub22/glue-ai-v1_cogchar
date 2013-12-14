@@ -46,7 +46,7 @@ public class StickFigureTwister extends RenderModule {
 	public void setBodyController(BodyController tc) {
 		myBodyController = tc;
 	}
-	private void twist(float tpf) { 
+	private void twist_onSceneThread(float tpf) { 
 				//	System.out.println("simpleUpdate, tpf=" + tpf);
 		if (myBodyController != null) {
 			List<AnimControl> animControls = myContext.getAnimControls();
@@ -68,7 +68,7 @@ public class StickFigureTwister extends RenderModule {
 				Bone firstKid = kids.get(0);
 				tgtBone = firstKid;
 			}
-			twistBone(tpf, tgtBone, direction);
+			twistBone_onSceneThread(tpf, tgtBone, direction);
 		}
 	}
 	public void dumpBonePositionsToVCP(Bone b, String prefix) { 
@@ -78,7 +78,7 @@ public class StickFigureTwister extends RenderModule {
 		// System.out.println("================================================================");
 		//vcp.setDumpText(prefix + "qryBone=" + b + ", localPos=" + localPos + ", modelPos=" + modelPos + ", localRot=" + b.getLocalRotation());		
 	}
-	private void twistBone(float tpf, Bone tgtBone, String direction) {
+	private void twistBone_onSceneThread(float tpf, Bone tgtBone, String direction) {
 
 		myWaistTwistAngle += tpf * myWaistTwistRate;
 		float posQuarterPi = FastMath.HALF_PI / 2f;
@@ -92,7 +92,7 @@ public class StickFigureTwister extends RenderModule {
 		}
 
 		Quaternion q = makeRotQuatForSingleAxis(myWaistTwistAngle, direction);
-		applyBoneRotQuat(tgtBone, q);
+		applyBoneRotQuat_onSceneThread(tgtBone, q);
 		/*
 		GeneralScoreBoard sb = myContext.getScoreBoard();
 		if ((myTwistScoringFlag) && (sb != null)) {
@@ -118,8 +118,8 @@ public class StickFigureTwister extends RenderModule {
 		return q;
 	}
 	
-	private static void applyBoneRotQuat(Bone tgtBone, Quaternion rotation) {
-		applyBoneTransforms(tgtBone, null, rotation, null);
+	private static void applyBoneRotQuat_onSceneThread(Bone tgtBone, Quaternion rotation) {
+		applyBoneTransforms_onSceneThread(tgtBone, null, rotation, null);
 	}
 	/**
 	* Applies transforms from the "initial"/"bind" orientation, creating a new "local" transform set.
@@ -129,7 +129,7 @@ public class StickFigureTwister extends RenderModule {
 	 * @param rotation
 	 * @param scale 
 	 */
-	public static void applyBoneTransforms(Bone tgtBone, Vector3f translation, Quaternion rotation, Vector3f scale) {
+	public static void applyBoneTransforms_onSceneThread(Bone tgtBone, Vector3f translation, Quaternion rotation, Vector3f scale) {
 		
 		tgtBone.setUserControl(true);
 		
@@ -150,6 +150,6 @@ public class StickFigureTwister extends RenderModule {
 	}
 
 	@Override protected void doRenderCycle(long runSeqNum, float tpf) {
-		twist(tpf);
+		twist_onSceneThread(tpf);
 	}
 }

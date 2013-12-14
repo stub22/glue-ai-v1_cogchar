@@ -9,7 +9,17 @@
 
     <artifactId>org.cogchar.bundle.temp.wire</artifactId>
 	
-    <name>${project.artifactId} - OSGi Bundle</name>	
+    <name>${project.artifactId} - captures untainted PUMA stuff</name>	
+	
+	<!-- Does depend on:
+			o.c.b.core = {core.impl, api.animoid, api.vworld, api.web}
+			o.c.b.bind.robokind
+			
+		Does not depend on:
+			o.c.b.app.PUMA
+			o.c.b.bundle.render.*
+			o.c.b.lift
+	-->
 	
     <packaging>bundle</packaging>
 

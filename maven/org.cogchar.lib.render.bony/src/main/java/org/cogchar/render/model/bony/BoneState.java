@@ -17,8 +17,10 @@
 package org.cogchar.render.model.bony;
 
 
-import com.jme3.math.FastMath;
+// These JME3 deps prevent us from pushing this class and FigureState into
+// into o.c.lib.vworld.API.
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 
 /**
