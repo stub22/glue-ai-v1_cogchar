@@ -29,6 +29,7 @@ import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
+import org.cogchar.render.model.humanoid.HumanoidFigure_SinbadTest;
 import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 import org.cogchar.render.scene.goody.PathMgr;
 import org.cogchar.render.scene.goody.SpatialAnimMgr;
@@ -78,11 +79,11 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 		getHRC().setDefaultCameraLocation();
 	}
 
-	public HumanoidFigure getSinbad() { 
+	public HumanoidFigure_SinbadTest getSinbad() { 
 		BonyRenderContext brc = getHRC();
 		RenderConfigEmitter bce = brc.getConfigEmitter();
 		HumanoidFigureManager hfm = getFigureManager();
-		return hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
+		return (HumanoidFigure_SinbadTest) hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
 	}	
 	public PumaVirtualWorldMapper getVWM() { 
 		return myPAC.getOrMakeVWorldMapper();

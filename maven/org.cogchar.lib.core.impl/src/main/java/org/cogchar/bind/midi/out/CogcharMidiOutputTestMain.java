@@ -67,7 +67,8 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 			nlt.lpadLightDemo();
 
 			cmotm.testMPMP(); // Does not currently wait for seq to finish
-			// ...so it is playing now...
+			// ...so it is playing now, and will overlap with anything done next.
+			// 
 			cmotm.playSomeNotes();
 		} catch (Throwable t) {
 			t.printStackTrace();

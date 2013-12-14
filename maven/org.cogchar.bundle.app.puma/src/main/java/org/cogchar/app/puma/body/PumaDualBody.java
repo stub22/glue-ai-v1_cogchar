@@ -25,7 +25,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 
 
-import org.cogchar.api.humanoid.HumanoidConfig;
+import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.name.skeleton.BoneCN;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 
@@ -58,8 +58,8 @@ public class PumaDualBody extends BasicDebugger {
 	 * @param graphIdentForBony
 	 * @throws Throwable 
 	 */
-	public void absorbContext(PumaRegistryClient prc, BundleContext bundleCtx, RepoClient rc, HumanoidConfig humCfg,  
-				Ident graphIdentForBony) throws Throwable {
+	public void absorbContext(PumaRegistryClient prc, BundleContext bundleCtx, RepoClient rc, 
+				FigureConfig humCfg,  Ident graphIdentForBony) throws Throwable {
 		
 		PumaVirtualWorldMapper vWorldMapper = prc.getVWorldMapper(null);
 		// It's OK if vWorldMapper == null.  We still construct a Humanoid Mapper, which will then 
@@ -99,7 +99,7 @@ public class PumaDualBody extends BasicDebugger {
 
 
 	private boolean setupBonyModelBindingToRobokind(BundleContext bunCtx, RepoClient rc, Ident graphIdentForBony, 
-					HumanoidConfig hc, List<ClassLoader> clsForRKConf) {
+					FigureConfig hc, List<ClassLoader> clsForRKConf) {
 		Ident charIdent = getCharIdent();
 		getLogger().debug("Setup for {} using graph {} and humanoidConf {}", new Object[]{charIdent, graphIdentForBony, hc});
 		try {

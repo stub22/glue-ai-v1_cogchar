@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ *  Copyright 2013 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -12,41 +12,15 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
  */
 
 package org.cogchar.api.humanoid;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class HumanoidBoneConfig {
 
-	private List<HumanoidBoneDesc> myBoneDescs = new ArrayList<HumanoidBoneDesc>();
-
-	public HumanoidBoneConfig() {
-
-	}
-
-	public void addBoneDesc(String spatialName) {
-		HumanoidBoneDesc hbd = new HumanoidBoneDesc(spatialName);
-		myBoneDescs.add(hbd);
-	}
-
-
-
-	public List<HumanoidBoneDesc> getBoneDescs() {
-		return myBoneDescs;
-	}
-
-	public int getConfiguredBoneCount() {
-		return myBoneDescs.size();
-	}
-
+public class FigureBoneConfig_SinbadTest extends FigureBoneConfig {
 	public void addSinbadDefaultBoneDescs() {
 
 		// Explicitly bound to KRD in Bowl-At-Sinbad demo
@@ -85,7 +59,6 @@ public class HumanoidBoneConfig {
 		addBoneDesc("TongueBase");
 		addBoneDesc("LowerLip");
 	}
-
 	/*
 	 * 
 	 */
@@ -149,5 +122,4 @@ public class HumanoidBoneConfig {
 		addBoneDesc("RtAnkle");
 	}
 	*/
-
 }

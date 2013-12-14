@@ -22,6 +22,8 @@ import java.net.URL;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
+import javax.sound.midi.Track;
+
 import org.appdapter.core.log.BasicDebugger;
 
 /**
@@ -64,6 +66,7 @@ public class MonoPatchMelodyPerf extends BasicDebugger {
 	}
 	public void startPlaying() {
 		try {
+			analyzeTracks();
 			connectToSeqr();
 			mySequencer.open();
 			mySequencer.setSequence(mySequence);
@@ -74,5 +77,9 @@ public class MonoPatchMelodyPerf extends BasicDebugger {
 	}
 	public void close() {
 		mySequencer.close();		
+	}
+	public void analyzeTracks() { 
+		Track[] tracks = mySequence.getTracks();
+		getLogger().info("My seq has {} tracks: {}", tracks.length, tracks);
 	}
 }

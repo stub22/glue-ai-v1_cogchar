@@ -34,6 +34,7 @@ import org.appdapter.core.matdat.RepoClientTester.CommandRec;
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
+import org.cogchar.render.model.humanoid.HumanoidFigure_SinbadTest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -221,7 +222,7 @@ public class TriggerItems {
 	*/ 
 	public static class StandUp extends CtxCmdBoxTI {
 		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
-			HumanoidFigure hw = pccb.getSinbad();
+			HumanoidFigure_SinbadTest hw = pccb.getSinbad();
 			if (hw != null) {
 				hw.makeSinbadStandUp();
 			}
@@ -229,7 +230,7 @@ public class TriggerItems {
 	}
 	public static class Boogie extends CtxCmdBoxTI {
 		@Override public void fireOnPCCB(PumaContextCommandBox pccb) {
-			HumanoidFigure hw = pccb.getSinbad();
+			HumanoidFigure_SinbadTest hw = pccb.getSinbad();
 			if (hw != null) {
 				// This is an Ogre skeletal animation run by JME3, bypassing our figure-anim system.
 				hw.runSinbadBoogieAnim();

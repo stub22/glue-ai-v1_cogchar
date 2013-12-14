@@ -22,6 +22,12 @@ import org.slf4j.Logger;
 import static org.cogchar.api.animoid.protocol.JointStateCoordinateType.*;
 
 /**
+ * Early prototype of a value describing the position of a joint.
+ * Can be relative or absolute.
+ * Must somehow boil down to a value compatible with a Double.
+ * Can represent a 1st or 2nd derivative of a JP, i.e. velocity or acceleration.
+ * Most common subtype in original design: JointPositionAROM
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 public class JointPosition extends JointStateItem {
@@ -140,9 +146,6 @@ public class JointPosition extends JointStateItem {
 		derivJP.setCoordinateFloat(outType, rate);
 		return derivJP;
 	}
-
-
-
 	public void addDelta(JointPosition delta) {
 		JointStateCoordinateType ct = getCoordinateType();
 		JointStateCoordinateType dct = delta.getCoordinateType();

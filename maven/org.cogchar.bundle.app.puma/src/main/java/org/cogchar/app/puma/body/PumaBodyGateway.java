@@ -38,7 +38,7 @@ import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.RepoClient;
 
-import org.cogchar.api.humanoid.HumanoidConfig;
+import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.api.skeleton.config.BoneProjectionRange;
 import org.cogchar.name.skeleton.BoneCN;
@@ -110,7 +110,8 @@ public class PumaBodyGateway extends BasicDebugger {
 		return myMBRSC.getCogcharMotionSource();
 	}
 
-	public boolean initVWorldHumanoid(RepoClient qi, final Ident qGraph, final HumanoidConfig hc) throws Throwable {
+	public boolean initVWorldHumanoid(RepoClient qi, final Ident qGraph, 
+				final FigureConfig hc) throws Throwable {
 		if (myVWorldMapper != null) {
 			HumanoidRenderContext hrc = myVWorldMapper.getHumanoidRenderContext();
 			// New with "GlobalModes": we'll run hrc.setupHumanoidFigure from here now
@@ -181,7 +182,8 @@ public class PumaBodyGateway extends BasicDebugger {
 			});
 		}
 	}
-	public boolean connectBonyRobotToRobokindAndVWorld(BundleContext bundleCtx, HumanoidConfig hc, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
+	public boolean connectBonyRobotToRobokindAndVWorld(BundleContext bundleCtx,
+				FigureConfig hc, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
 		// We useta read from a TTL file with: 	boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharID, qGraph, bqn); 	
 		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);
@@ -202,8 +204,8 @@ public class PumaBodyGateway extends BasicDebugger {
 		}
 		return boneRobotOK;
 	}
-	protected void startJointGroup(HumanoidConfig hc, List<ClassLoader> possibleCLs) { 
-		String jgFullPath = hc.myJointConfigPath;
+	protected void startJointGroup(FigureConfig hc, List<ClassLoader> possibleCLs) { 
+		String jgFullPath = hc.getJointGroupConfigPath();
 		if (jgFullPath != null) {
 			ClassLoader cl = ClassLoaderUtils.findResourceClassLoader(jgFullPath, possibleCLs);
 			if (cl != null) {
@@ -236,6 +238,7 @@ public class PumaBodyGateway extends BasicDebugger {
 		for (ModelJoint mJoint : allJoints) {
 			for (BoneProjectionRange bpr : mJoint.getBoneRotationRanges()) {
 				String boneName = bpr.getBoneName();
+				// BoneState is returned, but ignored here.
 				fs.obtainBoneState(boneName);
 			}
 		}

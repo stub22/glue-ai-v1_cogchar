@@ -28,7 +28,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 
-import org.cogchar.api.humanoid.HumanoidConfig;
+import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
@@ -223,7 +223,7 @@ public class PumaAppContext extends BasicDebugger {
 						getLogger().warn("Could not get valid graphs on which to query for config of {}", charIdent.getLocalName());
 						break;
 					}
-					HumanoidConfig humConfig = new HumanoidConfig(rc, charIdent, graphIdentForHumanoid);
+					FigureConfig humConfig = new FigureConfig(rc, charIdent, graphIdentForHumanoid);
 					PumaDualBody pdb = connectDualBody(humConfig, graphIdentForBony);
 				} catch (Throwable t) {
 					getLogger().error("Problem initing dualBody for charIdent: " + charIdent, t);
@@ -232,11 +232,11 @@ public class PumaAppContext extends BasicDebugger {
 		}
 	}
 
-	protected PumaDualBody connectDualBody(HumanoidConfig humCfg, Ident graphIdentForBony) throws Throwable {
-		Ident bonyCharID = humCfg.myCharIdent;
+	protected PumaDualBody connectDualBody(FigureConfig humCfg, Ident graphIdentForBony) throws Throwable {
+		Ident bonyCharID = humCfg.getFigureID();
 		BundleContext bunCtx = getBundleContext();
 		RepoClient rc = getOrMakeMainConfigRC();		
-		PumaDualBody pdb = new PumaDualBody(bonyCharID, humCfg.myNickname);
+		PumaDualBody pdb = new PumaDualBody(bonyCharID, humCfg.getNickname());
 		pdb.absorbContext(myRegClient, bunCtx, rc, humCfg, graphIdentForBony);
 		myBodyMgr.addBody(pdb);
 		return pdb;
