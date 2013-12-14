@@ -43,6 +43,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.midi.FunMidiEventRouter;
 import org.cogchar.bind.midi.MidiDevMatchPattern;
 import org.cogchar.bind.midi.MidiDevWrap;
+import org.cogchar.bind.midi.seq.MonoPatchMelodyPerf;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -65,6 +66,8 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 			NovLpadTest nlt = new NovLpadTest();
 			nlt.lpadLightDemo();
 
+			cmotm.testMPMP(); // Does not currently wait for seq to finish
+			// ...so it is playing now...
 			cmotm.playSomeNotes();
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -428,6 +431,16 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		}, allControllersMask);
 	}
 
+	private void testMPMP() { 
+		try {
+			String path = "src/main/resources/midiseq/mutopia/GoodKingWenceslas.mid";
+			File relFileDevOnly = new File(path);
+			MonoPatchMelodyPerf mpmp = new MonoPatchMelodyPerf (relFileDevOnly);
+			mpmp.startPlaying();
+		} catch (Throwable t) {
+			getLogger().error("Problem testing melody seq", t);
+		}
+	}
 	private void closeAllDevsAndExit() {
 		/*  Iterator iterator = sm_openedMidiDeviceList.iterator(); while (iterator.hasNext())	{
 		 MidiDevice	device = (MidiDevice) iterator.next();
