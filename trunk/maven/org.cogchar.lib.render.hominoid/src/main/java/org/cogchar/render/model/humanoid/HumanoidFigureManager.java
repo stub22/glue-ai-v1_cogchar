@@ -28,7 +28,7 @@ import java.util.Map;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.app.bony.BonyRenderContext;
-import org.cogchar.api.humanoid.HumanoidConfig;
+import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.api.humanoid.HumanoidFigureConfig;
 import org.cogchar.render.model.humanoid.HumanoidFigureModule;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
@@ -46,7 +46,7 @@ public class HumanoidFigureManager extends BasicDebugger {
 
 	private Map<Ident, HumanoidFigure> myFiguresByCharIdent = new HashMap<Ident, HumanoidFigure>();
 
-	public HumanoidFigure getOrMakeHumanoidFigure(RepoClient qi, Ident charIdent, HumanoidConfig hc, 
+	public HumanoidFigure getOrMakeHumanoidFigure(RepoClient qi, Ident charIdent, FigureConfig hc, 
 				Ident bonyConfigGraph, RenderConfigEmitter rce) {
 		HumanoidFigure hf = myFiguresByCharIdent.get(charIdent);
 		if (hf == null) {
@@ -78,7 +78,7 @@ public class HumanoidFigureManager extends BasicDebugger {
 
 	// Now does more, but does less on jME thread!
 	public HumanoidFigure setupHumanoidFigure(final BonyRenderContext brc, RepoClient qi, final Ident charIdent, 
-					Ident bonyConfigGraph, HumanoidConfig hc) throws Throwable {
+					Ident bonyConfigGraph, FigureConfig hc) throws Throwable {
 		RenderRegistryClient rrc = brc.getRenderRegistryClient();
 		RenderConfigEmitter rce = brc.getConfigEmitter();
 		final HumanoidFigure figure = getOrMakeHumanoidFigure(qi, charIdent, hc, bonyConfigGraph, rce);
@@ -138,7 +138,7 @@ public class HumanoidFigureManager extends BasicDebugger {
 
 	public void toggleDebugSkeletons() {
 		for (HumanoidFigure hf : myFiguresByCharIdent.values()) {
-			hf.toggleDebugSkeleton();
+			hf.toggleDebugSkeleton_onSceneThread();
 		}
 	}
 	

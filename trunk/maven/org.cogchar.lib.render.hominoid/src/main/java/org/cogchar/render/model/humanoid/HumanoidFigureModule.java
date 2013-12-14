@@ -20,6 +20,9 @@ import org.cogchar.render.model.bony.FigureState;
 import org.cogchar.render.app.bony.BonyRenderContext;
 
 /**
+ * Coroutine module to apply updates in an abstract FigureState (typically 
+ * received from an animation system, on some other thread) to a HumanoidFigure
+ * object.  
  * @author Stu B. <www.texpedient.com>
  */
 public class HumanoidFigureModule extends RenderModule {
@@ -35,6 +38,6 @@ public class HumanoidFigureModule extends RenderModule {
 	
 	@Override protected void doRenderCycle(long runSeqNum, float tpf) {
 		FigureState fs = myFigure.getFigureState();
-		myFigure.applyFigureState(fs);
+		myFigure.applyFigureState_onSceneThread(fs);
 	}
 }

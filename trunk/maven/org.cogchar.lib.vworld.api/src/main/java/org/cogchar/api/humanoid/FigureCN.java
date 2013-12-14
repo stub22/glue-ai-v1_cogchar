@@ -22,7 +22,7 @@ package org.cogchar.api.humanoid;
  */
 
 
-public class HumanoidCN {
+public class FigureCN {
 	final static String QUERY_SHEET = "ccrt:qry_sheet_22";
 	final static String HUMANOID_QUERY = "ccrt:find_humanoids_99";
 

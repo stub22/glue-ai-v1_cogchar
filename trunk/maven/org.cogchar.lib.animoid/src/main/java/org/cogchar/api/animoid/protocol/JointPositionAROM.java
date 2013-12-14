@@ -16,7 +16,10 @@
 package org.cogchar.api.animoid.protocol;
 import static org.cogchar.api.animoid.protocol.JointStateCoordinateType.*;
 /**
- *
+ * An early prototype (ca. 2009) of a concept very close to a modern
+ * TinkerBot NormalizedDouble.
+ * 
+ * <br/>AROM = "Absolute Range of Motion", bounded by 0.0 = "min", 1.0 = "max".
  * @author Stu B. <www.texpedient.com>
  */
 public class JointPositionAROM extends JointPosition {
