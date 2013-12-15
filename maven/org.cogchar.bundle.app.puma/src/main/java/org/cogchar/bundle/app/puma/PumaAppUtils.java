@@ -15,6 +15,7 @@
  */
 package org.cogchar.bundle.app.puma;
 import java.util.List;
+import java.io.PrintStream;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
@@ -46,6 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PumaAppUtils extends BasicDebugger {
 	static Logger theLogger = LoggerFactory.getLogger(PumaAppUtils.class);
+	private static GreedyHandleSet firstGreedyHandleSet;
 
 	/**
 	 * This is a crude handle-grabbing entry pont, which assumes "the application"
@@ -79,9 +81,23 @@ public class PumaAppUtils extends BasicDebugger {
 
 	
 	public static List<FancyFile> getKnownAnimationFiles() { 
-		GreedyHandleSet srec = new GreedyHandleSet();
+		GreedyHandleSet srec = PumaAppUtils.obtainGreedyHandleSet();
 		return AnimFileSpecReader.findAnimFileSpecsForJava(srec.animBCE);
 	}
+
+	public static int checkAnimationFiles(PrintStream infoStream) {
+		List<FancyFile> animFiles = getKnownAnimationFiles();
+		theLogger.info("Got anim files: {}", animFiles);
+		for (FancyFile ff : animFiles) {
+			Ident animID = ff.mySpec().getIdent();
+			String fullPath = ff.myResolvedFullPath();
+			if (infoStream != null) {
+				infoStream.println(" " + animID + " = " + fullPath);
+			}
+		}
+		return animFiles.size();
+	}
+
 	public static 	void startSillyMotionComputersDemoForVWorldOnly(BundleContext bundleCtx, Robot.Id optRobotID_elseAllRobots) { 
 		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx, optRobotID_elseAllRobots);
 		for (CogcharMotionSource cms : cogMotSrcList) {
@@ -93,7 +109,7 @@ public class PumaAppUtils extends BasicDebugger {
 		}
 	}
 	public static 	void attachVWorldRenderModule(BundleContext bundleCtx, RenderModule rMod, Ident optVWorldSpecID) {
-		GreedyHandleSet srec = new GreedyHandleSet();	
+		GreedyHandleSet srec = PumaAppUtils.obtainGreedyHandleSet();
 		PumaVirtualWorldMapper pvwm = srec.pumaRegClient.getVWorldMapper(optVWorldSpecID);
 		if (pvwm != null) {
 			pvwm.attachRenderModule(rMod);
@@ -101,4 +117,16 @@ public class PumaAppUtils extends BasicDebugger {
 			theLogger.error("Cannot find VWorld to attach renderModel [optVWorldSpecID={}]", optVWorldSpecID);
 		}
 	} 
+
+	public static GreedyHandleSet obtainGreedyHandleSet() {
+		if (firstGreedyHandleSet == null) {
+			try {
+				firstGreedyHandleSet = new GreedyHandleSet();
+			} catch (Exception e) {
+				e.printStackTrace();
+				theLogger.error("" + e, e);
+			}
+		}
+		return firstGreedyHandleSet;
+	}
 }
