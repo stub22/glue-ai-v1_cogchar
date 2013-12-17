@@ -16,6 +16,7 @@
 package org.cogchar.svc.behav.control;
 
 import java.awt.event.ActionListener;
+import java.util.Set;
 import org.jflux.api.core.Listener;
 
 /**
@@ -29,7 +30,7 @@ public interface ActionCallbackMap {
 	
     public ActionListener getActionCallback(String actionCallbackName);	
     
-	public void removeActionCallback(String actionCallbackName);
+    public void removeActionCallback(String actionCallbackName);
     
     public void addActionListener(Listener<String> listener);
     
@@ -38,4 +39,6 @@ public interface ActionCallbackMap {
     public void addActionRemoveListener(Listener<String> listener);
     
     public void removeActionRemoveListener(Listener<String> listener);
+    
+    public Set<String> getActionKeys();
 }
