@@ -57,15 +57,21 @@ public class PumaGlobalModeManager {
 			startGlobalConfigService(optBundCtxForLifecycle);
 		}
 	}
+	// Used to resolve configuration graphs by:
+	//		PumaDualBodyManager
+	//		PumaAppContext
 	public Ident resolveGraphForCharAndRole(Ident charID, Ident roleID) { 
+		// This semi-hidden double-map is kinda ugly
 		return myGlobalConfig.ergMap().get(charID).get(roleID);
 	}
 
-	// Right now this really feels wrong to make this a service! I don't believe in these maps enough yet.
-	// Putting it here since it's more experimental than the GlobalConfigEmitter itself, but if this ends up
-	// being the "preferred" solution this interface should probably go into o.c.blob.emit
 	class GlobalConfigServiceImpl implements GlobalConfigEmitter.GlobalConfigService {
 
+		// Stu 2013-12-18:  This overall design using two maps, one of which is a map-of-maps, has never
+		// been fully reviewed or approved.    We want to replace it with lifecycled goodies, in a
+		// refined view of what a "character" is.
+		
+		// "ERG" stands for Entity-Role-Graph
 		@Override public java.util.HashMap<Ident, java.util.HashMap<Ident, Ident>> getErgMap() {
 			return myGlobalConfig.ergMap();
 		}
@@ -73,19 +79,17 @@ public class PumaGlobalModeManager {
 			return myGlobalConfig.entityMap();
 		}
 	}
+	// Stu 2013-12-18:   GlobalConfigEmitter has always been a placeholder slack-variable object, and one of the
+	// primary manifestations of character-ness, without full clarity or formality.
+
+	
+	// Ryan - late 2012 sometime:
 	// Now here's something I was hoping to avoid, but it necessary for our experiment in making Lift a managed
 	// service. This is best seen as a trial of one possible way to handle the "GlobalMode" graph configuration.
 	// What we'll do here is tell the PumaAppContext to make the GlobalConfigEmitter available as a no-lifecycle
 	// managed service. (Why no-lifecycle? Because these lifecycles have to end somewhere! But it would make sense
 	// to make this service depend on the query interface if we decide to keep it.)
 	// Then Lifter can access it to load its config.
-	// The problem with this approach is that it elevates the GlobalConfigEmitter to a data structure of particular 
-	// importance outside of PUMA (we're putting it on the OSGi registry for crying out loud!), when at this early
-	// point I've been trying to keep non-PUMA code "agnostic" to any details of the graph "mode" config other than
-	// the Idents of the graph.
-	// So this may be a bad-idea-dead-end. Unless we decide we've fallen in love with both the GlobalConfigEmitter
-	// and the idea of doing config via managed services, in which it may turn out to be just what we need.
-	// For now, we'll restrict usage of this to the LifterLifeCycle only...
 	public boolean startGlobalConfigService(BundleContext bundCtx) {
 		boolean success = false;
 		if (myGlobalConfig != null) {
