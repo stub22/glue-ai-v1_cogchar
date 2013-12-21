@@ -20,7 +20,6 @@ import com.jme3.renderer.ViewPort;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.api.cinema.*;
 import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
@@ -34,6 +33,12 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.cogchar.api.cinema.AnimWaypointsConfig;
+import org.cogchar.api.cinema.LightsCameraConfig;
+import org.cogchar.api.cinema.PathConfig;
+import org.cogchar.api.cinema.ThingAnimConfig;
+
 
 /**
  *
@@ -56,7 +61,7 @@ public class HumanoidRenderWorldMapper {
 		LightsCameraConfig lcc = new LightsCameraConfig(qi, qGraph);
 		RenderRegistryClient rendRegCli = hrc.getRenderRegistryClient();
 		CameraMgr cm = rendRegCli.getOpticCameraFacade(null);
-		cm.initCamerasFromConfig(lcc, hrc);
+		cm.initCamerasFromConfig(lcc, rendRegCli);
 		LightFactory lf = rendRegCli.getOpticLightFacade(null);
 		lf.initLightsFromConfig(lcc, hrc);
 		setBackgroundColor(hrc, lcc);

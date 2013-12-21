@@ -32,6 +32,8 @@ import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
 
 /**
+ * A BehaviorAgent that dispatches output speech and motion directly within the current process.
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 
