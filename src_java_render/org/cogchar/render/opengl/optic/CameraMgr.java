@@ -43,6 +43,8 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.task.Queuer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.cogchar.api.humanoid.FigureBoneReferenceConfig;
+import org.cogchar.render.opengl.scene.FigureBoneNodeFinder;
 
 /**
  * @author Stu B. <www.texpedient.com> & Ryan Biggs
@@ -59,12 +61,7 @@ public class CameraMgr {
 
 	static Logger theLogger = LoggerFactory.getLogger(CameraMgr.class);
 
-	// Yuck - to be replaced with general (node-)AttachedCameraBinding
-	public static interface AttachmentNodeFinder {
-		public Node findNode(CameraConfig config, CogcharRenderContext crc);
-	}
-
-	private AttachmentNodeFinder	myAttachmentNodeFinder;
+	private FigureBoneNodeFinder	myAttachmentNodeFinder;
 	private	Queuer					myQueuer;
 	
 	// private Map<String, CameraBinding> myCameraBindingsByName = new HashMap<String, CameraBinding>();
@@ -92,7 +89,7 @@ public class CameraMgr {
 		return getCameraBinding(DEF_CAM_ID);
 	}	
 
-	public void setAttachmentNodeFinder(AttachmentNodeFinder hcm) {
+	public void setAttachmentNodeFinder(FigureBoneNodeFinder hcm) {
 		myAttachmentNodeFinder = hcm;
 	}
 
@@ -109,15 +106,14 @@ public class CameraMgr {
 		}
 		return camBind;
 	}
-	public void initCamerasFromConfig(LightsCameraConfig config, CogcharRenderContext crc) {
-		RenderRegistryClient rrc = crc.getRenderRegistryClient();
+	public void initCamerasFromConfig(LightsCameraConfig config, RenderRegistryClient rrc) {
 		for (CameraConfig cc : config.myCCs) {
 			theLogger.info("Building Camera for config: {}", cc);
-			applyCameraConfig(cc, rrc, crc);
+			applyCameraConfig(cc, rrc);
 		}
 	}
 	
-	public void applyCameraConfig(CameraConfig cConf, RenderRegistryClient rrc, CogcharRenderContext crc) { // CogcharRenderContext crc) {
+	public void applyCameraConfig(CameraConfig cConf, RenderRegistryClient rrc) { 
 		
 		Ident camID = cConf.myCamID;
 		CameraBinding camBind = findOrMakeCameraBinding(camID); 
@@ -128,12 +124,10 @@ public class CameraMgr {
 			camBind.applyInVWorld(Queuer.QueueingStyle.QUEUE_AND_RETURN);
 		}
 		// TODO:  Use rdf:type
-		// Old way:
-		// boolean flag_isHeadCam = camID.getLocalName().contains(LightsCameraAN.suffix_HEAD_CAM);
-		boolean flag_isBoneAttached = cConf.myBoneAttachmentFlag;
-		if (flag_isBoneAttached) {
+		FigureBoneReferenceConfig figureBoneRef = cConf.getBoneAttachmentConfig();
+		if (figureBoneRef != null) {
 			if (myAttachmentNodeFinder != null) {
-				Node attachmentNode = myAttachmentNodeFinder.findNode(cConf, crc);
+				Node attachmentNode = myAttachmentNodeFinder.findFigureBoneNode(figureBoneRef);
 				if (attachmentNode != null) {
 					camBind.attachCameraToSceneNode(attachmentNode);
 				}

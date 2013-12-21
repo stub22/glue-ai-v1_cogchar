@@ -52,17 +52,24 @@ import org.cogchar.render.opengl.scene.GeomFactory;
 import org.cogchar.render.opengl.scene.TextMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.slf4j.Logger;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class ShapeAnimator {
+public class VizShapeGroup {
+	private		Ident	myGroupID;
+	
 	private		Map<Ident, VizShape> myShapesByIdent = new HashMap<Ident, VizShape>();
 	
 	// private		RenderRegistryClient	myRRC;
-	private		Material myStandardMaterial;
-	private		Node mySubsysNode = new Node("shape_animator_25");
+	private		Material	myStandardMaterial;
+	private		Node		mySubsysNode;
 	
+	public VizShapeGroup(Ident groupID) {
+		myGroupID = groupID;
+		mySubsysNode = new Node(groupID.getLocalName());
+	}
 	public void setupMaterials(RenderRegistryClient	rrc) { 
 		MatFactory matFactory = rrc.getOpticMaterialFacade(null, null);
 		myStandardMaterial = matFactory.makeMatWithOptTexture("Common/MatDefs/Light/Lighting.j3md", "SpecularMap", null);
