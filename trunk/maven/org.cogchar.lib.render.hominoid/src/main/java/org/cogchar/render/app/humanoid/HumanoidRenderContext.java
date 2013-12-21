@@ -29,7 +29,6 @@ import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.model.humanoid.HumanoidFigureManager;
 import org.cogchar.render.opengl.optic.CameraMgr;
-import org.cogchar.render.optic.hominoid.HominoidCameraManager;
 import org.cogchar.render.sys.goody.GoodyModularRenderContext;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
@@ -74,8 +73,7 @@ public class HumanoidRenderContext extends GoodyModularRenderContext {
 	public void setupHominoidCameraManager() {
 		RenderRegistryClient rrc = getRenderRegistryClient();
 		CameraMgr cmgr = rrc.getOpticCameraFacade(null);
-		HominoidCameraManager homCM = new HominoidCameraManager();
-		cmgr.setAttachmentNodeFinder(homCM);		
+		cmgr.setAttachmentNodeFinder(myHFM);		
 	}
 	public void initCinematicParameters() {
 		WorkaroundAppStub stub = getAppStub();

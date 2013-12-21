@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PumaAppUtils extends BasicDebugger {
 	static Logger theLogger = LoggerFactory.getLogger(PumaAppUtils.class);
-	private static GreedyHandleSet firstGreedyHandleSet;
+	private static GreedyHandleSet theFirstGreedyHandleSet;
 
 	/**
 	 * This is a crude handle-grabbing entry pont, which assumes "the application"
@@ -119,14 +119,14 @@ public class PumaAppUtils extends BasicDebugger {
 	} 
 
 	public static GreedyHandleSet obtainGreedyHandleSet() {
-		if (firstGreedyHandleSet == null) {
+		if (theFirstGreedyHandleSet == null) {
 			try {
-				firstGreedyHandleSet = new GreedyHandleSet();
+				theFirstGreedyHandleSet = new GreedyHandleSet();
 			} catch (Exception e) {
 				e.printStackTrace();
 				theLogger.error("" + e, e);
 			}
 		}
-		return firstGreedyHandleSet;
+		return theFirstGreedyHandleSet;
 	}
 }

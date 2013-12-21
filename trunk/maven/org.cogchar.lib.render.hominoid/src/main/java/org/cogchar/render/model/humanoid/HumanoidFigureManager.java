@@ -37,12 +37,14 @@ import java.util.concurrent.Callable;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.render.sys.task.BasicCallableRenderTask;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.cogchar.render.opengl.scene.FigureBoneNodeFinder;
+import org.cogchar.api.humanoid.FigureBoneReferenceConfig;
 
 import org.appdapter.core.log.BasicDebugger;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class HumanoidFigureManager extends BasicDebugger {
+public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNodeFinder {
 
 	private Map<Ident, HumanoidFigure> myFiguresByCharIdent = new HashMap<Ident, HumanoidFigure>();
 
@@ -143,31 +145,22 @@ public class HumanoidFigureManager extends BasicDebugger {
 	}
 	
 	
-	public Node findHumanoidBoneAttachNode(BonyRenderContext brc, final Ident robotIdent, final String boneName) {
-		final HumanoidFigure robot = getHumanoidFigure(robotIdent);
+	public Node findHumanoidBoneAttachNode(final Ident charID, final String boneName) {
+		final HumanoidFigure robot = getHumanoidFigure(charID);
 		Node attachmentNode = null;
 		if (robot == null) {
-			getLogger().warn("Failed to find bone {} due to missing robot: {}", boneName, robotIdent);
+			getLogger().warn("Failed to find bone {} due to missing robot: {}", boneName, charID);
 		} else {
 			attachmentNode =  robot.getBoneAttachmentsNode(boneName);
 			if (attachmentNode == null) {
-				getLogger().warn("Could not find bone {} on robot: {}", boneName, robotIdent);	
+				getLogger().warn("Could not find bone {} on robot: {}", boneName, charID);	
 			}
 		}
 		return attachmentNode;
 	}
-		/*
-		// getBoneAttachmentsNode attaches things to the rootNode, so this next line must be enqueued for the main render thread. Convenient!
-		
-					if (attachToBone != null) {
-						attachToBone.attachChild(toAttach);
-					} else {
-						
-					}
-					return null;
-				}
-			});
-		}
-	}	
-	*/ 
+
+
+	@Override public com.jme3.scene.Node findFigureBoneNode(FigureBoneReferenceConfig figBoneRef) {
+		return findHumanoidBoneAttachNode(figBoneRef.getFigureID(), figBoneRef.getBoneName());
+	}
 }

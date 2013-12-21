@@ -31,7 +31,12 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.cinema.*;
+import org.cogchar.api.cinema.SpatialActionConfig;
+import org.cogchar.api.cinema.ThingAnimInstanceConfig;
+import org.cogchar.api.cinema.AnimWaypointsConfig;
+import org.cogchar.api.cinema.WaypointConfig;
+import org.cogchar.api.cinema.RotationConfig;
+import org.cogchar.api.cinema.VectorScaleConfig;
 
 /**
  * Generates and controls jMonkey spatial animations for virtual world "things"

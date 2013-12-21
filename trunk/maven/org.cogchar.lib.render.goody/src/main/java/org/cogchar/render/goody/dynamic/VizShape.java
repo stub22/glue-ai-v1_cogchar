@@ -57,6 +57,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 public class VizShape {
 	private		Ident		myIdent;
 	private		Vector3f	myPosVec;
+	private		Quaternion	myDirection;
 	private		float		myRadius;
 	// Strangely it seems RGBA is the only colorspace directly supported by JME3 core API - true? (No HSV, YUV)
 	private		ColorRGBA	myColor;
@@ -84,7 +85,7 @@ public class VizShape {
 		myMaterial.setFloat("Shininess", 25f);
 	}
 
-	public void setupGeom(ShapeAnimator sa, RenderRegistryClient rrc) {
+	public void setupGeom(VizShapeGroup sa, RenderRegistryClient rrc) {
 		int zSamp = 20;
 		int rSamp = 20;
 		// Copied+modified from DataballGoodyBuilder
@@ -103,20 +104,26 @@ public class VizShape {
 		myGeom.setLocalTranslation(myPosVec);
 	}
 
-	public void setPosition(Vector3f pos) {
+	public void setPosition_onRendThrd(Vector3f pos) {
 		myPosVec = pos;
 		if (myGeom != null) {
 			myGeom.setLocalTranslation(myPosVec);
 		}
 	}
 
-	public void setColor(ColorRGBA col) {
+	public void setColor_onRendThrd(ColorRGBA col) {
 		myColor = col;
 		if (myMaterial != null) {
 			applyColorsToMat();
 		}
 	}
-	
+
+	public void setDirection_onRendThrd(Quaternion dirQuat) {
+		myDirection = dirQuat;
+		if (myGeom != null) {
+			myGeom.setLocalRotation(myDirection);
+		}
+	}
 }
 /*
 myRenderContext.enqueueCallable(new Callable<Void>() { // Do this on main render thread

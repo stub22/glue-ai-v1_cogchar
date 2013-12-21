@@ -22,6 +22,7 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.api.humanoid.FigureBoneReferenceConfig;
 import org.cogchar.name.cinema.LightsCameraAN;
 
 /**
@@ -45,10 +46,8 @@ public class CameraConfig {
 	 */			
 	public float[] myDisplayRect = new float[4];
 	
-	public Ident	myAttachedRobotID;
-	public String	myAttachedBoneName;
+	public	FigureBoneReferenceConfig	myFigureAttachConf;
 	
-	public boolean	myBoneAttachmentFlag = false;
 
 	@Override public String toString() {
 		return "CameraConfig[id=" + myCamID + ", pos=" + Arrays.toString(myCamPos) + ", dir=" 
@@ -69,12 +68,10 @@ public class CameraConfig {
 		for (int index = 0; index < myDisplayRect.length; index++) {
 			myDisplayRect[index] = sh.pullFloat(qSoln, LightsCameraCN.VIEWPORT_VAR_NAME[index], Float.NaN);
 		}
-		myAttachedRobotID = sh.pullIdent(qSoln, LightsCameraCN.ATTACHED_ROBOT_VAR_NAME);
-		myAttachedBoneName = sh.pullString(qSoln, LightsCameraCN.ATTACHED_BONE_VAR_NAME);
-		if ((myAttachedRobotID != null) && (myAttachedBoneName != null)) {
-			// Old way
-			// boolean flag_isHeadCam = camID.getLocalName().contains(LightsCameraAN.suffix_HEAD_CAM);
-			myBoneAttachmentFlag = true;
+		Ident attachedRobotID = sh.pullIdent(qSoln, LightsCameraCN.ATTACHED_ROBOT_VAR_NAME);
+		String attachedBoneName = sh.pullString(qSoln, LightsCameraCN.ATTACHED_BONE_VAR_NAME);
+		if ((attachedRobotID != null) && (attachedBoneName != null)) {
+			myFigureAttachConf = new FigureBoneReferenceConfig(attachedRobotID, attachedBoneName);
 		}
 	}
 	
@@ -85,10 +82,11 @@ public class CameraConfig {
 		myCamPointDir = camPointDir;
 		myDisplayRect = displayRect;
 	}
-	public void setAttachmentNodeParams(Ident	attachedRobotID, String	attachedBoneName) { 
-		myAttachedRobotID = attachedRobotID;
-		myAttachedBoneName = attachedBoneName;
-		myBoneAttachmentFlag = true;
+	public void setAttachmentNodeParams(Ident attachedRobotID, String	attachedBoneName) { 
+		myFigureAttachConf = new FigureBoneReferenceConfig(attachedRobotID, attachedBoneName);
+	}
+	public FigureBoneReferenceConfig getBoneAttachmentConfig() { 
+		return myFigureAttachConf;
 	}
 
 	/* Disabled for now because we needed a method from HumanoidConfigEmitter, which is going away (see below). We can find a way to solve this problem if we decide we need assembler config again
