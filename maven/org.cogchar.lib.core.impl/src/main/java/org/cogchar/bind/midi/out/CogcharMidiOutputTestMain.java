@@ -40,9 +40,9 @@ import javax.sound.midi.Track;
 import javax.sound.midi.Transmitter;
 
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.bind.midi.FunMidiEventRouter;
-import org.cogchar.bind.midi.MidiDevMatchPattern;
-import org.cogchar.bind.midi.MidiDevWrap;
+import org.cogchar.bind.midi.general.FunMidiEventRouter;
+import org.cogchar.bind.midi.general.MidiDevMatchPattern;
+import org.cogchar.bind.midi.general.MidiDevWrap;
 import org.cogchar.bind.midi.seq.MonoPatchMelodyPerf;
 
 /**
@@ -69,7 +69,7 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 			cmotm.testMPMP(); // Does not currently wait for seq to finish
 			// ...so it is playing now, and will overlap with anything done next.
 			// 
-			cmotm.playSomeNotes();
+			// cmotm.playSomeNotes();
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
@@ -248,6 +248,8 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 				notesOffMsg.setMessage(ShortMessage.NOTE_OFF, i, noteIdx, offVel);
 				synthRcvr.send(notesOffMsg, timeStampImmediate);
 				getLogger().debug("Program change chanFromZ={} to {}", i, tgtInst);
+				// Appears that sending bank this way is not univerally understood.
+				// Another way (more official?) is to seperately select the bank as a CC-#0 value.
 				progChangeMsg.setMessage(ShortMessage.PROGRAM_CHANGE, i, tgtPatch.getProgram(), tgtPatch.getBank());
 				synthRcvr.send(progChangeMsg, timeStampImmediate);
 				noteOnMsg.setMessage(ShortMessage.NOTE_ON, i, noteIdx, onVel);
@@ -401,45 +403,15 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 	}
 
 
-
-	private void noticeSeqrTrackEnd(final Sequencer seqr) {
-		getLogger().info("MidiPlayer.<...>.meta(): end of track message received, closing sequencer and attached MidiDevices...");
-		seqr.close();
-
-	}
-
-	private void listenForSeqrEvents(final Sequencer seqr) throws Throwable {
-		seqr.addMetaEventListener(new MetaEventListener() {
-			public void meta(MetaMessage message) {
-
-				getLogger().info("%%% MetaMessage: " + message);
-				getLogger().info("%%% MetaMessage type: [{}]  length: {}" + message.getType(), message.getLength());
-				if (message.getType() == 47) {
-					noticeSeqrTrackEnd(seqr);
-				}
-			}
-		});
-		int[] allControllersMask = new int[128];
-		for (int i = 0; i < allControllersMask.length; i++) {
-			allControllersMask[i] = i;
-		}
-		seqr.addControllerEventListener(
-			new ControllerEventListener() {
-			public void controlChange(ShortMessage message) {
-				getLogger().info("%%% ShortMessage: {}", message);
-				getLogger().info("%%% ShortMessage controller={}, value={} ", message.getData1(), message.getData2());
-			}
-		}, allControllersMask);
-	}
-
 	private void testMPMP() { 
+		String path = "src/main/resources/midiseq/mutopia/GoodKingWenceslas.mid";
 		try {
-			String path = "src/main/resources/midiseq/mutopia/GoodKingWenceslas.mid";
+			
 			File relFileDevOnly = new File(path);
 			MonoPatchMelodyPerf mpmp = new MonoPatchMelodyPerf (relFileDevOnly);
 			mpmp.startPlaying();
 		} catch (Throwable t) {
-			getLogger().error("Problem testing melody seq", t);
+			getLogger().error("Problem playing melody seq from path {}", path, t);
 		}
 	}
 	private void closeAllDevsAndExit() {
@@ -449,24 +421,6 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 		 } if (DEBUG) { out("MidiPlayer.<...>.meta(): ...closed, now exiting"); }	 //System.exit(0);	 */
 	}
 
-	private void callSequencerMethods(Sequencer seqr) throws Throwable {
-		// Scratchpad method calls, not ready for invocation yet.
-		Sequence sequence = null;
-		String mfName = "filename.mid";
-		File midiFile = new File(mfName);
-		sequence = MidiSystem.getSequence(midiFile);
-
-		seqr.open();
-		seqr.setSequence(sequence);
-		seqr.start();
-		/*
-		 * 	 *	To accomplish this, we register a Listener to the Sequencer.
-		 *	It is called when there are "meta" events. Meta event
-		 *	47 is end of track.
-
-		 * 
-		 */
-	}
 	private void synthMapperCode(Sequencer seqr) throws Throwable {
 		// This is just a bunch of nonsensical but compilable code to validate that we *could* call these methods.
 		ArrayList<MidiDevice> sm_openedMidiDeviceList = new ArrayList<MidiDevice>();

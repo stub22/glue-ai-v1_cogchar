@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.midi;
+package org.cogchar.bind.midi.in;
 
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;

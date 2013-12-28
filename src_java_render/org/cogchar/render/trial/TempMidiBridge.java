@@ -21,10 +21,10 @@ import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Transmitter;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.bind.midi.FunMidiEventRouter;
-import org.cogchar.bind.midi.InterestingMidiEvent;
-import org.cogchar.bind.midi.MidiEventReporter;
-import org.cogchar.bind.midi.MidiReceiverOurs;
+import org.cogchar.bind.midi.general.FunMidiEventRouter;
+import org.cogchar.bind.midi.in.InterestingMidiEvent;
+import org.cogchar.bind.midi.in.MidiEventReporter;
+import org.cogchar.bind.midi.in.MidiReceiverOurs;
 import org.cogchar.bind.midi.out.CogcharMidiOutputTestMain;
 import org.cogchar.bind.midi.out.NovLpadTest;
 /**
@@ -112,6 +112,13 @@ public class TempMidiBridge extends BasicDebugger {
 	
 	private		ControlChangeParamBinding[]	myBindingsByNumber = new ControlChangeParamBinding[128];
 	
+	/**
+	 * Overwrites any existing listener binding for this param.
+	 * TODO:  Also map by midi-channel.
+	 * @param ccNum
+	 * @param paramName
+	 * @param listener 
+	 */
 	public void putControlChangeParamBinding(int ccNum, String paramName, ParamValueListener listener) {
 		ControlChangeParamBinding ccpb = new ControlChangeParamBinding();
 		ccpb.myParamName = paramName;
