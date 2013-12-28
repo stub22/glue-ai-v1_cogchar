@@ -21,9 +21,9 @@ import javax.sound.midi.MidiDevice;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.bind.midi.MidiDevMatchPattern;
-import org.cogchar.bind.midi.MidiDevWrap;
-import org.cogchar.bind.midi.MidiReceiverDevWrap;
+import org.cogchar.bind.midi.general.MidiDevMatchPattern;
+import org.cogchar.bind.midi.general.MidiDevWrap;
+import org.cogchar.bind.midi.general.MidiReceiverDevWrap;
 
 /**
  * @author Stu B. <www.texpedient.com>

@@ -16,7 +16,7 @@
 
 package org.cogchar.test.midi;
 
-import org.cogchar.bind.midi.FunMidiEventRouter;
+import org.cogchar.bind.midi.general.FunMidiEventRouter;
 
 /**
  * @author Stu B. <www.texpedient.com>

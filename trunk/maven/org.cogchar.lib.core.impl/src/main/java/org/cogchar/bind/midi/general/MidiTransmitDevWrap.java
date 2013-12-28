@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.midi;
+package org.cogchar.bind.midi.general;
 
 import java.util.ArrayList;
 import java.util.List;
