@@ -13,8 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.midi;
+package org.cogchar.bind.midi.general;
 
+import org.cogchar.bind.midi.in.InterestingMidiEvent;
+import org.cogchar.bind.midi.in.MidiEventReporter;
+import org.cogchar.bind.midi.in.MidiReceiverDumpsAndNotifies;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;

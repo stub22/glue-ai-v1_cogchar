@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.midi;
+package org.cogchar.bind.midi.in;
 
 import java.util.ArrayList;
 import java.util.List;

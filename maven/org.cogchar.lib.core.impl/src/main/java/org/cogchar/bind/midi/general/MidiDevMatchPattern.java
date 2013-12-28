@@ -14,20 +14,26 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.midi;
+package org.cogchar.bind.midi.general;
 
-import javax.sound.midi.Receiver;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.Transmitter;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class MidiReceiverDevWrap extends MidiDevWrap {
-	public		Receiver		myReceiver;
-	
-	public MidiReceiverDevWrap(Receiver rcvr, MidiDevWrap devWrap) {
-		super(devWrap);
-		myReceiver = rcvr;
-	}
+public class MidiDevMatchPattern {
+		public boolean matchInfo(MidiDevice.Info infoCand) {
+			String name = infoCand.getName();
+			return true;
+		}
 
+		public boolean matchDevice(MidiDevice devCand, MidiDevice.Info infoCand) {
+			return true;
+		}
+
+		public boolean matchTransmitter(Transmitter tmit, MidiDevice devCand, MidiDevice.Info infoCand) {
+			return true;
+		}
 }
