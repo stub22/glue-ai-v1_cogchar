@@ -15,6 +15,7 @@
  */
 package org.cogchar.render.trial;
 
+import org.cogchar.bind.midi.in.TempMidiBridge;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import org.cogchar.render.app.core.CogcharPresumedApp;
