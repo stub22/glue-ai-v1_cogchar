@@ -43,6 +43,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.midi.general.FunMidiEventRouter;
 import org.cogchar.bind.midi.general.MidiDevMatchPattern;
 import org.cogchar.bind.midi.general.MidiDevWrap;
+import org.cogchar.bind.midi.seq.DemoMidiSeq;
 import org.cogchar.bind.midi.seq.MonoPatchMelodyPerf;
 
 /**
@@ -64,7 +65,7 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 			CogcharMidiOutputTestMain cmotm = new CogcharMidiOutputTestMain();
 
 			NovLpadTest nlt = new NovLpadTest();
-			nlt.lpadLightDemo();
+			nlt.startLightDemo();
 
 			cmotm.testMPMP(); // Does not currently wait for seq to finish
 			// ...so it is playing now, and will overlap with anything done next.
@@ -134,7 +135,7 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 	private void playChordSequence(Sequencer dseq) throws Throwable {
 		getLogger().info("Playing sequence of chords on {}", dseq);
 		if (dseq != null) {
-			Sequence seq = makeSequenceOfChords();
+			Sequence seq = MidiTrackFactory.makeSequenceOfChords();
 			dseq.open();
 			dseq.setSequence(seq);
 			dseq.start();
@@ -314,105 +315,17 @@ public class CogcharMidiOutputTestMain extends BasicDebugger {
 
 	}
 
-	private Sequence makeSequenceOfChords() throws Throwable {
-		Sequence sequence = new Sequence(Sequence.PPQ, 1);
-		sequence.createTrack();
-		Track track = sequence.createTrack();
-
-		// first chord: C major
-		track.add(createNoteOnEvent(60, 0));
-		track.add(createNoteOnEvent(64, 0));
-		track.add(createNoteOnEvent(67, 0));
-		track.add(createNoteOnEvent(72, 0));
-		track.add(createNoteOffEvent(60, 1));
-		track.add(createNoteOffEvent(64, 1));
-		track.add(createNoteOffEvent(67, 1));
-		track.add(createNoteOffEvent(72, 1));
-
-		// second chord: f minor N
-		track.add(createNoteOnEvent(53, 1));
-		track.add(createNoteOnEvent(65, 1));
-		track.add(createNoteOnEvent(68, 1));
-		track.add(createNoteOnEvent(73, 1));
-		track.add(createNoteOffEvent(63, 2));
-		track.add(createNoteOffEvent(65, 2));
-		track.add(createNoteOffEvent(68, 2));
-		track.add(createNoteOffEvent(73, 2));
-
-		// third chord: C major 6-4
-		track.add(createNoteOnEvent(55, 2));
-		track.add(createNoteOnEvent(64, 2));
-		track.add(createNoteOnEvent(67, 2));
-		track.add(createNoteOnEvent(72, 2));
-		track.add(createNoteOffEvent(64, 3));
-		track.add(createNoteOffEvent(72, 3));
-
-		// fourth chord: G major 7
-		track.add(createNoteOnEvent(65, 3));
-		track.add(createNoteOnEvent(71, 3));
-		track.add(createNoteOffEvent(55, 4));
-		track.add(createNoteOffEvent(65, 4));
-		track.add(createNoteOffEvent(67, 4));
-		track.add(createNoteOffEvent(71, 4));
-
-		// fifth chord: C major
-		track.add(createNoteOnEvent(48, 4));
-		track.add(createNoteOnEvent(64, 4));
-		track.add(createNoteOnEvent(67, 4));
-		track.add(createNoteOnEvent(72, 4));
-		track.add(createNoteOffEvent(48, 8));
-		track.add(createNoteOffEvent(64, 8));
-		track.add(createNoteOffEvent(67, 8));
-		track.add(createNoteOffEvent(72, 8));
-
-		return sequence;
-	}
-	private static final int VELOCITY = 64;
-
-	private static MidiEvent createNoteOnEvent(int nKey, long lTick) {
-		return createNoteEvent(ShortMessage.NOTE_ON,
-			nKey,
-			VELOCITY,
-			lTick);
-	}
-
-	private static MidiEvent createNoteOffEvent(int nKey, long lTick) {
-		return createNoteEvent(ShortMessage.NOTE_OFF,
-			nKey,
-			0,
-			lTick);
-	}
-
-	private static MidiEvent createNoteEvent(int nCommand,
-		int nKey,
-		int nVelocity,
-		long lTick) {
-		ShortMessage message = new ShortMessage();
-		try {
-			message.setMessage(nCommand,
-				0, // always on channel 1
-				nKey,
-				nVelocity);
-		} catch (InvalidMidiDataException e) {
-			e.printStackTrace();
-			return null;
-		}
-		MidiEvent event = new MidiEvent(message,
-			lTick);
-		return event;
-	}
 
 
-	private void testMPMP() { 
-		String path = "src/main/resources/midiseq/mutopia/GoodKingWenceslas.mid";
-		try {
-			
-			File relFileDevOnly = new File(path);
-			MonoPatchMelodyPerf mpmp = new MonoPatchMelodyPerf (relFileDevOnly);
-			mpmp.startPlaying();
-		} catch (Throwable t) {
-			getLogger().error("Problem playing melody seq from path {}", path, t);
-		}
+	private void testMPMP() {
+		// DemoMidiSeq.unitTestMPMP();
+		int lengthMsec = 2000;
+		DemoMidiSeq.shortTestPlay(DemoMidiSeq.DemoMonoMelody.GREENSLEEVES_MELODY, lengthMsec);
+		DemoMidiSeq.shortTestPlay(DemoMidiSeq.DemoMonoMelody.DOUJAN, lengthMsec);
+		DemoMidiSeq.shortTestPlay(DemoMidiSeq.DemoMonoMelody.BEETHOVEN_MOONLIGHT, lengthMsec);
+		DemoMidiSeq.shortTestPlay(DemoMidiSeq.DemoMonoMelody.AULD_LANG_SYNE, lengthMsec);
+		DemoMidiSeq.shortTestPlay(DemoMidiSeq.DemoMonoMelody.GOOD_KING_WENCESLAS, lengthMsec);
+		DemoMidiSeq.shortTestPlay(DemoMidiSeq.DemoMonoMelody.GREEN_THREECOUNT, lengthMsec);
 	}
 	private void closeAllDevsAndExit() {
 		/*  Iterator iterator = sm_openedMidiDeviceList.iterator(); while (iterator.hasNext())	{

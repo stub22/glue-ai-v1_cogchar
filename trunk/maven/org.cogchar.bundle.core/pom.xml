@@ -127,7 +127,8 @@
                         <Bundle-Activator>org.cogchar.bundle.core.CogcharCoreActivator</Bundle-Activator>
 						<Export-Package>
 							org.cogchar.*;-split-package:=merge-first,
-							com.thoughtworks.xstream.*;-split-package:=merge-first
+							com.thoughtworks.xstream.*;-split-package:=merge-first,
+							midiseq.*;-split-package:=merge-first
 						</Export-Package>
 						<Import-Package>
 							<!-- All of these are wanted by the xstream stuff ?-->
