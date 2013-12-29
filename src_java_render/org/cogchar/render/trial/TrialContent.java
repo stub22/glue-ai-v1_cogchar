@@ -15,6 +15,7 @@
  */
 package org.cogchar.render.trial;
 
+import org.cogchar.bind.midi.in.TempMidiBridge;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;

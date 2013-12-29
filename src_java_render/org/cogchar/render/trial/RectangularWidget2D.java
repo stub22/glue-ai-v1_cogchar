@@ -16,6 +16,7 @@
 
 package org.cogchar.render.trial;
 
+import org.cogchar.bind.midi.in.ParamValueListener;
 import com.jme3.scene.Node;
 import java.util.concurrent.Callable;
 import org.appdapter.core.log.BasicDebugger;
