@@ -129,11 +129,10 @@ public class TempMidiBridge extends BasicDebugger {
 	public void playSomeOutput() { 
 	
 		FunMidiEventRouter fmer = new FunMidiEventRouter();
+		NovLpadTest nlt = new NovLpadTest();
 		try {
 			CogcharMidiOutputTestMain cmotm = new CogcharMidiOutputTestMain();
-
-			NovLpadTest nlt = new NovLpadTest();
-			nlt.lpadLightDemo();
+			nlt.startLightDemo();
 
 			cmotm.playSomeNotes();
 		} catch (Throwable t) {
@@ -141,6 +140,9 @@ public class TempMidiBridge extends BasicDebugger {
 		} finally {
 			fmer.logInfo("Doing cleanup");
 			fmer.cleanup();
+			if (nlt != null) {
+				nlt.cleanup();
+			}
 		}	
 	}
 	

@@ -38,32 +38,35 @@ public class NovLpadTest extends BasicDebugger {
 
 		NovLpadTest nlt  = new NovLpadTest();
 		try {
-			nlt.lpadLightDemo();
+			nlt.startLightDemo();
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
 			nlt.logInfo("Doing cleanup");
-			// nlt   fmer.cleanup();
+			nlt.cleanup();
 		}		
 	}
-	public void lpadLightDemo()  {
+	public boolean startLightDemo()  {
 		try {
 			myLpadDevWrap = findLaunchpadOutRcvr();
 			if (myLpadDevWrap != null) {
 				myLpadDevWrap.ensureDevOpen();
 				playLightStates();
-				myLpadDevWrap.ensureDevClosed();
-
+				return true;
 			} else {
 				getLogger().warn("Cannot find/open launchpad for light-output");
 			}
 		} catch (Throwable t) {
 			getLogger().error("Caught: ", t);
 		}
+		return false;
 		
 	}
 	public void cleanup() { 
-		
+		if (myLpadDevWrap != null) {
+			myLpadDevWrap.ensureDevClosed();
+			myLpadDevWrap = null;
+		}
 	}
 	public MidiReceiverDevWrap findLaunchpadOutRcvr() throws Throwable {
 		MidiDevMatchPattern devPattern = new MidiDevMatchPattern();
@@ -89,15 +92,21 @@ public class NovLpadTest extends BasicDebugger {
 		}
 		return lpadDevWrap;
 	}
+	static int theDramaticColors[] = {12, 13, 15, 29, 63, 62, 28, 60};
+
+	
 	public void playLightStates() throws Throwable {
+		int brightYellow = 58;
+		wipeAllCellsToColor(brightYellow);
+	}
+	public void wipeAllCellsToColor(int colorState) throws Throwable {
 		for (int rowIdx = 0; rowIdx < 8; rowIdx++) {
 			for (int colIdx = 0; colIdx < 9; colIdx++) {
 				int cellNum = rowIdx * 16 + colIdx;
-				int stateVal = 58;
-				writeLaunchpadLightState(cellNum, stateVal);
+				writeLaunchpadLightState(cellNum, colorState);
 			}
 		}
-	}
+	}	
 	public void writeLaunchpadLightState(int lightNum, int lightState) throws Throwable {
 		
 		ShortMessage noteOnMsg = new ShortMessage();

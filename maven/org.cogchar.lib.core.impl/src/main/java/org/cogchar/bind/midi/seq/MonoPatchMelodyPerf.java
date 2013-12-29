@@ -84,6 +84,11 @@ public class MonoPatchMelodyPerf extends BasicDebugger {
 			getLogger().error("MIDI Out problem", t);
 		}
 	}
+	public void stopPlaying() {
+		if (mySequencer != null) {
+			mySequencer.stop();
+		}
+	}
 	public void close() {
 		mySequencer.close();		
 	}
