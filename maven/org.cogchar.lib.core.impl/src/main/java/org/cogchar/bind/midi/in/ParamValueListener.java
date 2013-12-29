@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.trial;
+package org.cogchar.bind.midi.in;
 
 /**
  * @author Stu B. <www.texpedient.com>

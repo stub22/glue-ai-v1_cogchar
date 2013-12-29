@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-package org.cogchar.render.trial;
+package org.cogchar.bind.midi.in;
+
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Receiver;
@@ -22,11 +23,9 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Transmitter;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.midi.general.FunMidiEventRouter;
-import org.cogchar.bind.midi.in.InterestingMidiEvent;
-import org.cogchar.bind.midi.in.MidiEventReporter;
-import org.cogchar.bind.midi.in.MidiReceiverOurs;
 import org.cogchar.bind.midi.out.CogcharMidiOutputTestMain;
 import org.cogchar.bind.midi.out.NovLpadTest;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */

@@ -16,6 +16,8 @@
 
 package org.cogchar.render.trial;
 
+import org.cogchar.bind.midi.in.ParamValueListener;
+import org.cogchar.bind.midi.in.TempMidiBridge;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import org.appdapter.core.log.BasicDebugger;

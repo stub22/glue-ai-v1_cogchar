@@ -61,8 +61,4 @@ public class DemoMidiOutputPlayer extends BasicDebugger {
 		}
 	}
 	
-	public void playLightDemo() { 
-		NovLpadTest nlt = new NovLpadTest();
-		nlt.startLightDemo();		
-	}
 }
