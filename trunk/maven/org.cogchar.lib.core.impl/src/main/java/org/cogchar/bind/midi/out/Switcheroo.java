@@ -59,7 +59,7 @@ public class Switcheroo extends BasicDebugger implements MidiEventReporter.Liste
 			if (ime instanceof InterestingMidiEvent.ControlChange) {
 				InterestingMidiEvent.ControlChange cchg = (InterestingMidiEvent.ControlChange) ime;
 				double mult = cchg.myValue / 32.0f;
-				getLogger().info("Setting multA to {} in response to: {}", mult, cchg);
+				getLogger().debug("Setting multA to {} in response to: {}", mult, cchg);
 
 			}
 
