@@ -33,7 +33,7 @@ import org.cogchar.bind.midi.out.NovLpadTest;
 public class TempMidiBridge extends BasicDebugger {
 	
 	private		FunMidiEventRouter		myFMER;
-	
+	private		CCParamRouter			myCCPR;
 	
 	public static void main(String[] args) {
 		org.apache.log4j.BasicConfigurator.configure();
@@ -66,65 +66,11 @@ public class TempMidiBridge extends BasicDebugger {
 		}
 		myFMER = new FunMidiEventRouter();
 		myFMER.startPumpingMidiEvents();
-		OurListener ol = new OurListener();
-		myFMER.registerListener(ol);		
+		myCCPR= new CCParamRouter(myFMER);
 	}
-	// Something not unlike a Novation Nocturn, in x Channels
-	public void connectAndMapContSurf (String devName, int chanCount) {
-		
+	public CCParamRouter getCCParamRouter() { 
+		return myCCPR;
 	}
-	public class OurListener extends BasicDebugger implements MidiEventReporter.Listener {
-
-		@Override public void reportEvent(InterestingMidiEvent ime) {
-			getLogger().info("*** Oulist received midi event: {} ", ime);
-			Receiver recvr = ime.myReceiver;
-			
-			if (recvr instanceof  MidiReceiverOurs) {
-				MidiReceiverOurs mro = (MidiReceiverOurs) recvr;
-				if (ime instanceof InterestingMidiEvent.ControlChange) {
-					InterestingMidiEvent.ControlChange ccEvent = (InterestingMidiEvent.ControlChange) ime;
-					int ccNum = ccEvent.myController;
-					float normalVal = ccEvent.myValue / 127.0001f;
-					ControlChangeParamBinding ccpb = myBindingsByNumber[ccNum];
-					getLogger().info("Got normalVal={} for ccNum={} with binding={}", normalVal, ccNum, ccpb);
-					if (ccpb != null) {
-						ccpb.noticeNormalizedValue(normalVal);
-					}
-					
-				}
-				if (mro.myKind == MidiReceiverOurs.KnownKind.NovationAutomap) {
-					
-				}
-			}
-		}
-	}
-	static class ControlChangeParamBinding  {
-		String				myParamName;
-		ParamValueListener	myListener;
-		public void noticeNormalizedValue(float val) {
-			myListener.setNormalizedNumericParam(myParamName, val);
-		}
-		public String toString() {
-			return "[paramName=" + myParamName + ", listener=" + myListener + "]";
-		}
-	}
-	
-	private		ControlChangeParamBinding[]	myBindingsByNumber = new ControlChangeParamBinding[128];
-	
-	/**
-	 * Overwrites any existing listener binding for this param.
-	 * TODO:  Also map by midi-channel.
-	 * @param ccNum
-	 * @param paramName
-	 * @param listener 
-	 */
-	public void putControlChangeParamBinding(int ccNum, String paramName, ParamValueListener listener) {
-		ControlChangeParamBinding ccpb = new ControlChangeParamBinding();
-		ccpb.myParamName = paramName;
-		ccpb.myListener = listener;
-		myBindingsByNumber[ccNum] = ccpb;
-	}
-	
 	public void playSomeOutput() { 
 	
 		FunMidiEventRouter fmer = new FunMidiEventRouter();

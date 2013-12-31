@@ -16,6 +16,7 @@
 package org.cogchar.render.trial;
 
 import org.cogchar.bind.midi.in.TempMidiBridge;
+import org.cogchar.bind.midi.in.CCParamRouter;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import org.cogchar.render.app.core.CogcharPresumedApp;
@@ -137,12 +138,15 @@ public class TrialBalloon extends CogcharPresumedApp {
 		// Camera-viewports are placed in the screen coordinate system, so we might consider them to be a kind
 		// of 2-D content.  They are part of that layout, anyhoo.
 		myContent.initContent2D_onRendThread(rrc, guiNode, assetManager);
-		myContent.attachMidiCCs(myTMB);
+		
+		CCParamRouter ccpr = myTMB.getCCParamRouter();
+		
+		myContent.attachMidiCCs(ccpr);
 		
 		TrialCameras tcam = new TrialCameras();
 		tcam.setupCamerasAndViews(rrc, crc, myContent);
 		
-		tcam.attachMidiCCs(myTMB);
+		tcam.attachMidiCCs(ccpr);
 		
 	}
 

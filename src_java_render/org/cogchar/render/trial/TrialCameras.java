@@ -17,7 +17,7 @@
 package org.cogchar.render.trial;
 
 import org.cogchar.bind.midi.in.ParamValueListener;
-import org.cogchar.bind.midi.in.TempMidiBridge;
+import org.cogchar.bind.midi.in.CCParamRouter;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import org.appdapter.core.log.BasicDebugger;
@@ -85,16 +85,15 @@ public class TrialCameras extends BasicDebugger implements ParamValueListener {
 
 	}
 	
-	protected void attachMidiCCs(TempMidiBridge tmb) { 
-		tmb.putControlChangeParamBinding(27, CamCoord.AZIMUTH.name(), this); 
-		tmb.putControlChangeParamBinding(28, CamCoord.ELEVATION.name(), this); 
+	protected void attachMidiCCs(CCParamRouter ccpr) { 
+		ccpr.putControlChangeParamBinding(27, CamCoord.AZIMUTH.name(), this); 
+		ccpr.putControlChangeParamBinding(28, CamCoord.ELEVATION.name(), this); 
 		
 		// Experiment:  assign CC #40 to a crossfader, e.g. on a Nocturn
-		tmb.putControlChangeParamBinding(40, CamCoord.DEPTH.name(), this); 				
+		ccpr.putControlChangeParamBinding(40, CamCoord.DEPTH.name(), this); 				
 	}	
 	
 	@Override public void setNormalizedNumericParam(String paramName, float normZeroToOne) {
-		Queuer.QueueingStyle qStyle = Queuer.QueueingStyle.QUEUE_AND_RETURN;
 		CamCoord ccoord = CamCoord.valueOf(paramName);
 		float halfPi = (float) (0.5 * Math.PI);
 		switch (ccoord) {

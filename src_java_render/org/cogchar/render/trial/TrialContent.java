@@ -15,7 +15,7 @@
  */
 package org.cogchar.render.trial;
 
-import org.cogchar.bind.midi.in.TempMidiBridge;
+import org.cogchar.bind.midi.in.CCParamRouter;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
@@ -212,15 +212,14 @@ public class TrialContent extends BasicDebugger {
 
 
 	
-	public void attachMidiCCs(TempMidiBridge tmb) { 
+	public void attachMidiCCs(CCParamRouter ccpr) { 
 		// Controller numbers starting with 21 are the default CC numbers Automap applies to the knobs of a Nocturn
-		tmb.putControlChangeParamBinding(21, RectangularWidget2D.CoordName.X.name(), myFloatingStatBox); 
-		tmb.putControlChangeParamBinding(22, RectangularWidget2D.CoordName.Y.name(), myFloatingStatBox); 
-		tmb.putControlChangeParamBinding(23, RectangularWidget2D.CoordName.Width.name(), myFloatingStatBox); 
-		tmb.putControlChangeParamBinding(24, RectangularWidget2D.CoordName.Height.name(), myFloatingStatBox); 
-		tmb.putControlChangeParamBinding(25, TextBox2D.TEXT_VAL_PARAM_NAME, myFloatingStatBox); 
+		ccpr.putControlChangeParamBinding(21, RectangularWidget2D.CoordName.X.name(), myFloatingStatBox); 
+		ccpr.putControlChangeParamBinding(22, RectangularWidget2D.CoordName.Y.name(), myFloatingStatBox); 
+		ccpr.putControlChangeParamBinding(23, RectangularWidget2D.CoordName.Width.name(), myFloatingStatBox); 
+		ccpr.putControlChangeParamBinding(24, RectangularWidget2D.CoordName.Height.name(), myFloatingStatBox); 
+		ccpr.putControlChangeParamBinding(25, TextBox2D.TEXT_VAL_PARAM_NAME, myFloatingStatBox); 
 		
-
 	}
 	
 	
