@@ -36,13 +36,13 @@ import org.jflux.api.core.Adapter;
 import org.jflux.api.core.util.DefaultNotifier;
 import org.jflux.api.core.util.EmptyAdapter;
 import org.jflux.impl.messaging.JMSAvroUtils;
+import org.jflux.impl.messaging.rk.utils.ConnectionManager;
 import org.jflux.impl.transport.jms.MessageHeaderAdapter;
 import org.robokind.api.common.utils.TimeUtils;
 import org.robokind.api.speechrec.SpeechRecEvent;
 import org.robokind.api.speechrec.SpeechRecEventList;
 import org.robokind.impl.speechrec.SpeechRecEventListRecord;
 import org.robokind.impl.speechrec.SpeechRecEventRecord;
-import org.robokind.impl.messaging.utils.ConnectionManager;
 import static org.cogchar.bundle.demo.dictation.osgi.DictationConfigUtils.*;
 
 /**
