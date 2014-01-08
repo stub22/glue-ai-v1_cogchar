@@ -57,7 +57,7 @@ Version-less parent will be allowed in Maven 3.1.
 		<jmonkey.version>3.0.0.20121220-SNAPSHOT</jmonkey.version>
 		<appdapter.msg.version>1.0.5</appdapter.msg.version>
 		<appdapter.version>1.1.4</appdapter.version>
-		<robokind.version>0.9.4-SNAPSHOT</robokind.version>
+		<robokind.version>0.9.5-SNAPSHOT</robokind.version>
 		<jflux.version>0.1.8</jflux.version>
 		<scala.version>2.10.2</scala.version>
 		<netbeans.version>RELEASE721</netbeans.version>
