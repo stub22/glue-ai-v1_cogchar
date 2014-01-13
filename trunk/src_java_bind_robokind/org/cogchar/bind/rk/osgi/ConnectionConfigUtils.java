@@ -20,7 +20,7 @@ import org.jflux.api.core.Source;
 import org.jflux.api.core.config.Configuration;
 import org.jflux.api.core.config.DefaultConfiguration;
 import org.jflux.api.core.util.DefaultTimestampSource;
-import org.robokind.impl.messaging.utils.ConnectionManager;
+import org.jflux.impl.messaging.rk.utils.ConnectionManager;
 
 /**
  *
