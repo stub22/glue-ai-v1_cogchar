@@ -21,13 +21,13 @@ import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelRobotFactory;
 import org.jflux.api.core.config.Configuration;
+import org.jflux.impl.messaging.rk.config.RKMessagingConfigUtils;
 import org.robokind.api.motion.Robot;
 import org.osgi.framework.BundleContext;
 
 import org.jflux.impl.services.rk.lifecycle.config.RKLifecycleConfigUtils.GenericLifecycleFactory;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
-import org.robokind.impl.messaging.config.RKMessagingConfigUtils;
 import static org.cogchar.bind.rk.osgi.RobokindBindingConfigUtils.*;
 import org.jflux.impl.services.rk.lifecycle.ManagedService;
 
