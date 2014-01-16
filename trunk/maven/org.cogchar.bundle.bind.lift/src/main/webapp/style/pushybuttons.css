@@ -103,3 +103,13 @@
 	background-color: #3F1C22;
 }
 
+div.halfPageSlotLeftRight {
+	position:absolute;
+	overflow: hidden;
+	width:50%;
+	height:100%;
+}
+
+div.halfPageSlotLeftRight#slot1, div.halfPageSlotLeftRight#slot1 {
+	font-size: 48px;
+}
