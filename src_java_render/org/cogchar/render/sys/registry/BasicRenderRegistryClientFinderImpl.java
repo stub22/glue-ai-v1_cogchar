@@ -24,7 +24,8 @@ import org.appdapter.core.log.BasicDebugger;
 
 public class BasicRenderRegistryClientFinderImpl extends BasicDebugger implements RenderRegistryClientFinder {
 	private RenderRegistryClient myRegClient;
-	
+	protected static Object completedInitLock = new Object();
+
 	public BasicRenderRegistryClientFinderImpl(RenderRegistryClient rrc) {
 		myRegClient = rrc;
 	}
