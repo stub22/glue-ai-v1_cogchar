@@ -31,29 +31,51 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  * We'll find a cleaner way to plug this stuff in soon.
  */
 public class ModularRenderContext extends CogcharRenderContext {
-	private		CogcharRenderModulator			myRenderModulator;
+	private CogcharRenderModulator myRenderModulator;
 
 	public ModularRenderContext(RenderRegistryClient rrc) {
 		super(rrc);
 	}
-	
-//	public VirtualCharacterPanel myVCP;
-	
+
+	//	public VirtualCharacterPanel myVCP;
+
 	@Override public void completeInit() {
-		super.completeInit();
-		logInfo("init CogcharRenderModulator");		
-		myRenderModulator = new CogcharRenderModulator();
+		synchronized (completedInitLock) {
+			if (myRenderModulator != null)
+				return;
+			super.completeInit();
+			logInfo("init CogcharRenderModulator");
+			myRenderModulator = new CogcharRenderModulator();
+		}
 	}
-	
-	public void attachModule(Module<CogcharRenderModulator> m) { 
-		myRenderModulator.attachModule(m);
+
+	public void attachModule(Module<CogcharRenderModulator> m) {
+		synchronized (completedInitLock) {
+			ensureInitCompleted();
+			myRenderModulator.attachModule(m);
+		}
 	}
-	public void detachModule(Module<CogcharRenderModulator> m) { 
-		myRenderModulator.detachModule(m);
+
+	protected void ensureInitCompleted() {
+		synchronized (completedInitLock) {
+			if (myRenderModulator == null) {
+				completeInit();
+			}
+		}
 	}
-	protected CogcharRenderModulator getModulator() { 
-		return myRenderModulator;
+
+	public void detachModule(Module<CogcharRenderModulator> m) {
+		synchronized (completedInitLock) {
+			myRenderModulator.detachModule(m);
+		}
 	}
+
+	protected CogcharRenderModulator getModulator() {
+		synchronized (completedInitLock) {
+			return myRenderModulator;
+		}
+	}
+
 	@Override public void doUpdate(float tpf) {
 		if (myRenderModulator != null) {
 			myRenderModulator.runOneCycle(tpf);
