@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.cogchar</groupId>
 		<artifactId>org.cogchar.modules.main</artifactId>
-		<version>1.0.8.0-SNAPSHOT</version>
+		<version>1.0.8.0</version>
 		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
 	</parent>	
 
@@ -201,7 +201,7 @@
 									-->
 									<!-- Stu: Permission to load sun.misc required by ext.bundle.opengl.jmonkey, as of 2011-12-23 -->
                                     <!-- org.w3c.dom.* are missing from default.properties in felix 4.2.1, they are present in 3.0.7 -->
-									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc, org.w3c.dom.css, org.w3c.dom.html, org.w3c.dom.stylesheets,                                                     org.w3c.dom.traversal,                                                     org.w3c.dom.ranges,                                                     org.w3c.dom.views,                                                     org.w3c.dom.xpath" />
+									<entry key="org.osgi.framework.system.packages.extra" value="sun.misc, org.w3c.dom.css, org.w3c.dom.html, org.w3c.dom.stylesheets, org.w3c.dom.traversal,                                                     org.w3c.dom.ranges,                                                     org.w3c.dom.views,                                                     org.w3c.dom.xpath" />
                                 </propertyfile>
                                 <makeurl property="run.properties.url" file="${project.build.directory}/run.properties" />
 																<!--
