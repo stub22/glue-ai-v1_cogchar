@@ -29,19 +29,37 @@ public class MidiEventReporter extends BasicDebugger {
 	public static interface Listener {
 		public void reportEvent(InterestingMidiEvent ime);
 	}
+
 	private List<Listener> myListeners = new ArrayList<Listener>();
+
 	public void registerListener(Listener l) {
-		myListeners.add(l);
+		synchronized (myListeners) {
+			if (!myListeners.contains(l))
+				myListeners.add(l);
+		}
 	}
-	protected void deliverEvent(InterestingMidiEvent ime) { 
-		for (Listener l : myListeners) {
+
+	public void unregisterListener(Listener l) {
+		synchronized (myListeners) {
+			myListeners.remove(l);
+		}
+	}
+
+	protected void deliverEvent(InterestingMidiEvent ime) {
+		Listener[] myListenersArray;
+		synchronized (myListeners) {
+			myListenersArray = myListeners.toArray(new Listener[myListeners.size()]);
+		}
+		for (Listener l : myListenersArray) {
 			l.reportEvent(ime);
 		}
 	}
+
 	protected void noticeControlChange(Receiver rcvr, int channel, int controller, int value) {
 		InterestingMidiEvent ime = new InterestingMidiEvent.ControlChange(rcvr, channel, controller, value);
 		deliverEvent(ime);
 	}
+
 	protected void noticeNoteOn(Receiver rcvr, int channel, int note, int vel) {
 		InterestingMidiEvent ime;
 		if (vel == 0) {
@@ -53,8 +71,9 @@ public class MidiEventReporter extends BasicDebugger {
 		}
 		deliverEvent(ime);
 	}
+
 	protected void noticeNoteOff(Receiver rcvr, int channel, int note, int vel) {
 		InterestingMidiEvent ime = new InterestingMidiEvent.NoteOff(rcvr, channel, note, vel);
 		deliverEvent(ime);
-	}	
+	}
 }
