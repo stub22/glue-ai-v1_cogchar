@@ -139,7 +139,7 @@ class ZenoConfigEmitter extends BonyConfigEmitter {
   // This is for getting bone names from Turtle, but was going to require a ClassLoader from somewhere
   // Instead, just jumped to query-based config
   def getBoneNames(robotIdent:Ident, loader:ClassLoader, queryUri:String)={
-	val rdfModel = ModelFactory.createDefaultModel();
+	val rdfModel = RepoDatasetFactory.createPrivateMemModel
 	val solutions = new ArrayBuffer[String]
 	try {
 	  val stream = loader.getResourceAsStream(HumanoidConfigEmitter.getBonyConfigPath(robotIdent));
