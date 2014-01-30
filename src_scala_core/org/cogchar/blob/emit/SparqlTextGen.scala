@@ -69,7 +69,7 @@ import org.cogchar.name.dir.{NamespaceDir, AssumedQueryDir, AssumedGraphDir}
 object SparqlTextGen extends BasicDebugger {
 	def main(args: Array[String]) : Unit = {
 		// forceLog4jConfig();		
-		val prefixModel : Model = ModelFactory.createDefaultModel();
+		val prefixModel : Model = RepoDatasetFactory.createPrivateMemModel
 		
 		prefixModel.setNsPrefix("xsd", NamespaceDir.XSD_NS) // "http://www.w3.org/2001/XMLSchema#");
 		prefixModel.setNsPrefix("dc", NamespaceDir.DC_NS) // "http://purl.org/dc/elements/1.1/");
