@@ -17,31 +17,26 @@
 package org.cogchar.api.fancy
 
 
-import java.io.Reader;
-import java.util.Iterator;
-import org.appdapter.bind.csv.datmat.TestSheetReadMain;
-import au.com.bytecode.opencsv.CSVReader;
-import org.appdapter.core.name.FreeIdent;
-import org.appdapter.core.name.Ident;
-// import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMap}
-
-
-import org.appdapter.core.log.BasicDebugger;
-
+import java.io.Reader
+import java.util.Iterator
+import org.appdapter.bind.csv.datmat.TestSheetReadMain
+import au.com.bytecode.opencsv.CSVReader
+import org.appdapter.core.name.FreeIdent
+import org.appdapter.core.name.Ident
+import org.appdapter.core.log.BasicDebugger
 import com.hp.hpl.jena.rdf.model.{Model, Statement, Resource, Property, Literal, RDFNode, ModelFactory}
-import com.hp.hpl.jena.query.{ResultSet, ResultSetFormatter, ResultSetRewindable, ResultSetFactory, QuerySolution};
+import com.hp.hpl.jena.query.{ResultSet, ResultSetFormatter, ResultSetRewindable, ResultSetFactory, QuerySolution}
 import com.hp.hpl.jena.ontology.{OntProperty, ObjectProperty, DatatypeProperty}
 import com.hp.hpl.jena.datatypes.{RDFDatatype, TypeMapper}
 import com.hp.hpl.jena.datatypes.xsd.{XSDDatatype}
 import com.hp.hpl.jena.shared.{PrefixMapping}
-
 import org.cogchar.api.thing.{TypedValueMap, ThingActionSpec}
-
-import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver};
+import org.appdapter.impl.store.{ModelClientImpl, ResourceResolver}
 import org.cogchar.blob.emit.{SparqlTextGen}
 import org.cogchar.name.dir.{NamespaceDir}
-import org.cogchar.name.thing.ThingCN;
+import org.cogchar.name.thing.ThingCN
 import org.slf4j.{Logger, LoggerFactory}
+import org.appdapter.core.store.dataset.RepoDatasetFactory
     
 
 /**
@@ -73,7 +68,7 @@ class FancyThingModelWriter extends BasicDebugger {
       logger.debug("3f961315-f38c-427f-842c-bc74ab725f22: DBG: writeTASpecToNewModel given null TA spec")
       throw new NullPointerException("Unable to write null ThingActionSpec to model")
     }
-    val m : Model = ModelFactory.createDefaultModel();
+    val m : Model = RepoDatasetFactory.createPrivateMemModel
     val mci = new ModelClientImpl(m);
     val rr = new ResourceResolver(m, None);
     val actionSpecID : Ident = tas.getActionSpecID(); //Must always be present
