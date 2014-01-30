@@ -16,22 +16,29 @@
 
 package org.cogchar.blob.emit
 
-import java.io.Reader;
-import java.util.Iterator;
-import org.appdapter.bind.csv.datmat.TestSheetReadMain;
-import au.com.bytecode.opencsv.CSVReader;
-
-import org.appdapter.core.log.BasicDebugger;
-
+import java.io.Reader
+import java.util.Iterator
+import org.appdapter.bind.csv.datmat.TestSheetReadMain
+import au.com.bytecode.opencsv.CSVReader
+import org.appdapter.core.log.BasicDebugger
 import com.hp.hpl.jena.rdf.model.{Model, Statement, Resource, Property, Literal, RDFNode, ModelFactory}
-import com.hp.hpl.jena.query.{ResultSet, ResultSetFormatter, ResultSetRewindable, ResultSetFactory, QuerySolution};
+import com.hp.hpl.jena.query.{ResultSet, ResultSetFormatter, ResultSetRewindable, ResultSetFactory, QuerySolution}
 import com.hp.hpl.jena.ontology.{OntProperty, ObjectProperty, DatatypeProperty}
 import com.hp.hpl.jena.datatypes.{RDFDatatype, TypeMapper}
 import com.hp.hpl.jena.datatypes.xsd.{XSDDatatype}
 import com.hp.hpl.jena.shared.{PrefixMapping}
-
-
 import com.hp.hpl.jena.shared.{PrefixMapping}
+/*
+	static String PREFIX_FOAF = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n",
+			PREFIX_XSD = "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n",
+			PREFIX_DC = "PREFIX dc:      <http://purl.org/dc/elements/1.1/>\n",
+			PREFIX_DBO = "PREFIX dbo: <http://dbpedia.org/ontology/>\n",
+			PREFIX_BOOKS = "PREFIX books:   <http://example.org/book/>\n",
+			PREFIX_CCRT = "PREFIX ccrt:  <urn:ftd:cogchar.org:2012:runtime#>\n",
+			PREFIX_UA = "PREFIX ua:    <http://www.cogchar.org      /lift/user/config#>\n";
+*/
+import org.cogchar.name.dir.{NamespaceDir, AssumedQueryDir, AssumedGraphDir}
+import org.appdapter.core.store.dataset.RepoDatasetFactory
 
 class SparqlTextGen(val myPrefixMap : PrefixMapping ) {
 	def emitPrefixDeclarationLine(abbrev : String) : String = {
@@ -55,16 +62,6 @@ class SparqlTextGen(val myPrefixMap : PrefixMapping ) {
 		allDeclsText + "INSERT DATA {  GRAPH  " + graphQName + " { \n" + bodyTurtle + "}}\n"
 	}
 }
-/*
-	static String PREFIX_FOAF = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n",
-			PREFIX_XSD = "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n",
-			PREFIX_DC = "PREFIX dc:      <http://purl.org/dc/elements/1.1/>\n",
-			PREFIX_DBO = "PREFIX dbo: <http://dbpedia.org/ontology/>\n",
-			PREFIX_BOOKS = "PREFIX books:   <http://example.org/book/>\n",
-			PREFIX_CCRT = "PREFIX ccrt:  <urn:ftd:cogchar.org:2012:runtime#>\n",
-			PREFIX_UA = "PREFIX ua:    <http://www.cogchar.org      /lift/user/config#>\n";
-*/
-import org.cogchar.name.dir.{NamespaceDir, AssumedQueryDir, AssumedGraphDir}
 
 object SparqlTextGen extends BasicDebugger {
 	def main(args: Array[String]) : Unit = {
