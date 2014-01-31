@@ -20,6 +20,6 @@ package org.cogchar.bind.mio.blend;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class CogcharBlenderForRobokind {
+public class CogcharBlenderForMechIO {
 
 }
