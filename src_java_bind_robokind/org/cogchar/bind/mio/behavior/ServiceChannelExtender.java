@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cogchar.bind.rk.behavior;
+package org.cogchar.bind.mio.behavior;
 
 import java.util.HashMap;
 import java.util.List;

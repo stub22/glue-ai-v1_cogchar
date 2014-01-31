@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cogchar.bind.rk.osgi;
+package org.cogchar.bind.mio.osgi;
 
 import javax.jms.Connection;
 import org.jflux.api.core.Source;

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.rk.robot.client;
+package org.cogchar.bind.mio.robot.client;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -23,7 +23,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceFactory;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
-import org.mechio.api.common.utils.RKConstants;
+import org.jflux.api.common.rk.utils.RKConstants;
 import org.mechio.api.motion.Robot;
 import org.mechio.integration.motion_speech.VisemeMotionUtils;
 import org.appdapter.core.name.Ident;

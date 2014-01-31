@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.rk.robot.svc;
+package org.cogchar.bind.mio.robot.svc;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.mechio.api.common.config.VersionProperty;
+import org.jflux.api.common.rk.config.VersionProperty;
 import org.jflux.api.core.config.Configuration;
 import java.util.Properties;
 
@@ -29,7 +29,7 @@ import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
-import org.mechio.api.common.services.Constants;
+import org.jflux.api.common.rk.services.Constants;
 import org.mechio.api.motion.Robot;
 
 
@@ -41,8 +41,8 @@ import org.mechio.impl.motion.messaging.TargetFrameListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.cogchar.bind.rk.osgi.RobokindBindingConfigUtils.*;
-import static org.cogchar.bind.rk.osgi.ServiceConfigUtils.*;
+import static org.cogchar.bind.mio.osgi.MechIOBindingConfigUtils.*;
+import static org.cogchar.bind.mio.osgi.ServiceConfigUtils.*;
 
 import org.cogchar.platform.util.ClassLoaderUtils;
 

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cogchar.bind.rk.robot.model;
+package org.cogchar.bind.mio.robot.model;
 
 import org.cogchar.api.skeleton.config.BoneJointConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
-import org.mechio.api.common.config.VersionProperty;
-import org.mechio.api.common.services.ServiceFactory;
+import org.jflux.api.common.rk.config.VersionProperty;
+import org.jflux.api.common.rk.services.ServiceFactory;
 import org.mechio.api.motion.Joint;
 import org.mechio.api.motion.Robot;
 import org.slf4j.Logger;

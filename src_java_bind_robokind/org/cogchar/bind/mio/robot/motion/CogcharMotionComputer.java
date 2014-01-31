@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.rk.robot.motion;
+package org.cogchar.bind.mio.robot.motion;
 
 /**
  * @author Stu B. <www.texpedient.com>

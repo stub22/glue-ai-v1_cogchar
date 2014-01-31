@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.rk.robot.model;
+package org.cogchar.bind.mio.robot.model;
 
 import org.cogchar.api.skeleton.config.BoneJointConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.mechio.api.common.config.VersionProperty;
-import org.mechio.api.common.position.NormalizedDouble;
+import org.jflux.api.common.rk.config.VersionProperty;
+import org.jflux.api.common.rk.position.NormalizedDouble;
 import org.mechio.api.motion.AbstractRobot;
 import org.mechio.api.motion.Joint;
 import org.mechio.api.motion.Robot;

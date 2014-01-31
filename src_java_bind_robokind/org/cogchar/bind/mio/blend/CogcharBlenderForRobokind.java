@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.rk.blend;
+package org.cogchar.bind.mio.blend;
 
 /**
  * @author Stu B. <www.texpedient.com>

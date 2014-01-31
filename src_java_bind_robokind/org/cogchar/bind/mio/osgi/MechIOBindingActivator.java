@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.rk.osgi;
+package org.cogchar.bind.mio.osgi;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
 
@@ -26,8 +26,8 @@ import org.osgi.framework.BundleContext;
  *
  * @author Stu B. <www.texpedient.com>
  */
-public class RobokindBindingActivator extends BundleActivatorBase {
-	static Logger theLogger = LoggerFactory.getLogger(RobokindBindingActivator.class);
+public class MechIOBindingActivator extends BundleActivatorBase {
+	static Logger theLogger = LoggerFactory.getLogger(MechIOBindingActivator.class);
 	
 	@Override protected Logger getLogger() {
 		return theLogger;
