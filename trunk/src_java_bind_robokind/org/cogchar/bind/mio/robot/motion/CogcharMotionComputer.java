@@ -48,7 +48,7 @@ public abstract class CogcharMotionComputer {
 	 *		single-cycle
 	 *			may receive predecessor, and whether it does is fundamental to its design.
 	 * 
-	 * Fixing the move() method in the obvious joint-factored way is the minimal extension beyond what Robokind does,
+	 * Fixing the move() method in the obvious joint-factored way is the minimal extension beyond what MechIO does,
 	 * and allows us to complete the above design to show off fun Symja EQs.
 	 * 
 	 * 

@@ -180,9 +180,9 @@ or    animPlayer.playAnimation(anim, 0, anim.getLength());			 */
         try{
             config = new XMLConfiguration(xmlConfFilePath);
         }catch (ConfigurationException t){
-            getLogger().warn("Cannont open Robokind animation XML  file [" + xmlConfFilePath + "]", t);
+            getLogger().warn("Cannont open MechIO animation XML  file [" + xmlConfFilePath + "]", t);
         }catch(Exception t){
-            getLogger().error("Error reading Robokind animation XML  file  [" + xmlConfFilePath + "]", t);
+            getLogger().error("Error reading MechIO animation XML  file  [" + xmlConfFilePath + "]", t);
         }		
 		return config;
 	}
@@ -193,9 +193,9 @@ or    animPlayer.playAnimation(anim, 0, anim.getLength());			 */
 			URL url = new URL(xmlConfUrl);
             config = new XMLConfiguration(url);
         }catch (ConfigurationException t){
-            getLogger().warn("Cannont open Robokind animation XML URL [" + xmlConfUrl  + "]", t);
+            getLogger().warn("Cannont open MechIO animation XML URL [" + xmlConfUrl  + "]", t);
         }catch(Exception t){
-            getLogger().error("Error reading Robokind animation XML URL [" + xmlConfUrl + "]", t);
+            getLogger().error("Error reading MechIO animation XML URL [" + xmlConfUrl + "]", t);
         }		
 		return config;
 	}	
