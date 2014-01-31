@@ -66,7 +66,7 @@ bci:zenoR50		rdf:type			bc:BuildableBoneRobotConfig;
 #### Some additional descriptive metadata
 	apsb:label			"Zeno R-50 Avatar Bone Config apsb:label";
 	rdfs:label			"Zeno R-50 Avatar Bone Config rdfs:label";
-#### bc:robotName is used for the Robokind "Robot.Id"
+#### bc:robotName is used for the MechIO "Robot.Id"
 	bc:robotName		"Avatar_AZR50";
 
 ### bc:joint property contains the URIs of each joint.  The order does not matter.
