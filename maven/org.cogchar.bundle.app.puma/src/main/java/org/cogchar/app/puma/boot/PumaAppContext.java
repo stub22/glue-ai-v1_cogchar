@@ -30,8 +30,6 @@ import org.appdapter.help.repo.RepoClient;
 
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
-import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
-import org.cogchar.bind.rk.robot.svc.RobotServiceFuncs;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 
 import org.osgi.framework.BundleContext;
@@ -40,11 +38,11 @@ import org.cogchar.app.puma.behavior.PumaBehaviorManager;
 import org.cogchar.app.puma.body.PumaDualBody;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
 import org.cogchar.app.puma.body.PumaDualBodyManager;
-import static org.cogchar.app.puma.boot.PumaContextCommandBox.THING_ACTIONS;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
+import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext;
+import org.cogchar.bind.mio.robot.svc.RobotServiceFuncs;
 import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
-import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.platform.trigger.BoxSpace;
 
 import org.cogchar.platform.trigger.CommandSpace;

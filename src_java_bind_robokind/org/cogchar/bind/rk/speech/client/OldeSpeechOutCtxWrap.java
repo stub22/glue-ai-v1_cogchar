@@ -19,9 +19,9 @@ import org.appdapter.core.log.BasicDebugger;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.robokind.api.speech.SpeechJob;
+import org.mechio.api.speech.SpeechJob;
 
-import org.robokind.api.speech.SpeechService;
+import org.mechio.api.speech.SpeechService;
 
 /**
  * @author Stu B. <www.texpedient.com>

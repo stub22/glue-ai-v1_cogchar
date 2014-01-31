@@ -21,14 +21,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.appdapter.help.repo.RepoClient;
+import org.cogchar.bind.mio.behavior.ChannelBindingConfig;
+import org.cogchar.bind.mio.behavior.ServiceChannelExtender;
 // import org.cogchar.blob.emit.BehavMasterConfigTest;
 import org.cogchar.impl.scene.read.SceneSpecReader;
 import org.cogchar.impl.channel.FancyChannelSpec;
 import org.osgi.framework.BundleContext;
-import org.cogchar.bind.rk.behavior.ChannelBindingConfig;
 
-import org.cogchar.bind.rk.behavior.ServiceChannelExtender;
-import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.cogchar.name.behavior.MasterDemoNames;
 
 /**

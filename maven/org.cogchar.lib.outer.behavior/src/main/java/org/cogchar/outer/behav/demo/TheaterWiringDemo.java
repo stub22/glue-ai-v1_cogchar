@@ -21,7 +21,6 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.outer.behav.impl.OSGiTheater;
 import org.cogchar.impl.channel.GraphChannelHub;
-import org.appdapter.core.matdat.EnhancedRepoClient;
 import org.cogchar.impl.channel.ThingActionChanSpec;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.Theater;

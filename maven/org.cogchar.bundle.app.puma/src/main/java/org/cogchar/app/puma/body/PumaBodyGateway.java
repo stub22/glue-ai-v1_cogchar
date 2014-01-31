@@ -17,21 +17,16 @@ package org.cogchar.app.puma.body;
 
 
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
-
-import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.boot.ClassLoaderUtils;
 
 import org.appdapter.core.name.Ident;
 
 import org.osgi.framework.BundleContext;
-import org.cogchar.bind.rk.robot.model.ModelRobot;
-import org.cogchar.bind.rk.robot.model.ModelJoint;
 
 import org.cogchar.render.model.bony.FigureState;
 
-import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 
@@ -44,23 +39,19 @@ import org.cogchar.api.skeleton.config.BoneProjectionRange;
 import org.cogchar.name.skeleton.BoneCN;
 import org.cogchar.app.puma.vworld.ModelToFigureStateMappingFuncs;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
-import org.cogchar.bind.rk.robot.client.RobotAnimContext;
-import org.cogchar.bind.rk.robot.client.RobotVisemeClient;
-import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
+import org.cogchar.bind.mio.robot.client.RobotVisemeClient;
+import org.cogchar.bind.mio.robot.model.ModelJoint;
+import org.cogchar.bind.mio.robot.model.ModelRobot;
+import org.cogchar.bind.mio.robot.motion.CogcharMotionSource;
+import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext;
 
-import org.cogchar.bind.rk.robot.svc.ModelBlendingRobotServiceContext;
-import org.cogchar.impl.perform.FancyTextPerfChan;
-
-import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.osgi.framework.ServiceRegistration;
-import org.cogchar.platform.util.ClassLoaderUtils;
-import org.robokind.api.motion.Robot;
-import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
+import org.mechio.api.motion.Robot;
 /**
  * @author Stu B. <www.texpedient.com>
  * 
  * A Puma character uses this object to control its embodiment, with or without an OpenGL avatar.
- * Here we create a ModelRobot and connect it to all the Robokind services.  
+ * Here we create a ModelRobot and connect it to all the MechIO services.  
  * Optionally, we also create an OpenGL Avatar, and bind it to the ModelRobot (via HumanoidFigure/State).
  * 
  * 
@@ -69,7 +60,7 @@ public class PumaBodyGateway extends BasicDebugger {
 
 	private	Ident									myCharID;
 	
-	// Gateway to all the Robokind robot services
+	// Gateway to all the MechIO robot services
 	private	ModelBlendingRobotServiceContext		myMBRSC;
 	
 	// Gateway to all the OpengL VWorld services 
@@ -92,7 +83,7 @@ public class PumaBodyGateway extends BasicDebugger {
 		return hrc;
 	}
 	/**
-	 * Unsafe access to the Robokind-compliant Cogchar model of an Avatar's joints, at protected scope.
+	 * Unsafe access to the MechIO-compliant Cogchar model of an Avatar's joints, at protected scope.
 	 * @return 
 	 */
 	protected ModelRobot getBonyRobot() { 
@@ -182,7 +173,7 @@ public class PumaBodyGateway extends BasicDebugger {
 			});
 		}
 	}
-	public boolean connectBonyRobotToRobokindAndVWorld(BundleContext bundleCtx,
+	public boolean connectBonyRobotToMechIOAndVWorld(BundleContext bundleCtx,
 				FigureConfig hc, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
 		// We useta read from a TTL file with: 	boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharID, qGraph, bqn); 	
@@ -195,12 +186,12 @@ public class PumaBodyGateway extends BasicDebugger {
 			// An old crude way to set initial joint positions, left here as reminder of the issue.
 			// myPHM.applyInitialBoneRotations();
 			
-			// Robokind has a built in viseme loop, which we configure from a path 
+			// MechIO has a built in viseme loop, which we configure from a path 
 			startVisemePump(clsForRKConf);
 			startJointGroup(hc, clsForRKConf);
 			
 		} else {
-			getLogger().warn("connectBonyCharToRobokindSvcs() aborting due to failed boneRobot init, for charIdent: {}", myCharID);
+			getLogger().warn("connectBonyCharToMechIOSvcs() aborting due to failed boneRobot init, for charIdent: {}", myCharID);
 		}
 		return boneRobotOK;
 	}
@@ -255,7 +246,7 @@ public class PumaBodyGateway extends BasicDebugger {
 			}
 			 */
 	}
-	public void disconnectBonyCharFromRobokindSvcs() {
+	public void disconnectBonyCharFromMechIOSvcs() {
 		myBoneRobotConfigServiceRegistration.unregister();
 	}
 }

@@ -27,8 +27,8 @@ import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.animation.player.AnimationPlayer;
-import org.robokind.api.speech.SpeechService;
+import org.mechio.api.animation.player.AnimationPlayer;
+import org.mechio.api.speech.SpeechService;
 
 import org.osgi.framework.FrameworkUtil;
 

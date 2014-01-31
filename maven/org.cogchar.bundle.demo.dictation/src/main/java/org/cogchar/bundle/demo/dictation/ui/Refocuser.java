@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class Refocuser implements FocusListener{
     private Component myFocusedComponent;

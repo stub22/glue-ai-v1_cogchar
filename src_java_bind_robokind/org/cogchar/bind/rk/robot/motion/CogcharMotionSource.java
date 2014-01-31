@@ -17,15 +17,15 @@ package org.cogchar.bind.rk.robot.motion;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.robokind.api.motion.utils.RobotMoverFrameSource;
+import org.mechio.api.motion.utils.RobotMoverFrameSource;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.Robot.RobotPositionMap;
-import org.robokind.api.motion.blending.FrameSource;
-import org.robokind.api.motion.protocol.MotionFrame;
+import org.mechio.api.motion.Robot;
+import org.mechio.api.motion.Robot.RobotPositionMap;
+import org.mechio.api.motion.blending.FrameSource;
+import org.mechio.api.motion.protocol.MotionFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

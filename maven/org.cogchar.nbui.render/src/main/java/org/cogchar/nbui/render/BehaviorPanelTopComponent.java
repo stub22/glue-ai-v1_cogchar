@@ -15,8 +15,8 @@
  */
 package org.cogchar.nbui.render;
 
-import org.cogchar.bind.rk.robot.client.RobotSelector;
-import org.cogchar.bind.rk.robot.client.RobotSelector.OSGiRobotSelector;
+import org.cogchar.bind.mio.robot.client.RobotSelector;
+import org.cogchar.bind.mio.robot.client.RobotSelector.OSGiRobotSelector;
 import org.cogchar.svc.behav.control.ActionCallbackMap;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -27,7 +27,7 @@ import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
-import org.robokind.api.motion.Robot;
+import org.mechio.api.motion.Robot;
 
 /**
  * Top component which displays something.

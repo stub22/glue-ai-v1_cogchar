@@ -65,7 +65,7 @@
 		<module>../org.cogchar.bundle.demo.all</module>
 		<module>../org.cogchar.bundle.app.puma</module>
 		<module>../org.cogchar.bundle.core</module>		
-		<module>../org.cogchar.bundle.bind.robokind</module>
+		<module>../org.cogchar.bundle.bind.mechio</module>
 		<module>../org.cogchar.bundle.bind.cogbot</module>
 		<module>../org.cogchar.bundle.bind.lift</module>
 		<module>../org.cogchar.bundle.bind.joseki</module>

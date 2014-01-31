@@ -19,7 +19,7 @@ import javax.sound.sampled.AudioFormat;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class SoundDetectConfig {
     public static final int DEFAULT_BUFFER_SIZE=64;

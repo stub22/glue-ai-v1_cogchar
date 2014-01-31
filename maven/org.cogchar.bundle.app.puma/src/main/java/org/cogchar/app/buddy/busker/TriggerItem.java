@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 package org.cogchar.app.buddy.busker;
-import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.platform.trigger.CogcharScreenBox;
 import org.cogchar.platform.trigger.CogcharActionTrigger;
 

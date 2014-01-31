@@ -15,17 +15,7 @@
  */
 
 package org.cogchar.app.puma.vworld;
-import java.util.ArrayList;
-import org.robokind.api.motion.Joint;
-import org.robokind.api.motion.Robot;
 
-import org.cogchar.bind.rk.robot.model.ModelRobotUtils;
-import org.cogchar.bind.rk.robot.model.ModelRobot;
-import org.cogchar.bind.rk.robot.model.ModelJoint;
-
-
-import org.cogchar.render.app.bony.BonyVirtualCharApp;
-import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.model.bony.FigureState;
 import org.cogchar.render.model.bony.BoneState;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
@@ -34,10 +24,10 @@ import java.util.List;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import org.cogchar.bind.rk.robot.svc.BlendingRobotServiceContext;
-import org.cogchar.api.skeleton.config.BoneProjectionRange;
 import org.cogchar.api.skeleton.config.BoneProjectionPosition;
 import org.cogchar.api.skeleton.config.BoneRotationAxis;
+import org.cogchar.bind.mio.robot.model.ModelRobot;
+import org.cogchar.bind.mio.robot.model.ModelRobotUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

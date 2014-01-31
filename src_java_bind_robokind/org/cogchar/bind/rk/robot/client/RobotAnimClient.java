@@ -19,11 +19,11 @@ package org.cogchar.bind.rk.robot.client;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.animation.Animation;
-import org.robokind.api.animation.Channel;
-import org.robokind.api.animation.MotionPath;
-import org.robokind.api.animation.utils.AnimationUtils;
-import org.robokind.api.animation.utils.ChannelsParameterSource;
+import org.mechio.api.animation.Animation;
+import org.mechio.api.animation.Channel;
+import org.mechio.api.animation.MotionPath;
+import org.mechio.api.animation.utils.AnimationUtils;
+import org.mechio.api.animation.utils.ChannelsParameterSource;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -33,16 +33,16 @@ import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.bind.rk.robot.model.ModelJoint;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
-import org.robokind.api.animation.player.AnimationJob;
-import org.robokind.api.animation.player.AnimationPlayer;
-import org.robokind.api.animation.utils.ChannelsParameter;
-import org.robokind.api.animation.xml.AnimationFileReader;
-import org.robokind.api.animation.xml.AnimationXML;
-import org.robokind.api.common.playable.PlayState;
-import org.robokind.api.common.position.NormalizedDouble;
-import org.robokind.api.motion.Joint;
-import org.robokind.api.motion.Robot;
-import org.robokind.impl.animation.xml.AnimationXMLReader;
+import org.mechio.api.animation.player.AnimationJob;
+import org.mechio.api.animation.player.AnimationPlayer;
+import org.mechio.api.animation.utils.ChannelsParameter;
+import org.mechio.api.animation.xml.AnimationFileReader;
+import org.mechio.api.animation.xml.AnimationXML;
+import org.mechio.api.common.playable.PlayState;
+import org.mechio.api.common.position.NormalizedDouble;
+import org.mechio.api.motion.Joint;
+import org.mechio.api.motion.Robot;
+import org.mechio.impl.animation.xml.AnimationXMLReader;
 
 
 

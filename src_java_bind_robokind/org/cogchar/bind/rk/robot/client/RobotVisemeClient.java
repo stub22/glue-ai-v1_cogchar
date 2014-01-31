@@ -23,9 +23,9 @@ import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceFactory;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
-import org.robokind.api.common.utils.RKConstants;
-import org.robokind.api.motion.Robot;
-import org.robokind.integration.motion_speech.VisemeMotionUtils;
+import org.mechio.api.common.utils.RKConstants;
+import org.mechio.api.motion.Robot;
+import org.mechio.integration.motion_speech.VisemeMotionUtils;
 import org.appdapter.core.name.Ident;
 import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceGroup;
 
@@ -48,7 +48,7 @@ public class RobotVisemeClient extends BasicDebugger {
 	public  void startPumpingVisemeAnimation(BundleContext bunCtx, Ident speechOutChanID, Ident charBodyChanID,
 					String visConfResPath, List<ClassLoader> clsForRKConf, Robot.Id robotId) throws Throwable { 
 		// As of 2012-11-23, the code below is based on sample code shown in comments of:
-		// org.robokind.integration.motion_speech.Activator
+		// org.mechio.integration.motion_speech.Activator
 		ManagedServiceFactory fact = new OSGiComponentFactory(bunCtx);
 		String speechServiceId = RKConstants.DEFAULT_SPEECH_ID;
 		// Old way required an actual filesystem file, i.e. java.io.File (or path to same)

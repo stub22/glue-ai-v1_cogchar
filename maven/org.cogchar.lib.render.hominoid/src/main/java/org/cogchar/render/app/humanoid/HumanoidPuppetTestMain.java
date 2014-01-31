@@ -30,7 +30,7 @@ import org.cogchar.render.gui.bony.PanelUtils;
 
 /**
  * Example of a Java program that is able to display a bony-humanoid in OpenGL,
- * without using OSGi, or any Robokind robotics interfaces.
+ * without using OSGi, or any MechIO robotics interfaces.
  * 
  * To successfully run this test program, you must invoke it with a classpath that includes
  * the resources it wants, e.g. use the BonyDemoMain class in the org.cogchar.demo.render.opengl 

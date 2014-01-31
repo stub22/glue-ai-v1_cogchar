@@ -3,7 +3,6 @@ package org.cogchar.bundle.demo.all;
 
 import org.appdapter.osgi.core.BundleActivatorBase;
 
-import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
@@ -14,6 +13,9 @@ import org.osgi.framework.BundleContext;
 public class DemoAllBundleActivator extends BundleActivatorBase {
 
 	@Override public void start(final BundleContext context) throws Exception {
+        // Start MechIO services first, before doing anything else
+        SpeechActivator.start(context);
+        MessagingActivator.start(context);
 		// Will look for log4j.properties at root of this bundle.
 		// Any top-level OSGi app that wants to enable Log4J (and thereby make Jena happy, while
 		// retaining the power to configure Jena's logging level) should have the dependencies

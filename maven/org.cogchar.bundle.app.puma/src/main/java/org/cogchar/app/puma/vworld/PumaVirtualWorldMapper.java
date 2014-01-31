@@ -22,8 +22,6 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.cogchar.app.puma.boot.PumaAppContext;
-import static org.cogchar.app.puma.boot.PumaContextCommandBox.ALL_HUMANOID_CONFIG;
-import static org.cogchar.app.puma.boot.PumaContextCommandBox.WORLD_CONFIG;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
 import org.cogchar.name.entity.EntityRoleCN;

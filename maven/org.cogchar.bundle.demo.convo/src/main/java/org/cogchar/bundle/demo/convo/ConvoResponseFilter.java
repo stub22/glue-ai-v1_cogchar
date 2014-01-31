@@ -20,12 +20,12 @@ import java.util.List;
 import org.cogchar.bind.cogbot.main.GenRespWithConf;
 import org.jflux.api.core.Adapter;
 import org.jflux.api.core.Listener;
-import org.robokind.api.messaging.services.ServiceCommand;
-import org.robokind.api.messaging.services.ServiceCommandFactory;
+import org.jflux.api.messaging.rk.services.ServiceCommand;
+import org.jflux.api.messaging.rk.services.ServiceCommandFactory;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class ConvoResponseFilter<R extends GenRespWithConf> implements 
         Adapter<R, R> {

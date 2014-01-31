@@ -20,13 +20,13 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.cogchar.bind.cogbot.main.CogbotCommunicator;
 import org.cogchar.bind.cogbot.main.GenRespWithConf;
+import org.jflux.api.common.rk.utils.TimeUtils;
 import org.jflux.api.core.Adapter;
 import org.jflux.api.core.Listener;
-import org.robokind.api.common.utils.TimeUtils;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class CogbotProcessor implements Adapter<String, ConvoResponse>{
     private final static String STOP_SCHED_PROMPT = "STOP_ZS_SCHEDULE";

@@ -29,7 +29,7 @@ import org.jflux.api.core.Listener;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class ConversationLogPanel extends javax.swing.JPanel {
     private static DateFormat theDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);

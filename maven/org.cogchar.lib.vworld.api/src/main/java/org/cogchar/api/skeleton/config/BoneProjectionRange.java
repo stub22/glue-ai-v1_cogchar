@@ -21,7 +21,7 @@ import org.appdapter.core.item.ItemFuncs;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org> 
+ * @author Matthew Stevenson <www.cogchar.org> 
  * @author Stu B. <www.texpedient.com>
  */
 public class BoneProjectionRange  {

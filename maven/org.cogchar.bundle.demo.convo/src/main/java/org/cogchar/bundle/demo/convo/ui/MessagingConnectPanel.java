@@ -27,7 +27,7 @@ import org.jflux.api.core.Source;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class MessagingConnectPanel extends javax.swing.JPanel {
     

@@ -22,16 +22,16 @@ import org.jflux.impl.messaging.rk.config.DependentLifecycle;
 import org.jflux.impl.messaging.rk.config.MessagingLifecycleGroupConfigUtils;
 import org.jflux.impl.messaging.rk.config.RKMessagingConfigUtils;
 import org.osgi.framework.BundleContext;
-import org.robokind.api.animation.lifecycle.AnimationPlayerClientLifecycle;
-import org.robokind.api.animation.protocol.AnimationEvent;
-import org.robokind.api.animation.protocol.AnimationSignal;
+import org.mechio.api.animation.lifecycle.AnimationPlayerClientLifecycle;
+import org.mechio.api.animation.protocol.AnimationEvent;
+import org.mechio.api.animation.protocol.AnimationSignal;
 import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceFactory;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
 import static org.jflux.impl.messaging.rk.config.MessagingLifecycleGroupConfigUtils.*;
 import static org.jflux.impl.services.rk.lifecycle.config.RKManagedGroupConfigUtils.*;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
-import org.robokind.impl.animation.messaging.PortableAnimationEvent;
+import org.mechio.impl.animation.messaging.PortableAnimationEvent;
 
 /**
  *

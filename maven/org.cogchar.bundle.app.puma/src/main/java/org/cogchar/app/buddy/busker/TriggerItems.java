@@ -30,10 +30,9 @@ import org.cogchar.app.puma.behavior.DirectBehaviorAgent;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.appdapter.core.matdat.RepoClientTester;
 import org.appdapter.core.matdat.RepoClientTester.CommandRec;
+import org.cogchar.bind.mio.robot.client.RobotAnimClient.BuiltinAnimKind;
 
-import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
-import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.model.humanoid.HumanoidFigure_SinbadTest;
 
 import org.slf4j.Logger;

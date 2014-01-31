@@ -17,8 +17,8 @@ package org.cogchar.bind.rk.behavior;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.robokind.api.animation.player.AnimationPlayer;
-import org.robokind.api.speech.SpeechService;
+import org.mechio.api.animation.player.AnimationPlayer;
+import org.mechio.api.speech.SpeechService;
 
 import org.cogchar.impl.channel.FancyChannelSpec;
 import org.cogchar.impl.channel.GraphChannelNames;
@@ -34,7 +34,7 @@ import org.appdapter.help.repo.RepoClient;
  * 
  * 
  * 
- * @author Matthew Stevenson <www.robokind.org> 
+ * @author Matthew Stevenson <www.cogchar.org> 
  * @author Stub22
  */
 public class ChannelBindingConfig {
