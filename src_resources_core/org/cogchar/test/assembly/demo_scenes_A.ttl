@@ -71,7 +71,7 @@ csi:animOut_200
 	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
 	apsb:label			"[apsb:]AnimOut-VirtualBest for CC Demo";
 	rdfs:label 			"[rdfs:]AnimOut-VirtualBest for CC Demo";
-	cs:details			"Sends control signals and monitors status of Robokind XML animations, for some assumed best humanoid";
+	cs:details			"Sends control signals and monitors status of MechIO XML animations, for some assumed best humanoid";
 	.
 
 
