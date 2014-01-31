@@ -21,10 +21,10 @@ import java.util.*;
 import org.appdapter.core.log.BasicDebugger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.utils.RobotManager;
-import org.robokind.api.motion.utils.RobotUtils;
-import org.robokind.impl.motion.lifecycle.RemoteRobotHostServiceGroup;
+import org.mechio.api.motion.Robot;
+import org.mechio.api.motion.utils.RobotManager;
+import org.mechio.api.motion.utils.RobotUtils;
+import org.mechio.impl.motion.lifecycle.RemoteRobotHostServiceGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,12 +16,12 @@
 package org.cogchar.bundle.demo.convo;
 
 import org.jflux.api.core.Adapter;
-import org.robokind.api.speechrec.SpeechRecEvent;
-import org.robokind.api.speechrec.SpeechRecEventList;
+import org.mechio.api.speechrec.SpeechRecEvent;
+import org.mechio.api.speechrec.SpeechRecEventList;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class SpeechRecFilter implements 
         Adapter<SpeechRecEventList<SpeechRecEvent>, SpeechRecEvent> {

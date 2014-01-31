@@ -18,7 +18,6 @@ package org.cogchar.app.puma.registry;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.avro.generic.GenericData;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaContextMediator;

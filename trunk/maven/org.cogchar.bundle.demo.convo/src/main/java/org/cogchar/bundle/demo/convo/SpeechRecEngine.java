@@ -17,18 +17,18 @@ package org.cogchar.bundle.demo.convo;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jflux.api.common.rk.utils.TimeUtils;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.Notifier;
 import org.jflux.api.core.util.Repeater;
-import org.robokind.api.common.utils.TimeUtils;
-import org.robokind.api.speechrec.SpeechRecEventList;
-import org.robokind.api.speechrec.SpeechRecService;
-import org.robokind.impl.speechrec.SpeechRecEventListRecord;
-import org.robokind.impl.speechrec.SpeechRecEventRecord;
+import org.mechio.api.speechrec.SpeechRecEventList;
+import org.mechio.api.speechrec.SpeechRecService;
+import org.mechio.impl.speechrec.SpeechRecEventListRecord;
+import org.mechio.impl.speechrec.SpeechRecEventRecord;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class SpeechRecEngine implements Notifier<SpeechRecEventList>{
     private SpeechRecService mySpeechRec;

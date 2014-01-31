@@ -28,10 +28,10 @@
 			
 		
 		<dependency>
-			<groupId>org.robokind</groupId>
+			<groupId>org.mechio</groupId>
 			<!-- Needed at compile time for PortableSpeechRequest in CogbotSpeechDemo -->
-			<artifactId>org.robokind.impl.speech</artifactId>
-			<version>${robokind.version}</version>
+			<artifactId>org.mechio.impl.speech</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>
     </dependencies>
 

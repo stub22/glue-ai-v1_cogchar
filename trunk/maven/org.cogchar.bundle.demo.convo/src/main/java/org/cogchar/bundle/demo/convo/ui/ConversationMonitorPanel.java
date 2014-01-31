@@ -27,7 +27,7 @@ import org.jflux.api.core.Notifier;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class ConversationMonitorPanel extends javax.swing.JPanel {
 

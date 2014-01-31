@@ -15,8 +15,8 @@ import org.jflux.impl.messaging.rk.config.RKMessagingConfigUtils;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.utils.ManagedServiceFactory;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
-import org.robokind.api.motion.Robot;
-import org.robokind.integration.motion_speech.VisemeMotionUtils;
+import org.mechio.api.motion.Robot;
+import org.mechio.integration.motion_speech.VisemeMotionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

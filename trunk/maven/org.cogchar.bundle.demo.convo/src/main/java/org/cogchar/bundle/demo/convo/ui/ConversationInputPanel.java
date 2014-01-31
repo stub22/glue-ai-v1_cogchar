@@ -27,7 +27,7 @@ import org.jflux.api.core.Notifier;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class ConversationInputPanel extends javax.swing.JPanel {
     private Notifier<String> myNotifier;

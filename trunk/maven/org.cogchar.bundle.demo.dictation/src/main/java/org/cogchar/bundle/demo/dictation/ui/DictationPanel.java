@@ -21,7 +21,7 @@ import static org.cogchar.bundle.demo.dictation.osgi.DictationConfigUtils.*;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class DictationPanel extends JPanel {
     private final static Logger theLogger = Logger.getLogger(DictationPanel.class.getName());

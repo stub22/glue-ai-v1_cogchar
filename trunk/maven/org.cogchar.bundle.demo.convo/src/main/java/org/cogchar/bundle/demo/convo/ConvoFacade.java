@@ -18,7 +18,7 @@ package org.cogchar.bundle.demo.convo;
 
 import org.jflux.impl.transport.jms.MessageHeaderAdapter;
 import org.jflux.api.encode.EncodeRequest;
-import org.robokind.impl.speech.SpeechRequestRecord;
+import org.mechio.impl.speech.SpeechRequestRecord;
 import org.jflux.api.core.Adapter;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.Source;
@@ -32,10 +32,10 @@ import org.jflux.api.core.node.ProducerNode;
 import org.jflux.api.core.node.chain.NodeChain;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
 import org.jflux.impl.messaging.JMSAvroUtils;
-import org.robokind.api.speech.SpeechRequest;
-import org.robokind.api.speechrec.SpeechRecEvent;
-import org.robokind.api.speechrec.SpeechRecEventList;
-import org.robokind.impl.speechrec.SpeechRecEventListRecord;
+import org.mechio.api.speech.SpeechRequest;
+import org.mechio.api.speechrec.SpeechRecEvent;
+import org.mechio.api.speechrec.SpeechRecEventList;
+import org.mechio.impl.speechrec.SpeechRecEventListRecord;
 
 import static org.cogchar.bundle.demo.convo.osgi.ConvoConfigUtils.*;
 /**

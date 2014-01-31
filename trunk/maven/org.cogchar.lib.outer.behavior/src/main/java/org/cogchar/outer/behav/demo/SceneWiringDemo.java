@@ -26,7 +26,7 @@ import org.appdapter.core.matdat.PipelineQuerySpec;
 import org.appdapter.core.matdat.*;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.bind.rk.behavior.SceneSpecExtender;
+import org.cogchar.bind.mio.behavior.SceneSpecExtender;
 import org.cogchar.impl.scene.BehaviorSpecBuilder;
 import org.cogchar.impl.scene.SceneSpec;
 import org.cogchar.impl.scene.SceneSpecBuilder;

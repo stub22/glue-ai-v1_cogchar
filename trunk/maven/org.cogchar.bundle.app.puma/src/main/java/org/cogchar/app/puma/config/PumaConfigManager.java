@@ -15,15 +15,9 @@
  */
 package org.cogchar.app.puma.config;
 
-import java.util.List;
-import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
-import org.appdapter.impl.store.FancyRepo;
 
 import org.cogchar.app.buddy.busker.TriggerItems;
-import org.cogchar.blob.emit.GlobalConfigEmitter;
-
-
 
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;

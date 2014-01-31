@@ -18,11 +18,11 @@ package org.cogchar.bind.rk.osgi;
 import java.io.File;
 import org.jflux.api.core.config.Configuration;
 import org.jflux.api.core.config.DefaultConfiguration;
-import org.robokind.api.common.config.VersionProperty;
-import org.robokind.api.motion.jointgroup.JointGroup;
-import org.robokind.api.motion.jointgroup.RobotJointGroup;
-import org.robokind.api.motion.jointgroup.RobotJointGroupConfig;
-import org.robokind.impl.motion.jointgroup.RobotJointGroupConfigXMLReader;
+import org.mechio.api.common.config.VersionProperty;
+import org.mechio.api.motion.jointgroup.JointGroup;
+import org.mechio.api.motion.jointgroup.RobotJointGroup;
+import org.mechio.api.motion.jointgroup.RobotJointGroupConfig;
+import org.mechio.impl.motion.jointgroup.RobotJointGroupConfigXMLReader;
 
 /**
  *

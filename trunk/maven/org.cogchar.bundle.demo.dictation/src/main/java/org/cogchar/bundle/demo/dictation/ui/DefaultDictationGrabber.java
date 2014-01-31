@@ -30,6 +30,7 @@ import javax.jms.JMSException;
 import javax.jms.Session;
 import org.apache.qpid.client.AMQConnection;
 import org.cogchar.bundle.demo.dictation.sound.SoundDetector;
+import org.jflux.api.common.rk.utils.TimeUtils;
 import org.jflux.api.core.node.ConsumerNode;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
 import org.jflux.api.core.Adapter;
@@ -38,16 +39,14 @@ import org.jflux.api.core.util.EmptyAdapter;
 import org.jflux.impl.messaging.JMSAvroUtils;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
 import org.jflux.impl.transport.jms.MessageHeaderAdapter;
-import org.robokind.api.common.utils.TimeUtils;
-import org.robokind.api.speechrec.SpeechRecEvent;
-import org.robokind.api.speechrec.SpeechRecEventList;
-import org.robokind.impl.speechrec.SpeechRecEventListRecord;
-import org.robokind.impl.speechrec.SpeechRecEventRecord;
+import org.mechio.api.speechrec.SpeechRecEventList;
+import org.mechio.impl.speechrec.SpeechRecEventListRecord;
+import org.mechio.impl.speechrec.SpeechRecEventRecord;
 import static org.cogchar.bundle.demo.dictation.osgi.DictationConfigUtils.*;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class DefaultDictationGrabber implements DictationGrabber{
     private final static Logger theLogger = Logger.getLogger(DefaultDictationGrabber.class.getName());

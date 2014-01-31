@@ -22,17 +22,13 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.WantsThingAction;
-import org.cogchar.impl.perform.basic.AnimLaunchEntityAction;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.api.web.WebEntityAction;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.bind.lift.LiftAmbassador;
 
-import org.cogchar.bind.rk.robot.client.AnimMediaHandle;
-import org.cogchar.bind.rk.robot.client.AnimOutTrigChan;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.render.app.trigger.SceneActions;
 import org.osgi.framework.BundleContext;

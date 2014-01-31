@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.robokind.api.common.config.VersionProperty;
-import org.robokind.api.common.position.NormalizedDouble;
-import org.robokind.api.motion.AbstractRobot;
-import org.robokind.api.motion.Joint;
-import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.Robot.RobotPositionMap;
+import org.mechio.api.common.config.VersionProperty;
+import org.mechio.api.common.position.NormalizedDouble;
+import org.mechio.api.motion.AbstractRobot;
+import org.mechio.api.motion.Joint;
+import org.mechio.api.motion.Robot;
+import org.mechio.api.motion.Robot.RobotPositionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

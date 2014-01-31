@@ -43,9 +43,9 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * for extension, with fewer type parameters than the Basic____ classes.
  *
  * The FancyText_____ classes target all features that are driven by text messages, including
- * speech output and simple interpreters like the scripted-animation system from robokind.
+ * speech output and simple interpreters like the scripted-animation system from MechIO.
  * (The latter is actually driven by the animation resource/file *pathname* as the FancyTextMedia,
- * at present - see AnimOutTrigChan in the o.c.b.bind.robokind project.).
+ * at present - see AnimOutTrigChan in the o.c.b.bind.mechio project.).
  */
 
 abstract class FancyTextPerfChan[OutJob >: Null](id: Ident) extends BasicPerfChan(id) with FancyPerfChan_MovedToJava[OutJob] {

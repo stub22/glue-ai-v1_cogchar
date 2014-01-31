@@ -28,8 +28,6 @@ import org.appdapter.core.name.Ident;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
-import org.cogchar.bundle.app.puma.PumaAppUtils;
-
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -106,7 +104,7 @@ public class PumaBooter extends BasicDebugger {
 		/*
 		 * At this point we have blank, generic PAC + HRC (if vWorld) context objects to work with. PAC + HRC are
 		 * typically each a singleton, but not assumed to be. No characters or config have been populated, no OpenGL
-		 * window has been opened, and no connection has been made to Robokind.
+		 * window has been opened, and no connection has been made to MechIO.
 		 */
 
 		getLogger().debug("%%% Starting repository-backed config services");
@@ -126,7 +124,7 @@ public class PumaBooter extends BasicDebugger {
 		/*
 		 * Connect the Cogchar PUMA application (configured by implications of the sysContextURI and
 		 * sysLocalTempConfigDir used in setupConfigEmitters() above). The result is a list of connected "dual"
-		 * characters, which each have a presence in both Cogchar virtual space and Robokind physical space.			 *
+		 * characters, which each have a presence in both Cogchar virtual space and MechIO physical space.			 *
 		 * If we try to do this inside the JME3Thread callable above (under certain conditions), we can get hung up when
 		 * RobotServiceContext calls RobotUtils.registerRobot()
 		 */

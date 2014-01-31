@@ -28,18 +28,18 @@ import org.cogchar.api.perform.FancyPerformance;
 import org.cogchar.impl.perform.FancyTextMedia;
 import org.cogchar.impl.perform.FancyTextCursor;
 import org.cogchar.platform.util.ClassLoaderUtils;
-import org.robokind.api.animation.Animation;
-import org.robokind.api.animation.player.AnimationJob;
-import org.robokind.api.common.playable.PlayState;
-import org.robokind.api.common.utils.TimeUtils;
+import org.mechio.api.animation.Animation;
+import org.mechio.api.animation.player.AnimationJob;
+import org.mechio.api.common.playable.PlayState;
+import org.mechio.api.common.utils.TimeUtils;
 import org.cogchar.api.thing.WantsThingAction;
 
 import org.cogchar.name.web.WebActionNames;
 import org.cogchar.name.web.WebUserActionNames;
 
 import org.cogchar.impl.perform.MediaHandle;
-import org.robokind.api.animation.Channel;
-import org.robokind.api.animation.MotionPath;
+import org.mechio.api.animation.Channel;
+import org.mechio.api.animation.MotionPath;
 
 /**
  * @author StuB22

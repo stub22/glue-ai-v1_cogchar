@@ -25,11 +25,11 @@ import org.cogchar.impl.perform.FancyTextMedia;
 import org.cogchar.impl.perform.FancyTextCursor;
 
 import org.osgi.framework.BundleContext;
-import org.robokind.api.animation.player.AnimationJob;
-import org.robokind.api.speech.SpeechJob;
+import org.mechio.api.animation.player.AnimationJob;
+import org.mechio.api.speech.SpeechJob;
 
-import org.robokind.api.speech.SpeechService;
-import org.robokind.api.speech.utils.DefaultSpeechJob;
+import org.mechio.api.speech.SpeechService;
+import org.mechio.api.speech.utils.DefaultSpeechJob;
 
 /**
  * @author Stu B. <www.texpedient.com>

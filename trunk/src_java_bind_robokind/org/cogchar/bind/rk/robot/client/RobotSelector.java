@@ -17,14 +17,14 @@ package org.cogchar.bind.rk.robot.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.robokind.api.common.property.PropertyChangeNotifier;
-import org.robokind.api.common.property.PropertyChangeSource;
-import org.robokind.api.motion.Robot;
-import org.robokind.api.motion.Robot.Id;
+import org.mechio.api.common.property.PropertyChangeNotifier;
+import org.mechio.api.common.property.PropertyChangeSource;
+import org.mechio.api.motion.Robot;
+import org.mechio.api.motion.Robot.Id;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 
 

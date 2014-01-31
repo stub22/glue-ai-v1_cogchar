@@ -19,7 +19,7 @@ import javax.swing.UIManager;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class DictationFrame extends javax.swing.JFrame {
 
