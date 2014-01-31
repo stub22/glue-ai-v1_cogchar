@@ -57,7 +57,7 @@ csi:animOut_200
 	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
 	apsb:label			"[apsb:]AnimOut-VirtualBest for Avatar_ZenoR50";
 	rdfs:label 			"[rdfs:]AnimOut-VirtualBest for Avatar_ZenoR50";
-	cs:details			"Robokind XML animations - 'best' version (perm or temp) based on current settings in GUI";
+	cs:details			"MechIO XML animations - 'best' version (perm or temp) based on current settings in GUI";
 	.
 
 
@@ -66,7 +66,7 @@ csi:animOut_210
 	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
 	apsb:label			"[apsb:]AnimOut-PermBundle for Avatar_ZenoR50";
 	rdfs:label 			"[rdfs:]AnimOut-PermBundle for Avatar_ZenoR50";
-	cs:details			"Robokind XML animations - 'permanent' version from resource bundle";
+	cs:details			"MechIO XML animations - 'permanent' version from resource bundle";
 	.
 
 csi:animOut_220		
@@ -74,7 +74,7 @@ csi:animOut_220
 	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
 	apsb:label			"[apsb:]AnimOut-TempFolder for Avatar_ZenoR50";
 	rdfs:label 			"[rdfs:]AnimOut-TempFolder for Avatar_ZenoR50";
-	cs:details			"Robokind XML animations - 'temp' version from NB module filesys APP/org_cogchar_nbui_render/config/cogchar/rk_bind_temp";
+	cs:details			"MechIO XML animations - 'temp' version from NB module filesys APP/org_cogchar_nbui_render/config/cogchar/rk_bind_temp";
 .
 
 # behavior_temp
