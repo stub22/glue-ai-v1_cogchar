@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cogchar.bind.rk.behavior;
+package org.cogchar.bind.mio.behavior;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.rk.robot.client;
+package org.cogchar.bind.mio.robot.client;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import java.net.URL;
@@ -30,8 +30,8 @@ import org.cogchar.impl.perform.FancyTextCursor;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.mechio.api.animation.Animation;
 import org.mechio.api.animation.player.AnimationJob;
-import org.mechio.api.common.playable.PlayState;
-import org.mechio.api.common.utils.TimeUtils;
+import org.jflux.api.common.rk.playable.PlayState;
+import org.jflux.api.common.rk.utils.TimeUtils;
 import org.cogchar.api.thing.WantsThingAction;
 
 import org.cogchar.name.web.WebActionNames;

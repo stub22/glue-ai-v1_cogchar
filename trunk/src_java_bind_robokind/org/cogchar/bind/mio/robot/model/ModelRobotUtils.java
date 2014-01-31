@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.rk.robot.model;
+package org.cogchar.bind.mio.robot.model;
 
 import org.cogchar.api.skeleton.config.BoneProjectionPosition;
 import java.util.ArrayList;

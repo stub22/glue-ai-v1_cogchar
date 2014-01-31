@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cogchar.bind.rk.behavior;
+package org.cogchar.bind.mio.behavior;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import org.cogchar.impl.scene.SceneSpec;
-import org.cogchar.bind.rk.behavior.ChannelBindingConfig.ChannelType;
+import org.cogchar.bind.mio.behavior.ChannelBindingConfig.ChannelType;
 import org.jflux.api.core.Listener;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;

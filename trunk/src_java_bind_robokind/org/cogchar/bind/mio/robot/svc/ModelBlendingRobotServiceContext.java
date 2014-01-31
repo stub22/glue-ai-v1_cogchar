@@ -13,13 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.rk.robot.svc;
+package org.cogchar.bind.mio.robot.svc;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
-import org.cogchar.bind.rk.robot.model.ModelRobot;
-import org.cogchar.bind.rk.robot.model.ModelRobotFactory;
+import org.cogchar.bind.mio.robot.model.ModelRobot;
+import org.cogchar.bind.mio.robot.model.ModelRobotFactory;
 import org.jflux.api.core.config.Configuration;
 import org.jflux.impl.messaging.rk.config.RKMessagingConfigUtils;
 import org.mechio.api.motion.Robot;
@@ -28,7 +28,7 @@ import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.config.RKLifecycleConfigUtils.GenericLifecycleFactory;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
-import static org.cogchar.bind.rk.osgi.RobokindBindingConfigUtils.*;
+import static org.cogchar.bind.mio.osgi.MechIOBindingConfigUtils.*;
 import org.jflux.impl.services.rk.lifecycle.ManagedService;
 
 

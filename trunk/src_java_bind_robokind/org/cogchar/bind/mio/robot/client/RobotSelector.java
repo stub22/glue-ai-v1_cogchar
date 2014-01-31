@@ -13,12 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.rk.robot.client;
+package org.cogchar.bind.mio.robot.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.mechio.api.common.property.PropertyChangeNotifier;
-import org.mechio.api.common.property.PropertyChangeSource;
+import org.jflux.api.common.rk.property.PropertyChangeNotifier;
+import org.jflux.api.common.rk.property.PropertyChangeSource;
 import org.mechio.api.motion.Robot;
 import org.mechio.api.motion.Robot.Id;
 

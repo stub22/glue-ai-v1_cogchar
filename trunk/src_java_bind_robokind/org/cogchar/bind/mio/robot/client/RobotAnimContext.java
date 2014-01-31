@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.rk.robot.client;
+package org.cogchar.bind.mio.robot.client;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.mechio.api.animation.Animation;
 import org.mechio.api.animation.player.AnimationJob;
 
-import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
-import org.cogchar.bind.rk.robot.model.ModelRobot;
+import org.cogchar.bind.mio.robot.client.RobotAnimClient.BuiltinAnimKind;
+import org.cogchar.bind.mio.robot.model.ModelRobot;
 import java.net.URL;
 import org.cogchar.impl.channel.AnimFileSpecReader;
 import org.cogchar.platform.util.ClassLoaderUtils;

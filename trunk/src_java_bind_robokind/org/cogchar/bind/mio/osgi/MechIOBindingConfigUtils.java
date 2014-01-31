@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cogchar.bind.rk.osgi;
+package org.cogchar.bind.mio.osgi;
 
 import java.io.File;
 import org.jflux.api.core.config.Configuration;
 import org.jflux.api.core.config.DefaultConfiguration;
-import org.mechio.api.common.config.VersionProperty;
+import org.jflux.api.common.rk.config.VersionProperty;
 import org.mechio.api.motion.jointgroup.JointGroup;
 import org.mechio.api.motion.jointgroup.RobotJointGroup;
 import org.mechio.api.motion.jointgroup.RobotJointGroupConfig;
@@ -28,7 +28,7 @@ import org.mechio.impl.motion.jointgroup.RobotJointGroupConfigXMLReader;
  *
  * @author Matthew Stevenson
  */
-public class RobokindBindingConfigUtils {
+public class MechIOBindingConfigUtils {
     public static String CONF_JOINTGROUP_XML_PATH = "ccrkJointGroupXMLPath";
     
     public static String CONF_JOINTGROUP_PARAM_ID_FORMAT = "ccrkJointGroupParmIdFormatString";

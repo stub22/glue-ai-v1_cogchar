@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cogchar.bind.rk.behavior;
+package org.cogchar.bind.mio.behavior;
 
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
@@ -21,8 +21,8 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.channel.Channel;
 import org.cogchar.api.perform.PerfChannel;
-import org.cogchar.bind.rk.robot.client.RobotAnimContext;
-import org.cogchar.bind.rk.speech.client.SpeechOutputClient;
+import org.cogchar.bind.mio.robot.client.RobotAnimContext;
+import org.cogchar.bind.mio.speech.client.SpeechOutputClient;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.platform.util.ClassLoaderUtils;
 import org.osgi.framework.Bundle;
