@@ -19,7 +19,7 @@ import org.cogchar.bind.cogbot.main.GenRespWithConf;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class ConvoResponse extends GenRespWithConf{
     private String myInput;

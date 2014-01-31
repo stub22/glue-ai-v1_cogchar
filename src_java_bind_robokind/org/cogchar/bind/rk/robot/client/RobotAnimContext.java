@@ -24,15 +24,15 @@ import org.appdapter.core.log.BasicDebugger;
 
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 
-import org.robokind.api.animation.Animation;
-import org.robokind.api.animation.player.AnimationJob;
+import org.mechio.api.animation.Animation;
+import org.mechio.api.animation.player.AnimationJob;
 
 import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.bind.rk.robot.model.ModelRobot;
 import java.net.URL;
 import org.cogchar.impl.channel.AnimFileSpecReader;
 import org.cogchar.platform.util.ClassLoaderUtils;
-import org.robokind.api.animation.player.AnimationPlayer;
+import org.mechio.api.animation.player.AnimationPlayer;
 
 import org.cogchar.impl.perform.MediaResolverFactory;
 import org.cogchar.impl.perform.UrlSearcher;

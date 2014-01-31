@@ -17,8 +17,8 @@ package org.cogchar.bind.rk.osgi;
 
 import org.jflux.api.core.config.Configuration;
 import org.jflux.api.core.config.DefaultConfiguration;
-import org.robokind.api.common.config.VersionProperty;
-import org.robokind.api.common.osgi.lifecycle.ConfiguredServiceParams;
+import org.mechio.api.common.config.VersionProperty;
+import org.mechio.api.common.osgi.lifecycle.ConfiguredServiceParams;
 
 /**
  *

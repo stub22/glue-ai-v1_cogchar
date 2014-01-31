@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * TODO:  Capture formal unit tests that build ChannelBindingConfigs manually and test them
  * in different JFlux contexts.
  * 
- * @author Matthew Stevenson <www.robokind.org> 
+ * @author Matthew Stevenson <www.cogchar.org> 
  * @author Stub22
  */
 public class ChannelBindingLifecycle extends AbstractLifecycleProvider<Channel, Channel> {

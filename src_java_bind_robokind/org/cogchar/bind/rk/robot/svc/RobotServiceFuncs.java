@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.robokind.api.common.config.VersionProperty;
+import org.mechio.api.common.config.VersionProperty;
 import org.jflux.api.core.config.Configuration;
 import java.util.Properties;
 
@@ -29,14 +29,14 @@ import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
-import org.robokind.api.common.services.Constants;
-import org.robokind.api.motion.Robot;
+import org.mechio.api.common.services.Constants;
+import org.mechio.api.motion.Robot;
 
 
-import org.robokind.api.motion.lifecycle.RobotJointGroupLifecycle;
+import org.mechio.api.motion.lifecycle.RobotJointGroupLifecycle;
 /*
-import org.robokind.impl.motion.messaging.JMSMotionFrameAsyncReceiver;
-import org.robokind.impl.motion.messaging.TargetFrameListener;
+import org.mechio.impl.motion.messaging.JMSMotionFrameAsyncReceiver;
+import org.mechio.impl.motion.messaging.TargetFrameListener;
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

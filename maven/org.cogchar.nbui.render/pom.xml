@@ -113,7 +113,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>org.cogchar.bundle.bind.robokind</artifactId>
+			<artifactId>org.cogchar.bundle.bind.mechio</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -142,15 +142,15 @@
 			<version>${appdapter.version}</version>
 		</dependency>	
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.api.speech</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.speech</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.robokind</groupId>
+			<groupId>org.mechio</groupId>
 			<!-- Needed at compile time for PortableSpeechRequest in CogbotSpeechDemo -->
-			<artifactId>org.robokind.impl.speech</artifactId>
-			<version>${robokind.version}</version>
+			<artifactId>org.mechio.impl.speech</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>				
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -193,41 +193,41 @@
  
 		
 		<dependency>
-			<artifactId>org.robokind.api.motion</artifactId>
-			<groupId>org.robokind</groupId>
-			<version>${robokind.version}</version>
+			<artifactId>org.mechio.api.motion</artifactId>
+			<groupId>org.mechio</groupId>
+			<version>${mechio.version}</version>
 		</dependency>
 		<dependency>
-			<artifactId>org.robokind.api.common</artifactId>
-			<groupId>org.robokind</groupId>
-			<version>${robokind.version}</version>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.common.rk</artifactId>
+			<version>${jflux.version}</version>
 		</dependency>
 		<dependency>
-			<artifactId>org.robokind.api.animation</artifactId>
-			<groupId>org.robokind</groupId>
-			<version>${robokind.version}</version>
+			<artifactId>org.mechio.api.animation</artifactId>
+			<groupId>org.mechio</groupId>
+			<version>${mechio.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.integration.animation_motion</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.integration.animation_motion</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>
 			
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.motion</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.impl.motion</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>
 		<dependency>
-			<artifactId>org.robokind.api.messaging</artifactId>
-			<groupId>org.robokind</groupId>
-			<version>${robokind.version}</version>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.messaging.rk</artifactId>
+			<version>${jflux.version}</version>
 		</dependency>
 		<dependency>
-			<artifactId>org.robokind.impl.messaging</artifactId>
-			<groupId>org.robokind</groupId>
-			<version>${robokind.version}</version>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.impl.messaging.rk</artifactId>
+			<version>${jflux.version}</version>
 		</dependency>
 		<dependency>
 			<artifactId>slf4j-api</artifactId>

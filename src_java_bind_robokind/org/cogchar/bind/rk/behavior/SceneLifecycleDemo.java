@@ -26,15 +26,15 @@ import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
-import org.robokind.api.speech.SpeechEvent;
-import org.robokind.api.speech.SpeechEventList;
-import org.robokind.api.speech.SpeechJob;
-import org.robokind.api.speech.SpeechRequest;
-import org.robokind.api.speech.SpeechService;
+import org.mechio.api.speech.SpeechEvent;
+import org.mechio.api.speech.SpeechEventList;
+import org.mechio.api.speech.SpeechJob;
+import org.mechio.api.speech.SpeechRequest;
+import org.mechio.api.speech.SpeechService;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class SceneLifecycleDemo {
     public static void test(BundleContext context){

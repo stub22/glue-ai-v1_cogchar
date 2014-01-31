@@ -19,7 +19,7 @@ import org.jflux.api.core.Adapter;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class ConversationInputFilter implements 
         Adapter<String, String> {

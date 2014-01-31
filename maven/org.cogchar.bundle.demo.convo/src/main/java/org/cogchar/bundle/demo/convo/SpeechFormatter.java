@@ -15,14 +15,14 @@
  */
 package org.cogchar.bundle.demo.convo;
 
+import org.jflux.api.common.rk.utils.TimeUtils;
 import org.jflux.api.core.Adapter;
-import org.robokind.api.common.utils.TimeUtils;
-import org.robokind.api.speech.SpeechRequest;
-import org.robokind.impl.speech.SpeechRequestRecord;
+import org.mechio.api.speech.SpeechRequest;
+import org.mechio.impl.speech.SpeechRequestRecord;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class SpeechFormatter implements Adapter<String, SpeechRequest> {
     private String mySourceId;

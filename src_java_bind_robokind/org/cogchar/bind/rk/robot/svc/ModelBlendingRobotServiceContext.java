@@ -22,7 +22,7 @@ import org.cogchar.bind.rk.robot.model.ModelRobot;
 import org.cogchar.bind.rk.robot.model.ModelRobotFactory;
 import org.jflux.api.core.config.Configuration;
 import org.jflux.impl.messaging.rk.config.RKMessagingConfigUtils;
-import org.robokind.api.motion.Robot;
+import org.mechio.api.motion.Robot;
 import org.osgi.framework.BundleContext;
 
 import org.jflux.impl.services.rk.lifecycle.config.RKLifecycleConfigUtils.GenericLifecycleFactory;

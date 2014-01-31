@@ -52,7 +52,7 @@ public class VanillaConfigManager extends PumaConfigManager {
 	 * Does not yet perform any cleanup on old lifecycles.
 	 * TODO:  Add any such necessary cleanup.
 	 * @param mediator
-	 * @param optBundCtxForLifecycle - optional (null => None) OSGi BundleContext signaling that JFlux.org/Robokind.org 
+	 * @param optBundCtxForLifecycle - optional (null => None) OSGi BundleContext signaling that JFlux.org/MechIO.org 
 	 * -compatible lifecycles should be started.
 	 */
 	protected void applyVanillaRepoClientAsMainConfig( PumaContextMediator mediator, BundleContext optBundCtxForLifecycle) {

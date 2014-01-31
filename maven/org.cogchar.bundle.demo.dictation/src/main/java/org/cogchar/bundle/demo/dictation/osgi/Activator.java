@@ -21,7 +21,7 @@ import org.osgi.framework.BundleContext;
 
 /***
  * 
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class Activator implements BundleActivator {
 

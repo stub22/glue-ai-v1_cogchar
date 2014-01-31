@@ -16,9 +16,7 @@
 package org.cogchar.app.puma.body;
 
 
-import org.cogchar.app.puma.body.PumaBodyGateway;
 import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
-import java.io.File;
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.name.Ident;
@@ -33,7 +31,6 @@ import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
-import org.cogchar.platform.trigger.BoxSpace;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -68,9 +65,9 @@ public class PumaDualBody extends BasicDebugger {
 
 		boolean vwHumOK = myBodyMapper.initVWorldHumanoid(rc, graphIdentForBony, humCfg);
 		
-		List<ClassLoader> rkConfCLs = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
+		List<ClassLoader> rkConfCLs = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_MIO_CONF);
 		
-		boolean setupOK = setupBonyModelBindingToRobokind(bundleCtx, rc, graphIdentForBony, humCfg, rkConfCLs);
+		boolean setupOK = setupBonyModelBindingToMechIO(bundleCtx, rc, graphIdentForBony, humCfg, rkConfCLs);
 	}
 
 
@@ -98,21 +95,21 @@ public class PumaDualBody extends BasicDebugger {
 	}
 
 
-	private boolean setupBonyModelBindingToRobokind(BundleContext bunCtx, RepoClient rc, Ident graphIdentForBony, 
-					FigureConfig hc, List<ClassLoader> clsForRKConf) {
+	private boolean setupBonyModelBindingToMechIO(BundleContext bunCtx, RepoClient rc, Ident graphIdentForBony, 
+					FigureConfig hc, List<ClassLoader> clsForMIOConf) {
 		Ident charIdent = getCharIdent();
 		getLogger().debug("Setup for {} using graph {} and humanoidConf {}", new Object[]{charIdent, graphIdentForBony, hc});
 		try {
 			BoneCN bqn = new BoneCN();
-			boolean connectedOK = 		myBodyMapper.connectBonyRobotToRobokindAndVWorld(bunCtx, hc, graphIdentForBony, rc, bqn, clsForRKConf);
+			boolean connectedOK = 		myBodyMapper.connectBonyRobotToMechIOAndVWorld(bunCtx, hc, graphIdentForBony, rc, bqn, clsForMIOConf);
 			if (connectedOK) {
 				return true;
 			} else {
-				getLogger().warn("Failed to connect RK+VWorld bindings for character: {}", charIdent);
+				getLogger().warn("Failed to connect MIO+VWorld bindings for character: {}", charIdent);
 				return false;
 			}
 		} catch (Throwable t) {
-			getLogger().error("Exception during setupCharacterBindingToRobokind for character: {}", charIdent, t);
+			getLogger().error("Exception during setupCharacterBindingToMechIO for character: {}", charIdent, t);
 			return false;
 		}
 	}

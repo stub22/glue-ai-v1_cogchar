@@ -17,10 +17,10 @@ package org.cogchar.bind.rk.robot.model;
 
 import org.cogchar.api.skeleton.config.BoneJointConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
-import org.robokind.api.common.config.VersionProperty;
-import org.robokind.api.common.services.ServiceFactory;
-import org.robokind.api.motion.Joint;
-import org.robokind.api.motion.Robot;
+import org.mechio.api.common.config.VersionProperty;
+import org.mechio.api.common.services.ServiceFactory;
+import org.mechio.api.motion.Joint;
+import org.mechio.api.motion.Robot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

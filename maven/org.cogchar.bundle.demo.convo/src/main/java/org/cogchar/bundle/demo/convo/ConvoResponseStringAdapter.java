@@ -20,7 +20,7 @@ import org.jflux.api.core.Adapter;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class ConvoResponseStringAdapter<R extends GenRespWithConf> implements 
         Adapter<R,String>{

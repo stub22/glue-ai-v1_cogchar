@@ -8,7 +8,7 @@
 		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
 	</parent>
 	
-	<artifactId>org.cogchar.bundle.bind.robokind</artifactId>
+	<artifactId>org.cogchar.bundle.bind.mechio</artifactId>
 	<packaging>bundle</packaging>
 
 	<name>${project.artifactId} - OSGi - binds motion, vision, speech</name>
@@ -55,60 +55,60 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.api.speech</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.speech</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.robokind</groupId>
+			<groupId>org.mechio</groupId>
 			<!-- Needed at compile time for PortableSpeechRequest  -->
-			<artifactId>org.robokind.impl.speech</artifactId>
-			<version>${robokind.version}</version>
+			<artifactId>org.mechio.impl.speech</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>				
 		
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.api.motion</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.motion</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>		
 
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.api.animation</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.animation</artifactId>
+			<version>${mechio.version}</version>
 		</dependency><dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.api.vision</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.vision</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.messaging</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.impl.messaging.rk</artifactId>
+			<version>${jflux.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.motion</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.impl.motion</artifactId>
+			<version>${mechio.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.integration.animation_motion</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.integration.animation_motion</artifactId>
+			<version>${mechio.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.integration.motion_speech</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.integration.motion_speech</artifactId>
+			<version>${mechio.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<!-- Needed at compile time for AnimationXMLReader -->			
-			<groupId>org.robokind</groupId>
-			<artifactId>org.robokind.impl.animation</artifactId>
-			<version>${robokind.version}</version>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.impl.animation</artifactId>
+			<version>${mechio.version}</version>
             <scope>compile</scope>
 		</dependency>
 
@@ -123,8 +123,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>org.cogchar.bind.rk.osgi.RobokindBindingActivator</Bundle-Activator>
-						<Export-Package>org.cogchar.bind.rk.*</Export-Package>
+						<Bundle-Activator>org.cogchar.bind.mio.osgi.MechIOBindingActivator</Bundle-Activator>
+						<Export-Package>org.cogchar.bind.mio.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

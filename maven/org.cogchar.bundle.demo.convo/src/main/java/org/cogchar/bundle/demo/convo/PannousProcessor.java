@@ -27,11 +27,11 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jflux.api.common.rk.utils.TimeUtils;
 import org.jflux.api.core.Adapter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.robokind.api.common.utils.TimeUtils;
 
 /**
  *

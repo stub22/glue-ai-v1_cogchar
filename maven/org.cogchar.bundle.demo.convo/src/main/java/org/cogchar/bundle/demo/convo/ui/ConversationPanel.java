@@ -29,7 +29,7 @@ import static org.cogchar.bundle.demo.convo.osgi.ConvoConfigUtils.*;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class ConversationPanel extends javax.swing.JPanel {
     public final static int TAB_CONVO = 0;

@@ -26,7 +26,7 @@ import org.jflux.api.core.Listener;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class TriggerPanel extends javax.swing.JPanel implements ActionCallbackMap {
 

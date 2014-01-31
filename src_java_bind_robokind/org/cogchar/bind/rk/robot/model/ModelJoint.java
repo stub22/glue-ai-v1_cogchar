@@ -22,14 +22,14 @@ import org.cogchar.api.skeleton.config.BoneJointConfig;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.robokind.api.common.position.DoubleRange;
-import org.robokind.api.common.position.NormalizableRange;
-import org.robokind.api.common.position.NormalizedDouble;
-import org.robokind.api.common.utils.Utils;
-import org.robokind.api.motion.AbstractJoint;
-import org.robokind.api.motion.Joint;
-import org.robokind.api.motion.JointProperty;
-import org.robokind.api.motion.joint_properties.ReadCurrentPosition;
+import org.mechio.api.common.position.DoubleRange;
+import org.mechio.api.common.position.NormalizableRange;
+import org.mechio.api.common.position.NormalizedDouble;
+import org.mechio.api.common.utils.Utils;
+import org.mechio.api.motion.AbstractJoint;
+import org.mechio.api.motion.Joint;
+import org.mechio.api.motion.JointProperty;
+import org.mechio.api.motion.joint_properties.ReadCurrentPosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

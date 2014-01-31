@@ -31,7 +31,7 @@ import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponentFactory;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class ServiceChannelExtender extends ServiceClassListener<ChannelBindingConfig>{
     private ManagedServiceFactory myManagerFactory;

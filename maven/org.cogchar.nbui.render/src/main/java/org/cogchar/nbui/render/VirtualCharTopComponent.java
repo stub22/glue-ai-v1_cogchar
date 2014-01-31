@@ -43,14 +43,14 @@ import org.cogchar.platform.util.ClassLoaderUtils;
 import org.cogchar.render.app.bony.BonyRenderContext;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 
-import org.robokind.api.motion.Robot;
+import org.mechio.api.motion.Robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Top component which displays the OpenGL Canvas
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  * @author Stu B. <www.texpedient.com>
  */
 @ConvertAsProperties(dtd = "-//org.cogchar.nbui//VirtualChar//EN",
@@ -249,7 +249,7 @@ public final class VirtualCharTopComponent extends TopComponent {
             }
             init(context);
         }catch(Throwable t){
-            theLogger.warn("Error initializing Cogchar-Robokind binding or OpenGL rendering.", t);
+            theLogger.warn("Error initializing Cogchar-MechIO binding or OpenGL rendering.", t);
         }
     }
 

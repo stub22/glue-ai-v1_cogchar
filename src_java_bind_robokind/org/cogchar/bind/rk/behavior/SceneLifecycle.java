@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class SceneLifecycle extends AbstractLifecycleProvider<Scene, BScene> {
 	private static Logger theLogger =  LoggerFactory.getLogger(SceneLifecycle.class);

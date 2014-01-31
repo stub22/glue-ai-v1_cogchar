@@ -25,7 +25,7 @@ import javax.sound.sampled.TargetDataLine;
 
 /***
  * 
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class SoundDetector{
     private final static Logger theLogger = Logger.getLogger(SoundDetector.class.getName());

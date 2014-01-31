@@ -23,10 +23,10 @@ import org.jflux.impl.messaging.rk.JMSAvroRecordAsyncReceiver;
 import org.jflux.impl.messaging.rk.JMSAvroRecordSender;
 import org.jflux.impl.messaging.rk.JMSBytesMessageSender;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
-import org.robokind.api.speech.SpeechRequest;
-import org.robokind.api.speech.SpeechRequestFactory;
-import org.robokind.impl.speech.SpeechRequestRecord;
-import org.robokind.impl.speech.PortableSpeechRequest;
+import org.mechio.api.speech.SpeechRequest;
+import org.mechio.api.speech.SpeechRequestFactory;
+import org.mechio.impl.speech.SpeechRequestRecord;
+import org.mechio.impl.speech.PortableSpeechRequest;
 
 import static org.cogchar.bind.cogbot.main.CogbotConfigUtils.*;
 

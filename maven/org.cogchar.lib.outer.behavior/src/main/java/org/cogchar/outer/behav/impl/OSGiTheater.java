@@ -18,7 +18,7 @@ package org.cogchar.outer.behav.impl;
 import java.util.ArrayList;
 import java.util.List;
 import org.cogchar.api.scene.Scene;
-import org.cogchar.bind.rk.behavior.SceneLifecycleDemo;
+import org.cogchar.bind.mio.behavior.SceneLifecycleDemo;
 import org.cogchar.impl.scene.Theater;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.osgi.ServiceClassListener;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * You must call start() before the OSGiTheater begins tracking Scenes.
  * 
  * 
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public class OSGiTheater extends ServiceClassListener<Scene> {
     private List<Scene> myScenes;

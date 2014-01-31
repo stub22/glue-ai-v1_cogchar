@@ -22,12 +22,11 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.WantsThingAction;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
-import org.cogchar.bind.rk.robot.client.RobotAnimClient;
-import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
+import org.cogchar.bind.mio.robot.client.RobotAnimClient;
+import org.cogchar.bind.mio.robot.svc.RobotServiceContext;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.scene.Theater;
-import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
 
@@ -46,7 +45,7 @@ public class DirectBehaviorAgent extends PumaBehaviorAgent {
 	}
 
 	public void initMappers(PumaRegistryClient prc, RobotServiceContext rsc) {
-		List<ClassLoader> clsForRKConf = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
+		List<ClassLoader> clsForRKConf = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_MIO_CONF);
 		myRobotMotionMapper = new PumaRobotMotionMapper(myAgentID, myBehaviorCE, clsForRKConf, rsc);
 		mySpeechOutputMapper = new PumaSpeechOutputMapper(myAgentID);
 	}

@@ -17,7 +17,7 @@ package org.cogchar.bundle.demo.dictation.ui;
 
 /**
  *
- * @author Matthew Stevenson <www.robokind.org>
+ * @author Matthew Stevenson <www.cogchar.org>
  */
 public interface DictationGrabber {
     public boolean collectDictation();
