@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cogchar.bind.rk.osgi;
+package org.cogchar.bind.mio.osgi;
 
 import org.jflux.api.core.config.Configuration;
 import org.jflux.api.core.config.DefaultConfiguration;
-import org.mechio.api.common.config.VersionProperty;
-import org.mechio.api.common.osgi.lifecycle.ConfiguredServiceParams;
+import org.jflux.api.common.rk.config.VersionProperty;
+import org.jflux.api.common.rk.osgi.lifecycle.ConfiguredServiceParams;
 
 /**
  *

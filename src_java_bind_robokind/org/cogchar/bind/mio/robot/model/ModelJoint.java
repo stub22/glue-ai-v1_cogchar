@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.rk.robot.model;
+package org.cogchar.bind.mio.robot.model;
 
 import org.cogchar.api.skeleton.config.BoneProjectionPosition;
 import org.cogchar.api.skeleton.config.BoneProjectionRange;
@@ -22,10 +22,10 @@ import org.cogchar.api.skeleton.config.BoneJointConfig;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mechio.api.common.position.DoubleRange;
-import org.mechio.api.common.position.NormalizableRange;
-import org.mechio.api.common.position.NormalizedDouble;
-import org.mechio.api.common.utils.Utils;
+import org.jflux.api.common.rk.position.DoubleRange;
+import org.jflux.api.common.rk.position.NormalizableRange;
+import org.jflux.api.common.rk.position.NormalizedDouble;
+import org.jflux.api.common.rk.utils.Utils;
 import org.mechio.api.motion.AbstractJoint;
 import org.mechio.api.motion.Joint;
 import org.mechio.api.motion.JointProperty;

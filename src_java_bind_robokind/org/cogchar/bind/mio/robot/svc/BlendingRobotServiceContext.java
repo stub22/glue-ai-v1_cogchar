@@ -13,8 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.rk.robot.svc;
-import org.cogchar.bind.rk.robot.motion.CogcharMotionSource;
+package org.cogchar.bind.mio.robot.svc;
+import org.cogchar.bind.mio.robot.motion.CogcharMotionSource;
 import java.util.ArrayList;
 import java.util.List;
 import org.jflux.api.core.config.Configuration;

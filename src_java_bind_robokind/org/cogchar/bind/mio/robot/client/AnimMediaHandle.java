@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.rk.robot.client;
+package org.cogchar.bind.mio.robot.client;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import java.net.URL;

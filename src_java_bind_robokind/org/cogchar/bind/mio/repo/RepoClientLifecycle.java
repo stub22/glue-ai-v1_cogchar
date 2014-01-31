@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.rk.repo;
+package org.cogchar.bind.mio.repo;
 
 import java.util.ArrayList;
 import java.util.List;

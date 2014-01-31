@@ -14,17 +14,17 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.rk.robot.client;
+package org.cogchar.bind.mio.robot.client;
 
-import org.cogchar.bind.rk.robot.client.RobotAnimClient;
-import org.cogchar.bind.rk.robot.client.RobotAnimContext;
-import org.cogchar.bind.rk.robot.svc.RobotServiceContext;
+import org.cogchar.bind.mio.robot.client.RobotAnimClient;
+import org.cogchar.bind.mio.robot.client.RobotAnimContext;
+import org.cogchar.bind.mio.robot.svc.RobotServiceContext;
 import org.osgi.framework.BundleContext;
 import org.mechio.api.motion.Robot;
 import org.mechio.api.motion.utils.RobotUtils;
 
-import org.cogchar.bind.rk.robot.client.RobotAnimClient.BuiltinAnimKind;
-import org.cogchar.bind.rk.robot.model.ModelRobot;
+import org.cogchar.bind.mio.robot.client.RobotAnimClient.BuiltinAnimKind;
+import org.cogchar.bind.mio.robot.model.ModelRobot;
 import java.net.URL;
 import org.appdapter.core.name.Ident;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;

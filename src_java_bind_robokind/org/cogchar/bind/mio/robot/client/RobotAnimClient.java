@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.rk.robot.client;
+package org.cogchar.bind.mio.robot.client;
 
 
 
@@ -31,15 +31,15 @@ import org.apache.commons.configuration.XMLConfiguration;
 import java.net.URL;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.bind.rk.robot.model.ModelJoint;
-import org.cogchar.bind.rk.robot.model.ModelRobot;
+import org.cogchar.bind.mio.robot.model.ModelJoint;
+import org.cogchar.bind.mio.robot.model.ModelRobot;
 import org.mechio.api.animation.player.AnimationJob;
 import org.mechio.api.animation.player.AnimationPlayer;
 import org.mechio.api.animation.utils.ChannelsParameter;
 import org.mechio.api.animation.xml.AnimationFileReader;
 import org.mechio.api.animation.xml.AnimationXML;
-import org.mechio.api.common.playable.PlayState;
-import org.mechio.api.common.position.NormalizedDouble;
+import org.jflux.api.common.rk.playable.PlayState;
+import org.jflux.api.common.rk.position.NormalizedDouble;
 import org.mechio.api.motion.Joint;
 import org.mechio.api.motion.Robot;
 import org.mechio.impl.animation.xml.AnimationXMLReader;
