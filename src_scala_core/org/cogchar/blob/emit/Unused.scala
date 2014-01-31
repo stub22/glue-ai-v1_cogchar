@@ -204,9 +204,9 @@ class ZenoConfigEmitter extends BonyConfigEmitter {
 	def	getConvyConfigEmitter() : ConvyConfigEmitter = myConvyCE;
 
 	
-	val myRobokindBindingCE : RobokindBindingConfigEmitter = new RobokindBindingConfigEmitter();
+	val myMechIOBindingCE : MechIOBindingConfigEmitter = new MechIOBindingConfigEmitter();
 	
-	def	getRobokindBindingConfigEmitter() : RobokindBindingConfigEmitter = myRobokindBindingCE;	
+	def	getMechIOBindingConfigEmitter() : MechIOBindingConfigEmitter = myMechIOBindingCE;	
 
 	
 	lazy val myRenderCE : RenderConfigEmitter = new RenderConfigEmitter(Some(getSystemContextURI()));
