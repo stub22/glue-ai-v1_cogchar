@@ -40,7 +40,7 @@ import org.jflux.api.encode.EncodeRequest;
 import org.jflux.api.messaging.rk.services.ServiceCommand;
 import org.jflux.impl.messaging.JMSAvroUtils;
 import org.jflux.impl.messaging.rk.ServiceCommandRecord;
-import org.jflux.impl.messaging.services.PortableServiceCommand;
+import org.jflux.impl.messaging.rk.services.PortableServiceCommand;
 import org.jflux.impl.transport.jms.MessageHeaderAdapter;
 import org.mechio.api.speech.SpeechRequest;
 import org.mechio.api.speechrec.SpeechRecEvent;

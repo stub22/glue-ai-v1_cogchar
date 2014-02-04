@@ -45,7 +45,7 @@ import org.jflux.api.core.util.EmptyAdapter;
 import org.jflux.api.messaging.rk.services.ServiceCommand;
 import org.jflux.impl.messaging.JMSAvroUtils;
 import org.jflux.impl.messaging.rk.ServiceCommandRecord;
-import org.jflux.impl.messaging.services.PortableServiceCommand;
+import org.jflux.impl.messaging.rk.services.PortableServiceCommand;
 import org.mechio.api.speech.SpeechRequest;
 import org.mechio.api.speechrec.SpeechRecEvent;
 import org.mechio.api.speechrec.SpeechRecEventList;
