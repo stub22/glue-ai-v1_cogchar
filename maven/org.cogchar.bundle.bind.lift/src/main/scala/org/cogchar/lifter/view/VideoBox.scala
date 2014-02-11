@@ -27,14 +27,27 @@ package org.cogchar.lifter {
 	  protected val matchingName = "VIDEOBOX"
   
 	  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
-		makeBox(control.resource, true)
+		makeBox(control.resource, false)
 	  }
 	  
 	  def makeBox(videoResource:String, mute: Boolean): NodeSeq = {
+      if(mute){
+        return makeMutedBox(videoResource);
+      }else{
+        return makeUnmutedBox(videoResource);
+      }
+	  }
+	  
+	  def makeMutedBox(videoResource:String): NodeSeq = {
 		val videoPath: String = "/video/" + videoResource // May want to move this prefix to central location
-		val muteText = mute.toString
 		// It's all well and good to use a single video resource unless we want to support IE, in which case we'll have to mix in more
-		<video src={videoPath} width="100%" height="100%" autoplay="true" muted={muteText}></video>
+		<video src={videoPath} width="100%" height="100%" autoplay="true" muted="true"></video>
+	  }
+	  
+	  def makeUnmutedBox(videoResource:String): NodeSeq = {
+		val videoPath: String = "/video/" + videoResource // May want to move this prefix to central location
+		// It's all well and good to use a single video resource unless we want to support IE, in which case we'll have to mix in more
+		<video src={videoPath} width="100%" height="100%" autoplay="true"></video>
 	  }
 	  
 	}
