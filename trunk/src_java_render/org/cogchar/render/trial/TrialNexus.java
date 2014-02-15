@@ -33,6 +33,7 @@ import org.cogchar.api.space.PosBlock;
 import org.cogchar.api.space.PosRange;
 
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl;
@@ -61,21 +62,24 @@ public class TrialNexus extends BasicDebugger {
 		
 		Node vizNode = new Node("sspace_viz_node");
 		parentNode.attachChild(vizNode);
+		
+		Material localMat1 = baseMat.clone();		
+		localMat1.setColor("Color", new ColorRGBA(0.5f, 0.1f, 0.9f, 0.5f));
+		Material localMat2 = baseMat.clone();		
+		localMat2.setColor("Color", new ColorRGBA(0.9f, 0.8f, 0.1f, 0.5f));		
 
-		
-		RenderState.BlendMode matBlendMode = RenderState.BlendMode.Alpha;
-		RenderQueue.Bucket spatRenderBucket  = RenderQueue.Bucket.Transparent;
-		RenderState.FaceCullMode matFaceCullMode = RenderState.FaceCullMode.Off;  		// Render both sides
-		Spatial.CullHint spatCullHint = Spatial.CullHint.Never;  // Others are CullHint.Always, CullHint.Inherit
-		
-		// To get transparency, we also need to put spatials into eligible buckets
-		baseMat.getAdditionalRenderState().setBlendMode(matBlendMode);
-		baseMat.getAdditionalRenderState().setFaceCullMode(matFaceCullMode);	
-		
+		BlendedShapeContext bscBase = new BlendedShapeContext(baseMat);
+		bscBase.setRenderStateVals(baseMat);
+
+		BlendedShapeContext bsc1 = new BlendedShapeContext(bscBase, localMat1);
+		BlendedShapeContext bsc2 = new BlendedShapeContext(bscBase, localMat2);
+
 		TextSpatialFactory tsf = new TextSpatialFactory(myRRC);
 	
 		int cellCount = xCount * yCount * zCount;
 		int seq = 0;
+				
+		Mesh quadMeshFiveByFive = new Quad(5, 5);
 		
 		for (int xi = 1 ; xi <= xCount; xi++) {
 			for (int yi = 1 ; yi <= yCount; yi++) {
@@ -84,18 +88,15 @@ public class TrialNexus extends BasicDebugger {
 					CellBlock unitCB = CellRangeFactory.makeUnitBlock3D(xi, yi, zi);
 					PosBlock unitPB = deepSpace.computePosBlockForCellBlock(unitCB);
 					getLogger().debug("Unit cell with seq#={} has cellBlock={} and posBlock.description={}", seq, unitCB, unitPB.describe());	
-					Material localMat1 = baseMat.clone();		
-					localMat1.setColor("Color", new ColorRGBA(0.5f, 0.1f, 0.9f, 0.5f));
 
 					PosRange xpr = unitPB.myPRs()[0];
 					PosRange ypr = unitPB.myPRs()[1];
 					PosRange zpr = unitPB.myPRs()[2];
 					
 					String qlabTxt01 = "bq_" + seq  + "_1";
-					Geometry qg1 = new Geometry(qlabTxt01, new Quad(5, 5));
-					qg1.setMaterial(localMat1);
-					qg1.setQueueBucket(spatRenderBucket);
-					qg1.setCullHint(spatCullHint);
+					Geometry qg1 = new Geometry(qlabTxt01, quadMeshFiveByFive);
+					
+					bsc1.setupGeom(qg1);
 					
 					qg1.setLocalTranslation(xpr.getMin(), ypr.getMin(), zpr.getMin());
 					vizNode.attachChild(qg1);
@@ -103,28 +104,48 @@ public class TrialNexus extends BasicDebugger {
 					qlabBT_01.setLocalTranslation(xpr.getCenter(), ypr.getCenter(), zpr.getMin());
 					vizNode.attachChild(qlabBT_01);
 					
-					Material localMat2 = baseMat.clone();		
-					localMat1.setColor("Color", new ColorRGBA(0.9f, 0.8f, 0.1f, 0.5f));					
-					
 					String qlabTxt02 = "bq_" + seq + "_2";
-					Geometry qg2 = new Geometry(qlabTxt02, new Quad(5, 5));
-					qg2.setMaterial(localMat2);
-					qg2.setQueueBucket(spatRenderBucket);
-					qg2.setCullHint(spatCullHint);
 					
+					Geometry qg2 = new Geometry(qlabTxt02, quadMeshFiveByFive);
+					
+					bsc2.setupGeom(qg2);
+
 					qg2.setLocalTranslation(xpr.getMin(), ypr.getMin(), zpr.getMin());
 				
 					Quaternion rotAboutY_90 = new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_Y);
 					qg2.setLocalRotation(rotAboutY_90);
 					
 					vizNode.attachChild(qg2);
-	
-									
-
 				}
 			}
 		}
 	}	
+	
+	public static class BlendedShapeContext {
+		RenderState.BlendMode matBlendMode = RenderState.BlendMode.Alpha;
+		RenderQueue.Bucket spatRenderBucket  = RenderQueue.Bucket.Transparent;
+		RenderState.FaceCullMode matFaceCullMode = RenderState.FaceCullMode.Off;  		// Render both sides
+		Spatial.CullHint spatCullHint = Spatial.CullHint.Never;  // Others are CullHint.Always, CullHint.Inherit
+		
+		Material	myMaterial;
+		
+		public BlendedShapeContext(Material mat) {
+			myMaterial = mat;
+		}
+		public BlendedShapeContext(BlendedShapeContext bscBase, Material mat) {
+			this(mat);
+		}
+		public void setRenderStateVals(Material baseMat) { 
+		// To get transparency, we also need to put spatials into eligible buckets
+			baseMat.getAdditionalRenderState().setBlendMode(matBlendMode);
+			baseMat.getAdditionalRenderState().setFaceCullMode(matFaceCullMode);				
+		}
+		public void setupGeom(Geometry g) {	
+			g.setMaterial(myMaterial);
+			g.setQueueBucket(spatRenderBucket);
+			g.setCullHint(spatCullHint);			
+		}
+	}
 }
 /*
  * Quaternion rotation = new Quaternion();

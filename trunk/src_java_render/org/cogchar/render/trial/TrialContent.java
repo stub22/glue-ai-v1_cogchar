@@ -243,20 +243,27 @@ public class TrialContent extends BasicDebugger {
 		// On a mat, we could choose to set the cull mode, but that can also be done 
 		// on shapes - as below.
 	
+		// quick "can we draw?" sanity test - optional
+		makeSomeQuads(paramVizNode, mat);
+		
+		paramVizNode.setLocalTranslation(-10.0f, 10.0f, 5.0f);
+		myMainDeepNode.attachChild(paramVizNode);
+		tNexus.makeSheetspace(myMainDeepNode, mat);		
+		
+	}
+
+	public void makeSomeQuads(Node parentNode, Material mat) { 
 		for (int i =0; i< 10; i++) {
+			// These 10 quads are 
 			float d = i * 25.0f;
 			Geometry qg = new Geometry("pvq_" + i, new Quad(10, 20));
 			qg.setMaterial(mat);
 			configureRenderingForSpatial(qg);  // Sets the rendering bucket and cull mode
 
 			qg.setLocalTranslation(0.8f * d, -20.0f + 0.5f * d , -3.0f - 1.0f * d);
-			paramVizNode.attachChild(qg);
-		}
-		paramVizNode.setLocalTranslation(-10.0f, 10.0f, 5.0f);
-		myMainDeepNode.attachChild(paramVizNode);
-		tNexus.makeSheetspace(myMainDeepNode, mat);		
+			parentNode.attachChild(qg);
+		}		
 	}
-
 	public void setCamDebugText(String dbgTxt) { 
 		myCamStatBT.setText(dbgTxt);
 	}
