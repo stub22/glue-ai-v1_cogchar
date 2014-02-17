@@ -160,10 +160,33 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 		THE_CC_WORKAROUND_APP_STUB = new RFSpec<WorkaroundAppStub>(RFKind.CC_WORKAROUND_APP_STUB, WorkaroundAppStub.class, false);
 	}
 
+	// Optional caching trick throttles repeated attempts to find global system root.
+	// In more sophisticated OSGi deployments may want to disable this trick (but it should 
+	// be dissolved into JFlux infra soon enough, anyway).  
+	private static SubsystemHandle theCachedGlobalRenderSubsysHandle;
+	private static boolean USE_CACHING_TRICK = true;
+	
+	private static <EFT, EFK> SubsystemHandle getRenderSubsysHandle(FacadeSpec<EFT, EFK> fs, Class optCredClaz) { 
+		// The ing trick basically bypasses the "well known registry" of Cogchar/Appdapter after the
+		// first lookup.   This reduces confusing (but accurate) warning messages about "Cannot get local bundle, 
+		// so we are assumed to be outside OSGi...Getting singleton WellKnownRegistry in non-OSGi context"
+		// when running in Java main().  
+		SubsystemHandle ourRenderSH = null;
+		if (USE_CACHING_TRICK && (theCachedGlobalRenderSubsysHandle != null)) { 
+			// LoggerFactory.getLogger(RenderRegistryFuncs.class).info("################ Cache HIT");
+			ourRenderSH = theCachedGlobalRenderSubsysHandle;
+		} else {
+			// LoggerFactory.getLogger(RenderRegistryFuncs.class).info("################ Cache MISS");
+			ourRenderSH = SubsystemHandleFinder.getRenderSubsysHandle(fs, optCredClaz);
+			theCachedGlobalRenderSubsysHandle = ourRenderSH;
+		}
+		return ourRenderSH;
+	}
+	
 	private static <EFT, EFK> EFT findExternalFacadeOrNull(FacadeSpec<EFT, EFK> fs, String optOverrideName, Class optCredClaz) {
 		EFT result = null;
 
-		SubsystemHandle shand = SubsystemHandleFinder.getRenderSubsysHandle(fs, optCredClaz);
+		SubsystemHandle shand = getRenderSubsysHandle(fs, optCredClaz);
 		FacadeHandle<EFT> fh = (FacadeHandle<EFT>) shand.findExternalFacade((FacadeSpec<EFT, EFK>) fs, optOverrideName);
 		if (fh.isReady()) {
 			result = fh.getOrElse(null);
@@ -172,13 +195,13 @@ public abstract class RenderRegistryFuncs extends BasicDebugger {
 	}
 
 	private static <EFT, EFK> void registerExternalFacade(FacadeSpec<EFT, EFK> fs, EFT facade, String optOverrideName, Class optCredClaz) {
-		SubsystemHandle shand = SubsystemHandleFinder.getRenderSubsysHandle(fs, optCredClaz);
+		SubsystemHandle shand = getRenderSubsysHandle(fs, optCredClaz);
 		shand.registerExternalFacade(fs, facade, optOverrideName);
 	}
 
 	protected static <IFT, IFK> IFT findOrMakeInternalFacade(FacadeSpec<IFT, IFK> fs, String optOverrideName, Class optCredClaz) {
 		try {
-			SubsystemHandle shand = SubsystemHandleFinder.getRenderSubsysHandle(fs, optCredClaz);
+			SubsystemHandle shand = getRenderSubsysHandle(fs, optCredClaz);
 			return shand.findOrMakeInternalFacade(fs, optOverrideName);
 		} catch (java.lang.VirtualMachineError cnf) {
 			// we also want to cover UnsupportedClassVersionError and other possilbe classloading errors
