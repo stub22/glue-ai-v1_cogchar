@@ -53,7 +53,7 @@ public class TrialBalloon extends CogcharPresumedApp {
 		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() calling initMidi()");
 		// Initialize any MIDI stuff.
 		tbApp.initMidi();
-		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() calling JME3 start()");
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() calling JME3 start(), which will in turn call TrialBalloon.simpleInitApp()");
 		// Start the JME3 Virtual world.
 		tbApp.start();
 		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest");
@@ -118,16 +118,20 @@ public class TrialBalloon extends CogcharPresumedApp {
 		myTBRC = rc;
 		return rc;
 	}
-
+/**
+ * 
+ */
 	@Override public void simpleInitApp() {
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling super.simpleInitApp()");
+		getLogger().info("^^^^^^^^^^^^^^^^^^ We are on JME3 thread (inside start()), calling super.simpleInitApp()");
 		super.simpleInitApp();
-		getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.simpleInitApp()");
+		getLogger().info("Returned from super.simpleInitApp() - still on JME3 thread, setting flyCam speed.");
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
 		flyCam.setMoveSpeed(20);
 		myContent = new TrialContent();
 		CogcharRenderContext crc = getRenderContext();
 		RenderRegistryClient rrc = crc.getRenderRegistryClient();
+		getLogger().info("will now init, in order: lights, 3D content, 2D content, MIDI controllers, extra cameras");
+
 		myContent.shedLight_onRendThread(crc);
 		// The other args besides rrc are superfluous, since they are indirectly accessible through rrc.
 		// Note that these other args are all instance variables of this TrialBalloon app, inherited from JME3 SimpleApp.
@@ -140,12 +144,12 @@ public class TrialBalloon extends CogcharPresumedApp {
 		myContent.initContent2D_onRendThread(rrc, guiNode, assetManager);
 		
 		CCParamRouter ccpr = myTMB.getCCParamRouter();
-		
+		// Hand the MIDI 
 		myContent.attachMidiCCs(ccpr);
 		
 		TrialCameras tcam = new TrialCameras();
 		tcam.setupCamerasAndViews(rrc, crc, myContent);
-		
+		// Hand the MIDI bindings to the camera-aware app.
 		tcam.attachMidiCCs(ccpr);
 		
 	}
