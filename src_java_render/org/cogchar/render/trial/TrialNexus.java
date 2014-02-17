@@ -52,6 +52,8 @@ public class TrialNexus extends BasicDebugger {
 		myRRC = rrc;
 	}
 	public void makeSheetspace(Node parentNode, Material  baseMat) {
+		// X * Y * Z = 315
+		// Onscreen we see 1 (lower, back, left)- to 315 (upper, front, right)
 		int xCount= 7, yCount = 5, zCount = 9;
 		MultiDimGridSpace deepSpace = GridSpaceFactory.makeSpace3D(xCount, -40.0f, 40.0f, yCount, -20.0f, 20.0f, zCount, -50.0f, 20.0f);
 
@@ -95,7 +97,6 @@ public class TrialNexus extends BasicDebugger {
 					
 					String qlabTxt01 = "bq_" + seq  + "_1";
 					Geometry qg1 = new Geometry(qlabTxt01, quadMeshFiveByFive);
-					
 					bsc1.setupGeom(qg1);
 					
 					qg1.setLocalTranslation(xpr.getMin(), ypr.getMin(), zpr.getMin());
@@ -105,9 +106,7 @@ public class TrialNexus extends BasicDebugger {
 					vizNode.attachChild(qlabBT_01);
 					
 					String qlabTxt02 = "bq_" + seq + "_2";
-					
 					Geometry qg2 = new Geometry(qlabTxt02, quadMeshFiveByFive);
-					
 					bsc2.setupGeom(qg2);
 
 					qg2.setLocalTranslation(xpr.getMin(), ypr.getMin(), zpr.getMin());

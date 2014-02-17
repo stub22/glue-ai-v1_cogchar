@@ -136,8 +136,10 @@ public class TrialCameras extends BasicDebugger implements ParamValueListener {
 		String camBindingStats = myWackyCamBinding.getDebugText();
 		getLogger().debug("Cam binding stats: {}", camBindingStats);
 		myContentBridge.setCamDebugText(camBindingStats);
-		
+		// getLogger().debug("Starting applyInVWorld()");
 		myWackyCamBinding.applyInVWorld(Queuer.QueueingStyle.QUEUE_AND_RETURN);
+		// getLogger().debug("Finished applyInVWorld()");
+
 	}
 	
 }
