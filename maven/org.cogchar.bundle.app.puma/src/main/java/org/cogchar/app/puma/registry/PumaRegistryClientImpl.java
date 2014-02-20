@@ -18,10 +18,11 @@ package org.cogchar.app.puma.registry;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.avro.generic.GenericData;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaContextMediator;
-import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
+//import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.app.puma.config.VanillaConfigManager;
 import org.cogchar.platform.trigger.BoxSpace;
@@ -42,7 +43,9 @@ public class PumaRegistryClientImpl implements PumaRegistryClient {
 	private	CommandSpace			myCommandSpace;
 	
 	// The remaining ingredients are all optional.
-	private PumaVirtualWorldMapper	myVWorldMapper;
+	//private PumaVirtualWorldMapper	myVWorldMapper;
+    
+    
 	private PumaWebMapper			myWebMapper;	
 	
 	private BundleContext			myBundleContext;
@@ -76,13 +79,13 @@ public class PumaRegistryClientImpl implements PumaRegistryClient {
 		return myCommandSpace;
 	}
 
-	@Override public PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID) {
-		return myVWorldMapper;
-	}
-
-	@Override public void putVWorldMapper(PumaVirtualWorldMapper vwm, Ident optSpecID) {
-		myVWorldMapper = vwm;
-	}
+//	@Override public PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID) {
+//		return myVWorldMapper;
+//	}
+//
+//	@Override public void putVWorldMapper(PumaVirtualWorldMapper vwm, Ident optSpecID) {
+//		myVWorldMapper = vwm;
+//	}
 
 	@Override public PumaWebMapper getWebMapper(Ident optSpecID) {
 		return myWebMapper;

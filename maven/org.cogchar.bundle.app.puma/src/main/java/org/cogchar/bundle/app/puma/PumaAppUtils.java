@@ -17,6 +17,7 @@ package org.cogchar.bundle.app.puma;
 import java.util.List;
 import java.io.PrintStream;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
@@ -25,13 +26,15 @@ import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.appdapter.help.repo.RepoClient;
-import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
-import org.cogchar.bind.mio.robot.motion.CogcharMotionSource;
+//import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
+import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.osgi.framework.BundleContext;
 import org.mechio.api.motion.Robot;
+import org.cogchar.bind.mio.robot.motion.CogcharMotionSource;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.channel.AnimFileSpecReader;
 import org.cogchar.impl.channel.FancyFile;
+import org.cogchar.name.entity.EntityRoleCN;
 import static org.cogchar.name.entity.EntityRoleCN.RKRT_NS_PREFIX;
 import org.cogchar.render.sys.module.RenderModule;
 import org.slf4j.Logger;
@@ -105,15 +108,15 @@ public class PumaAppUtils extends BasicDebugger {
 			cms.addJointComputer(dmc);
 		}
 	}
-	public static 	void attachVWorldRenderModule(BundleContext bundleCtx, RenderModule rMod, Ident optVWorldSpecID) {
-		GreedyHandleSet srec = PumaAppUtils.obtainGreedyHandleSet();
-		PumaVirtualWorldMapper pvwm = srec.pumaRegClient.getVWorldMapper(optVWorldSpecID);
-		if (pvwm != null) {
-			pvwm.attachRenderModule(rMod);
-		} else {
-			theLogger.error("Cannot find VWorld to attach renderModel [optVWorldSpecID={}]", optVWorldSpecID);
-		}
-	} 
+//	public static 	void attachVWorldRenderModule(BundleContext bundleCtx, RenderModule rMod, Ident optVWorldSpecID) {
+//		GreedyHandleSet srec = PumaAppUtils.obtainGreedyHandleSet();
+//		PumaVirtualWorldMapper pvwm = srec.pumaRegClient.getVWorldMapper(optVWorldSpecID);
+//		if (pvwm != null) {
+//			pvwm.attachRenderModule(rMod);
+//		} else {
+//			theLogger.error("Cannot find VWorld to attach renderModel [optVWorldSpecID={}]", optVWorldSpecID);
+//		}
+//	} 
 
 	public static GreedyHandleSet obtainGreedyHandleSet() {
 		if (theFirstGreedyHandleSet == null) {

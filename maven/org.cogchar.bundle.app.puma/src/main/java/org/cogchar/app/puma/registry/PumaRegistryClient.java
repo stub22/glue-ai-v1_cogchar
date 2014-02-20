@@ -16,11 +16,12 @@
 
 package org.cogchar.app.puma.registry;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaContextMediator;
-import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
+//import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CommandSpace;
@@ -49,8 +50,8 @@ public interface PumaRegistryClient {
 	public CommandSpace getCommandSpace(Ident optSpecID);
 	//public void putCommandSpace(CommandSpace cs, Ident optSpecID);
 
-	public PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID);
-	public void putVWorldMapper (PumaVirtualWorldMapper v, Ident optSpecID);
+//	public PumaVirtualWorldMapper getVWorldMapper(Ident optSpecID);
+//	public void putVWorldMapper (PumaVirtualWorldMapper v, Ident optSpecID);
 	
 	public PumaWebMapper getWebMapper(Ident optSpecID);
 	public void putWebMapper(PumaWebMapper wm, Ident optSpecID);

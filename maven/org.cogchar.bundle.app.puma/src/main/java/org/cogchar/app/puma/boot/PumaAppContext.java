@@ -17,36 +17,45 @@ package org.cogchar.app.puma.boot;
 
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.config.PumaConfigManager;
-import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
+//import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.PumaRegistryClientImpl;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
+import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext;
+import org.cogchar.bind.mio.robot.svc.RobotServiceFuncs;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 
 import org.osgi.framework.BundleContext;
-import org.cogchar.app.buddy.busker.TriggerItems;
+//import org.cogchar.app.buddy.busker.TriggerItems;
 import org.cogchar.app.puma.behavior.PumaBehaviorManager;
 import org.cogchar.app.puma.body.PumaDualBody;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
+import org.cogchar.app.puma.config.BodyConfigSpec;
 import org.cogchar.app.puma.body.PumaDualBodyManager;
+import static org.cogchar.app.puma.boot.PumaContextCommandBox.THING_ACTIONS;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
-import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext;
-import org.cogchar.bind.mio.robot.svc.RobotServiceFuncs;
 import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
+import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.platform.trigger.BoxSpace;
 
 import org.cogchar.platform.trigger.CommandSpace;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
+import org.jflux.impl.services.rk.lifecycle.ManagedService;
+import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
+
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -62,18 +71,29 @@ public class PumaAppContext extends BasicDebugger {
 	private PumaBehaviorManager			myBehavMgr;
 	
 	private	PumaContextCommandBox		myPCCB;
+    
+    private ArrayList<BodyConfigSpec>   bodyConfigSpecs;
 	
 	public PumaAppContext(BundleContext bc, PumaContextMediator mediator, Ident ctxID) {
 		myRegClient = new PumaRegistryClientImpl(bc, mediator);
 		advertisePumaRegClient(myRegClient);
 		myBundleContext = bc;
-
+        
 		BoxSpace bs = myRegClient.getTargetBoxSpace(null);
 		myPCCB = new PumaContextCommandBox(this);
 		bs.addBox(ctxID, myPCCB);
 		
 		myBodyMgr = new PumaDualBodyManager();
 		myBehavMgr = new PumaBehaviorManager();
+        bodyConfigSpecs= new ArrayList<BodyConfigSpec>();
+        
+        ServiceLifecycleProvider<PumaRegistryClient> lifecycle =
+                new SimpleLifecycle<PumaRegistryClient>(myRegClient,PumaRegistryClient.class.getName());
+            Properties props=new Properties();
+            props.put("theRegistryClient","theRegistryClient");
+            ManagedService<PumaRegistryClient> ms = new OSGiComponent<PumaRegistryClient>(myBundleContext, lifecycle, props);
+            ms.start();
+        
 	}
 	
 	private void advertisePumaRegClient(PumaRegistryClient prc) {
@@ -83,24 +103,6 @@ public class PumaAppContext extends BasicDebugger {
 	
 	public BundleContext getBundleContext() {
 		return myBundleContext;
-	}
-
-	public boolean hasVWorldMapper() {
-		return (myRegClient.getVWorldMapper(null) != null);
-	}
-
-	/**
-	 * Public so that window system plugins can get access, e.g. o.c.nbui.render.
-	 *
-	 * @return
-	 */
-	public PumaVirtualWorldMapper getOrMakeVWorldMapper() {
-		PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
-		if (pvwm == null) {
-			pvwm = new PumaVirtualWorldMapper(this);
-			myRegClient.putVWorldMapper(pvwm, null);
-		}
-		return pvwm;
 	}
 
 	protected boolean hasWebMapper() {
@@ -129,15 +131,6 @@ public class PumaAppContext extends BasicDebugger {
 
 	protected PumaConfigManager getConfigManager() {
 		return myRegClient.getConfigMgr(null);
-	}
-
-	protected void startOpenGLCanvas(boolean wrapInJFrameFlag, java.awt.event.WindowListener optWinLis) throws Exception {
-		if (hasVWorldMapper()) {
-			PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
-			pvwm.startOpenGLCanvas(wrapInJFrameFlag, optWinLis);
-		} else {
-			getLogger().warn("Ignoring startOpenGLCanvas command - no vWorldMapper present");
-		}
 	}
 
 	public void startRepositoryConfigServices() {
@@ -227,16 +220,36 @@ public class PumaAppContext extends BasicDebugger {
 					getLogger().error("Problem initing dualBody for charIdent: " + charIdent, t);
 				}
 			}
+            
+            ServiceLifecycleProvider<ArrayList> lifecycle =
+                new SimpleLifecycle<ArrayList>(bodyConfigSpecs,ArrayList.class.getName());
+            Properties props=new Properties();
+            props.put("bodyConfigSpec","bodyConfigSpec");
+            ManagedService<ArrayList> ms = new OSGiComponent<ArrayList>(myBundleContext, lifecycle, props);
+            ms.start();
+            
+            ClassLoader vizResCL = getSingleClassLoaderOrNull(ResourceFileCategory.RESFILE_OPENGL_JME3_OGRE);
+            
+//            ServiceLifecycleProvider<ClassLoader> clLifecycle =
+//                new SimpleLifecycle<ClassLoader>(vizResCL,ClassLoader.class.getName());
+//            Properties clProps=new Properties();
+//            props.put("classLoader","classLoader");
+//            ManagedService<ClassLoader> clMS = new OSGiComponent<ClassLoader>(myBundleContext, clLifecycle, clProps);
+//            clMS.start();
 		}
 	}
 
 	protected PumaDualBody connectDualBody(FigureConfig humCfg, Ident graphIdentForBony) throws Throwable {
 		Ident bonyCharID = humCfg.getFigureID();
 		BundleContext bunCtx = getBundleContext();
-		RepoClient rc = getOrMakeMainConfigRC();		
+		RepoClient rc = getOrMakeMainConfigRC();
+        //bodyConfigSpecs.add(new BodyConfigSpec(rc, bonyCharID, humCfg));
 		PumaDualBody pdb = new PumaDualBody(bonyCharID, humCfg.getNickname());
-		pdb.absorbContext(myRegClient, bunCtx, rc, humCfg, graphIdentForBony);
-		myBodyMgr.addBody(pdb);
+		BodyConfigSpec bConfig=new BodyConfigSpec(rc, bonyCharID, humCfg);
+        pdb.setBodyConfigSpec(bConfig);
+        pdb.absorbContext(myRegClient, bunCtx, rc, humCfg, graphIdentForBony);
+		bodyConfigSpecs.add(bConfig);
+        myBodyMgr.addBody(pdb);
 		return pdb;
 	}
 
@@ -256,7 +269,7 @@ public class PumaAppContext extends BasicDebugger {
 		CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
 		BoxSpace boxSpc = myRegClient.getTargetBoxSpace(null);
 		// TODO:  stuff to clear out the command space
-		TriggerItems.populateCommandSpace(repoCli, cmdSpc, boxSpc);
+		//TriggerItems.populateCommandSpace(repoCli, cmdSpc, boxSpc);
 	}
 /**
  * 	 * Called from one of these three places:
@@ -270,25 +283,7 @@ public class PumaAppContext extends BasicDebugger {
 	 * 
  * @param clearFirst 
  */
-	protected void initCinema(boolean clearFirst) {
-		if (hasVWorldMapper()) {
-			PumaVirtualWorldMapper pvwm = myRegClient.getVWorldMapper(null);
-			if (clearFirst) {
-				pvwm.clearCinematicStuff();
-			}
-			CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
-			PumaConfigManager pcm = getConfigManager();
-			BasicThingActionRouter router = GruesomeTAProcessingFuncs.getActionRouter();
-			pvwm.initVirtualWorlds(cmdSpc, pcm, router);
-//          Moved connectWeb call to PumaBooter so we can get lifter without the VWorld - Matt, Sep 20 2013
-//			connectWeb();
 
-			ClassLoader vizResCL = getSingleClassLoaderOrNull(ResourceFileCategory.RESFILE_OPENGL_JME3_OGRE);
-			pvwm.connectVisualizationResources(vizResCL);
-		} else {
-			getLogger().warn("Ignoring initCinema command - no vWorldMapper present");
-		}
-	}
 
 	/**
 	 * Called only from 	 PumaBooter.pumaBootUnsafeUnderOSGi
@@ -329,8 +324,7 @@ public class PumaAppContext extends BasicDebugger {
 		myBodyMgr.disconnectAllBodies();
 		RobotServiceFuncs.clearJointGroups();
 		ModelBlendingRobotServiceContext.clearRobots();
-		PumaVirtualWorldMapper pvwm = getOrMakeVWorldMapper();
-		pvwm.detachAllHumanoidFigures();
+		
 		myBodyMgr.clear();
 		// Oops - but they are STILL in the box-space!!!
 	}
@@ -338,12 +332,10 @@ public class PumaAppContext extends BasicDebugger {
 	protected void disconnectAllCharsAndMappers() throws Throwable {
 		BundleContext bunCtx = getBundleContext();
 
-		if (hasVWorldMapper()) {
-			PumaVirtualWorldMapper vWorldMapper = getOrMakeVWorldMapper();
-			vWorldMapper.clearCinematicStuff();
+		
 			// Consider:  also set the context/registry vWorldMapper to null, expecting
 			// PumaBooter or somesuch to find it again.
-		}
+		
 		if (hasWebMapper()) {
 			PumaWebMapper webMapper = getOrMakeWebMapper();
 			webMapper.disconnectLiftSceneInterface(bunCtx);
@@ -372,7 +364,7 @@ public class PumaAppContext extends BasicDebugger {
 			// state at this moment during a full "boot" sequence.
 			connectAllBodies();
 
-			initCinema(true);
+			//initCinema(true);
 
 		} catch (Throwable t) {
 			getLogger().error("Error attempting to reload all PUMA App config: ", t);
@@ -403,5 +395,5 @@ public class PumaAppContext extends BasicDebugger {
 		*/ 
 	}
 	
-
+    
 }
