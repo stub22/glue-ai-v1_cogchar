@@ -33,7 +33,7 @@ import org.jflux.impl.services.rk.osgi.OSGiUtils;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
-import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
+//import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 import org.appdapter.core.matdat.RepoSpec;
@@ -115,12 +115,12 @@ public final class VirtualCharTopComponent extends TopComponent {
 			theLogger.info("Our Cogchar-NBUI-PBBM.notifyContextBuilt is not accessing any config today.  How sad.");
 		}
 		@Override public void notifyPanelsConstructed(PumaAppContext ctx) throws Throwable {
-			if (ctx.hasVWorldMapper()) {
-				PumaVirtualWorldMapper pvwm = ctx.getOrMakeVWorldMapper();
-				BonyRenderContext brc = pvwm.getHumanoidRenderContext();
-				// Create/find the Cogchar-enabled Swing GUI panel to display inside this Netbeans Component window.
-				initVirtualCharPanel(brc);
-			}
+//			if (ctx.hasVWorldMapper()) {
+//				PumaVirtualWorldMapper pvwm = ctx.getOrMakeVWorldMapper();
+//				BonyRenderContext brc = pvwm.getHumanoidRenderContext();
+//				// Create/find the Cogchar-enabled Swing GUI panel to display inside this Netbeans Component window.
+//				initVirtualCharPanel(brc);
+//			}
 		}
 
 		
