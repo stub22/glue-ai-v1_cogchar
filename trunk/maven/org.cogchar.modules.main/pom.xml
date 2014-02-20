@@ -64,6 +64,7 @@
 		<module>../ext.bundle.fuseki</module>
 		<module>../org.cogchar.bundle.demo.all</module>
 		<module>../org.cogchar.bundle.app.puma</module>
+        <module>../org.cogchar.bundle.app.vworld.startup</module>
 		<module>../org.cogchar.bundle.core</module>		
 		<module>../org.cogchar.bundle.bind.mechio</module>
 		<module>../org.cogchar.bundle.bind.cogbot</module>

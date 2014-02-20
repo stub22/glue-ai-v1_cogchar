@@ -13,24 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.app.buddy.busker;
+package org.cogchar.bundle.app.vworld.busker;
+
+import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.platform.trigger.CogcharScreenBox;
 import org.cogchar.platform.trigger.CogcharActionTrigger;
 
-
 /**
  * @author Stu B. <www.texpedient.com>
- * Base impl class for CogcharTriggers, providing the inherited identifier+name features of KnownComponentImpl,
- * and providing a convenience logging method.
+ * Base impl class for CogcharTriggers, providing the inherited identifier+name
+ * features of KnownComponentImpl, and providing a convenience logging method.
  */
 public abstract class TriggerItem extends org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl implements CogcharActionTrigger {
-	protected void logFiring(CogcharScreenBox targetBox, Object extraInfoObj, Object extraDebugObj) {
-		getLogger().info("Trigger[class={}, id={}] firing on box [class={}, id={}], extraInfo=[{}]", this.getClass(), 
-					this.getIdent(), targetBox.getClass().getName(), targetBox.getIdent(), extraInfoObj);	
-		getLogger().debug("Full debug dump of trigger [{}]\nand box:\n[{}]\nextraDebug=[{}]", this, targetBox, extraDebugObj);
-	}
-	protected void logFiring(CogcharScreenBox targetBox) {
-		logFiring(targetBox, null, null);
-	}	
-	
+
+    protected void logFiring(CogcharScreenBox targetBox, Object extraInfoObj, Object extraDebugObj) {
+        getLogger().info("Trigger[class={}, id={}] firing on box [class={}, id={}], extraInfo=[{}]", this.getClass(),
+                this.getIdent(), targetBox.getClass().getName(), targetBox.getIdent(), extraInfoObj);
+        getLogger().debug("Full debug dump of trigger [{}]\nand box:\n[{}]\nextraDebug=[{}]", this, targetBox, extraDebugObj);
+    }
+
+    protected void logFiring(CogcharScreenBox targetBox) {
+        logFiring(targetBox, null, null);
+    }
 }

@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Lives in the  Puma project so it can access the JFlux Lifecycle API.
+ *Lives in the  Puma project so it can access the Robokind Lifecycle API.
  * @author Ryan Biggs
  */
 public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.LiftAmbassadorInterface, LiftAmbassador.inputInterface> {

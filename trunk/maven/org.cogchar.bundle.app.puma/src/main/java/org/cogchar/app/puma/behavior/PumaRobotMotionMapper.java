@@ -19,10 +19,7 @@ package org.cogchar.app.puma.behavior;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
-import org.cogchar.bind.mio.robot.client.AnimOutTrigChan;
-import org.cogchar.bind.mio.robot.client.DirectRobotAnimContext;
-import org.cogchar.bind.mio.robot.client.RobotAnimClient;
-import org.cogchar.bind.mio.robot.client.RobotAnimContext;
+import org.cogchar.bind.mio.robot.client.*;
 import org.cogchar.bind.mio.robot.svc.RobotServiceContext;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.perform.PerfChannelNames;
@@ -31,7 +28,7 @@ import org.cogchar.impl.perform.FancyTextPerfChan;
 /**
  * @author Stu B. <www.texpedient.com>
  * 
- * This object knows how to do fun and useful things with underlying MechIO motion + animation services
+ * This object knows how to do fun and useful things with underlying Robokind motion + animation services
  * using the RobotAnimContext and RobotServiceContext (latter is currently unused, except to init the RobotAnimContext).
  */
 

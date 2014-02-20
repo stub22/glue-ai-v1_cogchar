@@ -13,8 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-package org.cogchar.app.puma.vworld;
+package org.cogchar.bundle.app.vworld.startup;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.api.monitor.AppDebugMonitor;
@@ -24,17 +23,17 @@ import org.cogchar.api.thing.ThingActionSpec;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-
 public class VWorldMonitorBinding extends BasicDebugger implements AppDebugMonitor {
 
-	@Override public void notifyThingActionTransit(TransitKind kind, ThingActionSpec taSpec) {
-		getLogger().info("notified of TA-Spec transit kind=[{}], spec-ID=[{}]", kind, taSpec.getActionSpecID());
-		getLogger().debug("Full action spec dump: {}", taSpec);
-	}
+    @Override
+    public void notifyThingActionTransit(TransitKind kind, ThingActionSpec taSpec) {
+        getLogger().info("notified of TA-Spec transit kind=[{}], spec-ID=[{}]", kind, taSpec.getActionSpecID());
+        getLogger().debug("Full action spec dump: {}", taSpec);
+    }
 
-	@Override public void notifyEntityActionTransit(TransitKind kind, BasicEntityAction action) {
-		getLogger().info("notified of EntityAction transit kind=[{}], entity-action.entity-ID=[{}]", kind, action.getEntityID());
-		getLogger().debug("Full action dump: {}", action);
-	}
-
+    @Override
+    public void notifyEntityActionTransit(TransitKind kind, BasicEntityAction action) {
+        getLogger().info("notified of EntityAction transit kind=[{}], entity-action.entity-ID=[{}]", kind, action.getEntityID());
+        getLogger().debug("Full action dump: {}", action);
+    }
 }

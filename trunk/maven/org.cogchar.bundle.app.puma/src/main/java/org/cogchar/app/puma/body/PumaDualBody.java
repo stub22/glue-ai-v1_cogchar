@@ -15,8 +15,9 @@
  */
 package org.cogchar.app.puma.body;
 
-
-import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.body.PumaBodyGateway;
+//import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
+import java.io.File;
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.name.Ident;
@@ -26,91 +27,106 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.name.skeleton.BoneCN;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
+import org.cogchar.app.puma.config.BodyConfigSpec;
 
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
+import org.cogchar.platform.trigger.BoxSpace;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaDualBody extends BasicDebugger { 
+public class PumaDualBody extends BasicDebugger {
 
-	private		Ident						myDualBodyID;
-	private		String						myNickName;
-	private		PumaBodyGateway				myBodyMapper;
+    private Ident myDualBodyID;
+    private String myNickName;
+    private PumaBodyGateway myBodyMapper;
+    private BodyConfigSpec  bodyConfig;
+    
+    public PumaDualBody(Ident dualBodyID, String nickName) {
+        myDualBodyID = dualBodyID;
+        myNickName = nickName;
+        bodyConfig=null;
 
-	public PumaDualBody(Ident dualBodyID, String nickName) {
-		myDualBodyID = dualBodyID;
-		myNickName = nickName;
-			
-	}
-	/** 
-	 * Performs the substance of all body initialization, given explicit instructions.
-	 * @param prc
-	 * @param bundleCtx
-	 * @param rc
-	 * @param humCfg
-	 * @param graphIdentForBony
-	 * @throws Throwable 
-	 */
-	public void absorbContext(PumaRegistryClient prc, BundleContext bundleCtx, RepoClient rc, 
-				FigureConfig humCfg,  Ident graphIdentForBony) throws Throwable {
-		
-		PumaVirtualWorldMapper vWorldMapper = prc.getVWorldMapper(null);
-		// It's OK if vWorldMapper == null.  We still construct a Humanoid Mapper, which will then 
-		// exist solely for the purpose of forwarding joint commands to connected Robots.
-		myBodyMapper = new PumaBodyGateway(vWorldMapper, bundleCtx, myDualBodyID);
+    }
 
-		boolean vwHumOK = myBodyMapper.initVWorldHumanoid(rc, graphIdentForBony, humCfg);
-		
-		List<ClassLoader> rkConfCLs = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_MIO_CONF);
-		
-		boolean setupOK = setupBonyModelBindingToMechIO(bundleCtx, rc, graphIdentForBony, humCfg, rkConfCLs);
-	}
+    /**
+     * Performs the substance of all body initialization, given explicit
+     * instructions.
+     *
+     * @param prc
+     * @param bundleCtx
+     * @param rc
+     * @param humCfg
+     * @param graphIdentForBony
+     * @throws Throwable
+     */
+    public void absorbContext(PumaRegistryClient prc, BundleContext bundleCtx, RepoClient rc,
+            FigureConfig humCfg, Ident graphIdentForBony) throws Throwable {
+        
+        //PumaVirtualWorldMapper vWorldMapper = prc.getVWorldMapper(null);
+        // It's OK if vWorldMapper == null.  We still construct a Humanoid Mapper, which will then 
+        // exist solely for the purpose of forwarding joint commands to connected Robots.
+        myBodyMapper = new PumaBodyGateway(bundleCtx, myDualBodyID);
+        
+        if(bodyConfig!=null)
+        {
+            bodyConfig.setModelRobot(myBodyMapper.getBonyRobot());
+            //myBodyMapper.setBodyConfigSpec(bodyConfig);
+        }
+        //boolean vwHumOK = myBodyMapper.initVWorldHumanoid(rc, graphIdentForBony, humCfg);
 
+        List<ClassLoader> rkConfCLs = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
 
-	public String getNickName() {
-		return myNickName;
-	}
-	public Ident getCharIdent() {
-		return myDualBodyID;
-	}
-	public PumaBodyGateway getBodyGateway() {
-		return 		myBodyMapper;
-	}
+        boolean setupOK = setupBonyModelBindingToRobokind(bundleCtx, rc, graphIdentForBony, humCfg, rkConfCLs);
+    }
 
+    public String getNickName() {
+        return myNickName;
+    }
 
-	// This method is called once (for each character) when bony config update is requested
-	public void updateBonyConfig(RepoClient qi, Ident graphID, BoneCN bqn) throws Throwable {
-		BoneRobotConfig brc = new BoneRobotConfig(qi, myDualBodyID, graphID, bqn);
-		myBodyMapper.updateModelRobotUsingBoneRobotConfig(brc);
-	}
+    public Ident getCharIdent() {
+        return myDualBodyID;
+    }
 
+    public PumaBodyGateway getBodyGateway() {
+        return myBodyMapper;
+    }
+    
+    public void setBodyConfigSpec(BodyConfigSpec spec)
+    {
+        bodyConfig=spec;
+    }
+    
+    // This method is called once (for each character) when bony config update is requested
+    public void updateBonyConfig(RepoClient qi, Ident graphID, BoneCN bqn) throws Throwable {
+        BoneRobotConfig brc = new BoneRobotConfig(qi, myDualBodyID, graphID, bqn);
+        myBodyMapper.updateModelRobotUsingBoneRobotConfig(brc);
+    }
 
-	
-	@Override public String toString() {
-		return "PumaDualChar[uri=" + myDualBodyID + ", nickName=" + myNickName + "]";
-	}
+    @Override
+    public String toString() {
+        return "PumaDualChar[uri=" + myDualBodyID + ", nickName=" + myNickName + "]";
+    }
 
-
-	private boolean setupBonyModelBindingToMechIO(BundleContext bunCtx, RepoClient rc, Ident graphIdentForBony, 
-					FigureConfig hc, List<ClassLoader> clsForMIOConf) {
-		Ident charIdent = getCharIdent();
-		getLogger().debug("Setup for {} using graph {} and humanoidConf {}", new Object[]{charIdent, graphIdentForBony, hc});
-		try {
-			BoneCN bqn = new BoneCN();
-			boolean connectedOK = 		myBodyMapper.connectBonyRobotToMechIOAndVWorld(bunCtx, hc, graphIdentForBony, rc, bqn, clsForMIOConf);
-			if (connectedOK) {
-				return true;
-			} else {
-				getLogger().warn("Failed to connect MIO+VWorld bindings for character: {}", charIdent);
-				return false;
-			}
-		} catch (Throwable t) {
-			getLogger().error("Exception during setupCharacterBindingToMechIO for character: {}", charIdent, t);
-			return false;
-		}
-	}
+    private boolean setupBonyModelBindingToRobokind(BundleContext bunCtx, RepoClient rc, Ident graphIdentForBony,
+            FigureConfig hc, List<ClassLoader> clsForRKConf) {
+        Ident charIdent = getCharIdent();
+        getLogger().debug("Setup for {} using graph {} and humanoidConf {}", new Object[]{charIdent, graphIdentForBony, hc});
+        try {
+            BoneCN bqn = new BoneCN();
+            boolean connectedOK = myBodyMapper.connectBonyRobotToRobokindAndVWorld(bunCtx, hc, graphIdentForBony, rc, bqn, clsForRKConf);
+            if (connectedOK) {
+                return true;
+            } else {
+                getLogger().warn("Failed to connect RK+VWorld bindings for character: {}", charIdent);
+                return false;
+            }
+        } catch (Throwable t) {
+            getLogger().error("Exception during setupCharacterBindingToRobokind for character: {}", charIdent, t);
+            return false;
+        }
+    }
 }
