@@ -25,7 +25,7 @@ import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.body.PumaBodyGateway;
 import org.cogchar.app.puma.body.PumaDualBody;
-import org.cogchar.bind.mio.robot.svc.RobotServiceContext;
+import org.cogchar.bind.mio.robot.svc.*;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.osgi.framework.BundleContext;
 

@@ -22,10 +22,10 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 
 import org.cogchar.bind.lift.LiftAmbassador;
-import org.cogchar.render.goody.basic.DataballGoodyBuilder;
-import org.cogchar.render.scene.goody.PathMgr;
-import org.cogchar.render.scene.goody.SpatialAnimMgr;
-/**
+//import org.cogchar.render.goody.basic.DataballGoodyBuilder;
+//import org.cogchar.render.scene.goody.PathMgr;
+//import org.cogchar.render.scene.goody.SpatialAnimMgr;
+///**
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -46,27 +46,27 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
 	}
 
 	@Override public boolean triggerAnimation(Ident uri) {
-		getLogger().info("Got request to trigger animation {}", uri);
-		boolean success = myPCCB.getPathMgr().controlAnimationByName(uri, PathMgr.ControlAction.PLAY);
-		if (!success) {
-			success = myPCCB.getThingAnimMgr().controlAnimationByName(uri, SpatialAnimMgr.ControlAction.PLAY);
-		}
-		return success;
+//		getLogger().info("Got request to trigger animation {}", uri);
+//		boolean success = myPCCB.getPathMgr().controlAnimationByName(uri, PathMgr.ControlAction.PLAY);
+//		if (!success) {
+//			success = myPCCB.getThingAnimMgr().controlAnimationByName(uri, SpatialAnimMgr.ControlAction.PLAY);
+//		}
+		return true; //success;
 	}
 
 	@Override public boolean stopAnimation(Ident uri) {
-		getLogger().info("Got request to stop animation {}", uri);
-		boolean success = myPCCB.getPathMgr().controlAnimationByName(uri, PathMgr.ControlAction.STOP);
-		if (!success) {
-			success = myPCCB.getThingAnimMgr().controlAnimationByName(uri, SpatialAnimMgr.ControlAction.STOP);
-		}
-		return success;
+//		getLogger().info("Got request to stop animation {}", uri);
+//		boolean success = myPCCB.getPathMgr().controlAnimationByName(uri, PathMgr.ControlAction.STOP);
+//		if (!success) {
+//			success = myPCCB.getThingAnimMgr().controlAnimationByName(uri, SpatialAnimMgr.ControlAction.STOP);
+//		}
+		return true; //success;
 	}
 
 
 
 	@Override public boolean performDataballAction(String action, String text) {
-		return DataballGoodyBuilder.getTheBallBuilder().performAction(action, text);
+		return true; //DataballGoodyBuilder.getTheBallBuilder().performAction(action, text);
 	}
 
 	@Override public boolean performUpdate(String request) {
