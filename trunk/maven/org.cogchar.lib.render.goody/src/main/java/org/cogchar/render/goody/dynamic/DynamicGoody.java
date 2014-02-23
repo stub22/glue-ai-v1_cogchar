@@ -38,7 +38,9 @@ import org.appdapter.core.log.BasicDebugger;
   *		2) Math Space : a set of parameters changing over time, related by functions, as defined by specs
   *		3) V-World OpenGL Space: rendered model display for user
   * 
-  * A Goody has an index.  The first goody is at 1 (not 0).
+  * A Goody has an immutable index, representing its allocation-position within its space.
+  * A Goody does not change its index or its space.
+  * The first goody in a space is at index 1 (not 0).
  */
 
 
