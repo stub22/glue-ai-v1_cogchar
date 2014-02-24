@@ -130,6 +130,10 @@ public class SymjaScriptEngineExperiment {
 			putVar("$y", new Boolean(true));
 			String xAndY = (String) evalPrint("$x && $y");	// assertEquals("True", stringResult);
 
+			//  ********* Here is the definition of the pattern called $threeVec
+			// Note how it captures the value of magicMult into the definition - this is not a modifiable
+			// parameter (without redefining the magicMult pattern).
+			
 			evalPrint("$threeVec[v1_,v2_,v3_]:={v1,v2 * " + magicMult + ",v3}");
 			evalPrint("$threeVec[$x,5,NextPrime[37,3]]");
 			
