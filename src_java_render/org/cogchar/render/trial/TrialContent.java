@@ -248,13 +248,14 @@ public class TrialContent extends BasicDebugger {
 		
 		paramVizNode.setLocalTranslation(-10.0f, 10.0f, 5.0f);
 		myMainDeepNode.attachChild(paramVizNode);
+		// Here is the 3D grid of boxes
 		tNexus.makeSheetspace(myMainDeepNode, mat);		
 		
 	}
 
 	public void makeSomeQuads(Node parentNode, Material mat) { 
 		for (int i =0; i< 10; i++) {
-			// These 10 quads are 
+			// These 10 quads just stream off into space, proving that we can attach geoms to OpenGL parent.
 			float d = i * 25.0f;
 			Geometry qg = new Geometry("pvq_" + i, new Quad(10, 20));
 			qg.setMaterial(mat);
