@@ -23,67 +23,68 @@ import org.cogchar.lifter.view._
 // Stateless, so OK to make this an object?
 object HandlerConfigurator {
   def initializeActionHandlers:AbstractLifterActionHandler = {
-	// Instantiate each of the action handlers
-	val liftConfigHandler = new LiftConfigHandler
-	val cinematicHandler = new CinematicHandler
-	val variableHandler = new LifterVariableHandler
-	val sceneHandler = new SceneTriggerHandler
-	val commandHandler = new LifterCommandActionHandler
-	val lifterQueryHandler = new LifterQueryActionHandler
-	val repoOutputHandler = new RepoOutputHandler
-	val robotAnimHandler = new RobotAnimationHandler
+    // Instantiate each of the action handlers
+    val liftConfigHandler = new LiftConfigHandler
+    val cinematicHandler = new CinematicHandler
+    val variableHandler = new LifterVariableHandler
+    val sceneHandler = new SceneTriggerHandler
+    val commandHandler = new LifterCommandActionHandler
+    val lifterQueryHandler = new LifterQueryActionHandler
+    val repoOutputHandler = new RepoOutputHandler
+    val robotAnimHandler = new RobotAnimationHandler
     val questionAndAnswerHandler = new QuestionAndAnswerHandler
     val flowActionHandler = new FlowActionHandler
 
 
-	// Set up the chain
-	liftConfigHandler setNextHandler cinematicHandler
-	cinematicHandler setNextHandler variableHandler
-	variableHandler setNextHandler sceneHandler
-	sceneHandler setNextHandler commandHandler
-	commandHandler setNextHandler lifterQueryHandler
-	lifterQueryHandler setNextHandler repoOutputHandler
-	repoOutputHandler setNextHandler robotAnimHandler
+    // Set up the chain
+    liftConfigHandler setNextHandler cinematicHandler
+    cinematicHandler setNextHandler variableHandler
+    variableHandler setNextHandler sceneHandler
+    sceneHandler setNextHandler commandHandler
+    commandHandler setNextHandler lifterQueryHandler
+    lifterQueryHandler setNextHandler repoOutputHandler
+    repoOutputHandler setNextHandler robotAnimHandler
     robotAnimHandler setNextHandler questionAndAnswerHandler
     questionAndAnswerHandler setNextHandler flowActionHandler
-	// Return the first handler in chain
-	liftConfigHandler
+    // Return the first handler in chain
+    liftConfigHandler
   }
   def initializeCommandHandlers:AbstractLifterCommandHandler = {
-	// Instantiate each of the command handlers
-	val speechCommandHandler = new SpeechCommandHandler
-	val submitHandler = new SubmitCommandHandler
-	val submitTextHandler = new SubmitTextCommandHandler
-	val showTextHandler = new ShowTextCommandHandler
-	val updateHandler = new UpdateCommandHandler
-	val oldDemoHandler = new OldDemoCommandHandler
-	val lastConfigHandler = new LastConfigCommandHandler
-	val databallsHandler = new DataballsCommandHandler
-	// Set up the chain
-	speechCommandHandler setNextHandler submitHandler
-	submitHandler setNextHandler submitTextHandler
-	submitTextHandler setNextHandler showTextHandler
-	showTextHandler setNextHandler updateHandler
-	updateHandler setNextHandler oldDemoHandler
-	oldDemoHandler setNextHandler lastConfigHandler
-	lastConfigHandler setNextHandler databallsHandler
-	// Return the first handler in chain
-	speechCommandHandler
+    // Instantiate each of the command handlers
+    val speechCommandHandler = new SpeechCommandHandler
+    val submitHandler = new SubmitCommandHandler
+    val submitTextHandler = new SubmitTextCommandHandler
+    val showTextHandler = new ShowTextCommandHandler
+    val updateHandler = new UpdateCommandHandler
+    val oldDemoHandler = new OldDemoCommandHandler
+    val lastConfigHandler = new LastConfigCommandHandler
+    val databallsHandler = new DataballsCommandHandler
+    // Set up the chain
+    speechCommandHandler setNextHandler submitHandler
+    submitHandler setNextHandler submitTextHandler
+    submitTextHandler setNextHandler showTextHandler
+    showTextHandler setNextHandler updateHandler
+    updateHandler setNextHandler oldDemoHandler
+    oldDemoHandler setNextHandler lastConfigHandler
+    lastConfigHandler setNextHandler databallsHandler
+    // Return the first handler in chain
+    speechCommandHandler
   }
   def initializeControlInitializationHandlers:AbstractControlInitializationHandler = {
-	// Set up the chain
-	PushyButton setNextHandler ToggleButton
-	ToggleButton setNextHandler TextBox
-	TextBox setNextHandler TextForm
-	TextForm setNextHandler DualTextForm
-	DualTextForm setNextHandler InsertMarkup
-	InsertMarkup setNextHandler ListBox
-	ListBox setNextHandler LoginForm
-	LoginForm setNextHandler RadioButtons
-	RadioButtons setNextHandler SelectBoxes
-	SelectBoxes setNextHandler VideoBox
-	VideoBox setNextHandler LinkList
-	// Return the first handler in chain
-	PushyButton
+    // Set up the chain
+    PushyButton setNextHandler ToggleButton
+    ToggleButton setNextHandler TextBox
+    TextBox setNextHandler TextForm
+    TextForm setNextHandler DualTextForm
+    DualTextForm setNextHandler InsertMarkup
+    InsertMarkup setNextHandler ListBox
+    ListBox setNextHandler LoginForm
+    LoginForm setNextHandler RadioButtons
+    RadioButtons setNextHandler SelectBoxes
+    SelectBoxes setNextHandler VideoBox
+    VideoBox setNextHandler ExtFrame
+    ExtFrame setNextHandler LinkList
+    // Return the first handler in chain
+    PushyButton
   }
 }
