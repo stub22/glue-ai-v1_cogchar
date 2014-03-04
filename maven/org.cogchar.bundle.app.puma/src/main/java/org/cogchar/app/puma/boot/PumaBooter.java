@@ -182,6 +182,13 @@ public class PumaBooter extends BasicDebugger {
 //        }
         GruesomeTAProcessingFuncs.registerActionConsumers();
         mediator.notifyBeforeBootComplete(pac);
+        ServiceLifecycleProvider<PumaAppContext> lifecycle =
+                new SimpleLifecycle<PumaAppContext>(pac, PumaAppContext.class.getName());
+        Properties props = new Properties();
+        props.put("pumaAppContext", PumaAppContext.class.getName());
+
+        ManagedService<PumaAppContext> ms = new OSGiComponent<PumaAppContext>(bundleCtx, lifecycle, props);
+        ms.start();
     }
 
     private Repo findMainRepo(PumaContextMediator mediator) {
