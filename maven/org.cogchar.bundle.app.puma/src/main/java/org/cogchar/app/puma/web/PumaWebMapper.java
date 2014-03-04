@@ -52,7 +52,7 @@ public class PumaWebMapper extends BasicDebugger {
 	private OSGiComponent					myLiftAppComp;
 	private OSGiComponent					myLiftSceneComp;
 	private PumaContextCommandBox			myPCCB;
-	
+	private BundleContext context;
 	// Make default constuctor private to prevent PumaWebMapper from being instantiated without a PumaAppContext
 	private PumaWebMapper() {}
 	
@@ -62,6 +62,11 @@ public class PumaWebMapper extends BasicDebugger {
 	public PumaContextCommandBox getCommandBox() { 
 		return myPCCB;
 	}
+    
+    public void attachContext(BundleContext context)
+    {
+        this.context=context;
+    }
 	/**
 	 * 
 	 * @return 
@@ -69,7 +74,7 @@ public class PumaWebMapper extends BasicDebugger {
 	 */
 	protected CommandTargetForUseFromWeb geWebCommandTarget() {
 		if (myCmdTargetForWeb == null) {
-			myCmdTargetForWeb = new CommandTargetForUseFromWeb(myPCCB, this);
+			myCmdTargetForWeb = new CommandTargetForUseFromWeb(context, this);
 		}
 		return myCmdTargetForWeb;
 	}

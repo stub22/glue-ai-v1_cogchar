@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import org.cogchar.app.puma.config.BodyConfigSpec;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
-import org.cogchar.bind.mio.robot.model.ModelRobot;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
+import org.cogchar.app.puma.event.CommandEvent;
+import org.cogchar.app.puma.event.Updater;
+import org.cogchar.app.puma.boot.PumaAppContext;
 
 public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifecycle<VWorldRegistry> {
 
@@ -23,6 +25,8 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
     private final static String theMediator = "pumaMediator";
     private final static String theBodyConfig = "bodyConfigSpec";
     private final static String theRegClient = "theRegistryClient";
+    private final static String commandEvent="commandEvent";
+    private final static String appContext="appContext";
     
     private final static String[] theClassNameArray = {
         VWorldRegistry.class.getName()
@@ -36,7 +40,12 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
         new ServiceDependency(theBodyConfig, ArrayList.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY,
         ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP),
         new ServiceDependency(theRegClient, PumaRegistryClient.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY,
+        ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP),
+        new ServiceDependency(commandEvent, CommandEvent.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY,
+        ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP),
+        new ServiceDependency(appContext, PumaAppContext.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY,
         ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP)
+            
     };
 
     @Override
@@ -49,13 +58,17 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
         } catch (Throwable t) {
             getLogger().warn("%%%%%%%%%%%%%%%%%%%%%%% Error with VWorldMapper init %%%%%%%%%%%%%%%%%%%%%%%");
         }
-
+        
+        PumaContextCommandBox pCCB=new PumaContextCommandBox(vworldreg);
+        pCCB.setAppContext((PumaAppContext)dependencyMap.get(appContext));
+        CommandEvent ce=(CommandEvent)dependencyMap.get(commandEvent);
+        ce.setUpdater((Updater)pCCB);
         //code for connecting bodies
         ArrayList<BodyConfigSpec> bodyConfig = (ArrayList<BodyConfigSpec>) dependencyMap.get(theBodyConfig);
 
         for (BodyConfigSpec body : bodyConfig) {
             try {
-                getLogger().info("Going through Body Configs");
+                getLogger().info("Initializing Virtual World Humaniods.");
                 vworldreg.setCharID(body.getHumCfg().getFigureID());
                 vworldreg.initVWorldHumanoid(body.getRepoClient(), body.getGraphIdentForBony(), body.getHumCfg());
                 vworldreg.connectBonyRobotToHumanoidFigure(body.getModelRobot());

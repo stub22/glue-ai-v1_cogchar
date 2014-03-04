@@ -19,11 +19,13 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.event.CommandEvent;
 
 /**
  *
  * @author Major Jacquote II <mjacquote@gmail.com>
- * @author 
+ * @author
  */
 public class VirtualWorldFactory {
 
@@ -134,6 +136,37 @@ public class VirtualWorldFactory {
 
 
         bindings.put("theRegistryClient", regBinding);
+
+
+        Map<String, String> appContextProps = new HashMap<String, String>();
+        regrProps.put("appContext", PumaAppContext.class.getName());
+        BasicDescriptor appDescriptor =
+                new BasicDescriptor(
+                PumaAppContext.class.getName(),
+                appContextProps);
+
+        ServiceBinding appContextBinding = new ServiceBinding(
+                (ServiceDependency) l.getDependencySpecs().get(2),
+                appDescriptor,
+                ServiceBinding.BindingStrategy.LAZY);
+
+
+        bindings.put("appContextBinding", appContextBinding);
+        
+        Map<String, String> commandEventProps = new HashMap<String, String>();
+        regrProps.put("commandEvent", CommandEvent.class.getName());
+        BasicDescriptor commandEventDescriptor =
+                new BasicDescriptor(
+                CommandEvent.class.getName(),
+                commandEventProps);
+
+        ServiceBinding commandEventBinding = new ServiceBinding(
+                (ServiceDependency) l.getDependencySpecs().get(2),
+                commandEventDescriptor,
+                ServiceBinding.BindingStrategy.LAZY);
+
+
+        bindings.put("appContextBinding", commandEventBinding);
 
         return bindings;
     }
