@@ -115,6 +115,7 @@ public class PumaAppContext extends BasicDebugger {
 			pwm = new PumaWebMapper(myPCCB);
 			myRegClient.putWebMapper(pwm, null);
 		}
+        pwm.attachContext(myBundleContext);
 		return pwm;
 	}
 
@@ -129,7 +130,7 @@ public class PumaAppContext extends BasicDebugger {
 		return myRegClient.getCtxMediator(null);
 	}
 
-	protected PumaConfigManager getConfigManager() {
+	public PumaConfigManager getConfigManager() {
 		return myRegClient.getConfigMgr(null);
 	}
 
@@ -263,7 +264,7 @@ public class PumaAppContext extends BasicDebugger {
 	/**
 	 * Would also need to reload keybindings for this to be effective
 	 */
-	protected void reloadCommandSpace() {
+	public void reloadCommandSpace() {
 		final PumaConfigManager pcm = getConfigManager();
 		RepoClient repoCli = getOrMakeMainConfigRC();
 		CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
@@ -295,21 +296,21 @@ public class PumaAppContext extends BasicDebugger {
 		webMapper.connectLiftInterface(bunCtx);
 	}
 
-	protected void resetToDefaultConfig() {
+	public void resetToDefaultConfig() {
 		PumaConfigManager pcm = getConfigManager();
 		BundleContext bc = getBundleContext();
 		pcm.clearMainConfigRepoClient();
 		// pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bc);	
 	}
 
-	protected void reloadBoneRobotConfig() {
+	public void reloadBoneRobotConfig() {
 		final PumaConfigManager pcm = getConfigManager();
 		
 		RepoClient rc = getOrMakeMainConfigRC();
 		myBodyMgr.reloadAllBoneRobotConfigs(pcm, rc);
 	}
 
-	protected void reloadGlobalConfig() {
+	public void reloadGlobalConfig() {
 		final PumaConfigManager pcm = getConfigManager();
 		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();		
 		RepoClient rc = getOrMakeMainConfigRC();
@@ -346,7 +347,7 @@ public class PumaAppContext extends BasicDebugger {
 		// Which means the user will need to 
 	}
 
-	protected void reloadAll(boolean resetMainConfigFlag) {
+	public void reloadAll(boolean resetMainConfigFlag) {
 		try {
 			BundleContext bunCtx = getBundleContext();
 			// Here we make the cute assumption that vWorldMapper or webMapper would be null
@@ -376,7 +377,7 @@ public class PumaAppContext extends BasicDebugger {
 	/**
 	 * Called from PumaContextCommandBox.processUpdateRequestNow(THING_ACTIONS)
 	 */
-	protected void resetMainConfigAndCheckThingActions() {
+	public void resetMainConfigAndCheckThingActions() {
 		final PumaConfigManager pcm = getConfigManager();
 		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		pcm.clearMainConfigRepoClient();
