@@ -55,10 +55,10 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements LiftAmbassador
         
          ServiceLifecycleProvider<CommandEvent> lifecycle =
                 new SimpleLifecycle<CommandEvent>(ce, CommandEvent.class.getName());
-        Properties props = new Properties();
-        props.put("commandEventDep", CommandEvent.class.getName());
+//        Properties props = new Properties();
+//        props.put("commandEventDep", CommandEvent.class.getName());
 
-        ManagedService<CommandEvent> ms = new OSGiComponent<CommandEvent>(bundleCtx, lifecycle, props);
+        ManagedService<CommandEvent> ms = new OSGiComponent<CommandEvent>(bundleCtx, lifecycle, null);
         ms.start();
     }
 
