@@ -63,6 +63,8 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
         pCCB.setAppContext((PumaAppContext)dependencyMap.get(appContext));
         CommandEvent ce=(CommandEvent)dependencyMap.get(commandEvent);
         ce.setUpdater((Updater)pCCB);
+        vworldreg.setContextCommandBox(pCCB);
+        pCCB.reloadCommandSpace();
         //code for connecting bodies
         ArrayList<BodyConfigSpec> bodyConfig = (ArrayList<BodyConfigSpec>) dependencyMap.get(theBodyConfig);
 
@@ -79,7 +81,11 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
         //end body connection code
 
 //        vworldreg.initCinema(false, (ClassLoader) dependencyMap.get(theClassLoader));
-         vworldreg.initCinema(false, null);
+        vworldreg.initCinema(false, null);  
+        System.out.println("******************************************************");
+        System.out.println("Dependency List Names!");
+        System.out.println("Size: "+dependencyMap.size());
+        
         return vworldreg;
     }
 
