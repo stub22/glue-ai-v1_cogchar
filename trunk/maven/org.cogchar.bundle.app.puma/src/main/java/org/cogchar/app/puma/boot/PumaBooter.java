@@ -184,10 +184,10 @@ public class PumaBooter extends BasicDebugger {
         mediator.notifyBeforeBootComplete(pac);
         ServiceLifecycleProvider<PumaAppContext> lifecycle =
                 new SimpleLifecycle<PumaAppContext>(pac, PumaAppContext.class.getName());
-        Properties props = new Properties();
-        props.put("pumaAppContext", PumaAppContext.class.getName());
+//        Properties props = new Properties();
+//        props.put("pumaAppContext", PumaAppContext.class.getName());
 
-        ManagedService<PumaAppContext> ms = new OSGiComponent<PumaAppContext>(bundleCtx, lifecycle, props);
+        ManagedService<PumaAppContext> ms = new OSGiComponent<PumaAppContext>(bundleCtx, lifecycle, null);
         ms.start();
     }
 
