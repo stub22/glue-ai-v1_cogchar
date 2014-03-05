@@ -22,6 +22,8 @@ import org.cogchar.render.scene.goody.SpatialAnimMgr;
 import org.cogchar.render.sys.goody.GoodyGameFeatureAdapter;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.appdapter.core.name.Ident;
+import org.cogchar.app.puma.config.TriggerConfig;
+import org.cogchar.bundle.app.vworld.busker.TriggerItems;
 
 /**
  * This class is intended to be the "public" API to the PUMA "system", for use
@@ -128,7 +130,14 @@ public class PumaContextCommandBox extends CogcharScreenBox implements Updater {
         HumanoidFigureManager hfm = getFigureManager();
         return (HumanoidFigure_SinbadTest) hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
     }
-
+    
+    public void reloadCommandSpace()
+    {
+        TriggerConfig ti=myPAC.reloadCommandSpace();
+        
+        TriggerItems.populateCommandSpace(ti.getRepoClient(), ti.getCommandSpace(), ti.getBoxSpace());
+    }
+    
     private ExecutorService getExecService() {
         if (myExecService == null) {
             myExecService = Executors.newSingleThreadExecutor();

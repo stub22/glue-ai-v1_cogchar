@@ -40,6 +40,7 @@ public class VWorldRegistry extends BasicDebugger {
     private boolean hasVWorldMapper = true;
     private PumaRegistryClient myRegClient;
     private Ident myCharID;
+    private PumaContextCommandBox pCCB;
 
     public VWorldRegistry() {
         vworld = new PumaVirtualWorldMapper();
@@ -57,10 +58,20 @@ public class VWorldRegistry extends BasicDebugger {
     public void setRegClient(PumaRegistryClient rc) {
         myRegClient = rc;
     }
+    
+    public void setContextCommandBox(PumaContextCommandBox pCCB)
+    {
+        this.pCCB=pCCB;
+    }
+    
+    public PumaContextCommandBox getContextCommnandBox()
+    {
+        return pCCB;
+    }
     //From AppUtil 
     //May Split off into it's own class or get rid of all together. 
 
-    public void attachVWorldRenderModule(BundleContext bundleCtx, RenderModule rMod, Ident optVWorldSpecID) {
+    public void attachVWorldRenderModule(RenderModule rMod) {
         if (vworld != null) {
             vworld.attachRenderModule(rMod);
         } else {
