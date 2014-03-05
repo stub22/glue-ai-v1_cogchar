@@ -50,6 +50,7 @@ import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.platform.trigger.BoxSpace;
 
 import org.cogchar.platform.trigger.CommandSpace;
+import org.cogchar.app.puma.config.TriggerConfig;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.jflux.impl.services.rk.lifecycle.ManagedService;
 import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
@@ -89,9 +90,9 @@ public class PumaAppContext extends BasicDebugger {
         
         ServiceLifecycleProvider<PumaRegistryClient> lifecycle =
                 new SimpleLifecycle<PumaRegistryClient>(myRegClient,PumaRegistryClient.class.getName());
-            Properties props=new Properties();
-            props.put("theRegistryClient","theRegistryClient");
-            ManagedService<PumaRegistryClient> ms = new OSGiComponent<PumaRegistryClient>(myBundleContext, lifecycle, props);
+//            Properties props=new Properties();
+//            props.put("theRegistryClient","theRegistryClient");
+            ManagedService<PumaRegistryClient> ms = new OSGiComponent<PumaRegistryClient>(myBundleContext, lifecycle, null);
             ms.start();
         
 	}
@@ -264,11 +265,19 @@ public class PumaAppContext extends BasicDebugger {
 	/**
 	 * Would also need to reload keybindings for this to be effective
 	 */
-	public void reloadCommandSpace() {
+	public TriggerConfig reloadCommandSpace() {
 		final PumaConfigManager pcm = getConfigManager();
 		RepoClient repoCli = getOrMakeMainConfigRC();
 		CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
 		BoxSpace boxSpc = myRegClient.getTargetBoxSpace(null);
+        
+        TriggerConfig tConfig=new TriggerConfig();
+        tConfig.setBoxSpace(boxSpc);
+        tConfig.setCommandSpace(cmdSpc);
+        tConfig.setRepoClient(repoCli);
+        
+        return tConfig;
+        
 		// TODO:  stuff to clear out the command space
 		//TriggerItems.populateCommandSpace(repoCli, cmdSpc, boxSpc);
 	}
