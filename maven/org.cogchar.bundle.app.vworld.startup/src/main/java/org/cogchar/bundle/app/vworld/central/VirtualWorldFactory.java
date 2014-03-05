@@ -127,7 +127,7 @@ public class VirtualWorldFactory {
         BasicDescriptor regDescriptor =
                 new BasicDescriptor(
                 PumaRegistryClient.class.getName(),
-                regrProps);
+                null);
 
         ServiceBinding regBinding = new ServiceBinding(
                 (ServiceDependency) l.getDependencySpecs().get(2),
@@ -143,30 +143,30 @@ public class VirtualWorldFactory {
         BasicDescriptor appDescriptor =
                 new BasicDescriptor(
                 PumaAppContext.class.getName(),
-                appContextProps);
+                null);
 
         ServiceBinding appContextBinding = new ServiceBinding(
-                (ServiceDependency) l.getDependencySpecs().get(2),
+                (ServiceDependency) l.getDependencySpecs().get(4),
                 appDescriptor,
                 ServiceBinding.BindingStrategy.LAZY);
 
 
-        bindings.put("appContextBinding", appContextBinding);
-        
+        bindings.put("appContext", appContextBinding);
+
         Map<String, String> commandEventProps = new HashMap<String, String>();
-        regrProps.put("commandEvent", CommandEvent.class.getName());
+        regrProps.put("commandEventDep", CommandEvent.class.getName());
         BasicDescriptor commandEventDescriptor =
                 new BasicDescriptor(
                 CommandEvent.class.getName(),
-                commandEventProps);
+                null);
 
         ServiceBinding commandEventBinding = new ServiceBinding(
-                (ServiceDependency) l.getDependencySpecs().get(2),
+                (ServiceDependency) l.getDependencySpecs().get(3),
                 commandEventDescriptor,
                 ServiceBinding.BindingStrategy.LAZY);
 
 
-        bindings.put("appContextBinding", commandEventBinding);
+        bindings.put("commandEvent", commandEventBinding);
 
         return bindings;
     }
