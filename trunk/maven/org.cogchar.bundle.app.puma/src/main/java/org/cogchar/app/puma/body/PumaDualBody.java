@@ -43,12 +43,12 @@ public class PumaDualBody extends BasicDebugger {
     private Ident myDualBodyID;
     private String myNickName;
     private PumaBodyGateway myBodyMapper;
-    private BodyConfigSpec  bodyConfig;
-    
+    private BodyConfigSpec bodyConfig;
+
     public PumaDualBody(Ident dualBodyID, String nickName) {
         myDualBodyID = dualBodyID;
         myNickName = nickName;
-        bodyConfig=null;
+        bodyConfig = null;
 
     }
 
@@ -65,22 +65,21 @@ public class PumaDualBody extends BasicDebugger {
      */
     public void absorbContext(PumaRegistryClient prc, BundleContext bundleCtx, RepoClient rc,
             FigureConfig humCfg, Ident graphIdentForBony) throws Throwable {
-        
+
         //PumaVirtualWorldMapper vWorldMapper = prc.getVWorldMapper(null);
         // It's OK if vWorldMapper == null.  We still construct a Humanoid Mapper, which will then 
         // exist solely for the purpose of forwarding joint commands to connected Robots.
         myBodyMapper = new PumaBodyGateway(bundleCtx, myDualBodyID);
-        
-        if(bodyConfig!=null)
-        {
+        List<ClassLoader> rkConfCLs = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
+
+        boolean setupOK = setupBonyModelBindingToRobokind(bundleCtx, rc, graphIdentForBony, humCfg, rkConfCLs);
+        if (bodyConfig != null) {
             bodyConfig.setModelRobot(myBodyMapper.getBonyRobot());
             //myBodyMapper.setBodyConfigSpec(bodyConfig);
         }
         //boolean vwHumOK = myBodyMapper.initVWorldHumanoid(rc, graphIdentForBony, humCfg);
 
-        List<ClassLoader> rkConfCLs = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
 
-        boolean setupOK = setupBonyModelBindingToRobokind(bundleCtx, rc, graphIdentForBony, humCfg, rkConfCLs);
     }
 
     public String getNickName() {
@@ -94,12 +93,11 @@ public class PumaDualBody extends BasicDebugger {
     public PumaBodyGateway getBodyGateway() {
         return myBodyMapper;
     }
-    
-    public void setBodyConfigSpec(BodyConfigSpec spec)
-    {
-        bodyConfig=spec;
+
+    public void setBodyConfigSpec(BodyConfigSpec spec) {
+        bodyConfig = spec;
     }
-    
+
     // This method is called once (for each character) when bony config update is requested
     public void updateBonyConfig(RepoClient qi, Ident graphID, BoneCN bqn) throws Throwable {
         BoneRobotConfig brc = new BoneRobotConfig(qi, myDualBodyID, graphID, bqn);
