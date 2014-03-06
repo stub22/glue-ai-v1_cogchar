@@ -45,12 +45,12 @@ public class VWorldRegistry extends BasicDebugger {
     public VWorldRegistry() {
         vworld = new PumaVirtualWorldMapper();
     }
-    
+
     protected PumaVirtualWorldMapper getVW()
     {
         return vworld;
     }
-    
+
     public void setCharID(Ident id) {
         myCharID = id;
     }
@@ -58,12 +58,12 @@ public class VWorldRegistry extends BasicDebugger {
     public void setRegClient(PumaRegistryClient rc) {
         myRegClient = rc;
     }
-    
+
     public void setContextCommandBox(PumaContextCommandBox pCCB)
     {
         this.pCCB=pCCB;
     }
-    
+
     public PumaContextCommandBox getContextCommnandBox()
     {
         return pCCB;
@@ -120,7 +120,7 @@ public class VWorldRegistry extends BasicDebugger {
             getLogger().warn("Ignoring initCinema command - no vWorldMapper present");
         }
     }
-    
+
     protected void notifyVWorldWindowClosed() {
         Bundle anyB = org.osgi.framework.FrameworkUtil.getBundle(getClass());
         BundleContext anyBC = anyB.getBundleContext();
