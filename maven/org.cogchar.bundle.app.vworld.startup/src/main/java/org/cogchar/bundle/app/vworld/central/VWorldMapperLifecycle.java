@@ -70,6 +70,15 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
 
         for (BodyConfigSpec body : bodyConfig) {
             try {
+                System.out.println("STATUS!!!!!!!!!!: ");
+                if(body.getGraphIdentForBony()!=null)
+                {
+                    System.out.println("GraphIdentForBony is non-null: "+body.getGraphIdentForBony());
+                }
+                if(body.getRepoClient()!=null)
+                {
+                    System.out.println("REPOCLIENT FOUND: "+(body.getRepoClient()).toString());
+                }
                 getLogger().info("Initializing Virtual World Humaniods.");
                 vworldreg.setCharID(body.getHumCfg().getFigureID());
                 vworldreg.initVWorldHumanoid(body.getRepoClient(), body.getGraphIdentForBony(), body.getHumCfg());
@@ -82,9 +91,6 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
 
 //        vworldreg.initCinema(false, (ClassLoader) dependencyMap.get(theClassLoader));
         vworldreg.initCinema(false, null);  
-        System.out.println("******************************************************");
-        System.out.println("Dependency List Names!");
-        System.out.println("Size: "+dependencyMap.size());
         
         return vworldreg;
     }

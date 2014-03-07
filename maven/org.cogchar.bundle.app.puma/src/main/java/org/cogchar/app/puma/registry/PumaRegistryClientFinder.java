@@ -17,7 +17,6 @@
 package org.cogchar.app.puma.registry;
 import org.appdapter.api.facade.FacadeSpec;
 import org.appdapter.subreg.SubsystemHandle;
-import org.appdapter.subreg.BasicSubsystemHandle;
 import org.appdapter.subreg.FacadeHandle;
 import org.cogchar.blob.emit.SubsystemHandleFinder;
 
