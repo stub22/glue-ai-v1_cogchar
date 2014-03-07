@@ -21,19 +21,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.appdapter.help.repo.RepoClient;
-//import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
+import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.platform.trigger.CogcharScreenBox;
-//import org.cogchar.render.app.bony.BonyGameFeatureAdapter;
-//import org.cogchar.render.app.bony.BonyRenderContext;
-//import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-//import org.cogchar.render.model.humanoid.HumanoidFigure;
-//import org.cogchar.render.model.humanoid.HumanoidFigure_SinbadTest;
-//import org.cogchar.render.model.humanoid.HumanoidFigureManager;
-//import org.cogchar.render.scene.goody.PathMgr;
-//import org.cogchar.render.scene.goody.SpatialAnimMgr;
-//import org.cogchar.render.sys.goody.GoodyGameFeatureAdapter;
+import org.cogchar.render.app.bony.BonyRenderContext;
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.cogchar.render.model.humanoid.HumanoidFigure_SinbadTest;
+import org.cogchar.render.model.humanoid.HumanoidFigureManager;
+import org.cogchar.render.scene.goody.PathMgr;
+import org.cogchar.render.scene.goody.SpatialAnimMgr;
+import org.cogchar.render.sys.goody.GoodyGameFeatureAdapter;
 
 
 /**
@@ -60,35 +58,35 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 	protected PumaContextCommandBox(PumaAppContext pac) {
 		myPAC = pac;
 	}
-//	protected HumanoidRenderContext getHRC() { 
-//		return myPAC.getOrMakeVWorldMapper().getHumanoidRenderContext();
-//	}
-//	public GoodyGameFeatureAdapter getGameFeatureAdapter() { 
-//		return getHRC().getGameFeatureAdapter();
-//	}
-//	public HumanoidFigureManager getFigureManager() { 
-//		return getHRC().getHumanoidFigureManager();
-//	}
-//	public PathMgr getPathMgr() {
-//		return getHRC().getGoodyRenderRegistryClient().getScenePathFacade(null);
-//	}
-//	public SpatialAnimMgr getThingAnimMgr() {
-//		return getHRC().getGoodyRenderRegistryClient().getSceneAnimFacade(null);
-//	}
-//	public void resetMainCameraLocation() { 
-//		getHRC().setDefaultCameraLocation();
-//	}
+	protected HumanoidRenderContext getHRC() { 
+		return myPAC.getOrMakeVWorldMapper().getHumanoidRenderContext();
+	}
+	public GoodyGameFeatureAdapter getGameFeatureAdapter() { 
+		return getHRC().getGameFeatureAdapter();
+	}
+	public HumanoidFigureManager getFigureManager() { 
+		return getHRC().getHumanoidFigureManager();
+	}
+	public PathMgr getPathMgr() {
+		return getHRC().getGoodyRenderRegistryClient().getScenePathFacade(null);
+	}
+	public SpatialAnimMgr getThingAnimMgr() {
+		return getHRC().getGoodyRenderRegistryClient().getSceneAnimFacade(null);
+	}
+	public void resetMainCameraLocation() { 
+		getHRC().setDefaultCameraLocation();
+	}
 
-//	public HumanoidFigure_SinbadTest getSinbad() { 
-//		BonyRenderContext brc = getHRC();
-//		RenderConfigEmitter bce = brc.getConfigEmitter();
-//		HumanoidFigureManager hfm = getFigureManager();
-//		return (HumanoidFigure_SinbadTest) hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
-//	}	
-//	public PumaVirtualWorldMapper getVWM() { 
-//		return myPAC.getOrMakeVWorldMapper();
-//	}
-//	
+	public HumanoidFigure_SinbadTest getSinbad() { 
+		BonyRenderContext brc = getHRC();
+		RenderConfigEmitter bce = brc.getConfigEmitter();
+		HumanoidFigureManager hfm = getFigureManager();
+		return (HumanoidFigure_SinbadTest) hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
+	}	
+	public PumaVirtualWorldMapper getVWM() { 
+		return myPAC.getOrMakeVWorldMapper();
+	}
+	
 	private ExecutorService getExecService() { 
 		if (myExecService == null) {
 			myExecService = Executors.newSingleThreadExecutor();
@@ -133,7 +131,7 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 	private boolean processUpdateRequestNow(String request, final boolean resetMainConfigFlag) {
 		boolean successFlag = true;
 		if (WORLD_CONFIG.equals(request.toLowerCase())) {
-			//myPAC.initCinema(true);
+			myPAC.initCinema(true);
 		} else if (BONE_ROBOT_CONFIG.equals(request.toLowerCase())) {
 			myPAC.reloadBoneRobotConfig();
 		} else if (MANAGED_GCS.equals(request.toLowerCase())) {

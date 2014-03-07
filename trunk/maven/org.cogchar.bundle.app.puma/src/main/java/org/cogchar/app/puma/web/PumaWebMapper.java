@@ -22,17 +22,13 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.WantsThingAction;
-import org.cogchar.impl.perform.basic.AnimLaunchEntityAction;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.api.web.WebEntityAction;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.bind.lift.LiftAmbassador;
 
-import org.cogchar.bind.mio.robot.client.AnimMediaHandle;
-import org.cogchar.bind.mio.robot.client.AnimOutTrigChan;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.render.app.trigger.SceneActions;
 import org.osgi.framework.BundleContext;
@@ -52,7 +48,7 @@ public class PumaWebMapper extends BasicDebugger {
 	private OSGiComponent					myLiftAppComp;
 	private OSGiComponent					myLiftSceneComp;
 	private PumaContextCommandBox			myPCCB;
-	private BundleContext context;
+	
 	// Make default constuctor private to prevent PumaWebMapper from being instantiated without a PumaAppContext
 	private PumaWebMapper() {}
 	
@@ -62,11 +58,6 @@ public class PumaWebMapper extends BasicDebugger {
 	public PumaContextCommandBox getCommandBox() { 
 		return myPCCB;
 	}
-    
-    public void attachContext(BundleContext context)
-    {
-        this.context=context;
-    }
 	/**
 	 * 
 	 * @return 
@@ -74,7 +65,7 @@ public class PumaWebMapper extends BasicDebugger {
 	 */
 	protected CommandTargetForUseFromWeb geWebCommandTarget() {
 		if (myCmdTargetForWeb == null) {
-			myCmdTargetForWeb = new CommandTargetForUseFromWeb(context, this);
+			myCmdTargetForWeb = new CommandTargetForUseFromWeb(myPCCB, this);
 		}
 		return myCmdTargetForWeb;
 	}

@@ -46,7 +46,7 @@ public class PumaDualBodyManager extends BasicDebugger {
 	}
 	public void disconnectAllBodies() { 
 		for (PumaDualBody pdb : getAllBodies()) {
-			pdb.getBodyGateway().disconnectBonyCharFromRobokindSvcs();
+			pdb.getBodyGateway().disconnectBonyCharFromMechIOSvcs();
 		}
 	}
 	public void clear() { 

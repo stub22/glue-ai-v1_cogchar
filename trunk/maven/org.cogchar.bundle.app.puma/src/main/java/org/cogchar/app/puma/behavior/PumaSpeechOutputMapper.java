@@ -19,7 +19,6 @@ package org.cogchar.app.puma.behavior;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.bind.mio.speech.client.SpeechOutputClient;
-import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.perform.PerfChannelNames;
 import org.cogchar.impl.scene.Theater;
 import org.osgi.framework.BundleContext;
@@ -27,7 +26,7 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Stu B. <www.texpedient.com>
  * 
- * Talks to Robokind Speech Output services using SpeechOutputClient binding.
+ * Talks to MechIO Speech Output services using SpeechOutputClient binding.
  */
 
 public class PumaSpeechOutputMapper extends BasicDebugger {

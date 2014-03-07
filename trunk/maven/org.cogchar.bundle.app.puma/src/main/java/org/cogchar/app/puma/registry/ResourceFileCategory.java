@@ -25,5 +25,5 @@ public enum ResourceFileCategory {
 	RESFILE_OPENGL_JME3_OGRE, // Not used yet - 2012-10-23
 	RESFILE_WEB_LIFT, // Not used yet - 2012-10-23
 	RESFILE_WEB_SPARQL, // Not used yet - 2012-10-23
-	RESFILE_RK_CONF // Used for Robokind JointGroup file open via getResourceAsStream
+	RESFILE_MIO_CONF  // Used for MechIO JointGroup file open via getResourceAsStream
 }
