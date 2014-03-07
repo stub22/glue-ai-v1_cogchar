@@ -115,6 +115,7 @@ public final class VirtualCharTopComponent extends TopComponent {
 			theLogger.info("Our Cogchar-NBUI-PBBM.notifyContextBuilt is not accessing any config today.  How sad.");
 		}
 		@Override public void notifyPanelsConstructed(PumaAppContext ctx) throws Throwable {
+            
 //			if (ctx.hasVWorldMapper()) {
 //				PumaVirtualWorldMapper pvwm = ctx.getOrMakeVWorldMapper();
 //				BonyRenderContext brc = pvwm.getHumanoidRenderContext();
