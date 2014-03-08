@@ -34,9 +34,9 @@ import org.appdapter.core.log.BasicDebugger;
   * 
   * Manages a single goody that is part of some space.  (For now, we assume there is just one).
   * A Goody has a presence in all three of:
-  *		1) Semantic Space: a GoodySpec, which may be edited by user
+  *		1) Semantic Space: a GoodySpec, which may be edited by user, either offline or while we are running
   *		2) Math Space : a set of parameters changing over time, related by functions, as defined by specs
-  *		3) V-World OpenGL Space: rendered model display for user
+  *		3) V-World OpenGL Space: rendered 3D display for user
   * 
   * A Goody has an immutable index, representing its allocation-position within its space.
   * A Goody does not change its index or its space.

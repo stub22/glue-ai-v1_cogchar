@@ -68,10 +68,10 @@ import java.util.ArrayList;
 			Translucent -  A special mode used for rendering transparent objects that should not be effected by SceneProcessor.
 			Transparent -    This is the mode you should use for object with transparency in them.  
 			
-		2) What culling is applied to your spatial?   :  Never, Inherit, Always
+		2) What culling is applied to your spatial?   :  Never, Inherit, Always  [use Always to disable display of this spatial]
 
 		3) What parent node are you attaching to?  (Regular/"deep",  GUI/"flat", other?)
-	-------
+-----------
  
 	per-material
 
@@ -96,7 +96,7 @@ import java.util.ArrayList;
 		thread, e.g. in a MIDI callback.  This asynchronously solves the problem, and is viable for a small to
 		medium sized message flow.  But as we do heavier lifting, we will want to hook up with the update() callback
 		in a more sophsiticated way.
-
+-------------
 *   per text-block
 		7) A font includes a material, which determines color and transparency.
 		However, the BitmapText object also has methods for setColor() and setAlpha().    Hrmmmmm.
@@ -235,25 +235,22 @@ public class TrialContent extends BasicDebugger {
 		CoreFeatureAdapter.addLightToRootNode(crc, odl);
 	}
 	
+	// Attaches some fun rectangular quad arrays
 	public void makeRectilinearParamViz(TrialNexus tNexus, RenderRegistryClient rrc) { 	
-		Node paramVizNode = new Node("param_viz_root");
-
+		// On a mat, we could choose to set the cull mode, but that can also be done on shapes - as below.
 		Material mat = makeAlphaBlendedUnshadedMaterial(rrc, 0f, 1.0f, 0, 0.5f);
-			
-		// On a mat, we could choose to set the cull mode, but that can also be done 
-		// on shapes - as below.
-	
+		
 		// quick "can we draw?" sanity test - optional
-		makeSomeQuads(paramVizNode, mat);
+		attachSomeQuads(myMainDeepNode, mat);
 		
-		paramVizNode.setLocalTranslation(-10.0f, 10.0f, 5.0f);
-		myMainDeepNode.attachChild(paramVizNode);
-		// Here is the 3D grid of boxes
+		// Here is the main 3D grid of boxes
 		tNexus.makeSheetspace(myMainDeepNode, mat);		
-		
 	}
-
-	public void makeSomeQuads(Node parentNode, Material mat) { 
+	public void attachSomeQuads(Node parentNode, Material mat) { 
+		Node quadVizNode = new Node("quad_viz_root");		
+		quadVizNode.setLocalTranslation(-10.0f, 10.0f, 5.0f);
+		parentNode.attachChild(quadVizNode);
+		
 		for (int i =0; i< 10; i++) {
 			// These 10 quads just stream off into space, proving that we can attach geoms to OpenGL parent.
 			float d = i * 25.0f;
@@ -262,7 +259,7 @@ public class TrialContent extends BasicDebugger {
 			configureRenderingForSpatial(qg);  // Sets the rendering bucket and cull mode
 
 			qg.setLocalTranslation(0.8f * d, -20.0f + 0.5f * d , -3.0f - 1.0f * d);
-			parentNode.attachChild(qg);
+			quadVizNode.attachChild(qg);
 		}		
 	}
 	public void setCamDebugText(String dbgTxt) { 
