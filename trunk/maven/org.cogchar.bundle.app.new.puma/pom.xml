@@ -9,8 +9,7 @@
 
     <artifactId>org.cogchar.bundle.app.puma</artifactId>
     <packaging>bundle</packaging>
-    <name>${project.artifactId}  OSGi Bundle</name>
-
+    <name>${project.artifactId} -  NEW version without V-World</name>
     <dependencies>
 
         <dependency>
