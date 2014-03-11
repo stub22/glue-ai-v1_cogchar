@@ -323,7 +323,13 @@ public class TriggerItems {
         //  Returns the Class object associated with the class or interface with the given string name, using the given class loader.
         TriggerItem ti = null;
         try {
-            Class trigClass = Class.forName(trigFQCN);
+            
+            //This is a temp fix until I can figure out where the trigFQCN is coming from.  
+            //I think it's coming from a spreadsheet somehwere, but I've not discovered exactly where.
+            
+            String testQN=trigFQCN.replace("org.cogchar.app.buddy.busker", "org.cogchar.bundle.app.vworld.busker");
+//            Class trigClass = Class.forName(trigFQCN);
+            Class trigClass = Class.forName(testQN);
             ti = (TriggerItem) trigClass.newInstance();
         } catch (Throwable t) {
             theLogger.error("Cannot make trigger item for class " + trigFQCN, t);
