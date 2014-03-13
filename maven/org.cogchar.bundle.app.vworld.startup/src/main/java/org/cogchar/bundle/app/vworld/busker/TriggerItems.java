@@ -337,11 +337,11 @@ public class TriggerItems {
         return ti;
     }
 
-    public static void populateCommandSpace(RepoClient rc, CommandSpace cSpace, BoxSpace boxSpace) {
+    public static void populateCommandSpace(RepoClient rc, CommandSpace cSpace, BoxSpace boxSpace, PumaContextCommandBox commandBox) {
         List<CommandRec> cmdRecList = RepoClientTester.queryCommands(rc);
         for (CommandRec cRec : cmdRecList) {
             TriggerItem ti = makeTriggerItem(cRec.trigFQCN());
-            CogcharScreenBox csBox = boxSpace.findBox(cRec.boxID());
+            CogcharScreenBox csBox = commandBox; //boxSpace.findBox(cRec.boxID());
             if ((ti != null) && (csBox != null)) {
                 CommandBinding cb = cSpace.findOrMakeBinding(cRec.cmdID());
                 CogcharActionBinding cab = new BasicActionBindingImpl();

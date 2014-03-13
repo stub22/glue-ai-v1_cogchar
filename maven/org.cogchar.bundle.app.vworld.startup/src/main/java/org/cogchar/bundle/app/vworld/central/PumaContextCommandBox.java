@@ -135,7 +135,7 @@ public class PumaContextCommandBox extends CogcharScreenBox implements Updater {
     {
         TriggerConfig ti=myPAC.reloadCommandSpace();
         
-        TriggerItems.populateCommandSpace(ti.getRepoClient(), ti.getCommandSpace(), ti.getBoxSpace());
+        TriggerItems.populateCommandSpace(ti.getRepoClient(), ti.getCommandSpace(), ti.getBoxSpace(), this);
     }
     
     private ExecutorService getExecService() {
