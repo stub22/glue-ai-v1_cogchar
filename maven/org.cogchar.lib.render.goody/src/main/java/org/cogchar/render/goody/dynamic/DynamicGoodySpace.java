@@ -27,6 +27,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 import java.util.Set;
 import java.util.HashSet;
+import org.cogchar.render.trial.TrialUpdater;
 
 /**
  *
@@ -36,10 +37,12 @@ import java.util.HashSet;
  * (which come from a user-editable source).  SpecGraph contains expressions which populate the MathSpace.
  * SpecGraph also defines instructions for how to construct + apply updates to particular goodies.
  * 
+ * Under what conditions does every DynamicGoody have a spec?
+ * Does individual DynaGoodySpec have authority to assert a subclass? 
  */
 
 
-public class DynamicGoodySpace extends BasicDebugger {
+public class DynamicGoodySpace extends BasicDebugger implements TrialUpdater {
 	
 	private	Ident			mySpecGraphID, mySpecID;
 	private	ModelClient		myCachedModelClient;
@@ -135,6 +138,10 @@ public class DynamicGoodySpace extends BasicDebugger {
 			nGoodies[jdx] = new DynamicGoody(jdx + 1);
 		}
 		myGoodies = nGoodies;
+	}
+
+	@Override public void doUpdate(RenderRegistryClient rrc, float tpf) {
+		doFastVWorldUpdate();
 	}
 
 }

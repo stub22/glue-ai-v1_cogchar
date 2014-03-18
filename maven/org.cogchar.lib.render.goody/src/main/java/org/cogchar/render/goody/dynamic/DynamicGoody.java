@@ -32,15 +32,27 @@ import org.appdapter.core.log.BasicDebugger;
  *
   * @author Stu B. <www.texpedient.com>
   * 
-  * Manages a single goody that is part of some space.  (For now, we assume there is just one).
-  * A Goody has a presence in all three of:
+  * Manages a single DynaGoody that is part of some space.  (For now, we assume there is just one space that any
+  * DynaGoody is involved in)
+  * A DynaGoody has a presence in all three of:
   *		1) Semantic Space: a GoodySpec, which may be edited by user, either offline or while we are running
+  * -- Does every DynaGoody necessarily have a concrete spec record of its own? 
+  *    Or might some of these specs be implicit? 
+  * 
   *		2) Math Space : a set of parameters changing over time, related by functions, as defined by specs
+  *	-- which might be shared among some DynaGoodies, and/or attached to another clump of objects on which the
+  * DynaGoodies rely.
+  * 
   *		3) V-World OpenGL Space: rendered 3D display for user
   * 
-  * A Goody has an immutable index, representing its allocation-position within its space.
-  * A Goody does not change its index or its space.
-  * The first goody in a space is at index 1 (not 0).
+  * A DynaGoody has an immutable index, representing its allocation-position within its space.
+  * A DynaGoody does not change its index or its space.
+  * (But what about its spec or its subclass?  Can those change?)
+  * The first DynaGoody in a space is at index 1 (not 0).
+  * 
+  * This idea is related to Cells found in org.cogchar.api.space, but here we are 
+  * more concretely committed to the idea of each DynaGoody having an object representation,
+  * and being updated as part of the VWorld update loop.
  */
 
 

@@ -19,6 +19,8 @@ import org.cogchar.bind.midi.in.TempMidiBridge;
 import org.cogchar.bind.midi.in.CCParamRouter;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
+import java.util.ArrayList;
+import java.util.List;
 import org.cogchar.render.app.core.CogcharPresumedApp;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
@@ -43,6 +45,7 @@ public class TrialBalloon extends CogcharPresumedApp {
 	// In this test, we have the luxury of knowing the exact class of our associated context.
 	private TB_RenderContext myTBRC;
 	private	TrialContent		myContent;
+	private	List<TrialUpdater>		myUpdaters = new ArrayList<TrialUpdater>();
 
 	public static void main(String[] args) {
 		// These two lines activate Log4J without requiring a log4j.properties file.  
@@ -80,8 +83,6 @@ public class TrialBalloon extends CogcharPresumedApp {
 	*/
 	@Override public void start() {
 		try {
-
-			
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Calling super.start()");
 			super.start();
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from super.start() - JME3 render thread (probably LWJGL) is now launched.");
@@ -102,7 +103,6 @@ public class TrialBalloon extends CogcharPresumedApp {
 			// or subsequent activity.  So, generally speaking, this start() is an uncertain place to do anything
 			// involving JME3.  But launching some other system threads, e.g. MIDI, is a reasonable thing to do.
 			
-
 			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from initMidiRouter(), returning from start()");
 		} catch (Throwable t) {
 			getLogger().error("start() caught: ", t);
@@ -143,6 +143,8 @@ public class TrialBalloon extends CogcharPresumedApp {
 		// of 2-D content.  They are part of that layout, anyhoo.
 		myContent.initContent2D_onRendThread(rrc, guiNode, assetManager);
 		
+		attachVWorldUpdater(myContent);
+		
 		CCParamRouter ccpr = myTMB.getCCParamRouter();
 		// Hand the MIDI 
 		myContent.attachMidiCCs(ccpr);
@@ -154,6 +156,9 @@ public class TrialBalloon extends CogcharPresumedApp {
 		
 	}
 
+	public void attachVWorldUpdater(TrialUpdater tu) {
+		myUpdaters.add(tu);
+	}
 
 	@Override public void destroy() {
 		getLogger().info("JME3 destroy() called");
@@ -169,9 +174,9 @@ public class TrialBalloon extends CogcharPresumedApp {
 			// 1) We want to be quick (avoid logging) 
 			// 2) We have direct access to the scene graph.
 			super.doUpdate(tpf);
-			if (myContent != null) {
-				RenderRegistryClient rrc = getRenderRegistryClient();
-				myContent.doUpdate(rrc, tpf);
+			RenderRegistryClient rrc = getRenderRegistryClient();
+			for (TrialUpdater u : myUpdaters) {				
+				u.doUpdate(rrc, tpf);
 			}
 		}
 	}
