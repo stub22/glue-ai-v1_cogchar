@@ -106,7 +106,7 @@ import java.util.ArrayList;
 		9) "Size" parameter of text-font is in some texty frame of reference
  
  */
-public class TrialContent extends BasicDebugger {
+public class TrialContent extends BasicDebugger implements TrialUpdater {
 
 	private String letters = "abcd\nABCD\nEFGHIKLMNOPQRS\nTUVWXYZ";
 	private String digits = "1\n234567890";
@@ -331,7 +331,7 @@ public class TrialContent extends BasicDebugger {
 		spat.setCullHint(spatCullHint);	
 	}
 	
-	public void doUpdate(RenderRegistryClient rrc, float tpf)	{
+	@Override public void doUpdate(RenderRegistryClient rrc, float tpf)	{
 		for (PointerCone pc : myPointerCones) {
 			pc.doUpdate(rrc, tpf);
 		}
