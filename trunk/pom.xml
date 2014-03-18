@@ -56,9 +56,9 @@ Version-less parent will be allowed in Maven 3.1.
 	<properties>
 		<jmonkey.version>3.0.0.20121220-SNAPSHOT</jmonkey.version>
 		<appdapter.msg.version>1.0.5</appdapter.msg.version>
-		<appdapter.version>1.1.6-SNAPSHOT</appdapter.version>
-		<mechio.version>1.0.1-SNAPSHOT</mechio.version>
-		<jflux.version>0.2.0-SNAPSHOT</jflux.version>
+		<appdapter.version>1.1.6</appdapter.version>
+		<mechio.version>1.0.1</mechio.version>
+		<jflux.version>0.2.0</jflux.version>
 		<scala.version>2.10.2</scala.version>
 		<netbeans.version>RELEASE721</netbeans.version>
 				
