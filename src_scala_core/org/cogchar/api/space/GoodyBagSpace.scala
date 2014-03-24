@@ -18,14 +18,18 @@ package org.cogchar.api.space
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * This builds on available context-free types to provide a general display constructor kit.
+ *  More usable current impl is org.cogchar.render.goody.dynamic.DynamicGoodySpace.
+ *  
  */
 
 class GoodyBag (val myoForeColor : Option[ColorFloatsRGBA], 
 						val myoBackColor : Option[ColorFloatsRGBA], 
 						val myoText : Option[TextVal],
 						val myoShape : Option[ShapeVal]) {
-
 }
+
 
 class BagInSpace (val myBag : GoodyBag, val myCellRange : CellBlock) {
 	
