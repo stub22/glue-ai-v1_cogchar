@@ -45,6 +45,8 @@ import org.appdapter.core.log.BasicDebugger;
   * 
   *		3) V-World OpenGL Space: rendered 3D display for user
   * 
+  * DynamicGoody is a base-class 
+  * 
   * A DynaGoody has an immutable index, representing its allocation-position within its space.
   * A DynaGoody does not change its index or its space.
   * (But what about its spec or its subclass?  Can those change?)
@@ -57,52 +59,35 @@ import org.appdapter.core.log.BasicDebugger;
 
 
 public class DynamicGoody extends BasicDebugger {
-	public static class Spec {
-		Ident	myKind;
-	}
-	
+	// This goody exists "within" myDGSpace, "at" index myGoodyIndex.
 	private DynamicGoodySpace		myDGSpace;
-	private	Node					myDisplayNode;
 	private	Integer					myGoodyIndex;
-	private	Ident					myGoodyID;
+	
+	// This OpenGL node is always a child of the Node held in myDGSpace.
+	private	Node					myDisplayNode;
 
-	protected DynamicGoody(int index) {
+	public DynamicGoody(int index) {
 		myGoodyIndex = index;
 	}
-
-	public void setSpace(DynamicGoodySpace dgSpace) {
+	public void setParentSpace(DynamicGoodySpace<?> dgSpace) {
 		myDGSpace = dgSpace;
 	}
-	protected void reloadConfig(ModelClient mc) {
-		
+
+	protected DynamicGoodySpace getParentSpace() {
+		return myDGSpace;
 	}
-	public void doFastVWorldUpdate() { 
-		
+	protected Integer getIndex() {
+		return myGoodyIndex;
 	}
-	public void updateStuff(ModelClient mc) { 
-		Ident	goodyID = myGoodyID;
+	protected Node getDisplayNode() {
+		return myDisplayNode;
 	}
-	// Currently we need the ModelClient to resolve QNames to idents.
-	public void updateFromSpecItem(ModelClient mc, Item specItem) {
-		
-		// TODO:  These property names need to come from ontology-generated constants.
-		String posVecExpr_Prop_QN = "hev:expr_pos_vec3f";
-		String colorVecExpr_Prop_QN = "hev:expr_color_vec4f";
-		// This resolution (and hence direct dependence on ModelClient mc) could be done "once", on a per-space or global basis.
-		Ident posVecExpr_Prop_ID = mc.makeIdentForQName(posVecExpr_Prop_QN);
-		Ident colorVecExpr_Prop_ID = mc.makeIdentForQName(colorVecExpr_Prop_QN);
-		
-		// From here on out, we only use Items + Idents (so we're not directly RDF/Jena dependent).
-		String posVecExpr = specItem.getValString(posVecExpr_Prop_ID, "{0, 0, 0}");		
-		String colorVecExpr = specItem.getValString(colorVecExpr_Prop_ID, "{0, 0, 0, 0}");
-		getLogger().info("posVecExpr=" + posVecExpr + ", colorVecExpr=" + colorVecExpr);
+
+	// This is the crucial entry point.  Default does nothing.  Override to update your goody display,
+	// but don't hog the OpenGL thread, or you will make the display stutter.
+	public void doFastVWorldUpdate_onRendThrd() { 
 	}
-	/* public void readSpec
-	public Ident getIdent() { 
-		if (myGoodyID = null) {
-			String qName = "h"
-			myGoodyID = new 
-		}
+	protected void detachAndDispose() {
+		// Clean up called when we are resized out of existence.
 	}
-	*/
 }

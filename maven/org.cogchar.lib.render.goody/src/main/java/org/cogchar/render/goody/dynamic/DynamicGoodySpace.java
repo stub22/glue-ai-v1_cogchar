@@ -39,60 +39,90 @@ import org.cogchar.render.trial.TrialUpdater;
  * 
  * Under what conditions does every DynamicGoody have a spec?
  * Does individual DynaGoodySpec have authority to assert a subclass? 
+ * 
+ * A DGSpace is an openGL-bound container and CPU-delegator.
+ * We 
  */
 
-
-public class DynamicGoodySpace extends BasicDebugger implements TrialUpdater {
-	
-	private	Ident			mySpecGraphID, mySpecID;
-	private	ModelClient		myCachedModelClient;
-	private	MathGate		myMathGate;
-	private	Integer			myGoodyCount;
-	
+public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends DynamicGoody implements TrialUpdater {
+		
 	private	Node			myGroupDisplayNode, myParentDisplayNode;
 	//  We use an array to emphasize the indexed nature of this space.
 	// However, "goodyIndex" always starts at 1, so we have to subtract 1
 	private	DynamicGoody	myGoodies[] = new DynamicGoody[0];
 	
-	public DynamicGoodySpace(Ident specGraphID, Ident specID) { 
-		mySpecGraphID = specGraphID;
-		mySpecID = specID;
-		myGroupDisplayNode = new Node(specGraphID.getLocalName());
+	public DynamicGoodySpace(DynamicGoodySpace<?> optParentSpace, int idxIntoParentOrNeg) { 
+		super(idxIntoParentOrNeg);
+		if (optParentSpace != null) {
+			setParentSpace(optParentSpace);
+		}
+		
 	}
-	public Ident getSpecGraphID() {
-		return mySpecGraphID;
-	}
-	
-	public DynamicGoody getGoodyAtIndex(int oneBasedIndex) {
-		if ((oneBasedIndex >= 1) && (oneBasedIndex <= myGoodies.length)) {
-			return myGoodies[oneBasedIndex - 1];
-		} else {
-			getLogger().error("Supplied index {} is out of bounds [1, {}]", oneBasedIndex, myGoodies.length);
-			throw new RuntimeException("out of bounds goody index sent to space: " + mySpecGraphID);
+	@Override public void doUpdate(RenderRegistryClient rrc, float tpf) {
+		doFastVWorldUpdate_onRendThrd();
+	}	
+	public void doFastVWorldUpdate_onRendThrd() { 
+		for (int idx = 0; idx < myGoodies.length; idx++) {
+			myGoodies[idx].doFastVWorldUpdate_onRendThrd();
 		}
 	}
-	public Ident mapGoodyIndexToID(Integer idx) {
-		return null;
+	// Override to set good node names.
+	protected String getUniqueSpaceName() { 
+		return "generatedName_99";
 	}
-	public void refreshMathGate(MathGate mg) {
-		myMathGate = mg;
-	}	
-	public void refreshModelClient(ModelClient mc) {
-		myCachedModelClient = mc;
-		Item specItem = mc.makeItemForIdent(mySpecID);
-		getLogger().info("Got space-specItem: {}", specItem);
-		String goodyCount_Prop_QN = "hev:goodyCount";
-		Ident goodyCount_Prop_ID = mc.makeIdentForQName(goodyCount_Prop_QN);
-		Integer goodyCount = specItem.getValInteger(goodyCount_Prop_ID, 0);
-		getLogger().info("goodyCount=" + goodyCount);
-		resizeSpace(goodyCount);
-		
-		// TODO:  Reload Stuff
+	protected Node getGroupDisplayNode() { 
+		if (myGroupDisplayNode == null) {
+			myGroupDisplayNode = new Node(getUniqueSpaceName());
+		}
+		return myGroupDisplayNode;
 	}
-	public Set<Item> getGoodySpecItems() { 
-		Set<Item> specItems = new HashSet<Item>();
-		return specItems;
+	// Called by resizeSpace.  Our default impl just makes a default DynamicGoody, which doesn't do much.
+	// Override this method to create useful goodies of appropriate types.  
+	protected abstract DGT makeGoody(Integer oneBasedIndex);
+//		return new DynamicGoody(oneBasedIndex);
+//	}
+	
+	public DGT getGoodyAtIndex(int oneBasedIndex) {
+		if ((oneBasedIndex >= 1) && (oneBasedIndex <= myGoodies.length)) {
+			return (DGT) myGoodies[oneBasedIndex - 1];
+		} else {
+			getLogger().error("Supplied index {} is out of bounds [1, {}]", oneBasedIndex, myGoodies.length);
+			throw new RuntimeException("out of bounds goody index sent to space: " + getUniqueSpaceName());
+		}
 	}
+	/**
+	 * The only way to create or destroy goodies is to resize the space (which is usually done only by updating 
+	 * the space-level spec).
+	 * On expansion, existing goodies survive.  On contraction, all goodies
+	 * up to the new size survive, higher than that size are logically forgotten.
+	 *		...and we must detach+dispose of their OpenGL resources.
+	 * @param size 
+	 */
+	public void resizeSpace(int size) { 
+		int oldSize = myGoodies.length;
+		if (oldSize == size) {
+			return;
+		}
+		DynamicGoody nGoodies[] = new DynamicGoody[size];
+		int maxCopy = Math.min(oldSize, size);
+		for (int idx =0; idx < maxCopy; idx++) {
+			nGoodies[idx] = myGoodies[idx];
+		}
+		// Make any new ones required
+		for (int jdx = maxCopy; jdx < size; jdx++) {
+			// jdx is zero-based, so we add one to set the 1-based Goody-space index.
+			nGoodies[jdx] = makeGoody(jdx + 1);
+		}
+		// Detach + Dispose any old ones no longer in scope.
+		for (int kdx = maxCopy; kdx < oldSize; kdx++) {
+			myGoodies[kdx].detachAndDispose();
+		}
+		myGoodies = nGoodies;
+	}
+	@Override protected void detachAndDispose() {
+		resizeSpace(0);
+	}
+
 	public void setParentDisplayNode_onRendThrd(Node n) { 
 		// create and/or reparent the GroupDisplayNode
 		myParentDisplayNode = n;
@@ -110,38 +140,8 @@ public class DynamicGoodySpace extends BasicDebugger implements TrialUpdater {
 	}	
 	*/
 	
-	public void doFastVWorldUpdate() { 
-		for (int idx = 0; idx < myGoodies.length; idx++) {
-			myGoodies[idx].doFastVWorldUpdate();
-		}
-	}
-	
-	/**
-	 * The only way to create or destroy goodies is to resize the space (which is usually done only by updating 
-	 * the space-level spec).
-	 * On expansion, existing goodies survive.  On contraction, all goodies
-	 * up to the new size survive, higher than that size are forgotten.
-	 * @param size 
-	 */
-	public void resizeSpace(int size) { 
-		int oldSize = myGoodies.length;
-		if (oldSize == size) {
-			return;
-		}
-		DynamicGoody nGoodies[] = new DynamicGoody[size];
-		int maxCopy = Math.min(oldSize, size);
-		for (int idx =0; idx < maxCopy; idx++) {
-			nGoodies[idx] = myGoodies[idx];
-		}
-		for (int jdx = maxCopy; jdx < size; jdx++) {
-			// jdx is zero-based, so we add one to set the 1-based Goody-space index.
-			nGoodies[jdx] = new DynamicGoody(jdx + 1);
-		}
-		myGoodies = nGoodies;
-	}
-
-	@Override public void doUpdate(RenderRegistryClient rrc, float tpf) {
-		doFastVWorldUpdate();
+	public void activateDisplay() {
+		
 	}
 
 }
