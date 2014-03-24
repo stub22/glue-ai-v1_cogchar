@@ -23,3 +23,4 @@ package org.cogchar.api.space
 class TextVal(myFullTextString : String) {
 	def getFullTextString() = myFullTextString
 }
+
