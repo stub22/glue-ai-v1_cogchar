@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013 by The Cogchar Project (www.cogchar.org).
+ *  Copyright 2013-2014 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.cogchar.name.lifter;
 
+import org.appdapter.core.name.FreeIdent;
+import org.appdapter.core.name.Ident;
 import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.name.dir.TempNamespaceDir;
 
@@ -73,10 +75,39 @@ public class ActionStrings {
 	  // Really we should pick a unique one for animations (p_scenetrig derivative?) to avoid confusion
 	  final public static String p_anim = TempNamespaceDir.NS_TestAnimSrc;
 	  
-	  final public static String LIFT_REFRESH_UPDATE_NAME = "ManagedGlobalConfigService";
+	  final public static String LIFT_REFRESH_UPDATE_NAME = 
+                  "ManagedGlobalConfigService";
       
-      final public static String BEHAVIOR_MASTER_SCENE_PREFIXES = NamespaceDir.NS_ccScnInst;
-      final public static String BEHAVIOR_MASTER_ADMIN_PREFIXES = NamespaceDir.NS_ccScnAdminInst;
+      final public static String BEHAVIOR_MASTER_SCENE_PREFIXES = 
+              NamespaceDir.NS_ccScnInst;
+      final public static String BEHAVIOR_MASTER_ADMIN_PREFIXES =
+              NamespaceDir.NS_ccScnAdminInst;
       
-      final public static String SPEECH_RECOGNITION_PREFIX = NamespaceDir.NS_LifterSpeechRecognition;
+      final public static String SPEECH_RECOGNITION_PREFIX = 
+              NamespaceDir.NS_LifterSpeechRecognition;
+
+    
+    // The lifter outgoing  URI
+    
+    public static final Ident LIFTER_ACTION = new FreeIdent(
+        "http://www.cogchar.org/lift/user/action#action");
+    
+    public static final Ident LIFTER_SESSION = new FreeIdent(
+         "http://www.cogchar.org/lift/user/action#session");
+    
+    // IDs that can be registered as lifter sessions listed below
+    
+    public static final String DEFAULT_REGISTRATION = "action";
+    
+    public static final String STUDENT_REGISTRATION = "student";
+    public static final Ident STUDENT_ACITON = new FreeIdent(
+            "http://www.cogchar.org/lift/user/action#student");
+    public static final Ident STUDENT_START_PAGE = new FreeIdent(
+            "http://www.cogchar.org/lift/config/configroot#student-start-page-config");
+    
+    public static final String FACILITATOR_REGISTRATION = "facilitator";
+    public static final Ident FACILITATOR_ACITON = new FreeIdent(
+            "http://www.cogchar.org/lift/user/action#facilitator");
+    public static final Ident FACILITATOR_START_PAGE = new FreeIdent(
+            "http://www.cogchar.org/lift/config/configroot#facilitator-start-page-config");
 }
