@@ -12,7 +12,6 @@ import Helpers._
 //import _root_.net.liftweb.mapper.{DB, ConnectionManager, Schemifier, DefaultConnectionIdentifier, StandardDBVendor}
 import _root_.java.sql.{Connection, DriverManager}
 import _root_.org.cogchar.lifter.lib._
-import org.cogchar.lifter.model.{LifterClientRegistration, LifterThingActionScanner}
 import _root_.org.cogchar.lifter.model._
 import _root_.org.cogchar.bind.lift.LiftAmbassador
 

@@ -21,45 +21,131 @@ import org.appdapter.core.name.{FreeIdent,Ident}
 //import scala.collection.mutable.ArrayBuffer
 import org.cogchar.api.thing.{ThingActionSpec, WantsThingAction, TypedValueMap}
 import org.cogchar.api.thing.WantsThingAction.ConsumpStatus
+import org.cogchar.name.lifter.ActionStrings
+import org.slf4j.{Logger,LoggerFactory}
 
 class LifterThingActionScanner extends WantsThingAction {
+  val theLogger: Logger = 
+    LoggerFactory.getLogger(classOf[LifterThingActionScanner])
     
 //  private val lifterFlowActionID:Ident =
 //    new FreeIdent("http://www.cogchar.org/lift/flow/action#action");
 //  private val lifterFlowActionID:Ident =
 //    new FreeIdent("http://www.cogchar.org/lift/flow/action#action");
 
-  private val lifterActionID : Ident = 
-            new FreeIdent("http://www.cogchar.org/lift/user/action#action");
+//  private val lifterActionID : Ident = 
+//            new FreeIdent("http://www.cogchar.org/lift/user/action#action");
   
-  private val lifterConfigIDPrefix : String = "http://www.cogchar.org/lift/config/configroot#";
+  private val lifterActionIDPrefix : String = 
+    ("http://www.cogchar.org/lift/user/action#");
+  
+  private val lifterConfigIDPrefix : String =
+    "http://www.cogchar.org/lift/config/configroot#";
   
   @Override
   def consumeAction(
     actionSpec:ThingActionSpec, srcGraphID:Ident ): ConsumpStatus = {
     
     val t: TypedValueMap = actionSpec.getParamTVM();
-    if(t.getAsIdent(lifterActionID) == null) {
-      return ConsumpStatus.IGNORED
-    }
-    else {
-      // This ensures the TA is a student registration
-      val configControlID:Ident = t.getAsIdent(lifterActionID);
-            
-      // Pull the student's lifter session ID
-      val sessionID: String = 
-        LifterClientRegistration.getCurrentStudentLifterSession()
-            
-      if(sessionID == null) return ConsumpStatus.IGNORED
+      
+    // Check to see if action is associated with a registered user.
+    for ( ID <- LifterClientRegistration.listOfRegistrationIDs ) {
+      
+      
+      theLogger.trace( "localName: " + ID )
+      theLogger.trace( "lifterRegistrationIDPrefix: " + lifterActionIDPrefix )
         
-      if( !configControlID.getAbsUriString.startsWith(lifterConfigIDPrefix)) {
-        return ConsumpStatus.IGNORED
+      // Take the value (command) associated with this action key
+      val configControlID:Ident = t.getAsIdent(
+        new FreeIdent( lifterActionIDPrefix + ID ));
+      
+      
+      theLogger.trace( "t: " + t )
+      
+      
+      theLogger.trace( "configControlID: " + configControlID )
+        
+      // If the command is not targeting lifter, ignore it
+      if( configControlID != null && 
+         configControlID.getAbsUriString.startsWith(lifterConfigIDPrefix) ) {
+        
+        
+        // This is for backwards compatibility 
+        // may be removed once RDF data is updated
+        var checkedID = ID;
+        if(checkedID.equals(ActionStrings.DEFAULT_REGISTRATION)) {
+          checkedID = ActionStrings.STUDENT_REGISTRATION;
+        }
+        
+        theLogger.info(
+          "Lifter targeted action detected for user: " + checkedID )
+        
+        // Pull the registration for this user
+        val sessionID: String = 
+          LifterClientRegistration.getLifterSession(checkedID)
+        
+        theLogger.trace( "sessionID: " + sessionID )
+        
+        // If this user is not registered, ignore command
+        if(sessionID == null) return ConsumpStatus.IGNORED
+        
+        theLogger.info( "User " +
+                       checkedID +
+                       " is registered, sending command." )
+        
+        // Send to lifter
+        pushPage(configControlID, sessionID); 
+        
+          theLogger.info( "Pushed " + 
+                         configControlID +
+                         " to user " +
+                         checkedID )    
+        
+        return ConsumpStatus.USED;
       }
       
-      // Fire an action
-      PageCommander.getLiftAmbassador.activateControlsFromUri(
-        sessionID, configControlID)
-      return ConsumpStatus.USED;
+      // Also check for registration events
+      val registrationAction:Ident = t.getAsIdent(
+        ActionStrings.LIFTER_ACTION);
+      
+      if( registrationAction != null ) {
+        
+        
+        // Send to lifter
+        val registrationSession:String = t.getAsString(
+          ActionStrings.LIFTER_SESSION)
+      
+        if( registrationSession != null ) {
+          theLogger.info( "Lifter registration action detected for user: " + ID )
+          pushPage(
+            LifterClientRegistration.mapRegistrationIDsToStartPageURIs(ID),
+            registrationSession);   
+          theLogger.info( "Pushed " + 
+                         LifterClientRegistration.mapRegistrationIDsToStartPageURIs(ID) +
+                         " to user " +
+                         ID )     
+          return ConsumpStatus.USED;
+        }
+      }
     }
+    return ConsumpStatus.IGNORED
+  }
+  
+//  def checkForLifterPageCommand(): = Boolean (
+//  ) {
+//    //
+//  }
+//    
+//  def checkForLifterRegistrationCommand(): = Boolean (
+//  ) {
+//    //
+//  }
+    
+  /**
+   * Send a page in response to the command
+   */
+  def pushPage(configControlID: Ident, sessionID: String) {
+    PageCommander.getLiftAmbassador.activateControlsFromUri(
+      sessionID, configControlID)
   }
 }
