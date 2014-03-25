@@ -14,6 +14,7 @@ import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.event.CommandEvent;
 import org.cogchar.app.puma.event.Updater;
@@ -79,10 +80,13 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
                 {
                     System.out.println("REPOCLIENT FOUND: "+(body.getRepoClient()).toString());
                 }
-                getLogger().info("Initializing Virtual World Humaniods.");
-                vworldreg.setCharID(body.getHumCfg().getFigureID());
+				Ident charID = body.getHumCfg().getFigureID();
+                getLogger().info("Initializing Virtual World Humanoid for charID={}", charID);
+                vworldreg.setCharID(charID);
+				getLogger().info("Calling initVworldHumanoid for charID={}", charID);
                 vworldreg.initVWorldHumanoid(body.getRepoClient(), body.getGraphIdentForBony(), body.getHumCfg());
-                vworldreg.connectBonyRobotToHumanoidFigure(body.getModelRobot());
+				getLogger().info("Calling connnectBonyRobotToHumanoidFigure for charID={}", charID);
+				vworldreg.connectBonyRobotToHumanoidFigure(body.getModelRobot());
             } catch (Throwable t) {
                 getLogger().error("InitVWorldHumanoid failure");
             }

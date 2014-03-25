@@ -81,6 +81,7 @@ public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNo
 	// Now does more, but does less on jME thread!
 	public HumanoidFigure setupHumanoidFigure(final BonyRenderContext brc, RepoClient qi, final Ident charIdent, 
 					Ident bonyConfigGraph, FigureConfig hc) throws Throwable {
+		getLogger().info("beginning setup for charID={}", charIdent);
 		RenderRegistryClient rrc = brc.getRenderRegistryClient();
 		RenderConfigEmitter rce = brc.getConfigEmitter();
 		final HumanoidFigure figure = getOrMakeHumanoidFigure(qi, charIdent, hc, bonyConfigGraph, rce);
@@ -88,7 +89,7 @@ public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNo
 		final Node rootNode = rrc.getJme3RootDeepNode(null);
 		final PhysicsSpace ps = brc.getPhysicsSpace();
 		if (figure == null) {
-			getLogger().warn("setupHumanoidFigure() Found null HumanoidFigure for {}", charIdent);
+			getLogger().warn("setupHumanoidFigure() Found null HumanoidFigure for charID={}", charIdent);
 			return null;
 		}
 		/**

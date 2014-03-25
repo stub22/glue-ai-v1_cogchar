@@ -58,11 +58,14 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 		}
 		
 	}
+	// This will be called if we have been explicitly attached as a TrialUpdater.
+	// Should not be called if we are a child space.
 	@Override public void doUpdate(RenderRegistryClient rrc, float tpf) {
 		doFastVWorldUpdate_onRendThrd();
 	}	
-	public void doFastVWorldUpdate_onRendThrd() { 
+	@Override public void doFastVWorldUpdate_onRendThrd() { 
 		for (int idx = 0; idx < myGoodies.length; idx++) {
+			// Some of these may be child spaces.
 			myGoodies[idx].doFastVWorldUpdate_onRendThrd();
 		}
 	}
@@ -121,6 +124,12 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 	}
 	@Override protected void detachAndDispose() {
 		resizeSpace(0);
+		if (myGroupDisplayNode != null) {
+			if (myParentDisplayNode != null) {
+				myParentDisplayNode.detachChild(myGroupDisplayNode);
+			}
+		}
+		// TODO:  Detach group display node
 	}
 
 	public void setParentDisplayNode_onRendThrd(Node n) { 

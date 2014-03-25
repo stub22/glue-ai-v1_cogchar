@@ -55,10 +55,14 @@ public class BoneRobotConfig extends KnownComponentImpl {
 	// A new constructor to build BoneRobotConfig from spreadsheet
 	public BoneRobotConfig(RepoClient rc, Ident bonyConfigIdent, Ident graphIdent, BoneCN bqn) {
 		SolutionHelper sh = new SolutionHelper();
-		getLogger().info("Building BoneRobotConfig via queries for {} using graph {} ", bonyConfigIdent, graphIdent);
+		getLogger().info("Building BoneRobotConfig via queries for boneConfigID[{}] and graphID [{}]", bonyConfigIdent, graphIdent);
 		SolutionList robotSL = rc.queryIndirectForAllSolutions(bqn.ROBOT_NAME_QUERY_URI, graphIdent);
+		getLogger().info("Got robotSL {} for query {}", robotSL, bqn.ROBOT_NAME_QUERY_URI);
 		SolutionMap robotSolMap = robotSL.makeSolutionMap(bqn.ROBOT_URI_VAR_NAME);
+		getLogger().info("Got SolMap {} for varName {}", robotSolMap, bqn.ROBOT_URI_VAR_NAME);
 		myRobotName = sh.pullString(robotSolMap, bonyConfigIdent, bqn.ROBOT_NAME_VAR_NAME);
+		getLogger().info("Pulled myRobotName {} for bonyConfigID {}", myRobotName, bonyConfigIdent);
+
 		SolutionList bjConfSL = rc.queryIndirectForAllSolutions(bqn.BONE_JOINT_CONFIG_QUERY_QN, graphIdent, bqn.ROBOT_IDENT_QUERY_VAR, bonyConfigIdent);
 		List<Ident> boneJointConfigIdents = sh.pullIdentsAsJava(bjConfSL, bqn.BONE_JOINT_CONFIG_INSTANCE_VAR_NAME);
 
