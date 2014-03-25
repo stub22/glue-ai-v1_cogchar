@@ -62,18 +62,18 @@ import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
  */
 public class PumaAppContext extends BasicDebugger {
 
-	private PumaRegistryClient			myRegClient;
-	private OSGiComponent				myRegClientOSGiComp;
+	private PumaRegistryClient				myRegClient;
+	private OSGiComponent					myRegClientOSGiComp;
 	
-	private BundleContext				myBundleContext;
+	private BundleContext					myBundleContext;
 
-	private	PumaDualBodyManager			myBodyMgr;
+	private	PumaDualBodyManager				myBodyMgr;
 	
-	private PumaBehaviorManager			myBehavMgr;
+	private PumaBehaviorManager				myBehavMgr;
 	
-	private	PumaContextCommandBox		myPCCB;
+	private	PumaContextCommandBox			myPCCB;
     
-    private ArrayList<BodyHandleRecord>   bodyConfigSpecs;
+    private ArrayList<BodyHandleRecord>		myBodyHandleRecs;
 	
 	public PumaAppContext(BundleContext bc, PumaContextMediator mediator, Ident ctxID) {
 		myRegClient = new PumaRegistryClientImpl(bc, mediator);
@@ -86,7 +86,7 @@ public class PumaAppContext extends BasicDebugger {
 		
 		myBodyMgr = new PumaDualBodyManager();
 		myBehavMgr = new PumaBehaviorManager();
-        bodyConfigSpecs= new ArrayList<BodyHandleRecord>();
+        myBodyHandleRecs= new ArrayList<BodyHandleRecord>();
         
         ServiceLifecycleProvider<PumaRegistryClient> lifecycle =
                 new SimpleLifecycle<PumaRegistryClient>(myRegClient,PumaRegistryClient.class.getName());
@@ -224,7 +224,7 @@ public class PumaAppContext extends BasicDebugger {
 			}
             
             ServiceLifecycleProvider<ArrayList> lifecycle =
-                new SimpleLifecycle<ArrayList>(bodyConfigSpecs,ArrayList.class.getName());
+                new SimpleLifecycle<ArrayList>(myBodyHandleRecs,ArrayList.class.getName());
             Properties props=new Properties();
             props.put("bodyConfigSpec","bodyConfigSpec");
             ManagedService<ArrayList> ms = new OSGiComponent<ArrayList>(myBundleContext, lifecycle, props);
@@ -247,10 +247,11 @@ public class PumaAppContext extends BasicDebugger {
 		RepoClient rc = getOrMakeMainConfigRC();
         //bodyConfigSpecs.add(new BodyConfigSpec(rc, bonyCharID, humCfg));
 		PumaDualBody pdb = new PumaDualBody(bonyCharID, humCfg.getNickname());
-		BodyHandleRecord bConfig=new BodyHandleRecord(rc, bonyCharID, humCfg);
+		// Create and publish a BodyHandleRecord so that other systems can discover this body.
+		BodyHandleRecord bConfig = new BodyHandleRecord(rc, graphIdentForBony, humCfg);
         pdb.setBodyConfigSpec(bConfig);
         pdb.absorbContext(myRegClient, bunCtx, rc, humCfg, graphIdentForBony);
-		bodyConfigSpecs.add(bConfig);
+		myBodyHandleRecs.add(bConfig);
         myBodyMgr.addBody(pdb);
 		return pdb;
 	}

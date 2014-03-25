@@ -28,9 +28,10 @@ import org.cogchar.bind.mio.robot.model.ModelRobot;
  * (ModelRobot and RepoClient), which are not serializable to RDF.   
  */
 public class BodyHandleRecord  {
-        private RepoClient		myRepoClient;
+        private FigureConfig	myHumFigConf;	
         private Ident			myBoneSrcGraphID;
-        private FigureConfig	myHumFigConf;
+
+		private RepoClient		myRepoClient;
         private ModelRobot		myModelRobot;
         
         public BodyHandleRecord(RepoClient repoCli, Ident boneSrcGraphID, FigureConfig humFigConf)   {

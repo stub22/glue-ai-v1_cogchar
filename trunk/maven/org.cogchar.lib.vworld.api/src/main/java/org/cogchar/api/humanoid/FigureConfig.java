@@ -15,6 +15,7 @@
  */
 package org.cogchar.api.humanoid;
 
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.SolutionMap;
 import org.appdapter.help.repo.RepoClient;
@@ -28,15 +29,15 @@ import org.appdapter.help.repo.SolutionList;
  *
  * @author Ryan Biggs <rbiggs@skyriversoftware.com>
  */
-public class FigureConfig {
+public class FigureConfig extends BasicDebugger {
 
-	protected Ident myFigureID;
-	protected String myNickname = "";
-	protected String myMeshPath;
-	protected String myJointGroupConfigPath;
-	protected Float[] myInitialPosition = new Float[3];
-	protected float myScale;
-	protected boolean myPhysicsFlag;
+	protected Ident		myFigureID;
+	protected String	myNickname = "";
+	protected String	myMeshPath;
+	protected String	myJointGroupConfigPath;
+	protected Float[]	myInitialPosition = new Float[3];
+	protected float		myScale;
+	protected boolean	myPhysicsFlag;
 
 	protected FigureConfig(Ident figureID) {
 		myFigureID = figureID;

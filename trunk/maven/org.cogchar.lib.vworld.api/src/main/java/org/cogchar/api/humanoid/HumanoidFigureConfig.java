@@ -55,6 +55,10 @@ public class HumanoidFigureConfig extends FigureConfig {
 		SolutionList solutionList = qi.queryIndirectForAllSolutions(BoneCN.BONE_NAMES_QUERY_QN, bonyGraphIdent, 
 						BoneCN.ROBOT_IDENT_QUERY_VAR, charIdent);
 		List<String> boneNames = sh.pullStringsAsJava(solutionList, BoneCN.BONE_NAME_VAR_NAME);
+		getLogger().info("Found boneNames {}", boneNames);
+		if (boneNames.size() == 0) {
+			getLogger().warn("BoneNames result is empty for charID={}", charIdent);
+		}
 		for (String boneName : boneNames) {
 			myFigureBoneConfig.addBoneDesc(boneName);
 		}

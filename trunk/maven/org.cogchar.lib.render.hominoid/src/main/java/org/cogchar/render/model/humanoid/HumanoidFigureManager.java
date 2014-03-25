@@ -54,8 +54,12 @@ public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNo
 		if (hf == null) {
 			//BonyConfigEmitter bce = getBonyConfigEmitter();
 			String matPath = rce.getMaterialPath();
+			getLogger().info(
+					"Constructing HumanoidFigureConfig for charID={} using bonyConfigGraph={}, renderCE={} " 
+					+ " repoClient{}  figConf={}", charIdent, bonyConfigGraph, rce, qi, hc);
 			HumanoidFigureConfig hfc = new HumanoidFigureConfig(qi, hc, matPath, bonyConfigGraph); // rce, bonyConfigGraph);
 			if (hfc.isComplete()) {
+				getLogger().info("HumanoidFigureConfig is complete {}", hfc);
 				hf = new HumanoidFigure(hfc);
 				myFiguresByCharIdent.put(charIdent, hf);
 			}
@@ -80,11 +84,11 @@ public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNo
 
 	// Now does more, but does less on jME thread!
 	public HumanoidFigure setupHumanoidFigure(final BonyRenderContext brc, RepoClient qi, final Ident charIdent, 
-					Ident bonyConfigGraph, FigureConfig hc) throws Throwable {
-		getLogger().info("beginning setup for charID={}", charIdent);
+					Ident bonyConfigGraphID, FigureConfig hc) throws Throwable {
+		getLogger().info("beginning setup for charID={} using bonyConfigGraphID {}", charIdent, bonyConfigGraphID);
 		RenderRegistryClient rrc = brc.getRenderRegistryClient();
 		RenderConfigEmitter rce = brc.getConfigEmitter();
-		final HumanoidFigure figure = getOrMakeHumanoidFigure(qi, charIdent, hc, bonyConfigGraph, rce);
+		final HumanoidFigure figure = getOrMakeHumanoidFigure(qi, charIdent, hc, bonyConfigGraphID, rce);
 		final AssetManager amgr = rrc.getJme3AssetManager(null);
 		final Node rootNode = rrc.getJme3RootDeepNode(null);
 		final PhysicsSpace ps = brc.getPhysicsSpace();
