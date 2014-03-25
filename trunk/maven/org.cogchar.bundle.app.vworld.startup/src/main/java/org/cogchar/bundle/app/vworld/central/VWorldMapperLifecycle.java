@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
 import java.util.ArrayList;
+import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.app.puma.config.BodyConfigSpec;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
@@ -80,13 +81,15 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
                 {
                     System.out.println("REPOCLIENT FOUND: "+(body.getRepoClient()).toString());
                 }
-				Ident charID = body.getHumCfg().getFigureID();
+				FigureConfig humaFigCfg = body.getHumCfg();
+				Ident charID = humaFigCfg.getFigureID();
                 getLogger().info("Initializing Virtual World Humanoid for charID={}", charID);
-                vworldreg.setCharID(charID);
+				// This have been our bug, once combined with the idea of a 
+				// single vworldreg.myCharID:  vworldreg.setCharID(charID);
 				getLogger().info("Calling initVworldHumanoid for charID={}", charID);
-                vworldreg.initVWorldHumanoid(body.getRepoClient(), body.getGraphIdentForBony(), body.getHumCfg());
+                vworldreg.initVWorldHumanoid(body.getRepoClient(), body.getGraphIdentForBony(), humaFigCfg);
 				getLogger().info("Calling connnectBonyRobotToHumanoidFigure for charID={}", charID);
-				vworldreg.connectBonyRobotToHumanoidFigure(body.getModelRobot());
+				vworldreg.connectBonyRobotToHumanoidFigure(body.getModelRobot(), charID);
             } catch (Throwable t) {
                 getLogger().error("InitVWorldHumanoid failure");
             }
