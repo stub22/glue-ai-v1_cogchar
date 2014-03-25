@@ -21,14 +21,19 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.bind.mio.robot.model.ModelRobot;
 
-public class BodyConfigSpec
-    {
+
+/*
+ * Registration of this entity triggers the final binding of virtual robot to onscreen avatar.
+ * Changed name to BodyHandleRecord - this should not be a "Spec" since it contains runtime handles
+ * (ModelRobot and RepoClient), which are not serializable to RDF.   
+ */
+public class BodyHandleRecord  {
         private RepoClient		myRepoClient;
         private Ident			myBoneSrcGraphID;
         private FigureConfig	myHumFigConf;
         private ModelRobot		myModelRobot;
         
-        public BodyConfigSpec(RepoClient repoCli, Ident boneSrcGraphID, FigureConfig humFigConf)   {
+        public BodyHandleRecord(RepoClient repoCli, Ident boneSrcGraphID, FigureConfig humFigConf)   {
             myRepoClient		= repoCli;
             myBoneSrcGraphID	= boneSrcGraphID;
             myHumFigConf		= humFigConf;
