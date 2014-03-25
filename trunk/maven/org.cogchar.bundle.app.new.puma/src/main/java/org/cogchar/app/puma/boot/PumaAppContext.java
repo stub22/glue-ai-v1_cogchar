@@ -80,9 +80,10 @@ public class PumaAppContext extends BasicDebugger {
 		advertisePumaRegClient(myRegClient);
 		myBundleContext = bc;
         
-		BoxSpace bs = myRegClient.getTargetBoxSpace(null);
+        //Keeping thse commented out until the PumaContextCommandBox in this project is completely unwired. 
+		//BoxSpace bs = myRegClient.getTargetBoxSpace(null);
 		myPCCB = new PumaContextCommandBox(this);
-		bs.addBox(ctxID, myPCCB);
+		//bs.addBox(ctxID, myPCCB);
 		
 		myBodyMgr = new PumaDualBodyManager();
 		myBehavMgr = new PumaBehaviorManager();

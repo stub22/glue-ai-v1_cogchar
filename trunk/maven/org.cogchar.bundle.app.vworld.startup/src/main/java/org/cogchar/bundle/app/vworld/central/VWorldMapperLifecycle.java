@@ -17,6 +17,7 @@ import org.jflux.api.service.ServiceLifecycle;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.event.CommandEvent;
@@ -57,12 +58,14 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
         VWorldRegistry vworldreg = new VWorldRegistry();
         vworldreg.setRegClient((PumaRegistryClient) dependencyMap.get(DEPKEY_PumaRegCli));
         
+        String ctxURI=((PumaContextMediator) dependencyMap.get(DEPKEY_Mediator)).getSysContextRootURI();
+        Ident ctxID=new FreeIdent(ctxURI);
         try {
             vworldreg.initVWorldUnsafe((PumaContextMediator) dependencyMap.get(DEPKEY_Mediator));
         } catch (Throwable t) {
             getLogger().warn("%%%%%%%%%%%%%%%%%%%%%%% Error with VWorldMapper init %%%%%%%%%%%%%%%%%%%%%%%");
         }
-        PumaContextCommandBox pCCB=new PumaContextCommandBox(vworldreg);
+        PumaContextCommandBox pCCB=new PumaContextCommandBox(vworldreg, (PumaRegistryClient) dependencyMap.get(DEPKEY_PumaRegCli), ctxID);
         pCCB.setAppContext((PumaAppContext)dependencyMap.get(DEPKEY_AppContext));
         CommandEvent ce=(CommandEvent)dependencyMap.get(DEPKEY_CommandEvent);
         ce.setUpdater((Updater)pCCB);

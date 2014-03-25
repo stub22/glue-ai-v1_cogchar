@@ -24,6 +24,8 @@ import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.TriggerConfig;
 import org.cogchar.bundle.app.vworld.busker.TriggerItems;
+import org.cogchar.app.puma.registry.PumaRegistryClient;
+import org.cogchar.platform.trigger.BoxSpace;
 
 /**
  * This class is intended to be the "public" API to the PUMA "system", for use
@@ -44,10 +46,16 @@ public class PumaContextCommandBox extends CogcharScreenBox implements Updater {
     private ExecutorService myExecService;
     private VWorldRegistry vwr;
     private PumaAppContext myPAC;
+    private PumaRegistryClient myRegClient;
+    private BoxSpace box;
 
-    protected PumaContextCommandBox(VWorldRegistry vr) {
+    protected PumaContextCommandBox(VWorldRegistry vr, PumaRegistryClient reg, Ident ctxID) {
 
         vwr = vr;
+        box=reg.getTargetBoxSpace(null);
+        
+      
+        box.addBox(ctxID,this);
 
     }
 
@@ -128,14 +136,22 @@ public class PumaContextCommandBox extends CogcharScreenBox implements Updater {
         BonyRenderContext brc = getHRC();
         RenderConfigEmitter bce = brc.getConfigEmitter();
         HumanoidFigureManager hfm = getFigureManager();
+        
+        //Major 3-25-2014
+        //This check was put into place because we were getting ClassCastExceptions when trying to 
+        //Cast a HumanoidFigure down to a HumanoidFigure_SinbadTest.  
+       if(hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT()) instanceof HumanoidFigure_SinbadTest){
         return (HumanoidFigure_SinbadTest) hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
+       }
+        getLogger().error("Could not cast HumanoidFigure to HumanoidFigure_SinbadTest");
+        return null;
     }
     
     public void reloadCommandSpace()
     {
         TriggerConfig ti=myPAC.reloadCommandSpace();
         
-        TriggerItems.populateCommandSpace(ti.getRepoClient(), ti.getCommandSpace(), ti.getBoxSpace(), this);
+        TriggerItems.populateCommandSpace(ti.getRepoClient(), ti.getCommandSpace(), ti.getBoxSpace());
     }
     
     private ExecutorService getExecService() {
