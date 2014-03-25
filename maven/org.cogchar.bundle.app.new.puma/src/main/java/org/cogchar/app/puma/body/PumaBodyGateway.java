@@ -135,6 +135,7 @@ public class PumaBodyGateway extends BasicDebugger {
 	 */
 	protected boolean initModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {
 
+		getLogger().info("initModelRobot for charID={}, using brConfig={}, mbrContext={}", myCharID, brc, myMBRSC);
 		if (brc != null) {
 			// This creates our ModelRobot instance, and calls registerAndStart() in the RobotServiceContext base class.
 			myMBRSC.makeModelRobotWithBlenderAndFrameSource(brc);
@@ -155,11 +156,13 @@ public class PumaBodyGateway extends BasicDebugger {
 		return true;
 	}
 
-	public void updateModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {	
+	public void updateModelRobotUsingBoneRobotConfig(BoneRobotConfig brc) throws Throwable {
 		ModelRobot targetRobot = getBonyRobot();
 		boolean flag_hardResetGoalPosToDefault = false;
+		getLogger().info("Updating modelRobot {} with BoneRobotConfig {}", targetRobot, brc);
 		targetRobot.updateConfig(brc, flag_hardResetGoalPosToDefault);
 	}
+	// Feature moved to VWorldRegistry
 //	public void connectBonyRobotToHumanoidFigure() throws Exception {
 //		final ModelRobot br = getBonyRobot();
 //		if (br == null) {

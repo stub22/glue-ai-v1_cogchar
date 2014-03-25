@@ -56,7 +56,7 @@ public class ModelToFigureStateMappingFuncs {
         FigureState fs = hf.getFigureState();
 		theLogger.info("FigureState={}", fs);
         Map<String, List<BoneProjectionPosition>> rotMap = ModelRobotUtils.getGoalAnglesAsRotations(br);
-        // theLogger.info("Sending " + fs + " to " + rotMap);
+        theLogger.info("rotMap={}", rotMap);
         applyAllSillyEulerRotations(fs, rotMap);
     }
 
