@@ -40,7 +40,7 @@ import org.osgi.framework.BundleContext;
 import org.cogchar.app.puma.behavior.PumaBehaviorManager;
 import org.cogchar.app.puma.body.PumaDualBody;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
-import org.cogchar.app.puma.config.BodyConfigSpec;
+import org.cogchar.app.puma.config.BodyHandleRecord;
 import org.cogchar.app.puma.body.PumaDualBodyManager;
 import static org.cogchar.app.puma.boot.PumaContextCommandBox.THING_ACTIONS;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
@@ -73,7 +73,7 @@ public class PumaAppContext extends BasicDebugger {
 	
 	private	PumaContextCommandBox		myPCCB;
     
-    private ArrayList<BodyConfigSpec>   bodyConfigSpecs;
+    private ArrayList<BodyHandleRecord>   bodyConfigSpecs;
 	
 	public PumaAppContext(BundleContext bc, PumaContextMediator mediator, Ident ctxID) {
 		myRegClient = new PumaRegistryClientImpl(bc, mediator);
@@ -86,7 +86,7 @@ public class PumaAppContext extends BasicDebugger {
 		
 		myBodyMgr = new PumaDualBodyManager();
 		myBehavMgr = new PumaBehaviorManager();
-        bodyConfigSpecs= new ArrayList<BodyConfigSpec>();
+        bodyConfigSpecs= new ArrayList<BodyHandleRecord>();
         
         ServiceLifecycleProvider<PumaRegistryClient> lifecycle =
                 new SimpleLifecycle<PumaRegistryClient>(myRegClient,PumaRegistryClient.class.getName());
@@ -247,7 +247,7 @@ public class PumaAppContext extends BasicDebugger {
 		RepoClient rc = getOrMakeMainConfigRC();
         //bodyConfigSpecs.add(new BodyConfigSpec(rc, bonyCharID, humCfg));
 		PumaDualBody pdb = new PumaDualBody(bonyCharID, humCfg.getNickname());
-		BodyConfigSpec bConfig=new BodyConfigSpec(rc, bonyCharID, humCfg);
+		BodyHandleRecord bConfig=new BodyHandleRecord(rc, bonyCharID, humCfg);
         pdb.setBodyConfigSpec(bConfig);
         pdb.absorbContext(myRegClient, bunCtx, rc, humCfg, graphIdentForBony);
 		bodyConfigSpecs.add(bConfig);
