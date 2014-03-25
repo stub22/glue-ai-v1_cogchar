@@ -30,6 +30,7 @@ import org.cogchar.app.puma.behavior.DirectBehaviorAgent;
 import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
 import org.appdapter.core.matdat.RepoClientTester;
 import org.appdapter.core.matdat.RepoClientTester.CommandRec;
+import org.appdapter.core.name.Ident;
 
 import org.cogchar.bind.mio.robot.client.RobotAnimClient.BuiltinAnimKind;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
@@ -329,6 +330,8 @@ public class TriggerItems {
             
             String testQN=trigFQCN.replace("org.cogchar.app.buddy.busker", "org.cogchar.bundle.app.vworld.busker");
 //            Class trigClass = Class.forName(trigFQCN);
+			
+			
             Class trigClass = Class.forName(testQN);
             ti = (TriggerItem) trigClass.newInstance();
         } catch (Throwable t) {
@@ -341,17 +344,28 @@ public class TriggerItems {
         List<CommandRec> cmdRecList = RepoClientTester.queryCommands(rc);
         for (CommandRec cRec : cmdRecList) {
             TriggerItem ti = makeTriggerItem(cRec.trigFQCN());
-            CogcharScreenBox csBox = commandBox; //boxSpace.findBox(cRec.boxID());
-            if ((ti != null) && (csBox != null)) {
-                CommandBinding cb = cSpace.findOrMakeBinding(cRec.cmdID());
-                CogcharActionBinding cab = new BasicActionBindingImpl();
-                cab.addTargetBox(csBox);
-                cab.setTargetTrigger(ti);
-                cb.appendAction(cab);
-                getLogger().info("Successfully populated command: {}", cRec);
-            } else {
-                getLogger().warn("Skipping failed binding for trig=[{}] and box=[{}], for cmd=[{}]", new Object[]{ti, csBox, cRec});
-            }
+			Ident cmdID = cRec.cmdID();
+			Ident boxID = cRec.boxID();
+            CogcharScreenBox csBox = boxSpace.findBox(boxID);  // commandBox;
+			// We go ahead and resolve the box to prove box-space is still working.
+			getLogger().info("Resolved boxID {} for cmdID {} to csBox-class {}", boxID, cmdID, csBox.getClass());
+			// FIXME - TEMP HACK to keep the universal commandBox triggers working, but skip the other-box-targeted ones
+			// until new-PCCB is fixed.
+			// 
+			if (csBox == commandBox) {
+				if ((ti != null) && (csBox != null)) {
+					CommandBinding cb = cSpace.findOrMakeBinding(cmdID);
+					CogcharActionBinding cab = new BasicActionBindingImpl();
+					cab.addTargetBox(csBox);
+					cab.setTargetTrigger(ti);
+					cb.appendAction(cab);
+					getLogger().info("Successfully populated command: {}", cRec);
+				} else {
+					getLogger().warn("Skipping failed binding for trig=[{}] and box=[{}], for cmd=[{}]", new Object[]{ti, csBox, cRec});
+				}
+			} else {
+				getLogger().warn("skipping boxID {} , new-PumaCCB is not ready for csBox that is not === PCCB, such as {}", boxID, csBox.getClass());
+			}
         }
     }
 }

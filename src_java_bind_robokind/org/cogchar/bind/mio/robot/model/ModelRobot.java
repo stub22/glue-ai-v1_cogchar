@@ -88,9 +88,9 @@ public class ModelRobot extends AbstractRobot<ModelJoint> {
 	@Override public void move(RobotPositionMap positions, long lenMillisec) {
         long now = System.currentTimeMillis();
         long elapsed = now - myLastMoveStampMillis;
-		//theLogger.info(getDescription() + " moving to: " + 
-        //        positions + ", over " + lenMillisec + " milliseconds. "
-        //        + "elapsed: " + elapsed + ", current time: " + System.currentTimeMillis());
+	//	theLogger.info(getDescription() + " moving to: " + 
+     //          positions + ", over " + lenMillisec + " milliseconds. "
+      //          + "elapsed: " + elapsed + ", current time: " + System.currentTimeMillis());
         myLastMoveStampMillis = now;
         if(myJointMap == null){
             throw new NullPointerException();

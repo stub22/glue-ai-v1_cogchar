@@ -82,7 +82,7 @@ public class ModelToFigureStateMappingFuncs {
         for (BoneProjectionPosition rot : rots) {
             BoneRotationAxis rotAxis = rot.getRotationAxis();
             float rads = (float) rot.getAngleRadians();
-            // theLogger.info("Rotating " + bs.getBoneName() + " around " + rotAxis + " by  " + rads + " radians.");
+         //   theLogger.info("Rotating " + bs.getBoneName() + " around " + rotAxis + " by  " + rads + " radians.");
             switch (rotAxis) {
 
                 case X_ROT:
