@@ -23,38 +23,31 @@ import org.cogchar.bind.mio.robot.model.ModelRobot;
 
 public class BodyConfigSpec
     {
-        private RepoClient rc;
-        private Ident graphIdentForBony;
-        private FigureConfig humCfg;
-        private ModelRobot modelRobot;
+        private RepoClient		myRepoClient;
+        private Ident			myBoneSrcGraphID;
+        private FigureConfig	myHumFigConf;
+        private ModelRobot		myModelRobot;
         
-        public BodyConfigSpec(RepoClient repo, Ident ident, FigureConfig config)
-        {
-            rc=repo;
-            graphIdentForBony=ident;
-            humCfg=config;
-        }
-        
-        public RepoClient getRepoClient()
-        {
-            return rc;
+        public BodyConfigSpec(RepoClient repoCli, Ident boneSrcGraphID, FigureConfig humFigConf)   {
+            myRepoClient		= repoCli;
+            myBoneSrcGraphID	= boneSrcGraphID;
+            myHumFigConf		= humFigConf;
         }
         
-        public Ident getGraphIdentForBony()
-        {
-            return graphIdentForBony;
+        public RepoClient getRepoClient()  {
+            return myRepoClient;
         }
         
-        public ModelRobot getModelRobot()
-        {
-            return modelRobot;
+        public Ident getBoneSrcGraphID()  {
+            return myBoneSrcGraphID;
         }
-        public void setModelRobot(ModelRobot mr)
-        {
-            modelRobot=mr;
+        public ModelRobot getModelRobot()  {
+            return myModelRobot;
         }
-        public FigureConfig getHumCfg()
-        {
-            return humCfg;
+        public void setModelRobot(ModelRobot mr) {
+            myModelRobot = mr;
+        }
+        public FigureConfig getHumaFigureConfig() {
+            return myHumFigConf;
         }
     }
