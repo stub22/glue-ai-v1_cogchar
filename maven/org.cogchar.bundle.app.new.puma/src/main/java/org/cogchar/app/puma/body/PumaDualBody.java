@@ -27,7 +27,7 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.name.skeleton.BoneCN;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
-import org.cogchar.app.puma.config.BodyConfigSpec;
+import org.cogchar.app.puma.config.BodyHandleRecord;
 
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
@@ -43,7 +43,7 @@ public class PumaDualBody extends BasicDebugger {
     private Ident myDualBodyID;
     private String myNickName;
     private PumaBodyGateway myBodyMapper;
-    private BodyConfigSpec bodyConfig;
+    private BodyHandleRecord bodyConfig;
 
     public PumaDualBody(Ident dualBodyID, String nickName) {
         myDualBodyID = dualBodyID;
@@ -94,7 +94,7 @@ public class PumaDualBody extends BasicDebugger {
         return myBodyMapper;
     }
 
-    public void setBodyConfigSpec(BodyConfigSpec spec) {
+    public void setBodyConfigSpec(BodyHandleRecord spec) {
         bodyConfig = spec;
     }
 

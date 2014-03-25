@@ -28,7 +28,7 @@ import org.appdapter.core.name.Ident;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Properties;
-import org.cogchar.app.puma.config.BodyConfigSpec;
+import org.cogchar.app.puma.config.BodyHandleRecord;
 import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
 import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.jflux.impl.services.rk.lifecycle.ManagedService;
