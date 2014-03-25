@@ -324,14 +324,13 @@ public class TriggerItems {
         //  Returns the Class object associated with the class or interface with the given string name, using the given class loader.
         TriggerItem ti = null;
         try {
-            
-            //This is a temp fix until I can figure out where the trigFQCN is coming from.  
-            //I think it's coming from a spreadsheet somehwere, but I've not discovered exactly where.
-            
-            String testQN=trigFQCN.replace("org.cogchar.app.buddy.busker", "org.cogchar.bundle.app.vworld.busker");
+            //From Major 3-25-2014: 
+            //This is a temporary fix until we fully switch over to the New PUMA system. 
+            //The FQCNs are being created from a spreadsheet linked to the main spreadsheet we're using. 
+            String testQN = trigFQCN.replace("org.cogchar.app.buddy.busker", "org.cogchar.bundle.app.vworld.busker");
 //            Class trigClass = Class.forName(trigFQCN);
-			
-			
+
+
             Class trigClass = Class.forName(testQN);
             ti = (TriggerItem) trigClass.newInstance();
         } catch (Throwable t) {
@@ -340,32 +339,27 @@ public class TriggerItems {
         return ti;
     }
 
-    public static void populateCommandSpace(RepoClient rc, CommandSpace cSpace, BoxSpace boxSpace, PumaContextCommandBox commandBox) {
+    public static void populateCommandSpace(RepoClient rc, CommandSpace cSpace, BoxSpace boxSpace) {
         List<CommandRec> cmdRecList = RepoClientTester.queryCommands(rc);
         for (CommandRec cRec : cmdRecList) {
             TriggerItem ti = makeTriggerItem(cRec.trigFQCN());
-			Ident cmdID = cRec.cmdID();
-			Ident boxID = cRec.boxID();
-            CogcharScreenBox csBox = boxSpace.findBox(boxID);  // commandBox;
-			// We go ahead and resolve the box to prove box-space is still working.
-			getLogger().info("Resolved boxID {} for cmdID {} to csBox-class {}", boxID, cmdID, csBox.getClass());
-			// FIXME - TEMP HACK to keep the universal commandBox triggers working, but skip the other-box-targeted ones
-			// until new-PCCB is fixed.
-			// 
-			if (csBox == commandBox) {
-				if ((ti != null) && (csBox != null)) {
-					CommandBinding cb = cSpace.findOrMakeBinding(cmdID);
-					CogcharActionBinding cab = new BasicActionBindingImpl();
-					cab.addTargetBox(csBox);
-					cab.setTargetTrigger(ti);
-					cb.appendAction(cab);
-					getLogger().info("Successfully populated command: {}", cRec);
-				} else {
-					getLogger().warn("Skipping failed binding for trig=[{}] and box=[{}], for cmd=[{}]", new Object[]{ti, csBox, cRec});
-				}
-			} else {
-				getLogger().warn("skipping boxID {} , new-PumaCCB is not ready for csBox that is not === PCCB, such as {}", boxID, csBox.getClass());
-			}
+            Ident cmdID = cRec.cmdID();
+            Ident boxID = cRec.boxID();
+            CogcharScreenBox csBox = boxSpace.findBox(boxID);  
+            // We go ahead and resolve the box to prove box-space is still working.
+            getLogger().info("Resolved boxID {} for cmdID {} to csBox-class {}", boxID, cmdID, csBox.getClass());
+            
+            if ((ti != null) && (csBox != null)) {
+                CommandBinding cb = cSpace.findOrMakeBinding(cmdID);
+                CogcharActionBinding cab = new BasicActionBindingImpl();
+                cab.addTargetBox(csBox);
+                cab.setTargetTrigger(ti);
+                cb.appendAction(cab);
+                getLogger().info("Successfully populated command: {}", cRec);
+            } else {
+                getLogger().warn("Skipping failed binding for trig=[{}] and box=[{}], for cmd=[{}]", new Object[]{ti, csBox, cRec});
+            }
+
         }
     }
 }
