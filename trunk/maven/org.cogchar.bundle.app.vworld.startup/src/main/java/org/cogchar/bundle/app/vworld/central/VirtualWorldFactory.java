@@ -60,7 +60,7 @@ public class VirtualWorldFactory {
         Map<String, ServiceBinding> bindings = new HashMap<String, ServiceBinding>();
         VWorldMapperLifecycle vMapLifecycle = new VWorldMapperLifecycle();
 
-        getBindings(bindings, vMapLifecycle);
+        VWorldMapperLifecycle.getBindings(bindings, vMapLifecycle);
 
         OSGiRegistry registry = new OSGiRegistry(context);
 
@@ -73,101 +73,5 @@ public class VirtualWorldFactory {
         serviceManager.start(registry);
     }
 
-    private static Map getBindings(Map<String, ServiceBinding> bindings, ServiceLifecycle l) {
 
-//        Map<String, String> clProps = new HashMap<String, String>();
-//        clProps.put("classLoader", "classLoader");
-//        BasicDescriptor clDescriptor =
-//                new BasicDescriptor(
-//                ClassLoader.class.getName(),
-//                clProps);
-//
-//        ServiceBinding clBinding = new ServiceBinding(
-//                (ServiceDependency) l.getDependencySpecs().get(0),
-//                clDescriptor,
-//                ServiceBinding.BindingStrategy.LAZY);
-//        
-//        System.out.println("clBinding info: "+clBinding.toString());
-//
-//        bindings.put("classLoader", clBinding);
-
-        Map<String, String> configProps = new HashMap<String, String>();
-        configProps.put("bodyConfigSpec", "bodyConfigSpec");
-        BasicDescriptor configDepDescriptor =
-                new BasicDescriptor(
-                ArrayList.class.getName(),
-                configProps);
-
-        ServiceBinding configBinding = new ServiceBinding(
-                (ServiceDependency) l.getDependencySpecs().get(1),
-                configDepDescriptor,
-                ServiceBinding.BindingStrategy.LAZY);
-
-
-        bindings.put("bodyConfigSpec", configBinding);
-
-        Map<String, String> mediatorProps = new HashMap<String, String>();
-        mediatorProps.put("pumaMediator", "pumaMediator");
-        BasicDescriptor mediatorDescriptor =
-                new BasicDescriptor(
-                PumaContextMediator.class.getName(),
-                mediatorProps);
-
-        ServiceBinding mediatorBinding = new ServiceBinding(
-                (ServiceDependency) l.getDependencySpecs().get(0),
-                mediatorDescriptor,
-                ServiceBinding.BindingStrategy.LAZY);
-
-
-        bindings.put("pumaMediator", mediatorBinding);
-
-
-        Map<String, String> regrProps = new HashMap<String, String>();
-        regrProps.put("theRegistryClient", "theRegistryClient");
-        BasicDescriptor regDescriptor =
-                new BasicDescriptor(
-                PumaRegistryClient.class.getName(),
-                null);
-
-        ServiceBinding regBinding = new ServiceBinding(
-                (ServiceDependency) l.getDependencySpecs().get(2),
-                regDescriptor,
-                ServiceBinding.BindingStrategy.LAZY);
-
-
-        bindings.put("theRegistryClient", regBinding);
-
-
-        Map<String, String> appContextProps = new HashMap<String, String>();
-        regrProps.put("appContext", PumaAppContext.class.getName());
-        BasicDescriptor appDescriptor =
-                new BasicDescriptor(
-                PumaAppContext.class.getName(),
-                null);
-
-        ServiceBinding appContextBinding = new ServiceBinding(
-                (ServiceDependency) l.getDependencySpecs().get(4),
-                appDescriptor,
-                ServiceBinding.BindingStrategy.LAZY);
-
-
-        bindings.put("appContext", appContextBinding);
-
-        Map<String, String> commandEventProps = new HashMap<String, String>();
-        regrProps.put("commandEventDep", CommandEvent.class.getName());
-        BasicDescriptor commandEventDescriptor =
-                new BasicDescriptor(
-                CommandEvent.class.getName(),
-                null);
-
-        ServiceBinding commandEventBinding = new ServiceBinding(
-                (ServiceDependency) l.getDependencySpecs().get(3),
-                commandEventDescriptor,
-                ServiceBinding.BindingStrategy.LAZY);
-
-
-        bindings.put("commandEvent", commandEventBinding);
-
-        return bindings;
-    }
 }

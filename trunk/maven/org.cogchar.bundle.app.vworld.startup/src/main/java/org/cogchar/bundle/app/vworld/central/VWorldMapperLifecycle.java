@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.app.puma.config.BodyHandleRecord;
 import org.jflux.api.service.ServiceDependency;
@@ -21,12 +22,14 @@ import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.event.CommandEvent;
 import org.cogchar.app.puma.event.Updater;
 import org.cogchar.app.puma.boot.PumaAppContext;
+import org.jflux.api.registry.basic.BasicDescriptor;
+import org.jflux.api.service.binding.ServiceBinding;
 
 public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifecycle<VWorldRegistry> {
 
     private final static String REGKEY_ClassLoader		= "classLoader";
     private final static String DEPKEY_Mediator			= "puma-mediator";
-    private final static String DEPKEY_BodyHandleGroup	= "body-handle-group";
+    private final static String DEPKEY_BodyHandleRec	= "body-handle-rec";
     private final static String DEPKEY_PumaRegCli		= "puma-reg-client";
     private final static String DEPKEY_CommandEvent		= "command-event";
     private final static String DEPKEY_AppContext		= "app-context";
@@ -39,26 +42,10 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
 //        new ServiceDependency(theClassLoader, ClassLoader.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY,
 //        ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP),
 		makeUnaryStaticServiceDep(DEPKEY_Mediator, PumaContextMediator.class),
-		makeUnaryStaticServiceDep(DEPKEY_BodyHandleGroup, ArrayList.class),
+		makeUnaryStaticServiceDep(DEPKEY_BodyHandleRec, ArrayList.class),
 		makeUnaryStaticServiceDep(DEPKEY_PumaRegCli, PumaRegistryClient.class),
 		makeUnaryStaticServiceDep(DEPKEY_CommandEvent, CommandEvent.class),
 		makeUnaryStaticServiceDep(DEPKEY_AppContext, PumaAppContext.class)
-
-		/*
-		 ABOVE 5 lines replaces the below 5 lines.   D.R.Y.
-		 * 
-        new ServiceDependency(REGKEY_Mediator, PumaContextMediator.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY,
-        ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP),
-        new ServiceDependency(REGKEY_BodyConfSpec, ArrayList.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY,
-        ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP),
-        new ServiceDependency(REGKEY_PumaRegCli, PumaRegistryClient.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY,
-        ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP),
-        new ServiceDependency(REGKEY_CommandEvent, CommandEvent.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY,
-        ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP),
-        new ServiceDependency(REGKEY_AppContext, PumaAppContext.class.getName(), ServiceDependency.Cardinality.MANDATORY_UNARY,
-        ServiceDependency.UpdateStrategy.STATIC, Collections.EMPTY_MAP)
-		*/
-            
     };
 	
 	private static ServiceDependency makeUnaryStaticServiceDep(String regKey, Class depClazz) { 
@@ -82,9 +69,9 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
         vworldreg.setContextCommandBox(pCCB);
         pCCB.reloadCommandSpace();
         //code for connecting bodies
-        ArrayList<BodyHandleRecord> bodyConfig = (ArrayList<BodyHandleRecord>) dependencyMap.get(DEPKEY_BodyHandleGroup);
+        ArrayList<BodyHandleRecord> bodyHandleRecList = (ArrayList<BodyHandleRecord>) dependencyMap.get(DEPKEY_BodyHandleRec);
 
-        for (BodyHandleRecord body : bodyConfig) {
+        for (BodyHandleRecord body : bodyHandleRecList) {
             try {
                 Ident		boneSrcGraphID = body.getBoneSrcGraphID();
 				RepoClient	repoCli = body.getRepoClient();
@@ -131,4 +118,101 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
     @Override public List<ServiceDependency> getDependencySpecs() {
         return Arrays.asList(theDependencyArray);
     }
+    protected static Map getBindings(Map<String, ServiceBinding> bindings, ServiceLifecycle l) {
+
+//        Map<String, String> clProps = new HashMap<String, String>();
+//        clProps.put("classLoader", "classLoader");
+//        BasicDescriptor clDescriptor =
+//                new BasicDescriptor(
+//                ClassLoader.class.getName(),
+//                clProps);
+//
+//        ServiceBinding clBinding = new ServiceBinding(
+//                (ServiceDependency) l.getDependencySpecs().get(0),
+//                clDescriptor,
+//                ServiceBinding.BindingStrategy.LAZY);
+//        
+//        System.out.println("clBinding info: "+clBinding.toString());
+//
+//        bindings.put("classLoader", clBinding);
+
+        Map<String, String> configProps = new HashMap<String, String>();
+     //   configProps.put(DEPKEY_BodyHandleRec, DEPKEY_BodyHandleRec);
+        BasicDescriptor configDepDescriptor =
+                new BasicDescriptor(
+                ArrayList.class.getName(),
+                configProps);
+
+        ServiceBinding configBinding = new ServiceBinding(
+                (ServiceDependency) l.getDependencySpecs().get(1),
+                configDepDescriptor,
+                ServiceBinding.BindingStrategy.LAZY);
+
+
+        bindings.put(DEPKEY_BodyHandleRec, configBinding);
+
+        Map<String, String> mediatorProps = new HashMap<String, String>();
+	//		mediatorProps.put(DEPKEY_Mediator, DEPKEY_Mediator);
+        BasicDescriptor mediatorDescriptor =
+                new BasicDescriptor(
+                PumaContextMediator.class.getName(),
+                mediatorProps);
+
+        ServiceBinding mediatorBinding = new ServiceBinding(
+                (ServiceDependency) l.getDependencySpecs().get(0),
+                mediatorDescriptor,
+                ServiceBinding.BindingStrategy.LAZY);
+
+
+        bindings.put(DEPKEY_Mediator, mediatorBinding);
+
+
+        Map<String, String> regrProps = new HashMap<String, String>();
+     //    regrProps.put(DEPKEY_PumaRegCli, DEPKEY_PumaRegCli);
+        BasicDescriptor regDescriptor =
+                new BasicDescriptor(
+                PumaRegistryClient.class.getName(),
+                regrProps);
+
+        ServiceBinding regBinding = new ServiceBinding(
+                (ServiceDependency) l.getDependencySpecs().get(2),
+                regDescriptor,
+                ServiceBinding.BindingStrategy.LAZY);
+
+
+        bindings.put(DEPKEY_PumaRegCli, regBinding);
+
+
+        Map<String, String> appContextProps = new HashMap<String, String>();
+       // appContextProps.put(DEPKEY_AppContext, PumaAppContext.class.getName());
+        BasicDescriptor appDescriptor =
+                new BasicDescriptor(
+                PumaAppContext.class.getName(),
+                appContextProps);
+
+        ServiceBinding appContextBinding = new ServiceBinding(
+                (ServiceDependency) l.getDependencySpecs().get(4),
+                appDescriptor,
+                ServiceBinding.BindingStrategy.LAZY);
+
+
+        bindings.put(DEPKEY_AppContext, appContextBinding);
+
+        Map<String, String> commandEventProps = new HashMap<String, String>();
+        // commandEventProps.put(DEPKEY_CommandEvent, CommandEvent.class.getName());
+        BasicDescriptor commandEventDescriptor =
+                new BasicDescriptor(
+                CommandEvent.class.getName(),
+                commandEventProps);
+
+        ServiceBinding commandEventBinding = new ServiceBinding(
+                (ServiceDependency) l.getDependencySpecs().get(3),
+                commandEventDescriptor,
+                ServiceBinding.BindingStrategy.LAZY);
+
+
+        bindings.put(DEPKEY_CommandEvent, commandEventBinding);
+
+        return bindings;
+    }	
 }
