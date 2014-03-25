@@ -64,11 +64,8 @@
 		<module>../ext.bundle.fuseki</module>
 		<module>../org.cogchar.bundle.demo.all</module>
 		<!-- Stu configging for "all new puma" build -->
-<!--		<module>../org.cogchar.bundle.app.new.puma</module>
-        <module>../org.cogchar.bundle.app.vworld.startup</module>-->
-		 <!--for "old puma", disable the above two lines and add instead:-->
-		<module>../org.cogchar.bundle.app.puma</module>
-		
+		<module>../org.cogchar.bundle.app.new.puma</module>
+        <module>../org.cogchar.bundle.app.vworld.startup</module>
 		
 		<module>../org.cogchar.bundle.core</module>		
 		<module>../org.cogchar.bundle.bind.mechio</module>
@@ -98,7 +95,7 @@
 				o.c.l.?.api - for Storychat
 				o.c.l.sight.api - for Freckler
 				
-		In contrast, TinkerBot.org does not have such a plugin, because
+		In contrast, MechIO.org does not have such a plugin, because
 		Cogchar actually functions as a plugin to TinkerBot, and wrapper around it.
 		-->
 
