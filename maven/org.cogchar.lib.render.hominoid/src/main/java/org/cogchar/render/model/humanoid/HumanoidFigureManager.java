@@ -89,7 +89,7 @@ public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNo
 		final Node rootNode = rrc.getJme3RootDeepNode(null);
 		final PhysicsSpace ps = brc.getPhysicsSpace();
 		if (figure == null) {
-			getLogger().warn("setupHumanoidFigure() Found null HumanoidFigure for charID={}", charIdent);
+			getLogger().warn("aborting setup for charID={} - found null HumanoidFigure", charIdent);
 			return null;
 		}
 		/**
@@ -146,15 +146,15 @@ public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNo
 	}
 	
 	
-	public Node findHumanoidBoneAttachNode(final Ident charID, final String boneName) {
-		final HumanoidFigure robot = getHumanoidFigure(charID);
+	public Node findHumanoidBoneAttachNode(final Ident charFigID, final String boneName) {
+		final HumanoidFigure humaFig = getHumanoidFigure(charFigID);
 		Node attachmentNode = null;
-		if (robot == null) {
-			getLogger().warn("Failed to find bone {} due to missing robot: {}", boneName, charID);
+		if (humaFig == null) {
+			getLogger().warn("Failed to find bone {} due to missing robot for charFigID={}", boneName, charFigID);
 		} else {
-			attachmentNode =  robot.getBoneAttachmentsNode(boneName);
+			attachmentNode =  humaFig.getBoneAttachmentsNode(boneName);
 			if (attachmentNode == null) {
-				getLogger().warn("Could not find bone {} on robot: {}", boneName, charID);	
+				getLogger().warn("Could not find bone {} on robot for charFigID={}", boneName, charFigID);	
 			}
 		}
 		return attachmentNode;
