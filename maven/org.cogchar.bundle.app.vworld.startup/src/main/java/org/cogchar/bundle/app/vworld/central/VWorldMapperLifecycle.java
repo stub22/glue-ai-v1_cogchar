@@ -84,12 +84,12 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
                 }
 				FigureConfig humaFigCfg = body.getHumaFigureConfig();
 				
-				Ident charID = humaFigCfg.getFigureID();
+				Ident figureID = humaFigCfg.getFigureID();
 
-				getLogger().info("Calling initVworldHumanoid for charID={}", charID);
+				getLogger().info("Calling initVworldHumanoid for charID={} and boneSrcGraphID={}", figureID, boneSrcGraphID);
                 vworldreg.initVWorldHumanoid(body.getRepoClient(), boneSrcGraphID, humaFigCfg);
-				getLogger().info("Calling connnectBonyRobotToHumanoidFigure for charID={}", charID);
-				vworldreg.connectBonyRobotToHumanoidFigure(body.getModelRobot(), charID);
+				getLogger().info("Calling connnectBonyRobotToHumanoidFigure for charID={}", figureID);
+				vworldreg.connectBonyRobotToHumanoidFigure(body.getModelRobot(), figureID);
             } catch (Throwable t) {
                 getLogger().error("InitVWorldHumanoid failure");
             }

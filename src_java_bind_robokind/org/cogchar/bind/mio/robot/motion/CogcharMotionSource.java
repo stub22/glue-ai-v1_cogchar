@@ -102,7 +102,7 @@ public class CogcharMotionSource extends RobotMoverFrameSource {
 		String svcClsName = FrameSource.class.getName();
 		String filter = null; 
 		if (optRobotID != null) {
-			String.format( "(%s=%s)", Robot.PROP_ID, optRobotID.toString());
+			filter = String.format( "(%s=%s)", Robot.PROP_ID, optRobotID.toString());
 		}
 		try {
 			ServiceReference[] refs = bunCtx.getServiceReferences(svcClsName, filter);

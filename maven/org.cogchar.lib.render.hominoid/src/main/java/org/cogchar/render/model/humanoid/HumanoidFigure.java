@@ -79,12 +79,15 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 	private	SkeletonDebugger				myJMESkeletonDebugger;
 
 	
+	// Holds the runtime state of the bones, which it is our job to render into OpenGL skeleton updates
+	// in the metho
 	private	FigureState						myFigureState;
 	
-	private	HumanoidFigureConfig			myConfig;
+	// Holds the detailed configuration of the bone mapping
+	private	HumanoidFigureConfig			myHFConfig;
 	
-	private HumanoidFigureModule			myModule;
-
+	// Supplies render callbacks on the OpenGL update thread, allowing us to update the OpenGL skeleton model.
+	private HumanoidFigureModule			myHFModule;
 
 
 	public static String
@@ -99,13 +102,13 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 
 
 	public HumanoidFigure(HumanoidFigureConfig hfc) { 
-		myConfig = hfc;
+		myHFConfig = hfc;
 	}
 	protected Node getFigureNode() { 
 		return myJME3ModelSceneNode;
 	}
 	protected HumanoidFigureConfig getFigureConfig() { 
-		return myConfig;
+		return myHFConfig;
 	}
 	protected AnimChannel getFigureAnimChannel() { 
 		return myJME3AnimChannel;
@@ -114,13 +117,13 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		return myRagdollKinematicControl;
 	}
 	protected Ident getCharIdent() { 
-		return myConfig.getFigureID();
+		return myHFConfig.getFigureID();
 	}
 	protected String getNickname() { 
-		return myConfig.getNickname();
+		return myHFConfig.getNickname();
 	}	
 	protected FigureBoneConfig getHBConfig() {
-		return myConfig.getFigureBoneConfig();
+		return myHFConfig.getFigureBoneConfig();
 	}
 	protected Bone getFigureBone(String boneName) {
 		Bone b = myJMESkeleton.getBone(boneName);
@@ -133,14 +136,14 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 	// We provide getter/setter for the HumanoidFigureModule associated with this HumanoidFigure here.
 	// This allows us to detach the module on character "deinit"
 	public HumanoidFigureModule getModule() {
-		return myModule;
+		return myHFModule;
 	}
 	public void setModule(HumanoidFigureModule module) {
-		myModule = module;
+		myHFModule = module;
 	}
 
 	public boolean loadMeshAndSkeletonIntoVWorld(AssetManager assetMgr, Node parentNode, PhysicsSpace ps) {
-		String meshPath = myConfig.getMeshPath();
+		String meshPath = myHFConfig.getMeshPath();
 		try {
 			myJME3ModelSceneNode = (Node) assetMgr.loadModel(meshPath);
 		} catch (Throwable t) {
@@ -148,7 +151,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 			return false;
 		}
 		
-		myJME3ModelSceneNode.setLocalScale(myConfig.getScale()); 
+		myJME3ModelSceneNode.setLocalScale(myHFConfig.getScale()); 
 		
 		// This was commented out in JMonkey code:
 		//  myHumanoidModel.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X));
@@ -166,14 +169,14 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 
 		applyHumanoidJointLimits(myRagdollKinematicControl);
 
-		if (myConfig.getPhysicsFlag() && (ps != null)) {
+		if (myHFConfig.getPhysicsFlag() && (ps != null)) {
 			myRagdollKinematicControl.addCollisionListener(this);
 			ps.add(myRagdollKinematicControl);
 		}
 
 		parentNode.attachChild(myJME3ModelSceneNode);
 		
-		Vector3f pos = new Vector3f(myConfig.getInitX(), myConfig.getInitY(), myConfig.getInitZ());
+		Vector3f pos = new Vector3f(myHFConfig.getInitX(), myHFConfig.getInitY(), myHFConfig.getInitZ());
 		moveToPosition_onSceneThread(pos);
 
 		myJME3AnimChannel = humanoidControl.createChannel();
@@ -245,7 +248,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		// AnimControl humanoidControl = myHumanoidModelNode.getControl(AnimControl.class);
 		if (myJMESkeletonDebugger == null) {
 			myJMESkeletonDebugger = new SkeletonDebugger(SKEL_DEBUG_NAME, myJMESkeleton);
-			String unshadedMatPath = myConfig.getDebugSkelMatPath();
+			String unshadedMatPath = myHFConfig.getDebugSkelMatPath();
 			Material mat2 = new Material(assetMgr, unshadedMatPath);
 			mat2.getAdditionalRenderState().setWireframe(true);
 			mat2.setColor("Color", ColorRGBA.Green);
@@ -280,7 +283,10 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 		}
 		FigureBoneConfig hbc = getHBConfig();
 		List<FigureBoneDesc> boneDescs = hbc.getBoneDescs();
-		// theLogger.info("Applying figureState " + fs + " to boneDescs[" + boneDescs + "]"); // TEST ONLY
+		if (boneDescs.size() == 0) {
+			theLogger.warn("Found 0 boneDescs to map to for figure {}", myHFConfig);
+		}
+		theLogger.trace("Applying figureState {} to {} boneDescs[{}]", fs, boneDescs.size(), boneDescs); 
 		int debugModulator = 0;
 		for (FigureBoneDesc hbd : boneDescs) {
 			
@@ -296,6 +302,8 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
                                 Vector3f boneScaleVec = null;   // Same as Vector3f.UNIT_XYZ = new Vector3f(1.0, 1.0, 1.0); = scale by 1 in all 3 directions
                                 
 				StickFigureTwister.applyBoneTransforms_onSceneThread(tgtBone, boneTranslateVec, boneRotQuat, boneScaleVec);
+			} else {
+				theLogger.debug("Skipping boneState {} and tgtBone {}, for boneName {}", bs, tgtBone, boneName);
 			}
 		}
 	

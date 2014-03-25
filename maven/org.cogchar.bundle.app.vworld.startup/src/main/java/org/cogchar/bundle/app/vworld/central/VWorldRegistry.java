@@ -17,7 +17,7 @@ import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
-import org.cogchar.bind.mio.robot.model.ModelJoint;
+
 import org.cogchar.bind.mio.robot.model.ModelRobot;
 import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
 import org.osgi.framework.Bundle;
@@ -29,9 +29,10 @@ import org.cogchar.render.model.bony.FigureState;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
-import org.cogchar.api.skeleton.config.BoneProjectionRange;
+
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.bundle.app.vworld.startup.ModelToFigureStateMappingFuncs;
+
 
 public class VWorldRegistry extends BasicDebugger {
 
@@ -178,26 +179,13 @@ public class VWorldRegistry extends BasicDebugger {
         return hf;
     }
 
-    private FigureState setupFigureState(ModelRobot br) {
-
-        FigureState fs = new FigureState();
-        List<ModelJoint> allJoints = br.getJointList();
-        for (ModelJoint mJoint : allJoints) {
-            for (BoneProjectionRange bpr : mJoint.getBoneRotationRanges()) {
-                String boneName = bpr.getBoneName();
-                // BoneState is returned, but ignored here.
-                fs.obtainBoneState(boneName);
-            }
-        }
-        return fs;
-    }
-
-    public boolean initVWorldHumanoid(RepoClient qi, final Ident qGraph, final FigureConfig figConf) throws Throwable {
-		Ident charID = figConf.getFigureID();
+    public boolean initVWorldHumanoid(RepoClient qi, final Ident boneConfGraphID, final FigureConfig figConf) throws Throwable {
+		Ident figID = figConf.getFigureID();
+		getLogger().info("Setting up figureID={} using boneConfigGraphID {}", figID, boneConfGraphID);
         if (myVWorldMapper != null) {
             HumanoidRenderContext hrc = myVWorldMapper.getHumanoidRenderContext();
             // New with "GlobalModes": we'll run hrc.setupHumanoidFigure from here now
-            HumanoidFigure hf = hrc.getHumanoidFigureManager().setupHumanoidFigure(hrc, qi, charID, qGraph, figConf);
+            HumanoidFigure hf = hrc.getHumanoidFigureManager().setupHumanoidFigure(hrc, qi, figID, boneConfGraphID, figConf);
             return (hf != null);
         } else {
             getLogger().warn("initVWorldHumanoid doing nothing, because no VWorldMapper is assigned.");
@@ -205,6 +193,11 @@ public class VWorldRegistry extends BasicDebugger {
         }
     }
 
+	public VWorldRoboPump setupRoboPump(final Ident pumpID, ModelRobot mr, HumanoidFigure hf) throws Exception { 
+		VWorldRoboPump pump = new VWorldRoboPump(pumpID, mr, hf);
+		pump.completeSetup();
+		return pump;
+	}
     public void connectBonyRobotToHumanoidFigure(ModelRobot mr, final Ident charID) throws Exception {
 		getLogger().info("charID={}, ModelRobot={}, robotID={}", charID,  mr, mr.getRobotId());
         final ModelRobot br = mr; //getBonyRobot();
@@ -215,26 +208,7 @@ public class VWorldRegistry extends BasicDebugger {
         final HumanoidFigure hf = getHumanoidFigure(charID);
 		getLogger().info("HumanoidFigure={}", hf);
         if (hf != null) {
-            // It is optional to create this state object if there is no humanoid figure to animate.
-            // It could be used for some other programming purpose.
-            FigureState fs = setupFigureState(br);
-			getLogger().info("FigureState={}", fs);
-            hf.setFigureState(fs);
-            br.registerMoveListener(new ModelRobot.MoveListener() {
-                @Override
-                public void notifyBonyRobotMoved(ModelRobot br) {
-                    HumanoidFigure hf = getHumanoidFigure(charID);
-                    if (hf != null) {
-						// This print() will be too copious, and will need to be disabled after bone-bugs are fixed.
-						getLogger().info("Calling propagateState for charID={}, robotID={}, hfig={}", charID, br.getRobotId(), hf);
-
-                        ModelToFigureStateMappingFuncs.propagateState(br, hf);
-                    } else {
-						// Again, too copious
-						getLogger().warn("Cannot propagate: HumanoidFigure is null for charID={}, robotID={}", charID, br.getRobotId());
-					}
-                }
-            });
+			VWorldRoboPump pump = setupRoboPump(charID, mr, hf);
         } else {
 			getLogger().warn("connection aborting due to missing HumanoidFigure, for charID={}",charID);
 		}
