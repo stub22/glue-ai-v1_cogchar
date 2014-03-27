@@ -30,7 +30,7 @@ public class ConversationInputFilter implements
             return null;
         }
         String out = in.replaceAll("'", "");
-         out = in.replaceAll("[^a-zA-Z0-9 ]+", " ");
+        out = out.replaceAll("[^a-zA-Z0-9 ]+", " ");
         return out;
     }
 }
