@@ -46,10 +46,12 @@ import org.cogchar.render.trial.TrialUpdater;
 
 public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends DynamicGoody implements TrialUpdater {
 		
-	private	Node			myGroupDisplayNode, myParentDisplayNode;
+	private	Node			myGroupDisplayNode; // , myParentDisplayNode;
 	//  We use an array to emphasize the indexed nature of this space.
 	// However, "goodyIndex" always starts at 1, so we have to subtract 1
 	private	DynamicGoody	myGoodies[] = new DynamicGoody[0];
+	
+	protected Integer		myNextSize;
 	
 	public DynamicGoodySpace(DynamicGoodySpace<?> optParentSpace, int idxIntoParentOrNeg) { 
 		super(idxIntoParentOrNeg);
@@ -58,24 +60,31 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 		}
 		
 	}
+	protected void setDesiredSize(int size) {
+		myNextSize = size;
+	}
 	// This will be called if we have been explicitly attached as a TrialUpdater.
 	// Should not be called if we are a child space.
 	@Override public void doUpdate(RenderRegistryClient rrc, float tpf) {
 		doFastVWorldUpdate_onRendThrd();
 	}	
-	@Override public void doFastVWorldUpdate_onRendThrd() { 
+	@Override public void doFastVWorldUpdate_onRendThrd() {
+		if (myNextSize != null) {
+			resizeSpace_onRendThrd(myNextSize);
+			myNextSize = null;
+		}
 		for (int idx = 0; idx < myGoodies.length; idx++) {
 			// Some of these may be child spaces.
 			myGoodies[idx].doFastVWorldUpdate_onRendThrd();
 		}
 	}
 	// Override to set good node names.
-	protected String getUniqueSpaceName() { 
+	@Override protected String getUniqueName() { 
 		return "generatedName_99";
 	}
-	protected Node getGroupDisplayNode() { 
+	@Override protected Node getDisplayNode() { 
 		if (myGroupDisplayNode == null) {
-			myGroupDisplayNode = new Node(getUniqueSpaceName());
+			myGroupDisplayNode = new Node(getUniqueName());
 		}
 		return myGroupDisplayNode;
 	}
@@ -85,12 +94,15 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 //		return new DynamicGoody(oneBasedIndex);
 //	}
 	
-	public DGT getGoodyAtIndex(int oneBasedIndex) {
+	public synchronized boolean hasGoodyAtIndex(int oneBasedIndex) {
+		return ((oneBasedIndex >= 1) && (oneBasedIndex <= myGoodies.length));
+	}
+	public synchronized DGT getGoodyAtIndex(int oneBasedIndex) {
 		if ((oneBasedIndex >= 1) && (oneBasedIndex <= myGoodies.length)) {
 			return (DGT) myGoodies[oneBasedIndex - 1];
 		} else {
 			getLogger().error("Supplied index {} is out of bounds [1, {}]", oneBasedIndex, myGoodies.length);
-			throw new RuntimeException("out of bounds goody index sent to space: " + getUniqueSpaceName());
+			throw new RuntimeException("out of bounds goody index sent to space: " + getUniqueName());
 		}
 	}
 	/**
@@ -101,56 +113,63 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 	 *		...and we must detach+dispose of their OpenGL resources.
 	 * @param size 
 	 */
-	public void resizeSpace(int size) { 
+	private synchronized void resizeSpace_onRendThrd(int size) { 
 		int oldSize = myGoodies.length;
 		if (oldSize == size) {
 			return;
 		}
 		DynamicGoody nGoodies[] = new DynamicGoody[size];
+		// First, copy over the old goodies that still fit.
 		int maxCopy = Math.min(oldSize, size);
 		for (int idx =0; idx < maxCopy; idx++) {
 			nGoodies[idx] = myGoodies[idx];
 		}
-		// Make any new ones required
-		for (int jdx = maxCopy; jdx < size; jdx++) {
-			// jdx is zero-based, so we add one to set the 1-based Goody-space index.
-			nGoodies[jdx] = makeGoody(jdx + 1);
+		// Next, make any new goodies required
+		Node groupDisplayNode = getDisplayNode();
+		if (groupDisplayNode != null) {
+			for (int jdx = maxCopy; jdx < size; jdx++) {
+				// jdx is zero-based, so we add one to set the 1-based Goody-space index.
+				nGoodies[jdx] = makeGoody(jdx + 1);
+				nGoodies[jdx].setParentSpace(this);
+				nGoodies[jdx].ensureAttachedToParentNode_onRendThrd(groupDisplayNode);
+			}
+		} else {
+			throw new RuntimeException("Cannot resize goody space before group display node is available");
 		}
-		// Detach + Dispose any old ones no longer in scope.
+		// Finally, detach + dispose any old goodies that are no longer in scope.
 		for (int kdx = maxCopy; kdx < oldSize; kdx++) {
-			myGoodies[kdx].detachAndDispose();
+			myGoodies[kdx].detachAndDispose_onRendThrd();
 		}
 		myGoodies = nGoodies;
 	}
-	@Override protected void detachAndDispose() {
-		resizeSpace(0);
+	@Override public void detachAndDispose_onRendThrd() {
+		setDesiredSize(0);
+		resizeSpace_onRendThrd(0);
 		if (myGroupDisplayNode != null) {
-			if (myParentDisplayNode != null) {
-				myParentDisplayNode.detachChild(myGroupDisplayNode);
+			Node parentNode = myGroupDisplayNode.getParent();
+			if (parentNode != null) {
+				parentNode.detachChild(myGroupDisplayNode);
 			}
 		}
-		// TODO:  Detach group display node
 	}
-
+	/*
+	@Override public void ensureChildNodesAttached_onRendThrd() { 
+		// For all goodies, make sure the our groupDisplayNode
+	}
+	*/
+/*
 	public void setParentDisplayNode_onRendThrd(Node n) { 
 		// create and/or reparent the GroupDisplayNode
 		myParentDisplayNode = n;
 		myParentDisplayNode.attachChild(myGroupDisplayNode);
 	}
-	public void attachChildDisplayNodes_onRendThrd() { 
-		// For all goodies, attach the child node to our groupDisplayNode
-	}
-	/*
 	public void a_onRendThrd(RenderRegistryClient	rrc) {
 		if (mySubsysNode != null) {
 			DeepSceneMgr dsm = rrc.getSceneDeepFacade(null);
 			dsm.attachTopSpatial(mySubsysNode);
 		}
-	}	
-	*/
-	
-	public void activateDisplay() {
-		
 	}
-
+	public void activateDisplay() {		
+	}
+	*/
 }

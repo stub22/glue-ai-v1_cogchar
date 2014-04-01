@@ -103,7 +103,7 @@ public class TrialBalloon extends CogcharPresumedApp {
 			// or subsequent activity.  So, generally speaking, this start() is an uncertain place to do anything
 			// involving JME3.  But launching some other system threads, e.g. MIDI, is a reasonable thing to do.
 			
-			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returned from initMidiRouter(), returning from start()");
+			getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ Returning from start()");
 		} catch (Throwable t) {
 			getLogger().error("start() caught: ", t);
 		}
