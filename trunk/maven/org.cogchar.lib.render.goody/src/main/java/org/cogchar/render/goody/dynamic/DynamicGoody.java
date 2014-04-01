@@ -60,7 +60,7 @@ import org.appdapter.core.log.BasicDebugger;
 
 public class DynamicGoody extends BasicDebugger {
 	// This goody exists "within" myDGSpace, "at" index myGoodyIndex.
-	private DynamicGoodySpace		myDGSpace;
+	private DynamicGoodySpace		myParentDGSpace;
 	private	Integer					myGoodyIndex;
 	
 	// This OpenGL node is always a child of the Node held in myDGSpace.
@@ -70,16 +70,35 @@ public class DynamicGoody extends BasicDebugger {
 		myGoodyIndex = index;
 	}
 	public void setParentSpace(DynamicGoodySpace<?> dgSpace) {
-		myDGSpace = dgSpace;
+		myParentDGSpace = dgSpace;
 	}
-
+	public void ensureAttachedToParentNode_onRendThrd(Node parentDNode) {
+		Node childDNode = getDisplayNode();
+		// Node parentDNode = myParentDGSpace.getDisplayNode();
+		if(!parentDNode.hasChild(childDNode)) {
+			parentDNode.attachChild(childDNode);
+		} else {
+			throw new RuntimeException ("Cannot call attachDisplayToParent_onRendThrd() before setParentSpace()");
+		}
+	}
+	protected String getUniqueName() {
+		String parentName = myParentDGSpace.getUniqueName();
+		return parentName + "_" + myGoodyIndex;
+	}
 	protected DynamicGoodySpace getParentSpace() {
-		return myDGSpace;
+		return myParentDGSpace;
 	}
 	protected Integer getIndex() {
 		return myGoodyIndex;
 	}
 	protected Node getDisplayNode() {
+		if (myDisplayNode == null) {
+			if (myParentDGSpace != null) { 
+				myDisplayNode = new Node(getUniqueName());
+			}  else {
+				getLogger().warn("getDisplayNode() cannot make node yet, because no parent is attached");
+			}
+		}
 		return myDisplayNode;
 	}
 
@@ -87,7 +106,8 @@ public class DynamicGoody extends BasicDebugger {
 	// but don't hog the OpenGL thread, or you will make the display stutter.
 	public void doFastVWorldUpdate_onRendThrd() { 
 	}
-	protected void detachAndDispose() {
+	
+	public void detachAndDispose_onRendThrd() {
 		// Clean up called when we are resized out of existence.
 	}
 }

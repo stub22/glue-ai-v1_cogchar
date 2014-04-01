@@ -55,6 +55,9 @@ import org.slf4j.Logger;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * Includes a map of VizShapes by Ident, which each have a geom that is usually attached to 
+ * the Node parent for this group.
  */
 
 public class VizShapeGroup {
