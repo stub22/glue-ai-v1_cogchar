@@ -84,7 +84,10 @@ public class VizShape {
 		myMaterial.setColor("Specular", myColor);
 		myMaterial.setFloat("Shininess", 25f);
 	}
-
+	// This "group" is of dubious value - the point is to provide a source of shared default parameters.
+	// In a pinch, a subtype of VizShape could override this method and downcast the group type to get
+	// at "more parameters" from another layer of subclasses.  
+	// But for now it is used only to share a starting material.
 	public void setupGeom(VizShapeGroup sa, RenderRegistryClient rrc) {
 		int zSamp = 20;
 		int rSamp = 20;
