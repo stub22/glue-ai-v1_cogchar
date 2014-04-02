@@ -38,7 +38,6 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
 
@@ -56,8 +55,9 @@ import org.slf4j.Logger;
 /**
  * @author Stu B. <www.texpedient.com>
  * 
- * Includes a map of VizShapes by Ident, which each have a geom that is usually attached to 
- * the Node parent for this group.
+ * The purpose of this Group is to keep track of some set of shapes, which generally have
+ * common material + shape properties, but may or may not have any spatial relationship to each other.
+ * Includes a map of VizShapes by Ident, which each have a geom.
  */
 
 public class VizShapeGroup {
@@ -67,11 +67,9 @@ public class VizShapeGroup {
 	
 	// private		RenderRegistryClient	myRRC;
 	private		Material	myStandardMaterial;
-	private		Node		mySubsysNode;
 	
 	public VizShapeGroup(Ident groupID) {
 		myGroupID = groupID;
-		mySubsysNode = new Node(groupID.getLocalName());
 	}
 	public void setupMaterials(RenderRegistryClient	rrc) { 
 		MatFactory matFactory = rrc.getOpticMaterialFacade(null, null);
@@ -81,19 +79,7 @@ public class VizShapeGroup {
 		return myStandardMaterial;
 	}
 	
-	public void enable_onRendThrd(RenderRegistryClient	rrc) {
-		if (mySubsysNode != null) {
-			DeepSceneMgr dsm = rrc.getSceneDeepFacade(null);
-			dsm.attachTopSpatial(mySubsysNode);
-		}
-	}
-	public void disable_onRendThrd(RenderRegistryClient	rrc) {
-		if (mySubsysNode != null) {
-			DeepSceneMgr dsm = rrc.getSceneDeepFacade(null);
-			dsm.detachTopSpatial(mySubsysNode);
-		}		
-	}
-	public void attachChild_onRendThrd(RenderRegistryClient	rrc, VizShape child) {
+	public void configureMemberGeom_onRendThrd(RenderRegistryClient	rrc, VizShape child) {
 		Ident childID = child.getIdent();
 		Geometry childGeom = child.getGeom();
 		myShapesByIdent.put(childID, child);
@@ -101,6 +87,5 @@ public class VizShapeGroup {
 			child.setupGeom(this, rrc);
 			childGeom = child.getGeom();
 		}
-		mySubsysNode.attachChild(childGeom);
 	}
 }
