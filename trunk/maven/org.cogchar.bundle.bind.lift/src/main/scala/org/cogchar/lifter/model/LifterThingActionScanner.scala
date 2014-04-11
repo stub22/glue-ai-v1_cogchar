@@ -30,6 +30,7 @@ class LifterThingActionScanner extends WantsThingAction {
     
 //  private val lifterFlowActionID:Ident =
 //    new FreeIdent("http://www.cogchar.org/lift/flow/action#action");
+
 //  private val lifterFlowActionID:Ident =
 //    new FreeIdent("http://www.cogchar.org/lift/flow/action#action");
 
@@ -59,9 +60,7 @@ class LifterThingActionScanner extends WantsThingAction {
       val configControlID:Ident = t.getAsIdent(
         new FreeIdent( lifterActionIDPrefix + ID ));
       
-      
       theLogger.trace( "t: " + t )
-      
       
       theLogger.trace( "configControlID: " + configControlID )
         
@@ -81,7 +80,7 @@ class LifterThingActionScanner extends WantsThingAction {
           "Lifter targeted action detected for user: " + checkedID )
         
         // Pull the registration for this user
-        val sessionID: String = 
+        val sessionID: String =
           LifterClientRegistration.getLifterSession(checkedID)
         
         theLogger.trace( "sessionID: " + sessionID )
@@ -96,50 +95,16 @@ class LifterThingActionScanner extends WantsThingAction {
         // Send to lifter
         pushPage(configControlID, sessionID); 
         
-          theLogger.info( "Pushed " + 
+          theLogger.info( "Pushed " +
                          configControlID +
                          " to user " +
                          checkedID )    
         
         return ConsumpStatus.USED;
       }
-      
-      // Also check for registration events
-      val registrationAction:Ident = t.getAsIdent(
-        ActionStrings.LIFTER_ACTION);
-      
-      if( registrationAction != null ) {
-        
-        
-        // Send to lifter
-        val registrationSession:String = t.getAsString(
-          ActionStrings.LIFTER_SESSION)
-      
-        if( registrationSession != null ) {
-          theLogger.info( "Lifter registration action detected for user: " + ID )
-          pushPage(
-            LifterClientRegistration.mapRegistrationIDsToStartPageURIs(ID),
-            registrationSession);   
-          theLogger.info( "Pushed " + 
-                         LifterClientRegistration.mapRegistrationIDsToStartPageURIs(ID) +
-                         " to user " +
-                         ID )     
-          return ConsumpStatus.USED;
-        }
-      }
     }
     return ConsumpStatus.IGNORED
   }
-  
-//  def checkForLifterPageCommand(): = Boolean (
-//  ) {
-//    //
-//  }
-//    
-//  def checkForLifterRegistrationCommand(): = Boolean (
-//  ) {
-//    //
-//  }
     
   /**
    * Send a page in response to the command
