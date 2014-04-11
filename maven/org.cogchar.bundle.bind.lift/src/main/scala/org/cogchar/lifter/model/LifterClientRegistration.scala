@@ -33,7 +33,12 @@ import java.util.Random;
 import org.cogchar.outer.client.AgentRepoClient;
 import org.cogchar.outer.client.TestOuterClientSOH;
 
-
+/**
+ * This class consumes web client registration TAs and stores the resulting
+ * registrations in its static sibling object.
+ * 
+ * @author Jason R. Eads <jeads362@gmail.com>
+ */
 class LifterClientRegistration extends WantsThingAction {
   val theLogger: Logger = LifterClientRegistration.theLogger
   
@@ -41,49 +46,67 @@ class LifterClientRegistration extends WantsThingAction {
   def consumeAction(
     actionSpec:ThingActionSpec, srcGraphID:Ident ): ConsumpStatus = {
 
+    // Pull the parameters attached to the TA
     val t:TypedValueMap = actionSpec.getParamTVM();
     
     // Check if the TA matches registration for any of the users
     val registrationAction:Ident = t.getAsIdent(
       ActionStrings.LIFTER_ACTION);
     
+    // Collect the session ID
     val registrationSession:String = t.getAsString(
       ActionStrings.LIFTER_SESSION)
     
-    theLogger.debug("checking possible registration action: {}", registrationAction)
-      
-    for( ID <- LifterClientRegistration.listOfRegistrationIDs ) {
-      
-      if( registrationAction.getLocalName().equals(ID)) {
-        
-        theLogger.debug("registration action detected: {}", registrationAction)
+    // If actual registration event...
+    if( registrationAction.getAbsUriString.startsWith(ActionStrings.REGISTRATION_PREFIX) ) {
     
-        // register the user's session
-        LifterClientRegistration.registerSession(
-          ID,
-          registrationSession)
-        
-        theLogger.info(
-          "User \""
-          + ID
-          + "\" registered with session # "
-          + registrationSession)
-        
-        return ConsumpStatus.CONSUMED;
+      theLogger.debug("checking possible registration action: {}", registrationAction)
+    
+      // Check against all role IDs
+      for( ID <- LifterClientRegistration.listOfRegistrationIDs ) {
+
+        if( registrationAction.getLocalName().equals(ID)) {
+
+          theLogger.debug("registration action detected: {}", registrationAction)
+
+          // register the user's session
+          LifterClientRegistration.registerSession(
+            ID,
+            registrationSession)
+
+          theLogger.info(
+            "User \""
+            + ID
+            + "\" registered with session # "
+            + registrationSession)
+          
+          // push a new page confiming registration
+          PageCommander.getLiftAmbassador.activateControlsFromUri(
+            registrationSession,
+            new FreeIdent(LifterClientRegistration.mapRegistrationIDsToStartPageURIs(ID))
+            )
+
+          return ConsumpStatus.CONSUMED;
+        }
       }
     }
     return ConsumpStatus.IGNORED;
   }
 }
 
-
-
 /**
  * Retains user session registrations for local code to reference lifter 
- * browsers with.
+ * browsers with. This allows events in the system to send data out to these
+ * clients.
+ * 
+ * A collection of roles determine what IDs can be registered.
+ * 
+ * @author Jason R. Eads <jeads362@gmail.com>
  */
 object LifterClientRegistration {
-  val theLogger: Logger = LoggerFactory.getLogger(classOf[LifterClientRegistration])
+  val theLogger: Logger =
+    LoggerFactory.getLogger(classOf[LifterClientRegistration])
+  
   val ID: Ident = new FreeIdent(
     "http://www.glue.ai/system/class/reference#"
     + "org.cogchar.lifter.model.LifterClientRegistration");
@@ -112,9 +135,6 @@ object LifterClientRegistration {
     ActionStrings.FACILITATOR_REGISTRATION -> 
     ActionStrings.FACILITATOR_START_PAGE
   )
-  
-  private val LifterClientRegistrationID: Ident = new FreeIdent(
-    "http://www.cogchar.org/schema/crazyRandom#org.cogchar.lifter.model.LifterClientRegistration");
   
   def registerSession( userRegistationID:String, sessionID:String ) {
     
