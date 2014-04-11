@@ -97,6 +97,9 @@ public class ActionStrings {
     
     // IDs that can be registered as lifter sessions listed below
     
+    public static final String REGISTRATION_PREFIX = 
+            "http://www.cogchar.org/lift/action/registration#";
+    
     public static final String DEFAULT_REGISTRATION = "action";
     
     public static final String STUDENT_REGISTRATION = "student";
