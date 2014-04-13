@@ -16,17 +16,9 @@
 package org.cogchar.render.goody.dynamic;
 
 import com.jme3.scene.Node;
-import org.appdapter.core.name.Ident;
-import org.appdapter.core.item.Item;
 
-import org.appdapter.core.store.ModelClient;
-import org.cogchar.bind.symja.MathGate;
-import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
-import java.util.Set;
-import java.util.HashSet;
 import org.cogchar.render.trial.TrialUpdater;
 
 /**
@@ -44,7 +36,7 @@ import org.cogchar.render.trial.TrialUpdater;
  * We 
  */
 
-public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends DynamicGoody implements TrialUpdater {
+public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends DynamicGoody implements TrialUpdater, DynamicGoodyParent {
 		
 	private	Node			myGroupDisplayNode; // , myParentDisplayNode;
 	//  We use an array to emphasize the indexed nature of this space.
@@ -56,7 +48,7 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 	public DynamicGoodySpace(DynamicGoodySpace<?> optParentSpace, int idxIntoParentOrNeg) { 
 		super(idxIntoParentOrNeg);
 		if (optParentSpace != null) {
-			setParentSpace(optParentSpace);
+			setParent(optParentSpace);
 		}
 		
 	}
@@ -66,23 +58,23 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 	// This will be called if we have been explicitly attached as a TrialUpdater.
 	// Should not be called if we are a child space.
 	@Override public void doUpdate(RenderRegistryClient rrc, float tpf) {
-		doFastVWorldUpdate_onRendThrd();
+		doFastVWorldUpdate_onRendThrd(rrc);
 	}	
-	@Override public void doFastVWorldUpdate_onRendThrd() {
+	@Override public void doFastVWorldUpdate_onRendThrd(RenderRegistryClient rrc) {
 		if (myNextSize != null) {
 			resizeSpace_onRendThrd(myNextSize);
 			myNextSize = null;
 		}
 		for (int idx = 0; idx < myGoodies.length; idx++) {
 			// Some of these may be child spaces.
-			myGoodies[idx].doFastVWorldUpdate_onRendThrd();
+			myGoodies[idx].doFastVWorldUpdate_onRendThrd(rrc);
 		}
 	}
 	// Override to set good node names.
-	@Override protected String getUniqueName() { 
+	@Override public String getUniqueName() { 
 		return "generatedName_99";
 	}
-	@Override protected Node getDisplayNode() { 
+	@Override public Node getDisplayNode() { 
 		if (myGroupDisplayNode == null) {
 			myGroupDisplayNode = new Node(getUniqueName());
 		}
@@ -130,8 +122,8 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 			for (int jdx = maxCopy; jdx < size; jdx++) {
 				// jdx is zero-based, so we add one to set the 1-based Goody-space index.
 				nGoodies[jdx] = makeGoody(jdx + 1);
-				nGoodies[jdx].setParentSpace(this);
-				nGoodies[jdx].ensureAttachedToParentNode_onRendThrd(groupDisplayNode);
+				nGoodies[jdx].setParent(this);
+				//  This happens during update:   nGoodies[jdx].ensureAttachedToParentNode_onRendThrd();
 			}
 		} else {
 			throw new RuntimeException("Cannot resize goody space before group display node is available");
@@ -143,33 +135,8 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 		myGoodies = nGoodies;
 	}
 	@Override public void detachAndDispose_onRendThrd() {
+		super.detachAndDispose_onRendThrd();
 		setDesiredSize(0);
 		resizeSpace_onRendThrd(0);
-		if (myGroupDisplayNode != null) {
-			Node parentNode = myGroupDisplayNode.getParent();
-			if (parentNode != null) {
-				parentNode.detachChild(myGroupDisplayNode);
-			}
-		}
 	}
-	/*
-	@Override public void ensureChildNodesAttached_onRendThrd() { 
-		// For all goodies, make sure the our groupDisplayNode
-	}
-	*/
-/*
-	public void setParentDisplayNode_onRendThrd(Node n) { 
-		// create and/or reparent the GroupDisplayNode
-		myParentDisplayNode = n;
-		myParentDisplayNode.attachChild(myGroupDisplayNode);
-	}
-	public void a_onRendThrd(RenderRegistryClient	rrc) {
-		if (mySubsysNode != null) {
-			DeepSceneMgr dsm = rrc.getSceneDeepFacade(null);
-			dsm.attachTopSpatial(mySubsysNode);
-		}
-	}
-	public void activateDisplay() {		
-	}
-	*/
 }
