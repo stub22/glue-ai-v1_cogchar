@@ -16,17 +16,9 @@
 package org.cogchar.render.goody.dynamic;
 
 import com.jme3.scene.Node;
-import org.appdapter.core.name.Ident;
-import org.appdapter.core.name.FreeIdent;
-import org.appdapter.core.item.Item;
-import org.appdapter.core.store.ModelClient;
-//import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
-//import org.appdapter.impl.store.{FancyRepo};
-//import org.appdapter.core.matdat.{SheetRepo,_}
-//import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
-import com.hp.hpl.jena.rdf.model.Model;
 
 import org.appdapter.core.log.BasicDebugger;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  *
@@ -60,7 +52,7 @@ import org.appdapter.core.log.BasicDebugger;
 
 public class DynamicGoody extends BasicDebugger {
 	// This goody exists "within" myDGSpace, "at" index myGoodyIndex.
-	private DynamicGoodySpace		myParentDGSpace;
+	private DynamicGoodyParent		myParent;
 	private	Integer					myGoodyIndex;
 	
 	// This OpenGL node is always a child of the Node held in myDGSpace.
@@ -69,31 +61,36 @@ public class DynamicGoody extends BasicDebugger {
 	public DynamicGoody(int index) {
 		myGoodyIndex = index;
 	}
-	public void setParentSpace(DynamicGoodySpace<?> dgSpace) {
-		myParentDGSpace = dgSpace;
+	public void setParent(DynamicGoodyParent dgParent) {
+		myParent = dgParent;
 	}
-	public void ensureAttachedToParentNode_onRendThrd(Node parentDNode) {
+	protected void ensureAttachedToParentNode_onRendThrd() {
 		Node childDNode = getDisplayNode();
-		// Node parentDNode = myParentDGSpace.getDisplayNode();
-		if(!parentDNode.hasChild(childDNode)) {
-			parentDNode.attachChild(childDNode);
-		} else {
-			throw new RuntimeException ("Cannot call attachDisplayToParent_onRendThrd() before setParentSpace()");
+		DynamicGoodyParent dgParent = getParent();
+		if (dgParent != null) {
+			Node parentDNode = dgParent.getDisplayNode();
+			if ((parentDNode != null ) && (childDNode != null)) {
+				if(!parentDNode.hasChild(childDNode)) {
+					getLogger().debug("Attaching childDNode {} to parentDNode {}", childDNode, parentDNode);
+					parentDNode.attachChild(childDNode);
+				}
+			}
 		}
 	}
-	protected String getUniqueName() {
-		String parentName = myParentDGSpace.getUniqueName();
+	public String getUniqueName() {
+		String parentName = myParent.getUniqueName();
 		return parentName + "_" + myGoodyIndex;
 	}
-	protected DynamicGoodySpace getParentSpace() {
-		return myParentDGSpace;
+	protected DynamicGoodyParent getParent() {
+		return myParent;
 	}
 	protected Integer getIndex() {
 		return myGoodyIndex;
 	}
-	protected Node getDisplayNode() {
+	public Node getDisplayNode() {
 		if (myDisplayNode == null) {
-			if (myParentDGSpace != null) { 
+			if (myParent != null) { 
+				// The parent is used in constructing our uniqueName
 				myDisplayNode = new Node(getUniqueName());
 			}  else {
 				getLogger().warn("getDisplayNode() cannot make node yet, because no parent is attached");
@@ -104,10 +101,19 @@ public class DynamicGoody extends BasicDebugger {
 
 	// This is the crucial entry point.  Default does nothing.  Override to update your goody display,
 	// but don't hog the OpenGL thread, or you will make the display stutter.
-	public void doFastVWorldUpdate_onRendThrd() { 
+	public void doFastVWorldUpdate_onRendThrd(RenderRegistryClient rrc)  { 
 	}
 	
 	public void detachAndDispose_onRendThrd() {
 		// Clean up called when we are resized out of existence.
+		getLogger().debug("Detach and dispose called for goody at index {}", getIndex());
+		Node displayNode = getDisplayNode();
+		if (displayNode != null) {
+			Node parentNode = displayNode.getParent();
+			if (parentNode != null) {
+				parentNode.detachChild(displayNode);
+			}
+		}
+		
 	}
 }
