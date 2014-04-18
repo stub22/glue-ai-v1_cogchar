@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.cogchar</groupId>
         <artifactId>org.cogchar.modules.main</artifactId>
-        <version>1.0.9.0</version>
+        <version>1.0.9.1-SNAPSHOT</version>
         <relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
     </parent>	
 
