@@ -1,0 +1,95 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.0.9.0</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>
+
+    <groupId>org.cogchar</groupId>
+    <artifactId>ext.bundle.fuseki_0_2_7</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>${artifactId} - OSGi Bundle for Jena Fuseki servlet</name>
+<!-- This project is intended to replace o.c.b.bind.joseki, which
+served 3 purposes:
+
+    1) OSGi bundling for runtime discovery by PAX-Web.
+        (See web deployment instructions in the pom.xml of o.c.b.bind.joseki)
+    
+    2) Easy attachment of the PUMA "main" repo, the existence of which is a 
+    simplistic assumption that we are outgrowing.  (Previously accomplished
+    by java hack, possibly replacable with Assembler plugins accessing 
+    a registry to attach our repos as specified in Fueski config.ttl).
+    
+    3) Aynch notification from the Servlet of each Update processed to a
+    listener registered by a PUMA application.  (Ugly java hack, used by
+    our Goody V-World service to hear commands from java-HTTP-client, via
+    temporary naive ThingActionRouter/Consumer pattern).
+    
+    These features place the bundle more in the "bind" category than the "ext"
+    category.  So, if we wind up replicating these features, we probably
+    need a bundle called o.c.bundle.bind.fuseki.   However, for the moment
+    we are experimenting with a more pure/thin wrapper around the jena-fuseki
+    jar, which so far it is appropriate to call ext.bundle.fuseki_0_2_7.
+    
+ --> 
+
+    <dependencies>
+        <dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
+			<version>${appdapter.version}</version>
+            <scope>provided</scope>
+		</dependency>
+        <dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.osgi.common</artifactId>
+        <version>${appdapter.version}</version>
+		</dependency>
+        <dependency>
+            <!-- "jena-fuseki" transitively pulls in its own copies of the Jena libraries.
+                If we decide to copy+modify the source of Fuseki, as we did in 
+                o.c.bundle.bind.joseki, then we would not have this dependency,
+                and we would just use Appdapter's ext.bundle.jena_all_2_10_1.
+                
+                But if we manage to *not* copy+modify Fuseki's source, then
+                we will probably want to "exclude" the Jena dependencies
+                brought in by jena-fuseki, as well as the Jetty stuff it
+                pulls in (which we get via PAXWeb, instead), although we
+                note that the existing o.c.bundle.bind.joseki is sloppy
+                about these issues, and it hasn't caused any known problems.
+                
+               -->
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-fuseki</artifactId>
+            <version>0.2.7</version>
+			<exclusions>
+				<!-- "jena-fuseki" transitively pulls in its own copies of the Jena libraries we want to put a stop to this
+				-->
+				<exclusion>
+                    <groupId>org.apache.jena</groupId>
+                    <artifactId>apache-jena-libs</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>org.cogchar.ext.bundle.fuseki.Activator</Bundle-Activator>
+                        <Export-Package />
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
