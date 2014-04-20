@@ -177,6 +177,7 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
 
     public void render(RenderManager rm, ViewPort vp) {
         if (enabled && space != null && space.getDebugManager() != null) {
+			/* debugShape disappeared from base class between 2012-12-20 and 2014-03-25
             if (debugShape == null) {
                 attachDebugShape(space.getDebugManager());
             }
@@ -185,6 +186,7 @@ public class PhysicsHoverControl extends PhysicsVehicle implements PhysicsContro
             debugShape.updateLogicalState(0);
             debugShape.updateGeometricState();
             rm.renderScene(debugShape, vp);
+			*/
         }
     }
 
