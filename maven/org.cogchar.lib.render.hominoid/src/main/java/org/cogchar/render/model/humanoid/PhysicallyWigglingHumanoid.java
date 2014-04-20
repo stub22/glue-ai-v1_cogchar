@@ -46,7 +46,7 @@ public class PhysicallyWigglingHumanoid extends HumanoidFigure {
 		}
 		float amplitude = 5.0f;
 		float wigglePhaseRad = FastMath.TWO_PI  * myPhysicsWigglePhase;
-		float wiggleVel = amplitude * FastMath.sin2(wigglePhaseRad);
+		float wiggleVel = amplitude * FastMath.sin(wigglePhaseRad);
 
 		if (myPhysicsWigglePhase < 0.5) {
 			wiggleVel = amplitude;
