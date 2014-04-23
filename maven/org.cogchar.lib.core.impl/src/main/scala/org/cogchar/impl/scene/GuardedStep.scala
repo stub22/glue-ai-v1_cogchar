@@ -26,6 +26,8 @@ import org.cogchar.api.scene.Behavior
  *  - somewhere.  Since the "spec" layer already forms an immutable + cachable structure, we
  *  will allow the implementation level "step" to contain state.
  *
+ * @author Stu B. <www.texpedient.com>
+ * @author Douglas Miles
  */
 
 class GuardedStepExec(stepSpec: GuardedStepSpec, actionExec: BehaviorActionExec)
@@ -58,10 +60,6 @@ class GuardedStepExec(stepSpec: GuardedStepSpec, actionExec: BehaviorActionExec)
     getLogger().info("All {} guards are satisfied, now proceeding with step {}", myGuards.size, stepSpec.myOptID)
     beginPerformances(s, b)
   }
-
-}
-class ThingActionGuardedStepExec(stepSpec: GuardedStepSpec, actionExec: BehaviorActionExec)
-  extends GuardedStepExec(stepSpec, actionExec) {
 
 }
 class GuardedStepSpec(stepSpecID: Ident, val myActionSpec: BehaviorActionSpec, val myGuardSpecs: Set[org.cogchar.api.scene.GuardSpec])

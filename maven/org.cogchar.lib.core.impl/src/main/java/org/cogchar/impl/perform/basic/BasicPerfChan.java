@@ -17,13 +17,9 @@ package org.cogchar.impl.perform.basic;
 
 import org.cogchar.api.channel.BasicChannel;
 import org.appdapter.core.name.Ident;
-import org.appdapter.core.name.FreeIdent;
 import org.cogchar.api.perform.Media;
 import org.cogchar.api.perform.PerfChannel;
 import org.cogchar.api.perform.Performance;
-import org.cogchar.api.perform.Performance.Instruction;
-
-
 
 public abstract class BasicPerfChan extends BasicChannel implements PerfChannel {
 	private PerfChannel.Status myStatus = PerfChannel.Status.INIT;

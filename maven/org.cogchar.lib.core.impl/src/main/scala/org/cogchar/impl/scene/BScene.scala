@@ -16,33 +16,21 @@
 
 package org.cogchar.impl.scene
 
-import org.appdapter.core.name.{Ident, FreeIdent};
-import org.appdapter.core.item.{Item};
+import org.appdapter.core.name.{Ident};
 import org.appdapter.core.log.{BasicDebugger};
 
-import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
-import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
-
-import com.hp.hpl.jena.assembler.{Assembler, Mode}
-
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Resource;
-
-import org.cogchar.name.behavior.{SceneFieldNames}
-import org.cogchar.api.channel.{Channel, BasicChannel}
+// import org.cogchar.name.behavior.{SceneFieldNames}
 import org.cogchar.api.perform.{PerfChannel, Media, Performance, FancyPerformance};
 import org.cogchar.impl.perform.basic.{BasicPerfChan, BasicPerformance};
-import org.cogchar.impl.channel.{FancyChannelSpec};
-import org.cogchar.impl.perform.{FancyTime, PerfChannelNames, FancyTextPerf};
+import org.cogchar.impl.perform.{FancyTime, FancyTextPerf};
 
 import org.cogchar.api.channel.{GraphChannel};
 import org.cogchar.api.scene.{Scene};
 import org.cogchar.api.perform.{PerfChannel, Media, Performance, FancyPerformance};
-import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyTextPerfChan, FancyTextInstruction}
+import org.cogchar.impl.perform.{FancyTime, FancyTextPerf}
 
 import scala.collection.mutable.HashMap;
-import org.appdapter.api.module.{Module, Modulator}
-import org.appdapter.api.module.Module.State;
+import org.appdapter.api.module.{Module}
 
 
 /**
@@ -75,12 +63,12 @@ class BSceneRootChan (id : Ident, val scn: BScene) extends BasicPerfChan(id){
  */
 
 abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Scene[FancyTime, BSceneRootChan] {
-	val		rootyID = mySceneSpec.getIdent() // new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
-	val		myRootChan = new BSceneRootChan(rootyID, this);
-	val		myWiredPerfChannels  = new HashMap[Ident,PerfChannel]();
+	val rootyID = mySceneSpec.getIdent() // new FreeIdent(SceneFieldNames.I_rooty, SceneFieldNames.N_rooty);
+	val myRootChan = new BSceneRootChan(rootyID, this);
+	val myWiredPerfChannels  = new HashMap[Ident,PerfChannel]();
 
-	val		myCachedModules = new scala.collection.mutable.HashSet[Module[BScene]]()
-	var		myCachedModulator : BehaviorModulator = null
+	val myCachedModules = new scala.collection.mutable.HashSet[Module[BScene]]()
+	var myCachedModulator : BehaviorModulator = null
 
 
 	override def getRootChannel() : BSceneRootChan = {	myRootChan	}
@@ -259,7 +247,6 @@ class FancyBScene(ss: SceneSpec) extends BScene(ss) {
 				getLogger().error("**************   How did we avoid all the cases above?  optPMM={} ", optPMM);
 				Performance.State.INITING
 			}
-
 		}
 	}
 }

@@ -16,26 +16,20 @@
 
 package org.cogchar.impl.scene
 
-import org.appdapter.core.name.{Ident, FreeIdent};
+import org.appdapter.core.name.{Ident};
 import org.appdapter.core.item.{Item};
-import org.appdapter.core.log.{BasicDebugger};
 
 import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 
 import com.hp.hpl.jena.assembler.{Assembler, Mode}
 
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import org.cogchar.name.behavior.{SceneFieldNames}
-import org.cogchar.api.channel.{Channel, BasicChannel}
 import org.cogchar.impl.channel.{FancyChannelSpec};
-import org.cogchar.api.perform.{PerfChannel, Media, Performance};
 
-import org.cogchar.impl.perform.{FancyTime, PerfChannelNames};
 
-import org.cogchar.api.scene.{Scene};
 
 import scala.collection.mutable.HashMap;
 

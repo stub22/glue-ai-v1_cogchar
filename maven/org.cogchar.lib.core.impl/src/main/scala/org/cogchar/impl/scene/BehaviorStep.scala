@@ -19,8 +19,7 @@ package org.cogchar.impl.scene
 import org.appdapter.core.log.BasicDebugger
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.cogchar.api.perform.{BehaviorActionExec}
-import org.cogchar.api.perform.{PerfChannel, Media, Performance, FancyPerformance};
-import org.cogchar.impl.perform.{ FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyTextPerfChan, FancyTextInstruction};
+import org.cogchar.api.perform.{FancyPerformance};
 import org.cogchar.api.scene.Behavior
 
 
@@ -93,7 +92,9 @@ class ScheduledActionStepExec(stepSpec : ScheduledActionStepSpec, actionExec : B
 
 }
 
-class ScheduledActionStepSpec (val myOffsetMillisec : Int, val myActionSpec: BehaviorActionSpec)
+class ScheduledActionStepSpec (
+  val myOffsetMillisec : Int,
+  val myActionSpec: BehaviorActionSpec)
 			extends BehaviorStepSpec(None) {
 
 	def makeStepExecutor() : BehaviorStepExec = {
@@ -101,7 +102,11 @@ class ScheduledActionStepSpec (val myOffsetMillisec : Int, val myActionSpec: Beh
 		new ScheduledActionStepExec(this, actionExec)
 	}
 	override def toString() : String = {
-		"ScheduledActionStepSpec[offsetMsec=" + myOffsetMillisec + ", action=" + myActionSpec + "]"
+		"ScheduledActionStepSpec[offsetMsec=" +
+                myOffsetMillisec +
+                ", action=" +
+                myActionSpec +
+                "]"
 	}
 }
 

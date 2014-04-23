@@ -16,7 +16,6 @@
 
 package org.cogchar.impl.scene
 
-import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
 
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
@@ -26,19 +25,13 @@ import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
-import org.appdapter.api.module.{Module, Modulator}
-import org.appdapter.api.module.Module.State;
+import org.appdapter.module.basic.{EmptyTimedModule}
 
 //import org.cogchar.impl.channel.{FancyChannelSpec};
-import org.appdapter.core.log.{BasicDebugger, Loggable};
 
-import org.appdapter.api.module.Module
 import org.cogchar.api.scene.Behavior
-import org.cogchar.api.scene.Scene
 
 
 /**  A Behavior is a thread of activity run by a BehaviorModulator.
@@ -57,18 +50,20 @@ import org.cogchar.api.scene.Scene
 abstract class BehaviorImpl(val mySpec: BehaviorSpec) extends EmptyTimedModule[BScene] with Behavior[BScene] {
 
 	var	myStartStamp : Long = -1;
+        
 	// def logMe(msg: String) {logInfo("[" + this + "]-" + msg);}
 	override protected def doStart(scn : BScene) {
 		myStartStamp = System.currentTimeMillis();
 		myRunDebugModulus = 25;
 	}
+        
 	override protected def doStop(scn : BScene) {
 		getLogger().info("doStop called for behavior {}", this)
 	}
+        
 	def getMillsecSinceStart() : Long = {
 		System.currentTimeMillis() - myStartStamp;
 	}
-
 }
 
 class TStamp () {
@@ -76,6 +71,7 @@ class TStamp () {
 	val	myFullSec = mySysStamp / 1000;
 	val myMilSec = mySysStamp - myFullSec * 1000;
 }
+
 class TimelineBehavior (bs: BehaviorSpec) {
 
 }
