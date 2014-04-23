@@ -22,20 +22,12 @@ import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Resource;
 import org.cogchar.name.behavior.{SceneFieldNames};
 
-import org.cogchar.api.perform.{PerfChannel, Media, Performance, FancyPerformance};
-import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyTextPerfChan, FancyTextInstruction};
 
-import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
-import org.appdapter.api.module.{Module, Modulator}
-import org.appdapter.api.module.Module.State;
 import org.cogchar.api.scene.Behavior
 
 import org.cogchar.api.perform.{Performance};
-import org.appdapter.core.log.{BasicDebugger, Loggable};
 
 
 import org.cogchar.api.thing.{ThingActionSpec}
@@ -47,7 +39,6 @@ import scala.collection.mutable.HashSet
  */
 
 class GuardedBehavior (val myGBS: GuardedBehaviorSpec) extends BehaviorImpl(myGBS) {
-  // var myNextStepIndex : Int = 0;
 
   import scala.collection.mutable.HashSet
 
@@ -102,8 +93,8 @@ case class GuardedBehaviorSpec() extends BehaviorSpec {
   override def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
     /**
      public static String		P_initialStep		= NS_ccScn + "initialStep";
-     public static String		P_step				= NS_ccScn + "step";
-     public static String		P_finalStep			= NS_ccScn + "finalStep";
+     public static String		P_step			= NS_ccScn + "step";
+     public static String		P_finalStep		= NS_ccScn + "finalStep";
      public static String		P_waitForStart		= NS_ccScn + "waitForStart";
      public static String		P_waitForEnd		= NS_ccScn + "waitForEnd";
      */

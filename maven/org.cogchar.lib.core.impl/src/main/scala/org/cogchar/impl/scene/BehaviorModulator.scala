@@ -15,24 +15,11 @@
  */
 
 package org.cogchar.impl.scene
-import org.appdapter.core.name.{Ident, FreeIdent};
-import org.appdapter.core.item.{Item};
 
-import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
+import org.appdapter.module.basic.{BasicModulator}
+import org.appdapter.api.module.{Module}
+import org.appdapter.core.log.{Loggable};
 
-import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
-import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Resource;
-
-import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
-import org.appdapter.api.module.{Module, Modulator}
-import org.appdapter.api.module.Module.State;
-
-import org.appdapter.core.log.{BasicDebugger, Loggable};
 /**
  * The behavior-modulator uses a BScene as the (potentially writable) 
  * application "Context" for the modules.   Through this context they

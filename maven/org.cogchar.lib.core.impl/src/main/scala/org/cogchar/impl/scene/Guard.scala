@@ -20,12 +20,9 @@ package org.cogchar.impl.scene
  * @author Stu B. <www.texpedient.com>
  */
 
-import org.appdapter.core.log.{ BasicDebugger, Loggable }
+import org.appdapter.core.log.{ BasicDebugger }
 import org.appdapter.core.name.{ Ident }
-import org.cogchar.api.perform.{ Media, PerfChannel, Performance }
-import org.cogchar.impl.perform.basic.{ BasicPerformance }
-import org.cogchar.api.perform.{PerfChannel, Media, Performance, FancyPerformance}
-import org.cogchar.impl.perform.{ FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyTextPerfChan, FancyTextInstruction}
+import org.cogchar.api.perform.{ Performance }
 import org.cogchar.impl.channel.{ ThingActionGraphChan }
 import org.cogchar.api.thing._
 import org.cogchar.api.scene._

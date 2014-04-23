@@ -16,21 +16,14 @@
 
 package org.cogchar.impl.scene
 
-import org.appdapter.core.name.{Ident, FreeIdent}
 import org.appdapter.core.item.{Item, JenaResourceItem}
-import org.appdapter.core.log.{BasicDebugger, Loggable}
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader
-import org.appdapter.bind.rdf.jena.model.JenaModelUtils
 import org.appdapter.bind.rdf.jena.query.SPARQL_Utils
 import org.appdapter.bind.rdf.jena.reason.JenaReasonerUtils
-import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
-import org.appdapter.api.module.{Module, Modulator}
-import org.appdapter.api.module.Module.State
 import org.cogchar.api.scene.Behavior
 import com.hp.hpl.jena.assembler.{Assembler, Mode}
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase
-import com.hp.hpl.jena.rdf.model.{Resource, Model, InfModel, ModelFactory}
-import com.hp.hpl.jena.query.{ResultSet, ResultSetFormatter, ResultSetFactory, ResultSetRewindable}
+import com.hp.hpl.jena.rdf.model.{InfModel}
+import com.hp.hpl.jena.query.{ResultSetFormatter, ResultSetFactory}
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype
 import org.cogchar.name.behavior.{SceneFieldNames};
 import org.appdapter.core.store.dataset.RepoDatasetFactory
