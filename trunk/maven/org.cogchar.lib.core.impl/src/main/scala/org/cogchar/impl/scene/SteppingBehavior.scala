@@ -15,21 +15,13 @@
  */
 
 package org.cogchar.impl.scene
-import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Resource;
 
-import org.appdapter.module.basic.{EmptyTimedModule,BasicModulator}
-import org.appdapter.api.module.{Module, Modulator}
-import org.appdapter.api.module.Module.State;
-
-import org.appdapter.core.log.{BasicDebugger, Loggable};
 import org.cogchar.name.behavior.{SceneFieldNames};
 import org.cogchar.api.scene.Behavior
 

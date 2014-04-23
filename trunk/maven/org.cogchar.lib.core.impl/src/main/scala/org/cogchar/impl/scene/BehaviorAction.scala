@@ -73,7 +73,12 @@ abstract class BehaviorActionSpec extends BasicDebugger {
   }
   def makeActionExec() : BehaviorActionExec
 
-  def wireChannelSpecs(parentItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
+  def wireChannelSpecs(
+    parentItem : Item, 
+    reader : ItemAssemblyReader, 
+    assmblr : Assembler, 
+    mode: Mode) {
+    
     val chanPropName = SceneFieldNames.P_channel
     val actionChannelSpecs = reader.findOrMakeLinkedObjects(parentItem, chanPropName, assmblr, mode, null);
     getLogger().debug("Got action-channel specs: {} ", actionChannelSpecs);
@@ -87,7 +92,8 @@ abstract class BehaviorActionSpec extends BasicDebugger {
         case fcs: FancyChannelSpec => {
             wireFancyChannelSpec(fcs)
           }
-        case _ => getLogger().warn("Unexpected object found in step at {} = {}", Array[Object]( chanPropName, actChanSpec));
+        case _ => getLogger().warn("Unexpected object found in step at {} = {}",
+                                   Array[Object]( chanPropName, actChanSpec));
       }
     }
   }
@@ -122,8 +128,6 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
               val perf  = txtChan.makePerfAndPlayAtBeginNow(media)
               // prepending to the list is fastest, hence the "reverseOrder" approach.
               perfListReverseOrder = perf :: perfListReverseOrder
-
-
             }
           case  _ => {
               getLogger().warn("************* TextAction cannot perform on non Text-Channel: " + chan);
@@ -145,13 +149,32 @@ class TextActionExec(val mySpec : TextActionSpec) extends BasicDebugger with Beh
  def consumeSpec(inTASpec : ThingActionSpec) : Unit
  }
  */
+
+
 /*
+ * Currently untested and unused!  - Matt stated this
+ *
  * Consumes filtered ThingActions from an input channel, and uses them to write to some output channel.
  * For an output *graph*-channel, this passthru can be accomplished as a pure-graph operation, so
  * there would be no reason to deserialize for that case.
  * However, when the output channel downstream is a more concrete kind of Java perf-channel, then the
  * deserialization of the ThingActionSpec into this perform method is useful.
  */
+class UseThingActionSpec (val myInChanID : Ident, val myOptFilterID : Option[Ident]) extends BehaviorActionSpec() {
+  // This object needs to configure a number of decisions:
+  // Where should perform() look for the input ThingAction?
+  // What filter should we use to *take* one/all of the the input-TAs before then passing them on?
+  // Where is the implied "seen-it" bag for this agent on this channel, used to mark ?
+  // When did this agent "start"?  (For input ThingAction filtering purposes)
+  // Where should perform() send the output ThingAction?
+
+  override def makeActionExec() : BehaviorActionExec = {
+    new UseThingActionExec(this)
+  }
+  override def toString() : String = {
+    "UseThingActionSpec[inChanID= " + myInChanID + ", optFilterID=" + myOptFilterID + ", outChanIDs=" + myChannelIdents + "]";
+  }
+}
 class UseThingActionExec(val mySpec : UseThingActionSpec) extends BasicDebugger with BehaviorActionExec {
   override def performExec(s: Scene[_,_]) : java.util.List[org.cogchar.api.perform.FancyPerformance] = {
     // Find and "take" the most obvious input ThingAction, by marking a seen-it bag for this agent.
@@ -200,27 +223,21 @@ class UseThingActionExec(val mySpec : UseThingActionSpec) extends BasicDebugger 
     None
   }
 }
-class UseThingActionSpec (val myInChanID : Ident, val myOptFilterID : Option[Ident]) extends BehaviorActionSpec() {
-  // This object needs to configure a number of decisions:
-  // Where should perform() look for the input ThingAction?
-  // What filter should we use to *take* one/all of the the input-TAs before then passing them on?
-  // Where is the implied "seen-it" bag for this agent on this channel, used to mark ?
-  // When did this agent "start"?  (For input ThingAction filtering purposes)
-  // Where should perform() send the output ThingAction?
+
+class FireThingActionSpec( val myThingActionSpecList: List[ThingActionSpec], val myOutputTAGraph: Ident ) extends BehaviorActionSpec() {
 
   override def makeActionExec() : BehaviorActionExec = {
-    new UseThingActionExec(this)
+    new FireThingActionExec(this)
   }
+
   override def toString() : String = {
-    "UseThingActionSpec[inChanID= " + myInChanID + ", optFilterID=" + myOptFilterID + ", outChanIDs=" + myChannelIdents + "]";
+    "FireThingActionSpec[firesThingActions= " + myThingActionSpecList.toString + ", outputTAGraph = " + myOutputTAGraph.toString;
   }
 }
-
-class FireThingActionExec( val mySpec : FireThingActionSpec) extends BasicDebugger with BehaviorActionExec {
+class FireThingActionExec( val mySpec : FireThingActionSpec ) extends BasicDebugger with BehaviorActionExec {
   val logger: Logger = LoggerFactory.getLogger(classOf[FireThingActionExec])
   val theTargetGraphQN = "ccrt:thing_sheet_22"
   val rand: Random = new Random()
-  
   
   override def performExec(s: Scene[_,_]) : java.util.List[org.cogchar.api.perform.FancyPerformance] = {
     logger.debug("1d452916-6998-406a-b7f9-42147ab52dcc: FireThingActionExec.performExec is now starting ")
@@ -282,14 +299,7 @@ class FireThingActionExec( val mySpec : FireThingActionSpec) extends BasicDebugg
     }
     perfs;
   }
-}
-class FireThingActionSpec (val myThingActionSpecList: List[ThingActionSpec], val myOutputTAGraph: Ident ) extends BehaviorActionSpec() {
-
-  override def makeActionExec() : BehaviorActionExec = {
-    new FireThingActionExec(this)
-  }
-
   override def toString() : String = {
-    "FireThingActionSpec[firesThingActions= " + myThingActionSpecList.toString + ", outputTAGraph = " + myOutputTAGraph.toString;
+    "FireThingActionExec[spec=" + mySpec + "]";
   }
 }
