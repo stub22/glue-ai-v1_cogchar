@@ -36,7 +36,7 @@ import org.cogchar.impl.channel.AnimFileSpecReader;
 import org.cogchar.impl.channel.FancyFile;
 import org.cogchar.name.entity.EntityRoleCN;
 import static org.cogchar.name.entity.EntityRoleCN.RKRT_NS_PREFIX;
-import org.cogchar.render.sys.module.RenderModule;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

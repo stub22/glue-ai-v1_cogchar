@@ -17,18 +17,18 @@
             <artifactId>org.cogchar.bundle.bind.mechio</artifactId>
             <version>${project.version}</version>
         </dependency>
-		
+		<!--
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.cogchar.bundle.render.opengl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-			<!-- Temporarily adding this dep so we can pass classloader to Jena for bony config load - may be time to get rid of it-->
             <groupId>${project.groupId}</groupId>
             <artifactId>org.cogchar.bundle.render.resources</artifactId>
             <version>${project.version}</version>
         </dependency>
+		-->
 		<!--  This drags along some HTTP-Client deps that we would rather not have in PUMA.
 		<dependency>
             <groupId>${project.groupId}</groupId>
