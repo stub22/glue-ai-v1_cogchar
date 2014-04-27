@@ -28,7 +28,7 @@ import org.cogchar.impl.scene.TheaterTest;
 import org.cogchar.impl.trigger.FancyTriggerFacade;
 import org.cogchar.platform.trigger.CogcharEventActionBinder;
 import org.cogchar.platform.trigger.CogcharScreenBox;
-import org.cogchar.render.app.trigger.SceneActions;
+import org.cogchar.impl.web.in.SceneActions;
 import org.osgi.framework.BundleContext;
 import org.cogchar.platform.trigger.BoxSpace;
 
@@ -142,7 +142,8 @@ public abstract class PumaBehaviorAgent extends CogcharScreenBox {
 		String pathTail = "bhv_nugget_02.ttl";
 		String behavPath = myBehaviorCE.getBehaviorPermPath(pathTail);
 		// if (useTempFiles) {	//behavPath = behavCE.getBehaviorTempFilePath(pathTail);
-		ClassLoader optCLforJenaFM = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+		getLogger().warn("As of 2014-04-26, we are no longer supplying the ResourceBundle ClassLoader here!");
+		ClassLoader optCLforJenaFM = null; // org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
 		TheaterTest.loadSceneBookFromFile(myTheater, behavPath, optCLforJenaFM, clearCachesFirst);
 	}
 	public void loadBehaviorConfigFromRepo(RepoClient repoClient, Ident chanGraphID, Ident behavGraphID, 

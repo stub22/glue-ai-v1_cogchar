@@ -34,7 +34,7 @@ import org.cogchar.bind.mio.robot.client.AnimOutTrigChan;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.name.entity.EntityRoleCN;
-import org.cogchar.render.app.trigger.SceneActions;
+import org.cogchar.impl.web.in.SceneActions;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.render.app.trigger;
+package org.cogchar.impl.web.in;
 
 import org.cogchar.platform.gui.keybind.KeyBindingConfigItem;
 import org.cogchar.platform.gui.keybind.KeyBindingTracker;
@@ -21,23 +21,14 @@ import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
-import org.cogchar.platform.trigger.CogcharScreenBox;
-import org.cogchar.platform.trigger.CogcharActionTrigger;
 import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.platform.trigger.CogcharEventActionBinder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.TreeMap;
 import org.cogchar.api.web.WebAppInterface;
-import org.cogchar.render.sys.input.VW_InputBindingFuncs;
+
 
 /**
  *
@@ -46,33 +37,12 @@ public class SceneActions {
 
 	static Logger theLogger = LoggerFactory.getLogger(SceneActions.class);
 
-	private static Map<String, CogcharActionBinding> theBoundActionsByTrigName = new HashMap<String, CogcharActionBinding>();
+	public static Map<String, CogcharActionBinding> theBoundActionsByTrigName = new HashMap<String, CogcharActionBinding>();
 	
-	private static int numberOfBindings = 0;
+	public static int numberOfBindings = 0;
 	
-	public static void setupActionListeners(InputManager inputManager, KeyBindingConfig config, KeyBindingTracker kbt) {
-		numberOfBindings = config.mySceneBindings.size();
-		String actionNames[] = new String[numberOfBindings];
-		//theBoundActions = new DummyBinding[numberOfBindings];
-		Iterator<KeyBindingConfigItem> sceneMappings = config.mySceneBindings.values().iterator();
-		// We'll put the bindings in this temporary map so we can deliver a sorted sequence to KeyBindingTracker
-		Map<String, Integer> bindingMap = new TreeMap<String, Integer>();
-		int idx = 0;
-		while (sceneMappings.hasNext()) {
-			KeyBindingConfigItem nextMapping = sceneMappings.next();
-			String keyName = nextMapping.myBoundKeyName;
-			int sceneTrigKeyNum = VW_InputBindingFuncs.getKeyConstantForName(keyName);
-			if (sceneTrigKeyNum != VW_InputBindingFuncs.NULL_KEY) {
-				KeyTrigger keyTrig = new KeyTrigger(sceneTrigKeyNum);
-				String sceneTrigName = nextMapping.myTargetActionName;
-				inputManager.addMapping(sceneTrigName, keyTrig);
-				bindingMap.put(sceneTrigName, sceneTrigKeyNum);
-				actionNames[idx] = sceneTrigName;
-				idx++;
-			}
-		}
-		VW_InputBindingFuncs.registerActionListeners(theBoundActionsByTrigName, actionNames, bindingMap, inputManager, kbt);
-
+	public static interface SceneTriggerManager {
+		public void addKeyMapping(String sceneName, int keyCode);
 	}
 
 	public static void setTriggerBinding(String sceneTrigName, CogcharActionBinding ba) {

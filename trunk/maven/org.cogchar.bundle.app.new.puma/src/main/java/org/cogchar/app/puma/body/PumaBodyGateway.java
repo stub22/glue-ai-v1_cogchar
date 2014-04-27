@@ -27,13 +27,6 @@ import org.appdapter.core.name.Ident;
 
 import org.osgi.framework.BundleContext;
 import org.cogchar.bind.mio.robot.model.ModelRobot;
-import org.cogchar.bind.mio.robot.model.ModelJoint;
-
-import org.cogchar.render.model.bony.FigureState;
-
-import org.cogchar.render.sys.context.CogcharRenderContext;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.render.model.humanoid.HumanoidFigure;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.help.repo.RepoClient;
