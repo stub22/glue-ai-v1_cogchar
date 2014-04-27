@@ -19,7 +19,6 @@ import org.cogchar.app.puma.config.PumaContextMediator;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.appdapter.core.store.Repo;
 
 import org.appdapter.core.name.FreeIdent;

@@ -24,7 +24,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 import org.cogchar.platform.gui.keybind.KeyBindingTracker;
 
-import org.cogchar.render.app.trigger.SceneActions;
+import org.cogchar.impl.web.in.SceneActions;
 
 import com.jme3.system.AppSettings;
 import com.jme3.input.InputManager;
@@ -77,15 +77,24 @@ public class VW_InputDirector extends BasicDebugger {
 		inputManager.clearMappings(); // May be a reload, so let's clear the mappings
 		myKeyBindingTracker.clearMap();		
 	}
+	public static class InputManagerDoodad implements SceneActions.SceneTriggerManager {
+		InputManager myJME3InputManager;
+
+		@Override public void addKeyMapping(String sceneName, int keyCode) {
+			KeyTrigger keyTrig = new KeyTrigger(keyCode);
+			myJME3InputManager.addMapping(sceneName, keyTrig);				
+		}
+	}
 	public void setupKeyBindingsAndHelpScreen() {
-		InputManager inputManager = myRenderRegCli.getJme3InputManager(null);
+		InputManagerDoodad doodad = new InputManagerDoodad();
+		doodad.myJME3InputManager = myRenderRegCli.getJme3InputManager(null);
 		// If we do that, we'd better clear the KeyBindingTracker too
 		// Since we just cleared mappings and are (for now at least) using the default FlyByCamera mappings, we must re-register them
 		FlyByCamera fbCam = myAppStub.getFlyByCamera();
-		fbCam.registerWithInput(inputManager);
+		fbCam.registerWithInput(doodad.myJME3InputManager);
 		// Now we'll register the mappings in Cog Char based on theConfig
 		// HumanoidPuppetActions.setupActionListeners(inputManager, myHRC_elim, myKeyBindCfg, myKeyBindingTracker);
-		SceneActions.setupActionListeners(inputManager, myKeyBindCfg, myKeyBindingTracker);
+		setupActionListeners(doodad, myKeyBindCfg, myKeyBindingTracker);
 		
 		setupCommandKeybindings();
 		
@@ -141,4 +150,34 @@ public class VW_InputDirector extends BasicDebugger {
 	public VW_HelpScreenMgr getHelpScreenMgr() { 
 		return myHelpScreenMgr;
 	}
+	
+	public static void setupActionListeners(SceneActions.SceneTriggerManager stm, //InputManager inputManager, 
+				KeyBindingConfig config, KeyBindingTracker kbt) {
+		SceneActions.numberOfBindings = config.mySceneBindings.size();
+		String actionNames[] = new String[SceneActions.numberOfBindings];
+		//theBoundActions = new DummyBinding[numberOfBindings];
+		Iterator<KeyBindingConfigItem> sceneMappings = config.mySceneBindings.values().iterator();
+		// We'll put the bindings in this temporary map so we can deliver a sorted sequence to KeyBindingTracker
+		Map<String, Integer> bindingMap = new TreeMap<String, Integer>();
+		int idx = 0;
+		while (sceneMappings.hasNext()) {
+			KeyBindingConfigItem nextMapping = sceneMappings.next();
+			String keyName = nextMapping.myBoundKeyName;
+			int sceneTrigKeyNum = VW_InputBindingFuncs.getKeyConstantForName(keyName);
+			if (sceneTrigKeyNum != VW_InputBindingFuncs.NULL_KEY) {
+				String sceneTrigName = nextMapping.myTargetActionName;
+				// Factored out JME3 dependent code into implementation of SceneTriggerManager.
+				// KeyTrigger keyTrig = new KeyTrigger(sceneTrigKeyNum);
+				// inputManager.addMapping(sceneTrigName, keyTrig);
+				stm.addKeyMapping(sceneTrigName, sceneTrigKeyNum);
+				bindingMap.put(sceneTrigName, sceneTrigKeyNum);
+				actionNames[idx] = sceneTrigName;
+				idx++;
+			}
+		}
+		VW_InputBindingFuncs.registerActionListeners(SceneActions.theBoundActionsByTrigName, actionNames, bindingMap, 
+					((InputManagerDoodad) stm).myJME3InputManager, kbt);
+
+	}
+		
 }

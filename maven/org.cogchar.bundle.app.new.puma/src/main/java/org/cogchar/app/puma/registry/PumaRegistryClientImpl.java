@@ -19,6 +19,7 @@ package org.cogchar.app.puma.registry;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.avro.generic.GenericData;
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaContextMediator;
@@ -33,7 +34,7 @@ import org.osgi.framework.BundleContext;
  * @author Stu B. <www.texpedient.com>
  */
 
-public class PumaRegistryClientImpl implements PumaRegistryClient {
+public class PumaRegistryClientImpl extends BasicDebugger implements PumaRegistryClient {
 	// private	PumaAppContext			myAppContext;
 	
 	// Here are the 4 required ingredients of a PUMA application.  
@@ -48,13 +49,13 @@ public class PumaRegistryClientImpl implements PumaRegistryClient {
     
 	private PumaWebMapper			myWebMapper;	
 	
-	private BundleContext			myBundleContext;
-	private ClassLoader				myInitialBonyRdfCL;
+//	private BundleContext			myBundleContext;
+//	private ClassLoader				myInitialBonyRdfCL;
 	// We now have a single instance of the web mapper here [via this.getWebMapper and PumaWebMapper.getWebMapper],
 	// instead of separate instances for each PumaDualCharacter.
 	
 	public PumaRegistryClientImpl(BundleContext optBundleContext, PumaContextMediator mediator) {
-		myBundleContext = optBundleContext;
+		// myBundleContext = optBundleContext;
 		myMediator = mediator;
 		myConfigManager = new VanillaConfigManager();
 		myTargetBoxSpace = new BoxSpace();
@@ -98,8 +99,9 @@ public class PumaRegistryClientImpl implements PumaRegistryClient {
 	@Override public List<ClassLoader> getResFileCLsForCat(ResourceFileCategory cat) {
 		List<ClassLoader> extraCLs = myMediator.getExtraResFileCLsForCat(cat);
 		List<ClassLoader> totalCLs = new ArrayList<ClassLoader>(extraCLs);
-		ClassLoader ourOpenGLResLoader = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
-		totalCLs.add(ourOpenGLResLoader);
+		getLogger().warn("As of 2014-04-26, we are no longer supplying the ResourceBundle ClassLoader here!");
+		// ClassLoader ourOpenGLResLoader = org.cogchar.bundle.render.resources.ResourceBundleActivator.class.getClassLoader();
+		// totalCLs.add(ourOpenGLResLoader);
 		return totalCLs;
 	}
 	
