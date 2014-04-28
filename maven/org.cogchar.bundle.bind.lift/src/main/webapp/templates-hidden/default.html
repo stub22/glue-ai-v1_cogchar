@@ -117,10 +117,14 @@
  
     <script id="jquery" src="/classpath/jquery.js" type="text/javascript"/>
     <script id="json" src="/classpath/json.js" type="text/javascript"/>
+	<!--
     <script id="screenLoadCoverFunctions" src="/js/coverup.js" type="text/javascript"/>
+	-->
   </head>
   <body onload="lifterInit();" style="overflow:hidden;">
+	  <!--
      <iframe id="screenLoadCover" height="102%" width="102%"  style="top:-1%; left:-1%; background-color:#00668e; position:absolute; z-index:100;"></iframe>
+   -->
     <lift:bind name="content" />
 	<div id="SpeechRequest">
         <lift:comet type="JavaScriptActor"><div name="JSCommandSlot">A hidden div to fire JS command</div></lift:comet>
