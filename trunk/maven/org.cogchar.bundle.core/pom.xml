@@ -112,7 +112,15 @@
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.services</artifactId>
 			<version>${jflux.version}</version>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<!-- TODO:  Bind this in a more replacable way -->
+			<!-- Used in o.c.impl.netconf.CogCharNetworkServiceLauncher -->
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.common.rk</artifactId>
+			<version>${jflux.version}</version>
+			<scope>runtime</scope>
+		</dependency>				
     </dependencies>
 
     <build>
