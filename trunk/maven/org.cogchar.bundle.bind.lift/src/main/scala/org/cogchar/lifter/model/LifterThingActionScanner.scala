@@ -110,7 +110,6 @@ class LifterThingActionScanner extends WantsThingAction {
    * Send a page in response to the command
    */
   def pushPage(configControlID: Ident, sessionID: String) {
-    PageCommander.getLiftAmbassador.activateControlsFromUri(
-      sessionID, configControlID)
+    PageCommander.getLiftAmbassador.activateControlsFromUri(sessionID, configControlID)
   }
 }
