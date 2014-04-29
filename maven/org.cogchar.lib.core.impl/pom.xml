@@ -36,6 +36,12 @@
 			<version>${jflux.version}</version>
 		</dependency>
 		<dependency>
+			<!-- Used in o.c.impl.netconf.CogCharNetworkServiceLauncher -->
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.common.rk</artifactId>
+			<version>${jflux.version}</version>
+		</dependency>			
+		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-actors</artifactId>
 			<version>2.10.2</version>
