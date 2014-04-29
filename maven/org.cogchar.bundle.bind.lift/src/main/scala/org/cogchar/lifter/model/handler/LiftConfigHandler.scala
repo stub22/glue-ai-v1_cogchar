@@ -26,8 +26,13 @@ class LiftConfigHandler extends AbstractLifterActionHandler {
 
   protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_liftconfig)
   
-  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
-	PageCommander.getLiftAmbassador.activateControlsFromUri(sessionId, control.action)
+  protected def handleHere(
+    state:LifterState, 
+    sessionId:String, 
+    slotNum:Int, 
+    control:ControlConfig, 
+    input:Array[String]) {
+    
+    PageCommander.getLiftAmbassador.activateControlsFromUri(sessionId, control.action)
   }
-  
 }

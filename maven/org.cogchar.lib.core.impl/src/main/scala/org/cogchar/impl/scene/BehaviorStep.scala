@@ -22,8 +22,6 @@ import org.cogchar.api.perform.{BehaviorActionExec}
 import org.cogchar.api.perform.{FancyPerformance};
 import org.cogchar.api.scene.Behavior
 
-
-
 /**
  * @author Stu B. <www.texpedient.com>
  */
