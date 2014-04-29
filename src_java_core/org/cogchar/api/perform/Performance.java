@@ -38,8 +38,8 @@ public interface Performance<Cursor, MediaType extends Media<Cursor>, WorldTime>
 
 	}
 
-	public enum State {
-		INITING, CUEING, PLAYING, PAUSING, STOPPING
+	public enum State { // CUEING -> QUEUEING   ???
+		INITING, CUEING, PLAYING, PAUSING, STOPPING 
 	}
 
 	/**
