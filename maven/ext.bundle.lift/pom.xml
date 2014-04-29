@@ -248,10 +248,6 @@
 							nu.validator.*
 						</Export-Package>
 						<Import-Package>
-							<!-- We static import our expected bootstrap, thus web.xml overrides generally won't work, 
-								yet.  This is complementary to the DynamicImport below.
-							-->
-							bootstrap.liftweb,
 							!nu.xom.*,
 							!org.mozilla.*,
 							!ch.qos.logback.*, 
@@ -268,6 +264,7 @@
 							Class.forName() lookups by lift	into our app code.  
 						-->
 						<DynamicImport-Package>
+							bootstrap.liftweb,		<!-- Default bootstrap is here, but can be overriden in web.xml -->
 							org.cogchar.lifter.*,
 							org.friendularity.minlift.*
 						</DynamicImport-Package>											
