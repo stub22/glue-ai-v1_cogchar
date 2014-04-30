@@ -53,7 +53,15 @@
 			<version>1.1.2</version>
 			<scope>runtime</scope>			
 		</dependency>
-		
+
+		<!-- Appears this one is not needed. 
+		<dependency>
+			<groupId>org.ops4j.pax.web</groupId>
+			<artifactId>pax-web-extender-whiteboard</artifactId>
+			<version>1.1.2</version>
+			<scope>runtime</scope>
+		</dependency> 
+    	-->		
     </dependencies>
 
     <build>
