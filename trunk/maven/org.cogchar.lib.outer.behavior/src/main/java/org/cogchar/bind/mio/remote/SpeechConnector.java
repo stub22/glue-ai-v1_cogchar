@@ -15,7 +15,7 @@
  */
 
 
-package org.cogchar.outer.behav.demo;
+package org.cogchar.bind.mio.remote;
 
 import java.util.Properties;
 import org.jflux.api.core.Listener;
