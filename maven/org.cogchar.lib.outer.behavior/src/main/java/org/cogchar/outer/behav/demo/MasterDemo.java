@@ -16,6 +16,8 @@
 
 package org.cogchar.outer.behav.demo;
 
+import org.cogchar.bind.mio.remote.AnimationConnector;
+import org.cogchar.bind.mio.remote.RobotConnector;
 import java.util.List;
 
 import org.appdapter.core.log.BasicDebugger;
@@ -41,7 +43,7 @@ public class MasterDemo extends BasicDebugger {
 	public SceneWiringDemo mySceneWiringDemo;
 	public TheaterWiringDemo myTheaterWiringDemo;
 
-	public void preLaunchSetup(BundleContext bundleCtx, String robotEnvVarKey) {
+	public void preLaunch_SetupMechioRemoteConns(BundleContext bundleCtx, String robotEnvVarKey) {
 		try {
 			AnimationConnector.launchPortableAnimEventFactory(bundleCtx);
 			RobotConnector.connectRobotsFromSysEnv(bundleCtx, robotEnvVarKey);
