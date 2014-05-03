@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter {
-  package snippet {
+package org.cogchar.lifter.snippet 
 
-	import net.liftweb.http.SHtml
-	import net.liftweb.util.CssSel
-	import net.liftweb.util.Helpers._
-	import scala.xml.{NodeSeq,XML}
+import net.liftweb.http.SHtml
+import net.liftweb.util.CssSel
+import net.liftweb.util.Helpers._
+import scala.xml.{NodeSeq,XML}
+import org.cogchar.lifter.model.control.{AbstractMultiSelectControl, AbstractMultiSelectControlObject}
 
-	object SelectBoxes extends AbstractMultiSelectControlObject {
+object SelectBoxes extends AbstractMultiSelectControlObject {
 	  
 	  protected val matchingName = "SELECTBOXES"
 	  
@@ -48,7 +48,7 @@ package org.cogchar.lifter {
 	  }
 	}
 	  
-	class SelectBoxes extends AbstractMultiSelectControl {
+class SelectBoxes extends AbstractMultiSelectControl {
 		
 	  def getName: String = SelectBoxes.matchingName
 	  
@@ -78,7 +78,4 @@ package org.cogchar.lifter {
 		}
 	  }
 
-	}
-
-  }
 }

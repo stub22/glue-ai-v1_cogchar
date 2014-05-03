@@ -16,16 +16,21 @@
 
 package org.cogchar.lifter.snippet
 
+
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.{ControlToggler,LifterState}
-import org.cogchar.lifter.model.handler.{AbstractControlInitializationHandler,LifterVariableHandler}
+
+import org.cogchar.lifter.model.control.{AbstractControlInitializationHandler}
+import org.cogchar.lifter.model.action.{LifterVariableHandler}
+
+import org.cogchar.lifter.model.main.{ControlToggler,LifterState}
+
 import scala.xml.NodeSeq
 
 object ToggleButton extends AbstractControlInitializationHandler {
 	  
   protected val matchingName = "TOGGLEBUTTON"
   
-  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
 	val sessionState = state.stateBySession(sessionId)
 	// Load the "full" action (with an action local name containing actions for each state) into toggleButtonFullActionMap
 	sessionState.toggleControlMultiActionsBySlot(slotNum) = control.action

@@ -4,7 +4,7 @@ import net.liftweb.common.Full
 import net.liftweb.http.S
 import net.liftweb.http.js.JsCmds.{RedirectTo,Script}
 import org.cogchar.lifter.app.LifterLogger
-import org.cogchar.lifter.model.PageCommander
+import org.cogchar.lifter.model.main.PageCommander
 import xml.NodeSeq
 
 
