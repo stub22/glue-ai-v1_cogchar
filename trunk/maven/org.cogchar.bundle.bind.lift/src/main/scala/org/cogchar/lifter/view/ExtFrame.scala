@@ -18,15 +18,15 @@ package org.cogchar.lifter {
   package view {
 
     import org.cogchar.bind.lift.ControlConfig
-    import org.cogchar.lifter.model.LifterState
-    import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
+    import org.cogchar.lifter.model.main.LifterState
+    import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
     import scala.xml.NodeSeq
 
     object ExtFrame  extends AbstractControlInitializationHandler {
 	  
       protected val matchingName = "EXTFRAME"
   
-      protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+      override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
         makeBox(control.resource)
       }
 	  

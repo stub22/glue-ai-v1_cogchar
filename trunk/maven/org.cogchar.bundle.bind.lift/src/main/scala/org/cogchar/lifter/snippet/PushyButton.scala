@@ -23,8 +23,8 @@ package org.cogchar.lifter {
 	import net.liftweb.http.js.JsCmds
 	import net.liftweb.util.Helpers._
 	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.model.{LifterState,PageCommander}
-	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
+	import org.cogchar.lifter.model.main.{LifterState,PageCommander}
+	import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import scala.xml.NodeSeq
 
@@ -32,7 +32,7 @@ package org.cogchar.lifter {
 	  
 	  protected val matchingName = "PUSHYBUTTON"
   
-	  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
 		makeButton(control.text, control.style, control.resource, slotNum)
 	  }
 	  

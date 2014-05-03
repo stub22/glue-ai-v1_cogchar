@@ -23,8 +23,8 @@ package org.cogchar.lifter {
 	import net.liftweb.http.js.JsCmds
 	import scala.xml.NodeSeq
 	import org.cogchar.lifter.app.LifterLogger
-	import org.cogchar.lifter.model.PageCommander
-	import org.cogchar.lifter.model.PageCommander._ // Six imports here: case classes. Wildcard OK?
+	import org.cogchar.lifter.model.main.PageCommander
+	import org.cogchar.lifter.model.main.PageCommander._ // Six imports here: case classes. Wildcard OK?
 
 	class JavaScriptActor extends CometActor with CometListener with LifterLogger {
 	  
@@ -39,7 +39,7 @@ package org.cogchar.lifter {
 		  case _ => ""
 		}
 	  }
-	  def registerWith = org.cogchar.lifter.model.PageCommander
+	  def registerWith = org.cogchar.lifter.model.main.PageCommander
 
 	  override def lowPriority : PartialFunction[Any, Unit] = {
 		case req: SpeechInRequest if (req.sessionId == mySessionId) => {

@@ -14,23 +14,19 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter.view
+package org.cogchar.lifter.model.command
+import org.cogchar.name.lifter.ActionStrings
+import org.cogchar.lifter.model.main.{LifterState,PageCommander}
+import scala.collection.mutable.ArrayBuffer
 
-import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.main.LifterState
-import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
-import scala.xml.NodeSeq
-
-object InsertMarkup extends AbstractControlInitializationHandler {
+class LastConfigCommandHandler extends AbstractLifterCommandHandler {
   
-   protected val matchingName = "INSERTMARKUP"
+  protected val matchingTokens = ArrayBuffer(ActionStrings.lastConfig)
   
-	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
-		insert(control.resource)
-	  }
-	  
-	  def insert(resource:String): NodeSeq = {
-		val classString = "lift:embed?what=/inserts/" + resource
-		<div class={classString}/>
-	  }
+  override protected def handleCommand(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
+	PageCommander.initFromCogcharRDF(sessionId, state.stateBySession(sessionId).lastLiftConfig)
+  }
+  
 }
+
+

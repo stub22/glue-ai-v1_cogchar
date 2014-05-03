@@ -14,20 +14,16 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter {
-  package app {
+package org.cogchar.lifter.app
+
   
-	import model.SpeechChunk
-	import net.liftweb.http.rest.RestHelper
-	import net.liftweb.json.JValue
+import org.cogchar.lifter.model.main.SpeechChunk
+import net.liftweb.http.rest.RestHelper
+import net.liftweb.json.JValue
 
-	object SpeechRestListener extends RestHelper {  
-	  serve{ 
-		case "speech" :: Nil JsonPut SpeechChunk(chunk) -> _ => SpeechChunk.setContents(chunk): JValue
-	  }
-      
-	}
-
+object SpeechRestListener extends RestHelper {  
+  serve{ 
+	case "speech" :: Nil JsonPut SpeechChunk(chunk) -> _ => SpeechChunk.setContents(chunk): JValue
   }
+
 }
-  

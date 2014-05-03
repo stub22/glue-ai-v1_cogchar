@@ -19,6 +19,10 @@ package org.cogchar.lifter.model.handler
 import org.cogchar.lifter.snippet._
 import org.cogchar.lifter.view._
 
+import org.cogchar.lifter.model.action._
+import org.cogchar.lifter.model.command._
+import org.cogchar.lifter.model.control._
+
 // A class with methods to initialize the handler chains - may be a cleaner way to do this...
 // Stateless, so OK to make this an object?
 object HandlerConfigurator {
@@ -28,7 +32,7 @@ object HandlerConfigurator {
     val cinematicHandler = new CinematicHandler
     val variableHandler = new LifterVariableHandler
     val sceneHandler = new SceneTriggerHandler
-    val commandHandler = new LifterCommandActionHandler
+    val commandHandler = new CommandInvokerActionHandler  // Tricky devil - is an actionHandler that invokes command-chain
     val lifterQueryHandler = new LifterQueryActionHandler
     val repoOutputHandler = new RepoOutputHandler
     val robotAnimHandler = new RobotAnimationHandler
@@ -37,15 +41,15 @@ object HandlerConfigurator {
 
 
     // Set up the chain
-    liftConfigHandler setNextHandler cinematicHandler
-    cinematicHandler setNextHandler variableHandler
-    variableHandler setNextHandler sceneHandler
-    sceneHandler setNextHandler commandHandler
-    commandHandler setNextHandler lifterQueryHandler
-    lifterQueryHandler setNextHandler repoOutputHandler
-    repoOutputHandler setNextHandler robotAnimHandler
-    robotAnimHandler setNextHandler questionAndAnswerHandler
-    questionAndAnswerHandler setNextHandler flowActionHandler
+    liftConfigHandler setNextActionHandler cinematicHandler
+    cinematicHandler setNextActionHandler variableHandler
+    variableHandler setNextActionHandler sceneHandler
+    sceneHandler setNextActionHandler commandHandler
+    commandHandler setNextActionHandler lifterQueryHandler
+    lifterQueryHandler setNextActionHandler repoOutputHandler
+    repoOutputHandler setNextActionHandler robotAnimHandler
+    robotAnimHandler setNextActionHandler questionAndAnswerHandler
+    questionAndAnswerHandler setNextActionHandler flowActionHandler
     // Return the first handler in chain
     liftConfigHandler
   }
@@ -60,13 +64,13 @@ object HandlerConfigurator {
     val lastConfigHandler = new LastConfigCommandHandler
     val databallsHandler = new DataballsCommandHandler
     // Set up the chain
-    speechCommandHandler setNextHandler submitHandler
-    submitHandler setNextHandler submitTextHandler
-    submitTextHandler setNextHandler showTextHandler
-    showTextHandler setNextHandler updateHandler
-    updateHandler setNextHandler oldDemoHandler
-    oldDemoHandler setNextHandler lastConfigHandler
-    lastConfigHandler setNextHandler databallsHandler
+    speechCommandHandler setNextCommandHandler submitHandler
+    submitHandler setNextCommandHandler submitTextHandler
+    submitTextHandler setNextCommandHandler showTextHandler
+    showTextHandler setNextCommandHandler updateHandler
+    updateHandler setNextCommandHandler oldDemoHandler
+    oldDemoHandler setNextCommandHandler lastConfigHandler
+    lastConfigHandler setNextCommandHandler databallsHandler
     // Return the first handler in chain
     speechCommandHandler
   }

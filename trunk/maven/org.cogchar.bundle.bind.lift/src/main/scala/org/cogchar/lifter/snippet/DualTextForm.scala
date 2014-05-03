@@ -18,6 +18,7 @@ package org.cogchar.lifter {
   package snippet {
 
 	import net.liftweb.http.js.JsCmd
+	import org.cogchar.lifter.model.control.{AbstractTextForm, AbstractTextFormObject}
 	
 	object DualTextForm extends AbstractTextFormObject {
 	  

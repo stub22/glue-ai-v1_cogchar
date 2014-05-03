@@ -22,6 +22,8 @@ package org.cogchar.lifter {
    	import net.liftweb.util.CssSel
 	import net.liftweb.util.Helpers._
 	
+	import org.cogchar.lifter.model.control.{AbstractTextForm, AbstractTextFormObject}
+	
 	object LoginForm extends AbstractTextFormObject {
 	  
 	  protected val matchingName = "LOGINFORM"

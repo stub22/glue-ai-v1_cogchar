@@ -14,23 +14,20 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter.view
+package org.cogchar.lifter.model.action
 
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.main.LifterState
-import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
-import scala.xml.NodeSeq
+import org.cogchar.name.lifter.ActionStrings
+import org.cogchar.lifter.model.main.{LifterState,PageCommander}
+import scala.collection.mutable.ArrayBuffer
 
-object InsertMarkup extends AbstractControlInitializationHandler {
+// A handler for action URIs consisting of a cinematic URI
+class CinematicHandler extends AbstractLifterActionHandler {
+
+  override protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_cinematic, ActionStrings.p_thinganim)
   
-   protected val matchingName = "INSERTMARKUP"
+  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
+	PageCommander.getLiftAmbassador.triggerCinematic(control.action)
+  }
   
-	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
-		insert(control.resource)
-	  }
-	  
-	  def insert(resource:String): NodeSeq = {
-		val classString = "lift:embed?what=/inserts/" + resource
-		<div class={classString}/>
-	  }
 }
