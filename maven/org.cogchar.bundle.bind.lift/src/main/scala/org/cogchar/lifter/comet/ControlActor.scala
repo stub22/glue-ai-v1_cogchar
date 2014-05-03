@@ -21,7 +21,7 @@ package org.cogchar.lifter {
 	import net.liftweb.http.{CometActor, CometListener, S}
 	import net.liftweb.http.js.JsCmds.SetHtml
 	import org.cogchar.lifter.app.LifterLogger
-	import org.cogchar.lifter.model.PageCommander
+	import org.cogchar.lifter.model.main.PageCommander
 	import org.cogchar.lifter.view.TextBox
 
 	class ControlActor extends CometActor with CometListener with LifterLogger {
@@ -41,7 +41,7 @@ package org.cogchar.lifter {
 		}
 	  }	 
 	 
-	  def registerWith = org.cogchar.lifter.model.PageCommander
+	  def registerWith = org.cogchar.lifter.model.main.PageCommander
 	  
 	  override def lowPriority : PartialFunction[Any, Unit]  = {		
 		case a: PageCommander.ControlChange if ((a.sessionId.equals(mySessionId)) && (a.slotNum == slotNum)) => {

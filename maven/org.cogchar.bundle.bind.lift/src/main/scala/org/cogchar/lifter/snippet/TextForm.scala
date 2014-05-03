@@ -24,8 +24,8 @@ package org.cogchar.lifter {
 	import net.liftweb.util.Helpers._ 
 	import org.cogchar.bind.lift.ControlConfig
 	import org.cogchar.lifter.app.LifterLogger
-	import org.cogchar.lifter.model.{LifterState,PageCommander}
-	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
+	import org.cogchar.lifter.model.main.{LifterState,PageCommander}
+	import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import scala.xml.NodeSeq
 	
@@ -34,7 +34,7 @@ package org.cogchar.lifter {
 	  
 	  protected val matchingName = "TEXTINPUT"
   
-	  protected def handleHere(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
 		makeTextForm(state, sessionId, slotNum, control.text)
 	  }
 	  

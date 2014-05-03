@@ -21,6 +21,8 @@ package org.cogchar.lifter {
 	import net.liftweb.util.CssSel
 	import net.liftweb.util.Helpers._
 	import scala.xml.{NodeSeq,XML}
+import org.cogchar.lifter.model.control.{AbstractMultiSelectControl, AbstractMultiSelectControlObject}
+
 
 	object LinkList extends AbstractMultiSelectControlObject {
 	  

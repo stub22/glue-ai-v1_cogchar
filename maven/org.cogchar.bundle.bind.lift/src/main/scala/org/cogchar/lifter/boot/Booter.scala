@@ -1,23 +1,15 @@
 package org.cogchar.lifter.boot
 
-import _root_.net.liftweb.util._
-import _root_.net.liftweb.common._
-import _root_.net.liftweb.http._
-import _root_.net.liftweb.http.provider._
-//import _root_.net.liftweb.mapper._
-import _root_.net.liftweb.sitemap._
-import _root_.net.liftweb.sitemap.Loc._
-import _root_.net.liftweb.actor.ActorLogger
-import Helpers._
-//import _root_.net.liftweb.mapper.{DB, ConnectionManager, Schemifier, DefaultConnectionIdentifier, StandardDBVendor}
-import _root_.java.sql.{Connection, DriverManager}
-import _root_.org.cogchar.lifter.app._
-import _root_.org.cogchar.lifter.model._
+import net.liftweb.http.{Bootable, Html5Properties, LiftRules, Req, LiftSession}
+import net.liftweb.http.provider.{HTTPRequest}
+import net.liftweb.sitemap.{Menu, SiteMap, Loc}
+import net.liftweb.actor.ActorLogger
 
-import _root_.org.cogchar.bind.lift.LiftAmbassador
+import org.cogchar.bind.lift.LiftAmbassador
+import org.cogchar.lifter.model.main.{PageCommander};
+import org.cogchar.lifter.app.{SpeechRestListener};
 
-import org.jflux.impl.services.rk.lifecycle.ManagedService;
-import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
+import org.jflux.impl.services.rk.lifecycle.{ManagedService, ServiceLifecycleProvider};
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
