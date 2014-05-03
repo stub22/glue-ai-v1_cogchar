@@ -23,7 +23,7 @@ package org.cogchar.lifter.snippet
 	import net.liftweb.util.CssSel
 	import net.liftweb.util.Helpers._ // This wildcard import is the way Lift Helpers roll for CssSel operations and etc.
 	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.LifterLogger
+	import org.cogchar.lifter.app.LifterLogger
 	import org.cogchar.lifter.model.{LifterState,PageCommander}
 	import org.cogchar.lifter.model.handler.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox

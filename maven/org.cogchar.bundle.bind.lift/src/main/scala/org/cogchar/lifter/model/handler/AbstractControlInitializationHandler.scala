@@ -17,7 +17,7 @@
 package org.cogchar.lifter.model.handler
 
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.LifterLogger
+import org.cogchar.lifter.app.LifterLogger
 import org.cogchar.lifter.model.LifterState
 import scala.xml.NodeSeq
 

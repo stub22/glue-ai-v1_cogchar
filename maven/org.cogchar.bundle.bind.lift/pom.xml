@@ -89,26 +89,36 @@
 
 						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
 						<Export-Package>
-							org.cogchar.lifter.*, 
+							org.cogchar.lifter.*
+							<!-- This bootstrap package will be replaced using web.xml 
 							bootstrap.*
+							-->
 						</Export-Package>
-						<!-- Now this is exclusion is needed only in ext.bundle.lift
+						<!-- To try making our own private copy of the LiftWeb static/singleton state, we add
+								Private-Pkg for the lift state, 
+								toserve = needed for "blueprint" jquery.js 
+								i18n = lift-core_* properties needed for resource localization   
+						-->		    
+						<Private-Package>
+							net.liftweb.*,
+							toserve.*,	
+							i18n		
+						</Private-Package>					
+					
+						<!-- These import exclusions are needed in ext.bundle.lift,
+							OR any bundle that wants to be runnable in parallel with other Lift 2.5-based webapp bundles,
+							using the Private-Package instruction above.   
+						-->
 						<Import-Package>
-							!nu.xom.*,
-							!org.mozilla.*,
+		
 							!ch.qos.logback.*, 
 							!org.specs2.*, 
 							!scala.tools.scalap.*, 
-							-->
-							<!-- We do not want import links to this *old* version of httpclient.
-								We are using httpclient 4.3.1.   When we see "commons" in the name,
-								that is referring to version 3.* (or earlier).
-							-->
-							<!--
 							!org.apache.commons.httpclient.*,
+							<!-- Otherwise, "allow all normal imports" = * -->
 							*
 						</Import-Package>
-							-->
+		
 					</instructions>
 
 				</configuration>
