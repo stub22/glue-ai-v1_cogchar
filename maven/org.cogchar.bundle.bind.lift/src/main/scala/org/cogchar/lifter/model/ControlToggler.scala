@@ -18,7 +18,7 @@ package org.cogchar.lifter.model
 
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.LifterLogger
+import org.cogchar.lifter.app.LifterLogger
 import org.cogchar.name.lifter.ActionStrings
 import scala.xml.NodeSeq
 

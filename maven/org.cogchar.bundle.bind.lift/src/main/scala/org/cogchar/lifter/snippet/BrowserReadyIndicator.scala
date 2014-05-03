@@ -3,7 +3,7 @@ package org.cogchar.lifter.snippet
 import net.liftweb.common.Full
 import net.liftweb.http.S
 import net.liftweb.http.js.JsCmds.{RedirectTo,Script}
-import org.cogchar.lifter.LifterLogger
+import org.cogchar.lifter.app.LifterLogger
 import org.cogchar.lifter.model.PageCommander
 import xml.NodeSeq
 

@@ -22,7 +22,7 @@ package org.cogchar.lifter {
 	import net.liftweb.http.js.JsCmd
 	import net.liftweb.http.js.JsCmds
 	import scala.xml.NodeSeq
-	import org.cogchar.lifter.LifterLogger
+	import org.cogchar.lifter.app.LifterLogger
 	import org.cogchar.lifter.model.PageCommander
 	import org.cogchar.lifter.model.PageCommander._ // Six imports here: case classes. Wildcard OK?
 

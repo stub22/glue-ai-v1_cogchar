@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter
+package org.cogchar.lifter.app
 
 import org.slf4j.LoggerFactory
 

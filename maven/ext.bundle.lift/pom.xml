@@ -240,7 +240,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.cogchar.ext.bundle.lift.Activator</Bundle-Activator>
+
 						<Export-Package>
 							i18n,
 							net.liftweb.*, 
@@ -260,14 +260,21 @@
 							!org.apache.commons.httpclient.*,
 							*
 						</Import-Package>
-						<!-- This DynamicImport workaround is currently necessary so that OSGi can wire up the 
-							Class.forName() lookups by lift	into our app code.  
-						-->
+						
+						
+						<!--
+							DynamicImport-Package is not needed if we private-pkg our statics into the webapp bundles.
+							But in a naive "single net.liftweb classloader" config, this DynamicImport workaround is  
+							necessary so that OSGi can wire up the 	Class.forName() lookups by lift	into outer webapp code.
+							
+							Default bootstrap.liftweb package is used here, but can be overriden in web.xml of the webapp bundle.
+						
 						<DynamicImport-Package>
-							bootstrap.liftweb,		<!-- Default bootstrap is here, but can be overriden in web.xml -->
+							bootstrap.liftweb,		
 							org.cogchar.lifter.*,
 							org.friendularity.minlift.*
-						</DynamicImport-Package>											
+						</DynamicImport-Package>										
+						-->	
                     </instructions>
                 </configuration>
             </plugin>
