@@ -21,7 +21,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	import scala.xml.NodeSeq
 	import net.liftweb.actor.LiftActor
 	import org.appdapter.core.name.{FreeIdent, Ident}
-	import org.cogchar.lifter.LifterLogger
+	import org.cogchar.lifter.app.LifterLogger
 	import org.cogchar.lifter.model.handler.{HandlerConfigurator, LifterVariableHandler}
 	import org.cogchar.lifter.view.TextBox
 	import org.cogchar.bind.lift.{ControlConfig, LiftAmbassador, LiftConfig}

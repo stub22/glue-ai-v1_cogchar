@@ -15,7 +15,7 @@
  */
 
 package org.cogchar.lifter {
-  package lib {
+  package app {
   
 	import model.SpeechChunk
 	import net.liftweb.http.rest.RestHelper

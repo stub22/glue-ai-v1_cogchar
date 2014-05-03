@@ -1,5 +1,7 @@
 package bootstrap.liftweb
 
+
+
 import _root_.net.liftweb.util._
 import _root_.net.liftweb.common._
 import _root_.net.liftweb.http._
@@ -11,8 +13,9 @@ import _root_.net.liftweb.actor.ActorLogger
 import Helpers._
 //import _root_.net.liftweb.mapper.{DB, ConnectionManager, Schemifier, DefaultConnectionIdentifier, StandardDBVendor}
 import _root_.java.sql.{Connection, DriverManager}
-import _root_.org.cogchar.lifter.lib._
+import _root_.org.cogchar.lifter.app._
 import _root_.org.cogchar.lifter.model._
+
 import _root_.org.cogchar.bind.lift.LiftAmbassador
 
 import org.jflux.impl.services.rk.lifecycle.ManagedService;
@@ -25,7 +28,7 @@ import org.cogchar.api.thing.WantsThingAction
 
 import java.util.Properties;
 
-import org.cogchar.lifter.LifterLogger
+import org.cogchar.lifter.app.LifterLogger
 /**
  * A class that's instantiated early and run.  It allows the application
  * to modify lift's environment
@@ -37,7 +40,7 @@ import org.cogchar.lifter.LifterLogger
  * We can change the name of the bound init class in web.xml, using init-param for the filter.
  * 
  */
-class Boot extends LifterLogger {
+class OldBoot_Ignored extends LifterLogger {
   
   def boot {
 	 
