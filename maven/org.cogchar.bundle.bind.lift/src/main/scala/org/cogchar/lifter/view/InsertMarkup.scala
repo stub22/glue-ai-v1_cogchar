@@ -16,8 +16,8 @@
 
 package org.cogchar.lifter.view
 
-import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.model.main.LifterState
+import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
 import scala.xml.NodeSeq
 

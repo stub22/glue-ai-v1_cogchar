@@ -22,8 +22,9 @@ package org.cogchar.lifter {
 	import net.liftweb.http.{S,SHtml}
 	import net.liftweb.http.js.JsCmds
 	import net.liftweb.util.Helpers._
-	import org.cogchar.bind.lift.ControlConfig
-	import org.cogchar.lifter.model.main.{LifterState,PageCommander}
+	import org.cogchar.impl.web.config.ControlConfig
+	import org.cogchar.lifter.model.main.{PageCommander}
+import org.cogchar.impl.web.wire.{LifterState}
 	import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import scala.xml.NodeSeq

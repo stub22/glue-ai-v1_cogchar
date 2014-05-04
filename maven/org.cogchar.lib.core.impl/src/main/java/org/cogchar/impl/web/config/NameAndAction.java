@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.lift;
+package org.cogchar.impl.web.config;
 
 import org.appdapter.core.name.Ident;
 

@@ -23,7 +23,7 @@ import org.cogchar.api.perform.FancyPerformance;
 
 import org.cogchar.name.lifter.LiftAN;
 
-import org.cogchar.bind.lift.LiftAmbassador;
+import org.cogchar.impl.web.config.LiftAmbassador;
 /**
  * @author Stu B. <www.texpedient.com>
  */

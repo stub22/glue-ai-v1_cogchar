@@ -21,12 +21,13 @@ import org.cogchar.name.lifter.{ActionStrings}
 	import scala.xml.NodeSeq
 	import net.liftweb.actor.LiftActor
 	import org.appdapter.core.name.{FreeIdent, Ident}
-	import org.cogchar.lifter.app.LifterLogger
+	import org.cogchar.impl.web.util.LifterLogger
+	import org.cogchar.impl.web.wire.{LifterState}
 	import org.cogchar.lifter.model.handler.{HandlerConfigurator}
 	import org.cogchar.lifter.model.action.{AbstractLifterActionHandler, LifterVariableHandler}
 	import org.cogchar.lifter.model.control.{AbstractControlInitializationHandler}
 	import org.cogchar.lifter.view.TextBox
-	import org.cogchar.bind.lift.{ControlConfig, LiftAmbassador, LiftConfig}
+	import org.cogchar.impl.web.config.{ControlConfig, LiftAmbassador, LiftConfig}
 	import scala.collection.JavaConverters._
 	// import org.cogchar.platform.trigger.CogcharActionBinding
 	
@@ -102,7 +103,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 		  theLiftAmbassador
 	  }
 	  
-	  def getInitialConfigId = theLifterState.INITIAL_CONFIG_ID
+	  def getInitialConfigId = theLifterState.getSessionInitialConfigID
 	  
 	  def initializeSession(sessionId:String) {
 		  info("Initializing Session {}", sessionId)
@@ -158,7 +159,8 @@ import org.cogchar.name.lifter.{ActionStrings}
 									
 	  def initFromCogcharRDF(sessionId:String, liftConfig:LiftConfig) {
 		info("Loading LiftConfig for session {}", sessionId)
-		if (sessionId.equals(theLifterState.INITIAL_CONFIG_ID)) {
+		val initConfigID = getInitialConfigId
+		if (sessionId.equals(initConfigID)) {
 		  theLifterState.clearAndInitializeState
 		} else { // otherwise reset maps for this session
 		  theLifterState.prepareSessionForNewConfig(sessionId)
@@ -167,6 +169,8 @@ import org.cogchar.name.lifter.{ActionStrings}
 		val sessionState = getSessionState(sessionId)
 		sessionState.currentLiftConfig = liftConfig
 
+		val sillyMaxControlCount = theLifterState.getMaxControlCount()
+		
 		val controlList: java.util.List[ControlConfig] = liftConfig.myCCs
 
 		val controlSet = controlList.asScala.toSet
@@ -178,18 +182,19 @@ import org.cogchar.name.lifter.{ActionStrings}
 			} catch {
 			  case _: Any =>  myLogger.warn("Unable to get valid slotNum from loaded control; URI fragment was {}", controlDef.myURI_Fragment) // The control will still be loaded into slot -1; could "break" here but it's messy and unnecessary
 			}
-			if (slotNum > theLifterState.MAX_CONTROL_QUANTITY) {
-			  myLogger.warn("Maximum number of controls exceeded ({}); some controls may not be cleared upon page change!", theLifterState.MAX_CONTROL_QUANTITY)
+			
+			if (slotNum > sillyMaxControlCount) {
+			  myLogger.warn("Maximum number of controls exceeded ({}); some controls may not be cleared upon page change!", sillyMaxControlCount)
 			  myLogger.warn("MAX_CONTROL_QUANTITY in LifterState can be increased if this is necessary.")
 			}
 			loadControlDefToState(sessionId, slotNum, controlDef)
 		  })
 		// Blank unspecified slots (out to MAX_CONTROL_QUANTITY)
-		for (slot <- 1 to theLifterState.MAX_CONTROL_QUANTITY) {
+		for (slot <- 1 to sillyMaxControlCount) {
 		  sessionState.controlXmlBySlot.putIfAbsent(slot, NodeSeq.Empty)
 		}
 		sessionState.currentTemplateName = liftConfig.template
-		if (sessionId.equals(theLifterState.INITIAL_CONFIG_ID)) { 
+		if (sessionId.equals(getInitialConfigId)) { 
 		  renderInitialControls; // Required to get things started if pages are loaded in browsers before config is initialized
 		} else { // otherwise...
 		  val changedTemplate = !sessionState.currentTemplateName.equals(sessionState.lastLiftConfig.template)
@@ -359,7 +364,7 @@ import org.cogchar.name.lifter.{ActionStrings}
                 }        
     
 		def notifyConfigReady {
-		  initFromCogcharRDF(theLifterState.INITIAL_CONFIG_ID, getLiftAmbassador.getInitialConfig)
+			initFromCogcharRDF(getInitialConfigId, getLiftAmbassador.getInitialConfig)
 		}
 		def setConfigForSession(sessionId:String, config:LiftConfig) {
 		  initFromCogcharRDF(sessionId, config)
