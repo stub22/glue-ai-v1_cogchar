@@ -27,7 +27,7 @@ import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.api.web.WebEntityAction;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
-import org.cogchar.bind.lift.LiftAmbassador;
+import org.cogchar.impl.web.config.LiftAmbassador;
 
 import org.cogchar.bind.mio.robot.client.AnimMediaHandle;
 import org.cogchar.bind.mio.robot.client.AnimOutTrigChan;

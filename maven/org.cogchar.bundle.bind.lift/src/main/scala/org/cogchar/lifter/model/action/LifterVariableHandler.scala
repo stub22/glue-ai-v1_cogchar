@@ -18,9 +18,10 @@ package org.cogchar.lifter.model.action
 
 import java.lang.NumberFormatException
 import org.appdapter.core.name.Ident
-import org.cogchar.bind.lift.ControlConfig
+import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.name.lifter.ActionStrings
-import org.cogchar.lifter.model.main.{ControlToggler,LifterState,PageCommander}
+import org.cogchar.lifter.model.main.{ControlToggler,PageCommander}
 import org.cogchar.lifter.snippet.PushyButton
 import scala.collection.mutable.ArrayBuffer
 

@@ -15,7 +15,7 @@
  */
 package org.cogchar.impl.netconf;
 
-import org.cogchar.bind.lift.LiftAmbassador;
+import org.cogchar.impl.web.config.LiftAmbassador;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 // import org.friendularity.bundle.netconfig.LinuxNetworkConfigurator;

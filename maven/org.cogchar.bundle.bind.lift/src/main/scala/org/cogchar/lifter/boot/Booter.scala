@@ -5,7 +5,7 @@ import net.liftweb.http.provider.{HTTPRequest}
 import net.liftweb.sitemap.{Menu, SiteMap, Loc}
 import net.liftweb.actor.ActorLogger
 
-import org.cogchar.bind.lift.LiftAmbassador
+import org.cogchar.impl.web.config.LiftAmbassador
 import org.cogchar.lifter.model.main.{PageCommander};
 import org.cogchar.lifter.app.{SpeechRestListener};
 
@@ -18,7 +18,7 @@ import org.cogchar.api.thing.WantsThingAction
 
 import java.util.Properties;
 
-import org.cogchar.lifter.app.LifterLogger
+import org.cogchar.impl.web.util.LifterLogger
 /**
  * A class that's instantiated early and run.  It allows the application
  * to modify lift's environment

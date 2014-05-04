@@ -16,9 +16,10 @@
 
 package org.cogchar.lifter.model.control
 
-import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.app.LifterLogger
-import org.cogchar.lifter.model.main.LifterState
+import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.impl.web.wire.{LifterState}
+import org.cogchar.impl.web.util.LifterLogger
+
 import scala.xml.NodeSeq
 
 trait AbstractControlInitializationHandler extends LifterLogger {

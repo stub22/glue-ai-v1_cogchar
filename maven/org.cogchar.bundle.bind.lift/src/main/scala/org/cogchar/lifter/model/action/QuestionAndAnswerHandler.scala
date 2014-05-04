@@ -16,9 +16,10 @@
 package org.cogchar.lifter.model.action
 
 import org.appdapter.core.name.FreeIdent
-import org.cogchar.bind.lift.{ControlConfig, LiftConfig}
+import org.cogchar.impl.web.config.{ControlConfig, LiftConfig}
 import org.cogchar.name.lifter.{ActionStrings}
-import org.cogchar.lifter.model.main.{LifterState,PageCommander}
+import org.cogchar.lifter.model.main.{PageCommander}
+import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
 
 /**

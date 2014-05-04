@@ -21,7 +21,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 
-import org.cogchar.bind.lift.LiftAmbassador;
+import org.cogchar.impl.web.config.LiftAmbassador;
 import org.cogchar.app.puma.event.CommandEvent;
 import org.jflux.impl.services.rk.lifecycle.ManagedService;
 import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;

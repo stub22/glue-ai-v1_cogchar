@@ -17,8 +17,9 @@
 package org.cogchar.lifter.model.command
 
 import org.cogchar.name.lifter.ActionStrings
-import org.cogchar.lifter.app.LifterLogger
-import org.cogchar.lifter.model.main.LifterState
+import org.cogchar.impl.web.util.LifterLogger
+
+import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
 
 trait AbstractLifterCommandHandler extends LifterLogger {

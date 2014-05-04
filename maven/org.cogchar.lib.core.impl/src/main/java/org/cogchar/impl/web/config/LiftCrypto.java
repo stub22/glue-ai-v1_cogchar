@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.bind.lift;
+package org.cogchar.impl.web.config;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;

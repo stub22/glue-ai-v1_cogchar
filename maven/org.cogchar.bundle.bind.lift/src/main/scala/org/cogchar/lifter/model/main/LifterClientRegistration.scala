@@ -15,7 +15,7 @@
 package org.cogchar.lifter.model.main
 
 import org.appdapter.core.name.{FreeIdent,Ident}
-//import org.cogchar.bind.lift.{ControlConfig, LiftConfig}
+//import org.cogchar.impl.web.config.{ControlConfig, LiftConfig}
 //import org.cogchar.name.lifter.{ActionStrings}
 //import org.cogchar.lifter.model.{LifterState,PageCommander}
 //import scala.collection.mutable.ArrayBuffer

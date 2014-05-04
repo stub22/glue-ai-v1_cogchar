@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.bind.lift;
+package org.cogchar.impl.web.config;
 
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
