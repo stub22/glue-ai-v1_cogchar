@@ -18,9 +18,10 @@ package org.cogchar.lifter.model.action
 
 
 import org.appdapter.core.name.FreeIdent
-import org.cogchar.bind.lift.ControlConfig;
+import org.cogchar.impl.web.config.ControlConfig;
+import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.name.lifter.ActionStrings
-import org.cogchar.lifter.model.main.{LifterState, PageCommander}
+import org.cogchar.lifter.model.main.{PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
 // A handler for action URIs requesting output to be written to the repo

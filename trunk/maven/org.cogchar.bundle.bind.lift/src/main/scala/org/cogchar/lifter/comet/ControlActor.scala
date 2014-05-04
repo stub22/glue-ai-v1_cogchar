@@ -20,7 +20,7 @@ package org.cogchar.lifter {
 	import net.liftweb.common.Full
 	import net.liftweb.http.{CometActor, CometListener, S}
 	import net.liftweb.http.js.JsCmds.SetHtml
-	import org.cogchar.lifter.app.LifterLogger
+	import org.cogchar.impl.web.util.LifterLogger
 	import org.cogchar.lifter.model.main.PageCommander
 	import org.cogchar.lifter.view.TextBox
 

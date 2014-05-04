@@ -16,9 +16,10 @@
 
 package org.cogchar.lifter.model.control
 
-import org.cogchar.bind.lift.ControlConfig
-import org.cogchar.lifter.app.LifterLogger
-import org.cogchar.lifter.model.main.{LifterState,PageCommander}
+import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.impl.web.util.LifterLogger
+import org.cogchar.lifter.model.main.{PageCommander}
+import org.cogchar.impl.web.wire.{LifterState}
 
 import org.cogchar.lifter.view.TextBox
 import org.cogchar.name.lifter.ActionStrings

@@ -16,7 +16,8 @@
 
 package org.cogchar.lifter.model.command
 import org.cogchar.name.lifter.{ActionStrings}
-import org.cogchar.lifter.model.main.{LifterState,PageCommander}
+import org.cogchar.lifter.model.main.{PageCommander}
+import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.lifter.snippet.{PushyButton, RadioButtons, SelectBoxes, TextForm}
 import scala.collection.mutable.ArrayBuffer
 

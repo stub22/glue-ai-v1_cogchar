@@ -25,7 +25,7 @@ import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.osgi.framework.BundleContext;
 
-import org.cogchar.bind.lift.LiftAmbassador;
+import org.cogchar.impl.web.config.LiftAmbassador;
 
 /**
  * Pulled from the Activator of the old prototype: o.f.b.netconfig

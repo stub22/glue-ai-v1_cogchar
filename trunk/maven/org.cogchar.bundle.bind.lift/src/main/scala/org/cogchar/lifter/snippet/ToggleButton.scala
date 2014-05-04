@@ -17,12 +17,13 @@
 package org.cogchar.lifter.snippet
 
 
-import org.cogchar.bind.lift.ControlConfig
+import org.cogchar.impl.web.config.ControlConfig
 
 import org.cogchar.lifter.model.control.{AbstractControlInitializationHandler}
 import org.cogchar.lifter.model.action.{LifterVariableHandler}
 
-import org.cogchar.lifter.model.main.{ControlToggler,LifterState}
+import org.cogchar.lifter.model.main.{ControlToggler}
+import org.cogchar.impl.web.wire.{LifterState}
 
 import scala.xml.NodeSeq
 

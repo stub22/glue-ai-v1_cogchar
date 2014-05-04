@@ -16,9 +16,10 @@
 
 package org.cogchar.lifter.model.handler
 
-import org.cogchar.bind.lift.ControlConfig
+import org.cogchar.impl.web.config.ControlConfig
 import org.cogchar.name.lifter.ActionStrings
-import org.cogchar.lifter.model.main.LifterState
+
+import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
 
 import org.cogchar.lifter.model.command.AbstractLifterCommandHandler;
