@@ -32,6 +32,9 @@ import org.cogchar.render.model.humanoid.HumanoidFigure;
 
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.bundle.app.vworld.startup.ModelToFigureStateMappingFuncs;
+import org.jflux.impl.services.rk.osgi.OSGiUtils;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 
 public class VWorldRegistry extends BasicDebugger {
@@ -132,6 +135,8 @@ public class VWorldRegistry extends BasicDebugger {
     }
 
     protected void shutdownOSGiContainer(BundleContext bc) {
+        getLogger().warn("PumaBooter firing shutdown events.");
+        fireShutdownEvents(bc);
         Bundle sysB = bc.getBundle(0);
         getLogger().warn("PumaBooter asking system bundle to stop(): {}", sysB);
         try {
@@ -139,6 +144,24 @@ public class VWorldRegistry extends BasicDebugger {
         } catch (Throwable t) {
             getLogger().error("PumaBooter caught exception during sys-bundle.stop() request", t);
         }
+    }
+    
+    protected void fireShutdownEvents(BundleContext context){
+        String filter = OSGiUtils.createFilter("RunnableType", "Shutdown");
+        try{
+            ServiceReference[] refs = context.getServiceReferences(Runnable.class.getName(), filter);
+            if(refs == null){
+                return;
+            }
+            for(ServiceReference ref : refs){
+                Runnable r = OSGiUtils.getService(Runnable.class, context, ref);
+                if(r != null){
+                    r.run();
+                }
+            }
+        }catch(InvalidSyntaxException ex){
+        }
+        
     }
 
     protected PumaConfigManager getConfigManager() {
