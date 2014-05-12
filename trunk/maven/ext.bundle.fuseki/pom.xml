@@ -65,8 +65,10 @@ served 3 purposes:
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-fuseki</artifactId>
             <version>0.2.7</version>
+			<scope>provided</scope>
 			<exclusions>
-				<!-- "jena-fuseki" transitively pulls in its own copies of the Jena libraries we want to put a stop to this
+				<!-- "jena-fuseki" transitively will pull in its own copies of the Jena libraries,
+					(conflicting with our ext.bundle.jena above) which we prevent by excluding them.
 				-->
 				<exclusion>
                     <groupId>org.apache.jena</groupId>
@@ -86,7 +88,9 @@ served 3 purposes:
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.cogchar.ext.bundle.fuseki.Activator</Bundle-Activator>
-                        <Export-Package />
+                        <Export-Package>
+							org.apache.jena.fuseki.*
+						</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

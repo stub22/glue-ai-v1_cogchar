@@ -16,7 +16,6 @@
 
 package org.cogchar.lifter.model.command
 import org.cogchar.name.lifter.ActionStrings
-import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
 
@@ -24,11 +23,11 @@ class DataballsCommandHandler extends AbstractLifterCommandHandler {
   
   protected val matchingTokens = ArrayBuffer(ActionStrings.databalls)
   
-  override protected def handleCommand(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
-	val databallsAction = command.stripPrefix(ActionStrings.databalls + ActionStrings.commandTokenSeparator);
+  override protected def handleCommand(cmdContext : CommandContext) { // state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
+	val databallsAction = cmdContext.myCommand.stripPrefix(ActionStrings.databalls + ActionStrings.commandTokenSeparator);
 	var databallsText:String = null;
-	if (input != null) databallsText = input(0)
-	PageCommander.getLiftAmbassador.performDataballAction(databallsAction, databallsText);
+	if (cmdContext.myInput != null) databallsText = cmdContext.myInput(0)
+	myLiftAmbassador.performDataballAction(databallsAction, databallsText);
   }
   
 }

@@ -17,10 +17,10 @@
 package org.cogchar.lifter.model.command
 
 import org.cogchar.name.lifter.{ActionStrings}
-import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.lifter.view.TextBox
 import scala.collection.mutable.ArrayBuffer
+import org.cogchar.lifter.model.main.{PageCommander}
 
 class SubmitTextCommandHandler extends AbstractLifterCommandHandler {
   
@@ -30,32 +30,33 @@ class SubmitTextCommandHandler extends AbstractLifterCommandHandler {
   
   protected val matchingTokens = ArrayBuffer(ActionStrings.submitText)
   
-  override protected def handleCommand(appState:LifterState, sessionId:String, slotId:Int, command:String, input:Array[String]) {
-	val splitAction = command.split(ActionStrings.commandTokenSeparator)
+  override protected def handleCommand(cmdContext : CommandContext) { // appState:LifterState, sessionId:String, slotId:Int, command:String, input:Array[String]) {
+	val splitAction = cmdContext.myCommand.split(ActionStrings.commandTokenSeparator)
 	val actionToken = splitAction(1)
 	actionToken match {
 	  case ActionStrings.COGBOT_TOKEN => {
-		  val sessionState = appState.stateBySession(sessionId)
+		  val sessionState = cmdContext.getSessionState() // myState.stateBySession(cmdContext.mySessionId)
 		  val cogbotDisplayList = sessionState.cogbotDisplaySlots
 		  if (cogbotDisplayList != Nil) { // Likely this check is not necessary - foreach just won't execute if list is Nil, right?
-			val response = PageCommander.getLiftAmbassador.getCogbotResponse(input(0))
+			val response = myLiftAmbassador.getCogbotResponse(cmdContext.myInput(0))
 			val cleanedResponse = cleanCogbotResponse(response)
 			cogbotDisplayList.foreach(slotNum =>
-			  PageCommander.setControl(sessionId, slotNum, TextBox.makeBox("Cogbot said \"" + cleanedResponse 
-																  + "\"", sessionState.controlConfigBySlot(slotNum).style)))
-			if (sessionState.cogbotTextToSpeechActive) PageCommander.outputSpeech(sessionId, cleanedResponse) // Output Android speech if cogbotTextToSpeechActive is set
+			  PageCommander.setControl(cmdContext.mySessionId, slotNum, TextBox.makeBox("Cogbot said \"" + cleanedResponse 
+																  + "\"", sessionState.controlConfigBySlot(cmdContext.mySlotNum).style)))
+			if (sessionState.cogbotTextToSpeechActive) PageCommander.outputSpeech(cmdContext.mySessionId, cleanedResponse) // Output Android speech if cogbotTextToSpeechActive is set
 		  }
 		}
 	  case ActionStrings.DATABALLS_TOKEN => {
 		  if (splitAction.size > 2) {
-			val databallsAction = command.split(ActionStrings.commandTokenSeparator)(2)
-			PageCommander.getLiftAmbassador.performDataballAction(databallsAction, input(0));
+			val databallsAction = cmdContext.myCommand.split(ActionStrings.commandTokenSeparator)(2)
+			myLiftAmbassador.performDataballAction(databallsAction, cmdContext.myInput(0));
 		  } else {
-			warn("Request found to submit text to databalls, but no destination (third Lifter command token) found during session {}", sessionId)
+			warn("Request found to submit text to databalls, but no destination (third Lifter command token) found during session {}", 
+				 cmdContext.mySessionId)
 		  }
 		}
 	  case _ => {
-		  warn("No action found in SubmitTextCommandHandler for token {} during session {}", actionToken, sessionId)
+		  warn("No action found in SubmitTextCommandHandler for token {} during session {}", actionToken, cmdContext.mySessionId)
 		}
 	}
   }

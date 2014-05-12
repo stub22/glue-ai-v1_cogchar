@@ -30,7 +30,7 @@ class SceneTriggerHandler extends AbstractLifterActionHandler {
   override protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_scenetrig)
   
   override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
-	val success = PageCommander.getLiftAmbassador.triggerScene(control.action.getLocalName)
+	val success = myLiftAmbassador.triggerScene(control.action.getLocalName)
 	if (success) {
 	  val sceneRunningScreen = createSceneInfoScreen(state, sessionId, control)
 	  PageCommander.initFromCogcharRDF(sessionId, sceneRunningScreen)
