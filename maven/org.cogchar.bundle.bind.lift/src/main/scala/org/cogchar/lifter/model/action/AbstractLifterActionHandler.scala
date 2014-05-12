@@ -22,12 +22,14 @@ import org.cogchar.impl.web.util.LifterLogger
 import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
+import org.cogchar.impl.web.config.{LiftAmbassador}
 
 trait AbstractLifterActionHandler extends LifterLogger {
   private var myNextActionHandler: AbstractLifterActionHandler = null
   protected val matchingPrefixes: ArrayBuffer[String]
 
-	
+  protected var myLiftAmbassador : LiftAmbassador = PageCommander.getLiftAmbassador
+  
   def processAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
 	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {
       this.handleAction(state, sessionId, slotNum, control, input)}

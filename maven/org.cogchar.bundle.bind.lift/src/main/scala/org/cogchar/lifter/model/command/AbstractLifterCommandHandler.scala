@@ -19,13 +19,28 @@ package org.cogchar.lifter.model.command
 import org.cogchar.name.lifter.ActionStrings
 import org.cogchar.impl.web.util.LifterLogger
 
-import org.cogchar.impl.web.wire.{LifterState}
+import org.cogchar.impl.web.wire.{LifterState, WebSessionState}
+import org.cogchar.impl.web.config.{LiftAmbassador}
+import org.cogchar.lifter.model.main.{PageCommander} // Used just to fetch LiftAmbassadors
+
 import scala.collection.mutable.ArrayBuffer
 
+class CommandContext(val myState:LifterState, 
+					 val mySessionId:String, 
+					 val mySlotNum:Int, 
+					 val myCommand:String, 
+					 val myInput:Array[String]) {
+	def getSessionState() : WebSessionState = myState.stateBySession(mySessionId)
+}
+	
 trait AbstractLifterCommandHandler extends LifterLogger {
-  
+	protected var myLiftAmbassador : LiftAmbassador = PageCommander.getLiftAmbassador
+	
   def processCommand(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
-	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {this.handleCommand(state, sessionId, slotNum, command, input)}
+	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {
+		val cmdContext = new CommandContext(state, sessionId, slotNum, command, input)
+		this.handleCommand(cmdContext) // state, sessionId, slotNum, command, input)
+	}
 	else {
 	  if (this.myNextCommandHandler != null) {
 		myNextCommandHandler.processCommand(state, sessionId, slotNum, command, input)
@@ -38,7 +53,11 @@ trait AbstractLifterCommandHandler extends LifterLogger {
   
   // Checks for actions which this control performs upon rendering, not actuation
   def checkForInitialAction(state:LifterState, sessionId:String, slotNum:Int, command:String) {
-	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {this.handleInitialActionHere(state, sessionId, slotNum, command)}
+	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {
+		val dummyInput = new Array[String](0)
+		val cmdContext = new CommandContext(state, sessionId, slotNum, command, dummyInput)
+		this.handleInitialActionHere(cmdContext) // state, sessionId, slotNum, command)
+	}
 	else {
 	  if (this.myNextCommandHandler != null) {
 		myNextCommandHandler.checkForInitialAction(state, sessionId, slotNum, command)
@@ -54,8 +73,8 @@ trait AbstractLifterCommandHandler extends LifterLogger {
   protected def getNextCommandHandler = myNextCommandHandler
   
   protected val matchingTokens: ArrayBuffer[String]
-  protected def handleCommand(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String])
+  protected def handleCommand(cmdContext : CommandContext) // state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String])
   // A blank method for handleInitialActionHere. If a command would like to perform tasks on rendering, it can override this method.
-  protected def handleInitialActionHere(state:LifterState, sessionId:String, slotNum:Int, command:String) {}
+  protected def handleInitialActionHere(cmdContext : CommandContext) {} // state:LifterState, sessionId:String, slotNum:Int, command:String) {}
   
 }

@@ -21,7 +21,6 @@ import org.appdapter.core.name.FreeIdent
 import org.cogchar.impl.web.config.ControlConfig;
 import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.name.lifter.ActionStrings
-import org.cogchar.lifter.model.main.{PageCommander}
 import scala.collection.mutable.ArrayBuffer
 
 // A handler for action URIs requesting output to be written to the repo
@@ -32,7 +31,7 @@ class RepoOutputHandler extends AbstractLifterActionHandler {
   override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
 	val senderIdent = new FreeIdent(ActionStrings.p_repoSender + control.action.getLocalName());
 	// In this prototype method, we only send the first piece of input. Probably no good except for initial test!
-	PageCommander.getLiftAmbassador.sendUserTextViaRepo(senderIdent, input(0), sessionId);
+	myLiftAmbassador.sendUserTextViaRepo(senderIdent, input(0), sessionId);
   }
   
 }
