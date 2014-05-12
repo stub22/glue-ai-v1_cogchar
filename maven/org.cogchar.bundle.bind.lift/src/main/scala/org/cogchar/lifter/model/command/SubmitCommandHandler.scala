@@ -17,7 +17,6 @@
 package org.cogchar.lifter.model.command
 
 import org.cogchar.name.lifter.{ActionStrings}
-import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
 
@@ -25,27 +24,27 @@ class SubmitCommandHandler extends AbstractLifterCommandHandler {
   
   protected val matchingTokens = ArrayBuffer(ActionStrings.submit)
   
-  override protected def handleCommand(appState:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
-	val desiredAction = command.stripPrefix(ActionStrings.submit + ActionStrings.commandTokenSeparator)
+  override protected def handleCommand(cmdContext : CommandContext) { // appState:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
+	val desiredAction = cmdContext.myCommand.stripPrefix(ActionStrings.submit + ActionStrings.commandTokenSeparator)
 	desiredAction match {
 	  case ActionStrings.NETWORK_CONFIG_TOKEN => {
-		  if (input.length == 2) {
+		  if (cmdContext.myInput.length == 2) {
 			var encryptionName:String = null;
-			val sessionVariables = appState.stateBySession(sessionId).sessionLifterVariablesByName
+			val sessionVariables = cmdContext.getSessionState().sessionLifterVariablesByName
 			if (sessionVariables contains ActionStrings.encryptionTypeVar) {
 			  encryptionName = sessionVariables(ActionStrings.encryptionTypeVar)
 			} else {
 			  myLogger.warn("No encryption type set for network config, assuming none")
 			  encryptionName = ActionStrings.noEncryptionName
 			}
-			PageCommander.getLiftAmbassador.requestNetworkConfig(input(0), encryptionName, input(1))
+			myLiftAmbassador.requestNetworkConfig(cmdContext.myInput(0), encryptionName, cmdContext.myInput(1))
 		  } else {
 			myLogger.error("Network config submit lifter action requested, but text input list length is not 2")
 		  }
 		}
 	  case ActionStrings.LOGIN_TOKEN => {
-		  if (input.length == 2) {
-			PageCommander.getLiftAmbassador.login(sessionId, input(0), input(1));
+		  if (cmdContext.myInput.length == 2) {
+			myLiftAmbassador.login(cmdContext.mySessionId, cmdContext.myInput(0), cmdContext.myInput(1));
 		  } else {
 			myLogger.error("Login submit lifter action requested, but text input list length is not 2")
 		  }

@@ -16,24 +16,24 @@
 
 package org.cogchar.lifter.model.command
 import org.cogchar.name.lifter.{ActionStrings}
-import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
+
 import scala.collection.mutable.ArrayBuffer
 
 class UpdateCommandHandler extends AbstractLifterCommandHandler {
 
-  protected val matchingTokens = ArrayBuffer(ActionStrings.update, ActionStrings.refreshLift)
+  override protected val matchingTokens = ArrayBuffer(ActionStrings.update, ActionStrings.refreshLift)
   
- override  protected def handleCommand(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
-	val splitAction = command.split(ActionStrings.commandTokenSeparator)
+ override  protected def handleCommand(cmdContext : CommandContext) { // state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
+	val splitAction = cmdContext.myCommand.split(ActionStrings.commandTokenSeparator)
 	splitAction(0) match {
 	  case ActionStrings.update => {
-		  PageCommander.getLiftAmbassador.performCogCharUpdate(splitAction(1))
+		  myLiftAmbassador.performCogCharUpdate(splitAction(1))
 		}
 	  case ActionStrings.refreshLift => {
-		  state.lifterInitialized = false;
-		  PageCommander.getLiftAmbassador.clearLiftConfigCache
-		  PageCommander.getLiftAmbassador.performCogCharUpdate(ActionStrings.LIFT_REFRESH_UPDATE_NAME)
+		  cmdContext.myState.lifterInitialized = false;
+		  myLiftAmbassador.clearLiftConfigCache
+		  myLiftAmbassador.performCogCharUpdate(ActionStrings.LIFT_REFRESH_UPDATE_NAME)
 		}
 	  case _ =>
 	}

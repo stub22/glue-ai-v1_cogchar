@@ -27,41 +27,42 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler {
   protected val matchingTokens = ArrayBuffer(ActionStrings.acquireSpeech, ActionStrings.getContinuousSpeech,
 											 ActionStrings.stopContinuousSpeech, ActionStrings.cogbotSpeech)
   
-  override protected def handleCommand(appState:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {  
-	val primaryToken = command.split(ActionStrings.commandTokenSeparator)(0)
+  override protected def handleCommand(cmdContext : CommandContext) { // appState:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {  
+	val primaryToken = cmdContext.myCommand.split(ActionStrings.commandTokenSeparator)(0)
 	primaryToken match {
 	  case ActionStrings.acquireSpeech => {
-		  if (input == null) { // If so, this is a button or etc. asking for speech acquisition to be triggered
-			PageCommander.acquireSpeech(sessionId, slotNum)
+		  if (cmdContext.myInput == null) { // If so, this is a button or etc. asking for speech acquisition to be triggered
+			PageCommander.acquireSpeech(cmdContext.mySessionId, cmdContext.mySlotNum)
 		  } else { // otherwise, we are getting speech back from an acquisition via the SpeechRestListener
-			displayInputSpeech(appState, sessionId, input(0))
+			displayInputSpeech(cmdContext.myState, cmdContext.mySessionId, cmdContext.myInput(0))
 			// Next we strip the acquireSpeech prefix and continue handling. For this to work, the SpeechCommandHandler
 			// must be near the "top" of the chain of responsiblity, and actions performed on acquired speech
 			// (such as submittext) must be farther down the chain.
 			val nextCmdHandler = getNextCommandHandler
-			nextCmdHandler.processCommand(appState, sessionId, slotNum, 
-							command.stripPrefix(ActionStrings.acquireSpeech + ActionStrings.commandTokenSeparator), input)
+			val nextCommand = cmdContext.myCommand.stripPrefix(ActionStrings.acquireSpeech + ActionStrings.commandTokenSeparator)
+			nextCmdHandler.processCommand(cmdContext.myState, cmdContext.mySessionId, cmdContext.mySlotNum, 
+							nextCommand, cmdContext.myInput)
 		  }
 		}
 	  case ActionStrings.getContinuousSpeech => {
-		  if (input == null) { // If so, this is a button or etc. asking for speech acquisition to be triggered
-			PageCommander.requestContinuousSpeech(sessionId, slotNum, true)
+		  if (cmdContext.myInput == null) { // If so, this is a button or etc. asking for speech acquisition to be triggered
+			PageCommander.requestContinuousSpeech(cmdContext.mySessionId, cmdContext.mySlotNum, true)
 		  } else { // otherwise, we are getting speech back from an acquisition via the SpeechRestListener
-			displayInputSpeech(appState, sessionId, input(0))
+			displayInputSpeech(cmdContext.myState, cmdContext.mySessionId, cmdContext.myInput(0))
 			// Next we strip the getContinuousSpeech prefix and continue handling. For this to work, the SpeechCommandHandler
 			// must be near the "top" of the chain of responsiblity, and actions performed on acquired speech
 			// (such as submittext) must be farther down the chain.
 			val nextCmdHandler = getNextCommandHandler
-			nextCmdHandler.processCommand(appState, sessionId, slotNum, 
-							command.stripPrefix(ActionStrings.getContinuousSpeech + ActionStrings.commandTokenSeparator), input)
+			val nextCommand = cmdContext.myCommand.stripPrefix(ActionStrings.getContinuousSpeech + ActionStrings.commandTokenSeparator)
+			nextCmdHandler.processCommand(cmdContext.myState, cmdContext.mySessionId, cmdContext.mySlotNum, nextCommand, cmdContext.myInput)
 		  }
 		}
 	  case ActionStrings.stopContinuousSpeech => {
-		  PageCommander.requestContinuousSpeech(sessionId, slotNum, false)
+		  PageCommander.requestContinuousSpeech(cmdContext.mySessionId, cmdContext.mySlotNum, false)
 		}
 	  case ActionStrings.cogbotSpeech => {
-		  val secondToken = command.stripPrefix(ActionStrings.cogbotSpeech + ActionStrings.commandTokenSeparator)
-		  val sessionState = appState.stateBySession(sessionId)
+		  val secondToken = cmdContext.myCommand.stripPrefix(ActionStrings.cogbotSpeech + ActionStrings.commandTokenSeparator)
+		  val sessionState = cmdContext.getSessionState() // myState.stateBySession(cmdContext.mySessionId)
 		  secondToken match {
 			case ActionStrings.ENABLE_TOKEN => sessionState.cogbotTextToSpeechActive = true
 			case ActionStrings.DISABLE_TOKEN => sessionState.cogbotTextToSpeechActive = false

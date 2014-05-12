@@ -38,7 +38,7 @@ class LifterQueryActionHandler extends AbstractLifterActionHandler {
   override def optionalInitialRendering(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig) {
 	control.controlType match {
 	  case LinkList.matchingName => {
-		  val namesAndActionsList = PageCommander.getLiftAmbassador.getNamesAndActionsFromQuery(control.action)
+		  val namesAndActionsList = myLiftAmbassador.getNamesAndActionsFromQuery(control.action)
 		  val namesList = new ArrayBuffer[String]
 		  val actionList = new ArrayBuffer[Ident]
 		  namesAndActionsList.foreach{item =>

@@ -18,7 +18,6 @@ package org.cogchar.lifter.model.action
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.impl.web.config.{ControlConfig, LiftConfig}
 import org.cogchar.name.lifter.{ActionStrings}
-import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
 
@@ -32,11 +31,10 @@ import scala.collection.mutable.ArrayBuffer
 class QuestionAndAnswerHandler extends AbstractLifterActionHandler {
 
   //TODO: migrate to ActionStrings
-  override protected val matchingPrefixes = ArrayBuffer(
-    "http://www.cogchar.org/lift/question_and_answer#") 
+  override protected val matchingPrefixes = ArrayBuffer("http://www.cogchar.org/lift/question_and_answer#") 
   
   override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
-	val success = PageCommander.getLiftAmbassador.sendActionViaRepo(control.action, sessionId)
+	val success = myLiftAmbassador.sendActionViaRepo(control.action, sessionId)
   }
   
 }

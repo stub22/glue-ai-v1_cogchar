@@ -18,7 +18,6 @@ package org.cogchar.lifter.model.action
 
 import org.cogchar.impl.web.config.ControlConfig
 import org.cogchar.name.lifter.ActionStrings
-import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
 
@@ -34,6 +33,6 @@ class LiftConfigHandler extends AbstractLifterActionHandler {
     control:ControlConfig, 
     input:Array[String]) {
     
-    PageCommander.getLiftAmbassador.activateControlsFromUri(sessionId, control.action)
+    myLiftAmbassador.activateControlsFromUri(sessionId, control.action)
   }
 }
