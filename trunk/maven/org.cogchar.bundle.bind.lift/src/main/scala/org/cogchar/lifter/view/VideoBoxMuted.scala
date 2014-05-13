@@ -1,5 +1,5 @@
 /*
- *  Copyright 2012-2014 by The Cogchar Project (www.cogchar.org).
+ *  Copyright 2014 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,16 +22,16 @@ package org.cogchar.lifter {
     import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
     import scala.xml.NodeSeq
 
-    object VideoBox extends AbstractControlInitializationHandler {
+    object VideoBoxMuted extends AbstractControlInitializationHandler {
 	  
-      protected val matchingName = "VIDEOBOX"
+      protected val matchingName = "VIDEOBOXMUTED"
   
-      // Create a video box
+      // Create a muted video box.
       override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
         val videoPath: String = "/video/" + control.resource // May want to move this prefix to central location
         // It's all well and good to use a single video resource unless we want to support IE, in which case we'll have to mix in more
-        <video src={videoPath} width="100%" height="100%" autoplay="true"></video>
-      }
+        <video src={videoPath} width="100%" height="100%" autoplay="true" muted="true"></video>
+      }  
     }
   }
 }
