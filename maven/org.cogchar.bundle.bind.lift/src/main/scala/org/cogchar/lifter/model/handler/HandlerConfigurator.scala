@@ -86,7 +86,8 @@ object HandlerConfigurator {
     LoginForm setNextHandler RadioButtons
     RadioButtons setNextHandler SelectBoxes
     SelectBoxes setNextHandler VideoBox
-    VideoBox setNextHandler ExtFrame
+    VideoBox setNextHandler VideoBoxMuted 
+    VideoBoxMuted setNextHandler ExtFrame
     ExtFrame setNextHandler LinkList
     // Return the first handler in chain
     PushyButton
