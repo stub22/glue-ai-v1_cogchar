@@ -79,7 +79,7 @@ public class RobotServiceContext<R extends Robot> extends BasicDebugger {
     protected void launchRemoteHost(String connectionConfigId) {
         RemoteRobotHostServiceGroup newHost = new RemoteRobotHostServiceGroup(
                 myBundleCtx, myRobot.getRobotId(), 
-                "host", "client", connectionConfigId, null);
+                "host", "client", connectionConfigId, null, null, 100);
 		launchedHosts.add(newHost);
 		newHost.start();
     }
