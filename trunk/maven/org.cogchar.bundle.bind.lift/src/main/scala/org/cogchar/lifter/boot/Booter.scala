@@ -50,7 +50,7 @@ class Booter extends Bootable with LifterLogger {
 		}
 	}
 	***********/
-	// where to search snippet
+	// where to search for subpackages including:  snippet, 
 	LiftRules.addToPackages("org.cogchar.lifter")
 
 	// SiteMap; probably not really necessary at this point
@@ -103,7 +103,11 @@ class Booter extends Bootable with LifterLogger {
 }
 
 
-/*  Snapshot 2014-04-28, using Lift 2.5.1
+/*  Snapshot of dummy stacktrace 2014-04-28, using Lift 2.5.1, 
+ *  showing where we are in the callstack when a *default* boot method is invoked.
+ *  If this class is hooked in via init-param, the stack will be a bit different,
+ *  until the line :
+ *			net.liftweb.http.LiftFilter.bootLift(LiftServlet.scala:928)
  *  
      [java] java.lang.Exception: Dummy
      [java] 	at bootstrap.liftweb.Boot.boot(Boot.scala:50)
