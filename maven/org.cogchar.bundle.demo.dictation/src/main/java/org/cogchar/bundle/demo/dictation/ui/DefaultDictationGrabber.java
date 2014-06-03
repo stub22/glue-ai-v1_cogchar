@@ -36,12 +36,12 @@ import org.jflux.api.core.node.chain.NodeChainBuilder;
 import org.jflux.api.core.Adapter;
 import org.jflux.api.core.util.DefaultNotifier;
 import org.jflux.api.core.util.EmptyAdapter;
-import org.jflux.impl.messaging.JMSAvroUtils;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
-import org.jflux.impl.transport.jms.MessageHeaderAdapter;
 import org.mechio.api.speechrec.SpeechRecEventList;
 import org.mechio.impl.speechrec.SpeechRecEventListRecord;
 import org.mechio.impl.speechrec.SpeechRecEventRecord;
+import org.jflux.api.core.node.DefaultConsumerNode;
+import org.jflux.impl.messaging.rk.JMSAvroMessageSender;
 import static org.cogchar.bundle.demo.dictation.osgi.DictationConfigUtils.*;
 
 /**
@@ -199,17 +199,31 @@ public class DefaultDictationGrabber implements DictationGrabber{
         if(dest == null){
             return null;
         }
-        ConsumerNode<SpeechRecEventList> ttsNode = NodeChainBuilder.build(
-                    JMSAvroUtils.byteStreamRequestFactory(SpeechRecEventList.class))
-                .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
-                    SpeechRecEventListRecord.class, 
-                    SpeechRecEventListRecord.SCHEMA$, 
-                    new EmptyAdapter(), 
-                    mySession, dest, 
-                    new MessageHeaderAdapter("application/speechRecEventList")));
-        return NodeChainBuilder.build(
-                new SpeechRecEventListFormatter("source", "dest"))
-                .getConsumerChain(ttsNode);
+        try{
+            JMSAvroMessageSender<SpeechRecEventList,SpeechRecEventListRecord> sender = 
+                    new JMSAvroMessageSender<SpeechRecEventList, SpeechRecEventListRecord>(mySession, dest);
+            sender.setAdapter(new EmptyAdapter());
+            sender.setDefaultContentType("application/speechRecEventList");
+            sender.start();
+            ConsumerNode<SpeechRecEventList> ttsNode = new DefaultConsumerNode<SpeechRecEventList>(sender);
+            return NodeChainBuilder.build(
+                    new SpeechRecEventListFormatter("source", "dest"))
+                    .getConsumerChain(ttsNode);
+        }catch(Exception ex){
+            theLogger.log(Level.WARNING,"Error connecting to TTS.",ex);
+            return null;
+        }
+//        ConsumerNode<SpeechRecEventList> ttsNode = NodeChainBuilder.build(
+//                    JMSAvroUtils.byteStreamRequestFactory(SpeechRecEventList.class))
+//                .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
+//                    SpeechRecEventListRecord.class, 
+//                    SpeechRecEventListRecord.SCHEMA$, 
+//                    new EmptyAdapter(), 
+//                    mySession, dest, 
+//                    new MessageHeaderAdapter("application/speechRecEventList")));
+//        return NodeChainBuilder.build(
+//                new SpeechRecEventListFormatter("source", "dest"))
+//                .getConsumerChain(ttsNode);
     }
     
     public static class SpeechRecEventListFormatter implements 

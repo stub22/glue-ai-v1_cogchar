@@ -18,7 +18,6 @@ package org.cogchar.bundle.demo.convo.ui;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.Destination;
-import javax.jms.JMSException;
 import javax.jms.Session;
 import org.cogchar.bundle.demo.convo.CogbotProcessor;
 import org.cogchar.bundle.demo.convo.ConversationInputFilter;
@@ -30,18 +29,19 @@ import org.cogchar.bundle.demo.convo.SpeechFormatter;
 import org.cogchar.bundle.demo.convo.SpeechRecFilter;
 import org.cogchar.bundle.demo.convo.SpeechRecStringFilter;
 import org.jflux.api.core.node.ConsumerNode;
+import org.jflux.api.core.node.DefaultConsumerNode;
 import org.jflux.api.core.node.DefaultProcessorNode;
+import org.jflux.api.core.node.DefaultProducerNode;
 import org.jflux.api.core.node.ProcessorNode;
 import org.jflux.api.core.node.ProducerNode;
 import org.jflux.api.core.node.chain.NodeChain;
 import org.jflux.api.core.node.chain.NodeChainBuilder;
 import org.jflux.api.core.util.EmptyAdapter;
-import org.jflux.api.encode.EncodeRequest;
 import org.jflux.api.messaging.rk.services.ServiceCommand;
-import org.jflux.impl.messaging.JMSAvroUtils;
+import org.jflux.impl.messaging.rk.JMSAvroMessageAsyncReceiver;
+import org.jflux.impl.messaging.rk.JMSAvroMessageSender;
 import org.jflux.impl.messaging.rk.ServiceCommandRecord;
 import org.jflux.impl.messaging.rk.services.PortableServiceCommand;
-import org.jflux.impl.transport.jms.MessageHeaderAdapter;
 import org.mechio.api.speech.SpeechRequest;
 import org.mechio.api.speechrec.SpeechRecEvent;
 import org.mechio.api.speechrec.SpeechRecEventList;
@@ -167,29 +167,46 @@ public class ConvoConnector {
     
     private ProducerNode<SpeechRecEventList<SpeechRecEvent>> buildSpeechRecChain(
             Session session, Destination dest){
+        JMSAvroMessageAsyncReceiver<SpeechRecEventList<SpeechRecEvent>, SpeechRecEventListRecord> rec = 
+            new JMSAvroMessageAsyncReceiver<SpeechRecEventList<SpeechRecEvent>, SpeechRecEventListRecord>(
+            session, dest, SpeechRecEventListRecord.class, SpeechRecEventListRecord.SCHEMA$);
+        rec.setAdapter(new EmptyAdapter());
         try{
-            return JMSAvroUtils.buildEventReceiverChain(
-                    SpeechRecEventListRecord.class, 
-                    SpeechRecEventListRecord.SCHEMA$, 
-                    new EmptyAdapter(), 
-                    session, dest);
-        }catch(JMSException ex){
-            theLogger.log(Level.WARNING,"Error connecting to Speech Rec.",ex);
+            rec.start();
+        }catch(Exception ex){
+            theLogger.log(Level.SEVERE, "Unable to start Message Receiver", ex);
             return null;
         }
+        return new DefaultProducerNode<SpeechRecEventList<SpeechRecEvent>>(rec);
+//        try{
+//            return JMSAvroUtils.buildEventReceiverChain(
+//                    SpeechRecEventListRecord.class, 
+//                    SpeechRecEventListRecord.SCHEMA$, 
+//                    new EmptyAdapter(), 
+//                    session, dest);
+//        }catch(JMSException ex){
+//            theLogger.log(Level.WARNING,"Error connecting to Speech Rec.",ex);
+//            return null;
+//        }
     }
     
     private ConsumerNode<SpeechRequest> buildTTSNodeChain(
             Session session, Destination dest){
         try{
-            return NodeChainBuilder.build(
-                    EncodeRequest.factory(SpeechRequest.class, new JMSAvroUtils.ByteOutputStreamFactory()))
-                .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
-                    SpeechRequestRecord.class, 
-                    SpeechRequestRecord.SCHEMA$, 
-                    new EmptyAdapter(), 
-                    session, dest, 
-                    new MessageHeaderAdapter("application/speechRequest")));
+            JMSAvroMessageSender<SpeechRequest,SpeechRequestRecord> sender = 
+                    new JMSAvroMessageSender<SpeechRequest, SpeechRequestRecord>(session, dest);
+            sender.setAdapter(new EmptyAdapter());
+            sender.setDefaultContentType("application/speechRequest");
+            sender.start();
+            return new DefaultConsumerNode<SpeechRequest>(sender);
+//            return NodeChainBuilder.build(
+//                    EncodeRequest.factory(SpeechRequest.class, new JMSAvroUtils.ByteOutputStreamFactory()))
+//                .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
+//                    SpeechRequestRecord.class, 
+//                    SpeechRequestRecord.SCHEMA$, 
+//                    new EmptyAdapter(), 
+//                    session, dest, 
+//                    new MessageHeaderAdapter("application/speechRequest")));
         }catch(Exception ex){
             theLogger.log(Level.WARNING,"Error connecting to TTS.",ex);
             return null;
@@ -199,18 +216,29 @@ public class ConvoConnector {
     private ConsumerNode<ServiceCommand> buildServiceCommandNodeChain(
             Session session, Destination dest){
         try{
-            return NodeChainBuilder.build(
-                    EncodeRequest.factory(ServiceCommand.class, new JMSAvroUtils.ByteOutputStreamFactory()))
-                .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
-                    ServiceCommandRecord.class, 
-                    ServiceCommandRecord.SCHEMA$, 
-                    new EmptyAdapter(), 
-                    session, dest, 
-                    new MessageHeaderAdapter("application/service-command")));
-        }catch(JMSException ex){
+            JMSAvroMessageSender<ServiceCommand,ServiceCommandRecord> sender = 
+                    new JMSAvroMessageSender<ServiceCommand, ServiceCommandRecord>(session, dest);
+            sender.setAdapter(new EmptyAdapter());
+            sender.setDefaultContentType("application/service-command");
+            sender.start();
+            return new DefaultConsumerNode<ServiceCommand>(sender);
+        }catch(Exception ex){
             theLogger.log(Level.WARNING,"Error connecting to TTS.",ex);
             return null;
         }
+//        try{
+//            return NodeChainBuilder.build(
+//                    EncodeRequest.factory(ServiceCommand.class, new JMSAvroUtils.ByteOutputStreamFactory()))
+//                .getConsumerChain(JMSAvroUtils.buildEventSenderChain(
+//                    ServiceCommandRecord.class, 
+//                    ServiceCommandRecord.SCHEMA$, 
+//                    new EmptyAdapter(), 
+//                    session, dest, 
+//                    new MessageHeaderAdapter("application/service-command")));
+//        }catch(JMSException ex){
+//            theLogger.log(Level.WARNING,"Error connecting to TTS.",ex);
+//            return null;
+//        }
     }
     
     public void disconnect(){
