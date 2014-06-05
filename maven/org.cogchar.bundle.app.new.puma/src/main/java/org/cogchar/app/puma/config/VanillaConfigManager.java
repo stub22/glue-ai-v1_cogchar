@@ -16,7 +16,7 @@
 
 package org.cogchar.app.puma.config;
 
-import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.core.repo.RepoSpec;
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.store.Repo;

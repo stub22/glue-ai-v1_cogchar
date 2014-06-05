@@ -21,11 +21,9 @@ import org.cogchar.bind.mio.remote.RobotConnector;
 import java.util.List;
 
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.matdat.EnhancedRepoClient;
-import org.appdapter.core.matdat.PipelineQuerySpec;
-import org.appdapter.core.matdat.RepoSpec;
-// import org.appdapter.gui.demo.DemoBrowser;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.core.matdat.*;
+import org.appdapter.core.repo.*;
+import org.appdapter.help.repo.*;
 import org.cogchar.api.scene.Scene;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.Theater;

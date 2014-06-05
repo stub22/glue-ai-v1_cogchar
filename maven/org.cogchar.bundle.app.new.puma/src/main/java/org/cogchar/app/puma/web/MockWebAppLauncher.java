@@ -27,7 +27,7 @@ import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.core.repo.RepoSpec;
 import org.cogchar.name.entity.EntityRoleCN;
 
 import org.osgi.framework.BundleContext;

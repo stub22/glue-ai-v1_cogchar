@@ -15,16 +15,14 @@
  */
 
 package org.cogchar.impl.channel
-import scala.collection.mutable.HashMap;
 
-import org.appdapter.core.log.{ BasicDebugger, Loggable };
-import org.appdapter.core.name.{ Ident, FreeIdent };
-import org.appdapter.core.item.{ Item };
-import org.appdapter.help.repo.{ RepoClient }
+import scala.collection.mutable.HashMap
 
-import org.cogchar.api.channel.{ GraphChannel }
-import org.appdapter.core.matdat.{ RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, RepoClientTester, DirectDerivedGraph, DerivedGraphSpec }
-import org.cogchar.blob.emit.{ RepoFabric, FabricBox }
+import org.appdapter.core.name.Ident
+import org.appdapter.core.repo.DirectDerivedGraph
+import org.appdapter.help.repo.RepoClient
+import org.cogchar.api.channel.GraphChannel
+import org.cogchar.blob.emit.RepoFabric
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -38,7 +36,7 @@ class GraphChannelHub(bootRepoClient: RepoClient) {
   // Can promote this to EnhancedRepoClient when needed.
   var myMainRepoClient: RepoClient = bootRepoClient
 
-  def makeThingActionGraphChan(chanID : Ident, matchGraphID : Ident, cutoffTStamp : Long): GraphChannel = {
+  def makeThingActionGraphChan(chanID: Ident, matchGraphID: Ident, cutoffTStamp: Long): GraphChannel = {
     val tagc = new ThingActionGraphChan(chanID, myMainRepoClient, matchGraphID, cutoffTStamp)
     myGraphChans.put(chanID, tagc)
     tagc

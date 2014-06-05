@@ -21,11 +21,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
-import org.appdapter.core.matdat.BoundModelProvider;
-import org.appdapter.core.matdat.PipelineQuerySpec;
 import org.appdapter.core.matdat.*;
+import org.appdapter.help.repo.*;
+import org.appdapter.core.repo.*;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
 import org.cogchar.bind.mio.behavior.SceneSpecExtender;
 import org.cogchar.impl.scene.BehaviorSpecBuilder;
 import org.cogchar.impl.scene.SceneSpec;
