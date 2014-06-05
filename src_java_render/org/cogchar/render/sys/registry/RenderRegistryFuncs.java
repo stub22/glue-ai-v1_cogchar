@@ -40,7 +40,7 @@ import org.cogchar.render.sys.asset.AssetContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.appdapter.help.repo.*;
-import org.appdapter.core.matdat.*;
+import org.appdapter.core.repo.*;
 
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
