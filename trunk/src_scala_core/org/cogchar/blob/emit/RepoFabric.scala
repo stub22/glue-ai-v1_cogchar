@@ -18,8 +18,8 @@ package org.cogchar.blob.emit
 import org.appdapter.trigger.bind.jena.TriggerImpl
 import org.appdapter.api.trigger.{BoxContext}
 import org.appdapter.core.store.{ Repo }
-import org.appdapter.core.matdat._
-//import org.appdapter.core.matdat.OmniLoaderRepoTest
+import org.appdapter.core.repo._
+//import org.appdapter.core.repo.OmniLoaderRepoTest
 //import org.appdapter.core.repo.RepoSpec
 //import org.appdapter.core.matdat.SimplistRepoSpec
 import org.appdapter.demo.DemoBrowserUI
