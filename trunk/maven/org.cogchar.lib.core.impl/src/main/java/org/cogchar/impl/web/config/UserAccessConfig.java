@@ -22,7 +22,6 @@ import java.util.Map;
 import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.*;
-import org.appdapter.core.matdat.HelpRepoExtensions;
 import org.cogchar.name.lifter.UserCN;
 
 /**

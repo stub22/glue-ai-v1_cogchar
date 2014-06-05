@@ -18,12 +18,13 @@ package org.cogchar.blob.emit
 import org.appdapter.trigger.bind.jena.TriggerImpl
 import org.appdapter.api.trigger.{BoxContext}
 import org.appdapter.core.store.{ Repo }
-import org.appdapter.core.matdat.GoogSheetRepoSpec
-import org.appdapter.core.matdat.OmniLoaderRepoTest
-import org.appdapter.core.matdat.RepoSpec
-import org.appdapter.core.matdat.SimplistRepoSpec
+import org.appdapter.core.matdat._
+//import org.appdapter.core.matdat.OmniLoaderRepoTest
+//import org.appdapter.core.repo.RepoSpec
+//import org.appdapter.core.matdat.SimplistRepoSpec
 import org.appdapter.demo.DemoBrowserUI
 import org.appdapter.trigger.bind.jena.{FullBox, FullTrigger}
+import org.appdapter.core.repo.RepoSpec
 //import org.appdapter.scafun.{ BoxOne, TriggerOne}
 //import org.appdapter.gui.trigger.SysTriggers;
 /**
@@ -99,10 +100,11 @@ object RepoFabricTest {
     print("Start Whackamole");
     val repoNav = DemoBrowserUI.makeDemoNavigatorCtrl(args);
     print("Create a Goog Sheet Spec");
-    val repoSpec = new GoogSheetRepoSpec(OmniLoaderRepoTest.BMC_SHEET_KEY, OmniLoaderRepoTest.BMC_NAMESPACE_SHEET_NUM, OmniLoaderRepoTest.BMC_DIRECTORY_SHEET_NUM);
+    // Tests need to provide their own constants
+    /*val repoSpec = new GoogSheetRepoSpec(OmniLoaderRepoTest.BMC_SHEET_KEY, OmniLoaderRepoTest.BMC_NAMESPACE_SHEET_NUM, OmniLoaderRepoTest.BMC_DIRECTORY_SHEET_NUM);
     val repo = repoSpec.makeRepo;
-    repo.loadSheetModelsIntoMainDataset();
-    repo.loadDerivedModelsIntoMainDataset(null);
+    repo.getMainQueryDataset();
+    //repo.loadDerivedModelsIntoMainDataset(null);
     repoNav.addObject(repo.toString(), repo, true);
     print("Make RepoFabric");
     val rf = new RepoFabric();
@@ -114,7 +116,7 @@ object RepoFabricTest {
     rf.addEntry(new SimplistRepoSpec(repo))
     print("Resync");
     repoNav.addObject(null, fb, true);
-    java.lang.Thread.sleep(60000000);
+    java.lang.Thread.sleep(60000000);*/
   }
 }
 

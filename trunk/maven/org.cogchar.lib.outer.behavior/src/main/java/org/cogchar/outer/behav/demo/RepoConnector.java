@@ -17,16 +17,16 @@
 
 package org.cogchar.outer.behav.demo;
 
-import org.appdapter.core.store.Repo;
-
+import org.appdapter.core.matdat.OnlineSheetRepoSpec;
+import org.appdapter.help.repo.*;
+import org.appdapter.core.repo.*;
+import org.appdapter.core.store.*;
+import org.appdapter.impl.store.*;
 
 import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 import org.osgi.framework.BundleContext;
 
 
-import org.appdapter.core.matdat.RepoSpec;
-import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.matdat.EnhancedRepoClient;
 
 /**
  * This object is a crutch for this particular demo, not a general piece of test infrastructure.

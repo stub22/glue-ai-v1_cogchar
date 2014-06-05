@@ -15,42 +15,36 @@
  */
 
 package org.cogchar.impl.thing.fancy
-import org.appdapter.core.name.{Ident, FreeIdent}
-import org.appdapter.core.store.{Repo, InitialBinding }
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
-import org.appdapter.impl.store.{FancyRepo};
-import org.appdapter.core.matdat.{SheetRepo}
-import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
-import com.hp.hpl.jena.rdf.model.{Model}
 
-import  org.cogchar.api.thing.{ThingActionSpec};
-import  org.cogchar.impl.thing.basic.{BasicTypedValueMap, BasicTypedValueMapWithConversion}
+import org.appdapter.core.name.Ident
+import org.cogchar.api.thing.ThingActionSpec
+import org.cogchar.impl.thing.basic.BasicTypedValueMapWithConversion
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 object FancyThingTest {
-	def main(args: Array[String]) : Unit = {
-		// Must enable "compile" scope for Log4J dep in order to compile this code.
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
-		
-		println("Ooo, it's fancy in here!")
-	}
-	
-	def encodeThingActionForGraph(graphID : Ident, actionSpec: ThingActionSpec) : String = {
-		"";
-	}
-	/*
+  def main(args: Array[String]): Unit = {
+    // Must enable "compile" scope for Log4J dep in order to compile this code.
+    org.apache.log4j.BasicConfigurator.configure();
+    org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+
+    println("Ooo, it's fancy in here!")
+  }
+
+  def encodeThingActionForGraph(graphID: Ident, actionSpec: ThingActionSpec): String = {
+    "";
+  }
+  /*
 	 *	static String glueUpSilly = PREFIX_CCRT + PREFIX_UA + PREFIX_DC
 			+ "INSERT DATA {  GRAPH   ccrt:user_access_sheet_22 { \n"
 			+ "<http://yeah/nutty> dc:title 'How to be revolting' ;    dc:creator 'Spart A. Cus'. }}\n";
 	 *
 	 */
-	
+
 }
 class ConcreteTVM() extends BasicTypedValueMapWithConversion {
-	/*
+  /*
 	override def  getAsIdent( propName : Ident) : Ident = {
 		null;
 	}
@@ -75,7 +69,7 @@ class ConcreteTVM() extends BasicTypedValueMapWithConversion {
 	*/
 }
 class SparqlRenderContext() {
-	def whoopee() = {
-		
-	}
+  def whoopee() = {
+
+  }
 }

@@ -19,7 +19,7 @@ package org.cogchar.render.test;
 import com.hp.hpl.jena.rdf.model.Model;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.matdat.RepoSpec;
+import org.appdapter.core.repo.RepoSpec;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
