@@ -15,13 +15,19 @@
  */
 
 package org.cogchar.blob.emit
-import org.appdapter.core.name.{Ident, FreeIdent}
-import org.appdapter.core.store.{Repo, InitialBinding }
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl} 
-import org.appdapter.impl.store.{FancyRepo};
-import org.appdapter.core.matdat.{SheetRepo,_}
-import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
-import com.hp.hpl.jena.rdf.model.{Model}
+
+import java.io.ByteArrayOutputStream
+
+import scala.collection.JavaConversions.asScalaBuffer
+
+import org.appdapter.core.matdat.OnlineSheetRepoSpec
+import org.appdapter.core.name.{FreeIdent, Ident}
+import org.appdapter.core.store.Repo
+import org.appdapter.demo.DemoResources
+import org.appdapter.help.repo.{RepoClient, RepoClientImpl}
+import org.appdapter.impl.store.FancyRepo
+import org.cogchar.impl.channel.AnimFileSpecReader
+import org.cogchar.name.dir.{AssumedGraphDir, AssumedQueryDir}
 
 
 /** Documenting and testing our query-based configuration systems.

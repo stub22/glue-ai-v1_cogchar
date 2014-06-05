@@ -15,21 +15,15 @@
  */
 
 package org.cogchar.impl.channel
-import org.appdapter.core.name.{Ident, FreeIdent};
-import org.appdapter.core.item.{Item};
 
-import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
+import org.appdapter.bind.rdf.jena.assembly.{DynamicCachingComponentAssembler, ItemAssemblyReader, KnownComponentImpl}
+import org.appdapter.core.item.Item
+import org.appdapter.core.name.Ident
+import org.cogchar.api.channel.Channel
+import org.cogchar.name.channel.ChannelNames
 
-import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
-import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Resource;
-
-import org.cogchar.name.channel.{ChannelNames};
-import org.cogchar.api.channel.{Channel};
+import com.hp.hpl.jena.assembler.{Assembler, Mode}
+import com.hp.hpl.jena.rdf.model.Resource
 /**
  * @author Stu B. <www.texpedient.com>
  */

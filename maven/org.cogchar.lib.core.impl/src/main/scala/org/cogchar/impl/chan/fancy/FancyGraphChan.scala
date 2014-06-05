@@ -18,17 +18,19 @@ package org.cogchar.impl.channel
 
 import org.cogchar.api.channel.{BasicGraphChan}
 import org.appdapter.core.name.{Ident, FreeIdent}
-import org.appdapter.core.store.{Repo, InitialBinding }
-import org.appdapter.help.repo.{RepoClient} 
-import com.hp.hpl.jena.query.{QuerySolution} // Query, QueryFactory, QueryExecution, QueryExecutionFactory, , QuerySolutionMap, Syntax};
-import com.hp.hpl.jena.rdf.model.{Model}
-import org.cogchar.api.thing.{ThingActionSpec}
-import org.cogchar.impl.thing.basic.{BasicThingActionUpdater}
-/**
- * @author Stu B. <www.texpedient.com>
- */
-
-import org.appdapter.core.matdat.{SheetRepo, BoundModelProvider, RepoSpec, OnlineSheetRepoSpec, DatabaseRepoSpec, DirectDerivedGraph, DerivedGraphSpec, _}
+import org.appdapter.core.item.{Item}
+import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader
+import com.hp.hpl.jena.assembler.Assembler
+import com.hp.hpl.jena.assembler.Mode
+import com.hp.hpl.jena.assembler.assemblers.AssemblerBase
+import com.hp.hpl.jena.rdf.model.Resource
+import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl
+import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler
+import org.cogchar.name.dir.{NamespaceDir}
+import org.appdapter.core.repo.BoundModelProvider
+import org.appdapter.help.repo.RepoClient
+import org.cogchar.api.thing.ThingActionSpec
+import org.cogchar.impl.thing.basic.BasicThingActionUpdater
 
 class ProvidedGraphChan(chanID : Ident, val myModelProvider : BoundModelProvider) extends BasicGraphChan(chanID) with FancyChannel {
 	
@@ -57,18 +59,6 @@ class ThingActionGraphChan(chanID : Ident, rc : RepoClient, matchGraphID : Ident
 	
 	
 }
-
-import org.appdapter.core.name.{Ident, FreeIdent};
-import org.appdapter.core.item.{Item};
-import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Resource;
-import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
-import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
-
-import org.cogchar.name.dir.{NamespaceDir};
 
 
 class ThingActionChanSpec  extends KnownComponentImpl {

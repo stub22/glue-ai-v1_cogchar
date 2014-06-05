@@ -16,21 +16,16 @@
 
 package org.cogchar.scalatest
 
-import org.appdapter.api.trigger.MutableBox
+import scala.collection.JavaConversions
+
 import org.appdapter.api.registry.VerySimpleRegistry
-import org.appdapter.trigger.bind.jena.TriggerImpl
+import org.appdapter.api.trigger.MutableBox
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils
 import org.appdapter.bind.rdf.jena.model.JenaFileManagerUtils
 import org.appdapter.core.log.BasicDebugger
-import org.appdapter.core.matdat.{RepoClientTester, OnlineSheetRepoSpec}
-// import org.appdapter.gui.demo.{DemoNavigatorCtrl, DemoBrowser}
 import org.appdapter.osgi.registry.RegistryServiceFuncs
-import org.appdapter.trigger.scafun.{Boxy}
-import org.appdapter.trigger.bind.jena.{FullBox, FullTrigger}
-//import org.appdapter.scafun.{ BoxOne, TriggerOne}
-import org.cogchar.blob.emit.{RepoFabric, FabricBox}
-import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger}
-import scala.collection.JavaConversions
+import org.appdapter.trigger.bind.jena.{FullBox, FullTrigger, TriggerImpl}
+import org.cogchar.platform.trigger.{CogcharActionTrigger, CogcharScreenBox}
 
 /**
  *	Designed to work with or without OSGi context.

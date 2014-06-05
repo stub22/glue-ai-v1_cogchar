@@ -28,8 +28,8 @@ import org.cogchar.platform.trigger.BasicActionBindingImpl;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.app.puma.behavior.DirectBehaviorAgent;
 import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
-import org.appdapter.core.matdat.RepoClientTester;
-import org.appdapter.core.matdat.RepoClientTester.CommandRec;
+import org.appdapter.help.repo.ChannelsTriggersHelper;
+import org.appdapter.help.repo.CommandRec;
 import org.appdapter.core.name.Ident;
 
 import org.cogchar.bind.mio.robot.client.RobotAnimClient.BuiltinAnimKind;
@@ -340,7 +340,7 @@ public class TriggerItems {
     }
 
     public static void populateCommandSpace(RepoClient rc, CommandSpace cSpace, BoxSpace boxSpace) {
-        List<CommandRec> cmdRecList = RepoClientTester.queryCommands(rc);
+        List<CommandRec> cmdRecList = ChannelsTriggersHelper.queryCommands(rc);
         for (CommandRec cRec : cmdRecList) {
             TriggerItem ti = makeTriggerItem(cRec.trigFQCN());
             Ident cmdID = cRec.cmdID();

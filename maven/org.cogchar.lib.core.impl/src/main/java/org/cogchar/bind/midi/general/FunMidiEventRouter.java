@@ -20,7 +20,7 @@ import org.cogchar.bind.midi.in.MidiEventReporter;
 import org.cogchar.bind.midi.in.MidiReceiverDumpsAndNotifies;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
