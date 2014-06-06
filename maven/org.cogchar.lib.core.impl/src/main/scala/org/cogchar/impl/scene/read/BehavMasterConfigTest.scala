@@ -32,7 +32,7 @@ import org.osgi.framework.BundleContext
 import org.appdapter.core.matdat._
 import org.appdapter.core.repo.RepoSpecDefaultNames
 import org.appdapter.core.repo.PipelineQuerySpec
-import org.appdapter.core.repo.OfflineXlsSheetRepoSpec
+import org.appdapter.core.matdat.OfflineXlsSheetRepoSpec
 
 // import org.cogchar.blob.emit.RepoClientTester from here
 
