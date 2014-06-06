@@ -14,12 +14,9 @@
  *  limitations under the License.
  */
 
-package org.cogchar.blob.emit
+package org.cogchar.scalatest
 
 import java.io.ByteArrayOutputStream
-
-import scala.collection.JavaConversions.asScalaBuffer
-
 import org.appdapter.core.matdat.OnlineSheetRepoSpec
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.core.store.Repo
@@ -28,6 +25,9 @@ import org.appdapter.help.repo.{RepoClient, RepoClientImpl}
 import org.appdapter.impl.store.FancyRepo
 import org.cogchar.impl.channel.AnimFileSpecReader
 import org.cogchar.name.dir.{AssumedGraphDir, AssumedQueryDir}
+import org.appdapter.demo.DemoResources
+import org.appdapter.core.repo.DatabaseRepoFactoryLoader
+import org.appdapter.core.repo.DatabaseRepoSpec
 
 
 /** Documenting and testing our query-based configuration systems.
@@ -147,8 +147,8 @@ object RepoClientTester {
 		// ( ?colorR = "0.8" ) ( ?colorG = "0.8" ) ( ?colorB = "0.8" ) ( ?colorAlpha = "1" )]
 		// 
 		 
-		RepoTester.testRepoDirect(dfltTestRepo, rspec.getDfltQrySrcGraphQName, lightsQueryQN, 
-								  rspec.getDfltTgtGraphSparqlVarName, lightsGraphQN)
+		//RepoTester.testRepoDirect(dfltTestRepo, rspec.getDfltQrySrcGraphQName, lightsQueryQN, 
+		//						  rspec.getDfltTgtGraphSparqlVarName, lightsGraphQN)
 		
 		// Next, let's set up a RepoClient wrapper to give us some extra features. 
 		// (RepoClient constructor params uses opposite order than the variables documented above)
@@ -158,7 +158,6 @@ object RepoClientTester {
 		println("Running same query via RepoClient")
 		val solList = dfltTestRC.queryIndirectForAllSolutions(lightsQueryQN, lightsGraphQN)
 		println("Results, in the form of 'Solution' wrapper objects = " + solList.javaList)
-		
 		// The dirGraphID can be phony for now, because it is not needed until we try to do something
 		// fancy like an indirect query.  We can do direct SPARQL queries against the dataset without
 		// having a valid directory graph.  However, we cannot use the "InitialBinding" convenience
@@ -168,7 +167,8 @@ object RepoClientTester {
 		// 
 		val dirGraphID = new FreeIdent("urn:org.cogchar/dirModelInRepoTestDB", "dirModelInRepoTestDB");
 		
-		val dbRepo = RepoTester.loadDatabaseRepo(DFLT_SDB_REPO_CONFIG_PATH, DFLT_SDB_REPO_CONFIG_CLASS_LOADER, dirGraphID)
+		val dbRepoSpec = new DatabaseRepoSpec(DFLT_SDB_REPO_CONFIG_PATH, DFLT_SDB_REPO_CONFIG_CLASS_LOADER, dirGraphID)
+		val dbRepo = dbRepoSpec.makeRepo
 		println("Built dbRepo: " + dbRepo);
 		
 		val lightsGraphID = dfltTestRC.makeIdentForQName(lightsGraphQN);
