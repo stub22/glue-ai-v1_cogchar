@@ -14,30 +14,30 @@
  *  limitations under the License.
  */
 
-package org.cogchar.blob.emit
-import org.appdapter.core.name.{Ident, FreeIdent}
+package org.cogchar.scalatest
+
+import org.appdapter.core.name.Ident
 import org.appdapter.core.store.{Repo, InitialBinding}
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl, InitialBindingImpl}
 import com.hp.hpl.jena.query.{QuerySolution}
 import com.hp.hpl.jena.rdf.model.{Model}
 import org.appdapter.core.log.BasicDebugger
 import com.hp.hpl.jena.sparql.sse.SSE
 import com.hp.hpl.jena.sparql.modify.request.{UpdateCreate, UpdateLoad}
-import com.hp.hpl.jena.update.{GraphStore, GraphStoreFactory, UpdateAction, UpdateRequest}
+import com.hp.hpl.jena.update.{GraphStore, UpdateAction, UpdateRequest}
 import com.hp.hpl.jena.sdb.{Store, SDBFactory}
-import org.appdapter.core.repo.XLSXSheetRepoLoader
-import org.appdapter.core.repo.DatabaseRepo
-import org.appdapter.core.repo.OfflineXlsSheetRepoSpec
+import org.appdapter.core.repo._
+import org.appdapter.core.matdat._
 import org.appdapter.core.repo.DirectRepo
 import org.appdapter.core.matdat.GoogSheetRepoLoader
 import org.appdapter.core.matdat.OnlineSheetRepoSpec
-import org.appdapter.impl.store.FancyRepoFactory
+import org.appdapter.core.repo._
 import org.appdapter.impl.store.FancyRepo
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 object RepoTester extends BasicDebugger {
+  /*
 	// Modeled on SheetRepo.loadTestSheetRepo
 	def loadGoogSheetRepo(sheetKey : String, namespaceSheetNum : Int, dirSheetNum : Int, 
 						fileModelCLs : java.util.List[ClassLoader]) : FancyRepo = {
@@ -53,12 +53,15 @@ object RepoTester extends BasicDebugger {
 		// Load the rest of the repo's initial *sheet* models, as instructed by the directory.
 		getLogger().debug("Loading Sheet Models") 
 		// if shRepo is an OmniLoaderRepo, this results in a call to ensureUpdated(), which does a lot of stuff.
-		shRepo.loadSheetModelsIntoMainDataset()
+		//shRepo.loadSheetModelsIntoMainDataset()
+		// repo is in control of when it loads the sheet models now
+		// if we want that to be done *maybe* getMainQueryDataset might casue that.. but even that hopefully not!
+		shRepo.getMainQueryDataset
 		// Load the rest of the repo's initial *file/resource* models, as instructed by the directory.
 		// 2013-05-28: Stu temp restored old version of loader
 		getLogger().debug("Loading File Models")
 		// unnecessary if shRepo is an OmniLoaderRepo
-		shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
+		//shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
 		shRepo
 	}
 	
@@ -99,8 +102,9 @@ object RepoTester extends BasicDebugger {
 	}
 	
 	def copyAllRepoModels(sourceRepo : Repo.WithDirectory, targetRepo : Repo.WithDirectory) : Unit = {
-	}
+	}*/
 }
+/*
 class BetterDatabaseRepo(sdbStore : Store, dirGraphID : Ident) extends DatabaseRepo(sdbStore, dirGraphID){
 //	Current docs for GraphStoreFactory (more recent than the code version we're using) say,
 //	regarding   GraphStoreFactory. reate(Dataset dataset)
@@ -142,3 +146,4 @@ class BetterDatabaseRepo(sdbStore : Store, dirGraphID : Ident) extends DatabaseR
         SSE.write(sdbUpdateGraphStore) ;		
 	}
 }
+*/
