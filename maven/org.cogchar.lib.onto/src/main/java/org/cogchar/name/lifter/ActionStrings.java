@@ -88,29 +88,37 @@ public class ActionStrings {
 
     
     // The lifter outgoing  URI
+    // FIXME:    Confusingly, the word "action" occurs at several places in this naming hierarchy.
+	  
+	public static String FOLDER_CGC_PUSHY = "http://www.cogchar.org/lift/";
+	public static String FOLDER_PUSHY_ACTION =  FOLDER_CGC_PUSHY + "action/";
+	public static final String PREFIX_REGISTRATION = FOLDER_PUSHY_ACTION + "registration#";
+				//         "http://www.cogchar.org/lift/action/registration#";
+
+	public static String FOLDER_PUSHY_USER = FOLDER_CGC_PUSHY + "user/"; // http://www.cogchar.org/lift/user/
+	public static String FOLDER_PUSHY_USER_ACTION = FOLDER_PUSHY_USER + "action/"; // http://www.cogchar.org/lift/user/action/
+	public static String PREFIX_PUSHY_USER_ACTION = FOLDER_PUSHY_USER + "action#"; // http://www.cogchar.org/lift/user/action#
+
+    public static final Ident PUSHY_USER_ACTION_ACTION = new FreeIdent(PREFIX_PUSHY_USER_ACTION + "action");
+				//        "http://www.cogchar.org/lift/user/action#action");
     
-    public static final Ident LIFTER_ACTION = new FreeIdent(
-        "http://www.cogchar.org/lift/user/action#action");
+    public static final Ident PUSHY_USER_ACTION_SESSION = new FreeIdent(PREFIX_PUSHY_USER_ACTION + "session");
+				//         "http://www.cogchar.org/lift/user/action#session");
     
-    public static final Ident LIFTER_SESSION = new FreeIdent(
-         "http://www.cogchar.org/lift/user/action#session");
-    
-    // IDs that can be registered as lifter sessions listed below
-    
-    public static final String REGISTRATION_PREFIX = 
-            "http://www.cogchar.org/lift/action/registration#";
-    
+    // IDs that can be registered as lifter sessions listed below    
     public static final String DEFAULT_REGISTRATION = "action";
-    
+	
     public static final String STUDENT_REGISTRATION = "student";
-    public static final Ident STUDENT_ACITON = new FreeIdent(
-            "http://www.cogchar.org/lift/user/action#student");
-    public static final Ident STUDENT_START_PAGE = new FreeIdent(
-            "http://www.cogchar.org/lift/config/configroot#student-start-page-config");
+    public static final Ident STUDENT_ACITON = new FreeIdent(PREFIX_PUSHY_USER_ACTION + "student");
+       //     "http://www.cogchar.org/lift/user/action#student");
+	
+	public static final String PREFIX_CONFIG_ROOT = FOLDER_CGC_PUSHY + "config/configroot#";
+    public static final Ident STUDENT_START_PAGE = new FreeIdent(PREFIX_CONFIG_ROOT + "student-start-page-config");
+          //  "http://www.cogchar.org/lift/config/configroot#student-start-page-config");
     
     public static final String FACILITATOR_REGISTRATION = "facilitator";
-    public static final Ident FACILITATOR_ACITON = new FreeIdent(
-            "http://www.cogchar.org/lift/user/action#facilitator");
-    public static final Ident FACILITATOR_START_PAGE = new FreeIdent(
-            "http://www.cogchar.org/lift/config/configroot#facilitator-start-page-config");
+    public static final Ident FACILITATOR_ACITON = new FreeIdent(PREFIX_PUSHY_USER_ACTION + "facilitator");
+           //   "http://www.cogchar.org/lift/user/action#facilitator");
+    public static final Ident FACILITATOR_START_PAGE = new FreeIdent(PREFIX_CONFIG_ROOT + "facilitator-start-page-config");
+           //  "http://www.cogchar.org/lift/config/configroot#facilitator-start-page-config");
 }
