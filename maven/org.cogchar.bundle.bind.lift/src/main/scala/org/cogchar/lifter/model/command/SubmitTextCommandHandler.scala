@@ -20,7 +20,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.lifter.view.TextBox
 import scala.collection.mutable.ArrayBuffer
-import org.cogchar.lifter.model.main.{PageCommander}
+import org.cogchar.lifter.model.main.{PageCommander, SpeechRecGateway}
 
 class SubmitTextCommandHandler extends AbstractLifterCommandHandler {
   
@@ -43,7 +43,8 @@ class SubmitTextCommandHandler extends AbstractLifterCommandHandler {
 			cogbotDisplayList.foreach(slotNum =>
 			  PageCommander.setControl(cmdContext.mySessionId, slotNum, TextBox.makeBox("Cogbot said \"" + cleanedResponse 
 																  + "\"", sessionState.controlConfigBySlot(cmdContext.mySlotNum).style)))
-			if (sessionState.cogbotTextToSpeechActive) PageCommander.outputSpeech(cmdContext.mySessionId, cleanedResponse) // Output Android speech if cogbotTextToSpeechActive is set
+			if (sessionState.cogbotTextToSpeechActive) 
+				SpeechRecGateway.outputSpeech(cmdContext.mySessionId, cleanedResponse) // Output Android speech if cogbotTextToSpeechActive is set
 		  }
 		}
 	  case ActionStrings.DATABALLS_TOKEN => {

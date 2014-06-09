@@ -24,7 +24,7 @@ package org.cogchar.lifter {
 	import scala.xml.NodeSeq
 	import org.cogchar.impl.web.util.LifterLogger
 	import org.cogchar.lifter.model.main.PageCommander
-	import org.cogchar.lifter.model.main.PageCommander._ // Six imports here: case classes. Wildcard OK?
+	// import org.cogchar.lifter.model.main.PageCommander._ // Six imports here: case classes. Wildcard OK?
 
 	class JavaScriptActor extends CometActor with CometListener with LifterLogger {
 	  
@@ -40,6 +40,10 @@ package org.cogchar.lifter {
 		}
 	  }
 	  def registerWith = org.cogchar.lifter.model.main.PageCommander
+
+import org.cogchar.lifter.model.main.SpeechRecGateway.{SpeechInRequest, SpeechOutRequest, 
+							ContinuousSpeechInStartRequest, ContinuousSpeechInStopRequest}
+import org.cogchar.lifter.model.main.PageCommander.{HtmlPageRequest, HtmlPageRefreshRequest}
 
 	  override def lowPriority : PartialFunction[Any, Unit] = {
 		case req: SpeechInRequest if (req.sessionId == mySessionId) => {
