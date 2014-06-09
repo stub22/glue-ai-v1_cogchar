@@ -17,7 +17,7 @@
 package org.cogchar.lifter.model.command
 
 import org.cogchar.name.lifter.{ActionStrings}
-import org.cogchar.lifter.model.main.{PageCommander}
+import org.cogchar.lifter.model.main.{PageCommander, SpeechRecGateway}
 import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.lifter.view.TextBox
 import scala.collection.mutable.ArrayBuffer
@@ -32,7 +32,7 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler {
 	primaryToken match {
 	  case ActionStrings.acquireSpeech => {
 		  if (cmdContext.myInput == null) { // If so, this is a button or etc. asking for speech acquisition to be triggered
-			PageCommander.acquireSpeech(cmdContext.mySessionId, cmdContext.mySlotNum)
+			SpeechRecGateway.acquireSpeech(cmdContext.mySessionId, cmdContext.mySlotNum)
 		  } else { // otherwise, we are getting speech back from an acquisition via the SpeechRestListener
 			displayInputSpeech(cmdContext.myState, cmdContext.mySessionId, cmdContext.myInput(0))
 			// Next we strip the acquireSpeech prefix and continue handling. For this to work, the SpeechCommandHandler
@@ -46,7 +46,7 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler {
 		}
 	  case ActionStrings.getContinuousSpeech => {
 		  if (cmdContext.myInput == null) { // If so, this is a button or etc. asking for speech acquisition to be triggered
-			PageCommander.requestContinuousSpeech(cmdContext.mySessionId, cmdContext.mySlotNum, true)
+			SpeechRecGateway.requestContinuousSpeech(cmdContext.mySessionId, cmdContext.mySlotNum, true)
 		  } else { // otherwise, we are getting speech back from an acquisition via the SpeechRestListener
 			displayInputSpeech(cmdContext.myState, cmdContext.mySessionId, cmdContext.myInput(0))
 			// Next we strip the getContinuousSpeech prefix and continue handling. For this to work, the SpeechCommandHandler
@@ -58,7 +58,7 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler {
 		  }
 		}
 	  case ActionStrings.stopContinuousSpeech => {
-		  PageCommander.requestContinuousSpeech(cmdContext.mySessionId, cmdContext.mySlotNum, false)
+		  SpeechRecGateway.requestContinuousSpeech(cmdContext.mySessionId, cmdContext.mySlotNum, false)
 		}
 	  case ActionStrings.cogbotSpeech => {
 		  val secondToken = cmdContext.myCommand.stripPrefix(ActionStrings.cogbotSpeech + ActionStrings.commandTokenSeparator)

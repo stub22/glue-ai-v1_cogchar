@@ -73,10 +73,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  
 	  // Case classes for messaging JavaScriptActor
 	  case class HtmlPageRequest(sessionId:String, pagePathOption:Option[String])
-	  case class SpeechOutRequest(sessionId:String, text:String)
-	  case class SpeechInRequest(sessionId:String, slotNum:Int)
-	  case class ContinuousSpeechInStartRequest(sessionId:String, slotNum:Int)
-	  case class ContinuousSpeechInStopRequest(sessionId:String)
+
 	  case class HtmlPageRefreshRequest(sessionId:String)
 	  
 	  // Case classes for controls to message back into PageCommander
@@ -85,6 +82,9 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  case class ControlMultiSelect(sessionId:String, slotNum:Int, subControl:Int)
 	  case class ControlMultiAction(sessionId:String, slotNum:Int, subControl:Int, multiActionFlag:Boolean)
 	  
+	
+	def exposedUpdateListeners(x : Any) : Unit = {updateListeners(x)}
+	
 	  def getMarkup(sessionId:String, controlId: Int): NodeSeq = {
 		var nodeOut = NodeSeq.Empty
 		try {
@@ -314,27 +314,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 		val input:Array[String] = Array(ActionStrings.subControlIdentifier + subControlSelected.toString)
 		handleAction(sessionId, slotNum, input)
 	  }
-	  
-	  // Likely should go in different class...
-	  def outputSpeech(sessionId:String, text: String) {
-		updateListeners(SpeechOutRequest(sessionId, text)) // To tell JavaScriptActor we want Android devices to say the text
-	  }
-	  
-	  // Likely should go in different class...
-	  def acquireSpeech(sessionId:String, slotNum:Int) {
-		updateListeners(SpeechInRequest(sessionId, slotNum)); // Send this message - JavaScriptActor will use it to attach requesting info to JS Call - allows multiple speech request controls
-	  }
-	  
-	  // Likely should go in different class...
-	  def requestContinuousSpeech(sessionId:String, slotNum: Int, desired: Boolean) {
-		info("In requestContinuousSpeech, setting to {} for session {}", desired, sessionId)
-		if (desired) {
-		  updateListeners(ContinuousSpeechInStartRequest(sessionId, slotNum))
-		} else {
-		  updateListeners(ContinuousSpeechInStopRequest(sessionId))
-		}
-	  }
-	  
+
 	  def getCurrentTemplate(sessionId:String) = {
 		var templateToLoad: String = null
 		val sessionState = theLifterState.stateBySession
