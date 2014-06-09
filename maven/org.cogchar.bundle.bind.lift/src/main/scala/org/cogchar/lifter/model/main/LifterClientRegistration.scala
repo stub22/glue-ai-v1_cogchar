@@ -51,14 +51,14 @@ class LifterClientRegistration extends WantsThingAction {
     
     // Check if the TA matches registration for any of the users
     val registrationAction:Ident = t.getAsIdent(
-      ActionStrings.LIFTER_ACTION);
+      ActionStrings.PUSHY_USER_ACTION_ACTION);
     
     // Collect the session ID
     val registrationSession:String = t.getAsString(
-      ActionStrings.LIFTER_SESSION)
+      ActionStrings.PUSHY_USER_ACTION_SESSION)
     
     // If actual registration event...
-    if( registrationAction.getAbsUriString.startsWith(ActionStrings.REGISTRATION_PREFIX) ) {
+    if( registrationAction.getAbsUriString.startsWith(ActionStrings.PREFIX_REGISTRATION) ) {
     
       theLogger.debug("checking possible registration action: {}", registrationAction)
     
