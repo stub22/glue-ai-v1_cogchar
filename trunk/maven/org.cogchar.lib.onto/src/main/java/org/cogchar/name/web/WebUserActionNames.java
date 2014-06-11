@@ -37,6 +37,8 @@ public class WebUserActionNames {
 		return new FreeIdent(USER_ACTION_NS + nameTail);
 	}
 	
+	// These are properties.  We can tell their datatypes by looking at how they are used in 
+	// WebSessionActionParamWriter.
 	public	static Ident	SENDER = makeID("sender");
 	public	static Ident	USER = makeID("user");
 	public	static Ident	SESSION = makeID("session");
