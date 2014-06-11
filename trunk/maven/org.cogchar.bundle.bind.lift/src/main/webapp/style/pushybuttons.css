@@ -110,6 +110,16 @@ div.halfPageSlotLeftRight {
 	height:100%;
 }
 
+.questionTextForWidePage {
+	padding-top: 25px;
+	color: white;
+	font-size: 3.5em;
+	bottom: 20%;
+	position: absolute;
+	left: 30%;
+	right: 30%;
+}
+
 div.halfPageSlotLeftRight#slot1, div.halfPageSlotLeftRight#slot1 {
 	font-size: 48px;
 }
