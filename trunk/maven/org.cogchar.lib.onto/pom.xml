@@ -59,9 +59,11 @@
 							<ontology>true</ontology>
 							<no-strict>true</no-strict>
 							<use-inf>true</use-inf>
+							<!-- uc-names makes the constants be UPPER_CASE_STYLE instead of cCamelCaseStyle -->
+							<uc-names>true</uc-names>
 						</source>
 						<source>
-							<!-- Test2.java (only) will contain OntModel declarations -->
+							<!-- Example of properties applied to just one file, but a bogus one that we aren't even using -->
 							<input>src/main/vocabs/demo2.ttl</input>
 							<ontology>true</ontology>
 						</source>
@@ -76,81 +78,6 @@
 					</execution>
 				</executions>
 			</plugin>			
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
-				<executions>				
-					<execution>
-						<id>anim-motiv</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>java</goal>
-						</goals>
-						<configuration>
-							<mainClass>jena.schemagen</mainClass>
-							<arguments>
-								<argument>--inference</argument>
-								<argument>-i</argument>
-								<argument>${project.basedir}/src/main/resources/org/cogchar/onto/AnimMotivMapBlend.owl</argument>
-								<argument>--package</argument>
-								<argument>org.cogchar.gen.ontoname</argument>
-								<argument>-o</argument>
-								<argument>${project.build.directory}/generated-sources/java</argument>
-								<argument>-n</argument>
-								<argument>AnimMotivMapBlend</argument>
-								<argument>--uppercase</argument>
-
-							</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>behav-chan</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>java</goal>
-						</goals>
-						<configuration>
-							<mainClass>jena.schemagen</mainClass>
-							<arguments>
-								<argument>--inference</argument>
-								<argument>-i</argument>
-								<argument>${project.basedir}/src/main/resources/org/cogchar/onto/BehavChanAct.owl</argument>
-								<argument>--package</argument>
-								<argument>org.cogchar.gen.ontoname</argument>
-								<argument>-o</argument>
-								<argument>${project.build.directory}/generated-sources/java</argument>
-								<argument>-n</argument>
-								<argument>BehavChanAct</argument>
-								<argument>--uppercase</argument>
-							</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>hominoid-body</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>java</goal>
-						</goals>
-						<configuration>
-							<mainClass>jena.schemagen</mainClass>
-							<arguments>
-								<argument>--inference</argument>
-								<argument>-i</argument>
-								<argument>${project.basedir}/src/main/resources/org/cogchar/onto/HominoidBodySchema.owl</argument>
-								<argument>--package</argument>
-								<argument>org.cogchar.gen.ontoname</argument>
-								<argument>-o</argument>
-								<argument>${project.build.directory}/generated-sources/java</argument>
-								<argument>-n</argument>
-								<argument>HominoidBodySchema</argument>
-								<argument>--uppercase</argument>
-
-							</arguments>
-						</configuration>
-					</execution>					
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
