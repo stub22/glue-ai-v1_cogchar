@@ -31,6 +31,51 @@
 	</dependencies>
 	<build>
 		<plugins>
+			<!-- Processing of newer ontos is following pattern described here
+				http://jena.apache.org/documentation/tools/schemagen-maven.html
+				
+				However, the plugin version described there is out of date.
+				We found this one by searching maven-central.
+			-->
+			<plugin>
+
+				<groupId>org.apache.jena</groupId>
+				<artifactId>jena-maven-tools</artifactId>
+				<version>0.5</version>
+			
+
+				<configuration>
+					<includes>
+						<include>src/main/resources/org/cogchar/onto/*_owl2.ttl</include>
+					</includes>
+					<fileOptions>
+						<source>
+<!--   Jena docs are out of date
+ http://grepcode.com/file/repo1.maven.org$maven2@org.apache.jena$jena-maven-tools@0.4@org$apache$jena$tools$schemagen$Source.java
+-->													
+							<input>default</input>
+							<output>${project.build.directory}/generated-sources/java</output>
+							<package-name>org.cogchar.gen.oname</package-name>
+							<ontology>true</ontology>
+							<no-strict>true</no-strict>
+							<use-inf>true</use-inf>
+						</source>
+						<source>
+							<!-- Test2.java (only) will contain OntModel declarations -->
+							<input>src/main/vocabs/demo2.ttl</input>
+							<ontology>true</ontology>
+						</source>
+					</fileOptions>							
+				</configuration>
+				<executions>
+					<execution>
+						<id>schemagen</id>
+						<goals>
+							<goal>translate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>

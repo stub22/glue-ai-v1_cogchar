@@ -18,7 +18,6 @@ package org.cogchar.impl.thing.basic;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.web.WebEntityAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
