@@ -15,7 +15,7 @@
  */
 
 package org.cogchar.scalatest
-import org.cogchar.gen.ontoname.{BehavChanAct, HominoidBodySchema, AnimMotivMapBlend}
+import org.cogchar.gen.oname.{BehavChanAct_owl2, HominoidBodySchema_owl2, AnimMotivMapBlend_owl2}
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -24,6 +24,6 @@ object OntoTest {
 	def main(args: Array[String]): Unit = {
 		println(this.toString() + " says 'Hello!'");
 		
-		println("BCA-ANIM_FRAME_MEDIA=" + BehavChanAct.ANIM_FRAME_MEDIA)
+		println("BCA-ANIM_FRAME_MEDIA=" + BehavChanAct_owl2.ANIM_FRAME_MEDIA)
 	}
 }
