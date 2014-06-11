@@ -19,6 +19,7 @@ package org.cogchar.name.web;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.name.dir.NamespaceDir;
+import org.cogchar.gen.oname.WebTier_owl2;
 
 /**
  *
@@ -45,5 +46,8 @@ public class WebUserActionNames {
 	public	static Ident	USER_CLASS = makeID("userclass");
 	public	static Ident	USER_TEXT = makeID("inputtext");
 	public	static Ident	ACTION = makeID("action");
+	
+	public static String heyNow = WebTier_owl2.getURI();
+	
 
 }
