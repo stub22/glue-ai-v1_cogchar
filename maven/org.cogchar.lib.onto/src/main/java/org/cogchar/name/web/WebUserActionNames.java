@@ -38,6 +38,10 @@ public class WebUserActionNames {
 		return new FreeIdent(USER_ACTION_NS + nameTail);
 	}
 	
+	public static Ident makeID (com.hp.hpl.jena.rdf.model.Resource jenaRsrc) {
+		return new org.appdapter.core.item.JenaResourceItem(jenaRsrc);
+	}	
+	
 	// These are properties.  We can tell their datatypes by looking at how they are used in 
 	// WebSessionActionParamWriter.
 	public	static Ident	SENDER = makeID("sender");
@@ -49,6 +53,8 @@ public class WebUserActionNames {
 	
 	public static String heyNow = WebTier_owl2.getURI();
 	public static String anotherGuy = WebTier_owl2.SENDER.getLocalName();
+	
+	public	static Ident   idFromOntoName = makeID(WebTier_owl2.SENDER);
 	
 
 }
