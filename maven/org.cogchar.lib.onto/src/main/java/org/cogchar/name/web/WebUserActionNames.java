@@ -48,6 +48,7 @@ public class WebUserActionNames {
 	public	static Ident	ACTION = makeID("action");
 	
 	public static String heyNow = WebTier_owl2.getURI();
+	public static String anotherGuy = WebTier_owl2.SENDER.getLocalName();
 	
 
 }
