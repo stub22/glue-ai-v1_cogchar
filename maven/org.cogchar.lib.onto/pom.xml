@@ -31,7 +31,7 @@
 	</dependencies>
 	<build>
 		<plugins>
-			<!-- Processing of newer ontos is following pattern described here
+			<!-- Processing of current ontos is following pattern described here
 				http://jena.apache.org/documentation/tools/schemagen-maven.html
 				
 				However, the plugin version described there is out of date.
@@ -47,6 +47,7 @@
 				<configuration>
 					<includes>
 						<include>src/main/resources/org/cogchar/onto/*_owl2.ttl</include>
+						
 					</includes>
 					<fileOptions>
 						<source>
@@ -96,8 +97,30 @@
 					</execution>
 				</executions>
 			</plugin>
-   			
-			  
+			<!--
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/generated-sources/java</outputDirectory>
+              <resources>          
+                <resource>
+                  <directory>src/non-packaged-resources</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>              
+            </configuration>            
+          </execution>
+        </executions>
+      </plugin> 
+		-->
 		</plugins>
 		<pluginManagement>
 			<plugins>
