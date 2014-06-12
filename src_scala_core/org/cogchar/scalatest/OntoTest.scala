@@ -16,6 +16,7 @@
 
 package org.cogchar.scalatest
 import org.cogchar.gen.oname.{BehavChanAct_owl2, HominoidBodySchema_owl2, AnimMotivMapBlend_owl2, WebTier_owl2}
+import org.cogchar.name.web.WebUserActionNames
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -27,5 +28,7 @@ object OntoTest {
 		println("BCA-ANIM_FRAME_MEDIA=" + BehavChanAct_owl2.ANIM_FRAME_MEDIA)
 		
 		println ("WebTier_owl2.SENDER.localName: " + WebTier_owl2.SENDER.getLocalName())
+		
+		println ("ID from ontoName: " + WebUserActionNames.idFromOntoName)
 	}
 }

@@ -64,8 +64,11 @@
 							<uc-names>true</uc-names>
 						</source>
 						<source>
-							<!-- Example of properties applied to just one file, but a bogus one that we aren't even using -->
-							<input>src/main/vocabs/demo2.ttl</input>
+							<!-- Example of properties applied to just one file, but a bogus one that we 
+							aren't even using (because this dummy file path is not part of an "include" spec
+							above
+							-->
+							<input>src/dummy/unused.ttl</input>
 							<ontology>true</ontology>
 						</source>
 					</fileOptions>							
@@ -97,30 +100,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>2.6</version>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/generated-sources/java</outputDirectory>
-              <resources>          
-                <resource>
-                  <directory>src/non-packaged-resources</directory>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>              
-            </configuration>            
-          </execution>
-        </executions>
-      </plugin> 
-		-->
 		</plugins>
 		<pluginManagement>
 			<plugins>
