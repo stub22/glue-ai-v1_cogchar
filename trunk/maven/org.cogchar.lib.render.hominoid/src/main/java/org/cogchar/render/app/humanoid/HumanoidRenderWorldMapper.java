@@ -72,7 +72,7 @@ public class HumanoidRenderWorldMapper {
         /*
          * Overrides the background color if a skybox image is available at
          * Content/textures/skybox/default.dds
-         * /
+         */
         setSkyBox(hrc);
 
     }
