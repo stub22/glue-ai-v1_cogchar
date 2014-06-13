@@ -36,6 +36,12 @@
 				
 				However, the plugin version described there is out of date.
 				We found this one by searching maven-central.
+				
+				This plugin runs before the java-compile step.
+				
+				The generated .java files are written to ${project.build.directory}/generated-sources/java,
+				which is made part of the java build step using the config of the build-helper-maven-plugin
+				below.
 			-->
 			<plugin>
 
@@ -51,17 +57,36 @@
 					</includes>
 					<fileOptions>
 						<source>
-<!--   Jena docs are out of date
+<!--  Published jena docs are out of date.  
+The options we can use are mostly equivalent to the ones described here
+http://jena.apache.org/documentation/tools/schemagen.html
+but to get the actual option name, we have to look in Jena code, such as here:
  http://grepcode.com/file/repo1.maven.org$maven2@org.apache.jena$jena-maven-tools@0.4@org$apache$jena$tools$schemagen$Source.java
--->													
+-->										
+
+							<!-- the "default" input supplies options used by all files matching includes above.  -->
 							<input>default</input>
 							<output>${project.build.directory}/generated-sources/java</output>
 							<package-name>org.cogchar.gen.oname</package-name>
+							<!-- We want more specialized OWL-aware java-subclasses like "Individual" and 
+								"ObjectProperty", not just "Resource" and "Property".
+							-->
 							<ontology>true</ontology>
+							<!-- no-strict prevents strict checking of ___ which if left on causes build error ____ -->
 							<no-strict>true</no-strict>
-							<use-inf>true</use-inf>
+							<!-- Sure, we like inference, although it's probably not needed in this task,
+								but it makes the serialized model larger.  If we want to use include-source,
+								below, this can lead to the full-model java String constant being too long,
+								and not compiling.
+							--> 
+							<use-inf>false</use-inf>
 							<!-- uc-names makes the constants be UPPER_CASE_STYLE instead of cCamelCaseStyle -->
 							<uc-names>true</uc-names>
+							<!-- Serializes the source code of the vocabulary, and 
+							includes this into the generated class file. At class load time, creates a Model 
+							containing the definitions from the source
+							-->
+							<include-source>true</include-source>
 						</source>
 						<source>
 							<!-- Example of properties applied to just one file, but a bogus one that we 
@@ -83,6 +108,7 @@
 				</executions>
 			</plugin>			
 			<plugin>
+				<!-- We want the generated-sources/java directory to be included in the java-compile step -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<version>1.7</version>
