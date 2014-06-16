@@ -87,7 +87,20 @@ public class BasicThingActionUpdater {
 	 * @param seeingAgentID
 	 * @return 
 	 */
-	public List<ThingActionSpec> viewActionsAndMark(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {		
+        public List<ThingActionSpec> viewActionsAndMark(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {  
+	    try {
+		return viewActionsAndMark_orig(rc,srcGraphID,cutoffTStamp,viewingAgentID);		
+	    } catch ( Exception e ) {
+		theLogger.error(" viewActionsAndMark "+e,e);
+                try {
+		    Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		    theLogger.error("Thread.sleep(1000)"+e,e);
+		}
+		return new java.util.ArrayList<ThingActionSpec>();
+	    }
+	}
+	public List<ThingActionSpec> viewActionsAndMark_orig(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {		
 		InitialBinding queryIB = rc.makeInitialBinding();
 		Literal cutoffTimeLit = rc.makeTypedLiteral(cutoffTStamp.toString(), XSDDatatype.XSDlong);
 		queryIB.bindNode(ThingCN.V_cutoffTStampMsec, cutoffTimeLit);
