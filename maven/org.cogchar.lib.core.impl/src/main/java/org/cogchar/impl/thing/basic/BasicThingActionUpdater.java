@@ -70,7 +70,7 @@ public class BasicThingActionUpdater {
 	
 	@Deprecated protected List<ThingActionSpec> takeThingActions(RepoClient rc, Ident srcGraphID) {
 	    try {
-		return takeThingActions_orig(rc,srcGraphID,cutoffTStamp,viewingAgentID);		
+		return takeThingActions_orig(rc,srcGraphID);		
 	    } catch ( Exception e ) {
 		theLogger.error(" takeThingActions "+e,e);
                 try {
