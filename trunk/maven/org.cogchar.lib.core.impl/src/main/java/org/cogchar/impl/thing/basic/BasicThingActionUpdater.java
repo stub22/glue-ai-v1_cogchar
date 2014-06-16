@@ -81,7 +81,7 @@ public class BasicThingActionUpdater {
 		return new java.util.ArrayList<ThingActionSpec>();
 	    }
 	}
-	public List<ThingActionSpec> takeThingActions_orig(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {
+	public List<ThingActionSpec> takeThingActions_orig(RepoClient rc, Ident srcGraphID) {
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
 		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
 		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
