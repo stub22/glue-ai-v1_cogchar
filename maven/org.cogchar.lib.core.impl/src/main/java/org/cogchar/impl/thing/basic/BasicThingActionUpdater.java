@@ -75,8 +75,8 @@ public class BasicThingActionUpdater {
 		theLogger.error(" takeThingActions "+e,e);
                 try {
 		    Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		    theLogger.error("Thread.sleep(1000)"+e,e);
+		} catch (InterruptedException ee) {
+		    theLogger.error("Thread.sleep(1000)"+ee,ee);
 		}
 		return new java.util.ArrayList<ThingActionSpec>();
 	    }
@@ -107,8 +107,8 @@ public class BasicThingActionUpdater {
 		theLogger.error(" viewActionsAndMark "+e,e);
                 try {
 		    Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		    theLogger.error("Thread.sleep(1000)"+e,e);
+		} catch (InterruptedException ee) {
+		    theLogger.error("Thread.sleep(1000)"+ee,ee);
 		}
 		return new java.util.ArrayList<ThingActionSpec>();
 	    }
