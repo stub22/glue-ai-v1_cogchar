@@ -69,6 +69,19 @@ public class BasicThingActionUpdater {
 	}
 	
 	@Deprecated protected List<ThingActionSpec> takeThingActions(RepoClient rc, Ident srcGraphID) {
+	    try {
+		return takeThingActions_orig(rc,srcGraphID,cutoffTStamp,viewingAgentID);		
+	    } catch ( Exception e ) {
+		theLogger.error(" takeThingActions "+e,e);
+                try {
+		    Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		    theLogger.error("Thread.sleep(1000)"+e,e);
+		}
+		return new java.util.ArrayList<ThingActionSpec>();
+	    }
+	}
+	public List<ThingActionSpec> takeThingActions_orig(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
 		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
 		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
