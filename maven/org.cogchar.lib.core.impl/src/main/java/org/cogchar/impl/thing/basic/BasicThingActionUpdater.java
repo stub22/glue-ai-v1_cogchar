@@ -64,7 +64,12 @@ public class BasicThingActionUpdater {
 		for (ThingActionSpec tas : actionSpecList) {
 			//deleteThingAction(rc, srcGraphID, tas);
 		}
-		theLogger.info("Returning ThingAction list of length {} from graph {}",  actionSpecList.size(), srcGraphID);
+		int listSize = actionSpecList.size();
+		if (listSize != 0) {
+			theLogger.info("Returning ThingAction list of length {} from graph {}", listSize, srcGraphID);
+		} else {
+			theLogger.trace("Returning empty ThingAction list from graph {}", srcGraphID);
+		}
 		return actionSpecList;
 	}
 	
@@ -131,7 +136,12 @@ public class BasicThingActionUpdater {
 		for (ThingActionSpec tas : actionSpecList) {
 			markThingActionSeen(rc, srcGraphID, tas, viewingAgentID);
 		}
-		theLogger.info("Returning ThingAction list of length {} from graph {}",  actionSpecList.size(), srcGraphID);
+		int listSize = actionSpecList.size();
+		if (listSize != 0) {
+			theLogger.info("Returning ThingAction list of length {} from graph {}", listSize, srcGraphID);
+		} else {
+			theLogger.trace("Returning empty ThingAction list from graph {}", srcGraphID);
+		}		
 		return actionSpecList;
 	}	
 
