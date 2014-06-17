@@ -65,13 +65,14 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 				stat = consumer.consumeAction(actionSpec, srcGraphID);
 			} // TODO: more specific exception(s) ...?
 			catch (Exception e) {
-				theLogger.warn("TA Consumer:{} ...caught except while handling ThingAction:{}\n{}", consumer.toString(), actionSpec.getActionSpecID(), e.toString());
-				theLogger.debug("Full dump of spec: {}", actionSpec);
+				theLogger.warn("TA Consumer:{} ...caught except while handling ThingAction: {}", consumer.toString(), actionSpec.getActionSpecID());
+				theLogger.warn("The exception trace is: ",  e);
+				theLogger.info("Full dump of spec: {}", actionSpec);
 				continue;
 			}
 			if (stat == null) {
-				theLogger.warn("TA Consumer:{} ...null status from handling ThingAction:{}", consumer.toString(), actionSpec.getActionSpecID());
-				theLogger.debug("Full dump of spec: {}", actionSpec);
+				theLogger.warn("TA Consumer:{} ...null status from handling ThingAction:{}", consumer.toString(), actionSpec.getActionSpecID());			
+				theLogger.info("Full dump of spec: {}", actionSpec);
 				continue;
 			}
 			switch (stat) {
