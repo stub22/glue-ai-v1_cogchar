@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.0.9.1</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>	
+	
+	<artifactId>org.cogchar.bundle.bind.lift</artifactId>
+	
+
+	<!--
+			When we use "bundle" packaging, then we get a ".jar" file which is easily loaded as a bundle.	
+			PAX services are able to find the webapp within this bundle.
+	-->
+	
+	<packaging>bundle</packaging>
+
+	
+	<name>${project.artifactId} - Webapp in OSGi bundle</name>
+
+	<!-- Set the baseURL for http access via OSGi -->
+	<properties>
+		<web.contextPath>test_lifter</web.contextPath>
+	</properties>
+        
+        
+	<dependencies>
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cogchar</groupId>
+			<artifactId>ext.bundle.lift</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.common.rk</artifactId>
+			<version>${jflux.version}</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.registry</artifactId>
+			<version>${jflux.version}</version>
+		</dependency>		
+				
+
+		<!-- javax.servlet is marked "provided" so it can be used at compile time, but not propagated forward.  -->
+		<!--  But maybe we don't really need it explicitly at all, these days.
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+          -->
+
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/webapp</directory>
+			</resource>
+		</resources>
+		
+		<plugins>    
+			<plugin>
+				<!-- Reconfigured based on http://leshazlewood.com/2010/09/08/osgi-maven-pax-and-web-applications/  -->
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+
+						<!--	"Webapp-Context"  is PAX-specific and deprecated since PAX 1.0.0.
+											<Webapp-Context>${web.contextPath}</Webapp-Context>
+											Web-ContextPath is from the OSGi spec.
+											With no Web-ContextPath, PAX assigns a default context path like:
+											http://localhost:8080/org.cogchar.org.cogchar.lifter/
+						-->
+
+						<Web-ContextPath>${web.contextPath}</Web-ContextPath>
+						<Export-Package>
+							org.cogchar.lifter.*
+							<!-- This bootstrap package will be replaced using web.xml 
+							bootstrap.*
+							-->
+						</Export-Package>
+						<!-- To try making our own private copy of the LiftWeb static/singleton state, we add
+								Private-Pkg for the lift state, 
+								toserve = needed for "blueprint" jquery.js 
+								i18n = lift-core_* properties needed for resource localization   
+						-->		    
+						<Private-Package>
+							net.liftweb.*,
+							toserve.*,	
+							i18n		
+						</Private-Package>					
+					
+						<!-- These import exclusions are needed in ext.bundle.lift,
+							OR any bundle that wants to be runnable in parallel with other Lift 2.5-based webapp bundles,
+							using the Private-Package instruction above.   
+						-->
+						<Import-Package>
+		
+							!ch.qos.logback.*, 
+							!org.specs2.*, 
+							!scala.tools.scalap.*, 
+							!org.apache.commons.httpclient.*,
+							<!-- Otherwise, "allow all normal imports" = * -->
+							*
+						</Import-Package>
+		
+					</instructions>
+
+				</configuration>
+			</plugin>
+
+							
+			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<version>2.14.3</version>
+				<configuration>
+					<charset>${project.build.sourceEncoding}</charset>
+					<jvmArgs>
+						<jvmArg>-XX:+TieredCompilation</jvmArg>
+						<jvmArg>-Xmx1024m</jvmArg>
+						<jvmArg>-DpackageLinkDefs=file://${project.build.directory}/packageLinkDefs.properties</jvmArg>
+					</jvmArgs>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.2</version>
+				<executions>
+					<execution>
+						<id>default-copy-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<overwrite>true</overwrite>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/src</directory>
+									<includes>
+										<include>packageLinkDefs.properties</include>
+									</includes>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+	</build>
+
+</project>
