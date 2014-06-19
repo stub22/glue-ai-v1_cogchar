@@ -26,7 +26,7 @@ import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
 import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.api.thing.TypedValueMap;
+import org.cogchar.api.thing.SerTypedValueMap;
 import org.cogchar.name.thing.ThingCN;
 import org.slf4j.Logger;
 
@@ -52,7 +52,7 @@ public class BasicThingActionQResAdapter extends BasicDebugger {
 			Ident targetID = sh.pullIdent(actionSoln, ThingCN.V_targetThingID);
 			Ident targetTypeID = sh.pullIdent(actionSoln, ThingCN.V_targetThingTypeID);
 
-			TypedValueMap actionParams = buildActionParameterValueMap(rc, srcGraphID, sh, actionID, theLogger);
+			SerTypedValueMap actionParams = buildActionParameterValueMap(rc, srcGraphID, sh, actionID, theLogger);
 			Literal tstampLiteral = actionSoln.getLiteralResultVar(ThingCN.V_postedTStampMsec);
 			Long actionPostedTStampMsec = (tstampLiteral != null) ? tstampLiteral.getLong() : null;
 			ThingActionSpec spec = new BasicThingActionSpec(actionID, targetID, targetTypeID, verbID, srcAgentID, actionParams, actionPostedTStampMsec);
@@ -62,11 +62,11 @@ public class BasicThingActionQResAdapter extends BasicDebugger {
 		return actionSpecList;
 	}
 
-	protected TypedValueMap buildActionParameterValueMap(RepoClient rc, Ident srcGraphID, SolutionHelper sh, Ident actionIdent) {
+	protected SerTypedValueMap buildActionParameterValueMap(RepoClient rc, Ident srcGraphID, SolutionHelper sh, Ident actionIdent) {
 		return buildActionParameterValueMap(rc, srcGraphID, sh, actionIdent, getLogger());
 	}
 
-	static public TypedValueMap buildActionParameterValueMap(RepoClient rc, Ident srcGraphID, SolutionHelper sh, Ident actionIdent, Logger theLogger) {
+	static public SerTypedValueMap buildActionParameterValueMap(RepoClient rc, Ident srcGraphID, SolutionHelper sh, Ident actionIdent, Logger theLogger) {
 		BasicTypedValueMap paramMap = new BasicTypedValueMapWithConversion();
 		SolutionList paramList = rc.queryIndirectForAllSolutions(ThingCN.PARAM_QUERY_URI, srcGraphID, ThingCN.V_attachedActionID, actionIdent);
 		for (Object paramSoln0 : paramList.javaList()) {

@@ -20,6 +20,7 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.api.thing.ActionParamWriter;
 import org.cogchar.api.thing.TypedValueMap;
+import org.cogchar.api.thing.SerTypedValueMap;
 
 /**
  * Typically used from a remote client to capture values for encoding in SPARQL-Update.
@@ -29,7 +30,7 @@ import org.cogchar.api.thing.TypedValueMap;
 public class GoodyActionParamWriter extends ActionParamWriter {
 
 
-	public GoodyActionParamWriter(TypedValueMap  tvm) {
+	public GoodyActionParamWriter(SerTypedValueMap  tvm) {
 		super(tvm);
 	}
 

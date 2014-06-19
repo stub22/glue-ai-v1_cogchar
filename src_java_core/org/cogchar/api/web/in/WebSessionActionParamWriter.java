@@ -20,7 +20,7 @@ import org.appdapter.core.name.Ident;
 // import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.name.web.WebUserActionNames;
 import org.cogchar.api.thing.ActionParamWriter;
-import org.cogchar.api.thing.TypedValueMap;
+import org.cogchar.api.thing.SerTypedValueMap;
 
 /**
  * This class has something to do with session-level state management.
@@ -30,7 +30,7 @@ import org.cogchar.api.thing.TypedValueMap;
 
 
 public class WebSessionActionParamWriter extends ActionParamWriter {
-	public WebSessionActionParamWriter(TypedValueMap ttvMap) {
+	public WebSessionActionParamWriter(SerTypedValueMap ttvMap) {
 		super(ttvMap);
 	}
 	

@@ -17,7 +17,7 @@
 package org.cogchar.impl.web.in;
 
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.thing.TypedValueMap;
+import org.cogchar.api.thing.SerTypedValueMap;
 import org.cogchar.api.web.in.WebSessionActionParamWriter;
 import org.cogchar.api.web.in.WebSessionInputSender;
 import org.cogchar.impl.thing.basic.BasicThingActionForwarder;
@@ -55,7 +55,7 @@ public class WebSessionInputForwarder extends BasicThingActionForwarder implemen
 		Ident entityID = mintInstanceID(entityBase);
 		Ident srcAgentID = mintInstanceID("liftMessageAgent");
 		Ident verbID =  GoodyNames.ACTION_CREATE; // Probably shouldn't come from GoodyNames. Right now we are only CREATEing an output message
-		TypedValueMap valueMap = myPendingActionParamWriter.getValueMap();
+		SerTypedValueMap valueMap = myPendingActionParamWriter.getValueMap();
 		Long postedTStampMsec = System.currentTimeMillis();
 		BasicThingActionSpec actionSpec = 
 				new BasicThingActionSpec(actRecID, entityID, getEntityTypeID(), verbID, srcAgentID, valueMap, postedTStampMsec);	
