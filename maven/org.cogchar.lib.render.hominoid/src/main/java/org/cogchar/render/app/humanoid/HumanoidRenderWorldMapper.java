@@ -42,6 +42,8 @@ import org.cogchar.api.cinema.ThingAnimConfig;
 import com.jme3.scene.Node;
 import com.jme3.asset.AssetManager;
 import com.jme3.util.SkyFactory;
+import com.jme3.scene.Spatial;
+import java.util.concurrent.Callable;
 
 /**
  *
@@ -132,15 +134,29 @@ public class HumanoidRenderWorldMapper {
      *
      * @param hrc
      */
-    private void setSkyBox(HumanoidRenderContext hrc) {
-        try {
-            Node root = hrc.getGoodyRenderRegistryClient().getJme3RootDeepNode(null);
-            AssetManager assetManager = hrc.getGoodyRenderRegistryClient().getJme3AssetManager(null);
-            root.attachChild(SkyFactory.createSky(
-                    assetManager, "textures/skybox/default.dds", false));
-        } catch (Exception e) {
-            theLogger.error("Skybox background image failed to load:", e);
-        }
+    private void setSkyBox(final HumanoidRenderContext hrc) {
+
+        hrc.getAppStub().enqueue(new Callable() {
+            @Override
+            public Object call() {
+                try {
+                    Node root = hrc.getGoodyRenderRegistryClient().getJme3RootDeepNode(null);
+                    AssetManager assetManager = hrc.getGoodyRenderRegistryClient().getJme3AssetManager(null);
+                    String skyPath = "textures/skybox/Default/";
+                    Spatial mySky = SkyFactory.createSky(assetManager,
+                            assetManager.loadTexture(skyPath + "West.png"),
+                            assetManager.loadTexture(skyPath + "East.png"),
+                            assetManager.loadTexture(skyPath + "North.png"),
+                            assetManager.loadTexture(skyPath + "South.png"),
+                            assetManager.loadTexture(skyPath + "Up.png"),
+                            assetManager.loadTexture(skyPath + "Down.png"));
+                    root.attachChild(mySky);
+                } catch (Exception e) {
+                    theLogger.error("Skybox background image failed to load:", e);
+                }
+                return null;
+            }
+        });
     }
 
     // A temporary way to make it possible to interact with figures... but ultimately, Humanoids aren't quite goodies!
