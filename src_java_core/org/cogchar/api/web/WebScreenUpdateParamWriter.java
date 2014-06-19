@@ -22,6 +22,7 @@ import org.cogchar.name.lifter.LiftCN;
 import org.cogchar.name.web.WebActionNames;
 import org.cogchar.api.thing.ActionParamWriter;
 import org.cogchar.api.thing.TypedValueMap;
+import org.cogchar.api.thing.SerTypedValueMap;
 
 /**
  * Typically used from a remote client to capture values for encoding in SPARQL-Update.
@@ -31,7 +32,7 @@ import org.cogchar.api.thing.TypedValueMap;
  */
 public class WebScreenUpdateParamWriter extends ActionParamWriter {
 
-	public WebScreenUpdateParamWriter(TypedValueMap tvMap) {
+	public WebScreenUpdateParamWriter(SerTypedValueMap tvMap) {
 		super(tvMap);
 	}
 	
@@ -48,7 +49,7 @@ public class WebScreenUpdateParamWriter extends ActionParamWriter {
 	
 	// The next method is for setting a single control by repo-encoded "control action":
 	public void putControlAction(Ident actionIdent) {
-		TypedValueMap tvm = getValueMap();
+		SerTypedValueMap tvm = getValueMap();
 		tvm.putValueAtName(WebActionNames.WEBCONTROL_ACTION, actionIdent.getAbsUriString());
 	}
 	
