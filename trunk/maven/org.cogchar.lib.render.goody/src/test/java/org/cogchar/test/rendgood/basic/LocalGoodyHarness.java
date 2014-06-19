@@ -19,6 +19,7 @@ import java.util.Random;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.TypedValueMap;
+import org.cogchar.api.thing.SerTypedValueMap;
 import org.cogchar.api.thing.WantsThingAction;
 import org.cogchar.name.goody.GoodyNames;
 
@@ -95,7 +96,7 @@ public class LocalGoodyHarness {
 		Ident srcAgentID = myAgentID;
 		Long postedTStampMsec = System.currentTimeMillis();
 
-		TypedValueMap valueMap = paramWriter.getValueMap();
+		SerTypedValueMap valueMap = paramWriter.getValueMap();
 		BasicThingActionSpec actionSpec = new BasicThingActionSpec(actRecID,
 			gar.entityID, gar.entityTypeID, gar.verbID, srcAgentID, valueMap, postedTStampMsec);
 

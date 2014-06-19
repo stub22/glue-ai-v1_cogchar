@@ -16,7 +16,7 @@
 
 package org.cogchar.api.thing;
 
-import org.cogchar.api.thing.TypedValueMap;
+import org.cogchar.api.thing.SerTypedValueMap;
 
 /**
  *
@@ -26,13 +26,13 @@ import org.cogchar.api.thing.TypedValueMap;
 
 public abstract class ActionParamWriter {
 	
-	protected TypedValueMap		myTVMap;
+	protected SerTypedValueMap		myTVMap;
 
-	public ActionParamWriter(TypedValueMap tvm) {
+	public ActionParamWriter(SerTypedValueMap tvm) {
 		myTVMap = tvm;
 	}
 	
-	public TypedValueMap	getValueMap() { 
+	public SerTypedValueMap	getValueMap() { 
 		return myTVMap;
 	}
 	

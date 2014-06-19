@@ -16,44 +16,57 @@
 
 package org.cogchar.impl.thing.basic;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.api.thing.TypedValueMap;
+import org.appdapter.core.name.SerIdent;
+import org.cogchar.api.thing.SerTypedValueMap;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public abstract class BasicTypedValueMap implements TypedValueMap {
+public abstract class BasicTypedValueMap implements SerTypedValueMap {
 	
 	public BasicTypedValueMap() {
 		
 	}
-	private	Map<Ident, Object>		myRawObjsByID = new HashMap<Ident, Object>();
+	private	Map<SerIdent, Serializable>		myRawObjsByID = new HashMap<SerIdent, Serializable>();
 
 	@Override public int getSize() { 
 		return myRawObjsByID.size();
 	}
 	@Override public Iterator<Ident>	iterateKeys() {
-		return myRawObjsByID.keySet().iterator();
+		Set<Ident> idSet = new HashSet<Ident>();
+		idSet.addAll(myRawObjsByID.keySet());
+		return idSet.iterator();
 	}
 
-		
 	@Override public Object getRaw(Ident name) {
-		return myRawObjsByID.get(name);
+		SerIdent serID = ensureSerIdent(name);
+		return myRawObjsByID.get(serID);
 	}
 	protected <VT> VT getValueAtNameAs(Ident name, Class<VT> valClass) {
+		SerIdent serID = ensureSerIdent(name);
 		VT typedResult = null;
-		Object rawVal = myRawObjsByID.get(name);
+		Object rawVal = myRawObjsByID.get(serID);
 		if (rawVal != null) {
 			typedResult = (VT) rawVal;
 		}
 		return typedResult;
 	}
 	@Override public void putValueAtName(Ident name, Object val) {
-		myRawObjsByID.put(name, val);
+		if (val instanceof Serializable) {
+			SerIdent serID = ensureSerIdent(name);
+			myRawObjsByID.put(serID, (Serializable) val);
+		} else {
+			throw new RuntimeException("Cannot put nonserializable object of type " + val.getClass() + " into a BasicTypedValueMap");
+		}
 	}
 	@Override public void putNameAtName(Ident name, Ident nameVal) { 
 		putValueAtName(name, nameVal);
@@ -64,4 +77,12 @@ public abstract class BasicTypedValueMap implements TypedValueMap {
 	@Override  public String toString() {
 		return "BasicTypedValueMap[objsByID=" + myRawObjsByID + "]";
 	}	
+	
+	private SerIdent ensureSerIdent(Ident in) { 
+		if (in instanceof SerIdent) {
+			return (SerIdent) in;
+		} else {
+			return new FreeIdent(in);
+		}
+	}
 }

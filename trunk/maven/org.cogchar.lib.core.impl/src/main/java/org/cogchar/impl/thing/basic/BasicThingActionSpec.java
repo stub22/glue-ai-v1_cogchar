@@ -16,34 +16,38 @@
 
 package org.cogchar.impl.thing.basic;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
+import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
+import org.appdapter.core.name.SerIdent;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.TypedValueMap;
+import org.cogchar.api.thing.SerTypedValueMap;
 
 /**  Equivalent to the action of a certain subset of SPARQL-Update.
  * @author Stu B. <www.texpedient.com>
  */
 
-public class BasicThingActionSpec extends KnownComponentImpl implements ThingActionSpec {
+public class BasicThingActionSpec extends KnownComponentImpl implements ThingActionSpec, Serializable {
 	// Including the actionRecordID formally reifies the action for posterity.  
-	private		Ident					myActionRecordID;
+	private		SerIdent					myActionRecordID;
 	// The "subject" of the update, and the subject of the prop-Vals
-	private		Ident					myTargetThingID;
+	private		SerIdent					myTargetThingID;
 	// A type classifier for the target thing.  May be omitted, unless we need to create the targetThing.
-	private		Ident					myTargetThingTypeID;
+	private		SerIdent					myTargetThingTypeID;
 	
 	// Verb is applied to the target, and can be simple C.(R.)U.D.  Or...can be more subtle.
 	// Combined with targetThingType (and potentially other fields), determines the full (implied)
 	// "type" of this action.  Working with that imlied type through RDF-rules + scala-cases, 
 	// operating on the thing itself using the param data below, is our bread and butter.
-	private		Ident					myActionVerbID;	
+	private		SerIdent					myActionVerbID;	
 	
-	private		Ident					mySourceAgentID;
+	private		SerIdent					mySourceAgentID;
 	
-	private		TypedValueMap			myParamTVMap;
+	private		SerTypedValueMap			myParamTVMap;
 	
 	private		Long					myPostedTimestamp;
 	
@@ -54,16 +58,26 @@ public class BasicThingActionSpec extends KnownComponentImpl implements ThingAct
 	 * @param verbID - occasionally null
 	 */
 	public BasicThingActionSpec(Ident actionRecID, Ident targetThingID, Ident targetThingTypeID,  Ident verbID, 
-				Ident sourceAgentID, TypedValueMap paramTVMap, Long postedTimestamp) {
-		myActionRecordID = actionRecID;
-		myTargetThingID = targetThingID;
-		myTargetThingTypeID = targetThingTypeID;
-		myActionVerbID = verbID;
-		mySourceAgentID = sourceAgentID;
+				Ident sourceAgentID, SerTypedValueMap paramTVMap, Long postedTimestamp) {
+		myActionRecordID = ensureSerIdent(actionRecID);
+		myTargetThingID = ensureSerIdent(targetThingID);
+		myTargetThingTypeID = ensureSerIdent(targetThingTypeID);
+		myActionVerbID = ensureSerIdent(verbID);
+		mySourceAgentID = ensureSerIdent(sourceAgentID);
 		
 		myParamTVMap = paramTVMap;
 		myPostedTimestamp = postedTimestamp;
 	}
+	private SerIdent ensureSerIdent(Ident in) {
+		if (in == null) { 
+			return null;
+		} else if (in instanceof SerIdent) {
+			return (SerIdent) in;
+		} else {
+			return new FreeIdent(in);
+		}
+	}
+	/*
 	private BasicThingActionSpec(ThingActionSpec template) { 
 		// myActionRecordID = template.getActionSpecID();
 		// mySourceAgentID = 
@@ -72,6 +86,7 @@ public class BasicThingActionSpec extends KnownComponentImpl implements ThingAct
 		
 		myParamTVMap = null;  // copy of (paramTVMap)
 	}
+	*/
     // Empty constructor for assembler usage
     public BasicThingActionSpec() {}
 
@@ -111,28 +126,28 @@ public class BasicThingActionSpec extends KnownComponentImpl implements ThingAct
 					+ "postedTStamp=" + myPostedTimestamp + "]";
 	}
 
-    public void setMyActionRecordID(Ident myActionRecordID) {
-        this.myActionRecordID = myActionRecordID;
+    public void setMyActionRecordID(Ident actionRecordID) {
+        this.myActionRecordID = ensureSerIdent(actionRecordID);
     }
 
-    public void setMyTargetThingID(Ident myTargetThingID) {
-        this.myTargetThingID = myTargetThingID;
+    public void setMyTargetThingID(Ident targetThingID) {
+        this.myTargetThingID = ensureSerIdent(targetThingID);
     }
 
-    public void setMyTargetThingTypeID(Ident myTargetThingTypeID) {
-        this.myTargetThingTypeID = myTargetThingTypeID;
+    public void setMyTargetThingTypeID(Ident targetThingTypeID) {
+        this.myTargetThingTypeID = ensureSerIdent(targetThingTypeID);
     }
 
-    public void setMyActionVerbID(Ident myActionVerbID) {
-        this.myActionVerbID = myActionVerbID;
+    public void setMyActionVerbID(Ident actionVerbID) {
+        this.myActionVerbID = ensureSerIdent(actionVerbID);
     }
 
-    public void setMySourceAgentID(Ident mySourceAgentID) {
-        this.mySourceAgentID = mySourceAgentID;
+    public void setMySourceAgentID(Ident sourceAgentID) {
+        this.mySourceAgentID = ensureSerIdent(sourceAgentID);
     }
 
-    public void setMyParamTVMap(TypedValueMap myParamTVMap) {
-        this.myParamTVMap = myParamTVMap;
+    public void setMyParamTVMap(SerTypedValueMap paramTVMap) {
+        this.myParamTVMap = paramTVMap;
     }
 
     public void setMyPostedTimestamp(Long myPostedTimestamp) {

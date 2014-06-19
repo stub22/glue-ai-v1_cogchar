@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 
 import java.util.Random;
 import org.cogchar.api.thing.TypedValueMap;
+import org.cogchar.api.thing.SerTypedValueMap;
 import org.cogchar.outer.client.AgentRepoClient;
 import org.cogchar.outer.client.TestOuterClientSOH;
 /**
@@ -74,7 +75,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		
 		sendBitBoxTAS(goodyID, GoodyNames.ACTION_MOVE, btvm, ran, debugFlag);
 	}
-	public void sendBitBoxTAS(Ident tgtThingID, Ident verbID, TypedValueMap paramTVMap, Random ran, boolean debugFlag) {
+	public void sendBitBoxTAS(Ident tgtThingID, Ident verbID, SerTypedValueMap paramTVMap, Random ran, boolean debugFlag) {
 		Ident actRecID = new FreeIdent("action_#" + ran.nextInt());
 		Ident tgtThingTypeID = GoodyNames.TYPE_BIT_BOX;
 		Ident srcAgentID = null;

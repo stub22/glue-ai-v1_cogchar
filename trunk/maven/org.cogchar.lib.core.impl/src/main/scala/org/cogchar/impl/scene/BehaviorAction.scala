@@ -32,6 +32,7 @@ import  org.cogchar.api.perform.{Media, PerfChannel, Performance}
 import  org.cogchar.api.perform.BehaviorActionExec
 import  org.cogchar.impl.perform.basic.{BasicPerformance}
 import org.cogchar.impl.channel.{FancyChannelSpec};
+import org.cogchar.api.thing.SerTypedValueMap;
 import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMap};
 import org.cogchar.api.perform.{PerfChannel, Media, Performance, FancyPerformance};
 import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyTextPerfChan, FancyTextInstruction};
@@ -262,7 +263,8 @@ class FireThingActionExec( val mySpec : FireThingActionSpec ) extends BasicDebug
       newTA.setMyActionVerbID( ta.getVerbID )
       
       // Matt assured me there is no need to deep copy the ParamTVM
-      newTA.setMyParamTVMap( ta.getParamTVM )
+	  val serParamMap = ta.getParamTVM.asInstanceOf[SerTypedValueMap]
+      newTA.setMyParamTVMap(serParamMap)
       
       // Set timestamp
       newTA.setMyPostedTimestamp( System.currentTimeMillis );
