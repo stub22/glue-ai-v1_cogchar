@@ -16,8 +16,9 @@
 
 package org.cogchar.lifter {
   package view {
+	import org.cogchar.api.web.{WebControl}
 
-	import org.cogchar.impl.web.config.ControlConfig
+	import org.cogchar.impl.web.config.WebControlImpl
 	import org.cogchar.impl.web.wire.{LifterState}
 	import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
 	import scala.xml.NodeSeq
@@ -26,8 +27,8 @@ package org.cogchar.lifter {
 	  
 	  protected val matchingName = "TEXTBOX"
   
-	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
-		makeBox(control.text, control.style)
+	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+		makeBox(control.getText, control.getStyle)
 	  }
 	  
 	  def makeBox(text:String, style:String, centered:Boolean, displayAsCell:Boolean): NodeSeq = {

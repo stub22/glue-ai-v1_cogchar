@@ -27,6 +27,8 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.ThingActionSender;
 import org.cogchar.api.web.WebAppInterface;
+import org.cogchar.api.web.WebSceneInterface;
+import org.cogchar.api.web.WebControl;
 import org.cogchar.api.web.in.WebSessionInputSender;
 import org.cogchar.impl.web.in.WebSessionInputForwarder;
 import org.cogchar.name.lifter.ChatAN;
@@ -39,22 +41,22 @@ import org.slf4j.LoggerFactory;
  *
  * @author Ryan Biggs
  */
-public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebSceneInterface {
+public class LiftAmbassador implements WebAppInterface, WebSceneInterface {
 
 	private static LiftAmbassador theLiftAmbassador;
 	private static final Object theClassLock = LiftAmbassador.class;
 	private static Logger theLogger = LoggerFactory.getLogger(LiftAmbassador.class); //OK?
 	private LiftConfig myInitialConfig;
 	private WebSceneInterface mySceneLauncher;
-	private LiftInterface myLift;
-	private LiftAppInterface myLiftAppInterface;
+	private WebInstanceGlob myGlob;
+	private AvailableCommands myAvailSysCmds;
 	// The following RepoClient is now an instance variable, but currently is set with a setter (setRepoClient)
 	// so that PageCommander, etc. can call into the active LiftAmbassador instance without knowing about RepoClient.
 	// Perhaps we'll ultimately want to get rid of this setter and just specify the RepoClient/qGraph in a constructor.
 	// However, setting interfaces this way allows LifterLifecycle to change any of the interfaces upon dependency change without
 	// requiring a new LiftAmbassador instance.
 	private RepoClient myRepoClient; 
-	private LiftNetworkConfigInterface myNetConfigInterface;
+	private WebappNetworkConfigHandle myNetConfigInterface;
 	private Ident myQGraph;
 	private boolean myConfigReady = false;
 	private List<Ident> myTriggeredCinematics = new ArrayList<Ident>(); // We need this so we can reset previously played cinematics on replay
@@ -98,51 +100,6 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		myWSISender = tas;
 	}
 	
-	public interface LiftInterface {
-
-		void notifyConfigReady();
-		
-		void setConfigForSession(String sessionId, LiftConfig config);
-		
-		void setControlForSessionAndSlot(String sessionId, int slotNum, ControlConfig newConfig);
-
-		void loadPage(String sessionId, String path);
-		
-		String getVariable(String key);
-
-		String getVariable(String sessionId, String key);
-
-		void showError(String errorSourceKey, String errorText);
-		
-		void showError(String errorSourceKey, String errorText, String sessionId);
-		
-		List<String> getActiveSessions();
-	}
-
-	public interface LiftAppInterface {
-
-		boolean triggerAnimation(Ident uri);
-
-		boolean stopAnimation(Ident uri);
-
-		String queryCogbot(String query, String cogbotConvoUrl);
-
-		boolean performDataballAction(String action, String text);
-		
-		boolean performUpdate(String request);
-	}
-
-	// A (currently blank) interface used by service manager and available to add future PUMA/CogChar-to-Lifter channels
-	public interface LiftAmbassadorInterface {
-	}
-	
-	public interface LiftNetworkConfigInterface {
-
-		void configure(String ssid, String security, String key);
-	}
-
-	public static class inputInterface implements LiftAmbassadorInterface {
-	}
 
 	// This (legacy) flavor of the method activates controls for the initial config for new sessions
 	// I *think* that due to improvements in LifterState, activation no longer needs to be synchronized
@@ -152,8 +109,8 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 			myInitialConfig = newConfig;
 			theLogger.info("Lift config sent to LiftAmbassador");
 			myConfigReady = true;
-			if (myLift != null) {
-				myLift.notifyConfigReady();
+			if (myGlob != null) {
+				myGlob.notifyConfigReady();
 				theLogger.info("Lift notified of config ready");
 			}
 		}
@@ -163,8 +120,8 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	public void activateControlsFromConfig(String sessionId, LiftConfig newConfig) {
 		//theLogger.info("Activating controls for session {}: {}", sessionId, newConfig); // TEST ONLY
 		synchronized (activationLock) { // Likely doesn't actually need synchronization since LifterState is now threadsafe...
-			if (myLift != null) {
-				myLift.setConfigForSession(sessionId, newConfig);
+			if (myGlob != null) {
+				myGlob.setConfigForSession(sessionId, newConfig);
 			} else {
 				theLogger.error("A new control set was requested for session {}, but no liftInterface was found!", sessionId);
 			}
@@ -172,58 +129,53 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	}
 	
 	// This method activates a single control for a single session
-	public void activateControlFromConfig(String sessionId, int slotNum, ControlConfig newConfig) {
+	public void activateControlFromConfig(String sessionId, int slotNum, WebControl control) {
+		WebControlImpl copiedControl = new WebControlImpl(control);
 		synchronized (activationLock) { // Likely doesn't actually need synchronization since LifterState is now threadsafe...
-			if (myLift != null) {
-				myLift.setControlForSessionAndSlot(sessionId, slotNum, newConfig);
+			if (myGlob != null) {
+				myGlob.setControlForSessionAndSlot(sessionId, slotNum, copiedControl);
 			} else {
 				theLogger.error("A new control was requested for session {}, but no liftInterface was found!", sessionId);
 			}
 		}
 	}
-	public void activateControlFromConfig(String sessionId, int slotNum, WebAppInterface.Control newControl) {
-		activateControlFromConfig(sessionId, slotNum, ControlConfig.getControlConfigFromControlInterface(newControl));
-	}
 		
 	// Activate a control in all sessions -- probably just for temporary testing
-	public void activateControlFromConfig(int slotNum, ControlConfig newConfig) {
-		for (String sessionId : myLift.getActiveSessions()) {
-			activateControlFromConfig(sessionId, slotNum, newConfig);
+	@Override public void activateControlFromConfig(int slotNum, WebControl control) {
+		WebControlImpl copiedControl = new WebControlImpl(control);
+		for (String sessionId : myGlob.getActiveSessions()) {
+			activateControlFromConfig(sessionId, slotNum, copiedControl);
 		}
 	}
-	public void activateControlFromConfig(int slotNum, WebAppInterface.Control newControl) {
-		activateControlFromConfig(slotNum, ControlConfig.getControlConfigFromControlInterface(newControl));
-	}
-	
+
 	// Activates a single control in a single session based on user
-	public void activateControlFromConfigForUser(String userName, int slotNum, ControlConfig newConfig) {
+	@Override public void activateControlFromConfigForUser(String userName, int slotNum, WebControl control) {
+		WebControlImpl copiedControl = new WebControlImpl(control);
 		String sessionId = userSessionMap.get(getUserIdentFromName(userName));
 		if (sessionId != null) {
-			activateControlFromConfig(sessionId, slotNum, newConfig);
+			activateControlFromConfig(sessionId, slotNum, copiedControl);
 		} else {
 			theLogger.warn("Could not set control based on user name; no login on record for user {}", userName);
 		}
 	}
-	public void activateControlFromConfigForUser(String userName, int slotNum, WebAppInterface.Control newControl) {
-		activateControlFromConfigForUser(userName, slotNum, ControlConfig.getControlConfigFromControlInterface(newControl));
-	}
+
 	
 	// Activates a single control in all sessions of a given user class local name
 	// Should the full URI be accepted as input instead? Perhaps, but for now local name is accepted to simplify
 	// user experience in Robosteps and etc.
-	public void activateControlFromConfigForUserClass(String desiredUserClassLN, int slotNum, ControlConfig newConfig) {
+	@Override public void activateControlFromConfigForUserClass(String desiredUserClassLN, int slotNum, WebControl control) {
+		WebControlImpl copiedControl = new WebControlImpl(control);
 		Ident desiredUserClassURI  = getUserClassIdentFromLN(desiredUserClassLN);
 		for (Ident activeUser : userSessionMap.keySet()) {
 			if (myUserMap.get(activeUser).userClass.equals(desiredUserClassURI)) {
-				activateControlFromConfig(userSessionMap.get(activeUser), slotNum, newConfig);
+				activateControlFromConfig(userSessionMap.get(activeUser), slotNum, copiedControl);
 			}
 		}
 	}
-	public void activateControlFromConfigForUserClass(String desiredUserClassLN, int slotNum, WebAppInterface.Control newControl) {
-		activateControlFromConfigForUserClass(desiredUserClassLN, slotNum, ControlConfig.getControlConfigFromControlInterface(newControl));
-	}
+
 	
 	// Activates controls identified by a LiftConfig URI
+	// Called from LiftConfigHandler, but not defined by an interface
 	public void activateControlsFromUri(String sessionId, Ident configIdent) {
 		// May be OK not to have this synchronized if appdapter repo code is threadsafe, and if myLiftConfigCache
 		// is made a ConcurrentHashMap
@@ -250,14 +202,14 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	}
 	
 	// Activates controls identified by a LiftConfig URI in all sessions -- probably just for temporary testing
-	public void activateControlsFromUri(Ident configIdent) {
-		for (String sessionId : myLift.getActiveSessions()) {
+	@Override  public void activateControlsFromUri(Ident configIdent) {
+		for (String sessionId : myGlob.getActiveSessions()) {
 			activateControlsFromUri(sessionId, configIdent);
 		}
 	}
 	
 	// Activates controls in a single session based on user
-	public void activateControlsFromUriForUser(String userName, Ident configIdent) {
+	@Override  public void activateControlsFromUriForUser(String userName, Ident configIdent) {
 		String sessionId = userSessionMap.get(getUserIdentFromName(userName));
 		if (sessionId != null) {
 			activateControlsFromUri(sessionId, configIdent);
@@ -267,7 +219,7 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	}
 	
 	// Activates controls in a single session based on user class
-	public void activateControlsFromUriForUserClass(String desiredUserClassLN, Ident configIdent) {
+	@Override  public void activateControlsFromUriForUserClass(String desiredUserClassLN, Ident configIdent) {
 		Ident desiredUserClassURI  = getUserClassIdentFromLN(desiredUserClassLN);
 		for (Ident activeUser : userSessionMap.keySet()) {
 			if (myUserMap.get(activeUser).userClass.equals(desiredUserClassURI)) {
@@ -277,12 +229,12 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	}
 	
 	// Activates a single control in a single session
-	public void activateControlFromUri(String sessionId, int slotNum, Ident configIdent) {
+	private void activateControlFromUri(String sessionId, int slotNum, Ident configIdent) {
 		// May be OK not to have this synchronized if appdapter repo code is threadsafe
 		synchronized(activationLock) {
 			boolean success = false;
 			if (myRepoClient != null) {
-				ControlConfig newControl = ControlConfig.getControlConfigFromUri(myRepoClient, myQGraph, configIdent);
+				WebControlImpl newControl = WebControlImpl.getControlConfigFromUri(myRepoClient, myQGraph, configIdent);
 				if (newControl != null) {
 					theLogger.info("Loaded lift control {} from sheet", configIdent.getLocalName());
 					activateControlFromConfig(sessionId, slotNum, newControl);
@@ -298,12 +250,12 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	}
 	
 	// Activates a single control in a single session by localname only, assuming the lci: prefix
-	public void activateControlFromLocalName(String sessionId, int slotNum, String localName) {
+	private void activateControlFromLocalName(String sessionId, int slotNum, String localName) {
 		Ident controlIdent = new FreeIdent(LiftCN.LIFT_CONFIG_INSTANCE_PREFIX + localName, localName);
 		activateControlFromUri(sessionId, slotNum, controlIdent);
 	}
 	
-	public void activateControlAction(Ident actionIdent) {
+	@Override  public void activateControlAction(Ident actionIdent) {
 		// May be OK not to have this synchronized if appdapter repo code is threadsafe
 		synchronized(activationLock) {
 			if (myRepoClient != null) {
@@ -319,7 +271,7 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 					if (action.config != null) {
 						configAction = true;
 					}
-					for (String sessionId : myLift.getActiveSessions()) {
+					for (String sessionId : myGlob.getActiveSessions()) {
 						if (configAction) { // Config actions take precidence over control actions if both are specified
 							activateControlsFromUri(action.config);
 						} else if (controlAction) {
@@ -338,15 +290,16 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		}
 	}
 	
-	
+	// Called from Booter.scala, but is not defined by an interface
 	public LiftConfig getInitialConfig() {
 		return myInitialConfig;
 	}
 
-	public String getControlPrefix() {
+	private String getControlPrefix() {
 		return LiftAN.partial_P_control + "_";
 	}
 
+	// Gets called from LifterLifecycle, but is not derived from an interface.
 	public void storeChatConfig(ChatConfig cc) {
 		// How do we want to handle the possible case of more than one ChatConfigResource? Not sure quite what the future will hold for ChatConfig.
 		// For now, let's just combine them all into one. This could be dangerous, but makes sense for now(?)
@@ -413,9 +366,9 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		synchronized (cogcharLock) {
 			boolean success;
 			if (myTriggeredCinematics.contains(cinematicUri)) {
-				myLiftAppInterface.stopAnimation(cinematicUri); // In order to replay, we need to stop previously played cinematic first
+				myAvailSysCmds.stopAnimation(cinematicUri); // In order to replay, we need to stop previously played cinematic first
 			}
-			success = myLiftAppInterface.triggerAnimation(cinematicUri);
+			success = myAvailSysCmds.triggerAnimation(cinematicUri);
 			if (success) {
 				myTriggeredCinematics.add(cinematicUri);
 			}
@@ -439,8 +392,8 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	public boolean performDataballAction(String databallAction, String databallText) {
 		synchronized (databallsLock) {
 			boolean success = false;
-			if (myLiftAppInterface != null) {
-				success = myLiftAppInterface.performDataballAction(databallAction, databallText);
+			if (myAvailSysCmds != null) {
+				success = myAvailSysCmds.performDataballAction(databallAction, databallText);
 			} else {
 				theLogger.warn("Attempting to perform Databall action, but no LiftAppInterface found");
 			}
@@ -451,10 +404,10 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	public String getCogbotResponse(String query) {
 		synchronized (cogbotLock) { 
 			String response = "";
-			if (myLiftAppInterface != null) {
+			if (myAvailSysCmds != null) {
 				if (myChatConfigEntries.containsKey(ChatAN.N_cogbotConvoUrl)) {
 					String convoIp = myChatConfigEntries.get(ChatAN.N_cogbotConvoUrl).replaceFirst("http://", "");
-					response = myLiftAppInterface.queryCogbot(query, convoIp);
+					response = myAvailSysCmds.queryCogbot(query, convoIp);
 					theLogger.info("Cogbot says {}", response);
 				} else {
 					theLogger.error("No URL found from ChatConfig for Cogbot conversation server");
@@ -469,8 +422,8 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	public boolean performCogCharUpdate(String desiredUpdate) {
 		synchronized (theClassLock) { // Definitely needs to be threadsafe, and a good thing to lock down the entire LiftAmbassador
 			boolean success = false;
-			if (myLiftAppInterface != null) {
-				success = myLiftAppInterface.performUpdate(desiredUpdate);
+			if (myAvailSysCmds != null) {
+				success = myAvailSysCmds.performUpdate(desiredUpdate);
 			} else {
 				theLogger.error("Cannot perform update: {} because no LiftAppInterface is available", desiredUpdate);
 			}
@@ -485,9 +438,9 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	}
 
 	// Gets a global lifter variable
-	public String getLiftVariable(String key) {
-		if (myLift != null) {
-			return myLift.getVariable(key);
+	@Override public String getGlobalWebappVariable(String key) {
+		if (myGlob != null) {
+			return myGlob.getGlobalVariable(key);
 		} else {
 			theLogger.warn("Variable requested from Lift, but no Lift messenger set");
 			return null;
@@ -495,9 +448,9 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	}
 	
 	// Gets a session lifter variable
-	public String getLiftVariable(String sessionId, String key) {
-		if (myLift != null) {
-			return myLift.getVariable(sessionId, key);
+	private String getSessionWebappVariable(String sessionId, String key) {
+		if (myGlob != null) {
+			return myGlob.getSessionVariable(sessionId, key);
 		} else {
 			theLogger.warn("Variable requested from Lift, but no Lift messenger set");
 			return null;
@@ -505,23 +458,24 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	}
 
 	// Display global error
-	public void displayError(String errorSource, String errorText) {
-		if (myLift != null) {
-			myLift.showError(errorSource, errorText);
+	@Override public void displayGlobalWebappError(String errorSource, String errorText) {
+		if (myGlob != null) {
+			myGlob.showGlobalError(errorSource, errorText);
 		} else {
 			theLogger.error("Could not show the following error in Lift because no Lift messenger is set: {}: {}",errorSource, errorText);
 		}
 	}
 	
 	// Display error to session
-	public void displayError(String errorSource, String errorText, String sessionId) {
-		if (myLift != null) {
-			myLift.showError(errorSource, errorText, sessionId);
+	private void displaySessionWebappError(String errorSource, String errorText, String sessionId) {
+		if (myGlob != null) {
+			myGlob.showSessionError(errorSource, errorText, sessionId);
 		} else {
 			theLogger.error("Could not show the following error in Lift session {} because no Lift messenger is set: {}: {}", new Object[]{sessionId, errorSource, errorText});
 		}
 	}
 	
+	// Called from SubmitCommandHandler, but not defined by an interface
 	public void requestNetworkConfig(String ssid, String security, String key) {
 		synchronized (networkConfigLock) { // ... in case come crazy fools are both trying to configure the network simultaneously!
 			if (myNetConfigInterface != null) {
@@ -542,14 +496,14 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 					userSessionMap.put(userIdent, sessionId); // Add last logged-in sessionID to userSessionMap to track userName-sessionID correspondence
 					activateControlsFromUri(sessionId, myUserMap.get(userIdent).startConfig);
 				} else {
-					displayError("login", "Password not recognized", sessionId); // <- move strings to resource
+					displaySessionWebappError("login", "Password not recognized", sessionId); // <- move strings to resource
 				}
 			} else {
-				displayError("login", "Username not recognized", sessionId); // <- move strings to resource
+				displaySessionWebappError("login", "Username not recognized", sessionId); // <- move strings to resource
 			}
 		} else {
 			theLogger.error("Attempting to log in user, but myUserMap is not set!");
-			displayError("login", "User database not set!", sessionId); // <- move strings to resource
+			displaySessionWebappError("login", "User database not set!", sessionId); // <- move strings to resource
 		}
 	}
 	
@@ -571,13 +525,13 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		mySceneLauncher = launcher;
 	}
 
-	public void setLiftMessenger(LiftInterface li) {
+	public void setLiftMessenger(WebInstanceGlob aGlob) {
 		theLogger.info("Lift messenger set");
-		myLift = li;
+		myGlob = aGlob;
 	}
 
-	public void setAppInterface(LiftAppInterface lai) {
-		myLiftAppInterface = lai;
+	public void setAvailableCommands(AvailableCommands lai) {
+		myAvailSysCmds = lai;
 	}
 
 	public void setRepoClient(RepoClient qi, Ident graphIdent) {
@@ -585,7 +539,7 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 		myQGraph = graphIdent;
 	}
 	
-	public void setNetConfigInterface(LiftNetworkConfigInterface lnci) {
+	public void setNetConfigInterface(WebappNetworkConfigHandle lnci) {
 		myNetConfigInterface = lnci;
 	}
 
@@ -594,7 +548,7 @@ public class LiftAmbassador implements WebAppInterface, WebAppInterface.WebScene
 	}
 	
 	// Used by external classes which need to directly construct new ControlConfigs
-	@Override public WebAppInterface.Control getNewControl() {
-		return new ControlConfig();
+	@Override public WebControl getNewControl() {
+		return new WebControlImpl();
 	}
 }

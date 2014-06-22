@@ -17,7 +17,7 @@
 package org.cogchar.lifter.model.main
 
 import org.appdapter.core.name.FreeIdent
-import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.impl.web.util.LifterLogger
 
@@ -79,8 +79,8 @@ class ControlToggler extends LifterLogger {
 	  })
   }
   
-  def getSingularControlXml(sessionId:String, slotNum:Int, control:ControlConfig, state:Boolean): NodeSeq = {
-	val newControl = new ControlConfig();
+  def getSingularControlXml(sessionId:String, slotNum:Int, control:WebControlImpl, state:Boolean): NodeSeq = {
+	val newControl = new WebControlImpl();
 	newControl.controlType = control.controlType
 	newControl.text = getSubstringForToggleState(control.text, state)
 	newControl.style = getSubstringForToggleState(control.style, state)
@@ -88,7 +88,7 @@ class ControlToggler extends LifterLogger {
 	PageCommander.getXmlForControl(sessionId, slotNum, newControl)
   }
   
-  def getSingularControlXmlAndRender(sessionId:String, slotNum:Int, control:ControlConfig, state:Boolean) {
+  def getSingularControlXmlAndRender(sessionId:String, slotNum:Int, control:WebControlImpl, state:Boolean) {
 	PageCommander.setControl(sessionId, slotNum, getSingularControlXml(sessionId, slotNum, control, state))
   }
   

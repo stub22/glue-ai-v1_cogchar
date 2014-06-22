@@ -16,7 +16,7 @@
 
 package org.cogchar.impl.web.wire
 
-import org.cogchar.impl.web.config.{ControlConfig, LiftConfig}
+import org.cogchar.impl.web.config.{WebControlImpl, LiftConfig}
 import scala.xml.NodeSeq
 import org.appdapter.core.name.Ident
 import scala.collection.mutable.{ArrayBuffer,HashMap,Map,SynchronizedBuffer};

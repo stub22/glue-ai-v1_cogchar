@@ -18,7 +18,7 @@ package org.cogchar.lifter.model.action
 
 
 import org.appdapter.core.name.FreeIdent
-import org.cogchar.impl.web.config.ControlConfig;
+import org.cogchar.impl.web.config.WebControlImpl;
 import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.name.lifter.ActionStrings
 import scala.collection.mutable.ArrayBuffer
@@ -28,7 +28,7 @@ class RepoOutputHandler extends AbstractLifterActionHandler {
   
   override protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_requestRepoOutput)
   
-  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
+  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
 	val senderIdent = new FreeIdent(ActionStrings.p_repoSender + control.action.getLocalName());
 	// In this prototype method, we only send the first piece of input. Probably no good except for initial test!
 	myLiftAmbassador.sendUserTextViaRepo(senderIdent, input(0), sessionId);

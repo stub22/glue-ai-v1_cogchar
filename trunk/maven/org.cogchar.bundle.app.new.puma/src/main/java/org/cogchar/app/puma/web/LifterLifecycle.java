@@ -24,8 +24,13 @@ import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
 import org.cogchar.api.web.WebAppInterfaceTracker;
+import org.cogchar.api.web.WebSceneInterface;
 import org.cogchar.impl.web.config.ChatConfig;
 import org.cogchar.impl.web.config.LiftAmbassador;
+import org.cogchar.impl.web.config.AvailableCommands;
+import org.cogchar.impl.web.config.WebappNetworkConfigHandle;
+import org.cogchar.impl.web.config.AmbassadorServiceHandle;
+import org.cogchar.impl.web.config.AmbassadorServiceImpl;
 import org.cogchar.impl.web.config.LiftConfig;
 import org.cogchar.impl.web.config.UserAccessConfig;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
@@ -39,7 +44,7 @@ import org.slf4j.LoggerFactory;
  *Lives in the  Puma project so it can access the Robokind Lifecycle API.
  * @author Ryan Biggs
  */
-public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.LiftAmbassadorInterface, LiftAmbassador.inputInterface> {
+public class LifterLifecycle extends AbstractLifecycleProvider<AmbassadorServiceHandle, AmbassadorServiceImpl> {
 
 	private final static Logger theLogger = LoggerFactory.getLogger(LifterLifecycle.class);
 	static final String LIFTER_ENTITY_TYPE = "WebappEntity";
@@ -49,9 +54,9 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 	private final static Ident USER_ACCESS_CONFIG_ROLE = new FreeIdent(rkrt + "userConf", "userConf");
 	private final static String queryEmitterId = "queryInterface";
 	private final static String globalConfigId = "globalConfig";
-	private final static String theLiftAppInterfaceId = "liftAppInterface";
-	private final static String theLiftSceneInterfaceId = "liftSceneInterface";
-	private final static String theLiftNetConfigInterfaceId = "liftNetConfigInterface";
+	private final static String theAvailableCommands_Key = "availableCommands";
+	private final static String theLiftSceneInterface_Key = "liftSceneInterface";
+	private final static String theLiftNetConfigInterface_Key = "liftNetConfigInterface";
 
 	static class OurDescriptorBuilder {
 
@@ -59,9 +64,9 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 			DescriptorListBuilder dlb = new DescriptorListBuilder()
 					.dependency(queryEmitterId, RepoClient.class)
 					.dependency(globalConfigId, GlobalConfigEmitter.GlobalConfigService.class)
-					.dependency(theLiftAppInterfaceId, LiftAmbassador.LiftAppInterface.class).optional()
-					.dependency(theLiftSceneInterfaceId, LiftAmbassador.WebSceneInterface.class).optional()
-					.dependency(theLiftNetConfigInterfaceId, LiftAmbassador.LiftNetworkConfigInterface.class).optional();
+					.dependency(theAvailableCommands_Key, AvailableCommands.class).optional()
+					.dependency(theLiftSceneInterface_Key, WebSceneInterface.class).optional()
+					.dependency(theLiftNetConfigInterface_Key, WebappNetworkConfigHandle.class).optional();
 			return dlb;
 		}
 	}
@@ -76,16 +81,16 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 	}
 
 	@Override
-	protected synchronized LiftAmbassador.inputInterface create(Map<String, Object> dependencies) {
-		theLogger.info("Creating LiftAmbassador.inputInterface in LifterLifecycle");
+	protected synchronized AmbassadorServiceImpl create(Map<String, Object> dependencies) {
+		theLogger.info("Creating AmbassadorServiceImpl from LifterLifecycle");
 		LiftAmbassador myLiftAmbassador = LiftAmbassador.getLiftAmbassador();
-		myLiftAmbassador.setAppInterface((LiftAmbassador.LiftAppInterface) dependencies.get(theLiftAppInterfaceId));
-		myLiftAmbassador.setSceneLauncher((LiftAmbassador.WebSceneInterface) dependencies.get(theLiftSceneInterfaceId));
-		myLiftAmbassador.setNetConfigInterface((LiftAmbassador.LiftNetworkConfigInterface) dependencies.get(theLiftNetConfigInterfaceId));
+		myLiftAmbassador.setAvailableCommands((AvailableCommands) dependencies.get(theAvailableCommands_Key));
+		myLiftAmbassador.setSceneLauncher((WebSceneInterface) dependencies.get(theLiftSceneInterface_Key));
+		myLiftAmbassador.setNetConfigInterface((WebappNetworkConfigHandle) dependencies.get(theLiftNetConfigInterface_Key));
 		connectWebContent(myLiftAmbassador, (RepoClient) dependencies.get(queryEmitterId),
 				(GlobalConfigEmitter.GlobalConfigService) dependencies.get(globalConfigId));
 		WebAppInterfaceTracker.getTracker().setWebInterface(myLiftAmbassador);
-		return new LiftAmbassador.inputInterface();
+		return new AmbassadorServiceImpl();
 	}
 
 	@Override
@@ -99,18 +104,18 @@ public class LifterLifecycle extends AbstractLifecycleProvider<LiftAmbassador.Li
 		} else if ((globalConfigId.equals(serviceId)) && (dependency != null) && (availableDependencies.get(queryEmitterId) != null)) {
 			connectWebContent(myLiftAmbassador, (RepoClient) availableDependencies.get(queryEmitterId),
 					(GlobalConfigEmitter.GlobalConfigService) dependency);
-		} else if (theLiftAppInterfaceId.equals(serviceId)) {
-			myLiftAmbassador.setAppInterface((LiftAmbassador.LiftAppInterface) dependency);
-		} else if (theLiftSceneInterfaceId.equals(serviceId)) {
-			myLiftAmbassador.setSceneLauncher((LiftAmbassador.WebSceneInterface) dependency);
-		} else if (theLiftNetConfigInterfaceId.equals(serviceId)) {
-			myLiftAmbassador.setNetConfigInterface((LiftAmbassador.LiftNetworkConfigInterface) dependency);
+		} else if (theAvailableCommands_Key.equals(serviceId)) {
+			myLiftAmbassador.setAvailableCommands((AvailableCommands) dependency);
+		} else if (theLiftSceneInterface_Key.equals(serviceId)) {
+			myLiftAmbassador.setSceneLauncher((WebSceneInterface) dependency);
+		} else if (theLiftNetConfigInterface_Key.equals(serviceId)) {
+			myLiftAmbassador.setNetConfigInterface((WebappNetworkConfigHandle) dependency);
 		}
 	}
 
 	@Override
-	public Class<LiftAmbassador.LiftAmbassadorInterface> getServiceClass() {
-		return LiftAmbassador.LiftAmbassadorInterface.class;
+	public Class<AmbassadorServiceHandle> getServiceClass() {
+		return AmbassadorServiceHandle.class;
 	}
 
 	public void connectWebContent(LiftAmbassador la, RepoClient qi, GlobalConfigEmitter.GlobalConfigService configService) {

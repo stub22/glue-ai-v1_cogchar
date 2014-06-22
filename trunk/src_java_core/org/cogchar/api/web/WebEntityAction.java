@@ -99,7 +99,7 @@ public class WebEntityAction extends BasicEntityAction {
 				if (controlAction != null) {
 					la.activateControlAction(controlAction);
 				} else {
-					WebAppInterface.Control newCC = generateControlConfig(la);
+					WebControl newCC = generateControlConfig(la);
 					Integer slotNum = getSlotID();
 					if (slotNum != null) {
 						if (webUser != null) {
@@ -132,8 +132,8 @@ public class WebEntityAction extends BasicEntityAction {
 		}
 	}
 		// A method to generate a new ControlConfig for display from a WebAction
-	protected WebAppInterface.Control generateControlConfig(WebAppInterface webInterface) {
-		WebAppInterface.Control cc = webInterface.getNewControl();
+	protected WebControl generateControlConfig(WebAppInterface webInterface) {
+		WebControl cc = webInterface.getNewControl();
 		if (getControlType() == null) {
 			cc.setType("NULLTYPE");
 		} else {

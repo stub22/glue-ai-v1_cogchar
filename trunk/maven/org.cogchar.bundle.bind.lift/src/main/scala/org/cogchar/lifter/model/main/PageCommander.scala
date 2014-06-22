@@ -27,7 +27,8 @@ import org.cogchar.name.lifter.{ActionStrings}
 	import org.cogchar.lifter.model.action.{AbstractLifterActionHandler, LifterVariableHandler}
 	import org.cogchar.lifter.model.control.{AbstractControlInitializationHandler}
 	import org.cogchar.lifter.view.TextBox
-	import org.cogchar.impl.web.config.{ControlConfig, LiftAmbassador, LiftConfig}
+	import org.cogchar.api.web.{WebControl}
+	import org.cogchar.impl.web.config.{WebControlImpl, LiftAmbassador, LiftConfig, WebInstanceGlob}
 	import scala.collection.JavaConverters._
 	// import org.cogchar.platform.trigger.CogcharActionBinding
 	
@@ -49,22 +50,22 @@ import org.cogchar.name.lifter.{ActionStrings}
           myLogger.info(msg, params.map(_.asInstanceOf[Object]).toArray)
       }
   
-	  private var theLiftAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods
+	  private var myAmbassador:LiftAmbassador = null // Probably it makes sense to retain a pointer to the LiftAmbassador since it is used in several methods
 	  
 	  private var updateInfo: String = ""
 	  
-	  private val theLifterState = new LifterState
-	  private val firstActionHandler : AbstractLifterActionHandler = HandlerConfigurator.initializeActionHandlers
-	  private val firstControlInitializationHandler : AbstractControlInitializationHandler = HandlerConfigurator.initializeControlInitializationHandlers
+	  private val myWebappState = new LifterState
+	  private val myHeadActHandler : AbstractLifterActionHandler = HandlerConfigurator.initializeActionHandlers
+	  private val myHeadControlInitHandler : AbstractControlInitializationHandler = HandlerConfigurator.initializeControlInitializationHandlers
 	  
-	  private def getSessionState(sessionId:String) = theLifterState.stateBySession(sessionId)
+	  private def getSessionState(sessionId:String) = myWebappState.stateBySession(sessionId)
 	  
 	  // This hackish thing right here perhaps best illustrates what's wrong with the current PageCommander factoring.
 	  // Generally application state is held here in theLifterState and passed to other components only as a method
 	  // variable as needed. However, because of the combination of our unique situation of having snippets invoked via
 	  // Comet and the fact PageCommander is a non session-aware object natively (so SessionVars don't work here), it's
 	  // necessary to expose the state needed to populate snippet invocations here:
-	  def hackIntoSnippetDataMap(sessionId:String) = theLifterState.getSnippetDataMapForSession(sessionId)
+	  def hackIntoSnippetDataMap(sessionId:String) = myWebappState.getSnippetDataMapForSession(sessionId)
 	  
 	  def createUpdate = updateInfo
 	  
@@ -97,33 +98,33 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  }
 	  
 	  def getLiftAmbassador = {
-		  if (theLiftAmbassador == null) {
-			theLiftAmbassador = LiftAmbassador.getLiftAmbassador
+		  if (myAmbassador == null) {
+			myAmbassador = LiftAmbassador.getLiftAmbassador
 		  }
-		  theLiftAmbassador
+		  myAmbassador
 	  }
 	  
-	  def getInitialConfigId = theLifterState.getSessionInitialConfigID
+	  def getInitialConfigId = myWebappState.getSessionInitialConfigID
 	  
 	  def initializeSession(sessionId:String) {
 		  info("Initializing Session {}", sessionId)
-		  theLifterState.initializeSession(sessionId)
+		  myWebappState.initializeSession(sessionId)
 	  }
 	  
 	  // This method clears the state info for a session from the state maps.
 	  // Performed on session shutdown via LiftSession.onShutdownSession (in Boot.scala)
 	  def removeSession(sessionId:String) {
 		info("Removing state for session {}", sessionId)
-		theLifterState.removeSession(sessionId)
+		myWebappState.removeSession(sessionId)
 	  }
 	  
 	  def renderInitialControls {
-		  theLifterState.lifterInitialized = true
+		  myWebappState.lifterInitialized = true
 		  // If this is a restart on config change, activeSessions will have sessions which need to be re-initialized
-		  theLifterState.activeSessions.foreach(sessionId => initializeSessionAndRedirectToNewTemplate(sessionId))
+		  myWebappState.activeSessions.foreach(sessionId => initializeSessionAndRedirectToNewTemplate(sessionId))
 		  // If it's an initial startup, there may be sessions in sessionsAwaitingStart
-		  theLifterState.sessionsAwaitingStart.foreach(sessionId => initializeSessionAndRedirectToNewTemplate(sessionId))
-		  theLifterState.sessionsAwaitingStart.clear
+		  myWebappState.sessionsAwaitingStart.foreach(sessionId => initializeSessionAndRedirectToNewTemplate(sessionId))
+		  myWebappState.sessionsAwaitingStart.clear
 	  }
 	  
 	  def initializeSessionAndRedirectToNewTemplate(sessionId:String) {
@@ -133,12 +134,12 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  }
 	  
 	  def requestStart(sessionId:String) {
-	   if (theLifterState.lifterInitialized) {
+	   if (myWebappState.lifterInitialized) {
 		 initializeSession(sessionId)
 	   } else {
 		 // Some situations may result in requestStart being called more than once, so we need to check if it's already in buffer
-		 if (!(theLifterState.sessionsAwaitingStart contains sessionId)) {
-		   theLifterState.sessionsAwaitingStart += sessionId
+		 if (!(myWebappState.sessionsAwaitingStart contains sessionId)) {
+		   myWebappState.sessionsAwaitingStart += sessionId
 		 }
 	   }
 	  }
@@ -147,10 +148,10 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  // be initialized and the caller notified it wasn't previously active by returning a false result
 	  def checkForActiveSessionAndStartIfNot(sessionId:String):Boolean = {
 		var sessionActive = true
-		if (!(theLifterState.activeSessions contains sessionId)) {
+		if (!(myWebappState.activeSessions contains sessionId)) {
 		  sessionActive = false
 		  requestStart(sessionId) // Needs a little more refactoring between this and requestStart
-		  if (theLifterState.lifterInitialized) {
+		  if (myWebappState.lifterInitialized) {
 			setControlsFromMap(sessionId)
 		  }
 		} 
@@ -161,17 +162,17 @@ import org.cogchar.name.lifter.{ActionStrings}
 		info("Loading LiftConfig for session {}", sessionId)
 		val initConfigID = getInitialConfigId
 		if (sessionId.equals(initConfigID)) {
-		  theLifterState.clearAndInitializeState
+		  myWebappState.clearAndInitializeState
 		} else { // otherwise reset maps for this session
-		  theLifterState.prepareSessionForNewConfig(sessionId)
+		  myWebappState.prepareSessionForNewConfig(sessionId)
 		}
 		
 		val sessionState = getSessionState(sessionId)
 		sessionState.currentLiftConfig = liftConfig
 
-		val sillyMaxControlCount = theLifterState.getMaxControlCount()
+		val sillyMaxControlCount = myWebappState.getMaxControlCount()
 		
-		val controlList: java.util.List[ControlConfig] = liftConfig.myCCs
+		val controlList: java.util.List[WebControlImpl] = liftConfig.myCCs
 
 		val controlSet = controlList.asScala.toSet
 		controlSet.foreach(controlDef => {
@@ -207,8 +208,8 @@ import org.cogchar.name.lifter.{ActionStrings}
 		}
 	  }
 	  
-	  def getXmlForControl(sessionId: String, slotNum:Int, controlDef:ControlConfig): NodeSeq = {
-		firstControlInitializationHandler.processControlInit(theLifterState, sessionId, slotNum, controlDef)
+	  def getXmlForControl(sessionId: String, slotNum:Int, controlDef:WebControl): NodeSeq = {
+		myHeadControlInitHandler.processControlInit(myWebappState, sessionId, slotNum, controlDef)
 	  }
 					  
 	  def setControl(sessionId: String, slotNum: Int, slotHtml: NodeSeq) {
@@ -224,22 +225,23 @@ import org.cogchar.name.lifter.{ActionStrings}
 		}
 	  }							
 	  
-	  def loadControlDefToState(sessionId:String, slotNum:Int, controlDef:ControlConfig) {
+	  def loadControlDefToState(sessionId:String, slotNum:Int, controlDef:WebControl) {
 		val sessionState = getSessionState(sessionId)
 		// Below, we clone the controlDef with a copy constructor so the ControlConfigs in the controlDefMap are 
 		// not the same objects as in LiftAmbassador's page cache.
 		// That's important largly because ToggleButton modifies the actions in the controlDefMap.
 		// Pretty darn messy, and likely a topic for further refactoring.
-		sessionState.controlConfigBySlot(slotNum) = new ControlConfig(controlDef) 
+		val clonedWCI =  new WebControlImpl(controlDef)
+		sessionState.controlConfigBySlot(slotNum) = clonedWCI
 		// Trigger control initialization handler chain to fill proper XML into controlsMap
 		sessionState.controlXmlBySlot(slotNum) = getXmlForControl(sessionId, slotNum, controlDef)
 		// Check for initial nee "local" actions which PageCommander needs to handle, such as text display
-		firstActionHandler.optionalInitialRendering(theLifterState, sessionId, slotNum, controlDef)
+		myHeadActHandler.optionalInitialRendering(myWebappState, sessionId, slotNum, clonedWCI) //  controlDef)
 	  }
   
 	  def handleAction(sessionId:String, formId:Int, input:Array[String]) {
 		//info("Handling action: {}", getSessionState(sessionId).controlConfigBySlot(formId).action) // TEST ONLY
-		firstActionHandler.processAction(theLifterState, sessionId, formId, 
+		myHeadActHandler.processAction(myWebappState, sessionId, formId, 
 											getSessionState(sessionId).controlConfigBySlot(formId), input)
 	  }
 	  
@@ -250,7 +252,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 		val ignore = checkForBounce(sessionId, id)
 		if (!ignore) {
 		  if (getSessionState(sessionId).toggleControlStateBySlot contains id) {
-			  ControlToggler.getTheToggler.toggle(theLifterState,sessionId,id)
+			  ControlToggler.getTheToggler.toggle(myWebappState,sessionId,id)
 		  }
 		  handleAction(sessionId, id, null)		  
 		}
@@ -261,7 +263,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  def checkForBounce(sessionId:String, id:Int): Boolean = {
 		bounceCheckLock.synchronized {
 		  val time = new Date().getTime()
-		  val bounceMap = theLifterState.lastTimeAcutatedBySlot(sessionId)
+		  val bounceMap = myWebappState.lastTimeAcutatedBySlot(sessionId)
 		  var ignore = false
 		  //info("Checking for bounce with session " + sessionId + " and slot " + id + " time=" + time) // TEST ONLY
 		  if (bounceMap contains id) {
@@ -296,10 +298,10 @@ import org.cogchar.name.lifter.{ActionStrings}
 			  // If the multiActionFlag is not set, handle this control as a MultiSelect control.
 			  // Allows both MultiSelect and MultiAction controls to extend AbstractMultiSelectControl
 			  handleMultiSelectInput(a.sessionId, a.slotNum, a.subControl)
-			} else if (theLifterState.stateBySession(a.sessionId).multiActionsBySlot contains a.slotNum) {
+			} else if (myWebappState.stateBySession(a.sessionId).multiActionsBySlot contains a.slotNum) {
 			  // Set the "main" action to the currently desired one; a workaround we may want to change to something more elegant in the future
-			  theLifterState.stateBySession(a.sessionId).controlConfigBySlot(a.slotNum).action = 
-				theLifterState.stateBySession(a.sessionId).multiActionsBySlot(a.slotNum)(a.subControl)
+			  myWebappState.stateBySession(a.sessionId).controlConfigBySlot(a.slotNum).action = 
+				myWebappState.stateBySession(a.sessionId).multiActionsBySlot(a.slotNum)(a.subControl)
 			  // Using triggerAction to check for bounce, which I believe should work properly here...
 			  triggerAction(a.sessionId, a.slotNum)
 			} else {
@@ -317,7 +319,7 @@ import org.cogchar.name.lifter.{ActionStrings}
 
 	  def getCurrentTemplate(sessionId:String) = {
 		var templateToLoad: String = null
-		val sessionState = theLifterState.stateBySession
+		val sessionState = myWebappState.stateBySession
 		if (sessionState contains sessionId) templateToLoad = sessionState(sessionId).currentTemplateName
 		templateToLoad
 	  }
@@ -331,59 +333,59 @@ import org.cogchar.name.lifter.{ActionStrings}
 	  
 	  var theMessenger: CogcharMessenger = null
 	
-	  def getMessenger: LiftAmbassador.LiftInterface = { 
+	  def getMessenger: WebInstanceGlob = { 
 		if (theMessenger == null) {
 		  theMessenger = new CogcharMessenger
 		}
 		theMessenger
 	  }
 
-	  class CogcharMessenger extends LiftAmbassador.LiftInterface {
+	  class CogcharMessenger extends WebInstanceGlob {
                 def info(msg: String, params: Any*) {
                   myLogger.info(msg, params.map(_.asInstanceOf[Object]).toArray)
                 }        
     
-		def notifyConfigReady {
+		override def notifyConfigReady {
 			initFromCogcharRDF(getInitialConfigId, getLiftAmbassador.getInitialConfig)
 		}
-		def setConfigForSession(sessionId:String, config:LiftConfig) {
+		override def setConfigForSession(sessionId:String, config:LiftConfig) {
 		  initFromCogcharRDF(sessionId, config)
 		}
-		def setControlForSessionAndSlot(sessionId:String, slotNum:Int, newConfig:ControlConfig) {
+		override def setControlForSessionAndSlot(sessionId:String, slotNum:Int, webControl:WebControl) {
 		  // Set control on display
-		  val newControlXml = getXmlForControl(sessionId, slotNum, newConfig)
+		  val newControlXml = getXmlForControl(sessionId, slotNum, webControl)
 		  setControl(sessionId, slotNum, newControlXml)
 		  // Write control to state
-		  loadControlDefToState(sessionId, slotNum, newConfig)
+		  loadControlDefToState(sessionId, slotNum, webControl)
 		}
-		def loadPage(sessionId:String, pagePath:String) {
+		override def loadPage(sessionId:String, pagePath:String) {
 		  updateListeners(HtmlPageRequest(sessionId, Some(pagePath)))
 		}
-		def getVariable(key:String): String = { // returns value from "public" (global) app variables map
+		override def getGlobalVariable(key:String): String = { // returns value from "public" (global) app variables map
 		  var contents:String = null
-		  val globalVariables = theLifterState.globalLifterVariablesByName
+		  val globalVariables = myWebappState.globalLifterVariablesByName
 		  if (globalVariables contains key) contents = globalVariables(key)
 		  contents
 		}
-		def getVariable(sessionId:String, key:String): String = { // returns value from "session" app variables map
+		override def getSessionVariable(sessionId:String, key:String): String = { // returns value from "session" app variables map
 		  var contents:String = null
 		  val sessionVariables = getSessionState(sessionId).sessionLifterVariablesByName
 		  if (sessionVariables contains key) contents = sessionVariables(key)
 		  contents
 		}
 		// Show error globally
-		def showError(errorSourceCode:String, errorText:String) {
+		override def showGlobalError(errorSourceCode:String, errorText:String) {
 		  info("In showError; code = {}; text = {}", errorSourceCode, errorText);
-		  val activeSessionIterator = theLifterState.activeSessions.iterator
+		  val activeSessionIterator = myWebappState.activeSessions.iterator
 		  while (activeSessionIterator.hasNext) {
 			val sessionId = activeSessionIterator.next
-			showError(errorSourceCode, errorText, sessionId)
+			showSessionError(errorSourceCode, errorText, sessionId)
 		  }
 		}
 		// Show error in session
-		def showError(errorSourceCode:String, errorText:String, sessionId:String) {
+		override def showSessionError(errorSourceCode:String, errorText:String, sessionId:String) {
 		  info("In showError; code = {}; text = {}; session = {}", Array[AnyRef](errorSourceCode, errorText, sessionId));
-		  if (theLifterState.stateBySession contains sessionId) {
+		  if (myWebappState.stateBySession contains sessionId) {
 			  val sessionErrorMap = getSessionState(sessionId).errorDisplaySlotsByType
 			  if (sessionErrorMap contains errorSourceCode) {
 				val slotNum = sessionErrorMap(errorSourceCode)
@@ -399,8 +401,8 @@ import org.cogchar.name.lifter.{ActionStrings}
 		// Get list of active sessionIds -- to control independent sessions from repo updates, but not sure how we'll
 		// really want to handle that need. This is a temporary(?) idea:
 		import collection.JavaConversions._
-		def getActiveSessions() : java.util.List[String] = {
-		  theLifterState.activeSessions
+		override def getActiveSessions() : java.util.List[String] = {
+		  myWebappState.activeSessions
 		}
 	  }
 	

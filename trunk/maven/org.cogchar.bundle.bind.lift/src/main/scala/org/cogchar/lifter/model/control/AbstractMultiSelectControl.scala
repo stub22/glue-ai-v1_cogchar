@@ -16,7 +16,7 @@
 
 package org.cogchar.lifter.model.control
 
-import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.impl.web.util.LifterLogger
 import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
@@ -31,11 +31,14 @@ import net.liftweb.util.Helpers._ // This wildcard import is the way Lift Helper
 import scala.collection.mutable.HashMap
 import scala.xml.NodeSeq
 
+import org.cogchar.api.web.{WebControl}
+
+
 trait AbstractMultiSelectControlObject extends AbstractControlInitializationHandler {
   
-  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq =  {
+  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq =  {
 	// From the RDF "text" value we assume a comma separated list with the first item the title and the rest option labels
-	val textItems = control.text.split(ActionStrings.stringAttributeSeparator)
+	val textItems = control.getText.split(ActionStrings.stringAttributeSeparator)
 	val titleText = textItems(0)
 	val labelItems = textItems.tail
 	makeMultiControl(state, sessionId, slotNum, titleText, labelItems)

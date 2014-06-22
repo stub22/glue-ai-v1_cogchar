@@ -304,7 +304,7 @@ public class PumaAppContext extends BasicDebugger {
 		PumaWebMapper webMapper = getOrMakeWebMapper();
 		BundleContext bunCtx = getBundleContext();
 		webMapper.connectLiftSceneInterface(bunCtx);
-		webMapper.connectLiftInterface(bunCtx);
+		webMapper.connectAvailableCommands(bunCtx);
 	}
 
 	public void resetToDefaultConfig() {

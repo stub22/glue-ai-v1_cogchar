@@ -15,7 +15,7 @@
  */
 
 package org.cogchar.impl.web.wire
-import org.cogchar.impl.web.config.{ControlConfig, LiftConfig}
+import org.cogchar.impl.web.config.{WebControlImpl, LiftConfig}
 import scala.xml.NodeSeq
 import org.appdapter.core.name.Ident
 
@@ -29,7 +29,7 @@ import scala.collection.JavaConversions._ // required to use java.util.concurren
 
 
 class WebSessionState(private val mySessionId : String) {
-	var controlConfigBySlot:ConcurrentMap[Int,ControlConfig] = new ConcHashMapWithCapacity[Int,ControlConfig](HashMapBindings.MAX_CONTROL_QUANTITY)
+	var controlConfigBySlot:ConcurrentMap[Int,WebControlImpl] = new ConcHashMapWithCapacity[Int,WebControlImpl](HashMapBindings.MAX_CONTROL_QUANTITY)
 	var controlXmlBySlot:ConcurrentMap[Int,NodeSeq] = new ConcHashMapWithCapacity[Int,NodeSeq](HashMapBindings.MAX_CONTROL_QUANTITY)
 	var currentLiftConfig: LiftConfig = null
 	var lastLiftConfig: LiftConfig = null
@@ -51,7 +51,7 @@ class WebSessionState(private val mySessionId : String) {
 	var multiActionsBySlot:ConcurrentMap[Int,Array[Ident]] = new DfltConcHashMap[Int,Array[Ident]]
  
 	def initUsingContents(sourceState : WebSessionState) {
-		controlConfigBySlot = new ConcurrentHashMap[Int,ControlConfig](sourceState.controlConfigBySlot)
+		controlConfigBySlot = new ConcurrentHashMap[Int,WebControlImpl](sourceState.controlConfigBySlot)
 		controlXmlBySlot = new ConcurrentHashMap[Int,NodeSeq](sourceState.controlXmlBySlot)
 		currentLiftConfig = sourceState.currentLiftConfig // we won't be modifying this, so no need to copy
 		cogbotDisplaySlots = sourceState.cogbotDisplaySlots.clone

@@ -31,7 +31,7 @@ public class LiftConfig extends KnownComponentImpl {
 
 	private static final String DEFAULT_TEMPLATE = "12slots";
 	
-	public List<ControlConfig> myCCs = new ArrayList<ControlConfig>();
+	public List<WebControlImpl> myCCs = new ArrayList<WebControlImpl>();
 	//public List<ControlActionConfig> myCACs = new ArrayList<ControlActionConfig>();
 	public String template = DEFAULT_TEMPLATE;
 	
@@ -53,7 +53,7 @@ public class LiftConfig extends KnownComponentImpl {
 		SolutionList solutionList = qi.queryIndirectForAllSolutions(LiftCN.CONTROL_QUERY_TEMPLATE_URI, graphIdent, 
 							LiftCN.CONFIG_QUERY_VAR_NAME, configUri);
 		for (Solution solution : solutionList.javaList()) {
-			myCCs.add(new ControlConfig(qi, solution));
+			myCCs.add(new WebControlImpl(qi, solution));
 		}
 		/* Not too sure we want these in here...
 		// Read in control actions

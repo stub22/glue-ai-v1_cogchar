@@ -30,6 +30,7 @@ import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler;
 import org.appdapter.bind.rdf.jena.assembly.ItemAssemblyReader;
 import org.appdapter.bind.rdf.jena.model.JenaLiteralUtils;
+import org.appdapter.bind.rdf.jena.model.SerialJenaResItem;
 import org.appdapter.core.convert.Converter;
 import org.appdapter.core.convert.ReflectUtils;
 import org.appdapter.core.item.Item;
@@ -47,6 +48,8 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+
 
 /**
  * Used by Jena, not meant to be created and used directly.
@@ -75,7 +78,7 @@ public class ThingActionFilterBuilder<MKC extends ThingActionFilter> extends Dyn
 			return taf;
 		getLogger().debug("Assembler[{}] is opening component at: {}", this, compID);
 		Resource res = builderConfResource.getModel().createResource(compID.getAbsUriString());
-		JenaResourceItem wrapperItem = new JenaResourceItem(res);
+		JenaResourceItem wrapperItem = new SerialJenaResItem(res);
 		MKC comp = fetchOrMakeComponent(wrapperItem, wrapperItem, this, Mode.REUSE);
 		return comp;
 	}

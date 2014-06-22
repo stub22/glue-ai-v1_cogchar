@@ -17,7 +17,7 @@
 package org.cogchar.lifter.model.action
 
 import org.appdapter.core.name.FreeIdent
-import org.cogchar.impl.web.config.{ControlConfig, LiftConfig}
+import org.cogchar.impl.web.config.{WebControlImpl, LiftConfig}
 import org.cogchar.name.lifter.{ActionStrings}
 import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
@@ -29,7 +29,7 @@ class SceneTriggerHandler extends AbstractLifterActionHandler {
 
   override protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_scenetrig)
   
-  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
+  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
 	val success = myLiftAmbassador.triggerScene(control.action.getLocalName)
 	if (success) {
 	  val sceneRunningScreen = createSceneInfoScreen(state, sessionId, control)
@@ -39,10 +39,10 @@ class SceneTriggerHandler extends AbstractLifterActionHandler {
   
   // A method to create a liftconfig locally to serve as a "Scene Playing" info screen
   // This is an early hard coded demo that needs to be refactored or eliminated
-  def createSceneInfoScreen(state:LifterState, sessionId:String, control:ControlConfig): LiftConfig = {
+  def createSceneInfoScreen(state:LifterState, sessionId:String, control:WebControlImpl): LiftConfig = {
 	val singleSlotTemplateName = state.getSingleSlotTemplateName
 	val sceneInfoConfig = new LiftConfig(singleSlotTemplateName)
-	val infoButton = new ControlConfig()
+	val infoButton = new WebControlImpl()
 	infoButton.myURI_Fragment = "info_control_1"
 	infoButton.controlType = "PUSHYBUTTON"
 	infoButton.action = new FreeIdent(ActionStrings.p_liftcmd + ActionStrings.lastConfig, ActionStrings.lastConfig)
