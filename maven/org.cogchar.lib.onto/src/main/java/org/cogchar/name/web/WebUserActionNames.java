@@ -39,7 +39,8 @@ public class WebUserActionNames {
 	}
 	
 	public static Ident makeID (com.hp.hpl.jena.rdf.model.Resource jenaRsrc) {
-		return new org.appdapter.core.item.JenaResourceItem(jenaRsrc);
+		return new org.appdapter.bind.rdf.jena.model.SerialJenaResItem(jenaRsrc);
+		// return new org.appdapter.core.item.JenaResourceItem(jenaRsrc);
 	}	
 	
 	// These are properties.  We can tell their datatypes by looking at how they are used in 

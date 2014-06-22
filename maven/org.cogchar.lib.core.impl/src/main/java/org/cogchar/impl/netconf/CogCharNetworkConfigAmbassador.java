@@ -15,7 +15,7 @@
  */
 package org.cogchar.impl.netconf;
 
-import org.cogchar.impl.web.config.LiftAmbassador;
+import org.cogchar.impl.web.config.WebappNetworkConfigHandle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 // import org.friendularity.bundle.netconfig.LinuxNetworkConfigurator;
@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Ryan Biggs <rbiggs@skyriversoftware.com>
  */
-public class CogCharNetworkConfigAmbassador implements LiftAmbassador.LiftNetworkConfigInterface {
+public class CogCharNetworkConfigAmbassador implements WebappNetworkConfigHandle {
 	
 	private static Logger theLogger = Logger.getLogger(CogCharNetworkConfigAmbassador.class.getName());
 	

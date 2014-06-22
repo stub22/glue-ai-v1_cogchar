@@ -18,7 +18,7 @@ package org.cogchar.lifter.model.action
 
 import java.lang.NumberFormatException
 import org.appdapter.core.name.Ident
-import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.name.lifter.ActionStrings
 import org.cogchar.lifter.model.main.{ControlToggler,PageCommander}
@@ -30,7 +30,7 @@ class LifterVariableHandler extends AbstractLifterActionHandler {
   
   override protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_liftvar, ActionStrings.p_liftsessionvar)
   
-  override  protected def handleAction(state:LifterState, sessionId:String, slotId:Int, control:ControlConfig, input:Array[String]) {
+  override  protected def handleAction(state:LifterState, sessionId:String, slotId:Int, control:WebControlImpl, input:Array[String]) {
 	val varName = control.action.getLocalName
 	var variablesMap: scala.collection.mutable.Map[String, String] = null;
 	var sessionVar = false

@@ -570,14 +570,14 @@ public class DataballGoodyBuilder extends BasicDebugger {
 	public boolean buildModelFromTurtleUsingLiftSettings(String configPath) {
 		boolean success = false;
 		myResourceCl = null;
-		String classloaderKey = getWebInterface().getLiftVariable(DataballStrings.classloaderKey);
+		String classloaderKey = getWebInterface().getGlobalWebappVariable(DataballStrings.classloaderKey);
 		if (classloaderKey != null) {
 			if (myClassloaders.containsKey(classloaderKey)) {
 				myResourceCl = myClassloaders.get(classloaderKey);
 			}
 		}
 		boolean showAllObjects = false;
-		String liftShowAllObjectsString = getWebInterface().getLiftVariable(DataballStrings.showAllObjects);
+		String liftShowAllObjectsString = getWebInterface().getGlobalWebappVariable(DataballStrings.showAllObjects);
 		if (liftShowAllObjectsString != null) {
 			showAllObjects = Boolean.valueOf(liftShowAllObjectsString);
 		}
@@ -668,13 +668,13 @@ public class DataballGoodyBuilder extends BasicDebugger {
 	
 	void showErrorInLift(String errorText) {
 		myLogger.error(errorText);
-		getWebInterface().displayError(DataballStrings.liftErrorCode, errorText);
+		getWebInterface().displayGlobalWebappError(DataballStrings.liftErrorCode, errorText);
 	}
 
 	public boolean performAction(String action, String text) {
 		boolean success = true;
 		// Clear error shown in Lift, if any
-		getWebInterface().displayError(DataballStrings.liftErrorCode, "");
+		getWebInterface().displayGlobalWebappError(DataballStrings.liftErrorCode, "");
 		if (action.equals(DataballStrings.viewRdfGraph)) { // Oh, Java 6 and your non-String supporting case statements...
 			success = buildModelFromTurtleUsingLiftSettings(text);
 		} else if (action.equals(DataballStrings.onOff)) {

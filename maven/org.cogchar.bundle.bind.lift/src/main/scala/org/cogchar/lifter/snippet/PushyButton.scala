@@ -22,19 +22,20 @@ package org.cogchar.lifter {
 	import net.liftweb.http.{S,SHtml}
 	import net.liftweb.http.js.JsCmds
 	import net.liftweb.util.Helpers._
-	import org.cogchar.impl.web.config.ControlConfig
+	import org.cogchar.impl.web.config.WebControlImpl
 	import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
 	import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
 	import org.cogchar.lifter.view.TextBox
 	import scala.xml.NodeSeq
+	import org.cogchar.api.web.{WebControl}
 
 	object PushyButton extends AbstractControlInitializationHandler {
 	  
 	  protected val matchingName = "PUSHYBUTTON"
   
-	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
-		makeButton(control.text, control.style, control.resource, slotNum)
+	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+		makeButton(control.getText, control.getStyle, control.getResource, slotNum)
 	  }
 	  
 	  def makeButton(buttonText:String, buttonClass:String, buttonImage:String, buttonId: Int): NodeSeq = {

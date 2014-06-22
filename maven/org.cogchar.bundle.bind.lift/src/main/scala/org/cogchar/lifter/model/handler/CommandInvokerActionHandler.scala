@@ -16,7 +16,7 @@
 
 package org.cogchar.lifter.model.handler
 
-import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.name.lifter.ActionStrings
 
 import org.cogchar.impl.web.wire.{LifterState}
@@ -35,11 +35,11 @@ class CommandInvokerActionHandler extends AbstractLifterActionHandler {
   
   private var myFirstCommandHandler:AbstractLifterCommandHandler = HandlerConfigurator.initializeCommandHandlers
   
-  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
+  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
 		myFirstCommandHandler.processCommand(state, sessionId, slotNum, control.action.getLocalName, input)
   }
   
-	override protected def handleRendering(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig) {
+	override protected def handleRendering(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl) {
 		myFirstCommandHandler.checkForInitialAction(state, sessionId, slotNum, control.action.getLocalName)
   }
   

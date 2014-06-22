@@ -16,7 +16,7 @@
 
 package org.cogchar.lifter.model.action
 
-import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.name.lifter.ActionStrings
 import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
@@ -26,7 +26,7 @@ class CinematicHandler extends AbstractLifterActionHandler {
 
   override protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_cinematic, ActionStrings.p_thinganim)
   
-  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
+  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
 	myLiftAmbassador.triggerCinematic(control.action)
   }
   

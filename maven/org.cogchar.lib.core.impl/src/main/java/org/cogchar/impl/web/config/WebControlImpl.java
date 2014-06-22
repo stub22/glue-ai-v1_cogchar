@@ -20,7 +20,7 @@ import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.Solution;
 import org.appdapter.help.repo.SolutionHelper;
 import org.appdapter.help.repo.SolutionList;
-import org.cogchar.api.web.WebAppInterface;
+import org.cogchar.api.web.WebControl;
 import org.cogchar.name.lifter.LiftCN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Ryan Biggs
  */
-public class ControlConfig implements WebAppInterface.Control {
+public class WebControlImpl implements WebControl {
 
-	static Logger theLogger = LoggerFactory.getLogger(ControlConfig.class);
+	static Logger theLogger = LoggerFactory.getLogger(WebControlImpl.class);
 	public String myURI_Fragment;
 	public String controlType = "NULLTYPE";
 	public Ident action;
@@ -44,12 +44,12 @@ public class ControlConfig implements WebAppInterface.Control {
 				+ text + "\", style=" + style + " resource=" + resource + "]";
 	}
 
-	public ControlConfig() {
+	public WebControlImpl() {
 		// No need to do anything here; basically adding the default constructor for use by PageCommander in Lift
 	}
 	
-	// A new constructor to build ControlConfig from spreadsheet
-	public ControlConfig(RepoClient qi, Solution solution) {
+	// A new constructor to build WebControlImpl from spreadsheet
+	public WebControlImpl(RepoClient qi, Solution solution) {
 		SolutionHelper sh = new SolutionHelper();
 		Ident myIdent = sh.pullIdent(solution, LiftCN.CONTROL_VAR_NAME);
 		if (myIdent != null) { // This might be false (myIdent = null) if this is instantiated via getControlConfigFromUri
@@ -73,23 +73,25 @@ public class ControlConfig implements WebAppInterface.Control {
 	}
 	
 	// A copy constructor - currently needed by PageCommander (but probably better if it wasn't...)
-	public ControlConfig(ControlConfig configToCopy) {
-		myURI_Fragment = configToCopy.myURI_Fragment;
-		controlType = configToCopy.controlType;
-		action = configToCopy.action;
-		text = configToCopy.text;
-		style = configToCopy.style;
-		resource = configToCopy.resource;
+	public WebControlImpl(WebControl configToCopy) {
+		if (configToCopy instanceof WebControlImpl) {
+			myURI_Fragment = ((WebControlImpl) configToCopy).myURI_Fragment;
+		}
+		controlType = configToCopy.getType();
+		action = configToCopy.getAction();
+		text = configToCopy.getText();
+		style = configToCopy.getStyle();
+		resource = configToCopy.getResource();
 	}
 	
-	// A factory method to get a ControlConfig by URI alone
-	public static ControlConfig getControlConfigFromUri(RepoClient qi, Ident graphIdent, Ident configUri) {
-		ControlConfig newConfig = null;
+	// A factory method to get a WebControlImpl by URI alone
+	public static WebControlImpl getControlConfigFromUri(RepoClient qi, Ident graphIdent, Ident configUri) {
+		WebControlImpl newConfig = null;
 		SolutionList solutionList = qi.queryIndirectForAllSolutions(LiftCN.FREE_CONTROL_QUERY_TEMPLATE_URI, graphIdent, 
 							LiftCN.CONTROL_QUERY_VAR_NAME, configUri);
 		switch (solutionList.javaList().size()) {
 			case 0:	theLogger.warn("Could not find control with URI {}", configUri); break;
-			case 1: newConfig = new ControlConfig(qi, solutionList.javaList().get(0));
+			case 1: newConfig = new WebControlImpl(qi, solutionList.javaList().get(0));
 								newConfig.myURI_Fragment = configUri.getLocalName();
 								break;
 			default: theLogger.error("Found multiple controls with URI {}", configUri); break;
@@ -97,17 +99,6 @@ public class ControlConfig implements WebAppInterface.Control {
 		return newConfig;
 	}
 	
-	// A factory method to get a ControlConfig from a WebAppInterface.Control. The Control probably already is a ControlConfig,
-	// but since we can't count on that in general, here we explicitly build a ControlConfig
-	public static ControlConfig getControlConfigFromControlInterface(WebAppInterface.Control appControl) {
-		ControlConfig newConfig = new ControlConfig();
-		newConfig.controlType = appControl.getType();
-		newConfig.action = appControl.getAction();
-		newConfig.resource = appControl.getResource();
-		newConfig.style = appControl.getStyle();
-		newConfig.text = appControl.getText();
-		return newConfig;
-	}
 	
 	// Getters and setters to implement WebAppInterface.Control
 	public void setType(String type) {
@@ -147,7 +138,7 @@ public class ControlConfig implements WebAppInterface.Control {
 	
 	
 	/* No longer available unless we fix this up to support the new action URIs instead of strings
-	public ControlConfig(Item configItem) {
+	public WebControlImpl(Item configItem) {
 		myURI_Fragment = configItem.getIdent().getLocalName();
 		controlType = ItemFuncs.getString(configItem, LiftConfigNames.P_controlType, "NULLTYPE");
 		action = ItemFuncs.getString(configItem, LiftConfigNames.P_controlAction, "");

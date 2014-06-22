@@ -27,7 +27,7 @@ import org.cogchar.platform.trigger.CogcharEventActionBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.cogchar.api.web.WebAppInterface;
+import org.cogchar.api.web.WebSceneInterface;
 
 
 /**
@@ -90,7 +90,7 @@ public class SceneActions {
 		return theLauncher;
 	}
 
-	static class SceneLauncher implements WebAppInterface.WebSceneInterface {
+	static class SceneLauncher implements WebSceneInterface {
 		@Override public boolean triggerScene(String scene) {
 			boolean success = false;
 			CogcharActionBinding triggerBinding = getTriggerBinding(scene);
