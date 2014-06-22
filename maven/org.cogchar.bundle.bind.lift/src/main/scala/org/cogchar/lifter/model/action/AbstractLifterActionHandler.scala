@@ -17,7 +17,7 @@
 package org.cogchar.lifter.model.action
 
 import org.appdapter.core.name.Ident
-import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.impl.web.util.LifterLogger
 import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
@@ -30,7 +30,7 @@ trait AbstractLifterActionHandler extends LifterLogger {
 
   protected var myLiftAmbassador : LiftAmbassador = PageCommander.getLiftAmbassador
   
-  def processAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
+  def processAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
 	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {
       this.handleAction(state, sessionId, slotNum, control, input)}
 	else {
@@ -44,7 +44,7 @@ trait AbstractLifterActionHandler extends LifterLogger {
   }
   
   // Checks for actions which this control performs upon rendering, not actuation
-  def optionalInitialRendering(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig) {
+  def optionalInitialRendering(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl) {
 	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {this.handleRendering(state, sessionId, slotNum, control)}
 	else {
 	  if (this.myNextActionHandler != null) {
@@ -58,8 +58,8 @@ trait AbstractLifterActionHandler extends LifterLogger {
 	myNextActionHandler = handler
   }
   
-  protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String])
+  protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String])
   // A blank method for handleInitialActionHere. If an action would like to perform tasks on rendering, it can override this method.
-  protected def handleRendering(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig) {}
+  protected def handleRendering(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl) {}
   
 }

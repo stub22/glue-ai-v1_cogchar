@@ -22,7 +22,9 @@ package org.cogchar.lifter.model.control
 	import net.liftweb.http.js.JsCmds.SetValById
 	import net.liftweb.util.CssSel
 	import net.liftweb.util.Helpers._ // This wildcard import is the way Lift Helpers roll for CssSel operations and etc.
-	import org.cogchar.impl.web.config.ControlConfig
+	import org.cogchar.api.web.{WebControl}
+
+	import org.cogchar.impl.web.config.WebControlImpl
 	import org.cogchar.impl.web.util.LifterLogger
 	import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
@@ -41,9 +43,9 @@ import org.cogchar.impl.web.wire.{LifterState}
 	  val labelIdPrefix = "textformlabel_"
 	  val textBoxIdPrefix = "textform_in_"
   
-	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
 		// From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
-		val textItems = control.text.split(ActionStrings.stringAttributeSeparator)
+		val textItems = control.getText.split(ActionStrings.stringAttributeSeparator)
 		val label1 = textItems(0)
 		val label2 = textItems(1)
 		val submitLabel = textItems(2)

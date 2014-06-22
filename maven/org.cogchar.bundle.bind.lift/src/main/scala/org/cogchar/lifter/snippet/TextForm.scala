@@ -22,7 +22,9 @@ package org.cogchar.lifter {
 	import net.liftweb.http.js.JsCmd
 	import net.liftweb.http.js.JsCmds.SetValById
 	import net.liftweb.util.Helpers._ 
-	import org.cogchar.impl.web.config.ControlConfig
+	import org.cogchar.api.web.{WebControl}
+
+	import org.cogchar.impl.web.config.WebControlImpl
 	import org.cogchar.impl.web.util.LifterLogger
 	import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
@@ -35,8 +37,8 @@ import org.cogchar.impl.web.wire.{LifterState}
 	  
 	  protected val matchingName = "TEXTINPUT"
   
-	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
-		makeTextForm(state, sessionId, slotNum, control.text)
+	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+		makeTextForm(state, sessionId, slotNum, control.getText)
 	  }
 	  
 	  val defaultText = "" // We can add bits to define this in XML if we want

@@ -16,6 +16,7 @@
 package org.cogchar.app.puma.web;
 
 import com.hp.hpl.jena.query.Dataset;
+import org.apache.mina.util.AvailablePortFinder;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
@@ -24,10 +25,10 @@ import org.appdapter.help.repo.RepoClient;
 import org.cogchar.api.thing.WantsThingAction;
 import org.cogchar.impl.perform.basic.AnimLaunchEntityAction;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
-import org.cogchar.api.web.WebAppInterface;
+import org.cogchar.api.web.WebSceneInterface;
 import org.cogchar.api.web.WebEntityAction;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
-import org.cogchar.impl.web.config.LiftAmbassador;
+import org.cogchar.impl.web.config.AvailableCommands;
 
 import org.cogchar.bind.mio.robot.client.AnimMediaHandle;
 import org.cogchar.bind.mio.robot.client.AnimOutTrigChan;
@@ -70,7 +71,7 @@ public class PumaWebMapper extends BasicDebugger {
 	/**
 	 * 
 	 * @return 
-	 * Called only from	connectLiftInterface()  
+	 * Called only from	connectAvailableCommands()  
 	 */
 	protected CommandTargetForUseFromWeb geWebCommandTarget() {
 		if (myCmdTargetForWeb == null) {
@@ -81,7 +82,7 @@ public class PumaWebMapper extends BasicDebugger {
 
 	public void connectLiftSceneInterface(BundleContext bundleCtx) {
 		if (myLiftSceneComp == null) {
-			ServiceLifecycleProvider lifecycle = new SimpleLifecycle(SceneActions.getLauncher(), WebAppInterface.WebSceneInterface.class);
+			ServiceLifecycleProvider lifecycle = new SimpleLifecycle(SceneActions.getLauncher(), WebSceneInterface.class);
 			myLiftSceneComp = new OSGiComponent(bundleCtx, lifecycle);
 		}
 		myLiftSceneComp.start();
@@ -97,9 +98,9 @@ public class PumaWebMapper extends BasicDebugger {
 	 * PumaAppContext.connectWeb(), which is called from PUMA booter, typically from a Framework-started event
 	 * handler in some "top" application bundle.
  */
-	public void connectLiftInterface(BundleContext bundleCtx) {
+	public void connectAvailableCommands(BundleContext bundleCtx) {
 		CommandTargetForUseFromWeb webCmdTarget = geWebCommandTarget();
-		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(webCmdTarget, LiftAmbassador.LiftAppInterface.class);
+		ServiceLifecycleProvider lifecycle = new SimpleLifecycle(webCmdTarget, AvailableCommands.class);
 		myLiftAppComp = new OSGiComponent(bundleCtx, lifecycle);
 		myLiftAppComp.start();
 	}

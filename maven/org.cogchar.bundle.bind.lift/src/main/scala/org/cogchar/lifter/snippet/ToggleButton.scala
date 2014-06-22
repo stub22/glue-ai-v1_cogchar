@@ -16,8 +16,8 @@
 
 package org.cogchar.lifter.snippet
 
-
-import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.api.web.{WebControl}
+import org.cogchar.impl.web.config.WebControlImpl
 
 import org.cogchar.lifter.model.control.{AbstractControlInitializationHandler}
 import org.cogchar.lifter.model.action.{LifterVariableHandler}
@@ -31,12 +31,12 @@ object ToggleButton extends AbstractControlInitializationHandler {
 	  
   protected val matchingName = "TOGGLEBUTTON"
   
-  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
 	val sessionState = state.stateBySession(sessionId)
 	// Load the "full" action (with an action local name containing actions for each state) into toggleButtonFullActionMap
-	sessionState.toggleControlMultiActionsBySlot(slotNum) = control.action
+	sessionState.toggleControlMultiActionsBySlot(slotNum) = control.getAction
 	// Next we need to see if an app variable linked to this toggle button is already set and set the button state to match if so
-	val buttonState = LifterVariableHandler.getStateFromVariable(state, sessionId, control.action)
+	val buttonState = LifterVariableHandler.getStateFromVariable(state, sessionId, control.getAction)
 	// Flag the fact this is a toggle button and set current state via toggleButtonMap
 	sessionState.toggleControlStateBySlot(slotNum) = buttonState
 	// A TOGGLEBUTTON trick: we have copied the full action for this control to toggleButtonFullActionMap - now

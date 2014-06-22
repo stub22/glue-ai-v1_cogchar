@@ -25,7 +25,7 @@ import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.osgi.framework.BundleContext;
 
-import org.cogchar.impl.web.config.LiftAmbassador;
+import org.cogchar.impl.web.config.WebappNetworkConfigHandle;
 
 /**
  * Pulled from the Activator of the old prototype: o.f.b.netconfig
@@ -38,7 +38,7 @@ public class CogCharNetworkServiceLauncher {
 	public static void startCogCharAmbassadors(BundleContext context) {
 		// Connect a CogCharNetworkConfigAmbassador as a (no lifecycle) managed service, so lifter can use it
 		ServiceLifecycleProvider ambassadorCycle =
-				new SimpleLifecycle(new CogCharNetworkConfigAmbassador(), LiftAmbassador.LiftNetworkConfigInterface.class);
+				new SimpleLifecycle(new CogCharNetworkConfigAmbassador(), WebappNetworkConfigHandle.class);
 		OSGiComponent cncaComp = new OSGiComponent(context, ambassadorCycle);
 		cncaComp.start();
 	}	

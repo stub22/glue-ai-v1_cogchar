@@ -16,7 +16,9 @@
 
 package org.cogchar.lifter.model.control
 
-import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.api.web.{WebControl}
+
+// import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.impl.web.util.LifterLogger
 
@@ -24,15 +26,15 @@ import scala.xml.NodeSeq
 
 trait AbstractControlInitializationHandler extends LifterLogger {
   
-  def processControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq = {
+  def processControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
 	var result = NodeSeq.Empty
-	if (this.matchingName equals control.controlType) {result = this.handleControlInit(state, sessionId, slotNum, control)}
+	if (this.matchingName equals control.getType) {result = this.handleControlInit(state, sessionId, slotNum, control)}
 	else {
 	  if (this.nextHandler != null) {
 		result = nextHandler.processControlInit(state, sessionId, slotNum, control)
 	  } else {
 		myLogger.warn("Reached end of control initialization chain without finding handler for sessionId {}" +
-			 " and slotNum:{} with control type: {}", Array[AnyRef](sessionId, slotNum.asInstanceOf[AnyRef], control.controlType))
+			 " and slotNum:{} with control type: {}", Array[AnyRef](sessionId, slotNum.asInstanceOf[AnyRef], control.getType))
 	  }
 	}
 	result
@@ -45,7 +47,7 @@ trait AbstractControlInitializationHandler extends LifterLogger {
   }
   
   protected val matchingName: String
-  protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig): NodeSeq
+  protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq
 
 
 }

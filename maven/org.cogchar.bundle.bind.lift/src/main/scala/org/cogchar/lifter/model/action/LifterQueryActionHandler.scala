@@ -17,7 +17,7 @@
 package org.cogchar.lifter.model.action
 
 import org.appdapter.core.name.Ident
-import org.cogchar.impl.web.config.ControlConfig
+import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.name.lifter.ActionStrings
 import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
@@ -30,12 +30,12 @@ class LifterQueryActionHandler extends AbstractLifterActionHandler {
 
   override protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_lifterQuery)
   
-  override  protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig, input:Array[String]) {
+  override  protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
 	myLogger.warn("Lifter does not know how handle a lifter query as a triggered action in session {}, control []",
 				  sessionId, slotNum)
   }
   
-  override def optionalInitialRendering(state:LifterState, sessionId:String, slotNum:Int, control:ControlConfig) {
+  override def optionalInitialRendering(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl) {
 	control.controlType match {
 	  case LinkList.matchingName => {
 		  val namesAndActionsList = myLiftAmbassador.getNamesAndActionsFromQuery(control.action)

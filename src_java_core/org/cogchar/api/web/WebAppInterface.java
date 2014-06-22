@@ -37,33 +37,18 @@ public interface WebAppInterface {
 	public void activateControlsFromUri(Ident configUri);
 	public void activateControlsFromUriForUser(String user, Ident configUri);
 	public void activateControlsFromUriForUserClass(String webUserClass, Ident configIdent);
-	public void activateControlFromConfig(int slotNum, Control controlConfig);
-	public void activateControlFromConfigForUser(String user, int slotNum, Control controlConfig);
-	public void activateControlFromConfigForUserClass(String userClass, int slotNum, Control controlConfig);
+	public void activateControlFromConfig(int slotNum, WebControl controlConfig);
+	public void activateControlFromConfigForUser(String user, int slotNum, WebControl controlConfig);
+	public void activateControlFromConfigForUserClass(String userClass, int slotNum, WebControl controlConfig);
 	
-	public String getLiftVariable(String varName);
-	public void displayError(String errorCode, String errorText);
+	public String getGlobalWebappVariable(String varName);
+	public void displayGlobalWebappError(String errorCode, String errorText);
 	
-	public Control getNewControl();
+	public WebControl getNewControl();
 	
-	public interface WebSceneInterface {
-
-		boolean triggerScene(String scene);
-	}
 	
 	// Reflects org.cogchar.bind.lift.ControlConfig
-	public interface Control {
-		public void setType(String type);
-		public String getType();
-		public void setAction(Ident action);
-		public Ident getAction();
-		public void setText(String text);
-		public String getText();
-		public void setStyle(String style);
-		public String getStyle();
-		public void setResource(String resource);
-		public String getResource();
-	}
+
 	
 	
 	
