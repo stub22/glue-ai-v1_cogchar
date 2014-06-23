@@ -18,7 +18,7 @@ package org.cogchar.lifter.model.command
 
 import org.cogchar.name.lifter.{ActionStrings}
 import org.cogchar.impl.web.wire.{LifterState}
-import org.cogchar.lifter.view.TextBox
+import org.cogchar.lifter.view.TextBoxFactory
 import scala.collection.mutable.ArrayBuffer
 import org.cogchar.lifter.model.main.{PageCommander, SpeechRecGateway}
 
@@ -41,7 +41,9 @@ class SubmitTextCommandHandler extends AbstractLifterCommandHandler {
 			val response = myLiftAmbassador.getCogbotResponse(cmdContext.myInput(0))
 			val cleanedResponse = cleanCogbotResponse(response)
 			cogbotDisplayList.foreach(slotNum =>
-			  PageCommander.setControl(cmdContext.mySessionId, slotNum, TextBox.makeBox("Cogbot said \"" + cleanedResponse 
+			  PageCommander.setControl(cmdContext.mySessionId, slotNum, 
+						TextBoxFactory.makeBox("Cogbot said \"" + cleanedResponse 
+										
 																  + "\"", sessionState.controlConfigBySlot(cmdContext.mySlotNum).style)))
 			if (sessionState.cogbotTextToSpeechActive) 
 				SpeechRecGateway.outputSpeech(cmdContext.mySessionId, cleanedResponse) // Output Android speech if cogbotTextToSpeechActive is set

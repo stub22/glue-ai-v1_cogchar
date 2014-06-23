@@ -67,7 +67,7 @@ object Whackamole extends BasicDebugger {
 		for (x <- loadedStuff) {
 			getLogger.info("Got Thing[" + x + "]")
 			x match {
-				// Scala "match" may be ignoring the [ParameterType]
+				// Scala "match" may be ignoring the [ParameterType], but we use it as doc of what we want
 				case mb : MutableBox[CogcharActionTrigger] => { winnerList = mb :: winnerList }
 				case _ => getLogger.info("Ignoring.")
 			}

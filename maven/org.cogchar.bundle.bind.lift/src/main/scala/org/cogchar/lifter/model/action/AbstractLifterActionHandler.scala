@@ -18,24 +18,25 @@ package org.cogchar.lifter.model.action
 
 import org.appdapter.core.name.Ident
 import org.cogchar.impl.web.config.WebControlImpl
-import org.cogchar.impl.web.util.LifterLogger
-import org.cogchar.lifter.model.main.{PageCommander}
+import org.cogchar.impl.web.util.HasLogger
+// import org.cogchar.lifter.model.main.{PageCommander}
 import org.cogchar.impl.web.wire.{LifterState}
+import org.cogchar.impl.web.util.{WebHelper}
 import scala.collection.mutable.ArrayBuffer
 import org.cogchar.impl.web.config.{LiftAmbassador}
 
-trait AbstractLifterActionHandler extends LifterLogger {
+abstract class AbstractLifterActionHandler(protected val myLiftAmbassador : LiftAmbassador) extends HasLogger {
   private var myNextActionHandler: AbstractLifterActionHandler = null
   protected val matchingPrefixes: ArrayBuffer[String]
 
-  protected var myLiftAmbassador : LiftAmbassador = PageCommander.getLiftAmbassador
+//  protected var myLiftAmbassador : LiftAmbassador = PageCommander.getLiftAmbassador
   
-  def processAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
-	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {
-      this.handleAction(state, sessionId, slotNum, control, input)}
+  def processAction(sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
+	if (this.matchingPrefixes contains WebHelper.getUriPrefix(control.action)) {
+      this.handleAction(sessionId, slotNum, control, input)}
 	else {
 	  if (this.myNextActionHandler != null) {
-		myNextActionHandler.processAction(state, sessionId, slotNum, control, input)
+		myNextActionHandler.processAction(sessionId, slotNum, control, input)
 	  } else {
 		myLogger.warn("Reached end of action handling chain without finding handler for sessionId:{}" + 
 					  " and slotNum:{} with action: {}", Array[AnyRef](sessionId, slotNum.asInstanceOf[AnyRef], control.action))
@@ -44,11 +45,13 @@ trait AbstractLifterActionHandler extends LifterLogger {
   }
   
   // Checks for actions which this control performs upon rendering, not actuation
-  def optionalInitialRendering(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl) {
-	if (this.matchingPrefixes contains PageCommander.getUriPrefix(control.action)) {this.handleRendering(state, sessionId, slotNum, control)}
+  def optionalInitialRendering(sessionId:String, slotNum:Int, control:WebControlImpl) {
+	if (this.matchingPrefixes contains WebHelper.getUriPrefix(control.action)) {
+		this.handleRendering(sessionId, slotNum, control)
+	}
 	else {
 	  if (this.myNextActionHandler != null) {
-		myNextActionHandler.optionalInitialRendering(state, sessionId, slotNum, control)
+		myNextActionHandler.optionalInitialRendering(sessionId, slotNum, control)
 	  }
 	}
   }
@@ -58,8 +61,8 @@ trait AbstractLifterActionHandler extends LifterLogger {
 	myNextActionHandler = handler
   }
   
-  protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String])
+  protected def handleAction(sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String])
   // A blank method for handleInitialActionHere. If an action would like to perform tasks on rendering, it can override this method.
-  protected def handleRendering(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl) {}
+  protected def handleRendering(sessionId:String, slotNum:Int, control:WebControlImpl) {}
   
 }

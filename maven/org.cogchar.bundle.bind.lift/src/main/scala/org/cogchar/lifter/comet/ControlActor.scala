@@ -20,11 +20,11 @@ package org.cogchar.lifter {
 	import net.liftweb.common.Full
 	import net.liftweb.http.{CometActor, CometListener, S}
 	import net.liftweb.http.js.JsCmds.SetHtml
-	import org.cogchar.impl.web.util.LifterLogger
-	import org.cogchar.lifter.model.main.PageCommander
-	import org.cogchar.lifter.view.TextBox
+	import org.cogchar.impl.web.util.HasLogger
+	import org.cogchar.lifter.model.main.{PageCommander, ControlChange}
+	import org.cogchar.lifter.view.TextBoxFactory
 
-	class ControlActor extends CometActor with CometListener with LifterLogger {
+	class ControlActor extends CometActor with CometListener with HasLogger {
 	  
 	  final val SLOT_ID_PREFIX = "slot"
   
@@ -44,7 +44,7 @@ package org.cogchar.lifter {
 	  def registerWith = org.cogchar.lifter.model.main.PageCommander
 	  
 	  override def lowPriority : PartialFunction[Any, Unit]  = {		
-		case a: PageCommander.ControlChange if ((a.sessionId.equals(mySessionId)) && (a.slotNum == slotNum)) => {
+		case a: ControlChange if ((a.sessionId.equals(mySessionId)) && (a.slotNum == slotNum)) => {
 			partialUpdate(SetHtml(slotId, a.markup)) // Works without full reRender! But requires separate id and name for each slot in template...
 		}
 		case _: Any => // Do nothing if our ID not matched
@@ -53,7 +53,7 @@ package org.cogchar.lifter {
 	  def render = {
 		if (mySessionId.isEmpty) {
 		  myLogger.error("ControlActor cannot get sessionId, not rendering!")
-		  TextBox.makeBox("ControlActor cannot get sessionId, not rendering!", "", true)
+		  TextBoxFactory.makeBox("ControlActor cannot get sessionId, not rendering!", "", true)
 	  } else {
 		  ("#" + slotId + " *") #> PageCommander.getMarkup(mySessionId, slotNum)
 		}

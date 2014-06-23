@@ -22,11 +22,11 @@ package org.cogchar.lifter {
 	import net.liftweb.http.js.JsCmd
 	import net.liftweb.http.js.JsCmds
 	import scala.xml.NodeSeq
-	import org.cogchar.impl.web.util.LifterLogger
+	import org.cogchar.impl.web.util.HasLogger
 	import org.cogchar.lifter.model.main.PageCommander
 	// import org.cogchar.lifter.model.main.PageCommander._ // Six imports here: case classes. Wildcard OK?
 
-	class JavaScriptActor extends CometActor with CometListener with LifterLogger {
+	class JavaScriptActor extends CometActor with CometListener with HasLogger {
 	  
 	  // On initial render, just blank anything in JavaScriptActor comet div
 	  def render = "@JSCommandSlot" #> NodeSeq.Empty
@@ -43,7 +43,7 @@ package org.cogchar.lifter {
 
 import org.cogchar.lifter.model.main.SpeechRecGateway.{SpeechInRequest, SpeechOutRequest, 
 							ContinuousSpeechInStartRequest, ContinuousSpeechInStopRequest}
-import org.cogchar.lifter.model.main.PageCommander.{HtmlPageRequest, HtmlPageRefreshRequest}
+import org.cogchar.lifter.model.main.{HtmlPageRequest, HtmlPageRefreshRequest}
 
 	  override def lowPriority : PartialFunction[Any, Unit] = {
 		case req: SpeechInRequest if (req.sessionId == mySessionId) => {

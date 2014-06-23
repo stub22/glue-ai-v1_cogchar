@@ -69,4 +69,6 @@ class WebSessionState(private val mySessionId : String) {
 		lastLiftConfig = sourceState.currentLiftConfig
 	}
 	
+	def getSessionID : String = mySessionId
+	
 }

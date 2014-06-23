@@ -18,6 +18,7 @@ package org.cogchar.lifter.model.action
 
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.impl.web.config.{WebControlImpl, LiftConfig}
+import org.cogchar.impl.web.config.{LiftAmbassador}
 import org.cogchar.name.lifter.{ActionStrings}
 import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
@@ -26,11 +27,11 @@ import scala.collection.mutable.ArrayBuffer
 // Currently, we create a "ThingAction" repo update on the URI
 // Should SceneTriggerHandler be absorbed into this?
 // Should this be absorbed into a general structure for creating "ThingAction" updates for general Lifter actions?
-class RobotAnimationHandler extends AbstractLifterActionHandler {
+class RobotAnimationHandler(liftAmb: LiftAmbassador) extends AbstractLifterActionHandler(liftAmb) {
 
   override protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_anim)
   
-  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
+  override protected def handleAction(sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
 	val success = myLiftAmbassador.sendActionViaRepo(control.action, sessionId)
   }
   

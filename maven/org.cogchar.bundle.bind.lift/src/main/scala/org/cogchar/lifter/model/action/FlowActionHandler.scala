@@ -19,6 +19,7 @@ import org.cogchar.impl.web.config.{WebControlImpl, LiftConfig}
 import org.cogchar.name.lifter.{ActionStrings}
 import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
+import org.cogchar.impl.web.config.{LiftAmbassador}
 
 /**
  * This Handler deals with the registration of clients, and the flow TAs whose
@@ -27,7 +28,7 @@ import scala.collection.mutable.ArrayBuffer
  * 
  * @author Jason R. Eads <jeads362@gmail.com>
  */
-class FlowActionHandler extends AbstractLifterActionHandler {
+class FlowActionHandler(liftAmb : LiftAmbassador) extends AbstractLifterActionHandler(liftAmb) {
 
   //TODO: migrate to ActionStrings
   override protected val matchingPrefixes = ArrayBuffer(
@@ -35,7 +36,6 @@ class FlowActionHandler extends AbstractLifterActionHandler {
     "http://www.cogchar.org/lift/action/registration#") 
   
   override protected def handleAction(
-    state:LifterState,
     sessionId:String,
     slotNum:Int, 
     control:WebControlImpl, 

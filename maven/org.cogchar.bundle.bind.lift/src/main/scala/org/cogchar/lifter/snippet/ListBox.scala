@@ -14,53 +14,48 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter {
-  package snippet {
+package org.cogchar.lifter.snippet 
 
-	import net.liftweb.common.Empty
-	import net.liftweb.http.SHtml
-	import net.liftweb.util.CssSel
-	import net.liftweb.util.Helpers._
-	import scala.xml.NodeSeq
-	import org.cogchar.lifter.model.control.{AbstractMultiSelectControl, AbstractMultiSelectControlObject}
-	
-	object ListBox extends AbstractMultiSelectControlObject {
+import net.liftweb.common.Empty
+import net.liftweb.http.SHtml
+import net.liftweb.util.CssSel
+import net.liftweb.util.Helpers._
+import scala.xml.NodeSeq
+import org.cogchar.lifter.model.control.{AbstractMultiSelectControl, AbstractMultiSelectControlObject, SnippetHelper}
+import org.cogchar.impl.web.wire.{SessionOrganizer}
+
+class ListBox extends AbstractMultiSelectControlObject (SnippetHelper.mySessionOrganizer) with AbstractMultiSelectControl {
 	  
-	  protected val matchingName = "LISTBOX"
+	protected val matchingName = "LISTBOX"
   
-	  // Not currently implemented:
-	  //val responseText = "Title can change" // We can add bits to define this in XML if we want, or code in more fancy conditionals
-	  val titlePrefix = "listformtitle"
-	  val boxId = "listbox"
+	// Not currently implemented:
+	//val responseText = "Title can change" // We can add bits to define this in XML if we want, or code in more fancy conditionals
+	val titlePrefix = "listformtitle"
+	val boxId = "listbox"
 	  
-	  def makeMultiControlImpl(labelText: String, labelList:Array[String], idNum: Int): NodeSeq = {
+	def makeMultiControlImpl(labelText: String, labelList:Array[String], idNum: Int): NodeSeq = {
 		val formIdForHtml: String = idNum.toString
 		val titleId: String = titlePrefix + formIdForHtml // We need a unique ID here in case we'd like JavaScript to update the title after post
 		(
-		  <form class='lift:form.ajax'>
-			<lift:ListBox formId={formIdForHtml}>
-			  <div id={titleId} class='labels'></div>
-			  <input id={boxId} class='formlabels'/>
-			</lift:ListBox>
-		  </form>
+			<form class='lift:form.ajax'>
+				<lift:ListBox formId={formIdForHtml}>
+					<div id={titleId} class='labels'></div>
+					<input id={boxId} class='formlabels'/>
+				</lift:ListBox>
+			</form>
 		)
-	  }
 	}
+	def getName: String = matchingName
 	  
-	class ListBox extends AbstractMultiSelectControl {
-		
-	  def getName: String = ListBox.matchingName
-	  
-	  def generateSelectors(sessionId: String, formId: Int, title: String, labels: Array[String]): CssSel = {
+	def generateSelectors(sessionId: String, formId: Int, title: String, labels: Array[String]): CssSel = {
 		val listLength = labels.length
-		val listBoxInstanceTitle = ListBox.titlePrefix + formId
+		val listBoxInstanceTitle = titlePrefix + formId
 		val titleSelectorText: String = "#"+listBoxInstanceTitle+" *"
-		val boxSelectorText: String = "#" + ListBox.boxId
+		val boxSelectorText: String = "#" + boxId
 		val rows = if (listLength < 8) listLength else 7
 		val listPairs = (for (i <- 0 until listLength) yield (i.toString, labels(i)))// There may be a simplier Scala way to do this
 		titleSelectorText #> title & boxSelectorText #> SHtml.ajaxSelect(listPairs, Empty, process _, "class" -> "formlabels", "size" -> rows.toString)
-	  }	  
-	}
-
-  }
+	}	  
 }
+
+

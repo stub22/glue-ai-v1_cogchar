@@ -28,12 +28,14 @@ class OldDemoCommandHandler extends AbstractLifterCommandHandler {
   
   override protected def handleCommand(cmdContext : CommandContext) { // state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
 	cmdContext.myInput(0).stripPrefix(ActionStrings.subControlIdentifier).toInt match { 
+		/*
 	  case 0 => PageCommander.setControl(cmdContext.mySessionId, 6, PushyButton.makeButton("A button", "buttonred", "", 6))
-	  case 1 => PageCommander.setControl(cmdContext.mySessionId, 6, TextForm.makeTextForm(cmdContext.myState, cmdContext.mySessionId, 6, "A text box"))
+	  case 1 => PageCommander.setControl(cmdContext.mySessionId, 6, TextForm.makeTextForm(cmdContext.mySessOrg, cmdContext.mySessionId, 6, "A text box"))
 	  case 2 => PageCommander.setControl(cmdContext.mySessionId, 6, 
-			SelectBoxes.makeMultiControl(cmdContext.myState, cmdContext.mySessionId, 6, "Checkboxes", Array("an option", "and another")))
+			SelectBoxes.makeMultiControl(cmdContext.mySessOrg, cmdContext.mySessionId, 6, "Checkboxes", Array("an option", "and another")))
 	  case 3 => PageCommander.setControl(cmdContext.mySessionId, 6, 
-			RadioButtons.makeMultiControl(cmdContext.myState, cmdContext.mySessionId, 6, "Radio buttons", Array("Radio Option 1", "Radio Option 2")))
+			RadioButtons.makeMultiControl(cmdContext.mySessOrg, cmdContext.mySessionId, 6, "Radio buttons", Array("Radio Option 1", "Radio Option 2")))
+*/
 	  case _ =>
 	}
   }

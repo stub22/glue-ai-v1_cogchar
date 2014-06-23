@@ -31,7 +31,7 @@ class UpdateCommandHandler extends AbstractLifterCommandHandler {
 		  myLiftAmbassador.performCogCharUpdate(splitAction(1))
 		}
 	  case ActionStrings.refreshLift => {
-		  cmdContext.myState.lifterInitialized = false;
+		  cmdContext.mySessOrg.markSessionGroupInitFlag(false);
 		  myLiftAmbassador.clearLiftConfigCache
 		  myLiftAmbassador.performCogCharUpdate(ActionStrings.LIFT_REFRESH_UPDATE_NAME)
 		}

@@ -20,24 +20,26 @@ import org.appdapter.core.name.Ident
 import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.name.lifter.ActionStrings
 import org.cogchar.lifter.model.main.{PageCommander}
-import org.cogchar.impl.web.wire.{LifterState}
-import org.cogchar.lifter.snippet.LinkList
+import org.cogchar.impl.web.wire.{LifterState, SessionOrganizer, WebappCommander}
+import org.cogchar.lifter.snippet.{LinkList, LinkListFactory}
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.JavaConversions.asScalaBuffer
+import org.cogchar.impl.web.config.{LiftAmbassador}
+
 
 // A handler for action URIs consisting of a Lifter query
-class LifterQueryActionHandler extends AbstractLifterActionHandler {
+class LifterQueryActionHandler(liftAmb : LiftAmbassador, val mySessOrg : SessionOrganizer, myWebappCmdr : WebappCommander ) extends AbstractLifterActionHandler(liftAmb) {
 
   override protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_lifterQuery)
   
-  override  protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
+  override  protected def handleAction(sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
 	myLogger.warn("Lifter does not know how handle a lifter query as a triggered action in session {}, control []",
 				  sessionId, slotNum)
   }
   
-  override def optionalInitialRendering(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl) {
+  override def optionalInitialRendering(sessionId:String, slotNum:Int, control:WebControlImpl) {
 	control.controlType match {
-	  case LinkList.matchingName => {
+	  case LinkListFactory.matchingName => {
 		  val namesAndActionsList = myLiftAmbassador.getNamesAndActionsFromQuery(control.action)
 		  val namesList = new ArrayBuffer[String]
 		  val actionList = new ArrayBuffer[Ident]
@@ -45,8 +47,10 @@ class LifterQueryActionHandler extends AbstractLifterActionHandler {
 			namesList += item.getName
 			actionList += item.getAction
 		  }
-		  state.stateBySession(sessionId).multiActionsBySlot(slotNum) = actionList.toArray
-		  PageCommander.setControl(sessionId, slotNum, LinkList.makeMultiControl(state, sessionId, slotNum, control.text, namesList.toArray))
+		  val sessState = mySessOrg.getSessionState(sessionId)
+		  sessState.multiActionsBySlot(slotNum) = actionList.toArray
+		  val multiCtrl = LinkListFactory.makeMultiControlImpl(control.text, namesList.toArray, slotNum)
+		  myWebappCmdr.setControl(sessionId, slotNum, multiCtrl)
 	  }
 	  case _ => {
 		  myLogger.warn("Lifter does not know how to interpret a query as action for control type {}" +
