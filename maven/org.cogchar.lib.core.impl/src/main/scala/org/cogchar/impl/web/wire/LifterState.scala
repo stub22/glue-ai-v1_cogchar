@@ -26,18 +26,12 @@ import scala.collection.JavaConversions._ // required to use java.util.concurren
 
 
 // A class to hold the state maps, etc. for Lifter. It looks like there are no getters/setters, but this is Scala so there are!
-class LifterState {
-  
-  private final val INITIAL_CONFIG_ID = "InitialConfig" // "sessionId" for initial config for new sessions
-  private final val SINGLE_SLOT_TEMPLATE = "singleSlot"
+class LifterState(val myInitCfgId : String) {
   
   // Needs some additional refactoring, since these default definitions are usually thrown away by getNewSessionState
-
   
   val stateBySession:ConcurrentMap[String,WebSessionState] = new DfltConcHashMap[String,WebSessionState]
 
-  val globalLifterVariablesByName:ConcurrentMap[String,String] = new DfltConcHashMap[String,String]
-  
   var lifterInitialized:Boolean = false // Will be set to true once PageCommander receives initial control config from LiftAmbassador
   val activeSessions = new ArrayBuffer[String] with SynchronizedBuffer[String]
   var sessionsAwaitingStart = new ArrayBuffer[String] with SynchronizedBuffer[String]
@@ -55,7 +49,7 @@ class LifterState {
 
   def getSnippetDataMapForSession(sessionId:String) = {
 	if (!(snippetRenderDataMap contains sessionId)) {
-	  snippetRenderDataMap(sessionId) = snippetRenderDataMap(INITIAL_CONFIG_ID).clone
+	  snippetRenderDataMap(sessionId) = snippetRenderDataMap(myInitCfgId).clone
 	}
 	//println("getSnippetDataMapForSession: Session " + sessionId + " has state with size " + snippetRenderDataMap(sessionId).size) // TEST ONLY
 	snippetRenderDataMap(sessionId)
@@ -79,18 +73,18 @@ class LifterState {
   // to come.
   private def makeNewSessionState(sessionId:String) : WebSessionState = {
 	val newSessionState = new WebSessionState(sessionId)
-	val initialStateContents : WebSessionState = stateBySession(INITIAL_CONFIG_ID)
+	val initialStateContents : WebSessionState = stateBySession(myInitCfgId)
 	newSessionState.initUsingContents(initialStateContents)
 	newSessionState
   }
   
   def clearAndInitializeState {
 	stateBySession.clear
-	stateBySession(INITIAL_CONFIG_ID) = new WebSessionState(INITIAL_CONFIG_ID)
-	globalLifterVariablesByName.clear
+	stateBySession(myInitCfgId) = new WebSessionState(myInitCfgId)
+	// globalLifterVariablesByName.clear
 	lastTimeAcutatedBySlot.clear
 	snippetRenderDataMap.clear
-	snippetRenderDataMap(INITIAL_CONFIG_ID) = new HashMap[Int, Any]
+	snippetRenderDataMap(myInitCfgId) = new HashMap[Int, Any]
   }
   
   def prepareSessionForNewConfig(sessionId:String) {
@@ -111,11 +105,7 @@ class LifterState {
 	snippetRenderDataMap remove sessionId
   }
   
-	def getMaxControlCount() : Int = HashMapBindings.MAX_CONTROL_QUANTITY
-	
-	def getSingleSlotTemplateName() : String = SINGLE_SLOT_TEMPLATE
-	
-	def getSessionInitialConfigID() : String = INITIAL_CONFIG_ID
+
 	
 	def getWebSessionState(sessionId:String) : WebSessionState = stateBySession(sessionId)
 
