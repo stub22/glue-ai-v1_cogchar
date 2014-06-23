@@ -20,10 +20,10 @@ package org.cogchar.lifter.model.main
  * @author Stu B. <www.texpedient.com>
  */
 
-import org.cogchar.impl.web.util.LifterLogger
+import org.cogchar.impl.web.util.HasLogger
 import net.liftweb.http.ListenerManager
 
-object SpeechRecGateway extends LifterLogger {
+object SpeechRecGateway extends HasLogger {
 	
 	  private def info(msg: String, params: Any*) {
           myLogger.info(msg, params.map(_.asInstanceOf[Object]).toArray)

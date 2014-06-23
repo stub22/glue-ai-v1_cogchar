@@ -14,41 +14,35 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter {
-  package snippet {
+package org.cogchar.lifter.snippet 
 	
-	import net.liftweb.http.SHtml
-	import net.liftweb.http.js.JsCmd
-   	import net.liftweb.util.CssSel
-	import net.liftweb.util.Helpers._
-	
-	import org.cogchar.lifter.model.control.{AbstractTextForm, AbstractTextFormObject}
-	
-	object LoginForm extends AbstractTextFormObject {
-	  
-	  protected val matchingName = "LOGINFORM"
-	  
-	}
+import net.liftweb.http.SHtml
+import net.liftweb.http.js.JsCmd
+import net.liftweb.util.CssSel
+import net.liftweb.util.Helpers._
+import org.cogchar.lifter.model.control.{SnippetHelper}	
+import org.cogchar.lifter.model.control.{AbstractTextForm, AbstractTextFormObject}
+import org.cogchar.impl.web.wire.{SessionOrganizer}
 
-	class LoginForm extends AbstractTextForm {
+class  LoginForm extends AbstractTextFormObject(SnippetHelper.mySessionOrganizer) with AbstractTextForm { 
 	  
-	  // Too bad these are required to get prefixes from object - has to be a better way...
-	  val labelIdPrefix: String = LoginForm.labelIdPrefix
-	  val textBoxIdPrefix: String = LoginForm.textBoxIdPrefix
+	protected val matchingName = "LOGINFORM"
+	  
+	  
+	// Too bad these are required to get prefixes from object - has to be a better way...
+	// val labelIdPrefix: String = labelIdPrefix
+	// val textBoxIdPrefix: String = textBoxIdPrefix
    
-	  override def process(): JsCmd = {
+	override def process(): JsCmd = {
 		myLogger.info("Input text for form #{}: {}; [password hidden] in session {}",
 					  Array[AnyRef](formId.asInstanceOf[AnyRef], text1, sessionId))
 		super.process();
-	  }
+	}
 	  
-	  override def generateSelectors(titleText: Array[String]): CssSel = {
+	override def generateSelectors(titleText: Array[String]): CssSel = {
 		labelSelectorText1 #> titleText(0) & labelSelectorText2 #> titleText(1) &
 		boxSelectorText1 #> (SHtml.text(text1, text1 = _, "id" -> textBoxInstanceLabel1)) &
 		boxSelectorText2 #> (SHtml.password(text2, text2 = _, "id" -> textBoxInstanceLabel2) ++ SHtml.hidden(process))
-	  }
-	
 	}
-
-  }
+	
 }

@@ -18,7 +18,7 @@ import org.cogchar.api.thing.WantsThingAction
 
 import java.util.Properties;
 
-import org.cogchar.impl.web.util.LifterLogger
+import org.cogchar.impl.web.util.HasLogger
 /**
  * A class that's instantiated early and run.  It allows the application
  * to modify lift's environment
@@ -30,7 +30,7 @@ import org.cogchar.impl.web.util.LifterLogger
  * We can change the name of the bound init class in web.xml, using init-param for the filter.
  * 
  */
-class Booter extends Bootable with LifterLogger {
+class Booter extends Bootable with HasLogger {
   
   override def boot {
 	 
@@ -83,7 +83,7 @@ class Booter extends Bootable with LifterLogger {
 	// (Session initialization is done via "BrowserReadyIndicator" snippet instead of LiftSession.onSetupSession
 	// so that Lifter knows the browser has read the default template (or another one already loaded in browser at
 	// Lifter startup) and is ready to receive a page redirect to the desired template)
-	LiftSession.onShutdownSession ::= ((ls:LiftSession) => PageCommander.removeSession(ls.uniqueId))
+	LiftSession.onShutdownSession ::= ((ls:LiftSession) => PageCommander.getSessionOrg.removeSession(ls.uniqueId))
 	
 	println("##################### Booter.boot   9999999999999999 ")
     

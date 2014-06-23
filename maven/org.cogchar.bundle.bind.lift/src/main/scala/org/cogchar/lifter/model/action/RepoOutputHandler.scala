@@ -22,13 +22,14 @@ import org.cogchar.impl.web.config.WebControlImpl;
 import org.cogchar.impl.web.wire.{LifterState}
 import org.cogchar.name.lifter.ActionStrings
 import scala.collection.mutable.ArrayBuffer
+import org.cogchar.impl.web.config.{LiftAmbassador}
 
 // A handler for action URIs requesting output to be written to the repo
-class RepoOutputHandler extends AbstractLifterActionHandler {
+class RepoOutputHandler(liftAmb: LiftAmbassador) extends AbstractLifterActionHandler(liftAmb) {
   
   override protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_requestRepoOutput)
   
-  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
+  override protected def handleAction(sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
 	val senderIdent = new FreeIdent(ActionStrings.p_repoSender + control.action.getLocalName());
 	// In this prototype method, we only send the first piece of input. Probably no good except for initial test!
 	myLiftAmbassador.sendUserTextViaRepo(senderIdent, input(0), sessionId);

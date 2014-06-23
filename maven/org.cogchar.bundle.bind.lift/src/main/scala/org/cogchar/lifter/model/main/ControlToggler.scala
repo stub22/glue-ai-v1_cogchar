@@ -18,8 +18,8 @@ package org.cogchar.lifter.model.main
 
 import org.appdapter.core.name.FreeIdent
 import org.cogchar.impl.web.config.WebControlImpl
-import org.cogchar.impl.web.wire.{LifterState}
-import org.cogchar.impl.web.util.LifterLogger
+import org.cogchar.impl.web.wire.{LifterState, WebSessionState, SessionOrganizer}
+import org.cogchar.impl.web.util.{WebHelper, HasLogger}
 
 import org.cogchar.name.lifter.ActionStrings
 import scala.xml.NodeSeq
@@ -38,17 +38,18 @@ object ControlToggler {
 }
 
 
-class ControlToggler extends LifterLogger {
+class ControlToggler extends HasLogger {
   
-  def toggle(appState:LifterState, sessionId:String, slotNum: Int) {
-	val sessionState = appState.stateBySession(sessionId)
+  def toggle(sessionState : WebSessionState, slotNum: Int) {
+	// val sessionState = appState.stateBySession(sessionId)
+	val sessionId  = sessionState.getSessionID
 	val controls = sessionState.controlConfigBySlot
 	if (controls contains slotNum) {
 	  if (sessionState.toggleControlMultiActionsBySlot contains slotNum) {
 		val toggleStateMap = sessionState.toggleControlStateBySlot
 		if (toggleStateMap contains slotNum) {
 		  val state = toggleStateMap(slotNum)
-		  setSingularAction(appState, sessionId, slotNum, state)
+		  setSingularAction(sessionState, slotNum, state)
 		  getSingularControlXmlAndRender(sessionId, slotNum, controls(slotNum), !state)
 		  toggleStateMap(slotNum) = !state
 		} else {
@@ -64,13 +65,15 @@ class ControlToggler extends LifterLogger {
 
   // A method to synchronize the state of toggle buttons in all sessions which are connected to the state of a global lifter variable
   // Blur of responsibity between toggle action and lifter variables, but probably belongs here.
-  def setAllPublicLiftvarToggleButtonsToState(appState:LifterState, varName:String, state:Boolean) {
-	appState.activeSessions.foreach(sessionId => {
-		val toggleStateMap = appState.stateBySession(sessionId).toggleControlStateBySlot
+  import scala.collection.JavaConversions._
+  def setAllPublicLiftvarToggleButtonsToState(sessOrg : SessionOrganizer, varName:String, state:Boolean) {
+	  sessOrg.getActiveSessions.foreach(sessionId => {
+			  val sessState = sessOrg.getSessionState(sessionId)
+		val toggleStateMap = sessState.toggleControlStateBySlot
 		toggleStateMap.keySet.foreach(slotNum => {
-			val control = appState.stateBySession(sessionId).controlConfigBySlot(slotNum)
+			val control = sessState.controlConfigBySlot(slotNum)
 			val actionIdent = control.action
-			if (ActionStrings.p_liftvar.equals(PageCommander.getUriPrefix(actionIdent))
+			if (ActionStrings.p_liftvar.equals(WebHelper.getUriPrefix(actionIdent))
 				&& varName.equals(actionIdent.getLocalName)) {  
 			  getSingularControlXmlAndRender(sessionId, slotNum, control, state)
 			  toggleStateMap(slotNum) = state
@@ -92,12 +95,13 @@ class ControlToggler extends LifterLogger {
 	PageCommander.setControl(sessionId, slotNum, getSingularControlXml(sessionId, slotNum, control, state))
   }
   
-  def setSingularAction(appState:LifterState, sessionId:String, slotNum:Int, state:Boolean) {
-	val sessionState = appState.stateBySession(sessionId)
+  def setSingularAction(sessionState : WebSessionState, slotNum:Int, state:Boolean) {
+	// val sessionState = appState.stateBySession(sessionId)
+	// val sessionId  = sessionState.getSessionID
 	val controls = sessionState.controlConfigBySlot
 	val actionItem = getSubstringForToggleState(sessionState.toggleControlMultiActionsBySlot(slotNum).getLocalName,
 												state, ActionStrings.multiCommandSeparator)
-	val actionUriPrefix = PageCommander.getUriPrefix(controls(slotNum).action)
+	val actionUriPrefix = WebHelper.getUriPrefix(controls(slotNum).action)
 	controls(slotNum).action = new FreeIdent(actionUriPrefix + actionItem, actionItem)
   }
   

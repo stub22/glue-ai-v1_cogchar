@@ -14,47 +14,41 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter {
-  package snippet {
+package org.cogchar.lifter.snippet 
 
-	import net.liftweb.common.Empty
-	import net.liftweb.http.SHtml
-	import net.liftweb.util.CssSel
-	import net.liftweb.util.Helpers._
-	import scala.xml.NodeSeq
-import org.cogchar.lifter.model.control.{AbstractMultiSelectControl, AbstractMultiSelectControlObject}	
+import net.liftweb.common.Empty
+import net.liftweb.http.SHtml
+import net.liftweb.util.CssSel
+import net.liftweb.util.Helpers._
+import scala.xml.NodeSeq
+import org.cogchar.lifter.model.control.{AbstractMultiSelectControlObject, SnippetHelper}	
+import org.cogchar.impl.web.wire.{SessionOrganizer}
 
-	object RadioButtons extends AbstractMultiSelectControlObject {
+class RadioButtons extends AbstractMultiSelectControlObject(SnippetHelper.mySessionOrganizer) {
 	  
-	  protected val matchingName = "RADIOBUTTONS"
-  
-	  //val responseText = "I see you!" // Currently ignored; waiting for future expansion to control RDF definition if we want to use this
+	protected val matchingName = "RADIOBUTTONS"
+	//val responseText = "I see you!" // Currently ignored; waiting for future expansion to control RDF definition if we want to use this
 	  
-	  val titlePrefix = "radiotitle"
+	val titlePrefix = "radiotitle"
 
-	  def makeMultiControlImpl(labelText: String, labelList:Array[String], idNum: Int): NodeSeq = {
+	def makeMultiControlImpl(labelText: String, labelList:Array[String], idNum: Int): NodeSeq = {
 		val formIdForHtml: String = idNum.toString
 		val titleId: String = titlePrefix + formIdForHtml // We need a unique ID here, because JavaScript will be updating the title after post
 		<form class="lift:form.ajax"><lift:RadioButtons formId={formIdForHtml}><div class="labels" id={titleId}></div><div id="buttonshere"></div></lift:RadioButtons></form>
-	  }
 	}
-	
-	class RadioButtons extends AbstractMultiSelectControl {
+	def getName: String = matchingName
 	  
-	  def getName: String = RadioButtons.matchingName
-	  
-	  def generateSelectors(sessionId: String, formId: Int, title: String, labels: Array[String]): CssSel = {
+	def generateSelectors(sessionId: String, formId: Int, title: String, labels: Array[String]): CssSel = {
 		val listLength = labels.length
-		val radioButtonsInstanceTitleId = RadioButtons.titlePrefix + formId
+		val radioButtonsInstanceTitleId = titlePrefix + formId
 		val titleSelectorText: String = "#"+radioButtonsInstanceTitleId+" *"
 		val buttonTags = (for (i <- 0 until listLength) yield i.toString)// There may be a simplier Scala way to do this
 		val theButtons = SHtml.ajaxRadio(buttonTags, Empty, process _)
 		var buttonHtml: NodeSeq = NodeSeq.Empty
 		for (buttonIndex <- 0 until listLength) {
-		  buttonHtml = buttonHtml ++ <div><span class="formlabels">{labels(buttonIndex)}</span><span>{theButtons(buttonIndex)}</span></div>
+			buttonHtml = buttonHtml ++ <div><span class="formlabels">{labels(buttonIndex)}</span><span>{theButtons(buttonIndex)}</span></div>
 		}
 		titleSelectorText #> title & "#buttonshere" #> buttonHtml
-	  }
 	}
-  }
 }
+

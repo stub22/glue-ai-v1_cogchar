@@ -18,8 +18,8 @@ package org.cogchar.lifter.model.command
 
 import org.cogchar.name.lifter.{ActionStrings}
 import org.cogchar.lifter.model.main.{PageCommander, SpeechRecGateway}
-import org.cogchar.impl.web.wire.{LifterState}
-import org.cogchar.lifter.view.TextBox
+import org.cogchar.impl.web.wire.{LifterState, SessionOrganizer, WebSessionState}
+import org.cogchar.lifter.view.TextBoxFactory
 import scala.collection.mutable.ArrayBuffer
 
 class SpeechCommandHandler extends AbstractLifterCommandHandler {
@@ -34,13 +34,13 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler {
 		  if (cmdContext.myInput == null) { // If so, this is a button or etc. asking for speech acquisition to be triggered
 			SpeechRecGateway.acquireSpeech(cmdContext.mySessionId, cmdContext.mySlotNum)
 		  } else { // otherwise, we are getting speech back from an acquisition via the SpeechRestListener
-			displayInputSpeech(cmdContext.myState, cmdContext.mySessionId, cmdContext.myInput(0))
+			displayInputSpeech(cmdContext.mySessOrg, cmdContext.mySessionId, cmdContext.myInput(0))
 			// Next we strip the acquireSpeech prefix and continue handling. For this to work, the SpeechCommandHandler
 			// must be near the "top" of the chain of responsiblity, and actions performed on acquired speech
 			// (such as submittext) must be farther down the chain.
 			val nextCmdHandler = getNextCommandHandler
 			val nextCommand = cmdContext.myCommand.stripPrefix(ActionStrings.acquireSpeech + ActionStrings.commandTokenSeparator)
-			nextCmdHandler.processCommand(cmdContext.myState, cmdContext.mySessionId, cmdContext.mySlotNum, 
+			nextCmdHandler.processCommand(cmdContext.mySessOrg, cmdContext.mySessionId, cmdContext.mySlotNum, 
 							nextCommand, cmdContext.myInput)
 		  }
 		}
@@ -48,13 +48,13 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler {
 		  if (cmdContext.myInput == null) { // If so, this is a button or etc. asking for speech acquisition to be triggered
 			SpeechRecGateway.requestContinuousSpeech(cmdContext.mySessionId, cmdContext.mySlotNum, true)
 		  } else { // otherwise, we are getting speech back from an acquisition via the SpeechRestListener
-			displayInputSpeech(cmdContext.myState, cmdContext.mySessionId, cmdContext.myInput(0))
+			displayInputSpeech(cmdContext.mySessOrg, cmdContext.mySessionId, cmdContext.myInput(0))
 			// Next we strip the getContinuousSpeech prefix and continue handling. For this to work, the SpeechCommandHandler
 			// must be near the "top" of the chain of responsiblity, and actions performed on acquired speech
 			// (such as submittext) must be farther down the chain.
 			val nextCmdHandler = getNextCommandHandler
 			val nextCommand = cmdContext.myCommand.stripPrefix(ActionStrings.getContinuousSpeech + ActionStrings.commandTokenSeparator)
-			nextCmdHandler.processCommand(cmdContext.myState, cmdContext.mySessionId, cmdContext.mySlotNum, nextCommand, cmdContext.myInput)
+			nextCmdHandler.processCommand(cmdContext.mySessOrg, cmdContext.mySessionId, cmdContext.mySlotNum, nextCommand, cmdContext.myInput)
 		  }
 		}
 	  case ActionStrings.stopContinuousSpeech => {
@@ -73,11 +73,11 @@ class SpeechCommandHandler extends AbstractLifterCommandHandler {
 	}
   }
   
-  private def displayInputSpeech(state:LifterState, sessionId:String, textToDisplay:String) {
-	val sessionState = state.stateBySession(sessionId)
+  private def displayInputSpeech(sessOrg : SessionOrganizer, sessionId:String, textToDisplay:String) {
+	  val sessionState : WebSessionState = sessOrg.getSessionState(sessionId)
 	sessionState.speechDisplaySlots.foreach(slotId => 
 	  PageCommander.setControl(sessionId, slotId, 
-		TextBox.makeBox("I think you said \"" + textToDisplay + "\"", sessionState.controlConfigBySlot(slotId).style, true)))
+		TextBoxFactory.makeBox("I think you said \"" + textToDisplay + "\"", sessionState.controlConfigBySlot(slotId).style, true)))
   }
   
 }

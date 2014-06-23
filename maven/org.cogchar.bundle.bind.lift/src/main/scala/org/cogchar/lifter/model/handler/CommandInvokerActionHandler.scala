@@ -17,9 +17,10 @@
 package org.cogchar.lifter.model.handler
 
 import org.cogchar.impl.web.config.WebControlImpl
+import org.cogchar.impl.web.config.{LiftAmbassador}
 import org.cogchar.name.lifter.ActionStrings
 
-import org.cogchar.impl.web.wire.{LifterState}
+import org.cogchar.impl.web.wire.{LifterState, SessionOrganizer}
 import scala.collection.mutable.ArrayBuffer
 
 import org.cogchar.lifter.model.command.AbstractLifterCommandHandler;
@@ -29,18 +30,18 @@ import org.cogchar.lifter.model.action.AbstractLifterActionHandler;
 /* This tricky little devil is taking responsibility for invoking the entire command chain.
 	So, as written, he needs this nasty little import
 */
-class CommandInvokerActionHandler extends AbstractLifterActionHandler {
+class CommandInvokerActionHandler(liftAmb: LiftAmbassador, mySessOrg : SessionOrganizer) extends AbstractLifterActionHandler(liftAmb) {
   
   override protected val matchingPrefixes = ArrayBuffer(ActionStrings.p_liftcmd)
   
   private var myFirstCommandHandler:AbstractLifterCommandHandler = HandlerConfigurator.initializeCommandHandlers
   
-  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
-		myFirstCommandHandler.processCommand(state, sessionId, slotNum, control.action.getLocalName, input)
+  override protected def handleAction(sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
+		myFirstCommandHandler.processCommand(mySessOrg, sessionId, slotNum, control.action.getLocalName, input)
   }
   
-	override protected def handleRendering(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl) {
-		myFirstCommandHandler.checkForInitialAction(state, sessionId, slotNum, control.action.getLocalName)
+	override protected def handleRendering(sessionId:String, slotNum:Int, control:WebControlImpl) {
+		myFirstCommandHandler.checkForInitialAction(mySessOrg, sessionId, slotNum, control.action.getLocalName)
   }
   
 }

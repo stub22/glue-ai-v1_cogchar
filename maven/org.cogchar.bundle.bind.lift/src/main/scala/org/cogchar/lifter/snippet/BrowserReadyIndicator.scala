@@ -3,12 +3,12 @@ package org.cogchar.lifter.snippet
 import net.liftweb.common.Full
 import net.liftweb.http.S
 import net.liftweb.http.js.JsCmds.{RedirectTo,Script}
-import org.cogchar.impl.web.util.LifterLogger
+import org.cogchar.impl.web.util.HasLogger
 import org.cogchar.lifter.model.main.PageCommander
 import xml.NodeSeq
 
 
-object BrowserReadyIndicator extends LifterLogger {
+object BrowserReadyIndicator extends HasLogger {
 
   final val STARTUP_TEMPLATE = "loading"
   final val TEMPLATE_NAME_ATTRIB_NAME = "templateName"
@@ -20,7 +20,7 @@ object BrowserReadyIndicator extends LifterLogger {
 		  val sessionId = myLiftSession.uniqueId
 		  PageCommander.checkForActiveSessionAndStartIfNot(sessionId)
 		  val templateName: String = (S.attr(TEMPLATE_NAME_ATTRIB_NAME) openOr "NotFound")
-		  val desiredTemplate = PageCommander.getCurrentTemplate(sessionId)
+		  val desiredTemplate = PageCommander.getSessionOrg.getCurrentTemplateForSession(sessionId)
 		  //myLogger.info("Desired template is " + desiredTemplate) // TEST ONLY
 		  if (desiredTemplate == null) { // Indicates Lifter has not yet fully initialized
 			if (templateName.equals(STARTUP_TEMPLATE)) {

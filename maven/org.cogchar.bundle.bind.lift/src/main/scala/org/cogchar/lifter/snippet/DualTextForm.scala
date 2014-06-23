@@ -14,31 +14,25 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter {
-  package snippet {
+package org.cogchar.lifter.snippet 
 
-	import net.liftweb.http.js.JsCmd
-	import org.cogchar.lifter.model.control.{AbstractTextForm, AbstractTextFormObject}
-	
-	object DualTextForm extends AbstractTextFormObject {
+import net.liftweb.http.js.JsCmd
+import org.cogchar.lifter.model.control.{AbstractTextForm, AbstractTextFormObject, SnippetHelper}
+import org.cogchar.impl.web.wire.{SessionOrganizer}
+class DualTextForm extends AbstractTextFormObject(SnippetHelper.mySessionOrganizer) with AbstractTextForm {
 	  
-	  protected val matchingName = "DUALTEXTINPUT"
+	protected val matchingName = "DUALTEXTINPUT"
 	  
-	}
-
-	class DualTextForm extends AbstractTextForm {
+	// Too bad these are required to get prefixes from object - has to be a better way...
+	//val labelIdPrefix: String = labelIdPrefix
+	//val textBoxIdPrefix: String = textBoxIdPrefix
 	  
-	  // Too bad these are required to get prefixes from object - has to be a better way...
-	  val labelIdPrefix: String = DualTextForm.labelIdPrefix
-	  val textBoxIdPrefix: String = DualTextForm.textBoxIdPrefix
-	  
-	  override def process(): JsCmd = {
+	override def process(): JsCmd = {
 		myLogger.info("Input text for form {} for session {}: {}; {}",
-		  Array[AnyRef](formId.asInstanceOf[AnyRef], sessionId, text1, text2))
+					  Array[AnyRef](formId.asInstanceOf[AnyRef], sessionId, text1, text2))
 		super.process();
-	  } 
+	} 
 
-	}
-
-  }
 }
+
+

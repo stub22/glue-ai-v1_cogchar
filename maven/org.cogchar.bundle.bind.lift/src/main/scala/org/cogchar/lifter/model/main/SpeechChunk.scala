@@ -76,7 +76,7 @@ package org.cogchar.lifter.model.main
 		lastSpeech(idItems(0)) = chunk.speechText
 		val processThread = new Thread(new Runnable { // A new thread to call back into PageCommander to make sure we don't block Ajax handling
 			def run() {
-			  PageCommander ! PageCommander.ControlTextInput(idItems(0), idItems(1).toInt, Array(chunk.speechText)) // Let PageCommander know about the text so it can figure out what to do with it
+			  PageCommander ! ControlTextInput(idItems(0), idItems(1).toInt, Array(chunk.speechText)) // Let PageCommander know about the text so it can figure out what to do with it
 			}
 		  })
 		processThread.start
