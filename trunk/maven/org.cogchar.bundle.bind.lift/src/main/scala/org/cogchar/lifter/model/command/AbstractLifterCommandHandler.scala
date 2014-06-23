@@ -17,33 +17,34 @@
 package org.cogchar.lifter.model.command
 
 import org.cogchar.name.lifter.ActionStrings
-import org.cogchar.impl.web.util.LifterLogger
+import org.cogchar.impl.web.util.HasLogger
 
-import org.cogchar.impl.web.wire.{LifterState, WebSessionState}
+import org.cogchar.impl.web.wire.{LifterState, WebSessionState, SessionOrganizer}
 import org.cogchar.impl.web.config.{LiftAmbassador}
 import org.cogchar.lifter.model.main.{PageCommander} // Used just to fetch LiftAmbassadors
 
 import scala.collection.mutable.ArrayBuffer
 
-class CommandContext(val myState:LifterState, 
+class CommandContext(
+					 val mySessOrg : SessionOrganizer,
 					 val mySessionId:String, 
 					 val mySlotNum:Int, 
 					 val myCommand:String, 
 					 val myInput:Array[String]) {
-	def getSessionState() : WebSessionState = myState.stateBySession(mySessionId)
+					 def getSessionState() : WebSessionState = mySessOrg.getSessionState(mySessionId) 
 }
 	
-trait AbstractLifterCommandHandler extends LifterLogger {
+abstract class AbstractLifterCommandHandler extends HasLogger {
 	protected var myLiftAmbassador : LiftAmbassador = PageCommander.getLiftAmbassador
 	
-  def processCommand(state:LifterState, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
+  def processCommand(sessOrg: SessionOrganizer, sessionId:String, slotNum:Int, command:String, input:Array[String]) {
 	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {
-		val cmdContext = new CommandContext(state, sessionId, slotNum, command, input)
+		val cmdContext = new CommandContext(sessOrg, sessionId, slotNum, command, input)
 		this.handleCommand(cmdContext) // state, sessionId, slotNum, command, input)
 	}
 	else {
 	  if (this.myNextCommandHandler != null) {
-		myNextCommandHandler.processCommand(state, sessionId, slotNum, command, input)
+		myNextCommandHandler.processCommand(sessOrg, sessionId, slotNum, command, input)
 	  } else {
 		myLogger.warn("Reached end of Lifter Command handling chain without finding handler for sessionId:{} " +
 					  "and slotNum:{} with action: {}", Array[AnyRef](sessionId, slotNum.asInstanceOf[AnyRef], command))
@@ -52,15 +53,15 @@ trait AbstractLifterCommandHandler extends LifterLogger {
   }
   
   // Checks for actions which this control performs upon rendering, not actuation
-  def checkForInitialAction(state:LifterState, sessionId:String, slotNum:Int, command:String) {
+  def checkForInitialAction(sessOrg: SessionOrganizer, sessionId:String, slotNum:Int, command:String) {
 	if (this.matchingTokens contains command.split(ActionStrings.commandTokenSeparator)(0)) {
 		val dummyInput = new Array[String](0)
-		val cmdContext = new CommandContext(state, sessionId, slotNum, command, dummyInput)
+		val cmdContext = new CommandContext(sessOrg, sessionId, slotNum, command, dummyInput)
 		this.handleInitialActionHere(cmdContext) // state, sessionId, slotNum, command)
 	}
 	else {
 	  if (this.myNextCommandHandler != null) {
-		myNextCommandHandler.checkForInitialAction(state, sessionId, slotNum, command)
+		myNextCommandHandler.checkForInitialAction(sessOrg, sessionId, slotNum, command)
 	  }
 	}
   }

@@ -23,11 +23,11 @@ package org.cogchar.lifter {
     import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
     import scala.xml.NodeSeq
 
-    object ExtFrame  extends AbstractControlInitializationHandler {
+    class ExtFrame  extends AbstractControlInitializationHandler {
 	  
       protected val matchingName = "EXTFRAME"
   
-      override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+      override protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
         makeBox(control.getResource)
       }
 	  

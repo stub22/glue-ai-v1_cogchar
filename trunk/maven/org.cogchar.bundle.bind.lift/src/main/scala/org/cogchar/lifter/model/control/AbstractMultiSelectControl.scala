@@ -17,11 +17,11 @@
 package org.cogchar.lifter.model.control
 
 import org.cogchar.impl.web.config.WebControlImpl
-import org.cogchar.impl.web.util.LifterLogger
-import org.cogchar.lifter.model.main.{PageCommander}
-import org.cogchar.impl.web.wire.{LifterState}
+import org.cogchar.impl.web.util.HasLogger
+import org.cogchar.lifter.model.main.{PageCommander, ControlMultiAction}
+import org.cogchar.impl.web.wire.{LifterState, SessionOrganizer}
 
-import org.cogchar.lifter.view.TextBox
+import org.cogchar.lifter.view.TextBoxFactory
 import org.cogchar.name.lifter.ActionStrings
 import net.liftweb.common.Full
 import net.liftweb.http.{S, StatefulSnippet}
@@ -34,34 +34,37 @@ import scala.xml.NodeSeq
 import org.cogchar.api.web.{WebControl}
 
 
-trait AbstractMultiSelectControlObject extends AbstractControlInitializationHandler {
+abstract class AbstractMultiSelectControlObject(mySessOrg: SessionOrganizer) 
+	extends AbstractControlInitializationHandler with AbstractMultiSelectControl {
   
-  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq =  {
+
+  override protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq =  {
 	// From the RDF "text" value we assume a comma separated list with the first item the title and the rest option labels
 	val textItems = control.getText.split(ActionStrings.stringAttributeSeparator)
 	val titleText = textItems(0)
 	val labelItems = textItems.tail
-	makeMultiControl(state, sessionId, slotNum, titleText, labelItems)
+	makeMultiControl(mySessOrg, sessionId, slotNum, titleText, labelItems)
   }
   
   val titlePrefix: String
   
-  final def makeMultiControl(state:LifterState, sessionId:String, slotNum: Int, titleText: String, labelList:Array[String]): NodeSeq = {
-	initializeMaps(state, titleText, labelList, sessionId, slotNum);
+  final def makeMultiControl(sessOrg: SessionOrganizer, sessionId:String, slotNum: Int, titleText: String, labelList:Array[String]): NodeSeq = {
+	initializeMaps(sessOrg, titleText, labelList, sessionId, slotNum);
 	makeMultiControlImpl(titleText, labelList, slotNum)
   }
   
   def makeMultiControlImpl(titleText: String, labelList:Array[String], slotNum: Int): NodeSeq
   
-  def initializeMaps(state:LifterState, titleText: String, labelList:Array[String], sessionId:String, slotNum:Int) {
+  def initializeMaps(sessOrg: SessionOrganizer, titleText: String, labelList:Array[String], sessionId:String, slotNum:Int) {
 	val controlData = new MultiSelectControlData
 	controlData title = titleText
 	controlData labels = labelList
-	state.getSnippetDataMapForSession(sessionId)(slotNum) = controlData
+	val snipDataMap = sessOrg.hackIntoSnippetDataMap(sessionId)
+	snipDataMap(slotNum) = controlData
   }
 }
 
-trait AbstractMultiSelectControl extends StatefulSnippet with LifterLogger {
+trait AbstractMultiSelectControl extends StatefulSnippet with HasLogger {
   var formId: Int = blankId
   val blankId = -1
   var sessionId: String = ""
@@ -108,13 +111,13 @@ trait AbstractMultiSelectControl extends StatefulSnippet with LifterLogger {
   
   def produceErrorMessages(errorText:String): NodeSeq = {
 	myLogger.error(errorText)
-	TextBox.makeBox(errorText, "", true)
+	TextBoxFactory.makeBox(errorText, "", true)
   }
   
   def process(result: String): JsCmd = {
 	myLogger.info("{} says item number {} on slot {} is selected in session {}",
 	Array[AnyRef](getName, result.asInstanceOf[AnyRef], formId.asInstanceOf[AnyRef], sessionId))
-	PageCommander ! PageCommander.ControlMultiAction(sessionId, formId, result.toInt, multiActionFlag)
+	PageCommander ! ControlMultiAction(sessionId, formId, result.toInt, multiActionFlag)
 	JsCmds.Noop
   }
   

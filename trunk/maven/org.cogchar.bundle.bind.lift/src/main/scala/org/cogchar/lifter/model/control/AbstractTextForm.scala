@@ -25,36 +25,36 @@ package org.cogchar.lifter.model.control
 	import org.cogchar.api.web.{WebControl}
 
 	import org.cogchar.impl.web.config.WebControlImpl
-	import org.cogchar.impl.web.util.LifterLogger
-	import org.cogchar.lifter.model.main.{PageCommander}
-import org.cogchar.impl.web.wire.{LifterState}
+	import org.cogchar.impl.web.util.HasLogger
+	import org.cogchar.lifter.model.main.{PageCommander, ControlTextInput}
+import org.cogchar.impl.web.wire.{LifterState, SessionOrganizer}
 	
-	import org.cogchar.lifter.view.TextBox
+	import org.cogchar.lifter.view.TextBoxFactory
 	import org.cogchar.name.lifter.ActionStrings
 	import scala.xml.{NodeSeq,XML}
 	
 	// An abstracted text form control. Right now only supports two entry fields, but will be refactored soon to generalize
 	// to an arbitrary number of entry fields
 	// Still needs additional refactoring for clarity and concision as well
-	trait AbstractTextFormObject extends AbstractControlInitializationHandler {
+	abstract class AbstractTextFormObject(val mySessOrg: SessionOrganizer) extends AbstractControlInitializationHandler {
 	  
 	  protected val matchingName: String
 	  
 	  val labelIdPrefix = "textformlabel_"
 	  val textBoxIdPrefix = "textform_in_"
   
-	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+	  override protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
 		// From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
 		val textItems = control.getText.split(ActionStrings.stringAttributeSeparator)
 		val label1 = textItems(0)
 		val label2 = textItems(1)
 		val submitLabel = textItems(2)
-		makeForm(state, sessionId, slotNum, label1, label2, submitLabel)
+		makeForm(mySessOrg, sessionId, slotNum, label1, label2, submitLabel)
 	  }
 	  
-	  def makeForm(state:LifterState, sessionId:String, idNum:Int, label1:String, label2:String, submitLabel:String): NodeSeq = {
+	  def makeForm(sessOrg : SessionOrganizer, sessionId:String, idNum:Int, label1:String, label2:String, submitLabel:String): NodeSeq = {
 		val formIdforHtml: String = idNum.toString
-		val dataMap = state.getSnippetDataMapForSession(sessionId)
+		val dataMap = sessOrg.hackIntoSnippetDataMap(sessionId)
 		dataMap(idNum) = Array(label1, label2) // Soon: ArrayBuffer
 		val labelId1: String = labelIdPrefix + formIdforHtml + "A"// We need unique IDs here, because JavaScript may be updating the label after post [future expansion]
 		val labelId2: String = labelIdPrefix + formIdforHtml + "B"
@@ -68,7 +68,7 @@ import org.cogchar.impl.web.wire.{LifterState}
 	  }
 	}
 
-	trait AbstractTextForm extends StatefulSnippet with LifterLogger {
+	trait AbstractTextForm extends StatefulSnippet with HasLogger {
 	  
 	  // Right now these must be set equal to the object values in the subclass - nasty... :(
 	  val labelIdPrefix: String
@@ -122,7 +122,7 @@ import org.cogchar.impl.web.wire.{LifterState}
 			// This common code needs to be refactored into a common location:
 			val errorString = "Text form cannot get sessionId, not rendering!"
 			myLogger.error(errorString)
-			TextBox.makeBox(errorString, "", true)
+			TextBoxFactory.makeBox(errorString, "", true)
 		  }
 		}
 	  }
@@ -136,7 +136,7 @@ import org.cogchar.impl.web.wire.{LifterState}
 	  
 	  // May be overriden to customize processing
 	  def process(): JsCmd = {
-		  PageCommander ! PageCommander.ControlTextInput(sessionId, formId, Array(text1, text2)) // Let PageCommander know about the text so it can figure out what to do with it
+		  PageCommander ! ControlTextInput(sessionId, formId, Array(text1, text2)) // Let PageCommander know about the text so it can figure out what to do with it
 		  // Clear text in input boxes (or set if afterEntryText is overridden) 
 		  SetValById(textBoxInstanceLabel1, afterEntryText) &  SetValById(textBoxInstanceLabel2, afterEntryText)
 	  }

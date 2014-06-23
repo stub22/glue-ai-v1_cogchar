@@ -14,101 +14,98 @@
  *  limitations under the License.
  */
 
-package org.cogchar.lifter {
-  package snippet {
+package org.cogchar.lifter.snippet
 
-   	import net.liftweb.common.Full
-	import net.liftweb.http.{S,SHtml,StatefulSnippet}
-	import net.liftweb.http.js.JsCmd
-	import net.liftweb.http.js.JsCmds.SetValById
-	import net.liftweb.util.Helpers._ 
-	import org.cogchar.api.web.{WebControl}
+import net.liftweb.common.Full
+import net.liftweb.http.{S,SHtml,StatefulSnippet}
+import net.liftweb.http.js.JsCmd
+import net.liftweb.http.js.JsCmds.SetValById
+import net.liftweb.util.Helpers._ 
+import org.cogchar.api.web.{WebControl}
 
-	import org.cogchar.impl.web.config.WebControlImpl
-	import org.cogchar.impl.web.util.LifterLogger
-	import org.cogchar.lifter.model.main.{PageCommander}
-import org.cogchar.impl.web.wire.{LifterState}
-	import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
-	import org.cogchar.lifter.view.TextBox
-	import scala.xml.NodeSeq
+import org.cogchar.impl.web.config.WebControlImpl
+import org.cogchar.impl.web.util.HasLogger
+import org.cogchar.lifter.model.main.{PageCommander, ControlTextInput}
+import org.cogchar.impl.web.wire.{LifterState, SessionOrganizer}
+import org.cogchar.lifter.model.control.{AbstractControlInitializationHandler, SnippetHelper}
+import org.cogchar.lifter.view.TextBoxFactory
+import scala.xml.NodeSeq
 	
-	// This should eventually [er, soon] be refactored as an AbstractTextForm
-	object TextForm extends AbstractControlInitializationHandler {
-	  
-	  protected val matchingName = "TEXTINPUT"
+// This should eventually [er, soon] be refactored as an AbstractTextForm
+class TextForm extends AbstractControlInitializationHandler with StatefulSnippet {
+	 private val mySessionOrg = SnippetHelper.mySessionOrganizer
+	protected val matchingName = "TEXTINPUT"
   
-	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
-		makeTextForm(state, sessionId, slotNum, control.getText)
-	  }
+	override protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+		makeTextForm(mySessionOrg, sessionId, slotNum, control.getText)
+	}
 	  
-	  val defaultText = "" // We can add bits to define this in XML if we want
-	  //val responseText = "Thanks for the input!" // We can add bits to define this in XML if we want - will probably do so soon, but disabling for "operational" demo right now
-	  val afterEntryText = "" // Right now we just clear text after input; we can do whatever we want
-	  val submitLabel = "Submit" // We can add bits to define this in XML if we want
-	  val textBoxRows = 7;
-	  val blankId = -1
+	val defaultText = "" // We can add bits to define this in XML if we want
+	//val responseText = "Thanks for the input!" // We can add bits to define this in XML if we want - will probably do so soon, but disabling for "operational" demo right now
+	val afterEntryText = "" // Right now we just clear text after input; we can do whatever we want
+	val submitLabel = "Submit" // We can add bits to define this in XML if we want
+	val textBoxRows = 7;
+	val blankId = -1
 	  
-	  val labelIdPrefix = "textformlabel"
-	  val textBoxIdPrefix = "text_in"
+	val labelIdPrefix = "textformlabel"
+	val textBoxIdPrefix = "text_in"
 	  
-	  def makeTextForm(state:LifterState, sessionId:String, idNum:Int, initialText:String): NodeSeq = {
+	def makeTextForm(sessOrg : SessionOrganizer, sessionId:String, idNum:Int, initialText:String): NodeSeq = {
 		val formIdforHtml: String = idNum.toString
-		val dataMap = state.getSnippetDataMapForSession(sessionId)
+		val dataMap = sessOrg.hackIntoSnippetDataMap(sessionId)
 		dataMap(idNum) = initialText
 		val labelId: String = labelIdPrefix + formIdforHtml // We need a unique ID here, because JavaScript will be updating the label after post
 		val inputId: String = textBoxIdPrefix + formIdforHtml // JavaScript may want to do things to the input box too, like clear it
 		// For good form and designer-friendliness, it would be nice to have all the XML in a template. But, we need to generate it here in order to set attributes. Maybe I can find a better way eventually.
 		<form class="lift:form.ajax"><lift:TextForm formId={formIdforHtml}><div class="labels" id={labelId}></div><input id={inputId}/> <input type="submit" value={submitLabel}/></lift:TextForm></form>
-	  }
-	  
 	}
-
-	class TextForm extends StatefulSnippet with LifterLogger {
-	  var text: String = TextForm.defaultText
-	  var formId: Int = TextForm.blankId
-	  var sessionId: String = ""
-	  var idItems: Array[String] = new Array[String](2)
-	  lazy val textFormInstanceLabel = TextForm.labelIdPrefix + formId
-	  lazy val textBoxInstanceLabel = TextForm.textBoxIdPrefix + formId
 	  
-	  final def snippetData(sessionId:String) = PageCommander.hackIntoSnippetDataMap(sessionId)
+	var text: String = defaultText
+	var formId: Int = blankId
+	var sessionId: String = ""
+	var idItems: Array[String] = new Array[String](2)
+	lazy val textFormInstanceLabel = labelIdPrefix + formId
+	lazy val textBoxInstanceLabel = textBoxIdPrefix + formId
+	  
+	final def snippetData(sessionId:String) = PageCommander.hackIntoSnippetDataMap(sessionId)
 	 
-	  def dispatch = {case "render" => render}	  
+	def dispatch = {case "render" => render}	  
 	  
-	  def render(xhtml:NodeSeq) = {
+	def render(xhtml:NodeSeq) = {
    
 		def process(): JsCmd = {
-		  myLogger.info("Input text for form #{}: {} in session {}",
-						 Array[AnyRef](formId.asInstanceOf[AnyRef], text, sessionId))
-		  PageCommander ! PageCommander.ControlTextInput(sessionId, formId, Array(text)) // Let PageCommander know about the text so it can figure out what to do with it
-		  //SetHtml(textFormInstanceLabel, Text(TextForm.responseText)) & // for now, this is disabled for the "operational" demo requirements
-		  SetValById(textBoxInstanceLabel, TextForm.afterEntryText)
+			myLogger.info("Input text for form #{}: {} in session {}",
+						  Array[AnyRef](formId.asInstanceOf[AnyRef], text, sessionId))
+			PageCommander ! ControlTextInput(sessionId, formId, Array(text)) // Let PageCommander know about the text so it can figure out what to do with it
+			//SetHtml(textFormInstanceLabel, Text(TextForm.responseText)) & // for now, this is disabled for the "operational" demo requirements
+			SetValById(textBoxInstanceLabel, afterEntryText)
 		}
 		
 		S.session match {
-		  case Full(myLiftSession) => {
-			sessionId = myLiftSession.uniqueId
-			formId = (S.attr("formId") openOr "-1").toInt
-			val labelSelectorText: String = "#"+textFormInstanceLabel+" *"
-			val boxSelectorText: String = "#"+textBoxInstanceLabel
-			var titleText = ""
-			snippetData(sessionId)(formId) match {
-			  case title: String => titleText = title
-			  case _ => myLogger.warn("Title for TextForm in session {} and slot {} could not be found in snippet data map",
-									  sessionId, formId)
-			}
-			val selectors = labelSelectorText #> titleText &
-			  boxSelectorText #> (SHtml.textarea(text, text = _, "rows" -> TextForm.textBoxRows.toString, "id" -> textBoxInstanceLabel) ++ SHtml.hidden(process))
-			selectors.apply(xhtml)
-		  }
-		  case _ => {
-			val errorString = "TextForm cannot get sessionId, not rendering!"
-			error(errorString)
-			TextBox.makeBox(errorString, "", true)
-		  }
+			case Full(myLiftSession) => {
+					sessionId = myLiftSession.uniqueId
+					formId = (S.attr("formId") openOr "-1").toInt
+					val labelSelectorText: String = "#"+textFormInstanceLabel+" *"
+					val boxSelectorText: String = "#"+textBoxInstanceLabel
+					var titleText = ""
+					snippetData(sessionId)(formId) match {
+						case title: String => titleText = title
+						case _ => myLogger.warn("Title for TextForm in session {} and slot {} could not be found in snippet data map",
+												sessionId, formId)
+					}
+					val selectors = labelSelectorText #> titleText &
+					boxSelectorText #> (
+						SHtml.textarea(text, text = _, "rows" -> textBoxRows.toString, "id" -> textBoxInstanceLabel) 
+						++ SHtml.hidden(process))
+					selectors.apply(xhtml)
+				}
+			case _ => {
+					val errorString = "TextForm cannot get sessionId, not rendering!"
+					error(errorString)
+					TextBoxFactory.makeBox(errorString, "", true)
+				}
 		}
-	  }
 	}
-
-  }
 }
+
+

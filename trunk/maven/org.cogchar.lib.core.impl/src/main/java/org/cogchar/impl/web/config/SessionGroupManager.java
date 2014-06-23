@@ -24,15 +24,17 @@ import org.cogchar.api.web.WebControl;
  */
 
 public interface SessionGroupManager {
+		List<String> getActiveSessions();		
+		String getSessionVariable(String sessionId, String key);
+
 		void setConfigForSession(String sessionId, LiftConfig config);
 		
 		void setControlForSessionAndSlot(String sessionId, int slotNum, WebControl newConfig);
 
 		void loadPage(String sessionId, String path);
 		
-		String getSessionVariable(String sessionId, String key);
 		
 		void showSessionError(String errorSourceKey, String errorText, String sessionId);
 		
-		List<String> getActiveSessions();
+
 }

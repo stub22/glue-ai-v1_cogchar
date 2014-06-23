@@ -20,7 +20,7 @@ import org.cogchar.impl.web.config.{WebControlImpl, LiftConfig}
 import org.cogchar.name.lifter.{ActionStrings}
 import org.cogchar.impl.web.wire.{LifterState}
 import scala.collection.mutable.ArrayBuffer
-
+import org.cogchar.impl.web.config.{LiftAmbassador}
 /**
  * This Handler deals with the Question and Answer page pushy buttons, which 
  * push ThingActions to the repo in response to the buttons pressed.
@@ -28,12 +28,12 @@ import scala.collection.mutable.ArrayBuffer
  * 
  * @author Jason R. Eads <jeads362@gmail.com>
  */
-class QuestionAndAnswerHandler extends AbstractLifterActionHandler {
+class QuestionAndAnswerHandler(liftAmb: LiftAmbassador) extends AbstractLifterActionHandler(liftAmb) {
 
   //TODO: migrate to ActionStrings
   override protected val matchingPrefixes = ArrayBuffer("http://www.cogchar.org/lift/question_and_answer#") 
   
-  override protected def handleAction(state:LifterState, sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
+  override protected def handleAction(sessionId:String, slotNum:Int, control:WebControlImpl, input:Array[String]) {
 	val success = myLiftAmbassador.sendActionViaRepo(control.action, sessionId)
   }
   

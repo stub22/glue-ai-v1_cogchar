@@ -23,14 +23,15 @@ package org.cogchar.lifter {
 	import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
 	import scala.xml.NodeSeq
 
-	object TextBox extends AbstractControlInitializationHandler {
+	class TextBox extends AbstractControlInitializationHandler {
 	  
 	  protected val matchingName = "TEXTBOX"
   
-	  override protected def handleControlInit(state:LifterState, sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
-		makeBox(control.getText, control.getStyle)
+	  override protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+		TextBoxFactory.makeBox(control.getText, control.getStyle)
 	  }
-	  
+	}
+	object TextBoxFactory {
 	  def makeBox(text:String, style:String, centered:Boolean, displayAsCell:Boolean): NodeSeq = {
 		if (centered) {
 		  if (displayAsCell) {
