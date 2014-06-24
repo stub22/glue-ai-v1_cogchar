@@ -19,7 +19,7 @@ package org.cogchar.lifter.snippet
 import org.cogchar.api.web.{WebControl}
 import org.cogchar.impl.web.config.WebControlImpl
 
-import org.cogchar.lifter.model.control.{AbstractControlInitializationHandler, SnippetHelper}
+import org.cogchar.lifter.model.control.{AbstractControlSnippet, SnippetHelper}
 import org.cogchar.lifter.model.action.{LifterVariableHandler}
 
 import org.cogchar.lifter.model.main.{ControlToggler}
@@ -27,12 +27,12 @@ import org.cogchar.impl.web.wire.{LifterState, WebSessionState, SessionOrganizer
 
 import scala.xml.NodeSeq
 
-class ToggleButton extends AbstractControlInitializationHandler {
+class ToggleButton extends AbstractControlSnippet {
 	private val mySessionOrg = SnippetHelper.mySessionOrganizer
 	
   protected val matchingName = "TOGGLEBUTTON"
   
-  override protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+  override protected def generateXmlForControl(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
 	  val sessionState : WebSessionState = mySessionOrg.getSessionState(sessionId)
 	// Load the "full" action (with an action local name containing actions for each state) into toggleButtonFullActionMap
 	sessionState.toggleControlMultiActionsBySlot(slotNum) = control.getAction

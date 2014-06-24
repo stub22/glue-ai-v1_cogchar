@@ -17,7 +17,7 @@
 package org.cogchar.lifter.model.control
 
 import org.cogchar.impl.web.config.WebControlImpl
-import org.cogchar.impl.web.util.HasLogger
+import org.cogchar.impl.web.util.HasLoggerConv
 import org.cogchar.lifter.model.main.{PageCommander, ControlMultiAction}
 import org.cogchar.impl.web.wire.{LifterState, SessionOrganizer}
 
@@ -35,10 +35,10 @@ import org.cogchar.api.web.{WebControl}
 
 
 abstract class AbstractMultiSelectControlObject(mySessOrg: SessionOrganizer) 
-	extends AbstractControlInitializationHandler with AbstractMultiSelectControl {
+	extends AbstractControlSnippet with AbstractMultiSelectControl {
   
 
-  override protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq =  {
+  override protected def generateXmlForControl(sessionId:String, slotNum:Int, control:WebControl): NodeSeq =  {
 	// From the RDF "text" value we assume a comma separated list with the first item the title and the rest option labels
 	val textItems = control.getText.split(ActionStrings.stringAttributeSeparator)
 	val titleText = textItems(0)
@@ -64,7 +64,7 @@ abstract class AbstractMultiSelectControlObject(mySessOrg: SessionOrganizer)
   }
 }
 
-trait AbstractMultiSelectControl extends StatefulSnippet with HasLogger {
+trait AbstractMultiSelectControl extends StatefulSnippet with HasLoggerConv {
   var formId: Int = blankId
   val blankId = -1
   var sessionId: String = ""
@@ -115,8 +115,8 @@ trait AbstractMultiSelectControl extends StatefulSnippet with HasLogger {
   }
   
   def process(result: String): JsCmd = {
-	myLogger.info("{} says item number {} on slot {} is selected in session {}",
-	Array[AnyRef](getName, result.asInstanceOf[AnyRef], formId.asInstanceOf[AnyRef], sessionId))
+	info4("{} says item number {} on slot {} is selected in session {}",
+		getName, result.asInstanceOf[AnyRef], formId.asInstanceOf[AnyRef], sessionId)
 	PageCommander ! ControlMultiAction(sessionId, formId, result.toInt, multiActionFlag)
 	JsCmds.Noop
   }

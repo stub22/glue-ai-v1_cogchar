@@ -36,14 +36,14 @@ import org.cogchar.impl.web.wire.{LifterState, SessionOrganizer}
 	// An abstracted text form control. Right now only supports two entry fields, but will be refactored soon to generalize
 	// to an arbitrary number of entry fields
 	// Still needs additional refactoring for clarity and concision as well
-	abstract class AbstractTextFormObject(val mySessOrg: SessionOrganizer) extends AbstractControlInitializationHandler {
+	abstract class AbstractTextFormObject(val mySessOrg: SessionOrganizer) extends AbstractControlSnippet {
 	  
 	  protected val matchingName: String
 	  
 	  val labelIdPrefix = "textformlabel_"
 	  val textBoxIdPrefix = "textform_in_"
   
-	  override protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+	  override protected def generateXmlForControl(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
 		// From the RDF "text" value we assume a comma separated list with the items Label 1,Label2,Submit Label
 		val textItems = control.getText.split(ActionStrings.stringAttributeSeparator)
 		val label1 = textItems(0)
