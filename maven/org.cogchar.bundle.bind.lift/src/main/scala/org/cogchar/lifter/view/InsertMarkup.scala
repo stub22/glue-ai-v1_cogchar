@@ -19,14 +19,14 @@ import org.cogchar.api.web.{WebControl}
 
 import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.impl.web.wire.{LifterState}
-import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
+import org.cogchar.lifter.model.control.AbstractControlSnippet
 import scala.xml.NodeSeq
 
-class InsertMarkup extends AbstractControlInitializationHandler {
+class InsertMarkup extends AbstractControlSnippet {
   
    protected val matchingName = "INSERTMARKUP"
   
-	  override protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+	  override protected def generateXmlForControl(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
 		insert(control.getResource)
 	  }
 	  

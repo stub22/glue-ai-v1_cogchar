@@ -27,16 +27,16 @@ import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.impl.web.util.HasLogger
 import org.cogchar.lifter.model.main.{PageCommander, ControlTextInput}
 import org.cogchar.impl.web.wire.{LifterState, SessionOrganizer}
-import org.cogchar.lifter.model.control.{AbstractControlInitializationHandler, SnippetHelper}
+import org.cogchar.lifter.model.control.{AbstractControlSnippet, SnippetHelper}
 import org.cogchar.lifter.view.TextBoxFactory
 import scala.xml.NodeSeq
 	
 // This should eventually [er, soon] be refactored as an AbstractTextForm
-class TextForm extends AbstractControlInitializationHandler with StatefulSnippet {
+class TextForm extends AbstractControlSnippet with StatefulSnippet {
 	 private val mySessionOrg = SnippetHelper.mySessionOrganizer
 	protected val matchingName = "TEXTINPUT"
   
-	override protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+	override protected def generateXmlForControl(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
 		makeTextForm(mySessionOrg, sessionId, slotNum, control.getText)
 	}
 	  
