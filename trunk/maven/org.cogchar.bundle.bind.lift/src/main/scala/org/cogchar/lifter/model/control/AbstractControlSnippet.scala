@@ -20,36 +20,36 @@ import org.cogchar.api.web.{WebControl}
 
 // import org.cogchar.impl.web.config.WebControlImpl
 import org.cogchar.impl.web.wire.{LifterState}
-import org.cogchar.impl.web.util.HasLogger
+import org.cogchar.impl.web.util.HasLoggerConv
 
 import scala.xml.NodeSeq
 
-trait AbstractControlInitializationHandler extends HasLogger {
+trait AbstractControlSnippet extends HasLoggerConv {
   
-  def processControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+  def generateOutputXml(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
 	var result = NodeSeq.Empty
 	if (this.matchingName equals control.getType) {
-		result = this.handleControlInit(sessionId, slotNum, control)
+		result = this.generateXmlForControl(sessionId, slotNum, control)
 	}
 	else {
 	  if (this.nextHandler != null) {
-		result = nextHandler.processControlInit(sessionId, slotNum, control)
+		result = nextHandler.generateOutputXml(sessionId, slotNum, control)
 	  } else {
-		myLogger.warn("Reached end of control initialization chain without finding handler for sessionId {}" +
-			 " and slotNum:{} with control type: {}", Array[AnyRef](sessionId, slotNum.asInstanceOf[AnyRef], control.getType))
+		warn3("Reached end of ControlSnippet chain without finding handler for sessionId {}" +
+			 " and slotNum:{} with control type: {}", sessionId, slotNum.asInstanceOf[AnyRef], control.getType)
 	  }
 	}
 	result
   }
   
-  var nextHandler: AbstractControlInitializationHandler = null
+  var nextHandler: AbstractControlSnippet = null
   
-  def setNextHandler(handler: AbstractControlInitializationHandler) {
+  def setNextHandler(handler: AbstractControlSnippet) {
 	nextHandler = handler
   }
   
   protected val matchingName: String
-  protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq
+  protected def generateXmlForControl(sessionId:String, slotNum:Int, control:WebControl): NodeSeq
 
 
 }

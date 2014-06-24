@@ -25,7 +25,7 @@ import org.cogchar.impl.web.util.HasLogger
 import org.cogchar.impl.web.wire.{LifterState, WebSessionState, SessionOrganizer, WebappGlobalState, WebappCommander}
 import org.cogchar.lifter.model.handler.{HandlerConfigurator}
 import org.cogchar.lifter.model.action.{AbstractLifterActionHandler, LifterVariableHandler}
-import org.cogchar.lifter.model.control.{AbstractControlInitializationHandler}
+import org.cogchar.lifter.model.control.{AbstractControlSnippet}
 import org.cogchar.lifter.view.TextBoxFactory
 import org.cogchar.api.web.{WebControl}
 import org.cogchar.impl.web.config.{WebControlImpl, LiftAmbassador, LiftConfig, WebInstanceGlob}

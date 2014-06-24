@@ -20,15 +20,15 @@ package org.cogchar.lifter {
 
     import org.cogchar.impl.web.config.WebControlImpl
     import org.cogchar.impl.web.wire.{LifterState}
-    import org.cogchar.lifter.model.control.AbstractControlInitializationHandler
+    import org.cogchar.lifter.model.control.AbstractControlSnippet
     import scala.xml.NodeSeq
 
-    class VideoBoxMuted extends AbstractControlInitializationHandler {
+    class VideoBoxMuted extends AbstractControlSnippet {
 	  
       protected val matchingName = "VIDEOBOXMUTED"
   
       // Create a muted video box.
-      override protected def handleControlInit(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
+      override protected def generateXmlForControl(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
         val videoPath: String = "/video/" + control.getResource // May want to move this prefix to central location
         // It's all well and good to use a single video resource unless we want to support IE, in which case we'll have to mix in more
         <video src={videoPath} width="100%" height="100%" autoplay="true" muted="true"></video>

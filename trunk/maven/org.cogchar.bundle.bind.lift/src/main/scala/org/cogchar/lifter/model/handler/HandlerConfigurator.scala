@@ -78,7 +78,7 @@ object HandlerConfigurator {
     // Return the first handler in chain
     speechCommandHandler
   }
-  def initializeControlInitializationHandlers(sorg : SessionOrganizer):AbstractControlInitializationHandler = {
+  def initializeControlSnippets(sorg : SessionOrganizer):AbstractControlSnippet = {
 	 // These are lift-"snippet" instances we keep around as handlers, but they are also isntantiatable 
 	 // by LiftWeb directly.
 	val pButton = new PushyButton

@@ -25,7 +25,7 @@ import org.cogchar.impl.web.util.HasLogger
 import org.cogchar.impl.web.wire.{LifterState, SessionOrganizer, WebappGlobalState, WebSessionState, WebappCommander}
 import org.cogchar.lifter.model.handler.{HandlerConfigurator}
 import org.cogchar.lifter.model.action.{AbstractLifterActionHandler, LifterVariableHandler}
-import org.cogchar.lifter.model.control.{AbstractControlInitializationHandler}
+import org.cogchar.lifter.model.control.{AbstractControlSnippet}
 import org.cogchar.lifter.view.TextBox
 import org.cogchar.api.web.{WebControl}
 import org.cogchar.impl.web.config.{WebControlImpl, LiftAmbassador, LiftConfig, WebInstanceGlob}
@@ -69,7 +69,7 @@ object PageCommander extends LiftActor with ListenerManager with HasLogger with 
 	def hackIntoSnippetDataMap(sessionId:String) =   getSessionOrg.hackIntoSnippetDataMap(sessionId)
 
 	private val myHeadActHandler : AbstractLifterActionHandler = HandlerConfigurator.initializeActionHandlers(getLiftAmbassador, myGlobalStateMgr, getSessionOrg, this)
-	private val myHeadControlInitHandler : AbstractControlInitializationHandler = HandlerConfigurator.initializeControlInitializationHandlers(getSessionOrg)
+	private val myHeadControlSnippet : AbstractControlSnippet = HandlerConfigurator.initializeControlSnippets(getSessionOrg)
 	  
 
 	
@@ -184,7 +184,7 @@ object PageCommander extends LiftActor with ListenerManager with HasLogger with 
 		}
 	}
 	override def getXmlForControl(sessionId: String, slotNum:Int, controlDef:WebControl): NodeSeq = {
-		myHeadControlInitHandler.processControlInit(sessionId, slotNum, controlDef)
+		myHeadControlSnippet.generateOutputXml(sessionId, slotNum, controlDef)
 	}
 	
 	def setControl(sessionId: String, slotNum: Int, slotHtml: NodeSeq) {
