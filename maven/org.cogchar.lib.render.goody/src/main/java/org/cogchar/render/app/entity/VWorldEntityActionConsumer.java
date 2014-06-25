@@ -94,37 +94,41 @@ public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  e
 		GoodyActionExtractor ga = new GoodyActionExtractor(actionSpec);
 		Ident gid = ga.getGoodyID();
 		VWorldEntity goodyOne = myGoodiesByID.get(gid);
-		//theLogger.info("The kind for Goody is {}", ga.getKind()); // TEST ONLY
-		switch (ga.getKind()) {
-			case CREATE: { // If it's a CREATE action, we will do some different stuff
-				if (myGoodiesByID.containsKey(gid)) {
-					theLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid);
-				} else {
-					goodyOne = GoodyFactory.getTheFactory().createAndAttachByAction(ga, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
-					if (goodyOne != null) {
-						addGoody(goodyOne);
+		
+		GoodyActionExtractor.Kind kind = ga.getKind();
+		theLogger.info("The kind of Goody inspected is {}", kind); // TEST ONLY
+		if (kind != null) {
+			switch (ga.getKind()) {  
+				case CREATE: { // If it's a CREATE action, we will do some different stuff
+					if (myGoodiesByID.containsKey(gid)) {
+						theLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid);
+					} else {
+						goodyOne = GoodyFactory.getTheFactory().createAndAttachByAction(ga, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
+						if (goodyOne != null) {
+							addGoody(goodyOne);
+							return ConsumpStatus.USED;
+						}
+					}
+					break;
+				}
+				case DELETE: {
+					if (!myGoodiesByID.containsKey(gid)) {
+						theLogger.warn("Could not delete goody because it does not exist: {}", gid);
+					} else {
+						removeGoody(goodyOne);
 						return ConsumpStatus.USED;
 					}
+					break;
 				}
-				break;
-			}
-			case DELETE: {
-				if (!myGoodiesByID.containsKey(gid)) {
-					theLogger.warn("Could not delete goody because it does not exist: {}", gid);
-				} else {
-					removeGoody(goodyOne);
-					return ConsumpStatus.USED;
-				}
-				break;
-			}
-			default: {
-				// For the moment, let's focus on "update"
-				try {
-					// Now - apply the action to goodyOne
-					goodyOne.applyAction(ga, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
-					return ConsumpStatus.USED;
-				} catch (Exception e) {
-					theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);
+				default: {
+					// For the moment, let's focus on "update"
+					try {
+						// Now - apply the action to goodyOne
+						goodyOne.applyAction(ga, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
+						return ConsumpStatus.USED;
+					} catch (Exception e) {
+						theLogger.warn("Problem attempting to update goody with URI: {}", gid, e);
+					}
 				}
 			}
 		}

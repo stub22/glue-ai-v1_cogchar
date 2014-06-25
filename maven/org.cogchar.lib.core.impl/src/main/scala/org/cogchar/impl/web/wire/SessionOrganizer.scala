@@ -87,6 +87,8 @@ abstract class SessionOrganizer(val myCmdr : WebappCommander, val myWebappGlobal
 	def hasActiveSession(sessionId: String) : Boolean = mySessionGroupState.activeSessions contains sessionId
 	
 	def initSession(sessionId: String) {
+	// Confused:  Why do we call globalLifterVariablesByName.clear every time we load a liftConfig for a *session*?
+	// We are doing this once for each session, right? 		
 		// info("Loading LiftConfig for session {}", sessionId)
 		val initConfigID = getInitialConfigID
 		if (sessionId.equals(initConfigID)) {
