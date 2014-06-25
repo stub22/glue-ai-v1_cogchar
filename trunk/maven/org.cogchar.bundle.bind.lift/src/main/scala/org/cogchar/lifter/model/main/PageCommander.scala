@@ -124,20 +124,9 @@ object PageCommander extends LiftActor with ListenerManager with HasLogger with 
 		} 
 		return sessionActive
 	}
-	// Confused:  Why do we call globalLifterVariablesByName.clear every time we load a liftConfig for a *session*?
-	// We are doing this once for each session, right? 
 	override def initFromCogcharRDF(sessionId:String, liftConfig:LiftConfig) {
 		info("Loading LiftConfig for session {}", sessionId)
-/*
-		val initConfigID = getInitialConfigId
-		if (sessionId.equals(initConfigID)) {
-			myWebappState.clearAndInitializeState
-			// globalLifterVariablesByName.clear
-			myGlobalStateMgr.clearAndInit
-		} else { // otherwise reset maps for this session
-			myWebappState.prepareSessionForNewConfig(sessionId)
-		}
-*/
+
 		val so = getSessionOrg
 		so.initSession(sessionId)
 		val sessionState : WebSessionState = getSessionState(sessionId)
