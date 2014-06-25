@@ -40,58 +40,61 @@ import org.cogchar.outer.client.TestOuterClientSOH;
  * @author Jason R. Eads <jeads362@gmail.com>
  */
 class LifterClientRegistration extends WantsThingAction {
-  val theLogger: Logger = LifterClientRegistration.theLogger
+	val theLogger: Logger = LifterClientRegistration.theLogger
   
-  @Override
-  def consumeAction(
-    actionSpec:ThingActionSpec, srcGraphID:Ident ): ConsumpStatus = {
+	@Override
+	def consumeAction(
+		actionSpec:ThingActionSpec, srcGraphID:Ident ): ConsumpStatus = {
 
-    // Pull the parameters attached to the TA
-    val t:TypedValueMap = actionSpec.getParamTVM();
+		// Pull the parameters attached to the TA
+		val t:TypedValueMap = actionSpec.getParamTVM();
     
-    // Check if the TA matches registration for any of the users
-    val registrationAction:Ident = t.getAsIdent(
-      ActionStrings.PUSHY_USER_ACTION_ACTION);
+		// Check if the TA matches registration for any of the users
+		val registrationAction:Ident = t.getAsIdent(
+			ActionStrings.PUSHY_USER_ACTION_ACTION);
     
-    // Collect the session ID
-    val registrationSession:String = t.getAsString(
-      ActionStrings.PUSHY_USER_ACTION_SESSION)
+		// Collect the session ID
+		val registrationSession:String = t.getAsString(
+			ActionStrings.PUSHY_USER_ACTION_SESSION)
     
-    // If actual registration event...
-    if( registrationAction.getAbsUriString.startsWith(ActionStrings.PREFIX_REGISTRATION) ) {
+		if (registrationAction != null) {
+		
+			// If actual registration event...
+			if( registrationAction.getAbsUriString.startsWith(ActionStrings.PREFIX_REGISTRATION) ) {
     
-      theLogger.debug("checking possible registration action: {}", registrationAction)
+				theLogger.debug("checking possible registration action: {}", registrationAction)
     
-      // Check against all role IDs
-      for( ID <- LifterClientRegistration.listOfRegistrationIDs ) {
+				// Check against all role IDs
+				for( ID <- LifterClientRegistration.listOfRegistrationIDs ) {
 
-        if( registrationAction.getLocalName().equals(ID)) {
+					if( registrationAction.getLocalName().equals(ID)) {
 
-          theLogger.debug("registration action detected: {}", registrationAction)
+						theLogger.debug("registration action detected: {}", registrationAction)
 
-          // register the user's session
-          LifterClientRegistration.registerSession(
-            ID,
-            registrationSession)
+						// register the user's session
+						LifterClientRegistration.registerSession(
+							ID,
+							registrationSession)
 
-          theLogger.info(
-            "User \""
-            + ID
-            + "\" registered with session # "
-            + registrationSession)
+						theLogger.info(
+							"User \""
+							+ ID
+							+ "\" registered with session # "
+							+ registrationSession)
           
-          // push a new page confiming registration
-          PageCommander.getLiftAmbassador.activateControlsFromUri(
-            registrationSession,
-            new FreeIdent(LifterClientRegistration.mapRegistrationIDsToStartPageURIs(ID))
-            )
+						// push a new page confiming registration
+						PageCommander.getLiftAmbassador.activateControlsFromUri(
+							registrationSession,
+							new FreeIdent(LifterClientRegistration.mapRegistrationIDsToStartPageURIs(ID))
+						)
 
-          return ConsumpStatus.CONSUMED;
-        }
-      }
-    }
-    return ConsumpStatus.IGNORED;
-  }
+						return ConsumpStatus.CONSUMED;
+					}
+				}
+			}
+		}
+		return ConsumpStatus.IGNORED;
+	}
 }
 
 /**
@@ -104,52 +107,52 @@ class LifterClientRegistration extends WantsThingAction {
  * @author Jason R. Eads <jeads362@gmail.com>
  */
 object LifterClientRegistration {
-  val theLogger: Logger =
-    LoggerFactory.getLogger(classOf[LifterClientRegistration])
+	val theLogger: Logger =
+		LoggerFactory.getLogger(classOf[LifterClientRegistration])
   
-  val ID: Ident = new FreeIdent(
-    "http://www.glue.ai/system/class/reference#"
-    + "org.cogchar.lifter.model.LifterClientRegistration");
+	val ID: Ident = new FreeIdent(
+		"http://www.glue.ai/system/class/reference#"
+		+ "org.cogchar.lifter.model.LifterClientRegistration");
   
-  // The list from which registered users are indentified
-  val listOfRegistrationIDs = List(
-    ActionStrings.DEFAULT_REGISTRATION,
-    ActionStrings.STUDENT_REGISTRATION,
-    ActionStrings.FACILITATOR_REGISTRATION
-  )
+	// The list from which registered users are indentified
+	val listOfRegistrationIDs = List(
+		ActionStrings.DEFAULT_REGISTRATION,
+		ActionStrings.STUDENT_REGISTRATION,
+		ActionStrings.FACILITATOR_REGISTRATION
+	)
   
-  // Stores the lifter session for user, allowing communication with browser
-  private var mapUserToSession: collection.immutable.Map[String,String] =
-    collection.Map.empty;
+	// Stores the lifter session for user, allowing communication with browser
+	private var mapUserToSession: collection.immutable.Map[String,String] =
+		collection.Map.empty;
   
-  // The start page for a given user role
-  val mapRegistrationIDsToStartPageURIs = Map[String,Ident](
+	// The start page for a given user role
+	val mapRegistrationIDsToStartPageURIs = Map[String,Ident](
     
 
-    ActionStrings.DEFAULT_REGISTRATION ->
-    ActionStrings.STUDENT_START_PAGE,
+		ActionStrings.DEFAULT_REGISTRATION ->
+		ActionStrings.STUDENT_START_PAGE,
     
-    ActionStrings.STUDENT_REGISTRATION ->
-    ActionStrings.STUDENT_START_PAGE,
+		ActionStrings.STUDENT_REGISTRATION ->
+		ActionStrings.STUDENT_START_PAGE,
     
-    ActionStrings.FACILITATOR_REGISTRATION -> 
-    ActionStrings.FACILITATOR_START_PAGE
-  )
+		ActionStrings.FACILITATOR_REGISTRATION -> 
+		ActionStrings.FACILITATOR_START_PAGE
+	)
   
-  def registerSession( userRegistationID:String, sessionID:String ) {
+	def registerSession( userRegistationID:String, sessionID:String ) {
     
-    // This is for backwards compatibility 
-    // may be removed once RDF data is updated
-    if( userRegistationID == ActionStrings.STUDENT_REGISTRATION ) {
-      LifterClientRegistration.mapUserToSession = 
-        mapUserToSession + ((ActionStrings.DEFAULT_REGISTRATION, sessionID))
-    }
+		// This is for backwards compatibility 
+		// may be removed once RDF data is updated
+		if( userRegistationID == ActionStrings.STUDENT_REGISTRATION ) {
+			LifterClientRegistration.mapUserToSession = 
+				mapUserToSession + ((ActionStrings.DEFAULT_REGISTRATION, sessionID))
+		}
     
-    LifterClientRegistration.mapUserToSession = 
-      mapUserToSession + ((userRegistationID, sessionID))
-  }
+		LifterClientRegistration.mapUserToSession = 
+			mapUserToSession + ((userRegistationID, sessionID))
+	}
   
-  def getLifterSession( userRegistationID :String ): String = {
-    return LifterClientRegistration.mapUserToSession(userRegistationID);
-  }
+	def getLifterSession( userRegistationID :String ): String = {
+		return LifterClientRegistration.mapUserToSession(userRegistationID);
+	}
 }

@@ -171,12 +171,12 @@ public class PumaWebMapper extends BasicDebugger {
         }
 
         @Override
-        protected void addService(WantsThingAction t) {
-			myRouter.appendConsumer(myGraphIdent, t);
+        protected void addService(WantsThingAction startedWanting) {
+			myRouter.appendConsumer(myGraphIdent, startedWanting);
         }
 
         @Override
-        protected void removeService(WantsThingAction t) {
+        protected void removeService(WantsThingAction stoppedWanting) {
         }
         
         
