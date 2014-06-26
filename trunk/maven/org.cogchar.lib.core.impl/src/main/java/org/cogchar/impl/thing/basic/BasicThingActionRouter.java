@@ -57,9 +57,12 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 			myAppMonitor.notifyThingActionTransit(AppDebugMonitor.TransitKind.TASTED_BY_ROUTER, actionSpec);
 		}
 		List<WantsThingAction> consumerList = findConsumersForSourceGraph(srcGraphID);
-		getLogger().info("Consuming {} actions from ThingAction-graph: {}", consumerList.size(), srcGraphID);
+		getLogger().info("Passing actions to {} consumers from ThingAction-graph: {}  ", consumerList.size(), srcGraphID);
+		getLogger().info("consumerList dump:  {}", consumerList);
 		ConsumpStatus highestSoFar = ConsumpStatus.IGNORED;
+		
 		for (WantsThingAction consumer : consumerList) {
+			
 			ConsumpStatus stat = null;
 			try {
 				stat = consumer.consumeAction(actionSpec, srcGraphID);

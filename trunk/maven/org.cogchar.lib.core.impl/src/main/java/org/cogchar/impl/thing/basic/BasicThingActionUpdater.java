@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.cogchar.impl.thing.basic;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -39,54 +38,57 @@ import org.slf4j.LoggerFactory;
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
-
-
 public class BasicThingActionUpdater {
-	
+
 	// This is just a temporary definition of the sourceAgentID until it becomes clear where this best comes from
-	public static final Ident SOURCE_AGENT_ID = new FreeIdent(ThingCN.TA_NS + "RepoThingAction"); 
-	
+	public static final Ident SOURCE_AGENT_ID = new FreeIdent(ThingCN.TA_NS + "RepoThingAction");
 	private static Logger theLogger = LoggerFactory.getLogger(BasicThingActionUpdater.class);
-	
+
 	/**
-	 * Fetches pending ThingActions from model, and physically deletes them (or at least the part of them
-	 * that makes them matchable) from source model.
-	 * 
+	 * Unused we think. Fetches pending ThingActions from model, and [ USED TO BUT DISABLED SINCE AT LEAST 2013-Oct
+	 * physically deletes them (or at least the part of them that makes them matchable) from source model.]
+	 *
 	 * @param rc
 	 * @param srcGraphID
-	 * @return 
+	 * @return
 	 */
-	@Deprecated protected List<ThingActionSpec> viewActions(RepoClient rc, Ident srcGraphID) {
-		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
-		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
-		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
-		// Delete the actions from graph, so they are not returned on next call to this method.
-		for (ThingActionSpec tas : actionSpecList) {
-			//deleteThingAction(rc, srcGraphID, tas);
-		}
-		int listSize = actionSpecList.size();
-		if (listSize != 0) {
-			theLogger.info("Returning ThingAction list of length {} from graph {}", listSize, srcGraphID);
-		} else {
-			theLogger.trace("Returning empty ThingAction list from graph {}", srcGraphID);
-		}
-		return actionSpecList;
-	}
+	/*
+	 @Deprecated protected List<ThingActionSpec> viewActions(RepoClient rc, Ident srcGraphID) {
+	 SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
+	 BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
+	 List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
+	 // DISABLED:    Delete the actions from graph, so they are not returned on next call to this method.
+	 for (ThingActionSpec tas : actionSpecList) {
+	 // This actual deletion has been commented out since at least Revision 1244 (October 2013)
+	 //deleteThingAction(rc, srcGraphID, tas);
+	 }
+	 int listSize = actionSpecList.size();
+	 if (listSize != 0) {
+	 theLogger.info("Returning ThingAction list of length {} from graph {}", listSize, srcGraphID);
+	 } else {
+	 theLogger.trace("Returning empty ThingAction list from graph {}", srcGraphID);
+	 }
+	 return actionSpecList;
+	 }
+	 */
 	
-	@Deprecated protected List<ThingActionSpec> takeThingActions(RepoClient rc, Ident srcGraphID) {
-	    try {
-		return takeThingActions_orig(rc,srcGraphID);		
-	    } catch ( Exception e ) {
-		theLogger.error(" takeThingActions "+e,e);
-                try {
-		    Thread.sleep(1000);
-		} catch (InterruptedException ee) {
-		    theLogger.error("Thread.sleep(1000)"+ee,ee);
+	static int dubiousSleepMsec = 100;
+	
+	@Deprecated protected List<ThingActionSpec> takeThingActions_Safe(RepoClient rc, Ident srcGraphID) {
+		try {
+			return takeThingActions_Unsafe(rc, srcGraphID);
+		} catch (Exception e) {
+			theLogger.error(" takeThingActions " + e, e);
+			try {
+				Thread.sleep(dubiousSleepMsec);
+			} catch (InterruptedException ee) {
+				theLogger.error("Thread.sleep(" + dubiousSleepMsec + ")" + ee, ee);
+			}
+			return new java.util.ArrayList<ThingActionSpec>();
 		}
-		return new java.util.ArrayList<ThingActionSpec>();
-	    }
 	}
-	public List<ThingActionSpec> takeThingActions_orig(RepoClient rc, Ident srcGraphID) {
+
+	public List<ThingActionSpec> takeThingActions_Unsafe(RepoClient rc, Ident srcGraphID) {
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
 		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
 		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
@@ -94,31 +96,33 @@ public class BasicThingActionUpdater {
 		for (ThingActionSpec tas : actionSpecList) {
 			deleteThingAction(rc, srcGraphID, tas);
 		}
-		theLogger.info("Returning ThingAction list of length {} from graph {}",  actionSpecList.size(), srcGraphID);
+		theLogger.info("Returning ThingAction list of length {} from graph {}", actionSpecList.size(), srcGraphID);
 		return actionSpecList;
 	}
-	
+
 	/**
 	 * Finds actions not yet seen by a particular reading agent, pulls their data, and marks them seen for that agent.
+	 *
 	 * @param rc
 	 * @param srcGraphID
 	 * @param seeingAgentID
-	 * @return 
+	 * @return
 	 */
-        public List<ThingActionSpec> viewActionsAndMark(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {  
-	    try {
-		return viewActionsAndMark_orig(rc,srcGraphID,cutoffTStamp,viewingAgentID);		
-	    } catch ( Exception e ) {
-		theLogger.error(" viewActionsAndMark "+e,e);
-                try {
-		    Thread.sleep(1000);
-		} catch (InterruptedException ee) {
-		    theLogger.error("Thread.sleep(1000)"+ee,ee);
+	public List<ThingActionSpec> viewActionsAndMark_Safe(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {
+		try {
+			return viewActionsAndMark_Unsafe(rc, srcGraphID, cutoffTStamp, viewingAgentID);
+		} catch (Exception e) {
+			theLogger.error(" viewActionsAndMark " + e, e);
+			try {
+				Thread.sleep(dubiousSleepMsec);
+			} catch (InterruptedException ee) {
+				theLogger.error("Thread.sleep(" + dubiousSleepMsec + ")" + ee, ee);
+			}
+			return new java.util.ArrayList<ThingActionSpec>();
 		}
-		return new java.util.ArrayList<ThingActionSpec>();
-	    }
 	}
-	public List<ThingActionSpec> viewActionsAndMark_orig(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {		
+
+	public List<ThingActionSpec> viewActionsAndMark_Unsafe(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {
 		InitialBinding queryIB = rc.makeInitialBinding();
 		Literal cutoffTimeLit = rc.makeTypedLiteral(cutoffTStamp.toString(), XSDDatatype.XSDlong);
 		queryIB.bindNode(ThingCN.V_cutoffTStampMsec, cutoffTimeLit);
@@ -126,8 +130,8 @@ public class BasicThingActionUpdater {
 		// TODO:  Get the queryVarName exposed by RepoClient, currently it is private.
 		// Also:  Consider keeping marker statements in a viewer-specific model, queried in compound with the source 
 		// data model (so source data model is not marked by viewers, and viewers marks remain private and resettable)
-		
-		String queryGraphVarName =  "qGraph"; // RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR;
+
+		String queryGraphVarName = "qGraph"; // RepoSpecDefaultNames.DFLT_TGT_GRAPH_SPARQL_VAR;
 		queryIB.bindIdent(queryGraphVarName, srcGraphID);
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.UNSEEN_ACTION_QUERY_URI, queryIB);
 		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
@@ -141,19 +145,19 @@ public class BasicThingActionUpdater {
 			theLogger.info("Returning ThingAction list of length {} from graph {}", listSize, srcGraphID);
 		} else {
 			theLogger.trace("Returning empty ThingAction list from graph {}", srcGraphID);
-		}		
+		}
 		return actionSpecList;
-	}	
+	}
 
-			
 	/**
-	 *  Q:  Under what conditions are we allowed to do this directly through Dataset.getNamedModel() actions?
-	 *  A:  Not sure - the clean-est way is to generate SPARQL-UPDATE and apply.
-     * If we are allowed to modify the model directly using Jena API, then it will be sufficient (for immediate
-	 *	practical purposes) to delete all triples with actionIdent as SUBJECT.
-	 * @param tas 
+	 * Q: Under what conditions are we allowed to do this directly through Dataset.getNamedModel() actions? A: Not sure
+	 * - the clean-est way is to generate SPARQL-UPDATE and apply. If we are allowed to modify the model directly using
+	 * Jena API, then it will be sufficient (for immediate practical purposes) to delete all triples with actionIdent as
+	 * SUBJECT.
+	 *
+	 * @param tas
 	 */
-	private void deleteThingAction(RepoClient rc, Ident graphID, ThingActionSpec tas) { 
+	private void deleteThingAction(RepoClient rc, Ident graphID, ThingActionSpec tas) {
 		Ident actionID = tas.getActionSpecID();
 		Resource actionRes = rc.makeResourceForIdent(actionID);
 		Repo.WithDirectory repo = rc.getRepo();
@@ -162,8 +166,8 @@ public class BasicThingActionUpdater {
 		gm.removeAll(actionRes, null, null);
 		theLogger.info("After remova from {}, graph size is {}", graphID, gm.size());
 	}
-	
-	private void markThingActionSeen(RepoClient rc, Ident graphToMark, ThingActionSpec tas,  Ident seeingAgentID) { 
+
+	private void markThingActionSeen(RepoClient rc, Ident graphToMark, ThingActionSpec tas, Ident seeingAgentID) {
 		Ident actionID = tas.getActionSpecID();
 		Resource actionRes = rc.makeResourceForIdent(actionID);
 		Resource agentRes = rc.makeResourceForIdent(seeingAgentID);
@@ -171,9 +175,8 @@ public class BasicThingActionUpdater {
 		Model gm = repo.getNamedModel(graphToMark);
 		scala.Option<String> optStr = scala.Option.apply(null);
 		ResourceResolver rr = new ResourceResolver(gm, optStr);
-		Property viewedByProp  = rr.findOrMakeProperty(gm, ThingCN.P_viewedBy);
+		Property viewedByProp = rr.findOrMakeProperty(gm, ThingCN.P_viewedBy);
 		Statement viewedByStmt = gm.createStatement(actionRes, viewedByProp, agentRes);
 		gm.add(viewedByStmt);
 	}
-
 }
