@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.channel
+package org.cogchar.blob.emit
 
 import org.appdapter.api.module.Module.State;
 import org.appdapter.core.log.{BasicDebugger};

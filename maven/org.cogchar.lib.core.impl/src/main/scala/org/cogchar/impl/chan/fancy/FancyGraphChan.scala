@@ -32,7 +32,7 @@ import org.appdapter.help.repo.RepoClient
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.impl.thing.basic.BasicThingActionUpdater
 
-import org.cogchar.impl.channel.{FancyChannel}
+// import org.cogchar.impl.channel.{FancyChannel}
 
 class ProvidedGraphChan(chanID : Ident, val myModelProvider : BoundModelProvider) extends BasicGraphChan(chanID) with FancyChannel {
 	
