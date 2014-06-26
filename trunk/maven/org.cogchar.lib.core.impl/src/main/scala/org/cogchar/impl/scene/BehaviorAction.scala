@@ -31,14 +31,15 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
 import  org.cogchar.api.perform.{Media, PerfChannel, Performance}
 import  org.cogchar.api.perform.BehaviorActionExec
 import  org.cogchar.impl.perform.basic.{BasicPerformance}
-import org.cogchar.impl.channel.{FancyChannelSpec};
+
 import org.cogchar.api.thing.SerTypedValueMap;
 import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMap};
 import org.cogchar.api.perform.{PerfChannel, Media, Performance, FancyPerformance};
 import org.cogchar.impl.perform.{FancyTime, FancyTextMedia, FancyTextPerf, FancyTextCursor, FancyTextPerfChan, FancyTextInstruction};
 
 import org.cogchar.api.channel.{GraphChannel}
-import org.cogchar.impl.chan.fancy.{ThingActionGraphChan}
+import org.cogchar.impl.channel.{FancyChannelSpec}
+import org.cogchar.impl.chan.fancy.ThingActionGraphChan
 import org.cogchar.api.thing.{ThingActionSpec, ThingActionFilter, WantsThingAction}
 import org.cogchar.api.fancy.{FancyThingModelWriter}
 import org.apache.http.impl.client.{DefaultHttpClient}

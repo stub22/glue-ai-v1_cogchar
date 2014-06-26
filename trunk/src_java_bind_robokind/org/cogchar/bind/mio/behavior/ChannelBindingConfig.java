@@ -21,7 +21,7 @@ import org.mechio.api.animation.player.AnimationPlayer;
 import org.mechio.api.speech.SpeechService;
 
 import org.cogchar.impl.channel.FancyChannelSpec;
-import org.cogchar.impl.channel.GraphChannelNames;
+import org.cogchar.blob.emit.GraphChannelNames;
 import org.cogchar.impl.perform.PerfChannelNames;
 
 import org.appdapter.help.repo.RepoClient;

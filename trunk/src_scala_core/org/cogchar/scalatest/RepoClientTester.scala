@@ -23,7 +23,7 @@ import org.appdapter.core.store.Repo
 import org.appdapter.demo.DemoResources
 import org.appdapter.help.repo.{RepoClient, RepoClientImpl}
 import org.appdapter.impl.store.FancyRepo
-import org.cogchar.impl.channel.AnimFileSpecReader
+
 import org.cogchar.name.dir.{AssumedGraphDir, AssumedQueryDir}
 import org.appdapter.demo.DemoResources
 import org.appdapter.core.repo.DatabaseRepoFactoryLoader
@@ -200,17 +200,12 @@ object RepoClientTester {
 		val resolvedQueryURL = org.appdapter.demo.DemoResources.QUERY_PATH;
 		// RepoTester.testRepoDirect(dbRepo, )
 		
-		import org.cogchar.impl.channel.AnimFileSpecReader;
-		val animGraphID = dfltTestRC.makeIdentForQName(AnimFileSpecReader.animGraphQN);
-		val behavCE = new org.cogchar.blob.emit.BehaviorConfigEmitter(dfltTestRC, animGraphID)
-		
-		val animFiles = AnimFileSpecReader.findAnimFileSpecs(behavCE);
-		println("Got animFiles: " + animFiles);
+
 		val cmdList = queryCommands(dfltTestRC);
 		println("Got commands: " + cmdList);
 		
-		val chanSet = assembleChannelSpecs(dfltTestRC);
-		println("Got chanSpecs: " + chanSet)
+//		val chanSet = assembleChannelSpecs(dfltTestRC);
+//		println("Got chanSpecs: " + chanSet)
 		
 		queryInboxEvents(dfltTestRC);
 		
@@ -254,10 +249,7 @@ object RepoClientTester {
 			})
 		resultJList
 	}	
-	import org.cogchar.impl.channel.FancyChannelSpec;
-	def assembleChannelSpecs (rc : RepoClient) : java.util.Set[Object] = {
-		rc.assembleRootsFromNamedModel("ccrt:chan_sheet_AZR50")
-	}
+
 
 	val eventQueryQN = "ccrt:find_agentItemEvents_99" // The QName of a query in the "Queries" model/tab
 	val eventGraphQN = "ccrt:inbox_sheet_AZR50" // The QName of a graph = model = tab, as given by directory model.   
