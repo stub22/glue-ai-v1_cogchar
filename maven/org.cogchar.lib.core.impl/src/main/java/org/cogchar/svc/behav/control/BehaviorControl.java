@@ -65,6 +65,8 @@ public class BehaviorControl implements WantsThingAction {
     public ConsumpStatus consumeAction(
             ThingActionSpec actionSpec,
             Ident srcGraphID) {
+		
+		theLogger.info("sceneActionCallbackMap={}, adminActionCallbackMap={}", mySceneActionCallbackMap, myAdminActionCallbackMap);
 
         if (actionSpec == null) {
             theLogger.warn("Null actionSpec passed to BehaviorControl for consumption.");

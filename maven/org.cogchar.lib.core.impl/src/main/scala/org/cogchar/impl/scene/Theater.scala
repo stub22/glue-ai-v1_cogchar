@@ -25,7 +25,7 @@ import org.appdapter.help.repo.{RepoClient}
 import org.cogchar.api.channel.{GraphChannel}
 import org.cogchar.api.perform.{Media, PerfChannel};
 import org.cogchar.impl.perform.{DummyTextChan, FancyTime, PerfChannelNames};
-import org.cogchar.impl.channel.{GraphChannelHub};
+import org.cogchar.impl.chan.fancy.{GraphChannelHub};
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
 /**  A theater is an execution context for scene-based behavior.

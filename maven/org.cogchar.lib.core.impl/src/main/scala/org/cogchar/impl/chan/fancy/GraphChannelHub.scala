@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.channel
+package org.cogchar.impl.chan.fancy
 
 import scala.collection.mutable.HashMap
 
