@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.channel
+package org.cogchar.impl.chan.fancy
 
 import org.appdapter.bind.rdf.jena.assembly.{DynamicCachingComponentAssembler, ItemAssemblyReader, KnownComponentImpl}
 import org.appdapter.core.item.Item
@@ -35,7 +35,7 @@ trait FancyChannel extends Channel {
 // The ChannelSpec has not advanced beyond a URI rendevous point, which SceneSpecs can refer to.
 // Through 2012 our behavior demos relied on PUMA to inject actual channels with matching URIs into a Theater.
 
-class FancyChannelSpec extends KnownComponentImpl {
+class RealFancyChannelSpec extends KnownComponentImpl {
 	var		myOsgiFilterString : String = "NONE";
 	var		myChanType : Ident = null;
 	
@@ -61,9 +61,9 @@ class FancyChannelSpec extends KnownComponentImpl {
 		}		
 	}	
 }
-class FancyChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[FancyChannelSpec](builderConfRes) {
+class RealFancyChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[RealFancyChannelSpec](builderConfRes) {
 
-	override protected def initExtendedFieldsAndLinks(cs: FancyChannelSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
+	override protected def initExtendedFieldsAndLinks(cs: RealFancyChannelSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
 		getLogger().debug("FancyChannelSpecBuilder.initExtendedFieldsAndLinks using {}", configItem);
 		val reader = getReader();
 		cs.completeInit(configItem, reader, assmblr, mode)
