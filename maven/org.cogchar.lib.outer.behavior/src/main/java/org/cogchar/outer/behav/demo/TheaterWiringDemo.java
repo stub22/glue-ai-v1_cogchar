@@ -20,8 +20,8 @@ package org.cogchar.outer.behav.demo;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.cogchar.outer.behav.impl.OSGiTheater;
-import org.cogchar.impl.channel.GraphChannelHub;
-import org.cogchar.impl.channel.ThingActionChanSpec;
+import org.cogchar.impl.chan.fancy.GraphChannelHub;
+import org.cogchar.impl.chan.fancy.RealThingActionChanSpec;
 import org.cogchar.impl.scene.BScene;
 import org.cogchar.impl.scene.Theater;
 import org.osgi.framework.BundleContext;
@@ -106,21 +106,21 @@ public class TheaterWiringDemo extends WiringDemo {
 		}
 	}
 	
-    static class TAGraphChanSpecListener extends ServiceClassListener<ThingActionChanSpec> {
+    static class TAGraphChanSpecListener extends ServiceClassListener<RealThingActionChanSpec> {
         private GraphChannelHub myHub;
         
         public TAGraphChanSpecListener(BundleContext context, String serviceFilter, GraphChannelHub hub) {
-            super(ThingActionChanSpec.class, context, serviceFilter);
+            super(RealThingActionChanSpec.class, context, serviceFilter);
             myHub = hub;
         }
 
         @Override
-        protected void addService(ThingActionChanSpec t) {
+        protected void addService(RealThingActionChanSpec t) {
             myHub.makeThingActionGraphChan(t.getIdent(), t.mySourceModel(), 0);
         }
 
         @Override
-        protected void removeService(ThingActionChanSpec t) {
+        protected void removeService(RealThingActionChanSpec t) {
         }
         
         

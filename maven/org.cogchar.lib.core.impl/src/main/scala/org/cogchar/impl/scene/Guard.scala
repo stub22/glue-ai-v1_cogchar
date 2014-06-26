@@ -23,7 +23,7 @@ package org.cogchar.impl.scene
 import org.appdapter.core.log.{ BasicDebugger }
 import org.appdapter.core.name.{ Ident }
 import org.cogchar.api.perform.{ Performance }
-import org.cogchar.impl.channel.{ ThingActionGraphChan }
+import org.cogchar.impl.chan.fancy.{ ThingActionGraphChan }
 import org.cogchar.api.thing._
 import org.cogchar.api.scene._
 import scala.collection.JavaConverters._

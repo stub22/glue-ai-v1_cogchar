@@ -24,7 +24,7 @@ public class RepoUpdateCallbackAdapter {
 		theCallbacks.add(c);
 	}
 	public static void notifyCallbacks() { 
-		theLogger.info("Sending SPARQL-Update callback notices");
+		theLogger.info("Sending SPARQL-Update callback notices to {} listeners: {}", theCallbacks.size(), theCallbacks);
 		for (Callback c : theCallbacks) {
 			c.repoUpdateCompleted();
 		}
