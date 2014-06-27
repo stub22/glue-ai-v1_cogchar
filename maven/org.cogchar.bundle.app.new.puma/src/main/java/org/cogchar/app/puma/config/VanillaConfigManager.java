@@ -58,13 +58,17 @@ public class VanillaConfigManager extends PumaConfigManager {
 	protected void applyVanillaRepoClientAsMainConfig( PumaContextMediator mediator, BundleContext optBundCtxForLifecycle) {
         RepoClient repoClient = getExistingRepoClient(optBundCtxForLifecycle);
         // TODO:  "turn off" any previous config's lifecycle
-        if(repoClient == null){
+        if(repoClient == null) {
+			getLogger().info("{Stretchy Yawn} Time to make a vanillaRepoClient!");
             repoClient = makeVanillaRepoClient(mediator);
-        }
+        } else {
+			getLogger().info("{Smell the coffee} Someone already made a repoClient!");
+		}
 		if (repoClient != null) {
 			setMainConfigRepoClient(repoClient);
 			if (optBundCtxForLifecycle != null)  {
-				myQueryComp = startRepoClientLifecyle(optBundCtxForLifecycle, repoClient);
+				getLogger().info("Starting repoClient lifecycle.");
+				myQueryComp = startRepoClientLifecycle(optBundCtxForLifecycle, repoClient);
 			}
 		}
 	}

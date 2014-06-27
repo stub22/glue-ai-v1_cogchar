@@ -61,7 +61,11 @@ public class MasterDemo extends BasicDebugger {
 		EnhancedRepoClient demoRepoCli = repoConn.connectDemoRepoClient(demoRepoSpec);
 		launchDemo(bundleCtx, demoRepoCli);
 	}
-
+/*  [java] 	at org.cogchar.outer.behav.demo.MasterDemo.launchDemo(MasterDemo.java:69)
+     [java] 	at com.rkbots.demo.behavior.master.BehaviorMasterLifecycle.create(BehaviorMasterLifecycle.java:45)
+     [java] 	at com.rkbots.demo.behavior.master.BehaviorMasterLifecycle.create(BehaviorMasterLifecycle.java:22)
+     [java] 	at org.jflux.impl.services.rk.lifecycle.AbstractLifecycleProvider.start(AbstractLifecycleProvider.java:74)
+*/
 	public void launchDemo(BundleContext bundleCtx, RepoClient defDemoRepoCli) {
 		try {
 			getLogger().info("Launching demo using repoClient={}", defDemoRepoCli);
