@@ -65,7 +65,7 @@ extends SingleSourceGraphChan(chanID, rc, matchGraphID) {
 		 // the future. 
 		 // */ 
 		
-		val tasList : java.util.List[ThingActionSpec] = tau.viewActionsAndMark_Safe(rc, matchGraphID, cutoffTStamp, viewingAgentID);
+		val tasList : java.util.List[ThingActionSpec] = tau.viewActionsAndMark_TX(rc, matchGraphID, cutoffTStamp, viewingAgentID);
 		
 		/*		 // The actual concurrency problem we have at the moment occurs because of concurrent read/write to just one
 		 // crucial model.  You guessed it, "the" runtime-TA model!  But i a more complex scenario there can be any

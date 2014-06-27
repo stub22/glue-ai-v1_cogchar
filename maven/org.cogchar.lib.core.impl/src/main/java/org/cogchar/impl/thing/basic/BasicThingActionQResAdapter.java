@@ -51,7 +51,8 @@ public class BasicThingActionQResAdapter extends BasicDebugger {
 			Ident verbID = sh.pullIdent(actionSoln, ThingCN.V_verbID);
 			Ident targetID = sh.pullIdent(actionSoln, ThingCN.V_targetThingID);
 			Ident targetTypeID = sh.pullIdent(actionSoln, ThingCN.V_targetThingTypeID);
-
+			// calls rc.queryIndirectForAllSolutions(ThingCN.PARAM_QUERY_URI, srcGraphID, ThingCN.V_attachedActionID, actionIdent);
+			// which we want to be transactionally consistent with whatever generated the actionsList.
 			SerTypedValueMap actionParams = buildActionParameterValueMap(rc, srcGraphID, sh, actionID, theLogger);
 			Literal tstampLiteral = actionSoln.getLiteralResultVar(ThingCN.V_postedTStampMsec);
 			Long actionPostedTStampMsec = (tstampLiteral != null) ? tstampLiteral.getLong() : null;

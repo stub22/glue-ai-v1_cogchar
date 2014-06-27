@@ -31,6 +31,7 @@ import org.appdapter.help.repo.RepoClient;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.impl.store.ResourceResolver;
 import org.cogchar.api.thing.ThingActionSpec;
+import static org.cogchar.impl.thing.basic.BasicThingActionQResAdapter.buildActionParameterValueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +74,7 @@ public class BasicThingActionUpdater {
 	 */
 	
 	static int dubiousSleepMsec = 100;
-	
+	// Used only from PUMA to drain thingActions during init/reset, right?
 	@Deprecated protected List<ThingActionSpec> takeThingActions_Safe(RepoClient rc, Ident srcGraphID) {
 		try {
 			return takeThingActions_Unsafe(rc, srcGraphID);
@@ -88,7 +89,8 @@ public class BasicThingActionUpdater {
 		}
 	}
 
-	public List<ThingActionSpec> takeThingActions_Unsafe(RepoClient rc, Ident srcGraphID) {
+	private List<ThingActionSpec> takeThingActions_Unsafe(RepoClient rc, Ident srcGraphID) {
+		// Will need to become transactional if used concurrently, like viewActions below.
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
 		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
 		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
@@ -102,27 +104,66 @@ public class BasicThingActionUpdater {
 
 	/**
 	 * Finds actions not yet seen by a particular reading agent, pulls their data, and marks them seen for that agent.
-	 *
+	 * Implementation involves a classic transactional "Read-then-Write" scenario.
+	 * If we are already in an open transaction, this operation will preserve it.
+	 * Otherwise, if transactions are supported, this op will bracket all the graph access in a single write-trans,
+	 * to ensure consistency of results.
+	 * 
+	 * Because this is the grittiest part of the ThingAction pipeline, we expand at length to close the world.
+	 * Yes, it's a naughty topic, but so far this read-then-write operation is called from two places in Cogchar:
+	 *		
+	 *		BasicThingActionConsumer.viewAndMarkAllActions - called in orderly manner by any agent with write-access 
+	 *		to a repo.
+	 * 
+	 *		ThingActionGraphChan.seeThingActions - called from a channel user agent such as BThtr, which interact with 
+	 *		remainder of system using repo contents of which ThingActions are a minimal examplar.  That method contains 
+	 *		another huge comment for your pleasure.
+	 * 
+	 * Double-naughty:  The other defined sources of repo updates (besides the marking-view), with which we may
+	 * have write contention, are:
+	 *		1) "config loads" - infrequent and in theory we have full control, not a big concern.
+	 *		2) SPARQL-Update requests from external clients, via HTTP, AMQP, other.
+	 * 
 	 * @param rc
 	 * @param srcGraphID
 	 * @param seeingAgentID
 	 * @return
 	 */
-	public List<ThingActionSpec> viewActionsAndMark_Safe(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {
-		try {
-			return viewActionsAndMark_Unsafe(rc, srcGraphID, cutoffTStamp, viewingAgentID);
-		} catch (Exception e) {
-			theLogger.error(" viewActionsAndMark " + e, e);
-			try {
-				Thread.sleep(dubiousSleepMsec);
-			} catch (InterruptedException ee) {
-				theLogger.error("Thread.sleep(" + dubiousSleepMsec + ")" + ee, ee);
-			}
-			return new java.util.ArrayList<ThingActionSpec>();
-		}
-	}
 
-	public List<ThingActionSpec> viewActionsAndMark_Unsafe(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {
+	public List<ThingActionSpec> viewActionsAndMark_TX(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {
+		List<ThingActionSpec> actionSpecList = null;
+		com.hp.hpl.jena.query.Dataset  txDataset = null; // if this becomes non-null, then we are taking responsibility for transaction boundary.
+		Repo.WithDirectory assumedRepo = rc.getRepo();
+		if (assumedRepo != null) {
+			// This is probably not, semantically, the "best" dataset for thingAction transfer, but that's another topic.
+			com.hp.hpl.jena.query.Dataset dset = assumedRepo.getMainQueryDataset();
+			if (dset.supportsTransactions() && (!dset.isInTransaction())) {
+				// We need to start a write transaction, and then remember to commit or abort it.
+				txDataset = dset;
+				txDataset.begin(com.hp.hpl.jena.query.ReadWrite.WRITE);			
+			}
+		}
+		try {
+			actionSpecList = viewActionsAndMark_Raw(rc, srcGraphID, cutoffTStamp, viewingAgentID);
+			if (txDataset != null) {
+				txDataset.commit();
+			}
+		} catch (Throwable t) {
+			theLogger.error("Error during read/write operation on thingAction graph, will rollback.", t);
+			if (txDataset != null) {
+				txDataset.abort();
+			}
+		} finally { 
+			if (txDataset != null) {
+				txDataset.end();  // "end()" is not strictly necessary, according to Jena mailing lists
+			}
+		}
+		if (actionSpecList == null) {
+			actionSpecList = new java.util.ArrayList<ThingActionSpec>();
+		}
+		return actionSpecList;		
+	}
+	private List<ThingActionSpec> viewActionsAndMark_Raw(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {	
 		InitialBinding queryIB = rc.makeInitialBinding();
 		Literal cutoffTimeLit = rc.makeTypedLiteral(cutoffTStamp.toString(), XSDDatatype.XSDlong);
 		queryIB.bindNode(ThingCN.V_cutoffTStampMsec, cutoffTimeLit);
@@ -135,6 +176,7 @@ public class BasicThingActionUpdater {
 		queryIB.bindIdent(queryGraphVarName, srcGraphID);
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.UNSEEN_ACTION_QUERY_URI, queryIB);
 		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
+		// reap invokes buildActionParameterValueMap which invokes rc.queryIndirectForAllSolutions
 		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
 		// Delete the actions from graph, so they are not returned on next call to this method.
 		for (ThingActionSpec tas : actionSpecList) {
@@ -146,6 +188,7 @@ public class BasicThingActionUpdater {
 		} else {
 			theLogger.trace("Returning empty ThingAction list from graph {}", srcGraphID);
 		}
+
 		return actionSpecList;
 	}
 
@@ -167,6 +210,7 @@ public class BasicThingActionUpdater {
 		theLogger.info("After remova from {}, graph size is {}", graphID, gm.size());
 	}
 
+	// This should be done inside a write-Xaction, with boundaries that encompass the prior related reads.
 	private void markThingActionSeen(RepoClient rc, Ident graphToMark, ThingActionSpec tas, Ident seeingAgentID) {
 		Ident actionID = tas.getActionSpecID();
 		Resource actionRes = rc.makeResourceForIdent(actionID);
