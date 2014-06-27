@@ -16,6 +16,7 @@
 package org.cogchar.app.puma.config;
 
 import java.util.List;
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.help.repo.RepoClient;
 import org.appdapter.impl.store.FancyRepo;
@@ -36,7 +37,7 @@ import org.cogchar.platform.trigger.CommandSpace;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public abstract class PumaConfigManager {
+public abstract class PumaConfigManager extends BasicDebugger {
 	// A query interface instance we can reuse - right now just to trigger repo reloads. May want to do that via
 	// GlobalConfigEmitter or some other interface in the long run...?
 
@@ -83,9 +84,10 @@ public abstract class PumaConfigManager {
 
 	
 	// TODO : This can be pushed down into o.c.lib.core
-	protected static OSGiComponent startRepoClientLifecyle(BundleContext bundCtx, RepoClient rc) {
+	protected static OSGiComponent startRepoClientLifecycle(BundleContext bundCtx, RepoClient rc) {
 		OSGiComponent rcComp = null;
 		if (rc != null) {
+			
 			ServiceLifecycleProvider lifecycle = new SimpleLifecycle(rc, RepoClient.class);
 			rcComp = new OSGiComponent(bundCtx, lifecycle);
 			rcComp.start();

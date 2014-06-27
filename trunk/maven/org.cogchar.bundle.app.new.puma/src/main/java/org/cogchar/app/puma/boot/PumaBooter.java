@@ -125,7 +125,7 @@ public class PumaBooter extends BasicDebugger {
         /*
          * At this point we have blank, generic PAC + HRC (if vWorld) context objects to work with. PAC + HRC are
          * typically each a singleton, but not assumed to be. No characters or config have been populated, no OpenGL
-         * window has been opened, and no connection has been made to Robokind.
+         * window has been opened, and no connection has been made to MechIO services or devices.
          */
 
         getLogger().debug("%%% Starting repository-backed config services");

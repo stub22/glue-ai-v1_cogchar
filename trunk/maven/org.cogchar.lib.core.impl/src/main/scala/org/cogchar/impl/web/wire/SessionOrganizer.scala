@@ -29,7 +29,7 @@ abstract class SessionOrganizer(val myCmdr : WebappCommander, val myWebappGlobal
 	def getInitialConfigID : String = myWebappGlobalState.getSessionInitialConfigID
 
 	private val mySessionGroupState = new LifterState(getInitialConfigID)
-	def getSessionState(sessionId:String) = mySessionGroupState.stateBySession(sessionId)
+	def getSessionState(sessionId:String) = mySessionGroupState.stateBySession.getOrElse(sessionId, null)
 	
 	
 	def initializeSession(sessionId:String) {
@@ -78,6 +78,8 @@ abstract class SessionOrganizer(val myCmdr : WebappCommander, val myWebappGlobal
 		val sessionState : WebSessionState = getSessionState(sessionId) 
 		if (sessionState != null) {
 			templateToLoad = sessionState.currentTemplateName
+		} else {
+			warn1("No sessionState found for sessionID={}", sessionId)
 		}
 		templateToLoad
 	}
