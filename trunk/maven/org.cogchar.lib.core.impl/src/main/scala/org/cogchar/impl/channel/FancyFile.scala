@@ -44,7 +44,9 @@ class FancyFile(val mySpec : FileSpec, val myResolvedFullPath : String) {
 class FancyFolder {
 }
 import org.cogchar.blob.emit.BehaviorConfigEmitter
-object AnimFileSpecReader {
+import org.cogchar.impl.web.util.HasLoggerConv
+
+object AnimFileSpecReader extends HasLoggerConv {
 	val ANIM_IDENT = "anim"
 	val ANIM_REL_PATH = "relPath"
 	val ANIM_FOLDER_PATH = "folderPath"
@@ -61,11 +63,12 @@ object AnimFileSpecReader {
 		val solList = repoClient.queryIndirectForAllSolutions(animQueryQN, animGraphQN)
 
 		solList.javaList foreach (animFile => {
-				println("Got animFile soln: " + animFile);
+				debug1("Got animFile soln: {} ", animFile);
+				
 				val animIdent = animFile.getIdentResultVar(ANIM_IDENT);
 				val animRelPath = animFile.getStringResultVar(ANIM_REL_PATH);
 				val animFolderPath = animFile.getStringResultVar(ANIM_FOLDER_PATH);
-				println("ident=" + animIdent + ", relPath=" + animRelPath + ", folderPath=" + animFolderPath)
+				info3("found anim-file-Spec: ident={}  relPath={}  folderPath={}", animIdent ,animRelPath , animFolderPath)
 				
 				val animFolderSpec = new FolderSpec(animFolderPath, None)
 				val animFileSpec = new FileSpec(animRelPath, Some(animFolderSpec))
