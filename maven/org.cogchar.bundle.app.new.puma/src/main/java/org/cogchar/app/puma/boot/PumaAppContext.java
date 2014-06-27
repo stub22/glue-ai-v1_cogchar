@@ -143,7 +143,7 @@ public class PumaAppContext extends BasicDebugger {
 		pcm.applyDefaultRepoClientAsMainConfig(mediator, myBundleContext);
 		// This method performs the configuration actions associated with the developmental "Global Mode" concept
 		// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
-		// be updated to relect that	
+		// be updated to reflect that	
 		RepoClient rc = getOrMakeMainConfigRC();
 		PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		pgmm.applyGlobalConfig(myBundleContext, rc);
@@ -327,7 +327,7 @@ public class PumaAppContext extends BasicDebugger {
 		RepoClient rc = getOrMakeMainConfigRC();
 		// Below is needed for Lifter to obtain dependency from LifterLifecycle
 		// Will revisit once repo functionality stabilizes a bit
-		//PumaConfigManager.startRepoClientLifecyle(myBundleContext, rc);
+		//PumaConfigManager.startRepoClientLifecycle(myBundleContext, rc);
 		pgmm.startGlobalConfigService(myBundleContext);
 	}
 
