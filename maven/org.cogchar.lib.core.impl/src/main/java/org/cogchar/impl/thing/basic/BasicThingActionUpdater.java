@@ -137,11 +137,21 @@ public class BasicThingActionUpdater {
 		if (assumedRepo != null) {
 			// This is probably not, semantically, the "best" dataset for thingAction transfer, but that's another topic.
 			com.hp.hpl.jena.query.Dataset dset = assumedRepo.getMainQueryDataset();
-			if (dset.supportsTransactions() && (!dset.isInTransaction())) {
+			Boolean supportsTrans = dset.supportsTransactions();
+			Boolean alreadyInTrans = null;
+			if (supportsTrans) {
+				alreadyInTrans = dset.isInTransaction();
+			}	
+			if (supportsTrans  && (!alreadyInTrans)) {			
 				// We need to start a write transaction, and then remember to commit or abort it.
 				txDataset = dset;
+				theLogger.info("Bracketing for TRANSACTIONAL write on dataset {}", dset);
 				txDataset.begin(com.hp.hpl.jena.query.ReadWrite.WRITE);			
+			} else {
+				theLogger.info("Performing unbracketed read+write on dataset {}, supportsTrans={}, alreadyInTrans={}", dset, supportsTrans, alreadyInTrans);
 			}
+		} else {
+			theLogger.warn("Could not find assumedRepo - remote repoClient?");
 		}
 		try {
 			actionSpecList = viewActionsAndMark_Raw(rc, srcGraphID, cutoffTStamp, viewingAgentID);
