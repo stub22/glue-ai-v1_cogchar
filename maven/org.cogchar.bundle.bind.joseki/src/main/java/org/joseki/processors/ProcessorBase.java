@@ -52,6 +52,7 @@ public abstract class ProcessorBase implements Processor
 			// Begin Stu's Xact patch:
 			
 			if (dataset.supportsTransactions()) {
+				log.info("Opening WRITE transaction against our dataset");
 				dataset.begin(com.hp.hpl.jena.query.ReadWrite.WRITE);
 				dsetXactOpen = true;
 			}
@@ -131,7 +132,7 @@ public abstract class ProcessorBase implements Processor
                     {
 						if (dsetXactionActive) {
 							if (successfulOperation) {
-								log.info("Commiting dataset xact");
+								log.info("Commiting dataset xact - Stu notest that this is where commit happens with TDB-in Mem as of 2014-06-28");
 								dataset.commit();
 								dataset.end();
 							} else {
