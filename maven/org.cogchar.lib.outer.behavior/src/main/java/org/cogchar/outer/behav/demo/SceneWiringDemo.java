@@ -37,6 +37,7 @@ import org.jflux.impl.services.rk.osgi.OSGiUtils;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.appdapter.bind.rdf.jena.query.JenaArqQueryFuncs_TxAware.Oper;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -69,7 +70,7 @@ public class SceneWiringDemo extends WiringDemo {
 
 	public void loadAndRegisterSceneSpecs(BundleContext bundleCtx, RepoClient directRC, String directGraphQN,
 			PipelineQuerySpec pipeQuerySpec, String derivedGraphQN, String sceneGroupQN) {
-		Collection<SceneSpec> sceneSpecs = loadDemoSceneSpecs(directRC, directGraphQN, pipeQuerySpec, derivedGraphQN);
+		Collection<SceneSpec> sceneSpecs = loadDemoSceneSpecs_TX(directRC, directGraphQN, pipeQuerySpec, derivedGraphQN);
 		setupSceneSpecOSGiComps(bundleCtx, sceneSpecs, sceneGroupQN);
 	}
 
@@ -87,8 +88,18 @@ public class SceneWiringDemo extends WiringDemo {
 			getLogger().error("Problem looking up OSGiComponents for existing SceneSpecs", t);
 		}
 	}
-
-	public List<SceneSpec> loadDemoSceneSpecs(RepoClient bmcRepoCli, String directGraphQN,
+	public List<SceneSpec> loadDemoSceneSpecs_TX(final RepoClient bmcRepoCli, final String directGraphQN,
+			final PipelineQuerySpec pipeQuerySpec, final String derivedGraphQN) {
+		List<SceneSpec> res = null;
+		// Does it need to be a write?  Is the derived model going into the dataset?
+		res = RepoClientFuncs_TxAware.execReadTransCompatible(bmcRepoCli, null, new Oper<List<SceneSpec>>() {
+			@Override public List<SceneSpec> perform() {
+				return loadDemoSceneSpecs_Raw(bmcRepoCli, directGraphQN, pipeQuerySpec, derivedGraphQN);
+			}
+		});
+		return res;
+	}
+	private List<SceneSpec> loadDemoSceneSpecs_Raw(RepoClient bmcRepoCli, String directGraphQN,
 			PipelineQuerySpec pipeQuerySpec, String derivedGraphQN) {
 
 		// SceneBook = "old" way, in which it was more obvious that channels are being resolved from Swizzle cache 
