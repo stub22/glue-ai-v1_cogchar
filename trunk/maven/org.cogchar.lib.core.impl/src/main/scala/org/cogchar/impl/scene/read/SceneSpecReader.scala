@@ -32,7 +32,7 @@ import org.cogchar.impl.scene.{ SceneBook, SceneSpec }
 class SceneSpecReader extends BasicDebugger {
   def readChannelSpecs(repoClient: RepoClient, chanGraphQN: String): java.util.Set[FancyChannelSpec] = {
     val specSet = new java.util.HashSet[FancyChannelSpec]();
-    val objectsFound: java.util.Set[Object] = repoClient.assembleRootsFromNamedModel(chanGraphQN);
+    val objectsFound: java.util.Set[Object] = repoClient.assembleRootsFromNamedModel_TX(chanGraphQN);
     if (objectsFound != null) {
       import scala.collection.JavaConversions._;
       for (o <- objectsFound) {
@@ -49,7 +49,7 @@ class SceneSpecReader extends BasicDebugger {
   def readSceneSpecs(repoClient: RepoClient, behavGraphQN: String): java.util.List[SceneSpec] = {
     val behavGraphID = repoClient.makeIdentForQName(behavGraphQN);
 
-    val allBehavSpecs = repoClient.assembleRootsFromNamedModel(behavGraphID);
+    val allBehavSpecs = repoClient.assembleRootsFromNamedModel_TX(behavGraphID);
     val ssList = SceneBook.filterSceneSpecs(allBehavSpecs);
     getLogger().info("Loaded SceneSpecs: " + ssList);
 

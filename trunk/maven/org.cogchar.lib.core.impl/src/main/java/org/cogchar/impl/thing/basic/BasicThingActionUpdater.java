@@ -28,6 +28,8 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.InitialBinding;
 import org.appdapter.core.store.Repo;
 import org.appdapter.help.repo.RepoClient;
+import org.appdapter.help.repo.RepoClientFuncs_TxAware;
+import org.appdapter.bind.rdf.jena.query.JenaArqQueryFuncs_TxAware.Oper;
 import org.appdapter.help.repo.SolutionList;
 import org.appdapter.impl.store.ResourceResolver;
 import org.cogchar.api.thing.ThingActionSpec;
@@ -45,51 +47,23 @@ public class BasicThingActionUpdater {
 	public static final Ident SOURCE_AGENT_ID = new FreeIdent(ThingCN.TA_NS + "RepoThingAction");
 	private static Logger theLogger = LoggerFactory.getLogger(BasicThingActionUpdater.class);
 
-	/**
-	 * Unused we think. Fetches pending ThingActions from model, and [ USED TO BUT DISABLED SINCE AT LEAST 2013-Oct
-	 * physically deletes them (or at least the part of them that makes them matchable) from source model.]
-	 *
-	 * @param rc
-	 * @param srcGraphID
-	 * @return
-	 */
-	/*
-	 @Deprecated protected List<ThingActionSpec> viewActions(RepoClient rc, Ident srcGraphID) {
-	 SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
-	 BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
-	 List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
-	 // DISABLED:    Delete the actions from graph, so they are not returned on next call to this method.
-	 for (ThingActionSpec tas : actionSpecList) {
-	 // This actual deletion has been commented out since at least Revision 1244 (October 2013)
-	 //deleteThingAction(rc, srcGraphID, tas);
-	 }
-	 int listSize = actionSpecList.size();
-	 if (listSize != 0) {
-	 theLogger.info("Returning ThingAction list of length {} from graph {}", listSize, srcGraphID);
-	 } else {
-	 theLogger.trace("Returning empty ThingAction list from graph {}", srcGraphID);
-	 }
-	 return actionSpecList;
-	 }
-	 */
-	
 	static int dubiousSleepMsec = 100;
 	// Used only from PUMA to drain thingActions during init/reset, right?
-	@Deprecated protected List<ThingActionSpec> takeThingActions_Safe(RepoClient rc, Ident srcGraphID) {
-		try {
-			return takeThingActions_Unsafe(rc, srcGraphID);
-		} catch (Exception e) {
-			theLogger.error(" takeThingActions " + e, e);
-			try {
-				Thread.sleep(dubiousSleepMsec);
-			} catch (InterruptedException ee) {
-				theLogger.error("Thread.sleep(" + dubiousSleepMsec + ")" + ee, ee);
+	@Deprecated protected List<ThingActionSpec> takeThingActions_TX(final RepoClient rc, final Ident srcGraphID) {
+		List<ThingActionSpec> takenActions = null;
+		takenActions = RepoClientFuncs_TxAware.execWriteTransCompatible(rc, null, new Oper<List<ThingActionSpec>>() {
+			@Override public List<ThingActionSpec> perform() {
+				return takeThingActions_Raw(rc, srcGraphID);
 			}
-			return new java.util.ArrayList<ThingActionSpec>();
+			
+		});
+		if (takenActions == null) {
+			takenActions = new java.util.ArrayList<ThingActionSpec>();
 		}
+		return takenActions;		
 	}
 
-	private List<ThingActionSpec> takeThingActions_Unsafe(RepoClient rc, Ident srcGraphID) {
+	private List<ThingActionSpec> takeThingActions_Raw(RepoClient rc, Ident srcGraphID) {
 		// Will need to become transactional if used concurrently, like viewActions below.
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
 		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();
@@ -100,6 +74,7 @@ public class BasicThingActionUpdater {
 		}
 		theLogger.info("Returning ThingAction list of length {} from graph {}", actionSpecList.size(), srcGraphID);
 		return actionSpecList;
+		
 	}
 
 	/**
@@ -130,44 +105,15 @@ public class BasicThingActionUpdater {
 	 * @return
 	 */
 
-	public List<ThingActionSpec> viewActionsAndMark_TX(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {
+	public List<ThingActionSpec> viewActionsAndMark_TX(final RepoClient rc, final Ident srcGraphID, final Long cutoffTStamp, final Ident viewingAgentID) {
 		List<ThingActionSpec> actionSpecList = null;
-		com.hp.hpl.jena.query.Dataset  txDataset = null; // if this becomes non-null, then we are taking responsibility for transaction boundary.
-		Repo.WithDirectory assumedRepo = rc.getRepo();
-		if (assumedRepo != null) {
-			// This is probably not, semantically, the "best" dataset for thingAction transfer, but that's another topic.
-			com.hp.hpl.jena.query.Dataset dset = assumedRepo.getMainQueryDataset();
-			Boolean supportsTrans = dset.supportsTransactions();
-			Boolean alreadyInTrans = null;
-			if (supportsTrans) {
-				alreadyInTrans = dset.isInTransaction();
-			}	
-			if (supportsTrans  && (!alreadyInTrans)) {			
-				// We need to start a write transaction, and then remember to commit or abort it.
-				txDataset = dset;
-				theLogger.info("Bracketing for TRANSACTIONAL write on dataset {}", dset);
-				txDataset.begin(com.hp.hpl.jena.query.ReadWrite.WRITE);			
-			} else {
-				theLogger.info("Performing unbracketed read+write on dataset {}, supportsTrans={}, alreadyInTrans={}", dset, supportsTrans, alreadyInTrans);
+
+		actionSpecList = RepoClientFuncs_TxAware.execWriteTransCompatible(rc, null, new Oper<List<ThingActionSpec>>() {
+			@Override public List<ThingActionSpec> perform() {
+				return viewActionsAndMark_Raw(rc, srcGraphID, cutoffTStamp, viewingAgentID);
 			}
-		} else {
-			theLogger.warn("Could not find assumedRepo - remote repoClient?");
-		}
-		try {
-			actionSpecList = viewActionsAndMark_Raw(rc, srcGraphID, cutoffTStamp, viewingAgentID);
-			if (txDataset != null) {
-				txDataset.commit();
-			}
-		} catch (Throwable t) {
-			theLogger.error("Error during read/write operation on thingAction graph, will rollback.", t);
-			if (txDataset != null) {
-				txDataset.abort();
-			}
-		} finally { 
-			if (txDataset != null) {
-				txDataset.end();  // "end()" is not strictly necessary, according to Jena mailing lists
-			}
-		}
+			
+		});		
 		if (actionSpecList == null) {
 			actionSpecList = new java.util.ArrayList<ThingActionSpec>();
 		}

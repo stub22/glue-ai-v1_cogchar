@@ -51,8 +51,8 @@ public abstract class BasicThingActionConsumer extends BasicDebugger implements 
 	
 	@Deprecated public void consumeAllActions(RepoClient rc, Ident srcGraphID) {
 		BasicThingActionUpdater updater = new BasicThingActionUpdater();
-		// takeThingActions_Safe is our obsolete, deprecated legacy prototype implementation of message reaping
-		List<ThingActionSpec> actionSpecList = updater.takeThingActions_Safe(rc, srcGraphID); 
+		// takeThingActions_TX is our obsolete, deprecated legacy prototype implementation of message reaping
+		List<ThingActionSpec> actionSpecList = updater.takeThingActions_TX(rc, srcGraphID); 
 		// It is due to be replaced with the following, although in fact the whole consumer pattern
 		// should instead be dissolved, as noted in the class-comment header for this class.
 		// Actions will no longer be "consumed", they will only be noticed, and eventually forgotten.
@@ -80,7 +80,7 @@ public abstract class BasicThingActionConsumer extends BasicDebugger implements 
 	 */
 	@Deprecated public void viewAndMarkAllActions(RepoClient rc, Ident srcGraphID, Long cutoffTime, Ident viewingAgent) {
 		BasicThingActionUpdater updater = new BasicThingActionUpdater();
-		// takeThingActions_Safe is our obsolete, deprecated legacy prototype implementation of message reaping
+		// takeThingActions_TX is our obsolete, deprecated legacy prototype implementation of message reaping
 		List<ThingActionSpec> actionSpecList = updater.viewActionsAndMark_TX(rc, srcGraphID, cutoffTime, viewingAgent);
 		// It is due to be replaced with the following, although in fact the whole consumer pattern
 		// should instead be dissolved, as noted in the class-comment header for this class.

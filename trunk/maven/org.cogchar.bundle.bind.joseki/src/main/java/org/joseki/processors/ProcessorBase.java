@@ -39,7 +39,7 @@ public abstract class ProcessorBase implements Processor
         Model defaultModel = null ;
         
         final Dataset dataset = buildDataset(datasetDesc, request, response)  ;
-
+		boolean dsetXactOpen = false;
         if ( dataset != null )
         {
             ResponseCallback cbLock = new ResponseCallback() {
@@ -49,7 +49,14 @@ public abstract class ProcessorBase implements Processor
                     datasetDesc.returnDataset(dataset) ;
                 }} ;
             response.addCallback(cbLock) ;
-            thisLock = dataset.getLock() ;
+			// Begin Stu's Xact patch:
+			
+			if (dataset.supportsTransactions()) {
+				dataset.begin(com.hp.hpl.jena.query.ReadWrite.WRITE);
+				dsetXactOpen = true;
+			}
+			
+			thisLock = dataset.getLock() ; // Stu sez - this call to getLock() was throwing before the patch
             // Transactions - if and only if there is a default model supporting transactions
             defaultModel = dataset.getDefaultModel() ;
             transactions = defaultModel.supportsTransactions() && stusTransactEnabledFlag ;
@@ -80,21 +87,37 @@ public abstract class ProcessorBase implements Processor
 				}
             }} ;
         response.addCallback(cbLock) ;
-        
+        final boolean dsetXactionActive = dsetXactOpen;
         // Always add - TDB supports .commit.
         if ( transactions )
         {
             needAbort = true ;
             try { defaultModel.begin(); } catch (UnsupportedOperationException ex) { needAbort = false ; }
             final Model m = defaultModel ;
+			
+			
             ResponseCallback cb = new ResponseCallback() {
                 public void callback(boolean successfulOperation)
                 {
                     log.debug("ResponseCallback: transaction") ;
                     if ( successfulOperation )
-                        try { m.commit(); } catch (Exception ex) { log.info("Exception on commit: "+ex.getMessage()) ; }
+                        try { 
+							m.commit(); 
+							if (dsetXactionActive) {
+								log.info("Commiting dataset xact");
+								dataset.commit();
+								dataset.end();
+							}
+						} catch (Exception ex) { log.info("Exception on commit: "+ex.getMessage()) ; }
                     else
-                        try { m.abort(); }  catch (Exception ex) { log.info("Exception on abort: "+ex.getMessage()) ; }
+                        try {
+							m.abort(); 
+							if (dsetXactionActive) {
+								log.info("Aborting dataset xact");
+								dataset.abort();
+								dataset.end();
+							}
+						}  catch (Exception ex) { log.info("Exception on abort: "+ex.getMessage()) ; }
                 }} ;
             response.addCallback(cb) ;
         } else {
@@ -106,6 +129,17 @@ public abstract class ProcessorBase implements Processor
                 ResponseCallback cb = new ResponseCallback() {
                     public void callback(boolean successfulOperation)
                     {
+						if (dsetXactionActive) {
+							if (successfulOperation) {
+								log.info("Commiting dataset xact");
+								dataset.commit();
+								dataset.end();
+							} else {
+								log.info("Aborting dataset xact");
+								dataset.abort();
+								dataset.end();
+							}
+						}
                         log.debug("ResponseCallback: sync") ;
                         if ( attemptSync(dataset.asDatasetGraph()) )
                             log.debug("ResponseCallback: sync/done") ;
