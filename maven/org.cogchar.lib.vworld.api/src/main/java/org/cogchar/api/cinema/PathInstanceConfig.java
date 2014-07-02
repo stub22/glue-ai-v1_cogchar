@@ -37,8 +37,8 @@ import org.appdapter.core.matdat.*;
 public class PathInstanceConfig extends SpatialActionConfig {
 	public float duration;
 	public String directionType;
-	public float[] lookAtDirection = new float[3]; // Vector3f would be ideal but jME dependency not available here. Might move this later and make it so.
-	public float tension;
+	public float[] lookAtLocation = new float[3]; // Vector3f would be ideal but jME dependency not available here. Might move this later and make it so.
+        public float tension;
 	public boolean cycle;
 	public String loopMode;
 	public List<WaypointConfig> waypoints = new ArrayList<WaypointConfig>();
@@ -54,8 +54,8 @@ public class PathInstanceConfig extends SpatialActionConfig {
 		duration = sh.pullFloat(solution, CinemaCN.DURATION_VAR_NAME, Float.NaN);
 		pullAttachedItemAndType(sh, solution);
 		directionType = sh.pullIdent(solution, CinemaCN.DIRECTION_TYPE_VAR_NAME).getLocalName();
-		for (int index = 0; index < lookAtDirection.length; index++) {
-			lookAtDirection[index] = sh.pullFloat(solution, CinemaCN.DIRECTION_VAR_NAME[index], 0f);
+		for (int index = 0; index < lookAtLocation.length; index++) {
+			lookAtLocation[index] = sh.pullFloat(solution, CinemaCN.DIRECTION_VAR_NAME[index], 0f);
 		}
 		tension = sh.pullFloat(solution, CinemaCN.TENSION_VAR_NAME, 0f);
 		cycle = sh.pullBoolean(solution, CinemaCN.CYCLE_VAR_NAME);
@@ -67,10 +67,10 @@ public class PathInstanceConfig extends SpatialActionConfig {
 		}
 	}
 
-	public PathInstanceConfig(Ident item, AttachedItemType itemType, float newDuration, float[] newDirection, List<WaypointConfig> theWaypoints, Ident pathUri) {
+	public PathInstanceConfig(Ident item, AttachedItemType itemType, float newDuration, float[] newLookAtLocation, List<WaypointConfig> theWaypoints, Ident pathUri) {
 		duration = newDuration;
 		directionType = "Rotation";
-		lookAtDirection = newDirection;
+		lookAtLocation = newLookAtLocation;
 		tension = 0.83f;
 		cycle = false;
 		loopMode = "DontLoop";

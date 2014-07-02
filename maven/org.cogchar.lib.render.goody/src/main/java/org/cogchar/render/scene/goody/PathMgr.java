@@ -38,53 +38,52 @@ import org.cogchar.api.cinema.WaypointConfig;
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
-
-
 public class PathMgr extends AbstractThingCinematicMgr {
-	private Map<Ident, MotionEvent> myPathsByUri = new HashMap<Ident, MotionEvent>();
 
-	@Override
+    private Map<Ident, MotionEvent> myPathsByUri = new HashMap<Ident, MotionEvent>();
+
+    @Override
     public void buildAnimation(SpatialActionConfig sac) {
         myLogger.info("Building Path from RDF: {}", sac);
-		if (sac.getClass() != PathInstanceConfig.class) {
-			myLogger.warn("buildAnimation was passed the wrong class of configuration object! Aborting.");
-			return;
-		}
-		PathInstanceConfig pic = (PathInstanceConfig) sac;
+        if (sac.getClass() != PathInstanceConfig.class) {
+            myLogger.warn("buildAnimation was passed the wrong class of configuration object! Aborting.");
+            return;
+        }
+        PathInstanceConfig pic = (PathInstanceConfig) sac;
         Map<String, CameraNode> boundCameras = new HashMap<String, CameraNode>(); // To keep track of cameras bound to this cinematic
-		SpatialGrabber grabber = new SpatialGrabber(myCRC);
-		Spatial attachedSpatial = grabber.getSpatialForSpecifiedType(pic, boundCameras);
-		//staticLogger.info("The attached spatial is {} with requested uri {}", attachedSpatial, pic.attachedItem); // TEST ONLY
-		if (attachedSpatial != null) {
-			MotionEvent event = getMotionEvent(pic, attachedSpatial);
-			if (event != null) {
-				myPathsByUri.put(pic.myUri, event);
-			}
-		}
+        SpatialGrabber grabber = new SpatialGrabber(myCRC);
+        Spatial attachedSpatial = grabber.getSpatialForSpecifiedType(pic, boundCameras);
+        //staticLogger.info("The attached spatial is {} with requested uri {}", attachedSpatial, pic.attachedItem); // TEST ONLY
+        if (attachedSpatial != null) {
+            MotionEvent event = getMotionEvent(pic, attachedSpatial);
+            if (event != null) {
+                myPathsByUri.put(pic.myUri, event);
+            }
+        }
     }
 
-	// A class to extend MotionEvent to detach MotionEvent's spatial from the root node when the animation completes
-	// This allows the flycam to operate normally after an animation if we animate the default camera
-	class DetachingMotionEvent extends MotionEvent {
+    // A class to extend MotionEvent to detach MotionEvent's spatial from the root node when the animation completes
+    // This allows the flycam to operate normally after an animation if we animate the default camera
+    class DetachingMotionEvent extends MotionEvent {
 
-		Node myRootNode;
+        Node myRootNode;
 
-		DetachingMotionEvent(Spatial spatial, MotionPath path, float initialDuration, Node rootNode) {
-			super(spatial, path, initialDuration);
-			myRootNode = rootNode;
-		}
+        DetachingMotionEvent(Spatial spatial, MotionPath path, float initialDuration, Node rootNode) {
+            super(spatial, path, initialDuration);
+            myRootNode = rootNode;
+        }
 
-		@Override
-		public void onStop() {
-			//super.onStop(); //maybe? -Matt (from MotionEvent: currentWaypoint = 0;)
-			myRootNode.detachChild(this.getSpatial());
-		}
-	}
+        @Override
+        public void onStop() {
+            //super.onStop(); //maybe? -Matt (from MotionEvent: currentWaypoint = 0;)
+            myRootNode.detachChild(this.getSpatial());
+        }
+    }
 
     private MotionEvent getMotionEvent(PathInstanceConfig track, Spatial attachedSpatial) {
         MotionPath path = new MotionPath();
         path.setCycle(track.cycle);
-		AnimWaypointsConfig waypointInfo = AnimWaypointsConfig.getMainConfig();
+        AnimWaypointsConfig waypointInfo = AnimWaypointsConfig.getMainConfig();
         for (WaypointConfig waypoint : track.waypoints) {
             if (noPosition(waypoint.myCoordinates)) { // If we don't have coordinates for this waypoint...
                 // First check to see if this waypoint refers to a stored waypoint previously defined
@@ -103,60 +102,73 @@ public class PathMgr extends AbstractThingCinematicMgr {
             //staticLogger.info("Making new waypoint: " + new Vector3f(waypoint.myCoordinates[0], waypoint.myCoordinates[1], waypoint.myCoordinates[2])); // TEST ONLY
             path.addWayPoint(new Vector3f(waypoint.myCoordinates[0], waypoint.myCoordinates[1], waypoint.myCoordinates[2]));
         }
-		
-		MotionEvent motionTrack = null;
-		
-		if (path.getNbWayPoints() < 2) {
-			myLogger.warn("Less than two waypoints found in path {}; aborting build.", track.myUri);
-		} else {
-			path.setCurveTension(track.tension);
 
-			MotionEvent.Direction directionJmeType = null;
-			for (MotionEvent.Direction testType : MotionEvent.Direction.values()) {
-				if (track.directionType.equals(testType.toString())) {
-					directionJmeType = testType;
-				}
-			}
-			if (directionJmeType == null) {
-				myLogger.error("Specified MotionEvent direction type not in MotionEvent.Direction: {}", track.directionType);
-				return null;
-			}
-			LoopMode loopJmeType = setLoopMode(track.loopMode);
-			if (loopJmeType == null) {
-				myLogger.error("Specified MotionEvent loop mode not in com.jme3.animation.LoopMode: {}", track.loopMode);
-				return null;
-			}
-			motionTrack = new DetachingMotionEvent(attachedSpatial, path, track.duration, 
-					myCRC.getRenderRegistryClient().getJme3RootDeepNode(null));
-			motionTrack.setDirectionType(directionJmeType);
-			motionTrack.setLookAt(new Vector3f(track.lookAtDirection[0], track.lookAtDirection[1], track.lookAtDirection[2]), Vector3f.UNIT_Y);
-			motionTrack.setRotation(new Quaternion(track.lookAtDirection)); // Used for "Rotation" MotionEvent.Direction -- still experimental
-			motionTrack.setLoopMode(loopJmeType);
-		}
+        MotionEvent motionTrack = null;
+
+        if (path.getNbWayPoints() < 2) {
+            myLogger.warn("Less than two waypoints found in path {}; aborting build.", track.myUri);
+        } else {
+            path.setCurveTension(track.tension);
+
+            MotionEvent.Direction directionJmeType = null;
+            for (MotionEvent.Direction testType : MotionEvent.Direction.values()) {
+                if (track.directionType.equals(testType.toString())) {
+                    directionJmeType = testType;
+                }
+            }
+            if (directionJmeType == null) {
+                myLogger.error("Specified MotionEvent direction type not in MotionEvent.Direction: {}", track.directionType);
+                return null;
+            }
+            LoopMode loopJmeType = setLoopMode(track.loopMode);
+            if (loopJmeType == null) {
+                myLogger.error("Specified MotionEvent loop mode not in com.jme3.animation.LoopMode: {}", track.loopMode);
+                return null;
+            }
+            motionTrack = new DetachingMotionEvent(attachedSpatial, path, track.duration,
+                    myCRC.getRenderRegistryClient().getJme3RootDeepNode(null));
+            
+            // For move rotation to work, we need to look at a specific location, prior to bens changes we were attempting to use a rotation as our location...
+            motionTrack.setDirectionType(MotionEvent.Direction.LookAt);
+            motionTrack.setLookAt(new Vector3f(track.lookAtLocation[0], track.lookAtLocation[1], track.lookAtLocation[2]), Vector3f.UNIT_Y);
+            
+            motionTrack.setLoopMode(loopJmeType);
+            motionTrack.setInitialDuration(track.duration);
+
+        }
         return motionTrack;
-	}
+    }
 
-	@Override
+    @Override
     public boolean controlAnimationByName(final Ident uri, ControlAction action) { // Soon switching to controlPathByUri
         boolean validAction = true;
         final MotionEvent path = myPathsByUri.get(uri);
         if (path != null) {
             if (action.equals(PathMgr.ControlAction.PLAY)) {
                 myLogger.info("Playing cinematic {}", uri);
-				// Stu added time reset so that anims with "DontLoop" can be played more than once.
-				Callable c = new Callable() { // Do this on main render thread
-					@Override public Void call() throws Exception {
-						path.setTime(0.0f);
-						path.play();
-						return null;
-					}
-				};
-				myCRC.enqueueCallable(c);
-				
+                // Stu added time reset so that anims with "DontLoop" can be played more than once.
+                Callable c = new Callable() { // Do this on main render thread
+                    @Override
+                    public Void call() {
+                        try {
+                            // Ben is specifically stopping null pointer exception as lwjgl exception can be thrown.
+                            if (path != null) { 
+                                path.setTime(0.0f);
+                                path.play();
+                            }else{
+                                myLogger.error("Trouble setting camera path, path is null {}", path);
+                            }
+                        } catch (Exception e) {
+                            myLogger.error("Trouble setting camera path {}", e);
+                        }
+                        return null;
+                    }
+                };
+                myCRC.enqueueCallable(c);
+
             } else if (action.equals(PathMgr.ControlAction.STOP)) {
                 // Wouldn't you know, this has to be done on main thread
                 Future<Object> waitForThis = myCRC.enqueueCallable(new Callable<Boolean>() {
-
                     @Override
                     public Boolean call() throws Exception {
                         path.stop();
@@ -184,11 +196,10 @@ public class PathMgr extends AbstractThingCinematicMgr {
         return validAction;
     }
 
-	@Override
+    @Override
     public void clearAnimations() {
         myPathsByUri.clear();
-		// Disable CameraNodes?
+        // Disable CameraNodes?
         myLogger.info("Paths cleared.");
     }
-
 }
