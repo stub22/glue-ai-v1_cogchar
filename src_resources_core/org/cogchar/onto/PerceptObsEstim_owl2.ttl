@@ -170,14 +170,16 @@
 
 :myX rdf:type owl:DatatypeProperty ;
      
+     rdfs:comment """http://stackoverflow.com/questions/15336872/xsd-what-is-the-difference-between-xsinteger-and-xsint
+
+""" ;
+     
      rdfs:subPropertyOf <file:/E:/_mount/cogchar_trunk/src_resources_core/org/cogchar/onto/org.cogchar.onto/perceptObsEstim#ourTopDataProperty> ;
      
      rdfs:range xsd:decimal ,
                 xsd:double ,
                 xsd:float ,
                 xsd:int ,
-                xsd:integer ,
-                xsd:positiveInteger ,
                 owl:rational ,
                 owl:real .
 
