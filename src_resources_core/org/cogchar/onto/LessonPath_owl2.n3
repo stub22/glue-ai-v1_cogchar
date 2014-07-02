@@ -11,14 +11,42 @@
 
 #################################################################
 #
+#    Annotation properties
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Datatypes
+#
+#################################################################
+
+
+
+
+#################################################################
+#
 #    Object Properties
 #
 #################################################################
 
 
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasHelperFolio
+
+:hasHelperFolio rdf:type owl:ObjectProperty ;
+                
+                rdfs:subPropertyOf :ourObjectProperty .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasLesson
 
 :hasLesson rdf:type owl:ObjectProperty ;
+           
+           rdfs:range :Lesson ;
            
            rdfs:subPropertyOf :ourObjectProperty .
 
@@ -27,6 +55,8 @@
 ###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasLessonPrompt
 
 :hasLessonPrompt rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:range :LessonPrompt ;
                  
                  rdfs:subPropertyOf :ourObjectProperty .
 
@@ -38,9 +68,23 @@
                    
                    rdfs:range :LessonResponse ;
                    
-                   rdfs:domain :LessonUsage ;
-                   
                    rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasLessonUsage
+
+:hasLessonUsage rdf:type owl:ObjectProperty ;
+                
+                rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStudentFolio
+
+:hasStudentFolio rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:subPropertyOf :ourObjectProperty .
 
 
 
@@ -58,6 +102,61 @@
 
 #################################################################
 #
+#    Data properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasPoints
+
+:hasPoints rdf:type owl:DatatypeProperty ;
+           
+           rdfs:subPropertyOf :ourDataProperty ;
+           
+           rdfs:range xsd:decimal .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStampCreated
+
+:hasStampCreated rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:subPropertyOf :ourDataProperty ;
+                 
+                 rdfs:range xsd:dateTimeStamp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStampCreatedJava
+
+:hasStampCreatedJava rdf:type owl:DatatypeProperty ;
+                     
+                     rdfs:subPropertyOf :ourDataProperty ;
+                     
+                     rdfs:range xsd:long .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasXmlText
+
+:hasXmlText rdf:type owl:DatatypeProperty ;
+            
+            rdfs:subPropertyOf :ourDataProperty ;
+            
+            rdfs:range rdf:XMLLiteral .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#ourDataProperty
+
+:ourDataProperty rdf:type owl:DatatypeProperty .
+
+
+
+
+
+#################################################################
+#
 #    Classes
 #
 #################################################################
@@ -67,7 +166,9 @@
 
 :Content rdf:type owl:Class ;
          
-         rdfs:subClassOf :LThing .
+         rdfs:subClassOf :LThing ;
+         
+         rdfs:comment "Metadata record for any piece of content." .
 
 
 
@@ -105,7 +206,9 @@
 
 :Lesson rdf:type owl:Class ;
         
-        rdfs:subClassOf :Content .
+        rdfs:subClassOf :Content ;
+        
+        rdfs:comment "Metadata for some Lesson." .
 
 
 
@@ -113,7 +216,9 @@
 
 :LessonPrompt rdf:type owl:Class ;
               
-              rdfs:subClassOf :Content .
+              rdfs:subClassOf :Content ;
+              
+              rdfs:comment "Metadata for some prompt a student may respond to.   " .
 
 
 
