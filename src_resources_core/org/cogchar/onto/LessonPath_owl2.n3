@@ -113,6 +113,16 @@
 #################################################################
 
 
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasFlag
+
+:hasFlag rdf:type owl:DatatypeProperty ;
+         
+         rdfs:subPropertyOf :ourDataProperty ;
+         
+         rdfs:range xsd:boolean .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasPoints
 
 :hasPoints rdf:type owl:DatatypeProperty ;
@@ -147,7 +157,9 @@
 
 :hasStatDouble rdf:type owl:DatatypeProperty ;
                
-               rdfs:subPropertyOf :ourDataProperty .
+               rdfs:subPropertyOf :ourDataProperty ;
+               
+               rdfs:range xsd:double .
 
 
 
@@ -155,37 +167,21 @@
 
 :hasStatFloat rdf:type owl:DatatypeProperty ;
               
-              rdfs:subPropertyOf :ourDataProperty .
+              rdfs:subPropertyOf :ourDataProperty ;
+              
+              rdfs:range xsd:float .
 
 
 
-###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStatRational
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasText
 
-:hasStatRational rdf:type owl:DatatypeProperty ;
-                 
-                 rdfs:subPropertyOf :ourDataProperty ;
-                 
-                 rdfs:range owl:rational .
-
-
-
-###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStatReal
-
-:hasStatReal rdf:type owl:DatatypeProperty ;
-             
-             rdfs:subPropertyOf :ourDataProperty ;
-             
-             rdfs:range owl:real .
-
-
-
-###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasXmlText
-
-:hasXmlText rdf:type owl:DatatypeProperty ;
-            
-            rdfs:comment "Using XMLLiteral as range type causes missing class in RDFReactor 4.8.3" ;
-            
-            rdfs:subPropertyOf :ourDataProperty .
+:hasText rdf:type owl:DatatypeProperty ;
+         
+         rdfs:comment "Using XMLLiteral as range type causes missing class in RDFReactor 4.8.3" ;
+         
+         rdfs:subPropertyOf :ourDataProperty ;
+         
+         rdfs:range xsd:string .
 
 
 
