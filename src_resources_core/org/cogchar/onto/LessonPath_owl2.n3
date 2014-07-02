@@ -38,6 +38,8 @@
 
 :hasHelperFolio rdf:type owl:ObjectProperty ;
                 
+                rdfs:range :HelperFolio ;
+                
                 rdfs:subPropertyOf :ourObjectProperty .
 
 
@@ -76,6 +78,8 @@
 
 :hasLessonUsage rdf:type owl:ObjectProperty ;
                 
+                rdfs:range :LessonUsage ;
+                
                 rdfs:subPropertyOf :ourObjectProperty .
 
 
@@ -83,6 +87,8 @@
 ###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStudentFolio
 
 :hasStudentFolio rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:range :StudentFolio ;
                  
                  rdfs:subPropertyOf :ourObjectProperty .
 
@@ -113,7 +119,7 @@
            
            rdfs:subPropertyOf :ourDataProperty ;
            
-           rdfs:range xsd:decimal .
+           rdfs:range xsd:integer .
 
 
 
@@ -123,7 +129,7 @@
                  
                  rdfs:subPropertyOf :ourDataProperty ;
                  
-                 rdfs:range xsd:dateTimeStamp .
+                 rdfs:range xsd:dateTime .
 
 
 
@@ -137,19 +143,57 @@
 
 
 
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStatDouble
+
+:hasStatDouble rdf:type owl:DatatypeProperty ;
+               
+               rdfs:subPropertyOf :ourDataProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStatFloat
+
+:hasStatFloat rdf:type owl:DatatypeProperty ;
+              
+              rdfs:subPropertyOf :ourDataProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStatRational
+
+:hasStatRational rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:subPropertyOf :ourDataProperty ;
+                 
+                 rdfs:range owl:rational .
+
+
+
+###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasStatReal
+
+:hasStatReal rdf:type owl:DatatypeProperty ;
+             
+             rdfs:subPropertyOf :ourDataProperty ;
+             
+             rdfs:range owl:real .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#hasXmlText
 
 :hasXmlText rdf:type owl:DatatypeProperty ;
             
-            rdfs:subPropertyOf :ourDataProperty ;
+            rdfs:comment "Using XMLLiteral as range type causes missing class in RDFReactor 4.8.3" ;
             
-            rdfs:range rdf:XMLLiteral .
+            rdfs:subPropertyOf :ourDataProperty .
 
 
 
 ###  http://onto.cogchar.org/onto/201407/LessonPath_OWL2#ourDataProperty
 
-:ourDataProperty rdf:type owl:DatatypeProperty .
+:ourDataProperty rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:domain :LThing .
 
 
 
