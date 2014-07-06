@@ -53,6 +53,10 @@
 				<configuration>
 					<includes>
 						<include>src/main/resources/org/cogchar/onto/*_owl2.ttl</include>
+						<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and for some files 
+						we are going along with that for now.
+						-->
+						<include>src/main/resources/org/cogchar/onto/*_owl2.n3</include>
 						
 					</includes>
 					<fileOptions>
