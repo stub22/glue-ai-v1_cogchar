@@ -118,6 +118,20 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasGraphNameUri
+
+:hasGraphNameUri rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:comment "The name of a graph as used in QuadStores and SPARQL operations." ;
+                 
+                 rdfs:domain :GraphPointer ;
+                 
+                 rdfs:subPropertyOf :mDataProp ;
+                 
+                 rdfs:range xsd:anyURI .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasJavaPackageName
 
 :hasJavaPackageName rdf:type owl:DatatypeProperty ;
@@ -284,6 +298,30 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GO_CopyToNewOpen
+
+:GO_CopyToNewOpen rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :GO_CopyAsNew .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GO_CopyToNewRelease
+
+:GO_CopyToNewRelease rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :GO_CopyAsNew .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GO_CopyToNewSnapshot
+
+:GO_CopyToNewSnapshot rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf :GO_CopyAsNew .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GP_Open
 
 :GP_Open rdf:type owl:Class ;
@@ -314,7 +352,9 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
            
            rdfs:subClassOf :MThing ;
            
-           rdfs:comment "Either a dataset (=quadstore) or a \"standalone\" (=triplestore) graph model or file (of whatvever kind, in-mem or N3 file) is a host.   However, a dataset host does not \"contain\" little hosts inside it for each graph.  If you make a copy of that graph outside the dataset (e.g. as a \"checkout\"), now you have a new host." .
+           rdfs:comment """Either a dataset (=quadstore) or a \"standalone\" (=triplestore) graph model or file (of whatvever kind, in-mem or N3 file) is a host.   However, a dataset host does not \"contain\" little hosts inside it for each graph.  If you make a copy of that graph outside the dataset (e.g. as a \"checkout\"), now you have a new GraphHost.
+
+A Host does not keep GraphPointers to its own graphs, but an inverse query may be used to find all GraphPointers that refer to a particular host.""" .
 
 
 
@@ -366,8 +406,25 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
               
               rdfs:subClassOf :MThing ;
               
-              rdfs:comment """Refers to a single graph in some GraphHost.
-Is required to be in one of the forms GP_Snapshot, GP_Release, or GP_Open - which typically apply textual contraints to the form of the URI used.  Thus we practically ensure that a graph URI may not try to \"change states\" by changing it's associated type - the URI must be changed too, typically by copying the graph.    (If the types were actually re-assignable, that would be nonmonotonic logic).""" .
+              rdfs:comment """Metadata for a single graph in some GraphHost.
+The actual graph URI (used in QuadStores and SPARQL operations) must be specified using the hasGraphNameUri property, which is usually distinct from the Uri of this pointer.
+
+A pointer is required to be in one of the forms GP_Snapshot, GP_Release, or GP_Open - which typically apply textual contraints to the form of the URI used,
+for both the pointerUri and, in particular, the hasGraphNameUri.
+
+We attempt to ensure that neither the graph nor pointer URI can \"change states\" by changing it's associated type.  Instead, a new graph with a new URI, and a new pointer, must all be created, typically by copying the graph.    (If the types were actually re-assignable, that would lead to nonmonotonic logic).
+
+GraphPointers are not necessarily unique;  multiple different pointers might refer to the same graph.  However, in general it is beneficial to try to make the GraphPointers as unique as possible.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphPointerSet
+
+:GraphPointerSet rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :MThing ;
+                 
+                 rdfs:comment "An unordered set of GraphPointers that can be used to construct a query, or copied to a new Quadstore." .
 
 
 
