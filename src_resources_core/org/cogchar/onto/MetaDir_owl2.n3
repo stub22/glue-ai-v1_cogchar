@@ -50,6 +50,45 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasSourceGP
+
+:hasSourceGP rdf:type owl:ObjectProperty ;
+             
+             rdfs:domain :GraphOp ;
+             
+             rdfs:range :GraphPointer ;
+             
+             rdfs:subPropertyOf :mObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasTargetGP
+
+:hasTargetGP rdf:type owl:FunctionalProperty ,
+                      owl:ObjectProperty ;
+             
+             rdfs:domain :GraphOp ;
+             
+             rdfs:range :GraphPointer ;
+             
+             rdfs:subPropertyOf :mObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#isDescendedFrom
+
+:isDescendedFrom rdf:type owl:AsymmetricProperty ,
+                          owl:ObjectProperty ,
+                          owl:TransitiveProperty ;
+                 
+                 rdfs:range :GraphPointer ;
+                 
+                 rdfs:domain :GraphPointer ;
+                 
+                 rdfs:subPropertyOf :mObjProp .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#mObjProp
 
 :mObjProp rdf:type owl:ObjectProperty ;
@@ -73,7 +112,9 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasFilenameTailWithExt rdf:type owl:DatatypeProperty ;
                         
-                        rdfs:subPropertyOf :mDataProp .
+                        rdfs:subPropertyOf :mDataProp ;
+                        
+                        rdfs:range xsd:string .
 
 
 
@@ -81,7 +122,9 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasJavaPackageName rdf:type owl:DatatypeProperty ;
                     
-                    rdfs:subPropertyOf :mDataProp .
+                    rdfs:subPropertyOf :mDataProp ;
+                    
+                    rdfs:range xsd:string .
 
 
 
@@ -89,7 +132,9 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasMavenArtifactId rdf:type owl:DatatypeProperty ;
                     
-                    rdfs:subPropertyOf :mDataProp .
+                    rdfs:subPropertyOf :mDataProp ;
+                    
+                    rdfs:range xsd:string .
 
 
 
@@ -97,7 +142,9 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasMavenGroupId rdf:type owl:DatatypeProperty ;
                  
-                 rdfs:subPropertyOf :mDataProp .
+                 rdfs:subPropertyOf :mDataProp ;
+                 
+                 rdfs:range xsd:string .
 
 
 
@@ -105,7 +152,39 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasMavenVersion rdf:type owl:DatatypeProperty ;
                  
-                 rdfs:subPropertyOf :mDataProp .
+                 rdfs:subPropertyOf :mDataProp ;
+                 
+                 rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOpComment
+
+:hasOpComment rdf:type owl:DatatypeProperty ;
+              
+              rdfs:subPropertyOf :mDataProp ;
+              
+              rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOpStamp
+
+:hasOpStamp rdf:type owl:DatatypeProperty ;
+            
+            rdfs:subPropertyOf :mDataProp ;
+            
+            rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOpUsername
+
+:hasOpUsername rdf:type owl:DatatypeProperty ;
+               
+               rdfs:subPropertyOf :mDataProp ;
+               
+               rdfs:range xsd:string .
 
 
 
@@ -113,7 +192,9 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasOsgiBundleSymbolicName rdf:type owl:DatatypeProperty ;
                            
-                           rdfs:subPropertyOf :mDataProp .
+                           rdfs:subPropertyOf :mDataProp ;
+                           
+                           rdfs:range xsd:string .
 
 
 
@@ -121,7 +202,9 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasOsgiBundleVersion rdf:type owl:DatatypeProperty ;
                       
-                      rdfs:subPropertyOf :mDataProp .
+                      rdfs:subPropertyOf :mDataProp ;
+                      
+                      rdfs:range xsd:string .
 
 
 
@@ -151,6 +234,54 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 #    Classes
 #
 #################################################################
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GOTD_Add
+
+:GOTD_Add rdf:type owl:Class ;
+          
+          rdfs:subClassOf :GraphOpTripleDelta .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GOTD_Remove
+
+:GOTD_Remove rdf:type owl:Class ;
+             
+             rdfs:subClassOf :GraphOpTripleDelta .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GOTD_RemoveAndAdd
+
+:GOTD_RemoveAndAdd rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :GraphOpTripleDelta .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GO_CopyAsAdd
+
+:GO_CopyAsAdd rdf:type owl:Class ;
+              
+              rdfs:subClassOf :GraphOpCopy .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GO_CopyAsNew
+
+:GO_CopyAsNew rdf:type owl:Class ;
+              
+              rdfs:subClassOf :GraphOpCopy .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GO_CopyAsReplace
+
+:GO_CopyAsReplace rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :GraphOpCopy .
+
 
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GP_Open
@@ -184,6 +315,48 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
            rdfs:subClassOf :MThing ;
            
            rdfs:comment "Either a dataset (=quadstore) or a \"standalone\" (=triplestore) graph model or file (of whatvever kind, in-mem or N3 file) is a host.   However, a dataset host does not \"contain\" little hosts inside it for each graph.  If you make a copy of that graph outside the dataset (e.g. as a \"checkout\"), now you have a new host." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphOp
+
+:GraphOp rdf:type owl:Class ;
+         
+         rdfs:subClassOf :MThing ;
+         
+         rdfs:comment "An operation in the audit-log of a particular Graph(Pointer)." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphOpCopy
+
+:GraphOpCopy rdf:type owl:Class ;
+             
+             rdfs:subClassOf :GraphOp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphOpTripleDelta
+
+:GraphOpTripleDelta rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :GraphOp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphOpWholeDelete
+
+:GraphOpWholeDelete rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :GraphOp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphOpWholeNew
+
+:GraphOpWholeNew rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :GraphOp .
 
 
 
