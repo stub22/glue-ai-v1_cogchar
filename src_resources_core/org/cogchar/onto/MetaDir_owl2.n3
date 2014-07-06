@@ -42,6 +42,30 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 #################################################################
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasClasspathEntity
+
+:hasClasspathEntity rdf:type owl:ObjectProperty ;
+                    
+                    rdfs:range :ClasspathEntity ;
+                    
+                    rdfs:domain :MThing ;
+                    
+                    rdfs:subPropertyOf :mObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMavenArtifact
+
+:hasMavenArtifact rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:domain :MThing ;
+                  
+                  rdfs:range :MavenArtifact ;
+                  
+                  rdfs:subPropertyOf :mObjProp .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMemberGP
 
 :hasMemberGP rdf:type owl:ObjectProperty ;
@@ -51,6 +75,30 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
              rdfs:domain :GraphPointerSet ;
              
              rdfs:subPropertyOf :mObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOsgiBundle
+
+:hasOsgiBundle rdf:type owl:ObjectProperty ;
+               
+               rdfs:domain :MThing ;
+               
+               rdfs:range :OsgiBundle ;
+               
+               rdfs:subPropertyOf :mObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasParentFolder
+
+:hasParentFolder rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:domain :ClasspathEntity ;
+                 
+                 rdfs:range :ClasspathFolder ;
+                 
+                 rdfs:subPropertyOf :mObjProp .
 
 
 
@@ -140,6 +188,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasFilenameTailWithExt rdf:type owl:DatatypeProperty ;
                         
+                        rdfs:domain :MThing ;
+                        
                         rdfs:subPropertyOf :mDataProp ;
                         
                         rdfs:range xsd:string .
@@ -164,6 +214,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasJavaPackageName rdf:type owl:DatatypeProperty ;
                     
+                    rdfs:domain :ClasspathEntity ;
+                    
                     rdfs:subPropertyOf :mDataProp ;
                     
                     rdfs:range xsd:string .
@@ -173,6 +225,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMavenArtifactId
 
 :hasMavenArtifactId rdf:type owl:DatatypeProperty ;
+                    
+                    rdfs:domain :MavenArtifact ;
                     
                     rdfs:subPropertyOf :mDataProp ;
                     
@@ -184,6 +238,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasMavenGroupId rdf:type owl:DatatypeProperty ;
                  
+                 rdfs:domain :MavenArtifact ;
+                 
                  rdfs:subPropertyOf :mDataProp ;
                  
                  rdfs:range xsd:string .
@@ -193,6 +249,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMavenVersion
 
 :hasMavenVersion rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:domain :MavenArtifact ;
                  
                  rdfs:subPropertyOf :mDataProp ;
                  
@@ -204,6 +262,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasOpComment rdf:type owl:DatatypeProperty ;
               
+              rdfs:domain :GraphOp ;
+              
               rdfs:subPropertyOf :mDataProp ;
               
               rdfs:range xsd:string .
@@ -214,15 +274,31 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasOpStamp rdf:type owl:DatatypeProperty ;
             
+            rdfs:domain :GraphOp ;
+            
             rdfs:subPropertyOf :mDataProp ;
             
-            rdfs:range xsd:string .
+            rdfs:range xsd:dateTime .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOpStampJava
+
+:hasOpStampJava rdf:type owl:DatatypeProperty ;
+                
+                rdfs:domain :GraphOp ;
+                
+                rdfs:subPropertyOf :mDataProp ;
+                
+                rdfs:range xsd:long .
 
 
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOpUsername
 
 :hasOpUsername rdf:type owl:DatatypeProperty ;
+               
+               rdfs:domain :GraphOp ;
                
                rdfs:subPropertyOf :mDataProp ;
                
@@ -234,6 +310,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasOsgiBundleSymbolicName rdf:type owl:DatatypeProperty ;
                            
+                           rdfs:domain :OsgiBundle ;
+                           
                            rdfs:subPropertyOf :mDataProp ;
                            
                            rdfs:range xsd:string .
@@ -244,6 +322,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasOsgiBundleVersion rdf:type owl:DatatypeProperty ;
                       
+                      rdfs:domain :OsgiBundle ;
+                      
                       rdfs:subPropertyOf :mDataProp ;
                       
                       rdfs:range xsd:string .
@@ -253,6 +333,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasUrlText
 
 :hasUrlText rdf:type owl:DatatypeProperty ;
+            
+            rdfs:domain :MThing ;
             
             rdfs:subPropertyOf :mDataProp ;
             
@@ -276,6 +358,54 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 #    Classes
 #
 #################################################################
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#ClasspathEntity
+
+:ClasspathEntity rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :MThing .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#ClasspathFile
+
+:ClasspathFile rdf:type owl:Class ;
+               
+               rdfs:subClassOf :ClasspathEntity .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#ClasspathFolder
+
+:ClasspathFolder rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :ClasspathEntity .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3ST_N3
+
+:GH3ST_N3 rdf:type owl:Class ;
+          
+          rdfs:subClassOf :GraphHost3SerialTriples .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3ST_TabInSpreadsheet
+
+:GH3ST_TabInSpreadsheet rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :GraphHost3SerialTriples .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH5RS_FusekiServer
+
+:GH5RS_FusekiServer rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :GraphHost5RemoteServer .
+
 
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GOTD_Add
@@ -386,6 +516,14 @@ A Host does not keep GraphPointers to its own graphs, but an inverse query may b
 
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost3SerialTriples
+
+:GraphHost3SerialTriples rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf :GraphHost3Triples .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost3Triples
 
 :GraphHost3Triples rdf:type owl:Class ;
@@ -406,6 +544,14 @@ A Host does not keep GraphPointers to its own graphs, but an inverse query may b
 
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost4SerialQuads
+
+:GraphHost4SerialQuads rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :GraphHost4Quads .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost5Quints
 
 :GraphHost5Quints rdf:type owl:Class ;
@@ -413,6 +559,22 @@ A Host does not keep GraphPointers to its own graphs, but an inverse query may b
                   rdfs:subClassOf :GraphHost ;
                   
                   rdfs:comment "Describes a volume containing any number of quadstores (= datasets, in Jena lingo)." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost5RemoteServer
+
+:GraphHost5RemoteServer rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :GraphHost5Quints .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost5SerialVolume
+
+:GraphHost5SerialVolume rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :GraphHost5Quints .
 
 
 
@@ -519,7 +681,7 @@ GraphPointers are not necessarily unique;  multiple different pointers might ref
 
 :HLTDB_InMem rdf:type owl:Class ;
              
-             rdfs:subClassOf :HostLocalTDB .
+             rdfs:subClassOf :QuadstoreLocalTDB .
 
 
 
@@ -527,47 +689,7 @@ GraphPointers are not necessarily unique;  multiple different pointers might ref
 
 :HLTDB_OnDisk rdf:type owl:Class ;
               
-              rdfs:subClassOf :HostLocalTDB .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostAtURL
-
-:HostAtURL rdf:type owl:Class ;
-           
-           rdfs:subClassOf :GraphHost .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostLoadedLocal
-
-:HostLoadedLocal rdf:type owl:Class ;
-                 
-                 rdfs:subClassOf :GraphHost .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostLocalMemNotrans
-
-:HostLocalMemNotrans rdf:type owl:Class ;
-                     
-                     rdfs:subClassOf :HostLoadedLocal .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostLocalTDB
-
-:HostLocalTDB rdf:type owl:Class ;
-              
-              rdfs:subClassOf :HostLoadedLocal .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostN3
-
-:HostN3 rdf:type owl:Class ;
-        
-        rdfs:subClassOf :HostSerialTriples .
+              rdfs:subClassOf :QuadstoreLocalTDB .
 
 
 
@@ -575,46 +697,7 @@ GraphPointers are not necessarily unique;  multiple different pointers might ref
 
 :HostN4 rdf:type owl:Class ;
         
-        rdfs:subClassOf :HostSerialQuads .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostOnClasspath
-
-:HostOnClasspath rdf:type owl:Class ;
-                 
-                 rdfs:subClassOf :GraphHost ;
-                 
-                 rdfs:comment """Refers to either a single file or a group of files containing triples or quads, which can be found somewhere on a java classpath - typically of some known Maven artifact, which may often also be an OSGi bundle.
-
-Will usually overlap with HostUnparsed, and sometimes (but typically only for short term purposes) with HostAtURL (because classpath entries may have URLs provided via OSGi).""" .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostSerialQuads
-
-:HostSerialQuads rdf:type owl:Class ;
-                 
-                 rdfs:subClassOf :GraphHost4Quads ,
-                                 :HostUnparsed .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostSerialTriples
-
-:HostSerialTriples rdf:type owl:Class ;
-                   
-                   rdfs:subClassOf :GraphHost3Triples ,
-                                   :HostUnparsed .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostSerialVolume
-
-:HostSerialVolume rdf:type owl:Class ;
-                  
-                  rdfs:subClassOf :GraphHost5Quints ,
-                                  :HostUnparsed .
+        rdfs:subClassOf :GraphHost4SerialQuads .
 
 
 
@@ -622,39 +705,7 @@ Will usually overlap with HostUnparsed, and sometimes (but typically only for sh
 
 :HostSpreadsheet rdf:type owl:Class ;
                  
-                 rdfs:subClassOf :HostSerialQuads .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostStoreRemote
-
-:HostStoreRemote rdf:type owl:Class ;
-                 
-                 rdfs:subClassOf :GraphHost .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostStoreRemoteSOH
-
-:HostStoreRemoteSOH rdf:type owl:Class ;
-                    
-                    rdfs:subClassOf :HostAtURL ,
-                                    :HostStoreRemote ;
-                    
-                    rdfs:comment """Remote store using SOH = SPARQL over HTTP 
-= SPARQL 1.1 Graph Store HTTP Protocol
-See:
-http://www.w3.org/TR/sparql11-http-rdf-update/
-
-""" .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostTabInSpreadsheet
-
-:HostTabInSpreadsheet rdf:type owl:Class ;
-                      
-                      rdfs:subClassOf :HostSerialTriples .
+                 rdfs:subClassOf :GraphHost4SerialQuads .
 
 
 
@@ -662,7 +713,7 @@ http://www.w3.org/TR/sparql11-http-rdf-update/
 
 :HostTrig rdf:type owl:Class ;
           
-          rdfs:subClassOf :HostSerialQuads .
+          rdfs:subClassOf :GraphHost4SerialQuads .
 
 
 
@@ -670,15 +721,7 @@ http://www.w3.org/TR/sparql11-http-rdf-update/
 
 :HostTripleCSV rdf:type owl:Class ;
                
-               rdfs:subClassOf :HostSerialTriples .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostUnparsed
-
-:HostUnparsed rdf:type owl:Class ;
-              
-              rdfs:subClassOf :GraphHost .
+               rdfs:subClassOf :GraphHost3SerialTriples .
 
 
 
@@ -692,6 +735,38 @@ Regarding the RDF-Reactor API:
 If inference is applied prior to java code generation, then all the *subproperties* of the properties below will properly use this class as domain+range.
 
 Without inference, that role falls down onto RDF-Reactor's \"Thing1.java\".""" .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#MavenArtifact
+
+:MavenArtifact rdf:type owl:Class ;
+               
+               rdfs:subClassOf :MThing .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#OsgiBundle
+
+:OsgiBundle rdf:type owl:Class ;
+            
+            rdfs:subClassOf :MThing .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#QuadstoreLocalMemNotrans
+
+:QuadstoreLocalMemNotrans rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :GraphHost4Quads .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#QuadstoreLocalTDB
+
+:QuadstoreLocalTDB rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :GraphHost4Quads .
 
 
 
@@ -709,8 +784,7 @@ Without inference, that role falls down onto RDF-Reactor's \"Thing1.java\".""" .
 
 :RemoteQuadstoreSOH rdf:type owl:Class ;
                     
-                    rdfs:subClassOf :GraphHost4Quads ,
-                                    :HostStoreRemoteSOH .
+                    rdfs:subClassOf :GraphHost4Quads .
 
 
 
