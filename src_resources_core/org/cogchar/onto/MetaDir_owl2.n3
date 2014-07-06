@@ -42,14 +42,6 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 #################################################################
 
 
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasGraphHost
-
-:hasGraphHost rdf:type owl:ObjectProperty ;
-              
-              rdfs:subPropertyOf :mObjProp .
-
-
-
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMemberGP
 
 :hasMemberGP rdf:type owl:ObjectProperty ;
@@ -59,6 +51,19 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
              rdfs:domain :GraphPointerSet ;
              
              rdfs:subPropertyOf :mObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasParentHost
+
+:hasParentHost rdf:type owl:FunctionalProperty ,
+                        owl:ObjectProperty ;
+               
+               rdfs:domain :GraphHost ;
+               
+               rdfs:range :GraphHost ;
+               
+               rdfs:subPropertyOf :mObjProp .
 
 
 
@@ -87,16 +92,16 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 
 
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#isDescendedFrom
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#isDescendedFromGP
 
-:isDescendedFrom rdf:type owl:ObjectProperty ,
-                          owl:TransitiveProperty ;
-                 
-                 rdfs:range :GraphPointer ;
-                 
-                 rdfs:domain :GraphPointer ;
-                 
-                 rdfs:subPropertyOf :mObjProp .
+:isDescendedFromGP rdf:type owl:ObjectProperty ,
+                            owl:TransitiveProperty ;
+                   
+                   rdfs:range :GraphPointer ;
+                   
+                   rdfs:domain :GraphPointer ;
+                   
+                   rdfs:subPropertyOf :mObjProp .
 
 
 
@@ -107,6 +112,18 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
           rdfs:domain :MThing ;
           
           rdfs:range :MThing .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#pointsToGraphHost
+
+:pointsToGraphHost rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:range :GraphHost ;
+                   
+                   rdfs:domain :GraphPointer ;
+                   
+                   rdfs:subPropertyOf :mObjProp .
 
 
 
@@ -369,6 +386,36 @@ A Host does not keep GraphPointers to its own graphs, but an inverse query may b
 
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost3Triples
+
+:GraphHost3Triples rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :GraphHost ;
+                   
+                   rdfs:comment "Describes a single well formed graph = model, which may reside within a quadstore, or independently in-memory or in a file." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost4Quads
+
+:GraphHost4Quads rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :GraphHost ;
+                 
+                 rdfs:comment "Describes a single well-formed Quadstore, suitable for SPARQL query/update over named graphs (= one dataset, in Jena lingo)." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost5Quints
+
+:GraphHost5Quints rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :GraphHost ;
+                  
+                  rdfs:comment "Describes a volume containing any number of quadstores (= datasets, in Jena lingo)." .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphOp
 
 :GraphOp rdf:type owl:Class ;
@@ -536,7 +583,11 @@ GraphPointers are not necessarily unique;  multiple different pointers might ref
 
 :HostOnClasspath rdf:type owl:Class ;
                  
-                 rdfs:subClassOf :GraphHost .
+                 rdfs:subClassOf :GraphHost ;
+                 
+                 rdfs:comment """Refers to either a single file or a group of files containing triples or quads, which can be found somewhere on a java classpath - typically of some known Maven artifact, which may often also be an OSGi bundle.
+
+Will usually overlap with HostUnparsed, and sometimes (but typically only for short term purposes) with HostAtURL (because classpath entries may have URLs provided via OSGi).""" .
 
 
 
@@ -544,7 +595,8 @@ GraphPointers are not necessarily unique;  multiple different pointers might ref
 
 :HostSerialQuads rdf:type owl:Class ;
                  
-                 rdfs:subClassOf :HostUnparsed .
+                 rdfs:subClassOf :GraphHost4Quads ,
+                                 :HostUnparsed .
 
 
 
@@ -552,7 +604,17 @@ GraphPointers are not necessarily unique;  multiple different pointers might ref
 
 :HostSerialTriples rdf:type owl:Class ;
                    
-                   rdfs:subClassOf :HostUnparsed .
+                   rdfs:subClassOf :GraphHost3Triples ,
+                                   :HostUnparsed .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostSerialVolume
+
+:HostSerialVolume rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :GraphHost5Quints ,
+                                  :HostUnparsed .
 
 
 
@@ -564,20 +626,35 @@ GraphPointers are not necessarily unique;  multiple different pointers might ref
 
 
 
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostStorePointer
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostStoreRemote
 
-:HostStorePointer rdf:type owl:Class ;
-                  
-                  rdfs:subClassOf :GraphHost .
+:HostStoreRemote rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :GraphHost .
 
 
 
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostStorePointerHttp
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostStoreRemoteSOH
 
-:HostStorePointerHttp rdf:type owl:Class ;
+:HostStoreRemoteSOH rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :HostAtURL ,
+                                    :HostStoreRemote ;
+                    
+                    rdfs:comment """Remote store using SOH = SPARQL over HTTP 
+= SPARQL 1.1 Graph Store HTTP Protocol
+See:
+http://www.w3.org/TR/sparql11-http-rdf-update/
+
+""" .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#HostTabInSpreadsheet
+
+:HostTabInSpreadsheet rdf:type owl:Class ;
                       
-                      rdfs:subClassOf :HostAtURL ,
-                                      :HostStorePointer .
+                      rdfs:subClassOf :HostSerialTriples .
 
 
 
@@ -607,15 +684,33 @@ GraphPointers are not necessarily unique;  multiple different pointers might ref
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#MThing
 
-:MThing rdf:type owl:Class .
+:MThing rdf:type owl:Class ;
+        
+        rdfs:comment """This class provides a bounds on domain and range for objectProperties (and domain for dataProperties) in the MDir ontology.  
+
+Regarding the RDF-Reactor API:
+If inference is applied prior to java code generation, then all the *subproperties* of the properties below will properly use this class as domain+range.
+
+Without inference, that role falls down onto RDF-Reactor's \"Thing1.java\".""" .
 
 
 
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#SPH_Fuseki_SOH
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#RQSOH_FusekiDataset
 
-:SPH_Fuseki_SOH rdf:type owl:Class ;
-                
-                rdfs:subClassOf :HostStorePointerHttp .
+:RQSOH_FusekiDataset rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :RemoteQuadstoreSOH ;
+                     
+                     rdfs:comment "Refers to a remote SPARQL-over-HTTP host known to be using Fuseki  conventions, which allows us to guess a dataset URL from available pieces." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#RemoteQuadstoreSOH
+
+:RemoteQuadstoreSOH rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :GraphHost4Quads ,
+                                    :HostStoreRemoteSOH .
 
 
 
