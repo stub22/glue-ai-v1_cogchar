@@ -210,7 +210,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasFilenameTailWithExt
 
-:hasFilenameTailWithExt rdf:type owl:DatatypeProperty ;
+:hasFilenameTailWithExt rdf:type owl:DatatypeProperty ,
+                                 owl:FunctionalProperty ;
                         
                         rdfs:domain :MThing ;
                         
@@ -222,7 +223,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasGraphNameUri
 
-:hasGraphNameUri rdf:type owl:DatatypeProperty ;
+:hasGraphNameUri rdf:type owl:DatatypeProperty ,
+                          owl:FunctionalProperty ;
                  
                  rdfs:comment "The name of a graph as used in QuadStores and SPARQL operations." ;
                  
@@ -236,7 +238,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasJavaPackageName
 
-:hasJavaPackageName rdf:type owl:DatatypeProperty ;
+:hasJavaPackageName rdf:type owl:DatatypeProperty ,
+                             owl:FunctionalProperty ;
                     
                     rdfs:domain :ClasspathEntity ;
                     
@@ -248,7 +251,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMavenArtifactId
 
-:hasMavenArtifactId rdf:type owl:DatatypeProperty ;
+:hasMavenArtifactId rdf:type owl:DatatypeProperty ,
+                             owl:FunctionalProperty ;
                     
                     rdfs:domain :MavenArtifact ;
                     
@@ -260,7 +264,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMavenGroupId
 
-:hasMavenGroupId rdf:type owl:DatatypeProperty ;
+:hasMavenGroupId rdf:type owl:DatatypeProperty ,
+                          owl:FunctionalProperty ;
                  
                  rdfs:domain :MavenArtifact ;
                  
@@ -272,7 +277,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMavenVersion
 
-:hasMavenVersion rdf:type owl:DatatypeProperty ;
+:hasMavenVersion rdf:type owl:DatatypeProperty ,
+                          owl:FunctionalProperty ;
                  
                  rdfs:domain :MavenArtifact ;
                  
@@ -308,7 +314,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOpStampJava
 
-:hasOpStampJava rdf:type owl:DatatypeProperty ;
+:hasOpStampJava rdf:type owl:DatatypeProperty ,
+                         owl:FunctionalProperty ;
                 
                 rdfs:domain :GraphOp ;
                 
@@ -356,7 +363,10 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasSpreadsheetKey
 
-:hasSpreadsheetKey rdf:type owl:DatatypeProperty ;
+:hasSpreadsheetKey rdf:type owl:DatatypeProperty ,
+                            owl:FunctionalProperty ;
+                   
+                   rdfs:domain :GH4S_Spreadsheet ;
                    
                    rdfs:subPropertyOf :mDataProp ;
                    
@@ -366,7 +376,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasTabNumber
 
-:hasTabNumber rdf:type owl:DatatypeProperty ;
+:hasTabNumber rdf:type owl:DatatypeProperty ,
+                       owl:FunctionalProperty ;
               
               rdfs:domain :GH3S_TabInSpreadsheet ;
               
@@ -378,7 +389,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasUrlText
 
-:hasUrlText rdf:type owl:DatatypeProperty ;
+:hasUrlText rdf:type owl:DatatypeProperty ,
+                     owl:FunctionalProperty ;
             
             rdfs:domain :MThing ;
             
@@ -503,6 +515,14 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 :GH4S_Spreadsheet rdf:type owl:Class ;
                   
                   rdfs:subClassOf :GraphHost4Serial .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH4S_SpreadsheetRemote
+
+:GH4S_SpreadsheetRemote rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :GH4S_Spreadsheet .
 
 
 
