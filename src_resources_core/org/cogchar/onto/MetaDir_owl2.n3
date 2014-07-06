@@ -115,6 +115,30 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasParentHost4Quads
+
+:hasParentHost4Quads rdf:type owl:ObjectProperty ;
+                     
+                     rdfs:domain :GraphHost3Triples ;
+                     
+                     rdfs:range :GraphHost4Quads ;
+                     
+                     rdfs:subPropertyOf :hasParentHost .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasParentHost5Quints
+
+:hasParentHost5Quints rdf:type owl:ObjectProperty ;
+                      
+                      rdfs:domain :GraphHost4Quads ;
+                      
+                      rdfs:range :GraphHost5Quints ;
+                      
+                      rdfs:subPropertyOf :hasParentHost .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasSourceGP
 
 :hasSourceGP rdf:type owl:ObjectProperty ;
@@ -344,7 +368,7 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasTabNumber rdf:type owl:DatatypeProperty ;
               
-              rdfs:domain :GH3ST_TabInSpreadsheet ;
+              rdfs:domain :GH3S_TabInSpreadsheet ;
               
               rdfs:subPropertyOf :mDataProp ;
               
@@ -406,27 +430,29 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 
 
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3ST_CSV
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3S_CSV
 
-:GH3ST_CSV rdf:type owl:Class ;
-           
-           rdfs:subClassOf :GraphHost3SerialTriples .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3ST_N3
-
-:GH3ST_N3 rdf:type owl:Class ;
+:GH3S_CSV rdf:type owl:Class ;
           
-          rdfs:subClassOf :GraphHost3SerialTriples .
+          rdfs:subClassOf :GraphHost3Serial .
 
 
 
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3ST_TabInSpreadsheet
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3S_N3
 
-:GH3ST_TabInSpreadsheet rdf:type owl:Class ;
-                        
-                        rdfs:subClassOf :GraphHost3SerialTriples .
+:GH3S_N3 rdf:type owl:Class ;
+         
+         rdfs:subClassOf :GraphHost3Serial ;
+         
+         rdfs:comment "Includes both N3 and Turtle" .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3S_TabInSpreadsheet
+
+:GH3S_TabInSpreadsheet rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :GraphHost3Serial .
 
 
 
@@ -446,11 +472,29 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 
 
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH4S_N4
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH4RSOH_FusekiDataset
 
-:GH4S_N4 rdf:type owl:Class ;
-         
-         rdfs:subClassOf :GraphHost4Serial .
+:GH4RSOH_FusekiDataset rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :GraphHost4RemoteSOH ;
+                       
+                       rdfs:comment "Refers to a remote SPARQL-over-HTTP host known to be using Fuseki  conventions, which allows us to guess a dataset URL from available pieces." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH4S_Folder
+
+:GH4S_Folder rdf:type owl:Class ;
+             
+             rdfs:subClassOf :GraphHost4Serial .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH4S_NQuads
+
+:GH4S_NQuads rdf:type owl:Class ;
+             
+             rdfs:subClassOf :GraphHost4Serial .
 
 
 
@@ -474,7 +518,17 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :GH5RS_FusekiServer rdf:type owl:Class ;
                     
-                    rdfs:subClassOf :GraphHost5RemoteServer .
+                    rdfs:subClassOf :GraphHost5RemoteServer ;
+                    
+                    rdfs:comment "This kind of server could host any number of FusekiDatasets." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH5S_Folder
+
+:GH5S_Folder rdf:type owl:Class ;
+             
+             rdfs:subClassOf :GraphHost5SerialVolume .
 
 
 
@@ -586,11 +640,11 @@ A Host does not keep GraphPointers to its own graphs, but an inverse query may b
 
 
 
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost3SerialTriples
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost3Serial
 
-:GraphHost3SerialTriples rdf:type owl:Class ;
-                         
-                         rdfs:subClassOf :GraphHost3Triples .
+:GraphHost3Serial rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :GraphHost3Triples .
 
 
 
@@ -799,16 +853,6 @@ Without inference, that role falls down onto RDF-Reactor's \"Thing1.java\".""" .
 :OsgiBundle rdf:type owl:Class ;
             
             rdfs:subClassOf :MThing .
-
-
-
-###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#RQSOH_FusekiDataset
-
-:RQSOH_FusekiDataset rdf:type owl:Class ;
-                     
-                     rdfs:subClassOf :GraphHost4RemoteSOH ;
-                     
-                     rdfs:comment "Refers to a remote SPARQL-over-HTTP host known to be using Fuseki  conventions, which allows us to guess a dataset URL from available pieces." .
 
 
 
