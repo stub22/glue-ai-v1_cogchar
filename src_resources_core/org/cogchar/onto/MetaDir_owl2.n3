@@ -420,8 +420,37 @@ A Host does not keep GraphPointers to its own graphs, but an inverse query may b
               rdfs:comment """Metadata for a single graph in some GraphHost.
 The actual graph URI (used in QuadStores and SPARQL operations) must be specified using the hasGraphNameUri property, which is usually distinct from the Uri of this pointer.
 
-A pointer is required to be in one of the forms GP_Snapshot, GP_Release, or GP_Open - which typically apply textual contraints to the form of the URI used,
-for both the pointerUri and, in particular, the hasGraphNameUri.
+Thus the constructor parameters of this pointer should usually *not* be used with the graphNameUri.   Use a different, obviously pointer-related and mode-stamped URI.  Here are 3 examples, using an optional scheme based on FDC federated namescheme, in which a datestamp may be embedded into the URN prefix:
+
+(For info on FDC URN scheme, see    http://tools.ietf.org/html/rfc4198)
+
+urn:fdc:DomainName.org:2014:graph.open.myconf#speech_out_config.sammy
+urn:fdc:DomainName.org:20120922:graph.rel.aconf#speech_out_config.jimmy
+urn:fdc:DomainName.org:201407:graph.snap.hopeful#anim_bank.sammy
+
+These above would make good hasGraphNameUris (which go in the ?g fields of triples and queries against the actual GraphHosts) but are not quite right for GraphPointer Uris . These are typical *values* of the hasGraphNameUri property, which we currently treat as a literal-valued datatypeProperty to avoid confusion.
+
+In contrast, the GraphPointer URI (owner/subject of the hasGraphNameUri bindings) *can* be a blank node, but if the pointer is to be shared, then its own URI becomes important.   Now we are in the mode of subject ?s and objectProperty-value ?o URIs used in the ?s and ?o fields of triples, 
+including the important case when ?p=hasGraphNameUri., and ?o is one of the typical values *preceding above*.  These triples are the lynchpin of the GraphPointer structure, and it is important not to muddy them up (hence this epic omment).
+
+Proceeding to show some typical URIs for GraphPointer instances.
+Here we assume a single namespace (preceding the #) in use at the DomainName.org for naming instances of glue mdir metadata.    Following that we use a 3-field identifier showing the main kind of thing (gptr), the mode (open, rel, snap), and the arbitrarly local name, broken by convention using under_score (because it's an *instance*).
+
+urn:fdc:DomainName.org:2014:glue-mdir-inst#gptr.open.speech_out_sammy
+urn:fdc:DomainName.org:2014:glue-mdir-inst#gptr.rel.speech_out_jimmy
+urn:fdc:DomainName.org:2014:glue-mdir-inst#gptr.snap.anim_bank_sammy
+
+The inclusion of type-specifiers open/rel/snap in the GP URIs is optional, but is suggested as a crutch until a particular workflow outgrows this approach.
+On the other hand, it is important to use these designations in the hasGraphNameUris values whenever possible, if users are to have direct write access
+to the underlying quadstores via unpredictable means.  It is important that \"rel\" graphs are never written, since their value is assumed permanently immutable 
+and cachable.  Known sizes and canonical-hashes of rel-graphs should be used to further enforce this perspective.
+
+A pointer is required to have exactly one of the 3 sub-types indicating its workflow state:  GP_Snapshot, GP_Release, or GP_Open - which typically apply textual contraints to the form of the URI used,
+for both the pointerUri and, in particular, the hasGraphNameUri.  In the example above, the constraint
+is mapped to the second sub-field of the strings matching \"graph.workForm.whatItIs\", where
+workForm is one of:  open, rel, snap.   The meaning of the preceding date field is contextualized by the
+workForm, and is orthogonal to the question of date precision, which in FDC is specified as
+ DateId      = (CCYY [MM [DD]]) / 1*3(DIGIT)
 
 We attempt to ensure that neither the graph nor pointer URI can \"change states\" by changing it's associated type.  Instead, a new graph with a new URI, and a new pointer, must all be created, typically by copying the graph.    (If the types were actually re-assignable, that would lead to nonmonotonic logic).
 
@@ -435,7 +464,7 @@ GraphPointers are not necessarily unique;  multiple different pointers might ref
                  
                  rdfs:subClassOf :MThing ;
                  
-                 rdfs:comment "An unordered set of GraphPointers that can be used to construct a query, or copied to a new Quadstore." .
+                 rdfs:comment "An unordered set of GraphPointers that can be used to construct a query, or to copy the underlying graphs to a new Quadstore (which will require new GraphPointers to refer to it)." .
 
 
 
