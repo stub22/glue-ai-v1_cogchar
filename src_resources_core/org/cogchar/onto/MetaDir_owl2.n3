@@ -50,6 +50,18 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasMemberGP
+
+:hasMemberGP rdf:type owl:ObjectProperty ;
+             
+             rdfs:range :GraphPointer ;
+             
+             rdfs:domain :GraphPointerSet ;
+             
+             rdfs:subPropertyOf :mObjProp .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasSourceGP
 
 :hasSourceGP rdf:type owl:ObjectProperty ;
@@ -77,8 +89,7 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#isDescendedFrom
 
-:isDescendedFrom rdf:type owl:AsymmetricProperty ,
-                          owl:ObjectProperty ,
+:isDescendedFrom rdf:type owl:ObjectProperty ,
                           owl:TransitiveProperty ;
                  
                  rdfs:range :GraphPointer ;
