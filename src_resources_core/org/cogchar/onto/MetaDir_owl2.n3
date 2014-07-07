@@ -78,6 +78,28 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasNamespaceAbbrev
+
+:hasNamespaceAbbrev rdf:type owl:ObjectProperty ;
+                    
+                    rdfs:range :NamespaceAbbreviation ;
+                    
+                    rdfs:subPropertyOf :mObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasNamespaceChunkTab
+
+:hasNamespaceChunkTab rdf:type owl:ObjectProperty ;
+                      
+                      rdfs:domain :GH4S_Spreadsheet ;
+                      
+                      rdfs:range :NVPairTabInSheet ;
+                      
+                      rdfs:subPropertyOf :mObjProp .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOsgiBundle
 
 :hasOsgiBundle rdf:type owl:ObjectProperty ;
@@ -378,6 +400,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasTabNumber rdf:type owl:DatatypeProperty ,
                        owl:FunctionalProperty ;
+              
+              rdfs:comment "Used by both and GH3S_TabInSpreadsheet and NVPairTabInSheet" ;
               
               rdfs:domain :GH3S_TabInSpreadsheet ;
               
@@ -865,6 +889,38 @@ Without inference, that role falls down onto RDF-Reactor's \"Thing1.java\".""" .
 :MavenArtifact rdf:type owl:Class ;
                
                rdfs:subClassOf :MThing .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#NVPairChunk
+
+:NVPairChunk rdf:type owl:Class ;
+             
+             rdfs:subClassOf :MThing .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#NVPairTabInSheet
+
+:NVPairTabInSheet rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :NVPairChunk .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#NameValuePair
+
+:NameValuePair rdf:type owl:Class ;
+               
+               rdfs:subClassOf :MThing .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#NamespaceAbbreviation
+
+:NamespaceAbbreviation rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :NameValuePair .
 
 
 
