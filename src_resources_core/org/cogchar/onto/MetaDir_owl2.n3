@@ -403,8 +403,6 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
               
               rdfs:comment "Used by both and GH3S_TabInSpreadsheet and NVPairTabInSheet" ;
               
-              rdfs:domain :GH3S_TabInSpreadsheet ;
-              
               rdfs:subPropertyOf :mDataProp ;
               
               rdfs:range xsd:integer .
