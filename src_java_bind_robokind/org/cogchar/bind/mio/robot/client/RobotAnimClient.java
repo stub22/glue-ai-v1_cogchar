@@ -151,7 +151,8 @@ or    animPlayer.playAnimation(anim, 0, anim.getLength());			 */
             }
             return reader.readAnimation(filepath);
         } catch(Throwable t){
-             getLogger().error("Problem reading animation from {} ", filepath, t);
+             getLogger().warn("Cannot read animation from {} ", filepath);
+			 getLogger().trace("Full stack trace:", t);
             return null;
         }
     }
