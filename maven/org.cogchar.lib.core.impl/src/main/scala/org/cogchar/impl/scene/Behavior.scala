@@ -64,6 +64,9 @@ abstract class BehaviorImpl(val mySpec: BehaviorSpec) extends EmptyTimedModule[B
 	def getMillsecSinceStart() : Long = {
 		System.currentTimeMillis() - myStartStamp;
 	}
+	override def  getDiagnosticInfo() : java.lang.Object = {
+		return "Default Diagnostics for [" + this + "]";
+	}
 }
 
 class TStamp () {

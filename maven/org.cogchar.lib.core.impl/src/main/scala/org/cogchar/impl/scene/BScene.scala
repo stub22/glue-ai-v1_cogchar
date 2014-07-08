@@ -168,6 +168,9 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 	}
 	def cancelAllPerfJobs()
 
+	override def  getDiagnosticInfo() : java.lang.Object = {
+		return "Default Diagnostics for [" + this + "]";
+	}
 }
 
 import scala.collection.mutable.Map

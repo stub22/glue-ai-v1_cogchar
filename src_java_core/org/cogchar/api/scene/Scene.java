@@ -37,4 +37,7 @@ public interface Scene<WorldTime, RootChanType> extends CreatedFromSpec {
 	public RootChanType getRootChannel();
 	public PerfChannel getPerfChannel(Ident chanID);
 	public GraphChannel getGraphChannel(Ident chanID);
+	
+	public Object getDiagnosticInfo();
+	
 }
