@@ -26,8 +26,8 @@ import org.appdapter.impl.store.FancyRepo
 
 import org.cogchar.name.dir.{AssumedGraphDir, AssumedQueryDir}
 import org.appdapter.demo.DemoResources
-import org.appdapter.core.repo.DatabaseRepoFactoryLoader
-import org.appdapter.core.repo.DatabaseRepoSpec
+import org.appdapter.impl.store.DatabaseRepoFactoryLoader
+import org.appdapter.impl.store.DatabaseRepoSpec
 
 
 /** Documenting and testing our query-based configuration systems.
