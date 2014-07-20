@@ -197,7 +197,7 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
                    
                    rdfs:range :GraphHost ;
                    
-                   rdfs:domain :GraphPointer ;
+                   rdfs:domain :Pointer ;
                    
                    rdfs:subPropertyOf :mObjProp .
 
@@ -538,7 +538,9 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :GH4S_SpreadsheetRemote rdf:type owl:Class ;
                         
-                        rdfs:subClassOf :GH4S_Spreadsheet .
+                        rdfs:subClassOf :GH4S_Spreadsheet ;
+                        
+                        rdfs:comment "Our common legacy scratchpad container - an online spreadsheet with a tab  for each graph." .
 
 
 
@@ -810,7 +812,7 @@ A Host does not keep GraphPointers to its own graphs, but an inverse query may b
 
 :GraphPointer rdf:type owl:Class ;
               
-              rdfs:subClassOf :MThing ;
+              rdfs:subClassOf :PointerToGHost3 ;
               
               rdfs:comment """Metadata for a single graph in some GraphHost.
 The actual graph URI (used in QuadStores and SPARQL operations) must be specified using the hasGraphNameUri property, which is usually distinct from the Uri of this pointer.
@@ -921,6 +923,38 @@ Without inference, that role falls down onto RDF-Reactor's \"Thing1.java\".""" .
 :OsgiBundle rdf:type owl:Class ;
             
             rdfs:subClassOf :MThing .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#Pointer
+
+:Pointer rdf:type owl:Class ;
+         
+         rdfs:subClassOf :MThing .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#PointerToGHost3
+
+:PointerToGHost3 rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Pointer .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#PointerToGHost4
+
+:PointerToGHost4 rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Pointer .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#PointerToGHost5
+
+:PointerToGHost5 rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Pointer .
 
 
 
