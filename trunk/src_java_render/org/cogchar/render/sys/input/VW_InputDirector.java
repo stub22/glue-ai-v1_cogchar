@@ -131,7 +131,7 @@ public class VW_InputDirector extends BasicDebugger {
         private int scrollLoc = 0;
         private FlyByCamera fbCam = null;
         private int maxZoom = -17;
-        private int minZoom = 30;
+        private int minZoom = 15;
 
         @Override
         public void onAnalog(String name, float value, float tpf) {
