@@ -1,0 +1,88 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.0.9.2</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>
+	<artifactId>org.cogchar.bundle.bind.joseki</artifactId>
+
+	<packaging>bundle</packaging>
+
+	<name>${project.artifactId} - OSGi - SPARQL-HTTP interface</name>
+	
+	<!-- Important: Establish the Web URL, which is used in OSGi spec
+			Web-ContextPath instruction far below, in maven-bundle-plugin.instructions
+			
+		When starting from a "New bundle project", to create a webapp, besides the
+		PAX-Web dependencies we need those instructions, and optionally this 
+		highly-visible web.contextPath variable.
+	-->	
+	<properties>
+		<web.contextPath>cchr_josk</web.contextPath>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>1.4.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+			<version>${appdapter.version}</version>		   
+		</dependency>		
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
+			<type>jar</type>
+			<version>${appdapter.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+	    <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.bundle.app.puma</artifactId>
+            <version>${project.version}</version>
+        </dependency>	
+		
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+			<!--				Web-ContextPath is from the OSGi spec, set from variable at top of file.
+								With no Web-ContextPath, PAX assigns a default context path like:
+								http://localhost:8080/org.cogchar.org.cogchar.lifter/
+			-->						
+						<Web-ContextPath>${web.contextPath}</Web-ContextPath>							
+						<Export-Package>
+							org.joseki.*, 
+							org.cogchar.joswrap, 
+							org.cogchar.bundle.bind.joseki, 
+							etc.*;-split-package:=merge-first, 
+							Data.*, 
+							WEB-INF.*;-split-package:=merge-first
+						</Export-Package>
+						<Bundle-Activator>org.cogchar.bundle.bind.joseki.Activator</Bundle-Activator>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
