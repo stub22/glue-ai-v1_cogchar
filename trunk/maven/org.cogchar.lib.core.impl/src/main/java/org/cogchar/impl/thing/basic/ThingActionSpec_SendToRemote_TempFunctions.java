@@ -38,11 +38,15 @@ import com.hp.hpl.jena.query.*;
 import java.util.ArrayList;
 
 /**
- * THIS WILL BE REPLACED
- *
+ * This remote-SPARQL workaround is used from BehaviorAction.scala,
+ * which is now able to call repo-update methods instead.  
+ * If the target repo IS in fact remote, the result will be similar to what
+ * this class does.
+ * 
  * @author Jason Randolph Eads <jeads362@gmail.com>
  */
-public class BasicThingActionSpecBuilderTempFunctions extends BasicDebugger {
+@Deprecated
+public class ThingActionSpec_SendToRemote_TempFunctions extends BasicDebugger {
 
     // ENTER HERE, listed in order of initial usage
     //From AgentRepoClient

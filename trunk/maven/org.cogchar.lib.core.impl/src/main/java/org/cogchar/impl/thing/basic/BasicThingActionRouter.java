@@ -52,7 +52,7 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 		myAppMonitor = appMonitor;
 	}
 
-	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
+	@Override public synchronized ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
 		if (myAppMonitor != null) {
 			myAppMonitor.notifyThingActionTransit(AppDebugMonitor.TransitKind.TASTED_BY_ROUTER, actionSpec);
 		}
@@ -109,7 +109,7 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 		return consumerList;
 	}
 
-	public void appendConsumer(Ident srcGraphID, WantsThingAction consumer) {
+	public synchronized void appendConsumer(Ident srcGraphID, WantsThingAction consumer) {
 		List<WantsThingAction> consumerList = findConsumersForSourceGraph(srcGraphID);
 		consumerList.add(consumer);
 	}
@@ -130,10 +130,9 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 	 * * See also the inherited *2-args* form of this method in BasicThingActionConsumer.
 	 *
 	 */
-	@Deprecated public void consumeAllActions(RepoClient rc) {
+	@Deprecated synchronized public void consumeAllActions(RepoClient rc) {
 		for (Ident srcGraphID : myConsumersBySrcGraphID.keySet()) {
-			getLogger().info("Consuming actions from ThingAction-graph: {}", srcGraphID);
-//            consumeAllActions(rc, srcGraphID);
+			getLogger().debug("Consuming actions from ThingAction-graph: {}", srcGraphID);
 			// This results in calls to consumeAction(actionSpec, srcGraphID);
 			viewAndMarkAllActions(rc, srcGraphID, myCutoffTime, myViewingAgentID);
 		}

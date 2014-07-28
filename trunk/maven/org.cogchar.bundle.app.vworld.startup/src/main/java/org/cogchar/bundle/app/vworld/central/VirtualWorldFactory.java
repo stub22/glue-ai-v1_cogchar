@@ -1,6 +1,5 @@
 package org.cogchar.bundle.app.vworld.central;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +18,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.cogchar.app.puma.boot.PumaAppContext;
-import org.cogchar.app.puma.event.CommandEvent;
+
 
 /**
  *
@@ -72,6 +70,5 @@ public class VirtualWorldFactory {
                 null);
         serviceManager.start(registry);
     }
-
 
 }
