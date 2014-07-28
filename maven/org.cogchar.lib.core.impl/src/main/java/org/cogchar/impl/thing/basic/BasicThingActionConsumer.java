@@ -49,7 +49,7 @@ public abstract class BasicThingActionConsumer extends BasicDebugger implements 
 	 */
 	
 	
-	@Deprecated public void consumeAllActions(RepoClient rc, Ident srcGraphID) {
+	@Deprecated synchronized public void consumeAllActions(RepoClient rc, Ident srcGraphID) {
 		BasicThingActionUpdater updater = new BasicThingActionUpdater();
 		// takeThingActions_TX is our obsolete, deprecated legacy prototype implementation of message reaping
 		List<ThingActionSpec> actionSpecList = updater.takeThingActions_TX(rc, srcGraphID); 
@@ -60,7 +60,8 @@ public abstract class BasicThingActionConsumer extends BasicDebugger implements 
 		for (ThingActionSpec actionSpec : actionSpecList) {
 			getLogger().info("Consuming from graph {} actionSpec with spec-ID {}", srcGraphID, actionSpec.getActionSpecID());
 			getLogger().debug("Debug - full spec dump: {} ", actionSpec);
-			consumeAction(actionSpec, srcGraphID);
+			ConsumpStatus status = consumeAction(actionSpec, srcGraphID);
+			getLogger().info("Returned Consump-Status = {}", status);
 		}
 	}
 	
