@@ -44,7 +44,7 @@ import org.cogchar.api.thing.{ThingActionSpec, ThingActionFilter, WantsThingActi
 import org.cogchar.api.fancy.{FancyThingModelWriter}
 import org.apache.http.impl.client.{DefaultHttpClient}
 
-import org.cogchar.impl.thing.basic.BasicThingActionSpecBuilderTempFunctions
+import org.cogchar.impl.thing.basic.ThingActionSpec_SendToRemote_TempFunctions
 import  org.cogchar.api.perform.BehaviorActionExec
 
 import java.util.Random;
@@ -292,13 +292,14 @@ class FireThingActionExec( val mySpec : FireThingActionSpec ) extends BasicDebug
         fmw.writeTASpecToString(newTA, theTargetGraphQN, rand)
       logger.debug("b3855315-5a1c-4c7c-92ed-987011f044a7: The newTA was passed to the FancyThingModelWriter")
 
-      
+      /***************  FIXME:  Replace this with update-send to appropriateRepoClient **/
       logger.debug("a351608a-32b3-40e7-9fd2-58673cf1e0cb: The fixme_functions will begin.")
       val debugFlag : Boolean = false;
-      val fixme_functions : BasicThingActionSpecBuilderTempFunctions = 
-        new BasicThingActionSpecBuilderTempFunctions()
+      val fixme_functions : ThingActionSpec_SendToRemote_TempFunctions = 
+        new ThingActionSpec_SendToRemote_TempFunctions()
       fixme_functions.execRemoteSparqlUpdate("", updateTextToAddTA, debugFlag)
       logger.debug("4ba9906c-a980-4c79-8ee2-57961812776e: The fixme_functions have ended.")
+	  
     }
     perfs;
   }

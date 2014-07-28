@@ -31,7 +31,9 @@ import org.cogchar.impl.web.config.LiftAmbassador;
 class WebOutPerfChan(id : Ident)  extends  FancyTextPerfChan[WebOutPerfJob](id) {
 	override def fancyFastCueAndPlay ( textMedia : FancyTextMedia, cuePos : FancyTextCursor, perf : FancyTextPerf ) 
 				: Unit =  {	
+					
 		val commandUriString : String = textMedia.getFullText();
+		getLogger().warn("Using old-form direct call from BThtr to LiftAmbassador for cmd: {}", commandUriString);
 		if (commandUriString == null) { // is this check necessary? 
 			getLogger().warn("WebOutTriggerChan received a null FancyTextMedia message");
 		} else if (commandUriString.startsWith(LiftAN.NS_LifterConfig)) {

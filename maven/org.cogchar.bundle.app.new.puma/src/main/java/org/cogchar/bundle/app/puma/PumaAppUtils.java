@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 package org.cogchar.bundle.app.puma;
+
 import java.util.List;
 import java.io.PrintStream;
 import org.appdapter.core.log.BasicDebugger;
@@ -42,45 +43,74 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B. <www.texpedient.com>
- * 
+ *
  * High level workarounds - vintage Spring+Summer 2013.
  */
 public class PumaAppUtils extends BasicDebugger {
+
 	static Logger theLogger = LoggerFactory.getLogger(PumaAppUtils.class);
 	private static GreedyHandleSet theFirstGreedyHandleSet;
 
 	/**
-	 * This is a crude handle-grabbing entry pont, which assumes "the application"
-	 * has already been initialized.  
-	 * It is used from:
-	 *		PumaAppUtils.attachVWorldRenderModule
-	 *		PumaAppUtils.getKnownAnimationFiles
-	 * 
-	 *		GruesomeTAProcessingFuncs.registerActionConsumers
-	 *		GreedyHandleSet.processPendingThingActions
-	 * 
-	 *		CCRK_DemoActivator.startDeicticMonitoring - New capstone features for viz of gaze, pointing, throwing, kicking
-	 *		CCRK_DemoActivator.setupDebuggingScaffold - disabled exposure to Swing GUI
-	 *		
-	 * 
+	 * This is a crude handle-grabbing entry pont, which assumes "the application" has already been initialized. It is
+	 * used from: PumaAppUtils.attachVWorldRenderModule PumaAppUtils.getKnownAnimationFiles
+	 *
+	 * GruesomeTAProcessingFuncs.registerActionConsumers GreedyHandleSet.processPendingThingActions
+	 *
+	 * CCRK_DemoActivator.startDeicticMonitoring - New capstone features for viz of gaze, pointing, throwing, kicking
+	 * CCRK_DemoActivator.setupDebuggingScaffold - disabled exposure to Swing GUI
+	 *
+	 *
 	 */
 	public static class GreedyHandleSet {
-		public PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
-		public PumaRegistryClient pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
-		public final PumaConfigManager pcm = pumaRegClient.getConfigMgr(null);
-		public RepoClient rc = pcm.getMainConfigRepoClient();
-		public PumaWebMapper pumaWebMapper = pumaRegClient.getWebMapper(null);
-		private Ident animPathGraphID = rc.makeIdentForQName(AnimFileSpecReader.animGraphQN());
+		private GreedyHandleSet() { 
+			// Protected constructor so you can't just "make" one yourself - must obtain it.
+		}
+		public PumaRegistryClientFinder prcFinder;
+		public PumaRegistryClient pumaRegClient;
+		public PumaConfigManager pcm;
+		public RepoClient rc;
+		public PumaWebMapper pumaWebMapper;
+		private Ident animPathGraphID;
 		
 		// Junky old stuff of dubious value.  All three of these classes were created as placeholders for
 		// difficult concepts, better treated as free variables than known designs.
-		public final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();		
-		public GlobalConfigEmitter gce = pgmm.getGlobalConfig();
-		public BehaviorConfigEmitter animBCE = new BehaviorConfigEmitter(rc, animPathGraphID);
+		public PumaGlobalModeManager pgmm;
+		public GlobalConfigEmitter gce;
+		public BehaviorConfigEmitter animBCE;
+
+		private boolean setup() {
+			prcFinder = new PumaRegistryClientFinder();
+			if (prcFinder == null) {
+				return false;
+			}
+			pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
+			if (pumaRegClient == null) {
+				return false;
+			}
+			pcm = pumaRegClient.getConfigMgr(null);
+			if (pcm == null) {
+				return false;
+			}
+			rc = pcm.getMainConfigRepoClient();
+			if (rc == null) {
+				return false;
+			}
+			pumaWebMapper = pumaRegClient.getWebMapper(null); 
+			if (pumaWebMapper == null) {
+				return false;
+			}
+			animPathGraphID = rc.makeIdentForQName(AnimFileSpecReader.animGraphQN());
+			// Junky old stuff of dubious value.  All three of these classes were created as placeholders for
+			// difficult concepts, better treated as free variables than known designs.
+			pgmm = pcm.getGlobalModeMgr();
+			gce = pgmm.getGlobalConfig();
+			animBCE = new BehaviorConfigEmitter(rc, animPathGraphID);
+			return true;
+		}
 	}
 
-	
-	public static List<FancyFile> getKnownAnimationFiles() { 
+	public static List<FancyFile> getKnownAnimationFiles() {
 		GreedyHandleSet srec = PumaAppUtils.obtainGreedyHandleSet();
 		return AnimFileSpecReader.findAnimFileSpecsForJava(srec.animBCE);
 	}
@@ -98,7 +128,7 @@ public class PumaAppUtils extends BasicDebugger {
 		return animFiles.size();
 	}
 
-	public static 	void startSillyMotionComputersDemoForVWorldOnly(BundleContext bundleCtx, Robot.Id optRobotID_elseAllRobots) { 
+	public static void startSillyMotionComputersDemoForVWorldOnly(BundleContext bundleCtx, Robot.Id optRobotID_elseAllRobots) {
 		List<CogcharMotionSource> cogMotSrcList = CogcharMotionSource.findCogcharMotionSources(bundleCtx, optRobotID_elseAllRobots);
 		for (CogcharMotionSource cms : cogMotSrcList) {
 			Robot srcBot = cms.getRobot();
@@ -121,9 +151,14 @@ public class PumaAppUtils extends BasicDebugger {
 	public static GreedyHandleSet obtainGreedyHandleSet() {
 		if (theFirstGreedyHandleSet == null) {
 			try {
-				theFirstGreedyHandleSet = new GreedyHandleSet();
+				GreedyHandleSet ghs = new GreedyHandleSet();
+				if (ghs.setup()) {
+					theFirstGreedyHandleSet = ghs;
+				} else {
+					theLogger.error("Greedy handle set could not be setup(), try again later?");
+				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 				theLogger.error("" + e, e);
 			}
 		}

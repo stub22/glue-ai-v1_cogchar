@@ -15,10 +15,7 @@
 package org.cogchar.lifter.model.main
 
 import org.appdapter.core.name.{FreeIdent,Ident}
-//import org.cogchar.impl.web.config.{ControlConfig, LiftConfig}
-//import org.cogchar.name.lifter.{ActionStrings}
-//import org.cogchar.lifter.model.{LifterState,PageCommander}
-//import scala.collection.mutable.ArrayBuffer
+
 import org.cogchar.api.thing.{ThingActionSpec, WantsThingAction, TypedValueMap}
 import org.cogchar.api.thing.WantsThingAction.ConsumpStatus
 import org.cogchar.name.lifter.ActionStrings
@@ -26,7 +23,7 @@ import org.cogchar.name.thing.ThingCN
 import org.slf4j.{Logger,LoggerFactory}
 
 import org.cogchar.api.fancy.{FancyThingModelWriter}
-import org.cogchar.impl.thing.basic.BasicThingActionSpecBuilderTempFunctions
+
 import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMapWithConversion, BasicTypedValueMap};
 import org.cogchar.impl.thing.fancy.ConcreteTVM;
 import java.util.Random;
