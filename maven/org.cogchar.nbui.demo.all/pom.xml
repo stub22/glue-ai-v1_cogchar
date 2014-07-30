@@ -29,7 +29,7 @@
 
 		<brandingToken>org_cogchar_nbui</brandingToken>
 	</properties>
-    
+    <!-- Moved into top pom.xml so we get same repos as other sub-projects, in glue-ai recommended order.
 	<repositories>
 		<repository>
 			<id>netbeans</id>
@@ -37,6 +37,7 @@
 			<url>http://bits.netbeans.org/maven2/</url>
 		</repository>
 	</repositories>
+	-->
 
 	<dependencies>
 		<dependency>
