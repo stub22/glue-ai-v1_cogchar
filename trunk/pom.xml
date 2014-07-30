@@ -69,7 +69,43 @@ Version-less parent will be allowed in Maven 3.1.
 		
 		<netbeans.hint.license>cogchar-apache20</netbeans.hint.license>		
 	</properties>
-	
+	<repositories>
+		<!-- 	Explicit reference to Maven central ... ensures it is always checked first (we think).	-->		
+		<repository>
+			<id>maven-central</id>
+			<url>http://repo.maven.apache.org/maven2/</url>
+		</repository>		
+		<repository>
+			<id>sonatype-public</id>
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</repository>
+		<!-- Needed for "good" log4J bundle (for org.cogchar.bundle.bind.lift) -->
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<name>Spring EBR External Release Repository</name>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+		</repository>
+		<!-- needed for netbeans binaries, used in org.cogchar.nbui.demo.all. -->
+		<repository>
+			<id>netbeans</id>
+			<name>NetBeans</name>
+			<url>http://bits.netbeans.org/maven2/</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<!-- 	Explicit reference to Maven central ... ensures it is always checked first (we think).	-->
+		<pluginRepository>
+			<id>maven-central</id>
+			<url>http://repo.maven.apache.org/maven2/</url>
+		</pluginRepository>			
+		<pluginRepository>
+			<!-- Necessary to find JFlux plugins during an empty-repo build from SNAPSHOTs -->
+			<id>sonatype-public</id>
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</pluginRepository>		
+	</pluginRepositories>  	
 <!--
 	connection - used for read access to Maven (e.g. for svn-update)
 	developerConnection - requires a write-access connection (e.g. for svn-commit)
