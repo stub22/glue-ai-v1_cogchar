@@ -16,12 +16,7 @@
 	
 	<packaging>jar</packaging>
 
-
-
-
-
 	<dependencies>
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.bundle.core</artifactId>
@@ -30,60 +25,45 @@
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.gui</artifactId>
-            <version>${appdapter.version}</version>
         </dependency>		
-	 				
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>ext.bundle.opengl.jmonkey</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<!-- This dep is used in addition to ext.bundle, to help NB. -->
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-core</artifactId>
-			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>
 		<dependency>
 			<!-- This dep is used in addition to ext.bundle, to help NB. -->
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-jbullet</artifactId>
-			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>			
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-testdata</artifactId>
-			<version>${jmonkey.version}</version>
 			<scope>test</scope>
 		</dependency>		
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jmonkeyengine3</artifactId>
-			<version>${jmonkey.version}</version>
 			<scope>test</scope>
 		</dependency>		
-		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-	
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>	

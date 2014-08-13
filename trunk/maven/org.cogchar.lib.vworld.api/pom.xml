@@ -16,7 +16,6 @@
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.lib.core</artifactId>
-			<version>${appdapter.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -38,7 +37,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

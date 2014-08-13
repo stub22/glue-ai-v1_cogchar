@@ -68,28 +68,23 @@
         <dependency>
             <groupId>org.appdapter</groupId>
             <artifactId>org.appdapter.bundle.core</artifactId>
-            <version>${appdapter.version}</version>
         </dependency>
 
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
-			<version>${appdapter.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.math.symja_jas</artifactId>
-			<version>${appdapter.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.xpp3</artifactId>
-			<version>1.1.4c_5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-actors</artifactId>
-			<version>2.10.2</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>scala-library</artifactId>
@@ -101,24 +96,18 @@
         <dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.core</artifactId>
-			<version>${jflux.version}</version>
 		</dependency>			
         <dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.registry</artifactId>
-			<version>${jflux.version}</version>
 		</dependency>		
         <dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.services</artifactId>
-			<version>${jflux.version}</version>
 		</dependency>
 		<dependency>
-			<!-- TODO:  Bind this in a more replacable way -->
-			<!-- Used in o.c.impl.netconf.CogCharNetworkServiceLauncher -->
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.common.rk</artifactId>
-			<version>${jflux.version}</version>
 			<scope>runtime</scope>
 		</dependency>				
     </dependencies>
@@ -128,7 +117,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
