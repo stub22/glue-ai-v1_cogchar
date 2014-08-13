@@ -10,11 +10,9 @@
 	<artifactId>org.cogchar.lib.core.impl</artifactId>	
 	<name>${project.artifactId} - POJO + Scala</name>
 
-	
 	<packaging>jar</packaging>  
 
 	<dependencies>
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.core.api</artifactId>
@@ -23,28 +21,23 @@
         <dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.core</artifactId>
-			<version>${jflux.version}</version>
 		</dependency>			
         <dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.registry</artifactId>
-			<version>${jflux.version}</version>
 		</dependency>		
         <dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.services</artifactId>
-			<version>${jflux.version}</version>
 		</dependency>
 		<dependency>
 			<!-- Used in o.c.impl.netconf.CogCharNetworkServiceLauncher -->
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.common.rk</artifactId>
-			<version>${jflux.version}</version>
 		</dependency>			
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-actors</artifactId>
-			<version>2.10.2</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>scala-library</artifactId>
@@ -55,7 +48,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>					
 	</dependencies>
@@ -64,7 +56,6 @@
 			<plugin>
 				<groupId>org.scala-tools</groupId>
 				<artifactId>maven-scala-plugin</artifactId>
-				<version>2.15.2</version>
 				<executions>
 					<execution>
 						<goals>

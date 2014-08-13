@@ -40,13 +40,11 @@ served 3 purposes:
         <dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
-			<version>${appdapter.version}</version>
             <scope>provided</scope>
 		</dependency>
         <dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.osgi.common</artifactId>
-        <version>${appdapter.version}</version>
 		</dependency>
         <dependency>
             <!-- "jena-fuseki" transitively pulls in its own copies of the Jena libraries.
@@ -64,7 +62,6 @@ served 3 purposes:
                -->
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-fuseki</artifactId>
-            <version>0.2.7</version>
 			<scope>provided</scope>
 			<exclusions>
 				<!-- "jena-fuseki" transitively will pull in its own copies of the Jena libraries,
@@ -83,7 +80,6 @@ served 3 purposes:
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>

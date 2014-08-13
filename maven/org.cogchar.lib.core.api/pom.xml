@@ -10,7 +10,7 @@
 		<version>1.1.0-SNAPSHOT</version>
 		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
 	</parent>		
-	
+
 	<artifactId>org.cogchar.lib.core.api</artifactId>
 	<name>${project.artifactId} - POJO + Scala</name>
 	<description>Cogchar core - does not include Render binding or Robot binding</description>
@@ -26,29 +26,22 @@
 			<artifactId>org.cogchar.lib.actor</artifactId>
 			<version>${project.version}</version>
 		</dependency -->	                
-    	<dependency>
+		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
-			<version>${appdapter.version}</version>
 		</dependency>
-
-
 		<dependency>
 			<!-- Apache commons-math used in both o.c.l.animoid and o.c.l.sonograph, which we obtain indirectly via: -->	
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.math.symja_jas</artifactId>
-			<version>${appdapter.version}</version>
 		</dependency>		
-
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.xpp3</artifactId>
-			<version>1.1.4c_5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>kxml2-min</artifactId>
@@ -56,23 +49,20 @@
 				</exclusion>
 			</exclusions>
 		</dependency>	
-    <!-- Test -->
+		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.scalatest</groupId>
 			<artifactId>scalatest</artifactId>
-			<version>1.2</version>
 			<scope>test</scope>
 		</dependency>		
 		<dependency>
 			<groupId>org.scala-tools.testing</groupId>
 			<artifactId>specs_2.10</artifactId>
-			<version>1.6.9</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -81,15 +71,9 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-
-
-		
-
 	</dependencies>
-
 	<build>
-<!--	  
+		<!--	  
 	These two sourceDir params are unnecessary, since our project conforms to maven-scala-plugin conventions.
     <sourceDirectory>src/main/scala</sourceDirectory>
     <testSourceDirectory>src/test/scala</testSourceDirectory>
@@ -98,12 +82,10 @@
 			<plugin>
 				<groupId>org.scala-tools</groupId>
 				<artifactId>maven-scala-plugin</artifactId>
-				<version>2.15.2</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>compile</goal>
-						
 							<!-- We're not actually using any scala tests right now
 							<goal>testCompile</goal>
 Stu:  When I try to activate "testCompile" I get:
@@ -111,7 +93,6 @@ error: bad symbolic reference. A signature in ShouldMatchers.class refers to typ
 in package scala.package which is not available.
 It may be completely missing from the current classpath, or the version on
 the classpath might be incompatible with the version used when compiling ShouldMatchers.class.							
-							
 							-->
 						</goals>
 					</execution>
@@ -120,7 +101,6 @@ the classpath might be incompatible with the version used when compiling ShouldM
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.6</version>
 				<configuration>
 					<skipTests>true</skipTests>
 					<useFile>false</useFile>
@@ -133,9 +113,6 @@ the classpath might be incompatible with the version used when compiling ShouldM
 					</includes>
 				</configuration>
 			</plugin>
-			
-		
-   			
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -143,7 +120,6 @@ the classpath might be incompatible with the version used when compiling ShouldM
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>

@@ -17,17 +17,13 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-	
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>ext.bundle.opengl.nifty</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.bundle.render.resources</artifactId>
@@ -48,7 +44,6 @@
 			<!-- We need the big-ol jME3 testdata archive for some of these demos. -->
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-testdata</artifactId>
-			<version>${jmonkey.version}</version>
 			<scope>runtime</scope>
 		</dependency>	
 		
@@ -59,14 +54,12 @@
 			<!-- This dep is used in addition to ext.bundle, to help NB code editor. -->
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-core</artifactId>
-			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>
 		<dependency>
 			<!-- This dep is used in addition to ext.bundle, to help NB code editor. -->
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-jbullet</artifactId>
-			<version>${jmonkey.version}</version>
 			<scope>provided</scope>	
 		</dependency>		
 	</dependencies>
@@ -76,11 +69,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>	
