@@ -14,20 +14,15 @@
 	<name>${project.artifactId} - OSGi - binds motion, vision, speech</name>
 
 	<dependencies>
-
-	
         <dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${project.version}</version>
 		</dependency>		
-		
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
-
 			<!-- Freezing to the 1.0.9 version of JScience wrapper -->
-			<version>1.0.9</version>
 			<scope>runtime</scope>
             <!-- but dont let it use "runtime" classes that mismatch -->
             <exclusions>
@@ -57,61 +52,50 @@
 		<dependency>
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.api.speech</artifactId>
-			<version>${mechio.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.mechio</groupId>
 			<!-- Needed at compile time for PortableSpeechRequest  -->
 			<artifactId>org.mechio.impl.speech</artifactId>
-			<version>${mechio.version}</version>
 		</dependency>				
 		
 		<dependency>
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.api.motion</artifactId>
-			<version>${mechio.version}</version>
 		</dependency>		
 
 		<dependency>
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.api.animation</artifactId>
-			<version>${mechio.version}</version>
-		</dependency><dependency>
+		</dependency>
+		<dependency>
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.api.vision</artifactId>
-			<version>${mechio.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.impl.messaging.rk</artifactId>
-			<version>${jflux.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.impl.motion</artifactId>
-			<version>${mechio.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.integration.animation_motion</artifactId>
-			<version>${mechio.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.integration.motion_speech</artifactId>
-			<version>${mechio.version}</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<!-- Needed at compile time for AnimationXMLReader -->			
 			<groupId>org.mechio</groupId>
 			<artifactId>org.mechio.impl.animation</artifactId>
-			<version>${mechio.version}</version>
             <scope>compile</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -119,7 +103,6 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -131,11 +114,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -13,21 +13,15 @@
 	<name>${project.artifactId} - POJO</name>
 
 	<dependencies>
-
 		<dependency>
-			<artifactId>org.appdapter.bundle.core</artifactId>
 			<groupId>org.appdapter</groupId>
-			<version>${appdapter.version}</version>
+			<artifactId>org.appdapter.bundle.core</artifactId>
 		</dependency>	
-					
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>		
-        
-	
 	</dependencies>
 	<build>
 		<plugins>
@@ -47,9 +41,6 @@
 
 				<groupId>org.apache.jena</groupId>
 				<artifactId>jena-maven-tools</artifactId>
-				<version>0.5</version>
-			
-
 				<configuration>
 					<includes>
 						<include>src/main/resources/org/cogchar/onto/*_owl2.ttl</include>
@@ -57,11 +48,10 @@
 						we are going along with that for now.
 						-->
 						<include>src/main/resources/org/cogchar/onto/*_owl2.n3</include>
-						
 					</includes>
 					<fileOptions>
 						<source>
-<!--  Published jena docs are out of date.  
+							<!--  Published jena docs are out of date.  
 The options we can use are mostly equivalent to the ones described here
 http://jena.apache.org/documentation/tools/schemagen.html
 but to get the actual option name, we have to look in Jena code, such as here:
@@ -115,7 +105,6 @@ but to get the actual option name, we have to look in Jena code, such as here:
 				<!-- We want the generated-sources/java directory to be included in the java-compile step -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.7</version>
 				<executions>
 					<execution>
 						<id>add-source</id>
@@ -137,7 +126,6 @@ but to get the actual option name, we have to look in Jena code, such as here:
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
