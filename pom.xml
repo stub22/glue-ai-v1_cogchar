@@ -53,9 +53,13 @@ Version-less parent will be allowed in Maven 3.1.
             <module>maven/org.cogchar.nbui.render</module>
         </modules>
         <properties>
+            <!-- Glue Dependencies -->
             <appdapter.msg.version>1.0.5</appdapter.msg.version>
             <appdapter.jscience.version>1.0.9</appdapter.jscience.version>
             <appdapter.version>1.2.0</appdapter.version>
+            <jflux.version>0.2.2</jflux.version>
+            <mechio.version>1.0.3</mechio.version>
+            <!-- Non Glue Dependencies -->
             <commons.codec.version>1.6</commons.codec.version>
             <commons.fileupload.version>1.2.2</commons.fileupload.version>
             <commons.io.version>2.1</commons.io.version>
@@ -63,7 +67,6 @@ Version-less parent will be allowed in Maven 3.1.
             <felix.org.osgi.core.version>1.4.0</felix.org.osgi.core.version>
             <felix.org.osgi.compendium.version>1.4.0</felix.org.osgi.compendium.version>
             <jena.fuseki.version>0.2.7</jena.fuseki.version>
-            <jflux.version>0.2.2</jflux.version>
             <jmonkey.version>3.0.0.20140325-SNAPSHOT</jmonkey.version>
             <joda.time.version>2.1</joda.time.version>
             <joda.convert.version>1.2</joda.convert.version>
@@ -71,7 +74,6 @@ Version-less parent will be allowed in Maven 3.1.
             <junit.version>4.8.1</junit.version>
             <maven.compiler.source>1.6</maven.compiler.source>
             <maven.compiler.target>1.6</maven.compiler.target>
-            <mechio.version>1.0.3</mechio.version>
             <net.liftweb.version>2.5.1</net.liftweb.version>
             <netbeans.hint.license>cogchar-apache20</netbeans.hint.license>	
             <netbeans.version>RELEASE721</netbeans.version>
@@ -107,14 +109,6 @@ Version-less parent will be allowed in Maven 3.1.
             <version.maven.resources.plugin>2.4.3</version.maven.resources.plugin>
             <version.maven.surefire.plugin>2.9</version.maven.surefire.plugin>
             <version.nbm.maven.plugin>3.11</version.nbm.maven.plugin>
-            <!-- org.cogchar.nbui.render properties-->
-            <brandingToken>org_cogchar_nbui_render</brandingToken>
-            <!-- All config *files* (not classpath resources) are placed in this output directory in our module
-			This area is also used for "temporary" config files created/edited by user during runtime.
-            -->
-            <cogcharConfigTgt>config/cogchar</cogcharConfigTgt>
-            <!-- "Permanent" classpath-sourced config resources come from here.  -->
-            <cogcharTempConfigSrc>../org.cogchar.bundle.render.resources/src/main/resources</cogcharTempConfigSrc>
         </properties>
         <dependencyManagement>
             <dependencies>
