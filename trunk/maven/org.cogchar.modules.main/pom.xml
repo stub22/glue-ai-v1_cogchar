@@ -12,7 +12,7 @@
 	<artifactId>org.cogchar.modules.main</artifactId>
 
 	<packaging>pom</packaging>
-	<name>${project.artifactId} - "Main Modules" parent pom</name>
+	<name>${project.artifactId} - 'Main Modules' parent pom</name>
 	<description>All libraries and OSGi bundles - everything EXCEPT nbui projects</description>
 
 	
