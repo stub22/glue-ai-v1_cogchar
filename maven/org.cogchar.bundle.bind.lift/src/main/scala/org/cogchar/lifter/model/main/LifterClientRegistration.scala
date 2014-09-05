@@ -23,8 +23,8 @@ import org.cogchar.name.thing.ThingCN
 import org.slf4j.{Logger,LoggerFactory}
 
 import org.cogchar.api.fancy.{FancyThingModelWriter}
-
-import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMapWithConversion, BasicTypedValueMap};
+// import org.cogchar.impl.thing.basic.BasicThingActionSpecBuilderTempFunctions
+// import org.cogchar.impl.thing.basic.{BasicThingActionSpec, BasicTypedValueMapWithConversion, BasicTypedValueMap};
 import org.cogchar.impl.thing.fancy.ConcreteTVM;
 import java.util.Random;
 import org.cogchar.outer.client.AgentRepoClient;

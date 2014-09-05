@@ -15,24 +15,15 @@
  */
 package org.cogchar.app.puma.config;
 
-import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.impl.store.FancyRepo;
 
-//import org.cogchar.app.buddy.busker.TriggerItems;
-import org.cogchar.blob.emit.GlobalConfigEmitter;
-
-
+import org.appdapter.fancy.rclient.RepoClient;
 
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 
-import org.cogchar.platform.trigger.BoxSpace;
-import org.cogchar.platform.trigger.CommandSpace;
 
 /**
  * @author Stu B. <www.texpedient.com>

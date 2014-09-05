@@ -21,9 +21,9 @@ import java.util.Arrays;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.SolutionHelper;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.Solution;
+import org.appdapter.fancy.query.SolutionHelper;
 
 /**
  * @author Ryan Biggs

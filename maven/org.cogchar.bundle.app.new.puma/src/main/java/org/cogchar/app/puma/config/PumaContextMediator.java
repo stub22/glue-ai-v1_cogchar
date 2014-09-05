@@ -15,11 +15,10 @@
  */
 package org.cogchar.app.puma.config;
 
-import org.cogchar.app.puma.registry.PumaRegistryClient;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.repo.RepoSpec;
+import org.appdapter.fancy.rspec.RepoSpec;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 

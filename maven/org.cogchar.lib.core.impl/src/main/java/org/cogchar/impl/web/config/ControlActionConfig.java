@@ -17,10 +17,10 @@
 package org.cogchar.impl.web.config;
 
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionHelper;
-import org.appdapter.help.repo.SolutionList;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.Solution;
+import org.appdapter.fancy.query.SolutionHelper;
+import org.appdapter.fancy.query.SolutionList;
 import org.cogchar.name.lifter.LiftCN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

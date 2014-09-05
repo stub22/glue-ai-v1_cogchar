@@ -26,6 +26,8 @@ import java.util.Map;
 import org.appdapter.core.name.FreeIdent;
 import org.cogchar.lifter.generation.PageGeneratorUtils.LifterControlDescription;
 import org.cogchar.name.lifter.LiftAN;
+import org.appdapter.core.log.BasicDebugger;
+
 
 /**
  * When properly registered, this scanner consumes TAs that define liftercofigs.
@@ -34,16 +36,16 @@ import org.cogchar.name.lifter.LiftAN;
  *
  * @author Jason Randolph Eads <jeads362@gmail.com>
  */
-public class LifterAnswerPageGenerator implements WantsThingAction {
+public class LifterAnswerPageGenerator extends BasicDebugger implements WantsThingAction {
     
-    Ident lifterAnswerPageIdent = new FreeIdent(LiftAN.NS_liftconfig);
-    String lifterAnswerPageControlLabelPrefix = "label_";
-    String lifterAnswerPageControlResourcePrefix = "resource_";
-    String lifterAnswerPageControlActionPrefix = "action_";
-    String lifterAnswerPageControlColorPrefix = "color_";
+    private Ident lifterAnswerPageIdent = new FreeIdent(LiftAN.NS_liftconfig);
+    private String lifterAnswerPageControlLabelPrefix = "label_";
+    private String lifterAnswerPageControlResourcePrefix = "resource_";
+    private String lifterAnswerPageControlActionPrefix = "action_";
+    private String lifterAnswerPageControlColorPrefix = "color_";
     
-    Model myLifterModel = null;
-    Model myThingActionModel = null;
+    private Model myLifterModelReadonly = null;
+    private Model myThingActionModelReadonly = null;
     
     /**
      * Provide models to which the new RDF data will be stored. One model will
@@ -57,8 +59,8 @@ public class LifterAnswerPageGenerator implements WantsThingAction {
             Model lifterModel, 
             Model thingActionModel ) {
         
-        myLifterModel = lifterModel;
-        myThingActionModel = thingActionModel;
+        myLifterModelReadonly = lifterModel;
+        myThingActionModelReadonly = thingActionModel;
     }
         
     /**
@@ -141,13 +143,15 @@ public class LifterAnswerPageGenerator implements WantsThingAction {
         Model pageModel = PageGeneratorUtils.make12SlotLifterPageWithPushyButtons(
                 liftconfigID, controlDescriptions);
         
+		getLogger().warn("Adding contents of pageModel to 'myLifterModelReadonly'");  // FIXME
         // Merge the model into the main model
-        myLifterModel.add(pageModel);
+        myLifterModelReadonly.add(pageModel);
         
+		getLogger().warn("Adding contents taModel to 'myThingActionModelReadonly'");  // FIXME
         // Fire the TA that triggers the lifter page to display.
         Model taModel = PageGeneratorUtils.
                 makeThingActionTriggerForLifterPage(liftconfigID);
-        myThingActionModel.add(taModel);
+        myThingActionModelReadonly.add(taModel);
         
         // The page is available and the triggering TA is in transit.
         return ConsumpStatus.CONSUMED;

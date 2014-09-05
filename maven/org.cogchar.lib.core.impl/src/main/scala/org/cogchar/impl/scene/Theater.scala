@@ -20,7 +20,7 @@ import scala.collection.mutable.HashMap;
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
-import org.appdapter.help.repo.{RepoClient}
+import org.appdapter.fancy.rclient.{RepoClient}
 
 import org.cogchar.api.channel.{GraphChannel}
 import org.cogchar.api.perform.{Media, PerfChannel};
@@ -50,6 +50,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	
 	private var myGraphChanHub : GraphChannelHub = null;
 	
+	// Called from Theater wiringDemo
 	def setGraphChanHub(gch : GraphChannelHub) {  myGraphChanHub = gch	}
 	
 	def registerPerfChannel (c : PerfChannel) {
@@ -61,6 +62,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	def registerSceneBook(sb : SceneBook) {
 		mySceneBook = sb;
 	}
+	// Called from FancyTrigger.makeTriggerForScene(ss : SceneSpec).fire()
 	def makeSceneFromBook(sceneID: Ident) : BScene = {
 		getLogger.info("MakeSceneFromBook for SceneID={}, char-theater ={}", Array[Object]( sceneID, myIdent));
 		val sceneSpec = mySceneBook.findSceneSpec(sceneID);
@@ -70,7 +72,8 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		scene;
 	}
   
-    def safelyWireGraphChannels(scene: BScene){
+	// called during makeSceneFromBook()-above and also during exclusiveActivateScene()-below
+    private def safelyWireGraphChannels(scene: BScene){
         if (myGraphChanHub != null) {
             //we'll give the scene a copy of the hub's full map
 			val graphChans = new java.util.HashSet[GraphChannel]()
@@ -81,14 +84,27 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		}
     }
   
+	// Called from trigger.fire() when for trigs constructed by FancyTrigger.makeTriggerForScene(ss : SceneSpec),
+	// which does this on each fire() {scn =
+	// 			t.stopAllScenesAndModules(cancelOutJobs)
+	//			val scn : BScene = t.makeSceneFromBook(freeSceneID);
+	//			t.exclusiveActivateScene(scn, cancelOutJobs);
 	def exclusiveActivateScene(scene: BScene, cancelPrevJobs : Boolean) {	
 		// This rq-stops all their modules, and asks them each to forget/reset, but does not "forget" them at theater or BM level.
 		deactivateAllScenes(cancelPrevJobs)
+		
+//		Currently we do not try to wirePerfChannels because...we expect that to be done by lifecycle-poppin.  Right?
+//		Hmmm.   Stu buys that wiring up channels to exist with simple-lifecycles is good.  The wiring of those to actually
+//		make a scene run may be an area where we need more control, must look more at JFlux APIs.
 //		scene.wirePerfChannels(myPerfChanSet);
+//		Graph channels throughout the scene-impl (down through behavs, guards, actions) should connect to appropriate 
+//		graphs in this step.  This makes more sense than popping lifecycles around beyond what is needed.
+//		Steps and Guards should not have their own lifecycles.
+		
         safelyWireGraphChannels(scene);
 		activateScene(scene)
 	}
-
+	// Called from within this package, and also from MasterDemo.
 	def activateScene(scene: BScene) {
 		// See comments about multi-scene above.  For now we expect to be used in a single-active-scene approach.
 		// IF we are strict single-scene, then we SHOULD ensure previous scene is complete, and modulator is idle.

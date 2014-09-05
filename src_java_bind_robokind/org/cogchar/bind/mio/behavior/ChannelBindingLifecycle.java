@@ -18,7 +18,7 @@ package org.cogchar.bind.mio.behavior;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.api.channel.Channel;
 
 import org.jflux.impl.services.rk.lifecycle.AbstractLifecycleProvider;

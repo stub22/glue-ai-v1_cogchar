@@ -20,9 +20,9 @@ import org.cogchar.name.cinema.CinemaCN;
 import java.util.HashMap;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionList;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.Solution;
+import org.appdapter.fancy.query.SolutionList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

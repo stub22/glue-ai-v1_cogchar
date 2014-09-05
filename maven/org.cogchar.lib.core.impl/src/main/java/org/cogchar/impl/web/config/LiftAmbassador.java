@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-import org.cogchar.api.thing.ThingActionSender;
+import org.appdapter.fancy.rclient.RepoClient;
+
 import org.cogchar.api.web.WebAppInterface;
 import org.cogchar.api.web.WebSceneInterface;
 import org.cogchar.api.web.WebControl;

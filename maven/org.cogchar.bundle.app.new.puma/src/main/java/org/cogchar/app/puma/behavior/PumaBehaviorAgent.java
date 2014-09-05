@@ -18,7 +18,7 @@ package org.cogchar.app.puma.behavior;
 
 import java.lang.ClassLoader;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
@@ -73,9 +73,9 @@ public abstract class PumaBehaviorAgent extends CogcharScreenBox {
 		// Old way, may still be useful durnig behavior development by advanced users.
 		// loadBehaviorConfigFromTestFile(clearCachesFirst);
 		RepoClient rc = pcm.getMainConfigRepoClient();
-		Ident	chanGraphID = rc.makeIdentForQName(chanGraphQN);
+		Ident	chanGraphID = rc.getDefaultRdfNodeTranslator().makeIdentForQName(chanGraphQN);
 		
-		Ident	behavGraphID = rc.makeIdentForQName(behavGraphQN);
+		Ident	behavGraphID = rc.getDefaultRdfNodeTranslator().makeIdentForQName(behavGraphQN);
 		loadBehaviorConfigFromRepo(rc, chanGraphID, behavGraphID, clearCachesFirst);
 		
 		startTheater(bunCtx);

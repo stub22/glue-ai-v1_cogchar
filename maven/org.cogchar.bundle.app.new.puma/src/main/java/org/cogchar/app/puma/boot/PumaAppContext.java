@@ -27,7 +27,8 @@ import java.util.List;
 import java.util.Properties;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
+
 
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;

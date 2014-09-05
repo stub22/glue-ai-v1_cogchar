@@ -6,13 +6,13 @@ package org.cogchar.bundle.app.vworld.central;
  */
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
+
 import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
 import org.appdapter.core.name.Ident;
 import org.osgi.framework.BundleContext;
 import org.cogchar.render.sys.module.RenderModule;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaRegistryClient;

@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.*;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.Solution;
+import org.appdapter.fancy.query.SolutionHelper;
+import org.appdapter.fancy.query.SolutionList;
 
 /**
  *

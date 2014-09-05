@@ -18,16 +18,14 @@ package org.cogchar.app.puma.web;
 
 import org.appdapter.core.log.BasicDebugger;
 
-import com.hp.hpl.jena.query.Dataset;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-
 
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.web.PumaWebMapper;
-import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.repo.RepoSpec;
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.fancy.rspec.RepoSpec;
 import org.cogchar.name.entity.EntityRoleCN;
 
 import org.osgi.framework.BundleContext;

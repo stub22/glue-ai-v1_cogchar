@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.bind.mio.behavior.ChannelBindingConfig;
 import org.cogchar.bind.mio.behavior.ServiceChannelExtender;
 // import org.cogchar.blob.emit.BehavMasterConfigTest;

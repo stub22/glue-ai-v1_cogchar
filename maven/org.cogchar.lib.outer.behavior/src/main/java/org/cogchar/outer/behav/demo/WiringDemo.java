@@ -19,7 +19,7 @@ package org.cogchar.outer.behav.demo;
 
 import java.util.Properties;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;

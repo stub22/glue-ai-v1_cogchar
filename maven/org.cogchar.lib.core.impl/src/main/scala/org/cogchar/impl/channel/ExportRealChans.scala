@@ -30,3 +30,24 @@ class ThingActionChanSpecBuilder(builderConfRes : Resource) extends RealThingAct
 	
 class FancyChannelSpec extends RealFancyChannelSpec 
 class FancyChannelSpecBuilder(builderConfRes : Resource) extends RealFancyChannelSpecBuilder(builderConfRes ) 
+
+/**
+ * These get loaded by Assembler in context like:
+ /*     [java] 98060  ERROR [Service Manager Thread - 16] (AssemblerUtils.java:93) buildAllRootsInModel - Cannot assemble item http://www.cogchar.org/schema/scene/instance#Flow-TA-Test-TAChan-C1
+ [java] com.hp.hpl.jena.assembler.exceptions.AssemblerException: caught: null
+ [java]   doing:
+ [java]     root: http://www.cogchar.org/schema/scene/instance#Flow-TA-Test-TAChan-C1 with type: urn:ftd:cogchar.org:2012:runtime#BuildableTAChanSpec assembler class: class org.cogchar.impl.channel.ThingActionChanSpecBuilder
+ [java] 
+ [java] 	at com.hp.hpl.jena.assembler.assemblers.AssemblerGroup$PlainAssemblerGroup.openBySpecificType(AssemblerGroup.java:138)
+ [java] 	at com.hp.hpl.jena.assembler.assemblers.AssemblerGroup$PlainAssemblerGroup.open(AssemblerGroup.java:117)
+ [java] 	at com.hp.hpl.jena.assembler.assemblers.AssemblerGroup$ExpandingAssemblerGroup.open(AssemblerGroup.java:81)
+ [java] 	at org.appdapter.bind.rdf.jena.assembly.AssemblerUtils.buildAllRootsInModel(AssemblerUtils.java:90)
+ [java] 	at org.appdapter.bind.rdf.jena.assembly.AssemblerUtils.buildAllRootsInModel(AssemblerUtils.java:100)
+ [java] 	at org.appdapter.core.store.BasicRepoImpl.assembleRootsFromNamedModel(BasicRepoImpl.java:318)
+ [java] 	at org.appdapter.help.repo.RepoClientImpl.assembleRootsFromNamedModel(RepoClientImpl.scala:111)
+ [java] 	at org.cogchar.outer.behav.demo.TAGraphChanWiringDemo.loadTAChanSpecs(TAGraphChanWiringDemo.java:61)
+ [java] 	at org.cogchar.outer.behav.demo.TAGraphChanWiringDemo.loadAndRegisterSpecs(TAGraphChanWiringDemo.java:45)
+ [java] 	at com.rkbots.demo.behavior.master.BehaviorMasterLifecycle.create(BehaviorMasterLifecycle.java:47)
+ [java] 	at com.rkbots.demo.behavior.master.BehaviorMasterLifecycle.create(BehaviorMasterLifecycle.java:22)
+ */
+ */

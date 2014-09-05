@@ -19,7 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.*;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.Solution;
+import org.appdapter.fancy.query.SolutionHelper;
+import org.appdapter.fancy.query.SolutionList;
+import org.appdapter.fancy.query.SolutionMap;
 import org.cogchar.name.lifter.LiftCN;
 
 /**

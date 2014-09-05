@@ -27,7 +27,7 @@ import org.cogchar.bind.mio.robot.svc.RobotServiceContext;
 import org.cogchar.blob.emit.BehaviorConfigEmitter;
 import org.cogchar.impl.perform.FancyTextPerfChan;
 import org.cogchar.impl.scene.Theater;
-import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
+// import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
 

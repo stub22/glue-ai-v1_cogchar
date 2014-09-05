@@ -18,11 +18,12 @@ package org.cogchar.render.test;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.core.repo.RepoSpec;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.Repo;
-import org.appdapter.help.repo.RepoClient;
+
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.fancy.rspec.RepoSpec;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.name.dir.AssumedQueryDir;
 import org.cogchar.name.dir.AssumedGraphDir;
 
@@ -47,7 +48,7 @@ public class ZZConfigReader extends BasicDebugger {
 		Repo.WithDirectory dfltTestRepo = rs.makeRepo();
 		RepoClient dfltTestRC = rs.makeRepoClient(dfltTestRepo);
 		
-		Ident lightsGraphID = dfltTestRC.makeIdentForQName(lightsGraphQN);
+		Ident lightsGraphID = dfltTestRC.getDefaultRdfNodeTranslator().makeIdentForQName(lightsGraphQN);
 		Model lightsModelFromSheet = dfltTestRepo.getNamedModel(lightsGraphID);
 		getLogger().info("Fetched lights model: {} ", lightsModelFromSheet);
 	}

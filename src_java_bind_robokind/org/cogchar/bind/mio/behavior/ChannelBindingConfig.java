@@ -24,7 +24,7 @@ import org.cogchar.impl.channel.FancyChannelSpec;
 import org.cogchar.blob.emit.GraphChannelNames;
 import org.cogchar.impl.perform.PerfChannelNames;
 
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 
 /**
  * Current approach requires us to define, for each "Type" of channel:

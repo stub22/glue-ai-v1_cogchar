@@ -25,15 +25,15 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import java.util.List;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.appdapter.core.store.InitialBinding;
-import org.appdapter.core.store.Repo;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.RepoClientFuncs_TxAware;
+import org.appdapter.core.query.InitialBinding;
+
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.rclient.RepoClientFuncs_TxAware;
 import org.appdapter.bind.rdf.jena.query.JenaArqQueryFuncs_TxAware.Oper;
-import org.appdapter.help.repo.SolutionList;
-import org.appdapter.impl.store.ResourceResolver;
+import org.appdapter.fancy.query.SolutionList;
+import org.appdapter.fancy.model.ResourceResolver;
 import org.cogchar.api.thing.ThingActionSpec;
-import static org.cogchar.impl.thing.basic.BasicThingActionQResAdapter.buildActionParameterValueMap;
+// import static org.cogchar.impl.thing.basic.BasicThingActionQResAdapter.buildActionParameterValueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,7 +121,7 @@ public class BasicThingActionUpdater {
 	}
 	private List<ThingActionSpec> viewActionsAndMark_Raw(RepoClient rc, Ident srcGraphID, Long cutoffTStamp, Ident viewingAgentID) {	
 		InitialBinding queryIB = rc.makeInitialBinding();
-		Literal cutoffTimeLit = rc.makeTypedLiteral(cutoffTStamp.toString(), XSDDatatype.XSDlong);
+		Literal cutoffTimeLit = rc.getDefaultRdfNodeTranslator().makeTypedLiteral(cutoffTStamp.toString(), XSDDatatype.XSDlong);
 		queryIB.bindNode(ThingCN.V_cutoffTStampMsec, cutoffTimeLit);
 		queryIB.bindIdent(ThingCN.V_viewingAgentID, viewingAgentID);
 		// TODO:  Get the queryVarName exposed by RepoClient, currently it is private.
@@ -158,9 +158,10 @@ public class BasicThingActionUpdater {
 	 */
 	private void deleteThingAction(RepoClient rc, Ident graphID, ThingActionSpec tas) {
 		Ident actionID = tas.getActionSpecID();
-		Resource actionRes = rc.makeResourceForIdent(actionID);
-		Repo.WithDirectory repo = rc.getRepo();
-		Model gm = repo.getNamedModel(graphID);
+		Resource actionRes = rc.getDefaultRdfNodeTranslator().makeResourceForIdent(actionID);
+		//Repo.WithDirectory repo = rc.getRepo();
+		theLogger.warn("About to fetch a readonly model and then try to write to it - what's that all about?");
+		Model gm = rc.getNamedModelReadonly(graphID); //  repo.getNamedModel(graphID);    FIXME
 		theLogger.info("Prior to removal from {}, graph size is {}", graphID, gm.size());
 		gm.removeAll(actionRes, null, null);
 		theLogger.info("After remova from {}, graph size is {}", graphID, gm.size());
@@ -169,10 +170,11 @@ public class BasicThingActionUpdater {
 	// This should be done inside a write-Xaction, with boundaries that encompass the prior related reads.
 	private void markThingActionSeen(RepoClient rc, Ident graphToMark, ThingActionSpec tas, Ident seeingAgentID) {
 		Ident actionID = tas.getActionSpecID();
-		Resource actionRes = rc.makeResourceForIdent(actionID);
-		Resource agentRes = rc.makeResourceForIdent(seeingAgentID);
-		Repo.WithDirectory repo = rc.getRepo();
-		Model gm = repo.getNamedModel(graphToMark);
+		Resource actionRes = rc.getDefaultRdfNodeTranslator().makeResourceForIdent(actionID);
+		Resource agentRes = rc.getDefaultRdfNodeTranslator().makeResourceForIdent(seeingAgentID);
+		// Repo.WithDirectory repo = rc.getRepo();
+		theLogger.warn("About to fetch a readonly model and then try to write to it - what's that all about?");
+		Model gm = rc.getNamedModelReadonly(graphToMark); // repo.getNamedModel(graphToMark);    FIXME
 		scala.Option<String> optStr = scala.Option.apply(null);
 		ResourceResolver rr = new ResourceResolver(gm, optStr);
 		Property viewedByProp = rr.findOrMakeProperty(gm, ThingCN.P_viewedBy);

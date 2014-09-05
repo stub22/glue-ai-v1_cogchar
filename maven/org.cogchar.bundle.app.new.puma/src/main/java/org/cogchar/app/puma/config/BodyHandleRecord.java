@@ -17,7 +17,8 @@
 package org.cogchar.app.puma.config;
 
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
+
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.bind.mio.robot.model.ModelRobot;
 

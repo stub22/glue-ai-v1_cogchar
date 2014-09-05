@@ -18,10 +18,12 @@ package org.cogchar.api.humanoid;
 import java.util.List;
 import org.appdapter.core.name.Ident;
 import org.cogchar.name.skeleton.BoneCN;
-// import org.cogchar.blob.emit.RenderConfigEmitter;
-import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.SolutionHelper;
+
+import org.appdapter.fancy.rclient.RepoClient;
+
+import org.appdapter.fancy.query.SolutionList;
+import org.appdapter.fancy.query.SolutionHelper;
+
 
 /**
  * This is essentially a wrapper around the HumanoidConfig.

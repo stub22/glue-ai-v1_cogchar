@@ -22,10 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionHelper;
-import org.appdapter.help.repo.SolutionList;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.Solution;
+import org.appdapter.fancy.query.SolutionList;
+import org.appdapter.fancy.query.SolutionHelper;
+
 import org.slf4j.Logger;
 
 

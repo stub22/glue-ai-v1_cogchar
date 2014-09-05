@@ -25,7 +25,9 @@ import org.cogchar.name.lifter.LiftAN;
 
 import org.cogchar.impl.web.config.LiftAmbassador;
 /**
- * @author Stu B. <www.texpedient.com>
+ This Chan talks directly to the LiftAmbassador instead of going through repo indirection.
+ Thus it manifests an assumption that the Behavior-agent and the Web-agent are in the same process.
+ This is used in some Pushy feature tests, but not in the current pathway used 
  */
 
 class WebOutPerfChan(id : Ident)  extends  FancyTextPerfChan[WebOutPerfJob](id) {

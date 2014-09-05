@@ -2,7 +2,8 @@ package org.cogchar.app.puma.config;
 
 import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.platform.trigger.BoxSpace;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
+
 /**
  *
  * @author robokind

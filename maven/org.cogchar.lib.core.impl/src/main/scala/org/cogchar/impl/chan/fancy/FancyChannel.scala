@@ -34,38 +34,3 @@ trait FancyChannel extends Channel {
 
 // The ChannelSpec has not advanced beyond a URI rendevous point, which SceneSpecs can refer to.
 // Through 2012 our behavior demos relied on PUMA to inject actual channels with matching URIs into a Theater.
-
-class RealFancyChannelSpec extends KnownComponentImpl {
-	var		myOsgiFilterString : String = "NONE";
-	var		myChanType : Ident = null;
-	
-	override def getFieldSummary() : String = {
-		return super.getFieldSummary() + ", osgiFilteringString=" + myOsgiFilterString + 
-				", chanType=" + myChanType;
-	}
-	def getOSGiFilterString() = myOsgiFilterString;
-	def getChannelTypeID() = myChanType;
-	def getChannelID() = getIdent();
-	
-	
-	def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
-		
-		myOsgiFilterString = reader.readConfigValString(configItem.getIdent(), ChannelNames.P_osgiFilterString, configItem, null);
-		
-		val chanTypePropID = reader.getConfigPropertyIdent(configItem, configItem.getIdent(), ChannelNames.P_channelType);
-		val linkedChanTypes : java.util.Set[Item] = configItem.getLinkedItemSet(chanTypePropID, Item.LinkDirection.FORWARD);
-		
-		getLogger().debug("ChannelSpec has linkedChanTypes: {} ",  linkedChanTypes);
-		if (linkedChanTypes.size() == 1) {
-			myChanType =  linkedChanTypes.iterator.next.asInstanceOf[Ident]
-		}		
-	}	
-}
-class RealFancyChannelSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[RealFancyChannelSpec](builderConfRes) {
-
-	override protected def initExtendedFieldsAndLinks(cs: RealFancyChannelSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
-		getLogger().debug("FancyChannelSpecBuilder.initExtendedFieldsAndLinks using {}", configItem);
-		val reader = getReader();
-		cs.completeInit(configItem, reader, assmblr, mode)
-	}
-}

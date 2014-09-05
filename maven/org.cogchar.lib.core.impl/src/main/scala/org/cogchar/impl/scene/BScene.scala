@@ -73,9 +73,11 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 
 	override def getRootChannel() : BSceneRootChan = {	myRootChan	}
 	import scala.collection.JavaConversions._;
+	
 	override def wirePerfChannels(perfChans : java.util.Collection[PerfChannel]) : Unit = {
 		// Currently, all we do is copy references to all chans into our wired channel map.
 		// TODO:  reconcile the actually wired channels with the ones in the SceneSpecs.
+		// 
 		// Open question:  What does it mean to "re-wire" a BScene?
 		if (myWiredPerfChannels.size > 0) {
 			throw new RuntimeException("Wiring new perfChannels [" + perfChans + "] into a scene with existing channels: " + myWiredPerfChannels)

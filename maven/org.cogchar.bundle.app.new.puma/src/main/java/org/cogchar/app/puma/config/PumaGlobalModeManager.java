@@ -18,7 +18,8 @@ package org.cogchar.app.puma.config;
 
 import org.cogchar.name.entity.EntityRoleCN;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
+
 import org.jflux.impl.services.rk.osgi.lifecycle.OSGiComponent;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
 import org.osgi.framework.BundleContext;

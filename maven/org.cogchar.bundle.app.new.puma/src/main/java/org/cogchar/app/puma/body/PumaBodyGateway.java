@@ -17,37 +17,28 @@ package org.cogchar.app.puma.body;
 
 
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
-
-import org.appdapter.core.log.BasicDebugger;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 import org.appdapter.core.name.Ident;
-
-import org.osgi.framework.BundleContext;
 import org.cogchar.bind.mio.robot.model.ModelRobot;
 
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
+
+import org.mechio.api.motion.Robot;
 
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
-import org.cogchar.api.skeleton.config.BoneProjectionRange;
+
 import org.cogchar.name.skeleton.BoneCN;
-//import org.cogchar.app.puma.vworld.ModelToFigureStateMappingFuncs;
-//import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
-import org.cogchar.bind.mio.robot.client.RobotAnimContext;
 import org.cogchar.bind.mio.robot.client.RobotVisemeClient;
-import org.cogchar.bind.mio.robot.client.RobotAnimClient.BuiltinAnimKind;
 
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext;
-import org.cogchar.impl.perform.FancyTextPerfChan;
 
-import org.cogchar.blob.emit.BehaviorConfigEmitter;
-import org.osgi.framework.ServiceRegistration;
 import org.cogchar.platform.util.ClassLoaderUtils;
-import org.mechio.api.motion.Robot;
 import org.cogchar.bind.mio.robot.motion.CogcharMotionSource;
 /**
  * @author Stu B. <www.texpedient.com>

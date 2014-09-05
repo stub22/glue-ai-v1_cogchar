@@ -18,7 +18,8 @@ package org.cogchar.bundle.app.puma;
 import java.util.List;
 import java.io.PrintStream;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.name.FreeIdent;
+
+
 import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
@@ -26,9 +27,8 @@ import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.appdapter.help.repo.RepoClient;
-//import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
-import org.cogchar.impl.thing.basic.BasicThingActionRouter;
+import org.appdapter.fancy.rclient.RepoClient;
+
 import org.osgi.framework.BundleContext;
 import org.mechio.api.motion.Robot;
 import org.cogchar.bind.mio.robot.motion.CogcharMotionSource;
@@ -57,8 +57,8 @@ public class PumaAppUtils extends BasicDebugger {
 	 *
 	 * GruesomeTAProcessingFuncs.registerActionConsumers GreedyHandleSet.processPendingThingActions
 	 *
-	 * CCRK_DemoActivator.startDeicticMonitoring - New capstone features for viz of gaze, pointing, throwing, kicking
-	 * CCRK_DemoActivator.setupDebuggingScaffold - disabled exposure to Swing GUI
+	 *		CCRK_DemoActivator.startDeicticMonitoring - New capstone features for viz of gaze, pointing, throwing, kicking
+	 *		CCRK_DemoActivator.setupDebuggingScaffold - disabled exposure to Swing GUI
 	 *
 	 *
 	 */
@@ -83,7 +83,7 @@ public class PumaAppUtils extends BasicDebugger {
 			prcFinder = new PumaRegistryClientFinder();
 			if (prcFinder == null) {
 				return false;
-			}
+	}
 			pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
 			if (pumaRegClient == null) {
 				return false;
@@ -100,7 +100,7 @@ public class PumaAppUtils extends BasicDebugger {
 			if (pumaWebMapper == null) {
 				return false;
 			}
-			animPathGraphID = rc.makeIdentForQName(AnimFileSpecReader.animGraphQN());
+			animPathGraphID = rc.getDefaultRdfNodeTranslator().makeIdentForQName(AnimFileSpecReader.animGraphQN());
 			// Junky old stuff of dubious value.  All three of these classes were created as placeholders for
 			// difficult concepts, better treated as free variables than known designs.
 			pgmm = pcm.getGlobalModeMgr();

@@ -33,16 +33,31 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 
 	static float TEST_INIT_X = 30.0f, TEST_INIT_Y = 15.0f, TEST_INIT_Z = 10.0f;
 	public static void main(String[] args) {
-		TestRemoteBitBoxes tester = new TestRemoteBitBoxes();
+		TestRemoteBitBoxes tester = new TestRemoteBitBoxes("goGetEmTiger");
 		tester.doBitBoxTest(0);
 	}
-	public TestRemoteBitBoxes() {
+	public TestRemoteBitBoxes(String aName) {
+		System.out.println("TestRemoteBitBoxes is being constructed with name " + aName + "  and is calling forceLog4jConfig");
 		forceLog4jConfig();
 	}
 	private static String goodyGraphQN = "ccrt:thing_sheet_22";
 	private static String boxBaseURI = "http://dummy.org/bitbox#num_";
 	
+	public void setUp() { 
+		getLogger().info("POJO-style setup");
+	}
+	public void tearDown() { 
+		getLogger().info("POJO-style tearDown");
+	}
+	
+	// http://maven.apache.org/surefire/maven-surefire-plugin/examples/pojo-test.html
+	public void testPojoStyle() {
+		getLogger().warn("Runs as a surefire-Pojo style test, which gets found because the name starts with test, but only if Junit4 is not enabled");
+		getLogger().info("Info level logging");
+		getLogger().debug("Debug level logging");
+	}
 	public void doBitBoxTest(int outerLoopCount) {
+		getLogger().warn("doBitBoxTest is called");
 		Random ran = new Random();
 		Ident boxOneID = makeOneBitBox(ran, true);
 		for (int outer = 0; outer < outerLoopCount; outer++) {
@@ -52,6 +67,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 				updateGoodyLocation(boxOneID, TEST_INIT_X + disp, TEST_INIT_Y + disp, TEST_INIT_Z + disp, ran, false);
 			}
 		}
+		getLogger().warn("doBitBoxTest is done");
 	}
 	public Ident makeOneBitBox(Random ran, boolean debugFlag) {
 		BasicTypedValueMap btvm = new ConcreteTVM();

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.impl.chan.fancy.RealThingActionChanSpec;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.lifecycle.ManagedService;
@@ -56,7 +56,7 @@ public class TAGraphChanWiringDemo {
     private static List<RealThingActionChanSpec> loadTAChanSpecs(RepoClient defaultDemoRepoClient, String taChanGraphQN) {
         List<RealThingActionChanSpec> specs = new ArrayList();
         // Determine the URI for the 'qualified name' which identifies the data in the repo
-        Ident taChanGraphID = defaultDemoRepoClient.makeIdentForQName(taChanGraphQN);
+        Ident taChanGraphID = defaultDemoRepoClient.getDefaultRdfNodeTranslator().makeIdentForQName(taChanGraphQN);
         // Collect the objects from the repo, building them from RDF raw data
         Set<Object> assembledRoots = defaultDemoRepoClient.assembleRootsFromNamedModel(taChanGraphID);
         for (Object root : assembledRoots) {
