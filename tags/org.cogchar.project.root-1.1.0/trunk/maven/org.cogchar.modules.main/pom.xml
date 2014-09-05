@@ -1,0 +1,100 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.project.root</artifactId>
+		<version>1.1.0</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>  
+	
+	<artifactId>org.cogchar.modules.main</artifactId>
+
+	<packaging>pom</packaging>
+	<name>${project.artifactId} - 'Main Modules' parent pom</name>
+	<description>All libraries and OSGi bundles - everything EXCEPT nbui projects</description>
+
+	
+	<modules>	
+		<module>../ext.bundle.ops4j.pax.web</module>
+		<module>../ext.bundle.fuseki</module>
+		<module>../ext.bundle.lift</module>
+		
+		<module>../org.cogchar.bundle.demo.all</module>
+		<!-- Stu configging for "all new puma" build -->
+		<module>../org.cogchar.bundle.app.new.puma</module>
+        <module>../org.cogchar.bundle.app.vworld.startup</module>
+		
+		<module>../org.cogchar.bundle.core</module>		
+		<module>../org.cogchar.bundle.bind.mechio</module>
+		<module>../org.cogchar.bundle.bind.cogbot</module>
+		<module>../org.cogchar.bundle.bind.lift</module>
+		<module>../org.cogchar.bundle.bind.joseki</module>
+
+		<module>../org.cogchar.bundle.temp.wire</module>
+
+		<module>../org.cogchar.bundle.demo.convo</module>
+		<module>../org.cogchar.bundle.demo.dictation</module>
+		
+		<module>../org.cogchar.lib.onto</module>
+		<module>../org.cogchar.lib.core.api</module>
+		<module>../org.cogchar.lib.core.impl</module>
+		
+		<!-- These modules will stay in Cogchar.org permanently. -->
+		<module>../org.cogchar.lib.vworld.api</module>
+		<module>../org.cogchar.lib.sight.api</module>
+		<!-- Proposed:  
+		Each other major plugin project gets one API lib in Cogchar.
+		However, the code in these APIs should be minimized, in favor of ontology binding 
+		through repo-based mechanisms.
+		
+		The 3 major plugins are currently defined to be
+				o.c.l.vworld.api - for Hedspc
+				o.c.l.?.api - for Storychat
+				o.c.l.sight.api - for Freckler
+				
+		In contrast, MechIO.org does not have such a plugin, because
+		Cogchar actually functions as a plugin to TinkerBot, and wrapper around it.
+		-->
+
+		
+		<module>../org.cogchar.lib.animoid</module>
+		<module>../org.cogchar.lib.convoid</module>
+		<module>../org.cogchar.lib.integroid</module>		
+
+		
+		<module>../org.cogchar.lib.sonograph</module>
+		
+		<module>../org.cogchar.lib.outer.behavior</module>
+		
+		
+	<!-- ********************************************************************************
+			These 9 modules will move to HeDSpc.org before the release of Cogchar 1.1.0 
+	*************************************************************************************
+	-->
+		<module>../org.cogchar.lib.render.impl</module>
+		<module>../org.cogchar.lib.render.bony</module>
+		<module>../org.cogchar.lib.render.goody</module>
+		<module>../org.cogchar.lib.render.hominoid</module>
+		
+		<module>../org.cogchar.bundle.render.opengl</module>
+		<module>../org.cogchar.bundle.render.resources</module>
+		
+			<!-- Extra tests and demos, can dissolve into "Test Packages" of the libs -->
+			<module>../org.cogchar.demo.render.opengl</module>
+				
+		<!-- OSGi + Maven wrappers for JME3 + Nifty -->
+		<module>../ext.bundle.opengl.jmonkey</module>
+		<module>../ext.bundle.opengl.nifty</module>
+		<!-- End of modules that are moving to HeDSpc.org -->		
+
+	</modules>
+	
+	<!-- ***********************************************************************************
+	****************************************************************************************
+		DO NOT EDIT WITHOUT MAVEN+FELIX SAVVY:  SHARED FELIX LAUNCHER PROFILES 
+		This single bundle-launch profile is available to all subprojects. 
+		TODO: allow for per-project vmargs customization using properties.
+	-->
+</project>

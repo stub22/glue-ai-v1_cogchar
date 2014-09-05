@@ -1,0 +1,177 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.1.0</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>		
+	<artifactId>org.cogchar.lib.onto</artifactId>
+	<packaging>jar</packaging>
+
+	<name>${project.artifactId} - POJO</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+		</dependency>	
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>		
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- Processing of current ontos is following pattern described here
+				http://jena.apache.org/documentation/tools/schemagen-maven.html
+				
+				However, the plugin version described there is out of date.
+				We found this one by searching maven-central.
+				
+				This plugin runs before the java-compile step.
+				
+				The generated .java files are written to ${project.build.directory}/generated-sources/java,
+				which is made part of the java build step using the config of the build-helper-maven-plugin
+				below.
+			-->
+			<plugin>
+
+				<groupId>org.apache.jena</groupId>
+				<artifactId>jena-maven-tools</artifactId>
+				<configuration>
+					<includes>
+						<include>src/main/resources/org/cogchar/onto/*_owl2.ttl</include>
+						<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and for some files 
+						we are going along with that for now.
+						-->
+						<include>src/main/resources/org/cogchar/onto/*_owl2.n3</include>
+					</includes>
+					<fileOptions>
+						<source>
+							<!--  Published jena docs are out of date.  
+The options we can use are mostly equivalent to the ones described here
+http://jena.apache.org/documentation/tools/schemagen.html
+but to get the actual option name, we have to look in Jena code, such as here:
+ http://grepcode.com/file/repo1.maven.org$maven2@org.apache.jena$jena-maven-tools@0.4@org$apache$jena$tools$schemagen$Source.java
+-->										
+
+							<!-- the "default" input supplies options used by all files matching includes above.  -->
+							<input>default</input>
+							<output>${project.build.directory}/generated-sources/java</output>
+							<package-name>org.cogchar.gen.oname</package-name>
+							<!-- We want more specialized OWL-aware java-subclasses like "Individual" and 
+								"ObjectProperty", not just "Resource" and "Property".
+							-->
+							<ontology>true</ontology>
+							<!-- no-strict prevents strict checking of ___ which if left on causes build error ____ -->
+							<no-strict>true</no-strict>
+							<!-- Sure, we like inference, although it's probably not needed in this task,
+								but it makes the serialized model larger.  If we want to use include-source,
+								below, this can lead to the full-model java String constant being too long,
+								and not compiling.
+							--> 
+							<use-inf>false</use-inf>
+							<!-- uc-names makes the constants be UPPER_CASE_STYLE instead of cCamelCaseStyle -->
+							<uc-names>true</uc-names>
+							<!-- Serializes the source code of the vocabulary, and 
+							includes this into the generated class file. At class load time, creates a Model 
+							containing the definitions from the source
+							-->
+							<include-source>true</include-source>
+						</source>
+						<source>
+							<!-- Example of properties applied to just one file, but a bogus one that we 
+							aren't even using (because this dummy file path is not part of an "include" spec
+							above
+							-->
+							<input>src/dummy/unused.ttl</input>
+							<ontology>true</ontology>
+						</source>
+					</fileOptions>							
+				</configuration>
+				<executions>
+					<execution>
+						<id>schemagen</id>
+						<goals>
+							<goal>translate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
+			<plugin>
+				<!-- We want the generated-sources/java directory to be included in the java-compile step -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											build-helper-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.7,)
+										</versionRange>
+										<goals>
+											<goal>add-source</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											exec-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.2.1,)
+										</versionRange>
+										<goals>
+											<goal>java</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
