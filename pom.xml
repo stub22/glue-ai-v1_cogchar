@@ -664,14 +664,14 @@ Version-less parent will be allowed in Maven 3.1.
             <developerConnection>scm:svn:https://subversion.assembla.com/svn/cogchar/trunk/</developerConnection>
             <url>https://www.assembla.com/code/cogchar/subversion/nodes/trunk/</url>
         </scm>
-        
+        <!--  Disabling, as this makes it impossible to release the project without access to the specified server.
         <distributionManagement>
             <site>
                 <id>nexus-site</id>
                 <url>dav:http://localhost:8081/nexus/content/sites/site/org/cogchar</url>
             </site>
         </distributionManagement>
-        
+        -->
 	<build>
             <extensions>
                 <extension>
