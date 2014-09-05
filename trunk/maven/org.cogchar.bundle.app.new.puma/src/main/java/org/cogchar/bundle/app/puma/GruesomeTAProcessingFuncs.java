@@ -28,13 +28,13 @@ import org.slf4j.LoggerFactory;
 public class GruesomeTAProcessingFuncs {
 
 	static Logger theLogger = LoggerFactory.getLogger(GruesomeTAProcessingFuncs.class);
-	private static BasicThingActionRouter theRouter;
+	private static BasicThingActionRouter	theRouter;
 
-	public static BasicThingActionRouter getActionRouter() {
+	public static BasicThingActionRouter	getActionRouter() {
 		if (theRouter == null) {
-			String localName = "theRouter";
-			Ident agentID = new FreeIdent(RKRT_NS_PREFIX + localName, localName);
-			theRouter = new BasicThingActionRouter(0L, agentID);
+            String localName = "theRouter";
+            Ident agentID = new FreeIdent(RKRT_NS_PREFIX + localName, localName);
+            theRouter = new BasicThingActionRouter(0L, agentID);
 		}
 		return theRouter;
 	}
@@ -63,11 +63,11 @@ public class GruesomeTAProcessingFuncs {
 		PumaAppUtils.GreedyHandleSet srec = PumaAppUtils.obtainGreedyHandleSet();
 		BasicThingActionRouter router = getActionRouter();
 		if ((srec !=null) && (router != null)) {
-			// Only known call to this 1-arg method form.
-			router.consumeAllActions(srec.rc);
+		// Only known call to this 1-arg method form.
+		router.consumeAllActions(srec.rc);
 		} else {
 			theLogger.warn("Cannot process with handleSet={} and taRouter={}", srec, router);
-		}
+	}
 	}
 
 	private static class RouterRunnable implements java.lang.Runnable {

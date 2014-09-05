@@ -20,10 +20,14 @@ import junit.framework.TestCase;
 /**
  *
  * @author Stu B. <www.texpedient.com>
+ * Classname must end or begin in "Test" to be found by default Surefire pattern.
+ * http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#includes
+ * 
+ * Junit3Style = extends TestCase, does not use @Test annotations on methods.
  */
-public class EmptyJUnitTestOne extends TestCase {
+public class Junit3StyleTest extends TestCase {
 	
-	public EmptyJUnitTestOne(String testName) {
+	public Junit3StyleTest(String testName) {
 		super(testName);
 	}
 	
@@ -38,4 +42,7 @@ public class EmptyJUnitTestOne extends TestCase {
 	}
 	// TODO add test methods here. The name must begin with 'test'. For example:
 	// public void testHello() {}
+	public void testOfWill() {
+		System.out.println("Junit3StyleTest - this method name starts with test");
+	}	
 }

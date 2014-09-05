@@ -17,8 +17,9 @@ package org.cogchar.api.cinema;
 
 import org.cogchar.name.cinema.CinemaCN;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionHelper;
+
+import org.appdapter.fancy.query.Solution;
+import org.appdapter.fancy.query.SolutionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

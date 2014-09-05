@@ -17,7 +17,8 @@
 package org.cogchar.scalatest
 
 import org.appdapter.core.name.Ident
-import org.appdapter.core.store.{Repo, InitialBinding}
+import org.appdapter.core.store.{Repo}
+import org.appdapter.core.query.{InitialBinding}
 import com.hp.hpl.jena.query.{QuerySolution}
 import com.hp.hpl.jena.rdf.model.{Model}
 import org.appdapter.core.log.BasicDebugger
@@ -25,13 +26,12 @@ import com.hp.hpl.jena.sparql.sse.SSE
 import com.hp.hpl.jena.sparql.modify.request.{UpdateCreate, UpdateLoad}
 import com.hp.hpl.jena.update.{GraphStore, UpdateAction, UpdateRequest}
 import com.hp.hpl.jena.sdb.{Store, SDBFactory}
-import org.appdapter.core.repo._
-import org.appdapter.core.matdat._
-import org.appdapter.core.repo.DirectRepo
-import org.appdapter.core.matdat.GoogSheetRepoLoader
-import org.appdapter.core.matdat.OnlineSheetRepoSpec
-import org.appdapter.core.repo._
-import org.appdapter.impl.store.FancyRepo
+
+
+import org.appdapter.fancy.loader.GoogSheetRepoLoader
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec
+
+import org.appdapter.fancy.repo.{DirectRepo, FancyRepo}
 /**
  * @author Stu B. <www.texpedient.com>
  */

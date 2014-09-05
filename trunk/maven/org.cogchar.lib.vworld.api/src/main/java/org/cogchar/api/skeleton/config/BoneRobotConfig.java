@@ -30,13 +30,18 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.SolutionMap;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.SolutionList;
+import org.appdapter.fancy.query.SolutionMap;
+import org.appdapter.fancy.query.SolutionHelper;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.Comparator;
+import java.util.Collections;
+import java.util.ArrayList;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.SolutionHelper;
+
 
 /**
  * @author Stu B. <www.texpedient.com>

@@ -34,7 +34,7 @@ import org.cogchar.render.model.humanoid.HumanoidFigureModule;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.render.sys.task.BasicCallableRenderTask;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.opengl.scene.FigureBoneNodeFinder;

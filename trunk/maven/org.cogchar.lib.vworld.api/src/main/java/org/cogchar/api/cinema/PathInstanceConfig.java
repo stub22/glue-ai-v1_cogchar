@@ -21,12 +21,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionHelper;
-import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.*;
-import org.appdapter.core.matdat.*;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.Solution;
+import org.appdapter.fancy.query.SolutionList;
+
+import org.appdapter.fancy.query.SolutionHelper;
+
+// import org.appdapter.help.repo.*;
+// import org.appdapter.core.matdat.*;
 
 /**
  * Holds instances of "Paths" from which we can create Thing MotionPaths/MotionEvents

@@ -21,8 +21,7 @@ import java.io.File;
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-
+import org.appdapter.fancy.rclient.RepoClient;
 
 import org.cogchar.api.humanoid.FigureConfig;
 import org.cogchar.name.skeleton.BoneCN;
@@ -33,7 +32,6 @@ import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
-import org.cogchar.platform.trigger.BoxSpace;
 
 /**
  * @author Stu B. <www.texpedient.com>

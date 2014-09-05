@@ -21,9 +21,16 @@ import java.util.Collection;
 import java.util.List;
 
 import org.appdapter.bind.rdf.jena.assembly.AssemblerUtils;
-import org.appdapter.core.matdat.*;
-import org.appdapter.help.repo.*;
-import org.appdapter.core.repo.*;
+//import org.appdapter.core.matdat.*;
+//import org.appdapter.help.repo.*;
+import org.appdapter.fancy.gpointer.PipelineQuerySpec;
+import org.appdapter.fancy.gpointer.PointerToTypedGraph;
+import org.appdapter.fancy.gpointer.TypedGraphPointerFactory;
+
+import org.appdapter.fancy.rclient.RepoClient;
+
+
+import org.appdapter.fancy.rclient.RepoClientFuncs_TxAware;
 import org.appdapter.core.name.Ident;
 import org.cogchar.bind.mio.behavior.SceneSpecExtender;
 import org.cogchar.impl.scene.BehaviorSpecBuilder;
@@ -109,8 +116,8 @@ public class SceneWiringDemo extends WiringDemo {
 		//		BoundModelProvider directBMP = ModelProviderFactory.makeOneDirectModelProvider(bmcRepoCli, directBehavGraphID);
 		//		List<SceneSpec> ssList = readSceneSpecsFromBMP(directBMP);
 		// readSceneSpecsFromDirectGraph(bmcRepoCli, directGraphQN);
-		Ident derivedBehavGraphID = bmcRepoCli.makeIdentForQName(derivedGraphQN);
-		BoundModelProvider derivedBMP = ModelProviderFactory.makeOneDerivedModelProvider(bmcRepoCli, pipeQuerySpec, derivedBehavGraphID);
+		Ident derivedBehavGraphID = bmcRepoCli.getDefaultRdfNodeTranslator().makeIdentForQName(derivedGraphQN);
+		PointerToTypedGraph derivedBMP = TypedGraphPointerFactory.makeOneDerivedModelPointer(bmcRepoCli, pipeQuerySpec, derivedBehavGraphID);
 		// List<SceneSpec> bonusList = readSceneSpecsFromDerivedGraph(bmcRepoCli, pipeQuerySpec, derivedGraphQN);
 		List<SceneSpec> bonusList = readSceneSpecsFromBMP(derivedBMP);
 
@@ -122,7 +129,7 @@ public class SceneWiringDemo extends WiringDemo {
 		return comboList;
 	}
 
-	public List<SceneSpec> readSceneSpecsFromBMP(BoundModelProvider bmp) {
+	public List<SceneSpec> readSceneSpecsFromBMP(PointerToTypedGraph bmp) {
 		getLogger().info("loading SceneSpecs from BMP: {}", bmp);
 		List<SceneSpec> ssList = new ArrayList<SceneSpec>();
 		try {

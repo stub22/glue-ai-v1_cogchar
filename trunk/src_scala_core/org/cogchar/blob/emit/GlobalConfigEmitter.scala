@@ -18,7 +18,8 @@ package org.cogchar.blob.emit
 
 import org.appdapter.core.name.{FreeIdent, Ident}
 
-import org.appdapter.help.repo.{RepoClient, SolutionHelper}
+import org.appdapter.fancy.rclient.{RepoClient}
+import org.appdapter.fancy.query.{SolutionHelper}
 
 import org.cogchar.name.entity.EntityRoleCN._;
 

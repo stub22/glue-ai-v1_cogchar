@@ -30,8 +30,8 @@ import org.appdapter.core.name.Ident;
 import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.query.SolutionList;
+import org.appdapter.fancy.rclient.RepoClient;
 
 /**
  * Used to enclose data from RDF Lift webapp configuration currently in liftConfig.ttl

@@ -16,11 +16,12 @@
 
 package org.cogchar.app.puma.config;
 
-import org.appdapter.core.repo.RepoSpec;
+import org.appdapter.fancy.rspec.RepoSpec;
+import org.appdapter.fancy.rclient.RepoClient;
+
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.store.Repo;
-import org.appdapter.help.repo.RepoClient;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;

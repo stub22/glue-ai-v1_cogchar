@@ -25,7 +25,7 @@ import org.cogchar.platform.trigger.CogcharScreenBox;
 import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.platform.trigger.CommandBinding;
 import org.cogchar.platform.trigger.BasicActionBindingImpl;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.app.puma.behavior.DirectBehaviorAgent;
 import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
 import org.appdapter.help.repo.ChannelsTriggersHelper;

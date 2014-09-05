@@ -18,9 +18,11 @@ package org.cogchar.api.cinema;
 
 import org.cogchar.name.cinema.CinemaCN;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionList;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.Solution;
+import org.appdapter.fancy.query.SolutionList;
+
+
 
 /**
  * Holds a list of "Thing Animations" from which we can create keyframe-based spatial animations

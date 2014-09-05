@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
 import org.cogchar.api.thing.WantsThingAction;
@@ -93,18 +93,16 @@ public class LifterAnswerPageGeneratorLifecycle implements
                 theQueryInterface);
         
         // Collect the lifter page recieving Model
-        Model lifterModel = repoClient.getRepo().
-                getNamedModel(mySpec.getLifterModelURI());
+        Model lifterModelReadonly = repoClient.getNamedModelReadonly(mySpec.getLifterModelURI());  // FIXME
         
         
         // Collect the TA recieving Model
-        Model thingActionModel = repoClient.getRepo().
-                getNamedModel(mySpec.getThingActionModelURI());
+        Model thingActionModelReadonly = repoClient.getNamedModelReadonly(mySpec.getThingActionModelURI());  // FIXME
         
         // Instance the pageGenerator
         LifterAnswerPageGenerator pageGen = new LifterAnswerPageGenerator(
-                lifterModel, 
-                thingActionModel);
+                lifterModelReadonly, 
+                thingActionModelReadonly);
         
         //TODO: confirm... is this enough?
         // does it need nothing more to get into the TA router?

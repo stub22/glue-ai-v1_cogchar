@@ -18,7 +18,7 @@ import org.cogchar.app.puma.config.PumaContextMediator;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.name.FreeIdent;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.event.CommandEvent;
 import org.cogchar.app.puma.event.Updater;

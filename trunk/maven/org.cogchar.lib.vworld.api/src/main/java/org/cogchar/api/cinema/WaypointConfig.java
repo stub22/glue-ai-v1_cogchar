@@ -19,10 +19,10 @@ package org.cogchar.api.cinema;
 import org.cogchar.name.cinema.CinemaCN;
 import java.util.Arrays;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionHelper;
-//import com.jme3.math.Vector3f; // Not available here
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.Solution;
+import org.appdapter.fancy.query.SolutionHelper;
+
 
 
 /**

@@ -17,9 +17,11 @@
 package org.cogchar.impl.scene.read
 
 import org.appdapter.core.name.{ Ident, FreeIdent }
-import org.appdapter.core.store.{ Repo, InitialBinding }
-import org.appdapter.help.repo.{ RepoClient, RepoClientImpl, InitialBindingImpl }
-import org.appdapter.impl.store.{ FancyRepo }
+import org.appdapter.core.store.{ Repo }
+import org.appdapter.core.query.{ InitialBinding }
+import org.appdapter.fancy.rclient.{ RepoClient, RepoClientImpl, LocalRepoClientImpl }
+import org.appdapter.fancy.query.{ InitialBindingImpl }
+import org.appdapter.fancy.repo.{ FancyRepo }
 import com.hp.hpl.jena.query.{ QuerySolution }
 import com.hp.hpl.jena.rdf.model.{ Model }
 import org.cogchar.impl.perform.{ PerfChannelNames }
@@ -29,10 +31,10 @@ import org.cogchar.impl.scene.{ SceneSpec, SceneBook }
 import org.appdapter.core.log.BasicDebugger
 import org.cogchar.platform.util.ClassLoaderUtils
 import org.osgi.framework.BundleContext
-import org.appdapter.core.matdat._
-import org.appdapter.core.repo.RepoSpecDefaultNames
-import org.appdapter.core.repo.PipelineQuerySpec
-import org.appdapter.core.matdat.OfflineXlsSheetRepoSpec
+// import org.appdapter.fancy.matdat.{}
+import org.appdapter.fancy.rspec.{RepoSpecDefaultNames, OfflineXlsSheetRepoSpec, OnlineSheetRepoSpec}
+import org.appdapter.fancy.gpointer.PipelineQuerySpec
+
 
 // import org.cogchar.blob.emit.RepoClientTester from here
 
@@ -90,7 +92,7 @@ object BehavMasterConfigTest extends SceneSpecReader {
     val fileResModelCLs = new java.util.ArrayList[ClassLoader]();
     val bmcRepoSpec = makeBMC_RepoSpec(fileResModelCLs);
 
-    val bmcMemoryRepoHandle = bmcRepoSpec.makeRepo();
+    val bmcMemoryRepoHandle = bmcRepoSpec.getOrMakeRepo();
 
     println("Loaded Repo: " + bmcMemoryRepoHandle)
 
@@ -104,7 +106,7 @@ object BehavMasterConfigTest extends SceneSpecReader {
     // val bmcRepoCli = bmcRepoSpec.makeRepoClient(bmcMemoryRepoHandle);
     // ..just does:
     // new RepoClientImpl(repo, getDfltTgtGraphSparqlVarName, getDfltQrySrcGraphQName);
-    val bmcRepoCli = new RepoClientImpl(bmcMemoryRepoHandle, TGT_GRAPH_SPARQL_VAR, QUERY_SOURCE_GRAPH_QN)
+    val bmcRepoCli = new LocalRepoClientImpl(bmcMemoryRepoHandle, TGT_GRAPH_SPARQL_VAR, QUERY_SOURCE_GRAPH_QN)
 
     println("Repo Client: " + bmcRepoCli)
     // Use an arbitrarily assumed name for the ChannelBinding Graph (as set in the "Dir" model of the source repo).
@@ -123,7 +125,7 @@ object BehavMasterConfigTest extends SceneSpecReader {
     // println("SpeechOut-Best=" + ChannelNames.getOutChanIdent_SpeechMain)
 
     // Create a new repo of kind  "derived"
-    val derivedBehavGraphID = bmcRepoCli.makeIdentForQName(DERIVED_BEHAV_GRAPH_QN);
+    val derivedBehavGraphID = bmcRepoCli.getDefaultRdfNodeTranslator.makeIdentForQName(DERIVED_BEHAV_GRAPH_QN);
     val pqs = new PipelineQuerySpec(PIPE_ATTR_QQN, PIPE_SOURCE_QQN, PIPELINE_GRAPH_QN);
     val derivedSceneSpecList = readSceneSpecsFromDerivedRepo(bmcRepoCli, pqs, derivedBehavGraphID);
     println(EQBAR + "\nGot derived scene specs : " + derivedSceneSpecList)

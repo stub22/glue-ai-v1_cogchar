@@ -18,7 +18,7 @@ package org.cogchar.bind.mio.behavior;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.api.channel.Channel;
 import org.cogchar.api.perform.PerfChannel;
 import org.cogchar.bind.mio.robot.client.RobotAnimContext;

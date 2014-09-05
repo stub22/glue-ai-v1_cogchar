@@ -20,11 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
+
 import org.cogchar.api.monitor.AppDebugMonitor;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.WantsThingAction;
-import org.cogchar.name.entity.EntityRoleCN;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

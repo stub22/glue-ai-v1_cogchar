@@ -17,17 +17,17 @@
 package org.cogchar.scalatest
 
 import java.io.ByteArrayOutputStream
-import org.appdapter.core.matdat.OnlineSheetRepoSpec
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.core.store.Repo
 import org.appdapter.demo.DemoResources
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl}
-import org.appdapter.impl.store.FancyRepo
+import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl, LocalRepoClientImpl}
+import org.appdapter.fancy.repo.FancyRepo
 
 import org.cogchar.name.dir.{AssumedGraphDir, AssumedQueryDir}
 import org.appdapter.demo.DemoResources
-import org.appdapter.impl.store.DatabaseRepoFactoryLoader
-import org.appdapter.impl.store.DatabaseRepoSpec
+import org.appdapter.fancy.loader.SdbSqlRepoFactoryLoader
+import org.appdapter.fancy.rspec.SdbSqlRepoSpec
 
 
 /** Documenting and testing our query-based configuration systems.
@@ -126,7 +126,7 @@ object RepoClientTester {
 		// 	which loads the directory and then calls:
 		// 	shRepo.loadSheetModelsIntoMainDataset()
 		// 	shRepo.loadFileModelsIntoMainDataset(fileModelCLs)
-		val dfltTestRepo = rspec.makeRepo();
+		val dfltTestRepo = rspec.getOrMakeRepo();
 		
 		// At this point, we can forget that the repo came from a spreadsheet, at least for
 		// *reading* purposes.  We could write to the repo in memory, but we'd have to save
@@ -167,11 +167,11 @@ object RepoClientTester {
 		// 
 		val dirGraphID = new FreeIdent("urn:org.cogchar/dirModelInRepoTestDB", "dirModelInRepoTestDB");
 		
-		val dbRepoSpec = new DatabaseRepoSpec(DFLT_SDB_REPO_CONFIG_PATH, DFLT_SDB_REPO_CONFIG_CLASS_LOADER, dirGraphID)
-		val dbRepo = dbRepoSpec.makeRepo
+		val dbRepoSpec = new SdbSqlRepoSpec(DFLT_SDB_REPO_CONFIG_PATH, DFLT_SDB_REPO_CONFIG_CLASS_LOADER, dirGraphID)
+		val dbRepo = dbRepoSpec.getOrMakeRepo
 		println("Built dbRepo: " + dbRepo);
 		
-		val lightsGraphID = dfltTestRC.makeIdentForQName(lightsGraphQN);
+		val lightsGraphID = dfltTestRC.getDefaultRdfNodeTranslator.makeIdentForQName(lightsGraphQN);
 		val copyURI_Tail = "ranDumbModelURI_02"
 		val copyID = new FreeIdent("urn:org.cogchar/" + copyURI_Tail, copyURI_Tail)
 		val lightsModelFromSheet = dfltTestRepo.getNamedModel(lightsGraphID);
@@ -220,7 +220,7 @@ object RepoClientTester {
 	}
 
   	def makeRepoClient(fr : FancyRepo, queryTargetVarName:  String, querySheetQN : String) : RepoClient = {
-		new RepoClientImpl(fr, queryTargetVarName, querySheetQN)		
+		new LocalRepoClientImpl(fr, queryTargetVarName, querySheetQN)		
 	}		
 
 	/*

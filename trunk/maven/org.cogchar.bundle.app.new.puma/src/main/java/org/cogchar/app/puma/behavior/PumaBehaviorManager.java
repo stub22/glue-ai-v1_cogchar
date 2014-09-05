@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
+
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.body.PumaBodyGateway;
@@ -52,7 +53,7 @@ public class PumaBehaviorManager extends BasicDebugger {
 		// and finally into the AnimMediaHandle.Cache  which is used by the AnimOutTrigChan.
 		
 		RepoClient animResRepoClient = prc.getConfigMgr(null).getMainConfigRepoClient();
-		Ident animPathModelID =  animResRepoClient.makeIdentForQName(AnimFileSpecReader.animGraphQN());
+		Ident animPathModelID =  animResRepoClient.getDefaultRdfNodeTranslator().makeIdentForQName(AnimFileSpecReader.animGraphQN());
 		myBehavCE = new BehaviorConfigEmitter(animResRepoClient, animPathModelID);
 		
 		// Here are some older config properties serving a related config/anim path-resolving role.
