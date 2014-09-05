@@ -1,0 +1,138 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.1.0</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>
+	
+	<artifactId>org.cogchar.bundle.bind.mechio</artifactId>
+	<packaging>bundle</packaging>
+
+	<name>${project.artifactId} - OSGi - binds motion, vision, speech</name>
+
+	<dependencies>
+        <dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.math.jscience_50SNAP</artifactId>
+			<!-- Freezing to the 1.0.9 version of JScience wrapper -->
+			<scope>runtime</scope>
+            <!-- but dont let it use "runtime" classes that mismatch -->
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.osgi.core</artifactId>
+                    <groupId>org.apache.felix</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xercesImpl</artifactId>
+                    <groupId>xerces</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>icu4j</artifactId>
+                    <groupId>com.ibm.icu</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>    
+		</dependency>
+
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.speech</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<!-- Needed at compile time for PortableSpeechRequest  -->
+			<artifactId>org.mechio.impl.speech</artifactId>
+		</dependency>				
+		
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.motion</artifactId>
+		</dependency>		
+
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.animation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.vision</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.impl.messaging.rk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.impl.motion</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.integration.animation_motion</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.integration.motion_speech</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Needed at compile time for AnimationXMLReader -->			
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.impl.animation</artifactId>
+            <scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Activator>org.cogchar.bind.mio.osgi.MechIOBindingActivator</Bundle-Activator>
+						<Export-Package>org.cogchar.bind.mio.*</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+<!--
+/*
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+ -->

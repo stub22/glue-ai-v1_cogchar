@@ -1,0 +1,335 @@
+## This file contains RDF in Turtle (".ttl") format.
+## See:   http://www.w3.org/TeamSubmission/turtle/
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+@prefix apsb:	<http://www.appdapter.org/schema/box#> .
+@prefix apt:	<http://www.appdapter.org/test#> .
+
+@prefix cs:		<http://www.cogchar.org/schema/scene#> .
+@prefix csi:	<http://www.cogchar.org/schema/scene/instance#> .
+
+
+<>  rdfs:comment     "Chewy nuggets of real behavior"   .
+### TODO:  We can't yet use imports with relative paths or in a way that matches
+### both our "perm" and "temp" directory structures.
+###	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl";
+
+##  Here we have 2 minimal RDFS classes to prime Jena Assembler's pump.
+## We are also assuming that various channelSpecs are available to point to by URI.
+## TODO:  Build real RDFS and OWL schemas to help work with this data.
+
+
+cs:BuildableSceneSpec
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.impl.scene.SceneSpecBuilder" 
+		.		
+
+cs:BuildableBehaviorSpec
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.impl.scene.BehaviorSpecBuilder" 
+		.	
+
+## We usually build these channels from spreadsheet, but we still need the
+## ChannelBuilder declared, so we can allow ItemAssemblyReaderImpl.findOrMakeLinkedObjects
+## to find those previously loaded channels.
+
+cs:BuildableChannelSpec
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.impl.perform.ChannelSpecBuilder" 
+		.	
+
+### We also need to know that the channels are of this type, which we should 
+### be able to do with some declarative mojo on the cs:channel property
+### ...but so far, this ain't workin
+cs:channel
+	a		rdfs:Property;
+	rdfs:range	cs:BuildableChannelSpec
+	.
+
+
+csi:speechOut_100		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]SpeechOutMain for CC Demo";
+	rdfs:label 			"[rdfs:]SpeechOutMain for CC Demo";
+	cs:details			"Will map to whatever you have running";
+	.
+
+csi:animOut_200		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"[apsb:]AnimOut-VirtualBest for CC Demo";
+	rdfs:label 			"[rdfs:]AnimOut-VirtualBest for CC Demo";
+	cs:details			"Sends control signals and monitors status of MechIO XML animations, for some assumed best humanoid";
+	.
+
+
+
+# behavior_temp
+# logging_temp
+# rk_bind_temp
+
+
+################################################################################################################
+### Test scenes 1-10  are launched with numeric keypad
+# Scenes 1-3, 5 test SteppingBehavior only
+# Scenes 4, 6-9 test RuledBehavior
+################################################################################################################
+
+csi:scn_001 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"Stepping Behavior test #1";
+	cs:details			"scene-specific-details-go-here";
+	cs:behavior			csi:bh_001;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_01"
+	.
+
+csi:scn_002 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"Stepping Behavior test #2";
+	cs:behavior			csi:bh_002;
+	cs:channel			csi:speechOut_100;
+	cs:channel			csi:animOut_200;
+	cs:trigger			"sceneTrig_02"
+	.
+
+csi:scn_003 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"Stepping Behavior test #3";
+	cs:behavior			csi:bh_002, csi:bh_001;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_03"
+	.
+
+csi:bh_001		
+	rdf:type			cs:BuildableBehaviorSpec;
+	apsb:javaFQCN		"org.cogchar.impl.scene.SteppingBehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.7;
+			cs:text				"I have a positive contribution to make"
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	5.2;
+			cs:text				"I am not a nattering nabob"
+		]
+## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
+	)
+	.
+
+csi:bh_002		
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.SteppingBehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	1.2;
+			cs:text				"Started after 1.2 seconds"
+		] 
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	2.0;
+			cs:text				"dir_101_sysTest_vol_01/UNSAFE_allJoints_fullRange_01.xml"
+		] 
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	7;
+			cs:text				"Started after 7 seconds"
+		]
+## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
+	)
+	.
+
+csi:scn_004	
+	rdf:type			cs:BuildableSceneSpec;		
+	apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"Ruled Behavior test #4";
+	cs:details			"scene-specific-details-go-here";
+	cs:behavior			csi:bh_004;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_04"
+	.
+
+csi:bh_004
+	rdf:type			cs:BuildableBehaviorSpec;
+	apsb:javaFQCN		"org.cogchar.impl.scene.RuledBehaviorSpec";
+	cs:rules		"""
+@prefix csi: <http://www.cogchar.org/schema/scene/instance#>
+@prefix sil: <urn:sillyNamespace#>
+
+# @include <RDFS>.
+
+[bonusForSilliness: (?c sil:sillyProperty ?x) -> (?c sil:bonusProperty 22)]
+					""";
+
+	cs:query		"""
+
+PREFIX csi: <http://www.cogchar.org/schema/scene/instance#>
+PREFIX sil: <urn:sillyNamespace#>
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:	<http://www.w3.org/2000/01/rdf-schema#>
+
+PREFIX fnApbj: 	<java:org.appdapter.binding.jena.>
+PREFIX fnXp: 	<http://www.w3.org/2005/xpath-functions#>
+
+# We want the union of the default graph and any named graphs.
+SELECT * 
+{ 
+    { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } 
+}
+
+					"""
+	.
+
+
+csi:scn_005
+	rdf:type			cs:BuildableSceneSpec;		
+	apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"Stepping Behavior test #5";
+	cs:behavior			csi:bh_005;
+	cs:channel			csi:speechOut_100, csi:animOut_200;
+	cs:trigger			"sceneTrig_05"
+	.
+
+csi:bh_005	
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.SteppingBehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.0;
+			cs:text				"Starting animation anger.xml"
+		] 
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	1.0;
+			cs:text				"animations/misc/anger.xml"
+		] 
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	5.0;
+			cs:text				"Starting animation blink.xml"
+		] 
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	6.0;
+			cs:text				"animations/misc/blink.xml"
+		] 
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	10.0;
+			cs:text				"Starting animation happy.xml"
+		] 
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	11.0;
+			cs:text				"animations/misc/happy.xml"
+		] 
+## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
+	)
+	.
+
+
+csi:scn_007	
+	rdf:type			cs:BuildableSceneSpec;		
+	apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"DynWeb + Avatar - Ruled Behavior Scene #07";
+	cs:details			"Uses rules to affect query results that drive playback";
+	cs:behavior			csi:bh_007;
+	cs:channel			csi:speechOut_100, csi:animOut_200;
+	cs:trigger			"sceneTrig_07"
+	.
+
+csi:bh_007
+	rdf:type			cs:BuildableBehaviorSpec;
+	apsb:javaFQCN		"org.cogchar.impl.scene.RuledBehaviorSpec";
+	cs:rules		"""
+@prefix csi: <http://www.cogchar.org/schema/scene/instance#>
+@prefix sil: <urn:sillyNamespace#>
+
+# @include <RDFS>.
+
+[bonusForSilliness: (?c sil:sillyProperty ?x) -> (?c sil:bonusProperty 22)]
+					""";
+
+	cs:query		"""
+
+PREFIX csi: <http://www.cogchar.org/schema/scene/instance#>
+PREFIX sil: <urn:sillyNamespace#>
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:	<http://www.w3.org/2000/01/rdf-schema#>
+
+PREFIX fnApbj: 	<java:org.appdapter.binding.jena.>
+PREFIX fnXp: 	<http://www.w3.org/2005/xpath-functions#>
+
+# We want the union of the default graph and any named graphs.
+SELECT * 
+{ 
+    { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } 
+}
+
+					"""
+	.
+
+
+################################################################################################################
+###   Demo Scenes 11-20 are launched with top-row number keys ("1" launches "11", "2" launches "12", ...)
+################################################################################################################
+
+
+csi:scn_011 	
+#  Conveying: Enthusiasm, excitement.
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn_011 - I Feel Good";
+	cs:behavior			csi:bh_011;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_11"
+	.
+
+csi:bh_011		
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.SteppingBehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.5;
+			cs:text				"Wow. So many people here today. How do you all feel? Ill tell you how I feel."
+			#Robot looks around, moves head back and forth. Opens eyes and mouth, Spreads arms. 
+
+		] 
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	10;
+			# Trigger audio file, with some leading and trailing text to help Acapela.  
+			cs:text				"well hey now \\aud=\"/mnt/vm_shared/wav_samples/DancingFeet_MAG.wav\"\\ can you dig it?"
+	#  Robot shrugs head, looks down, looks up, opens mouth, raises one arm, starts replaying 
+	#  song and pumps arms in rock and roll time.
+		]
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	10.1;
+			cs:text				"dir_301_meetAndGreet_vol_01/dance_arms.xml"
+		] 
+		[
+			cs:channel			csi:animOut_200;
+			cs:startOffsetSec	10.2;
+			cs:text				"dir_301_meetAndGreet_vol_01/dance_legs.xml"
+		] 
+	)
+	.
+################################################################################################################
