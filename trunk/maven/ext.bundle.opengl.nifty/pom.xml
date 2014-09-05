@@ -1,0 +1,92 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.1.0</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>	
+
+    <artifactId>ext.bundle.opengl.nifty</artifactId>
+
+    <packaging>bundle</packaging>
+
+    <name>ext.bundle.opengl.nifty - OSGi - Nifty wrapper - not tested lately</name>
+
+    <dependencies>
+        <!--dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+			 TODO:  Are we ready for 4.3? Lets let appdatper provide
+            <version>4.2.0</version->
+		</dependency--> 
+       <dependency>
+            <groupId>org.appdapter</groupId>
+            <artifactId>ext.bundle.osgi.common</artifactId>
+			<scope>provided</scope>
+        </dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-niftygui</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!--  Need to exclude "sounds", "tutorial", "defaultcontrols/sounds"
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty-default-controls</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty-examples</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>nifty-style-black</artifactId>
+			<version>${jmonkey.version}</version>
+			<scope>provided</scope>
+		</dependency>			
+		-->
+        <dependency>
+            <groupId>org.bushe</groupId>
+            <artifactId>eventbus</artifactId>
+			<scope>runtime</scope>
+        </dependency>
+        <dependency>
+			<!-- Still needed, or covered by import in ext.bundle.jmonkey? -->
+            <groupId>xpp3</groupId>
+            <artifactId>xpp3</artifactId>
+			<scope>runtime</scope>
+        </dependency>		
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>org.cogchar.ext.bundle.opengl.nifty.Activator</Bundle-Activator>
+						<!-- 
+						TODO:  Review what packages we really need to export.
+						Need to export the root package files like nifty.nxs -->
+						<Export-Package>
+							Common.*,
+							com.jme3.*,
+							de.lessvoid.*
+						</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
