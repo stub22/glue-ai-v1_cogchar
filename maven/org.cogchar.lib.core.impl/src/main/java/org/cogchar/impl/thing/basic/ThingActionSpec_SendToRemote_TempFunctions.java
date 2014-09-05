@@ -42,6 +42,9 @@ import java.util.ArrayList;
  * which is now able to call repo-update methods instead.  
  * If the target repo IS in fact remote, the result will be similar to what
  * this class does.
+  * 
+ * Currently used from:   FireThingActionExec - defined under BehaviorAction.scala
+ *       fixme_functions.execRemoteSparqlUpdate("", updateTextToAddTA, debugFlag)
  * 
  * @author Jason Randolph Eads <jeads362@gmail.com>
  */

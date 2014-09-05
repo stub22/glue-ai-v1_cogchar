@@ -20,7 +20,7 @@ import scala.collection.mutable.HashMap;
 import org.appdapter.core.log.{BasicDebugger, Loggable};
 import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
-import org.appdapter.help.repo.{RepoClient}
+import org.appdapter.fancy.rclient.{RepoClient}
 
 import org.cogchar.api.perform.{Media, PerfChannel};
 import org.cogchar.impl.perform.{DummyTextChan, FancyTime, PerfChannelNames};

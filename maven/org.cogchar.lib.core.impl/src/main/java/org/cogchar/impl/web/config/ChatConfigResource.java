@@ -27,10 +27,10 @@ import org.appdapter.core.item.Item;
 import org.appdapter.core.item.ItemFuncs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionList;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.SolutionHelper;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.Solution;
+import org.appdapter.fancy.query.SolutionHelper;
+import org.appdapter.fancy.query.SolutionList;
 
 /**
  * @author Ryan Biggs

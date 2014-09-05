@@ -16,24 +16,25 @@
 package org.cogchar.app.puma.web;
 
 import com.hp.hpl.jena.query.Dataset;
-import org.apache.mina.util.AvailablePortFinder;
+// import org.apache.mina.util.AvailablePortFinder;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.Repo;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
+
 import org.cogchar.api.thing.WantsThingAction;
-import org.cogchar.impl.perform.basic.AnimLaunchEntityAction;
+// import org.cogchar.impl.perform.basic.AnimLaunchEntityAction;
 import org.cogchar.impl.thing.basic.BasicThingActionRouter;
 import org.cogchar.api.web.WebSceneInterface;
 import org.cogchar.api.web.WebEntityAction;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;
 import org.cogchar.impl.web.config.AvailableCommands;
 
-import org.cogchar.bind.mio.robot.client.AnimMediaHandle;
-import org.cogchar.bind.mio.robot.client.AnimOutTrigChan;
+// import org.cogchar.bind.mio.robot.client.AnimMediaHandle;
+// import org.cogchar.bind.mio.robot.client.AnimOutTrigChan;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
-import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
+// import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
 import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.impl.web.in.SceneActions;
 import org.osgi.framework.BundleContext;
@@ -116,25 +117,36 @@ public class PumaWebMapper extends BasicDebugger {
     	lifterComp.start();
 	}	
 /**
- * Called from o.f.b.repo - Activator 
+ * Called from o.f.b.repo - Activator ,   o.f.b.webapp.semrepo.Activator, o.f.b.demoserv.semrepo.Activator...
  * and from 
  * o.c.b.bind.joseki - o.c.joswrap.RepoJosDsetDesc
+ *
  * @return 
  */
-	public Dataset getMainSparqlDataset() {
+	public Dataset getMainLocalSparqlDataset() {
+		Dataset mainConfDset = null;
 		PumaContextCommandBox pccb = getCommandBox();
 		RepoClient mainConfRC = pccb.getMainConfigRepoClient();
-		Repo mainConfRepo = mainConfRC.getRepo();
-		Dataset mainConfDset = mainConfRepo.getMainQueryDataset();
-		// Print out the available graphs, for debugging.
-		java.util.List<Repo.GraphStat> gStats = mainConfRepo.getGraphStats();
-		for (Repo.GraphStat gStat : gStats) {
-			getLogger().debug("Found in main config:  " + gStat);
-		}		
+		Repo mainConfRepo = mainConfRC.getRepoIfLocal();
+		if (mainConfRepo != null) {
+			mainConfDset = mainConfRepo.getMainQueryDataset();
+			// Print out the available graphs, for debugging.
+			java.util.List<Repo.GraphStat> gStats = mainConfRepo.getGraphStats();
+			for (Repo.GraphStat gStat : gStats) {
+				getLogger().debug("Found in main config:  " + gStat);
+			}
+		} else {
+			getLogger().warn("There is no local query dataset - mainConfigRepoClient must be remote!");
+		}
 		return mainConfDset;
 	}
 	/**
-	 * Called only from  GruesomeTAProcessingFuncs.registerActionConsumers()
+	 * Called only from  GruesomeTAProcessingFuncs.registerActionConsumers().
+	 * This does 2 things:
+	 * 1) Sets up some an assumed consumer for WebEntityAcsion
+	 * 2) Sets up an OSGi listener that can append additonal consumers of type WantsThingAction when they appear
+	 * in the OSGi registry.
+	 * 
 	 * @param router
 	 * @param rc
 	 * @param gce 
@@ -148,8 +160,12 @@ public class PumaWebMapper extends BasicDebugger {
 			worldConfigIdent = gce.entityMap().get(EntityRoleCN.VIRTUAL_WORLD_ENTITY_TYPE).get(0);
 			Ident graphIdent = gce.ergMap().get(worldConfigIdent).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
 			
+			// Set up a hadwired consumer to process 
+			// WebActionNames.WEBCONTROL.equals(tgtThingTypeID) || WebActionNames.WEBCONFIG.equals(tgtThingTypeID)) {
+			// There is no reason this couldn't instead be posted into registry for the TaConsumerTracker to find.
 			WebEntityAction.Consumer weaConsumer = new WebEntityAction.Consumer();
 			router.appendConsumer(graphIdent, weaConsumer);
+			// Now set up a listener on the OSGi registry that can append any other WantsThingAction guys that come along.
 			BundleContext context = OSGiUtils.getBundleContext(WantsThingAction.class);
             if(context != null){
                 String filter = null;//OSGiUtils.createFilter("thingActionChannelAgentId", "*aZR50");

@@ -17,8 +17,9 @@
 package org.cogchar.blob.emit
 
 import org.appdapter.core.name.{Ident, FreeIdent}
-import org.appdapter.core.store.{Repo, InitialBinding }
-import org.appdapter.help.repo.{RepoClient}
+import org.appdapter.core.store.{Repo}
+import org.appdapter.core.query.{ InitialBinding }
+import org.appdapter.fancy.rclient.{RepoClient}
 import com.hp.hpl.jena.rdf.model.Model;
 /**
  * @author Stu B. <www.texpedient.com>
@@ -30,7 +31,7 @@ class BehaviorConfigEmitter(val myDefaultRepoClient : RepoClient, val myAnimPath
 	
 	
 	def getAnimPathResolverModel() : Model  = {
-		myDefaultRepoClient.getRepo.getNamedModel(myAnimPathModelID)
+		myDefaultRepoClient.getNamedModelReadonly(myAnimPathModelID)
 	}
 	
 	val DEFAULT_SYS_CONTEXT_URI = "urn:org.cogchar/syscontext/default";

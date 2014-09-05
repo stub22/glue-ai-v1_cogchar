@@ -18,12 +18,12 @@ package org.cogchar.api.cinema;
 import org.cogchar.name.cinema.LightsCameraCN;
 import java.util.Arrays;
 import org.appdapter.core.name.Ident;
+import org.appdapter.fancy.query.Solution;
 
-import org.appdapter.help.repo.Solution;
-import org.appdapter.help.repo.SolutionHelper;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.query.SolutionHelper;
+
 import org.cogchar.api.humanoid.FigureBoneReferenceConfig;
-import org.cogchar.name.cinema.LightsCameraAN;
+
 
 /**
  * @author Ryan Biggs

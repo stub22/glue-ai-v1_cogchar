@@ -1,5 +1,5 @@
 /*
- *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
+ *  Copyright 2014 by The Cogchar Project (www.cogchar.org).
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,21 +14,17 @@
  *  limitations under the License.
  */
 
-package org.cogchar.api.cinema;
-import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl;
-import org.appdapter.fancy.rclient.RepoClient;
+package org.cogchar.test.hedspc.api;
 
+import org.junit.Test;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-public class QueryBackedConfigBase extends KnownComponentImpl {
-	private		RepoClient		myQI;
-	public QueryBackedConfigBase(RepoClient qi) {
-		myQI = qi;
-	}
-	protected RepoClient getRepoClient() { 
-		return myQI;
+public class NoSpecialName {
+	@Test
+	public void clznameDoesntEndInTest() {
+		System.out.println("clznameDoesntEndInTest has a @Test annotation, and class name does not end in 'Test'");
 	}
 }

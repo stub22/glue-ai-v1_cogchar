@@ -19,9 +19,18 @@ import org.appdapter.core.name.Ident;
 import java.util.List;
 
 /**
- 
- * A Channel is a handle to a useful symbol/signal stream resource producer/consumer.  
- * Either/either, both/both.  Hello Algebra!
+ * Channel is the primary boundary concept connecting lower-cogchar (Graphs + Services) with upper-cogchar (Scenes + Behaviors).
+ * Both upper and lower layers know about channels, but view them differently.  
+ * 
+ * Channels are used as descriptions and
+ * handles for data-flow pathways, but are not much mixed up in the implementation of those pathways, except in 
+ * providing config parameters and a handle for reporting the channel status.
+ * 
+ * Channels are annotated with RDF-types and properties indicating their specific purpose and meaning.
+ * 
+ * A Channel is a handle to a useful symbol/signal stream resource producer/consumer,
+ * seen from either side, but usually not both at the same time.   Hello Algebra!
+ * 
  * @author Stu B. <www.texpedient.com>
  */
 

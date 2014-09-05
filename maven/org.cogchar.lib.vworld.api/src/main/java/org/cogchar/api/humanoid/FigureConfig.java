@@ -17,10 +17,12 @@ package org.cogchar.api.humanoid;
 
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.SolutionMap;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.SolutionHelper;
-import org.appdapter.help.repo.SolutionList;
+
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.query.SolutionList;
+import org.appdapter.fancy.query.SolutionMap;
+import org.appdapter.fancy.query.SolutionHelper;
+
 
 /**
  * This class serves as a place to hold the humanoid config (right now, 

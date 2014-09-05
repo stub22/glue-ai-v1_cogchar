@@ -27,14 +27,16 @@ import com.hp.hpl.jena.rdf.model.Resource
 import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler
 import org.cogchar.name.dir.{NamespaceDir}
-import org.appdapter.core.repo.BoundModelProvider
-import org.appdapter.help.repo.RepoClient
+import org.appdapter.fancy.gpointer.PointerToTypedGraph
+import org.appdapter.fancy.rclient.RepoClient
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.impl.thing.basic.BasicThingActionUpdater
 
 // import org.cogchar.impl.channel.{FancyChannel}
 
-class ProvidedGraphChan(chanID : Ident, val myModelProvider : BoundModelProvider) extends BasicGraphChan(chanID) with FancyChannel {
+/** These are all graph-reading channel variations contructable using 
+*/
+class ProvidedGraphChan(chanID : Ident, val myModelProvider : PointerToTypedGraph) extends BasicGraphChan(chanID) with FancyChannel {
 	
 }
 class FancyGraphChan(chanID : Ident, val myRepoClient : RepoClient) extends BasicGraphChan(chanID) with FancyChannel {

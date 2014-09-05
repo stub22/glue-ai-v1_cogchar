@@ -19,14 +19,13 @@ package org.cogchar.bind.mio.repo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.appdapter.help.repo.RepoClient;
-import org.appdapter.help.repo.RepoClientImpl;
-import org.appdapter.impl.store.FancyRepo;
-import org.cogchar.api.perform.PerfChannel;
-import org.cogchar.impl.scene.SceneSpec;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.appdapter.fancy.rclient.LocalRepoClientImpl;
+import org.appdapter.fancy.repo.FancyRepo;
+
 import org.jflux.impl.services.rk.lifecycle.AbstractLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.DependencyDescriptor;
-import org.jflux.impl.services.rk.osgi.OSGiUtils;
+
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -53,7 +52,7 @@ public class RepoClientLifecycle extends AbstractLifecycleProvider <RepoClient, 
 	}
 	@Override protected RepoClient create(Map<String, Object> map) {
 		FancyRepo	fancyRepo = null;
-		RepoClient rc = new RepoClientImpl(fancyRepo, myQueryTargetVarName, myQuerySheetQN)	;
+		RepoClient rc = new LocalRepoClientImpl(fancyRepo, myQueryTargetVarName, myQuerySheetQN)	;
 		return rc;	
 	}
 

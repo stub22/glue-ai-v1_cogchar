@@ -21,23 +21,33 @@ import org.cogchar.api.perform.PerfChannel;
 import org.appdapter.core.name.Ident;
 
 /**
+ * RootChanType is a type-parameter but it does not yet play a significant role in how scenes are controlled.
  * @author Stu B. <www.texpedient.com>
  *
+ */
+public interface Scene<WorldTime, RootChanType> extends CreatedFromSpec {
+	
+	public 	void wirePerfChannels(Collection<PerfChannel> chans);
+	public 	void wireGraphChannels(Collection<GraphChannel> chans);
+	
+	public PerfChannel getPerfChannel(Ident chanID);
+	public GraphChannel getGraphChannel(Ident chanID);
+	
+	/**
  * We have not yet precisely defined or committed fully to this "rootChannel" idea.
  * It is not currently used for any practical purpose.  (2013-04-14).
+ * 
+ * 
+	 * 
  * However, the concept is that "our scene is controlled from a high-order symbolic 'root' channel,
  * and pumps data to/from specific datastream (sub-)channels."  Thus we might say that temporarily the
  * rootChannel and sub-channels are "bound".  In practice this binding happens through the evolution of
  * "Performance" objects, which form the shared state + notification pathway between subChannels and
  * scene/rootChannel.
- */
-public interface Scene<WorldTime, RootChanType> extends CreatedFromSpec {
-	public 	void wirePerfChannels(Collection<PerfChannel> chans);
-	public 	void wireGraphChannels(Collection<GraphChannel> chans);
+
+	 * @return 
+	 */
 	public RootChanType getRootChannel();
-	public PerfChannel getPerfChannel(Ident chanID);
-	public GraphChannel getGraphChannel(Ident chanID);
-	
 	public Object getDiagnosticInfo();
 	
 }

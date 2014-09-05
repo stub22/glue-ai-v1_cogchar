@@ -17,11 +17,15 @@
 
 package org.cogchar.outer.behav.demo;
 
-import org.appdapter.core.matdat.OnlineSheetRepoSpec;
-import org.appdapter.help.repo.*;
-import org.appdapter.core.repo.*;
+import org.appdapter.fancy.rspec.RepoSpec;
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.fancy.rclient.EnhancedRepoClient;
+// import org.appdapter.help.repo.*;
+// import org.appdapter.core.repo.*;
+// import org.appdapter.impl.store.*;
 import org.appdapter.core.store.*;
-import org.appdapter.impl.store.*;
+
+
 
 import org.cogchar.impl.scene.read.BehavMasterConfigTest;
 import org.osgi.framework.BundleContext;

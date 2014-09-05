@@ -20,8 +20,9 @@ import scala.collection.JavaConversions.asScalaSet
 
 import org.appdapter.core.log.BasicDebugger
 import org.appdapter.core.name.Ident
-import org.appdapter.core.repo.{ BoundModelProvider, ModelProviderFactory, PipelineQuerySpec }
-import org.appdapter.help.repo.RepoClient
+
+import org.appdapter.fancy.gpointer.{ PipelineQuerySpec , PointerToTypedGraph, TypedGraphPointerFactory }
+import org.appdapter.fancy.rclient.RepoClient
 import org.cogchar.impl.channel.FancyChannelSpec
 import org.cogchar.impl.scene.{ SceneBook, SceneSpec }
 
@@ -47,7 +48,7 @@ class SceneSpecReader extends BasicDebugger {
     specSet;
   }
   def readSceneSpecs(repoClient: RepoClient, behavGraphQN: String): java.util.List[SceneSpec] = {
-    val behavGraphID = repoClient.makeIdentForQName(behavGraphQN);
+    val behavGraphID = repoClient.getDefaultRdfNodeTranslator.makeIdentForQName(behavGraphQN);
 
     val allBehavSpecs = repoClient.assembleRootsFromNamedModel_TX(behavGraphID);
     val ssList = SceneBook.filterSceneSpecs(allBehavSpecs);
@@ -60,10 +61,10 @@ class SceneSpecReader extends BasicDebugger {
   def readSceneSpecsFromDerivedRepo(srcRepoCli: RepoClient, pqs: PipelineQuerySpec, derivedBehavGraphID: Ident): java.util.List[SceneSpec] = {
     println(EQBAR + "\nReading indirect graph " + derivedBehavGraphID + " using " + pqs + "thru repoClient [" + srcRepoCli + "]");
 
-    val bmp = ModelProviderFactory.makeOneDerivedModelProvider(srcRepoCli, pqs, derivedBehavGraphID)
+    val bmp = TypedGraphPointerFactory.makeOneDerivedModelPointer(srcRepoCli, pqs, derivedBehavGraphID)
     readSceneSpecsFromBMP(bmp)
   }
-  def readSceneSpecsFromBMP(bmp: BoundModelProvider): java.util.List[SceneSpec] = {
+  def readSceneSpecsFromBMP(bmp: PointerToTypedGraph): java.util.List[SceneSpec] = {
     val allObjects: java.util.Set[Object] = bmp.assembleModelRoots()
     val sceneSpecList: java.util.List[SceneSpec] = SceneBook.filterSceneSpecs(allObjects);
     sceneSpecList

@@ -75,11 +75,9 @@ abstract class BehaviorActionSpec extends BasicDebugger {
   }
   def makeActionExec() : BehaviorActionExec
 
-  def wireChannelSpecs(
-    parentItem : Item, 
-    reader : ItemAssemblyReader, 
-    assmblr : Assembler, 
-    mode: Mode) {
+  // Called by GuardedBehaviorSpec and SteppingBehaviorSpec during their own completeInit() processes.
+  // However this does *not* get called 
+  def wireChannelSpecs(parentItem : Item,  reader : ItemAssemblyReader,  assmblr : Assembler,  mode: Mode) {
     
     val chanPropName = SceneFieldNames.P_channel
     val actionChannelSpecs = reader.findOrMakeLinkedObjects(parentItem, chanPropName, assmblr, mode, null);
@@ -101,7 +99,7 @@ abstract class BehaviorActionSpec extends BasicDebugger {
   }
   protected def wireFancyChannelSpec(fcs : FancyChannelSpec) {
     val chanId = fcs.getIdent();
-    // What does this freeing accomplish?  Are we trying to ensure the source model can be garbage collected?
+    // What does this free-ident copy accomplish?  Are we trying to ensure the source model can be garbage-collected?
     val freeChanIdent = new FreeIdent(chanId);
     addChannelIdent(freeChanIdent);
   }
@@ -191,7 +189,7 @@ class UseThingActionExec(val mySpec : UseThingActionSpec) extends BasicDebugger 
       val outChan : PerfChannel = s.getPerfChannel(outChanID);
       val inChan : GraphChannel = s.getGraphChannel(mySpec.myInChanID)
 
-      //Sending unseen ThingActions to outChan
+      //Sending not-before-seen ThingActions to outChan
       /*
        * We will want to control how many ThingActions get processed per execution.
        * TAGraphChane views and marks all unseen ThingActions at once, that will

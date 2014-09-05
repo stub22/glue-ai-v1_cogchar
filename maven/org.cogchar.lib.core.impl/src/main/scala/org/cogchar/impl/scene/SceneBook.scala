@@ -21,7 +21,7 @@ import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
 import org.appdapter.bind.rdf.jena.model.{JenaFileManagerUtils};
 
-import org.appdapter.help.repo.{RepoClient}
+import org.appdapter.fancy.rclient.{RepoClient}
 
 import org.cogchar.impl.perform.{ChannelSpecBuilder};
 import scala.collection.mutable.HashMap;

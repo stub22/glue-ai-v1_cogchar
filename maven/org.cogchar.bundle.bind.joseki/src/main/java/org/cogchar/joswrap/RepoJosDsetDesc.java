@@ -62,7 +62,7 @@ public class RepoJosDsetDesc extends ModJosDatasetDesc {
 		PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
 		PumaRegistryClient pumaRegClient = prcFinder.getPumaRegClientOrNull(null, PumaRegistryClient.class);
 		PumaWebMapper pwm = pumaRegClient.getWebMapper(null);
-		pumaDataset = pwm.getMainSparqlDataset();
+		pumaDataset = pwm.getMainLocalSparqlDataset();
 		return pumaDataset;
 	}
 }

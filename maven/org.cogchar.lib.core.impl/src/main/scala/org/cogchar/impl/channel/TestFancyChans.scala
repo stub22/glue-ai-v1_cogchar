@@ -15,12 +15,13 @@
  */
 
 package org.cogchar.impl.channel
-import org.appdapter.core.matdat.OnlineSheetRepoSpec
+
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.core.store.Repo
 import org.appdapter.demo.DemoResources
-import org.appdapter.help.repo.{RepoClient, RepoClientImpl}
-import org.appdapter.impl.store.FancyRepo
+import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
+import org.appdapter.fancy.rspec.OnlineSheetRepoSpec
+import org.appdapter.fancy.repo.FancyRepo
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -35,7 +36,7 @@ object TestFancyChans {
 	}
 	
 	def go(dfltTestRC : RepoClient) {
-		val animGraphID = dfltTestRC.makeIdentForQName(AnimFileSpecReader.animGraphQN);
+		val animGraphID = dfltTestRC.getDefaultRdfNodeTranslator.makeIdentForQName(AnimFileSpecReader.animGraphQN);
 		val behavCE = new org.cogchar.blob.emit.BehaviorConfigEmitter(dfltTestRC, animGraphID)
 		
 		val animFiles = AnimFileSpecReader.findAnimFileSpecs(behavCE);

@@ -22,7 +22,7 @@ import java.util.{ Iterator, Random }
 import org.appdapter.core.log.BasicDebugger
 import org.appdapter.core.name.Ident
 import org.appdapter.core.store.dataset.RepoDatasetFactory
-import org.appdapter.impl.store.{ ModelClientImpl, ResourceResolver }
+import org.appdapter.fancy.model.{ ModelClientImpl, ResourceResolver }
 import org.cogchar.api.thing.{ ThingActionSpec, TypedValueMap }
 import org.cogchar.blob.emit.SparqlTextGen
 import org.cogchar.name.dir.NamespaceDir

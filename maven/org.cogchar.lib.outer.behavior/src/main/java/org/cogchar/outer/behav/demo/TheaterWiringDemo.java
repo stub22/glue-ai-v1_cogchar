@@ -18,7 +18,7 @@
 package org.cogchar.outer.behav.demo;
 
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.outer.behav.impl.OSGiTheater;
 import org.cogchar.impl.chan.fancy.GraphChannelHub;
 import org.cogchar.impl.chan.fancy.RealThingActionChanSpec;
@@ -67,9 +67,9 @@ public class TheaterWiringDemo extends WiringDemo {
 		OSGiTheater osgiT = makeOSGiTheaterAndStart(bundleCtx, t, sceneOSGiFilter);
 		return osgiT;
 	}
-	public Theater makeTheater(org.appdapter.help.repo.RepoClient bmcRepoCli, String debugCharQN) {
+	public Theater makeTheater(RepoClient bmcRepoCli, String debugCharQN) {
 		// This makeTheater method does not yet do any smart stuff, but it could.
-		Ident debugCharID = bmcRepoCli.makeIdentForQName(debugCharQN);
+		Ident debugCharID = bmcRepoCli.getDefaultRdfNodeTranslator().makeIdentForQName(debugCharQN);
 		Theater t = new Theater(debugCharID);
 		return t;
 	}

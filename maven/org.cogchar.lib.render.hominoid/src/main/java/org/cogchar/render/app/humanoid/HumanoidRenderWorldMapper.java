@@ -15,11 +15,10 @@
  */
 package org.cogchar.render.app.humanoid;
 
-import com.jme3.math.ColorRGBA;
-import com.jme3.renderer.ViewPort;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.render.app.core.WorkaroundAppStub;
 import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
@@ -39,11 +38,13 @@ import org.cogchar.api.cinema.LightsCameraConfig;
 import org.cogchar.api.cinema.PathConfig;
 import org.cogchar.api.cinema.ThingAnimConfig;
 
+import com.jme3.math.ColorRGBA;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.asset.AssetManager;
 import com.jme3.util.SkyFactory;
 import com.jme3.scene.Spatial;
-import java.util.concurrent.Callable;
+
 
 /**
  *

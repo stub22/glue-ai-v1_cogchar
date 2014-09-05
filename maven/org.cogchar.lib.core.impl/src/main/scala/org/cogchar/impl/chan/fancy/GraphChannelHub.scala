@@ -19,13 +19,15 @@ package org.cogchar.impl.chan.fancy
 import scala.collection.mutable.HashMap
 
 import org.appdapter.core.name.Ident
-import org.appdapter.core.repo.DirectDerivedGraph
-import org.appdapter.help.repo.RepoClient
+import org.appdapter.fancy.gpointer.DirectDerivedGraph
+import org.appdapter.fancy.rclient.RepoClient
 import org.cogchar.api.channel.GraphChannel
 import org.cogchar.blob.emit.RepoFabric
 
 /**
  * @author Stu B. <www.texpedient.com>
+ * 
+ * Handles read-channel setup for some large chunk of app functionality.
  */
 
 class GraphChannelHub(bootRepoClient: RepoClient) {
@@ -36,6 +38,13 @@ class GraphChannelHub(bootRepoClient: RepoClient) {
   // Can promote this to EnhancedRepoClient when needed.
   var myMainRepoClient: RepoClient = bootRepoClient
 
+  /** Make an input GraphChannel used to monitor changes on some graph, using view-and-mark xactions.
+   *  This is the *only* active way to instantiate a ThingActionGraphChan.
+   *  
+   * This is called *only* from 
+   *  org.cogchar.outer.behav.demo.TheaterWiringDemo.TAGraphChanSpecListener.addService(RealThingActionChanSpec t) {
+            myHub.makeThingActionGraphChan(t.getIdent(), t.mySourceModel(), 0);
+   *   */
   def makeThingActionGraphChan(chanID: Ident, matchGraphID: Ident, cutoffTStamp: Long): GraphChannel = {
     val tagc = new ThingActionGraphChan(chanID, myMainRepoClient, matchGraphID, cutoffTStamp)
     myGraphChans.put(chanID, tagc)

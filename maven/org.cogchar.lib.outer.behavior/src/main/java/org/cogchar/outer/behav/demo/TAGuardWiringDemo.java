@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.appdapter.bind.rdf.jena.model.JenaFileManagerUtils;
 import org.appdapter.core.name.Ident;
-import org.appdapter.help.repo.RepoClient;
+import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.impl.scene.ThingActionGuardSpec;
 import org.cogchar.impl.thing.filters.ThingActionFilterBuilder;
 import org.osgi.framework.BundleContext;
@@ -69,7 +69,7 @@ public class TAGuardWiringDemo {
 	private static List<ThingActionGuardSpec> loadTAGuardSpecs(RepoClient defaultDemoRepoClient, String taGuardGraphQN) {
 		List<ThingActionGuardSpec> specs = new ArrayList();
 		// Determine the URI for the 'qualified name' which identifies the data in the repo
-		Ident taGuardGraphID = defaultDemoRepoClient.makeIdentForQName(taGuardGraphQN);
+		Ident taGuardGraphID = defaultDemoRepoClient.getDefaultRdfNodeTranslator().makeIdentForQName(taGuardGraphQN);
 		// Collect the objects from the repo, building them from RDF raw data
 		Set<Object> assembledRoots = defaultDemoRepoClient.assembleRootsFromNamedModel(taGuardGraphID);
 		for (Object root : assembledRoots) {

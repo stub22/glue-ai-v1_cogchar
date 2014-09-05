@@ -26,8 +26,8 @@ import com.hp.hpl.jena.rdf.model.Resource
 import org.appdapter.bind.rdf.jena.assembly.KnownComponentImpl
 import org.appdapter.bind.rdf.jena.assembly.DynamicCachingComponentAssembler
 import org.cogchar.name.dir.{NamespaceDir}
-import org.appdapter.core.repo.BoundModelProvider
-import org.appdapter.help.repo.RepoClient
+// import org.appdapter.core.repo.PointerToGraph
+import org.appdapter.fancy.rclient.RepoClient
 import org.cogchar.api.thing.ThingActionSpec
 import org.cogchar.impl.thing.basic.BasicThingActionUpdater
 
@@ -35,6 +35,13 @@ import org.cogchar.impl.thing.basic.BasicThingActionUpdater
 
 /**
  * @author Stu B. <www.texpedient.com>
+ 
+ TAGraphChan knows how to *read*(and mark-read) from a graph containing ThingAction graphs.  
+ 
+ It attempts to do one useful cycle of reading(+marking) each time that seeThingActions() is called.
+ 
+ It does this using a view-and-mark read+write transaction.
+ 
  */
 
 // chanID is used as the agent
@@ -84,50 +91,5 @@ extends SingleSourceGraphChan(chanID, rc, matchGraphID) {
 }
 
 
-class RealThingActionChanSpec  extends KnownComponentImpl {
-	var		myDetails : String = "EMPTY";
-	var   mySourceModel : Ident = null;
-  
-	override def getFieldSummary() : String = {
-		return super.getFieldSummary() + ", details=" + myDetails + ", sourec graph=" + mySourceModel;
-	}
-	def completeInit(configItem : Item, reader : ItemAssemblyReader, assmblr : Assembler , mode: Mode) {
-		val sourceModelPropID = reader.getConfigPropertyIdent(configItem, configItem.getIdent(), NamespaceDir.NS_CCRT_RT + "sourceModel");
-		val linkedSourceModels : java.util.Set[Item] = configItem.getLinkedItemSet(sourceModelPropID, Item.LinkDirection.FORWARD);
-		
-		getLogger().debug("ThingActionChanSpec has linkedSourceModels: {} ",  linkedSourceModels);
-		if (linkedSourceModels.size() == 1) {
-			mySourceModel =  linkedSourceModels.iterator.next.asInstanceOf[Ident]
-		}		
-		myDetails = reader.readConfigValString(configItem.getIdent(), NamespaceDir.NS_CCRT_RT + "details", configItem, null);		
-	}	
-
-}
-
-class RealThingActionChanSpecBuilder(builderConfRes : Resource) extends DynamicCachingComponentAssembler[RealThingActionChanSpec](builderConfRes) {
-
-	override protected def initExtendedFieldsAndLinks(cs: RealThingActionChanSpec, configItem : Item, assmblr : Assembler , mode: Mode ) {
-		getLogger().debug("ThingActionChanSpecBuilder.initExtendedFieldsAndLinks using {}", configItem);
-		val reader = getReader();
-		cs.completeInit(configItem, reader, assmblr, mode)
-	}
-}
 
 
-/*     [java] 98060  ERROR [Service Manager Thread - 16] (AssemblerUtils.java:93) buildAllRootsInModel - Cannot assemble item http://www.cogchar.org/schema/scene/instance#Flow-TA-Test-TAChan-C1
- [java] com.hp.hpl.jena.assembler.exceptions.AssemblerException: caught: null
- [java]   doing:
- [java]     root: http://www.cogchar.org/schema/scene/instance#Flow-TA-Test-TAChan-C1 with type: urn:ftd:cogchar.org:2012:runtime#BuildableTAChanSpec assembler class: class org.cogchar.impl.channel.ThingActionChanSpecBuilder
- [java] 
- [java] 	at com.hp.hpl.jena.assembler.assemblers.AssemblerGroup$PlainAssemblerGroup.openBySpecificType(AssemblerGroup.java:138)
- [java] 	at com.hp.hpl.jena.assembler.assemblers.AssemblerGroup$PlainAssemblerGroup.open(AssemblerGroup.java:117)
- [java] 	at com.hp.hpl.jena.assembler.assemblers.AssemblerGroup$ExpandingAssemblerGroup.open(AssemblerGroup.java:81)
- [java] 	at org.appdapter.bind.rdf.jena.assembly.AssemblerUtils.buildAllRootsInModel(AssemblerUtils.java:90)
- [java] 	at org.appdapter.bind.rdf.jena.assembly.AssemblerUtils.buildAllRootsInModel(AssemblerUtils.java:100)
- [java] 	at org.appdapter.core.store.BasicRepoImpl.assembleRootsFromNamedModel(BasicRepoImpl.java:318)
- [java] 	at org.appdapter.help.repo.RepoClientImpl.assembleRootsFromNamedModel(RepoClientImpl.scala:111)
- [java] 	at org.cogchar.outer.behav.demo.TAGraphChanWiringDemo.loadTAChanSpecs(TAGraphChanWiringDemo.java:61)
- [java] 	at org.cogchar.outer.behav.demo.TAGraphChanWiringDemo.loadAndRegisterSpecs(TAGraphChanWiringDemo.java:45)
- [java] 	at com.rkbots.demo.behavior.master.BehaviorMasterLifecycle.create(BehaviorMasterLifecycle.java:47)
- [java] 	at com.rkbots.demo.behavior.master.BehaviorMasterLifecycle.create(BehaviorMasterLifecycle.java:22)
- */
