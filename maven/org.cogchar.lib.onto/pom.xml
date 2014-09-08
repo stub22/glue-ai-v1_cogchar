@@ -97,9 +97,26 @@ but to get the actual option name, we have to look in Jena code, such as here:
 							<!-- The output option seems to not propagate from the default setting above -->
 							<output>${project.build.directory}/generated-sources/java</output>
 							<ontology>true</ontology>
-							<!--							
+<!--
+In version 0.5 - include seems to work for one additional namespace, but not when specified multiple times.
+Perhaps it works when specified in config file?
+
+The include option may repeated multiple times to include a variety of constants from other namespaces in the output class.
+
+Since OWL and RDFS ontologies may include individuals that are named instances of declared classes, schemagen 
+will include individuals among the constants that it generates in Java. By default, an individual will be included if 
+its class has a URI that is in one of the permitted namespaces for the vocabulary, even if the individual itself is not 
+in that namespace. If the option strictIndividuals is set, individuals are only included if they have a URI that is in 
+the permitted namespaces for the vocabulary.
+-->							
+							<include>urn:ftd:cogchar.org:2012:runtime#</include>
+							<!--  Here is an example of a second extra NS that we might like to include, but can't:
+							<include>http://jena.hpl.hp.com/2005/11/Assembler#</include>
+							-->
+							<!-- Separate but related problem:							
 							Schemagen-maven version 0.5 seems to not like this option, so currently we are
-							falling back to setting	the @base in the onto file itself.
+							falling back to setting	the @base in the onto file itself, and specifying ONE additional
+							namespace using the "include" option above.
 							<namespace>http://www.cogchar.org/schema/scene#</namespace>
 							-->
 						</source>						
