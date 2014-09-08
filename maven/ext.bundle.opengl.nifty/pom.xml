@@ -28,11 +28,13 @@
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-niftygui</artifactId>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>nifty</artifactId>
+			<version>${jmonkey.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--  Need to exclude "sounds", "tutorial", "defaultcontrols/sounds"

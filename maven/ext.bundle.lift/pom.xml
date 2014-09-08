@@ -19,6 +19,7 @@
 		<dependency>
 			<groupId>net.liftweb</groupId>
 			<artifactId>lift-webkit_2.10</artifactId>
+			<version>${net.liftweb.version}</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
@@ -53,6 +54,7 @@
 		<dependency>
 			<groupId>net.liftweb</groupId>
 			<artifactId>lift-actor_2.10</artifactId>
+			<version>${net.liftweb.version}</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
@@ -88,6 +90,7 @@
         <dependency>
 			<groupId>net.liftweb</groupId>
 			<artifactId>lift-testkit_2.10</artifactId>
+			<version>${net.liftweb.version}</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
@@ -154,6 +157,7 @@
         <dependency>
 			<groupId>net.liftweb</groupId>
             <artifactId>lift-util_2.10</artifactId>
+			<version>${net.liftweb.version}</version>
 			<scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -167,8 +171,9 @@
             </exclusions>
         </dependency>
         <dependency>
+			<groupId>net.liftweb</groupId>
             <artifactId>lift-json_2.10</artifactId>
-            <groupId>net.liftweb</groupId>
+			<version>${net.liftweb.version}</version>
 			<scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -188,6 +193,7 @@
         <dependency>
             <artifactId>lift-common_2.10</artifactId>
             <groupId>net.liftweb</groupId>
+			<version>${net.liftweb.version}</version>
 			<scope>provided</scope>
             <exclusions>
                 <exclusion>
