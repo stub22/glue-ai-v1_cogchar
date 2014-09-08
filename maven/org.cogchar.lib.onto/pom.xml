@@ -90,6 +90,19 @@ but to get the actual option name, we have to look in Jena code, such as here:
 							<input>src/dummy/unused.ttl</input>
 							<ontology>true</ontology>
 						</source>
+						<source>
+							<!-- Properties applying only to the BehavScene onto.
+							-->
+							<input>src/main/resources/org/cogchar/onto/BehavScene_owl2.ttl</input>
+							<!-- The output option seems to not propagate from the default setting above -->
+							<output>${project.build.directory}/generated-sources/java</output>
+							<ontology>true</ontology>
+							<!--							
+							Schemagen-maven version 0.5 seems to not like this option, so currently we are
+							falling back to setting	the @base in the onto file itself.
+							<namespace>http://www.cogchar.org/schema/scene#</namespace>
+							-->
+						</source>						
 					</fileOptions>							
 				</configuration>
 				<executions>
