@@ -1,17 +1,20 @@
-@prefix : <http://onto.cogchar.org/onto/temp/bscene#> .
+@prefix : <http://www.cogchar.org/schema/scene#> .
 @prefix cs: <http://www.cogchar.org/schema/scene#> .
 @prefix ja: <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix csi: <http://www.cogchar.org/schema/scene/instance#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix tbs: <http://onto.cogchar.org/onto/temp/bscene#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix apsb: <http://www.appdapter.org/schema/box#> .
 @prefix ccrt: <urn:ftd:cogchar.org:2012:runtime#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://onto.cogchar.org/onto/temp/bscene> .
+@base <http://www.cogchar.org/schema/scene> .
 
-<http://onto.cogchar.org/onto/temp/bscene> rdf:type owl:Ontology .
+<http://www.cogchar.org/schema/scene> rdf:type owl:Ontology ;
+                                      
+                                      rdfs:comment "Currently, we must set the base-URI of this ontology to the target vocabulary that we want jena-schemagen to use."^^xsd:string .
 
 
 #################################################################
@@ -23,39 +26,39 @@
 
 ###  http://www.cogchar.org/schema/scene#chanFilter
 
-cs:chanFilter rdf:type owl:ObjectProperty ;
-              
-              rdfs:label "cs_chanFilter"^^xsd:string ;
-              
-              rdfs:subPropertyOf cs:topObjProp .
+:chanFilter rdf:type owl:ObjectProperty ;
+            
+            rdfs:label "cs_chanFilter"^^xsd:string ;
+            
+            rdfs:subPropertyOf :topObjProp .
 
 
 
 ###  http://www.cogchar.org/schema/scene#firesThingAction
 
-cs:firesThingAction rdf:type owl:ObjectProperty ;
-                    
-                    rdfs:label "cs_firesThingAction"^^xsd:string ;
-                    
-                    rdfs:subPropertyOf cs:topObjProp .
+:firesThingAction rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:label "cs_firesThingAction"^^xsd:string ;
+                  
+                  rdfs:subPropertyOf :topObjProp .
 
 
 
 ###  http://www.cogchar.org/schema/scene#topObjProp
 
-cs:topObjProp rdf:type owl:ObjectProperty ;
-              
-              rdfs:label "cs_topObjProp"^^xsd:string .
+:topObjProp rdf:type owl:ObjectProperty ;
+            
+            rdfs:label "cs_topObjProp"^^xsd:string .
 
 
 
 ###  http://www.cogchar.org/schema/scene#waitForChan
 
-cs:waitForChan rdf:type owl:ObjectProperty ;
-               
-               rdfs:label "cs_waitForChan"^^xsd:string ;
-               
-               rdfs:subPropertyOf cs:topObjProp .
+:waitForChan rdf:type owl:ObjectProperty ;
+             
+             rdfs:label "cs_waitForChan"^^xsd:string ;
+             
+             rdfs:subPropertyOf :topObjProp .
 
 
 
@@ -70,9 +73,9 @@ cs:waitForChan rdf:type owl:ObjectProperty ;
 
 ###  http://www.cogchar.org/schema/scene#topDataProp
 
-cs:topDataProp rdf:type owl:DatatypeProperty ;
-               
-               rdfs:label "cs_topDataProp"^^xsd:string .
+:topDataProp rdf:type owl:DatatypeProperty ;
+             
+             rdfs:label "cs_topDataProp"^^xsd:string .
 
 
 
@@ -87,9 +90,9 @@ cs:topDataProp rdf:type owl:DatatypeProperty ;
 
 ###  http://www.cogchar.org/schema/scene#TopThing
 
-cs:TopThing rdf:type owl:Class ;
-            
-            rdfs:label "cs_TopThing"^^xsd:string .
+:TopThing rdf:type owl:Class ;
+          
+          rdfs:label "cs_TopThing"^^xsd:string .
 
 
 
