@@ -21,6 +21,29 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.semweb4j</groupId>
+			<artifactId>rdfreactor.dist</artifactId>
+			<type>pom</type>
+			<exclusions>
+				<exclusion>
+					<artifactId>rdf2go.impl.sesame</artifactId>
+					<groupId>org.semweb4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>rdfreactor-maven-plugin</artifactId>
+					<groupId>org.semweb4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>rdfreactor.generator</artifactId>
+					<groupId>org.semweb4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.semweb4j</groupId>
+			<artifactId>rdf2go.impl.jena</artifactId>
 		</dependency>		
 	</dependencies>
 	<build>
@@ -60,7 +83,7 @@ but to get the actual option name, we have to look in Jena code, such as here:
 
 							<!-- the "default" input supplies options used by all files matching includes above.  -->
 							<input>default</input>
-							<output>${project.build.directory}/generated-sources/java</output>
+							<output>${project.build.directory}/generated-sources/jena-vocab</output>
 							<package-name>org.cogchar.gen.oname</package-name>
 							<!-- We want more specialized OWL-aware java-subclasses like "Individual" and 
 								"ObjectProperty", not just "Resource" and "Property".
@@ -103,12 +126,12 @@ Perhaps it works when specified in config file?
 
 The include option may repeated multiple times to include a variety of constants from other namespaces in the output class.
 
-Since OWL and RDFS ontologies may include individuals that are named instances of declared classes, schemagen 
-will include individuals among the constants that it generates in Java. By default, an individual will be included if 
-its class has a URI that is in one of the permitted namespaces for the vocabulary, even if the individual itself is not 
-in that namespace. If the option strictIndividuals is set, individuals are only included if they have a URI that is in 
-the permitted namespaces for the vocabulary.
--->							
+							Since OWL and RDFS ontologies may include individuals that are named instances of declared classes, schemagen 
+							will include individuals among the constants that it generates in Java. By default, an individual will be included if 
+							its class has a URI that is in one of the permitted namespaces for the vocabulary, even if the individual itself is not 
+							in that namespace. If the option strictIndividuals is set, individuals are only included if they have a URI that is in 
+							the permitted namespaces for the vocabulary.
+							-->							
 							<include>urn:ftd:cogchar.org:2012:runtime#</include>
 							<!--  Here is an example of a second extra NS that we might like to include, but can't:
 							<include>http://jena.hpl.hp.com/2005/11/Assembler#</include>
@@ -143,12 +166,58 @@ the permitted namespaces for the vocabulary.
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/java</source>
+								<source>${project.build.directory}/generated-sources/jena-vocab</source>
 							</sources>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.semweb4j</groupId>
+				<artifactId>rdfreactor-maven-plugin</artifactId>
+				<executions>
+					<!-- We need one execution config for each owl schema that we run rdfreactor against.
+						Each such config should target a unique output java package, and log file.
+					-->
+				
+					<execution>
+						<id>behavScene</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and we are going along with that for now.	-->							
+							<schemaFile>src/main/resources/org/cogchar/onto/BehavScene_owl2.n3</schemaFile>
+							<packageName>org.cogchar.api.owrap.bscene</packageName>
+							<rdfReactorLogfile>target/rdfreactor_behavScene.log</rdfReactorLogfile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>thingAction</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and we are going along with that for now.	-->							
+							<schemaFile>src/main/resources/org/cogchar/onto/ThingAction_owl2.n3</schemaFile>
+							<packageName>org.cogchar.api.owrap.taction</packageName>
+							<rdfReactorLogfile>target/rdfreactor_thingAction.log</rdfReactorLogfile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>pushyScreen</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and we are going along with that for now.	-->							
+							<schemaFile>src/main/resources/org/cogchar/onto/PushyScreen_owl2.n3</schemaFile>
+							<packageName>org.cogchar.api.owrap.pscreen</packageName>
+							<rdfReactorLogfile>target/rdfreactor_pushyScreen.log</rdfReactorLogfile>
+						</configuration>
+					</execution>										
+				</executions>
+			</plugin>			
 		</plugins>
 		<pluginManagement>
 			<plugins>
