@@ -138,6 +138,10 @@
 							sun.*;resolution:='optional', 					
 							*
 						</Import-Package>
+							<!-- Temporarily including RDF-Reactor runtime stuff, which is from an un-OSGi-fied jar
+								(whereas all the rdf2go jars seem to have proper manifests.)
+							-->						
+						<Private-Package>org.ontoware.rdfreactor.*</Private-Package>						
 					</instructions>
                 </configuration>
             </plugin>
