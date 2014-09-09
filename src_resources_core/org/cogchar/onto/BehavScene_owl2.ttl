@@ -34,6 +34,16 @@ ja:topJaObjProp rdf:type owl:ObjectProperty ;
 
 
 
+###  http://www.cogchar.org/schema/scene#behavior
+
+:behavior rdf:type owl:ObjectProperty ;
+          
+          rdfs:label "cs_behavior"^^xsd:string ;
+          
+          rdfs:subPropertyOf :topCsObjProp .
+
+
+
 ###  http://www.cogchar.org/schema/scene#chanFilter
 
 :chanFilter rdf:type owl:ObjectProperty ;
@@ -44,6 +54,16 @@ ja:topJaObjProp rdf:type owl:ObjectProperty ;
 
 
 
+###  http://www.cogchar.org/schema/scene#channel
+
+:channel rdf:type owl:ObjectProperty ;
+         
+         rdfs:label "cs_channel"^^xsd:string ;
+         
+         rdfs:subPropertyOf :topCsObjProp .
+
+
+
 ###  http://www.cogchar.org/schema/scene#firesThingAction
 
 :firesThingAction rdf:type owl:ObjectProperty ;
@@ -51,6 +71,36 @@ ja:topJaObjProp rdf:type owl:ObjectProperty ;
                   rdfs:label "cs_firesThingAction"^^xsd:string ;
                   
                   rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#outputTAGraph
+
+:outputTAGraph rdf:type owl:ObjectProperty ;
+               
+               rdfs:label "cs_outputTAGraph"^^xsd:string ;
+               
+               rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#step
+
+:step rdf:type owl:ObjectProperty ;
+      
+      rdfs:label "cs_step"^^xsd:string ;
+      
+      rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#taGuard
+
+:taGuard rdf:type owl:ObjectProperty ;
+         
+         rdfs:label "cs_taGuard" ;
+         
+         rdfs:subPropertyOf :topCsObjProp .
 
 
 
@@ -72,6 +122,26 @@ cs namespace is currently the \"main\" NS for this ontology.""" .
              rdfs:label "cs_waitForChan"^^xsd:string ;
              
              rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#waitForEnd
+
+:waitForEnd rdf:type owl:ObjectProperty ;
+            
+            rdfs:label "cs_waitForEnd"^^xsd:string ;
+            
+            rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#waitForStart
+
+:waitForStart rdf:type owl:ObjectProperty ;
+              
+              rdfs:label "cs_waitForStart"^^xsd:string ;
+              
+              rdfs:subPropertyOf :topCsObjProp .
 
 
 
@@ -104,6 +174,16 @@ ccrt:topCcrtObjProp rdf:type owl:ObjectProperty ;
 #################################################################
 
 
+###  http://www.cogchar.org/schema/scene#text
+
+:text rdf:type owl:DatatypeProperty ;
+      
+      rdfs:label "cs_text"^^xsd:string ;
+      
+      rdfs:subPropertyOf :topCsDataProp .
+
+
+
 ###  http://www.cogchar.org/schema/scene#topCsDataProp
 
 :topCsDataProp rdf:type owl:DatatypeProperty ;
@@ -121,6 +201,36 @@ ccrt:topCcrtObjProp rdf:type owl:ObjectProperty ;
 #    Classes
 #
 #################################################################
+
+
+###  http://www.cogchar.org/schema/scene#BuildableBehaviorSpec
+
+:BuildableBehaviorSpec rdf:type owl:Class ;
+                       
+                       rdfs:label "cs_BuildableBehaviorSpec"^^xsd:string ;
+                       
+                       rdfs:subClassOf :TopCsThing .
+
+
+
+###  http://www.cogchar.org/schema/scene#BuildableChannelSpec
+
+:BuildableChannelSpec rdf:type owl:Class ;
+                      
+                      rdfs:label "cs_BuildableChannelSpec"^^xsd:string ;
+                      
+                      rdfs:subClassOf :TopCsThing .
+
+
+
+###  http://www.cogchar.org/schema/scene#BuildableSceneSpec
+
+:BuildableSceneSpec rdf:type owl:Class ;
+                    
+                    rdfs:label "cs_BuildableSceneSpec"^^xsd:string ;
+                    
+                    rdfs:subClassOf :TopCsThing .
+
 
 
 ###  http://www.cogchar.org/schema/scene#TopCsThing
