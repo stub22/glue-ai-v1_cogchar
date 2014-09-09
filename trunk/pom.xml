@@ -53,69 +53,91 @@ Version-less parent will be allowed in Maven 3.1.
 		<module>maven/org.cogchar.nbui.render</module>
   </modules>
 	<properties>
-            <!-- Glue Dependencies -->
-			<appdapter.msg.version>1.0.5</appdapter.msg.version>
-            <appdapter.jscience.version>1.0.9</appdapter.jscience.version>
+		<encoding>UTF-8</encoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-			<appdapter.version>1.2.1-SNAPSHOT</appdapter.version>
-            <jflux.version>0.2.3-SNAPSHOT</jflux.version>
-            <mechio.version>1.0.4-SNAPSHOT</mechio.version>
-            <!-- Non Glue Dependencies -->
-            <commons.codec.version>1.6</commons.codec.version>
-            <commons.fileupload.version>1.2.2</commons.fileupload.version>
-            <commons.io.version>2.1</commons.io.version>
-            <encoding>UTF-8</encoding>
-            <felix.org.osgi.core.version>1.4.0</felix.org.osgi.core.version>
-            <felix.org.osgi.compendium.version>1.4.0</felix.org.osgi.compendium.version>
-            <jena.fuseki.version>0.2.7</jena.fuseki.version>
-            <jmonkey.version>3.0.0.20140325-SNAPSHOT</jmonkey.version>
-            <joda.time.version>2.1</joda.time.version>
-            <joda.convert.version>1.2</joda.convert.version>
-            <jscience.version>4.3.1</jscience.version>
-            <junit.version>4.8.1</junit.version>
+		<!-- Glue Dependencies -->
+		<appdapter.msg.version>1.0.5</appdapter.msg.version>
+		<appdapter.jscience.version>1.0.9</appdapter.jscience.version>
+
+		<appdapter.version>1.2.1-SNAPSHOT</appdapter.version>
+		<jflux.version>0.2.3-SNAPSHOT</jflux.version>
+		<mechio.version>1.0.4-SNAPSHOT</mechio.version>
+
+		<!-- Non Glue Dependencies -->
+		<commons.codec.version>1.6</commons.codec.version>
+		<commons.fileupload.version>1.2.2</commons.fileupload.version>
+		<commons.io.version>2.1</commons.io.version>
+
+		<felix.org.osgi.core.version>1.4.0</felix.org.osgi.core.version>
+		<felix.org.osgi.compendium.version>1.4.0</felix.org.osgi.compendium.version>
+		<jena.fuseki.version>0.2.7</jena.fuseki.version>
+		<jmonkey.version>3.0.0.20140325-SNAPSHOT</jmonkey.version>
+		<joda.time.version>2.1</joda.time.version>
+		<joda.convert.version>1.2</joda.convert.version>
+		<jscience.version>4.3.1</jscience.version>
+		<junit.version>4.8.1</junit.version>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
-            <net.liftweb.version>2.5.1</net.liftweb.version>
-            <netbeans.hint.license>cogchar-apache20</netbeans.hint.license>	
-            <netbeans.version>RELEASE721</netbeans.version>
-            <org.apache.http.version>4.3</org.apache.http.version>
-            <org.apache.log4j.version>1.2.16</org.apache.log4j.version>
-            <org.osgi.version>4.3.0</org.osgi.version>
-            <org.ow2.version>1.0.33</org.ow2.version>
-            <org.json.version>chargebee-1.0</org.json.version>
-            <org.bushe.eventbus.version>1.3</org.bushe.eventbus.version>
-            <pax.web.version>1.1.2</pax.web.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-            <scala.version>2.10.2</scala.version>
-            <scala.test.version>1.2</scala.test.version>
-            <scala.specs.version>1.6.9</scala.specs.version>
-            <servicemix.bundles.javax.inject.version>1_2</servicemix.bundles.javax.inject.version>
-            <servicemix.bundles.paranamer.version>2.4_1</servicemix.bundles.paranamer.version>
-            <servicemix.bundles.xmlpull.version>1.1.3.1_2</servicemix.bundles.xmlpull.version>
-            <servicemix.bundles.xpp3.version>1.1.4c_6</servicemix.bundles.xpp3.version>
-            <servlet.api.version>2.5</servlet.api.version>
-            <slf4j.version>1.7.5</slf4j.version>
-            <version.org.apache.felix.main>4.2.1</version.org.apache.felix.main>		
-            <wagon.webdav.version>1.0-beta-7</wagon.webdav.version>
-            <xpp3.version>1.1.4c</xpp3.version>
-            <xstream.version>1.4</xstream.version>
-            <!-- Plugin versions -->
-            <version.build.helper.maven.plugin>1.7</version.build.helper.maven.plugin>
-            <version.jena.maven.tools>0.5</version.jena.maven.tools>
-            <version.lifecycle.mapping>1.0.0</version.lifecycle.mapping>
-            <version.license.maven.plugin>1.7</version.license.maven.plugin>
-            <version.maven.antrun.plugin>1.6</version.maven.antrun.plugin>
-            <version.maven.assembly.plugin>2.2</version.maven.assembly.plugin>
-            <version.maven.bundle.plugin>2.3.7</version.maven.bundle.plugin>
-            <version.maven.compiler.plugin>2.3.2</version.maven.compiler.plugin>
-            <version.maven.jar.plugin>2.3.2</version.maven.jar.plugin>
-            <version.maven.site.plugin>3.4</version.maven.site.plugin>
-            <version.maven.resources.plugin>2.4.3</version.maven.resources.plugin>
-            <version.maven.surefire.plugin>2.9</version.maven.surefire.plugin>
-            <version.nbm.maven.plugin>3.11</version.nbm.maven.plugin>
+		<net.liftweb.version>2.5.1</net.liftweb.version>
+		<netbeans.hint.license>cogchar-apache20</netbeans.hint.license>	
+		<netbeans.version>RELEASE721</netbeans.version>
+		<org.apache.http.version>4.3</org.apache.http.version>
+		<org.apache.log4j.version>1.2.16</org.apache.log4j.version>
+		<org.osgi.version>4.3.0</org.osgi.version>
+		<org.ow2.version>1.0.33</org.ow2.version>
+		<org.json.version>chargebee-1.0</org.json.version>
+		<org.bushe.eventbus.version>1.3</org.bushe.eventbus.version>
+		<pax.web.version>1.1.2</pax.web.version>
+
+		<scala.test.version>1.2</scala.test.version>
+		<scala.specs.version>1.6.9</scala.specs.version>
+		<servicemix.bundles.javax.inject.version>1_2</servicemix.bundles.javax.inject.version>
+		<servicemix.bundles.paranamer.version>2.4_1</servicemix.bundles.paranamer.version>
+		<servicemix.bundles.xmlpull.version>1.1.3.1_2</servicemix.bundles.xmlpull.version>
+		<servicemix.bundles.xpp3.version>1.1.4c_6</servicemix.bundles.xpp3.version>
+		<servlet.api.version>2.5</servlet.api.version>
+
+		<version.org.apache.felix.main>4.2.1</version.org.apache.felix.main>		
+		<wagon.webdav.version>1.0-beta-7</wagon.webdav.version>
+		<xpp3.version>1.1.4c</xpp3.version>
+		<xstream.version>1.4</xstream.version>
+
+		<!-- key infrastructure versions -->
+		<scala.version>2.10.2</scala.version>
+		<slf4j.version>1.7.5</slf4j.version>			
+			
+		<!-- plugins used during ontogen -->
+		<org.semweb4j.version>4.8.3</org.semweb4j.version>	
+		<version.jena.maven.tools>0.5</version.jena.maven.tools>
+		<version.build.helper.maven.plugin>1.7</version.build.helper.maven.plugin>
+						
+		<!-- Other plugin versions -->
+		<version.lifecycle.mapping>1.0.0</version.lifecycle.mapping>
+		<version.license.maven.plugin>1.7</version.license.maven.plugin>
+		<version.maven.antrun.plugin>1.6</version.maven.antrun.plugin>
+		<version.maven.assembly.plugin>2.2</version.maven.assembly.plugin>
+		<version.maven.bundle.plugin>2.3.7</version.maven.bundle.plugin>
+		<version.maven.compiler.plugin>2.3.2</version.maven.compiler.plugin>
+		<version.maven.jar.plugin>2.3.2</version.maven.jar.plugin>
+		<version.maven.site.plugin>3.4</version.maven.site.plugin>
+		<version.maven.resources.plugin>2.4.3</version.maven.resources.plugin>
+		<version.maven.surefire.plugin>2.9</version.maven.surefire.plugin>
+		<version.nbm.maven.plugin>3.11</version.nbm.maven.plugin>
 	</properties>
         <dependencyManagement>
             <dependencies>
+				<dependency>
+					<groupId>org.semweb4j</groupId>
+					<artifactId>rdfreactor.dist</artifactId>
+					<version>${org.semweb4j.version}</version>
+					<type>pom</type>
+				</dependency>
+				<dependency>
+					<groupId>org.semweb4j</groupId>
+					<artifactId>rdf2go.impl.jena</artifactId>
+					<version>${org.semweb4j.version}</version>
+				</dependency>				
                 <dependency>
                     <groupId>com.thoughtworks.xstream</groupId>
                     <artifactId>xstream</artifactId>
@@ -312,11 +334,11 @@ Version-less parent will be allowed in Maven 3.1.
                     <artifactId>joda-convert</artifactId>
                     <version>${joda.convert.version}</version>
                 </dependency>
-                <dependency>
-			<groupId>org.jscience</groupId>
-			<artifactId>jscience</artifactId>
-			<version>${jscience.version}</version>
-		</dependency>
+				<dependency>
+					<groupId>org.jscience</groupId>
+					<artifactId>jscience</artifactId>
+					<version>${jscience.version}</version>
+				</dependency>
                 <dependency>
                     <groupId>org.json</groupId>
                     <artifactId>org.json</artifactId>
@@ -479,6 +501,18 @@ Version-less parent will be allowed in Maven 3.1.
 			<name>sonatype public</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
+		<!-- Need for RDF-Reactor and RDF2go -->
+		<repository>
+			<id>semweb4j-repo</id>
+			<name>FZI Maven Repository</name>
+			<url>http://mavenrepo.fzi.de/semweb4j.org/repo</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>		
 		<!-- Needed for "good" log4J bundle (for org.cogchar.bundle.bind.lift) -->
 		<repository>
 			<id>com.springsource.repository.bundles.external</id>
@@ -503,7 +537,18 @@ Version-less parent will be allowed in Maven 3.1.
 			<id>sonatype-public</id>
 			<name>sonatype public</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
-		</pluginRepository>		
+		</pluginRepository>
+		<pluginRepository>
+			<id>semweb4j-repo</id>
+			<name>FZI Maven Repository</name>
+			<url>http://mavenrepo.fzi.de/semweb4j.org/repo</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>				
 	</pluginRepositories>  	
         <!--
 	connection - used for read access to Maven (e.g. for svn-update)
@@ -600,16 +645,6 @@ Version-less parent will be allowed in Maven 3.1.
 					<version>${version.maven.resources.plugin}</version>
 				</plugin>				
 				<plugin>
-					<groupId>org.apache.jena</groupId>
-					<artifactId>jena-maven-tools</artifactId>
-					<version>${version.jena.maven.tools}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>${version.build.helper.maven.plugin}</version>
-				</plugin>
-				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>${version.lifecycle.mapping}</version>
@@ -629,6 +664,23 @@ Version-less parent will be allowed in Maven 3.1.
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>${version.maven.jar.plugin}</version>
 				</plugin>
+
+				<!-- The following 3 plugins are needed to do our code generation from ontologies -->
+				<plugin>
+					<groupId>org.semweb4j</groupId>
+					<artifactId>rdfreactor-maven-plugin</artifactId>
+					<version>${org.semweb4j.version}</version>
+				</plugin>				
+				<plugin>
+					<groupId>org.apache.jena</groupId>
+					<artifactId>jena-maven-tools</artifactId>
+					<version>${version.jena.maven.tools}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>${version.build.helper.maven.plugin}</version>
+				</plugin>								
 			</plugins>
 		</pluginManagement>
 		<plugins>
