@@ -4,6 +4,7 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ccrt: <urn:ftd:cogchar.org:2012:runtime#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @base <http://onto.coghcar.org/onto/2014/05/PushyScreen-OWL2> .
 
@@ -25,7 +26,9 @@ lc:action rdf:type owl:ObjectProperty ;
           
           rdfs:label "lc_action"^^xsd:string ;
           
-          rdfs:subPropertyOf lc:topLcObjProp .
+          rdfs:subPropertyOf lc:topLcObjProp ;
+          
+          rdfs:domain ccrt:liftcontrol .
 
 
 
@@ -35,7 +38,11 @@ lc:liftConfig rdf:type owl:ObjectProperty ;
               
               rdfs:label "lc_liftConfig"^^xsd:string ;
               
-              rdfs:subPropertyOf lc:topLcObjProp .
+              rdfs:subPropertyOf lc:topLcObjProp ;
+              
+              rdfs:range ccrt:liftconfig ;
+              
+              rdfs:domain ccrt:liftcontrol .
 
 
 
@@ -53,7 +60,9 @@ lc:type rdf:type owl:ObjectProperty ;
         
         rdfs:label "lc_type"^^xsd:string ;
         
-        rdfs:subPropertyOf lc:topLcObjProp .
+        rdfs:subPropertyOf lc:topLcObjProp ;
+        
+        rdfs:domain ccrt:liftcontrol .
 
 
 
@@ -72,7 +81,11 @@ lc:resource rdf:type owl:DatatypeProperty ;
             
             rdfs:label "lc_resource"^^xsd:string ;
             
-            rdfs:subPropertyOf lc:topLcDataProp .
+            rdfs:subPropertyOf lc:topLcDataProp ;
+            
+            rdfs:range xsd:string ;
+            
+            rdfs:domain ccrt:liftcontrol .
 
 
 
@@ -82,7 +95,11 @@ lc:style rdf:type owl:DatatypeProperty ;
          
          rdfs:label "lc_style"^^xsd:string ;
          
-         rdfs:subPropertyOf lc:topLcDataProp .
+         rdfs:subPropertyOf lc:topLcDataProp ;
+         
+         rdfs:range xsd:string ;
+         
+         rdfs:domain ccrt:liftcontrol .
 
 
 
@@ -92,7 +109,11 @@ lc:template rdf:type owl:DatatypeProperty ;
             
             rdfs:label "lc_template"^^xsd:string ;
             
-            rdfs:subPropertyOf lc:topLcDataProp .
+            rdfs:subPropertyOf lc:topLcDataProp ;
+            
+            rdfs:range xsd:string ;
+            
+            rdfs:domain ccrt:liftconfig .
 
 
 
@@ -102,7 +123,11 @@ lc:text rdf:type owl:DatatypeProperty ;
         
         rdfs:label "lc_text"^^xsd:string ;
         
-        rdfs:subPropertyOf lc:topLcDataProp .
+        rdfs:subPropertyOf lc:topLcDataProp ;
+        
+        rdfs:range xsd:string ;
+        
+        rdfs:domain ccrt:liftcontrol .
 
 
 
@@ -126,6 +151,42 @@ lc:topLcDataProp rdf:type owl:DatatypeProperty ;
 ###  http://onto.coghcar.org/onto/2014/05/PushyScreen-OWL2#ps_TopPsThing
 
 :ps_TopPsThing rdf:type owl:Class .
+
+
+
+###  http://www.cogchar.org/lift/config#TopLcThing
+
+lc:TopLcThing rdf:type owl:Class ;
+              
+              rdfs:label "lc_TopLcThing" .
+
+
+
+###  urn:ftd:cogchar.org:2012:runtime#TopCcrtThing
+
+ccrt:TopCcrtThing rdf:type owl:Class ;
+                  
+                  rdfs:label "ccrt_TopCcrtThing" .
+
+
+
+###  urn:ftd:cogchar.org:2012:runtime#liftconfig
+
+ccrt:liftconfig rdf:type owl:Class ;
+                
+                rdfs:label "ccrt_liftconfig" ;
+                
+                rdfs:subClassOf ccrt:TopCcrtThing .
+
+
+
+###  urn:ftd:cogchar.org:2012:runtime#liftcontrol
+
+ccrt:liftcontrol rdf:type owl:Class ;
+                 
+                 rdfs:label "ccrt_liftcontrol" ;
+                 
+                 rdfs:subClassOf ccrt:TopCcrtThing .
 
 
 
