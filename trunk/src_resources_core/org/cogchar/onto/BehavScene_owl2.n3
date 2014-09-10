@@ -40,6 +40,10 @@ ja:topJaObjProp rdf:type owl:ObjectProperty ;
           
           rdfs:label "cs_behavior"^^xsd:string ;
           
+          rdfs:range :BuildableBehaviorSpec ;
+          
+          rdfs:domain :BuildableSceneSpec ;
+          
           rdfs:subPropertyOf :topCsObjProp .
 
 
@@ -59,6 +63,10 @@ ja:topJaObjProp rdf:type owl:ObjectProperty ;
 :channel rdf:type owl:ObjectProperty ;
          
          rdfs:label "cs_channel"^^xsd:string ;
+         
+         rdfs:range :BuildableChannelSpec ;
+         
+         rdfs:domain :BuildableSceneSpec ;
          
          rdfs:subPropertyOf :topCsObjProp .
 
@@ -90,6 +98,8 @@ ja:topJaObjProp rdf:type owl:ObjectProperty ;
       
       rdfs:label "cs_step"^^xsd:string ;
       
+      rdfs:domain :BuildableBehaviorSpec ;
+      
       rdfs:subPropertyOf :topCsObjProp .
 
 
@@ -111,7 +121,9 @@ ja:topJaObjProp rdf:type owl:ObjectProperty ;
               rdfs:label "cs_topCsObjProp"^^xsd:string ;
               
               rdfs:comment """Root of object properties in the Behav-Scene onto.
-cs namespace is currently the \"main\" NS for this ontology.""" .
+cs namespace is currently the \"main\" NS for this ontology.""" ;
+              
+              rdfs:domain :TopCsThing .
 
 
 
@@ -203,6 +215,16 @@ ccrt:topCcrtObjProp rdf:type owl:ObjectProperty ;
 #################################################################
 
 
+###  http://www.cogchar.org/schema/scene#BehaviorStep
+
+:BehaviorStep rdf:type owl:Class ;
+              
+              rdfs:label "cs_BehaviorStep" ;
+              
+              rdfs:subClassOf :TopCsThing .
+
+
+
 ###  http://www.cogchar.org/schema/scene#BuildableBehaviorSpec
 
 :BuildableBehaviorSpec rdf:type owl:Class ;
@@ -230,6 +252,16 @@ ccrt:topCcrtObjProp rdf:type owl:ObjectProperty ;
                     rdfs:label "cs_BuildableSceneSpec"^^xsd:string ;
                     
                     rdfs:subClassOf :TopCsThing .
+
+
+
+###  http://www.cogchar.org/schema/scene#ThingActionGuard
+
+:ThingActionGuard rdf:type owl:Class ;
+                  
+                  rdfs:label "cs_ThingActionGuard" ;
+                  
+                  rdfs:subClassOf :TopCsThing .
 
 
 
