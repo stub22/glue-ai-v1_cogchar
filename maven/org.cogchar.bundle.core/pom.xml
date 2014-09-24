@@ -109,7 +109,13 @@
 			<groupId>org.jflux</groupId>
 			<artifactId>org.jflux.api.common.rk</artifactId>
 			<scope>runtime</scope>
-		</dependency>				
+		</dependency>
+        <dependency>
+			<!-- Proper bundle used by ontoware RDF2Go stuff, which is not otherwise propagated -->
+			<groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -139,9 +145,13 @@
 							*
 						</Import-Package>
 							<!-- Temporarily including RDF-Reactor runtime stuff, which is from an un-OSGi-fied jar
-								(whereas all the rdf2go jars seem to have proper manifests.)
+								(whereas all the rdf2go jars seem to have proper manifests - except impl.
+								also we need     org.ontoware.aifbcommons stuff
+						
 							-->						
-						<Private-Package>org.ontoware.rdfreactor.*</Private-Package>						
+							<!--      org.ontoware.rdf2go.impl.*,   org.ontoware.rdfreactor.*     -->
+						<Private-Package>org.ontoware.*
+						</Private-Package>
 					</instructions>
                 </configuration>
             </plugin>
