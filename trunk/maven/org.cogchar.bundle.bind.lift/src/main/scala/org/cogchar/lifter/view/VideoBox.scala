@@ -29,7 +29,7 @@ package org.cogchar.lifter {
   
       // Create a video box
       override protected def generateXmlForControl(sessionId:String, slotNum:Int, control:WebControl): NodeSeq = {
-        val videoPath: String = "/video/" + control.getResource // May want to move this prefix to central location
+        val videoPath: String =control.getResource // May want to move this prefix to central location
         // It's all well and good to use a single video resource unless we want to support IE, in which case we'll have to mix in more
         <video src={videoPath} width="100%" height="100%" autoplay="true"></video>
       }
