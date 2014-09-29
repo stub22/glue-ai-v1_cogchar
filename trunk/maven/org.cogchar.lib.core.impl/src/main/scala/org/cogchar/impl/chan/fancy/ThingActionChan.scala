@@ -29,7 +29,7 @@ import org.cogchar.name.dir.{NamespaceDir}
 // import org.appdapter.core.repo.PointerToGraph
 import org.appdapter.fancy.rclient.RepoClient
 import org.cogchar.api.thing.ThingActionSpec
-import org.cogchar.impl.thing.basic.BasicThingActionUpdater
+import org.cogchar.impl.thing.route.BasicThingActionUpdater
 
 //	import org.cogchar.impl.channel.{FancyChannel}
 

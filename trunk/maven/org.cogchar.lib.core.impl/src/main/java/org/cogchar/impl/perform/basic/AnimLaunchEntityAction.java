@@ -18,7 +18,7 @@ package org.cogchar.impl.perform.basic;
 
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.BasicEntityAction;
-import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
+import org.cogchar.impl.thing.route.BasicThingActionConsumer;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.TypedValueMap;
 import org.cogchar.api.web.WebEntityAction;

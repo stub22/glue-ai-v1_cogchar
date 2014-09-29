@@ -25,7 +25,7 @@ import org.appdapter.fancy.rclient.RepoClient;
 
 import org.cogchar.api.thing.WantsThingAction;
 // import org.cogchar.impl.perform.basic.AnimLaunchEntityAction;
-import org.cogchar.impl.thing.basic.BasicThingActionRouter;
+import org.cogchar.impl.thing.route.BasicThingActionRouter;
 import org.cogchar.api.web.WebSceneInterface;
 import org.cogchar.api.web.WebEntityAction;
 import org.cogchar.app.puma.boot.PumaContextCommandBox;

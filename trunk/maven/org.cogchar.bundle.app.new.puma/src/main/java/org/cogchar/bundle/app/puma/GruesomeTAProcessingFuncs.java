@@ -17,7 +17,7 @@ package org.cogchar.bundle.app.puma;
 
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
-import org.cogchar.impl.thing.basic.BasicThingActionRouter;
+import org.cogchar.impl.thing.route.BasicThingActionRouter;
 import static org.cogchar.name.entity.EntityRoleCN.RKRT_NS_PREFIX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

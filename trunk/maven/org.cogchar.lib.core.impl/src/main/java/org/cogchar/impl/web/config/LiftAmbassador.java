@@ -15,7 +15,7 @@
  */
 package org.cogchar.impl.web.config;
 
-import org.cogchar.impl.thing.basic.BasicThingActionForwarder;
+import org.cogchar.impl.thing.route.BasicThingActionForwarder;
 import org.cogchar.api.web.in.WebSessionActionParamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
