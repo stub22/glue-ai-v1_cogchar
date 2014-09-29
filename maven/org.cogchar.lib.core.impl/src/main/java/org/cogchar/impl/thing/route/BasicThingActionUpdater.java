@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.cogchar.impl.thing.basic;
+package org.cogchar.impl.thing.route;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.rdf.model.Literal;
@@ -26,7 +26,11 @@ import java.util.List;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.query.InitialBinding;
-
+import org.appdapter.fancy.gportal.DelegatingPortal;
+import org.appdapter.fancy.gportal.GraphAbsorber;
+import org.appdapter.fancy.gportal.GraphSupplier;
+import org.appdapter.fancy.gportal.GraphQuerier;
+import org.appdapter.fancy.gportal.GraphUpdater;
 import org.appdapter.fancy.rclient.RepoClient;
 import org.appdapter.fancy.rclient.RepoClientFuncs_TxAware;
 import org.appdapter.bind.rdf.jena.query.JenaArqQueryFuncs_TxAware.Oper;
@@ -136,7 +140,8 @@ public class BasicThingActionUpdater {
 		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
 		// Delete the actions from graph, so they are not returned on next call to this method.
 		for (ThingActionSpec tas : actionSpecList) {
-			markThingActionSeen(rc, srcGraphID, tas, viewingAgentID);
+			// TODO:  Make a graphPortal
+			old_markThingActionSeen(rc, srcGraphID, tas, viewingAgentID);
 		}
 		int listSize = actionSpecList.size();
 		if (listSize != 0) {
@@ -168,17 +173,32 @@ public class BasicThingActionUpdater {
 	}
 
 	// This should be done inside a write-Xaction, with boundaries that encompass the prior related reads.
-	private void markThingActionSeen(RepoClient rc, Ident graphToMark, ThingActionSpec tas, Ident seeingAgentID) {
+	// Since it does not start an explicit xact, it expects to get an automatic xact, if one is needed.
+	private void old_markThingActionSeen(RepoClient rc, Ident graphToMark, ThingActionSpec tas, Ident seeingAgentID) {
 		Ident actionID = tas.getActionSpecID();
 		Resource actionRes = rc.getDefaultRdfNodeTranslator().makeResourceForIdent(actionID);
 		Resource agentRes = rc.getDefaultRdfNodeTranslator().makeResourceForIdent(seeingAgentID);
-		// Repo.WithDirectory repo = rc.getRepo();
-		theLogger.warn("About to fetch a readonly model and then try to write to it - what's that all about?");
+		
+		theLogger.warn("About to fetch a readonly model and then try to write to it.  Needs update to use GraphPortal else: When a copy, then our marking probably is useles");
 		Model gm = rc.getNamedModelReadonly(graphToMark); // repo.getNamedModel(graphToMark);    FIXME
-		scala.Option<String> optStr = scala.Option.apply(null);
+		scala.Option<String> optStr = scala.Option.apply(null);  // yields None, right?
 		ResourceResolver rr = new ResourceResolver(gm, optStr);
 		Property viewedByProp = rr.findOrMakeProperty(gm, ThingCN.P_viewedBy);
 		Statement viewedByStmt = gm.createStatement(actionRes, viewedByProp, agentRes);
 		gm.add(viewedByStmt);
+	}
+	private void markThingActionSeen(DelegatingPortal dgp, Ident graphToMark, ThingActionSpec tas, Ident seeingAgentID) {
+		// This can be implemented as either sparql update, or using absorber-add.  Latter is probly faster.
+		// 
+
+		GraphAbsorber grAbsr = dgp.getAbsorber();
+		GraphUpdater grUpdr = dgp.getUpdater();
+		String graphURI = graphToMark.getAbsUriString();
+		Model srcModel = null;
+		grAbsr.addStatementsToNamedModel(graphURI, srcModel);
+	}
+	private void otherStuff(DelegatingPortal dgp) { 
+		GraphSupplier grSuplr = dgp.getSupplier();
+		GraphQuerier grQryr = dgp.getQuerier();		
 	}
 }

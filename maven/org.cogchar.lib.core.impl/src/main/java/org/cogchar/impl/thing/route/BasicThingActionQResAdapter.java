@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.thing.basic;
+package org.cogchar.impl.thing.route;
 
 import com.hp.hpl.jena.rdf.model.Literal;
 import java.util.ArrayList;
@@ -27,13 +27,17 @@ import org.appdapter.fancy.query.SolutionHelper;
 import org.appdapter.fancy.query.SolutionList;
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.SerTypedValueMap;
+import org.cogchar.impl.thing.basic.BasicThingActionSpec;
+import org.cogchar.impl.thing.basic.BasicTypedValueMap;
+import org.cogchar.impl.thing.basic.BasicTypedValueMapWithConversion;
 import org.cogchar.name.thing.ThingCN;
 import org.slf4j.Logger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  * 
- * This class knows how to pull ThingAction(Spec) data from 
+ * This class knows how to pull ThingAction(Spec) data from a SolutionList, which is inefficient memwise for 
+ * large solution lists that might be filtered in-code, so, it is really SolutionList that needs improving upon.
  */
 
 public class BasicThingActionQResAdapter extends BasicDebugger {

@@ -16,7 +16,7 @@
 
 package org.cogchar.impl.thing.fancy
 import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.impl.thing.basic.BasicThingActionRouter;
+import org.cogchar.impl.thing.route.BasicThingActionRouter;
 
 /**
  * @author Stu B. <www.texpedient.com>

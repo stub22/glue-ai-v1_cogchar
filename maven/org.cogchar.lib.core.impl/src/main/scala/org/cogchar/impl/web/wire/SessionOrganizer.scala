@@ -20,7 +20,6 @@ import org.cogchar.impl.web.util.HasLoggerConv
 import org.cogchar.impl.web.config.SessionGroupManager
 
 /**
- * @author Stu B. <www.texpedient.com>
  */
 
 abstract class SessionOrganizer(val myCmdr : WebappCommander, val myWebappGlobalState : WebappGlobalState) 

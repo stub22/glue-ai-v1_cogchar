@@ -20,7 +20,7 @@ import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
 import org.appdapter.core.name.Ident;
-import org.cogchar.impl.thing.basic.BasicThingActionConsumer;
+import org.cogchar.impl.thing.route.BasicThingActionConsumer;
 import org.cogchar.api.thing.ThingActionSpec;
 // import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 // import org.cogchar.render.model.humanoid.HumanoidFigure;

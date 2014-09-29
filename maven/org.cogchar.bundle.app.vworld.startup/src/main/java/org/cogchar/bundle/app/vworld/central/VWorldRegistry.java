@@ -24,7 +24,7 @@ import org.osgi.framework.Bundle;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.platform.trigger.CommandSpace;
 import org.cogchar.render.sys.context.CogcharRenderContext;
-import org.cogchar.impl.thing.basic.BasicThingActionRouter;
+import org.cogchar.impl.thing.route.BasicThingActionRouter;
 import org.cogchar.render.model.bony.FigureState;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;

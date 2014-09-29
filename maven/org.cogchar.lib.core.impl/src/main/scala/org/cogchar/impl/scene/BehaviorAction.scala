@@ -44,7 +44,7 @@ import org.cogchar.api.thing.{ThingActionSpec, ThingActionFilter, WantsThingActi
 import org.cogchar.api.fancy.{FancyThingModelWriter}
 import org.apache.http.impl.client.{DefaultHttpClient}
 
-import org.cogchar.impl.thing.basic.ThingActionSpec_SendToRemote_TempFunctions
+import org.cogchar.impl.thing.route.ThingActionSpec_SendToRemote_TempFunctions
 import  org.cogchar.api.perform.BehaviorActionExec
 
 import java.util.Random;
