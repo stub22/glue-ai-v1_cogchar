@@ -25,6 +25,8 @@ import scala.collection.mutable.ConcurrentMap
 import scala.collection.JavaConversions._ // required to use java.util.concurrent.ConcurrentHashMap as a scala.collection.mutable.ConcurrentMap
 
 /**
+ *
+ *   Hello!  This file is brought to you as an example of DOING IT WRONG.
  */
 
 

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.thing.basic;
+package org.cogchar.impl.thing.route;
 
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;

@@ -20,7 +20,7 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.SerTypedValueMap;
 import org.cogchar.api.web.in.WebSessionActionParamWriter;
 import org.cogchar.api.web.in.WebSessionInputSender;
-import org.cogchar.impl.thing.basic.BasicThingActionForwarder;
+import org.cogchar.impl.thing.route.BasicThingActionForwarder;
 import org.cogchar.impl.thing.basic.BasicThingActionSpec;
 import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.impl.thing.basic.BasicTypedValueMapWithConversion;

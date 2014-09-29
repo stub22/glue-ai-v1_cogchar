@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.thing.basic;
+package org.cogchar.impl.thing.route;
 
 import org.cogchar.api.web.in.WebSessionActionParamWriter;
 import java.util.Random;

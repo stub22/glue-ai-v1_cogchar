@@ -31,7 +31,7 @@ import org.appdapter.fancy.rclient.RepoClient;
 
 
 import org.cogchar.api.humanoid.FigureConfig;
-import org.cogchar.impl.thing.basic.BasicThingActionRouter;
+import org.cogchar.impl.thing.route.BasicThingActionRouter;
 import org.cogchar.bind.mio.robot.svc.ModelBlendingRobotServiceContext;
 import org.cogchar.bind.mio.robot.svc.RobotServiceFuncs;
 import org.cogchar.blob.emit.GlobalConfigEmitter;
