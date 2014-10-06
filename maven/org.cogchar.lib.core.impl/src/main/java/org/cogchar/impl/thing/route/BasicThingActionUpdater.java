@@ -74,7 +74,7 @@ public class BasicThingActionUpdater {
 		List<ThingActionSpec> actionSpecList = taqra.reapActionSpecList(actionsSolList, rc, srcGraphID, SOURCE_AGENT_ID);
 		// Delete the actions from graph, so they are not returned on next call to this method.
 		for (ThingActionSpec tas : actionSpecList) {
-			deleteThingAction(rc, srcGraphID, tas);
+			old_deleteThingAction(rc, srcGraphID, tas);
 		}
 		theLogger.info("Returning ThingAction list of length {} from graph {}", actionSpecList.size(), srcGraphID);
 		return actionSpecList;
@@ -141,7 +141,7 @@ public class BasicThingActionUpdater {
 		// Delete the actions from graph, so they are not returned on next call to this method.
 		for (ThingActionSpec tas : actionSpecList) {
 			// TODO:  Make a graphPortal
-			old_markThingActionSeen(rc, srcGraphID, tas, viewingAgentID);
+			markThingActionSeen(rc, srcGraphID, tas, viewingAgentID);
 		}
 		int listSize = actionSpecList.size();
 		if (listSize != 0) {
@@ -161,11 +161,11 @@ public class BasicThingActionUpdater {
 	 *
 	 * @param tas
 	 */
-	private void deleteThingAction(RepoClient rc, Ident graphID, ThingActionSpec tas) {
+	@Deprecated private void old_deleteThingAction(RepoClient rc, Ident graphID, ThingActionSpec tas) {
 		Ident actionID = tas.getActionSpecID();
 		Resource actionRes = rc.getDefaultRdfNodeTranslator().makeResourceForIdent(actionID);
 		//Repo.WithDirectory repo = rc.getRepo();
-		theLogger.warn("About to fetch a readonly model and then try to write to it - what's that all about?");
+		theLogger.error("FIXME:  About to fetch a readonly model and then try to write to it, which will have no effect - FIXME!!!");
 		Model gm = rc.getNamedModelReadonly(graphID); //  repo.getNamedModel(graphID);    FIXME
 		theLogger.info("Prior to removal from {}, graph size is {}", graphID, gm.size());
 		gm.removeAll(actionRes, null, null);
@@ -174,31 +174,20 @@ public class BasicThingActionUpdater {
 
 	// This should be done inside a write-Xaction, with boundaries that encompass the prior related reads.
 	// Since it does not start an explicit xact, it expects to get an automatic xact, if one is needed.
-	private void old_markThingActionSeen(RepoClient rc, Ident graphToMark, ThingActionSpec tas, Ident seeingAgentID) {
+	private void markThingActionSeen(RepoClient rc, Ident graphToMark, ThingActionSpec tas, Ident seeingAgentID) {
 		Ident actionID = tas.getActionSpecID();
 		Resource actionRes = rc.getDefaultRdfNodeTranslator().makeResourceForIdent(actionID);
 		Resource agentRes = rc.getDefaultRdfNodeTranslator().makeResourceForIdent(seeingAgentID);
-		
-		theLogger.warn("About to fetch a readonly model and then try to write to it.  Needs update to use GraphPortal else: When a copy, then our marking probably is useles");
-		Model gm = rc.getNamedModelReadonly(graphToMark); // repo.getNamedModel(graphToMark);    FIXME
-		scala.Option<String> optStr = scala.Option.apply(null);  // yields None, right?
-		ResourceResolver rr = new ResourceResolver(gm, optStr);
+
+		Model gm = com.hp.hpl.jena.rdf.model.ModelFactory.createDefaultModel();
+		scala.Option<String> none = scala.Option.apply(null);  // yields None
+		ResourceResolver rr = new ResourceResolver(gm, none);
 		Property viewedByProp = rr.findOrMakeProperty(gm, ThingCN.P_viewedBy);
 		Statement viewedByStmt = gm.createStatement(actionRes, viewedByProp, agentRes);
+		
 		gm.add(viewedByStmt);
+		theLogger.info("Made new-style statement for thing-seen-mark : {}, submitting through RC-portal-wrapper on the assumption that we are already in a Write TX!", viewedByStmt);
+		rc.postNamedModel(graphToMark, gm);
 	}
-	private void markThingActionSeen(DelegatingPortal dgp, Ident graphToMark, ThingActionSpec tas, Ident seeingAgentID) {
-		// This can be implemented as either sparql update, or using absorber-add.  Latter is probly faster.
-		// 
 
-		GraphAbsorber grAbsr = dgp.getAbsorber();
-		GraphUpdater grUpdr = dgp.getUpdater();
-		String graphURI = graphToMark.getAbsUriString();
-		Model srcModel = null;
-		grAbsr.addStatementsToNamedModel(graphURI, srcModel);
-	}
-	private void otherStuff(DelegatingPortal dgp) { 
-		GraphSupplier grSuplr = dgp.getSupplier();
-		GraphQuerier grQryr = dgp.getQuerier();		
-	}
 }
