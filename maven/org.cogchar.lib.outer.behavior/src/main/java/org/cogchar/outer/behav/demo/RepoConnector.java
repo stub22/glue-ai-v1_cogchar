@@ -17,13 +17,12 @@
 
 package org.cogchar.outer.behav.demo;
 
+import org.appdapter.core.store.Repo;
 import org.appdapter.fancy.rspec.RepoSpec;
 import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
 import org.appdapter.fancy.rclient.EnhancedRepoClient;
-// import org.appdapter.help.repo.*;
-// import org.appdapter.core.repo.*;
-// import org.appdapter.impl.store.*;
-import org.appdapter.core.store.*;
+import org.appdapter.fancy.rclient.EnhancedLocalRepoClient;
+
 
 
 
@@ -56,7 +55,7 @@ class RepoConnector {
 	public EnhancedRepoClient connectDemoRepoClient(RepoSpec repoSpec) {
 		Repo.WithDirectory bmcMemoryRepoHandle = repoSpec.makeRepo();
 		// Before we enhanced the repoCli, this was just:  repoSpec.makeRepoClient(bmcMemoryRepoHandle);
-		EnhancedRepoClient bmcRepoCli = new EnhancedRepoClient(repoSpec, bmcMemoryRepoHandle, 
+		EnhancedRepoClient bmcRepoCli = new EnhancedLocalRepoClient(repoSpec, bmcMemoryRepoHandle, 
 					BehavMasterConfigTest.TGT_GRAPH_SPARQL_VAR(), BehavMasterConfigTest.QUERY_SOURCE_GRAPH_QN());
 		return bmcRepoCli;
 	}
