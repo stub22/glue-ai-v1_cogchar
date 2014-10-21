@@ -92,7 +92,16 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	def exclusiveActivateScene(scene: BScene, cancelPrevJobs : Boolean) {	
 		// This rq-stops all their modules, and asks them each to forget/reset, but does not "forget" them at theater or BM level.
 		deactivateAllScenes(cancelPrevJobs)
-		
+		activateScene(scene)
+	}
+	// Called from within this package, and also from MasterDemo (and now from Milo)
+	// 2014-10-21 - separated prior "activateScene" into two steps, so we can get at the scene's behaviors after
+	// they are constructed, but before it has been added to the running set.  
+	def activateScene(scene: BScene) : Unit = {
+		initializeSceneModules(scene)
+		activateInitializedScene(scene)
+	}
+	def initializeSceneModules(scene: BScene) : Unit = {
 //		Currently we do not try to wirePerfChannels because...we expect that to be done by lifecycle-poppin.  Right?
 //		Hmmm.   Stu buys that wiring up channels to exist with simple-lifecycles is good.  The wiring of those to actually
 //		make a scene run may be an area where we need more control, must look more at JFlux APIs.
@@ -101,11 +110,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 //		graphs in this step.  This makes more sense than popping lifecycles around beyond what is needed.
 //		Steps and Guards should not have their own lifecycles.
 		
-        safelyWireGraphChannels(scene);
-		activateScene(scene)
-	}
-	// Called from within this package, and also from MasterDemo.
-	def activateScene(scene: BScene) {
+        safelyWireGraphChannels(scene);		
 		// See comments about multi-scene above.  For now we expect to be used in a single-active-scene approach.
 		// IF we are strict single-scene, then we SHOULD ensure previous scene is complete, and modulator is idle.
 		val prevModuleCnt = myBM.getAttachedModuleCount
@@ -119,6 +124,8 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		// Here is the single-active-scene contraint currently enforced by BehaviorModulator.
 		myBM.setSceneContext(scene);
 		scene.attachBehaviorsToModulator(myBM);
+	}
+	def activateInitializedScene(scene : BScene) : Unit =  {
 		myUnfinishedScenes.add(scene);
 	}
 	protected def deactivateScene(scene: BScene, cancelPerfJobs : Boolean) {
@@ -161,7 +168,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		}
 	}
 	// Currently this is called in thread below when the BehaviorModulator takes a break, 
-	// and also in 
+	// and also in (?) 
 	protected def forgetFinishedScenes() {
 		for (sc <- myUnfinishedScenes.toArray) {
 			if (!sc.hasUnfinishedModules) {
