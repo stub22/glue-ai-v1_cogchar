@@ -51,7 +51,7 @@ public class BasicThingActionUpdater {
 	public static final Ident SOURCE_AGENT_ID = new FreeIdent(ThingCN.TA_NS + "RepoThingAction");
 	private static Logger theLogger = LoggerFactory.getLogger(BasicThingActionUpdater.class);
 
-	static int dubiousSleepMsec = 100;
+	// static int dubiousSleepMsec = 100;
 	// Used only from PUMA to drain thingActions during init/reset, right?
 	@Deprecated protected List<ThingActionSpec> takeThingActions_TX(final RepoClient rc, final Ident srcGraphID) {
 		List<ThingActionSpec> takenActions = null;
@@ -67,7 +67,7 @@ public class BasicThingActionUpdater {
 		return takenActions;		
 	}
 
-	private List<ThingActionSpec> takeThingActions_Raw(RepoClient rc, Ident srcGraphID) {
+	@Deprecated private List<ThingActionSpec> takeThingActions_Raw(RepoClient rc, Ident srcGraphID) {
 		// Will need to become transactional if used concurrently, like viewActions below.
 		SolutionList actionsSolList = rc.queryIndirectForAllSolutions(ThingCN.ACTION_QUERY_URI, srcGraphID);
 		BasicThingActionQResAdapter taqra = new BasicThingActionQResAdapter();

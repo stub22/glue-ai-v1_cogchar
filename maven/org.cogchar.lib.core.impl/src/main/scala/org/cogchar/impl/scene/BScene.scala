@@ -180,7 +180,7 @@ import scala.collection.mutable.Map
 /**
  * Implements the features beyond BScene that we need to make behavior decisions.
  *    1) Tracks performances of its own steps for others to guard on
- *    2) [TODO] - Tracks GraphChannels supplying useful input+state data
+ *    2) Tracks GraphChannels supplying useful input+state data
  *
  *    These two features above should be separated into traits, which are then
  *    mixed in by FancyBScene.  Consider having those traits extend Scene interface.
