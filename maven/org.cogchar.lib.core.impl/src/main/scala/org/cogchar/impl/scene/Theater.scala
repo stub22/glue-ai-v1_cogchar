@@ -28,6 +28,8 @@ import org.cogchar.impl.perform.{DummyTextChan, FancyTime, PerfChannelNames};
 import org.cogchar.impl.chan.fancy.{GraphChannelHub};
 import org.cogchar.platform.trigger.{CogcharScreenBox, CogcharActionTrigger, CogcharActionBinding, CogcharEventActionBinder};
 
+import org.cogchar.api.scene.Behavior
+
 /**  A theater is an execution context for scene-based behavior.
  * @author Stu B. <www.texpedient.com>
  */
@@ -98,10 +100,10 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	// 2014-10-21 - separated prior "activateScene" into two steps, so we can get at the scene's behaviors after
 	// they are constructed, but before it has been added to the running set.  
 	def activateScene(scene: BScene) : Unit = {
-		initializeSceneModules(scene)
-		activateInitializedScene(scene)
+		val behavs : List[Behavior[BScene]] = initializeSceneAndMakeBehaviors(scene)
+		activateInitializedScene(scene, behavs)
 	}
-	def initializeSceneModules(scene: BScene) : Unit = {
+	def initializeSceneAndMakeBehaviors(scene: BScene) : List[Behavior[BScene]] = {
 //		Currently we do not try to wirePerfChannels because...we expect that to be done by lifecycle-poppin.  Right?
 //		Hmmm.   Stu buys that wiring up channels to exist with simple-lifecycles is good.  The wiring of those to actually
 //		make a scene run may be an area where we need more control, must look more at JFlux APIs.
@@ -123,9 +125,12 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		scene.forgetAllModules()
 		// Here is the single-active-scene contraint currently enforced by BehaviorModulator.
 		myBM.setSceneContext(scene);
-		scene.attachBehaviorsToModulator(myBM);
+		scene.attachSceneToModulator(myBM);
+		val behavs : List[Behavior[BScene]] = scene.makeBehaviorsFromSpecs
+		behavs
 	}
-	def activateInitializedScene(scene : BScene) : Unit =  {
+	def activateInitializedScene(scene : BScene, behavsToActivate : List[Behavior[BScene]]) : Unit =  {
+		scene.attachBehaviorModules(behavsToActivate)
 		myUnfinishedScenes.add(scene);
 	}
 	protected def deactivateScene(scene: BScene, cancelPerfJobs : Boolean) {

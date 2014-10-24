@@ -31,6 +31,7 @@ import org.cogchar.impl.perform.{FancyTime, FancyTextPerf}
 
 import scala.collection.mutable.HashMap;
 import org.appdapter.api.module.{Module}
+import org.cogchar.api.scene.Behavior
 
 
 /**
@@ -88,9 +89,8 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 		}
 	}
 	// If the modulator has "autoDetachOnFinish" set to true, then the modules will be auto-detached.
-	def attachBehaviorsToModulator(bm : BehaviorModulator) {
+	def attachSceneToModulator(bm : BehaviorModulator) {
 		updateModuleCaches(bm);
-		makeAndAttachBehavsFromSpecs();
 	}
 
 	/**
@@ -102,11 +102,23 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 	 * That cache in FancyBScene below is how GuardedBehaviors check their guard-perfs.
 	 * A BScene might choose
 	 */
-	protected def makeAndAttachBehavsFromSpecs() {
-		for (bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
-			val b = bs.makeBehavior();
+	
+	// Normally these were created by makeBehaviorsFromSpecs, but we pass as data to allow clients to adjust
+	// behaviors after construction but before they start running (which happens as soon as they are attached
+	// as modules, regardless of whether the Theater thinks this scene is "active").
+	def attachBehaviorModules(behavs : List[Behavior[BScene]]) : Unit = {
+		for (b : Behavior[BScene] <- behavs) {
 			attachModule(b);
 		}
+	}
+
+	def makeBehaviorsFromSpecs : List[Behavior[BScene]] = {
+		var behavs : List[Behavior[BScene]] = Nil
+		for (bs : BehaviorSpec <- mySceneSpec.myBehaviorSpecs.values) {
+			val b = bs.makeBehavior();
+			behavs ::= b
+		}
+		behavs
 	}
 
 	protected def updateModuleCaches(bm : BehaviorModulator) {
