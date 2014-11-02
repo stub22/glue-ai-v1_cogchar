@@ -21,7 +21,7 @@ import org.appdapter.core.log.{BasicDebugger, Loggable};
 import org.appdapter.core.name.{Ident, FreeIdent};
 import org.appdapter.core.item.{Item};
 import org.appdapter.fancy.rclient.{RepoClient}
-
+import org.appdapter.api.module.Module
 import org.cogchar.api.channel.{GraphChannel}
 import org.cogchar.api.perform.{Media, PerfChannel};
 import org.cogchar.impl.perform.{DummyTextChan, FancyTime, PerfChannelNames};
@@ -182,13 +182,16 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 			}			
 		}
 	}	
-
+	def attachIndependentModule(aModule : Module[BScene]) {
+		myBM.attachModule(aModule)
+	}
 	def stopAllScenesAndModules(cancelOutputJobs : Boolean) {
 		deactivateAllScenes(cancelOutputJobs)
 		// We can't know if this is necessary. 
 		requestStopAllModules();
 	}
 	private def requestStopAllModules() {
+		getLogger.warn("requestStopAllModules will stop independent modules as well as scene-associated modules")
 		myBM.requestStopOnAllModules();
 	}
 	protected def replaceBehaviorModulator() { 
