@@ -217,7 +217,10 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		}
 	}
 	def startThread() {
-		val sleepTimeMsec = 100
+		startThread(200)
+	}
+	def startThread(sleepTimeMsec : Int) {
+		
 		// TODO: Consider how this thread communication might be better done with Scala actors, 
 		// following experimental pattern in BehaviorTrial.scala.
 		// 
