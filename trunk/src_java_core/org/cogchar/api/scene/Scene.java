@@ -22,6 +22,8 @@ import org.appdapter.core.name.Ident;
 
 /**
  * RootChanType is a type-parameter but it does not yet play a significant role in how scenes are controlled.
+ * 
+ * Scene (unlike Behavior) does not currently have a published state model.
  * @author Stu B. <www.texpedient.com>
  *
  */

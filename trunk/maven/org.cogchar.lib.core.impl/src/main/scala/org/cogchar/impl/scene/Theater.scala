@@ -120,8 +120,9 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 			getLogger.warn("activateScene({}) called but prevModuleCount={}", prevModuleCnt)
 		}
 		getLogger.info("Activating scene with spec[{}] for char-theater {}", Array[Object]( scene.mySceneSpec.getIdent, myIdent));
-		// TODO: Check if the scene still has any cached modules.
-		// Clear out anything laying around (e.g. if the scene is interrupting itself with a re-activation)
+		// TODO: Check if the scene still has any previously cached modules.
+		// That would suggest we are re-using the scene instance, which is not a common practice.  
+		// A possible scenario would be a scene interrupting itself with a re-activation, but we've never tried that.
 		scene.forgetAllModules()
 		// Here is the single-active-scene contraint currently enforced by BehaviorModulator.
 		myBM.setSceneContext(scene);
@@ -133,7 +134,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		scene.attachBehaviorModules(behavsToActivate)
 		myUnfinishedScenes.add(scene);
 	}
-	protected def deactivateScene(scene: BScene, cancelPerfJobs : Boolean) {
+	def deactivateScene(scene: BScene, cancelPerfJobs : Boolean) {
 		if (cancelPerfJobs) {
 			// We want any output playback to be canceled.
 			scene.cancelAllPerfJobs()
@@ -145,15 +146,20 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		// objects piped in through the OSGi theater, although that generally is kind of a messy idea.
 		// So, would probably be better to dispose of this scene object, and reconstitute from sceneSpec
 		// when desired.  
-		scene.forgetAllModules();
+		scene.forgetAllModules(); // Note this is called again during the later forgetting of the scene itself.
 		// TODO : Consider disposing of the scene object, preventing it from being reused.
-		
+		// REFINE:
 		// Note that we cannot yet assume the scene's modules have actually finished executing.
-		// So *THIS* scene will probably not get forgotten yet.  But we take this chance to forget
-		// any other finished scenes in the theater that are accumulating dust.  (This task would 
+		// So *THIS* scene will probably not get forgotten yet, but we do take this opportunity to
+		// clean out any other finished scenes in the theater that are accumulating dust.  (This task would 
 		// ideally be done at "user" level, i.e. within an admin coroutine module, rather than here
 		// in the outer-"kernel")
+		doPendingCleanup()
+	}
+	def doPendingCleanup() {
+ 
 		forgetFinishedScenes()
+		
 	}
 	def deactivateAllScenes(cancelPerfJobs : Boolean) {
 		// copy toArray to avoid interference with delete ops.  myActiveScenes.toArray.apply{}
@@ -163,7 +169,8 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	}
 	
 	protected def forgetFinishedScene(scene: BScene) {
-		// This would have happened already if the scene was "deactivated", but NOT if it merely "expired"
+		// This would have happened already if the scene was "deactivated", but NOT if it merely "expired" by having
+		// all its modules stopped.
 		scene.forgetAllModules();
 		// TODO:  dbl-check that it is really "finished"
 		if (myUnfinishedScenes.contains(scene)) {
@@ -185,6 +192,7 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	def attachIndependentModule(aModule : Module[BScene]) {
 		myBM.attachModule(aModule)
 	}
+	// This is a very heavy stop, since it presumes the theater has no utility modules.
 	def stopAllScenesAndModules(cancelOutputJobs : Boolean) {
 		deactivateAllScenes(cancelOutputJobs)
 		// We can't know if this is necessary. 
