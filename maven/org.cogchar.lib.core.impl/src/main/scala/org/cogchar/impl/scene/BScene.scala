@@ -100,10 +100,9 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 	 * running scene may cache information by stepSpec-ID at present (rather than by say,
 	 * step-EXEC-ID, which would be generated at runtime, thus safer but harder to find).
 	 * That cache in FancyBScene below is how GuardedBehaviors check their guard-perfs.
-	 * A BScene might choose
 	 */
 	
-	// Normally these were created by makeBehaviorsFromSpecs, but we pass as data to allow clients to adjust
+	// Normally these are created by makeBehaviorsFromSpecs, but we pass as data to allow clients to adjust
 	// behaviors after construction but before they start running (which happens as soon as they are attached
 	// as modules, regardless of whether the Theater thinks this scene is "active").
 	def attachBehaviorModules(behavs : List[Behavior[BScene]]) : Unit = {
@@ -154,15 +153,17 @@ abstract class BScene (val mySceneSpec: SceneSpec) extends BasicDebugger with Sc
 			mod.markStopRequested
 		}
 	}
+	// Called from: Theater.deactivateScene, Theater.initializeSceneAndMakeBehaviors,  BScene.updateModuleCaches, 
+	// Theater.forgetFinishedScene
 	def forgetAllModules() {
 		myCachedModules.clear
 	}
 	// If we want a module to be detached from a modulator without waiting for auto-detach-on-finish, then
-	// we must use something like this.  However, we cannot detach a module which is currently in an action method.
+	// we would needsomething like this.  However, we cannot detach a module which is currently in an action method
 	// (doRun, stop, start) - we will instead get an exception.  To proceed without blocking or async requests,
 	// this method must catch those exceptions.
-	def attemptImmediateDetachAllModules() {
-	}
+	// private def attemptImmediateDetachAllModules() : Unit = ???
+	
 	def getUnfinishedModules() : Set[Module[BScene]] = {
 		if (myCachedModulator != null) {
 			myCachedModulator.findUnfinishedModules(myCachedModules.toSet)
