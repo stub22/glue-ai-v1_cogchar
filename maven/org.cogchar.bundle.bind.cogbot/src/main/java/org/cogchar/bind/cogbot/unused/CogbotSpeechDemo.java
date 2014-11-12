@@ -23,6 +23,7 @@ import org.jflux.impl.messaging.rk.JMSAvroRecordAsyncReceiver;
 import org.jflux.impl.messaging.rk.JMSAvroRecordSender;
 import org.jflux.impl.messaging.rk.JMSBytesMessageSender;
 import org.jflux.impl.messaging.rk.utils.ConnectionManager;
+import org.jflux.impl.messaging.rk.utils.ConnectionUtils;
 import org.mechio.api.speech.SpeechRequest;
 import org.mechio.api.speech.SpeechRequestFactory;
 import org.mechio.impl.speech.SpeechRequestRecord;
@@ -35,21 +36,30 @@ import static org.cogchar.bind.cogbot.main.CogbotConfigUtils.*;
  *
  */
 public class CogbotSpeechDemo {
-    private final static Logger theLogger = Logger.getLogger(CogbotSpeechDemo.class.getName());
+    private final static Logger theLogger =
+            Logger.getLogger(CogbotSpeechDemo.class.getName());
     private final static String CONF_DEMO_BROKER_IP = "cogbotDemoBrokerIp";
     private final static String CONF_DEMO_BROKER_PORT = "cogbotDemoBrokerPort";
-    private final static String CONF_DEMO_BROKER_USERNAME = "cogbotDemoBrokerUsername";
-    private final static String CONF_DEMO_BROKER_PASSWORD = "cogbotDemoBrokerPassword";
-    private final static String CONF_DEMO_BROKER_CLIENT_NAME = "cogbotDemoBrokerClientName";
-    private final static String CONF_DEMO_BROKER_VIRTUAL_HOST = "cogbotDemoBrokerVirtualHost";
+    private final static String CONF_DEMO_BROKER_USERNAME =
+            "cogbotDemoBrokerUsername";
+    private final static String CONF_DEMO_BROKER_PASSWORD =
+            "cogbotDemoBrokerPassword";
+    private final static String CONF_DEMO_BROKER_CLIENT_NAME =
+            "cogbotDemoBrokerClientName";
+    private final static String CONF_DEMO_BROKER_VIRTUAL_HOST =
+            "cogbotDemoBrokerVirtualHost";
     private final static String CONF_TTS_DEST = "cogbotDemoTTSDest";
     private final static String CONF_SPREC_DEST = "cogbotDemoSpRecDest";
     
     private static void setDemoConfigVals(){
         setOrCreateValue(String.class, CONF_DEMO_BROKER_IP, "127.0.0.1");
         setOrCreateValue(String.class, CONF_DEMO_BROKER_PORT, "5672");
-        setOrCreateValue(String.class, CONF_DEMO_BROKER_USERNAME, "admin");
-        setOrCreateValue(String.class, CONF_DEMO_BROKER_PASSWORD, "admin");
+        setOrCreateValue(
+                String.class, CONF_DEMO_BROKER_USERNAME,
+                ConnectionUtils.getUsername());
+        setOrCreateValue(
+                String.class, CONF_DEMO_BROKER_PASSWORD,
+                ConnectionUtils.getPassword());
         setOrCreateValue(String.class, CONF_DEMO_BROKER_CLIENT_NAME, "client1");
         setOrCreateValue(String.class, CONF_DEMO_BROKER_VIRTUAL_HOST, "test");
         setOrCreateValue(String.class, CONF_TTS_DEST, "speechRequest");
@@ -84,12 +94,14 @@ public class CogbotSpeechDemo {
         Destination recDest = ConnectionManager.createDestination(
                 getValue(String.class, CONF_SPREC_DEST));
 
-        MessageSender<SpeechRequest> sender = createSpeechSender(session, sendDest);
+        MessageSender<SpeechRequest> sender =
+                createSpeechSender(session, sendDest);
         if(sender == null){
             return;
         }
         SpeechHandler handler = new SpeechHandler(cogbot, sender);
-        MessageAsyncReceiver<SpeechRequest> receiver = createSpeechReceiver(session, recDest);
+        MessageAsyncReceiver<SpeechRequest> receiver =
+                createSpeechReceiver(session, recDest);
         if(receiver == null){
             return;
         }
@@ -151,7 +163,8 @@ public class CogbotSpeechDemo {
             Session session, Destination dest){
 
         DefaultMessageAsyncReceiver<SpeechRequest, SpeechRequestRecord> receiver =
-                new DefaultMessageAsyncReceiver<SpeechRequest, SpeechRequestRecord>();
+                new DefaultMessageAsyncReceiver<SpeechRequest,
+                        SpeechRequestRecord>();
         MessageConsumer consumer;
         try{
             consumer = session.createConsumer(dest);

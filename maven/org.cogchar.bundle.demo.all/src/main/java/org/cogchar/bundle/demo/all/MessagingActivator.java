@@ -29,10 +29,10 @@ class MessagingActivator {
     private static void connectMotion(BundleContext context) throws Exception {
         theLogger.info("Registering Motion Connection and Destinations");
         Connection con = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", 
+                getUsername(), getPassword(), "client1", "test",
                 "tcp://127.0.0.1:5672");
         con.start();
-        ConnectionUtils.ensureSession(context, 
+        ConnectionUtils.ensureSession(context,
                 "motionConnection", con, null);
         ConnectionUtils.ensureDestinations(context, 
                 "robotRequest", "robotRequest", TOPIC, null, 
@@ -43,11 +43,11 @@ class MessagingActivator {
     
     private static void connectSpeech(BundleContext context) throws Exception {
         Connection con = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", 
+                getUsername(), getPassword(), "client1", "test",
                 "tcp://127.0.0.1:5672");
         con.start();
         theLogger.info("Registering Speech Connection and Destinations");
-        ConnectionUtils.ensureSession(context, 
+        ConnectionUtils.ensureSession(context,
                 "speechConnection", con, null);
         ConnectionUtils.ensureDestinations(context, 
                 "speechCommand", "speechCommand", QUEUE, null, 
@@ -58,13 +58,14 @@ class MessagingActivator {
         theLogger.info("Speech Connection and Destinations Registered");
     }
     
-    private static void connectAnimation(BundleContext context) throws Exception {
+    private static void connectAnimation(
+            BundleContext context) throws Exception {
         Connection con = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", 
+                getUsername(), getPassword(), "client1", "test",
                 "tcp://127.0.0.1:5672");
         con.start();
         theLogger.info("Registering Animation Connection and Destinations");
-        ConnectionUtils.ensureSession(context, 
+        ConnectionUtils.ensureSession(context,
                 "animationConnection", con, null);
         ConnectionUtils.ensureDestinations(context, 
                 "animationRequest", "animationRequest", TOPIC, null);
@@ -73,11 +74,11 @@ class MessagingActivator {
     
     private static void connectVision(BundleContext context) throws Exception {
         Connection con = ConnectionManager.createConnection(
-                "admin", "admin", "client1", "test", 
+                getUsername(), getPassword(), "client1", "test",
                 "tcp://127.0.0.1:5672");
         con.start();
         theLogger.info("Registering Vision Connection and Destinations");
-        ConnectionUtils.ensureSession(context, 
+        ConnectionUtils.ensureSession(context,
                 "visionConnection", con, null);
         ConnectionUtils.ensureDestinations(context, 
                 "visionCameraCommand", "camera0Command", QUEUE, null, 
