@@ -19,6 +19,7 @@ import org.jflux.api.core.Listener;
 import org.jflux.api.core.Source;
 import org.jflux.api.core.config.Configuration;
 import org.jflux.api.core.config.DefaultConfiguration;
+import org.jflux.impl.messaging.rk.utils.ConnectionUtils;
 
 /**
  *
@@ -28,16 +29,21 @@ public class ConvoConfigUtils {
     public static String CONF_SPREC_BROKER_IP = "convoSpRecBrokerIp";
     public static String CONF_SPREC_BROKER_PORT = "convoSpRecBrokerPort";
     public static String CONF_SPREC_BROKER_USERNAME = "convoSpRecBrokerUser";
-    public static String CONF_SPREC_BROKER_PASSWORD = "convoSpRecBrokerPassword";
-    public static String CONF_SPREC_BROKER_CLIENT_NAME = "convoSpRecBrokerClientName";
-    public static String CONF_SPREC_BROKER_VIRTUAL_HOST = "convoSpRecBrokerVirtualHost";
+    public static String CONF_SPREC_BROKER_PASSWORD =
+            "convoSpRecBrokerPassword";
+    public static String CONF_SPREC_BROKER_CLIENT_NAME =
+            "convoSpRecBrokerClientName";
+    public static String CONF_SPREC_BROKER_VIRTUAL_HOST =
+            "convoSpRecBrokerVirtualHost";
     public static String CONF_SPREC_DESTINATION = "convoSpRecDestinationStr";
     public static String CONF_TTS_BROKER_IP = "convoTTSBrokerIp";
     public static String CONF_TTS_BROKER_PORT = "convoTTSBrokerPort";
     public static String CONF_TTS_BROKER_USERNAME = "convoTTSBrokerUser";
     public static String CONF_TTS_BROKER_PASSWORD = "convoTTSBrokerPassword";
-    public static String CONF_TTS_BROKER_CLIENT_NAME = "convoTTSBrokerClientName";
-    public static String CONF_TTS_BROKER_VIRTUAL_HOST = "convoTTSBrokerVirtualHost";
+    public static String CONF_TTS_BROKER_CLIENT_NAME =
+            "convoTTSBrokerClientName";
+    public static String CONF_TTS_BROKER_VIRTUAL_HOST =
+            "convoTTSBrokerVirtualHost";
     public static String CONF_TTS_DESTINATION = "convoTTSDestinationStr";
     public static String CONF_COGBOT_IP = "convoCogbotIp";
     public static String CONF_COGBOT_POLL_INTERVAL = "convoCogbotPollInterval";
@@ -62,17 +68,26 @@ public class ConvoConfigUtils {
         
         conf.addProperty(String.class, CONF_SPREC_BROKER_IP, "127.0.0.1");
         conf.addProperty(String.class, CONF_SPREC_BROKER_PORT, "5672");
-        conf.addProperty(String.class, CONF_SPREC_BROKER_USERNAME, "admin");
-        conf.addProperty(String.class, CONF_SPREC_BROKER_PASSWORD, "admin");
-        conf.addProperty(String.class, CONF_SPREC_BROKER_CLIENT_NAME, "client1");
+        conf.addProperty(
+                String.class, CONF_SPREC_BROKER_USERNAME,
+                ConnectionUtils.getUsername());
+        conf.addProperty(
+                String.class, CONF_SPREC_BROKER_PASSWORD,
+                ConnectionUtils.getPassword());
+        conf.addProperty(
+                String.class, CONF_SPREC_BROKER_CLIENT_NAME, "client1");
         conf.addProperty(String.class, CONF_SPREC_BROKER_VIRTUAL_HOST, "test");
         conf.addProperty(String.class, CONF_SPREC_DESTINATION, 
                 "speechRecEvent; {create:always, node:{type:topic}}");
         
         conf.addProperty(String.class, CONF_TTS_BROKER_IP, "127.0.0.1");
         conf.addProperty(String.class, CONF_TTS_BROKER_PORT, "5672");
-        conf.addProperty(String.class, CONF_TTS_BROKER_USERNAME, "admin");
-        conf.addProperty(String.class, CONF_TTS_BROKER_PASSWORD, "admin");
+        conf.addProperty(
+                String.class, CONF_TTS_BROKER_USERNAME,
+                ConnectionUtils.getUsername());
+        conf.addProperty(
+                String.class, CONF_TTS_BROKER_PASSWORD,
+                ConnectionUtils.getPassword());
         conf.addProperty(String.class, CONF_TTS_BROKER_CLIENT_NAME, "client1");
         conf.addProperty(String.class, CONF_TTS_BROKER_VIRTUAL_HOST, "test");
         conf.addProperty(String.class, CONF_TTS_DESTINATION, 
