@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Please see Cogchar open source license at bottom of this file -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.project.root</artifactId>
+		<version>1.1.1</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>  
+	
+	<artifactId>org.cogchar.nbui.render</artifactId>
+	<packaging>nbm</packaging>
+	<name>${project.artifactId} - NetBeans GUI Module</name>
+	<properties>
+		<brandingToken>org_cogchar_nbui_render</brandingToken>
+		<!-- All config *files* (not classpath resources) are placed in this output directory in our module
+		This area is also used for "temporary" config files created/edited by user during runtime.
+		-->
+		<cogcharConfigTgt>config/cogchar</cogcharConfigTgt>
+		<!-- "Permanent" classpath-sourced config resources come from here.  -->
+		<cogcharTempConfigSrc>../org.cogchar.bundle.render.resources/src/main/resources</cogcharTempConfigSrc>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.netbeans.api</groupId>
+			<artifactId>org-netbeans-api-annotations-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.netbeans.api</groupId>
+			<artifactId>org-openide-windows</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.netbeans.api</groupId>
+			<artifactId>org-openide-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.netbeans.api</groupId>
+			<artifactId>org-openide-util-lookup</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.netbeans.api</groupId>
+			<artifactId>org-openide-awt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.netbeans.api</groupId>
+			<artifactId>org-netbeans-modules-settings</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.netbeans.api</groupId>
+			<artifactId>org-openide-modules</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.app.puma</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.render.opengl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.bind.mechio</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.bind.cogbot</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient-osgi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore-osgi</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>org.ow2.bundles</groupId>
+			<artifactId>ow2-bundles-externals-commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
+		</dependency>	
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.speech</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<!-- Needed at compile time for PortableSpeechRequest in CogbotSpeechDemo -->
+			<artifactId>org.mechio.impl.speech</artifactId>
+		</dependency>				
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.render.resources</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>org.apache.servicemix.specs.activation-api-1.1</artifactId>
+					<groupId>org.apache.servicemix.specs</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.apache_qpid_010</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.impl.encode.avro</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.impl.services.rk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.motion</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.common.rk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.api.animation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.integration.animation_motion</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mechio</groupId>
+			<artifactId>org.mechio.impl.motion</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.api.messaging.rk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jflux</groupId>
+			<artifactId>org.jflux.impl.messaging.rk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>runtime</scope>
+			<exclusions>
+				<!-- Exclude bundled log4J and use the springsource one below, which works better under OSGi -->
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.log4j</groupId>
+			<artifactId>com.springsource.org.apache.log4j</artifactId>
+		</dependency>		
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>nbm-maven-plugin</artifactId>
+				
+				<!--  This version was preventing project display under NB 7.1.2
+				<version>3.6</version>
+				2013-11-01: Now trying same version as current RWShop
+				-->
+				<extensions>true</extensions>
+				<configuration>
+					<brandingToken>${brandingToken}</brandingToken>
+					<cluster>${brandingToken}</cluster>
+					<useOSGiDependencies>true</useOSGiDependencies>
+					<nbmResources>
+						<nbmResource>
+							<directory>${cogcharTempConfigSrc}/logging_default</directory>
+							<targetPath>${cogcharConfigTgt}/logging_temp</targetPath>
+						</nbmResource>
+						<nbmResource>
+							<directory>${cogcharTempConfigSrc}/behavior</directory>
+							<targetPath>${cogcharConfigTgt}/behavior_temp</targetPath>
+						</nbmResource>							
+						<nbmResource>
+							<directory>${cogcharTempConfigSrc}/rk_bind_config</directory>
+							<targetPath>${cogcharConfigTgt}/rk_bind_temp</targetPath>
+						</nbmResource>			
+					</nbmResources>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+                    <!-- to have the jar plugin pickup the nbm generated manifest -->
+					<useDefaultManifestFile>true</useDefaultManifestFile>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
+<!--
+/*
+ *  Copyright 2011 by The Cogchar Project (www.cogchar.org).
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+ -->
