@@ -112,7 +112,7 @@ the classpath might be incompatible with the version used when compiling ShouldM
 					<!--  This trick did not seem to work.
 					<junitArtifactName>org.apache.servicemix.bundles:org.apache.servicemix.bundles.junit</junitArtifactName>
 					-->
-					<skipTests>false</skipTests>
+					<skipTests>true</skipTests>
 					<useFile>false</useFile>
 					<disableXmlReport>true</disableXmlReport>
 				</configuration>
