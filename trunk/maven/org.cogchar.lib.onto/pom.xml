@@ -68,7 +68,7 @@
 					<includes>
 						<include>src/main/resources/org/cogchar/onto/*_owl2.ttl</include>
 						<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and for some files 
-						we are going along with that for now.
+						we are going along with that for now, so we must make the jena-schemagen file search compatible.
 						-->
 						<include>src/main/resources/org/cogchar/onto/*_owl2.n3</include>
 					</includes>
@@ -215,7 +215,19 @@ The include option may repeated multiple times to include a variety of constants
 							<packageName>org.cogchar.api.owrap.pscreen</packageName>
 							<rdfReactorLogfile>target/rdfreactor_pushyScreen.log</rdfReactorLogfile>
 						</configuration>
-					</execution>										
+					</execution>
+					<execution>
+						<id>metaDir</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and we are going along with that for now.	-->							
+							<schemaFile>src/main/resources/org/cogchar/onto/MetaDir_owl2.n3</schemaFile>
+							<packageName>org.cogchar.api.owrap.mdir</packageName>
+							<rdfReactorLogfile>target/rdfreactor_metaDir.log</rdfReactorLogfile>
+						</configuration>
+					</execution>					
 				</executions>
 			</plugin>			
 		</plugins>

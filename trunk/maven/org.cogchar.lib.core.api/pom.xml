@@ -20,6 +20,17 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.onto</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<!-- 2015-01-17 Temporarily adding "scala-actors" lib here, although it is really more an Impl than API thing -->
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-actors</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>scala-library</artifactId>
+					<groupId>org.scala-lang</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>		
 		<!-- dependency>
 			<groupId>${project.groupId}</groupId>

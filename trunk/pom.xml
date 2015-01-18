@@ -55,7 +55,9 @@ Version-less parent will be allowed in Maven 3.1.
 	<properties>
 		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
+		<!-- Disable compile-on-save to more cleanly launch programs using OSGi and/or Scala, under Netbeans 8 -->
+		<netbeans.compile.on.save>none</netbeans.compile.on.save>
+		
 		<!-- Glue Dependencies -->
 		<appdapter.msg.version>1.0.5</appdapter.msg.version>
 		<appdapter.jscience.version>1.0.9</appdapter.jscience.version>
