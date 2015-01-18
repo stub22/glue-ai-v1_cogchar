@@ -67,9 +67,14 @@ object Whackamole extends BasicDebugger {
 		for (x <- loadedStuff) {
 			getLogger.info("Got Thing[" + x + "]")
 			x match {
-				// Scala "match" may be ignoring the [ParameterType], but we use it as doc of what we want
-				case mb : MutableBox[CogcharActionTrigger] => { winnerList = mb :: winnerList }
-				case _ => getLogger.info("Ignoring.")
+				// Scala match can't actually use parameter types, since they are erased. 
+				// We used to specify them anyway, but it generates nasty warnings.
+// Whackamole.scala:71: warning: non-variable type argument org.cogchar.platform.trigger.CogcharActionTrigger in type 
+// pattern org.appdapter.api.trigger.MutableBox[org.cogchar.platform.trigger.CogcharActionTrigger] is unchecked since 
+// it is eliminated by erasure"
+
+				case mb : MutableBox[_] => { winnerList = mb.asInstanceOf[MutableBox[CogcharActionTrigger]] :: winnerList }
+				case _ => getLogger.info("Ignoring {}.", x)
 			}
 		}
 		winnerList;
