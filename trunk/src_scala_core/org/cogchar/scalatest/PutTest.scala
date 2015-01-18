@@ -67,9 +67,9 @@ case class PTMsg(txt : String)
 
 case class StopMsg()
 
-// Here is the "old" Scala API summary, which we still rely on as of 2015-Jan
+// Here is the "old" Scala API summary, which we still rely on as of 2015-Jan.
 // http://docs.scala-lang.org/overviews/core/actors.html
-// 
+// We are trying to limit the fanciness of our Actors code, so that it will work with minimal changes under Scala 2.11.
 class WritingActor  extends scala.actors.Actor with VarargsLogging {
 	override  def act : Unit = {
 		var myDoneFlag : Boolean = false
@@ -78,8 +78,7 @@ class WritingActor  extends scala.actors.Actor with VarargsLogging {
 		while (!myDoneFlag) {
 			info2("WritingActor at top of loop for {} which is {}", selfThing, this)
 			receive {
-				// Blocking "receive" call uses scala actors runtime to wait for a message for this actor,
-				// sent (we happen to know) from DynamicBrowserDirectorImpl.deliverOutboundMsgAndForget
+				// Blocking "receive" call uses scala actors runtime to wait for a message for this actor.
 				case ptmsg : PTMsg => { 
 					info1("WritingActor got nice PTMsg: [{}]", ptmsg)
 				}
