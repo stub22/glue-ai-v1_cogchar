@@ -53,9 +53,11 @@ Version-less parent will be allowed in Maven 3.1.
 		<module>maven/org.cogchar.nbui.render</module>
   </modules>
 	<properties>
+		
 		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- Disable compile-on-save to more cleanly launch programs using OSGi and/or Scala, under Netbeans 8 -->
+		
+		<!-- Disable compile-on-save to launch programs using maven-plugins for OSGi and Scala, under Netbeans 8 -->
 		<netbeans.compile.on.save>none</netbeans.compile.on.save>
 		
 		<!-- Glue Dependencies -->

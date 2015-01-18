@@ -17,7 +17,7 @@
 package org.cogchar.impl.scene
 
 import scala.actors._
-import Actor._
+// import Actor._
 import org.appdapter.core.log.{BasicDebugger};
 
 /**
@@ -29,41 +29,43 @@ import org.appdapter.core.log.{BasicDebugger};
 
 class  WorkThing extends BasicDebugger {
 	var emotedCount = 0	
+	
+	def getSelf = Actor.self
 	def sendEmoteMsgLater(a : Actor, waitMsec : Long) : Unit = {
 		log("Will sendEmoteMsgLater to " + a + " now starting NEW innerActor")
-		val innerActor = actor 
+		val innerActor = Actor.actor 
 		{
-			log("innerActor[" + self + "] has been created, and will now sleep for " + waitMsec + " msec")
+			log("innerActor[" + getSelf + "] has been created, and will now sleep for " + waitMsec + " msec")
 			Thread.sleep(waitMsec)
-			log("innerActor[" + self + "] finished sleeping, now sending 'Emote' message to immutably saved mainActor")
+			log("innerActor[" + getSelf + "] finished sleeping, now sending 'Emote' message to immutably saved mainActor")
 			a ! "Emote"
-			log("innerActor[" + self + "] finished sending message, and mutable emotedCount is now " + emotedCount + ", sleeping two sec")
+			log("innerActor[" + getSelf + "] finished sending message, and mutable emotedCount is now " + emotedCount + ", sleeping two sec")
 			Thread.sleep(2000)
-			log("innerActor[" + self + "] finished SECOND nap!")
+			log("innerActor[" + getSelf + "] finished SECOND nap!")
 		}
 		log ("emoteLater built innerActor[" + innerActor + "] and emotedCount is now " + emotedCount);
 	}
 	def startSillyActor() : Actor = {
-		val sillyActor = actor {
-			log ("sillyActor[" + self + "] - first line of syntax")
+		val sillyActor = Actor.actor {
+			log ("sillyActor[" + getSelf + "] - first line of syntax")
 
 			log("sillyActor - calling sendEmoteMsgLater() for the first time")
 	
-			sendEmoteMsgLater(self, 1000);
+			sendEmoteMsgLater(getSelf, 1000);
 		
 			log("sillyActor - entering 'loop' dispatch construct")
-			loop {
+			Actor.loop {
 				log("sillyActor is at top of its 'loop', about to enter 'react', which does not return, but is called repeatedly")
-				react {
+				Actor.react {
 					case "Emote" =>
 						emotedCount += 1
-						log("sillyActor[" + self + "] is reacting to an Emote message, emoted count is now " + emotedCount)
+						log("sillyActor[" + getSelf + "] is reacting to an Emote message, emoted count is now " + emotedCount)
 						if (emotedCount < 5) {
 							log("sillyActor is calling emoteLater()")
-							sendEmoteMsgLater(self, emotedCount * 1000);
+							sendEmoteMsgLater(getSelf, emotedCount * 1000);
 							log("sillyActor finished calling emoteLater()")
 						} else {
-							log("sillyActor[" + self + " has now reacted 5 times, so we're not sending another message")
+							log("sillyActor[" + getSelf + " has now reacted 5 times, so we're not sending another message")
 						}
 						log("sillyActor has finished processing the 'Emote' message, emotedCount is now " + emotedCount)
 						log("This particular invocation of react() is now ending, so control passes back into the actor-system loop construct")
@@ -87,7 +89,7 @@ class  WorkThing extends BasicDebugger {
 		sillyActor
 	}
 	def log(txt: String) {
-		logInfo(txt)
+		getLogger.info(txt)
 	}
 }
 object BehaviorTrial extends BasicDebugger {
@@ -95,7 +97,7 @@ object BehaviorTrial extends BasicDebugger {
 		val tstamp = System.currentTimeMillis();
 		val sec = tstamp / 1000
 		val msec = tstamp - sec * 1000
-		logInfo("T[" + sec % 10000 + "." + msec + "] " + txt)
+		getLogger.info("T[" + sec % 10000 + "." + msec + "] " + txt)
 	}
 
 
@@ -106,14 +108,22 @@ object BehaviorTrial extends BasicDebugger {
 		val wt = new WorkThing;
 		val sa = wt.startSillyActor();
 		log("Started sillyActor=" + sa)
-		org.cogchar.test.assembly.AssemblyTest.main(null);
+		// org.cogchar.test.assembly.AssemblyTest.main(null);
 		log("main() sleeping for 2.5 sec")
 		Thread.sleep(2500)
 		log("main sending to sillyActor")
 		sa ! "Hey, this message is from main(), and I am the boss of you, mr SillyActor"
-		org.cogchar.test.assembly.AssemblyTest.main(null);		
+		// org.cogchar.test.assembly.AssemblyTest.main(null);		
 		log("actThreadingTest() END ------------------- ")
 
 	}
-
+	
+	def main(args: Array[String]) : Unit = {
+		// Must enable "compile" or "provided" scope for Log4J dep in order to compile this code.
+		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		println("Configured Log4J, now running test")
+		actThreadingTest() 
+		println("Test is done")
+	}
 }

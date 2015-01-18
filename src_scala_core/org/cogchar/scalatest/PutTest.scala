@@ -46,21 +46,26 @@ object PutTest extends VarargsLogging {
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		info0("Puttin MDir paths to the PutTest!")
 		
+		// Here we know our legacy actor-instance explicitly, which is not the Akka way.  We are supposed to use the 
+		// Akka factory, which gives us back an ActorRef.  
 		val outPuss = new WritingActor()
-		// Starting amigo right away keeps us in compliance with Akka impl required in Scala 2.11.
+		// Starting outPuss right away keeps us in compliance with Akka impl required in Scala 2.11.
 		// http://docs.scala-lang.org/overviews/core/actors-migration-guide.html
 		// Bullet #4
 		// "Akka actors are automatically started when instantiated. Users will have to reshape their 
 		// system so it starts all the actors right after their instantiation."
+		// 
 		// Also note that it is this first start call which appears to fire up the Actors threading system.
 		// Without it, the program will exit immediately after main() ends.
 		outPuss.start
-		outPuss ! "why not just send a string, eh?"
+		outPuss ! "why not just send a string, eh?"  // This comes through as a Reactor
 		outPuss ! 25
 		outPuss ! PTMsg("text inside a nice little PTMsg case class")
-		outPuss ! StopMsg()
+		outPuss ! StopMsg() // Sending this allows the actors framework to shutdown, too, so the program can exit.
 		outPuss ! PTMsg("Since the target WritingActor was already told to stop, this message will never be processed")
 		outPuss ! PTMsg("Nor will this one")
+		// Program will now exit, unless the StopMsg line above is commented out.
+		info0("Main is done, program should exit soon")
 	}
 }
 case class PTMsg(txt : String)
@@ -73,25 +78,35 @@ case class StopMsg()
 class WritingActor  extends scala.actors.Actor with VarargsLogging {
 	override  def act : Unit = {
 		var myDoneFlag : Boolean = false
-		// Loop and process messages
-		val selfThing = "[self undefined in legacy Actors]"
+
+		// self is a method on the companion object
+		def getSelf = scala.actors.Actor.self
+		// val selfThing = "[self undefined in legacy Actors]"
+		// Loop and process messages until we
 		while (!myDoneFlag) {
-			info2("WritingActor at top of loop for {} which is {}", selfThing, this)
+			info2("WritingActor at top of loop for {} which is {}", getSelf, this)
+			// Blocking "receive" call uses scala actors runtime to wait for a message for this actor, which is
+			// then passed to the anonymous-partial-function contents of the block.
 			receive {
-				// Blocking "receive" call uses scala actors runtime to wait for a message for this actor.
 				case ptmsg : PTMsg => { 
 					info1("WritingActor got nice PTMsg: [{}]", ptmsg)
 				}
 				case stopMsg : StopMsg => {
 					info2("WritingActor got StopMsg {}, setting myDoneFlag for {}", stopMsg, this)
 					myDoneFlag = true
-				} 
+				}
+				case strngMsg : String => {
+					info1("Got a string message, and explicitly matched it as: {}", strngMsg)	
+				}
+				// Best practice in production actors code is usually *not* to handle the wildcard case, so that
+				// frameworks (e.g. Akka EventBus) can do something with the 'unhandled'.  However we are currently 
+				// handling it here, naively.
 				case other => {
 					info1("WritingActor got other message: {}, absorbing it (rather than leaving 'unhandled')", other)
 				}
 			}
 		}
-		info2("WritingActor's work is done - exiting act() method for {} which is {}", selfThing, this)
+		info2("WritingActor's work is done - exiting act() method for {} which is {}", getSelf, this)
     }
 	
 }
