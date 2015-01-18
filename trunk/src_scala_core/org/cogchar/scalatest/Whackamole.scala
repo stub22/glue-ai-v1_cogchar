@@ -28,6 +28,7 @@ import org.appdapter.trigger.bind.jena.{FullBox, FullTrigger, TriggerImpl}
 import org.cogchar.platform.trigger.{CogcharActionTrigger, CogcharScreenBox}
 
 /**
+ *  Experimental debugging GUI.
  *	Designed to work with or without OSGi context.
  * @author Stu B. <www.texpedient.com>
  */
