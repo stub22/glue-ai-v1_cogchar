@@ -19,6 +19,21 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 #################################################################
 #
+#    Annotation properties
+#
+#################################################################
+
+
+###  http://www.w3.org/2002/07/owl#maxCardinality
+
+owl:maxCardinality rdf:type owl:AnnotationProperty .
+
+
+
+
+
+#################################################################
+#
 #    Object Properties
 #
 #################################################################
@@ -173,6 +188,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 :isDescendedFromGP rdf:type owl:ObjectProperty ,
                             owl:TransitiveProperty ;
                    
+                   rdfs:comment "Does this mean our contents were sourced from the referent?  Or " ;
+                   
                    rdfs:domain :GraphPointer ;
                    
                    rdfs:range :GraphPointer ;
@@ -194,6 +211,9 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#pointsToGraphHost
 
 :pointsToGraphHost rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:comment """Do we expect it to be common that a GraphPointer might have varying values for this property?  Is it intended to represent mutable state?
+""" ;
                    
                    rdfs:range :GraphHost ;
                    
@@ -241,6 +261,8 @@ Thus our tone is more \"helpful metadata\" than \"vital bootstrap\".""" .
 
 :hasGraphNameUri rdf:type owl:DatatypeProperty ,
                           owl:FunctionalProperty ;
+                 
+                 owl:maxCardinality "1" ;
                  
                  rdfs:comment "The name of a graph as used in QuadStores and SPARQL operations." ;
                  
@@ -772,7 +794,7 @@ A Host does not keep GraphPointers to its own graphs, but an inverse query may b
          
          rdfs:subClassOf :MThing ;
          
-         rdfs:comment "An operation in the audit-log of a particular Graph(Pointer)." .
+         rdfs:comment "An operation in the request-queue and eventually audit-log of a particular MDir-aware agent." .
 
 
 
@@ -812,7 +834,7 @@ A Host does not keep GraphPointers to its own graphs, but an inverse query may b
 
 :GraphPointer rdf:type owl:Class ;
               
-              rdfs:subClassOf :PointerToGHost3 ;
+              rdfs:subClassOf :Pointer ;
               
               rdfs:comment """Metadata for a single graph in some GraphHost.
 The actual graph URI (used in QuadStores and SPARQL operations) must be specified using the hasGraphNameUri property, which is usually distinct from the Uri of this pointer.
