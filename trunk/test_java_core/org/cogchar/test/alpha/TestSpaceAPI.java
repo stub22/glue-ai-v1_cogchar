@@ -29,7 +29,7 @@ public class TestSpaceAPI {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		// This scala test object is defined in GridSpace.scala, in this same maven project.
-		org.cogchar.api.space.GridSpaceTest.go();  // compiles and runs fine despite Netbeans highlighter complaint.
+		org.cogchar.api.space.GridSpaceTest.goGoGo();  // compiles and runs fine despite Netbeans highlighter complaint.
 		
 		wozers();
 	}
@@ -39,6 +39,6 @@ public class TestSpaceAPI {
 		theLogger.info("Space description={}", space.describe()); // cellFrom == 1 -> base-1 labelling
 		CellBlock cellBlock = CellRangeFactory.makeBlock2D(3, 5, -1, 6);
 		PosBlock posBlock = space.computePosBlockForCellBlock(cellBlock);
-		theLogger.info("Computed result PosBlock description={}", posBlock.describe());
+		theLogger.info("Computed result PosBlock description[xBlock,yBlock]={}", posBlock.describe());
 	}
 }	
