@@ -173,8 +173,6 @@ case class FunnyTestAct(op : GraphOpWrap[GraphOp])
 case class FunnyTestStep(myPrevSteps : Set[FunnyTestStep], myAct : FunnyTestAct)
  
 
-// case class
-
 // Here is the "old" Scala API summary, which we still rely on as of 2015-Jan.
 // http://docs.scala-lang.org/overviews/core/actors.html
 // We are trying to limit the fanciness of our Actors code, so that it will work with minimal changes under Scala 2.11.
