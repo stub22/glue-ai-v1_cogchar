@@ -60,7 +60,7 @@ public class TrialBalloon extends CogcharPresumedApp {
 		// Start the JME3 Virtual world.
 		tbApp.start();
 		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest");
-		org.cogchar.api.space.GridSpaceTest.go();
+		org.cogchar.api.space.GridSpaceTest.goGoGo();
 		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting config-load test");
 		
 		// app.optLoadConfig();

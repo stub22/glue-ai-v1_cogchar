@@ -227,7 +227,19 @@ The include option may repeated multiple times to include a variety of constants
 							<packageName>org.cogchar.api.owrap.mdir</packageName>
 							<rdfReactorLogfile>target/rdfreactor_metaDir.log</rdfReactorLogfile>
 						</configuration>
-					</execution>					
+					</execution>
+					<execution>
+						<id>circRecipe</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and we are going along with that for now.	-->							
+							<schemaFile>src/main/resources/org/cogchar/onto/CircusRecipe_owl2.n3</schemaFile>
+							<packageName>org.cogchar.api.owrap.crcp</packageName>
+							<rdfReactorLogfile>target/rdfreactor_circRecipe.log</rdfReactorLogfile>
+						</configuration>
+					</execution>												
 				</executions>
 			</plugin>			
 		</plugins>
