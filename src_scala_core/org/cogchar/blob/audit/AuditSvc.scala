@@ -23,9 +23,10 @@ trait AuditSenderSvc {
 
 trait AuditSvcFinder { 
 	def findSenderSvc : AuditSenderSvc
+	def findJobFactory : AuditJobFactory
 }
 
-object AuditSvcGlobalReg {
+class AuditSvcRegImpl {
 	private lazy val myAuditSendActor = new AuditSendActor
 	
 	lazy val	mySenderSvc = new AuditSenderSvc {
@@ -33,11 +34,19 @@ object AuditSvcGlobalReg {
 		override def sendMsg(msg : AuditMsg) : Unit = {
 			myAuditSendActor ! msg
 		}
+
 	}
+	lazy val myJobFactory = new AuditJobFactory
 }
+object AuditSvcGlobalReg extends AuditSvcRegImpl
 // biz classes can extend this to find the default "global" service.
 trait AuditSvcFinderGlobal extends AuditSvcFinder {
 	override def findSenderSvc : AuditSenderSvc = {
 		AuditSvcGlobalReg.mySenderSvc
 	}
+
+	override def findJobFactory : AuditJobFactory = {
+		AuditSvcGlobalReg.myJobFactory
+	}
+
 }
