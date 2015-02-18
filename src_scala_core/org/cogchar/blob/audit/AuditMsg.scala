@@ -16,41 +16,77 @@
 
 package org.cogchar.blob.audit
 
+import org.appdapter.core.name.SerIdent
+import java.io.Serializable
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
-trait AuditUri {	
-}
+// Some AuditMsgs are serializable
 trait AuditMsg {
 	
 }
-class AuditJobAction(myJobUri : AuditUri, myActionUri : AuditUri)  {
-	def getJobUri : AuditUri = myJobUri
-	def getActionUri : AuditUri = myActionUri
-}
-trait AuditJobMsg[PayloadType] extends AuditMsg {
-	def getJobUri : AuditUri
-	def getJobAction : AuditJobAction
-	def getPayload : PayloadType
+// AuditUri is mostly equivalent to Ident.  
+trait AuditUri extends Serializable {
+	def getID : SerIdent
 }
 
-class AuditJobMsgImpl[PayloadType](
-		private val myAction : AuditJobAction, 
+trait AJMsgHeader extends Serializable { 
+	// Machine assigned and mostly meaningless -- random or sequential (which may imply ordering, yeah, but let's
+	// not use that.  Use the timestamps.)
+	def getJobUri : AuditUri
+	// These two kind-URIs refer to app-specific Ontology types, which together allow us receivers to interpret the job.
+	// We provide a starting library of kinds to build on.
+	def getJobKindUri : AuditUri	
+	def getActionKindUri : AuditUri	
+	def getStampJavaMillisec : Long
+
+}
+// Payload may be not-readily-serializable, but can be conveyed to an Actor who will take care of that.
+// The other aspects of the Msg should all be serializable - that's why we put them in a Header type.
+trait AuditJobMsg[PayloadType] extends AuditMsg {
+	def getHeader : AJMsgHeader
+	def getPayload : PayloadType  
+}
+// JobKind will often refer to a circus recipe *type*.
+class AJMsgHeaderNaiveImpl(myJobUri : AuditUri, myJobKindUri : AuditUri, myActionKindUri : AuditUri) extends AJMsgHeader {
+	def getJobUri : AuditUri = myJobUri // Instance URI generated automatically
+	// These kinds are from some app-specific onto, for we provide suggested template patterns.
+	// "Kinds" may be thought of as either types or individuals.
+	def getJobKindUri : AuditUri = myJobKindUri
+	// Points to a subtype *or* individual-of-subtype of CircusActionToken.  
+	def getActionKindUri : AuditUri = myActionKindUri 
+	val	myStampMsec : Long = System.currentTimeMillis
+	override def getStampJavaMillisec : Long = myStampMsec
+}
+class AuditUriNaiveImpl(auditID : SerIdent) extends AuditUri { 
+	override def getID : SerIdent = auditID
+}
+class AJMsgNaiveImpl[PayloadType](
+		private val myHeader : AJMsgHeader, 
 		private val myPayload : PayloadType) extends AuditJobMsg[PayloadType] {
-	override def getJobUri : AuditUri = myAction.getJobUri
-	override def getJobAction : AuditJobAction = myAction
-	override def getPayload : PayloadType = myPayload
+	override def getHeader : AJMsgHeader = myHeader
+	override def getPayload : PayloadType = myPayload	
 }
 
 // Used by Biz classes to write a series of messages related to a "Job" context, which should usually
 // not be kept open for longer than about one second, unless it's for some kind of inherently long
-// operation, such as a remote batch transfer.  The actionUris are drawn from the ___ ontology.  (Circus?).
+// operation, such as a remote batch transfer.  
+// action(Kind)Uris are often drawn from 
+
 trait AuditJobHandle {
-	def getJobUri : AuditUri
-	def makeJobMsg[PayType](jobActionUri : AuditUri, payload : PayType) : AuditJobMsg[PayType] = {
-		val jobAction = new AuditJobAction(getJobUri, jobActionUri)
-		new AuditJobMsgImpl(jobAction, payload)
+	protected def getJobUri : AuditUri
+	protected def getJobKindUri : AuditUri
+	protected def getAuditSvc : AuditSenderSvc
+	private def makeActionMsg[PayType](jobActionKindUri : AuditUri, payload : PayType) : AuditJobMsg[PayType] = {
+		val msgHeader = new AJMsgHeaderNaiveImpl(getJobUri, getJobKindUri, jobActionKindUri)
+		new AJMsgNaiveImpl(msgHeader, payload)
+	}
+	def sendActionMsg[PayType](actionKindUri : AuditUri, payload : PayType) : Unit = {
+		val auditSvc = getAuditSvc
+		val jobMsg = makeActionMsg(actionKindUri, payload)
+		auditSvc.sendMsg(jobMsg)
 	}
 }
 /*
@@ -64,17 +100,17 @@ case class AJA_Exception extends AuditJobAction
 case class AJA_Fail extends AuditJobAction
 */
 // Use this 
-object AuditJobMsgFactory {
+class AuditJobFactory {
 	
-	def makeJobMsg[PayType](jobAction : AuditJobAction, payload : PayType) : AuditJobMsg[PayType] = {
-		new AuditJobMsgImpl(jobAction, payload)
-	}
-
-	def makeJobHandle() : AuditJobHandle = {
-		val jobUri : AuditUri = null // TODO: assign random
+	def makeJobHandle(svc : AuditSenderSvc, jobKindUri : AuditUri) : AuditJobHandle = {
+		val jobUri : AuditUri = null // TODO: assign random or timestamped
 		new AuditJobHandle {
-			override def getJobUri : AuditUri = jobUri
+			override protected def getJobUri : AuditUri = jobUri
+			override protected def getJobKindUri : AuditUri = jobKindUri
+			override protected def getAuditSvc : AuditSenderSvc = svc
+			
 		}
+		
 	}
-//	def makeJobBeginMsg
+	
 }
