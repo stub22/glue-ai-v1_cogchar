@@ -456,6 +456,16 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 #################################################################
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#BrokerPointer
+
+:BrokerPointer rdf:type owl:Class ;
+               
+               rdfs:subClassOf :Pointer ;
+               
+               rdfs:comment "URI that can be used to locate a runtime Broker object by name." .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#ClasspathEntity
 
 :ClasspathEntity rdf:type owl:Class ;
