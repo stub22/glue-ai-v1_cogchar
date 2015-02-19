@@ -296,6 +296,38 @@ Plain URI of the broker instance may be used to find the impl at runtime.""" ;
 
 
 
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#CAT_Howl
+
+:CAT_Howl rdf:type owl:Class ;
+          
+          rdfs:subClassOf :CircusActionToken .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#CAT_LoadAndWire
+
+:CAT_LoadAndWire rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :CircusActionToken .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#CAT_RunOnce
+
+:CAT_RunOnce rdf:type owl:Class ;
+             
+             rdfs:subClassOf :CircusActionToken .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#CircusActionToken
+
+:CircusActionToken rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :RToken .
+
+
+
 ###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#CircusRecipe
 
 :CircusRecipe rdf:type owl:Class ;
@@ -304,7 +336,7 @@ Plain URI of the broker instance may be used to find the impl at runtime.""" ;
               
               rdfs:comment """Circus is an intended corruption of Circuit.  
 
-A Circus is an executable workflow that produces the results of its output components, designated in this recipe by use of :hasOutRecipe.
+A Circus is an executable workflow that produces the results of its output components, designated from this recipe by use of :hasOutRecipe.
 
 """ .
 
@@ -565,6 +597,14 @@ This is *not* normally used as a target for update.""" .
 ###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#RThing
 
 :RThing rdf:type owl:Class .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#RToken
+
+:RToken rdf:type owl:Class ;
+        
+        rdfs:subClassOf :RThing .
 
 
 
