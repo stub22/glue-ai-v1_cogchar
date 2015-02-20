@@ -71,6 +71,8 @@
 						we are going along with that for now, so we must make the jena-schemagen file search compatible.
 						-->
 						<include>src/main/resources/org/cogchar/onto/*_owl2.n3</include>
+						<!-- Individuals used in tests.  Other apps may use a similar pattern to bind features to names. -->
+						<include>src/main/resources/org/cogchar/onto_indiv/*_owl2.ttl</include>
 					</includes>
 					<fileOptions>
 						<source>
@@ -91,34 +93,35 @@ but to get the actual option name, we have to look in Jena code, such as here:
 							<ontology>true</ontology>
 							<!-- no-strict prevents strict checking of ___ which if left on causes build error ____ -->
 							<no-strict>true</no-strict>
-							<!-- Sure, we like inference, although it's probably not needed in this task,
-								but it makes the serialized model larger.  If we want to use include-source,
+							<!-- Sure, we like inference, but it's generally not needed in this task,
+								and it makes the serialized model larger.  If we want to use include-source,
 								below, this can lead to the full-model java String constant being too long,
 								and not compiling.
 							--> 
 							<use-inf>false</use-inf>
 							<!-- uc-names makes the constants be UPPER_CASE_STYLE instead of cCamelCaseStyle -->
 							<uc-names>true</uc-names>
-							<!-- Serializes the source code of the vocabulary, and 
+							<!-- If "true", serializes the source code of the vocabulary, and 
 							includes this into the generated class file. At class load time, creates a Model 
-							containing the definitions from the source
+							containing the definitions from the source.  Fun, but not strictly necessary, and
+							makes the generated source+class files bigger.
 							-->
-							<include-source>true</include-source>
+							<include-source>false</include-source>
 						</source>
 						<source>
-							<!-- Example of properties applied to just one file, but a bogus one that we 
-							aren't even using (because this dummy file path is not part of an "include" spec
-							above
+							<!-- Properties applying only to the sample indivs 
 							-->
-							<input>src/dummy/unused.ttl</input>
-							<ontology>true</ontology>
+							<input>src/main/resources/org/cogchar/onto_indiv/bootSample_2015Q1_owl2.ttl</input>
+							<package-name>org.cogchar.gen.indiv</package-name>
+							<output>${project.build.directory}/generated-sources/jena-vocab</output>
 						</source>
 						<source>
 							<!-- Properties applying only to the BehavScene onto.
 							-->
-							<input>src/main/resources/org/cogchar/onto/BehavScene_owl2.ttl</input>
+							<input>src/main/resources/org/cogchar/onto/BehavScene_owl2.n3</input>
+							<package-name>org.cogchar.gen.bs</package-name>
 							<!-- The output option seems to not propagate from the default setting above -->
-							<output>${project.build.directory}/generated-sources/java</output>
+							<output>${project.build.directory}/generated-sources/jena-vocab</output>
 							<ontology>true</ontology>
 <!--
 In version 0.5 - include seems to work for one additional namespace, but not when specified multiple times.
@@ -126,11 +129,11 @@ Perhaps it works when specified in config file?
 
 The include option may repeated multiple times to include a variety of constants from other namespaces in the output class.
 
-							Since OWL and RDFS ontologies may include individuals that are named instances of declared classes, schemagen 
-							will include individuals among the constants that it generates in Java. By default, an individual will be included if 
-							its class has a URI that is in one of the permitted namespaces for the vocabulary, even if the individual itself is not 
-							in that namespace. If the option strictIndividuals is set, individuals are only included if they have a URI that is in 
-							the permitted namespaces for the vocabulary.
+Since OWL and RDFS ontologies may include individuals that are named instances of declared classes, schemagen 
+will include individuals among the constants that it generates in Java. By default, an individual will be included if 
+its class has a URI that is in one of the permitted namespaces for the vocabulary, even if the individual itself is not 
+in that namespace. If the option strictIndividuals is set, individuals are only included if they have a URI that is in 
+the permitted namespaces for the vocabulary.
 							-->							
 							<include>urn:ftd:cogchar.org:2012:runtime#</include>
 							<!--  Here is an example of a second extra NS that we might like to include, but can't:
