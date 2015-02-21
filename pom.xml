@@ -64,8 +64,8 @@ Version-less parent will be allowed in Maven 3.1.
 		<appdapter.msg.version>1.0.5</appdapter.msg.version>
 		<appdapter.jscience.version>1.0.9</appdapter.jscience.version>
 
-		<appdapter.version>1.2.3-SNAPSHOT</appdapter.version>
-		<jflux.version>0.2.4-SNAPSHOT</jflux.version>
+		<appdapter.version>1.2.3</appdapter.version>
+		<jflux.version>0.2.4</jflux.version>
 		<mechio.version>1.0.5-SNAPSHOT</mechio.version>
 
 		<!-- Non Glue Dependencies -->
