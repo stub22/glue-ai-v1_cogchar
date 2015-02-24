@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.1.2</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>
+
+    <artifactId>org.cogchar.bundle.temp.wire</artifactId>
+	
+    <name>${project.artifactId} - captures untainted PUMA stuff</name>	
+	
+	<!-- Does depend on:
+			o.c.b.core = {core.impl, api.animoid, api.vworld, api.web}
+			o.c.b.bind.mechio
+			
+		Does not depend on:
+			o.c.b.app.PUMA
+			o.c.b.bundle.render.*
+			o.c.b.lift
+	-->
+	
+    <packaging>bundle</packaging>
+
+
+    <dependencies>
+        <dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.bundle.bind.mechio</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+        <dependency>
+            <groupId>org.jflux</groupId>
+            <artifactId>org.jflux.impl.registry.osgi</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>org.cogchar.bundle.temp.wire.Activator</Bundle-Activator>
+                        <Export-Package>org.cogchar.bundle.temp.wire</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

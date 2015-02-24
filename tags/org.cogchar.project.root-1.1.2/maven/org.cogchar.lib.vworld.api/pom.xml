@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.1.2</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>	
+	<name>org.cogchar.lib.vworld.api - POJO</name>
+
+	<artifactId>org.cogchar.lib.vworld.api</artifactId>
+	<packaging>jar</packaging>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.lib.core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.onto</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.core.api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.cogchar.lib.core.impl</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- This baby works properly with JUnit-4 annotations, and default Surefire config.
+			Without this dep, Surefire (default version = ?)  thinks we are in Junit-3 mode.
+			which does not recognize the @Test method annotations, so we get 
+			"Running org.cogchar.test.hedspc.api.Junit4StyleTest
+			Tests run: 0,"
+			
+			However, even with this dep, at runtime we always see "junit version: 4.6".
+			Stu:  Thought maybe it said "4.11" one time, but can't find my way back to that place.
+			I guess Surefire is private-packaging its own version(s) of JUnit, but is using our dependency as just
+			the clue to whether we are using 3.x, 4.{0-6}, or 4.7+ = "parallel".
+			
+			Adding to the excitement, when this Junit4 style works, then JUnit3 tests also work, but
+			POJO-style tests are not* invoked.
+			
+		-->		
+		<!--
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		-->
+		<!-- Surefire doesn't see this version (and so Junit-4 tests don't get executed, unless we set junitArtifactName 
+			in surefire config...and even then, not sure it works.  
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.junit</artifactId>
+			<version>4.11_2</version>
+			<scope>test</scope>
+        </dependency>
+		-->
+		
+	</dependencies>
+</project>
