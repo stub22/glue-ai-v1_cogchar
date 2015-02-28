@@ -528,11 +528,29 @@ in either of the crucial positions discussed in mdir:GraphPointer.
 
 
 
-###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#MR_SparqlSelect
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#MR_CircusResultRows
 
-:MR_SparqlSelect rdf:type owl:Class ;
-                 
-                 rdfs:subClassOf :MatrixRecipe .
+:MR_CircusResultRows rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :MR_DenseRegularColumns .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#MR_DenseRegularColumns
+
+:MR_DenseRegularColumns rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :MatrixRecipe ;
+                        
+                        rdfs:comment "A matrix with regular column structure, which determines the types (and name-keys) of output values.  The matrix data may often be delievered incrementally in rows.  This type is compatible with a SPARQL or SQL result rowset.   Output values types are generally constant in each column, across the rows.  However the types in the columns (often defined by separate column sub-recipes, as in the case of a MR_CircusResultRows) may be quite different from each other - e.g. they may produce in each output row an assortment of literals, URIs, graphs, queryGraphSets, more matrices, or even entire circuses!" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#MR_SparqlSelectRows
+
+:MR_SparqlSelectRows rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :MR_DenseRegularColumns .
 
 
 
