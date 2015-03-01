@@ -126,9 +126,9 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 :hasParentHost rdf:type owl:FunctionalProperty ,
                         owl:ObjectProperty ;
                
-               rdfs:domain :GraphHost ;
-               
                rdfs:range :GraphHost ;
+               
+               rdfs:domain :GraphHost ;
                
                rdfs:subPropertyOf :mObjProp .
 
@@ -190,9 +190,9 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
                    
                    rdfs:comment "Does this mean our contents were sourced from the referent?  Or " ;
                    
-                   rdfs:domain :GraphPointer ;
-                   
                    rdfs:range :GraphPointer ;
+                   
+                   rdfs:domain :GraphPointer ;
                    
                    rdfs:subPropertyOf :mObjProp .
 
@@ -202,9 +202,9 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 
 :mObjProp rdf:type owl:ObjectProperty ;
           
-          rdfs:range :MThing ;
+          rdfs:domain :MThing ;
           
-          rdfs:domain :MThing .
+          rdfs:range :MThing .
 
 
 
@@ -262,9 +262,9 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 :hasGraphNameUri rdf:type owl:DatatypeProperty ,
                           owl:FunctionalProperty ;
                  
-                 owl:maxCardinality "1" ;
-                 
                  rdfs:comment "The name of a graph as used in QuadStores and SPARQL operations." ;
+                 
+                 owl:maxCardinality "1" ;
                  
                  rdfs:domain :GraphPointer ;
                  
@@ -490,6 +490,26 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 
 
 
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3P_InQuadstore
+
+:GH3P_InQuadstore rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :GraphHost3Parsed ;
+                  
+                  rdfs:comment "We expect :hasParentHost4Quads to point at a live (i.e. parsed, not serial=folder) QuadStore, which might be in-memory, in a local file DB, or in a remote server." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3P_MemoryIndep
+
+:GH3P_MemoryIndep rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :GraphHost3Parsed ;
+                  
+                  rdfs:comment "An in-memory standalone graph, which is *not* part of any quad-store." .
+
+
+
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3S_CSV
 
 :GH3S_CSV rdf:type owl:Class ;
@@ -502,9 +522,27 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 
 :GH3S_N3 rdf:type owl:Class ;
          
-         rdfs:subClassOf :GraphHost3Serial ;
+         rdfs:subClassOf :GH3S_RDF ;
          
          rdfs:comment "Includes both N3 and Turtle" .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3S_RDF
+
+:GH3S_RDF rdf:type owl:Class ;
+          
+          rdfs:subClassOf :GraphHost3Serial ;
+          
+          rdfs:comment "Serialized triples in a directly-RDF-compatible form, i.e. the forms directly readable with a typical RDF parser such as N3 and RDF/XML." .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GH3S_RDF_XML
+
+:GH3S_RDF_XML rdf:type owl:Class ;
+              
+              rdfs:subClassOf :GH3S_RDF .
 
 
 
@@ -706,7 +744,19 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
            
            rdfs:comment """Either a dataset (=quadstore) or a \"standalone\" (=triplestore) graph model or file (of whatvever kind, in-mem or N3 file) is a host.   However, a dataset host does not \"contain\" little hosts inside it for each graph.  If you make a copy of that graph outside the dataset (e.g. as a \"checkout\"), now you have a new GraphHost.
 
-A Host does not keep GraphPointers to its own graphs, but an inverse query may be used to find all GraphPointers that refer to a particular host.""" .
+A Host does not keep GraphPointers to its own graphs, but an inverse query (in the indexing graphs containing instances of this mdir ontology) may be used to find all GraphPointers that refer to a particular host (within that index).
+""" .
+
+
+
+###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#GraphHost3Parsed
+
+:GraphHost3Parsed rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :GraphHost3Triples ;
+                  
+                  rdfs:comment """A triple container that contains parsed RDF, thus accessible through RDF APIs.  
+""" .
 
 
 
