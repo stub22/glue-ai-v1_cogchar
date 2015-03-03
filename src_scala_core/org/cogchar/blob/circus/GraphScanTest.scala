@@ -34,6 +34,10 @@ import java.io.File
 /**
  * This code (along with rest of circus package) will probably be promoted to Appdapter eventually, but it is
  * easier for now to prototype with it in the Cogchar layer of Glue.AI.  It is not Cogchar feature-specific.
+ * 
+ * TODO:  We would like to make this scanning work for folders in an OSGi-bundle as well, but that will
+ * require us to use Bundle.findEntries (returns iterator of URLs) or Bundle.getEntryPaths (iterator of Strings).
+ * We may want to create a Folder interface that allows us to treat bundles and filesystems symmetrically.
  */
 
 object GraphScanTest extends VarargsLogging {
@@ -71,15 +75,26 @@ object GraphScanTest extends VarargsLogging {
 	}
 	// This could in some cases be a lot of pathnames, and thus the collection of names could be large.
 	// User should ensure that either the folder or the filterFunc is sufficiently narrow to prevent over-match.
-	def deepSearchMatchingReadablePlainFiles(filt : Function1[File, Boolean]) : Set[File] = {
-		Set()
+	def deepSearchMatchingReadablePlainFiles(folder : File, filt : Function1[File, Boolean]) : Set[File] = {
+		val matchingPlainFilesHere : Set[File] = findReadablePlainFilesInFolder(folder).filter(filt)
+		val subFolders : Set[File] = findReadableSubFoldersInFolder(folder)
+		val matchingSubFiles : Set[File] = subFolders.flatMap(deepSearchMatchingReadablePlainFiles(_, filt))
+		matchingPlainFilesHere ++ matchingSubFiles
 	}
-	
+	private def firstMatchingSuffix(f : File, suffixes : Seq[String]) : Option[String] = {
+		val fileName = f.getName
+		suffixes.find(fileName.endsWith(_))
+	}
 	def deepSearchReadablePlainFilesWithSuffixes(folder : File, suffixes : Set[String]) : Set[File] =  {
-		Set()
+		val suffixSeq = suffixes.toSeq
+		val filterFunc  = new Function1[File, Boolean] {
+			def apply(f : File) : Boolean = firstMatchingSuffix(f, suffixSeq).isDefined
+		}
+		deepSearchMatchingReadablePlainFiles(folder, filterFunc)
 	}
 	def deepSearchReadableGraphTripleFiles(folder : File) : Set[File] = {
-		Set()
+		val suffixes = Set(".ttl", ".n3")
+		deepSearchReadablePlainFilesWithSuffixes(folder, suffixes)
 	}
 	// Return number of index records created.
 	def makeGHostRecordsForDeepFolderOfTripleFiles(r2goModel : rdf2go.model.Model, deepFolder : File) : Int = {
