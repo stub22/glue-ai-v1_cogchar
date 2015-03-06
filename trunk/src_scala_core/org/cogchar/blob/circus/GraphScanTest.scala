@@ -45,8 +45,9 @@ object GraphScanTest extends VarargsLogging {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		info0("Starting GraphScanTest")
+		
+		
 	}
-	// Plain => not a sub-folder
 	// We return Set because there is no ordering assumed on the returned collection.
 	// Regarding equality of members within this set, we note the following about the File.equals() method:
 	// http://docs.oracle.com/javase/7/docs/api/java/io/File.html#equals(java.lang.Object)
@@ -54,47 +55,13 @@ object GraphScanTest extends VarargsLogging {
 	// not null and is an abstract pathname that denotes the same file or directory as this abstract pathname. 
 	// Whether or not two abstract pathnames are equal depends upon the underlying system. On UNIX systems, 
 	// alphabetic case is significant in comparing pathnames; on Microsoft Windows systems it is not."
-	def findReadablePlainFilesInFolder(folder : File) : Set[File] = {
-		if(folder.exists && folder.isDirectory && folder.canRead) {
-			val allFiles : Array[File] = folder.listFiles
-			val readablePlainFiles : Array[File] = allFiles.filter(p => { p.isFile && p.canRead })	
-			readablePlainFiles.toSet
-		} else {
-			Set[File]()
-		}
-	}
-	def findReadableSubFoldersInFolder(folder : File) : Set[File] = {
-		if(folder.exists && folder.isDirectory && folder.canRead) {
-			val allFiles : Array[File] = folder.listFiles
-			val readableFolders : Array[File] = allFiles.filter(p => { p.isDirectory && p.canRead })
-			readableFolders.toSet
-		} else {
-			Set[File]()
-			
-		}
-	}
+
 	// This could in some cases be a lot of pathnames, and thus the collection of names could be large.
 	// User should ensure that either the folder or the filterFunc is sufficiently narrow to prevent over-match.
-	def deepSearchMatchingReadablePlainFiles(folder : File, filt : Function1[File, Boolean]) : Set[File] = {
-		val matchingPlainFilesHere : Set[File] = findReadablePlainFilesInFolder(folder).filter(filt)
-		val subFolders : Set[File] = findReadableSubFoldersInFolder(folder)
-		val matchingSubFiles : Set[File] = subFolders.flatMap(deepSearchMatchingReadablePlainFiles(_, filt))
-		matchingPlainFilesHere ++ matchingSubFiles
-	}
-	private def firstMatchingSuffix(f : File, suffixes : Seq[String]) : Option[String] = {
-		val fileName = f.getName
-		suffixes.find(fileName.endsWith(_))
-	}
-	def deepSearchReadablePlainFilesWithSuffixes(folder : File, suffixes : Set[String]) : Set[File] =  {
-		val suffixSeq = suffixes.toSeq
-		val filterFunc  = new Function1[File, Boolean] {
-			def apply(f : File) : Boolean = firstMatchingSuffix(f, suffixSeq).isDefined
-		}
-		deepSearchMatchingReadablePlainFiles(folder, filterFunc)
-	}
 	def deepSearchReadableGraphTripleFiles(folder : File) : Set[File] = {
+		val deh = new org.cogchar.blob.entry.DiskEntryHost()
 		val suffixes = Set(".ttl", ".n3")
-		deepSearchReadablePlainFilesWithSuffixes(folder, suffixes)
+		deh.deepSearchReadablePlainFilesWithSuffixes(folder, suffixes)
 	}
 	// Return number of index records created.
 	def makeGHostRecordsForDeepFolderOfTripleFiles(r2goModel : rdf2go.model.Model, deepFolder : File) : Int = {
