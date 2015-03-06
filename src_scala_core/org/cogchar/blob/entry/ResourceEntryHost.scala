@@ -54,9 +54,7 @@ class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) w
 			Set()
 		}
 	}
-	// Note these 2 different function-arg type syntaxes are equivalent
-	// override def searchDirectPlainEntries(filt: PlainEntry => Boolean): Set[PlainEntry] = ??? // recurse = false
-	// override def searchDeepPlainEntries(filt: Function1[PlainEntry,Boolean]): Set[PlainEntry] = ???  // recurse = true	
+
 }
 class ResourceEntryHost(refClz : java.lang.Class[_]) extends EntryHost {
 	// refClz : java.lang.Class[_], resPath : String
