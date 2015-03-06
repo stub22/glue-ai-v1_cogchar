@@ -122,8 +122,9 @@ object GraphScanTest extends VarargsLogging {
 		
 		// TODO -- make the appropriate subtype for the given file extension.  Possibly also taste the files contents
 		// to be more sure.
-		// This constructor form creates a random URI.
+		// This constructor form creates a random record-instance URI.
 		val gh3sHandle = new GraphHost3Serial(r2goModel, true)
+		// Store the physical graph URL into the index model.
 		gh3sHandle.setUrlText(fileURL.toString)
 		gh3sHandle
 	}
