@@ -32,9 +32,7 @@ class DiskEntry(someFile : File) extends Entry {
 class DiskFolderEntry (diskFolder : File) extends DiskEntry(diskFolder) with FolderEntry {
 	override def findDirectPlainEntries: Traversable[PlainEntry] = ???
 	override def findDirectSubFolders: Traversable[FolderEntry] = ???
-//	override def searchDirectPlainEntries(filt: Function1[PlainEntry,Boolean]): Set[PlainEntry] = ??? // recurse = false
-//	override def searchDeepPlainEntries(filt: Function1[PlainEntry,Boolean]): Set[PlainEntry] = ???  // recurse = true
-	
+	// Basic search forms are implemented in base trait.	
 }
 class DiskPlainEntry(diskFile : File) extends DiskEntry(diskFile) with PlainEntry {
 	// We *could* offer size information, mod-stamp, and other.

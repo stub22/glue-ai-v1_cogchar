@@ -56,14 +56,28 @@ trait FolderEntry extends Entry {
 	def searchDirectPlainEntries(filt : Function1[PlainEntry, Boolean]) : Set[PlainEntry] = {
 		findDirectPlainEntries.filter(filt).toSet
 	}
-	// TODO: 
-	def searchDeepPlainEntries(filt : Function1[PlainEntry, Boolean]) : Set[PlainEntry] = {
+
+	def searchDeepPlainEntries(filt : Function1[PlainEntry, Boolean], maxResultCount : Int) : Set[PlainEntry] = {
 		val matchedDirectPEnts : Set[PlainEntry] = searchDirectPlainEntries(filt)
 		val subFolders : Traversable[FolderEntry] = findDirectSubFolders
-		val matchedDeepPEnts : Set[PlainEntry] = subFolders.flatMap(_.searchDeepPlainEntries(filt)).toSet
-		matchedDirectPEnts ++ matchedDeepPEnts
+		// TODO: adjust this value properly at each step through the loop; as-is we may overshoot.
+		val subResultMax = maxResultCount - matchedDirectPEnts.size
+		val matchedDeepPEnts : Set[PlainEntry] = subFolders.flatMap(_.searchDeepPlainEntries(filt, subResultMax)).toSet
+		(matchedDirectPEnts ++ matchedDeepPEnts).take(maxResultCount)
+	}
+	private def firstMatchingSuffix(pe : PlainEntry, suffixes : Seq[String]) : Option[String] = {
+		val locUriTxt : String  = pe.getJavaURI.toString
+		suffixes.find(locUriTxt.endsWith(_))
 	}
 		
+	def searchDeepPlainEntriesBySuffix(suffixes : Set[String], maxResultCount : Int) : Set[PlainEntry] =  {
+		val suffixSeq = suffixes.toSeq
+		val filterFunc  = new Function1[PlainEntry, Boolean] {
+			def apply(pe : PlainEntry) : Boolean = firstMatchingSuffix(pe, suffixSeq).isDefined
+		}
+		searchDeepPlainEntries(filterFunc, maxResultCount)
+	}
+
 
 }
 
