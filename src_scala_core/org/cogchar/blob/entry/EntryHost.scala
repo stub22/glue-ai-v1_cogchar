@@ -103,20 +103,6 @@ trait EntryHost {
 	def findPlainEntry(locUri : java.net.URI) : Option[PlainEntry]
 }
 
-// These can be provided from main(), or an injected service (OSGi/JFlux).
-// Knows about some ordered sequence of hosts to query.
-
-trait EntryHostFinder {
-	def findEntryHostsInOrder : Seq[EntryHost]
-	
-	def findFirstMatchingPlainEntry(locUri : java.net.URI) : Option[PlainEntry]
-	def findFirstMatchingFolderEntry(locUri : java.net.URI) : Option[FolderEntry]
-	
-	def findAllMatchingPlainEntries(locUri : java.net.URI) : Set[FolderEntry]
-	def findAllMatchingFolderEntries(locUri : java.net.URI) : Set[FolderEntry]
-	
-	def searchAllPlainEntriesBySuffix(locUri : java.net.URI, suffixes : Set[String], deepSearch : Boolean, maxResultCount : Int):  Set[PlainEntry]
-}
 
 /*
  *  *  
