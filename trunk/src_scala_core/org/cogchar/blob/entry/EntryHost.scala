@@ -30,33 +30,42 @@ import java.io.File
 
 // An EntryHost can find entries, which are known primarily by URI.
 // Each entry is either PlainEntry or FolderEntry.
+// "Plain" => not a sub-folder.
+// Entries within a folder are "direct", while recursive sub-folder contents are "deep" (and dangerous!). 
+// Our two primary verbs are defined to be:
+// 
+// "find" -> could be filtered or unfiltered, direct or deep.   Often (so far) naive about result sizes.
+// "search" -> filtered in some way (predicates, suffixes), often deep, includes result-size limits. 
+//  
+//  We expect all result entries to reflect readable files/resources/folders.  
+// If a file/resource/folder exists but is not accessible, it shouldn't be returned.
+
 trait Entry {
 	def getJavaURI : java.net.URI 
 	def getJavaURL : java.net.URL = getJavaURI.toURL  // See Java platform comments at bottom.
 }
-// Plain => not a sub-folder
+
 trait PlainEntry extends Entry {
 	// So far is just a marker type.
 }
 // Here we have an abstract Folder for *read* only.  
 trait FolderEntry extends Entry {
-	// We return weak collections in form of Traversable.
-	// Implied:  We accept results to be "readable".  If a file exists but is not accessible, it shouldn't be returned.
-	// 
-	// Entries within this folder are "direct", sub contents are "deep" (and dangerous!). 
+	// We return weak collections in form of Traversable, which *could* be lazy in an advanced implementation.
+	// http://www.scala-lang.org/api/2.10.3/index.html#scala.collection.Traversable
+	
 	def findDirectPlainEntries : Traversable[PlainEntry]
 	def findDirectSubFolders : Traversable[FolderEntry]
-	// Q:  Do we want findDeepSubFolders?
+	// Q:  Do we want findDeepSubFolders?  A: Yes, but only in size-limited form.
 	
-	// Beware naive unqualified deep search!   
-	protected def findDeepPlainEntries :  Traversable[PlainEntry] = {
+	// Beware - naive unqualified deep search!   If you call this on a big tree, it's gonna hurt, yo.
+	@Deprecated protected def findDeepPlainEntries :  Traversable[PlainEntry] = {
 		findDirectPlainEntries ++ findDirectSubFolders.flatMap(_.findDeepPlainEntries)
 	}
-	
+	// Search direct with arbitrary predicate filter.
 	def searchDirectPlainEntries(filt : Function1[PlainEntry, Boolean]) : Set[PlainEntry] = {
 		findDirectPlainEntries.filter(filt).toSet
 	}
-
+	// Beware:  We have a maxResultcount but it's implementation is a weak approximation.
 	def searchDeepPlainEntries(filt : Function1[PlainEntry, Boolean], maxResultCount : Int) : Set[PlainEntry] = {
 		val matchedDirectPEnts : Set[PlainEntry] = searchDirectPlainEntries(filt)
 		val subFolders : Traversable[FolderEntry] = findDirectSubFolders
@@ -72,6 +81,8 @@ trait FolderEntry extends Entry {
 		
 	def searchDeepPlainEntriesBySuffix(suffixes : Set[String], maxResultCount : Int) : Set[PlainEntry] =  {
 		val suffixSeq = suffixes.toSeq
+		// Here is one of the longer, clearer ways of writing out what a Scala "function" is doing.
+		// This can also be written in 99-Zillion forms of shorthand.
 		val filterFunc  = new Function1[PlainEntry, Boolean] {
 			def apply(pe : PlainEntry) : Boolean = firstMatchingSuffix(pe, suffixSeq).isDefined
 		}
