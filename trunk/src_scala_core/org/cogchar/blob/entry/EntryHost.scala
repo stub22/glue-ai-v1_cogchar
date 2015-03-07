@@ -80,10 +80,42 @@ trait FolderEntry extends Entry {
 
 
 }
+// EntryHost is a mechanism for finding physical paths to be indexed, and not a tool for 
+// searching data contents, nor for writing data.
+
+// EntryHost is a gateway into a bundle, a read-only filesystem, a classpath-space, or similar fast local data resource.
+// Handles for these are typically registered with some EntryHostFinder.
+// 
+// It would *not* make much sense to add caching or indexing to these "Entry" mechanisms.
+// 
+// If we were going to read a remote web folder, then it should already supply an index graph for us.  
+// We should not need to scan it with this kind of folder-iteration code, and we note that if we did, it would be slow.
+// So we choose to *not* do that through this API.  Fast local resources only!
+// 
+// Current implementing types are:
+// 
+//		BundleEntryHost
+//		DiskEntryHost
+//		ResourceEntryHost
 
 trait EntryHost {
-	def findFolderEntry(uriLoc : java.net.URI) : Option[FolderEntry]
-	def findPlainEntry(uriLoc : java.net.URI) : Option[PlainEntry]
+	def findFolderEntry(locUri : java.net.URI) : Option[FolderEntry]
+	def findPlainEntry(locUri : java.net.URI) : Option[PlainEntry]
+}
+
+// These can be provided from main(), or an injected service (OSGi/JFlux).
+// Knows about some ordered sequence of hosts to query.
+
+trait EntryHostFinder {
+	def findEntryHostsInOrder : Seq[EntryHost]
+	
+	def findFirstMatchingPlainEntry(locUri : java.net.URI) : Option[PlainEntry]
+	def findFirstMatchingFolderEntry(locUri : java.net.URI) : Option[FolderEntry]
+	
+	def findAllMatchingPlainEntries(locUri : java.net.URI) : Set[FolderEntry]
+	def findAllMatchingFolderEntries(locUri : java.net.URI) : Set[FolderEntry]
+	
+	def searchAllPlainEntriesBySuffix(locUri : java.net.URI, suffixes : Set[String], deepSearch : Boolean, maxResultCount : Int):  Set[PlainEntry]
 }
 
 /*
