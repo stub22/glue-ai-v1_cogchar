@@ -96,13 +96,4 @@ object GraphScanTest extends VarargsLogging {
 		gh3sHandle
 	}
 	
-	
-	// length : long, lastModified : long
-	// toURI : URI      Constructs a file: URI that represents this abstract pathname.
-	// isAbsolute() -- Tests whether this abstract pathname is absolute.
-	// File	getCanonicalFile()- 	Returns the canonical form of this abstract pathname.
-	// String	getCanonicalPath() Returns the canonical pathname string of this abstract pathname.
-	// String	getName()  -- Returns the name of the file or directory denoted by this abstract pathname.
-	// Path		toPath() -- Returns a java.nio.file.Path object constructed from the this abstract path.
-	// String	toString()  -- Returns the pathname string of this abstract pathname.	
 }

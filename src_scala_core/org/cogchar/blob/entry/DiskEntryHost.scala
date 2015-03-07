@@ -25,8 +25,20 @@ import java.io.File
 class DiskEntry(someFile : File) extends Entry {
 	// Often it is file: form of URL, but not always.
 	override def getJavaURI : java.net.URI = someFile.toURI 
+	
+	// Methods supported by java.io.File
+	// --------------------------------
+	// length : long, lastModified : long
+	// toURI : URI      Constructs a file: URI that represents this abstract pathname.
+	// isAbsolute() -- Tests whether this abstract pathname is absolute.
+	// File	getCanonicalFile()- 	Returns the canonical form of this abstract pathname.
+	// String	getCanonicalPath() Returns the canonical pathname string of this abstract pathname.
+	// String	getName()  -- Returns the name of the file or directory denoted by this abstract pathname.
+	// Path		toPath() -- Returns a java.nio.file.Path object constructed from the this abstract path.
+	// String	toString()  -- Returns the pathname string of this abstract pathname.	
+	
 }
-// Being able to read from a folder-tree of files on a disk is an important user feature.
+// Being able to read from a folder-tree of files on a disk is an important app-developer's feature.
 // We also think this impl *might* work with some Resource folder structures in JDK7.  
 // See comments in ResourceEntryHost.scala.
 class DiskFolderEntry (diskFolder : File) extends DiskEntry(diskFolder) with FolderEntry {
