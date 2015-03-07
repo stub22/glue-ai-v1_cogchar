@@ -30,12 +30,12 @@ trait EntryHostFinder {
 	// Generally these were registered by some impl-specific means.
 	def findEntryHostsInOrder : Seq[EntryHost]
 	
-	def findFirstMatchingPlainEntry(locUri : java.net.URI) : Option[PlainEntry]
-	def findFirstMatchingFolderEntry(locUri : java.net.URI) : Option[FolderEntry]
+	def findFirstMatchingPlainEntry(path : String) : Option[PlainEntry]
+	def findFirstMatchingFolderEntry(path : String) : Option[FolderEntry]
 	
-	def findAllMatchingPlainEntries(locUri : java.net.URI) : Set[FolderEntry]
-	def findAllMatchingFolderEntries(locUri : java.net.URI) : Set[FolderEntry]
+	def findAllMatchingPlainEntries(path : String) : Set[FolderEntry]
+	def findAllMatchingFolderEntries(path : String) : Set[FolderEntry]
 	
-	def searchAllPlainEntriesBySuffix(locUri : java.net.URI, suffixes : Set[String], deepSearch : Boolean, maxResultCount : Int):  Set[PlainEntry]
+	def searchAllPlainEntriesBySuffix(path : String, suffixes : Set[String], deepSearch : Boolean, maxResultCount : Int):  Set[PlainEntry]
 }
 
