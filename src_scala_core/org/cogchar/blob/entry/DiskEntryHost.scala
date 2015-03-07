@@ -51,8 +51,8 @@ class DiskPlainEntry(diskFile : File) extends DiskEntry(diskFile) with PlainEntr
 }
 
 class DiskEntryHost() extends EntryHost { 
-	override def findFolderEntry(uriLoc : java.net.URI) : Option[FolderEntry] = None
-	override def findPlainEntry(uriLoc : java.net.URI) : Option[PlainEntry] = None
+	override def findFolderEntry(path : String) : Option[FolderEntry] = ???
+	override def findPlainEntry(path : String) : Option[PlainEntry] = ???
 
 	// Below are some working methods written before EntryHost absraction was defined.
 	// Refactor and use these guts to implement the DiskFolderEntry above.
