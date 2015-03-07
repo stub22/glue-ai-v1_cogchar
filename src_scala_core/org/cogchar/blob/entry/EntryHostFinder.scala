@@ -30,6 +30,8 @@ trait EntryHostFinder {
 	// Generally these were registered by some impl-specific means.
 	def findEntryHostsInOrder : Seq[EntryHost]
 	
+	// These should be implementable here in the trait, using findEntryHostsInOrder.
+	// We usually expect that the input path can be treated as relative to some implied "root" for each entry host.
 	def findFirstMatchingPlainEntry(path : String) : Option[PlainEntry]
 	def findFirstMatchingFolderEntry(path : String) : Option[FolderEntry]
 	

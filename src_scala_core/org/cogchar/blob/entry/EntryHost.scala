@@ -86,7 +86,8 @@ trait FolderEntry extends Entry {
 // EntryHost is a gateway into a bundle, a read-only filesystem, a classpath-space, or similar fast local data resource.
 // Handles for these are typically registered with some EntryHostFinder.
 // 
-// It would *not* make much sense to add caching or indexing to these "Entry" mechanisms.
+// It would *not* make much sense to add caching or indexing directly to these "Entry" mechanisms.
+// Such features are managed in higher level code, outside of this package.
 // 
 // If we were going to read a remote web folder, then it should already supply an index graph for us.  
 // We should not need to scan it with this kind of folder-iteration code, and we note that if we did, it would be slow.
@@ -99,9 +100,8 @@ trait FolderEntry extends Entry {
 //		ResourceEntryHost
 
 trait EntryHost {
-	// Should these arguments really be URIs, or should they be relative String paths? 
-	// def findFolderEntry(locUri : java.net.URI) : Option[FolderEntry]
-	// def findPlainEntry(locUri : java.net.URI) : Option[PlainEntry]
+
+	// These input paths are relative to some implied "root" or "home" for each EntryHost.
 	def findFolderEntry(path : String) : Option[FolderEntry]
 	def findPlainEntry(path : String) : Option[PlainEntry]
 }
