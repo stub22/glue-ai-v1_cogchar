@@ -99,8 +99,11 @@ trait FolderEntry extends Entry {
 //		ResourceEntryHost
 
 trait EntryHost {
-	def findFolderEntry(locUri : java.net.URI) : Option[FolderEntry]
-	def findPlainEntry(locUri : java.net.URI) : Option[PlainEntry]
+	// Should these arguments really be URIs, or should they be relative String paths? 
+	// def findFolderEntry(locUri : java.net.URI) : Option[FolderEntry]
+	// def findPlainEntry(locUri : java.net.URI) : Option[PlainEntry]
+	def findFolderEntry(path : String) : Option[FolderEntry]
+	def findPlainEntry(path : String) : Option[PlainEntry]
 }
 
 

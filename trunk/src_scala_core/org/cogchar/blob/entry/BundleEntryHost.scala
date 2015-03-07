@@ -28,8 +28,8 @@ class BundleEntryHost(bundle : org.osgi.framework.Bundle) extends EntryHost {
 		import scala.collection.JavaConverters._
 		urlEnum.asScala.toSet
 	}
-	override def findFolderEntry(uriLoc : java.net.URI) : Option[FolderEntry] = None
-	override def findPlainEntry(uriLoc : java.net.URI) : Option[PlainEntry] = None
+	override def findFolderEntry(path : String) : Option[FolderEntry] = ???
+	override def findPlainEntry(path : String) : Option[PlainEntry] = ???
 }
 class BundleEntry(locUri : java.net.URI) extends Entry {
 	override def getJavaURI : java.net.URI = locUri

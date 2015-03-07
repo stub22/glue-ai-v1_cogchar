@@ -57,17 +57,15 @@ class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) w
 
 }
 class ResourceEntryHost(refClz : java.lang.Class[_]) extends EntryHost {
-	// refClz : java.lang.Class[_], resPath : String
+
 	
-	def folderEntryForRelPath(path : String) : Option[FolderEntry] = {
+	override def findFolderEntry(path : String) : Option[FolderEntry] = {
+		// Do we expect clients to use this method 
 		val url_opt : Option[java.net.URL] = Option(refClz.getResource(path));
 		url_opt.map(url => new ResourceFolderEntry(url.toURI))
+
 	}
-	override def findFolderEntry(uriLoc : java.net.URI) : Option[FolderEntry] = {
-		// lazy val myUri_opt : Option[java.net.URI] = Option(refClz.getResource(resPath)).map(_.toURI)
-		None
-	}
-	override def findPlainEntry(uriLoc : java.net.URI) : Option[PlainEntry] = ???
+	override def findPlainEntry(path : String) : Option[PlainEntry] = ???
 }
 
 // *********************************************************************************
