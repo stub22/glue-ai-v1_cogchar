@@ -65,7 +65,10 @@ class ResourceEntryHost(refClz : java.lang.Class[_]) extends EntryHost {
 		url_opt.map(url => new ResourceFolderEntry(url.toURI))
 
 	}
-	override def findPlainEntry(path : String) : Option[PlainEntry] = ???
+	override def findPlainEntry(path : String) : Option[PlainEntry] = {
+		val url_opt : Option[java.net.URL] = Option(refClz.getResource(path));
+		url_opt.map(url => new ResourcePlainEntry(url.toURI))
+	}
 }
 
 // *********************************************************************************
