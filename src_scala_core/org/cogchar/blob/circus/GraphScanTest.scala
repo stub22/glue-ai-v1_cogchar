@@ -45,6 +45,7 @@ object GraphScanTest extends VarargsLogging {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		info0("Starting GraphScanTest")
+		// TODO:  Read files from cogchar.lib.onto as a test
 		
 		
 	}
@@ -58,42 +59,60 @@ object GraphScanTest extends VarargsLogging {
 
 	// This could in some cases be a lot of pathnames, and thus the collection of names could be large.
 	// User should ensure that either the folder or the filterFunc is sufficiently narrow to prevent over-match.
-	def deepSearchReadableGraphTripleFiles(folder : File) : Set[File] = {
-		val deh = new org.cogchar.blob.entry.DiskEntryHost()
-		val suffixes = Set(".ttl", ".n3")
-		deh.deepSearchReadablePlainFilesWithSuffixes(folder, suffixes)
-	}
-	// Return number of index records created.
-	def makeGHostRecordsForDeepFolderOfTripleFiles(r2goModel : rdf2go.model.Model, deepFolder : File) : Int = {
+	val graphFileSuffixes = Set(".ttl", ".n3")// 
+
+	import org.cogchar.blob.entry.{FolderEntry, PlainEntry}
+	def makeGHostRecordsForDeepFolderEntryOfTripleFiles(r2goModel : rdf2go.model.Model, deepFolderEntry : FolderEntry, maxEntries : Int) : Int = {
 		// TODO:  Make one or more GHost4Serial records identifying the folders, and link the GHost3 records to them.
-		val graphFiles : Set[File] = deepSearchReadableGraphTripleFiles(deepFolder)
-		val handles : Set[GraphHost3Serial] = graphFiles.map(sgf => {
-			makeGHost3RecordForFileGraph(r2goModel, sgf)
+		
+		val graphEntries : Set[PlainEntry] = deepFolderEntry.searchDeepPlainEntriesBySuffix(graphFileSuffixes, maxEntries)		
+		val handles : Set[GraphHost3Serial] = graphEntries.map(sge => {
+			makeGHost3RecordForGraphAtURL(r2goModel, sge.getJavaURI)
 		})
 		handles.size
-	}
+	}	
 	// We are using the mdir:hasUrlText property to record the file location in "file:" URL form.
 	// (We say URL rather than URI, because in this case we expect the path to be directly dereferencable).
 	
 	// Normally we do not attach content-oriented metadata directly to the GHost3 record.  
 	// However we sometimes do attach physical statistics such as file-size and last-modified time.
 	// 
-	def findOrMakeGHost3RecordForFileGraph(r2goModel : rdf2go.model.Model, singleGraphFile : File) : GraphHost3Serial  = {
+//	private def findOrMakeGHost3RecordForFileGraph(r2goModel : rdf2go.model.Model, singleGraphFile : File) : GraphHost3Serial  = {
 		// TODO:  Find any matching GraphHost3Serial record in the graph, unless disabled by flag (for optimization).
-		makeGHost3RecordForFileGraph(r2goModel, singleGraphFile)
-	}
-	// The returned record may correspond to a blank node, or may have a randomly generated URI.
-	def makeGHost3RecordForFileGraph(r2goModel : rdf2go.model.Model, singleGraphFile : File) : GraphHost3Serial  = {
-		// TODO:  Make sure this URI is "absolute"...?
-		val fileURL : java.net.URI = singleGraphFile.toURI
+//		makeGHost3RecordForGraphAtURL(r2goModel, singleGraphFile.toURI)
+//	}
+	// The returned record may correspond to a blank node, or may have a randomly generated URI (and here we do mean
+	// "URI" in every sense, since it is for a semantic instance.  URN would also be appropriate].
+	// 
+	// The methodName says "URL" to emphasize physicality, and logically the singleGraphUrl value is a URL, but is
+	// typed as java.net.URI for java-centric reasons.   See comments at bottom of EntryHost.scala.
+	def makeGHost3RecordForGraphAtURL(r2goModel : rdf2go.model.Model, singleGraphUrl : java.net.URI) : GraphHost3Serial  = {
+		// TODO:  Make sure this URL is "absolute"...?
+	
+		// val fileURL : java.net.URI = singleGraphFile.toURI
 		
-		// TODO -- make the appropriate subtype for the given file extension.  Possibly also taste the files contents
-		// to be more sure.
-		// This constructor form creates a random record-instance URI.
+		// This constructor form creates a random record-instance URI.  It's a URN-flavored URI, usually un-fetchable.
 		val gh3sHandle = new GraphHost3Serial(r2goModel, true)
+		// TODO -- add an appropriate subtype tag for the given file extension.  Possibly also taste the files contents
+		// to be more sure.
+		
 		// Store the physical graph URL into the index model.
-		gh3sHandle.setUrlText(fileURL.toString)
+		gh3sHandle.setUrlText(singleGraphUrl.toString)  // This is logically a URL, referring to a fetchable resource.
 		gh3sHandle
 	}
-	
+	@Deprecated def deepSearchReadableGraphTripleFiles(folder : File) : Set[File] = {
+		val deh = new org.cogchar.blob.entry.DiskEntryHost()
+
+		deh.deepSearchReadablePlainFilesWithSuffixes(folder, graphFileSuffixes)
+	}
+	// 
+	// Return number of index records created.
+	@Deprecated def makeGHostRecordsForDeepFolderOfTripleFiles(r2goModel : rdf2go.model.Model, deepFolder : File) : Int = {
+		// TODO:  Make one or more GHost4Serial records identifying the folders, and link the GHost3 records to them.
+		val graphFiles : Set[File] = deepSearchReadableGraphTripleFiles(deepFolder)
+		val handles : Set[GraphHost3Serial] = graphFiles.map(sgf => {
+			makeGHost3RecordForGraphAtURL(r2goModel, sgf.toURI)
+		})
+		handles.size
+	}	
 }

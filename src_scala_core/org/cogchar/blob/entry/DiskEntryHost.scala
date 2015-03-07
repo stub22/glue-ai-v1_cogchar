@@ -56,7 +56,7 @@ class DiskEntryHost() extends EntryHost {
 
 	// Below are some working methods written before EntryHost absraction was defined.
 	// Refactor and use these guts to implement the DiskFolderEntry above.
-	def findReadablePlainFilesInFolder(folder : File) : Set[File] = {
+	@Deprecated def findReadablePlainFilesInFolder(folder : File) : Set[File] = {
 		if(folder.exists && folder.isDirectory && folder.canRead) {
 			val allFiles : Array[File] = folder.listFiles
 			val readablePlainFiles : Array[File] = allFiles.filter(p => { p.isFile && p.canRead })	
@@ -65,30 +65,29 @@ class DiskEntryHost() extends EntryHost {
 			Set[File]()
 		}
 	}
-	def findReadableSubFoldersInFolder(folder : File) : Set[File] = {
+	@Deprecated def findReadableSubFoldersInFolder(folder : File) : Set[File] = {
 		if(folder.exists && folder.isDirectory && folder.canRead) {
 			val allFiles : Array[File] = folder.listFiles
 			val readableFolders : Array[File] = allFiles.filter(p => { p.isDirectory && p.canRead })
 			readableFolders.toSet
 		} else {
 			Set[File]()
-			
 		}
 	}
 	
-	// TODO:  These methods below were written before the EntryHost concept was defined.
-	// They should be reworked into abstractions that can work with any kind of FolderEntry (not just a File).
-	def deepSearchMatchingReadablePlainFiles(folder : File, filt : Function1[File, Boolean]) : Set[File] = {
+	// As of 2015-03-07, these 3 methods below are already supplanted by what's in the FolderEntry base trait.
+	// So we can delete these when DiskEntryHost is complete and tested.
+	@Deprecated def deepSearchMatchingReadablePlainFiles(folder : File, filt : Function1[File, Boolean]) : Set[File] = {
 		val matchingPlainFilesHere : Set[File] = findReadablePlainFilesInFolder(folder).filter(filt)
 		val subFolders : Set[File] = findReadableSubFoldersInFolder(folder)
 		val matchingSubFiles : Set[File] = subFolders.flatMap(deepSearchMatchingReadablePlainFiles(_, filt))
 		matchingPlainFilesHere ++ matchingSubFiles
 	}
-	private def firstMatchingSuffix(f : File, suffixes : Seq[String]) : Option[String] = {
+	@Deprecated private def firstMatchingSuffix(f : File, suffixes : Seq[String]) : Option[String] = {
 		val fileName = f.getName
 		suffixes.find(fileName.endsWith(_))
 	}
-	def deepSearchReadablePlainFilesWithSuffixes(folder : File, suffixes : Set[String]) : Set[File] =  {
+	@Deprecated def deepSearchReadablePlainFilesWithSuffixes(folder : File, suffixes : Set[String]) : Set[File] =  {
 		val suffixSeq = suffixes.toSeq
 		val filterFunc  = new Function1[File, Boolean] {
 			def apply(f : File) : Boolean = firstMatchingSuffix(f, suffixSeq).isDefined
