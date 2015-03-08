@@ -55,18 +55,19 @@ object GraphScanTest extends VarargsLogging {
 	}
 	def scanCogcharOntoTestFiles() : Unit = {
 		// Read files from these two cogchar onto folders as a test.
-		// These are actually resolved *within* our project's class space (because resources are SVN-extern mounted here).
-		val ontoFolderPath = "org/cogchar/onto"
-		val indivFolderPath = "org/cogchar/onto_indiv"
-		// Here is a folder that is outside our class space
-		val appdFolderPath = "org/appdapter/democonf"
 		
-		// Those folders should both be findable within this ResourceEntryHost.
-		// Hmmm.   That is working, sorta, but it is actually using the fact that copies of these files appear
-		// in the local project via SVN mount.  It is not resolving them against the jar file of the lib.onto project.
+		// These two are actually resolved *within* our project's class space (because resources are SVN-extern mounted here).
 		// So we see results like:
 		// #hasUrlText "file:/E:/_mount/cogchar_trunk/maven/org.cogchar.lib.core.api/target/classes/org/cogchar/onto_indiv/bootSample_2015Q1_owl2.ttl"
-		// ...which is not quite what we want!
+		val ontoFolderPath = "org/cogchar/onto"
+		val indivFolderPath = "org/cogchar/onto_indiv"
+		
+		// Here is a folder that is outside our class space, which resolves to a Jar file, and then fails with the
+		// current impl of ResourceFolderEntry, which cannot handle Jar file contents.
+		val appdFolderPath = "org/appdapter/democonf"
+		
+
+
 		val markerClazz : java.lang.Class[_] = classOf[BSamp]
 		val ontoResEntryHost = new ResourceEntryHost(markerClazz) 
 		val maxEntries = 200
@@ -85,6 +86,7 @@ object GraphScanTest extends VarargsLogging {
 		val foundIndivCount = scanDeepGraphFolderIntoGHostRecords(ontoResEntryHost, indivFolderPath, maxEntries, indivScanResultModel)
 		info3("Deep-scanned indiv folder {} and found {} results: {}", indivFolderPath, foundIndivCount : Integer, 
 				  indivScanResultModel.getUnderlyingModelImplementation)		
+		
 		
 		val appdResEntryHost = new ResourceEntryHost(classOf[org.appdapter.demo.DemoResources])
 		// Scan the appd folder and print results
