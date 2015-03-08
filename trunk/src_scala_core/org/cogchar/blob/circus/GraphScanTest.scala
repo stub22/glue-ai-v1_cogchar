@@ -54,9 +54,12 @@ object GraphScanTest extends VarargsLogging {
 		scanCogcharOntoTestFiles
 	}
 	def scanCogcharOntoTestFiles() : Unit = {
-		// Read files from these two cogchar onto folders as a test
+		// Read files from these two cogchar onto folders as a test.
+		// These are actually resolved *within* our project's class space (because resources are SVN-extern mounted here).
 		val ontoFolderPath = "org/cogchar/onto"
 		val indivFolderPath = "org/cogchar/onto_indiv"
+		// Here is a folder that is outside our class space
+		val appdFolderPath = "org/appdapter/democonf"
 		
 		// Those folders should both be findable within this ResourceEntryHost.
 		// Hmmm.   That is working, sorta, but it is actually using the fact that copies of these files appear
@@ -71,6 +74,7 @@ object GraphScanTest extends VarargsLogging {
 		// Make result models for the two scans.
 		val ontoScanResultModel = makeEmptyTempR2GoModel
 		val indivScanResultModel = makeEmptyTempR2GoModel
+		val appdScanResultModel = makeEmptyTempR2GoModel
 		
 		// Scan the onto folder and print results
 		val foundOntoCount = scanDeepGraphFolderIntoGHostRecords(ontoResEntryHost, ontoFolderPath, maxEntries, ontoScanResultModel)
@@ -81,6 +85,14 @@ object GraphScanTest extends VarargsLogging {
 		val foundIndivCount = scanDeepGraphFolderIntoGHostRecords(ontoResEntryHost, indivFolderPath, maxEntries, indivScanResultModel)
 		info3("Deep-scanned indiv folder {} and found {} results: {}", indivFolderPath, foundIndivCount : Integer, 
 				  indivScanResultModel.getUnderlyingModelImplementation)		
+		
+		val appdResEntryHost = new ResourceEntryHost(classOf[org.appdapter.demo.DemoResources])
+		// Scan the appd folder and print results
+		// 2015-03-07:  As expected, we currently get:
+		// Error instantiating java.io.File for uri: jar:file:/E:/mrepo_j7_m305/org/appdapter/org.appdapter.bundle.core/1.2.3/org.appdapter.bundle.core-1.2.3.jar!/org/appdapter/democonf, exc: java.lang.IllegalArgumentException: URI is not hierarchical
+		val foundAppdCount = scanDeepGraphFolderIntoGHostRecords(appdResEntryHost, appdFolderPath, maxEntries, appdScanResultModel)
+		info3("Deep-scanned appd folder {} and found {} results: {}", appdFolderPath, foundAppdCount : Integer, 
+				  appdScanResultModel.getUnderlyingModelImplementation)		
 		
 	}
 
