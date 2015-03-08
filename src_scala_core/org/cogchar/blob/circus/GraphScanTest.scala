@@ -52,8 +52,9 @@ object GraphScanTest extends VarargsLogging {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		info0("Starting GraphScanTest")
-		
-		
+		scanCogcharOntoTestFiles
+	}
+	def scanCogcharOntoTestFiles() : Unit = {
 		// Read files from these two cogchar onto folders as a test
 		val ontoFolderPath = "org/cogchar/onto"
 		val indivFolderPath = "org/cogchar/onto_indiv"
