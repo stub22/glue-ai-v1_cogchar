@@ -34,6 +34,9 @@ class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) w
 	// Error instantiating java.io.File for uri: 
 	// jar:file:/E:/mrepo_j7_m305/org/cogchar/org.cogchar.bundle.core/1.1.3-SNAPSHOT/org.cogchar.bundle.core-1.1.3-SNAPSHOT.jar!/org/cogchar/onto
 	// exc: java.lang.IllegalArgumentException: URI is not hierarchical.
+	// 
+	// Thus we will need to use one of the techniques discussed in links + pastes at bottom of this file, in order
+	// to read contents of a resource folder that is in a classpath-jar (for cases where we are outside of OSGi).
 
 	lazy val myPseudoDFE : Option[DiskFolderEntry] = {
 		var file_opt : Option[File] = None
