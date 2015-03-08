@@ -17,12 +17,13 @@
 package org.cogchar.blob.entry
 
 import java.io.File
+import org.appdapter.fancy.log.VarargsLogging
 /**
  
  Regular filesystem implementation of EntryHost stuff.   
  We are interested only in *reading* this filesystem.
  */
-class DiskEntry(someFile : File) extends Entry {
+class DiskEntry(someFile : File) extends Entry with VarargsLogging {
 	// Often it is file: form of URL, but not always.
 	override def getJavaURI : java.net.URI = someFile.toURI 
 	
@@ -42,21 +43,50 @@ class DiskEntry(someFile : File) extends Entry {
 // We also think this impl *might* work with some Resource folder structures in JDK7.  
 // See comments in ResourceEntryHost.scala.
 class DiskFolderEntry (diskFolder : File) extends DiskEntry(diskFolder) with FolderEntry {
-	override def findDirectPlainEntries: Traversable[PlainEntry] = ???
-	override def findDirectSubFolders: Traversable[FolderEntry] = ???
-	// Basic search forms are implemented in base trait.	
+	override def findDirectPlainEntries: Traversable[PlainEntry] = {
+		readableSubFiles.filter(_.isFile).map(new DiskPlainEntry(_))
+	}
+	override def findDirectSubFolders: Traversable[FolderEntry] = {
+		readableSubFiles.filter(_.isDirectory).map(new DiskFolderEntry(_))
+	}
+
+	private def readableSubFiles : Array[File]	= {
+		if(diskFolder.exists && diskFolder.isDirectory && diskFolder.canRead) {
+			diskFolder.listFiles.filter(_.canRead)
+		}
+		else {
+			error1("diskFolder {} is not readable as a directory", diskFolder)
+			Array()
+		}
+	}
+
 }
 class DiskPlainEntry(diskFile : File) extends DiskEntry(diskFile) with PlainEntry {
 	// We *could* offer size information, mod-stamp, and other.
 }
 
-class DiskEntryHost() extends EntryHost { 
-	override def findFolderEntry(path : String) : Option[FolderEntry] = ???
-	override def findPlainEntry(path : String) : Option[PlainEntry] = ???
+// if rootPathOpt is supplied, it will be prepended to all paths we are queried on.
+class DiskEntryHost(rootPathOpt : Option[String]) extends EntryHost {
+	private def resolvePath(partialPath : String) = {
+		if (rootPathOpt.isDefined) {
+			rootPathOpt.get + partialPath
+		} else partialPath
+	}
+	private def findReadableFile(partialPath : String) : Option[File] = {
+		val resolvedPath = resolvePath(partialPath)
+		val f = new File(resolvedPath)
+		if (f.exists && f.canRead) Some(f) else None
+	}
+	override def findFolderEntry(path : String) : Option[FolderEntry] = {
+		findReadableFile(path).filter(_.isDirectory).map(new DiskFolderEntry(_))
+	}
+	override def findPlainEntry(path : String) : Option[PlainEntry] = {
+		findReadableFile(path).filter(_.isFile).map(new DiskPlainEntry(_))
+	}
 
 	// Below are some working methods written before EntryHost absraction was defined.
 	// Refactor and use these guts to implement the DiskFolderEntry above.
-	@Deprecated def findReadablePlainFilesInFolder(folder : File) : Set[File] = {
+	@Deprecated private def findReadablePlainFilesInFolder(folder : File) : Set[File] = {
 		if(folder.exists && folder.isDirectory && folder.canRead) {
 			val allFiles : Array[File] = folder.listFiles
 			val readablePlainFiles : Array[File] = allFiles.filter(p => { p.isFile && p.canRead })	
@@ -65,7 +95,7 @@ class DiskEntryHost() extends EntryHost {
 			Set[File]()
 		}
 	}
-	@Deprecated def findReadableSubFoldersInFolder(folder : File) : Set[File] = {
+	@Deprecated private def findReadableSubFoldersInFolder(folder : File) : Set[File] = {
 		if(folder.exists && folder.isDirectory && folder.canRead) {
 			val allFiles : Array[File] = folder.listFiles
 			val readableFolders : Array[File] = allFiles.filter(p => { p.isDirectory && p.canRead })
@@ -77,7 +107,7 @@ class DiskEntryHost() extends EntryHost {
 	
 	// As of 2015-03-07, these 3 methods below are already supplanted by what's in the FolderEntry base trait.
 	// So we can delete these when DiskEntryHost is complete and tested.
-	@Deprecated def deepSearchMatchingReadablePlainFiles(folder : File, filt : Function1[File, Boolean]) : Set[File] = {
+	@Deprecated private def deepSearchMatchingReadablePlainFiles(folder : File, filt : Function1[File, Boolean]) : Set[File] = {
 		val matchingPlainFilesHere : Set[File] = findReadablePlainFilesInFolder(folder).filter(filt)
 		val subFolders : Set[File] = findReadableSubFoldersInFolder(folder)
 		val matchingSubFiles : Set[File] = subFolders.flatMap(deepSearchMatchingReadablePlainFiles(_, filt))
@@ -87,6 +117,7 @@ class DiskEntryHost() extends EntryHost {
 		val fileName = f.getName
 		suffixes.find(fileName.endsWith(_))
 	}
+	// This method is temporariliy being called from some test harnesses
 	@Deprecated def deepSearchReadablePlainFilesWithSuffixes(folder : File, suffixes : Set[String]) : Set[File] =  {
 		val suffixSeq = suffixes.toSeq
 		val filterFunc  = new Function1[File, Boolean] {
