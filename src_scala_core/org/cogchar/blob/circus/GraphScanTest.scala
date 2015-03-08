@@ -88,18 +88,18 @@ object GraphScanTest extends VarargsLogging {
 	// User should ensure that either the folder or the filterFunc is sufficiently narrow to prevent over-match.
 	val graphFileSuffixes = Set(".ttl", ".n3")// 
 
-	def scanDeepGraphFolderIntoGHostRecords(entryHost : EntryHost, folderPath : String, maxEnts : Int, r2goModel : R2GoModel) : Int = {
+	def scanDeepGraphFolderIntoGHostRecords(entryHost : EntryHost, folderPath : String, maxEnts : Int, resultModel : R2GoModel) : Int = {
 		val folderEntry_opt : Option[FolderEntry] = entryHost.findFolderEntry(folderPath)
 		if (folderEntry_opt.isDefined) {
-			GraphScanTest.makeGHostRecordsForDeepFolderEntryOfTripleFiles(r2goModel, folderEntry_opt.get, maxEnts)
+			GraphScanTest.makeGHostRecordsForDeepFolderEntryOfTripleFiles(resultModel, folderEntry_opt.get, maxEnts)
 		} else -1
 	}	
-	def makeGHostRecordsForDeepFolderEntryOfTripleFiles(r2goModel : rdf2go.model.Model, deepFolderEntry : FolderEntry, maxEntries : Int) : Int = {
+	def makeGHostRecordsForDeepFolderEntryOfTripleFiles(resultModel : rdf2go.model.Model, deepFolderEntry : FolderEntry, maxEntries : Int) : Int = {
 		// TODO:  Make one or more GHost4Serial records identifying the folders, and link the GHost3 records to them.
 		
 		val graphEntries : Set[PlainEntry] = deepFolderEntry.searchDeepPlainEntriesBySuffix(graphFileSuffixes, maxEntries)		
 		val handles : Set[GraphHost3Serial] = graphEntries.map(sge => {
-			makeGHost3RecordForGraphAtURL(r2goModel, sge.getJavaURI)
+			makeGHost3RecordForGraphAtURL(resultModel, sge.getJavaURI)
 		})
 		handles.size
 	}	
