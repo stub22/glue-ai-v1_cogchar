@@ -86,6 +86,14 @@ class DiskEntryHost(rootPathOpt : Option[String]) extends EntryHost {
 
 	// Below are some working methods written before EntryHost absraction was defined.
 	// Refactor and use these guts to implement the DiskFolderEntry above.
+	// 
+	// We return Set because there is no ordering assumed on the returned collection.
+	// Regarding equality of members within this set, we note the following about the File.equals() method:
+	// http://docs.oracle.com/javase/7/docs/api/java/io/File.html#equals(java.lang.Object)
+	// "Tests this abstract pathname for equality with the given object. Returns true if and only if the argument is 
+	// not null and is an abstract pathname that denotes the same file or directory as this abstract pathname. 
+	// Whether or not two abstract pathnames are equal depends upon the underlying system. On UNIX systems, 
+	// alphabetic case is significant in comparing pathnames; on Microsoft Windows systems it is not."	 
 	@Deprecated private def findReadablePlainFilesInFolder(folder : File) : Set[File] = {
 		if(folder.exists && folder.isDirectory && folder.canRead) {
 			val allFiles : Array[File] = folder.listFiles
@@ -125,5 +133,5 @@ class DiskEntryHost(rootPathOpt : Option[String]) extends EntryHost {
 		}
 		deepSearchMatchingReadablePlainFiles(folder, filterFunc)
 	}
-	
+
 }

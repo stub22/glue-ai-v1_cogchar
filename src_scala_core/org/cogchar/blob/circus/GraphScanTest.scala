@@ -49,8 +49,7 @@ import org.cogchar.blob.entry.{EntryHost, PlainEntry, FolderEntry, DiskEntryHost
 
 object GraphScanTest extends VarargsLogging {
 	def main(args: Array[String]): Unit = {
-		org.apache.log4j.BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
+		setupScanTestLogging
 		info0("Starting GraphScanTest")
 		scanCogcharOntoTestFiles
 	}
@@ -76,21 +75,14 @@ object GraphScanTest extends VarargsLogging {
 		// Scan the onto folder and print results
 		val foundOntoCount = scanDeepGraphFolderIntoGHostRecords(ontoResEntryHost, ontoFolderPath, maxEntries, ontoScanResultModel)
 		info3("Deep-scanned onto folder {} and found {} results: {}", ontoFolderPath, foundOntoCount : Integer, 
-			  ontoScanResultModel.getUnderlyingModelImplementation)
+				  ontoScanResultModel.getUnderlyingModelImplementation)
 		
 		// Scan the indiv folder and print results
 		val foundIndivCount = scanDeepGraphFolderIntoGHostRecords(ontoResEntryHost, indivFolderPath, maxEntries, indivScanResultModel)
 		info3("Deep-scanned indiv folder {} and found {} results: {}", indivFolderPath, foundIndivCount : Integer, 
-			  indivScanResultModel.getUnderlyingModelImplementation)		
+				  indivScanResultModel.getUnderlyingModelImplementation)		
 		
 	}
-	// We return Set because there is no ordering assumed on the returned collection.
-	// Regarding equality of members within this set, we note the following about the File.equals() method:
-	// http://docs.oracle.com/javase/7/docs/api/java/io/File.html#equals(java.lang.Object)
-	// "Tests this abstract pathname for equality with the given object. Returns true if and only if the argument is 
-	// not null and is an abstract pathname that denotes the same file or directory as this abstract pathname. 
-	// Whether or not two abstract pathnames are equal depends upon the underlying system. On UNIX systems, 
-	// alphabetic case is significant in comparing pathnames; on Microsoft Windows systems it is not."
 
 	// This could in some cases be a lot of pathnames, and thus the collection of names could be large.
 	// User should ensure that either the folder or the filterFunc is sufficiently narrow to prevent over-match.
@@ -141,12 +133,32 @@ object GraphScanTest extends VarargsLogging {
 		gh3sHandle
 	}
 	
-	private def makeEmptyTempR2GoModel() : R2GoModel = {
+	def makeEmptyTempR2GoModel() : R2GoModel = {
 		val jenaModelForGHostRecs : JenaModel = JenaModelFactory.createDefaultModel
 		val r2goModel: R2GoModel = new rdf2go.impl.jena.ModelImplJena(jenaModelForGHostRecs)		
 		r2goModel.open
 		r2goModel
 	}	
+	def setupScanTestLogging() : Unit = { 
+		org.apache.log4j.BasicConfigurator.configure();
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);		
+		setLogLevelToInfoForClz(classOf[org.ontoware.rdf2go.impl.jena.TypeConversion])
+		setLogLevelToInfoForClz(classOf[org.ontoware.rdfreactor.runtime.RDFReactorRuntime])
+		setLogLevelToInfoForClz(classOf[org.ontoware.rdfreactor.runtime.ReactorRuntimeEntity])
+		setLogLevelToInfoForClz(classOf[com.hp.hpl.jena.shared.LockMRSW])
+		// These 2 are *packages*, so we can't use the classOf trick.
+		setLogLevelToInfoForPkg("com.hp.hpl.jena.tdb.transaction")
+		setLogLevelToInfoForPkg("org.apache.jena.info")
+	}
+	private def setLogLevelToInfoForClz(clz: Class[_]) {
+		org.apache.log4j.Logger.getLogger(clz).setLevel(org.apache.log4j.Level.INFO)
+	}
+	private def setLogLevelToInfoForPkg(pkgName : String) {
+		org.apache.log4j.Logger.getLogger(pkgName).setLevel(org.apache.log4j.Level.INFO)
+	}
+	
+	// Methods below are obsolete - they use java.io.File directly instead of going through FolderEntry system.
+	
 	@Deprecated private def deepSearchReadableGraphTripleFiles(folder : File) : Set[File] = {
 		val deh = new org.cogchar.blob.entry.DiskEntryHost(None)
 
@@ -162,5 +174,20 @@ object GraphScanTest extends VarargsLogging {
 			makeGHost3RecordForGraphAtURL(r2goModel, sgf.toURI)
 		})
 		handles.size
-	}	
+	}
+	// This still uses the crude java.io.File based API.
+	// We are replacing it with "EntryHost" based functionality.
+	@Deprecated def naiveFolderScanAndIndex(rootFolderPath : String, relativeFolderPath : String, resultModel : R2GoModel) : Int = {
+		
+		// Here is a source-tree oriented path, not a bundle/class-rez path.
+		// Temporarily needed for compatibility with our current "folder"-based scan below.
+		// To be relaced with EntryHost approach.
+		val scanFolderPath = relativeFolderPath;
+		// We want to this once for each folder of graphs that is needed by some broker we want to init (or later feed)
+		val deepFolder : File = new File(scanFolderPath)
+		val numGraphs_orNumRecs : Int = makeGHostRecordsForDeepFolderOfTripleFiles(resultModel, deepFolder) 
+		info3("Got {} recs from {} into r2goModel: {}", numGraphs_orNumRecs : Integer, scanFolderPath,  resultModel)
+		numGraphs_orNumRecs	
+	}
+	
 }
