@@ -26,13 +26,20 @@ class ResourcePlainEntry(locUri : java.net.URI) extends ResourceEntry(locUri) wi
 }
 class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) with FolderEntry {
 	// Here we leverage the fact that JVM can (in theory) return us a java.io.File object for a 
-	// classpath resource folder.  [Not clear on the limitations of this yet, though].
-	// Thus we can create a delegate DiskFolderEntry and let it do all our work!
+	// classpath resource folder.  Thus we can create a delegate DiskFolderEntry and let it do all our work!
+	// Oops, sad trombone. 
+	// 
+	// This approach works for target/classes, but does not work if the URI points into a jar-file.  
+	// We get, for example:
+	// Error instantiating java.io.File for uri: 
+	// jar:file:/E:/mrepo_j7_m305/org/cogchar/org.cogchar.bundle.core/1.1.3-SNAPSHOT/org.cogchar.bundle.core-1.1.3-SNAPSHOT.jar!/org/cogchar/onto
+	// exc: java.lang.IllegalArgumentException: URI is not hierarchical.
+
 	lazy val myPseudoDFE : Option[DiskFolderEntry] = {
 		var file_opt : Option[File] = None
 		try {
 			debug1("Making pseudo-file for locUri: {}", locUri)
-			val file = new File(locUri) // Does this support subFolders? 
+			val file = new File(locUri) // Q: Does this support subFolders?   A: If we are in target/classes, sure, but otherwise...
 			file_opt = Option(file)
 		} catch  {
 			case t : Throwable => error2("Error instantiating java.io.File for uri: {}, exc: {}", locUri, t)
