@@ -31,6 +31,13 @@ import com.hp.hpl.jena
 
 import java.io.File
 
+import jena.rdf.model.{ Model => JenaModel, ModelFactory => JenaModelFactory }
+import jena.ontology.Individual
+import rdf2go.model.{Model => R2GoModel}
+
+import org.cogchar.blob.entry.{EntryHost, PlainEntry, FolderEntry, DiskEntryHost, ResourceEntryHost}
+
+
 /**
  * This code (along with rest of circus package) will probably be promoted to Appdapter eventually, but it is
  * easier for now to prototype with it in the Cogchar layer of Glue.AI.  It is not Cogchar feature-specific.
@@ -45,8 +52,35 @@ object GraphScanTest extends VarargsLogging {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		info0("Starting GraphScanTest")
-		// TODO:  Read files from cogchar.lib.onto as a test
 		
+		
+		// Read files from these two cogchar onto folders as a test
+		val ontoFolderPath = "org/cogchar/onto"
+		val indivFolderPath = "org/cogchar/onto_indiv"
+		
+		// Those folders should both be findable within this ResourceEntryHost.
+		// Hmmm.   That is working, sorta, but it is actually using the fact that copies of these files appear
+		// in the local project via SVN mount.  It is not resolving them against the jar file of the lib.onto project.
+		// So we see results like:
+		// #hasUrlText "file:/E:/_mount/cogchar_trunk/maven/org.cogchar.lib.core.api/target/classes/org/cogchar/onto_indiv/bootSample_2015Q1_owl2.ttl"
+		// ...which is not quite what we want!
+		val markerClazz : java.lang.Class[_] = classOf[BSamp]
+		val ontoResEntryHost = new ResourceEntryHost(markerClazz) 
+		val maxEntries = 200
+		
+		// Make result models for the two scans.
+		val ontoScanResultModel = makeEmptyTempR2GoModel
+		val indivScanResultModel = makeEmptyTempR2GoModel
+		
+		// Scan the onto folder and print results
+		val foundOntoCount = scanDeepGraphFolderIntoGHostRecords(ontoResEntryHost, ontoFolderPath, maxEntries, ontoScanResultModel)
+		info3("Deep-scanned onto folder {} and found {} results: {}", ontoFolderPath, foundOntoCount : Integer, 
+			  ontoScanResultModel.getUnderlyingModelImplementation)
+		
+		// Scan the indiv folder and print results
+		val foundIndivCount = scanDeepGraphFolderIntoGHostRecords(ontoResEntryHost, indivFolderPath, maxEntries, indivScanResultModel)
+		info3("Deep-scanned indiv folder {} and found {} results: {}", indivFolderPath, foundIndivCount : Integer, 
+			  indivScanResultModel.getUnderlyingModelImplementation)		
 		
 	}
 	// We return Set because there is no ordering assumed on the returned collection.
@@ -61,7 +95,12 @@ object GraphScanTest extends VarargsLogging {
 	// User should ensure that either the folder or the filterFunc is sufficiently narrow to prevent over-match.
 	val graphFileSuffixes = Set(".ttl", ".n3")// 
 
-	import org.cogchar.blob.entry.{FolderEntry, PlainEntry}
+	def scanDeepGraphFolderIntoGHostRecords(entryHost : EntryHost, folderPath : String, maxEnts : Int, r2goModel : R2GoModel) : Int = {
+		val folderEntry_opt : Option[FolderEntry] = entryHost.findFolderEntry(folderPath)
+		if (folderEntry_opt.isDefined) {
+			GraphScanTest.makeGHostRecordsForDeepFolderEntryOfTripleFiles(r2goModel, folderEntry_opt.get, maxEnts)
+		} else -1
+	}	
 	def makeGHostRecordsForDeepFolderEntryOfTripleFiles(r2goModel : rdf2go.model.Model, deepFolderEntry : FolderEntry, maxEntries : Int) : Int = {
 		// TODO:  Make one or more GHost4Serial records identifying the folders, and link the GHost3 records to them.
 		
@@ -100,13 +139,21 @@ object GraphScanTest extends VarargsLogging {
 		gh3sHandle.setUrlText(singleGraphUrl.toString)  // This is logically a URL, referring to a fetchable resource.
 		gh3sHandle
 	}
-	@Deprecated def deepSearchReadableGraphTripleFiles(folder : File) : Set[File] = {
-		val deh = new org.cogchar.blob.entry.DiskEntryHost()
+	
+	private def makeEmptyTempR2GoModel() : R2GoModel = {
+		val jenaModelForGHostRecs : JenaModel = JenaModelFactory.createDefaultModel
+		val r2goModel: R2GoModel = new rdf2go.impl.jena.ModelImplJena(jenaModelForGHostRecs)		
+		r2goModel.open
+		r2goModel
+	}	
+	@Deprecated private def deepSearchReadableGraphTripleFiles(folder : File) : Set[File] = {
+		val deh = new org.cogchar.blob.entry.DiskEntryHost(None)
 
 		deh.deepSearchReadablePlainFilesWithSuffixes(folder, graphFileSuffixes)
 	}
-	// 
+
 	// Return number of index records created.
+	// This method is temporarily used by some other (unpublished) boot tests.  
 	@Deprecated def makeGHostRecordsForDeepFolderOfTripleFiles(r2goModel : rdf2go.model.Model, deepFolder : File) : Int = {
 		// TODO:  Make one or more GHost4Serial records identifying the folders, and link the GHost3 records to them.
 		val graphFiles : Set[File] = deepSearchReadableGraphTripleFiles(deepFolder)
