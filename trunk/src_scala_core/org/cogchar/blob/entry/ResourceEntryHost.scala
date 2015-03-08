@@ -31,8 +31,11 @@ class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) w
 	lazy val myPseudoDFE : Option[DiskFolderEntry] = {
 		var file_opt : Option[File] = None
 		try {
+			debug1("Making pseudo-file for locUri: {}", locUri)
 			val file = new File(locUri) // Does this support subFolders? 
 			file_opt = Option(file)
+		} catch  {
+			case t : Throwable => error2("Error instantiating java.io.File for uri: {}, exc: {}", locUri, t)
 		}
 		file_opt.map(new DiskFolderEntry(_))
 	}
