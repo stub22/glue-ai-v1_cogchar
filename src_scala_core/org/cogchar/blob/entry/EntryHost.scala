@@ -17,6 +17,9 @@
 package org.cogchar.blob.entry
 
 import java.io.File
+
+import org.appdapter.fancy.log.VarargsLogging
+
 /**
  *  Gingerly starting on a minimal abstract API for reading a "Scannable Folder", mainly to support a variety of
  *  alternative scenarios where we want to load a set of files from either the disk, our classpath, or a particular
@@ -40,7 +43,7 @@ import java.io.File
 //  We expect all result entries to reflect readable files/resources/folders.  
 // If a file/resource/folder exists but is not accessible, it shouldn't be returned.
 
-trait Entry {
+trait Entry extends VarargsLogging {
 	def getJavaURI : java.net.URI 
 	def getJavaURL : java.net.URL = getJavaURI.toURL  // See Java platform comments at bottom.
 }
@@ -110,7 +113,7 @@ trait FolderEntry extends Entry {
 //		DiskEntryHost
 //		ResourceEntryHost
 
-trait EntryHost {
+trait EntryHost extends VarargsLogging {
 
 	// These input paths are relative to some implied "root" or "home" for each EntryHost.
 	def findFolderEntry(path : String) : Option[FolderEntry]

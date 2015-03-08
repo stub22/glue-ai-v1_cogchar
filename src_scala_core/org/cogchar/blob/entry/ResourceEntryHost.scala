@@ -58,16 +58,23 @@ class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) w
 }
 class ResourceEntryHost(refClz : java.lang.Class[_]) extends EntryHost {
 
+	private def resolvePathToURL(path: String) : Option[java.net.URL] = {
+		val pathWithLeadingSlash : String = if (path.startsWith("/")) path else "/" + path
+		val resolvedURL_opt = Option(refClz.getResource(pathWithLeadingSlash));
+		if (resolvedURL_opt.isEmpty) {
+			warn1("Could not resolve resource path: {}", pathWithLeadingSlash)
+		}
+		resolvedURL_opt
+	}
 	
 	override def findFolderEntry(path : String) : Option[FolderEntry] = {
-		// Do we expect clients to use this method 
-		val url_opt : Option[java.net.URL] = Option(refClz.getResource(path));
-		url_opt.map(url => new ResourceFolderEntry(url.toURI))
+		val resolvedURL_opt : Option[java.net.URL] = resolvePathToURL(path) 
+		resolvedURL_opt.map(url => new ResourceFolderEntry(url.toURI))
 
 	}
 	override def findPlainEntry(path : String) : Option[PlainEntry] = {
-		val url_opt : Option[java.net.URL] = Option(refClz.getResource(path));
-		url_opt.map(url => new ResourcePlainEntry(url.toURI))
+		val resolvedURL_opt : Option[java.net.URL] = resolvePathToURL(path) 
+		resolvedURL_opt.map(url => new ResourcePlainEntry(url.toURI))
 	}
 }
 
