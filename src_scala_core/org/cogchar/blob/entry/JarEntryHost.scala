@@ -95,7 +95,7 @@ class JarEntryHost(rootPathOpt : Option[String]) extends EntryHost {
 	override def findPlainEntry(path : String) : Option[PlainEntry] = {
 		findReadablePath(path).filter(Files.isRegularFile(_)).map(new JarPlainEntry(_))
 	}
-
+/*
 	// Below are some working methods written before EntryHost absraction was defined.
 	// Refactor and use these guts to implement the JarFolderEntry above.
 	// 
@@ -167,5 +167,5 @@ class JarEntryHost(rootPathOpt : Option[String]) extends EntryHost {
 		}
 		deepSearchMatchingReadablePlainPaths(folder, filterFunc)
 	}
-
+*/
 }
