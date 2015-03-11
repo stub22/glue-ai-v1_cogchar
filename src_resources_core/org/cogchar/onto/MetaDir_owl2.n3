@@ -236,6 +236,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 
 :hasDatasetName rdf:type owl:DatatypeProperty ;
                 
+                owl:maxCardinality "1" ;
+                
                 rdfs:domain :GraphHost4Quads ;
                 
                 rdfs:subPropertyOf :mDataProp ;
@@ -248,6 +250,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 
 :hasFilenameTailWithExt rdf:type owl:DatatypeProperty ,
                                  owl:FunctionalProperty ;
+                        
+                        owl:maxCardinality "1" ;
                         
                         rdfs:domain :MThing ;
                         
@@ -279,6 +283,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 :hasJavaPackageName rdf:type owl:DatatypeProperty ,
                              owl:FunctionalProperty ;
                     
+                    owl:maxCardinality "1" ;
+                    
                     rdfs:domain :ClasspathEntity ;
                     
                     rdfs:subPropertyOf :mDataProp ;
@@ -291,6 +297,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 
 :hasMavenArtifactId rdf:type owl:DatatypeProperty ,
                              owl:FunctionalProperty ;
+                    
+                    owl:maxCardinality "1" ;
                     
                     rdfs:domain :MavenArtifact ;
                     
@@ -305,6 +313,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 :hasMavenGroupId rdf:type owl:DatatypeProperty ,
                           owl:FunctionalProperty ;
                  
+                 owl:maxCardinality "1" ;
+                 
                  rdfs:domain :MavenArtifact ;
                  
                  rdfs:subPropertyOf :mDataProp ;
@@ -317,6 +327,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 
 :hasMavenVersion rdf:type owl:DatatypeProperty ,
                           owl:FunctionalProperty ;
+                 
+                 owl:maxCardinality "1" ;
                  
                  rdfs:domain :MavenArtifact ;
                  
@@ -342,6 +354,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 
 :hasOpStamp rdf:type owl:DatatypeProperty ;
             
+            owl:maxCardinality "1" ;
+            
             rdfs:domain :GraphOp ;
             
             rdfs:subPropertyOf :mDataProp ;
@@ -355,6 +369,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 :hasOpStampJava rdf:type owl:DatatypeProperty ,
                          owl:FunctionalProperty ;
                 
+                owl:maxCardinality "1" ;
+                
                 rdfs:domain :GraphOp ;
                 
                 rdfs:subPropertyOf :mDataProp ;
@@ -366,6 +382,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOpUsername
 
 :hasOpUsername rdf:type owl:DatatypeProperty ;
+               
+               owl:maxCardinality "1" ;
                
                rdfs:domain :GraphOp ;
                
@@ -379,6 +397,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 
 :hasOsgiBundleSymbolicName rdf:type owl:DatatypeProperty ;
                            
+                           owl:maxCardinality "1" ;
+                           
                            rdfs:domain :OsgiBundle ;
                            
                            rdfs:subPropertyOf :mDataProp ;
@@ -390,6 +410,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 ###  http://onto.cogchar.org/onto/201407/MetaDir_OWL2#hasOsgiBundleVersion
 
 :hasOsgiBundleVersion rdf:type owl:DatatypeProperty ;
+                      
+                      owl:maxCardinality "1" ;
                       
                       rdfs:domain :OsgiBundle ;
                       
@@ -404,6 +426,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 :hasSpreadsheetKey rdf:type owl:DatatypeProperty ,
                             owl:FunctionalProperty ;
                    
+                   owl:maxCardinality "1" ;
+                   
                    rdfs:domain :GH4S_Spreadsheet ;
                    
                    rdfs:subPropertyOf :mDataProp ;
@@ -417,6 +441,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 :hasTabNumber rdf:type owl:DatatypeProperty ,
                        owl:FunctionalProperty ;
               
+              owl:maxCardinality "1" ;
+              
               rdfs:comment "Used by both and GH3S_TabInSpreadsheet and NVPairTabInSheet" ;
               
               rdfs:subPropertyOf :mDataProp ;
@@ -429,6 +455,8 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 
 :hasUrlText rdf:type owl:DatatypeProperty ,
                      owl:FunctionalProperty ;
+            
+            owl:maxCardinality "1" ;
             
             rdfs:domain :MThing ;
             
