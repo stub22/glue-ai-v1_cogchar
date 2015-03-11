@@ -196,7 +196,7 @@ object GraphScanTest extends VarargsLogging {
 		// Here is a source-tree oriented path, not a bundle/class-rez path.
 		// Temporarily needed for compatibility with our current "folder"-based scan below.
 		// To be relaced with EntryHost approach.
-		val scanFolderPath = relativeFolderPath;
+		val scanFolderPath = rootFolderPath + relativeFolderPath;
 		// We want to this once for each folder of graphs that is needed by some broker we want to init (or later feed)
 		val deepFolder : File = new File(scanFolderPath)
 		val numGraphs_orNumRecs : Int = makeGHostRecordsForDeepFolderOfTripleFiles(resultModel, deepFolder) 
