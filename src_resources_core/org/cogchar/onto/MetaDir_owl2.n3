@@ -456,14 +456,15 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
 :hasUrlText rdf:type owl:DatatypeProperty ,
                      owl:FunctionalProperty ;
             
+            rdfs:comment "When using xsd:anyURI as the range type, in combination with maxCardinatlity =1, under RDFReactor 4.8.3 we get a compilation error, where generated code is trying to use a missing variant of Base.getAs." ;
+            
             owl:maxCardinality "1" ;
             
             rdfs:domain :MThing ;
             
             rdfs:subPropertyOf :mDataProp ;
             
-            rdfs:range xsd:anyURI ,
-                       xsd:string .
+            rdfs:range xsd:string .
 
 
 
