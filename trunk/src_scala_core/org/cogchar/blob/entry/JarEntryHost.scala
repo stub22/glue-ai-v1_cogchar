@@ -32,7 +32,7 @@ class JarEntry(somePath : Path) extends Entry with VarargsLogging {
 	// Often it is file: form of URL, but not always.
 	override def getJavaURI : java.net.URI = somePath.toUri 
 	
-	
+	 
 }
 // Being able to read from a folder-tree of files on a jar is an important app-developer's feature.
 // We also think this impl *might* work with some Resource folder structures in JDK7.  
