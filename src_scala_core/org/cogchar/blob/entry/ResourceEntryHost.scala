@@ -16,39 +16,57 @@
 
 package org.cogchar.blob.entry
 
-import java.io.File
+import java.nio.file.FileSystems
+import java.nio.file.Path
+import java.nio.file.Paths
 
-// class ResourceEntry(refClz : java.lang.Class[_], resPath : String) {
 class ResourceEntry(locUri : java.net.URI) extends Entry {
 	override def getJavaURI : java.net.URI = locUri
 }
 class ResourcePlainEntry(locUri : java.net.URI) extends ResourceEntry(locUri) with PlainEntry {
 }
 class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) with FolderEntry {
-	// Here we leverage the fact that JVM can (in theory) return us a java.io.File object for a 
-	// classpath resource folder.  Thus we can create a delegate DiskFolderEntry and let it do all our work!
-	// Oops, sad trombone. 
-	// 
-	// This approach works for target/classes, but does not work if the URI points into a jar-file.  
-	// We get, for example:
-	// Error instantiating java.io.File for uri: 
-	// jar:file:/E:/mrepo_j7_m305/org/cogchar/org.cogchar.bundle.core/1.1.3-SNAPSHOT/org.cogchar.bundle.core-1.1.3-SNAPSHOT.jar!/org/cogchar/onto
-	// exc: java.lang.IllegalArgumentException: URI is not hierarchical.
-	// 
-	// Thus we will need to use one of the techniques discussed in links + pastes at bottom of this file, in order
-	// to read contents of a resource folder that is in a classpath-jar (for cases where we are outside of OSGi).
+	/*
+         * The previous approach was attempting to use java.io.File objects but this does not allow
+         * the user to search through jars for files. So instead the approach shown in this folder uses 
+         * java.nio.file.Path objects which have all of the same functionality of File objects to my knowledge,
+         * they will allow us to get their size and last modification time with the following methods. 
+         * Files.size(path) The size in bytes, if in a jar the size will be of the compressed file.
+         * Files.getLastModifiedTime(path)
+         */
 
-	lazy val myPseudoDFE : Option[DiskFolderEntry] = {
-		var file_opt : Option[File] = None
-		try {
-			debug1("Making pseudo-file for locUri: {}", locUri)
-			val file = new File(locUri) // Q: Does this support subFolders?   A: If we are in target/classes, sure, but otherwise...
-			file_opt = Option(file)
-		} catch  {
-			case t : Throwable => error2("Error instantiating java.io.File for uri: {}, exc: {}", locUri, t)
-		}
-		file_opt.map(new DiskFolderEntry(_))
-	}
+	lazy val myPseudoDFE: Option[JarFolderEntry] = {
+
+        var path_opt: Option[Path] = None
+        try {
+            
+                import scala.collection.JavaConversions._
+                debug1("Making pseudo-path for locUri: {}", locUri)
+                if(locUri.getScheme == "jar"){
+                    /**
+                     * A path cannot contain "jar:" or "file:/" because of the colons. Most links to jars sent in here have
+                     * "jar:file:/" appended to the beginning of their Uris so they must be removed.
+                     * The path to the jar and the path inside the jar are seperated by a "!" which is what I am using as a delimiter below.
+                     */
+                    val uriParts = locUri.toString.split("!")
+                    val locJarPath = uriParts(0).replaceFirst("jar:", "").replaceFirst("file:/", "")
+                    val directoryInJarPath = uriParts(1)
+                    
+                    // To read the contents of a jar you have to create a FileSystem object and use it to create paths inside the jar
+                    val jarFileSystem = FileSystems.newFileSystem(Paths.get(locJarPath), classOf[ResourceEntryHost].getClassLoader)
+                    
+                    // Create the path inside of the jar
+                    val path = jarFileSystem.getPath(directoryInJarPath)
+                    path_opt = Option(path)
+                }else{
+                    val path = Paths.get(locUri)
+                    path_opt = Option(path)
+                }
+        } catch {
+            case t: Throwable => error2("Error instantiating java.nio.file.Path for uri: {}, exc: {}", locUri, t)
+        }
+        path_opt.map(new JarFolderEntry(_))
+    }
 	
 	
 	override def findDirectPlainEntries: Traversable[PlainEntry] = {
@@ -61,7 +79,6 @@ class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) w
 	}
 	override def findDirectSubFolders: Traversable[FolderEntry] = {
 		if (myPseudoDFE.isDefined) {
-			// But does this work?   Does the "File" know about its sub-folders?
 			myPseudoDFE.get.findDirectSubFolders
 		} else {
 			Set()
@@ -90,63 +107,3 @@ class ResourceEntryHost(refClz : java.lang.Class[_]) extends EntryHost {
 		resolvedURL_opt.map(url => new ResourcePlainEntry(url.toURI))
 	}
 }
-
-// *********************************************************************************
-// Third case is the messiest, historically:  We want to access some folder that we expect is on our classpath,
-// but we are not in OSGi.  This is helpful when we are unit testing bits of software that want to read folders
-// of resources in the current project, or some upstream project (e.g. some onto test-data project).
-// 
-// This discussion offers some alternatives:
-// http://stackoverflow.com/questions/11012819/how-can-i-get-a-resource-folder-from-inside-my-jar-file
-// http://stackoverflow.com/questions/1429172/how-do-i-list-the-files-inside-a-jar-file
-// 
-// "If you pass in a directory to the getResourceAsStream method then it will return a listing of files in the 
-// directory ( or at least a stream of it)." - on all platforms?
-
-// 
-// Variations on:
-// URL url = MyClass.class.getResource("/com/abc/package/resources/");
-//     final URL url = Launcher.class.getResource("/" + path);
-//     if (url != null) {
-//        final File dir = new File(url.toURI());
-//			for (File nextFile : dir.listFiles()) {          
-//			
-//			
-//	"...work when you run the application on IDE (not with jar file), You can remove it if you don't like that."
-// 
-// But in some cases (still under Java 7?  or all better now?) we might need something like:
-// final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-// 
-// if(jarFile.isFile()) {  // Run with JAR file
-//    final JarFile jar = new JarFile(jarFile);
-//    final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
-//    while(entries.hasMoreElements()) {
-//        final String name = entries.nextElement().getName();
-//        if (name.startsWith(path + "/")) { //filter according to the path
-//            System.out.println(name);
-//        }
-//    }
-//    jar.close();
-// } else { // Run with IDE
-// 
-// "Note that in Java 7, you can create a FileSystem from the JAR (zip) file, and then use NIO's directory walking 
-// and filtering mechanisms to search through it. This would make it easier to write code that handles JARs and 
-// "exploded" directories."
-// 
-// 
-
-/*
- *     URI uri = MyClass.class.getResource("/resources").toURI();
-    Path myPath;
-    if (uri.getScheme().equals("jar")) {
-        FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
-        myPath = fileSystem.getPath("/resources");
-    } else {
-        myPath = Paths.get(uri);
-    }
-    Stream<Path> walk = Files.walk(myPath, 1);
-    for (Iterator<Path> it = walk.iterator(); it.hasNext();){
-        System.out.println(it.next());
-    }
- */
-
