@@ -83,7 +83,7 @@ class DiskEntryHost(rootPathOpt : Option[String]) extends EntryHost {
 	override def findPlainEntry(path : String) : Option[PlainEntry] = {
 		findReadableFile(path).filter(_.isFile).map(new DiskPlainEntry(_))
 	}
-
+/*
 	// Below are some working methods written before EntryHost absraction was defined.
 	// Refactor and use these guts to implement the DiskFolderEntry above.
 	// 
@@ -133,5 +133,5 @@ class DiskEntryHost(rootPathOpt : Option[String]) extends EntryHost {
 		}
 		deepSearchMatchingReadablePlainFiles(folder, filterFunc)
 	}
-
+*/
 }
