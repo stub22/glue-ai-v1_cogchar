@@ -170,7 +170,7 @@ object GraphScanTest extends VarargsLogging {
 	private def setLogLevelToInfoForPkg(pkgName : String) {
 		org.apache.log4j.Logger.getLogger(pkgName).setLevel(org.apache.log4j.Level.INFO)
 	}
-	
+	/*
 	// Methods below are obsolete - they use java.io.File directly instead of going through FolderEntry system.
 	
 	@Deprecated private def deepSearchReadableGraphTripleFiles(folder : File) : Set[File] = {
@@ -203,5 +203,5 @@ object GraphScanTest extends VarargsLogging {
 		info3("Got {} recs from {} into r2goModel: {}", numGraphs_orNumRecs : Integer, scanFolderPath,  resultModel)
 		numGraphs_orNumRecs	
 	}
-	
+	*/
 }
