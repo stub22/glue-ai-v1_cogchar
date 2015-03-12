@@ -35,13 +35,13 @@ class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) w
          * Files.getLastModifiedTime(path)
          */
 
-	lazy val myPseudoDFE: Option[JarFolderEntry] = {
+	lazy val myJnioDelegate: Option[JnioFolderEntry] = {
 
         var path_opt: Option[Path] = None
         try {
             
                 import scala.collection.JavaConversions._
-                debug1("Making pseudo-path for locUri: {}", locUri)
+                debug1("Making Java NIO-path for locUri: {}", locUri)
                 if(locUri.getScheme == "jar"){
                     /**
                      * A path cannot contain "jar:" or "file:/" because of the colons. Most links to jars sent in here have
@@ -65,21 +65,21 @@ class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) w
         } catch {
             case t: Throwable => error2("Error instantiating java.nio.file.Path for uri: {}, exc: {}", locUri, t)
         }
-        path_opt.map(new JarFolderEntry(_))
+        path_opt.map(new JnioFolderEntry(_))
     }
 	
 	
 	override def findDirectPlainEntries: Traversable[PlainEntry] = {
-		if (myPseudoDFE.isDefined) {
-			// Will return the FolderPlainEntries - why not? 
-			myPseudoDFE.get.findDirectPlainEntries  // But we could also:  .map(new ResourcePlainEntry(_.getJavaURI))
+		if (myJnioDelegate.isDefined) {
+	
+			myJnioDelegate.get.findDirectPlainEntries  
 		} else {
 			Set()
 		}
 	}
 	override def findDirectSubFolders: Traversable[FolderEntry] = {
-		if (myPseudoDFE.isDefined) {
-			myPseudoDFE.get.findDirectSubFolders
+		if (myJnioDelegate.isDefined) {
+			myJnioDelegate.get.findDirectSubFolders
 		} else {
 			Set()
 		}
