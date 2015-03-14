@@ -29,9 +29,9 @@ Java 7 NIO Path based entries.
  */
 class JnioEntry(somePath : Path) extends Entry with VarargsLogging {
 	// Often it is file: form of URL, but not always.
+	// May also be  jar:file:  which winds up being trickier to deal with downstream.
 	override def getJavaURI : java.net.URI = somePath.toUri 
 	
-	 
 }
 
 class JnioFolderEntry (jnioFolder : Path) extends JnioEntry(jnioFolder) with FolderEntry {
