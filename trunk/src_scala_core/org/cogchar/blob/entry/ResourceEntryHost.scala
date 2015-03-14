@@ -43,22 +43,41 @@ class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) w
                 import scala.collection.JavaConversions._
                 debug1("Making Java NIO-path for locUri: {}", locUri)
                 if(locUri.getScheme == "jar"){
-                    /**
-                     * A path cannot contain "jar:" or "file:/" because of the colons. Most links to jars sent in here have
+					// Example debug output pointing to a folder inside a Jar in a local maven repo:
+					// jar:file:/E:/mrepo_j7_m305/com/rkbots/milo/com.rkbots.milo.api.onto/1.1.0-SNAPSHOT/com.rkbots.milo.api.onto-1.1.0-SNAPSHOT.jar!/com/rkbots/milo/onto/
+
+					/**
+					 * Let's try to clarify this statement:
+					 *
+                     *		A path cannot contain "jar:" or "file:/" because of the colons.
+					 *		
+					 *	[What kind of "path" has this constraint?  A java.nio.file.Path?  Do we have a reference on that?]
+					 *	
+					 *  Most links to jars sent in here have
                      * "jar:file:/" appended to the beginning of their Uris so they must be removed.
-                     * The path to the jar and the path inside the jar are seperated by a "!" which is what I am using as a delimiter below.
+                     * The path to the jar and the path inside the jar are separated by a "!" which is what I am using as a delimiter below.
+					 * 
+					 * [Was the code below copied from somewhere, or is this Ben's original solution? ]
                      */
                     val uriParts = locUri.toString.split("!")
                     val locJarPath = uriParts(0).replaceFirst("jar:", "").replaceFirst("file:/", "")
                     val directoryInJarPath = uriParts(1)
                     
-                    // To read the contents of a jar you have to create a FileSystem object and use it to create paths inside the jar
+                    // To read the contents of a jar you have to create a FileSystem object and use it to create paths inside the jar.
+					// Three concerns here:
+					//		A) It may be costly to call newFileSystem a lot.   
+					//		B) Are we supposed to explicitly close these file systems at some point?
+					//		C) Sometimes we may want a different classloader in order to resolve the path correctly.
+					//		[This is a context-dependent question.  The classloader used here may not matter 
+					//		too much in most cases where this code is being called, since we are probably outside
+					//		OSGi in a main() program, and there is probably just one big classloader].
                     val jarFileSystem = FileSystems.newFileSystem(Paths.get(locJarPath), classOf[ResourceEntryHost].getClassLoader)
                     
                     // Create the path inside of the jar
                     val path = jarFileSystem.getPath(directoryInJarPath)
                     path_opt = Option(path)
-                }else{
+                } else {
+					// In this case the resource was probably resolved to a regular file: in our local project's "target/classes" directory.
                     val path = Paths.get(locUri)
                     path_opt = Option(path)
                 }
