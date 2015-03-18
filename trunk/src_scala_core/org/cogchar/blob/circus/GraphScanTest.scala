@@ -152,7 +152,9 @@ object GraphScanTest extends VarargsLogging {
 		val r2goModel: R2GoModel = new rdf2go.impl.jena.ModelImplJena(jenaModelForGHostRecs)		
 		r2goModel.open
 		r2goModel
-	}	
+	}
+
+	
 	def setupScanTestLogging() : Unit = { 
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);		
