@@ -29,6 +29,7 @@ import org.ontoware.rdf2go
 import com.hp.hpl.jena
 
 /**
+ * Here we have an incomplete skeleton of a graph*matrix symbolic runtime.
  */
 
 object CircusTest extends VarargsLogging with AuditSvcFinderGlobal {
