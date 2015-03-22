@@ -256,18 +256,23 @@ class LoadableGraph(val myIndexGP : MdirGraphPointer, val myResolvedSourceGHost 
 }
 
 object LoadableGraphFuncs extends VarargsLogging {
-	// This method returns a function closure with bindings of the required context values.
+	// This make-maker method returns a function closure with bindings for the required context values.
 	def makeLGHandleMaker(gpIndexModel : R2GoModel, sourceGHostIndexModel : R2GoModel, parentFCH : FriendlyChunkHandle) 
 			: Function1[HasURI, TypedItemHandle[LoadableGraph]] = {
 		hasUri => {
 			val r2goURI : R2GoURI = hasUri.getR2GoURI
 			val indexGP : MdirGraphPointer = new MdirGraphPointer(gpIndexModel, r2goURI, false)
+			// These are only partially resolved, because we don't know if they are connected to the right model.
 			val partiallyResolvedGHosts : Array[MdirGraphHost] = indexGP.getAllPointsToGraphHost_as.asArray
 			val prghCount = partiallyResolvedGHosts.size 
 			if (prghCount == 1) {
+				// Connect the URI to the model we were told to use for the sourceGHosts.
 				val resolvedSourceGHost = new MdirGraphHost(sourceGHostIndexModel, partiallyResolvedGHosts(0).asURI, false)
+				// Make a live object instance to track the loading state of the content data.
 				val lg = new LoadableGraph(indexGP, resolvedSourceGHost)
+				// TODO:  Make the typedURI based on the indexGP and its backing model.
 				val typedURI : HasTypedURI = null
+				// Make the handle to be cached.
 				val itemHandle = new TypedItemHandle[LoadableGraph](lg, typedURI, parentFCH)
 				itemHandle
 			} else {
