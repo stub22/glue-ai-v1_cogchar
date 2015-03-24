@@ -19,7 +19,9 @@
 		<module>../ext.bundle.ops4j.pax.web</module>
 		<module>../ext.bundle.fuseki</module>
 		<module>../ext.bundle.lift</module>
-		
+		<module>../ext.bundle.ontoware</module>
+
+				
 		<module>../org.cogchar.bundle.demo.all</module>
 		<!-- Stu configging for "all new puma" build -->
 		<module>../org.cogchar.bundle.app.new.puma</module>
