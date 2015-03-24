@@ -24,7 +24,13 @@
     	<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
-		</dependency>		
+		</dependency>	
+		
+    	<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.apache_httpclient</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>					
 		<!--
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -86,8 +92,27 @@
                     <groupId>org.apache.jena</groupId>
                     <artifactId>jena-core</artifactId>
                 </exclusion>
+                <exclusion>
+					<!-- We are not using this feature currently, and it drags in a lot of other deps -->
+                    <groupId>com.github.jsonld-java</groupId>
+                    <artifactId>jsonld-java-jena</artifactId>
+                </exclusion>
             </exclusions>
-        </dependency>	
+        </dependency>
+		<!--
+        <dependency>
+            <groupId>com.github.jsonld-java</groupId>
+            <artifactId>jsonld-java-jena</artifactId>
+            <version>0.4.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.3.3</version>
+            <scope>provided</scope>
+        </dependency>
+		-->
     </dependencies>
 
     <build>
@@ -101,6 +126,7 @@
 						<!-- Probly not needed
                         <Import-Package>sun.misc;resolution:='optional',*</Import-Package>
 						-->
+						<Import-Package>!com.github.jsonldjava.*,*</Import-Package>
                         <Export-Package>
 							<!-- Notes:  1) We don't want to re-export the packages from rdf2go.api.
 							2) The impl package is somewhat tricky, as this is the special "binding" pkg, 
