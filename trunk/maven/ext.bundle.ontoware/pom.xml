@@ -19,17 +19,27 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.osgi.core</artifactId>
         </dependency>
+    	<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
+		</dependency>		
+		<!--
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
+		-->
         <dependency>
-            <!-- Proper bundle used by ontoware RDF2Go stuff, which is not otherwise propagated -->
+            <!-- Proper bundle used by ontoware RDF2Go stuff, which is not otherwise propagated.
+				We do *not* want to re-export this bundle.
+			-->
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
+			<!-- Since we want this bundle-dep to propagate, we don't want "provided"
             <scope>provided</scope>
+			-->
         </dependency>
         <dependency>
             <groupId>org.semweb4j</groupId>
@@ -43,6 +53,7 @@
             <groupId>org.semweb4j</groupId>
             <artifactId>rdfreactor.runtime</artifactId>
             <version>5.0.1</version>
+			<!-- We are re-exporting this jar contents, so "provided" is correct scope -->
              <scope>provided</scope>
         </dependency>
         <dependency>
@@ -53,6 +64,7 @@
             -->
             <artifactId>rdf2go.impl.jena</artifactId>
             <version>5.0.1</version>
+			<!-- We are re-exporting this jar contents, so "provided" is correct scope -->
              <scope>provided</scope>
             <!--  Still needed?
             <exclusions>
@@ -84,11 +96,13 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-						<!-- Perhaps not needed
+						<!-- Probly not needed
                         <Import-Package>sun.misc;resolution:='optional',*</Import-Package>
 						-->
                         <Export-Package>
-							<!-- We dont want to re-export the packages from rdf2go.api --> 
+							<!-- Notes:  1) We don't want to re-export the packages from rdf2go.api.
+							2) The impl package is somewhat tricky, as this is the special "binding" pkg, 
+							but also contains AbstractModelFactory.class -->
 							org.ontoware.rdf2go.impl.*,  
 							org.ontoware.rdfreactor.*
 							<!--
