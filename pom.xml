@@ -86,7 +86,9 @@ Version-less parent will be allowed in Maven 3.1.
 		<net.liftweb.version>2.5.1</net.liftweb.version>
 		<netbeans.hint.license>cogchar-apache20</netbeans.hint.license>	
 		<netbeans.version>RELEASE721</netbeans.version>
+		<!--
 		<org.apache.http.version>4.3</org.apache.http.version>
+		-->
 		<org.apache.log4j.version>1.2.16</org.apache.log4j.version>
 		<org.osgi.version>4.3.0</org.osgi.version>
 		<org.ow2.version>1.0.33</org.ow2.version>
@@ -195,6 +197,7 @@ Version-less parent will be allowed in Maven 3.1.
                     <artifactId>org.osgi.compendium</artifactId>
                     <version>${felix.org.osgi.compendium.version}</version>
                 </dependency>
+				<!--
                 <dependency>
                     <groupId>org.apache.httpcomponents</groupId>
                     <artifactId>httpclient-osgi</artifactId>
@@ -205,6 +208,7 @@ Version-less parent will be allowed in Maven 3.1.
                     <artifactId>httpcore-osgi</artifactId>
                     <version>${org.apache.http.version}</version>
                 </dependency>
+				-->
                 <dependency>
                     <groupId>org.apache.jena</groupId>
                     <artifactId>jena-fuseki</artifactId>
@@ -508,6 +512,7 @@ Version-less parent will be allowed in Maven 3.1.
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
 		<!-- Need for RDF-Reactor and RDF2go -->
+		<!--
 		<repository>
 			<id>semweb4j-repo</id>
 			<name>FZI Maven Repository</name>
@@ -519,6 +524,7 @@ Version-less parent will be allowed in Maven 3.1.
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>		
+		-->
 		<!-- Needed for "good" log4J bundle (for org.cogchar.bundle.bind.lift) -->
 		<repository>
 			<id>com.springsource.repository.bundles.external</id>
