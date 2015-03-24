@@ -35,7 +35,9 @@
             <groupId>org.semweb4j</groupId>
             <artifactId>rdf2go.api</artifactId>
             <version>5.0.1</version>
+			<!-- Nope, we want this dep to propagate, so we want scope=compile, which is the default.
              <scope>provided</scope>
+			 -->
         </dependency>
         <dependency>
             <groupId>org.semweb4j</groupId>
@@ -61,6 +63,7 @@
             </exclusions>
             -->
             <exclusions>
+				<!-- We do not want to propagate a direct dependence on these jena deps. -->
                 <exclusion>
                     <groupId>org.apache.jena</groupId>
                     <artifactId>jena-arq</artifactId>
@@ -81,9 +84,20 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+						<!-- Perhaps not needed
                         <Import-Package>sun.misc;resolution:='optional',*</Import-Package>
-                        <Export-Package>org.ontoware.*, rdf2go.*, rdfreactor.runtime, com.github.jsonldjava.*, com.fasterxml.jackson.*, org.apache.commons.io.*</Export-Package>
+						-->
+                        <Export-Package>
+							<!-- We dont want to re-export the packages from rdf2go.api --> 
+							org.ontoware.rdf2go.impl.*,  
+							org.ontoware.rdfreactor.*
+							<!--
+							org.ontoware.*, rdf2go.*, rdfreactor.runtime, com.github.jsonldjava.*, com.fasterxml.jackson.*, org.apache.commons.io.*
+							-->
+						</Export-Package>
+						<!-- Perhaps not needed
                         <Private-Package>edu.emory.mathcs.backport.java.util.*</Private-Package>
+						-->
                     </instructions>
                 </configuration>
             </plugin>
