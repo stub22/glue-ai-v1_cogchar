@@ -76,11 +76,6 @@ class BundleEntry(bundle : org.osgi.framework.Bundle, locUri : java.net.URI) ext
 	override def getJavaURI : java.net.URI = locUri
 }
 class BundleFolderEntry(bundle : org.osgi.framework.Bundle, locUri : java.net.URI) extends BundleEntry (bundle, locUri) with FolderEntry {
-        // BundleFolderEntry could supply its own search impls based on the getMatchingEntryURLs method above
-	// 
-	// Note these 2 different function-arg type syntaxes are equivalent
-	// override def searchDirectPlainEntries(filt: PlainEntry => Boolean): Set[PlainEntry] = ??? // recurse = false
-	// override def searchDeepPlainEntries(filt: Function1[PlainEntry,Boolean]): Set[PlainEntry] = ???  // recurse = true
     
     
 	lazy val myBundleDelegate: Option[OSGIFolderEntry] = {
