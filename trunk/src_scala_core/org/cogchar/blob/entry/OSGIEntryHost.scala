@@ -41,24 +41,24 @@ class OSGIFolderEntry (bundle : org.osgi.framework.Bundle, osgiURL : URL) extend
 		readableSubURLs.filter(isDirectory(_)).map(new OSGIFolderEntry(bundle, _))
 	}
         
-  def isDirectory(pathURL: URL): Boolean = {
-    val fileURL = pathURL.getPath
-    fileURL.endsWith("/") || fileURL.endsWith("\\")
-  }
-  
-    def isReadable(url: URL): Boolean = {
-    var readable = false
+  def isDirectory(url: URL): Boolean = {
+    var directory = true
     try {
       val conn = url.openConnection()
       val is = conn.getInputStream
-      // Returns how many bytes can be read, if it isn't 0, then it is readable
+      // Returns how many bytes can be read, if it isn't 0, then it is a directory
       if (is.available() != 0) {
-        readable = true
+         directory = false
       }
     } catch {
       case e: Exception => 
     }
-    readable
+     directory
+  }
+  
+  // I don't know how to tell if a URL is readable...
+    def isReadable(url: URL): Boolean = {
+    true
   }
   
     def exists(pathURL: URL): Boolean = {
@@ -118,24 +118,24 @@ class OSGIEntryHost(bundle : org.osgi.framework.Bundle, rootURLOpt : Option[Stri
 		findReadableURL(path).filter(isRegularFile(_)).map(new OSGIPlainEntry(bundle, _))
 	}
        
-  def isDirectory(pathURL: URL): Boolean = {
-    val fileURL = pathURL.getPath
-    fileURL.endsWith("/") || fileURL.endsWith("\\")
-  }
-    
-  def isReadable(url: URL): Boolean = {
-    var readable = false
+  def isDirectory(url: URL): Boolean = {
+    var directory = true
     try {
       val conn = url.openConnection()
       val is = conn.getInputStream
-      // Returns how many bytes can be read, if it isn't 0, then it is readable
+      // Returns how many bytes can be read, if it isn't 0, then it is a directory
       if (is.available() != 0) {
-        readable = true
+         directory = false
       }
     } catch {
       case e: Exception => 
     }
-    readable
+     directory
+  }
+    
+  // I don't know how to tell if a URL is readable...
+  def isReadable(url: URL): Boolean = {
+    true
   }
   
     def exists(pathURL: URL): Boolean = {
