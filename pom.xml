@@ -112,7 +112,7 @@ Version-less parent will be allowed in Maven 3.1.
 		<slf4j.version>1.7.5</slf4j.version>			
 			
 		<!-- plugins used during ontogen -->
-		<org.semweb4j.version>4.8.3</org.semweb4j.version>	
+		<org.semweb4j.version>5.0.1</org.semweb4j.version>	
 		<version.jena.maven.tools>0.5</version.jena.maven.tools>
 		<version.build.helper.maven.plugin>1.7</version.build.helper.maven.plugin>
 						
@@ -131,12 +131,14 @@ Version-less parent will be allowed in Maven 3.1.
 	</properties>
         <dependencyManagement>
             <dependencies>
+				<!--
 				<dependency>
 					<groupId>org.semweb4j</groupId>
 					<artifactId>rdfreactor.dist</artifactId>
 					<version>${org.semweb4j.version}</version>
 					<type>pom</type>
 				</dependency>
+				-->
 				<dependency>
 					<groupId>org.semweb4j</groupId>
 					<artifactId>rdf2go.impl.jena</artifactId>
@@ -542,6 +544,7 @@ Version-less parent will be allowed in Maven 3.1.
 			<name>sonatype public</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</pluginRepository>
+		<!--
 		<pluginRepository>
 			<id>semweb4j-repo</id>
 			<name>FZI Maven Repository</name>
@@ -552,7 +555,8 @@ Version-less parent will be allowed in Maven 3.1.
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-		</pluginRepository>				
+		</pluginRepository>	
+		-->			
 	</pluginRepositories>  	
         <!--
 	connection - used for read access to Maven (e.g. for svn-update)

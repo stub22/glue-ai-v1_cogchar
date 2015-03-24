@@ -23,6 +23,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>ext.bundle.ontoware</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<!--
+		<dependency>
 			<groupId>org.semweb4j</groupId>
 			<artifactId>rdfreactor.dist</artifactId>
 			<type>pom</type>
@@ -44,7 +50,8 @@
 		<dependency>
 			<groupId>org.semweb4j</groupId>
 			<artifactId>rdf2go.impl.jena</artifactId>
-		</dependency>		
+		</dependency>
+		-->
 	</dependencies>
 	<build>
 		<plugins>
