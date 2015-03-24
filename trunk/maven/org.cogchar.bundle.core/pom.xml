@@ -14,6 +14,7 @@
     <name>${project.artifactId} - OSGi Bundle</name>
 
     <dependencies>
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.core.api</artifactId>
@@ -110,12 +111,14 @@
 			<artifactId>org.jflux.api.common.rk</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<!-- This is now propagated by ext.bundle.ontolware
         <dependency>
-			<!-- Proper bundle used by ontoware RDF2Go stuff, which is not otherwise propagated -->
+			
 			<groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
+		-->
     </dependencies>
 
     <build>
