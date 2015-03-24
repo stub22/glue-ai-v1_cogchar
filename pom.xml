@@ -86,9 +86,9 @@ Version-less parent will be allowed in Maven 3.1.
 		<net.liftweb.version>2.5.1</net.liftweb.version>
 		<netbeans.hint.license>cogchar-apache20</netbeans.hint.license>	
 		<netbeans.version>RELEASE721</netbeans.version>
-		<!--
-		<org.apache.http.version>4.3</org.apache.http.version>
-		-->
+		
+		<org.apache.http.version>4.3.1</org.apache.http.version>
+	
 		<org.apache.log4j.version>1.2.16</org.apache.log4j.version>
 		<org.osgi.version>4.3.0</org.osgi.version>
 		<org.ow2.version>1.0.33</org.ow2.version>
