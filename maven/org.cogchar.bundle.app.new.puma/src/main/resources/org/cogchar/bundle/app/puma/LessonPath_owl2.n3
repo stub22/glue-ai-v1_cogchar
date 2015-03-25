@@ -1,0 +1,2427 @@
+#################################################################
+#    Copyright 2015 by RoboKind.   All Rights Reserved.
+#################################################################
+@prefix : <http://onto.robokind.info/onto/201407/LessonPath_OWL2#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://onto.robokind.info/onto/201407/LessonPath_OWL2> .
+
+<http://onto.robokind.info/onto/201407/LessonPath_OWL2> rdf:type owl:Ontology ;
+                                                        
+                                                        rdfs:comment "Defines concepts used in Milo lesson content, runtime, and reporting."^^xsd:string .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+###  http://www.w3.org/2002/07/owl#maxCardinality
+
+owl:maxCardinality rdf:type owl:AnnotationProperty .
+
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#affectsBlock
+
+:affectsBlock rdf:type owl:ObjectProperty ;
+              
+              rdfs:comment "The outputs/consequences of TimingConstraints are all achieved through subproperties of affectsBlock.  All the affectsBlock consequences of a TimingConstraint are activated simultaneously, upon satisfaction of the constraint input predicates (the waitsFors)." ;
+              
+              rdfs:range :ContentBlock ;
+              
+              rdfs:domain :TimingConstraint ;
+              
+              rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#affectsLoop
+
+:affectsLoop rdf:type owl:ObjectProperty ;
+             
+             rdfs:comment """The loop-related properties are left only partially specified, 
+until the Milo app is working with the other features.""" ;
+             
+             rdfs:range :LoopingBlock ;
+             
+             rdfs:domain :TimingConstraint ;
+             
+             rdfs:subPropertyOf :affectsBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#excludesBlock
+
+:excludesBlock rdf:type owl:ObjectProperty ;
+               
+               rdfs:comment """Allows a TimingConstraint to turn off a particular block.
+If the target block is PENDING, it goes to PREVENTED.
+If it is ACTIVE, it goes to CANCELED.
+Otherwise, no effect.""" ;
+               
+               rdfs:range :ContentBlock ;
+               
+               rdfs:domain :TimingConstraint ;
+               
+               rdfs:subPropertyOf :affectsBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#finishesBlock
+
+:finishesBlock rdf:type owl:ObjectProperty ;
+               
+               rdfs:comment """When constraint is satisfied for the first time (and only then),
+If target block state is BS_ACTIVE, it goes to BS_COMPLETE.
+Otherwise, no effect.
+""" ;
+               
+               rdfs:range :ContentBlock ;
+               
+               rdfs:domain :TimingConstraint ;
+               
+               rdfs:subPropertyOf :affectsBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#focusesOn
+
+:focusesOn rdf:type owl:ObjectProperty ;
+           
+           rdfs:comment """Used to identify the context elements that are selected for the motive.
+For example, if our motive is to play a lesson for a student and a faciliator, then all of     lesson + student + faciliator would be focuses of this motive.
+""" ;
+           
+           rdfs:domain :InteractionMotive ;
+           
+           rdfs:range :LThing ;
+           
+           rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#focusesOnHelperFolio
+
+:focusesOnHelperFolio rdf:type owl:ObjectProperty ;
+                      
+                      rdfs:comment "When a faciliator is logged in, then most of the active motives will be tied to that faciliator's HelperFolio through this property." ;
+                      
+                      rdfs:range :HelperFolio ;
+                      
+                      rdfs:domain :InteractionMotive ;
+                      
+                      rdfs:subPropertyOf :focusesOn .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#focusesOnLesson
+
+:focusesOnLesson rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:domain :InteractionMotive ;
+                 
+                 rdfs:range :Lesson ;
+                 
+                 rdfs:subPropertyOf :focusesOn ;
+                 
+                 rdfs:domain [ rdf:type owl:Restriction ;
+                               owl:onProperty :focusesOnLesson ;
+                               owl:onClass :Lesson ;
+                               owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
+                             ] .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#focusesOnStudentFolio
+
+:focusesOnStudentFolio rdf:type owl:ObjectProperty ;
+                       
+                       rdfs:domain :InteractionMotive ;
+                       
+                       rdfs:range :StudentFolio ;
+                       
+                       rdfs:subPropertyOf :focusesOn .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#follows
+
+:follows rdf:type owl:ObjectProperty ;
+         
+         rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#followsMember
+
+:followsMember rdf:type owl:ObjectProperty ;
+               
+               rdfs:range :ModuleMember ;
+               
+               rdfs:domain :ModuleMember ;
+               
+               rdfs:subPropertyOf :follows .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#followsOnScreen
+
+:followsOnScreen rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:domain :ContentBlock ;
+                 
+                 rdfs:range :ContentBlock ;
+                 
+                 rdfs:subPropertyOf :follows .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#followsPromptButton
+
+:followsPromptButton rdf:type owl:ObjectProperty ;
+                     
+                     rdfs:comment """Describes screen ordering.
+Could be a partialOrdering (transitive)
+or a wellOrdering (functional)""" ;
+                     
+                     rdfs:range :PromptButton ;
+                     
+                     rdfs:domain :PromptButton ;
+                     
+                     rdfs:subPropertyOf :followsOnScreen .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChild
+
+:hasChild rdf:type owl:ObjectProperty ;
+          
+          rdfs:comment "used to indicate parent-to-child relation within a major category (content, response, motive)"^^xsd:string ;
+          
+          rdfs:domain :LThing ;
+          
+          rdfs:range :LThing ;
+          
+          rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildAnimPointer
+
+:hasChildAnimPointer rdf:type owl:ObjectProperty ;
+                     
+                     rdfs:range :AnimMediaPointer ;
+                     
+                     rdfs:domain :CharacterPresentation ;
+                     
+                     rdfs:subPropertyOf :hasChildMediaPointer .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildBlock
+
+:hasChildBlock rdf:type owl:ObjectProperty ;
+               
+               rdfs:domain :ContentBlock ;
+               
+               rdfs:range :ContentBlock ;
+               
+               rdfs:subPropertyOf :hasChildContent .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildConstraint
+
+:hasChildConstraint rdf:type owl:ObjectProperty ;
+                    
+                    rdfs:domain :ContentBlock ;
+                    
+                    rdfs:range :TimingConstraint ;
+                    
+                    rdfs:subPropertyOf :hasChildContent .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildContent
+
+:hasChildContent rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:domain :Content ;
+                 
+                 rdfs:range :Content ;
+                 
+                 rdfs:subPropertyOf :hasChild .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildImagePointer
+
+:hasChildImagePointer rdf:type owl:ObjectProperty ;
+                      
+                      rdfs:domain :ContentBlock ;
+                      
+                      rdfs:range :ImageMediaPointer ;
+                      
+                      rdfs:subPropertyOf :hasChildMediaPointer .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildLesson
+
+:hasChildLesson rdf:type owl:ObjectProperty ;
+                
+                rdfs:range :Lesson ;
+                
+                rdfs:domain :LessonModuleMember ;
+                
+                rdfs:subPropertyOf :hasChildContent .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildMediaPointer
+
+:hasChildMediaPointer rdf:type owl:ObjectProperty ;
+                      
+                      rdfs:subPropertyOf :hasChildContent .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildMember
+
+:hasChildMember rdf:type owl:ObjectProperty ;
+                
+                rdfs:domain :Module ;
+                
+                rdfs:range :ModuleMember ;
+                
+                rdfs:subPropertyOf :hasChildContent .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildMotive
+
+:hasChildMotive rdf:type owl:ObjectProperty ;
+                
+                rdfs:range :Motive ;
+                
+                rdfs:domain :Motive ;
+                
+                rdfs:subPropertyOf :hasChild .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildPrompt
+
+:hasChildPrompt rdf:type owl:ObjectProperty ;
+                
+                rdfs:domain :ContentBlock ;
+                
+                rdfs:range :Prompt ;
+                
+                rdfs:subPropertyOf :hasChildBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildResponse
+
+:hasChildResponse rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:range :Response ;
+                  
+                  rdfs:domain :Response ;
+                  
+                  rdfs:subPropertyOf :hasChild .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasChildVideoPointer
+
+:hasChildVideoPointer rdf:type owl:ObjectProperty ;
+                      
+                      rdfs:range :VideoMediaPointer ;
+                      
+                      rdfs:domain :VideoPresentation ;
+                      
+                      rdfs:subPropertyOf :hasChildMediaPointer .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasCurrentBlockState
+
+:hasCurrentBlockState rdf:type owl:FunctionalProperty ,
+                               owl:ObjectProperty ;
+                      
+                      owl:maxCardinality "1" ;
+                      
+                      rdfs:range :BlockState ;
+                      
+                      rdfs:domain :BlockUsage ;
+                      
+                      rdfs:subPropertyOf :hasCurrentState .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasCurrentConstraintState
+
+:hasCurrentConstraintState rdf:type owl:FunctionalProperty ,
+                                    owl:ObjectProperty ;
+                           
+                           owl:maxCardinality "1" ;
+                           
+                           rdfs:range :ConstraintState ;
+                           
+                           rdfs:domain :ConstraintUsage ;
+                           
+                           rdfs:subPropertyOf :hasCurrentState .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasCurrentState
+
+:hasCurrentState rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasParent
+
+:hasParent rdf:type owl:ObjectProperty ;
+           
+           rdfs:comment """We do not use hasParent in the content graphs.
+It is only for the runtime/historical usage graphs.""" ;
+           
+           rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasParentUsage
+
+:hasParentUsage rdf:type owl:FunctionalProperty ,
+                         owl:ObjectProperty ;
+                
+                owl:maxCardinality "1" ;
+                
+                rdfs:range :Usage ;
+                
+                rdfs:domain :Usage ;
+                
+                rdfs:subPropertyOf :hasParent .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#mayStartBlock
+
+:mayStartBlock rdf:type owl:ObjectProperty ;
+               
+               rdfs:comment """Used by the StartsEach* types to start some subset of N blocks, usually 1 of N.
+May use querying to discover loop scope, to manage repetition.
+""" ;
+               
+               rdfs:range :ContentBlock ;
+               
+               rdfs:domain :TimingConstraint ;
+               
+               rdfs:subPropertyOf :affectsBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ourObjectProperty
+
+:ourObjectProperty rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:domain :LThing ;
+                   
+                   rdfs:range :LThing .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#presentsToRole
+
+:presentsToRole rdf:type owl:ObjectProperty ;
+                
+                rdfs:comment "Allows a block to be presented to particular roles." ;
+                
+                rdfs:domain :ContentBlock ;
+                
+                rdfs:range :Role ;
+                
+                rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#respondsTo
+
+:respondsTo rdf:type owl:ObjectProperty ;
+            
+            rdfs:range :LThing ;
+            
+            rdfs:domain :Response ;
+            
+            rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#respondsToBlock
+
+:respondsToBlock rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:comment "Often used in direct assertion over PerceviedResponse, to show where a perception occurred on the content timeline (without emphasizing the subtype of content active at that moment)."^^xsd:string ;
+                 
+                 rdfs:range :ContentBlock ;
+                 
+                 rdfs:domain :Response ;
+                 
+                 rdfs:subPropertyOf :respondsTo .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#respondsToLesson
+
+:respondsToLesson rdf:type owl:FunctionalProperty ,
+                           owl:ObjectProperty ;
+                  
+                  rdfs:range :Lesson ;
+                  
+                  rdfs:domain :LessonResponse ;
+                  
+                  rdfs:subPropertyOf :respondsToBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#respondsToPrompt
+
+:respondsToPrompt rdf:type owl:FunctionalProperty ,
+                           owl:ObjectProperty ;
+                  
+                  rdfs:range :Prompt ;
+                  
+                  rdfs:domain :PromptedResponse ;
+                  
+                  rdfs:subPropertyOf :respondsToBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#respondsToQuestion
+
+:respondsToQuestion rdf:type owl:FunctionalProperty ,
+                             owl:ObjectProperty ;
+                    
+                    rdfs:range :Question ;
+                    
+                    rdfs:domain :QuestionResponse ;
+                    
+                    rdfs:subPropertyOf :respondsToBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#restartsLoop
+
+:restartsLoop rdf:type owl:ObjectProperty ;
+              
+              rdfs:comment """The loop-related properties are left only partially specified, 
+until the Milo app is working with the other features.""" ;
+              
+              rdfs:range :LoopingBlock ;
+              
+              rdfs:domain :TimingConstraint ;
+              
+              rdfs:subPropertyOf :affectsLoop .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#startsBlock
+
+:startsBlock rdf:type owl:InverseFunctionalProperty ,
+                      owl:ObjectProperty ;
+             
+             rdfs:comment """Inverse functional property, allows a block to start.   A block may only be started once, within a single run through any enclosing LoopingBlock. A block should have only one TimingConstraint pointing at it with startsBlock, or else the behavior is undefined.     Instead authors should use a waitsFor-Any or waitsFor-All construct to join the other constraints.
+
+When the constraint becomes satisfied the first time (and only then),
+if targetBlock is in state BS_PENDING, then it goes to BS_ACTIVE.
+Otherwise, no effect.
+
+A constraint may specify :startsBlock only for blocks which have the same immediate  parent (via inverse  :hasChildBlock) as the constraint itself (via inverse :hasChildConstraint).   This rule should be enforced through an OWL2 restriction, and by software at runtime.
+""" ;
+             
+             rdfs:range :ContentBlock ;
+             
+             rdfs:domain :TimingConstraint ;
+             
+             rdfs:subPropertyOf :affectsBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#uses
+
+:uses rdf:type owl:ObjectProperty ;
+      
+      rdfs:range :LThing ;
+      
+      rdfs:domain :Usage ;
+      
+      rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesBlockResponse
+
+:usesBlockResponse rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:range :BlockResponse ;
+                   
+                   rdfs:domain :BlockUsage ;
+                   
+                   rdfs:subPropertyOf :usesResponse .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesConstraint
+
+:usesConstraint rdf:type owl:FunctionalProperty ,
+                         owl:ObjectProperty ;
+                
+                owl:maxCardinality "1" ;
+                
+                rdfs:domain :ConstraintUsage ;
+                
+                rdfs:range :TimingConstraint ;
+                
+                rdfs:subPropertyOf :usesContent .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesContent
+
+:usesContent rdf:type owl:ObjectProperty ;
+             
+             rdfs:range :Content ;
+             
+             rdfs:domain :Usage ;
+             
+             rdfs:subPropertyOf :uses .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesContentBlock
+
+:usesContentBlock rdf:type owl:FunctionalProperty ,
+                           owl:ObjectProperty ;
+                  
+                  owl:maxCardinality "1" ;
+                  
+                  rdfs:domain :BlockUsage ;
+                  
+                  rdfs:range :ContentBlock ;
+                  
+                  rdfs:subPropertyOf :usesContent .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesFacilScreenHost
+
+:usesFacilScreenHost rdf:type owl:ObjectProperty ;
+                     
+                     rdfs:range :ScreenHost ;
+                     
+                     rdfs:domain :Usage ;
+                     
+                     rdfs:subPropertyOf :uses .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesHelperFolio
+
+:usesHelperFolio rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:range :HelperFolio ;
+                 
+                 rdfs:domain :LessonUsage ;
+                 
+                 rdfs:subPropertyOf :uses .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesLesson
+
+:usesLesson rdf:type owl:FunctionalProperty ,
+                     owl:ObjectProperty ;
+            
+            owl:maxCardinality "1" ;
+            
+            rdfs:range :Lesson ;
+            
+            rdfs:domain :LessonUsage ;
+            
+            rdfs:subPropertyOf :usesContentBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesLessonResponse
+
+:usesLessonResponse rdf:type owl:FunctionalProperty ,
+                             owl:ObjectProperty ;
+                    
+                    owl:maxCardinality "1" ;
+                    
+                    rdfs:range :LessonResponse ;
+                    
+                    rdfs:domain :LessonUsage ;
+                    
+                    rdfs:subPropertyOf :usesBlockResponse .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesResponse
+
+:usesResponse rdf:type owl:ObjectProperty ;
+              
+              rdfs:domain :BlockUsage ;
+              
+              rdfs:range :Response ;
+              
+              rdfs:subPropertyOf :uses .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesRobotHost
+
+:usesRobotHost rdf:type owl:ObjectProperty ;
+               
+               rdfs:comment "Pointer to the host (Robot or Avatar-Desktop) that provides/provided a particular lesson usage." ;
+               
+               rdfs:domain :LessonUsage ;
+               
+               rdfs:range :RobotHost ;
+               
+               rdfs:subPropertyOf :uses .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesStudentFolio
+
+:usesStudentFolio rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:domain :LessonUsage ;
+                  
+                  rdfs:range :StudentFolio ;
+                  
+                  rdfs:subPropertyOf :uses .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#usesStudentScreenHost
+
+:usesStudentScreenHost rdf:type owl:ObjectProperty ;
+                       
+                       rdfs:range :ScreenHost ;
+                       
+                       rdfs:domain :Usage ;
+                       
+                       rdfs:subPropertyOf :uses .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#waitsFor
+
+:waitsFor rdf:type owl:ObjectProperty ;
+          
+          rdfs:comment "Upon satisfaction (of all or any - see subtypes of TimingConstraint), the waiter should   trigger start of all blks attached via startsBlock, but each target block may only be triggered by one of these constraints (otherwise add more constraints and use waitsForAny)." ;
+          
+          rdfs:range :LThing ;
+          
+          rdfs:domain :Waiter ;
+          
+          rdfs:subPropertyOf :ourObjectProperty .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#waitsForBlock
+
+:waitsForBlock rdf:type owl:ObjectProperty ;
+               
+               rdfs:range :ContentBlock ;
+               
+               rdfs:domain :Waiter ;
+               
+               rdfs:subPropertyOf :waitsFor .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#waitsForBlockFinish
+
+:waitsForBlockFinish rdf:type owl:ObjectProperty ;
+                     
+                     rdfs:comment "Satisfied only when the obj-Block imoves to state BS_COMPLETE." ;
+                     
+                     rdfs:range :ContentBlock ;
+                     
+                     rdfs:domain :TimingConstraint ;
+                     
+                     rdfs:subPropertyOf :waitsForBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#waitsForBlockResponse
+
+:waitsForBlockResponse rdf:type owl:ObjectProperty ;
+                       
+                       rdfs:comment "Waits for a response to the block that is newer than the waiting constraint usage." ;
+                       
+                       rdfs:range :ContentBlock ;
+                       
+                       rdfs:domain :TimingConstraint ;
+                       
+                       rdfs:subPropertyOf :waitsForBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#waitsForBlockStart
+
+:waitsForBlockStart rdf:type owl:ObjectProperty ;
+                    
+                    rdfs:comment """Logically \"Started\" simply means succesfully transitioned from PENDING to ACTIVE 
+at some point in the past.   However in interpreting this meaning from recorded
+states, there are some fine points to consider.
+
+A blockUsage is definitely considered to have been started whenever whenever we find it
+in one of the states: 
+ BS_ACTIVE, BS_COMPLETE
+
+Two additional states are somewhat ambiguous with respect to the concept of determining
+\"Start\" authorization from the recorded state:
+
+If we find a BlockUsage in state BS_CANCELED, then it must in fact have started, but was later
+aborted, perhaps very soon after the starting.    So logically we mus say that BS_CANCELED
+implies \"Started\".   However, potentially (depending on implementation
+details) we are reading the block's state in a sibling constraint, very soon after both of these 
+things have happened.    In this case we may not want to treat the starting as having \"happened\"
+for constraint satisfaction purposes.  However, relying on such shortcuts is sketchy and not
+a good result for Author's to rely upon.   We will return to this point later.
+
+If we find it in state BS_FAILED, then it may in fact have started (or tried to start), and we 
+may or may not give it credit for doing so.
+
+""" ;
+                    
+                    rdfs:range :ContentBlock ;
+                    
+                    rdfs:domain :TimingConstraint ;
+                    
+                    rdfs:subPropertyOf :waitsForBlock .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#waitsForCondition
+
+:waitsForCondition rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:comment "Waits for some arbitrary predictate to hold over graph-space." ;
+                   
+                   rdfs:range :Condition ;
+                   
+                   rdfs:domain :TimingConstraint ;
+                   
+                   rdfs:subPropertyOf :waitsFor .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#waitsForConditionNegative
+
+:waitsForConditionNegative rdf:type owl:ObjectProperty ;
+                           
+                           rdfs:range :Condition ;
+                           
+                           rdfs:domain :TimingConstraint ;
+                           
+                           rdfs:subPropertyOf :waitsFor .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#waitsForConstraint
+
+:waitsForConstraint rdf:type owl:ObjectProperty ;
+                    
+                    rdfs:comment "Waits for some other constraint to be satisfied - i.e. to be in state CS_WAS_YES." ;
+                    
+                    rdfs:domain :TimingConstraint ;
+                    
+                    rdfs:range :TimingConstraint ;
+                    
+                    rdfs:subPropertyOf :waitsFor .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#waitsForConstraintNegative
+
+:waitsForConstraintNegative rdf:type owl:ObjectProperty ;
+                            
+                            rdfs:domain :TimingConstraint ;
+                            
+                            rdfs:range :TimingConstraint ;
+                            
+                            rdfs:subPropertyOf :waitsFor .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasAuthoredLabel
+
+:hasAuthoredLabel rdf:type owl:DatatypeProperty ;
+                  
+                  rdfs:comment """In our old scenegenerator.properties NV pair form, the names of blocks and other entities (all the names on both sides of all the .properties statements)
+correspond to values of this property.  """ ;
+                  
+                  rdfs:domain :Content ;
+                  
+                  rdfs:subPropertyOf :ourDataProperty ;
+                  
+                  rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasBooleanValue
+
+:hasBooleanValue rdf:type owl:DatatypeProperty ;
+                 
+                 owl:maxCardinality "1" ;
+                 
+                 rdfs:domain :LThing ;
+                 
+                 rdfs:subPropertyOf :ourDataProperty ;
+                 
+                 rdfs:range xsd:boolean .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasDisplayOrder
+
+:hasDisplayOrder rdf:type owl:DatatypeProperty ,
+                          owl:FunctionalProperty ;
+                 
+                 owl:maxCardinality "1" ;
+                 
+                 rdfs:domain :Module ;
+                 
+                 rdfs:subPropertyOf :ourDataProperty ;
+                 
+                 rdfs:range xsd:int .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasDummyStatTest
+
+:hasDummyStatTest rdf:type owl:DatatypeProperty ;
+                  
+                  rdfs:subPropertyOf :ourDataProperty .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasFirstName
+
+:hasFirstName rdf:type owl:DatatypeProperty ;
+              
+              owl:maxCardinality "1" ;
+              
+              rdfs:domain :HelperFolio ,
+                          :StudentFolio ;
+              
+              rdfs:subPropertyOf :ourDataProperty ;
+              
+              rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasFlag
+
+:hasFlag rdf:type owl:DatatypeProperty ;
+         
+         rdfs:domain :LThing ;
+         
+         rdfs:subPropertyOf :hasDummyStatTest ;
+         
+         rdfs:range xsd:boolean .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasHelperID
+
+:hasHelperID rdf:type owl:DatatypeProperty ;
+             
+             rdfs:comment "The helper id is an id proovided by the school for that helper.  Helper ids are expected to be unique within a school district, but there is no expectation of global uniqueness and cannot be used as a reliable identifier.  This is only to be used for display and reporting purposes.  The helper folio and any other helper account will have a different id provided from within the system with guarentees of uniqueness." ;
+             
+             owl:maxCardinality "1" ;
+             
+             rdfs:domain :HelperFolio ;
+             
+             rdfs:subPropertyOf :ourDataProperty ;
+             
+             rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasImplNote
+
+:hasImplNote rdf:type owl:DatatypeProperty ;
+             
+             rdfs:comment "" ,
+                          """We can create any number of implNotes, which can be useful
+in runtime debugging, but are wasteful to keep in persistent archives.  
+Thus it is common to filter them out on transfer to persistence.""" ;
+             
+             rdfs:domain :RuntimeRecord ;
+             
+             rdfs:subPropertyOf :ourDataProperty ;
+             
+             rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasImplSummary
+
+:hasImplSummary rdf:type owl:DatatypeProperty ,
+                         owl:FunctionalProperty ;
+                
+                owl:maxCardinality "1" ;
+                
+                rdfs:comment """Functional prop with max card 1.   So we store at most one of these values,
+and update it at appropriate intervals.""" ;
+                
+                rdfs:domain :RuntimeRecord ;
+                
+                rdfs:subPropertyOf :ourDataProperty ;
+                
+                rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasLastName
+
+:hasLastName rdf:type owl:DatatypeProperty ;
+             
+             owl:maxCardinality "1" ;
+             
+             rdfs:domain :HelperFolio ,
+                         :StudentFolio ;
+             
+             rdfs:subPropertyOf :ourDataProperty ;
+             
+             rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasMatchingQuantity
+
+:hasMatchingQuantity rdf:type owl:DatatypeProperty ,
+                              owl:FunctionalProperty ;
+                     
+                     owl:maxCardinality "1" ;
+                     
+                     rdfs:domain :Condition ;
+                     
+                     rdfs:subPropertyOf :ourDataProperty ;
+                     
+                     rdfs:range xsd:int .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasMaxDurationMsec
+
+:hasMaxDurationMsec rdf:type owl:DatatypeProperty ,
+                             owl:FunctionalProperty ;
+                    
+                    owl:maxCardinality "1" ;
+                    
+                    rdfs:domain :Content ;
+                    
+                    rdfs:subPropertyOf :ourDataProperty ;
+                    
+                    rdfs:range xsd:int .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasPathText
+
+:hasPathText rdf:type owl:DatatypeProperty ;
+             
+             rdfs:domain :MediaPointer ;
+             
+             rdfs:subPropertyOf :hasText ;
+             
+             rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasPoints
+
+:hasPoints rdf:type owl:DatatypeProperty ,
+                    owl:FunctionalProperty ;
+           
+           owl:maxCardinality "1" ;
+           
+           rdfs:comment "Still vaguely defined idea that a prompt or question may have some points associated with it." ;
+           
+           rdfs:domain :LThing ;
+           
+           rdfs:subPropertyOf :ourDataProperty ;
+           
+           rdfs:range xsd:int .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasQueryText
+
+:hasQueryText rdf:type owl:DatatypeProperty ;
+              
+              rdfs:domain :QueryCondition ;
+              
+              rdfs:subPropertyOf :hasText ;
+              
+              rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasScreenText
+
+:hasScreenText rdf:type owl:DatatypeProperty ,
+                        owl:FunctionalProperty ;
+               
+               owl:maxCardinality "1" ;
+               
+               rdfs:domain :ContentBlock ;
+               
+               rdfs:subPropertyOf :hasText ;
+               
+               rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasSpokenName
+
+:hasSpokenName rdf:type owl:DatatypeProperty ,
+                        owl:FunctionalProperty ;
+               
+               owl:maxCardinality "1" ;
+               
+               rdfs:comment "Descriptive name that might be spoken." ;
+               
+               rdfs:domain :LThing ;
+               
+               rdfs:subPropertyOf :ourDataProperty ;
+               
+               rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasSpokenText
+
+:hasSpokenText rdf:type owl:DatatypeProperty ;
+               
+               rdfs:domain :CharacterPresentation ;
+               
+               rdfs:subPropertyOf :hasText ;
+               
+               rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasStampCreated
+
+:hasStampCreated rdf:type owl:DatatypeProperty ,
+                          owl:FunctionalProperty ;
+                 
+                 owl:maxCardinality "1" ;
+                 
+                 rdfs:domain :LThing ;
+                 
+                 rdfs:subPropertyOf :ourDataProperty ;
+                 
+                 rdfs:range xsd:dateTime .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasStampCreatedJava
+
+:hasStampCreatedJava rdf:type owl:DatatypeProperty ,
+                              owl:FunctionalProperty ;
+                     
+                     owl:maxCardinality "1" ;
+                     
+                     rdfs:domain :LThing ;
+                     
+                     rdfs:subPropertyOf :ourDataProperty ;
+                     
+                     rdfs:range xsd:long .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasStampEndedJava
+
+:hasStampEndedJava rdf:type owl:DatatypeProperty ,
+                            owl:FunctionalProperty ;
+                   
+                   owl:maxCardinality "1" ;
+                   
+                   rdfs:domain :RuntimeRecord ;
+                   
+                   rdfs:subPropertyOf :ourDataProperty ;
+                   
+                   rdfs:range xsd:long .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasStampStartedJava
+
+:hasStampStartedJava rdf:type owl:DatatypeProperty ,
+                              owl:FunctionalProperty ;
+                     
+                     owl:maxCardinality "1" ;
+                     
+                     rdfs:domain :RuntimeRecord ;
+                     
+                     rdfs:subPropertyOf :ourDataProperty ;
+                     
+                     rdfs:range xsd:long .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasStatDouble
+
+:hasStatDouble rdf:type owl:DatatypeProperty ;
+               
+               rdfs:domain :LThing ;
+               
+               rdfs:subPropertyOf :hasDummyStatTest ;
+               
+               rdfs:range xsd:double .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasStatFloat
+
+:hasStatFloat rdf:type owl:DatatypeProperty ;
+              
+              rdfs:domain :LThing ;
+              
+              rdfs:subPropertyOf :hasDummyStatTest ;
+              
+              rdfs:range xsd:float .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasStudentID
+
+:hasStudentID rdf:type owl:DatatypeProperty ;
+              
+              owl:maxCardinality "1" ;
+              
+              rdfs:comment "The student id is an id proovided by the school for that student.  Student ids are expected to be unique within a school district, but there is no expectation of global uniqueness and cannot be used as a reliable identifier.  This is only to be used for display and reporting purposes.  The student folio and any other student account will have a different id provided from within the system with guarentees of uniqueness." ;
+              
+              rdfs:domain :StudentFolio ;
+              
+              rdfs:subPropertyOf :ourDataProperty ;
+              
+              rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasStyleText
+
+:hasStyleText rdf:type owl:DatatypeProperty ;
+              
+              rdfs:comment "Placeholder for things like CSS attribute text" ;
+              
+              rdfs:domain :ContentBlock ;
+              
+              rdfs:subPropertyOf :hasText ;
+              
+              rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasText
+
+:hasText rdf:type owl:DatatypeProperty ;
+         
+         rdfs:comment "Using XMLLiteral as range type causes missing class in RDFReactor 4.8.3" ;
+         
+         rdfs:domain :LThing ;
+         
+         rdfs:subPropertyOf :ourDataProperty ;
+         
+         rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasWrittenBriefName
+
+:hasWrittenBriefName rdf:type owl:DatatypeProperty ,
+                              owl:FunctionalProperty ;
+                     
+                     rdfs:comment "Short name for display." ;
+                     
+                     owl:maxCardinality "1" ;
+                     
+                     rdfs:domain :LThing ;
+                     
+                     rdfs:subPropertyOf :ourDataProperty ;
+                     
+                     rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasWrittenDescription
+
+:hasWrittenDescription rdf:type owl:DatatypeProperty ,
+                                owl:FunctionalProperty ;
+                       
+                       owl:maxCardinality "1" ;
+                       
+                       rdfs:comment "Full description for on-screen display." ;
+                       
+                       rdfs:domain :LThing ;
+                       
+                       rdfs:subPropertyOf :ourDataProperty ;
+                       
+                       rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#hasWrittenName
+
+:hasWrittenName rdf:type owl:DatatypeProperty ,
+                         owl:FunctionalProperty ;
+                
+                owl:maxCardinality "1" ;
+                
+                rdfs:comment "Regular name (longer than writtenBriefName, shorter than writtenDescription) that can be displayed on a screen or report." ;
+                
+                rdfs:domain :LThing ;
+                
+                rdfs:subPropertyOf :ourDataProperty ;
+                
+                rdfs:range xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ourDataProperty
+
+:ourDataProperty rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:domain :LThing .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Account
+
+:Account rdf:type owl:Class ;
+         
+         rdfs:subClassOf :UserRecord ;
+         
+         rdfs:comment "A usually password-protected login.    Accounts may be associated with role-types.   Students typically do not have accounts." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#AgendaMotive
+
+:AgendaMotive rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Motive ;
+              
+              rdfs:comment "Represents a set of motives, typically as a snapshot in time.  High level planning traectory of a system may be defined as a sequence of distinct agenda motives, created at successive plan-output intervals."^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#AnimMediaPointer
+
+:AnimMediaPointer rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :MediaPointer .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#AuthorRole
+
+:AuthorRole rdf:type owl:Class ;
+            
+            rdfs:subClassOf :ExceptionalRole .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#AwaitsAll
+
+:AwaitsAll rdf:type owl:Class ;
+           
+           rdfs:subClassOf :TimingConstraint ;
+           
+           rdfs:comment "Conjunctive-AND is satisfied only when all of the waitsFor conditions are satisfied." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#AwaitsAny
+
+:AwaitsAny rdf:type owl:Class ;
+           
+           rdfs:subClassOf :TimingConstraint ;
+           
+           rdfs:comment "Disjunctive-OR is satisfied when any of the waitsFor conditions are satisfied." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#BlockResponse
+
+:BlockResponse rdf:type owl:Class ;
+               
+               rdfs:subClassOf :Response .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#BlockState
+
+:BlockState rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Token ;
+            
+            rdfs:comment " During playback of a lesson, a block progresses through BlockStates." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#BlockUsage
+
+:BlockUsage rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Usage ;
+            
+            rdfs:comment "BlockUsage keeps a reified activity state via hasCurrentBlockState." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#CharacterPresentation
+
+:CharacterPresentation rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :Presentation ;
+                       
+                       rdfs:comment "Presentation made by a character, including speech, animation, lighting effects, and nonreactive embedded screen displays (which are classified separately from GuiPresentation and VideoPresentation screen displays)."^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ChooseLessonMotive
+
+:ChooseLessonMotive rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :InteractionMotive .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ChooseStudentMotive
+
+:ChooseStudentMotive rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :InteractionMotive .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Condition
+
+:Condition rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Waiter ;
+           
+           rdfs:comment "Some fluent condition predicate." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ConstraintState
+
+:ConstraintState rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Token .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ConstraintUsage
+
+:ConstraintUsage rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Usage ;
+                 
+                 rdfs:comment "A ConstraintUsage keeps is a reified logical state, via hasConstraintState, in one of three values:  BS_UNKNOWN, BS_WAS_YES, BS_WAS_NO.     The constraints consequences are fired when we reach BS_WAS_YES (the first time, and only then)." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Content
+
+:Content rdf:type owl:Class ;
+         
+         rdfs:subClassOf :LThing ;
+         
+         rdfs:comment "Metadata record for any piece of content." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ContentBlock
+
+:ContentBlock rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Content ;
+              
+              rdfs:comment "Blocks are pieces of output content, defining containment and a simple activation state machine.  During playback of a lesson, a block progresses through BlockStates." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ControlPB_LessonPause
+
+:ControlPB_LessonPause rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :ControlPromptButton .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ControlPB_LessonResume
+
+:ControlPB_LessonResume rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :ControlPromptButton .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ControlPB_LessonStop
+
+:ControlPB_LessonStop rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf :ControlPromptButton .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ControlPB_LessonStopAndCalmDown
+
+:ControlPB_LessonStopAndCalmDown rdf:type owl:Class ;
+                                 
+                                 rdfs:subClassOf :ControlPromptButton .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ControlPB_SegmentDone
+
+:ControlPB_SegmentDone rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :ControlPromptButton .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ControlPromptButton
+
+:ControlPromptButton rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :PromptButton .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#DeveloperRole
+
+:DeveloperRole rdf:type owl:Class ;
+               
+               rdfs:subClassOf :ExceptionalRole .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#EligibleBlockState
+
+:EligibleBlockState rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :BlockState .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ExceptionalRole
+
+:ExceptionalRole rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Role .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#FacilitatorRole
+
+:FacilitatorRole rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :RegularRole .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Folio
+
+:Folio rdf:type owl:Class ;
+       
+       rdfs:subClassOf :UserRecord ;
+       
+       rdfs:comment """A folio provides a URI for a particular role played by a particular person.
+Intersection records (such as LessonUsage) typically refer to the folio in order to indicate \"who\" did something.   Queries for such records are used to return \"all instances\" where a particular person (supposedly) did something.""" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#GuiForm
+
+:GuiForm rdf:type owl:Class ;
+         
+         rdfs:subClassOf :ContentBlock ;
+         
+         rdfs:comment """May not be used much, but included for conceptual clarity, helping us think about what a conventional GUI form both is and is not.   Contains three kinds of prompts:  required, optional, action [submit, cancel...]
+"""^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#GuiPresentation
+
+:GuiPresentation rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Presentation ;
+                 
+                 rdfs:comment "A (possibly interactive) screen presentation (often through web browser) that is not a video.  However, most such interactions are usually structured as Questions or GuiForms.    The common use of GuiPresentation is as a subcomponent of Question, where it is used to present a screen, with some prompts embedded in it." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#HelperFolio
+
+:HelperFolio rdf:type owl:Class ;
+             
+             rdfs:subClassOf :Folio ;
+             
+             rdfs:comment "A helper folio represents a facilitator role played by some person (or system, agent, etc)." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Host
+
+:Host rdf:type owl:Class ;
+      
+      rdfs:subClassOf :RuntimeRecord .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ImageMediaPointer
+
+:ImageMediaPointer rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :MediaPointer .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#InteractionMotive
+
+:InteractionMotive rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :Motive .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#LThing
+
+:LThing rdf:type owl:Class .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Lesson
+
+:Lesson rdf:type owl:Class ;
+        
+        rdfs:subClassOf :ContentBlock ;
+        
+        rdfs:comment """A lesson is 
+
+a coarse-grained content entity with metadata
+
+an important key URI for recordkeeping and reporting.  See LessonResponse and LessonUsage.
+
+a container for content blocks 
+
+an assembly of presentations and questions, connected using timing constraints, respondable-prompts, and looping.
+
+often part of a module"""^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#LessonModuleMember
+
+:LessonModuleMember rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :ModuleMember .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#LessonResponse
+
+:LessonResponse rdf:type owl:Class ;
+                
+                rdfs:subClassOf :BlockResponse ;
+                
+                rdfs:comment "A container for all the pieces of response entered during a particular LessonUsage, by all participants."^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#LessonUsage
+
+:LessonUsage rdf:type owl:Class ;
+             
+             rdfs:subClassOf :BlockUsage ;
+             
+             rdfs:comment "A container for a single interaction with a lesson, including the LessonResponse and additional admin data." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#LoopCountCondition
+
+:LoopCountCondition rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :Condition ;
+                    
+                    rdfs:comment "Will be true when   :waitsForBlock is a looping block which is on its :hasMatchingQuantity time through the loop.  First time through (i.e. before any restarts/resets) matches quantity=1, second time (after one reset) quantity=2..." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#LoopingBlock
+
+:LoopingBlock rdf:type owl:Class ;
+              
+              rdfs:subClassOf :ContentBlock ;
+              
+              rdfs:comment """A looping set of content, which on each loop appends a set of fresh block state for all its children.  That is, it creates a new usage-state frame in which all its children are in  BS_PENDING, just as they are when the lesson starts.
+
+The loop is restarted when a constraint triggers \"restartsLoop\" pointing at this block.
+The loop is terminated when a constraint triggers \"terminatesLoop\" pointing at this block.
+
+Unresolved question:  How do we (re-)wire constraint-usages to children of the looping block-usage as each usage frame is appended?   If the inputs and outputs of the constraint are all within the looping block, then it is simple enough to duplicate them.  However, if the output affectsBlock links are pointing *outside* of the looping block...."""^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#MediaPointer
+
+:MediaPointer rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Content .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Module
+
+:Module rdf:type owl:Class ;
+        
+        rdfs:subClassOf :Content ;
+        
+        rdfs:comment "A container for Lessons." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ModuleMember
+
+:ModuleMember rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Content .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Motive
+
+:Motive rdf:type owl:Class ;
+        
+        rdfs:subClassOf :RuntimeRecord ;
+        
+        rdfs:comment """A motive is a goal that some system has or had.   \"Motive\" fits in the M position in acronym PUMA = (Perceive, Understand, Motivate, Act), which could be called an elaboration of BDI = (Beliefs, Desires, Intentions).   
+
+A system may have multiple currently active motives, a long history of past active motives, and a deep ongoing calculation regarding potential future motives.
+"""^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#PerceivedAttentionResponse
+
+:PerceivedAttentionResponse rdf:type owl:Class ;
+                            
+                            rdfs:subClassOf :PerceivedResponse ;
+                            
+                            rdfs:comment "Estimate of student attention, based on eye-contact and related factors." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#PerceivedEmotionResponse
+
+:PerceivedEmotionResponse rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :PerceivedResponse ;
+                          
+                          rdfs:comment "Estimate of student's emotional state, based on face expression and related factors." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#PerceivedResponse
+
+:PerceivedResponse rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :Response ;
+                   
+                   rdfs:comment "Perceptions that our system makes, recorded as part of a lesson response, marked with timestamps and with \"respondsToBlock\" to show where we were in the lesson." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#PersistentFlag
+
+:PersistentFlag rdf:type owl:Class ;
+                
+                rdfs:subClassOf :SystemFlag .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#PersistentPromptGuiButton
+
+:PersistentPromptGuiButton rdf:type owl:Class ;
+                           
+                           rdfs:subClassOf :PromptButton ;
+                           
+                           rdfs:comment """Similar to a QuestionPromptGuiButton, but does not auto-complete when pressed.
+It does cause a response to be recorded on each press.""" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#PlayLessonMotive
+
+:PlayLessonMotive rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :InteractionMotive .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Presentation
+
+:Presentation rdf:type owl:Class ;
+              
+              rdfs:subClassOf :ContentBlock ;
+              
+              rdfs:comment """A presentation is a collection of content that plays through some set of related channels, typically with some internal timing dynamics (that are considered below the level of the lpath:ContentBlock+TimingConstraint system).
+
+A presentation does not directly account for gathering of input from users or environment.
+
+We use lpath:presentsToRole to indicate what roles see this presentation."""^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Prompt
+
+:Prompt rdf:type owl:Class ;
+        
+        rdfs:subClassOf :ContentBlock ;
+        
+        rdfs:comment """A prompt is a mechanism offered to a user to select an option or enter data.
+During playback, a prompt is considered to \"start\" when it is offered to the user (i.e. when it becomes hearable as a user's response), and to \"complete\" as soon as it is selected or filled in by a user."""^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#PromptButton
+
+:PromptButton rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Prompt .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#PromptedResponse
+
+:PromptedResponse rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :BlockResponse ;
+                  
+                  rdfs:comment "Response based on a user selecting an answer, (LATER: or supplying a free-form answer in an expected gui-screen-place, or speaking an answer in response to a verbal prompt).  " .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#QueryCondition
+
+:QueryCondition rdf:type owl:Class ;
+                
+                rdfs:subClassOf :Condition .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Question
+
+:Question rdf:type owl:Class ;
+          
+          rdfs:subClassOf :ContentBlock ;
+          
+          rdfs:comment """A question may contain some presentation elements, and always includes some set of prompts.   During playback, when one of the prompts (including potentially a timeout prompt) is completed, then the question as a whole is COMPLETE.    
+
+We use   lpath:presentsToRole to indicate what Role the question should be presented to."""^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#QuestionPromptGuiButton
+
+:QuestionPromptGuiButton rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf :PromptButton ;
+                         
+                         rdfs:comment """A button representing an option or answer that a user might choose.
+When pressed the button will cause a response to be recorded,
+AND the button will auto-COMPLETE.""" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#QuestionResponse
+
+:QuestionResponse rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :BlockResponse ;
+                  
+                  rdfs:comment "Container for the entire response to a question, which typically includes one or more promptedResponses."^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#QuestionTimeoutPrompt
+
+:QuestionTimeoutPrompt rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :Prompt ;
+                       
+                       rdfs:comment "This kind of pseudo-prompt auto-completes a certain amount of time after it is activated, and is typically treated as an additional pseudo-answer."^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ReaskingQuestion
+
+:ReaskingQuestion rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :Question ;
+                  
+                  rdfs:comment "A complex form of question which may allow for re-asking based on the response.  We may not get this fully implemented right away, but it is here to help us think clearly.   A reasking question may be simulated with a sequence of unrepeatable questions, which was the technique used in the first 6 long-form Milo lessons, or it might be done  using the more general LoopingBlock construct."^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#RegularRole
+
+:RegularRole rdf:type owl:Class ;
+             
+             rdfs:subClassOf :Role .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ReportOnLessonUsageMotive
+
+:ReportOnLessonUsageMotive rdf:type owl:Class ;
+                           
+                           rdfs:subClassOf :InteractionMotive .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ReportOnStudentFolioMotive
+
+:ReportOnStudentFolioMotive rdf:type owl:Class ;
+                            
+                            rdfs:subClassOf :InteractionMotive .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Response
+
+:Response rdf:type owl:Class ;
+          
+          rdfs:subClassOf :UserRecord ;
+          
+          rdfs:comment "A response (by a student) to some content." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#RobotHost
+
+:RobotHost rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Host .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Role
+
+:Role rdf:type owl:Class ;
+      
+      rdfs:subClassOf :Token .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#RuntimeRecord
+
+:RuntimeRecord rdf:type owl:Class ;
+               
+               rdfs:subClassOf :LThing .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#ScreenHost
+
+:ScreenHost rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Host .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#SingleGuiQuestion
+
+:SingleGuiQuestion rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :SingleQuestion ;
+                   
+                   rdfs:comment "An unrepeatable question asked of someone, with responses expected via a GUI (eg via a web/tablet screens).  " .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#SingleQuestion
+
+:SingleQuestion rdf:type owl:Class ;
+                
+                rdfs:subClassOf :Question ;
+                
+                rdfs:comment "A unrepeatable question which may only be asked and answered once during a particular parent block."^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#SparqlAskCondition
+
+:SparqlAskCondition rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :QueryCondition ;
+                    
+                    rdfs:comment "This condition is true when  hasQueryText evaluates to true as a SPARQL ASK query - executed over the available state dataset." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#StartsOne
+
+:StartsOne rdf:type owl:Class ;
+           
+           rdfs:subClassOf :TimingConstraint ;
+           
+           rdfs:comment "These subtypes are meant to be applied to a TimingConstraint independently of AwaitsAll and AwaitsAny.  It affects how the mayStartBlock links are processed, but not any of the other links of this constraint." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#StartsOneUniformIID
+
+:StartsOneUniformIID rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :StartsOne ;
+                     
+                     rdfs:comment """IID = \"Independent, identically distributed\":
+Exactly one mayStartsBlock will fire at random (with uniform = equiprobable distribution), regardless of previous firing by previous usages in any loop context.""" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#StartsOneUniformLRU
+
+:StartsOneUniformLRU rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :StartsOne ;
+                     
+                     rdfs:comment """Stars the mayStartBlock least recently used (LRU) \"within this loop\", else any not-yet-used such block at random.
+Typically used within a loop, implies the ability to look back at past iterations.""" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#StartsOneUniformOnce
+
+:StartsOneUniformOnce rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf :StartsOne ;
+                      
+                      rdfs:comment "Start one mayStartsBlock at random, but not if it has been used before within \"this loop\".  Thus this aspect of the constraint does nothing after all the mayStartsBlocks have been used within the closest enclosing loop." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#StudentFolio
+
+:StudentFolio rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Folio ;
+              
+              rdfs:comment "Student Folio is a URI to which information about a student is attached." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#StudentRole
+
+:StudentRole rdf:type owl:Class ;
+             
+             rdfs:subClassOf :RegularRole .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#SystemFlag
+
+:SystemFlag rdf:type owl:Class ;
+            
+            rdfs:subClassOf :LThing .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#TechnicianRole
+
+:TechnicianRole rdf:type owl:Class ;
+                
+                rdfs:subClassOf :ExceptionalRole .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#TerminalBlockState
+
+:TerminalBlockState rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :BlockState .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#TimingConstraint
+
+:TimingConstraint rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :Waiter ;
+                  
+                  rdfs:comment """Used to link elements of content together, for both sequencing and parallel synchronization.  
+
+These are akin to a higher-layer version of the waitForXyz properties of the Cogchar BThtr.
+
+It is also a core construct of our forthcoming proposal for BML 2.0, building on the XML based synchronization language from BML 1.0.
+
+Normally there should only one constraint pointing to a block.
+A TimingConstraint waitsFor some number of blocks (starting/ending) and/or conditions.   At that time it will allow all connected \"startsBlock\" blocks to start, and it will disable any blocks marked with disablesBlock.    Note that startsBlock is inverse-functional."""^^xsd:string .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Token
+
+:Token rdf:type owl:Class ;
+       
+       rdfs:subClassOf :LThing ;
+       
+       rdfs:comment "Token is a pseudo-meta-class signifying the kinds of entities that have well defined individuals, functioning like \"enum\" constants.  They are used extensively in content.  " .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Usage
+
+:Usage rdf:type owl:Class ;
+       
+       rdfs:subClassOf :UserRecord ;
+       
+       rdfs:comment """Usages are persistable forms of instances of running content.
+Generally playing a piece of content for users a single time means creating a new
+ Usage instance referring to that content.  The properties of this instance
+define the entry parameters and state of the content playback.""" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#UserLoginMotive
+
+:UserLoginMotive rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :InteractionMotive ;
+                 
+                 rdfs:comment "Use a GuiForm to lookup an Account." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#UserRecord
+
+:UserRecord rdf:type owl:Class ;
+            
+            rdfs:subClassOf :RuntimeRecord ;
+            
+            rdfs:comment "Live user data written to persistent store." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#VideoMediaPointer
+
+:VideoMediaPointer rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :MediaPointer .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#VideoPresentation
+
+:VideoPresentation rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :Presentation .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#Waiter
+
+:Waiter rdf:type owl:Class ;
+        
+        rdfs:subClassOf :Content .
+
+
+
+
+
+#################################################################
+#
+#    Individuals
+#
+#################################################################
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#BS_ACTIVE
+
+:BS_ACTIVE rdf:type :BlockState ,
+                    :EligibleBlockState ,
+                    owl:NamedIndividual ;
+           
+           rdfs:comment "My precondition constraint fired \"startsBlock\" at me (before anyone else got to disable me with \"abortsBlock\").    I am now \"running\" and offering something to the user, on my own little timeline.  From here my exits are to BS_CANCELED (by abortsBlock) and BS_COMPLETE (by \"finishesBlock\")." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#BS_CANCELED
+
+:BS_CANCELED rdf:type :BlockState ,
+                      :TerminalBlockState ,
+                      owl:NamedIndividual ;
+             
+             rdfs:comment """I was ACTIVE but before I could COMPLETE, some other activity made me unnecessary., using the equivalent of abortsBlock.
+""" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#BS_COMPLETE
+
+:BS_COMPLETE rdf:type :BlockState ,
+                      :TerminalBlockState ,
+                      owl:NamedIndividual ;
+             
+             rdfs:comment "I was active and now I'm done.  Anyone who was waiting for me can now go!" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#BS_FAILED
+
+:BS_FAILED rdf:type :BlockState ,
+                    :TerminalBlockState ,
+                    owl:NamedIndividual ;
+           
+           rdfs:comment "Unusual state, usually reflecting an error that occurred while I was ACTIVE (or PENDING trying to go to ACTIVE)." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#BS_PENDING
+
+:BS_PENDING rdf:type :BlockState ,
+                     :EligibleBlockState ,
+                     owl:NamedIndividual ;
+            
+            rdfs:comment "Nothing has happened to me yet.  " .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#BS_PREVENTED
+
+:BS_PREVENTED rdf:type :BlockState ,
+                       :TerminalBlockState ,
+                       owl:NamedIndividual ;
+              
+              rdfs:comment "Terminal state (modulo reset) - some constraint fired and aborted / disabled me , before I could become ACTIVE.    Generally this means that some other content's progress has made my content unnecessary on this run.  Since I was not ACTIVE yet when the exclusion occurred, there should be nothing to clean up." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#BS_SUSPENDED
+
+:BS_SUSPENDED rdf:type :BlockState ,
+                       :EligibleBlockState ,
+                       owl:NamedIndividual .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#CPB_AUTO_VID_SEG_DONE
+
+:CPB_AUTO_VID_SEG_DONE rdf:type :ControlPB_SegmentDone ,
+                                :ControlPromptButton ,
+                                owl:NamedIndividual ;
+                       
+                       :hasScreenText "Auto detect for vid-seg-end does not go on screen." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#CPB_LESSON_PAUSE
+
+:CPB_LESSON_PAUSE rdf:type :ControlPB_LessonPause ,
+                           :ControlPromptButton ,
+                           owl:NamedIndividual ;
+                  
+                  :hasScreenText "Pause Lesson" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#CPB_LESSON_RESUME
+
+:CPB_LESSON_RESUME rdf:type :ControlPB_LessonResume ,
+                            :ControlPromptButton ,
+                            owl:NamedIndividual ;
+                   
+                   :hasScreenText "Resume Lesson" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#CPB_LESSON_STOP
+
+:CPB_LESSON_STOP rdf:type :ControlPB_LessonStop ,
+                          :ControlPromptButton ,
+                          owl:NamedIndividual ;
+                 
+                 :hasScreenText "Stop Lesson" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#CPB_LESSON_STOP_AND_CALM_DOWN
+
+:CPB_LESSON_STOP_AND_CALM_DOWN rdf:type :ControlPB_LessonStopAndCalmDown ,
+                                        :ControlPromptButton ,
+                                        owl:NamedIndividual ;
+                               
+                               :hasScreenText "Let's Calm Down" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#CPB_SEGMENT_DONE
+
+:CPB_SEGMENT_DONE rdf:type :ControlPB_SegmentDone ,
+                           :ControlPromptButton ,
+                           owl:NamedIndividual ;
+                  
+                  :hasStyleText "Some style for SEGMENT_DONE button" ;
+                  
+                  :hasScreenText "Segment Done" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#CPB_VIDEO_SEGMENT_DONE
+
+:CPB_VIDEO_SEGMENT_DONE rdf:type :ControlPB_SegmentDone ,
+                                 :ControlPromptButton ,
+                                 owl:NamedIndividual ;
+                        
+                        :hasScreenText "Video Play is Done" ;
+                        
+                        :hasStyleText "Style text for Video Segment Done" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#CS_UNEVALUATED
+
+:CS_UNEVALUATED rdf:type :ConstraintState ,
+                         owl:NamedIndividual ;
+                
+                rdfs:comment "The related constraintUsage has never evaluated." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#CS_WAS_NO
+
+:CS_WAS_NO rdf:type :ConstraintState ,
+                    owl:NamedIndividual ;
+           
+           rdfs:comment "The last time this constraint usage evaluated, the result was false = unsatisfied." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#CS_WAS_YES
+
+:CS_WAS_YES rdf:type :ConstraintState ,
+                     owl:NamedIndividual ;
+            
+            rdfs:comment "The last time this constraint usage evaluated, the result was true = satisfied." .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#DFLT_AUTHOR
+
+:DFLT_AUTHOR rdf:type :AuthorRole ,
+                      owl:NamedIndividual ;
+             
+             rdfs:comment "" .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#DFLT_DEVELOPER
+
+:DFLT_DEVELOPER rdf:type :DeveloperRole ,
+                         owl:NamedIndividual .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#DFLT_FACILITATOR
+
+:DFLT_FACILITATOR rdf:type :FacilitatorRole ,
+                           owl:NamedIndividual .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#DFLT_STUDENT
+
+:DFLT_STUDENT rdf:type :StudentRole ,
+                       owl:NamedIndividual .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#DFLT_TECHNICIAN
+
+:DFLT_TECHNICIAN rdf:type :TechnicianRole ,
+                          owl:NamedIndividual .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#FALLBACK_QUEST
+
+:FALLBACK_QUEST rdf:type :SingleGuiQuestion ,
+                         owl:NamedIndividual .
+
+
+
+###  http://onto.robokind.info/onto/201407/LessonPath_OWL2#FALLBACK_QUEST_LOOP
+
+:FALLBACK_QUEST_LOOP rdf:type :LoopingBlock ,
+                              owl:NamedIndividual .
+
+
+
+
+###  Generated by the OWL API (version 3.5.0) http://owlapi.sourceforge.net
+

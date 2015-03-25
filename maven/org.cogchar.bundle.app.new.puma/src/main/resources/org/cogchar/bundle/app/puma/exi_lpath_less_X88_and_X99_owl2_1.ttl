@@ -1,0 +1,256 @@
+#################################################################
+#    Copyright 2015 by RoboKind.   All Rights Reserved.
+#################################################################
+@prefix : <http://onto.robokind.info/onto/201407/exInstLpath_OWL2#> .
+@prefix exi: <http://onto.robokind.info/onto/201407/exInstLpath_OWL2#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix lpath: <http://onto.robokind.info/onto/201407/LessonPath_OWL2#> .
+@base <http://onto.robokind.info/onto/201407/exInstLpath_OWL2> .
+
+<http://onto.robokind.info/onto/201407/exInstLpath_OWL2> rdf:type owl:Ontology ;
+                                                         
+                                                         rdfs:comment "Contains some example instance data for the LessonPath domain." ;
+                                                         
+                                                         owl:imports <http://onto.robokind.info/onto/201407/LessonPath_OWL2> .
+
+
+#################################################################
+#
+#    Individuals
+#
+#################################################################
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#lesson_X88
+
+:lesson_X88 rdf:type lpath:Lesson ,
+                     owl:NamedIndividual ;
+            
+            rdfs:label "A label for the a pretend lesson where facil chooses some content." ;
+            
+            rdfs:comment "Milo wants to teach you stuff." ;
+            
+            lpath:hasWrittenName "Lesson X88 (play me!)" ;
+            
+            lpath:hasChildBlock :presChar_LX88C55 ,
+                                :presVid_LX88V77 ,
+                                :quest_LX88Q01_whatContentDoyaWant ;
+            
+            lpath:hasChildConstraint :tc_LX88_endsWith_EitherPayloadContentEnded ,
+                                     :tc_LX88_startsWith_Q01 ,
+                                     :tc_storyBtn_trigs_charStory ,
+                                     :tc_vidButton_trigs_vidShow .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#lesson_X99
+
+:lesson_X99 rdf:type lpath:Lesson ,
+                     owl:NamedIndividual ;
+            
+            lpath:hasWrittenName "Lesson X99 (empty!)" ;
+            
+            rdfs:comment "This lesson is full of good info.  Come and learn from Milo!" .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#module_X
+
+:module_X rdf:type lpath:Module ,
+                   owl:NamedIndividual ;
+          
+          lpath:hasWrittenName "Module X" ;
+          
+          lpath:hasChildLesson :lesson_X88 ,
+                               :lesson_X99 .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#presChar_LX88C55
+
+:presChar_LX88C55 rdf:type lpath:CharacterPresentation ,
+                           owl:NamedIndividual ;
+                  
+                  lpath:hasSpokenText "Yes, I am a Giants fan.  Hunter Pence is fast and fierce.  Vamos Gigantes!" ;
+                  
+                  rdfs:comment """Pretend char presentation points to an anim and also hasSpeechText.
+It nominally presentsToRole : Facilitator, so the robot may  look at the
+facilitator if possible, but this property is optional for Character content.""" ;
+                  
+                  lpath:presentsToRole lpath:DFLT_FACILITATOR ;
+                  
+                  lpath:hasChildAnimPointer :ptrAnim_XPA_44 .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#presVid_LX88V77
+
+:presVid_LX88V77 rdf:type lpath:VideoPresentation ,
+                          owl:NamedIndividual ;
+                 
+                 rdfs:comment """Pretend video presentation - this instance is part of the main content, so is namestamped appropriately.
+The video pointer we refer to is usually from a separate MediaPointer volume.
+presentsToRole asserts that both Facilitator and Student should see the video, if possible, although that is not a common practice...""" ;
+                 
+                 lpath:presentsToRole lpath:DFLT_FACILITATOR ,
+                                      lpath:DFLT_STUDENT ;
+                 
+                 lpath:hasChildVideoPointer :ptrVid_XPV_66 .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#ptrAnim_XPA_44
+
+:ptrAnim_XPA_44 rdf:type lpath:AnimMediaPointer ,
+                         owl:NamedIndividual ;
+                
+                lpath:hasPathText "/path/to/anim/hunterPenceIsSafe.xml" .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#ptrImage_iconForMovie
+
+:ptrImage_iconForMovie rdf:type lpath:ImageMediaPointer ,
+                                owl:NamedIndividual ;
+                       
+                       lpath:hasPathText "path/to/movieIcon.png" .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#ptrImage_iconForRobot
+
+:ptrImage_iconForRobot rdf:type lpath:ImageMediaPointer ,
+                                owl:NamedIndividual ;
+                       
+                       lpath:hasPathText "path/to/robotIcon.png" .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#ptrVid_XPV_66
+
+:ptrVid_XPV_66 rdf:type lpath:VideoMediaPointer ,
+                        owl:NamedIndividual ;
+               
+               lpath:hasPathText "/path/to/neat/video.mp4" ;
+               
+               rdfs:comment "Note that the sample URI is not related to the lesson content that uses this pointer." .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#qTimeout_LX88Q01
+
+:qTimeout_LX88Q01 rdf:type lpath:QuestionTimeoutPrompt ,
+                           owl:NamedIndividual ;
+                  
+                  lpath:hasMaxDurationMsec "8025"^^xsd:int .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#qstAnsBtn_LX88Q01A01_showMeTheVideo
+
+:qstAnsBtn_LX88Q01A01_showMeTheVideo rdf:type lpath:QuestionPromptGuiButton ,
+                                              owl:NamedIndividual ;
+                                     
+                                     lpath:hasScreenText "Please show the video" ;
+                                     
+                                     lpath:hasStyleText "some CSS style for the video button" ;
+                                     
+                                     lpath:hasChildImagePointer :ptrImage_iconForMovie ;
+                                     
+                                     lpath:followsPromptButton :qstAnsBtn_LX88Q01A02_tellMeTheStory .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#qstAnsBtn_LX88Q01A02_tellMeTheStory
+
+:qstAnsBtn_LX88Q01A02_tellMeTheStory rdf:type lpath:QuestionPromptGuiButton ,
+                                              owl:NamedIndividual ;
+                                     
+                                     lpath:hasScreenText "Screen Text for Button Y" ;
+                                     
+                                     lpath:hasStyleText "some CSS style for the robot-story button" ;
+                                     
+                                     lpath:hasChildImagePointer :ptrImage_iconForRobot .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#quest_LX88Q01_whatContentDoyaWant
+
+:quest_LX88Q01_whatContentDoyaWant rdf:type lpath:SingleGuiQuestion ,
+                                            owl:NamedIndividual ;
+                                   
+                                   lpath:hasScreenText "Which content would you like to see?" ;
+                                   
+                                   lpath:presentsToRole lpath:DFLT_FACILITATOR ,
+                                                        lpath:DFLT_STUDENT ;
+                                   
+                                   lpath:hasChildPrompt :qTimeout_LX88Q01 ,
+                                                        :qstAnsBtn_LX88Q01A01_showMeTheVideo ,
+                                                        :qstAnsBtn_LX88Q01A02_tellMeTheStory .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#tc_LX88_endsWith_EitherPayloadContentEnded
+
+:tc_LX88_endsWith_EitherPayloadContentEnded rdf:type lpath:AwaitsAny ,
+                                                     owl:NamedIndividual ;
+                                            
+                                            lpath:finishesBlock :lesson_X88 ;
+                                            
+                                            lpath:waitsForBlockFinish :presChar_LX88C55 ,
+                                                                      :presVid_LX88V77 .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#tc_LX88_startsWith_Q01
+
+:tc_LX88_startsWith_Q01 rdf:type lpath:AwaitsAll ,
+                                 owl:NamedIndividual ;
+                        
+                        lpath:waitsForBlockStart :lesson_X88 ;
+                        
+                        lpath:startsBlock :quest_LX88Q01_whatContentDoyaWant .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#tc_storyBtn_trigs_charStory
+
+:tc_storyBtn_trigs_charStory rdf:type owl:NamedIndividual ;
+                             
+                             lpath:startsBlock :presChar_LX88C55 ;
+                             
+                             lpath:waitsForBlockFinish :qstAnsBtn_LX88Q01A02_tellMeTheStory .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#tc_vidButton_trigs_vidShow
+
+:tc_vidButton_trigs_vidShow rdf:type lpath:AwaitsAll ,
+                                     owl:NamedIndividual ;
+                            
+                            lpath:startsBlock :presVid_LX88V77 ;
+                            
+                            lpath:waitsForBlockFinish :qstAnsBtn_LX88Q01A01_showMeTheVideo .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#vid_finished_btn_seen_only_by_facil
+
+:vid_finished_btn_seen_only_by_facil rdf:type owl:NamedIndividual .
+
+
+
+###  http://onto.robokind.info/onto/201407/exInstLpath_OWL2#video_wrapper_GUI_for_facil
+
+:video_wrapper_GUI_for_facil rdf:type lpath:GuiPresentation ,
+                                      owl:NamedIndividual .
+
+
+
+
+###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
+
