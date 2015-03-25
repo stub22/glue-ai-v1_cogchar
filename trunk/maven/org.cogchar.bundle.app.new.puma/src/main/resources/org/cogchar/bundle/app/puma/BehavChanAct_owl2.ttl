@@ -1,0 +1,861 @@
+@prefix : <http://www.cogchar.org/onto/behavChan_2012/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.cogchar.org/onto/behavChan_2012/> .
+
+<http://www.cogchar.org/onto/behavChan_2012/> rdf:type owl:Ontology ;
+                                              
+                                              rdfs:label "Ontology level label - shows up anywhere?" ;
+                                              
+                                              rdfs:comment "Ontology level comment - shows up at package level?" .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Datatypes
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/actRelation
+
+:actRelation rdf:type owl:ObjectProperty .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/actSource
+
+:actSource rdf:type owl:ObjectProperty ;
+           
+           rdfs:subPropertyOf :actRelation .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/actTarget
+
+:actTarget rdf:type owl:ObjectProperty ;
+           
+           rdfs:subPropertyOf :actRelation .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/actVerb
+
+:actVerb rdf:type owl:ObjectProperty ;
+         
+         rdfs:subPropertyOf :actRelation .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasA
+
+:hasA rdf:type owl:ObjectProperty .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasChan
+
+:hasChan rdf:type owl:ObjectProperty ;
+         
+         rdfs:subPropertyOf :hasA .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasJob
+
+:hasJob rdf:type owl:ObjectProperty ;
+        
+        rdfs:subPropertyOf :hasA .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasMedia
+
+:hasMedia rdf:type owl:ObjectProperty ;
+          
+          rdfs:subPropertyOf :hasA .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasPredicate
+
+:hasPredicate rdf:type owl:ObjectProperty ;
+              
+              rdfs:subPropertyOf :hasA .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasContentFilePath
+
+:hasContentFilePath rdf:type owl:DatatypeProperty ;
+                    
+                    rdfs:subPropertyOf :hasData .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasContentXml
+
+:hasContentXml rdf:type owl:DatatypeProperty ;
+               
+               rdfs:subPropertyOf :hasData ;
+               
+               rdfs:range rdf:XMLLiteral .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasData
+
+:hasData rdf:type owl:DatatypeProperty .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasDurationSec
+
+:hasDurationSec rdf:type owl:DatatypeProperty ;
+                
+                rdfs:subPropertyOf :hasData ;
+                
+                rdfs:range xsd:decimal .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasFormalTimestamp
+
+:hasFormalTimestamp rdf:type owl:DatatypeProperty ;
+                    
+                    rdfs:subPropertyOf :hasData ;
+                    
+                    rdfs:range xsd:dateTimeStamp .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasJavaTStampMsec
+
+:hasJavaTStampMsec rdf:type owl:DatatypeProperty ;
+                   
+                   rdfs:comment "A long number of millisec using the java convention." ;
+                   
+                   rdfs:subPropertyOf :hasData ;
+                   
+                   rdfs:range xsd:long .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasKeyframeCount
+
+:hasKeyframeCount rdf:type owl:DatatypeProperty ;
+                  
+                  rdfs:subPropertyOf :hasData .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasQueryText
+
+:hasQueryText rdf:type owl:DatatypeProperty ;
+              
+              rdfs:subPropertyOf :hasData ;
+              
+              rdfs:range xsd:string .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/hasUnixTStampSec
+
+:hasUnixTStampSec rdf:type owl:DatatypeProperty ;
+                  
+                  rdfs:subPropertyOf :hasData ;
+                  
+                  rdfs:range xsd:decimal .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/AcaSTMedia
+
+:AcaSTMedia rdf:type owl:Class ;
+            
+            rdfs:subClassOf :SpeechTextMedia .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/Agent
+
+:Agent rdf:type owl:Class ;
+       
+       rdfs:subClassOf :SysThingy .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/AnimFrameMedia
+
+:AnimFrameMedia rdf:type owl:Class ;
+                
+                rdfs:subClassOf :FrameMedia .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/AnimJobChan
+
+:AnimJobChan rdf:type owl:Class ;
+             
+             rdfs:subClassOf :JobChan .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/AnimPlayJob
+
+:AnimPlayJob rdf:type owl:Class ;
+             
+             rdfs:subClassOf :MediaPlayJob ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasChan ;
+                               owl:someValuesFrom :AnimJobChan
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMedia ;
+                               owl:someValuesFrom :AnimFrameMedia
+                             ] .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/AudioFrameMedia
+
+:AudioFrameMedia rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :FrameMedia .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/AudioInChan
+
+:AudioInChan rdf:type owl:Class ;
+             
+             rdfs:subClassOf :SenseChan .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/AudioJobChan
+
+:AudioJobChan rdf:type owl:Class ;
+              
+              rdfs:subClassOf :JobChan .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/AudioPlayJob
+
+:AudioPlayJob rdf:type owl:Class ;
+              
+              rdfs:subClassOf :MediaPlayJob .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/BeatInChan
+
+:BeatInChan rdf:type owl:Class ;
+            
+            rdfs:subClassOf :PercepChan ;
+            
+            rdfs:comment "Tells us the signature, tempo, phase, volume, confidence of a discernible rhythm source." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/Behav
+
+:Behav rdf:type owl:Class ;
+       
+       rdfs:subClassOf :ModelThingy ;
+       
+       rdfs:comment """Behav instances are pieces of behavior specification given in terms of 
+time,  
+channels, 
+things (affected by actions), 
+and jobs (updated by exec layer).""" .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/BodySenseChan
+
+:BodySenseChan rdf:type owl:Class ;
+               
+               rdfs:subClassOf :SenseChan ;
+               
+               rdfs:comment """Raw / fused information about our own body state, including servo positions, temperatures, errors, etc.
+
+Some overlap with physic chan.""" .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/BoogieChan
+
+:BoogieChan rdf:type owl:Class ;
+            
+            rdfs:subClassOf :GoalChan ;
+            
+            rdfs:comment "Rhythmically oriented movement channel, i.e. dancing, involving one or more groove things." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/Chan
+
+:Chan rdf:type owl:Class ;
+      
+      rdfs:subClassOf :ModelThingy ;
+      
+      rdfs:comment """A chan represents a boundary between cognition and concrete I/O.  
+It may refer to 
+
+ 1) a physical(-ish) media channel or network port
+ 2) a logical channel for assertions in repos
+ 3) a subtle combo of #1 and #2.
+
+In practice, each piece of information is marked with the URI of the channel that it is VERB-ed on (where verb = sent, received, played, perceived...). """ .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/ChanAct
+
+:ChanAct rdf:type owl:Class ;
+         
+         rdfs:subClassOf :ChanFrag ,
+                         :ThingAct ;
+         
+         rdfs:comment "Represents a ThingAct strongly associated to a channel (but usually not a JobChannel).  It is normally a control command or an  event." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/ChanFrag
+
+:ChanFrag rdf:type owl:Class ;
+          
+          rdfs:subClassOf :ModelThingy ,
+                          [ rdf:type owl:Restriction ;
+                            owl:onProperty :hasChan ;
+                            owl:someValuesFrom :Chan
+                          ] ;
+          
+          rdfs:comment """A fragment is a \"thing\" which is simply any piece of data referring to a channel.   
+
+Arbitrary perceptions, goals, and thoughts may be captured as fragments.    
+
+To \"send a message\" of the most general kind, convey a ThingAct which CREATEs a Fragment on some channel.""" .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/ChanFrame
+
+:ChanFrame rdf:type owl:Class ;
+           
+           rdfs:subClassOf :ChanFrag ;
+           
+           rdfs:comment """Describes a particular data-frame associated to some channel, which is part of a continuous stream of data on that channel (rather than a special \"command\" or \"event\").
+
+The content data of the frame may be encoded in RDF somewhere, or it may not be.  """ .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/ChanJob
+
+:ChanJob rdf:type owl:Class ;
+         
+         rdfs:subClassOf :Job ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasChan ;
+                           owl:someValuesFrom :JobChan
+                         ] .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/ChoiceInChan
+
+:ChoiceInChan rdf:type owl:Class ;
+              
+              rdfs:subClassOf :SymbolChan ;
+              
+              rdfs:comment """A user's explicit choice in some structured scenario is indicated on a ChoiceInChan.
+
+Menu selections, restricted vocabulary interactions, and multiple-choice games all make use of this kind of chanel.""" .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/Command
+
+:Command rdf:type owl:Class ;
+         
+         rdfs:subClassOf :SysThingy ;
+         
+         rdfs:comment """Command is a direct instruction from client software or some GUI that is typically more disruptive than a channel message.   
+
+Commands cannot usually  be received from NUI, it must use channels.    
+
+Commands may be sent using ThingActs, but they may also be sent directly in code.""" .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/CommandInChan
+
+:CommandInChan rdf:type owl:Class ;
+               
+               rdfs:subClassOf :SymbolChan ;
+               
+               rdfs:comment "Explicit commands may be conveyed on a Command chan, but they may also be conveyed through direct coding." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/FrameMedia
+
+:FrameMedia rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Media .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/GazeChan
+
+:GazeChan rdf:type owl:Class ;
+          
+          rdfs:subClassOf :GoalChan .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/GestureChan
+
+:GestureChan rdf:type owl:Class ;
+             
+             rdfs:subClassOf :Chan ;
+             
+             rdfs:comment "Some expressive or indicative gesture, usually involving physical movement, with various parameters and constraints.  Some overlap with various GoalChans, but a Gesture can sometimes be relatively simple, e.g. open loop, but based on body starting state." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/GoalChan
+
+:GoalChan rdf:type owl:Class ;
+          
+          rdfs:subClassOf :Chan ;
+          
+          rdfs:comment "Represents macro control over closed-loop physical behaviors like gazing, pointing, walking, running, dancing." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/Goody
+
+:Goody rdf:type owl:Class ;
+       
+       rdfs:subClassOf :SysThingy ;
+       
+       rdfs:comment """A goody is generally just some arbitrary useful shape in a virtual world.  
+It is included in this ontology because it was the first working example
+of an entity controlled by ThingActs.""" .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/HububInChan
+
+:HububInChan rdf:type owl:Class ;
+             
+             rdfs:subClassOf :PercepChan ;
+             
+             rdfs:comment "Hubub vector refers to directions of interest from audio + video fusion.  Includes camera saliency (e.g. motion) and audio location." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/Implication
+
+:Implication rdf:type owl:Class ;
+             
+             rdfs:subClassOf :SysThingy ;
+             
+             rdfs:comment "An implication defines a consequence asserted when a particular Predicate becomes satisfied." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/Job
+
+:Job rdf:type owl:Class ;
+     
+     rdfs:subClassOf :ModelThingy ;
+     
+     rdfs:comment """A Job represents a temporarily continuous stream-oriented action that may be monitored and controlled.   
+
+Typically a Job involves the playing of Media.
+
+A Job is controlled and monitored using ThingActs.""" .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/JobChan
+
+:JobChan rdf:type owl:Class ;
+         
+         rdfs:subClassOf :Chan ;
+         
+         rdfs:comment "JobChan is a marker for an output Chan that has or may have jobs associated to it." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/LocomotionChan
+
+:LocomotionChan rdf:type owl:Class ;
+                
+                rdfs:subClassOf :GoalChan .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/LoqSTMedia
+
+:LoqSTMedia rdf:type owl:Class ;
+            
+            rdfs:subClassOf :SpeechTextMedia .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/Media
+
+:Media rdf:type owl:Class ;
+       
+       rdfs:subClassOf <http://www.cogchar.org/onto/behavChan_2012/#Thingy> ;
+       
+       rdfs:comment "Media provides metadata and optionally some subset of actual content." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/MediaPlayJob
+
+:MediaPlayJob rdf:type owl:Class ;
+              
+              rdfs:subClassOf :ChanJob ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :hasMedia ;
+                                owl:someValuesFrom :Media
+                              ] .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/ModelThingy
+
+:ModelThingy rdf:type owl:Class ;
+             
+             rdfs:subClassOf <http://www.cogchar.org/onto/behavChan_2012/#Thingy> .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/OnceBehav
+
+:OnceBehav rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Behav ;
+           
+           rdfs:comment "A OnceBehav may fire its action only once unless & until it is explicitly reset." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/PercepChan
+
+:PercepChan rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Chan ;
+            
+            rdfs:comment "A perceived entity input channel." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/PersonInChan
+
+:PersonInChan rdf:type owl:Class ;
+              
+              rdfs:subClassOf :PercepChan ;
+              
+              rdfs:comment "Fused/fragmentary information about people we perceive, based on faces, skeletons, voices.  " .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/PhysicInChan
+
+:PhysicInChan rdf:type owl:Class ;
+              
+              rdfs:subClassOf :SenseChan ;
+              
+              rdfs:comment "Information about physical position and motion, including IMU, compass, etc.  Some overlap with BodySenseChan.  Note we expect SlamInChan  to provide  some ongoing location + motion estimates, so we needn't focus on details here when getting started.  " .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/PointChan
+
+:PointChan rdf:type owl:Class ;
+           
+           rdfs:subClassOf :GoalChan .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/Predicate
+
+:Predicate rdf:type owl:Class ;
+           
+           rdfs:subClassOf :SysThingy ;
+           
+           rdfs:comment "A predicate is an authoring convenience.  It is a named logical condition that may be empirically tested at any time in any context.  The condition itself may be extended without changing the URI of the predicate." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/QueryBehav
+
+:QueryBehav rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Behav ;
+            
+            rdfs:comment "Check a query against some set of graphs.  If result passes a predicate, take some action." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/RepoGraph
+
+:RepoGraph rdf:type owl:Class ;
+           
+           rdfs:subClassOf :SysThingy .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/SAPI_STMedia
+
+:SAPI_STMedia rdf:type owl:Class ;
+              
+              rdfs:subClassOf :SpeechTextMedia .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/Scene
+
+:Scene rdf:type owl:Class ;
+       
+       rdfs:subClassOf :ModelThingy ;
+       
+       rdfs:comment "A scene is an written or generated collection of behavior that is deployed and undeployed as a unit.  " .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/ScreenChan
+
+:ScreenChan rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Chan .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/SenseChan
+
+:SenseChan rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Chan ;
+           
+           rdfs:comment "A signal-level input/internal sensory channel." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/SlamInChan
+
+:SlamInChan rdf:type owl:Class ;
+            
+            rdfs:subClassOf :PercepChan ;
+            
+            rdfs:comment "SLAM - Simultaneous Location and Mapping - openslam.org - refers to information telling us where we are, how we are moving, and what is surrounding us. In a broad definition may include our velocity + accel  tensors.  Here the emphasis is on accuracy, while on HububInChan, the emphasis is on interest." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/SpeechJobChan
+
+:SpeechJobChan rdf:type owl:Class ;
+               
+               rdfs:subClassOf :JobChan .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/SpeechPlayJob
+
+:SpeechPlayJob rdf:type owl:Class ;
+               
+               rdfs:subClassOf :MediaPlayJob .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/SpeechTextMedia
+
+:SpeechTextMedia rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :TextMedia .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/SymbolChan
+
+:SymbolChan rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Chan ;
+            
+            rdfs:comment "Information of apparently direct symbolic content, i.e. communication." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/SysThingy
+
+:SysThingy rdf:type owl:Class ;
+           
+           rdfs:subClassOf <http://www.cogchar.org/onto/behavChan_2012/#Thingy> .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/TextMedia
+
+:TextMedia rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Media .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/ThingAct
+
+:ThingAct rdf:type owl:Class ;
+          
+          rdfs:subClassOf <http://www.cogchar.org/onto/behavChan_2012/#Thingy> ;
+          
+          rdfs:comment "\"Messages\" are propagated thru ThingActs describing state changes in Things in Graphs in Repos." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/TopicInChan
+
+:TopicInChan rdf:type owl:Class ;
+             
+             rdfs:subClassOf :SymbolChan ;
+             
+             rdfs:comment "Input heard or read/seen indicating symbolic (textual or iconic) content, especially proper names, titles, unusual words, logos, insignia.  Contrast to ChoiceInChan." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/VideoFrameMedia
+
+:VideoFrameMedia rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :FrameMedia .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/VideoInChan
+
+:VideoInChan rdf:type owl:Class ;
+             
+             rdfs:subClassOf :SenseChan .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/VideoJobChan
+
+:VideoJobChan rdf:type owl:Class ;
+              
+              rdfs:subClassOf :JobChan .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/VideoPlayJob
+
+:VideoPlayJob rdf:type owl:Class ;
+              
+              rdfs:subClassOf :MediaPlayJob .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/WebEntryFrag
+
+:WebEntryFrag rdf:type owl:Class ;
+              
+              rdfs:subClassOf :WebScreenFrag ;
+              
+              rdfs:comment "Invites the user to submit some data, usually in the form of text and numbers." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/WebScreenChan
+
+:WebScreenChan rdf:type owl:Class ;
+               
+               rdfs:subClassOf :ScreenChan .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/WebScreenFrag
+
+:WebScreenFrag rdf:type owl:Class ;
+               
+               rdfs:subClassOf :ChanFrag ;
+               
+               rdfs:comment "A fragment to be rendered on some web screen." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/WebSelectFrag
+
+:WebSelectFrag rdf:type owl:Class ;
+               
+               rdfs:subClassOf :WebScreenFrag ;
+               
+               rdfs:comment "Invites a user to select from some range of choices." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/WebUploadFrag
+
+:WebUploadFrag rdf:type owl:Class ;
+               
+               rdfs:subClassOf :WebScreenFrag ;
+               
+               rdfs:comment "Invite the user to upload some kind of file data." .
+
+
+
+###  http://www.cogchar.org/onto/behavChan_2012/#Thingy
+
+<http://www.cogchar.org/onto/behavChan_2012/#Thingy> rdf:type owl:Class .
+
+
+
+
+###  Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net
+
