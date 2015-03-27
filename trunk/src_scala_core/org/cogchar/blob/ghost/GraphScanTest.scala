@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.blob.circus
+package org.cogchar.blob.ghost
 import org.appdapter.fancy.log.VarargsLogging
 
 import org.apache.jena.riot.RDFDataMgr
@@ -100,7 +100,7 @@ object GraphScanTest extends VarargsLogging {
 
 	// This could in some cases be a lot of pathnames, and thus the collection of names could be large.
 	// User should ensure that either the folder or the filterFunc is sufficiently narrow to prevent over-match.
-	val graphFileSuffixes = Set(".ttl", ".n3")// 
+	val graphFileSuffixes = Set(".ttl", ".n3")  
 
 	def scanDeepGraphFolderIntoGHostRecords(entryHost : EntryHost, folderPath : String, maxEnts : Int, resultModel : R2GoModel) : Int = {
 		val folderEntry_opt : Option[FolderEntry] = entryHost.findFolderEntry(folderPath)
