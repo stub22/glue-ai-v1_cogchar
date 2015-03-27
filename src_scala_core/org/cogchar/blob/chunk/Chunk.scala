@@ -16,6 +16,8 @@
 
 package org.cogchar.blob.chunk
 
+import org.appdapter.fancy.log.VarargsLogging
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
@@ -29,8 +31,8 @@ trait Chunk {
 }
 
 
-// Friendly chunk provides typesafe methods to fetch a cache or a handle.
-trait FriendlyChunk extends Chunk {
+// FriendlyChunk provides typesafe methods to fetch a cache or a handle.
+trait FriendlyChunk extends Chunk with VarargsLogging {
 	
 //	protected def findOrMakeCache[HT](wturi : HasTypeMarkURI, handleMaker : Function1[HasURI, TypedItemHandle[HT]], clz : Class[HT]) : TypedHandleCache[HT] 
 
@@ -40,10 +42,14 @@ trait FriendlyChunk extends Chunk {
 	
 	def getTypedHandle[HT](instUri : HasURI, typUri : HasTypeMarkURI, handleClz : Class[HT]) : Option[TypedItemHandle[HT]] = {
 		val cache_opt = getTypedCache(typUri, handleClz)
+		// debug2("For type-mark-uri {}, found typedCache-opt {}", typUri, cache_opt)
 		cache_opt.flatMap(_.getTypedHandle(instUri))
-		//val cache = findOrMakeCache[HT](wturi, null, clz)
-		//cache.getTypedHandle(wiuri)
 	}
+	def getOrMakeTypedHandle[HT](instUri : HasURI, typUri : HasTypeMarkURI, handleClz : Class[HT]) : Option[TypedItemHandle[HT]] = {
+		val cache_opt = getTypedCache(typUri, handleClz)
+		// debug2("For type-mark-uri {}, found typedCache-opt {}", typUri, cache_opt)
+		cache_opt.map(_.getOrMakeTypedHandle(instUri))
+	}	
 }
 
 import scala.collection.mutable.HashMap
