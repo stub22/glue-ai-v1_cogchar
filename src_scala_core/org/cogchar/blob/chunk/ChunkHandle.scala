@@ -24,6 +24,8 @@ trait ChunkHandle extends Handle {
 	// Provides a convenience API for searching the Chunk's *contents*.
 	def getHandle(instUri : HasURI, tUri : HasTypeMarkURI) : Option[_ <: Handle]
 	def getTypedHandle[HT](instUri : HasURI, typUri : HasTypeMarkURI, handleClz : Class[HT]) : Option[TypedItemHandle[HT]] 
+	def getOrMakeTypedHandle[HT](instUri : HasURI, typUri : HasTypeMarkURI, handleClz : Class[HT]) : Option[TypedItemHandle[HT]]
+		
 }
 // abstract class SubChunkHandle(uriWrap : HasURI, parentCH : ChunkHandle) extends ItemHandle(uriWrap, parentCH) with ChunkHandle
 
@@ -32,8 +34,10 @@ class RootChunkHandle(private val myUriWrap : HasURI) extends ChunkHandle {
 	override def getItemURI : HasURI = myUriWrap
 	override def getParentChunkHandle = None
 	// RootChunkHandle is generally used only as a parent for other ChunkHandles.
+	// TODO - decide how that should work.
 	override def getHandle(instUri : HasURI, tUri : HasTypeMarkURI) : Option[_ <: Handle] = ???
 	override def getTypedHandle[HT](instUri : HasURI, typUri : HasTypeMarkURI, handleClz : Class[HT]) : Option[TypedItemHandle[HT]] = ???
+	override def getOrMakeTypedHandle[HT](instUri : HasURI, typUri : HasTypeMarkURI, handleClz : Class[HT]) : Option[TypedItemHandle[HT]] = ???
 }
 
 // Here chunkUriWrap is an identifier for the chunk.  The chunkUriWrap may have some type information available,
@@ -47,5 +51,10 @@ class FriendlyChunkHandle(chunk : FriendlyChunk, chunkUriWrap : HasPossiblyTyped
 	}
 	override def getTypedHandle[HT](instUri : HasURI, typUri : HasTypeMarkURI, handleClz : Class[HT]) : Option[TypedItemHandle[HT]] = {
 		chunk.getTypedHandle(instUri, typUri, handleClz)
+	}
+	// Returns Option to handle the case where we don't have the *cache*.  But if we do have the cache, it should always find-or-make
+	// the desired handle.
+	override def getOrMakeTypedHandle[HT](instUri : HasURI, typUri : HasTypeMarkURI, handleClz : Class[HT]) : Option[TypedItemHandle[HT]] = {
+		chunk.getOrMakeTypedHandle(instUri, typUri, handleClz)
 	}
 }

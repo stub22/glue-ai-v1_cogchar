@@ -88,6 +88,19 @@ class LGSChunkHandle(chunk : FriendlyChunk, chunkUriWrap : HasPossiblyTypedURI, 
 	def getLGStateHandle(graphPointerUriWrap : HasURI) : Option[TypedItemHandle[LoadableGraphState]] = {
 		getTypedHandle(graphPointerUriWrap, LoadableGraphHandleFuncs.MGP_TypeMarkUriWrap, classOf[LoadableGraphState])
 	}
+	def getOrMakeLGStateHandle(graphPointerUriWrap : HasURI) : TypedItemHandle[LoadableGraphState] = {
+		// We can force the Option to get, because the only uncertainty is whether the right cache exists, and we
+		// know it does, in this case.
+		getOrMakeTypedHandle(graphPointerUriWrap, LoadableGraphHandleFuncs.MGP_TypeMarkUriWrap, classOf[LoadableGraphState]).get
+	}	
+	def getLGStateHandle(graphPointerUri : R2GoURI) : Option[TypedItemHandle[LoadableGraphState]] = {
+		val gpUriWrap : HasURI = new HasR2GoURI(graphPointerUri)
+		getLGStateHandle(gpUriWrap)
+	}
+	def getOrMakeLGStateHandle(graphPointerUri : R2GoURI) : TypedItemHandle[LoadableGraphState] = {
+		val gpUriWrap : HasURI = new HasR2GoURI(graphPointerUri)
+		getOrMakeLGStateHandle(gpUriWrap)
+	}
 }
 
 
