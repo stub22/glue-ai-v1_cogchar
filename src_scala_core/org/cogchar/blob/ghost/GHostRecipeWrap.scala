@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.blob.circus
+package org.cogchar.blob.ghost
 
 
 import org.appdapter.fancy.log.VarargsLogging
@@ -47,37 +47,8 @@ class GHostRecipeWrap(val myGR : GhostRecipe) extends VarargsLogging {
 	// referredGHosts.map(RRUtil.promote(_, classOf[owrap.mdir.GraphHost]))
 	
 }
-object GHostRecipeUtil { 
-	
-}
 
 
-import org.ontoware.rdf2go
-import rdf2go.model.{Model => R2GoModel}
-import rdf2go.model.node.{URI => R2GoURI}
-
-import org.ontoware.rdfreactor
-import rdfreactor.runtime.ReactorRuntimeEntity
-import rdfreactor.schema.rdfs.{Class => RDFR_Class}
-
-object RRUtil {
-	// promote does *not* check for any asserted rdf:type, and does *not* assert the rdf:type.
-	// Thus this type change is purely within Java space.
-	def promote[X](orig : ReactorRuntimeEntity, tgtClz : java.lang.Class[X]) : X = {
-		// If no special converter is registered for this type, castTo will wind up calling
-		// RDFReactorRuntime.resource2reactorbase, which in turn does reflection to find constructor, and then calls:
-		// return constructor.newInstance(new Object[] { model, node, false });
-		orig.castTo(tgtClz).asInstanceOf[X]
-	}
-	def maybePromote[X](orig : ReactorRuntimeEntity, classURI : R2GoURI, tgtClz : java.lang.Class[X]) : Option[X] = {
-		// isInstanceof does (only) a check for rdf:type in the model.  
-		// model.contains(rdfResource, RDF.type, classURI);
-		// So if we want inheritance, must enable inference on the model and apply appropriate ontology.
-		if (orig.isInstanceof(classURI)) {
-			Option(promote(orig, tgtClz))
-		} else 	None
-	}
-}
 /*
  * 
  216	public boolean isInstanceof( URI classURI ) {

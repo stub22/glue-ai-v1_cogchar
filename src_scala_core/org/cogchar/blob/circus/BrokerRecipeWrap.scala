@@ -34,6 +34,7 @@ import rdfreactor.runtime.ReactorRuntimeEntity
 import rdfreactor.schema.rdfs.{Class => RDFR_Class}
 
 
+import org.cogchar.blob.ghost.{RRUtil, GHostRecipeWrap}
 	// To get at the goodies we need (crcp:)Cogchar-Circus-Recipe ontology instance
 	// val generalContentBR : BrokerRecipe = new BrokerRecipe(cbrokerModel, contentBrokerURI, false)
 

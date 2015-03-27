@@ -17,7 +17,7 @@
  * @author Stu B. <www.texpedient.com>
  */
 
-package org.cogchar.blob.circus
+package org.cogchar.blob.ghost
 
 import com.hp.hpl.jena
 import org.apache.jena.riot.RDFDataMgr
@@ -34,10 +34,10 @@ import org.cogchar.api.owrap
 import owrap.mdir.{GraphHost3Serial, GH4SFolder, GraphPointer => MdirGraphPointer}
 
 
-							   
+/*				   
 class GHostWrap {
-
 }
+*/
 
 case class IndexResult (attemptedCount : Int, loadedCount : Int, pointedCount : Int)
 

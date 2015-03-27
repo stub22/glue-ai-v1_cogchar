@@ -29,7 +29,7 @@ import jena.rdf.model.{ Model => JenaModel}
 
 import org.cogchar.api.owrap.mdir.{GraphPointer => MdirGraphPointer, GraphHost => MdirGraphHost, GraphHost3Serial}
 
-import org.cogchar.blob.circus.{RRUtil, GHostUtil}
+import org.cogchar.blob.ghost.{RRUtil, GHostUtil}
 // There is no need for a class or trait called LoadableGraphHandle.
 // What we do instead is provide the guts as LoadableGraphState, and the handle type is then
 // TypedItemHandle[LoadableGraphState].  Colloquially we sometimes call that a LoadableGraph(State)Handle,
@@ -49,12 +49,14 @@ import org.cogchar.blob.circus.{RRUtil, GHostUtil}
 // graph.   Any such information should be embodied in myIndexGP and whatever app-specific index-data it links to.
 final class LoadableGraphState(val myIndexGP : MdirGraphPointer, private val myResolvedSourceGHost : MdirGraphHost) 
 		extends VarargsLogging {
-	var		myPayloadModelR2GoM_opt : Option[R2GoModel] = None // Initially there is no payload model loaded.
 	// We call it a "payload" model to distinguish from associated index models.
+	var		myPayloadModelR2GoM_opt : Option[R2GoModel] = None // Initially there is no payload model loaded.
+
 	// This should only be able to fail under rare circumstances, or if we have bad code assumptions.
 	def getOpenPayloadModel : Option[R2GoModel] = {
 		if (myPayloadModelR2GoM_opt.isEmpty) {
-			// TODO:  Get smarter about whether the GHost is of dimension 4 or a 3.
+			// TODO:  Get smarter about what kind of GHost we have.  Is it of dimension 4 or a 3?  
+			// But so far we just assume its for a file-backed model (GraphHost3Serial) that we want to read into memory.
 			val ser3GH : GraphHost3Serial = RRUtil.promote(myResolvedSourceGHost, classOf[GraphHost3Serial])
 			val loadedModel_opt : Option[JenaModel] = GHostUtil.readModelFromGHost3Serial(ser3GH)
 			if (loadedModel_opt.isDefined) {
@@ -79,7 +81,7 @@ object LoadableGraphHandleFuncs extends VarargsLogging {
 	// This make-maker method returns a function closure with bindings for the required context values.
 	// We supply it with readable index models as discussed above.
 	// These index model-handles are required to exist when this maker is constructed, 
-	// although the actual graph contents may change anytime before the maker-func is actually invoked.
+	// although the actual graph contents may change anytime efore the maker-func is actually invoked.
 	def makeLGHandleMaker(gpIndexModel : R2GoModel, sourceGHostIndexModel : R2GoModel, parentCH : ChunkHandle) 
 			: Function1[HasURI, TypedItemHandle[LoadableGraphState]] = {
 		hasUri => {
@@ -101,7 +103,7 @@ object LoadableGraphHandleFuncs extends VarargsLogging {
 				// Make a live object instance to track the loading state of the content data.
 				val lg = new LoadableGraphState(indexGP, resolvedSourceGHost)
 				// TODO:  Make the typedURI based on the indexGP and its backing model.
-				val typedURI : HasTypedURI = null
+				val typedURI : HasPossiblyTypedURI = null
 				// Make the handle to be cached.
 				val itemHandle = new TypedItemHandle[LoadableGraphState](lg, typedURI, parentCH)
 				itemHandle
@@ -112,12 +114,14 @@ object LoadableGraphHandleFuncs extends VarargsLogging {
 		}
 	}
 	// Makes a chunk with just one type cache in it
-	def makeChunkForLoadableGraphs(parentCH : ChunkHandle, gpIdxModel : R2GoModel, srcGHostIdxModel : R2GoModel) : FriendlyChunk = {
+	def makeChunkForLoadableGraphs(chunkUriWrap : HasPossiblyTypedURI, parentCH : ChunkHandle, gpIdxModel : R2GoModel, srcGHostIdxModel : R2GoModel) : FriendlyChunkHandle = {
 		val chunk = new InternalChunk
-		val handleMaker = makeLGHandleMaker(gpIdxModel, srcGHostIdxModel, parentCH)
+		val chunkHandle = new FriendlyChunkHandle(chunk, chunkUriWrap, parentCH)
+		val lgHandleMaker = makeLGHandleMaker(gpIdxModel, srcGHostIdxModel, chunkHandle)
 		// The rdf:type of the uri key is mdir:GraphPointer, whereas the handle payload type is LoadableGraphState.
 		val typURI : HasTypeMarkURI = new HasR2GoClassURI(MdirGraphPointer.RDFS_CLASS)
-		chunk.setupTypedCache(typURI, classOf[LoadableGraphState], handleMaker)
-		chunk
+		chunk.setupTypedCache(typURI, classOf[LoadableGraphState], lgHandleMaker)
+		chunkHandle
 	}
+	
 }

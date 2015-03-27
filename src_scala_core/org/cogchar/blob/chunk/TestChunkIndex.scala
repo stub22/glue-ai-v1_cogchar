@@ -38,12 +38,9 @@ import rdf2go.model.node.{URI => R2GoURI}
 import rdfreactor.runtime.ReactorRuntimeEntity
 import rdfreactor.schema.rdfs.{Class => RDFR_Class}
 
-
-
-
-
 import org.appdapter.fancy.log.VarargsLogging
-import org.cogchar.blob.circus.{ GraphScanTest}
+import org.cogchar.blob.ghost.{ GraphScanTest}
+
 object TestChunkIndex extends VarargsLogging {
 	def main(args: Array[String]): Unit = {
 		GraphScanTest.setupScanTestLogging
