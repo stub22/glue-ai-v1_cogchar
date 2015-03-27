@@ -61,11 +61,11 @@ case class ItemHandle(private val myURIWrap : HasURI, private val myParentChunkH
 //		2) At construction time, we have an actual item object to wrap, 
 //		which we can hold in an immutable val (though it may change internally)
 
-class TypedItemHandle[IT](val myItem : IT, uriWrap : HasTypedURI, parentCH : ChunkHandle) 
+class TypedItemHandle[IT](val myItem : IT, uriWrap : HasPossiblyTypedURI, parentCH : ChunkHandle) 
 				extends ItemHandle(uriWrap, parentCH) with  TypedHandle[IT] {
 	override def unwrap : IT = myItem
 	// If the original uriWrap was connected to a Model, this can return useful rdf:types.
-	def getTypedItemURI : HasTypedURI = uriWrap
+	def getTypedItemURI : HasPossiblyTypedURI = uriWrap
 }
 
 // Hmmm.  This would work in cases where we are only interested in caching an entity, but commonly we need 

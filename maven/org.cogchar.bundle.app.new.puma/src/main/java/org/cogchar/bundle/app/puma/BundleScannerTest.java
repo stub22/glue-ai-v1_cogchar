@@ -1,6 +1,6 @@
 package org.cogchar.bundle.app.puma;
 
-import org.cogchar.blob.circus.GraphScanTest;
+import org.cogchar.blob.ghost.GraphScanTest;
 import org.cogchar.blob.entry.BundleEntryHost;
 import org.cogchar.bundle.core.CogcharCoreActivator;
 import org.ontoware.rdf2go.model.Model;
