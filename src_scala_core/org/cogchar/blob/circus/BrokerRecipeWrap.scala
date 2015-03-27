@@ -88,6 +88,8 @@ class FeatureBrokerRecipeWrap(featureBrokerRecipe: BRFeature) extends BrokerReci
 }
 
 object BrokerRecipeUtil {
+	
+
 	def toFeatureBrokerRecipe(recipeInst : ReactorRuntimeEntity) : BRFeature = {
 		// Normally this is used when recipeInst was read using some application ontology that imports crcp:.
 		// We do *not* type-check the input against asserted rdf:type, nor do we assert the type!
