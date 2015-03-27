@@ -24,11 +24,15 @@ import org.ontoware.rdfreactor
 import rdf2go.model.{Model => R2GoModel}
 import rdf2go.model.node.{URI => R2GoURI}
 
-import org.cogchar.api.owrap.mdir.{GraphPointer => MdirGraphPointer, GraphHost => MdirGraphHost}
+import com.hp.hpl.jena
+import jena.rdf.model.{ Model => JenaModel}
 
+import org.cogchar.api.owrap.mdir.{GraphPointer => MdirGraphPointer, GraphHost => MdirGraphHost, GraphHost3Serial}
+
+import org.cogchar.blob.circus.{RRUtil, GHostUtil}
 // There is no need for a class or trait called LoadableGraphHandle.
 // What we do instead is provide the guts as LoadableGraphState, and the handle type is then
-// TypedItemHandle[LoadableGraphState].  Colloquially we sometimes call that a LoadableGraph[State]Handle,
+// TypedItemHandle[LoadableGraphState].  Colloquially we sometimes call that a LoadableGraph(State)Handle,
 // but that is not a defined scala type name.
 // 
 // We assume that both myIndexGP and myResolvedGHost are backed by open index models.
@@ -39,12 +43,36 @@ import org.cogchar.api.owrap.mdir.{GraphPointer => MdirGraphPointer, GraphHost =
 // the myIndexGP and myResolvedSourceGHost).  If that succeeded or failed due to the index model being readonly,
 // that would not be our problem.
 // 
-// TODO:  Get smarter about whether the GHost is of dimension 4 or a 3.
+
 // 
 // Note that we do *not* expect this type to be extended to hold application-specific information about the
 // graph.   Any such information should be embodied in myIndexGP and whatever app-specific index-data it links to.
-final class LoadableGraphState(val myIndexGP : MdirGraphPointer, private val myResolvedSourceGHost : MdirGraphHost) {
-	var		myContentR2GoM_opt : Option[R2GoModel] = None // Initially there is no model loaded.
+final class LoadableGraphState(val myIndexGP : MdirGraphPointer, private val myResolvedSourceGHost : MdirGraphHost) 
+		extends VarargsLogging {
+	var		myPayloadModelR2GoM_opt : Option[R2GoModel] = None // Initially there is no payload model loaded.
+	// We call it a "payload" model to distinguish from associated index models.
+	// This should only be able to fail under rare circumstances, or if we have bad code assumptions.
+	def getOpenPayloadModel : Option[R2GoModel] = {
+		if (myPayloadModelR2GoM_opt.isEmpty) {
+			// TODO:  Get smarter about whether the GHost is of dimension 4 or a 3.
+			val ser3GH : GraphHost3Serial = RRUtil.promote(myResolvedSourceGHost, classOf[GraphHost3Serial])
+			val loadedModel_opt : Option[JenaModel] = GHostUtil.readModelFromGHost3Serial(ser3GH)
+			if (loadedModel_opt.isDefined) {
+				val contentR2GoM : R2GoModel = new rdf2go.impl.jena.ModelImplJena(loadedModel_opt.get)
+				contentR2GoM.open
+				myPayloadModelR2GoM_opt = Some(contentR2GoM)
+			} else {
+				error2("Cannot load graph for pointer {} at resolved host {}", myIndexGP, myResolvedSourceGHost)
+			}
+		}
+		myPayloadModelR2GoM_opt
+	}
+	def releasePayloadModel : Unit = {
+		if (myPayloadModelR2GoM_opt.isDefined) {
+			myPayloadModelR2GoM_opt.get.close
+			myPayloadModelR2GoM_opt = None
+		}
+	}
 }
 
 object LoadableGraphHandleFuncs extends VarargsLogging {
