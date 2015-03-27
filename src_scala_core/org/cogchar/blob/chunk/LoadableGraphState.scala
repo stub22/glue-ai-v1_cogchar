@@ -50,6 +50,8 @@ final class LoadableGraphState(val myIndexGP : MdirGraphPointer, private val myR
 object LoadableGraphHandleFuncs extends VarargsLogging {
 	// This make-maker method returns a function closure with bindings for the required context values.
 	// We supply it with readable index models as discussed above.
+	// These index model-handles are required to exist when this maker is constructed, 
+	// although the actual graph contents may change anytime before the maker-func is actually invoked.
 	def makeLGHandleMaker(gpIndexModel : R2GoModel, sourceGHostIndexModel : R2GoModel, parentCH : ChunkHandle) 
 			: Function1[HasURI, TypedItemHandle[LoadableGraphState]] = {
 		hasUri => {
@@ -58,7 +60,9 @@ object LoadableGraphHandleFuncs extends VarargsLogging {
 			// and a MdirGraphHost.
 			val grapPointerR2GoURI : R2GoURI = hasUri.getR2GoURI
 			// Presumably the pointer already exists in the index model (otherwise the getAllPoints... is going to fail).
-			//               false => Do *not* write an rdf:type for this pointer uri!
+			//               false => Do *not* write an rdf:type for this pointer uri! [because all required types should
+			//               already exist.  Some of those types may be app-specific, and mdir:GraphPointer itself 
+			//               may be implied, inferred, asserted or ignored as the app sees fit.].  
 			val indexGP : MdirGraphPointer = new MdirGraphPointer(gpIndexModel, grapPointerR2GoURI, false)
 			// These are only partially resolved, because we don't know if they are connected to the right model.
 			val partiallyResolvedGHosts : Array[MdirGraphHost] = indexGP.getAllPointsToGraphHost_as.asArray
