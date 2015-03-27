@@ -23,6 +23,7 @@ package org.cogchar.blob.chunk
 trait ChunkHandle extends Handle {
 	// Provides a convenience API for searching the Chunk's *contents*.
 	def getHandle(instUri : HasURI, tUri : HasTypeMarkURI) : Option[_ <: Handle]
+	def getTypedHandle[HT](instUri : HasURI, typUri : HasTypeMarkURI, handleClz : Class[HT]) : Option[TypedItemHandle[HT]] 
 }
 // abstract class SubChunkHandle(uriWrap : HasURI, parentCH : ChunkHandle) extends ItemHandle(uriWrap, parentCH) with ChunkHandle
 
@@ -32,6 +33,7 @@ class RootChunkHandle(private val myUriWrap : HasURI) extends ChunkHandle {
 	override def getParentChunkHandle = None
 	// RootChunkHandle is generally used only as a parent for other ChunkHandles.
 	override def getHandle(instUri : HasURI, tUri : HasTypeMarkURI) : Option[_ <: Handle] = ???
+	override def getTypedHandle[HT](instUri : HasURI, typUri : HasTypeMarkURI, handleClz : Class[HT]) : Option[TypedItemHandle[HT]] = ???
 }
 
 // Here chunkUriWrap is an identifier for the chunk.  The chunkUriWrap may have some type information available,
@@ -43,6 +45,7 @@ class FriendlyChunkHandle(chunk : FriendlyChunk, chunkUriWrap : HasPossiblyTyped
 		val qClz = classOf[Any]
 		chunk.getTypedHandle(instUri, typUri, qClz)
 	}
+	override def getTypedHandle[HT](instUri : HasURI, typUri : HasTypeMarkURI, handleClz : Class[HT]) : Option[TypedItemHandle[HT]] = {
+		chunk.getTypedHandle(instUri, typUri, handleClz)
+	}
 }
-
-
