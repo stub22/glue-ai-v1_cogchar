@@ -78,7 +78,11 @@ final class LoadableGraphState(val myIndexGP : MdirGraphPointer, private val myR
 }
 
 // Special case where we only care about the ability to find LoadableGraphsState-Handles.
-class LGStateChunkHandle(chunk : FriendlyChunk, chunkUriWrap : HasPossiblyTypedURI, parentCH : ChunkHandle) 
+// For client's convenience, we also keep references to the index models.
+
+class LGSChunkHandle(chunk : FriendlyChunk, chunkUriWrap : HasPossiblyTypedURI, parentCH : ChunkHandle,
+			val myGPIndexModel : R2GoModel, val mySrcGHostIdxModel : R2GoModel) 
+
 		extends FriendlyChunkHandle(chunk, chunkUriWrap, parentCH) {
 			
 	def getLGStateHandle(graphPointerUriWrap : HasURI) : Option[TypedItemHandle[LoadableGraphState]] = {
@@ -127,9 +131,9 @@ object LoadableGraphHandleFuncs extends VarargsLogging {
 	// Makes a chunk with just one type cache in it, able to load all the graphs that have pointers in gpIdxModel,
 	// resolved into gHosts in srcGHostIdxModel.
 	def makeChunkForLoadableGraphs(chunkUriWrap : HasPossiblyTypedURI, parentCH : ChunkHandle, gpIdxModel : R2GoModel, 
-				srcGHostIdxModel : R2GoModel) : LGStateChunkHandle = {
+				srcGHostIdxModel : R2GoModel) : LGSChunkHandle = {
 		val chunk = new InternalChunk
-		val chunkHandle = new LGStateChunkHandle(chunk, chunkUriWrap, parentCH)
+		val chunkHandle = new LGSChunkHandle(chunk, chunkUriWrap, parentCH, gpIdxModel, srcGHostIdxModel)
 		val lgHandleMaker = makeLGHandleMaker(gpIdxModel, srcGHostIdxModel, chunkHandle)
 		// The rdf:type of the uri key is mdir:GraphPointer, whereas the handle payload type is LoadableGraphState.
 		chunk.setupTypedCache(MGP_TypeMarkUriWrap, classOf[LoadableGraphState], lgHandleMaker)
