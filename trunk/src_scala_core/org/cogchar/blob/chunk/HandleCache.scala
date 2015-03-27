@@ -16,9 +16,11 @@
 
 package org.cogchar.blob.chunk
 
+import org.appdapter.fancy.log.VarargsLogging
+
 // The meaning and type-constraint of the handle is not known at this layer.
 // The Cache is empowered to *make* handles as needed.
-trait HandleCache {
+trait HandleCache extends VarargsLogging {
 	def getHandle(instUri : HasURI) : Option[Handle]
 	
 	// Overwrites any existing handle for this URI (or a subtype may throw an exception if overwrite is undesirable).  
@@ -37,6 +39,7 @@ trait TypedHandleCache[IT] extends HandleCache {
 	
 	override protected def makeAndStoreHandle(instUri : HasURI) : Unit = {
 		val tih = makeTypedHandle(instUri)
+		// debug2("For {} made typed handle {}", instUri, tih)
 		putTypedHandle(tih)
 	}
 	
@@ -49,8 +52,6 @@ trait TypedHandleCache[IT] extends HandleCache {
 		val existing_opt : Option[TypedItemHandle[IT]] = getTypedHandle(wuri)
 		existing_opt.getOrElse({
 			makeAndStoreHandle(wuri)
-			// val made = maker(wuri)
-			// putTypedHandle(made)
 			getTypedHandle(wuri).get
 		})	
 	}
