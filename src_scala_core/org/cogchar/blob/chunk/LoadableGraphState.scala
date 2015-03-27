@@ -135,7 +135,8 @@ object LoadableGraphHandleFuncs extends VarargsLogging {
 		val chunk = new InternalChunk
 		val chunkHandle = new LGSChunkHandle(chunk, chunkUriWrap, parentCH, gpIdxModel, srcGHostIdxModel)
 		val lgHandleMaker = makeLGHandleMaker(gpIdxModel, srcGHostIdxModel, chunkHandle)
-		// The rdf:type of the uri key is mdir:GraphPointer, whereas the handle payload type is LoadableGraphState.
+		// The rdf:type of the uri key is (possibly some subtype of) mdir:GraphPointer, 
+		// whereas the handle payload type is LoadableGraphState.
 		chunk.setupTypedCache(MGP_TypeMarkUriWrap, classOf[LoadableGraphState], lgHandleMaker)
 		chunkHandle
 	}
