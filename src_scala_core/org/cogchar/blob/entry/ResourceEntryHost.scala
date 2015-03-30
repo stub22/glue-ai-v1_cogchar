@@ -57,10 +57,17 @@ class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) w
                      * "jar:file:/" appended to the beginning of their Uris so they must be removed.
                      * The path to the jar and the path inside the jar are separated by a "!" which is what I am using as a delimiter below.
 					 * 
-					 * [Was the code below copied from somewhere, or is this Ben's original solution? ]
+					 * [Was the code below copied from somewhere, or is this Ben's original solution? This is Ben's original solution. ]
                      */
                     val uriParts = locUri.toString.split("!")
-                    val locJarPath = uriParts(0).replaceFirst("jar:", "").replaceFirst("file:/", "")
+                    var locJarPath = uriParts(0).replaceFirst("jar:", "").replaceFirst("file:", "")
+                    
+                    // Windows file systems also need you to trim off the first forward slash,
+                    // But this causes an error on Linux and Mac machines.
+                    if(isWindows()){
+                      locJarPath = locJarPath.replaceFirst("/", "")
+                    }
+                    
                     val directoryInJarPath = uriParts(1)
                     
                     // To read the contents of a jar you have to create a FileSystem object and use it to create paths inside the jar.
@@ -86,7 +93,15 @@ class ResourceFolderEntry(locUri : java.net.URI) extends ResourceEntry(locUri) w
         }
         path_opt.map(new JnioFolderEntry(_))
     }
-	
+    // Checks if the current running system is windows
+	def isWindows(): Boolean = {
+          val osName = System.getProperty("os.name")
+          if (osName != null) {
+            osName.toLowerCase().contains("win")
+          } else {
+            false
+          }
+        }
 	
 	override def findDirectPlainEntries: Traversable[PlainEntry] = {
 		if (myJnioDelegate.isDefined) {
