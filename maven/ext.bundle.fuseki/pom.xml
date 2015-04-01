@@ -8,10 +8,10 @@
 	</parent>
 
     <groupId>org.cogchar</groupId>
-    <artifactId>ext.bundle.fuseki_0_2_7</artifactId>
+    <artifactId>ext.bundle.fuseki_2_0_0</artifactId>
     <packaging>bundle</packaging>
 
-    <name>${artifactId} - OSGi Bundle for Jena Fuseki servlet</name>
+    <name>${artifactId} -  UNFINISHED - OSGi Bundle for Jena Fuseki servlet - UNFINISHED</name>
 <!-- This project is intended to replace o.c.b.bind.joseki, which
 served 3 purposes:
 
@@ -28,7 +28,7 @@ served 3 purposes:
     our Goody V-World service to hear commands from java-HTTP-client, via
     temporary naive ThingActionRouter/Consumer pattern).
     
-    These features place the bundle more in the "bind" category than the "ext"
+    Features #2 and #3 fall more into the "bind" category than the "ext"
     category.  So, if we wind up replicating these features, we probably
     need a bundle called o.c.bundle.bind.fuseki.   However, for the moment
     we are experimenting with a more pure/thin wrapper around the jena-fuseki
@@ -37,42 +37,49 @@ served 3 purposes:
  --> 
 
     <dependencies>
+		<!--
         <dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.jena_all_2_10_1</artifactId>
             <scope>provided</scope>
 		</dependency>
+		-->
         <dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.osgi.common</artifactId>
 		</dependency>
-        <dependency>
-            <!-- "jena-fuseki" transitively pulls in its own copies of the Jena libraries.
+		<dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-fuseki-core</artifactId>
+			<version>2.0.0</version>
+			<scope>provided</scope>
+        </dependency>
+
+		<!--  This .war shows up as a "non-classpath" dependency.
+		<dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-fuseki-war</artifactId>
+			<type>war</type>
+			<version>2.0.0</version>
+			<scope>provided</scope>
+        </dependency>
+		-->
+            <!--
+				Alternate approach - depend on jena-fuseki-core instead of jena-fuseki-war.
+				
+				"jena-fuseki" transitively pulls in its own copies of the Jena libraries.
                 If we decide to copy+modify the source of Fuseki, as we did in 
                 o.c.bundle.bind.joseki, then we would not have this dependency,
                 and we would just use Appdapter's ext.bundle.jena_all_2_10_1.
                 
                 But if we manage to *not* copy+modify Fuseki's source, then
-                we will probably want to "exclude" the Jena dependencies
+				 we will probably want to "exclude" the Jena dependencies
                 brought in by jena-fuseki, as well as the Jetty stuff it
                 pulls in (which we get via PAXWeb, instead), although we
                 note that the existing o.c.bundle.bind.joseki is sloppy
                 about these issues, and it hasn't caused any known problems.
-                
-               -->
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-fuseki</artifactId>
-			<scope>provided</scope>
-			<exclusions>
-				<!-- "jena-fuseki" transitively will pull in its own copies of the Jena libraries,
-					(conflicting with our ext.bundle.jena above) which we prevent by excluding them.
-				-->
-				<exclusion>
-                    <groupId>org.apache.jena</groupId>
-                    <artifactId>apache-jena-libs</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+
+               -->		
     </dependencies>
 
     <build>
