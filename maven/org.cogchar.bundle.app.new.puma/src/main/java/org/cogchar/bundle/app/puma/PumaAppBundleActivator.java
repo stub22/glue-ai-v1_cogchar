@@ -25,7 +25,7 @@ public class PumaAppBundleActivator extends BundleActivatorBase {
         // We assume some other bundle has configured SLF4J for us.
         super.start(context);
 //        BundleScannerTest.scanBundleFromContext(context);
-        BundleScannerTest.scanBundleCore();
+//        BundleScannerTest.scanBundleCore();
     }
 
     @Override

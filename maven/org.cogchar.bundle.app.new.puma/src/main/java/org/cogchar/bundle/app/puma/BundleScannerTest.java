@@ -11,8 +11,6 @@ import org.osgi.framework.FrameworkUtil;
 public class BundleScannerTest {
 
     public static void scanBundleFromContext(BundleContext context) throws Exception {
-        // TODO add activation code here
-
         Bundle bundle = context.getBundle();
         scanBundleContents(bundle);
         System.exit(0);
@@ -25,11 +23,8 @@ public class BundleScannerTest {
 
     public static void scanBundleFromClass(Class bundleClass) throws Exception {
 
-        // TODO add activation code here
         Bundle bundle = FrameworkUtil.getBundle(bundleClass);
         scanBundleContents(bundle);
-
-        System.exit(0);
     }
 
     private static void scanBundleContents(Bundle bundle) {
