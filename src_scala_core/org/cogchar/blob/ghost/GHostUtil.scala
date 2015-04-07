@@ -80,7 +80,7 @@ object GHostUtil extends VarargsLogging {
 			// Scan the supplied entryHost and assert up to maxEntries gh3Serial records in the index model.  
 			// Optionally it might also copy our GH4SFolder metadata into the gh3IdxModel; left undefined.
 			val foundModelCount = GraphScanTest.scanDeepGraphFolderIntoGHostRecords(entryHost, ghostPath, maxEntries, openTgtModel)
-			info2("Deep-scanned GHost folder {} and found {} results.", ghostPath, foundModelCount : Integer)	  
+			info3("Deep-scanned GHost folder {} in host {} and found {} results.", ghostPath, entryHost, foundModelCount : Integer)	  
 		})
 		debug1("Index model now contains: {}", openTgtModel.getUnderlyingModelImplementation)
 		// Dangerous assumption:  There weren't any other ghost3Serials in the openTgtModel when it was passed to us!
