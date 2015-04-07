@@ -66,7 +66,7 @@ class GraphFileLoader extends VarargsLogging {
 	private def makeAndLoadMemDelgPort(loadFunc : Function3[GraphFileLoader, Dataset, GraphAbsorber, Unit]) : DelegatingPortal = {
 		val inMemDSet = TDBFactory.createDataset()
 		val dgp = new LazyLocalDelegatingPortal(inMemDSet)
-		val absrbr = dgp.getAbsorber.asInstanceOf[LocalGraphAbsorber]
+		val absrbr = dgp.getAbsorber.asInstanceOf[LocalGraphAbsorber] // The cast to LocalGraphAbsorber is legit but unnecessary.
 		loadFunc(this, inMemDSet, absrbr)
 		dgp
 	}
