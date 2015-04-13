@@ -13,7 +13,6 @@ public class BundleScannerTest {
     public static void scanBundleFromContext(BundleContext context) throws Exception {
         Bundle bundle = context.getBundle();
         scanBundleContents(bundle);
-        System.exit(0);
     }
 
     public static void scanBundleCore() throws Exception {
