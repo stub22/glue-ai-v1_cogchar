@@ -1,0 +1,310 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.cogchar</groupId>
+		<artifactId>org.cogchar.modules.main</artifactId>
+		<version>1.1.3</version>
+		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
+	</parent>		
+	<artifactId>org.cogchar.lib.onto</artifactId>
+	<packaging>jar</packaging>
+
+	<name>${project.artifactId} - POJO</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.core</artifactId>
+		</dependency>	
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>ext.bundle.ontoware</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<!--
+		<dependency>
+			<groupId>org.semweb4j</groupId>
+			<artifactId>rdfreactor.dist</artifactId>
+			<type>pom</type>
+			<exclusions>
+				<exclusion>
+					<artifactId>rdf2go.impl.sesame</artifactId>
+					<groupId>org.semweb4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>rdfreactor-maven-plugin</artifactId>
+					<groupId>org.semweb4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>rdfreactor.generator</artifactId>
+					<groupId>org.semweb4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.semweb4j</groupId>
+			<artifactId>rdf2go.impl.jena</artifactId>
+		</dependency>
+		-->
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- Processing of current ontos is following pattern described here
+				http://jena.apache.org/documentation/tools/schemagen-maven.html
+				
+				However, the plugin version described there is out of date.
+				We found this one by searching maven-central.
+				
+				This plugin runs before the java-compile step.
+				
+				The generated .java files are written to ${project.build.directory}/generated-sources/java,
+				which is made part of the java build step using the config of the build-helper-maven-plugin
+				below.
+			-->
+			<plugin>
+
+				<groupId>org.apache.jena</groupId>
+				<artifactId>jena-maven-tools</artifactId>
+				<configuration>
+					<includes>
+						<include>src/main/resources/org/cogchar/onto/*_owl2.ttl</include>
+						<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and for some files 
+						we are going along with that for now, so we must make the jena-schemagen file search compatible.
+						-->
+						<include>src/main/resources/org/cogchar/onto/*_owl2.n3</include>
+						<!-- Individuals used in tests.  Other apps may use a similar pattern to bind features to names. -->
+						<include>src/main/resources/org/cogchar/onto_indiv/*_owl2.ttl</include>
+					</includes>
+					<fileOptions>
+						<source>
+							<!--  Published jena docs are out of date.  
+The options we can use are mostly equivalent to the ones described here
+http://jena.apache.org/documentation/tools/schemagen.html
+but to get the actual option name, we have to look in Jena code, such as here:
+ http://grepcode.com/file/repo1.maven.org$maven2@org.apache.jena$jena-maven-tools@0.4@org$apache$jena$tools$schemagen$Source.java
+-->										
+
+							<!-- the "default" input supplies options used by all files matching includes above.  -->
+							<input>default</input>
+							<output>${project.build.directory}/generated-sources/jena-vocab</output>
+							<package-name>org.cogchar.gen.oname</package-name>
+							<!-- We want more specialized OWL-aware java-subclasses like "Individual" and 
+								"ObjectProperty", not just "Resource" and "Property".
+							-->
+							<ontology>true</ontology>
+							<!-- no-strict prevents strict checking of ___ which if left on causes build error ____ -->
+							<no-strict>true</no-strict>
+							<!-- Sure, we like inference, but it's generally not needed in this task,
+								and it makes the serialized model larger.  If we want to use include-source,
+								below, this can lead to the full-model java String constant being too long,
+								and not compiling.
+							--> 
+							<use-inf>false</use-inf>
+							<!-- uc-names makes the constants be UPPER_CASE_STYLE instead of cCamelCaseStyle -->
+							<uc-names>true</uc-names>
+							<!-- If "true", serializes the source code of the vocabulary, and 
+							includes this into the generated class file. At class load time, creates a Model 
+							containing the definitions from the source.  Fun, but not strictly necessary, and
+							makes the generated source+class files bigger.
+							-->
+							<include-source>false</include-source>
+						</source>
+						<source>
+							<!-- Properties applying only to the sample indivs 
+							-->
+							<input>src/main/resources/org/cogchar/onto_indiv/bootSample_2015Q1_owl2.ttl</input>
+							<package-name>org.cogchar.gen.indiv</package-name>
+							<output>${project.build.directory}/generated-sources/jena-vocab</output>
+						</source>
+						<source>
+							<!-- Properties applying only to the BehavScene onto.
+							-->
+							<input>src/main/resources/org/cogchar/onto/BehavScene_owl2.n3</input>
+							<package-name>org.cogchar.gen.bs</package-name>
+							<!-- The output option seems to not propagate from the default setting above -->
+							<output>${project.build.directory}/generated-sources/jena-vocab</output>
+							<ontology>true</ontology>
+<!--
+In version 0.5 - include seems to work for one additional namespace, but not when specified multiple times.
+Perhaps it works when specified in config file?
+
+The include option may repeated multiple times to include a variety of constants from other namespaces in the output class.
+
+Since OWL and RDFS ontologies may include individuals that are named instances of declared classes, schemagen 
+will include individuals among the constants that it generates in Java. By default, an individual will be included if 
+its class has a URI that is in one of the permitted namespaces for the vocabulary, even if the individual itself is not 
+in that namespace. If the option strictIndividuals is set, individuals are only included if they have a URI that is in 
+the permitted namespaces for the vocabulary.
+							-->							
+							<include>urn:ftd:cogchar.org:2012:runtime#</include>
+							<!--  Here is an example of a second extra NS that we might like to include, but can't:
+							<include>http://jena.hpl.hp.com/2005/11/Assembler#</include>
+							-->
+							<!-- Separate but related problem:							
+							Schemagen-maven version 0.5 seems to not like this option, so currently we are
+							falling back to setting	the @base in the onto file itself, and specifying ONE additional
+							namespace using the "include" option above.
+							<namespace>http://www.cogchar.org/schema/scene#</namespace>
+							-->
+						</source>						
+					</fileOptions>							
+				</configuration>
+				<executions>
+					<execution>
+						<id>schemagen</id>
+						<goals>
+							<goal>translate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
+			<plugin>
+				<!-- We want the generated-sources/java directory to be included in the java-compile step -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/jena-vocab</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.semweb4j</groupId>
+				<artifactId>rdfreactor-maven-plugin</artifactId>
+				<executions>
+					<!-- We need one execution config for each owl schema that we run rdfreactor against.
+						Each such config should target a unique output java package, and log file.
+					-->
+				
+					<execution>
+						<id>behavScene</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and we are going along with that for now.	-->							
+							<schemaFile>src/main/resources/org/cogchar/onto/BehavScene_owl2.n3</schemaFile>
+							<packageName>org.cogchar.api.owrap.bscene</packageName>
+							<rdfReactorLogfile>target/rdfreactor_behavScene.log</rdfReactorLogfile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>thingAction</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and we are going along with that for now.	-->							
+							<schemaFile>src/main/resources/org/cogchar/onto/ThingAction_owl2.n3</schemaFile>
+							<packageName>org.cogchar.api.owrap.taction</packageName>
+							<rdfReactorLogfile>target/rdfreactor_thingAction.log</rdfReactorLogfile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>pushyScreen</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and we are going along with that for now.	-->							
+							<schemaFile>src/main/resources/org/cogchar/onto/PushyScreen_owl2.n3</schemaFile>
+							<packageName>org.cogchar.api.owrap.pscreen</packageName>
+							<rdfReactorLogfile>target/rdfreactor_pushyScreen.log</rdfReactorLogfile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>metaDir</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and we are going along with that for now.	-->							
+							<schemaFile>src/main/resources/org/cogchar/onto/MetaDir_owl2.n3</schemaFile>
+							<packageName>org.cogchar.api.owrap.mdir</packageName>
+							<rdfReactorLogfile>target/rdfreactor_metaDir.log</rdfReactorLogfile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>circRecipe</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and we are going along with that for now.	-->							
+							<schemaFile>src/main/resources/org/cogchar/onto/CircusRecipe_owl2.n3</schemaFile>
+							<packageName>org.cogchar.api.owrap.crcp</packageName>
+							<rdfReactorLogfile>target/rdfreactor_circRecipe.log</rdfReactorLogfile>
+						</configuration>
+					</execution>												
+				</executions>
+			</plugin>			
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											build-helper-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.7,)
+										</versionRange>
+										<goals>
+											<goal>add-source</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											exec-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.2.1,)
+										</versionRange>
+										<goals>
+											<goal>java</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

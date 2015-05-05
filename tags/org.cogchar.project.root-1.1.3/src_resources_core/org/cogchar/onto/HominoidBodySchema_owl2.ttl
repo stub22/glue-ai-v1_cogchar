@@ -1,0 +1,809 @@
+@prefix : <http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#> .
+@prefix za: <http://www.hrkind.com/metad/2012/06/zenoAnims.owl#> .
+@prefix cca: <http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix appsnazz: <http://www.appdapter.org/ontologies/2010/snazzy.owl#> .
+@prefix ace_lexicon: <http://attempto.ifi.uzh.ch/ace_lexicon#> .
+@base <http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2> .
+
+<http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2> rdf:type owl:Ontology ;
+                                                                
+                                                                owl:imports <http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl> .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Datatypes
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#contains
+
+cca:contains ace_lexicon:TV_sg "containses" ;
+             
+             ace_lexicon:TV_vbg "containsed" ;
+             
+             ace_lexicon:TV_pl "contains" .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#AuthoredAnimPiece
+
+:AuthoredAnimPiece rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :HominoidDomainEntity ;
+                   
+                   ace_lexicon:CN_pl "AuthoredAnimPieces" ;
+                   
+                   ace_lexicon:CN_sg "AuthoredAnimPiece" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#CanonTwistDirection3D
+
+:CanonTwistDirection3D rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :HominoidDomainEntity ;
+                       
+                       ace_lexicon:CN_sg "ZenoTwistDirection" ;
+                       
+                       ace_lexicon:CN_pl "ZenoTwistDirections" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#HominoidBody
+
+:HominoidBody rdf:type owl:Class ;
+              
+              rdfs:subClassOf :HominoidDomainEntity ;
+              
+              ace_lexicon:CN_sg "HumanoidBody" ;
+              
+              ace_lexicon:CN_pl "HumanoidBodies" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#HominoidDomainEntity
+
+:HominoidDomainEntity rdf:type owl:Class ;
+                      
+                      ace_lexicon:CN_pl "ThingZenoes" ;
+                      
+                      ace_lexicon:CN_sg "ThingZeno" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#HominoidGrossRegion
+
+:HominoidGrossRegion rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :HominoidDomainEntity ;
+                     
+                     ace_lexicon:CN_pl "ZenoBodyTopRegions" ;
+                     
+                     ace_lexicon:CN_sg "ZenoBodyTopRegion" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#HominoidServoJoint
+
+:HominoidServoJoint rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :HominoidDomainEntity ,
+                                    cca:RobotServoJoint ;
+                    
+                    ace_lexicon:CN_sg "ZenoServoJoint" ;
+                    
+                    ace_lexicon:CN_pl "ZenoServoJoints" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_100
+
+:Joint_100 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_100s" ;
+           
+           ace_lexicon:CN_sg "Joint_100" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_200
+
+:Joint_200 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_200s" ;
+           
+           ace_lexicon:CN_sg "Joint_200" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_201
+
+:Joint_201 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_201" ;
+           
+           ace_lexicon:CN_pl "Joint_201s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_202
+
+:Joint_202 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_202s" ;
+           
+           ace_lexicon:CN_sg "Joint_202" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_300
+
+:Joint_300 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_300s" ;
+           
+           ace_lexicon:CN_sg "Joint_300" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_301
+
+:Joint_301 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_301" ;
+           
+           ace_lexicon:CN_pl "Joint_301s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_310
+
+:Joint_310 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_310s" ;
+           
+           ace_lexicon:CN_sg "Joint_310" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_311
+
+:Joint_311 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_311s" ;
+           
+           ace_lexicon:CN_sg "Joint_311" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_312
+
+:Joint_312 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_312" ;
+           
+           ace_lexicon:CN_pl "Joint_312s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_320
+
+:Joint_320 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_320" ;
+           
+           ace_lexicon:CN_pl "Joint_320s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_321
+
+:Joint_321 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_321" ;
+           
+           ace_lexicon:CN_pl "Joint_321s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_322
+
+:Joint_322 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_322s" ;
+           
+           ace_lexicon:CN_sg "Joint_322" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_400
+
+:Joint_400 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_400" ;
+           
+           ace_lexicon:CN_pl "Joint_400s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_401
+
+:Joint_401 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_401s" ;
+           
+           ace_lexicon:CN_sg "Joint_401" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_410
+
+:Joint_410 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_410s" ;
+           
+           ace_lexicon:CN_sg "Joint_410" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_411
+
+:Joint_411 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_411" ;
+           
+           ace_lexicon:CN_pl "Joint_411s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_420
+
+:Joint_420 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_420s" ;
+           
+           ace_lexicon:CN_sg "Joint_420" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_430
+
+:Joint_430 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_430" ;
+           
+           ace_lexicon:CN_pl "Joint_430s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_500
+
+:Joint_500 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_500" ;
+           
+           ace_lexicon:CN_pl "Joint_500s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_501
+
+:Joint_501 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_501s" ;
+           
+           ace_lexicon:CN_sg "Joint_501" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_510
+
+:Joint_510 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_510" ;
+           
+           ace_lexicon:CN_pl "Joint_510s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_511
+
+:Joint_511 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_511s" ;
+           
+           ace_lexicon:CN_sg "Joint_511" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_520
+
+:Joint_520 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_520" ;
+           
+           ace_lexicon:CN_pl "Joint_520s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_530
+
+:Joint_530 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_530s" ;
+           
+           ace_lexicon:CN_sg "Joint_530" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_600
+
+:Joint_600 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_600s" ;
+           
+           ace_lexicon:CN_sg "Joint_600" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_601
+
+:Joint_601 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_601s" ;
+           
+           ace_lexicon:CN_sg "Joint_601" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_602
+
+:Joint_602 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_602s" ;
+           
+           ace_lexicon:CN_sg "Joint_602" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_610
+
+:Joint_610 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_610" ;
+           
+           ace_lexicon:CN_pl "Joint_610s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_620
+
+:Joint_620 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_620s" ;
+           
+           ace_lexicon:CN_sg "Joint_620" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_621
+
+:Joint_621 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_621" ;
+           
+           ace_lexicon:CN_pl "Joint_621s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_700
+
+:Joint_700 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_700" ;
+           
+           ace_lexicon:CN_pl "Joint_700s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_701
+
+:Joint_701 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_701s" ;
+           
+           ace_lexicon:CN_sg "Joint_701" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_702
+
+:Joint_702 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_sg "Joint_702" ;
+           
+           ace_lexicon:CN_pl "Joint_702s" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_710
+
+:Joint_710 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_710s" ;
+           
+           ace_lexicon:CN_sg "Joint_710" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_720
+
+:Joint_720 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_720s" ;
+           
+           ace_lexicon:CN_sg "Joint_720" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Joint_721
+
+:Joint_721 rdf:type owl:Class ;
+           
+           rdfs:subClassOf :HominoidServoJoint ;
+           
+           ace_lexicon:CN_pl "Joint_721s" ;
+           
+           ace_lexicon:CN_sg "Joint_721" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#PitchAboutX
+
+:PitchAboutX rdf:type owl:Class ;
+             
+             rdfs:subClassOf :CanonTwistDirection3D ;
+             
+             ace_lexicon:CN_pl "PitchAboutXes" ;
+             
+             ace_lexicon:CN_sg "PitchAboutX" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Point3D
+
+:Point3D rdf:type owl:Class ;
+         
+         rdfs:subClassOf cca:Point ;
+         
+         ace_lexicon:CN_pl "Point3Ds" ;
+         
+         ace_lexicon:CN_sg "Point3D" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Region_100_Torso
+
+:Region_100_Torso rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :HominoidGrossRegion ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty cca:contains ;
+                                    owl:someValuesFrom :Joint_100
+                                  ] ;
+                  
+                  ace_lexicon:CN_pl "Region_100_Torsoes" ;
+                  
+                  ace_lexicon:CN_sg "Region_100_Torso" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Region_200_Neck
+
+:Region_200_Neck rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :HominoidGrossRegion ;
+                 
+                 ace_lexicon:CN_sg "Region_200_Neck" ;
+                 
+                 ace_lexicon:CN_pl "Region_200_Necks" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Region_300_Head
+
+:Region_300_Head rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :HominoidGrossRegion ;
+                 
+                 ace_lexicon:CN_sg "Region_300_Head" ;
+                 
+                 ace_lexicon:CN_pl "Region_300_Heads" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Region_400_ArmLeft
+
+:Region_400_ArmLeft rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :HominoidGrossRegion ;
+                    
+                    ace_lexicon:CN_pl "Region_400_ArmLefts" ;
+                    
+                    ace_lexicon:CN_sg "Region_400_ArmLeft" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Region_500_ArmRight
+
+:Region_500_ArmRight rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :HominoidGrossRegion ;
+                     
+                     ace_lexicon:CN_pl "Region_500_ArmRights" ;
+                     
+                     ace_lexicon:CN_sg "Region_500_ArmRight" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Region_600_LegLeft
+
+:Region_600_LegLeft rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :HominoidGrossRegion ;
+                    
+                    ace_lexicon:CN_pl "Region_600_LegLefts" ;
+                    
+                    ace_lexicon:CN_sg "Region_600_LegLeft" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Region_700_LegRight
+
+:Region_700_LegRight rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :HominoidGrossRegion ;
+                     
+                     ace_lexicon:CN_pl "Region_700_LegRights" ;
+                     
+                     ace_lexicon:CN_sg "Region_700_LegRight" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Region_800_Tail
+
+:Region_800_Tail rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :HominoidGrossRegion ;
+                 
+                 ace_lexicon:CN_pl "Region_800_Tails" ;
+                 
+                 ace_lexicon:CN_sg "Region_800_Tail" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#Region_900_Other
+
+:Region_900_Other rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :HominoidGrossRegion ;
+                  
+                  ace_lexicon:CN_pl "Region_900_Others" ;
+                  
+                  ace_lexicon:CN_sg "Region_900_Other" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#RollAboutZ
+
+:RollAboutZ rdf:type owl:Class ;
+            
+            rdfs:subClassOf :CanonTwistDirection3D ;
+            
+            ace_lexicon:CN_sg "RollAboutZ" ;
+            
+            ace_lexicon:CN_pl "RollAboutZes" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/HominoidBodySchema_OWL2#YawAboutY
+
+:YawAboutY rdf:type owl:Class ;
+           
+           rdfs:subClassOf :CanonTwistDirection3D ;
+           
+           ace_lexicon:CN_sg "YawAboutY" ;
+           
+           ace_lexicon:CN_pl "YawAbouties" .
+
+
+
+###  http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#Point
+
+cca:Point ace_lexicon:CN_pl "Points" ;
+          
+          ace_lexicon:CN_sg "Point" .
+
+
+
+###  http://www.cogchar.org/ontologies/y2012m06/AnimMotivMapBlend.owl#RobotServoJoint
+
+cca:RobotServoJoint ace_lexicon:CN_sg "RobotServoJoint" ;
+                    
+                    ace_lexicon:CN_pl "RobotServoJoints" .
+
+
+
+
+
+#################################################################
+#
+#    Annotations
+#
+#################################################################
+
+
+cca:Character ace_lexicon:CN_sg "Character" ;
+              
+              ace_lexicon:CN_pl "Characters" .
+
+
+
+
+
+#################################################################
+#
+#    General axioms
+#
+#################################################################
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :Joint_100
+                :Joint_200
+                :Joint_201
+                :Joint_202
+                :Joint_300
+                :Joint_301
+                :Joint_310
+                :Joint_311
+                :Joint_312
+                :Joint_320
+                :Joint_321
+                :Joint_322
+                :Joint_400
+                :Joint_401
+                :Joint_410
+                :Joint_411
+                :Joint_420
+                :Joint_430
+                :Joint_500
+                :Joint_501
+                :Joint_510
+                :Joint_511
+                :Joint_520
+                :Joint_530
+                :Joint_600
+                :Joint_601
+                :Joint_602
+                :Joint_610
+                :Joint_620
+                :Joint_621
+                :Joint_700
+                :Joint_701
+                :Joint_702
+                :Joint_710
+                :Joint_720
+                :Joint_721
+              )
+] .
+
+
+
+
+###  Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net
+
