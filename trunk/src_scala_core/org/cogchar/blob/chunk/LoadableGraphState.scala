@@ -47,7 +47,7 @@ import org.cogchar.blob.ghost.{RRUtil, GHostUtil}
 // 
 // Note that we do *not* expect this type to be extended to hold application-specific information about the
 // graph.   Any such information should be embodied in myIndexGP and whatever app-specific index-data it links to.
-final class LoadableGraphState(val myIndexGP : MdirGraphPointer, private val myResolvedSourceGHost : MdirGraphHost) 
+final class LoadableGraphState(private val myIndexGP : MdirGraphPointer, private val myResolvedSourceGHost : MdirGraphHost) 
 		extends VarargsLogging {
 	// We call it a "payload" model to distinguish from associated index models.
 	var		myPayloadModelR2GoM_opt : Option[R2GoModel] = None // Initially there is no payload model loaded.
@@ -75,9 +75,11 @@ final class LoadableGraphState(val myIndexGP : MdirGraphPointer, private val myR
 			myPayloadModelR2GoM_opt = None
 		}
 	}
+	def getIndexGraphPointer : MdirGraphPointer = myIndexGP
+	def getResolvedSourceGHost : MdirGraphHost = myResolvedSourceGHost
 }
 
-// Special case where we only care about the ability to find LoadableGraphsState-Handles.
+// This is the handle for an entire *chunk*, which is used only for its ability to find LoadableGraphsState-Handles.
 // For client's convenience, we also keep references to the index models.
 
 class LGSChunkHandle(chunk : FriendlyChunk, chunkUriWrap : HasPossiblyTypedURI, parentCH : ChunkHandle,
