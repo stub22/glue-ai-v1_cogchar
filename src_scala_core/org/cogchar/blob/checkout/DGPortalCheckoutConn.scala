@@ -51,20 +51,20 @@ class DGPortalCheckoutConn(private val myDGPortal: DelegatingPortal) extends Che
 		val op = new Oper[String]  {
 			override def perform : String = {
 				myDGPortal.getAbsorber.replaceNamedModel(graphAbsUri, srcModel)
-				"happy result from PUT"
+				"SUCCESS result from PUT"
 			}
 		}
-		val result = myDGPortal.execWriteTransCompatible(op, "sad result from PUT")
+		val result = myDGPortal.execWriteTransCompatible(op, "FAILED result from PUT")
 	}
 	def postJenaModel(graphId: Ident, srcModel: Model) {
 		val graphAbsUri = graphId.getAbsUriString
 		val op = new Oper[String]  {
 			override def perform : String = {
 				myDGPortal.getAbsorber.addStatementsToNamedModel(graphAbsUri, srcModel)
-				"happy result from POST"
+				"SUCCESS result from POST"
 			}
 		}
-		val result = myDGPortal.execWriteTransCompatible(op, "sad result from POST")
+		val result = myDGPortal.execWriteTransCompatible(op, "FAILED result from POST")
 	}
 	def deleteJenaGraph(graphId: Ident) {
 		val graphAbsUri = graphId.getAbsUriString
