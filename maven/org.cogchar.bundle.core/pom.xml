@@ -112,10 +112,17 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.semweb4j.jena</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>				
+		<!--
+		<dependency>
 			<groupId>org.cogchar</groupId>
 			<artifactId>ext.bundle.ontoware</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		-->
 	</dependencies>
 		<!-- This is now propagated by ext.bundle.ontolware
         <dependency>

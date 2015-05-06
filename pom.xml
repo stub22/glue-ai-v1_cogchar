@@ -114,8 +114,10 @@ Version-less parent will be allowed in Maven 3.1.
 		<slf4j.version>1.7.5</slf4j.version>			
 			
 		<!-- plugins used during ontogen -->
+	
 		<org.semweb4j.version>5.0.1</org.semweb4j.version>	
-		<version.jena.maven.tools>0.5</version.jena.maven.tools>
+	
+		<version.jena.maven.tools>0.8</version.jena.maven.tools>
 		<version.build.helper.maven.plugin>1.7</version.build.helper.maven.plugin>
 						
 		<!-- Other plugin versions -->
@@ -246,7 +248,7 @@ Version-less parent will be allowed in Maven 3.1.
                 </dependency>
                 <dependency>
                     <groupId>org.appdapter</groupId>
-                    <artifactId>ext.bundle.jena_all_2_10_1</artifactId>
+					<artifactId>ext.bundle.jena_all_2_13_0</artifactId>
                     <version>${appdapter.version}</version>
                 </dependency>
                 <dependency>
@@ -511,20 +513,7 @@ Version-less parent will be allowed in Maven 3.1.
 			<name>sonatype public</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
-		<!-- Need for RDF-Reactor and RDF2go -->
-		<!--
-		<repository>
-			<id>semweb4j-repo</id>
-			<name>FZI Maven Repository</name>
-			<url>http://mavenrepo.fzi.de/semweb4j.org/repo</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>		
-		-->
+
 		<!-- Needed for "good" log4J bundle (for org.cogchar.bundle.bind.lift) -->
 		<repository>
 			<id>com.springsource.repository.bundles.external</id>
@@ -550,19 +539,7 @@ Version-less parent will be allowed in Maven 3.1.
 			<name>sonatype public</name>
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</pluginRepository>
-		<!--
-		<pluginRepository>
-			<id>semweb4j-repo</id>
-			<name>FZI Maven Repository</name>
-			<url>http://mavenrepo.fzi.de/semweb4j.org/repo</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>	
-		-->			
+	
 	</pluginRepositories>  	
         <!--
 	connection - used for read access to Maven (e.g. for svn-update)
