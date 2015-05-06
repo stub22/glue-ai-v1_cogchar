@@ -23,35 +23,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>ext.bundle.ontoware</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.appdapter</groupId>
+			<artifactId>ext.bundle.semweb4j.jena</artifactId>
+			<version>${appdapter.version}</version>
 		</dependency>		
-		<!--
-		<dependency>
-			<groupId>org.semweb4j</groupId>
-			<artifactId>rdfreactor.dist</artifactId>
-			<type>pom</type>
-			<exclusions>
-				<exclusion>
-					<artifactId>rdf2go.impl.sesame</artifactId>
-					<groupId>org.semweb4j</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>rdfreactor-maven-plugin</artifactId>
-					<groupId>org.semweb4j</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>rdfreactor.generator</artifactId>
-					<groupId>org.semweb4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.semweb4j</groupId>
-			<artifactId>rdf2go.impl.jena</artifactId>
-		</dependency>
-		-->
 	</dependencies>
 	<build>
 		<plugins>
