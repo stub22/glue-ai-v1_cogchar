@@ -7,7 +7,7 @@ import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaGlobalPrebootInjector;
 import org.appdapter.fancy.rspec.RepoSpec;
-import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
 import org.osgi.framework.BundleContext;
 
 public class DemoAllBundleActivator extends BundleActivatorBase {
