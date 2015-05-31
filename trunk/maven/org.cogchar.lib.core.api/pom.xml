@@ -41,6 +41,11 @@
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
 		</dependency>
+    	<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.xload</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>		
 		<dependency>
 			<!-- Apache commons-math used in both o.c.l.animoid and o.c.l.sonograph, which we obtain indirectly via: -->	
 			<groupId>org.appdapter</groupId>

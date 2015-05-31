@@ -20,7 +20,7 @@ import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.core.store.Repo
 import org.appdapter.demo.DemoResources
 import org.appdapter.fancy.rclient.{RepoClient, RepoClientImpl}
-import org.appdapter.fancy.rspec.OnlineSheetRepoSpec
+import org.appdapter.xload.rspec.OnlineSheetRepoSpec
 import org.appdapter.fancy.repo.FancyRepo
 /**
  * @author Stu B. <www.texpedient.com>

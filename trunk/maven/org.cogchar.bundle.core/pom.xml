@@ -70,7 +70,11 @@
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
 		</dependency>
-
+    	<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.xload</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.xml.dom4j_161</artifactId>
