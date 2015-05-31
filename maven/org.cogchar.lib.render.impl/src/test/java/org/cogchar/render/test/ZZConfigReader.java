@@ -21,7 +21,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.core.store.Repo;
 
-import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
 import org.appdapter.fancy.rspec.RepoSpec;
 import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.name.dir.AssumedQueryDir;

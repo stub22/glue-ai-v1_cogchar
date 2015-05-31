@@ -19,7 +19,7 @@ package org.cogchar.outer.behav.demo;
 
 import org.appdapter.core.store.Repo;
 import org.appdapter.fancy.rspec.RepoSpec;
-import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
 import org.appdapter.fancy.rclient.EnhancedRepoClient;
 import org.appdapter.fancy.rclient.EnhancedLocalRepoClient;
 
