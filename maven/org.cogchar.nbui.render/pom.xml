@@ -131,6 +131,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.xload</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.apache_qpid_010</artifactId>
 		</dependency>
 		<dependency>
