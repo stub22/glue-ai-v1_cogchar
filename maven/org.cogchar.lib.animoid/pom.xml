@@ -23,6 +23,11 @@
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.appdapter</groupId>
+			<artifactId>org.appdapter.bundle.math</artifactId>
+			<version>${appdapter.version}</version>
+		</dependency>
 		<!-- This works well enough at runtime for us to at least run the old "CurveTest".
 		
 		-->

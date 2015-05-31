@@ -31,8 +31,9 @@ import org.cogchar.impl.scene.{ SceneSpec, SceneBook }
 import org.appdapter.core.log.BasicDebugger
 import org.cogchar.platform.util.ClassLoaderUtils
 import org.osgi.framework.BundleContext
-// import org.appdapter.fancy.matdat.{}
-import org.appdapter.fancy.rspec.{RepoSpecDefaultNames, OfflineXlsSheetRepoSpec, OnlineSheetRepoSpec}
+
+import org.appdapter.fancy.rspec.{RepoSpecDefaultNames }
+import org.appdapter.xload.rspec.{ OfflineXlsSheetRepoSpec, OnlineSheetRepoSpec}
 import org.appdapter.fancy.gpointer.PipelineQuerySpec
 
 

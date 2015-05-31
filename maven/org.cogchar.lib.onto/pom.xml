@@ -22,11 +22,13 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>ext.bundle.semweb4j.jena</artifactId>
 			<version>${appdapter.version}</version>
-		</dependency>		
+		</dependency>
+		-->		
 	</dependencies>
 	<build>
 		<plugins>

@@ -28,10 +28,11 @@ import com.hp.hpl.jena.update.{GraphStore, UpdateAction, UpdateRequest}
 import com.hp.hpl.jena.sdb.{Store, SDBFactory}
 
 
-import org.appdapter.fancy.loader.GoogSheetRepoLoader
-import org.appdapter.fancy.rspec.OnlineSheetRepoSpec
+import org.appdapter.xload.sheet.GoogSheetRepoLoader
+import org.appdapter.xload.rspec.OnlineSheetRepoSpec
 
-import org.appdapter.fancy.repo.{DirectRepo, FancyRepo}
+import org.appdapter.fancy.repo.{FancyRepo}
+import org.appdapter.xload.repo.{DirectRepo}
 /**
  * @author Stu B. <www.texpedient.com>
  */

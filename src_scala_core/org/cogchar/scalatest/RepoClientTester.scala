@@ -17,7 +17,7 @@
 package org.cogchar.scalatest
 
 import java.io.ByteArrayOutputStream
-import org.appdapter.fancy.rspec.OnlineSheetRepoSpec
+import org.appdapter.xload.rspec.OnlineSheetRepoSpec
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.core.store.Repo
 import org.appdapter.demo.DemoResources
@@ -26,8 +26,8 @@ import org.appdapter.fancy.repo.FancyRepo
 
 import org.cogchar.name.dir.{AssumedGraphDir, AssumedQueryDir}
 import org.appdapter.demo.DemoResources
-import org.appdapter.fancy.loader.SdbSqlRepoFactoryLoader
-import org.appdapter.fancy.rspec.SdbSqlRepoSpec
+import org.appdapter.xload.fancy.SdbSqlRepoFactoryLoader
+import org.appdapter.xload.rspec.SdbSqlRepoSpec
 
 
 /** Documenting and testing our query-based configuration systems.

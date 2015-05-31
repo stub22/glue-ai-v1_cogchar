@@ -24,7 +24,7 @@ import org.appdapter.core.name.Ident;
 import org.cogchar.app.puma.boot.PumaAppContext;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.web.PumaWebMapper;
-import org.appdapter.fancy.rspec.OnlineSheetRepoSpec;
+import org.appdapter.xload.rspec.OnlineSheetRepoSpec;
 import org.appdapter.fancy.rspec.RepoSpec;
 import org.cogchar.name.entity.EntityRoleCN;
 
