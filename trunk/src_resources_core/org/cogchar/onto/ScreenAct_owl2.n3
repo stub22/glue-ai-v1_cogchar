@@ -361,6 +361,33 @@
 
 #################################################################
 #
+#    Data properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#CogcharScreenDataProp
+
+:CogcharScreenDataProp rdf:type owl:DatatypeProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasCreateStampJLong
+
+:hasCreateStampJLong rdf:type owl:DatatypeProperty ;
+                     
+                     rdfs:subPropertyOf :CogcharScreenDataProp ;
+                     
+                     rdfs:domain :ScreenAct ;
+                     
+                     rdfs:range xsd:long .
+
+
+
+
+
+#################################################################
+#
 #    Classes
 #
 #################################################################
@@ -745,6 +772,22 @@
 :OSA_Modify rdf:type owl:Class ;
             
             rdfs:subClassOf :OutputScreenAct .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#OSA_Pop
+
+:OSA_Pop rdf:type owl:Class ;
+         
+         rdfs:subClassOf :OutputScreenAct .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#OSA_Push
+
+:OSA_Push rdf:type owl:Class ;
+          
+          rdfs:subClassOf :OutputScreenAct .
 
 
 
