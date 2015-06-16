@@ -71,7 +71,17 @@
                
                rdfs:domain :DisplayLayoutDesc ;
                
-               rdfs:subPropertyOf :hasParameter .
+               rdfs:subPropertyOf :cogcharScreenObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasFeature
+
+:hasFeature rdf:type owl:ObjectProperty ;
+            
+            rdfs:range :DisplayFeatureDesc ;
+            
+            rdfs:subPropertyOf :cogcharScreenObjProp .
 
 
 
@@ -80,6 +90,18 @@
 :hasFirstOper rdf:type owl:ObjectProperty ;
               
               rdfs:subPropertyOf :cogcharScreenObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasItem
+
+:hasItem rdf:type owl:ObjectProperty ;
+         
+         rdfs:range :DisplayItemDesc ;
+         
+         rdfs:domain :DisplayLayoutDesc ;
+         
+         rdfs:subPropertyOf :hasFeature .
 
 
 
@@ -111,6 +133,10 @@
 
 :hasParam rdf:type owl:ObjectProperty ;
           
+          rdfs:domain :DisplayFeatureDesc ;
+          
+          rdfs:range :DisplayParameterDesc ;
+          
           rdfs:subPropertyOf :cogcharScreenObjProp .
 
 
@@ -135,7 +161,15 @@
 
 :hasPosBottom rdf:type owl:ObjectProperty ;
               
-              rdfs:subPropertyOf :hasPos .
+              rdfs:subPropertyOf :hasPosVert .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasPosHoriz
+
+:hasPosHoriz rdf:type owl:ObjectProperty ;
+             
+             rdfs:subPropertyOf :hasPos .
 
 
 
@@ -143,7 +177,7 @@
 
 :hasPosLeft rdf:type owl:ObjectProperty ;
             
-            rdfs:subPropertyOf :hasPos .
+            rdfs:subPropertyOf :hasPosHoriz .
 
 
 
@@ -177,7 +211,7 @@
 
 :hasPosRight rdf:type owl:ObjectProperty ;
              
-             rdfs:subPropertyOf :hasPos .
+             rdfs:subPropertyOf :hasPosHoriz .
 
 
 
@@ -185,7 +219,23 @@
 
 :hasPosTop rdf:type owl:ObjectProperty ;
            
-           rdfs:subPropertyOf :hasPos .
+           rdfs:subPropertyOf :hasPosVert .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasPosVert
+
+:hasPosVert rdf:type owl:ObjectProperty ;
+            
+            rdfs:range :DPD_PosVert ;
+            
+            rdfs:subPropertyOf :hasPos ;
+            
+            rdfs:domain [ rdf:type owl:Class ;
+                          owl:unionOf ( :DPD_Point
+                                        :DisplayFeatureDesc
+                                      )
+                        ] .
 
 
 
@@ -225,6 +275,30 @@
 
 
 
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasScreen
+
+:hasScreen rdf:type owl:ObjectProperty ;
+           
+           rdfs:range :DLD_Screen ;
+           
+           rdfs:domain :ScreenAct ;
+           
+           rdfs:subPropertyOf :hasFeature .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasSubLayout
+
+:hasSubLayout rdf:type owl:ObjectProperty ;
+              
+              rdfs:range :DisplayLayoutDesc ;
+              
+              rdfs:domain :DisplayLayoutDesc ;
+              
+              rdfs:subPropertyOf :hasFeature .
+
+
+
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasTopElement
 
 :hasTopElement rdf:type owl:ObjectProperty ;
@@ -241,6 +315,24 @@
 
 
 
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#isAfter
+
+:isAfter rdf:type owl:ObjectProperty ;
+         
+         rdfs:subPropertyOf :comparesTo .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#isBefore
+
+:isBefore rdf:type owl:ObjectProperty ;
+          
+          rdfs:subPropertyOf :comparesTo ;
+          
+          owl:inverseOf :isAfter .
+
+
+
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#isEqualTo
 
 :isEqualTo rdf:type owl:ObjectProperty ;
@@ -249,11 +341,19 @@
 
 
 
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#isGreaterThan
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#isFarFrom
 
-:isGreaterThan rdf:type owl:ObjectProperty ;
-               
-               rdfs:subPropertyOf :comparesTo .
+:isFarFrom rdf:type owl:ObjectProperty ;
+           
+           rdfs:subPropertyOf :comparesTo .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#isNearTo
+
+:isNearTo rdf:type owl:ObjectProperty ;
+          
+          rdfs:subPropertyOf :comparesTo .
 
 
 
@@ -264,38 +364,6 @@
 #    Classes
 #
 #################################################################
-
-
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#CD_AlignHoriz
-
-:CD_AlignHoriz rdf:type owl:Class ;
-               
-               rdfs:subClassOf :DCD_Align .
-
-
-
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#CD_AlignVert
-
-:CD_AlignVert rdf:type owl:Class ;
-              
-              rdfs:subClassOf :DCD_Align .
-
-
-
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#CD_OrderHoriz
-
-:CD_OrderHoriz rdf:type owl:Class ;
-               
-               rdfs:subClassOf :DCD_Order .
-
-
-
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#CD_OrderVert
-
-:CD_OrderVert rdf:type owl:Class ;
-              
-              rdfs:subClassOf :DCD_Order .
-
 
 
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#CogcharScreenThing
@@ -336,11 +404,99 @@
 
 
 
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldEntry
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_Field
 
-:DID_FieldEntry rdf:type owl:Class ;
+:DID_Field rdf:type owl:Class ;
+           
+           rdfs:subClassOf :DisplayItemDesc .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldChoice
+
+:DID_FieldChoice rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :DID_Field .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldChoiceMulti
+
+:DID_FieldChoiceMulti rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf :DID_FieldChoice .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldChoiceSingle
+
+:DID_FieldChoiceSingle rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :DID_FieldChoice .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldColor
+
+:DID_FieldColor rdf:type owl:Class ;
                 
-                rdfs:subClassOf :DisplayItemDesc .
+                rdfs:subClassOf :DID_FieldVector .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldColorRGBA
+
+:DID_FieldColorRGBA rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :DID_FieldColor .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldNum
+
+:DID_FieldNum rdf:type owl:Class ;
+              
+              rdfs:subClassOf :DID_Field .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldNumDecimal
+
+:DID_FieldNumDecimal rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :DID_FieldNum .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldNumInteger
+
+:DID_FieldNumInteger rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :DID_FieldNum .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldText
+
+:DID_FieldText rdf:type owl:Class ;
+               
+               rdfs:subClassOf :DID_Field .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldTextSecure
+
+:DID_FieldTextSecure rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :DID_FieldText .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_FieldVector
+
+:DID_FieldVector rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :DID_Field .
 
 
 
