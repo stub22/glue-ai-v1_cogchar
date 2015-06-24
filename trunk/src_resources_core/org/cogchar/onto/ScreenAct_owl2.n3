@@ -121,6 +121,18 @@
 
 
 
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasMedia
+
+:hasMedia rdf:type owl:ObjectProperty ;
+          
+          rdfs:range :DPD_Media ;
+          
+          rdfs:domain :DisplayItemDesc ;
+          
+          rdfs:subPropertyOf :cogcharScreenObjProp .
+
+
+
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasMiddleElement
 
 :hasMiddleElement rdf:type owl:ObjectProperty ;
@@ -583,6 +595,14 @@
 
 
 
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPD_Media
+
+:DPD_Media rdf:type owl:Class ;
+           
+           rdfs:subClassOf :DisplayParameterDesc .
+
+
+
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPD_Point
 
 :DPD_Point rdf:type owl:Class ;
@@ -651,7 +671,9 @@
 
 :DPD_Url rdf:type owl:Class ;
          
-         rdfs:subClassOf :DisplayParameterDesc .
+         rdfs:subClassOf :DisplayParameterDesc ;
+         
+         rdfs:comment "Refers to Url of some page-link or service, not to media." .
 
 
 
