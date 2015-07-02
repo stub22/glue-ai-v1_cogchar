@@ -92,7 +92,7 @@ public class VanillaConfigManager extends PumaConfigManager {
     }
 	/**
 	 * Ask client Mediator for its MainConfig RepoSpec, and then make a repo for that spec,
-	 * thus implementing the crux of Cogchar-PUMA boot customization.
+	 * thus implementing the crux of (the pre-lifecycle era form of) Cogchar-PUMA boot customization.
 	 * @param mediator
 	 * @return 
 	 */

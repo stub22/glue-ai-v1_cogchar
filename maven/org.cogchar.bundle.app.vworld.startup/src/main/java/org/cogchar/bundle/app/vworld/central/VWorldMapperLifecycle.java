@@ -28,7 +28,7 @@ import org.jflux.api.service.binding.ServiceBinding;
 
 public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifecycle<VWorldRegistry> {
 
-    private final static String REGKEY_ClassLoader		= "classLoader";
+    // private final static String REGKEY_ClassLoader		= "classLoader";
     private final static String DEPKEY_Mediator			= "puma-mediator";
     private final static String DEPKEY_BodyHandleRec	= "body-handle-rec";
     private final static String DEPKEY_PumaRegCli		= "puma-reg-client";
