@@ -55,7 +55,9 @@ owl:maxCardinality rdf:type owl:AnnotationProperty .
                
                owl:maxCardinality "1" ;
                
-               rdfs:domain :RefToSession ;
+               rdfs:domain :ScreenAct ;
+               
+               rdfs:range :ScreenSession ;
                
                rdfs:subPropertyOf :forSession .
 
@@ -1262,7 +1264,8 @@ particular app GUI).  """ .
 
 :ScreenSession rdf:type owl:Class ;
                
-               rdfs:subClassOf :RefToRole .
+               rdfs:subClassOf :CogcharScreenThing ,
+                               :RefToRole .
 
 
 
