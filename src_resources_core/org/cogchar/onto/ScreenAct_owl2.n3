@@ -11,6 +11,21 @@
 
 #################################################################
 #
+#    Annotation properties
+#
+#################################################################
+
+
+###  http://www.w3.org/2002/07/owl#maxCardinality
+
+owl:maxCardinality rdf:type owl:AnnotationProperty .
+
+
+
+
+
+#################################################################
+#
 #    Object Properties
 #
 #################################################################
@@ -27,7 +42,22 @@
 
 :comparesTo rdf:type owl:ObjectProperty ;
             
+            rdfs:comment "These properties establish unreified constraints." ;
+            
             rdfs:subPropertyOf :cogcharScreenObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#forOneSession
+
+:forOneSession rdf:type owl:FunctionalProperty ,
+                        owl:ObjectProperty ;
+               
+               owl:maxCardinality "1" ;
+               
+               rdfs:domain :RefToSession ;
+               
+               rdfs:subPropertyOf :forSession .
 
 
 
@@ -35,7 +65,12 @@
 
 :forRole rdf:type owl:ObjectProperty ;
          
-         rdfs:domain :ScreenAct ;
+         rdfs:comment """Allows multiple values.
+May be used to attach roles to a session, or to an act.
+Normally an input act could have only one role, but
+an output act could have mutliple roles.""" ;
+         
+         rdfs:domain :RefToRole ;
          
          rdfs:range :ScreenRole ;
          
@@ -47,7 +82,7 @@
 
 :forSession rdf:type owl:ObjectProperty ;
             
-            rdfs:domain :ScreenAct ;
+            rdfs:domain :RefToSession ;
             
             rdfs:range :ScreenSession ;
             
@@ -81,15 +116,24 @@
             
             rdfs:range :DisplayFeatureDesc ;
             
+            rdfs:domain :RefToFeature ;
+            
             rdfs:subPropertyOf :cogcharScreenObjProp .
 
 
 
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasFirstOper
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasImageMedia
 
-:hasFirstOper rdf:type owl:ObjectProperty ;
-              
-              rdfs:subPropertyOf :cogcharScreenObjProp .
+:hasImageMedia rdf:type owl:FunctionalProperty ,
+                        owl:ObjectProperty ;
+               
+               owl:maxCardinality "1" ;
+               
+               rdfs:range :DPDM_Image ;
+               
+               rdfs:domain :DisplayItemDesc ;
+               
+               rdfs:subPropertyOf :hasMedia .
 
 
 
@@ -99,7 +143,7 @@
          
          rdfs:range :DisplayItemDesc ;
          
-         rdfs:domain :DisplayLayoutDesc ;
+         rdfs:domain :RefToItem ;
          
          rdfs:subPropertyOf :hasFeature .
 
@@ -113,11 +157,18 @@
 
 
 
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasLeftSideParam
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasLoginCred
 
-:hasLeftSideParam rdf:type owl:ObjectProperty ;
-                  
-                  rdfs:subPropertyOf :hasParam .
+:hasLoginCred rdf:type owl:FunctionalProperty ,
+                       owl:ObjectProperty ;
+              
+              owl:maxCardinality "1" ;
+              
+              rdfs:range :Credential ;
+              
+              rdfs:domain :ISessReq_Open ;
+              
+              rdfs:subPropertyOf :cogcharScreenObjProp .
 
 
 
@@ -129,7 +180,7 @@
           
           rdfs:domain :DisplayItemDesc ;
           
-          rdfs:subPropertyOf :cogcharScreenObjProp .
+          rdfs:subPropertyOf :hasParam .
 
 
 
@@ -138,6 +189,49 @@
 :hasMiddleElement rdf:type owl:ObjectProperty ;
                   
                   rdfs:subPropertyOf :hasPositionedElement .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasOrdParam
+
+:hasOrdParam rdf:type owl:ObjectProperty ;
+             
+             rdfs:domain :DisplayConstraintDesc ;
+             
+             rdfs:subPropertyOf :hasParam .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasOrdParam1
+
+:hasOrdParam1 rdf:type owl:FunctionalProperty ,
+                       owl:ObjectProperty ;
+              
+              owl:maxCardinality "1" ;
+              
+              rdfs:subPropertyOf :hasOrdParam .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasOrdParam2
+
+:hasOrdParam2 rdf:type owl:FunctionalProperty ,
+                       owl:ObjectProperty ;
+              
+              owl:maxCardinality "1" ;
+              
+              rdfs:subPropertyOf :hasOrdParam .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasOrdParam3
+
+:hasOrdParam3 rdf:type owl:FunctionalProperty ,
+                       owl:ObjectProperty ;
+              
+              owl:maxCardinality "1" ;
+              
+              rdfs:subPropertyOf :hasOrdParam .
 
 
 
@@ -153,17 +247,11 @@
 
 
 
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasParameter
-
-:hasParameter rdf:type owl:ObjectProperty ;
-              
-              rdfs:subPropertyOf :cogcharScreenObjProp .
-
-
-
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasPos
 
 :hasPos rdf:type owl:ObjectProperty ;
+        
+        rdfs:range :DPD_Position ;
         
         rdfs:subPropertyOf :hasParam .
 
@@ -181,13 +269,18 @@
 
 :hasPosHoriz rdf:type owl:ObjectProperty ;
              
+             rdfs:range :DPD_PosHoriz ;
+             
              rdfs:subPropertyOf :hasPos .
 
 
 
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasPosLeft
 
-:hasPosLeft rdf:type owl:ObjectProperty ;
+:hasPosLeft rdf:type owl:FunctionalProperty ,
+                     owl:ObjectProperty ;
+            
+            owl:maxCardinality "1" ;
             
             rdfs:subPropertyOf :hasPosHoriz .
 
@@ -267,33 +360,16 @@
 
 
 
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasRightSideParam
-
-:hasRightSideParam rdf:type owl:ObjectProperty ;
-                   
-                   rdfs:subPropertyOf :hasParam .
-
-
-
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasRole
-
-:hasRole rdf:type owl:ObjectProperty ;
-         
-         rdfs:range :ScreenRole ;
-         
-         rdfs:domain :ScreenSession ;
-         
-         rdfs:subPropertyOf :cogcharScreenObjProp .
-
-
-
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasScreen
 
-:hasScreen rdf:type owl:ObjectProperty ;
+:hasScreen rdf:type owl:FunctionalProperty ,
+                    owl:ObjectProperty ;
+           
+           owl:maxCardinality "1" ;
            
            rdfs:range :DLD_Screen ;
            
-           rdfs:domain :ScreenAct ;
+           rdfs:domain :RefToScreen ;
            
            rdfs:subPropertyOf :hasFeature .
 
@@ -323,7 +399,23 @@
 
 :hasUrl rdf:type owl:ObjectProperty ;
         
-        rdfs:subPropertyOf :hasParameter .
+        rdfs:range :DPD_Url ;
+        
+        rdfs:subPropertyOf :hasParam .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasVideoMedia
+
+:hasVideoMedia rdf:type owl:ObjectProperty ;
+               
+               rdfs:comment "Maybe use multi-cardinality to indicate different available formats?" ;
+               
+               rdfs:domain :DID_VideoPanel ;
+               
+               rdfs:range :DPDM_Video ;
+               
+               rdfs:subPropertyOf :hasMedia .
 
 
 
@@ -396,6 +488,35 @@
 
 
 
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasCredLoginName
+
+:hasCredLoginName rdf:type owl:DatatypeProperty ,
+                           owl:FunctionalProperty ;
+                  
+                  owl:maxCardinality "1" ;
+                  
+                  rdfs:subPropertyOf :CogcharScreenDataProp ;
+                  
+                  rdfs:domain :Credential ;
+                  
+                  rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasCredPassHash
+
+:hasCredPassHash rdf:type owl:DatatypeProperty ;
+                 
+                 owl:maxCardinality "1" ;
+                 
+                 rdfs:subPropertyOf :CogcharScreenDataProp ;
+                 
+                 rdfs:domain :Credential ;
+                 
+                 rdfs:range xsd:string .
+
+
+
 
 
 #################################################################
@@ -408,6 +529,22 @@
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#CogcharScreenThing
 
 :CogcharScreenThing rdf:type owl:Class .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#Credential
+
+:Credential rdf:type owl:Class ;
+            
+            rdfs:subClassOf :CogcharScreenThing .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#CredentialBasic
+
+:CredentialBasic rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Credential .
 
 
 
@@ -539,19 +676,19 @@
 
 
 
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_Image
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_ImagePanel
 
-:DID_Image rdf:type owl:Class ;
-           
-           rdfs:subClassOf :DisplayItemDesc .
+:DID_ImagePanel rdf:type owl:Class ;
+                
+                rdfs:subClassOf :DisplayItemDesc .
 
 
 
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_Video
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_VideoPanel
 
-:DID_Video rdf:type owl:Class ;
-           
-           rdfs:subClassOf :DisplayItemDesc .
+:DID_VideoPanel rdf:type owl:Class ;
+                
+                rdfs:subClassOf :DisplayItemDesc .
 
 
 
@@ -575,7 +712,107 @@
 
 :DLD_Screen rdf:type owl:Class ;
             
-            rdfs:subClassOf :DisplayLayoutDesc .
+            rdfs:subClassOf :DisplayLayoutDesc ;
+            
+            rdfs:comment """One of these DLD_Screens is sent out with the OutputScreenActs,
+OSA_Push, OSA_Replace, OSA_Modify.
+
+Producing+Consuming Instances of this screen is the main labor
+for the application screen-author/xlator and the GUI renderer.
+
+A screen is a special case of a layout.
+
+Each screen should have a URI (not be a blank node).
+
+""" .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_Audio
+
+:DPDM_Audio rdf:type owl:Class ;
+            
+            rdfs:subClassOf :DPD_Media .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_AudioSamp
+
+:DPDM_AudioSamp rdf:type owl:Class ;
+                
+                rdfs:subClassOf :DPDM_Audio .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_AudioSamp_Wav
+
+:DPDM_AudioSamp_Wav rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :DPDM_AudioSamp .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_Image
+
+:DPDM_Image rdf:type owl:Class ;
+            
+            rdfs:subClassOf :DPD_Media .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_ImageRaster
+
+:DPDM_ImageRaster rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :DPDM_Image .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_ImgRast_GIF
+
+:DPDM_ImgRast_GIF rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :DPDM_ImageRaster .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_ImgRast_JPG
+
+:DPDM_ImgRast_JPG rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :DPDM_ImageRaster .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_ImgRast_PNG
+
+:DPDM_ImgRast_PNG rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :DPDM_ImageRaster .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_Video
+
+:DPDM_Video rdf:type owl:Class ;
+            
+            rdfs:subClassOf :DPD_Media .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_Video_Mpeg
+
+:DPDM_Video_Mpeg rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :DPDM_Video .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_Video_Webm
+
+:DPDM_Video_Webm rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :DPDM_Video .
 
 
 
@@ -592,6 +829,30 @@
 :DPD_Font rdf:type owl:Class ;
           
           rdfs:subClassOf :DisplayParameterDesc .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPD_FontMonospaced
+
+:DPD_FontMonospaced rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :DPD_Font .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPD_FontSanSerif
+
+:DPD_FontSanSerif rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :DPD_Font .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPD_FontSerif
+
+:DPD_FontSerif rdf:type owl:Class ;
+               
+               rdfs:subClassOf :DPD_Font .
 
 
 
@@ -681,7 +942,8 @@
 
 :DisplayConstraintDesc rdf:type owl:Class ;
                        
-                       rdfs:subClassOf :CogcharScreenThing .
+                       rdfs:subClassOf :CogcharScreenThing ,
+                                       :RefToParam .
 
 
 
@@ -689,7 +951,8 @@
 
 :DisplayFeatureDesc rdf:type owl:Class ;
                     
-                    rdfs:subClassOf :CogcharScreenThing .
+                    rdfs:subClassOf :CogcharScreenThing ,
+                                    :RefToParam .
 
 
 
@@ -705,7 +968,11 @@
 
 :DisplayLayoutDesc rdf:type owl:Class ;
                    
-                   rdfs:subClassOf :DisplayFeatureDesc .
+                   rdfs:subClassOf :DisplayFeatureDesc ,
+                                   :RefToItem ;
+                   
+                   rdfs:comment """A layout may link to  direct params, items (which may have params), other layouts (which may have params), reified  constraints (on params).   Note there
+may also be unreified constraints established using the comparesTo properties.""" .
 
 
 
@@ -745,15 +1012,12 @@
 
 :ISessReq_Open rdf:type owl:Class ;
                
-               rdfs:subClassOf :InputSessionRequest .
+               rdfs:subClassOf :InputSessionRequest ;
+               
+               rdfs:comment """After GUI sends a SessReq-open, it expects to get back either
+OSA_SessionCreate  or OSA_SessionDeny
 
-
-
-###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#InputAct
-
-:InputAct rdf:type owl:Class ;
-          
-          rdfs:subClassOf :ScreenAct .
+""" .
 
 
 
@@ -761,7 +1025,20 @@
 
 :InputItemAct rdf:type owl:Class ;
               
-              rdfs:subClassOf :InputAct .
+              rdfs:subClassOf :InputScreenAct ,
+                              :RefToItem ;
+              
+              rdfs:comment """Records input from a user supplied through some DisplayItem, such as
+a button or field.   Application generally wants to detect, record, and
+use these values to produce responsive output-ScreenActs.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#InputScreenAct
+
+:InputScreenAct rdf:type owl:Class ;
+                
+                rdfs:subClassOf :ScreenAct .
 
 
 
@@ -769,7 +1046,7 @@
 
 :InputSessionRequest rdf:type owl:Class ;
                      
-                     rdfs:subClassOf :InputAct .
+                     rdfs:subClassOf :InputScreenAct .
 
 
 
@@ -777,7 +1054,9 @@
 
 :OSA_AttachRole rdf:type owl:Class ;
                 
-                rdfs:subClassOf :OutputScreenAct .
+                rdfs:subClassOf :OutputScreenAct ;
+                
+                rdfs:comment "Explicitly indicates that a particular set of roles is now associated to a given single session." .
 
 
 
@@ -785,7 +1064,11 @@
 
 :OSA_Error rdf:type owl:Class ;
            
-           rdfs:subClassOf :OutputScreenAct .
+           rdfs:subClassOf :OutputScreenAct ;
+           
+           rdfs:comment """Indicates an error without otherwise affecting the GUI state.
+GUI may display this error or not.
+Stack height is unchanged.""" .
 
 
 
@@ -793,7 +1076,13 @@
 
 :OSA_Modify rdf:type owl:Class ;
             
-            rdfs:subClassOf :OutputScreenAct .
+            rdfs:subClassOf :OutputScreenAct ;
+            
+            rdfs:comment """Placeholder for the idea of \"Modify\" a screen previously sent 
+(presumably the last one sent).  
+Stack height is unchanged.
+Provisional - this may not be necessary or worth the required complexity.
+""" .
 
 
 
@@ -801,7 +1090,10 @@
 
 :OSA_Pop rdf:type owl:Class ;
          
-         rdfs:subClassOf :OutputScreenAct .
+         rdfs:subClassOf :OutputScreenAct ;
+         
+         rdfs:comment """Remove top of screen stack, revealing the screen below it.
+Stack height reduces by one.""" .
 
 
 
@@ -809,7 +1101,11 @@
 
 :OSA_Push rdf:type owl:Class ;
           
-          rdfs:subClassOf :OutputScreenAct .
+          rdfs:subClassOf :OutputScreenAct ;
+          
+          rdfs:comment """Establish a new current = \"top\" screen for the given roles/sessions, pushing
+existing screens down one position in the stack.  Stack height grows by one.
+See also OSA_Replace.""" .
 
 
 
@@ -817,7 +1113,10 @@
 
 :OSA_Replace rdf:type owl:Class ;
              
-             rdfs:subClassOf :OutputScreenAct .
+             rdfs:subClassOf :OutputScreenAct ;
+             
+             rdfs:comment """Replace the screen on top of screen stack with :hasScreen.
+Stack height stays the same.""" .
 
 
 
@@ -825,7 +1124,30 @@
 
 :OSA_SessionCreate rdf:type owl:Class ;
                    
-                   rdfs:subClassOf :OutputScreenAct .
+                   rdfs:subClassOf :OutputScreenAct ;
+                   
+                   rdfs:comment "Sent as successful response to ISessReq_Open" .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#OSA_SessionDeny
+
+:OSA_SessionDeny rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :OutputScreenAct ;
+                 
+                 rdfs:comment "Sent as login-failed response to ISessReq_Open" .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#OSA_SessionDestroy
+
+:OSA_SessionDestroy rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :OutputScreenAct ;
+                    
+                    rdfs:comment """Represents \"logged out\" - either in response to ISessReq_Close, or because app
+is terminating session for other reason, such as. session timeout or app shutdown.""" .
 
 
 
@@ -833,7 +1155,9 @@
 
 :OSA_SessionResume rdf:type owl:Class ;
                    
-                   rdfs:subClassOf :OutputScreenAct .
+                   rdfs:subClassOf :OutputScreenAct ;
+                   
+                   rdfs:comment "App re-enabling this session after temporary suspension - should be an unusual operation." .
 
 
 
@@ -841,7 +1165,11 @@
 
 :OSA_SessionSuspend rdf:type owl:Class ;
                     
-                    rdfs:subClassOf :OutputScreenAct .
+                    rdfs:subClassOf :OutputScreenAct ;
+                    
+                    rdfs:comment """App is temporarily suspending this session, for some unusual reason.
+(E.g. system switched low-level-modes in a way that temporarily inhibits this
+particular app GUI).  """ .
 
 
 
@@ -849,7 +1177,66 @@
 
 :OutputScreenAct rdf:type owl:Class ;
                  
-                 rdfs:subClassOf :ScreenAct .
+                 rdfs:subClassOf :RefToScreen ,
+                                 :ScreenAct ;
+                 
+                 rdfs:comment "Each instance of OutputScreenAct represents an application telling a screen-interface to \"do\" something, either to a display or to a user's session." .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#Ref
+
+:Ref rdf:type owl:Class ;
+     
+     rdfs:subClassOf :CogcharScreenThing .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#RefToFeature
+
+:RefToFeature rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Ref .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#RefToItem
+
+:RefToItem rdf:type owl:Class ;
+           
+           rdfs:subClassOf :RefToFeature .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#RefToParam
+
+:RefToParam rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Ref .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#RefToRole
+
+:RefToRole rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Ref .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#RefToScreen
+
+:RefToScreen rdf:type owl:Class ;
+             
+             rdfs:subClassOf :RefToFeature .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#RefToSession
+
+:RefToSession rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Ref .
 
 
 
@@ -857,7 +1244,9 @@
 
 :ScreenAct rdf:type owl:Class ;
            
-           rdfs:subClassOf :CogcharScreenThing .
+           rdfs:subClassOf :CogcharScreenThing ,
+                           :RefToRole ,
+                           :RefToSession .
 
 
 
@@ -873,7 +1262,7 @@
 
 :ScreenSession rdf:type owl:Class ;
                
-               rdfs:subClassOf :CogcharScreenThing .
+               rdfs:subClassOf :RefToRole .
 
 
 
