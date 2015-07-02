@@ -90,8 +90,8 @@ object CircusTest extends VarargsLogging with AuditSvcFinderGlobal {
 		// GHosts represent all input/output RDF files, disk-folders, and local databases (of dim 3, 4, 5). 
 		// The data they contain is referred to thru the forms of (subkinds of) Graph, QueryGrSet, Uri, Literal,
 		// which may be thought of as our symbolic(+atomic primitive) working types of dimension 3, 4, 1, 1, respectively.
-		// Matrix is our other data-data type, covering the kinds of data (of whatever dimension k) that fit better
-		// into rectangular structures (of dim k) than into graphs.
+		// Matrix is our other data-data type, covering the kinds of data (of whatever regular dimensions j,k,l...) that fit better
+		// into rectangular structures (of dim j,k,l,...) than into graphs.
 		// Broker and Circus are objects defining the OO programmer's boundary to data pipelines of this system.
 		// Brokers are app-specific, and Circuses (authored/configured/generated using Recipes) are the main tools 
 		// that an app's brokers use to access the data-data kinds.
@@ -104,6 +104,17 @@ object CircusTest extends VarargsLogging with AuditSvcFinderGlobal {
 		// The CircusRecipe system is a convenient wrapper around the functionality in the RDF + SPARQL standards, 
 		// with an emphasis on authorable pipelines of explicit structure maps, filters and equations, locally robust 
 		// operation, and reasonable network scalability.
+		// 
+		// Within this core frame-piping functionality, we commonly deploy many algorithmic components of varying kinds,
+		// including math expressions of many forms, such as those executable in the Symja + JAS calculations engine 
+		// components (note: parts of these math components may be covered by LGPL or GPL; please review their licenses 
+		// carefully).  Entertwining of such math expressions with logical expressions and rules (OWL-DL, Jena rules, 
+		// SPARQL, etc) is a key area of experimentation supported by the Circus+Recipe paradigm.  
+		// 
+		// Successful experiments are captured as recipe patterns.  Recipes may be constructed by ontology-bound code,
+		// with or without supplementary stored RDF data.   Neither of those methods should be seen as necessarily
+		// preferred, as each has its place.  Isolation of persistence issues from logical issues is a main benefit
+		// of the RDF platform standards family.
 		
 	}	
 }		
