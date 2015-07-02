@@ -226,7 +226,19 @@ the permitted namespaces for the vocabulary.
 							<packageName>org.cogchar.api.owrap.crcp</packageName>
 							<rdfReactorLogfile>target/rdfreactor_circRecipe.log</rdfReactorLogfile>
 						</configuration>
-					</execution>												
+					</execution>
+					<execution>
+						<id>scrnAct</id>
+						<goals>
+							<goal>rdfs-classes</goal>
+						</goals>
+						<configuration>
+							<!-- RDF Reactor maven plugin likes to call Turtle ".n3", and we are going along with that for now.	-->							
+							<schemaFile>src/main/resources/org/cogchar/onto/ScreenAct_owl2.n3</schemaFile>
+							<packageName>org.cogchar.api.owrap.scrn</packageName>
+							<rdfReactorLogfile>target/rdfreactor_screenAct.log</rdfReactorLogfile>
+						</configuration>
+					</execution>																	
 				</executions>
 			</plugin>			
 		</plugins>
