@@ -369,7 +369,7 @@ an output act could have mutliple roles.""" ;
            
            rdfs:range :DLD_Screen ;
            
-           rdfs:domain :RefToScreen ;
+           rdfs:domain :OutputScreenAct ;
            
            rdfs:subPropertyOf :hasFeature .
 
