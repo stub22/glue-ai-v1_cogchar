@@ -112,6 +112,14 @@ an output act could have mutliple roles.""" ;
 
 
 
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasDocMedia
+
+:hasDocMedia rdf:type owl:ObjectProperty ;
+             
+             rdfs:subPropertyOf :hasMedia .
+
+
+
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasFeature
 
 :hasFeature rdf:type owl:ObjectProperty ;
@@ -389,6 +397,14 @@ an output act could have mutliple roles.""" ;
 
 
 
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasTextMedia
+
+:hasTextMedia rdf:type owl:ObjectProperty ;
+              
+              rdfs:subPropertyOf :hasDocMedia .
+
+
+
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasTopElement
 
 :hasTopElement rdf:type owl:ObjectProperty ;
@@ -439,6 +455,21 @@ an output act could have mutliple roles.""" ;
 
 
 
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#isConsistentWith
+
+:isConsistentWith rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:comment """InputActs may report the last relevant OutputAct they are known to be
+consistent with.  For example, if the same screen description was referred to in several recent output acts, this link would let us know which of those had been already processed at the time the input event occurred.""" ;
+                  
+                  rdfs:domain :InputScreenAct ;
+                  
+                  rdfs:range :OutputScreenAct ;
+                  
+                  rdfs:subPropertyOf :cogcharScreenObjProp .
+
+
+
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#isEqualTo
 
 :isEqualTo rdf:type owl:ObjectProperty ;
@@ -482,6 +513,8 @@ an output act could have mutliple roles.""" ;
 
 :hasCreateStampJLong rdf:type owl:DatatypeProperty ;
                      
+                     owl:maxCardinality "1" ;
+                     
                      rdfs:subPropertyOf :CogcharScreenDataProp ;
                      
                      rdfs:domain :ScreenAct ;
@@ -516,6 +549,19 @@ an output act could have mutliple roles.""" ;
                  rdfs:domain :Credential ;
                  
                  rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasTextContent
+
+:hasTextContent rdf:type owl:DatatypeProperty ,
+                         owl:FunctionalProperty ;
+                
+                rdfs:subPropertyOf :CogcharScreenDataProp ;
+                
+                rdfs:domain :CogcharScreenThing ;
+                
+                rdfs:range xsd:string .
 
 
 
@@ -582,11 +628,21 @@ an output act could have mutliple roles.""" ;
 
 
 
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_DocPanel
+
+:DID_DocPanel rdf:type owl:Class ;
+              
+              rdfs:subClassOf :DID_MediaPanel .
+
+
+
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_Field
 
 :DID_Field rdf:type owl:Class ;
            
-           rdfs:subClassOf :DisplayItemDesc .
+           rdfs:subClassOf :DisplayItemDesc ;
+           
+           rdfs:comment "Fields allow user to edit a value, sent back as InputScreenActs of type IIA_FieldValue." .
 
 
 
@@ -682,7 +738,23 @@ an output act could have mutliple roles.""" ;
 
 :DID_ImagePanel rdf:type owl:Class ;
                 
+                rdfs:subClassOf :DID_MediaPanel .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_MediaPanel
+
+:DID_MediaPanel rdf:type owl:Class ;
+                
                 rdfs:subClassOf :DisplayItemDesc .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DID_TextPanel
+
+:DID_TextPanel rdf:type owl:Class ;
+               
+               rdfs:subClassOf :DID_DocPanel .
 
 
 
@@ -690,7 +762,7 @@ an output act could have mutliple roles.""" ;
 
 :DID_VideoPanel rdf:type owl:Class ;
                 
-                rdfs:subClassOf :DisplayItemDesc .
+                rdfs:subClassOf :DID_MediaPanel .
 
 
 
@@ -754,6 +826,14 @@ Each screen should have a URI (not be a blank node).
 
 
 
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_Doc
+
+:DPDM_Doc rdf:type owl:Class ;
+          
+          rdfs:subClassOf :DPD_Media .
+
+
+
 ###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_Image
 
 :DPDM_Image rdf:type owl:Class ;
@@ -791,6 +871,14 @@ Each screen should have a URI (not be a blank node).
 :DPDM_ImgRast_PNG rdf:type owl:Class ;
                   
                   rdfs:subClassOf :DPDM_ImageRaster .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#DPDM_Text
+
+:DPDM_Text rdf:type owl:Class ;
+           
+           rdfs:subClassOf :DPDM_Doc .
 
 
 
