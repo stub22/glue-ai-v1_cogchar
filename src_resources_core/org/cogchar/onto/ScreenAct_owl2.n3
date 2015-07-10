@@ -557,11 +557,49 @@ consistent with.  For example, if the same screen description was referred to in
 :hasTextContent rdf:type owl:DatatypeProperty ,
                          owl:FunctionalProperty ;
                 
+                owl:maxCardinality "1" ;
+                
                 rdfs:subPropertyOf :CogcharScreenDataProp ;
                 
                 rdfs:domain :CogcharScreenThing ;
                 
                 rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasValDecimal
+
+:hasValDecimal rdf:type owl:DatatypeProperty ;
+               
+               owl:maxCardinality "1" ;
+               
+               rdfs:domain :CogcharScreenThing ;
+               
+               rdfs:subPropertyOf :hasValNum ;
+               
+               rdfs:range xsd:decimal .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasValInt
+
+:hasValInt rdf:type owl:DatatypeProperty ;
+           
+           owl:maxCardinality "1" ;
+           
+           rdfs:subPropertyOf :hasValNum ;
+           
+           rdfs:range xsd:int .
+
+
+
+###  http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#hasValNum
+
+:hasValNum rdf:type owl:DatatypeProperty ;
+           
+           rdfs:subPropertyOf :CogcharScreenDataProp ;
+           
+           rdfs:domain :CogcharScreenThing .
 
 
 
