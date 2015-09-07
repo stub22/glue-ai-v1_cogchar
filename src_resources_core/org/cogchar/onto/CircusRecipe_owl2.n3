@@ -215,7 +215,12 @@ Plain URI of the broker instance may be used to find the impl at runtime.""" ;
 
 :hasOutRecipe rdf:type owl:ObjectProperty ;
               
-              rdfs:comment "Identifies an output of a circus, of type given by the target recipe type." ;
+              rdfs:comment """Identifies an output of a circus, of type given by the target recipe type.
+Only circus recipes may have outputs.
+The circus result itself is then merely the aggregation of these potentially changing
+ outputs.
+In software, we expect each such circus output to be visible as a result source, 
+which may be queried and evented on.""" ;
               
               rdfs:domain :CircusRecipe ;
               
@@ -400,13 +405,21 @@ A Circus is an executable workflow that produces the results of its output compo
 
 
 
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GRC_InferSpinRules
+
+:GRC_InferSpinRules rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :GRC_Infer .
+
+
+
 ###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GRC_SparqlConstruct
 
 :GRC_SparqlConstruct rdf:type owl:Class ;
                      
                      rdfs:subClassOf :GR_Compute ;
                      
-                     rdfs:comment "Applies input SPARQL-text to input graph to produce output graph." .
+                     rdfs:comment "Applies input SPARQL{-text, -spinIndiv} to input graph to produce output graph." .
 
 
 
@@ -421,6 +434,28 @@ A Circus is an executable workflow that produces the results of its output compo
 
 
 
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_Appendable
+
+:GR_Appendable rdf:type owl:Class ;
+               
+               rdfs:subClassOf :GR_Volatile ;
+               
+               rdfs:comment "Any graph which may receive more triples is GR_Appendable, subtype of GR_Volatile." .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_AppendableMonotonic
+
+:GR_AppendableMonotonic rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :GR_Appendable ;
+                        
+                        owl:disjointWith :GR_Modifiable ;
+                        
+                        rdfs:comment "A graph which may accept new triples, but may not delete or modify existing triples." .
+
+
+
 ###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_Compute
 
 :GR_Compute rdf:type owl:Class ;
@@ -429,11 +464,49 @@ A Circus is an executable workflow that produces the results of its output compo
 
 
 
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_Fixed
+
+:GR_Fixed rdf:type owl:Class ;
+          
+          rdfs:subClassOf :GR_Monotonic ;
+          
+          owl:disjointWith :GR_Volatile .
+
+
+
 ###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_Load
 
 :GR_Load rdf:type owl:Class ;
          
          rdfs:subClassOf :GraphRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_Modifiable
+
+:GR_Modifiable rdf:type owl:Class ;
+               
+               rdfs:subClassOf :GR_Appendable ;
+               
+               rdfs:comment """Triples may be deleted or replaced (as well as added).
+
+Not usable with monotonic reasoning, but may use rules in some
+defeasible way, or by rerunning downstream inference from 
+scratch on changes.
+
+Generally we want to keep the number of such graphs
+relatively small, since they are connected with complexity
+in our systems.  We expect careful manipulation of these modifiable
+graphs, with relatively large supporting context of of monotonic,
+often immutable (GR_Fixed) data.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_Monotonic
+
+:GR_Monotonic rdf:type owl:Class ;
+              
+              rdfs:subClassOf :GraphRecipe .
 
 
 
@@ -447,19 +520,30 @@ A Circus is an executable workflow that produces the results of its output compo
 
 
 
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_ReleasedRef
+
+:GR_ReleasedRef rdf:type owl:Class ;
+                
+                rdfs:subClassOf :GR_Fixed ,
+                                :GR_Refer ;
+                
+                rdfs:comment """Recipe that contains a reference to a well known, released graph data version.
+We know this data is fixed and thus also monotonic for reasoning purposes.""" .
+
+
+
 ###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_Volatile
 
 :GR_Volatile rdf:type owl:Class ;
              
-             rdfs:subClassOf :GraphRecipe .
+             rdfs:subClassOf :GraphRecipe ;
+             
+             rdfs:comment """A graph which may change in some way, after it is accessed for the first time.
+Before we load or calculate any graph the first time, we want to know if it
+is GR_Fixed or GR_Volatile.
 
-
-
-###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_VolatileMonotonic
-
-:GR_VolatileMonotonic rdf:type owl:Class ;
-                      
-                      rdfs:subClassOf :GR_Volatile .
+When a MetaDir GP record is used to index the result of such a recipe, that
+result will always be of type GP_Open.""" .
 
 
 
@@ -491,7 +575,7 @@ That mechanism may use the URI of this indiv to convey its GHost impl.""" .
              rdfs:subClassOf :Recipe ;
              
              rdfs:comment """Produces a usable runtime reference to a GHost container, usually including matchable metadata.
-Used in lower level crud circuits.
+Used in lower level C.R.U.D. circuits.
 For apps is less useful for most purposes than the GraphRecipe and QryGrSetRecipe.""" .
 
 
@@ -570,16 +654,6 @@ in either of the crucial positions discussed in mdir:GraphPointer.
 
 
 
-###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#QGSR_AggCommon
-
-:QGSR_AggCommon rdf:type owl:Class ;
-                
-                rdfs:subClassOf :QGSR_Aggregate ;
-                
-                rdfs:comment "Presumes that the input graph recipes refer to a common GHost4 which can be queried directly (with or without using FROM or FROM NAMED - supported by ARQ/TDB).  Without this designation , circus might unnecessarily think it is supposed to pull all input graph contents into a new dataset for query." .
-
-
-
 ###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#QGSR_Aggregate
 
 :QGSR_Aggregate rdf:type owl:Class ;
@@ -587,6 +661,16 @@ in either of the crucial positions discussed in mdir:GraphPointer.
                 rdfs:subClassOf :QryGrSetRecipe ;
                 
                 rdfs:comment "Produce a queryGraphSet via aggregation of any number of graph(pointer)s produced by input GraphRecipes." .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#QGSR_AggregateSiblings
+
+:QGSR_AggregateSiblings rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :QGSR_Aggregate ;
+                        
+                        rdfs:seeAlso "Presumes that the input graph recipes refer to a common GHost4 which can be queried directly (with or without using FROM or FROM NAMED - supported by ARQ+TDB).  Without this designation , circus might unnecessarily think it is supposed to pull all input graph contents into a new dataset for query." .
 
 
 
@@ -608,7 +692,9 @@ in either of the crucial positions discussed in mdir:GraphPointer.
                 
                 rdfs:comment """Produces a set of graphs for query (by SPARQL, usually).
 That might be an existing dataset (aka GHost4), or might be a GraphPointerSet.
-This is *not* normally used as a target for update.""" .
+
+This is *not* normally used as a direct target for updates.
+Updates are instead usually sent to particular GR_Volatile graphs""" .
 
 
 
@@ -632,9 +718,12 @@ This is *not* normally used as a target for update.""" .
         
         rdfs:subClassOf :RThing ;
         
-        rdfs:comment """A recipe can be used to (repeatedly) produce the most current value for some slot, of some known type.  
+        rdfs:comment """A recipe can be used to (repeatedly) produce the most current value for some slot, of some known type.    The slot might be single valued or array valued (possibly ordered, possibly of growing size).
 
-Usually recipes are constructed with reference to other input recipes, which is a shorthand to referring to the output of those recipes.""" .
+Usually recipes are constructed with reference to other input recipes, which is a shorthand to referring to the output of those recipes.  
+
+When a specific known chunk of data is desired as input, we use a Refer recipe to
+point to some known MetaDir: resource.""" .
 
 
 
@@ -701,5 +790,31 @@ Usually recipes are constructed with reference to other input recipes, which is 
 
 
 
-###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
+
+#################################################################
+#
+#    Annotations
+#
+#################################################################
+
+
+mdir:GP_Snapshot rdfs:comment """A Snapshot graph is mostly immutable and cacheable, but with fewer assumptions 
+of permanence than a Released graph provides.""" .
+
+
+
+mdir:GP_Release rdfs:comment """A Released graph is a permanent immutable piece of data, 
+which we may freely cache and compute cached results over.""" .
+
+
+
+mdir:GP_Open rdfs:comment """An Open graph is one that should not be cached beyond
+any system restart.  It may actually be volatile, or it may
+be some programmer's graph that, while readonly at 
+runtime, might be different each time some program is run.""" .
+
+
+
+
+###  Generated by the OWL API (version 3.5.1) http://owlapi.sourceforge.net
 
