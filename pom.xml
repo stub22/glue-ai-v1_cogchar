@@ -61,7 +61,7 @@ Version-less parent will be allowed in Maven 3.1.
 		<netbeans.compile.on.save>none</netbeans.compile.on.save>
 		
 		<!-- Glue Dependencies -->
-		<appdapter.msg.version>1.0.5</appdapter.msg.version>
+		<appdapter.msg.version>1.2.4-SNAPSHOT</appdapter.msg.version>
 		<appdapter.jscience.version>1.0.9</appdapter.jscience.version>
 
 		<appdapter.version>1.2.4-SNAPSHOT</appdapter.version>
@@ -244,7 +244,7 @@ Version-less parent will be allowed in Maven 3.1.
                 </dependency>
                 <dependency>
                     <groupId>org.appdapter</groupId>
-                    <artifactId>ext.bundle.apache_qpid_010</artifactId>
+                    <artifactId>ext.bundle.apache_qpid_032</artifactId>
                     <version>${appdapter.msg.version}</version>
                 </dependency>
                 <dependency>
