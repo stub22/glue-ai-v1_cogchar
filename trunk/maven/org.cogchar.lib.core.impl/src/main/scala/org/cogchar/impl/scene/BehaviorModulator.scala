@@ -27,6 +27,7 @@ import org.appdapter.core.log.{Loggable};
  * @author Stu B. <www.texpedient.com>
  */
 
+// base-class args are for 	public BasicModulator(Ctx defCtx, boolean autoDetachOnFinish) {
 class BehaviorModulator() extends BasicModulator[BScene](null, true) {
 	def setSceneContext(scene : BScene) { 
 		setDefaultContext(scene);

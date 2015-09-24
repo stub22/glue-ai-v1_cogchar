@@ -117,9 +117,9 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 		// IF we are strict single-scene, then we SHOULD ensure previous scene is complete, and modulator is idle.
 		val prevModuleCnt = myBM.getAttachedModuleCount
 		if (prevModuleCnt > 1) {
-			getLogger.warn("activateScene({}) called but prevModuleCount={}", prevModuleCnt)
+			getLogger.warn("activateScene() called but prevModuleCount={}", prevModuleCnt)
 		}
-		getLogger.info("Activating scene with spec[{}] for char-theater {}", Array[Object]( scene.mySceneSpec.getIdent, myIdent));
+		getLogger.info("Activating scene with spec[{}] for char-theater {}", Array[Object]( scene.mySceneSpec.getIdent, myIdent) : _*);
 		// TODO: Check if the scene still has any previously cached modules.
 		// That would suggest we are re-using the scene instance, which is not a common practice.  
 		// A possible scenario would be a scene interrupting itself with a re-activation, but we've never tried that.
@@ -192,12 +192,13 @@ class Theater(val myIdent : Ident) extends CogcharScreenBox {
 	def attachIndependentModule(aModule : Module[BScene]) {
 		myBM.attachModule(aModule)
 	}
-	// This is a very heavy stop, since it presumes the theater has no utility modules.
+	// This is a very heavy stop, since it basically presumes the theater has no utility modules (that need to keep running).
 	def stopAllScenesAndModules(cancelOutputJobs : Boolean) {
 		deactivateAllScenes(cancelOutputJobs)
 		// We can't know if this is necessary. 
 		requestStopAllModules();
 	}
+	// Stops *ALL* modules, not just the soft ones in the scene.  Use with care!
 	private def requestStopAllModules() {
 		getLogger.warn("requestStopAllModules will stop independent modules as well as scene-associated modules")
 		myBM.requestStopOnAllModules();
