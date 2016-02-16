@@ -7,7 +7,7 @@
 		<relativePath>../org.cogchar.modules.main/pom.xml</relativePath>
 	</parent>	
 	
-    <artifactId>ext.bundle.lift</artifactId>
+    <artifactId>ext.bundle.liftweb_v263_s210</artifactId>
 	
 	<packaging>bundle</packaging>
 

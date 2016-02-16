@@ -25,15 +25,19 @@ import org.cogchar.render.trial.TrialUpdater;
  *
  * @author Stu B. <www.texpedient.com>
  * 
+ * Holds a resizable collection of DynamicGoody objects.  
+ * Each space in the collection is always filled with one DG, capable of display and computation.
+ * A DGSpace is an openGL-bound container and CPU-delegator.
+ * 
  * Goal is flexibility + performance in animating fixed-size blocks V-World goodies using MathSpace and SpecGraphs
  * (which come from a user-editable source).  SpecGraph contains expressions which populate the MathSpace.
  * SpecGraph also defines instructions for how to construct + apply updates to particular goodies.
  * 
+ * Some old unresolved academic questions:
  * Under what conditions does every DynamicGoody have a spec?
  * Does individual DynaGoodySpec have authority to assert a subclass? 
  * 
- * A DGSpace is an openGL-bound container and CPU-delegator.
- * We 
+
  */
 
 public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends DynamicGoody implements TrialUpdater, DynamicGoodyParent {
@@ -100,7 +104,7 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 	/**
 	 * The only way to create or destroy goodies is to resize the space (which is usually done only by updating 
 	 * the space-level spec).
-	 * On expansion, existing goodies survive.  On contraction, all goodies
+	 * On expansion, existing goodies survive and new ones are added.  On contraction, all goodies
 	 * up to the new size survive, higher than that size are logically forgotten.
 	 *		...and we must detach+dispose of their OpenGL resources.
 	 * @param size 
