@@ -22,6 +22,8 @@ import org.appdapter.core.log.BasicDebugger;
 
 object GridSpaceTest extends BasicDebugger {
 	def main(args : Array[String]) : Unit = {
+		// Would need to active Log4J to see messages.
+		// Usually we run this test from a higher-order main.
 		goGoGo
 	}
 	def goGoGo : Unit = {
