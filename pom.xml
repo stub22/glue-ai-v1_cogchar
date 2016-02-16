@@ -83,7 +83,7 @@ Version-less parent will be allowed in Maven 3.1.
 		<junit.version>4.8.1</junit.version>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
-		<net.liftweb.version>2.5.1</net.liftweb.version>
+		<net.liftweb.version>2.6.3</net.liftweb.version>
 		<netbeans.hint.license>cogchar-apache20</netbeans.hint.license>	
 		<netbeans.version>RELEASE721</netbeans.version>
 		
