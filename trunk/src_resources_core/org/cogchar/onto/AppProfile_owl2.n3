@@ -87,6 +87,14 @@ Those subtypes are overlapping, i.e. not exclusive of each other.""" .
 
 
 
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBR_LegacyConfig
+
+:AFBR_LegacyConfig rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :ApproFeatureBrokerRecipe .
+
+
+
 ###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AGP_ProfileFragment
 
 :AGP_ProfileFragment rdf:type owl:Class ;
