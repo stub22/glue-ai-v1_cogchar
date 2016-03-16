@@ -154,7 +154,7 @@ public class PumaBooter extends BasicDebugger {
         boolean wantChars = mediator.getFlagIncludeCharacters();
         if (wantChars) {
 
-            getLogger().debug("%%% calling connectDualRobotChars()");
+            getLogger().info("%%% calling connectAllBodies()");
 
             pac.connectAllBodies();
 
@@ -165,7 +165,9 @@ public class PumaBooter extends BasicDebugger {
             //We should chek the flag, but oglweb doesn't have it on, so we'll go with the chars flag - Matt
             //if(mediator.getFlagIncludeWebServices()){
             pac.connectWeb();
-        }
+        } else {
+			getLogger().info("%%% mediator.wantChars is false");
+		}
 
         // NOW we are ready to set up the command-processing system, making use of our boxSpace to find
         // characters and other commandable entities.
