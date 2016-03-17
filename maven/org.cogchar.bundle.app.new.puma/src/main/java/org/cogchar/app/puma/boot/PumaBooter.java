@@ -152,6 +152,7 @@ public class PumaBooter extends BasicDebugger {
 
 
         boolean wantChars = mediator.getFlagIncludeCharacters();
+		getLogger().info("Dang old wantChars={}", wantChars);
         if (wantChars) {
 
             getLogger().info("%%% calling connectAllBodies()");
