@@ -16,6 +16,7 @@
 
 package org.cogchar.app.puma.config;
 
+import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.name.entity.EntityRoleCN;
 import org.appdapter.core.name.Ident;
 import org.appdapter.fancy.rclient.RepoClient;
@@ -31,10 +32,10 @@ import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
  * @author Ryan B. and Stu B.
  * 
  * We are use this object class to capture the need for a top level assignment of role-graphs to characters.
- * The PUMA system allows us to set up any number of 
+ * The PUMA system allows us to set up and connect any number of roles, chars, and bodies.
  */
 
-public class PumaGlobalModeManager {
+public class PumaGlobalModeManager extends BasicDebugger {
 	// A managed service instance of the GlobalConfigEmitter, currently used only by LifterLifecycle.
 	// We need to keep track of it so we can stop and restart it for Lift "refresh"
 	OSGiComponent myGcComp;

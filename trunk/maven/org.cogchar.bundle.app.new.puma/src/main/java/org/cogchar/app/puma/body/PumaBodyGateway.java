@@ -169,8 +169,8 @@ public class PumaBodyGateway extends BasicDebugger {
 //			});
 //		}
 //	}
-	public boolean connectBonyRobotToRobokindAndVWorld(BundleContext bundleCtx,
-				FigureConfig hc, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
+	public boolean connectBonyRobotToMioAndVWorld(BundleContext bundleCtx,
+												  FigureConfig hc, Ident qGraph, RepoClient qi, BoneCN bqn, List<ClassLoader> clsForRKConf) throws Throwable {
 		// We useta read from a TTL file with: 	boneRobotConf = readBoneRobotConfig(bonyConfigPathPerm, myInitialBonyRdfCL);
 		BoneRobotConfig boneRobotConf = new BoneRobotConfig(qi, myCharID, qGraph, bqn); 	
 		myBoneRobotConfigServiceRegistration = bundleCtx.registerService(BoneRobotConfig.class.getName(), boneRobotConf, null);

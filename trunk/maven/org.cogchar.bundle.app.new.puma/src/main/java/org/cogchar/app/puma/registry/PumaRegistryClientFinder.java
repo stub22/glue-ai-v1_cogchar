@@ -23,6 +23,8 @@ import org.cogchar.blob.emit.SubsystemHandleFinder;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ *
+ *  IOC scaffolding
  */
 
 public class PumaRegistryClientFinder {

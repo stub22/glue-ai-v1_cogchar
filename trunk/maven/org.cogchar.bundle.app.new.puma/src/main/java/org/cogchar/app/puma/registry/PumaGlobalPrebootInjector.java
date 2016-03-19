@@ -21,6 +21,12 @@ import org.cogchar.app.puma.config.PumaContextMediator;
 
 /**
  * @author Stu B. <www.texpedient.com>
+ *
+ * Old workaround wiring, still available but no longer depended on.
+ *
+ * TODO:  Finish replacing Injector with lifecycled JFlux services,
+ * but ensure support for standalone .main() launch.
+ *
  */
 
 public class PumaGlobalPrebootInjector extends BasicDebugger {

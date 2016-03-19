@@ -48,7 +48,7 @@ public class GruesomeTAProcessingFuncs {
 		BasicThingActionRouter router = getActionRouter();
 		srec.pumaWebMapper.registerActionConsumers(router, srec.rc, srec.gce);
 	}
-	/* This is called in two separate cases:
+	/* processPendingThingActions is called in two separate cases:
 	 *		1) In the repoUpdateCompleted() callback of a top-level application, e.g.
 	 *			a) o.f.b.demo.liftoff.Activator
 	 *			b) c.h.b.oglweb.R50.Activator
@@ -67,7 +67,7 @@ public class GruesomeTAProcessingFuncs {
 		router.consumeAllActions(srec.rc);
 		} else {
 			theLogger.warn("Cannot process with handleSet={} and taRouter={}", srec, router);
-	}
+		}
 	}
 
 	private static class RouterRunnable implements java.lang.Runnable {

@@ -46,7 +46,7 @@ public class DirectBehaviorAgent extends PumaBehaviorAgent {
 	}
 
 	public void initMappers(PumaRegistryClient prc, RobotServiceContext rsc) {
-		List<ClassLoader> clsForRKConf = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
+		List<ClassLoader> clsForRKConf = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_MIO_CONF);
 		myRobotMotionMapper = new PumaRobotMotionMapper(myAgentID, myBehaviorCE, clsForRKConf, rsc);
 		mySpeechOutputMapper = new PumaSpeechOutputMapper(myAgentID);
 	}
