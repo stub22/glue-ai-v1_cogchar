@@ -143,7 +143,7 @@ public class PumaWebMapper extends BasicDebugger {
 	/**
 	 * Called only from  GruesomeTAProcessingFuncs.registerActionConsumers().
 	 * This does 2 things:
-	 * 1) Sets up some an assumed consumer for WebEntityAcsion
+	 * 1) Sets up some an assumed consumer for WebEntityAction
 	 * 2) Sets up an OSGi listener that can append additonal consumers of type WantsThingAction when they appear
 	 * in the OSGi registry.
 	 * 
@@ -153,33 +153,53 @@ public class PumaWebMapper extends BasicDebugger {
 	 */
 	public void registerActionConsumers(BasicThingActionRouter router, RepoClient rc, GlobalConfigEmitter gce) { 
 
-		Ident worldConfigIdent = new FreeIdent("if/exception/while/reading/this/ident/report#null");
+	//	Ident backupWorldConfigID_orNull = new FreeIdent("if/exception/while/reading/this/ident/report#nullVal");
+		Ident vwEntConfID = null;
 		try {
-			// We shouldn't have more than one, so let's just assume there's one. This is a slightly different assumption
-			// to what happens in PumaVirtualWorldMapper.
-			worldConfigIdent = gce.entityMap().get(EntityRoleCN.VIRTUAL_WORLD_ENTITY_TYPE).get(0);
-			Ident graphIdent = gce.ergMap().get(worldConfigIdent).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
-			
-			// Set up a hadwired consumer to process 
-			// WebActionNames.WEBCONTROL.equals(tgtThingTypeID) || WebActionNames.WEBCONFIG.equals(tgtThingTypeID)) {
-			// There is no reason this couldn't instead be posted into registry for the TaConsumerTracker to find.
-			WebEntityAction.Consumer weaConsumer = new WebEntityAction.Consumer();
-			router.appendConsumer(graphIdent, weaConsumer);
-			// Now set up a listener on the OSGi registry that can append any other WantsThingAction guys that come along.
-			BundleContext context = OSGiUtils.getBundleContext(WantsThingAction.class);
-            if(context != null){
-                String filter = null;//OSGiUtils.createFilter("thingActionChannelAgentId", "*aZR50");
-                new TAConsumerTracker(context, filter, router, graphIdent).start();
-            }
+			// Temporarily assuming exactly one vworldConfig supplied. This is a slightly different assumption
+			// than what is used in PumaVirtualWorldMapper.
+			String vwMarker = EntityRoleCN.VIRTUAL_WORLD_ENTITY_TYPE;
+			Ident taBindRoleID = EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE;
+			vwEntConfID = gce.getFirstEntityIdent_orNull(vwMarker, null);
+			if (vwEntConfID != null) {
+				Ident entRoleGraphID = gce.getEntConfRoleGraphID_orNull(vwEntConfID, taBindRoleID);
+				if (entRoleGraphID != null) {
+					// First add hardwired consumer for web-stuff
+					registerWebActionConsumer(router, entRoleGraphID);
+					// Now set up a listener on the OSGi registry that can append any other WantsThingAction guys that come along.
+					BundleContext context = OSGiUtils.getBundleContext(WantsThingAction.class);
+					if(context != null){
+						String filter = null;  //OSGiUtils.createFilter("thingActionChannelAgentId", "*aZR50");
+						new TAConsumerTracker(context, filter, router, entRoleGraphID).start();
+					} else {
+						getLogger().error("No bundle context for WantsThingAction");
+					}
+				} else {
+					getLogger().error("No ThingActionBinding found for vwConf={} at role={} in erg-subMap={}",
+								vwEntConfID, taBindRoleID,  gce.ergMap().get(vwEntConfID));
+				}
+			}
+			else {
+				getLogger().error("No virtualWorld entity found at {} in gce.entityMap()={}",
+						vwMarker, gce.entityMap());
+			}
+
 		} catch (Exception e) {
-			getLogger().error("Could not register ThingActionConsumer for config {}", worldConfigIdent.getLocalName(), e);
-		}		
+			getLogger().error("Caught exception while registering ThingActionConsumer for vw-confID={}", vwEntConfID, e);
+		}
 	}
-    
+	private void registerWebActionConsumer(BasicThingActionRouter router, Ident graphIdent) {
+		// Set up a hadwired consumer to process
+		// WebActionNames.WEBCONTROL.equals(tgtThingTypeID) || WebActionNames.WEBCONFIG.equals(tgtThingTypeID)) {
+		// There is no reason this couldn't instead be posted into registry for the TaConsumerTracker to find.
+		WebEntityAction.Consumer weaConsumer = new WebEntityAction.Consumer();
+		router.appendConsumer(graphIdent, weaConsumer);
+
+	}
     static class TAConsumerTracker extends ServiceClassListener<WantsThingAction> {
         private BasicThingActionRouter myRouter;
         private Ident myGraphIdent;
-        
+
         public TAConsumerTracker(BundleContext context, String serviceFilter, BasicThingActionRouter router, Ident graphIdent) {
             super(WantsThingAction.class, context, serviceFilter);
             myRouter = router;

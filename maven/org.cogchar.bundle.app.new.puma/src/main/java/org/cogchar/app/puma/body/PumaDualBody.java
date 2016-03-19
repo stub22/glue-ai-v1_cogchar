@@ -15,9 +15,7 @@
  */
 package org.cogchar.app.puma.body;
 
-import org.cogchar.app.puma.body.PumaBodyGateway;
 //import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
-import java.io.File;
 import org.osgi.framework.BundleContext;
 
 import org.appdapter.core.name.Ident;
@@ -68,9 +66,9 @@ public class PumaDualBody extends BasicDebugger {
         // It's OK if vWorldMapper == null.  We still construct a Humanoid Mapper, which will then 
         // exist solely for the purpose of forwarding joint commands to connected Robots.
         myBodyMapper = new PumaBodyGateway(bundleCtx, myDualBodyID);
-        List<ClassLoader> rkConfCLs = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_RK_CONF);
+        List<ClassLoader> mioConfCLs = prc.getResFileCLsForCat(ResourceFileCategory.RESFILE_MIO_CONF);
 
-        boolean setupOK = setupBonyModelBindingToRobokind(bundleCtx, rc, graphIdentForBony, humCfg, rkConfCLs);
+        boolean setupOK = setupBonyModelBindingToMechIO(bundleCtx, rc, graphIdentForBony, humCfg, mioConfCLs);
         if (bodyConfig != null) {
             bodyConfig.setModelRobot(myBodyMapper.getBonyRobot());
             //myBodyMapper.setBodyConfigSpec(bodyConfig);
@@ -107,13 +105,13 @@ public class PumaDualBody extends BasicDebugger {
         return "PumaDualChar[uri=" + myDualBodyID + ", nickName=" + myNickName + "]";
     }
 
-    private boolean setupBonyModelBindingToRobokind(BundleContext bunCtx, RepoClient rc, Ident graphIdentForBony,
-            FigureConfig hc, List<ClassLoader> clsForRKConf) {
+    private boolean setupBonyModelBindingToMechIO(BundleContext bunCtx, RepoClient rc, Ident graphIdentForBony,
+            FigureConfig hc, List<ClassLoader> clsForMioConf) {
         Ident charIdent = getCharIdent();
         getLogger().debug("Setup for {} using graph {} and humanoidConf {}", new Object[]{charIdent, graphIdentForBony, hc});
         try {
             BoneCN bqn = new BoneCN();
-            boolean connectedOK = myBodyMapper.connectBonyRobotToRobokindAndVWorld(bunCtx, hc, graphIdentForBony, rc, bqn, clsForRKConf);
+            boolean connectedOK = myBodyMapper.connectBonyRobotToMioAndVWorld(bunCtx, hc, graphIdentForBony, rc, bqn, clsForMioConf);
             if (connectedOK) {
                 return true;
             } else {
