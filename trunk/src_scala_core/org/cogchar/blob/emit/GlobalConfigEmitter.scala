@@ -17,16 +17,20 @@
 package org.cogchar.blob.emit
 
 import org.appdapter.core.name.{FreeIdent, Ident}
-
+import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.fancy.rclient.{RepoClient}
 import org.appdapter.fancy.query.{SolutionHelper}
 
 import org.cogchar.name.entity.EntityRoleCN._;
 
 
+trait GlobalConfigResolver {
+	def getEntityIdentsForMarker(marker : String) : Traversable[Ident]
+}
+
 // An object class to hold "global" configuration information loaded at "boot"
 // Currently corresponds to "GlobalMode" bindings
-class GlobalConfigEmitter(val myQI : RepoClient)  {
+class GlobalConfigEmitter(val myQI : RepoClient) extends GlobalConfigResolver with BasicDebugger {
 	// Constants for query config - this could live elsewhere but may make sense here
 	// As usual, meta-meta-data keeps squeezing out into code
 
