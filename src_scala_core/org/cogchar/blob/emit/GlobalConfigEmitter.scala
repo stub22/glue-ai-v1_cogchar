@@ -23,14 +23,41 @@ import org.appdapter.fancy.query.{SolutionHelper}
 
 import org.cogchar.name.entity.EntityRoleCN._;
 
+import java.util.{List => JList, HashMap => JHashMap}
 
 trait GlobalConfigResolver {
-	def getEntityIdentsForMarker(marker : String) : Traversable[Ident]
+	// Marker === EntityType in 2012 parlance
+
+	def getEntityIdentsAtMarker(marker : String) : Traversable[Ident]
+
+	def getEntityIdentsAtMarker_Array(marker : String) : Array[Ident] = {
+		getEntityIdentsAtMarker(marker).toArray
+		// Array gives easy java interop, but poor semantics
+	}
+
+	def getFirstEntityIdent_opt(marker : String) : Option[Ident] = {
+		getEntityIdentsAtMarker(marker).headOption
+	}
+	def getFirstEntityIdent_opt(marker : String, backupOpt : Option[Ident]) : Option[Ident] = {
+		getFirstEntityIdent_opt(marker).headOption.orElse(backupOpt)
+	}
+	// For use from Java
+	def getFirstEntityIdent_orNull(marker : String, backupOrNull : Ident) : Ident = {
+		getFirstEntityIdent_opt(marker, Option(backupOrNull)).getOrElse(null)
+	}
+
+	def getEntConfRoleGraphID_opt(entConfID : Ident, roleID : Ident) : Option[Ident]
+
+	def getEntConfRoleGraphID_orNull(entConfID : Ident, roleID : Ident) : Ident = {
+		getEntConfRoleGraphID_opt(entConfID, roleID).getOrElse(null)
+	}
+
+
 }
 
 // An object class to hold "global" configuration information loaded at "boot"
 // Currently corresponds to "GlobalMode" bindings
-class GlobalConfigEmitter(val myQI : RepoClient) extends GlobalConfigResolver with BasicDebugger {
+class GlobalConfigEmitter(val myQI : RepoClient) extends  BasicDebugger with GlobalConfigResolver  {
 	// Constants for query config - this could live elsewhere but may make sense here
 	// As usual, meta-meta-data keeps squeezing out into code
 
@@ -80,7 +107,23 @@ class GlobalConfigEmitter(val myQI : RepoClient) extends GlobalConfigResolver wi
 			entityMap.put(ENTITY_TYPES(i), entityList)
 		}
 	}
-  
+
+
+	lazy val emptyIDArray = new Array[Ident](0)
+	import scala.collection.JavaConverters._
+
+	override def getEntityIdentsAtMarker(marker : String) : Traversable[Ident] = {
+		val entListOrNull : java.util.List[Ident] = entityMap.get(marker)
+		if (entListOrNull != null) entListOrNull.asScala else Nil
+	}
+
+	override def getEntConfRoleGraphID_opt(entConfID : Ident, roleID : Ident) : Option[Ident] = {
+		val graphsByRole : JHashMap[Ident, Ident] = ergMap.get(entConfID)
+		if (graphsByRole != null) {
+			val graphID = graphsByRole.get(roleID)
+			Option(graphID)
+		} else None
+	}
 	// Below is an experiment in making Global Config a managed service, which is something I haven't truly
 	// been at all convinced is the right thing to do. But necessary for our Lifter-as-managed-service
 	// experiment. Managed services beget managed services!!
