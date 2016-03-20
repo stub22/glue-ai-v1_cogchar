@@ -17,6 +17,8 @@
 package org.cogchar.scalatest
 
 import java.io.ByteArrayOutputStream
+import org.appdapter.core.log.BasicDebugger
+import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.xload.rspec.OnlineSheetRepoSpec
 import org.appdapter.core.name.{FreeIdent, Ident}
 import org.appdapter.core.store.Repo
@@ -32,23 +34,21 @@ import org.appdapter.xload.rspec.SdbSqlRepoSpec
 
 /** Documenting and testing our query-based configuration systems.
  *	// Note that "QName" and QN refers to the prefixed style syntax, which is resolved against
- // the repo's known prefixes.  
+  * // the repo's known prefixes.
  */
-object RepoClientTester {
-
- 
+object RepoClientTester extends VarargsLogging  {
 	// The first 3 params define the repo:
 	
 	/**
-	 The sheet key is used to build a URL for something like a Google-Docs spreadsheet,
-	 which we read in easily as just CSV (commma-separated values).
-	 Each tab of the spreadsheet is treated as a separate named graph, which are all
-	 registered in a directory graph, which can also happen to be in the same spreadsheet.
+	  * The sheet key is used to build a URL for something like a Google-Docs spreadsheet,
+	  * which we read in easily as just CSV (commma-separated values).
+	  * Each tab of the spreadsheet is treated as a separate named graph, which are all
+	  * registered in a directory graph, which can also happen to be in the same spreadsheet.
 
-	 // Shared public "CharBootAll" test sheet.  
-	 // 2012-09-29 : Note that queries were updated to remove "!!", although the latter are now
-	 // converted to "?" if present, so no query-"templates" should be broken (even in older sheet's).
-	 // We now use standard SPARQL query text and variable replacement, in all cases.
+	  * // Shared public "CharBootAll" test sheet.
+	  * // 2012-09-29 : Note that queries were updated to remove "!!", although the latter are now
+	  * // converted to "?" if present, so no query-"templates" should be broken (even in older sheet's).
+	  * // We now use standard SPARQL query text and variable replacement, in all cases.
 	 */
 	
 	final val TEST_REPO_SHEET_KEY = "0ArBjkBoH40tndDdsVEVHZXhVRHFETTB5MGhGcWFmeGc" 
@@ -232,9 +232,12 @@ object RepoClientTester {
 		override def toString() : String = "[cmdID=" + cmdID + ", boxID=" + boxID + ", trigID=" + trigID + ", trigFQCN=" + trigFQCN + "]";
 	}
 
+
+	var cmdQueryQN = "ccrt:find_cmds_99" // The QName of a query in the "Queries" model/tab
+	var cmdGraphQN = "ccrt:cmd_sheet_sin23" // The QName of a graph = model = tab, as given by directory model.
+
 	def queryCommands (rc : RepoClient) : java.util.List[CommandRec] = {
-		val cmdQueryQN = "ccrt:find_cmds_99" // The QName of a query in the "Queries" model/tab
-		val cmdGraphQN = "ccrt:cmd_sheet_AZR50" // The QName of a graph = model = tab, as given by directory model.
+		info2("querying for commands with q={} and g={}", cmdQueryQN : Object, cmdGraphQN : Object)
 		val solList = rc.queryIndirectForAllSolutions(cmdQueryQN, cmdGraphQN)
 		val resultJList = new java.util.ArrayList[CommandRec]();
 		import scala.collection.JavaConversions._
@@ -247,6 +250,7 @@ object RepoClientTester {
 				val cRec = new CommandRec(cmdID, boxID, trigID, trigFQCN);
 				resultJList.add(cRec);
 			})
+		info1("Found {} commands", resultJList.size() : Integer)
 		resultJList
 	}	
 

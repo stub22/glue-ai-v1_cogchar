@@ -345,11 +345,11 @@ public class TriggerItems {
             TriggerItem ti = makeTriggerItem(cRec.trigFQCN());
             Ident cmdID = cRec.cmdID();
             Ident boxID = cRec.boxID();
-            CogcharScreenBox csBox = boxSpace.findBox(boxID);  
-            // We go ahead and resolve the box to prove box-space is still working.
-            getLogger().info("Resolved boxID {} for cmdID {} to csBox-class {}", boxID, cmdID, csBox.getClass());
+			// We go ahead and resolve the box to prove box-space is still working.
+            CogcharScreenBox csBox = boxSpace.findBox(boxID);
             
             if ((ti != null) && (csBox != null)) {
+				getLogger().info("Resolved boxID {} for cmdID {} to csBox-class {}", boxID, cmdID, csBox.getClass());
                 CommandBinding cb = cSpace.findOrMakeBinding(cmdID);
                 CogcharActionBinding cab = new BasicActionBindingImpl();
                 cab.addTargetBox(csBox);
