@@ -85,7 +85,11 @@ public class GoodyActionParamWriter extends ActionParamWriter {
 	
 	public void putObjectAtName(Ident pName, Object pVal) {
 		TypedValueMap tvm = getValueMap();
-		tvm.putValueAtName(pName, pVal);
+		if (pVal != null) {
+			tvm.putValueAtName(pName, pVal);
+		} else {
+			System.out.println("Need logging!  GoodyActionParamWriter cannot write null value at ident=" + pName);
+		}
 	}
 	public void putNameAtName(Ident pName, Ident pVal) {
 		TypedValueMap tvm = getValueMap();
