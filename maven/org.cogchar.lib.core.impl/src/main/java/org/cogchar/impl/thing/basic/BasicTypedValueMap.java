@@ -60,12 +60,15 @@ public abstract class BasicTypedValueMap implements SerTypedValueMap {
 		}
 		return typedResult;
 	}
-	@Override public void putValueAtName(Ident name, Object val) {
-		if (val instanceof Serializable) {
+	@Override public void putValueAtName(Ident name, Object v) {
+		if (v == null) {
+			throw new RuntimeException("Cannot put null value into a BasicTypedValueMap at key " + name);
+		}
+		if (v instanceof Serializable) {
 			SerIdent serID = ensureSerIdent(name);
-			myRawObjsByID.put(serID, (Serializable) val);
+			myRawObjsByID.put(serID, (Serializable) v);
 		} else {
-			throw new RuntimeException("Cannot put nonserializable object of type " + val.getClass() + " into a BasicTypedValueMap");
+			throw new RuntimeException("Cannot put nonserializable object of type " + v.getClass() + " into a BasicTypedValueMap at key " + name);
 		}
 	}
 	@Override public void putNameAtName(Ident name, Ident nameVal) { 
