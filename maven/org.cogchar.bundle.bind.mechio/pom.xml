@@ -19,7 +19,25 @@
 			<artifactId>org.cogchar.bundle.core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
+        <!-- Temp experiment:  Seems IDEA builtin compiler does not grok the libs-are-reexported concept.
+        We must either add extra ugly lib imports, or get errors like:
+        Error:(18, 39) java: package org.cogchar.api.skeleton.config does not exist
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.lib.vworld.api</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.cogchar.lib.core.impl</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        -->
+
 		<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.math</artifactId>

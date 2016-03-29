@@ -19,7 +19,7 @@ import org.cogchar.api.event.BasicNotifier;
 import org.cogchar.api.perform.Media;
 import org.cogchar.api.perform.PerfChannel;
 import org.cogchar.api.perform.Performance;
-
+import org.cogchar.api.perform.Performance.State;
 /**
  * @author Stu B. <www.texpedient.com>
  * 
