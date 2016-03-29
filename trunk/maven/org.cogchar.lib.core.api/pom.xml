@@ -22,6 +22,9 @@
 			<version>${project.version}</version>
 		</dependency>
 		<!-- 2015-01-17 Temporarily adding "scala-actors" lib here, although it is really more an Impl than API thing -->
+        <!--
+        Old (pre-akka) scala.actors pkg is currently used by our prototype AuditSvc, which is used in CircusTest
+        -->
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-actors</artifactId>
@@ -31,12 +34,14 @@
 					<groupId>org.scala-lang</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>		
-		<!-- dependency>
+		</dependency>
+        <!--  2016-03-28 removed this dangling reference to nonexistent prj, don't know how it was resolving
+		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.cogchar.lib.actor</artifactId>
 			<version>${project.version}</version>
-		</dependency -->	                
+		</dependency>
+		-->
     	<dependency>
 			<groupId>org.appdapter</groupId>
 			<artifactId>org.appdapter.bundle.core</artifactId>
@@ -74,7 +79,14 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
--->		
+-->
+        <!-- These deps appear to cause a Scala lib other than 2.10.2 to come in,
+        leading under IDEA to same error mentioned in "testCompile" section below:
+error: bad symbolic reference. A signature in ShouldMatchers.class refers to type Collection
+in package scala.package which is not available.
+
+            ...because IDEA wants to compile test sources
+
 		<dependency>
 			<groupId>org.scalatest</groupId>
 			<artifactId>scalatest</artifactId>
@@ -91,6 +103,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		-->
 	</dependencies>
 	<build>
 		<!--	  

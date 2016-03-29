@@ -27,7 +27,7 @@ public abstract class BasicPerfChan extends BasicChannel implements PerfChannel 
 	public BasicPerfChan(Ident ident) {
 		super(ident);
 	}
-	public Status getStatus() {
+	public PerfChannel.Status getStatus() {
 		return myStatus;
 	}
 
