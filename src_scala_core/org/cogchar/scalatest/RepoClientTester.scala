@@ -232,7 +232,6 @@ object RepoClientTester extends VarargsLogging  {
 		override def toString() : String = "[cmdID=" + cmdID + ", boxID=" + boxID + ", trigID=" + trigID + ", trigFQCN=" + trigFQCN + "]";
 	}
 
-
 	var cmdQueryQN = "ccrt:find_cmds_99" // The QName of a query in the "Queries" model/tab
 	var cmdGraphQN = "ccrt:cmd_sheet_sin23" // The QName of a graph = model = tab, as given by directory model.
 
@@ -253,7 +252,6 @@ object RepoClientTester extends VarargsLogging  {
 		info1("Found {} commands", resultJList.size() : Integer)
 		resultJList
 	}	
-
 
 	val eventQueryQN = "ccrt:find_agentItemEvents_99" // The QName of a query in the "Queries" model/tab
 	val eventGraphQN = "ccrt:inbox_sheet_AZR50" // The QName of a graph = model = tab, as given by directory model.   
