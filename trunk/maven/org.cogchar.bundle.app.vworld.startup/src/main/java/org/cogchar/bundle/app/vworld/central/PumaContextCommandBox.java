@@ -67,7 +67,7 @@ public class PumaContextCommandBox extends CogcharScreenBox implements Updater {
             return null;
         }
 
-        return vwr.getVW();
+        return vwr.getVWM();
 
     }
 
@@ -166,10 +166,9 @@ public class PumaContextCommandBox extends CogcharScreenBox implements Updater {
     final public static String ALL_HUMANOID_CONFIG = "allhumanoidconfig";
     final public static String THING_ACTIONS = "thingactions";
 
-    // Currently used from two places:
-    // org/cogchar/app/puma/cgchr/PumaVirtualWorldMapper.java:[74,15] 
-    // org/cogchar/app/puma/cgchr/CommandTargetForUseFromWeb.java:[66,25] 
-    // which is set up by PumaWebMapper
+	// Here "update" is exceptional "update system wiring" request.
+    // Currently used from TriggerItems (3 places), and from PumaContextCommandBox.processUpdate.
+
     public Future<Boolean> processUpdateRequestAsync(final String request, final boolean resetMainConfigFlag) {
         // Do the actual updates on a new thread. That way we don't block the render thread. Much less intrusive, plus this way things
         // we need to enqueue on main render thread will actually complete -  it must not be blocked during some of the update operations!
@@ -190,7 +189,7 @@ public class PumaContextCommandBox extends CogcharScreenBox implements Updater {
     }
 
     /**
-     * Called only indirectly after scheduling by processUpdateRequestAsync()
+     * Called only indirectly after scheduling by processUpdateRequestAsync() above
      * above.
      *
      * @param request

@@ -32,6 +32,10 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Stu B. <www.texpedient.com>
  *
+ *
+ * The meaning of my methods is illustrated in code of PumaVirtualWorldMapper.setupActionConsumer,
+ * which calls appendConsumer and setAppMonitor.
+ *
  * Will dissolve and be mostly replaced by MarkingAgent pattern, but this still may serve as hub of a crude notification
  * propagator until better options are in place.
  */

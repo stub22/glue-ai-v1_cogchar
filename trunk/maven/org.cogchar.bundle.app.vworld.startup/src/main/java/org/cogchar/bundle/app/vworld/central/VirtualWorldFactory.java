@@ -3,6 +3,8 @@ package org.cogchar.bundle.app.vworld.central;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
 import java.util.Properties;
