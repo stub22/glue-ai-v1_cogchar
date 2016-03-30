@@ -55,7 +55,7 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
 	}
 
     @Override public VWorldRegistry createService(Map<String, Object> dependencyMap) {
-        VWorldRegistry vworldreg = new VWorldRegistry();
+		StatefulVWorldRegistry vworldreg = new GruesomeVWorldRegistry();
         vworldreg.setRegClient((PumaRegistryClient) dependencyMap.get(DEPKEY_PumaRegCli));
         
         String ctxURI=((PumaContextMediator) dependencyMap.get(DEPKEY_Mediator)).getSysContextRootURI();

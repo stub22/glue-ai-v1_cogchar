@@ -16,10 +16,8 @@ import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
-import org.cogchar.app.puma.registry.ResourceFileCategory;
 
 import org.cogchar.bind.mio.robot.model.ModelRobot;
-import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
 import org.osgi.framework.Bundle;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.platform.trigger.CommandSpace;
@@ -31,56 +29,27 @@ import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 
 import org.cogchar.api.humanoid.FigureConfig;
-import org.cogchar.bundle.app.vworld.startup.ModelToFigureStateMappingFuncs;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 
-public class VWorldRegistry extends BasicDebugger {
+public abstract class VWorldRegistry extends BasicDebugger {
+
+	public abstract PumaVirtualWorldMapper getVWM();
+	protected abstract boolean hasVWorldMapper();
+	protected abstract PumaRegistryClient getRegClient();
 
     private CogcharRenderContext myCRC;
-    private PumaVirtualWorldMapper myVWorldMapper;
-    private boolean hasVWorldMapper = true;
-    private PumaRegistryClient myRegClient;
-	
-	// This myCharID field looks quite suspicious.
-   // private Ident myCharID;
-    private PumaContextCommandBox pCCB;
 
-    public VWorldRegistry() {
-        myVWorldMapper = new PumaVirtualWorldMapper();
-    }
+	protected abstract void initCinema(boolean clearFirst, ClassLoader vizResCL);
 
-	// Stu moved this from protected to public, pending further analysis.
-    public PumaVirtualWorldMapper getVW()
-    {
-        return myVWorldMapper;
-    }
-/*
-    public void setCharID(Ident id) {
-        myCharID = id;
-    }
-*/
-    public void setRegClient(PumaRegistryClient rc) {
-        myRegClient = rc;
-    }
-
-    public void setContextCommandBox(PumaContextCommandBox pCCB)
-    {
-        this.pCCB=pCCB;
-    }
-
-    public PumaContextCommandBox getContextCommnandBox()
-    {
-        return pCCB;
-    }
-    //From AppUtil 
+    //From AppUtil
     //May Split off into it's own class or get rid of all together. 
 
     public void attachVWorldRenderModule(RenderModule rMod) {
-        if (myVWorldMapper != null) {
-            myVWorldMapper.attachRenderModule(rMod);
+		if (hasVWorldMapper()) {
+            getVWM().attachRenderModule(rMod);
         } else {
             getLogger().error("Unable to attach Render Module.");
         }
@@ -90,7 +59,8 @@ public class VWorldRegistry extends BasicDebugger {
     public void initVWorldUnsafe(PumaContextMediator mediator) throws Throwable {
         String panelKind = mediator.getPanelKind();
 
-        HumanoidRenderContext hrc = myVWorldMapper.initHumanoidRenderContext(panelKind);
+		PumaVirtualWorldMapper vwm = getVWM();
+        HumanoidRenderContext hrc = vwm.initHumanoidRenderContext(panelKind);
         boolean allowJFrames = mediator.getFlagAllowJFrames();
         if (allowJFrames) {
             WindowAdapter winLis = new WindowAdapter() {
@@ -101,34 +71,16 @@ public class VWorldRegistry extends BasicDebugger {
                 }
             };
             getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling startOpenGLCanvas");
-            myVWorldMapper.startOpenGLCanvas(allowJFrames, winLis);
+            vwm.startOpenGLCanvas(allowJFrames, winLis);
 
         }
 
         hrc.runPostInitLaunchOnJmeThread();
     }
 
-    protected void initCinema(boolean clearFirst, ClassLoader vizResCL) {
-
-        if (hasVWorldMapper) {
-
-            if (clearFirst) {
-                myVWorldMapper.clearCinematicStuff();
-            }
-            CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
-            PumaConfigManager pcm = getConfigManager();
-            BasicThingActionRouter router = GruesomeTAProcessingFuncs.getActionRouter();
-            myVWorldMapper.initVirtualWorlds(cmdSpc, pcm, router);
 
 
-            //ClassLoader vizResCL = getSingleClassLoaderOrNull(ResourceFileCategory.RESFILE_OPENGL_JME3_OGRE);
-            myVWorldMapper.connectVisualizationResources(vizResCL);
-        } else {
-            getLogger().warn("Ignoring initCinema command - no vWorldMapper present");
-        }
-    }
-
-    protected void notifyVWorldWindowClosed() {
+	protected void notifyVWorldWindowClosed() {
         Bundle anyB = org.osgi.framework.FrameworkUtil.getBundle(getClass());
         BundleContext anyBC = anyB.getBundleContext();
         shutdownOSGiContainer(anyBC);
@@ -160,30 +112,32 @@ public class VWorldRegistry extends BasicDebugger {
                 }
             }
         }catch(InvalidSyntaxException ex){
+			getLogger().warn("Ignoring InvalidSyntaxException during shutdown");
         }
         
     }
 
     protected PumaConfigManager getConfigManager() {
-        return myRegClient.getConfigMgr(null);
+        return getRegClient().getConfigMgr(null);
     }
 
     protected void stopAndReleaseAllHumanoids() {
-        myVWorldMapper.detachAllHumanoidFigures();
+        getVWM().detachAllHumanoidFigures();
     }
 
     protected void disconnectAllCharsAndMappers() throws Throwable {
 
-        if (hasVWorldMapper) {
-            myVWorldMapper.clearCinematicStuff();
+        if (hasVWorldMapper()) {
+
+            getVWM().clearCinematicStuff();
         }
 
         stopAndReleaseAllHumanoids();
     }
 
     protected void startOpenGLCanvas(boolean wrapInJFrameFlag, java.awt.event.WindowListener optWinLis) throws Exception {
-        if (hasVWorldMapper) {
-            myVWorldMapper.startOpenGLCanvas(wrapInJFrameFlag, optWinLis);
+        if (hasVWorldMapper()) {
+			getVWM().startOpenGLCanvas(wrapInJFrameFlag, optWinLis);
         } else {
             getLogger().warn("Ignoring startOpenGLCanvas command - no vWorldMapper present");
         }
@@ -193,8 +147,8 @@ public class VWorldRegistry extends BasicDebugger {
     //From PumaBodyGateway
     protected HumanoidFigure getHumanoidFigure(Ident charID) {
         HumanoidFigure hf = null;
-        if (myVWorldMapper != null) {
-            HumanoidRenderContext hrc = myVWorldMapper.getHumanoidRenderContext();
+		if (hasVWorldMapper()) {
+            HumanoidRenderContext hrc = getVWM().getHumanoidRenderContext();
             if (hrc != null) {
                 hf = hrc.getHumanoidFigureManager().getHumanoidFigure(charID); // myCharID);
             }
@@ -205,8 +159,8 @@ public class VWorldRegistry extends BasicDebugger {
     public boolean initVWorldHumanoid(RepoClient qi, final Ident boneConfGraphID, final FigureConfig figConf) throws Throwable {
 		Ident figID = figConf.getFigureID();
 		getLogger().info("Setting up figureID={} using boneConfigGraphID {}", figID, boneConfGraphID);
-        if (myVWorldMapper != null) {
-            HumanoidRenderContext hrc = myVWorldMapper.getHumanoidRenderContext();
+		if (hasVWorldMapper()) {
+            HumanoidRenderContext hrc = getVWM().getHumanoidRenderContext();
             // New with "GlobalModes": we'll run hrc.setupHumanoidFigure from here now
             HumanoidFigure hf = hrc.getHumanoidFigureManager().setupHumanoidFigure(hrc, qi, figID, boneConfGraphID, figConf);
             return (hf != null);
