@@ -201,7 +201,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
      * Let's review and figure out what is really going on here.
      *
      * The stack at this point [as of 2013-10-06] is: initCinematicStuff
-     * initVirtualWorlds PumaAppContext.initCinema - * (see Javadoc comment
+     * initVirtualWorlds VWorldRegistry.initCinema - * (see Javadoc comment
      * above this method). - called from 3 different places, including pumaBoot
      * and processUpdateRequestNow()
      */
@@ -211,11 +211,14 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
         try {
             Ident actionGraphID = gce.ergMap().get(worldConfigID).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
             BasicThingActionConsumer consumer = gFactory.getActionConsumer();
-            // We consume the actions here because...(?) [Something-something clear the "old"[/"init"] actions]
+            // We drain the actions here, one time, before attaching consumer, because...(?)
+			// [Something-something clear the "old"[/"init"] actions]
             // Note here is the *only* use of this deprecated 2-args method form (in all of Cogchar), so refactoring 
             // it out of this call in Puma will allow us to remove it from o.c.lib.core.
             consumer.consumeAllActions(repoCli, actionGraphID);
+
             router.appendConsumer(actionGraphID, consumer);
+			// Future action consumption happens when router gets data and passes to consumers.
             getLogger().info("Finished consumingActions and appending consumer, now attaching AppMonitor binding");
             if (myVWMonitorBinding == null) {
                 myVWMonitorBinding = new VWorldMonitorBinding();
