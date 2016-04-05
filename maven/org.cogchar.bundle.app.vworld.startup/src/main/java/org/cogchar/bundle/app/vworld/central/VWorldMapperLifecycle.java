@@ -55,55 +55,19 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
 	}
 
     @Override public VWorldRegistry createService(Map<String, Object> dependencyMap) {
+
+		PumaContextMediator pcMediator = (PumaContextMediator) dependencyMap.get(DEPKEY_Mediator);
+		PumaAppContext pactx = (PumaAppContext) dependencyMap.get(DEPKEY_AppContext);
+		CommandEvent ce= (CommandEvent) dependencyMap.get(DEPKEY_CommandEvent);
+		PumaRegistryClient pumaRegCli = (PumaRegistryClient) dependencyMap.get(DEPKEY_PumaRegCli);
+		ArrayList<BodyHandleRecord> bodyHandleRecList = (ArrayList<BodyHandleRecord>) dependencyMap.get(DEPKEY_BodyHandleRec);
+
+		VWorldInitHelper helper = new VWorldInitHelper();
 		StatefulVWorldRegistry vworldreg = new GruesomeVWorldRegistry();
-        vworldreg.setRegClient((PumaRegistryClient) dependencyMap.get(DEPKEY_PumaRegCli));
-        
-        String ctxURI=((PumaContextMediator) dependencyMap.get(DEPKEY_Mediator)).getSysContextRootURI();
-        Ident ctxID=new FreeIdent(ctxURI);
-        try {
-            vworldreg.initVWorldUnsafe((PumaContextMediator) dependencyMap.get(DEPKEY_Mediator));
-        } catch (Throwable t) {
-            getLogger().warn("%%%%%%%%%%%%%%%%%%%%%%% Error with VWorldMapper init %%%%%%%%%%%%%%%%%%%%%%%");
-        }
-        PumaContextCommandBox pCCB=new PumaContextCommandBox(vworldreg, (PumaRegistryClient) dependencyMap.get(DEPKEY_PumaRegCli), ctxID);
-        pCCB.setAppContext((PumaAppContext)dependencyMap.get(DEPKEY_AppContext));
-        CommandEvent ce=(CommandEvent)dependencyMap.get(DEPKEY_CommandEvent);
-        ce.setUpdater((Updater)pCCB);
-        vworldreg.setContextCommandBox(pCCB);
-        pCCB.reloadCommandSpace();
-        //code for connecting bodies
-        ArrayList<BodyHandleRecord> bodyHandleRecList = (ArrayList<BodyHandleRecord>) dependencyMap.get(DEPKEY_BodyHandleRec);
-
-        for (BodyHandleRecord body : bodyHandleRecList) {
-            try {
-                Ident		boneSrcGraphID = body.getBoneSrcGraphID();
-				RepoClient	repoCli = body.getRepoClient();
-				
-                if (boneSrcGraphID != null) {
-                    getLogger().debug("boneSrcGraphID is non-null {}", boneSrcGraphID);
-                }
-                if (repoCli !=null) {
-                    getLogger().debug("REPOCLIENT FOUND: {}", repoCli);
-                }
-				FigureConfig humaFigCfg = body.getHumaFigureConfig();
-				
-				Ident figureID = humaFigCfg.getFigureID();
-
-				getLogger().info("Calling initVworldHumanoid for charID={} and boneSrcGraphID={}", figureID, boneSrcGraphID);
-                vworldreg.initVWorldHumanoid(body.getRepoClient(), boneSrcGraphID, humaFigCfg);
-				getLogger().info("Calling connnectBonyRobotToHumanoidFigure for charID={}", figureID);
-				vworldreg.connectBonyRobotToHumanoidFigure(body.getModelRobot(), figureID);
-            } catch (Throwable t) {
-                getLogger().error("InitVWorldHumanoid failure");
-            }
-        }
-        //end body connection code
-
-//        vworldreg.initCinema(false, (ClassLoader) dependencyMap.get(theClassLoader));
-        vworldreg.initCinema(false, null);  
-        
-        return vworldreg;
+		helper.connectRegistry(vworldreg, pcMediator, pactx, ce, pumaRegCli, bodyHandleRecList);
+		return vworldreg;
     }
+
 
     @Override  public VWorldRegistry handleDependencyChange(VWorldRegistry client, String changeType, String dependencyName,
             Object dependency, Map<String, Object> availableDependencies) {
