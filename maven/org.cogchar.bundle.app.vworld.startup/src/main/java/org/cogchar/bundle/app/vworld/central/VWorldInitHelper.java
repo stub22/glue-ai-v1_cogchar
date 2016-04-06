@@ -19,6 +19,7 @@ import java.util.ArrayList;
  * Created by Owner on 4/4/2016.
  */
 public class VWorldInitHelper extends BasicDebugger {
+	// Called to do the real work of VWorldMapperLifecycle.createService
 	public void connectRegistry(StatefulVWorldRegistry vworldreg, PumaContextMediator pcMediator,
 					PumaAppContext pactx, CommandEvent ce,  PumaRegistryClient pumaRegCli,
 					ArrayList<BodyHandleRecord> bodyHandleRecList) {

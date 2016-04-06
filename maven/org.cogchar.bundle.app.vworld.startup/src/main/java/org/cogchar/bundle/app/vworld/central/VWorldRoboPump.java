@@ -15,15 +15,16 @@
  */
 package org.cogchar.bundle.app.vworld.central;
 
-import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
+import org.cogchar.api.skeleton.config.BoneProjectionRange;
 import org.cogchar.bind.mio.robot.model.ModelJoint;
 import org.cogchar.bind.mio.robot.model.ModelRobot;
 import org.cogchar.bundle.app.vworld.startup.ModelToFigureStateMappingFuncs;
-import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.model.bony.FigureState;
-import org.cogchar.api.skeleton.config.BoneProjectionRange;
+import org.cogchar.render.model.humanoid.HumanoidFigure;
+
+import java.util.List;
 /**
  *
  * @author Stu B22 <stub22@appstract.com>

@@ -5,12 +5,19 @@ import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
 import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
 
 import org.cogchar.platform.trigger.CommandSpace;
+import org.cogchar.api.thing.WantsThingAction;
 import org.cogchar.impl.thing.route.BasicThingActionRouter;
 
 /**
  * Created by Owner on 3/29/2016.
  */
 public class GruesomeVWorldRegistry extends StatefulVWorldRegistry {
+
+	private WantsThingAction 	myRouter = null;
+	public WantsThingAction getRouter() {
+		return myRouter;
+	}
+
 	@Override protected void initCinema(boolean clearFirst, ClassLoader vizResCL) {
 
 		if (hasVWorldMapper()) {
@@ -22,6 +29,7 @@ public class GruesomeVWorldRegistry extends StatefulVWorldRegistry {
 			CommandSpace cmdSpc = getRegClient().getCommandSpace(null);
 			PumaConfigManager pcm = getConfigManager();
 			BasicThingActionRouter router = GruesomeTAProcessingFuncs.getActionRouter();
+			myRouter = router;
 			vwm.initVirtualWorlds(cmdSpc, pcm, router);
 
 
