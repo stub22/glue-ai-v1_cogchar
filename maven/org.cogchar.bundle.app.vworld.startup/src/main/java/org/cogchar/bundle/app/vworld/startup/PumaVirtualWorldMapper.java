@@ -15,35 +15,35 @@
  */
 package org.cogchar.bundle.app.vworld.startup;
 
-import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.fancy.rclient.RepoClient;
-import org.cogchar.impl.thing.route.BasicThingActionConsumer;
-import org.cogchar.impl.thing.route.BasicThingActionRouter;
+import org.cogchar.blob.emit.GlobalConfigEmitter;
+import org.cogchar.blob.emit.KeystrokeConfigEmitter;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
+import org.cogchar.impl.thing.route.BasicThingActionConsumer;
+import org.cogchar.impl.thing.route.BasicThingActionRouter;
 import org.cogchar.name.entity.EntityRoleCN;
-import org.cogchar.blob.emit.*;
 import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.trigger.CommandSpace;
+import org.cogchar.render.app.entity.GoodyFactory;
+import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
-import org.cogchar.render.app.entity.GoodyFactory;
-import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
 import org.cogchar.render.opengl.osgi.RenderBundleUtils;
 import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 import org.cogchar.render.sys.input.VW_HelpScreenMgr;
 import org.cogchar.render.sys.input.VW_InputBindingFuncs;
 import org.cogchar.render.sys.module.RenderGateway;
 import org.cogchar.render.sys.module.RenderModule;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
+
+import java.util.List;
 
 /**
  * @author Stu B. <www.texpedient.com>
