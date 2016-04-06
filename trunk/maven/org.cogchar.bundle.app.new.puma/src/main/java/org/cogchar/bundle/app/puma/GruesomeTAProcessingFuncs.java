@@ -48,14 +48,16 @@ public class GruesomeTAProcessingFuncs {
 		BasicThingActionRouter router = getActionRouter();
 		srec.pumaWebMapper.registerActionConsumers(router, srec.rc, srec.gce);
 	}
-	/* processPendingThingActions is called in two separate cases:
+	/* processPendingThingActions is called in two separate cases, outside of this file:
 	 *		1) In the repoUpdateCompleted() callback of a top-level application, e.g.
 	 *			a) o.f.b.demo.liftoff.Activator
 	 *			b) c.h.b.oglweb.R50.Activator
 	 *		2) On a call to  PumaAppContext.resetMainConfigAndCheckThingActions
 	 *			which is queued indirectly from   PumaContextCommandBox.processUpdateRequestAsync
 	 *			which is a crude, old form of GUI wiring to be replaced.
-	 *	
+	 *
+	 *   It is also called below, from the dedicated RouterRunnable thread, which is
+	 *   a newer (c. 2014) approach.
 	 */
 
 	@Deprecated

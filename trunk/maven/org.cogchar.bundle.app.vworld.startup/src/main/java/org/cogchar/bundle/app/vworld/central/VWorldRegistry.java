@@ -4,39 +4,36 @@ package org.cogchar.bundle.app.vworld.central;
  *
  * @author Major Jacquote II
  */
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
-import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
-import org.appdapter.core.name.Ident;
-import org.osgi.framework.BundleContext;
-import org.cogchar.render.sys.module.RenderModule;
 import org.appdapter.core.log.BasicDebugger;
+import org.appdapter.core.name.Ident;
 import org.appdapter.fancy.rclient.RepoClient;
+import org.cogchar.api.humanoid.FigureConfig;
+import org.cogchar.api.thing.WantsThingAction;
 import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
-
 import org.cogchar.bind.mio.robot.model.ModelRobot;
-import org.osgi.framework.Bundle;
-import org.cogchar.render.app.humanoid.HumanoidRenderContext;
-import org.cogchar.platform.trigger.CommandSpace;
-import org.cogchar.render.sys.context.CogcharRenderContext;
-import org.cogchar.impl.thing.route.BasicThingActionRouter;
-import org.cogchar.render.model.bony.FigureState;
-import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
-
-import org.cogchar.api.humanoid.FigureConfig;
+import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.module.RenderModule;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public abstract class VWorldRegistry extends BasicDebugger {
 
 	public abstract PumaVirtualWorldMapper getVWM();
+	public abstract WantsThingAction getRouter();
+
 	protected abstract boolean hasVWorldMapper();
 	protected abstract PumaRegistryClient getRegClient();
 
