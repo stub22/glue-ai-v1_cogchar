@@ -37,6 +37,42 @@
 
 
 
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#hasAdptr
+
+:hasAdptr rdf:type owl:ObjectProperty ;
+          
+          rdfs:range :PumpAdptr ;
+          
+          rdfs:domain :PumpListenChan ;
+          
+          rdfs:subPropertyOf :approProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#knowsChan
+
+:knowsChan rdf:type owl:ObjectProperty ;
+           
+           rdfs:subPropertyOf :approProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#knowsListenChan
+
+:knowsListenChan rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:subPropertyOf :knowsChan .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#knowsPostChan
+
+:knowsPostChan rdf:type owl:ObjectProperty ;
+               
+               rdfs:subPropertyOf :knowsChan .
+
+
+
 
 
 #################################################################
@@ -189,6 +225,30 @@ This distinction is consistent with our comments on ApproSystemBrokerRecipe.""" 
                          
                          rdfs:comment """Recipes that define any data used by the wider world to initialize and identify app   components.  None of this data may be used inside the app  runtime.
 """ .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#PumpAdptr
+
+:PumpAdptr rdf:type owl:Class ;
+           
+           rdfs:subClassOf :AFBRE_Task .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#PumpListenChan
+
+:PumpListenChan rdf:type owl:Class ;
+                
+                rdfs:subClassOf :AFBRE_In .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#PumpPostChan
+
+:PumpPostChan rdf:type owl:Class ;
+              
+              rdfs:subClassOf :AFBRE_Out .
 
 
 
