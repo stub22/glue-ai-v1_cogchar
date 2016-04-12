@@ -142,4 +142,9 @@ public class BasicThingActionRouter extends BasicThingActionConsumer {
 			viewAndMarkAllActions(rc, srcGraphID, myCutoffTime, myViewingAgentID);
 		}
 	}
+
+	public Map<Ident, List<WantsThingAction>> hackExposeConsumerMap () {
+		return myConsumersBySrcGraphID;
+	}
+
 }
