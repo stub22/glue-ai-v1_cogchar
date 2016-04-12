@@ -30,8 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Formerly GoodySpace, this class manages actions for Entities. Mostly this still focuses on Goodies, but now this is
- * being generalized for web actions as well. Much refinement, additions, and refactoring TBD.
+ * Base class for GoodySpace, this class manages actions for Entities.
  *
  * @author Stu B. <www.texpedient.com>, Ryan Biggs <rbiggs@hansonrobokind.com>
  *
