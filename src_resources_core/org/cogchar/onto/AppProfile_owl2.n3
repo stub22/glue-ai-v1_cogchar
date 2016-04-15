@@ -143,7 +143,10 @@ Those subtypes are overlapping, i.e. not exclusive of each other.""" .
 
 :AGP_VirtualWorldConfig rdf:type owl:Class ;
                         
-                        rdfs:subClassOf :ApproGraphPointer .
+                        rdfs:subClassOf :ApproGraphPointer ;
+                        
+                        rdfs:comment """Graph is interpreted using VirtGoody (+ThingAct, etc.) ontology,
+as a set of instructions ordered by dependency.""" .
 
 
 
@@ -249,6 +252,14 @@ This distinction is consistent with our comments on ApproSystemBrokerRecipe.""" 
 :PumpPostChan rdf:type owl:Class ;
               
               rdfs:subClassOf :AFBRE_Out .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#VWorldPumpAdptr
+
+:VWorldPumpAdptr rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :PumpAdptr .
 
 
 
