@@ -16,9 +16,21 @@
 #################################################################
 
 
-###  http://www.headyspace.org/onto/y2013/VirtGood#ourObjectProp
+###  http://www.headyspace.org/onto/y2013/VirtGood#appliesTo
 
-:ourObjectProp rdf:type owl:ObjectProperty .
+:appliesTo rdf:type owl:ObjectProperty ;
+           
+           rdfs:domain :Effect ;
+           
+           rdfs:range :Goody ;
+           
+           rdfs:subPropertyOf :vgObjectProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#vgObjectProp
+
+:vgObjectProp rdf:type owl:ObjectProperty .
 
 
 
@@ -31,9 +43,17 @@
 #################################################################
 
 
-###  http://www.headyspace.org/onto/y2013/VirtGood#ourDataProp
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasGGG
 
-:ourDataProp rdf:type owl:DatatypeProperty .
+:hasGGG rdf:type owl:DatatypeProperty ;
+        
+        rdfs:subPropertyOf :vgDataProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#vgDataProp
+
+:vgDataProp rdf:type owl:DatatypeProperty .
 
 
 
@@ -46,12 +66,228 @@
 #################################################################
 
 
-###  http://www.headyspace.org/onto/y2013/VirtGood#OurThing
+###  http://www.headyspace.org/onto/y2013/VirtGood#AffineTransform
 
-:OurThing rdf:type owl:Class .
+:AffineTransform rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Effect .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#AvatarGoody
+
+:AvatarGoody rdf:type owl:Class ;
+             
+             rdfs:subClassOf :DeepGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#BitBox
+
+:BitBox rdf:type owl:Class ;
+        
+        rdfs:subClassOf :GameGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#BitCube
+
+:BitCube rdf:type owl:Class ;
+         
+         rdfs:subClassOf :GameGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#Box
+
+:Box rdf:type owl:Class ;
+     
+     rdfs:subClassOf :ShapeGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#CameraGoody
+
+:CameraGoody rdf:type owl:Class ;
+             
+             rdfs:subClassOf :DeepGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#Color
+
+:Color rdf:type owl:Class ;
+       
+       rdfs:subClassOf :Effect .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#CrossHair
+
+:CrossHair rdf:type owl:Class ;
+           
+           rdfs:subClassOf :FlatGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#DeepGoody
+
+:DeepGoody rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Goody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#Duration
+
+:Duration rdf:type owl:Class ;
+          
+          rdfs:subClassOf :VGParam .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#Effect
+
+:Effect rdf:type owl:Class ;
+        
+        rdfs:subClassOf :VGThing .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#FlatGoody
+
+:FlatGoody rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Goody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#GameGoody
+
+:GameGoody rdf:type owl:Class ;
+           
+           rdfs:subClassOf :DeepGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#Goody
+
+:Goody rdf:type owl:Class ;
+       
+       rdfs:subClassOf :VGThing .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#LightGoody
+
+:LightGoody rdf:type owl:Class ;
+            
+            rdfs:subClassOf :DeepGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#OverlayGoody
+
+:OverlayGoody rdf:type owl:Class ;
+              
+              rdfs:subClassOf :FlatGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#Rotation
+
+:Rotation rdf:type owl:Class ;
+          
+          rdfs:subClassOf :AffineTransform .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#Scaling
+
+:Scaling rdf:type owl:Class ;
+         
+         rdfs:subClassOf :AffineTransform .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#ScoreBoard
+
+:ScoreBoard rdf:type owl:Class ;
+            
+            rdfs:subClassOf :OverlayGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#ShapeGoody
+
+:ShapeGoody rdf:type owl:Class ;
+            
+            rdfs:subClassOf :DeepGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#TextGoody
+
+:TextGoody rdf:type owl:Class ;
+           
+           rdfs:subClassOf :FlatGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#Texture
+
+:Texture rdf:type owl:Class ;
+         
+         rdfs:subClassOf :Effect .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#TicTacGrid
+
+:TicTacGrid rdf:type owl:Class ;
+            
+            rdfs:subClassOf :GameGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#TicTacMark
+
+:TicTacMark rdf:type owl:Class ;
+            
+            rdfs:subClassOf :GameGoody .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#Translation
+
+:Translation rdf:type owl:Class ;
+             
+             rdfs:subClassOf :AffineTransform .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGParam
+
+:VGParam rdf:type owl:Class ;
+         
+         rdfs:subClassOf :VGThing .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGThing
+
+:VGThing rdf:type owl:Class .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#WorldGoody
+
+:WorldGoody rdf:type owl:Class ;
+            
+            rdfs:subClassOf :DeepGoody .
 
 
 
 
-###  Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net
+###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
 
