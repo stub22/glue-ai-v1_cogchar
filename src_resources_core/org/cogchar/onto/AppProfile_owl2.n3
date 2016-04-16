@@ -122,7 +122,34 @@
 
 :AFBRM_ConfigChar rdf:type owl:Class ;
                   
-                  rdfs:subClassOf :AFBR_ModernConfig .
+                  rdfs:subClassOf :AFBR_ModernConfig ;
+                  
+                  rdfs:comment """Config feature set defining any range of core character features.
+Actual root-features loaded and run are determined externally 
+via the appProfile system, which also specifies top-level 
+connections from chars to VWorlds and Robots.
+
+""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRM_ConfigGame
+
+:AFBRM_ConfigGame rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :AFBR_ModernConfig ;
+                  
+                  rdfs:comment """Here \"ConfigGame\" is a catch-all for interactive content, including
+chat scripts, games or lessons, which are not intrinsic to a glue.ai 
+nexus (character or runtime).  It is a good place for glue.ai learners 
+to create experimental content.     Core behavior capabilities of 
+characters are excluded, as those should be filed under
+ConfigChar.    (Similarly, VWorld and Robot system config is 
+customarily excluded from appearing in this Game content, 
+although that rule could be bent depending on application).    
+Selection and triggering of \"games\" content is app-specific,
+can be done with any combo of recipe-loaded graphs.
+See \"profile\" documentation for top level app config info.""" .
 
 
 
@@ -130,7 +157,12 @@
 
 :AFBRM_ConfigRobot rdf:type owl:Class ;
                    
-                   rdfs:subClassOf :AFBR_ModernConfig .
+                   rdfs:subClassOf :AFBR_ModernConfig ;
+                   
+                   rdfs:comment """Designates config tree used for a particular robot setup.
+Not all config must be read or used.  Setup may be filtered 
+by application and switched from command line, env, etc.  
+using the profile features of glue.ai.""" .
 
 
 
@@ -138,7 +170,15 @@
 
 :AFBRM_ConfigVWorld rdf:type owl:Class ;
                     
-                    rdfs:subClassOf :AFBR_ModernConfig .
+                    rdfs:subClassOf :AFBR_ModernConfig ;
+                    
+                    rdfs:comment """Configures a vworld without any characters in it,
+with the power to display data based on simpler
+3D features, using shapses, color, text, and motion.
+
+May include file pointers for humanoid body skeletons 
++ meshes, which are typically not loaded at runtime 
+until a character asks for it.""" .
 
 
 
@@ -171,7 +211,16 @@ Those subtypes are overlapping, i.e. not exclusive of each other.""" .
 
 :AFBR_ModernConfig rdf:type owl:Class ;
                    
-                   rdfs:subClassOf :ApproFeatureBrokerRecipe .
+                   rdfs:subClassOf :ApproFeatureBrokerRecipe ;
+                   
+                   rdfs:comment """Each modern config typically corresponds to a virtual folder containing 
+any number of graphs, configuring any number of features, but all
+within the general category given by the AFBRM_ subtype.
+These AFBRM config entities and folders should not be mistaken as being equal
+by definition to any particular single instance of a Char, Robot, VWorld or Game,
+because selection within these config occurs from the app-profile.  
+It is from *there* that final decisions about linking and activation are made.
+""" .
 
 
 
