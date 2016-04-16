@@ -73,6 +73,18 @@
 
 
 
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#usesFeature
+
+:usesFeature rdf:type owl:ObjectProperty ;
+             
+             rdfs:domain :ASBR_Nexus ;
+             
+             rdfs:range :ApproFeatureBrokerRecipe ;
+             
+             rdfs:subPropertyOf :approProp .
+
+
+
 
 
 #################################################################
@@ -106,6 +118,30 @@
 
 
 
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRM_ConfigChar
+
+:AFBRM_ConfigChar rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :AFBR_ModernConfig .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRM_ConfigRobot
+
+:AFBRM_ConfigRobot rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :AFBR_ModernConfig .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRM_ConfigVWorld
+
+:AFBRM_ConfigVWorld rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :AFBR_ModernConfig .
+
+
+
 ###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBR_Endpoint
 
 :AFBR_Endpoint rdf:type owl:Class ;
@@ -126,6 +162,14 @@ Those subtypes are overlapping, i.e. not exclusive of each other.""" .
 ###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBR_LegacyConfig
 
 :AFBR_LegacyConfig rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :ApproFeatureBrokerRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBR_ModernConfig
+
+:AFBR_ModernConfig rdf:type owl:Class ;
                    
                    rdfs:subClassOf :ApproFeatureBrokerRecipe .
 
@@ -158,11 +202,27 @@ as a set of instructions ordered by dependency.""" .
 
 
 
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ASBRN_EmbedPhysRuntime
+
+:ASBRN_EmbedPhysRuntime rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :ASBRN_Runtime .
+
+
+
 ###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ASBRN_Runtime
 
 :ASBRN_Runtime rdf:type owl:Class ;
                
                rdfs:subClassOf :ASBR_Nexus .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ASBRN_VWorldSimRuntime
+
+:ASBRN_VWorldSimRuntime rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :ASBRN_Runtime .
 
 
 
@@ -172,7 +232,12 @@ as a set of instructions ordered by dependency.""" .
             
             rdfs:subClassOf :ApproSystemBrokerRecipe ;
             
-            rdfs:comment """A nexus represents a gateway into JFlux Lifecycle + Service space.
+            rdfs:comment """Below is original vision from ~2014.
+As of 2016 a Nexus also corresponds to a high-level chunk of actors,
+nearly a direct child of an akka ActorSystem.
+
+
+A nexus represents a gateway into JFlux Lifecycle + Service space.
 Instances of ASBR_Nexus configure a broker to hook or be hooked to that.
 At this level we don't care \"who finds whom\" - we just attach any data needed for that, as this recipe.
 
