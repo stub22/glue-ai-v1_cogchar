@@ -21,9 +21,9 @@
 #################################################################
 
 
-###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#approProp
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#approObjProp
 
-:approProp rdf:type owl:ObjectProperty .
+:approObjProp rdf:type owl:ObjectProperty .
 
 
 
@@ -33,7 +33,7 @@
                 
                 rdfs:domain :ApproGraphPointer ;
                 
-                rdfs:subPropertyOf :approProp .
+                rdfs:subPropertyOf :approObjProp .
 
 
 
@@ -45,7 +45,15 @@
           
           rdfs:domain :PumpListenChan ;
           
-          rdfs:subPropertyOf :approProp .
+          rdfs:subPropertyOf :approObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#hasLegacyThing
+
+:hasLegacyThing rdf:type owl:ObjectProperty ;
+                
+                rdfs:subPropertyOf :approObjProp .
 
 
 
@@ -53,7 +61,7 @@
 
 :knowsChan rdf:type owl:ObjectProperty ;
            
-           rdfs:subPropertyOf :approProp .
+           rdfs:subPropertyOf :approObjProp .
 
 
 
@@ -77,11 +85,73 @@
 
 :usesFeature rdf:type owl:ObjectProperty ;
              
+             rdfs:comment "Links top-tier nexus entity (from profile recipes) to a second tier feature-broker recipe, which in turn defines configuration (usually via chunk) that may be used in the " ;
+             
              rdfs:domain :ASBR_Nexus ;
              
              rdfs:range :ApproFeatureBrokerRecipe ;
              
-             rdfs:subPropertyOf :approProp .
+             rdfs:subPropertyOf :approObjProp .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#approDataProp
+
+:approDataProp rdf:type owl:DatatypeProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#approLegacyDataProp
+
+:approLegacyDataProp rdf:type owl:DatatypeProperty ;
+                     
+                     rdfs:subPropertyOf :approDataProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#hasLegacyDefaultSparqlVarName
+
+:hasLegacyDefaultSparqlVarName rdf:type owl:DatatypeProperty ;
+                               
+                               rdfs:comment """ LEGACY PROPERTY: To be factored out:
+
+Default variable name used in  SPARQL queries that need a ?graphTgt argument.
+(So in this example, the property value would be \"graphTgt\").
+Generally must match the (legacy) queries read in from (legacy) query src graph.
+Java code uses this property to know where to plug in the actual queryTgt
+graph name into our dynamic queries at runtime.
+
+  // This var is used in the convenience forms of queryIndirect that handle many common
+  // use cases, wherein the query needs a single graph to operate on that is switched
+  // by application logic or user selection.""" ;
+                               
+                               rdfs:domain :AFBR_LegacyConfig ;
+                               
+                               rdfs:subPropertyOf :approLegacyDataProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#hasLegacyQuerySourceQName
+
+:hasLegacyQuerySourceQName rdf:type owl:DatatypeProperty ;
+                           
+                           rdfs:comment """ LEGACY PROPERTY: To be factored out:
+
+Weird legacy property treated as a String QName (resolved in an implied
+namespace).  If the whole legacy pattern were going to last, would
+prefer to have an objectProp here.  In even more modern terms, this would 
+be done with an mdir:GraphPointer, usually pointed to from a Recipe.""" ;
+                           
+                           rdfs:subPropertyOf :approLegacyDataProp .
 
 
 
@@ -247,7 +317,18 @@ as a set of instructions ordered by dependency.""" .
 
 :ASBRN_Character rdf:type owl:Class ;
                  
-                 rdfs:subClassOf :ASBR_Nexus .
+                 rdfs:subClassOf :ASBR_Nexus ;
+                 
+                 rdfs:comment """Recipe for a char nexus describes a particular version of a top level
+ human-relatable entity,
+generally corresponding to a top level actor in a running glue.ai actorSys.
+
+Feature-brokers are made available to a nexus by connection with :usesFeature.
+Those feature brokers may in turn point to lower graph configs.  It is generally
+ preferable that those particular lower graphs are not aware of any nexus URIs.
+ Instead they define their own URIs for usable (2nd-tier) chunks of functionality,
+ which may then be  freely used from (top-tier) higher profile recipes, which is where the nexus indivs are defined.
+""" .
 
 
 
