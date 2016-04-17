@@ -34,8 +34,8 @@ import org.cogchar.render.trial.TrialUpdater;
  * SpecGraph also defines instructions for how to construct + apply updates to particular goodies.
  * 
  * Some old unresolved academic questions:
- * Under what conditions does every DynamicGoody have a spec?
- * Does individual DynaGoodySpec have authority to assert a subclass? 
+ * Q1) Under what conditions does every DynamicGoody have an explicit spec, which amounts to reified URI and optional properties?
+ * Q2) Does individual DynaGoodySpec have authority to assert a subclass?
  * 
 
  */
@@ -102,8 +102,11 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 		}
 	}
 	/**
-	 * The only way to create or destroy goodies is to resize the space (which is usually done only by updating 
-	 * the space-level spec).
+	 * The only way to create or destroy goodies is to resize the space.
+	 *
+	 *
+
+
 	 * On expansion, existing goodies survive and new ones are added.  On contraction, all goodies
 	 * up to the new size survive, higher than that size are logically forgotten.
 	 *		...and we must detach+dispose of their OpenGL resources.
