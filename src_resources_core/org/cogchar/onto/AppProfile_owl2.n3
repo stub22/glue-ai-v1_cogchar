@@ -120,7 +120,10 @@
 
 ###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#hasLegacyDefaultSparqlVarName
 
-:hasLegacyDefaultSparqlVarName rdf:type owl:DatatypeProperty ;
+:hasLegacyDefaultSparqlVarName rdf:type owl:DatatypeProperty ,
+                                        owl:FunctionalProperty ;
+                               
+                               owl:maxCardinality "1" ;
                                
                                rdfs:comment """ LEGACY PROPERTY: To be factored out:
 
@@ -136,13 +139,16 @@ graph name into our dynamic queries at runtime.
                                
                                rdfs:domain :AFBR_LegacyConfig ;
                                
-                               rdfs:subPropertyOf :approLegacyDataProp .
+                               rdfs:subPropertyOf :approLegacyDataProp ;
+                               
+                               rdfs:range xsd:string .
 
 
 
 ###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#hasLegacyQuerySourceQName
 
-:hasLegacyQuerySourceQName rdf:type owl:DatatypeProperty ;
+:hasLegacyQuerySourceQName rdf:type owl:DatatypeProperty ,
+                                    owl:FunctionalProperty ;
                            
                            rdfs:comment """ LEGACY PROPERTY: To be factored out:
 
@@ -151,7 +157,13 @@ namespace).  If the whole legacy pattern were going to last, would
 prefer to have an objectProp here.  In even more modern terms, this would 
 be done with an mdir:GraphPointer, usually pointed to from a Recipe.""" ;
                            
-                           rdfs:subPropertyOf :approLegacyDataProp .
+                           owl:maxCardinality "1" ;
+                           
+                           rdfs:domain :AFBR_LegacyConfig ;
+                           
+                           rdfs:subPropertyOf :approLegacyDataProp ;
+                           
+                           rdfs:range xsd:string .
 
 
 
