@@ -85,7 +85,7 @@ public class TrialCameras extends BasicDebugger implements ParamValueListener {
 
 	}
 	
-	protected void attachMidiCCs(CCParamRouter ccpr) { 
+	public void attachMidiCCs(CCParamRouter ccpr) {
 		ccpr.putControlChangeParamBinding(27, CamCoord.AZIMUTH.name(), this); 
 		ccpr.putControlChangeParamBinding(28, CamCoord.ELEVATION.name(), this); 
 		

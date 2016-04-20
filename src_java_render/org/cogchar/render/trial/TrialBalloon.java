@@ -41,11 +41,11 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  */
 public class TrialBalloon extends CogcharPresumedApp {
 
-	private TempMidiBridge myTMB = new TempMidiBridge();
+	protected TempMidiBridge myTMB = new TempMidiBridge();
 	// In this test, we have the luxury of knowing the exact class of our associated context.
-	private TB_RenderContext myTBRC;
-	private	TrialContent		myContent;
-	private	List<TrialUpdater>		myUpdaters = new ArrayList<TrialUpdater>();
+	protected TB_RenderContext myTBRC;
+	protected TrialContent		myContent;
+	protected List<TrialUpdater>		myUpdaters = new ArrayList<TrialUpdater>();
 
 	public static void main(String[] args) {
 		// These two lines activate Log4J without requiring a log4j.properties file.  
@@ -53,21 +53,21 @@ public class TrialBalloon extends CogcharPresumedApp {
 		org.apache.log4j.BasicConfigurator.configure();
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ALL);
 		TrialBalloon tbApp = new TrialBalloon();
-		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() calling initMidi()");
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main(R) calling initMidi()");
 		// Initialize any MIDI stuff.
 		tbApp.initMidi();
-		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() calling JME3 start(), which will in turn call TrialBalloon.simpleInitApp()");
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main(R) calling JME3 start(), which will in turn call TrialBalloon.simpleInitApp()");
 		// Start the JME3 Virtual world.
 		tbApp.start();
-		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting GridSpaceTest");
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main(R) starting GridSpaceTest");
 		org.cogchar.api.space.GridSpaceTest.goGoGo();
-		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main() starting config-load test");
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^  main(R) starting config-load test");
 		
 		// app.optLoadConfig();
-		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ main() calling playMidiOutput()");
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ main(R) calling playMidiOutput()");
 		tbApp.playMidiOutput();
 		
-		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ End of main()");
+		tbApp.getLogger().info("^^^^^^^^^^^^^^^^^^^^^^^^ End of main(R)");
 	}
 	public void initMidi() { 
 		myTMB.initMidiRouter();
@@ -124,6 +124,10 @@ public class TrialBalloon extends CogcharPresumedApp {
 	@Override public void simpleInitApp() {
 		getLogger().info("^^^^^^^^^^^^^^^^^^ We are on JME3 thread (inside start()), calling super.simpleInitApp()");
 		super.simpleInitApp();
+		getLogger().info("Returned from super.simpleInitApp() - calling doMoreSimpleInit.");
+		doMoreSimpleInit();
+	}
+	protected void doMoreSimpleInit() {
 		getLogger().info("Returned from super.simpleInitApp() - still on JME3 thread, setting flyCam speed.");
 		// Sets the speed of our POV camera movement.  The default is pretty slow.
 		flyCam.setMoveSpeed(20);
