@@ -24,10 +24,8 @@ import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.BillboardControl;
-import org.cogchar.demo.render.opengl.DemoYouPickStuff;
 import org.cogchar.demo.render.opengl.UnfinishedDemoApp;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
@@ -67,7 +65,7 @@ public class TrialBalloon extends UnfinishedDemoApp {
 			BonyGameFeatureAdapter.initCrossHairs(settings, getRenderRegistryClient()); // a "+" in the middle of the screen to help aiming
 			setupLight();	
 			// shedMoreLight();
-			BitmapText btSpatial = makeTextSpatial();
+			BitmapText btSpatial = makeTextSpatialShowingCharset();
 			myMainNode.attachChild(btSpatial);
 			BillboardControl bbCont = new BillboardControl();
 			/**
@@ -80,7 +78,7 @@ public class TrialBalloon extends UnfinishedDemoApp {
 			btSpatial.addControl(bbCont);
 			viewPort.setBackgroundColor(ColorRGBA.Blue);
 		}
-		private BitmapText makeTextSpatial() {
+		private BitmapText makeTextSpatialShowingCharset() {
 			String txtB = "ABCDEFGHIKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()-=_+[]\\;',./{}|:<>?";
 			RenderRegistryClient rrc = getRenderRegistryClient();
 			
@@ -97,7 +95,7 @@ public class TrialBalloon extends UnfinishedDemoApp {
 			// The materials of the font are called its "pages".
 			// http://hub.jmonkeyengine.org/forum/topic/render-back-of-bitmaptext/
 			int pageCount = bf.getPageSize();
-			System.out.println("Disabling culling for a total of " + pageCount + " font materials");
+			getLogger().info("TrialBallon - charset text spatial is disabling culling for a total of {} font materials", pageCount);
 			for (int i=0; i < pageCount; i++) {
 				Material fontMat = bf.getPage(i);
 				fontMat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
