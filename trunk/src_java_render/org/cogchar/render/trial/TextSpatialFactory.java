@@ -44,7 +44,7 @@ public class TextSpatialFactory extends BasicDebugger {
 		BitmapFont bf = txtSpatial.getFont();
 		float fontRenderedSize = bf.getCharSet().getRenderedSize();
 
-		getLogger().info("Font rendered size={}", fontRenderedSize);
+
 		// This action disables culling for *all* spatials made with the *material* on this font, so it should really be happening
 		// further out, in concert with font and material management.    If we want individual/group control over 
 		// culling, seems we might clone() a material for the text instance(s), and enable/disable culling on that material.
@@ -55,6 +55,15 @@ public class TextSpatialFactory extends BasicDebugger {
 		// way. (Maybe for collision-detect?)
 		// For wrapping, explicit newlines embedded in the text also work.
 		int rectHeight = 3;
+		boolean debugFlag = true;
+		if (debugFlag) {
+			String trimmedTxt = txtB.trim();
+			int tlen = trimmedTxt.length();
+			int lmax = 15;
+			int endSmple = (lmax < tlen) ? lmax : tlen;
+			String contPre = trimmedTxt.substring(0, endSmple);
+			getLogger().debug("Text spatial cont=[{}], font rendered size={} rect width={} height={}", contPre, fontRenderedSize, rectWidth, rectHeight);
+		}
 		Rectangle rect = new Rectangle(0, 0, rectWidth, rectHeight);
 		txtSpatial.setBox(rect);
 
