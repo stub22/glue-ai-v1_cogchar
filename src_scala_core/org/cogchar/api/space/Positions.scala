@@ -47,7 +47,7 @@ class FixedPosRange(val myMinPos : Float, val myMaxPos : Float) extends PosRange
 }
 // A rectilinear piece of physical-ish ("real") metric space, defined by an array of position ranges.
 // Each PosRange defines the extent of this block in one dimension.
-// By itself, this PosBlock does not define any Cells, it is purely a metric space concept.
+// By itself, this PosBlock does not define any Cells; it is purely a metric space concept.
 class PosBlock(val myPRs : Array[PosRange]) extends KnowsOrthoDim {
 	override def getOrthoDimCount() = myPRs.length
 	def describe() : String = {

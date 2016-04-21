@@ -136,6 +136,7 @@ public class TrialContent extends BasicDebugger implements TrialUpdater {
 
 		// Not clear yet what "size" of the font means.  It seems that if we want the rectangle to really contain
 		TextSpatialFactory tsf = new TextSpatialFactory(rrc);
+		getLogger().info("Making 3D text spatials for letters, digits, syms = 3 total");
 		myLettersBTS = tsf.makeTextSpatial(letters, 0.2f, RenderQueue.Bucket.Transparent, 6); // eff-scale 3.4f, wraps after 2-3 chars
 		myDigitsBTS = tsf.makeTextSpatial(digits, 0.1f, RenderQueue.Bucket.Transparent, 6);  // eff-scale 1.7f, wraps after 6 chars
 		mySymsBTS = tsf.makeTextSpatial(syms, 0.05f, RenderQueue.Bucket.Transparent, 6);   // eff-scale 1.05f, wraps after ~ 18 oddly shaped chars
@@ -177,6 +178,7 @@ public class TrialContent extends BasicDebugger implements TrialUpdater {
 		// Let's make some blocks of text, and position them.
 		// The guiBucket isn't really necessary, since spatial will inherit the guiBucket from the gui parent Node.
 		RenderQueue.Bucket guiBucket = RenderQueue.Bucket.Gui;
+		getLogger().info("Making 2D text spatials for letters, digits, syms = 3 total");
 		myFlatDigitsBTS = tsf.makeTextSpatial(digits, txtRegScale, guiBucket, textWrapPixWidth);
 		myCamStatBT = tsf.makeTextSpatial(myCamStatTxt, txtRegScale * 0.7f, null, 95 );
 		myOverlayEqnBT = tsf.makeTextSpatial("X+Y", txtDoubleScale, null, textWrapPixWidth);

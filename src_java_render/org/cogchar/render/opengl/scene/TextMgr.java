@@ -59,7 +59,7 @@ public class TextMgr extends RenderRegistryAware {
 		// The materials of the font are called its "pages".
 		// http://hub.jmonkeyengine.org/forum/topic/render-back-of-bitmaptext/
 		int pageCount = bf.getPageSize();
-		System.out.println("Disabling culling for a total of " + pageCount + " font materials");
+		getLogger().info("TextMgr disabling culling for a total of {}  font materials", pageCount);
 		for (int i = 0; i < pageCount; i++) {
 			Material fontMat = bf.getPage(i);
 			fontMat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
