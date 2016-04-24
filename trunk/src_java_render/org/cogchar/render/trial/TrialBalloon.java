@@ -165,11 +165,11 @@ public class TrialBalloon extends CogcharPresumedApp {
 	}
 
 	@Override public void destroy() {
-		getLogger().info("JME3 destroy() called");
+		getLogger().info("JME3 destroy() called in TrialBalloon");
 		super.destroy();
 		getLogger().info("Cleaning up MIDI bridge");
 		myTMB.cleanup();
-		getLogger().info("MIDI cleanup finished");
+		getLogger().info("MIDI cleanup finished - end of TrialBalloon.destroy()");
 	}
 	public class TB_RenderContext extends ConfiguredPhysicalModularRenderContext {
 
