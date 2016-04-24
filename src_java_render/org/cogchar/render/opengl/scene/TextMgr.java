@@ -37,6 +37,11 @@ public class TextMgr extends RenderRegistryAware {
 		if (myDefaultFont == null) {
 			AssetManager amgr = findJme3AssetManager(null);
 			myDefaultFont = amgr.loadFont("Interface/Fonts/Default.fnt");
+			// This action disables culling for *all* spatials made with the *material* on this font.
+			// If we want individual/group control over culling, seems we might clone() a material for the
+			// text instance(s), and enable/disable culling on that material.
+
+			disableCullingForFont(myDefaultFont);
 		}
 		return myDefaultFont;
 	}
