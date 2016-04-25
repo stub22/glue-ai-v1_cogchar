@@ -280,6 +280,78 @@
 
 
 
+###  http://www.headyspace.org/onto/y2013/VirtGood#VWIA_AreaTap
+
+:VWIA_AreaTap rdf:type owl:Class ;
+              
+              rdfs:subClassOf :VWIA_Click .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VWIA_ButtonPress
+
+:VWIA_ButtonPress rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :VWIA_Click .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VWIA_Click
+
+:VWIA_Click rdf:type owl:Class ;
+            
+            rdfs:subClassOf :VWInputAct .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VWIA_DragPointer
+
+:VWIA_DragPointer rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :VWIA_Move .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VWIA_KeyPress
+
+:VWIA_KeyPress rdf:type owl:Class ;
+               
+               rdfs:subClassOf :VWIA_Click .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VWIA_Move
+
+:VWIA_Move rdf:type owl:Class ;
+           
+           rdfs:subClassOf :VWInputAct .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VWIA_MovePointer
+
+:VWIA_MovePointer rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :VWIA_Move .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VWIA_PointerClick
+
+:VWIA_PointerClick rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :VWIA_Click .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VWInputAct
+
+:VWInputAct rdf:type owl:Class ;
+            
+            rdfs:subClassOf :VGThing .
+
+
+
 ###  http://www.headyspace.org/onto/y2013/VirtGood#WorldGoody
 
 :WorldGoody rdf:type owl:Class ;
