@@ -46,7 +46,7 @@ public class TextSpatialFactory extends BasicDebugger {
 		// way. (Maybe for collision-detect?)
 		// For wrapping, explicit newlines embedded in the text also work.
 		int rectHeight = 3;
-		boolean debugFlag = true;
+		boolean debugFlag = getLogger().isDebugEnabled();
 		if (debugFlag) {
 			String trimmedTxt = txtB.trim();
 			int tlen = trimmedTxt.length();
@@ -55,8 +55,11 @@ public class TextSpatialFactory extends BasicDebugger {
 			String contPre = trimmedTxt.substring(0, endSmple);
 			BitmapFont bf = txtSpatial.getFont();
 			float fontRenderedSize = bf.getCharSet().getRenderedSize();
-			getLogger().info("Text spatial cont=[{}], font rendered size={} rect width={} height={}", contPre, fontRenderedSize, rectWidth, rectHeight);
+			getLogger().debug("Text spatial cont=[{}], font rendered size={} rect width={} height={}", contPre, fontRenderedSize, rectWidth, rectHeight);
+		} else {
+			getLogger().debug("This message should never appear, because level is DEBUG, and isDebugEnabled is false!");
 		}
+
 		Rectangle rect = new Rectangle(0, 0, rectWidth, rectHeight);
 		txtSpatial.setBox(rect);
 
