@@ -176,6 +176,19 @@ be done with an mdir:GraphPointer, usually pointed to from a Recipe.""" ;
 #################################################################
 
 
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ACR_GamePipe
+
+:ACR_GamePipe rdf:type owl:Class ;
+              
+              rdfs:subClassOf :ApproCircusRecipe ;
+              
+              rdfs:comment """Recipe for a circus that serves as a pipeline for some arbitrary content
+data, called a \"Game Pipe\".   It is definitely *not* part of what we call
+a character, or a system nexus - rather it is just some content+computation that
+an author/programmer wants to throw into our world, for whatever reason.""" .
+
+
+
 ###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRE_In
 
 :AFBRE_In rdf:type owl:Class ;
@@ -406,6 +419,14 @@ Usually a single, anonymous instance of this type is created at runtime.
 Eventually our different profile names can perhaps be tied to named 
 individuals of this type, however this information exists \"outside the app\" - and should not be used inside the app code.
 This distinction is consistent with our comments on ApproSystemBrokerRecipe.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ApproCircusRecipe
+
+:ApproCircusRecipe rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf crcp:CircusRecipe .
 
 
 
