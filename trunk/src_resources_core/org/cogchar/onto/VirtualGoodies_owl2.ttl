@@ -1,4 +1,6 @@
 @prefix : <http://www.headyspace.org/onto/y2013/VirtGood#> .
+@prefix csa: <http://onto.cogchar.org/onto/201506/ScreenAct_OWL2#> .
+@prefix hvg: <http://www.headyspace.org/onto/y2013/VirtGood#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
@@ -6,7 +8,9 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @base <http://www.headyspace.org/onto/y2013/VirtGood> .
 
-<http://www.headyspace.org/onto/y2013/VirtGood> rdf:type owl:Ontology .
+<http://www.headyspace.org/onto/y2013/VirtGood> rdf:type owl:Ontology ;
+                                                
+                                                owl:imports <http://onto.cogchar.org/onto/201506/ScreenAct_OWL2> .
 
 
 #################################################################
