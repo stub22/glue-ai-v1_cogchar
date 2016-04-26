@@ -262,7 +262,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
 
     /**
      * Called from PumaAppContext.stopAndReleaseAllHumanoids, which is called
-     * only from PumaContextCommandBox.processUpdateRequestNow
+     * only from VWCtxCmdBox.processUpdateRequestNow
      */
     public void detachAllHumanoidFigures() {
         HumanoidRenderContext hrc = getHumanoidRenderContext();

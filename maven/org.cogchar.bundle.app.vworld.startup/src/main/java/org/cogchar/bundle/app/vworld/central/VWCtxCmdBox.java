@@ -27,20 +27,12 @@ import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.platform.trigger.BoxSpace;
 
 /**
- * This class is intended to be the "public" API to the PUMA "system", for use
- * from direct commands sent by GUIs or network.
+ *  2016-04-26 just discovered this duplicate of PumaContextCommandBox, now trying to split those
+ *  notions cleanly.
  *
- * An instance of this object is referred to in our repositories, as registered
- * with the URI returned by an application's
- * PumaContextMediator.getSysContextURI() method.
  *
- * Having "public" methods on this object helps us to keep more of
- * PumaAppContext's methods *protected*, and also keep track in one place of
- * what we're officially *exposing* to the command layer.
- *
- * @author Stu B. <www.texpedient.com>
  */
-public class PumaContextCommandBox extends CogcharScreenBox implements Updater {
+public class VWCtxCmdBox extends CogcharScreenBox implements Updater {
 
     private ExecutorService myExecService;
     private VWorldRegistry vwr;
@@ -48,7 +40,7 @@ public class PumaContextCommandBox extends CogcharScreenBox implements Updater {
     private PumaRegistryClient myRegClient;
     private BoxSpace box;
 
-    protected PumaContextCommandBox(VWorldRegistry vr, PumaRegistryClient reg, Ident ctxID) {
+    protected VWCtxCmdBox(VWorldRegistry vr, PumaRegistryClient reg, Ident ctxID) {
 
         vwr = vr;
         box=reg.getTargetBoxSpace(null);
@@ -167,7 +159,7 @@ public class PumaContextCommandBox extends CogcharScreenBox implements Updater {
     final public static String THING_ACTIONS = "thingactions";
 
 	// Here "update" is exceptional "update system wiring" request.
-    // Currently used from TriggerItems (3 places), and from PumaContextCommandBox.processUpdate.
+    // Currently used from TriggerItems (3 places), and from VWCtxCmdBox.processUpdate.
 
     public Future<Boolean> processUpdateRequestAsync(final String request, final boolean resetMainConfigFlag) {
         // Do the actual updates on a new thread. That way we don't block the render thread. Much less intrusive, plus this way things
