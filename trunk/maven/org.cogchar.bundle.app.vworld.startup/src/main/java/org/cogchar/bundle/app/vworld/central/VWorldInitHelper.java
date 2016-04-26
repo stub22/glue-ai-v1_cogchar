@@ -33,12 +33,12 @@ public class VWorldInitHelper extends BasicDebugger {
 		} catch (Throwable t) {
 			getLogger().warn("%%%%%%%%%%%%%%%%%%%%%%% Error with VWorldMapper init %%%%%%%%%%%%%%%%%%%%%%%");
 		}
-		PumaContextCommandBox pCCB = new PumaContextCommandBox(vworldreg, pumaRegCli, ctxID);
-		pCCB.setAppContext(pactx);
+		VWCtxCmdBox vwccb = new VWCtxCmdBox(vworldreg, pumaRegCli, ctxID);
+		vwccb.setAppContext(pactx);
 
-		ce.setUpdater((Updater)pCCB);
-		vworldreg.setContextCommandBox(pCCB);
-		pCCB.reloadCommandSpace();
+		ce.setUpdater((Updater)vwccb);
+		vworldreg.setContextCommandBox(vwccb);
+		vwccb.reloadCommandSpace();
 		//code for connecting bodies
 
 		for (BodyHandleRecord body : bodyHandleRecList) {

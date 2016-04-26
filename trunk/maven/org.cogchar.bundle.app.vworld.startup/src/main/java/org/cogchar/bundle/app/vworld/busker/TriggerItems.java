@@ -18,7 +18,7 @@ package org.cogchar.bundle.app.vworld.busker;
 import java.util.List;
 import java.util.concurrent.Future;
 import org.cogchar.app.puma.behavior.PumaBehaviorAgent;
-import org.cogchar.bundle.app.vworld.central.PumaContextCommandBox;
+import org.cogchar.bundle.app.vworld.central.VWCtxCmdBox;
 import org.cogchar.platform.trigger.BoxSpace;
 import org.cogchar.platform.trigger.CogcharActionBinding;
 import org.cogchar.platform.trigger.CogcharScreenBox;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Contains all the trigger-"commands" currently available through V-World GUI
  * (except for scene-triggers). These triggers fire on either the systemContext
- * (PumaContextCommandBox) or a particular character (PumaBehaviorAgent).
+ * (VWCtxCmdBox) or a particular character (PumaBehaviorAgent).
  *
  * @author Stu B. <www.texpedient.com>
  */
@@ -172,12 +172,12 @@ public class TriggerItems {
 
         protected boolean myForceMainConfigResetFlag = false;
 
-        abstract void fireOnPCCB(PumaContextCommandBox pccb);
+        abstract void fireOnPCCB(VWCtxCmdBox pccb);
 
         @Override
         public void fire(CogcharScreenBox targetBox) {
             logFiring(targetBox);
-            PumaContextCommandBox pccb = (PumaContextCommandBox) targetBox;
+            VWCtxCmdBox pccb = (VWCtxCmdBox) targetBox;
             fireOnPCCB(pccb);
         }
     }
@@ -185,7 +185,7 @@ public class TriggerItems {
     public static class ResetMainCamera extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
             pccb.resetMainCameraLocation();
             // ctx.setDefaultCameraLocation();
         }
@@ -194,31 +194,31 @@ public class TriggerItems {
     public static class UpdateWorldConfig extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
-            Future<Boolean> resultFuture = pccb.processUpdateRequestAsync(PumaContextCommandBox.WORLD_CONFIG, myForceMainConfigResetFlag);
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
+            Future<Boolean> resultFuture = pccb.processUpdateRequestAsync(VWCtxCmdBox.WORLD_CONFIG, myForceMainConfigResetFlag);
         }
     }
 
     public static class UpdateBoneRobotConfig extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
-            Future<Boolean> resultFuture = pccb.processUpdateRequestAsync(PumaContextCommandBox.BONE_ROBOT_CONFIG, myForceMainConfigResetFlag);
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
+            Future<Boolean> resultFuture = pccb.processUpdateRequestAsync(VWCtxCmdBox.BONE_ROBOT_CONFIG, myForceMainConfigResetFlag);
         }
     }
 
     public static class UpdateAllHumanoidConfig extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
-            Future<Boolean> resultFuture = pccb.processUpdateRequestAsync(PumaContextCommandBox.ALL_HUMANOID_CONFIG, myForceMainConfigResetFlag);
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
+            Future<Boolean> resultFuture = pccb.processUpdateRequestAsync(VWCtxCmdBox.ALL_HUMANOID_CONFIG, myForceMainConfigResetFlag);
         }
     }
 
     public static class ToggleSkeletonHilite extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
             pccb.getFigureManager().toggleDebugSkeletons();
         }
     }
@@ -226,7 +226,7 @@ public class TriggerItems {
     public static class Shoot extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
             pccb.getGameFeatureAdapter().cmdShoot();
         }
     }
@@ -234,7 +234,7 @@ public class TriggerItems {
     public static class Boom extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
             pccb.getGameFeatureAdapter().toggleAnnoyingStuff();
         }
     }
@@ -242,7 +242,7 @@ public class TriggerItems {
     public static class ShowResourceBalls extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
             DataballGoodyBuilder.getTheBallBuilder().runBalls();
         }
     }
@@ -250,7 +250,7 @@ public class TriggerItems {
     public static class PickBalls extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
             DataballGoodyBuilder.getTheBallBuilder().pick();
         }
     }
@@ -258,7 +258,7 @@ public class TriggerItems {
     public static class BiggerProjectile extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
             pccb.getGameFeatureAdapter().cmdBiggerProjectile();
         }
     }
@@ -266,13 +266,13 @@ public class TriggerItems {
     public static class SmallerProjectile extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
             pccb.getGameFeatureAdapter().cmdSmallerProjectile();
         }
     }
     /*
      public static class ToggleKinMode extends CtxCmdBoxTI {
-     @Override public void fireOnPCCB(PumaContextCommandBox pccb) {
+     @Override public void fireOnPCCB(VWCtxCmdBox pccb) {
      HumanoidFigure hw = pccb.getSinbad();
      if (hw != null) {
      hw.togglePhysicsKinematicModeEnabled();
@@ -285,7 +285,7 @@ public class TriggerItems {
     public static class StandUp extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
             HumanoidFigure_SinbadTest hw = pccb.getSinbad();
             if (hw != null) {
                 hw.makeSinbadStandUp();
@@ -296,7 +296,7 @@ public class TriggerItems {
     public static class Boogie extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
             HumanoidFigure_SinbadTest hw = pccb.getSinbad();
             if (hw != null) {
                 // This is an Ogre skeletal animation run by JME3, bypassing our figure-anim system.
@@ -308,7 +308,7 @@ public class TriggerItems {
     public static class ToggleHelp extends CtxCmdBoxTI {
 
         @Override
-        public void fireOnPCCB(PumaContextCommandBox pccb) {
+        public void fireOnPCCB(VWCtxCmdBox pccb) {
             PumaVirtualWorldMapper pvwm = pccb.getVirtualWorld();
             pvwm.toggleHelpScreenDisplay();
         }

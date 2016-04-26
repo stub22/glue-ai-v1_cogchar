@@ -10,7 +10,7 @@ public abstract class StatefulVWorldRegistry extends VWorldRegistry {
 	private PumaVirtualWorldMapper myVWorldMapper;
 	// protected boolean hasVWorldMapper = true;
 	private PumaRegistryClient myRegClient;
-	private PumaContextCommandBox pCCB;
+	private VWCtxCmdBox pCCB;
 
 	protected PumaVirtualWorldMapper makeVWMapper() {
 		return new PumaVirtualWorldMapper();
@@ -34,12 +34,12 @@ public abstract class StatefulVWorldRegistry extends VWorldRegistry {
 		myRegClient = rc;
 	}
 
-	public void setContextCommandBox(PumaContextCommandBox pCCB)
+	public void setContextCommandBox(VWCtxCmdBox pCCB)
 	{
 		this.pCCB=pCCB;
 	}
 
-	public PumaContextCommandBox getContextCommnandBox()
+	public VWCtxCmdBox getContextCommnandBox()
 	{
 		return pCCB;
 	}
