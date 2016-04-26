@@ -95,6 +95,70 @@
 
 
 
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsCnfBrkr
+
+:wantsCnfBrkr rdf:type owl:ObjectProperty ;
+              
+              rdfs:range :AFBR_ModernConfig ;
+              
+              rdfs:subPropertyOf :wantsFeature .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsEndpoint
+
+:wantsEndpoint rdf:type owl:ObjectProperty ;
+               
+               rdfs:subPropertyOf :wantsFeature .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsFeature
+
+:wantsFeature rdf:type owl:ObjectProperty ;
+              
+              rdfs:domain :ApproCircusRecipe ;
+              
+              rdfs:range :ApproFeatureBrokerRecipe ;
+              
+              rdfs:subPropertyOf :approObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsGrphPtr
+
+:wantsGrphPtr rdf:type owl:ObjectProperty ;
+              
+              rdfs:domain :ApproGraphPointer ;
+              
+              rdfs:subPropertyOf :approObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsPointIn
+
+:wantsPointIn rdf:type owl:ObjectProperty ;
+              
+              rdfs:subPropertyOf :wantsEndpoint .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsPointOut
+
+:wantsPointOut rdf:type owl:ObjectProperty ;
+               
+               rdfs:subPropertyOf :wantsEndpoint .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsTask
+
+:wantsTask rdf:type owl:ObjectProperty ;
+           
+           rdfs:subPropertyOf :wantsEndpoint .
+
+
+
 
 
 #################################################################
