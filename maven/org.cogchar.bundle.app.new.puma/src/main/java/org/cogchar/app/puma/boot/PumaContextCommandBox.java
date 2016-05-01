@@ -39,7 +39,10 @@ import org.cogchar.platform.trigger.CogcharScreenBox;
 
 /**
  * This class is intended to be the "public" API to the PUMA "system",
- * for use from direct commands sent by GUIs or network.  
+ * for use from direct commands sent by GUIs or network.
+ *
+ * This base version is used in robots and headless deployments.
+ *
  * 
  * An instance of this object is referred to in our repositories, as 
  * registered with the URI returned by an application's  
@@ -126,6 +129,7 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 	}
 
 	/**
+	 * This simply forwards calls to myPAC, which is a PumaAppContext, currently (2016-04-27) required to be osgi-wired.
 	 * Called only indirectly after scheduling by processUpdateRequestAsync() above.
 	 * @param request
 	 * @param resetMainConfigFlag

@@ -27,9 +27,13 @@ import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.platform.trigger.BoxSpace;
 
 /**
- *  2016-04-26 just discovered this duplicate of PumaContextCommandBox, now trying to split those
- *  notions cleanly.
+ *  2016-04-26 discovered duplicate (in name) of PumaContextCommandBox.
+ *  This one is used only from VWorld, while the other is used only in headless/robot deploys.
  *
+ * This impl depends on having a PumaAppContext for several operations, which in turn
+ * currently implies that we *must* be running in an OSGi context (although the latter point
+ * is not directly relied upon by this impl) - note that BundleContext is a constructor arg
+ * to
  *
  */
 public class VWCtxCmdBox extends CogcharScreenBox implements Updater {
@@ -180,7 +184,7 @@ public class VWCtxCmdBox extends CogcharScreenBox implements Updater {
 
     }
 
-    /**
+    /**	This simply forwards calls to myPAC, which is a PumaAppContext, currently (2016-04-27) required to be osgi-wired.
      * Called only indirectly after scheduling by processUpdateRequestAsync() above
      * above.
      *
