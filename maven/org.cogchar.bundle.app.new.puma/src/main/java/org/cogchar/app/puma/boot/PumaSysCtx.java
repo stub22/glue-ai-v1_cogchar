@@ -11,7 +11,7 @@ public interface PumaSysCtx {
 
 	public PumaSysCnfMgr getSysCnfMgr();
 
-	public TriggerConfig reloadCommandSpace();
+	public TriggerConfig reloadCmdTrigConf();
 
 	public static interface BootSupport extends PumaSysCtx {
 		public void startRepositoryConfigServices();
