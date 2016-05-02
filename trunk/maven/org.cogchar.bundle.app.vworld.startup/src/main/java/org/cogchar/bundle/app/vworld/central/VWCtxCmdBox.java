@@ -4,11 +4,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.appdapter.fancy.rclient.RepoClient;
-import org.cogchar.app.puma.boot.PumaSysCtx;
+
 import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.event.Updater;
-import org.cogchar.app.puma.config.PumaConfigManager;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.platform.trigger.CogcharScreenBox;
 import org.cogchar.render.app.bony.BonyRenderContext;
@@ -21,8 +19,6 @@ import org.cogchar.render.scene.goody.SpatialAnimMgr;
 import org.cogchar.render.sys.goody.GoodyGameFeatureAdapter;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.appdapter.core.name.Ident;
-import org.cogchar.app.puma.config.TriggerConfig;
-import org.cogchar.bundle.app.vworld.busker.TriggerItems;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.platform.trigger.BoxSpace;
 
@@ -32,44 +28,37 @@ import org.cogchar.platform.trigger.BoxSpace;
  *
  * This impl depends on having a PumaSysCtxImpl for several operations, which in turn
  * currently implies that we *must* be running in an OSGi context (although the latter point
- * is not directly relied upon by this impl) - note that BundleContext is a constructor arg
- * to
+ * is not directly relied upon by this impl).
  *
  */
-public class VWCtxCmdBox extends CogcharScreenBox implements Updater {
+public abstract class VWCtxCmdBox extends CogcharScreenBox implements Updater {
 
-    private ExecutorService myExecService;
-    private VWorldRegistry vwr;
-    private PumaSysCtx myPSC;
-    private PumaRegistryClient myRegClient;
-    private BoxSpace box;
+    private 	ExecutorService 		myExecService;
+    protected 	VWorldRegistry 			myVWReg;
 
-    protected VWCtxCmdBox(VWorldRegistry vr, PumaRegistryClient reg, Ident ctxID) {
+//    private 	PumaRegistryClient 		myRegClient;
+    private 	BoxSpace 				myBoxSpc;
 
-        vwr = vr;
-        box=reg.getTargetBoxSpace(null);
-        
-      
-        box.addBox(ctxID,this);
-
+    protected VWCtxCmdBox(VWorldRegistry vr, BoxSpace boxSpc, Ident ctxID) {
+        myVWReg = vr;
+        myBoxSpc = boxSpc;
+        myBoxSpc.addBox(ctxID, this);
     }
-
+/*
     protected void setVWorldRegistry(VWorldRegistry registry) {
-        vwr = registry;
+        myVWReg = registry;
     }
+*/
 
     public PumaVirtualWorldMapper getVirtualWorld() {
-        if (vwr == null) {
+        if (myVWReg == null) {
             return null;
         }
 
-        return vwr.getVWM();
+        return myVWReg.getVWM();
 
     }
 
-    public void setAppContext(PumaSysCtx psc) {
-        myPSC = psc;
-    }
 
     public boolean triggerStartAnimation(Ident uri) {
         boolean result;
@@ -142,13 +131,7 @@ public class VWCtxCmdBox extends CogcharScreenBox implements Updater {
         return null;
     }
     
-    public void reloadCommandSpace()
-    {
-        TriggerConfig ti= myPSC.reloadCommandSpace();
-        
-        TriggerItems.populateCommandSpace(ti.getRepoClient(), ti.getCommandSpace(), ti.getBoxSpace());
-    }
-    
+
     private ExecutorService getExecService() {
         if (myExecService == null) {
             myExecService = Executors.newSingleThreadExecutor();
@@ -184,39 +167,6 @@ public class VWCtxCmdBox extends CogcharScreenBox implements Updater {
 
     }
 
-    /**	This simply forwards calls to myPSC, which is a PumaSysCtxImpl, currently (2016-04-27) required to be osgi-wired.
-     * Called only indirectly after scheduling by processUpdateRequestAsync() above
-     * above.
-     *
-     * @param request
-     * @param resetMainConfigFlag
-     * @return
-     */
-    private boolean processUpdateRequestNow(String request, final boolean resetMainConfigFlag) {
-        boolean successFlag = true;
-        if (WORLD_CONFIG.equals(request.toLowerCase())) {
-            vwr.initCinema(false, null);
-        } else if (BONE_ROBOT_CONFIG.equals(request.toLowerCase())) {
-            myPSC.reloadBoneRobotConfig();
-        } else if (MANAGED_GCS.equals(request.toLowerCase())) {
-            final PumaConfigManager pcm = myPSC.getSysCnfMgr().getConfigManager();
-            pcm.clearOSGiComps();
-            myPSC.getSysCnfMgr().reloadGlobalConfig();
-        } else if (ALL_HUMANOID_CONFIG.equals(request.toLowerCase())) {
-            // This also calls initCinema
-			((PumaSysCtx.BootSupport) myPSC).reloadAll(resetMainConfigFlag);
-            vwr.initCinema(false, null);
-        } else if (THING_ACTIONS.equals(request.toLowerCase())) {
-            myPSC.getSysCnfMgr().resetMainConfigAndCheckThingActions();
-        } else {
-            getLogger().warn("PumaSysCtxImpl did not recognize the config update to be performed: {}", request);
-            successFlag = false;
-        }
-        return successFlag;
-    }
+	protected abstract boolean processUpdateRequestNow(String request, final boolean resetMainConfigFlag);
 
-    public RepoClient getMainConfigRepoClient() {
-        PumaConfigManager pcm = myPSC.getSysCnfMgr().getConfigManager();
-        return pcm.getMainConfigRepoClient();
-    }
 }

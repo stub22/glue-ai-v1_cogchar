@@ -13,6 +13,8 @@ import org.cogchar.app.puma.registry.PumaRegistryClient;
 
 import org.cogchar.api.humanoid.FigureConfig;
 
+import org.cogchar.platform.trigger.BoxSpace;
+
 import java.util.ArrayList;
 
 /**
@@ -33,10 +35,10 @@ public class VWorldInitHelper extends BasicDebugger {
 		} catch (Throwable t) {
 			getLogger().warn("%%%%%%%%%%%%%%%%%%%%%%% Error with VWorldMapper init %%%%%%%%%%%%%%%%%%%%%%%");
 		}
-		VWCtxCmdBox vwccb = new VWCtxCmdBox(vworldreg, pumaRegCli, ctxID);
-		vwccb.setAppContext(psctx);
+		BoxSpace boxSpc =  pumaRegCli.getTargetBoxSpace(null);
+		VWCtxCmdBoxUpdatable vwccb = new VWCtxCmdBoxUpdatable(vworldreg, boxSpc, ctxID, psctx);
 
-		ce.setUpdater((Updater)vwccb);
+		ce.setUpdater(vwccb);
 		vworldreg.setContextCommandBox(vwccb);
 		vwccb.reloadCommandSpace();
 		//code for connecting bodies

@@ -223,8 +223,8 @@ public class PumaSysCtxImpl extends BasicDebugger implements PumaSysCtx {
 	/**
 	 * Would also need to reload keybindings for this to be effective
 	 */
-	@Override public TriggerConfig reloadCommandSpace() {
-		final PumaConfigManager pcm = getInnerConfigManager();
+	@Override public TriggerConfig reloadCmdTrigConf() {
+		// final PumaConfigManager pcm = getInnerConfigManager();
 		RepoClient repoCli = getMainConfigRC();
 		CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
 		BoxSpace boxSpc = myRegClient.getTargetBoxSpace(null);
