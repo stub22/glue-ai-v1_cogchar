@@ -4,7 +4,7 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.appdapter.fancy.rclient.RepoClient;
-import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaSysCtx;
 import org.cogchar.app.puma.config.BodyHandleRecord;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.cogchar.app.puma.event.CommandEvent;
@@ -21,8 +21,8 @@ import java.util.ArrayList;
 public class VWorldInitHelper extends BasicDebugger {
 	// Called to do the real work of VWorldMapperLifecycle.createService
 	public void connectRegistry(StatefulVWorldRegistry vworldreg, PumaContextMediator pcMediator,
-					PumaAppContext pactx, CommandEvent ce,  PumaRegistryClient pumaRegCli,
-					ArrayList<BodyHandleRecord> bodyHandleRecList) {
+								PumaSysCtx psctx, CommandEvent ce, PumaRegistryClient pumaRegCli,
+								ArrayList<BodyHandleRecord> bodyHandleRecList) {
 
 		vworldreg.setRegClient(pumaRegCli);
 
@@ -34,7 +34,7 @@ public class VWorldInitHelper extends BasicDebugger {
 			getLogger().warn("%%%%%%%%%%%%%%%%%%%%%%% Error with VWorldMapper init %%%%%%%%%%%%%%%%%%%%%%%");
 		}
 		VWCtxCmdBox vwccb = new VWCtxCmdBox(vworldreg, pumaRegCli, ctxID);
-		vwccb.setAppContext(pactx);
+		vwccb.setAppContext(psctx);
 
 		ce.setUpdater((Updater)vwccb);
 		vworldreg.setContextCommandBox(vwccb);

@@ -55,7 +55,7 @@ public class PumaWebMapper extends BasicDebugger {
 	private OSGiComponent					myLiftSceneComp;
 	private PumaContextCommandBox			myPCCB;
 	private BundleContext context;
-	// Make default constuctor private to prevent PumaWebMapper from being instantiated without a PumaAppContext
+	// Make default constuctor private to prevent PumaWebMapper from being instantiated without a PumaSysCtxImpl
 	private PumaWebMapper() {}
 	
 	public PumaWebMapper(PumaContextCommandBox pccb) {
@@ -96,7 +96,7 @@ public class PumaWebMapper extends BasicDebugger {
  * 
  * @param bundleCtx 
  * Called only from 
-	 * PumaAppContext.connectWeb(), which is called from PUMA booter, typically from a Framework-started event
+	 * PumaSysCtxImpl.connectWeb(), which is called from PUMA booter, typically from a Framework-started event
 	 * handler in some "top" application bundle.
  */
 	public void connectAvailableCommands(BundleContext bundleCtx) {

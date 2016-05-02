@@ -52,7 +52,7 @@ public abstract class VWorldRegistry extends BasicDebugger {
         }
     }
 
-    //From PumaAppContext
+    //From PumaSysCtxImpl
     public void initVWorldUnsafe(PumaContextMediator mediator) throws Throwable {
         String panelKind = mediator.getPanelKind();
 
@@ -139,7 +139,7 @@ public abstract class VWorldRegistry extends BasicDebugger {
             getLogger().warn("Ignoring startOpenGLCanvas command - no vWorldMapper present");
         }
     }
-//-----end PumaAppContext methods
+//-----end PumaSysCtxImpl methods
 
     //From PumaBodyGateway
     protected HumanoidFigure getHumanoidFigure(Ident charID) {

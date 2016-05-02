@@ -30,7 +30,7 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.osgi.framework.BundleContext;
 import org.jflux.impl.services.rk.osgi.OSGiUtils;
 
-import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaSysCtx;
 import org.cogchar.app.puma.boot.PumaBooter;
 import org.cogchar.app.puma.config.PumaContextMediator;
 //import org.cogchar.app.puma.vworld.PumaVirtualWorldMapper;
@@ -110,11 +110,11 @@ public final class VirtualCharTopComponent extends TopComponent {
 		@Override public String getSysContextRootURI() {	
 			return super.getSysContextRootURI();
 		}
-		@Override public void notifyContextBuilt(PumaAppContext pac) throws Throwable { 
+		@Override public void notifyContextBuilt(PumaSysCtx pac) throws Throwable {
 			// This is our chance to access config resources
 			theLogger.info("Our Cogchar-NBUI-PBBM.notifyContextBuilt is not accessing any config today.  How sad.");
 		}
-		@Override public void notifyPanelsConstructed(PumaAppContext ctx) throws Throwable {
+		@Override public void notifyPanelsConstructed(PumaSysCtx ctx) throws Throwable {
             
 //			if (ctx.hasVWorldMapper()) {
 //				PumaVirtualWorldMapper pvwm = ctx.getOrMakeVWorldMapper();

@@ -24,12 +24,9 @@ import org.appdapter.core.store.Repo;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Properties;
-import org.cogchar.app.puma.config.BodyHandleRecord;
+
 import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
-import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.jflux.impl.services.rk.lifecycle.ManagedService;
 import org.jflux.impl.services.rk.lifecycle.ServiceLifecycleProvider;
 import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
@@ -119,8 +116,9 @@ public class PumaBooter extends BasicDebugger {
         String ctxURI = mediator.getSysContextRootURI();
 
         Ident ctxID = new FreeIdent(ctxURI);
-        getLogger().warn("%%% Creating PumaAppContext at [{}]", ctxID);
-        final PumaAppContext pac = new PumaAppContext(bundleCtx, mediator, ctxID);
+        getLogger().warn("%%% Creating PumaSysCtxImpl at [{}]", ctxID);
+        final PumaSysCtx.BootSupport pscbs = new PumaSysCtxImplBootable(bundleCtx, mediator, ctxID);
+
 
         /*
          * At this point we have blank, generic PAC + HRC (if vWorld) context objects to work with. PAC + HRC are
@@ -130,13 +128,13 @@ public class PumaBooter extends BasicDebugger {
 
         getLogger().debug("%%% Starting repository-backed config services");
 
-        pac.startRepositoryConfigServices();
+		pscbs.startRepositoryConfigServices();
 
         /*The mediator should now do any special init that it wants to, but without assuming GUI exists.
          * This stage includes getting the FIRST whack (both read and write) at the configuration services.  
          * However, the default mediator impl does nothing.  */
 
-        mediator.notifyContextBuilt(pac);
+        mediator.notifyContextBuilt(pscbs);
         // Mediator must have an answer for this before any config is loaded, presently.
         boolean wantVWorld = mediator.getFlagIncludeVirtualWorld();
 //		if (wantVWorld) {
@@ -157,15 +155,15 @@ public class PumaBooter extends BasicDebugger {
 
             getLogger().info("%%% calling connectAllBodies()");
 
-            pac.connectAllBodies();
+			pscbs.connectAllBodies();
 
-            pac.reloadCommandSpace();
+			pscbs.reloadCommandSpace();
 
-            mediator.notifyCharactersLoaded(pac);
+            mediator.notifyCharactersLoaded(pscbs);
             //}
             //We should chek the flag, but oglweb doesn't have it on, so we'll go with the chars flag - Matt
             //if(mediator.getFlagIncludeWebServices()){
-            pac.connectWeb();
+			pscbs.connectWeb();
         } else {
 			getLogger().info("%%% mediator.wantChars is false");
 		}
@@ -183,13 +181,13 @@ public class PumaBooter extends BasicDebugger {
 //            //pac.initCinema(false);
 //        }
         GruesomeTAProcessingFuncs.registerActionConsumers();
-        mediator.notifyBeforeBootComplete(pac);
-        ServiceLifecycleProvider<PumaAppContext> lifecycle =
-                new SimpleLifecycle<PumaAppContext>(pac, PumaAppContext.class.getName());
+        mediator.notifyBeforeBootComplete(pscbs);
+        ServiceLifecycleProvider<PumaSysCtx> lifecycle =
+                new SimpleLifecycle<PumaSysCtx>(pscbs, PumaSysCtx.class.getName());
 //        Properties props = new Properties();
-//        props.put("pumaAppContext", PumaAppContext.class.getName());
+//        props.put("pumaAppContext", PumaSysCtxImpl.class.getName());
 
-        ManagedService<PumaAppContext> ms = new OSGiComponent<PumaAppContext>(bundleCtx, lifecycle, null);
+        ManagedService<PumaSysCtx> ms = new OSGiComponent<PumaSysCtx>(bundleCtx, lifecycle, null);
         ms.start();
     }
 
@@ -199,7 +197,7 @@ public class PumaBooter extends BasicDebugger {
         return r;
     }
 
-//	private void initVWorldUnsafe(final PumaAppContext pac, PumaContextMediator mediator) throws Throwable {
+//	private void initVWorldUnsafe(final PumaSysCtxImpl pac, PumaContextMediator mediator) throws Throwable {
 //		// Mediator must be able to decide panelKind before the HumanoidRenderContext is built.
 //		String panelKind = mediator.getPanelKind();
 //		getLogger().debug("%%%%%%%%%%%%%%%%%%% Calling initHumanoidRenderContext()");
@@ -230,7 +228,7 @@ public class PumaBooter extends BasicDebugger {
 //		/**
 //		 * Populate the virtual world with humanoids, cameras, lights, and other goodies. This step will load all the 3D
 //		 * models (and other rendering resources) that Cogchar needs, based on what is implied by the sysContextURI we
-//		 * supplied to the PumaAppContext constructor above.
+//		 * supplied to the PumaSysCtxImpl constructor above.
 //		 *
 //		 * We enqueue this work to occur,on JME3 update thread. Otherwise we'll get an: IllegalStateException: Scene
 //		 * graph is not properly updated for rendering.

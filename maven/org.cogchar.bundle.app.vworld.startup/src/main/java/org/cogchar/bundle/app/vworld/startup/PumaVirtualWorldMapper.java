@@ -249,8 +249,8 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
     }
 
     /**
-     * Called from PumaAppContext.initCinema (if clearFirst arg-flag is true)
-     * and PumaAppContext.disconnectAllCharsAndMappers
+     * Called from PumaSysCtxImpl.initCinema (if clearFirst arg-flag is true)
+     * and PumaSysCtxImpl.disconnectAllCharsAndMappers
      */
     public void clearCinematicStuff() {
         HumanoidRenderWorldMapper myRenderMapper = new HumanoidRenderWorldMapper();
@@ -261,7 +261,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
     }
 
     /**
-     * Called from PumaAppContext.stopAndReleaseAllHumanoids, which is called
+     * Called from PumaSysCtxImpl.stopAndReleaseAllHumanoids, which is called
      * only from VWCtxCmdBox.processUpdateRequestNow
      */
     public void detachAllHumanoidFigures() {
@@ -270,7 +270,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
     }
 
     /**
-     * Called from PumaAppContext.initCinema
+     * Called from PumaSysCtxImpl.initCinema
      *
      * @param bonyRdfCl
      */

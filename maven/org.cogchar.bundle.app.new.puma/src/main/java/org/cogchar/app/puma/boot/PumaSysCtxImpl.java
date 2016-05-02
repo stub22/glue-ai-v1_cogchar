@@ -22,6 +22,8 @@ import org.cogchar.app.puma.web.PumaWebMapper;
 import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.registry.PumaRegistryClientImpl;
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -43,11 +45,8 @@ import org.cogchar.app.puma.body.PumaDualBody;
 import org.cogchar.app.puma.config.PumaGlobalModeManager;
 import org.cogchar.app.puma.config.BodyHandleRecord;
 import org.cogchar.app.puma.body.PumaDualBodyManager;
-import static org.cogchar.app.puma.boot.PumaContextCommandBox.THING_ACTIONS;
 import org.cogchar.app.puma.registry.PumaRegistryClientFinder;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
-import org.cogchar.bundle.app.puma.GruesomeTAProcessingFuncs;
-import org.cogchar.bundle.app.puma.PumaAppUtils;
 import org.cogchar.platform.trigger.BoxSpace;
 
 import org.cogchar.platform.trigger.CommandSpace;
@@ -61,23 +60,29 @@ import org.jflux.impl.services.rk.lifecycle.utils.SimpleLifecycle;
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public class PumaAppContext extends BasicDebugger {
+public class PumaSysCtxImpl extends BasicDebugger implements PumaSysCtx {
 
-	private PumaRegistryClient				myRegClient;
+	protected PumaRegistryClient				myRegClient;
+	private PumaSysCnfMgr					mySysCnfMgr;
+
 	private OSGiComponent					myRegClientOSGiComp;
 	
-	private BundleContext					myBundleContext;
+	protected BundleContext					myBundleContext;
 
-	private	PumaDualBodyManager				myBodyMgr;
+	protected	PumaDualBodyManager				myBodyMgr;
 	
-	private PumaBehaviorManager				myBehavMgr;
+	protected PumaBehaviorManager				myBehavMgr;
 	
-	private	PumaContextCommandBox			myPCCB;
+	protected	PumaContextCommandBox			myPCCB;
     
     private ArrayList<BodyHandleRecord>		myBodyHandleRecs;
-	
-	public PumaAppContext(BundleContext bc, PumaContextMediator mediator, Ident ctxID) {
+
+	// bc only really gets used for starting the PumaRegistryClient lifecycle.
+	public PumaSysCtxImpl(BundleContext bc, PumaContextMediator mediator, Ident ctxID) {
+		// bc is optional for this impl, may be null, and is not actually used.
 		myRegClient = new PumaRegistryClientImpl(bc, mediator);
+		// bc may be used by lifecycles in here.
+		mySysCnfMgr = new PumaSysCnfMgrImpl(myRegClient, bc);
 		advertisePumaRegClient(myRegClient);
 		myBundleContext = bc;
         
@@ -98,13 +103,23 @@ public class PumaAppContext extends BasicDebugger {
             ms.start();
         
 	}
-	
+
+	protected PumaConfigManager getInnerConfigManager() {
+		return mySysCnfMgr.getConfigManager();
+	}
+	@Override public PumaSysCnfMgr getSysCnfMgr() {
+		return mySysCnfMgr;
+	}
+
+	protected RepoClient getMainConfigRC() {
+		return mySysCnfMgr.getMainConfigRC();
+	}
 	private void advertisePumaRegClient(PumaRegistryClient prc) {
 		PumaRegistryClientFinder prcFinder = new PumaRegistryClientFinder();
-		prcFinder.registerPumaRegClient(prc, null, PumaAppContext.class);
+		prcFinder.registerPumaRegClient(prc, null, PumaSysCtxImpl.class);
 	}
-	
-	public BundleContext getBundleContext() {
+
+	protected BundleContext getBundleContext() {
 		return myBundleContext;
 	}
 
@@ -112,45 +127,10 @@ public class PumaAppContext extends BasicDebugger {
 		return (myRegClient.getWebMapper(null) != null);
 	}
 
-	public PumaWebMapper getOrMakeWebMapper() {
-		PumaWebMapper pwm = myRegClient.getWebMapper(null);
-		if (pwm == null) {
-			pwm = new PumaWebMapper(myPCCB);
-			myRegClient.putWebMapper(pwm, null);
-		}
-        pwm.attachContext(myBundleContext);
-		return pwm;
-	}
-
-	protected RepoClient getOrMakeMainConfigRC() {
-		final PumaConfigManager pcm = getConfigManager();
-		PumaContextMediator mediator = getMediator();
-		RepoClient repoCli = pcm.getOrMakeMainConfigRepoClient(mediator, myBundleContext);
-		return repoCli;
-	}
-
 	protected PumaContextMediator getMediator() {
 		return myRegClient.getCtxMediator(null);
 	}
 
-	public PumaConfigManager getConfigManager() {
-		return myRegClient.getConfigMgr(null);
-	}
-
-	public void startRepositoryConfigServices() {
-		PumaConfigManager pcm = getConfigManager();
-		PumaContextMediator mediator = myRegClient.getCtxMediator(null);
-		// This would happen by default anyway, if there were not already a MainConfigRepoClient in place.
-		pcm.applyDefaultRepoClientAsMainConfig(mediator, myBundleContext);
-		// This method performs the configuration actions associated with the developmental "Global Mode" concept
-		// If/when "Global Mode" is replaced with a different configuration "emitter", the method(s) here will
-		// be updated to reflect that	
-		RepoClient rc = getOrMakeMainConfigRC();
-		PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
-		pgmm.applyGlobalConfig(myBundleContext, rc);
-		
-		myBehavMgr.initConfigLinks(myRegClient);
-	}
 
 	/**
 	 * Third (and last) stage init of OpenGL, and all other systems. Done AFTER startOpenGLCanvas().
@@ -158,31 +138,12 @@ public class PumaAppContext extends BasicDebugger {
 	 * @return
 	 * @throws Throwable
 	 */
-	
-	public void connectAllBodies() {
-		List<Ident> charIDs = getAllCharIdents();
-		connectDualBodies(charIDs);
-		makeAgentsForAllBodies(charIDs);
-	}
-	public void makeAgentsForAllBodies(List<Ident> charIdents) {
-		BundleContext bunCtx = getBundleContext();
-		final PumaConfigManager pcm = getConfigManager();
-		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
-		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
-		RepoClient rc = getOrMakeMainConfigRC();		
-		for (Ident charID : charIdents) {
-			PumaDualBody pdb = myBodyMgr.getBody(charID);
-			if (pdb != null) {
-				getLogger().info("Making agent for char={} and body={} ", charID, pdb);
-				myBehavMgr.makeAgentForBody(bunCtx, myRegClient, pdb, charID);
-			}
-		}
-	}
+
 	protected List<Ident> getAllCharIdents() {
-		final PumaConfigManager pcm = getConfigManager();
+		final PumaConfigManager pcm = getInnerConfigManager();
 		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
-		RepoClient rc = getOrMakeMainConfigRC();
+		// RepoClient rc = getOrMakeMainConfigRC();
 		//List<PumaDualCharacter> pdcList = new ArrayList<PumaDualCharacter>();
 		List<Ident> charIdents = new ArrayList<Ident>(); // A blank list, so if the try fails below, the for loop won't throw an Exception
 
@@ -198,10 +159,10 @@ public class PumaAppContext extends BasicDebugger {
 		return charIdents;
 	}
 	protected void connectDualBodies(List<Ident> charIdents) {
-		final PumaConfigManager pcm = getConfigManager();
+		final PumaConfigManager pcm = getInnerConfigManager();
 		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
 		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
-		RepoClient rc = getOrMakeMainConfigRC();
+		RepoClient rc = getMainConfigRC();
 		
 		if (gce == null) {
 			getLogger().warn("GlobalConfigEmitter not available, cannot setup characters!");
@@ -234,19 +195,13 @@ public class PumaAppContext extends BasicDebugger {
             
             ClassLoader vizResCL = getSingleClassLoaderOrNull(ResourceFileCategory.RESFILE_OPENGL_JME3_OGRE);
             
-//            ServiceLifecycleProvider<ClassLoader> clLifecycle =
-//                new SimpleLifecycle<ClassLoader>(vizResCL,ClassLoader.class.getName());
-//            Properties clProps=new Properties();
-//            props.put("classLoader","classLoader");
-//            ManagedService<ClassLoader> clMS = new OSGiComponent<ClassLoader>(myBundleContext, clLifecycle, clProps);
-//            clMS.start();
 		}
 	}
 
 	protected PumaDualBody connectDualBody(FigureConfig humCfg, Ident graphIdentForBony) throws Throwable {
 		Ident bonyCharID = humCfg.getFigureID();
 		BundleContext bunCtx = getBundleContext();
-		RepoClient rc = getOrMakeMainConfigRC();
+		RepoClient rc = getMainConfigRC();
         //bodyConfigSpecs.add(new BodyConfigSpec(rc, bonyCharID, humCfg));
 		PumaDualBody pdb = new PumaDualBody(bonyCharID, humCfg.getNickname());
 		// Create and publish a BodyHandleRecord so that other systems can discover this body.
@@ -268,9 +223,9 @@ public class PumaAppContext extends BasicDebugger {
 	/**
 	 * Would also need to reload keybindings for this to be effective
 	 */
-	public TriggerConfig reloadCommandSpace() {
-		final PumaConfigManager pcm = getConfigManager();
-		RepoClient repoCli = getOrMakeMainConfigRC();
+	@Override public TriggerConfig reloadCommandSpace() {
+		final PumaConfigManager pcm = getInnerConfigManager();
+		RepoClient repoCli = getMainConfigRC();
 		CommandSpace cmdSpc = myRegClient.getCommandSpace(null);
 		BoxSpace boxSpc = myRegClient.getTargetBoxSpace(null);
         
@@ -291,7 +246,7 @@ public class PumaAppContext extends BasicDebugger {
 	 * 
 	 *  2)  PumaContextCommandBox.processUpdateRequestNow(WORLD_CONFIG)
 	 * 
-	 *	3)  PumaAppContext.reloadAll
+	 *	3)  PumaSysCtxImpl.reloadAll
 	 *		PumaContextCommandBox.processUpdateRequestNow(ALL_HUMANOID_CONFIG)
 	 * 
  * @param clearFirst 
@@ -301,36 +256,15 @@ public class PumaAppContext extends BasicDebugger {
 	/**
 	 * Called only from 	 PumaBooter.pumaBootUnsafeUnderOSGi
 	 */
-	protected void connectWeb() {
-		PumaWebMapper webMapper = getOrMakeWebMapper();
-		BundleContext bunCtx = getBundleContext();
-		webMapper.connectLiftSceneInterface(bunCtx);
-		webMapper.connectAvailableCommands(bunCtx);
-	}
 
-	public void resetToDefaultConfig() {
-		PumaConfigManager pcm = getConfigManager();
+
+	protected void resetToDefaultConfig() {
+		PumaConfigManager pcm = getInnerConfigManager();
 		BundleContext bc = getBundleContext();
 		pcm.clearMainConfigRepoClient();
 		// pcm.applyFreshDefaultMainRepoClientToGlobalConfig(bc);	
 	}
 
-	public void reloadBoneRobotConfig() {
-		final PumaConfigManager pcm = getConfigManager();
-		
-		RepoClient rc = getOrMakeMainConfigRC();
-		myBodyMgr.reloadAllBoneRobotConfigs(pcm, rc);
-	}
-
-	public void reloadGlobalConfig() {
-		final PumaConfigManager pcm = getConfigManager();
-		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();		
-		RepoClient rc = getOrMakeMainConfigRC();
-		// Below is needed for Lifter to obtain dependency from LifterLifecycle
-		// Will revisit once repo functionality stabilizes a bit
-		//PumaConfigManager.startRepoClientLifecycle(myBundleContext, rc);
-		pgmm.startGlobalConfigService(myBundleContext);
-	}
 
 	protected void stopAndReleaseAllHumanoids() {
 		myBehavMgr.stopAllAgents();
@@ -342,71 +276,11 @@ public class PumaAppContext extends BasicDebugger {
 		// Oops - but they are STILL in the box-space!!!
 	}
 
-	protected void disconnectAllCharsAndMappers() throws Throwable {
-		BundleContext bunCtx = getBundleContext();
+	@Override  public void reloadBoneRobotConfig() {
+		final PumaConfigManager pcm = getInnerConfigManager();
 
-		
-			// Consider:  also set the context/registry vWorldMapper to null, expecting
-			// PumaBooter or somesuch to find it again.
-		
-		if (hasWebMapper()) {
-			PumaWebMapper webMapper = getOrMakeWebMapper();
-			webMapper.disconnectLiftSceneInterface(bunCtx);
-			// Similarly, consider setting context/registry webMapper to null.
-		}
-		stopAndReleaseAllHumanoids();
-		// If we did set our vWorldMapper and webMapper to null, above, then we'd
-		// Which means the user will need to 
+		RepoClient rc = getMainConfigRC();
+		myBodyMgr.reloadAllBoneRobotConfigs(pcm, rc);
 	}
 
-	public void reloadAll(boolean resetMainConfigFlag) {
-		try {
-			BundleContext bunCtx = getBundleContext();
-			// Here we make the cute assumption that vWorldMapper or webMapper would be null
-			// if we weren't using those features.  Only problem is that is not true yet,
-			// because these accessor methods
-
-			disconnectAllCharsAndMappers();
-
-			// NOW we are ready to load any new config.
-			if (resetMainConfigFlag) {
-				resetToDefaultConfig();
-			}
-
-			// So NOW what we want to examine is the difference between the state right here, and the
-			// state at this moment during a full "boot" sequence.
-			connectAllBodies();
-
-			//initCinema(true);
-
-		} catch (Throwable t) {
-			getLogger().error("Error attempting to reload all PUMA App config: ", t);
-			// May be good to handle an exception by setting state of a "RebootResult" or etc...
-		}
-	}
-	
-	// Temporary method for testing goody/thing actions until the repo auto-update trigger features are alive
-	/**
-	 * Called from PumaContextCommandBox.processUpdateRequestNow(THING_ACTIONS)
-	 */
-	public void resetMainConfigAndCheckThingActions() {
-		final PumaConfigManager pcm = getConfigManager();
-		final PumaGlobalModeManager pgmm = pcm.getGlobalModeMgr();
-		pcm.clearMainConfigRepoClient();
-		GruesomeTAProcessingFuncs.processPendingThingActions();
-		/*
-		 * Old way, where the GlobalConfigEmitter was passed in explicitly on each update.
-		 * That is not necessarily a bad approach!
-		* 
-		RepoClient rc = getOrMakeMainConfigRC();
-		GlobalConfigEmitter gce = pgmm.getGlobalConfig();
-		if (hasVWorldMapper()) {
-			PumaVirtualWorldMapper vWorldMapper = getOrMakeVWorldMapper();
-			vWorldMapper.updateVWorldEntitySpaces(rc, gce);
-		}
-		* 
-		*/ 
-	}
-	
-    
 }

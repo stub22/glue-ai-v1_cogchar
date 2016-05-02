@@ -85,7 +85,7 @@ public abstract class PumaBehaviorAgent extends CogcharScreenBox {
 		doWiringPreStart(optBunCtxForWiring, myTheater);
 		SceneBook sb = myTheater.getSceneBook();
 		CogcharEventActionBinder trigBinder = SceneActions.getBinder();
-		//myWebMapper.connectLiftSceneInterface(myBundleCtx); // Now done in PumaAppContext.initCinema
+		//myWebMapper.connectLiftSceneInterface(myBundleCtx); // Now done in PumaSysCtxImpl.initCinema
 		FancyTriggerFacade.registerTriggersForAllScenes(trigBinder, myTheater, sb);
 		myTheater.startThread();
 		doWiringPostStart(optBunCtxForWiring, myTheater);
@@ -107,7 +107,7 @@ public abstract class PumaBehaviorAgent extends CogcharScreenBox {
 		// Was 200, but very occasionally this wasn't quite long enough, and myWorkThread was becoming null after the
 		// check in Theater.killThread, causing a NPE
 		int killTimeWaitMsec = 250; 
-		//myWebMapper.disconnectLiftSceneInterface(myBundleCtx); // Now done in PumaAppContext.reloadAll
+		//myWebMapper.disconnectLiftSceneInterface(myBundleCtx); // Now done in PumaSysCtxImpl.reloadAll
 		myTheater.fullyStop(killTimeWaitMsec, cancelOutJobs);
 	}
 	

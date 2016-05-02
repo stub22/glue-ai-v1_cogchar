@@ -49,7 +49,7 @@ import org.cogchar.platform.trigger.CogcharScreenBox;
  * PumaContextMediator.getSysContextURI() method.
  * 
  * Having "public" methods on this object helps us to keep more
- * of PumaAppContext's methods *protected*, and also keep track
+ * of PumaSysCtxImpl's methods *protected*, and also keep track
  * in one place of what we're officially *exposing* to the command 
  * layer.
  * 
@@ -57,42 +57,14 @@ import org.cogchar.platform.trigger.CogcharScreenBox;
  */
 
 public class PumaContextCommandBox extends CogcharScreenBox {
-	private		PumaAppContext		myPAC;
+	private 	PumaSysCtx			myPSysCtx;
 	
 	private		ExecutorService		myExecService;
 	
-	protected PumaContextCommandBox(PumaAppContext pac) {
-		myPAC = pac;
+	protected PumaContextCommandBox(PumaSysCtx psctx) {
+		myPSysCtx = psctx;
 	}
-//	protected HumanoidRenderContext getHRC() { 
-//		return myPAC.getOrMakeVWorldMapper().getHumanoidRenderContext();
-//	}
-//	public GoodyGameFeatureAdapter getGameFeatureAdapter() { 
-//		return getHRC().getGameFeatureAdapter();
-//	}
-//	public HumanoidFigureManager getFigureManager() { 
-//		return getHRC().getHumanoidFigureManager();
-//	}
-//	public PathMgr getPathMgr() {
-//		return getHRC().getGoodyRenderRegistryClient().getScenePathFacade(null);
-//	}
-//	public SpatialAnimMgr getThingAnimMgr() {
-//		return getHRC().getGoodyRenderRegistryClient().getSceneAnimFacade(null);
-//	}
-//	public void resetMainCameraLocation() { 
-//		getHRC().setDefaultCameraLocation();
-//	}
 
-//	public HumanoidFigure_SinbadTest getSinbad() { 
-//		BonyRenderContext brc = getHRC();
-//		RenderConfigEmitter bce = brc.getConfigEmitter();
-//		HumanoidFigureManager hfm = getFigureManager();
-//		return (HumanoidFigure_SinbadTest) hfm.getHumanoidFigure(bce.SINBAD_CHAR_IDENT());
-//	}	
-//	public PumaVirtualWorldMapper getVWM() { 
-//		return myPAC.getOrMakeVWorldMapper();
-//	}
-//	
 	private ExecutorService getExecService() { 
 		if (myExecService == null) {
 			myExecService = Executors.newSingleThreadExecutor();
@@ -129,7 +101,7 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 	}
 
 	/**
-	 * This simply forwards calls to myPAC, which is a PumaAppContext, currently (2016-04-27) required to be osgi-wired.
+	 * This simply forwards calls to myPAC, which is a PumaSysCtxImpl, currently (2016-04-27) required to be osgi-wired.
 	 * Called only indirectly after scheduling by processUpdateRequestAsync() above.
 	 * @param request
 	 * @param resetMainConfigFlag
@@ -140,24 +112,24 @@ public class PumaContextCommandBox extends CogcharScreenBox {
 		if (WORLD_CONFIG.equals(request.toLowerCase())) {
 			//myPAC.initCinema(true);
 		} else if (BONE_ROBOT_CONFIG.equals(request.toLowerCase())) {
-			myPAC.reloadBoneRobotConfig();
+			myPSysCtx.reloadBoneRobotConfig();
 		} else if (MANAGED_GCS.equals(request.toLowerCase())) {
-			final PumaConfigManager pcm = myPAC.getConfigManager();
+			final PumaConfigManager pcm = myPSysCtx.getSysCnfMgr().getConfigManager();
 			pcm.clearOSGiComps();
-			myPAC.reloadGlobalConfig();
+			myPSysCtx.getSysCnfMgr().reloadGlobalConfig();
 		} else if (ALL_HUMANOID_CONFIG.equals(request.toLowerCase())) {
-			// This also calls initCinema
-			myPAC.reloadAll(resetMainConfigFlag);
+
+			((PumaSysCtx.BootSupport) myPSysCtx).reloadAll(resetMainConfigFlag);
 		} else if (THING_ACTIONS.equals(request.toLowerCase())) {
-			myPAC.resetMainConfigAndCheckThingActions();
+			myPSysCtx.getSysCnfMgr().resetMainConfigAndCheckThingActions();
 		} else {
-			getLogger().warn("PumaAppContext did not recognize the config update to be performed: {}", request);
+			getLogger().warn("PumaSysCtxImpl did not recognize the config update to be performed: {}", request);
 			successFlag = false;
 		}
 		return successFlag;
 	}
 	public 	RepoClient getMainConfigRepoClient() {
-		PumaConfigManager pcm = myPAC.getConfigManager();
+		PumaConfigManager pcm = myPSysCtx.getSysCnfMgr().getConfigManager();
 		return pcm.getMainConfigRepoClient();
 	}
 }

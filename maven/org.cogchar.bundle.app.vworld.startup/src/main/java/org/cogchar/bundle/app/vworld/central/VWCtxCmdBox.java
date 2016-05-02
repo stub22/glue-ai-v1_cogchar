@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.appdapter.fancy.rclient.RepoClient;
-import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaSysCtx;
 import org.cogchar.bundle.app.vworld.startup.PumaVirtualWorldMapper;
 import org.cogchar.app.puma.event.Updater;
 import org.cogchar.app.puma.config.PumaConfigManager;
@@ -30,7 +30,7 @@ import org.cogchar.platform.trigger.BoxSpace;
  *  2016-04-26 discovered duplicate (in name) of PumaContextCommandBox.
  *  This one is used only from VWorld, while the other is used only in headless/robot deploys.
  *
- * This impl depends on having a PumaAppContext for several operations, which in turn
+ * This impl depends on having a PumaSysCtxImpl for several operations, which in turn
  * currently implies that we *must* be running in an OSGi context (although the latter point
  * is not directly relied upon by this impl) - note that BundleContext is a constructor arg
  * to
@@ -40,7 +40,7 @@ public class VWCtxCmdBox extends CogcharScreenBox implements Updater {
 
     private ExecutorService myExecService;
     private VWorldRegistry vwr;
-    private PumaAppContext myPAC;
+    private PumaSysCtx myPSC;
     private PumaRegistryClient myRegClient;
     private BoxSpace box;
 
@@ -67,8 +67,8 @@ public class VWCtxCmdBox extends CogcharScreenBox implements Updater {
 
     }
 
-    public void setAppContext(PumaAppContext pac) {
-        myPAC = pac;
+    public void setAppContext(PumaSysCtx psc) {
+        myPSC = psc;
     }
 
     public boolean triggerStartAnimation(Ident uri) {
@@ -144,7 +144,7 @@ public class VWCtxCmdBox extends CogcharScreenBox implements Updater {
     
     public void reloadCommandSpace()
     {
-        TriggerConfig ti=myPAC.reloadCommandSpace();
+        TriggerConfig ti= myPSC.reloadCommandSpace();
         
         TriggerItems.populateCommandSpace(ti.getRepoClient(), ti.getCommandSpace(), ti.getBoxSpace());
     }
@@ -184,7 +184,7 @@ public class VWCtxCmdBox extends CogcharScreenBox implements Updater {
 
     }
 
-    /**	This simply forwards calls to myPAC, which is a PumaAppContext, currently (2016-04-27) required to be osgi-wired.
+    /**	This simply forwards calls to myPSC, which is a PumaSysCtxImpl, currently (2016-04-27) required to be osgi-wired.
      * Called only indirectly after scheduling by processUpdateRequestAsync() above
      * above.
      *
@@ -197,26 +197,26 @@ public class VWCtxCmdBox extends CogcharScreenBox implements Updater {
         if (WORLD_CONFIG.equals(request.toLowerCase())) {
             vwr.initCinema(false, null);
         } else if (BONE_ROBOT_CONFIG.equals(request.toLowerCase())) {
-            myPAC.reloadBoneRobotConfig();
+            myPSC.reloadBoneRobotConfig();
         } else if (MANAGED_GCS.equals(request.toLowerCase())) {
-            final PumaConfigManager pcm = myPAC.getConfigManager();
+            final PumaConfigManager pcm = myPSC.getSysCnfMgr().getConfigManager();
             pcm.clearOSGiComps();
-            myPAC.reloadGlobalConfig();
+            myPSC.getSysCnfMgr().reloadGlobalConfig();
         } else if (ALL_HUMANOID_CONFIG.equals(request.toLowerCase())) {
             // This also calls initCinema
-            myPAC.reloadAll(resetMainConfigFlag);
+			((PumaSysCtx.BootSupport) myPSC).reloadAll(resetMainConfigFlag);
             vwr.initCinema(false, null);
         } else if (THING_ACTIONS.equals(request.toLowerCase())) {
-            myPAC.resetMainConfigAndCheckThingActions();
+            myPSC.getSysCnfMgr().resetMainConfigAndCheckThingActions();
         } else {
-            getLogger().warn("PumaAppContext did not recognize the config update to be performed: {}", request);
+            getLogger().warn("PumaSysCtxImpl did not recognize the config update to be performed: {}", request);
             successFlag = false;
         }
         return successFlag;
     }
 
     public RepoClient getMainConfigRepoClient() {
-        PumaConfigManager pcm = myPAC.getConfigManager();
+        PumaConfigManager pcm = myPSC.getSysCnfMgr().getConfigManager();
         return pcm.getMainConfigRepoClient();
     }
 }
