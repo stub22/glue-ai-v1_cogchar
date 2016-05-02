@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.fancy.rspec.RepoSpec;
-import org.cogchar.app.puma.boot.PumaAppContext;
+import org.cogchar.app.puma.boot.PumaSysCtx;
 import org.cogchar.app.puma.registry.ResourceFileCategory;
 
 /**  This mediator is our "/etc/rc", the "top" mechanism available to customize the Cogchar PUMA boot up sequence.
@@ -37,7 +37,7 @@ public abstract class PumaContextMediator extends BasicDebugger {
 	 * @param ctx
 	 * @throws Throwable 
 	 */
-	public void notifyContextBuilt(PumaAppContext ctx) throws Throwable {
+	public void notifyContextBuilt(PumaSysCtx ctx) throws Throwable {
 	}
 	/**  Boot callback sequence #2 - optional.
 	 * Could apply to any GUI concepts, but currently applies only to our VWorld OpenGL panel.  This callback
@@ -53,7 +53,7 @@ public abstract class PumaContextMediator extends BasicDebugger {
 	 * @param ctx
 	 * @throws Throwable
 	 */	
-	public void notifyPanelsConstructed(PumaAppContext ctx) throws Throwable {
+	public void notifyPanelsConstructed(PumaSysCtx ctx) throws Throwable {
 	}
 	/**  Boot callback sequence #3.
 	 * The Puma chars have now been loaded, or reloaded.  If you want to fix up
@@ -65,7 +65,7 @@ public abstract class PumaContextMediator extends BasicDebugger {
 	 * @param ctx
 	 * @throws Throwable 
 	 */
-	public void notifyCharactersLoaded(PumaAppContext ctx) throws Throwable {
+	public void notifyCharactersLoaded(PumaSysCtx ctx) throws Throwable {
 	}	
 	/**
 	 *  Boot callback sequence #4.
@@ -74,7 +74,7 @@ public abstract class PumaContextMediator extends BasicDebugger {
 	 * @param ctx
 	 * @throws Throwable 
 	 */
-	public void notifyBeforeBootComplete(PumaAppContext ctx) throws Throwable {
+	public void notifyBeforeBootComplete(PumaSysCtx ctx) throws Throwable {
 		
 	}
 

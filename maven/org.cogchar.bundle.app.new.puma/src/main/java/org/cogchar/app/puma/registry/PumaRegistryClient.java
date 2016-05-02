@@ -35,8 +35,8 @@ import org.cogchar.platform.trigger.CommandSpace;
 
 public interface PumaRegistryClient {
 	
-	//public PumaAppContext getAppContext(Ident optSpecID);
-	//public void putAppContext(PumaAppContext pac, Ident optSpecID);
+	//public PumaSysCtxImpl getAppContext(Ident optSpecID);
+	//public void putAppContext(PumaSysCtxImpl pac, Ident optSpecID);
 	
 	public PumaContextMediator getCtxMediator(Ident optSpecID);
 	// public void putCtxMediator (PumaContextMediator med, Ident optSpecID);

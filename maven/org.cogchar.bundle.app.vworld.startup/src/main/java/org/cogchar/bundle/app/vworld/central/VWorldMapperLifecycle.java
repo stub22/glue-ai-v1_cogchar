@@ -11,18 +11,14 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.cogchar.api.humanoid.FigureConfig;
+import org.cogchar.app.puma.boot.PumaSysCtxImpl;
 import org.cogchar.app.puma.config.BodyHandleRecord;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
 import org.cogchar.app.puma.config.PumaContextMediator;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.name.Ident;
-import org.appdapter.core.name.FreeIdent;
-import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.app.puma.registry.PumaRegistryClient;
 import org.cogchar.app.puma.event.CommandEvent;
-import org.cogchar.app.puma.event.Updater;
-import org.cogchar.app.puma.boot.PumaAppContext;
 import org.jflux.api.registry.basic.BasicDescriptor;
 import org.jflux.api.service.binding.ServiceBinding;
 
@@ -46,7 +42,7 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
 		makeUnaryStaticServiceDep(DEPKEY_BodyHandleRec, ArrayList.class),
 		makeUnaryStaticServiceDep(DEPKEY_PumaRegCli, PumaRegistryClient.class),
 		makeUnaryStaticServiceDep(DEPKEY_CommandEvent, CommandEvent.class),
-		makeUnaryStaticServiceDep(DEPKEY_AppContext, PumaAppContext.class)
+		makeUnaryStaticServiceDep(DEPKEY_AppContext, PumaSysCtxImpl.class)
     };
 	
 	private static ServiceDependency makeUnaryStaticServiceDep(String regKey, Class depClazz) { 
@@ -57,7 +53,7 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
     @Override public VWorldRegistry createService(Map<String, Object> dependencyMap) {
 
 		PumaContextMediator pcMediator = (PumaContextMediator) dependencyMap.get(DEPKEY_Mediator);
-		PumaAppContext pactx = (PumaAppContext) dependencyMap.get(DEPKEY_AppContext);
+		PumaSysCtxImpl pactx = (PumaSysCtxImpl) dependencyMap.get(DEPKEY_AppContext);
 		CommandEvent ce= (CommandEvent) dependencyMap.get(DEPKEY_CommandEvent);
 		PumaRegistryClient pumaRegCli = (PumaRegistryClient) dependencyMap.get(DEPKEY_PumaRegCli);
 		ArrayList<BodyHandleRecord> bodyHandleRecList = (ArrayList<BodyHandleRecord>) dependencyMap.get(DEPKEY_BodyHandleRec);
@@ -151,10 +147,10 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
 
 
         Map<String, String> appContextProps = new HashMap<String, String>();
-       // appContextProps.put(DEPKEY_AppContext, PumaAppContext.class.getName());
+       // appContextProps.put(DEPKEY_AppContext, PumaSysCtxImpl.class.getName());
         BasicDescriptor appDescriptor =
                 new BasicDescriptor(
-                PumaAppContext.class.getName(),
+                PumaSysCtxImpl.class.getName(),
                 appContextProps);
 
         ServiceBinding appContextBinding = new ServiceBinding(
