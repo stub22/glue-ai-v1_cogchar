@@ -157,7 +157,7 @@ public class PumaBooter extends BasicDebugger {
 
 			pscbs.connectAllBodies();
 
-			pscbs.reloadCommandSpace();
+			pscbs.reloadCmdTrigConf();
 
             mediator.notifyCharactersLoaded(pscbs);
             //}
