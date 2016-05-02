@@ -52,7 +52,7 @@ public class GruesomeTAProcessingFuncs {
 	 *		1) In the repoUpdateCompleted() callback of a top-level application, e.g.
 	 *			a) o.f.b.demo.liftoff.Activator
 	 *			b) c.h.b.oglweb.R50.Activator
-	 *		2) On a call to  PumaAppContext.resetMainConfigAndCheckThingActions
+	 *		2) On a call to  PumaSysCtxImpl.resetMainConfigAndCheckThingActions
 	 *			which is queued indirectly from   PumaContextCommandBox.processUpdateRequestAsync
 	 *			which is a crude, old form of GUI wiring to be replaced.
 	 *

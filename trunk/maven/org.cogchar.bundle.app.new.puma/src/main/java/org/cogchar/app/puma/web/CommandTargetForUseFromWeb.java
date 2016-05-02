@@ -101,7 +101,7 @@ class CommandTargetForUseFromWeb extends BasicDebugger implements AvailableComma
             
             //Future<Boolean> resultFuture =null;
         } else {
-            getLogger().warn("Update requested, but PumaWebMapper cannot find PumaAppContext for RQ=" + request);
+            getLogger().warn("Update requested, but PumaWebMapper cannot find PumaSysCtxImpl for RQ=" + request);
         }
         return success;
     }

@@ -35,7 +35,7 @@ import org.osgi.framework.BundleContext;
  */
 
 public class PumaRegistryClientImpl extends BasicDebugger implements PumaRegistryClient {
-	// private	PumaAppContext			myAppContext;
+	// private	PumaSysCtxImpl			myAppContext;
 	
 	// Here are the 4 required ingredients of a PUMA application.  
 	private PumaContextMediator		myMediator;

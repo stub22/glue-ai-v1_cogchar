@@ -61,7 +61,7 @@ public class PumaGlobalModeManager extends BasicDebugger {
 	}
 	// Used to resolve configuration graphs by:
 	//		PumaDualBodyManager
-	//		PumaAppContext
+	//		PumaSysCtxImpl
 	public Ident resolveGraphForCharAndRole(Ident charID, Ident roleID) { 
 		// This semi-hidden double-map is kinda ugly
 		return myGlobalConfig.ergMap().get(charID).get(roleID);
@@ -88,7 +88,7 @@ public class PumaGlobalModeManager extends BasicDebugger {
 	// Ryan - late 2012 sometime:
 	// Now here's something I was hoping to avoid, but it necessary for our experiment in making Lift a managed
 	// service. This is best seen as a trial of one possible way to handle the "GlobalMode" graph configuration.
-	// What we'll do here is tell the PumaAppContext to make the GlobalConfigEmitter available as a no-lifecycle
+	// What we'll do here is tell the PumaSysCtxImpl to make the GlobalConfigEmitter available as a no-lifecycle
 	// managed service. (Why no-lifecycle? Because these lifecycles have to end somewhere! But it would make sense
 	// to make this service depend on the query interface if we decide to keep it.)
 	// Then Lifter can access it to load its config.
