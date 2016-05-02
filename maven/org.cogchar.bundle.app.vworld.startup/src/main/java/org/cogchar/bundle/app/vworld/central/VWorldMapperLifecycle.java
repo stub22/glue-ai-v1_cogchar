@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.cogchar.api.humanoid.FigureConfig;
-import org.cogchar.app.puma.boot.PumaSysCtxImpl;
+import org.cogchar.app.puma.boot.PumaSysCtx;
 import org.cogchar.app.puma.config.BodyHandleRecord;
 import org.jflux.api.service.ServiceDependency;
 import org.jflux.api.service.ServiceLifecycle;
@@ -42,7 +42,7 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
 		makeUnaryStaticServiceDep(DEPKEY_BodyHandleRec, ArrayList.class),
 		makeUnaryStaticServiceDep(DEPKEY_PumaRegCli, PumaRegistryClient.class),
 		makeUnaryStaticServiceDep(DEPKEY_CommandEvent, CommandEvent.class),
-		makeUnaryStaticServiceDep(DEPKEY_AppContext, PumaSysCtxImpl.class)
+		makeUnaryStaticServiceDep(DEPKEY_AppContext, PumaSysCtx.class)
     };
 	
 	private static ServiceDependency makeUnaryStaticServiceDep(String regKey, Class depClazz) { 
@@ -53,7 +53,7 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
     @Override public VWorldRegistry createService(Map<String, Object> dependencyMap) {
 
 		PumaContextMediator pcMediator = (PumaContextMediator) dependencyMap.get(DEPKEY_Mediator);
-		PumaSysCtxImpl pactx = (PumaSysCtxImpl) dependencyMap.get(DEPKEY_AppContext);
+		PumaSysCtx pactx = (PumaSysCtx) dependencyMap.get(DEPKEY_AppContext);
 		CommandEvent ce= (CommandEvent) dependencyMap.get(DEPKEY_CommandEvent);
 		PumaRegistryClient pumaRegCli = (PumaRegistryClient) dependencyMap.get(DEPKEY_PumaRegCli);
 		ArrayList<BodyHandleRecord> bodyHandleRecList = (ArrayList<BodyHandleRecord>) dependencyMap.get(DEPKEY_BodyHandleRec);
@@ -142,15 +142,13 @@ public class VWorldMapperLifecycle extends BasicDebugger implements ServiceLifec
                 regDescriptor,
                 ServiceBinding.BindingStrategy.LAZY);
 
-
         bindings.put(DEPKEY_PumaRegCli, regBinding);
-
 
         Map<String, String> appContextProps = new HashMap<String, String>();
        // appContextProps.put(DEPKEY_AppContext, PumaSysCtxImpl.class.getName());
         BasicDescriptor appDescriptor =
                 new BasicDescriptor(
-                PumaSysCtxImpl.class.getName(),
+                PumaSysCtx.class.getName(),
                 appContextProps);
 
         ServiceBinding appContextBinding = new ServiceBinding(
