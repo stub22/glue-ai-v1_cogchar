@@ -40,11 +40,12 @@ import org.cogchar.render.trial.TrialUpdater;
 
  */
 
-public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends DynamicGoody implements TrialUpdater, DynamicGoodyParent {
+public abstract class DynamicGoodySpace<MemberDG extends DynamicGoody>
+		extends DynamicGoody implements TrialUpdater, DynamicGoodyParent {
 		
 	private	Node			myGroupDisplayNode; // , myParentDisplayNode;
-	//  We use an array to emphasize the indexed nature of this space.
-	// However, "goodyIndex" always starts at 1, so we have to subtract 1
+	//  We use a (resizable) java array to emphasize the indexed nature of this space (indexing is logically visible to client code).
+	// However, logical "goodyIndex" always starts at 1, so we have to subtract 1 from accesses.
 	private	DynamicGoody	myGoodies[] = new DynamicGoody[0];
 	
 	protected Integer		myNextSize;
@@ -61,16 +62,20 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 	}
 	// This will be called if we have been explicitly attached as a TrialUpdater.
 	// Should not be called if we are a child space.
+	// Preferably we should pick just one for each dgs, and not have it attached in *both* ways.
 	@Override public void doUpdate(RenderRegistryClient rrc, float tpf) {
 		doFastVWorldUpdate_onRendThrd(rrc);
-	}	
+	}
+
+	// This method is called in either of the update scenarios.
+	// Our default impl gives *all* sub-goodies an update chance, but our subclasses could be more selective.
 	@Override public void doFastVWorldUpdate_onRendThrd(RenderRegistryClient rrc) {
 		if (myNextSize != null) {
 			resizeSpace_onRendThrd(myNextSize);
 			myNextSize = null;
 		}
 		for (int idx = 0; idx < myGoodies.length; idx++) {
-			// Some of these may be child spaces.
+			// Some of these may be child spaces, and/or contain complex objects such as avatars or cameras.
 			myGoodies[idx].doFastVWorldUpdate_onRendThrd(rrc);
 		}
 	}
@@ -86,16 +91,16 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 	}
 	// Called by resizeSpace.  Our default impl just makes a default DynamicGoody, which doesn't do much.
 	// Override this method to create useful goodies of appropriate types.  
-	protected abstract DGT makeGoody(Integer oneBasedIndex);
+	protected abstract MemberDG makeGoody(Integer oneBasedIndex);
 //		return new DynamicGoody(oneBasedIndex);
 //	}
 	
 	public synchronized boolean hasGoodyAtIndex(int oneBasedIndex) {
 		return ((oneBasedIndex >= 1) && (oneBasedIndex <= myGoodies.length));
 	}
-	public synchronized DGT getGoodyAtIndex(int oneBasedIndex) {
+	public synchronized MemberDG getGoodyAtIndex(int oneBasedIndex) {
 		if ((oneBasedIndex >= 1) && (oneBasedIndex <= myGoodies.length)) {
-			return (DGT) myGoodies[oneBasedIndex - 1];
+			return (MemberDG) myGoodies[oneBasedIndex - 1];
 		} else {
 			getLogger().error("Supplied index {} is out of bounds [1, {}]", oneBasedIndex, myGoodies.length);
 			throw new RuntimeException("out of bounds goody index sent to space: " + getUniqueName());
@@ -104,9 +109,6 @@ public abstract class DynamicGoodySpace<DGT extends DynamicGoody> extends Dynami
 	/**
 	 * The only way to create or destroy goodies is to resize the space.
 	 *
-	 *
-
-
 	 * On expansion, existing goodies survive and new ones are added.  On contraction, all goodies
 	 * up to the new size survive, higher than that size are logically forgotten.
 	 *		...and we must detach+dispose of their OpenGL resources.

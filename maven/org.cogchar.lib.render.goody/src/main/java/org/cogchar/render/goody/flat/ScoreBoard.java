@@ -68,7 +68,7 @@ public class ScoreBoard implements GeneralScoreBoard {
 
 		myScoreFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
 		myScoreColor = ColorRGBA.Magenta;
-		//
+
 		int topY = baseY + (numRows - 1) * rowHeight;
 		for (int rowIdx=0; rowIdx < numRows; rowIdx++) {
 			Row aLine = new Row (baseX, topY - rowIdx * rowHeight, boardWidth, rowHeight, textSizeMult);
