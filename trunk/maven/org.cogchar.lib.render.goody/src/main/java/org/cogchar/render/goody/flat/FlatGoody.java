@@ -49,11 +49,11 @@ public abstract class FlatGoody extends VWorldEntity {
 	protected void attachToOverlaySpatial(QueueingStyle style) {
 		final Node fgn = getFlatGoodyNode();
 		if (fgn != null) {
-			
-			getLogger().debug("Attaching 2d goody to virtual world: {} at location {} :" + fgn, getUri().getLocalName(), 
-						fgn.getLocalTranslation());
+			// Location may be incorrect at this time, because location change may be delayed by queueing to JME thread.
 			enqueueForJme(new Callable() { // Do this on main render thread
 				@Override public Void call() throws Exception {
+					getLogger().debug("Attaching 2d goody to virtual world: name={}, location={}, gnode={}", getUri().getLocalName(),
+							fgn.getLocalTranslation(), fgn);
 					myOverlayMgr.attachOverlaySpatial(fgn);
 					return null;
 				}
@@ -111,7 +111,8 @@ public abstract class FlatGoody extends VWorldEntity {
 		}
 	}
 	@Override public void setPosition(Vector3f position, QueueingStyle style) {
-	//	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		// getLogger().error("setPosition to {} is not implemented", position);
+		setScreenPosition(position, style);
 	}
 	
 }

@@ -107,7 +107,7 @@ public class TrialNexus extends BasicDebugger {
 					
 					String qlabTxt02 = "bq_" + seq + "_2";
 					Geometry qg2 = new Geometry(qlabTxt02, quadMeshFiveByFive);
-					bsc2.setupGeom(qg2);
+						bsc2.setupGeom(qg2);
 
 					qg2.setLocalTranslation(xpr.getMin(), ypr.getMin(), zpr.getMin());
 				

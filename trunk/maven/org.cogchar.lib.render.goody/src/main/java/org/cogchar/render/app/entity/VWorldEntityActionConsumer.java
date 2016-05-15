@@ -61,7 +61,6 @@ public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  e
 		} else {
 			theLogger.warn("Something is attempting to add a null goody to the GoodySpace, ignoring");
 		}
-
 	}
 
 	public void removeGoody(VWorldEntity departingGoody) {
@@ -85,7 +84,7 @@ public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  e
 	public Dimension getScreenDimension() {
 		return myScreenDimension;
 	}
-	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID) {
+	@Override public ConsumpStatus consumeAction(ThingActionSpec actionSpec, Ident srcGraphID_isUnused) {
 		theLogger.info("The targetThingType is {}", actionSpec.getTargetThingTypeID()); // TEST ONLY
 
 		// How do we decide whether it's really a VWorld / Goody action?
@@ -102,6 +101,7 @@ public class VWorldEntityActionConsumer extends BasicThingActionConsumer { //  e
 					if (myGoodiesByID.containsKey(gid)) {
 						theLogger.warn("Goody already created! Ignoring additional creation request for goody: {}", gid);
 					} else {
+
 						goodyOne = GoodyFactory.getTheFactory().createAndAttachByAction(ga, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 						if (goodyOne != null) {
 							addGoody(goodyOne);

@@ -23,25 +23,37 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 /**
  *
   * @author Stu B. <www.texpedient.com>
-  * 
-  * Manages a single DynaGoody that is part of some space.  (For now, we assume there is just one space that any
-  * DynaGoody is involved in)
+  *
+ * DynamicGoody is a base-class.
+ *
+ * Each DynaGoody is part of some space.  (For now, we assume there is just one space that any
+  * DynaGoody is involved in).
+ *
+ * The DynaGoody is aware of its space and is able to interact with it.   This is a difference it has from
+ * the older BasicGoodyEntity.
+
+ *
   * A DynaGoody has a presence in all three of:
-  *		1) Semantic Space: a GoodySpec, which may be edited by user, either offline or while we are running
-  * -- Does every DynaGoody necessarily have a concrete spec record of its own? 
-  *    Or might some of these specs be implicit? 
+ *		1) V-World OpenGL Space: rendered 3D display for user
+ *		This aspect it has in common with other goody types.
+ *
+  *		2) Semantic Space: a URI for a GoodySpec.  Models defining that spec may be edited by user code,
+ *		either offline or while we are running.
+  *    Question:  Does every DynaGoody necessarily have a concrete spec record of its own?  Or might some of these
+ *    specs be implicit?
+ *
+ *    The URI for a particular dyna-goody is derivable from two pieces:
+ *    A) the URI of its parent space
+ *    B) the index of the dyna goody into its parent space
   * 
-  *		2) Math Space : a set of parameters changing over time, related by functions, as defined by specs
+  *		3) Math Space : a set of parameters changing over time, related by functions, as defined by specs
   *	-- which might be shared among some DynaGoodies, and/or attached to another clump of objects on which the
   * DynaGoodies rely.
-  * 
-  *		3) V-World OpenGL Space: rendered 3D display for user
-  * 
-  * DynamicGoody is a base-class 
+  *
   * 
   * A DynaGoody has an immutable index, representing its allocation-position within its space.
   * A DynaGoody does not change its index or its space.
-  * (But what about its spec or its subclass?  Can those change?)
+  * (But what about its spec or its kind/subclass?  Can those change?)
   * The first DynaGoody in a space is at index 1 (not 0).
   * 
   * This idea is related to Cells found in org.cogchar.api.space, but here we are 
@@ -77,6 +89,7 @@ public class DynamicGoody extends BasicDebugger {
 			}
 		}
 	}
+	// Used to derive the URI of the dyna-goody.
 	public String getUniqueName() {
 		String parentName = myParent.getUniqueName();
 		return parentName + "_" + myGoodyIndex;
@@ -101,6 +114,8 @@ public class DynamicGoody extends BasicDebugger {
 
 	// This is the crucial entry point.  Default does nothing.  Override to update your goody display,
 	// but don't hog the OpenGL thread, or you will make the display stutter.
+	// Default impl of DynamicGoodySpace does call this for each child sub-goody, on every JME.doUpdate loop,
+	// but a subclass of DGS might choose to be more selective.
 	public void doFastVWorldUpdate_onRendThrd(RenderRegistryClient rrc)  { 
 	}
 	

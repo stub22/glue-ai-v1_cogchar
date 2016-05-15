@@ -143,9 +143,13 @@ public class GoodyFactory {
 					novGoody = new TicTacMark(myRRC, goodyID, locVec, rotQuat, scaleVec, isAnO);
 				} else if (GoodyNames.TYPE_TICTAC_GRID.equals(goodyType)) {
 					novGoody = new TicTacGrid(myRRC, goodyID, locVec, rotQuat, gcolor, scaleVec);
+				} else if (GoodyNames.TYPE_BOX.equals(goodyType)) {
+					novGoody = new GoodyBox(myRRC, goodyID, locVec, rotQuat, gcolor, scaleVec);
 				} else if (GoodyNames.TYPE_CROSSHAIR.equals(goodyType)) {
+					// Flat goody uses different parentNode attachment.
 					novGoody = new CrossHairGoody(myRRC, goodyID, locVec, scaleUniform);
 				} else if (GoodyNames.TYPE_SCOREBOARD.equals(goodyType)) {
+					// Flat goody uses different parentNode attachment.
 					float sizeX = ga.getSizeVec3D()[0];
 					float rowHeight = sizeX;
 					float textSize = scaleUniform;					
@@ -155,12 +159,11 @@ public class GoodyFactory {
 					novGoody = new ScoreBoardGoody(myRRC, goodyID, locVec, rowHeight, rowCount, textSize);
 					
 				} else if (GoodyNames.TYPE_TEXT.equals(goodyType)) {
+					// Flat goody uses different parentNode attachment.
 					// scale.getX() should return scalarScale if that is provided, or use Robosteps API scalar scale which
 					// is represented as a vector scale with identical components
 					novGoody = new ParagraphGoody(myRRC, goodyID, locVec, scaleVec.getX(), gcolor, goodyText); 
 					
-				} else if (GoodyNames.TYPE_BOX.equals(goodyType)) {
-					novGoody = new GoodyBox(myRRC, goodyID, locVec, rotQuat, gcolor, scaleVec);
 				} else if (GoodyNames.TYPE_CAMERA.equals(goodyType)) {
 					Ident cameraUri = goodyID;
 					if (myGoodySpace.getGoody(cameraUri) == null) { //Otherwise this camera wrapper is already created

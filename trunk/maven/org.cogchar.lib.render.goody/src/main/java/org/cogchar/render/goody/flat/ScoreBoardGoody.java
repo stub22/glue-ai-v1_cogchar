@@ -22,6 +22,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.font.BitmapText;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.name.FreeIdent;
@@ -75,7 +76,8 @@ public class ScoreBoardGoody extends FlatGoody implements GeneralScoreBoard {
 		myNode = new Node("ScoreBoardGoody_" + uri.getLocalName());
 		myRows = new ArrayList<ScoreBoardGoody.Row>();
 		myRowHeight = rowHeight;
-		myPosition = topPosition;
+
+		// myPosition = topPosition;
 		String baseUriString = uri.getAbsUriString();
 		for (int rowIdx=0; rowIdx < numRows; rowIdx++) {
 			Ident rowIdent = new FreeIdent(baseUriString + "Row" + rowIdx);
@@ -83,7 +85,13 @@ public class ScoreBoardGoody extends FlatGoody implements GeneralScoreBoard {
 					getPositionForRow(rowIdx, topPosition), textSize, MY_SCORE_COLOR);
 			myRows.add(aLine);
 			aLine.setScoreText("line_" + rowIdx);
+			// Does this node-attachment step need to be queued?
+			// Seems that because the parentNode is not attached to grandParent yet, it is OK to attach kids to it.
+			BitmapText rowTextNode = aLine.getTextNode();
+			myNode.attachChild(rowTextNode);
 		}
+
+		setPosition(topPosition, QueueingStyle.QUEUE_AND_RETURN);
 		//BonyRenderContext.setScoreBoard(this); //needs to happen somewhere, probably not here!
 	}
 	@Override protected Node getFlatGoodyNode() {
@@ -140,6 +148,7 @@ public class ScoreBoardGoody extends FlatGoody implements GeneralScoreBoard {
 	};
 	
 	@Override public void setPosition(Vector3f position, QueueingStyle qStyle) {
+		super.setPosition(position, qStyle);
 		for (int rowIdx=0; rowIdx < myRows.size(); rowIdx++) {
 			Row nextRow = myRows.get(rowIdx);
 			nextRow.setScreenPosRelToParent(getPositionForRow(rowIdx, position), qStyle);

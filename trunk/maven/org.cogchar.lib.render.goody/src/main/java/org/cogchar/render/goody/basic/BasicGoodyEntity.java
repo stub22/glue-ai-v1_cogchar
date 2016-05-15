@@ -122,7 +122,7 @@ public class BasicGoodyEntity extends VWorldEntity {
 		}
 	}
 
-	//This may not be a great thing to expose publically. For now it's used to attach a GoodyEntity to a CameraEntity
+	//This may not be a great thing to expose publicly. For now it's used to attach a GoodyEntity to a CameraEntity
 	public Node getContentNode() {
 		return myContentNode;
 	}
