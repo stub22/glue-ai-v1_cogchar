@@ -24,5 +24,5 @@ import com.jme3.scene.Node;
 public interface DynamicGoodyParent {
 	public String getUniqueName();
 	
-	public Node getDisplayNode();
+	public Node getDisplayNode();  // The node that children should be attached to
 }

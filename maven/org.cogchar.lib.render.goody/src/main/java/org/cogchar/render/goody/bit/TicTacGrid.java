@@ -148,8 +148,9 @@ public class TicTacGrid extends BasicGoodyEntity {
 		int[] gridPosition = getGridPosition(mark.getUri());
 		return getWorldPositionForMark(gridPosition[0], gridPosition[1]);
 	}
-	
-	private VWorldEntityActionConsumer getTheGoodySpace() {
+
+	// Protected so it can be overridden
+	protected VWorldEntityActionConsumer getTheGoodySpace() {
 		return GoodyFactory.getTheFactory().getActionConsumer();
 	}
 	
