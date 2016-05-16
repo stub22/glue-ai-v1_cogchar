@@ -24,6 +24,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Torus;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
@@ -43,9 +44,9 @@ public class BitBox extends AbstractBitGoody {
 	private int zeroIndex;
 	private int oneIndex;
 	
-	public BitBox(GoodyRenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
-			Vector3f size, boolean boxState) {
-		super(aRenderRegCli, boxUri);
+	public BitBox(BasicGoodyCtx bgc,  Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
+				  Vector3f size, boolean boxState) {
+		super(bgc, boxUri);
 		QueueingStyle qStyle = QueueingStyle.QUEUE_AND_RETURN;
 		//myLogger.info("Making a BitBox: size={}, position={}, state={}, URI={}", //TEST ONLY
 		//	new Object[]{size, initialPosition, boxState, boxUri.getAbsUriString()}); //TEST ONLY

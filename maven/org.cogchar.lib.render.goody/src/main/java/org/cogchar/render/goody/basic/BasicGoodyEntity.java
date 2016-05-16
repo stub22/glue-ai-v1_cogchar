@@ -41,7 +41,7 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
 // This will need some ongoing refactorings both to fix some oddness and bad form inherent in development of the concepts here,
 // and to make sure the BasicGoodyImpl has the sorts of properties we want it to have 
-public class BasicGoodyEntity extends VWorldEntity {
+public class BasicGoodyEntity extends BasicVWorldEntity {
 
 	private Vector3f		myPosition = new Vector3f(); // default: at origin (relative to parentNode)
 	private Quaternion		myRotation = new Quaternion(); // default: no rotation (relative to parentNode)
@@ -58,10 +58,11 @@ public class BasicGoodyEntity extends VWorldEntity {
 
 	// May not want to allow this to be instantiated directly
 	// Might make sense to set more instance variables in the constructor as well, including perhaps rootNode?
-	protected BasicGoodyEntity(GoodyRenderRegistryClient aRenderRegCli, Ident uri) {
-		super(aRenderRegCli, uri);
+	protected BasicGoodyEntity(BasicGoodyCtx bgc, Ident uri) {
+		super(bgc, uri);
 		myContentNode = new Node("Goody Node of " + uri.getLocalName());
 	}
+
 	protected Quaternion getRotation() {
 		return myRotation;
 	}

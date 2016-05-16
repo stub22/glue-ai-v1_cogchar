@@ -32,10 +32,12 @@ import org.cogchar.api.cinema.WaypointConfig;
 import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.app.entity.GoodyActionExtractor;
-import org.cogchar.render.app.entity.GoodyFactory;
+
 import org.cogchar.render.app.entity.VWorldEntity;
-import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
+
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.goody.basic.BasicGoodyEntity;
+import org.cogchar.render.goody.basic.BasicVWorldEntity;
 import org.cogchar.render.scene.goody.PathMgr;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
@@ -47,12 +49,12 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
-public class VWorldCameraEntity extends VWorldEntity {
+public class VWorldCameraEntity extends BasicVWorldEntity {
 
     private Camera myCamera;
 
-    public VWorldCameraEntity(GoodyRenderRegistryClient aRenderRegCli, Ident cameraUri, Camera theCamera) {
-        super(aRenderRegCli, cameraUri);
+    public VWorldCameraEntity(BasicGoodyCtx bgc, Ident cameraUri, Camera theCamera) {
+        super(bgc, cameraUri);
         myCamera = theCamera;
     }
 
@@ -166,8 +168,8 @@ public class VWorldCameraEntity extends VWorldEntity {
     private void attachToGoody(String goodyUriString, QueueingStyle qStyle) {
         if (goodyUriString != null) {
             Ident goodyUri = new FreeIdent(goodyUriString);
-            VWorldEntityActionConsumer consumer = GoodyFactory.getTheFactory().getActionConsumer();
-            VWorldEntity goodyToAttach = consumer.getGoody(goodyUri);
+           //  VWorldEntityActionConsumer consumer = GoodyFactory.getTheFactory().getActionConsumer();
+            VWorldEntity goodyToAttach = getGoodyCtx().getVWER().getGoody(goodyUri); // consumer.getGoody(goodyUri);
             // Can avoid this instanceof code smell by refactoring here or in VWorldEntityActionConsumer;
             // All this stuff needs refactoring in any case to separate cameras out from the "Goody" concept, among many
             // other reasons...
