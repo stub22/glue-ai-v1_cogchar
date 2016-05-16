@@ -16,14 +16,12 @@
 
 package org.cogchar.render.goody.flat;
 
-import java.awt.Dimension;
+import com.jme3.math.Vector3f;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.app.entity.VWorldEntity;
-import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 
-import com.jme3.math.Vector3f;
-import org.cogchar.render.app.entity.GoodyFactory;
-import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
+import java.awt.*;
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -33,10 +31,10 @@ public abstract class FlatGoodyWithScreenFracPos extends FlatGoody {
 	private	Dimension	myStoredScreenDim;
 	private	float		myFracPosX = 0.5f, myFracPosY = 0.5f;
 	
-	protected FlatGoodyWithScreenFracPos(GoodyRenderRegistryClient aRenderRegCli, Ident uri) {
-		super(aRenderRegCli, uri);
-		VWorldEntityActionConsumer vweac = GoodyFactory.getTheFactory().getActionConsumer();
-		Dimension screenDimension = vweac.getScreenDimension();
+	protected FlatGoodyWithScreenFracPos(BasicGoodyCtx bgc, Ident uri) {
+		super(bgc, uri);
+		// VWorldEntityActionConsumer vweac = GoodyFactory.getTheFactory().getActionConsumer();
+		Dimension screenDimension = bgc.getScreenDimension();  //   vweac.getScreenDimension();
 		if (screenDimension != null) {
 			applyScreenDimension(screenDimension);
 		} else {

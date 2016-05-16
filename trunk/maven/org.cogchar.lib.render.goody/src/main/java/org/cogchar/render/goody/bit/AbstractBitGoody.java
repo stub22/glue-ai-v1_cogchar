@@ -17,6 +17,7 @@
 package org.cogchar.render.goody.bit;
 
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.goody.basic.BasicGoodyEntity;
 import org.cogchar.render.app.entity.GoodyActionExtractor;
 import org.cogchar.name.goody.GoodyNames;
@@ -34,8 +35,8 @@ public abstract class AbstractBitGoody extends BasicGoodyEntity {
 	
 	protected boolean state = false;
 	
-	protected AbstractBitGoody(GoodyRenderRegistryClient aRenderRegCli, Ident uri) {
-		super(aRenderRegCli, uri);
+	protected AbstractBitGoody(BasicGoodyCtx bgc, Ident uri) {
+		super(bgc, uri);
 	}
 	
 	public void setZeroState(QueueingStyle qStyle) {

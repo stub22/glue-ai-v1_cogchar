@@ -20,7 +20,8 @@ import java.util.concurrent.Callable;
 import org.appdapter.core.name.Ident;
 import org.appdapter.fancy.rclient.RepoClient;
 import org.cogchar.render.app.core.WorkaroundAppStub;
-import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
+
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.model.humanoid.HumanoidFigure;
 import org.cogchar.render.model.humanoid.VWorldHumanoidFigureEntity;
 import org.cogchar.render.opengl.optic.CameraMgr;
@@ -161,14 +162,15 @@ public class HumanoidRenderWorldMapper {
     }
 
     // A temporary way to make it possible to interact with figures... but ultimately, Humanoids aren't quite goodies!
-    public void addHumanoidGoodies(VWorldEntityActionConsumer consumer, HumanoidRenderContext hrc) {
+    public void addHumanoidGoodies(BasicGoodyCtx bgc, HumanoidRenderContext hrc) {
         GoodyRenderRegistryClient grrc = hrc.getGoodyRenderRegistryClient();
         Map<Ident, HumanoidFigure> humanoidFigures = hrc.getHumanoidFigureManager().getHumanoidFigures();
         for (Ident figureUri : humanoidFigures.keySet()) {
-            theLogger.info("Adding a HumanoidFigureGoodyWrapper for {}", figureUri);
-            HumanoidFigure figure = humanoidFigures.get(figureUri);
-            VWorldHumanoidFigureEntity vhfe = new VWorldHumanoidFigureEntity(grrc, figureUri, figure);
-            consumer.addGoody(vhfe);
+			theLogger.info("Adding a HumanoidFigureGoodyWrapper for {}", figureUri);
+			HumanoidFigure figure = humanoidFigures.get(figureUri);
+			VWorldHumanoidFigureEntity vhfe = new VWorldHumanoidFigureEntity(grrc, figureUri, figure);
+			// consumer.addGoody(vhfe);
+			bgc.getVWER().addGoody(vhfe);
         }
     }
 

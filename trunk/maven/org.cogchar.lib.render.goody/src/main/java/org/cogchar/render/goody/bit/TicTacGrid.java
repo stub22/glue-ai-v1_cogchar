@@ -16,10 +16,11 @@
 
 package org.cogchar.render.goody.bit;
 
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.goody.basic.BasicGoodyEntity;
 import org.cogchar.render.app.entity.GoodyActionExtractor;
-import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
-import org.cogchar.render.app.entity.GoodyFactory;
+
+
 import org.cogchar.name.goody.GoodyNames;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -56,9 +57,9 @@ public class TicTacGrid extends BasicGoodyEntity {
 	
 	private Map<Ident, TicTacMark> markMap = new HashMap<Ident, TicTacMark>();
 	
-	public TicTacGrid(GoodyRenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, 
-			Quaternion initialRotation, ColorRGBA color, Vector3f size) {
-		super(aRenderRegCli, boxUri);
+	public TicTacGrid(BasicGoodyCtx bgc, Ident boxUri, Vector3f initialPosition,
+					  Quaternion initialRotation, ColorRGBA color, Vector3f size) {
+		super(bgc, boxUri);
 		setPositionRotationAndScale(initialPosition, initialRotation, size, QueueingStyle.QUEUE_AND_RETURN);
 		Mesh gridMesh = makeCustomGridMesh();
 		if (color == null) {
@@ -91,9 +92,11 @@ public class TicTacGrid extends BasicGoodyEntity {
 			Vector3f markPosition = getWorldPositionForMark(xPos, yPos);
 			Quaternion rotation = getRotation();
 			Vector3f scale = getScale();
+			BasicGoodyCtx bgc = getGoodyCtx();
 			TicTacMark markGoody = 
-					new TicTacMark(getRenderRegCli(), markUri, markPosition, rotation, scale, isPlayerO);
-			getTheGoodySpace().addGoody(markGoody);
+					new TicTacMark(bgc, markUri, markPosition, rotation, scale, isPlayerO);
+			// getTheGoodySpace().addGoody(markGoody);
+			bgc.getVWER().addGoody(markGoody);
 			Node parentNode = getParentNode();
 			markGoody.attachToVirtualWorldNode(parentNode, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 			markMap.put(markUri, markGoody);
@@ -104,7 +107,7 @@ public class TicTacGrid extends BasicGoodyEntity {
 		Ident markIdent = createMarkIdent(xPos, yPos);
 		BasicGoodyEntity markToRemove = markMap.get(markIdent);
 		if (markToRemove != null) {
-			getTheGoodySpace().removeGoody(markToRemove);
+			getGoodyCtx().getVWER().removeGoody(markToRemove);
 			markMap.remove(markIdent);
 		} else {
 			getLogger().warn("No TicTacMark to remove at location ({}, {})", xPos, yPos);
@@ -113,7 +116,7 @@ public class TicTacGrid extends BasicGoodyEntity {
 	
 	public void clearMarks() {
 		for (BasicGoodyEntity mark : markMap.values()) {
-			getTheGoodySpace().removeGoody(mark);
+			getGoodyCtx().getVWER().removeGoody(mark);
 		}
 		markMap.clear();
 	}
@@ -150,9 +153,9 @@ public class TicTacGrid extends BasicGoodyEntity {
 	}
 
 	// Protected so it can be overridden
-	protected VWorldEntityActionConsumer getTheGoodySpace() {
-		return GoodyFactory.getTheFactory().getActionConsumer();
-	}
+//	protected VWorldEntityActionConsumer getTheGoodySpace() {
+//		return GoodyFactory.getTheFactory().getActionConsumer();
+//	}
 	
 	// On detach, we also want to remove all marks
 	@Override public void detachFromVirtualWorldNode(QueueingStyle qStyle) {

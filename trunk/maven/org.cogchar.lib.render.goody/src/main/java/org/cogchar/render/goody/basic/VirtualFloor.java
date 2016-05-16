@@ -38,9 +38,9 @@ public class VirtualFloor extends BasicGoodyEntity {
 	
 	private final ColorRGBA DEFAULT_COLOR = ColorRGBA.LightGray;
 
-	public VirtualFloor(GoodyRenderRegistryClient aRenderRegCli, Ident floorUri, Vector3f position, ColorRGBA color,
+	public VirtualFloor(BasicGoodyCtx bgc, Ident floorUri, Vector3f position, ColorRGBA color,
 			boolean rigidBodyPhysFlag) {
-		super(aRenderRegCli, floorUri);
+		super(bgc, floorUri);
 		setPosition(position, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 		// Constants and collision shape below taken from PhysicsStuffBuilder.
 		// How much of this stuff do we want to come from repo instead?

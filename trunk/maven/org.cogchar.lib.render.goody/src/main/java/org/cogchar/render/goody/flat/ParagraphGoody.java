@@ -22,6 +22,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 import org.cogchar.render.sys.task.Queuer.QueueingStyle;
@@ -41,9 +42,9 @@ public class ParagraphGoody extends FlatGoody {
 	
 	private	FlatGoodyTextElement		myTextElement;
 	
-	public ParagraphGoody(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f position, Float scale, 
-				ColorRGBA color, String text) {
-		super(aRenderRegCli, uri);
+	public ParagraphGoody(BasicGoodyCtx bgc, Ident uri, Vector3f position, Float scale,
+						  ColorRGBA color, String text) {
+		super(bgc, uri);
 
 		if (color == null) {
 			color = DEFAULT_COLOR;
@@ -54,7 +55,7 @@ public class ParagraphGoody extends FlatGoody {
 		if (text == null) {
 			text = DEFAULT_TEXT;
 		}
-		myTextElement = new FlatGoodyTextElement(aRenderRegCli);		
+		myTextElement = new FlatGoodyTextElement(bgc.getGRRC());
 		myTextElement.setContentText(text);
 		myTextElement.setUniformScaleFactor(scale, QueueingStyle.QUEUE_AND_RETURN);
 		myTextElement.setColor(color);

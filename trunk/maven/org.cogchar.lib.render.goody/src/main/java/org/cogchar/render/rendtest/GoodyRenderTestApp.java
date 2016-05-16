@@ -28,7 +28,9 @@ import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
-import org.cogchar.render.app.entity.GoodyFactory;
+
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
+import org.cogchar.render.goody.basic.BasicGoodyCtxImpl;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.context.CoreFeatureAdapter;
 import org.cogchar.render.sys.goody.GoodyModularRenderContext;
@@ -83,10 +85,10 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 				
 		GoodyModularRenderContext renderCtx = getBonyRenderContext();
 		GoodyRenderRegistryClient grrc = renderCtx.getGoodyRenderRegistryClient();
-		GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, renderCtx);	
-
+		// GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, renderCtx);
+		BasicGoodyCtx bgc = new BasicGoodyCtxImpl(grrc, renderCtx);
 		try {
-			initContentOnJME3Thread();
+			initContentOnJME3Thread(bgc);
 		} catch(Throwable t) {
 			t.printStackTrace();
 		}
@@ -215,14 +217,14 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 
 	// We are on the JME3 thread!
 	// The visual effects of this work are not shown until the method returns.
-	private void initContentOnJME3Thread() throws Throwable {
+	private void initContentOnJME3Thread(BasicGoodyCtx bgc) throws Throwable {
 
 		ViewPort pvp = getPrimaryAppViewPort();
 		pvp.setBackgroundColor(ColorRGBA.Blue);
 		shedLight();
 		// Hook-in for Goody system
 
-		LocalGoodyHarness lgh = new LocalGoodyHarness();
+		LocalGoodyHarness lgh = new LocalGoodyHarness(bgc);
 
 		LocalGoodyHarness.GARecipe garTemplate_AA = makeActionTemplate();
 

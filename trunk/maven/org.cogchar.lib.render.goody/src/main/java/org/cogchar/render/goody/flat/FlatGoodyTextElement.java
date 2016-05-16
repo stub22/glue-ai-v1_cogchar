@@ -16,25 +16,14 @@
 
 package org.cogchar.render.goody.flat;
 
-import org.cogchar.render.app.entity.GoodyActionExtractor;
-import org.cogchar.render.app.entity.GoodyFactory;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import com.jme3.math.ColorRGBA;
-import java.awt.Dimension;
-import java.util.concurrent.Callable;
 import org.appdapter.core.log.BasicDebugger;
-import org.appdapter.core.name.Ident;
-import org.cogchar.render.sys.task.Queuer.QueueingStyle;
-import org.cogchar.render.app.entity.VWorldEntity;
-
-import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
-import org.cogchar.render.opengl.scene.FlatOverlayMgr;
-// import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
+import org.cogchar.render.sys.task.Queuer.QueueingStyle;
+
+// import org.cogchar.render.sys.registry.RenderRegistryClient;
 /**
  * "x,y locations of guiNode children are the x,y pixel on screen and z controls the render order.
  *  guiNode at 0,0 = lower left of the screen."

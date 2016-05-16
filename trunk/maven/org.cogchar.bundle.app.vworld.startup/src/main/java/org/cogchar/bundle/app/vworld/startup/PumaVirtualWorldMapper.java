@@ -27,8 +27,9 @@ import org.cogchar.impl.thing.route.BasicThingActionRouter;
 import org.cogchar.name.entity.EntityRoleCN;
 import org.cogchar.platform.gui.keybind.KeyBindingConfig;
 import org.cogchar.platform.trigger.CommandSpace;
-import org.cogchar.render.app.entity.GoodyFactory;
-import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
+
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
+import org.cogchar.render.goody.basic.BasicGoodyCtxImpl;
 import org.cogchar.render.app.humanoid.HumanoidRenderContext;
 import org.cogchar.render.app.humanoid.HumanoidRenderWorldMapper;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
@@ -99,11 +100,15 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
         KeyBindingConfig currKeyBindCfg = new KeyBindingConfig();
         // Hook-in for Goody system
         GoodyRenderRegistryClient grrc = hrc.getGoodyRenderRegistryClient();
-        GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, hrc);
+
+		BasicGoodyCtx bgc = new BasicGoodyCtxImpl(grrc, hrc);
+
+        // GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, hrc);
         // Setup the humanoid "goodies"
         HumanoidRenderWorldMapper hrwMapper = new HumanoidRenderWorldMapper();
-        VWorldEntityActionConsumer veActConsumer = gFactory.getActionConsumer();
-        hrwMapper.addHumanoidGoodies(veActConsumer, hrc);
+        // VWorldEntityActionConsumer veActConsumer = gFactory.getActionConsumer();
+        // hrwMapper.addHumanoidGoodies(veActConsumer, hrc);
+		hrwMapper.addHumanoidGoodies(bgc, hrc);
         try {
             List<Ident> worldConfigIdents = gce.entityMap().get(EntityRoleCN.VIRTUAL_WORLD_ENTITY_TYPE);
             // Multiple worldConfigIdents? Possible. It's possible duplicate cinematic definitions might cause problems
@@ -111,7 +116,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
             for (Ident configIdent : worldConfigIdents) {
                 // This may try to add a head-cam, so we need to have injected the HominoidCameraManager already
                 // (done 10 lines above).
-                initCinematicStuff(gce, configIdent, rc, gFactory, router);
+                initCinematicStuff(gce, configIdent, rc, bgc, router);
                 // Like with everything else dependent on global config's graph settings (except for Lift, which uses a managed service
                 // version of GlobalConfigEmitter) it seems logical to set the key bindings here.
                 // Multiple worldConfigIdents? We decided above this is possible (if messy). If key bindings are duplicated
@@ -147,7 +152,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
      * to get our configurable V-world up and running.
      */
     private void initCinematicStuff(GlobalConfigEmitter gce, Ident worldConfigIdent, RepoClient repoCli,
-            GoodyFactory gFactory, BasicThingActionRouter router) {
+									BasicGoodyCtx bgc,  BasicThingActionRouter router) {
         HumanoidRenderWorldMapper renderMapper = new HumanoidRenderWorldMapper();
         HumanoidRenderContext hrc = getHumanoidRenderContext();
         Ident graphIdent = null;
@@ -161,7 +166,7 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
         } catch (Exception e) {
             getLogger().warn("Error attempting to initialize lights and cameras for {}: ", worldConfigIdent.getLocalName(), e);
         }
-        setupActionConsumer(router, gce, worldConfigIdent, repoCli, gFactory);
+        setupActionConsumer(router, gce, worldConfigIdent, repoCli, bgc); //  gFactory);
         graphIdent = null;
         try {
             graphIdent = gce.ergMap().get(worldConfigIdent).get(EntityRoleCN.WAYPOINTS_BINDINGS_ROLE);
@@ -205,19 +210,21 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
      * above this method). - called from 3 different places, including pumaBoot
      * and processUpdateRequestNow()
      */
-    public void setupActionConsumer(BasicThingActionRouter router, GlobalConfigEmitter gce, Ident worldConfigID,
-            RepoClient repoCli, GoodyFactory gFactory) {
+    public void setupActionConsumer(BasicThingActionRouter router, GlobalConfigEmitter gce,
+									Ident worldConfigID,
+            RepoClient repoCli, BasicGoodyCtx bgc) { //    GoodyFactory gFactory) {
         // Goodies should be initialized before paths/animations so that they can reference Goodies!
         try {
             Ident actionGraphID = gce.ergMap().get(worldConfigID).get(EntityRoleCN.THING_ACTIONS_BINDINGS_ROLE);
-            BasicThingActionConsumer consumer = gFactory.getActionConsumer();
+            //BasicThingActionConsumer consumer = gFactory.getActionConsumer();
+
             // We drain the actions here, one time, before attaching consumer, because...(?)
 			// [Something-something clear the "old"[/"init"] actions]
             // Note here is the *only* use of this deprecated 2-args method form (in all of Cogchar), so refactoring 
             // it out of this call in Puma will allow us to remove it from o.c.lib.core.
-            consumer.consumeAllActions(repoCli, actionGraphID);
+           // consumer.consumeAllActions(repoCli, actionGraphID);
 
-            router.appendConsumer(actionGraphID, consumer);
+          //  router.appendConsumer(actionGraphID, consumer);
 			// Future action consumption happens when router gets data and passes to consumers.
             getLogger().info("Finished consumingActions and appending consumer, now attaching AppMonitor binding");
             if (myVWMonitorBinding == null) {
