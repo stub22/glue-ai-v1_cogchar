@@ -18,7 +18,8 @@ package org.cogchar.render.sys.goody;
 import java.awt.Dimension;
 import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.render.app.bony.BonyRenderContext;
-import org.cogchar.render.app.entity.VWorldEntityActionConsumer;
+
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 import org.cogchar.render.goody.flat.GeneralScoreBoard;
 import org.cogchar.render.gui.bony.VirtualCharacterPanel;
@@ -40,7 +41,8 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 public class GoodyModularRenderContext extends BonyRenderContext {
 	private		DataballGoodyBuilder			myBallBuilder;
 	private		boolean							thisBallBuilderSet;
-	private		VWorldEntityActionConsumer		myEntitySpace;						
+	// private		VWorldEntityActionConsumer		myEntitySpace;
+	private 	BasicGoodyCtx					myBasicGoodyCtx;
 	private		boolean							thisEntitySpaceSet;
 	
 	protected	GeneralScoreBoard				myScoreBoard;
@@ -83,9 +85,9 @@ public class GoodyModularRenderContext extends BonyRenderContext {
 		}
 	}
 	
-	public void setTheEntitySpace(VWorldEntityActionConsumer theSpace) {
-		myEntitySpace = theSpace;
-		if (theSpace != null) {
+	public void setTheEntitySpace(BasicGoodyCtx bgc) {
+		myBasicGoodyCtx = bgc;
+		if (bgc != null) {
 			thisEntitySpaceSet = true; // In theory, this variable allows a fast boolean check in doUpdate instead of having to check for null each update
 		}
 	}	
@@ -96,7 +98,7 @@ public class GoodyModularRenderContext extends BonyRenderContext {
 			if (vcp != null) {
 				myScreenDimension = vcp.getSize(myScreenDimension);
 				if (!myScreenDimension.equals(lastScreenDimension)) {
-					myEntitySpace.applyNewScreenDimension(myScreenDimension);
+					myBasicGoodyCtx.applyNewScreenDimension(myScreenDimension);
 					lastScreenDimension = (Dimension)myScreenDimension.clone();
 				}
 			}

@@ -24,6 +24,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.texture.Texture;
 import jme3tools.optimize.TextureAtlas;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.opengl.optic.MatFactory;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
@@ -42,9 +43,9 @@ public class BitCube extends AbstractBitGoody {
 	
 	private int geomIndex;
 	
-	public BitCube(GoodyRenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
-			Vector3f size, Boolean boxState) {
-		super(aRenderRegCli, boxUri);
+	public BitCube(BasicGoodyCtx bgc, Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
+				   Vector3f size, Boolean boxState) {
+		super(bgc, boxUri);
 		QueueingStyle qStyle = QueueingStyle.QUEUE_AND_RETURN;
 		if (size == null) {
 			getLogger().warn("No size specified for BitCube, defaulting to size = 1");

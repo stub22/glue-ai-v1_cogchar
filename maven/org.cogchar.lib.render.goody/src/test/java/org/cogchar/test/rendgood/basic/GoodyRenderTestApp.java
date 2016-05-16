@@ -48,10 +48,6 @@ import org.cogchar.blob.emit.RenderConfigEmitter;
 import org.cogchar.name.dir.NamespaceDir;
 
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
-import org.cogchar.render.app.entity.GoodyFactory;
-
-
-
 
 /**
  * @author Stu B. <www.texpedient.com>
@@ -99,7 +95,7 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 				
 		GoodyModularRenderContext renderCtx = getBonyRenderContext();
 		GoodyRenderRegistryClient grrc = renderCtx.getGoodyRenderRegistryClient();
-		GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, renderCtx);	
+	//	GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, renderCtx);
 		
 		initContentOnJME3Thread();
 		// hideJmonkeyDebugInfo();

@@ -26,6 +26,7 @@ import com.jme3.scene.shape.Torus;
 import java.util.ArrayList;
 import java.util.List;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.goody.basic.BasicGoodyEntity;
 import org.cogchar.render.goody.basic.CompositeMeshBuilder;
 import org.cogchar.render.goody.basic.CompositeMeshBuilder.MeshComponent;
@@ -50,9 +51,9 @@ public class TicTacMark extends BasicGoodyEntity {
 	private int indexX;
 	private int indexO;
 
-	public TicTacMark(GoodyRenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
-			Vector3f size, boolean isPlayerO) {
-		super(aRenderRegCli, boxUri);
+	public TicTacMark(BasicGoodyCtx bgc, Ident boxUri, Vector3f initialPosition, Quaternion initialRotation,
+					  Vector3f size, boolean isPlayerO) {
+		super(bgc, boxUri);
 		QueueingStyle qStyle = QueueingStyle.QUEUE_AND_RETURN;
 		setPositionAndRotation(initialPosition, initialRotation, qStyle);
 		setVectorScale(size, qStyle);

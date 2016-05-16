@@ -28,6 +28,7 @@ import java.util.List;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.app.entity.VWorldEntity;
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
@@ -55,7 +56,6 @@ public class ScoreBoardGoody extends FlatGoody implements GeneralScoreBoard {
 	List<ScoreBoardGoody.Row>	myRows;
 
 	private	Node	myNode;
-	
 
 	public class Row extends FlatGoodyTextElement {
 		public Row(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f rowPosition, float textSize, ColorRGBA scoreColor) {
@@ -70,18 +70,19 @@ public class ScoreBoardGoody extends FlatGoody implements GeneralScoreBoard {
 			setContentText(scoreText);
 		}
 	}
-	public ScoreBoardGoody(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f topPosition, 
-				float rowHeight, int numRows, float textSize) {
-		super(aRenderRegCli, uri);
+	public ScoreBoardGoody(BasicGoodyCtx bgc, Ident uri, Vector3f topPosition,
+						   float rowHeight, int numRows, float textSize) {
+		super(bgc, uri);
 		myNode = new Node("ScoreBoardGoody_" + uri.getLocalName());
 		myRows = new ArrayList<ScoreBoardGoody.Row>();
 		myRowHeight = rowHeight;
 
 		// myPosition = topPosition;
 		String baseUriString = uri.getAbsUriString();
+		GoodyRenderRegistryClient grrc = bgc.getGRRC();
 		for (int rowIdx=0; rowIdx < numRows; rowIdx++) {
 			Ident rowIdent = new FreeIdent(baseUriString + "Row" + rowIdx);
-			ScoreBoardGoody.Row aLine = new ScoreBoardGoody.Row(aRenderRegCli, rowIdent, 
+			ScoreBoardGoody.Row aLine = new ScoreBoardGoody.Row(grrc, rowIdent,
 					getPositionForRow(rowIdx, topPosition), textSize, MY_SCORE_COLOR);
 			myRows.add(aLine);
 			aLine.setScoreText("line_" + rowIdx);

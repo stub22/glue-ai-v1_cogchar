@@ -22,6 +22,9 @@
 
 package org.cogchar.render.goody.physical;
 
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
+import org.cogchar.render.goody.basic.BasicGoodyCtxImpl;
+import org.cogchar.render.sys.goody.GoodyModularRenderContext;
 import org.cogchar.render.sys.input.InputMgr;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -145,7 +148,9 @@ public class GoodyPhysicsStuffBuilder extends RenderRegistryAware implements Phy
 		Ident floorUri = new FreeIdent(ccrt+floorLocalName);
 		// TODO:  Complete refactoring by ensuring this really is a GoodyRenderRegistryClient
 		GoodyRenderRegistryClient grrc = (GoodyRenderRegistryClient) myCRC.getRenderRegistryClient();
-		VirtualFloor floor = new VirtualFloor(grrc, floorUri, new Vector3f(0, -5, 0), 
+		GoodyModularRenderContext gmrc = (GoodyModularRenderContext) myCRC;
+		BasicGoodyCtx bgc = new BasicGoodyCtxImpl(grrc, gmrc);
+		VirtualFloor floor = new VirtualFloor(bgc, floorUri, new Vector3f(0, -5, 0),
 				null, rigidBodyPhysFlag);
 		floor.attachToVirtualWorldNode(myParentNode, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
 	}

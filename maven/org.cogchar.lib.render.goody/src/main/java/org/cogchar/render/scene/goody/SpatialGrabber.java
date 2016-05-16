@@ -21,13 +21,16 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl.ControlDirection;
 import java.util.Map;
 import java.util.concurrent.Callable;
+
+import org.appdapter.core.item.Item;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.cinema.SpatialActionConfig;
 import org.cogchar.render.app.entity.CameraBinding;
 import org.cogchar.render.app.entity.VWorldEntity;
+import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.goody.basic.BasicGoodyEntity;
-import org.cogchar.render.app.entity.GoodyFactory;
+
 import org.cogchar.render.opengl.optic.CameraMgr;
 import org.cogchar.render.sys.context.CogcharRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
@@ -106,9 +109,13 @@ public class SpatialGrabber extends BasicDebugger {
 		return attachedSpatial;
 	}
 	Spatial getSpatialForAttachedGoody(SpatialActionConfig track) {
+		throw new RuntimeException("FIXME: getSpatialForAttachedGoody needs access to a BasicGoodyCtx!");
+	}
+	private Spatial doGetSpatialForAttachedGoody(SpatialActionConfig track, BasicGoodyCtx bgc) {
 		Spatial attachedSpatial = null;
 		try {
-			VWorldEntity desiredGoody = GoodyFactory.getTheFactory().getActionConsumer().getGoody(track.attachedItem);
+			VWorldEntity desiredGoody = null; // GoodyFactory.getTheFactory().getActionConsumer().getGoody(track.attachedItem);
+
 			if (desiredGoody instanceof BasicGoodyEntity) {
 				BasicGoodyEntity goody3d = (BasicGoodyEntity) desiredGoody;
 				attachedSpatial = goody3d.getCurrentAttachedGeometry();

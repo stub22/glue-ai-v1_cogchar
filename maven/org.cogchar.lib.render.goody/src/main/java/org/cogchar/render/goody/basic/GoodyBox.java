@@ -34,9 +34,9 @@ public class GoodyBox extends BasicGoodyEntity {
 	
 	private final ColorRGBA DEFAULT_COLOR = ColorRGBA.LightGray;
 
-	public GoodyBox(GoodyRenderRegistryClient aRenderRegCli, Ident boxUri, Vector3f position, Quaternion rotation, 
+	public GoodyBox(BasicGoodyCtx bgc,  Ident boxUri, Vector3f position, Quaternion rotation,
 			ColorRGBA color, Vector3f size/*boolean rigidBodyPhysFlag*/) {
-		super(aRenderRegCli, boxUri);
+		super(bgc, boxUri);
 		// This check is shared with BitCube and BitBox and should be factored out:
 		if (size == null) {
 			getLogger().warn("No size specified for GoodyBox, defaulting to size = 1");
