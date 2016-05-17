@@ -4,12 +4,27 @@ import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.goody.basic.BasicGoodyCtx;
+import org.cogchar.api.thing.SerTypedValueMap;
+import org.cogchar.api.thing.WantsThingAction;
+import org.cogchar.api.vworld.GoodyActionParamWriter;
+import org.cogchar.impl.thing.basic.BasicThingActionSpec;
+import org.cogchar.impl.thing.basic.BasicTypedValueMap;
+import org.cogchar.impl.thing.fancy.ConcreteTVM;
 import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.name.goody.GoodyNames;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Random;
+
 /**
  * Created by Owner on 5/15/2016.
  */
 public class GoodyTestMsgMaker extends BasicDebugger {
+
+	protected Random myRandomizer = new Random();
+	protected Ident myAgentID = new FreeIdent(NamespaceDir.CCRT_NS + "test_agent_LGH");
+
 	private LocalGoodyHarness.GARecipe makeActionTemplate() {
 		LocalGoodyHarness.GARecipe garTemplate_AA = new LocalGoodyHarness.GARecipe();
 
@@ -22,10 +37,8 @@ public class GoodyTestMsgMaker extends BasicDebugger {
 
 		return garTemplate_AA;
 	}
-	private Ident makeIdentForIdx(int idx) {
-		return new FreeIdent(NamespaceDir.CCRT_NS + "ttg_" + idx);
-	}
-	private void makeTicTacGrid(LocalGoodyHarness lgh, Ident entityID) {
+
+	private List<BasicThingActionSpec> makeTicTacGrid(Ident entityID) {
 		LocalGoodyHarness.GARecipe gar = makeActionTemplate();
 		gar.entityID = entityID;
 		getLogger().info("********************************************** Make TICTAC GRID");
@@ -33,16 +46,16 @@ public class GoodyTestMsgMaker extends BasicDebugger {
 		gar.entityTypeID = GoodyNames.TYPE_TICTAC_GRID;
 		gar.locX = -8.0f;
 		gar.locZ = -5.0f;
-		lgh.makeActionSpecAndSend(gar);
+		BasicThingActionSpec cmsg = makeActionSpec(gar);
 
 		getLogger().info("********************************************** Extra SET op on same TICTAC GRID");
 		// Now we (set some properties on that GRID
 		gar.verbID = GoodyNames.ACTION_SET;
 		// String removeString = ga.getSpecialString(CLEAR_IDENT);
-		lgh.makeActionSpecAndSend(gar);
-
+		BasicThingActionSpec umsg = makeActionSpec(gar);
+		return makeMsgList(cmsg, umsg);
 	}
-	private void makeTicTacMark(LocalGoodyHarness lgh, Ident entityID) {
+	private List<BasicThingActionSpec> makeTicTacMark(Ident entityID) {
 		getLogger().info("********************************************** Make TICTAC MARK");
 		LocalGoodyHarness.GARecipe gb = makeActionTemplate();
 		gb.entityID = entityID;
@@ -50,9 +63,10 @@ public class GoodyTestMsgMaker extends BasicDebugger {
 		gb.locY = 2.0f;
 		gb.locY = 3.0f;
 		gb.entityTypeID = GoodyNames.TYPE_TICTAC_MARK;
-		lgh.makeActionSpecAndSend(gb);
+		BasicThingActionSpec cmsg = makeActionSpec(gb);
+		return makeMsgList(cmsg);
 	}
-	private void makeBitBox(LocalGoodyHarness lgh, Ident entityID) {
+	private List<BasicThingActionSpec> makeBitBox(Ident entityID) {
 		getLogger().info("********************************************** Make BITBOX");
 		// Now let's CREATE a BIT_BOX
 
@@ -60,29 +74,32 @@ public class GoodyTestMsgMaker extends BasicDebugger {
 		gb.entityID = entityID;
 		gb.entityTypeID = GoodyNames.TYPE_BIT_BOX;
 		gb.locX = -5.0f;
-		lgh.makeActionSpecAndSend(gb);
+		BasicThingActionSpec cmsg = makeActionSpec(gb);
 		// ...and finish setting the properties on the BIT_BOX
 		gb.verbID = GoodyNames.ACTION_SET;
-		lgh.makeActionSpecAndSend(gb);
+		BasicThingActionSpec umsg = makeActionSpec(gb);
+		return makeMsgList(cmsg, umsg);
 
 	}
-	private void makeBox(LocalGoodyHarness lgh, Ident entityID) {
+	private List<BasicThingActionSpec> makeBox(Ident entityID) {
 		getLogger().info("********************************************** Make BOX");
 		LocalGoodyHarness.GARecipe gb = makeActionTemplate();
 		gb.entityID = entityID;
 		gb.entityTypeID = GoodyNames.TYPE_BOX;
 		gb.locX = 10.0f;
-		lgh.makeActionSpecAndSend(gb);
+		BasicThingActionSpec cmsg = makeActionSpec(gb);
+		return makeMsgList(cmsg);
 	}
-	private void makeBitCube(LocalGoodyHarness lgh, Ident entityID) {
+	private List<BasicThingActionSpec> makeBitCube(Ident entityID) {
 		getLogger().info("********************************************** Make BitCube -- fails because we can't find resource");
 		LocalGoodyHarness.GARecipe gb = makeActionTemplate();
 		gb.entityID = entityID;
 		gb.entityTypeID = GoodyNames.TYPE_BIT_CUBE;
 		gb.locX = 6.5f;
-		lgh.makeActionSpecAndSend(gb);
+		BasicThingActionSpec cmsg = makeActionSpec(gb);
+		return makeMsgList(cmsg);
 	}
-	private void makeFloor(LocalGoodyHarness lgh, Ident entityID) {
+	private List<BasicThingActionSpec> makeFloor(Ident entityID) {
 		getLogger().info("********************************************** Make Floor");
 		LocalGoodyHarness.GARecipe gb = makeActionTemplate();
 		gb.entityID = entityID;
@@ -91,9 +108,10 @@ public class GoodyTestMsgMaker extends BasicDebugger {
 		gb.locX = -2.0f;
 		gb.locZ = -3.0f;
 		gb.locY = -4.0f;
-		lgh.makeActionSpecAndSend(gb);
+		BasicThingActionSpec cmsg = makeActionSpec(gb);
+		return makeMsgList(cmsg);
 	}
-	private void makeScoreboard(LocalGoodyHarness lgh, Ident entityID) {
+	private List<BasicThingActionSpec> makeScoreboard(Ident entityID) {
 		getLogger().info("********************************************** Make SCOREBOARD");
 		LocalGoodyHarness.GARecipe gb = makeActionTemplate();
 		gb.entityID = entityID;
@@ -101,10 +119,12 @@ public class GoodyTestMsgMaker extends BasicDebugger {
 		gb.entityTypeID = GoodyNames.TYPE_SCOREBOARD;
 //		gb.locX = 0.1f;
 		gb.locX = 50.0f; gb.locY = 400.0f;
-		lgh.makeActionSpecAndSend(gb);
+		BasicThingActionSpec cmsg = makeActionSpec(gb);
+		return makeMsgList(cmsg);
+
 
 	}
-	private void makeCrosshair(LocalGoodyHarness lgh, Ident entityID) {
+	private List<BasicThingActionSpec> makeCrosshair(Ident entityID) {
 		getLogger().info("********************************************** Make CROSSHAIR");
 		LocalGoodyHarness.GARecipe gb = makeActionTemplate();
 		gb.entityID = entityID;
@@ -113,10 +133,11 @@ public class GoodyTestMsgMaker extends BasicDebugger {
 		// gb.locX = 0.7f; gb.locY = 0.2f;
 		gb.locX = 150.0f; gb.locY = 350.0f;
 		gb.scaleX = 5.0f;
-		lgh.makeActionSpecAndSend(gb);
+		BasicThingActionSpec cmsg = makeActionSpec(gb);
+		return makeMsgList(cmsg);
 
 	}
-	private void makeText(LocalGoodyHarness lgh, Ident entityID) {
+	private List<BasicThingActionSpec> makeText(Ident entityID) {
 		getLogger().info("********************************************** Make TEXT");
 		LocalGoodyHarness.GARecipe gb = makeActionTemplate();
 		gb.entityID = entityID;
@@ -127,38 +148,43 @@ public class GoodyTestMsgMaker extends BasicDebugger {
 		// gb.locX = 10.0f; gb.locY = 10.0f;
 		gb.locX = 201.0f; gb.locY = 198.0f;
 		gb.text = "Oh yes indeedy! XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-		lgh.makeActionSpecAndSend(gb);
+		BasicThingActionSpec cmsg = makeActionSpec(gb);
+		return makeMsgList(cmsg);
+
 	}
 
 
-	// We are on the JME3 thread!
 	// The visual effects of this work are not shown until the method returns.
-	public void sendGoodyCreationMessages_onJME3Thread(BasicGoodyCtx bgc) throws Throwable {
+	public List<BasicThingActionSpec> makeGoodyCreationMsgs() throws Throwable {
 
-		LocalGoodyHarness lgh = new LocalGoodyHarness(bgc);
+//		LocalGoodyHarness lgh = new LocalGoodyHarness(bgc);
 
 		LocalGoodyHarness.GARecipe garTemplate_AA = makeActionTemplate();
 
 		int gbi = 0;
 
-		makeTicTacGrid(lgh, makeIdentForIdx(gbi++));
+		List<BasicThingActionSpec> msgs = new ArrayList<BasicThingActionSpec>();
 
-		makeTicTacMark(lgh, makeIdentForIdx(gbi++));
+		msgs.addAll(makeTicTacGrid(makeIdentForIdx(gbi++)));
 
-		makeBitBox(lgh, makeIdentForIdx(gbi++));
+		msgs.addAll(makeTicTacMark(makeIdentForIdx(gbi++)));
 
-		makeBox(lgh, makeIdentForIdx(gbi++));
+		msgs.addAll(makeBitBox(makeIdentForIdx(gbi++)));
 
-		makeBitCube(lgh, makeIdentForIdx(gbi++));
+		msgs.addAll(makeBox(makeIdentForIdx(gbi++)));
 
-		makeFloor(lgh, makeIdentForIdx(gbi++));
+		msgs.addAll(makeBitCube(makeIdentForIdx(gbi++)));
+
+		msgs.addAll(makeFloor(makeIdentForIdx(gbi++)));
 
 		// 2D Goodies
-		makeScoreboard(lgh, makeIdentForIdx(gbi++));
+		msgs.addAll(makeScoreboard(makeIdentForIdx(gbi++)));
 
-		makeCrosshair(lgh, makeIdentForIdx(gbi++));
+		msgs.addAll(makeCrosshair(makeIdentForIdx(gbi++)));
 
-		makeText(lgh, makeIdentForIdx(gbi++));
+		msgs.addAll(makeText(makeIdentForIdx(gbi++)));
+
+		return msgs;
 
 /*		// Hominoid entities
 		getLogger().info("********************************************** Make AVATAR-link");
@@ -178,5 +204,39 @@ public class GoodyTestMsgMaker extends BasicDebugger {
 		// GoodySpace gSpace = getGoodySpace();
 		// hrwMapper.addHumanoidGoodies(veActConsumer, hrc);
 	}
+	public BasicThingActionSpec makeActionSpec(LocalGoodyHarness.GARecipe gar) {
+		BasicTypedValueMap btvm = new ConcreteTVM();
+		GoodyActionParamWriter paramWriter = new GoodyActionParamWriter(btvm);
+		gar.writeToMap(paramWriter);
+		String mintedInstIdPrefix = NamespaceDir.CCRT_NS + "minted_";
+		Ident actRecID = mintInstanceID(mintedInstIdPrefix);
 
+		Ident srcAgentID = myAgentID;
+		Long postedTStampMsec = System.currentTimeMillis();
+
+		SerTypedValueMap valueMap = paramWriter.getValueMap();
+		BasicThingActionSpec actionSpec = new BasicThingActionSpec(actRecID,
+				gar.entityID, gar.entityTypeID, gar.verbID, srcAgentID, valueMap, postedTStampMsec);
+
+		return actionSpec;
+	}
+	public List<BasicThingActionSpec> makeMsgList(BasicThingActionSpec oneMsg) {
+		List<BasicThingActionSpec> msgList = new ArrayList<BasicThingActionSpec>();
+		msgList.add(oneMsg);
+		return msgList;
+	}
+	public List<BasicThingActionSpec> makeMsgList(BasicThingActionSpec msg1, BasicThingActionSpec msg2) {
+		List<BasicThingActionSpec> msgList = new ArrayList<BasicThingActionSpec>();
+		msgList.add(msg1);
+		msgList.add(msg2);
+		return msgList;
+	}
+	public Ident mintInstanceID(String uriPre) {
+		int rNum = myRandomizer.nextInt(Integer.MAX_VALUE);
+		String uri = uriPre + rNum;
+		return new FreeIdent(uri);
+	}
+	public Ident makeIdentForIdx(int idx) {
+		return new FreeIdent(NamespaceDir.CCRT_NS + "ttg_" + idx);
+	}
 }
