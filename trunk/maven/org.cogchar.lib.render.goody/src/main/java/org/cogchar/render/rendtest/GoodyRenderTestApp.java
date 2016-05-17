@@ -29,6 +29,9 @@ import org.cogchar.name.dir.NamespaceDir;
 import org.cogchar.name.goody.GoodyNames;
 import org.cogchar.render.app.bony.BonyVirtualCharApp;
 
+import org.cogchar.api.thing.WantsThingAction;
+import org.cogchar.impl.thing.basic.BasicThingActionSpec;
+
 import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.goody.basic.BasicGoodyCtxImpl;
 import org.cogchar.render.sys.context.CogcharRenderContext;
@@ -37,6 +40,8 @@ import org.cogchar.render.sys.goody.GoodyModularRenderContext;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClientImpl;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
+
+import java.util.List;
 
 
 /**
@@ -106,13 +111,24 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 
 		GoodyTestMsgMaker gtmm = new GoodyTestMsgMaker();
 
-		gtmm.sendGoodyCreationMessages_onJME3Thread(bgc);
+		List<BasicThingActionSpec> msgs =  gtmm.makeGoodyCreationMsgs();
+		for (BasicThingActionSpec msg : msgs) {
+			getLogger().info("Sending: {}", msg);
+			sendActionSpec(bgc, msg);
+		}
 		//	GoodyRenderTestContent grtc = new GoodyRenderTestContent();
 		// GoodySpace gSpace = getGoodySpace();
 		// hrwMapper.addHumanoidGoodies(veActConsumer, hrc);
 	}
 
-
+	static private void sendActionSpec(BasicGoodyCtx bgc, BasicThingActionSpec actionSpec) {
+		// This winds up calling enqueueForJmeAndWait in
+		// BasicGoodyEntity.attachToVirtualWorldNode
+		//  1) Why does it need to wait?  This slows down the action-consuming thread.
+		//  2) If it does wait, and we are already on the JME thread when we call this - hello deadlock!
+		// Ident srcGraphID = srcAgentID;
+		WantsThingAction.ConsumpStatus consumpStatus = bgc.consumeAction(actionSpec);
+	}
 	private void shedLight() {
 		CogcharRenderContext cpmrc = getRenderContext();
 		CoreFeatureAdapter.setupLight(cpmrc);
