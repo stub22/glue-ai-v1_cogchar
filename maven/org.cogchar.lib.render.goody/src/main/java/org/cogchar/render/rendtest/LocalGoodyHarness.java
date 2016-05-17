@@ -36,14 +36,14 @@ import java.util.Random;
  */
 public class LocalGoodyHarness {
 
-	protected Random myRandomizer = new Random();
-	protected Ident myAgentID = new FreeIdent(NamespaceDir.CCRT_NS + "test_agent_LGH");
-
+	// protected Ident myAgentID = new FreeIdent(NamespaceDir.CCRT_NS + "test_agent_LGH");
+/*
 	private BasicGoodyCtx myGoodyCtx;
 
 	public LocalGoodyHarness(BasicGoodyCtx bgc) {
 		myGoodyCtx = bgc;
 	}
+	*/
 	public static class GARecipe implements Cloneable {
 
 		public Ident entityID = null;
@@ -90,38 +90,4 @@ public class LocalGoodyHarness {
 		}
 	}
 
-	public void makeActionSpecAndSend(GARecipe gar) {
-		BasicTypedValueMap btvm = new ConcreteTVM();
-		GoodyActionParamWriter paramWriter = new GoodyActionParamWriter(btvm);
-		gar.writeToMap(paramWriter);
-		String mintedInstIdPrefix = NamespaceDir.CCRT_NS + "minted_";
-		Ident actRecID = mintInstanceID(mintedInstIdPrefix);
-
-		Ident srcAgentID = myAgentID;
-		Long postedTStampMsec = System.currentTimeMillis();
-
-		SerTypedValueMap valueMap = paramWriter.getValueMap();
-		BasicThingActionSpec actionSpec = new BasicThingActionSpec(actRecID,
-			gar.entityID, gar.entityTypeID, gar.verbID, srcAgentID, valueMap, postedTStampMsec);
-
-	//	GoodySpace gSpace = getGoodySpace();
-		Ident srcGraphID = srcAgentID;
-		// This winds up calling enqueueForJmeAndWait in
-		// BasicGoodyEntity.attachToVirtualWorldNode
-		//  1) Why does it need to wait?  This slows down the action-consuming thread.
-		//  2) If it does wait, and we are already on the JME thread when we call this - hello deadlock!
-	//	WantsThingAction.ConsumpStatus consumpStatus = gSpace.consumeAction(actionSpec, srcGraphID);
-		WantsThingAction.ConsumpStatus consumpStatus = myGoodyCtx.consumeAction(actionSpec);
-	}
-
-	public Ident mintInstanceID(String instanceLabel) {
-		int rNum = myRandomizer.nextInt(Integer.MAX_VALUE);
-		return null;  // new FreeIdent(NS_ROBOSTEPS_INST + instanceLabel + "_" + rNum);
-	}
-/*
-	private GoodySpace getGoodySpace() {
-		GoodyFactory gFactory = GoodyFactory.getTheFactory();
-		return gFactory.getGoodySpace();
-	}
-*/
 }
