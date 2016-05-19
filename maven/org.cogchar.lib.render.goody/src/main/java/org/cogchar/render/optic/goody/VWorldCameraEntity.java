@@ -106,7 +106,10 @@ public class VWorldCameraEntity extends BasicVWorldEntity {
         Vector3f lookAtLocation = getLookAtLocation(newPosition, newOrientation);
         PathInstanceConfig cameraPath = new PathInstanceConfig(getUri(), AttachedItemType.CAMERA,
                 duration, lookAtLocation.toArray(new float[3]), waypoints, pathUri);
-        PathMgr pMgr = getRenderRegCli().getScenePathFacade(null);
+		RenderRegistryClient rrc = getRenderRegCli();
+		// getScenePathFacade is one of the two special methods that GoodyRenderRegistryClient supplies.
+		GoodyRenderRegistryClient grrc = (GoodyRenderRegistryClient) rrc; // Cast could fail here
+        PathMgr pMgr = grrc.getScenePathFacade(null);
         pMgr.buildAnimation(cameraPath);
         pMgr.controlAnimationByName(pathUri, PathMgr.ControlAction.PLAY);
     }

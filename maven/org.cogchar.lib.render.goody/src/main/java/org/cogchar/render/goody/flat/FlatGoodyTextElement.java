@@ -21,6 +21,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import org.appdapter.core.log.BasicDebugger;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.task.Queuer.QueueingStyle;
 
 // import org.cogchar.render.sys.registry.RenderRegistryClient;
@@ -37,12 +38,12 @@ public class FlatGoodyTextElement extends BasicDebugger {
 	private Vector3f					myScreenPosRelToParent = new Vector3f(); 
 
 	private BitmapText					myOverlayText;
-	private GoodyRenderRegistryClient	myRenderRegCli;
+	private RenderRegistryClient 		myRenderRegCli;
 	private	float						myScale = 1.0f;
 	private ColorRGBA					myColor;
 	private String						myContent = "No Content Set";
 	
-	public FlatGoodyTextElement(GoodyRenderRegistryClient aRenderRegCli) {
+	public FlatGoodyTextElement(RenderRegistryClient aRenderRegCli) {
 		myRenderRegCli = aRenderRegCli;
 	}
 	public void setScreenPosRelToParent(Vector3f sprtp, QueueingStyle qStyle) {

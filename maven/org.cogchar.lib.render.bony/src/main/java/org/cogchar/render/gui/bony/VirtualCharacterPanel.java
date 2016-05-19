@@ -21,15 +21,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.cogchar.render.app.bony.BodyController;
 import org.cogchar.render.app.bony.VerbalController;
+import org.cogchar.render.sys.window.WindowStatusReader;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
-public interface VirtualCharacterPanel {
+public interface VirtualCharacterPanel extends WindowStatusReader {
 	public void setRenderCanvas (Canvas c);
 	public JFrame makeEnclosingJFrame(String title);
 	public JPanel getJPanel();
 	public BodyController getBodyController();
 	public VerbalController getVerbalController();
-	public Dimension getSize(Dimension rv);
+	// Moved to WindowStatusReader
+	// public Dimension getSize(Dimension rv);
 }

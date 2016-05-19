@@ -14,7 +14,7 @@ abstract public class BasicVWorldEntity extends VWorldEntity {
 	}
 
 	protected BasicVWorldEntity(BasicGoodyCtx bgc, Ident uri) {
-		super(bgc.getGRRC(), uri);
+		super(bgc.getRRC(), uri);
 		myGoodyCtx = bgc;
 	}
 }

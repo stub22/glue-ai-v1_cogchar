@@ -5,6 +5,7 @@ import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
 import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.thing.WantsThingAction.ConsumpStatus;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 import java.awt.Dimension;
 
@@ -12,7 +13,7 @@ import java.awt.Dimension;
  * Created by Owner on 5/14/2016.
  */
 public interface BasicGoodyCtx {
-	public GoodyRenderRegistryClient getGRRC();
+	public RenderRegistryClient getRRC();
 
 	public VWorldEntityReg getVWER();
 
