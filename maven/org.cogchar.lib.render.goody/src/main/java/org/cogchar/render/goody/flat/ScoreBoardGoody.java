@@ -29,8 +29,8 @@ import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.goody.basic.BasicGoodyCtx;
-import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
  * A goody to create the Cogchar ScoreBoard. Intended to completely replace original
@@ -58,7 +58,7 @@ public class ScoreBoardGoody extends FlatGoody implements GeneralScoreBoard {
 	private	Node	myNode;
 
 	public class Row extends FlatGoodyTextElement {
-		public Row(GoodyRenderRegistryClient aRenderRegCli, Ident uri, Vector3f rowPosition, float textSize, ColorRGBA scoreColor) {
+		public Row(RenderRegistryClient aRenderRegCli, Ident uri, Vector3f rowPosition, float textSize, ColorRGBA scoreColor) {
 			super(aRenderRegCli);
 			//myLogger.info("In ScoreBoardGoody.Row, Window size is {}x{}, position is {}", new Object[]{myScreenWidth, myScreenHeight, rowPosition}); // TEST ONLY
 			this.setScreenPosRelToParent(rowPosition, VWorldEntity.QueueingStyle.QUEUE_AND_RETURN);
@@ -79,7 +79,7 @@ public class ScoreBoardGoody extends FlatGoody implements GeneralScoreBoard {
 
 		// myPosition = topPosition;
 		String baseUriString = uri.getAbsUriString();
-		GoodyRenderRegistryClient grrc = bgc.getGRRC();
+		RenderRegistryClient grrc = bgc.getRRC();
 		for (int rowIdx=0; rowIdx < numRows; rowIdx++) {
 			Ident rowIdent = new FreeIdent(baseUriString + "Row" + rowIdx);
 			ScoreBoardGoody.Row aLine = new ScoreBoardGoody.Row(grrc, rowIdent,

@@ -34,31 +34,39 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.CameraNode;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.cogchar.render.sys.window.WantsWindowStatus;
+import org.cogchar.render.sys.window.WindowStatusMonitor;
 
 /**
  * Created by Owner on 5/14/2016.
  */
-public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx {
-	private GoodyRenderRegistryClient	myGRRC;
+public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, WantsWindowStatus {
+	private RenderRegistryClient 		myRRC;
 	private VWorldEntityReg				myVWER  = new VWorldEntityReg();
 	private Dimension					myScreenDimension;
 	private Node						myRootNode = new Node("GoodyNode");
 
-	public BasicGoodyCtxImpl(GoodyRenderRegistryClient aGRRC, GoodyModularRenderContext gmrc) {
-		myGRRC = aGRRC;
+	public BasicGoodyCtxImpl(RenderRegistryClient rrc, WindowStatusMonitor wsm) {//  GoodyModularRenderContext gmrc) {
+		myRRC = rrc;
 		attachRootGoodyNode();
-
-		VirtualCharacterPanel optCharPanel = gmrc.getPanel();
-
-		gmrc.setTheEntitySpace(this);
-
-		if (optCharPanel != null) {
-			Dimension charPanelSz = optCharPanel.getSize(null);
-			applyNewScreenDimension(charPanelSz);
+		wsm.addListener(this);
+		Dimension winSzOrNull = wsm.getWindowSize();
+		if (winSzOrNull != null) {
+			getLogger().info("Found initial window size, applying: {}", winSzOrNull);
+			applyNewScreenDimension(winSzOrNull);
+		} else {
+			getLogger().warn("No initial window size found");
 		}
+//		VirtualCharacterPanel optCharPanel = gmrc.getPanel();
+// 		gmrc.setTheEntitySpace(this);  // Allow context to call us back with screen-dim changes.
+//		if (optCharPanel != null) {
+//			Dimension charPanelSz = optCharPanel.getSize(null);
+// applyNewScreenDimension(charPanelSz);
+// }
 	}
-	@Override public GoodyRenderRegistryClient getGRRC() {
-		return myGRRC;
+	@Override public RenderRegistryClient getRRC() {
+		return myRRC;
 	}
 
 	@Override public void applyNewScreenDimension(Dimension newDimension) {
@@ -73,8 +81,8 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx {
 		return myScreenDimension;
 	}
 	public final void attachRootGoodyNode() {
-		final DeepSceneMgr dsm = myGRRC.getSceneDeepFacade(null);
-		myGRRC.getWorkaroundAppStub().enqueue(new Callable<Void>() { // Must manually do this on main render thread, ah jMonkey...
+		final DeepSceneMgr dsm = myRRC.getSceneDeepFacade(null);
+		myRRC.getWorkaroundAppStub().enqueue(new Callable<Void>() { // Must manually do this on main render thread, ah jMonkey...
 
 			@Override
 			public Void call() throws Exception {
@@ -163,7 +171,7 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx {
 					Ident cameraUri = goodyID;
 					if (myVWER.getGoody(cameraUri) == null) { //Otherwise this camera wrapper is already created
 						getLogger().info("Adding a VWorldCameraEntity for {}", cameraUri);
-						CameraBinding camBinding = myGRRC.getOpticCameraFacade(null).getCameraBinding(cameraUri);
+						CameraBinding camBinding = myRRC.getOpticCameraFacade(null).getCameraBinding(cameraUri);
 						if (camBinding != null) {
 							Camera cam = camBinding.getCamera();
 							if (cam != null) {
@@ -238,6 +246,9 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx {
 		return ConsumpStatus.IGNORED;
 	}
 
+	@Override public void notifyWindowSize(Dimension size) {
+		applyNewScreenDimension(size);
+	}
 }
 	/* Moved to HumaonoidRenderWorldMapper
 	// A temporary way to make it possible to interact with figures... ultimately Humanoids aren't goodies!

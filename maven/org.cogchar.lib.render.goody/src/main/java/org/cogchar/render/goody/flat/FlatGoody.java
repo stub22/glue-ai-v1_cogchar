@@ -17,18 +17,14 @@
 package org.cogchar.render.goody.flat;
 
 import org.appdapter.core.name.Ident;
-import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.goody.basic.BasicGoodyCtx;
 import org.cogchar.render.goody.basic.BasicVWorldEntity;
 import org.cogchar.render.opengl.scene.FlatOverlayMgr;
-import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 import com.jme3.scene.Node;
 import com.jme3.math.Vector3f;
 import com.jme3.math.ColorRGBA;
 import java.util.concurrent.Callable;
 import org.cogchar.render.app.entity.GoodyActionExtractor;
-import static org.cogchar.render.app.entity.GoodyActionExtractor.Kind.MOVE;
-import static org.cogchar.render.app.entity.GoodyActionExtractor.Kind.SET;
 
 
 /**
@@ -41,7 +37,7 @@ public abstract class FlatGoody extends BasicVWorldEntity {
 
 	protected FlatGoody(BasicGoodyCtx bgc,  Ident uri) {
 		super (bgc, uri);
-		myOverlayMgr =bgc.getGRRC().getSceneFlatFacade(null);
+		myOverlayMgr =bgc.getRRC().getSceneFlatFacade(null);
 	}
 	protected abstract Node getFlatGoodyNode();
 	@Override public void attachToVirtualWorldNode(Node vWorldNode, QueueingStyle qStyle) {
