@@ -37,20 +37,23 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 /**
  *
  * @author stub22
+ *
+ * Most important feature is propagation of canvas-size changes to attached BasicGoodyCtx.
+ *
  */
 public class GoodyModularRenderContext extends BonyRenderContext {
 	private		DataballGoodyBuilder			myBallBuilder;
 	private		boolean							thisBallBuilderSet;
 	// private		VWorldEntityActionConsumer		myEntitySpace;
-	private 	BasicGoodyCtx					myBasicGoodyCtx;
-	private		boolean							thisEntitySpaceSet;
+	// private 	BasicGoodyCtx					myBasicGoodyCtx; // Call this guy back with screen-dim changes
+	// private		boolean							thisEntitySpaceSet;
 	
 	protected	GeneralScoreBoard				myScoreBoard;
 
 	private GoodyGameFeatureAdapter		myGameFeatureAdapter;
 	
-	private Dimension myScreenDimension = new Dimension();
-	private Dimension lastScreenDimension = new Dimension();
+	// private Dimension myScreenDimension = new Dimension();
+	// private Dimension lastScreenDimension = new Dimension();
 	
 	public GoodyModularRenderContext(GoodyRenderRegistryClient grrc, RenderConfigEmitter rce) { 
 		super(grrc, rce);
@@ -84,14 +87,17 @@ public class GoodyModularRenderContext extends BonyRenderContext {
 			thisBallBuilderSet = true; // In theory, this variable allows a fast boolean check in doUpdate instead of having to check for null each update
 		}
 	}
-	
+	/*
 	public void setTheEntitySpace(BasicGoodyCtx bgc) {
 		myBasicGoodyCtx = bgc;
 		if (bgc != null) {
 			thisEntitySpaceSet = true; // In theory, this variable allows a fast boolean check in doUpdate instead of having to check for null each update
 		}
-	}	
+	}
+	*/
 	@Override public void doUpdate(float tpf) {
+	/* Now done in FramedRenderContext
+
 		// Update screen dimension for 2D Goodies:
 		if (thisEntitySpaceSet) {
 			VirtualCharacterPanel vcp = getPanel();
@@ -103,7 +109,7 @@ public class GoodyModularRenderContext extends BonyRenderContext {
 				}
 			}
 		}
-		
+*/
 		if (thisBallBuilderSet) {
 			// tpf is passed to BallBuilder only for debugging now; it may get used more broadly eventally
 			// or may be removed from the method			

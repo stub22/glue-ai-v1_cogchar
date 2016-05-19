@@ -23,6 +23,7 @@ import java.awt.Dimension;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.appdapter.core.name.Ident;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.task.Queuer;
 // import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
@@ -39,16 +40,16 @@ import org.slf4j.LoggerFactory;
 
 public abstract class VWorldEntity extends Queuer {
 
-	private	 GoodyRenderRegistryClient	myGoodyRRC;
+	private RenderRegistryClient myGoodyRRC;
 	private	 Ident						myUri;
 	
 	
-	protected VWorldEntity(GoodyRenderRegistryClient aRenderRegCli, Ident uri) {
+	protected VWorldEntity(RenderRegistryClient aRenderRegCli, Ident uri) {
 		super(aRenderRegCli);
 		myGoodyRRC = aRenderRegCli;
 		myUri = uri;
 	}
-	protected GoodyRenderRegistryClient getRenderRegCli() {
+	protected RenderRegistryClient getRenderRegCli() {
 		return myGoodyRRC;
 	}
 	

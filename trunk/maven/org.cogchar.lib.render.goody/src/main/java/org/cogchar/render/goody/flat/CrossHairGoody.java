@@ -24,8 +24,6 @@ import java.awt.Dimension;
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.goody.basic.BasicGoodyCtx;
-import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
 /**
  *
@@ -39,7 +37,7 @@ public class CrossHairGoody extends FlatGoodyWithScreenFracPos {
 	
 	public CrossHairGoody(BasicGoodyCtx bgc, Ident uri, Vector3f positionOffset, Float scale) {
 		super(bgc, uri);
-		myTextEl = new FlatGoodyTextElement(bgc.getGRRC());
+		myTextEl = new FlatGoodyTextElement(bgc.getRRC());
 		makeCrossHairs(scale, positionOffset);
 	}
 	

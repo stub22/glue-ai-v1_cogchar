@@ -37,7 +37,7 @@ public class BonyRenderContext extends ConfiguredPhysicalModularRenderContext {
 	// TODO:  We want this app pointer to go away.
 	protected	BonyVirtualCharApp		myApp;
 	
-	protected	VirtualCharacterPanel	myPanel;   
+	protected	VirtualCharacterPanel	myPanel;
 	protected	JFrame					myFrame;
 
 	protected	List<AnimControl>		myAnimControls;
@@ -63,12 +63,14 @@ public class BonyRenderContext extends ConfiguredPhysicalModularRenderContext {
 		this.myApp = app;
 	}
 
+
 	public VirtualCharacterPanel getPanel() {
 		return myPanel;
 	}
 
 	public void setPanel(VirtualCharacterPanel panel) {
 		this.myPanel = panel;
+		setWindowStatusReader(panel);
 	}
 
 

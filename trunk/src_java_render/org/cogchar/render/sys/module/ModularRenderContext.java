@@ -21,6 +21,7 @@ import org.appdapter.api.module.Module;
 // import org.cogchar.render.goody.basic.DataballGoodyBuilder;
 // import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.sys.context.CogcharRenderContext;
+import org.cogchar.render.sys.context.FramedRenderContext;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 
 /**
@@ -30,7 +31,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
  * Ryan 2013-04-17: As long as we're adding stuff that doesn't belong, how about some Goody update stuff too?!
  * We'll find a cleaner way to plug this stuff in soon.
  */
-public class ModularRenderContext extends CogcharRenderContext {
+public class ModularRenderContext extends FramedRenderContext {
 	private CogcharRenderModulator myRenderModulator;
 
 	public ModularRenderContext(RenderRegistryClient rrc) {

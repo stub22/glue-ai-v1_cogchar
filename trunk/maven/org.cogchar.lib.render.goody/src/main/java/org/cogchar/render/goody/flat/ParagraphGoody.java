@@ -23,9 +23,6 @@ import com.jme3.scene.Node;
 
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.goody.basic.BasicGoodyCtx;
-import org.cogchar.render.sys.registry.RenderRegistryClient;
-import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
-import org.cogchar.render.sys.task.Queuer.QueueingStyle;
 
 /**
  * This class defines general purpose 2d text display goodies
@@ -55,7 +52,7 @@ public class ParagraphGoody extends FlatGoody {
 		if (text == null) {
 			text = DEFAULT_TEXT;
 		}
-		myTextElement = new FlatGoodyTextElement(bgc.getGRRC());
+		myTextElement = new FlatGoodyTextElement(bgc.getRRC());
 		myTextElement.setContentText(text);
 		myTextElement.setUniformScaleFactor(scale, QueueingStyle.QUEUE_AND_RETURN);
 		myTextElement.setColor(color);
