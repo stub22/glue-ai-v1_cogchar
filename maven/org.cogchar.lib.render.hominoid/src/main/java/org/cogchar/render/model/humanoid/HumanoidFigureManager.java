@@ -58,11 +58,18 @@ public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNo
 					"Constructing HumanoidFigureConfig for charID={} using bonyConfigGraph={}, renderCE={} " 
 					+ " repoClient{}  figConf={}", charIdent, bonyConfigGraph, rce, qi, hc);
 			HumanoidFigureConfig hfc = new HumanoidFigureConfig(qi, hc, matPath, bonyConfigGraph); // rce, bonyConfigGraph);
-			if (hfc.isComplete()) {
-				getLogger().info("HumanoidFigureConfig is complete {}", hfc);
-				hf = new HumanoidFigure(hfc);
-				myFiguresByCharIdent.put(charIdent, hf);
-			}
+			hf = addHumanoidFigure(hfc);
+		}
+		return hf;
+	}
+
+	public HumanoidFigure addHumanoidFigure(HumanoidFigureConfig hfc) {
+		HumanoidFigure hf = null;
+		if (hfc.isComplete()) {
+			getLogger().info("HumanoidFigureConfig is complete {}", hfc);
+			hf = new HumanoidFigure(hfc);
+			Ident charID = hf.getCharIdent();
+			myFiguresByCharIdent.put(charID, hf);
 		}
 		return hf;
 	}
@@ -86,16 +93,24 @@ public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNo
 	public HumanoidFigure setupHumanoidFigure(final BonyRenderContext brc, RepoClient qi, final Ident charIdent, 
 					Ident bonyConfigGraphID, FigureConfig hc) throws Throwable {
 		getLogger().info("beginning setup for charID={} using bonyConfigGraphID {}", charIdent, bonyConfigGraphID);
-		RenderRegistryClient rrc = brc.getRenderRegistryClient();
 		RenderConfigEmitter rce = brc.getConfigEmitter();
 		final HumanoidFigure figure = getOrMakeHumanoidFigure(qi, charIdent, hc, bonyConfigGraphID, rce);
-		final AssetManager amgr = rrc.getJme3AssetManager(null);
-		final Node rootNode = rrc.getJme3RootDeepNode(null);
-		final PhysicsSpace ps = brc.getPhysicsSpace();
+
 		if (figure == null) {
 			getLogger().warn("aborting setup for charID={} - found null HumanoidFigure", charIdent);
 			return null;
 		}
+		attachFigure(brc, figure);
+
+		return figure;
+	}
+	public void attachFigure(final BonyRenderContext brc, final HumanoidFigure figure) throws Throwable {
+		RenderRegistryClient rrc = brc.getRenderRegistryClient();
+
+		final Ident charID = figure.getCharIdent();
+		final AssetManager amgr = rrc.getJme3AssetManager(null);
+		final Node rootNode = rrc.getJme3RootDeepNode(null);
+		final PhysicsSpace ps = brc.getPhysicsSpace();
 		/**
 		 * This task will eventually run async on the OpenGL render thread, and will load our OpenGL figure,
 		 * and make it snazzy.
@@ -111,17 +126,13 @@ public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNo
 					figure.setModule(hfm);
 					// Activate coroutine threading for our  module.
 					brc.attachModule(hfm);
-					getLogger().warn("Async Result (not really a 'warning') : Figure initialized and HumanoidFigureModule attached for {}", charIdent);
+					getLogger().warn("Async Result (not really a 'warning') : Figure initialized and HumanoidFigureModule attached for {}", charID);
 				} else {
-					getLogger().warn("Delayed problem in code launched from setupHumanoidFigure():  Figure init failed for: {}", charIdent);
+					getLogger().warn("Delayed problem in code launched from setupHumanoidFigure():  Figure init failed for: {}", charID);
 				}
 			}
 		});
-		// Now we are back to the main thread.    We do not know if figureInit will succeed later,
-		// but regardless
-
-		// Now back on the main thread again.
-		return figure;
+		// Now we are back to the main thread.    We do not know if figureInit will succeed later.
 	}
 
 	public void detachHumanoidFigures(final BonyRenderContext brc) {
