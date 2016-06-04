@@ -52,6 +52,9 @@ public class FigureConfig extends BasicDebugger {
 		myPhysicsFlag = other.myPhysicsFlag;
 		myJointGroupConfigPath = other.myJointGroupConfigPath;
 	}
+	// This constructor is used directly in PumaSysCtxImpl.connectDualBodies, which then creates a BodyHandleRecord,
+	// which are all posted into OSGi registry, and from there used as an input dependency to the VWorldMapperLifecycle,
+	// which eventually creates a HumanoidFigureConfig that calls "copyValuesFrom" in its constructor.
 	public FigureConfig(RepoClient qi, Ident figureID, Ident graphIdent) {
 		SolutionHelper sh = new SolutionHelper();
 		myFigureID = figureID;
