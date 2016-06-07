@@ -28,11 +28,11 @@ import org.cogchar.render.app.bony.BonyRenderContext;
 public class HumanoidFigureModule extends RenderModule {
 	private HumanoidFigure	myFigure;
 	
-	private BonyRenderContext  myBRC;
+	private BonyRenderContext myBRC_orNull_isUnused;
 	
 	public HumanoidFigureModule(HumanoidFigure hw, BonyRenderContext brc) {
 		myFigure = hw;
-		myBRC = brc;
+		myBRC_orNull_isUnused = brc;
 		setDebugRateModulus(1000);
 	}
 	
