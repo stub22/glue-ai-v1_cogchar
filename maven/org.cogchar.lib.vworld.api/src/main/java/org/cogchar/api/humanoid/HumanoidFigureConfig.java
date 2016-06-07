@@ -44,7 +44,6 @@ public class HumanoidFigureConfig extends FigureConfig {
 		myDebugSkelMatPath = matPath;
 //		myDebugSkelMatPath = rce.getMaterialPath();
 		myFigureBoneConfig = new FigureBoneConfig();
-		
 
 		addBoneDescsFromBoneRobotConfig(qi, myFigureID, bonyGraphIdent, this);
 	}
