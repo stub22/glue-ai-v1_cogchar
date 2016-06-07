@@ -35,6 +35,8 @@ import org.cogchar.render.model.humanoid.HumanoidFigure;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 import org.appdapter.fancy.rclient.RepoClient;
+import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.context.PhysicalModularRenderContext;
 import org.cogchar.render.sys.task.BasicCallableRenderTask;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.opengl.scene.FigureBoneNodeFinder;
@@ -104,28 +106,30 @@ public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNo
 
 		return figure;
 	}
-	public void attachFigure(final BonyRenderContext brc, final HumanoidFigure figure) throws Throwable {
-		RenderRegistryClient rrc = brc.getRenderRegistryClient();
+	public void attachFigure(final PhysicalModularRenderContext pmrc, final HumanoidFigure figure) throws Throwable {
+		RenderRegistryClient rrc = pmrc.getRenderRegistryClient();
 
 		final Ident charID = figure.getCharIdent();
 		final AssetManager amgr = rrc.getJme3AssetManager(null);
 		final Node rootNode = rrc.getJme3RootDeepNode(null);
-		final PhysicsSpace ps = brc.getPhysicsSpace();
+		final PhysicsSpace ps = pmrc.getPhysicsSpace();
 		/**
 		 * This task will eventually run async on the OpenGL render thread, and will load our OpenGL figure,
 		 * and make it snazzy.
 		 */
-		brc.runTaskSafelyUntilComplete(new BasicCallableRenderTask(brc) {
+
+		final BonyRenderContext bonyRC_orNull_isUnused = (pmrc instanceof BonyRenderContext) ? (BonyRenderContext) pmrc : null;
+		pmrc.runTaskSafelyUntilComplete(new BasicCallableRenderTask(pmrc) {
 
 			@Override public void performWithClient(RenderRegistryClient rrc) throws Throwable {
 				boolean figureInitOK = figure.loadMeshAndSkeletonIntoVWorld(amgr, rootNode, ps);
 				if (figureInitOK) {
 					// Create a coroutine execution module to accept time slices, to 
 					// allows us to animate the humanoid figure.
-					final HumanoidFigureModule hfm = new HumanoidFigureModule(figure, brc);
+					final HumanoidFigureModule hfm = new HumanoidFigureModule(figure, bonyRC_orNull_isUnused);
 					figure.setModule(hfm);
 					// Activate coroutine threading for our  module.
-					brc.attachModule(hfm);
+					pmrc.attachModule(hfm);
 					getLogger().warn("Async Result (not really a 'warning') : Figure initialized and HumanoidFigureModule attached for {}", charID);
 				} else {
 					getLogger().warn("Delayed problem in code launched from setupHumanoidFigure():  Figure init failed for: {}", charID);
@@ -135,7 +139,7 @@ public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNo
 		// Now we are back to the main thread.    We do not know if figureInit will succeed later.
 	}
 
-	public void detachHumanoidFigures(final BonyRenderContext brc) {
+	public void detachHumanoidFigures(final PhysicalModularRenderContext brc) {
 		RenderRegistryClient rrc = brc.getRenderRegistryClient();
 		final Node rootNode = rrc.getJme3RootDeepNode(null);
 		final PhysicsSpace ps = brc.getPhysicsSpace();
