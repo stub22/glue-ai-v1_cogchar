@@ -32,6 +32,94 @@
 
 
 
+###  http://www.headyspace.org/onto/y2013/VirtGood#attachedChildGoody
+
+:attachedChildGoody rdf:type owl:ObjectProperty ;
+                    
+                    rdfs:range :DeepGoody ;
+                    
+                    rdfs:domain :VGOA_Attach ;
+                    
+                    rdfs:subPropertyOf :vgObjectProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#attachedParentBone
+
+:attachedParentBone rdf:type owl:ObjectProperty ;
+                    
+                    rdfs:subPropertyOf :vgObjectProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#attachedParentGoody
+
+:attachedParentGoody rdf:type owl:ObjectProperty ;
+                     
+                     rdfs:subPropertyOf :vgObjectProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasAngle
+
+:hasAngle rdf:type owl:ObjectProperty ;
+          
+          rdfs:domain :Rotation ;
+          
+          rdfs:range :VGP_Angle ;
+          
+          rdfs:subPropertyOf :vgObjectProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasDurationToExpire
+
+:hasDurationToExpire rdf:type owl:ObjectProperty ;
+                     
+                     rdfs:subPropertyOf :vgObjectProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasDurationToMax
+
+:hasDurationToMax rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:subPropertyOf :vgObjectProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasEffect
+
+:hasEffect rdf:type owl:ObjectProperty ;
+           
+           rdfs:range :Effect ;
+           
+           rdfs:domain :VGUpdateAct ;
+           
+           rdfs:subPropertyOf :vgObjectProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasOrthoVect
+
+:hasOrthoVect rdf:type owl:ObjectProperty ;
+              
+              rdfs:domain :Rotation ;
+              
+              rdfs:range :VGP_Vector ;
+              
+              rdfs:subPropertyOf :vgObjectProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasParam
+
+:hasParam rdf:type owl:ObjectProperty ;
+          
+          rdfs:subPropertyOf :vgObjectProp .
+
+
+
 ###  http://www.headyspace.org/onto/y2013/VirtGood#vgObjectProp
 
 :vgObjectProp rdf:type owl:ObjectProperty .
@@ -47,11 +135,99 @@
 #################################################################
 
 
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasAngleDeg
+
+:hasAngleDeg rdf:type owl:DatatypeProperty ;
+             
+             rdfs:subPropertyOf :hasAngleMag .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasAngleMag
+
+:hasAngleMag rdf:type owl:DatatypeProperty ;
+             
+             rdfs:subPropertyOf :vgDataProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasAngleRad
+
+:hasAngleRad rdf:type owl:DatatypeProperty ;
+             
+             rdfs:subPropertyOf :hasAngleMag .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasColorField
+
+:hasColorField rdf:type owl:DatatypeProperty ;
+               
+               rdfs:subPropertyOf :vgDataProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasDurationSec
+
+:hasDurationSec rdf:type owl:DatatypeProperty ;
+                
+                rdfs:subPropertyOf :vgDataProp .
+
+
+
 ###  http://www.headyspace.org/onto/y2013/VirtGood#hasGGG
 
 :hasGGG rdf:type owl:DatatypeProperty ;
         
         rdfs:subPropertyOf :vgDataProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasQuatField
+
+:hasQuatField rdf:type owl:DatatypeProperty ;
+              
+              rdfs:subPropertyOf :vgDataProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasRed
+
+:hasRed rdf:type owl:DatatypeProperty ;
+        
+        rdfs:subPropertyOf :hasColorField .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasVectorField
+
+:hasVectorField rdf:type owl:DatatypeProperty ;
+                
+                rdfs:subPropertyOf :vgDataProp .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasVectorX
+
+:hasVectorX rdf:type owl:DatatypeProperty ;
+            
+            rdfs:subPropertyOf :hasVectorField .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasVectorY
+
+:hasVectorY rdf:type owl:DatatypeProperty ;
+            
+            rdfs:subPropertyOf :hasVectorField .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#hasVectorZ
+
+:hasVectorZ rdf:type owl:DatatypeProperty ;
+            
+            rdfs:subPropertyOf :hasVectorField .
 
 
 
@@ -90,7 +266,7 @@
 
 :BitBox rdf:type owl:Class ;
         
-        rdfs:subClassOf :GameGoody .
+        rdfs:subClassOf :DisplayGoody .
 
 
 
@@ -98,7 +274,7 @@
 
 :BitCube rdf:type owl:Class ;
          
-         rdfs:subClassOf :GameGoody .
+         rdfs:subClassOf :DisplayGoody .
 
 
 
@@ -142,11 +318,11 @@
 
 
 
-###  http://www.headyspace.org/onto/y2013/VirtGood#Duration
+###  http://www.headyspace.org/onto/y2013/VirtGood#DisplayGoody
 
-:Duration rdf:type owl:Class ;
-          
-          rdfs:subClassOf :VGParam .
+:DisplayGoody rdf:type owl:Class ;
+              
+              rdfs:subClassOf :ShapeGoody .
 
 
 
@@ -163,14 +339,6 @@
 :FlatGoody rdf:type owl:Class ;
            
            rdfs:subClassOf :Goody .
-
-
-
-###  http://www.headyspace.org/onto/y2013/VirtGood#GameGoody
-
-:GameGoody rdf:type owl:Class ;
-           
-           rdfs:subClassOf :DeepGoody .
 
 
 
@@ -250,7 +418,7 @@
 
 :TicTacGrid rdf:type owl:Class ;
             
-            rdfs:subClassOf :GameGoody .
+            rdfs:subClassOf :ShapeGoody .
 
 
 
@@ -258,7 +426,7 @@
 
 :TicTacMark rdf:type owl:Class ;
             
-            rdfs:subClassOf :GameGoody .
+            rdfs:subClassOf :ShapeGoody .
 
 
 
@@ -270,6 +438,102 @@
 
 
 
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGOA_Apply
+
+:VGOA_Apply rdf:type owl:Class ;
+            
+            rdfs:subClassOf :VGUpdateAct .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGOA_Attach
+
+:VGOA_Attach rdf:type owl:Class ;
+             
+             rdfs:subClassOf :VGUpdateAct .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGOA_Make
+
+:VGOA_Make rdf:type owl:Class ;
+           
+           rdfs:subClassOf :VGUpdateAct .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGP_Angle
+
+:VGP_Angle rdf:type owl:Class ;
+           
+           rdfs:subClassOf :VGParam .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGP_Bone
+
+:VGP_Bone rdf:type owl:Class ;
+          
+          rdfs:subClassOf :VGParam .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGP_Color
+
+:VGP_Color rdf:type owl:Class ;
+           
+           rdfs:subClassOf :VGParam .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGP_ColorRGBA
+
+:VGP_ColorRGBA rdf:type owl:Class ;
+               
+               rdfs:subClassOf :VGP_Color .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGP_QuatABCD
+
+:VGP_QuatABCD rdf:type owl:Class ;
+              
+              rdfs:subClassOf :VGP_Quaternion .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGP_Quaternion
+
+:VGP_Quaternion rdf:type owl:Class ;
+                
+                rdfs:subClassOf :VGParam .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGP_TimeDuration
+
+:VGP_TimeDuration rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :VGParam .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGP_Vector
+
+:VGP_Vector rdf:type owl:Class ;
+            
+            rdfs:subClassOf :VGParam .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGP_VectorXYZ
+
+:VGP_VectorXYZ rdf:type owl:Class ;
+               
+               rdfs:subClassOf :VGP_Vector .
+
+
+
 ###  http://www.headyspace.org/onto/y2013/VirtGood#VGParam
 
 :VGParam rdf:type owl:Class ;
@@ -278,9 +542,25 @@
 
 
 
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGQueryAct
+
+:VGQueryAct rdf:type owl:Class ;
+            
+            rdfs:subClassOf :VGThing .
+
+
+
 ###  http://www.headyspace.org/onto/y2013/VirtGood#VGThing
 
 :VGThing rdf:type owl:Class .
+
+
+
+###  http://www.headyspace.org/onto/y2013/VirtGood#VGUpdateAct
+
+:VGUpdateAct rdf:type owl:Class ;
+             
+             rdfs:subClassOf :VGThing .
 
 
 
@@ -304,7 +584,9 @@
 
 :VWIA_Click rdf:type owl:Class ;
             
-            rdfs:subClassOf :VWInputAct .
+            rdfs:subClassOf :VWUserInputAct ;
+            
+            rdfs:comment "Conventional UI click gesture." .
 
 
 
@@ -328,7 +610,7 @@
 
 :VWIA_Move rdf:type owl:Class ;
            
-           rdfs:subClassOf :VWInputAct .
+           rdfs:subClassOf :VWUserInputAct .
 
 
 
@@ -348,11 +630,11 @@
 
 
 
-###  http://www.headyspace.org/onto/y2013/VirtGood#VWInputAct
+###  http://www.headyspace.org/onto/y2013/VirtGood#VWUserInputAct
 
-:VWInputAct rdf:type owl:Class ;
-            
-            rdfs:subClassOf :VGThing .
+:VWUserInputAct rdf:type owl:Class ;
+                
+                rdfs:subClassOf :VGThing .
 
 
 
