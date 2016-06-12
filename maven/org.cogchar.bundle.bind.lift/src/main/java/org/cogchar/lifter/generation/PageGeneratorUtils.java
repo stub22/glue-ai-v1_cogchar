@@ -196,11 +196,16 @@ public class PageGeneratorUtils {
         
         // Defines the TA's targetThing as the TA itself
         // ( currently a target is required by the query system for a valid TA )
+
+		/***   2016-06-12  -- this is wrong - should just use rdf:type of the targetThingItem, instead.
+
         Property targetThingTypeProp = dataModel.createProperty(
                 ThingCN.P_targetThingType);
         taResource.addProperty(
                 targetThingTypeProp,
                 ThingCN.T_ThingAction);
+		*/
+
 
         // Declares the TA's creation-time in a timestamp
         Property timestampProp = dataModel.createProperty(

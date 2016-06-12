@@ -33,7 +33,7 @@ import java.util.Set;
 
 import org.appdapter.core.item.Item.LinkDirection;
 
-// Boo, we do not
+// Boo, we do not like such imports.
 import static org.cogchar.name.thing.ThingCN.*;
 
 import org.slf4j.Logger;
@@ -71,8 +71,8 @@ public class BasicThingActionSpecBuilder extends
 
     private final static FreeIdent theTargetThingFieldIdent =
             safeFreeIdent(P_targetThing);
-    private final static FreeIdent theTargetThingTypeFieldIdent =
-            safeFreeIdent(P_targetThingType);
+//    private final static FreeIdent theTargetThingTypeFieldIdent =
+//            safeFreeIdent(P_targetThingType);
     private final static FreeIdent theActionVerbFieldIdent =
             safeFreeIdent(P_verb);
     private final static FreeIdent theSourceAgentFieldIdent =
@@ -116,13 +116,15 @@ public class BasicThingActionSpecBuilder extends
         if(targetThingItem != null){
             spec.setMyTargetThingID(targetThingItem.getIdent());
         }
-        
+
+		/***   2016-06-12  -- this is wrong - should just use rdf:type of the targetThingItem, instead.
         Item targetTypeItem = item.getOptionalSingleLinkedItem(
                 theTargetThingTypeFieldIdent, 
                 LinkDirection.FORWARD);
         if(targetTypeItem != null){
             spec.setMyTargetThingTypeID(targetTypeItem.getIdent());
         }
+		*/
         
         Item actionVerbItem =item.getOptionalSingleLinkedItem(
                 theActionVerbFieldIdent, 
