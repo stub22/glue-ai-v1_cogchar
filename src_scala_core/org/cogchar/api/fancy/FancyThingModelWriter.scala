@@ -96,7 +96,8 @@ class FancyThingModelWriter extends BasicDebugger {
       m.add(actThingStmt)
 
       if (targetThingType != null) {
-        val targetThingTypeProp: Property = rr.findOrMakeProperty(m, ThingCN.P_targetThingType);
+		// This targetThingTypeProp is unused - we use rdfTypeProp instead!
+//        val targetThingTypeProp: Property = rr.findOrMakeProperty(m, ThingCN.P_targetThingType);
         val thingTypeRes: Resource = mci.makeResourceForIdent(targetThingType)
         val actThingTypeStmt = m.createStatement(thingRes, rdfTypeProp, thingTypeRes)
         m.add(actThingTypeStmt)
