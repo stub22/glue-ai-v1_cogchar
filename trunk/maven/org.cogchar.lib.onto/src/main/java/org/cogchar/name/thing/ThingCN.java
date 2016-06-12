@@ -20,6 +20,7 @@ import org.cogchar.name.dir.AssumedQueryDir;
 import org.cogchar.name.dir.NamespaceDir;
 
 /**
+ * Noted 2016-06-11 that this class only provides Strings.
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  * @author stub22
@@ -74,8 +75,18 @@ public class ThingCN {
     public final static String  P_targetThingType  = TA_NS + "targetThingType";
 	public final static String	P_postedTSMsec = TA_NS + "postTStampMsec";
     
-    
-    public final static String	P_IdentAttachedToThingAction = TA_NS + "targetAction";
+
+	// 2016-06-11  Stu sez:  This name makes sense for linking a param to its parent TA (when using weak param convention).
+	// That is how it is used in FanyThingModelWriter...
+	// ...but the code in old BTASpecBuilder confuses this point.
+	// Tiebraker is the query form used by BasicThingActionQResAdapter, found at PARAM_QUERY_URI:
+	// ?thingActionParam a ccrt:ThingActionParam;
+// 	ta:targetAction ?attachedToAction;
+//	ta:paramIdent ?actParamID ;
+//	ta:paramValue ?actParamVal.
+	// Shows that we expect param to point at its parent action using the :targetAction property.
+	public final static String	P_IdentAttachedToThingAction = TA_NS + "targetAction";
+
 	public final static String	P_paramIdent = TA_NS + "paramIdent";
     public final static String  P_paramValue  = TA_NS + "paramValue";
     

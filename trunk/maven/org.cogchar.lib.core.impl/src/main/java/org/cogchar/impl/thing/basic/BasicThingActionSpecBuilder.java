@@ -33,14 +33,22 @@ import java.util.Set;
 
 import org.appdapter.core.item.Item.LinkDirection;
 
+// Boo, we do not
 import static org.cogchar.name.thing.ThingCN.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/** From 2013-14 era.
  * This is the SpecBuilder to construct RuntimeTAs for use in steps that fire
  * a TA directly.
+ *
+ * Relevance in 2016:
+ * Shows direct model-binding access to a taSpec rep coded in ThingCN namespace.
+ * This is an alternative to BasicThingActionQResAdapter, which reads SPARQL
+ * solutions set up by query BTAUpdater over ThingCN.ACTION_QUERY_URI.
+ * Uses Extra vintage "assembler" pattern to do this, which is not wrong,
+ * just kinda klunky.
  *
  * @author Jason Randolph Eads <jeads362@gmail.com>
  */
@@ -57,7 +65,10 @@ public class BasicThingActionSpecBuilder extends
     }
     
     private final static String theActionRecordIdentPrefix = TA_NS + "stepTA-";
-    
+
+	// Stu sez: All these P_ constants are static-imported from ThingCN (boo!)
+	// Note also that the field refs themselves are static, which is undesirable.
+
     private final static FreeIdent theTargetThingFieldIdent =
             safeFreeIdent(P_targetThing);
     private final static FreeIdent theTargetThingTypeFieldIdent =
@@ -70,7 +81,9 @@ public class BasicThingActionSpecBuilder extends
             safeFreeIdent(P_postedTSMsec);
     private final static FreeIdent theThingActionParamAttachedTAFieldIdent =
             safeFreeIdent(P_IdentAttachedToThingAction);
-    
+
+	// Stu sez:  These idents are used to access extra assumed fields beyond BTASpec.
+	//
     private final static FreeIdent theParamIdentFieldIdent =
             safeFreeIdent(P_paramIdent);
     private final static FreeIdent theParamIdentValueFieldIdent =
