@@ -30,7 +30,7 @@ import java.util.Random;
 import org.cogchar.outer.client.AgentRepoClient;
 import org.cogchar.outer.client.TestOuterClientSOH;
 
-/**
+ /**Vintage 2013-14.
  * This class consumes web client registration TAs and stores the resulting
  * registrations in its static sibling object.
  * 

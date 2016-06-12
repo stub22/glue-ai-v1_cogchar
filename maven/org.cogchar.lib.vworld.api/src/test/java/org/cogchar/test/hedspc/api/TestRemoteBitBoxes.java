@@ -18,7 +18,7 @@ import org.cogchar.api.fancy.FancyThingModelWriter;
 import org.slf4j.Logger;
 
 import java.util.Random;
-import org.cogchar.api.thing.TypedValueMap;
+
 import org.cogchar.api.thing.SerTypedValueMap;
 import org.cogchar.outer.client.AgentRepoClient;
 import org.cogchar.outer.client.TestOuterClientSOH;
@@ -104,7 +104,7 @@ public class TestRemoteBitBoxes  extends BasicDebugger {
 		log.info("Sending action spec: " + actionSpec);
 
 		FancyThingModelWriter ftmw = new FancyThingModelWriter();
-		String updateTxt = ftmw.writeTASpecToString(actionSpec, goodyGraphQN, ran);
+		String updateTxt = ftmw.writeTASpecTo_SPARQL_Update_String(actionSpec, goodyGraphQN, ran);
 		
 		// logInfo("UpdateTxt:\n" + updateTxt);
 		myAgentRepoClient.execRemoteSparqlUpdate(TestOuterClientSOH.glueUpdURL, updateTxt, debugFlag);

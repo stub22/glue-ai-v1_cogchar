@@ -124,33 +124,45 @@ class FancyThingModelWriter extends BasicDebugger {
   }
   import java.io.ByteArrayOutputStream;
 
-  def writeTASpecToString(tas: ThingActionSpec, tgtGraphQN: String, ran: Random): String = {
-    val specModel: Model = writeTASpecToNewModel(tas, ran)
+  def writeTASpecTo_SPARQL_Update_String(tas: ThingActionSpec, tgtGraphQN: String, ran: Random): String = {
+	  val specModelWithPrefixes = writeTASpecAndPrefixesToNewModel(tas, ran)
 
-    specModel.setNsPrefix("rdf", RDF_NS);
-    specModel.setNsPrefix("xsd", XSD_NS)
+	  val turtleTriplesString = serializeSpecModelToTurtleString(specModelWithPrefixes)
 
-    specModel.setNsPrefix("ccrt", CCRT_NS)
-    specModel.setNsPrefix("ta", TA_NS)
-    specModel.setNsPrefix("goody", GOODY_NS)
+	  val lastPreStart = turtleTriplesString.lastIndexOf("@prefix");
+	  val lastPreEnd = turtleTriplesString.indexOf("\n", lastPreStart)
 
-    val baos: ByteArrayOutputStream = new ByteArrayOutputStream();
-    val outLang = "TURTLE";
-    specModel.write(baos, outLang);
-    val encoding = "UTF8";
-    val turtleTriples = baos.toString(encoding)
+	  val turtleTriplesBare = turtleTriplesString.substring(lastPreEnd)
 
-    val lastPreStart = turtleTriples.lastIndexOf("@prefix");
-    val lastPreEnd = turtleTriples.indexOf("\n", lastPreStart)
+	  val stg = new SparqlTextGen(specModelWithPrefixes);
 
-    val turtleTriplesBare = turtleTriples.substring(lastPreEnd)
+	  val upRqTxt = stg.emitSingleGraphInsert(tgtGraphQN, turtleTriplesBare);
 
-    val stg = new SparqlTextGen(specModel);
-
-    val upRqTxt = stg.emitSingleGraphInsert(tgtGraphQN, turtleTriplesBare);
-
-    upRqTxt;
+	  upRqTxt;
   }
+	def writeTASpecAndPrefixesToNewModel(tas: ThingActionSpec, ran: Random): Model = {
+
+		val specModel: Model = writeTASpecToNewModel(tas, ran)
+
+		specModel.setNsPrefix("rdf", RDF_NS);
+		specModel.setNsPrefix("xsd", XSD_NS)
+
+		specModel.setNsPrefix("ccrt", CCRT_NS)
+		specModel.setNsPrefix("ta", TA_NS)
+		specModel.setNsPrefix("goody", GOODY_NS)
+
+		specModel
+	}
+  def serializeSpecModelToTurtleString(specModel: Model) : String = {
+
+	  val baos: ByteArrayOutputStream = new ByteArrayOutputStream();
+	  val outLang = "TURTLE";
+	  specModel.write(baos, outLang);
+	  val encoding = "UTF8";
+	  val turtleTriples = baos.toString(encoding)
+	  turtleTriples
+  }
+
 
   // In the weak convention, each param is held in a separate record attached to the parent thing.
   def writeParamsUsingWeakConvention(mci: ModelClientImpl, actionRes: Resource, tvm: TypedValueMap, ran: Random): Unit = {

@@ -16,21 +16,16 @@
 
 package org.cogchar.impl.thing.route;
 
-import org.cogchar.api.web.in.WebSessionActionParamWriter;
 import java.util.Random;
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.FreeIdent;
 import org.appdapter.core.name.Ident;
 import org.cogchar.api.thing.ThingActionSender;
-import org.cogchar.impl.thing.basic.BasicThingActionSpec;
-import org.cogchar.impl.thing.basic.BasicTypedValueMap;
 import org.cogchar.api.thing.ThingActionSpec;
-import org.cogchar.api.thing.TypedValueMap;
 
 import org.cogchar.api.fancy.FancyThingModelWriter;
-import org.cogchar.name.goody.GoodyNames;
+
 import org.cogchar.name.lifter.LiftAN;
-import org.cogchar.name.web.WebActionNames;
 import org.cogchar.outer.client.AgentRepoClient;
 
 /**
@@ -65,7 +60,7 @@ public abstract class BasicThingActionForwarder extends BasicDebugger implements
 	
 	protected void sendActionSpec(ThingActionSpec actionSpec) {
 		FancyThingModelWriter ftmw = new FancyThingModelWriter();
-		String updateTxt = ftmw.writeTASpecToString(actionSpec, myUpdateGraphQN, myRandomizer);
+		String updateTxt = ftmw.writeTASpecTo_SPARQL_Update_String(actionSpec, myUpdateGraphQN, myRandomizer);
 		getLogger().debug("Sending update message:\n{}", updateTxt);
 		boolean debugFlag = false;
 		myAgentRepoClient.execRemoteSparqlUpdate(myUpdateTargetURL, updateTxt, debugFlag);
