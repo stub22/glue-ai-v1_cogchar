@@ -25,6 +25,8 @@ import org.cogchar.api.thing.SerTypedValueMap;
 /**
  * Typically used from a remote client to capture values for encoding in SPARQL-Update.
  *
+ * Oversimplified property-value model here
+ *
  * @author Stu B. <www.texpedient.com>
  */
 public class GoodyActionParamWriter extends ActionParamWriter {
@@ -41,6 +43,7 @@ public class GoodyActionParamWriter extends ActionParamWriter {
 		tvm.putValueAtName(GoodyNames.LOCATION_Z, locZ);
 	}
 
+	// TODO : Could instead be specified as quaternion
 	public void putRotation(float rotAxisX, float rotAxisY, float rotAxisZ, float magDeg) {
 		TypedValueMap tvm = getValueMap();
 		tvm.putValueAtName(GoodyNames.ROTATION_AXIS_X, rotAxisX);
@@ -68,8 +71,7 @@ public class GoodyActionParamWriter extends ActionParamWriter {
 		tvm.putValueAtName(GoodyNames.SCALE_Y, scaleY);
 		tvm.putValueAtName(GoodyNames.SCALE_Z, scaleZ);
 	}
-	
-	// Not sure if this is how we want this to look or how we want it named, but good for starters...
+
 	public void putDuration(float duration) {
 		TypedValueMap tvm = getValueMap();
 		tvm.putValueAtName(GoodyNames.TRAVEL_TIME, duration);

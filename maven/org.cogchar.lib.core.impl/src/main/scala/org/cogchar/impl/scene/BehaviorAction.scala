@@ -287,7 +287,7 @@ class FireThingActionExec( val mySpec : FireThingActionSpec ) extends BasicDebug
       
       logger.debug("2a7b474c-0dd3-4c0f-ae5e-7cb382ad30e9: The newTA will be passed to the FancyThingModelWriter")
       val updateTextToAddTA : String = 
-        fmw.writeTASpecToString(newTA, theTargetGraphQN, rand)
+        fmw.writeTASpecTo_SPARQL_Update_String(newTA, theTargetGraphQN, rand)
       logger.debug("b3855315-5a1c-4c7c-92ed-987011f044a7: The newTA was passed to the FancyThingModelWriter")
 
       /***************  FIXME:  Replace this with update-send to appropriateRepoClient **/
