@@ -72,7 +72,8 @@ public class ThingCN {
 
 	public final static String	P_verb = TA_NS + "verb";
 	public final static String	P_targetThing = TA_NS + "targetThing";
-    public final static String  P_targetThingType  = TA_NS + "targetThingType";
+	// We are using "rdf:type"  instead.
+   // public final static String  P_targetThingType  = TA_NS + "targetThingType";
 	public final static String	P_postedTSMsec = TA_NS + "postTStampMsec";
     
 
