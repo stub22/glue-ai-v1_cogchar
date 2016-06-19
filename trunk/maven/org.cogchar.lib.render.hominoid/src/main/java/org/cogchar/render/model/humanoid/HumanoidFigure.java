@@ -104,7 +104,7 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
 	public HumanoidFigure(HumanoidFigureConfig hfc) { 
 		myHFConfig = hfc;
 	}
-	protected Node getFigureNode() { 
+	public Node getFigureNode() {
 		return myJME3ModelSceneNode;
 	}
 	protected HumanoidFigureConfig getFigureConfig() { 

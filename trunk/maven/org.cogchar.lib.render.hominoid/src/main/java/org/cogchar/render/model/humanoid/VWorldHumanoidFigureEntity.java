@@ -46,7 +46,7 @@ public class VWorldHumanoidFigureEntity extends VWorldEntity {
 	private Node myNode;
 	private AnimControl figureControl = new AnimControl();
 	
-	public VWorldHumanoidFigureEntity(GoodyRenderRegistryClient aRenderRegCli, Ident figureUri, HumanoidFigure hf) {
+	public VWorldHumanoidFigureEntity(RenderRegistryClient aRenderRegCli, Ident figureUri, HumanoidFigure hf) {
 		super(aRenderRegCli, figureUri);
 		myNode = hf.getNode();
 	}
