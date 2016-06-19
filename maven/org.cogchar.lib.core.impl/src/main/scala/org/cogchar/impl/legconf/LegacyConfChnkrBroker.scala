@@ -14,12 +14,13 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.chnkr
+package org.cogchar.impl.legconf
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory}
 import org.cogchar.api.owrap.appro.AFBRLegacyConfig
 import org.cogchar.api.owrap.crcp.{BRFeature => CC_BRFeature}
 import org.cogchar.api.owrap.mdir.{GraphHost => MdirGraphHost, GraphHost3Triples, GraphPointer => MdirGraphPointer}
 import org.cogchar.blob.circus.{BrokerRecipeUtil, BrokerRecipeWrap, FeatureBrokerRecipeWrap}
+import org.cogchar.impl.chnkr.SerialGraphChnkr
 import org.ontoware.rdf2go
 import org.ontoware.rdf2go.model.node.{URI => R2GoURI}
 import org.ontoware.rdf2go.model.{Model => R2GoModel}
