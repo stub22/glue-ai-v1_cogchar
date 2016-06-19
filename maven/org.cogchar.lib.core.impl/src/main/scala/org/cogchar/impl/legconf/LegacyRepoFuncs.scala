@@ -1,4 +1,4 @@
-package org.cogchar.impl.chnkr
+package org.cogchar.impl.legconf
 
 import org.appdapter.fancy.log.VarargsLogging
 import org.appdapter.fancy.rclient.{RepoClient, EnhancedRepoClient, EnhancedLocalRepoClient};

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.cogchar.impl.chnkr
+package org.cogchar.impl.legconf
 import com.hp.hpl.jena.query.Dataset
 import com.hp.hpl.jena.rdf.model.{Model => JenaModel, ModelFactory => JenaModelFactory}
 import org.appdapter.core.store.BasicRepoImpl
