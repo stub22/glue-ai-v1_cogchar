@@ -63,8 +63,9 @@ public class CameraBinding extends BasicDebugger {
 	private ViewPort myViewport;
 	private Queuer myQueuer;
 
-	// Only used when Camera is attached to a node (not the other way around!)
-	
+	// This old comment appears false, since myCamNode appears to be used in different directions by:
+	// attachSceneNodeToCamera and attachCameraToSceneNode
+	// 	FALSE:	"Only used when Camera is attached to a node (not the other way around!)"
 	private	CameraNode	myCamNode;
 	
 	public CameraBinding(Queuer queuer, Ident requiredID) {
@@ -106,7 +107,7 @@ public class CameraBinding extends BasicDebugger {
 		if (cc.myCamPointDir != null) {
 			myPointDirVec3f = new Vector3f(cc.myCamPointDir[0], cc.myCamPointDir[1], cc.myCamPointDir[2]);
 			if (flag_storeDefaults) {
-				myPointDirVec3f = myPointDirVec3f.clone();
+				myDefPointDirV3f = myPointDirVec3f.clone();
 			}
 		}
 		if (cc.myDisplayRect != null) {
@@ -122,7 +123,7 @@ public class CameraBinding extends BasicDebugger {
 			getLogger().warn("Cannot reset worldPos - default is null for camBinding with id={}", myIdent);
 		}
 		if (myDefPointDirV3f != null) {
-			myPointDirVec3f = myPointDirVec3f.clone();
+			myPointDirVec3f = myDefPointDirV3f.clone();
 		}
 	}
 

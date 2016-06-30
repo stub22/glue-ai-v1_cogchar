@@ -17,7 +17,13 @@
 package org.cogchar.render.model.humanoid;
 
 import org.cogchar.render.app.entity.VWorldEntity;
-import com.jme3.animation.*;
+
+import com.jme3.animation.Animation;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimationFactory;
+import com.jme3.animation.LoopMode;
+
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
