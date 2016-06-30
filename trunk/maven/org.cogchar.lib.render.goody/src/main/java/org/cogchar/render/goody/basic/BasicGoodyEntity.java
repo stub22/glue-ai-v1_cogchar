@@ -16,7 +16,11 @@
 
 package org.cogchar.render.goody.basic;
 
-import com.jme3.animation.*;
+import com.jme3.animation.Animation;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimationFactory;
+import com.jme3.animation.LoopMode;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
@@ -29,6 +33,8 @@ import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+
 import org.appdapter.core.name.Ident;
 import org.cogchar.render.app.entity.GoodyActionExtractor;
 import org.cogchar.render.app.entity.VWorldEntity;

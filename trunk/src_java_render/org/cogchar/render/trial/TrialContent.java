@@ -134,7 +134,7 @@ public class TrialContent extends BasicDebugger implements TrialUpdater {
 		// This scale factor will be multiplied by the getRenderedSize value of the font, which is 17.0f
 		// for the default font (on JDK6.Win7, YMMV).
 
-		// Not clear yet what "size" of the font means.  It seems that if we want the rectangle to really contain
+		// Not clear yet what "size" of the font means.  It seems that if we want the rectangle to really contain...
 		TextSpatialFactory tsf = new TextSpatialFactory(rrc);
 		getLogger().info("Making 3D text spatials for letters, digits, syms = 3 total");
 		myLettersBTS = tsf.makeTextSpatial(letters, 0.2f, RenderQueue.Bucket.Transparent, 6); // eff-scale 3.4f, wraps after 2-3 chars
@@ -306,14 +306,14 @@ public class TrialContent extends BasicDebugger implements TrialUpdater {
 			
 	}
 
-	protected static Material makeAlphaBlendedUnshadedMaterial(RenderRegistryClient rrc, float red,
+	public static Material makeAlphaBlendedUnshadedMaterial(RenderRegistryClient rrc, float red,
 				float green, float blue, float alpha) { 
 
 		AssetManager assetMgr = rrc.getJme3AssetManager(null);
 		ColorRGBA color = new ColorRGBA(red, green, blue, alpha);
 		return makeAlphaBlendedUnshadedMaterial(assetMgr, color);	
 	}
-	protected static Material makeAlphaBlendedUnshadedMaterial(AssetManager assetMgr, ColorRGBA color) { 
+	public static Material makeAlphaBlendedUnshadedMaterial(AssetManager assetMgr, ColorRGBA color) {
 		FaceCullMode matFaceCullMode = FaceCullMode.Off;  		// Render both sides
 		Material unshMat = new Material(assetMgr, "Common/MatDefs/Misc/Unshaded.j3md");
 		// For transparency/lucency we set the BlendMode on addtlRenderState.
