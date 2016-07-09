@@ -63,6 +63,8 @@ public class CameraBinding extends BasicDebugger {
 	private ViewPort myViewport;
 	private Queuer myQueuer;
 
+	private ColorRGBA myStoredViewBgColor = ColorRGBA.LightGray;
+
 	// This old comment appears false, since myCamNode appears to be used in different directions by:
 	// attachSceneNodeToCamera and attachCameraToSceneNode
 	// 	FALSE:	"Only used when Camera is attached to a node (not the other way around!)"
@@ -96,6 +98,8 @@ public class CameraBinding extends BasicDebugger {
 	public void setCamera(Camera cam) {
 		myCam = cam;
 	}
+
+	public ViewPort getViewPort() { return myViewport; }
 
 	public void setValsFromConfig(CameraConfig cc, boolean flag_storeDefaults) {
 		if (cc.myCamPos != null) {
@@ -171,8 +175,14 @@ public class CameraBinding extends BasicDebugger {
 			myViewport = rrc.getJme3RenderManager(null).createPostView(getShortName(), myCam); // PostView or MainView?
 			myViewport.setClearFlags(true, true, true);
 			// BackroundColor is set for main window right now in WorkaroundFuncsMustDie.setupCameraLightAndViewport - yuck. 
-			myViewport.setBackgroundColor(ColorRGBA.LightGray);
+			myViewport.setBackgroundColor(myStoredViewBgColor);
 			myViewport.attachScene(rrc.getJme3RootDeepNode(null));
+		}
+	}
+	public void setViewPortColor_rendThrd(ColorRGBA vpBgColor) {
+		myStoredViewBgColor = vpBgColor;
+		if (myViewport != null) {
+			myViewport.setBackgroundColor(myStoredViewBgColor);
 		}
 	}
 
