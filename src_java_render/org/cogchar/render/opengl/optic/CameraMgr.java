@@ -25,7 +25,9 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.CameraControl.ControlDirection;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +90,8 @@ public class CameraMgr {
 	public CameraBinding getDefaultCameraBinding() {
 		return getCameraBinding(DEF_CAM_ID);
 	}	
+
+	public Collection<CameraBinding> getAllCameraBindings() { return myCameraBindingsByID.values(); }
 
 	public void setAttachmentNodeFinder(FigureBoneNodeFinder hcm) {
 		myAttachmentNodeFinder = hcm;
