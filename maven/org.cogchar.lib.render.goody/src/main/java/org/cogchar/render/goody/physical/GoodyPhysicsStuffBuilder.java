@@ -218,7 +218,7 @@ public class GoodyPhysicsStuffBuilder extends RenderRegistryAware implements Phy
 					bulletg.addControl(bulletControl);
 					bulletControl.setLinearVelocity(cam.getDirection().mult(25));
 					bulletg.addControl(bulletControl);
-					myRootNode.attachChild(bulletg);
+					myTopGoodyNode.attachChild(bulletg);
 					myPhysSpc.add(bulletControl);
 	 * }
 	 *
