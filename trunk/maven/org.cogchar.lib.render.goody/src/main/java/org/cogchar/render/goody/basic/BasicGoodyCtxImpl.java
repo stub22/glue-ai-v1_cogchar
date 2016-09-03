@@ -14,11 +14,8 @@ import org.cogchar.render.goody.bit.TicTacMark;
 import org.cogchar.render.goody.flat.CrossHairGoody;
 import org.cogchar.render.goody.flat.ParagraphGoody;
 import org.cogchar.render.goody.flat.ScoreBoardGoody;
-import org.cogchar.render.gui.bony.VirtualCharacterPanel;
 import org.cogchar.render.opengl.scene.DeepSceneMgr;
 import org.cogchar.render.optic.goody.VWorldCameraEntity;
-import org.cogchar.render.sys.goody.GoodyModularRenderContext;
-import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
 
 
 import org.cogchar.api.thing.ThingActionSpec;
@@ -45,11 +42,11 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, W
 	private RenderRegistryClient 		myRRC;
 	private VWorldEntityReg				myVWER  = new VWorldEntityReg();
 	private Dimension					myScreenDimension;
-	private Node						myRootNode = new Node("GoodyNode");
+	protected Node 						myTopGoodyNode = null;
 
 	public BasicGoodyCtxImpl(RenderRegistryClient rrc, WindowStatusMonitor wsm) {//  GoodyModularRenderContext gmrc) {
 		myRRC = rrc;
-		attachRootGoodyNode();
+		// attachRootGoodyNode();    Removed 2016-09-03 by stub22
 		wsm.addListener(this);
 		Dimension winSzOrNull = wsm.getWindowSize();
 		if (winSzOrNull != null) {
@@ -58,12 +55,9 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, W
 		} else {
 			getLogger().warn("No initial window size found");
 		}
-//		VirtualCharacterPanel optCharPanel = gmrc.getPanel();
-// 		gmrc.setTheEntitySpace(this);  // Allow context to call us back with screen-dim changes.
-//		if (optCharPanel != null) {
-//			Dimension charPanelSz = optCharPanel.getSize(null);
-// applyNewScreenDimension(charPanelSz);
-// }
+	}
+	@Override public void setupAsMainGoodyCtx() {
+		attachTopGoodyNode();
 	}
 	@Override public RenderRegistryClient getRRC() {
 		return myRRC;
@@ -80,16 +74,36 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, W
 	@Override public Dimension getScreenDimension() {
 		return myScreenDimension;
 	}
-	public final void attachRootGoodyNode() {
+
+	// Added 2016-09-03
+	public void setTopGoodyNode(Node tgn) {
+		// TODO:  Check for old topGoodyNode, != new one, and if found log-warn and remove it.
+		if ((myTopGoodyNode != null) && (myTopGoodyNode != tgn)) {
+			getLogger().warn("");
+		}
+		myTopGoodyNode = tgn;
+		attachTopGoodyNode();
+	}
+	// Renamed and moved to protected scope, 2016-09-03
+	protected void attachTopGoodyNode() {
+		final Node topGoodyNode = getTopGoodyNode();
+		getLogger().info("Queueing attachment for topGoodyNode={}", topGoodyNode);
 		final DeepSceneMgr dsm = myRRC.getSceneDeepFacade(null);
 		myRRC.getWorkaroundAppStub().enqueue(new Callable<Void>() { // Must manually do this on main render thread, ah jMonkey...
 
 			@Override
 			public Void call() throws Exception {
-				dsm.attachTopSpatial(myRootNode);
+				dsm.attachTopSpatial(topGoodyNode);
 				return null;
 			}
 		});
+	}
+
+	protected Node getTopGoodyNode() {
+		if (myTopGoodyNode == null) {
+			myTopGoodyNode = new Node("bgciGoodyNode");
+		}
+		return myTopGoodyNode;
 	}
 
 	@Override public VWorldEntityReg getVWER() {
@@ -102,12 +116,13 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, W
 	public VWorldEntity createAndAttachByAction(GoodyActionExtractor ga, VWorldEntity.QueueingStyle qStyle) {
 		VWorldEntity newGoody = createByAction(ga);
 		if (newGoody != null) {
-			newGoody.attachToVirtualWorldNode(myRootNode, qStyle);
+			newGoody.attachToVirtualWorldNode(myTopGoodyNode, qStyle);
 		}
 		return newGoody;
 	}
 
-	private VWorldEntity createByAction(GoodyActionExtractor ga) {
+	// Marked protected 2016-09-03, was private before.
+	protected VWorldEntity createByAction(GoodyActionExtractor ga) {
 		VWorldEntity novGoody = null;
 		if (ga.getKind() == GoodyActionExtractor.Kind.CREATE) {
 			// Switch on string local name would be nice
@@ -229,7 +244,7 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, W
 						myVWER.removeGoody(goodyOne);
 						return ConsumpStatus.USED;
 					}
-					break;
+ 					break;
 				}
 				default: {
 					// For the moment, let's focus on "update"
@@ -247,29 +262,7 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, W
 	}
 
 	@Override public void notifyWindowSize(Dimension size) {
+
 		applyNewScreenDimension(size);
 	}
 }
-	/* Moved to HumaonoidRenderWorldMapper
-	// A temporary way to make it possible to interact with figures... ultimately Humanoids aren't goodies!
-	private void addHumanoidGoodies(GoodyModularRenderContext hrc) {
-		Map<Ident, HumanoidFigure> humanoidFigures = hrc.getHumanoidFigureManager().getHumanoidFigures();
-		for (Ident figureUri : humanoidFigures.keySet()) {
-			theLogger.info("Adding a HumanoidFigureGoodyWrapper for {}", figureUri);
-			addGoody(new VWorldHumanoidFigureEntity(hrc.getRenderRegistryClient(), figureUri, humanoidFigures.get(figureUri)));
-		}
-	}
-	*/
-// Now camera goody wrappers are added as required by GoodyFactory
-// addCameraGoodies(gmrc); // Cameras aren't really goodies, but we can pretend for the moment!
-	/*
-	private void addCameraGoodies(GoodyModularRenderContext hrc) {
-		Map<String, Camera> cameras = hrc.getRenderRegistryClient().getOpticCameraFacade(null).getCameraMap();
-		for (String cameraName : cameras.keySet()) {
-			theLogger.info("Adding a Camera for {}", cameraName);
-			// This evidences the fact that the CameraMgr needs to switch to URIs to identify cameras, not strings:
-			addGoody(new VWorldCameraEntity(hrc.getRenderRegistryClient(), new FreeIdent(NamespaceDir.NS_CCRT_RT + cameraName),
-					cameras.get(cameraName)));
-		}
-	}
-	*/

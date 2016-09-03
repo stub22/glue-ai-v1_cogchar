@@ -91,7 +91,8 @@ public class GoodyRenderTestApp extends BonyVirtualCharApp<GoodyModularRenderCon
 		GoodyModularRenderContext renderCtx = getBonyRenderContext();
 		GoodyRenderRegistryClient grrc = renderCtx.getGoodyRenderRegistryClient();
 		// GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, renderCtx);
-		BasicGoodyCtx bgc = new BasicGoodyCtxImpl(grrc, renderCtx);
+		BasicGoodyCtxImpl bgc = new BasicGoodyCtxImpl(grrc, renderCtx);
+		bgc.setupAsMainGoodyCtx(); // Added 2016-09-03 for compat with changes to BasicGoodyCtxImpl
 		try {
 			initContentOnJME3Thread(bgc);
 		} catch(Throwable t) {
