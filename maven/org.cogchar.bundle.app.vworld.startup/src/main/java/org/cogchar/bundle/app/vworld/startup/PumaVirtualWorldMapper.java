@@ -101,7 +101,8 @@ public class PumaVirtualWorldMapper extends BasicDebugger implements RenderGatew
         // Hook-in for Goody system
         GoodyRenderRegistryClient grrc = hrc.getGoodyRenderRegistryClient();
 
-		BasicGoodyCtx bgc = new BasicGoodyCtxImpl(grrc, hrc);
+		BasicGoodyCtxImpl bgc = new BasicGoodyCtxImpl(grrc, hrc);
+		bgc.setupAsMainGoodyCtx(); // Added 2016-09-03 for compat with changes to BasicGoodyCtxImpl
 
         // GoodyFactory gFactory = GoodyFactory.createTheFactory(grrc, hrc);
         // Setup the humanoid "goodies"

@@ -10,7 +10,7 @@ import org.cogchar.render.sys.registry.RenderRegistryClient;
 import java.awt.Dimension;
 
 /**
- * Created by Owner on 5/14/2016.
+ * Created by Stub22 on 5/14/2016.
  */
 public interface BasicGoodyCtx {
 	public RenderRegistryClient getRRC();
@@ -21,4 +21,6 @@ public interface BasicGoodyCtx {
 	public void applyNewScreenDimension(Dimension newDimension);
 
 	public ConsumpStatus consumeAction(ThingActionSpec actionSpec);
+
+	public void setupAsMainGoodyCtx(); // Bind our top jme-node as the presumed ancestor of all goodies in the scene
 }
