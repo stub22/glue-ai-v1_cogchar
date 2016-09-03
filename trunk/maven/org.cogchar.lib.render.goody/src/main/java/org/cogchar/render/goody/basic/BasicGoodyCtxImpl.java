@@ -36,13 +36,13 @@ import org.cogchar.render.sys.window.WantsWindowStatus;
 import org.cogchar.render.sys.window.WindowStatusMonitor;
 
 /**
- * Created by Owner on 5/14/2016.
+ * Created by Stub22 on 5/14/2016.
  */
 public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, WantsWindowStatus {
 	private RenderRegistryClient 		myRRC;
 	private VWorldEntityReg				myVWER  = new VWorldEntityReg();
 	private Dimension					myScreenDimension;
-	protected Node 						myTopGoodyNode = null;
+	private Node 						myTopGoodyNode = null;
 
 	public BasicGoodyCtxImpl(RenderRegistryClient rrc, WindowStatusMonitor wsm) {//  GoodyModularRenderContext gmrc) {
 		myRRC = rrc;
@@ -79,7 +79,7 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, W
 	public void setTopGoodyNode(Node tgn) {
 		// TODO:  Check for old topGoodyNode, != new one, and if found log-warn and remove it.
 		if ((myTopGoodyNode != null) && (myTopGoodyNode != tgn)) {
-			getLogger().warn("");
+			getLogger().warn("Found old myTopGoodyNode={}, replacing with new one={}", myTopGoodyNode, tgn);
 		}
 		myTopGoodyNode = tgn;
 		attachTopGoodyNode();
@@ -87,7 +87,7 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, W
 	// Renamed and moved to protected scope, 2016-09-03
 	protected void attachTopGoodyNode() {
 		final Node topGoodyNode = getTopGoodyNode();
-		getLogger().info("Queueing attachment for topGoodyNode={}", topGoodyNode);
+		getLogger().info("Queueing attachment for deep topGoodyNode={}", topGoodyNode);
 		final DeepSceneMgr dsm = myRRC.getSceneDeepFacade(null);
 		myRRC.getWorkaroundAppStub().enqueue(new Callable<Void>() { // Must manually do this on main render thread, ah jMonkey...
 
@@ -114,9 +114,10 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, W
 	// This way, EntitySpace doesn't need to know about the root node to attach. But this pattern can change if
 	// we decide we rather it did!
 	public VWorldEntity createAndAttachByAction(GoodyActionExtractor ga, VWorldEntity.QueueingStyle qStyle) {
+		Node topGoodyNode = getTopGoodyNode();
 		VWorldEntity newGoody = createByAction(ga);
 		if (newGoody != null) {
-			newGoody.attachToVirtualWorldNode(myTopGoodyNode, qStyle);
+			newGoody.attachToVirtualWorldNode(topGoodyNode, qStyle);
 		}
 		return newGoody;
 	}
