@@ -303,7 +303,8 @@ public class HumanoidFigure extends BasicDebugger implements RagdollCollisionLis
                                 
 				StickFigureTwister.applyBoneTransforms_onSceneThread(tgtBone, boneTranslateVec, boneRotQuat, boneScaleVec);
 			} else {
-				theLogger.debug("Skipping boneState {} and tgtBone {}, for boneName {}", bs, tgtBone, boneName);
+				String tgtBoneName = (tgtBone == null) ? "NULL" : tgtBone.getName();
+				theLogger.debug("Skipping boneState={} and tgtBone.name={}, for boneName={}", bs, tgtBoneName, boneName);
 			}
 		}
 	

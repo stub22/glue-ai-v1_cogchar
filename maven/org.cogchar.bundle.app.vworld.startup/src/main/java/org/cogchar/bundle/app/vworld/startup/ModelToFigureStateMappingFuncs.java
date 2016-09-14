@@ -47,6 +47,8 @@ import org.slf4j.LoggerFactory;
  *
  * Encodes our naive assumptions for bone rotation mappings.
  *
+ * Important class is the main integration point between o.c.bind.mio and the v-world concepts.
+ *
  */
 public class ModelToFigureStateMappingFuncs {
 

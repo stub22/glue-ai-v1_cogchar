@@ -235,6 +235,11 @@ or    animPlayer.playAnimation(anim, 0, anim.getLength());			 */
 			Joint.Id jointId = new Joint.Id(jointNum);
 			Robot.JointId rJID = new Robot.JointId(robotID, jointId);
 			ModelJoint mj = refBot.getJoint(rJID);
+
+			if (mj == null) {
+				getLogger().warn("Cannot find joint for jointID={} in modelRobot={}, skipping", rJID, refBot);
+				continue;
+			}
 	
 			//time in millisec, position in normalized range [0,1]
 			// Need to get the joint so we can get the abs-default position.
