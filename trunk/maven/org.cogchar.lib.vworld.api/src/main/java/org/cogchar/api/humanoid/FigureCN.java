@@ -23,13 +23,13 @@ package org.cogchar.api.humanoid;
 
 
 public class FigureCN {
-	final static String QUERY_SHEET = "ccrt:qry_sheet_22";
+	// final static String QUERY_SHEET = "ccrt:qry_sheet_22";
 	final static String HUMANOID_QUERY = "ccrt:find_humanoids_99";
 
 	final static String ROBOT_URI_VAR_NAME = "humInd";
-	final static String ROBOT_ID_VAR_NAME = "rkRobotID";
+	final static String HUMANOID_NICKNAME_VAR_NAME = "rkRobotID";
 	final static String MESH_PATH_VAR_NAME = "meshPath";
-	final static String BONY_CONFIG_PATH_VAR_NAME = "bonyConfigPath";
+	// final static String BONY_CONFIG_PATH_VAR_NAME = "bonyConfigPath";
 	final static String JOINT_CONFIG_PATH_VAR_NAME = "jointConfigPath";
 	final static String[] INITIAL_POSITION_VAR_NAMES = {"initX", "initY", "initZ"};
 	final static String SCALE_VAR_NAME = "scale";
