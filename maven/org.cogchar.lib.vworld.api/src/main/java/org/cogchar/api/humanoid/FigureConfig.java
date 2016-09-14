@@ -61,7 +61,7 @@ public class FigureConfig extends BasicDebugger {
 		
 		SolutionList sList = qi.queryIndirectForAllSolutions(FigureCN.HUMANOID_QUERY, graphIdent);
 		SolutionMap solutionMap  = sList.makeSolutionMap(FigureCN.ROBOT_URI_VAR_NAME);
-		myNickname = sh.pullString(solutionMap, figureID, FigureCN.ROBOT_ID_VAR_NAME);
+		myNickname = sh.pullString(solutionMap, figureID, FigureCN.HUMANOID_NICKNAME_VAR_NAME);
 		myMeshPath = sh.pullString(solutionMap, figureID, FigureCN.MESH_PATH_VAR_NAME);
 		myJointGroupConfigPath = sh.pullString(solutionMap, figureID, FigureCN.JOINT_CONFIG_PATH_VAR_NAME);
 		for (int i = 0; i < myInitialPosition.length; i++) {
