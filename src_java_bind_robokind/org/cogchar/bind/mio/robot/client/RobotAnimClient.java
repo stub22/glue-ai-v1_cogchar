@@ -215,32 +215,24 @@ or    animPlayer.playAnimation(anim, 0, anim.getLength());			 */
 		 * I need to make ids and position in the animations explicit, but it
 		 * isn't as critical as fixing the motion was.
 		 */
+		//Matt - 9/2016: No longer using ChannelParams, using the robot's JointList instead.
+//		Robot.Id robotID = refBot.getRobotId();
+//		
+//		ChannelsParameterSource cpSource = AnimationUtils.getChannelsParameterSource();
+//		getLogger().debug("channelParamSource={}", cpSource);
+//		List<ChannelsParameter> chanParams = cpSource.getChannelParameters();
+//		getLogger().debug("Test animation channels={}", chanParams);
 		
-		Robot.Id robotID = refBot.getRobotId();
-		
-		ChannelsParameterSource cpSource = AnimationUtils.getChannelsParameterSource();
-		getLogger().debug("channelParamSource={}", cpSource);
-		List<ChannelsParameter> chanParams = cpSource.getChannelParameters();
-		getLogger().debug("Test animation channels={}", chanParams);
 		Animation anim = new Animation();
 		//Create your channels and add points
-		for (ChannelsParameter cp : chanParams) {
-            int jointNum = cp.getChannelID();
-            String name = cp.getChannelName();
+		for (ModelJoint mj : refBot.getJointList()) {
+            int jointNum = mj.getId().getLogicalJointNumber();
+            String name = mj.getName();
 			Channel chan = new Channel(jointNum, name);
 			getLogger().debug("Creating MotionPath for channel jointNum={}, name={}", jointNum, name);
 			//default path interpolation is a CSpline
 			MotionPath path = new MotionPath();
 			
-			Joint.Id jointId = new Joint.Id(jointNum);
-			Robot.JointId rJID = new Robot.JointId(robotID, jointId);
-			ModelJoint mj = refBot.getJoint(rJID);
-
-			if (mj == null) {
-				getLogger().warn("Cannot find joint for jointID={} in modelRobot={}, skipping", rJID, refBot);
-				continue;
-			}
-	
 			//time in millisec, position in normalized range [0,1]
 			// Need to get the joint so we can get the abs-default position.
 			int gotoRampMsec = 1000;
@@ -256,8 +248,8 @@ or    animPlayer.playAnimation(anim, 0, anim.getLength());			 */
 				break;
 				case BAK_DANGER_YOGA:		
 					path.addPoint(500, defaultPosNorm.getValue());
-					path.addPoint(1500, 1.0);
-					path.addPoint(2500, 0.0);
+					path.addPoint(1500, maxPosNorm);
+					path.addPoint(2500, minPosNorm);
 					path.addPoint(3500, defaultPosNorm.getValue());					
 				break;	
 			}			
