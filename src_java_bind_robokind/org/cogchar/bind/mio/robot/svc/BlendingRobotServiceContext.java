@@ -89,13 +89,13 @@ public class BlendingRobotServiceContext<R extends Robot> extends RobotServiceCo
 
     @Override public void registerAndStart(R robot, String connectionConfig) throws Throwable {
 		Robot.Id robotID = robot.getRobotId();
-		theLogger.info("super.registerAndStart(robotID=" + robotID + ")");
+		theLogger.info("Calling super.registerAndStart(robotID={}, connectionConfig={})", robotID, connectionConfig);
 		super.registerAndStart(robot, connectionConfig);
-		theLogger.info("startDefaultBlender(robotID=" + robotID + ")");
+		theLogger.info("Calling startDefaultBlender(robotID=" + robotID + ")");
 		startDefaultBlender();
-		theLogger.info("registerCogcharMotionSource(robotID=" + robotID + ")");
+		theLogger.info("Calling registerCogcharMotionSource(robotID=" + robotID + ")");
 		registerCogcharMotionSource();
-		theLogger.info("testPositionMoveToDefaultPositions(robotID=" + robotID + ")");
+		theLogger.info("Calling testPositionMoveToDefaultPositions(robotID=" + robotID + ")");
 		testPositionMoveToDefaultPositions();
 		theLogger.info("registerAndStart COMPLETE for robotID=" + robotID);
 	}
