@@ -17,6 +17,8 @@ package org.cogchar.bind.mio.robot.svc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
 import org.cogchar.api.skeleton.config.BoneRobotConfig;
 import org.cogchar.bind.mio.robot.model.ModelRobot;
 import org.cogchar.bind.mio.robot.model.ModelRobotFactory;
@@ -55,10 +57,15 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
             getLogger().warn("Error building ModelRobot from config {}",  config);
             return;
         }
+		getLogger().info("Fetching connectionConf = getValue(Configuration.class, MSGCONF_ROBOT_HOST [={}])", MSGCONF_ROBOT_HOST);
         Configuration<String> connectionConf = getValue(Configuration.class, MSGCONF_ROBOT_HOST);
-        ManagedService connectionConfigService = RKMessagingConfigUtils.registerConnectionConfig(
-                MSGCONF_ROBOT_HOST, connectionConf, 
-                null, new OSGiComponentFactory(myBundleCtx));
+		getLogger().info("Fetched connectionConf={}, and myBundleCtx={}", connectionConf, myBundleCtx);
+		Properties noProps = null;
+		OSGiComponentFactory osgiCompFactory = new OSGiComponentFactory(myBundleCtx);
+		getLogger().info("Made OSGiComponentFactory={}, now calling RKMessagingConfigUtils.registerConnectionConfig.", osgiCompFactory);
+        ManagedService connectionConfigService = RKMessagingConfigUtils.registerConnectionConfig(MSGCONF_ROBOT_HOST,
+						connectionConf,	noProps, osgiCompFactory); // new OSGiComponentFactory(myBundleCtx));
+		getLogger().info("RKMessagingConfigUtils.registerConnectionConfig returned connConfigSvc={}", connectionConfigService);
 		registeredConnectionConfigServices.add(connectionConfigService);
 		registerAndStart(br, MSGCONF_ROBOT_HOST);
 		getLogger().info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& END makeModelRobotWithBlenderAndFrameSource ");
