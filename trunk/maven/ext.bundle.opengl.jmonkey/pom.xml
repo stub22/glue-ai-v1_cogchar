@@ -271,6 +271,13 @@ The jmonkey.verson property is inherited from our parent project's pom.xml.
 							native/windows/OpenAL64.dll;
                             osname=win32;
                             processor=x86-64,
+
+                            native/windows/lwjgl64.dll;
+							native/windows/jinput-dx8_64.dll;
+							native/windows/jinput-raw_64.dll;
+							native/windows/OpenAL64.dll;
+                            osname=win10;
+                            processor=x86-64,
                 
                            
                             native/macosx/liblwjgl.jnilib;
