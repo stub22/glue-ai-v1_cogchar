@@ -48,7 +48,7 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
 		super(bundleCtx);
 	}
 
-	public void makeModelRobotWithBlenderAndFrameSource(BoneRobotConfig config) throws Throwable {
+	public void makeModelRobotWithBlenderAndFrameSource(BoneRobotConfig config ) throws Throwable {
 		getLogger().info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START makeModelRobot__ for robot {} ",  config.myRobotName);		
 		getLogger().debug("BoneRobtConfig details: {} ",  config);
 		//Create your Robot and register it
@@ -59,10 +59,13 @@ public class ModelBlendingRobotServiceContext extends BlendingRobotServiceContex
         }
 		getLogger().info("Fetching connectionConf = getValue(Configuration.class, MSGCONF_ROBOT_HOST [={}])", MSGCONF_ROBOT_HOST);
         Configuration<String> connectionConf = getValue(Configuration.class, MSGCONF_ROBOT_HOST);
-		getLogger().info("Fetched connectionConf={}, and myBundleCtx={}", connectionConf, myBundleCtx);
+
+		getLogger().info("Fetched connectionConf={}, and myBundleCtx.bundle={}", connectionConf, myBundleCtx.getBundle());
 		Properties noProps = null;
 		OSGiComponentFactory osgiCompFactory = new OSGiComponentFactory(myBundleCtx);
 		getLogger().info("Made OSGiComponentFactory={}, now calling RKMessagingConfigUtils.registerConnectionConfig.", osgiCompFactory);
+		// Note that as of 2016-09-20, this step is what triggers the first wave of lifecycle dependency matches,
+		// and thus leads to our first logged messages from the JFlux+OSGi Service Manager threads.
         ManagedService connectionConfigService = RKMessagingConfigUtils.registerConnectionConfig(MSGCONF_ROBOT_HOST,
 						connectionConf,	noProps, osgiCompFactory); // new OSGiComponentFactory(myBundleCtx));
 		getLogger().info("RKMessagingConfigUtils.registerConnectionConfig returned connConfigSvc={}", connectionConfigService);

@@ -34,7 +34,9 @@ import org.slf4j.LoggerFactory;
  */
 public class RobotServiceContext<R extends Robot> extends BasicDebugger {
 	static Logger theLogger = LoggerFactory.getLogger(RobotServiceContext.class);
-	
+
+	// 2013-era comments below on the state held by this context.
+
 	// A static map of all the Robots connected via registerRobot
 	// We'll need this to disconnect 'em all on "mode" change
 	// The map points to the bundle context used to register the robot so we can unregister it with that context, since
