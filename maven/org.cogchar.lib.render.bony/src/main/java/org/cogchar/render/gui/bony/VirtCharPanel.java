@@ -48,8 +48,8 @@ public class VirtCharPanel extends javax.swing.JPanel implements VirtualCharacte
 		renderPanel.add(c, BorderLayout.CENTER);
 	}
 	
-	@Override public JFrame makeEnclosingJFrame(String title) {
-		return PanelUtils.makeEnclosingJFrame(this, title);
+	@Override public JFrame makeEnclosingJFrame(String title, long sleepMsecAfterPack) {
+		return PanelUtils.makeEnclosingJFrame(this, title, sleepMsecAfterPack);
 	}
 	@Override public JPanel getJPanel() {
 		return this;

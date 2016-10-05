@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 public class PanelUtils {
 	static Logger theLogger = LoggerFactory.getLogger(PanelUtils.class);	
 	
-	public static JFrame makeEnclosingJFrame(JPanel panel, String title) {
+	public static JFrame makeEnclosingJFrame(JPanel panel, String title, long sleepMsecAfterPack) {
 		if (title == null) { 
 			title = panel.getClass().getName();
 		}
@@ -48,14 +48,16 @@ The value is set to HIDE_ON_CLOSE by default. Changes to the value of this prope
 
 		theLogger.info("Packing frame - this creates OGL display and starts the LwjglAbstractDisplay thread.");
 		frame.pack();
-		///*  Sleep here to see that pack() in fact does trigger Lwjgl thread
-		try {
-			theLogger.info("Sleeping 10 sec so we can see full impact of frame.pack().");
-			Thread.sleep(10000);
-		} catch (Throwable t) {
-			t.printStackTrace();
+		if (sleepMsecAfterPack > 0) {
+			///*  Sleep here to see that pack() in fact does trigger Lwjgl thread
+			try {
+				theLogger.info("Sleeping {} millisec to allow frame.pack() consequences to complete.", sleepMsecAfterPack);
+				Thread.sleep(sleepMsecAfterPack);
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
 		}
-		theLogger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 10 sec is up, now setting frame visible");
+		theLogger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% post frame.pack() sleep time is up, now calling frame.setVisible()");
 		frame.setVisible(true);	
 		return frame;
 	}

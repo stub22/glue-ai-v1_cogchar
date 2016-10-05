@@ -134,9 +134,10 @@ public class HumanoidRenderContext extends GoodyModularRenderContext {
             // If startJMonkey is called first, we often hang in frame.setVisible() as JMonkey tries
             // to do some magic restart deal that doesn't work as of jme3-alpha4-August_2011.
 
+			long sleepMsecAfterPack = 9500;
             // During the Frame-pack portion of this method, we get all the way to:
             //  CogcharPresumedApp - ********************* DemoApp.initialize() called
-            JFrame jf = vcp.makeEnclosingJFrame("CCRK-PUMA Virtual World");
+            JFrame jf = vcp.makeEnclosingJFrame("CCRK-PUMA Virtual World", sleepMsecAfterPack);
             logInfo("Got Enclosing Frame, adding to BonyRenderContext for WindowClose triggering: " + jf);
             // Frame will receive a close event when org.cogchar.bundle.render.opengl is STOPPED
             // So, that's our attempt to close the window gracefully on app exit (under OSGi).
