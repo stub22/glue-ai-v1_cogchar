@@ -35,8 +35,8 @@ public class FancyCharPanel extends javax.swing.JPanel implements VirtualCharact
 	@Override public void setRenderCanvas (Canvas c) {
 		myVCP.setRenderCanvas(c);
 	}	
-	@Override public JFrame makeEnclosingJFrame(String title) {
-		return PanelUtils.makeEnclosingJFrame(this, title);
+	@Override public JFrame makeEnclosingJFrame(String title, long sleepMsecAfterPack) {
+		return PanelUtils.makeEnclosingJFrame(this, title, sleepMsecAfterPack);
 	}	
 	@Override public JPanel getJPanel() {
 		return this;

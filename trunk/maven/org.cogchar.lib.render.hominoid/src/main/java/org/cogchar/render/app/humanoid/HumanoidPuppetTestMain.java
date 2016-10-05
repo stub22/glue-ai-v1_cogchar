@@ -62,7 +62,8 @@ public class HumanoidPuppetTestMain {
 		// before startJMonkey.  Might add frame to BonyRenderContext...
 		VirtualCharacterPanel vcp = bc.getPanel();
 		// theLogger.info("*********************** BEFORE FRAMING: VCP width="  + vcp.getWidth() + ", height=" + vcp.getHeight());
-		JFrame jf = vcp.makeEnclosingJFrame("Humanoid Puppet Test");
+		long sleepMsecAfterPack = 9488;
+		JFrame jf = vcp.makeEnclosingJFrame("Humanoid Puppet Test", sleepMsecAfterPack);
 		bc.setFrame(jf);
 		jf.addWindowListener(new WindowAdapter() {
 			@Override public void	windowClosing(WindowEvent e) {
