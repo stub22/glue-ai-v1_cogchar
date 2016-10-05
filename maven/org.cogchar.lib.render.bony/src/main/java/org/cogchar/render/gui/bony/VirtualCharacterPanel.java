@@ -28,7 +28,7 @@ import org.cogchar.render.sys.window.WindowStatusReader;
  */
 public interface VirtualCharacterPanel extends WindowStatusReader {
 	public void setRenderCanvas (Canvas c);
-	public JFrame makeEnclosingJFrame(String title);
+	public JFrame makeEnclosingJFrame(String title, long sleepMsecAfterPack);
 	public JPanel getJPanel();
 	public BodyController getBodyController();
 	public VerbalController getVerbalController();
