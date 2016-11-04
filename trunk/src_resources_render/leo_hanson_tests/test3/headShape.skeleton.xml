@@ -1,0 +1,35 @@
+<skeleton>
+    <bones>
+        <bone id="0" name="root">
+            <position x="0" y="-7.85889" z="0" />
+            <rotation angle="1.5708">
+                <axis x="0" y="0" z="1" />
+            </rotation>
+            <scale x="0.122795" y="0.122795" z="0.122795" />
+        </bone>
+        <bone id="1" name="head_jnt">
+            <position x="64" y="1.42109e-014" z="0" />
+            <rotation angle="1.5708">
+                <axis x="0" y="0" z="-1" />
+            </rotation>
+        </bone>
+        <bone id="2" name="leftShoulder_jnt">
+            <position x="16" y="0" z="0" />
+            <rotation angle="3.14159">
+                <axis x="0" y="1" z="0" />
+            </rotation>
+        </bone>
+        <bone id="3" name="rightShoulder_jnt">
+            <position x="-16" y="0" z="5.76224e-015" />
+            <rotation angle="3.14159">
+                <axis x="-0.00300049" y="0.999995" z="1.83727e-019" />
+            </rotation>
+        </bone>
+    </bones>
+    <bonehierarchy>
+        <boneparent bone="head_jnt" parent="root" />
+        <boneparent bone="leftShoulder_jnt" parent="head_jnt" />
+        <boneparent bone="rightShoulder_jnt" parent="head_jnt" />
+    </bonehierarchy>
+    <animations />
+</skeleton>

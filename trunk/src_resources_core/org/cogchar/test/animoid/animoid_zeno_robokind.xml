@@ -1,0 +1,287 @@
+<?xml version="1.0"?>
+<AnimoidConfig>
+
+	
+	<ViewPort	widthPixels="320" 	widthDegrees="45.2"  azSkewDegrees="-2.0"
+					heightPixels="240" 	heightDegrees="31.6"  elSkewDegrees="-1.0"/>
+	
+	<holdEntryNormDeg>2.0</holdEntryNormDeg>
+	<holdExitNormDeg>4.0</holdExitNormDeg>
+	
+		
+	<FaceNoticeConfig>	
+		<!-- Initial strength of a face hypothesis -->
+		<initialStrength>0.2</initialStrength>
+		<!-- Exponential time constant for decay of strength when face is 
+			presumed out of view due to the movement of robot's gaze.
+		-->
+		<!-- Matt had -0.004, -0.075, 0.05 -->
+
+		<hiddenDecayConstant>-0.00004</hiddenDecayConstant>
+		<!-- Exponential time constant for decay of strength when we
+			are looking where we last saw the face, but it still isn't visible
+		-->
+		<exposedDecayConstant>-0.00075</exposedDecayConstant>
+		<!-- Strength the hypo must stay above to survive -->
+		<survivalThreshold>0.0005</survivalThreshold>
+		
+		<!-- Strength above which a faceCue will be posted -->
+		<!-- Unused in Distro 17b - this threshold is set in the rules -->
+		<postingThreshold>0.8</postingThreshold>
+		<!-- Strength below which the faceCue will be cleared -->
+		<!-- Unused in Distro 17b - this threshold is set in the rules -->
+		<clearingThreshold>0.3</clearingThreshold>
+
+
+		<!-- Most recent freckled obs is also always retained -->
+		<obsRetainedInHypo>45</obsRetainedInHypo>
+
+		<!-- Initial enrollment face is also retained -->
+		<obsRetainedInFreckleFace>40</obsRetainedInFreckleFace>
+
+		<!-- Coefficients for quadratic expression for the cognitive distance
+			between two face observations.  Variables are:
+				deg = degrees of separation of observation centers
+				sec = seconds of separation of observation times
+			cogDist = cogDistCoeffDegSquared * deg^2 + cogDistCoeffSecSquared * sec^2
+						+ cogDistCoeffProduct * deg * sec
+		-->
+		<cogDistCoeffAzDiamSquared>10.0</cogDistCoeffAzDiamSquared>
+		<cogDistCoeffElDiamSquared>3.0</cogDistCoeffElDiamSquared>
+		<cogDistCoeffSeconds>0.0</cogDistCoeffSeconds>
+		<!-- 18d - Temporarily unused as we try to decide what the product should be now -->
+		<cogDistCoeffProduct>0.0</cogDistCoeffProduct>
+
+		<cogDistCoeffTimestampOverlap>1000.0</cogDistCoeffTimestampOverlap>
+		<cogDistCoeffFreckleMatch>-5000.0</cogDistCoeffFreckleMatch>
+		<cogDistCoeffFreckleMismatch>5000.0</cogDistCoeffFreckleMismatch>
+
+		<!-- How close in cogDist must 2 hypos be in order to be merged? -->
+		<mergeThresholdCogDist>30.0</mergeThresholdCogDist>
+
+		<!--Correction factor for using vision timestamp to estimate position. 
+			How much slower is the camera+openCV stack than the serial-to-servo stack?
+			Use a negative number if we think serial-to-servo is slower.
+			So far, we have not been able to make this useful, so leaving it at 0.0.
+		-->
+		<visionToMotionOffsetSec>0.0</visionToMotionOffsetSec>
+
+		<!-- Parameters to determine whether one position estimate is better than another
+			Newer is better, and more certain is better
+		-->
+		<!-- Weight per second of age difference -->
+		<ageUncertaintyWeight>2.0</ageUncertaintyWeight>
+		<!-- Weight per degree of position-estimate uncertainty (due to speed) difference.
+			To always take the newest estimate, set this to 0.0 
+		-->
+		<positionUncertaintyWeight>0.05</positionUncertaintyWeight>
+
+	</FaceNoticeConfig>
+	<AnimationBlendConfig>
+		<rashAllowanceMultiplier>1.2</rashAllowanceMultiplier>
+		<rashBonusAllowance>0.03</rashBonusAllowance>
+	</AnimationBlendConfig>
+	
+	<!-- 15 = Head-Turn-Right -->
+	<GazeJoint logicalJointID="15" positiveDirection="RIGHT" rangeOfMotionDegrees="84.58"/>
+	<!-- 14 = Upper-Nod-Forward (the *forehead* comes forward, and the gaze goes *down*) -->
+	<GazeJoint logicalJointID="14" positiveDirection="DOWN" rangeOfMotionDegrees="37.28"/>
+	<!-- 34 = Eyes-Right -->
+	<GazeJoint logicalJointID="34" positiveDirection="RIGHT" rangeOfMotionDegrees="21.15"/>
+	<!-- 13 = Eyes-Up -->
+	<GazeJoint logicalJointID="13" positiveDirection="UP" rangeOfMotionDegrees="5.51"/>
+
+	<!-- 1000 = Upper-Torso-Left - Note that the R.O.M. degrees=60.0 below is FAKE -->
+	<GazeJoint logicalJointID="1000" positiveDirection="LEFT" rangeOfMotionDegrees="24.47"/>	
+
+	<GazeStrategy	name="rampyAllJoints"  motionStyle="RAMPY">
+		<refreshPeriodFrames>1</refreshPeriodFrames>
+		<slackHorizDeg>0.5</slackHorizDeg>
+		<slackVertDeg>0.5</slackVertDeg>
+		<!-- 34 = Eyes-Turn-Right -->
+		<GazeJointStrategy logicalJointID="34">
+			<rampVelMaxDPS>40.0</rampVelMaxDPS>
+			<rampAccelMaxDPSPS>40.0</rampAccelMaxDPSPS>
+			<rampDecelMaxDPSPS>10000.0</rampDecelMaxDPSPS>
+		</GazeJointStrategy>
+		<!-- 15 = Head-Turn-Right -->
+		<GazeJointStrategy logicalJointID="15">
+			<rampVelMaxDPS>20.0</rampVelMaxDPS>
+			<rampAccelMaxDPSPS>10.0</rampAccelMaxDPSPS>
+			<rampDecelMaxDPSPS>10000.0</rampDecelMaxDPSPS>
+		</GazeJointStrategy>
+		<!-- 1000 = Upper-Torso-Left -->
+		<GazeJointStrategy logicalJointID="15">
+			<rampVelMaxDPS>10.0</rampVelMaxDPS>
+			<rampAccelMaxDPSPS>5.0</rampAccelMaxDPSPS>
+			<rampDecelMaxDPSPS>10000.0</rampDecelMaxDPSPS>
+		</GazeJointStrategy>		
+
+		<!-- 13 = Both-Eyes-Up -->
+		<GazeJointStrategy logicalJointID="13">
+			<rampVelMaxDPS>40.0</rampVelMaxDPS>
+			<rampAccelMaxDPSPS>20.0</rampAccelMaxDPSPS>
+			<rampDecelMaxDPSPS>10000.0</rampDecelMaxDPSPS>
+		</GazeJointStrategy>		
+		<!-- 14 = Nod-Forward -->
+		<GazeJointStrategy logicalJointID="14">
+			<rampVelMaxDPS>30.0</rampVelMaxDPS>
+			<rampAccelMaxDPSPS>15.0</rampAccelMaxDPSPS>
+			<rampDecelMaxDPSPS>10000.0</rampDecelMaxDPSPS>
+		</GazeJointStrategy>	
+	</GazeStrategy>
+
+	<GazeStrategy	name="rampyRecenteringHelperForNeckJoints"  motionStyle="RAMPY">
+		<refreshPeriodFrames>1</refreshPeriodFrames>
+		<slackHorizDeg>0.4</slackHorizDeg>
+		<slackVertDeg>0.4</slackVertDeg>
+		<!-- 15 = Head-Turn-Right -->
+		<GazeJointStrategy logicalJointID="15">
+			<rampVelMaxDPS>40.0</rampVelMaxDPS>
+			<rampAccelMaxDPSPS>60.0</rampAccelMaxDPSPS>
+			<rampDecelMaxDPSPS>10000.0</rampDecelMaxDPSPS>
+		</GazeJointStrategy>
+		<!-- 14 = Nod-Forward -->
+		<GazeJointStrategy logicalJointID="14">
+			<rampVelMaxDPS>20.0</rampVelMaxDPS>
+			<rampAccelMaxDPSPS>10.0</rampAccelMaxDPSPS>
+			<rampDecelMaxDPSPS>10000.0</rampDecelMaxDPSPS>
+		</GazeJointStrategy>
+	</GazeStrategy>		
+	
+	
+	<GazeStrategy	name="rampyRecenter"  motionStyle="HOLD_AND_RECENTER">
+		<!-- Helper should not use the same joints listed below -->
+		<helperStrategyName>rampyRecenteringHelperForNeckJoints</helperStrategyName>
+
+		<!-- 34 = Eyes-Turn-Right -->
+		<GazeJointStrategy logicalJointID="34">
+			<recenterSlackDeg>0.5</recenterSlackDeg>
+			<recenterMaxVelDPS>4.0</recenterMaxVelDPS>
+		</GazeJointStrategy>
+
+		<!-- 13 = Eyes-Up -->
+		<GazeJointStrategy logicalJointID="13">
+			<recenterSlackDeg>0.5</recenterSlackDeg>
+			<recenterMaxVelDPS>4.0</recenterMaxVelDPS>
+		</GazeJointStrategy>			
+	</GazeStrategy>
+	
+	<GazeStrategy	name="jumpyRecenteringHelperForNeckJoints"  motionStyle="JUMPY">
+		<refreshPeriodFrames>1</refreshPeriodFrames>
+		<slackHorizDeg>0.5</slackHorizDeg>
+		<slackVertDeg>0.5</slackVertDeg>
+		<brakeSlope>1.0</brakeSlope>
+		<brakePower>3.0</brakePower>
+		<flatJumpSize>1.0</flatJumpSize>
+		<distanceJumpRatio>0.2</distanceJumpRatio>
+		
+		<!-- 15 = Head-Turn-Right -->
+		<GazeJointStrategy logicalJointID="15">
+			<flatMotionWeight>1.0</flatMotionWeight>
+		</GazeJointStrategy>
+		<!-- 14 = Nod-Forward -->
+		<GazeJointStrategy logicalJointID="14">
+			<flatMotionWeight>0.5</flatMotionWeight>
+		</GazeJointStrategy>
+	</GazeStrategy>	
+	
+	
+	<GazeStrategy	name="jumpyRecenter"  motionStyle="HOLD_AND_RECENTER">
+		<!-- Helper should not use the same joints listed below -->
+		<helperStrategyName>jumpyRecenteringHelperForNeckJoints</helperStrategyName>
+
+		<!-- 34 = Eyes-Turn-Right -->
+		<GazeJointStrategy logicalJointID="34">
+			<recenterSlackDeg>0.5</recenterSlackDeg>
+			<recenterMaxVelDPS>4.0</recenterMaxVelDPS>
+		</GazeJointStrategy>
+
+		<!-- 13 = Eyes-Up -->
+		<GazeJointStrategy logicalJointID="13">
+			<recenterSlackDeg>0.5</recenterSlackDeg>
+			<recenterMaxVelDPS>4.0</recenterMaxVelDPS>
+		</GazeJointStrategy>			
+
+	</GazeStrategy>
+	
+	<GazeStrategy	name="noGaze"  motionStyle="NONE"/>
+	
+	<GazeStrategy	name="jumpyNeckMedium"  motionStyle="JUMPY">
+		<refreshPeriodFrames>1</refreshPeriodFrames>
+		<slackHorizDeg>1.0</slackHorizDeg>
+		<slackVertDeg>1.0</slackVertDeg>
+		<brakeSlope>1.0</brakeSlope>
+		<brakePower>3.0</brakePower>
+		<flatJumpSize>1.0</flatJumpSize>
+		<distanceJumpRatio>0.2</distanceJumpRatio>
+		
+		<!-- 15 = Head-Turn-Right -->
+		<GazeJointStrategy logicalJointID="15">
+			<flatMotionWeight>1.0</flatMotionWeight>
+		</GazeJointStrategy>
+		<!-- 14 = Nod-Forward -->
+		<GazeJointStrategy logicalJointID="14">
+			<flatMotionWeight>0.5</flatMotionWeight>
+		</GazeJointStrategy>
+	</GazeStrategy>
+	
+	
+	<GazeStrategy	name="jumpyAllJointsMedium"	 motionStyle="JUMPY">
+		<refreshPeriodFrames>1</refreshPeriodFrames>
+
+		<slackHorizDeg>1.0</slackHorizDeg>
+		<slackVertDeg>1.0</slackVertDeg>
+		<brakeSlope>1.0</brakeSlope>
+		<brakePower>2.0</brakePower>
+		<flatJumpSize>0.5</flatJumpSize>
+		<distanceJumpRatio>0.2</distanceJumpRatio>
+
+		<!-- 13 = Eyes-Right -->
+		<GazeJointStrategy logicalJointID="34">
+			<flatMotionWeight>0.5</flatMotionWeight>
+		</GazeJointStrategy>
+		<!-- 15 = Head-Turn-Right -->
+		<GazeJointStrategy logicalJointID="15">
+			<flatMotionWeight>0.5</flatMotionWeight>
+		</GazeJointStrategy>
+
+		<!-- 13 = Eyes-Up -->
+		<GazeJointStrategy logicalJointID="13">
+			<flatMotionWeight>0.3</flatMotionWeight>
+		</GazeJointStrategy>		
+		<!-- 14 = Nod-Forward -->
+		<GazeJointStrategy logicalJointID="14">
+			<flatMotionWeight>0.35</flatMotionWeight>
+		</GazeJointStrategy>
+	</GazeStrategy>
+	
+	
+	<GazeStrategy	name="jumpyAllJointsAggressive" motionStyle="JUMPY">
+		<refreshPeriodFrames>1</refreshPeriodFrames>
+		<slackHorizDeg>1.0</slackHorizDeg>
+		<slackVertDeg>1.0</slackVertDeg>
+		<brakeSlope>1.0</brakeSlope>
+		<brakePower>2.0</brakePower>
+		<flatJumpSize>0.0</flatJumpSize>
+		<distanceJumpRatio>0.90</distanceJumpRatio>
+
+		<!-- 34 = Both-Eyes-Right -->
+		<GazeJointStrategy logicalJointID="34">
+			<flatMotionWeight>0.4</flatMotionWeight>
+		</GazeJointStrategy>
+		<!-- 15 = Head-Turn-Right -->
+		<GazeJointStrategy logicalJointID="15">
+			<flatMotionWeight>0.6</flatMotionWeight>
+		</GazeJointStrategy>
+
+		<!-- 13 = Eyes-Up -->
+		<GazeJointStrategy logicalJointID="13">
+			<flatMotionWeight>0.3</flatMotionWeight>
+		</GazeJointStrategy>		
+		<!-- 14 = Nod-Forward -->
+		<GazeJointStrategy logicalJointID="14">
+			<flatMotionWeight>0.35</flatMotionWeight>
+		</GazeJointStrategy>
+	</GazeStrategy>
+</AnimoidConfig>

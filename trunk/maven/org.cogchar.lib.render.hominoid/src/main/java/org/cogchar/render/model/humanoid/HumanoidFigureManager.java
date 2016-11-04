@@ -1,0 +1,186 @@
+/*
+ *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+package org.cogchar.render.model.humanoid;
+
+import org.cogchar.render.app.humanoid.HumanoidRenderContext;
+import org.appdapter.core.name.Ident;
+
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.scene.Node;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.cogchar.blob.emit.RenderConfigEmitter;
+import org.cogchar.render.app.core.WorkaroundAppStub;
+import org.cogchar.render.app.bony.BonyRenderContext;
+import org.cogchar.api.humanoid.FigureConfig;
+import org.cogchar.api.humanoid.HumanoidFigureConfig;
+import org.cogchar.render.model.humanoid.HumanoidFigureModule;
+import org.cogchar.render.model.humanoid.HumanoidFigure;
+import java.util.Iterator;
+import java.util.concurrent.Callable;
+import org.appdapter.fancy.rclient.RepoClient;
+import org.cogchar.render.sys.context.ConfiguredPhysicalModularRenderContext;
+import org.cogchar.render.sys.context.PhysicalModularRenderContext;
+import org.cogchar.render.sys.task.BasicCallableRenderTask;
+import org.cogchar.render.sys.registry.RenderRegistryClient;
+import org.cogchar.render.opengl.scene.FigureBoneNodeFinder;
+import org.cogchar.api.humanoid.FigureBoneReferenceConfig;
+
+import org.appdapter.core.log.BasicDebugger;
+/**
+ * @author Stu B. <www.texpedient.com>
+ */
+public class HumanoidFigureManager extends BasicDebugger implements FigureBoneNodeFinder {
+
+	private Map<Ident, HumanoidFigure> myFiguresByCharIdent = new HashMap<Ident, HumanoidFigure>();
+
+	public HumanoidFigure getOrMakeHumanoidFigure(RepoClient qi, Ident charIdent, FigureConfig hc, 
+				Ident bonyConfigGraph, RenderConfigEmitter rce) {
+		HumanoidFigure hf = myFiguresByCharIdent.get(charIdent);
+		if (hf == null) {
+			//BonyConfigEmitter bce = getBonyConfigEmitter();
+			String matPath = rce.getMaterialPath();
+			getLogger().info(
+					"Constructing HumanoidFigureConfig for charID={} using bonyConfigGraph={}, renderCE={} " 
+					+ " repoClient{}  figConf={}", charIdent, bonyConfigGraph, rce, qi, hc);
+			HumanoidFigureConfig hfc = new HumanoidFigureConfig(qi, hc, matPath, bonyConfigGraph); // rce, bonyConfigGraph);
+			hf = addHumanoidFigure(hfc);
+		}
+		return hf;
+	}
+
+	public HumanoidFigure addHumanoidFigure(HumanoidFigureConfig hfc) {
+		HumanoidFigure hf = null;
+		if (hfc.isComplete()) {
+			getLogger().info("HumanoidFigureConfig is complete {}", hfc);
+			hf = new HumanoidFigure(hfc);
+			Ident charID = hf.getCharIdent();
+			myFiguresByCharIdent.put(charID, hf);
+		}
+		return hf;
+	}
+
+	// A few places want to just get the HumanoidFigure and aren't interested in possibly creating it.
+	// Those features don't want to have to worry about the graph idents, which are just for loading config
+	// (CoreFeatureAdapter.attachToHumanoidBone, HumanoidPuppetActions.getSinbad)
+	// I don't like overloading this method, but probably only a temporary fix
+	public HumanoidFigure getHumanoidFigure(Ident charIdent) {
+		return myFiguresByCharIdent.get(charIdent);
+	}
+	
+	// This method is probably even more problematic than getHumanoidFigure(Ident), but for now it provides a way for 
+	// the Goody/Entity system to get a list of figures to be able to control. Soon this will probably be done directly
+	// from the repo.
+	public Map<Ident, HumanoidFigure> getHumanoidFigures() {
+		return myFiguresByCharIdent;
+	}
+
+	// Now does more, but does less on jME thread!
+	public HumanoidFigure setupHumanoidFigure(final BonyRenderContext brc, RepoClient qi, final Ident charIdent, 
+					Ident bonyConfigGraphID, FigureConfig hc) throws Throwable {
+		getLogger().info("beginning setup for charID={} using bonyConfigGraphID {}", charIdent, bonyConfigGraphID);
+		RenderConfigEmitter rce = brc.getConfigEmitter();
+		final HumanoidFigure figure = getOrMakeHumanoidFigure(qi, charIdent, hc, bonyConfigGraphID, rce);
+
+		if (figure == null) {
+			getLogger().warn("aborting setup for charID={} - found null HumanoidFigure", charIdent);
+			return null;
+		}
+		attachFigure(brc, figure);
+
+		return figure;
+	}
+	public void attachFigure(final PhysicalModularRenderContext pmrc, final HumanoidFigure figure) throws Throwable {
+		RenderRegistryClient rrc = pmrc.getRenderRegistryClient();
+
+		final Ident charID = figure.getCharIdent();
+		final AssetManager amgr = rrc.getJme3AssetManager(null);
+		final Node rootNode = rrc.getJme3RootDeepNode(null);
+		final PhysicsSpace ps = pmrc.getPhysicsSpace();
+		/**
+		 * This task will eventually run async on the OpenGL render thread, and will load our OpenGL figure,
+		 * and make it snazzy.
+		 */
+
+		final BonyRenderContext bonyRC_orNull_isUnused = (pmrc instanceof BonyRenderContext) ? (BonyRenderContext) pmrc : null;
+		pmrc.runTaskSafelyUntilComplete(new BasicCallableRenderTask(pmrc) {
+
+			@Override public void performWithClient(RenderRegistryClient rrc) throws Throwable {
+				boolean figureInitOK = figure.loadMeshAndSkeletonIntoVWorld(amgr, rootNode, ps);
+				if (figureInitOK) {
+					// Create a coroutine execution module to accept time slices, to 
+					// allows us to animate the humanoid figure.
+					final HumanoidFigureModule hfm = new HumanoidFigureModule(figure, bonyRC_orNull_isUnused);
+					figure.setModule(hfm);
+					// Activate coroutine threading for our  module.
+					pmrc.attachModule(hfm);
+					getLogger().warn("Async Result (not really a 'warning') : Figure initialized and HumanoidFigureModule attached for {}", charID);
+				} else {
+					getLogger().warn("Delayed problem in code launched from setupHumanoidFigure():  Figure init failed for: {}", charID);
+				}
+			}
+		});
+		// Now we are back to the main thread.    We do not know if figureInit will succeed later.
+	}
+
+	public void detachHumanoidFigures(final PhysicalModularRenderContext brc) {
+		RenderRegistryClient rrc = brc.getRenderRegistryClient();
+		final Node rootNode = rrc.getJme3RootDeepNode(null);
+		final PhysicsSpace ps = brc.getPhysicsSpace();
+		Iterator<HumanoidFigure> currentFigureIterator = myFiguresByCharIdent.values().iterator();
+		while (currentFigureIterator.hasNext()) {
+			final HumanoidFigure aHumanoid = currentFigureIterator.next();
+			brc.enqueueCallable(new Callable<Void>() { // Do this on main render thread
+
+				@Override public Void call() throws Exception {
+					brc.detachModule(aHumanoid.getModule());
+					aHumanoid.detachFromVirtualWorld(rootNode, ps);
+					return null;
+				}
+			});
+		}
+		myFiguresByCharIdent.clear();
+	}
+
+	public void toggleDebugSkeletons() {
+		for (HumanoidFigure hf : myFiguresByCharIdent.values()) {
+			hf.toggleDebugSkeleton_onSceneThread();
+		}
+	}
+	
+	
+	public Node findHumanoidBoneAttachNode(final Ident charFigID, final String boneName) {
+		final HumanoidFigure humaFig = getHumanoidFigure(charFigID);
+		Node attachmentNode = null;
+		if (humaFig == null) {
+			getLogger().warn("Failed to find bone {} due to missing robot for charFigID={}", boneName, charFigID);
+		} else {
+			attachmentNode =  humaFig.getBoneAttachmentsNode(boneName);
+			if (attachmentNode == null) {
+				getLogger().warn("Could not find bone {} on robot for charFigID={}", boneName, charFigID);	
+			}
+		}
+		return attachmentNode;
+	}
+
+
+	@Override public com.jme3.scene.Node findFigureBoneNode(FigureBoneReferenceConfig figBoneRef) {
+		return findHumanoidBoneAttachNode(figBoneRef.getFigureID(), figBoneRef.getBoneName());
+	}
+}
