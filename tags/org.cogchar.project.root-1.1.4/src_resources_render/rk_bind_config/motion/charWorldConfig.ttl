@@ -1,0 +1,144 @@
+## This file contains RDF in Turtle (".ttl") format.
+## See:   http://www.w3.org/TeamSubmission/turtle/
+
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+@prefix apsb:	<http://www.appdapter.org/schema/box#> .
+@prefix apt:	<http://www.appdapter.org/test#> .
+
+@prefix bc:		<http://www.cogchar.org/bony/config#> .
+@prefix bci:	<http://www.cogchar.org/bony/config/instance#> .
+
+
+<>  rdfs:comment     "All of this metadata is optional, unused, and just for fun/future" ;
+    dc:creator       "Ryan Biggs" ;
+    dc:subject       "Character World config" ;
+    dc:publisher     "cogchar.org" ;
+    dc:title         "(title) Character World config" ;
+    dc:description   "(desc) Character World config such as lights and cameras" ;
+    dc:date          "2012-05-03" ;
+
+    dc:format        "RDF" ;
+    dc:identifier    "what_does_this_dublin_core_identifier_mean"
+    .
+    
+
+#### This "Buildable" resource defines a factory for a particular kind of component.
+
+bc:BuildableLightsCameraConfig
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.api.cinema.LightsCameraConfig$Builder" 
+#####  Again, note the period ending the description of this resource, and all other
+#####  top-level (*syntactically, but not semantically*) resources below.
+		.
+
+
+##########################################################################
+#####   The Main Resource
+#####  The URI of the Character World Config is (the expanded form of) bci:charWorldConfig1	
+##### rdf:type allows Jena Assembler to construct the factory   (LightsCameraConfig.Builder)
+##### defined by the BuildableLightsCameraConfig above.
+##########################################################################
+
+bci:charWorldConfig1		rdf:type			bc:BuildableLightsCameraConfig;
+####  Here is the class name of the actual config object instance we are constructing.
+	apsb:javaFQCN		"org.cogchar.api.cinema.LightsCameraConfig";
+#### Some additional descriptive metadata
+	apsb:label			"Character World Config apsb:label";
+	rdfs:label			"Character World Config rdfs:label";
+
+
+# Now let's list the cameras contained within this config
+        bc:camera
+                bci:camera_DEFAULT,
+				bci:camera_HEAD_CAM,
+# This next camera is used by a demo cinematic, but is disabled in SVN code to avoid cluttering the v-world with extra viewports
+# Uncomment it to enable it if you like! 
+#                bci:camera_anotherTestCamera,
+				bci:camera_aTestCamera;
+                
+# ... and the lights
+		bc:light	bci:light_Demo;
+ .        
+
+
+################################################################################
+# Camera Resources
+################################################################################
+
+bci:camera_DEFAULT
+        bc:xPos                 0.0;
+        bc:yPos                 40.0;
+        bc:zPos                 80.0;
+        bc:xDir                 0.0;
+        bc:yDir                 -0.3;
+        bc:zDir                 -1.0;
+        bc:viewportXstart		0.0;
+        bc:viewportXend			1.0;
+        bc:viewportYstart		0.0;
+        bc:viewportYend			1.0;
+.        
+        
+bci:camera_aTestCamera
+        bc:xPos                 0.0;
+        bc:yPos                 40.0;
+        bc:zPos                 80.0;
+        bc:xDir                 0.0;
+        bc:yDir                 -0.3;
+        bc:zDir                 -1.0;
+		bc:viewportXstart		0.0;
+		bc:viewportXend			0.3;
+		bc:viewportYstart		0.0;
+        bc:viewportYend			0.3;
+.
+
+bci:camera_anotherTestCamera
+        bc:xPos                 0.0;
+        bc:yPos                 40.0;
+        bc:zPos                 80.0;
+        bc:xDir                 0.0;
+        bc:yDir                 -0.3;
+        bc:zDir                 -1.0;
+        bc:viewportXstart		0.0;
+		bc:viewportXend			0.3;
+		bc:viewportYstart		0.7;
+        bc:viewportYend			1.0;
+.
+
+# Position of HEAD_CAM is relative to instantaneous location of attachedTo bone
+bci:camera_HEAD_CAM
+		bc:xPos                 0.0;
+        bc:yPos                 0.0;
+        bc:zPos                 1.0;
+        bc:viewportXstart		0.0;
+		bc:viewportXend			0.3;
+		bc:viewportYstart		0.3;
+        bc:viewportYend			0.6;
+		bc:attachedToRobot		"rk-cajunZeno";
+		bc:attachedToBone		"LtEye2";
+.
+
+################################################################################
+# Light Resources
+################################################################################
+
+bci:light_Demo
+        bc:type			"DIRECTIONAL";
+        bc:xDir                 -0.1;
+        bc:yDir                 -0.7;
+        bc:zDir                 -1;
+        bc:colorR               1.0;
+        bc:colorG               1.0;
+        bc:colorB               1.0;
+        bc:colorAlpha			1.0;
+
+.    

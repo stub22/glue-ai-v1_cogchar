@@ -1,0 +1,653 @@
+@prefix : <http://onto.cogchar.org/onto/201603/AppProfile_OWL2#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix crcp: <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#> .
+@prefix mdir: <http://onto.cogchar.org/onto/201407/MetaDir_OWL2#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://onto.cogchar.org/onto/201603/AppProfile_OWL2> .
+
+<http://onto.cogchar.org/onto/201603/AppProfile_OWL2> rdf:type owl:Ontology ;
+                                                      
+                                                      owl:imports <http://onto.cogchar.org/onto/201407/MetaDir_OWL2> ,
+                                                                  <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2> .
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#approObjProp
+
+:approObjProp rdf:type owl:ObjectProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#describesThing
+
+:describesThing rdf:type owl:ObjectProperty ;
+                
+                rdfs:domain :ApproGraphPointer ;
+                
+                rdfs:subPropertyOf :approObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#hasAdptr
+
+:hasAdptr rdf:type owl:ObjectProperty ;
+          
+          rdfs:range :PumpAdptr ;
+          
+          rdfs:domain :PumpListenChan ;
+          
+          rdfs:subPropertyOf :approObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#hasLegacyThing
+
+:hasLegacyThing rdf:type owl:ObjectProperty ;
+                
+                rdfs:subPropertyOf :approObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#knowsChan
+
+:knowsChan rdf:type owl:ObjectProperty ;
+           
+           rdfs:subPropertyOf :approObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#knowsListenChan
+
+:knowsListenChan rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:subPropertyOf :knowsChan .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#knowsPostChan
+
+:knowsPostChan rdf:type owl:ObjectProperty ;
+               
+               rdfs:subPropertyOf :knowsChan .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#usesFeature
+
+:usesFeature rdf:type owl:ObjectProperty ;
+             
+             rdfs:comment "Links top-tier nexus entity (from profile recipes) to a second tier feature-broker recipe, which in turn defines configuration (usually via chunk) that may be used in the " ;
+             
+             rdfs:domain :ASBR_Nexus ;
+             
+             rdfs:range :ApproFeatureBrokerRecipe ;
+             
+             rdfs:subPropertyOf :approObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsCnfBrkr
+
+:wantsCnfBrkr rdf:type owl:ObjectProperty ;
+              
+              rdfs:range :AFBR_ModernConfig ;
+              
+              rdfs:subPropertyOf :wantsFeature .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsEndpoint
+
+:wantsEndpoint rdf:type owl:ObjectProperty ;
+               
+               rdfs:subPropertyOf :wantsFeature .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsFeature
+
+:wantsFeature rdf:type owl:ObjectProperty ;
+              
+              rdfs:domain :ApproCircusRecipe ;
+              
+              rdfs:range :ApproFeatureBrokerRecipe ;
+              
+              rdfs:subPropertyOf :approObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsGrphPtr
+
+:wantsGrphPtr rdf:type owl:ObjectProperty ;
+              
+              rdfs:domain :ApproGraphPointer ;
+              
+              rdfs:subPropertyOf :approObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsPointIn
+
+:wantsPointIn rdf:type owl:ObjectProperty ;
+              
+              rdfs:subPropertyOf :wantsEndpoint .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsPointOut
+
+:wantsPointOut rdf:type owl:ObjectProperty ;
+               
+               rdfs:subPropertyOf :wantsEndpoint .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#wantsTask
+
+:wantsTask rdf:type owl:ObjectProperty ;
+           
+           rdfs:subPropertyOf :wantsEndpoint .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#approDataProp
+
+:approDataProp rdf:type owl:DatatypeProperty .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#approLegacyDataProp
+
+:approLegacyDataProp rdf:type owl:DatatypeProperty ;
+                     
+                     rdfs:subPropertyOf :approDataProp .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#hasLegacyDefaultSparqlVarName
+
+:hasLegacyDefaultSparqlVarName rdf:type owl:DatatypeProperty ,
+                                        owl:FunctionalProperty ;
+                               
+                               owl:maxCardinality "1" ;
+                               
+                               rdfs:comment """ LEGACY PROPERTY: To be factored out:
+
+Default variable name used in  SPARQL queries that need a ?graphTgt argument.
+(So in this example, the property value would be \"graphTgt\").
+Generally must match the (legacy) queries read in from (legacy) query src graph.
+Java code uses this property to know where to plug in the actual queryTgt
+graph name into our dynamic queries at runtime.
+
+  // This var is used in the convenience forms of queryIndirect that handle many common
+  // use cases, wherein the query needs a single graph to operate on that is switched
+  // by application logic or user selection.""" ;
+                               
+                               rdfs:domain :AFBR_LegacyConfig ;
+                               
+                               rdfs:subPropertyOf :approLegacyDataProp ;
+                               
+                               rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#hasLegacyQuerySourceQName
+
+:hasLegacyQuerySourceQName rdf:type owl:DatatypeProperty ,
+                                    owl:FunctionalProperty ;
+                           
+                           rdfs:comment """ LEGACY PROPERTY: To be factored out:
+
+Weird legacy property treated as a String QName (resolved in an implied
+namespace).  If the whole legacy pattern were going to last, would
+prefer to have an objectProp here.  In even more modern terms, this would 
+be done with an mdir:GraphPointer, usually pointed to from a Recipe.""" ;
+                           
+                           owl:maxCardinality "1" ;
+                           
+                           rdfs:domain :AFBR_LegacyConfig ;
+                           
+                           rdfs:subPropertyOf :approLegacyDataProp ;
+                           
+                           rdfs:range xsd:string .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ACR_GamePipe
+
+:ACR_GamePipe rdf:type owl:Class ;
+              
+              rdfs:subClassOf :ApproCircusRecipe ;
+              
+              rdfs:comment """Recipe for a circus that serves as a pipeline for some arbitrary content
+data, called a \"Game Pipe\".   It is definitely *not* part of what we call
+a character, or a system nexus - rather it is just some content+computation that
+an author/programmer wants to throw into our world, for whatever reason.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRE_In
+
+:AFBRE_In rdf:type owl:Class ;
+          
+          rdfs:subClassOf :AFBR_Endpoint .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRE_Out
+
+:AFBRE_Out rdf:type owl:Class ;
+           
+           rdfs:subClassOf :AFBR_Endpoint .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRE_Task
+
+:AFBRE_Task rdf:type owl:Class ;
+            
+            rdfs:subClassOf :AFBR_Endpoint .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRM_ConfigChar
+
+:AFBRM_ConfigChar rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :AFBR_ModernConfig ;
+                  
+                  rdfs:comment """Config feature set defining any range of core character features.
+Actual root-features loaded and run are determined externally 
+via the appProfile system, which also specifies top-level 
+connections from chars to VWorlds and Robots.
+
+""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRM_ConfigGame
+
+:AFBRM_ConfigGame rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :AFBR_ModernConfig ;
+                  
+                  rdfs:comment """Here \"ConfigGame\" is a catch-all for interactive content, including
+chat scripts, games or lessons, which are not intrinsic to a glue.ai 
+nexus (character or runtime).  It is a good place for glue.ai learners 
+to create experimental content.     Core behavior capabilities of 
+characters are excluded, as those should be filed under
+ConfigChar.    (Similarly, VWorld and Robot system config is 
+customarily excluded from appearing in this Game content, 
+although that rule could be bent depending on application).    
+Selection and triggering of \"games\" content is app-specific,
+can be done with any combo of recipe-loaded graphs.
+See \"profile\" documentation for top level app config info.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRM_ConfigRobot
+
+:AFBRM_ConfigRobot rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :AFBR_ModernConfig ;
+                   
+                   rdfs:comment """Designates config tree used for a particular robot setup.
+Not all config must be read or used.  Setup may be filtered 
+by application and switched from command line, env, etc.  
+using the profile features of glue.ai.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBRM_ConfigVWorld
+
+:AFBRM_ConfigVWorld rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :AFBR_ModernConfig ;
+                    
+                    rdfs:comment """Configures a vworld without any characters in it,
+with the power to display data based on simpler
+3D features, using shapses, color, text, and motion.
+
+May include file pointers for humanoid body skeletons 
++ meshes, which are typically not loaded at runtime 
+until a character asks for it.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBR_Endpoint
+
+:AFBR_Endpoint rdf:type owl:Class ;
+               
+               rdfs:subClassOf :ApproFeatureBrokerRecipe ;
+               
+               rdfs:comment """Recipes of this type define a broker that can resolve service endpoints,
+within some feature category, for some number of characters (local/remote).
+Character IDs, host names, and service properties may be specified within the 
+Recipe.
+
+An individual may be marked with one or more subtypes to show
+that it can handle some combination of In, Out, and Task interactions.
+Those subtypes are overlapping, i.e. not exclusive of each other.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBR_LegacyConfig
+
+:AFBR_LegacyConfig rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :ApproFeatureBrokerRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AFBR_ModernConfig
+
+:AFBR_ModernConfig rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :ApproFeatureBrokerRecipe ;
+                   
+                   rdfs:comment """Each modern config typically corresponds to a virtual folder containing 
+any number of graphs, configuring any number of features, but all
+within the general category given by the AFBRM_ subtype.
+These AFBRM config entities and folders should not be mistaken as being equal
+by definition to any particular single instance of a Char, Robot, VWorld or Game,
+because selection within these config occurs from the app-profile.  
+It is from *there* that final decisions about linking and activation are made.
+""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AGP_ProfileFragment
+
+:AGP_ProfileFragment rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :ApproGraphPointer .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#AGP_VirtualWorldConfig
+
+:AGP_VirtualWorldConfig rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :ApproGraphPointer ;
+                        
+                        rdfs:comment """Graph is interpreted using VirtGoody (+ThingAct, etc.) ontology,
+as a set of instructions ordered by dependency.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ASBRN_Character
+
+:ASBRN_Character rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :ASBR_Nexus ;
+                 
+                 rdfs:comment """Recipe for a char nexus describes a particular version of a top level
+ human-relatable entity,
+generally corresponding to a top level actor in a running glue.ai actorSys.
+
+Feature-brokers are made available to a nexus by connection with :usesFeature.
+Those feature brokers may in turn point to lower graph configs.  It is generally
+ preferable that those particular lower graphs are not aware of any nexus URIs.
+ Instead they define their own URIs for usable (2nd-tier) chunks of functionality,
+ which may then be  freely used from (top-tier) higher profile recipes, which is where the nexus indivs are defined.
+""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ASBRN_EmbedPhysRuntime
+
+:ASBRN_EmbedPhysRuntime rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :ASBRN_Runtime .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ASBRN_Runtime
+
+:ASBRN_Runtime rdf:type owl:Class ;
+               
+               rdfs:subClassOf :ASBR_Nexus .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ASBRN_VWorldSimRuntime
+
+:ASBRN_VWorldSimRuntime rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :ASBRN_Runtime .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ASBR_Nexus
+
+:ASBR_Nexus rdf:type owl:Class ;
+            
+            rdfs:subClassOf :ApproSystemBrokerRecipe ;
+            
+            rdfs:comment """Below is original vision from ~2014.
+As of 2016 a Nexus also corresponds to a high-level chunk of actors,
+nearly a direct child of an akka ActorSystem.
+
+
+A nexus represents a gateway into JFlux Lifecycle + Service space.
+Instances of ASBR_Nexus configure a broker to hook or be hooked to that.
+At this level we don't care \"who finds whom\" - we just attach any data needed for that, as this recipe.
+
+A Nexus *may* also be used as the identify of the overall application service itself, that is, the thing which depends on entry hosts + profile + JFlux lifecycles for all its goodies at that level.    Any webapps will also need to hook or be hooked to that same service.
+
+Somehow, magically, the thing named by this nexus knows how to resolve all our
+AFBR_Endpoints, in a way consistent with their subData and any subData attached to this nexus-system-broker-recipe instance.
+
+Once JFlux-RDF is working, there should be little if any Java code required
+for the Appro Nexus setup.
+At that point, perhaps  ASBR_Nexus is just a subtype or alias for some
+JFlux type.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ASBR_Profile
+
+:ASBR_Profile rdf:type owl:Class ;
+              
+              rdfs:subClassOf :ApproSystemBrokerRecipe ;
+              
+              rdfs:comment """A container for the ghost-recipes used to find relevant profile-graph-fragments.  
+Usually a single, anonymous instance of this type is created at runtime.
+Eventually our different profile names can perhaps be tied to named 
+individuals of this type, however this information exists \"outside the app\" - and should not be used inside the app code.
+This distinction is consistent with our comments on ApproSystemBrokerRecipe.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ApproCircusRecipe
+
+:ApproCircusRecipe rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf crcp:CircusRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ApproFeatureBrokerRecipe
+
+:ApproFeatureBrokerRecipe rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf crcp:BR_Feature ;
+                          
+                          rdfs:comment "Recipes for brokers that allow app features to function." .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ApproGraphPointer
+
+:ApproGraphPointer rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf mdir:GraphPointer .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#ApproSystemBrokerRecipe
+
+:ApproSystemBrokerRecipe rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf crcp:BR_Meta ;
+                         
+                         rdfs:comment """Recipes that define any data used by the wider world to initialize and identify app   components.  None of this data may be used inside the app  runtime.
+""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#PumpAdptr
+
+:PumpAdptr rdf:type owl:Class ;
+           
+           rdfs:subClassOf :AFBRE_Task .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#PumpListenChan
+
+:PumpListenChan rdf:type owl:Class ;
+                
+                rdfs:subClassOf :AFBRE_In .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#PumpPostChan
+
+:PumpPostChan rdf:type owl:Class ;
+              
+              rdfs:subClassOf :AFBRE_Out .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#VWorldPumpAdptr
+
+:VWorldPumpAdptr rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :PumpAdptr .
+
+
+
+
+
+#################################################################
+#
+#    Individuals
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DBRKRCP_ANIM
+
+:DBRKRCP_ANIM rdf:type owl:NamedIndividual .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DBRKRCP_AUDMUS
+
+:DBRKRCP_AUDMUS rdf:type owl:NamedIndividual .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DBRKRCP_FILESYS
+
+:DBRKRCP_FILESYS rdf:type owl:NamedIndividual .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DBRKRCP_GOODY
+
+:DBRKRCP_GOODY rdf:type owl:NamedIndividual .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DBRKRCP_INTWEB
+
+:DBRKRCP_INTWEB rdf:type owl:NamedIndividual ;
+                
+                rdfs:comment """Broker to resolving references to/from our internal webapps.
+Impl should rely on JFlux wiring.
+Player app does not care whom is hooked as dep to whom.
+In player feature main() testing, Mocks may also masquerade 
+as webapps through this name.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DBRKRCP_MINIDISP
+
+:DBRKRCP_MINIDISP rdf:type owl:NamedIndividual .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DBRKRCP_PERCEPT
+
+:DBRKRCP_PERCEPT rdf:type owl:NamedIndividual .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DBRKRCP_SBMARK
+
+:DBRKRCP_SBMARK rdf:type owl:NamedIndividual .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DBRKRCP_SPEECH
+
+:DBRKRCP_SPEECH rdf:type owl:NamedIndividual .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DBRKRCP_SYSEXEC
+
+:DBRKRCP_SYSEXEC rdf:type owl:NamedIndividual .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DNEXBR_MAIN_APP
+
+:DNEXBR_MAIN_APP rdf:type owl:NamedIndividual .
+
+
+
+###  http://onto.cogchar.org/onto/201603/AppProfile_OWL2#DNEXBR_MAIN_CHAR
+
+:DNEXBR_MAIN_CHAR rdf:type owl:NamedIndividual ;
+                  
+                  rdfs:comment """In a main() test program, properties on this indiv may be used 
+to provide a default character or robot ID.  
+
+Probably not used in OSGi context.
+""" .
+
+
+
+
+###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
+

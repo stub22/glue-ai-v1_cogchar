@@ -1,0 +1,280 @@
+@prefix : <http://www.cogchar.org/schema/scene#> .
+@prefix cs: <http://www.cogchar.org/schema/scene#> .
+@prefix ja: <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix csi: <http://www.cogchar.org/schema/scene/instance#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix tbs: <http://onto.cogchar.org/onto/temp/bscene#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix apsb: <http://www.appdapter.org/schema/box#> .
+@prefix ccrt: <urn:ftd:cogchar.org:2012:runtime#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.cogchar.org/schema/scene> .
+
+<http://www.cogchar.org/schema/scene> rdf:type owl:Ontology ;
+                                      
+                                      rdfs:comment "Currently (using jena-schemagen maven plugin version 0.5), we must set the base-URI of this ontology to the target vocabulary that we want jena-schemagen to use."^^xsd:string .
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://jena.hpl.hp.com/2005/11/Assembler#topJaObjProp
+
+ja:topJaObjProp rdf:type owl:ObjectProperty ;
+                
+                rdfs:label "ja_topJaObjProp"^^xsd:string ;
+                
+                rdfs:comment "The ja NS is currently not available in the schemagen output for BehavScene onto." .
+
+
+
+###  http://www.cogchar.org/schema/scene#behavior
+
+:behavior rdf:type owl:ObjectProperty ;
+          
+          rdfs:label "cs_behavior"^^xsd:string ;
+          
+          rdfs:range :BuildableBehaviorSpec ;
+          
+          rdfs:domain :BuildableSceneSpec ;
+          
+          rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#chanFilter
+
+:chanFilter rdf:type owl:ObjectProperty ;
+            
+            rdfs:label "cs_chanFilter"^^xsd:string ;
+            
+            rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#channel
+
+:channel rdf:type owl:ObjectProperty ;
+         
+         rdfs:label "cs_channel"^^xsd:string ;
+         
+         rdfs:range :BuildableChannelSpec ;
+         
+         rdfs:domain :BuildableSceneSpec ;
+         
+         rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#firesThingAction
+
+:firesThingAction rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:label "cs_firesThingAction"^^xsd:string ;
+                  
+                  rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#outputTAGraph
+
+:outputTAGraph rdf:type owl:ObjectProperty ;
+               
+               rdfs:label "cs_outputTAGraph"^^xsd:string ;
+               
+               rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#step
+
+:step rdf:type owl:ObjectProperty ;
+      
+      rdfs:label "cs_step"^^xsd:string ;
+      
+      rdfs:domain :BuildableBehaviorSpec ;
+      
+      rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#taGuard
+
+:taGuard rdf:type owl:ObjectProperty ;
+         
+         rdfs:label "cs_taGuard" ;
+         
+         rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#topCsObjProp
+
+:topCsObjProp rdf:type owl:ObjectProperty ;
+              
+              rdfs:label "cs_topCsObjProp"^^xsd:string ;
+              
+              rdfs:comment """Root of object properties in the Behav-Scene onto.
+cs namespace is currently the \"main\" NS for this ontology.""" ;
+              
+              rdfs:domain :TopCsThing .
+
+
+
+###  http://www.cogchar.org/schema/scene#waitForChan
+
+:waitForChan rdf:type owl:ObjectProperty ;
+             
+             rdfs:label "cs_waitForChan"^^xsd:string ;
+             
+             rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#waitForEnd
+
+:waitForEnd rdf:type owl:ObjectProperty ;
+            
+            rdfs:label "cs_waitForEnd"^^xsd:string ;
+            
+            rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#waitForStart
+
+:waitForStart rdf:type owl:ObjectProperty ;
+              
+              rdfs:label "cs_waitForStart"^^xsd:string ;
+              
+              rdfs:subPropertyOf :topCsObjProp .
+
+
+
+###  urn:ftd:cogchar.org:2012:runtime#sourceModel
+
+ccrt:sourceModel rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:label "ccrt_sourceModel" ;
+                 
+                 rdfs:subPropertyOf ccrt:topCcrtObjProp .
+
+
+
+###  urn:ftd:cogchar.org:2012:runtime#topCcrtObjProp
+
+ccrt:topCcrtObjProp rdf:type owl:ObjectProperty ;
+                    
+                    rdfs:label "ccrt_topCcrtObjProp"^^xsd:string ;
+                    
+                    rdfs:comment "Root of CCRT properties used in the Behav-Scene onto, which currently are output into schemagen constants for the onto.  (see comments in pom.xml file for o.c.lib.onto maven project)."^^xsd:string .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://www.cogchar.org/schema/scene#text
+
+:text rdf:type owl:DatatypeProperty ;
+      
+      rdfs:label "cs_text"^^xsd:string ;
+      
+      rdfs:subPropertyOf :topCsDataProp .
+
+
+
+###  http://www.cogchar.org/schema/scene#topCsDataProp
+
+:topCsDataProp rdf:type owl:DatatypeProperty ;
+               
+               rdfs:label "cs_topCsDataProp"^^xsd:string ;
+               
+               rdfs:comment "Root of data properties used in the Behav-Scene onto." .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://www.cogchar.org/schema/scene#BehaviorStep
+
+:BehaviorStep rdf:type owl:Class ;
+              
+              rdfs:label "cs_BehaviorStep" ;
+              
+              rdfs:subClassOf :TopCsThing .
+
+
+
+###  http://www.cogchar.org/schema/scene#BuildableBehaviorSpec
+
+:BuildableBehaviorSpec rdf:type owl:Class ;
+                       
+                       rdfs:label "cs_BuildableBehaviorSpec"^^xsd:string ;
+                       
+                       rdfs:subClassOf :TopCsThing .
+
+
+
+###  http://www.cogchar.org/schema/scene#BuildableChannelSpec
+
+:BuildableChannelSpec rdf:type owl:Class ;
+                      
+                      rdfs:label "cs_BuildableChannelSpec"^^xsd:string ;
+                      
+                      rdfs:subClassOf :TopCsThing .
+
+
+
+###  http://www.cogchar.org/schema/scene#BuildableSceneSpec
+
+:BuildableSceneSpec rdf:type owl:Class ;
+                    
+                    rdfs:label "cs_BuildableSceneSpec"^^xsd:string ;
+                    
+                    rdfs:subClassOf :TopCsThing .
+
+
+
+###  http://www.cogchar.org/schema/scene#ThingActionGuard
+
+:ThingActionGuard rdf:type owl:Class ;
+                  
+                  rdfs:label "cs_ThingActionGuard" ;
+                  
+                  rdfs:subClassOf :TopCsThing .
+
+
+
+###  http://www.cogchar.org/schema/scene#TopCsThing
+
+:TopCsThing rdf:type owl:Class ;
+            
+            rdfs:label "cs_TopCsThing"^^xsd:string ;
+            
+            rdfs:comment "Root class for Behav-Scene entities in the CS namespace."^^xsd:string .
+
+
+
+
+###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
+

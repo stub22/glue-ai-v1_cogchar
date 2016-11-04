@@ -1,0 +1,92 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix apsb:	<http://www.appdapter.org/schema/box#> .
+@prefix apt:	<http://www.appdapter.org/test#> .
+
+@prefix cs:		<http://www.cogchar.org/schema/scene#> .
+@prefix csi:	<http://www.cogchar.org/schema/scene/instance#> .
+
+@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+
+cs:BuildableSceneSpec
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.impl.scene.SceneSpecBuilder" 
+		.		
+
+cs:BuildableBehaviorSpec
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.impl.scene.BehaviorSpecBuilder" 
+		.	
+
+cs:BuildableChannelSpec
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.impl.perform.ChannelSpecBuilder" 
+		.		
+
+csi:speechOut_100		
+	rdf:type			cs:BuildableChannelSpec;
+	apsb:javaFQCN		"org.cogchar.impl.perform.ChannelSpec";
+	apsb:label			"SPEECH_OUT-MAIN-ACAPELA_KENNY";
+	rdfs:label 			"SPEECH_OUT-MAIN-ACAPELA_KENNY";
+	apsb:trigger		apt:trig_001a;
+	cs:details			"Acapela 'Kenny' timed for Linux";
+	cs:size				-99.7;
+	.
+
+csi:scn_004	
+	rdf:type			cs:BuildableSceneSpec;
+	apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn-004 apsb label";
+	rdfs:label 			"scn-004 rdfs label";
+	cs:details			"scene-specific-details-go-here";
+	cs:behavior			csi:bh_001A, csi:bh_001B;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_04"
+	.
+
+csi:bh_001A		
+	rdf:type			cs:BuildableBehaviorSpec;
+	apsb:javaFQCN		"org.cogchar.impl.scene.SteppingBehaviorSpec";
+	apsb:label			"bh-001 apsb label";
+	rdfs:label 			"bh-001 rdfs label";
+	apsb:trigger		apt:trig_001a;
+	cs:details			"behavior-specific-details-go-here";
+	cs:size				11;
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.7;
+			cs:text				"I have a positive contribution to make"
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	5.2;
+			cs:text				"I am not a nattering nabob"
+		]
+## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
+	)
+	.
+
+csi:bh_001B		
+	rdf:type			cs:BuildableBehaviorSpec;
+	apsb:javaFQCN		"org.cogchar.impl.scene.SteppingBehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	2.0;
+			cs:text				"Started after 2 sec"
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	7.0;
+			cs:text				"Started after 7 sec"
+		]
+	)
+	.
