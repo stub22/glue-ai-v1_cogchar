@@ -1,0 +1,705 @@
+@prefix : <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix mdir: <http://onto.cogchar.org/onto/201407/MetaDir_OWL2#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2> .
+
+<http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2> rdf:type owl:Ontology ;
+                                                        
+                                                        owl:imports <http://onto.cogchar.org/onto/201407/MetaDir_OWL2> .
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasGraphHost
+
+:hasGraphHost rdf:type owl:ObjectProperty ;
+              
+              rdfs:comment """Points at a grounding mdir:GraphHost record of some dimension (3,4,5).
+Can be used to refer directly in storage, or to refer to a captured result at runtime.""" ;
+              
+              rdfs:range mdir:GraphHost ;
+              
+              rdfs:domain :GhostRecipe ;
+              
+              rdfs:subPropertyOf :rObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasGraphPointer
+
+:hasGraphPointer rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:range mdir:GraphPointer ;
+                 
+                 rdfs:domain :GraphRecipe ;
+                 
+                 rdfs:subPropertyOf :rObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasGraphPointerSet
+
+:hasGraphPointerSet rdf:type owl:ObjectProperty ;
+                    
+                    rdfs:range mdir:GraphPointerSet ;
+                    
+                    rdfs:domain :QryGrSetRecipe ;
+                    
+                    rdfs:subPropertyOf :rObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInBrokerRecipe
+
+:hasInBrokerRecipe rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:comment """Instance data used only iby a meta-broker implementing bootstrap circuses.
+Plain URI of the broker instance may be used to find the impl at runtime.""" ;
+                   
+                   rdfs:range :BrokerRecipe ;
+                   
+                   rdfs:domain :CircusRecipe ;
+                   
+                   rdfs:subPropertyOf :hasInRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInGhostRecipe
+
+:hasInGhostRecipe rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:range :GhostRecipe ;
+                  
+                  rdfs:domain :Recipe ;
+                  
+                  rdfs:subPropertyOf :hasInRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInGraphRecipe
+
+:hasInGraphRecipe rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:comment "This may point to a concrete graph supply chain, or to a resolvable GR_Refer, which can be thought of as a graph/graph-set " ;
+                  
+                  rdfs:range :GraphRecipe ;
+                  
+                  rdfs:domain :RThing ;
+                  
+                  rdfs:subPropertyOf :hasInRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInNameTextRecipe
+
+:hasInNameTextRecipe rdf:type owl:ObjectProperty ;
+                     
+                     rdfs:range :TextRecipe ;
+                     
+                     rdfs:domain :UR_Text ;
+                     
+                     rdfs:subPropertyOf :hasInTextRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInPropertyNameRecipe
+
+:hasInPropertyNameRecipe rdf:type owl:ObjectProperty ;
+                         
+                         rdfs:domain :RThing ;
+                         
+                         rdfs:range :UriRecipe ;
+                         
+                         rdfs:subPropertyOf :hasInUriRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInQryGrSetRecipe
+
+:hasInQryGrSetRecipe rdf:type owl:ObjectProperty ;
+                     
+                     rdfs:range :QryGrSetRecipe ;
+                     
+                     rdfs:domain :RThing ;
+                     
+                     rdfs:subPropertyOf :hasInRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInRecipe
+
+:hasInRecipe rdf:type owl:ObjectProperty ;
+             
+             rdfs:comment "parent inRecipe property may be used for summary queries, when inference is available." ;
+             
+             rdfs:domain :RThing ;
+             
+             rdfs:range :Recipe ;
+             
+             rdfs:subPropertyOf :rObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInRuleTextRecipe
+
+:hasInRuleTextRecipe rdf:type owl:ObjectProperty ;
+                     
+                     rdfs:domain :RThing ;
+                     
+                     rdfs:range :TextRecipe ;
+                     
+                     rdfs:subPropertyOf :hasInTextRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInSparqlTextRecipe
+
+:hasInSparqlTextRecipe rdf:type owl:ObjectProperty ;
+                       
+                       rdfs:domain :RThing ;
+                       
+                       rdfs:range :TextRecipe ;
+                       
+                       rdfs:subPropertyOf :hasInTextRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInSubjectNameRecipe
+
+:hasInSubjectNameRecipe rdf:type owl:ObjectProperty ;
+                        
+                        rdfs:comment "Used to access a known individual, including to specify a GraphPointer record by name." ;
+                        
+                        rdfs:domain :RThing ;
+                        
+                        rdfs:range :UriRecipe ;
+                        
+                        rdfs:subPropertyOf :hasInUriRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInTextRecipe
+
+:hasInTextRecipe rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:domain :RThing ;
+                 
+                 rdfs:range :TextRecipe ;
+                 
+                 rdfs:subPropertyOf :hasInRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasInUriRecipe
+
+:hasInUriRecipe rdf:type owl:ObjectProperty ;
+                
+                rdfs:domain :RThing ;
+                
+                rdfs:range :TextRecipe ;
+                
+                rdfs:subPropertyOf :hasInRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasOutRecipe
+
+:hasOutRecipe rdf:type owl:ObjectProperty ;
+              
+              rdfs:comment "Identifies an output of a circus, of type given by the target recipe type." ;
+              
+              rdfs:domain :CircusRecipe ;
+              
+              rdfs:range :Recipe ;
+              
+              rdfs:subPropertyOf :rObjProp .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#rObjProp
+
+:rObjProp rdf:type owl:ObjectProperty .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#hasConstantText
+
+:hasConstantText rdf:type owl:DatatypeProperty ,
+                          owl:FunctionalProperty ;
+                 
+                 owl:maxCardinality "1" ;
+                 
+                 rdfs:domain :TR_Constant ;
+                 
+                 rdfs:subPropertyOf :rDataProp ;
+                 
+                 rdfs:range xsd:string .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#rDataProp
+
+:rDataProp rdf:type owl:DatatypeProperty .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#BR_Feature
+
+:BR_Feature rdf:type owl:Class ;
+            
+            rdfs:subClassOf :BrokerRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#BR_Meta
+
+:BR_Meta rdf:type owl:Class ;
+         
+         rdfs:subClassOf :BrokerRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#BrokerRecipe
+
+:BrokerRecipe rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Recipe ;
+              
+              rdfs:comment "For bootstrap shenanigans and top level config - should not be referred to other than by a bootCircus, sysCircus, or similar." .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#CAT_Howl
+
+:CAT_Howl rdf:type owl:Class ;
+          
+          rdfs:subClassOf :CircusActionToken .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#CAT_LoadAndWire
+
+:CAT_LoadAndWire rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :CircusActionToken .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#CAT_RunOnce
+
+:CAT_RunOnce rdf:type owl:Class ;
+             
+             rdfs:subClassOf :CircusActionToken .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#CircusActionToken
+
+:CircusActionToken rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :RToken .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#CircusRecipe
+
+:CircusRecipe rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Recipe ;
+              
+              rdfs:comment """Circus is an intended corruption of Circuit.  
+
+A Circus is an executable workflow that produces the results of its output components, designated from this recipe by use of :hasOutRecipe.
+
+""" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#ExtraSparqlThing
+
+:ExtraSparqlThing rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :RThing ;
+                  
+                  rdfs:comment "Placeholder for when we figure out multi-inheritance mapping in impl" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#FR_SparqlAsk
+
+:FR_SparqlAsk rdf:type owl:Class ;
+              
+              rdfs:subClassOf :FlagRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#FlagRecipe
+
+:FlagRecipe rdf:type owl:Class ;
+            
+            rdfs:subClassOf :LiteralRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GRC_Infer
+
+:GRC_Infer rdf:type owl:Class ;
+           
+           rdfs:subClassOf :GR_Compute .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GRC_InferJenaRules
+
+:GRC_InferJenaRules rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :GRC_Infer .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GRC_InferOwlLite
+
+:GRC_InferOwlLite rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :GRC_Infer .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GRC_InferRDFS
+
+:GRC_InferRDFS rdf:type owl:Class ;
+               
+               rdfs:subClassOf :GRC_Infer .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GRC_SparqlConstruct
+
+:GRC_SparqlConstruct rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :GR_Compute ;
+                     
+                     rdfs:comment "Applies input SPARQL-text to input graph to produce output graph." .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GRC_Union
+
+:GRC_Union rdf:type owl:Class ;
+           
+           rdfs:subClassOf :GR_Compute ;
+           
+           rdfs:comment """Combines any number of graphs from input recipes.
+""" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_Compute
+
+:GR_Compute rdf:type owl:Class ;
+            
+            rdfs:subClassOf :GraphRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_Load
+
+:GR_Load rdf:type owl:Class ;
+         
+         rdfs:subClassOf :GraphRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_Refer
+
+:GR_Refer rdf:type owl:Class ;
+          
+          rdfs:subClassOf :GraphRecipe ;
+          
+          rdfs:comment "Instances of Refer may be used as variables with value in the :hasInputGraphPointer and :hasInputGraphPointerSet links." .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_Volatile
+
+:GR_Volatile rdf:type owl:Class ;
+             
+             rdfs:subClassOf :GraphRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GR_VolatileMonotonic
+
+:GR_VolatileMonotonic rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf :GR_Volatile .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GhR_Refer
+
+:GhR_Refer rdf:type owl:Class ;
+           
+           rdfs:subClassOf :GhostRecipe ;
+           
+           rdfs:comment "Points to metadata for an mdir:GHost record, via hasGraphHost." .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GhR_Variable
+
+:GhR_Variable rdf:type owl:Class ;
+              
+              rdfs:subClassOf :GhostRecipe ;
+              
+              rdfs:comment """Expects that some GHost will be provided at runtime through a hidden mechanism.
+That mechanism may use the URI of this indiv to convey its GHost impl.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GhostRecipe
+
+:GhostRecipe rdf:type owl:Class ;
+             
+             rdfs:subClassOf :Recipe ;
+             
+             rdfs:comment """Produces a usable runtime reference to a GHost container, usually including matchable metadata.
+Used in lower level crud circuits.
+For apps is less useful for most purposes than the GraphRecipe and QryGrSetRecipe.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#GraphRecipe
+
+:GraphRecipe rdf:type owl:Class ;
+             
+             rdfs:subClassOf :Recipe ;
+             
+             rdfs:comment """The main logical way to refer to a graph in a circusRecipe is via these
+GraphRecipes.  
+
+A GraphRecipe produces something describable with mdir:GraphPointers.
+Typically the consumer circus at runtime will use the result in the form of an object providing access to the GraphPointer data as well as the graph it points to, with appropriate semantics for read/write based on the details.
+
+The runtime output GraphPointer may or may not have a durable URI assigned to it
+in either of the crucial positions discussed in mdir:GraphPointer.  
+1)    pointer name = durable URI or blank node.
+        To supply a name-pipeline, use hasInSubjectNameRecipe (attached to this GraphRecipe).  Here the subject is for the graphPointer individual being output according to this recipe.
+
+2)   host-qualifier-name = unassigned (for a direct GHost3 pointer), or hasGraphNameUri val (for GHost-4 narrowing).
+
+
+""" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#LiteralRecipe
+
+:LiteralRecipe rdf:type owl:Class ;
+               
+               rdfs:subClassOf :Recipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#MR_CircusResultRows
+
+:MR_CircusResultRows rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :MR_DenseRegularColumns .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#MR_DenseRegularColumns
+
+:MR_DenseRegularColumns rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :MatrixRecipe ;
+                        
+                        rdfs:comment "A matrix with regular column structure, which determines the types (and name-keys) of output values.  The matrix data may often be delievered incrementally in rows.  This type is compatible with a SPARQL or SQL result rowset.   Output values types are generally constant in each column, across the rows.  However the types in the columns (often defined by separate column sub-recipes, as in the case of a MR_CircusResultRows) may be quite different from each other - e.g. they may produce in each output row an assortment of literals, URIs, graphs, queryGraphSets, more matrices, or even entire circuses!" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#MR_SparqlSelectRows
+
+:MR_SparqlSelectRows rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :MR_DenseRegularColumns .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#MatrixRecipe
+
+:MatrixRecipe rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Recipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#NumberRecipe
+
+:NumberRecipe rdf:type owl:Class ;
+              
+              rdfs:subClassOf :LiteralRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#QGSR_AggCommon
+
+:QGSR_AggCommon rdf:type owl:Class ;
+                
+                rdfs:subClassOf :QGSR_Aggregate ;
+                
+                rdfs:comment "Presumes that the input graph recipes refer to a common GHost4 which can be queried directly (with or without using FROM or FROM NAMED - supported by ARQ/TDB).  Without this designation , circus might unnecessarily think it is supposed to pull all input graph contents into a new dataset for query." .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#QGSR_Aggregate
+
+:QGSR_Aggregate rdf:type owl:Class ;
+                
+                rdfs:subClassOf :QryGrSetRecipe ;
+                
+                rdfs:comment "Produce a queryGraphSet via aggregation of any number of graph(pointer)s produced by input GraphRecipes." .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#QGSR_Refer
+
+:QGSR_Refer rdf:type owl:Class ;
+            
+            rdfs:subClassOf :QryGrSetRecipe ;
+            
+            rdfs:comment "Refers to an existing mdir:GraphPointerSet via :hasGraphPointerSet." .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#QryGrSetRecipe
+
+:QryGrSetRecipe rdf:type owl:Class ;
+                
+                rdfs:subClassOf :Recipe ;
+                
+                rdfs:comment """Produces a set of graphs for query (by SPARQL, usually).
+That might be an existing dataset (aka GHost4), or might be a GraphPointerSet.
+This is *not* normally used as a target for update.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#RThing
+
+:RThing rdf:type owl:Class .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#RToken
+
+:RToken rdf:type owl:Class ;
+        
+        rdfs:subClassOf :RThing .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#Recipe
+
+:Recipe rdf:type owl:Class ;
+        
+        rdfs:subClassOf :RThing ;
+        
+        rdfs:comment """A recipe can be used to (repeatedly) produce the most current value for some slot, of some known type.  
+
+Usually recipes are constructed with reference to other input recipes, which is a shorthand to referring to the output of those recipes.""" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#StampRecipe
+
+:StampRecipe rdf:type owl:Class ;
+             
+             rdfs:subClassOf :LiteralRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#TR_Constant
+
+:TR_Constant rdf:type owl:Class ;
+             
+             rdfs:subClassOf :TextRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#TR_PropGrab
+
+:TR_PropGrab rdf:type owl:Class ;
+             
+             rdfs:subClassOf :TextRecipe ;
+             
+             rdfs:comment "Evaluates  inSubjectNameR . inPropertyNameR" .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#TextRecipe
+
+:TextRecipe rdf:type owl:Class ;
+            
+            rdfs:subClassOf :LiteralRecipe .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#UR_Column
+
+:UR_Column rdf:type owl:Class ;
+           
+           rdfs:subClassOf :UriRecipe ;
+           
+           rdfs:comment "Expects to pull URI value from a column of a Matrix, e.g. SPARQL SELECT result." .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#UR_Text
+
+:UR_Text rdf:type owl:Class ;
+         
+         rdfs:subClassOf :UriRecipe ;
+         
+         rdfs:comment "Expect to construct a URI from some text produced by a TextRecipe." .
+
+
+
+###  http://onto.cogchar.org/onto/201502/CircusRecipe_OWL2#UriRecipe
+
+:UriRecipe rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Recipe .
+
+
+
+
+###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
+

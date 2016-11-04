@@ -1,0 +1,270 @@
+@prefix : <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix appdSnazzy: <http://www.appdapter.org/ontologies/2010/snazzy.owl#> .
+@prefix ace_lexicon: <http://attempto.ifi.uzh.ch/ace_lexicon#> .
+@base <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend> .
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend> rdf:type owl:Ontology ;
+                                                          
+                                                          owl:imports <http://www.appdapter.org/ontologies/2010/snazzy.owl> .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+ace_lexicon:TV_pl rdf:type owl:AnnotationProperty .
+
+
+
+ace_lexicon:TV_sg rdf:type owl:AnnotationProperty .
+
+
+
+ace_lexicon:CN_sg rdf:type owl:AnnotationProperty .
+
+
+
+ace_lexicon:CN_pl rdf:type owl:AnnotationProperty .
+
+
+
+ace_lexicon:TV_vbg rdf:type owl:AnnotationProperty .
+
+
+
+
+
+#################################################################
+#
+#    Datatypes
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#contains
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#contains> rdf:type owl:AsymmetricProperty ,
+                                                                            owl:IrreflexiveProperty ,
+                                                                            owl:ObjectProperty ,
+                                                                            owl:TransitiveProperty ;
+                                                                   
+                                                                   ace_lexicon:TV_pl "contains" ;
+                                                                   
+                                                                   ace_lexicon:TV_sg "contains" ;
+                                                                   
+                                                                   ace_lexicon:TV_vbg "contained" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#isContainedBy
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#isContainedBy> rdf:type owl:AsymmetricProperty ,
+                                                                                 owl:IrreflexiveProperty ,
+                                                                                 owl:ObjectProperty ,
+                                                                                 owl:TransitiveProperty ;
+                                                                        
+                                                                        ace_lexicon:TV_sg "isContainedBies" ;
+                                                                        
+                                                                        ace_lexicon:TV_pl "isContainedBy" ;
+                                                                        
+                                                                        ace_lexicon:TV_vbg "isContainedBied" ;
+                                                                        
+                                                                        owl:inverseOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#contains> .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#BodyPart
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#BodyPart> rdf:type owl:Class ;
+                                                                   
+                                                                   rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Thingo> ;
+                                                                   
+                                                                   ace_lexicon:CN_pl "BodyParts" ;
+                                                                   
+                                                                   ace_lexicon:CN_sg "BodyPart" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#BodyRegion
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#BodyRegion> rdf:type owl:Class ;
+                                                                     
+                                                                     rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Thingo> ;
+                                                                     
+                                                                     ace_lexicon:CN_pl "BodyRegions" ;
+                                                                     
+                                                                     ace_lexicon:CN_sg "BodyRegion" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Character
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Character> rdf:type owl:Class ;
+                                                                    
+                                                                    rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Thingo> ;
+                                                                    
+                                                                    ace_lexicon:CN_pl "Characters" ;
+                                                                    
+                                                                    ace_lexicon:CN_sg "Character" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#DirectedAngle1D
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#DirectedAngle1D> rdf:type owl:Class ;
+                                                                          
+                                                                          rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Thingo> ;
+                                                                          
+                                                                          ace_lexicon:CN_sg "Angle" ;
+                                                                          
+                                                                          ace_lexicon:CN_pl "Angles" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Drive
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Drive> rdf:type owl:Class ;
+                                                                
+                                                                rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Thingo> ;
+                                                                
+                                                                ace_lexicon:CN_sg "Drive" ;
+                                                                
+                                                                ace_lexicon:CN_pl "Drives" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Gesture
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Gesture> rdf:type owl:Class ;
+                                                                  
+                                                                  rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Thingo> ;
+                                                                  
+                                                                  ace_lexicon:CN_pl "Gestures" ;
+                                                                  
+                                                                  ace_lexicon:CN_sg "Gesture" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#NormalRange1D
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#NormalRange1D> rdf:type owl:Class ;
+                                                                        
+                                                                        rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Range1D> ;
+                                                                        
+                                                                        ace_lexicon:CN_pl "NormalRange1Ds" ;
+                                                                        
+                                                                        ace_lexicon:CN_sg "NormalRange1D" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Point
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Point> rdf:type owl:Class ;
+                                                                
+                                                                rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Thingo> ;
+                                                                
+                                                                ace_lexicon:CN_sg "Point" ;
+                                                                
+                                                                ace_lexicon:CN_pl "Points" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Point1D
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Point1D> rdf:type owl:Class ;
+                                                                  
+                                                                  rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Point> ;
+                                                                  
+                                                                  ace_lexicon:CN_sg "Point1D" ;
+                                                                  
+                                                                  ace_lexicon:CN_pl "Point1Ds" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Range1D
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Range1D> rdf:type owl:Class ;
+                                                                  
+                                                                  rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Space> ;
+                                                                  
+                                                                  ace_lexicon:CN_pl "Range1Ds" ;
+                                                                  
+                                                                  ace_lexicon:CN_sg "Range1D" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#RobotServoJoint
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#RobotServoJoint> rdf:type owl:Class ;
+                                                                          
+                                                                          rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#BodyPart> ;
+                                                                          
+                                                                          ace_lexicon:CN_sg "RobotServoJoint" ;
+                                                                          
+                                                                          ace_lexicon:CN_pl "RobotServoJoints" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Signal
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Signal> rdf:type owl:Class ;
+                                                                 
+                                                                 rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Thingo> ;
+                                                                 
+                                                                 ace_lexicon:CN_sg "Signal" ;
+                                                                 
+                                                                 ace_lexicon:CN_pl "Signals" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Space
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Space> rdf:type owl:Class ;
+                                                                
+                                                                rdfs:subClassOf <http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Thingo> ;
+                                                                
+                                                                ace_lexicon:CN_sg "Range" ;
+                                                                
+                                                                ace_lexicon:CN_pl "Ranges" .
+
+
+
+###  http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Thingo
+
+<http://onto.cogchar.org/onto/y2012m06/AnimMotivMapBlend#Thingo> rdf:type owl:Class ;
+                                                                 
+                                                                 ace_lexicon:CN_sg "Thingo" ;
+                                                                 
+                                                                 ace_lexicon:CN_pl "Thingoes" .
+
+
+
+
+###  Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net
+

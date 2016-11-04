@@ -1,0 +1,35 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix apsb:	<http://www.appdapter.org/schema/box#> .
+@prefix apt:	<http://www.appdapter.org/test#> .
+
+@prefix cn:		<http://www.cogchar.org/schema/nugget#> .
+
+@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+
+
+cn:nug_003 	rdf:type			cn:BuildableNugget;
+				apsb:javaFQCN		"org.cogchar.test.assembly.Nugget";
+				apsb:label			"nuggy-003 apsb label";
+				rdfs:label 			"nuggy-003 rdfs label";
+				apsb:trigger		apt:trig_001a;
+				cn:details			"nugget-3-deets"
+				.
+		
+cn:nug_004 	rdf:type			cn:BuildableNugget;
+				apsb:javaFQCN		"org.cogchar.test.assembly.MegaNugget";
+				apsb:label			"nuggy-004 apsb label";
+				rdfs:label 			"nuggy-004 rdfs label";
+				apsb:trigger		apt:trig_001a;
+				cn:details			"details of mega-nug #004";
+				cn:gaucho			"obscuro";
+				cn:count			22999;
+				cn:angle			77.44
+				.
+		

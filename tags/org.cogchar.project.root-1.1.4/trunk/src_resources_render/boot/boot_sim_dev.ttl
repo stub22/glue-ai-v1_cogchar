@@ -1,0 +1,119 @@
+## This file contains RDF in Turtle (".ttl") format.
+## See:   http://www.w3.org/TeamSubmission/turtle/
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+
+@prefix ja: 	<http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+
+@prefix cbs:		<urn:org.cogchar/schema/boot#> .
+@prefix cbsi:		<urn:org.cogchar/schema/boot/instance#> .
+
+
+<>  rdfs:comment     "Boot configuration for Cogchar character system" .
+### TODO:  We can't yet use imports with relative paths or in a way that matches
+### both our "perm" and "temp" directory structures.
+###	ja:imports		"org/cogchar/test/assembly/moreNugs.ttl";
+
+cbs:BuildableSysSpec
+		a 					rdfs:Class;
+		rdfs:subClassOf 	ja:Object;
+		ja:assembler		"org.cogchar.impl.boot.SysSpecBuilder" 
+		.		
+
+####################
+# Path Kinds
+#
+# Schema
+
+cbs:PathKind	a 		rdfs:Class.
+
+## Instances
+## Note that we use the type-system prefix "cbs:" for these enum-style master-data URIs
+## (Not the user-instance-graph "cbsi:" prefix).
+
+cbs:PK_FILE				a		cbs:PathKind.
+cbs:PK_CL_RESOURCE		a		cbs:PathKind.
+cbs:PK_URL				a		cbs:PathKind.
+
+##################  Config Kinds, type then instances
+cbs:ConfigKind			a		rdfs:Class.
+
+cbs:CK_BOOT					a	cbs:ConfigKind.
+cbs:CK_BEHAVIOR				a	cbs:ConfigKind.
+cbs:CK_CCRK_BONY_ROBOT		a	cbs:ConfigKind.
+cbs:CK_RK_VISEME			a	cbs:ConfigKind.
+cbs:CK_RK_ANIMATION			a	cbs:ConfigKind.
+cbs:CK_RK_JOINT_GROUP		a	cbs:ConfigKind.
+cbs:CK_OGRE_MESH			a	cbs:ConfigKind.
+
+##################  Config Formats, type then instances
+cbs:ConfigFormat		a		rdfs:Class.
+
+cbs:CF_XML				a	cbs:ConfigFormat.
+cbs:CF_RDF_TTL			a	cbs:ConfigFormat.
+cbs:CF_AVRO				a	cbs:ConfigFormat.
+cbs:CF_CSV				a	cbs:ConfigFormat.
+cbs:CF_CSV				a	cbs:ConfigFormat.
+
+
+csi:sys_222 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.boot.SysSpec";
+	cbs:label			"Nice label for system #222";
+	cbs:pathKind		"FILE"
+	cbs:path
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_01"
+	.
+
+csi:scn_002 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn-001 apsb label";
+	cs:behavior			csi:bh_002;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_02"
+	.
+
+csi:scn_003 	
+	rdf:type			cs:BuildableSceneSpec;		apsb:javaFQCN		"org.cogchar.impl.scene.SceneSpec";
+	apsb:label			"scn-001 apsb label";
+	cs:behavior			csi:bh_002, csi:bh_001;
+	cs:channel			csi:speechOut_100;
+	cs:trigger			"sceneTrig_03"
+	.
+
+csi:bh_001		
+	rdf:type			cs:BuildableBehaviorSpec;
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	0.7;
+			cs:text				"I have a positive contribution to make"
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	5.2;
+			cs:text				"I am not a nattering nabob"
+		]
+## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
+	)
+	.
+
+csi:bh_002		
+	rdf:type			cs:BuildableBehaviorSpec;	
+	apsb:javaFQCN		"org.cogchar.impl.scene.BehaviorSpec";
+	cs:steps (
+		[
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	1.2;
+			cs:text				"Started after 1.2 seconds"
+		] [
+			cs:channel			csi:speechOut_100;
+			cs:startOffsetSec	7;
+			cs:text				"Started after 7 seconds"
+		]
+## Need an explicit stop-time marker, so we know how long to wait before "stopping" the behavior module.
+	)
+	.
