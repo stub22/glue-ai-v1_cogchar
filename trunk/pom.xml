@@ -82,8 +82,8 @@ Version-less parent will be allowed in Maven 3.1.
 		<joda.convert.version>1.2</joda.convert.version>
 		<jscience.version>4.3.1</jscience.version>
 		<junit.version>4.8.1</junit.version>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
 		<net.liftweb.version>2.6.3</net.liftweb.version>
         <!--    Netbeans and OSGi can fail to run projects if "compile on save"
                 is enabled so we're disabling it.
