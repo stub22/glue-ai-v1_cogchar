@@ -16,17 +16,15 @@
 
 package org.cogchar.ext.bundle.opengl.jmonkey;
 
-import org.lwjgl.LWJGLUtil;
-
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class NativeLibUtils {
-	public static void testNativeLoad() { 
+	public static void testNativeLoad() {
 		System.out.println("NativeLibUtils: os.arch=" + System.getProperty("os.arch"));
 		System.out.println("NativeLibUtils: org.lwjgl.librarypath=" + System.getProperty("org.lwjgl.librarypath"));
-		System.out.println("NativeLibUtils: java.library.path=" + System.getProperty("java.library.path"));			
+		System.out.println("NativeLibUtils: java.library.path=" + System.getProperty("java.library.path"));
 		// System.out.println("NativeLibUtils: All properties=" + System.getProperties());
 	}
 }
@@ -55,7 +53,7 @@ public class NativeLibUtils {
 	 * 
 	 *         String libraryPath = getExtractionDir().toString();
 		if (needLWJGL) //  true f (renderer.startsWith("LWJGL")) {{
-            logger.log(Level.INFO, "Extraction Directory: {0}", getExtractionDir().toString());
+            logger.info("Extraction Directory: {}", getExtractionDir());
 
             // LWJGL supports this feature where
             // it can load libraries from this path.
