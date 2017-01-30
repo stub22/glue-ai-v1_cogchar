@@ -21,35 +21,39 @@
 
 package org.cogchar.render.test;
 
+import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.UIManager;
+
+import javax.swing.*;
+
 import jme3test.TestChooser;
-import org.osgi.framework.Bundle;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class TestChooserWrapper extends TestChooser {
-    private static final Logger logger = Logger.getLogger(TestChooserWrapper.class.getName());
-	
-	private	List<Class> myTestClasses = new ArrayList<Class>();
-		
-	public static void displayTestChooser(Bundle bun, final String[] args) {         
-		try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-        }
+	private static final Logger theLogger = LoggerFactory.getLogger(TestChooserWrapper.class);
 
-        TestChooserWrapper tcw = new TestChooserWrapper(bun);
+	private List<Class> myTestClasses = new ArrayList<>();
+
+	public static void displayTestChooser(Bundle bun, final String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+		}
+
+		TestChooserWrapper tcw = new TestChooserWrapper(bun);
 
 		tcw.start(args);
 	}
+
 	public TestChooserWrapper(Bundle bun) {
 		super();
 		// This gets just the first level of entries below /jme3test
@@ -67,47 +71,50 @@ public class TestChooserWrapper extends TestChooser {
 					myTestClasses.add(c);
 				}
 			}
-		}		
+		}
 	}
-	@Override protected void addDisplayedClasses(Vector<Class> classes) {
-        // find("jme3test", true, classes);
+
+	@Override
+	protected void addDisplayedClasses(Vector<Class> classes) {
+		// find("jme3test", true, classes);
 		for (Class c : myTestClasses) {
 			classes.add(c);
 		}
-    }
-    private Class load(String name) {
+	}
+
+	private Class load(String name) {
 		int cns = name.indexOf("jme3test/");
-        if (name.endsWith(".class")
-         && name.indexOf("Test") >= 0
-         && name.indexOf('$') < 0
-		&& cns >= 0) {
-		
+		if (name.endsWith(".class")
+				&& name.indexOf("Test") >= 0
+				&& name.indexOf('$') < 0
+				&& cns >= 0) {
+
 			String classname = name.substring(cns, name.length() - ".class".length());
 
-            if (classname.startsWith("/")) {
-                classname = classname.substring(1);
-            }
-            classname = classname.replace('/', '.');
+			if (classname.startsWith("/")) {
+				classname = classname.substring(1);
+			}
+			classname = classname.replace('/', '.');
 
 			// System.out.println("Deduced classname: " + classname);
-            try {
-				logger.log(Level.INFO, "Trying to load class: {0}", classname);
-                final Class<?> cls = Class.forName(classname);
-                cls.getMethod("main", new Class[] { String[].class });
-                if (!getClass().equals(cls)) {
-                    return cls;
-                }
-            } catch (NoClassDefFoundError e) {
-                // class has unresolved dependencies
-                return null;
-            } catch (ClassNotFoundException e) {
-                // class not in classpath
-                return null;
-            } catch (NoSuchMethodException e) {
-                // class does not have a main method
-                return null;
-            }
-        }
-        return null;
-    }
+			try {
+				theLogger.info("Trying to load class: {}", classname);
+				final Class<?> cls = Class.forName(classname);
+				cls.getMethod("main", new Class[]{String[].class});
+				if (!getClass().equals(cls)) {
+					return cls;
+				}
+			} catch (NoClassDefFoundError e) {
+				// class has unresolved dependencies
+				return null;
+			} catch (ClassNotFoundException e) {
+				// class not in classpath
+				return null;
+			} catch (NoSuchMethodException e) {
+				// class does not have a main method
+				return null;
+			}
+		}
+		return null;
+	}
 }
