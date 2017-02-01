@@ -73,13 +73,13 @@ public class ConversationFrame extends javax.swing.JFrame {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ConversationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(ConversationFrame.class).error(ex.getMessage(), ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ConversationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(ConversationFrame.class).error(ex.getMessage(), ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ConversationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(ConversationFrame.class).error(ex.getMessage(), ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ConversationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            org.slf4j.LoggerFactory.getLogger(ConversationFrame.class).error(ex.getMessage(), ex);
         }
         //</editor-fold>
 
