@@ -16,76 +16,76 @@
 
 package org.cogchar.convoid.job;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.cogchar.api.convoid.act.Step;
-import java.util.Map;
 import org.cogchar.zzz.platform.stub.JobStub;
-import org.cogchar.zzz.platform.stub.JobStub.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class StepJob extends JobStub implements StepProgressListener {
-	private static Logger	theLogger = Logger.getLogger(StepJob.class.getName());
-	static {
-		theLogger.setLevel(Level.ALL);
-	}	
-	private		transient StepExecution	myStepExecution;
-	
+	private static final Logger theLogger = LoggerFactory.getLogger(StepJob.class);
+	private transient StepExecution myStepExecution;
+
 	public StepJob(StepExecution stex) {
 		super();
 		myStepExecution = stex;
 		myStepExecution.registerProgressListener(this);
 	}
 
-    public Step getStep(){
-        if(myStepExecution == null){
-            return null;
-        }
-        return myStepExecution.getStep();
-    }
-    @Override
+	public Step getStep() {
+		if (myStepExecution == null) {
+			return null;
+		}
+		return myStepExecution.getStep();
+	}
+
+	@Override
 	protected void start() {
 		myStepExecution.start();
 		// expect STARTED event to trigger our status change
 	}
-    @Override
+
+	@Override
 	protected void abort() {
-		setStatus(Status.ABORTING);	
+		setStatus(Status.ABORTING);
 		myStepExecution.stop();
 		// expect a STOPPED event to change our status to ABORTED
 	}
+
 	public void handleStepProgress(StepExecution sexec) {
 		StepExecution.Status sexStatus = sexec.checkStatus();
-		switch(sexStatus) {
-		case STARTED:
-			setStatus(Status.RUNNING);
-		break;
-		case FINISHED:
-            theLogger.info("StepJob finished: " + sexec.hashCode());
-			setStatus(Status.COMPLETED);
-		break;
-		case STOPPED:
-            theLogger.info("StepJob stopped: " + sexec.hashCode());
-			setStatus(Status.ABORTED);
-		break;
+		switch (sexStatus) {
+			case STARTED:
+				setStatus(Status.RUNNING);
+				break;
+			case FINISHED:
+				theLogger.info("StepJob finished: " + sexec.hashCode());
+				setStatus(Status.COMPLETED);
+				break;
+			case STOPPED:
+				theLogger.info("StepJob stopped: " + sexec.hashCode());
+				setStatus(Status.ABORTED);
+				break;
 		}
 	}
+
 	public static StepJob build(Step s, Map<String, String> configMap, String stepExecFactoryClassName) {
-		StepJob	stepJob = null;
+		StepJob stepJob = null;
 		StepExecution sexec = StepExecution.makeStepExecution(s, configMap, stepExecFactoryClassName);
 		if (sexec != null) {
-			stepJob = new StepJob (sexec); 
+			stepJob = new StepJob(sexec);
 			stepJob.myConfigMap = configMap;
 		} else {
-			theLogger.warning("Can't construct stepJob for step: " + s);
+			theLogger.warn("Can't construct stepJob for step: " + s);
 		}
-		return stepJob; 
+		return stepJob;
 	}
-    
-    @Override
+
+	@Override
 	public String getTypeString() {
 		String stepType = "UNKNOWN_STEP_TYPE";
 		if (myStepExecution != null) {
@@ -96,7 +96,9 @@ public class StepJob extends JobStub implements StepProgressListener {
 		}
 		return "StepJob[type=" + stepType + "]";
 	}
-	@Override public String getContentSummaryString() {
+
+	@Override
+	public String getContentSummaryString() {
 		// TODO: get step's position in category hierarchy
 		String result = "NULL";
 		String stepText = "NO_STEP_TEXT";
@@ -104,7 +106,7 @@ public class StepJob extends JobStub implements StepProgressListener {
 			Step s = myStepExecution.getStep();
 			if (s != null) {
 				stepText = s.getText();
-			}		
+			}
 		}
 		if (stepText != null) {
 			int length = stepText.length();

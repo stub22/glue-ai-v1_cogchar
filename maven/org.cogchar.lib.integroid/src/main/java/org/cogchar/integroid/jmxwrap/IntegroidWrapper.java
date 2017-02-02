@@ -17,11 +17,6 @@
 package org.cogchar.integroid.jmxwrap;
 
 
-
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.management.ObjectName;
 import org.cogchar.convoid.broker.ConvoidHelpFuncs;
 import org.cogchar.convoid.job.StepJob;
 import org.cogchar.integroid.broker.IntegroidFacade;
@@ -30,18 +25,23 @@ import org.cogchar.zzz.platform.stub.CueListener;
 import org.cogchar.zzz.platform.stub.CueStub;
 import org.cogchar.zzz.platform.stub.JobListener;
 import org.cogchar.zzz.platform.stub.JobStub;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+
+import javax.management.ObjectName;
 
 /**
- *
  * @author Stu Baurmann
  */
-public class IntegroidWrapper extends NotifyingBeanImpl 
-			implements IntegroidWrapperMXBean, JobListener, CueListener {
-	private static Logger	theLogger = Logger.getLogger(IntegroidWrapper.class.getName());
-	
-	IntegroidFacade		myIGF;
-	
-	public 	IntegroidWrapper(IntegroidFacade igf, ObjectName on) {
+public class IntegroidWrapper extends NotifyingBeanImpl
+		implements IntegroidWrapperMXBean, JobListener, CueListener {
+	private static final Logger theLogger = LoggerFactory.getLogger(IntegroidWrapper.class);
+
+	IntegroidFacade myIGF;
+
+	public IntegroidWrapper(IntegroidFacade igf, ObjectName on) {
 		super(on);
 		myIGF = igf;
 /*
@@ -51,14 +51,16 @@ public class IntegroidWrapper extends NotifyingBeanImpl
 		JobSpace js = ss.getJobSpace();
 		js.addJobListener(this);
  * 
- */		
+ */
 	}
+
 	public static IntegroidWrapper createAndRegister(IntegroidFacade igf) throws Throwable {
 		ObjectName on = new ObjectName(IntegroidWrapperMXBean.INTEGROID_JMX_OBJNAME);
 		IntegroidWrapper w = new IntegroidWrapper(igf, on);
 		w.register();
 		return w;
-	}	
+	}
+
 	public void postVerbalCue(Map<String, Double> meanings, double strength) {
 		theLogger.info("postVerbalCue: " + meanings);
 		ConvoidHelpFuncs.addVerbalCue(myIGF, meanings, strength);
@@ -70,52 +72,49 @@ public class IntegroidWrapper extends NotifyingBeanImpl
 		IntegroidHelpFuncs.addThoughtCueForName(myIGF, thoughtName, strength);
 		myIGF.processWhenSafe();
 	}
+
 	public void postTextCue(String channel, String textData, double strength) {
 		theLogger.info("postTextCue: channel=" + channel + ", textData=" + textData);
 		IntegroidHelpFuncs.addTextCue(myIGF, channel, textData, strength);
 		myIGF.processWhenSafe();
 	}
-	
+
 	public void postVariableCue(String name, String value, double strength) {
 		theLogger.info("postVariableCue: varName=" + name + ", value=" + value);
 		IntegroidHelpFuncs.setVariable(myIGF, name, value, strength);
 		myIGF.processWhenSafe();
 	}
 
-	public void postHeardCue(String text){
+	public void postHeardCue(String text) {
 		theLogger.info("postHeardCue: " + text);
 		ConvoidHelpFuncs.addHeardCue(myIGF, text);
 	}
 
 	public void notifyCuePosted(CueStub c) {
-		if (theLogger.isLoggable(Level.FINER)) {
-			theLogger.finer("notifyCuePosted: " + c);
-		}
+		theLogger.debug("notifyCuePosted: " + c);
+
 		// Including the cue object in the message will prevent JConsole from
 		// displaying this notification, unless JConsole has the cue class graph
 		// on its classpath.
 		sendAttributeChangeNotification(
-					    "CuePosted=" + c.toString(), ATTRIB_CUE_POSTED, null, c);
+				"CuePosted=" + c.toString(), ATTRIB_CUE_POSTED, null, c);
 	}
+
 	public void notifyCueUpdated(CueStub c) {
-		if (theLogger.isLoggable(Level.FINER)) {
-			theLogger.finer("notifyCueUpdated: " + c);
-		}
+		theLogger.debug("notifyCueUpdated: " + c);
 		sendAttributeChangeNotification(
-					    "CueUpdated=" + c.toString(), ATTRIB_CUE_UPDATED, null, c);
+				"CueUpdated=" + c.toString(), ATTRIB_CUE_UPDATED, null, c);
 	}
+
 	public void notifyCueCleared(CueStub c) {
-		if (theLogger.isLoggable(Level.FINER)) {
-			theLogger.finer("notifyCueCleared: " + c);
-		}
+		theLogger.debug("notifyCueCleared: " + c);
 		sendAttributeChangeNotification(
-					    "CueCleared=" + c.toString(), ATTRIB_CUE_CLEARED, null, c);
+				"CueCleared=" + c.toString(), ATTRIB_CUE_CLEARED, null, c);
 	}
+
 	public void notifyJobPosted(JobStub j) {
 		theLogger.info("DEBUG - notifyJobPosted, job=" + j.toString());
-		if (theLogger.isLoggable(Level.FINER)) {
-			theLogger.finer("notifyJobPosted: " + j);
-		}
+		theLogger.debug("notifyJobPosted: " + j);
 		// Including the job object in the message will prevent JConsole from
 		// displaying this notification, unless JConsole has the job class graph
 		// on its classpath.
@@ -123,17 +122,17 @@ public class IntegroidWrapper extends NotifyingBeanImpl
 		// (related to the SAPI block?)
 		Object noticeObj = mapJobNoticeObject(j);
 		sendAttributeChangeNotification(
-					    "JobPosted=" + j.toString(), ATTRIB_JOB_POSTED, null, noticeObj); //  j);
+				"JobPosted=" + j.toString(), ATTRIB_JOB_POSTED, null, noticeObj); //  j);
 	}
+
 	public void notifyJobCleared(JobStub j) {
 		theLogger.info("DEBUG - notifyJobCleared, job=" + j.toString());
-		if (theLogger.isLoggable(Level.FINER)) {
-			theLogger.finer("notifyJobCleared: " + j);
-		}
+		theLogger.debug("notifyJobCleared: " + j);
 		Object noticeObj = mapJobNoticeObject(j);
 		sendAttributeChangeNotification(
-					    "JobCleared=" + j.toString(), ATTRIB_JOB_CLEARED, null, noticeObj);
+				"JobCleared=" + j.toString(), ATTRIB_JOB_CLEARED, null, noticeObj);
 	}
+
 	public Object mapJobNoticeObject(JobStub j) {
 		if (j instanceof StepJob) {
 			return "StepJob is not serializable?!";

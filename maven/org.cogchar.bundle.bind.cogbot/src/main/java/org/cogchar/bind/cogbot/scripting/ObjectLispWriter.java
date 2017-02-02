@@ -182,7 +182,7 @@ public class ObjectLispWriter {
 //                Object os = m.invoke(target, OBJS0);
 //                sb.append(" " + nv(propname, makeSObject(os, excptFor)));
 //            } catch (Throwable ex) {
-//                //Logger.getLogger(ObjectLispWriter.class.getName()).log(Level.SEVERE, null, ex);
+//                //Logger.getLogger(ObjectLispWriter.class).error(ex.getMessage(), ex);
 //            }
 //        }
 //        sb.append(")");

@@ -19,29 +19,31 @@ package org.cogchar.bundle.demo.convo;
 import org.jflux.api.core.Adapter;
 import org.jflux.api.core.Listener;
 import org.jflux.api.core.Source;
-import java.util.logging.Logger;
 import org.jflux.api.core.node.ConsumerNode;
 import org.jflux.api.core.node.ProducerNode;
 import org.jflux.api.core.node.chain.NodeChain;
 import org.mechio.api.speech.SpeechRequest;
 import org.mechio.api.speechrec.SpeechRecEvent;
 import org.mechio.api.speechrec.SpeechRecEventList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class ConvoFacade {
-   private final static Logger theLogger = Logger.getLogger(ConvoFacade.class.getName());
-    ProducerNode<SpeechRecEventList<SpeechRecEvent>> mySpeechProducer;
-    Adapter<String,ConvoResponse> myConvoProc;
-    ConsumerNode<SpeechRequest> myResponseSender;
-    private NodeChain myChain;
-    private Source<String> myCogbotIpSource;
-    private Listener<String> myCogbotIpSetter;
-    private Source<Long> myCogbotPollIntervalSource;
-    private Listener<Long> myCogbotPollIntervalSetter;
-    /*
-    public ConvoFacade() {
+	private static final Logger theLogger = LoggerFactory.getLogger(ConvoFacade.class);
+	ProducerNode<SpeechRecEventList<SpeechRecEvent>> mySpeechProducer;
+	Adapter<String, ConvoResponse> myConvoProc;
+	ConsumerNode<SpeechRequest> myResponseSender;
+	private NodeChain myChain;
+	private Source<String> myCogbotIpSource;
+	private Listener<String> myCogbotIpSetter;
+	private Source<Long> myCogbotPollIntervalSource;
+	private Listener<Long> myCogbotPollIntervalSetter;
+	/*
+	public ConvoFacade() {
 
         pnlRecConnect.setDestination(
                 getSource(String.class, CONF_SPREC_DESTINATION), 
@@ -180,5 +182,5 @@ public class ConvoFacade {
         txtCogbotPollInterval.setEnabled(val);
     }
 
-	*/ 
+	*/
 }

@@ -4,15 +4,16 @@
  */
 package org.cogchar.bind.cogbot.cogsim;
 
-import java.util.logging.Logger;
 import org.cogchar.bind.cogbot.main.CogbotService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stu B.
  */
 public class TestCogSim {
 
-	private static Logger theLogger = Logger.getLogger(TestCogSim.class.getName());
+	private static final Logger theLogger = LoggerFactory.getLogger(TestCogSim.class);
 
 	public static void main(String args[]) {
 		try {
