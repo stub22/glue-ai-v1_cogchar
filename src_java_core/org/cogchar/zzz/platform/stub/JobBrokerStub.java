@@ -16,56 +16,58 @@
 
 package org.cogchar.zzz.platform.stub;
 
+import org.cogchar.platform.util.TimeUtils;
+
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-import org.cogchar.platform.util.TimeUtils;
 // Drools 4
 // import org.drools.FactHandle;
 // import org.drools.WorkingMemory;
 
 /**
- *
  * @author Stu B. <www.texpedient.com>
  */
 public class JobBrokerStub extends ThalamusBrokerStub implements JobSpaceStub {
-	private static Logger	theLogger = Logger.getLogger(JobBrokerStub.class.getName());
+	private static final org.slf4j.Logger theLogger = org.slf4j.LoggerFactory.getLogger(JobBrokerStub.class);
 
 	/**
-	 * 
+	 *
 	 */
-	protected	JobConfig.Source		myJobConfigSource;
+	protected JobConfig.Source myJobConfigSource;
 	// private List<JobListener> myJobListeners = new ArrayList<JobListener>();
-	
+
 	/**
-	 * 
+	 *
 	 * @param t
 	 * @param sks
 	 */
 	public JobBrokerStub() { // { Thalamus t, StatefulKnowledgeSession sks) {
 		super(); // t, sks);
 	}
+
 	/**
-	 * 
+	 *
 	 * @param j
 	 */
 	protected void assertJob(JobStub j) {
 		long now = TimeUtils.currentTimeMillis();
 		j.setCreateStampMsec(now);
-	//	myThalamus.setLastJobAdded(j);		
-	//	mySKS.insert(j);
-		j.setBroker(this);		
+		//	myThalamus.setLastJobAdded(j);
+		//	mySKS.insert(j);
+		j.setBroker(this);
 	}
+
 	/**
-	 * 
+	 *
 	 * @param j
 	 */
 	public void postManualJob(JobStub j) {
 		assertJob(j);
-	}	
+	}
+
 	/**
-	 * 
+	 *
 	 * @param j
 	 */
 	public synchronized void clearJob(JobStub j) {
@@ -77,19 +79,22 @@ public class JobBrokerStub extends ThalamusBrokerStub implements JobSpaceStub {
 		 * 
 		 */
 	}
+
 	public void terminateAndClearJob(JobStub j) {
 		theLogger.info("Terminating and Clearing Job with createStamp=" + j.getCreateStampMsec()
-					+ ": " + j);
+				+ ": " + j);
 		// Blender unregisters the anim based on its status.
 		j.requestCancelOrAbort();
 		clearJob(j);
 	}
+
 	public <JT extends JobStub> void terminateAndClearJobsInClass(Class<JT> jtClass) {
 		List<JT> jobs = getAllJobsMatchingClass(jtClass);
 		for (JT job : jobs) {
 			terminateAndClearJob(job);
 		}
 	}
+
 	/*
 	public void addJobListener(JobListener cl) {
 		myJobListeners.add(cl);
@@ -101,23 +106,26 @@ public class JobBrokerStub extends ThalamusBrokerStub implements JobSpaceStub {
 	 */
 	public synchronized void notifyJobPosted(JobStub j) {
 		theLogger.finer("notifyJobPosted:" + j.getTypeString());
-	//	for (JobListener jl: myJobListeners) {
-	//		jl.notifyJobPosted(j);
-	//	}
+		//	for (JobListener jl: myJobListeners) {
+		//		jl.notifyJobPosted(j);
+		//	}
 	}
+
 	public synchronized void notifyJobCleared(JobStub j) {
 		theLogger.info("notifyJobCleared:" + j.getTypeString());
 //		for (JobListener jl: myJobListeners) {
 //			jl.notifyJobCleared(j);
 //		}
-	}	
+	}
 
 	public void setJobConfigSource(JobConfig.Source src) {
 		myJobConfigSource = src;
-	}	
+	}
+
 	public JobConfig getJobConfig() {
 		return myJobConfigSource.getJobConfig();
 	}
+
 	public void propertyChange(PropertyChangeEvent evt) {
 		String propertyName = evt.getPropertyName();
 		Object propertyValue = evt.getNewValue();
@@ -134,22 +142,25 @@ public class JobBrokerStub extends ThalamusBrokerStub implements JobSpaceStub {
 		}
 		 * 
 		 */
-	}		
+	}
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public List<JobStub> getJobList() {
 		return null;
 		// return myThalamus.getJobList();
 	}
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public List<JobStub> getJobListCopy() {
 		return new ArrayList<JobStub>(getJobList());
 	}
+
 	public synchronized <JT extends JobStub> List<JT> getAllJobsMatchingClass(Class<JT> clazz) {
 		return getAllFactsMatchingClass(clazz);
 	}

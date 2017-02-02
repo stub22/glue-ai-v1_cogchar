@@ -19,41 +19,38 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
  * @author Stu B. <www.texpedient.com>
  *
- *  ChainJob is a list of jobs to be run in order.
+ *         ChainJob is a list of jobs to be run in order.
  */
 public class ChainJob extends JobStub implements PropertyChangeListener {
-	private static Logger	theLogger = Logger.getLogger(ChainJob.class.getName());
-	static {
-		theLogger.setLevel(Level.ALL);
-	}	
+	private static final org.slf4j.Logger theLogger = org.slf4j.LoggerFactory.getLogger(ChainJob.class);
 
-	private		transient	List<JobStub>	myJobList;
-	
-	private					int			myCurrentJobIndex = -1;
-	
+	private transient List<JobStub> myJobList;
+
+	private int myCurrentJobIndex = -1;
+
 	/**
-	 * 
+	 *
 	 */
 	public ChainJob() {
 		myJobList = new ArrayList<JobStub>();
 	}
+
 	/**
-	 * 
+	 *
 	 * @param j
 	 */
 	public void appendJob(JobStub j) {
 		myJobList.add(j);
 		j.addPropertyChangeListener(this);
 	}
+
 	/**
-	 * 
+	 *
 	 */
 	protected void start() {
 		if (myJobList.size() > 0) {
@@ -61,9 +58,10 @@ public class ChainJob extends JobStub implements PropertyChangeListener {
 			myCurrentJobIndex = 0;
 			startCurrentChildJob();
 		} else {
-			setStatus(Status.COMPLETED);	
+			setStatus(Status.COMPLETED);
 		}
 	}
+
 	private JobStub getCurrentChildJob() {
 		JobStub result = null;
 		if ((myCurrentJobIndex >= 0) && (myCurrentJobIndex < myJobList.size())) {
@@ -71,53 +69,58 @@ public class ChainJob extends JobStub implements PropertyChangeListener {
 		}
 		return result;
 	}
+
 	private synchronized void startCurrentChildJob() {
 		JobStub currentChild = getCurrentChildJob();
 		currentChild.scheduleToStartNow();
 		currentChild.click();
 	}
-	
+
 	private synchronized void advanceOrComplete() {
 		myCurrentJobIndex++;
 		if (myCurrentJobIndex >= myJobList.size()) {
-			setStatus(Status.COMPLETED);			
+			setStatus(Status.COMPLETED);
 		} else {
 			startCurrentChildJob();
 		}
 	}
+
 	/**
-	 * 
+	 *
 	 */
 	protected void abort() {
 		// Abort current child job, if not aborting/ed already?
-		setStatus(Status.ABORTING);	
+		setStatus(Status.ABORTING);
 	}
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public String getTypeString() {
 		return "ChainJob[childCount=" + myJobList.size() + "]";
 	}
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public String getContentSummaryString() {
 		return myJobList.toString();
-	}	
+	}
+
 	public void propertyChange(PropertyChangeEvent evt) {
 		Object source = evt.getSource();
 		String propertyName = evt.getPropertyName();
 		Object propertyValue = evt.getNewValue();
-		theLogger.finest("ChainJob got property change [src,name]=[" + source + "," +  propertyName + "] := " + propertyValue);
+		theLogger.finest("ChainJob got property change [src,name]=[" + source + "," + propertyName + "] := " + propertyValue);
 		if ((source == getCurrentChildJob()) && propertyName.equals(JobStub.PROP_STATUS)) {
 			JobStub.Status updatedStatus = (JobStub.Status) propertyValue;
-			switch(updatedStatus) {
-			case ABORTED:
-			case COMPLETED:
-				advanceOrComplete();
-			break;
+			switch (updatedStatus) {
+				case ABORTED:
+				case COMPLETED:
+					advanceOrComplete();
+					break;
 			}
 		}
 	}

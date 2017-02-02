@@ -3,29 +3,24 @@ package org.cogchar.zzz.platform.stub;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 
 /**
- * 
  * @author Stu B.
  */
 public abstract class ThalamusBrokerStub implements PropertyChangeListener, ThalamentSpaceStub {
-	private static Logger	theLogger = Logger.getLogger(ThalamusBrokerStub.class.getName());	
-	static {
-		// theLogger.setLevel(Level.ALL);
-	}	
+	private static final org.slf4j.Logger theLogger = org.slf4j.LoggerFactory.getLogger(ThalamusBrokerStub.class);
 	/**
-	 * 
+	 *
 	 */
 	// protected		final	Thalamus							myThalamus;
 	/**
-	 * 
+	 *
 	 */
 	//protected		final	StatefulKnowledgeSession			mySKS;
 
 	/**
-	 * 
+	 *
 	 * @param t
 	 * @param sks
 	 */
@@ -38,15 +33,16 @@ public abstract class ThalamusBrokerStub implements PropertyChangeListener, Thal
 		 * 
 		 */
 	}
+
 	/**
-	 * 
+	 *
 	 * @param globalName
 	 */
 	public void registerGlobalHandle(String globalName) {
 		// mySKS.setGlobal(globalName, this);
 	}
-	
-	 
+
+
 	public synchronized List<FactHandleStub> getAllFactHandlesMatchingClass(Class clazz) {
 		List<FactHandleStub> result = new ArrayList<FactHandleStub>();
 		/*
@@ -75,6 +71,7 @@ public abstract class ThalamusBrokerStub implements PropertyChangeListener, Thal
 		 */
 		return result;
 	}
+
 	public synchronized <T extends Object> T getSingleFactMatchingClass(Class<T> clazz) {
 		List<T> matchedList = getAllFactsMatchingClass(clazz);
 		int mls = matchedList.size();
@@ -103,9 +100,9 @@ public abstract class ThalamusBrokerStub implements PropertyChangeListener, Thal
 		mySKS.retract(fh);
 	}
 	 */
-	
+
 	/**
-	 * 
+	 *
 	 * @param t
 	 */
 	public void update(ThalamentStub t) {
@@ -120,7 +117,7 @@ public abstract class ThalamusBrokerStub implements PropertyChangeListener, Thal
 		 */
 	}
 
-    public void postFact(ThalamentStub t){
-      //  mySKS.insert(t);
-    }
+	public void postFact(ThalamentStub t) {
+		//  mySKS.insert(t);
+	}
 }

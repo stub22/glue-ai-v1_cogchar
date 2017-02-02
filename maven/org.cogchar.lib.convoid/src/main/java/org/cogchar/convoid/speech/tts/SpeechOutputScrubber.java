@@ -16,14 +16,15 @@
 
 package org.cogchar.convoid.speech.tts;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author Stu Baurmann
  */
 public class SpeechOutputScrubber {
-	private static Logger	theLogger = Logger.getLogger(SpeechOutputScrubber.class.getName());
+	private static final Logger theLogger = LoggerFactory.getLogger(SpeechOutputScrubber.class);
+
 	// TODO: This functionality should be in Convoid, not RoboNativeWrap.
 	// Also, the scrubbing should be configurable.
 	public static String scrubText(String inputText) {
@@ -33,9 +34,11 @@ public class SpeechOutputScrubber {
 		theLogger.info("After scrubbing, output speech text is: " + scrubbedText);
 		return scrubbedText;
 	}
+
 	public static void scrubTest(String inputText) {
 		String scrubbed = scrubText(inputText);
 	}
+
 	public static void main(String args[]) {
 		scrubTest("Hey ! What's up with _ NASA these days ?  Are they OK?");
 	}
