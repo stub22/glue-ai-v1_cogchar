@@ -18,7 +18,6 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import javax.management.Notification;
 import javax.management.NotificationListener;
@@ -111,7 +110,7 @@ public class CogbotAvatar implements NotificationListener, Serializable {
 		try {
 			return cso.fetchLastThingWeSaid(debugFlag);
 		} catch (Throwable t) {
-			service.log(Level.WARNING, "Cannot fetchLastThingWeSaid []", t);
+			theLogger.warn("Cannot fetchLastThingWeSaid []", t);
 			return "";
 		}
 	}
@@ -122,7 +121,7 @@ public class CogbotAvatar implements NotificationListener, Serializable {
 		try {
 			return cso.fetchLastThingWeHeard(debugFlag);
 		} catch (Throwable t) {
-			service.log(Level.WARNING, "Cannot fetchLastThingWeHeard []", t);
+			theLogger.warn("Cannot fetchLastThingWeHeard []", t);
 			return "";
 		}
 	}
