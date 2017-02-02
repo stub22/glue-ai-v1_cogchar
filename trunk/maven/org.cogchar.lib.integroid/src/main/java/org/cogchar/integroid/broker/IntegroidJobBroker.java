@@ -17,43 +17,41 @@
 package org.cogchar.integroid.broker;
 
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-
-import org.cogchar.convoid.job.ConvoidJobSpace;
-import org.cogchar.convoid.broker.ConvoidFacade;
 import org.cogchar.animoid.broker.AnimoidFacade;
 import org.cogchar.animoid.broker.AnimoidJobSpace;
+import org.cogchar.convoid.broker.ConvoidFacade;
+import org.cogchar.convoid.job.ConvoidJobSpace;
 import org.cogchar.zzz.platform.stub.JobBrokerStub;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // import org.drools.WorkingMemory;
 
 /**
  * @author Stu B. <www.texpedient.com>
- *
  */
 public class IntegroidJobBroker extends JobBrokerStub implements ConvoidJobSpace, AnimoidJobSpace {
-	protected static Logger	theLogger = Logger.getLogger(IntegroidJobBroker.class.getName());
-	static {
-		theLogger.setLevel(Level.ALL);
-	}
-	
-	protected		AnimoidFacade			myAnimoidFacade;
-	protected		ConvoidFacade			myConvoidFacade;
+	private static final Logger theLogger = LoggerFactory.getLogger(IntegroidJobBroker.class);
+
+	protected AnimoidFacade myAnimoidFacade;
+	protected ConvoidFacade myConvoidFacade;
 
 	public IntegroidJobBroker() { // Thalamus t, StatefulKnowledgeSession sks) {
 		super(); // t, sks);
 	}
+
 	public void setAnimoidFacade(AnimoidFacade af) {
 		myAnimoidFacade = af;
 	}
+
 	public AnimoidFacade getAnimoidFacade() {
 		return myAnimoidFacade;
 	}
+
 	public ConvoidFacade getConvoidFacade() {
 		return myConvoidFacade;
 	}
+
 	public void setConvoidFacade(ConvoidFacade cf) {
 		myConvoidFacade = cf;
 	}
@@ -63,7 +61,7 @@ public class IntegroidJobBroker extends JobBrokerStub implements ConvoidJobSpace
 	}
 
 	public void setSpeakingState() {
-		
+
 	}
 
 

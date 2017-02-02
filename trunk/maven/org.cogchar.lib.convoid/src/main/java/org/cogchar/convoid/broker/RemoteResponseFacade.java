@@ -19,39 +19,39 @@ import org.cogchar.convoid.player.BehaviorContext;
 import org.cogchar.convoid.player.BehaviorContext.Detail;
 import org.cogchar.convoid.player.IBehaviorPlayable;
 import org.cogchar.convoid.player.StepPlayer;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author Matt Stevenson
  */
 public class RemoteResponseFacade {
-    private static Logger theLogger = Logger.getLogger(RemoteResponseFacade.class.getName());
-    private static IRemoteResponseInterface	theRemoteResponseIterface;
+	private static final Logger theLogger = LoggerFactory.getLogger(RemoteResponseFacade.class);
+	private static IRemoteResponseInterface theRemoteResponseIterface;
 
-	public static void setInterface(IRemoteResponseInterface remote){
+	public static void setInterface(IRemoteResponseInterface remote) {
 		theRemoteResponseIterface = remote;
 	}
 
-	public static String getResponse(){
-		if(theRemoteResponseIterface == null){
+	public static String getResponse() {
+		if (theRemoteResponseIterface == null) {
 			return "";
 		}
 		return theRemoteResponseIterface.getResponse();
 	}
 
-	public static BehaviorContext getResponseBehavior(){
+	public static BehaviorContext getResponseBehavior() {
 		String resp = getResponse();
-        if(resp == null){
-            resp = "";
-        }
-        resp = resp.trim();
-        theLogger.severe("Got response from Messaging Nexus: (" + resp + ")");
-		if(resp.isEmpty() || resp.equals("null")){
+		if (resp == null) {
+			resp = "";
+		}
+		resp = resp.trim();
+		theLogger.error("Got response from Messaging Nexus: (" + resp + ")");
+		if (resp.isEmpty() || resp.equals("null")) {
 			return BehaviorContext.makeEmpty().and(Detail.REMOTE);
 		}
-        resp = "<sapi>" + resp + "</sapi>";
-        theLogger.severe("Sending Response: (" + resp + ")");
+		resp = "<sapi>" + resp + "</sapi>";
+		theLogger.error("Sending Response: (" + resp + ")");
 		IBehaviorPlayable player = new StepPlayer(resp);
 		return new BehaviorContext().with(player).andActualType("REMOTE_RESPONSE").and(Detail.REMOTE);
 	}

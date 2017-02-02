@@ -16,23 +16,23 @@
 
 package org.cogchar.convoid.job;
 
-import org.cogchar.api.convoid.act.*;
-import java.util.logging.Logger;
+import org.cogchar.api.convoid.act.Step;
 import org.cogchar.api.convoid.cue.ConvoidCueSpace;
 import org.cogchar.zzz.platform.stub.ChainJob;
 import org.cogchar.zzz.platform.stub.JobConfig;
 import org.cogchar.zzz.platform.stub.JobStub;
 import org.cogchar.zzz.platform.stub.ThalamentStub;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author Stu B. <www.texpedient.com>
  */
 public class ConversationJob extends JobStub {
-	private static Logger	theLogger = Logger.getLogger(ConversationJob.class.getName());
-	private		transient	ChainJob				myOpenChainJob;
+	private static final Logger theLogger = LoggerFactory.getLogger(ConversationJob.class);
+	private transient ChainJob myOpenChainJob;
 
-	private		transient	ConvoidJobSpace			myJobSpace;
+	private transient ConvoidJobSpace myJobSpace;
 
 	public ConversationJob(ConvoidJobSpace jobSpace) {
 		myJobSpace = jobSpace;
@@ -42,35 +42,39 @@ public class ConversationJob extends JobStub {
 		if (myOpenChainJob == null) {
 			myOpenChainJob = new ChainJob();
 		} else {
-			theLogger.finer("A ChainJob is already open - ignoring request to open one");
+			theLogger.trace("A ChainJob is already open - ignoring request to open one");
 		}
-	}	
+	}
+
 	public void startOpenChainJob() {
 		if (myOpenChainJob != null) {
 			myOpenChainJob.scheduleToStartNow();
 			myOpenChainJob.click();
 			myOpenChainJob = null;
 		} else {
-			theLogger.finer("No ChainJob is open - ignoring request to start");
+			theLogger.trace("No ChainJob is open - ignoring request to start");
 		}
 	}
-	public synchronized StepJob appendJobForStep(Step s, JobConfig jobConfig, 
-				String stepExecFactoryClassName, ThalamentStub cause) {
-		StepJob	sj = StepJob.build(s, jobConfig, stepExecFactoryClassName);
-        sj.setCausingThalament(cause);
+
+	public synchronized StepJob appendJobForStep(Step s, JobConfig jobConfig,
+												 String stepExecFactoryClassName, ThalamentStub cause) {
+		StepJob sj = StepJob.build(s, jobConfig, stepExecFactoryClassName);
+		sj.setCausingThalament(cause);
 		if (sj != null) {
 			myJobSpace.postManualJob(sj);
-            if (myOpenChainJob == null) {
-                openChainJob();
-            }
-            myOpenChainJob.appendJob(sj);
+			if (myOpenChainJob == null) {
+				openChainJob();
+			}
+			myOpenChainJob.appendJob(sj);
 		}
 		return sj;
 	}
+
 	protected StepJob appendJobForStep(Step s, ThalamentStub cause) {
 		JobConfig jobConfig = myJobSpace.getJobConfig();
 		return appendJobForStep(s, jobConfig, null, cause);
 	}
+
 	public synchronized StepJob createDynamicSpeechStepAndRunJob(String stepXML, ThalamentStub cause) {
 		// Currently we do not do the switch to "speaking vocab" stuff here.
 		Step dynamicStep = new Step();
@@ -85,10 +89,10 @@ public class ConversationJob extends JobStub {
 	}
 
 	public synchronized StepJob playSingleStep(ConvoidCueSpace ccs, Step step, ThalamentStub cause) {
-        theLogger.info("Playing Step: " + step.getText());
+		theLogger.info("Playing Step: " + step.getText());
 		StepJob sj = appendJobForStep(step, cause);
 		if (sj != null) {
-            startOpenChainJob();
+			startOpenChainJob();
 		}
 		return sj;
 	}

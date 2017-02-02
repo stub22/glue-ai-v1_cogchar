@@ -16,26 +16,27 @@
 
 package org.cogchar.sight.api.facerec;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
-import java.util.logging.Logger;
 
 /**
- *
  * @author Stu B. <www.texpedient.com>
  */
 public class FreckleSampleQuality implements Serializable {
-	private static Logger theLogger = Logger.getLogger(FreckleSampleQuality.class.getName());
+	private static final Logger theLogger = LoggerFactory.getLogger(FreckleSampleQuality.class);
 
-	private String	myRawQualityPacket;
-	private Double	myScore = -888.0;
+	private String myRawQualityPacket;
+	private Double myScore = -888.0;
 	private Boolean myEnrollmentSuitability = false;
 	private Boolean myVerificationSuitability = false;
-	private String	myQualityHints = "result parsing error";
+	private String myQualityHints = "result parsing error";
 
 	public FreckleSampleQuality(String sampleQualityPacket) {
 		myRawQualityPacket = sampleQualityPacket;
 		if ((sampleQualityPacket == null) || sampleQualityPacket.isEmpty()) {
-			theLogger.warning("Sample quality packet is empty");
+			theLogger.warn("Sample quality packet is empty");
 			return;
 		}
 		if (sampleQualityPacket.trim().equals("NO_EYES_FOUND")) {
@@ -50,12 +51,13 @@ public class FreckleSampleQuality implements Serializable {
 				myVerificationSuitability = sqTokens[2].equals("1");
 				myQualityHints = sqTokens[3];
 			} else {
-				theLogger.warning("Got unexpected sampleQuality token count: " + sqTokens.length + " for tokenString: " + sampleQualityPacket);
+				theLogger.warn("Got unexpected sampleQuality token count: " + sqTokens.length + " for tokenString: " + sampleQualityPacket);
 			}
 		}
 	}
+
 	public boolean checkEnrollmentWorthy() {
-		return myEnrollmentSuitability && myVerificationSuitability	&& (myScore > 0.9);
+		return myEnrollmentSuitability && myVerificationSuitability && (myScore > 0.9);
 	}
 
 	public Double getScore() {
@@ -81,6 +83,7 @@ public class FreckleSampleQuality implements Serializable {
 	public void setEnrollmentSuitability(Boolean enrollmentSuitability) {
 		myEnrollmentSuitability = enrollmentSuitability;
 	}
+
 	public String getQualityHints() {
 		return myQualityHints;
 	}
@@ -88,12 +91,15 @@ public class FreckleSampleQuality implements Serializable {
 	public void setQualityHints(String qualityHints) {
 		myQualityHints = qualityHints;
 	}
+
 	public String getRawPacket() {
 		return myRawQualityPacket;
 	}
+
 	public void setRawPacket(String raw) {
 		myRawQualityPacket = raw;
 	}
+
 	public String toString() {
 		return "score=" + myScore
 				+ ", enrollSuit=" + myEnrollmentSuitability
@@ -101,6 +107,7 @@ public class FreckleSampleQuality implements Serializable {
 				+ ", qualityHints=[" + myQualityHints + "]"
 				+ ", rawPacket=[" + myRawQualityPacket + "]";
 	}
+
 	public String fetchSummary() {
 		return String.format("q=%+6.4f", getScore()) + ", vs=" + getVerificationSuitability()
 				+ ", es=" + getEnrollmentSuitability() + ", hints=" + getQualityHints();

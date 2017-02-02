@@ -16,82 +16,82 @@
 
 package org.cogchar.xploder.mgr;
 
-import org.cogchar.xploder.cursors.IConvoidCursor;
 import org.cogchar.api.convoid.act.Category;
 import org.cogchar.api.convoid.act.Step;
-import org.cogchar.convoid.player.BehaviorContext;
-import org.cogchar.convoid.player.SpeechPlayer;
-import org.cogchar.convoid.player.IBehaviorPlayable;
-import java.util.logging.Logger;
 import org.cogchar.convoid.job.SpeechJob;
+import org.cogchar.convoid.player.BehaviorContext;
+import org.cogchar.convoid.player.IBehaviorPlayable;
+import org.cogchar.convoid.player.SpeechPlayer;
 import org.cogchar.platform.util.TimeUtils;
+import org.cogchar.xploder.cursors.IConvoidCursor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author Matt Stevenson
  */
 public class BehaviorTypeManager {
-    private static Logger theLogger = Logger.getLogger(BehaviorTypeManager.class.getName());
-	private Class				myJobClass;
-	private CursorGroup         myGroup;
-	private SpeechJobFactory	myFactory;
-	private String              myBehaviorType;
-	private Category			myCategory;
-    private IConvoidCursor      myLastPlayed;
-    private Boolean             myImplicitFetch;
+	private static final Logger theLogger = LoggerFactory.getLogger(BehaviorTypeManager.class);
+	private Class myJobClass;
+	private CursorGroup myGroup;
+	private SpeechJobFactory myFactory;
+	private String myBehaviorType;
+	private Category myCategory;
+	private IConvoidCursor myLastPlayed;
+	private Boolean myImplicitFetch;
 
 	public BehaviorTypeManager(Category rootCat, String categoryName, SpeechJobFactory factory, Boolean fetch) {
-        myCategory = rootCat.findSubCategory(categoryName);
+		myCategory = rootCat.findSubCategory(categoryName);
 		myFactory = factory;
 		myBehaviorType = myFactory.getBehaviorType();
 		myGroup = myFactory.buildCursorGroup(myCategory);
 		myJobClass = myFactory.getJobClass();
-        myImplicitFetch = fetch;
+		myImplicitFetch = fetch;
 	}
 
-	public CursorGroup getCursorGroup(){
+	public CursorGroup getCursorGroup() {
 		return myGroup;
 	}
 
-	public Class getJobClass(){
+	public Class getJobClass() {
 		return myJobClass;
 	}
 
-	public SpeechJobFactory getFactory(){
+	public SpeechJobFactory getFactory() {
 		return myFactory;
 	}
 
-	public String getBehaviorType(){
+	public String getBehaviorType() {
 		return myBehaviorType;
 	}
 
-	public void setLastPlayed(SpeechJob job){
+	public void setLastPlayed(SpeechJob job) {
 		myLastPlayed = job.getCategoryCursor();
 	}
 
-	public SpeechJob getLastPlayed(){
+	public SpeechJob getLastPlayed() {
 		return myGroup.getJobForCursor(myLastPlayed);
 	}
 
-    public BehaviorContext getMoreToSay(){
-        if(myLastPlayed == null){
-            return BehaviorContext.makeEmpty();
-        }else if(moreToSay()){
-            SpeechJob job = getLastPlayed();
-            Step step = myLastPlayed.getBestStepAtTime(TimeUtils.currentTimeMillis());
-            if(step != null){
+	public BehaviorContext getMoreToSay() {
+		if (myLastPlayed == null) {
+			return BehaviorContext.makeEmpty();
+		} else if (moreToSay()) {
+			SpeechJob job = getLastPlayed();
+			Step step = myLastPlayed.getBestStepAtTime(TimeUtils.currentTimeMillis());
+			if (step != null) {
 				IBehaviorPlayable player = new SpeechPlayer(step, job);
 				return new BehaviorContext().with(player).andActualType(myBehaviorType);
-            }
-        }
-        return BehaviorContext.makeEmpty();
-    }
+			}
+		}
+		return BehaviorContext.makeEmpty();
+	}
 
-    public boolean moreToSay(){
-        return myLastPlayed.isPlayableAtTime(TimeUtils.currentTimeMillis());
-    }
+	public boolean moreToSay() {
+		return myLastPlayed.isPlayableAtTime(TimeUtils.currentTimeMillis());
+	}
 
-    public Boolean getImplicitFetch(){
-        return myImplicitFetch;
-    }
+	public Boolean getImplicitFetch() {
+		return myImplicitFetch;
+	}
 }

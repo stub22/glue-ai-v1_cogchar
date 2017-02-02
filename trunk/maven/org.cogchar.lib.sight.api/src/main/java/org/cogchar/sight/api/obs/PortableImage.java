@@ -16,21 +16,20 @@
 
 package org.cogchar.sight.api.obs;
 
-import java.awt.Component;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.MemoryImageSource;
 import java.io.Serializable;
-import java.util.logging.Logger;
 
 /**
  * @author Stu B. <www.texpedient.com>
  */
 public class PortableImage implements Serializable {
 
-	private static Logger theLogger = Logger.getLogger(PortableImage.class.getName());
+	private static final Logger theLogger = LoggerFactory.getLogger(PortableImage.class);
 	private transient Image myJavaImage;
 	private transient OpenCVImage myOCVI;
 	private int myWidth, myHeight;
@@ -58,7 +57,7 @@ public class PortableImage implements Serializable {
 		setHeight(b.height());
 		setBytesWithoutHeader(b.bytes());
 	}
-	
+
 	public PortableImage(BufferedImage img, Rectangle bbox, boolean flipVertical) {
 		this(img.getSubimage(bbox.x, bbox.y, bbox.width, bbox.height), flipVertical);
 	}
@@ -79,12 +78,13 @@ public class PortableImage implements Serializable {
 		myBytesWithoutHeader = b;
 		// printDiag(10000);
 	}
+
 	public void printDiag(int step) {
 		int len = myBytesWithoutHeader.length;
 		for (int idx = 0; idx < len; idx += step) {
 			theLogger.info("byte[" + idx + "] = " + myBytesWithoutHeader[idx]);
 		}
-		int idx = len -1;
+		int idx = len - 1;
 		theLogger.info("byte[" + idx + "] = " + myBytesWithoutHeader[idx]);
 	}
 
@@ -106,11 +106,12 @@ public class PortableImage implements Serializable {
 
 	public Image fetchJavaImage() {
 		if (myJavaImage == null) {
-			MemoryImageSource mis  = buildMemoryImageSourceForBytesWithoutHeader(myBytesWithoutHeader, myWidth, myHeight);
+			MemoryImageSource mis = buildMemoryImageSourceForBytesWithoutHeader(myBytesWithoutHeader, myWidth, myHeight);
 			myJavaImage = Toolkit.getDefaultToolkit().createImage(mis);
 		}
 		return myJavaImage;
 	}
+
 	public Image fetchJavaImage(Component comp) {
 		return fetchJavaImage();
 	}
@@ -118,7 +119,7 @@ public class PortableImage implements Serializable {
 	private static Image readJavaImageFromBGBytes(Component comp, byte[] iba, int w, int h) {
 		// Was this tried and gave error?    Why is comp approach better?
 		// Image img = Toolkit.getDefaultToolkit().createImage(mis);
-		MemoryImageSource mis  = buildMemoryImageSourceForBytesWithoutHeader(iba, w, h);
+		MemoryImageSource mis = buildMemoryImageSourceForBytesWithoutHeader(iba, w, h);
 		Image img = comp.createImage(mis);
 		return img;
 	}

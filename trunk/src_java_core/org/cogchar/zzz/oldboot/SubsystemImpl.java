@@ -16,21 +16,20 @@
 
 package org.cogchar.zzz.oldboot;
 
-import java.util.Map;
 import java.util.HashMap;
-
-import java.util.logging.Logger;
+import java.util.Map;
 
 /**
  * All SubsystemImpls are singletons, which are automatically placed in a registry that
  * can only be accessed by other SubsystemImpls.
+ *
  * @author Stu B. <www.texpedient.com>
  */
 public abstract class SubsystemImpl {
-	private static Logger	theLogger = Logger.getLogger(SubsystemImpl.class.getName());
-	private	static		Map<Class, SubsystemImpl>	theSubsystemRegistry;
-	private ClassLoader					myClassLoader;
-	
+	private static final org.slf4j.Logger theLogger = org.slf4j.LoggerFactory.getLogger(SubsystemImpl.class);
+	private static Map<Class, SubsystemImpl> theSubsystemRegistry;
+	private ClassLoader myClassLoader;
+
 	protected void registerSubsystem(SubsystemImpl subImpl) {
 		if (theSubsystemRegistry == null) {
 			theSubsystemRegistry = new HashMap<Class, SubsystemImpl>();
@@ -42,13 +41,16 @@ public abstract class SubsystemImpl {
 		}
 		theSubsystemRegistry.put(subsystemClass, subImpl);
 	}
+
 	protected SubsystemImpl lookupSubsystem(Class c) {
 		return theSubsystemRegistry.get(c);
 	}
+
 	protected SubsystemImpl() {
 		registerSubsystem(this);
-		myClassLoader = Thread.currentThread().getContextClassLoader();	
+		myClassLoader = Thread.currentThread().getContextClassLoader();
 	}
+
 	protected void blessCurrentThread() {
 		/*
 		// Callback from JNI does not have a contextClassLoader.

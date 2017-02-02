@@ -16,38 +16,38 @@
 
 package org.cogchar.zzz.platform.stub;
 
-import java.beans.PropertyChangeEvent;
-import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Logger;
+import org.cogchar.platform.util.TimeUtils;
 import org.cogchar.zzz.api.platform.cues.NamedCue;
 import org.cogchar.zzz.api.platform.cues.NowCue;
 import org.cogchar.zzz.api.platform.cues.TextCue;
 import org.cogchar.zzz.api.platform.cues.ThoughtCue;
 import org.cogchar.zzz.api.platform.cues.TimerCue;
 import org.cogchar.zzz.api.platform.cues.VariableCue;
-import org.cogchar.platform.util.TimeUtils;
+
+import java.beans.PropertyChangeEvent;
+import java.util.HashMap;
+import java.util.List;
 
 /**
- *
  * @author Stu B. <www.texpedient.com>
  */
 public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
-	private static Logger	theLogger = Logger.getLogger(CueBrokerStub.class.getName());	
+	private static final org.slf4j.Logger theLogger = org.slf4j.LoggerFactory.getLogger(CueBrokerStub.class);
 
 	// private List<CueListener> myCueListeners = new ArrayList<CueListener>();
-	
+
 	/**
-	 * 
+	 *
 	 * @param t
 	 * @param sks
 	 */
 	public CueBrokerStub() { // Thalamus t, StatefulKnowledgeSession sks) {
-		super(); 
+		super();
 		// super(t, sks);
 	}
+
 	/**
-	 * 
+	 *
 	 * @param c
 	 * @param strength
 	 */
@@ -55,7 +55,7 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		long now = TimeUtils.currentTimeMillis();
 		c.setCreateStampMsec(now);
 		c.setStrength(strength);
-	//	myThalamus.setLastCueAdded(c);
+		//	myThalamus.setLastCueAdded(c);
 		// Problem with the auto-update deal is that each property change is handled
 		// by Drools with a retract-and-assert, allowing all rules involving all
 		// properties to re-match.  
@@ -63,12 +63,14 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		// So, we have replaced with explicit broker update.
 //		mySKS.insert(c);
 // 		c.setBroker(this);
-	}	
+	}
+
 	/**
-	 * 
+	 *
 	 * @param c
 	 */
-	@Override public synchronized void clearCue(CueStub c) {
+	@Override
+	public synchronized void clearCue(CueStub c) {
 		theLogger.info("Clearing cue: " + c);
 		/*
 		if (retractFactForObject(c)) {
@@ -77,39 +79,48 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		 * 
 		 */
 	}
-	@Override public void broadcastCueUpdate(CueStub c) {
+
+	@Override
+	public void broadcastCueUpdate(CueStub c) {
 		notifyCueUpdated(c);
 	}
+
 	/**
-	 * 
+	 *
 	 */
-	@Override public synchronized void clearAllCues() {
+	@Override
+	public synchronized void clearAllCues() {
 		clearAllCuesMatching(CueStub.class);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param prevDurationMsec
 	 * @param nextDurationMsec
 	 * @param strength
 	 * @return
 	 */
-	@Override  public NowCue addNowCue(Long prevDurationMsec, Long nextDurationMsec, Double strength) {
+	@Override
+	public NowCue addNowCue(Long prevDurationMsec, Long nextDurationMsec, Double strength) {
 		NowCue nc = new NowCue(prevDurationMsec, nextDurationMsec);
 		this.stampAndRegisterCue(nc, strength);
 		return nc;
 	}
+
 	/**
-	 * 
+	 *
 	 */
-	@Override  public void clearAllNowCues() {
+	@Override
+	public void clearAllNowCues() {
 		clearAllCuesMatching(NowCue.class);
 	}
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	@Override  public NowCue getSolitaryNowCue() {
+	@Override
+	public NowCue getSolitaryNowCue() {
 		NowCue result = null;
 		List<NowCue> allNowCues = getAllFactsMatchingClass(NowCue.class);
 		if (allNowCues.size() == 1) {
@@ -125,32 +136,38 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 	}
 
 
-	@Override public TextCue addTextCue(String textChannelName, String textData, Double strength) {
+	@Override
+	public TextCue addTextCue(String textChannelName, String textData, Double strength) {
 		TextCue tc = new TextCue(textChannelName, textData);
 		stampAndRegisterCue(tc, strength);
 		return tc;
 	}
 
-	@Override public TimerCue addTimerCue(String timerName, Integer durationSec){
-        TimerCue tc = new TimerCue(timerName, durationSec);
-        stampAndRegisterCue(tc, 1.0);
-        return tc;
-    }
-	@Override public ThoughtCue addThoughtCueForName(String thoughtName, double strength){
-        ThoughtCue tc = new ThoughtCue(thoughtName);
-        stampAndRegisterCue(tc, strength);
-        return tc;
-    }
+	@Override
+	public TimerCue addTimerCue(String timerName, Integer durationSec) {
+		TimerCue tc = new TimerCue(timerName, durationSec);
+		stampAndRegisterCue(tc, 1.0);
+		return tc;
+	}
+
+	@Override
+	public ThoughtCue addThoughtCueForName(String thoughtName, double strength) {
+		ThoughtCue tc = new ThoughtCue(thoughtName);
+		stampAndRegisterCue(tc, strength);
+		return tc;
+	}
 
 
-	@Override public List<VariableCue> getAllVariableCues() {
+	@Override
+	public List<VariableCue> getAllVariableCues() {
 		return getAllFactsMatchingClass(VariableCue.class);
 	}
-	
-	@Override public VariableCue setVariableCue(String varName, String varVal, Double strength) {
+
+	@Override
+	public VariableCue setVariableCue(String varName, String varVal, Double strength) {
 		List<VariableCue> allVarCues = getAllVariableCues();
 		VariableCue target = null;
-		for (VariableCue vc: allVarCues) {
+		for (VariableCue vc : allVarCues) {
 			if (vc.getName().equals(varName)) {
 				target = vc;
 				target.setValue(varVal);
@@ -164,15 +181,14 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		}
 		return target;
 	}
-	/**
 
-	public void addCueListener(CueListener cl) {
-		myCueListeners.add(cl);
-	}
-	public void removeCueListener(CueListener cl) {
-		myCueListeners.remove(cl);
-	}
-	 * @param c
+	/**
+	 * public void addCueListener(CueListener cl) {
+	 * myCueListeners.add(cl);
+	 * }
+	 * public void removeCueListener(CueListener cl) {
+	 * myCueListeners.remove(cl);
+	 * }
 	 */
 	protected synchronized void notifyCuePosted(CueStub c) {
 		theLogger.finer("notifyCuePosted:" + c.getTypeString());
@@ -180,14 +196,16 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 //			cl.notifyCuePosted(c);
 //		}
 	}
+
 	protected synchronized void notifyCueUpdated(CueStub c) {
 		theLogger.finer("notifyCueUpdated:" + c.getTypeString());
 //		for (CueListener cl: myCueListeners) {
 //			cl.notifyCueUpdated(c);
 //		}
 	}
+
 	/**
-	 * 
+	 *
 	 * @param c
 	 */
 	protected synchronized void notifyCueCleared(CueStub c) {
@@ -196,12 +214,13 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		//	cl.notifyCueCleared(c);
 		//}
 	}
+
 	/**
-	 * 
+	 *
 	 * @param clazz
 	 */
 	public synchronized void clearAllCuesMatching
-				(Class<? extends CueStub> clazz) {
+	(Class<? extends CueStub> clazz) {
 		/*
 		List<FactHandle> targets = getAllFactHandlesMatchingClass(clazz);
 		for (FactHandle fh: targets) {
@@ -223,11 +242,13 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		 * 
 		 */
 	}
+
 	/**
-	 * 
+	 *
 	 * @param name
 	 */
-	@Override public synchronized void clearMatchingNamedCues(String name) {
+	@Override
+	public synchronized void clearMatchingNamedCues(String name) {
 		/*
 		int clearedCount = 0;
 		Class clazz = NamedCue.class;
@@ -251,30 +272,35 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		 * 
 		 */
 	}
+
 	/**
-	 * 
+	 *
 	 * @param nc
 	 */
-	@Override public synchronized void clearMatchingNamedCues(NamedCue nc) {
+	@Override
+	public synchronized void clearMatchingNamedCues(NamedCue nc) {
 		String name = nc.getName();
 		clearMatchingNamedCues(name);
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	@Override public JobConfig getJobConfig() {
+	@Override
+	public JobConfig getJobConfig() {
 		return new VariableCueJobConfig();
 	}
+
 	private class VariableCueJobConfig extends HashMap<String, String> implements JobConfig {
 		VariableCueJobConfig() {
 			List<VariableCue> varCueList = getAllVariableCues();
-			for (VariableCue vc: varCueList) {
+			for (VariableCue vc : varCueList) {
 				put(vc.getName(), vc.getValue());
 			}
 		}
-	}	
+	}
+
 	public void propertyChange(PropertyChangeEvent evt) {
 		String propertyName = evt.getPropertyName();
 		Object propertyValue = evt.getNewValue();
@@ -293,10 +319,12 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		 */
 	}
 
-    public void addCue(CueStub c){
-        this.stampAndRegisterCue(c, c.getStrength());
-    }
-	@Override public <NCT extends NamedCue>  NCT getNamedCue(Class<NCT> clazz, String cueName) {
+	public void addCue(CueStub c) {
+		this.stampAndRegisterCue(c, c.getStrength());
+	}
+
+	@Override
+	public <NCT extends NamedCue> NCT getNamedCue(Class<NCT> clazz, String cueName) {
 		List<NCT> allCues = getAllFactsMatchingClass(clazz);
 		for (NCT cue : allCues) {
 			String cn = cue.getName();

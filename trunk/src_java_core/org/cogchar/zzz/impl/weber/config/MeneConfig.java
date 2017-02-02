@@ -9,34 +9,32 @@ import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- *
  * @author matt
  */
 public class MeneConfig {
-	private static Logger theLogger = Logger.getLogger(MeneConfig.class.getName());
+	private static final org.slf4j.Logger theLogger = org.slf4j.LoggerFactory.getLogger(MeneConfig.class);
 	private Map<String, IStringFormatter> formatters;
 	private String reset_phrase;
 	private String elbot_url_local;
 	private String elbot_url_remote;
 	private String cogbot_url_local;
 	private String serviceURL = "service:jmx:rmi:///jndi/rmi://localhost:7227/jmxrmi";
-    private String myLogDirectory=null;
-    private String batch_timeout;
-    
-    public IStringFormatter getFormatter(String key){
-        if(!formatters.containsKey(key)){
-            return new EmptyFormatter();
-        }
-        return formatters.get(key);
-    }
+	private String myLogDirectory = null;
+	private String batch_timeout;
 
-    public void load_configuration(String propsPath){
-        loadConfigPropsAndVars(propsPath, false);
-    }
+	public IStringFormatter getFormatter(String key) {
+		if (!formatters.containsKey(key)) {
+			return new EmptyFormatter();
+		}
+		return formatters.get(key);
+	}
+
+	public void load_configuration(String propsPath) {
+		loadConfigPropsAndVars(propsPath, false);
+	}
+
 	public static Properties readPropertiesFile(String propsPath) {
 		Properties props = new Properties();
 		FileInputStream propsFile = null;
@@ -56,10 +54,11 @@ public class MeneConfig {
 		}
 		return props;
 	}
+
 	public void loadConfigPropsAndVars(String propsPath, boolean force) {
 		if (formatters != null && !force) {
 			return;
-		} 
+		}
 		Properties props = readPropertiesFile(propsPath);
 		load_configuration(props);
 	}
@@ -72,20 +71,20 @@ public class MeneConfig {
 			cogbot_url_local = config.getProperty("cogbot_url_local");
 			serviceURL = config.getProperty("character_engine_jmx_url");
 			myLogDirectory = config.getProperty("log_directory");
-            batch_timeout = config.getProperty("batch_timeout");
+			batch_timeout = config.getProperty("batch_timeout");
 			formatters = new HashMap<String, IStringFormatter>();
-			String[] categories = { "input", "id", "logId", "animation", "str",
-					"animation_list", "states", "ask_replace" };
+			String[] categories = {"input", "id", "logId", "animation", "str",
+					"animation_list", "states", "ask_replace"};
 			for (String key : categories) {
 				String path = config.getProperty(key + "_path");
 				formatters.put(key, ReplaceFormatter.loadFromFile(path));
 			}
-			String[] question_cats = { "question" };
+			String[] question_cats = {"question"};
 			for (String key : question_cats) {
 				String path = config.getProperty(key + "_path");
 				formatters.put(key, QuestionFormatter.loadFromFile(path));
 			}
-			String[] random_cats = { "partner" };
+			String[] random_cats = {"partner"};
 			for (String key : random_cats) {
 				String path = config.getProperty(key + "_path");
 				formatters.put(key, RandomFormatter.loadFromFile(path));
@@ -95,31 +94,31 @@ public class MeneConfig {
 		}
 	}
 
-    public String getElbotUrlLocal() {
-        return elbot_url_local;
-    }
+	public String getElbotUrlLocal() {
+		return elbot_url_local;
+	}
 
-    public String getCogbotUrlLocal() {
-        return cogbot_url_local;
-    }
+	public String getCogbotUrlLocal() {
+		return cogbot_url_local;
+	}
 
-    public String getElbotUrlRemote() {
-        return elbot_url_remote;
-    }
+	public String getElbotUrlRemote() {
+		return elbot_url_remote;
+	}
 
-    public String getResetPhrase() {
-        return reset_phrase;
-    }
+	public String getResetPhrase() {
+		return reset_phrase;
+	}
 
-    public String getServiceURL() {
-        return serviceURL;
-    }
+	public String getServiceURL() {
+		return serviceURL;
+	}
 
-    public String getLogDirectory(){
-        return myLogDirectory;
-    }
+	public String getLogDirectory() {
+		return myLogDirectory;
+	}
 
-    public String getBatchTimeout(){
-        return batch_timeout;
-    }
+	public String getBatchTimeout() {
+		return batch_timeout;
+	}
 }

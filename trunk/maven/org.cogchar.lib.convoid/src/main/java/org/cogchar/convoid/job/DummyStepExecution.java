@@ -16,32 +16,28 @@
 
 package org.cogchar.convoid.job;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.cogchar.api.convoid.act.Step;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 /**
  * @author Stu B. <www.texpedient.com>
- *
  */
 public class DummyStepExecution extends StepExecution {
-	private static Logger	theLogger = Logger.getLogger(DummyStepExecution.class.getName());
-	static {
-		theLogger.setLevel(Level.ALL);
-	}
-	
+	private static final Logger theLogger = LoggerFactory.getLogger(DummyStepExecution.class);
+
 	public DummyStepExecution(Step s, Map<String, String> configMap) {
 		super(s, configMap);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see com.hansonrobotics.convoid.mouth.StepExecution#connect()
 	 */
 	@Override
 	public void connect() {
-		theLogger.finer("DummyStepExecution - connect(), step=" + getStep());
+		theLogger.trace("DummyStepExecution - connect(), step=" + getStep());
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +45,7 @@ public class DummyStepExecution extends StepExecution {
 	 */
 	@Override
 	public void disconnect() {
-		theLogger.finer("DummyStepExecution - disconnect(), step=" + getStep());
+		theLogger.trace("DummyStepExecution - disconnect(), step=" + getStep());
 	}
 
 	/* (non-Javadoc)
@@ -57,7 +53,7 @@ public class DummyStepExecution extends StepExecution {
 	 */
 	@Override
 	public void start() {
-		theLogger.finer("DummyStepExecution - start(), step=" + getStep());
+		theLogger.trace("DummyStepExecution - start(), step=" + getStep());
 	}
 
 	/* (non-Javadoc)
@@ -65,13 +61,14 @@ public class DummyStepExecution extends StepExecution {
 	 */
 	@Override
 	public void stop() {
-		theLogger.finer("DummyStepExecution - stop(), step=" + getStep());
+		theLogger.trace("DummyStepExecution - stop(), step=" + getStep());
 	}
-	
+
 	public static class Factory implements StepExecutionFactory {
 		public StepExecution makeStepExecution(Step s, Map<String, String> configMap) {
 			return new DummyStepExecution(s, configMap);
 		}
+
 		public static void registerAsDefault() {
 			Factory f = new Factory();
 			StepExecution.registerFactory(f.getClass().getName(), f, true);

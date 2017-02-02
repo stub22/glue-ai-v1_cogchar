@@ -4,9 +4,6 @@
  */
 package org.cogchar.bind.cogbot.cogsim;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -19,20 +16,25 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Stu Baurmann
  */
 public class OldTestCogSimInline {
 
-	private static Logger theLogger = Logger.getLogger(OldTestCogSimInline.class.getName());
+	private static final Logger theLogger = LoggerFactory.getLogger(OldTestCogSimInline.class);
 	static public String urlRoot = "http://binabot.gotdns.org:5580/";
 	static public String saidURL = urlRoot + "posterboard/onchat-said";
 	static public String heardURL = urlRoot + "posterboard/onchat-heard";
 	static public String actionURL = urlRoot + "postaction";
 
 	public static void postMessageToCogbot(HttpClient client,
-				String cmd, String args) throws Throwable {
+										   String cmd, String args) throws Throwable {
 		theLogger.info("Posting to URL: " + actionURL);
 		HttpPost postReq = new HttpPost(actionURL);
 	/* This is for GET params and for params processed by HttpClient
@@ -43,9 +45,9 @@ public class OldTestCogSimInline {
 		theLogger.info("Post Params: " + params);
 		postReq.setParams(params);
 	 */
-        List <NameValuePair> nvps = new ArrayList <NameValuePair>();
-        nvps.add(new BasicNameValuePair("cmd", cmd));
-        nvps.add(new BasicNameValuePair("args", args));
+		List<NameValuePair> nvps = new ArrayList<>();
+		nvps.add(new BasicNameValuePair("cmd", cmd));
+		nvps.add(new BasicNameValuePair("args", args));
 		UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(nvps, HTTP.UTF_8);
 		postReq.setEntity(formEntity);
 		Header[] allHeaders = postReq.getAllHeaders();
@@ -67,6 +69,7 @@ public class OldTestCogSimInline {
 		dumpResponseInfo(response, "get last thing said");
 		return null;
 	}
+
 	public static String getLastThingWeHeard(HttpClient client) throws Throwable {
 		String thingWeHeard = null;
 		HttpGet getReq = new HttpGet(heardURL);
@@ -74,8 +77,9 @@ public class OldTestCogSimInline {
 		dumpResponseInfo(response, "get last thing heard");
 		return thingWeHeard;
 	}
-	public static void dumpResponseInfo (HttpResponse response, String rqSummary)
-				throws Throwable {
+
+	public static void dumpResponseInfo(HttpResponse response, String rqSummary)
+			throws Throwable {
 		theLogger.info("RequestSummary: " + rqSummary);
 		if (response != null) {
 			theLogger.info("Response status line: " + response.getStatusLine());
@@ -87,18 +91,19 @@ public class OldTestCogSimInline {
 				theLogger.info(EntityUtils.toString(resEntity));
 				resEntity.consumeContent();
 			} else {
-				theLogger.warning("No entity attached to response to request: " + rqSummary);
+				theLogger.warn("No entity attached to response to request: " + rqSummary);
 			}
 		} else {
-			theLogger.warning("Got null response to request: " + rqSummary);
+			theLogger.warn("Got null response to request: " + rqSummary);
 		}
 	}
+
 	public static void main(String args[]) {
 		try {
 			HttpClient client = new DefaultHttpClient();
 			String message = "mene sez the time is: " + System.currentTimeMillis();
 			theLogger.info("Saying: [" + message + "]");
-			postMessageToCogbot(client, "say", message);		
+			postMessageToCogbot(client, "say", message);
 			client = new DefaultHttpClient();
 			String lastSaid = getLastThingWeSaid(client);
 			theLogger.info("Last thing we said: " + lastSaid);
