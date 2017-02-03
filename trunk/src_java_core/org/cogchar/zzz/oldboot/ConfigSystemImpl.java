@@ -75,7 +75,7 @@ public class ConfigSystemImpl extends SubsystemImpl {
 			myTargetRobotParams = targetRobotParamHolder.getChildren();
 			successFlag = true;
 		} else {
-			theLogger.fine("Can't find requested robot config: " + targetRobotName);
+			theLogger.debug("Can't find requested robot config: " + targetRobotName);
 		}
 		return successFlag;
 	}

@@ -42,13 +42,13 @@ public class MeneConfig {
 			propsFile = new FileInputStream(propsPath);
 			props.load(propsFile);
 		} catch (Throwable t) {
-			theLogger.log(Level.SEVERE, "Can't read propsFile: " + propsPath, t);
+			theLogger.error("Can't read propsFile: " + propsPath, t);
 		} finally {
 			if (propsFile != null) {
 				try {
 					propsFile.close();
 				} catch (Throwable t) {
-					theLogger.log(Level.SEVERE, "Can't close propsFile " + propsFile, t);
+					theLogger.error("Can't close propsFile " + propsFile, t);
 				}
 			}
 		}
