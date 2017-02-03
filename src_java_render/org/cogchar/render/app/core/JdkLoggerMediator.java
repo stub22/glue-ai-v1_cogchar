@@ -15,24 +15,24 @@
  */
 
 package org.cogchar.render.app.core;
+import com.jme3.asset.plugins.UrlLocator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.appdapter.core.log.BasicDebugger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * @author Stu B. <www.texpedient.com>
  */
 
 public class JdkLoggerMediator extends BasicDebugger {
 	private Logger ulLogger, genLogger;
-
 	public void setUp() {
-		// TODO(ben): Not sure this is setup right
 		getLogger().info("Setting general JDK-logger level (used by JME3) to 'WARNING'");
-		genLogger = LoggerFactory.getLogger(JdkLoggerMediator.class);
+		genLogger = Logger.getLogger("");
+		genLogger.setLevel(Level.WARNING);
 
-		getLogger().info("Disabling confusing JDK-Logger warnings from UrlLocator");
-		ulLogger = LoggerFactory.getLogger(JdkLoggerMediator.class);
+		getLogger().info("Disabling confusing JDK-Logger warnings from UrlLocator");		
+		ulLogger = Logger.getLogger(UrlLocator.class.getName());
+		ulLogger.setLevel(Level.SEVERE);
 	}
 }
