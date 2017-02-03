@@ -113,7 +113,7 @@ public class ChainJob extends JobStub implements PropertyChangeListener {
 		Object source = evt.getSource();
 		String propertyName = evt.getPropertyName();
 		Object propertyValue = evt.getNewValue();
-		theLogger.finest("ChainJob got property change [src,name]=[" + source + "," + propertyName + "] := " + propertyValue);
+		theLogger.trace("ChainJob got property change [src,name]=[" + source + "," + propertyName + "] := " + propertyValue);
 		if ((source == getCurrentChildJob()) && propertyName.equals(JobStub.PROP_STATUS)) {
 			JobStub.Status updatedStatus = (JobStub.Status) propertyValue;
 			switch (updatedStatus) {

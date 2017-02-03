@@ -76,7 +76,7 @@ public class JobBrokerStub extends ThalamusBrokerStub implements JobSpaceStub {
 		 * if (retractFactForObject(j)) {
 			myThalamus.setLastJobRemoved(j);
 		}
-		 * 
+		 *
 		 */
 	}
 
@@ -102,10 +102,10 @@ public class JobBrokerStub extends ThalamusBrokerStub implements JobSpaceStub {
 	public void removeJobListener(JobListener cl) {
 		myJobListeners.remove(cl);
 	}
-	 * 
+	 *
 	 */
 	public synchronized void notifyJobPosted(JobStub j) {
-		theLogger.finer("notifyJobPosted:" + j.getTypeString());
+		theLogger.trace("notifyJobPosted:" + j.getTypeString());
 		//	for (JobListener jl: myJobListeners) {
 		//		jl.notifyJobPosted(j);
 		//	}
@@ -129,9 +129,9 @@ public class JobBrokerStub extends ThalamusBrokerStub implements JobSpaceStub {
 	public void propertyChange(PropertyChangeEvent evt) {
 		String propertyName = evt.getPropertyName();
 		Object propertyValue = evt.getNewValue();
-		theLogger.fine("propertyChange:  " + propertyName + " := " + propertyValue);
+		theLogger.debug("propertyChange:  " + propertyName + " := " + propertyValue);
 		if (java.beans.Beans.isDesignTime()) {
-			theLogger.fine("It's design time!  No further processing of event");
+			theLogger.debug("It's design time!  No further processing of event");
 			return;
 		}
 		/*
@@ -140,7 +140,7 @@ public class JobBrokerStub extends ThalamusBrokerStub implements JobSpaceStub {
 		} else if (propertyName.equals(Thalamus.PROP_LAST_JOB_REMOVED)) {
 			notifyJobCleared((Job) propertyValue);
 		}
-		 * 
+		 *
 		 */
 	}
 

@@ -58,7 +58,7 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		//	myThalamus.setLastCueAdded(c);
 		// Problem with the auto-update deal is that each property change is handled
 		// by Drools with a retract-and-assert, allowing all rules involving all
-		// properties to re-match.  
+		// properties to re-match.
 		// mySKS.insert(c, c.autoUpdateOnPropertyChange());
 		// So, we have replaced with explicit broker update.
 //		mySKS.insert(c);
@@ -76,7 +76,7 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		if (retractFactForObject(c)) {
 			myThalamus.setLastCueRemoved(c);
 		}
-		 * 
+		 *
 		 */
 	}
 
@@ -130,7 +130,7 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 			throw new RuntimeException("Expected one NowCue, but got " + allNowCues.size());
 		}
 		if (allNowCues.size() == 0) {
-			theLogger.warning("Could not find solitary NowCue [this is OK at startup]");
+			theLogger.warn("Could not find solitary NowCue [this is OK at startup]");
 		}
 		return result;
 	}
@@ -191,14 +191,14 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 	 * }
 	 */
 	protected synchronized void notifyCuePosted(CueStub c) {
-		theLogger.finer("notifyCuePosted:" + c.getTypeString());
+		theLogger.trace("notifyCuePosted:" + c.getTypeString());
 //		for (CueListener cl: myCueListeners) {
 //			cl.notifyCuePosted(c);
 //		}
 	}
 
 	protected synchronized void notifyCueUpdated(CueStub c) {
-		theLogger.finer("notifyCueUpdated:" + c.getTypeString());
+		theLogger.trace("notifyCueUpdated:" + c.getTypeString());
 //		for (CueListener cl: myCueListeners) {
 //			cl.notifyCueUpdated(c);
 //		}
@@ -209,7 +209,7 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 	 * @param c
 	 */
 	protected synchronized void notifyCueCleared(CueStub c) {
-		theLogger.finer("notifyCueCleared:" + c.getTypeString());
+		theLogger.trace("notifyCueCleared:" + c.getTypeString());
 		//for (CueListener cl: myCueListeners) {
 		//	cl.notifyCueCleared(c);
 		//}
@@ -226,10 +226,10 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		for (FactHandle fh: targets) {
 			// TODO: this explicit casting to fact types is kinda
 			// hokey.
-			
+
 			// TODO:  Concerned about the robustness of the delete-
 			// duality.  Need to periodically absolute-sync the
-			// the workingMemory and the thalamus structures.			
+			// the workingMemory and the thalamus structures.
 			Object factObj = getFactObjectFromHandle(fh);
 			theLogger.info("Retracting factHandle=" + fh + " for fact=" + factObj);
 			retractFactForHandle(fh);
@@ -237,9 +237,9 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 				Cue cue = (Cue) factObj;
 				theLogger.info("Removing thalamus cue: " + cue);
 				myThalamus.setLastCueRemoved(cue);
-			} 
+			}
 		}
-		 * 
+		 *
 		 */
 	}
 
@@ -256,7 +256,7 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		for (FactHandle fh: targets) {
 			Object factObj = mySKS.getObject(fh);
 			if (factObj instanceof NamedCue) {
-				NamedCue ncue = (NamedCue) factObj;		
+				NamedCue ncue = (NamedCue) factObj;
 				if (ncue.getName().equals(name)) {
 					theLogger.finer("TDA: Retracting factHandle: " + fh);
 					mySKS.retract(fh);
@@ -269,7 +269,7 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 			}
 		}
 		theLogger.finer("Cleared " + clearedCount + " cues named: " + name);
-		 * 
+		 *
 		 */
 	}
 
@@ -304,9 +304,9 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 	public void propertyChange(PropertyChangeEvent evt) {
 		String propertyName = evt.getPropertyName();
 		Object propertyValue = evt.getNewValue();
-		theLogger.fine("propertyChange:  " + propertyName + " := " + propertyValue);
+		theLogger.trace("propertyChange:  " + propertyName + " := " + propertyValue);
 		if (java.beans.Beans.isDesignTime()) {
-			theLogger.fine("It's design time!  No further processing of event");
+			theLogger.debug("It's design time!  No further processing of event");
 			return;
 		}
 		/*
@@ -315,7 +315,7 @@ public class CueBrokerStub extends ThalamusBrokerStub implements CueSpaceStub {
 		} else 	if (propertyName.equals(Thalamus.PROP_LAST_CUE_REMOVED)) {
 			notifyCueCleared((Cue) propertyValue);
 		}
-		 * 
+		 *
 		 */
 	}
 
