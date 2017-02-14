@@ -34,6 +34,7 @@ import com.jme3.scene.CameraNode;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.window.WantsWindowStatus;
 import org.cogchar.render.sys.window.WindowStatusMonitor;
+import scala.Option;
 
 /**
  * Created by Stub22 on 5/14/2016.
@@ -143,7 +144,7 @@ public class BasicGoodyCtxImpl extends BasicDebugger implements BasicGoodyCtx, W
 				Quaternion rotQuat = ga.getRotationQuaternion();
 				Ident goodyID = ga.getGoodyID();
 				Ident goodyType = ga.getType();
-				ColorRGBA gcolor = ga.getColor();
+				ColorRGBA gcolor = ga.getColorOrDefault();
 				String goodyText = ga.getText();
 				Boolean bitBoxState = ga.getSpecialBoolean(GoodyNames.BOOLEAN_STATE);
 				Boolean isAnO =  ga.getSpecialBoolean(GoodyNames.USE_O);

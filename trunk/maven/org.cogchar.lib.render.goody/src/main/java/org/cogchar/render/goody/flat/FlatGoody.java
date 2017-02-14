@@ -1,12 +1,12 @@
 /*
  *  Copyright 2013 by The Cogchar Project (www.cogchar.org).
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.math.ColorRGBA;
 import java.util.concurrent.Callable;
 import org.cogchar.render.app.entity.GoodyActionExtractor;
+import scala.Option;
 
 
 /**
@@ -61,7 +62,7 @@ public abstract class FlatGoody extends BasicVWorldEntity {
 					getUri().getLocalName());
 		}
 	}
-	
+
 	@Override public void detachFromVirtualWorldNode(QueueingStyle style) {
 		final Node fgn = getFlatGoodyNode();
 		enqueueForJme(new Callable() { // Do this on main render thread
@@ -79,7 +80,7 @@ public abstract class FlatGoody extends BasicVWorldEntity {
 		if (fgn != null) {
 			Callable positioningCallable = new Callable() { // Do this on main render thread
 				@Override public Void call() throws Exception {
-					getLogger().debug("Setting screen position for {} to {}", getUri().getLocalName(), 	screenPos);					
+					getLogger().debug("Setting screen position for {} to {}", getUri().getLocalName(), 	screenPos);
 					fgn.setLocalTranslation(screenPos);
 					return null;
 				}
@@ -90,16 +91,16 @@ public abstract class FlatGoody extends BasicVWorldEntity {
 	// Override this method to add functionality; be sure to call this super method to apply standard Goody actions
 	@Override	public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		switch (ga.getKind()) {
-			case MOVE : 
+			case MOVE :
 			case SET : {
 				Vector3f locVec = ga.getLocationVec3f();
 				if (locVec != null) {
 					setScreenPosition(locVec, qStyle);
 				}
 				setUniformScaleFactor(ga.getScaleUniform(), qStyle);
-				ColorRGBA c = ga.getColor();
-				if (c != null) {
-					myForeColor = c;
+				Option<ColorRGBA> c = ga.getColor();
+				if (c.isDefined()) {
+					myForeColor = ga.getColorOrDefault();
 				}
 				break;
 			}
@@ -112,5 +113,5 @@ public abstract class FlatGoody extends BasicVWorldEntity {
 		// getLogger().error("setPosition to {} is not implemented", position);
 		setScreenPosition(position, style);
 	}
-	
+
 }
