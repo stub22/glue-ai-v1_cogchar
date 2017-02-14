@@ -26,6 +26,7 @@ import org.cogchar.api.thing.ThingActionSpec;
 import org.cogchar.api.vworld.GoodyActionParamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 
 /**
@@ -149,7 +150,7 @@ public class GoodyActionExtractor extends GoodyActionParamReader {
 		return resultQuat;
 	}
 
-    public boolean hasColor(){
+    private boolean hasColor(){
         Float cVals[] = getColorVec4D();
 
         for(Float f : cVals){
@@ -161,19 +162,36 @@ public class GoodyActionExtractor extends GoodyActionParamReader {
         return true;
     }
 
-
-	public ColorRGBA getColor() {
+    /**
+     *
+     * @return an option of the color. It will return None if the GoodyAction does not have a color.
+     */
+	public Option<ColorRGBA> getColor() {
 		Float cVals[] = getColorVec4D();
 
         if(!hasColor()){
-           // TODO(ben): Should we really return a default value? Fault tolerant, yes, but this feels like a bug.
-           theLogger.warn("Couldn't find a color in Goody Thing Action. Returning Grey. Why is someone trying to extract a color that wasn't sent?");
-           return new ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f);
+           return Option.empty();
         }
 
-		ColorRGBA resultColor =  new ColorRGBA(cVals[0], cVals[1], cVals[2], cVals[3]);
-		return resultColor;
+		return Option.apply(new ColorRGBA(cVals[0], cVals[1], cVals[2], cVals[3]));
 	}
+
+    /**
+     *
+     * @return the color or Grey if no color is specified
+     */
+    public ColorRGBA getColorOrDefault() {
+        final Option<ColorRGBA> colorOpt = getColor();
+
+        if(colorOpt.isEmpty()){
+            theLogger.warn("Couldn't find a color in Goody Thing Action. Returning Grey. It would be preferrable if the user set this color.");
+            return new ColorRGBA(0.5f, 0.5f, 0.5f, 1.0f);
+        }
+
+		return colorOpt.getOrElse(null);
+	}
+
+
 
 
 }

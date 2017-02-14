@@ -1,12 +1,12 @@
 /*
  *  Copyright 2012 by The Cogchar Project (www.cogchar.org).
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,13 +40,15 @@ import org.cogchar.render.app.entity.GoodyActionExtractor;
 import org.cogchar.render.app.entity.VWorldEntity;
 import org.cogchar.render.sys.registry.RenderRegistryClient;
 import org.cogchar.render.sys.goody.GoodyRenderRegistryClient;
+import scala.Option;
+
 /**
  *
  * @author Ryan Biggs <rbiggs@hansonrobokind.com>
  */
 
 // This will need some ongoing refactorings both to fix some oddness and bad form inherent in development of the concepts here,
-// and to make sure the BasicGoodyImpl has the sorts of properties we want it to have 
+// and to make sure the BasicGoodyImpl has the sorts of properties we want it to have
 public class BasicGoodyEntity extends BasicVWorldEntity {
 
 	private Vector3f		myPosition = new Vector3f(); // default: at origin (relative to parentNode)
@@ -91,7 +93,7 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 		Material myMaterial;
 		Quaternion myRotationOffset;
 
-		BasicGoodyGeomBinding(Mesh mesh, Material material, ColorRGBA color, 
+		BasicGoodyGeomBinding(Mesh mesh, Material material, ColorRGBA color,
 				Quaternion rotation, CollisionShape shape, float mass) {
 			myRotationOffset = rotation;
 			if (color != null) {
@@ -121,7 +123,7 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 			myColor = newColor;
 			myMaterial.setColor("Diffuse", newColor);
 			myMaterial.setColor("Ambient", newColor);
-			myMaterial.setColor("Specular", newColor);	
+			myMaterial.setColor("Specular", newColor);
 		}
 
 		Geometry getJmeGeometry() {
@@ -133,12 +135,12 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 	public Node getContentNode() {
 		return myContentNode;
 	}
-	protected Node getParentNode() { 
+	protected Node getParentNode() {
 		return myParentNode;
 	}
 	// Returns geometry index
 	// This method is intended to support physical objects
-	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation, 
+	protected int addGeometry(Mesh mesh, Material material, ColorRGBA color, Quaternion rotation,
 			CollisionShape shape, float mass) {
 		myGeomBindings.add(new BasicGoodyGeomBinding(mesh, material, color, rotation, shape, mass));
 		return myGeomBindings.size() - 1;
@@ -157,19 +159,19 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 	}
 
 
-	
+
 	// For attaching "default" (zero index) geometry
 	@Override public void attachToVirtualWorldNode(Node parentNode, QueueingStyle style) {
 		attachToVirtualWorldNode(parentNode, 0, style);
 	}
-	
+
 	// For attaching geometry by index
 	// A bit messy now that we're using a myNode, especially in the multiple enqueueForJmeAndWait calls
 	// in this method; perhaps has potental to be refactored into something more satisfying...
-	
+
 	// Note that if we are already on the JME3 render thread, and we try to block synchronously, we will deadlock!
 	protected void attachToVirtualWorldNode(Node parentNode, int geometryIndex, QueueingStyle style) {
-		if (parentNode != myParentNode) { 
+		if (parentNode != myParentNode) {
 			if (myParentNode != null) {
 				enqueueForJme(new Callable() { // Do this on main render thread
 					@Override public Void call() throws Exception {
@@ -185,7 +187,7 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 				myParentNode.attachChild(myContentNode);
 				return null;
 			}
-		}, style);		
+		}, style);
 		setActiveBoundGeomIndex(geometryIndex, style);
 	}
 	// For switching to geometry from a new index, attached to existing root node
@@ -199,7 +201,7 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 			}
 		} else {
 			getLogger().error("Attempting to set geometry by index, but no root node is set");
-		}	
+		}
 	}
 
 	@Override public void detachFromVirtualWorldNode(QueueingStyle style) {
@@ -235,13 +237,13 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 					getRenderRegCli().getJme3BulletPhysicsSpace().remove(currentGeomBinding.myControl);
 				}
 				// Must detach by name; detaching by saved geometry does not work
-				myContentNode.detachChildNamed(getUri().getLocalName()); 
+				myContentNode.detachChildNamed(getUri().getLocalName());
 				myCurrAttachedBindingIndex = NULL_INDEX;
 				return null;
 			}
 		}, style);
 	}
-	
+
 	protected void setNewGeometryRotationOffset(int geomId, Quaternion offset) {
 		BasicGoodyGeomBinding geomBinding = myGeomBindings.get(geomId);
 		geomBinding.myRotationOffset = offset;
@@ -252,7 +254,7 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 	}
 
 	@Override public void setRotation(Quaternion newRotation, QueueingStyle qStyle) {
-		setPositionAndRotation(myPosition, newRotation, qStyle); 
+		setPositionAndRotation(myPosition, newRotation, qStyle);
 	}
 
 	public void setPositionAndRotation(Vector3f newPosition, Quaternion newRotation, QueueingStyle style) {
@@ -271,7 +273,7 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 	private Quaternion getTotalRotation(BasicGoodyGeomBinding goodieGeometry) {
 		return myRotation.mult(goodieGeometry.myRotationOffset);
 	}
-	
+
 	private void setGeometryPositionAndRotation(BasicGoodyGeomBinding goodieGeometry) {
 		Quaternion totalRotation = getTotalRotation(goodieGeometry);
 		//myLogger.info("Setting Goody position {}, rotation {} with offset {} for total rotation {}", // TEST ONLY
@@ -286,7 +288,7 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 			jmeGeometry.setLocalRotation(totalRotation);
 		}
 	}
-	
+
 	// Likely will eventually want to refactor this to use SpatialAnimMgr
 	protected void moveViaAnimation(Vector3f newPosition, Quaternion newOrientation, Vector3f newScale, float duration) {
 		final String moveAnimName = "BasicGoodyMoveFactory";
@@ -313,7 +315,7 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 		// Oddly, it seems this needs to be set *after* starting the animation with setAnim:
 		moveChannel.setLoopMode(LoopMode.DontLoop);
 	}
-	
+
 	protected void setNewPositionAndRotationIfNonNull(Vector3f newPosition, Quaternion newRotation) {
 		if (newPosition != null) {
 			myPosition = newPosition;
@@ -322,9 +324,9 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 			myRotation = newRotation;
 		}
 	}
-	
 
-	
+
+
 	@Override public void setVectorScale(final Vector3f scaleVector, QueueingStyle style) {
 		if (scaleVector != null) {
 			enqueueForJme(new Callable() { // Do this on main render thread
@@ -341,7 +343,7 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 			myScaleVec = scaleVector;
 		}
 	}
-	
+
 	private void setPositionRotationAndScale(Vector3f position, Quaternion rotation, Vector3f scale, Float scalarScale,
 				QueueingStyle qStyle) {
 		setPositionAndRotation(position, rotation, qStyle);
@@ -351,7 +353,7 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 			setUniformScaleFactor(scalarScale, qStyle);
 		}
 	}
-	
+
 	public void setCurrentGeometryColor(final ColorRGBA geoColor) {
 		//myLogger.info("setting color with color {} to index {}", geoColor, attachedIndex); // TEST ONLY
 		if ((geoColor != null) && (myCurrAttachedBindingIndex != NULL_INDEX)) {
@@ -359,18 +361,22 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 			currentGeometry.setMaterialColor(geoColor);
 		}
 	}
-	
+
 	// Override this method to add functionality for particular goodies, but  be sure to call this super method.
 	@Override public void applyAction(GoodyActionExtractor ga, QueueingStyle qStyle) {
 		Vector3f newLocation = ga.getLocationVec3f();
 		Quaternion newRotation = ga.getRotationQuaternion();
 		Vector3f newVectorScale = ga.getScaleVec3f();
 		Float scaleFactor = ga.getScaleUniform();
-		ColorRGBA newColor = ga.getColor();
+
 		switch (ga.getKind()) {
 			case SET : {
 				setPositionRotationAndScale(newLocation, newRotation, newVectorScale, scaleFactor, qStyle);
-				setCurrentGeometryColor(newColor);
+
+                Option<ColorRGBA> newColor = ga.getColor();
+                if(newColor.isDefined()){
+                    setCurrentGeometryColor(ga.getColorOrDefault());
+                }
 				break;
 			}
 			case MOVE : {
@@ -401,7 +407,7 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 		}
 		return currentGeometry;
 	}
-	
+
 	private BasicGoodyGeomBinding getCurrentAttachedGeomBinding() {
 		BasicGoodyGeomBinding currentGeometry = null;
 		if (myCurrAttachedBindingIndex != NULL_INDEX) {
@@ -409,5 +415,5 @@ public class BasicGoodyEntity extends BasicVWorldEntity {
 		}
 		return currentGeometry;
 	}
-		
+
 }
