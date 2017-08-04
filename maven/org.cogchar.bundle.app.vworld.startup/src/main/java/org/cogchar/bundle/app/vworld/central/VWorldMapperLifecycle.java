@@ -2,7 +2,7 @@ package org.cogchar.bundle.app.vworld.central;
 
 /**
  *
- * @author Major Jacquote II <mjacquote@gmail.com>
+ * @author
  */
 import java.util.Collections;
 import java.util.List;

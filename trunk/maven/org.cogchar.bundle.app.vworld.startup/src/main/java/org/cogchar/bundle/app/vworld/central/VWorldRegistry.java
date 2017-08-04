@@ -2,7 +2,7 @@ package org.cogchar.bundle.app.vworld.central;
 
 /**
  *
- * @author Major Jacquote II
+ * @author
  */
 
 import org.appdapter.core.log.BasicDebugger;
