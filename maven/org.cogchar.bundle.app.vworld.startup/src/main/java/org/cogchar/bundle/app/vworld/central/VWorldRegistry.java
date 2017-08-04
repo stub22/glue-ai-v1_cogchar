@@ -1,10 +1,5 @@
 package org.cogchar.bundle.app.vworld.central;
 
-/**
- *
- * @author Major Jacquote II
- */
-
 import org.appdapter.core.log.BasicDebugger;
 import org.appdapter.core.name.Ident;
 import org.appdapter.fancy.rclient.RepoClient;
