@@ -24,7 +24,7 @@ import org.osgi.framework.ServiceReference;
 
 /**
  *
- * @author Major Jacquote II <mjacquote@gmail.com>
+ * @author
  * @author
  */
 public class VirtualWorldFactory {

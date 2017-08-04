@@ -1,11 +1,6 @@
 package org.cogchar.app.puma.event;
 
 import org.appdapter.core.name.Ident;
-/**
- *
- * @author Major Jacquote II <mjacquote@gmail.com>
- *
- */
 public class CommandEvent {
 
     public enum EventType {

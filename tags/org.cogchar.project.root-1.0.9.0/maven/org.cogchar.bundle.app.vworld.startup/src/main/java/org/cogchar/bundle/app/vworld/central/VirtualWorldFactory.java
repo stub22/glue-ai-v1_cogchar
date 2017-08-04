@@ -24,7 +24,7 @@ import org.cogchar.app.puma.event.CommandEvent;
 
 /**
  *
- * @author Major Jacquote II <mjacquote@gmail.com>
+ * @author
  * @author
  */
 public class VirtualWorldFactory {
