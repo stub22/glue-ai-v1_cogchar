@@ -1,9 +1,5 @@
 package org.cogchar.bundle.app.vworld.central;
 
-/**
- *
- * @author Major Jacquote II <mjacquote@gmail.com>
- */
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
