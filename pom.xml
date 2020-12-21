@@ -112,7 +112,7 @@ Version-less parent will be allowed in Maven 3.1.
 		<version.org.apache.felix.main>5.6.1</version.org.apache.felix.main>
 		<wagon.webdav.version>1.0-beta-7</wagon.webdav.version>
 		<xpp3.version>1.1.4c</xpp3.version>
-		<xstream.version>1.4</xstream.version>
+		<xstream.version>1.4.15</xstream.version>
 
 		<!-- key infrastructure versions -->
 		<scala.version>2.10.2</scala.version>
